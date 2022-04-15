@@ -18,9 +18,12 @@ import warnings
 from lmfit import Model
 from typing import Any, Dict, List, Tuple, Union
 
-from plasmapy.formulary.dielectric import permittivity_1D_Maxwellian
-from plasmapy.formulary.frequencies import plasma_frequency
-from plasmapy.formulary.speeds import thermal_speed, thermal_speed_coefficients
+from plasmapy.formulary import (
+    permittivity_1D_Maxwellian_lite,
+    plasma_frequency_lite,
+    thermal_speed_coefficients,
+    thermal_speed_lite,
+)
 from plasmapy.particles import Particle, particle_mass
 from plasmapy.utils.decorators import (
     bind_lite_func,
@@ -182,8 +185,8 @@ def spectral_density_lite(
     # Calculate plasma parameters
     # Temperatures here in K!
     coefs = thermal_speed_coefficients("most_probable", 3)
-    vTe = thermal_speed.lite(Te, m_e_si_unitless, coefs)
-    vTi = thermal_speed.lite(Ti, ion_mass, coefs)
+    vTe = thermal_speed_lite(Te, m_e_si_unitless, coefs)
+    vTi = thermal_speed_lite(Ti, ion_mass, coefs)
     zbar = np.sum(ifract * ion_z)
 
     # Compute electron and ion densities
@@ -191,7 +194,7 @@ def spectral_density_lite(
     ni = ifract * n / zbar  # ne/zbar = sum(ni)
 
     # wpe is calculated for the entire plasma (all electron populations combined)
-    wpe = plasma_frequency.lite(n, m_e_si_unitless, 1)
+    wpe = plasma_frequency_lite(n, m_e_si_unitless, 1)
 
     # Convert wavelengths to angular frequencies (electromagnetic waves, so
     # phase speed is c)
@@ -230,15 +233,15 @@ def spectral_density_lite(
     # Calculate the susceptibilities
     chiE = np.zeros([efract.size, w.size], dtype=np.complex128)
     for i, fract in enumerate(efract):
-        wpe = plasma_frequency.lite(ne[i], m_e_si_unitless, 1)
-        chiE[i, :] = permittivity_1D_Maxwellian.lite(w_e[i, :], k, vTe[i], wpe)
+        wpe = plasma_frequency_lite(ne[i], m_e_si_unitless, 1)
+        chiE[i, :] = permittivity_1D_Maxwellian_lite(w_e[i, :], k, vTe[i], wpe)
 
     # Treatment of multiple species is an extension of the discussion in
     # Sheffield Sec. 5.1
     chiI = np.zeros([ifract.size, w.size], dtype=np.complex128)
     for i, fract in enumerate(ifract):
-        wpi = plasma_frequency.lite(ni[i], ion_mass[i], ion_z[i])
-        chiI[i, :] = permittivity_1D_Maxwellian.lite(w_i[i, :], k, vTi[i], wpi)
+        wpi = plasma_frequency_lite(ni[i], ion_mass[i], ion_z[i])
+        chiI[i, :] = permittivity_1D_Maxwellian_lite(w_i[i, :], k, vTi[i], wpi)
 
     # Calculate the longitudinal dielectric function
     epsilon = 1 + np.sum(chiE, axis=0) + np.sum(chiI, axis=0)
@@ -645,7 +648,7 @@ def _spectral_density_model(wavelengths, settings=None, **params):
     Te *= 11605
     Ti *= 11605
 
-    alpha, model_Skw = spectral_density.lite(
+    alpha, model_Skw = spectral_density_lite(
         wavelengths,
         probe_wavelength,
         n,
