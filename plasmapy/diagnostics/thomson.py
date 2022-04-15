@@ -421,12 +421,16 @@ def spectral_density(
         efract = np.ones(1)
     else:
         efract = np.asarray(efract, dtype=np.float64)
+        if np.sum(efract) != 1:
+            raise ValueError(f"The provided efract does not sum to 1: {efract}")
 
     # Validate ifract
     if ifract is None:
         ifract = np.ones(1)
     else:
         ifract = np.asarray(ifract, dtype=np.float64)
+        if np.sum(ifract) != 1:
+            raise ValueError(f"The provided ifract does not sum to 1: {ifract}")
 
     if probe_vec is None:
         probe_vec = np.array([1, 0, 0])

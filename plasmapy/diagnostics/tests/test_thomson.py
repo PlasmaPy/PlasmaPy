@@ -305,6 +305,20 @@ def multiple_species_collective_args():
     return kwargs
 
 
+def test_efract_sum_error(single_species_collective_args):
+    args, kwargs = spectral_density_args_kwargs(single_species_collective_args)
+    kwargs["efract"] = np.array([2.0])  # Sum is not 1
+    with pytest.raises(ValueError):
+        alpha, Skw = thomson.spectral_density(*args, **kwargs)
+
+
+def test_ifract_sum_error(single_species_collective_args):
+    args, kwargs = spectral_density_args_kwargs(single_species_collective_args)
+    kwargs["ifract"] = np.array([0.5, 1.2])  # Sum is not 1
+    with pytest.raises(ValueError):
+        alpha, Skw = thomson.spectral_density(*args, **kwargs)
+
+
 @pytest.fixture()
 def multiple_species_collective_spectrum(multiple_species_collective_args):
 
@@ -888,7 +902,7 @@ def iaw_single_species_settings_params():
     kwargs["n"] = Parameter("n", value=2e17 * 1e6, vary=False)
     kwargs["Te_0"] = Parameter("Te_0", value=10, vary=False, min=5, max=20)
     kwargs["Ti_0"] = Parameter("Ti_0", value=20, vary=True, min=5, max=70)
-    kwargs["ifract_0"] = Parameter("ifract_0", value=1.0, vary=False, min=0.2, max=0.8)
+    kwargs["ifract_0"] = Parameter("ifract_0", value=1.0, vary=False)
     kwargs["ion_speed_0"] = Parameter("ion_speed_0", value=0, vary=False)
     kwargs["electron_speed_0"] = Parameter("electron_speed_0", value=0, vary=False)
 
