@@ -272,7 +272,7 @@ def spectral_density_lite(
     # Recast as real: imaginary part is already zero
     Skw = np.real(np.sum(econtr, axis=0) + np.sum(icontr, axis=0))
 
-    # Apply an insturment function if one is provided
+    # Apply an instrument function if one is provided
     if instr_func_arr is not None:
         Skw = np.convolve(Skw, instr_func_arr, mode="same")
     return np.mean(alpha), Skw
@@ -729,7 +729,7 @@ def spectral_density_model(wavelengths, settings, params):
     Notes
     -----
 
-    If an insturment function is included, the data should not include any
+    If an instrument function is included, the data should not include any
     `numpy.nan` values - instead regions with no data should be removed from
     both the data and wavelength arrays using `numpy.delete`.
 
