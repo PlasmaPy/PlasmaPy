@@ -85,7 +85,7 @@ def spectral_density_lite(
         Wavelength of the probe laser in meters.
 
     n : `~astropy.units.Quantity`
-        Total number density of all electron populations.
+        Total combined number density of all electron populations.
         (convertible to cm\ :sup:`-3`)
 
     Te : `~numpy.ndarray`, shape (Ne, )
@@ -341,7 +341,7 @@ def spectral_density(
         Wavelength of the probe laser. (convertible to nm)
 
     n : `~astropy.units.Quantity`
-        Total number density of all electron populations.
+        Total combined number density of all electron populations.
         (convertible to cm\ :sup:`-3`)
 
     Te : `~astropy.units.Quantity`, shape (Ne, )
@@ -355,14 +355,13 @@ def spectral_density(
     efract : array_like, shape (Ne, ), optional
         An array-like object where each element represents the fraction (or ratio)
         of the electron population number density to the total electron number
-        density (:math:`F_e`).
-        Must sum to 1.0. Default is a single electron component.
+        density (:math:`F_e`). Must sum to 1.0. Default is a single
+        electron component.
 
     ifract : array_like, shape (Ni, ), optional
         An array-like object where each element represents the fraction (or ratio)
         of the ion population number density to the total ion number density
-        (:math:`F_i`).
-        Must sum to 1.0. Default is a single ion species.
+        (:math:`F_i`). Must sum to 1.0. Default is a single ion species.
 
     ion_species : `str` or `~plasmapy.particles.particle_class.Particle`, shape (Ni, ), optional
         A list or single instance of `~plasmapy.particles.Particle`, or
@@ -698,7 +697,7 @@ def spectral_density_model(wavelengths, settings, params):
 
     params : `lmfit.Parameters` object
         A Parameters object that must contains the following variables
-            - n: 0th order density in m^-3
+            - n: Total combined density of the elctron populations in m^-3
             - Te_e# : Temperature in eV
             - Ti_i# : Temperature in eV
 
