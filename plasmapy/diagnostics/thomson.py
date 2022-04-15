@@ -84,8 +84,9 @@ def spectral_density_lite(
     probe_wavelength : real number
         Wavelength of the probe laser in meters.
 
-    n : real number
-        Mean (0th order) density of all plasma components combined in m^-3.
+    n : `~astropy.units.Quantity`
+        Total number density of all electron populations.
+        (convertible to cm\ :sup:`-3`)
 
     Te : `~numpy.ndarray`, shape (Ne, )
         Temperature of each electron component in Kelvin. Shape (Ne, ) must be
@@ -305,6 +306,30 @@ def spectral_density(
     velocity distribution functions are assumed to be Maxwellian, making this
     function equivalent to Eq. 3.4.6 in :cite:t:`sheffield:2011`\ .
 
+    The number density of the e:sup:`th` electron populations is defined as
+
+    .. math::
+        n_e = F_e n_0
+
+    where :math:`n` is total density of all electron population combined and
+    :math:`F_e` is the fractional density of each electron poulation such
+    that
+
+    .. math::
+        \sum_e n_e = n
+
+    .. math::
+        \sum_e F_e = 1
+
+    The plasma is assumed to be charge neutral, and therefore the number
+    density of the i:sup:`th` ion population is
+
+    .. math::
+        n_i = \fract{F_i n}{\sum_i F_i Z_i}
+
+    with :math:`F_i` defined in the same way as :math:`F_e`.
+
+
     Parameters
     ----------
 
@@ -316,7 +341,7 @@ def spectral_density(
         Wavelength of the probe laser. (convertible to nm)
 
     n : `~astropy.units.Quantity`
-        Mean (0th order) density of all plasma components combined.
+        Total number density of all electron populations.
         (convertible to cm\ :sup:`-3`)
 
     Te : `~astropy.units.Quantity`, shape (Ne, )
@@ -329,12 +354,14 @@ def spectral_density(
 
     efract : array_like, shape (Ne, ), optional
         An array-like object where each element represents the fraction (or ratio)
-        of the electron population number density to the total electron number density.
+        of the electron population number density to the total electron number
+        density (:math:`F_e`).
         Must sum to 1.0. Default is a single electron component.
 
     ifract : array_like, shape (Ni, ), optional
         An array-like object where each element represents the fraction (or ratio)
-        of the ion population number density to the total ion number density.
+        of the ion population number density to the total ion number density
+        (:math:`F_i`).
         Must sum to 1.0. Default is a single ion species.
 
     ion_species : `str` or `~plasmapy.particles.particle_class.Particle`, shape (Ni, ), optional
