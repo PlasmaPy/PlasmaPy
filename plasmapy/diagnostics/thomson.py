@@ -165,10 +165,10 @@ def spectral_density_lite(
     coefs = thermal_speed_coefficients("most_probable", 3)
     vTe = thermal_speed_lite(Te, m_e_si_unitless, coefs)
     vTi = thermal_speed_lite(Ti, ion_mass, coefs)
-    zbar = np.sum(ifract * ion_z)
 
     # Compute electron and ion densities
     ne = efract * n
+    zbar = np.sum(ifract * ion_z)
     ni = ifract * n / zbar  # ne/zbar = sum(ni)
 
     # wpe is calculated for the entire plasma (all electron populations combined)
@@ -353,15 +353,14 @@ def spectral_density(
         number of ion populations Ni. (in K or convertible to eV)
 
     efract : array_like, shape (Ne, ), optional
-        An array-like object where each element represents the fraction (or ratio)
-        of the electron population number density to the total electron number
-        density (:math:`F_e`). Must sum to 1.0. Default is a single
+        An array-like object representing :math:`F_e` (defined above).
+        Must sum to 1.0. Default is [1.0], representing a single
         electron component.
 
     ifract : array_like, shape (Ni, ), optional
-        An array-like object where each element represents the fraction (or ratio)
-        of the ion population number density to the total ion number density
-        (:math:`F_i`). Must sum to 1.0. Default is a single ion species.
+        An array-like object representing :math:`F_i` (defined above).
+        Must sum to 1.0. Default is [1.0], representing a single
+        ion component.
 
     ion_species : `str` or `~plasmapy.particles.particle_class.Particle`, shape (Ni, ), optional
         A list or single instance of `~plasmapy.particles.Particle`, or
