@@ -1,0 +1,6 @@
+When instantiating a |Particle| representing an element or isotope with
+no charge information provided, the
+:attr:`~plasmapy.particles.particle_class.Particle.charge_number` will
+now default to ``0``.  For example, ``Particle("H")`` will be equivalent
+to ``Particle("H 0+")`` and ``Particle("H", Z=0)``. Previously,
+``Particle("H").charge_number`` led to a |ChargeError|.
