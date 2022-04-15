@@ -157,30 +157,6 @@ def spectral_density_lite(
 
     """
 
-    if efract is None:
-        efract = np.array([1.0])
-
-    if ifract is None:
-        ifract = np.array([1.0])
-
-    if ion_z is None:
-        ion_z = np.array([1])
-
-    if ion_mass is None:
-        ion_mass = np.array([1])
-
-    if probe_vec is None:
-        probe_vec = np.array([1, 0, 0])
-
-    if scatter_vec is None:
-        scatter_vec = np.array([0, 1, 0])
-
-    if electron_vel is None:
-        electron_vel = np.zeros([efract.size, 3])
-
-    if ion_vel is None:
-        ion_vel = np.zeros([ifract.size, 3])
-
     scattering_angle = np.arccos(np.dot(probe_vec, scatter_vec))
 
     # Calculate plasma parameters
@@ -455,7 +431,6 @@ def spectral_density(
         # If a single quantity is given, put it in an array so it's iterable
         # If Ti.size != len(ion_species), assume same temp. for all species
         Ti = np.array([Ti.value]) * Ti.unit
-        )
 
     # Make sure the sizes of ion_species, ifract, ion_vel, and Ti all match
     if (

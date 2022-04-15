@@ -166,7 +166,11 @@ def single_species_collective_args():
     kwargs["n"] = 5e17 * u.cm ** -3
     kwargs["Te"] = 10 * u.eV
     kwargs["Ti"] = 10 * u.eV
+    kwargs["efract"] = np.array([1.0])
+    kwargs["ifract"] = np.array([1.0])
     kwargs["ion_species"] = "C-12 5+"
+    kwargs["electron_vel"] = np.array([[0, 0, 0]]) * u.km / u.s
+    kwargs["ion_vel"] = np.array([[0, 0, 0]]) * u.km / u.s
     kwargs["probe_vec"] = np.array([1, 0, 0])
     kwargs["scatter_vec"] = np.array([0, 1, 0])
 
@@ -265,14 +269,6 @@ def test_spectral_density_lite_minimal_arguments(single_species_collective_args)
 
     # Delete the arguments that have default values
     optional_keys = [
-        "efract",
-        "ifract",
-        "ion_z",
-        "ion_mass",
-        "electron_vel",
-        "ion_vel",
-        "probe_vec",
-        "scatter_vec",
         "instr_func_arr",
     ]
     for key in optional_keys:
@@ -301,6 +297,7 @@ def multiple_species_collective_args():
     kwargs["ion_species"] = [Particle("p+"), Particle("C-12 5+")]
     kwargs["probe_vec"] = np.array([1, 0, 0])
     kwargs["scatter_vec"] = np.array([0, 1, 0])
+    kwargs["efract"] = np.array([1.0])
     kwargs["ifract"] = np.array([0.7, 0.3])
     kwargs["electron_vel"] = np.array([[300, 0, 0]]) * u.km / u.s
     kwargs["ion_vel"] = np.array([[-500, 0, 0], [0, 500, 0]]) * u.km / u.s
@@ -374,7 +371,11 @@ def single_species_non_collective_args():
     kwargs["n"] = 5e15 * u.cm ** -3
     kwargs["Te"] = 100 * u.eV
     kwargs["Ti"] = np.array([10]) * u.eV
+    kwargs["efract"] = np.array([1.0])
+    kwargs["ifract"] = np.array([1.0])
     kwargs["ion_species"] = ["H+"]
+    kwargs["electron_vel"] = np.array([[0, 0, 0]]) * u.km / u.s
+    kwargs["ion_vel"] = np.array([[0, 0, 0]]) * u.km / u.s
     kwargs["probe_vec"] = np.array([1, 0, 0])
     kwargs["scatter_vec"] = np.array([0, 1, 0])
 
