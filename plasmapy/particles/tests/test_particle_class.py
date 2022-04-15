@@ -14,7 +14,6 @@ from plasmapy.particles._isotopes import data_about_isotopes
 from plasmapy.particles._special_particles import particle_zoo
 from plasmapy.particles.atomic import known_isotopes
 from plasmapy.particles.exceptions import (
-    ChargeError,
     InvalidElementError,
     InvalidIonError,
     InvalidIsotopeError,
@@ -226,15 +225,15 @@ test_Particle_table = [
         "H",
         {},
         {
-            "symbol": "H",
+            "symbol": "H 0+",
             "element": "H",
             "isotope": None,
             "isotope_name": InvalidIsotopeError,
-            "ionic_symbol": None,
-            "roman_symbol": ChargeError,
+            "ionic_symbol": "H 0+",
+            "roman_symbol": "H I",
             "is_ion": False,
-            "charge": ChargeError,
-            "charge_number": ChargeError,
+            "charge": 0 * u.C,
+            "charge_number": 0,
             "mass_number": InvalidIsotopeError,
             "baryon_number": ParticleError,
             "lepton_number": 0,
@@ -402,21 +401,21 @@ test_Particle_table = [
         "Li",
         {"mass_numb": 7},
         {
-            "symbol": "Li-7",
+            "symbol": "Li-7 0+",
             "element": "Li",
             "element_name": "lithium",
             "isotope": "Li-7",
             "isotope_name": "lithium-7",
-            "ionic_symbol": None,
-            "roman_symbol": ChargeError,
+            "ionic_symbol": "Li-7 0+",
+            "roman_symbol": "Li-7 I",
             "is_ion": False,
-            "charge_number": ChargeError,
+            "charge_number": 0,
             "atomic_number": 3,
             "mass_number": 7,
             "neutron_number": 4,
             "baryon_number": 7,
             "half_life": np.inf * u.s,
-            "nuclide_mass": 1.1647614796180463e-26 * u.kg,
+            "nuclide_mass": 1.1647614796180463e-26 * u.kg,  # !!!!!!!!!!!
         },
     ),
     (
@@ -490,15 +489,25 @@ test_Particle_table = [
             'is_category(any_of="boson", exclude="boson")': ParticleError,
         },
     ),
-    (Particle("C"), {}, {"symbol": "C", "atomic_number": 6, "element": "C"}),
+    (Particle("C"), {}, {"symbol": "C 0+", "atomic_number": 6, "element": "C"}),
     (
-        Particle("C"),
+        "C",
         {"Z": 3, "mass_numb": 14},
         {
             "symbol": "C-14 3+",
             "element": "C",
             "isotope": "C-14",
             "ionic_symbol": "C-14 3+",
+        },
+    ),
+    (
+        "Li",
+        {"Z": 2, "mass_numb": 6},
+        {
+            "symbol": "Li-6 2+",
+            "element": "Li",
+            "isotope": "Li-6",
+            "ionic_symbol": "Li-6 2+",
         },
     ),
 ]
@@ -514,10 +523,16 @@ def test_Particle_class(arg, kwargs, expected_dict):
     """
 
     call = call_string(Particle, arg, kwargs)
+    print(arg)
+    print(kwargs)
+    print(call)
     errmsg = ""
 
     try:
         particle = Particle(arg, **kwargs)
+        print(particle)
+        print(arg)
+        print(kwargs)
     except Exception as exc:
         raise ParticleError(f"Problem creating {call}") from exc
 
@@ -603,16 +618,12 @@ test_Particle_error_table = [
     (["neutron"], {}, ".atomic_number", InvalidElementError),
     (["H"], {"Z": 0}, ".mass_number", InvalidIsotopeError),
     (["neutron"], {}, ".mass_number", InvalidIsotopeError),
-    (["He"], {"mass_numb": 4}, ".charge", ChargeError),
-    (["He"], {"mass_numb": 4}, ".charge_number", ChargeError),
     (["Fe"], {}, ".spin", MissingParticleDataError),
     (["nu_e"], {}, ".mass", MissingParticleDataError),
     (["Og"], {}, ".standard_atomic_weight", MissingParticleDataError),
     ([Particle("C-14")], {"mass_numb": 13}, "", InvalidParticleError),
     ([Particle("Au 1+")], {"Z": 2}, "", InvalidParticleError),
     ([[]], {}, "", TypeError),
-    (["Fe"], {}, ".ionize()", ChargeError),
-    (["D"], {}, ".recombine()", ChargeError),
     (["Fe 26+"], {}, ".ionize()", InvalidIonError),
     (["Fe 6+"], {}, ".ionize(-1)", ValueError),
     (["Fe 25+"], {}, ".recombine(0)", ValueError),
@@ -1330,14 +1341,14 @@ particle_json_repr_table = [
         '{"plasmapy_particle": {"type": "Particle", \
         "module": "plasmapy.particles.particle_class", \
         "date_created": "...", \
-        "__init__": {"args": ["Pb"], "kwargs": {}}}}',
+        "__init__": {"args": ["Pb 0+"], "kwargs": {}}}}',
     ),
     (
         Particle,
         {"argument": "lead"},
         '{"plasmapy_particle": {"type": "Particle", \
         "module": "plasmapy.particles.particle_class", \
-        "date_created": "...", "__init__": {"args": ["Pb"], "kwargs": {}}}}',
+        "date_created": "...", "__init__": {"args": ["Pb 0+"], "kwargs": {}}}}',
     ),
     (
         CustomParticle,
