@@ -523,16 +523,10 @@ def test_Particle_class(arg, kwargs, expected_dict):
     """
 
     call = call_string(Particle, arg, kwargs)
-    print(arg)
-    print(kwargs)
-    print(call)
     errmsg = ""
 
     try:
         particle = Particle(arg, **kwargs)
-        print(particle)
-        print(arg)
-        print(kwargs)
     except Exception as exc:
         raise ParticleError(f"Problem creating {call}") from exc
 
