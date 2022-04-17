@@ -139,7 +139,7 @@ def spectral_density_lite(
             W = 0.5*(\max{\lambda} - \min{\lambda})
 
         Where :math:`\lambda` is the wavelengths array. This array will be
-        convolved with the spectral density function before it is 
+        convolved with the spectral density function before it is
         returned.
 
     Returns
@@ -147,7 +147,7 @@ def spectral_density_lite(
     alpha : float
         Mean scattering parameter, where ``alpha`` > 1 corresponds to collective
         scattering and ``alpha`` < 1 indicates non-collective scattering. The
-        scattering parameter is calculated based on the total plasma density 
+        scattering parameter is calculated based on the total plasma density
         :math:`n`.
 
     Skw : `~numpy.ndarray`
