@@ -662,7 +662,7 @@ def _spectral_density_model(wavelengths, settings=None, **params):
 
 def spectral_density_model(wavelengths, settings, params):
     """
-    Returns a `lmfit.Model` function for Thomson spectral density function
+    Returns a `lmfit.model.Model` function for Thomson spectral density function.
 
     Parameters
     ----------
