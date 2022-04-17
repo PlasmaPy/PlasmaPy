@@ -695,13 +695,14 @@ def spectral_density_model(wavelengths, settings, params):
             - Ti_i# : Temperature in eV
 
         and may contain the following optional variables
-            - efract_e# : Fraction of each electron population (must sum to 1) (optional)
-            - ifract_i# : Fraction of each ion population (must sum to 1) (optional)
-            - electron_speed_e# : Electron speed in m/s (optional)
-            - ion_speed_i# : Ion speed in m/s (optional)
+            - :samp:`efract_{e#}` : Fraction of each electron population (must sum to 1) (optional)
+            - :samp:`ifract_{i#}` : Fraction of each ion population (must sum to 1) (optional)
+            - :samp:`electron_speed_{e#}` : Electron speed in m/s (optional)
+            - :samp:`ion_speed_{ei}` : Ion speed in m/s (optional)
 
-        where i# and e# are the number of electron and ion populations,
-        zero-indexed, respectively (eg. 0,1,2...).
+        where where :samp:`{i#}` and where :samp:`{e#}` are replaced by the
+        number of electron and ion populations, zero-indexed, respectively
+        (eg. 0,1,2...).
 
         These quantities can be either fixed or varying.
 
