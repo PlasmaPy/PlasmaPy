@@ -727,11 +727,10 @@ def spectral_density_model(wavelengths, settings, params):
         "scatter_vec",
         "ion_species",
     }
-    if req_settings - set(settings) != set():
+    if missing_settings := req_settings - set(settings):
         raise ValueError(
-            f"Setting(s) {req_settings - set(settings)} was(were) not "
-            "provided in kwarg 'settings', "
-            f"but is(are) required."
+            f"The following required settings were not provided in the 
+            f"keyword argument 'settings': {missing_settings}"
         )
 
     # required parameters
