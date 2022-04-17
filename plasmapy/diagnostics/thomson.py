@@ -67,9 +67,9 @@ def spectral_density_lite(
     r"""
 
     The :term:`lite-function` version of
-    `~plasmapy.formulary.parameters.thermal_speed`.  Performs the same
+    `~plasmapy.diagnostics.thomson.spectral_density`.  Performs the same
     thermal speed calculations as
-    `~plasmapy.formulary.parameters.thermal_speed`, but is intended for
+    `~plasmapy.diagnostics.thomson.spectral_density`, but is intended for
     computational use and, thus, has data conditioning safeguards
     removed.
 
@@ -85,7 +85,7 @@ def spectral_density_lite(
 
     n : `~astropy.units.Quantity`
         Total combined number density of all electron populations.
-        (convertible to cm\ :sup:`-3`)
+        (in m\ :sup:`-3`)
 
     Te : `~numpy.ndarray`, shape (Ne, )
         Temperature of each electron component in kelvin. Shape (Ne, ) must be
@@ -114,7 +114,7 @@ def spectral_density_lite(
     electron_vel : `~numpy.ndarray`, shape (Ne, 3), optional
         Velocity of each electron population in the rest frame (in m/s).
         If set, overrides ``electron_vdir`` and ``electron_speed``.
-        Defaults to a stationary plasma [0, 0, 0] m/s.
+        Defaults to a stationary plasma ``[0, 0, 0]`` m/s.
 
     ion_vel : `~numpy.ndarray`, shape (Ni, 3), optional
         Velocity vectors for each electron population in the rest frame
@@ -123,7 +123,7 @@ def spectral_density_lite(
 
     probe_vec : float `~numpy.ndarray`, shape (3, )
         Unit vector in the direction of the probe laser. Defaults to
-        [1, 0, 0].
+        ``[1, 0, 0]``.
 
     scatter_vec : float `~numpy.ndarray`, shape (3, )
         Unit vector pointing from the scattering volume to the detector.
