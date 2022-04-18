@@ -674,15 +674,16 @@ def spectral_density_model(wavelengths, settings, params):
         A dictionary of non-variable inputs to the spectral density function
         which must include the following:
 
-            - probe_wavelength: Probe wavelength in meters
-            - probe_vec : (3,) unit vector in the probe direction
-            - scatter_vec: (3,) unit vector in the scattering direction
-            - ion_species : list of Particle strings describing each ion species
+        - probe_wavelength: Probe wavelength in meters
+        - probe_vec : (3,) unit vector in the probe direction
+        - scatter_vec: (3,) unit vector in the scattering direction
+        - ion_species : list of Particle strings describing each ion species
 
         and may contain the following optional variables
-            - electron_vdir : (e#, 3) array of electron velocity unit vectors
-            - ion_vdir : (e#, 3) array of ion velocity unit vectors
-            - instr_func : A function that takes a wavelength u.Quantity array
+
+        - electron_vdir : (e#, 3) array of electron velocity unit vectors
+        - ion_vdir : (e#, 3) array of ion velocity unit vectors
+        - instr_func : A function that takes a wavelength u.Quantity array
                         and returns a spectrometer insturment function as an
                         `numpy.ndarray`.
 
@@ -690,19 +691,20 @@ def spectral_density_model(wavelengths, settings, params):
 
     params : `lmfit.Parameters` object
         A `~lmfit.parameter.Parameters` object that must contain the following variables
-            - n: Total combined density of the electron populations in m\ :sup:`-3`
-            - :samp:`T_e_{e#}` : Temperature in eV
-            - :samp:`T_i_{i#}` : Temperature in eV
+
+        - n: Total combined density of the electron populations in m\ :sup:`-3`
+        - :samp:`T_e_{e#}` : Temperature in eV
+        - :samp:`T_i_{i#}` : Temperature in eV
 
         where where :samp:`{i#}` and where :samp:`{e#}` are replaced by the
         number of electron and ion populations, zero-indexed, respectively
         (eg. 0,1,2...). The parameters object may also contain the following
         optional variables
 
-            - :samp:`efract_{e#}` : Fraction of each electron population (must sum to 1) (optional)
-            - :samp:`ifract_{i#}` : Fraction of each ion population (must sum to 1) (optional)
-            - :samp:`electron_speed_{e#}` : Electron speed in m/s (optional)
-            - :samp:`ion_speed_{ei}` : Ion speed in m/s (optional)
+        - :samp:`efract_{e#}` : Fraction of each electron population (must sum to 1) (optional)
+        - :samp:`ifract_{i#}` : Fraction of each ion population (must sum to 1) (optional)
+        - :samp:`electron_speed_{e#}` : Electron speed in m/s (optional)
+        - :samp:`ion_speed_{ei}` : Ion speed in m/s (optional)
 
         These quantities can be either fixed or varying.
 
