@@ -119,6 +119,7 @@ intersphinx_mapping = {
     ),
     "sphinx": ("https://www.sphinx-doc.org/en/master/", None),
     "numba": ("https://numba.readthedocs.io/en/stable/", None),
+    "lmfit": ("https://lmfit.github.io/lmfit-py/", None),
 }
 hoverxref_intersphinx = [
     "readthedocs",
@@ -131,6 +132,7 @@ hoverxref_intersphinx = [
     "sphinx_automodapi",
     "sphinx",
     "numba",
+    "lmfit",
 ]
 
 autoclass_content = "both"
