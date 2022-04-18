@@ -50,8 +50,8 @@ def spectral_density_lite(
     wavelengths,
     probe_wavelength: numbers.Real,
     n: numbers.Real,
-    Te: np.ndarray,
-    Ti: np.ndarray,
+    T_e: np.ndarray,
+    T_i: np.ndarray,
     *,
     efract: np.ndarray,
     ifract: np.ndarray,
@@ -87,11 +87,11 @@ def spectral_density_lite(
         Total combined number density of all electron populations.
         (in m\ :sup:`-3`)
 
-    Te : `~numpy.ndarray`, shape (Ne, )
+    T_e : `~numpy.ndarray`, shape (Ne, )
         Temperature of each electron component in kelvin. Shape (Ne, ) must be
         equal to the number of electron populations Ne.
 
-    Ti : `~numpy.ndarray`, shape (Ni, )
+    T_i : `~numpy.ndarray`, shape (Ni, )
         Temperature of each ion component in kelvin. Shape (Ni, ) must be
         equal to the number of ion populations Ni.
 
@@ -161,8 +161,8 @@ def spectral_density_lite(
     # Calculate plasma parameters
     # Temperatures here in K!
     coefs = thermal_speed_coefficients("most_probable", 3)
-    vTe = thermal_speed_lite(Te, m_e_si_unitless, coefs)
-    vTi = thermal_speed_lite(Ti, ion_mass, coefs)
+    vT_e = thermal_speed_lite(T_e, m_e_si_unitless, coefs)
+    vT_i = thermal_speed_lite(T_i, ion_mass, coefs)
 
     # Compute electron and ion densities
     ne = efract * n
@@ -200,24 +200,24 @@ def spectral_density_lite(
 
     # Compute the scattering parameter alpha
     # expressed here using the fact that v_th/w_p = root(2) * Debye length
-    alpha = np.sqrt(2) * wpe / np.outer(k, vTe)
+    alpha = np.sqrt(2) * wpe / np.outer(k, vT_e)
 
     # Calculate the normalized phase velocities (Sec. 3.4.2 in Sheffield)
-    xe = np.outer(1 / vTe, 1 / k) * w_e
-    xi = np.outer(1 / vTi, 1 / k) * w_i
+    xe = np.outer(1 / vT_e, 1 / k) * w_e
+    xi = np.outer(1 / vT_i, 1 / k) * w_i
 
     # Calculate the susceptibilities
     chiE = np.zeros([efract.size, w.size], dtype=np.complex128)
     for i, fract in enumerate(efract):
         wpe = plasma_frequency_lite(ne[i], m_e_si_unitless, 1)
-        chiE[i, :] = permittivity_1D_Maxwellian_lite(w_e[i, :], k, vTe[i], wpe)
+        chiE[i, :] = permittivity_1D_Maxwellian_lite(w_e[i, :], k, vT_e[i], wpe)
 
     # Treatment of multiple species is an extension of the discussion in
     # Sheffield Sec. 5.1
     chiI = np.zeros([ifract.size, w.size], dtype=np.complex128)
     for i, fract in enumerate(ifract):
         wpi = plasma_frequency_lite(ni[i], ion_mass[i], ion_z[i])
-        chiI[i, :] = permittivity_1D_Maxwellian_lite(w_i[i, :], k, vTi[i], wpi)
+        chiI[i, :] = permittivity_1D_Maxwellian_lite(w_i[i, :], k, vT_i[i], wpi)
 
     # Calculate the longitudinal dielectric function
     epsilon = 1 + np.sum(chiE, axis=0) + np.sum(chiI, axis=0)
@@ -228,7 +228,7 @@ def spectral_density_lite(
             2
             * np.sqrt(np.pi)
             / k
-            / vTe[m]
+            / vT_e[m]
             * np.power(np.abs(1 - np.sum(chiE, axis=0) / epsilon), 2)
             * np.exp(-xe[m, :] ** 2)
         )
@@ -240,7 +240,7 @@ def spectral_density_lite(
             * np.sqrt(np.pi)
             * ion_z[m]
             / k
-            / vTi[m]
+            / vT_i[m]
             * np.power(np.abs(np.sum(chiE, axis=0) / epsilon), 2)
             * np.exp(-xi[m, :] ** 2)
         )
@@ -258,16 +258,16 @@ def spectral_density_lite(
     wavelengths={"can_be_negative": False, "can_be_zero": False},
     probe_wavelength={"can_be_negative": False, "can_be_zero": False},
     n={"can_be_negative": False, "can_be_zero": False},
-    Te={"can_be_negative": False, "equivalencies": u.temperature_energy()},
-    Ti={"can_be_negative": False, "equivalencies": u.temperature_energy()},
+    T_e={"can_be_negative": False, "equivalencies": u.temperature_energy()},
+    T_i={"can_be_negative": False, "equivalencies": u.temperature_energy()},
 )
 @bind_lite_func(spectral_density_lite)
 def spectral_density(
     wavelengths: u.nm,
     probe_wavelength: u.nm,
     n: u.m ** -3,
-    Te: u.K,
-    Ti: u.K,
+    T_e: u.K,
+    T_i: u.K,
     efract: np.ndarray = None,
     ifract: np.ndarray = None,
     ion_species: Union[str, List[str], Particle, List[Particle]] = "p",
@@ -342,11 +342,11 @@ def spectral_density(
         Total combined number density of all electron populations.
         (convertible to cm\ :sup:`-3`)
 
-    Te : `~astropy.units.Quantity`, shape (Ne, )
+    T_e : `~astropy.units.Quantity`, shape (Ne, )
         Temperature of each electron component. Shape (Ne, ) must be equal to the
         number of electron populations Ne. (in K or convertible to eV)
 
-    Ti : `~astropy.units.Quantity`, shape (Ni, )
+    T_i : `~astropy.units.Quantity`, shape (Ni, )
         Temperature of each ion component. Shape (Ni, ) must be equal to the
         number of ion populations Ni. (in K or convertible to eV)
 
@@ -453,35 +453,35 @@ def spectral_density(
             continue
         ion_species[ii] = Particle(ion)
 
-    # Condition Ti
-    if Ti.size == 1:
+    # Condition T_i
+    if T_i.size == 1:
         # If a single quantity is given, put it in an array so it's iterable
-        # If Ti.size != len(ion_species), assume same temp. for all species
-        Ti = np.array([Ti.value]) * Ti.unit
+        # If T_i.size != len(ion_species), assume same temp. for all species
+        T_i = np.array([T_i.value]) * T_i.unit
 
-    # Make sure the sizes of ion_species, ifract, ion_vel, and Ti all match
+    # Make sure the sizes of ion_species, ifract, ion_vel, and T_i all match
     if (
         (len(ion_species) != ifract.size)
         or (ion_vel.shape[0] != ifract.size)
-        or (Ti.size != ifract.size)
+        or (T_i.size != ifract.size)
     ):
         raise ValueError(
             f"Inconsistent number of ion species in ifract ({ifract}), "
-            f"ion_species ({len(ion_species)}), Ti ({Ti.size}), "
+            f"ion_species ({len(ion_species)}), T_i ({T_i.size}), "
             f"and/or ion_vel ({ion_vel.shape[0]})."
         )
 
-    # Condition Te
-    if Te.size == 1:
+    # Condition T_e
+    if T_e.size == 1:
         # If a single quantity is given, put it in an array so it's iterable
-        # If Te.size != len(efract), assume same temp. for all species
-        Te = np.array([Te.value]) * Te.unit
+        # If T_e.size != len(efract), assume same temp. for all species
+        T_e = np.array([T_e.value]) * T_e.unit
 
-    # Make sure the sizes of efract, electron_vel, and Te all match
-    if (electron_vel.shape[0] != efract.size) or (Te.size != efract.size):
+    # Make sure the sizes of efract, electron_vel, and T_e all match
+    if (electron_vel.shape[0] != efract.size) or (T_e.size != efract.size):
         raise ValueError(
             f"Inconsistent number of electron populations in efract ({efract.size}), "
-            f"Te ({Te.size}), or electron velocity ({electron_vel.shape[0]})."
+            f"T_e ({T_e.size}), or electron velocity ({electron_vel.shape[0]})."
         )
 
     # Create arrays of ion Z and mass from particles given
@@ -526,8 +526,8 @@ def spectral_density(
         wavelengths.to(u.m).value,
         probe_wavelength.to(u.m).value,
         n.to(u.m ** -3).value,
-        Te.to(u.K).value,
-        Ti.to(u.K).value,
+        T_e.to(u.K).value,
+        T_i.to(u.K).value,
         efract=efract,
         ifract=ifract,
         ion_z=ion_z,
@@ -623,8 +623,8 @@ def _spectral_density_model(wavelengths, settings=None, **params):
 
     # LOAD FROM PARAMS
     n = params["n"]
-    Te = _params_to_array(params, "Te")
-    Ti = _params_to_array(params, "Ti")
+    T_e = _params_to_array(params, "T_e")
+    T_i = _params_to_array(params, "T_i")
     efract = _params_to_array(params, "efract")
     ifract = _params_to_array(params, "ifract")
 
@@ -635,15 +635,15 @@ def _spectral_density_model(wavelengths, settings=None, **params):
     ion_vel = ion_speed[:, np.newaxis] * ion_vdir
 
     # Convert temperatures from eV to Kelvin (required by fast_spectral_density)
-    Te *= 11604.51812155
-    Ti *= 11604.51812155
+    T_e *= 11604.51812155
+    T_i *= 11604.51812155
 
     alpha, model_Skw = spectral_density_lite(
         wavelengths,
         probe_wavelength,
         n,
-        Te,
-        Ti,
+        T_e,
+        T_i,
         efract=efract,
         ifract=ifract,
         ion_z=ion_z,
@@ -691,18 +691,18 @@ def spectral_density_model(wavelengths, settings, params):
     params : `lmfit.Parameters` object
         A `~lmfit.parameter.Parameters` object that must contain the following variables
             - n: Total combined density of the electron populations in m\ :sup:`-3`
-            - Te_e# : Temperature in eV
-            - Ti_i# : Temperature in eV
+            - :samp:`T_e_{e#}` : Temperature in eV
+            - :samp:`T_i_{i#}` : Temperature in eV
 
-        and may contain the following optional variables
+        where where :samp:`{i#}` and where :samp:`{e#}` are replaced by the
+        number of electron and ion populations, zero-indexed, respectively
+        (eg. 0,1,2...). The parameters object may also contain the following
+        optional variables
+
             - :samp:`efract_{e#}` : Fraction of each electron population (must sum to 1) (optional)
             - :samp:`ifract_{i#}` : Fraction of each ion population (must sum to 1) (optional)
             - :samp:`electron_speed_{e#}` : Electron speed in m/s (optional)
             - :samp:`ion_speed_{ei}` : Ion speed in m/s (optional)
-
-        where where :samp:`{i#}` and where :samp:`{e#}` are replaced by the
-        number of electron and ion populations, zero-indexed, respectively
-        (eg. 0,1,2...).
 
         These quantities can be either fixed or varying.
 
@@ -757,7 +757,7 @@ def spectral_density_model(wavelengths, settings, params):
     # **********************
     # Required settings and parameters per population
     # **********************
-    for p, nums in zip(["Te", "Ti"], [num_e, num_i]):
+    for p, nums in zip(["T_e", "T_i"], [num_e, num_i]):
         for num in range(nums):
             key = p + "_" + str(num)
             if key not in params:

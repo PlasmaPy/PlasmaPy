@@ -81,15 +81,15 @@ def spectral_density_args_kwargs(kwargs):
         kwargs["wavelengths"],
         kwargs["probe_wavelength"],
         kwargs["n"],
-        kwargs["Te"],
-        kwargs["Ti"],
+        kwargs["T_e"],
+        kwargs["T_i"],
     )
 
     del kwargs["wavelengths"]
     del kwargs["probe_wavelength"]
     del kwargs["n"]
-    del kwargs["Te"]
-    del kwargs["Ti"]
+    del kwargs["T_e"]
+    del kwargs["T_i"]
 
     return args, kwargs
 
@@ -109,25 +109,25 @@ def args_to_lite_args(kwargs):
         kwargs["probe_wavelength"] = kwargs["probe_wavelength"].to(u.m).value
     if "n" in keys:
         kwargs["n"] = kwargs["n"].to(u.m ** -3).value
-    if "Te" in keys:
-        kwargs["Te"] = (kwargs["Te"] / const.k_B).to(u.K).value
-    if "Ti" in keys:
-        kwargs["Ti"] = (kwargs["Ti"] / const.k_B).to(u.K).value
+    if "T_e" in keys:
+        kwargs["T_e"] = (kwargs["T_e"] / const.k_B).to(u.K).value
+    if "T_i" in keys:
+        kwargs["T_i"] = (kwargs["T_i"] / const.k_B).to(u.K).value
     if "electron_vel" in keys:
         kwargs["electron_vel"] = kwargs["electron_vel"].to(u.m / u.s).value
     if "ion_vel" in keys:
         kwargs["ion_vel"] = kwargs["ion_vel"].to(u.m / u.s).value
 
-    if kwargs["Te"].size == 1:
-        kwargs["Te"] = np.array(
+    if kwargs["T_e"].size == 1:
+        kwargs["T_e"] = np.array(
             [
-                kwargs["Te"],
+                kwargs["T_e"],
             ]
         )
-    if kwargs["Ti"].size == 1:
-        kwargs["Ti"] = np.array(
+    if kwargs["T_i"].size == 1:
+        kwargs["T_i"] = np.array(
             [
-                kwargs["Ti"],
+                kwargs["T_i"],
             ]
         )
 
@@ -164,8 +164,8 @@ def single_species_collective_args():
     kwargs["wavelengths"] = np.arange(520, 545, 0.01) * u.nm
     kwargs["probe_wavelength"] = 532 * u.nm
     kwargs["n"] = 5e17 * u.cm ** -3
-    kwargs["Te"] = 10 * u.eV
-    kwargs["Ti"] = 10 * u.eV
+    kwargs["T_e"] = 10 * u.eV
+    kwargs["T_i"] = 10 * u.eV
     kwargs["efract"] = np.array([1.0])
     kwargs["ifract"] = np.array([1.0])
     kwargs["ion_species"] = "C-12 5+"
@@ -292,8 +292,8 @@ def multiple_species_collective_args():
     kwargs["wavelengths"] = np.arange(520, 545, 0.01) * u.nm
     kwargs["probe_wavelength"] = 532 * u.nm
     kwargs["n"] = 5e17 * u.cm ** -3
-    kwargs["Te"] = 10 * u.eV
-    kwargs["Ti"] = np.array([5, 5]) * u.eV
+    kwargs["T_e"] = 10 * u.eV
+    kwargs["T_i"] = np.array([5, 5]) * u.eV
     kwargs["ion_species"] = [Particle("p+"), Particle("C-12 5+")]
     kwargs["probe_vec"] = np.array([1, 0, 0])
     kwargs["scatter_vec"] = np.array([0, 1, 0])
@@ -383,8 +383,8 @@ def single_species_non_collective_args():
     kwargs["wavelengths"] = np.arange(500, 570, 0.01) * u.nm
     kwargs["probe_wavelength"] = 532 * u.nm
     kwargs["n"] = 5e15 * u.cm ** -3
-    kwargs["Te"] = 100 * u.eV
-    kwargs["Ti"] = np.array([10]) * u.eV
+    kwargs["T_e"] = 100 * u.eV
+    kwargs["T_i"] = np.array([10]) * u.eV
     kwargs["efract"] = np.array([1.0])
     kwargs["ifract"] = np.array([1.0])
     kwargs["ion_species"] = ["H+"]
@@ -446,7 +446,7 @@ def test_single_species_non_collective_spectrum(single_species_non_collective_sp
         (
             {
                 "ifract": [0.5, 0.5],
-                "Ti": 5 * u.eV,
+                "T_i": 5 * u.eV,
             },
             ValueError,
             "Inconsistent number of ion species in ifract",
@@ -460,7 +460,7 @@ def test_single_species_non_collective_spectrum(single_species_non_collective_sp
         (
             {
                 "efract": [0.5, 0.5],
-                "Te": np.array(
+                "T_e": np.array(
                     [
                         5,
                     ]
@@ -523,8 +523,8 @@ def test_split_populations():
     scatter_vec = np.array([0, 1, 0])
 
     # Combined
-    Te = np.array([10]) * u.eV
-    Ti = np.array([10]) * u.eV
+    T_e = np.array([10]) * u.eV
+    T_i = np.array([10]) * u.eV
     ion_species = ["H+"]
     ifract = np.array([1.0])
     efract = np.array([1.0])
@@ -533,8 +533,8 @@ def test_split_populations():
         wavelengths,
         probe_wavelength,
         n,
-        Te,
-        Ti,
+        T_e,
+        T_i,
         ifract=ifract,
         efract=efract,
         ion_species=ion_species,
@@ -544,8 +544,8 @@ def test_split_populations():
 
     # Split e and i populations into two parts
     # this should not change the results since the parts are identical
-    Te = np.array([10, 10]) * u.eV
-    Ti = np.array([10, 10]) * u.eV
+    T_e = np.array([10, 10]) * u.eV
+    T_i = np.array([10, 10]) * u.eV
     ion_species = ["H+", "H+"]
     ifract = np.array([0.2, 0.8])
     efract = np.array([0.8, 0.2])
@@ -554,8 +554,8 @@ def test_split_populations():
         wavelengths,
         probe_wavelength,
         n,
-        Te,
-        Ti,
+        T_e,
+        T_i,
         ifract=ifract,
         efract=efract,
         ion_species=ion_species,
@@ -616,7 +616,7 @@ def test_param_to_array_fcns():
     params = Parameters()
 
     # Create two groups of test variables, one of scalars and one of vectors
-    prefix = "Te"
+    prefix = "T_e"
     for i in range(3):
         params.add(prefix + f"_{i}", value=2)
 
@@ -625,7 +625,7 @@ def test_param_to_array_fcns():
         for j in ["x", "y", "z"]:
             params.add(prefix + f"_{j}_{i}", value=2)
 
-    arr = thomson._params_to_array(params, "Te", vector=False)
+    arr = thomson._params_to_array(params, "T_e", vector=False)
     assert arr.shape == (3,)
     assert np.mean(arr) == 2
 
@@ -674,8 +674,8 @@ def run_fit(
 
     # LOAD FROM PARAMS
     n = params["n"]
-    Te = thomson._params_to_array(params, "Te")
-    Ti = thomson._params_to_array(params, "Ti")
+    T_e = thomson._params_to_array(params, "T_e")
+    T_i = thomson._params_to_array(params, "T_i")
     efract = thomson._params_to_array(params, "efract")
     ifract = thomson._params_to_array(params, "ifract")
     electron_speed = thomson._params_to_array(params, "electron_speed")
@@ -694,12 +694,12 @@ def run_fit(
     try:
         electron_vdir = settings["electron_vdir"]
     except KeyError:
-        electron_vdir = np.ones([len(Te), 3])
+        electron_vdir = np.ones([len(T_e), 3])
 
     try:
         ion_vdir = settings["ion_vdir"]
     except KeyError:
-        ion_vdir = np.ones([len(Ti), 3])
+        ion_vdir = np.ones([len(T_i), 3])
 
     electron_vel = electron_speed[:, np.newaxis] * electron_vdir
     ion_vel = ion_speed[:, np.newaxis] * ion_vdir
@@ -709,8 +709,8 @@ def run_fit(
         wavelengths,
         probe_wavelength * u.m,
         n * u.m ** -3,
-        Te * u.eV,
-        Ti * u.eV,
+        T_e * u.eV,
+        T_i * u.eV,
         ifract=ifract,
         efract=efract,
         ion_species=ion_species,
@@ -824,8 +824,8 @@ def epw_single_species_settings_params():
     kwargs["n"] = Parameter(
         "n", value=2e17 * 1e6, vary=True, min=8e16 * 1e6, max=6e17 * 1e6
     )
-    kwargs["Te_0"] = Parameter("Te_0", value=10, vary=True, min=5, max=20)
-    kwargs["Ti_0"] = Parameter("Ti_0", value=20, vary=False, min=5, max=70)
+    kwargs["T_e_0"] = Parameter("T_e_0", value=10, vary=True, min=5, max=20)
+    kwargs["T_i_0"] = Parameter("T_i_0", value=20, vary=False, min=5, max=70)
 
     w0 = probe_wavelength.value
     kwargs["wavelengths"] = (
@@ -861,9 +861,9 @@ def epw_multi_species_settings_params():
     kwargs["n"] = Parameter(
         "n", value=2e17 * 1e6, vary=True, min=8e16 * 1e6, max=6e17 * 1e6
     )
-    kwargs["Te_0"] = Parameter("Te_0", value=10, vary=True, min=5, max=20)
-    kwargs["Te_1"] = Parameter("Te_1", value=35, vary=True, min=5, max=20)
-    kwargs["Ti_0"] = Parameter("Ti_0", value=20, vary=False, min=5, max=70)
+    kwargs["T_e_0"] = Parameter("T_e_0", value=10, vary=True, min=5, max=20)
+    kwargs["T_e_1"] = Parameter("T_e_1", value=35, vary=True, min=5, max=20)
+    kwargs["T_i_0"] = Parameter("T_i_0", value=20, vary=False, min=5, max=70)
     kwargs["efract_0"] = Parameter("efract_0", value=0.5, vary=False)
     kwargs["efract_1"] = Parameter("efract_1", value=0.5, vary=False)
 
@@ -900,8 +900,8 @@ def iaw_single_species_settings_params():
     kwargs["electron_vdir"] = np.array([[1, 0, 0]])
 
     kwargs["n"] = Parameter("n", value=2e17 * 1e6, vary=False)
-    kwargs["Te_0"] = Parameter("Te_0", value=10, vary=False, min=5, max=20)
-    kwargs["Ti_0"] = Parameter("Ti_0", value=20, vary=True, min=5, max=70)
+    kwargs["T_e_0"] = Parameter("T_e_0", value=10, vary=False, min=5, max=20)
+    kwargs["T_i_0"] = Parameter("T_i_0", value=20, vary=True, min=5, max=70)
     kwargs["ifract_0"] = Parameter("ifract_0", value=1.0, vary=False)
     kwargs["ion_speed_0"] = Parameter("ion_speed_0", value=0, vary=False)
     kwargs["electron_speed_0"] = Parameter("electron_speed_0", value=0, vary=False)
@@ -937,10 +937,10 @@ def iaw_multi_species_settings_params():
     kwargs["electron_vdir"] = np.array([[0, 0.2, 0.7]])
 
     kwargs["n"] = Parameter("n", value=1e19 * 1e6, vary=False)
-    kwargs["Te_0"] = Parameter("Te_0", value=500, vary=False, min=5, max=1000)
-    kwargs["Ti_0"] = Parameter("Ti_0", value=200, vary=True, min=5, max=1000)
-    kwargs["Ti_1"] = Parameter("Ti_1", value=500, vary=True, min=5, max=1000)
-    kwargs["Ti_2"] = Parameter("Ti_2", value=400, vary=False, min=5, max=1000)
+    kwargs["T_e_0"] = Parameter("T_e_0", value=500, vary=False, min=5, max=1000)
+    kwargs["T_i_0"] = Parameter("T_i_0", value=200, vary=True, min=5, max=1000)
+    kwargs["T_i_1"] = Parameter("T_i_1", value=500, vary=True, min=5, max=1000)
+    kwargs["T_i_2"] = Parameter("T_i_2", value=400, vary=False, min=5, max=1000)
     kwargs["ifract_0"] = Parameter("ifract_0", value=0.4, vary=False, min=0.2, max=0.8)
     kwargs["ifract_1"] = Parameter("ifract_1", value=0.3, vary=False, min=0.2, max=0.8)
     kwargs["ifract_2"] = Parameter("ifract_2", value=0.3, vary=False, min=0.2, max=0.8)
@@ -986,8 +986,8 @@ def noncollective_single_species_settings_params():
     kwargs["n"] = Parameter(
         "n", value=2e17 * 1e6, vary=True, min=8e16 * 1e6, max=6e17 * 1e6
     )
-    kwargs["Te_0"] = Parameter("Te_0", value=10, vary=True, min=5, max=20)
-    kwargs["Ti_0"] = Parameter("Ti_0", value=120, vary=False, min=5, max=70)
+    kwargs["T_e_0"] = Parameter("T_e_0", value=10, vary=True, min=5, max=20)
+    kwargs["T_i_0"] = Parameter("T_i_0", value=120, vary=False, min=5, max=70)
     kwargs["efract_0"] = Parameter("efract_0", value=1.0, vary=False)
     kwargs["electron_speed_0"] = Parameter("electron_speed_0", value=0, vary=False)
 
@@ -1105,15 +1105,15 @@ def test_fit_with_minimal_parameters():
 
     ion_species = ["H+"]
     n = 2e17 * u.cm ** -3
-    Ti = 20 * u.eV
-    Te = 10 * u.eV
+    T_i = 20 * u.eV
+    T_e = 10 * u.eV
 
     alpha, Skw = thomson.spectral_density(
         wavelengths,
         probe_wavelength,
         n,
-        Te,
-        Ti,
+        T_e,
+        T_i,
         ion_species=ion_species,
         probe_vec=probe_vec,
         scatter_vec=scatter_vec,
@@ -1134,8 +1134,8 @@ def test_fit_with_minimal_parameters():
 
     params = Parameters()
 
-    params.add("Te_0", value=Te.value, vary=False, min=5, max=20)
-    params.add("Ti_0", value=Ti.value, vary=True, min=5, max=70)
+    params.add("T_e_0", value=T_e.value, vary=False, min=5, max=20)
+    params.add("T_i_0", value=T_i.value, vary=True, min=5, max=70)
 
     # Try creating model: will raise exception because required values
     # are missing in settings, eg. 'probe_wavelength'
@@ -1145,7 +1145,7 @@ def test_fit_with_minimal_parameters():
     # Add back in the required values
     settings["probe_wavelength"] = probe_wavelength.to(u.m).value
 
-    # Still raises an exception because Te_0 is still missing
+    # Still raises an exception because T_e_0 is still missing
     with pytest.raises(ValueError):
         model = thomson.spectral_density_model(wavelengths, settings, params)
 
@@ -1186,18 +1186,18 @@ def test_fit_with_minimal_parameters():
         # Required parameters
         ({"n": None}, ValueError, "was not provided in parameters, but is required."),
         (
-            {"Te_0": None},
+            {"T_e_0": None},
             ValueError,
             "was not provided in parameters, but is required.",
         ),
         # Two ion temps are required for this multi-ion example
         (
-            {"Ti_0": None},
+            {"T_i_0": None},
             ValueError,
             "was not provided in parameters, but is required.",
         ),
         (
-            {"Ti_1": None},
+            {"T_i_1": None},
             ValueError,
             "was not provided in parameters, but is required.",
         ),
