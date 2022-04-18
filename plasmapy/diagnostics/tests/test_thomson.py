@@ -131,21 +131,21 @@ def args_to_lite_args(kwargs):
             ]
         )
 
-    if not isinstance(kwargs["ion_species"], list):
-        kwargs["ion_species"] = [
-            kwargs["ion_species"],
+    if not isinstance(kwargs["ions"], list):
+        kwargs["ions"] = [
+            kwargs["ions"],
         ]
 
-    ion_z = np.zeros(len(kwargs["ion_species"]))
-    ion_mass = np.zeros(len(kwargs["ion_species"]))
-    for i, particle in enumerate(kwargs["ion_species"]):
+    ion_z = np.zeros(len(kwargs["ions"]))
+    ion_mass = np.zeros(len(kwargs["ions"]))
+    for i, particle in enumerate(kwargs["ions"]):
         if not isinstance(particle, Particle):
             particle = Particle(particle)
         ion_z[i] = particle.charge_number
         ion_mass[i] = particle_mass(particle).to(u.kg).value
     kwargs["ion_z"] = ion_z
     kwargs["ion_mass"] = ion_mass
-    del kwargs["ion_species"]
+    del kwargs["ions"]
 
     return kwargs
 
@@ -168,7 +168,7 @@ def single_species_collective_args():
     kwargs["T_i"] = 10 * u.eV
     kwargs["efract"] = np.array([1.0])
     kwargs["ifract"] = np.array([1.0])
-    kwargs["ion_species"] = "C-12 5+"
+    kwargs["ions"] = "C-12 5+"
     kwargs["electron_vel"] = np.array([[0, 0, 0]]) * u.km / u.s
     kwargs["ion_vel"] = np.array([[0, 0, 0]]) * u.km / u.s
     kwargs["probe_vec"] = np.array([1, 0, 0])
@@ -231,7 +231,7 @@ def test_spectral_density_minimal_arguments(single_species_collective_args):
     optional_keys = [
         "efract",
         "ifract",
-        "ion_species",
+        "ions",
         "electron_vel",
         "ion_vel",
         "probe_vec",
@@ -294,7 +294,7 @@ def multiple_species_collective_args():
     kwargs["n"] = 5e17 * u.cm ** -3
     kwargs["T_e"] = 10 * u.eV
     kwargs["T_i"] = np.array([5, 5]) * u.eV
-    kwargs["ion_species"] = [Particle("p+"), Particle("C-12 5+")]
+    kwargs["ions"] = [Particle("p+"), Particle("C-12 5+")]
     kwargs["probe_vec"] = np.array([1, 0, 0])
     kwargs["scatter_vec"] = np.array([0, 1, 0])
     kwargs["efract"] = np.array([1.0])
@@ -387,7 +387,7 @@ def single_species_non_collective_args():
     kwargs["T_i"] = np.array([10]) * u.eV
     kwargs["efract"] = np.array([1.0])
     kwargs["ifract"] = np.array([1.0])
-    kwargs["ion_species"] = ["H+"]
+    kwargs["ions"] = ["H+"]
     kwargs["electron_vel"] = np.array([[0, 0, 0]]) * u.km / u.s
     kwargs["ion_vel"] = np.array([[0, 0, 0]]) * u.km / u.s
     kwargs["probe_vec"] = np.array([1, 0, 0])
@@ -438,7 +438,7 @@ def test_single_species_non_collective_spectrum(single_species_non_collective_sp
     [
         # Ion species provided but empty
         (
-            {"ion_species": []},
+            {"ions": []},
             ValueError,
             "At least one ion species needs to be defined.",
         ),
@@ -525,7 +525,7 @@ def test_split_populations():
     # Combined
     T_e = np.array([10]) * u.eV
     T_i = np.array([10]) * u.eV
-    ion_species = ["H+"]
+    ions = ["H+"]
     ifract = np.array([1.0])
     efract = np.array([1.0])
 
@@ -537,7 +537,7 @@ def test_split_populations():
         T_i,
         ifract=ifract,
         efract=efract,
-        ion_species=ion_species,
+        ions=ions,
         probe_vec=probe_vec,
         scatter_vec=scatter_vec,
     )
@@ -546,7 +546,7 @@ def test_split_populations():
     # this should not change the results since the parts are identical
     T_e = np.array([10, 10]) * u.eV
     T_i = np.array([10, 10]) * u.eV
-    ion_species = ["H+", "H+"]
+    ions = ["H+", "H+"]
     ifract = np.array([0.2, 0.8])
     efract = np.array([0.8, 0.2])
 
@@ -558,7 +558,7 @@ def test_split_populations():
         T_i,
         ifract=ifract,
         efract=efract,
-        ion_species=ion_species,
+        ions=ions,
         probe_vec=probe_vec,
         scatter_vec=scatter_vec,
     )
@@ -685,7 +685,7 @@ def run_fit(
         settings["instr_func"] = None
 
     # LOAD FROM SETTINGS
-    ion_species = settings["ion_species"]
+    ions = settings["ions"]
     probe_vec = settings["probe_vec"]
     scatter_vec = settings["scatter_vec"]
     probe_wavelength = settings["probe_wavelength"]
@@ -713,7 +713,7 @@ def run_fit(
         T_i * u.eV,
         ifract=ifract,
         efract=efract,
-        ion_species=ion_species,
+        ions=ions,
         probe_vec=probe_vec,
         scatter_vec=scatter_vec,
         electron_vel=electron_vel * u.m / u.s,
@@ -774,7 +774,7 @@ def spectral_density_model_settings_params(kwargs):
         "probe_wavelength",
         "probe_vec",
         "scatter_vec",
-        "ion_species",
+        "ions",
         "electron_vdir",
         "ion_vdir",
         "instr_func",
@@ -819,7 +819,7 @@ def epw_single_species_settings_params():
     kwargs["probe_wavelength"] = probe_wavelength.to(u.m).value
     kwargs["probe_vec"] = np.array([1, 0, 0])
     kwargs["scatter_vec"] = scatter_vec
-    kwargs["ion_species"] = ["H+"]
+    kwargs["ions"] = ["H+"]
 
     kwargs["n"] = Parameter(
         "n", value=2e17 * 1e6, vary=True, min=8e16 * 1e6, max=6e17 * 1e6
@@ -856,7 +856,7 @@ def epw_multi_species_settings_params():
     kwargs["probe_wavelength"] = probe_wavelength.to(u.m).value
     kwargs["probe_vec"] = probe_vec
     kwargs["scatter_vec"] = scatter_vec
-    kwargs["ion_species"] = ["H+"]
+    kwargs["ions"] = ["H+"]
 
     kwargs["n"] = Parameter(
         "n", value=2e17 * 1e6, vary=True, min=8e16 * 1e6, max=6e17 * 1e6
@@ -895,7 +895,7 @@ def iaw_single_species_settings_params():
     kwargs["probe_wavelength"] = probe_wavelength.to(u.m).value
     kwargs["probe_vec"] = probe_vec
     kwargs["scatter_vec"] = scatter_vec
-    kwargs["ion_species"] = ["H+"]
+    kwargs["ions"] = ["H+"]
     kwargs["ion_vdir"] = np.array([[1, 0, 0]])
     kwargs["electron_vdir"] = np.array([[1, 0, 0]])
 
@@ -932,7 +932,7 @@ def iaw_multi_species_settings_params():
     kwargs["probe_wavelength"] = probe_wavelength.to(u.m).value
     kwargs["probe_vec"] = probe_vec
     kwargs["scatter_vec"] = scatter_vec
-    kwargs["ion_species"] = ["H+", "H+", "C-12 +4"]
+    kwargs["ions"] = ["H+", "H+", "C-12 +4"]
     kwargs["ion_vdir"] = np.array([[0.5, 0.5, 0]])
     kwargs["electron_vdir"] = np.array([[0, 0.2, 0.7]])
 
@@ -979,7 +979,7 @@ def noncollective_single_species_settings_params():
     kwargs["probe_wavelength"] = probe_wavelength.to(u.m).value
     kwargs["probe_vec"] = probe_vec
     kwargs["scatter_vec"] = scatter_vec
-    kwargs["ion_species"] = ["H+"]
+    kwargs["ions"] = ["H+"]
     kwargs["ion_vdir"] = np.array([[1, 0, 0]])
     kwargs["electron_vdir"] = np.array([[1, 0, 0]])
 
@@ -1103,7 +1103,7 @@ def test_fit_with_minimal_parameters():
     w0 = probe_wavelength.value
     wavelengths = np.linspace(w0 - 5, w0 + 5, num=512) * u.nm
 
-    ion_species = ["H+"]
+    ions = ["H+"]
     n = 2e17 * u.cm ** -3
     T_i = 20 * u.eV
     T_e = 10 * u.eV
@@ -1114,7 +1114,7 @@ def test_fit_with_minimal_parameters():
         n,
         T_e,
         T_i,
-        ion_species=ion_species,
+        ions=ions,
         probe_vec=probe_vec,
         scatter_vec=scatter_vec,
     )
@@ -1130,7 +1130,7 @@ def test_fit_with_minimal_parameters():
     settings = {}
     settings["probe_vec"] = probe_vec
     settings["scatter_vec"] = scatter_vec
-    settings["ion_species"] = ion_species
+    settings["ions"] = ions
 
     params = Parameters()
 
@@ -1179,7 +1179,7 @@ def test_fit_with_minimal_parameters():
         ),
         ({"probe_vec": None}, ValueError, "not provided in settings, but is required"),
         (
-            {"ion_species": None},
+            {"ions": None},
             ValueError,
             "not provided in settings, but is required",
         ),
@@ -1231,9 +1231,6 @@ def test_model_input_validation(control, error, msg, iaw_multi_species_settings_
 
     wavelengths, params, settings = spectral_density_model_settings_params(kwargs)
 
-    print(list(settings.keys()))
-    print(list(params.keys()))
-
     if error is None:
         thomson.spectral_density_model(wavelengths, settings, params)
 
@@ -1246,16 +1243,3 @@ def test_model_input_validation(control, error, msg, iaw_multi_species_settings_
             if msg is not None:
                 print(excinfo.value)
                 assert msg in str(excinfo.value)
-
-
-if __name__ == "__main__":
-    pass
-    # test_different_input_types()
-    # test_collective_spectrum()
-    # test_non_collective_spectrum()
-    # test_fit_with_minimal_parameters()
-    # test_fit_epw_single_species()
-    # test_fit_epw_multi_species()
-    # test_fit_iaw_single_species()
-    # test_fit_iaw_multi_species()
-    # test_multiple_ion_species_spectrum()
