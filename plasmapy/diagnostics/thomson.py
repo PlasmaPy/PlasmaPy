@@ -711,7 +711,10 @@ def spectral_density_model(wavelengths, settings, params):
     Returns
     -------
 
-    Spectral density (optimization function)
+    model : `lmfit.model.Model` object
+        An `lmfit.model.Model` of the spectral density function for the
+        provided settings and parameters that can be used to fit Thomson
+        scattering data.
 
     Notes
     -----
