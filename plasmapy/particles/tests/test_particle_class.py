@@ -611,7 +611,6 @@ test_Particle_error_table = [
     ([Particle("C-14")], {"mass_numb": 13}, "", InvalidParticleError),
     ([Particle("Au 1+")], {"Z": 2}, "", InvalidParticleError),
     ([[]], {}, "", TypeError),
-    (["Fe"], {}, ".ionize()", ChargeError),
     (["D"], {}, ".recombine()", ChargeError),
     (["Fe 26+"], {}, ".ionize()", InvalidIonError),
     (["Fe 6+"], {}, ".ionize(-1)", ValueError),
