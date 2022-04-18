@@ -270,7 +270,7 @@ def spectral_density(
     T_i: u.K,
     efract: np.ndarray = None,
     ifract: np.ndarray = None,
-    ion_species: Union[str, List[str], Particle, List[Particle]] = "p",
+    ions: Union[str, List[str], Particle, List[Particle]] = "p",
     electron_vel: u.m / u.s = None,
     ion_vel: u.m / u.s = None,
     probe_vec=None,
@@ -314,7 +314,7 @@ def spectral_density(
         Must sum to 1.0. Default is [1.0], representing a single
         ion component.
 
-    ion_species : `str` or `~plasmapy.particles.particle_class.Particle`, shape (Ni, ), optional
+    ions : `str` or `~plasmapy.particles.particle_class.Particle`, shape (Ni, ), optional
         A list or single instance of `~plasmapy.particles.Particle`, or
         strings convertible to `~plasmapy.particles.particle_class.Particle`.
         Default is ``'H+'`` corresponding to a single species of hydrogen ions.
@@ -443,31 +443,31 @@ def spectral_density(
     if ion_vel is None:
         ion_vel = np.zeros([ifract.size, 3]) * u.m / u.s
 
-    # Condition ion_species
-    if isinstance(ion_species, (str, Particle)):
-        ion_species = [ion_species]
-    if len(ion_species) == 0:
+    # Condition ions
+    if isinstance(ions, (str, Particle)):
+        ions = [ions]
+    if len(ions) == 0:
         raise ValueError("At least one ion species needs to be defined.")
-    for ii, ion in enumerate(ion_species):
+    for ii, ion in enumerate(ions):
         if isinstance(ion, Particle):
             continue
-        ion_species[ii] = Particle(ion)
+        ions[ii] = Particle(ion)
 
     # Condition T_i
     if T_i.size == 1:
         # If a single quantity is given, put it in an array so it's iterable
-        # If T_i.size != len(ion_species), assume same temp. for all species
+        # If T_i.size != len(ions), assume same temp. for all species
         T_i = np.array([T_i.value]) * T_i.unit
 
-    # Make sure the sizes of ion_species, ifract, ion_vel, and T_i all match
+    # Make sure the sizes of ions, ifract, ion_vel, and T_i all match
     if (
-        (len(ion_species) != ifract.size)
+        (len(ions) != ifract.size)
         or (ion_vel.shape[0] != ifract.size)
         or (T_i.size != ifract.size)
     ):
         raise ValueError(
             f"Inconsistent number of ion species in ifract ({ifract}), "
-            f"ion_species ({len(ion_species)}), T_i ({T_i.size}), "
+            f"ions ({len(ions)}), T_i ({T_i.size}), "
             f"and/or ion_vel ({ion_vel.shape[0]})."
         )
 
@@ -485,9 +485,9 @@ def spectral_density(
         )
 
     # Create arrays of ion Z and mass from particles given
-    ion_z = np.zeros(len(ion_species))
-    ion_mass = np.zeros(len(ion_species)) * u.kg
-    for i, particle in enumerate(ion_species):
+    ion_z = np.zeros(len(ions))
+    ion_mass = np.zeros(len(ions)) * u.kg
+    for i, particle in enumerate(ions):
         ion_z[i] = particle.charge_number
         ion_mass[i] = particle_mass(particle)
 
@@ -677,7 +677,7 @@ def spectral_density_model(wavelengths, settings, params):
         - probe_wavelength: Probe wavelength in meters
         - probe_vec : (3,) unit vector in the probe direction
         - scatter_vec: (3,) unit vector in the scattering direction
-        - ion_species : list of Particle strings describing each ion species
+        - ions : list of Particle strings describing each ion species
 
         and may contain the following optional variables
 
@@ -711,7 +711,10 @@ def spectral_density_model(wavelengths, settings, params):
     Returns
     -------
 
-    Spectral density (optimization function)
+    model : `lmfit.model.Model` object
+        An `lmfit.model.Model` of the spectral density function for the
+        provided settings and parameters that can be used to fit Thomson
+        scattering data.
 
     Notes
     -----
@@ -727,7 +730,7 @@ def spectral_density_model(wavelengths, settings, params):
         "probe_wavelength",
         "probe_vec",
         "scatter_vec",
-        "ion_species",
+        "ions",
     }
 
     if missing_settings := required_settings - set(settings):
@@ -771,7 +774,7 @@ def spectral_density_model(wavelengths, settings, params):
     # Create arrays of ion Z and mass from particles given
     ion_z = np.zeros(num_i)
     ion_mass = np.zeros(num_i)
-    for i, species in enumerate(settings["ion_species"]):
+    for i, species in enumerate(settings["ions"]):
         particle = Particle(species)
         ion_z[i] = particle.charge_number
         ion_mass[i] = particle_mass(particle).value
