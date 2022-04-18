@@ -221,8 +221,9 @@ def stix(
             f" value of shape {len(k)} and {len(theta.shape)}."
         )
     if np.isscalar(theta.value):
-        theta = np.array([theta.value]) * u.rad
+        theta = np.array([theta.value])
 
+    # generate the plasma parameters needed
     wps = []
     wcs = []
 
@@ -233,37 +234,41 @@ def stix(
     wcs = np.array(wcs)
 
     # Stix method implemented
-    n = Symbol("n")
+    w = Symbol("w")
 
     S = 1
     P = 1
     D = 0
 
-    for i in range(len(species)):
-        S -= (wps[i] ** 2) / (n ** 2 + wcs[i] ** 2)
-        P -= (wps[i] / n) ** 2
-        D += ((wps[i] ** 2) / (n ** 2 + wcs[i] ** 2)) * (wcs[i] / n)
+    for i in range(len(wps)):
+        S -= (wps[i] ** 2) / (w ** 2 + wcs[i] ** 2)
+        P -= (wps[i] / w) ** 2
+        D += ((wps[i] ** 2) / (w ** 2 + wcs[i] ** 2)) * (wcs[i] / w)
 
     R = S + D
     L = S - D
 
-    tan_sqd = []
-    eq = []
-    sol_omega = {}
+    # Generate coefficients to solve
+
+    A = []
+    B = []
+    C = []
 
     for i in range(len(theta)):
-        tan_sqd.append((np.tan(theta[i])) ** 2)
-        lhs_eq = tan_sqd[i] * (S * (n ** 2) - R * L) * (n ** 2 - P)
-        rhs_eq = -P * (n ** 2 - R) * (n ** 2 - L)
-        arg_ = simplify((lhs_eq + rhs_eq).value)
-        eq.append(arg_)
-        # print(eq[i])
-        sol = solve(eq[i], n, warn=True)
-        sol_omega[theta[i].value] = sol
-        # print(sol_omega)
-        for j in range(len(sol_omega)):
-            sol_omega[theta[i].value][j] = (
-                (c_si_unitless * k[i]) / sol_omega[theta[i].value][j]
-            ) * (u.s ** -1)
+        A.append(S*(np.sin(theta[i])**2))
+        B.append(R*L*(np.sin(theta[i])**2) + P*S*(1 + np.cos(theta[i])**2))
+        C.append(P*R*L)
 
-    return sol_omega
+    # generate solution
+
+    omegas = {}
+
+    for i in range(len(k)):
+        omegas[k[i]] = {}
+        for j in range(len(theta)):
+            omegas[k[i]][theta[i]] = []
+            eq = A*((c_si_unitless*k[i])/w)**4 + B*((c_si_unitless*k[i])/w)**2 + P*R*L
+            eq_sim = simplify(eq)
+            print(eq_sim)
+
+    return
