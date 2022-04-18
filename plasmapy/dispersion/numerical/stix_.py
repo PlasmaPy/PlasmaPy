@@ -9,9 +9,6 @@ import astropy.units as u
 import numpy as np
 
 from astropy.constants.si import c
-from sympy import simplify, Symbol
-from sympy.solvers import solve
-from typing import Any, List, Union
 
 from plasmapy.formulary.frequencies import gyrofrequency, plasma_frequency
 from plasmapy.particles import Particle, ParticleList
@@ -152,7 +149,7 @@ def stix(
 
     """
 
-    # validate ions argument
+    # Validate ions argument
     if not isinstance(ions, (list, tuple)):
         ions = [ions]
     ions = ParticleList(ions)
@@ -164,7 +161,7 @@ def stix(
             f"{[ion for ion, fail in zip(ions, failed) if not fail]}"
         )
 
-    # validate n_i argument
+    # Validate n_i argument
     if n_i.ndim not in (0, 1):
         raise ValueError(
             f"Argument 'n_i' must be a single valued or a 1D array of "
@@ -187,7 +184,7 @@ def stix(
     densities[:-1] = n_i
     densities[-1] = np.sum(n_i * ions.charge_number)
 
-    # validate B argument
+    # Validate B argument
     B = B.squeeze()
     if B.ndim != 0:
         raise ValueError(
@@ -195,7 +192,7 @@ def stix(
             f" shape  {B.shape}."
         )
 
-    # validate k argument and dimension
+    # Validate k argument and dimension
     k = k.squeeze()
     if not (k.ndim == 0 or k.ndim == 1):
         raise ValueError(
@@ -207,7 +204,7 @@ def stix(
     if np.isscalar(k.value):
         k = np.array([k.value])
 
-    # validate theta value
+    # Validate theta value
     theta = theta.squeeze()
     theta = theta.to(u.radian)
     if theta.ndim not in (0, 1):
@@ -215,15 +212,10 @@ def stix(
             f"Argument 'theta' needs to be a single value or 1D array "
             f" astropy Quantity, got array of shape {k.shape}."
         )
-    elif theta.ndim == 1 and theta.size != len(k):
-        raise ValueError(
-            f"Argument 'theta' and 'k' need to be the same length, got"
-            f" value of shape {len(k)} and {len(theta.shape)}."
-        )
     if np.isscalar(theta.value):
         theta = np.array([theta.value])
 
-    # generate the plasma parameters needed
+    # Generate the plasma parameters needed
     wps = []
     wcs = []
 
@@ -234,8 +226,6 @@ def stix(
     wcs = np.array(wcs)
 
     # Stix method implemented
-    w = Symbol("w")
-
     S = 1
     P = 1
     D = 0
@@ -249,26 +239,31 @@ def stix(
     L = S - D
 
     # Generate coefficients to solve
-
     A = []
     B = []
     C = []
 
     for i in range(len(theta)):
-        A.append(S*(np.sin(theta[i])**2))
-        B.append(R*L*(np.sin(theta[i])**2) + P*S*(1 + np.cos(theta[i])**2))
-        C.append(P*R*L)
+        arg_ = S*(np.sin(theta[i])**2) + P*(np.cos(theta[i])**2)
+        A.append(arg_)
+        arg_ = -(R*L*(np.sin(theta[i])**2) + P*S*(1+(np.cos(theta[i])**2)))
+        B.append(arg_)
+        C.append(P * R * L)
 
-    # generate solution
-
+    # Generate solutions
     omegas = {}
 
     for i in range(len(k)):
         omegas[k[i]] = {}
         for j in range(len(theta)):
-            omegas[k[i]][theta[i]] = []
-            eq = A*((c_si_unitless*k[i])/w)**4 + B*((c_si_unitless*k[i])/w)**2 + P*R*L
-            eq_sim = simplify(eq)
-            print(eq_sim)
+            coefficients = np.array([C[i], B[i], A[i]], ndmin=4)
+            nroots = coefficients.shape[0] - 1
+            nks = coefficients.shape[1]
+            roots = np.empty((nroots, nks), dtype=np.complex128)
+            for k in range(nks):
+                roots[:, k] = np.roots(coefficients[:, k])[:]
 
-    return
+            roots = np.sqrt(roots)
+            omegas[k[i]][theta[j]] = np.sort(roots, axis=0)
+
+    return omegas
