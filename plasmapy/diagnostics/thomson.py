@@ -279,54 +279,8 @@ def spectral_density(
 ) -> Tuple[Union[np.floating, np.ndarray], np.ndarray]:
     r"""
     Calculate the spectral density function for Thomson scattering of a
-    probe laser beam by a multi-species Maxwellian plasma.
-
-    This function calculates the spectral density function for Thomson
-    scattering of a probe laser beam by a plasma consisting of one or more ion
-    species and a one or more thermal electron populations (the entire plasma
-    is assumed to be quasi-neutral)
-
-    .. math::
-        S(k,ω) = \sum_e \frac{2π}{k}
-        \bigg |1 - \frac{χ_e}{ε} \bigg |^2
-        f_{e0,e} \bigg (\frac{ω}{k} \bigg ) +
-        \sum_i \frac{2π Z_i}{k}
-        \bigg |\frac{χ_e}{ε} \bigg |^2 f_{i0,i}
-        \bigg ( \frac{ω}{k} \bigg )
-
-    where :math:`χ_e` is the electron component susceptibility of the
-    plasma and :math:`ε = 1 + \sum_e χ_e + \sum_i χ_i` is the total
-    plasma dielectric  function (with :math:`χ_i` being the ion component
-    of the susceptibility), :math:`Z_i` is the charge of each ion, :math:`k`
-    is the scattering wavenumber, :math:`ω` is the scattering frequency,
-    and :math:`f_{e0,e}` and :math:`f_{i0,i}` are the electron and ion velocity
-    distribution functions respectively. In this function the electron and ion
-    velocity distribution functions are assumed to be Maxwellian, making this
-    function equivalent to Eq. 3.4.6 in :cite:t:`sheffield:2011`\ .
-
-    The number density of the e\ :sup:`th` electron populations is defined as
-
-    .. math::
-        n_e = F_e n_0
-
-    where :math:`n` is total density of all electron population combined and
-    :math:`F_e` is the fractional density of each electron population such
-    that
-
-    .. math::
-        \sum_e n_e = n
-
-    .. math::
-        \sum_e F_e = 1
-
-    The plasma is assumed to be charge neutral, and therefore the number
-    density of the i\ :sup:`th` ion population is
-
-    .. math::
-        n_i = \frac{F_i n}{\sum_i F_i Z_i}
-
-    with :math:`F_i` defined in the same way as :math:`F_e`.
-
+    probe laser beam by a multi-species Maxwellian plasma. See **Notes**
+    section below for additional details.
 
     Parameters
     ----------
@@ -403,6 +357,52 @@ def spectral_density(
 
     Notes
     -----
+
+    This function calculates the spectral density function for Thomson
+    scattering of a probe laser beam by a plasma consisting of one or more ion
+    species and a one or more thermal electron populations (the entire plasma
+    is assumed to be quasi-neutral)
+
+    .. math::
+        S(k,ω) = \sum_e \frac{2π}{k}
+        \bigg |1 - \frac{χ_e}{ε} \bigg |^2
+        f_{e0,e} \bigg (\frac{ω}{k} \bigg ) +
+        \sum_i \frac{2π Z_i}{k}
+        \bigg |\frac{χ_e}{ε} \bigg |^2 f_{i0,i}
+        \bigg ( \frac{ω}{k} \bigg )
+
+    where :math:`χ_e` is the electron component susceptibility of the
+    plasma and :math:`ε = 1 + \sum_e χ_e + \sum_i χ_i` is the total
+    plasma dielectric  function (with :math:`χ_i` being the ion component
+    of the susceptibility), :math:`Z_i` is the charge of each ion, :math:`k`
+    is the scattering wavenumber, :math:`ω` is the scattering frequency,
+    and :math:`f_{e0,e}` and :math:`f_{i0,i}` are the electron and ion velocity
+    distribution functions respectively. In this function the electron and ion
+    velocity distribution functions are assumed to be Maxwellian, making this
+    function equivalent to Eq. 3.4.6 in :cite:t:`sheffield:2011`\ .
+
+    The number density of the e\ :sup:`th` electron populations is defined as
+
+    .. math::
+        n_e = F_e n
+
+    where :math:`n` is total density of all electron population combined and
+    :math:`F_e` is the fractional density of each electron population such
+    that
+
+    .. math::
+        \sum_e n_e = n
+
+    .. math::
+        \sum_e F_e = 1
+
+    The plasma is assumed to be charge neutral, and therefore the number
+    density of the i\ :sup:`th` ion population is
+
+    .. math::
+        n_i = \frac{F_i n}{\sum_i F_i Z_i}
+
+    with :math:`F_i` defined in the same way as :math:`F_e`.
 
     For details, see "Plasma Scattering of Electromagnetic Radiation" by
     :cite:t:`sheffield:2011`. This code is a modified version of the
