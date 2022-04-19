@@ -31,7 +31,7 @@ class NullPointWarning(UserWarning):
 class NonZeroDivergence(NullPointError):
     def __init__(self):
         super().__init__(
-            "Gauss's law for magnetism does not hold for the provided magnetic field."
+            "The divergence constraint does not hold for the provided magnetic field."
         )
 
 
