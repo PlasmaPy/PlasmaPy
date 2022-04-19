@@ -1153,7 +1153,7 @@ def _locate_null_point(vspace, cell, n, err):
             ):
                 warnings.warn(
                     "Multiple null points suspected. Trilinear method may not work as intended.",
-                    MultipleNullPoints,
+                    MultipleNullPointWarning,
                 )
 
             # Adjust position
