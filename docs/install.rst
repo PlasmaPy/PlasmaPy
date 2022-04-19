@@ -156,8 +156,8 @@ Obtaining official releases
 A ZIP_ file containing the source code for official releases of
 `plasmapy` can be obtained `from PyPI`_ or `from Zenodo`_.
 
-Alternatively, official releases since 0.7.0 can be downloaded from
-`PlasmaPy's GitHub Repository`_ by using the :guilabel:`Releases` tab.
+Alternatively, official releases since 0.7.0 can be downloaded from the
+releases_ page on `PlasmaPy's GitHub repository`_.
 
 Obtaining source code from GitHub
 ---------------------------------
@@ -224,4 +224,5 @@ will be installed.
 .. _installing packages: https://packaging.python.org/en/latest/tutorials/installing-packages/#installing-from-vcs
 .. _managing packages: https://docs.anaconda.com/anaconda/navigator/tutorials/manage-packages/#installing-a-package
 .. _miniconda: https://docs.conda.io/en/latest/miniconda.html
+.. _releases: https://github.com/PlasmaPy/PlasmaPy/releases
 .. _ZIP: https://en.wikipedia.org/wiki/ZIP_(file_format)
