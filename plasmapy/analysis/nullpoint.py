@@ -1188,6 +1188,7 @@ def _classify_null_point(vspace, cell, loc):
     Return the coordinates of a null point within
     a given grid cell in a vector space using the
     Newton-Rapshon method.
+
     Multiple initial positions are tried until either
     one converges inside a the grid cell, or the maximum
     iteration is reached.
