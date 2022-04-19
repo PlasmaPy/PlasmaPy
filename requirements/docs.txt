@@ -1,9 +1,11 @@
-# these are dependencies required to build package documentation
-# ought to mirror 'docs' under options.extras_require in setup.cfg
+# These are dependencies required to build package documentation, and
+# ought to mirror 'docs' under options.extras_require in setup.cfg.
+# This lists the requirements that would be installed when doing:
+# pip install plasmapy[docs]
 -r extras.txt
+-r install.txt
 docutils
 ipykernel
-ipywidgets
 jinja2 != 3.1
 nbsphinx
 numpydoc
