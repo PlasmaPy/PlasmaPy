@@ -120,6 +120,7 @@ intersphinx_mapping = {
     "sphinx": ("https://www.sphinx-doc.org/en/master/", None),
     "numba": ("https://numba.readthedocs.io/en/stable/", None),
 }
+
 hoverxref_intersphinx = [
     "readthedocs",
     "python",
@@ -199,7 +200,7 @@ exclude_patterns = [
 # If true, `todo` and `todoList` produce output, else they produce nothing.
 todo_include_todos = False
 
-default_role = "obj"
+default_role = "py:obj"
 
 # Customizations for make linkcheck using regular expressions
 linkcheck_allowed_redirects = {
@@ -269,6 +270,62 @@ hoverxref_role_types = {
     "ref": "tooltip",
     "term": "tooltip",
 }
+
+# Specify patterns to ignore when doing a nitpicky documentation build.
+# These may include common expressions like "real number" as well as
+# workarounds for nested inline literals as defined in docs/common_links.py
+
+python_role = "py:.*"
+
+nitpick_ignore_regex = [
+    (python_role, "and"),
+    (python_role, "array .*"),
+    (python_role, "array_like"),
+    (python_role, "callable"),
+    (python_role, "dictionary.*"),
+    (python_role, "function"),
+    (python_role, ".*integer.*"),
+    (python_role, "iterable"),
+    (python_role, "key"),
+    (python_role, "keyword-only"),
+    (python_role, ".* object"),
+    (python_role, "optional"),
+    (python_role, "or"),
+    (python_role, "Real"),
+    (python_role, ".*real number.*"),
+    (python_role, ".*representation.*"),
+    (python_role, "shape.*"),
+    (python_role, "u\..*"),
+    (python_role, ".*Unit.*"),
+    # pytest helpers
+    (python_role, "_pytest.*"),
+    (python_role, "Failed"),
+    # charged_particle_radiography
+    (python_role, "2 ints"),
+    (python_role, "a single int"),
+    (python_role, "Tuple of 1"),
+    # for reST workarounds defined in docs/common_links.rst
+    (python_role, "h5py"),
+    (python_role, "IPython.sphinxext.ipython_console_highlighting"),
+    (python_role, "lmfit"),
+    (python_role, "mpmath"),
+    (python_role, "nbsphinx"),
+    (python_role, "xarray"),
+    # plasmapy_sphinx
+    (python_role, "automod.*"),
+    (python_role, "Builder"),
+    (python_role, "docutils.*"),
+    (python_role, "level"),
+    (python_role, ".*member.*"),
+    (python_role, "OptionSpec"),
+    (python_role, "py"),
+    (python_role, "[Ss]phinx.*"),  # also for reST workarounds in docs/common_links.rst
+    # The following patterns still need to be fixed.
+    (python_role, "json.decoder.JSONDecoder"),
+    (python_role, "plasmapy.analysis.swept_langmuir.find_floating_potential"),
+    (python_role, "plasmapy.particles.particle_collections"),
+    (python_role, "plasmapy.utils.decorators.lite_func"),
+]
 
 # -- Options for HTML output ----------------------------------------------
 
