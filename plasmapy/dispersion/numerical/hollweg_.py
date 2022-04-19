@@ -99,7 +99,7 @@ def hollweg(
 
     TypeError
         If ``ion`` is not of type or convertible to
-        `~plasmapy.particles.Particle`.
+        `~plasmapy.particles.particle_class.Particle`.
 
     TypeError
         If ``gamma_e``, ``gamma_i``, or ``z_mean`` are not of type `int`

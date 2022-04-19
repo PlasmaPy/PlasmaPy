@@ -22,7 +22,7 @@ PlasmaPy requires the following packages for installation:
 - `SciPy`_ — 1.2 or newer
 - `Astropy`_ — 4.0 or newer
 - `pandas <https://pandas.pydata.org>`_ — 1.0 or newer
-- `xarray <https://xarray.pydata.org/en/stable>`_ — above 0.14
+- |xarray|_ — above 0.14
 - `tqdm <https://tqdm.github.io>`_ — 4.41 or newer
 - `cached_property <https://pypi.org/project/cached-property>`_ — 1.5.2 or newer
 
