@@ -968,7 +968,7 @@ def _trilinear_analysis(vspace, cell):
     if len(BxByEndpoints) == 0 and len(BxBzEndpoints) == 0 and len(ByBzEndpoints) == 0:
         warnings.warn(
             "Multiple null points suspected. Trilinear method may not work as intended.",
-            MultipleNullPoints,
+            MultipleNullPointWarning,
         )
         return False
 
