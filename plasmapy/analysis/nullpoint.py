@@ -1217,9 +1217,12 @@ def _classify_null_point(vspace, cell, loc):
     -------
     string
         A string describing the null point type.
-    NoneType
-        None if the divergence of the given vector space
-        does not equal to zero.
+    
+    Raises
+    ------
+    NonZeroDivergence
+        If the divergence of the given vector space is not sufficiently close
+        to zero at the null point.
 
     Notes
     -----
