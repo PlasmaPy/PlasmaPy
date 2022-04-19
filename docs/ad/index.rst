@@ -37,7 +37,7 @@ on some of following key areas...
 
 #. Quick viewing of analyzed data with default plotting routines.
 #. Fully defining the physical parameters of a diagnostic with purposely
-   designed `Probe` classes that are integrated into the analysis workflow.
+   designed ``Probe`` classes that are integrated into the analysis workflow.
 #. Adding graphical user interfaces (GUIs) to the analysis workflow via notebook
    widgets.
 

@@ -60,7 +60,7 @@ def Fermi_integral(
     Warnings
     --------
     At present this function is limited to relatively small arguments
-    due to limitations in `mpmath` implementation of `~mpmath.polylog`.
+    due to limitations in ``mpmath.polylog``.
 
     Examples
     --------

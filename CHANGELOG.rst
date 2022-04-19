@@ -437,7 +437,7 @@ Bug Fixes
 - Fixed a bug that prevented nested iterations of a single
   `~plasmapy.particles.IonizationState` or
   `~plasmapy.particles.IonizationStateCollection` instance. (`#1025 <https://github.com/plasmapy/plasmapy/pull/1025>`__)
-- Fixed a bug in `grids.py` for non-uniform grids that arose when `xarray` upgraded
+- Fixed a bug in :file:`grids.py` for non-uniform grids that arose when |xarray|_ upgraded
   to `v0.17.0` (`#1027 <https://github.com/plasmapy/plasmapy/pull/1027>`__)
 - In `~plasmapy.diagnostics.proton_radiography.SyntheticProtonRadiograph`,
   adaptive ``dt`` now calculates the cyclotron period using the provided particle

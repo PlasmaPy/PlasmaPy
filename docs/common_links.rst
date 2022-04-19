@@ -126,6 +126,7 @@
 .. _Matrix chat room: https://app.element.io/#/room/#plasmapy:openastronomy.org
 .. _numpydoc: https://numpydoc.readthedocs.io/en/latest/format.html#docstring-standard
 .. _NumPy: https://numpy.org
+.. _OpenPMD: https://www.openpmd.org/
 .. _pandas: https://pandas.pydata.org
 .. _persistent identifier: https://en.wikipedia.org/wiki/Persistent_identifier
 .. _pip: https://pip.pypa.io
@@ -165,6 +166,11 @@
    formatted like a file but will be a link. In the text, these get used
    with the syntax for a substitution followed by an underscore to
    indicate that it's for a link: |docs/_static|_
+
+.. For these workarounds, if the replacement is something in single back
+   ticks (e.g., `xarray`), then it should also be added to
+   nitpick_ignore_regex in docs/conf.py so that it doesn't get counted
+   as an error in a nitpicky doc build (e.g., tox -e doc_build_nitpicky).
 
 .. _`docs/_static`: https://github.com/PlasmaPy/PlasmaPy/tree/main/docs/_static
 .. |docs/_static| replace:: :file:`docs/_static`

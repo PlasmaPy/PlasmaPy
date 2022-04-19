@@ -21,6 +21,7 @@ installed already, here are the instructions to `download Python`_ and
 install it.
 
 .. tip::
+=======
 
    New versions of Python_ are released annually in October, and it can
    take a few months for the scientific Python ecosystem to catch up. If

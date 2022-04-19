@@ -185,10 +185,10 @@ class ClassicalTransport:
     model: `str`
         Indication of whose formulation from literature to use. Allowed values are:
 
-        * `"Braginskii"` :cite:p:`braginskii:1965`
-        * `"Spitzer-Harm"` :cite:p:`spitzer:1953,spitzer:1962`
-        * `"Epperlein-Haines"` (not yet implemented) :cite:p:`epperlein:1986`
-        * `"Ji-Held"` :cite:p:`ji:2013`
+        * ``"Braginskii"`` :cite:p:`braginskii:1965`
+        * ``"Spitzer-Harm"`` :cite:p:`spitzer:1953,spitzer:1962`
+        * ``"Epperlein-Haines"`` (not yet implemented) :cite:p:`epperlein:1986`
+        * ``"Ji-Held"`` :cite:p:`ji:2013`
 
     field_orientation : `str`, defaults to ``'parallel'``
         Either of ``'parallel'``, ``'par'``, ``'perpendicular'``, ``'perp'``, ``'cross'``, or
@@ -207,7 +207,8 @@ class ClassicalTransport:
         Useful for comparing calculations.
 
     V_ei : `~astropy.units.Quantity`, optional
-       The relative velocity between particles.  Supplied to `Coulomb_logarithm`
+       The relative velocity between particles.  Supplied to
+       `~plasmapy.formulary.collisions.Coulomb_logarithm`
        function, not otherwise used.  If not provided, thermal velocity is
        assumed: :math:`μ V^2 \sim 2 k_B T` where :math:`μ` is the reduced mass.
 

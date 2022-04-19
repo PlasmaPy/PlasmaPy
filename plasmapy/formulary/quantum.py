@@ -462,9 +462,8 @@ def chemical_potential(n_e: u.m ** -3, T: u.K) -> u.dimensionless_unscaled:
     Warnings
     --------
     At present this function is limited to relatively small arguments
-    due to limitations in the `mpmath` implementation of
-    `~mpmath.polylog`, which PlasmaPy uses in calculating the Fermi
-    integral.
+    due to limitations in the ``mpmath.polylog``, which PlasmaPy uses in
+    calculating the Fermi integral.
 
     Examples
     --------

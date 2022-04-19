@@ -36,7 +36,7 @@ class IonizationStateCollection:
     ----------
     inputs: `list`, `tuple`, or `dict`
         A `list` or `tuple` of elements or isotopes (if ``T_e`` is
-        provided); a `list` of `~plasmapy.particles.IonizationState`
+        provided); a `list` of `~plasmapy.particles.ionization_state.IonizationState`
         instances; a `dict` with elements or isotopes as keys and
         a `~numpy.ndarray` of ionic fractions as the values; or a `dict`
         with elements or isotopes as keys and `~astropy.units.Quantity`
@@ -71,7 +71,8 @@ class IonizationStateCollection:
     Raises
     ------
     `~plasmapy.particles.exceptions.ParticleError`
-        If `~plasmapy.particles.IonizationStateCollection` cannot be instantiated.
+        If `~plasmapy.particles.ionization_state_collection.IonizationStateCollection`
+        cannot be instantiated.
 
     See Also
     --------
@@ -122,7 +123,8 @@ class IonizationStateCollection:
     the total element density, then the ionic fractions will be set
     proportionately.
 
-    When making comparisons between `~plasmapy.particles.IonizationStateCollection`
+    When making comparisons between
+    `~plasmapy.particles.ionization_state_collection.IonizationStateCollection`
     instances, `~numpy.nan` values are treated as equal.  Equality tests
     are performed to within a tolerance of ``tol``.
     """
@@ -422,11 +424,12 @@ class IonizationStateCollection:
         Notes
         -----
         The ionic fractions are initialized during instantiation of
-        `~plasmapy.particles.IonizationStateCollection`.  After this, the
-        only way to reset the ionic fractions via the ``ionic_fractions``
-        attribute is via a `dict` with elements or isotopes that are a
-        superset of the previous elements or isotopes.  However, you may
-        use item assignment of the `~plasmapy.particles.IonizationState`
+        `~plasmapy.particles.ionization_state_collection.IonizationStateCollection`.
+        After this, the only way to reset the ionic fractions via the
+        ``ionic_fractions`` attribute is via a `dict` with elements or
+        isotopes that are a superset of the previous elements or
+        isotopes.  However, you may use item assignment of the
+        `~plasmapy.particles.ionization_state.IonizationState`
         instance to assign new ionic fractions one element or isotope
         at a time.
 
@@ -940,7 +943,8 @@ class IonizationStateCollection:
     def summarize(self, minimum_ionic_fraction: Real = 0.01) -> None:
         """
         Print quicklook information for an
-        `~plasmapy.particles.IonizationStateCollection` instance.
+        `~plasmapy.particles.ionization_state_collection.IonizationStateCollection`
+        instance.
 
         Parameters
         ----------
