@@ -35,7 +35,7 @@ class NonZeroDivergence(NullPointError):
         )
 
 
-class MultipleNullPoints(NullPointWarning):
+class MultipleNullPointWarning(NullPointWarning):
     def __init__(self, msg):
         super().__init__(msg)
 
