@@ -9,8 +9,9 @@ from typing import Dict, Set
 
 import plasmapy
 
-base_directory = os.path.realpath(f"{plasmapy.__path__[0]}/..")
-requirements_directory = f"{base_directory}/requirements"
+import pathlib
+base_directory = pathlib.Path(__file__).parent.parent
+requirements_directory = base_directory / "requirements"
 requirements_prefixes = ("build", "docs", "extras", "install", "tests")
 
 
