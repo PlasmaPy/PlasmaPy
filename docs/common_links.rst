@@ -85,6 +85,7 @@
 .. |contributor guide| replace:: :ref:`contributor guide`\
 .. |documentation guide| replace:: :ref:`documentation guide`\
 .. |glossary| replace:: :ref:`glossary`\
+.. |minpython| replace:: 3.8
 .. |plasma-calculator| replace:: :ref:`plasmapy-calculator`\
 .. |release guide| replace:: :ref:`release guide`\
 .. |testing guide| replace:: :ref:`testing guide`\
@@ -99,6 +100,7 @@
 .. _BibTeX: http://www.bibtex.org
 .. _black: https://black.readthedocs.io
 .. _Conda: https://docs.conda.io
+.. _create an issue: https://github.com/PlasmaPy/PlasmaPy/issues/new/choose
 .. _CSS: https://en.wikipedia.org/wiki/CSS
 .. _docstring: https://en.wikipedia.org/wiki/Docstring
 .. _DOI: https://www.doi.org
@@ -122,9 +124,9 @@
 .. _MathJax: https://www.mathjax.org
 .. _matplotlib: https://matplotlib.org
 .. _Matrix chat room: https://app.element.io/#/room/#plasmapy:openastronomy.org
-.. _Numba: https://numba.pydata.org/
 .. _numpydoc: https://numpydoc.readthedocs.io/en/latest/format.html#docstring-standard
 .. _NumPy: https://numpy.org
+.. _OpenPMD: https://www.openpmd.org/
 .. _pandas: https://pandas.pydata.org
 .. _persistent identifier: https://en.wikipedia.org/wiki/Persistent_identifier
 .. _pip: https://pip.pypa.io
@@ -165,6 +167,11 @@
    with the syntax for a substitution followed by an underscore to
    indicate that it's for a link: |docs/_static|_
 
+.. For these workarounds, if the replacement is something in single back
+   ticks (e.g., `xarray`), then it should also be added to
+   nitpick_ignore_regex in docs/conf.py so that it doesn't get counted
+   as an error in a nitpicky doc build (e.g., tox -e doc_build_nitpicky).
+
 .. _`docs/_static`: https://github.com/PlasmaPy/PlasmaPy/tree/main/docs/_static
 .. |docs/_static| replace:: :file:`docs/_static`
 
@@ -186,11 +193,23 @@
 .. _`docs/bibliography.bib`: https://github.com/PlasmaPy/PlasmaPy/blob/main/docs/bibliography.bib
 .. |docs/bibliography.bib| replace:: :file:`docs/bibliography.bib`
 
+.. _h5py: https://www.h5py.org/
+.. |h5py| replace:: `h5py`
+
 .. _`IPython.sphinxext.ipython_console_highlighting`: https://ipython.readthedocs.io/en/stable/sphinxext.html?highlight=IPython.sphinxext.ipython_console_highlighting#ipython-sphinx-directive-module
 .. |IPython.sphinxext.ipython_console_highlighting| replace:: `IPython.sphinxext.ipython_console_highlighting`
 
+.. _lmfit: https://lmfit.github.io/lmfit-py/
+.. |lmfit| replace:: `lmfit`
+
+.. _mpmath: https://mpmath.org/doc/current/
+.. |mpmath| replace:: `mpmath`
+
 .. _nbsphinx: https://nbsphinx.readthedocs.io
 .. |nbsphinx| replace:: `nbsphinx`
+
+.. _numba: https://numba.readthedocs.io
+.. |numba| replace:: `numba`
 
 .. _`setup.cfg`: https://github.com/PlasmaPy/PlasmaPy/blob/main/setup.cfg
 .. |setup.cfg| replace:: :file:`setup.cfg`
@@ -209,3 +228,6 @@
 
 .. _`sphinx-hoverxref`: https://sphinx-hoverxref.readthedocs.io
 .. |sphinx-hoverxref| replace:: `sphinx-hoverxref`
+
+.. _xarray: https://docs.xarray.dev
+.. |xarray| replace:: `xarray`

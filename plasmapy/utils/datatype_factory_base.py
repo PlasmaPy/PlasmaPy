@@ -136,9 +136,9 @@ class BasicRegistrationFactory:
     def register(self, WidgetType, validation_function=None, is_default=False):
         """Register a widget with the factory.
 
-        If `validation_function` is not specified, tests `WidgetType` for
-        existence of any function in in the list `self.validation_functions`,
-        which is a list of strings which must be callable class attribute
+        If ``validation_function`` is not specified, tests ``WidgetType`` for
+        existence of any function in the ``validation_functions`` attribute,
+        which is a list of strings which must be callable class attributes.
 
         Parameters
         ----------
@@ -147,10 +147,11 @@ class BasicRegistrationFactory:
 
         validation_function : function, optional
             Function to validate against.  Defaults to `None`, which indicates
-            that a `classmethod` in `validation_functions` is used.
+            that a `classmethod` in the ``validation_functions``
+            attribute is used.
 
         is_default : `bool`, optional
-            Sets WidgetType to be the default widget.
+            Sets ``WidgetType`` to be the default widget.
 
         """
         if is_default:

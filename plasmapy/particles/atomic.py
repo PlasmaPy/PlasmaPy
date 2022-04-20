@@ -323,7 +323,7 @@ def charge_number(particle: Particle) -> Integral:
     `~plasmapy.particles.exceptions.ChargeError`
         If charge information for the particle is not available.
 
-    `~plasmapy.particles.exceptions.AtomicWarning`
+    `~plasmapy.particles.exceptions.ParticleWarning`
         If the input represents an ion with a charge number that is
         less than or equal to ``-3``, which is unlikely to occur in
         nature.
@@ -869,7 +869,7 @@ def reduced_mass(test_particle, target_particle) -> u.Quantity:
 
     `~astropy.units.UnitConversionError`
         If an argument is a `~astropy.units.Quantity` or
-        `~astropy.units.Constant` but does not have units of mass.
+        `~astropy.constants.Constant` but does not have units of mass.
 
     `~plasmapy.particles.exceptions.MissingParticleDataError`
         If the mass of either particle is not known.
