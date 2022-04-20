@@ -36,8 +36,7 @@ class NonZeroDivergence(NullPointError):
 
 
 class MultipleNullPointWarning(NullPointWarning):
-    def __init__(self, msg):
-        super().__init__(msg)
+    pass
 
 
 class Point:
@@ -62,15 +61,15 @@ class NullPoint(Point):
     A class for defining a null point in 3D space.
     """
 
-    def __init__(self, null_loc, type):
+    def __init__(self, null_loc, classification):
         super().__init__(null_loc)
-        self._type = type
+        self._classification = classification
 
-    def get_type(self):
+    def get_classification(self):
         r"""
         Returns the type of the null point object.
         """
-        return self._type
+        return self._classification
 
     def __eq__(self, point):
         r"""
@@ -84,7 +83,7 @@ class NullPoint(Point):
         )
         return np.isclose(d, 0, atol=_EQUALITY_ATOL)
 
-    type = property(get_type)
+    classification = property(get_classification)
 
 
 def _vector_space(

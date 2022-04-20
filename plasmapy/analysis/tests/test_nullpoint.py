@@ -368,79 +368,71 @@ def test_null_point_find8():
     assert len(npoints8) == 2
     loc1 = npoints8[0].loc.reshape(1, 3)
     loc2 = npoints8[1].loc.reshape(1, 3)
-    type1 = npoints8[0].type
-    type2 = npoints8[1].type
-    assert type1 == "Spiral null"
-    assert type2 == "Spiral null"
     assert np.allclose(loc1, [5.5, -5.5, 5.5], atol=_TESTING_ATOL)
     assert np.allclose(loc2, [5.5, 5.5, 5.5], atol=_TESTING_ATOL)
 
 
 # Testing null point types
-def field1(x, y, z):
-    return [x, 2 * y, -3 * z]
+class Test_classify_null_point:
+    r"""Test `~plasmapy.analysis.nullpoint._classify_null_point`."""
+
+    test_classify_null_point_values = [
+        (
+            {
+                "x_range": [-0.5, 0.5],
+                "y_range": [-0.5, 0.5],
+                "z_range": [-0.5, 0.5],
+                "precision": [0.03, 0.03, 0.03],
+                "func": lambda x, y, z: [x, 2 * y, -3 * z],
+            },
+            "Improper radial null",
+        ),
+        (
+            {
+                "x_range": [-0.1, 0.1],
+                "y_range": [-0.1, 0.1],
+                "z_range": [-0.1, 0.1],
+                "precision": [0.03, 0.03, 0.03],
+                "func": lambda x, y, z: [y * z, -x * z, x * y],
+            },
+            "Anti-parallel lines with null plane OR Planes of parabolae with null line",
+        ),
+        (
+            {
+                "x_range": [-0.1, 0.1],
+                "y_range": [-0.1, 0.1],
+                "z_range": [-0.1, 0.1],
+                "precision": [0.03, 0.03, 0.03],
+                "func": lambda x, y, z: [y * z, x * z, x * y],
+            },
+            "Proper radial null",
+        ),
+        (
+            {
+                "x_range": [5, 6],
+                "y_range": [-6, 6],
+                "z_range": [5, 6],
+                "precision": [0.3, 0.3, 0.3],
+                "func": lambda x, y, z: [(y - 5.5) * (y + 5.5), (z - 5.5), (x - 5.5)],
+            },
+            "Spiral null",
+        ),
+    ]
+
+    @pytest.mark.parametrize("kwargs, expected", test_classify_null_point_values)
+    def test_classify_null_point_vals(self, kwargs, expected):
+        r"""Test expected values."""
+        assert uniform_null_point_find(**kwargs)[0].classification == expected
 
 
+# Testing a magnetic filed that violates the divergence constraint
 def test_null_point_find9():
     nullpoint9_args = {
-        "x_range": [-0.5, 0.5],
-        "y_range": [-0.5, 0.5],
-        "z_range": [-0.5, 0.5],
-        "precision": [0.03, 0.03, 0.03],
-        "func": field1,
-    }
-    npoints = uniform_null_point_find(**nullpoint9_args)
-    assert (npoints[0].type) == "Improper radial null"
-
-
-#####
-def field2(x, y, z):
-    return [y * z, -x * z, x * y]
-
-
-def test_null_point_find10():
-    nullpoint10_args = {
         "x_range": [-0.1, 0.1],
         "y_range": [-0.1, 0.1],
         "z_range": [-0.1, 0.1],
         "precision": [0.03, 0.03, 0.03],
-        "func": field2,
-    }
-    npoints = uniform_null_point_find(**nullpoint10_args)
-
-    assert (
-        npoints[0].type
-    ) == "Anti-parallel lines with null plane OR Planes of parabolae with null line"
-
-
-def field3(x, y, z):
-    return [y * z, x * z, x * y]
-
-
-def test_null_point_find11():
-    nullpoint11_args = {
-        "x_range": [-0.1, 0.1],
-        "y_range": [-0.1, 0.1],
-        "z_range": [-0.1, 0.1],
-        "precision": [0.03, 0.03, 0.03],
-        "func": field3,
-    }
-    npoints = uniform_null_point_find(**nullpoint11_args)
-
-    assert (npoints[0].type) == "Proper radial null"
-
-
-def field4(x, y, z):
-    return [x, y, z]
-
-
-def test_null_point_find12():
-    nullpoint12_args = {
-        "x_range": [-0.1, 0.1],
-        "y_range": [-0.1, 0.1],
-        "z_range": [-0.1, 0.1],
-        "precision": [0.03, 0.03, 0.03],
-        "func": field4,
+        "func": lambda x, y, z: [x, y, z],
     }
     with pytest.raises(NonZeroDivergence):
-        npoints = uniform_null_point_find(**nullpoint12_args)
+        npoints = uniform_null_point_find(**nullpoint9_args)
