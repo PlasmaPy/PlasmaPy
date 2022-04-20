@@ -274,7 +274,7 @@ class FiniteStraightWire(Wire):
         )
 
         B_unit = np.cross(p2_p1, p - pf)
-        B_unit = B_unit / np.linalg.norm(B_unit)
+        B_unit /= np.linalg.norm(B_unit)
 
         B = (
             B_unit
@@ -415,8 +415,8 @@ class CircularWire(Wire):
             axis_x = np.array([1, 0, 0])
             axis_y = np.array([0, 1, 0])
         else:
-            axis_x = axis_x / np.linalg.norm(axis_x)
-            axis_y = axis_y / np.linalg.norm(axis_y)
+            axis_x /= np.linalg.norm(axis_x)
+            axis_y /= np.linalg.norm(axis_y)
 
         self.axis_x = axis_x
         self.axis_y = axis_y
