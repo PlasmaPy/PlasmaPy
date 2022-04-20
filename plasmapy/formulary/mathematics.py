@@ -148,7 +148,7 @@ def rot_a_to_b(a: np.ndarray, b: np.ndarray) -> np.ndarray:
         raise ValueError(
             f"Argument 'a' must have shape (3,) but input has shape {a.shape}."
         )
-    a /= np.linalg.norm(a)
+    a = a / np.linalg.norm(a)
 
     b = np.squeeze(b)
     if b.shape != (3,):
