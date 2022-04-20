@@ -20,11 +20,11 @@ c_si_unitless = c.value
 @validate_quantities(
     B={"can_be_negative": False},
     n_i={"can_be_negative": False},
-    k={"can_be_negative": False, "equivalencies": u.spectral()},
+    w={"can_be_negative": False},
 )
 def stix(
     B: u.T,
-    k: u.rad / u.m,
+    w: u.rad / u.s,
     ions: Particle,
     n_i: u.m ** -3,
     theta: u.rad,
@@ -43,9 +43,8 @@ def stix(
     B : `~astropy.units.Quantity`
         The magnetic field magnitude in units convertible to T.
 
-    k : `~astropy.units.Quantity`, single valued or 1-D array
-        Wavenumber in units convertible to rad/m.  Either single
-        valued or 1-D array of length :math:`N`.
+    w : `~astropy.units.Quantity`, single value omega  in units
+        convertible to rad/s.
 
     ions: a single or `list` of :term:`particle-like` object(s)
         epresentation of the ion species (e.g., ``"p"`` for protons,
@@ -139,7 +138,7 @@ def stix(
     >>> from plasmapy.dispersion.numerical.stix_ import stix
     >>> inputs = {
     ...     "B": 8.3e-9 * u.T,
-    ...     "k": 0.001 * u.rad / u.m,
+    ...     "w": 0.001 * u.rad / u.s,
     ...     "ions": [Particle("H+"), Particle("He+")],
     ...     "n_i": [4.0e5,2.0e5] * u.m**-3,
     ...     "theta": 30 * u.deg,
@@ -193,16 +192,16 @@ def stix(
         )
 
     # Validate k argument and dimension
-    k = k.squeeze()
-    if not (k.ndim == 0 or k.ndim == 1):
+    w = w.squeeze()
+    if not (w.ndim == 0 or w.ndim == 1):
         raise ValueError(
-            f"Argument 'k' needs to be a single value or a 1D array astropy Quantity,"
-            f"got a value of shape {k.shape}."
+            f"Argument 'w' needs to be a single value or a 1D array astropy Quantity,"
+            f"got a value of shape {w.shape}."
         )
-    if np.any(k <= 0):
-        raise ValueError(f"Argument 'k' can not a or have negative value")
-    if np.isscalar(k.value):
-        k = np.array([k.value])
+    if np.any(w <= 0):
+        raise ValueError(f"Argument 'w' can not a or have negative value")
+    if np.isscalar(w.value):
+        w = np.array([w.value])
 
     # Validate theta value
     theta = theta.squeeze()
@@ -244,26 +243,24 @@ def stix(
     C = []
 
     for i in range(len(theta)):
-        arg_ = S*(np.sin(theta[i])**2) + P*(np.cos(theta[i])**2)
+        arg_ = S * (np.sin(theta[i]) ** 2) + P * (np.cos(theta[i]) ** 2)
         A.append(arg_)
-        arg_ = -(R*L*(np.sin(theta[i])**2) + P*S*(1+(np.cos(theta[i])**2)))
+        arg_ = -(
+            R * L * (np.sin(theta[i]) ** 2) + P * S * (1 + (np.cos(theta[i]) ** 2))
+        )
         B.append(arg_)
         C.append(P * R * L)
 
     # Generate solutions
-    omegas = {}
+    k = {}
 
-    for i in range(len(k)):
-        omegas[k[i]] = {}
-        for j in range(len(theta)):
-            coefficients = np.array([C[i], B[i], A[i]], ndmin=4)
-            nroots = coefficients.shape[0] - 1
-            nks = coefficients.shape[1]
-            roots = np.empty((nroots, nks), dtype=np.complex128)
-            for k in range(nks):
-                roots[:, k] = np.roots(coefficients[:, k])[:]
+    for i in range(len(theta)):
+        arg_ = c_si_unitless / w
+        a = arg_ * A[i]
+        b = arg_ * B[i]
+        c = C[i]
+        coefficients = [a, 0, b, 0, c]
+        k[theta[i]] = np.roots(coefficients)
+        k[theta[i]] = np.sort(k[theta[i]], axis=0)
 
-            roots = np.sqrt(roots)
-            omegas[k[i]][theta[j]] = np.sort(roots, axis=0)
-
-    return omegas
+    return k
