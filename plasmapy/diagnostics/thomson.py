@@ -694,7 +694,7 @@ def spectral_density_model(wavelengths, settings, params):
 
         where where :samp:`{i#}` and where :samp:`{e#}` are replaced by the
         number of electron and ion populations, zero-indexed, respectively
-        (eg. 0,1,2...). The `~lmfit.parameter.Parameters` object may also contain 
+        (eg. 0,1,2...). The `~lmfit.parameter.Parameters` object may also contain
         the following optional variables:
 
         - :samp:`"efract_{e#}"` : Fraction of each electron population (must sum to 1)
