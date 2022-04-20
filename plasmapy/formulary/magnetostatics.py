@@ -401,7 +401,7 @@ class CircularWire(Wire):
             self.radius = radius.value
             self._radius_u = radius.unit
         else:
-            raise ValueError("Radius should bu larger than 0")
+            raise ValueError("Radius should be larger than 0")
         self.current = current.value
         self._current_u = current.unit
 
