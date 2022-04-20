@@ -416,7 +416,7 @@ class CircularWire(Wire):
             axis_y = np.array([0, 1, 0])
         else:
             axis_x = axis_x / np.linalg.norm(axis_x)
-            axis_y /= axis_y / np.linalg.norm(axis_y)
+            axis_y = axis_y / np.linalg.norm(axis_y)
 
         self.axis_x = axis_x
         self.axis_y = axis_y
