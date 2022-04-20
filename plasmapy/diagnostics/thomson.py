@@ -52,7 +52,6 @@ def spectral_density_lite(
     n: numbers.Real,
     T_e: np.ndarray,
     T_i: np.ndarray,
-    *,
     efract: np.ndarray,
     ifract: np.ndarray,
     ion_z: np.ndarray,

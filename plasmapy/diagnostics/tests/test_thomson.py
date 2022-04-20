@@ -640,11 +640,14 @@ def run_fit(
     settings,
     noise_amp=0.05,
     notch=None,
+    notch_as_nan=False,
     fit_method="differential_evolution",
     fit_kws={},
     max_iter=None,
     check_errors=True,
     require_redchi=1,
+    # If false, don't perform the actual fit just create the Model
+    run_fit=True,
 ):
     """
     This function takes a Parameters object, generates some synthetic data near it,
@@ -725,8 +728,14 @@ def run_fit(
     if notch is not None:
         x0 = np.argmin(np.abs(wavelengths.to(u.m).value * 1e9 - notch[0]))
         x1 = np.argmin(np.abs(wavelengths.to(u.m).value * 1e9 - notch[1]))
-        data = np.delete(data, np.arange(x0, x1))
-        wavelengths = np.delete(wavelengths, np.arange(x0, x1))
+
+        # Depending on the notch_as_nan keyword, either delete the missing data
+        # or replace with NaN values
+        if notch_as_nan:
+            data[x0:x1] = np.nan
+        else:
+            data = np.delete(data, np.arange(x0, x1))
+            wavelengths = np.delete(wavelengths, np.arange(x0, x1))
 
     data *= 1 + np.random.normal(loc=0, scale=noise_amp, size=wavelengths.size)
     data *= 1 / np.nanmax(data)
@@ -742,17 +751,18 @@ def run_fit(
     # Make the model, then perform the fit
     model = thomson.spectral_density_model(wavelengths.to(u.m).value, settings, params)
 
-    result = model.fit(
-        data,
-        params,
-        wavelengths=wavelengths.to(u.m).value,
-        method=fit_method,
-        max_nfev=max_iter,
-        fit_kws=fit_kws,
-    )
+    if run_fit:
+        result = model.fit(
+            data,
+            params,
+            wavelengths=wavelengths.to(u.m).value,
+            method=fit_method,
+            max_nfev=max_iter,
+            fit_kws=fit_kws,
+        )
 
-    # Assert that the fit reduced chi2 is under the requirement specified
-    assert result.redchi < require_redchi
+        # Assert that the fit reduced chi2 is under the requirement specified
+        assert result.redchi < require_redchi
 
 
 def spectral_density_model_settings_params(kwargs):
@@ -1074,8 +1084,18 @@ def test_fit_with_instr_func(epw_single_species_settings_params):
     # Warns that data should not include any NaNs
     # This is taken care of in run_fit by deleting the notch region rather than
     # replacing it with np.NaN
-    with pytest.warns(UserWarning, match="If an insturment function is included"):
-        run_fit(wavelengths, params, settings, notch=(531, 533))
+    with pytest.warns(UserWarning, match="If an instrument function is included,"):
+        run_fit(
+            wavelengths,
+            params,
+            settings,
+            notch=(531, 533),
+            notch_as_nan=True,
+            run_fit=False,
+        )
+
+    # Run the same fit using np.delete instead of np.nan values
+    run_fit(wavelengths, params, settings, notch=(531, 533))
 
 
 @pytest.mark.parametrize("instr_func", invalid_instr_func_list)
