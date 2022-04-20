@@ -330,8 +330,8 @@ def plasma_frequency(n: u.m ** -3, particle: Particle, z_mean=None) -> u.rad / u
             Z = z_mean
         Z = np.abs(Z)
         # TODO REPLACE WITH Z = np.abs(_grab_charge(particle, z_mean)), some bugs atm
-    except Exception:
-        raise ValueError(f"Invalid particle, {particle}, in plasma_frequency.")
+    except Exception as e:
+        raise ValueError(f"Invalid particle, {particle}, in plasma_frequency.") from e
 
     return plasma_frequency_lite(n=n, mass=m, z_mean=Z) * u.rad / u.s
 
