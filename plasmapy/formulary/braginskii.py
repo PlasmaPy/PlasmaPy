@@ -58,7 +58,7 @@ variables necessary for calculation. It then provides all of the functionality
 as methods (please refer to its documentation).
 
 If you only wish to calculate a single transport variable (or if just don't
-like object oriented interfaces), we have also provided wrapper functions in
+like object-oriented interfaces), we have also provided wrapper functions in
 the main module namespace that use |ClassicalTransport| under the hood (see below,
 in the Functions section).
 
@@ -84,13 +84,13 @@ gas completely stripped of electrons, and the stationary ion approximation).
 Spitzer-Harm :cite:p:`spitzer:1953,spitzer:1962`
 ------------------------------------------------
 
-These coefficients were obtained from a numerical solution of the Fokker-
-Planck equation. They give one of the earliest and most accurate (in the
-Fokker-Planck sense) results for electron transport in simple plasma. They
-principally apply in the unmagnetized / parallel field case, although for
-resistivity Spitzer also calculated a famous result for a strong
-perpendicular magnetic field. Results are for Z = 1, 2, 4, 16,
-and infinity (Lorentz gas / stationary ion approximation).
+These coefficients were obtained from a numerical solution of the
+Fokker-Planck equation. They give one of the earliest and most accurate
+(in the Fokker-Planck sense) results for electron transport in simple
+plasma. They principally apply in the unmagnetized / parallel field
+case, although for resistivity Spitzer also calculated a famous result
+for a strong perpendicular magnetic field. Results are for Z = 1, 2, 4,
+16, and infinity (Lorentz gas / stationary ion approximation).
 
 Epperlein-Haines :cite:p:`epperlein:1986`
 -----------------------------------------
@@ -185,10 +185,10 @@ class ClassicalTransport:
     model: `str`
         Indication of whose formulation from literature to use. Allowed values are:
 
-        * `"Braginskii"` :cite:p:`braginskii:1965`
-        * `"Spitzer-Harm"` :cite:p:`spitzer:1953,spitzer:1962`
-        * `"Epperlein-Haines"` (not yet implemented) :cite:p:`epperlein:1986`
-        * `"Ji-Held"` :cite:p:`ji:2013`
+        * ``"Braginskii"`` :cite:p:`braginskii:1965`
+        * ``"Spitzer-Harm"`` :cite:p:`spitzer:1953,spitzer:1962`
+        * ``"Epperlein-Haines"`` (not yet implemented) :cite:p:`epperlein:1986`
+        * ``"Ji-Held"`` :cite:p:`ji:2013`
 
     field_orientation : `str`, defaults to ``'parallel'``
         Either of ``'parallel'``, ``'par'``, ``'perpendicular'``, ``'perp'``, ``'cross'``, or
@@ -207,7 +207,8 @@ class ClassicalTransport:
         Useful for comparing calculations.
 
     V_ei : `~astropy.units.Quantity`, optional
-       The relative velocity between particles.  Supplied to `Coulomb_logarithm`
+       The relative velocity between particles.  Supplied to
+       `~plasmapy.formulary.collisions.Coulomb_logarithm`
        function, not otherwise used.  If not provided, thermal velocity is
        assumed: :math:`μ V^2 \sim 2 k_B T` where :math:`μ` is the reduced mass.
 
@@ -310,7 +311,7 @@ class ClassicalTransport:
         coulomb_log_method="classical",
     ):
         # check the model
-        self.model = model.lower()  # string inputs should be case insensitive
+        self.model = model.lower()  # string inputs should be case-insensitive
         valid_models = ["braginskii", "spitzer", "spitzer-harm", "ji-held"]
         if self.model not in valid_models:
             raise ValueError(f"Unknown transport model '{self.model}'")
@@ -1290,7 +1291,7 @@ def _nondim_resist_spitzer(Z, field_orientation):
     Dimensionless resistivity — Spitzer.
 
     These are results for both parallel-field / unmagnetized plasmas as well
-    as perpendicular-field / strongly magnetized plasma. Summary description
+    as perpendicular-field / strongly magnetized plasmas. Summary description
     in Physics of Fully Ionized Gases, Spitzer.
     """
     alpha_perp = 1

@@ -6,8 +6,6 @@ __all__ = []
 __aliases__ = []
 __lite_funcs__ = []
 
-import contextlib
-
 from plasmapy.formulary.braginskii import *
 from plasmapy.formulary.collisions import *
 from plasmapy.formulary.dielectric import *
@@ -29,6 +27,10 @@ for obj_name in list(globals()):
     if not (obj_name.startswith("__") or obj_name.endswith("__")):
         __all__.append(obj_name)
 __all__.sort()
+
+# Put non-formulary imports here so that they don't get included in __all__
+
+import contextlib  # isort:skip
 
 # auto populate __aliases__ & __lite_funcs__
 for modname in (
@@ -64,4 +66,4 @@ __aliases__ = list(sorted(set(__aliases__)))
 __lite_funcs__ = list(sorted(set(__lite_funcs__)))
 
 # cleanup namespace
-del modname, obj, obj_name
+del contextlib, modname, obj, obj_name

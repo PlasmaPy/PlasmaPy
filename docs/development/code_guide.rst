@@ -94,10 +94,23 @@ automatically. To apply these changes in a pull request, add a comment
 that says ``pre-commit.ci autofix``. After doing this, be sure to `pull
 the changes`_ from GitHub to your computer with ``git pull``.
 
+<<<<<<< HEAD
 To enable |pre-commit|_ locally, open a terminal, enter the directory of
 the PlasmaPy repository, and run:
 
 .. code-block:: bash
+=======
+PlasmaPy has a configuration for the `pre-commit framework
+<https://pre-commit.com/>`_ that takes care of style mostly automatically.
+Install it with ``pip install pre-commit``, then use ``pre-commit install`` within
+the repository.
+
+This will cause pre-commit to download the right versions of linters we use,
+then run an automated style checking suite on every commit.  Do note that this
+works better with a ``git add``, then ``git commit`` workflow than a ``git commit
+-a`` workflow — that way, you can check via ``git diff`` what the automated
+changes actually did.
+>>>>>>> 34c717ced17850f30ba4068726644afd39e15e3e
 
    pip install pre-commit
    pre-commit install
@@ -107,7 +120,16 @@ and attempted to commit it. If |pre-commit|_ has been installed, then
 the ``trailing-whitespace`` hook will cause |pre-commit|_ to fail while
 modifying :file:`some_file.py` to remove the trailing whitespace.
 
+<<<<<<< HEAD
 .. code-block:: console
+=======
+* black_ to automatically format code and ensure a consistent code style
+  throughout the package
+* isort_ to automatically sort imports.
+* `nbqa <https://github.com/nbQA-dev/nbQA>`_ to automatically apply the above
+  to example notebooks as well.
+* a few tools for :file:`requirements.txt`, :file:`.yml` files and the like.
+>>>>>>> 34c717ced17850f30ba4068726644afd39e15e3e
 
    $ git add some_file.py
    $ git commit -m "Add trailing whitespace"
@@ -148,15 +170,25 @@ the code is supposed to be doing.
   :kbd:`Shift+F6` on Windows or Linux and :kbd:`⇧F6` or :kbd:`⌥⌘R` on
   macOS.
 
+<<<<<<< HEAD
 * Use :pep:`8` conventions for naming variables, functions, classes, and
   constants (except as described later in this list).
+=======
+* Use ``Optional[type]`` for type hinted keyword arguments with a
+  default value of `None`.
+>>>>>>> 34c717ced17850f30ba4068726644afd39e15e3e
 
   - Use lowercase words separated by underscores for function and
     variable names (e.g., ``function_name`` and ``variable_name``).
 
+<<<<<<< HEAD
   - Use capitalized words without separators when naming a :term:`class`
     or an exception (e.g., ``ClassName`` or ``ExceptionName``). However,
     keep acronyms capitalized (e.g., ``MHDEquations``).
+=======
+* Avoid using ``lambda`` to define functions, as this notation may be
+  unfamiliar to newcomers to Python.
+>>>>>>> 34c717ced17850f30ba4068726644afd39e15e3e
 
   - Use capital letters words separated by underscores for constants
     (e.g., ``CONSTANT`` or ``CONSTANT_NAME``).
@@ -190,8 +222,15 @@ the code is supposed to be doing.
   gyration, whereas ``Larmor_frequency`` indicates that this frequency
   is somehow related to someone named Larmor.
 
+<<<<<<< HEAD
 * Avoid naming functions by spelling out the name of the Greek
   character, as in
+=======
+Descriptive branch names such as ``grad-shafranov`` or
+``adding-eigenfunction-poetry`` are helpful, while vague names like
+``edits`` are considered harmful.  After creating your branch locally,
+let your fork of PlasmaPy know about it by running:
+>>>>>>> 34c717ced17850f30ba4068726644afd39e15e3e
 
   * Similarly, using ``omega_ce`` as a function name will make the code
     less readable to people who are unfamiliar with this particular
@@ -809,10 +848,10 @@ Please note that it is necessary to store notebooks with their outputs stripped
   Currently, reviewers should ensure that submitted notebooks have outputs stripped.
 
 If you have an example notebook that includes packages unavailable in the
-documentation building environment (e.g., `bokeh`) or runs some heavy
+documentation building environment (e.g., ``bokeh``) or runs some heavy
 computation that should not be executed on every commit, *keep the outputs in
-the notebook* but store it in the repository with a `preexecuted_` prefix, e.g.
-`preexecuted_full_3d_mhd_chaotic_turbulence_simulation.ipynb`.
+the notebook* but store it in the repository with a ``preexecuted_`` prefix, e.g.
+:file:`preexecuted_full_3d_mhd_chaotic_turbulence_simulation.ipynb`.
 
 
 .. _ASCII: https://en.wikipedia.org/wiki/ASCII

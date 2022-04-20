@@ -6,7 +6,9 @@ and online at https://docs.plasmapy.org (accessible also using the
 """
 __all__ = [
     "online_help",
+    "analysis",
     "diagnostics",
+    "dispersion",
     "formulary",
     "particles",
     "plasma",
@@ -28,7 +30,16 @@ if sys.version_info < (3, 8):  # coverage: ignore
 # ----------------------------------------------------------------------------
 import pkg_resources
 
-from plasmapy import diagnostics, formulary, particles, plasma, simulation, utils
+from plasmapy import (
+    analysis,
+    diagnostics,
+    dispersion,
+    formulary,
+    particles,
+    plasma,
+    simulation,
+    utils,
+)
 
 # define version
 try:

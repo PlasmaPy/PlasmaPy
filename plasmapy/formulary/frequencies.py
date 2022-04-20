@@ -102,7 +102,7 @@ def gyrofrequency(B: u.T, particle: Particle, signed=False, Z=None) -> u.rad / u
 
     The recommended way to convert from angular frequency to frequency
     is to use an equivalency between cycles per second and hertz, as
-    Astropy's `~astropy.units.dimensionles_angles` equivalency does not
+    Astropy's `~astropy.units.dimensionless_angles` equivalency does not
     account for the factor of :math:`2π` needed during this conversion.  The
     `~astropy.units.dimensionless_angles` equivalency is appropriate
     when dividing a velocity by an angular frequency to get a length scale.
@@ -330,8 +330,8 @@ def plasma_frequency(n: u.m ** -3, particle: Particle, z_mean=None) -> u.rad / u
             Z = z_mean
         Z = np.abs(Z)
         # TODO REPLACE WITH Z = np.abs(_grab_charge(particle, z_mean)), some bugs atm
-    except Exception:
-        raise ValueError(f"Invalid particle, {particle}, in plasma_frequency.")
+    except Exception as e:
+        raise ValueError(f"Invalid particle, {particle}, in plasma_frequency.") from e
 
     return plasma_frequency_lite(n=n, mass=m, z_mean=Z) * u.rad / u.s
 
