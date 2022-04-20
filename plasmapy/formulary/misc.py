@@ -335,11 +335,11 @@ def mass_density(
     if not isinstance(particle, Particle):
         try:
             particle = Particle(particle)
-        except TypeError:
+        except TypeError as e:
             raise TypeError(
                 f"If passing a number density, you must pass a plasmapy Particle "
                 f"(not type {type(particle)}) to calculate the mass density!"
-            )
+            ) from e
 
     if not isinstance(z_ratio, (float, np.floating, int, np.integer)):
         raise TypeError(

@@ -108,7 +108,7 @@ def relativistic_energy(m: u.kg, v: u.m / u.s) -> u.Joule:
 
     Returns
     -------
-    `~astropy.Quantity`
+    `~astropy.units.Quantity`
         The relativistic energy (in joules) of an object of mass ``m``
         moving at velocity ``v``.
 

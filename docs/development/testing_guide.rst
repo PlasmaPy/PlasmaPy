@@ -215,9 +215,9 @@ examples of flags you can use with it:
   with a positive integer.
 
 * Use the ``-m 'not slow'`` flag to skip running slow (defined by the
-  `pytest.mark.slow` marker) tests, which is
-  useful when the slow tests are unrelated to your changes. To exclusively run
-  slow tests, use ``-m slow``.
+  ``@pytest.mark.slow`` marker) tests, which is
+  useful when the slow tests are unrelated to your changes. To exclusively
+  run slow tests, use ``-m slow``.
 
 * Use the ``--pdb`` flag to enter the `Python debugger`_ upon test
   failures.
@@ -321,14 +321,14 @@ Here is a minimal software test:
        assert 2 + 2 == 4
 
 The most common way to check that a condition is met is through an
-`assert` statement, as in this example. If the expression that follows
-`assert` evaluates to `False`, then this statement will raise an
+``assert`` statement, as in this example. If the expression that follows
+``assert`` evaluates to `False`, then this statement will raise an
 `AssertionError` so that the test will fail.  If the expression that
-follows `assert` evaluates to `True`, then this statement will do
+follows ``assert`` evaluates to `True`, then this statement will do
 nothing and the test will pass.
 
-When `assert` statements raise an `AssertionError`, pytest_ will display
-the values of the expressions evaluated in the `assert` statement. The
+When ``assert`` statements raise an `AssertionError`, pytest_ will display
+the values of the expressions evaluated in the ``assert`` statement. The
 automatic output from pytest_ is sufficient for simple tests like
 above. For more complex tests, we can add a descriptive error message
 to help us find the cause of a particular test failure.
@@ -355,7 +355,7 @@ Floating point comparisons
 
 In order to avoid these difficulties, use `numpy.testing.assert_allclose`
 when comparing floating point numbers and arrays, and
-`astropy.tests.helper.assert_quantity_allclose` when comparing |Quantity|
+``astropy.tests.helper.assert_quantity_allclose`` when comparing |Quantity|
 instances. The ``rtol`` keyword for each of these functions sets the
 acceptable relative tolerance. The value of ``rtol`` should be set ∼1–2
 orders of magnitude greater than the expected relative uncertainty. For
@@ -441,8 +441,8 @@ both will be run.
 
 However, this approach can lead to cumbersome, repeated code if you are
 calling the same function over and over. If you wish to run multiple
-tests for the same function, the preferred method is to use the
-`pytest.mark.parametrize` decorator.
+tests for the same function, the preferred method is to decorate it with
+``@pytest.mark.parametrize``.
 
 .. code-block:: python
 
@@ -641,7 +641,7 @@ should be balanced with each other rather than absolute principles.
   increases the probability that we will lose track of what we are
   doing and slows down progress.
 
-  Decorate unavoidably slow tests with `pytest.mark.slow`:
+  Decorate unavoidably slow tests with ``@pytest.mark.slow``:
 
   .. code-block:: python
 

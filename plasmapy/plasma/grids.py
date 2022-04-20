@@ -47,7 +47,6 @@ class AbstractGrid(ABC):
     as an `~numpy.ndarray`, while the units associated with each
     dimension are stored separately.
 
-
     There are two preferred methods to creating a grid object:
 
     1. Initializing the grid by providing three 3D
@@ -566,7 +565,7 @@ class AbstractGrid(ABC):
         grid{0,1,2} : `~astropy.units.Quantity` array, shape (n0, n1, n2)
             Grids of coordinate positions.
 
-        **kwargs: `~astropy.units.Quantity` array, shape (n0, n1, n2)
+        **kwargs : `~astropy.units.Quantity` array, shape (n0, n1, n2)
             Quantities defined on the grid.
         """
 
@@ -615,7 +614,7 @@ class AbstractGrid(ABC):
 
         Parameters
         ----------
-        key, array pairs as keyword arguments
+        **kwargs : key, array pairs
             The key will be used as the dataset key, while the array holds the
             quantity.
         """
@@ -703,7 +702,7 @@ class AbstractGrid(ABC):
             given, the same number of points will be used in each dimension.
             The default is 100.
 
-        **kwargs: Additional arguments
+        **kwargs : Additional arguments
             Any additional arguments will be passed directly to
             `numpy.linspace`.
         """

@@ -74,7 +74,7 @@ def Debye_length(T_e: u.K, n_e: u.m ** -3) -> u.m:
 
     See Also
     --------
-    Debye_number
+    ~plasmapy.formulary.dimensionless.Debye_number
 
     Examples
     --------
@@ -122,8 +122,8 @@ def gyroradius(
         The magnetic field magnitude in units convertible to tesla.
 
     particle : `~plasmapy.particles.particle_class.Particle`
-        Representation of the particle species (e.g., `'p'` for protons, `'D+'`
-        for deuterium, or `'He-4 +1'` for singly ionized helium-4).  If no
+        Representation of the particle species (e.g., ``'p'`` for protons, ``'D+'``
+        for deuterium, or ``'He-4 +1'`` for singly ionized helium-4).  If no
         charge state information is provided, then the particles are assumed
         to be singly charged.
 
@@ -136,7 +136,7 @@ def gyroradius(
 
     T_i : `~astropy.units.Quantity`, optional, keyword-only
         The particle temperature in units convertible to kelvin.
-        Note: Deprecated. Use T instead.
+        Note: Deprecated. Use ``T`` instead.
 
     Returns
     -------
@@ -144,7 +144,7 @@ def gyroradius(
         The particle gyroradius in units of meters.  This
         `~astropy.units.Quantity` will be based on either the
         perpendicular component of particle velocity as inputted, or
-        the most probable speed for an particle within a Maxwellian
+        the most probable speed for a particle within a Maxwellian
         distribution for the particle temperature.
 
     Raises
@@ -180,7 +180,7 @@ def gyroradius(
     where :math:`V_⟂` is the component of particle velocity that is
     perpendicular to the magnetic field and :math:`ω_{ci}` is the
     particle gyrofrequency.  If a temperature is provided, then
-    :math:`V_⟂` will be the most probable thermal velocity of an
+    :math:`V_⟂` will be the most probable thermal velocity of a
     particle at that temperature.
 
     Examples
@@ -243,7 +243,7 @@ def gyroradius(
             Vperp = speeds.thermal_speed(T, particle=particle)
         # else: Vperp is already valid, do nothing
     elif np.isscalar(Vperp.value):  # only T is an array
-        # this means either Vperp must be nan, or T must be array of all nan,
+        # this means either Vperp must be nan, or T must be an array of all nan,
         # or else we couldn't have gotten through check 1
         if isfinite_Vperp:
             # Vperp is valid, T is a vector that is all nan
@@ -253,7 +253,7 @@ def gyroradius(
             # normal case where Vperp is scalar nan and T is valid array
             Vperp = speeds.thermal_speed(T, particle=particle)
     elif np.isscalar(T.value):  # only Vperp is an array
-        # this means either T must be nan, or V_perp must be array of all nan,
+        # this means either T must be nan, or V_perp must be an array of all nan,
         # or else we couldn't have gotten through check 1
         if isfinite_T:
             # T is valid, V_perp is an array of all nan
