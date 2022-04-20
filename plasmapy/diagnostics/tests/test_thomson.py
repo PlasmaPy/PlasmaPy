@@ -12,6 +12,7 @@ from lmfit import Parameter, Parameters
 
 from plasmapy.diagnostics import thomson
 from plasmapy.particles import Particle, particle_mass
+from plasmapy.particles.particle_collections import ParticleList
 
 
 def example_instr_func(w):
@@ -478,6 +479,42 @@ def test_single_species_non_collective_spectrum(single_species_non_collective_sp
             ValueError,
             "number of electron populations",
         ),
+        # List of strings
+        (
+            {
+                "ions": [
+                    "p+",
+                ]
+            },
+            None,
+            None,
+        ),
+        # List of Particles
+        (
+            {
+                "ions": [
+                    Particle("p+"),
+                ]
+            },
+            None,
+            None,
+        ),
+        # Particle list
+        ({"ions": ParticleList(["p+"])}, None, None),
+        # ValueError when an ion is negative
+        (
+            {"ions": ParticleList(["p-"])},
+            ValueError,
+            "All ions must be positively charged.",
+        ),
+        # ValueError when an ion charge information is not provided
+        (
+            {"ions": ParticleList(["He"])},
+            ValueError,
+            "All ions must be positively charged.",
+        ),
+        # Value error when the ion list is empty
+        ({"ions": []}, ValueError, "At least one ion species needs to be defined."),
     ],
 )
 def test_spectral_density_input_errors(
@@ -1235,6 +1272,22 @@ def test_fit_with_minimal_parameters():
             ValueError,
             "ion_vdir must be set if ion_speeds",
         ),
+        # Test different input types for ``ions``
+        ({"ions": ParticleList(["H+", "H+", "He+"])}, None, None),
+        # Error if no particles are provided
+        ({"ions": []}, ValueError, "At least one ion species needs to be defined."),
+        # Error if an ion is negative
+        (
+            {"ions": ParticleList(["H+", "H+", "e-"])},
+            ValueError,
+            "All ions must be positively charged.",
+        ),
+        # Error if an ion charge information is not given
+        (
+            {"ions": ParticleList(["H+", "H+", "He"])},
+            ValueError,
+            "All ions must be positively charged.",
+        ),
     ],
 )
 def test_model_input_validation(control, error, msg, iaw_multi_species_settings_params):
@@ -1252,7 +1305,11 @@ def test_model_input_validation(control, error, msg, iaw_multi_species_settings_
     wavelengths, params, settings = spectral_density_model_settings_params(kwargs)
 
     if error is None:
-        thomson.spectral_density_model(wavelengths, settings, params)
+        thomson.spectral_density_model(
+            wavelengths,
+            settings,
+            params,
+        )
 
     else:
         with pytest.raises(error) as excinfo:

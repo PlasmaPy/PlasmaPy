@@ -25,6 +25,8 @@ from plasmapy.formulary import (
     thermal_speed_lite,
 )
 from plasmapy.particles import Particle, particle_mass
+from plasmapy.particles.exceptions import ChargeError
+from plasmapy.particles.particle_collections import ParticleList
 from plasmapy.utils.decorators import (
     bind_lite_func,
     preserve_signature,
@@ -309,10 +311,15 @@ def spectral_density(
         Must sum to 1.0. Default is [1.0], representing a single
         ion component.
 
-    ions : `str` or `~plasmapy.particles.particle_class.Particle`, shape (Ni, ), optional
+    ions : `str` or `~plasmapy.particles.particle_class.Particle` or
+           `~plasmapy.particles.particle_collections.ParticleList`,
+           shape (Ni, ), optional
+
         A list or single instance of `~plasmapy.particles.particle_class.Particle`, or
-        strings convertible to `~plasmapy.particles.particle_class.Particle`.
-        Default is ``'H+'`` corresponding to a single species of hydrogen ions.
+        strings convertible to `~plasmapy.particles.particle_class.Particle`,
+        or a `~plasmapy.particles.particle_collections.ParticleList`. All ions
+        must be positively charged. Default is ``'H+'`` corresponding to a
+        single species of hydrogen ions.
 
     electron_vel : `~astropy.units.Quantity`, shape (Ne, 3), optional
         Velocity of each electron population in the rest frame. (convertible to m/s)
@@ -439,14 +446,35 @@ def spectral_density(
         ion_vel = np.zeros([ifract.size, 3]) * u.m / u.s
 
     # Condition ions
-    if isinstance(ions, (str, Particle)):
-        ions = [ions]
+    # If a single value is provided, turn into a particle list
+    if isinstance(ions, ParticleList):
+        pass
+    elif isinstance(ions, str):
+        ions = ParticleList([Particle(ions)])
+    # If a list is provided, ensure all values are Particles, then convert
+    # to a ParticleList
+    elif isinstance(ions, list):
+        for ii, ion in enumerate(ions):
+            if isinstance(ion, Particle):
+                continue
+            ions[ii] = Particle(ion)
+        ions = ParticleList(ions)
+    else:
+        raise ValueError(
+            "The type of object provided to the ``ions`` keyword "
+            f"is not supported: {type(ions)}"
+        )
+
+    # Validate ions
     if len(ions) == 0:
         raise ValueError("At least one ion species needs to be defined.")
-    for ii, ion in enumerate(ions):
-        if isinstance(ion, Particle):
-            continue
-        ions[ii] = Particle(ion)
+
+    try:
+        if sum([ion.charge_number <= 0 for ion in ions]):
+            raise ValueError("All ions must be positively charged.")
+    # Catch error if charge information is missing
+    except ChargeError:
+        raise ValueError("All ions must be positively charged.")
 
     # Condition T_i
     if T_i.size == 1:
@@ -480,11 +508,8 @@ def spectral_density(
         )
 
     # Create arrays of ion Z and mass from particles given
-    ion_z = np.zeros(len(ions))
-    ion_mass = np.zeros(len(ions)) * u.kg
-    for i, particle in enumerate(ions):
-        ion_z[i] = particle.charge_number
-        ion_mass[i] = particle_mass(particle)
+    ion_z = ions.charge_number
+    ion_mass = ions.mass
 
     probe_vec = probe_vec / np.linalg.norm(probe_vec)
     scatter_vec = scatter_vec / np.linalg.norm(scatter_vec)
@@ -672,7 +697,10 @@ def spectral_density_model(wavelengths, settings, params):
         - ``"probe_wavelength"``: Probe wavelength in meters
         - ``"probe_vec"`` : (3,) unit vector in the probe direction
         - ``"scatter_vec"``: (3,) unit vector in the scattering direction
-        - ``"ions"`` : list of particle strings describing each ion species
+        - ``"ions"`` : list of particle strings,
+          `~plasmapy.particles.particle_class.Particle` objects, or a
+          `~plasmapy.particles.particle_collections.ParticleList` describing
+          each ion species. All ions must be positive.
 
         and may contain the following optional variables:
 
@@ -763,16 +791,49 @@ def spectral_density_model(wavelengths, settings, params):
                     f"{p} was not provided in kwarg 'parameters', but is required."
                 )
 
-    # Create arrays of ion Z and mu from particles given
+    # **************
+    # ions
+    # **************
+
+    ions = settings["ions"]
+    # Condition ions
+    # If a single value is provided, turn into a particle list
+    if isinstance(ions, ParticleList):
+        pass
+    elif isinstance(ions, str):
+        ions = ParticleList([Particle(ions)])
+    # If a list is provided, ensure all values are Particles, then convert
+    # to a ParticleList
+    elif isinstance(ions, list):
+        for ii, ion in enumerate(ions):
+            if isinstance(ion, Particle):
+                continue
+            ions[ii] = Particle(ion)
+        ions = ParticleList(ions)
+    else:
+        raise ValueError(
+            "The type of object provided to the ``ions`` keyword "
+            f"is not supported: {type(ions)}"
+        )
+
+    # Validate ions
+    if len(ions) == 0:
+        raise ValueError("At least one ion species needs to be defined.")
+
+    try:
+        if sum([ion.charge_number <= 0 for ion in ions]):
+            raise ValueError("All ions must be positively charged.")
+    # Catch error if charge information is missing
+    except ChargeError:
+        raise ValueError("All ions must be positively charged.")
+
     # Create arrays of ion Z and mass from particles given
-    ion_z = np.zeros(num_i)
-    ion_mass = np.zeros(num_i)
-    for i, species in enumerate(settings["ions"]):
-        particle = Particle(species)
-        ion_z[i] = particle.charge_number
-        ion_mass[i] = particle_mass(particle).value
-    settings["ion_z"] = ion_z
-    settings["ion_mass"] = ion_mass
+    settings["ion_z"] = ions.charge_number
+    settings["ion_mass"] = ions.mass
+
+    # **************
+    # efract and ifract
+    # **************
 
     # Automatically add an expression to the last efract parameter to
     # indicate that it depends on the others (so they sum to 1.0)
