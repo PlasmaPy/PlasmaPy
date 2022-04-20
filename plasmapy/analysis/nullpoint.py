@@ -148,7 +148,7 @@ def _vector_space(
         space. If not given, the vector values are generated over the vector space
         using the function func.
 
-    func: <class 'function'>
+    func: function
         A function that takes in 3 arguments, respectively representing a x, y, and z
         coordinate of a point and returns the vector value for that point in the form
         of a 1 by 3 array.
@@ -331,7 +331,7 @@ def trilinear_approx(vspace, cell):
 
     Returns
     -------
-    <class 'function'>
+    function
         A function whose input is a coordinate within a given grid cell
         and returns the trilinearly approximated vector value at that particular
         coordinate in that grid cell.
@@ -1425,7 +1425,7 @@ def uniform_null_point_find(
         A 1 by 2 array containing the range of z-values for the vector spaces.
         If not given, the default interval [0,1] is assumed.
 
-    func: <class 'function'>
+    func: function
         A function that takes in 3 arguments, respectively representing a x, y, and z
         coordinate of a point and returns the vector value for that point in the form
         of a 1 by 3 array.
