@@ -998,10 +998,10 @@ def _trilinear_analysis(vspace, cell):
         else:
             return True
 
-    A = endpoint_sign_check(BxByEndpoints, "z")
-    B = endpoint_sign_check(BxBzEndpoints, "y")
-    C = endpoint_sign_check(ByBzEndpoints, "x")
-    if A and B and C:
+    opposite_sign_z = endpoint_sign_check(BxByEndpoints, "z")
+    opposite_sign_y = endpoint_sign_check(BxBzEndpoints, "y")
+    opposite_sign_x = endpoint_sign_check(ByBzEndpoints, "x")
+    if opposite_sign_x and opposite_sign_y and opposite_sign_z:
         return True
     else:
         return False
@@ -1147,7 +1147,7 @@ def _locate_null_point(vspace, cell, n, err):
             Bx0 = np.array([locx, locy, locz])
             Bx0 = Bx0.reshape(3, 1)
             prev_norm = np.linalg.norm(x0)
-            # Too many null points if the determinant of the jacobian is zero
+            # Too many null points if the determinant of the determinant of the Jacobian is zero
             if np.isclose(
                 np.linalg.det(jcb(x0[0], x0[1], x0[2])), 0, atol=_EQUALITY_ATOL
             ):
@@ -1217,7 +1217,7 @@ def _classify_null_point(vspace, cell, loc):
     -------
     string
         A string describing the null point type.
-    
+
     Raises
     ------
     NonZeroDivergence

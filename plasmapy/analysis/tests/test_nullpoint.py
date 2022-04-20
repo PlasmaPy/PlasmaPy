@@ -15,7 +15,7 @@ from plasmapy.analysis.nullpoint import (
     _trilinear_jacobian,
     _vector_space,
     _vspace_iterator,
-    MultipleNullPoints,
+    MultipleNullPointWarning,
     NonZeroDivergence,
     null_point_find,
     NullPointError,
