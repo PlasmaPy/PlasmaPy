@@ -1,7 +1,6 @@
 """
 Tests for the null point finder class defined in `plasmapy.analysis.nullpoint`.
 """
-import math
 import numpy as np
 import pytest
 

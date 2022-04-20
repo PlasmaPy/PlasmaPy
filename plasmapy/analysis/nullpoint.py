@@ -21,14 +21,27 @@ _recursion_level = 0
 
 
 class NullPointError(Exception):
+    """
+    A class for handling the exceptions of the null point finder functionality.
+    """
+
     pass
 
 
 class NullPointWarning(UserWarning):
+    """
+    A class for handling the warnings of the null point finder functionality.
+    """
+
     pass
 
 
 class NonZeroDivergence(NullPointError):
+    """
+    A class for handling the exception raised by passing in a magnetic field
+    that violates the zero divergence constraint.
+    """
+
     def __init__(self):
         super().__init__(
             "The divergence constraint does not hold for the provided magnetic field."
@@ -36,6 +49,12 @@ class NonZeroDivergence(NullPointError):
 
 
 class MultipleNullPointWarning(NullPointWarning):
+    """
+    A class for handling the warning raised by passing in a magnetic field
+    grid that may contain multiple null points in close proximity due to low
+    resolution.
+    """
+
     pass
 
 
