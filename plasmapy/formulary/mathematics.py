@@ -155,7 +155,7 @@ def rot_a_to_b(a: np.ndarray, b: np.ndarray) -> np.ndarray:
         raise ValueError(
             f"Argument 'b' must have shape (3,) but input has shape {b.shape}."
         )
-    b /= np.linalg.norm(b)
+    b = b / np.linalg.norm(b)
 
     # Manually handle the case where a and b point in opposite directions
     if np.dot(a, b) == -1:
