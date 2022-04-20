@@ -263,6 +263,7 @@ def spectral_density(
     wavelengths: u.nm,
     probe_wavelength: u.nm,
     n: u.m ** -3,
+    *,
     T_e: u.K,
     T_i: u.K,
     efract: np.ndarray = None,
@@ -293,11 +294,11 @@ def spectral_density(
         Total combined number density of all electron populations.
         (convertible to cm\ :sup:`-3`)
 
-    T_e : `~astropy.units.Quantity`, shape (Ne, )
+    T_e : `~astropy.units.Quantity`, keyword-only, shape (Ne, )
         Temperature of each electron component. Shape (Ne, ) must be equal to the
         number of electron populations Ne. (in K or convertible to eV)
 
-    T_i : `~astropy.units.Quantity`, shape (Ni, )
+    T_i : `~astropy.units.Quantity`, keyword-only, shape (Ni, )
         Temperature of each ion component. Shape (Ni, ) must be equal to the
         number of ion populations Ni. (in K or convertible to eV)
 

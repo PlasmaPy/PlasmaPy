@@ -82,15 +82,11 @@ def spectral_density_args_kwargs(kwargs):
         kwargs["wavelengths"],
         kwargs["probe_wavelength"],
         kwargs["n"],
-        kwargs["T_e"],
-        kwargs["T_i"],
     )
 
     del kwargs["wavelengths"]
     del kwargs["probe_wavelength"]
     del kwargs["n"]
-    del kwargs["T_e"]
-    del kwargs["T_i"]
 
     return args, kwargs
 
@@ -570,8 +566,8 @@ def test_split_populations():
         wavelengths,
         probe_wavelength,
         n,
-        T_e,
-        T_i,
+        T_e=T_e,
+        T_i=T_i,
         ifract=ifract,
         efract=efract,
         ions=ions,
@@ -591,8 +587,8 @@ def test_split_populations():
         wavelengths,
         probe_wavelength,
         n,
-        T_e,
-        T_i,
+        T_e=T_e,
+        T_i=T_i,
         ifract=ifract,
         efract=efract,
         ions=ions,
@@ -749,8 +745,8 @@ def run_fit(
         wavelengths,
         probe_wavelength * u.m,
         n * u.m ** -3,
-        T_e * u.eV,
-        T_i * u.eV,
+        T_e=T_e * u.eV,
+        T_i=T_i * u.eV,
         ifract=ifract,
         efract=efract,
         ions=ions,
@@ -1169,8 +1165,8 @@ def test_fit_with_minimal_parameters():
         wavelengths,
         probe_wavelength,
         n,
-        T_e,
-        T_i,
+        T_e=T_e,
+        T_i=T_i,
         ions=ions,
         probe_vec=probe_vec,
         scatter_vec=scatter_vec,
