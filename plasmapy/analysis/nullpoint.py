@@ -1233,7 +1233,7 @@ def _classify_null_point(vspace, cell, loc):
 
     Returns
     -------
-    string
+    str
         A string describing the null point type.
 
     Raises
