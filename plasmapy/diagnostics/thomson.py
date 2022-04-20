@@ -16,7 +16,7 @@ import numpy as np
 import warnings
 
 from lmfit import Model
-from typing import Any, Dict, List, Tuple, Union
+from typing import Any, Dict, List, Optional, Tuple, Union
 
 from plasmapy.formulary import (
     permittivity_1D_Maxwellian_lite,
@@ -61,11 +61,9 @@ def spectral_density_lite(
     ion_vel: np.ndarray,
     probe_vec: np.ndarray,
     scatter_vec: np.ndarray,
-    instr_func_arr: np.ndarray = None,
+    instr_func_arr: Optional[np.ndarray] = None,
 ) -> Tuple[Union[np.floating, np.ndarray], np.ndarray]:
-
     r"""
-
     The :term:`lite-function` version of
     `~plasmapy.diagnostics.thomson.spectral_density`.  Performs the same
     thermal speed calculations as
@@ -75,7 +73,6 @@ def spectral_density_lite(
 
     Parameters
     ----------
-
     wavelengths : `~numpy.ndarray`, shape (Nwavelengths,)
         Array of wavelengths in meters over which the spectral density function
         will be calculated.
@@ -119,7 +116,7 @@ def spectral_density_lite(
     ion_vel : `~numpy.ndarray`, shape (Ni, 3), optional
         Velocity vectors for each electron population in the rest frame
         (in  m/s). If set, overrides ``ion_vdir`` and ``ion_speed``.
-        Defaults zero drift for all specified ion species.
+        Defaults to zero drift for all specified ion species.
 
     probe_vec : float `~numpy.ndarray`, shape (3, )
         Unit vector in the direction of the probe laser. Defaults to
@@ -131,14 +128,13 @@ def spectral_density_lite(
         corresponds to a 90 degree scattering angle geometry.
 
     instr_func_arr : `~numpy.ndarray`, shape (Nwavelengths,) optional
-
         The instrument function evaluated at a linearly spaced range of
         wavelengths ranging from :math:`-W` to :math:`W`, where
 
         .. math::
             W = 0.5*(\max{\lambda} - \min{\lambda})
 
-        Where :math:`\lambda` is the wavelengths array. This array will be
+        Here :math:`\lambda` is the ``wavelengths`` array. This array will be
         convolved with the spectral density function before it is
         returned.
 
@@ -315,7 +311,7 @@ def spectral_density(
         ion component.
 
     ions : `str` or `~plasmapy.particles.particle_class.Particle`, shape (Ni, ), optional
-        A list or single instance of `~plasmapy.particles.Particle`, or
+        A list or single instance of `~plasmapy.particles.particle_class.Particle`, or
         strings convertible to `~plasmapy.particles.particle_class.Particle`.
         Default is ``'H+'`` corresponding to a single species of hydrogen ions.
 
@@ -327,7 +323,7 @@ def spectral_density(
     ion_vel : `~astropy.units.Quantity`, shape (Ni, 3), optional
         Velocity vectors for each electron population in the rest frame
         (convertible to m/s). If set, overrides ``ion_vdir`` and ``ion_speed``.
-        Defaults zero drift for all specified ion species.
+        Defaults to zero drift for all specified ion species.
 
     probe_vec : float `~numpy.ndarray`, shape (3, )
         Unit vector in the direction of the probe laser. Defaults to
@@ -360,7 +356,7 @@ def spectral_density(
 
     This function calculates the spectral density function for Thomson
     scattering of a probe laser beam by a plasma consisting of one or more ion
-    species and a one or more thermal electron populations (the entire plasma
+    species and one or more thermal electron populations (the entire plasma
     is assumed to be quasi-neutral)
 
     .. math::
@@ -373,7 +369,7 @@ def spectral_density(
 
     where :math:`χ_e` is the electron component susceptibility of the
     plasma and :math:`ε = 1 + \sum_e χ_e + \sum_i χ_i` is the total
-    plasma dielectric  function (with :math:`χ_i` being the ion component
+    plasma dielectric function (with :math:`χ_i` being the ion component
     of the susceptibility), :math:`Z_i` is the charge of each ion, :math:`k`
     is the scattering wavenumber, :math:`ω` is the scattering frequency,
     and :math:`f_{e0,e}` and :math:`f_{i0,i}` are the electron and ion velocity
@@ -667,29 +663,29 @@ def spectral_density_model(wavelengths, settings, params):
     Parameters
     ----------
 
-    wavelengths : np.ndarray
+    wavelengths : numpy.ndarray
         Wavelength array, in meters.
 
     settings : dict
         A dictionary of non-variable inputs to the spectral density function
-        which must include the following:
+        which must include the following keys:
 
-        - probe_wavelength: Probe wavelength in meters
-        - probe_vec : (3,) unit vector in the probe direction
-        - scatter_vec: (3,) unit vector in the scattering direction
-        - ions : list of Particle strings describing each ion species
+        - ``"probe_wavelength"``: Probe wavelength in meters
+        - ``"probe_vec"`` : (3,) unit vector in the probe direction
+        - ``"scatter_vec"``: (3,) unit vector in the scattering direction
+        - ``"ions"`` : list of particle strings describing each ion species
 
-        and may contain the following optional variables
+        and may contain the following optional variables:
 
-        - electron_vdir : (e#, 3) array of electron velocity unit vectors
-        - ion_vdir : (e#, 3) array of ion velocity unit vectors
-        - instr_func : A function that takes a wavelength u.Quantity array
-                        and returns a spectrometer insturment function as an
-                        `numpy.ndarray`.
+        - ``"electron_vdir"`` : (e#, 3) array of electron velocity unit vectors
+        - ``"ion_vdir"`` : (e#, 3) array of ion velocity unit vectors
+        - ``"instr_func"`` : A function that takes a wavelength |Quantity| array
+          and returns a spectrometer instrument function as an
+          `~numpy.ndarray`.
 
         These quantities cannot be varied during the fit.
 
-    params : `lmfit.Parameters` object
+    params : `~lmfit.parameter.Parameters` object
         A `~lmfit.parameter.Parameters` object that must contain the following variables
 
         - n: Total combined density of the electron populations in m\ :sup:`-3`
@@ -698,20 +694,20 @@ def spectral_density_model(wavelengths, settings, params):
 
         where where :samp:`{i#}` and where :samp:`{e#}` are replaced by the
         number of electron and ion populations, zero-indexed, respectively
-        (eg. 0,1,2...). The parameters object may also contain the following
-        optional variables
+        (eg. 0,1,2...). The `~lmfit.parameter.Parameters` object may also contain 
+        the following optional variables:
 
-        - :samp:`efract_{e#}` : Fraction of each electron population (must sum to 1) (optional)
-        - :samp:`ifract_{i#}` : Fraction of each ion population (must sum to 1) (optional)
-        - :samp:`electron_speed_{e#}` : Electron speed in m/s (optional)
-        - :samp:`ion_speed_{ei}` : Ion speed in m/s (optional)
+        - :samp:`"efract_{e#}"` : Fraction of each electron population (must sum to 1)
+        - :samp:`"ifract_{i#}"` : Fraction of each ion population (must sum to 1)
+        - :samp:`"electron_speed_{e#}"` : Electron speed in m/s
+        - :samp:`"ion_speed_{ei}"` : Ion speed in m/s
 
         These quantities can be either fixed or varying.
 
     Returns
     -------
 
-    model : `lmfit.model.Model` object
+    model : `lmfit.model.Model`
         An `lmfit.model.Model` of the spectral density function for the
         provided settings and parameters that can be used to fit Thomson
         scattering data.
@@ -725,7 +721,6 @@ def spectral_density_model(wavelengths, settings, params):
 
     """
 
-    # required settings
     required_settings = {
         "probe_wavelength",
         "probe_vec",
@@ -739,7 +734,6 @@ def spectral_density_model(wavelengths, settings, params):
             f"'settings' argument: {missing_settings}"
         )
 
-    # required parameters
     required_params = {"n"}
     if missing_params := required_params - set(params):
         raise ValueError(
@@ -871,7 +865,7 @@ def spectral_density_model(wavelengths, settings, params):
         settings["instr_func_arr"] = instr_func_arr
 
         warnings.warn(
-            "If an insturment function is included, the data "
+            "If an instrument function is included, the data "
             "should not include any `numpy.nan` values. "
             "Instead regions with no data should be removed from "
             "both the data and wavelength arrays using "
