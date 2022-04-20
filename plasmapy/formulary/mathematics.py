@@ -5,6 +5,7 @@ __all__ = ["Fermi_integral", "rot_a_to_b"]
 import numbers
 import numpy as np
 
+from mpmath import polylog
 from typing import Union
 
 
@@ -70,13 +71,6 @@ def Fermi_integral(
     >>> Fermi_integral(1, 1)
     (1.8062860704447743-0j)
     """
-    try:
-        from mpmath import polylog
-    except ImportError as e:
-        from plasmapy.optional_deps import mpmath_import_error
-
-        raise mpmath_import_error from e
-
     if isinstance(x, (numbers.Integral, numbers.Real, numbers.Complex)):
         arg = -np.exp(x)
         return -1 * complex(polylog(j + 1, arg))

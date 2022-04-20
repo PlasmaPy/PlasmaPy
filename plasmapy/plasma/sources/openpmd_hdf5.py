@@ -1,6 +1,7 @@
 __all__ = ["HDF5Reader"]
 
 import astropy.units as u
+import h5py
 import numpy as np
 import os
 
@@ -56,12 +57,6 @@ class HDF5Reader(GenericPlasma):
 
         if not os.path.isfile(hdf5):
             raise FileNotFoundError(f"Could not find file: '{hdf5}'")
-        try:
-            import h5py
-        except ImportError as e:
-            from plasmapy.optional_deps import h5py_import_error
-
-            raise ImportError(h5py_import_error) from e
 
         h5 = h5py.File(hdf5, "r")
         self.h5 = h5
@@ -158,12 +153,6 @@ class HDF5Reader(GenericPlasma):
             raise FileNotFoundError(f"Could not find file: '{hdf5}'")
 
         if "openPMD" not in kwargs:
-            try:
-                import h5py
-            except ImportError as e:
-                from plasmapy.optional_deps import h5py_import_error
-
-                raise ImportError(h5py_import_error) from e
 
             h5 = h5py.File(hdf5, "r")
             try:
