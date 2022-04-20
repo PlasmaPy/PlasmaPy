@@ -12,6 +12,7 @@ from lmfit import Parameter, Parameters
 
 from plasmapy.diagnostics import thomson
 from plasmapy.particles import Particle, particle_mass
+from plasmapy.particles.particle_collections import ParticleList
 
 
 def example_instr_func(w):
@@ -81,15 +82,11 @@ def spectral_density_args_kwargs(kwargs):
         kwargs["wavelengths"],
         kwargs["probe_wavelength"],
         kwargs["n"],
-        kwargs["T_e"],
-        kwargs["T_i"],
     )
 
     del kwargs["wavelengths"]
     del kwargs["probe_wavelength"]
     del kwargs["n"]
-    del kwargs["T_e"]
-    del kwargs["T_i"]
 
     return args, kwargs
 
@@ -478,6 +475,42 @@ def test_single_species_non_collective_spectrum(single_species_non_collective_sp
             ValueError,
             "number of electron populations",
         ),
+        # List of strings
+        (
+            {
+                "ions": [
+                    "p+",
+                ]
+            },
+            None,
+            None,
+        ),
+        # List of Particles
+        (
+            {
+                "ions": [
+                    Particle("p+"),
+                ]
+            },
+            None,
+            None,
+        ),
+        # Particle list
+        ({"ions": ParticleList(["p+"])}, None, None),
+        # ValueError when an ion is negative
+        (
+            {"ions": ParticleList(["p-"])},
+            ValueError,
+            "All ions must be positively charged.",
+        ),
+        # ValueError when an ion charge information is not provided
+        (
+            {"ions": ParticleList(["He"])},
+            ValueError,
+            "All ions must be positively charged.",
+        ),
+        # Value error when the ion list is empty
+        ({"ions": []}, ValueError, "At least one ion species needs to be defined."),
     ],
 )
 def test_spectral_density_input_errors(
@@ -533,8 +566,8 @@ def test_split_populations():
         wavelengths,
         probe_wavelength,
         n,
-        T_e,
-        T_i,
+        T_e=T_e,
+        T_i=T_i,
         ifract=ifract,
         efract=efract,
         ions=ions,
@@ -554,8 +587,8 @@ def test_split_populations():
         wavelengths,
         probe_wavelength,
         n,
-        T_e,
-        T_i,
+        T_e=T_e,
+        T_i=T_i,
         ifract=ifract,
         efract=efract,
         ions=ions,
@@ -640,11 +673,14 @@ def run_fit(
     settings,
     noise_amp=0.05,
     notch=None,
+    notch_as_nan=False,
     fit_method="differential_evolution",
     fit_kws={},
     max_iter=None,
     check_errors=True,
     require_redchi=1,
+    # If false, don't perform the actual fit just create the Model
+    run_fit=True,
 ):
     """
     This function takes a Parameters object, generates some synthetic data near it,
@@ -709,8 +745,8 @@ def run_fit(
         wavelengths,
         probe_wavelength * u.m,
         n * u.m ** -3,
-        T_e * u.eV,
-        T_i * u.eV,
+        T_e=T_e * u.eV,
+        T_i=T_i * u.eV,
         ifract=ifract,
         efract=efract,
         ions=ions,
@@ -725,8 +761,14 @@ def run_fit(
     if notch is not None:
         x0 = np.argmin(np.abs(wavelengths.to(u.m).value * 1e9 - notch[0]))
         x1 = np.argmin(np.abs(wavelengths.to(u.m).value * 1e9 - notch[1]))
-        data = np.delete(data, np.arange(x0, x1))
-        wavelengths = np.delete(wavelengths, np.arange(x0, x1))
+
+        # Depending on the notch_as_nan keyword, either delete the missing data
+        # or replace with NaN values
+        if notch_as_nan:
+            data[x0:x1] = np.nan
+        else:
+            data = np.delete(data, np.arange(x0, x1))
+            wavelengths = np.delete(wavelengths, np.arange(x0, x1))
 
     data *= 1 + np.random.normal(loc=0, scale=noise_amp, size=wavelengths.size)
     data *= 1 / np.nanmax(data)
@@ -742,17 +784,18 @@ def run_fit(
     # Make the model, then perform the fit
     model = thomson.spectral_density_model(wavelengths.to(u.m).value, settings, params)
 
-    result = model.fit(
-        data,
-        params,
-        wavelengths=wavelengths.to(u.m).value,
-        method=fit_method,
-        max_nfev=max_iter,
-        fit_kws=fit_kws,
-    )
+    if run_fit:
+        result = model.fit(
+            data,
+            params,
+            wavelengths=wavelengths.to(u.m).value,
+            method=fit_method,
+            max_nfev=max_iter,
+            fit_kws=fit_kws,
+        )
 
-    # Assert that the fit reduced chi2 is under the requirement specified
-    assert result.redchi < require_redchi
+        # Assert that the fit reduced chi2 is under the requirement specified
+        assert result.redchi < require_redchi
 
 
 def spectral_density_model_settings_params(kwargs):
@@ -1074,8 +1117,18 @@ def test_fit_with_instr_func(epw_single_species_settings_params):
     # Warns that data should not include any NaNs
     # This is taken care of in run_fit by deleting the notch region rather than
     # replacing it with np.NaN
-    with pytest.warns(UserWarning, match="If an insturment function is included"):
-        run_fit(wavelengths, params, settings, notch=(531, 533))
+    with pytest.warns(UserWarning, match="If an instrument function is included,"):
+        run_fit(
+            wavelengths,
+            params,
+            settings,
+            notch=(531, 533),
+            notch_as_nan=True,
+            run_fit=False,
+        )
+
+    # Run the same fit using np.delete instead of np.nan values
+    run_fit(wavelengths, params, settings, notch=(531, 533))
 
 
 @pytest.mark.parametrize("instr_func", invalid_instr_func_list)
@@ -1112,8 +1165,8 @@ def test_fit_with_minimal_parameters():
         wavelengths,
         probe_wavelength,
         n,
-        T_e,
-        T_i,
+        T_e=T_e,
+        T_i=T_i,
         ions=ions,
         probe_vec=probe_vec,
         scatter_vec=scatter_vec,
@@ -1215,6 +1268,22 @@ def test_fit_with_minimal_parameters():
             ValueError,
             "ion_vdir must be set if ion_speeds",
         ),
+        # Test different input types for ``ions``
+        ({"ions": ParticleList(["H+", "H+", "He+"])}, None, None),
+        # Error if no particles are provided
+        ({"ions": []}, ValueError, "At least one ion species needs to be defined."),
+        # Error if an ion is negative
+        (
+            {"ions": ParticleList(["H+", "H+", "e-"])},
+            ValueError,
+            "All ions must be positively charged.",
+        ),
+        # Error if an ion charge information is not given
+        (
+            {"ions": ParticleList(["H+", "H+", "He"])},
+            ValueError,
+            "All ions must be positively charged.",
+        ),
     ],
 )
 def test_model_input_validation(control, error, msg, iaw_multi_species_settings_params):
@@ -1232,7 +1301,11 @@ def test_model_input_validation(control, error, msg, iaw_multi_species_settings_
     wavelengths, params, settings = spectral_density_model_settings_params(kwargs)
 
     if error is None:
-        thomson.spectral_density_model(wavelengths, settings, params)
+        thomson.spectral_density_model(
+            wavelengths,
+            settings,
+            params,
+        )
 
     else:
         with pytest.raises(error) as excinfo:
