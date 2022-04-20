@@ -1165,7 +1165,7 @@ def _locate_null_point(vspace, cell, n, err):
             Bx0 = np.array([locx, locy, locz])
             Bx0 = Bx0.reshape(3, 1)
             prev_norm = np.linalg.norm(x0)
-            # Too many null points if the determinant of the determinant of the Jacobian is zero
+            # Too many null points if the determinant of the Jacobian is zero
             if np.isclose(
                 np.linalg.det(jcb(x0[0], x0[1], x0[2])), 0, atol=_EQUALITY_ATOL
             ):
