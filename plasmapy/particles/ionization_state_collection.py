@@ -36,7 +36,7 @@ class IonizationStateCollection:
     ----------
     inputs: `list`, `tuple`, or `dict`
         A `list` or `tuple` of elements or isotopes (if ``T_e`` is
-        provided); a `list` of `~plasmapy.particles.IonizationState`
+        provided); a `list` of `~plasmapy.particles.ionization_state.IonizationState`
         instances; a `dict` with elements or isotopes as keys and
         a `~numpy.ndarray` of ionic fractions as the values; or a `dict`
         with elements or isotopes as keys and `~astropy.units.Quantity`
@@ -71,7 +71,8 @@ class IonizationStateCollection:
     Raises
     ------
     `~plasmapy.particles.exceptions.ParticleError`
-        If `~plasmapy.particles.IonizationStateCollection` cannot be instantiated.
+        If `~plasmapy.particles.ionization_state_collection.IonizationStateCollection`
+        cannot be instantiated.
 
     See Also
     --------
@@ -122,7 +123,8 @@ class IonizationStateCollection:
     the total element density, then the ionic fractions will be set
     proportionately.
 
-    When making comparisons between `~plasmapy.particles.IonizationStateCollection`
+    When making comparisons between
+    `~plasmapy.particles.ionization_state_collection.IonizationStateCollection`
     instances, `~numpy.nan` values are treated as equal.  Equality tests
     are performed to within a tolerance of ``tol``.
     """
@@ -144,8 +146,6 @@ class IonizationStateCollection:
         kappa: Real = np.inf,
     ):
 
-        abundances_provided = abundances is not None or log_abundances is not None
-
         set_abundances = True
         if isinstance(inputs, dict):
             all_quantities = np.all(
@@ -159,6 +159,10 @@ class IonizationStateCollection:
                     raise ParticleError(
                         "Units must be inverse volume for number densities."
                     )
+                abundances_provided = (
+                    abundances is not None or log_abundances is not None
+                )
+
                 if abundances_provided:
                     raise ParticleError(
                         "Abundances cannot be provided if inputs "
@@ -167,7 +171,7 @@ class IonizationStateCollection:
                 set_abundances = False
 
         try:
-            self._pars = dict()
+            self._pars = {}
             self.T_e = T_e
             self.n0 = n0
             self.tol = tol
@@ -213,20 +217,16 @@ class IonizationStateCollection:
                     n_elem=np.sum(self.number_densities[particle]),
                     tol=self.tol,
                 )
-            else:
-                if not isinstance(int_charge, Integral):
-                    raise TypeError(
-                        f"{int_charge} is not a valid charge for {particle}."
-                    )
-                elif not 0 <= int_charge <= atomic_number(particle):
-                    raise ChargeError(
-                        f"{int_charge} is not a valid charge for {particle}."
-                    )
-                return IonicLevel(
-                    ion=particle_symbol(particle, Z=int_charge),
-                    ionic_fraction=self.ionic_fractions[particle][int_charge],
-                    number_density=self.number_densities[particle][int_charge],
-                )
+
+            if not isinstance(int_charge, Integral):
+                raise TypeError(f"{int_charge} is not a valid charge for {particle}.")
+            elif not 0 <= int_charge <= atomic_number(particle):
+                raise ChargeError(f"{int_charge} is not a valid charge for {particle}.")
+            return IonicLevel(
+                ion=particle_symbol(particle, Z=int_charge),
+                ionic_fraction=self.ionic_fractions[particle][int_charge],
+                number_density=self.number_densities[particle][int_charge],
+            )
         except Exception as exc:
             raise IndexError(errmsg) from exc
 
@@ -424,11 +424,12 @@ class IonizationStateCollection:
         Notes
         -----
         The ionic fractions are initialized during instantiation of
-        `~plasmapy.particles.IonizationStateCollection`.  After this, the
-        only way to reset the ionic fractions via the ``ionic_fractions``
-        attribute is via a `dict` with elements or isotopes that are a
-        superset of the previous elements or isotopes.  However, you may
-        use item assignment of the `~plasmapy.particles.IonizationState`
+        `~plasmapy.particles.ionization_state_collection.IonizationStateCollection`.
+        After this, the only way to reset the ionic fractions via the
+        ``ionic_fractions`` attribute is via a `dict` with elements or
+        isotopes that are a superset of the previous elements or
+        isotopes.  However, you may use item assignment of the
+        `~plasmapy.particles.ionization_state.IonizationState`
         instance to assign new ionic fractions one element or isotope
         at a time.
 
@@ -764,19 +765,18 @@ class IonizationStateCollection:
         A `dict` with atomic or isotope symbols as keys and the base 10
         logarithms of the relative abundances as the corresponding values.
         """
-        log_abundances_dict = {}
-        for key in self.abundances.keys():
-            log_abundances_dict[key] = np.log10(self.abundances[key])
-        return log_abundances_dict
+        return {
+            atom: np.log10(abundance) for atom, abundance in self.abundances.items()
+        }
 
     @log_abundances.setter
     def log_abundances(self, value: Optional[Dict[str, Real]]):
         """Set the base 10 logarithm of the relative abundances."""
         if value is not None:
             try:
-                new_abundances_input = {}
-                for key in value.keys():
-                    new_abundances_input[key] = 10 ** value[key]
+                new_abundances_input = {
+                    atom: 10 ** log_abundance for atom, log_abundance in value.items()
+                }
                 self.abundances = new_abundances_input
             except Exception:
                 raise ParticleError("Invalid log_abundances.") from None
@@ -943,7 +943,8 @@ class IonizationStateCollection:
     def summarize(self, minimum_ionic_fraction: Real = 0.01) -> None:
         """
         Print quicklook information for an
-        `~plasmapy.particles.IonizationStateCollection` instance.
+        `~plasmapy.particles.ionization_state_collection.IonizationStateCollection`
+        instance.
 
         Parameters
         ----------
@@ -978,11 +979,9 @@ class IonizationStateCollection:
         """
         separator_line = 64 * "-"
 
-        output = []
-
-        output.append(
+        output = [
             f"IonizationStateCollection instance for: {', '.join(self.base_particles)}"
-        )
+        ]
 
         # Get the ionic symbol with the corresponding ionic fraction and
         # number density (if available), but only for the most abundant

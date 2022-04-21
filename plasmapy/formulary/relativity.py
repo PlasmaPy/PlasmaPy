@@ -80,11 +80,7 @@ def Lorentz_factor(V: u.m / u.s):
         γ[equals_c] = np.inf
 
     else:
-        if np.abs(V) == c:
-            γ = np.inf
-        else:
-            γ = ((1 - (V / c) ** 2) ** -0.5).value
-
+        γ = np.inf if np.abs(V) == c else ((1 - (V / c) ** 2) ** -0.5).value
     return γ
 
 
@@ -112,7 +108,7 @@ def relativistic_energy(m: u.kg, v: u.m / u.s) -> u.Joule:
 
     Returns
     -------
-    `~astropy.Quantity`
+    `~astropy.units.Quantity`
         The relativistic energy (in joules) of an object of mass ``m``
         moving at velocity ``v``.
 
@@ -153,5 +149,4 @@ def relativistic_energy(m: u.kg, v: u.m / u.s) -> u.Joule:
     ValueError: The argument 'm' to function relativistic_energy() can not contain negative numbers.
     """
     γ = Lorentz_factor(v)
-    E = γ * m * c ** 2
-    return E
+    return γ * m * c ** 2

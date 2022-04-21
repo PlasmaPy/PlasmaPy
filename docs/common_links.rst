@@ -1,5 +1,6 @@
 .. These are ReST substitutions and links that can be used throughout the docs
-.. (and docstrings) because they are added to ``docs/conf.py::rst_epilog``.
+   (and docstrings) because they are added to ``docs/conf.py::rst_epilog``.
+
 .. ------------------
 .. plasmapy.formulary
 .. ------------------
@@ -31,11 +32,38 @@
 .. |ParticleWarning| replace:: :class:`~plasmapy.particles.exceptions.ParticleWarning`
 .. |UnexpectedParticleError| replace:: :class:`~plasmapy.particles.exceptions.UnexpectedParticleError`
 
+.. |atomic_number| replace:: :func:`~plasmapy.particles.atomic.atomic_number`
+.. |atomic_symbol| replace:: :func:`~plasmapy.particles.symbols.atomic_symbol`
+.. |element_name| replace:: :func:`~plasmapy.particles.symbols.element_name`
+.. |half_life| replace:: :func:`~plasmapy.particles.atomic.half_life`
+.. |ionic_symbol| replace:: :func:`~plasmapy.particles.symbols.ionic_symbol`
+.. |is_stable| replace:: :func:`~plasmapy.particles.atomic.is_stable`
+.. |isotope_symbol| replace:: :func:`~plasmapy.particles.symbols.isotope_symbol`
+.. |isotopic_abundance| replace:: :func:`~plasmapy.particles.atomic.isotopic_abundance`
+.. |mass_number| replace:: :func:`~plasmapy.particles.atomic.mass_number`
+.. |charge_number| replace:: :func:`~plasmapy.particles.atomic.charge_number`
+.. |electric_charge| replace:: :func:`~plasmapy.particles.atomic.electric_charge`
+.. |standard_atomic_weight| replace:: :func:`~plasmapy.particles.atomic.standard_atomic_weight`
+.. |particle_mass| replace:: :func:`~plasmapy.particles.atomic.particle_mass`
+.. |particle_symbol| replace:: :func:`~plasmapy.particles.symbols.particle_symbol`
+.. |known_isotopes| replace:: :func:`~plasmapy.particles.atomic.known_isotopes`
+.. |common_isotopes| replace:: :func:`~plasmapy.particles.atomic.common_isotopes`
+.. |reduced_mass| replace:: :func:`~plasmapy.particles.atomic.reduced_mass`
+.. |stable_isotopes| replace:: :func:`~plasmapy.particles.atomic.stable_isotopes`
+
+.. -------------------
+.. plasmapy.simulation
+.. -------------------
+
+.. |ParticleTracker| replace:: :class:`~plasmapy.simulation.particletracker.ParticleTracker`
+
 .. ------------------
 .. NumPy replacements
 .. ------------------
 
-.. |ndarray| replace:: :class:`numpy.ndarray`
+.. |inf| replace:: `~numpy.inf`
+.. |nan| replace:: `~numpy.nan`
+.. |ndarray| replace:: :class:`~numpy.ndarray`
 
 .. --------------------
 .. Astropy replacements
@@ -46,19 +74,37 @@
 .. |TimeDelta| replace:: :class:`~astropy.time.TimeDelta`
 .. |Unit| replace:: :class:`~astropy.units.UnitBase`
 
+.. ----------------------
+.. PlasmaPy documentation
+.. ----------------------
+
+.. The backslash is needed for the substitution to work correctly when
+   used just before a period.
+
+.. |bibliography| replace:: :ref:`bibliography`\
+.. |contributor guide| replace:: :ref:`contributor guide`\
+.. |documentation guide| replace:: :ref:`documentation guide`\
+.. |glossary| replace:: :ref:`glossary`\
+.. |minpython| replace:: 3.8
+.. |plasma-calculator| replace:: :ref:`plasmapy-calculator`\
+.. |release guide| replace:: :ref:`release guide`\
+.. |testing guide| replace:: :ref:`testing guide`\
+
 .. --------
 .. Websites
 .. --------
+
 .. _Astropy docs: https://docs.astropy.org
 .. _Astropy: https://www.astropy.org
 .. _BibTeX format: https://www.bibtex.com/g/bibtex-format
 .. _BibTeX: http://www.bibtex.org
 .. _black: https://black.readthedocs.io
-.. _Conda: https://conda.io
+.. _Conda: https://docs.conda.io
+.. _create an issue: https://github.com/PlasmaPy/PlasmaPy/issues/new/choose
 .. _CSS: https://en.wikipedia.org/wiki/CSS
 .. _docstring: https://en.wikipedia.org/wiki/Docstring
 .. _DOI: https://www.doi.org
-.. _flake8: https://flake8.pycqa.org
+.. _flake8: https://flake8.pycqa.org/en/latest
 .. _git: https://git-scm.com
 .. _GitHub Actions: https://docs.github.com/en/actions
 .. _GitHub Discussions page: https://github.com/PlasmaPy/PlasmaPy/discussions
@@ -80,6 +126,7 @@
 .. _Matrix chat room: https://app.element.io/#/room/#plasmapy:openastronomy.org
 .. _numpydoc: https://numpydoc.readthedocs.io/en/latest/format.html#docstring-standard
 .. _NumPy: https://numpy.org
+.. _OpenPMD: https://www.openpmd.org/
 .. _pandas: https://pandas.pydata.org
 .. _persistent identifier: https://en.wikipedia.org/wiki/Persistent_identifier
 .. _pip: https://pip.pypa.io
@@ -90,7 +137,8 @@
 .. _PlasmaPy's GitHub repository: https://github.com/PlasmaPy/plasmapy
 .. _PlasmaPy's Matrix chat room: https://app.element.io/#/room/#plasmapy:openastronomy.org
 .. _pre-commit: https://pre-commit.com
-.. _pydocstyle: https://www.pydocstyle.org
+.. _`pre-commit.ci`: https://pre-commit.ci
+.. _pydocstyle: https://www.pydocstyle.org/en/stable
 .. _pygments: https://pygments.org
 .. _PyPI: https://pypi.org
 .. _pytest: https://docs.pytest.org
@@ -99,27 +147,36 @@
 .. _Read the Docs: https://readthedocs.org
 .. _reST: https://docutils.sourceforge.io/rst.html
 .. _reStructuredText (reST): https://docutils.sourceforge.io/rst.html
-.. _SciPy: https://www.scipy.org
+.. _SciPy: https://scipy.org
 .. _sphinx_automodapi: https://sphinx-automodapi.readthedocs.io
 .. _sphinx-build: https://www.sphinx-doc.org/en/master/man/sphinx-build.html
 .. _Sphinx: https://www.sphinx-doc.org
 .. _suggestion box: https://docs.google.com/forms/d/e/1FAIpQLSdT3O5iHZrLJRuavFyzoR23PGy0Prfzx2SQOcwJGWtvHyT2lw/viewform?usp=sf_link
-.. _towncrier: https://towncrier.readthedocs.io/en/actual-freaking-docs
-.. _tox: https://tox.readthedocs.io
+.. _towncrier: https://github.com/twisted/towncrier
+.. _tox: https://tox.wiki/en/latest
 .. _virtualenv: https://pypi.org/project/virtualenv
 .. _Wikipedia: https://www.wikipedia.org
 .. _Zenodo: https://zenodo.org
+
+.. ----------------------
+.. Nested inline literals
+.. ----------------------
 
 .. A workaround for nested inline literals so that the filename will get
    formatted like a file but will be a link. In the text, these get used
    with the syntax for a substitution followed by an underscore to
    indicate that it's for a link: |docs/_static|_
 
+.. For these workarounds, if the replacement is something in single back
+   ticks (e.g., `xarray`), then it should also be added to
+   nitpick_ignore_regex in docs/conf.py so that it doesn't get counted
+   as an error in a nitpicky doc build (e.g., tox -e doc_build_nitpicky).
+
 .. _`docs/_static`: https://github.com/PlasmaPy/PlasmaPy/tree/main/docs/_static
 .. |docs/_static| replace:: :file:`docs/_static`
 
-.. _`docs/_static/sphinx_rtd_overrides.css`: https://github.com/PlasmaPy/PlasmaPy/blob/main/docs/_static/rtd_theme_overrides.css
-.. |docs/_static/sphinx_rtd_overrides.css| replace:: :file:`docs/_static/sphinx_rtd_overrides.css`
+.. _`docs/_static/css`: https://github.com/PlasmaPy/PlasmaPy/tree/main/docs/_static/css
+.. |docs/_static/css| replace:: :file:`docs/_static/css`
 
 .. _`docs/api_static`: https://github.com/PlasmaPy/PlasmaPy/tree/main/docs/api_static
 .. |docs/api_static| replace:: :file:`docs/api_static`
@@ -136,11 +193,23 @@
 .. _`docs/bibliography.bib`: https://github.com/PlasmaPy/PlasmaPy/blob/main/docs/bibliography.bib
 .. |docs/bibliography.bib| replace:: :file:`docs/bibliography.bib`
 
+.. _h5py: https://www.h5py.org/
+.. |h5py| replace:: `h5py`
+
 .. _`IPython.sphinxext.ipython_console_highlighting`: https://ipython.readthedocs.io/en/stable/sphinxext.html?highlight=IPython.sphinxext.ipython_console_highlighting#ipython-sphinx-directive-module
 .. |IPython.sphinxext.ipython_console_highlighting| replace:: `IPython.sphinxext.ipython_console_highlighting`
 
+.. _lmfit: https://lmfit.github.io/lmfit-py/
+.. |lmfit| replace:: `lmfit`
+
+.. _mpmath: https://mpmath.org/doc/current/
+.. |mpmath| replace:: `mpmath`
+
 .. _nbsphinx: https://nbsphinx.readthedocs.io
 .. |nbsphinx| replace:: `nbsphinx`
+
+.. _numba: https://numba.readthedocs.io
+.. |numba| replace:: `numba`
 
 .. _`setup.cfg`: https://github.com/PlasmaPy/PlasmaPy/blob/main/setup.cfg
 .. |setup.cfg| replace:: :file:`setup.cfg`
@@ -156,3 +225,9 @@
 
 .. _`sphinx_changelog`: https://sphinx-changelog.readthedocs.io
 .. |sphinx_changelog| replace:: `sphinx_changelog`
+
+.. _`sphinx-hoverxref`: https://sphinx-hoverxref.readthedocs.io
+.. |sphinx-hoverxref| replace:: `sphinx-hoverxref`
+
+.. _xarray: https://docs.xarray.dev
+.. |xarray| replace:: `xarray`

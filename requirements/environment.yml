@@ -1,33 +1,7 @@
 name: plasmapy
 
-channels:
-- astropy
-- conda-forge
-
 dependencies:
-- python=3.7
-- numpy
-- scipy
-- astropy
-- h5py
-- matplotlib >= 3.3.0
-- mpmath
-- pandas
-- pillow
+- python=3.10
 - pip
-- xarray
-- numba
 - pip:
-  - hypothesis
-  - docutils
-  - numpydoc
-  - pytest
-  - lmfit
-  - pygments >= 2.4.1
-  - sphinx >= 3.2.0
-  - sphinx-gallery
-  - sphinx_rtd_theme >= 1.0.0
-  - towncrier >= 19.2.0
-  - pytest-regressions
-  - notebook
-  - packaging
+  - -r ../requirements.txt

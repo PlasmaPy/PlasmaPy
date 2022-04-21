@@ -62,13 +62,14 @@ from astropy.constants.si import e, eps0, hbar, k_B, m_e
 from numpy import pi
 
 from plasmapy import particles, utils
-from plasmapy.formulary import parameters
+from plasmapy.formulary.lengths import Debye_length
 from plasmapy.formulary.mathematics import Fermi_integral
 from plasmapy.formulary.quantum import (
     chemical_potential,
     thermal_deBroglie_wavelength,
     Wigner_Seitz_radius,
 )
+from plasmapy.formulary.speeds import thermal_speed
 from plasmapy.utils.decorators import validate_quantities
 from plasmapy.utils.decorators.checks import _check_relativistic
 
@@ -116,7 +117,7 @@ def Coulomb_logarithm(
     V : `~astropy.units.Quantity`, optional
         The relative velocity between particles. If not provided,
         thermal velocity is assumed: :math:`μ V^2 \sim 2 k_B T` where
-        `μ` is the reduced mass.
+        :math:`μ` is the reduced mass.
 
     method : `str`, optional
         The method by which to compute the Coulomb logarithm.  The
@@ -192,11 +193,12 @@ def Coulomb_logarithm(
 
     For all 7 methods, :math:`b_{min}` and :math:`b_{max}` are the inner
     impact parameter and the outer impact parameter, respectively, for
-    Coulomb collisions [1]_; :math:`b_{min}` and :math:`b_{max}` are
-    each computed by `~plasmapy.formulary.collisions.impact_parameter`.
+    Coulomb collisions :cite:p:`spitzer:1962`\ ; :math:`b_{min}` and
+    :math:`b_{max}` are each computed by
+    `~plasmapy.formulary.collisions.impact_parameter`.
 
     The abbreviations of Options 2–7 (``"GMS-..."``) refer to the first
-    initials of the three authors of Reference [4]_.
+    initials of the three authors of :cite:t:`gericke:2002`.
 
     .. note::
 
@@ -207,9 +209,9 @@ def Coulomb_logarithm(
     **Explanation of Supported Methods of Computing the Coulomb Logarithm**
 
     In this section, further information about each method, such as
-    about interpolation and other special features, is
-    documented. Please refer to Reference [1]_ and Reference [4]_ for
-    additional information about these methods.
+    about interpolation and other special features, is documented.
+    Please refer to :cite:t:`spitzer:1962` and :cite:t:`gericke:2002`
+    for additional information about these methods.
 
     Option 1: ``"classical"`` or ``"ls"`` (Landau-Spitzer)
 
@@ -241,7 +243,8 @@ def Coulomb_logarithm(
         The inner impact parameter (:math:`b_{min}`) is the higher of
         :math:`λ_{de Broglie}` and :math:`ρ_⟂` because for impact
         parameters lower than :math:`λ_{de Broglie}`, quantum effects
-        cause the collision to be non-Coulombic [2]_ [3]_.
+        cause the collision to be non-Coulombic
+        :cite:p:`chen:2016,fundamenski:2007`.
 
         The outer impact parameter (:math:`b_{max}`) is defined to be
         the Debye length (:math:`λ_{Debye}`) because at distances higher
@@ -257,8 +260,8 @@ def Coulomb_logarithm(
         which may be true if the coupling parameter is high (such as for
         nonideal, dense, cold plasmas).
 
-        Please refer to Reference [1]_ for additional information about
-        this method.
+        Please refer to :cite:t:`spitzer:1962` for additional
+        information about this method.
 
     Option 2: ``"ls_min_interp"`` or ``"GMS-1"`` (Landau-Spitzer,
     interpolation of :math:`b_{min}`)
@@ -285,7 +288,8 @@ def Coulomb_logarithm(
         if the coupling parameter is high (such as for nonideal, dense,
         cold plasmas).
 
-        Note: This is the first method in Table 1 of Reference [4]_.
+        Note: This is the first method in Table 1 of
+        :cite:t:`gericke:2002`.
 
     Option 3: ``"ls_full_interp"`` or ``"GMS-2"`` (Landau-Spitzer,
     interpolation of :math:`b_{min}` and :math:`b_{max}`)
@@ -313,7 +317,8 @@ def Coulomb_logarithm(
         if the coupling parameter is high (such as for nonideal, dense,
         cold plasmas).
 
-        Note: This is the second method in Table 1 of Reference [4]_.
+        Note: This is the second method in Table 1 of
+        :cite:t:`gericke:2002`.
 
     Option 4: ``"ls_clamp_mininterp"`` or ``"GMS-3"`` (Landau-Spitzer
     with a clamp, interpolation of :math:`b_{min}`)
@@ -352,7 +357,8 @@ def Coulomb_logarithm(
         :math:`\ln{Λ} < 0` by this method, even if the coupling
         parameter is high (such as for nonideal, dense, cold plasmas).
 
-        Note: This is the third method in Table 1 of Reference [4]_.
+        Note: This is the third method in Table 1 of
+        :cite:t:`gericke:2002`.
 
     Option 5: ``"hls_min_interp"`` or ``"GMS-4"`` (Hyperbolic
     Landau-Spitzer, interpolation of :math:`b_{min}`)
@@ -380,7 +386,8 @@ def Coulomb_logarithm(
         :math:`\ln{Λ} < 0` by this method, even if the coupling
         parameter is high (such as for nonideal, dense, cold plasmas).
 
-        Note: This is the fourth method in Table 1 of Reference [4]_.
+        Note: This is the fourth method in Table 1 of
+        :cite:t:`gericke:2002`.
 
     Option 6: ``"hls_max_interp"`` or ``"GMS-5"`` (Hyperbolic
     Landau-Spitzer, interpolation of :math:`b_{max}`)
@@ -410,7 +417,8 @@ def Coulomb_logarithm(
         Caution: This method overestimates :math:`\ln{Λ}` at high
         temperatures.
 
-        Note: This is the fifth method in Table 1 of Reference [4]_.
+        Note: This is the fifth method in Table 1 of
+        :cite:t:`gericke:2002`.
 
     Option 7: ``"hls_full_interp"`` or ``"GMS-6"`` (Hyperbolic
     Landau-Spitzer, interpolation of :math:`b_{min}` and
@@ -440,7 +448,8 @@ def Coulomb_logarithm(
         :math:`\ln{Λ} < 0` by this method, even if the coupling
         parameter is high (such as for nonideal, dense, cold plasmas).
 
-        Note: This is the sixth method in Table 1 of Reference [4]_.
+        Note: This is the sixth method in Table 1 of
+        :cite:t:`gericke:2002`.
 
     Examples
     --------
@@ -451,21 +460,6 @@ def Coulomb_logarithm(
     14.545527...
     >>> Coulomb_logarithm(T, n, ('e-', 'p+'), V = 1e6 * u.m / u.s)
     11.363478...
-
-    References
-    ----------
-    .. [1] Physics of Fully Ionized Gases, L. Spitzer (1962)
-
-    .. [2] Francis, F. Chen. Introduction to plasma physics and controlled
-       fusion 3rd edition. Ch 5 (Springer 2015).
-
-    .. [3] Comparison of Coulomb Collision Rates in the Plasma Physics
-       and Magnetically Confined Fusion Literature, W. Fundamenski and
-       O.E. Garcia, EFDA–JET–R(07)01
-
-    .. [4] Dense plasma temperature equilibration in the binary collision
-       approximation. D. O. Gericke et. al. PRE,  65, 036418 (2002).
-       DOI: 10.1103/PhysRevE.65.036418
 
     See Also
     --------
@@ -572,16 +566,16 @@ def _replaceNanVwithThermalV(V, T, m):
     # getting thermal velocity of system if no velocity is given
 
     if V is None:
-        V = parameters.thermal_speed(T, "e-", mass=m)
+        V = thermal_speed(T, "e-", mass=m)
     elif np.any(np.isnan(V)):
         if np.isscalar(V.value) or np.isscalar(T.value):
             if np.isscalar(V.value):
-                V = parameters.thermal_speed(T, "e-", mass=m)
+                V = thermal_speed(T, "e-", mass=m)
             if np.isscalar(T.value):
-                V[np.isnan(V)] = parameters.thermal_speed(T, "e-", mass=m)
+                V[np.isnan(V)] = thermal_speed(T, "e-", mass=m)
         else:
             V = V.copy()
-            V[np.isnan(V)] = parameters.thermal_speed(T[np.isnan(V)], "e-", mass=m)
+            V[np.isnan(V)] = thermal_speed(T[np.isnan(V)], "e-", mass=m)
 
     return V
 
@@ -646,7 +640,7 @@ def impact_parameter_perp(
     Notes
     -----
     The distance of closest approach, impact_parameter_perp, is given by
-    [1]_\ :
+    (see Ch. 5 of :cite:t:`chen:2016`):
 
     .. math::
 
@@ -659,11 +653,6 @@ def impact_parameter_perp(
     >>> species = ('e', 'p')
     >>> impact_parameter_perp(T, species)
     <Quantity 8.3550...e-12 m>
-
-    References
-    ----------
-    .. [1] Francis, F. Chen. Introduction to plasma physics and controlled
-       fusion 3rd edition. Ch 5 (Springer 2015).
     """
     # boiler plate checks
     T, masses, charges, reduced_mass, V = _boilerPlate(T=T, species=species, V=V)
@@ -769,7 +758,8 @@ def impact_parameter(
     length.
 
     For quantum plasmas the maximum impact parameter can be the
-    quadratic sum of the debye length and ion radius (Wigner_Seitz) [1]_
+    quadratic sum of the debye length and ion radius (Wigner_Seitz)
+    :cite:p:`gericke:2002`
 
     .. math::
 
@@ -779,7 +769,7 @@ def impact_parameter(
     thermal de Broglie wavelength and the distance of closest approach
     for a 90° Coulomb collision. A quadratic sum is used for all GMS
     methods, except for GMS-5, where ``b_min`` is simply set to the
-    distance of closest approach [1]_.
+    distance of closest approach :cite:p:`gericke:2002`.
 
     .. math::
 
@@ -795,33 +785,29 @@ def impact_parameter(
     (<Quantity 1.051...e-11 m>, <Quantity 2.182...e-05 m>)
     >>> impact_parameter(T, n, species, V=1e6 * u.m / u.s)
     (<Quantity 2.534...e-10 m>, <Quantity 2.182...e-05 m>)
-
-    References
-    ----------
-    .. [1] Dense plasma temperature equilibration in the binary collision
-       approximation. D. O. Gericke et. al. PRE,  65, 036418 (2002).
-       DOI: 10.1103/PhysRevE.65.036418
-
     """
     # boiler plate checks
     T, masses, charges, reduced_mass, V = _boilerPlate(T=T, species=species, V=V)
     # catching error where mean charge state is not given for non-classical
     # methods that require the ion density
-    if method in (
-        "ls_full_interp",
-        "GMS-2",
-        "hls_max_interp",
-        "GMS-5",
-        "hls_full_interp",
-        "GMS-6",
+    if (
+        method
+        in (
+            "ls_full_interp",
+            "GMS-2",
+            "hls_max_interp",
+            "GMS-5",
+            "hls_full_interp",
+            "GMS-6",
+        )
+        and np.isnan(z_mean)
     ):
-        if np.isnan(z_mean):
-            raise ValueError(
-                'Must provide a z_mean for "ls_full_interp", '
-                '"hls_max_interp", and "hls_full_interp" methods.'
-            )
+        raise ValueError(
+            'Must provide a z_mean for "ls_full_interp", '
+            '"hls_max_interp", and "hls_full_interp" methods.'
+        )
     # Debye length
-    lambdaDe = parameters.Debye_length(T, n_e)
+    lambdaDe = Debye_length(T, n_e)
     # de Broglie wavelength
     lambdaBroglie = hbar / (2 * reduced_mass * V)
     # distance of closest approach in 90° Coulomb collision
@@ -829,7 +815,7 @@ def impact_parameter(
 
     # obtaining minimum and maximum impact parameters depending on which
     # method is requested
-    if method == "classical" or method == "ls":
+    if method in ["classical", "ls"]:
         bmax = lambdaDe
         # Coulomb-style collisions will not happen for impact parameters
         # shorter than either of these two impact parameters, so we choose
@@ -840,22 +826,18 @@ def impact_parameter(
         # therefore, lambdaBroglie and bPerp are either both scalar or both array
         # if np.isscalar(bPerp.value) and np.isscalar(lambdaBroglie.value):  # both scalar
         try:  # assume both scalar
-            if bPerp > lambdaBroglie:
-                bmin = bPerp
-            else:
-                bmin = lambdaBroglie
-        # else:  # both lambdaBroglie and bPerp are arrays
+            bmin = bPerp if bPerp > lambdaBroglie else lambdaBroglie
         except ValueError:  # both lambdaBroglie and bPerp are arrays
             bmin = lambdaBroglie
             bmin[bPerp > lambdaBroglie] = bPerp[bPerp > lambdaBroglie]
-    elif method == "ls_min_interp" or method == "GMS-1":
+    elif method in ["ls_min_interp", "GMS-1"]:
         # 1st method listed in Table 1 of reference [1]
         # This is just another form of the classical Landau-Spitzer
         # approach, but bmin is interpolated between the de Broglie
         # wavelength and distance of closest approach.
         bmax = lambdaDe
         bmin = (lambdaBroglie ** 2 + bPerp ** 2) ** (1 / 2)
-    elif method == "ls_full_interp" or method == "GMS-2":
+    elif method in ["ls_full_interp", "GMS-2"]:
         # 2nd method listed in Table 1 of reference [1]
         # Another Landau-Spitzer like approach, but now bmax is also
         # being interpolated. The interpolation is between the Debye
@@ -867,17 +849,17 @@ def impact_parameter(
         ionRadius = Wigner_Seitz_radius(n_i)
         bmax = (lambdaDe ** 2 + ionRadius ** 2) ** (1 / 2)
         bmin = (lambdaBroglie ** 2 + bPerp ** 2) ** (1 / 2)
-    elif method == "ls_clamp_mininterp" or method == "GMS-3":
+    elif method in ["ls_clamp_mininterp", "GMS-3"]:
         # 3rd method listed in Table 1 of reference [1]
         # same as GMS-1, but not Lambda has a clamp at Lambda_min = 2
         # where Lambda is the argument to the Coulomb logarithm.
         bmax = lambdaDe
         bmin = (lambdaBroglie ** 2 + bPerp ** 2) ** (1 / 2)
-    elif method == "hls_min_interp" or method == "GMS-4":
+    elif method in ["hls_min_interp", "GMS-4"]:
         # 4th method listed in Table 1 of reference [1]
         bmax = lambdaDe
         bmin = (lambdaBroglie ** 2 + bPerp ** 2) ** (1 / 2)
-    elif method == "hls_max_interp" or method == "GMS-5":
+    elif method in ["hls_max_interp", "GMS-5"]:
         # 5th method listed in Table 1 of reference [1]
         # Mean ion density.
         n_i = n_e / z_mean
@@ -885,7 +867,7 @@ def impact_parameter(
         ionRadius = Wigner_Seitz_radius(n_i)
         bmax = (lambdaDe ** 2 + ionRadius ** 2) ** (1 / 2)
         bmin = bPerp
-    elif method == "hls_full_interp" or method == "GMS-6":
+    elif method in ["hls_full_interp", "GMS-6"]:
         # 6th method listed in Table 1 of reference [1]
         # Mean ion density.
         n_i = n_e / z_mean
@@ -899,7 +881,7 @@ def impact_parameter(
     # ARRAY NOTES
     # it could be that bmin and bmax have different sizes. If Te is a scalar,
     # T and V will be scalar from _boilerplate, so bmin will scalar.  However
-    # if n_e is an array, than bmax will be an array. if this is the case,
+    # if n_e is an array, then bmax will be an array. if this is the case,
     # do we want to extend the scalar bmin to equal the length of bmax? Sure.
     if np.isscalar(bmin.value) and not np.isscalar(bmax.value):
         bmin = np.repeat(bmin, len(bmax))
@@ -996,7 +978,8 @@ def collision_frequency(
 
     Notes
     -----
-    The collision frequency is given by [1]_
+    The collision frequency (see Ch. 5 of :cite:t:`chen:2016`) is given
+    by
 
     .. math::
 
@@ -1007,7 +990,7 @@ def collision_frequency(
     (typically taken as the thermal velocity), and :math:`\ln{Λ}` is the
     Coulomb logarithm accounting for small angle collisions.
 
-    See Equation (2.14) in [2]_.
+    See Equation (2.14) in :cite:t:`callen:unpublished`.
 
     Examples
     --------
@@ -1017,14 +1000,6 @@ def collision_frequency(
     >>> species = ('e', 'p')
     >>> collision_frequency(T, n, species)
     <Quantity 70249... Hz>
-
-    References
-    ----------
-    .. [1] Francis, F. Chen. Introduction to plasma physics and controlled
-       fusion 3rd edition. Ch 5 (Springer 2015).
-    .. [2] `Draft Material for "Fundamentals of Plasma Physics" Book
-       <https://drive.google.com/file/d/1mSpES1BDTbrD0L124pwH5s0c7t41L6g5/view>`__,
-       by James D. Callen
     """
     # boiler plate checks
     T, masses, charges, reduced_mass, V_r = _boilerPlate(T=T, species=species, V=V)
@@ -1040,8 +1015,6 @@ def collision_frequency(
         # impact parameter for 90° collision
         bPerp = impact_parameter_perp(T=T, species=species, V=V_reduced)
         print(T, n, species, z_mean, method)
-        # Coulomb logarithm
-        cou_log = Coulomb_logarithm(T, n, species, z_mean, V=V, method=method)
     elif species[0] in ("e", "e-") or species[1] in ("e", "e-"):
         # electron-ion collision
         # Need to manually pass electron thermal velocity to obtain
@@ -1052,19 +1025,15 @@ def collision_frequency(
         # need to also correct mass in collision radius from reduced
         # mass to electron mass
         bPerp = impact_parameter_perp(T=T, species=species, V=V) * reduced_mass / m_e
-        # Coulomb logarithm
         # !!! may also need to correct Coulomb logarithm to be
         # electron-electron version !!!
-        cou_log = Coulomb_logarithm(T, n, species, z_mean, V=V, method=method)
     else:
         # ion-ion collision
         # if a velocity was passed, we use that instead of the reduced
         # thermal velocity
         V = _replaceNanVwithThermalV(V, T, reduced_mass)
         bPerp = impact_parameter_perp(T=T, species=species, V=V)
-        # Coulomb logarithm
-        cou_log = Coulomb_logarithm(T, n, species, z_mean, V=V, method=method)
-
+    cou_log = Coulomb_logarithm(T, n, species, z_mean, V=V, method=method)
     # collisional cross section
     sigma = Coulomb_cross_section(bPerp)
     # collision frequency where Coulomb logarithm accounts for
@@ -1091,8 +1060,9 @@ def Coulomb_cross_section(impact_param: u.m) -> u.m ** 2:
 
     Notes
     -----
-    The collisional cross-section (see [1]_ for a graphical
-    demonstration) for a 90° Coulomb collision is obtained by
+    The `collisional cross-section
+    <https://en.wikipedia.org/w/index.php?title=Cross_section_(physics)&oldid=1037954726#Collision_among_gas_particles>`__
+    for a 90° Coulomb collision is obtained by
 
     .. math::
 
@@ -1109,14 +1079,8 @@ def Coulomb_cross_section(impact_param: u.m) -> u.m ** 2:
     <Quantity 6.157...e-18 m2>
     >>> Coulomb_cross_section(0.5*u.m)
     <Quantity 3.141... m2>
-
-    References
-    ----------
-    .. [1] `Cross Section: Collision among gas particles
-       <https://en.wikipedia.org/w/index.php?title=Cross_section_(physics)&oldid=1037954726#Collision_among_gas_particles>`__
     """
-    sigma = np.pi * (2 * impact_param) ** 2
-    return sigma
+    return np.pi * (2 * impact_param) ** 2
 
 
 @validate_quantities(
@@ -1135,12 +1099,13 @@ def fundamental_electron_collision_freq(
     Average momentum relaxation rate for a slowly flowing Maxwellian
     distribution of electrons.
 
-    [3]_ provides a derivation of this as an average collision frequency
-    between electrons and ions for a Maxwellian distribution. It is thus
-    a special case of the collision frequency with an averaging factor,
-    and is on many occasions in transport theory the most relevant
-    collision frequency that has to be considered. It is heavily related
-    to diffusion and resistivity in plasmas.
+    :cite:t:`braginskii:1965` provides a derivation of this as an
+    average collision frequency between electrons and ions for a
+    Maxwellian distribution. It is thus a special case of the collision
+    frequency with an averaging factor, and is on many occasions
+    in transport theory the most relevant collision frequency that has
+    to be considered. It is heavily related to diffusion and resistivity
+    in plasmas.
 
     Parameters
     ----------
@@ -1162,7 +1127,7 @@ def fundamental_electron_collision_freq(
     coulomb_log : `float` or dimensionless `~astropy.units.Quantity`, optional
         Option to specify a Coulomb logarithm of the electrons on the
         ions.  If not specified, the Coulomb log will is calculated
-        using the `~plasmapy.formulary.Coulomb_logarithm` function.
+        using the `~plasmapy.formulary.collisions.Coulomb_logarithm` function.
 
     coulomb_log_method : `str`, optional
         The method by which to compute the Coulomb logarithm.  The
@@ -1180,10 +1145,10 @@ def fundamental_electron_collision_freq(
 
     Notes
     -----
-    Equations (2.17) and (2.120) in [3]_ provide the original source
-    used to implement this formula, however, the simplest form that
-    connects our average collision frequency to the general collision
-    frequency is is this (from 2.17):
+    Equations (2.17) and (2.120) in :cite:t:`callen:unpublished` provide
+    the original source used to implement this formula, however, the
+    simplest form that connects our average collision frequency to the
+    general collision frequency is this (from 2.17):
 
     .. math::
 
@@ -1194,21 +1159,10 @@ def fundamental_electron_collision_freq(
     Maxwellian distribution).
 
     This implementation of the average collision frequency is equivalent to:
-    * :math:`1/τ_e` from ref [1]_ eqn (2.5e) pp. 215,
-    * :math:`ν_e` from ref [2]_ pp. 33,
 
-    References
-    ----------
-    .. [1] Braginskii, S. I. "Transport processes in a plasma." Reviews of
-       plasma physics 1 (1965): 205.
-
-    .. [2] Huba, J. D. "NRL (Naval Research Laboratory) Plasma Formulary,
-       revised." Naval Research Lab. Report NRL/PU/6790-16-614 (2016).
-       https://www.nrl.navy.mil/News-Media/Publications/NRL-Plasma-Formulary
-
-    .. [3] `Draft Material for "Fundamentals of Plasma Physics" Book
-       <https://drive.google.com/file/d/1mSpES1BDTbrD0L124pwH5s0c7t41L6g5/view>`__,
-       by James D. Callen
+    * :math:`1/τ_e` from equation (2.5e) on page 215 of
+      :cite:t:`braginskii:1965`
+    * :math:`ν_e` from page 33 of :cite:t:`nrlformulary:2019`
 
     Examples
     --------
@@ -1251,11 +1205,9 @@ def fundamental_electron_collision_freq(
         # the collision frequency calculation and replacing with
         # the user defined Coulomb logarithm value
         nu_mod = nu * coulomb_log / cLog
-        nu_e = coeff * nu_mod
+        return coeff * nu_mod
     else:
-        nu_e = coeff * nu
-
-    return nu_e
+        return coeff * nu
 
 
 @validate_quantities(
@@ -1274,9 +1226,10 @@ def fundamental_ion_collision_freq(
     Average momentum relaxation rate for a slowly flowing Maxwellian
     distribution of ions.
 
-    [3]_ provides a derivation of this as an average collision frequency
-    between ions and ions for a Maxwellian distribution. It is thus a
-    special case of the collision frequency with an averaging factor.
+    :cite:t:`braginskii:1965` provides a derivation of this as an
+    average collision frequency between ions and ions for a Maxwellian
+    distribution. It is thus a special case of the collision frequency
+    with an averaging factor.
 
     Parameters
     ----------
@@ -1317,10 +1270,11 @@ def fundamental_ion_collision_freq(
 
     Notes
     -----
-    Equations (2.36) and (2.122) in [3]_ provide the original source
-    used to implement this formula, however, in our implementation we
-    use the very same process that leads to the fundamental electron
-    collison rate (2.17), gaining simply a different coefficient:
+    Equations (2.36) and (2.122) in :cite:t:`callen:unpublished` provide
+    the original source used to implement this formula, however, in our
+    implementation we use the very same process that leads to the
+    fundamental electron collision rate (2.17), gaining simply a
+    different coefficient:
 
     .. math::
 
@@ -1338,21 +1292,9 @@ def fundamental_ion_collision_freq(
     This result is an ion momentum relaxation rate, and is used in many
     classical transport expressions. It is equivalent to:
 
-    * :math:`1/τ_i` from ref [1]_, equation (2.5i) pp. 215,
-    * :math:`ν_i` from ref [2]_ pp. 33,
-
-    References
-    ----------
-    .. [1] Braginskii, S. I. "Transport processes in a plasma." Reviews of
-       plasma physics 1 (1965): 205.
-
-    .. [2] Huba, J. D. "NRL (Naval Research Laboratory) Plasma Formulary,
-       revised." Naval Research Lab. Report NRL/PU/6790-16-614 (2016).
-       https://www.nrl.navy.mil/News-Media/Publications/NRL-Plasma-Formulary
-
-    .. [3] `Draft Material for "Fundamentals of Plasma Physics" Book
-       <https://drive.google.com/file/d/1mSpES1BDTbrD0L124pwH5s0c7t41L6g5/view>`__,
-       by James D. Callen
+    * :math:`1/τ_i` from equation (2.5i) on page 215 of
+      :cite:t:`braginskii:1965`
+    * :math:`ν_i` from page 33 of :cite:t:`nrlformulary:2019`
 
     Examples
     --------
@@ -1400,11 +1342,9 @@ def fundamental_ion_collision_freq(
         # the collision frequency calculation and replacing with
         # the user defined Coulomb logarithm value
         nu_mod = nu * coulomb_log / cLog
-        nu_i = coeff * nu_mod
+        return coeff * nu_mod
     else:
-        nu_i = coeff * nu
-
-    return nu_i
+        return coeff * nu
 
 
 @validate_quantities(
@@ -1490,12 +1430,12 @@ def mean_free_path(
     : `~astropy.units.UnitsWarning`
         If units are not provided, SI units are assumed.
 
-    : `~plasmapy.utils.RelativityWarning`
+    : `~plasmapy.utils.exceptions.RelativityWarning`
         If the input velocity is greater than 5% of the speed of light.
 
     Notes
     -----
-    The collisional mean free path is given by [1]_
+    The collisional mean free path (see :cite:t:`chen:2016`) is given by:
 
     .. math::
 
@@ -1513,11 +1453,6 @@ def mean_free_path(
     <Quantity 7.839... m>
     >>> mean_free_path(T, n, ('e-', 'p+'), V=1e6 * u.m / u.s)
     <Quantity 0.0109... m>
-
-    References
-    ----------
-    .. [1] Francis, F. Chen. Introduction to plasma physics and controlled
-       fusion 3rd edition. Ch 5 (Springer 2015).
     """
     # collisional frequency
     freq = collision_frequency(
@@ -1529,9 +1464,7 @@ def mean_free_path(
     # Should be fine since collision_frequency has its own boiler_plate
     # check, and we are only using this here to get the velocity.
     T, masses, charges, reduced_mass, V = _boilerPlate(T=T, species=species, V=V)
-    # mean free path length
-    mfp = V / freq
-    return mfp
+    return V / freq
 
 
 @validate_quantities(
@@ -1547,7 +1480,8 @@ def Spitzer_resistivity(
     V: u.m / u.s = np.nan * u.m / u.s,
     method="classical",
 ) -> u.Ohm * u.m:
-    r"""Spitzer resistivity of a plasma
+    r"""
+    Spitzer resistivity of a plasma.
 
     Parameters
     ----------
@@ -1622,7 +1556,8 @@ def Spitzer_resistivity(
 
     Notes
     -----
-    The Spitzer resistivity is given by [1]_ [2]_
+    The Spitzer resistivity (see Ch. 5 of :cite:t:`chen:2016`) is given
+    by:
 
     .. math::
 
@@ -1640,20 +1575,13 @@ def Spitzer_resistivity(
     Examples
     --------
     >>> import astropy.units as u
-    >>> n = 1e19*u.m**-3
-    >>> T = 1e6*u.K
+    >>> n = 1e19 * u.m ** -3
+    >>> T = 1e6 * u.K
     >>> species = ('e', 'p')
     >>> Spitzer_resistivity(T, n, species)
     <Quantity 2.4915...e-06 m Ohm>
     >>> Spitzer_resistivity(T, n, species, V=1e6 * u.m / u.s)
     <Quantity 0.000324... m Ohm>
-
-    References
-    ----------
-    .. [1] Francis, F. Chen. Introduction to plasma physics and controlled
-       fusion 3rd edition. Ch 5 (Springer 2015).
-    .. [2] https://drive.google.com/file/d/1mSpES1BDTbrD0L124pwH5s0c7t41L6g5/view
-
     """
     # collisional frequency
     freq = collision_frequency(
@@ -1662,11 +1590,11 @@ def Spitzer_resistivity(
     # boiler plate checks
     # fetching additional parameters
     T, masses, charges, reduced_mass, V = _boilerPlate(T=T, species=species, V=V)
-    if np.isnan(z_mean):
-        spitzer = freq * reduced_mass / (n * charges[0] * charges[1])
-    else:
-        spitzer = freq * reduced_mass / (n * (z_mean * e) ** 2)
-    return spitzer
+    return (
+        freq * reduced_mass / (n * charges[0] * charges[1])
+        if np.isnan(z_mean)
+        else freq * reduced_mass / (n * (z_mean * e) ** 2)
+    )
 
 
 @validate_quantities(
@@ -1714,7 +1642,7 @@ def mobility(
     V : `~astropy.units.Quantity`, optional
         The relative velocity between particles. If not provided,
         thermal velocity is assumed: :math:`μ V^2 \sim 2 k_B T` where
-        `μ` is the reduced mass.
+        :math:`μ` is the reduced mass.
 
     method : `str`, optional
         The method by which to compute the Coulomb logarithm.  The
@@ -1754,12 +1682,14 @@ def mobility(
     : `~astropy.units.UnitsWarning`
         If units are not provided, SI units are assumed.
 
-    : `~plasmapy.utils.RelativityWarning`
+    : `~plasmapy.utils.exceptions.RelativityWarning`
         If the input velocity is greater than 5% of the speed of light.
 
     Notes
     -----
-    The mobility is given by [1]_
+    The `mobility
+    <https://en.wikipedia.org/wiki/Electrical_mobility#Mobility_in_gas_phase>`_
+    is given by
 
     .. math::
 
@@ -1777,17 +1707,13 @@ def mobility(
     Examples
     --------
     >>> import astropy.units as u
-    >>> n = 1e19*u.m**-3
-    >>> T = 1e6*u.K
+    >>> n = 1e19 * u.m ** -3
+    >>> T = 1e6 * u.K
     >>> species = ('e', 'p')
     >>> mobility(T, n, species)
     <Quantity 250505... m2 / (s V)>
     >>> mobility(T, n, species, V=1e6 * u.m / u.s)
     <Quantity 1921.2784... m2 / (s V)>
-
-    References
-    ----------
-    .. [1] https://en.wikipedia.org/wiki/Electrical_mobility#Mobility_in_gas_phase
     """
     freq = collision_frequency(
         T=T, n=n_e, species=species, z_mean=z_mean, V=V, method=method
@@ -1797,12 +1723,8 @@ def mobility(
     # already has a boiler_plate check and we are doing this just
     # to recover the charges, mass, etc.
     T, masses, charges, reduced_mass, V = _boilerPlate(T=T, species=species, V=V)
-    if np.isnan(z_mean):
-        z_val = (charges[0] + charges[1]) / 2
-    else:
-        z_val = z_mean * e
-    mobility_value = z_val / (reduced_mass * freq)
-    return mobility_value
+    z_val = (charges[0] + charges[1]) / 2 if np.isnan(z_mean) else z_mean * e
+    return z_val / (reduced_mass * freq)
 
 
 @validate_quantities(
@@ -1897,7 +1819,8 @@ def Knudsen_number(
 
     Notes
     -----
-    The Knudsen number is given by [1]_
+    The `Knudsen number <https://en.wikipedia.org/wiki/Knudsen_number>`_
+    is given by
 
     .. math::
 
@@ -1916,23 +1839,18 @@ def Knudsen_number(
     --------
     >>> import astropy.units as u
     >>> L = 1e-3 * u.m
-    >>> n = 1e19*u.m**-3
-    >>> T = 1e6*u.K
+    >>> n = 1e19 * u.m ** -3
+    >>> T = 1e6 * u.K
     >>> species = ('e', 'p')
     >>> Knudsen_number(L, T, n, species)
     <Quantity 7839.5...>
     >>> Knudsen_number(L, T, n, species, V=1e6 * u.m / u.s)
     <Quantity 10.91773...>
-
-    References
-    ----------
-    .. [1] https://en.wikipedia.org/wiki/Knudsen_number
     """
     path_length = mean_free_path(
         T=T, n_e=n_e, species=species, z_mean=z_mean, V=V, method=method
     )
-    knudsen_param = path_length / characteristic_length
-    return knudsen_param
+    return path_length / characteristic_length
 
 
 @validate_quantities(
@@ -1986,15 +1904,10 @@ def coupling_parameter(
         :math:`μ` is the reduced mass.
 
     method : `str`, optional
-        The method by which to compute the Coulomb logarithm.  The
-        default method is the classical straight-line Landau-Spitzer
-        method (``"classical"`` or ``"ls"``). The other 6 supported
-        methods are ``"ls_min_interp"``, ``"ls_full_interp"``,
-        ``"ls_clamp_mininterp"``, ``"hls_min_interp"``,
-        ``"hls_max_interp"``, and ``"hls_full_interp"``.  Please refer
-        to the docstring of
-        `~plasmapy.formulary.collisions.Coulomb_logarithm` for more
-        information about these methods.
+        The method by which to compute the coupling parameter: either
+        ``"classical"`` or ``"quantum"``. The default method is ``"classical"``.
+        The Notes section of this docstring has more information about
+        these two methods.
 
     Returns
     -------
@@ -2038,7 +1951,7 @@ def coupling_parameter(
 
     .. math::
 
-        E_{Coulomb} = \frac{Z_1 Z_2 q_e^2}{4 π \epsilon_0 r}
+        E_{Coulomb} = \frac{Z_1 Z_2 q_e^2}{4 π ε_0 r}
 
     where :math:`r` is the Wigner-Seitz radius, and 1 and 2 refer to
     particle species 1 and 2 between which we want to determine the
@@ -2053,8 +1966,8 @@ def coupling_parameter(
     The quantum case is more complex. The kinetic energy is dominated by
     the Fermi energy, modulated by a correction factor based on the
     ideal chemical potential. This is obtained more precisely by taking
-    the the thermal kinetic energy and dividing by the degeneracy
-    parameter, modulated by the Fermi integral [1]_
+    the thermal kinetic energy and dividing by the degeneracy
+    parameter, modulated by the Fermi integral :cite:p:`gericke:2002`\ :
 
     .. math::
 
@@ -2073,8 +1986,8 @@ def coupling_parameter(
     where :math:`n_e` is the electron density and :math:`Λ_{de Broglie}`
     is the thermal de Broglie wavelength.
 
-    See equations 1.2, 1.3 and footnote 5 in [2]_ for details on the
-    ideal chemical potential.
+    See equations 1.2, 1.3 and footnote 5 in :cite:t:`bonitz:1998` for
+    details on the ideal chemical potential.
 
     Examples
     --------
@@ -2086,13 +1999,6 @@ def coupling_parameter(
     <Quantity 5.8033...e-05>
     >>> coupling_parameter(T, n, species, V=1e6 * u.m / u.s)
     <Quantity 5.8033...e-05>
-
-    References
-    ----------
-    .. [1] Dense plasma temperature equilibration in the binary collision
-       approximation. D. O. Gericke et. al. PRE,  65, 036418 (2002).
-       DOI: 10.1103/PhysRevE.65.036418
-    .. [2] Bonitz, Michael. Quantum kinetic theory. Stuttgart: Teubner, 1998.
     """
     # boiler plate checks
     T, masses, charges, reduced_mass, V = _boilerPlate(T=T, species=species, V=V)
@@ -2106,14 +2012,11 @@ def coupling_parameter(
         Z = (Z1 + Z2) / 2
         # getting ion density from electron density
         n_i = n_e / Z
-        # getting Wigner-Seitz radius based on ion density
-        radius = Wigner_Seitz_radius(n_i)
     else:
         # getting ion density from electron density
         n_i = n_e / z_mean
-        # getting Wigner-Seitz radius based on ion density
-        radius = Wigner_Seitz_radius(n_i)
-
+    # getting Wigner-Seitz radius based on ion density
+    radius = Wigner_Seitz_radius(n_i)
     # Coulomb potential energy between particles
     if np.isnan(z_mean):
         coulomb_energy = charges[0] * charges[1] / (4 * np.pi * eps0 * radius)

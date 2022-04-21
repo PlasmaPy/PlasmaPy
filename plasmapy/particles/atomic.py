@@ -27,15 +27,14 @@ import astropy.units as u
 from numbers import Integral, Real
 from typing import Any, List, Optional, Union
 
+from plasmapy.particles import _elements, _isotopes
 from plasmapy.particles.decorators import particle_input
-from plasmapy.particles.elements import _elements
 from plasmapy.particles.exceptions import (
     InvalidElementError,
     InvalidIsotopeError,
     InvalidParticleError,
     MissingParticleDataError,
 )
-from plasmapy.particles.isotopes import _isotopes
 from plasmapy.particles.particle_class import Particle
 from plasmapy.particles.symbols import atomic_symbol
 from plasmapy.utils.decorators.deprecation import deprecated
@@ -324,7 +323,7 @@ def charge_number(particle: Particle) -> Integral:
     `~plasmapy.particles.exceptions.ChargeError`
         If charge information for the particle is not available.
 
-    `~plasmapy.particles.exceptions.AtomicWarning`
+    `~plasmapy.particles.exceptions.ParticleWarning`
         If the input represents an ion with a charge number that is
         less than or equal to ``-3``, which is unlikely to occur in
         nature.
@@ -589,19 +588,20 @@ def known_isotopes(argument: Union[str, Integral] = None) -> List[str]:
 
     def known_isotopes_for_element(argument):
         element = atomic_symbol(argument)
-        isotopes = []
-        for isotope in _isotopes.keys():
-            if element + "-" in isotope and isotope[0 : len(element)] == element:
-                isotopes.append(isotope)
+        isotopes = [
+            isotope
+            for isotope in _isotopes.data_about_isotopes
+            if f"{element}-" in isotope and isotope[: len(element)] == element
+        ]
+
         if element == "H":
             isotopes.insert(1, "D")
             isotopes.insert(2, "T")
         mass_numbers = [mass_number(isotope) for isotope in isotopes]
-        sorted_isotopes = [
+        return [
             mass_number
             for (isotope, mass_number) in sorted(zip(mass_numbers, isotopes))
         ]
-        return sorted_isotopes
 
     if argument is not None:
         try:
@@ -616,7 +616,7 @@ def known_isotopes(argument: Union[str, Integral] = None) -> List[str]:
             raise InvalidParticleError("Invalid particle in known_isotopes.")
     elif argument is None:
         isotopes_list = []
-        for atomic_numb in range(1, len(_elements.keys()) + 1):
+        for atomic_numb in range(1, len(_elements.data_about_elements) + 1):
             isotopes_list += known_isotopes_for_element(atomic_numb)
 
     return isotopes_list
@@ -700,11 +700,14 @@ def common_isotopes(
         isotopes = known_isotopes(argument)
 
         CommonIsotopes = [
-            isotope for isotope in isotopes if "abundance" in _isotopes[isotope].keys()
+            isotope
+            for isotope in isotopes
+            if "abundance" in _isotopes.data_about_isotopes[isotope]
         ]
 
         isotopic_abundances = [
-            _isotopes[isotope]["abundance"] for isotope in CommonIsotopes
+            _isotopes.data_about_isotopes[isotope]["abundance"]
+            for isotope in CommonIsotopes
         ]
 
         sorted_isotopes = [
@@ -715,7 +718,7 @@ def common_isotopes(
         sorted_isotopes.reverse()
 
         if most_common_only and len(sorted_isotopes) > 1:
-            sorted_isotopes = sorted_isotopes[0:1]
+            sorted_isotopes = sorted_isotopes[:1]
 
         return sorted_isotopes
 
@@ -815,12 +818,11 @@ def stable_isotopes(
         argument: Union[str, int], stable_only: Optional[bool]
     ) -> List[str]:
         KnownIsotopes = known_isotopes(argument)
-        StableIsotopes = [
+        return [
             isotope
             for isotope in KnownIsotopes
-            if _isotopes[isotope]["stable"] == stable_only
+            if _isotopes.data_about_isotopes[isotope]["stable"] == stable_only
         ]
-        return StableIsotopes
 
     if argument is not None:
         try:
@@ -867,7 +869,7 @@ def reduced_mass(test_particle, target_particle) -> u.Quantity:
 
     `~astropy.units.UnitConversionError`
         If an argument is a `~astropy.units.Quantity` or
-        `~astropy.units.Constant` but does not have units of mass.
+        `~astropy.constants.Constant` but does not have units of mass.
 
     `~plasmapy.particles.exceptions.MissingParticleDataError`
         If the mass of either particle is not known.
@@ -962,8 +964,7 @@ def periodic_table_period(argument: Union[str, Integral]) -> Integral:
             "integer representing its atomic number."
         )
     symbol = atomic_symbol(argument)
-    period = _elements[symbol]["period"]
-    return period
+    return _elements.data_about_elements[symbol]["period"]
 
 
 def periodic_table_group(argument: Union[str, Integral]) -> Integral:
@@ -1016,8 +1017,7 @@ def periodic_table_group(argument: Union[str, Integral]) -> Integral:
             "symbol, or an integer representing its atomic number."
         )
     symbol = atomic_symbol(argument)
-    group = _elements[symbol]["group"]
-    return group
+    return _elements.data_about_elements[symbol]["group"]
 
 
 def periodic_table_block(argument: Union[str, Integral]) -> str:
@@ -1070,8 +1070,7 @@ def periodic_table_block(argument: Union[str, Integral]) -> str:
             "symbol, or an integer representing its atomic number."
         )
     symbol = atomic_symbol(argument)
-    block = _elements[symbol]["block"]
-    return block
+    return _elements.data_about_elements[symbol]["block"]
 
 
 def periodic_table_category(argument: Union[str, Integral]) -> str:
@@ -1122,8 +1121,7 @@ def periodic_table_category(argument: Union[str, Integral]) -> str:
             "symbol, or an integer representing its atomic number."
         )
     symbol = atomic_symbol(argument)
-    category = _elements[symbol]["category"]
-    return category
+    return _elements.data_about_elements[symbol]["category"]
 
 
 def _is_electron(arg: Any) -> bool:
@@ -1133,7 +1131,8 @@ def _is_electron(arg: Any) -> bool:
     """
     # TODO: Remove _is_electron from all parts of code.
 
-    if not isinstance(arg, str):
-        return False
-
-    return arg in ["e", "e-"] or arg.lower() == "electron"
+    return (
+        arg in ["e", "e-"] or arg.lower() == "electron"
+        if isinstance(arg, str)
+        else False
+    )

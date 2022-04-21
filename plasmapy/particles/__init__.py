@@ -5,6 +5,8 @@ atoms, isotopes, ions, and other particles.
 # __all__ will be auto populated below
 __all__ = []
 
+import inspect
+
 from plasmapy.particles.atomic import (
     atomic_number,
     charge_number,
@@ -30,6 +32,7 @@ from plasmapy.particles.particle_class import (
     AbstractPhysicalParticle,
     CustomParticle,
     DimensionlessParticle,
+    molecule,
     Particle,
     ParticleLike,
 )
@@ -39,7 +42,6 @@ from plasmapy.particles.serialization import (
     json_loads_particle,
     ParticleJSONDecoder,
 )
-from plasmapy.particles.special_particles import ParticleZoo
 from plasmapy.particles.symbols import (
     atomic_symbol,
     element_name,
@@ -49,31 +51,38 @@ from plasmapy.particles.symbols import (
 )
 
 proton = Particle("p+")
-"""A `Particle` instance representing a proton."""
+"""A |Particle| instance representing a proton."""
 
 electron = Particle("e-")
-"""A `Particle` instance representing an electron."""
+"""A |Particle| instance representing an electron."""
 
 neutron = Particle("n")
-"""A `Particle` instance representing a neutron."""
+"""A |Particle| instance representing a neutron."""
 
 positron = Particle("e+")
-"""A `Particle` instance representing a positron."""
+"""A |Particle| instance representing a positron."""
 
 deuteron = Particle("D 1+")
-"""A `Particle` instance representing a positively charged deuterium ion."""
+"""A |Particle| instance representing a positively charged deuterium ion."""
 
 triton = Particle("T 1+")
-"""A `Particle` instance representing a positively charged tritium ion."""
+"""A |Particle| instance representing a positively charged tritium ion."""
 
 alpha = Particle("He-4 2+")
 """
-A `Particle` instance representing an alpha particle (doubly charged
+A |Particle| instance representing an alpha particle (doubly charged
 helium-4).
 """
 
 # auto populate __all__
-for obj_name in list(globals()):
-    if not (obj_name.startswith("__") or obj_name.endswith("__")):
-        __all__.append(obj_name)
+for name, obj in list(globals().items()):
+    if inspect.ismodule(obj):
+        continue
+    elif name.startswith("__") or name.endswith("__"):
+        continue
+
+    __all__.append(name)
+
 __all__.sort()
+
+del inspect, name, obj

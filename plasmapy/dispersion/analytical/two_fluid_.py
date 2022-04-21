@@ -11,7 +11,8 @@ import warnings
 from astropy.constants.si import c
 from typing import Union
 
-from plasmapy.formulary import parameters as pfp
+from plasmapy.formulary.frequencies import gyrofrequency, plasma_frequency
+from plasmapy.formulary.speeds import Alfven_speed, ion_sound_speed
 from plasmapy.particles import Particle
 from plasmapy.particles.exceptions import ChargeError
 from plasmapy.utils.decorators import validate_quantities
@@ -41,7 +42,7 @@ def two_fluid(
     Using the solution provided by :cite:t:`bellan:2012`, calculate the
     analytical solution to the two fluid, low-frequency
     (:math:`\omega/kc \ll 1`) dispersion relation presented by
-    :cite:t:`stringer:1963`.  This dispersion relation also assummes a
+    :cite:t:`stringer:1963`.  This dispersion relation also assumes a
     uniform magnetic field :math:`\mathbf{B_o}`, no D.C. electric field
     :math:`\mathbf{E_o}=0`, and quasi-neutrality.  For more information
     see the **Notes** section below.
@@ -100,7 +101,7 @@ def two_fluid(
 
     TypeError
         If ``ion`` is not of type or convertible to
-        `~plasmapy.particles.Particle`.
+        `~plasmapy.particles.particle_class.Particle`.
 
     TypeError
         If ``gamma_e``, ``gamma_i``, or ``z_mean`` are not of type `int`
@@ -290,7 +291,7 @@ def two_fluid(
     n_e = z_mean * n_i
     with warnings.catch_warnings():
         warnings.simplefilter("ignore", category=PhysicsWarning)
-        c_s = pfp.ion_sound_speed(
+        c_s = ion_sound_speed(
             T_e=T_e,
             T_i=T_i,
             ion=ion,
@@ -299,9 +300,9 @@ def two_fluid(
             gamma_i=gamma_i,
             z_mean=z_mean,
         )
-    v_A = pfp.Alfven_speed(B, n_i, ion=ion, z_mean=z_mean)
-    omega_ci = pfp.gyrofrequency(B=B, particle=ion, signed=False, Z=z_mean)
-    omega_pe = pfp.plasma_frequency(n=n_e, particle="e-")
+    v_A = Alfven_speed(B, n_i, ion=ion, z_mean=z_mean)
+    omega_ci = gyrofrequency(B=B, particle=ion, signed=False, Z=z_mean)
+    omega_pe = plasma_frequency(n=n_e, particle="e-")
 
     # Bellan2012JGR params equation 32
     alpha = np.cos(theta.value) ** 2
