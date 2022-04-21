@@ -228,10 +228,10 @@ the code is supposed to be doing.
     in the |bibliography|.
 
   * Sometimes code that represents an equation will be most readable if
-    the Unicode_ characters for the symbols are used. For example,
+    the Unicode characters for the symbols are used. For example,
     ``λ = c / ν`` can be compared to a textbook more quickly than
     ``lambda = c / nu`` or ``wavelength = speed_of_light / frequency``.
-    Using Unicode_ characters for variable names is most beneficial for
+    Using Unicode characters for variable names is most beneficial for
     complex equations.
 
 * Choose names that are pronounceable so that they are easier to
