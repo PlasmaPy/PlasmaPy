@@ -232,9 +232,9 @@ def stix(
     D = 0
 
     for wc, wp in zip(wcs, wps):
-        S -= (wps ** 2) / (w ** 2 + wcs ** 2)
-        P -= (wps / w) ** 2
-        D += ((wps ** 2) / (w ** 2 + wcs ** 2)) * (wcs / w)
+        S -= (wp ** 2) / (w ** 2 + wc ** 2)
+        P -= (wp / w) ** 2
+        D += ((wp ** 2) / (w ** 2 + wc ** 2)) * (wc / w)
 
     R = S + D
     L = S - D
@@ -253,14 +253,18 @@ def stix(
         B.append(arg_)
         C.append(P * R * L)
 
-        coefficients = np.array([A, 0, B, 0, C], ndmin=2)
-        nroots = coefficients.shape[0] - 1  # 3
-        nks = coefficients.shape[1]
-        roots = np.empty((nroots, nks), dtype=np.complex128)
-        for ii in range(nks):
-            roots[:, ii] = np.roots(coefficients[:, ii])[:]
+    # Solve for k values
+    k = {}
 
-        roots = np.sqrt(roots)
-        roots = np.sort(roots, axis=0)
+    for i in range(len(theta)):
+        a = float(A.pop(i))
+        b = float(B.pop(i))
+        c = float(C.pop(i))
+        coefficients = [a, 0, b, 0, c]
 
-    return roots
+        deg = float(theta[i])
+        k[deg] = np.roots(coefficients)
+        k[deg] = np.sqrt(k[deg])
+        k[deg] = np.sort(k[deg], axis=0)
+
+    return k
