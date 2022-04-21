@@ -155,8 +155,8 @@ def stix(
 
     if not all(failed := [ion.is_ion and ion.charge_number > 0 for ion in ions]):
         raise ValueError(
-            f"Particle(s) passed to 'ions' must be a positively charged"
-            f" ion. The following particle(s) is(are) not allowed "
+            "Particle(s) passed to 'ions' must be a positively charged"
+            " ion. The following particle(s) is(are) not allowed "
             f"{[ion for ion, fail in zip(ions, failed) if not fail]}"
         )
 
