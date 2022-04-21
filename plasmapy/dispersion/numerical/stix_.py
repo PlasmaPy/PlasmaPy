@@ -163,12 +163,12 @@ def stix(
     # Validate n_i argument
     if n_i.ndim not in (0, 1):
         raise ValueError(
-            f"Argument 'n_i' must be a single valued or a 1D array of "
+            "Argument 'n_i' must be a single valued or a 1D array of "
             f"size 1 or {len(ions)}, instead got shape of {n_i.shape}"
         )
     elif n_i.ndim == 1 and n_i.size != len(ions):
         raise ValueError(
-            f"Argument 'n_i' and 'ions' need to be the same length, got"
+            "Argument 'n_i' and 'ions' need to be the same length, got"
             f" value of shape {len(ions)} and {len(n_i.shape)}."
         )
 
