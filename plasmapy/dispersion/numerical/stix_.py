@@ -231,11 +231,10 @@ def stix(
     S = 1
     P = 1
     D = 0
-
     for wc, wp in zip(wcs, wps):
         S -= (wp ** 2) / (w ** 2 - wc ** 2)
         P -= (wp / w) ** 2
-        D += ((wp ** 2) / (w ** 2 + wc ** 2)) * (wc / w)
+        D += ((wp ** 2) / (w ** 2 - wc ** 2)) * (wc / w)
 
     R = S + D
     L = S - D
