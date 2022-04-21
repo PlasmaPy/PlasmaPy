@@ -31,8 +31,8 @@ def stix(
 ):
     r"""
     Calculate the cold plasma function solution by using
-    :cite:t:`bellan:2012`, this uses the numerical method to find
-    (:math:`\omega`) dispersion relation provided by
+    :cite:t:`bellan:2012`, this uses the numerical method to find the
+    wave number(s), (:math:`k`), for the dispersion relation provided by
     :cite:t:`stringer:1963`. This dispersion relation also assumes
     uniform magnetic field :math:`\mathbf{B_0}`, theta is the angle
     between the magnetic and the normal surface of the wave vector.
@@ -43,8 +43,8 @@ def stix(
     B : `~astropy.units.Quantity`
         The magnetic field magnitude in units convertible to T.
 
-    w : `~astropy.units.Quantity`, single value omega  in units
-        convertible to rad/s.
+    w : `~astropy.units.Quantity`, single value omega or 1-D array in
+        units convertible to rad/s.
 
     ions: a single or `list` of :term:`particle-like` object(s)
         epresentation of the ion species (e.g., ``"p"`` for protons,
@@ -65,9 +65,9 @@ def stix(
     Returns
     -------
     omegas : Dict[`str`, `~astropy.units.Quantity`]
-        A dictionary of computed wave frequencies in units rad/s.  The
+        A dictionary of computed wave numbers in units rad/m.  The
         dictionary contains keys for each wave number, this will return
-        an array  of value :math:`K x 4`.
+        an array  of value :math:`\theta x 4`.
 
     Raises
     ------
@@ -264,6 +264,6 @@ def stix(
 
         deg = float(theta[i])
         k[deg] = np.roots(coefficients)
-        k[deg] = np.sort(k[deg], axis=0)
+        k[deg] = np.sort(k[deg] * u.rad / u.m, axis=0)
 
     return k
