@@ -94,23 +94,10 @@ automatically. To apply these changes in a pull request, add a comment
 that says ``pre-commit.ci autofix``. After doing this, be sure to `pull
 the changes`_ from GitHub to your computer with ``git pull``.
 
-<<<<<<< HEAD
 To enable |pre-commit|_ locally, open a terminal, enter the directory of
 the PlasmaPy repository, and run:
 
 .. code-block:: bash
-=======
-PlasmaPy has a configuration for the `pre-commit framework
-<https://pre-commit.com/>`_ that takes care of style mostly automatically.
-Install it with ``pip install pre-commit``, then use ``pre-commit install`` within
-the repository.
-
-This will cause pre-commit to download the right versions of linters we use,
-then run an automated style checking suite on every commit.  Do note that this
-works better with a ``git add``, then ``git commit`` workflow than a ``git commit
--a`` workflow — that way, you can check via ``git diff`` what the automated
-changes actually did.
->>>>>>> 34c717ced17850f30ba4068726644afd39e15e3e
 
    pip install pre-commit
    pre-commit install
@@ -120,16 +107,7 @@ and attempted to commit it. If |pre-commit|_ has been installed, then
 the ``trailing-whitespace`` hook will cause |pre-commit|_ to fail while
 modifying :file:`some_file.py` to remove the trailing whitespace.
 
-<<<<<<< HEAD
 .. code-block:: console
-=======
-* black_ to automatically format code and ensure a consistent code style
-  throughout the package
-* isort_ to automatically sort imports.
-* `nbqa <https://github.com/nbQA-dev/nbQA>`_ to automatically apply the above
-  to example notebooks as well.
-* a few tools for :file:`requirements.txt`, :file:`.yml` files and the like.
->>>>>>> 34c717ced17850f30ba4068726644afd39e15e3e
 
    $ git add some_file.py
    $ git commit -m "Add trailing whitespace"
@@ -170,25 +148,15 @@ the code is supposed to be doing.
   :kbd:`Shift+F6` on Windows or Linux and :kbd:`⇧F6` or :kbd:`⌥⌘R` on
   macOS.
 
-<<<<<<< HEAD
 * Use :pep:`8` conventions for naming variables, functions, classes, and
   constants (except as described later in this list).
-=======
-* Use ``Optional[type]`` for type hinted keyword arguments with a
-  default value of `None`.
->>>>>>> 34c717ced17850f30ba4068726644afd39e15e3e
 
   - Use lowercase words separated by underscores for function and
     variable names (e.g., ``function_name`` and ``variable_name``).
 
-<<<<<<< HEAD
   - Use capitalized words without separators when naming a :term:`class`
     or an exception (e.g., ``ClassName`` or ``ExceptionName``). However,
     keep acronyms capitalized (e.g., ``MHDEquations``).
-=======
-* Avoid using ``lambda`` to define functions, as this notation may be
-  unfamiliar to newcomers to Python.
->>>>>>> 34c717ced17850f30ba4068726644afd39e15e3e
 
   - Use capital letters words separated by underscores for constants
     (e.g., ``CONSTANT`` or ``CONSTANT_NAME``).
@@ -222,19 +190,49 @@ the code is supposed to be doing.
   gyration, whereas ``Larmor_frequency`` indicates that this frequency
   is somehow related to someone named Larmor.
 
-<<<<<<< HEAD
-* Avoid naming functions by spelling out the name of the Greek
-  character, as in
-=======
-Descriptive branch names such as ``grad-shafranov`` or
-``adding-eigenfunction-poetry`` are helpful, while vague names like
-``edits`` are considered harmful.  After creating your branch locally,
-let your fork of PlasmaPy know about it by running:
->>>>>>> 34c717ced17850f30ba4068726644afd39e15e3e
+* Choosing whether to name a variable after its symbol (e.g.,
+  ``lambda_D``or after its name (``Debye_length``) requires balancing
+  several different tradeoffs. When making this decision, it is helpful
+  to ask yourself if the name will be understandable to a newcomer to
+  the project. It is also helpful to think about who is most likely to
+  read the particular section of code.
 
-  * Similarly, using ``omega_ce`` as a function name will make the code
-    less readable to people who are unfamiliar with this particular
-    notation.
+  * Naming variables by their symbol sometimes reduces clarity. For
+    example, ``mu`` is less readable than ``viscosity`` to someone who
+    is not familiar with :math:`μ` representing viscosity. Additionally,
+    doing a web search for "mu" would not be helpful in figuring out
+    what the variable ``mu`` represents.
+
+  * Widely used symbols can be used with low risk of confusion. For
+    example, the symbol :math:`β` for plasma
+    `~plasmapy.formulary.dimensionless.beta` is used across much of
+    plasma science to represent the ratio of the plasma pressure to the
+    magnetic pressure.
+
+  * Naming variables after symbols that are used less ubiquitously
+    should be used with increased caution. Sometimes multiple symbols
+    for a physical quantity may be in common use. The standard symbol
+    for a physical quantity might differ across different subfields of
+    plasma science.
+
+  * If a symbol is defined in a docstring, then using that symbol would
+    be unlikely to lead to confusion. The symbol could be defined in a
+    comment; however, comments are less likely to be maintained than
+    docstrings.
+
+  * If the implementation of a function is based on a particular journal
+    article, then the function might be more readable and maintainable
+    if the variable names are based on the symbols used in that article.
+    This is especially true if the article is open access. The article
+    should be cited in the docstring of that function so that it appears
+    in the |bibliography|.
+
+  * Sometimes code that represents an equation will be most readable if
+    the Unicode_ characters for the symbols are used. For example,
+    ``λ = c / ν`` can be compared to a textbook more quickly than
+    ``lambda = c / nu`` or ``wavelength = speed_of_light / frequency``.
+    Using Unicode_ characters for variable names is most beneficial for
+    complex equations.
 
 * Choose names that are pronounceable so that they are easier to
   remember and more compatible with screen reader (text-to-speech)
@@ -539,7 +537,10 @@ Coding style
      >>> {x: x ** 2 for x in range(17) if x % 2 == 0}
      {0: 0, 2: 4, 4: 16, 6: 36, 8: 64, 10: 100, 12: 144, 14: 196, 16: 256}
 
-* Avoid using global variables.
+* Avoid using global variables when possible.
+
+* Use ``Optional[type]`` for type hinted keyword arguments with a
+  default value of `None`.
 
 * Avoid putting any significant implementation code in
   :file:`__init__.py` files. Implementation details should be contained
