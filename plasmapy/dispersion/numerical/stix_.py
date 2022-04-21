@@ -195,11 +195,13 @@ def stix(
     w = w.squeeze()
     if not (w.ndim == 0 or w.ndim == 1):
         raise ValueError(
-            f"Argument 'w' needs to be a single value or a 1D array astropy Quantity,"
-            f"got a value of shape {w.shape}."
+            f"Argument 'w' needs to be a single value or a 1D array "
+            f" astropy Quantity, got a value of shape {w.shape}."
         )
     if np.any(w <= 0):
-        raise ValueError(f"Argument 'w' can not a or have negative value")
+        raise ValueError(
+            f"Argument 'w' can not have a negative value."
+        )
     if np.isscalar(w.value):
         w = np.array([w.value])
 
