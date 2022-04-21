@@ -244,7 +244,6 @@ def stix(
     B = []
     C = []
 
-    k = {}
     val = c_si_unitless / w
 
     for phi in theta:
