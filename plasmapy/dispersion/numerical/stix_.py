@@ -191,7 +191,7 @@ def stix(
             f" shape  {B.shape}."
         )
 
-    # Validate k argument and dimension
+    # Validate w argument and dimension
     w = w.squeeze()
     if not (w.ndim == 0 or w.ndim == 1):
         raise ValueError(
@@ -214,6 +214,9 @@ def stix(
     if np.isscalar(theta.value):
         theta = np.array([theta.value])
 
+    # Generate mesh grid of w x theta
+    w, theta = np.meshgrid(w, theta, indexing="ij")
+
     # Generate the plasma parameters needed
     wps = []
     wcs = []
@@ -224,15 +227,13 @@ def stix(
     wps = np.array(wps)
     wcs = np.array(wcs)
 
-    w, theta = np.meshgrid(w, theta, indexing="ij")
-
     # Stix method implemented
     S = 1
     P = 1
     D = 0
 
     for wc, wp in zip(wcs, wps):
-        S -= (wp ** 2) / (w ** 2 + wc ** 2)
+        S -= (wp ** 2) / (w ** 2 - wc ** 2)
         P -= (wp / w) ** 2
         D += ((wp ** 2) / (w ** 2 + wc ** 2)) * (wc / w)
 
@@ -240,30 +241,18 @@ def stix(
     L = S - D
 
     # Generate coefficients to solve
-    A = []
-    B = []
-    C = []
-
-    val = c_si_unitless / w
-
-    for phi in theta:
-        arg_ = val * (S * (np.sin(phi) ** 2) + P * (np.cos(phi) ** 2))
-        A.append(arg_)
-        arg_ = -val * (R * L * (np.sin(phi) ** 2) + P * S * (1 + (np.cos(phi) ** 2)))
-        B.append(arg_)
-        C.append(P * R * L)
+    A = (c_si_unitless / w) ** 4 * (S * (np.sin(theta) ** 2) + P * (np.cos(theta) ** 2))
+    B = -((c_si_unitless / w) ** 2) * (
+        R * L * (np.sin(theta) ** 2) + P * S * (1 + (np.cos(theta) ** 2))
+    )
+    C = P * R * L
 
     # Solve for k values
-    k = {}
+    k = np.empty(4, dtype=np.complex128)
 
-    for i in range(len(theta)):
-        a = float(A.pop(i))
-        b = float(B.pop(i))
-        c = float(C.pop(i))
-        coefficients = [a, 0, b, 0, c]
-
-        deg = float(theta[i])
-        k[deg] = np.roots(coefficients)
-        k[deg] = np.sort(k[deg] * u.rad / u.m, axis=0)
+    k[0] = np.emath.sort((-B + np.emath.sqrt(B ** 2 - 4 * A * C)) / (2 * A))
+    k[1] = -k[0]
+    k[2] = np.emath.sort((-B - np.emath.sqrt(B ** 2 - 4 * A * C)) / (2 * A))
+    k[3] = -k[2]
 
     return k

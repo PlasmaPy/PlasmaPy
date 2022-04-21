@@ -12,7 +12,7 @@ class TestStix:
     _kwargs_single_valued = {
         "B": 8.3e-9 * u.T,
         "w": 0.001 * u.rad / u.s,
-        "ions": [Particle("e-"), Particle("H+")],
+        "ions": [Particle("He+"), Particle("H+")],
         "n_i": [4.0e5, 2.0e5] * u.m ** -3,
         "theta": 30 * u.deg,
     }
@@ -32,7 +32,6 @@ class TestStix:
                 {**_kwargs_single_valued, "n_i": 6 * u.m / u.s},
                 u.UnitTypeError,
             ),
-            ({**_kwargs_single_valued, "theta": np.ones((3, 2)) * u.deg}, TypeError),
             ({**_kwargs_single_valued, "theta": 5 * u.eV}, u.UnitTypeError),
         ],
     )
@@ -43,32 +42,32 @@ class TestStix:
     @pytest.mark.parametrize(
         "kwargs, expected",
         [
-            ({**_kwargs_single_valued, "w": 0 * u.rad / u.m}, {"shape": ()}),
+            ({**_kwargs_single_valued, "w": 0 * u.rad / u.s}, {"shape": 1}),
             (
-                {**_kwargs_single_valued, "w": [10] * u.rad / u.m},
-                {"shape": ()},
+                {**_kwargs_single_valued, "w": [10] * u.rad / u.s},
+                {"shape": 1},
             ),
             (
-                {**_kwargs_single_valued, "w": [10, 20, 30] * u.rad / u.m},
-                {"shape": ()},
+                {**_kwargs_single_valued, "w": [10, 20, 30] * u.rad / u.s},
+                {"shape": 3},
             ),
-            ({**_kwargs_single_valued, "ions": ["He+", "e-"]}, {"shape": ()}),
+            ({**_kwargs_single_valued, "ions": ["He+", "e-"]}, {"shape": 2}),
             (
                 {
                     **_kwargs_single_valued,
                     "ions": ["He+"],
-                    "n_i": [1] * u.rad / u.s,
+                    "n_i": [1] * u.m ** -3,
                 },
-                {"shape": ()},
+                {"shape": 1},
             ),
-            ({**_kwargs_single_valued, "ions": ["He+", "e-"]}, {"shape": ()}),
+            ({**_kwargs_single_valued, "ions": ["He+", "e-"]}, {"shape": 2}),
             (
                 {
                     **_kwargs_single_valued,
                     "ions": ["He+", "H+"],
-                    "n_i": [1, 2] * u.rad / u.s,
+                    "n_i": [1, 2] * u.m ** -3,
                 },
-                {"shape": ()},
+                {"shape": 2},
             ),
         ],
     )
@@ -79,18 +78,16 @@ class TestStix:
         assert isinstance(w, dict)
 
         for key in w.keys():
-            print(key)
             for val in w[key]:
-                print(val)
                 assert isinstance(val, u.Quantity)
-                assert val.unit == u.rad / u.s
+                assert val.unit == u.rad / u.m
 
         assert np.shape(w) == expected["shape"]
 
     @pytest.mark.parametrize(
         "kwargs, _warning",
         [
-            ({**_kwargs_single_valued, "w": 0 * u.s / u.m}, u.UnitTypeError),
+            ({**_kwargs_single_valued, "w": 0 * u.s / u.s}, u.UnitTypeError),
         ],
     )
     def test_warns(self, kwargs, _warning):
