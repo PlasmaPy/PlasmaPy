@@ -209,7 +209,7 @@ def stix(
     if theta.ndim not in (0, 1):
         raise TypeError(
             f"Argument 'theta' needs to be a single value or 1D array "
-            f" astropy Quantity, got array of shape {k.shape}."
+            f" astropy Quantity, got array of shape {theta.shape}."
         )
     if np.isscalar(theta.value):
         theta = np.array([theta.value])
@@ -224,15 +224,17 @@ def stix(
     wps = np.array(wps)
     wcs = np.array(wcs)
 
+    w, theta = np.meshgrid(w, theta, indexing="ij")
+
     # Stix method implemented
     S = 1
     P = 1
     D = 0
 
-    for i in range(len(wps)):
-        S -= (wps[i] ** 2) / (w ** 2 + wcs[i] ** 2)
-        P -= (wps[i] / w) ** 2
-        D += ((wps[i] ** 2) / (w ** 2 + wcs[i] ** 2)) * (wcs[i] / w)
+    for wc, wp in zip(wcs, wps):
+        S -= (wps ** 2) / (w ** 2 + wcs ** 2)
+        P -= (wps / w) ** 2
+        D += ((wps ** 2) / (w ** 2 + wcs ** 2)) * (wcs / w)
 
     R = S + D
     L = S - D
@@ -242,25 +244,24 @@ def stix(
     B = []
     C = []
 
-    for i in range(len(theta)):
-        arg_ = S * (np.sin(theta[i]) ** 2) + P * (np.cos(theta[i]) ** 2)
+    k = {}
+    val = c_si_unitless / w
+
+    for phi in theta:
+        arg_ = val * (S * (np.sin(phi) ** 2) + P * (np.cos(phi) ** 2))
         A.append(arg_)
-        arg_ = -(
-            R * L * (np.sin(theta[i]) ** 2) + P * S * (1 + (np.cos(theta[i]) ** 2))
-        )
+        arg_ = -val * (R * L * (np.sin(phi) ** 2) + P * S * (1 + (np.cos(phi) ** 2)))
         B.append(arg_)
         C.append(P * R * L)
 
-    # Generate solutions
-    k = {}
+        coefficients = np.array([A, 0, B, 0, C], ndmin=2)
+        nroots = coefficients.shape[0] - 1  # 3
+        nks = coefficients.shape[1]
+        roots = np.empty((nroots, nks), dtype=np.complex128)
+        for ii in range(nks):
+            roots[:, ii] = np.roots(coefficients[:, ii])[:]
 
-    for i in range(len(theta)):
-        arg_ = c_si_unitless / w
-        a = arg_ * A[i]
-        b = arg_ * B[i]
-        c = C[i]
-        coefficients = [a, 0, b, 0, c]
-        k[theta[i]] = np.roots(coefficients)
-        k[theta[i]] = np.sort(k[theta[i]], axis=0)
+        roots = np.sqrt(roots)
+        roots = np.sort(roots, axis=0)
 
-    return k
+    return roots
