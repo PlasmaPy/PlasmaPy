@@ -46,17 +46,42 @@ def test_Saha():
         Saha(g_j, g_k, 1e19 * u.kg, E_jk, T_e)
 
 
-def test_thomas_fermi_ionization_state():
+def test_thomas_fermi_ionization_state_return_type():
+    """Test the return type of the thomas-fermi ionization state function."""
     n = 1e29 * u.m ** -3
     T_e = 11604518.12155008 * u.K
     z = 6
 
     val = thomas_fermi_ionization_state(z, n, T_e)
     assert val.unit == u.dimensionless_unscaled
+
+
+def test_thomas_fermi_ionization_state_return_value():
+    """Test the return value of the thomas-fermi ionization state function."""
+
+    n = 1e29 * u.m ** -3
+    T_e = 11604518.12155008 * u.K
+    z = 6
+
+    val = thomas_fermi_ionization_state(z, n, T_e)
     assert np.isclose(val.value, 5.849715866306117)
+
+
+def test_thomas_fermi_ionization_state_warning():
+    """Test warning of the thomas-fermi ionization state function."""
+
+    T_e = 11604518.12155008 * u.K
+    z = 6
 
     with pytest.warns(u.UnitsWarning):
         thomas_fermi_ionization_state(z, 1e29, T_e)
+
+
+def test_thomas_fermi_ionization_state_error():
+    """Test units errors of the thomas-fermi ionization state function."""
+
+    T_e = 11604518.12155008 * u.K
+    z = 6
 
     with pytest.raises(u.UnitTypeError):
         thomas_fermi_ionization_state(z, 1e29 * u.kg, T_e)

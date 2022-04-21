@@ -1,6 +1,6 @@
 """Functions related to ionization states and the properties thereof."""
 
-__all__ = ["ionization_balance", "Saha", "Z_bal_"]
+__all__ = ["ionization_balance", "Saha", "Z_bal_", "thomas_fermi_ionization_state"]
 __aliases__ = ["Z_bal_"]
 
 import astropy.units as u
@@ -202,21 +202,36 @@ def thomas_fermi_ionization_state(
     Z, n_e: u.m ** (-3), T_e: u.K
 ) -> u.dimensionless_unscaled:
     r"""
-    Return the finite temperature Thomas-Fermi mean ionization state using fit provided in
-    R.M. More, "Pressure Ionization, Resonances, and the
-    Continuity of Bound and Free States", Adv. in Atomic
-    Mol. Phys., Vol. 21, p. 332 (Table IV).
+    Return the finite temperature Thomas-Fermi mean ionization state using fit provided in Table IV of
+    :cite:p:`more:1985`.
+
+    In strongly coupled plasmas the Saha equation for the calculation of the ionization state becomes inaccurate.
+    Self-consistent models based on density functional theory calculations have been proposed. Amongst them there is
+    the so-called Average Atom model. This model calculates the mean ionization state of a representative average atom,
+    i.e. spherical cell of plasma centered on one nucleus with radius :math:`a_i`, the Wigner-Seitz radius.
+    The Thomas-Fermi model calculates the mean ionization state from
+
+    .. math::
+        \\langle Z \\rangle_{\\rm TF} = \\frac{4\\pi a_i^3}{3} n(a_i)
+
+    where :math:`a_i` is the Wigner-Seitz radius, see :func:`plasmapy.formulary.quantum.Wigner_Seitz_radius`, calculated
+    from the ion density of the plasma. :math:`n(a_i)` is the electron density at the edge of the spherical plasma cell.
+    This density is obtained by solving nonlinear equation obtained from Thomas-Fermi Density Functional Theory (TF-DFT).
+    More information and details can be found in :cite:`murillo:2013`.
+
+    The `thomas_fermi_ionization_state` function, instead of solving nonlinear equations, uses fits provided by R. More
+    to calculate the mean ionization state.
 
     Parameters
     ----------
     Z : int
-        Ion charge number
+        Ion charge number.
 
     n_e : `~astropy.units.Quantity`
-        Electron number density in 1/m**3
+        Electron number density in units convertible to m\ :sup:`-3`\ .
 
     T_e : `~astropy.units.Quantity`
-        Electon temperature in K
+        Electron temperature in K or energy per electron.
 
     Warns
     -----
@@ -246,10 +261,13 @@ def thomas_fermi_ionization_state(
 
     Returns
     -------
-    Z : `~astropy.units.Quantity`
+    Z_TF : `~astropy.units.Quantity`
         The Thomas-Fermi ionization state of the ion in the plasma.
 
-    """
+    Notes
+    -----
+    Table IV of :cite:p:`more:1985` has been reproduced in :cite:p:`stanton:2016` for convenience.
+    Furthermore :cite:p:`stanton:2016`"""
 
     alpha = 14.3139
     beta = 0.6624
@@ -279,6 +297,6 @@ def thomas_fermi_ionization_state(
     Q = (R ** C + Q1 ** C) ** (1 / C)
     x = alpha * Q ** beta
 
-    TF_Z = Z * x / (1 + x + sqrt(1 + 2.0 * x)) * u.dimensionless_unscaled
+    Z_TF = Z * x / (1 + x + sqrt(1 + 2.0 * x)) * u.dimensionless_unscaled
 
-    return TF_Z
+    return Z_TF
