@@ -144,7 +144,7 @@ def stix(
     ...     "theta": 30 * u.deg,
     >>> }
     >>> w = stix(**inputs)
-    >>> print(w[0.001])
+    >>> print(w)
 
     """
 
@@ -264,7 +264,6 @@ def stix(
 
         deg = float(theta[i])
         k[deg] = np.roots(coefficients)
-        k[deg] = np.sqrt(k[deg])
         k[deg] = np.sort(k[deg], axis=0)
 
     return k
