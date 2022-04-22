@@ -60,7 +60,7 @@ class Plasma3D(GenericPlasma):
     def x(self):
         """
         (`~astropy.units.Quantity`) x-coordinates within the plasma domain. Equal to
-        the `domain_x` input parameter.
+        the ``domain_x`` input parameter.
         """
         return self._x
 
@@ -68,7 +68,7 @@ class Plasma3D(GenericPlasma):
     def y(self):
         """
         (`~astropy.units.Quantity`) y-coordinates within the plasma domain. Equal
-        to the `domain_y` input parameter.
+        to the ``domain_y`` input parameter.
         """
         return self._y
 
@@ -76,7 +76,7 @@ class Plasma3D(GenericPlasma):
     def z(self):
         """
         (`~astropy.units.Quantity`) z-coordinates within the plasma domain. Equal
-        to the `domain_z` input parameter.
+        to the ``domain_z`` input parameter.
         """
         return self._z
 

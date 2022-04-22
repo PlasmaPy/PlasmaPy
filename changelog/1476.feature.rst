@@ -1,0 +1,3 @@
+Created :term:`lite-function`
+`plasmapy.formulary.dielectric.permittivity_1D_Maxwellian_lite` for
+`plasmapy.formulary.dielectric.permittivity_1D_Maxwellian`.

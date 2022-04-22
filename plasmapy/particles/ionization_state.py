@@ -48,7 +48,7 @@ class IonicLevel:
     See Also
     --------
     IonizationState
-    plasmapy.particles.IonizationStateCollection
+    ~plasmapy.particles.ionization_state_collection.IonizationStateCollection
 
     Examples
     --------
@@ -234,7 +234,7 @@ class IonizationState:
     See Also
     --------
     IonicLevel
-    plasmapy.particles.IonizationStateCollection
+    plasmapy.particles.ionization_state_collection.IonizationStateCollection
 
     Examples
     --------
@@ -904,7 +904,7 @@ class IonizationState:
 
         Parameters
         ----------
-        minimum_ionic_fraction: Real
+        minimum_ionic_fraction: real number
             If the ionic fraction for a particular ionization state is
             below this level, then information for it will not be
             printed.  Defaults to 0.01.
