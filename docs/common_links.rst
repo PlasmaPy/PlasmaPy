@@ -135,6 +135,7 @@
 .. _PlasmaPy meetings: https://www.plasmapy.org/meetings
 .. _PlasmaPy's documentation: https://docs.plasmapy.org/en/stable
 .. _PlasmaPy's GitHub repository: https://github.com/PlasmaPy/plasmapy
+.. _PlasmaPy's data repository: https://github.com/PlasmaPy/PlasmaPy-data
 .. _PlasmaPy's Matrix chat room: https://app.element.io/#/room/#plasmapy:openastronomy.org
 .. _pre-commit: https://pre-commit.com
 .. _`pre-commit.ci`: https://pre-commit.ci

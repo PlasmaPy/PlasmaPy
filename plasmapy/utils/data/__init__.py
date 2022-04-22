@@ -1,6 +1,6 @@
 """
-The data subpackage contains functionality for downloading and retrieving data files.
+The `plasmapy.data` subpackage contains functionality for downloading and retrieving data files.
 """
-__all__ = ["data"]
+__all__ = ["downloader"]
 
-from plasmapy.utils.data import data
+from plasmapy.utils.data import downloader
