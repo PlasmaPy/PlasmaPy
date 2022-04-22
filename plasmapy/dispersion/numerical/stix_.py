@@ -195,11 +195,11 @@ def stix(
     w = w.squeeze()
     if not (w.ndim == 0 or w.ndim == 1):
         raise ValueError(
-            f"Argument 'w' needs to be a single value or a 1D array "
+            "Argument 'w' needs to be a single value or a 1D array "
             f" astropy Quantity, got a value of shape {w.shape}."
         )
     if np.any(w <= 0):
-        raise ValueError(f"Argument 'w' can not have a negative value.")
+        raise ValueError("Argument 'w' can not have a negative value.")
     if np.isscalar(w.value):
         w = np.array([w.value])
 
@@ -208,7 +208,7 @@ def stix(
     theta = theta.to(u.radian)
     if theta.ndim not in (0, 1):
         raise TypeError(
-            f"Argument 'theta' needs to be a single value or 1D array "
+            "Argument 'theta' needs to be a single value or 1D array "
             f" astropy Quantity, got array of shape {theta.shape}."
         )
     if np.isscalar(theta.value):
@@ -220,7 +220,6 @@ def stix(
     # Generate the plasma parameters needed
     wps = []
     wcs = []
-
     for par, dens in zip(species, densities.tolist()):
         wps.append(plasma_frequency(n=dens * u.m ** -3, particle=par).value)
         wcs.append(gyrofrequency(B=B, particle=par, signed=False).value)
@@ -254,4 +253,4 @@ def stix(
     k[2] = np.emath.sort((-B - np.emath.sqrt(B ** 2 - 4 * A * C)) / (2 * A))
     k[3] = -k[2]
 
-    return k
+    return k * u.rad / u.m
