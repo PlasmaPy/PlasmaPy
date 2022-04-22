@@ -4,6 +4,7 @@ __all__ = ["ionic_levels", "ParticleList"]
 
 import astropy.units as u
 import collections
+import contextlib
 import numpy as np
 
 from numbers import Integral
@@ -148,10 +149,8 @@ class ParticleList(collections.UserList):
         if isinstance(other, ParticleList):
             return other
 
-        try:
+        with contextlib.suppress(TypeError, InvalidParticleError):
             return ParticleList(other)
-        except (InvalidParticleError, TypeError):
-            pass
 
         try:
             return ParticleList([other])
@@ -353,7 +352,7 @@ class ParticleList(collections.UserList):
 
         Parameters
         ----------
-        abundances : array-like, optional
+        abundances : array_like, optional
             Real numbers representing relative abundances of the particles in
             the |ParticleList|. Must have the same number of elements as the
             |ParticleList|. This parameter gets passed to `numpy.average` via

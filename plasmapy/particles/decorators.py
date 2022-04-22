@@ -1,5 +1,5 @@
 """
-Module used to define the framework needed for the `particle_input` decorator.
+Module used to define the framework needed for the |particle_input| decorator.
 The decorator takes string and/or integer representations of particles
 as arguments and passes through the corresponding instance of the
 `~plasmapy.particles.particle_class.Particle` class.
@@ -120,7 +120,7 @@ def particle_input(
 
     Notes
     -----
-    If the annotated argument is named `element`, `isotope`, or `ion`,
+    If the annotated argument is named ``element``, ``isotope``, or ``ion``,
     then the decorator will raise an
     `~plasmapy.particles.exceptions.InvalidElementError`,
     `~plasmapy.particles.exceptions.InvalidIsotopeError`, or
@@ -354,7 +354,7 @@ def particle_input(
                 raw_argval = arguments[argname]
                 if isinstance(raw_argval, (tuple, list)):
                     # Input argument value is a tuple or list
-                    # of correspoding particles or atomic values.
+                    # of corresponding particles or atomic values.
                     argval_tuple = raw_argval
                     particles = []
                 else:

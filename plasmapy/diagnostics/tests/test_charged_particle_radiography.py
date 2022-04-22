@@ -44,7 +44,7 @@ def _test_grid(
         as start and stop respectively. The default is 1 cm.
     num : int or list of three ints
         The number of points in each direction (or list of one for each dimension).
-        Passed to the grid cosntructor as the num argument. The default is 100.
+        Passed to the grid constructor as the num argument. The default is 100.
 
     E0, B0, phi0 : u.Quantities
         Scaling quantities used in the various examples
@@ -272,7 +272,7 @@ def test_input_validation():
         sim = cpr.Tracker(grid, source, detector, verbose=False)
     Ex[0, 0, 0] = 0 * u.V / u.m
 
-    # Check what happens if a value is large realtive to the rest of the array
+    # Check what happens if a value is large relative to the rest of the array
     Ex[0, 0, 0] = 0.5 * np.max(Ex)
     grid.add_quantities(E_x=Ex)
     # with pytest.raises(ValueError):
@@ -387,7 +387,7 @@ def test_load_particles():
     with pytest.raises(ValueError):
         sim.load_particles(x, v)
 
-    # Test creating particles with explict keywords
+    # Test creating particles with explicit keywords
     x = sim.x * u.m
     v = sim.v * u.m / u.s
 
@@ -773,7 +773,7 @@ def test_add_wire_mesh():
     with pytest.raises(ValueError):
         run_mesh_example(extent=(1 * u.mm, 2 * u.mm, 3 * u.mm))
 
-    # Test wire mesh completely blocks all particles (in thise case because
+    # Test wire mesh completely blocks all particles (in this case because
     # the wire diameter is absurdely large)
     with pytest.raises(ValueError):
         run_mesh_example(wire_diameter=5 * u.mm)

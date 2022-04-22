@@ -105,7 +105,7 @@ class Tracker:
         of the detector plane. The vector from the source point to this
         point defines the normal vector of the detector plane. This vector
         can also be specified in cartesian, cylindrical, or spherical
-        coordinates (see the `source` keyword).
+        coordinates (see the ``source`` keyword).
 
     detector_hdir : `numpy.ndarray`, shape (3), optional
         A unit vector (in Cartesian coordinates) defining the horizontal
@@ -135,7 +135,7 @@ class Tracker:
         # self.grid is the grid object
         self.grid = grid
         # self.grid_arr is the grid positions in si units. This is created here
-        # so that it isn't continously called later
+        # so that it isn't continuously called later
         self.grid_arr = grid.grid.to(u.m).value
 
         self.verbose = verbose
@@ -320,7 +320,7 @@ class Tracker:
             The size of the mesh grid (in the mesh plane). If one value
             is provided, the mesh is circular and the value provided is
             interpreted as the diameter. If two values are provided, the
-            mesh is rectangular and they the values are interpreted as the
+            mesh is rectangular and the values are interpreted as the
             width and height respectively.
 
         nwires : Tuple of 1 or 2 ints, or a single int
@@ -336,14 +336,14 @@ class Tracker:
             A unit vector (in Cartesian coordinates) defining the horizontal
             direction on the mesh plane. Modifying this vector can rotate the
             mesh in the plane or tilt the mesh plane relative to the
-            source-detector axis. By default, `mesh_hdir` is set equal to
-            `detector_hdir` (see `detector_hdir` keyword in `__init__`).
+            source-detector axis. By default, ``mesh_hdir`` is set equal to
+            ``detector_hdir`` (see ``detector_hdir`` keyword in ``__init__``).
 
         mesh_vdir : `numpy.ndarray`, shape (3), optional
             A unit vector (in Cartesian coordinates) defining the vertical
             direction on the mesh plane. Modifying this vector can tilt the
-            mesh relative to the source-detector axis. By default, `mesh_vdir`
-            is defined to be perpendicular to `mesh_hdir` and the detector
+            mesh relative to the source-detector axis. By default, ``mesh_vdir``
+            is defined to be perpendicular to ``mesh_hdir`` and the detector
             plane normal (such that the mesh is parallel to the detector plane).
 
         Raises
@@ -585,8 +585,8 @@ class Tracker:
             guess will be made based on the size of the grid.
             Units must be convertible to radians.
 
-        particle : ~plasmapy.particles.Particle or string representation of same, optional
-            Representation of the particle species as either a `Particle` object
+        particle : ~plasmapy.particles.particle_class.Particle or string representation of same, optional
+            Representation of the particle species as either a |Particle| object
             or a string representation. The default particle is protons.
 
         distribution: str
@@ -596,16 +596,16 @@ class Tracker:
                 - 'monte-carlo': velocities will be chosen randomly,
                     such that the flux per solid angle is uniform.
 
-                - 'uniform': velocities will be distrbuted such that,
+                - 'uniform': velocities will be distributed such that,
                    left unperturbed,they will form a uniform pattern
                    on the detection plane. This method
-                   requires that `nparticles` be a perfect square. If it is not,
-                   `nparticles` will be set as the largest perfect square smaller
-                   than the provided `nparticles`.
+                   requires that ``nparticles`` be a perfect square. If it is not,
+                   ``nparticles`` will be set as the largest perfect square smaller
+                   than the provided ``nparticles``.
 
-            Simulations run in the `uniform` mode will imprint a grid pattern
+            Simulations run in the ``'uniform'`` mode will imprint a grid pattern
             on the image, but will well-sample the field grid with a
-            smaller number of particles. The default is `monte-carlo`
+            smaller number of particles. The default is ``'monte-carlo'``.
 
 
         """
@@ -678,8 +678,8 @@ class Tracker:
         v: `~astropy.units.Quantity`, shape (N,3)
             Velocities for N particles
 
-        particle : ~plasmapy.particles.Particle or string representation of same, optional
-            Representation of the particle species as either a `Particle` object
+        particle : ~plasmapy.particles.particle_class.Particle or string representation of same, optional
+            Representation of the particle species as either a |Particle| object
             or a string representation. The default particle is protons.
 
         distribution: str
@@ -689,13 +689,13 @@ class Tracker:
                 - 'monte-carlo': velocities will be chosen randomly,
                     such that the flux per solid angle is uniform.
 
-                - 'uniform': velocities will be distrbuted such that,
+                - 'uniform': velocities will be distributed such that,
                    left unpreturbed,they will form a uniform pattern
                    on the detection plane.
 
-            Simulations run in the `uniform` mode will imprint a grid pattern
+            Simulations run in the ``'uniform'`` mode will imprint a grid pattern
             on the image, but will well-sample the field grid with a
-            smaller number of particles. The default is `monte-carlo`
+            smaller number of particles. The default is ``'monte-carlo'``.
 
 
         """
@@ -983,7 +983,7 @@ class Tracker:
         ----------
 
         dt : `~astropy.units.Quantity`, optional
-            An explicitly set timestep in units convertable to seconds.
+            An explicitly set timestep in units convertible to seconds.
             Setting this optional keyword overrules the adaptive time step
             capability and forces the use of this timestep throughout. If a tuple
             of timesteps is provided, the adaptive timstep will be clamped
@@ -1003,7 +1003,7 @@ class Tracker:
 
         Returns
         -------
-        None.
+        None
 
         """
 
@@ -1314,7 +1314,7 @@ def synthetic_radiograph(
         and maximum values included in both the horizontal and vertical
         directions in the detector plane coordinates. Shape is
         ``((hmin, hmax), (vmin, vmax))``. If not specified, the size will be
-        set to include all particles on the detector. Units must be convertable
+        set to include all particles on the detector. Units must be convertible
         to meters.
 
     bins : array of integers, shape ``(2)``
@@ -1386,7 +1386,7 @@ def synthetic_radiograph(
     elif not isinstance(size, u.Quantity):
         raise TypeError(
             "Argument `size` must be an astropy.units.Quantity object with "
-            "units convertable to meters."
+            "units convertible to meters."
         )
     elif not size.unit.is_equivalent(u.m):
         raise ValueError("Argument `size` must have units convertible to meters.")

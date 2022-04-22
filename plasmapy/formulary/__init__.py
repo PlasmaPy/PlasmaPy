@@ -28,6 +28,10 @@ for obj_name in list(globals()):
         __all__.append(obj_name)
 __all__.sort()
 
+# Put non-formulary imports here so that they don't get included in __all__
+
+import contextlib  # isort:skip
+
 # auto populate __aliases__ & __lite_funcs__
 for modname in (
     "braginskii",
@@ -52,18 +56,14 @@ for modname in (
     except KeyError:  # coverage: ignore
         continue
 
-    try:
+    with contextlib.suppress(AttributeError):
         __aliases__.extend(obj.__aliases__)
-    except AttributeError:
-        pass
 
-    try:
+    with contextlib.suppress(AttributeError):
         __lite_funcs__.extend(obj.__lite_funcs__)
-    except AttributeError:
-        pass
 
 __aliases__ = list(sorted(set(__aliases__)))
 __lite_funcs__ = list(sorted(set(__lite_funcs__)))
 
 # cleanup namespace
-del modname, obj, obj_name
+del contextlib, modname, obj, obj_name

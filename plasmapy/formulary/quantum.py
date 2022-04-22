@@ -17,6 +17,7 @@ import astropy.units as u
 import numpy as np
 
 from astropy.constants.si import c, e, eps0, h, hbar, k_B, m_e
+from lmfit import minimize, Parameters
 
 from plasmapy import particles
 from plasmapy.formulary import mathematics
@@ -55,7 +56,7 @@ def deBroglie_wavelength(V: u.m / u.s, particle) -> u.m:
 
     particle : `str`, `~plasmapy.particles.particle_class.Particle`, or `~astropy.units.Quantity`
         An instance of `~plasmapy.particles.particle_class.Particle`, or
-        an equvalent representation (e.g., ``'e'``, ``'p'``, ``'D+'``, or
+        an equivalent representation (e.g., ``'e'``, ``'p'``, ``'D+'``, or
         ``'He-4 1+'``), for the particle of interest, or the particle
         mass in units convertible to kg.  If a
         `~plasmapy.particles.particle_class.Particle` instance is given, then the
@@ -111,12 +112,12 @@ def deBroglie_wavelength(V: u.m / u.s, particle) -> u.m:
     else:
         try:
             m = particle.to(u.kg)
-        except Exception:
+        except Exception as e:
             raise u.UnitConversionError(
                 "The second argument for deBroglie_wavelength must be either a "
                 "representation of a particle or a"
                 " Quantity with units of mass."
-            )
+            ) from e
 
     if V.size > 1:
 
@@ -124,12 +125,10 @@ def deBroglie_wavelength(V: u.m / u.s, particle) -> u.m:
         indices = V.value != 0
         lambda_dBr[indices] = h / (m * V[indices] * Lorentz_factor(V[indices]))
 
+    elif V == 0 * u.m / u.s:
+        lambda_dBr = np.inf * u.m
     else:
-
-        if V == 0 * u.m / u.s:
-            lambda_dBr = np.inf * u.m
-        else:
-            lambda_dBr = h / (Lorentz_factor(V) * m * V)
+        lambda_dBr = h / (Lorentz_factor(V) * m * V)
 
     return lambda_dBr
 
@@ -189,8 +188,7 @@ def thermal_deBroglie_wavelength(T_e: u.K) -> u.m:
     >>> thermal_deBroglie_wavelength(1 * u.eV)
     <Quantity 6.9193675e-10 m>
     """
-    lambda_dbTh = h / np.sqrt(2 * np.pi * m_e * k_B * T_e)
-    return lambda_dbTh
+    return h / np.sqrt(2 * np.pi * m_e * k_B * T_e)
 
 
 lambdaDB_th_ = thermal_deBroglie_wavelength
@@ -256,8 +254,7 @@ def Fermi_energy(n_e: u.m ** -3) -> u.J:
     <Quantity 1.2586761e-18 J>
     """
     coeff = (np.pi * hbar) ** 2 / (2 * m_e)
-    energy_F = coeff * (3 * n_e / np.pi) ** (2 / 3)
-    return energy_F
+    return coeff * (3 * n_e / np.pi) ** (2 / 3)
 
 
 Ef_ = Fermi_energy
@@ -331,8 +328,7 @@ def Thomas_Fermi_length(n_e: u.m ** -3) -> u.m:
 
     """
     energy_F = Fermi_energy(n_e)
-    lambda_TF = np.sqrt(2 * eps0 * energy_F / (3 * n_e * e ** 2))
-    return lambda_TF
+    return np.sqrt(2 * eps0 * energy_F / (3 * n_e * e ** 2))
 
 
 @validate_quantities(
@@ -396,8 +392,7 @@ def Wigner_Seitz_radius(n: u.m ** -3) -> u.m:
     <Quantity 1.33650462e-10 m>
 
     """
-    radius = (3 / (4 * np.pi * n)) ** (1 / 3)
-    return radius
+    return (3 / (4 * np.pi * n)) ** (1 / 3)
 
 
 # TODO: remove NotImplementedError and 'doctest: +SKIP' when the following issues are addressed...
@@ -467,9 +462,8 @@ def chemical_potential(n_e: u.m ** -3, T: u.K) -> u.dimensionless_unscaled:
     Warnings
     --------
     At present this function is limited to relatively small arguments
-    due to limitations in the `mpmath` implementation of
-    `~mpmath.polylog`, which PlasmaPy uses in calculating the Fermi
-    integral.
+    due to limitations in the ``mpmath.polylog``, which PlasmaPy uses in
+    calculating the Fermi integral.
 
     Examples
     --------
@@ -499,13 +493,6 @@ def chemical_potential(n_e: u.m ** -3, T: u.K) -> u.dimensionless_unscaled:
 
     # setting parameters for fitting along with bounds
     alphaGuess = 1 * u.dimensionless_unscaled
-    try:
-        from lmfit import minimize, Parameters
-    except ImportError as e:
-        from plasmapy.optional_deps import lmfit_import_error
-
-        raise lmfit_import_error from e
-
     params = Parameters()
     params.add("alpha", value=alphaGuess, min=0.0)
     # calling minimize function from lmfit to fit by minimizing the residual
