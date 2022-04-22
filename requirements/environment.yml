@@ -32,3 +32,5 @@ dependencies:
   - pytest-regressions
   - notebook
   - packaging
+  - requests
+  - urllib
