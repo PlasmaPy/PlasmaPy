@@ -863,10 +863,10 @@ def test_add_wire_mesh():
 
 
 @pytest.fixture
-def hdv2_stack():
+def hdv2_stack(tmp_path):
     # Fetch stopping power data files from data module
-    tissue_path = get_file("NIST_PSTAR_tissue_equivalent.txt")
-    aluminum_path = get_file("NIST_PSTAR_aluminum.txt")
+    tissue_path = get_file("NIST_PSTAR_tissue_equivalent.txt", directory=tmp_path)
+    aluminum_path = get_file("NIST_PSTAR_aluminum.txt", directory=tmp_path)
 
     arr = np.loadtxt(tissue_path, skiprows=8)
     eaxis = arr[:, 0] * u.MeV
