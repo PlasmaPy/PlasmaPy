@@ -399,7 +399,7 @@ class TestValidateQuantities:
                 "raises": u.UnitTypeError,
             },
             {
-                "descr": "decomposed units are still covnerted",
+                "descr": "decomposed units are still converted",
                 "setup": {
                     "function": self.foo,
                     "args": (2 * u.kg * u.m / u.s ** 2,),

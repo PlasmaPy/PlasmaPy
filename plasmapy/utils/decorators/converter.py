@@ -15,7 +15,7 @@ def angular_freq_to_hz(fn):
     A decorator that adds to a function the ability to convert the function's return from
     angular frequency (rad/s) to frequency (Hz).
 
-    A kwarg `to_hz` is added to the function's signature, with a default value of `False`.
+    A kwarg ``to_hz`` is added to the function's signature, with a default value of `False`.
     The keyword is also added to the function's docstring under the **"Other Parameters"**
     heading.
 
@@ -27,7 +27,7 @@ def angular_freq_to_hz(fn):
     Raises
     ------
     ValueError
-        If `fn` has already defined a kwarg `to_hz`
+        If ``fn`` has already defined a kwarg ``to_hz``
 
     Returns
     -------
@@ -36,10 +36,10 @@ def angular_freq_to_hz(fn):
 
     Notes
     -----
-    * If `angular_freq_to_hz` is used with decorator
-      :func:`~plasmapy.utils.decorators.validate_quantities`, then
+    * If `~plasmapy.utils.decorators.converter.angular_freq_to_hz` is used with decorator
+      :func:`~plasmapy.utils.decorators.validators.validate_quantities`, then
       `angular_freq_to_hz` should be used inside
-      :func:`~plasmapy.utils.decorators.validate_quantities` but special
+      :func:`~plasmapy.utils.decorators.validators.validate_quantities` but special
       consideration is needed for setup.  The following is an example of an
       appropriate setup::
 
@@ -52,7 +52,7 @@ def angular_freq_to_hz(fn):
         def foo(x: u.rad / u.s) -> u.rad / u.s
             return x
 
-      Adding `u.Hz` to the allowed units allows the converted quantity to pass
+      Adding ``u.Hz`` to the allowed units allows the converted quantity to pass
       the validations.
 
     Examples

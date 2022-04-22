@@ -117,7 +117,7 @@ def Coulomb_logarithm(
     V : `~astropy.units.Quantity`, optional
         The relative velocity between particles. If not provided,
         thermal velocity is assumed: :math:`μ V^2 \sim 2 k_B T` where
-        `μ` is the reduced mass.
+        :math:`μ` is the reduced mass.
 
     method : `str`, optional
         The method by which to compute the Coulomb logarithm.  The
@@ -790,19 +790,22 @@ def impact_parameter(
     T, masses, charges, reduced_mass, V = _boilerPlate(T=T, species=species, V=V)
     # catching error where mean charge state is not given for non-classical
     # methods that require the ion density
-    if method in (
-        "ls_full_interp",
-        "GMS-2",
-        "hls_max_interp",
-        "GMS-5",
-        "hls_full_interp",
-        "GMS-6",
+    if (
+        method
+        in (
+            "ls_full_interp",
+            "GMS-2",
+            "hls_max_interp",
+            "GMS-5",
+            "hls_full_interp",
+            "GMS-6",
+        )
+        and np.isnan(z_mean)
     ):
-        if np.isnan(z_mean):
-            raise ValueError(
-                'Must provide a z_mean for "ls_full_interp", '
-                '"hls_max_interp", and "hls_full_interp" methods.'
-            )
+        raise ValueError(
+            'Must provide a z_mean for "ls_full_interp", '
+            '"hls_max_interp", and "hls_full_interp" methods.'
+        )
     # Debye length
     lambdaDe = Debye_length(T, n_e)
     # de Broglie wavelength
@@ -812,7 +815,7 @@ def impact_parameter(
 
     # obtaining minimum and maximum impact parameters depending on which
     # method is requested
-    if method == "classical" or method == "ls":
+    if method in ["classical", "ls"]:
         bmax = lambdaDe
         # Coulomb-style collisions will not happen for impact parameters
         # shorter than either of these two impact parameters, so we choose
@@ -823,22 +826,18 @@ def impact_parameter(
         # therefore, lambdaBroglie and bPerp are either both scalar or both array
         # if np.isscalar(bPerp.value) and np.isscalar(lambdaBroglie.value):  # both scalar
         try:  # assume both scalar
-            if bPerp > lambdaBroglie:
-                bmin = bPerp
-            else:
-                bmin = lambdaBroglie
-        # else:  # both lambdaBroglie and bPerp are arrays
+            bmin = bPerp if bPerp > lambdaBroglie else lambdaBroglie
         except ValueError:  # both lambdaBroglie and bPerp are arrays
             bmin = lambdaBroglie
             bmin[bPerp > lambdaBroglie] = bPerp[bPerp > lambdaBroglie]
-    elif method == "ls_min_interp" or method == "GMS-1":
+    elif method in ["ls_min_interp", "GMS-1"]:
         # 1st method listed in Table 1 of reference [1]
         # This is just another form of the classical Landau-Spitzer
         # approach, but bmin is interpolated between the de Broglie
         # wavelength and distance of closest approach.
         bmax = lambdaDe
         bmin = (lambdaBroglie ** 2 + bPerp ** 2) ** (1 / 2)
-    elif method == "ls_full_interp" or method == "GMS-2":
+    elif method in ["ls_full_interp", "GMS-2"]:
         # 2nd method listed in Table 1 of reference [1]
         # Another Landau-Spitzer like approach, but now bmax is also
         # being interpolated. The interpolation is between the Debye
@@ -850,17 +849,17 @@ def impact_parameter(
         ionRadius = Wigner_Seitz_radius(n_i)
         bmax = (lambdaDe ** 2 + ionRadius ** 2) ** (1 / 2)
         bmin = (lambdaBroglie ** 2 + bPerp ** 2) ** (1 / 2)
-    elif method == "ls_clamp_mininterp" or method == "GMS-3":
+    elif method in ["ls_clamp_mininterp", "GMS-3"]:
         # 3rd method listed in Table 1 of reference [1]
         # same as GMS-1, but not Lambda has a clamp at Lambda_min = 2
         # where Lambda is the argument to the Coulomb logarithm.
         bmax = lambdaDe
         bmin = (lambdaBroglie ** 2 + bPerp ** 2) ** (1 / 2)
-    elif method == "hls_min_interp" or method == "GMS-4":
+    elif method in ["hls_min_interp", "GMS-4"]:
         # 4th method listed in Table 1 of reference [1]
         bmax = lambdaDe
         bmin = (lambdaBroglie ** 2 + bPerp ** 2) ** (1 / 2)
-    elif method == "hls_max_interp" or method == "GMS-5":
+    elif method in ["hls_max_interp", "GMS-5"]:
         # 5th method listed in Table 1 of reference [1]
         # Mean ion density.
         n_i = n_e / z_mean
@@ -868,7 +867,7 @@ def impact_parameter(
         ionRadius = Wigner_Seitz_radius(n_i)
         bmax = (lambdaDe ** 2 + ionRadius ** 2) ** (1 / 2)
         bmin = bPerp
-    elif method == "hls_full_interp" or method == "GMS-6":
+    elif method in ["hls_full_interp", "GMS-6"]:
         # 6th method listed in Table 1 of reference [1]
         # Mean ion density.
         n_i = n_e / z_mean
@@ -882,7 +881,7 @@ def impact_parameter(
     # ARRAY NOTES
     # it could be that bmin and bmax have different sizes. If Te is a scalar,
     # T and V will be scalar from _boilerplate, so bmin will scalar.  However
-    # if n_e is an array, than bmax will be an array. if this is the case,
+    # if n_e is an array, then bmax will be an array. if this is the case,
     # do we want to extend the scalar bmin to equal the length of bmax? Sure.
     if np.isscalar(bmin.value) and not np.isscalar(bmax.value):
         bmin = np.repeat(bmin, len(bmax))
@@ -1016,8 +1015,6 @@ def collision_frequency(
         # impact parameter for 90° collision
         bPerp = impact_parameter_perp(T=T, species=species, V=V_reduced)
         print(T, n, species, z_mean, method)
-        # Coulomb logarithm
-        cou_log = Coulomb_logarithm(T, n, species, z_mean, V=V, method=method)
     elif species[0] in ("e", "e-") or species[1] in ("e", "e-"):
         # electron-ion collision
         # Need to manually pass electron thermal velocity to obtain
@@ -1028,19 +1025,15 @@ def collision_frequency(
         # need to also correct mass in collision radius from reduced
         # mass to electron mass
         bPerp = impact_parameter_perp(T=T, species=species, V=V) * reduced_mass / m_e
-        # Coulomb logarithm
         # !!! may also need to correct Coulomb logarithm to be
         # electron-electron version !!!
-        cou_log = Coulomb_logarithm(T, n, species, z_mean, V=V, method=method)
     else:
         # ion-ion collision
         # if a velocity was passed, we use that instead of the reduced
         # thermal velocity
         V = _replaceNanVwithThermalV(V, T, reduced_mass)
         bPerp = impact_parameter_perp(T=T, species=species, V=V)
-        # Coulomb logarithm
-        cou_log = Coulomb_logarithm(T, n, species, z_mean, V=V, method=method)
-
+    cou_log = Coulomb_logarithm(T, n, species, z_mean, V=V, method=method)
     # collisional cross section
     sigma = Coulomb_cross_section(bPerp)
     # collision frequency where Coulomb logarithm accounts for
@@ -1087,8 +1080,7 @@ def Coulomb_cross_section(impact_param: u.m) -> u.m ** 2:
     >>> Coulomb_cross_section(0.5*u.m)
     <Quantity 3.141... m2>
     """
-    sigma = np.pi * (2 * impact_param) ** 2
-    return sigma
+    return np.pi * (2 * impact_param) ** 2
 
 
 @validate_quantities(
@@ -1135,7 +1127,7 @@ def fundamental_electron_collision_freq(
     coulomb_log : `float` or dimensionless `~astropy.units.Quantity`, optional
         Option to specify a Coulomb logarithm of the electrons on the
         ions.  If not specified, the Coulomb log will is calculated
-        using the `~plasmapy.formulary.Coulomb_logarithm` function.
+        using the `~plasmapy.formulary.collisions.Coulomb_logarithm` function.
 
     coulomb_log_method : `str`, optional
         The method by which to compute the Coulomb logarithm.  The
@@ -1213,11 +1205,9 @@ def fundamental_electron_collision_freq(
         # the collision frequency calculation and replacing with
         # the user defined Coulomb logarithm value
         nu_mod = nu * coulomb_log / cLog
-        nu_e = coeff * nu_mod
+        return coeff * nu_mod
     else:
-        nu_e = coeff * nu
-
-    return nu_e
+        return coeff * nu
 
 
 @validate_quantities(
@@ -1283,7 +1273,7 @@ def fundamental_ion_collision_freq(
     Equations (2.36) and (2.122) in :cite:t:`callen:unpublished` provide
     the original source used to implement this formula, however, in our
     implementation we use the very same process that leads to the
-    fundamental electron collison rate (2.17), gaining simply a
+    fundamental electron collision rate (2.17), gaining simply a
     different coefficient:
 
     .. math::
@@ -1352,11 +1342,9 @@ def fundamental_ion_collision_freq(
         # the collision frequency calculation and replacing with
         # the user defined Coulomb logarithm value
         nu_mod = nu * coulomb_log / cLog
-        nu_i = coeff * nu_mod
+        return coeff * nu_mod
     else:
-        nu_i = coeff * nu
-
-    return nu_i
+        return coeff * nu
 
 
 @validate_quantities(
@@ -1442,7 +1430,7 @@ def mean_free_path(
     : `~astropy.units.UnitsWarning`
         If units are not provided, SI units are assumed.
 
-    : `~plasmapy.utils.RelativityWarning`
+    : `~plasmapy.utils.exceptions.RelativityWarning`
         If the input velocity is greater than 5% of the speed of light.
 
     Notes
@@ -1476,9 +1464,7 @@ def mean_free_path(
     # Should be fine since collision_frequency has its own boiler_plate
     # check, and we are only using this here to get the velocity.
     T, masses, charges, reduced_mass, V = _boilerPlate(T=T, species=species, V=V)
-    # mean free path length
-    mfp = V / freq
-    return mfp
+    return V / freq
 
 
 @validate_quantities(
@@ -1604,11 +1590,11 @@ def Spitzer_resistivity(
     # boiler plate checks
     # fetching additional parameters
     T, masses, charges, reduced_mass, V = _boilerPlate(T=T, species=species, V=V)
-    if np.isnan(z_mean):
-        spitzer = freq * reduced_mass / (n * charges[0] * charges[1])
-    else:
-        spitzer = freq * reduced_mass / (n * (z_mean * e) ** 2)
-    return spitzer
+    return (
+        freq * reduced_mass / (n * charges[0] * charges[1])
+        if np.isnan(z_mean)
+        else freq * reduced_mass / (n * (z_mean * e) ** 2)
+    )
 
 
 @validate_quantities(
@@ -1656,7 +1642,7 @@ def mobility(
     V : `~astropy.units.Quantity`, optional
         The relative velocity between particles. If not provided,
         thermal velocity is assumed: :math:`μ V^2 \sim 2 k_B T` where
-        `μ` is the reduced mass.
+        :math:`μ` is the reduced mass.
 
     method : `str`, optional
         The method by which to compute the Coulomb logarithm.  The
@@ -1696,7 +1682,7 @@ def mobility(
     : `~astropy.units.UnitsWarning`
         If units are not provided, SI units are assumed.
 
-    : `~plasmapy.utils.RelativityWarning`
+    : `~plasmapy.utils.exceptions.RelativityWarning`
         If the input velocity is greater than 5% of the speed of light.
 
     Notes
@@ -1737,12 +1723,8 @@ def mobility(
     # already has a boiler_plate check and we are doing this just
     # to recover the charges, mass, etc.
     T, masses, charges, reduced_mass, V = _boilerPlate(T=T, species=species, V=V)
-    if np.isnan(z_mean):
-        z_val = (charges[0] + charges[1]) / 2
-    else:
-        z_val = z_mean * e
-    mobility_value = z_val / (reduced_mass * freq)
-    return mobility_value
+    z_val = (charges[0] + charges[1]) / 2 if np.isnan(z_mean) else z_mean * e
+    return z_val / (reduced_mass * freq)
 
 
 @validate_quantities(
@@ -1868,8 +1850,7 @@ def Knudsen_number(
     path_length = mean_free_path(
         T=T, n_e=n_e, species=species, z_mean=z_mean, V=V, method=method
     )
-    knudsen_param = path_length / characteristic_length
-    return knudsen_param
+    return path_length / characteristic_length
 
 
 @validate_quantities(
@@ -2031,14 +2012,11 @@ def coupling_parameter(
         Z = (Z1 + Z2) / 2
         # getting ion density from electron density
         n_i = n_e / Z
-        # getting Wigner-Seitz radius based on ion density
-        radius = Wigner_Seitz_radius(n_i)
     else:
         # getting ion density from electron density
         n_i = n_e / z_mean
-        # getting Wigner-Seitz radius based on ion density
-        radius = Wigner_Seitz_radius(n_i)
-
+    # getting Wigner-Seitz radius based on ion density
+    radius = Wigner_Seitz_radius(n_i)
     # Coulomb potential energy between particles
     if np.isnan(z_mean):
         coulomb_energy = charges[0] * charges[1] / (4 * np.pi * eps0 * radius)
