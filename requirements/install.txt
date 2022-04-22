@@ -12,6 +12,7 @@ numba
 numpy >= 1.19.0
 packaging
 pandas >= 1.0.0
+requests >= 2.27.1
 scipy >= 1.5.0
 tqdm >= 4.41.0
 voila >= 0.2.15
