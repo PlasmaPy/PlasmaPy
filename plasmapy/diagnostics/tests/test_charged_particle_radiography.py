@@ -13,7 +13,7 @@ from scipy.special import erf
 
 from plasmapy.diagnostics import charged_particle_radiography as cpr
 from plasmapy.plasma.grids import CartesianGrid
-from plasmapy.utils.data.data import get_file
+from plasmapy.utils.data.downloader import get_file
 
 
 def _test_grid(
