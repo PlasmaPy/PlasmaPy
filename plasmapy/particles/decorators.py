@@ -72,7 +72,7 @@ def _category_errmsg(particle, require, exclude, any_of, funcname) -> str:
     return category_errmsg
 
 
-def _get_args_to_become_particles(
+def _identify_args_to_become_particles(
     arguments: Dict[str, Any], annotations: Dict[str, Any]
 ) -> List[str]:
     """
@@ -89,14 +89,23 @@ def _get_args_to_become_particles(
         A `dict` with argument names as keys and the corresponding
         annotations as values for a function.
     """
-    args_to_become_particles = []
-    for argname, annotation in annotations.items():
-        if isinstance(annotations[argname], tuple):
-            if argname == "return":
+    arguments_to_become_particles = []
+
+    for parameter, annotation in annotations.items():
+
+        if isinstance(annotations[parameter], tuple):
+
+            # Accepting a tuple for particle_input can be deprecated
+            # because ParticleList now exists.
+
+            if parameter == "return":
                 continue
-            annotated_argnames = annotations[argname]
-            expected_params = len(annotated_argnames)
-            received_params = len(arguments[argname])
+
+            annotation = annotations[parameter]
+
+            expected_params = len(annotation)
+            received_params = len(arguments[parameter])
+
             if expected_params != received_params:
                 raise ValueError(
                     f"Number of parameters allowed in the tuple "
@@ -104,24 +113,31 @@ def _get_args_to_become_particles(
                     f"not equal to number of parameters passed in "
                     f"the tuple ({received_params} parameters)."
                 )
+
         elif isinstance(annotation, list):
-            annotated_argnames = annotations[argname]
-            expected_params = len(annotated_argnames)
+
+            # This option for particle_input is no longer needed since
+            # ParticleList now exists. Deprecate it?
+
+            annotation = annotations[parameter]
+            expected_params = len(annotation)
+
             if expected_params > 1:
                 raise TypeError(
                     "Put in [Particle] as the annotation to "
                     "accept arbitrary number of Particle arguments."
                 )
         else:
-            annotated_argnames = (annotations[argname],)
+            annotation = (annotations[parameter],)
 
-        for annotated_argname in annotated_argnames:
+        for annotated_argname in annotation:
             is_particle = (
                 annotated_argname is Particle or annotated_argname is Optional[Particle]
             )
-            if is_particle and argname != "return":
-                args_to_become_particles.append(argname)
-    return args_to_become_particles
+            if is_particle and parameter != "return":
+                arguments_to_become_particles.append(parameter)
+
+    return arguments_to_become_particles
 
 
 def _validate_arguments_and_annotations(
@@ -561,7 +577,7 @@ def particle_input(
 
             funcname = wrapped_function.__name__
 
-            args_to_become_particles = _get_args_to_become_particles(
+            args_to_become_particles = _identify_args_to_become_particles(
                 arguments, annotations
             )
 
@@ -594,6 +610,7 @@ def particle_input(
                 Z,
                 args_to_become_particles,
             )
+
             return wrapped_function(**new_kwargs)
 
         # add '__signature__' if it does not exist
