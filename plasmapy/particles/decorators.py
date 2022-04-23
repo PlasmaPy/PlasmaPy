@@ -1,5 +1,5 @@
 """
-Module used to define the framework needed for the `particle_input` decorator.
+Module used to define the framework needed for the |particle_input| decorator.
 The decorator takes string and/or integer representations of particles
 as arguments and passes through the corresponding instance of the
 `~plasmapy.particles.particle_class.Particle` class.
@@ -412,7 +412,7 @@ def particle_input(
 
     Notes
     -----
-    If the annotated argument is named `element`, `isotope`, or `ion`,
+    If the annotated argument is named ``element``, ``isotope``, or ``ion``,
     then the decorator will raise an
     `~plasmapy.particles.exceptions.InvalidElementError`,
     `~plasmapy.particles.exceptions.InvalidIsotopeError`, or
@@ -594,7 +594,6 @@ def particle_input(
                 Z,
                 args_to_become_particles,
             )
-
             return wrapped_function(**new_kwargs)
 
         # add '__signature__' if it does not exist
