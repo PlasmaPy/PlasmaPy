@@ -1,0 +1,1 @@
+Fix bug in Hollweg dispersion solver that didn't allow for theta array inputs
