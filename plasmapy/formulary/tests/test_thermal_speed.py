@@ -327,7 +327,7 @@ class TestThermalSpeedLite:
 
 
 # test class for kappa_thermal_speed() function:
-class Test_kappa_thermal_speed(object):
+class Test_kappa_thermal_speed:
     @classmethod
     def setup_class(self):
         """initializing parameters for tests"""

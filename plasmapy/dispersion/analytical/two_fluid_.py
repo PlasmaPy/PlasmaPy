@@ -42,7 +42,7 @@ def two_fluid(
     Using the solution provided by :cite:t:`bellan:2012`, calculate the
     analytical solution to the two fluid, low-frequency
     (:math:`\omega/kc \ll 1`) dispersion relation presented by
-    :cite:t:`stringer:1963`.  This dispersion relation also assummes a
+    :cite:t:`stringer:1963`.  This dispersion relation also assumes a
     uniform magnetic field :math:`\mathbf{B_o}`, no D.C. electric field
     :math:`\mathbf{E_o}=0`, and quasi-neutrality.  For more information
     see the **Notes** section below.
@@ -101,7 +101,7 @@ def two_fluid(
 
     TypeError
         If ``ion`` is not of type or convertible to
-        `~plasmapy.particles.Particle`.
+        `~plasmapy.particles.particle_class.Particle`.
 
     TypeError
         If ``gamma_e``, ``gamma_i``, or ``z_mean`` are not of type `int`

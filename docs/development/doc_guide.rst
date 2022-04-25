@@ -342,7 +342,7 @@ The |docs/conf.py|_ file contains the configuration information needed
 to customize Sphinx_ behavior. The documentation for Sphinx_ lists the
 `configuration options`_ that can be set.
 
-The |docs/_static/sphinx_rtd_overrides.css|_ file contains `style
+The |docs/_static/css|_ directory contains CSS_ files with `style
 overrides`_ for the `Read the Docs Sphinx Theme`_ to customize the look
 and feel of the online documentation.
 
@@ -364,7 +364,7 @@ extensions:
 * |sphinx_copybutton|_ to add a "copy" button for code blocks.
 * |sphinx_gallery.load_style|_ for using sphinx-gallery styles.
 * |IPython.sphinxext.ipython_console_highlighting|_.
-* |sphinx_changelog|_ for rendering `towncrier`_ changelogs.
+* |sphinx_changelog|_ for rendering towncrier_ changelogs.
 * |sphinx-hoverxref|_ for showing floating windows on cross references
   of the documentation.
 * `plasmapy_sphinx` for customizations created for use in PlasmaPy and
@@ -640,6 +640,53 @@ should be in the order provided.
       --------
 
       """
+
+Doctests
+~~~~~~~~
+
+PlasmaPy's test suite runs code examples in docstrings to verify that
+the expected output in the docstring matches the actual output from
+running the code. These doctests_ verify that docstring examples
+faithfully represent the behavior of the code.
+
+.. code-block:: python
+
+   def double(x):
+       """
+       >>> double(4)  # this line is tested that it matches the output below
+       8
+       """
+       return 2 * x
+
+An ellipsis (``...``) denotes that the actual and expected outputs
+should only be compared to the available precision. This capability is
+needed for functions in `plasmapy.formulary` that depend on fundamental
+constants that are occasionally revised.
+
+.. code-block:: python
+
+   def f():
+       """
+       >>> import numpy as np
+       >>> np.pi
+       3.14159...
+       >>> np.pi ** 100
+       5.187...e+49
+       """
+
+To skip the execution of a line of code in a docstring during tests, end
+the line with ``# doctest: +SKIP``. This is appropriate for lines where
+the output varies or an exception is raised.
+
+.. code-block:: python
+
+   def g():
+       """
+       >>> import random
+       >>> random.random()  # doctest: +SKIP
+       0.8905444
+       >>> raise ValueError  # doctest: +SKIP
+       """
 
 Definitions
 -----------
@@ -943,7 +990,7 @@ Narrative documentation guidelines
   ``automodapi``, or the like, then it is required to create a stub file
   for that particular subpackage or module in |docs/api_static|_ . For
   example, the stub file for `plasmapy.particles.atomic` is placed at
-  :file:`docs/api_static/plasampy.particles.atomic.rst` and its contents
+  :file:`docs/api_static/plasmapy.particles.atomic.rst` and its contents
   look like:
 
   .. code-block:: rst
@@ -978,6 +1025,7 @@ Narrative documentation guidelines
 .. _admonitions: https://docutils.sourceforge.io/docs/ref/rst/directives.html#admonitions
 .. _configuration options: https://www.sphinx-doc.org/en/master/usage/configuration.html
 .. _define substitutions: https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html#substitution-definitions
+.. _doctests: https://docs.pytest.org/en/6.2.x/doctest.html
 .. _link rot: https://en.wikipedia.org/wiki/Link_rot
 .. _nested inline markup: https://docutils.sphinx-users.jp/docutils/docs/dev/rst/alternatives.html#nested-inline-markup
 .. _options to sphinx-build: https://www.sphinx-doc.org/en/master/man/sphinx-build.html#options
@@ -985,6 +1033,7 @@ Narrative documentation guidelines
 .. _raise an issue: https://github.com/PlasmaPy/PlasmaPy/issues/new?title=Improve+documentation+for...&labels=Documentation
 .. _raw string: https://docs.python.org/3/reference/lexical_analysis.html#literals
 .. _Read the Docs Sphinx Theme: https://sphinx-rtd-theme.readthedocs.io
+.. _roundoff error: https://en.wikipedia.org/wiki/Round-off_error
 .. _Sphinx's glossary: https://www.sphinx-doc.org/en/master/glossary.html
 .. _Sphinx's templating page: https://www.sphinx-doc.org/en/master/templating.html
 .. _style overrides: https://docs.readthedocs.io/en/stable/guides/adding-custom-css.html

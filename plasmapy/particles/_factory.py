@@ -6,6 +6,8 @@ appropriate instance of one of those three classes.
 
 __all__ = []
 
+import contextlib
+
 from typing import Union
 
 from plasmapy.particles.exceptions import InvalidParticleError
@@ -69,10 +71,8 @@ def _physical_particle_factory(
         raise TypeError("Particle information has not been provided.")
 
     for particle_type in (Particle, CustomParticle, ParticleList):
-        try:
+        with contextlib.suppress(TypeError, InvalidParticleError):
             return particle_type(*args, **kwargs)
-        except (TypeError, InvalidParticleError):
-            pass
 
     raise InvalidParticleError(
         f"Unable to create an appropriate particle object with "

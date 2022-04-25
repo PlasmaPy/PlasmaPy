@@ -20,6 +20,8 @@ from plasmapy import particles
 from plasmapy.particles import Particle
 from plasmapy.utils.decorators import validate_quantities
 
+__all__ += __aliases__
+
 
 def _grab_charge(ion: Particle, z_mean=None):
     """
@@ -41,14 +43,7 @@ def _grab_charge(ion: Particle, z_mean=None):
         of ``ion``.
 
     """
-    if z_mean is None:
-        # warnings.warn("No z_mean given, defaulting to atomic charge",
-        #               PhysicsWarning)
-        Z = particles.charge_number(ion)
-    else:
-        # using average ionization provided by user
-        Z = z_mean
-    return Z
+    return particles.charge_number(ion) if z_mean is None else z_mean
 
 
 @validate_quantities(
@@ -115,8 +110,7 @@ def Bohm_diffusion(T_e: u.K, B: u.T) -> u.m ** 2 / u.s:
         The Bohm diffusion coefficient in meters squared per second.
 
     """
-    D_B = k_B * T_e / (16 * e * B)
-    return D_B
+    return k_B * T_e / (16 * e * B)
 
 
 DB_ = Bohm_diffusion
@@ -341,11 +335,11 @@ def mass_density(
     if not isinstance(particle, Particle):
         try:
             particle = Particle(particle)
-        except TypeError:
+        except TypeError as e:
             raise TypeError(
                 f"If passing a number density, you must pass a plasmapy Particle "
                 f"(not type {type(particle)}) to calculate the mass density!"
-            )
+            ) from e
 
     if not isinstance(z_ratio, (float, np.floating, int, np.integer)):
         raise TypeError(

@@ -17,6 +17,7 @@ from plasmapy.formulary.ionization import *
 from plasmapy.formulary.lengths import *
 from plasmapy.formulary.magnetostatics import *
 from plasmapy.formulary.mathematics import *
+from plasmapy.formulary.misc import *
 from plasmapy.formulary.quantum import *
 from plasmapy.formulary.relativity import *
 from plasmapy.formulary.speeds import *
@@ -26,6 +27,10 @@ for obj_name in list(globals()):
     if not (obj_name.startswith("__") or obj_name.endswith("__")):
         __all__.append(obj_name)
 __all__.sort()
+
+# Put non-formulary imports here so that they don't get included in __all__
+
+import contextlib  # isort:skip
 
 # auto populate __aliases__ & __lite_funcs__
 for modname in (
@@ -40,6 +45,7 @@ for modname in (
     "lengths",
     "magnetostatics",
     "mathematics",
+    "misc",
     "parameters",
     "quantum",
     "relativity",
@@ -50,18 +56,14 @@ for modname in (
     except KeyError:  # coverage: ignore
         continue
 
-    try:
+    with contextlib.suppress(AttributeError):
         __aliases__.extend(obj.__aliases__)
-    except AttributeError:
-        pass
 
-    try:
+    with contextlib.suppress(AttributeError):
         __lite_funcs__.extend(obj.__lite_funcs__)
-    except AttributeError:
-        pass
 
 __aliases__ = list(sorted(set(__aliases__)))
 __lite_funcs__ = list(sorted(set(__lite_funcs__)))
 
 # cleanup namespace
-del modname, obj, obj_name
+del contextlib, modname, obj, obj_name
