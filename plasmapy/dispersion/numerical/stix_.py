@@ -34,9 +34,9 @@ def stix(
     :cite:t:`bellan:2012`, this uses the numerical method to find the
     wave number(s), (:math:`k`), for the dispersion relation provided by
     :cite:t:`stringer:1963`. This dispersion relation also assumes
-    uniform magnetic field :math:`\mathbf{B_0}`, theta is the angle
-    between the magnetic and the normal surface of the wave vector.
-    For more information see the **Notes** section below.
+    uniform magnetic field :math:`\mathbf{B_0}`, :math:`\theta` is the
+    angle between the magnetic and the normal surface of the wave
+    vector. For more information see the **Notes** section below.
 
     Parameters
     ----------
@@ -67,7 +67,7 @@ def stix(
     omegas : Dict[`str`, `~astropy.units.Quantity`]
         A dictionary of computed wave numbers in units rad/m.  The
         dictionary contains keys for each wave number, this will return
-        an array  of value :math:`\theta x 4`.
+        an array  of value :math:`\theta \, x \, 4`.
 
     Raises
     ------
@@ -143,8 +143,8 @@ def stix(
     ...     "n_i": [4.0e5,2.0e5] * u.m**-3,
     ...     "theta": 30 * u.deg,
     >>> }
-    >>> w = stix(**inputs)
-    >>> print(w)
+    >>> k_ = stix(**inputs)
+    >>> print(k_)
 
     """
 
@@ -193,7 +193,7 @@ def stix(
 
     # Validate w argument and dimension
     w = w.squeeze()
-    if not (w.ndim == 0 or w.ndim == 1):
+    if w.ndim not in (0, 1):
         raise ValueError(
             "Argument 'w' needs to be a single value or a 1D array "
             f" astropy Quantity, got a value of shape {w.shape}."
