@@ -1,0 +1,3 @@
+Described the `GitHub Action`_ for
+`codespell <https://github.com/codespell-project/codespell>`__
+in the |testing guide|.
