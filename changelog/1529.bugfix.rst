@@ -1,0 +1,1 @@
+Fix bug in the :file:`hollweg_.py` module that didn't allow for theta array inputs.

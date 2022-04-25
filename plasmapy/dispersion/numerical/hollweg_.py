@@ -99,7 +99,7 @@ def hollweg(
 
     TypeError
         If ``ion`` is not of type or convertible to
-        `~plasmapy.particles.Particle`.
+        `~plasmapy.particles.particle_class.Particle`.
 
     TypeError
         If ``gamma_e``, ``gamma_i``, or ``z_mean`` are not of type `int`
@@ -333,7 +333,7 @@ def hollweg(
     # Warn about theta not nearly perpendicular
     if np.amax(np.abs(thetav - np.pi / 2)) > 0.1:
         warnings.warn(
-            f"This solver is valid in the regime where propogation is "
+            f"This solver is valid in the regime where propagation is "
             f"nearly perpendicular to B according to Bellan, 2012, Sec. 1.7 "
             f"(see documentation for DOI). A theta value of {theta:.2f} was "
             f"entered which may affect the validity of the solution.",

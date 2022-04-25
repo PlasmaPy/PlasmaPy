@@ -27,8 +27,7 @@ New Features
   checks with `Coveralls <https://coveralls.io/>`_.
 
 * Decided upon code and docstring style conventions and set up
-  automated code style checks with `pep8speaks
-  <https://pep8speaks.com/>`_.
+  automated code style checks with ``pep8speaks``.
 
 * Developed `online documentation for PlasmaPy
   <https://docs.plasmapy.org>`_ that is hosted by `Read the Docs`_.

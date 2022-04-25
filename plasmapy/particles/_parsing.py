@@ -120,19 +120,18 @@ def dealias_particle_aliases(alias: Union[str, Integral]) -> str:
     atomic number).
     """
     if not isinstance(alias, str):
-        symbol = alias
+        return alias
     elif (
         alias in case_sensitive_aliases.values()
         or alias in case_insensitive_aliases.values()
     ):
-        symbol = alias
+        return alias
     elif alias in case_sensitive_aliases:
-        symbol = case_sensitive_aliases[alias]
+        return case_sensitive_aliases[alias]
     elif alias.lower() in case_insensitive_aliases:
-        symbol = case_insensitive_aliases[alias.lower()]
+        return case_insensitive_aliases[alias.lower()]
     else:
-        symbol = alias
-    return symbol
+        return alias
 
 
 def invalid_particle_errmsg(argument, mass_numb=None, Z=None):
@@ -358,16 +357,8 @@ def parse_and_check_atomic_input(
         """
 
         if Z is not None:
-            if Z < 0:
-                sign = "-"
-            else:
-                sign = "+"
-
-            if isotope is None:
-                base = element
-            else:
-                base = isotope
-
+            sign = "-" if Z < 0 else "+"
+            base = element if isotope is None else isotope
             ion = f"{base} {np.abs(Z)}{sign}"
         else:
             ion = None
@@ -477,34 +468,35 @@ def parse_and_check_molecule_input(argument: str, Z: Integral = None):
 
     Parameters
     ----------
-    argument : 'str'
+    argument : `str`
         The molecule symbol to be parsed.
 
-    Z : 'Integral', optional
+    Z : `int`, optional
         The provided charge number.
 
     Returns
     -------
-    elements_dict : 'dict'
-        A dictionary with identified element symbols as keys and amount of each as values.
-        The molecule symbol stripped of the charge.
-        The integer charge.
+    elements_dict : `dict`
+        A dictionary with identified element symbols as keys and the
+        number of each element that make up the molecule as values. For
+        example, ``argument="CO2"`` would lead to ``elements_dict``
+        being ``{"C": 1, "O": 2}``.
 
-    molecule_info : 'str'
+    molecule_info : `str`
         The molecule symbol stripped of its charge.
 
-    Z : 'int'
-        The molecule charge.
+    Z : `int`
+        The charge number of the molecule.
 
     Raises
     ------
-    'InvalidParticleError'
-        If the Symbol couldn't be parsed.
+    `InvalidParticleError`
+        If ``argument`` could not be parsed as a molecule.
 
     Warns
     -----
-    `ParticleWarning`
-        If The charge is given both as an argument and in the symbol.
+    : `ParticleWarning`
+        If the charge is given both as an argument and in the symbol.
     """
     molecule_info, z_from_arg = extract_charge(argument)
     if not re.fullmatch(r"(?:[A-Z][a-z]?\d*)+", molecule_info):

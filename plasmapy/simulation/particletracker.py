@@ -21,12 +21,12 @@ class ParticleTracker:
 
     Parameters
     ----------
-    plasma : `Plasma`
+    plasma : Plasma object
         Plasma from which fields can be pulled.
 
     type : `str`
-        Particle type. See `plasmapy.particles.ParticleLike` for suitable
-        arguments. The default is a proton.
+        Particle type. See `plasmapy.particles.particle_class.ParticleLike`
+        for suitable arguments. The default is a proton.
 
     n_particles : `int`
         Number of macroparticles. The default is a single particle.
@@ -258,7 +258,7 @@ class ParticleTracker:
         ----------
         plot : `str`, optional
             Enable plotting of position component x, y, z for each of these
-            letters included in `plot`.
+            letters included in ``plot``.
         """
         import matplotlib.pyplot as plt
 
