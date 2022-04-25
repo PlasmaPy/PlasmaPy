@@ -158,6 +158,19 @@ The following checks are performed with each pull request.
 * The **Pull Request Labeler / triage (pull_request_target)** check
   applies appropriate GitHub_ labels to pull requests.
 
+* The **CI / codespell (pull request)** check runs codespell_ to catch
+  by looking for common misspellings.
+
+  * If codespell_ has been installed (e.g., by ``pip install codespell``),
+    then it may be run by going into the appropriate directory and
+    running ``codespell -i 2 -w``. This command will identify common
+    misspellings, interactively suggest replacements, and then write the
+    replacements into the file.
+
+  * Occasionally codespell_ will report false positives. Please add
+    false positives to ``ignore-words-list`` under ``codespell`` in
+    :file:`setup.cfg`.
+
 .. note::
 
    For first-time contributors, existing maintainers `may need to
