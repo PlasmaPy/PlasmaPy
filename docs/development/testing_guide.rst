@@ -731,6 +731,7 @@ should be balanced with each other rather than absolute principles.
 .. _Atom: https://atom.io
 .. _Codecov: https://about.codecov.io
 .. _`code coverage`: https://en.wikipedia.org/wiki/Code_coverage
+.. _codespell: https://github.com/codespell-project/codespell
 .. _`coverage.py`: https://coverage.readthedocs.io
 .. _`create a pull request`: https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests
 .. _fixtures: https://docs.pytest.org/en/latest/explanation/fixtures.html
