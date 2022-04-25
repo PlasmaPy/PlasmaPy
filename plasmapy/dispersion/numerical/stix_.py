@@ -248,9 +248,9 @@ def stix(
     # Solve for k values
     k = np.empty(4, dtype=np.complex128)
 
-    k[0] = np.emath.sort((-B + np.emath.sqrt(B ** 2 - 4 * A * C)) / (2 * A))
+    k[0] = np.emath.sort((-b + np.emath.sqrt(b ** 2 - 4 * a * c)) / (2 * a))
     k[1] = -k[0]
-    k[2] = np.emath.sort((-B - np.emath.sqrt(B ** 2 - 4 * A * C)) / (2 * A))
+    k[2] = np.emath.sort((-b - np.emath.sqrt(b ** 2 - 4 * a * c)) / (2 * a))
     k[3] = -k[2]
 
     return k * u.rad / u.m
