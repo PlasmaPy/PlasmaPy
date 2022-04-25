@@ -238,12 +238,12 @@ def stix(
     R = S + D
     L = S - D
 
-    # Generate coefficients to solve
-    A = (c_si_unitless / w) ** 4 * (S * (np.sin(theta) ** 2) + P * (np.cos(theta) ** 2))
-    B = -((c_si_unitless / w) ** 2) * (
+    # Generate coefficients to solve, a * k**4 + b * k**2 + c = 0
+    a = (c_si_unitless / w) ** 4 * (S * (np.sin(theta) ** 2) + P * (np.cos(theta) ** 2))
+    b = -((c_si_unitless / w) ** 2) * (
         R * L * (np.sin(theta) ** 2) + P * S * (1 + (np.cos(theta) ** 2))
     )
-    C = P * R * L
+    c = P * R * L
 
     # Solve for k values
     k = np.empty(4, dtype=np.complex128)
