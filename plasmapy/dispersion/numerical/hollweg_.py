@@ -331,7 +331,7 @@ def hollweg(
         )
 
     # Warn about theta not nearly perpendicular
-    if np.amax(np.abs(theta - np.pi / 2)) > 0.1:
+    if np.amax(np.abs(thetav - np.pi / 2)) > 0.1:
         warnings.warn(
             f"This solver is valid in the regime where propogation is "
             f"nearly perpendicular to B according to Bellan, 2012, Sec. 1.7 "
