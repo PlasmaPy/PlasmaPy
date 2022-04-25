@@ -67,7 +67,7 @@ def stix(
     omegas : Dict[`str`, `~astropy.units.Quantity`]
         A dictionary of computed wave numbers in units rad/m.  The
         dictionary contains keys for each wave number, this will return
-        an array  of value :math:`\theta \, x \, 4`.
+        an array  of value :math:`M \, x \, 4`.
 
     Raises
     ------
@@ -126,10 +126,10 @@ def stix(
 
     The equation is valid for all :math:`\omega` and :math:`k`
     providing that :math:`\frac{\omega}{k_{z}} >> \nu_{Te}` with
-    :math:`\nu_{Ti}` and :math:`k_{x}r_{Le,i} << 1`.  The prediction of
-    :math:`k \to 0` occurs when P, R or L cut off and predicts
-    :math:`k \to \infty` for perpendicular propagation during wave
-    resonance :math:`S \to 0`.
+    :math:`\nu_{Ti}` and :math:`k_{x}, \, r_{Le,i} << 1`.  The
+    prediction of :math:`k \to 0` occurs when P, R or L cut off and
+    predicts :math:`k \to \infty` for perpendicular propagation during
+    wave resonance :math:`S \to 0`.
 
     Example
     -------
