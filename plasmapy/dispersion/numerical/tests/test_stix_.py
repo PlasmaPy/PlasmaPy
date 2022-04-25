@@ -26,12 +26,9 @@ class TestStix:
             ({**_kwargs_single_valued, "B": 5 * u.m}, u.UnitTypeError),
             ({**_kwargs_single_valued, "w": -1.0 * u.rad / u.s}, ValueError),
             ({**_kwargs_single_valued, "w": 5 * u.s}, u.UnitTypeError),
-            ({**_kwargs_single_valued, "ions": {"not": "a particle"}}, TypeError),
+            ({**_kwargs_single_valued, "ions": "not a particle"}, TypeError),
             ({**_kwargs_single_valued, "n_i": "wrong type"}, TypeError),
-            (
-                {**_kwargs_single_valued, "n_i": 6 * u.m / u.s},
-                u.UnitTypeError,
-            ),
+            ({**_kwargs_single_valued, "n_i": 6 * u.m / u.s}, u.UnitTypeError),
             ({**_kwargs_single_valued, "theta": 5 * u.eV}, u.UnitTypeError),
         ],
     )
@@ -42,7 +39,7 @@ class TestStix:
     @pytest.mark.parametrize(
         "kwargs, expected",
         [
-            ({**_kwargs_single_valued, "w": 0 * u.rad / u.s}, {"shape": 1}),
+            ({**_kwargs_single_valued, "w": 2 * u.rad / u.s}, {"shape": 1}),
             (
                 {**_kwargs_single_valued, "w": [10] * u.rad / u.s},
                 {"shape": 1},
@@ -87,7 +84,7 @@ class TestStix:
     @pytest.mark.parametrize(
         "kwargs, _warning",
         [
-            ({**_kwargs_single_valued, "w": 0 * u.s / u.s}, u.UnitTypeError),
+            ({**_kwargs_single_valued, "w": 0 * u.m / u.s}, u.UnitTypeError),
         ],
     )
     def test_warns(self, kwargs, _warning):
