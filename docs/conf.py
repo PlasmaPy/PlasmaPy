@@ -74,31 +74,32 @@ automodapi_group_order = (
 )
 
 # If your documentation needs a minimal Sphinx version, state it here.
-#
-# needs_sphinx = '1.0'
+
+needs_sphinx = "4.4"
 
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones. When extensions are removed or added, please update the section
 # in docs/doc_guide.rst on Sphinx extensions.
+
 extensions = [
     "sphinx.ext.autodoc",
-    "sphinx.ext.intersphinx",
+    "sphinx.ext.extlinks",
     "sphinx.ext.graphviz",
+    "sphinx.ext.intersphinx",
     "sphinx.ext.mathjax",
     "sphinx.ext.napoleon",
     "sphinx.ext.todo",
     "nbsphinx",
+    "sphinxcontrib.bibtex",
     "sphinx_copybutton",
     "sphinx_gallery.load_style",
     "IPython.sphinxext.ipython_console_highlighting",
     "sphinx_changelog",
-    "plasmapy_sphinx",
-    "sphinxcontrib.bibtex",
     "hoverxref.extension",
     "notfound.extension",
     "sphinx_issues",
-    "sphinx.ext.extlinks",
+    "plasmapy_sphinx",
 ]
 
 # Configure sphinxcontrib-bibtex
@@ -110,6 +111,7 @@ bibtex_reference_style = "author_year"
 # Intersphinx generates automatic links to the documentation of objects
 # in other packages. When mappings are removed or added, please update
 # the section in docs/doc_guide.rst on references to other packages.
+
 intersphinx_mapping = {
     "readthedocs": ("https://docs.readthedocs.io/en/stable/", None),
     "python": ("https://docs.python.org/3/", None),
@@ -141,6 +143,8 @@ hoverxref_intersphinx = [
 
 autoclass_content = "both"
 autodoc_typehints_format = "short"
+
+# Configure sphinx-issues
 
 issues_github_path = "PlasmaPy/PlasmaPy"
 
@@ -210,6 +214,7 @@ todo_include_todos = False
 default_role = "py:obj"
 
 # Customizations for make linkcheck using regular expressions
+
 linkcheck_allowed_redirects = {
     r"https://doi\.org/.+": r"https://.+",  # DOI links are more persistent
     r"https://docs.+\.org": r"https://docs.+\.org/en/.+",
@@ -289,6 +294,7 @@ hoverxref_role_types = {
 
 extlinks = {
     "orcid": ("https://orcid.org/%s", "%s"),
+    "wikipedia": ("https://en.wikipedia.org/wiki/", "%s"),
 }
 
 # Specify patterns to ignore when doing a nitpicky documentation build.

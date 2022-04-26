@@ -101,8 +101,6 @@
 .. _black: https://black.readthedocs.io
 .. _Conda: https://docs.conda.io
 .. _create an issue: https://github.com/PlasmaPy/PlasmaPy/issues/new/choose
-.. _CSS: https://en.wikipedia.org/wiki/CSS
-.. _docstring: https://en.wikipedia.org/wiki/Docstring
 .. _DOI: https://www.doi.org
 .. _flake8: https://flake8.pycqa.org/en/latest
 .. _git: https://git-scm.com
