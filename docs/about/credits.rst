@@ -26,13 +26,13 @@ in parentheses are `ORCID author identifiers <https://orcid.org>`__.
 * :user:`Manas Bedmutha <manasbedmutha98>`
 * :user:`Justin Bergeron <Justin-Bergeron>`
 * :user:`Ludovico Bessi <ludoro>`
-* :user:`BH4 <BH4>`
+* :user:`BH4`
 * :user:`Khalil Bryant <KhalilBryant>`
 * :user:`Sean Carroll <seanwilliamcarroll>`
 * :user:`Sean Chambers <schambers>`
 * :user:`Ankur Chattopadhyay <chttrjeankr>`
 * :user:`Apoorv Choubey <apooravc>`
-* :user:`cclauss <cclauss>`
+* :user:`cclauss`
 * :user:`Jacob Deal <Jac0bDeal>`
 * :user:`Diego A. Diaz Riega <diego7319>`
 * :user:`Leah Einhorn <leahein>`
@@ -57,15 +57,15 @@ in parentheses are `ORCID author identifiers <https://orcid.org>`__.
 * :user:`Piotr Kuszaj <kuszaj>`
 * :user:`Samuel Langendorf <samurai688>` (:orcid:`0000-0002-7757-5879`)
 * :user:`Drew Leonard <SolarDrew>` (:orcid:`0000-0001-5270-7487`)
-* :user:`lgoenner <lgoenner>`
+* :user:`lgoenner`
 * :user:`Fionnlagh Mackenzie Dover <FinMacDov>` (:orcid:`0000-0002-1984-7303`)
 * :user:`Aditya Magarde <adityamagarde>`
 * :user:`Ritiek Malhotra <ritiek>`
 * :user:`Stuart Mumford <Cadair>` (:orcid:`0000-0003-4217-4642`)
 * :user:`Joshua Munn <jams2>`
 * :user:`Nick Murphy <namurphy>` (:orcid:`0000-0001-6628-8033`)
-* :user:`Nismirno <Nismirno>`
-* :user:`nrb1324 <nrb1324>`
+* :user:`Nismirno`
+* :user:`nrb1324`
 * :user:`Tulasi Parashar <tulasinandan>` (:orcid:`0000-0003-0602-8381`)
 * :user:`Neil Patel <ministrike3>`
 * :user:`Francisco Silva Pavon <silvafrancisco>`
