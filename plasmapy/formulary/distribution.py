@@ -14,7 +14,6 @@ __all__ = [
     "kappa_velocity_3D",
 ]
 
-from token import AT
 import astropy.units as u
 import numpy as np
 
