@@ -21,6 +21,9 @@ PlasmaPy Contributors
 The people in the following list have contributed to PlasmaPy.  Included
 in parentheses are `ORCID author identifiers <https://orcid.org>`__.
 
+.. ORCID provides a unique persistent identifier that you own and control.
+   To sign up, please go to: https://orcid.org/register
+
 * :user:`Haman Bagherianlemraski <haman80>` (:orcid:`0000-0001-7381-1996`)
 * :user:`Jasper Beckers <jasperbeckers>`
 * :user:`Manas Bedmutha <manasbedmutha98>`
