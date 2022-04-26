@@ -98,6 +98,7 @@ extensions = [
     "hoverxref.extension",
     "notfound.extension",
     "sphinx_issues",
+    "sphinx.ext.extlinks",
 ]
 
 bibtex_bibfiles = ["bibliography.bib"]
@@ -274,6 +275,18 @@ hoverxref_role_types = {
     "hoverxref": "tooltip",
     "ref": "tooltip",
     "term": "tooltip",
+}
+
+# Using sphinx.ext.extlinks lets us simplify the process of creating
+# links to commonly used external sites. The key of the extlink becomes
+# a new role, and the corresponding tuple contains the base url and the
+# caption. For example, we can now do :orcid:`0000-0000-0000-0000` and
+# have a link create to the corresponding ORCID page. New roles should
+# be added to rst-roles in setup.cfg to avoid being caught by
+# flake8-rst-docstrings.
+
+extlinks = {
+    "orcid": ("https://orcid.org/%s", "%s"),
 }
 
 # Specify patterns to ignore when doing a nitpicky documentation build.
