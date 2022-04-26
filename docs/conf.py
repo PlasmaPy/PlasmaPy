@@ -97,6 +97,7 @@ extensions = [
     "sphinxcontrib.bibtex",
     "hoverxref.extension",
     "notfound.extension",
+    "sphinx_issues",
 ]
 
 bibtex_bibfiles = ["bibliography.bib"]
