@@ -96,6 +96,7 @@ extensions = [
     "plasmapy_sphinx",
     "sphinxcontrib.bibtex",
     "hoverxref.extension",
+    "notfound.extension",
 ]
 
 bibtex_bibfiles = ["bibliography.bib"]
@@ -136,6 +137,8 @@ hoverxref_intersphinx = [
 
 autoclass_content = "both"
 autodoc_typehints_format = "short"
+
+issues_github_path = "PlasmaPy/PlasmaPy"
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]
