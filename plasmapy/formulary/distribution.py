@@ -21,9 +21,9 @@ from scipy.special import gamma
 
 from plasmapy.formulary.speeds import kappa_thermal_speed, thermal_speed
 from plasmapy.utils.units_definitions import (
-    SPEED_UNITS, 
-    SPEED_DISTRIBUTION_UNITS_1D, 
-    SPEED_DISTRIBUTION_UNITS_2D, 
+    SPEED_UNITS,
+    SPEED_DISTRIBUTION_UNITS_1D,
+    SPEED_DISTRIBUTION_UNITS_2D,
     SPEED_DISTRIBUTION_UNITS_3D,
 )
 
@@ -246,7 +246,7 @@ def Maxwellian_velocity_2D(
         vy_drift = _v_drift_conversion(vy_drift)
 
         # convert temperature to kelvin
-        T = T.to_value(u.K, equivalencies=u.temperature_energy())    
+        T = T.to_value(u.K, equivalencies=u.temperature_energy())
         if not np.isnan(vTh):
             # check units of thermal velocity
             vTh = vTh.to_value(SPEED_UNITS)
