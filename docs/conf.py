@@ -101,6 +101,8 @@ extensions = [
     "sphinx.ext.extlinks",
 ]
 
+# Configure sphinxcontrib-bibtex
+
 bibtex_bibfiles = ["bibliography.bib"]
 bibtex_default_style = "plain"
 bibtex_reference_style = "author_year"
