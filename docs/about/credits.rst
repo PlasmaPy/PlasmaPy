@@ -21,7 +21,7 @@ PlasmaPy Contributors
 The people in the following list have contributed to PlasmaPy.  Included
 in parentheses are `ORCID author identifiers <https://orcid.org>`__.
 
-* :user:`Haman Bagherianlemraski <haman80>` (`0000-0001-7381-1996 <https://orcid.org/0000-0001-7381-1996>`__)
+* :user:`Haman Bagherianlemraski <haman80>` (:orcid:`0000-0001-7381-1996`)
 * :user:`Jasper Beckers <jasperbeckers>`
 * :user:`Manas Bedmutha <manasbedmutha98>`
 * :user:`Justin Bergeron <Justin-Bergeron>`
@@ -45,42 +45,42 @@ in parentheses are `ORCID author identifiers <https://orcid.org>`__.
 * :user:`Graham Goudeau <GrahamGoudeau>`
 * :user:`Silvina Guidoni <https://www.american.edu/cas/faculty/guidoni.cfm>`
 * :user:`Colby Haggerty <colbych>`
-* :user:`Peter Heuer <pheuer>` (`0000-0001-5050-6606 <https://orcid.org/0000-0001-5050-6606>`__)
-* :user:`Julien Hillairet <jhillairet>` (`0000-0002-1073-6383 <https://orcid.org/0000-0002-1073-6383>`__)
+* :user:`Peter Heuer <pheuer>` (:orcid:`0000-0001-5050-6606`)
+* :user:`Julien Hillairet <jhillairet>` (:orcid:`0000-0002-1073-6383`)
 * :user:`Poh Zi How <pohzipohzi>`
-* :user:`Yi-Min Huang <yopology>` (`0000-0002-4237-2211 <https://orcid.org/0000-0002-4237-2211>`__)
+* :user:`Yi-Min Huang <yopology>` (:orcid:`0000-0002-4237-2211`)
 * :user:`Nabil Humphrey <NabilHumphrey>`
 * :user:`Maria Isupova <misupova>`
-* :user:`Alf Köhn-Seemann <alfkoehn>` (`0000-0002-1192-2057 <https://orcid.org/0000-0002-1192-2057>`__)
-* :user:`Pawel Kozlowski <lemmatum>` (`0000-0001-6849-3612 <https://orcid.org/0000-0001-6849-3612>`__)
+* :user:`Alf Köhn-Seemann <alfkoehn>` (:orcid:`0000-0002-1192-2057`)
+* :user:`Pawel Kozlowski <lemmatum>` (:orcid:`0000-0001-6849-3612`)
 * :user:`Siddharth Kulshrestha <siddharth185>`
 * :user:`Piotr Kuszaj <kuszaj>`
-* :user:`Samuel Langendorf <samurai688>` (`0000-0002-7757-5879 <https://orcid.org/0000-0002-7757-5879>`__)
-* :user:`Drew Leonard <SolarDrew>` (`0000-0001-5270-7487 <https://orcid.org/0000-0001-5270-7487>`__)
+* :user:`Samuel Langendorf <samurai688>` (:orcid:`0000-0002-7757-5879`)
+* :user:`Drew Leonard <SolarDrew>` (:orcid:`0000-0001-5270-7487`)
 * :user:`lgoenner <lgoenner>`
-* :user:`Fionnlagh Mackenzie Dover <FinMacDov>` (`0000-0002-1984-7303 <https://orcid.org/0000-0002-1984-7303>`__)
+* :user:`Fionnlagh Mackenzie Dover <FinMacDov>` (:orcid:`0000-0002-1984-7303`)
 * :user:`Aditya Magarde <adityamagarde>`
 * :user:`Ritiek Malhotra <ritiek>`
-* :user:`Stuart Mumford <Cadair>` (`0000-0003-4217-4642 <https://orcid.org/0000-0003-4217-4642>`__)
+* :user:`Stuart Mumford <Cadair>` (:orcid:`0000-0003-4217-4642`)
 * :user:`Joshua Munn <jams2>`
-* :user:`Nick Murphy <namurphy>` (`0000-0001-6628-8033 <https://orcid.org/0000-0001-6628-8033>`__)
+* :user:`Nick Murphy <namurphy>` (:orcid:`0000-0001-6628-8033`)
 * :user:`Nismirno <Nismirno>`
 * :user:`nrb1324 <nrb1324>`
-* :user:`Tulasi Parashar <tulasinandan>` (`0000-0003-0602-8381 <https://orcid.org/0000-0003-0602-8381>`__)
+* :user:`Tulasi Parashar <tulasinandan>` (:orcid:`0000-0003-0602-8381`)
 * :user:`Neil Patel <ministrike3>`
 * :user:`Francisco Silva Pavon <silvafrancisco>`
 * :user:`Roberto Díaz Pérez <RoberTnf>`
 * Jakub Polak
 * :user:`Raajit Raj <raajitr>`
-* :user:`Vishwas Rajashekar <DarkAEther>` (`0000-0002-4914-6612 <https://orcid.org/0000-0002-4914-6612>`__)
-* :user:`Antonia Savcheva <savcheva>` (`0000-0002-5598-046X <https://orcid.org/0000-0002-5598-046X>`__)
-* :user:`Chengcai Shen <ionizationcalc>` (`0000-0002-9258-4490 <https://orcid.org/0000-0002-9258-4490>`__)
+* :user:`Vishwas Rajashekar <DarkAEther>` (:orcid:`0000-0002-4914-6612`)
+* :user:`Antonia Savcheva <savcheva>` (:orcid:`0000-0002-5598-046X`)
+* :user:`Chengcai Shen <ionizationcalc>` (:orcid:`0000-0002-9258-4490`)
 * :user:`Dawa Nurbu Sherpa <nurbu5>`
 * :user:`Angad Singh <singha95>`
 * :user:`Ankit Singh <Griffintaur>`
 * :user:`Brigitta Sipőcz <bsipocz>`
-* :user:`David Stansby <dstansby>` (`0000-0002-1365-1908 <https://orcid.org/0000-0002-1365-1908>`__)
-* :user:`Dominik Stańczak <StanczakDominik>` (`0000-0001-6291-8843 <https://orcid.org/0000-0001-6291-8843>`__)
+* :user:`David Stansby <dstansby>` (:orcid:`0000-0002-1365-1908`)
+* :user:`Dominik Stańczak <StanczakDominik>` (:orcid:`0000-0001-6291-8843`)
 * :user:`Antoine Tavant <antoinetavant>`
 * :user:`Thomas Ulrich <Elfhelm>`
 * :user:`Thomas Varnish <tvarnish>`
@@ -88,10 +88,10 @@ in parentheses are `ORCID author identifiers <https://orcid.org>`__.
 * :user:`Sixue Xu <hzxusx>`
 * :user:`Carol Zhang <carolyz>`
 * :user:`Cody Skinner <cskinner74>`
-* :user:`Ramiz Qudsi <qudsiramiz>` (`0000-0001-8358-0482 <https://orcid.org/0000-0001-8358-0482>`__)
-* :user:`Steve Richardson <arichar6>` (`0000-0002-3056-6334 <https://orcid.org/0000-0002-3056-6334>`__)
-* :user:`Tiger Du <Tiger-Du>` (`0000-0002-8676-1710 <https://orcid.org/0000-0002-8676-1710>`__)
-* :user:`Kevin Montes <kjmontes>` (`0000-0002-0762-3708 <https://orcid.org/0000-0002-0762-3708>`__)
+* :user:`Ramiz Qudsi <qudsiramiz>` (:orcid:`0000-0001-8358-0482`)
+* :user:`Steve Richardson <arichar6>` (:orcid:`0000-0002-3056-6334`)
+* :user:`Tiger Du <Tiger-Du>` (:orcid:`0000-0002-8676-1710`)
+* :user:`Kevin Montes <kjmontes>` (:orcid:`0000-0002-0762-3708`)
 * :user:`David Drozdov <davemus>`
 * :user:`Dhawal Modi <Dhawal-Modi>`
 * :user:`Armando Salcido <aksalcido>`
