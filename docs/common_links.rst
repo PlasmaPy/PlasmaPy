@@ -227,5 +227,11 @@
 .. _`sphinx-hoverxref`: https://sphinx-hoverxref.readthedocs.io
 .. |sphinx-hoverxref| replace:: `sphinx-hoverxref`
 
+.. _`sphinx-issues`: https://github.com/sloria/sphinx-issues
+.. |sphinx-issues| replace:: `sphinx-issues`
+
+.. _`sphinx-notfound-page`: https://sphinx-notfound-page.readthedocs.io
+.. |sphinx-notfound-page| replace:: `sphinx-notfound-page`
+
 .. _xarray: https://docs.xarray.dev
 .. |xarray| replace:: `xarray`
