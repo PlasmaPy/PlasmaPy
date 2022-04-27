@@ -321,7 +321,7 @@ nitpick_ignore_regex = [
     (python_role, ".*real number.*"),
     (python_role, ".*representation.*"),
     (python_role, "shape.*"),
-    (python_role, "u\..*"),
+    (python_role, r"u\..*"),
     (python_role, ".*Unit.*"),
     # pytest helpers
     (python_role, "_pytest.*"),
