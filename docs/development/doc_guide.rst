@@ -342,9 +342,9 @@ The |docs/conf.py|_ file contains the configuration information needed
 to customize Sphinx_ behavior. The documentation for Sphinx_ lists the
 `configuration options`_ that can be set.
 
-The |docs/_static/css|_ directory contains CSS_ files with `style
-overrides`_ for the `Read the Docs Sphinx Theme`_ to customize the look
-and feel of the online documentation.
+The |docs/_static/css|_ directory contains :wikipedia:`CSS` files with
+`style overrides`_ for the `Read the Docs Sphinx Theme`_ to customize
+the look and feel of the online documentation.
 
 Sphinx extensions
 ~~~~~~~~~~~~~~~~~
@@ -353,7 +353,8 @@ Sphinx extensions
 extensions:
 
 * `sphinx.ext.autodoc` for including documentation from docstrings.
-* `sphinx.ext.extlinks` for shortening links to external sites
+* `sphinx.ext.extlinks` for shortening links to external sites (e.g.,
+  ``:orcid:`` and ``:wikipedia:``).
 * `sphinx.ext.graphviz` to allow Graphviz_ graphs to be included.
 * `sphinx.ext.intersphinx` for linking to other projects' documentation.
 * `sphinx.ext.mathjax` for math rendering with MathJax_.
@@ -368,9 +369,9 @@ extensions:
 * |sphinx_changelog|_ for rendering towncrier_ changelogs.
 * |sphinx-hoverxref|_ for showing floating windows on cross references
   of the documentation.
-* |notfound|_ to add a 404 page for the documentation
-* |sphinx-issues|_ to add roles for linking to GitHub (e.g., ``issue``,
-  ``pr``, and ``:user:``)
+* |notfound|_ to add a 404 page for the documentation.
+* |sphinx-issues|_ to add roles for linking to GitHub (``:commit:``,
+  ``:issue:``, ``:pr:``, and ``:user:``).
 * `plasmapy_sphinx` for customizations created for use in PlasmaPy and
   affiliated packages. Note that `plasmapy_sphinx` is expected to be
   broken out into its own package in the future.
