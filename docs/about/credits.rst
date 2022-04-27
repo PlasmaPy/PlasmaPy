@@ -56,7 +56,7 @@ in parentheses are `ORCID author identifiers <https://orcid.org>`__.
 * :user:`Maria Isupova <misupova>`
 * :user:`Alf Köhn-Seemann <alfkoehn>` (:orcid:`0000-0002-1192-2057`)
 * :user:`Pawel Kozlowski <lemmatum>` (:orcid:`0000-0001-6849-3612`)
-* :user:`Siddharth Kulshrestha <siddharth185>`
+* Siddharth Kulshrestha
 * :user:`Piotr Kuszaj <kuszaj>`
 * :user:`Samuel Langendorf <samurai688>` (:orcid:`0000-0002-7757-5879`)
 * :user:`Drew Leonard <SolarDrew>` (:orcid:`0000-0001-5270-7487`)
