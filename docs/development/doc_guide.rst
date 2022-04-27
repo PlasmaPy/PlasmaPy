@@ -369,7 +369,7 @@ extensions:
 * |sphinx_changelog|_ for rendering towncrier_ changelogs.
 * |sphinx-hoverxref|_ for showing floating windows on cross references
   of the documentation.
-* |notfound|_ to add a 404 page for the documentation.
+* |sphinx-notfound-page|_ to add a 404 page for the documentation.
 * |sphinx-issues|_ to add roles for linking to GitHub (``:commit:``,
   ``:issue:``, ``:pr:``, and ``:user:``).
 * `plasmapy_sphinx` for customizations created for use in PlasmaPy and
@@ -494,9 +494,9 @@ Writing documentation
 Docstrings
 ----------
 
-A docstring_ is a comment at the beginning of a function or another
-object that provides information on how to use that function (see
-:pep:`257`). Docstrings are designated by surrounding the content
+A :wikipedia:`docstring` is a comment at the beginning of a function or
+another object that provides information on how to use that function
+(see :pep:`257`). Docstrings are designated by surrounding the content
 with triple quotes ``"""This is my docstring."""``.
 
 In order to improve readability and maintain consistency, PlasmaPy uses
