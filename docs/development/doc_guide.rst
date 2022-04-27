@@ -369,7 +369,8 @@ extensions:
 * |sphinx_changelog|_ for rendering towncrier_ changelogs.
 * |sphinx-hoverxref|_ for showing floating windows on cross references
   of the documentation.
-* |sphinx-notfound-page|_ to add a 404 page for the documentation.
+* |sphinx-notfound-page|_ to add a :wikipedia:`404 <HTTP_404>` page
+  for the documentation.
 * |sphinx-issues|_ to add roles for linking to GitHub (``:commit:``,
   ``:issue:``, ``:pr:``, and ``:user:``).
 * `plasmapy_sphinx` for customizations created for use in PlasmaPy and
