@@ -177,10 +177,7 @@ release = "" if release == "unknown" else release
 pv = parse_version(release)
 release = pv.public
 version = ".".join(release.split(".")[:2])  # short X.Y version
-if pv.local is not None:
-    revision = pv.local[1:]  # revision number w/o the leading g
-else:
-    revision = ""
+revision = pv.local[1:] if pv.local is not None else ""
 
 # This is added to the end of RST files — a good place to put substitutions to
 # be used globally.
