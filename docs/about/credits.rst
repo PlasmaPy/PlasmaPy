@@ -46,7 +46,7 @@ in parentheses are `ORCID author identifiers <https://orcid.org>`__.
 * :user:`Bryan Foo <bryancfoo>`
 * :user:`Brian Goodall <goodab>`
 * :user:`Graham Goudeau <GrahamGoudeau>`
-* :user:`Silvina Guidoni <https://www.american.edu/cas/faculty/guidoni.cfm>`
+* `Silvina Guidoni <https://www.american.edu/cas/faculty/guidoni.cfm>`_
 * :user:`Colby Haggerty <colbych>`
 * :user:`Peter Heuer <pheuer>` (:orcid:`0000-0001-5050-6606`)
 * :user:`Julien Hillairet <jhillairet>` (:orcid:`0000-0002-1073-6383`)
