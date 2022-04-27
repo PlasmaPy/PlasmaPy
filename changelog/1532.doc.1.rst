@@ -1,0 +1,3 @@
+Added the |sphinx-notfound-page|_ extension to Sphinx_ so that the
+documentation now has a 404 (not found) page in the same style as the
+rest of the documentation.
