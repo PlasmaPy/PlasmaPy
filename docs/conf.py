@@ -294,6 +294,7 @@ hoverxref_role_types = {
 
 extlinks = {
     "orcid": ("https://orcid.org/%s", "%s"),
+    "wikipedia": ("https://en.wikipedia.org/wiki/", "%s"),
 }
 
 # Specify patterns to ignore when doing a nitpicky documentation build.
