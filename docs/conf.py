@@ -219,6 +219,7 @@ linkcheck_allowed_redirects = {
     r"https://docs.+\.io": r"https://docs.+\.io/en/.+",
     r"https://docs.+\.com": r"https://docs.+\.com/en/.+",
     r"https://docs.+\.dev": r"https://docs.+\.dev/en/.+",
+    r"https://en.wikipedia.org/wiki.+": "https://en.wikipedia.org/wiki.+",
     r"https://.+\.readthedocs\.io": r"https://.+\.readthedocs\.io/en/.+",
     r"https://www\.sphinx-doc\.org": r"https://www\.sphinx-doc\.org/en/.+",
     r"https://.+/github\.io": r"https://.+/github\.io/en/.+",
