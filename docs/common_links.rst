@@ -126,7 +126,6 @@
 .. _NumPy: https://numpy.org
 .. _OpenPMD: https://www.openpmd.org/
 .. _pandas: https://pandas.pydata.org
-.. _persistent identifier: https://en.wikipedia.org/wiki/Persistent_identifier
 .. _pip: https://pip.pypa.io
 .. _Plasma Hack Week: https://hack.plasmapy.org
 .. _PlasmaPy: https://www.plasmapy.org

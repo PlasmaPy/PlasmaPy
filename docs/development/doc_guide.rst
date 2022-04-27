@@ -728,7 +728,7 @@ documentation for PlasmaPy and affiliated packages.
 * Use technical jargon sparingly. Define technical jargon when
   necessary.
 
-* Use the `active voice`_ in the present tense.
+* Use the :wikipedia:`active voice <active_voice>` in the present tense.
 
 * Keep the documentation style consistent within a file or module, and
   preferably across all of `PlasmaPy's documentation`_.
@@ -783,8 +783,9 @@ documentation for PlasmaPy and affiliated packages.
   directory contains files that are used for the online documentation
   but are not generated during the Sphinx_ build.
 
-* Avoid linking to websites that might disappear due to `link rot`_ such
-  as documents hosted on personal websites.
+* Avoid linking to websites that might disappear due to
+  :wikipedia:`link rot <link_rot>` such as documents hosted on personal
+  websites.
 
   * When including references, use a link that includes a
     :wikipedia:`persistent identifier <persistent_identifier>` such as a
@@ -797,7 +798,7 @@ documentation for PlasmaPy and affiliated packages.
 * Include both the original references for a topic as well as accessible
   pedagogical references. Prefer references that are open access over
   references that require purchase of a subscription or are behind a
-  paywall_.
+  :wikipedia:`paywall`.
 
 .. note::
 
@@ -1027,19 +1028,15 @@ Narrative documentation guidelines
 .. |directive| replace:: :term:`directive`
 .. |directives| replace:: :term:`directives <directive>`
 
-.. _active voice: https://en.wikipedia.org/wiki/Active_voice
 .. _admonitions: https://docutils.sourceforge.io/docs/ref/rst/directives.html#admonitions
 .. _configuration options: https://www.sphinx-doc.org/en/master/usage/configuration.html
 .. _define substitutions: https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html#substitution-definitions
 .. _doctests: https://docs.pytest.org/en/6.2.x/doctest.html
-.. _link rot: https://en.wikipedia.org/wiki/Link_rot
 .. _nested inline markup: https://docutils.sphinx-users.jp/docutils/docs/dev/rst/alternatives.html#nested-inline-markup
 .. _options to sphinx-build: https://www.sphinx-doc.org/en/master/man/sphinx-build.html#options
-.. _paywall: https://en.wikipedia.org/wiki/Paywall
 .. _raise an issue: https://github.com/PlasmaPy/PlasmaPy/issues/new?title=Improve+documentation+for...&labels=Documentation
 .. _raw string: https://docs.python.org/3/reference/lexical_analysis.html#literals
 .. _Read the Docs Sphinx Theme: https://sphinx-rtd-theme.readthedocs.io
-.. _roundoff error: https://en.wikipedia.org/wiki/Round-off_error
 .. _Sphinx's glossary: https://www.sphinx-doc.org/en/master/glossary.html
 .. _Sphinx's templating page: https://www.sphinx-doc.org/en/master/templating.html
 .. _style overrides: https://docs.readthedocs.io/en/stable/guides/adding-custom-css.html
