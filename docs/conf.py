@@ -100,7 +100,6 @@ extensions = [
     "notfound.extension",
     "sphinx_issues",
     "plasmapy_sphinx",
-    "wikipedia",
 ]
 
 # Configure sphinxcontrib-bibtex
