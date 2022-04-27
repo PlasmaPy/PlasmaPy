@@ -206,7 +206,7 @@ exclude_patterns = [
     "**.ipynb_checkpoints",
     "plasmapy_sphinx",
     "common_links.rst",
-    "Untitled*",
+    "**Untitled*",
 ]
 
 # If true, `todo` and `todoList` produce output, else they produce nothing.
