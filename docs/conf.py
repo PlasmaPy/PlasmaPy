@@ -100,6 +100,7 @@ extensions = [
     "notfound.extension",
     "sphinx_issues",
     "plasmapy_sphinx",
+    "wikipedia",
 ]
 
 # Configure sphinxcontrib-bibtex
@@ -293,7 +294,6 @@ hoverxref_role_types = {
 
 extlinks = {
     "orcid": ("https://orcid.org/%s", "%s"),
-    "wikipedia": ("https://en.wikipedia.org/wiki/", "%s"),
 }
 
 # Specify patterns to ignore when doing a nitpicky documentation build.
