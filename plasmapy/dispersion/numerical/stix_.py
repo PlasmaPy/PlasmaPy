@@ -192,26 +192,25 @@ def stix(
         )
 
     # Validate w argument and dimension
-    w = w.squeeze()
+    w = w.value.squeeze()
     if w.ndim not in (0, 1):
         raise ValueError(
             "Argument 'w' needs to be a single value or a 1D array "
             f" astropy Quantity, got a value of shape {w.shape}."
         )
     if np.any(w <= 0):
-        raise ValueError("Argument 'w' can not have a negative value.")
-    if np.isscalar(w.value):
+        raise ValueError("Argument 'w' can ot have a negative value.")
+    elif np.isscalar(w.value):
         w = np.array([w.value])
 
     # Validate theta value
-    theta = theta.squeeze()
-    theta = theta.to(u.radian)
+    theta = theta.value.squeeze()
     if theta.ndim not in (0, 1):
         raise TypeError(
             "Argument 'theta' needs to be a single value or 1D array "
             f" astropy Quantity, got array of shape {theta.shape}."
         )
-    if np.isscalar(theta.value):
+    elif np.isscalar(theta.value):
         theta = np.array([theta.value])
 
     # Generate mesh grid of w x theta
@@ -227,9 +226,9 @@ def stix(
     wcs = np.array(wcs)
 
     # Stix method implemented
-    S = 1
-    P = 1
-    D = 0
+    S = np.ones_like(w, dtype=np.complex128)
+    P = np.ones_like(S)
+    D = np.zeros_like(S)
     for wc, wp in zip(wcs, wps):
         S -= (wp ** 2) / (w ** 2 - wc ** 2)
         P -= (wp / w) ** 2
@@ -248,9 +247,9 @@ def stix(
     # Solve for k values
     k = np.empty(4, dtype=np.complex128)
 
-    k[0] = np.emath.sort((-b + np.emath.sqrt(b ** 2 - 4 * a * c)) / (2 * a))
-    k[1] = -k[0]
-    k[2] = np.emath.sort((-b - np.emath.sqrt(b ** 2 - 4 * a * c)) / (2 * a))
-    k[3] = -k[2]
+    k[..., 0] = np.emath.sqrt((-b + np.emath.sqrt(b ** 2 - 4 * a * c)) / (2 * a))
+    k[..., 1] = -k[..., 0]
+    k[..., 2] = np.emath.sqrt((-b - np.emath.sqrt(b ** 2 - 4 * a * c)) / (2 * a))
+    k[..., 3] = -k[..., 2]
 
-    return k * u.rad / u.m
+    return k.squeeze() * u.rad / u.m
