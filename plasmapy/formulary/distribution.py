@@ -21,10 +21,10 @@ from scipy.special import gamma
 
 from plasmapy.formulary.speeds import kappa_thermal_speed, thermal_speed
 from plasmapy.utils.units_definitions import (
-    SPEED_UNITS,
     SPEED_DISTRIBUTION_UNITS_1D,
     SPEED_DISTRIBUTION_UNITS_2D,
     SPEED_DISTRIBUTION_UNITS_3D,
+    SPEED_UNITS,
 )
 
 
@@ -124,7 +124,9 @@ def Maxwellian_1D(v, T, particle="e", v_drift=0, vTh=np.nan, units="units"):
 
     if np.isnan(vTh):
         # get thermal speed
-        vTh = thermal_speed(T << u.K, particle=particle, method="most_probable").to_value(SPEED_UNITS)
+        vTh = thermal_speed(
+            T << u.K, particle=particle, method="most_probable"
+        ).to_value(SPEED_UNITS)
 
     # Get thermal velocity squared
     vThSq = vTh ** 2
@@ -253,7 +255,9 @@ def Maxwellian_velocity_2D(
 
     if np.isnan(vTh):
         # get thermal speed
-        vTh = thermal_speed(T << u.K, particle=particle, method="most_probable").to_value(SPEED_UNITS)
+        vTh = thermal_speed(
+            T << u.K, particle=particle, method="most_probable"
+        ).to_value(SPEED_UNITS)
 
     # accounting for thermal velocity in 2D
     vThSq = vTh ** 2
@@ -400,7 +404,9 @@ def Maxwellian_velocity_3D(
 
     if np.isnan(vTh):
         # get thermal velocity and thermal velocity squared
-        vTh = thermal_speed(T << u.K, particle=particle, method="most_probable").to_value(SPEED_UNITS)
+        vTh = thermal_speed(
+            T << u.K, particle=particle, method="most_probable"
+        ).to_value(SPEED_UNITS)
 
     # accounting for thermal velocity in 3D
     vThSq = vTh ** 2
@@ -506,7 +512,9 @@ def Maxwellian_speed_1D(v, T, particle="e", v_drift=0, vTh=np.nan, units="units"
 
     if np.isnan(vTh):
         # get thermal velocity and thermal velocity squared
-        vTh = thermal_speed(T << u.K, particle=particle, method="most_probable").to_value(SPEED_UNITS)
+        vTh = thermal_speed(
+            T << u.K, particle=particle, method="most_probable"
+        ).to_value(SPEED_UNITS)
 
     # Get thermal velocity squared
     vThSq = vTh ** 2
@@ -619,7 +627,9 @@ def Maxwellian_speed_2D(v, T, particle="e", v_drift=0, vTh=np.nan, units="units"
 
     if np.isnan(vTh):
         # get thermal velocity and thermal velocity squared
-        vTh = thermal_speed(T << u.K, particle=particle, method="most_probable").to_value(SPEED_UNITS)
+        vTh = thermal_speed(
+            T << u.K, particle=particle, method="most_probable"
+        ).to_value(SPEED_UNITS)
 
     # getting square of thermal speed
     vThSq = vTh ** 2
@@ -733,7 +743,9 @@ def Maxwellian_speed_3D(v, T, particle="e", v_drift=0, vTh=np.nan, units="units"
 
     if np.isnan(vTh):
         # get thermal velocity and thermal velocity squared
-        vTh = thermal_speed(T << u.K, particle=particle, method="most_probable").to_value(SPEED_UNITS)
+        vTh = thermal_speed(
+            T << u.K, particle=particle, method="most_probable"
+        ).to_value(SPEED_UNITS)
 
     # getting square of thermal speed
     vThSq = vTh ** 2
@@ -860,7 +872,9 @@ def kappa_velocity_1D(v, T, kappa, particle="e", v_drift=0, vTh=np.nan, units="u
 
     if np.isnan(vTh):
         # get thermal velocity and thermal velocity squared
-        vTh = kappa_thermal_speed(T << u.K, kappa, particle=particle).to_value(SPEED_UNITS)
+        vTh = kappa_thermal_speed(T << u.K, kappa, particle=particle).to_value(
+            SPEED_UNITS
+        )
 
     # Get thermal velocity squared and accounting for 1D instead of 3D
     vThSq = vTh ** 2
@@ -1021,7 +1035,9 @@ def kappa_velocity_3D(
 
     if np.isnan(vTh):
         # get thermal velocity and thermal velocity squared
-        vTh = kappa_thermal_speed(T << u.K, kappa, particle=particle).to_value(SPEED_UNITS)
+        vTh = kappa_thermal_speed(T << u.K, kappa, particle=particle).to_value(
+            SPEED_UNITS
+        )
 
     # getting square of thermal velocity
     vThSq = vTh ** 2

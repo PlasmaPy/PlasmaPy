@@ -1,3 +1,2 @@
-Reduced execution time by avoiding calculations with units while keeping unit validation. 
+Reduced execution time by avoiding calculations with units while keeping unit validation.
 Added `plasmapy/utils/units_definitions.py` to precompute units.
-
