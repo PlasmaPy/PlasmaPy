@@ -39,32 +39,32 @@ class TestStix:
     @pytest.mark.parametrize(
         "kwargs, expected",
         [
-            ({**_kwargs_single_valued, "w": 2 * u.rad / u.s}, {"shape": 1}),
+            ({**_kwargs_single_valued, "w": 2 * u.rad / u.s}, {"shape": ()}),
             (
                 {**_kwargs_single_valued, "w": [10] * u.rad / u.s},
-                {"shape": 1},
+                {"shape": ()},
             ),
             (
                 {**_kwargs_single_valued, "w": [10, 20, 30] * u.rad / u.s},
-                {"shape": 3},
+                {"shape": (3,)},
             ),
-            ({**_kwargs_single_valued, "ions": ["He+", "e-"]}, {"shape": 2}),
+            ({**_kwargs_single_valued, "ions": ["He+", "e-"]}, {"shape": (2,)}),
             (
                 {
                     **_kwargs_single_valued,
                     "ions": ["He+"],
                     "n_i": [1] * u.m ** -3,
                 },
-                {"shape": 1},
+                {"shape": (1,)},
             ),
-            ({**_kwargs_single_valued, "ions": ["He+", "e-"]}, {"shape": 2}),
+            ({**_kwargs_single_valued, "ions": ["He+", "e-"]}, {"shape": (2,)}),
             (
                 {
                     **_kwargs_single_valued,
                     "ions": ["He+", "H+"],
                     "n_i": [1, 2] * u.m ** -3,
                 },
-                {"shape": 2},
+                {"shape": (2,)},
             ),
         ],
     )
