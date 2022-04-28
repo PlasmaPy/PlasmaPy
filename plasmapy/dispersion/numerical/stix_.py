@@ -198,10 +198,10 @@ def stix(
             "Argument 'w' needs to be a single value or a 1D array "
             f" astropy Quantity, got a value of shape {w.shape}."
         )
-    if np.any(w <= 0):
+    elif np.any(w <= 0):
         raise ValueError("Argument 'w' can ot have a negative value.")
-    elif np.isscalar(w.value):
-        w = np.array([w.value])
+    elif np.isscalar(w):
+        w = np.array([w])
 
     # Validate theta value
     theta = theta.value.squeeze()
@@ -210,8 +210,8 @@ def stix(
             "Argument 'theta' needs to be a single value or 1D array "
             f" astropy Quantity, got array of shape {theta.shape}."
         )
-    elif np.isscalar(theta.value):
-        theta = np.array([theta.value])
+    elif np.isscalar(theta):
+        theta = np.array([theta])
 
     # Generate mesh grid of w x theta
     w, theta = np.meshgrid(w, theta, indexing="ij")
@@ -245,7 +245,7 @@ def stix(
     c = P * R * L
 
     # Solve for k values
-    k = np.empty(4, dtype=np.complex128)
+    k = np.empty(w.shape + (4,), dtype=np.complex128)
 
     k[..., 0] = np.emath.sqrt((-b + np.emath.sqrt(b ** 2 - 4 * a * c)) / (2 * a))
     k[..., 1] = -k[..., 0]
