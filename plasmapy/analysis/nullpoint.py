@@ -104,6 +104,10 @@ class NullPoint(Point):
 
     classification = property(get_classification)
 
+    def __repr__(self):
+        loc = np.array_str(self.loc).replace("\n", "")
+        return f"NullPoint(loc={loc}, classification={self.classification!r})"
+
 
 def _vector_space(
     x_arr=None,
