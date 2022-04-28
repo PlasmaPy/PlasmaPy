@@ -74,29 +74,35 @@ automodapi_group_order = (
 )
 
 # If your documentation needs a minimal Sphinx version, state it here.
-#
-# needs_sphinx = '1.0'
+
+needs_sphinx = "4.4"
 
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones. When extensions are removed or added, please update the section
 # in docs/doc_guide.rst on Sphinx extensions.
+
 extensions = [
     "sphinx.ext.autodoc",
-    "sphinx.ext.intersphinx",
+    "sphinx.ext.extlinks",
     "sphinx.ext.graphviz",
+    "sphinx.ext.intersphinx",
     "sphinx.ext.mathjax",
     "sphinx.ext.napoleon",
     "sphinx.ext.todo",
     "nbsphinx",
+    "sphinxcontrib.bibtex",
     "sphinx_copybutton",
     "sphinx_gallery.load_style",
     "IPython.sphinxext.ipython_console_highlighting",
     "sphinx_changelog",
-    "plasmapy_sphinx",
-    "sphinxcontrib.bibtex",
     "hoverxref.extension",
+    "notfound.extension",
+    "sphinx_issues",
+    "plasmapy_sphinx",
 ]
+
+# Configure sphinxcontrib-bibtex
 
 bibtex_bibfiles = ["bibliography.bib"]
 bibtex_default_style = "plain"
@@ -105,6 +111,7 @@ bibtex_reference_style = "author_year"
 # Intersphinx generates automatic links to the documentation of objects
 # in other packages. When mappings are removed or added, please update
 # the section in docs/doc_guide.rst on references to other packages.
+
 intersphinx_mapping = {
     "readthedocs": ("https://docs.readthedocs.io/en/stable/", None),
     "python": ("https://docs.python.org/3/", None),
@@ -137,6 +144,10 @@ hoverxref_intersphinx = [
 autoclass_content = "both"
 autodoc_typehints_format = "short"
 
+# Configure sphinx-issues
+
+issues_github_path = "PlasmaPy/PlasmaPy"
+
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]
 
@@ -166,10 +177,7 @@ release = "" if release == "unknown" else release
 pv = parse_version(release)
 release = pv.public
 version = ".".join(release.split(".")[:2])  # short X.Y version
-if pv.local is not None:
-    revision = pv.local[1:]  # revision number w/o the leading g
-else:
-    revision = ""
+revision = pv.local[1:] if pv.local is not None else ""
 
 # This is added to the end of RST files — a good place to put substitutions to
 # be used globally.
@@ -195,6 +203,7 @@ exclude_patterns = [
     "**.ipynb_checkpoints",
     "plasmapy_sphinx",
     "common_links.rst",
+    "**Untitled*",
 ]
 
 # If true, `todo` and `todoList` produce output, else they produce nothing.
@@ -203,12 +212,14 @@ todo_include_todos = False
 default_role = "py:obj"
 
 # Customizations for make linkcheck using regular expressions
+
 linkcheck_allowed_redirects = {
     r"https://doi\.org/.+": r"https://.+",  # DOI links are more persistent
     r"https://docs.+\.org": r"https://docs.+\.org/en/.+",
     r"https://docs.+\.io": r"https://docs.+\.io/en/.+",
     r"https://docs.+\.com": r"https://docs.+\.com/en/.+",
     r"https://docs.+\.dev": r"https://docs.+\.dev/en/.+",
+    r"https://en.wikipedia.org/wiki.+": "https://en.wikipedia.org/wiki.+",
     r"https://.+\.readthedocs\.io": r"https://.+\.readthedocs\.io/en/.+",
     r"https://www\.sphinx-doc\.org": r"https://www\.sphinx-doc\.org/en/.+",
     r"https://.+/github\.io": r"https://.+/github\.io/en/.+",
@@ -272,6 +283,19 @@ hoverxref_role_types = {
     "term": "tooltip",
 }
 
+# Using sphinx.ext.extlinks lets us simplify the process of creating
+# links to commonly used external sites. The key of the extlink becomes
+# a new role, and the corresponding tuple contains the base url and the
+# caption. For example, we can now do :orcid:`0000-0000-0000-0000` and
+# have a link create to the corresponding ORCID page. New roles should
+# be added to rst-roles in setup.cfg to avoid being caught by
+# flake8-rst-docstrings.
+
+extlinks = {
+    "orcid": ("https://orcid.org/%s", "%s"),
+    "wikipedia": ("https://en.wikipedia.org/wiki/", "%s"),
+}
+
 # Specify patterns to ignore when doing a nitpicky documentation build.
 # These may include common expressions like "real number" as well as
 # workarounds for nested inline literals as defined in docs/common_links.py
@@ -296,7 +320,7 @@ nitpick_ignore_regex = [
     (python_role, ".*real number.*"),
     (python_role, ".*representation.*"),
     (python_role, "shape.*"),
-    (python_role, "u\..*"),
+    (python_role, r"u\..*"),
     (python_role, ".*Unit.*"),
     # pytest helpers
     (python_role, "_pytest.*"),
