@@ -6,6 +6,7 @@
 .. ------------------
 
 .. |ClassicalTransport| replace:: :class:`~plasmapy.formulary.braginskii.ClassicalTransport`
+.. |RelativisticBody| replace:: :class:`~plasmapy.formulary.relativistic.RelativisticBody`
 
 .. ------------------
 .. plasmapy.particles
