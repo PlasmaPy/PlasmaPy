@@ -1,12 +1,17 @@
 r"""Functions for calculating relativistic quantities (:math:`v \to c`)."""
-__all__ = ["Lorentz_factor", "relativistic_energy"]
+__all__ = ["Lorentz_factor", "relativistic_energy", "RelativisticBody"]
 
 import astropy.units as u
 import numpy as np
 
 from astropy.constants import c
+from numbers import Integral, Real
+from typing import Union
 
 from plasmapy import utils
+from plasmapy.particles._factory import _physical_particle_factory
+from plasmapy.particles.particle_class import CustomParticle, Particle, ParticleLike
+from plasmapy.particles.particle_collections import ParticleList
 from plasmapy.utils.decorators import validate_quantities
 
 
@@ -150,3 +155,84 @@ def relativistic_energy(m: u.kg, v: u.m / u.s) -> u.Joule:
     """
     γ = Lorentz_factor(v)
     return γ * m * c ** 2
+
+
+class RelativisticBody:
+    """
+    A physical object that is moving a speed.
+
+    Parameters
+    ----------
+    particle : |ParticleLike|, optional
+
+    quantity : |Quantity|
+        A |Quantity| with units of speed, energy,
+
+    Z : integer, optional
+
+    mass_numb : integer, optional
+    """
+
+    @validate_quantities
+    def __init__(
+        self,
+        particle=None,
+        *,
+        kinetic_energy: u.J = None,
+        Z: Integral = None,
+        mass_numb: Integral = None,
+    ):
+
+        self._data = {
+            "particle": _physical_particle_factory(particle, Z=Z, mass_numb=mass_numb)
+        }
+        self.kinetic_energy = kinetic_energy
+
+    @property
+    def particle(self) -> Union[CustomParticle, Particle, ParticleList]:
+        print(self._data)
+        return self._data["particle"]
+
+    @particle.setter
+    def particle(self, particle: ParticleLike):
+        self._data["particle"] = _physical_particle_factory(particle)
+
+    @property
+    def rest_mass(self) -> u.Quantity[u.kg]:
+        return self.particle.mass
+
+    @property
+    def mass_energy(self) -> u.Quantity[u.J]:
+        """The rest mass energy, :math:`m_0 c^2`."""
+        return self.rest_mass * c ** 2
+
+    @property
+    def total_energy(self) -> u.Quantity[u.J]:
+        """The sum of the rest mass energy and the kinetic energy."""
+        return self._data["total_energy"]
+
+    @property
+    def kinetic_energy(self) -> u.Quantity[u.J]:
+        return self._data["kinetic_energy"]
+
+    @kinetic_energy.setter
+    def kinetic_energy(self, E: u.J):
+        self._data["kinetic_energy"] = E
+        self._data["total_energy"] = E + self.mass_energy
+        self._data["lorentz_factor"] = (
+            (self.total_energy / self.mass_energy).to("").value
+        )
+        self._data["v_over_c"] = np.sqrt(1.0 - 1.0 / self.lorentz_factor ** 2)
+        self._data["speed"] = self.v_over_c * c
+
+    @property
+    def v_over_c(self) -> float:
+        return self._data["v_over_c"]
+
+    @property
+    def speed(self) -> u.Quantity[u.m / u.s]:
+        return self._data["speed"]
+
+    @property
+    def lorentz_factor(self) -> float:
+        return self._data["lorentz_factor"]
