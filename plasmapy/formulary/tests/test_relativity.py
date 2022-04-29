@@ -6,7 +6,12 @@ import pytest
 from astropy import units as u
 from astropy.constants import c
 
-from plasmapy.formulary.relativity import Lorentz_factor, relativistic_energy
+from plasmapy.formulary.relativity import (
+    Lorentz_factor,
+    relativistic_energy,
+    RelativisticBody,
+)
+from plasmapy.particles import proton
 from plasmapy.utils.exceptions import RelativityError
 
 
@@ -80,3 +85,36 @@ def test_relativistic_energy():
 
     with pytest.raises(ValueError):
         relativistic_energy(-m, v)
+
+
+@pytest.fixture
+def uhecr():
+    """Representing an ultra-high energy cosmic ray."""
+    return RelativisticBody(particle="p+", kinetic_energy=1e21 * u.eV)
+
+
+def test_uhecr_properties(uhecr):
+    assert uhecr.lorentz_factor >= 1, f"{uhecr.lorentz_factor=}"
+    assert u.isclose(uhecr.v_over_c, 1, atol=0.00001), f"{uhecr.v_over_c=}"
+    assert uhecr.speed is not None
+    assert u.isclose(uhecr.speed, c, rtol=1e-14), f"{uhecr.speed=}"
+
+
+@pytest.fixture
+def proton_at_half_warp():
+    return RelativisticBody(particle=proton, kinetic_energy=2.3255785652637692e-11)
+
+
+@pytest.mark.parametrize(
+    "parameter, expected",
+    [
+        ("v_over_c", 0.5),
+        ("lorentz_factor", 1.1547005383792517),
+        ("mass_energy", 1.5032776159851256e-10 * u.J),
+        ("total_energy", 1.7358354725115025e-10 * u.J),
+        ("kinetic_energy", 2.3255785652637692e-11 * u.J),
+    ],
+)
+def test_relativistic_body(proton_at_half_warp, parameter, expected):
+    actual = getattr(proton_at_half_warp, parameter)
+    assert u.isclose(actual, expected)
