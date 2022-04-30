@@ -83,7 +83,7 @@ class IonicLevel:
                 [ionic_fraction_within_tolerance, number_density_within_tolerance]
             )
 
-        except Exception as exc:
+        except TypeError as exc:
             raise TypeError(
                 "Unable to ascertain equality between the following objects:\n"
                 f"  {self}\n"
@@ -99,7 +99,7 @@ class IonicLevel:
             self.ionic_fraction = ionic_fraction
             self.number_density = number_density
             self.T_i = T_i
-        except Exception as exc:
+        except (ValueError, TypeError) as exc:
             raise ParticleError("Unable to create IonicLevel object") from exc
 
     def __repr__(self):
@@ -329,7 +329,7 @@ class IonizationState:
                     "ionic fractions."
                 )
 
-        except Exception as exc:
+        except TypeError as exc:
             raise ParticleError(
                 f"Unable to create IonizationState object for {particle.symbol}."
             ) from exc
@@ -523,7 +523,7 @@ class IonizationState:
 
                 self._ionic_fractions = fractions
 
-        except Exception as exc:
+        except ParticleError as exc:
             raise ParticleError(
                 f"Unable to set ionic fractions of {self.element} to {fractions}."
             ) from exc

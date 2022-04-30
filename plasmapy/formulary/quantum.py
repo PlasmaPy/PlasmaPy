@@ -22,6 +22,7 @@ from lmfit import minimize, Parameters
 from plasmapy import particles
 from plasmapy.formulary import mathematics
 from plasmapy.formulary.relativity import Lorentz_factor
+from plasmapy.particles.exceptions import InvalidParticleError
 from plasmapy.utils import RelativityError
 from plasmapy.utils.decorators import validate_quantities
 
@@ -107,12 +108,12 @@ def deBroglie_wavelength(V: u.m / u.s, particle) -> u.m:
         try:
             # TODO: Replace with more general routine!
             m = particles.particle_mass(particle)
-        except Exception:
+        except (InvalidParticleError):
             raise ValueError("Unable to find particle mass.")
     else:
         try:
             m = particle.to(u.kg)
-        except Exception as e:
+        except u.UnitConversionError as e:
             raise u.UnitConversionError(
                 "The second argument for deBroglie_wavelength must be either a "
                 "representation of a particle or a"
