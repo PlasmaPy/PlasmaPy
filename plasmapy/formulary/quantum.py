@@ -108,7 +108,7 @@ def deBroglie_wavelength(V: u.m / u.s, particle) -> u.m:
         try:
             # TODO: Replace with more general routine!
             m = particles.particle_mass(particle)
-        except (InvalidParticleError):
+        except InvalidParticleError:
             raise ValueError("Unable to find particle mass.")
     else:
         try:

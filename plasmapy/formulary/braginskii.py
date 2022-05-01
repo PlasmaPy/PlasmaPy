@@ -134,6 +134,7 @@ from plasmapy.formulary.collisions import (
 from plasmapy.formulary.dimensionless import Hall_parameter
 from plasmapy.formulary.misc import _grab_charge
 from plasmapy.particles.atomic import _is_electron
+from plasmapy.particles.exceptions import InvalidParticleError
 from plasmapy.utils import PhysicsError
 from plasmapy.utils.decorators import validate_quantities
 
@@ -333,7 +334,7 @@ class ClassicalTransport:
         if m_i is None:
             try:
                 self.m_i = particles.particle_mass(ion)
-            except Exception:
+            except InvalidParticleError:
                 raise ValueError(
                     f"Unable to find mass of particle: {ion} in ClassicalTransport"
                 )

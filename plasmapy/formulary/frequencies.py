@@ -18,6 +18,10 @@ from numba import njit
 from plasmapy import particles
 from plasmapy.formulary import misc
 from plasmapy.particles import Particle
+from plasmapy.particles.exceptions import (
+    ChargeError,
+    InvalidParticleError,
+)
 from plasmapy.utils.decorators import (
     angular_freq_to_hz,
     bind_lite_func,
@@ -323,14 +327,14 @@ def plasma_frequency(n: u.m ** -3, particle: Particle, z_mean=None) -> u.rad / u
             #               PhysicsWarning)
             try:
                 Z = particles.charge_number(particle)
-            except Exception:
+            except ChargeError:
                 Z = 1
         else:
             # using user provided average ionization
             Z = z_mean
         Z = np.abs(Z)
         # TODO REPLACE WITH Z = np.abs(_grab_charge(particle, z_mean)), some bugs atm
-    except Exception as e:
+    except InvalidParticleError as e:
         raise ValueError(f"Invalid particle, {particle}, in plasma_frequency.") from e
 
     return plasma_frequency_lite(n=n, mass=m, z_mean=Z) * u.rad / u.s
@@ -425,7 +429,7 @@ def lower_hybrid_frequency(B: u.T, n_i: u.m ** -3, ion: Particle) -> u.rad / u.s
     # catch invalid ions.
     try:
         particles.charge_number(ion)
-    except Exception:
+    except InvalidParticleError:
         raise ValueError("Invalid ion in lower_hybrid_frequency.")
 
     omega_ci = gyrofrequency(B, particle=ion)
