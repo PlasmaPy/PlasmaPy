@@ -59,7 +59,7 @@ Conda
 -----
 
 To set up a development environment for PlasmaPy, we strongly recommend
-the `Anaconda distribution <https://www.anaconda.com/products/individual>`_.
+the `Anaconda distribution <https://www.anaconda.com/products/distribution>`_.
 
 Activate Anaconda
 ~~~~~~~~~~~~~~~~~
