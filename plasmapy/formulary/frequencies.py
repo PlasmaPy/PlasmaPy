@@ -18,10 +18,7 @@ from numba import njit
 from plasmapy import particles
 from plasmapy.formulary import misc
 from plasmapy.particles import Particle
-from plasmapy.particles.exceptions import (
-    ChargeError,
-    InvalidParticleError,
-)
+from plasmapy.particles.exceptions import ChargeError, InvalidParticleError
 from plasmapy.utils.decorators import (
     angular_freq_to_hz,
     bind_lite_func,
