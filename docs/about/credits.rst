@@ -102,6 +102,7 @@ in parentheses are `ORCID author identifiers <https://orcid.org>`__.
 * :user:`Tomas Stinson <14tstinson>`
 * :user:`Anna Lanteri <alanteriBW>`
 * :user:`Leo Murphy <LeoMurphyWM24>`
+* :user:`Reynaldo Rojas Zelaya <userr2232>`
 
 This list contains contributors to PlasmaPy's core package and vision
 statement, including a few people who do not show up as `PlasmaPy

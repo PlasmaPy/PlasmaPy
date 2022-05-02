@@ -359,7 +359,7 @@ def ion_sound_speed(
             m_i * (1 + klD2)
         )
         V_S = np.sqrt(V_S_squared).to(u.m / u.s)
-    except Exception:
+    except ValueError:
         raise ValueError("Unable to find ion sound speed.")
 
     return V_S
