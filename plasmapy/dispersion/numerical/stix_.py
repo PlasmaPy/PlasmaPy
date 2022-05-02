@@ -229,11 +229,9 @@ def stix(
     # Generate the plasma parameters needed
     wps = []
     wcs = []
-    for par, dens in zip(species, densities.tolist()):
+    for par, dens in zip(species, densities):
         wps.append(plasma_frequency(n=dens * u.m ** -3, particle=par).value)
         wcs.append(gyrofrequency(B=B, particle=par, signed=False).value)
-    wps = np.array(wps)
-    wcs = np.array(wcs)
 
     # Stix method implemented
     S = np.ones_like(w, dtype=np.complex128)
