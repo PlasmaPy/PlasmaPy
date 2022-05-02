@@ -45,7 +45,7 @@ def stix(
 
     w : `~astropy.units.Quantity`, single valued or 1-D array
         Wavefrequency in units convertible to rad/s.  Either singled
-        valued or 1-D array of lenth :math:`N`.
+        valued or 1-D array of length :math:`N`.
 
     ions: a single or `list` of :term:`particle-like` object(s)
         epresentation of the ion species (e.g., ``"p"`` for protons,
