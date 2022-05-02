@@ -20,7 +20,7 @@ c_si_unitless = c.value
 @validate_quantities(
     B={"can_be_negative": False},
     n_i={"can_be_negative": False},
-    w={"can_be_negative": False},
+    w={"can_be_negative": False, "can_be_zero": False},
 )
 def stix(
     B: u.T,

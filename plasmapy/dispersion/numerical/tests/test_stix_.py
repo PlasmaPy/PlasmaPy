@@ -74,10 +74,10 @@ class TestStix:
             (
                 {
                     **_kwargs_single_valued,
-                    "w": [10, 20, 30],
+                    "w": [10, 20],
                     "theta": 10 * u.rad,
                 },
-                {"shape": (3, 4)},
+                {"shape": (2, 4)},
             ),
         ],
     )
