@@ -199,8 +199,6 @@ def stix(
             "Argument 'w' needs to be a single value or a 1D array "
             f" astropy Quantity, got a value of shape {w.shape}."
         )
-    elif np.any(w <= 0):
-        raise ValueError("Argument 'w' can ot have a negative value.")
     elif np.isscalar(w):
         w = np.array([w])
 
