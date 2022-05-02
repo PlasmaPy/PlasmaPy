@@ -99,3 +99,10 @@ class TestStix:
         assert isinstance(k, u.Quantity)
         assert np.shape(k) == expected["shape"]
         assert k.unit == u.rad / u.m
+
+    @pytest.mark.parametrize(
+        "kwargs, expected",
+        [({**_kwargs_single_valued, "w": 1 * u.rad / u.s}, u.Quantity)],
+    )
+    def test_vals(self, kwargs, expected):
+        assert expected == type(kwargs["w"])
