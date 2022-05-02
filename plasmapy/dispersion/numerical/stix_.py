@@ -43,8 +43,9 @@ def stix(
     B : `~astropy.units.Quantity`
         The magnetic field magnitude in units convertible to T.
 
-    w : `~astropy.units.Quantity`, single value omega or 1-D array in
-        units convertible to rad/s.
+    w : `~astropy.units.Quantity`, single valued or 1-D array
+        Wavefrequency in units convertible to rad/s.  Either singled
+        valued or 1-D array of lenth :math:`N`.
 
     ions: a single or `list` of :term:`particle-like` object(s)
         epresentation of the ion species (e.g., ``"p"`` for protons,
