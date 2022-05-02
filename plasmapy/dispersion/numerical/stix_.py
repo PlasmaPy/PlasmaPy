@@ -64,10 +64,17 @@ def stix(
 
     Returns
     -------
-    omegas : Dict[`str`, `~astropy.units.Quantity`]
-        A dictionary of computed wave numbers in units rad/m.  The
-        dictionary contains keys for each wave number, this will return
-        an array  of value :math:`M \, x \, 4`.
+    k : `~astropy.units.Quantity` of shape ``(N, M, 4)``
+        An array of wavenubmers in units rad/m (shape
+        :math:`N \times M \times 4`).  The first dimension maps to the
+        ``w`` array, the second dimension maps to the ``theta`` array,
+        and the third dimension maps to the four roots of the Stix
+        polynomial.
+
+        * ``k[0]`` is the square root of the positive quadratic solution
+        * ``k[1] = -k[0]``
+        * ``k[2]`` is the square root of the negative quadratic solution
+        * ``k[3] = -k[2]``
 
     Raises
     ------
