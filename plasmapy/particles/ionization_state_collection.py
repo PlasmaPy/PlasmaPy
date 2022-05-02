@@ -180,7 +180,7 @@ class IonizationStateCollection:
                 self.abundances = abundances
                 self.log_abundances = log_abundances
             self.kappa = kappa
-        except Exception as exc:
+        except (ValueError, TypeError) as exc:
             raise ParticleError(
                 "Unable to create IonizationStateCollection object."
             ) from exc
@@ -227,7 +227,7 @@ class IonizationStateCollection:
                 ionic_fraction=self.ionic_fractions[particle][int_charge],
                 number_density=self.number_densities[particle][int_charge],
             )
-        except Exception as exc:
+        except (ChargeError, KeyError, TypeError) as exc:
             raise IndexError(errmsg) from exc
 
     def __setitem__(self, key, value):
@@ -302,7 +302,7 @@ class IonizationStateCollection:
 
         try:
             new_fractions = np.array(value, dtype=float)
-        except Exception as exc:
+        except TypeError as exc:
             raise TypeError(
                 f"{errmsg} because value cannot be converted into an "
                 f"array that represents ionic fractions."
@@ -680,7 +680,7 @@ class IonizationStateCollection:
             n = n.to(u.m ** -3)
         except u.UnitConversionError as exc:
             raise ParticleError("Units cannot be converted to u.m ** -3.") from exc
-        except Exception as exc:
+        except ParticleError as exc:
             raise ParticleError(f"{n} is not a valid number density.") from exc
         if n < 0 * u.m ** -3:
             raise ParticleError("Number density cannot be negative.")
@@ -723,7 +723,7 @@ class IonizationStateCollection:
                 new_keys_dict = {}
                 for old_key in old_keys:
                     new_keys_dict[particle_symbol(old_key)] = old_key
-            except Exception:
+            except ParticleError:
                 raise ParticleError(
                     f"The key {repr(old_key)} in the abundances "
                     f"dictionary is not a valid element or isotope."
@@ -746,7 +746,7 @@ class IonizationStateCollection:
                 inputted_abundance = abundances_dict[new_keys_dict[element]]
                 try:
                     inputted_abundance = float(inputted_abundance)
-                except Exception:
+                except TypeError:
                     raise TypeError(
                         f"The abundance for {element} was provided as"
                         f"{inputted_abundance}, which cannot be "
@@ -778,7 +778,7 @@ class IonizationStateCollection:
                     atom: 10 ** log_abundance for atom, log_abundance in value.items()
                 }
                 self.abundances = new_abundances_input
-            except Exception:
+            except ParticleError:
                 raise ParticleError("Invalid log_abundances.") from None
 
     @property
