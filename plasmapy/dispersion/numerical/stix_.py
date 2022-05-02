@@ -71,17 +71,27 @@ def stix(
     Raises
     ------
     `TypeError`
-        If the argument is of an invalid type.
-        `~astropy.units.UnitsError`
-        If the argument is a `~astropy.units.Quantity` but is not
-        dimensionless.
+        If applicable arguments are not instances of
+        `~astropy.units.Quantity` or cannot be converted into one.
 
     `ValueError`
-        If the number of frequencies for each ion isn't the same.
+        Particles in ``ions`` are not positively charged ions.
 
-    `NoConvergence`
-        If a solution cannot be found and the convergence failed to
-        root.
+    `ValueError`
+        The size of ``n_i`` is not the same as the length of ``ions``.
+
+    ValueError
+        If of ``B`` or ``n_i`` is negative.
+
+    ValueError
+        If ``w`` is negative or zero.
+
+    ValueError
+        If ``w`` or ``theta`` are not single valued or a 1-D array.
+
+    ~astropy.units.UnitTypeError
+        If applicable arguments do not have units convertible to the
+        expected units.
 
     Notes
     -----
