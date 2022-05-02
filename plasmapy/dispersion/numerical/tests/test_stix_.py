@@ -37,13 +37,13 @@ class TestStix:
             ({**_kwargs_single_valued, "n_i": 6 * u.m / u.s}, u.UnitTypeError),
             ({**_kwargs_single_valued, "theta": 5 * u.eV}, u.UnitTypeError),
             (
-                {**_kwargs_single_valued, "theta": np.ones((2, 2)) * u.rad / u.s},
+                {**_kwargs_single_valued, "theta": np.ones((2, 2)) * u.rad},
                 TypeError,
             ),
             ({**_kwargs_single_valued, "ions": Particle("e-")}, ValueError),
             ({**_kwargs_single_valued, "n_i": [4, 2, 3] * u.m ** -3}, ValueError),
             (
-                {**_kwargs_single_valued, "n_i": np.ones((2, 2)) * u.rad / u.s},
+                {**_kwargs_single_valued, "n_i": np.ones((2, 2)) * u.m ** -3},
                 ValueError,
             ),
         ],
