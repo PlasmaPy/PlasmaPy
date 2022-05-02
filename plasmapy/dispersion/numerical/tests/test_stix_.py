@@ -42,8 +42,10 @@ class TestStix:
             ),
             ({**_kwargs_single_valued, "ions": Particle("e-")}, ValueError),
             ({**_kwargs_single_valued, "n_i": [4, 2, 3] * u.m ** -3}, ValueError),
-            ({**_kwargs_single_valued, "n_i": np.ones((2, 2)) * u.rad / u.s}, ValueError),
-
+            (
+                {**_kwargs_single_valued, "n_i": np.ones((2, 2)) * u.rad / u.s},
+                ValueError,
+            ),
         ],
     )
     def test_raises(self, kwargs, _error):
