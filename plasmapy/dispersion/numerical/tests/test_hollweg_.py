@@ -256,6 +256,21 @@ class TestHollweg:
                 },
                 {"shape": (3,)},
             ),
+            (
+                {
+                    **_kwargs_single_valued,
+                    "k": [1, 2, 3] * u.rad / u.m,
+                    "theta": [50, 77] * u.deg,
+                },
+                {"shape": (3, 2)},
+            ),
+            (
+                {
+                    **_kwargs_single_valued,
+                    "theta": [50, 77] * u.deg,
+                },
+                {"shape": (2,)},
+            ),
         ],
     )
     def test_return_structure(self, kwargs, expected):

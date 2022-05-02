@@ -259,10 +259,10 @@ def hollweg(
 
     # validate argument theta
     theta = theta.squeeze()
-    if not (theta.ndim == 0 or theta.ndim == 1):
+    if theta.ndim not in (0, 1):
         raise ValueError(
             f"Argument 'theta' needs to be a single valued or 1D array astropy "
-            f"Quantity, got array of shape {k.shape}."
+            f"Quantity, got array of shape {theta.shape}."
         )
 
     # Single k value case
@@ -286,19 +286,17 @@ def hollweg(
         omega_ci = gyrofrequency(B=B, particle=ion, signed=False, Z=z_mean).value
         omega_pe = plasma_frequency(n=n_e, particle="e-").value
 
-    # strip units from select input args
-    k = k.value
-    theta = theta.value
     cs_vA = c_s / v_A
+    thetav, kv = np.meshgrid(theta.value, k.value)
 
     # Parameters kx and kz
-    kz = np.cos(theta) * k
-    kx = np.sin(theta) * k
+    kz = np.cos(thetav) * kv
+    kx = np.sin(thetav) * kv
 
     # Define helpful parameters
     beta = (c_s / v_A) ** 2
-    alpha_A = (k * v_A) ** 2
-    alpha_s = (k * c_s) ** 2  # == alpha_A * beta
+    alpha_A = (kv * v_A) ** 2
+    alpha_s = (kv * c_s) ** 2  # == alpha_A * beta
     sigma = (kz * v_A) ** 2
     D = (c_s / omega_ci) ** 2
     F = (c_si_unitless / omega_pe) ** 2
@@ -310,12 +308,14 @@ def hollweg(
     c0 = -alpha_s * sigma ** 2
 
     # Find roots to polynomial
-    coefficients = np.array([c3, c2, c1, c0], ndmin=2)
+    coefficients = np.array([c3, c2, c1, c0], ndmin=3)
     nroots = coefficients.shape[0] - 1  # 3
     nks = coefficients.shape[1]
-    roots = np.empty((nroots, nks), dtype=np.complex128)
+    nthetas = coefficients.shape[2]
+    roots = np.empty((nroots, nks, nthetas), dtype=np.complex128)
     for ii in range(nks):
-        roots[:, ii] = np.roots(coefficients[:, ii])[:]
+        for jj in range(nthetas):
+            roots[:, ii, jj] = np.roots(coefficients[:, ii, jj])
 
     roots = np.sqrt(roots)
     roots = np.sort(roots, axis=0)
@@ -331,12 +331,14 @@ def hollweg(
         )
 
     # Warn about theta not nearly perpendicular
-    if np.abs(theta - np.pi / 2) > 0.1:
+    theta_diff_max = np.amax(np.abs(thetav - np.pi / 2))
+    if theta_diff_max > 0.1:
         warnings.warn(
             f"This solver is valid in the regime where propagation is "
             f"nearly perpendicular to B according to Bellan, 2012, Sec. 1.7 "
-            f"(see documentation for DOI). A theta value of {theta:.2f} was "
-            f"entered which may affect the validity of the solution.",
+            f"(see documentation for DOI). A |theta - pi/2| value of "
+            f"{theta_diff_max:.2f} was calculated which may affect the "
+            f"validity of the solution.",
             PhysicsWarning,
         )
 
