@@ -260,7 +260,7 @@ class TestHollweg:
                 {
                     **_kwargs_single_valued,
                     "k": [1, 2, 3] * u.rad / u.m,
-                    "theta": [50, 77] * u.rad,
+                    "theta": [50, 77] * u.deg,
                 },
                 {"shape": (3, 2)},
             ),
