@@ -26,7 +26,7 @@ class TestStix:
             ({**_kwargs_single_valued, "B": -1 * u.T}, ValueError),
             ({**_kwargs_single_valued, "B": 5 * u.m}, u.UnitTypeError),
             ({**_kwargs_single_valued, "w": -1.0 * u.rad / u.s}, ValueError),
-            ({**_kwargs_single_valued, "w": [-1.0, 2] * u.rad / u.s}, ValueError),
+            ({**_kwargs_single_valued, "w": [-1, 2] * u.rad / u.s}, ValueError),
             ({**_kwargs_single_valued, "w": np.ones((2, 2)) * u.rad / u.s}, ValueError),
             ({**_kwargs_single_valued, "w": 5 * u.s}, u.UnitTypeError),
             (
@@ -42,6 +42,8 @@ class TestStix:
             ),
             ({**_kwargs_single_valued, "ions": Particle("e-")}, ValueError),
             ({**_kwargs_single_valued, "n_i": [4, 2, 3] * u.m ** -3}, ValueError),
+            ({**_kwargs_single_valued, "n_i": np.ones((2, 2)) * u.rad / u.s}, ValueError),
+
         ],
     )
     def test_raises(self, kwargs, _error):
