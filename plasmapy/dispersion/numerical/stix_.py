@@ -2,7 +2,6 @@
 This module contains functionality for calculating the numerical
 solutions to the Stix cold plasma function.
 """
-
 __all__ = ["stix"]
 
 import astropy.units as u
@@ -47,11 +46,10 @@ def stix(
         Wavefrequency in units convertible to rad/s.  Either singled
         valued or 1-D array of length :math:`N`.
 
-    ions: a single or `list` of :term:`particle-like` object(s)
-        epresentation of the ion species (e.g., ``"p"`` for protons,
+    ions: A list or single instance of :term:`particle-like` objects
+        representing the ion species (e.g., ``"p"`` for protons,
         ``"D+"`` for deuterium, ``["H+", "He+"]`` for hydrogen and
-        helium, etc.).  The charge state for each species must be
-        specified.
+        helium, etc.).  All ions must be positively charged.
 
     n_i: `~astropy.units.Quantity`, single valud or 1-D array
         Ion number density in units convertible to m\ :sup:`-3`.  Must
@@ -145,10 +143,13 @@ def stix(
     ...     "theta": 30 * u.deg,
     ... }
     >>> stix(**inputs)
+<<<<<<< Updated upstream
     <Quantity [ 0.0...e+00-1.83219...e-07j,
            -0.0...e+00+1.83219...e-07j,
             1.83451...e-07-0.0...e+00j,
            -1.83451...e-07+0.0...e+00j] rad / m>
+=======
+>>>>>>> Stashed changes
     """
 
     # Validate ions argument
