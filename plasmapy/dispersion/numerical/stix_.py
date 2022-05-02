@@ -105,7 +105,7 @@ def stix(
         \mathbf{n} = \frac{c \mathbf{k}}{\omega}
 
     .. math::
-        S = 1 - \sum \frac{\omega^{2}_{p\sigma}}{\omega^{2} -
+        S = 1 - \sum_{\sigma} \frac{\omega^{2}_{p\sigma}}{\omega^{2} -
             \omega^{2}_{c\sigma}}
 
     .. math::
@@ -145,7 +145,6 @@ def stix(
     >>> }
     >>> k_ = stix(**inputs)
     >>> print(k_)
-
     """
 
     # Validate ions argument

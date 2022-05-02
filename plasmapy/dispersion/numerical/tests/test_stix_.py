@@ -70,10 +70,18 @@ class TestStix:
                 },
                 {"shape": (4,)},
             ),
+            ({**_kwargs_single_valued, "theta": [10, 20, 30]}, {"shape": (3, 4)}),
+            (
+                {
+                    **_kwargs_single_valued,
+                    "w": [10, 20, 30],
+                    "theta": 10 * u.rad,
+                },
+                {"shape": (3, 4)},
+            ),
         ],
     )
     def test_return_structure(self, kwargs, expected):
-
         k = stix(**kwargs)
 
         assert isinstance(k, u.Quantity)
