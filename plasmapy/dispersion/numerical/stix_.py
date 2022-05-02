@@ -143,9 +143,12 @@ def stix(
     ...     "ions": [Particle("H+"), Particle("He+")],
     ...     "n_i": [4.0e5,2.0e5] * u.m**-3,
     ...     "theta": 30 * u.deg,
-    >>> }
-    >>> k_ = stix(**inputs)
-    >>> print(k_)
+    ... }
+    >>> stix(**inputs)
+    <Quantity [ 0.0...e+00-1.83219...e-07j,
+           -0.0...e+00+1.83219...e-07j,
+            1.83451...e-07-0.0...e+00j,
+           -1.83451...e-07+0.0...e+00j] rad / m>
     """
 
     # Validate ions argument
