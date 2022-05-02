@@ -143,13 +143,10 @@ def stix(
     ...     "theta": 30 * u.deg,
     ... }
     >>> stix(**inputs)
-<<<<<<< Updated upstream
     <Quantity [ 0.0...e+00-1.83219...e-07j,
            -0.0...e+00+1.83219...e-07j,
             1.83451...e-07-0.0...e+00j,
            -1.83451...e-07+0.0...e+00j] rad / m>
-=======
->>>>>>> Stashed changes
     """
 
     # Validate ions argument
