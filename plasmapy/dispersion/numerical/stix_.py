@@ -103,12 +103,9 @@ def stix(
 
     Notes
     -----
-    The cold plasma function is defined by :cite:t:`stringer:1963`,
-    this is equation 8 of :cite:t:`bellan:2012` and is presented below.
-    It is assumed that the zero-order quantities are uniform in space
-    and static in time; while the first-order quantities are assumed to
-    vary as :math:`e^{\left [ i (\textbf{k}\cdot\textbf{r} - \omega t)
-    \right ]}` :cite:t:`stix:1992`.
+    The cold plasma dispersion function is defined by
+    :cite:t:`stix:1992` in section 1-3 (and present by
+    :cite:t:`bellan:2012` in equation 8) to be
 
     .. math::
         (S\sin^{2}(\theta) + P\cos^{2}(\theta))(ck/\omega)^{4}
@@ -119,34 +116,50 @@ def stix(
     where,
 
     .. math::
-        \mathbf{n} = \frac{c \mathbf{k}}{\omega}
+        \mathbf{B_o} &= B_{o} \mathbf{\hat{z}} \\
+        \cos \theta &= \frac{k_z}{k} \\
+        \mathbf{k} &= k_{\rm x} \hat{x} + k_{\rm z} \hat{z}
 
     .. math::
-        S = 1 - \sum_{\sigma} \frac{\omega^{2}_{p\sigma}}{\omega^{2} -
-            \omega^{2}_{c\sigma}}
-
-    .. math::
-        P = 1 - \sum_{\sigma} \frac{\omega^{2}_{p\sigma}}{\omega^{2}}
-
-    .. math::
-        D = \sum_{\sigma}
-            \frac{\omega_{c\sigma}}{\omega}
-            \frac{\omega^{2}_{p\sigma}}{\omega^{2} -
+        S &= 1 - \sum_{s} \frac{\omega^{2}_{p,s}}{\omega^{2} -
+            \omega^{2}_{c,s}}\\
+        P &= 1 - \sum_{\sigma} \frac{\omega^{2}_{p,s}}{\omega^{2}}\\
+        D &= \sum_{s}
+            \frac{\omega_{c,s}}{\omega}
+            \frac{\omega^{2}_{p,s}}{\omega^{2} -
             \omega_{c\sigma}^{2}}
-
-    The Cold plasma assumption, Following on section 1.6 of
-    :cite:t:`bellan:2012` expresses following derived quantities as
-    follows.
 
     .. math::
         R = S + D \hspace{1cm} L = S - D
 
-    The equation is valid for all :math:`\omega` and :math:`k`
-    providing that :math:`\frac{\omega}{k_{z}} >> \nu_{Te}` with
-    :math:`\nu_{Ti}` and :math:`k_{x}, \, r_{Le,i} << 1`.  The
-    prediction of :math:`k \to 0` occurs when P, R or L cut off and
-    predicts :math:`k \to \infty` for perpendicular propagation during
-    wave resonance :math:`S \to 0`.
+    :math:`\omega` is the wave frequency, :math:`k` is the wavenumber,
+    :math:`\theta` is the wave propagation angle with respect to the
+    background magntic field :math:`\mathbf{B_o}`, :math:`s` corresponds
+    to plasma species :math:`s`, :math:`\omega_{p,s}` is the plasma
+    frequency of species :math:`s`, and :math:`\omega_{c,s}` is the
+    gyrofrequency of species :math:`s`. The derivation of this
+    dispersion relation assumed:
+
+    * zero temperature for all plasma species (:math:`T_{s}=0`)
+    * quasi-neutrallity
+    * a uniform background magntic field
+      :math:`\mathbf{B_o} = B_{o} \mathbf{\hat{z}}`
+    * no D.C. electric field :math:`\mathbf{E_o}=0`
+    * zero-order quantities for all plasma paramters (densities,
+      electric-field, magnetic field, particle speeds, etc.) are
+      constant in time and space
+    * firt-order pertibations in plasma parameters vary like
+      :math:`\sim e^{\left [ i (\textbf{k}\cdot\textbf{r} - \omega t)\right ]}`
+
+    Due to the cold plasma assumption, this equation is valid for all
+    :math:`\omega` and :math:`k` given
+    :math:`\frac{\omega}{k_{z}} \gg v_{Th}` for all thermal speeds
+    :math:`v_{Th}` of all plasma species and :math:`k_{x} r_{L} \ll 1`
+    for all gyroradii :math:`r_{L}` of all plasma species.
+
+    The relation predicts :math:`k \to 0` when any one of P, R or L
+    vanish (cutoffs) and :math:`k \to \infty` for perpendicular
+    propagation during wave resonance :math:`S \to 0`.
 
     Example
     -------
