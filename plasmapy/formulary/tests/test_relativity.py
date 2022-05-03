@@ -88,33 +88,50 @@ def test_relativistic_energy():
 
 
 @pytest.fixture
-def uhecr():
-    """Representing an ultra-high energy cosmic ray."""
+def ultra_relativistic_proton():
+    """Representing an ultra high energy cosmic ray (UHECR)."""
     return RelativisticBody(particle="p+", kinetic_energy=1e21 * u.eV)
 
 
-def test_uhecr_properties(uhecr):
-    assert uhecr.lorentz_factor >= 1, f"{uhecr.lorentz_factor=}"
-    assert u.isclose(uhecr.v_over_c, 1, atol=0.00001), f"{uhecr.v_over_c=}"
-    assert uhecr.speed is not None
-    assert u.isclose(uhecr.speed, c, rtol=1e-14), f"{uhecr.speed=}"
+def test_ultra_relativistic_proton_lorentz_factor(ultra_relativistic_proton):
+    assert ultra_relativistic_proton.lorentz_factor >= 1e6
 
 
-@pytest.fixture
-def proton_at_half_warp():
-    return RelativisticBody(particle=proton, kinetic_energy=2.3255785652637692e-11)
+def test_uhech_v_over_c(ultra_relativistic_proton):
+    assert u.isclose(ultra_relativistic_proton.v_over_c, 1, atol=1e-10)
 
 
-@pytest.mark.parametrize(
-    "parameter, expected",
-    [
-        ("v_over_c", 0.5),
-        ("lorentz_factor", 1.1547005383792517),
-        ("mass_energy", 1.5032776159851256e-10 * u.J),
-        ("total_energy", 1.7358354725115025e-10 * u.J),
-        ("kinetic_energy", 2.3255785652637692e-11 * u.J),
-    ],
-)
-def test_relativistic_body(proton_at_half_warp, parameter, expected):
-    actual = getattr(proton_at_half_warp, parameter)
-    assert u.isclose(actual, expected)
+def test_ultra_relativistic_proton_speed(ultra_relativistic_proton):
+    assert u.isclose(ultra_relativistic_proton.speed, c, rtol=1e-14)
+
+
+proton_at_half_c_properties = {
+    "particle": proton,
+    "v_over_c": 0.5,
+    "speed": 0.5 * c,
+    "lorentz_factor": 1.1547005383792517,
+    "mass_energy": 1.5032776159851256e-10 * u.J,
+    "total_energy": 1.7358354725115025e-10 * u.J,
+    "kinetic_energy": 2.3255785652637692e-11 * u.J),
+}
+
+speed_like_input_parameters = [
+    "v_over_c",
+    "speed",
+    "lorentz_factor",
+    "mass_energy",
+    "kinetic_energy",
+]
+
+@pytest.mark.parametrize("parameter", speed_like_input_parameters)
+def test_relativistic_body(parameter):
+
+    kwargs = {
+        "particle": proton_at_half_c_properties["particle"],
+        parameter: proton_at_half_c_properties[parameter],
+    }
+
+    actual = RelativisticBody(**kwargs)
+    expected = relativistic_body(particle=proton, v_over_c=0.5)
+
+    assert actual == expected

@@ -198,21 +198,21 @@ class RelativisticBody:
         self._data["particle"] = _physical_particle_factory(particle)
 
     @property
-    def rest_mass(self) -> u.Quantity[u.kg]:
+    def rest_mass(self) -> u.kg:
         return self.particle.mass
 
     @property
-    def mass_energy(self) -> u.Quantity[u.J]:
+    def mass_energy(self) -> u.J:
         """The rest mass energy, :math:`m_0 c^2`."""
         return self.rest_mass * c ** 2
 
     @property
-    def total_energy(self) -> u.Quantity[u.J]:
+    def total_energy(self) -> u.J:
         """The sum of the rest mass energy and the kinetic energy."""
         return self._data["total_energy"]
 
     @property
-    def kinetic_energy(self) -> u.Quantity[u.J]:
+    def kinetic_energy(self) -> u.J:
         return self._data["kinetic_energy"]
 
     @kinetic_energy.setter
@@ -230,9 +230,24 @@ class RelativisticBody:
         return self._data["v_over_c"]
 
     @property
-    def speed(self) -> u.Quantity[u.m / u.s]:
+    def speed(self) -> u.m / u.s:
         return self._data["speed"]
 
     @property
     def lorentz_factor(self) -> float:
         return self._data["lorentz_factor"]
+
+    _attributes_to_compare = ("particle", "rest_mass", "kinetic_energy", "mass_energy", "total_energy", "v_over_c")
+
+    def __eq__(self, other) -> bool:
+        for attr in self._attributes_to_compare:
+            if not hasattr(other, attr):
+                return False
+            self_value = getattr(self, attr)
+            other_value = getattr(self, attr)
+            if self_value != other_value:
+                return False
+        return True
+
+    def isclose(self, other: RelativisticBody) -> bool:
+        for attr in self._attributes_to_compare:
