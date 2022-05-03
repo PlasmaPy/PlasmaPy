@@ -2,6 +2,10 @@ ci:
   autofix_prs: false
   autoupdate_schedule: quarterly
 
+# using default_language_version
+default_language_version:
+  node: 16.15.0
+
 repos:
 
 - repo: https://github.com/pre-commit/pre-commit-hooks
