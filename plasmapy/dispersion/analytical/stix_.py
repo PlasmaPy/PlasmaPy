@@ -146,7 +146,7 @@ def stix(
     * zero-order quantities for all plasma parameters (densities,
       electric-field, magnetic field, particle speeds, etc.) are
       constant in time and space
-    * firt-order pertibations in plasma parameters vary like
+    * first-order perturbations in plasma parameters vary like
       :math:`\sim e^{\left [ i (\textbf{k}\cdot\textbf{r} - \omega t)\right ]}`
 
     Due to the cold plasma assumption, this equation is valid for all
