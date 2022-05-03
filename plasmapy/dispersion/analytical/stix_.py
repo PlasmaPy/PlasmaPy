@@ -143,7 +143,7 @@ def stix(
     * a uniform background magntic field
       :math:`\mathbf{B_o} = B_{o} \mathbf{\hat{z}}`
     * no D.C. electric field :math:`\mathbf{E_o}=0`
-    * zero-order quantities for all plasma paramters (densities,
+    * zero-order quantities for all plasma parameters (densities,
       electric-field, magnetic field, particle speeds, etc.) are
       constant in time and space
     * firt-order pertibations in plasma parameters vary like
