@@ -25,7 +25,7 @@ def stix(
     B: u.T,
     w: u.rad / u.s,
     ions: Particle,
-    n_i: u.m**-3,
+    n_i: u.m ** -3,
     theta: u.rad,
 ):
     r"""
@@ -50,7 +50,7 @@ def stix(
         ``"D+"`` for deuterium, ``["H+", "He+"]`` for hydrogen and
         helium, etc.).  All ions must be positively charged.
 
-    n_i: `~astropy.units.Quantity`, single valued or 1-D array
+    n_i: `~astropy.units.Quantity`, single valud or 1-D array
         Ion number density in units convertible to m\ :sup:`-3`.  Must
         be single valued or equal length to ``ions``.
 
@@ -121,11 +121,11 @@ def stix(
     .. math::
         S &= 1 - \sum_{s} \frac{\omega^{2}_{p,s}}{\omega^{2} -
             \omega^{2}_{c,s}}\\
-        P &= 1 - \sum_{s} \frac{\omega^{2}_{p,s}}{\omega^{2}}\\
+        P &= 1 - \sum_{\sigma} \frac{\omega^{2}_{p,s}}{\omega^{2}}\\
         D &= \sum_{s}
             \frac{\omega_{c,s}}{\omega}
             \frac{\omega^{2}_{p,s}}{\omega^{2} -
-            \omega_{c,s}^{2}}
+            \omega_{c\sigma}^{2}}
 
     .. math::
         R = S + D \hspace{1cm} L = S - D
@@ -143,10 +143,10 @@ def stix(
     * a uniform background magntic field
       :math:`\mathbf{B_o} = B_{o} \mathbf{\hat{z}}`
     * no D.C. electric field :math:`\mathbf{E_o}=0`
-    * zero-order quantities for all plasma parameters (densities,
+    * zero-order quantities for all plasma paramters (densities,
       electric-field, magnetic field, particle speeds, etc.) are
       constant in time and space
-    * first-order perturbations in plasma parameters vary like
+    * firt-order pertibations in plasma parameters vary like
       :math:`\sim e^{\left [ i (\textbf{k}\cdot\textbf{r} - \omega t)\right ]}`
 
     Due to the cold plasma assumption, this equation is valid for all
@@ -163,7 +163,7 @@ def stix(
     -------
     >>> from astropy import units as u
     >>> from plasmapy.particles import Particle
-    >>> from plasmapy.dispersion.analytical.stix_ import stix
+    >>> from plasmapy.dispersion.numerical.stix_ import stix
     >>> inputs = {
     ...     "B": 8.3e-9 * u.T,
     ...     "w": 0.001 * u.rad / u.s,
@@ -172,12 +172,14 @@ def stix(
     ...     "theta": 30 * u.deg,
     ... }
     >>> stix(**inputs)
-    <Quantity [ 6.03817661e-09-0.j, -6.03817661e-09+0.j,
-        6.97262784e-09-0.j, -6.97262784e-09+0.j] rad / m>
+    <Quantity [ 0.0...e+00-1.83219...e-07j,
+           -0.0...e+00+1.83219...e-07j,
+            1.83451...e-07-0.0...e+00j,
+           -1.83451...e-07+0.0...e+00j] rad / m>
     """
 
     # Validate ions argument
-    if not isinstance(ions, (list, tuple, ParticleList)):
+    if not isinstance(ions, (list, tuple)):
         ions = [ions]
     ions = ParticleList(ions)
 
@@ -246,39 +248,33 @@ def stix(
     wps = []
     wcs = []
     for par, dens in zip(species, densities):
-        wps.append(plasma_frequency(n=dens * u.m**-3, particle=par).value)
-        wcs.append(gyrofrequency(B=B, particle=par, signed=True).value)
+        wps.append(plasma_frequency(n=dens * u.m ** -3, particle=par).value)
+        wcs.append(gyrofrequency(B=B, particle=par, signed=False).value)
 
     # Stix method implemented
-    S = np.ones_like(w, dtype=np.float64)
+    S = np.ones_like(w, dtype=np.complex128)
     P = np.ones_like(S)
     D = np.zeros_like(S)
     for wc, wp in zip(wcs, wps):
-        S -= (wp**2) / (w**2 - wc**2)
+        S -= (wp ** 2) / (w ** 2 - wc ** 2)
         P -= (wp / w) ** 2
-        D += ((wp**2) / (w**2 - wc**2)) * (wc / w)
+        D += ((wp ** 2) / (w ** 2 - wc ** 2)) * (wc / w)
 
     R = S + D
     L = S - D
 
     # Generate coefficients to solve, a * k**4 + b * k**2 + c = 0
-    a = (S * np.sin(theta) ** 2) + (P * np.cos(theta) ** 2)
-    b = -((R * L * np.sin(theta) ** 2) + (P * S * (1 + np.cos(theta) ** 2)))
+    a = (c_si_unitless / w) ** 4 * (S * (np.sin(theta) ** 2) + P * (np.cos(theta) ** 2))
+    b = -((c_si_unitless / w) ** 2) * (
+        R * L * (np.sin(theta) ** 2) + P * S * (1 + (np.cos(theta) ** 2))
+    )
     c = P * R * L
 
     # Solve for k values
     k = np.empty(w.shape + (4,), dtype=np.complex128)
-    k[..., 0] = (
-        np.emath.sqrt((-b + np.emath.sqrt(b**2 - 4 * a * c)) / (2 * a))
-        * w
-        / c_si_unitless
-    )
+    k[..., 0] = np.emath.sqrt((-b + np.emath.sqrt(b ** 2 - 4 * a * c)) / (2 * a))
     k[..., 1] = -k[..., 0]
-    k[..., 2] = (
-        np.emath.sqrt((-b - np.emath.sqrt(b**2 - 4 * a * c)) / (2 * a))
-        * w
-        / c_si_unitless
-    )
+    k[..., 2] = np.emath.sqrt((-b - np.emath.sqrt(b ** 2 - 4 * a * c)) / (2 * a))
     k[..., 3] = -k[..., 2]
 
     return k.squeeze() * u.rad / u.m
