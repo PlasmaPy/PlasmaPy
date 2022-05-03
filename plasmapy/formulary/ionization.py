@@ -227,27 +227,6 @@ def thomas_fermi_ionization_state(
     `~astropy.units.UnitConversionError`
         If either of ``T_e`` or ``n_e`` is not in appropriate units.
 
-    Notes
-    -----
-    In strongly coupled plasmas the Saha equation for the calculation of the ionization state becomes inaccurate.
-    Self-consistent models based on density functional theory calculations have been proposed. Amongst them there is
-    the so-called Average Atom model. This model calculates the mean ionization state of a representative average atom,
-    i.e. spherical cell of plasma centered on one nucleus with radius :math:`a_i`, the Wigner-Seitz radius.
-    The Thomas-Fermi model calculates the mean ionization state from
-
-    .. math::
-        \langle Z \rangle_{\rm TF} = \frac{4\pi a_i^3}{3} n(a_i)
-
-    where :math:`a_i` is the Wigner-Seitz radius, see :func:`plasmapy.formulary.quantum.Wigner_Seitz_radius`, calculated
-    from the ion density of the plasma. :math:`n(a_i)` is the electron density at the edge of the spherical plasma cell.
-    This density is obtained by solving nonlinear equation obtained from Thomas-Fermi Density Functional Theory (TF-DFT).
-    More information and details can be found in :cite:t:`murillo:2013`.
-
-    The `thomas_fermi_ionization_state` function, instead of solving nonlinear equations, uses fits provided by R. More
-    to calculate the mean ionization state.
-
-    Table IV of :cite:t:`more:1985` has been reproduced in :cite:t:`stanton:2016` for convenience.
-
     Examples
     --------
     >>> import astropy.units as u
@@ -264,6 +243,32 @@ def thomas_fermi_ionization_state(
     -------
     `~astropy.units.Quantity`
         The Thomas-Fermi ionization state of the ion in the plasma.
+
+    Notes
+    -----
+    In hot dense plasmas, the combined effects of degeneracy and continuum lowering prevent the use of the Saha equation
+    for the calculation of the mean ionization state, $\langle Z \rangle$. This is because the Saha equation is
+    obtained from a balance of free energies of ideal gases with well-defined chemical compositions. In the strong
+    coupling regime the exact chemical abundances of the elements and their ionization thresholds are unknown,
+    therefore, it is more convenient to imagine the plasma as a continuum medium of electrons and positive nuclei.
+    The most common physical picture employed in the calculation of static properties of hot dense plasmas is the
+    so-called Average Atom (AA) model. This model considers a nucleus with charge number $Z$ embedded in a spherical cavity
+    in a continous background of positive charge. The radius of the sphere is $a_i$ determined by the plasma density.
+    :cite:t:`more:1985`. Several AA models have been formulated for the calculation of $\langle Z \rangle$ and reviewed in
+    :cite:t:`more:1985`, :cite:t:`murillo:2013`. The simplest model that includes thermal and pressure ionization effects is
+    the Thomas-Fermi model which calculates the mean ionization state from
+
+    .. math::
+        \langle Z \rangle_{\rm TF} = Z_{\rm nuc} - \frac{4\pi a_i^3}{3} n(a_i)
+
+    where :math:`Z_{\rm nuc}` is the bare nuclear charge of the ion, :math:`a_i` is the Wigner-Seitz radius,
+    see :func:`plasmapy.formulary.quantum.Wigner_Seitz_radius`, and :math:`n(a_i)` is the electron density at the edge
+    of the spherical cavity. This density is obtained by solving nonlinear equation obtained from Thomas-Fermi
+    Density Functional Theory (TF-DFT). More information and details can be found in :cite:t:`murillo:2013`.
+
+    The `thomas_fermi_ionization_state` function, instead of solving nonlinear equations, uses fits provided by R. More
+    to calculate the mean ionization state :cite:t:`more:1985`.
+    Table IV of :cite:t:`more:1985` has been reproduced in :cite:t:`stanton:2016` for convenience.
 
     """
 
