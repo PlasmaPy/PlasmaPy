@@ -253,7 +253,7 @@ def thomas_fermi_ionization_state(
     therefore, it is more convenient to imagine the plasma as a continuum medium of electrons and positive nuclei.
     The most common physical picture employed in the calculation of static properties of hot dense plasmas is the
     so-called Average Atom (AA) model. This model considers a nucleus with charge number $Z$ embedded in a spherical cavity
-    in a continous background of positive charge. The radius of the sphere is $a_i$ determined by the plasma density.
+    in a continuous background of positive charge. The radius of the sphere is $a_i$ determined by the plasma density.
     :cite:t:`more:1985`. Several AA models have been formulated for the calculation of $\langle Z \rangle$ and reviewed in
     :cite:t:`more:1985`, :cite:t:`murillo:2013`. The simplest model that includes thermal and pressure ionization effects is
     the Thomas-Fermi model which calculates the mean ionization state from
