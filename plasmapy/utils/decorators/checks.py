@@ -1374,7 +1374,7 @@ def _check_relativistic(V, funcname, betafrac=0.05):
 
     try:
         V_over_c = (V / c).to_value(u.dimensionless_unscaled)
-    except Exception:
+    except u.UnitConversionError:
         raise u.UnitConversionError(errmsg)
 
     beta = np.max(np.abs(V_over_c))
