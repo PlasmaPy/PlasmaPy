@@ -5,6 +5,7 @@ __all__ = ["Fermi_integral", "rot_a_to_b"]
 import numbers
 import numpy as np
 
+from mpmath import polylog
 from typing import Union
 
 
@@ -36,7 +37,7 @@ def Fermi_integral(
         If the argument is a `~astropy.units.Quantity` but is not
         dimensionless.
 
-    ValueError
+    `ValueError`
         If the argument is not entirely finite.
 
     Notes
@@ -56,9 +57,10 @@ def Fermi_integral(
     .. math::
         F_j (x) = -Li_{j+1}\left(-e^{x}\right)
 
-    Warning: at present this function is limited to relatively small
-    arguments due to limitations in the `~mpmath` package's
-    implementation of `~mpmath.polylog`.
+    Warnings
+    --------
+    At present this function is limited to relatively small arguments
+    due to limitations in ``mpmath.polylog``.
 
     Examples
     --------
@@ -68,19 +70,10 @@ def Fermi_integral(
     (1.3132616875182228-0j)
     >>> Fermi_integral(1, 1)
     (1.8062860704447743-0j)
-
     """
-    try:
-        from mpmath import polylog
-    except (ImportError, ModuleNotFoundError) as e:
-        from plasmapy.optional_deps import mpmath_import_error
-
-        raise mpmath_import_error from e
-
     if isinstance(x, (numbers.Integral, numbers.Real, numbers.Complex)):
         arg = -np.exp(x)
-        integral = -1 * complex(polylog(j + 1, arg))
-        return integral
+        return -1 * complex(polylog(j + 1, arg))
     elif isinstance(x, np.ndarray):
         integral_arr = np.zeros_like(x, dtype="complex")
         for idx, val in enumerate(x):
@@ -146,7 +139,6 @@ def rot_a_to_b(a: np.ndarray, b: np.ndarray) -> np.ndarray:
     -------
     R : `~numpy.ndarray`, shape (3,3)
         The rotation matrix that will rotate vector ``a`` onto vector ``b``.
-
     """
 
     # Normalize and validate both vectors

@@ -2,6 +2,7 @@ import pytest
 
 from typing import List, Optional, Tuple, Union
 
+from plasmapy.particles.decorators import particle_input
 from plasmapy.particles.exceptions import (
     ChargeError,
     InvalidElementError,
@@ -10,9 +11,7 @@ from plasmapy.particles.exceptions import (
     InvalidParticleError,
     ParticleError,
 )
-
-from ..decorators import particle_input
-from ..particle_class import Particle
+from plasmapy.particles.particle_class import Particle
 
 
 @particle_input
@@ -198,10 +197,11 @@ def function_to_test_annotations(particles: Union[Tuple, List], resulting_partic
     # will return True because of how Particle.__eq__ is set up.
 
     returned_particle_instances = all(
-        [isinstance(p, Particle) for p in resulting_particles]
+        isinstance(p, Particle) for p in resulting_particles
     )
+
     returned_correct_instances = all(
-        [expected[i] == resulting_particles[i] for i in range(len(particles))]
+        expected[i] == resulting_particles[i] for i in range(len(particles))
     )
 
     if not returned_particle_instances:

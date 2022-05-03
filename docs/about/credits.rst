@@ -21,83 +21,88 @@ PlasmaPy Contributors
 The people in the following list have contributed to PlasmaPy.  Included
 in parentheses are `ORCID author identifiers <https://orcid.org>`__.
 
-* `Jasper Beckers <https://github.com/jasperbeckers>`__
-* `Manas Bedmutha <https://github.com/manasbedmutha98>`__
-* `Justin Bergeron <https://github.com/Justin-Bergeron>`__
-* `Ludovico Bessi <https://github.com/ludoro>`__
-* `BH4 <https://github.com/BH4>`__
-* `Khalil Bryant <https://github.com/KhalilBryant>`__
-* `Sean Carroll <https://github.com/seanwilliamcarroll>`__
-* `Sean Chambers <https://github.com/schambers>`__
-* `Ankur Chattopadhyay <https://github.com/chttrjeankr>`__
-* `Apoorv Choubey <https://github.com/apooravc>`__
-* `cclauss <https://github.com/cclauss>`__
-* `Jacob Deal <https://github.com/Jac0bDeal>`__
-* `Diego A. Diaz Riega <https://github.com/diego7319>`__
-* `Leah Einhorn <https://github.com/leahein>`__
-* `Erik Everson <https://github.com/rocco8773>`__
-* `Thomas Fan <https://github.com/thomasjpfan>`__
-* `Samaiyah I. Farid <https://github.com/samaiyahfarid>`__
-* Michael Fischer
-* `Bryan Foo <https://github.com/bryancfoo>`__
-* `Brian Goodall <https://github.com/goodab>`__
-* `Graham Goudeau <https://github.com/GrahamGoudeau>`__
-* `Silvina Guidoni <https://www.american.edu/cas/faculty/guidoni.cfm>`__
-* `Colby Haggerty <https://github.com/colbych>`__
-* `Peter Heuer <https://github.com/pheuer>`__ (`0000-0001-5050-6606 <https://orcid.org/0000-0001-5050-6606>`__)
-* `Julien Hillairet <https://github.com/jhillairet>`__ (`0000-0002-1073-6383 <https://orcid.org/0000-0002-1073-6383>`__)
-* `Poh Zi How <https://github.com/pohzipohzi>`__
-* `Yi-Min Huang <https://github.com/yopology>`__ (`0000-0002-4237-2211 <https://orcid.org/0000-0002-4237-2211>`__)
-* `Nabil Humphrey <https://github.com/NabilHumphrey>`__
-* `Maria Isupova <https://github.com/misupova>`__
-* `Alf Köhn-Seemann <https://github.com/alfkoehn>`__ (`0000-0002-1192-2057 <https://orcid.org/0000-0002-1192-2057>`__)
-* `Pawel Kozlowski <https://github.com/lemmatum>`__ (`0000-0001-6849-3612 <https://orcid.org/0000-0001-6849-3612>`__)
-* `Siddharth Kulshrestha <https://github.com/siddharth185>`__
-* `Piotr Kuszaj <https://github.com/kuszaj>`__
-* `Samuel Langendorf <https://github.com/samurai688>`__ (`0000-0002-7757-5879 <https://orcid.org/0000-0002-7757-5879>`__)
-* `Drew Leonard <https://github.com/SolarDrew>`__ (`0000-0001-5270-7487 <https://orcid.org/0000-0001-5270-7487>`__)
-* `lgoenner <https://github.com/lgoenner>`__
-* `Fionnlagh Mackenzie Dover <https://github.com/FinMacDov>`__ (`0000-0002-1984-7303 <https://orcid.org/0000-0002-1984-7303>`__)
-* `Aditya Magarde <https://github.com/adityamagarde>`__
-* `Ritiek Malhotra <https://github.com/ritiek>`__
-* `Stuart Mumford <https://github.com/Cadair>`__ (`0000-0003-4217-4642 <https://orcid.org/0000-0003-4217-4642>`__)
-* `Joshua Munn <https://github.com/jams2>`__
-* `Nick Murphy <https://github.com/namurphy>`__ (`0000-0001-6628-8033 <https://orcid.org/0000-0001-6628-8033>`__)
-* `Nismirno <https://github.com/Nismirno>`__
-* `nrb1324 <https://github.com/nrb1324>`__
-* `Tulasi Parashar <https://github.com/tulasinandan>`__ (`0000-0003-0602-8381 <https://orcid.org/0000-0003-0602-8381>`__)
-* `Neil Patel <https://github.com/ministrike3>`__
-* `Francisco Silva Pavon <https://github.com/silvafrancisco>`__
-* `Roberto Díaz Pérez <https://github.com/RoberTnf>`__
-* Jakub Polak
-* `Raajit Raj <https://github.com/raajitr>`__
-* `Vishwas Rajashekar <https://github.com/DarkAEther>`__ (`0000-0002-4914-6612 <https://orcid.org/0000-0002-4914-6612>`__)
-* `Antonia Savcheva <https://github.com/savcheva>`__ (`0000-0002-5598-046X <https://orcid.org/0000-0002-5598-046X>`__)
-* `Chengcai Shen <https://github.com/ionizationcalc>`__ (`0000-0002-9258-4490 <https://orcid.org/0000-0002-9258-4490>`__)
-* `Dawa Nurbu Sherpa <https://github.com/nurbu5>`__
-* `Angad Singh <https://github.com/singha95>`__
-* `Ankit Singh <https://github.com/Griffintaur>`__
-* `Brigitta Sipőcz <https://github.com/bsipocz>`__
-* `David Stansby <https://github.com/dstansby>`__ (`0000-0002-1365-1908 <https://orcid.org/0000-0002-1365-1908>`__)
-* `Dominik Stańczak <https://github.com/StanczakDominik>`__ (`0000-0001-6291-8843 <https://orcid.org/0000-0001-6291-8843>`__)
-* `Antoine Tavant <https://github.com/antoinetavant>`__
-* `Thomas Ulrich <https://github.com/Elfhelm>`__
-* `Thomas Varnish <https://github.com/tvarnish>`__
-* `Anthony Vo <https://github.com/anthony-vo>`__
-* `Sixue Xu <https://github.com/hzxusx>`__
-* `Carol Zhang <https://github.com/carolyz>`__
-* `Cody Skinner <https://github.com/cskinner74>`__
-* `Ramiz Qudsi <https://github.com/qudsiramiz>`__ (`0000-0001-8358-0482 <https://orcid.org/0000-0001-8358-0482>`__)
-* `Steve Richardson <https://github.com/arichar6>`__ (`0000-0002-3056-6334 <https://orcid.org/0000-0002-3056-6334>`__)
-* `Tiger Du <https://github.com/Tiger-Du>`__ (`0000-0002-8676-1710 <https://orcid.org/0000-0002-8676-1710>`__)
-* `Kevin Montes <https://github.com/kjmontes>`__ (`0000-0002-0762-3708 <https://orcid.org/0000-0002-0762-3708>`__)
-* `David Drozdov <https://github.com/davemus>`__
-* `Dhawal Modi <https://github.com/Dhawal-Modi>`__
-* `Armando Salcido <https://github.com/aksalcido>`__
-* `Nicolas Lequette <https://github.com/Quettle>`__
-* `Tomas Stinson <https://github.com/14tstinson>`__
-* `Anna Lanteri <https://github.com/alanteriBW>`__
+.. ORCID provides a unique persistent identifier that you own and control.
+   To sign up, please go to: https://orcid.org/register
 
+* :user:`Haman Bagherianlemraski <haman80>` (:orcid:`0000-0001-7381-1996`)
+* :user:`Jasper Beckers <jasperbeckers>`
+* :user:`Manas Bedmutha <manasbedmutha98>`
+* :user:`Justin Bergeron <Justin-Bergeron>`
+* :user:`Ludovico Bessi <ludoro>`
+* :user:`BH4`
+* :user:`Khalil Bryant <KhalilBryant>`
+* :user:`Sean Carroll <seanwilliamcarroll>`
+* :user:`Sean Chambers <schambers>`
+* :user:`Ankur Chattopadhyay <chttrjeankr>`
+* :user:`Apoorv Choubey <apooravc>`
+* :user:`cclauss`
+* :user:`Jacob Deal <Jac0bDeal>`
+* :user:`Diego A. Diaz Riega <diego7319>`
+* :user:`Leah Einhorn <leahein>`
+* :user:`Erik Everson <rocco8773>`
+* :user:`Thomas Fan <thomasjpfan>`
+* :user:`Samaiyah I. Farid <samaiyahfarid>`
+* Michael Fischer
+* :user:`Bryan Foo <bryancfoo>`
+* :user:`Brian Goodall <goodab>`
+* :user:`Graham Goudeau <GrahamGoudeau>`
+* `Silvina Guidoni <https://www.american.edu/cas/faculty/guidoni.cfm>`_
+* :user:`Colby Haggerty <colbych>`
+* :user:`Peter Heuer <pheuer>` (:orcid:`0000-0001-5050-6606`)
+* :user:`Julien Hillairet <jhillairet>` (:orcid:`0000-0002-1073-6383`)
+* :user:`Poh Zi How <pohzipohzi>`
+* :user:`Yi-Min Huang <yopology>` (:orcid:`0000-0002-4237-2211`)
+* :user:`Nabil Humphrey <NabilHumphrey>`
+* :user:`Maria Isupova <misupova>`
+* :user:`Alf Köhn-Seemann <alfkoehn>` (:orcid:`0000-0002-1192-2057`)
+* :user:`Pawel Kozlowski <lemmatum>` (:orcid:`0000-0001-6849-3612`)
+* Siddharth Kulshrestha
+* :user:`Piotr Kuszaj <kuszaj>`
+* :user:`Samuel Langendorf <samurai688>` (:orcid:`0000-0002-7757-5879`)
+* :user:`Drew Leonard <SolarDrew>` (:orcid:`0000-0001-5270-7487`)
+* :user:`lgoenner`
+* :user:`Fionnlagh Mackenzie Dover <FinMacDov>` (:orcid:`0000-0002-1984-7303`)
+* :user:`Aditya Magarde <adityamagarde>`
+* :user:`Ritiek Malhotra <ritiek>`
+* :user:`Stuart Mumford <Cadair>` (:orcid:`0000-0003-4217-4642`)
+* :user:`Joshua Munn <jams2>`
+* :user:`Nick Murphy <namurphy>` (:orcid:`0000-0001-6628-8033`)
+* :user:`Nismirno`
+* :user:`nrb1324`
+* :user:`Tulasi Parashar <tulasinandan>` (:orcid:`0000-0003-0602-8381`)
+* :user:`Neil Patel <ministrike3>`
+* :user:`Francisco Silva Pavon <silvafrancisco>`
+* :user:`Roberto Díaz Pérez <RoberTnf>`
+* Jakub Polak
+* :user:`Raajit Raj <raajitr>`
+* :user:`Vishwas Rajashekar <DarkAEther>` (:orcid:`0000-0002-4914-6612`)
+* :user:`Antonia Savcheva <savcheva>` (:orcid:`0000-0002-5598-046X`)
+* :user:`Chengcai Shen <ionizationcalc>` (:orcid:`0000-0002-9258-4490`)
+* :user:`Dawa Nurbu Sherpa <nurbu5>`
+* :user:`Angad Singh <singha95>`
+* :user:`Ankit Singh <Griffintaur>`
+* :user:`Brigitta Sipőcz <bsipocz>`
+* :user:`David Stansby <dstansby>` (:orcid:`0000-0002-1365-1908`)
+* :user:`Dominik Stańczak <StanczakDominik>` (:orcid:`0000-0001-6291-8843`)
+* :user:`Antoine Tavant <antoinetavant>`
+* :user:`Thomas Ulrich <Elfhelm>`
+* :user:`Thomas Varnish <tvarnish>`
+* :user:`Tien Vo <tien-vo>`
+* :user:`Sixue Xu <hzxusx>`
+* :user:`Carol Zhang <carolyz>`
+* :user:`Cody Skinner <cskinner74>`
+* :user:`Ramiz Qudsi <qudsiramiz>` (:orcid:`0000-0001-8358-0482`)
+* :user:`Steve Richardson <arichar6>` (:orcid:`0000-0002-3056-6334`)
+* :user:`Tiger Du <Tiger-Du>` (:orcid:`0000-0002-8676-1710`)
+* :user:`Kevin Montes <kjmontes>` (:orcid:`0000-0002-0762-3708`)
+* :user:`David Drozdov <davemus>`
+* :user:`Dhawal Modi <Dhawal-Modi>`
+* :user:`Armando Salcido <aksalcido>`
+* :user:`Nicolas Lequette <Quettle>`
+* :user:`Tomas Stinson <14tstinson>`
+* :user:`Anna Lanteri <alanteriBW>`
+* :user:`Leo Murphy <LeoMurphyWM24>`
+* :user:`Reynaldo Rojas Zelaya <userr2232>`
 
 This list contains contributors to PlasmaPy's core package and vision
 statement, including a few people who do not show up as `PlasmaPy

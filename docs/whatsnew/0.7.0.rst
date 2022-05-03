@@ -91,7 +91,7 @@ Deprecations and Removals
   `~plasmapy.particles.ionization_state.IonizationState.charge_numbers`. (`#1136 <https://github.com/plasmapy/plasmapy/pull/1136>`__)
 - The ``particle`` attribute of |Particle|
   has been removed after having been deprecated in 0.6.0. (`#1146 <https://github.com/plasmapy/plasmapy/pull/1146>`__)
-- Use more generalized keyword argument ``T`` instead of ``T_i`` in `plasmapy.formulary.parameters.gyroradius`.
+- Use more generalized keyword argument ``T`` instead of ``T_i`` in ``plasmapy.formulary.parameters.gyroradius``.
   The ``T_i`` argument has been deprecated and will be removed in a subsequent release. (`#1210 <https://github.com/plasmapy/plasmapy/pull/1210>`__)
 
 
@@ -124,7 +124,7 @@ Features
 - Created the `~plasmapy.particles.ionization_state.IonizationState.to_list`
   method of |IonizationState| to provide a |ParticleList| instance that
   contains the different ionic levels. (`#1154 <https://github.com/plasmapy/plasmapy/pull/1154>`__)
-- The behaviour of the function `~plasmapy.formulary.parameters.gyroradius` has
+- The behaviour of the function ``plasmapy.formulary.parameters.gyroradius`` has
   been changed. If `numpy.nan` values are provided for ``T_i`` or ``Vperp``,
   then instead of raising a slightly misleading error, `numpy.nan` in the
   appropriate units is returned. (`#1187 <https://github.com/plasmapy/plasmapy/pull/1187>`__)
@@ -181,7 +181,7 @@ Improved Documentation
 
 - Improved consistency of documentation style and made
   reST_ fixes in several subpackages. (`#1073 <https://github.com/plasmapy/plasmapy/pull/1073>`__)
-- Added a pre-release section to the release guide.
+- Added a pre-release section to the |release guide|.
   This section now includes steps for having a feature freeze about a week before the release,
   followed by a code freeze about two days before the release. (`#1081 <https://github.com/plasmapy/plasmapy/pull/1081>`__)
 - Created the Sphinx_ extension package `plasmapy_sphinx` and used it to replace
@@ -202,41 +202,41 @@ Improved Documentation
   for example, in the development guide in the documentation). (`#1150 <https://github.com/plasmapy/plasmapy/pull/1150>`__)
 - Updated information on how to write and build documentation in the
   development guide. (`#1156 <https://github.com/plasmapy/plasmapy/pull/1156>`__)
-- Updated information on how to write and run tests in the contributor
-  guide. (`#1163 <https://github.com/plasmapy/plasmapy/pull/1163>`__)
+- Updated information on how to write and run tests in the |contributor guide|.
+  (`#1163 <https://github.com/plasmapy/plasmapy/pull/1163>`__)
 - Created an outline of a page in the development guide to describe the workflow
   required to contribute to PlasmaPy. (`#1178 <https://github.com/plasmapy/plasmapy/pull/1178>`__)
 - Added brief description about the physics of the upper-hybrid resonance
-  to the docstring of the function `~plasmapy.formulary.parameters.upper_hybrid_frequency`. (`#1180 <https://github.com/plasmapy/plasmapy/pull/1180>`__)
+  to the docstring of the function ``plasmapy.formulary.parameters.upper_hybrid_frequency``. (`#1180 <https://github.com/plasmapy/plasmapy/pull/1180>`__)
 - Added a brief description about the physics of the lower-hybrid resonance
-  to the docstring of the function `~plasmapy.formulary.parameters.lower_hybrid_frequency`. (`#1181 <https://github.com/plasmapy/plasmapy/pull/1181>`__)
-- Made the function `~plasmapy.formulary.parameters.gyrofrequency` more general
+  to the docstring of the function ``plasmapy.formulary.parameters.lower_hybrid_frequency``. (`#1181 <https://github.com/plasmapy/plasmapy/pull/1181>`__)
+- Made the function ``plasmapy.formulary.parameters.gyrofrequency`` more general
   by removing the indications that it might only work for ions. (`#1183 <https://github.com/plasmapy/plasmapy/pull/1183>`__)
 - Make `plasmapy.analysis.fit_functions.AbstractFitFunction.FitParamTuple` a
   property to fix the documentation build warning caused by the release
   of Sphinx_ ``v4.1.0``. (`#1199 <https://github.com/plasmapy/plasmapy/pull/1199>`__)
-- Included a step in the release guide to update Binder requirements
+- Included a step in the |release guide| to update Binder requirements
   so that the release of PlasmaPy on PyPI_ gets installed when opening
   example notebooks from the stable and release branches of the online
   documentation. (`#1205 <https://github.com/plasmapy/plasmapy/pull/1205>`__)
-- Updated the documentation guide to include updates to tox_ environments
+- Updated the |documentation guide| to include updates to tox_ environments
   for building the documentation. (`#1206 <https://github.com/plasmapy/plasmapy/pull/1206>`__)
 - Fixed numerous broken reST_ links in prior changelogs. (`#1207 <https://github.com/plasmapy/plasmapy/pull/1207>`__)
 - Improve the docstring for `plasmapy.online_help`. (`#1213 <https://github.com/plasmapy/plasmapy/pull/1213>`__)
 - Renamed "Development Guide" to "Contributor Guide", and temporarily removed
   the incomplete :file:`docs/development/workflow.rst` from the ``toctree`` of the
   Contributor Guide. (`#1217 <https://github.com/plasmapy/plasmapy/pull/1217>`__)
-- Fixed a typo in the docstring of `~plasmapy.formulary.parameters.Alfven_speed`. (`#1218 <https://github.com/plasmapy/plasmapy/pull/1218>`__)
+- Fixed a typo in the docstring of ``plasmapy.formulary.parameters.Alfven_speed``. (`#1218 <https://github.com/plasmapy/plasmapy/pull/1218>`__)
 - Fixed broken reST_ links in docstrings for aliases in `plasmapy.formulary`. (`#1238 <https://github.com/plasmapy/plasmapy/pull/1238>`__)
 - Fixed multiple broken and redirected links. (`#1257 <https://github.com/plasmapy/plasmapy/pull/1257>`__)
-- Updated the documentation guide to include a description on how to
+- Updated the |documentation guide| to include a description on how to
   add and cite references to PlasmaPy's global bibliography BibTeX_ file,
   :file:`docs/bibliography.bib`. (`#1263 <https://github.com/plasmapy/plasmapy/pull/1263>`__)
 - Added sphinxcontrib-bibtex_ as a Sphinx_ extension to enable references
   to be stored in a BibTeX_ file. (`#1263 <https://github.com/plasmapy/plasmapy/pull/1263>`__)
-- Began a documentation-wide bibliography page. (`#1263 <https://github.com/plasmapy/plasmapy/pull/1263>`__)
-- Updated documentation guide to describe where formulae should go in
-  docstrings and how to use glossary entries. (`#1264 <https://github.com/plasmapy/plasmapy/pull/1264>`__)
+- Began a documentation-wide |bibliography| page. (`#1263 <https://github.com/plasmapy/plasmapy/pull/1263>`__)
+- Updated the |documentation guide| to describe where formulae should go in
+  docstrings and how to use |glossary| entries. (`#1264 <https://github.com/plasmapy/plasmapy/pull/1264>`__)
 - Updated and fixed hyperlinks in the documentation. (`#1267 <https://github.com/plasmapy/plasmapy/pull/1267>`__)
 - Adopted the ``"xcode"`` code highlighting style for
   pygments_ to increase color contrast and improve web accessibility. (`#1268 <https://github.com/plasmapy/plasmapy/pull/1268>`__)
@@ -250,7 +250,7 @@ Improved Documentation
   documentation for a pull request. (`#1298 <https://github.com/plasmapy/plasmapy/pull/1298>`__)
 - Incorporated citations in the
   `~plasmapy.dispersion.analytical.two_fluid_.two_fluid` docstring into
-  the PlasmaPy bibliography framework. (`#1301 <https://github.com/plasmapy/plasmapy/pull/1301>`__)
+  the PlasmaPy |bibliography| framework. (`#1301 <https://github.com/plasmapy/plasmapy/pull/1301>`__)
 
 
 Trivial/Internal Changes
@@ -324,7 +324,7 @@ Trivial/Internal Changes
   radians. (`#1301 <https://github.com/plasmapy/plasmapy/pull/1301>`__)
 - Replaced usage of ``distutils.version.StrictVersion`` with
   ``packaging.version.Version`` because ``distutils`` has been deprecated.
-  As part of this change, `packaging <https://packaging.pypa.io>`__ has been
+  As part of this change, `packaging <https://packaging.pypa.io/en/latest>`__ has been
   added as a dependency. (`#1306 <https://github.com/plasmapy/plasmapy/pull/1306>`__)
 - Increased the minimum version of matplotlib to 3.3.0 and updated
   `plasmapy.diagnostics.langmuir.swept_probe_analysis` to be compatible

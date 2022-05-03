@@ -6,7 +6,9 @@ and online at https://docs.plasmapy.org (accessible also using the
 """
 __all__ = [
     "online_help",
+    "analysis",
     "diagnostics",
+    "dispersion",
     "formulary",
     "particles",
     "plasma",
@@ -20,15 +22,24 @@ __all__ = [
 # This is the same check as the one at the top of setup.py
 import sys
 
-if sys.version_info < (3, 7):
-    raise Exception("PlasmaPy does not support Python < 3.7")
+if sys.version_info < (3, 8):  # coverage: ignore
+    raise ImportError("PlasmaPy does not support Python < 3.8")
 
 # Packages may add whatever they like to this file, but
 # should keep this content at the top.
 # ----------------------------------------------------------------------------
 import pkg_resources
 
-from plasmapy import diagnostics, formulary, particles, plasma, simulation, utils
+from plasmapy import (
+    analysis,
+    diagnostics,
+    dispersion,
+    formulary,
+    particles,
+    plasma,
+    simulation,
+    utils,
+)
 
 # define version
 try:
