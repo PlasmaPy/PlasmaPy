@@ -163,7 +163,7 @@ def stix(
     -------
     >>> from astropy import units as u
     >>> from plasmapy.particles import Particle
-    >>> from plasmapy.dispersion.numerical.stix_ import stix
+    >>> from plasmapy.dispersion.analytical.stix_ import stix
     >>> inputs = {
     ...     "B": 8.3e-9 * u.T,
     ...     "w": 0.001 * u.rad / u.s,
