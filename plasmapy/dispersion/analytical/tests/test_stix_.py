@@ -4,7 +4,7 @@ import pytest
 
 from astropy import units as u
 
-from plasmapy.dispersion.numerical.stix_ import stix
+from plasmapy.dispersion.analytical.stix_ import stix
 from plasmapy.particles import Particle
 from plasmapy.particles.exceptions import InvalidParticleError
 
