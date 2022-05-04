@@ -6,13 +6,14 @@ import numpy as np
 
 from astropy.constants import c
 from numbers import Integral, Real
-from typing import Union
+from typing import Optional, Union
 
 from plasmapy import utils
 from plasmapy.particles._factory import _physical_particle_factory
 from plasmapy.particles.particle_class import CustomParticle, Particle, ParticleLike
 from plasmapy.particles.particle_collections import ParticleList
 from plasmapy.utils.decorators import validate_quantities
+from plasmapy.utils.exceptions import RelativityError
 
 
 @validate_quantities(V={"can_be_negative": True})
@@ -163,81 +164,245 @@ class RelativisticBody:
 
     Parameters
     ----------
-    particle : |ParticleLike|, optional
+    particle : |ParticleLike|, |ParticleList|, or |Quantity|
 
-    quantity : |Quantity|
-        A |Quantity| with units of speed, energy,
+    speed : |Quantity|, optional
+
+    momentum : |Quantity|, optional
+
+    total_energy : |Quantity|, optional
+       The sum of the mass energy
+
+    kinetic_energy : |Quantity|, optional
+
+    v_over_c : |Quantity|, optional
+
+    lorentz_factor : |Quantity|, optional
 
     Z : integer, optional
+        The charge number associated with ``particle``.
 
     mass_numb : integer, optional
+        The mass number of an isotope.
+
+    Notes
+    -----
+    Only one of ``speed``, ``momentum``, ``total_energy``,
+    ``kinetic_energy``, ``v_over_c``, and ``lorentz_factor`` may be
+    provided.
     """
+
+    _speed_like_inputs = (
+        "speed",
+        "momentum",
+        "total_energy",
+        "kinetic_energy",
+        "v_over_c",
+        "lorentz_factor",
+    )
 
     @validate_quantities
     def __init__(
         self,
-        particle=None,
+        particle: ParticleLike = None,
+        speed: u.m / u.s = None,
+        momentum: u.kg * u.m / u.s = None,
         *,
+        total_energy: u.J = None,
         kinetic_energy: u.J = None,
-        Z: Integral = None,
-        mass_numb: Integral = None,
+        v_over_c: Optional[Real] = None,
+        lorentz_factor: Optional[Real] = None,
+        Z: Optional[Integral] = None,
+        mass_numb: Optional[Integral] = None,
     ):
 
         self._data = {
             "particle": _physical_particle_factory(particle, Z=Z, mass_numb=mass_numb)
         }
-        self.kinetic_energy = kinetic_energy
+
+        arguments = [
+            speed,
+            momentum,
+            total_energy,
+            kinetic_energy,
+            v_over_c,
+            lorentz_factor,
+        ]
+        speed_like_argument = [
+            argument for argument in arguments if argument is not None
+        ]
+        if len(speed_like_argument) != 1:
+            raise TypeError(
+                "Exactly one speed-like input must be provided to RelativisticBody."
+            )
+
+        if total_energy is not None:
+            self.total_energy = total_energy
+        if kinetic_energy is not None:
+            self.kinetic_energy = kinetic_energy
+        if speed is not None:
+            self.speed = speed
+        if v_over_c is not None:
+            self.v_over_c = v_over_c
+        if momentum is not None:
+            self.momentum = momentum
+        if lorentz_factor is not None:
+            self.lorentz_factor = lorentz_factor
+
+    def __repr__(self):
+        return f"RelativisticBody({self.particle}, {self.speed})"
 
     @property
     def particle(self) -> Union[CustomParticle, Particle, ParticleList]:
-        print(self._data)
         return self._data["particle"]
+
+    @property
+    def mass(self) -> u.kg:
+        """
+        The rest mass of the body, :math:`m_0`.
+
+        Returns
+        -------
+        |Quantity|
+        """
+        return self.particle.mass
+
+    @property
+    def mass_energy(self) -> u.J:
+        """
+        The rest mass energy of the body, :math:`m_0 c^2`.
+
+        Returns
+        -------
+        |Quantity|
+        """
+        return self.mass * c ** 2
+
+    @property
+    def total_energy(self) -> u.J:
+        """
+        The sum of the rest mass energy and the kinetic energy of the
+        body, :math:`γ m_0 c^2`.
+
+        Returns
+        -------
+        |Quantity|
+        """
+        return self._data["total_energy"]
+
+    @property
+    def kinetic_energy(self) -> u.J:
+        """
+        The kinetic energy of the body, :math:`m_0 c^2 (γ-1)`.
+
+        Returns
+        -------
+        |Quantity|
+        """
+        return self._data["kinetic_energy"]
+
+    @property
+    def v_over_c(self) -> float:
+        """
+        The speed of the body divided by the speed of light,
+        :math:`\frac{v}{c}`.
+
+        Returns
+        -------
+        float
+        """
+        return self._data["v_over_c"]
+
+    @property
+    def speed(self) -> u.m / u.s:
+        """
+        The speed of the body, :math:`v`.
+
+        Returns
+        -------
+        |Quantity|
+        """
+        return self._data["speed"]
+
+    @property
+    def lorentz_factor(self) -> float:
+        """
+        The Lorentz factor of the body,
+        :math:`γ ≡ \frac{1}{\sqrt{1 - \frac{v^2}{c^2}}}`.
+
+        Returns
+        -------
+        float
+        """
+        return self._data["lorentz_factor"]
+
+    @property
+    def momentum(self) -> u.kg * u.m / u.s:
+        """
+        The magnitude of the momentum of the body,
+        :math:`p ≡ γ m_0 v`.
+
+        Returns
+        -------
+        |Quantity|
+        """
+        return self._data["momentum"]
 
     @particle.setter
     def particle(self, particle: ParticleLike):
         self._data["particle"] = _physical_particle_factory(particle)
 
-    @property
-    def rest_mass(self) -> u.kg:
-        return self.particle.mass
-
-    @property
-    def mass_energy(self) -> u.J:
-        """The rest mass energy, :math:`m_0 c^2`."""
-        return self.rest_mass * c ** 2
-
-    @property
-    def total_energy(self) -> u.J:
-        """The sum of the rest mass energy and the kinetic energy."""
-        return self._data["total_energy"]
-
-    @property
-    def kinetic_energy(self) -> u.J:
-        return self._data["kinetic_energy"]
-
     @kinetic_energy.setter
     def kinetic_energy(self, E: u.J):
-        self._data["kinetic_energy"] = E
+        self._data["kinetic_energy"] = E.to(u.J)
         self._data["total_energy"] = E + self.mass_energy
         self._data["lorentz_factor"] = (
             (self.total_energy / self.mass_energy).to("").value
         )
         self._data["v_over_c"] = np.sqrt(1.0 - 1.0 / self.lorentz_factor ** 2)
-        self._data["speed"] = self.v_over_c * c
+        self._data["speed"] = (self.v_over_c * c).to(u.m / u.s)
+        self._data["momentum"] = self.lorentz_factor * self.mass * self.speed
 
-    @property
-    def v_over_c(self) -> float:
-        return self._data["v_over_c"]
+    @total_energy.setter
+    def total_energy(self, total_energy_: u.J):
+        self.kinetic_energy = (total_energy_ - self.mass_energy).to(u.J)
 
-    @property
-    def speed(self) -> u.m / u.s:
-        return self._data["speed"]
+    @v_over_c.setter
+    def v_over_c(self, v_over_c_: Integral):
+        self.speed = (v_over_c_ * c).to(u.m / u.s)
 
-    @property
-    def lorentz_factor(self) -> float:
-        return self._data["lorentz_factor"]
+    @speed.setter
+    def speed(self, speed_: u.m / u.s):
+        self._data["speed"] = speed_
+        self._data["v_over_c"] = float((speed_ / c).to("").value)
+        self._data["lorentz_factor"] = Lorentz_factor(self.speed)
+        self._data["total_energy"] = self.lorentz_factor * self.mass * c ** 2
+        self._data["kinetic_energy"] = self.total_energy - self.mass_energy
+        self._data["momentum"] = self.lorentz_factor * self.mass * speed_
 
-    _attributes_to_compare = ("particle", "rest_mass", "kinetic_energy", "mass_energy", "total_energy", "v_over_c")
+    @lorentz_factor.setter
+    def lorentz_factor(self, γ: Real):
+        if not isinstance(γ, (Real, u.Quantity)):
+            raise TypeError("Invalid type for Lorentz factor")
+        if isinstance(γ, u.Quantity):
+            γ = γ.to("").value
+        if γ < 1:
+            raise ValueError("The Lorentz factor must be ≥ 1")
+        self.speed = c * np.sqrt(1 - γ ** -2)
+
+    @momentum.setter
+    def momentum(self, p: u.kg * u.m / u.s):
+        self.speed = (p / np.sqrt(self.mass ** 2 - (p / c) ** 2)).to(u.m / u.s)
+
+    _attributes_to_compare = (
+        "particle",
+        "rest_mass",
+        "kinetic_energy",
+        "mass_energy",
+        "total_energy",
+        "v_over_c",
+        "momentum",
+    )
 
     def __eq__(self, other) -> bool:
         for attr in self._attributes_to_compare:
@@ -249,5 +414,18 @@ class RelativisticBody:
                 return False
         return True
 
-    def isclose(self, other: RelativisticBody) -> bool:
-        for attr in self._attributes_to_compare:
+    def __add__(self, other: [u.m / u.s, u.kg * u.m / u.s, u.J]):
+        if not isinstance(other, u.Quantity):
+            return NotImplemented
+        if other.unit.physical_type == "speed":
+            new_speed = self.speed + other
+            return RelativisticBody(self.particle, speed=new_speed)
+        if other.unit.physical_type == "energy":
+            new_total_energy = self.total_energy + other
+            return RelativisticBody(self.particle, total_energy=new_total_energy)
+        if other.unit.physical_type == "momentum":
+            new_momentum = self.momentum + other
+            return RelativisticBody(self.particle, momentum=new_momentum)
+
+    def __sub__(self, other: [u.m / u.s, u.kg * u.m / u.s, u.J]):
+        return self.__add__(other)
