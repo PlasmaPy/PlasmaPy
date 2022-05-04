@@ -259,22 +259,22 @@ class RelativisticBody:
     @property
     def mass(self) -> u.kg:
         """
-        The rest mass of the body, :math:`m_0`.
+        The rest mass of the body, :math:`m_0`\ .
 
         Returns
         -------
-        |Quantity|
+        ~astropy.units.Quantity
         """
         return self.particle.mass
 
     @property
     def mass_energy(self) -> u.J:
         """
-        The rest mass energy of the body, :math:`m_0 c^2`.
+        The rest mass energy of the body, :math:`m_0 c^2`\ .
 
         Returns
         -------
-        |Quantity|
+        ~astropy.units.Quantity
         """
         return self.mass * c ** 2
 
@@ -282,22 +282,22 @@ class RelativisticBody:
     def total_energy(self) -> u.J:
         """
         The sum of the rest mass energy and the kinetic energy of the
-        body, :math:`γ m_0 c^2`.
+        body, :math:`γ m_0 c^2`\ .
 
         Returns
         -------
-        |Quantity|
+        ~astropy.units.Quantity
         """
         return self._data["total_energy"]
 
     @property
     def kinetic_energy(self) -> u.J:
         """
-        The kinetic energy of the body, :math:`m_0 c^2 (γ-1)`.
+        The kinetic energy of the body, :math:`m_0 c^2 (γ-1)`\ .
 
         Returns
         -------
-        |Quantity|
+        ~astropy.units.Quantity
         """
         return self._data["kinetic_energy"]
 
@@ -305,7 +305,7 @@ class RelativisticBody:
     def v_over_c(self) -> float:
         """
         The speed of the body divided by the speed of light,
-        :math:`\frac{v}{c}`.
+        :math:`\frac{v}{c}`\ .
 
         Returns
         -------
@@ -316,11 +316,11 @@ class RelativisticBody:
     @property
     def speed(self) -> u.m / u.s:
         """
-        The speed of the body, :math:`v`.
+        The speed of the body, :math:`v`\ .
 
         Returns
         -------
-        |Quantity|
+        ~astropy.units.Quantity
         """
         return self._data["speed"]
 
@@ -328,7 +328,7 @@ class RelativisticBody:
     def lorentz_factor(self) -> float:
         """
         The Lorentz factor of the body,
-        :math:`γ ≡ \frac{1}{\sqrt{1 - \frac{v^2}{c^2}}}`.
+        :math:`γ ≡ \frac{1}{\sqrt{1 - \frac{v^2}{c^2}}}`\ .
 
         Returns
         -------
@@ -340,11 +340,11 @@ class RelativisticBody:
     def momentum(self) -> u.kg * u.m / u.s:
         """
         The magnitude of the momentum of the body,
-        :math:`p ≡ γ m_0 v`.
+        :math:`p ≡ γ m_0 v`\ .
 
         Returns
         -------
-        |Quantity|
+        ~astropy.units.Quantity
         """
         return self._data["momentum"]
 
