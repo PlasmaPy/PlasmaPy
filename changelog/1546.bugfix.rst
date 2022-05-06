@@ -1,0 +1,1 @@
+Fixed the Z dependence in formulary.collisions.fundamental_collision_freq, by replacing n_e with n_i while calling collision_frequency. Closes Issue #1545.
