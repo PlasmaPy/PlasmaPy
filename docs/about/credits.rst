@@ -103,6 +103,7 @@ in parentheses are `ORCID author identifiers <https://orcid.org>`__.
 * :user:`Anna Lanteri <alanteriBW>`
 * :user:`Leo Murphy <LeoMurphyWM24>`
 * :user:`Reynaldo Rojas Zelaya <userr2232>`
+* :user:`Chris Moriarty <ChrisMoriarty>` (:orcid:`0000-0002-1757-7573`)
 
 This list contains contributors to PlasmaPy's core package and vision
 statement, including a few people who do not show up as `PlasmaPy

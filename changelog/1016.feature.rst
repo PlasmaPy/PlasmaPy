@@ -1,0 +1,3 @@
+Updated the return value of the ``mass`` method of `~plasmapy.particles.particle_class.Particle`
+to return np.nan, rather than raising a MissingParticleDataError, when the mass is unavailable
+(e.g. for neutrinos or elements with no standard atomic weight).
