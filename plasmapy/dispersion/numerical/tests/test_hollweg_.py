@@ -144,7 +144,7 @@ class TestHollweg:
         """Test scenarios involving k and theta arrays"""
         ws = hollweg(**kwargs)
         for mode, val in ws.items():
-            assert np.isclose(val.value, expected[mode])
+            assert np.allclose(val.value, expected[mode])
 
     @pytest.mark.parametrize(
         "kwargs, expected, desired_beta",
