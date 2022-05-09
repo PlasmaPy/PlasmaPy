@@ -465,7 +465,7 @@ test_Particle_table = [
             "element": None,
             "isotope": None,
             "isotope_name": InvalidElementError,
-            "mass": MissingParticleDataError,
+            "mass": np.nan * u.kg,
             "mass_energy": MissingParticleDataError,
             "charge_number": 0,
             "mass_number": InvalidIsotopeError,
