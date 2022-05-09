@@ -233,7 +233,7 @@ def nuclear_reaction_energy(*args, **kwargs):
 
                 particles += [particle] * multiplier
 
-            except Exception:
+            except ParticleError:
                 raise ParticleError(
                     f"{original_item} is not a valid reactant or "
                     "product in a nuclear reaction."
@@ -305,7 +305,7 @@ def nuclear_reaction_energy(*args, **kwargs):
             RHS_list = re.split(r" \+ ", RHS_string)
             reactants = process_particles_list(LHS_list)
             products = process_particles_list(RHS_list)
-        except Exception as ex:
+        except ParticleError as ex:
             raise ParticleError(f"{reaction} is not a valid nuclear reaction.") from ex
 
     elif reactants_products_are_inputs:
@@ -315,7 +315,7 @@ def nuclear_reaction_energy(*args, **kwargs):
             products = process_particles_list(kwargs["products"])
         except TypeError as t:
             raise TypeError(input_err_msg) from t
-        except Exception as e:
+        except ParticleError as e:
             raise ParticleError(errmsg) from e
 
     if total_baryon_number(reactants) != total_baryon_number(products):
