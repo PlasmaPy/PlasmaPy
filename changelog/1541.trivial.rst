@@ -1,0 +1,1 @@
+Replaced ``except Exception`` clauses in ``formulary``, ``particles``, and ``utils`` with specific exception statements.
