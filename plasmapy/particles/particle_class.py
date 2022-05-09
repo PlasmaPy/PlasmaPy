@@ -490,7 +490,7 @@ class Particle(AbstractPhysicalParticle):
                 mass_numb=mass_numb,
                 Z=Z,
             )
-        except Exception as exc:
+        except InvalidParticleError as exc:
             errmsg = _parsing.invalid_particle_errmsg(
                 argument, mass_numb=mass_numb, Z=Z
             )
@@ -1878,7 +1878,7 @@ class DimensionlessParticle(AbstractParticle):
             self.mass = mass
             self.charge = charge
             self.symbol = symbol
-        except Exception as exc:
+        except InvalidParticleError as exc:
             raise InvalidParticleError(
                 f"Unable to create a custom particle with a mass of "
                 f"{mass} and a charge of {charge}."
@@ -1913,7 +1913,7 @@ class DimensionlessParticle(AbstractParticle):
 
         try:
             new_obj = np.float64(obj)
-        except Exception:
+        except TypeError:
             raise TypeError(f"Cannot convert {obj} to numpy.float64.")
 
         if hasattr(new_obj, "__len__"):
@@ -2072,7 +2072,7 @@ class CustomParticle(AbstractPhysicalParticle):
             self.mass = mass
             self.charge = charge
             self.symbol = symbol
-        except Exception as exc:
+        except (ValueError, TypeError, u.UnitsError) as exc:
             raise InvalidParticleError(
                 f"Unable to create a custom particle with a mass of "
                 f"{mass} and a charge of {charge}."

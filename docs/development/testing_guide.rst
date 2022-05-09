@@ -55,7 +55,8 @@ PlasmaPy's tests can be run in the following ways:
 1. Creating and updating a pull request on GitHub_.
 2. Running pytest_ from the command line.
 3. Running tox_ from the command line.
-4. Running tests from an `integrated development environment`_ (IDE).
+4. Running tests from an :wikipedia:`integrated development environment
+   <integrated_development_environment>` (IDE).
 
 We recommend that new contributors perform the tests via a pull request
 on GitHub_. Creating a draft pull request and keeping it updated will
@@ -157,6 +158,19 @@ The following checks are performed with each pull request.
 
 * The **Pull Request Labeler / triage (pull_request_target)** check
   applies appropriate GitHub_ labels to pull requests.
+
+* The **CI / codespell (pull request)** check runs codespell_ to catch
+  by looking for common misspellings.
+
+  * If codespell_ has been installed (e.g., by ``pip install codespell``),
+    then it may be run by going into the appropriate directory and
+    running ``codespell -i 2 -w``. This command will identify common
+    misspellings, interactively suggest replacements, and then write the
+    replacements into the file.
+
+  * Occasionally codespell_ will report false positives. Please add
+    false positives to ``ignore-words-list`` under ``codespell`` in
+    :file:`setup.cfg`.
 
 .. note::
 
@@ -404,8 +418,7 @@ Test independence and parametrization
 -------------------------------------
 
 In this section, we'll discuss the issue of parametrization based on
-an example of a `proof
-<https://en.wikipedia.org/wiki/Riemann\_hypothesis#Excluded\_middle>`_
+an example of a :wikipedia:`proof <Riemann_hypothesis#Excluded_middle>`
 of Gauss's class number conjecture.
 
 The proof goes along these lines:
@@ -541,9 +554,10 @@ multiple values of :math:`x`. The hypothesis_ package simplifies
 Code coverage
 =============
 
-`Code coverage`_ refers to a metric "used to describe the degree to
-which the source code of a program is executed when a particular test
-suite runs." The most common code coverage metric is line coverage:
+:wikipedia:`Code coverage <Code_coverage>` refers to a metric "used to
+describe the degree to which the source code of a program is executed
+when a particular test suite runs." The most common code coverage metric
+is line coverage:
 
 .. math::
 
@@ -662,9 +676,10 @@ should be balanced with each other rather than absolute principles.
 * **Write code that is easy to test.** Write short functions that do
   exactly one thing with no side effects. Break up long functions into
   multiple functions that are smaller and more focused. Use
-  `pure functions`_ rather than functions that change the underlying
-  state of the system or depend on non-local variables. Use
-  `test-driven development`_ and write tests before writing the code to
+  :wikipedia:`pure functions <pure_function>` rather than functions that
+  change the underlying state of the system or depend on non-local
+  variables. Use :wikipedia:`test-driven development
+  <Test-driven_development>` and write tests before writing the code to
   be tested. When a section of code is difficult to test, consider
   refactoring_ it to make it easier to test.
 
@@ -717,7 +732,7 @@ should be balanced with each other rather than absolute principles.
 
 .. _Atom: https://atom.io
 .. _Codecov: https://about.codecov.io
-.. _`code coverage`: https://en.wikipedia.org/wiki/Code_coverage
+.. _codespell: https://github.com/codespell-project/codespell
 .. _`coverage.py`: https://coverage.readthedocs.io
 .. _`create a pull request`: https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests
 .. _fixtures: https://docs.pytest.org/en/latest/explanation/fixtures.html
@@ -725,16 +740,13 @@ should be balanced with each other rather than absolute principles.
 .. _`grouped into classes`: https://docs.pytest.org/en/latest/getting-started.html#group-multiple-tests-in-a-class
 .. _`how to invoke pytest`: https://docs.pytest.org/en/latest/how-to/usage.html
 .. _hypothesis: https://hypothesis.readthedocs.io
-.. _`integrated development environment`: https://en.wikipedia.org/wiki/Integrated_development_environment
 .. _`property-based testing`: https://hypothesis.works/articles/what-is-hypothesis
-.. _`pure functions`: https://en.wikipedia.org/wiki/Pure_function
 .. _PyCharm: https://www.jetbrains.com/pycharm
 .. _pytest: https://docs.pytest.org
 .. _`pytest-cov`: https://pytest-cov.readthedocs.io
 .. _`Python debugger`: https://docs.python.org/3/library/pdb.html
 .. _refactoring: https://refactoring.guru/refactoring/techniques
 .. _`test discovery conventions`: https://docs.pytest.org/en/latest/goodpractices.html#conventions-for-python-test-discovery
-.. _`test-driven development`: https://en.wikipedia.org/wiki/Test-driven_development
 .. _`test warnings`: https://docs.pytest.org/en/latest/warnings.html#warns
 .. _`test exceptions`: https://docs.pytest.org/en/latest/assert.html#assertions-about-expected-exceptions
 .. _`tox environments`: https://tox.wiki/en/latest/config.html#tox-environments
