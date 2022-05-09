@@ -117,6 +117,35 @@ class TestHollweg:
             hollweg(**kwargs)
 
     @pytest.mark.parametrize(
+        "kwargs, expected,"[
+            (  # array input for k, single value for theta
+                {
+                    **_kwargs_single_valued,
+                    "k": np.logspace(-7, -2, 2) * u.rad / u.m,
+                },
+                {
+                    "fast_mode": [2.62911663e-02 + 0.0j, 2.27876968e03 + 0.0j],
+                    "alfven_mode": [7.48765909e-04 + 0.0j, 2.13800404e03 + 0.0j],
+                    "acoustic_mode": [0.00043295 + 0.0j, 0.07358991 + 0.0j],
+                },
+            ),
+            (
+                {**_kwargs_single_valued, "theta": [87, 88]},
+                {
+                    "fast_mode": [3406.43522969 + 0.0j, 2278.76967883 + 0.0j],
+                    "alfven_mode": [2144.81200575 + 0.0j, 2138.00403666 + 0.0j],
+                    "acoustic_mode": [0.11044097 + 0.0j, 0.07358991 + 0.0j],
+                },
+            ),
+        ],
+    )
+    def test_vals(self, kwargs, expected):
+        """Test scenarios involving k and theta arrays"""
+        ws = hollweg(**kwargs)
+        for mode, val in ws.items():
+            assert np.allclose(val.value, expected[mode])
+
+    @pytest.mark.parametrize(
         "kwargs, expected, desired_beta",
         [
             (  # beta = 1/20 for kx*L = 0
