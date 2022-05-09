@@ -1478,3 +1478,10 @@ def test_molecule_other():
         assert CustomParticle(2 * 126.90447 * u.u, e.si, "I2 1+") == molecule(
             "I2 1+", Z=1
         )
+
+
+def test_undefined_mass():
+    """Test that a particle with an unknown mass returns numpy.nan * u.kg"""
+    tau_neutrino = Particle("tau neutrino")
+    assert np.isnan(tau_neutrino.mass.value)
+    assert tau_neutrino.mass.unit == u.kg
