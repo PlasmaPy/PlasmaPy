@@ -117,7 +117,7 @@ class TestHollweg:
             hollweg(**kwargs)
 
     @pytest.mark.parametrize(
-        "kwargs, expected,",
+        "kwargs, expected",
         [
             (  # array input for k, single value for theta
                 {
