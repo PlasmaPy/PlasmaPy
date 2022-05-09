@@ -259,7 +259,7 @@ def hollweg(
 
     # validate argument theta
     theta = theta.squeeze()
-    if not (theta.ndim == 0 or theta.ndim == 1):
+    if theta.ndim not in (0, 1):
         raise ValueError(
             f"Argument 'theta' needs to be a single valued or 1D array astropy "
             f"Quantity, got array of shape {theta.shape}."
@@ -315,7 +315,7 @@ def hollweg(
     roots = np.empty((nroots, nks, nthetas), dtype=np.complex128)
     for ii in range(nks):
         for jj in range(nthetas):
-            roots[:, ii, jj] = np.roots(coefficients[:, ii, jj])[:]
+            roots[:, ii, jj] = np.roots(coefficients[:, ii, jj])
 
     roots = np.sqrt(roots)
     roots = np.sort(roots, axis=0)

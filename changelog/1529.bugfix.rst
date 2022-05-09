@@ -1,1 +1,3 @@
-Fix bug in the :file:`hollweg_.py` module that didn't allow for theta array inputs.
+Fixed bug in :func:`~plasmapy.dispersion.numerical.hollweg_.hollweg`
+that did not allow for arguments ``theta`` and ``k`` to simultaneously
+be arrays.
