@@ -1,1 +1,4 @@
-Fixed the Z dependence in formulary.collisions.fundamental_collision_freq, by replacing n_e with n_i while calling collision_frequency. Closes Issue #1545.
+Fixed the ``Z`` dependence in
+`~plasmapy.formulary.collisions.fundamental_collision_freq`, by replacing
+``n_e`` with ``n_i`` while calling
+`~plasmapy.formulary.collisions.collision_frequency`.
