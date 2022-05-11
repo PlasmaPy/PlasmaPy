@@ -31,6 +31,7 @@ from typing import Any, List, Optional, Union
 from plasmapy.particles import _elements, _isotopes
 from plasmapy.particles.decorators import particle_input
 from plasmapy.particles.exceptions import (
+    ChargeError,
     InvalidElementError,
     InvalidIsotopeError,
     InvalidParticleError,
