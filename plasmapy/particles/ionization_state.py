@@ -265,6 +265,7 @@ class IonizationState:
 
     # TODO: Add in functionality to find equilibrium ionization states.
 
+    @particle_input(require="element")
     @validate_quantities(
         T_e={"unit": u.K, "equivalencies": u.temperature_energy()},
         T_i={
@@ -273,7 +274,6 @@ class IonizationState:
             "none_shall_pass": True,
         },
     )
-    @particle_input(require="element")
     def __init__(
         self,
         particle: Particle,
