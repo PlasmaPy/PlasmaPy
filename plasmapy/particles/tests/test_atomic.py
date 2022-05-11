@@ -28,6 +28,7 @@ from plasmapy.particles.atomic import (
     standard_atomic_weight,
 )
 from plasmapy.particles.exceptions import (
+    ChargeError,
     InvalidElementError,
     InvalidIsotopeError,
     InvalidParticleError,
