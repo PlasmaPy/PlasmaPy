@@ -14,7 +14,7 @@ from numbers import Integral
 from typing import Optional
 
 from .decorators import particle_input
-from .particle_class import ParticleLike
+from .particle_class import Particle
 
 # The @particle_input decorator takes the inputs for a function or
 # method and passes through the corresponding instance of the Particle
@@ -27,7 +27,7 @@ from .particle_class import ParticleLike
 
 
 @particle_input
-def atomic_symbol(element: ParticleLike) -> str:
+def atomic_symbol(element: Particle) -> str:
     """
     Return the atomic symbol.
 
@@ -97,7 +97,7 @@ def atomic_symbol(element: ParticleLike) -> str:
 
 
 @particle_input
-def isotope_symbol(isotope: ParticleLike, mass_numb: Optional[Integral] = None) -> str:
+def isotope_symbol(isotope: Particle, mass_numb: Optional[Integral] = None) -> str:
     """
     Return the symbol representing an isotope.
 
@@ -158,7 +158,7 @@ def isotope_symbol(isotope: ParticleLike, mass_numb: Optional[Integral] = None) 
 
 @particle_input(require="element", any_of=("charged", "uncharged"))
 def ionic_symbol(
-    particle: ParticleLike, mass_numb: Integral = None, Z: Integral = None
+    particle: Particle, mass_numb: Integral = None, Z: Integral = None
 ) -> str:
     """
     Return the ionic symbol of an ion or neutral atom.
@@ -226,7 +226,7 @@ def ionic_symbol(
 
 @particle_input
 def particle_symbol(
-    particle: ParticleLike, mass_numb: Integral = None, Z: Integral = None
+    particle: Particle, mass_numb: Integral = None, Z: Integral = None
 ) -> str:
     """
     Return the symbol of a particle.
@@ -288,7 +288,7 @@ def particle_symbol(
 
 
 @particle_input
-def element_name(element: ParticleLike) -> str:
+def element_name(element: Particle) -> str:
     """
     Return the name of an element.
 
