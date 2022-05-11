@@ -4,7 +4,7 @@ import pytest
 
 from typing import List, Optional, Tuple, Union
 
-from plasmapy.particles.decorators import particle_input
+from plasmapy.particles.decorators2 import particle_input
 from plasmapy.particles.exceptions import (
     ChargeError,
     InvalidElementError,
@@ -185,7 +185,6 @@ def function_to_test_annotations(particles: Union[Tuple, List], resulting_partic
         A collection containing many items, each of which may be a valid
         representation of a particle or a `~plasmapy.particles.Particle`
         instance
-
     """
 
     expected = [
@@ -527,45 +526,87 @@ def test_preserving_signature_with_stacked_decorators(decorator1, decorator2):
     assert undecorated_signature == decorated_signature_1_2 == decorated_signature_2_1
 
 
-def test_annotated_init():
-    class IonizationStateProxy:
-        @particle_input(require="element")
-        def __init__(self, particle: ParticleLike, ionic_fractions=None):
-            self.particle = particle
-
-    x = IonizationStateProxy("H-1", ionic_fractions=32)
-    assert x.particle == "H-1"
-
-
 def test_annotated_classmethod():
-    class X:
+    """
+    Test that `particle_input` behaves as expected for a method that is
+    decorated with `classmethod`.
+    """
+
+    class HasAnnotatedClassMethod:
         @classmethod
         @particle_input
         def f(cls, particle: ParticleLike):
             return particle
 
-    x = X()
-    assert x.f("p+") == Particle("p+")
+    has_annotated_classmethod = HasAnnotatedClassMethod()
+    assert has_annotated_classmethod.f("p+") == Particle("p+")
 
 
-def test_ionization_state_missing_posarg_error():
-    class IonizationStateProxy2:
-        @validate_quantities(
-            T_e={"unit": u.K, "equivalencies": u.temperature_energy()},
-            T_i={
-                "unit": u.K,
-                "equivalencies": u.temperature_energy(),
-                "none_shall_pass": True,
-            },
-        )
+@pytest.mark.parametrize(
+    "inner_decorator, outer_decorator",
+    [
+        (particle_input, particle_input),
+        (particle_input, particle_input()),
+        (particle_input(), particle_input),
+        (particle_input(), particle_input()),
+    ],
+)
+def test_self_stacked_decorator(outer_decorator, inner_decorator):
+    """Test that particle_input can be stacked with itself."""
+
+    @outer_decorator
+    @inner_decorator
+    def f(x, particle: ParticleLike):
+        return particle
+
+    result = f(1, "p+")
+    assert result == "p+"
+    assert isinstance(result, Particle)
+
+
+validate_quantities_ = validate_quantities(
+    T_e={"equivalencies": u.temperature_energy()}
+)
+
+
+def test_annotated_init():
+    """Test that `particle_input` can decorate an __init__ method."""
+
+    class HasAnnotatedInit:
         @particle_input(require="element")
+        def __init__(self, particle: ParticleLike, ionic_fractions=None):
+            self.particle = particle
+
+    x = HasAnnotatedInit("H-1", ionic_fractions=32)
+    assert x.particle == "H-1"
+
+
+@pytest.mark.parametrize(
+    "outer_decorator, inner_decorator",
+    [
+        (particle_input, validate_quantities_),
+        (particle_input(), validate_quantities_),
+        (validate_quantities_, particle_input),
+        (validate_quantities_, particle_input()),
+    ],
+)
+def test_particle_input_with_validate_quantities(outer_decorator, inner_decorator):
+    """Test that particle_input can be stacked with validate_quantities."""
+
+    class C:
+        @outer_decorator
+        @inner_decorator
         def __init__(
             self,
             particle: ParticleLike,
-            ionic_fractions=None,
-            T_e=None,
-            T_i=None,
+            T_e: u.K = None,
         ):
-            pass
+            self.particle = particle
+            self.T_e = T_e
 
-    IonizationStateProxy2("p+")
+    instance = C("p+", T_e=3.8 * u.eV)
+
+    assert instance.particle == "p+"
+    assert isinstance(instance.particle, Particle)
+
+    assert instance.T_e.unit == u.K

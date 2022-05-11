@@ -7,7 +7,18 @@ import inspect
 import wrapt
 
 from numbers import Integral
-from typing import Any, Callable, Dict, List, NoReturn, Optional, Set, Tuple, Union
+from typing import (
+    Any,
+    Callable,
+    Dict,
+    List,
+    NoReturn,
+    Optional,
+    Sequence,
+    Set,
+    Tuple,
+    Union,
+)
 
 from plasmapy.particles._factory import _physical_particle_factory
 from plasmapy.particles.exceptions import (
@@ -18,7 +29,10 @@ from plasmapy.particles.exceptions import (
     ParticleError,
 )
 from plasmapy.particles.particle_class import Particle, ParticleLike
-from plasmapy.particles.particle_collections import ParticleListLike
+from plasmapy.particles.particle_collections import ParticleList
+
+# Temporarily define ParticleListLike, pending #1528
+ParticleListLike = Union[ParticleList, Sequence[ParticleLike]]
 
 
 def _get_annotations(f: Callable):
@@ -108,7 +122,7 @@ _basic_allowed_annotations = (
     Union[ParticleLike, ParticleListLike],
 )
 _optional_allowed_annotations = tuple(
-    [Optional[annotation] for annotation in _basic_allowed_annotations]
+    Optional[annotation] for annotation in _basic_allowed_annotations
 )
 _allowed_annotations = _basic_allowed_annotations + _optional_allowed_annotations
 
@@ -175,18 +189,20 @@ class ParticleValidator:
         self._data["annotations"] = _get_annotations(function)
         self._data["parameters_to_process"] = self.find_parameters_to_process()
 
-    def find_parameters_to_process(self):
-        parameters_to_process = []
-        for parameter, annotation in self.annotations.items():
-            if parameter == "return":
-                continue
-            try:
-                if annotation in _allowed_annotations:
-                    parameters_to_process.append(parameter)
-            except TypeError:
-                continue
+    def find_parameters_to_process(self) -> List[str]:
+        """
+        Identify the parameters that have annotations that indicate that
+        the
 
-        return parameters_to_process
+        Returns
+        -------
+        `list` of `str`
+        """
+        return [
+            parameter
+            for parameter, annotation in self.annotations.items()
+            if annotation in _allowed_annotations and parameter != "return"
+        ]
 
     @property
     def annotations(self) -> Dict[str, Any]:
@@ -264,7 +280,7 @@ class ParticleValidator:
     def parameters_to_process(self) -> List[str]:
         """
         The parameters of
-        `~plasmapy.particles.decorators2.ParticleValidator.wrapped_function`
+        `~plasmapy.particles.decorators2.ParticleValidator.wrapped`
         that have annotations to be processed by |particle_input|.
 
         Returns
@@ -354,7 +370,8 @@ class ParticleValidator:
             )
             raise ParticleError(errmsg)
 
-    def _verify_particle_name_criteria(self, parameter, particle):
+    @staticmethod
+    def _verify_particle_name_criteria(parameter, particle):
 
         if parameter == "ion" and not particle.is_category("ion"):
             raise InvalidIonError
@@ -476,17 +493,20 @@ def particle_input(
     wrapped_function : `callable`
         The function or method to be decorated.
 
-    require : `str`, `set`, `list`, or `tuple`, optional
+    require : `str`, `set`, `list`, or `tuple`, keyword-only, optional
         Categories that a particle must be in.  If a particle is not in
         all of these categories, then a |ParticleError| will be raised.
 
-    any_of : `str`, `set`, `list`, or `tuple`, optional
+    any_of : `str`, `set`, `list`, or `tuple`, keyword-only, optional
         Categories that a particle may be in.  If a particle is not in
         any of these categories, then a |ParticleError| will be raised.
 
-    exclude : `str`, `set`, `list`, or `tuple`, optional
+    exclude : `str`, `set`, `list`, or `tuple`, keyword-only, optional
         Categories that a particle cannot be in.  If a particle is in
         any of these categories, then a |ParticleError| will be raised.
+
+    allow_custom_particles : bool, keyword-only, optional
+        ...
 
     Notes
     -----
@@ -498,10 +518,11 @@ def particle_input(
     does not correspond to an element, isotope, or ion, respectively.
 
     If exactly one argument is annotated with
-    `~plasmapy.particles.particle_class.Particle`, then the keywords ``Z`` and
-    ``mass_numb`` may be used to specify the charge number and/or mass number
-    of an ion or isotope.  However, the decorated function must allow ``Z``
-    and/or ``mass_numb`` as keywords in order to enable this functionality.
+    `~plasmapy.particles.particle_class.ParticleLike`, then the keywords
+    ``Z`` and ``mass_numb`` may be used to specify the charge number
+    and/or mass number of an ion or isotope.  However, the decorated
+    function must allow ``Z`` and/or ``mass_numb`` as keywords in order
+    to enable this functionality.
 
     Raises
     ------
@@ -552,6 +573,7 @@ def particle_input(
     .. code-block:: python
 
         from plasmapy.particles import particle_input, ParticleLike
+
         @particle_input
         def decorated_function(particle: ParticleLike):
             return particle
@@ -562,10 +584,12 @@ def particle_input(
     .. code-block:: python
 
         from plasmapy.particles import particle_input, ParticleLike
+
         class SampleClass:
             @particle_input
             def decorated_method(self, particle: ParticleLike):
                 return particle
+
         sample_instance = SampleClass()
         sample_instance.decorated_method('Fe')
 
@@ -576,6 +600,7 @@ def particle_input(
     .. code-block:: python
 
         from plasmapy.particles import particle_input, ParticleLike
+
         @particle_input(
             require={'matter'},
             any_of={'charged', 'uncharged},
@@ -589,6 +614,13 @@ def particle_input(
        Talk about how for class methods, ``@particle_input`` should be
        inside ``@classmethod``. Alternatively, is there a way to make it
        work with the order switched?
+
+
+
+    * Discuss annotated class methods!  Include that ``@particle_input``
+      should be the inner decorator and ``@classmethod`` should be the
+      outer decorator in order for this to work correctly.
+    *
     """
     if wrapped_function is None:
         return functools.partial(
