@@ -118,12 +118,14 @@ def _bind_arguments(
 _basic_allowed_annotations = (
     Particle,  # deprecated
     ParticleLike,
-    ParticleList,  # temporary
     ParticleListLike,
     Union[ParticleLike, ParticleListLike],
+    (Particle, Particle),  # deprecated
 )
 _optional_allowed_annotations = tuple(
-    Optional[annotation] for annotation in _basic_allowed_annotations
+    Optional[annotation]
+    for annotation in _basic_allowed_annotations
+    if annotation != (Particle, Particle)  # temporary hack
 )
 _allowed_annotations = _basic_allowed_annotations + _optional_allowed_annotations
 
@@ -418,8 +420,8 @@ class ParticleValidator:
         # This does not include cases like Optional[ParticleList],
         # Union[ParticleList, ParticleLike], etc. and thus needs updating.
 
-        if annotation is ParticleList:
-            return ParticleList(argument)
+        if annotation == (Particle, Particle):  # deprecated
+            return Particle(argument[0]), Particle(argument[1])
 
         if annotation in _basic_allowed_annotations and argument is None:
             raise TypeError(f"{parameter} may not be None.")
