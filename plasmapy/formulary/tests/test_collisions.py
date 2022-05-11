@@ -931,7 +931,7 @@ class Test_Coulomb_logarithm:
         """
         Tests whether an error is raised if only a single particle is given.
         """
-        with pytest.raises(ValueError):
+        with pytest.raises(IndexError):
             Coulomb_logarithm(1 * u.K, 5 * u.m ** -3, "e")
 
     def test_invalid_particle_error(self):
