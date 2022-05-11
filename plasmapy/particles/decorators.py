@@ -446,6 +446,12 @@ class ParticleValidator:
         Z_or_mass_numb = Z is not None or mass_numb is not None
         multiple_annotated_parameters = len(self.parameters_to_process) > 1
 
+        if Z is not None and not isinstance(Z, Integral):
+            raise TypeError("Z must be an integer.")
+
+        if mass_numb is not None and not isinstance(mass_numb, Integral):
+            raise TypeError("mass_numb must be an integer.")
+
         if Z_or_mass_numb and multiple_annotated_parameters:
             raise ParticleError(
                 "The arguments Z and mass_numb are not allowed when more "
