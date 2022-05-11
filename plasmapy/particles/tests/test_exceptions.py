@@ -30,6 +30,7 @@ from plasmapy.particles.exceptions import (
 )
 from plasmapy.particles.nuclear import nuclear_binding_energy, nuclear_reaction_energy
 from plasmapy.particles.symbols import atomic_symbol, element_name, isotope_symbol
+from plasmapy.utils.code_repr import call_string
 from plasmapy.utils.exceptions import PlasmaPyFutureWarning
 
 tests_for_exceptions = {
@@ -211,7 +212,12 @@ def test_named_tests_for_exceptions(tested_object, args, kwargs, expected_except
     with pytest.raises(expected_exception) as exc_info:
         tested_object(*args, **kwargs)
 
-    assert expected_exception == exc_info.type
+    assert expected_exception == exc_info.type, (
+        f"When running the command "
+        f"{call_string(tested_object, args, kwargs)},"
+        f"an {expected_exception} was expected. Instead, a "
+        f"{exc_info.type} was raised."
+    )
 
 
 tests_from_nuclear = [
@@ -1063,7 +1069,6 @@ def test_unnamed_tests_exceptions(tested_object, args, kwargs, expectation):
     if hasattr(expectation, "expected_exception"):
         assert type(expectation.expected_exception()) == exc_info.type
 
-    # TODO tbh given how ugly this is I don't think we should even be doing this check
     if hasattr(expectation, "expected_warning"):
         for expected_warning, recorded_warning in zip(
             exc_info.expected_warning, exc_info.list

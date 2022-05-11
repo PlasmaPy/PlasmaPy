@@ -14,6 +14,7 @@ from plasmapy.particles.atomic import (
     electric_charge,
     half_life,
     integer_charge,
+    ionic_levels,
     is_stable,
     isotopic_abundance,
     known_isotopes,
@@ -36,11 +37,7 @@ from plasmapy.particles.particle_class import (
     Particle,
     ParticleLike,
 )
-from plasmapy.particles.particle_collections import (
-    ionic_levels,
-    ParticleList,
-    ParticleListLike,
-)
+from plasmapy.particles.particle_collections import ParticleList, ParticleListLike
 from plasmapy.particles.serialization import (
     json_load_particle,
     json_loads_particle,

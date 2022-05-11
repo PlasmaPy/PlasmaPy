@@ -12,6 +12,7 @@ from astropy import units as u
 from numbers import Integral, Real
 from typing import List, Optional, Union
 
+from plasmapy.particles.atomic import ionic_levels
 from plasmapy.particles.decorators import particle_input
 from plasmapy.particles.exceptions import (
     ChargeError,
@@ -19,7 +20,7 @@ from plasmapy.particles.exceptions import (
     ParticleError,
 )
 from plasmapy.particles.particle_class import CustomParticle, Particle
-from plasmapy.particles.particle_collections import ionic_levels, ParticleList
+from plasmapy.particles.particle_collections import ParticleList
 from plasmapy.utils.decorators import validate_quantities
 from plasmapy.utils.decorators.deprecation import deprecated
 from plasmapy.utils.exceptions import PlasmaPyFutureWarning
@@ -265,6 +266,7 @@ class IonizationState:
 
     # TODO: Add in functionality to find equilibrium ionization states.
 
+    @particle_input(require="element")
     @validate_quantities(
         T_e={"unit": u.K, "equivalencies": u.temperature_energy()},
         T_i={
@@ -273,7 +275,6 @@ class IonizationState:
             "none_shall_pass": True,
         },
     )
-    @particle_input(require="element")
     def __init__(
         self,
         particle: Particle,

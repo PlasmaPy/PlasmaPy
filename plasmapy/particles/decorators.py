@@ -1,99 +1,142 @@
-"""
-Module used to define the framework needed for the |particle_input| decorator.
-The decorator takes string and/or integer representations of particles
-as arguments and passes through the corresponding instance of the
-`~plasmapy.particles.particle_class.Particle` class.
-"""
-__all__ = ["particle_input"]
+"""Decorators for `plasmapy.particles`."""
+
+__all__ = ["ParticleValidator", "particle_input"]
 
 import functools
 import inspect
-import numbers
+import wrapt
 
-from typing import Any, Callable, List, Optional, Set, Tuple, Union
+from numbers import Integral
+from typing import (
+    Any,
+    Callable,
+    Dict,
+    List,
+    NoReturn,
+    Optional,
+    Sequence,
+    Set,
+    Tuple,
+    Union,
+)
 
+from plasmapy.particles._factory import _physical_particle_factory
 from plasmapy.particles.exceptions import (
     ChargeError,
     InvalidElementError,
     InvalidIonError,
     InvalidIsotopeError,
-    InvalidParticleError,
     ParticleError,
 )
-from plasmapy.particles.particle_class import Particle
+from plasmapy.particles.particle_class import Particle, ParticleLike
+from plasmapy.particles.particle_collections import ParticleList
+
+# Temporarily define ParticleListLike, pending #1528
+ParticleListLike = Union[ParticleList, Sequence[ParticleLike]]
 
 
-def _particle_errmsg(
-    argname: str,
-    argval: str,
-    Z: int = None,
-    mass_numb: int = None,
-    funcname: str = None,
-) -> str:
+def _get_annotations(f: Callable):
     """
-    Return a string with an appropriate error message for an
-    `~plasmapy.particles.exceptions.InvalidParticleError`.
+    Access the annotations of a callable `object`.
+
+    Notes
+    -----
+    This function should be replaced with inspect.get_annotations when
+    support for Python 3.9 is dropped.
     """
-    errmsg = f"In {funcname}, {argname} = {repr(argval)} "
-    if mass_numb is not None or Z is not None:
-        errmsg += "with "
-    if mass_numb is not None:
-        errmsg += f"mass_numb = {repr(mass_numb)} "
-    if mass_numb is not None and Z is not None:
-        errmsg += "and "
-    if Z is not None:
-        errmsg += f"charge number Z = {repr(Z)} "
-    errmsg += "does not correspond to a valid particle."
-    return errmsg
+    return getattr(f, "__annotations__", None)
 
 
-def _category_errmsg(particle, require, exclude, any_of, funcname) -> str:
+def _make_into_set_or_none(obj) -> Optional[Set]:
     """
-    Return an appropriate error message for when a particle does not
-    meet the required categorical specifications.
+    Return `None` is ``obj`` is `None`, and otherwise convert ``obj``
+    into a `set`.
+
+    If ``obj`` is a string, then a `set` containing only ``obj`` will
+    be returned (i.e., ``obj`` will not be treated as iterable).
     """
-    category_errmsg = (
-        f"The particle {particle} does not meet the required "
-        f"classification criteria to be a valid input to {funcname}. "
-    )
-
-    errmsg_table = [
-        (require, "must belong to all"),
-        (any_of, "must belong to any"),
-        (exclude, "cannot belong to any"),
-    ]
-
-    for condition, phrase in errmsg_table:
-        if condition:
-            category_errmsg += (
-                f"The particle {phrase} of the following categories: {condition}. "
-            )
-
-    return category_errmsg
+    if obj is None:
+        return obj
+    return {obj} if isinstance(obj, str) else set(obj)
 
 
-def particle_input(
-    wrapped_function: Callable = None,
-    require: Union[str, Set, List, Tuple] = None,
-    any_of: Union[str, Set, List, Tuple] = None,
-    exclude: Union[str, Set, List, Tuple] = None,
-    none_shall_pass: bool = False,
-) -> Any:
+def _bind_arguments(
+    func: Callable,
+    args: Optional[Tuple] = None,
+    kwargs: Optional[Dict[str, Any]] = None,
+    instance=None,
+):
     """
-    Convert arguments to methods and functions to
-    `~plasmapy.particles.particle_class.Particle` objects.
-
-    Take positional and keyword arguments that are annotated with
-    `~plasmapy.particles.particle_class.Particle`, and pass through the
-    `~plasmapy.particles.particle_class.Particle` object corresponding
-    to those arguments to the decorated function or method.
-
-    Optionally, raise an exception if the particle does not satisfy the
-    specified categorical criteria.
+    Bind the arguments provided by ``args`` and ``kwargs`` to
+    the corresponding parameters in the signature of the function
+    or method being decorated.
 
     Parameters
     ----------
-    wrapped_function : `callable`
+    func : callable
+        The function or method to which to bind ``args`` and ``kwargs``.
+
+    args : tuple
+        Positional arguments.
+
+    kwargs : dict
+        Keyword arguments.
+
+    instance
+        If ``func`` is a class instance method, then ``instance`` should
+        be the instance to which ``func`` belongs.
+
+    Returns
+    -------
+    dict
+        A dictionary with the parameters of the wrapped function
+        as keys and the corresponding arguments as values,
+        but removing ``self`` and ``cls``.
+    """
+    wrapped_signature = inspect.signature(func)
+
+    # When decorating a function or staticmethod, instance will
+    # be None. When decorating a class instance method, instance
+    # will be the class instance, and will need to be bound to
+    # the "self" parameter but later removed. For a class method,
+    # it will be bound to the "cls" parameter instead.
+
+    if instance is None:
+        bound_arguments = wrapped_signature.bind(*args, **kwargs)
+    else:
+        bound_arguments = wrapped_signature.bind(instance, *args, **kwargs)
+
+    bound_arguments.apply_defaults()
+    arguments_to_be_processed = bound_arguments.arguments
+
+    arguments_to_be_processed.pop("self", None)
+    arguments_to_be_processed.pop("cls", None)
+
+    return arguments_to_be_processed
+
+
+_basic_allowed_annotations = (
+    Particle,  # deprecated
+    ParticleLike,
+    ParticleListLike,
+    Union[ParticleLike, ParticleListLike],
+    (Particle, Particle),  # deprecated
+)
+_optional_allowed_annotations = tuple(
+    Optional[annotation]
+    for annotation in _basic_allowed_annotations
+    if annotation != (Particle, Particle)  # temporary hack
+)
+_allowed_annotations = _basic_allowed_annotations + _optional_allowed_annotations
+
+
+class ParticleValidator:
+    """
+    Processes arguments for |particle_input|.
+
+    Parameters
+    ----------
+    wrapped : function
         The function or method to be decorated.
 
     require : `str`, `set`, `list`, or `tuple`, optional
@@ -111,12 +154,388 @@ def particle_input(
         any of these categories, then a
         `~plasmapy.particles.exceptions.ParticleError` will be raised.
 
-    none_shall_pass : `bool`, optional
-        If set to `True`, then the decorated argument may be set to
-        `None` without raising an exception.  In such cases, this
-        decorator will pass `None` through to the decorated function or
-        method.  If set to `False` and the annotated argument is given
-        a value of `None`, then this decorator will raise a `TypeError`.
+    allow_custom_particles : bool
+        If `True`, allow |CustomParticle| instances to be passed through.
+        Defaults to `True`.
+    """
+
+    def __init__(
+        self,
+        wrapped: Callable,
+        *,
+        require: Optional[Union[str, Set, List, Tuple]] = None,
+        any_of: Optional[Union[str, Set, List, Tuple]] = None,
+        exclude: Optional[Union[str, Set, List, Tuple]] = None,
+        allow_custom_particles: bool = True,
+    ):
+        self._data = {}
+        self.wrapped = wrapped
+        self.require = require
+        self.any_of = any_of
+        self.exclude = exclude
+        self.allow_custom_particles = allow_custom_particles
+
+    @property
+    def wrapped(self) -> Callable:
+        """
+        The function that is being decorated.
+
+        Returns
+        -------
+        callable
+        """
+        return self._data["wrapped_function"]
+
+    @wrapped.setter
+    def wrapped(self, function: Callable):
+        self._data["wrapped_function"] = function
+        self._data["annotations"] = _get_annotations(function)
+        self._data["parameters_to_process"] = self.find_parameters_to_process()
+
+    def find_parameters_to_process(self) -> List[str]:
+        """
+        Identify the parameters that have annotations that indicate that
+        the
+
+        Returns
+        -------
+        `list` of `str`
+        """
+        return [
+            parameter
+            for parameter, annotation in self.annotations.items()
+            if annotation in _allowed_annotations and parameter != "return"
+        ]
+
+    @property
+    def annotations(self) -> Dict[str, Any]:
+        """
+        The annotations of the decorated function.
+
+        Returns
+        -------
+        dict
+        """
+        return self._data.get("annotations", None)
+
+    @property
+    def require(self) -> Optional[Set]:
+        """
+        Categories that the particle must belong to.
+
+        Returns
+        -------
+        `set` of `str` or `None`
+        """
+        return self._data["require"]
+
+    @require.setter
+    def require(self, require_: Optional[Union[str, Set, List, Tuple]]):
+        self._data["require"] = _make_into_set_or_none(require_)
+
+    @property
+    def any_of(self) -> Optional[Set]:
+        """
+        Categories of which the particle must belong to at least one.
+
+        Returns
+        -------
+        `set` of `str` or `None`
+        """
+        return self._data["any_of"]
+
+    @any_of.setter
+    def any_of(self, any_of_: Optional[Union[str, Set, List, Tuple]]):
+        self._data["any_of"] = _make_into_set_or_none(any_of_)
+
+    @property
+    def exclude(self) -> Optional[Set]:
+        """
+        Categories that the particle cannot belong to.
+
+        Returns
+        -------
+        `set` of `str` or `None`
+        """
+        return self._data["exclude"]
+
+    @exclude.setter
+    def exclude(self, exclude_):
+        self._data["exclude"] = _make_into_set_or_none(exclude_)
+
+    @property
+    def allow_custom_particles(self) -> bool:
+        """
+        If `True`,  then the decorated argument may be or include
+        |CustomParticle| instances. Defaults to `True`.
+
+        Returns
+        -------
+        bool
+        """
+        return self._data["allow_custom_particles"]
+
+    @allow_custom_particles.setter
+    def allow_custom_particles(self, allow_custom_particles_: bool):
+        self._data["allow_custom_particles"] = allow_custom_particles_
+
+    @property
+    def parameters_to_process(self) -> List[str]:
+        """
+        The parameters of
+        `~plasmapy.particles.decorators2.ParticleValidator.wrapped`
+        that have annotations to be processed by |particle_input|.
+
+        Returns
+        -------
+        `list` of `str`
+        """
+        return self._data["parameters_to_process"]
+
+    def _verify_charge_categorization(self, particle) -> NoReturn:
+        """
+        Raise an exception if the particle is required to have charge
+        information and does not, or if the particle is required to be
+        charged and is not.
+
+        Raises
+        ------
+        ~plasmapy.particles.exceptions.ChargeError
+            If the particle is required to have charge information and
+            does not, or if the particle is required to be charged and
+            is either uncharged or lacks charge information.
+        """
+        must_be_charged = self.require is not None and "charged" in self.require
+        must_have_charge_info = self.any_of == {"charged", "uncharged"}
+
+        uncharged = particle._attributes["charge number"] == 0
+        lacks_charge_info = particle._attributes["charge number"] is None
+
+        if must_be_charged and (uncharged or must_have_charge_info):
+            raise ChargeError(f"A charged particle is required for {self.wrapped}.")
+
+        if must_have_charge_info and lacks_charge_info:
+            raise ChargeError(f"Charge information is required for {self.wrapped}.")
+
+    @staticmethod
+    def _category_errmsg(particle, require, exclude, any_of, funcname) -> str:
+        """
+        Return an appropriate error message for when a particle does not
+        meet the required categorical specifications.
+
+        Returns
+        -------
+        str
+        """
+        category_errmsg = (
+            f"The particle {particle} does not meet the required "
+            f"classification criteria to be a valid input to {funcname}. "
+        )
+
+        errmsg_table = [
+            (require, "must belong to all"),
+            (any_of, "must belong to any"),
+            (exclude, "cannot belong to any"),
+        ]
+
+        for condition, phrase in errmsg_table:
+            if condition:
+                category_errmsg += (
+                    f"The particle {phrase} of the following categories: {condition}. "
+                )
+
+        return category_errmsg
+
+    def _verify_particle_categorization(self, particle) -> NoReturn:
+        """
+        Verify that the particle meets the categorization criteria.
+
+        Raises
+        ------
+        ~plasmapy.particles.exceptions.ParticleError
+            If the particle does not meet the categorization criteria.
+
+        See Also
+        --------
+        ~plasmapy.particles.particle_class.Particle.is_category
+        """
+        if not particle.is_category(
+            require=self.require,
+            any_of=self.any_of,
+            exclude=self.exclude,
+        ):
+            errmsg = self._category_errmsg(
+                particle,
+                self.require,
+                self.exclude,
+                self.any_of,
+                self.wrapped.__name__,
+            )
+            raise ParticleError(errmsg)
+
+    def _verify_particle_name_criteria(self, parameter, particle):
+        """
+        Check that parameters with special names meet the expected
+        criteria.
+        """
+
+        category_table = (
+            ("element", particle.element, InvalidElementError),
+            ("isotope", particle.isotope, InvalidIsotopeError),
+            ("ion", particle.ionic_symbol, InvalidIonError),
+        )
+
+        for category_name, category_symbol, CategoryError in category_table:
+            if parameter == category_name and not category_symbol:
+                raise CategoryError(
+                    f"The argument {parameter} = {parameter!r} to "
+                    f"{self.wrapped.__name__} does not correspond to a "
+                    f"valid {parameter}."
+                )
+
+    def process_argument(
+        self,
+        parameter: str,
+        argument: Any,
+        Z: Optional[Integral],
+        mass_numb: Optional[Integral],
+    ) -> Any:
+        """
+        Process an argument that has an appropriate annotation.
+
+        Parameters
+        ----------
+        parameter : str
+            The name of the :term:`parameter` that was decorated.
+
+        argument : object
+            The value of the :term:`argument` associated with ``parameter``.
+
+        Z : integer
+            The charge number of an ion or neutral particle.
+
+        mass_numb : integer
+            The mass number of an isotope.
+
+        Raises
+        ------
+        CategoryError
+        """
+        annotation = self.annotations.get(parameter, None)
+
+        if annotation not in _allowed_annotations:
+            return argument
+
+        if annotation in _optional_allowed_annotations and argument is None:
+            return argument
+
+        # This does not yet include cases like Optional[ParticleList],
+        # Union[ParticleList, ParticleLike], etc. and thus needs updating.
+
+        if annotation == (Particle, Particle):  # deprecated
+            if not hasattr(argument, "__len__") or len(argument) != 2:
+                raise TypeError(f"The length of {argument} must be 2.")
+            return Particle(argument[0]), Particle(argument[1])
+
+        if annotation in _basic_allowed_annotations and argument is None:
+            raise TypeError(f"{parameter} may not be None.")
+
+        particle = _physical_particle_factory(argument, Z=Z, mass_numb=mass_numb)
+
+        self._verify_charge_categorization(particle)
+        self._verify_particle_categorization(particle)
+        self._verify_particle_name_criteria(parameter, particle)
+
+        return particle
+
+    parameters_to_skip = ("Z", "mass_numb")
+
+    def _perform_pre_validations(self, Z, mass_numb):
+
+        if not self.parameters_to_process:
+            raise ParticleError(
+                "No parameters have an annotation that will invoke particle_input."
+            )
+
+        Z_or_mass_numb = Z is not None or mass_numb is not None
+        multiple_annotated_parameters = len(self.parameters_to_process) > 1
+
+        if Z is not None and not isinstance(Z, Integral):
+            raise TypeError("Z must be an integer.")
+
+        if mass_numb is not None and not isinstance(mass_numb, Integral):
+            raise TypeError("mass_numb must be an integer.")
+
+        if Z_or_mass_numb and multiple_annotated_parameters:
+            raise ParticleError(
+                "The arguments Z and mass_numb are not allowed when more "
+                "than one argument or keyword is annotated with Particle "
+                "in functions decorated with particle_input."
+            )
+
+    def process_arguments(
+        self, args: tuple, kwargs: Dict[str, Any], instance=None
+    ) -> Dict[str, Any]:
+
+        arguments = _bind_arguments(self.wrapped, args, kwargs, instance)
+
+        Z = arguments.pop("Z", None)
+        mass_numb = arguments.pop("mass_numb", None)
+
+        self._perform_pre_validations(Z, mass_numb)
+
+        return {
+            parameter: self.process_argument(parameter, argument, Z, mass_numb)
+            for parameter, argument in arguments.items()
+        }
+
+
+# TODO: add ionic_level naming scheme
+
+
+def particle_input(
+    wrapped_function=None,
+    require: Union[str, Set, List, Tuple] = None,
+    any_of: Union[str, Set, List, Tuple] = None,
+    exclude: Union[str, Set, List, Tuple] = None,
+    allow_custom_particles: bool = True,
+):
+    """
+    Convert appropriately annotated arguments to particle objects.
+
+    Take |particle-like| or |particle-list-like| arguments that are
+    appropriately annotated (for example, with |ParticleLike| or
+    |ParticleListLike|), and convert them to a |Particle|,
+    |CustomParticle|, or |ParticleList|.
+
+    If the particle(s) do not satisfy provided categorization criteria,
+    then raise an appropriate exception. If the annotated parameter is
+    named ``element``, ``isotope``, ``ion``, or ``ionic_level``, then
+    the corresponding particle must be consistent with the name.
+
+    The conversion of objects to a |Particle|, |CustomParticle|, or
+    |ParticleList| is done in
+    `~plasmapy.particles.decorators2.ParticleValidator`.
+
+    Parameters
+    ----------
+    wrapped_function : `callable`
+        The function or method to be decorated.
+
+    require : `str`, `set`, `list`, or `tuple`, keyword-only, optional
+        Categories that a particle must be in.  If a particle is not in
+        all of these categories, then a |ParticleError| will be raised.
+
+    any_of : `str`, `set`, `list`, or `tuple`, keyword-only, optional
+        Categories that a particle may be in.  If a particle is not in
+        any of these categories, then a |ParticleError| will be raised.
+
+    exclude : `str`, `set`, `list`, or `tuple`, keyword-only, optional
+        Categories that a particle cannot be in.  If a particle is in
+        any of these categories, then a |ParticleError| will be raised.
+
+    allow_custom_particles : bool, keyword-only, optional
+        ...
 
     Notes
     -----
@@ -128,10 +547,11 @@ def particle_input(
     does not correspond to an element, isotope, or ion, respectively.
 
     If exactly one argument is annotated with
-    `~plasmapy.particles.particle_class.Particle`, then the keywords ``Z`` and
-    ``mass_numb`` may be used to specify the charge number and/or mass number
-    of an ion or isotope.  However, the decorated function must allow ``Z``
-    and/or ``mass_numb`` as keywords in order to enable this functionality.
+    `~plasmapy.particles.particle_class.ParticleLike`, then the keywords
+    ``Z`` and ``mass_numb`` may be used to specify the charge number
+    and/or mass number of an ion or isotope.  However, the decorated
+    function must allow ``Z`` and/or ``mass_numb`` as keywords in order
+    to enable this functionality.
 
     Raises
     ------
@@ -177,331 +597,74 @@ def particle_input(
     --------
     The following simple decorated function returns the
     `~plasmapy.particles.particle_class.Particle` object created from
-    the function's sole argument:
+    the function's sole argument: ← needs updating
 
     .. code-block:: python
 
-        from plasmapy.particles import particle_input, Particle
+        from plasmapy.particles import particle_input, ParticleLike
+
         @particle_input
-        def decorated_function(particle: Particle):
+        def decorated_function(particle: ParticleLike):
             return particle
-
-    This decorator may also be used to accept arguments using tuple
-    annotation containing specific number of elements or using list
-    annotation which accepts any number of elements in an iterable.
-    Returns a tuple of `~plasmapy.particles.particle_class.Particle`:
-
-    .. code-block:: python
-
-        from plasmapy.particles import particle_input, Particle
-        @particle_input
-        def decorated_tuple_function(particles: (Particle, Particle)):
-            return particles
-        sample_particles = decorated_tuple_function(('He', 'Li'))
-
-        @particle_input
-        def decorated_list_function(particles: [Particle]):
-            return particles
-        sample_particles = decorated_list_function(('Al 3+', 'C'))
-        sample_particles = decorated_list_function(['He', 'Ne', 'Ar'])
 
     This decorator may be used for methods in instances of classes, as
     in the following example:
 
     .. code-block:: python
 
-        from plasmapy.particles import particle_input, Particle
+        from plasmapy.particles import particle_input, ParticleLike
+
         class SampleClass:
             @particle_input
-            def decorated_method(self, particle: Particle):
+            def decorated_method(self, particle: ParticleLike):
                 return particle
+
         sample_instance = SampleClass()
         sample_instance.decorated_method('Fe')
 
-    Some functions may intended to be used with only certain categories
+    Some functions may be intended to be used with only certain categories
     of particles.  The ``require``, ``any_of``, and ``exclude`` keyword
     arguments enable this functionality.
 
     .. code-block:: python
 
-        from plasmapy.particles import particle_input, Particle
+        from plasmapy.particles import particle_input, ParticleLike
+
         @particle_input(
             require={'matter'},
             any_of={'charged', 'uncharged},
             exclude={'neutrino', 'antineutrino'},
         )
-        def selective_function(particle: Particle):
+        def selective_function(particle: ParticleLike):
             return particle
+
+    * Discuss annotated class methods!  Include that ``@particle_input``
+      should be the inner decorator and ``@classmethod`` should be the
+      outer decorator in order for this to work correctly.
     """
 
-    if exclude is None:
-        exclude = set()
-    if any_of is None:
-        any_of = set()
-    if require is None:
-        require = set()
+    # The following pattern comes from the docs for wrapt, and requires
+    # that the arguments to the decorator are keyword-only.
+    if wrapped_function is None:
+        return functools.partial(
+            particle_input,
+            require=require,
+            any_of=any_of,
+            exclude=exclude,
+            allow_custom_particles=allow_custom_particles,
+        )
 
-    def decorator(wrapped_function: Callable):
-        wrapped_signature = inspect.signature(wrapped_function)
+    particle_validator = ParticleValidator(
+        wrapped=wrapped_function,
+        require=require,
+        any_of=any_of,
+        exclude=exclude,
+        allow_custom_particles=allow_custom_particles,
+    )
 
-        # add '__signature__' to methods that are copied from
-        # wrapped_function onto wrapper
-        assigned = list(functools.WRAPPER_ASSIGNMENTS)
-        assigned.append("__signature__")
+    @wrapt.decorator
+    def wrapper(wrapped: Callable, instance, args: Tuple, kwargs: Dict[str, Any]):
+        new_kwargs = particle_validator.process_arguments(args, kwargs, instance)
+        return wrapped(**new_kwargs)
 
-        @functools.wraps(wrapped_function, assigned=assigned)
-        def wrapper(*args, **kwargs):
-            annotations = wrapped_function.__annotations__
-            bound_args = wrapped_signature.bind(*args, **kwargs)
-
-            default_arguments = bound_args.signature.parameters
-            arguments = bound_args.arguments
-            argnames = bound_args.signature.parameters.keys()
-
-            # Handle optional-only arguments in function declaration
-            for default_arg in default_arguments:
-                # The argument is not contained in `arguments` if the
-                # user does not explicitly pass an optional argument.
-                # In such cases, manually add it to `arguments` with
-                # the default value of parameter.
-                if default_arg not in arguments:
-                    arguments[default_arg] = default_arguments[default_arg].default
-
-            funcname = wrapped_function.__name__
-
-            args_to_become_particles = []
-            for argname in annotations.keys():
-                if isinstance(annotations[argname], tuple):
-                    if argname == "return":
-                        continue
-                    annotated_argnames = annotations[argname]
-                    expected_params = len(annotated_argnames)
-                    received_params = len(arguments[argname])
-                    if expected_params != received_params:
-                        raise ValueError(
-                            f"Number of parameters allowed in the tuple "
-                            f"({expected_params} parameters) are "
-                            f"not equal to number of parameters passed in "
-                            f"the tuple ({received_params} parameters)."
-                        )
-                elif isinstance(annotations[argname], list):
-                    annotated_argnames = annotations[argname]
-                    expected_params = len(annotated_argnames)
-                    if expected_params > 1:
-                        raise TypeError(
-                            "Put in [Particle] as the annotation to "
-                            "accept arbitrary number of Particle arguments."
-                        )
-                else:
-                    annotated_argnames = (annotations[argname],)
-
-                for annotated_argname in annotated_argnames:
-                    is_particle = (
-                        annotated_argname is Particle
-                        or annotated_argname is Optional[Particle]
-                    )
-                    if is_particle and argname != "return":
-                        args_to_become_particles.append(argname)
-
-            if not args_to_become_particles:
-                raise ParticleError(
-                    f"None of the arguments or keywords to {funcname} "
-                    f"have been annotated with Particle, as required "
-                    f"by the @particle_input decorator."
-                )
-            elif len(args_to_become_particles) > 1:
-                if "Z" in argnames or "mass_numb" in argnames:
-                    raise ParticleError(
-                        f"The arguments Z and mass_numb in {funcname} are not "
-                        f"allowed when more than one argument or keyword is "
-                        f"annotated with Particle in functions decorated "
-                        f"with @particle_input."
-                    )
-
-            for x in args_to_become_particles:
-                if (
-                    annotations[x] is Particle
-                    and isinstance(arguments[x], (tuple, list))
-                    and len(arguments[x]) > 1
-                ):
-                    raise TypeError(
-                        f"You cannot pass a tuple or list containing "
-                        f"Particles when only single Particle was "
-                        f"expected, instead found {arguments[x]}. If you "
-                        f"intend to pass more than 1 Particle instance, "
-                        f"use a tuple or a list type. "
-                        f"That is use (Particle, Particle, ...) or "
-                        f"[Particle] in function declaration."
-                    )
-
-            # If the number of arguments and keywords annotated with
-            # Particle is exactly one, then the Z and mass_numb keywords
-            # can be used without potential for ambiguity.
-
-            Z = arguments.get("Z", None)
-            mass_numb = arguments.get("mass_numb", None)
-
-            # Go through the argument names and check whether or not they are
-            # annotated with Particle.  If they aren't, include the name and
-            # value of the argument as an item in the new keyword arguments
-            # dictionary unchanged.  If they are annotated with Particle, then
-            # either convert the representation of a Particle to a Particle if
-            # it is not already a Particle and then do error checks.
-
-            new_kwargs = {}
-
-            for argname in argnames:
-                raw_argval = arguments[argname]
-                if isinstance(raw_argval, (tuple, list)):
-                    # Input argument value is a tuple or list
-                    # of corresponding particles or atomic values.
-                    argval_tuple = raw_argval
-                    particles = []
-                else:
-                    # Otherwise convert it to tuple anyway so it can work
-                    # with loops too.
-                    argval_tuple = (raw_argval,)
-
-                for pos, argval in enumerate(argval_tuple):
-                    should_be_particle = argname in args_to_become_particles
-                    # If the argument is not annotated with Particle, then we just
-                    # pass it through to the new keywords without doing anything.
-
-                    if not should_be_particle:
-                        new_kwargs[argname] = raw_argval
-                        continue
-
-                    # Occasionally there will be functions where it will be
-                    # useful to allow None as an argument.
-
-                    # In case annotations[argname] is a collection (which looks
-                    # like (Particle, Optional[Particle], ...) or [Particle])
-                    if isinstance(annotations[argname], tuple):
-                        optional_particle = (
-                            annotations[argname][pos] is Optional[Particle]
-                        )
-                    elif isinstance(annotations[argname], list):
-                        optional_particle = annotations[argname] == [Optional[Particle]]
-                    else:
-                        # Otherwise annotations[argname] must be a Particle itself
-                        optional_particle = annotations[argname] is Optional[Particle]
-
-                    if (optional_particle or none_shall_pass) and argval is None:
-                        particle = None
-                    else:
-                        params = (argval, Z, mass_numb)
-                        already_particle = isinstance(argval, Particle)
-
-                        particle = get_particle(
-                            argname, params, already_particle, funcname
-                        )
-
-                    if isinstance(raw_argval, (tuple, list)):
-                        # If passed argument is a tuple or list, keep
-                        # appending them.
-                        particles.append(particle)
-                        # Set appended values if current iteration is the
-                        # last iteration.
-                        if (pos + 1) == len(argval_tuple):
-                            new_kwargs[argname] = tuple(particles)
-                            del particles
-                    else:
-                        # Otherwise directly set values
-                        new_kwargs[argname] = particle
-
-            return wrapped_function(**new_kwargs)
-
-        # add '__signature__' if it does not exist
-        # - this will preserve parameter hints in IDE's
-        if not hasattr(wrapper, "__signature__"):
-            wrapper.__signature__ = inspect.signature(wrapped_function)
-
-        return wrapper
-
-    def get_particle(argname, params, already_particle, funcname):
-        argval, Z, mass_numb = params
-        """
-        Convert the argument to a
-        `~plasmapy.particles.particle_class.Particle` object if it is
-        not already one.
-        """
-
-        if not already_particle:
-
-            if not isinstance(argval, (numbers.Integral, str, tuple, list)):
-                raise TypeError(
-                    f"The argument {argname} to {funcname} must be "
-                    f"a string, an integer or a tuple or list of them "
-                    f"corresponding to an atomic number, or a "
-                    f"Particle object."
-                )
-
-            try:
-                particle = Particle(argval, Z=Z, mass_numb=mass_numb)
-            except InvalidParticleError as e:
-                raise InvalidParticleError(
-                    _particle_errmsg(argname, argval, Z, mass_numb, funcname)
-                ) from e
-
-        # We will need to do the same error checks whether or not the
-        # argument is already an instance of the Particle class.
-
-        if already_particle:
-            particle = argval
-
-        # If the name of the argument annotated with Particle in the
-        # decorated function is element, isotope, or ion; then this
-        # decorator should raise the appropriate exception when the
-        # particle ends up not being an element, isotope, or ion.
-
-        cat_table = [
-            ("element", particle.element, InvalidElementError),
-            ("isotope", particle.isotope, InvalidIsotopeError),
-            ("ion", particle.ionic_symbol, InvalidIonError),
-        ]
-
-        for category_name, category_symbol, CategoryError in cat_table:
-            if argname == category_name and not category_symbol:
-                raise CategoryError(
-                    f"The argument {argname} = {repr(argval)} to "
-                    f"{funcname} does not correspond to a valid "
-                    f"{argname}."
-                )
-
-        # Some functions require that particles be charged, or
-        # at least that particles have charge information.
-
-        _charge_number = particle._attributes["charge number"]
-
-        must_be_charged = "charged" in require
-        must_have_charge_info = set(any_of) == {"charged", "uncharged"}
-
-        uncharged = _charge_number == 0
-        lacks_charge_info = _charge_number is None
-
-        if must_be_charged and (uncharged or must_have_charge_info):
-            raise ChargeError(f"A charged particle is required for {funcname}.")
-
-        if must_have_charge_info and lacks_charge_info:
-            raise ChargeError(f"Charge information is required for {funcname}.")
-
-        # Some functions require particles that belong to more complex
-        # classification schemes.  Again, be sure to provide a
-        # maximally useful error message.
-
-        if not particle.is_category(require=require, exclude=exclude, any_of=any_of):
-            raise ParticleError(
-                _category_errmsg(particle, require, exclude, any_of, funcname)
-            )
-
-        return particle
-
-    # The following code allows the decorator to be used either with or
-    # without arguments.  This allows us to invoke the decorator either
-    # as `@particle_input` or as `@particle_input()`, where the latter
-    # call allows the decorator to have keyword arguments.
-
-    if wrapped_function is not None:
-        return decorator(wrapped_function)
-    else:
-        return decorator
+    return wrapper(wrapped_function)
