@@ -6,10 +6,7 @@ limit overhead and increase performance.
 They act in-place on position and velocity arrays to reduce
 memory allocation.
 """
-import math
 import numpy as np
-
-from astropy import constants
 
 
 def boris_push(x, v, B, E, q, m, dt):
@@ -18,26 +15,34 @@ def boris_push(x, v, B, E, q, m, dt):
 
     Parameters
     ----------
-    x : np.ndarray
-        particle position at full timestep, in SI (meter) units.
-    v : np.ndarray
-        particle velocity at half timestep, in SI (meter/second) units.
-    B : np.ndarray
-        magnetic field at full timestep, in SI (tesla) units.
-    E : float
-        electric field at full timestep, in SI (V/m) units.
-    q : float
-        particle charge, in SI (Coulomb) units.
-    m : float
-        particle mass, in SI (kg) units.
-    dt : float
-        timestep, in SI (second) units.
+    x : `~numpy.ndarray`
+        Particle position at full timestep, in SI (meter) units.
+
+    v : `~numpy.ndarray`
+        Particle velocity at half timestep, in SI (meter/second) units.
+
+    B : `~numpy.ndarray`
+        Magnetic field at full timestep, in SI (tesla) units.
+
+    E : `float`
+        Electric field at full timestep, in SI (V/m) units.
+
+    q : `float`
+        Particle charge, in SI (coulomb) units.
+
+    m : `float`
+        Particle mass, in SI (kg) units.
+
+    dt : `float`
+        Timestep, in SI (second) units.
 
     Notes
     ----------
-    The Boris algorithm is the standard energy conserving algorithm for
-    particle movement in plasma physics. See [1]_ for more details, and
-    [2]_ for a nice overview.
+    The Boris algorithm :cite:p:`boris:1970` is the standard energy
+    conserving algorithm for particle movement in plasma physics. See
+    :cite:t:`birdsall:2004` for more details, and this `page on the
+    Boris method <https://www.particleincell.com/2011/vxb-rotation>`__
+    for a nice overview.
 
     Conceptually, the algorithm has three phases:
 
@@ -48,13 +53,6 @@ def boris_push(x, v, B, E, q, m, dt):
 
     This ends up causing the magnetic field action to be properly "centered" in
     time, and the algorithm, being a symplectic integrator, conserves energy.
-
-    References
-    ----------
-    .. [1] C. K. Birdsall, A. B. Langdon, "Plasma Physics via Computer
-           Simulation", 2004, p. 58-63
-    .. [2] L. Brieda, "Particle Push in Magnetic Field (Boris Method)",
-           https://www.particleincell.com/2011/vxb-rotation/
     """
     hqmdt = 0.5 * dt * q / m
     vminus = v + hqmdt * E

@@ -1,1 +1,0 @@
-Created new grid objects representing plasma quantities as functions of space.

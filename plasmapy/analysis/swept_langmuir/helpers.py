@@ -6,7 +6,9 @@ import numpy as np
 
 
 def check_sweep(
-    voltage: np.ndarray, current: np.ndarray, strip_units: bool = True,
+    voltage: np.ndarray,
+    current: np.ndarray,
+    strip_units: bool = True,
 ) -> (np.ndarray, np.ndarray):
     """
     Function for checking that the voltage and current arrays are properly
@@ -26,7 +28,7 @@ def check_sweep(
         checked, but values should be in amperes.*
 
     strip_units: `bool`
-        (Default: `True`) If `True``, then the units on ``voltage`` and/or
+        (Default: `True`) If `True`, then the units on ``voltage`` and/or
         ``current`` will be stripped if either are passed in as an Astropy
         `~astropy.units.Quantity`.
 
@@ -91,7 +93,7 @@ def check_sweep(
             f"{voltage.ndim} dimensions.",
         )
     elif not np.all(np.diff(voltage) >= 0):
-        raise ValueError(f"The voltage array is not monotonically increasing.")
+        raise ValueError("The voltage array is not monotonically increasing.")
 
     # strip units
     if isinstance(voltage, u.Quantity) and strip_units:

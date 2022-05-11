@@ -1,5 +1,5 @@
 """
-`FitFunction` classes designed to assist in curve fitting of swept Langmuir
+``FitFunction`` classes designed to assist in curve fitting of swept Langmuir
 traces.
 """
 __all__ = [
@@ -34,7 +34,9 @@ class AbstractFitFunction(ABC):
     _param_names = NotImplemented  # type: Tuple[str, ...]
 
     def __init__(
-        self, params: Tuple[float, ...] = None, param_errors: Tuple[float, ...] = None,
+        self,
+        params: Tuple[float, ...] = None,
+        param_errors: Tuple[float, ...] = None,
     ):
         """
         Parameters
@@ -49,12 +51,7 @@ class AbstractFitFunction(ABC):
 
         """
 
-        self.FitParamTuple = namedtuple("FitParamTuple", self._param_names)
-        """
-        A `~collections.namedtuple` used for attributes :attr:`params` and
-        :attr:`param_errors`.  The attribute :attr:`parameter_names` defines
-        the tuple field names.
-        """
+        self._FitParamTuple = namedtuple("FitParamTuple", self._param_names)
 
         if params is None:
             self._params = None
@@ -71,7 +68,7 @@ class AbstractFitFunction(ABC):
 
     def __call__(self, x, x_err=None, reterr=False):
         """
-        Direct call of the fit function :math:`f(x)``.
+        Direct call of the fit function :math:`f(x)`.
 
         Parameters
         ----------
@@ -220,6 +217,15 @@ class AbstractFitFunction(ABC):
         return self._curve_fit_results
 
     @property
+    def FitParamTuple(self):
+        """
+        A `~collections.namedtuple` used for attributes :attr:`params` and
+        :attr:`param_errors`.  The attribute :attr:`param_names` defines
+        the tuple field names.
+        """
+        return self._FitParamTuple
+
+    @property
     def params(self) -> Union[None, tuple]:
         """The fitted parameters for the fit function."""
         if self._params is None:
@@ -323,8 +329,8 @@ class AbstractFitFunction(ABC):
                 or np.issubdtype(x.dtype, np.floating)
             ):
                 raise TypeError(
-                    f"Argument x needs to be an array_like object of integers "
-                    f"or floats."
+                    "Argument x needs to be an array_like object of integers "
+                    "or floats."
                 )
 
             x = x.squeeze()
@@ -337,7 +343,7 @@ class AbstractFitFunction(ABC):
     def root_solve(self, x0):
         """
         Solve for the root of the fit function (i.e. :math:`f(x_r) = 0`).  This
-        mehtod used `scipy.optimize.fsolve` to find the function roots.
+        method used `scipy.optimize.fsolve` to find the function roots.
 
         Parameters
         ----------
@@ -416,7 +422,7 @@ class AbstractFitFunction(ABC):
         """
         Use a non-linear least squares method to fit the fit function to
         (``xdata``, ``ydata``), using `scipy.optimize.curve_fit`.  This will set
-        the attributes :attr:`parameters`, :attr:`parameters_err`, and
+        the attributes :attr:`params`, :attr:`param_errors`, and
         :attr:`rsq`.
 
         The results of `scipy.optimize.curve_fit` can be obtained via
@@ -479,11 +485,11 @@ class Linear(AbstractFitFunction):
     _param_names = ("m", "b")
 
     def __str__(self):
-        return f"f(x) = m x + b"
+        return "f(x) = m x + b"
 
     @property
     def latex_str(self) -> str:
-        return fr"m x + b"
+        return r"m x + b"
 
     def func(self, x, m, b):
         """
@@ -511,7 +517,7 @@ class Linear(AbstractFitFunction):
         Returns
         -------
         y: array_like
-            dependent variables corresponding to `:math:``x``
+            dependent variables corresponding to :math:`x`
 
         """
         x = self._check_x(x)
@@ -577,24 +583,24 @@ class Linear(AbstractFitFunction):
             Not needed.  This is to ensure signature comparability with
             `AbstractFitFunction`.
 
-        *kwargs
+        **kwargs
             Not needed.  This is to ensure signature comparability with
             `AbstractFitFunction`.
 
         Returns
         -------
         root: float
-            The root value for the given fit :attr:`parameters`.
+            The root value for the given fit :attr:`params`.
 
         err: float
             The uncertainty in the calculated root for the given fit
-            :attr:`parameters` and :attr:`parameters_err`.
+            :attr:`params` and :attr:`param_errors`.
         """
         m, b = self.params
 
         if m == 0.0:
             warn(
-                f"Slope of Linear fit function is zero so no finite root exists. ",
+                "Slope of Linear fit function is zero so no finite root exists. ",
                 RuntimeWarning,
             )
             return _RootResults(np.nan, np.nan)
@@ -612,7 +618,7 @@ class Linear(AbstractFitFunction):
         """
         Calculate a linear least-squares regression of (``xdata``, ``ydata``)
         using `scipy.stats.linregress`.  This will set the attributes
-        :attr:`parameters`, :attr:`parameters_err`, and :attr:`rsq`.
+        :attr:`params`, :attr:`param_errors`, and :attr:`rsq`.
 
         The results of `scipy.stats.linregress` can be obtained via
         :attr:`curve_fit_results`.
@@ -668,11 +674,11 @@ class Exponential(AbstractFitFunction):
     _param_names = ("a", "alpha")
 
     def __str__(self):
-        return f"f(x) = a exp(alpha x)"
+        return "f(x) = a exp(alpha x)"
 
     @property
     def latex_str(self) -> str:
-        return fr"a \, \exp(\alpha x)"
+        return r"a \, \exp(\alpha x)"
 
     def func(self, x, a, alpha):
         """
@@ -754,18 +760,18 @@ class Exponential(AbstractFitFunction):
             Not needed.  This is to ensure signature compatibility with
             `AbstractFitFunction`.
 
-        *kwargs
+        **kwargs
             Not needed.  This is to ensure signature compatibility with
             `AbstractFitFunction`.
 
         Returns
         -------
         root: float
-            The root value for the given fit :attr:`parameters`.
+            The root value for the given fit :attr:`params`.
 
         err: float
             The uncertainty in the calculated root for the given fit
-            :attr:`parameters` and :attr:`parameters_err`.
+            :attr:`params` and :attr:`param_errors`.
         """
 
         return _RootResults(np.nan, np.nan)
@@ -799,15 +805,17 @@ class ExponentialPlusLinear(AbstractFitFunction):
     _param_names = ("a", "alpha", "m", "b")
 
     def __init__(
-        self, params: Tuple[float, ...] = None, param_errors: Tuple[float, ...] = None,
+        self,
+        params: Tuple[float, ...] = None,
+        param_errors: Tuple[float, ...] = None,
     ):
         self._exponential = Exponential()
         self._linear = Linear()
         super().__init__(params=params, param_errors=param_errors)
 
     def __str__(self):
-        exp_str = self._exponential.__str__().lstrip("f(x) = ")
-        lin_str = self._linear.__str__().lstrip("f(x) = ")
+        exp_str = self._exponential.__str__().replace("f(x) = ", "")
+        lin_str = self._linear.__str__().replace("f(x) = ", "")
         return f"f(x) = {exp_str} + {lin_str}"
 
     @property
@@ -937,17 +945,19 @@ class ExponentialPlusOffset(AbstractFitFunction):
     _param_names = ("a", "alpha", "b")
 
     def __init__(
-        self, params: Tuple[float, ...] = None, param_errors: Tuple[float, ...] = None,
+        self,
+        params: Tuple[float, ...] = None,
+        param_errors: Tuple[float, ...] = None,
     ):
         self._explin = ExponentialPlusLinear()
         super().__init__(params=params, param_errors=param_errors)
 
     def __str__(self):
-        return f"f(x) = a exp(alpha x) + b"
+        return "f(x) = a exp(alpha x) + b"
 
     @property
     def latex_str(self) -> str:
-        return fr"a \, \exp(\alpha x) + b"
+        return r"a \, \exp(\alpha x) + b"
 
     @AbstractFitFunction.params.setter
     def params(self, val) -> None:
@@ -1041,18 +1051,18 @@ class ExponentialPlusOffset(AbstractFitFunction):
             Not needed.  This is to ensure signature compatibility with
             `AbstractFitFunction`.
 
-        *kwargs
-            Not needed.  This is to ensure signature compability with
+        **kwargs
+            Not needed.  This is to ensure signature compatibility with
             `AbstractFitFunction`.
 
         Returns
         -------
         root: float
-            The root value for the given fit :attr:`parameters`.
+            The root value for the given fit :attr:`params`.
 
         err: float
             The uncertainty in the calculated root for the given fit
-            :attr:`parameters` and :attr:`parameters_err`.
+            :attr:`params` and :attr:`param_errors`.
         """
         a, alpha, b = self.params
         a_err, b_err, c_err = self.param_errors

@@ -1,5 +1,6 @@
 """Functionality for determining the floating potential of a Langmuir sweep."""
 __all__ = ["find_floating_potential", "find_vf_"]
+__aliases__ = ["find_vf_"]
 
 import numbers
 import numpy as np
@@ -13,7 +14,8 @@ from plasmapy.analysis.swept_langmuir.helpers import check_sweep
 from plasmapy.utils.exceptions import PlasmaPyWarning
 
 FloatingPotentialResults = namedtuple(
-    "FloatingPotentialResults", ("vf", "vf_err", "rsq", "func", "islands", "indices"),
+    "FloatingPotentialResults",
+    ("vf", "vf_err", "rsq", "func", "islands", "indices"),
 )
 
 
@@ -41,7 +43,7 @@ def find_floating_potential(
 
     current: `numpy.ndarray`
         1-D numpy array of probe current (should be in amperes) corresponding
-        to the :data:`voltage` array
+        to the ``voltage`` array
 
     threshold: positive, non-zero `int`
         Max allowed index distance between crossing-points before a new
@@ -65,7 +67,7 @@ def find_floating_potential(
 
     fit_type: str
         The type of curve to be fitted to the Langmuir trace,  ``"linear"`` or
-        ``"exponential"`` (Default).  This selects which `FitFunction` class
+        ``"exponential"`` (Default).  This selects which ``FitFunction`` class
         should be applied to the trace.
 
         +-------------+----------------------------------------------------------+
@@ -77,10 +79,10 @@ def find_floating_potential(
     Returns
     -------
     vf: `float` or `numpy.nan`
-        The calculated floating potential (same units as the `voltage` array).
+        The calculated floating potential (same units as the ``voltage`` array).
         Returns `numpy.nan` if the floating potential can not be determined.
         How :math:`V_f` is calculated depends on the fit function.  This is
-        described in the `root_solve()` method of the relevant fit function
+        described in the ``root_solve()`` method of the relevant fit function
         (e.g. the
         :meth:`~plasmapy.analysis.fit_functions.ExponentialPlusOffset.root_solve`
         method of `~plasmapy.analysis.fit_functions.ExponentialPlusOffset`).
@@ -89,7 +91,7 @@ def find_floating_potential(
         The uncertainty associated with the floating potential calculation
         (units same as ``vf``).  Returns `numpy.nan` if the floating potential
         can not be determined.  Like :math:`V_f`:, the calculation depends on
-        the applied fit function.  The `root_solve()` method also describes
+        the applied fit function.  The ``root_solve()`` method also describes
         how this is calculated.
 
     rsq: `float`
@@ -103,7 +105,7 @@ def find_floating_potential(
     func: sub-class of `~plasmapy.analysis.fit_functions.AbstractFitFunction`
         The callable function :math:`f(x)` representing the fit and its results.
 
-    islands: `List[slice]`
+    islands: ``List[slice]``
         List of `slice` objects representing the indices of the identified
         crossing-islands.
 
@@ -297,4 +299,7 @@ def find_floating_potential(
 
 
 find_vf_ = find_floating_potential
-"""Alias to :func:`find_floating_potential`."""
+"""
+Alias to
+:func:`~plasmapy.analysis.swept_langmuir.floating_potential.find_floating_potential`.
+"""

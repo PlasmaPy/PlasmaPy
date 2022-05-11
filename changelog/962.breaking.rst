@@ -1,1 +1,0 @@
-Changed the names of the supported methods of computing the Coulomb logarithm to improve readability. Expanded the documentation of these methods.

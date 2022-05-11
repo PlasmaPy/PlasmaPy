@@ -37,8 +37,8 @@ from plasmapy.formulary.braginskii import (
     thermoelectric_conductivity,
 )
 from plasmapy.formulary.collisions import Coulomb_logarithm
-from plasmapy.formulary.parameters import Hall_parameter
-from plasmapy.particles.atomic import integer_charge, particle_mass
+from plasmapy.formulary.dimensionless import Hall_parameter
+from plasmapy.particles.atomic import charge_number, particle_mass
 from plasmapy.particles.exceptions import InvalidParticleError
 from plasmapy.utils.exceptions import CouplingWarning, PhysicsError, RelativityWarning
 
@@ -49,7 +49,7 @@ def count_decimal_places(digits):
     return len(fractional)
 
 
-# test class for ClassicalTransport class:
+@pytest.mark.slow
 class Test_classical_transport:
     @classmethod
     def setup_class(self):
@@ -58,7 +58,7 @@ class Test_classical_transport:
         self.n_e = 2e13 / u.cm ** 3
         self.ion = "D +1"
         self.m_i = particle_mass(self.ion)
-        self.Z = integer_charge(self.ion)
+        self.Z = charge_number(self.ion)
         self.T_i = self.T_e
         self.n_i = self.n_e / self.Z
         self.B = 0.01 * u.T
@@ -179,7 +179,7 @@ class Test_classical_transport:
         assert testTrue, errStr
 
     def test_ion_viscosity_units(self):
-        """output should be Quantity with units of Pa s """
+        """output should be Quantity with units of Pa s"""
         testTrue = self.ct.ion_viscosity.unit == u.Pa * u.s
         errStr = (
             f"Ion viscosity units should be {u.Pa * u.s} "
@@ -966,9 +966,9 @@ class Test__nondim_visc_e_braginskii:
         beta_hat = _nondim_visc_e_braginskii(self.big_hall, Z)
         if idx == 0:
             assert np.isclose(beta_hat[idx], expected, atol=1e-2)
-        elif idx == 1 or idx == 2:
+        elif idx in [1, 2]:
             assert np.isclose(beta_hat[idx] * self.big_hall ** 2, expected, atol=1e-2)
-        elif idx == 3 or idx == 4:
+        elif idx in [3, 4]:
             assert np.isclose(beta_hat[idx] * self.big_hall, expected, atol=1e-1)
 
 
@@ -984,7 +984,7 @@ def test__nondim_tc_e_spitzer(Z):
     if Z == 1:
         kappa_check = 3.203
         rtol = 1e-3
-    elif Z == 2 or Z == 4:
+    elif Z in [2, 4]:
         kappa_check = _nondim_tc_e_braginskii(0, Z, "par")
         rtol = 2e-2
     elif Z == 16:
@@ -1003,7 +1003,7 @@ def test__nondim_resist_spitzer(Z):
     if Z == 1:
         alpha_check = 0.5064
         rtol = 1e-3
-    elif Z == 2 or Z == 4 or Z == np.inf:
+    elif Z in [2, 4, np.inf]:
         alpha_check = _nondim_resist_braginskii(0, Z, "par")
         rtol = 2e-2
     elif Z == 16:
@@ -1019,7 +1019,7 @@ def test__nondim_tec_spitzer(Z):
     if Z == 1:
         beta_check = 0.699
         rtol = 1e-3
-    elif Z == 2 or Z == 4 or Z == np.inf:
+    elif Z in [2, 4, np.inf]:
         beta_check = _nondim_tec_braginskii(0, Z, "par")
         rtol = 2e-2
     elif Z == 16:

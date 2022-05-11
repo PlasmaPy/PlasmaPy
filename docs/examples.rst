@@ -1,21 +1,69 @@
 Examples
 ========
 
+Here we catalog all the example Jupyter notebooks that have been created for
+the various functionality contained in `plasmapy`.
 
-.. _general_examples:
+.. contents::
+   :local:
 
-General examples
-----------------
-
-General-purpose and introductory examples from PlasmaPy.
-
-`You may also run these online via Binder (link uses the current master version). <https://mybinder.org/v2/gh/PlasmaPy/PlasmaPy/master?filepath=plasmapy/docs/notebooks>`_
+Getting started
+---------------
 
 .. nbgallery::
-    :caption: Examples
-    :name: example-gallery
-    :glob:
-    :reversed:
+  :glob:
 
-    notebooks/*
-    notebooks/*/*
+  notebooks/getting_started/*
+
+General
+-------
+
+.. nbgallery::
+   :glob:
+
+   notebooks/*
+
+Analyses & Diagnostics
+----------------------
+
+.. nbgallery::
+   :glob:
+
+   notebooks/analysis/*
+   notebooks/analysis/*/*
+   notebooks/diagnostics/*
+
+Dispersion
+----------
+
+.. nbgallery::
+   :glob:
+
+   notebooks/dispersion/*
+
+Formulary
+---------
+
+.. nbgallery::
+   :glob:
+
+   notebooks/formulary/*
+
+.. Particles
+   ---------
+
+Simulation
+----------
+
+.. nbgallery::
+   :glob:
+
+   notebooks/simulation/*
+
+Plasma Objects
+--------------
+
+.. nbgallery::
+   :glob:
+
+   notebooks/plasma/*

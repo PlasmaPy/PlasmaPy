@@ -2,34 +2,38 @@
 
 .. _plasmapy-documentation:
 
+.. image:: _static/graphic-circular.png
+   :alt: PlasmaPy logo
+   :align: right
+   :scale: 40%
+
 ######################
 PlasmaPy Documentation
 ######################
 
+PlasmaPy_ is an open source community-developed core Python_
+|minpython|\ + package for plasma physics currently under development.
+
+Example highlights
+------------------
+
 .. nbgallery::
    :hidden:
 
-   notebooks/physics
+   notebooks/diagnostics/charged_particle_radiography_particle_tracing
    notebooks/dispersion/two_fluid_dispersion
-   notebooks/thomson
-
-.. image:: _static/graphic-circular.png
-   :alt: PlasmaPy logo
-   :align: right
-   :scale: 80%
-
-
-`PlasmaPy <http://www.plasmapy.org/>`_ is an open source
-community-developed core `Python <https://www.python.org/>`_ 3.7+
-package for plasma physics currently under development.
+   notebooks/diagnostics/thomson
+   notebooks/analysis/swept_langmuir/find_floating_potential
+   notebooks/formulary/thermal_bremsstrahlung
+   notebooks/plasma/grids_nonuniform
 
 
 .. toctree::
    :caption: First Steps
    :maxdepth: 1
 
-   Vision Statement <about/vision_statement>
    Installing <install>
+   getting_started
    examples
    COMMUNICATION
    CONTRIBUTING
@@ -45,6 +49,7 @@ package for plasma physics currently under development.
    Formulary <formulary/index>
    Particles <particles/index>
    Simulation <simulation/index>
+   Plasma Calculator <plasma_calculator/index>
    Plasma Objects <plasma/index>
    Package Utilities <utils/index>
 
@@ -54,6 +59,7 @@ package for plasma physics currently under development.
 
    Overview <development/index>
    development/code_guide
+   development/changelog_guide
    development/doc_guide
    development/testing_guide
 
@@ -62,8 +68,10 @@ package for plasma physics currently under development.
    :caption: All the Rest
 
    about/credits
+   bibliography
+   glossary
    whatsnew/index
-   about/stability
+   Vision Statement <about/vision_statement>
    PlasmaPy.org <https://www.plasmapy.org>
 
 .. The about PlasmaPy section has some important information that would

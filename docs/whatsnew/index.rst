@@ -1,8 +1,8 @@
 .. _change-log:
 
-##########
-Change Log
-##########
+#########
+Changelog
+#########
 
 This document lists the changes made during each release of PlasmaPy,
 including bug fixes and changes to the application programming interface
@@ -12,6 +12,9 @@ including bug fixes and changes to the application programming interface
 .. toctree::
    :maxdepth: 1
 
+   0.8.0
+   0.7.0
+   0.6.0
    0.5.0
    0.4.0
    0.3.1

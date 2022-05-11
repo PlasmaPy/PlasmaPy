@@ -5,9 +5,9 @@ import pytest
 import scipy.integrate as spint
 
 from astropy import units as u
-from astropy.constants import c, e, eps0, k_B, m_e, m_p, mu0
+from astropy.constants import k_B, m_e
 
-from ..distribution import (
+from plasmapy.formulary.distribution import (
     kappa_velocity_1D,
     kappa_velocity_3D,
     Maxwellian_1D,
@@ -17,15 +17,13 @@ from ..distribution import (
     Maxwellian_velocity_2D,
     Maxwellian_velocity_3D,
 )
-from ..parameters import kappa_thermal_speed, thermal_speed
-
-# test class for Maxwellian_1D (velocity) function:
+from plasmapy.formulary.speeds import kappa_thermal_speed, thermal_speed
 
 
-class Test_Maxwellian_1D(object):
+class Test_Maxwellian_1D:
     @classmethod
     def setup_class(self):
-        """initializing parameters for tests """
+        """initializing parameters for tests"""
         self.T_e = 30000 * u.K
         self.v = 1e5 * u.m / u.s
         self.v_drift = 1000000 * u.m / u.s
@@ -199,11 +197,10 @@ class Test_Maxwellian_1D(object):
         assert np.isclose(distFunc.value, testVal, rtol=1e-5, atol=0.0), errStr
 
 
-# test class for Maxwellian_speed_1D function
-class Test_Maxwellian_speed_1D(object):
+class Test_Maxwellian_speed_1D:
     @classmethod
     def setup_class(self):
-        """initializing parameters for tests """
+        """initializing parameters for tests"""
         self.T = 1.0 * u.eV
         self.particle = "H+"
         # get thermal velocity and thermal velocity squared
@@ -329,11 +326,10 @@ class Test_Maxwellian_speed_1D(object):
         ), errStr
 
 
-# test class for Maxwellian_velocity_2D function
-class Test_Maxwellian_velocity_2D(object):
+class Test_Maxwellian_velocity_2D:
     @classmethod
     def setup_class(self):
-        """initializing parameters for tests """
+        """initializing parameters for tests"""
         self.T = 1.0 * u.eV
         self.particle = "H+"
         # get thermal velocity and thermal velocity squared
@@ -487,11 +483,11 @@ class Test_Maxwellian_velocity_2D(object):
         assert np.isclose(distFunc.value, testVal, rtol=1e-5, atol=0.0), errStr
 
 
-# test class for Maxwellian_speed_2D function
-class Test_Maxwellian_speed_2D(object):
+@pytest.mark.slow
+class Test_Maxwellian_speed_2D:
     @classmethod
     def setup_class(self):
-        """initializing parameters for tests """
+        """initializing parameters for tests"""
         self.T = 1.0 * u.eV
         self.particle = "H+"
         # get thermal velocity and thermal velocity squared
@@ -613,19 +609,11 @@ class Test_Maxwellian_speed_2D(object):
             )
 
 
-#        errStr = (f"Distribution function should be 0.0 "
-#                  f"and not {distFunc}.")
-#        assert np.isclose(distFunc.value,
-#                          0.0,
-#                          rtol=1e-5,
-#                          atol=0.0), errStr
-
-
-# test class for Maxwellian_velocity_3D function
-class Test_Maxwellian_velocity_3D(object):
+@pytest.mark.slow
+class Test_Maxwellian_velocity_3D:
     @classmethod
     def setup_class(self):
-        """initializing parameters for tests """
+        """initializing parameters for tests"""
         self.T = 1.0 * u.eV
         self.particle = "H+"
         # get thermal velocity and thermal velocity squared
@@ -796,11 +784,10 @@ class Test_Maxwellian_velocity_3D(object):
         assert np.isclose(distFunc.value, testVal, rtol=1e-5, atol=0.0), errStr
 
 
-# test class for Maxwellian_speed_3D function
-class Test_Maxwellian_speed_3D(object):
+class Test_Maxwellian_speed_3D:
     @classmethod
     def setup_class(self):
-        """initializing parameters for tests """
+        """initializing parameters for tests"""
         self.T = 1.0 * u.eV
         self.particle = "H+"
         # get thermal velocity and thermal velocity squared
@@ -922,21 +909,10 @@ class Test_Maxwellian_speed_3D(object):
             )
 
 
-#        errStr = (f"Distribution function should be 0.0 "
-#                  f"and not {distFunc}.")
-#        assert np.isclose(distFunc.value,
-#                          0.0,
-#                          rtol=1e-5,
-#                          atol=0.0), errStr
-
-
-# kappa
-
-# test class for kappa_velocity_1D function:
-class Test_kappa_velocity_1D(object):
+class Test_kappa_velocity_1D:
     @classmethod
     def setup_class(self):
-        """initializing parameters for tests """
+        """initializing parameters for tests"""
         self.T_e = 30000 * u.K
         self.kappa = 4
         self.kappaInvalid = 3 / 2
@@ -1159,11 +1135,11 @@ class Test_kappa_velocity_1D(object):
         assert np.isclose(distFunc.value, testVal, rtol=1e-5, atol=0.0), errStr
 
 
-# test class for kappa_velocity_3D function
-class Test_kappa_velocity_3D(object):
+@pytest.mark.slow
+class Test_kappa_velocity_3D:
     @classmethod
     def setup_class(self):
-        """initializing parameters for tests """
+        """initializing parameters for tests"""
         self.T = 1.0 * u.eV
         self.kappa = 4
         self.kappaInvalid = 3 / 2

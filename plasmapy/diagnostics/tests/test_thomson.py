@@ -235,7 +235,7 @@ def test_non_collective_spectrum():
 
     e_width = width_at_value(wavelength.value, Skw.value, 0.2e-13)
 
-    # Check that the widts of the electron feature matchs expectations
+    # Check that the widths of the electron feature matches expectations
     assert np.isclose(e_width, 22.6699, 1e-3), (
         "Non-collective case electron "
         f"feature width is {e_width} "
@@ -257,9 +257,9 @@ def test_multiple_ion_species_spectrum():
     max_wavelength = wavelength.value[np.argmax(Skw.value)]
 
     # Check width
-    assert np.isclose(width, 0.049999, 1e-2), (
+    assert np.isclose(width, 0.14, 1e-2), (
         f"Multiple ion species case spectrum width is {width} instead of "
-        "expected 0.04999"
+        "expected 0.14"
     )
 
     # Check max value

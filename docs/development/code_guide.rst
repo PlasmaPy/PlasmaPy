@@ -7,7 +7,7 @@ Code Development Guidelines
 This document describes the coding requirements and guidelines to be
 followed during the development of PlasmaPy and affiliated packages.
 
-Code written for PlasmaPy must be compatible with Python 3.7 and
+Code written for PlasmaPy must be compatible with Python 3.8 and
 later.
 
 Coding Style
@@ -18,39 +18,37 @@ TL;DR: use pre-commit
 
 PlasmaPy has a configuration for the `pre-commit framework
 <https://pre-commit.com/>`_ that takes care of style mostly automatically.
-Install it with `pip install pre-commit`, then use `pre-commit install` within
+Install it with ``pip install pre-commit``, then use ``pre-commit install`` within
 the repository.
 
 This will cause pre-commit to download the right versions of linters we use,
 then run an automated style checking suite on every commit.  Do note that this
-works better with a `git add`, then `git commit` workflow than a `git commit
--a` workflow — that way, you can check via `git diff` what the automated
+works better with a ``git add``, then ``git commit`` workflow than a ``git commit
+-a`` workflow — that way, you can check via ``git diff`` what the automated
 changes actually did.
 
 Note that the "Style linters / pre-commit (pull_request)" part of our
 Continuous Integration system can and will (metaphorically) shout at you if it
 finds you didn't apply the linters. Also note that the linters' output may vary
-with version, so, rather than apply `black` and `isort` manually, let
+with version, so, rather than apply black_ and isort_ manually, let
 pre-commit do the version management for you instead!
 
 Our pre-commit suite can be found in `.pre-commit-config.yaml
-<https://github.com/PlasmaPy/PlasmaPy/blob/master/.pre-commit-config.yaml>`_.
+<https://github.com/PlasmaPy/PlasmaPy/blob/main/.pre-commit-config.yaml>`_.
 It includes
 
-* `black <https://black.readthedocs.io/en/stable/>`_ to automatically
-  format code and ensure a consistent code style throughout the
-  package
-* `isort <https://pycqa.github.io/isort/>`_ to
-  automatically sort imports.
+* black_ to automatically format code and ensure a consistent code style
+  throughout the package
+* isort_ to automatically sort imports.
 * `nbqa <https://github.com/nbQA-dev/nbQA>`_ to automatically apply the above
   to example notebooks as well.
-* a few tools for `requirements.txt`, `.yml` files and the like.
+* a few tools for :file:`requirements.txt`, :file:`.yml` files and the like.
 
 PlasmaPy Code Style Guide, codified
 -----------------------------------
 
 * PlasmaPy follows the `PEP8 Style Guide for Python Code
-  <http://www.python.org/dev/peps/pep-0008/>`_.  This style choice
+  <https://peps.python.org/pep-0008>`__.  This style choice
   helps ensure that the code will be consistent and readable.
 
   * Line lengths should be chosen to maximize the readability and
@@ -60,10 +58,8 @@ PlasmaPy Code Style Guide, codified
   * Docstrings and comments should generally be limited to
     about 72 characters.
 
-* During code development, use
-  `black <https://black.readthedocs.io/en/stable/>`_ to automatically
-  format code and ensure a consistent code style throughout the
-  package and `isort <https://pycqa.github.io/isort/>`_ to
+* During code development, use black_ to automatically format code and
+  ensure a consistent code style throughout the package and isort_ to
   automatically sort imports.
 
 * Follow the existing coding style within a subpackage.  This includes,
@@ -83,13 +79,12 @@ PlasmaPy Code Style Guide, codified
   imports such as ``from ..particles import Particle``.
 
 * Use ``Optional[type]`` for type hinted keyword arguments with a
-  default value of ``None``.
+  default value of `None`.
 
 * There should be at least one pun per 1284 lines of code.
 
-* Avoid using `lambda` to define functions, as this notation may be
+* Avoid using ``lambda`` to define functions, as this notation may be
   unfamiliar to newcomers to Python.
-
 
 Branches, commits, and pull requests
 ====================================
@@ -103,7 +98,7 @@ repository:
   git fetch upstream
 
 Changes to PlasmaPy should be made using branches.  It is usually best
-to avoid making changes on your master branch so that it can be kept
+to avoid making changes on your main branch so that it can be kept
 consistent with the upstream repository.  Instead we can create a new
 branch for the specific feature that you would like to work on:
 
@@ -111,9 +106,9 @@ branch for the specific feature that you would like to work on:
 
   git branch *your-new-feature*
 
-Descriptive branch names such as `grad-shafranov` or
-`adding-eigenfunction-poetry` are helpful, while vague names like
-`edits` are considered harmful.  After creating your branch locally,
+Descriptive branch names such as ``grad-shafranov`` or
+``adding-eigenfunction-poetry`` are helpful, while vague names like
+``edits`` are considered harmful.  After creating your branch locally,
 let your fork of PlasmaPy know about it by running:
 
 .. code-block:: bash
@@ -141,12 +136,11 @@ recommend reading about `best practices for scientific computing
 `PEP 8 style guide for Python code
 <https://www.python.org/dev/peps/pep-0008/>`_ and the `numpydoc format
 for docstrings
-<https://github.com/numpy/numpy/blob/master/doc/HOWTO_DOCUMENT.rst.txt>`_
+<https://github.com/numpy/numpy/blob/main/doc/HOWTO_DOCUMENT.rst.txt>`_
 to maintain consistency and readability.  New contributors should not
 worry too much about precisely matching these styles when first
-submitting a pull request, as the `PEP8 Speaks
-<http://pep8speaks.com/>`_ GitHub integration will check pull requests
-for PEP 8 compatibility, and further changes to the style can be
+submitting a pull request, GitHub Actions will check pull requests
+for :pep:`8` compatibility, and further changes to the style can be
 suggested during code review.
 
 You may periodically commit changes to your branch by running
@@ -174,7 +168,7 @@ GitHub, you are ready to make a pull request.  Go to your fork of
 PlasmaPy in GitHub.  Select "Compare and pull request".  Add a
 descriptive title and some details about your changes.  Then select
 "Create pull request".  Other contributors will then have a chance to
-review the code and offer contructive suggestions.  You can continue
+review the code and offer constructive suggestions.  You can continue
 to edit the pull request by changing the corresponding branch on your
 PlasmaPy fork on GitHub.  After a pull request is merged into the
 code, you may delete the branch you created for that pull request.
@@ -186,7 +180,7 @@ developers and to our future selves.  They provide insight into why we
 chose a particular implementation, and help us avoid past mistakes.
 
 Suggestions on `how to write a git commit message
-<https://chris.beams.io/posts/git-commit/>`_:
+<https://cbea.ms/git-commit>`_:
 
 * Separate subject from body with a blank line
 
@@ -208,8 +202,7 @@ Documentation
 * All public classes, methods, and functions should have docstrings
   using the numpydoc format.
 
-* Docstrings may be checked locally using
-  `pydocstyle <http://www.pydocstyle.org/en/latest/>`_.
+* Docstrings may be checked locally using pydocstyle_.
 
 * These docstrings should include usage examples.
 
@@ -335,20 +328,19 @@ by an angular frequency to get a length scale:
 Examples
 ========
 
-.. _docs/notebooks: https://github.com/PlasmaPy/PlasmaPy/tree/master/docs/notebooks
-.. _nbsphinx: https://nbsphinx.readthedocs.io/en/latest/
+.. _docs/notebooks: https://github.com/PlasmaPy/PlasmaPy/tree/main/docs/notebooks
 
 Examples in PlasmaPy are written as Jupyter notebooks, taking advantage
-of their mature ecosystems. They are located in `docs/notebooks`_. `nbsphinx`_
+of their mature ecosystems. They are located in `docs/notebooks`_. |nbsphinx|_
 takes care of executing them at documentation build time and including them
 in the documentation.
 
 Please note that it is necessary to store notebooks with their outputs stripped
-(use the "Edit -> Clear all outputs" option). This accomplishes two goals:
+(use the "Edit -> Clear all" option in JupyterLab and the "Cell -> All Output -> Clear" option in the "classic" Jupyter Notebook). This accomplishes two goals:
 
 1. helps with versioning the notebooks, as binary image data is not stored in
    the notebook
-2. signals `nbsphinx` that it should execute the notebook.
+2. signals |nbsphinx|_ that it should execute the notebook.
 
 .. note::
 
@@ -356,10 +348,10 @@ Please note that it is necessary to store notebooks with their outputs stripped
   Currently, reviewers should ensure that submitted notebooks have outputs stripped.
 
 If you have an example notebook that includes packages unavailable in the
-documentation building environment (e.g., `bokeh`) or runs some heavy
+documentation building environment (e.g., ``bokeh``) or runs some heavy
 computation that should not be executed on every commit, *keep the outputs in
-the notebook* but store it in the repository with a `preexecuted_` prefix, e.g.
-`preexecuted_full_3d_mhd_chaotic_turbulence_simulation.ipynb`.
+the notebook* but store it in the repository with a ``preexecuted_`` prefix, e.g.
+:file:`preexecuted_full_3d_mhd_chaotic_turbulence_simulation.ipynb`.
 
 Benchmarks
 ==========

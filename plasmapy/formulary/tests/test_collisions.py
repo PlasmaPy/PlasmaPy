@@ -28,14 +28,14 @@ from plasmapy.utils.pytest_helpers import assert_can_handle_nparray
 class Test_Coulomb_logarithm:
     @classmethod
     def setup_class(self):
-        """initializing parameters for tests """
+        """initializing parameters for tests"""
         self.temperature1 = 10 * 11604 * u.K
         self.T_arr = np.array([1, 2]) * u.eV
         self.density1 = 1e20 * u.cm ** -3
         self.n_arr = np.array([1e20, 2e20]) * u.cm ** -3
         self.temperature2 = 1 * 11604 * u.K
         self.density2 = 1e23 * u.cm ** -3
-        self.z_mean = 2.5
+        self.z_mean = 2.5 * u.dimensionless_unscaled
         self.particles = ("e", "p")
         self.ls_min_interp = 3.4014290066940966
         self.gms1 = 3.4014290066940966
@@ -73,16 +73,16 @@ class Test_Coulomb_logarithm:
             {"method": "ls"},
             {"method": "ls_min_interp"},
             {"method": "GMS-1"},
-            {"method": "ls_full_interp", "z_mean": 1.0},
-            {"method": "GMS-2", "z_mean": 1.0},
+            {"method": "ls_full_interp", "z_mean": 1.0 * u.dimensionless_unscaled},
+            {"method": "GMS-2", "z_mean": 1.0 * u.dimensionless_unscaled},
             {"method": "ls_clamp_mininterp"},
             {"method": "GMS-3"},
             {"method": "hls_min_interp"},
             {"method": "GMS-4"},
-            {"method": "hls_max_interp", "z_mean": 1.0},
-            {"method": "GMS-5", "z_mean": 1.0},
-            {"method": "hls_full_interp", "z_mean": 1.0},
-            {"method": "GMS-6", "z_mean": 1.0},
+            {"method": "hls_max_interp", "z_mean": 1.0 * u.dimensionless_unscaled},
+            {"method": "GMS-5", "z_mean": 1.0 * u.dimensionless_unscaled},
+            {"method": "hls_full_interp", "z_mean": 1.0 * u.dimensionless_unscaled},
+            {"method": "GMS-6", "z_mean": 1.0 * u.dimensionless_unscaled},
         ],
     )
     def test_handle_nparrays(self, insert_some_nans, insert_all_nans, kwargs):
@@ -951,7 +951,7 @@ class Test_Coulomb_logarithm:
 class Test_impact_parameter_perp:
     @classmethod
     def setup_class(self):
-        """initializing parameters for tests """
+        """initializing parameters for tests"""
         self.T = 11604 * u.K
         self.particles = ("e", "p")
         self.V = 1e4 * u.km / u.s
@@ -1006,13 +1006,13 @@ class Test_impact_parameter_perp:
 class Test_impact_parameter:
     @classmethod
     def setup_class(self):
-        """initializing parameters for tests """
+        """initializing parameters for tests"""
         self.T = 11604 * u.K
         self.T_arr = np.array([1, 2]) * u.eV
         self.n_e = 1e17 * u.cm ** -3
         self.n_e_arr = np.array([1e17, 2e17]) * u.cm ** -3
         self.particles = ("e", "p")
-        self.z_mean = 2.5
+        self.z_mean = 2.5 * u.dimensionless_unscaled
         self.V = 1e4 * u.km / u.s
         self.True1 = np.array([7.200146594293746e-10, 2.3507660003984624e-08])
 
@@ -1081,11 +1081,11 @@ class Test_impact_parameter:
         [
             {"method": "classical"},
             {"method": "GMS-1"},
-            {"method": "GMS-2", "z_mean": 1.0},
+            {"method": "GMS-2", "z_mean": 1.0 * u.dimensionless_unscaled},
             {"method": "GMS-3"},
             {"method": "GMS-4"},
-            {"method": "GMS-5", "z_mean": 1.0},
-            {"method": "GMS-6", "z_mean": 1.0},
+            {"method": "GMS-5", "z_mean": 1.0 * u.dimensionless_unscaled},
+            {"method": "GMS-6", "z_mean": 1.0 * u.dimensionless_unscaled},
         ],
     )
     def test_handle_nparrays(self, insert_some_nans, insert_all_nans, kwargs):
@@ -1106,13 +1106,13 @@ class Test_impact_parameter:
 class Test_collision_frequency:
     @classmethod
     def setup_class(self):
-        """initializing parameters for tests """
+        """initializing parameters for tests"""
         self.T = 11604 * u.K
         self.n = 1e17 * u.cm ** -3
         self.particles = ("e", "p")
         self.electrons = ("e", "e")
         self.protons = ("p", "p")
-        self.z_mean = 2.5
+        self.z_mean = 2.5 * u.dimensionless_unscaled
         self.V = 1e4 * u.km / u.s
         self.True1 = 1.3468281539854646e12
         self.True_electrons = 1904702641552.1638
@@ -1245,7 +1245,7 @@ class Test_collision_frequency:
 class Test_fundamental_electron_collision_freq:
     @classmethod
     def setup_class(self):
-        """initializing parameters for tests """
+        """initializing parameters for tests"""
         self.T_arr = np.array([1, 2]) * u.eV
         self.n_arr = np.array([1e20, 2e20]) * u.cm ** -3
         self.ion = "p"
@@ -1264,7 +1264,7 @@ class Test_fundamental_electron_collision_freq:
 class Test_fundamental_ion_collision_freq:
     @classmethod
     def setup_class(self):
-        """initializing parameters for tests """
+        """initializing parameters for tests"""
         self.T_arr = np.array([1, 2]) * u.eV
         self.n_arr = np.array([1e20, 2e20]) * u.cm ** -3
         self.ion = "p"
@@ -1283,11 +1283,11 @@ class Test_fundamental_ion_collision_freq:
 class Test_mean_free_path:
     @classmethod
     def setup_class(self):
-        """initializing parameters for tests """
+        """initializing parameters for tests"""
         self.T = 11604 * u.K
         self.n_e = 1e17 * u.cm ** -3
         self.particles = ("e", "p")
-        self.z_mean = 2.5
+        self.z_mean = 2.5 * u.dimensionless_unscaled
         self.V = 1e4 * u.km / u.s
         self.True1 = 4.4047571877932046e-07
 
@@ -1346,11 +1346,11 @@ class Test_mean_free_path:
 class Test_Spitzer_resistivity:
     @classmethod
     def setup_class(self):
-        """initializing parameters for tests """
+        """initializing parameters for tests"""
         self.T = 11604 * u.K
         self.n = 1e12 * u.cm ** -3
         self.particles = ("e", "p")
-        self.z_mean = 2.5
+        self.z_mean = 2.5 * u.dimensionless_unscaled
         self.V = 1e4 * u.km / u.s
         self.True1 = 1.2665402649805445e-3
         self.True_zmean = 0.00020264644239688712
@@ -1424,11 +1424,11 @@ class Test_Spitzer_resistivity:
 class Test_mobility:
     @classmethod
     def setup_class(self):
-        """initializing parameters for tests """
+        """initializing parameters for tests"""
         self.T = 11604 * u.K
         self.n_e = 1e17 * u.cm ** -3
         self.particles = ("e", "p")
-        self.z_mean = 2.5
+        self.z_mean = 2.5 * u.dimensionless_unscaled
         self.V = 1e4 * u.km / u.s
         self.True1 = 0.13066090887074902
         self.True_zmean = 0.32665227217687254
@@ -1504,12 +1504,12 @@ class Test_mobility:
 class Test_Knudsen_number:
     @classmethod
     def setup_class(self):
-        """initializing parameters for tests """
+        """initializing parameters for tests"""
         self.length = 1 * u.nm
         self.T = 11604 * u.K
         self.n_e = 1e17 * u.cm ** -3
         self.particles = ("e", "p")
-        self.z_mean = 2.5
+        self.z_mean = 2.5 * u.dimensionless_unscaled
         self.V = 1e4 * u.km / u.s
         self.True1 = 440.4757187793204
 
@@ -1572,11 +1572,11 @@ class Test_Knudsen_number:
 class Test_coupling_parameter:
     @classmethod
     def setup_class(self):
-        """initializing parameters for tests """
+        """initializing parameters for tests"""
         self.T = 11604 * u.K
         self.n_e = 1e21 * u.cm ** -3
         self.particles = ("e", "p")
-        self.z_mean = 2.5
+        self.z_mean = 2.5 * u.dimensionless_unscaled
         self.V = 1e4 * u.km / u.s
         self.True1 = 2.3213156755481195
         self.True_zmean = 10.689750083758698

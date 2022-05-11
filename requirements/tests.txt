@@ -1,0 +1,16 @@
+# These are dependencies required to run package tests, and
+# ought to mirror 'tests' under options.extras_require in setup.cfg.
+# This lists the requirements that would be installed when doing:
+# pip install plasmapy[tests]
+-r extras.txt
+-r install.txt
+dlint
+flake8
+flake8-absolute-import
+flake8-rst-docstrings
+flake8-use-fstring
+hypothesis
+pydocstyle
+pytest >= 5.4.0
+pytest-regressions
+pytest-xdist

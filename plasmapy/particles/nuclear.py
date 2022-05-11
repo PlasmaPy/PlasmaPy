@@ -20,7 +20,7 @@ def nuclear_binding_energy(
 
     Parameters
     ----------
-    particle: `str`, `int`, or `~plasmapy.particles.Particle`
+    particle: `str`, `int`, or `~plasmapy.particles.particle_class.Particle`
         A Particle object, a string representing an element or isotope,
         or an integer representing the atomic number of an element.
 
@@ -79,7 +79,7 @@ def mass_energy(particle: Particle, mass_numb: Optional[int] = None) -> u.Quanti
 
     Parameters
     ----------
-    particle: `str`, `int`, or `~plasmapy.particles.Particle`
+    particle: `str`, `int`, or `~plasmapy.particles.particle_class.Particle`
         A Particle object, a string representing an element or isotope,
         or an integer representing the atomic number of an element.
 
@@ -91,7 +91,8 @@ def mass_energy(particle: Particle, mass_numb: Optional[int] = None) -> u.Quanti
     Returns
     -------
     mass_energy: `~astropy.units.Quantity`
-        The mass energy of the particle (or in the case of ) in units of joules.
+        The mass energy of the particle (or, in the case of an isotope,
+        its nuclide) in units of joules.
 
     Raises
     ------
@@ -106,7 +107,6 @@ def mass_energy(particle: Particle, mass_numb: Optional[int] = None) -> u.Quanti
 
     Examples
     --------
-
     >>> mass_energy('He-4')
     <Quantity 5.9719e-10 J>
     """
@@ -188,7 +188,7 @@ def nuclear_reaction_energy(*args, **kwargs):
     # often omitted from nuclear reactions when calculating the energy since
     # the mass is tiny.
 
-    errmsg = f"Invalid nuclear reaction."
+    errmsg = "Invalid nuclear reaction."
 
     def process_particles_list(
         unformatted_particles_list: List[Union[str, Particle]]
@@ -231,9 +231,9 @@ def nuclear_reaction_energy(*args, **kwargs):
                 if particle.element and not particle.isotope:
                     raise ParticleError(errmsg)
 
-                [particles.append(particle) for i in range(multiplier)]
+                particles += [particle] * multiplier
 
-            except Exception:
+            except ParticleError:
                 raise ParticleError(
                     f"{original_item} is not a valid reactant or "
                     "product in a nuclear reaction."
@@ -246,14 +246,11 @@ def nuclear_reaction_energy(*args, **kwargs):
         Find the total number of baryons minus the number of
         antibaryons in a list of particles.
         """
-        total_baryon_number = 0
-        for particle in particles:
-            total_baryon_number += particle.baryon_number
-        return total_baryon_number
+        return sum(particle.baryon_number for particle in particles)
 
     def total_charge(particles: List[Particle]) -> int:
         """
-        Find the total integer charge in a list of nuclides
+        Find the total charge number in a list of nuclides
         (excluding bound electrons) and other particles.
         """
         total_charge = 0
@@ -261,7 +258,7 @@ def nuclear_reaction_energy(*args, **kwargs):
             if particle.isotope:
                 total_charge += particle.atomic_number
             elif not particle.element:
-                total_charge += particle.integer_charge
+                total_charge += particle.charge_number
         return total_charge
 
     def add_mass_energy(particles: List[Particle]) -> u.Quantity:
@@ -308,7 +305,7 @@ def nuclear_reaction_energy(*args, **kwargs):
             RHS_list = re.split(r" \+ ", RHS_string)
             reactants = process_particles_list(LHS_list)
             products = process_particles_list(RHS_list)
-        except Exception as ex:
+        except ParticleError as ex:
             raise ParticleError(f"{reaction} is not a valid nuclear reaction.") from ex
 
     elif reactants_products_are_inputs:
@@ -318,7 +315,7 @@ def nuclear_reaction_energy(*args, **kwargs):
             products = process_particles_list(kwargs["products"])
         except TypeError as t:
             raise TypeError(input_err_msg) from t
-        except Exception as e:
+        except ParticleError as e:
             raise ParticleError(errmsg) from e
 
     if total_baryon_number(reactants) != total_baryon_number(products):

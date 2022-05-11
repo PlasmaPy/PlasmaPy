@@ -250,7 +250,10 @@ class TestFindFloatingPotential:
         voltage = self._voltage
         current = self._linear_current if fit_type == "linear" else self._exp_current
         results = find_floating_potential(
-            voltage, current, min_points=min_points, fit_type=fit_type,
+            voltage,
+            current,
+            min_points=min_points,
+            fit_type=fit_type,
         )
         assert isinstance(results, FloatingPotentialResults)
 
@@ -366,7 +369,10 @@ class TestFindFloatingPotential:
         current = m * voltage + b
 
         results = find_floating_potential(
-            voltage=voltage, current=current, fit_type="linear", min_points=0.8,
+            voltage=voltage,
+            current=current,
+            fit_type="linear",
+            min_points=0.8,
         )
 
         assert isinstance(results, FloatingPotentialResults)
@@ -378,7 +384,8 @@ class TestFindFloatingPotential:
         assert np.allclose(results.func.param_errors, (0.0, 0.0), atol=2e-8)
 
     @pytest.mark.parametrize(
-        "a, alpha, b", [(1.0, 0.2, -0.2), (2.7, 0.2, -10.0), (6.0, 0.6, -10.0)],
+        "a, alpha, b",
+        [(1.0, 0.2, -0.2), (2.7, 0.2, -10.0), (6.0, 0.6, -10.0)],
     )
     def test_perfect_exponential(self, a, alpha, b):
         """Test calculated fit parameters on a few perfectly exponential cases."""
@@ -386,7 +393,10 @@ class TestFindFloatingPotential:
         current = a * np.exp(alpha * voltage) + b
 
         results = find_floating_potential(
-            voltage=voltage, current=current, fit_type="exponential", min_points=0.8,
+            voltage=voltage,
+            current=current,
+            fit_type="exponential",
+            min_points=0.8,
         )
 
         assert isinstance(results, FloatingPotentialResults)
