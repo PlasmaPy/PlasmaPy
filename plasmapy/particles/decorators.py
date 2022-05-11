@@ -292,7 +292,7 @@ class ParticleValidator:
         """
         return self._data["parameters_to_process"]
 
-    def verify_charge_categorization(self, particle) -> NoReturn:
+    def _verify_charge_categorization(self, particle) -> NoReturn:
         """
         Raise an exception if the particle is required to have charge
         information and does not, or if the particle is required to be
@@ -379,12 +379,19 @@ class ParticleValidator:
         criteria.
         """
 
-        if parameter == "ion" and not particle.is_category("ion"):
-            raise InvalidIonError
-        elif parameter == "isotope" and not particle.is_category("isotope"):
-            raise InvalidIsotopeError
-        elif parameter == "element" and not particle.is_category("element"):
-            raise InvalidElementError
+        category_table = (
+            ("element", particle.element, InvalidElementError),
+            ("isotope", particle.isotope, InvalidIsotopeError),
+            ("ion", particle.ionic_symbol, InvalidIonError),
+        )
+
+        for category_name, category_symbol, CategoryError in category_table:
+            if parameter == category_name and not category_symbol:
+                raise CategoryError(
+                    f"The argument {parameter} = {parameter!r} to "
+                    f"{self.wrapped.__name__} does not correspond to a "
+                    f"valid {parameter}."
+                )
 
     def process_argument(
         self,
@@ -394,6 +401,7 @@ class ParticleValidator:
         mass_numb: Optional[Integral],
     ) -> Any:
         """
+        Process an argument that has an appropriate annotation.
 
         Parameters
         ----------
@@ -411,6 +419,7 @@ class ParticleValidator:
 
         Raises
         ------
+        CategoryError
         """
         annotation = self.annotations.get(parameter, None)
 
@@ -420,10 +429,12 @@ class ParticleValidator:
         if annotation in _optional_allowed_annotations and argument is None:
             return argument
 
-        # This does not include cases like Optional[ParticleList],
+        # This does not yet include cases like Optional[ParticleList],
         # Union[ParticleList, ParticleLike], etc. and thus needs updating.
 
         if annotation == (Particle, Particle):  # deprecated
+            if not hasattr(argument, "__len__") or len(argument) != 2:
+                raise TypeError(f"The length of {argument} must be 2.")
             return Particle(argument[0]), Particle(argument[1])
 
         if annotation in _basic_allowed_annotations and argument is None:
@@ -627,21 +638,13 @@ def particle_input(
         def selective_function(particle: ParticleLike):
             return particle
 
-    .. todo::
-
-       Talk about how for class methods, ``@particle_input`` should be
-       inside ``@classmethod``. Alternatively, is there a way to make it
-       work with the order switched?
-
-
-
     * Discuss annotated class methods!  Include that ``@particle_input``
       should be the inner decorator and ``@classmethod`` should be the
       outer decorator in order for this to work correctly.
-    *
     """
 
-    # Can only be done if arguments to decorator are keyword-only
+    # The following pattern comes from the docs for wrapt, and requires
+    # that the arguments to the decorator are keyword-only.
     if wrapped_function is None:
         return functools.partial(
             particle_input,
