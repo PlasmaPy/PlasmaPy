@@ -7,7 +7,8 @@ import collections
 import contextlib
 import numpy as np
 
-from typing import Callable, Iterable, List, Optional, Union
+from numbers import Integral
+from typing import Callable, Iterable, List, Optional, Sequence, Tuple, Union
 
 from plasmapy.particles.exceptions import InvalidParticleError
 from plasmapy.particles.particle_class import (
@@ -433,3 +434,41 @@ Remove the first occurrence of a
 """
 
 ParticleList.reverse.__doc__ = """Reverse the |ParticleList| in place."""
+
+ParticleListLike = Union[ParticleList, Sequence[ParticleLike]]
+
+ParticleListLike.__doc__ = r"""
+An `object` is :term:`particle-list-like` if it can be identified as a
+`~plasmapy.particles.particle_collections.ParticleList` or cast into
+one.
+
+When used as a type hint annotation, `ParticleListLike` indicates that
+the corresponding argument should represent a sequence of physical
+particles. Each item in a `ParticleListLike` must be
+`~plasmapy.particles.particle_class.ParticleLike`.
+
+Notes
+-----
+`~plasmapy.particles.particle_class.DimensionlessParticle` instances do
+not uniquely represent a physical particle, and are thus not
+|ParticleLike| and cannot be contained in a `ParticleListLike` object.
+
+See Also
+--------
+~plasmapy.particles.particle_collections.ParticleList
+~plasmapy.particles.particle_class.ParticleLike
+~plasmapy.particles.decorators.particle_input
+
+Examples
+--------
+Using `ParticleListLike` as a type hint annotation indicates that an
+argument or variable should represent a sequence of |ParticleLike|
+objects.
+
+>>> from plasmapy.particles import ParticleList, ParticleListLike
+>>> def contains_only_leptons(particles: ParticleListLike):
+...     particle_list = ParticleList(particles)
+...     return all(particle_list.is_category("lepton"))
+>>> contains_only_leptons(["electron", "muon"])
+True
+"""

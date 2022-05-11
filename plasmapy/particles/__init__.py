@@ -37,7 +37,7 @@ from plasmapy.particles.particle_class import (
     Particle,
     ParticleLike,
 )
-from plasmapy.particles.particle_collections import ParticleList
+from plasmapy.particles.particle_collections import ParticleList, ParticleListLike
 from plasmapy.particles.serialization import (
     json_load_particle,
     json_loads_particle,
