@@ -373,8 +373,11 @@ class ParticleValidator:
             )
             raise ParticleError(errmsg)
 
-    @staticmethod
-    def _verify_particle_name_criteria(parameter, particle):
+    def _verify_particle_name_criteria(self, parameter, particle):
+        """
+        Check that parameters with special names meet the expected
+        criteria.
+        """
 
         if parameter == "ion" and not particle.is_category("ion"):
             raise InvalidIonError
@@ -428,7 +431,7 @@ class ParticleValidator:
 
         particle = _physical_particle_factory(argument, Z=Z, mass_numb=mass_numb)
 
-        self.verify_charge_categorization(particle)
+        self._verify_charge_categorization(particle)
         self._verify_particle_categorization(particle)
         self._verify_particle_name_criteria(parameter, particle)
 
