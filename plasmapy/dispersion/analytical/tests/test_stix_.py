@@ -101,8 +101,23 @@ class TestStix:
         assert k.unit == u.rad / u.m
 
     @pytest.mark.parametrize(
-        "kwargs, expected",
-        [({**_kwargs_single_valued, "w": 1 * u.rad / u.s}, u.Quantity)],
+        "kwargs, expected, desired_output",
+        [
+            (
+                {**_kwargs_single_valued, "n_i": 1 * u.m**-3},
+                0,
+                0,
+            ),
+        ],
     )
-    def test_vals(self, kwargs, expected):
-        assert expected == type(kwargs["w"])
+    def test_vals(self, kwargs, expected, desired_output):
+        k_ = stix(kwargs)
+        print(k_)
+
+        if not np.isclose(k_, desired_output, atol=1e-2):
+            pytest.fail(
+                f"The Stix 1992 paper requires a 'k' value of {desired_output:0.5f}, "
+                f"instead got parameter {k_:.6f}."
+            )
+
+        assert np.allclose(k_, expected, atol=1e-2)
