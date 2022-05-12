@@ -3,10 +3,13 @@ import numpy as np
 import pytest
 
 from astropy import units as u
+from astropy.constants.si import c
 
 from plasmapy.dispersion.analytical.stix_ import stix
 from plasmapy.particles import Particle
 from plasmapy.particles.exceptions import InvalidParticleError
+
+c_unitless = c.value
 
 
 class TestStix:
@@ -101,23 +104,50 @@ class TestStix:
         assert k.unit == u.rad / u.m
 
     @pytest.mark.parametrize(
-        "kwargs, expected, desired_output",
+        "kwargs, expected",
         [
             (
-                {**_kwargs_single_valued, "n_i": 1 * u.m**-3},
-                0,
-                0,
+                {"theta": 0 * u.deg, "gamma": 1000, "beta": 1000, "mu": 1000.5},
+                {
+                    "n_1": 31.638591944805466,
+                    "n_2": 1414.5674255763668,
+                },
+            ),
+            (
+                {"theta": np.pi / 2 * u.deg, "gamma": 1000, "beta": 1000, "mu": 1000.5},
+                {
+                    "n_1": 44.73253849828242,
+                    "n_2": 0,
+                },
             ),
         ],
     )
-    def test_vals(self, kwargs, expected, desired_output):
-        k_ = stix(kwargs)
-        print(k_)
+    def test_vals(self, kwargs, expected):
 
-        if not np.isclose(k_, desired_output, atol=1e-2):
-            pytest.fail(
-                f"The Stix 1992 paper requires a 'k' value of {desired_output:0.5f}, "
-                f"instead got parameter {k_:.6f}."
-            )
+        gamma = kwargs["gamma"]
+        beta = kwargs["beta"]
+        mu = kwargs["mu"]
 
-        assert np.allclose(k_, expected, atol=1e-2)
+        R = (
+            1
+            - (gamma * beta ** 2) / (beta + 1)
+            + (gamma * beta ** 2) / (beta - (1 / mu))
+        )
+        L = (
+            1
+            + (gamma * beta ** 2) / (beta - 1)
+            + (gamma * beta ** 2) / (beta + (1 / mu))
+        )
+        P = 1 - gamma * beta ** 2 - gamma * mu * beta ** 2
+
+        S = 0.5 * (R + L)
+
+        if kwargs["theta"].value == 0:
+            n_1 = np.sqrt(R)
+            n_2 = np.sqrt(L)
+        elif kwargs["theta"].value == np.pi / 2:
+            n_1 = np.sqrt(R * L / S)
+            n_2 = np.sqrt(P)
+
+        assert np.isclose(n_1, expected["n_1"])
+        assert np.isclose(n_2, expected["n_2"])
