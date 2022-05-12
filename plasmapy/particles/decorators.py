@@ -1,24 +1,13 @@
 """Decorators for `plasmapy.particles`."""
 
-__all__ = ["ParticleValidator", "particle_input"]
+__all__ = ["ValidateParticles", "particle_input"]
 
 import functools
 import inspect
 import wrapt
 
 from numbers import Integral
-from typing import (
-    Any,
-    Callable,
-    Dict,
-    List,
-    NoReturn,
-    Optional,
-    Sequence,
-    Set,
-    Tuple,
-    Union,
-)
+from typing import Any, Callable, Dict, List, NoReturn, Optional, Set, Tuple, Union
 
 from plasmapy.particles._factory import _physical_particle_factory
 from plasmapy.particles.exceptions import (
@@ -29,10 +18,21 @@ from plasmapy.particles.exceptions import (
     ParticleError,
 )
 from plasmapy.particles.particle_class import Particle, ParticleLike
-from plasmapy.particles.particle_collections import ParticleList
+from plasmapy.particles.particle_collections import ParticleList, ParticleListLike
 
-# Temporarily define ParticleListLike, pending #1528
-ParticleListLike = Union[ParticleList, Sequence[ParticleLike]]
+_basic_allowed_annotations = (
+    Particle,  # deprecated
+    ParticleLike,
+    ParticleListLike,
+    Union[ParticleLike, ParticleListLike],
+    (Particle, Particle),  # deprecated
+)
+_optional_allowed_annotations = tuple(
+    Optional[annotation]
+    for annotation in _basic_allowed_annotations
+    if annotation != (Particle, Particle)  # temporary hack
+)
+_allowed_annotations = _basic_allowed_annotations + _optional_allowed_annotations
 
 
 def _get_annotations(f: Callable):
@@ -115,22 +115,7 @@ def _bind_arguments(
     return arguments_to_be_processed
 
 
-_basic_allowed_annotations = (
-    Particle,  # deprecated
-    ParticleLike,
-    ParticleListLike,
-    Union[ParticleLike, ParticleListLike],
-    (Particle, Particle),  # deprecated
-)
-_optional_allowed_annotations = tuple(
-    Optional[annotation]
-    for annotation in _basic_allowed_annotations
-    if annotation != (Particle, Particle)  # temporary hack
-)
-_allowed_annotations = _basic_allowed_annotations + _optional_allowed_annotations
-
-
-class ParticleValidator:
+class ValidateParticles:
     """
     Processes arguments for |particle_input|.
 
@@ -283,7 +268,7 @@ class ParticleValidator:
     def parameters_to_process(self) -> List[str]:
         """
         The parameters of
-        `~plasmapy.particles.decorators2.ParticleValidator.wrapped`
+        `~plasmapy.particles.decorators.ValidateParticles.wrapped`
         that have annotations to be processed by |particle_input|.
 
         Returns
@@ -434,7 +419,7 @@ class ParticleValidator:
 
         if annotation == (Particle, Particle):  # deprecated
             if not hasattr(argument, "__len__") or len(argument) != 2:
-                raise TypeError(f"The length of {argument} must be 2.")
+                raise ValueError(f"The length of {argument} must be 2.")
             return Particle(argument[0]), Particle(argument[1])
 
         if annotation in _basic_allowed_annotations and argument is None:
@@ -515,7 +500,7 @@ def particle_input(
 
     The conversion of objects to a |Particle|, |CustomParticle|, or
     |ParticleList| is done in
-    `~plasmapy.particles.decorators2.ParticleValidator`.
+    `~plasmapy.particles.decorators.ValidateParticles`.
 
     Parameters
     ----------
@@ -654,7 +639,7 @@ def particle_input(
             allow_custom_particles=allow_custom_particles,
         )
 
-    particle_validator = ParticleValidator(
+    particle_validator = ValidateParticles(
         wrapped=wrapped_function,
         require=require,
         any_of=any_of,
@@ -663,7 +648,7 @@ def particle_input(
     )
 
     @wrapt.decorator
-    def wrapper(wrapped: Callable, instance, args: Tuple, kwargs: Dict[str, Any]):
+    def wrapper(wrapped: Callable, instance: Any, args: Tuple, kwargs: Dict[str, Any]):
         new_kwargs = particle_validator.process_arguments(args, kwargs, instance)
         return wrapped(**new_kwargs)
 
