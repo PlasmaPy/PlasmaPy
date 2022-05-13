@@ -210,7 +210,7 @@ def extract_charge(arg: str):
 
     elif isotope_info.endswith(("-", "+")):  # Cases like 'H-' and 'Pb-209+++'
         match = re.fullmatch(
-            r"\s*(?P<isotope>\w+(-[0-9]+)*)(?P<charge>([-]+|[+]+)+)+\s*",
+            r"\s*(?P<isotope>\w+(-[0-9]+)*)(?P<charge>[-+]+)\s*",
             isotope_info,
         )
         isotope_info = match.groupdict()["isotope"]
