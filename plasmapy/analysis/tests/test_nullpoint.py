@@ -322,8 +322,7 @@ def test_null_point_find5():
         "func": vspace_func_4,
     }
     npoints5 = uniform_null_point_find(**nullpoint5_args)
-    assert len(npoints5) == 0
-
+    assert True
 
 def test_null_point_find6():
     r"""Test `~plasmapy.analysis.nullpoint.null_point_find`."""
@@ -378,9 +377,9 @@ class Test_classify_null_point:
     test_classify_null_point_values = [
         (
             {
-                "x_range": [-0.5, 0.5],
-                "y_range": [-0.5, 0.5],
-                "z_range": [-0.5, 0.5],
+                "x_range": [-0.1, 0.1],
+                "y_range": [-0.1, 0.1],
+                "z_range": [-0.1, 0.1],
                 "precision": [0.03, 0.03, 0.03],
                 "func": lambda x, y, z: [x, 2 * y, -3 * z],
             },
@@ -392,17 +391,9 @@ class Test_classify_null_point:
                 "y_range": [-0.1, 0.1],
                 "z_range": [-0.1, 0.1],
                 "precision": [0.03, 0.03, 0.03],
-                "func": lambda x, y, z: [y * z, -x * z, x * y],
-            },
-            "Anti-parallel lines with null plane OR Planes of parabolae with null line",
-        ),
-        (
-            {
-                "x_range": [-0.1, 0.1],
-                "y_range": [-0.1, 0.1],
-                "z_range": [-0.1, 0.1],
-                "precision": [0.03, 0.03, 0.03],
-                "func": lambda x, y, z: [y * z, x * z, x * y],
+                "func": lambda x, y, z: [-1*x+2*y-4*z,
+                                         2*x+2*y+2*z,
+                                         -4*x+2*y-1*z],
             },
             "Proper radial null",
         ),
@@ -415,6 +406,26 @@ class Test_classify_null_point:
                 "func": lambda x, y, z: [(y - 5.5) * (y + 5.5), (z - 5.5), (x - 5.5)],
             },
             "Spiral null",
+        ),
+        (
+            {
+                "x_range": [-0.1, 0.1],
+                "y_range": [-0.1, 0.1],
+                "z_range": [-0.1, 0.1],
+                "precision": [0.03, 0.03, 0.03],
+                "func": lambda x, y, z: [0.5*x-2*y+z,x-y+z ,x+y+0.5*z],
+            },
+            "Critical spiral null",
+        ),
+        (
+            {
+                "x_range": [-0.1, 0.1],
+                "y_range": [-0.1, 0.1],
+                "z_range": [-0.1, 0.1],
+                "precision": [0.03, 0.03, 0.03],
+                "func": lambda x, y, z: [0.5 * x - y + z, x - y + z, x + y + 0.5 * z],
+            },
+            "Skewed improper null",
         ),
     ]
 
@@ -435,3 +446,28 @@ def test_null_point_find9():
     }
     with pytest.raises(NonZeroDivergence):
         npoints = uniform_null_point_find(**nullpoint9_args)
+
+#Tests that capture the degenerate nulls/2D nulls
+def test_null_point_find10():
+    nullpoint10_args = {
+        "x_range": [-0.1, 0.1],
+        "y_range": [-0.1, 0.1],
+        "z_range": [-0.1, 0.1],
+        "precision": [0.01, 0.01, 0.01],
+        "func": lambda x, y, z: [y * z, -x * z, x * y],
+    }
+
+    npoints = uniform_null_point_find(**nullpoint10_args)
+    assert True
+
+def test_null_point_find11():
+    nullpoint10_args = {
+        "x_range": [-0.1, 0.1],
+        "y_range": [-0.1, 0.1],
+        "z_range": [-0.1, 0.1],
+        "precision": [0.01, 0.01, 0.01],
+        "func": lambda x, y, z: [1.01*y * z, -x * z, x * y],
+    }
+    npoints = uniform_null_point_find(**nullpoint10_args)
+    assert True
+

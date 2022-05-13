@@ -657,6 +657,16 @@ def _trilinear_analysis(vspace, cell):
     BxBzEndpoints = []
     ByBzEndpoints = []
 
+    #Check if exists in root list
+    def is_root_in_list(root, arr):
+        for r in arr:
+            x_close = np.isclose(root[0], r[0], atol=_EQUALITY_ATOL)
+            y_close = np.isclose(root[1], r[1], atol=_EQUALITY_ATOL)
+            z_close = np.isclose(root[2], r[2], atol=_EQUALITY_ATOL)
+            if x_close and y_close and z_close:
+                return True
+        return False
+
     # Front Surface
     yConst1 = vspace[0][1][f000[0]][f000[1]][
         f000[2]
@@ -674,9 +684,10 @@ def _trilinear_analysis(vspace, cell):
         fy + hy * yConst1,
     )
     for root in root_list:
-        BxByEndpoints.append((root[0], yConst1, root[1]))
+        if not is_root_in_list((root[0], yConst1, root[1]), BxByEndpoints):
+            BxByEndpoints.append((root[0], yConst1, root[1]))
 
-    # Bx=BZ=0 Curve Endpoint
+    # Bx=Bz=0 Curve Endpoint
     root_list = _bilinear_root(
         ax + cx * yConst1,
         bx + ex * yConst1,
@@ -689,7 +700,8 @@ def _trilinear_analysis(vspace, cell):
     )
 
     for root in root_list:
-        BxBzEndpoints.append((root[0], yConst1, root[1]))
+        if not is_root_in_list((root[0], yConst1, root[1]), BxBzEndpoints):
+            BxBzEndpoints.append((root[0], yConst1, root[1]))
 
     # By=Bz=0 Curve Endpoint
     root_list = _bilinear_root(
@@ -704,7 +716,8 @@ def _trilinear_analysis(vspace, cell):
     )
 
     for root in root_list:
-        ByBzEndpoints.append((root[0], yConst1, root[1]))
+        if not is_root_in_list((root[0], yConst1, root[1]), ByBzEndpoints) :
+            ByBzEndpoints.append((root[0], yConst1, root[1]))
 
     # Back Surface
     yConst2 = vspace[0][1][f111[0]][f111[1]][
@@ -723,7 +736,8 @@ def _trilinear_analysis(vspace, cell):
     )
 
     for root in root_list:
-        BxByEndpoints.append((root[0], yConst2, root[1]))
+        if not is_root_in_list((root[0], yConst2, root[1]), BxByEndpoints) :
+            BxByEndpoints.append((root[0], yConst2, root[1]))
 
     # Bx=Bz=0 Curve Endpoint
     root_list = _bilinear_root(
@@ -738,7 +752,8 @@ def _trilinear_analysis(vspace, cell):
     )
 
     for root in root_list:
-        BxBzEndpoints.append((root[0], yConst2, root[1]))
+        if not is_root_in_list((root[0], yConst2, root[1]), BxBzEndpoints) :
+            BxBzEndpoints.append((root[0], yConst2, root[1]))
 
     # By=Bz=0 Curve Endpoint
     root_list = _bilinear_root(
@@ -753,7 +768,8 @@ def _trilinear_analysis(vspace, cell):
     )
 
     for root in root_list:
-        ByBzEndpoints.append((root[0], yConst2, root[1]))
+        if not is_root_in_list((root[0], yConst2, root[1]), ByBzEndpoints) :
+            ByBzEndpoints.append((root[0], yConst2, root[1]))
 
     # Right Surface
     xConst1 = vspace[0][0][f111[0]][f111[1]][f111[2]]
@@ -770,7 +786,8 @@ def _trilinear_analysis(vspace, cell):
     )
 
     for root in root_list:
-        BxByEndpoints.append((xConst1, root[0], root[1]))
+        if not is_root_in_list((xConst1, root[0], root[1]), BxByEndpoints) :
+            BxByEndpoints.append((xConst1, root[0], root[1]))
 
     # Bx=BZ=0 Curve Endpoint
     root_list = _bilinear_root(
@@ -785,7 +802,8 @@ def _trilinear_analysis(vspace, cell):
     )
 
     for root in root_list:
-        BxBzEndpoints.append((xConst1, root[0], root[1]))
+        if not is_root_in_list((xConst1, root[0], root[1]), BxBzEndpoints) :
+            BxBzEndpoints.append((xConst1, root[0], root[1]))
 
     # By=Bz=0 Curve Endpoint
     root_list = _bilinear_root(
@@ -800,7 +818,8 @@ def _trilinear_analysis(vspace, cell):
     )
 
     for root in root_list:
-        ByBzEndpoints.append((xConst1, root[0], root[1]))
+        if not is_root_in_list((xConst1, root[0], root[1]), ByBzEndpoints) :
+            ByBzEndpoints.append((xConst1, root[0], root[1]))
 
     # Left Surface
     xConst2 = vspace[0][0][f000[0]][f000[1]][f000[2]]
@@ -817,7 +836,8 @@ def _trilinear_analysis(vspace, cell):
     )
 
     for root in root_list:
-        BxByEndpoints.append((xConst2, root[0], root[1]))
+        if not is_root_in_list((xConst2, root[0], root[1]), BxByEndpoints) :
+            BxByEndpoints.append((xConst2, root[0], root[1]))
 
     # Bx=BZ=0 Curve Endpoint
     root_list = _bilinear_root(
@@ -832,7 +852,8 @@ def _trilinear_analysis(vspace, cell):
     )
 
     for root in root_list:
-        BxBzEndpoints.append((xConst2, root[0], root[1]))
+        if not is_root_in_list((xConst2, root[0], root[1]), BxBzEndpoints) :
+            BxBzEndpoints.append((xConst2, root[0], root[1]))
 
     # By=Bz=0 Curve Endpoint
     root_list = _bilinear_root(
@@ -847,7 +868,8 @@ def _trilinear_analysis(vspace, cell):
     )
 
     for root in root_list:
-        ByBzEndpoints.append((xConst2, root[0], root[1]))
+        if not is_root_in_list((xConst2, root[0], root[1]), ByBzEndpoints) :
+            ByBzEndpoints.append((xConst2, root[0], root[1]))
 
     # Up Surface
     zConst1 = vspace[0][2][f111[0]][f111[1]][f111[2]]
@@ -864,7 +886,8 @@ def _trilinear_analysis(vspace, cell):
     )
 
     for root in root_list:
-        BxByEndpoints.append((root[0], root[1], zConst1))
+        if not is_root_in_list((root[0], root[1], zConst1), BxByEndpoints) :
+            BxByEndpoints.append((root[0], root[1], zConst1))
 
     # Bx=Bz=0 Curve Endpoint
     root_list = _bilinear_root(
@@ -879,7 +902,8 @@ def _trilinear_analysis(vspace, cell):
     )
 
     for root in root_list:
-        BxBzEndpoints.append((root[0], root[1], zConst1))
+        if not is_root_in_list((root[0], root[1], zConst1), BxBzEndpoints) :
+            BxBzEndpoints.append((root[0], root[1], zConst1))
 
     # By=Bz=0 Curve Endpoint
     root_list = _bilinear_root(
@@ -894,7 +918,8 @@ def _trilinear_analysis(vspace, cell):
     )
 
     for root in root_list:
-        ByBzEndpoints.append((root[0], root[1], zConst1))
+        if not is_root_in_list((root[0], root[1], zConst1), ByBzEndpoints) :
+            ByBzEndpoints.append((root[0], root[1], zConst1))
 
     # Down Surface
     zConst2 = vspace[0][2][f000[0]][f000[1]][f000[2]]
@@ -911,7 +936,8 @@ def _trilinear_analysis(vspace, cell):
     )
 
     for root in root_list:
-        BxByEndpoints.append((root[0], root[1], zConst2))
+        if not is_root_in_list((root[0], root[1], zConst2), BxByEndpoints) :
+            BxByEndpoints.append((root[0], root[1], zConst2))
 
     # Bx=Bz=0 Curve Endpoint
     root_list = _bilinear_root(
@@ -926,7 +952,8 @@ def _trilinear_analysis(vspace, cell):
     )
 
     for root in root_list:
-        BxBzEndpoints.append((root[0], root[1], zConst2))
+        if not is_root_in_list((root[0], root[1], zConst2), BxBzEndpoints) :
+            BxBzEndpoints.append((root[0], root[1], zConst2))
 
     # By=Bz=0 Curve Endpoint
     root_list = _bilinear_root(
@@ -941,12 +968,12 @@ def _trilinear_analysis(vspace, cell):
     )
 
     for root in root_list:
-        ByBzEndpoints.append((root[0], root[1], zConst2))
+        if not is_root_in_list((root[0], root[1], zConst2), ByBzEndpoints) :
+            ByBzEndpoints.append((root[0], root[1], zConst2))
 
     xbound = vspace[0][0][f111[0]][f111[1]][f111[2]]
     ybound = vspace[0][1][f111[0]][f111[1]][f111[2]]
     zbound = vspace[0][2][f111[0]][f111[1]][f111[2]]
-
     def bound(epoint):
         """
         Checks if the endpoints are located in or on the cube.
@@ -965,22 +992,28 @@ def _trilinear_analysis(vspace, cell):
         ) and (epoint[2] < zbound or np.isclose(epoint[2], zbound, atol=_EQUALITY_ATOL))
         return is_x_in_bound and is_y_in_bound and is_z_in_bound
 
+
     BxByEndpoints = list(filter(bound, BxByEndpoints))
     BxBzEndpoints = list(filter(bound, BxBzEndpoints))
     ByBzEndpoints = list(filter(bound, ByBzEndpoints))
-
     tlApprox = trilinear_approx(vspace, cell)
 
-    # # Check on the Surfaces
-    # for p in BxByEndpoints:
-    #     if np.linalg.norm(tlApprox(p[0], p[1], p[2])) < _EQUALITY_ATOL:
-    #         return True
-    # for p in BxBzEndpoints:
-    #     if np.linalg.norm(tlApprox(p[0], p[1], p[2])) < _EQUALITY_ATOL:
-    #         return True
-    # for p in ByBzEndpoints:
-    #     if np.linalg.norm(tlApprox(p[0], p[1], p[2])) < _EQUALITY_ATOL:
-    #         return True
+    # Check on the Surfaces
+    for p in BxByEndpoints:
+        if np.linalg.norm(tlApprox(p[0], p[1], p[2])) < _EQUALITY_ATOL:
+            # print(cell)
+            # print(tlApprox(p[0], p[1], p[2]))
+            return True
+    for p in BxBzEndpoints:
+        if np.linalg.norm(tlApprox(p[0], p[1], p[2])) < _EQUALITY_ATOL:
+            # print(cell)
+            # print(tlApprox(p[0], p[1], p[2]))
+            return True
+    for p in ByBzEndpoints:
+        if np.linalg.norm(tlApprox(p[0], p[1], p[2])) < _EQUALITY_ATOL:
+            # print(cell)
+            # print(tlApprox(p[0], p[1], p[2]))
+            return True
 
     # Check Grid Resolution
     if len(BxByEndpoints) == 0 and len(BxBzEndpoints) == 0 and len(ByBzEndpoints) == 0:
@@ -992,6 +1025,7 @@ def _trilinear_analysis(vspace, cell):
 
     if len(BxByEndpoints) != 2 or len(BxBzEndpoints) != 2 or len(ByBzEndpoints) != 2:
         return False
+
 
     def endpoint_sign_check(curve_endpoints, curve_name):
         if curve_name == "x":
@@ -1077,7 +1111,6 @@ def _locate_null_point(vspace, cell, n, err):
         If the maximum number of iteration has been
         reached, but convergence has not occurred.
     """
-
     global _recursion_level
     # Calculating the Jacobian and trilinear approximation functions for the cell
     tlApprox = trilinear_approx(vspace, cell)
@@ -1173,32 +1206,44 @@ def _locate_null_point(vspace, cell, n, err):
                     "Multiple null points suspected. Trilinear method may not work as intended.",
                     MultipleNullPointWarning,
                 )
-
+                if np.isclose(locx, 0, atol=_EQUALITY_ATOL) \
+                        and np.isclose(locy, 0, atol=_EQUALITY_ATOL) \
+                        and np.isclose(locz, 0, atol=_EQUALITY_ATOL):
+                    return x0
+                else:
+                    break
             # Adjust position
             x0 = np.subtract(
                 x0, np.matmul(np.linalg.inv(jcb(x0[0], x0[1], x0[2])), Bx0)
             )
             norm = np.linalg.norm(x0)
-            if np.abs((norm - prev_norm) / (prev_norm)) < err and in_bound(x0):
+            # print(x0)
+            # print(np.abs((norm - prev_norm) / (prev_norm)) )
+            # print(in_bound(x0))
+            if np.abs((norm - prev_norm) / (prev_norm+1e-10)) < err and in_bound(x0):
                 return x0
         if in_bound(x0):
-            warnings.warn("Max Iterations Reached")
-            return x0
-
+            warnings.warn("Max Iterations Reached without Convergence")
+            if np.isclose(locx, 0, atol=_EQUALITY_ATOL) \
+                    and np.isclose(locy, 0, atol=_EQUALITY_ATOL) \
+                    and np.isclose(locz, 0, atol=_EQUALITY_ATOL):
+                return x0
+    warnings.warn("Various starting points did not locate possible null point.")
+    #Generate new starting points localized into 8 small cells?
+    return None
+    # if _recursion_level > _MAX_RECURSION_LEVEL:
+    #     warnings.warn("Could not locate a possible null point")
+    #     return None
     # Break Up the Cell into 8 smaller cells and try again
-    _recursion_level = _recursion_level + 1
-    if _recursion_level > _MAX_RECURSION_LEVEL:
-        warnings.warn("Could not locate a possible null point")
-        return None
-    null_point_args = {
-        "func": tlApprox,
-        "x_range": [pos_000[0], pos_111[0]],
-        "y_range": [pos_000[1], pos_111[1]],
-        "z_range": [pos_000[2], pos_111[2]],
-        "precision": [deltax / 2, deltay / 2, deltaz / 2],
-    }
-
-    return null_point_find(**null_point_args)
+    # _recursion_level = _recursion_level + 1
+    # null_point_args = {
+    #     "func": tlApprox,
+    #     "x_range": [pos_000[0], pos_111[0]],
+    #     "y_range": [pos_000[1], pos_111[1]],
+    #     "z_range": [pos_000[2], pos_111[2]],
+    #     "precision": [deltax / 2, deltay / 2, deltaz / 2],
+    # }
+    # return uniform_null_point_find(**null_point_args)
 
 
 def _classify_null_point(vspace, cell, loc):
@@ -1254,7 +1299,9 @@ def _classify_null_point(vspace, cell, loc):
     eigen_vals, eigen_vectors = np.linalg.eig(M)
     # using the notation from Parnell et al. (1996)
     R = -1.0 * np.linalg.det(M)
-    Q = 0.5 * (np.trace(M) ** 2 - np.trace(np.matmul(M, M)))
+    #Q = 0.5 * (np.trace(M) ** 2 - np.trace(np.matmul(M, M)))
+    Q = -0.5 * np.trace(np.matmul(M, M))
+
     discriminant = (Q ** 3 / 27.0) + (R ** 2 / 4.0)
     determinant = -1.0 * R
     if np.isclose(discriminant, 0, atol=_EQUALITY_ATOL):
@@ -1284,7 +1331,7 @@ def _classify_null_point(vspace, cell, loc):
     return null_point_type
 
 
-def _vspace_iterator(vspace, maxiter=500, err=1e-10):
+def _vspace_iterator(vspace, maxiter=500, err=1e-4):
     r"""
     Returns an array of null point objects, representing
     the null points of the given vector space.
@@ -1320,8 +1367,8 @@ def _vspace_iterator(vspace, maxiter=500, err=1e-10):
                 if _reduction(vspace, [i, j, k]):
                     if _trilinear_analysis(vspace, [i, j, k]):
                         loc = _locate_null_point(vspace, [i, j, k], maxiter, err)
-                        null_type = _classify_null_point(vspace, [i, j, k], loc)
                         if loc is not None:
+                            null_type = _classify_null_point(vspace, [i, j, k], loc)
                             p = NullPoint(loc, null_type)
                             if p not in nullpoints:
                                 nullpoints.append(p)
@@ -1423,7 +1470,7 @@ def uniform_null_point_find(
     func: Callable,
     precision=[0.05, 0.05, 0.05],
     maxiter=500,
-    err=1e-10,
+    err=1e-4,
 ):
     r"""
     Return an array of `~plasmapy.analysis.nullpoint.NullPoint` objects, representing
