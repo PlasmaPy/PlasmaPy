@@ -167,7 +167,8 @@ def extract_charge(arg: str):
     )
 
     match = re.fullmatch(
-        r"\s*(?P<isotope>\w+(-[0-9]+)*([+-]*)*)(\s*(?P<charge>[+-]?[IVXLCDM0-9]+[+-]?)*)*\s*",
+        r"\s*(?P<isotope>\w+(-[0-9]+)*([+-]*)*)"
+        r"(\s*(?P<charge>[+-]?[IVXLCDM0-9]+[+-]?)*)*\s*",
         arg,
     )
 
