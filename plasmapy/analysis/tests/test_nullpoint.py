@@ -324,6 +324,7 @@ def test_null_point_find5():
     npoints5 = uniform_null_point_find(**nullpoint5_args)
     assert True
 
+
 def test_null_point_find6():
     r"""Test `~plasmapy.analysis.nullpoint.null_point_find`."""
     # Many null points; All vector dimensions zero
@@ -391,9 +392,11 @@ class Test_classify_null_point:
                 "y_range": [-0.1, 0.1],
                 "z_range": [-0.1, 0.1],
                 "precision": [0.03, 0.03, 0.03],
-                "func": lambda x, y, z: [-1*x+2*y-4*z,
-                                         2*x+2*y+2*z,
-                                         -4*x+2*y-1*z],
+                "func": lambda x, y, z: [
+                    -1 * x + 2 * y - 4 * z,
+                    2 * x + 2 * y + 2 * z,
+                    -4 * x + 2 * y - 1 * z,
+                ],
             },
             "Proper radial null",
         ),
@@ -413,7 +416,11 @@ class Test_classify_null_point:
                 "y_range": [-0.1, 0.1],
                 "z_range": [-0.1, 0.1],
                 "precision": [0.03, 0.03, 0.03],
-                "func": lambda x, y, z: [0.5*x-2*y+z,x-y+z ,x+y+0.5*z],
+                "func": lambda x, y, z: [
+                    0.5 * x - 2 * y + z,
+                    x - y + z,
+                    x + y + 0.5 * z,
+                ],
             },
             "Critical spiral null",
         ),
@@ -447,7 +454,8 @@ def test_null_point_find9():
     with pytest.raises(NonZeroDivergence):
         npoints = uniform_null_point_find(**nullpoint9_args)
 
-#Tests that capture the degenerate nulls/2D nulls
+
+# Tests that capture the degenerate nulls/2D nulls
 def test_null_point_find10():
     nullpoint10_args = {
         "x_range": [-0.1, 0.1],
@@ -460,14 +468,14 @@ def test_null_point_find10():
     npoints = uniform_null_point_find(**nullpoint10_args)
     assert True
 
+
 def test_null_point_find11():
     nullpoint10_args = {
         "x_range": [-0.1, 0.1],
         "y_range": [-0.1, 0.1],
         "z_range": [-0.1, 0.1],
         "precision": [0.01, 0.01, 0.01],
-        "func": lambda x, y, z: [1.01*y * z, -x * z, x * y],
+        "func": lambda x, y, z: [1.01 * y * z, -x * z, x * y],
     }
     npoints = uniform_null_point_find(**nullpoint10_args)
     assert True
-
