@@ -166,8 +166,23 @@ def extract_charge(arg: str):
         f"Invalid charge information in the particle string '{arg}'."
     )
 
-    if arg.count(" ") == 1:  # Cases like 'H 1-' and 'Fe-56 1+'
-        isotope_info, charge_info = arg.split(" ")
+    match = re.fullmatch(
+        r"\s*(?P<isotope>\w+(-[0-9]+)*([+-]*)*)"
+        r"(\s*(?P<charge>[+-]?[IVXLCDM0-9]+[+-]?)*)*\s*",
+        arg,
+    )
+
+    if match is None:
+        raise InvalidParticleError(invalid_charge_errmsg) from None
+
+    isotope_info = match.groupdict()["isotope"]
+    charge_info = match.groupdict()["charge"]
+    Z_from_arg = None
+
+    if charge_info is not None and isotope_info.endswith(("-", "+")):
+        # charge info is defined on both the charge_info and isotope_into strings
+        raise InvalidParticleError(invalid_charge_errmsg) from None
+    elif charge_info is not None:  # Cases like 'H 1-' and 'Fe-56 1+'
 
         sign_indicator_only_on_one_end = charge_info.endswith(
             ("-", "+")
@@ -194,19 +209,20 @@ def extract_charge(arg: str):
         except ValueError:
             raise InvalidParticleError(invalid_charge_errmsg) from None
 
-    elif arg.endswith(("-", "+")):  # Cases like 'H-' and 'Pb-209+++'
-        char = arg[-1]
-        match = re.match(f"[{char}]*", arg[::-1])
-        Z_from_arg = match.span()[1]
-        isotope_info = arg[: len(arg) - match.span()[1]]
+    elif isotope_info.endswith(("-", "+")):  # Cases like 'H-' and 'Pb-209+++'
+        match = re.fullmatch(
+            r"\s*(?P<isotope>\w+(-[0-9]+)?)(?P<charge>[-+]+)\s*",
+            isotope_info,
+        )
+        isotope_info = match.groupdict()["isotope"]
+        charge_info = match.groupdict()["charge"]
 
-        if char == "-":
-            Z_from_arg = -Z_from_arg
-        if isotope_info.endswith(("-", "+")):
+        if len(set(charge_info)) != 1:
             raise InvalidParticleError(invalid_charge_errmsg) from None
-    else:
-        isotope_info = arg
-        Z_from_arg = None
+
+        Z_from_arg = len(charge_info)
+        if charge_info[0] == "-":
+            Z_from_arg = -Z_from_arg
 
     return isotope_info, Z_from_arg
 
