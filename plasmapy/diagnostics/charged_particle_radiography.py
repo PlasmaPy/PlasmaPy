@@ -1094,7 +1094,7 @@ class Tracker:
 
         self._log("Run completed")
 
-        self._log(f"Fraction of particles tracked: {self.fract_tracked*100:.1f}%")
+        self._log(f"Fraction of particles tracked: {self.fract_tracked:.1%}")
 
         self._log(
             "Fraction of tracked particles that entered the grid: "
