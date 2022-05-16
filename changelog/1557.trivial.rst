@@ -1,0 +1,3 @@
+Added `flake8-implicit-str-concat
+<https://github.com/flake8-implicit-str-concat/flake8-implicit-str-concat>`__
+as a flake8_ extension.
