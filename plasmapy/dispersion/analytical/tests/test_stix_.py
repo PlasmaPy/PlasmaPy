@@ -33,21 +33,21 @@ class TestStix:
             ({**_kwargs_single_valued, "w": np.ones((2, 2)) * u.rad / u.s}, ValueError),
             ({**_kwargs_single_valued, "w": 5 * u.s}, u.UnitTypeError),
             (
-                {**_kwargs_single_valued, "ions": {"not": "a particle"}},
-                InvalidParticleError,
+                    {**_kwargs_single_valued, "ions": {"not": "a particle"}},
+                    InvalidParticleError,
             ),
             ({**_kwargs_single_valued, "n_i": "wrong type"}, TypeError),
             ({**_kwargs_single_valued, "n_i": 6 * u.m / u.s}, u.UnitTypeError),
             ({**_kwargs_single_valued, "theta": 5 * u.eV}, u.UnitTypeError),
             (
-                {**_kwargs_single_valued, "theta": np.ones((2, 2)) * u.rad},
-                TypeError,
+                    {**_kwargs_single_valued, "theta": np.ones((2, 2)) * u.rad},
+                    TypeError,
             ),
             ({**_kwargs_single_valued, "ions": Particle("e-")}, ValueError),
             ({**_kwargs_single_valued, "n_i": [4, 2, 3] * u.m ** -3}, ValueError),
             (
-                {**_kwargs_single_valued, "n_i": np.ones((2, 2)) * u.m ** -3},
-                ValueError,
+                    {**_kwargs_single_valued, "n_i": np.ones((2, 2)) * u.m ** -3},
+                    ValueError,
             ),
         ],
     )
@@ -60,39 +60,39 @@ class TestStix:
         [
             ({**_kwargs_single_valued, "w": 2 * u.rad / u.s}, {"shape": (4,)}),
             (
-                {**_kwargs_single_valued, "w": [10] * u.rad / u.s},
-                {"shape": (4,)},
+                    {**_kwargs_single_valued, "w": [10] * u.rad / u.s},
+                    {"shape": (4,)},
             ),
             (
-                {**_kwargs_single_valued, "w": [10, 20, 30] * u.rad / u.s},
-                {"shape": (3, 4)},
-            ),
-            ({**_kwargs_single_valued, "ions": ["He+", "H+"]}, {"shape": (4,)}),
-            (
-                {
-                    **_kwargs_single_valued,
-                    "ions": ["He+"],
-                    "n_i": [1] * u.m ** -3,
-                },
-                {"shape": (4,)},
+                    {**_kwargs_single_valued, "w": [10, 20, 30] * u.rad / u.s},
+                    {"shape": (3, 4)},
             ),
             ({**_kwargs_single_valued, "ions": ["He+", "H+"]}, {"shape": (4,)}),
             (
-                {
-                    **_kwargs_single_valued,
-                    "ions": ["He+", "H+"],
-                    "n_i": [1, 2] * u.m ** -3,
-                },
-                {"shape": (4,)},
+                    {
+                        **_kwargs_single_valued,
+                        "ions": ["He+"],
+                        "n_i": [1] * u.m ** -3,
+                    },
+                    {"shape": (4,)},
+            ),
+            ({**_kwargs_single_valued, "ions": ["He+", "H+"]}, {"shape": (4,)}),
+            (
+                    {
+                        **_kwargs_single_valued,
+                        "ions": ["He+", "H+"],
+                        "n_i": [1, 2] * u.m ** -3,
+                    },
+                    {"shape": (4,)},
             ),
             ({**_kwargs_single_valued, "theta": [10, 20, 30]}, {"shape": (3, 4)}),
             (
-                {
-                    **_kwargs_single_valued,
-                    "w": [10, 20],
-                    "theta": 10 * u.rad,
-                },
-                {"shape": (2, 4)},
+                    {
+                        **_kwargs_single_valued,
+                        "w": [10, 20],
+                        "theta": 10 * u.rad,
+                    },
+                    {"shape": (2, 4)},
             ),
         ],
     )
@@ -107,47 +107,35 @@ class TestStix:
         "kwargs, expected",
         [
             (
-                {"theta": 0 * u.deg, "gamma": 1000, "beta": 1000, "mu": 1000.5},
-                {
-                    "n_1": 31.638591944805466,
-                    "n_2": 1414.5674255763668,
-                },
+                    {**_kwargs_single_valued, "theta": 0 * u.rad},
+                    {
+                        "gamma": 1000,
+                        "beta": 1000,
+                        "mu": 1836,
+                        "ns": np.array([31, -31, 1414, -1414])
+                    },
             ),
             (
-                {"theta": np.pi / 2 * u.deg, "gamma": 1000, "beta": 1000, "mu": 1000.5},
-                {
-                    "n_1": 44.73253849828242,
-                    "n_2": 0,
-                },
+                    {**_kwargs_single_valued, "theta": np.pi / 2 * u.deg },
+                    {
+                        "gamma": 44.73253849828242,
+                        "beta": 0,
+                        "mu": 0,
+                        "ns": np.array([])
+                    },
             ),
         ],
     )
     def test_vals(self, kwargs, expected):
 
-        gamma = kwargs["gamma"]
-        beta = kwargs["beta"]
-        mu = kwargs["mu"]
+        #calculate mu
 
-        R = (
-            1
-            - (gamma * beta ** 2) / (beta + 1)
-            + (gamma * beta ** 2) / (beta - (1 / mu))
-        )
-        L = (
-            1
-            + (gamma * beta ** 2) / (beta - 1)
-            + (gamma * beta ** 2) / (beta + (1 / mu))
-        )
-        P = 1 - gamma * beta ** 2 - gamma * mu * beta ** 2
+        assert np.isclose(mu, expected['mu'])
+        assert np.isclose(gamma, expected ['gamma'])
+        assert np.isclose(beta, expected['beta'])
 
-        S = 0.5 * (R + L)
+        ks = stix(**kwargs)
 
-        if kwargs["theta"].value == 0:
-            n_1 = np.sqrt(R)
-            n_2 = np.sqrt(L)
-        elif kwargs["theta"].value == np.pi / 2:
-            n_1 = np.sqrt(R * L / S)
-            n_2 = np.sqrt(P)
+        #calculate ns
 
-        assert np.isclose(n_1, expected["n_1"])
-        assert np.isclose(n_2, expected["n_2"])
+        assert np.allclose(ns, expected['ns'])
