@@ -13,7 +13,7 @@ from plasmapy.particles.exceptions import (
     InvalidParticleError,
     ParticleError,
 )
-from plasmapy.particles.particle_class import Particle, ParticleLike
+from plasmapy.particles.particle_class import CustomParticle, Particle, ParticleLike
 from plasmapy.utils.code_repr import call_string
 from plasmapy.utils.decorators.validators import validate_quantities
 
@@ -586,8 +586,8 @@ def test_annotated_init():
     [
         (particle_input, validate_quantities_),
         (particle_input(), validate_quantities_),
-        (validate_quantities_, particle_input),
-        (validate_quantities_, particle_input()),
+        pytest.param(validate_quantities_, particle_input, marks=pytest.mark.xfail),
+        pytest.param(validate_quantities_, particle_input(), marks=pytest.mark.xfail),
     ],
 )
 def test_particle_input_with_validate_quantities(outer_decorator, inner_decorator):
@@ -610,3 +610,14 @@ def test_particle_input_with_validate_quantities(outer_decorator, inner_decorato
     assert isinstance(instance.particle, Particle)
 
     assert instance.T_e.unit == u.K
+
+
+def test_allow_custom_particles_is_true():
+    @particle_input(allow_custom_particles=False)
+    def f(particle: ParticleLike):
+        return particle
+
+    custom_particle = CustomParticle()
+
+    with pytest.raises(InvalidParticleError):
+        f(custom_particle)
