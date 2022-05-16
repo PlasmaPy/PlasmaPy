@@ -374,7 +374,7 @@ class AbstractGrid(ABC):
             return self.units[0]
         else:
             raise ValueError(
-                "Array dimensions do not all have the same " f"units: {self.units}"
+                f"Array dimensions do not all have the same units: {self.units}"
             )
 
     # *************************************************************************
@@ -783,9 +783,7 @@ class AbstractGrid(ABC):
                 stop[i] = stop[i].to(unit)
 
             except u.UnitConversionError:
-                raise ValueError(
-                    f"Units of {stop[i]} and " f" {unit} are not compatible"
-                )
+                raise ValueError(f"Units of {stop[i]} and {unit} are not compatible")
 
             # strip units
             stop[i] = stop[i].value
