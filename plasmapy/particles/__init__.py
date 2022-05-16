@@ -36,7 +36,11 @@ from plasmapy.particles.particle_class import (
     Particle,
     ParticleLike,
 )
-from plasmapy.particles.particle_collections import ionic_levels, ParticleList
+from plasmapy.particles.particle_collections import (
+    ionic_levels,
+    ParticleList,
+    ParticleListLike,
+)
 from plasmapy.particles.serialization import (
     json_load_particle,
     json_loads_particle,
