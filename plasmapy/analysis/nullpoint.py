@@ -1231,10 +1231,6 @@ def _locate_null_point(vspace, cell, n, err):
     warnings.warn("Various starting points did not locate possible null point.")
     # Generate new starting points localized into 8 small cells?
     return None
-    # if _recursion_level > _MAX_RECURSION_LEVEL:
-    #     warnings.warn("Could not locate a possible null point")
-    #     return None
-    # Break Up the Cell into 8 smaller cells and try again
     # _recursion_level = _recursion_level + 1
     # null_point_args = {
     #     "func": tlApprox,
