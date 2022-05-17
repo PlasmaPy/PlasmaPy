@@ -1231,15 +1231,6 @@ def _locate_null_point(vspace, cell, n, err):
     warnings.warn("Various starting points did not locate possible null point.")
     # Generate new starting points localized into 8 small cells?
     return None
-    # _recursion_level = _recursion_level + 1
-    # null_point_args = {
-    #     "func": tlApprox,
-    #     "x_range": [pos_000[0], pos_111[0]],
-    #     "y_range": [pos_000[1], pos_111[1]],
-    #     "z_range": [pos_000[2], pos_111[2]],
-    #     "precision": [deltax / 2, deltay / 2, deltaz / 2],
-    # }
-    # return uniform_null_point_find(**null_point_args)
 
 
 def _classify_null_point(vspace, cell, loc):
