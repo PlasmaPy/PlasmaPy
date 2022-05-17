@@ -10,6 +10,7 @@ __all__ = [
     "Linear",
 ]
 
+import numbers
 import numpy as np
 
 from abc import ABC, abstractmethod
@@ -238,7 +239,7 @@ class AbstractFitFunction(ABC):
         if isinstance(val, self.FitParamTuple) or (
             isinstance(val, (tuple, list))
             and len(val) == len(self.param_names)
-            and all(isinstance(vv, (int, np.integer, float, np.floating)) for vv in val)
+            and all(isinstance(vv, numbers.Real) for vv in val)
         ):
             self._params = tuple(val)
         else:
@@ -260,7 +261,7 @@ class AbstractFitFunction(ABC):
         if isinstance(val, self.FitParamTuple) or (
             isinstance(val, (tuple, list))
             and len(val) == len(self.param_names)
-            and all(isinstance(vv, (int, np.integer, float, np.floating)) for vv in val)
+            and all(isinstance(vv, numbers.Real) for vv in val)
         ):
             self._param_errors = tuple(val)
         else:
@@ -302,7 +303,7 @@ class AbstractFitFunction(ABC):
         class functionality.
         """
         for arg in args:
-            if not isinstance(arg, (int, np.integer, float, np.floating)):
+            if not isinstance(arg, numbers.Real):
                 raise TypeError(
                     f"Expected int or float for parameter argument, got "
                     f"{type(arg)}."
@@ -314,7 +315,7 @@ class AbstractFitFunction(ABC):
         Check the independent variable ``x`` so that it is an expected
         type for the class functionality.
         """
-        if isinstance(x, (int, float, np.integer, np.floating)):
+        if isinstance(x, numbers.Real):
             x = np.array(x)
         else:
             if not isinstance(x, np.ndarray):
