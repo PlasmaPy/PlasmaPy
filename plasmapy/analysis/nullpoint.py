@@ -1251,7 +1251,6 @@ def _classify_null_point(vspace, cell, loc):
 
     Parameters
     ----------
-
     vspace: array_like
         The vector space as constructed by the vector_space function which is
         A 1 by 3 array with the first element containing the coordinates,
