@@ -235,9 +235,7 @@ class AbstractFitFunction(ABC):
 
     @params.setter
     def params(self, val) -> None:
-        if isinstance(val, self.FitParamTuple):
-            self._params = tuple(val)
-        elif (
+        if isinstance(val, self.FitParamTuple) or (
             isinstance(val, (tuple, list))
             and len(val) == len(self.param_names)
             and all(isinstance(vv, (int, np.integer, float, np.floating)) for vv in val)
@@ -259,9 +257,7 @@ class AbstractFitFunction(ABC):
 
     @param_errors.setter
     def param_errors(self, val) -> None:
-        if isinstance(val, self.FitParamTuple):
-            self._param_errors = tuple(val)
-        elif (
+        if isinstance(val, self.FitParamTuple) or (
             isinstance(val, (tuple, list))
             and len(val) == len(self.param_names)
             and all(isinstance(vv, (int, np.integer, float, np.floating)) for vv in val)
