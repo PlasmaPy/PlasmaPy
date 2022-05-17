@@ -520,7 +520,7 @@ def Coulomb_logarithm(
         ]:
             warnings.warn(
                 f"The Coulomb logarithm is {ln_Lambda}, and the specified "
-                + f'method, "{method}", depends on weak coupling.',
+                f'method, "{method}", depends on weak coupling.',
                 utils.CouplingWarning,
             )
         elif np.any(ln_Lambda < 4):

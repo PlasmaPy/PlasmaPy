@@ -77,9 +77,7 @@ helium-4).
 
 # auto populate __all__
 for name, obj in list(globals().items()):
-    if inspect.ismodule(obj):
-        continue
-    elif name.startswith("__") or name.endswith("__"):
+    if inspect.ismodule(obj) or name.startswith("__") or name.endswith("__"):
         continue
 
     __all__.append(name)

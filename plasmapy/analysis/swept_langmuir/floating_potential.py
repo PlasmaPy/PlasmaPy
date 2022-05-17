@@ -216,9 +216,7 @@ def find_floating_potential(
     threshold_indices = np.where(cp_intervals > threshold)[0]
     n_islands = threshold_indices.size + 1
 
-    if np.isinf(min_points):
-        rtn["islands"] = [slice(cp_candidates[0], cp_candidates[-1] + 1)]
-    elif n_islands == 1:
+    if np.isinf(min_points) or n_islands == 1:
         rtn["islands"] = [slice(cp_candidates[0], cp_candidates[-1] + 1)]
     else:
         # There are multiple crossing points
