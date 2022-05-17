@@ -101,11 +101,19 @@ def find_ion_saturation_current(
         | ``"exp_plus_linear"`` | 1.0                                  |
         +-----------------------+--------------------------------------+
 
+        |
+
+        Can not be used with keyword ``voltage_bound``.
+
     voltage_bound: `float`
         A bias voltage (in volts) that specifies an upper bound used to
         collect the points for the curve fit.  That is, points that
         satisfy ``voltage <= voltage_bound`` are used in the fit.
         (DEFAULT ``None``)
+
+        |
+
+        Can not be used with keyword ``current_bound``.
 
     Returns
     -------
