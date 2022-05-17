@@ -157,7 +157,7 @@ def spectral_density(
     else:
         ifract = np.asarray(ifract, dtype=np.float64)
 
-    # If electon velocity is not specified, create an array corresponding
+    # If electron velocity is not specified, create an array corresponding
     # to zero drift
     if electron_vel is None:
         electron_vel = np.zeros([efract.size, 3]) * u.m / u.s

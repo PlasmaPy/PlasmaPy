@@ -86,8 +86,7 @@ def ionization_balance(n: u.m ** -3, T_e: u.K) -> u.dimensionless_unscaled:
     A = sqrt(k_B * T_e / E_H)
     B = log(1 / (4 * n * a0 ** 3) * (k_B * T_e / (pi * E_H)) ** (3 / 2))
 
-    Z = A * sqrt(B) - 1 / 2
-    return Z
+    return A * sqrt(B) - 1 / 2
 
 
 Z_bal_ = ionization_balance
@@ -189,6 +188,4 @@ def Saha(g_j, g_k, n_e: u.m ** -3, E_jk: u.J, T_e: u.K) -> u.dimensionless_unsca
     physical_constants = (k_B * T_e / (pi * E_h)) ** (3 / 2)
     boltzmann_factor = exp(-E_jk / (k_B * T_e))
 
-    ratio = degeneracy_factor * physical_constants * boltzmann_factor
-
-    return ratio
+    return degeneracy_factor * physical_constants * boltzmann_factor

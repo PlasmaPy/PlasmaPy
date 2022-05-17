@@ -235,7 +235,7 @@ def test_non_collective_spectrum():
 
     e_width = width_at_value(wavelength.value, Skw.value, 0.2e-13)
 
-    # Check that the widts of the electron feature matchs expectations
+    # Check that the widths of the electron feature matches expectations
     assert np.isclose(e_width, 22.6699, 1e-3), (
         "Non-collective case electron "
         f"feature width is {e_width} "

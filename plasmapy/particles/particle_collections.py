@@ -4,10 +4,11 @@ __all__ = ["ionic_levels", "ParticleList"]
 
 import astropy.units as u
 import collections
+import contextlib
 import numpy as np
 
 from numbers import Integral
-from typing import Callable, Iterable, List, Optional, Union
+from typing import Callable, Iterable, List, Optional, Sequence, Tuple, Union
 
 from plasmapy.particles.decorators import particle_input
 from plasmapy.particles.exceptions import ChargeError, InvalidParticleError
@@ -119,7 +120,7 @@ class ParticleList(collections.UserList):
         `list` containing `~plasmapy.particles.particle_class.Particle`
         and `~plasmapy.particles.particle_class.CustomParticle` instances.
         """
-        new_particles = list()
+        new_particles = []
         if particles is None:
             return new_particles
         for obj in particles:
@@ -148,10 +149,8 @@ class ParticleList(collections.UserList):
         if isinstance(other, ParticleList):
             return other
 
-        try:
+        with contextlib.suppress(TypeError, InvalidParticleError):
             return ParticleList(other)
-        except (InvalidParticleError, TypeError):
-            pass
 
         try:
             return ParticleList([other])
@@ -353,7 +352,7 @@ class ParticleList(collections.UserList):
 
         Parameters
         ----------
-        abundances : array-like, optional
+        abundances : array_like, optional
             Real numbers representing relative abundances of the particles in
             the |ParticleList|. Must have the same number of elements as the
             |ParticleList|. This parameter gets passed to `numpy.average` via
@@ -474,7 +473,7 @@ def ionic_levels(
     >>> ionic_levels("Fe-56", min_charge=13, max_charge=15)
     ParticleList(['Fe-56 13+', 'Fe-56 14+', 'Fe-56 15+'])
     """
-    base_particle = Particle(particle.isotope if particle.isotope else particle.element)
+    base_particle = Particle(particle.isotope or particle.element)
 
     if max_charge is None:
         max_charge = particle.atomic_number
@@ -489,3 +488,42 @@ def ionic_levels(
     return ParticleList(
         [Particle(base_particle, Z=Z) for Z in range(min_charge, max_charge + 1)]
     )
+
+
+ParticleListLike = Union[ParticleList, Sequence[ParticleLike]]
+
+ParticleListLike.__doc__ = r"""
+An `object` is :term:`particle-list-like` if it can be identified as a
+`~plasmapy.particles.particle_collections.ParticleList` or cast into
+one.
+
+When used as a type hint annotation, `ParticleListLike` indicates that
+the corresponding argument should represent a sequence of physical
+particles. Each item in a `ParticleListLike` must be
+`~plasmapy.particles.particle_class.ParticleLike`.
+
+Notes
+-----
+`~plasmapy.particles.particle_class.DimensionlessParticle` instances do
+not uniquely represent a physical particle, and are thus not
+|ParticleLike| and cannot be contained in a `ParticleListLike` object.
+
+See Also
+--------
+~plasmapy.particles.particle_collections.ParticleList
+~plasmapy.particles.particle_class.ParticleLike
+~plasmapy.particles.decorators.particle_input
+
+Examples
+--------
+Using `ParticleListLike` as a type hint annotation indicates that an
+argument or variable should represent a sequence of |ParticleLike|
+objects.
+
+>>> from plasmapy.particles import ParticleList, ParticleListLike
+>>> def contains_only_leptons(particles: ParticleListLike):
+...     particle_list = ParticleList(particles)
+...     return all(particle_list.is_category("lepton"))
+>>> contains_only_leptons(["electron", "muon"])
+True
+"""

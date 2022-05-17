@@ -6,8 +6,7 @@ __all__ = ["PlasmaBlob"]
 import astropy.units as u
 import warnings
 
-from plasmapy.formulary.collisions import coupling_parameter
-from plasmapy.formulary.dimensionless import quantum_theta
+from plasmapy.formulary import coupling_parameter, quantum_theta
 from plasmapy.formulary.misc import _grab_charge
 from plasmapy.particles import particle_mass
 from plasmapy.plasma.plasma_base import GenericPlasma
@@ -126,9 +125,7 @@ class PlasmaBlob(GenericPlasma):
                 f"Both Fermi and thermal energy important: Theta = {quantum_theta}"
             )
 
-        # summarizing and printing/returning regimes
-        aggregateStrs = [coupling_str, quantum_theta_str]
-        return aggregateStrs
+        return [coupling_str, quantum_theta_str]
 
     def coupling(self):
         """
@@ -152,10 +149,8 @@ class PlasmaBlob(GenericPlasma):
         Quantum theta parameter, which compares Fermi kinetic energy to
         thermal kinetic energy to check if quantum effects are important.
         """
-        theta = quantum_theta(self.T_e, self.n_e)
-        return theta
+        return quantum_theta(self.T_e, self.n_e)
 
     @classmethod
     def is_datasource_for(cls, **kwargs):
-        match = "T_e" in kwargs.keys() and "n_e" in kwargs.keys()
-        return match
+        return "T_e" in kwargs and "n_e" in kwargs
