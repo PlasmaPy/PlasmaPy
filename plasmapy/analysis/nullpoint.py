@@ -1218,9 +1218,6 @@ def _locate_null_point(vspace, cell, n, err):
                 x0, np.matmul(np.linalg.inv(jcb(x0[0], x0[1], x0[2])), Bx0)
             )
             norm = np.linalg.norm(x0)
-            # print(x0)
-            # print(np.abs((norm - prev_norm) / (prev_norm)) )
-            # print(in_bound(x0))
             if np.abs((norm - prev_norm) / (prev_norm + 1e-10)) < err and in_bound(x0):
                 return x0
         if in_bound(x0):
