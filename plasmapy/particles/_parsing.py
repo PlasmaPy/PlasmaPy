@@ -119,16 +119,9 @@ def dealias_particle_aliases(alias: Union[str, Integral]) -> str:
     (which will usually be a `str` but may be an `int` representing
     atomic number).
     """
-    if not isinstance(alias, str):
-        return alias
-    elif (
-        alias in case_sensitive_aliases.values()
-        or alias in case_insensitive_aliases.values()
-    ):
-        return alias
-    elif alias in case_sensitive_aliases:
+    if alias in case_sensitive_aliases:
         return case_sensitive_aliases[alias]
-    elif alias.lower() in case_insensitive_aliases:
+    elif isinstance(alias, str) and alias.lower() in case_insensitive_aliases:
         return case_insensitive_aliases[alias.lower()]
     else:
         return alias

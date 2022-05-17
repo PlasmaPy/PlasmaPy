@@ -15,6 +15,8 @@ __all__ = [
     "roman",
 ]
 
+import contextlib
+
 from plasmapy.utils import (
     code_repr,
     datatype_factory_base,
@@ -34,9 +36,7 @@ from plasmapy.utils.exceptions import (
     RelativityWarning,
 )
 
-try:
-    from plasmapy.utils import pytest_helpers
-except ModuleNotFoundError:
+with contextlib.suppress(ModuleNotFoundError):
     # pytest is not a hard dependency, so only import pytest_helpers if pytest
     # is installed
-    pass
+    from plasmapy.utils import pytest_helpers
