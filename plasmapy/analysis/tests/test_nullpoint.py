@@ -441,8 +441,9 @@ class Test_classify_null_point:
         assert uniform_null_point_find(**kwargs)[0].classification == expected
 
 
-# Testing a magnetic field that violates the divergence constraint
+
 def test_null_point_find9():
+    """Testing a magnetic field that violates the divergence constraint"""
     nullpoint9_args = {
         "x_range": [-0.1, 0.1],
         "y_range": [-0.1, 0.1],
