@@ -1285,7 +1285,6 @@ def _classify_null_point(vspace, cell, loc):
     eigen_vals, eigen_vectors = np.linalg.eig(M)
     # using the notation from Parnell et al. (1996)
     R = -1.0 * np.linalg.det(M)
-    # Q = 0.5 * (np.trace(M) ** 2 - np.trace(np.matmul(M, M)))
     Q = -0.5 * np.trace(np.matmul(M, M))
 
     discriminant = (Q ** 3 / 27.0) + (R ** 2 / 4.0)
