@@ -16,7 +16,7 @@ from abc import ABC, abstractmethod
 from collections import namedtuple
 from scipy.optimize import curve_fit, fsolve
 from scipy.stats import linregress
-from typing import Tuple, Union
+from typing import Optional, Tuple, Union
 from warnings import warn
 
 from plasmapy.utils.decorators import modify_docstring
@@ -226,7 +226,7 @@ class AbstractFitFunction(ABC):
         return self._FitParamTuple
 
     @property
-    def params(self) -> Union[None, tuple]:
+    def params(self) -> Optional[tuple]:
         """The fitted parameters for the fit function."""
         if self._params is None:
             return self._params
@@ -250,7 +250,7 @@ class AbstractFitFunction(ABC):
             )
 
     @property
-    def param_errors(self) -> Union[None, tuple]:
+    def param_errors(self) -> Optional[tuple]:
         """The associated errors of the fitted :attr:`params`."""
         if self._param_errors is None:
             return self._param_errors
