@@ -657,7 +657,7 @@ def _trilinear_analysis(vspace, cell):
     BxBzEndpoints = []
     ByBzEndpoints = []
 
-    # Check if exists in root list
+    # Check if the null point already exists in root list
     def is_root_in_list(root, arr):
         for r in arr:
             x_close = np.isclose(root[0], r[0], atol=_EQUALITY_ATOL)
