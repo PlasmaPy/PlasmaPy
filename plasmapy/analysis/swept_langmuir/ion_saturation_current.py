@@ -7,7 +7,7 @@ __aliases__ = ["find_isat_"]
 import numbers
 import numpy as np
 
-from typing import Tuple, NamedTuple, Union
+from typing import Tuple, NamedTuple, Optional, Union
 
 from plasmapy.analysis import fit_functions as ffuncs
 from plasmapy.analysis.swept_langmuir.helpers import check_sweep
@@ -21,19 +21,19 @@ class ISatExtras(NamedTuple):
     `find_ion_saturation_current`.
     """
 
-    rsq: Union[float, None]
+    rsq: Optional[float]
     """
     Alias for field number 0, the r-squared value of the ion-saturation
     curve fit.
     """
 
-    fitted_func: Union[ffuncs.AbstractFitFunction, None]
+    fitted_func: Optional[ffuncs.AbstractFitFunction]
     """
     Alias for field number 1, the :term:`fit-function` fitted during
     the ion-saturation curve fit.
     """
 
-    fitted_indices: Union[slice, None]
+    fitted_indices: Optional[slice]
     """
     Alias for field number 2, the indices used in the ion-saturation
     curve fit.
