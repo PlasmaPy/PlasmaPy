@@ -204,6 +204,7 @@ class TestFindIonSaturationCurrent:
                     ),
                 ),
             ),
+            # exponential plus linear fit to exponential plus linear analytical data
         ],
     )
     def test_analytical_fits(self, kwargs, expected):
@@ -219,3 +220,7 @@ class TestFindIonSaturationCurrent:
         assert np.allclose(extras.fitted_func.params, expected[1].fitted_func.params)
         assert np.isclose(extras.rsq, 1.0)
         assert extras.fitted_indices == expected[1].fitted_indices
+
+    @pytest.mark.skip
+    def test_pace_data(self):
+        ...
