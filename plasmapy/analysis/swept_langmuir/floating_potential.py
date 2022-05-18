@@ -13,11 +13,6 @@ from plasmapy.analysis import fit_functions as ffuncs
 from plasmapy.analysis.swept_langmuir.helpers import check_sweep
 from plasmapy.utils.exceptions import PlasmaPyWarning
 
-FloatingPotentialResults = namedtuple(
-    "FloatingPotentialResults",
-    ("vf", "vf_err", "rsq", "func", "islands", "indices"),
-)
-
 
 class VFExtras(NamedTuple):
     """
@@ -178,8 +173,8 @@ def find_floating_potential(
          ``fit_type="linear"`` and `scipy.optimize.curve_fit` for
          ``fit_type="exponential"``.
     """
-    rtn = FloatingPotentialResults(
-        vf=np.nan, vf_err=np.nan, rsq=None, func=None, islands=None, indices=None
+    rtn_extras = VFExtras(
+        vf_err=None, rsq=None, fitted_func=None, islands=None, fitted_indices=None
     )._asdict()
 
     _settings = {
@@ -189,7 +184,7 @@ def find_floating_potential(
     try:
         min_point_factor = _settings[fit_type]["min_point_factor"]
         fit_func = _settings[fit_type]["func"]()
-        rtn["func"] = fit_func
+        rtn_extras["fitted_func"] = fit_func
     except KeyError:
         raise ValueError(
             f"Requested fit '{fit_type}' is not a valid option.  Valid options "
@@ -253,7 +248,7 @@ def find_floating_potential(
     n_islands = threshold_indices.size + 1
 
     if np.isinf(min_points) or n_islands == 1:
-        rtn["islands"] = [slice(cp_candidates[0], cp_candidates[-1] + 1)]
+        rtn_extras["islands"] = [slice(cp_candidates[0], cp_candidates[-1] + 1)]
     else:
         # There are multiple crossing points
         isl_start = np.concatenate(
@@ -262,13 +257,13 @@ def find_floating_potential(
         isl_stop = np.concatenate(
             (cp_candidates[threshold_indices] + 1, [cp_candidates[-1] + 1])
         )
-        rtn["islands"] = []
+        rtn_extras["islands"] = []
         for start, stop in zip(isl_start, isl_stop):
-            rtn["islands"].append(slice(start, stop))
+            rtn_extras["islands"].append(slice(start, stop))
 
         # do islands fall within the min_points window?
         isl_window = (
-            np.abs(np.r_[rtn["islands"][-1]][-1] - np.r_[rtn["islands"][0]][0]) + 1
+            np.abs(np.r_[rtn_extras["islands"][-1]][-1] - np.r_[rtn_extras["islands"][0]][0]) + 1
         )
         if isl_window > min_points:
             warn(
@@ -278,7 +273,7 @@ def find_floating_potential(
                 PlasmaPyWarning,
             )
 
-            return FloatingPotentialResults(**rtn)
+            return None, VFExtras(**rtn_extras)
 
     # Construct crossing-island (pad if needed)
     if np.isinf(min_points):
@@ -322,14 +317,14 @@ def find_floating_potential(
             )
 
     # Perform Linear Regression Fit
-    volt_sub = voltage[istart : istop + 1]
-    curr_sub = current[istart : istop + 1]
+    volt_sub = voltage[istart: istop + 1]
+    curr_sub = current[istart: istop + 1]
     fit_func.curve_fit(volt_sub, curr_sub)
 
-    rtn["vf"], rtn["vf_err"] = fit_func.root_solve()
-    rtn.update({"rsq": fit_func.rsq, "indices": slice(istart, istop + 1)})
+    vf, rtn_extras["vf_err"] = fit_func.root_solve()
+    rtn_extras.update({"rsq": fit_func.rsq, "fitted_indices": slice(istart, istop + 1)})
 
-    return FloatingPotentialResults(**rtn)
+    return vf, VFExtras(**rtn_extras)
 
 
 find_vf_ = find_floating_potential
