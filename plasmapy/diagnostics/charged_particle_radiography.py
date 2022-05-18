@@ -1014,11 +1014,8 @@ class Tracker:
                 f"{field_weightings}",
             )
 
-        if dt is None:
-            # Set dt as an infinite range by default (auto dt with no restrictions)
-            self.dt = np.array([0.0, np.inf]) * u.s
-        else:
-            self.dt = dt
+        # By default, set dt as an infinite range (auto dt with no restrictions)
+        self.dt = np.array([0.0, np.inf]) * u.s if dt is None else dt
         self.dt = (self.dt).to(u.s).value
 
         # Check to make sure particles have already been generated
