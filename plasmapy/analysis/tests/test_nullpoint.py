@@ -322,7 +322,22 @@ def test_null_point_find5():
         "func": vspace_func_4,
     }
     npoints5 = uniform_null_point_find(**nullpoint5_args)
-    assert True
+    for p in npoints5:
+        if np.allclose(p.loc, np.array([5.5, 5.5, 5.5]), _EQUALITY_ATOL):
+            assert (
+                p.classification
+                == "Anti-parallel lines with null plane OR Planes of parabolae with null line"
+            )
+        if np.allclose(p.loc, np.array([5.47, 5.5, 5.5]), _EQUALITY_ATOL):
+            assert (
+                p.classification
+                == "Anti-parallel lines with null plane OR Planes of parabolae with null line"
+            )
+        if np.allclose(p.loc, np.array([5.5, 5.5, 5.47]), _EQUALITY_ATOL):
+            assert (
+                p.classification
+                == "Anti-parallel lines with null plane OR Planes of parabolae with null line"
+            )
 
 
 def test_null_point_find6():
@@ -463,9 +478,17 @@ def test_null_point_find10():
         "precision": [0.01, 0.01, 0.01],
         "func": lambda x, y, z: [y * z, -x * z, x * y],
     }
-
     npoints = uniform_null_point_find(**nullpoint10_args)
-    assert True
+    for p in npoints:
+        if np.allclose(p.loc, np.array([0, 0, 0]), _EQUALITY_ATOL):
+            assert p.classification == "Proper radial null"
+        if np.allclose(p.loc, np.array([0.01, 0, 0]), _EQUALITY_ATOL):
+            assert (
+                p.classification
+                == "Anti-parallel lines with null plane OR Planes of parabolae with null line"
+            )
+        if np.allclose(p.loc, np.array([0, 0, -0.01]), _EQUALITY_ATOL):
+            assert p.classification == "Continuous concentric ellipses"
 
 
 def test_null_point_find11():
@@ -477,4 +500,13 @@ def test_null_point_find11():
         "func": lambda x, y, z: [1.01 * y * z, -x * z, x * y],
     }
     npoints = uniform_null_point_find(**nullpoint10_args)
-    assert True
+    for p in npoints:
+        if np.allclose(p.loc, np.array([0, 0, 0]), _EQUALITY_ATOL):
+            assert p.classification == "Proper radial null"
+        if np.allclose(p.loc, np.array([0.01, 0, 0]), _EQUALITY_ATOL):
+            assert (
+                p.classification
+                == "Anti-parallel lines with null plane OR Planes of parabolae with null line"
+            )
+        if np.allclose(p.loc, np.array([0, 0, -0.01]), _EQUALITY_ATOL):
+            assert p.classification == "Continuous concentric ellipses"
