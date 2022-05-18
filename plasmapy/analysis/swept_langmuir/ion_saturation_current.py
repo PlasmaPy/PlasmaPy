@@ -234,4 +234,7 @@ def find_ion_saturation_current(
 
 
 find_isat_ = find_ion_saturation_current
-"""Alias to :func:`find_ion_saturation_current`."""
+"""
+Alias to
+:func:`~plasmapy.analysis.swept_langmuir.ion_saturation_current.find_ion_saturation_current`.
+"""
