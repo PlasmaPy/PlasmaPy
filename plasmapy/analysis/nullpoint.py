@@ -1316,7 +1316,7 @@ def _classify_null_point(vspace, cell, loc):
     return null_point_type
 
 
-def _vspace_iterator(vspace, maxiter=500, err=1e-4):
+def _vspace_iterator(vspace, maxiter=500, err=1e-10):
     r"""
     Returns an array of null point objects, representing
     the null points of the given vector space.
@@ -1368,7 +1368,7 @@ def null_point_find(
     v_arr=None,
     w_arr=None,
     maxiter=500,
-    err=1e-4,
+    err=1e-10,
 ):
     r"""
     Returns an array of nullpoint object, representing
@@ -1455,7 +1455,7 @@ def uniform_null_point_find(
     func: Callable,
     precision=[0.05, 0.05, 0.05],
     maxiter=500,
-    err=1e-4,
+    err=1e-10,
 ):
     r"""
     Return an array of `~plasmapy.analysis.nullpoint.NullPoint` objects, representing
