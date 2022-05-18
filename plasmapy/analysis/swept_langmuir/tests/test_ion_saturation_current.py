@@ -6,10 +6,7 @@ Tests for functionality contained in
 import numpy as np
 import pytest
 
-from unittest import mock
-
 from plasmapy.analysis import fit_functions as ffuncs
-from plasmapy.analysis import swept_langmuir as _sl
 from plasmapy.analysis.swept_langmuir.ion_saturation_current import (
     find_ion_saturation_current,
     find_isat_,
@@ -41,11 +38,15 @@ class TestFindIonSaturationCurrent:
     """
     analytical_funcs = {
         "linear": ffuncs.Linear(params=(0.0004, -0.014)),
+        "exp_offset": ffuncs.ExponentialPlusOffset(params=(0.001, 0.1, -0.01)),
     }
     analytical_data = {"voltage": np.linspace(-30.0, 35, 100)}
     analytical_data.update(
         {
             "current_linear": analytical_funcs["linear"](analytical_data["voltage"]),
+            "current_exp_offset": analytical_funcs["exp_offset"](
+                analytical_data["voltage"]
+            ),
         },
     )
 
@@ -123,6 +124,7 @@ class TestFindIonSaturationCurrent:
     @pytest.mark.parametrize(
         "kwargs, expected",
         [
+            # linear fit to linear analytical data
             (
                 {
                     "voltage": analytical_data["voltage"],
@@ -167,6 +169,38 @@ class TestFindIonSaturationCurrent:
                         fitted_func=analytical_funcs["linear"],
                         rsq=None,
                         fitted_indices=slice(0, 46),
+                    ),
+                ),
+            ),
+            # exponential plus offset fit to exponential plus offset analytical data
+            (
+                {
+                    "voltage": analytical_data["voltage"],
+                    "current": analytical_data["current_exp_offset"],
+                    "fit_type": "exp_plus_offset",
+                },
+                (
+                    ffuncs.Linear(params=(0.0, analytical_funcs["exp_offset"].params.b)),
+                    ISatExtras(
+                        fitted_func=analytical_funcs["exp_offset"],
+                        rsq=None,
+                        fitted_indices=slice(0, 81),
+                    ),
+                ),
+            ),
+            (
+                {
+                    "voltage": analytical_data["voltage"],
+                    "current": analytical_data["current_exp_offset"],
+                    "fit_type": "exp_plus_offset",
+                    "voltage_bound": 30,
+                },
+                (
+                    ffuncs.Linear(params=(0.0, analytical_funcs["exp_offset"].params.b)),
+                    ISatExtras(
+                        fitted_func=analytical_funcs["exp_offset"],
+                        rsq=None,
+                        fitted_indices=slice(0, 92),
                     ),
                 ),
             ),
