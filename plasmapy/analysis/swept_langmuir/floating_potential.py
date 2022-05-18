@@ -6,7 +6,7 @@ import numbers
 import numpy as np
 
 from collections import namedtuple
-from typing import Union
+from typing import List, NamedTuple, Optional, Union
 from warnings import warn
 
 from plasmapy.analysis import fit_functions as ffuncs
@@ -17,6 +17,43 @@ FloatingPotentialResults = namedtuple(
     "FloatingPotentialResults",
     ("vf", "vf_err", "rsq", "func", "islands", "indices"),
 )
+
+
+class VFExtras(NamedTuple):
+    """
+    Create a `tuple` containing the extra parameters calculated by
+    `find_floating_potential`.
+    """
+    vf_err: Optional[float]
+    """
+    Alias for field number 0, the error in the calculated floating
+    potential from the floating potential curve fit.
+    """
+
+    rsq: Optional[float]
+    """
+    Alias for field number 1, the r-squared value of the ion-saturation
+    curve fit.
+    """
+
+    fitted_func: Optional[float]
+    """
+    Alias for field number 2, the :term:`fit-function` fitted during
+    the floating potential curve fit.
+    """
+
+    islands: Optional[List[slice]]
+    """
+    Alias for field number 3, a list of `slice` objects representing
+    the indices of the identified crossing-islands discovered during
+    the floating potential curve fit.
+    """
+
+    fitted_indices: Optional[slice]
+    """
+    Alias for field number 4, the indices used in the floating potential
+    curve fit.
+    """
 
 
 def find_floating_potential(
