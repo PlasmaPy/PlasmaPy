@@ -39,6 +39,15 @@ class TestFindIonSaturationCurrent:
     Tests for function
     `~plasmapy.analysis.swept_langmuir.ion_saturation_current.find_ion_saturation_current`.
     """
+    analytical_funcs = {
+        "linear": ffuncs.Linear(params=(0.0004, -0.014)),
+    }
+    analytical_data = {"voltage": np.linspace(-30.0, 35, 100)}
+    analytical_data.update(
+        {
+            "current_linear": analytical_funcs["linear"](analytical_data["voltage"]),
+        },
+    )
 
     _null_result = (
         None,
@@ -110,3 +119,69 @@ class TestFindIonSaturationCurrent:
         """Test scenarios that raise exceptions."""
         with pytest.raises(_error):
             find_ion_saturation_current(**kwargs)
+
+    @pytest.mark.parametrize(
+        "kwargs, expected",
+        [
+            (
+                {
+                    "voltage": analytical_data["voltage"],
+                    "current": analytical_data["current_linear"],
+                    "fit_type": "linear",
+                },
+                (
+                    analytical_funcs["linear"],
+                    ISatExtras(
+                        fitted_func=analytical_funcs["linear"],
+                        rsq=None,
+                        fitted_indices=slice(0, 40),
+                    ),
+                ),
+            ),
+            (
+                {
+                    "voltage": analytical_data["voltage"],
+                    "current": analytical_data["current_linear"],
+                    "fit_type": "linear",
+                    "current_bound": 0.2
+                },
+                (
+                    analytical_funcs["linear"],
+                    ISatExtras(
+                        fitted_func=analytical_funcs["linear"],
+                        rsq=None,
+                        fitted_indices=slice(0, 20),
+                    ),
+                ),
+            ),
+            (
+                {
+                    "voltage": analytical_data["voltage"],
+                    "current": analytical_data["current_linear"],
+                    "fit_type": "linear",
+                    "voltage_bound": 0.0
+                },
+                (
+                    analytical_funcs["linear"],
+                    ISatExtras(
+                        fitted_func=analytical_funcs["linear"],
+                        rsq=None,
+                        fitted_indices=slice(0, 46),
+                    ),
+                ),
+            ),
+        ],
+    )
+    def test_analytical_fits(self, kwargs, expected):
+        isat, extras = find_ion_saturation_current(**kwargs)
+
+        # assertions on isat
+        assert isinstance(isat, type(expected[0]))
+        assert np.allclose(isat.params, expected[0].params)
+
+        # assertions on extras
+        assert isinstance(extras, ISatExtras)
+        assert isinstance(extras.fitted_func, type(expected[1].fitted_func))
+        assert np.allclose(extras.fitted_func.params, expected[1].fitted_func.params)
+        assert np.isclose(extras.rsq, 1.0)
+        assert extras.fitted_indices == expected[1].fitted_indices
