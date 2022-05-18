@@ -134,7 +134,7 @@ def _test_grid(
 def run_1D_example(name):
     """
     Run a simulation through an example with parameters optimized to
-    sum up to a lineout along x. The goal is to run a realtively fast
+    sum up to a lineout along x. The goal is to run a relatively fast
     sim with a quasi-1D field grid that can then be summed to get good
     enough statistics to use as a test.
     """
@@ -434,13 +434,13 @@ def test_run_options():
         sim.run(field_weighting="nearest neighbor", dt=1e-12 * u.s)
 
     # Test extreme deflections -> warns user
-    # This requires instatiating a whole new example field with a really
+    # This requires instantiating a whole new example field with a really
     # big B-field
     grid = _test_grid("constant_bz", num=50, B0=250 * u.T)
     source = (0 * u.mm, -10 * u.mm, 0 * u.mm)
     detector = (0 * u.mm, 200 * u.mm, 0 * u.mm)
 
-    # Expectwarnings because these fields aren't well-behaved at the edges
+    # Expect warnings because these fields aren't well-behaved at the edges
     with pytest.warns(
         RuntimeWarning, match="Fields should go to zero at edges of grid to avoid "
     ):
@@ -760,7 +760,7 @@ def test_add_wire_mesh():
     # Test a circular mesh
     run_mesh_example(extent=1 * u.mm)
 
-    # Test providng hdir
+    # Test providing hdir
     run_mesh_example(mesh_hdir=np.array([0.5, 0, 0.5]))
 
     # Test providing hdir and vdir
@@ -775,7 +775,7 @@ def test_add_wire_mesh():
         run_mesh_example(extent=(1 * u.mm, 2 * u.mm, 3 * u.mm))
 
     # Test wire mesh completely blocks all particles (in this case because
-    # the wire diameter is absurdely large)
+    # the wire diameter is absurdly large)
     with pytest.raises(ValueError):
         run_mesh_example(wire_diameter=5 * u.mm)
 
