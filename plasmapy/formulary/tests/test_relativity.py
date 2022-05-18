@@ -120,13 +120,20 @@ proton_at_half_warp_inputs = [
 @pytest.mark.parametrize("attr, expected", proton_at_half_warp_inputs)
 @pytest.mark.parametrize("parameter, argument", proton_at_half_warp_inputs)
 def test_relativistic_body(parameter, argument, attr, expected):
+    """Test attributes of RelativisticBody."""
     kwargs = {"particle": proton, parameter: argument}
     relativistic_body = RelativisticBody(**kwargs)
-    actual = getattr(relativistic_body, attr)
-    assert getattr(actual, "unit", None) == getattr(expected, "unit", None)
 
-    if not u.isclose(actual, expected, rtol=1e-9):
-        print("Unable to make comparison")
+    actual = getattr(relativistic_body, attr)
+
+    actual_unit = getattr(actual, "unit", None)
+    expected_unit = getattr(expected, "unit", None)
+    assert actual_unit == expected_unit, (
+        f"Expected units of {expected_unit} for {parameter}, "
+        f"but got units of {actual_unit}."
+    )
+
+    assert u.isclose(actual, expected, rtol=1e-7)
 
 
 # Need to test setattr
