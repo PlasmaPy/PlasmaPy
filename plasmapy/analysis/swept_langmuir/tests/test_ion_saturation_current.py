@@ -260,6 +260,7 @@ class TestFindIonSaturationCurrent:
         ],
     )
     def test_analytical_fits(self, kwargs, expected):
+        """Test functionality on analytical traces."""
         isat, extras = find_ion_saturation_current(**kwargs)
 
         # assertions on isat
@@ -274,6 +275,11 @@ class TestFindIonSaturationCurrent:
         assert extras.fitted_indices == expected[1].fitted_indices
 
     def test_on_pace_data(self):
+        """
+        Test functionality on D. Pace data.
+
+        Data was obtained from: https://davidpace.com/example-of-langmuir-probe-analysis/
+        """
         filepath = (Path.cwd() / "Pace2015.npy").resolve()
         voltage, current = np.load(filepath)
 
