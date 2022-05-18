@@ -1,0 +1,4 @@
+Added
+`~plamsapy.analysis.swept_langmuir.ion_saturation_current.find_ion_saturation_current`
+to the `~plasmapy.analysis.swept_langmuir` module to fit and return the
+ion-saturation current of a swept Langmuir probe trace.
