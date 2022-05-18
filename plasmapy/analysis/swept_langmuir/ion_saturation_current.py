@@ -7,7 +7,7 @@ __aliases__ = ["find_isat_"]
 import numbers
 import numpy as np
 
-from typing import Tuple, NamedTuple, Optional
+from typing import NamedTuple, Optional, Tuple
 
 from plasmapy.analysis import fit_functions as ffuncs
 from plasmapy.analysis.swept_langmuir.helpers import check_sweep
