@@ -830,10 +830,10 @@ def test_add_wire_mesh():
     dx = np.abs(size[0][1] - size[0][0]).to(u.mm).value / bins[0]
     fnyquist = int(bins[0] / 2)
     freqs = np.fft.fftfreq(h.size, d=dx)
-    freqs = freqs[0:fnyquist]
+    freqs = freqs[:fnyquist]
     # Calculate the positive frequency power spectrum
     pspect = np.abs(np.fft.fft(1 / line)) ** 2
-    pspect = pspect[0:fnyquist]
+    pspect = pspect[:fnyquist]
     pspect = np.where(np.abs(freqs) < 0.1, 0, pspect)  # Mask the low frequencies
 
     # Measured spacing is the inverse of the maximum spatial frequency
