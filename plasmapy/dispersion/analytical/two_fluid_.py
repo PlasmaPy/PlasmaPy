@@ -235,7 +235,7 @@ def two_fluid(
             raise TypeError(
                 f"For argument 'ion' expected type {Particle} but got {type(ion)}."
             )
-    if not (ion.is_ion or ion.is_category("element")):
+    if not ion.is_ion and not ion.is_category("element"):
         raise ValueError("The particle passed for 'ion' must be an ion or element.")
 
     # validate z_mean
@@ -244,13 +244,13 @@ def two_fluid(
             z_mean = abs(ion.charge_number)
         except ChargeError:
             z_mean = 1
-    else:
-        if not isinstance(z_mean, (int, np.integer, float, np.floating)):
-            raise TypeError(
-                f"Expected int or float for argument 'z_mean', but got {type(z_mean)}."
-            )
+    elif isinstance(z_mean, (int, np.integer, float, np.floating)):
         z_mean = abs(z_mean)
 
+    else:
+        raise TypeError(
+            f"Expected int or float for argument 'z_mean', but got {type(z_mean)}."
+        )
     # validate arguments
     for arg_name in ("B", "n_i", "T_e", "T_i"):
         val = locals()[arg_name].squeeze()
@@ -271,7 +271,7 @@ def two_fluid(
 
     # validate argument k
     k = k.squeeze()
-    if not (k.ndim == 0 or k.ndim == 1):
+    if k.ndim not in [0, 1]:
         raise ValueError(
             f"Argument 'k' needs to be a single valued or 1D array astropy Quantity,"
             f" got array of shape {k.shape}."
@@ -281,7 +281,7 @@ def two_fluid(
 
     # validate argument theta
     theta = theta.squeeze()
-    if not (theta.ndim == 0 or theta.ndim == 1):
+    if theta.ndim not in [0, 1]:
         raise ValueError(
             f"Argument 'theta' needs to be a single valued or 1D array astropy "
             f"Quantity, got array of shape {k.shape}."
