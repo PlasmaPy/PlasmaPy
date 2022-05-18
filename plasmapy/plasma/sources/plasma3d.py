@@ -178,7 +178,7 @@ class Plasma3D(GenericPlasma):
     @classmethod
     def is_datasource_for(cls, **kwargs):
         return (
-            all(f"domain_{direction}" in kwargs.keys() for direction in "xyz")
+            all(f"domain_{direction}" in kwargs for direction in "xyz")
             if len(kwargs) == 3
             else False
         )

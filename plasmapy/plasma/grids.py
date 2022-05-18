@@ -374,7 +374,7 @@ class AbstractGrid(ABC):
             return self.units[0]
         else:
             raise ValueError(
-                "Array dimensions do not all have the same " f"units: {self.units}"
+                f"Array dimensions do not all have the same units: {self.units}"
             )
 
     # *************************************************************************
@@ -619,13 +619,13 @@ class AbstractGrid(ABC):
             quantity.
         """
 
-        for key in kwargs.keys():
+        for key in kwargs:
             quantity = kwargs[key]
 
             # Check key against a list of "known" keys with pre-defined
             # meanings (eg. E_x, n_e) and raise a warning if a "non-standard"
             # key is being used so the user is aware.
-            if key in self.recognized_quantities.keys():
+            if key in self.recognized_quantities:
                 try:
                     quantity.to(self.recognized_quantities[key].unit)
                 except u.UnitConversionError:
@@ -783,9 +783,7 @@ class AbstractGrid(ABC):
                 stop[i] = stop[i].to(unit)
 
             except u.UnitConversionError:
-                raise ValueError(
-                    f"Units of {stop[i]} and " f" {unit} are not compatible"
-                )
+                raise ValueError(f"Units of {stop[i]} and {unit} are not compatible")
 
             # strip units
             stop[i] = stop[i].value
