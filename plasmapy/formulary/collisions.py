@@ -520,7 +520,7 @@ def Coulomb_logarithm(
         ]:
             warnings.warn(
                 f"The Coulomb logarithm is {ln_Lambda}, and the specified "
-                + f'method, "{method}", depends on weak coupling.',
+                f'method, "{method}", depends on weak coupling.',
                 utils.CouplingWarning,
             )
         elif np.any(ln_Lambda < 4):
@@ -1191,8 +1191,9 @@ def fundamental_electron_collision_freq(
 
     species = [ion, "e-"]
     Z_i = particles.charge_number(ion) * u.dimensionless_unscaled
+    n_i = n_e / Z_i
     nu = collision_frequency(
-        T_e, n_e, species, z_mean=Z_i, V=V, method=coulomb_log_method
+        T_e, n_i, species, z_mean=Z_i, V=V, method=coulomb_log_method
     )
     coeff = 4 / np.sqrt(np.pi) / 3
 

@@ -21,7 +21,7 @@ from astropy.constants import c
 from astropy.units.equivalencies import Equivalency
 from functools import reduce
 from operator import add
-from typing import Any, Dict, List, Tuple, Union
+from typing import Any, Dict, List, Optional, Tuple, Union
 
 from plasmapy.utils.decorators.helpers import preserve_signature
 from plasmapy.utils.exceptions import (
@@ -784,10 +784,10 @@ class CheckUnits(CheckBase):
     def _check_unit_core(
         self, arg, arg_name: str, arg_checks: Dict[str, Any]
     ) -> Tuple[
-        Union[None, u.Quantity],
-        Union[None, u.Unit],
-        Union[None, List[Any]],
-        Union[None, Exception],
+        Optional[u.Quantity],
+        Optional[u.Unit],
+        Optional[List[Any]],
+        Optional[Exception],
     ]:
         """
         Determines if `arg` passes unit checks `arg_checks` and if the units of
@@ -1374,7 +1374,7 @@ def _check_relativistic(V, funcname, betafrac=0.05):
 
     try:
         V_over_c = (V / c).to_value(u.dimensionless_unscaled)
-    except Exception:
+    except u.UnitConversionError:
         raise u.UnitConversionError(errmsg)
 
     beta = np.max(np.abs(V_over_c))
