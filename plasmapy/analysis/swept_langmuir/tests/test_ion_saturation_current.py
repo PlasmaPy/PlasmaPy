@@ -39,12 +39,16 @@ class TestFindIonSaturationCurrent:
     analytical_funcs = {
         "linear": ffuncs.Linear(params=(0.0004, -0.014)),
         "exp_offset": ffuncs.ExponentialPlusOffset(params=(0.001, 0.1, -0.01)),
+        "exp_linear": ffuncs.ExponentialPlusLinear(params=(0.001, 0.1, 0.00005, -0.01)),
     }
     analytical_data = {"voltage": np.linspace(-30.0, 35, 100)}
     analytical_data.update(
         {
             "current_linear": analytical_funcs["linear"](analytical_data["voltage"]),
             "current_exp_offset": analytical_funcs["exp_offset"](
+                analytical_data["voltage"]
+            ),
+            "current_exp_linear": analytical_funcs["exp_linear"](
                 analytical_data["voltage"]
             ),
         },
@@ -205,6 +209,45 @@ class TestFindIonSaturationCurrent:
                 ),
             ),
             # exponential plus linear fit to exponential plus linear analytical data
+            (
+                {
+                    "voltage": analytical_data["voltage"],
+                    "current": analytical_data["current_exp_linear"],
+                    "fit_type": "exp_plus_linear",
+                },
+                (
+                    ffuncs.Linear(params=(
+                        analytical_funcs["exp_linear"].params.m,
+                        analytical_funcs["exp_linear"].params.b
+                    )),
+                    ISatExtras(
+                        fitted_func=analytical_funcs["exp_linear"],
+                        rsq=None,
+                        fitted_indices=slice(0, 79),
+                    ),
+                ),
+            ),
+            (
+                {
+                    "voltage": analytical_data["voltage"],
+                    "current": analytical_data["current_exp_linear"],
+                    "fit_type": "exp_plus_linear",
+                    "voltage_bound": 30,
+                },
+                (
+                    ffuncs.Linear(
+                        params=(
+                            analytical_funcs["exp_linear"].params.m,
+                            analytical_funcs["exp_linear"].params.b
+                        )
+                    ),
+                    ISatExtras(
+                        fitted_func=analytical_funcs["exp_linear"],
+                        rsq=None,
+                        fitted_indices=slice(0, 92),
+                    ),
+                ),
+            ),
         ],
     )
     def test_analytical_fits(self, kwargs, expected):
