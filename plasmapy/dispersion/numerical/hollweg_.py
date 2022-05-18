@@ -224,11 +224,11 @@ def hollweg(
             z_mean = 1
     elif isinstance(z_mean, (int, np.integer, float, np.floating)):
         z_mean = abs(z_mean)
-
     else:
         raise TypeError(
             f"Expected int or float for argument 'z_mean', but got {type(z_mean)}."
         )
+
     # validate arguments
     for arg_name in ("B", "n_i", "T_e", "T_i"):
         val = locals()[arg_name].squeeze()
