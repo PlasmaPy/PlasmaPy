@@ -861,20 +861,3 @@ def test_add_wire_mesh():
 
     # Verify that the spacing is correct by checking the FFT
     assert np.isclose(measured_spacing, true_spacing, 0.5)
-
-
-if __name__ == "__main__":
-    """
-    test_coordinate_systems()
-    test_input_validation()
-    test_1D_deflections()
-    test_init()
-    test_create_particles()
-    test_load_particles()
-    test_run_options()
-    test_synthetic_radiograph()
-    test_add_wire_mesh()
-    test_gaussian_sphere_analytical_comparison()
-    test_cannot_modify_simulation_after_running()
-    """
-    pass
