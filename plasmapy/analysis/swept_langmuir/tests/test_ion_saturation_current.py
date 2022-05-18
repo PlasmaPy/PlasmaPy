@@ -36,6 +36,7 @@ class TestFindIonSaturationCurrent:
     Tests for function
     `~plasmapy.analysis.swept_langmuir.ion_saturation_current.find_ion_saturation_current`.
     """
+
     analytical_funcs = {
         "linear": ffuncs.Linear(params=(0.0004, -0.014)),
         "exp_offset": ffuncs.ExponentialPlusOffset(params=(0.001, 0.1, -0.01)),
@@ -149,7 +150,7 @@ class TestFindIonSaturationCurrent:
                     "voltage": analytical_data["voltage"],
                     "current": analytical_data["current_linear"],
                     "fit_type": "linear",
-                    "current_bound": 0.2
+                    "current_bound": 0.2,
                 },
                 (
                     analytical_funcs["linear"],
@@ -165,7 +166,7 @@ class TestFindIonSaturationCurrent:
                     "voltage": analytical_data["voltage"],
                     "current": analytical_data["current_linear"],
                     "fit_type": "linear",
-                    "voltage_bound": 0.0
+                    "voltage_bound": 0.0,
                 },
                 (
                     analytical_funcs["linear"],
@@ -184,7 +185,9 @@ class TestFindIonSaturationCurrent:
                     "fit_type": "exp_plus_offset",
                 },
                 (
-                    ffuncs.Linear(params=(0.0, analytical_funcs["exp_offset"].params.b)),
+                    ffuncs.Linear(
+                        params=(0.0, analytical_funcs["exp_offset"].params.b)
+                    ),
                     ISatExtras(
                         fitted_func=analytical_funcs["exp_offset"],
                         rsq=None,
@@ -200,7 +203,9 @@ class TestFindIonSaturationCurrent:
                     "voltage_bound": 30,
                 },
                 (
-                    ffuncs.Linear(params=(0.0, analytical_funcs["exp_offset"].params.b)),
+                    ffuncs.Linear(
+                        params=(0.0, analytical_funcs["exp_offset"].params.b)
+                    ),
                     ISatExtras(
                         fitted_func=analytical_funcs["exp_offset"],
                         rsq=None,
@@ -216,10 +221,12 @@ class TestFindIonSaturationCurrent:
                     "fit_type": "exp_plus_linear",
                 },
                 (
-                    ffuncs.Linear(params=(
-                        analytical_funcs["exp_linear"].params.m,
-                        analytical_funcs["exp_linear"].params.b
-                    )),
+                    ffuncs.Linear(
+                        params=(
+                            analytical_funcs["exp_linear"].params.m,
+                            analytical_funcs["exp_linear"].params.b,
+                        )
+                    ),
                     ISatExtras(
                         fitted_func=analytical_funcs["exp_linear"],
                         rsq=None,
@@ -238,7 +245,7 @@ class TestFindIonSaturationCurrent:
                     ffuncs.Linear(
                         params=(
                             analytical_funcs["exp_linear"].params.m,
-                            analytical_funcs["exp_linear"].params.b
+                            analytical_funcs["exp_linear"].params.b,
                         )
                     ),
                     ISatExtras(

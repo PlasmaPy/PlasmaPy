@@ -20,13 +20,14 @@ class ISatExtras(NamedTuple):
     Create a `tuple` containing the extra parameters calculated by
     `find_ion_saturation_current`.
     """
+
     rsq: Union[float, None]
     """
     Alias for field number 0, the r-squared value of the ion-saturation
     curve fit.
     """
 
-    fitted_func:  Union[ffuncs.AbstractFitFunction, None]
+    fitted_func: Union[ffuncs.AbstractFitFunction, None]
     """
     Alias for field number 1, the :term:`fit-function` fitted during
     the ion-saturation curve fit.
