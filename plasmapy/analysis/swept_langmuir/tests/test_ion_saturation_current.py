@@ -6,6 +6,8 @@ Tests for functionality contained in
 import numpy as np
 import pytest
 
+from pathlib import Path
+
 from plasmapy.analysis import fit_functions as ffuncs
 from plasmapy.analysis.swept_langmuir.ion_saturation_current import (
     find_ion_saturation_current,
@@ -271,6 +273,19 @@ class TestFindIonSaturationCurrent:
         assert np.isclose(extras.rsq, 1.0)
         assert extras.fitted_indices == expected[1].fitted_indices
 
-    @pytest.mark.skip
-    def test_pace_data(self):
-        ...
+    def test_on_pace_data(self):
+        filepath = (Path.cwd() / "Pace2015.npy").resolve()
+        voltage, current = np.load(filepath)
+
+        isort = np.argsort(voltage)
+        voltage = voltage[isort]
+        current = current[isort]
+
+        isat, extras = find_ion_saturation_current(
+            voltage, current, fit_type="exp_plus_linear", current_bound=3.6
+        )
+
+        assert np.isclose(isat.params.m, 3.81079e-6)
+        assert np.isclose(isat.params.b, 0.000110284)
+        assert np.isclose(extras.rsq, 0.982, atol=0.001)
+        assert np.isclose(np.min(isat(voltage)), -0.00014275)
