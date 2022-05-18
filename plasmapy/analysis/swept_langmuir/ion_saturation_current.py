@@ -76,7 +76,7 @@ def find_ion_saturation_current(
         +-----------------------+----------------------------------------------------------+
         | ``"linear"``          | `~plasmapy.analysis.fit_functions.Linear`                |
         +-----------------------+----------------------------------------------------------+
-        | ``"exponential"``     | `~plasmapy.analysis.fit_functions.ExponentialPlusOffset` |
+        | ``"exp_plus_offset"`` | `~plasmapy.analysis.fit_functions.ExponentialPlusOffset` |
         +-----------------------+----------------------------------------------------------+
         | ``"exp_plus_linear"`` | `~plasmapy.analysis.fit_functions.ExponentialPlusLinear` |
         +-----------------------+----------------------------------------------------------+
