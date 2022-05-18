@@ -254,6 +254,8 @@ class RelativisticBody:
 
     @property
     def particle(self) -> Union[CustomParticle, Particle, ParticleList]:
+        """The particle that is"""
+
         return self._data["particle"]
 
     @property
@@ -381,11 +383,18 @@ class RelativisticBody:
         self._data["momentum"] = self.lorentz_factor * self.mass * speed_
 
     @lorentz_factor.setter
-    def lorentz_factor(self, γ: Real):
+    def lorentz_factor(self, γ: Union[Real, u.Quantity]):
         if not isinstance(γ, (Real, u.Quantity)):
             raise TypeError("Invalid type for Lorentz factor")
+
         if isinstance(γ, u.Quantity):
-            γ = γ.to("").value
+            try:
+                γ = γ.to("").value
+            except u.UnitConversionError as exc:
+                raise u.UnitConversionError(
+                    "The Lorentz factor must be dimensionless."
+                ) from exc
+
         if γ < 1:
             raise ValueError("The Lorentz factor must be ≥ 1")
         self.speed = c * np.sqrt(1 - γ ** -2)
