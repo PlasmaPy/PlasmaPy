@@ -7,7 +7,6 @@ import astropy.units as u
 import numpy as np
 import os
 import pytest
-import warnings
 
 from scipy.special import erf
 
