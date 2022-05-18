@@ -95,8 +95,7 @@ class Characteristic:
 
         """
 
-        b = Characteristic(self.bias[key], self.current[key])
-        return b
+        return Characteristic(self.bias[key], self.current[key])
 
     def __sub__(self, other):
         r"""Support current subtraction"""
@@ -137,11 +136,10 @@ class Characteristic:
             )
         current_unique *= u.A
 
-        if inplace:
-            self.bias = bias_unique
-            self.current = current_unique
-        else:
+        if not inplace:
             return Characteristic(bias_unique, current_unique)
+        self.bias = bias_unique
+        self.current = current_unique
 
     def _check_validity(self):
         r"""Check the unit and value validity of the characteristic."""
@@ -668,9 +666,7 @@ def get_ion_density_LM(
     # Calculate the acoustic (Bohm) velocity
     c_s = np.sqrt(T_e / gas)
 
-    n_i = np.abs(ion_saturation_current) / (0.6 * const.e * probe_area * c_s)
-
-    return n_i
+    return np.abs(ion_saturation_current) / (0.6 * const.e * probe_area * c_s)
 
 
 @validate_quantities(
@@ -730,9 +726,7 @@ def get_electron_density_LM(
     # Calculate the thermal electron velocity
     v_th = np.sqrt(8 * T_e / (np.pi * const.m_e))
 
-    n_e = 4 * electron_saturation_current / (probe_area * const.e * v_th)
-
-    return n_e
+    return 4 * electron_saturation_current / (probe_area * const.e * v_th)
 
 
 def extract_exponential_section(probe_characteristic, T_e=None, ion_current=None):
@@ -833,9 +827,7 @@ def extract_ion_section(probe_characteristic):
 
     V_F = get_floating_potential(probe_characteristic)
 
-    ion_section = probe_characteristic[probe_characteristic.bias < V_F]
-
-    return ion_section
+    return probe_characteristic[probe_characteristic.bias < V_F]
 
 
 def get_electron_temperature(
@@ -1141,7 +1133,7 @@ def reduce_bimaxwellian_temperature(T_e: u.eV, hot_fraction: float) -> u.eV:
 
     # Return the electron temperature itself if it is not bi-Maxwellian
     # in the first place.
-    if hot_fraction is None or not np.array(T_e).size > 1:
+    if hot_fraction is None or np.array(T_e).size <= 1:
         return T_e
 
     return T_e[0] * (1 - hot_fraction) + T_e[1] * hot_fraction
