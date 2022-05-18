@@ -280,7 +280,7 @@ class TestFindIonSaturationCurrent:
 
         Data was obtained from: https://davidpace.com/example-of-langmuir-probe-analysis/
         """
-        filepath = (Path.cwd() / "Pace2015.npy").resolve()
+        filepath = (Path(__file__).parent / "Pace2015.npy").resolve()
         voltage, current = np.load(filepath)
 
         isort = np.argsort(voltage)
