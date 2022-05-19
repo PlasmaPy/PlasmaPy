@@ -9,7 +9,7 @@ import pytest
 from unittest import mock
 
 from plasmapy.analysis import fit_functions as ffuncs
-from plasmapy.analysis import swept_langmuir as _sl
+from plasmapy.analysis import swept_langmuir as sla
 from plasmapy.analysis.swept_langmuir.floating_potential import (
     find_floating_potential,
     find_vf_,
@@ -64,9 +64,9 @@ class TestFindFloatingPotential:
         varr = np.linspace(-20.0, 20.0, 100)
         carr = np.linspace(-20.0, 20.0, 100)
 
-        assert _sl.helpers.check_sweep is _sl.floating_potential.check_sweep
+        assert sla.helpers.check_sweep is sla.floating_potential.check_sweep
 
-        with mock.patch(_sl.floating_potential.__name__ + ".check_sweep") as mock_cs:
+        with mock.patch(sla.floating_potential.__name__ + ".check_sweep") as mock_cs:
             mock_cs.return_value = varr, carr
             find_floating_potential(voltage=varr, current=carr, fit_type="linear")
 
