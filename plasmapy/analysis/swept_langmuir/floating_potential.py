@@ -174,7 +174,7 @@ def find_floating_potential(
          ``fit_type="exponential"``.
     """
     rtn_extras = VFExtras(
-        vf_err=None, rsq=None, fitted_func=None, islands=None, fitted_indices=None
+        vf_err=np.nan, rsq=None, fitted_func=None, islands=None, fitted_indices=None
     )._asdict()
 
     _settings = {
@@ -273,7 +273,7 @@ def find_floating_potential(
                 PlasmaPyWarning,
             )
 
-            return None, VFExtras(**rtn_extras)
+            return np.nan, VFExtras(**rtn_extras)
 
     # Construct crossing-island (pad if needed)
     if np.isinf(min_points):
