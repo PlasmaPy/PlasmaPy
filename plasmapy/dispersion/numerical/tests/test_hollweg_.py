@@ -131,7 +131,7 @@ class TestHollweg:
                 },
             ),
             (
-                {**_kwargs_single_valued, "theta": [87, 88]},
+                {**_kwargs_single_valued, "theta": [87, 88] * u.deg},
                 {
                     "fast_mode": [3406.43522969 + 0.0j, 2278.76967883 + 0.0j],
                     "alfven_mode": [2144.81200575 + 0.0j, 2138.00403666 + 0.0j],
