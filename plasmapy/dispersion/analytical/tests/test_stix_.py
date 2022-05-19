@@ -6,10 +6,11 @@ from astropy import units as u
 from astropy.constants.si import c
 
 from plasmapy.dispersion.analytical.stix_ import stix
+from plasmapy.formulary import gyrofrequency, plasma_frequency
 from plasmapy.particles import Particle
 from plasmapy.particles.exceptions import InvalidParticleError
 
-c_unitless = c.value
+c_si_unitless = c.value
 
 
 class TestStix:
@@ -108,53 +109,62 @@ class TestStix:
         [
             (
                 {
-                    **_kwargs_single_valued,
                     "theta": 0 * u.rad,
-                    "ions": ["H+"],
-                    "n_i": 1 * u.m ** -3,
-                    "w": 3 * u.rad / u.s,
+                    "ions": [Particle("p")],
+                    "n_i": 1e12 * u.cm ** -3,
+                    "B": 0.434634 * u.T,
+                    "w": 4.1632e4 * u.rad / u.s,
                 },
                 {
                     "gamma": 1000,
                     "beta": 1000,
                     "mu": 1836,
-                    "ns": np.array([31, -31, 1414, -1414]),
+                    "ns": np.array(
+                        [31.63146, -31.63146, 31.66306, -31.66306]
+                    ),
                 },
             ),
-            (
-                {**_kwargs_single_valued, "theta": np.pi / 2 * u.deg},
-                {
-                    "gamma": 44.73253849828242,
-                    "beta": 0,
-                    "mu": 0,
-                    "ns": np.array([]),
-                },
-            ),
+            # (
+            #     {**_kwargs_single_valued, "theta": np.pi / 2 * u.deg},
+            #     {
+            #         "gamma": 44.73253849828242,
+            #         "beta": 0,
+            #         "mu": 0,
+            #         "ns": np.array([]),
+            #     },
+            # ),
         ],
     )
     def test_vals(self, kwargs, expected):
+        ion = kwargs["ions"][0]
 
-        mu = (Particle(kwargs["ions"]).mass()) / Particle("e-").mass()
-        gamma = (
-            4
-            * np.pi
-            * kwargs["n_i"].val
-            * Particle(kwargs["ions"]).mass()
-            * c_unitless
-            * c_unitless
-        ) / kwargs["B"].val
+        mu = ion.mass / Particle("e-").mass
+        if not np.isclose(mu, expected["mu"], rtol=9.0e-5):
+            pytest.fail(
+                "Test setup failure. Check 'kwarg' parameters, given"
+                f" values produces a mu of {mu:.0f} but expected "
+                f"{expected['mu']:.0f}."
+            )
 
-        big_omega = (Particle(kwargs["ions"]).charge * kwargs["B"].val) / (
-            Particle(kwargs["ions"]).mass * c_unitless
-        )
-        beta = big_omega / kwargs["w"].val
+        wpi = plasma_frequency(n=kwargs["n_i"], particle=ion).value
+        wci = gyrofrequency(kwargs["B"], particle=ion).value
+        gamma = (wpi / wci) ** 2
+        if not np.isclose(gamma, expected["gamma"], rtol=0.3e-4):
+            pytest.fail(
+                "Test setup failure. Check 'kwarg' parameters, given"
+                f" values produces a gamma of {gamma:.0f} but expected "
+                f"{expected['gamma']:.0f}."
+            )
 
-        assert np.isclose(mu, expected["mu"])
-        assert np.isclose(gamma, expected["gamma"])
-        assert np.isclose(beta, expected["beta"])
+        beta = wci / kwargs["w"].value
+        if not np.isclose(beta, expected["beta"], rtol=0.3e-4):
+            pytest.fail(
+                "Test setup failure. Check 'kwarg' parameters, given"
+                f" values produces a beta of {beta:.0f} but expected "
+                f"{expected['beta']:.0f}."
+            )
 
         ks = stix(**kwargs)
-
-        ns = ks * c_unitless / kwargs["w"]
+        ns = ks.value * c_si_unitless / kwargs["w"].value
 
         assert np.allclose(ns, expected["ns"])
