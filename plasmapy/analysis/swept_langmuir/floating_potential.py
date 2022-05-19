@@ -1,17 +1,18 @@
 """Functionality for determining the floating potential of a Langmuir sweep."""
-__all__ = ["find_floating_potential", "find_vf_"]
+__all__ = ["find_floating_potential", "VFExtras"]
 __aliases__ = ["find_vf_"]
 
 import numbers
 import numpy as np
 
-from collections import namedtuple
 from typing import List, NamedTuple, Optional, Union
 from warnings import warn
 
 from plasmapy.analysis import fit_functions as ffuncs
 from plasmapy.analysis.swept_langmuir.helpers import check_sweep
 from plasmapy.utils.exceptions import PlasmaPyWarning
+
+__all__ += __aliases__
 
 
 class VFExtras(NamedTuple):
