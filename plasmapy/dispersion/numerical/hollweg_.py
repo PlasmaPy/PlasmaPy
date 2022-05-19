@@ -213,7 +213,7 @@ def hollweg(
             raise TypeError(
                 f"For argument 'ion' expected type {Particle} but got {type(ion)}."
             )
-    if not (ion.is_ion or ion.is_category("element")):
+    if not ion.is_ion and not ion.is_category("element"):
         raise ValueError("The particle passed for 'ion' must be an ion or element.")
 
     # validate z_mean
@@ -222,12 +222,12 @@ def hollweg(
             z_mean = abs(ion.charge_number)
         except ChargeError:
             z_mean = 1
-    else:
-        if not isinstance(z_mean, (int, np.integer, float, np.floating)):
-            raise TypeError(
-                f"Expected int or float for argument 'z_mean', but got {type(z_mean)}."
-            )
+    elif isinstance(z_mean, (int, np.integer, float, np.floating)):
         z_mean = abs(z_mean)
+    else:
+        raise TypeError(
+            f"Expected int or float for argument 'z_mean', but got {type(z_mean)}."
+        )
 
     # validate arguments
     for arg_name in ("B", "n_i", "T_e", "T_i"):
@@ -249,7 +249,7 @@ def hollweg(
 
     # validate argument k
     k = k.squeeze()
-    if not (k.ndim == 0 or k.ndim == 1):
+    if k.ndim not in [0, 1]:
         raise ValueError(
             f"Argument 'k' needs to be single valued or a 1D array astropy Quantity,"
             f" got array of shape {k.shape}."
@@ -354,10 +354,8 @@ def hollweg(
             PhysicsWarning,
         )
 
-    omegas = {
+    return {
         "fast_mode": roots[2, :].squeeze() * u.rad / u.s,
         "alfven_mode": roots[1, :].squeeze() * u.rad / u.s,
         "acoustic_mode": roots[0, :].squeeze() * u.rad / u.s,
     }
-
-    return omegas
