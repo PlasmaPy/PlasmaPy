@@ -142,7 +142,7 @@ class TestHollweg:
                 {
                     **_kwargs_single_valued,
                     "k": np.logspace(-7, -2, 2),
-                    "theta": [86, 87, 88],
+                    "theta": [86, 87, 88] * u.deg,
                 },
                 {
                     "fast_mode": [
