@@ -35,4 +35,4 @@ depends on, including but not limited to
 `NumPy <https://numpy.org/citing-numpy>`__, and
 `SciPy <https://scipy.org/citing-scipy>`__.
 
-Note that a dev version of plasmapy should NOT be cited or used in published work.
+Note that a development version of PlasmaPy should NOT be cited or used in published work.
