@@ -107,7 +107,13 @@ class TestStix:
         "kwargs, expected",
         [
             (
-                {**_kwargs_single_valued, "theta": 0 * u.rad},
+                {
+                    **_kwargs_single_valued,
+                    "theta": 0 * u.rad,
+                    "ions": ["H+"],
+                    "n_i": 1 * u.m ** -3,
+                    "w": 3 * u.rad / u.s,
+                },
                 {
                     "gamma": 1000,
                     "beta": 1000,
@@ -128,13 +134,20 @@ class TestStix:
     )
     def test_vals(self, kwargs, expected):
 
-        gamma = 0
-        mu = 0
-        beta = 0
-        for ion in kwargs["ions"]:
-            gamma += 0
-            mu += 0
-            beta += 0
+        mu = (Particle(kwargs["ions"]).mass()) / Particle("e-").mass()
+        gamma = (
+            4
+            * np.pi
+            * kwargs["n_i"].val
+            * Particle(kwargs["ions"]).mass()
+            * c_unitless
+            * c_unitless
+        ) / kwargs["B"].val
+
+        big_omega = (Particle(kwargs["ions"]).charge * kwargs["B"].val) / (
+            Particle(kwargs["ions"]).mass * c_unitless
+        )
+        beta = big_omega / kwargs["w"].val
 
         assert np.isclose(mu, expected["mu"])
         assert np.isclose(gamma, expected["gamma"])
@@ -142,6 +155,6 @@ class TestStix:
 
         ks = stix(**kwargs)
 
-        # calculate ns
+        ns = ks * c_unitless / kwargs["w"]
 
         assert np.allclose(ns, expected["ns"])
