@@ -13,7 +13,7 @@ from plasmapy.analysis import swept_langmuir as _sl
 from plasmapy.analysis.swept_langmuir.floating_potential import (
     find_floating_potential,
     find_vf_,
-    FloatingPotentialResults,
+    VFExtras,
 )
 from plasmapy.utils.exceptions import PlasmaPyWarning
 
@@ -24,18 +24,17 @@ def test_floating_potential_namedtuple():
     data.
     """
 
-    assert issubclass(FloatingPotentialResults, tuple)
-    assert hasattr(FloatingPotentialResults, "_fields")
-    assert FloatingPotentialResults._fields == (
-        "vf",
+    assert issubclass(VFExtras, tuple)
+    assert hasattr(VFExtras, "_fields")
+    assert VFExtras._fields == (
         "vf_err",
         "rsq",
-        "func",
+        "fitted_func",
         "islands",
-        "indices",
+        "fitted_indices",
     )
-    assert hasattr(FloatingPotentialResults, "_field_defaults")
-    assert FloatingPotentialResults._field_defaults == {}
+    assert hasattr(VFExtras, "_field_defaults")
+    assert VFExtras._field_defaults == {}
 
 
 class TestFindFloatingPotential:
