@@ -20,6 +20,7 @@ class VFExtras(NamedTuple):
     Create a `tuple` containing the extra parameters calculated by
     `find_floating_potential`.
     """
+
     vf_err: Optional[float]
     """
     Alias for field number 0, the error in the calculated floating
@@ -264,7 +265,11 @@ def find_floating_potential(
 
         # do islands fall within the min_points window?
         isl_window = (
-            np.abs(np.r_[rtn_extras["islands"][-1]][-1] - np.r_[rtn_extras["islands"][0]][0]) + 1
+            np.abs(
+                np.r_[rtn_extras["islands"][-1]][-1]
+                - np.r_[rtn_extras["islands"][0]][0]
+            )
+            + 1
         )
         if isl_window > min_points:
             warn(
@@ -318,8 +323,8 @@ def find_floating_potential(
             )
 
     # Perform Linear Regression Fit
-    volt_sub = voltage[istart: istop + 1]
-    curr_sub = current[istart: istop + 1]
+    volt_sub = voltage[istart : istop + 1]
+    curr_sub = current[istart : istop + 1]
     fit_func.curve_fit(volt_sub, curr_sub)
 
     vf, rtn_extras["vf_err"] = fit_func.root_solve()
