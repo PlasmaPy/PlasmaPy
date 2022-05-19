@@ -104,7 +104,7 @@ def find_ion_saturation_current(
 
         |
 
-        Can not be used with keyword ``voltage_bound``.
+        Cannot be used with keyword ``voltage_bound``.
 
     voltage_bound: `float`
         A bias voltage (in volts) that specifies an upper bound used to
