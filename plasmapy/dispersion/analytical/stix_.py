@@ -125,7 +125,7 @@ def stix(
         D &= \sum_{s}
             \frac{\omega_{c,s}}{\omega}
             \frac{\omega^{2}_{p,s}}{\omega^{2} -
-            \omega_{c\sigma}^{2}}
+            \omega_{c,s}^{2}}
 
     .. math::
         R = S + D \hspace{1cm} L = S - D
