@@ -168,8 +168,7 @@ def find_floating_potential(
             f"Keyword 'threshold' is of type {type(threshold)}, expected an int "
             f"int >= 1."
         )
-
-    if threshold < 1:
+    elif threshold < 1:
         raise ValueError(
             f"Keyword 'threshold' has value ({threshold}) less than 1, "
             f"value must be an int >= 1."
