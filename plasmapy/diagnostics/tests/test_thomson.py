@@ -726,8 +726,8 @@ def run_fit(
     probe_wavelength = settings["probe_wavelength"]
     instr_func = settings["instr_func"]
 
-    electron_vdir = settings.get("electron_vdir", np.ones([len(T_e), 3])
-    ion_vdir = settings.get("ion_vdir", np.ones([len(T_i), 3])
+    electron_vdir = settings.get("electron_vdir", np.ones([len(T_e), 3]))
+    ion_vdir = settings.get("ion_vdir", np.ones([len(T_i), 3]))
 
     electron_vel = electron_speed[:, np.newaxis] * electron_vdir
     ion_vel = ion_speed[:, np.newaxis] * ion_vdir
