@@ -182,7 +182,7 @@ def spectral_density_lite(
     ks = np.sqrt(ws ** 2 - wpe ** 2) / c_si_unitless
     kl = np.sqrt(wl ** 2 - wpe ** 2) / c_si_unitless
 
-    # Compute the wavenumber shift (required by momentum conservation)\
+    # Compute the wavenumber shift (required by momentum conservation)
     # Eq. 1.7.10 in Sheffield
     k = np.sqrt(ks ** 2 + kl ** 2 - 2 * ks * kl * np.cos(scattering_angle))
     # Normal vector along k
