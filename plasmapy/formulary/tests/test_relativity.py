@@ -12,6 +12,7 @@ from plasmapy.formulary.relativity import (
     RelativisticBody,
 )
 from plasmapy.particles import proton
+from plasmapy.utils.code_repr import call_string
 from plasmapy.utils.exceptions import RelativityError
 
 
@@ -90,7 +91,7 @@ def test_relativistic_energy():
 @pytest.fixture
 def ultra_relativistic_proton():
     """Representing an ultra high energy cosmic ray (UHECR)."""
-    return RelativisticBody(particle="p+", kinetic_energy=1e21 * u.eV)
+    return RelativisticBody(particle="p+", kinetic_energy=np.float128(1e21) * u.eV)
 
 
 def test_ultra_relativistic_proton_lorentz_factor(ultra_relativistic_proton):
@@ -107,7 +108,7 @@ def test_ultra_relativistic_proton_speed(ultra_relativistic_proton):
 
 proton_at_half_warp_inputs = [
     ("v_over_c", 0.5),
-    ("speed", 0.5 * c),
+    ("V", 0.5 * c),
     ("lorentz_factor", 1.1547005383792517),
     ("total_energy", 1.7358354725115025e-10 * u.J),
     ("kinetic_energy", 2.3255785652637692e-11 * u.J),
@@ -122,12 +123,20 @@ proton_at_half_warp_inputs = [
 def test_relativistic_body(parameter, argument, attr, expected):
     """Test attributes of RelativisticBody."""
     kwargs = {"particle": proton, parameter: argument}
+    call_str = call_string(RelativisticBody, kwargs=kwargs)
+
+    print("\n", call_str, "\n")
+    print(parameter)
+
     relativistic_body = RelativisticBody(**kwargs)
 
-    actual = getattr(relativistic_body, attr)
+    actual = getattr(relativistic_body, attr, None)
+
+    print(f"{actual=}")
 
     actual_unit = getattr(actual, "unit", None)
     expected_unit = getattr(expected, "unit", None)
+
     assert actual_unit == expected_unit, (
         f"Expected units of {expected_unit} for {parameter}, "
         f"but got units of {actual_unit}."
