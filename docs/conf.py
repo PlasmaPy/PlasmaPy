@@ -453,13 +453,14 @@ nbsphinx_thumbnails = {
     "notebooks/diagnostics/langmuir_analysis": (
         "_static/notebook_images/langmuir_analysis.png"
     ),
+    "notebooks/formulary/satellite-constellation": "_static/notebook_images/mms.png",  # public domain
+    "notebooks/getting_started/units": "_static/notebook_images/astropy_logo_notext.png",  # CC BY-SA
     "notebooks/plasma/grids_cartesian": (
         "_static/notebook_images/uniform_grid_thumbnail.png"
     ),
     "notebooks/plasma/grids_nonuniform": (
         "_static/notebook_images/nonuniform_grid_thumbnail.png"
     ),
-    "notebooks/getting_started/units": "_static/notebook_images/astropy_logo_notext.png",  # CC BY-SA
 }
 
 # adapted from
