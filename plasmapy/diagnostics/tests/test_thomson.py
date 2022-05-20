@@ -28,9 +28,9 @@ def example_instr_func(w):
 
 def example_invalid_instr_func_bad_type(w):
     """
-    Example insturment function for use in testing
+    Example instrument function for use in testing
 
-    This insturment function is invalid because it does not return a plain
+    This instrument function is invalid because it does not return a plain
     np.ndarray.
     """
     sigma = 0.5 * u.nm
@@ -42,9 +42,9 @@ def example_invalid_instr_func_bad_type(w):
 
 def example_invalid_instr_func_bad_shape(w):
     """
-    Example insturment function for use in testing
+    Example instrument function for use in testing
 
-    This insturment function is invalid because it returns an array of a
+    This instrument function is invalid because it returns an array of a
     different shape than the provided wavelength array
     """
     sigma = 0.5 * u.nm
@@ -54,7 +54,7 @@ def example_invalid_instr_func_bad_shape(w):
     return inst[2:]
 
 
-# A list of invalid insturment functions
+# A list of invalid instrument functions
 invalid_instr_func_list = [
     (example_invalid_instr_func_bad_type),
     (example_invalid_instr_func_bad_shape),
@@ -602,9 +602,9 @@ def test_split_populations():
     assert np.all(deviation < 1e-6), "Failed split populations test"
 
 
-def test_thomson_with_insturment_function(single_species_collective_args):
+def test_thomson_with_instrument_function(single_species_collective_args):
     """
-    Generates an example Thomson scattering spectrum with an insturment
+    Generates an example Thomson scattering spectrum with an instrument
     function applied
     """
     wavelengths = single_species_collective_args["wavelengths"]
@@ -1094,10 +1094,10 @@ def test_fit_noncollective_single_species(noncollective_single_species_settings_
 def test_fit_with_instr_func(epw_single_species_settings_params):
     """
 
-    This test checks that fitting works with an insturment function
+    This test checks that fitting works with an instrument function
 
     It specifically tests the case where a notch is being used in the filter,
-    because this can cause a potential error with the insturment function.
+    because this can cause a potential error with the instrument function.
 
     """
     wavelengths, params, settings = spectral_density_model_settings_params(
@@ -1126,7 +1126,7 @@ def test_fit_with_instr_func(epw_single_species_settings_params):
 @pytest.mark.parametrize("instr_func", invalid_instr_func_list)
 def test_fit_with_invalid_instr_func(instr_func, iaw_single_species_settings_params):
     """
-    Verifies that an exception is raised if the provided insturment function
+    Verifies that an exception is raised if the provided instrument function
     is invalid.
     """
     wavelengths, params, settings = spectral_density_model_settings_params(
