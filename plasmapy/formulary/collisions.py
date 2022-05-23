@@ -1014,7 +1014,6 @@ def collision_frequency(
         V = _replaceNanVwithThermalV(V, T, reduced_mass)
         # impact parameter for 90° collision
         bPerp = impact_parameter_perp(T=T, species=species, V=V_reduced)
-        print(T, n, species, z_mean, method)
     elif species[0] in ("e", "e-") or species[1] in ("e", "e-"):
         # electron-ion collision
         # Need to manually pass electron thermal velocity to obtain
