@@ -5,12 +5,14 @@ __all__ = [
     "check_sweep",
     "find_floating_potential",
     "find_ion_saturation_current",
+    "plot_floating_potential",
 ]
 __aliases__ = ["find_isat_", "find_vf_"]
 
 from plasmapy.analysis.swept_langmuir.floating_potential import (
     find_floating_potential,
     find_vf_,
+    plot_floating_potential,
 )
 from plasmapy.analysis.swept_langmuir.helpers import check_sweep
 from plasmapy.analysis.swept_langmuir.ion_saturation_current import (
