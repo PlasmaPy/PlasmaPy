@@ -113,26 +113,79 @@ class TestStix:
                     "ions": [Particle("p")],
                     "n_i": 1e12 * u.cm ** -3,
                     "B": 0.434634 * u.T,
-                    "w": 4.1632e4 * u.rad / u.s,
+                    "w": 4.16321e4 * u.rad / u.s,
                 },
                 {
                     "gamma": 1000,
                     "beta": 1000,
                     "mu": 1836,
+                    "ns": np.array([31.63146, -31.63146, 31.66306, -31.66306]),
+                },
+            ),
+            (
+                {
+                    "theta": 0 * u.rad,
+                    "ions": [Particle("p")],
+                    "n_i": 1e12 * u.cm ** -3,
+                    "B": 0.434634 * u.T,
+                    "w": (41632 * 10 ** 3) * u.rad / u.s,
+                },
+                {
+                    "gamma": 1000,
+                    "beta": 1.1,
+                    "mu": 1836,
                     "ns": np.array(
-                        [31.63146, -31.63146, 31.66306, -31.66306]
+                        [22.39535727, -22.39535727, 6934.82540607, -6934.82540607]
                     ),
                 },
             ),
-            # (
-            #     {**_kwargs_single_valued, "theta": np.pi / 2 * u.deg},
-            #     {
-            #         "gamma": 44.73253849828242,
-            #         "beta": 0,
-            #         "mu": 0,
-            #         "ns": np.array([]),
-            #     },
-            # ),
+            (
+                {
+                    "theta": 0 * u.rad,
+                    "ions": [Particle("p")],
+                    "n_i": 1e12 * u.cm ** -3,
+                    "B": 0.434634 * u.T,
+                    "w": (124896 * 10 ** 5) * u.rad / u.s,
+                },
+                {
+                    "gamma": 1000,
+                    "beta": 1 / 400,
+                    "mu": 1836,
+                    "ns": np.array(
+                        [0.0 - 1.36982834j, 0.0 + 1.36982834j, 2.23009361, -2.23009361]
+                    ),
+                },
+            ),
+            (
+                {
+                    "theta": 0 * u.rad,
+                    "ions": [Particle("p")],
+                    "n_i": 1e12 * u.cm ** -3,
+                    "B": 0.434634 * u.T,
+                    "w": (4136 * 10 ** 7) * u.rad / u.s,
+                },
+                {
+                    "gamma": 1000,
+                    "beta": 1 / 1300,
+                    "mu": 1836,
+                    "ns": np.array([0.5880416, -0.5880416, 1.78668573, -1.78668573]),
+                },
+            ),
+            (
+                {
+                    "theta": 0 * u.rad,
+                    "ions": [Particle("p")],
+                    "n_i": 1e12 * u.cm ** -3,
+                    "B": 0.434634 * u.T,
+                    "w": (4136 * 10 ** 7) * u.rad / u.s,
+                },
+                {
+                    "gamma": 1000,
+                    "beta": 1 / 1418.5,
+                    "mu": 1836,
+                    "ns": np.array([0.5880416, -0.5880416, 1.78668573, -1.78668573]),
+                },
+            ),
         ],
     )
     def test_vals(self, kwargs, expected):
@@ -142,8 +195,8 @@ class TestStix:
         if not np.isclose(mu, expected["mu"], rtol=9.0e-5):
             pytest.fail(
                 "Test setup failure. Check 'kwarg' parameters, given"
-                f" values produces a mu of {mu:.0f} but expected "
-                f"{expected['mu']:.0f}."
+                f" values produces a mu of {mu:.2f} but expected "
+                f"{expected['mu']:.2f}."
             )
 
         wpi = plasma_frequency(n=kwargs["n_i"], particle=ion).value
@@ -152,16 +205,16 @@ class TestStix:
         if not np.isclose(gamma, expected["gamma"], rtol=0.3e-4):
             pytest.fail(
                 "Test setup failure. Check 'kwarg' parameters, given"
-                f" values produces a gamma of {gamma:.0f} but expected "
-                f"{expected['gamma']:.0f}."
+                f" values produces a gamma of {gamma:.2f} but expected "
+                f"{expected['gamma']:.2f}."
             )
 
         beta = wci / kwargs["w"].value
-        if not np.isclose(beta, expected["beta"], rtol=0.3e-4):
+        if not np.isclose(beta, expected["beta"], rtol=1):
             pytest.fail(
                 "Test setup failure. Check 'kwarg' parameters, given"
-                f" values produces a beta of {beta:.0f} but expected "
-                f"{expected['beta']:.0f}."
+                f" values produces a beta of {beta:.3f} but expected "
+                f"{expected['beta']:.3f}."
             )
 
         ks = stix(**kwargs)
