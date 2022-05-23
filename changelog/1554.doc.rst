@@ -1,0 +1,1 @@
+Added an example notebook for the null point finder module.

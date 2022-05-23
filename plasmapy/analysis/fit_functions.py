@@ -10,13 +10,14 @@ __all__ = [
     "Linear",
 ]
 
+import numbers
 import numpy as np
 
 from abc import ABC, abstractmethod
 from collections import namedtuple
 from scipy.optimize import curve_fit, fsolve
 from scipy.stats import linregress
-from typing import Tuple, Union
+from typing import Optional, Tuple, Union
 from warnings import warn
 
 from plasmapy.utils.decorators import modify_docstring
@@ -226,7 +227,7 @@ class AbstractFitFunction(ABC):
         return self._FitParamTuple
 
     @property
-    def params(self) -> Union[None, tuple]:
+    def params(self) -> Optional[tuple]:
         """The fitted parameters for the fit function."""
         if self._params is None:
             return self._params
@@ -235,12 +236,10 @@ class AbstractFitFunction(ABC):
 
     @params.setter
     def params(self, val) -> None:
-        if isinstance(val, self.FitParamTuple):
-            self._params = tuple(val)
-        elif (
+        if isinstance(val, self.FitParamTuple) or (
             isinstance(val, (tuple, list))
             and len(val) == len(self.param_names)
-            and all(isinstance(vv, (int, np.integer, float, np.floating)) for vv in val)
+            and all(isinstance(vv, numbers.Real) for vv in val)
         ):
             self._params = tuple(val)
         else:
@@ -250,7 +249,7 @@ class AbstractFitFunction(ABC):
             )
 
     @property
-    def param_errors(self) -> Union[None, tuple]:
+    def param_errors(self) -> Optional[tuple]:
         """The associated errors of the fitted :attr:`params`."""
         if self._param_errors is None:
             return self._param_errors
@@ -259,12 +258,10 @@ class AbstractFitFunction(ABC):
 
     @param_errors.setter
     def param_errors(self, val) -> None:
-        if isinstance(val, self.FitParamTuple):
-            self._param_errors = tuple(val)
-        elif (
+        if isinstance(val, self.FitParamTuple) or (
             isinstance(val, (tuple, list))
             and len(val) == len(self.param_names)
-            and all(isinstance(vv, (int, np.integer, float, np.floating)) for vv in val)
+            and all(isinstance(vv, numbers.Real) for vv in val)
         ):
             self._param_errors = tuple(val)
         else:
@@ -306,7 +303,7 @@ class AbstractFitFunction(ABC):
         class functionality.
         """
         for arg in args:
-            if not isinstance(arg, (int, np.integer, float, np.floating)):
+            if not isinstance(arg, numbers.Real):
                 raise TypeError(
                     f"Expected int or float for parameter argument, got "
                     f"{type(arg)}."
@@ -318,7 +315,7 @@ class AbstractFitFunction(ABC):
         Check the independent variable ``x`` so that it is an expected
         type for the class functionality.
         """
-        if isinstance(x, (int, float, np.integer, np.floating)):
+        if isinstance(x, numbers.Real):
             x = np.array(x)
         else:
             if not isinstance(x, np.ndarray):
