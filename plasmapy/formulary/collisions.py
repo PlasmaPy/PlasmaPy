@@ -819,7 +819,7 @@ def impact_parameter(
         # the larger of these two possibilities. That is, between the
         # de Broglie wavelength and the distance of closest approach.
         # ARRAY NOTES
-        # T and V should be guaranteed to be same size inputs from _boilerplate
+        # T and V should be guaranteed to be same size inputs from _process_inputs
         # therefore, lambdaBroglie and bPerp are either both scalar or both array
         # if np.isscalar(bPerp.value) and np.isscalar(lambdaBroglie.value):  # both scalar
         try:  # assume both scalar
@@ -877,7 +877,7 @@ def impact_parameter(
 
     # ARRAY NOTES
     # it could be that bmin and bmax have different sizes. If Te is a scalar,
-    # T and V will be scalar from _boilerplate, so bmin will scalar.  However
+    # T and V will be scalar from _process_inputs, so bmin will scalar. However
     # if n_e is an array, then bmax will be an array. if this is the case,
     # do we want to extend the scalar bmin to equal the length of bmax? Sure.
     if np.isscalar(bmin.value) and not np.isscalar(bmax.value):
@@ -1456,7 +1456,7 @@ def mean_free_path(
     # boiler plate to fetch velocity
     # this has been moved to after collision_frequency to avoid use of
     # reduced mass thermal velocity in electron-ion collision case.
-    # Should be fine since collision_frequency has its own boiler_plate
+    # Should be fine since collision_frequency has its own _process_inputs
     # check, and we are only using this here to get the velocity.
     T, masses, charges, reduced_mass, V = _process_inputs(T=T, species=species, V=V)
     return V / freq
@@ -1713,7 +1713,7 @@ def mobility(
         T=T, n=n_e, species=species, z_mean=z_mean, V=V, method=method
     )
     # we do this after collision_frequency since collision_frequency
-    # already has a boiler_plate check and we are doing this just
+    # already has a _process_inputs check and we are doing this just
     # to recover the charges, mass, etc.
     T, masses, charges, reduced_mass, V = _process_inputs(T=T, species=species, V=V)
     z_val = (charges[0] + charges[1]) / 2 if np.isnan(z_mean) else z_mean * e
