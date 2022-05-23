@@ -415,8 +415,15 @@ def plot_floating_potential(voltage, current, *, vf, vf_extras: VFExtras, ax: "A
     )
 
     # plot fitted curve
+    if isinstance(vf_extras.fitted_func, ffuncs.Linear):
+        label = "Linear Fit"
+    elif isinstance(vf_extras.fitted_func, ffuncs.ExponentialPlusOffset):
+        label = "Exponential Fit"
+    else:
+        label = "Fit"
+
     ax.autoscale(False)
-    ax.plot(vfit, ifit, color="orange", zorder=13, label=label + " Fit")
+    ax.plot(vfit, ifit, color="orange", zorder=13, label=label)
     ax.fill_between(
         vfit,
         ifit + ifit_err,
