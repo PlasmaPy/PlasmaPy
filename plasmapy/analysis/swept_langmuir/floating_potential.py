@@ -427,7 +427,7 @@ def plot_floating_potential(voltage, current, *, vf, vf_extras: VFExtras, ax: "A
         label="Fit Error",
     )
 
-    # plot fiducials
+    # plot fiducia
     ax.axhline(0.0, color="r", linestyle="--")
     ax.fill_between(
         [vf - vf_extras.vf_err, vf + vf_extras.vf_err],
