@@ -660,8 +660,7 @@ def impact_parameter_perp(
     # classical effects dominate.
     # !!!Note: an average ionization parameter will have to be
     # included here in the future
-    bPerp = charges[0] * charges[1] / (4 * pi * eps0 * reduced_mass * V ** 2)
-    return bPerp
+    return charges[0] * charges[1] / (4 * pi * eps0 * reduced_mass * V ** 2)
 
 
 @validate_quantities(
@@ -1038,8 +1037,7 @@ def collision_frequency(
     # collision frequency where Coulomb logarithm accounts for
     # small angle collisions, which are more frequent than large
     # angle collisions.
-    freq = n * sigma * V * cou_log
-    return freq
+    return n * sigma * V * cou_log
 
 
 @validate_quantities(impact_param={"can_be_negative": False})
@@ -2046,5 +2044,4 @@ def coupling_parameter(
             f"'quantum', instead of '{method}'."
         )
 
-    coupling = coulomb_energy / kinetic_energy
-    return coupling
+    return coulomb_energy / kinetic_energy
