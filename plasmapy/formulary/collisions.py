@@ -654,7 +654,6 @@ def impact_parameter_perp(
     >>> impact_parameter_perp(T, species)
     <Quantity 8.3550...e-12 m>
     """
-    # boiler plate checks
     T, masses, charges, reduced_mass, V = _boilerPlate(T=T, species=species, V=V)
     # Corresponds to a deflection of 90°s, which is valid when
     # classical effects dominate.
@@ -785,7 +784,6 @@ def impact_parameter(
     >>> impact_parameter(T, n, species, V=1e6 * u.m / u.s)
     (<Quantity 2.534...e-10 m>, <Quantity 2.182...e-05 m>)
     """
-    # boiler plate checks
     T, masses, charges, reduced_mass, V = _boilerPlate(T=T, species=species, V=V)
     # catching error where mean charge state is not given for non-classical
     # methods that require the ion density
@@ -1000,7 +998,6 @@ def collision_frequency(
     >>> collision_frequency(T, n, species)
     <Quantity 70249... Hz>
     """
-    # boiler plate checks
     T, masses, charges, reduced_mass, V_r = _boilerPlate(T=T, species=species, V=V)
     # using a more descriptive name for the thermal velocity using
     # reduced mass
@@ -1585,7 +1582,6 @@ def Spitzer_resistivity(
     freq = collision_frequency(
         T=T, n=n, species=species, z_mean=z_mean, V=V, method=method
     )
-    # boiler plate checks
     # fetching additional parameters
     T, masses, charges, reduced_mass, V = _boilerPlate(T=T, species=species, V=V)
     return (
@@ -1716,7 +1712,6 @@ def mobility(
     freq = collision_frequency(
         T=T, n=n_e, species=species, z_mean=z_mean, V=V, method=method
     )
-    # boiler plate checks
     # we do this after collision_frequency since collision_frequency
     # already has a boiler_plate check and we are doing this just
     # to recover the charges, mass, etc.
@@ -1998,7 +1993,6 @@ def coupling_parameter(
     >>> coupling_parameter(T, n, species, V=1e6 * u.m / u.s)
     <Quantity 5.8033...e-05>
     """
-    # boiler plate checks
     T, masses, charges, reduced_mass, V = _boilerPlate(T=T, species=species, V=V)
 
     if np.isnan(z_mean):
