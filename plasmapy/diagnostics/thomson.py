@@ -182,7 +182,7 @@ def spectral_density_lite(
     ks = np.sqrt(ws ** 2 - wpe ** 2) / c_si_unitless
     kl = np.sqrt(wl ** 2 - wpe ** 2) / c_si_unitless
 
-    # Compute the wavenumber shift (required by momentum conservation)\
+    # Compute the wavenumber shift (required by momentum conservation)
     # Eq. 1.7.10 in Sheffield
     k = np.sqrt(ks ** 2 + kl ** 2 - 2 * ks * kl * np.cos(scattering_angle))
     # Normal vector along k
@@ -822,7 +822,7 @@ def spectral_density_model(wavelengths, settings, params):
         raise ValueError("At least one ion species needs to be defined.")
 
     try:
-        if sum([ion.charge_number <= 0 for ion in ions]):
+        if sum(ion.charge_number <= 0 for ion in ions):
             raise ValueError("All ions must be positively charged.")
     # Catch error if charge information is missing
     except ChargeError:

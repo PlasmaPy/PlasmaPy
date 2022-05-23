@@ -17,7 +17,7 @@ from plasmapy.particles.particle_collections import ParticleList
 
 def example_instr_func(w):
     """
-    Example insturment function for use in testing
+    Example instrument function for use in testing
     """
     sigma = 0.5 * u.nm
     arg = (w / sigma).to(u.dimensionless_unscaled).value
@@ -28,9 +28,9 @@ def example_instr_func(w):
 
 def example_invalid_instr_func_bad_type(w):
     """
-    Example insturment function for use in testing
+    Example instrument function for use in testing
 
-    This insturment function is invalid because it does not return a plain
+    This instrument function is invalid because it does not return a plain
     np.ndarray.
     """
     sigma = 0.5 * u.nm
@@ -42,9 +42,9 @@ def example_invalid_instr_func_bad_type(w):
 
 def example_invalid_instr_func_bad_shape(w):
     """
-    Example insturment function for use in testing
+    Example instrument function for use in testing
 
-    This insturment function is invalid because it returns an array of a
+    This instrument function is invalid because it returns an array of a
     different shape than the provided wavelength array
     """
     sigma = 0.5 * u.nm
@@ -54,7 +54,7 @@ def example_invalid_instr_func_bad_shape(w):
     return inst[2:]
 
 
-# A list of invalid insturment functions
+# A list of invalid instrument functions
 invalid_instr_func_list = [
     (example_invalid_instr_func_bad_type),
     (example_invalid_instr_func_bad_shape),
@@ -318,7 +318,6 @@ def test_ifract_sum_error(single_species_collective_args):
 
 @pytest.fixture()
 def multiple_species_collective_spectrum(multiple_species_collective_args):
-
     """
     Generates an example Thomson scattering spectrum for multiple ion species
     that also have drift velocities. Parameters are set to be in the
@@ -422,7 +421,7 @@ def test_single_species_non_collective_spectrum(single_species_non_collective_sp
 
     e_width = width_at_value(wavelength.value, Skw.value, 0.2e-13)
 
-    # Check that the widts of the electron feature matchs expectations
+    # Check that the widths of the electron feature matches expectations
     assert np.isclose(e_width, 22.6699, 1e-3), (
         "Non-collective case electron "
         f"feature width is {e_width} "
@@ -603,9 +602,9 @@ def test_split_populations():
     assert np.all(deviation < 1e-6), "Failed split populations test"
 
 
-def test_thomson_with_insturment_function(single_species_collective_args):
+def test_thomson_with_instrument_function(single_species_collective_args):
     """
-    Generates an example Thomson scattering spectrum with an insturment
+    Generates an example Thomson scattering spectrum with an instrument
     function applied
     """
     wavelengths = single_species_collective_args["wavelengths"]
@@ -618,19 +617,19 @@ def test_thomson_with_insturment_function(single_species_collective_args):
 
     alpha, Skw_without = thomson.spectral_density(*args, **kwargs)
 
-    # Assert that the insturment function has made the IAW peak wider
+    # Assert that the instrument function has made the IAW peak wider
     w1 = width_at_value(wavelengths.value, Skw_with.value, 2e-13)
     w2 = width_at_value(wavelengths.value, Skw_without.value, 2e-13)
     assert w1 > w2
 
 
 @pytest.mark.parametrize("instr_func", invalid_instr_func_list)
-def test_thomson_with_invalid_insturment_function(
+def test_thomson_with_invalid_instrument_function(
     instr_func,
     single_species_collective_args,
 ):
     """
-    Verifies that an exception is raised if the provided insturment function
+    Verifies that an exception is raised if the provided instrument function
     is invalid.
     """
     args, kwargs = spectral_density_args_kwargs(single_species_collective_args)
@@ -679,7 +678,7 @@ def run_fit(
     max_iter=None,
     check_errors=True,
     require_redchi=1,
-    # If false, don't perform the actual fit just create the Model
+    # If false, don't perform the actual fit but instead just create the Model
     run_fit=True,
 ):
     """
@@ -727,15 +726,8 @@ def run_fit(
     probe_wavelength = settings["probe_wavelength"]
     instr_func = settings["instr_func"]
 
-    try:
-        electron_vdir = settings["electron_vdir"]
-    except KeyError:
-        electron_vdir = np.ones([len(T_e), 3])
-
-    try:
-        ion_vdir = settings["ion_vdir"]
-    except KeyError:
-        ion_vdir = np.ones([len(T_i), 3])
+    electron_vdir = settings.get("electron_vdir", np.ones([len(T_e), 3]))
+    ion_vdir = settings.get("ion_vdir", np.ones([len(T_i), 3]))
 
     electron_vel = electron_speed[:, np.newaxis] * electron_vdir
     ion_vel = ion_speed[:, np.newaxis] * ion_vdir
@@ -1069,7 +1061,7 @@ def test_fit_iaw_single_species(iaw_single_species_settings_params):
 
 def test_fit_iaw_instr_func(iaw_single_species_settings_params):
     """
-    Tests fitting with an insturment function
+    Tests fitting with an instrument function
 
     """
 
@@ -1102,10 +1094,10 @@ def test_fit_noncollective_single_species(noncollective_single_species_settings_
 def test_fit_with_instr_func(epw_single_species_settings_params):
     """
 
-    This test checks that fitting works with an insturment function
+    This test checks that fitting works with an instrument function
 
     It specifically tests the case where a notch is being used in the filter,
-    because this can cause a potential error with the insturment function.
+    because this can cause a potential error with the instrument function.
 
     """
     wavelengths, params, settings = spectral_density_model_settings_params(
@@ -1134,7 +1126,7 @@ def test_fit_with_instr_func(epw_single_species_settings_params):
 @pytest.mark.parametrize("instr_func", invalid_instr_func_list)
 def test_fit_with_invalid_instr_func(instr_func, iaw_single_species_settings_params):
     """
-    Verifies that an exception is raised if the provided insturment function
+    Verifies that an exception is raised if the provided instrument function
     is invalid.
     """
     wavelengths, params, settings = spectral_density_model_settings_params(
