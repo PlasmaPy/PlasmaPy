@@ -535,7 +535,7 @@ def Coulomb_logarithm(
 
 @validate_quantities(T={"equivalencies": u.temperature_energy()})
 @particles.particle_input
-def _boilerPlate(T: u.K, species: (particles.Particle, particles.Particle), V):
+def _process_inputs(T: u.K, species: (particles.Particle, particles.Particle), V):
     """
     Check the inputs to functions in ``collisions.py``.  Also obtains
     reduced in mass in a 2 particle collision system along with thermal
@@ -654,7 +654,7 @@ def impact_parameter_perp(
     >>> impact_parameter_perp(T, species)
     <Quantity 8.3550...e-12 m>
     """
-    T, masses, charges, reduced_mass, V = _boilerPlate(T=T, species=species, V=V)
+    T, masses, charges, reduced_mass, V = _process_inputs(T=T, species=species, V=V)
     # Corresponds to a deflection of 90°s, which is valid when
     # classical effects dominate.
     # !!!Note: an average ionization parameter will have to be
@@ -784,7 +784,7 @@ def impact_parameter(
     >>> impact_parameter(T, n, species, V=1e6 * u.m / u.s)
     (<Quantity 2.534...e-10 m>, <Quantity 2.182...e-05 m>)
     """
-    T, masses, charges, reduced_mass, V = _boilerPlate(T=T, species=species, V=V)
+    T, masses, charges, reduced_mass, V = _process_inputs(T=T, species=species, V=V)
     # catching error where mean charge state is not given for non-classical
     # methods that require the ion density
     if (
@@ -998,7 +998,7 @@ def collision_frequency(
     >>> collision_frequency(T, n, species)
     <Quantity 70249... Hz>
     """
-    T, masses, charges, reduced_mass, V_r = _boilerPlate(T=T, species=species, V=V)
+    T, masses, charges, reduced_mass, V_r = _process_inputs(T=T, species=species, V=V)
     # using a more descriptive name for the thermal velocity using
     # reduced mass
     V_reduced = V_r
@@ -1458,7 +1458,7 @@ def mean_free_path(
     # reduced mass thermal velocity in electron-ion collision case.
     # Should be fine since collision_frequency has its own boiler_plate
     # check, and we are only using this here to get the velocity.
-    T, masses, charges, reduced_mass, V = _boilerPlate(T=T, species=species, V=V)
+    T, masses, charges, reduced_mass, V = _process_inputs(T=T, species=species, V=V)
     return V / freq
 
 
@@ -1583,7 +1583,7 @@ def Spitzer_resistivity(
         T=T, n=n, species=species, z_mean=z_mean, V=V, method=method
     )
     # fetching additional parameters
-    T, masses, charges, reduced_mass, V = _boilerPlate(T=T, species=species, V=V)
+    T, masses, charges, reduced_mass, V = _process_inputs(T=T, species=species, V=V)
     return (
         freq * reduced_mass / (n * charges[0] * charges[1])
         if np.isnan(z_mean)
@@ -1715,7 +1715,7 @@ def mobility(
     # we do this after collision_frequency since collision_frequency
     # already has a boiler_plate check and we are doing this just
     # to recover the charges, mass, etc.
-    T, masses, charges, reduced_mass, V = _boilerPlate(T=T, species=species, V=V)
+    T, masses, charges, reduced_mass, V = _process_inputs(T=T, species=species, V=V)
     z_val = (charges[0] + charges[1]) / 2 if np.isnan(z_mean) else z_mean * e
     return z_val / (reduced_mass * freq)
 
@@ -1993,7 +1993,7 @@ def coupling_parameter(
     >>> coupling_parameter(T, n, species, V=1e6 * u.m / u.s)
     <Quantity 5.8033...e-05>
     """
-    T, masses, charges, reduced_mass, V = _boilerPlate(T=T, species=species, V=V)
+    T, masses, charges, reduced_mass, V = _process_inputs(T=T, species=species, V=V)
 
     if np.isnan(z_mean):
         # using mean charge to get average ion density.
