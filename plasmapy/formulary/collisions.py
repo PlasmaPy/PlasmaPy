@@ -59,6 +59,7 @@ import numpy as np
 import warnings
 
 from astropy.constants.si import e, eps0, hbar, k_B, m_e
+from numbers import Real
 from numpy import pi
 
 from plasmapy import particles, utils
@@ -76,7 +77,6 @@ from plasmapy.utils.decorators.checks import _check_relativistic
 
 @validate_quantities(
     T={"can_be_negative": False, "equivalencies": u.temperature_energy()},
-    z_mean={"none_shall_pass": True},
     V={"none_shall_pass": True},
 )
 @particles.particle_input
@@ -84,7 +84,7 @@ def Coulomb_logarithm(
     T: u.K,
     n_e: u.m ** -3,
     species: (particles.Particle, particles.Particle),
-    z_mean: u.dimensionless_unscaled = np.nan * u.dimensionless_unscaled,
+    z_mean: Real = np.nan,
     V: u.m / u.s = np.nan * u.m / u.s,
     method="classical",
 ):
@@ -665,14 +665,13 @@ def impact_parameter_perp(
 @validate_quantities(
     T={"can_be_negative": False, "equivalencies": u.temperature_energy()},
     n_e={"can_be_negative": False},
-    z_mean={"none_shall_pass": True},
     V={"none_shall_pass": True},
 )
 def impact_parameter(
     T: u.K,
     n_e: u.m ** -3,
     species,
-    z_mean: u.dimensionless_unscaled = np.nan * u.dimensionless_unscaled,
+    z_mean: Real = np.nan,
     V: u.m / u.s = np.nan * u.m / u.s,
     method="classical",
 ):
@@ -889,13 +888,12 @@ def impact_parameter(
 @validate_quantities(
     T={"can_be_negative": False, "equivalencies": u.temperature_energy()},
     n={"can_be_negative": False},
-    z_mean={"none_shall_pass": True},
 )
 def collision_frequency(
     T: u.K,
     n: u.m ** -3,
     species,
-    z_mean: u.dimensionless_unscaled = np.nan * u.dimensionless_unscaled,
+    z_mean: Real = np.nan,
     V: u.m / u.s = np.nan * u.m / u.s,
     method="classical",
 ) -> u.Hz:
@@ -1345,13 +1343,12 @@ def fundamental_ion_collision_freq(
 @validate_quantities(
     T={"can_be_negative": False, "equivalencies": u.temperature_energy()},
     n_e={"can_be_negative": False},
-    z_mean={"none_shall_pass": True},
 )
 def mean_free_path(
     T: u.K,
     n_e: u.m ** -3,
     species,
-    z_mean: u.dimensionless_unscaled = np.nan * u.dimensionless_unscaled,
+    z_mean: Real = np.nan,
     V: u.m / u.s = np.nan * u.m / u.s,
     method="classical",
 ) -> u.m:
@@ -1465,13 +1462,12 @@ def mean_free_path(
 @validate_quantities(
     T={"can_be_negative": False, "equivalencies": u.temperature_energy()},
     n={"can_be_negative": False},
-    z_mean={"none_shall_pass": True},
 )
 def Spitzer_resistivity(
     T: u.K,
     n: u.m ** -3,
     species,
-    z_mean: u.dimensionless_unscaled = np.nan * u.dimensionless_unscaled,
+    z_mean: Real = np.nan,
     V: u.m / u.s = np.nan * u.m / u.s,
     method="classical",
 ) -> u.Ohm * u.m:
@@ -1594,13 +1590,12 @@ def Spitzer_resistivity(
 @validate_quantities(
     T={"can_be_negative": False, "equivalencies": u.temperature_energy()},
     n_e={"can_be_negative": False},
-    z_mean={"none_shall_pass": True},
 )
 def mobility(
     T: u.K,
     n_e: u.m ** -3,
     species,
-    z_mean: u.dimensionless_unscaled = np.nan * u.dimensionless_unscaled,
+    z_mean: Real = np.nan,
     V: u.m / u.s = np.nan * u.m / u.s,
     method="classical",
 ) -> u.m ** 2 / (u.V * u.s):
@@ -1723,14 +1718,13 @@ def mobility(
 @validate_quantities(
     T={"can_be_negative": False, "equivalencies": u.temperature_energy()},
     n_e={"can_be_negative": False},
-    z_mean={"none_shall_pass": True},
 )
 def Knudsen_number(
     characteristic_length,
     T: u.K,
     n_e: u.m ** -3,
     species,
-    z_mean: u.dimensionless_unscaled = np.nan * u.dimensionless_unscaled,
+    z_mean: Real = np.nan,
     V: u.m / u.s = np.nan * u.m / u.s,
     method="classical",
 ) -> u.dimensionless_unscaled:
@@ -1849,13 +1843,12 @@ def Knudsen_number(
 @validate_quantities(
     T={"can_be_negative": False, "equivalencies": u.temperature_energy()},
     n_e={"can_be_negative": False},
-    z_mean={"none_shall_pass": True},
 )
 def coupling_parameter(
     T: u.K,
     n_e: u.m ** -3,
     species,
-    z_mean: u.dimensionless_unscaled = np.nan * u.dimensionless_unscaled,
+    z_mean: Real = np.nan,
     V: u.m / u.s = np.nan * u.m / u.s,
     method="classical",
 ) -> u.dimensionless_unscaled:
