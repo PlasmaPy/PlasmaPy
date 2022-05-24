@@ -538,7 +538,7 @@ def Coulomb_logarithm(
 def _process_inputs(T: u.K, species: (particles.Particle, particles.Particle), V):
     """
     Check the inputs to functions in ``collisions.py``.  Also obtains
-    reduced in mass in a 2 particle collision system along with thermal
+    the reduced mass in a 2 particle collision system along with thermal
     velocity.
     """
     masses = [p.mass for p in species]
@@ -654,11 +654,12 @@ def impact_parameter_perp(
     >>> impact_parameter_perp(T, species)
     <Quantity 8.3550...e-12 m>
     """
+    # Note: This formulation corresponds to collisions that result in a deflection of 90°s,
+    #       which is valid when classical effects dominate.
+    # TODO: need to incorporate an average ionization parameter
+
     T, masses, charges, reduced_mass, V = _process_inputs(T=T, species=species, V=V)
-    # Corresponds to a deflection of 90°s, which is valid when
-    # classical effects dominate.
-    # !!!Note: an average ionization parameter will have to be
-    # included here in the future
+
     return charges[0] * charges[1] / (4 * pi * eps0 * reduced_mass * V ** 2)
 
 
