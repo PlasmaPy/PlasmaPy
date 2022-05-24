@@ -653,7 +653,7 @@ def impact_parameter_perp(
     Examples
     --------
     >>> import astropy.units as u
-    >>> T = 1e6*u.K
+    >>> T = 1e6 * u.K
     >>> species = ('e', 'p')
     >>> impact_parameter_perp(T, species)
     <Quantity 8.3550...e-12 m>
@@ -780,8 +780,8 @@ def impact_parameter(
     Examples
     --------
     >>> import astropy.units as u
-    >>> n = 1e19*u.m**-3
-    >>> T = 1e6*u.K
+    >>> n = 1e19 * u.m**-3
+    >>> T = 1e6 * u.K
     >>> species = ('e', 'p')
     >>> impact_parameter(T, n, species)
     (<Quantity 1.051...e-11 m>, <Quantity 2.182...e-05 m>)
@@ -995,8 +995,8 @@ def collision_frequency(
     Examples
     --------
     >>> import astropy.units as u
-    >>> n = 1e19*u.m**-3
-    >>> T = 1e6*u.K
+    >>> n = 1e19 * u.m**-3
+    >>> T = 1e6 * u.K
     >>> species = ('e', 'p')
     >>> collision_frequency(T, n, species)
     <Quantity 70249... Hz>
@@ -1983,8 +1983,8 @@ def coupling_parameter(
     Examples
     --------
     >>> import astropy.units as u
-    >>> n = 1e19*u.m**-3
-    >>> T = 1e6*u.K
+    >>> n = 1e19 * u.m**-3
+    >>> T = 1e6 * u.K
     >>> species = ('e', 'p')
     >>> coupling_parameter(T, n, species)
     <Quantity 5.8033...e-05>
