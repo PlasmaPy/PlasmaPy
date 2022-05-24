@@ -548,34 +548,38 @@ def _process_inputs(T: u.K, species: (particles.Particle, particles.Particle), V
     reduced_mass = particles.reduced_mass(*species)
 
     # getting thermal velocity of system if no velocity is given
-    V = _replaceNanVwithThermalV(V, T, reduced_mass)
+    V = _replace_nan_velocity_with_thermal_velocity(V, T, reduced_mass)
 
     _check_relativistic(V, "V")
 
     return T, masses, charges, reduced_mass, V
 
 
-def _replaceNanVwithThermalV(V, T, m):
+def _replace_nan_velocity_with_thermal_velocity(V, T, m):
     """
     Get thermal velocity of system if no velocity is given, for a given
     mass.  Handles vector checks for ``V``, you must already know that
     ``T`` and ``m`` are okay.
     """
     if np.any(V == 0):
-        raise utils.PhysicsError("You cannot have a collision for zero velocity!")
-    # getting thermal velocity of system if no velocity is given
+        raise utils.PhysicsError("Collisions are not possible with a zero velocity.")
 
     if V is None:
-        V = thermal_speed(T, "e-", mass=m)
-    elif np.any(np.isnan(V)):
-        if np.isscalar(V.value) or np.isscalar(T.value):
-            if np.isscalar(V.value):
-                V = thermal_speed(T, "e-", mass=m)
-            if np.isscalar(T.value):
-                V[np.isnan(V)] = thermal_speed(T, "e-", mass=m)
-        else:
-            V = V.copy()
-            V[np.isnan(V)] = thermal_speed(T[np.isnan(V)], "e-", mass=m)
+        return thermal_speed(T, "e-", mass=m)
+
+    if not np.any(np.isnan(V)):
+        return V
+
+    if not (np.isscalar(V.value) or np.isscalar(T.value)):
+        V = V.copy()
+        V[np.isnan(V)] = thermal_speed(T[np.isnan(V)], "e-", mass=m)
+        return V
+
+    if np.isscalar(V.value):
+        return thermal_speed(T, "e-", mass=m)
+
+    if np.isscalar(T.value):
+        V[np.isnan(V)] = thermal_speed(T, "e-", mass=m)
 
     return V
 
@@ -1006,7 +1010,7 @@ def collision_frequency(
         # electron-electron collision
         # if a velocity was passed, we use that instead of the reduced
         # thermal velocity
-        V = _replaceNanVwithThermalV(V, T, reduced_mass)
+        V = _replace_nan_velocity_with_thermal_velocity(V, T, reduced_mass)
         # impact parameter for 90° collision
         bPerp = impact_parameter_perp(T=T, species=species, V=V_reduced)
     elif species[0] in ("e", "e-") or species[1] in ("e", "e-"):
@@ -1015,7 +1019,7 @@ def collision_frequency(
         # correct perpendicular collision radius
         # we ignore the reduced velocity and use the electron thermal
         # velocity instead
-        V = _replaceNanVwithThermalV(V, T, m_e)
+        V = _replace_nan_velocity_with_thermal_velocity(V, T, m_e)
         # need to also correct mass in collision radius from reduced
         # mass to electron mass
         bPerp = impact_parameter_perp(T=T, species=species, V=V) * reduced_mass / m_e
@@ -1025,7 +1029,7 @@ def collision_frequency(
         # ion-ion collision
         # if a velocity was passed, we use that instead of the reduced
         # thermal velocity
-        V = _replaceNanVwithThermalV(V, T, reduced_mass)
+        V = _replace_nan_velocity_with_thermal_velocity(V, T, reduced_mass)
         bPerp = impact_parameter_perp(T=T, species=species, V=V)
     cou_log = Coulomb_logarithm(T, n, species, z_mean, V=V, method=method)
     # collisional cross section
@@ -1180,7 +1184,7 @@ def fundamental_electron_collision_freq(
     ~plasmapy.formulary.collisions.fundamental_ion_collision_freq
     """
     # specify to use electron thermal velocity (most probable), not based on reduced mass
-    V = _replaceNanVwithThermalV(V, T_e, m_e)
+    V = _replace_nan_velocity_with_thermal_velocity(V, T_e, m_e)
 
     species = [ion, "e-"]
     Z_i = particles.charge_number(ion) * u.dimensionless_unscaled
@@ -1316,7 +1320,7 @@ def fundamental_ion_collision_freq(
     species = [ion, ion]
 
     # specify to use ion thermal velocity (most probable), not based on reduced mass
-    V = _replaceNanVwithThermalV(V, T_i, m_i)
+    V = _replace_nan_velocity_with_thermal_velocity(V, T_i, m_i)
 
     Z_i = particles.charge_number(ion) * u.dimensionless_unscaled
 
