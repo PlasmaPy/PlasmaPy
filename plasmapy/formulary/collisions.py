@@ -538,7 +538,7 @@ def Coulomb_logarithm(
 def _process_inputs(T: u.K, species: (particles.Particle, particles.Particle), V):
     """
     Check the inputs to functions in ``collisions.py``.  Also obtains
-    reduced in mass in a 2 particle collision system along with thermal
+    the reduced mass in a 2 particle collision system along with thermal
     velocity.
     """
     masses = [p.mass for p in species]
