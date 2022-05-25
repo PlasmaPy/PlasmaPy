@@ -19,6 +19,7 @@ from plasmapy.formulary.magnetostatics import *
 from plasmapy.formulary.mathematics import *
 from plasmapy.formulary.misc import *
 from plasmapy.formulary.quantum import *
+from plasmapy.formulary.radiation import *
 from plasmapy.formulary.relativity import *
 from plasmapy.formulary.speeds import *
 
