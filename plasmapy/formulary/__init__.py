@@ -49,6 +49,7 @@ for modname in (
     "misc",
     "parameters",
     "quantum",
+    "radiation",
     "relativity",
     "speeds",
 ):
