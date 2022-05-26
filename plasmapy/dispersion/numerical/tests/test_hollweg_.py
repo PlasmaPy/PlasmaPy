@@ -188,8 +188,8 @@ class TestHollweg:
             ),
         ],
     )
-    def test_vals(self, kwargs, expected):
-        """Test scenarios involving k and theta arrays"""
+    def test_handle_k_theta_arrays(self, kwargs, expected):
+        """Test scenarios involving k and theta arrays."""
         ws = hollweg(**kwargs)
         for mode, val in ws.items():
             assert np.allclose(val.value, expected[mode])
