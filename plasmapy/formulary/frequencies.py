@@ -432,11 +432,7 @@ def lower_hybrid_frequency(B: u.T, n_i: u.m ** -3, ion: Particle) -> u.rad / u.s
     omega_ci = gyrofrequency(B, particle=ion)
     omega_pi = plasma_frequency(n_i, particle=ion)
     omega_ce = gyrofrequency(B, particle="e-")
-    omega_lh = ((omega_ci * omega_ce) ** -1 + omega_pi ** -2) ** -0.5
-    # TODO possibly optimize the above line via np.sqrt
-    omega_lh = omega_lh
-
-    return omega_lh
+    return ((omega_ci * omega_ce) ** -1 + omega_pi ** -2) ** -0.5
 
 
 wlh_ = lower_hybrid_frequency
