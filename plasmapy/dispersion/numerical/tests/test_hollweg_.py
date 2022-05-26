@@ -119,7 +119,8 @@ class TestHollweg:
     @pytest.mark.parametrize(
         "kwargs, expected",
         [
-            (  # array input for k, single value for theta
+            # k is an array, theta is single valued
+            (
                 {
                     **_kwargs_single_valued,
                     "k": np.logspace(-7, -2, 2) * u.rad / u.m,
@@ -130,6 +131,7 @@ class TestHollweg:
                     "acoustic_mode": [0.00043295 + 0.0j, 0.07358991 + 0.0j],
                 },
             ),
+            # theta is an array, k is single valued
             (
                 {**_kwargs_single_valued, "theta": [87, 88] * u.deg},
                 {
@@ -138,6 +140,7 @@ class TestHollweg:
                     "acoustic_mode": [0.11044097 + 0.0j, 0.07358991 + 0.0j],
                 },
             ),
+            # k and theta are an array
             (
                 {
                     **_kwargs_single_valued,
