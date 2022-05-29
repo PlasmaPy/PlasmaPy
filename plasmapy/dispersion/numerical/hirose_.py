@@ -203,7 +203,7 @@ def hirose(
         z_mean = abs(z_mean)
 
     # invalidate T_i argument
-    if "T_i" in kwargs["kwargs"].keys():
+    if "T_i" in kwargs["kwargs"]:
         raise TypeError(
             "Got unexpected keyword 'T_i', dispersion relation assumes T_i = 0."
         )
