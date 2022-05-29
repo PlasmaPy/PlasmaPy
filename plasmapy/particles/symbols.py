@@ -127,7 +127,7 @@ def isotope_symbol(isotope: Particle, mass_numb: Optional[Integral] = None) -> s
         or contradictory information is provided.
 
     `TypeError`
-        If the argument is not a `str`, `int`, or `Particle`.
+        If the argument is not a `str`, `int`, or |Particle|.
 
     Warns
     -----
@@ -192,7 +192,7 @@ def ionic_symbol(
         contradictory information is provided.
 
     `TypeError`
-        If `particle` is not a `str`, `int`, or
+        If ``particle`` is not a `str`, `int`, or
         `~plasmapy.particles.particle_class.Particle`; or if either of
         ``mass_numb`` or ``Z`` is not an `int` or `str` representing an
         integer.

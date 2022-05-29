@@ -1,7 +1,7 @@
 :orphan:
 
-`plasmapy.plasma.plasma_factor`
-===============================
+`plasmapy.plasma.plasma_factory`
+================================
 
 .. currentmodule:: plasmapy.plasma.plasma_factory
 
