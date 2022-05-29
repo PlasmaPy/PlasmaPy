@@ -28,7 +28,7 @@ class ParticleJSONDecoder(json.JSONDecoder):
         decoded and its return value will be used in place of the given `dict`.
         This can be used to provide custom deserializations (e.g. to support
         JSON-RPC class hinting).  If not specified, then defaults to
-        `particle_hook`.).
+        `~plasmapy.particles.serialization.ParticleJSONDecoder.particle_hook`.).
 
     **kwargs :
         Any keyword accepted by `~json.JSONDecoder`.
@@ -44,10 +44,12 @@ class ParticleJSONDecoder(json.JSONDecoder):
         """
         Decode JSON strings into the appropriate particle class.
 
-        This method is an `object_hook` utilized by the `json`
+        This method is an ``object_hook`` utilized by the `json`
         deserialization processes to decode json strings into a particle
-        class (`AbstractParticle`, `CustomParticle`,
-        `DimensionlessParticle`, `Particle`).
+        class (`~plasmapy.particles.particle_class.AbstractParticle`,
+        `~plasmapy.particles.particle_class.CustomParticle`,
+        `~plasmapy.particles.particle_class.DimensionlessParticle`,
+        `~plasmapy.particles.particle_class.Particle`).
         """
         particle_types = {
             "AbstractParticle": AbstractParticle,
@@ -75,7 +77,7 @@ def json_load_particle(fp, *, cls=ParticleJSONDecoder, **kwargs):
 
     This function is a convenient form of `json.load` to deserialize a
     JSON document into a particle object. (Mirrors `json.load` with
-    `cls` defaulting to `ParticleJSONDecoder`.).
+    ``cls`` defaulting to `ParticleJSONDecoder`.).
 
     Parameters
     ----------
@@ -96,7 +98,7 @@ def json_loads_particle(s, *, cls=ParticleJSONDecoder, **kwargs):
     Deserialize a JSON string into the appropriate particle object.
 
     This function is convenient form of `json.loads` to deserialize a
-    JSON string into a particle object. (Mirrors `json.loads` with `cls`
+    JSON string into a particle object. (Mirrors `json.loads` with ``cls``
     defaulting to `ParticleJSONDecoder`.).
 
     Parameters

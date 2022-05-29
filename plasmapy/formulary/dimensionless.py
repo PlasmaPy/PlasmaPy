@@ -95,9 +95,7 @@ def Debye_number(T_e: u.K, n_e: u.m ** -3) -> u.dimensionless_unscaled:
     """
 
     lambda_D = lengths.Debye_length(T_e, n_e)
-    N_D = (4 / 3) * np.pi * n_e * lambda_D ** 3
-
-    return N_D
+    return (4 / 3) * np.pi * n_e * lambda_D ** 3
 
 
 nD_ = Debye_number
@@ -284,8 +282,7 @@ def quantum_theta(T: u.K, n_e: u.m ** -3) -> u.dimensionless_unscaled:
     """
     fermi_energy = quantum.Fermi_energy(n_e)
     thermal_energy = k_B * T
-    theta = thermal_energy / fermi_energy
-    return theta
+    return thermal_energy / fermi_energy
 
 
 @validate_quantities(
@@ -406,12 +403,11 @@ def Reynolds_number(
 
     Returns
     -------
-    Re: `~astropy.Quantity`
+    Re: `~astropy.units.Quantity`
         Dimensionless quantity.
 
     """
-    Re = abs(rho * U * L / mu)
-    return Re
+    return abs(rho * U * L / mu)
 
 
 Re_ = Reynolds_number
@@ -461,8 +457,6 @@ def Mag_Reynolds(U: u.m / u.s, L: u.m, sigma: u.S / u.m) -> u.dimensionless_unsc
     `~astropy.units.UnitConversionError`
         If ``U`` is not in appropriate units.
 
-
-
     Examples
     --------
     >>> import astropy.units as u
@@ -484,8 +478,7 @@ def Mag_Reynolds(U: u.m / u.s, L: u.m, sigma: u.S / u.m) -> u.dimensionless_unsc
 
     """
     eta = 1 / (mu0 * sigma)
-    Rm = abs(U * L / eta)
-    return Rm
+    return abs(U * L / eta)
 
 
 Rm_ = Mag_Reynolds

@@ -28,7 +28,7 @@ def check_sweep(
         checked, but values should be in amperes.*
 
     strip_units: `bool`
-        (Default: `True`) If `True``, then the units on ``voltage`` and/or
+        (Default: `True`) If `True`, then the units on ``voltage`` and/or
         ``current`` will be stripped if either are passed in as an Astropy
         `~astropy.units.Quantity`.
 

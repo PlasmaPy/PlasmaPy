@@ -2,23 +2,23 @@
 
 __all__ = [
     "atomic_number",
-    "mass_number",
-    "standard_atomic_weight",
-    "particle_mass",
-    "isotopic_abundance",
     "charge_number",
-    "electric_charge",
-    "integer_charge",
-    "is_stable",
-    "half_life",
-    "known_isotopes",
     "common_isotopes",
-    "stable_isotopes",
-    "reduced_mass",
-    "periodic_table_period",
-    "periodic_table_group",
+    "electric_charge",
+    "half_life",
+    "integer_charge",
+    "isotopic_abundance",
+    "is_stable",
+    "known_isotopes",
+    "mass_number",
+    "particle_mass",
     "periodic_table_block",
     "periodic_table_category",
+    "periodic_table_group",
+    "periodic_table_period",
+    "reduced_mass",
+    "stable_isotopes",
+    "standard_atomic_weight",
 ]
 
 import astropy.constants as const
@@ -323,7 +323,7 @@ def charge_number(particle: Particle) -> Integral:
     `~plasmapy.particles.exceptions.ChargeError`
         If charge information for the particle is not available.
 
-    `~plasmapy.particles.exceptions.AtomicWarning`
+    `~plasmapy.particles.exceptions.ParticleWarning`
         If the input represents an ion with a charge number that is
         less than or equal to ``-3``, which is unlikely to occur in
         nature.
@@ -869,7 +869,7 @@ def reduced_mass(test_particle, target_particle) -> u.Quantity:
 
     `~astropy.units.UnitConversionError`
         If an argument is a `~astropy.units.Quantity` or
-        `~astropy.units.Constant` but does not have units of mass.
+        `~astropy.constants.Constant` but does not have units of mass.
 
     `~plasmapy.particles.exceptions.MissingParticleDataError`
         If the mass of either particle is not known.
