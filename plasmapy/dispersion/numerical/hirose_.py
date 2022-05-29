@@ -123,6 +123,16 @@ def hirose(
     ValueError
         If ``k`` or ``theta`` are not single valued or a 1-D array.
 
+    Warns
+    -----
+    : `~plasmapy.utils.exceptions.PhysicsWarning`
+        When :math:`\omega / \omega_{\rm ci} > 0.1`, violation of the
+        low-frequency assumption.
+
+    : `~plasmapy.utils.exceptions.PhysicsWarning`
+        When a :math:`T_i` argument is given, solver automatically
+        sets :math:`T_i = 0`.
+
     Notes
     -----
     The dispersion relation presented in :cite:t:`hirose:2004`
@@ -259,18 +269,16 @@ def hirose(
         omega_ci = gyrofrequency(B=B, particle=ion, signed=False, Z=z_mean).value
         omega_pi = plasma_frequency(n=n_i, particle=ion).value
 
-    # strip units from select input args
-    k = k.value
-    theta = theta.value
+    thetav, kv = np.meshgrid(theta.value, k.value)
 
     # Parameter kz
-    kz = np.cos(theta) * k
+    kz = np.cos(thetav) * kv
 
     # Define helpful parameters
     A = (kz * v_A) ** 2
-    B = (k * c_s) ** 2
-    C = (k * v_A) ** 2
-    D = ((k * c_si_unitless) / omega_pi) ** 2
+    B = (kv * c_s) ** 2
+    C = (kv * v_A) ** 2
+    D = ((kv * c_si_unitless) / omega_pi) ** 2
 
     # Polynomial coefficients: c3*x^6 + c2*x^4 + c1*x^2 + c0
     c3 = A ** 0
@@ -279,22 +287,40 @@ def hirose(
     c0 = -B * A ** 2
 
     # Find roots of polynomial
-    coefficients = np.array([c3, c2, c1, c0], ndmin=2)
+    coefficients = np.array([c3, c2, c1, c0], ndmin=3)
     nroots = coefficients.shape[0] - 1  # 3
     nks = coefficients.shape[1]
-    roots = np.empty((nroots, nks), dtype=np.complex128)
+    nthetas = coefficients.shape[2]
+    roots = np.empty((nroots, nks, nthetas), dtype=np.complex128)
     for ii in range(nks):
-        roots[:, ii] = np.roots(coefficients[:, ii])[:]
+        for jj in range(nthetas):
+            roots[:, ii, jj] = np.roots(coefficients[:, ii, jj])
 
     roots = np.sqrt(roots)
     roots = np.sort(roots, axis=0)
 
-    omegas = {
+    # dispersion relation is only valid in the regime w << w_ci
+    w_max = np.max(roots)
+    w_wci_max = w_max / omega_ci
+    if w_wci_max > 0.1:
+        warnings.warn(
+            f"This solver is valid in the regime w/w_ci << 1.  A w "
+            f"value of {w_max:.2f} and a w/w_ci value of "
+            f"{w_wci_max:.2f} were calculated which may affect the "
+            f"validity of the solution.",
+            PhysicsWarning,
+        )
+
+    # dispersion relation only valid in the T_i = 0 regime
+    if kwargs["kwargs"] != {}:
+        warnings.warn(
+            "A T_i argument was entered, but this solver is only "
+            "valid in the cold ion regime and automatically sets T_i = 0.",
+            PhysicsWarning,
+        )            
+
+    return {
         "fast_mode": roots[2, :].squeeze() * u.rad / u.s,
         "alfven_mode": roots[1, :].squeeze() * u.rad / u.s,
         "acoustic_mode": roots[0, :].squeeze() * u.rad / u.s,
     }
-
-    # Ti is assumed to be 0 for this eqn
-
-    return omegas
