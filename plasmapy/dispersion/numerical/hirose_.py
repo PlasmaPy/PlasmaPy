@@ -129,10 +129,6 @@ def hirose(
         When :math:`\omega / \omega_{\rm ci} > 0.1`, violation of the
         low-frequency assumption.
 
-    : `~plasmapy.utils.exceptions.PhysicsWarning`
-        When a :math:`T_i` argument is given, solver automatically
-        sets :math:`T_i = 0`.
-
     Notes
     -----
     The dispersion relation presented in :cite:t:`hirose:2004`
@@ -207,7 +203,7 @@ def hirose(
         z_mean = abs(z_mean)
 
     # invalidate T_i argument
-    if "T_i" in kwargs.keys():
+    if "T_i" in kwargs["kwargs"].keys():
         raise TypeError(
             "Got unexpected keyword 'T_i', dispersion relation assumes T_i = 0."
         )
@@ -308,14 +304,6 @@ def hirose(
             f"value of {w_max:.2f} and a w/w_ci value of "
             f"{w_wci_max:.2f} were calculated which may affect the "
             f"validity of the solution.",
-            PhysicsWarning,
-        )
-
-    # dispersion relation only valid in the T_i = 0 regime
-    if kwargs["kwargs"] != {}:
-        warnings.warn(
-            "A T_i argument was entered, but this solver is only "
-            "valid in the cold ion regime and automatically sets T_i = 0.",
             PhysicsWarning,
         )
 
