@@ -62,9 +62,10 @@ def hirose(
     T_e : `~astropy.units.Quantity`
         The electron temperature in units of K or eV.
     theta : `~astropy.units.Quantity`, single valued or 1-D array
-        The angle of propagation of the wave with respect to the magnetic field,
-        :math:`\cos^{-1}(k_z / k)`, in units must be convertible to radians.
-        Either single valued or 1-D array of size :math:`M`.
+        The angle of propagation of the wave with respect to the
+        magnetic field, :math:`\cos^{-1}(k_z / k)`, in units convertible
+        to radians.  Either single valued or 1-D array of size
+        :math:`M`.
     gamma_e : `float` or `int`, optional
         The adiabatic index for electrons, which defaults to 1.  This
         value assumes that the electrons are able to equalize their
@@ -75,22 +76,24 @@ def hirose(
         assumes that ion motion has only one degree of freedom, namely
         along magnetic field lines.
     z_mean : `float` or int, optional
-        The average ionization state (arithmetic mean) of the ``ion`` composing
-        the plasma.  Will override any charge state defined by argument ``ion``.
+        The average ionization state (arithmetic mean) of the ``ion``
+        composing the plasma.  Will override any charge state defined
+        by argument ``ion``.
 
     Returns
     -------
     omega : Dict[str, `~astropy.units.Quantity`]
         A dictionary of computed wave frequencies in units rad/s.  The
-        dictionary contains three keys: ``'fast_mode'`` for the fast mode,
-        ``'alfven_mode'`` for the Alfvén mode, and ``'acoustic_mode'`` for the
-        ion-acoustic mode.  The value for each key will be a :math:`N x M` array.
+        dictionary contains three keys: ``'fast_mode'`` for the fast
+        mode, ``'alfven_mode'`` for the Alfvén mode, and
+        ``'acoustic_mode'`` for the ion-acoustic mode.  The value for
+        each key will be a :math:`N x M` array.
 
     Raises
     ------
     TypeError
-        If applicable arguments are not instances of `~astropy.units.Quantity` or
-        cannot be converted into one.
+        If applicable arguments are not instances of
+        `~astropy.units.Quantity` or cannot be converted into one.
 
     TypeError
         If ``ion`` is not of type or convertible to
@@ -105,8 +108,7 @@ def hirose(
         expected units.
 
     ValueError
-        If any of ``B``, ``k``, ``n_i``, ``T_e``, or ``T_i``
-        is negative.
+        If any of ``B``, ``k``, ``n_i``, or ``T_e`` is negative.
 
     ValueError
         If ``k`` is negative or zero.
