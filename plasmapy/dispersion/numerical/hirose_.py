@@ -317,7 +317,7 @@ def hirose(
             "A T_i argument was entered, but this solver is only "
             "valid in the cold ion regime and automatically sets T_i = 0.",
             PhysicsWarning,
-        )            
+        )
 
     return {
         "fast_mode": roots[2, :].squeeze() * u.rad / u.s,
