@@ -949,6 +949,7 @@ class Tracker:
 
         if self.fract_entered <= 0.1 or still_on >= 0.001:
             return False
+
         # Warn user if < 10% of the particles ended up on the grid
         if self.num_entered < 0.1 * self.nparticles:
             warnings.warn(
