@@ -80,15 +80,22 @@ class NullPoint(Point):
     A class for defining a null point in 3D space.
     """
 
-    def __init__(self, null_loc, classification):
+    def __init__(self, null_loc, classification, cell):
         super().__init__(null_loc)
         self._classification = classification
+        self._cell = cell
 
     def get_classification(self):
         r"""
         Returns the type of the null point object.
         """
         return self._classification
+
+    def get_cell(self):
+        r"""
+        Returns the cell that the null point location.
+        """
+        return self._cell
 
     def __eq__(self, point):
         r"""
@@ -103,6 +110,7 @@ class NullPoint(Point):
         return np.isclose(d, 0, atol=_EQUALITY_ATOL)
 
     classification = property(get_classification)
+    cell = property(get_cell)
 
 
 def _vector_space(
@@ -1354,7 +1362,7 @@ def _vspace_iterator(vspace, maxiter=500, err=1e-10):
                         loc = _locate_null_point(vspace, [i, j, k], maxiter, err)
                         if loc is not None:
                             null_type = _classify_null_point(vspace, [i, j, k], loc)
-                            p = NullPoint(loc, null_type)
+                            p = NullPoint(loc, null_type, [i, j, k])
                             if p not in nullpoints:
                                 nullpoints.append(p)
     return nullpoints
