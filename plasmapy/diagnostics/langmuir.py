@@ -138,6 +138,7 @@ class Characteristic:
 
         if not inplace:
             return Characteristic(bias_unique, current_unique)
+
         self.bias = bias_unique
         self.current = current_unique
 
