@@ -119,6 +119,7 @@ def kinetic_alfven(
     --------
     >>> import numpy as np
     >>> from astropy import units as u
+    >>> from plasmapy.particles import Particle
     >>> from plasmapy.dispersion.numerical import kinetic_alfven_
     >>> inputs = {
     ...    "k": np.logspace(-7,-2,2) * u.rad / u.m,
@@ -142,18 +143,21 @@ def kinetic_alfven(
                 f"For argument 'ion' expected type {Particle} but got {type(ion)}."
             )
     if not (ion.is_ion or ion.is_category("element")):
-        raise ValueError("The particle passed for 'ion' must be an ion or element.")
+        raise ValueError(
+            "The particle passed for 'ion' must be an ion or element."
+        )
 
     # validate z_mean
     if z_mean is None:
         try:
-            z_mean = abs(ion.integer_charge)
+            z_mean = abs(ion.charge_number)
         except ChargeError:
             z_mean = 1
     else:
         if not isinstance(z_mean, (int, np.integer, float, np.floating)):
             raise TypeError(
-                f"Expected int or float for argument 'z_mean', but got {type(z_mean)}."
+                "Expected int or float for argument 'z_mean', "
+                f"instead got {type(z_mean)}."
             )
         z_mean = abs(z_mean)
 
@@ -162,8 +166,8 @@ def kinetic_alfven(
         val = locals()[arg_name].squeeze()
         if val.shape != ():
             raise ValueError(
-                f"Argument '{arg_name}' must a single value and not an array of "
-                f"shape {val.shape}."
+                f"Argument '{arg_name}' must a single value and "
+                f"not an array of shape {val.shape}."
             )
         locals()[arg_name] = val
 
@@ -171,27 +175,29 @@ def kinetic_alfven(
     for arg_name in ("gamma_e", "gamma_i"):
         if not isinstance(locals()[arg_name], (int, np.integer, float, np.floating)):
             raise TypeError(
-                f"Expected int or float for argument '{arg_name}', but got "
-                f"{type(locals()[arg_name])}."
+                f"Expected int or float for argument '{arg_name}', "
+                f"instead got {type(locals()[arg_name])}."
             )
 
     # validate argument k
     k = k.squeeze()
     if not (k.ndim == 0 or k.ndim == 1):
         raise ValueError(
-            f"Argument 'k' needs to be a single valued or 1D array astropy Quantity,"
-            f" got array of shape {k.shape}."
+            "Argument 'k' needs to be a single valued or 1D array "
+            f"astropy Quantity, instead got array of shape {k.shape}."
         )
     if np.any(k <= 0):
-        raise ValueError("Argument 'k' can not be a or have negative values.")
+        raise ValueError(
+            "Argument 'k' can not be a or have negative values."
+        )
 
     # validate argument theta
     theta = theta.squeeze()
     theta = theta.to(u.radian)
     if not (theta.ndim == 0 or theta.ndim == 1):
         raise ValueError(
-            f"Argument 'theta' needs to be a single valued or 1D array astropy "
-            f"Quantity, got array of shape {k.shape}."
+            "Argument 'theta' needs to be a single valued or 1D array "
+            f"astropy Quantity, instead got array of shape {theta.shape}."
         )
 
     n_e = z_mean * n_i
@@ -208,7 +214,6 @@ def kinetic_alfven(
     omega_ci = pfp.gyrofrequency(B=B, particle=ion, signed=False, Z=z_mean)
 
     # parameters kz
-
     kz = np.cos(theta.value) * k
     kx = np.sqrt(k ** 2 - kz ** 2)
 
@@ -217,9 +222,7 @@ def kinetic_alfven(
     F = ((kx * c_s) / omega_ci) ** 2
 
     omega = np.sqrt(A * (1 + F))
-    # print(omega_ci)
 
-    # check for dispersion relation assumptions and valid regimes
 
     # thermal speeds for electrons and ions in plasma
     v_Te = pfp.thermal_speed(T=T_e, particle="e-")
@@ -239,29 +242,41 @@ def kinetic_alfven(
     # maximum value for w/kz test
     if omega_kz_max / v_Te > 0.1 or v_Ti / omega_kz_max > 0.1:
         warnings.warn(
-            f"This calculation produced one or more invalid w/kz value(s), "
-            f"which violates the regime in which the dispersion relation "
-            f"is valid (v_Te >> w/kz >> v_Ti)",
+            "This calculation produced one or more invalid w/kz "
+            "value(s), which violates the regime in which the "
+            "dispersion relation is valid (v_Te >> w/kz >> v_Ti)",
             PhysicsWarning,
         )
 
     # minimum value for w/kz test
     elif omega_kz_min / v_Te > 0.1 or v_Ti / omega_kz_min > 0.1:
         warnings.warn(
-            f"This calculation produced one or more invalid w/kz value(s) "
-            f"which violates the regime in which the dispersion relation "
-            f"is valid (v_Te >> w/kz >> v_Ti)",
+            "This calculation produced one or more invalid w/kz "
+            "value(s) which violates the regime in which the "
+            "dispersion relation is valid (v_Te >> w/kz >> v_Ti)",
             PhysicsWarning,
         )
 
     # dispersion relation is only valid in the regime w << w_ci
     if w_max / omega_ci > 0.1:
         warnings.warn(
-            f"The calculation produced a high-frequency wave, "
-            f"which violates the low frequency assumption (w << w_ci)",
+            "The calculation produced a high-frequency wave, "
+            "which violates the low frequency assumption (w << w_ci)",
             PhysicsWarning,
         )
 
     return omega
 
 
+inputs = {
+    "k": np.logspace(-7, -2, 2) * u.rad / u.m,
+    "theta": 30 * u.deg,
+    "B": 8.3e-9 * u.T,
+    "n_i": 5 * u.m ** -3,
+    "T_e": 1.6e6 * u.K,
+    "T_i": 4.0e5 * u.K,
+    "ion": Particle("p+"),
+}
+
+omegas = kinetic_alfven(**inputs)
+print(omegas)
