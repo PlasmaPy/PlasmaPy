@@ -118,7 +118,7 @@ jobs:
     - name: Install language-pack-fr and tzdata
       run: sudo apt-get install graphviz pandoc
     - name: Run tests
-      run: tox  -e build_docs -- -q
+      run: tox -e build_docs -- -q
   codespell:
     name: codespell
     runs-on: ubuntu-latest
