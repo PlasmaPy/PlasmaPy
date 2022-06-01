@@ -11,7 +11,8 @@ import warnings
 from astropy.constants.si import c
 from typing import Union
 
-from plasmapy.formulary import parameters as pfp
+from plasmapy.formulary import frequencies as pfp
+from plasmapy.formulary import speeds as speed
 from plasmapy.particles import Particle
 from plasmapy.particles.exceptions import ChargeError
 from plasmapy.utils.decorators import validate_quantities
@@ -202,7 +203,7 @@ def kinetic_alfven(
         )
 
     n_e = z_mean * n_i
-    c_s = pfp.ion_sound_speed(
+    c_s = speed.ion_sound_speed(
         T_e=T_e,
         T_i=T_i,
         ion=ion,
@@ -211,7 +212,7 @@ def kinetic_alfven(
         gamma_i=gamma_i,
         z_mean=z_mean,
     )
-    v_A = pfp.Alfven_speed(B, n_i, ion=ion, z_mean=z_mean)
+    v_A = speed.Alfven_speed(B, n_i, ion=ion, z_mean=z_mean)
     omega_ci = pfp.gyrofrequency(B=B, particle=ion, signed=False, Z=z_mean)
 
     # parameters kz
@@ -225,8 +226,8 @@ def kinetic_alfven(
     omega = np.sqrt(A * (1 + F))
 
     # thermal speeds for electrons and ions in plasma
-    v_Te = pfp.thermal_speed(T=T_e, particle="e-")
-    v_Ti = pfp.thermal_speed(T=T_i, particle=ion)
+    v_Te = speed.thermal_speed(T=T_e, particle="e-")
+    v_Ti = speed.thermal_speed(T=T_i, particle=ion)
 
     # maximum value of omega
     w_max = np.max(omega)
