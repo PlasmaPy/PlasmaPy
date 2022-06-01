@@ -35,7 +35,7 @@ repos:
     - python
 
 - repo: https://github.com/psf/black
-  rev: 21.12b0
+  rev: 22.3.0
   hooks:
   - id: black
     additional_dependencies:
@@ -46,7 +46,7 @@ repos:
   hooks:
   - id: nbqa-black
     additional_dependencies:
-    - black==21.12b0
+    - black==22.3.0
     - click<8.1  # remove this when black is next updated
     args:
     - --nbqa-mutate
