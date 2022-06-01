@@ -1,4 +1,4 @@
-"""Test functionality of Stix in `plasmapy.dispersion.numerical.stix_`."""
+"""Test functionality of Stix in `plasmapy.dispersion.analytical.stix_`."""
 import numpy as np
 import pytest
 
