@@ -21,7 +21,7 @@ class PlasmaBlob(GenericPlasma):
     spatial/temporal description.
     """
 
-    @validate_quantities(T_e=u.K, n_e=u.m ** -3)
+    @validate_quantities(T_e=u.K, n_e=u.m**-3)
     def __init__(self, T_e, n_e, Z=None, particle="p"):
         """
         Initialize plasma parameters.
