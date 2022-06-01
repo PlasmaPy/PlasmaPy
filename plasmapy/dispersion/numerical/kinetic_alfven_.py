@@ -40,21 +40,21 @@ def kinetic_alfven(
     z_mean: Union[float, int] = None,
 ):
     r"""
-    Using the equation provided in Bellan 201, this function
-    calculates the numerical solution to the two fluid dispersion relation
-    presented by Hirose 2004.
+    Using the equation provided in :cite:t:`bellan:2012`, this function
+    calculates the numerical solution to the two fluid dispersion
+    relation presented by :cite:t:`hirose:2004`.
     Parameters
     ----------
     B : `~astropy.units.Quantity`
         The magnetic field magnitude in units convertible to :math:`T`.
     ion : `str` or `~plasmapy.particles.particle_class.Particle`
-        Representation of the ion species (e.g., ``'p'`` for protons, ``'D+'``
-        for Deuterium, ``'He-4 +1'`` for singly ionized Helium-4, etc.). If no
-        charge state information is provided, then the ions are assumed to be
-        singly ionized.
+        Representation of the ion species (e.g., ``'p'`` for protons,
+        ``'D+'`` for Deuterium, ``'He-4 +1'`` for singly ionized
+        Helium-4, etc.). If no charge state information is provided,
+        then the ions are assumed to be singly ionized.
     k : `~astropy.units.Quantity`, single valued or 1-D array
-        Wavenumber in units convertible to :math:`rad / m`.  Either single
-        valued or 1-D array of length :math:`N`.
+        Wavenumber in units convertible to :math:`rad / m`.  Either
+        single valued or 1-D array of length :math:`N`.
     n_i : `~astropy.units.Quantity`
         Ion number density in units convertible to :math:`m^{-3}`.
     T_e : `~astropy.units.Quantity`
@@ -62,9 +62,10 @@ def kinetic_alfven(
     T_i : `~astropy.units.Quantity`
         The ion temperature in units of :math:`K` or :math:`eV`.
     theta : `~astropy.units.Quantity`, single valued or 1-D array
-        The angle of propagation of the wave with respect to the magnetic field,
-        :math:`\cos^{-1}(k_z / k)`, in units must be convertible to :math:`deg`.
-        Either single valued or 1-D array of size :math:`M`.
+        The angle of propagation of the wave with respect to the
+        magnetic field, :math:`\cos^{-1}(k_z / k)`, in units must be
+        convertible to :math:`rad`. Either single valued or 1-D array
+        of size :math:`M`.
     gamma_e : `float` or `int`, optional
         The adiabatic index for electrons, which defaults to 1.  This
         value assumes that the electrons are able to equalize their
@@ -75,27 +76,31 @@ def kinetic_alfven(
         assumes that ion motion has only one degree of freedom, namely
         along magnetic field lines.
     z_mean : `float` or int, optional
-        The average ionization state (arithmetic mean) of the ``ion`` composing
-        the plasma.  Will override any charge state defined by argument ``ion``.
+        The average ionization state (arithmetic mean) of the ``ion``
+        composing the plasma.  Will override any charge state defined
+        by argument ``ion``.
     Returns
     -------
     omega : Dict[str, `~astropy.units.Quantity`]
-        A dictionary of computed wave frequencies in units :math:`rad/s`.  The
-        dictionary contains three keys: ``'fast_mode'`` for the fast mode,
-        ``'alfven_mode'`` for the Alfvén mode, and ``'acoustic_mode'`` for the
-        ion-acoustic mode.  The value for each key will be a :math:`N x M` array.
+        A dictionary of computed wave frequencies in units
+        :math:`rad/s`.  The dictionary contains three keys:
+        ``'fast_mode'`` for the fast mode, ``'alfven_mode'`` for the
+        Alfv\'{e}n mode, and ``'acoustic_mode'`` for the ion-acoustic
+        mode.  The value for each key will be a :math:`N x M` array.
     Raises
     ------
     TypeError
-        If applicable arguments are not instances of `~astropy.units.Quantity` or
-        cannot be converted into one.
+        If applicable arguments are not instances of
+        `~astropy.units.Quantity` or cannot be converted into one.
     TypeError
-        If ``ion`` is not of type or convertible to `~plasmapy.particles.Particle`.
+        If ``ion`` is not of type or convertible to
+        `~plasmapy.particles.Particle`.
     TypeError
-        If ``gamma_e``, ``gamma_i``, or``z_mean`` are not of type `int` or `float`.
+        If ``gamma_e``, ``gamma_i``, or``z_mean`` are not of type
+        `int` or `float`.
     ~astropy.units.UnitTypeError
-        If applicable arguments do not have units convertible to the expected
-        units.
+        If applicable arguments do not have units convertible to the
+        expected units.
     ValueError
         If any of ``B``, ``k``, ``n_i``, ``T_e``, or ``T_i`` is negative.
     ValueError
@@ -143,9 +148,7 @@ def kinetic_alfven(
                 f"For argument 'ion' expected type {Particle} but got {type(ion)}."
             )
     if not (ion.is_ion or ion.is_category("element")):
-        raise ValueError(
-            "The particle passed for 'ion' must be an ion or element."
-        )
+        raise ValueError("The particle passed for 'ion' must be an ion or element.")
 
     # validate z_mean
     if z_mean is None:
@@ -187,9 +190,7 @@ def kinetic_alfven(
             f"astropy Quantity, instead got array of shape {k.shape}."
         )
     if np.any(k <= 0):
-        raise ValueError(
-            "Argument 'k' can not be a or have negative values."
-        )
+        raise ValueError("Argument 'k' can not be a or have negative values.")
 
     # validate argument theta
     theta = theta.squeeze()
@@ -222,7 +223,6 @@ def kinetic_alfven(
     F = ((kx * c_s) / omega_ci) ** 2
 
     omega = np.sqrt(A * (1 + F))
-
 
     # thermal speeds for electrons and ions in plasma
     v_Te = pfp.thermal_speed(T=T_e, particle="e-")
