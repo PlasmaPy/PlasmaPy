@@ -102,7 +102,7 @@ class Tracker:
         of the detector plane. The vector from the source point to this
         point defines the normal vector of the detector plane. This vector
         can also be specified in cartesian, cylindrical, or spherical
-        coordinates (see the `source` keyword).
+        coordinates (see the ``source`` keyword).
 
     detector_hdir : `numpy.ndarray`, shape (3), optional
         A unit vector (in Cartesian coordinates) defining the horizontal
@@ -317,7 +317,7 @@ class Tracker:
             The size of the mesh grid (in the mesh plane). If one value
             is provided, the mesh is circular and the value provided is
             interpreted as the diameter. If two values are provided, the
-            mesh is rectangular and they the values are interpreted as the
+            mesh is rectangular and the values are interpreted as the
             width and height respectively.
 
         nwires : Tuple of 1 or 2 ints, or a single int
@@ -333,14 +333,14 @@ class Tracker:
             A unit vector (in Cartesian coordinates) defining the horizontal
             direction on the mesh plane. Modifying this vector can rotate the
             mesh in the plane or tilt the mesh plane relative to the
-            source-detector axis. By default, `mesh_hdir` is set equal to
-            `detector_hdir` (see `detector_hdir` keyword in `__init__`).
+            source-detector axis. By default, ``mesh_hdir`` is set equal to
+            ``detector_hdir`` (see ``detector_hdir`` keyword in ``__init__``).
 
         mesh_vdir : `numpy.ndarray`, shape (3), optional
             A unit vector (in Cartesian coordinates) defining the vertical
             direction on the mesh plane. Modifying this vector can tilt the
-            mesh relative to the source-detector axis. By default, `mesh_vdir`
-            is defined to be perpendicular to `mesh_hdir` and the detector
+            mesh relative to the source-detector axis. By default, ``mesh_vdir``
+            is defined to be perpendicular to ``mesh_hdir`` and the detector
             plane normal (such that the mesh is parallel to the detector plane).
 
         Raises
@@ -582,8 +582,8 @@ class Tracker:
             guess will be made based on the size of the grid.
             Units must be convertible to radians.
 
-        particle : ~plasmapy.particles.Particle or string representation of same, optional
-            Representation of the particle species as either a `Particle` object
+        particle : ~plasmapy.particles.particle_class.Particle or string representation of same, optional
+            Representation of the particle species as either a |Particle| object
             or a string representation. The default particle is protons.
 
         distribution: str
@@ -596,13 +596,13 @@ class Tracker:
                 - 'uniform': velocities will be distributed such that,
                    left unperturbed,they will form a uniform pattern
                    on the detection plane. This method
-                   requires that `nparticles` be a perfect square. If it is not,
-                   `nparticles` will be set as the largest perfect square smaller
-                   than the provided `nparticles`.
+                   requires that ``nparticles`` be a perfect square. If it is not,
+                   ``nparticles`` will be set as the largest perfect square smaller
+                   than the provided ``nparticles``.
 
-            Simulations run in the `uniform` mode will imprint a grid pattern
+            Simulations run in the ``'uniform'`` mode will imprint a grid pattern
             on the image, but will well-sample the field grid with a
-            smaller number of particles. The default is `monte-carlo`
+            smaller number of particles. The default is ``'monte-carlo'``.
 
 
         """
@@ -675,8 +675,8 @@ class Tracker:
         v: `~astropy.units.Quantity`, shape (N,3)
             Velocities for N particles
 
-        particle : ~plasmapy.particles.Particle or string representation of same, optional
-            Representation of the particle species as either a `Particle` object
+        particle : ~plasmapy.particles.particle_class.Particle or string representation of same, optional
+            Representation of the particle species as either a |Particle| object
             or a string representation. The default particle is protons.
 
         distribution: str
@@ -690,9 +690,9 @@ class Tracker:
                    left unpreturbed,they will form a uniform pattern
                    on the detection plane.
 
-            Simulations run in the `uniform` mode will imprint a grid pattern
+            Simulations run in the ``'uniform'`` mode will imprint a grid pattern
             on the image, but will well-sample the field grid with a
-            smaller number of particles. The default is `monte-carlo`
+            smaller number of particles. The default is ``'monte-carlo'``.
 
 
         """
@@ -947,20 +947,20 @@ class Tracker:
         else:
             still_on = 0.0
 
-        if self.fract_entered > 0.1 and still_on < 0.001:
-            # Warn user if < 10% of the particles ended up on the grid
-            if self.num_entered < 0.1 * self.nparticles:
-                warnings.warn(
-                    f"Only {100*self.num_entered/self.nparticles:.2f}% of "
-                    "particles entered the field grid: consider "
-                    "decreasing the max_theta to increase this "
-                    "number.",
-                    RuntimeWarning,
-                )
-
-            return True
-        else:
+        if self.fract_entered <= 0.1 or still_on >= 0.001:
             return False
+
+        # Warn user if < 10% of the particles ended up on the grid
+        if self.num_entered < 0.1 * self.nparticles:
+            warnings.warn(
+                f"Only {100*self.num_entered/self.nparticles:.2f}% of "
+                "particles entered the field grid: consider "
+                "decreasing the max_theta to increase this "
+                "number.",
+                RuntimeWarning,
+            )
+
+        return True
 
     def run(
         self,
@@ -1000,7 +1000,7 @@ class Tracker:
 
         Returns
         -------
-        None.
+        None
 
         """
 
@@ -1015,11 +1015,8 @@ class Tracker:
                 f"{field_weightings}",
             )
 
-        if dt is None:
-            # Set dt as an infinite range by default (auto dt with no restrictions)
-            self.dt = np.array([0.0, np.inf]) * u.s
-        else:
-            self.dt = dt
+        # By default, set dt as an infinite range (auto dt with no restrictions)
+        self.dt = np.array([0.0, np.inf]) * u.s if dt is None else dt
         self.dt = (self.dt).to(u.s).value
 
         # Check to make sure particles have already been generated
@@ -1094,7 +1091,7 @@ class Tracker:
 
         self._log("Run completed")
 
-        self._log("Fraction of particles tracked: " f"{self.fract_tracked*100:.1f}%")
+        self._log(f"Fraction of particles tracked: {self.fract_tracked:.1%}")
 
         self._log(
             "Fraction of tracked particles that entered the grid: "
@@ -1201,8 +1198,7 @@ class Tracker:
         v0[:, 1] = np.dot(self.v_init, self.det_hdir)
         v0[:, 2] = np.dot(self.v_init, self.det_vdir)
 
-        # Store output values in a dictionary
-        result_dict = dict(
+        return dict(
             source=self.source,
             detector=self.detector,
             mag=self.mag,
@@ -1215,8 +1211,6 @@ class Tracker:
             y0=y0loc,
             v0=v0,
         )
-
-        return result_dict
 
     def save_results(self, path):
         """

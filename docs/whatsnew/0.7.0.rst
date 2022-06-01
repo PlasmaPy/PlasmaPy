@@ -91,7 +91,7 @@ Deprecations and Removals
   `~plasmapy.particles.ionization_state.IonizationState.charge_numbers`. (`#1136 <https://github.com/plasmapy/plasmapy/pull/1136>`__)
 - The ``particle`` attribute of |Particle|
   has been removed after having been deprecated in 0.6.0. (`#1146 <https://github.com/plasmapy/plasmapy/pull/1146>`__)
-- Use more generalized keyword argument ``T`` instead of ``T_i`` in `plasmapy.formulary.parameters.gyroradius`.
+- Use more generalized keyword argument ``T`` instead of ``T_i`` in ``plasmapy.formulary.parameters.gyroradius``.
   The ``T_i`` argument has been deprecated and will be removed in a subsequent release. (`#1210 <https://github.com/plasmapy/plasmapy/pull/1210>`__)
 
 
@@ -124,7 +124,7 @@ Features
 - Created the `~plasmapy.particles.ionization_state.IonizationState.to_list`
   method of |IonizationState| to provide a |ParticleList| instance that
   contains the different ionic levels. (`#1154 <https://github.com/plasmapy/plasmapy/pull/1154>`__)
-- The behaviour of the function `~plasmapy.formulary.parameters.gyroradius` has
+- The behaviour of the function ``plasmapy.formulary.parameters.gyroradius`` has
   been changed. If `numpy.nan` values are provided for ``T_i`` or ``Vperp``,
   then instead of raising a slightly misleading error, `numpy.nan` in the
   appropriate units is returned. (`#1187 <https://github.com/plasmapy/plasmapy/pull/1187>`__)
@@ -207,10 +207,10 @@ Improved Documentation
 - Created an outline of a page in the development guide to describe the workflow
   required to contribute to PlasmaPy. (`#1178 <https://github.com/plasmapy/plasmapy/pull/1178>`__)
 - Added brief description about the physics of the upper-hybrid resonance
-  to the docstring of the function `~plasmapy.formulary.parameters.upper_hybrid_frequency`. (`#1180 <https://github.com/plasmapy/plasmapy/pull/1180>`__)
+  to the docstring of the function ``plasmapy.formulary.parameters.upper_hybrid_frequency``. (`#1180 <https://github.com/plasmapy/plasmapy/pull/1180>`__)
 - Added a brief description about the physics of the lower-hybrid resonance
-  to the docstring of the function `~plasmapy.formulary.parameters.lower_hybrid_frequency`. (`#1181 <https://github.com/plasmapy/plasmapy/pull/1181>`__)
-- Made the function `~plasmapy.formulary.parameters.gyrofrequency` more general
+  to the docstring of the function ``plasmapy.formulary.parameters.lower_hybrid_frequency``. (`#1181 <https://github.com/plasmapy/plasmapy/pull/1181>`__)
+- Made the function ``plasmapy.formulary.parameters.gyrofrequency`` more general
   by removing the indications that it might only work for ions. (`#1183 <https://github.com/plasmapy/plasmapy/pull/1183>`__)
 - Make `plasmapy.analysis.fit_functions.AbstractFitFunction.FitParamTuple` a
   property to fix the documentation build warning caused by the release
@@ -226,7 +226,7 @@ Improved Documentation
 - Renamed "Development Guide" to "Contributor Guide", and temporarily removed
   the incomplete :file:`docs/development/workflow.rst` from the ``toctree`` of the
   Contributor Guide. (`#1217 <https://github.com/plasmapy/plasmapy/pull/1217>`__)
-- Fixed a typo in the docstring of `~plasmapy.formulary.parameters.Alfven_speed`. (`#1218 <https://github.com/plasmapy/plasmapy/pull/1218>`__)
+- Fixed a typo in the docstring of ``plasmapy.formulary.parameters.Alfven_speed``. (`#1218 <https://github.com/plasmapy/plasmapy/pull/1218>`__)
 - Fixed broken reST_ links in docstrings for aliases in `plasmapy.formulary`. (`#1238 <https://github.com/plasmapy/plasmapy/pull/1238>`__)
 - Fixed multiple broken and redirected links. (`#1257 <https://github.com/plasmapy/plasmapy/pull/1257>`__)
 - Updated the |documentation guide| to include a description on how to

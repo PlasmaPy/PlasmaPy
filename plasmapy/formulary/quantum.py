@@ -17,10 +17,12 @@ import astropy.units as u
 import numpy as np
 
 from astropy.constants.si import c, e, eps0, h, hbar, k_B, m_e
+from lmfit import minimize, Parameters
 
 from plasmapy import particles
 from plasmapy.formulary import mathematics
 from plasmapy.formulary.relativity import Lorentz_factor
+from plasmapy.particles.exceptions import InvalidParticleError
 from plasmapy.utils import RelativityError
 from plasmapy.utils.decorators import validate_quantities
 
@@ -106,17 +108,17 @@ def deBroglie_wavelength(V: u.m / u.s, particle) -> u.m:
         try:
             # TODO: Replace with more general routine!
             m = particles.particle_mass(particle)
-        except Exception:
+        except InvalidParticleError:
             raise ValueError("Unable to find particle mass.")
     else:
         try:
             m = particle.to(u.kg)
-        except Exception:
+        except u.UnitConversionError as e:
             raise u.UnitConversionError(
                 "The second argument for deBroglie_wavelength must be either a "
                 "representation of a particle or a"
                 " Quantity with units of mass."
-            )
+            ) from e
 
     if V.size > 1:
 
@@ -461,9 +463,8 @@ def chemical_potential(n_e: u.m ** -3, T: u.K) -> u.dimensionless_unscaled:
     Warnings
     --------
     At present this function is limited to relatively small arguments
-    due to limitations in the `mpmath` implementation of
-    `~mpmath.polylog`, which PlasmaPy uses in calculating the Fermi
-    integral.
+    due to limitations in the ``mpmath.polylog``, which PlasmaPy uses in
+    calculating the Fermi integral.
 
     Examples
     --------
@@ -493,13 +494,6 @@ def chemical_potential(n_e: u.m ** -3, T: u.K) -> u.dimensionless_unscaled:
 
     # setting parameters for fitting along with bounds
     alphaGuess = 1 * u.dimensionless_unscaled
-    try:
-        from lmfit import minimize, Parameters
-    except ImportError as e:
-        from plasmapy.optional_deps import lmfit_import_error
-
-        raise lmfit_import_error from e
-
     params = Parameters()
     params.add("alpha", value=alphaGuess, min=0.0)
     # calling minimize function from lmfit to fit by minimizing the residual

@@ -243,7 +243,7 @@ class _GenericWidget(abc.ABC):
         else:
             try:
                 self.try_change_value(value)
-            except Exception:
+            except ValueError:
                 self.display_error(value)
 
 
