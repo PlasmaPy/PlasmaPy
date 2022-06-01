@@ -2,6 +2,7 @@
 This module contains functionality for calculating various numerical
 solutions to the kinetic alfven dispersion relation
 """
+__all__ = ["kinetic_alfven"]
 
 import astropy.units as u
 import numpy as np
@@ -16,6 +17,8 @@ from plasmapy.particles.exceptions import ChargeError
 from plasmapy.utils.decorators import validate_quantities
 from plasmapy.utils.exceptions import PhysicsWarning
 
+c_si_unitless = c.value
+
 
 @validate_quantities(
     B={"can_be_negative": False},
@@ -23,7 +26,7 @@ from plasmapy.utils.exceptions import PhysicsWarning
     T_e={"can_be_negative": False, "equivalencies": u.temperature_energy()},
     T_i={"can_be_negative": False, "equivalencies": u.temperature_energy()},
 )
-def alfven(
+def kinetic_alfven(
     *,
     B: u.T,
     ion: Union[str, Particle],
@@ -46,7 +49,7 @@ def alfven(
         The magnetic field magnitude in units convertible to :math:`T`.
     ion : `str` or `~plasmapy.particles.particle_class.Particle`
         Representation of the ion species (e.g., ``'p'`` for protons, ``'D+'``
-        for deuterium, ``'He-4 +1'`` for singly ionized helium-4, etc.). If no
+        for Deuterium, ``'He-4 +1'`` for singly ionized Helium-4, etc.). If no
         charge state information is provided, then the ions are assumed to be
         singly ionized.
     k : `~astropy.units.Quantity`, single valued or 1-D array
@@ -114,8 +117,9 @@ def alfven(
         c_{\rm s}^2}{\omega_{\rm ci}^2} \right)
     Examples
     --------
+    >>> import numpy as np
     >>> from astropy import units as u
-    >>> from plasmapy.dispersion.numerical import alfven_
+    >>> from plasmapy.dispersion.numerical import kinetic_alfven_
     >>> inputs = {
     ...    "k": np.logspace(-7,-2,2) * u.rad / u.m,
     ...    "theta": 30 * u.deg,
@@ -125,8 +129,7 @@ def alfven(
     ...    "T_i": 4.0e5 * u.K,
     ...    "ion": Particle("p+"),
     ...}
-    >>> omegas = alfven(**inputs)
-    >>> omegas
+    >>> omegas = kinetic_alfven(**inputs)
     [7.01005647e+00 6.70197761e+08] rad / s
     """
 
