@@ -103,3 +103,43 @@ class TestHirose:
 
         for mode in ws:
             assert np.isclose(ws[mode], ws_expected[mode], atol=1e-5, rtol=1.7e-4)
+
+    @pytest.mark.parametrize(
+        "kwargs, expected",
+        [
+            ({**_kwargs_single_valued}, {"shape": ()}),
+            (
+                {
+                    **_kwargs_single_valued,
+                    "k": [1, 2, 3] * u.rad / u.m,
+                },
+                {"shape": (3,)},
+            ),
+            (
+                {
+                    **_kwargs_single_valued,
+                    "k": [1, 2, 3] * u.rad / u.m,
+                    "theta": [50, 77] * u.deg,
+                },
+                {"shape": (3, 2)},
+            ),
+            (
+                {
+                    **_kwargs_single_valued,
+                    "theta": [50, 77] * u.deg,
+                },
+                {"shape": (2,)},
+            ),
+        ],
+    )
+    def test_return_structure(self, kwargs, expected):
+        """Test the structure of the returned values."""
+        ws = hirose(**kwargs)
+
+        assert isinstance(ws, dict)
+        assert len({"acoustic_mode", "alfven_mode", "fast_mode"} - set(ws.keys())) == 0
+
+        for mode, val in ws.items():
+            assert isinstance(val, u.Quantity)
+            assert val.unit == u.rad / u.s
+            assert val.shape == expected["shape"]
