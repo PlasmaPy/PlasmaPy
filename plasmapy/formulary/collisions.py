@@ -505,33 +505,32 @@ def Coulomb_logarithm(
             "more information."
         )
 
-    # applying dimensionless units
     ln_Lambda = ln_Lambda.to(u.dimensionless_unscaled).value
 
-    # Allow NaNs through the < checks without warning
-    with np.errstate(invalid="ignore"):
-        if np.any(ln_Lambda < 2) and method in [
-            "classical",
-            "ls",
-            "ls_min_interp",
-            "GMS-1",
-            "ls_full_interp",
-            "GMS-2",
-        ]:
-            warnings.warn(
-                f"The calculation of Coulomb logarithm has found a value "
-                f"of ln Λ = {np.nanmin(ln_Lambda)} which is likely to be "
-                f"inaccurate due to strong coupling effects and "
-                f"{method = } assumes weak coupling.",
-                utils.CouplingWarning,
-            )
-        elif np.any(ln_Lambda < 4):
-            warnings.warn(
-                f"The calculation of Coulomb logarithm has found a value "
-                f"of ln Λ = {np.nanmin(ln_Lambda)} which is likely to be "
-                f"inaccurate due to strong coupling effects.",
-                utils.CouplingWarning,
-            )
+    min_ln_Lambda = np.nanmin(ln_Lambda)
+
+    if min_ln_Lambda < 2 and method in [
+        "classical",
+        "ls",
+        "ls_min_interp",
+        "GMS-1",
+        "ls_full_interp",
+        "GMS-2",
+    ]:
+        warnings.warn(
+            f"The calculation of Coulomb logarithm has found a value of "
+            f"min(ln Λ) = {min_ln_Lambda} which is likely to be inaccurate "
+            f"due to strong coupling effects, in particular because "
+            f"{method = } assumes weak coupling.",
+            utils.CouplingWarning,
+        )
+    elif min_ln_Lambda < 4:
+        warnings.warn(
+            f"The calculation of Coulomb logarithm has found a value of "
+            f"ln Λ = {min_ln_Lambda}. Coulomb logarithms of ≲ 4 may have "
+            f"increased uncertainty due to strong coupling effects.",
+            utils.CouplingWarning,
+        )
 
     return ln_Lambda
 
