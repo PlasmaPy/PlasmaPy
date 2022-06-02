@@ -519,14 +519,17 @@ def Coulomb_logarithm(
             "GMS-2",
         ]:
             warnings.warn(
-                f"The Coulomb logarithm is {ln_Lambda}, and the specified "
-                f'method, "{method}", depends on weak coupling.',
+                f"The calculation of Coulomb logarithm has found a value "
+                f"of ln Λ = {np.nanmin(ln_Lambda)} which is likely to be "
+                f"inaccurate due to strong coupling effects and "
+                f"{method = } assumes weak coupling.",
                 utils.CouplingWarning,
             )
         elif np.any(ln_Lambda < 4):
             warnings.warn(
-                f"The Coulomb logarithm is {ln_Lambda}, so strong "
-                "coupling effects may exist for the plasma.",
+                f"The calculation of Coulomb logarithm has found a value "
+                f"of ln Λ = {np.nanmin(ln_Lambda)} which is likely to be "
+                f"inaccurate due to strong coupling effects.",
                 utils.CouplingWarning,
             )
 
