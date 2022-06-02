@@ -20,7 +20,7 @@ class TestHirose:
         "T_e": 1.6e6 * u.K,
         "ion": Particle("p+"),
     }
-    
+
     @pytest.mark.parametrize(
         "kwargs, _error",
         [
@@ -53,4 +53,5 @@ class TestHirose:
     def test_raises(self, kwargs, _error):
         """Test scenarios that raise an `Exception`."""
         with pytest.raises(_error):
-            hirose(**kwargs)    
+            hirose(**kwargs)
+   
