@@ -54,4 +54,3 @@ class TestHirose:
         """Test scenarios that raise an `Exception`."""
         with pytest.raises(_error):
             hirose(**kwargs)
-   
