@@ -54,3 +54,53 @@ class TestHirose:
         """Test scenarios that raise an `Exception`."""
         with pytest.raises(_error):
             hirose(**kwargs)
+
+    @pytest.mark.parametrize(
+        "kwargs, _warning",
+        [
+            # w/w_ci << 1 PhysicsWarning
+            (
+                {
+                    "k": 0.01 * u.rad / u.m,
+                    "theta": 88 * u.deg,
+                    "n_i": 0.05 * u.cm ** -3,
+                    "B": 2.2e-8 * u.T,
+                    "T_e": 1.6e6 * u.K,
+                    "T_i": 4.0e5 * u.K,
+                    "ion": Particle("p+"),
+                },
+                PhysicsWarning,
+            ),
+        ],
+    )
+    def test_warning(self, kwargs, _warning):
+        """Test scenarios that raise a `Warning`."""
+        with pytest.warns(_warning):
+            hirose(**kwargs)
+
+    @pytest.mark.parametrize(
+        "kwargs, expected",
+        [
+            (
+                {
+                    **_kwargs_single_valued,
+                    "ion": Particle("He"),
+                    "z_mean": 2.0,
+                },
+                {**_kwargs_single_valued, "ion": Particle("He +2")},
+            ),
+            #
+            # z_mean defaults to 1
+            (
+                {**_kwargs_single_valued, "ion": Particle("He")},
+                {**_kwargs_single_valued, "ion": Particle("He+")},
+            ),
+        ],
+    )
+    def test_z_mean_override(self, kwargs, expected):
+        """Test overriding behavior of kw 'z_mean'."""
+        ws = hirose(**kwargs)
+        ws_expected = hirose(**expected)
+
+        for mode in ws:
+            assert np.isclose(ws[mode], ws_expected[mode], atol=1e-5, rtol=1.7e-4)
