@@ -518,17 +518,17 @@ def Coulomb_logarithm(
         "GMS-2",
     ]:
         warnings.warn(
-            f"The calculation of Coulomb logarithm has found a value of "
-            f"min(ln Λ) = {min_ln_Lambda} which is likely to be inaccurate "
+            f"The calculation of the Coulomb logarithm has found a value of "
+            f"min(ln Λ) = {min_ln_Lambda:.2f} which is likely to be inaccurate "
             f"due to strong coupling effects, in particular because "
             f"{method = } assumes weak coupling.",
             utils.CouplingWarning,
         )
     elif min_ln_Lambda < 4:
         warnings.warn(
-            f"The calculation of Coulomb logarithm has found a value of "
-            f"ln Λ = {min_ln_Lambda}. Coulomb logarithms of ≲ 4 may have "
-            f"increased uncertainty due to strong coupling effects.",
+            f"The calculation of the Coulomb logarithm has found a value of "
+            f"min(ln Λ) = {min_ln_Lambda:.2f}. Coulomb logarithms of ≲ 4 may "
+            f"have increased uncertainty due to strong coupling effects.",
             utils.CouplingWarning,
         )
 
