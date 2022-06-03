@@ -102,7 +102,7 @@ class TestHirose:
         ws_expected = hirose(**expected)
 
         for mode in ws:
-            assert np.isclose(ws[mode], ws_expected[mode], atol=1e-5, rtol=1.7e-4)
+            assert np.isclose(ws[mode], ws_expected[mode], atol=1e-3, rtol=1.7e-3)
 
     @pytest.mark.parametrize(
         "kwargs, expected",
