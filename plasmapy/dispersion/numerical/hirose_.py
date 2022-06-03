@@ -263,7 +263,7 @@ def hirose(
         ).value
         v_A = Alfven_speed(B, n_i, ion=ion, z_mean=z_mean).value
         omega_ci = gyrofrequency(B=B, particle=ion, signed=False, Z=z_mean).value
-        omega_pi = plasma_frequency(n=n_i, particle=ion).value
+        omega_pi = plasma_frequency(n=n_i, particle=ion, z_mean=z_mean).value
 
     thetav, kv = np.meshgrid(theta.value, k.value)
 
