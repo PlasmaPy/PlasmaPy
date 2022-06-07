@@ -23,8 +23,8 @@ class TestKinetic_Alfven:
         "T_i": 4.0e5 * u.K,
         "theta": 30 * u.deg,
         "gamma_e": 3,
-        "gamma_i":3,
-        "z_mean":1,
+        "gamma_i": 3,
+        "z_mean": 1,
     }
 
     @pytest.mark.parametrize(
@@ -34,7 +34,8 @@ class TestKinetic_Alfven:
             ({**_kwargs_single_valued, "B": [1e-9, 2e-9, 3e-9] * u.T}, ValueError),
             ({**_kwargs_single_valued, "B": -1 * u.T}, ValueError),
             ({**_kwargs_single_valued, "B": 5 * u.m}, u.UnitTypeError),
-            ({**_kwargs_single_valued, "ion": {"not": "a particle"}}, InvalidParticleError),
+            ({**_kwargs_single_valued, "ion": {"not": "a particle"}},
+             InvalidParticleError),
             ({**_kwargs_single_valued, "ion": "e-"}, ValueError),
             ({**_kwargs_single_valued, "k": np.ones((3, 2)) * u.rad / u.m}, ValueError),
             ({**_kwargs_single_valued, "k": 0 * u.rad / u.m}, ValueError),
