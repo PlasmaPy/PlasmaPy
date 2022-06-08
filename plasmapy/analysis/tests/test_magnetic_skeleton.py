@@ -27,4 +27,4 @@ def test_1():
         indexing="ij",
     )
     u, v, w = vspace_func_1(x, y, z)
-    magnetic_skeleton_find(x_arr, y_arr, z_arr, u, v, w)
+    nullpoints, spines, fan = magnetic_skeleton_find(x_arr, y_arr, z_arr, u, v, w)
