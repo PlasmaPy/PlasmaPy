@@ -120,7 +120,9 @@ def kinetic_alfven(
     ..math::
         \omega^2 = k_{\rm z}^2 v_{\rm A}^2 \left(1 + \frac{k_{\rm x}^2 &
         c_{\rm s}^2}{\omega_{\rm ci}^2} \right)
+
     Examples
+
     --------
     >>> import numpy as np
     >>> from astropy import units as u
