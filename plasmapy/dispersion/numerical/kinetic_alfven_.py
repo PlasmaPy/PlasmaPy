@@ -112,7 +112,9 @@ def kinetic_alfven(
         `astropy.units.Quantity` (i.e. an array).
     ValueError
         If ``k`` or ``theta`` are not single valued or a 1-D array.
+
     Notes
+
     -----
     Solves the 2 x 2 Matrix approach method from :cite:t:`bellan:2012`,
     (2x2 matrix method argued in Hasegawa and Uberoi 1982, Morales and
