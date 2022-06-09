@@ -62,3 +62,5 @@ class TestKinetic_Alfven:
         """Test scenarios that raise an `Exception`."""
         with pytest.raises(_error):
             kinetic_alfven(**kwargs)
+
+
