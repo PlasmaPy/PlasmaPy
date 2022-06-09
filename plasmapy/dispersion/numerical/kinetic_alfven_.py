@@ -87,9 +87,11 @@ def kinetic_alfven(
         :math:`rad/s`.  The dictionary contains a key for each:
         theta value provided. The value for each key will be
         a :math:`N x M` array.
+
     Raises
     ------
     TypeError
+
         If applicable arguments are not instances of
         `~astropy.units.Quantity` or cannot be converted into one.
     TypeError
