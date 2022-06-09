@@ -127,7 +127,7 @@ def kinetic_alfven(
     >>> from astropy import units as u
     >>> from plasmapy.particles import Particle
     >>> from plasmapy.dispersion.numerical import kinetic_alfven_
-    >>> kwargs_single_valued = {
+    >>> inputs = {
     ...     "B": 8.3e-9 * u.T,
     ...     "ion": Particle("p+"),
     ...     "k": np.logspace(-7, -2, 2) * u.rad / u.m,
@@ -140,7 +140,7 @@ def kinetic_alfven(
     ...     "z_mean": 1,
     ...}
     >>> omegas = kinetic_alfven(**inputs)
-    [7.01005647e+00 6.70197761e+08] rad / s
+    {30.0: <Quantity [1.24901116e+00, 3.45301796e+08] rad / s>}
     """
 
     # Validate argument ion
