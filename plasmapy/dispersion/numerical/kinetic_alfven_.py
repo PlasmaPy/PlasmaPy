@@ -84,10 +84,9 @@ def kinetic_alfven(
     -------
     omega : Dict[str, `~astropy.units.Quantity`]
         A dictionary of computed wave frequencies in units
-        :math:`rad/s`.  The dictionary contains three keys:
-        ``'fast_mode'`` for the fast mode, ``'alfven_mode'`` for the
-        Alfv\'{e}n mode, and ``'acoustic_mode'`` for the ion-acoustic
-        mode.  The value for each key will be a :math:`N x M` array.
+        :math:`rad/s`.  The dictionary contains a key for each:
+        theta value provided. The value for each key will be
+        a :math:`N x M` array.
     Raises
     ------
     TypeError
@@ -115,9 +114,9 @@ def kinetic_alfven(
         If ``k`` or ``theta`` are not single valued or a 1-D array.
     Notes
     -----
-    Solves equation 5 in Bellan2012JGR (2x2 matrix method
-    argued in Hasegawa and Uberoi 1982, Morales and Maggs 1997,
-    and Lysak and Lotko 1996)
+    Solves the 2 x 2 Matrix approach method from :cite:t:`bellan:2012`,
+    (2x2 matrix method argued in Hasegawa and Uberoi 1982, Morales and
+    Maggs 1997, and Lysak and Lotko 1996)
     ..math::
         \omega^2 = k_{\rm z}^2 v_{\rm A}^2 \left(1 + \frac{k_{\rm x}^2 &
         c_{\rm s}^2}{\omega_{\rm ci}^2} \right)
@@ -138,9 +137,10 @@ def kinetic_alfven(
     ...     "gamma_e": 3,
     ...     "gamma_i": 3,
     ...     "z_mean": 1,
-    ...}
+    ... }
     >>> omegas = kinetic_alfven(**inputs)
-    {30.0: <Quantity [1.24901116e+00, 3.45301796e+08] rad / s>}
+    {30.0: <Quantity [1.24901116e+00,
+        3.45301796e+08] rad / s>}
     """
 
     # Validate argument ion
