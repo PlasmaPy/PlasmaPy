@@ -129,7 +129,7 @@ def kinetic_alfven(
     >>> from plasmapy.dispersion.numerical import kinetic_alfven_
     >>> kwargs_single_valued = {
     ...     "B": 8.3e-9 * u.T,
-    ...     "ions": Particle("p+"),
+    ...     "ion": Particle("p+"),
     ...     "k": np.logspace(-7, -2, 2) * u.rad / u.m,
     ...     "n_i": 5 * u.m ** -3,
     ...     "T_e": 1.6e6 * u.K,
