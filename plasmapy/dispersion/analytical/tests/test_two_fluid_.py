@@ -83,7 +83,7 @@ class TestTwoFluid:
                     "theta": 5 * u.deg,
                 },
                 PhysicsWarning,
-            ),
+            )
         ],
     )
     def test_warns(self, kwargs, _warning):

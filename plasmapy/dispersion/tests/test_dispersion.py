@@ -52,8 +52,7 @@ class TestPlasmaDispersionFunction:
     """
 
     @pytest.mark.parametrize(
-        "bound_name, bound_attr",
-        [("lite", plasma_dispersion_func_lite)],
+        "bound_name, bound_attr", [("lite", plasma_dispersion_func_lite)]
     )
     def test_lite_function_binding(self, bound_name, bound_attr):
         """Test expected attributes are bound correctly."""
@@ -259,8 +258,7 @@ class TestPlasmaDispersionFunctionDeriv:
     """
 
     @pytest.mark.parametrize(
-        "bound_name, bound_attr",
-        [("lite", plasma_dispersion_func_deriv_lite)],
+        "bound_name, bound_attr", [("lite", plasma_dispersion_func_deriv_lite)]
     )
     def test_lite_function_binding(self, bound_name, bound_attr):
         """Test expected attributes are bound correctly."""

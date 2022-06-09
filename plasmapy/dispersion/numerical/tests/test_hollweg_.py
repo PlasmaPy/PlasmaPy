@@ -121,10 +121,7 @@ class TestHollweg:
         [
             # k is an array, theta is single valued
             (
-                {
-                    **_kwargs_single_valued,
-                    "k": np.logspace(-7, -2, 2) * u.rad / u.m,
-                },
+                {**_kwargs_single_valued, "k": np.logspace(-7, -2, 2) * u.rad / u.m},
                 {
                     "fast_mode": [2.62911663e-02 + 0.0j, 2.27876968e03 + 0.0j],
                     "alfven_mode": [7.48765909e-04 + 0.0j, 2.13800404e03 + 0.0j],
@@ -173,16 +170,8 @@ class TestHollweg:
                         ],
                     ],
                     "acoustic_mode": [
-                        [
-                            0.00086572 + 0.0j,
-                            0.00064937 + 0.0j,
-                            0.00043295 + 0.0j,
-                        ],
-                        [
-                            0.14735951 + 0.0j,
-                            0.11044097 + 0.0j,
-                            0.07358991 + 0.0j,
-                        ],
+                        [0.00086572 + 0.0j, 0.00064937 + 0.0j, 0.00043295 + 0.0j],
+                        [0.14735951 + 0.0j, 0.11044097 + 0.0j, 0.07358991 + 0.0j],
                     ],
                 },
             ),
@@ -300,11 +289,7 @@ class TestHollweg:
         "kwargs, expected",
         [
             (
-                {
-                    **_kwargs_single_valued,
-                    "ion": Particle("He"),
-                    "z_mean": 2.0,
-                },
+                {**_kwargs_single_valued, "ion": Particle("He"), "z_mean": 2.0},
                 {**_kwargs_single_valued, "ion": Particle("He +2")},
             ),
             #
@@ -327,13 +312,7 @@ class TestHollweg:
         "kwargs, expected",
         [
             ({**_kwargs_single_valued}, {"shape": ()}),
-            (
-                {
-                    **_kwargs_single_valued,
-                    "k": [1, 2, 3] * u.rad / u.m,
-                },
-                {"shape": (3,)},
-            ),
+            ({**_kwargs_single_valued, "k": [1, 2, 3] * u.rad / u.m}, {"shape": (3,)}),
             (
                 {
                     **_kwargs_single_valued,
@@ -342,13 +321,7 @@ class TestHollweg:
                 },
                 {"shape": (3, 2)},
             ),
-            (
-                {
-                    **_kwargs_single_valued,
-                    "theta": [50, 77] * u.deg,
-                },
-                {"shape": (2,)},
-            ),
+            ({**_kwargs_single_valued, "theta": [50, 77] * u.deg}, {"shape": (2,)}),
         ],
     )
     def test_return_structure(self, kwargs, expected):
