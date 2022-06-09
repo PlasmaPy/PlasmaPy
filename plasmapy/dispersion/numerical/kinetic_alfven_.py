@@ -42,7 +42,7 @@ def kinetic_alfven(
 ):
     r"""
     Using the equation provided in :cite:t:`bellan:2012`, this function
-    calculates the numerical solution to the two fluid dispersion
+    calculates the ##numerical solution to the kinetic Alfven dispersion
     relation presented by :cite:t:`hirose:2004`.
 
     Parameters
@@ -144,8 +144,7 @@ def kinetic_alfven(
     ...     "z_mean": 1,
     ... }
     >>> kinetic_alfven(**inputs)
-    {30.0: <Quantity [1.24901116e+00,
-        3.45301796e+08] rad / s>}
+    {30.0: <Quantity [1.24901116e+00, 3.45301796e+08] rad / s>}
     """
 
     # Validate argument ion
