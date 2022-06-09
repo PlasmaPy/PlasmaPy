@@ -149,7 +149,7 @@ def kinetic_alfven(
             ion = Particle(ion)
         except InvalidParticleError:
             raise InvalidParticleError(
-                "Argument 'ion' is not a valid particle, instead got {ion}."
+                f"Argument 'ion' is not a valid particle, instead got {ion}."
             )
         except TypeError:
             raise TypeError(
