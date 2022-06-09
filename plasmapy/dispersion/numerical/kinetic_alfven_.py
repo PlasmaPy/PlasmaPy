@@ -143,7 +143,7 @@ def kinetic_alfven(
     ...     "gamma_i": 3,
     ...     "z_mean": 1,
     ... }
-    >>> omegas = kinetic_alfven(**inputs)
+    >>> kinetic_alfven(**inputs)
     {30.0: <Quantity [1.24901116e+00, 3.45301796e+08] rad / s>}
     """
 
