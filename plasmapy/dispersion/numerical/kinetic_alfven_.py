@@ -44,6 +44,7 @@ def kinetic_alfven(
     Using the equation provided in :cite:t:`bellan:2012`, this function
     calculates the numerical solution to the two fluid dispersion
     relation presented by :cite:t:`hirose:2004`.
+
     Parameters
     ----------
     B : `~astropy.units.Quantity`
@@ -80,6 +81,7 @@ def kinetic_alfven(
         The average ionization state (arithmetic mean) of the ``ion``
         composing the plasma.  Will override any charge state defined
         by argument ``ion``.
+
     Returns
     -------
     omega : Dict[str, `~astropy.units.Quantity`]
@@ -87,6 +89,7 @@ def kinetic_alfven(
         :math:`rad/s`.  The dictionary contains a key for each:
         theta value provided. The value for each key will be
         a :math:`N x M` array.
+
     Raises
     ------
     TypeError
@@ -112,6 +115,7 @@ def kinetic_alfven(
         `astropy.units.Quantity` (i.e. an array).
     ValueError
         If ``k`` or ``theta`` are not single valued or a 1-D array.
+
     Notes
     -----
     Solves the 2 x 2 Matrix approach method from :cite:t:`bellan:2012`,
@@ -120,6 +124,7 @@ def kinetic_alfven(
     ..math::
         \omega^2 = k_{\rm z}^2 v_{\rm A}^2 \left(1 + \frac{k_{\rm x}^2 &
         c_{\rm s}^2}{\omega_{\rm ci}^2} \right)
+
     Examples
     --------
     >>> import numpy as np
@@ -139,8 +144,7 @@ def kinetic_alfven(
     ...     "z_mean": 1,
     ... }
     >>> omegas = kinetic_alfven(**inputs)
-    {30.0: <Quantity [1.24901116e+00,
-        3.45301796e+08] rad / s>}
+    {30.0: <Quantity [1.24901116e+00, 3.45301796e+08] rad / s>}
     """
 
     # Validate argument ion
