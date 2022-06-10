@@ -171,11 +171,7 @@ def kinetic_alfven(
             raise InvalidParticleError(
                 f"Argument 'ion' is not a valid particle, instead got {ion}."
             )
-        except TypeError:
-            raise TypeError(
-                f"Argument 'ion' expects type {Particle}, instead "
-                f"got type {type(ion)}."
-            )
+
     if not (ion.is_ion or ion.is_category("element")):
         raise ValueError(
             "The particle passed for 'ion' must be an ion"
@@ -184,10 +180,7 @@ def kinetic_alfven(
 
     # Validate z_mean
     if z_mean is None:
-        try:
-            z_mean = abs(ion.charge_number)
-        except ChargeError:
-            z_mean = 1
+        z_mean = abs(ion.charge_number)
     else:
         if not isinstance(z_mean, (int, np.integer, float, np.floating)):
             raise TypeError(
@@ -273,9 +266,7 @@ def kinetic_alfven(
         omega_kz_max = np.max(omega_kz).value
         omega_kz_min = np.min(omega_kz).value
 
-        # dispersion relation is only valid in v_Te >> w/kz >> v_Ti
-
-        # maximum value for w/kz test
+        # Maximum value for w/kz test
 
         if omega_kz_max / v_Te > 0.1 or v_Ti / omega_kz_max > 0.1:
             warnings.warn(
