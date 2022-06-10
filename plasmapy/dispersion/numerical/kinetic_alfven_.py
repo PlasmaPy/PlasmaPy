@@ -118,6 +118,7 @@ def kinetic_alfven(
 
     Notes
     -----
+
     Solves the 2 x 2 Matrix approach method from :cite:t:`bellan:2012`,
     (2x2 matrix method argued in Hasegawa and Uberoi 1982, Morales and
     Maggs 1997, and Lysak and Lotko 1996)
