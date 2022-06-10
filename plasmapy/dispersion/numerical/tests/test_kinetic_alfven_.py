@@ -135,7 +135,7 @@ class TestKinetic_Alfven:
             # w/vT min PhysicsWarning
             (
                 {
-                    "k": 0.01 * u.rad / u.m,
+                    "k": 0.000001 * u.rad / u.m,
                     "theta": 88 * u.deg,
                     "n_i": 0.05 * u.cm ** -3,
                     "B": 2.2e-8 * u.T,

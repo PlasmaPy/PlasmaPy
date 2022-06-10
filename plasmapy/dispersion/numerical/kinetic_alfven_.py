@@ -260,14 +260,13 @@ def kinetic_alfven(
         # maximum value of omega
         w_max = np.max(omega[theta[i]])
 
-        # maximum and minimum values for w/kz
+        # Maximum and minimum values for w/kz
         omega_kz = omega[theta[i]] / kz
 
         omega_kz_max = np.max(omega_kz).value
         omega_kz_min = np.min(omega_kz).value
 
         # Maximum value for w/kz test
-
         if omega_kz_max / v_Te > 0.1 or v_Ti / omega_kz_max > 0.1:
             warnings.warn(
                 "This calculation produced one or more invalid w/kz "
