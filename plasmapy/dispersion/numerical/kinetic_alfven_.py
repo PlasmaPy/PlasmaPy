@@ -118,13 +118,28 @@ def kinetic_alfven(
 
     Notes
     -----
-    Solves the 2 x 2 Matrix approach method from :cite:t:`bellan:2012`,
-    (2x2 matrix method argued in Hasegawa and Uberoi 1982, Morales and
-    Maggs 1997, and Lysak and Lotko 1996)
+    Using the 2 x 2 matrix approach method from :cite:t:`bellan:2012`,
+    this function computes the coresonding wave frequencies in units
+    :math:`rad/s`. This approach comes from :cite:t:`hasegawa:1982`,
+    :cite:t:`morales:1997` and :cite:t:`william:1996`; who argueed that
+    a 3 x 3 matrix that describes warm plasma waves, is able to be
+    represented as a 2 x 2 matrix becasue the compressional
+    (i.e., fast) mode can be factored out. This results in the
+    determinant, when in the limit of
+    :math:`\omega \gg k_{z}^{2} c^{2}_{\rm s}`, reduces to the kinetic
+    Alfv\'{e}n disersion relation.
 
     .. math::
         \omega^2 = k_{\rm z}^2 v_{\rm A}^2 \left(1 + \frac{k_{\rm x}^2 &
         c_{\rm s}^2}{\omega_{\rm ci}^2} \right)
+
+    With :math:`c_{\rm s}` being the wave speed and
+    :math:`\omega_{\rm ci}` as the gyrofrequency of the respective ion.
+    The regions in which this is valid are
+    :math:`\omega \ll \omega_{\rm ci}` and
+    :math:`\nu_{\rm Te} \gg \frac{\omega}{k_{z}} \gg \nu_{\rm Ti}, with
+    :math:`\nu_{\rm Ti}` standing for the thermal speed of the
+    respective ion. There is no restriction on propagation angle..
 
     Examples
     --------

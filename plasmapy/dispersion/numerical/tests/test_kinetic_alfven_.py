@@ -88,16 +88,16 @@ class TestKinetic_Alfven:
         ws = kinetic_alfven(**kwargs)
         ws_expected = kinetic_alfven(**expected)
 
-        for mode in ws:
-            assert np.isclose(ws[mode], ws_expected[mode], atol=0, rtol=1.7e-4)
+        for theta in ws:
+            assert np.allclose(ws[theta], ws_expected[theta], atol=0, rtol=1e-2)
 
     @pytest.mark.parametrize(
         "kwargs, expected",
         [
-            ({**_kwargs_bellan2012, "theta": 0 * u.deg}, {"shape": ()}),
+            ({**_kwargs_single_valued, "theta": 0 * u.deg}, {"shape": (2,)}),
             (
                 {
-                    **_kwargs_bellan2012,
+                    **_kwargs_single_valued,
                     "theta": 0 * u.deg,
                     "k": [1, 2, 3] * u.rad / u.m,
                 },
@@ -105,24 +105,23 @@ class TestKinetic_Alfven:
             ),
             (
                 {
-                    **_kwargs_bellan2012,
+                    **_kwargs_single_valued,
                     "theta": [10, 20, 30, 40, 50] * u.deg,
                     "k": [1, 2, 3] * u.rad / u.m,
                 },
-                {"shape": (3, 5)},
+                {"shape": (3,)},
             ),
             (
-                {**_kwargs_bellan2012, "theta": [10, 20, 30, 40, 50] * u.deg},
-                {"shape": (5,)},
+                {**_kwargs_single_valued, "theta": [10, 20, 30, 40, 50] * u.deg},
+                {"shape": (2,)},
             ),
         ],
     )
     def test_return_structure(self, kwargs, expected):
         """Test the structure of the returned values."""
-        ws = two_fluid(**kwargs)
+        ws = kinetic_alfven(**kwargs)
 
         assert isinstance(ws, dict)
-        assert len({"acoustic_mode", "alfven_mode", "fast_mode"} - set(ws.keys())) == 0
 
         for mode, val in ws.items():
             assert isinstance(val, u.Quantity)
