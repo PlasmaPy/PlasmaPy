@@ -62,3 +62,69 @@ class TestKinetic_Alfven:
         """Test scenarios that raise an `Exception`."""
         with pytest.raises(_error):
             kinetic_alfven(**kwargs)
+
+    @pytest.mark.parametrize(
+        "kwargs, expected",
+        [
+            (
+                {
+                    **_kwargs_single_valued,
+                    "ion": Particle("He"),
+                    "z_mean": 2.0,
+                    "theta": 0 * u.deg,
+                },
+                {**_kwargs_single_valued, "ion": Particle("He +2"), "theta": 0 * u.deg},
+            ),
+            #
+            # z_mean defaults to 1
+            (
+                {**_kwargs_single_valued, "ion": Particle("He"), "theta": 0 * u.deg},
+                {**_kwargs_single_valued, "ion": Particle("He+"), "theta": 0 * u.deg},
+            ),
+        ],
+    )
+    def test_z_mean_override(self, kwargs, expected):
+        """Test overriding behavior of kw 'z_mean'."""
+        ws = kinetic_alfven(**kwargs)
+        ws_expected = kinetic_alfven(**expected)
+
+        for mode in ws:
+            assert np.isclose(ws[mode], ws_expected[mode], atol=0, rtol=1.7e-4)
+
+    @pytest.mark.parametrize(
+        "kwargs, expected",
+        [
+            ({**_kwargs_bellan2012, "theta": 0 * u.deg}, {"shape": ()}),
+            (
+                {
+                    **_kwargs_bellan2012,
+                    "theta": 0 * u.deg,
+                    "k": [1, 2, 3] * u.rad / u.m,
+                },
+                {"shape": (3,)},
+            ),
+            (
+                {
+                    **_kwargs_bellan2012,
+                    "theta": [10, 20, 30, 40, 50] * u.deg,
+                    "k": [1, 2, 3] * u.rad / u.m,
+                },
+                {"shape": (3, 5)},
+            ),
+            (
+                {**_kwargs_bellan2012, "theta": [10, 20, 30, 40, 50] * u.deg},
+                {"shape": (5,)},
+            ),
+        ],
+    )
+    def test_return_structure(self, kwargs, expected):
+        """Test the structure of the returned values."""
+        ws = two_fluid(**kwargs)
+
+        assert isinstance(ws, dict)
+        assert len({"acoustic_mode", "alfven_mode", "fast_mode"} - set(ws.keys())) == 0
+
+        for mode, val in ws.items():
+            assert isinstance(val, u.Quantity)
+            assert val.unit == u.rad / u.s
+            assert val.shape == expected["shape"]

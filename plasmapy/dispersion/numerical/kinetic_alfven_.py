@@ -118,11 +118,10 @@ def kinetic_alfven(
 
     Notes
     -----
-
     Solves the 2 x 2 Matrix approach method from :cite:t:`bellan:2012`,
     (2x2 matrix method argued in Hasegawa and Uberoi 1982, Morales and
     Maggs 1997, and Lysak and Lotko 1996)
-    ..math::
+    .. math::
         \omega^2 = k_{\rm z}^2 v_{\rm A}^2 \left(1 + \frac{k_{\rm x}^2 &
         c_{\rm s}^2}{\omega_{\rm ci}^2} \right)
 
@@ -270,7 +269,7 @@ def kinetic_alfven(
                 PhysicsWarning,
             )
 
-        # minimum value for w/kz test
+        # Minimum value for w/kz test
         elif omega_kz_min / v_Te > 0.1 or v_Ti / omega_kz_min > 0.1:
             warnings.warn(
                 "This calculation produced one or more invalid w/kz "
@@ -279,7 +278,7 @@ def kinetic_alfven(
                 PhysicsWarning,
             )
 
-        # dispersion relation is only valid in the regime w << w_ci
+        # Dispersion relation is only valid in the regime w << w_ci
         if w_max / omega_ci > 0.1:
             warnings.warn(
                 "The calculation produced a high-frequency wave, "
