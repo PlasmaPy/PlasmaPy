@@ -121,6 +121,7 @@ def kinetic_alfven(
     Solves the 2 x 2 Matrix approach method from :cite:t:`bellan:2012`,
     (2x2 matrix method argued in Hasegawa and Uberoi 1982, Morales and
     Maggs 1997, and Lysak and Lotko 1996)
+
     .. math::
         \omega^2 = k_{\rm z}^2 v_{\rm A}^2 \left(1 + \frac{k_{\rm x}^2 &
         c_{\rm s}^2}{\omega_{\rm ci}^2} \right)
