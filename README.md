@@ -10,16 +10,16 @@ https://doi.org/10.1063/5.0083990
 The code is writen in Python 3 and is a Jupyterlab notebook.
 
 This code is not optimized for speed. Running the entire notebook may take
-upward of 20 minutes due. The main bottleneck is calculating large numbers of
+upward of 20 minutes. The main bottleneck is calculating large numbers of
 fusion reactivities by integration of cross section over a maxwellian velocity
-distribution.
+distribution. These could be cached, however for the sake of simplicity
+there is currently no caching functionality.
 
 ### Dependencies
-Requirements:
-Python 3.X
-Jupyterlab
-matplotlib
-pandas
+- Python 3.X
+- Jupyterlab
+- matplotlib
+- pandas
 
 ### Credits
 The cross sections for the reactions,
