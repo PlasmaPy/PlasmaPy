@@ -23,18 +23,25 @@ there is currently no caching functionality.
 
 ### Credits
 The cross sections for the reactions,
-T(d,n)4He (D + T --> n + α)
-D(d,p)T (D + D --> p + T)
-D(d,n)3He (D + D --> n + 3He)
-3He(d,p)4He (D + 3He --> p + α)
+
+- T(d,n)4He (D + T --> n + α)
+- D(d,p)T (D + D --> p + T)
+- D(d,n)3He (D + D --> n + 3He)
+- 3He(d,p)4He (D + 3He --> p + α)
+
 are from:
 H.S. Bosch and G.M. Hale 1992 Nucl. Fusion 32 611
 https://doi.org/10.1088/0029-5515/32/4/I07
 
 The cross sections for the reaction,
-11B(p,4He)4He4He (p + 11B --> 3α)
+
+- 11B(p,4He)4He4He (p + 11B --> 3α)
+
 is from
 W.M. Nevins and R. Swain 2000 Nucl. Fusion 40 865
 https://doi.org/10.1088/0029-5515/40/4/310
+
+### License
+MIT License, see LICENSE.
 
 - Sam Wurzel, 11 June 2022
