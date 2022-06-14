@@ -47,7 +47,6 @@ repos:
   - id: nbqa-black
     additional_dependencies:
     - black==22.3.0
-    - click<8.1  # remove this when black is next updated
     args:
     - --nbqa-mutate
   - id: nbqa-isort
