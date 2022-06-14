@@ -38,8 +38,6 @@ repos:
   rev: 22.3.0
   hooks:
   - id: black
-    additional_dependencies:
-    - click<8.1  # remove this when black is next updated
 
 - repo: https://github.com/nbQA-dev/nbQA
   rev: 1.3.1
