@@ -566,11 +566,11 @@ def _bilinear_root(a1, b1, c1, d1, a2, b2, c2, d2):
             x2 = (-1.0 * c) / b
 
     else:
-        if (b ** 2 - 4.0 * a * c) < 0:
+        if (b**2 - 4.0 * a * c) < 0:
             return np.array([])
         else:
-            x1 = (-1.0 * b + (b ** 2 - 4.0 * a * c) ** 0.5) / (2.0 * a)
-            x2 = (-1.0 * b - (b ** 2 - 4.0 * a * c) ** 0.5) / (2.0 * a)
+            x1 = (-1.0 * b + (b**2 - 4.0 * a * c) ** 0.5) / (2.0 * a)
+            x2 = (-1.0 * b - (b**2 - 4.0 * a * c) ** 0.5) / (2.0 * a)
 
     y1 = None
     y2 = None
@@ -1287,7 +1287,7 @@ def _classify_null_point(vspace, cell, loc):
     R = -1.0 * np.linalg.det(M)
     Q = -0.5 * np.trace(np.matmul(M, M))
 
-    discriminant = (Q ** 3 / 27.0) + (R ** 2 / 4.0)
+    discriminant = (Q**3 / 27.0) + (R**2 / 4.0)
     determinant = -1.0 * R
     if np.isclose(discriminant, 0, atol=_EQUALITY_ATOL):
         if np.allclose(M, M.T, atol=_EQUALITY_ATOL):  # Checking if M is symmetric

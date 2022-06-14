@@ -161,7 +161,7 @@ class Test_CircularWire:
         "Test a known solution"
         cw = CircularWire(self.normalz, self.center, self.radius, self.current)
         B1 = cw.magnetic_field([0, 0, 1])
-        B1_expected = np.array([0, 0, 1]) * 2 * np.pi / 2 ** 1.5 * 1e-7 * u.T
+        B1_expected = np.array([0, 0, 1]) * 2 * np.pi / 2**1.5 * 1e-7 * u.T
         assert np.all(np.isclose(B1.value, B1_expected.value))
         assert B1.unit == u.T
 
@@ -169,7 +169,7 @@ class Test_CircularWire:
         "Test a known solution"
         cw = CircularWire(self.normalx, self.center, self.radius, self.current)
         B2 = cw.magnetic_field([1, 0, 0])
-        B2_expected = np.array([1, 0, 0]) * 2 * np.pi / 2 ** 1.5 * 1e-7 * u.T
+        B2_expected = np.array([1, 0, 0]) * 2 * np.pi / 2**1.5 * 1e-7 * u.T
         assert np.all(np.isclose(B2.value, B2_expected.value))
         assert B2.unit == u.T
 
