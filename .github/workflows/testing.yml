@@ -91,7 +91,7 @@ jobs:
       run: python -m pip install --progress-bar off --upgrade tox codecov
     - name: Install language-pack-fr and tzdata
       if: startsWith(matrix.name, 'Documentation')
-      run: sudo apt-get install graphviz pandoc
+      run: sudo apt-get install pandoc
     - name: Run tests
       run: tox ${{ matrix.toxargs }} -e ${{ matrix.toxenv }} -- ${{ matrix.toxposargs }}
     - name: Upload coverage to codecov
@@ -116,7 +116,7 @@ jobs:
     - name: Install Python dependencies
       run: python -m pip install --progress-bar off --upgrade tox
     - name: Install language-pack-fr and tzdata
-      run: sudo apt-get install graphviz pandoc
+      run: sudo apt-get install pandoc
     - name: Run tests
       run: tox -e build_docs -- -q
   codespell:
