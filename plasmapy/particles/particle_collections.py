@@ -387,7 +387,7 @@ class ParticleList(collections.UserList):
 
         def _average(array, weights, use_rms):
             if use_rms:
-                return np.sqrt(np.average(array ** 2, weights=weights))
+                return np.sqrt(np.average(array**2, weights=weights))
             else:
                 return np.average(array, weights=weights)
 
