@@ -74,7 +74,8 @@ and run:
 It may also be necessary to install the following software:
 
 * `graphviz <https://graphviz.org/download>`__
-* `make <https://www.gnu.org/software/make/>`__
+* `make <https://www.gnu.org/software/make/>`__ (not necessary to build
+  the documentation with tox_)
 * `pandoc <https://pandoc.org/installing.html>`__
 
 Building documentation with make
