@@ -69,7 +69,7 @@ def test_deBroglie_wavelength():
 
 # defining some plasma parameters for tests
 T_e = 1 * u.eV
-n_e = 1e23 * u.cm ** -3
+n_e = 1e23 * u.cm**-3
 # should probably change this to use unittest module
 # add tests for numpy arrays as inputs
 # add tests for different astropy units (random fuzzing method?)
@@ -113,7 +113,7 @@ def test_Fermi_energy():
     with pytest.raises(TypeError):
         Fermi_energy("Bad Input")
     with pytest.raises(ValueError):
-        Fermi_energy(n_e=-1 * u.m ** -3)
+        Fermi_energy(n_e=-1 * u.m**-3)
 
 
 def test_Thomas_Fermi_length():
@@ -133,14 +133,14 @@ def test_Thomas_Fermi_length():
     with pytest.raises(TypeError):
         Thomas_Fermi_length("Bad Input")
     with pytest.raises(ValueError):
-        Thomas_Fermi_length(n_e=-1 * u.m ** -3)
+        Thomas_Fermi_length(n_e=-1 * u.m**-3)
 
 
 def test_Wigner_Seitz_radius():
     """
     Checks Wigner-Seitz radius for a known value.
     """
-    n_e = 1e23 * u.cm ** -3
+    n_e = 1e23 * u.cm**-3
     radiusTrue = 1.3365046175719772e-10 * u.m
     radiusMeth = Wigner_Seitz_radius(n_e)
     testTrue = u.isclose(radiusMeth, radiusTrue, rtol=1e-5)
@@ -152,8 +152,8 @@ class Test_chemical_potential:
     @classmethod
     def setup_class(self):
         """initializing parameters for tests"""
-        self.n_e = 1e20 * u.cm ** -3
-        self.n_e_fail = 1e23 * u.cm ** -3
+        self.n_e = 1e20 * u.cm**-3
+        self.n_e_fail = 1e23 * u.cm**-3
         self.T = 11604 * u.K
         self.True1 = 1.234345958778249e-11
 
@@ -191,7 +191,7 @@ class Test__chemical_potential_interp:
     @classmethod
     def setup_class(self):
         """initializing parameters for tests"""
-        self.n_e = 1e23 * u.cm ** -3
+        self.n_e = 1e23 * u.cm**-3
         self.T = 11604 * u.K
         self.True1 = 7.741256653579105
 

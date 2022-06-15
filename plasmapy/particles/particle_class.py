@@ -1165,7 +1165,7 @@ class Particle(AbstractPhysicalParticle):
         """
         try:
             mass = self.nuclide_mass if self.isotope else self.mass
-            energy = mass * const.c ** 2
+            energy = mass * const.c**2
             return energy.to(u.J)
         except MissingParticleDataError:
             raise MissingParticleDataError(
@@ -1219,7 +1219,7 @@ class Particle(AbstractPhysicalParticle):
         mass_of_nucleons = mass_of_protons + mass_of_neutrons
 
         mass_defect = mass_of_nucleons - self.nuclide_mass
-        nuclear_binding_energy = mass_defect * const.c ** 2
+        nuclear_binding_energy = mass_defect * const.c**2
 
         return nuclear_binding_energy.to(u.J)
 
@@ -2220,7 +2220,7 @@ class CustomParticle(AbstractPhysicalParticle):
         >>> custom_particle.mass_energy.to('GeV')
         <Quantity 112.19177208 GeV>
         """
-        return (self.mass * const.c ** 2).to(u.J)
+        return (self.mass * const.c**2).to(u.J)
 
     @property
     def symbol(self) -> str:
