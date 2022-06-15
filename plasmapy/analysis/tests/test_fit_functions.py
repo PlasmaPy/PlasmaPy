@@ -468,14 +468,14 @@ class TestFFExponentialPlusLinear(BaseFFTests):
         a_term = (exp_y * a_err / a) ** 2
         alpha_term = (exp_y * x * alpha_err) ** 2
         m_term = (m_err * x) ** 2
-        b_term = b_err ** 2
+        b_term = b_err**2
 
         err = a_term + alpha_term + m_term + b_term
 
         if x_err is not None:
             x_term = (exp_y * alpha * x_err) ** 2
             x_term += (m * x_err) ** 2
-            x_term += 2 * a * alpha * m * np.exp(alpha * x) * (x_err ** 2)
+            x_term += 2 * a * alpha * m * np.exp(alpha * x) * (x_err**2)
 
             err += x_term
 
@@ -515,7 +515,7 @@ class TestFFExponentialPlusOffset(BaseFFTests):
 
         a_term = (exp_y * a_err / a) ** 2
         alpha_term = (exp_y * x * alpha_err) ** 2
-        b_term = b_err ** 2
+        b_term = b_err**2
 
         err = a_term + alpha_term + b_term
 
@@ -561,7 +561,7 @@ class TestFFLinear(BaseFFTests):
         m_err, b_err = param_errors
 
         m_term = (m_err * x) ** 2
-        b_term = b_err ** 2
+        b_term = b_err**2
         err = m_term + b_term
 
         if x_err is not None:

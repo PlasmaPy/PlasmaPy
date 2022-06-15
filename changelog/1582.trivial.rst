@@ -1,0 +1,4 @@
+Updated the version of black_ to 22.3.0 in PlasmaPy's pre-commit_
+configuration. This update included a formatting change where spaces
+around power operators were removed for sufficiently simple operands
+(e.g., ``a ** b`` → ``a**b``).
