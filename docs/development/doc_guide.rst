@@ -71,7 +71,7 @@ and run:
 
    pip install -r requirements.txt
 
-It may also be necessary to `install pandoc`_.
+It may also be necessary to `install graphviz`_ and `install pandoc`_.
 
 Building documentation with make
 --------------------------------
@@ -1035,6 +1035,7 @@ Narrative documentation guidelines
 .. _configuration options: https://www.sphinx-doc.org/en/master/usage/configuration.html
 .. _define substitutions: https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html#substitution-definitions
 .. _doctests: https://docs.pytest.org/en/6.2.x/doctest.html
+.. _install graphviz: https://graphviz.org/download
 .. _install pandoc: https://pandoc.org/installing.html
 .. _nested inline markup: https://docutils.sphinx-users.jp/docutils/docs/dev/rst/alternatives.html#nested-inline-markup
 .. _options to sphinx-build: https://www.sphinx-doc.org/en/master/man/sphinx-build.html#options
