@@ -355,7 +355,6 @@ extensions:
 * `sphinx.ext.autodoc` for including documentation from docstrings.
 * `sphinx.ext.extlinks` for shortening links to external sites (e.g.,
   ``:orcid:`` and ``:wikipedia:``).
-* `sphinx.ext.graphviz` to allow Graphviz_ graphs to be included.
 * `sphinx.ext.intersphinx` for linking to other projects' documentation.
 * `sphinx.ext.mathjax` for math rendering with MathJax_.
 * `sphinx.ext.napoleon` for allowing NumPy style docstrings.

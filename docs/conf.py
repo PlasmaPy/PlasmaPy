@@ -85,7 +85,6 @@ needs_sphinx = "4.4"
 extensions = [
     "sphinx.ext.autodoc",
     "sphinx.ext.extlinks",
-    "sphinx.ext.graphviz",
     "sphinx.ext.intersphinx",
     "sphinx.ext.mathjax",
     "sphinx.ext.napoleon",
