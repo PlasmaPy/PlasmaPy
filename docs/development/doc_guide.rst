@@ -63,13 +63,15 @@ There are two methods for building the documentation: make_ and tox_.
 Prerequisites
 -------------
 
-To install all dependencies required to develop PlasmaPy on your local
-computer, enter the top-level directory of the cloned repository and
-run:
+To install all Python dependencies required to develop PlasmaPy on your
+local computer, enter the top-level directory of the cloned repository
+and run:
 
 .. code-block:: bash
 
    pip install -r requirements.txt
+
+It may also be necessary to `install pandoc`_.
 
 Building documentation with make
 --------------------------------
@@ -1033,6 +1035,7 @@ Narrative documentation guidelines
 .. _configuration options: https://www.sphinx-doc.org/en/master/usage/configuration.html
 .. _define substitutions: https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html#substitution-definitions
 .. _doctests: https://docs.pytest.org/en/6.2.x/doctest.html
+.. _install pandoc: https://pandoc.org/installing.html
 .. _nested inline markup: https://docutils.sphinx-users.jp/docutils/docs/dev/rst/alternatives.html#nested-inline-markup
 .. _options to sphinx-build: https://www.sphinx-doc.org/en/master/man/sphinx-build.html#options
 .. _raise an issue: https://github.com/PlasmaPy/PlasmaPy/issues/new?title=Improve+documentation+for...&labels=Documentation
