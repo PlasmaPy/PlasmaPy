@@ -18,13 +18,13 @@ PlasmaPy Documentation
    result, this branch contains both reviewed and unreviewed
    functionality, so use this branch at your own discretion.
 
-   Reviewed code will overlap with the `main` branch; that is, it can be
-   found in both this branch and `main`.
+   Reviewed code will overlap with the ``main`` branch; that is, it can
+   be found in both this branch and ``main``.
 
-   It's not intended for this branch to be merged with `main`, but only
+   It's not intended for this branch to be merged with ``main``, but only
    as a prototype branch so code can be tested on real data as it is
    being developed.  As functionality matures, each bit will be merged
-   into `main` with its own focused pull request.
+   into ``main`` with its own focused pull request.
 
 PlasmaPy_ is an open source community-developed core Python_
 |minpython|\ + package for plasma physics currently under development.
