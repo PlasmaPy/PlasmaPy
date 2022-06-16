@@ -1,0 +1,1 @@
+Updated the error messages in `~plasmapy.formulary.collisions.Coulomb_logarithm`.
