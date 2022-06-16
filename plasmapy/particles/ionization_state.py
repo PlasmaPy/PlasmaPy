@@ -164,7 +164,7 @@ class IonicLevel:
                     self._ionic_fraction = ionfrac
 
     @property
-    def number_density(self) -> u.m ** -3:
+    def number_density(self) -> u.m**-3:
         """The number density of the ion."""
         return self._number_density
 
@@ -172,8 +172,8 @@ class IonicLevel:
     @validate_quantities(
         n={"can_be_negative": False, "can_be_inf": False, "none_shall_pass": True},
     )
-    def number_density(self, n: u.m ** -3):
-        self._number_density = np.nan * u.m ** -3 if n is None else n
+    def number_density(self, n: u.m**-3):
+        self._number_density = np.nan * u.m**-3 if n is None else n
 
     @property
     def T_i(self) -> u.K:
@@ -282,7 +282,7 @@ class IonizationState:
         T_e: u.K = np.nan * u.K,
         T_i: u.K = None,
         kappa: Real = np.inf,
-        n_elem: u.m ** -3 = np.nan * u.m ** -3,
+        n_elem: u.m**-3 = np.nan * u.m**-3,
         tol: Union[float, int] = 1e-15,
     ):
         """
@@ -312,7 +312,7 @@ class IonizationState:
             if (
                 not np.isnan(n_elem)
                 and isinstance(ionic_fractions, u.Quantity)
-                and ionic_fractions.si.unit == u.m ** -3
+                and ionic_fractions.si.unit == u.m**-3
             ):
                 raise ParticleError(
                     "Cannot simultaneously provide number density "
@@ -449,7 +449,7 @@ class IonizationState:
         same_n_elem = (
             np.isnan(self.n_elem)
             and np.isnan(other.n_elem)
-            or u.allclose(self.n_elem, other.n_elem, rtol=min_tol, atol=0 * u.m ** -3)
+            or u.allclose(self.n_elem, other.n_elem, rtol=min_tol, atol=0 * u.m**-3)
         )
 
         # For the next line, recall that np.nan == np.nan is False
@@ -506,7 +506,7 @@ class IonizationState:
                 )
 
             if isinstance(fractions, u.Quantity):
-                fractions = fractions.to(u.m ** -3)
+                fractions = fractions.to(u.m**-3)
                 self.n_elem = np.sum(fractions)
                 self._ionic_fractions = np.array(fractions / self.n_elem)
             else:
@@ -553,7 +553,7 @@ class IonizationState:
 
     @property
     @validate_quantities
-    def n_e(self) -> u.m ** -3:
+    def n_e(self) -> u.m**-3:
         """
         The electron number density assuming a single species plasma.
         """
@@ -561,33 +561,33 @@ class IonizationState:
 
     @property
     @validate_quantities
-    def n_elem(self) -> u.m ** -3:
+    def n_elem(self) -> u.m**-3:
         """The total number density of neutrals and all ions."""
-        return self._n_elem.to(u.m ** -3)
+        return self._n_elem.to(u.m**-3)
 
     @n_elem.setter
     @validate_quantities
-    def n_elem(self, value: u.m ** -3):
+    def n_elem(self, value: u.m**-3):
         """Set the number density of neutrals and all ions."""
-        if value < 0 * u.m ** -3:
+        if value < 0 * u.m**-3:
             raise ParticleError
-        if 0 * u.m ** -3 < value <= np.inf * u.m ** -3:
-            self._n_elem = value.to(u.m ** -3)
+        if 0 * u.m**-3 < value <= np.inf * u.m**-3:
+            self._n_elem = value.to(u.m**-3)
         elif np.isnan(value):
-            self._n_elem = np.nan * u.m ** -3
+            self._n_elem = np.nan * u.m**-3
 
     @property
     @validate_quantities
-    def number_densities(self) -> u.m ** -3:
+    def number_densities(self) -> u.m**-3:
         """The number densities for each state."""
         try:
-            return (self.n_elem * self.ionic_fractions).to(u.m ** -3)
+            return (self.n_elem * self.ionic_fractions).to(u.m**-3)
         except Exception:
-            return np.full(self.atomic_number + 1, np.nan) * u.m ** -3
+            return np.full(self.atomic_number + 1, np.nan) * u.m**-3
 
     @number_densities.setter
     @validate_quantities
-    def number_densities(self, value: u.m ** -3):
+    def number_densities(self, value: u.m**-3):
         """Set the number densities for each state."""
         if np.any(value.value < 0):
             raise ParticleError("Number densities cannot be negative.")
@@ -595,7 +595,7 @@ class IonizationState:
             raise ParticleError(
                 f"Incorrect number of charge states for {self.base_particle}"
             )
-        value = value.to(u.m ** -3)
+        value = value.to(u.m**-3)
 
         self._n_elem = value.sum()
         self._ionic_fractions = value / self._n_elem
@@ -758,7 +758,7 @@ class IonizationState:
     @property
     def Z_rms(self) -> np.float64:
         """The root mean square charge number."""
-        return np.sqrt(np.sum(self.ionic_fractions * self.charge_numbers ** 2))
+        return np.sqrt(np.sum(self.ionic_fractions * self.charge_numbers**2))
 
     @property
     def Z_most_abundant(self) -> List[Integral]:

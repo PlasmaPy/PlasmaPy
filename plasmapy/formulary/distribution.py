@@ -129,7 +129,7 @@ def Maxwellian_1D(v, T, particle="e", v_drift=0, vTh=np.nan, units="units"):
         ).to_value(SPEED_UNITS)
 
     # Get thermal velocity squared
-    vThSq = vTh ** 2
+    vThSq = vTh**2
     # Get square of relative particle velocity
     vSq = (v - v_drift) ** 2
     # calculating distribution function
@@ -260,7 +260,7 @@ def Maxwellian_velocity_2D(
         ).to_value(SPEED_UNITS)
 
     # accounting for thermal velocity in 2D
-    vThSq = vTh ** 2
+    vThSq = vTh**2
     # Get square of relative particle velocity
     vSq = (vx - vx_drift) ** 2 + (vy - vy_drift) ** 2
     # calculating distribution function
@@ -409,7 +409,7 @@ def Maxwellian_velocity_3D(
         ).to_value(SPEED_UNITS)
 
     # accounting for thermal velocity in 3D
-    vThSq = vTh ** 2
+    vThSq = vTh**2
     # Get square of relative particle velocity
     vSq = (vx - vx_drift) ** 2 + (vy - vy_drift) ** 2 + (vz - vz_drift) ** 2
     # calculating distribution function
@@ -517,7 +517,7 @@ def Maxwellian_speed_1D(v, T, particle="e", v_drift=0, vTh=np.nan, units="units"
         ).to_value(SPEED_UNITS)
 
     # Get thermal velocity squared
-    vThSq = vTh ** 2
+    vThSq = vTh**2
     # Get square of relative particle velocity
     vSq = (v - v_drift) ** 2
     # calculating distribution function
@@ -632,7 +632,7 @@ def Maxwellian_speed_2D(v, T, particle="e", v_drift=0, vTh=np.nan, units="units"
         ).to_value(SPEED_UNITS)
 
     # getting square of thermal speed
-    vThSq = vTh ** 2
+    vThSq = vTh**2
     # get square of relative particle speed
     vSq = (v - v_drift) ** 2
     # calculating distribution function
@@ -748,7 +748,7 @@ def Maxwellian_speed_3D(v, T, particle="e", v_drift=0, vTh=np.nan, units="units"
         ).to_value(SPEED_UNITS)
 
     # getting square of thermal speed
-    vThSq = vTh ** 2
+    vThSq = vTh**2
     # get square of relative particle speed
     vSq = (v - v_drift) ** 2
     # calculating distribution function
@@ -877,7 +877,7 @@ def kappa_velocity_1D(v, T, kappa, particle="e", v_drift=0, vTh=np.nan, units="u
         )
 
     # Get thermal velocity squared and accounting for 1D instead of 3D
-    vThSq = vTh ** 2
+    vThSq = vTh**2
     # Get square of relative particle velocity
     vSq = (v - v_drift) ** 2
     # calculating distribution function
@@ -1040,7 +1040,7 @@ def kappa_velocity_3D(
         )
 
     # getting square of thermal velocity
-    vThSq = vTh ** 2
+    vThSq = vTh**2
     # Get square of relative particle velocity
     vSq = (vx - vx_drift) ** 2 + (vy - vy_drift) ** 2 + (vz - vz_drift) ** 2
     # calculating distribution function

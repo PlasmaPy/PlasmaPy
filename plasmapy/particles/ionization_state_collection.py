@@ -141,7 +141,7 @@ class IonizationStateCollection:
         T_e: u.K = np.nan * u.K,
         abundances: Optional[Dict[str, Real]] = None,
         log_abundances: Optional[Dict[str, Real]] = None,
-        n0: u.m ** -3 = np.nan * u.m ** -3,
+        n0: u.m**-3 = np.nan * u.m**-3,
         tol: Real = 1e-15,
         kappa: Real = np.inf,
     ):
@@ -153,7 +153,7 @@ class IonizationStateCollection:
             )
             if all_quantities:
                 right_units = np.all(
-                    [fracs[0].si.unit == u.m ** -3 for fracs in inputs.values()]
+                    [fracs[0].si.unit == u.m**-3 for fracs in inputs.values()]
                 )
                 if not right_units:
                     raise ParticleError(
@@ -253,7 +253,7 @@ class IonizationStateCollection:
 
         if isinstance(value, u.Quantity) and value.unit != u.dimensionless_unscaled:
             try:
-                new_number_densities = value.to(u.m ** -3)
+                new_number_densities = value.to(u.m**-3)
             except u.UnitConversionError:
                 raise ValueError(
                     f"{errmsg} because the units of value do not "
@@ -548,7 +548,7 @@ class IonizationStateCollection:
                 _elements_and_isotopes.append(new_key)
                 if inputs_have_quantities:
                     try:
-                        number_densities = inputs[key].to(u.m ** -3)
+                        number_densities = inputs[key].to(u.m**-3)
                         n_elem = np.sum(number_densities)
                         new_ionic_fractions[new_key] = np.array(
                             number_densities / n_elem
@@ -596,7 +596,7 @@ class IonizationStateCollection:
 
             if inputs_have_quantities:
                 if np.isnan(self.n0):
-                    new_n = 0 * u.m ** -3
+                    new_n = 0 * u.m**-3
                     for key in _elements_and_isotopes:
                         new_n += n_elems[key]
                     self.n0 = new_n
@@ -655,10 +655,10 @@ class IonizationStateCollection:
 
     @property
     @validate_quantities
-    def n_e(self) -> u.m ** -3:
+    def n_e(self) -> u.m**-3:
         """The electron number density under the assumption of quasineutrality."""
         number_densities = self.number_densities
-        n_e = 0.0 * u.m ** -3
+        n_e = 0.0 * u.m**-3
         for elem in self.base_particles:
             atomic_numb = atomic_number(elem)
             number_of_ionization_states = atomic_numb + 1
@@ -668,23 +668,23 @@ class IonizationStateCollection:
 
     @property
     @validate_quantities
-    def n0(self) -> u.m ** -3:
+    def n0(self) -> u.m**-3:
         """The number density scaling factor."""
         return self._pars["n"]
 
     @n0.setter
     @validate_quantities
-    def n0(self, n: u.m ** -3):
+    def n0(self, n: u.m**-3):
         """Set the number density scaling factor."""
         try:
-            n = n.to(u.m ** -3)
+            n = n.to(u.m**-3)
         except u.UnitConversionError as exc:
             raise ParticleError("Units cannot be converted to u.m ** -3.") from exc
         except ParticleError as exc:
             raise ParticleError(f"{n} is not a valid number density.") from exc
-        if n < 0 * u.m ** -3:
+        if n < 0 * u.m**-3:
             raise ParticleError("Number density cannot be negative.")
-        self._pars["n"] = n.to(u.m ** -3)
+        self._pars["n"] = n.to(u.m**-3)
 
     @property
     def number_densities(self) -> Dict[str, u.Quantity]:
@@ -775,7 +775,7 @@ class IonizationStateCollection:
         if value is not None:
             try:
                 new_abundances_input = {
-                    atom: 10 ** log_abundance for atom, log_abundance in value.items()
+                    atom: 10**log_abundance for atom, log_abundance in value.items()
                 }
                 self.abundances = new_abundances_input
             except ParticleError:

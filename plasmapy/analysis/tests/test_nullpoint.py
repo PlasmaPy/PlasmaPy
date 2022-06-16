@@ -33,7 +33,7 @@ def vspace_func_1(x, y, z):
 
 
 def vspace_func_2(x, y, z):
-    return [2 * y - z - 5.5, 3 * x + z - 22, x ** 2 - 11 * x + y + 24.75]
+    return [2 * y - z - 5.5, 3 * x + z - 22, x**2 - 11 * x + y + 24.75]
 
 
 def vspace_func_3(x, y, z):

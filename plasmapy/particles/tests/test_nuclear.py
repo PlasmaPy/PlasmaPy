@@ -108,11 +108,11 @@ table_of_nuclear_tests = [
     [nuclear_binding_energy, ["p"], {}, 0 * u.J],
     [nuclear_binding_energy, ["n"], {}, 0 * u.J],
     [nuclear_binding_energy, ["p"], {}, 0 * u.J],
-    [mass_energy, ["e-"], {}, (const.m_e * const.c ** 2).to(u.J)],
-    [mass_energy, ["p+"], {}, (const.m_p * const.c ** 2).to(u.J)],
-    [mass_energy, ["H-1"], {}, (const.m_p * const.c ** 2).to(u.J)],
-    [mass_energy, ["H-1 0+"], {}, (const.m_p * const.c ** 2).to(u.J)],
-    [mass_energy, ["n"], {}, (const.m_n * const.c ** 2).to(u.J)],
+    [mass_energy, ["e-"], {}, (const.m_e * const.c**2).to(u.J)],
+    [mass_energy, ["p+"], {}, (const.m_p * const.c**2).to(u.J)],
+    [mass_energy, ["H-1"], {}, (const.m_p * const.c**2).to(u.J)],
+    [mass_energy, ["H-1 0+"], {}, (const.m_p * const.c**2).to(u.J)],
+    [mass_energy, ["n"], {}, (const.m_n * const.c**2).to(u.J)],
 ]
 
 

@@ -31,7 +31,7 @@ def hollweg(
     B: u.T,
     ion: Union[str, Particle],
     k: u.rad / u.m,
-    n_i: u.m ** -3,
+    n_i: u.m**-3,
     T_e: u.K,
     T_i: u.K,
     theta: u.rad,
@@ -302,10 +302,10 @@ def hollweg(
     F = (c_si_unitless / omega_pe) ** 2
 
     # Polynomial coefficients: c3*x^3 + c2*x^2 + c1*x + c0 = 0
-    c3 = F * kx ** 2 + 1
-    c2 = -alpha_A * (1 + beta + F * kx ** 2) - sigma * (1 + D * kx ** 2)
-    c1 = sigma * alpha_A * (1 + 2 * beta + D * kx ** 2)
-    c0 = -alpha_s * sigma ** 2
+    c3 = F * kx**2 + 1
+    c2 = -alpha_A * (1 + beta + F * kx**2) - sigma * (1 + D * kx**2)
+    c1 = sigma * alpha_A * (1 + 2 * beta + D * kx**2)
+    c0 = -alpha_s * sigma**2
 
     # Find roots to polynomial
     coefficients = np.array([c3, c2, c1, c0], ndmin=3)

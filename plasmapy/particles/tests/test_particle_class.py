@@ -202,7 +202,7 @@ test_Particle_table = [
             "roman_symbol": None,
             "is_ion": False,
             "mass": m_e,
-            "mass_energy": (m_e * c ** 2).to("J"),
+            "mass_energy": (m_e * c**2).to("J"),
             "nuclide_mass": InvalidIsotopeError,
             "charge_number": 1,
             "spin": 1 / 2,

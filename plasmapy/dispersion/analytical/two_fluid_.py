@@ -30,7 +30,7 @@ def two_fluid(
     B: u.T,
     ion: Union[str, Particle],
     k: u.rad / u.m,
-    n_i: u.m ** -3,
+    n_i: u.m**-3,
     T_e: u.K,
     T_i: u.K,
     theta: u.rad,
@@ -314,13 +314,13 @@ def two_fluid(
     Q = 1 + (kv * c.value / omega_pe.value) ** 2
 
     # Bellan2012JGR params equation 35
-    A = ((1 + alphav) / Q) + beta + (alphav * Lambda / Q ** 2)
-    B = alphav * (1 + 2 * Q * beta + Lambda * beta) / Q ** 2
+    A = ((1 + alphav) / Q) + beta + (alphav * Lambda / Q**2)
+    B = alphav * (1 + 2 * Q * beta + Lambda * beta) / Q**2
     C = beta * (alphav / Q) ** 2
 
     # Bellan2012JGR params equation 36
-    p = (3 * B - A ** 2) / 3
-    q = (9 * A * B - 2 * A ** 3 - 27 * C) / 27
+    p = (3 * B - A**2) / 3
+    q = (9 * A * B - 2 * A**3 - 27 * C) / 27
 
     # Bellan2012JGR params equation 38
     R = 2 * Lambda * np.emath.sqrt(-p / 3)
