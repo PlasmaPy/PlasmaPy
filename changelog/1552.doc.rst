@@ -1,2 +1,2 @@
-Added a notebook on using `plasmapy.formulary.beta` to calculate
-plasma β in different parts of the solar atmosphere.
+Added a notebook on using `plasmapy.formulary.dimensionless.beta` to
+calculate plasma β in different parts of the solar atmosphere.
