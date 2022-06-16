@@ -1,2 +1,2 @@
 Added a notebook on using `plasmapy.formulary.beta` to calculate
-plasmapy β in different parts of the solar atmosphere.
+plasma β in different parts of the solar atmosphere.
