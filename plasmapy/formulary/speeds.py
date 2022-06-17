@@ -39,7 +39,7 @@ k_B_si_unitless = k_B.value
 @validate_quantities(density={"can_be_negative": False})
 def Alfven_speed(
     B: u.T,
-    density: (u.m ** -3, u.kg / u.m ** 3),
+    density: (u.m**-3, u.kg / u.m**3),
     ion: Optional[Particle] = None,
     z_mean: Optional[numbers.Real] = None,
 ) -> u.m / u.s:
@@ -71,10 +71,10 @@ def Alfven_speed(
         convertible to kg m\ :sup:`-3`\ .
 
     ion : `~plasmapy.particles.particle_class.Particle`, optional
-        Representation of the ion species (e.g., `'p'` for protons, `'D+'` for
-        deuterium, `'He-4 +1'` for singly ionized helium-4, etc.). If no charge
+        Representation of the ion species (e.g., ``'p'`` for protons, ``'D+'`` for
+        deuterium, ``'He-4 +1'`` for singly ionized helium-4, etc.). If no charge
         state information is provided, then the ions are assumed to be singly
-        ionized. If the density is an ion number density, then this paramter
+        ionized. If the density is an ion number density, then this parameter
         is required in order to convert to mass density.
 
     z_mean : `~numbers.Real`, optional
@@ -152,7 +152,7 @@ def Alfven_speed(
     <Quantity 21661.51... m / s>
     """
 
-    if density.unit.is_equivalent(u.kg / u.m ** 3):
+    if density.unit.is_equivalent(u.kg / u.m**3):
         rho = density
     else:
         if not isinstance(ion, Particle):
@@ -174,8 +174,7 @@ def Alfven_speed(
             density, "e", z_ratio=z_mean
         )
 
-    V_A = np.abs(B) / np.sqrt(mu0 * rho)
-    return V_A
+    return np.abs(B) / np.sqrt(mu0 * rho)
 
 
 va_ = Alfven_speed
@@ -193,8 +192,8 @@ def ion_sound_speed(
     T_e: u.K,
     T_i: u.K,
     ion: Particle,
-    n_e: u.m ** -3 = None,
-    k: u.m ** -1 = None,
+    n_e: u.m**-3 = None,
+    k: u.m**-1 = None,
     gamma_e=1,
     gamma_i=3,
     z_mean=None,
@@ -217,8 +216,8 @@ def ion_sound_speed(
         assumed to be zero.
 
     ion : `~plasmapy.particles.particle_class.Particle`
-        Representation of the ion species (e.g., `'p'` for protons,
-        `'D+'` for deuterium, or 'He-4 +1' for singly ionized
+        Representation of the ion species (e.g., ``'p'`` for protons,
+        ``'D+'`` for deuterium, or ``'He-4 +1'`` for singly ionized
         helium-4). If no charge state information is provided, then the
         ions are assumed to be singly charged.
 
@@ -246,7 +245,7 @@ def ion_sound_speed(
         along magnetic field lines.
 
     z_mean : `~astropy.units.Quantity`, optional
-        The average ionization (arithmetic mean) for a plasma where the
+        The average ionization (arithmetic mean) for a plasma where
         a macroscopic description is valid. If this quantity is not
         given then the charge number of the ion
         is used. This is effectively an average ion sound speed for the
@@ -360,7 +359,7 @@ def ion_sound_speed(
             m_i * (1 + klD2)
         )
         V_S = np.sqrt(V_S_squared).to(u.m / u.s)
-    except Exception:
+    except ValueError:
         raise ValueError("Unable to find ion sound speed.")
 
     return V_S
@@ -623,7 +622,7 @@ def thermal_speed(
        |                           |    1                                          |
        +--------------+------------+---------------+---------------+---------------+
 
-    The coefficents can be directly retrieved using
+    The coefficients can be directly retrieved using
     `~plasmapy.formulary.speeds.thermal_speed_coefficients`.
 
         .. rubric:: The Methods
@@ -671,8 +670,7 @@ def thermal_speed(
 
         - **NRL Formulary** ``method = "nrl"``
 
-          The `NRL Plasma Formulary
-          <https://www.nrl.navy.mil/ppd/content/nrl-plasma-formulary>`_
+          The NRL Plasma Formulary :cite:p:`nrlformulary:2019`
           uses the square root of the Normal distribution's variance
           as the expression for thermal speed.
 
@@ -821,7 +819,6 @@ def kappa_thermal_speed(
         coeff = np.sqrt((kappa - 3 / 2) / kappa)
     else:
         coeff = 1
-
     return vth * coeff
 
 

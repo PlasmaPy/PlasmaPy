@@ -15,7 +15,7 @@ def h5(request):
     h5.close()
 
 
-class TestPlasma(object):
+class TestPlasma:
     def test_patters(self):
         # Input data whose specific subclass cannot be known
         generic = plasmapy.plasma.Plasma(blablobleh="spam")
@@ -34,7 +34,7 @@ class TestPlasma(object):
     def test_PlasmaBlob(self):
         # Input data for PlasmaBlob
         T_e = 25 * 15e3 * u.K
-        n_e = 1e26 * u.cm ** -3
+        n_e = 1e26 * u.cm**-3
         Z = 2.0
         particle = "p"
         blob = plasmapy.plasma.Plasma(T_e=T_e, n_e=n_e, Z=Z, particle=particle)

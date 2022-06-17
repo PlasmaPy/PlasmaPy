@@ -33,7 +33,7 @@ def _code_repr_of_ndarray(array: np.ndarray, max_items=np.inf) -> str:
 
     def replace_excess_items_with_ellipsis(s: str, max_items: Integral):
         substrings_between_commas = s.split(",")
-        to_comma_before_ellipsis = ",".join(substrings_between_commas[0:max_items])
+        to_comma_before_ellipsis = ",".join(substrings_between_commas[:max_items])
         closing_brackets = "]" * substrings_between_commas[-1].count("]")
         closing = f", ...{closing_brackets})"
         return to_comma_before_ellipsis + closing
@@ -80,9 +80,8 @@ def _code_repr_of_arg(arg, max_items=np.inf) -> str:
         u.Quantity: _code_repr_of_quantity,
         np.ndarray: _code_repr_of_ndarray,
     }
-    for arg_type in function_for_type.keys():
+    for arg_type, code_repr_func in function_for_type.items():
         if isinstance(arg, arg_type):
-            code_repr_func = function_for_type[arg_type]
             return code_repr_func(arg, max_items=max_items)
     return repr(arg)
 
@@ -99,10 +98,9 @@ def _code_repr_of_args_and_kwargs(
 
     args_collection = args if isinstance(args, (tuple, list)) else (args,)
 
-    args_and_kwargs = ""
-
-    for arg in args_collection:
-        args_and_kwargs += f"{_code_repr_of_arg(arg, max_items)}, "
+    args_and_kwargs = "".join(
+        f"{_code_repr_of_arg(arg, max_items)}, " for arg in args_collection
+    )
 
     for kw_name, kw_val in kwargs.items():
         args_and_kwargs += f"{kw_name}={_code_repr_of_arg(kw_val, max_items)}, "
@@ -129,9 +127,10 @@ def _name_with_article(ex: Exception) -> str:
     use_an = all(
         [
             name[0] in "aeiouAEIOU",
-            name[0:3].lower() not in starts_with_vowel_but_uses_a,
+            name[:3].lower() not in starts_with_vowel_but_uses_a,
         ]
     )
+
     indefinite_article = "an" if use_an else "a"
     return f"{indefinite_article} {name}"
 
@@ -178,9 +177,10 @@ def _string_together_warnings_for_printing(
     followed by the corresponding message, separated by a full line.
     """
     warnings_with_messages = [
-        _object_name(warning, showmodule=False) + ": " + message
+        f"{_object_name(warning, showmodule=False)}: {message}"
         for warning, message in zip(warning_types, warning_messages)
     ]
+
     return "\n\n".join(warnings_with_messages)
 
 

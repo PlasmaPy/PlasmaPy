@@ -342,12 +342,12 @@ quantity_case = namedtuple("QuantityTestCases", ("quantity", "expected"))
     [
         quantity_case(quantity=5.3 * u.m, expected="5.3*u.m"),
         quantity_case(quantity=5.4 / u.m, expected="5.4/u.m"),
-        quantity_case(quantity=5.5 * u.m ** -2, expected="5.5*u.m**-2"),
+        quantity_case(quantity=5.5 * u.m**-2, expected="5.5*u.m**-2"),
         quantity_case(
             quantity=u.Quantity(5.0), expected="5.0*u.dimensionless_unscaled"
         ),
         quantity_case(
-            quantity=np.array([3.5, 4.2]) * u.m ** -2.5,
+            quantity=np.array([3.5, 4.2]) * u.m**-2.5,
             expected="np.array([3.5, 4.2])*u.m**-2.5",
         ),
     ],
