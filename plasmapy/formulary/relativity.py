@@ -108,7 +108,7 @@ def relativistic_energy(m: u.kg, v: u.m / u.s) -> u.Joule:
 
     Returns
     -------
-    `~astropy.Quantity`
+    `~astropy.units.Quantity`
         The relativistic energy (in joules) of an object of mass ``m``
         moving at velocity ``v``.
 
@@ -149,4 +149,4 @@ def relativistic_energy(m: u.kg, v: u.m / u.s) -> u.Joule:
     ValueError: The argument 'm' to function relativistic_energy() can not contain negative numbers.
     """
     γ = Lorentz_factor(v)
-    return γ * m * c ** 2
+    return γ * m * c**2

@@ -31,7 +31,7 @@ def hollweg(
     B: u.T,
     ion: Union[str, Particle],
     k: u.rad / u.m,
-    n_i: u.m ** -3,
+    n_i: u.m**-3,
     T_e: u.K,
     T_i: u.K,
     theta: u.rad,
@@ -99,7 +99,7 @@ def hollweg(
 
     TypeError
         If ``ion`` is not of type or convertible to
-        `~plasmapy.particles.Particle`.
+        `~plasmapy.particles.particle_class.Particle`.
 
     TypeError
         If ``gamma_e``, ``gamma_i``, or ``z_mean`` are not of type `int`
@@ -213,7 +213,7 @@ def hollweg(
             raise TypeError(
                 f"For argument 'ion' expected type {Particle} but got {type(ion)}."
             )
-    if not (ion.is_ion or ion.is_category("element")):
+    if not ion.is_ion and not ion.is_category("element"):
         raise ValueError("The particle passed for 'ion' must be an ion or element.")
 
     # validate z_mean
@@ -222,12 +222,12 @@ def hollweg(
             z_mean = abs(ion.charge_number)
         except ChargeError:
             z_mean = 1
-    else:
-        if not isinstance(z_mean, (int, np.integer, float, np.floating)):
-            raise TypeError(
-                f"Expected int or float for argument 'z_mean', but got {type(z_mean)}."
-            )
+    elif isinstance(z_mean, (int, np.integer, float, np.floating)):
         z_mean = abs(z_mean)
+    else:
+        raise TypeError(
+            f"Expected int or float for argument 'z_mean', but got {type(z_mean)}."
+        )
 
     # validate arguments
     for arg_name in ("B", "n_i", "T_e", "T_i"):
@@ -249,7 +249,7 @@ def hollweg(
 
     # validate argument k
     k = k.squeeze()
-    if not (k.ndim == 0 or k.ndim == 1):
+    if k.ndim not in [0, 1]:
         raise ValueError(
             f"Argument 'k' needs to be single valued or a 1D array astropy Quantity,"
             f" got array of shape {k.shape}."
@@ -259,10 +259,10 @@ def hollweg(
 
     # validate argument theta
     theta = theta.squeeze()
-    if not (theta.ndim == 0 or theta.ndim == 1):
+    if theta.ndim not in (0, 1):
         raise ValueError(
             f"Argument 'theta' needs to be a single valued or 1D array astropy "
-            f"Quantity, got array of shape {k.shape}."
+            f"Quantity, got array of shape {theta.shape}."
         )
 
     # Single k value case
@@ -286,36 +286,36 @@ def hollweg(
         omega_ci = gyrofrequency(B=B, particle=ion, signed=False, Z=z_mean).value
         omega_pe = plasma_frequency(n=n_e, particle="e-").value
 
-    # strip units from select input args
-    k = k.value
-    theta = theta.value
     cs_vA = c_s / v_A
+    thetav, kv = np.meshgrid(theta.value, k.value)
 
     # Parameters kx and kz
-    kz = np.cos(theta) * k
-    kx = np.sin(theta) * k
+    kz = np.cos(thetav) * kv
+    kx = np.sin(thetav) * kv
 
     # Define helpful parameters
     beta = (c_s / v_A) ** 2
-    alpha_A = (k * v_A) ** 2
-    alpha_s = (k * c_s) ** 2  # == alpha_A * beta
+    alpha_A = (kv * v_A) ** 2
+    alpha_s = (kv * c_s) ** 2  # == alpha_A * beta
     sigma = (kz * v_A) ** 2
     D = (c_s / omega_ci) ** 2
     F = (c_si_unitless / omega_pe) ** 2
 
     # Polynomial coefficients: c3*x^3 + c2*x^2 + c1*x + c0 = 0
-    c3 = F * kx ** 2 + 1
-    c2 = -alpha_A * (1 + beta + F * kx ** 2) - sigma * (1 + D * kx ** 2)
-    c1 = sigma * alpha_A * (1 + 2 * beta + D * kx ** 2)
-    c0 = -alpha_s * sigma ** 2
+    c3 = F * kx**2 + 1
+    c2 = -alpha_A * (1 + beta + F * kx**2) - sigma * (1 + D * kx**2)
+    c1 = sigma * alpha_A * (1 + 2 * beta + D * kx**2)
+    c0 = -alpha_s * sigma**2
 
     # Find roots to polynomial
-    coefficients = np.array([c3, c2, c1, c0], ndmin=2)
+    coefficients = np.array([c3, c2, c1, c0], ndmin=3)
     nroots = coefficients.shape[0] - 1  # 3
     nks = coefficients.shape[1]
-    roots = np.empty((nroots, nks), dtype=np.complex128)
+    nthetas = coefficients.shape[2]
+    roots = np.empty((nroots, nks, nthetas), dtype=np.complex128)
     for ii in range(nks):
-        roots[:, ii] = np.roots(coefficients[:, ii])[:]
+        for jj in range(nthetas):
+            roots[:, ii, jj] = np.roots(coefficients[:, ii, jj])
 
     roots = np.sqrt(roots)
     roots = np.sort(roots, axis=0)
@@ -331,12 +331,14 @@ def hollweg(
         )
 
     # Warn about theta not nearly perpendicular
-    if np.abs(theta - np.pi / 2) > 0.1:
+    theta_diff_max = np.amax(np.abs(thetav - np.pi / 2))
+    if theta_diff_max > 0.1:
         warnings.warn(
             f"This solver is valid in the regime where propagation is "
             f"nearly perpendicular to B according to Bellan, 2012, Sec. 1.7 "
-            f"(see documentation for DOI). A theta value of {theta:.2f} was "
-            f"entered which may affect the validity of the solution.",
+            f"(see documentation for DOI). A |theta - pi/2| value of "
+            f"{theta_diff_max:.2f} was calculated which may affect the "
+            f"validity of the solution.",
             PhysicsWarning,
         )
 
@@ -352,10 +354,8 @@ def hollweg(
             PhysicsWarning,
         )
 
-    omegas = {
+    return {
         "fast_mode": roots[2, :].squeeze() * u.rad / u.s,
         "alfven_mode": roots[1, :].squeeze() * u.rad / u.s,
         "acoustic_mode": roots[0, :].squeeze() * u.rad / u.s,
     }
-
-    return omegas

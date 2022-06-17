@@ -164,8 +164,8 @@ markup language. reST_ is human readable when viewed within a source
 code file or when printed out using `help`. reST_ also contains markup
 that allows the text to be transformed into `PlasmaPy's documentation`_.
 reST_ files use the file extension :file:`.rst`. Documentation contained
-within :file:`.py` files are in the form of docstrings_, which are
-written in reST_.
+within :file:`.py` files are in the form of
+:wikipedia:`docstrings <docstring>`, which are written in reST_.
 
 ReStructuredText Examples
 ~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -353,8 +353,10 @@ Sphinx extensions
 extensions:
 
 * `sphinx.ext.autodoc` for including documentation from docstrings.
-* `sphinx.ext.intersphinx` for linking to other projects' documentation.
+* `sphinx.ext.extlinks` for shortening links to external sites (e.g.,
+  ``:orcid:`` and ``:wikipedia:``).
 * `sphinx.ext.graphviz` to allow Graphviz_ graphs to be included.
+* `sphinx.ext.intersphinx` for linking to other projects' documentation.
 * `sphinx.ext.mathjax` for math rendering with MathJax_.
 * `sphinx.ext.napoleon` for allowing NumPy style docstrings.
 * `sphinx.ext.todo` to support ``todo`` |directives|.
@@ -367,6 +369,10 @@ extensions:
 * |sphinx_changelog|_ for rendering towncrier_ changelogs.
 * |sphinx-hoverxref|_ for showing floating windows on cross references
   of the documentation.
+* |sphinx-notfound-page|_ to add a :wikipedia:`404 <HTTP_404>` page
+  for the documentation.
+* |sphinx-issues|_ to add roles for linking to GitHub (``:commit:``,
+  ``:issue:``, ``:pr:``, and ``:user:``).
 * `plasmapy_sphinx` for customizations created for use in PlasmaPy and
   affiliated packages. Note that `plasmapy_sphinx` is expected to be
   broken out into its own package in the future.
@@ -489,9 +495,9 @@ Writing documentation
 Docstrings
 ----------
 
-A docstring_ is a comment at the beginning of a function or another
-object that provides information on how to use that function (see
-:pep:`257`). Docstrings are designated by surrounding the content
+A :wikipedia:`docstring` is a comment at the beginning of a function or
+another object that provides information on how to use that function
+(see :pep:`257`). Docstrings are designated by surrounding the content
 with triple quotes ``"""This is my docstring."""``.
 
 In order to improve readability and maintain consistency, PlasmaPy uses
@@ -641,6 +647,53 @@ should be in the order provided.
 
       """
 
+Doctests
+~~~~~~~~
+
+PlasmaPy's test suite runs code examples in docstrings to verify that
+the expected output in the docstring matches the actual output from
+running the code. These doctests_ verify that docstring examples
+faithfully represent the behavior of the code.
+
+.. code-block:: python
+
+   def double(x):
+       """
+       >>> double(4)  # this line is tested that it matches the output below
+       8
+       """
+       return 2 * x
+
+An ellipsis (``...``) denotes that the actual and expected outputs
+should only be compared to the available precision. This capability is
+needed for functions in `plasmapy.formulary` that depend on fundamental
+constants that are occasionally revised.
+
+.. code-block:: python
+
+   def f():
+       """
+       >>> import numpy as np
+       >>> np.pi
+       3.14159...
+       >>> np.pi ** 100
+       5.187...e+49
+       """
+
+To skip the execution of a line of code in a docstring during tests, end
+the line with ``# doctest: +SKIP``. This is appropriate for lines where
+the output varies or an exception is raised.
+
+.. code-block:: python
+
+   def g():
+       """
+       >>> import random
+       >>> random.random()  # doctest: +SKIP
+       0.8905444
+       >>> raise ValueError  # doctest: +SKIP
+       """
+
 Definitions
 -----------
 
@@ -657,7 +710,7 @@ within the :rst:dir:`glossary` |directive|.
 
 Using the :rst:role:`term` |role| allows us to link to the
 definitions of terms. Using ``:term:`kwargs``` will link to
-:term:`kwargs` in the :doc:`glossary`. We can also refer to terms
+:term:`kwargs` in the :ref:`glossary`. We can also refer to terms
 defined in the projects connected via intersphinx_ if they have not
 already been defined in PlasmaPy's :ref:`glossary`. Using
 ``:term:`role``` will link to |role| and ``:term:`directive``` will link
@@ -676,7 +729,7 @@ documentation for PlasmaPy and affiliated packages.
 * Use technical jargon sparingly. Define technical jargon when
   necessary.
 
-* Use the `active voice`_ in the present tense.
+* Use the :wikipedia:`active voice <active_voice>` in the present tense.
 
 * Keep the documentation style consistent within a file or module, and
   preferably across all of `PlasmaPy's documentation`_.
@@ -731,12 +784,14 @@ documentation for PlasmaPy and affiliated packages.
   directory contains files that are used for the online documentation
   but are not generated during the Sphinx_ build.
 
-* Avoid linking to websites that might disappear due to `link rot`_ such
-  as documents hosted on personal websites.
+* Avoid linking to websites that might disappear due to
+  :wikipedia:`link rot <link_rot>` such as documents hosted on personal
+  websites.
 
-  * When including references, use a link that includes a `persistent
-    identifier`_ such as a digital object identifier (DOI_) when one is
-    available (e.g., https://doi.org/10.5281/zenodo.4602818\ ).
+  * When including references, use a link that includes a
+    :wikipedia:`persistent identifier <persistent_identifier>` such as a
+    digital object identifier (DOI_) when one is available (e.g.,
+    https://doi.org/10.5281/zenodo.4602818\ ).
 
   * Wikipedia_ articles may be linked to when they contain a
     well-developed and accurate description of a concept.
@@ -744,7 +799,7 @@ documentation for PlasmaPy and affiliated packages.
 * Include both the original references for a topic as well as accessible
   pedagogical references. Prefer references that are open access over
   references that require purchase of a subscription or are behind a
-  paywall_.
+  :wikipedia:`paywall`.
 
 .. note::
 
@@ -974,14 +1029,12 @@ Narrative documentation guidelines
 .. |directive| replace:: :term:`directive`
 .. |directives| replace:: :term:`directives <directive>`
 
-.. _active voice: https://en.wikipedia.org/wiki/Active_voice
 .. _admonitions: https://docutils.sourceforge.io/docs/ref/rst/directives.html#admonitions
 .. _configuration options: https://www.sphinx-doc.org/en/master/usage/configuration.html
 .. _define substitutions: https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html#substitution-definitions
-.. _link rot: https://en.wikipedia.org/wiki/Link_rot
+.. _doctests: https://docs.pytest.org/en/6.2.x/doctest.html
 .. _nested inline markup: https://docutils.sphinx-users.jp/docutils/docs/dev/rst/alternatives.html#nested-inline-markup
 .. _options to sphinx-build: https://www.sphinx-doc.org/en/master/man/sphinx-build.html#options
-.. _paywall: https://en.wikipedia.org/wiki/Paywall
 .. _raise an issue: https://github.com/PlasmaPy/PlasmaPy/issues/new?title=Improve+documentation+for...&labels=Documentation
 .. _raw string: https://docs.python.org/3/reference/lexical_analysis.html#literals
 .. _Read the Docs Sphinx Theme: https://sphinx-rtd-theme.readthedocs.io

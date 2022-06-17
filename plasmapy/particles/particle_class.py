@@ -490,7 +490,7 @@ class Particle(AbstractPhysicalParticle):
                 mass_numb=mass_numb,
                 Z=Z,
             )
-        except Exception as exc:
+        except InvalidParticleError as exc:
             errmsg = _parsing.invalid_particle_errmsg(
                 argument, mass_numb=mass_numb, Z=Z
             )
@@ -858,7 +858,7 @@ class Particle(AbstractPhysicalParticle):
         The roman numeral represents one plus the charge number. Raise
         `~plasmapy.particles.exceptions.ChargeError` if no charge has
         been specified and
-        `~plasmapy.utils.roman.OutOfRangeError` if the charge is
+        `~plasmapy.utils.exceptions.OutOfRangeError` if the charge is
         negative.
 
         Examples
@@ -1165,7 +1165,7 @@ class Particle(AbstractPhysicalParticle):
         """
         try:
             mass = self.nuclide_mass if self.isotope else self.mass
-            energy = mass * const.c ** 2
+            energy = mass * const.c**2
             return energy.to(u.J)
         except MissingParticleDataError:
             raise MissingParticleDataError(
@@ -1219,7 +1219,7 @@ class Particle(AbstractPhysicalParticle):
         mass_of_nucleons = mass_of_protons + mass_of_neutrons
 
         mass_defect = mass_of_nucleons - self.nuclide_mass
-        nuclear_binding_energy = mass_defect * const.c ** 2
+        nuclear_binding_energy = mass_defect * const.c**2
 
         return nuclear_binding_energy.to(u.J)
 
@@ -1781,10 +1781,10 @@ class Particle(AbstractPhysicalParticle):
 
         Raises
         ------
-        ~plasmapy.particles.InvalidElementError
+        ~plasmapy.particles.exceptions.InvalidElementError
             If the |Particle| is not an element.
 
-        ~plasmapy.particles.ChargeError
+        ~plasmapy.particles.exceptions.ChargeError
             If no charge information for the |Particle| object is
             specified.
 
@@ -1852,7 +1852,7 @@ class DimensionlessParticle(AbstractParticle):
     See Also
     --------
     ~plasmapy.particles.particle_class.Particle
-    ~plasmapy.particles.CustomParticle
+    ~plasmapy.particles.particle_class.CustomParticle
 
     Notes
     -----
@@ -1878,7 +1878,7 @@ class DimensionlessParticle(AbstractParticle):
             self.mass = mass
             self.charge = charge
             self.symbol = symbol
-        except Exception as exc:
+        except InvalidParticleError as exc:
             raise InvalidParticleError(
                 f"Unable to create a custom particle with a mass of "
                 f"{mass} and a charge of {charge}."
@@ -1913,7 +1913,7 @@ class DimensionlessParticle(AbstractParticle):
 
         try:
             new_obj = np.float64(obj)
-        except Exception:
+        except TypeError:
             raise TypeError(f"Cannot convert {obj} to numpy.float64.")
 
         if hasattr(new_obj, "__len__"):
@@ -2072,7 +2072,7 @@ class CustomParticle(AbstractPhysicalParticle):
             self.mass = mass
             self.charge = charge
             self.symbol = symbol
-        except Exception as exc:
+        except (ValueError, TypeError, u.UnitsError) as exc:
             raise InvalidParticleError(
                 f"Unable to create a custom particle with a mass of "
                 f"{mass} and a charge of {charge}."
@@ -2220,7 +2220,7 @@ class CustomParticle(AbstractPhysicalParticle):
         >>> custom_particle.mass_energy.to('GeV')
         <Quantity 112.19177208 GeV>
         """
-        return (self.mass * const.c ** 2).to(u.J)
+        return (self.mass * const.c**2).to(u.J)
 
     @property
     def symbol(self) -> str:
@@ -2247,7 +2247,7 @@ class CustomParticle(AbstractPhysicalParticle):
         This method will return `True` if ``other`` is an identical
         |CustomParticle| instance with the same mass charge and symbol,
         and return `False` if ``other`` differs on any of these attributes,
-        or an other type.
+        or another type.
         """
 
         if not isinstance(other, self.__class__):
@@ -2445,8 +2445,8 @@ instances, are particle-like.
 
 See Also
 --------
-Particle
-CustomParticle
+~plasmapy.particles.particle_class.Particle
+~plasmapy.particles.particle_class.CustomParticle
 ~plasmapy.particles.decorators.particle_input
 
 Examples

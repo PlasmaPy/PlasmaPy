@@ -45,10 +45,10 @@ def test_Plasma3D_setup(grid_dimensions, expected_size):
 
     # Core variable units and shapes
     assert test_plasma.density.size == expected_size
-    assert test_plasma.density.si.unit == u.kg / u.m ** 3
+    assert test_plasma.density.si.unit == u.kg / u.m**3
 
     assert test_plasma.momentum.size == 3 * expected_size
-    assert test_plasma.momentum.si.unit == u.kg / (u.m ** 2 * u.s)
+    assert test_plasma.momentum.si.unit == u.kg / (u.m**2 * u.s)
 
     assert test_plasma.pressure.size == expected_size
     assert test_plasma.pressure.si.unit == u.Pa
@@ -75,8 +75,8 @@ def test_Plasma3D_derived_vars():
     )
 
     # Set an arbitrary uniform values throughout the plasma
-    test_plasma.density[...] = 2.0 * u.kg / u.m ** 3
-    test_plasma.momentum[...] = 10.0 * u.kg / (u.m ** 2 * u.s)
+    test_plasma.density[...] = 2.0 * u.kg / u.m**3
+    test_plasma.momentum[...] = 10.0 * u.kg / (u.m**2 * u.s)
     test_plasma.pressure[...] = 1 * u.Pa
     test_plasma.magnetic_field[...] = 0.01 * u.T
     test_plasma.electric_field[...] = 0.01 * u.V / u.m

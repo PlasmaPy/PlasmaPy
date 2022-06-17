@@ -47,7 +47,6 @@ class AbstractGrid(ABC):
     as an `~numpy.ndarray`, while the units associated with each
     dimension are stored separately.
 
-
     There are two preferred methods to creating a grid object:
 
     1. Initializing the grid by providing three 3D
@@ -118,7 +117,7 @@ class AbstractGrid(ABC):
         RecognizedQuantity("x", "x spatial position", u.m),
         RecognizedQuantity("y", "y spatial position", u.m),
         RecognizedQuantity("z", "z spatial position", u.m),
-        RecognizedQuantity("rho", "Mass density", u.kg / u.m ** 3),
+        RecognizedQuantity("rho", "Mass density", u.kg / u.m**3),
         RecognizedQuantity("E_x", "Electric field (x component)", u.V / u.m),
         RecognizedQuantity("E_y", "Electric field (y component)", u.V / u.m),
         RecognizedQuantity("E_z", "Electric field (z component)", u.V / u.m),
@@ -375,7 +374,7 @@ class AbstractGrid(ABC):
             return self.units[0]
         else:
             raise ValueError(
-                "Array dimensions do not all have the same " f"units: {self.units}"
+                f"Array dimensions do not all have the same units: {self.units}"
             )
 
     # *************************************************************************
@@ -566,7 +565,7 @@ class AbstractGrid(ABC):
         grid{0,1,2} : `~astropy.units.Quantity` array, shape (n0, n1, n2)
             Grids of coordinate positions.
 
-        **kwargs: `~astropy.units.Quantity` array, shape (n0, n1, n2)
+        **kwargs : `~astropy.units.Quantity` array, shape (n0, n1, n2)
             Quantities defined on the grid.
         """
 
@@ -615,18 +614,18 @@ class AbstractGrid(ABC):
 
         Parameters
         ----------
-        key, array pairs as keyword arguments
+        **kwargs : key, array pairs
             The key will be used as the dataset key, while the array holds the
             quantity.
         """
 
-        for key in kwargs.keys():
+        for key in kwargs:
             quantity = kwargs[key]
 
             # Check key against a list of "known" keys with pre-defined
             # meanings (eg. E_x, n_e) and raise a warning if a "non-standard"
             # key is being used so the user is aware.
-            if key in self.recognized_quantities.keys():
+            if key in self.recognized_quantities:
                 try:
                     quantity.to(self.recognized_quantities[key].unit)
                 except u.UnitConversionError:
@@ -703,7 +702,7 @@ class AbstractGrid(ABC):
             given, the same number of points will be used in each dimension.
             The default is 100.
 
-        **kwargs: Additional arguments
+        **kwargs : Additional arguments
             Any additional arguments will be passed directly to
             `numpy.linspace`.
         """
@@ -784,9 +783,7 @@ class AbstractGrid(ABC):
                 stop[i] = stop[i].to(unit)
 
             except u.UnitConversionError:
-                raise ValueError(
-                    f"Units of {stop[i]} and " f" {unit} are not compatible"
-                )
+                raise ValueError(f"Units of {stop[i]} and {unit} are not compatible")
 
             # strip units
             stop[i] = stop[i].value
