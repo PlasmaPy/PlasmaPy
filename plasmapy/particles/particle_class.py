@@ -1681,8 +1681,8 @@ class Particle(AbstractPhysicalParticle):
         |Particle| with the newly ionized |Particle|.
 
         New in version 0.8.0: If the |Particle| instance has no charge
-        information (e.g. `Particle("Li")`), it is assumed to be electrically
-        neutral.
+        information (e.g., ``Particle("Li")``), this method assumes it
+        to be electrically neutral.
 
         Parameters
         ----------
