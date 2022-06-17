@@ -62,7 +62,7 @@ def modify_docstring(func=None, prepend: str = None, append: str = None):
             )
 
         # save the original docstring
-        setattr(wrapper, "__original_doc__", wrapper.__doc__)
+        wrapper.__original_doc__ = wrapper.__doc__
         doclines = inspect.cleandoc(wrapper.__doc__).splitlines()
 
         # prepend docstring lines
@@ -104,7 +104,7 @@ def preserve_signature(f):
     """
     A decorator for decorators, which preserves the signature of the function
     being wrapped. This preservation allows IDE function parameter hints to work
-    on the wrapped function. To do this, the `__signature__` dunder is defined, or
+    on the wrapped function. To do this, the ``__signature__`` dunder is defined, or
     inherited, from the function being wrapped to the resulting wrapped function.
 
     Parameters
@@ -127,18 +127,9 @@ def preserve_signature(f):
     ...
     ...     return wrapper
     """
-    # add '__signature__' to methods that are copied from
-    # f onto wrapper
-    assigned = list(functools.WRAPPER_ASSIGNMENTS)
-    assigned.append("__signature__")
-
-    @functools.wraps(f, assigned=assigned)
-    def wrapper(*args, **kwargs):
-        return f(*args, **kwargs)
-
     # add '__signature__' if it does not exist
     # - this will preserve parameter hints in IDE's
-    if not hasattr(wrapper, "__signature__"):
-        wrapper.__signature__ = inspect.signature(f)
+    if not hasattr(f, "__signature__"):
+        f.__signature__ = inspect.signature(f)
 
-    return wrapper
+    return f

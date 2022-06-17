@@ -245,7 +245,7 @@ def test_add_particle_list_and_particle(various_particles):
     """
     new_particle_list = various_particles + electron
     assert new_particle_list[-1] == electron
-    assert new_particle_list[0:-1] == various_particles
+    assert new_particle_list[:-1] == various_particles
     assert isinstance(new_particle_list, ParticleList)
 
 
@@ -327,6 +327,43 @@ def test_particle_multiplication(method, particle):
     assert particle_list == [particle, particle, particle]
 
 
+@pytest.mark.parametrize(
+    "particles, args, kwargs, expected",
+    [
+        [
+            ["electron", "proton", "neutron"],
+            ["lepton"],
+            {},
+            [True, False, False],
+        ],
+        [
+            ["electron", "proton", "neutron"],
+            [],
+            {"require": "lepton"},
+            [True, False, False],
+        ],
+        [
+            ["electron", "proton", "neutron"],
+            [],
+            {"exclude": "lepton"},
+            [False, True, True],
+        ],
+        [
+            ["electron", "proton", "neutron"],
+            [],
+            {"any_of": {"lepton", "charged"}},
+            [True, True, False],
+        ],
+    ],
+)
+def test_particle_list_is_category(particles, args, kwargs, expected):
+    """
+    Test that ``ParticleList.is_category()`` behaves as expected.
+    """
+    sample_list = ParticleList(particles)
+    assert sample_list.is_category(*args, **kwargs) == expected
+
+
 def test_mean_particle():
     """
     Test that ``ParticleList.average_particle()`` returns a particle with
@@ -375,7 +412,7 @@ def test_root_mean_square_particle(use_rms_charge, use_rms_mass):
     assert u.isclose(average_particle.charge, expected_average_charge, rtol=1e-14)
 
     if use_rms_mass:
-        expected_average_mass = np.sqrt((proton.mass ** 2 + electron.mass ** 2) / 2)
+        expected_average_mass = np.sqrt((proton.mass**2 + electron.mass**2) / 2)
     else:
         expected_average_mass = (proton.mass + electron.mass) / 2
 

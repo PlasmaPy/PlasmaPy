@@ -21,12 +21,12 @@ class ParticleTracker:
 
     Parameters
     ----------
-    plasma : `Plasma`
+    plasma : Plasma object
         Plasma from which fields can be pulled.
 
     type : `str`
-        Particle type. See `plasmapy.particles.ParticleLike` for suitable
-        arguments. The default is a proton.
+        Particle type. See `plasmapy.particles.particle_class.ParticleLike`
+        for suitable arguments. The default is a proton.
 
     n_particles : `int`
         Number of macroparticles. The default is a single particle.
@@ -153,7 +153,7 @@ class ParticleTracker:
         `~astropy.units.Quantity`
             Array of kinetic energies, shape (nt, n).
         """
-        return (self.velocity_history ** 2).sum(axis=-1) * self.eff_m / 2
+        return (self.velocity_history**2).sum(axis=-1) * self.eff_m / 2
 
     def boris_push(self, init=False):
         r"""
@@ -168,8 +168,9 @@ class ParticleTracker:
 
         Notes
         ----------
-        The Boris algorithm is the standard energy conserving algorithm for
-        particle movement in plasma physics. See [1]_ for more details.
+        The Boris algorithm :cite:p:`boris:1970` is the standard energy
+        particle movement in plasma physics. See pages 58–63 of
+        :cite:t:`birdsall:2004` for more details.
 
         Conceptually, the algorithm has three phases:
 
@@ -180,11 +181,6 @@ class ParticleTracker:
 
         This ends up causing the magnetic field action to be properly
         "centered" in time, and the algorithm conserves energy.
-
-        References
-        ----------
-        .. [1] C. K. Birdsall, A. B. Langdon, "Plasma Physics via Computer
-               Simulation", 2004, p. 58-63
         """
         b, e = self._interpolate_fields()
 
@@ -262,7 +258,7 @@ class ParticleTracker:
         ----------
         plot : `str`, optional
             Enable plotting of position component x, y, z for each of these
-            letters included in `plot`.
+            letters included in ``plot``.
         """
         import matplotlib.pyplot as plt
 

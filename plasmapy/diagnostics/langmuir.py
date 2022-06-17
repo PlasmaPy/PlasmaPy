@@ -72,10 +72,10 @@ class Characteristic:
 
     Attributes
     ----------
-    bias : `astropy.units.Quantity`, ndarray
+    bias : `astropy.units.Quantity`, `~numpy.ndarray`
         Array of applied probe biases in units convertible to V.
 
-    current : `astropy.units.Quantity`, ndarray
+    current : `astropy.units.Quantity`, `~numpy.ndarray`
         Array of applied probe currents in units convertible to A.
 
     """
@@ -95,8 +95,7 @@ class Characteristic:
 
         """
 
-        b = Characteristic(self.bias[key], self.current[key])
-        return b
+        return Characteristic(self.bias[key], self.current[key])
 
     def __sub__(self, other):
         r"""Support current subtraction"""
@@ -137,11 +136,11 @@ class Characteristic:
             )
         current_unique *= u.A
 
-        if inplace:
-            self.bias = bias_unique
-            self.current = current_unique
-        else:
+        if not inplace:
             return Characteristic(bias_unique, current_unique)
+
+        self.bias = bias_unique
+        self.current = current_unique
 
     def _check_validity(self):
         r"""Check the unit and value validity of the characteristic."""
@@ -168,12 +167,12 @@ class Characteristic:
 
         Parameters
         ----------
-        padding : float
+        padding : `float`
             The padding ratio as a float between 0.0 and 1.0.
 
-        log : boolean, optional
-            If True the calculation will be performed on a logarithmic scale.
-            Default is False.
+        log : `bool`, optional
+            If `True` the calculation will be performed on a logarithmic scale.
+            Default is `False`.
 
         """
 
@@ -207,7 +206,7 @@ class Characteristic:
 )
 def swept_probe_analysis(
     probe_characteristic,
-    probe_area: u.m ** 2,
+    probe_area: u.m**2,
     gas_argument,
     bimaxwellian=False,
     visualize=False,
@@ -220,28 +219,28 @@ def swept_probe_analysis(
 
     Parameters
     ----------
-    probe_characteristic : ~plasmapy.diagnostics.langmuir.Characteristic
+    probe_characteristic : `~plasmapy.diagnostics.langmuir.Characteristic`
         The swept probe characteristic that is to be analyzed.
 
-    probe_area : ~astropy.units.Quantity
+    probe_area : `~astropy.units.Quantity`
         The area of the probe exposed to plasma in units convertible to m^2.
 
-    gas_argument : argument to instantiate the `Particle` class.
-        `str`, `int`, or `~plasmapy.particles.Particle`
+    gas_argument : argument to instantiate the |Particle| class.
+        `str`, `int`, or `~plasmapy.particles.particle_class.Particle`
         A string representing a particle, element, isotope, or ion; an
         integer representing the atomic number of an element; or a
-        `Particle` instance.
+        |Particle| instance.
 
-    visualize : bool, optional
+    visualize : `bool`, optional
         Can be used to plot the characteristic and the obtained parameters.
-        Default is False.
+        Default is `False`.
 
-    plot_electron_fit : bool, optional
-        If True, the fit of the electron current in the exponential section is
+    plot_electron_fit : `bool`, optional
+        If `True`, the fit of the electron current in the exponential section is
         shown. Default is False.
 
-    plot_EEDF : bool, optional
-        If True, the EEDF is computed and shown. Default is False.
+    plot_EEDF : `bool`, optional
+        If `True`, the EEDF is computed and shown. Default is `False`.
 
     Returns
     -------
@@ -253,15 +252,15 @@ def swept_probe_analysis(
         two values if bimaxwellian is True.
 
     "n_e" : `astropy.units.Quantity`
-        Estimate of the electron density in units of m^-3. See the Notes on
+        Estimate of the electron density in units of m\ :sup:`-3`\ . See the Notes on
         plasma densities.
 
     "n_i" : `astropy.units.Quantity`
-        Estimate of the ion density in units of m^-3. See the Notes on
+        Estimate of the ion density in units of m\ :sup:`-3`\ . See the Notes on
         plasma densities.
 
     "n_i_OML" : `astropy.units.Quantity`
-        OML-theory estimate of the ion density in units of m^-3. See the Notes
+        OML-theory estimate of the ion density in units of m\ :sup:`-3`\ . See the Notes
         on plasma densities.
 
     "V_F" : `astropy.units.Quantity`
@@ -289,7 +288,6 @@ def swept_probe_analysis(
     density provided by OML theory is likely the best estimate as it is not
     dependent on the obtained electron temperature, given that the conditions
     for OML theory hold.
-
     """
     _langmuir_futurewarning()
 
@@ -450,17 +448,17 @@ def get_plasma_potential(probe_characteristic, return_arg=False):
 
     Parameters
     ----------
-    probe_characteristic : ~plasmapy.diagnostics.langmuir.Characteristic
+    probe_characteristic : `~plasmapy.diagnostics.langmuir.Characteristic`
         The probe characteristic that is being analyzed.
 
-    return_arg : bool, optional
+    return_arg : `bool`, optional
         Controls whether or not the argument of the plasma potential within the
         characteristic array should be returned instead of the value of the
         voltage. Default is False.
 
     Returns
     -------
-    V_P : ~astropy.units.Quantity
+    V_P : `~astropy.units.Quantity`
         Estimate of the plasma potential in units convertible to V.
 
     Notes
@@ -503,17 +501,17 @@ def get_floating_potential(probe_characteristic, return_arg=False):
 
     Parameters
     ----------
-    probe_characteristic : ~plasmapy.diagnostics.langmuir.Characteristic
+    probe_characteristic : `~plasmapy.diagnostics.langmuir.Characteristic`
         The probe characteristic that is being analyzed.
 
-    return_arg : bool, optional
+    return_arg : `bool`, optional
         Controls whether or not the argument of the floating potential within
         the characteristic array should be returned instead of the value of the
         voltage. Default is False.
 
     Returns
     -------
-    V_F : ~astropy.units.Quantity
+    V_F : `~astropy.units.Quantity`
         Estimate of the floating potential in units convertible to V.
 
     Notes
@@ -546,20 +544,19 @@ def get_electron_saturation_current(probe_characteristic):
 
     Parameters
     ----------
-    probe_characteristic : ~plasmapy.diagnostics.langmuir.Characteristic
+    probe_characteristic : `~plasmapy.diagnostics.langmuir.Characteristic`
         The probe characteristic that is being analyzed.
 
     Returns
     -------
-    I_es: ~astropy.units.Quantity
+    I_es : `~astropy.units.Quantity`
         Estimate of the electron saturation current in units convertible to A.
 
     Notes
     -----
-    The function `get_plasma_potential` is used to obtain an estimate of the
-    plasma potential. The corresponding electron saturation current is
-    returned.
-
+    The function `~plasmapy.diagnostics.langmuir.get_plasma_potential`
+    is used to obtain an estimate of the plasma potential. The
+    corresponding electron saturation current is returned.
     """
 
     _langmuir_futurewarning()
@@ -582,12 +579,12 @@ def get_ion_saturation_current(probe_characteristic):
 
     Parameters
     ----------
-    probe_characteristic : ~plasmapy.diagnostics.langmuir.Characteristic
+    probe_characteristic : `~plasmapy.diagnostics.langmuir.Characteristic`
         The probe characteristic that is being analyzed.
 
     Returns
     -------
-    I_is : ~astropy.units.Quantity
+    I_is : `~astropy.units.Quantity`
         Estimate of the ion saturation current in units convertible to A.
 
     Notes
@@ -627,29 +624,29 @@ def get_ion_saturation_current(probe_characteristic):
     validations_on_return={"can_be_negative": False},
 )
 def get_ion_density_LM(
-    ion_saturation_current: u.A, T_e: u.eV, probe_area: u.m ** 2, gas
-) -> u.m ** -3:
+    ion_saturation_current: u.A, T_e: u.eV, probe_area: u.m**2, gas
+) -> u.m**-3:
     r"""Implement the Langmuir-Mottley (LM) method of obtaining the ion
     density.
 
     Parameters
     ----------
-    ion_saturation_current : ~astropy.units.Quantity
+    ion_saturation_current : `~astropy.units.Quantity`
         The ion saturation current in units convertible to A.
 
-    T_e : ~astropy.units.Quantity
+    T_e : `~astropy.units.Quantity`
         The electron temperature in units convertible to eV.
 
-    probe_area : ~astropy.units.Quantity
+    probe_area : `~astropy.units.Quantity`
         The area of the probe exposed to plasma in units convertible to m^2.
 
-    gas : ~astropy.units.Quantity
+    gas : `~astropy.units.Quantity`
         The (mean) mass of the background gas in atomic mass units.
 
     Returns
     -------
-    n_i : ~astropy.units.Quantity
-        Estimate of the ion density in units convertible to m^-3.
+    n_i : `~astropy.units.Quantity`
+        Estimate of the ion density in units convertible to m\ :sup:`-3`\ .
 
     Notes
     -----
@@ -670,9 +667,7 @@ def get_ion_density_LM(
     # Calculate the acoustic (Bohm) velocity
     c_s = np.sqrt(T_e / gas)
 
-    n_i = np.abs(ion_saturation_current) / (0.6 * const.e * probe_area * c_s)
-
-    return n_i
+    return np.abs(ion_saturation_current) / (0.6 * const.e * probe_area * c_s)
 
 
 @validate_quantities(
@@ -691,26 +686,26 @@ def get_ion_density_LM(
     validations_on_return={"can_be_negative": False},
 )
 def get_electron_density_LM(
-    electron_saturation_current: u.A, T_e: u.eV, probe_area: u.m ** 2
-) -> u.m ** -3:
+    electron_saturation_current: u.A, T_e: u.eV, probe_area: u.m**2
+) -> u.m**-3:
     r"""Implement the Langmuir-Mottley (LM) method of obtaining the electron
     density.
 
     Parameters
     ----------
-    electron_saturation_current : ~astropy.units.Quantity
+    electron_saturation_current : `~astropy.units.Quantity`
         The electron saturation current in units convertible to A.
 
-    T_e : ~astropy.units.Quantity
+    T_e : `~astropy.units.Quantity`
         The electron temperature in units convertible to eV.
 
-    probe_area : ~astropy.units.Quantity
+    probe_area : `~astropy.units.Quantity`
         The area of the probe exposed to plasma in units convertible to m^2.
 
     Returns
     -------
-    n_e : ~astropy.units.Quantity
-        Estimate of the electron density in units convertible to m^-3.
+    n_e : `~astropy.units.Quantity`
+        Estimate of the electron density in units convertible to m\ :sup:`-3`\ .
 
     Notes
     -----
@@ -732,9 +727,7 @@ def get_electron_density_LM(
     # Calculate the thermal electron velocity
     v_th = np.sqrt(8 * T_e / (np.pi * const.m_e))
 
-    n_e = 4 * electron_saturation_current / (probe_area * const.e * v_th)
-
-    return n_e
+    return 4 * electron_saturation_current / (probe_area * const.e * v_th)
 
 
 def extract_exponential_section(probe_characteristic, T_e=None, ion_current=None):
@@ -743,21 +736,21 @@ def extract_exponential_section(probe_characteristic, T_e=None, ion_current=None
 
     Parameters
     ----------
-    probe_characteristic : ~plasmapy.diagnostics.langmuir.Characteristic
+    probe_characteristic : `~plasmapy.diagnostics.langmuir.Characteristic`
         The probe characteristic that is being analyzed.
 
-    T_e : ~astropy.units.Quantity, optional
+    T_e : `~astropy.units.Quantity`, optional
         If given, the electron temperature can improve the accuracy of the
         bounds of the exponential region.
 
-    ion_current : ~plasmapy.diagnostics.langmuir.Characteristic, optional
+    ion_current : `~plasmapy.diagnostics.langmuir.Characteristic`, optional
         If given, the ion current will be subtracted from the probe
         characteristic to yield a better estimate of the electron current in
         the exponential region.
 
     Returns
     -------
-    exponential_section : ~plasmapy.diagnostics.langmuir.Characteristic
+    exponential_section : `~plasmapy.diagnostics.langmuir.Characteristic`
         The exponential electron current growth section.
 
     Notes
@@ -766,7 +759,6 @@ def extract_exponential_section(probe_characteristic, T_e=None, ion_current=None
     probe characteristic under the assumption that this bias region is bounded
     by the floating and plasma potentials. Additionally, an improvement in
     accuracy can be made when the electron temperature is supplied.
-
     """
 
     _langmuir_futurewarning()
@@ -809,12 +801,12 @@ def extract_ion_section(probe_characteristic):
 
     Parameters
     ----------
-    probe_characteristic : ~plasmapy.diagnostics.langmuir.Characteristic
+    probe_characteristic : `~plasmapy.diagnostics.langmuir.Characteristic`
         The probe characteristic that is being analyzed.
 
     Returns
     -------
-    ion_section : ~plasmapy.diagnostics.langmuir.Characteristic
+    ion_section : `~plasmapy.diagnostics.langmuir.Characteristic`
         The exponential electron current growth section.
 
     Notes
@@ -836,9 +828,7 @@ def extract_ion_section(probe_characteristic):
 
     V_F = get_floating_potential(probe_characteristic)
 
-    ion_section = probe_characteristic[probe_characteristic.bias < V_F]
-
-    return ion_section
+    return probe_characteristic[probe_characteristic.bias < V_F]
 
 
 def get_electron_temperature(
@@ -853,27 +843,27 @@ def get_electron_temperature(
 
     Parameters
     ----------
-    exponential_section : ~plasmapy.diagnostics.langmuir.Characteristic
+    exponential_section : `~plasmapy.diagnostics.langmuir.Characteristic`
         The probe characteristic that is being analyzed.
 
-    bimaxwellian : bool, optional
-        If True the exponential section will be fit assuming bi-Maxwellian
+    bimaxwellian : `bool`, optional
+        If `True` the exponential section will be fit assuming bi-Maxwellian
         electron populations, as opposed to Maxwellian. Default is False.
 
-    visualize : bool, optional
-        If True a plot of the exponential fit is shown. Default is False.
+    visualize : `bool`, optional
+        If `True` a plot of the exponential fit is shown. Default is `False`.
 
-    return_fit: bool, optional
-        If True the parameters of the fit will be returned in addition to the
-        electron temperature. Default is False.
+    return_fit: `bool`, optional
+        If `True` the parameters of the fit will be returned in addition to the
+        electron temperature. Default is `False`.
 
     return_hot_fraction: float, optional
-        If True the total fraction of hot electrons will be returned if the
-        population is bi-Maxwellian. Default is False.
+        If `True` the total fraction of hot electrons will be returned if the
+        population is bi-Maxwellian. Default is `False`.
 
     Returns
     -------
-    T_e : ~astropy.units.Quantity, (ndarray)
+    T_e : `~astropy.units.Quantity`, (ndarray)
         The estimated electron temperature in eV. In case of a bi-Maxwellian
         plasma an array containing two Quantities is returned.
 
@@ -919,7 +909,7 @@ def get_electron_temperature(
     if bimaxwellian:
         max_exp_bias = np.max(exponential_section.bias)
         min_exp_bias = np.min(exponential_section.bias)
-        x0 = min_exp_bias + 2 / 3 * (max_exp_bias - max_exp_bias)
+        x0 = min_exp_bias + 2 / 3 * (max_exp_bias - min_exp_bias)
 
         initial_guess = [x0.to(u.V).value, 0.6, 2, 1]
 
@@ -942,9 +932,9 @@ def get_electron_temperature(
 
     # Obtain the plasma parameters from the fit
     if not bimaxwellian:
-        slope = fit[2]
+        T0 = fit[2]
 
-        T_e = slope ** -1 * u.eV
+        T_e = T0 * u.eV
     else:
         x0, y0 = fit[0], fit[1]
         T0, Delta_T = [fit[2], fit[3]]
@@ -1028,23 +1018,23 @@ def extrapolate_electron_current(
 
     Parameters
     ----------
-    probe_characteristic : ~plasmapy.diagnostics.langmuir.Characteristic
+    probe_characteristic : `~plasmapy.diagnostics.langmuir.Characteristic`
         The probe characteristic that is being analyzed.
 
-    fit : ndarray
+    fit : `numpy.ndarray`
         Polynomial fit coefficients returned by the electron temperature fit.
 
-    bimaxwellian : bool, optional
-        If True the electron current is extrapolated assuming bi-Maxwellian
-        electron populations, as opposed to Maxwellian. Default is False.
+    bimaxwellian : `bool`, optional
+        If `True` the electron current is extrapolated assuming bi-Maxwellian
+        electron populations, as opposed to Maxwellian. Default is `False`.
 
-    visualize : bool, optional
-        If True a plot of the extracted electron current is shown. Default is
-        False.
+    visualize : `bool`, optional
+        If `True` a plot of the extracted electron current is shown. Default is
+        `False`.
 
     Returns
     -------
-    electron_current : ~plasmapy.diagnostics.langmuir.Characteristic
+    electron_current : `~plasmapy.diagnostics.langmuir.Characteristic`
         The extrapolated electron current characteristic.
 
     Notes
@@ -1116,7 +1106,7 @@ def reduce_bimaxwellian_temperature(T_e: u.eV, hot_fraction: float) -> u.eV:
 
     Parameters
     ----------
-    T_e : ~astropy.units.Quantity, ndarray
+    T_e : `~astropy.units.Quantity`, `numpy.ndarray`
         The bi-Maxwellian temperatures in eV. If a single temperature is
         provided, this is returned.
 
@@ -1126,7 +1116,7 @@ def reduce_bimaxwellian_temperature(T_e: u.eV, hot_fraction: float) -> u.eV:
 
     Returns
     -------
-    T_e : ~astropy.units.Quantity
+    T_e : `~astropy.units.Quantity`
         The reduced (mean) temperature in units of eV.
 
     Notes
@@ -1144,7 +1134,7 @@ def reduce_bimaxwellian_temperature(T_e: u.eV, hot_fraction: float) -> u.eV:
 
     # Return the electron temperature itself if it is not bi-Maxwellian
     # in the first place.
-    if hot_fraction is None or not np.array(T_e).size > 1:
+    if hot_fraction is None or np.array(T_e).size <= 1:
         return T_e
 
     return T_e[0] * (1 - hot_fraction) + T_e[1] * hot_fraction
@@ -1155,7 +1145,7 @@ def reduce_bimaxwellian_temperature(T_e: u.eV, hot_fraction: float) -> u.eV:
 )
 def get_ion_density_OML(
     probe_characteristic: Characteristic,
-    probe_area: u.m ** 2,
+    probe_area: u.m**2,
     gas,
     visualize=False,
     return_fit=False,
@@ -1165,31 +1155,31 @@ def get_ion_density_OML(
 
     Parameters
     ----------
-    probe_characteristic : ~plasmapy.diagnostics.langmuir.Characteristic
+    probe_characteristic : `~plasmapy.diagnostics.langmuir.Characteristic`
         The swept probe characteristic that is to be analyzed.
 
-    probe_area : ~astropy.units.Quantity
+    probe_area : `~astropy.units.Quantity`
         The area of the probe exposed to plasma in units convertible to m^2.
 
-    gas : ~astropy.units.Quantity
+    gas : `~astropy.units.Quantity`
         The (mean) mass of the background gas in atomic mass units.
 
-    visualize : bool, optional
-        If True a plot of the OML fit is shown. Default is False.
+    visualize : `bool`, optional
+        If `True` a plot of the OML fit is shown. Default is `False`.
 
-    return_fit: bool, optional
-        If True the parameters of the fit will be returned in addition to the
-        ion density. Default is False.
+    return_fit: `bool`, optional
+        If `True` the parameters of the fit will be returned in addition to the
+        ion density. Default is `False`.
 
     Returns
     -------
-    n_i_OML : ~astropy.units.Quantity
-        Estimated ion density in m^-3.
+    n_i_OML : `~astropy.units.Quantity`
+        Estimated ion density in m\ :sup:`-3`\ .
 
     Notes
     -----
     The method implemented in this function holds for cylindrical probes in a
-    cold ion plasma, ie. :math:T_i=0` eV. With OML theory an expression is found
+    cold ion plasma, i.e. :math:T_i=0` eV. With OML theory an expression is found
     for the ion current as function of probe bias independent of the electron
     temperature [mott-smith.langmuir-1926]_:
 
@@ -1227,11 +1217,11 @@ def get_ion_density_OML(
 
     n_i_OML = np.sqrt(
         -slope
-        * u.mA ** 2
+        * u.mA**2
         / u.V
-        * np.pi ** 2
+        * np.pi**2
         * ion.mass
-        / (probe_area ** 2 * const.e ** 3 * 2)
+        / (probe_area**2 * const.e**3 * 2)
     )
 
     if visualize:  # coverage: ignore
@@ -1252,9 +1242,9 @@ def get_ion_density_OML(
             plt.tight_layout()
 
     if return_fit:
-        return n_i_OML.to(u.m ** -3), fit
+        return n_i_OML.to(u.m**-3), fit
 
-    return n_i_OML.to(u.m ** -3)
+    return n_i_OML.to(u.m**-3)
 
 
 def extrapolate_ion_current_OML(probe_characteristic, fit, visualize=False):
@@ -1263,19 +1253,19 @@ def extrapolate_ion_current_OML(probe_characteristic, fit, visualize=False):
 
     Parameters
     ----------
-    probe_characteristic : ~plasmapy.diagnostics.langmuir.Characteristic
+    probe_characteristic : `~plasmapy.diagnostics.langmuir.Characteristic`
         The probe characteristic that is being analyzed.
 
-    fit : ndarray
+    fit : `~numpy.ndarray`
         Fit coefficients returned by the OML method.
 
-    visualize : bool, optional
-        If True a plot of the extracted electron current is shown. Default is
-        False.
+    visualize : `bool`, optional
+        If `True` a plot of the extracted electron current is shown. Default is
+        `False`.
 
     Returns
     -------
-    ion_section : ~plasmapy.diagnostics.langmuir.Characteristic
+    ion_section : `~plasmapy.diagnostics.langmuir.Characteristic`
         The exponential electron current growth section.
 
     Notes
@@ -1295,8 +1285,8 @@ def extrapolate_ion_current_OML(probe_characteristic, fit, visualize=False):
             f"and got {type(probe_characteristic)}"
         )
 
-    slope = fit[0] * u.mA ** 2 / u.V
-    offset = fit[1] * u.mA ** 2
+    slope = fit[0] * u.mA**2 / u.V
+    offset = fit[1] * u.mA**2
 
     ion_current = -np.sqrt(
         np.clip(slope * probe_characteristic.bias + offset, 0.0, None)
@@ -1328,19 +1318,19 @@ def get_EEDF(probe_characteristic, visualize=False):
 
     Parameters
     ----------
-    probe_characteristic : ~plasmapy.diagnostics.langmuir.Characteristic
+    probe_characteristic : `~plasmapy.diagnostics.langmuir.Characteristic`
         The swept probe characteristic that is to be analyzed.
 
-    visualize : bool, optional
-        If True a plot of the extracted electron current is shown. Default is
-        False.
+    visualize : `bool`, optional
+        If `True` a plot of the extracted electron current is shown. Default is
+        `False`.
 
     Returns
     -------
-    energy : `astropy.units.Quantity`, ndarray
+    energy : `astropy.units.Quantity`, `~numpy.ndarray`
         Array of potentials in V.
 
-    probability : float, ndarray
+    probability : float, `~numpy.ndarray`
         Array of floats corresponding to the potentials representing the EEDF
         in normalized probabilities.
 
@@ -1362,7 +1352,6 @@ def get_EEDF(probe_characteristic, visualize=False):
     References
     ----------
     .. [druyvesteyn-1930] Druyvesteyn, M.J. Z. Physik (1930) 64: 781
-
     """
 
     _langmuir_futurewarning()

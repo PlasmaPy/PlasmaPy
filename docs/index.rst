@@ -11,8 +11,8 @@
 PlasmaPy Documentation
 ######################
 
-PlasmaPy_ is an open source community-developed core Python_ 3.7+
-package for plasma physics currently under development.
+PlasmaPy_ is an open source community-developed core Python_
+|minpython|\ + package for plasma physics currently under development.
 
 Example highlights
 ------------------
@@ -32,8 +32,8 @@ Example highlights
    :caption: First Steps
    :maxdepth: 1
 
-   Vision Statement <about/vision_statement>
    Installing <install>
+   getting_started
    examples
    COMMUNICATION
    CONTRIBUTING
@@ -49,6 +49,7 @@ Example highlights
    Formulary <formulary/index>
    Particles <particles/index>
    Simulation <simulation/index>
+   Plasma Calculator <plasma_calculator/index>
    Plasma Objects <plasma/index>
    Package Utilities <utils/index>
 
@@ -70,7 +71,7 @@ Example highlights
    bibliography
    glossary
    whatsnew/index
-   about/stability
+   Vision Statement <about/vision_statement>
    PlasmaPy.org <https://www.plasmapy.org>
 
 .. The about PlasmaPy section has some important information that would

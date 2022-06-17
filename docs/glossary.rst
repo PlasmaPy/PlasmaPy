@@ -1,5 +1,7 @@
 .. currentmodule:: plasmapy
 
+.. _glossary:
+
 ********
 Glossary
 ********
@@ -43,6 +45,32 @@ Glossary
    kwargs
       An abbreviation for `keyword arguments`_.
 
+   lite-function
+   lite-functions
+      A lite weight version of an existing `plasmapy` function,
+      typically a formulary function.  These functions are intended for
+      computational use where speed matters more than anything else, and
+      as such **all argument safeguards have been stripped away** to
+      leave the most fundamental calculation possible.  A few things
+      to know about lite-functions:
+
+      - Lite-functions are a flavor of existing `plasmapy`
+        functionality and are denoted with a trailing ``_lite`` to the
+        name. For example,
+        `~plasmapy.formulary.speeds.thermal_speed_lite` is the
+        lite-function associated with
+        `~plasmapy.formulary.speeds.thermal_speed`.
+      - Lite-functions are typically bound to their normal version as
+        the ``lite`` attribute.  For example,
+        `~plasmapy.formulary.speeds.thermal_speed_lite` can be
+        accessed as ``thermal_speed.lite``.
+      - Lite-functions view all input and output arguments as being in
+        SI units.
+      - **UNITS ARE NOT VALIDATED BY THE FUNCTIONS.**  It is solely up to
+        the user to pass in parameters with the correct units.
+      - When possible, lite-functions are decorated with `numba.jit`
+        (or the like) for an additional speed boost.
+
    particle-like
       An `object` is *particle-like* if it is a |Particle| or
       |CustomParticle|, or can be cast into one.
@@ -79,12 +107,25 @@ Glossary
 
       For more complete details, refer to |ParticleLike|.
 
+   particle-list-like
+      An `object` is *particle-list-like* if it is a |ParticleList|, or
+      can be cast into one.
+
+      For more complete details, refer to |ParticleListLike|.
+
    real number
       Any numeric type that represents a real number. This could include
       a `float`, `int`, a dimensionless |Quantity|, or any of the
       `numpy.number` types. Note that if a PlasmaPy function expects a
       dimensional |Quantity| and a real number is provided, then the
       real number is often assumed to have the appropriate SI units.
+
+   temperature
+      Most functions in PlasmaPy accept temperature, :math:`T`, as a
+      `~astropy.units.Quantity` with units of temperature (e.g., kelvin)
+      or energy (e.g., electron-volts). A value for energy that is
+      provided will be divided by the Boltzmann constant, :math:`k_B`,
+      to be converted into units of temperature.
 
    unit test
       A **unit test** verifies a single unit of behavior, does it

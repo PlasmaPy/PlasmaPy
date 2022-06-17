@@ -31,11 +31,11 @@ class Test_Coulomb_logarithm:
         """initializing parameters for tests"""
         self.temperature1 = 10 * 11604 * u.K
         self.T_arr = np.array([1, 2]) * u.eV
-        self.density1 = 1e20 * u.cm ** -3
-        self.n_arr = np.array([1e20, 2e20]) * u.cm ** -3
+        self.density1 = 1e20 * u.cm**-3
+        self.n_arr = np.array([1e20, 2e20]) * u.cm**-3
         self.temperature2 = 1 * 11604 * u.K
-        self.density2 = 1e23 * u.cm ** -3
-        self.z_mean = 2.5
+        self.density2 = 1e23 * u.cm**-3
+        self.z_mean = 2.5 * u.dimensionless_unscaled
         self.particles = ("e", "p")
         self.ls_min_interp = 3.4014290066940966
         self.gms1 = 3.4014290066940966
@@ -73,16 +73,16 @@ class Test_Coulomb_logarithm:
             {"method": "ls"},
             {"method": "ls_min_interp"},
             {"method": "GMS-1"},
-            {"method": "ls_full_interp", "z_mean": 1.0},
-            {"method": "GMS-2", "z_mean": 1.0},
+            {"method": "ls_full_interp", "z_mean": 1.0 * u.dimensionless_unscaled},
+            {"method": "GMS-2", "z_mean": 1.0 * u.dimensionless_unscaled},
             {"method": "ls_clamp_mininterp"},
             {"method": "GMS-3"},
             {"method": "hls_min_interp"},
             {"method": "GMS-4"},
-            {"method": "hls_max_interp", "z_mean": 1.0},
-            {"method": "GMS-5", "z_mean": 1.0},
-            {"method": "hls_full_interp", "z_mean": 1.0},
-            {"method": "GMS-6", "z_mean": 1.0},
+            {"method": "hls_max_interp", "z_mean": 1.0 * u.dimensionless_unscaled},
+            {"method": "GMS-5", "z_mean": 1.0 * u.dimensionless_unscaled},
+            {"method": "hls_full_interp", "z_mean": 1.0 * u.dimensionless_unscaled},
+            {"method": "GMS-6", "z_mean": 1.0 * u.dimensionless_unscaled},
         ],
     )
     def test_handle_nparrays(self, insert_some_nans, insert_all_nans, kwargs):
@@ -183,7 +183,7 @@ class Test_Coulomb_logarithm:
         """
         T = 0.2 * u.eV
         T = T.to(u.K, equivalencies=u.temperature_energy())
-        n = 1e15 * u.m ** -3
+        n = 1e15 * u.m**-3
         # factor of np.log(2) corrects for different definitions of thermal
         # velocity. Chen uses v**2 = k * T / m  whereas we use
         # v ** 2 = 2 * k * T / m
@@ -204,7 +204,7 @@ class Test_Coulomb_logarithm:
         """
         T = 2 * u.eV
         T = T.to(u.K, equivalencies=u.temperature_energy())
-        n = 1e17 * u.m ** -3
+        n = 1e17 * u.m**-3
         # factor of np.log(2) corrects for different definitions of thermal
         # velocity. Chen uses v**2 = k * T / m  whereas we use
         # v ** 2 = 2 * k * T / m
@@ -225,7 +225,7 @@ class Test_Coulomb_logarithm:
         """
         T = 100 * u.eV
         T = T.to(u.K, equivalencies=u.temperature_energy())
-        n = 1e19 * u.m ** -3
+        n = 1e19 * u.m**-3
         # factor of np.log(2) corrects for different definitions of thermal
         # velocity. Chen uses v**2 = k * T / m  whereas we use
         # v ** 2 = 2 * k * T / m
@@ -246,7 +246,7 @@ class Test_Coulomb_logarithm:
         """
         T = 1e4 * u.eV
         T = T.to(u.K, equivalencies=u.temperature_energy())
-        n = 1e21 * u.m ** -3
+        n = 1e21 * u.m**-3
         # factor of np.log(2) corrects for different definitions of thermal
         # velocity. Chen uses v**2 = k * T / m  whereas we use
         # v ** 2 = 2 * k * T / m
@@ -268,7 +268,7 @@ class Test_Coulomb_logarithm:
         """
         T = 1e3 * u.eV
         T = T.to(u.K, equivalencies=u.temperature_energy())
-        n = 1e27 * u.m ** -3
+        n = 1e27 * u.m**-3
         # factor of np.log(2) corrects for different definitions of thermal
         # velocity. Chen uses v**2 = k * T / m  whereas we use
         # v ** 2 = 2 * k * T / m
@@ -530,7 +530,7 @@ class Test_Coulomb_logarithm:
         with pytest.warns(exceptions.PhysicsWarning, match="strong coupling effects"):
             methodVal = Coulomb_logarithm(
                 10 * 1160 * u.K,
-                (1e23 * u.cm ** -3, 1e20 * u.cm ** -3),
+                (1e23 * u.cm**-3, 1e20 * u.cm**-3),
                 self.particles,
                 z_mean=self.z_mean,
                 V=np.nan * u.m / u.s,
@@ -555,7 +555,7 @@ class Test_Coulomb_logarithm:
         with pytest.warns(exceptions.PhysicsWarning, match="strong coupling effects"):
             methodVal = Coulomb_logarithm(
                 10 * 1160 * u.K,
-                (1e23 * u.cm ** -3, 1e20 * u.cm ** -3),
+                (1e23 * u.cm**-3, 1e20 * u.cm**-3),
                 self.particles,
                 z_mean=self.z_mean,
                 V=np.nan * u.m / u.s,
@@ -910,12 +910,12 @@ class Test_Coulomb_logarithm:
     def test_relativity_warn(self):
         """Tests whether relativity warning is raised at high velocity."""
         with pytest.warns(exceptions.RelativityWarning):
-            Coulomb_logarithm(1e5 * u.K, 1 * u.m ** -3, ("e", "p"), V=0.9 * c)
+            Coulomb_logarithm(1e5 * u.K, 1 * u.m**-3, ("e", "p"), V=0.9 * c)
 
     def test_relativity_error(self):
         """Tests whether relativity error is raised at light speed."""
         with pytest.raises(exceptions.RelativityError):
-            Coulomb_logarithm(1e5 * u.K, 1 * u.m ** -3, ("e", "p"), V=1.1 * c)
+            Coulomb_logarithm(1e5 * u.K, 1 * u.m**-3, ("e", "p"), V=1.1 * c)
 
     def test_unit_conversion_error(self):
         """
@@ -924,7 +924,7 @@ class Test_Coulomb_logarithm:
         """
         with pytest.raises(u.UnitTypeError):
             Coulomb_logarithm(
-                1e5 * u.g, 1 * u.m ** -3, ("e", "p"), V=29979245 * u.m / u.s
+                1e5 * u.g, 1 * u.m**-3, ("e", "p"), V=29979245 * u.m / u.s
             )
 
     def test_single_particle_error(self):
@@ -932,7 +932,7 @@ class Test_Coulomb_logarithm:
         Tests whether an error is raised if only a single particle is given.
         """
         with pytest.raises(ValueError):
-            Coulomb_logarithm(1 * u.K, 5 * u.m ** -3, "e")
+            Coulomb_logarithm(1 * u.K, 5 * u.m**-3, "e")
 
     def test_invalid_particle_error(self):
         """
@@ -940,9 +940,9 @@ class Test_Coulomb_logarithm:
         is given.
         """
         with pytest.raises(plasmapy.particles.exceptions.InvalidParticleError):
-            Coulomb_logarithm(1 * u.K, 5 * u.m ** -3, ("e", "g"))
+            Coulomb_logarithm(1 * u.K, 5 * u.m**-3, ("e", "g"))
 
-    n_e = np.array([1e9, 1e9, 1e24]) * u.cm ** -3
+    n_e = np.array([1e9, 1e9, 1e24]) * u.cm**-3
     T = np.array([1e2, 1e7, 1e8]) * u.K
     Lambda = np.array([5.97, 21.66, 6.69])
     particles = ("e", "p")
@@ -998,8 +998,8 @@ class Test_impact_parameter_perp:
         )
 
     assert np.isclose(
-        Coulomb_logarithm(1 * u.eV, 5 * u.m ** -3, ("e", "e")),
-        Coulomb_logarithm(11604.5220 * u.K, 5 * u.m ** -3, ("e", "e")),
+        Coulomb_logarithm(1 * u.eV, 5 * u.m**-3, ("e", "e")),
+        Coulomb_logarithm(11604.5220 * u.K, 5 * u.m**-3, ("e", "e")),
     )
 
 
@@ -1009,10 +1009,10 @@ class Test_impact_parameter:
         """initializing parameters for tests"""
         self.T = 11604 * u.K
         self.T_arr = np.array([1, 2]) * u.eV
-        self.n_e = 1e17 * u.cm ** -3
-        self.n_e_arr = np.array([1e17, 2e17]) * u.cm ** -3
+        self.n_e = 1e17 * u.cm**-3
+        self.n_e_arr = np.array([1e17, 2e17]) * u.cm**-3
         self.particles = ("e", "p")
-        self.z_mean = 2.5
+        self.z_mean = 2.5 * u.dimensionless_unscaled
         self.V = 1e4 * u.km / u.s
         self.True1 = np.array([7.200146594293746e-10, 2.3507660003984624e-08])
 
@@ -1081,11 +1081,11 @@ class Test_impact_parameter:
         [
             {"method": "classical"},
             {"method": "GMS-1"},
-            {"method": "GMS-2", "z_mean": 1.0},
+            {"method": "GMS-2", "z_mean": 1.0 * u.dimensionless_unscaled},
             {"method": "GMS-3"},
             {"method": "GMS-4"},
-            {"method": "GMS-5", "z_mean": 1.0},
-            {"method": "GMS-6", "z_mean": 1.0},
+            {"method": "GMS-5", "z_mean": 1.0 * u.dimensionless_unscaled},
+            {"method": "GMS-6", "z_mean": 1.0 * u.dimensionless_unscaled},
         ],
     )
     def test_handle_nparrays(self, insert_some_nans, insert_all_nans, kwargs):
@@ -1108,11 +1108,11 @@ class Test_collision_frequency:
     def setup_class(self):
         """initializing parameters for tests"""
         self.T = 11604 * u.K
-        self.n = 1e17 * u.cm ** -3
+        self.n = 1e17 * u.cm**-3
         self.particles = ("e", "p")
         self.electrons = ("e", "e")
         self.protons = ("p", "p")
-        self.z_mean = 2.5
+        self.z_mean = 2.5 * u.dimensionless_unscaled
         self.V = 1e4 * u.km / u.s
         self.True1 = 1.3468281539854646e12
         self.True_electrons = 1904702641552.1638
@@ -1247,7 +1247,7 @@ class Test_fundamental_electron_collision_freq:
     def setup_class(self):
         """initializing parameters for tests"""
         self.T_arr = np.array([1, 2]) * u.eV
-        self.n_arr = np.array([1e20, 2e20]) * u.cm ** -3
+        self.n_arr = np.array([1e20, 2e20]) * u.cm**-3
         self.ion = "p"
         self.coulomb_log = 10
 
@@ -1266,7 +1266,7 @@ class Test_fundamental_ion_collision_freq:
     def setup_class(self):
         """initializing parameters for tests"""
         self.T_arr = np.array([1, 2]) * u.eV
-        self.n_arr = np.array([1e20, 2e20]) * u.cm ** -3
+        self.n_arr = np.array([1e20, 2e20]) * u.cm**-3
         self.ion = "p"
         self.coulomb_log = 10
 
@@ -1285,9 +1285,9 @@ class Test_mean_free_path:
     def setup_class(self):
         """initializing parameters for tests"""
         self.T = 11604 * u.K
-        self.n_e = 1e17 * u.cm ** -3
+        self.n_e = 1e17 * u.cm**-3
         self.particles = ("e", "p")
-        self.z_mean = 2.5
+        self.z_mean = 2.5 * u.dimensionless_unscaled
         self.V = 1e4 * u.km / u.s
         self.True1 = 4.4047571877932046e-07
 
@@ -1348,9 +1348,9 @@ class Test_Spitzer_resistivity:
     def setup_class(self):
         """initializing parameters for tests"""
         self.T = 11604 * u.K
-        self.n = 1e12 * u.cm ** -3
+        self.n = 1e12 * u.cm**-3
         self.particles = ("e", "p")
-        self.z_mean = 2.5
+        self.z_mean = 2.5 * u.dimensionless_unscaled
         self.V = 1e4 * u.km / u.s
         self.True1 = 1.2665402649805445e-3
         self.True_zmean = 0.00020264644239688712
@@ -1426,9 +1426,9 @@ class Test_mobility:
     def setup_class(self):
         """initializing parameters for tests"""
         self.T = 11604 * u.K
-        self.n_e = 1e17 * u.cm ** -3
+        self.n_e = 1e17 * u.cm**-3
         self.particles = ("e", "p")
-        self.z_mean = 2.5
+        self.z_mean = 2.5 * u.dimensionless_unscaled
         self.V = 1e4 * u.km / u.s
         self.True1 = 0.13066090887074902
         self.True_zmean = 0.32665227217687254
@@ -1507,9 +1507,9 @@ class Test_Knudsen_number:
         """initializing parameters for tests"""
         self.length = 1 * u.nm
         self.T = 11604 * u.K
-        self.n_e = 1e17 * u.cm ** -3
+        self.n_e = 1e17 * u.cm**-3
         self.particles = ("e", "p")
-        self.z_mean = 2.5
+        self.z_mean = 2.5 * u.dimensionless_unscaled
         self.V = 1e4 * u.km / u.s
         self.True1 = 440.4757187793204
 
@@ -1574,9 +1574,9 @@ class Test_coupling_parameter:
     def setup_class(self):
         """initializing parameters for tests"""
         self.T = 11604 * u.K
-        self.n_e = 1e21 * u.cm ** -3
+        self.n_e = 1e21 * u.cm**-3
         self.particles = ("e", "p")
-        self.z_mean = 2.5
+        self.z_mean = 2.5 * u.dimensionless_unscaled
         self.V = 1e4 * u.km / u.s
         self.True1 = 2.3213156755481195
         self.True_zmean = 10.689750083758698

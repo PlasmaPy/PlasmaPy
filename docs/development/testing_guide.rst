@@ -1,3 +1,5 @@
+.. _testing guide:
+
 *************
 Testing Guide
 *************
@@ -39,8 +41,8 @@ multiple software components work together as intended.
 PlasmaPy's tests are set up using the pytest_ framework. The tests for
 a subpackage are located in its :file:`tests` subdirectory in files with
 names of the form :file:`test_*.py`. For example, tests for
-`plasmapy.formulary.parameters` are located at
-:file:`plasmapy/formulary/tests/test_parameters.py` relative to the top
+`plasmapy.formulary.speeds` are located at
+:file:`plasmapy/formulary/tests/test_speeds.py` relative to the top
 of the package. Example code contained within docstrings is tested to
 make sure that the actual printed output matches what is in the
 docstring.
@@ -53,7 +55,8 @@ PlasmaPy's tests can be run in the following ways:
 1. Creating and updating a pull request on GitHub_.
 2. Running pytest_ from the command line.
 3. Running tox_ from the command line.
-4. Running tests from an `integrated development environment`_ (IDE).
+4. Running tests from an :wikipedia:`integrated development environment
+   <integrated_development_environment>` (IDE).
 
 We recommend that new contributors perform the tests via a pull request
 on GitHub_. Creating a draft pull request and keeping it updated will
@@ -156,6 +159,19 @@ The following checks are performed with each pull request.
 * The **Pull Request Labeler / triage (pull_request_target)** check
   applies appropriate GitHub_ labels to pull requests.
 
+* The **CI / codespell (pull request)** check runs codespell_ to catch
+  by looking for common misspellings.
+
+  * If codespell_ has been installed (e.g., by ``pip install codespell``),
+    then it may be run by going into the appropriate directory and
+    running ``codespell -i 2 -w``. This command will identify common
+    misspellings, interactively suggest replacements, and then write the
+    replacements into the file.
+
+  * Occasionally codespell_ will report false positives. Please add
+    false positives to ``ignore-words-list`` under ``codespell`` in
+    :file:`setup.cfg`.
+
 .. note::
 
    For first-time contributors, existing maintainers `may need to
@@ -213,9 +229,9 @@ examples of flags you can use with it:
   with a positive integer.
 
 * Use the ``-m 'not slow'`` flag to skip running slow (defined by the
-  `pytest.mark.slow` marker) tests, which is
-  useful when the slow tests are unrelated to your changes. To exclusively run
-  slow tests, use ``-m slow``.
+  ``@pytest.mark.slow`` marker) tests, which is
+  useful when the slow tests are unrelated to your changes. To exclusively
+  run slow tests, use ``-m slow``.
 
 * Use the ``--pdb`` flag to enter the `Python debugger`_ upon test
   failures.
@@ -319,14 +335,14 @@ Here is a minimal software test:
        assert 2 + 2 == 4
 
 The most common way to check that a condition is met is through an
-`assert` statement, as in this example. If the expression that follows
-`assert` evaluates to `False`, then this statement will raise an
+``assert`` statement, as in this example. If the expression that follows
+``assert`` evaluates to `False`, then this statement will raise an
 `AssertionError` so that the test will fail.  If the expression that
-follows `assert` evaluates to `True`, then this statement will do
+follows ``assert`` evaluates to `True`, then this statement will do
 nothing and the test will pass.
 
-When `assert` statements raise an `AssertionError`, pytest_ will display
-the values of the expressions evaluated in the `assert` statement. The
+When ``assert`` statements raise an `AssertionError`, pytest_ will display
+the values of the expressions evaluated in the ``assert`` statement. The
 automatic output from pytest_ is sufficient for simple tests like
 above. For more complex tests, we can add a descriptive error message
 to help us find the cause of a particular test failure.
@@ -353,7 +369,7 @@ Floating point comparisons
 
 In order to avoid these difficulties, use `numpy.testing.assert_allclose`
 when comparing floating point numbers and arrays, and
-`astropy.tests.helper.assert_quantity_allclose` when comparing |Quantity|
+``astropy.tests.helper.assert_quantity_allclose`` when comparing |Quantity|
 instances. The ``rtol`` keyword for each of these functions sets the
 acceptable relative tolerance. The value of ``rtol`` should be set ∼1–2
 orders of magnitude greater than the expected relative uncertainty. For
@@ -402,8 +418,7 @@ Test independence and parametrization
 -------------------------------------
 
 In this section, we'll discuss the issue of parametrization based on
-an example of a `proof
-<https://en.wikipedia.org/wiki/Riemann\_hypothesis#Excluded\_middle>`_
+an example of a :wikipedia:`proof <Riemann_hypothesis#Excluded_middle>`
 of Gauss's class number conjecture.
 
 The proof goes along these lines:
@@ -439,8 +454,8 @@ both will be run.
 
 However, this approach can lead to cumbersome, repeated code if you are
 calling the same function over and over. If you wish to run multiple
-tests for the same function, the preferred method is to use the
-`pytest.mark.parametrize` decorator.
+tests for the same function, the preferred method is to decorate it with
+``@pytest.mark.parametrize``.
 
 .. code-block:: python
 
@@ -539,9 +554,10 @@ multiple values of :math:`x`. The hypothesis_ package simplifies
 Code coverage
 =============
 
-`Code coverage`_ refers to a metric "used to describe the degree to
-which the source code of a program is executed when a particular test
-suite runs." The most common code coverage metric is line coverage:
+:wikipedia:`Code coverage <Code_coverage>` refers to a metric "used to
+describe the degree to which the source code of a program is executed
+when a particular test suite runs." The most common code coverage metric
+is line coverage:
 
 .. math::
 
@@ -639,7 +655,7 @@ should be balanced with each other rather than absolute principles.
   increases the probability that we will lose track of what we are
   doing and slows down progress.
 
-  Decorate unavoidably slow tests with `pytest.mark.slow`:
+  Decorate unavoidably slow tests with ``@pytest.mark.slow``:
 
   .. code-block:: python
 
@@ -660,9 +676,10 @@ should be balanced with each other rather than absolute principles.
 * **Write code that is easy to test.** Write short functions that do
   exactly one thing with no side effects. Break up long functions into
   multiple functions that are smaller and more focused. Use
-  `pure functions`_ rather than functions that change the underlying
-  state of the system or depend on non-local variables. Use
-  `test-driven development`_ and write tests before writing the code to
+  :wikipedia:`pure functions <pure_function>` rather than functions that
+  change the underlying state of the system or depend on non-local
+  variables. Use :wikipedia:`test-driven development
+  <Test-driven_development>` and write tests before writing the code to
   be tested. When a section of code is difficult to test, consider
   refactoring_ it to make it easier to test.
 
@@ -715,26 +732,23 @@ should be balanced with each other rather than absolute principles.
 
 .. _Atom: https://atom.io
 .. _Codecov: https://about.codecov.io
-.. _`code coverage`: https://en.wikipedia.org/wiki/Code_coverage
+.. _codespell: https://github.com/codespell-project/codespell
 .. _`coverage.py`: https://coverage.readthedocs.io
-.. _`create a pull request`: https://docs.github.com/en/github/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request
+.. _`create a pull request`: https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests
 .. _fixtures: https://docs.pytest.org/en/latest/explanation/fixtures.html
 .. _`f-strings`: https://docs.python.org/3/tutorial/inputoutput.html#tut-f-strings
 .. _`grouped into classes`: https://docs.pytest.org/en/latest/getting-started.html#group-multiple-tests-in-a-class
 .. _`how to invoke pytest`: https://docs.pytest.org/en/latest/how-to/usage.html
 .. _hypothesis: https://hypothesis.readthedocs.io
-.. _`integrated development environment`: https://en.wikipedia.org/wiki/Integrated_development_environment
 .. _`property-based testing`: https://hypothesis.works/articles/what-is-hypothesis
-.. _`pure functions`: https://en.wikipedia.org/wiki/Pure_function
 .. _PyCharm: https://www.jetbrains.com/pycharm
 .. _pytest: https://docs.pytest.org
 .. _`pytest-cov`: https://pytest-cov.readthedocs.io
 .. _`Python debugger`: https://docs.python.org/3/library/pdb.html
 .. _refactoring: https://refactoring.guru/refactoring/techniques
 .. _`test discovery conventions`: https://docs.pytest.org/en/latest/goodpractices.html#conventions-for-python-test-discovery
-.. _`test-driven development`: https://en.wikipedia.org/wiki/Test-driven_development
 .. _`test warnings`: https://docs.pytest.org/en/latest/warnings.html#warns
 .. _`test exceptions`: https://docs.pytest.org/en/latest/assert.html#assertions-about-expected-exceptions
-.. _`tox environments`: https://tox.readthedocs.io/en/latest/config.html?highlight=py37#tox-environments
+.. _`tox environments`: https://tox.wiki/en/latest/config.html#tox-environments
 .. _unpacking: https://docs.python.org/3/tutorial/controlflow.html#unpacking-argument-lists
 .. _`Visual Studio`: https://visualstudio.microsoft.com/

@@ -128,13 +128,12 @@ class BaseFFTests(ABC):
         if isproperty:
             assert isinstance(getattr(self.ff_class, name), property)
 
-        if name == "_param_names":
-            if self.ff_class._param_names == NotImplemented:
-                pytest.fail(
-                    f"{self.ff_class} class attribute '_param_names' needs to "
-                    f" be defined as a tuple of strings representing the names of "
-                    f"the fit parameters."
-                )
+        if name == "_param_names" and self.ff_class._param_names == NotImplemented:
+            pytest.fail(
+                f"{self.ff_class} class attribute '_param_names' needs to "
+                f" be defined as a tuple of strings representing the names of "
+                f"the fit parameters."
+            )
 
     @pytest.mark.parametrize(
         "name, value_ref_name",
@@ -323,9 +322,7 @@ class BaseFFTests(ABC):
                 y_err = results
                 y = None
 
-            x_err = None
-            if "x_err" in kwargs:
-                x_err = kwargs["x_err"]
+            x_err = kwargs["x_err"] if "x_err" in kwargs else None
             if isinstance(x, list):
                 x = np.array(x)
             y_err_expected = self.func_err(x, params, param_errors, x_err=x_err)
@@ -356,13 +353,8 @@ class BaseFFTests(ABC):
         param_errors = self._test_param_errors
         ff_obj = self.ff_class(params=params, param_errors=param_errors)
 
-        reterr = False
-        if "reterr" in kwargs:
-            reterr = kwargs["reterr"]
-        x_err = None
-        if "x_err" in kwargs:
-            x_err = kwargs["x_err"]
-
+        reterr = kwargs["reterr"] if "reterr" in kwargs else False
+        x_err = kwargs["x_err"] if "x_err" in kwargs else None
         with with_condition:
             results = ff_obj(x, **kwargs)
             if reterr:
@@ -476,14 +468,14 @@ class TestFFExponentialPlusLinear(BaseFFTests):
         a_term = (exp_y * a_err / a) ** 2
         alpha_term = (exp_y * x * alpha_err) ** 2
         m_term = (m_err * x) ** 2
-        b_term = b_err ** 2
+        b_term = b_err**2
 
         err = a_term + alpha_term + m_term + b_term
 
         if x_err is not None:
             x_term = (exp_y * alpha * x_err) ** 2
             x_term += (m * x_err) ** 2
-            x_term += 2 * a * alpha * m * np.exp(alpha * x) * (x_err ** 2)
+            x_term += 2 * a * alpha * m * np.exp(alpha * x) * (x_err**2)
 
             err += x_term
 
@@ -523,7 +515,7 @@ class TestFFExponentialPlusOffset(BaseFFTests):
 
         a_term = (exp_y * a_err / a) ** 2
         alpha_term = (exp_y * x * alpha_err) ** 2
-        b_term = b_err ** 2
+        b_term = b_err**2
 
         err = a_term + alpha_term + b_term
 
@@ -542,9 +534,10 @@ class TestFFExponentialPlusOffset(BaseFFTests):
         assert err == 0
 
         ff_obj.params = (3.0, 0.5, 5.0)
-        root, err = ff_obj.root_solve()
-        assert np.isnan(root)
-        assert np.isnan(err)
+        with pytest.warns(RuntimeWarning, match="invalid value encountered in log"):
+            root, err = ff_obj.root_solve()
+            assert np.isnan(root)
+            assert np.isnan(err)
 
 
 class TestFFLinear(BaseFFTests):
@@ -568,7 +561,7 @@ class TestFFLinear(BaseFFTests):
         m_err, b_err = param_errors
 
         m_term = (m_err * x) ** 2
-        b_term = b_err ** 2
+        b_term = b_err**2
         err = m_term + b_term
 
         if x_err is not None:
