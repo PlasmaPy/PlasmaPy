@@ -227,7 +227,7 @@ def plasma_frequency_lite(
     },
 )
 @angular_freq_to_hz
-def plasma_frequency(n: u.m ** -3, particle: Particle, z_mean=None) -> u.rad / u.s:
+def plasma_frequency(n: u.m**-3, particle: Particle, z_mean=None) -> u.rad / u.s:
     r"""Calculate the particle plasma frequency.
 
     **Aliases:** `wp_`
@@ -349,7 +349,7 @@ wp_ = plasma_frequency
     },
 )
 @angular_freq_to_hz
-def lower_hybrid_frequency(B: u.T, n_i: u.m ** -3, ion: Particle) -> u.rad / u.s:
+def lower_hybrid_frequency(B: u.T, n_i: u.m**-3, ion: Particle) -> u.rad / u.s:
     r"""
     Return the lower hybrid frequency.
 
@@ -432,7 +432,7 @@ def lower_hybrid_frequency(B: u.T, n_i: u.m ** -3, ion: Particle) -> u.rad / u.s
     omega_ci = gyrofrequency(B, particle=ion)
     omega_pi = plasma_frequency(n_i, particle=ion)
     omega_ce = gyrofrequency(B, particle="e-")
-    return ((omega_ci * omega_ce) ** -1 + omega_pi ** -2) ** -0.5
+    return ((omega_ci * omega_ce) ** -1 + omega_pi**-2) ** -0.5
 
 
 wlh_ = lower_hybrid_frequency
@@ -447,7 +447,7 @@ wlh_ = lower_hybrid_frequency
     },
 )
 @angular_freq_to_hz
-def upper_hybrid_frequency(B: u.T, n_e: u.m ** -3) -> u.rad / u.s:
+def upper_hybrid_frequency(B: u.T, n_e: u.m**-3) -> u.rad / u.s:
     r"""
     Return the upper hybrid frequency.
 
@@ -514,7 +514,7 @@ def upper_hybrid_frequency(B: u.T, n_e: u.m ** -3) -> u.rad / u.s:
     """
     omega_pe = plasma_frequency(n=n_e, particle="e-")
     omega_ce = gyrofrequency(B, "e-")
-    return np.sqrt(omega_pe ** 2 + omega_ce ** 2)
+    return np.sqrt(omega_pe**2 + omega_ce**2)
 
 
 wuh_ = upper_hybrid_frequency
