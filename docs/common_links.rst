@@ -20,7 +20,7 @@
 .. |particle_input| replace:: :func:`~plasmapy.particles.decorators.particle_input`
 .. |ParticleLike| replace:: :obj:`~plasmapy.particles.particle_class.ParticleLike`
 .. |ParticleList| replace:: :class:`~plasmapy.particles.particle_collections.ParticleList`
-.. |ParticleListLike| replace:: :class:`~plasmapy.particles.particle_collections.ParticleListLike`
+.. |ParticleListLike| replace:: :obj:`~plasmapy.particles.particle_collections.ParticleListLike`
 
 .. |ChargeError| replace:: :class:`~plasmapy.particles.exceptions.ChargeError`
 .. |InvalidElementError| replace:: :class:`~plasmapy.particles.exceptions.InvalidElementError`
