@@ -6,7 +6,7 @@ import pytest
 from astropy.constants import c, m_e
 from collections import namedtuple
 
-from plasmapy.utils.units_helpers import _get_physical_type_dict
+from plasmapy.utils._units_helpers import _get_physical_type_dict
 
 
 def test_get_physical_type_dict_specific_example():
