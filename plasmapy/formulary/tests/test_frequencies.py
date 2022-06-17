@@ -18,8 +18,8 @@ from plasmapy.utils.pytest_helpers import assert_can_handle_nparray
 
 Z = 1
 ion = "p"
-n_i = 5e19 * u.m ** -3
-n_e = Z * 5e19 * u.m ** -3
+n_i = 5e19 * u.m**-3
+n_e = Z * 5e19 * u.m**-3
 
 B = 1.0 * u.T
 B_nanarr = np.array([0.001, np.nan]) * u.T
@@ -34,13 +34,13 @@ B_nanarr = np.array([0.001, np.nan]) * u.T
         (wuh_, upper_hybrid_frequency),
     ],
 )
-def test_parameters_aliases(alias, parent):
-    """Test all aliases defined in parameters.py"""
+def test_aliases(alias, parent):
+    """Test all aliases defined in frequencies.py"""
     assert alias is parent
 
 
 def test_gyrofrequency():
-    r"""Test the gyrofrequency function in parameters.py."""
+    r"""Test the gyrofrequency function in frequencies.py."""
 
     assert gyrofrequency(B, "e-").unit.is_equivalent(u.rad / u.s)
 
@@ -120,7 +120,7 @@ def test_gyrofrequency():
 
 
 def test_lower_hybrid_frequency():
-    r"""Test the lower_hybrid_frequency function in parameters.py."""
+    r"""Test the lower_hybrid_frequency function in frequencies.py."""
 
     ion = "He-4 1+"
     omega_ci = gyrofrequency(B, particle=ion)
@@ -132,32 +132,32 @@ def test_lower_hybrid_frequency():
     assert omega_pi.unit.is_equivalent(u.rad / u.s)
     assert omega_ce.unit.is_equivalent(u.rad / u.s)
     assert omega_lh.unit.is_equivalent(u.rad / u.s)
-    left_hand_side = omega_lh ** -2
+    left_hand_side = omega_lh**-2
     right_hand_side = (
-        1 / (omega_ci ** 2 + omega_pi ** 2) + omega_ci ** -1 * omega_ce ** -1
+        1 / (omega_ci**2 + omega_pi**2) + omega_ci**-1 * omega_ce**-1
     )
     assert np.isclose(left_hand_side.value, right_hand_side.value)
 
     assert np.isclose(omega_lh_hz.value, 299878691.3223296)
 
     with pytest.raises(ValueError):
-        lower_hybrid_frequency(0.2 * u.T, n_i=5e19 * u.m ** -3, ion="asdfasd")
+        lower_hybrid_frequency(0.2 * u.T, n_i=5e19 * u.m**-3, ion="asdfasd")
 
     with pytest.raises(ValueError):
-        lower_hybrid_frequency(0.2 * u.T, n_i=-5e19 * u.m ** -3, ion="asdfasd")
+        lower_hybrid_frequency(0.2 * u.T, n_i=-5e19 * u.m**-3, ion="asdfasd")
 
     with pytest.raises(ValueError):
-        lower_hybrid_frequency(np.nan * u.T, n_i=-5e19 * u.m ** -3, ion="asdfasd")
+        lower_hybrid_frequency(np.nan * u.T, n_i=-5e19 * u.m**-3, ion="asdfasd")
 
     with pytest.warns(u.UnitsWarning):
         assert lower_hybrid_frequency(1.3, 1e19, "p+") == lower_hybrid_frequency(
-            1.3 * u.T, 1e19 * u.m ** -3, "p+"
+            1.3 * u.T, 1e19 * u.m**-3, "p+"
         )
     assert_can_handle_nparray(lower_hybrid_frequency)
 
 
 def test_upper_hybrid_frequency():
-    r"""Test the upper_hybrid_frequency function in parameters.py."""
+    r"""Test the upper_hybrid_frequency function in frequencies.py."""
 
     omega_uh = upper_hybrid_frequency(B, n_e=n_e)
     omega_uh_hz = upper_hybrid_frequency(B, n_e=n_e, to_hz=True)
@@ -167,23 +167,23 @@ def test_upper_hybrid_frequency():
     assert omega_pe.unit.is_equivalent(u.rad / u.s)
     assert omega_uh.unit.is_equivalent(u.rad / u.s)
     assert omega_uh_hz.unit.is_equivalent(u.Hz)
-    left_hand_side = omega_uh ** 2
-    right_hand_side = omega_ce ** 2 + omega_pe ** 2
+    left_hand_side = omega_uh**2
+    right_hand_side = omega_ce**2 + omega_pe**2
     assert np.isclose(left_hand_side.value, right_hand_side.value)
 
     assert np.isclose(omega_uh_hz.value, 69385868857.90918)
 
     with pytest.raises(ValueError):
-        upper_hybrid_frequency(5 * u.T, n_e=-1 * u.m ** -3)
+        upper_hybrid_frequency(5 * u.T, n_e=-1 * u.m**-3)
 
     with pytest.warns(u.UnitsWarning):
         assert upper_hybrid_frequency(1.2, 1.3) == upper_hybrid_frequency(
-            1.2 * u.T, 1.3 * u.m ** -3
+            1.2 * u.T, 1.3 * u.m**-3
         )
 
     with pytest.warns(u.UnitsWarning):
         assert upper_hybrid_frequency(1.4 * u.T, 1.3) == upper_hybrid_frequency(
-            1.4, 1.3 * u.m ** -3
+            1.4, 1.3 * u.m**-3
         )
 
     assert_can_handle_nparray(upper_hybrid_frequency)

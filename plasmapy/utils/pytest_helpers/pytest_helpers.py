@@ -84,30 +84,31 @@ def run_test(
     Parameters
     ----------
     func: callable, list, or tuple
-        The `callable` to be tested.  The first (and sole) argument to
-        `~plasmapy.utils.run_test` may alternatively be a list or tuple
-        containing these arguments (optionally omitting `kwargs` if the
-        `len` returns 3).
+        The callable to be tested.  The first (and sole) argument to
+        `~plasmapy.utils.pytest_helpers.pytest_helpers.run_test`
+        may alternatively be a `list` or `tuple` containing these
+        arguments (optionally omitting ``kwargs`` if the `len` returns
+        3).
 
     args: tuple or object
-        The positional arguments to `func`.
+        The positional arguments to ``func``.
 
     kwargs: dict
-        The keyword arguments to `func`.
+        The keyword arguments to ``func``.
 
     expected_outcome: object
         The expected result, exception, or warning from
-        `func(*args, **kwargs)`. This may also be a `tuple` of length
+        ``func(*args, **kwargs)``. This may also be a `tuple` of length
         two that contains the expected result as the first item and the
         expected warning as the second item.
 
     rtol : float
         The relative tolerance to be used by `~numpy.allclose` in an
-        element-wise comparison, defaulting to `0`.
+        element-wise comparison, defaulting to ``0``.
 
     atol : float
         The absolute tolerance to be used by `~numpy.allclose` in an
-        element-wise comparison, defaulting to `0`.
+        element-wise comparison, defaulting to ``0``.
 
     Returns
     -------
@@ -138,23 +139,23 @@ def run_test(
 
     TypeError
         If the equality of the actual result and expected result cannot
-        be determined (e.g., for a class lacking an `__eq__` method.
+        be determined (e.g., for a class lacking an ``__eq__`` method.
 
     Examples
     --------
-    The simplest way to use `~plasmapy.utils.run_test` is with inputs
-    for the function to be tests, the positional arguments in a `tuple`
-    or `list`, the keyword arguments in a `dict`, and then finally the
-    expected result or outcome.
+    The simplest way to use `~plasmapy.utils.pytest_helpers.pytest_helpers.run_test`
+    is with inputs for the function to be tests, the positional arguments
+    in a `tuple` or `list`, the keyword arguments in a `dict`, and then
+    finally the expected result or outcome.
 
     >>> args = tuple()
     >>> kwargs = dict()
     >>> run_test(lambda: 0, args, kwargs, 0)
 
-    If `expected` is a an exception or warning, then
-    `~plasmapy.utils.pytest_helpers.run_test` will raise an exception if
-    the expected exception is not raised or the expected warning is not
-    issued.
+    If ``expected`` is an exception or warning, then
+    `~plasmapy.utils.pytest_helpers.pytest_helpers.run_test` will raise
+    an exception if the expected exception is not raised or the expected
+    warning is not issued.
 
     >>> from warnings import warn
 
@@ -164,9 +165,9 @@ def run_test(
     >>> def raise_exception(): raise RuntimeError
     >>> run_test(raise_exception, args, kwargs, RuntimeError)
 
-    For warnings, `~plasmapy.utils.run_test` can accept a `tuple` of two
-    items where the first item is the expected result and the second
-    item is the expected warning.
+    For warnings, `~plasmapy.utils.pytest_helpers.pytest_helpers.run_test`
+    can accept a `tuple` of two items where the first item is the
+    expected result and the second item is the expected warning.
 
     .. code-block:: python
 
@@ -184,8 +185,9 @@ def run_test(
     >>> inputs = (return_arg, 42, {}, 42)
     >>> run_test(inputs)
 
-    If the `tuple` or `list` has a length of `3`, then
-    `~plasmapy.utils.run_test` assumes that `kwargs` is missing.
+    If the `tuple` or `list` has a length of ``3``, then
+    `~plasmapy.utils.pytest_helpers.pytest_helpers.run_test` assumes
+    that ``kwargs`` is missing.
 
     >>> inputs_without_kwargs = [return_arg, 42, 42]
     >>> run_test(inputs_without_kwargs)
@@ -426,14 +428,14 @@ def run_test_equivalent_calls(*test_inputs, require_same_type: bool = True):
     require_same_type: bool
         If `True` (the default), then all of the results are required to
         be of the same type.  If `False`, results do not need to be of
-        the same type (e.g., cases like `1.0 == 1` will not raise an
+        the same type (e.g., cases like ``1.0 == 1`` will not raise an
         exception).
 
     Raises
     ------
     ~plasmapy.tests.helpers.exceptions.UnexpectedResultFail
         If not all of the results are equivalent, or not all of the
-        results are of the same type and `require_same_type` evaluates
+        results are of the same type and ``require_same_type`` evaluates
         to `True`.
 
     ~plasmapy.tests.helpers.exceptions.UnexpectedExceptionFail
@@ -447,12 +449,13 @@ def run_test_equivalent_calls(*test_inputs, require_same_type: bool = True):
     Examples
     --------
     There are several possible formats that can be accepted by this
-    `~plasmapy.utils.run_test_equivalent_calls` to test that different
-    combinations of functions (or other `callable` objects), positional
-    arguments, and keyword arguments return equivalent results.
+    `~plasmapy.utils.pytest_helpers.pytest_helpers.run_test_equivalent_calls`
+    to test that different combinations of functions (or other callable
+    objects), positional arguments, and keyword arguments return
+    equivalent results.
 
     To test a single function that takes a single positional argument,
-    then `test_inputs` may be the function followed by an arbitrary
+    then ``test_inputs`` may be the function followed by an arbitrary
     number of positional arguments to be included into the function.
 
     >>> def f(x): return x ** 2
@@ -488,7 +491,7 @@ def run_test_equivalent_calls(*test_inputs, require_same_type: bool = True):
     >>> run_test_equivalent_calls(f, -1, 1)
     >>> run_test_equivalent_calls([f, -1, 1])
 
-    If `require_same_type` is `False`, then an exception will not be
+    If ``require_same_type``  is `False`, then an exception will not be
     raised if the results are of different types.
 
     >>> run_test_equivalent_calls(f, -1, 1.0, require_same_type=False)
@@ -524,10 +527,10 @@ def run_test_equivalent_calls(*test_inputs, require_same_type: bool = True):
     test_cases = []
 
     for inputs in test_inputs:
-        test_case = {}
-
-        test_case["function"] = func if func else inputs[0]
-        test_case["args"] = inputs[0] if func else inputs[1]
+        test_case = {
+            "function": func or inputs[0],
+            "args": inputs[0] if func else inputs[1],
+        }
 
         if not isinstance(test_case["args"], (list, tuple)):
             test_case["args"] = [test_case["args"]]
@@ -637,20 +640,20 @@ def assert_can_handle_nparray(
         The function to be tested for ability to handle numpy array quantities.
         Arguments are automatically given a vector input based on their
         variable name. Current args that are interpreted as vectors are:
-        `["T", "T_i", "T_e", "temperature"]`
-        `["n", "n_i", "n_e", "density"]`
-        `["B"]`
-        `["V", "Vperp"]`
-        `["coulomb_log"]`
-        `["characteristic_length"]`
+        ``["T", "T_i", "T_e", "temperature"]``,
+        ``["n", "n_i", "n_e", "density"]``,
+        ``["B"]``,
+        ``["V", "Vperp"]``,
+        ``["coulomb_log"]``,
+        ``["characteristic_length"]``.
 
     insert_some_nans: `list`
-        List of argument names in which to insert some np.nan values.
-        These must be arguments that will be tested as vectors as listed
-        above.
+        List of argument names in which to insert some `~numpy.nan`
+        values. These must be arguments that will be tested as vectors
+        as listed above.
 
     insert_all_nans: `list`
-        List of argument names to fill entirely with np.nan values.
+        List of argument names to fill entirely with `~numpy.nan` values.
 
     kwargs: `dict`
         Arguments to pass directly to the function in under test, in the
@@ -659,11 +662,11 @@ def assert_can_handle_nparray(
     Raises
     ------
     ValueError
-        If this function cannot interpret a parameter of function_to_test.
+        If this function cannot interpret a parameter of ``function_to_test``.
 
     Examples
     --------
-    >>> from plasmapy.formulary.parameters import Alfven_speed, gyrofrequency
+    >>> from plasmapy.formulary import Alfven_speed, gyrofrequency
     >>> assert_can_handle_nparray(Alfven_speed)
     >>> assert_can_handle_nparray(gyrofrequency, kwargs={"signed": True})
     >>> assert_can_handle_nparray(gyrofrequency, kwargs={"signed": False})
@@ -703,7 +706,7 @@ def assert_can_handle_nparray(
             unit = u.eV
             magnitude = 1.0
         elif param_name in ["n", "n_i", "n_e", "density"]:
-            unit = u.m ** -3
+            unit = u.m**-3
             magnitude = 1e20
         elif param_name == "B":
             unit = u.G
@@ -718,7 +721,7 @@ def assert_can_handle_nparray(
             unit = u.m
             magnitude = 1.0
         elif param_name == "k":
-            unit = u.m ** -1
+            unit = u.m**-1
             magnitude = 1.0
 
         # else, last resort, if it has a default argument, go with that:

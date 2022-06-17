@@ -23,9 +23,7 @@ import numpy as np
 
 from astropy.constants.si import k_B, mu0
 
-from plasmapy.formulary import parameters, quantum
-from plasmapy.formulary.frequencies import gyrofrequency
-from plasmapy.formulary.lengths import Debye_length
+from plasmapy.formulary import frequencies, lengths, misc, quantum
 from plasmapy.particles import Particle
 from plasmapy.utils.decorators import validate_quantities
 
@@ -36,7 +34,7 @@ __all__ += __aliases__
     T_e={"can_be_negative": False, "equivalencies": u.temperature_energy()},
     n_e={"can_be_negative": False},
 )
-def Debye_number(T_e: u.K, n_e: u.m ** -3) -> u.dimensionless_unscaled:
+def Debye_number(T_e: u.K, n_e: u.m**-3) -> u.dimensionless_unscaled:
     r"""Return the number of electrons within a sphere with a radius
     of the Debye length.
 
@@ -96,10 +94,8 @@ def Debye_number(T_e: u.K, n_e: u.m ** -3) -> u.dimensionless_unscaled:
 
     """
 
-    lambda_D = Debye_length(T_e, n_e)
-    N_D = (4 / 3) * np.pi * n_e * lambda_D ** 3
-
-    return N_D
+    lambda_D = lengths.Debye_length(T_e, n_e)
+    return (4 / 3) * np.pi * n_e * lambda_D**3
 
 
 nD_ = Debye_number
@@ -111,7 +107,7 @@ nD_ = Debye_number
     T={"can_be_negative": False, "equivalencies": u.temperature_energy()},
 )
 def Hall_parameter(
-    n: u.m ** -3,
+    n: u.m**-3,
     T: u.K,
     B: u.T,
     ion: Particle,
@@ -163,7 +159,7 @@ def Hall_parameter(
     V : `~astropy.units.quantity.Quantity`
         The relative velocity between ``particle`` and ``ion``.  If not provided,
         then the ``particle`` thermal velocity is assumed
-        (`~plasmapy.formulary.parameters.thermal_speed`).
+        (`~plasmapy.formulary.speeds.thermal_speed`).
 
     coulomb_log_method : `str`, optional
         The method by which to compute the Coulomb logarithm.
@@ -214,7 +210,7 @@ def Hall_parameter(
         fundamental_ion_collision_freq,
     )
 
-    gyro_frequency = gyrofrequency(B, particle)
+    gyro_frequency = frequencies.gyrofrequency(B, particle)
     gyro_frequency = gyro_frequency / u.radian
     if Particle(particle).symbol == "e-":
         coll_rate = fundamental_electron_collision_freq(
@@ -233,7 +229,7 @@ betaH_ = Hall_parameter
     T={"can_be_negative": False, "equivalencies": u.temperature_energy()},
     n_e={"can_be_negative": False},
 )
-def quantum_theta(T: u.K, n_e: u.m ** -3) -> u.dimensionless_unscaled:
+def quantum_theta(T: u.K, n_e: u.m**-3) -> u.dimensionless_unscaled:
     r"""
     Compare Fermi energy to thermal kinetic energy to check if quantum
     effects are important.
@@ -286,15 +282,14 @@ def quantum_theta(T: u.K, n_e: u.m ** -3) -> u.dimensionless_unscaled:
     """
     fermi_energy = quantum.Fermi_energy(n_e)
     thermal_energy = k_B * T
-    theta = thermal_energy / fermi_energy
-    return theta
+    return thermal_energy / fermi_energy
 
 
 @validate_quantities(
     T={"can_be_negative": False, "equivalencies": u.temperature_energy()},
     n={"can_be_negative": False},
 )
-def beta(T: u.K, n: u.m ** -3, B: u.T) -> u.dimensionless_unscaled:
+def beta(T: u.K, n: u.m**-3, B: u.T) -> u.dimensionless_unscaled:
     r"""
     Compute the ratio of thermal pressure to magnetic pressure.
 
@@ -332,17 +327,17 @@ def beta(T: u.K, n: u.m ** -3, B: u.T) -> u.dimensionless_unscaled:
 
     See Also
     --------
-    ~plasmapy.formulary.parameters.thermal_pressure
-    ~plasmapy.formulary.parameters.magnetic_pressure
+    ~plasmapy.formulary.misc.thermal_pressure
+    ~plasmapy.formulary.misc.magnetic_pressure
     """
-    thermal_pressure = parameters.thermal_pressure(T, n)
-    magnetic_pressure = parameters.magnetic_pressure(B)
+    thermal_pressure = misc.thermal_pressure(T, n)
+    magnetic_pressure = misc.magnetic_pressure(B)
     return thermal_pressure / magnetic_pressure
 
 
 @validate_quantities(U={"can_be_negative": True})
 def Reynolds_number(
-    rho: u.kg / u.m ** 3, U: u.m / u.s, L: u.m, mu: u.kg / (u.m * u.s)
+    rho: u.kg / u.m**3, U: u.m / u.s, L: u.m, mu: u.kg / (u.m * u.s)
 ) -> u.dimensionless_unscaled:
     r"""
     Compute the Reynolds number.
@@ -408,12 +403,11 @@ def Reynolds_number(
 
     Returns
     -------
-    Re: `~astropy.Quantity`
+    Re: `~astropy.units.Quantity`
         Dimensionless quantity.
 
     """
-    Re = abs(rho * U * L / mu)
-    return Re
+    return abs(rho * U * L / mu)
 
 
 Re_ = Reynolds_number
@@ -463,8 +457,6 @@ def Mag_Reynolds(U: u.m / u.s, L: u.m, sigma: u.S / u.m) -> u.dimensionless_unsc
     `~astropy.units.UnitConversionError`
         If ``U`` is not in appropriate units.
 
-
-
     Examples
     --------
     >>> import astropy.units as u
@@ -486,8 +478,7 @@ def Mag_Reynolds(U: u.m / u.s, L: u.m, sigma: u.S / u.m) -> u.dimensionless_unsc
 
     """
     eta = 1 / (mu0 * sigma)
-    Rm = abs(U * L / eta)
-    return Rm
+    return abs(U * L / eta)
 
 
 Rm_ = Mag_Reynolds

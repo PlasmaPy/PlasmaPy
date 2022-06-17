@@ -38,7 +38,7 @@ Backwards Incompatible Changes
 - Renamed the available "methods" for computing the Coulomb logarithm in an attempt
   to make the names more explicit.  This is implemented using the ``method`` keyword
   for functions `~plasmapy.formulary.collisions.Coulomb_logarithm` and
-  `~plasmapy.formulary.collisions.impact_parameter`, and then propogated throughout
+  `~plasmapy.formulary.collisions.impact_parameter`, and then propagated throughout
   the functionality in `plasmapy.formulary.collisions`. (`#962 <https://github.com/plasmapy/plasmapy/pull/962>`__)
 - Add dependency ``pandas >= 1.0.0``.  Modify ``xarray`` dependency to be
   ``xarray >= 0.14.0``. (`#963 <https://github.com/plasmapy/plasmapy/pull/963>`__)
@@ -79,10 +79,9 @@ Features
   that represent a call to a method or attribute of an object. These
   functions are used, for example, in error messages. (`#920 <https://github.com/plasmapy/plasmapy/pull/920>`__)
 - Add the function
-  :func:`~plasmapy.dispersion.two_fluid_dispersion.two_fluid_dispersion_solution` to
+  ``plasmapy.dispersion.two_fluid_dispersion.two_fluid_dispersion_solution`` to
   `plasmapy.dispersion`, which gives an analytical solution to the dispersion relation as
-  derived by P. M. Bellan 2012 (DOI: `10.1029/2012JA017856
-  <https://agupubs.onlinelibrary.wiley.com/doi/10.1029/2012JA017856>`_). (`#932 <https://github.com/plasmapy/plasmapy/pull/932>`__)
+  derived by :cite:t:`bellan:2012`\ . (`#932 <https://github.com/plasmapy/plasmapy/pull/932>`__)
 - Refactor out the `~plasmapy.simulation.particle_integrators.boris_push` tracking
   integrator algorithm from `~plasmapy.simulation.particletracker.ParticleTracker`. (`#953 <https://github.com/plasmapy/plasmapy/pull/953>`__)
 - For `plasmapy.plasma.grids` functionality, add better support for recognizing and
@@ -92,14 +91,14 @@ Features
   non-uniform grids. (`#963 <https://github.com/plasmapy/plasmapy/pull/963>`__)
 - Added the `~plasmapy.formulary.drifts.diamagnetic_drift` function to
   `~plasmapy.formulary.drifts`. (`#972 <https://github.com/plasmapy/plasmapy/pull/972>`__)
-- Add properties `~plasmapy.plasma.grids.AbstractGrid.grid_resolution` and
+- Add properties ``grid_resolution`` and
   `~plasmapy.plasma.grids.AbstractGrid.quantities` to
   `~plasmapy.plasma.grids.AbstractGrid`. (`#981 <https://github.com/plasmapy/plasmapy/pull/981>`__)
 - Make several speed improvements to the functionality in `~plasmapy.plasma.grids`,
   including the addition of keyword ``persistent`` to
   `~plasmapy.plasma.grids.AbstractGrid` (and child class) methods
   `~plasmapy.plasma.grids.AbstractGrid.nearest_neighbor_interpolator` and
-  `~plasmapy.plasma.grids.AbstractGrid.volume_averaged_interpolator`.  This keyword
+  ``volume_averaged_interpolator``.  This keyword
   allows the interpolators to assume the last grid setup and contents if input
   arguments have not changed. (`#981 <https://github.com/plasmapy/plasmapy/pull/981>`__)
 - Add methods `~plasmapy.plasma.grids.AbstractGrid.on_grid` and
@@ -129,11 +128,10 @@ Features
   `~plasmapy.particles.particle_collections.ParticleList`. (`#1017 <https://github.com/plasmapy/plasmapy/pull/1017>`__)
 - Added method `~plasmapy.plasma.grids.AbstractGrid.require_quantities` to
   `~plasmapy.plasma.grids.AbstractGrid` that verifies a list of quantities is present
-  on the grid.  Method is also incorported into
-  `~plasmapy.diagnostics.proton_radiography.SyntheticProtonRadiograph`. (`#1027 <https://github.com/plasmapy/plasmapy/pull/1027>`__)
+  on the grid.  Method is also incorporated into
+  ``plasmapy.diagnostics.proton_radiography.SyntheticProtonRadiograph``. (`#1027 <https://github.com/plasmapy/plasmapy/pull/1027>`__)
 - Added the
-  `~plasmapy.diagnostics.proton_radiography.SyntheticProtonRadiograph.add_wire_mesh()`
-  method to `~plasmapy.diagnostics.proton_radiography.SyntheticProtonRadiograph`
+  ``add_wire_mesh()`` method to ``plasmapy.diagnostics.proton_radiography.SyntheticProtonRadiograph``
   to allow the creation of synthetic proton radiographs that include a wire mesh
   reference grid. (`#1049 <https://github.com/plasmapy/plasmapy/pull/1049>`__)
 - Created a function, `~plasmapy.formulary.mathematics.rot_a_to_b`, that calculates
@@ -154,15 +152,15 @@ Bug Fixes
   `~plasmapy.particles.ionization_state_collection.IonizationStateCollection` instance. (`#1025 <https://github.com/plasmapy/plasmapy/pull/1025>`__)
 - Fixed a bug in :file:`grids.py` for non-uniform grids that arose when ``xarray`` upgraded
   to ``v0.17.0`` (`#1027 <https://github.com/plasmapy/plasmapy/pull/1027>`__)
-- In `~plasmapy.diagnostics.proton_radiography.SyntheticProtonRadiograph`,
+- In ``plasmapy.diagnostics.proton_radiography.SyntheticProtonRadiograph``,
   adaptive ``dt`` now calculates the cyclotron period using the provided particle
   charge and mass (previously assumed protons). (`#1035 <https://github.com/plasmapy/plasmapy/pull/1035>`__)
-- In `~plasmapy.diagnostics.proton_radiography.SyntheticProtonRadiograph`,
+- In ``plasmapy.diagnostics.proton_radiography.SyntheticProtonRadiograph``,
   the adaptive timestep algorithm now works when particles are provided using
-  `~plasmapy.diagnostics.proton_radiography.SyntheticProtonRadiograph.load_particles`. (`#1035 <https://github.com/plasmapy/plasmapy/pull/1035>`__)
-- In `~plasmapy.diagnostics.proton_radiography.SyntheticProtonRadiograph`, removed
+  ``plasmapy.diagnostics.proton_radiography.SyntheticProtonRadiograph.load_particles``. (`#1035 <https://github.com/plasmapy/plasmapy/pull/1035>`__)
+- In ``plasmapy.diagnostics.proton_radiography.SyntheticProtonRadiograph``, removed
   highly deflected particles so the call of
-  `~plasmapy.diagnostics.proton_radiography.SyntheticProtonRadiograph.max_deflection`
+  ``plasmapy.diagnostics.proton_radiography.SyntheticProtonRadiograph.max_deflection``
   does not raise an exception. (`#1035 <https://github.com/plasmapy/plasmapy/pull/1035>`__)
 
 
@@ -170,7 +168,7 @@ Improved Documentation
 ----------------------
 
 - Add narrative documentation on ionization state functionality. (`#796 <https://github.com/plasmapy/plasmapy/pull/796>`__)
-- Added description to :func:`~plasmapy.formulary.parameters.Hall_parameter`
+- Added description to ``plasmapy.formulary.parameters.Hall_parameter``
   signature and equation in docstrings. (`#934 <https://github.com/plasmapy/plasmapy/pull/934>`__)
 - Updated documentation for the `plasmapy.particles` and `plasmapy.utils` subpackages. (`#942 <https://github.com/plasmapy/plasmapy/pull/942>`__)
 - Improves documentation of :file:`plasmapy/formulary/quantum.py` by cleaning up docstrings of contained functionality. (`#951 <https://github.com/plasmapy/plasmapy/pull/951>`__)
@@ -191,7 +189,7 @@ Improved Documentation
 - Add live rendering of changelog entries on documentation builds, based on
   `sphinx-changelog <https://github.com/OpenAstronomy/sphinx-changelog>`_. (`#1052 <https://github.com/plasmapy/plasmapy/pull/1052>`__)
 - Created an example notebook demonstrating how the
-  `~plasmapy.diagnostics.proton_radiography.SyntheticProtonRadiograph` class can be
+  ``plasmapy.diagnostics.proton_radiography.SyntheticProtonRadiograph`` class can be
   used to generate synthetic proton radiographs with arbitrary source profiles.  Add
   code documentation links to all proton radiograph notebooks. (`#1054 <https://github.com/plasmapy/plasmapy/pull/1054>`__)
 - Update formatting and broken `sphinx.ext.intersphinx` links in `plasmapy.formulary` docstrings. (`#1058 <https://github.com/plasmapy/plasmapy/pull/1058>`__)

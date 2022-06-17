@@ -9,7 +9,7 @@ from plasmapy.utils.exceptions import PhysicsError
 def test_thermal_bremsstrahlung():
     # Test correct spectrum created
     frequencies = (10 ** np.arange(15, 16, 0.01)) / u.s
-    ne, Te = 1e22 * u.cm ** -3, 1e2 * u.eV
+    ne, Te = 1e22 * u.cm**-3, 1e2 * u.eV
     ion_species = "H+"
 
     spectrum = thermal_bremsstrahlung(frequencies, ne, Te, ion_species=ion_species)

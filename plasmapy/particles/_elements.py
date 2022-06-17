@@ -30,9 +30,7 @@ class PeriodicTable:
 
 def element_obj_hook(obj):
     """Provide an ``object_hook`` designed for `json.load` and `json.loads`."""
-    if "unit" in obj:
-        return obj["value"] * u.Unit(obj["unit"])
-    return obj
+    return obj["value"] * u.Unit(obj["unit"]) if "unit" in obj else obj
 
 
 # this code was used to create the JSON file as per vn-ki on Matrix:

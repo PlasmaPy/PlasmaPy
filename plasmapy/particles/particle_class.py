@@ -147,7 +147,7 @@ class AbstractParticle(ABC):
 
         Only the ``"__init__"`` entry should be modified by the subclass.
         """
-        json_dictionary = {
+        return {
             "plasmapy_particle": {
                 "type": type(self).__name__,
                 "module": self.__module__,
@@ -155,7 +155,6 @@ class AbstractParticle(ABC):
                 "__init__": {"args": (), "kwargs": {}},
             }
         }
-        return json_dictionary
 
     def __bool__(self):
         """
@@ -234,10 +233,10 @@ class Particle(AbstractPhysicalParticle):
         integer representing the atomic number of an element; or a
         |Particle| instance.
 
-    mass_numb : `int`, optional
+    mass_numb : `int`, optional, keyword-only
         The mass number of an isotope or nuclide.
 
-    Z : `int`, optional
+    Z : `int`, optional, keyword-only
         The charge number of the particle.
 
     Raises
@@ -413,9 +412,18 @@ class Particle(AbstractPhysicalParticle):
     def __init__(
         self,
         argument: ParticleLike,
+        *_,
         mass_numb: Integral = None,
         Z: Integral = None,
     ):
+
+        # TODO: Remove the following block during or after the 0.9.0 release
+
+        if _:
+            raise TypeError(
+                "The parameters mass_numb and Z to Particle are now "
+                "keyword-only [e.g., Particle('H', mass_numb=2, Z=1)]."
+            )
 
         # If argument is a Particle instance, then construct a new
         # Particle instance for the same particle.
@@ -482,7 +490,7 @@ class Particle(AbstractPhysicalParticle):
                 mass_numb=mass_numb,
                 Z=Z,
             )
-        except Exception as exc:
+        except InvalidParticleError as exc:
             errmsg = _parsing.invalid_particle_errmsg(
                 argument, mass_numb=mass_numb, Z=Z
             )
@@ -850,7 +858,7 @@ class Particle(AbstractPhysicalParticle):
         The roman numeral represents one plus the charge number. Raise
         `~plasmapy.particles.exceptions.ChargeError` if no charge has
         been specified and
-        `~plasmapy.utils.roman.OutOfRangeError` if the charge is
+        `~plasmapy.utils.exceptions.OutOfRangeError` if the charge is
         negative.
 
         Examples
@@ -869,7 +877,7 @@ class Particle(AbstractPhysicalParticle):
         if self._attributes["charge number"] < 0:
             raise roman.OutOfRangeError("Cannot convert negative charges to Roman.")
 
-        symbol = self.isotope if self.isotope else self.element
+        symbol = self.isotope or self.element
         charge_number = self._attributes["charge number"]
         roman_charge = roman.to_roman(charge_number + 1)
         return f"{symbol} {roman_charge}"
@@ -923,13 +931,11 @@ class Particle(AbstractPhysicalParticle):
             raise InvalidIsotopeError(_category_errmsg(self, "isotope"))
 
         if self.isotope == "D":
-            isotope_name = "deuterium"
+            return "deuterium"
         elif self.isotope == "T":
-            isotope_name = "tritium"
+            return "tritium"
         else:
-            isotope_name = f"{self.element_name}-{self.mass_number}"
-
-        return isotope_name
+            return f"{self.element_name}-{self.mass_number}"
 
     @property
     def charge_number(self) -> Integral:
@@ -1159,7 +1165,7 @@ class Particle(AbstractPhysicalParticle):
         """
         try:
             mass = self.nuclide_mass if self.isotope else self.mass
-            energy = mass * const.c ** 2
+            energy = mass * const.c**2
             return energy.to(u.J)
         except MissingParticleDataError:
             raise MissingParticleDataError(
@@ -1213,7 +1219,7 @@ class Particle(AbstractPhysicalParticle):
         mass_of_nucleons = mass_of_protons + mass_of_neutrons
 
         mass_defect = mass_of_nucleons - self.nuclide_mass
-        nuclear_binding_energy = mass_defect * const.c ** 2
+        nuclear_binding_energy = mass_defect * const.c**2
 
         return nuclear_binding_energy.to(u.J)
 
@@ -1597,10 +1603,7 @@ class Particle(AbstractPhysicalParticle):
                 return arg
             if isinstance(arg, str):
                 return {arg}
-            if isinstance(arg[0], (tuple, list, set)):
-                return set(arg[0])
-            else:
-                return set(arg)
+            return set(arg[0]) if isinstance(arg[0], (tuple, list, set)) else set(arg)
 
         if category_tuple and require:  # coverage: ignore
             raise ParticleError(
@@ -1677,6 +1680,10 @@ class Particle(AbstractPhysicalParticle):
         |Particle|.  If ``inplace`` is `True`, then replace the current
         |Particle| with the newly ionized |Particle|.
 
+        New in version 0.8.0: If the |Particle| instance has no charge
+        information (e.g. `Particle("Li")`), it is assumed to be electrically
+        neutral.
+
         Parameters
         ----------
         n : positive integer
@@ -1699,10 +1706,6 @@ class Particle(AbstractPhysicalParticle):
         `~plasmapy.particles.exceptions.InvalidElementError`
             If the |Particle| is not an element.
 
-        `~plasmapy.particles.exceptions.ChargeError`
-            If no charge information for the |Particle| object is
-            specified.
-
         `~plasmapy.particles.exceptions.InvalidIonError`
             If there are less than ``n`` remaining bound electrons.
 
@@ -1717,6 +1720,8 @@ class Particle(AbstractPhysicalParticle):
         >>> helium_particle.ionize(n=2, inplace=True)
         >>> helium_particle
         Particle("He-4 2+")
+        >>> Particle("Li").ionize(3)
+        Particle("Li 3+")
 
         """
         if not self.element:
@@ -1725,10 +1730,11 @@ class Particle(AbstractPhysicalParticle):
                 f"neutral atom or ion."
             )
         if not self.is_category(any_of={"charged", "uncharged"}):
-            raise ChargeError(
-                f"Cannot ionize {self.symbol} because its charge is not specified."
-            )
-        if self.charge_number == self.atomic_number:
+            assumed_charge_number = 0
+        else:
+            assumed_charge_number = self.charge_number
+
+        if assumed_charge_number == self.atomic_number:
             raise InvalidIonError(
                 f"The particle {self.symbol} is already fully "
                 f"ionized and cannot be ionized further."
@@ -1738,8 +1744,8 @@ class Particle(AbstractPhysicalParticle):
         if n <= 0:
             raise ValueError("n must be a positive number.")
 
-        base_particle = self.isotope if self.isotope else self.element
-        new_charge_number = self.charge_number + n
+        base_particle = self.isotope or self.element
+        new_charge_number = assumed_charge_number + n
 
         if inplace:
             self.__init__(base_particle, Z=new_charge_number)
@@ -1775,10 +1781,10 @@ class Particle(AbstractPhysicalParticle):
 
         Raises
         ------
-        ~plasmapy.particles.InvalidElementError
+        ~plasmapy.particles.exceptions.InvalidElementError
             If the |Particle| is not an element.
 
-        ~plasmapy.particles.ChargeError
+        ~plasmapy.particles.exceptions.ChargeError
             If no charge information for the |Particle| object is
             specified.
 
@@ -1811,7 +1817,7 @@ class Particle(AbstractPhysicalParticle):
         if n <= 0:
             raise ValueError("n must be a positive number.")
 
-        base_particle = self.isotope if self.isotope else self.element
+        base_particle = self.isotope or self.element
         new_charge_number = self.charge_number - n
 
         if inplace:
@@ -1846,7 +1852,7 @@ class DimensionlessParticle(AbstractParticle):
     See Also
     --------
     ~plasmapy.particles.particle_class.Particle
-    ~plasmapy.particles.CustomParticle
+    ~plasmapy.particles.particle_class.CustomParticle
 
     Notes
     -----
@@ -1872,7 +1878,7 @@ class DimensionlessParticle(AbstractParticle):
             self.mass = mass
             self.charge = charge
             self.symbol = symbol
-        except Exception as exc:
+        except InvalidParticleError as exc:
             raise InvalidParticleError(
                 f"Unable to create a custom particle with a mass of "
                 f"{mass} and a charge of {charge}."
@@ -1907,7 +1913,7 @@ class DimensionlessParticle(AbstractParticle):
 
         try:
             new_obj = np.float64(obj)
-        except Exception:
+        except TypeError:
             raise TypeError(f"Cannot convert {obj} to numpy.float64.")
 
         if hasattr(new_obj, "__len__"):
@@ -2066,7 +2072,7 @@ class CustomParticle(AbstractPhysicalParticle):
             self.mass = mass
             self.charge = charge
             self.symbol = symbol
-        except Exception as exc:
+        except (ValueError, TypeError, u.UnitsError) as exc:
             raise InvalidParticleError(
                 f"Unable to create a custom particle with a mass of "
                 f"{mass} and a charge of {charge}."
@@ -2214,7 +2220,7 @@ class CustomParticle(AbstractPhysicalParticle):
         >>> custom_particle.mass_energy.to('GeV')
         <Quantity 112.19177208 GeV>
         """
-        return (self.mass * const.c ** 2).to(u.J)
+        return (self.mass * const.c**2).to(u.J)
 
     @property
     def symbol(self) -> str:
@@ -2241,16 +2247,17 @@ class CustomParticle(AbstractPhysicalParticle):
         This method will return `True` if ``other`` is an identical
         |CustomParticle| instance with the same mass charge and symbol,
         and return `False` if ``other`` differs on any of these attributes,
-        or an other type.
+        or another type.
         """
 
         if not isinstance(other, self.__class__):
             return NotImplemented
-        return (
-            self.symbol.__eq__(other.symbol)
-            and u.isclose(self.mass, other.mass, equal_nan=True, rtol=0)
-            and u.isclose(self.charge, other.charge, equal_nan=True, rtol=0)
-        )
+
+        same_symbol = self.symbol.__eq__(other.symbol)
+        same_mass = u.isclose(self.mass, other.mass, equal_nan=True, rtol=0)
+        same_charge = u.isclose(self.charge, other.charge, equal_nan=True, rtol=0)
+
+        return same_symbol and same_mass and same_charge
 
     def __hash__(self) -> int:
         """
@@ -2268,26 +2275,32 @@ def molecule(
 
     Parameters
     ----------
-    symbol : 'str'
-        Symbol of the molecule to be parsed.
+    symbol : `str`
+        Symbol of the molecule to be parsed. This argument should be a
+        string representing the chemical formula where the subscript
+        numbers are not given as subscripts, followed by charge
+        information. For example, CO\ :sub:`2` can be represented as
+        ``"CO2"`` and CO\ :sup:`+` can be represented as ``"CO 1+"``,
+        ``"CO +1"``, or ``"CO+"``.
 
-    Z : 'Integral', optional
-        Charge number if not present in symbol.
+    Z : `int`, optional
+        The charge number if not present in the symbol.
 
     Returns
     -------
-        A |Particle| object if the input could be parsed as such,
-        or a |CustomParticle| with the provided symbol, charge,
-        and a mass corresponding to the sum of the molecule elements.
+    |Particle| or |CustomParticle|
+        A |Particle| object if the input could be parsed as such, or a
+        |CustomParticle| with the provided symbol, charge, and a mass
+        corresponding to the sum of the molecule elements.
 
     Raises
     ------
-    'InvalidParticleError'
+    `InvalidParticleError`
         If ``symbol`` couldn't be parsed.
 
     Warns
     -----
-    `ParticleWarning`
+    : `~plasmapy.particles.exceptions.ParticleWarning`
         If the charge is given both as an argument and in the symbol.
 
     Examples
@@ -2317,7 +2330,7 @@ def molecule(
     """
     try:
         return Particle(symbol, Z=Z)
-    except ParticleError:
+    except ParticleError as exc:
         element_dict, bare_symbol, Z = _parsing.parse_and_check_molecule_input(
             symbol, Z
         )
@@ -2325,14 +2338,15 @@ def molecule(
         for element_symbol, amount in element_dict.items():
             try:
                 element = Particle(element_symbol)
-            except ParticleError as e:
+            except ParticleError as exc2:
                 raise InvalidParticleError(
                     f"Could not identify {element_symbol}."
-                ) from e
+                ) from exc2
             if not element.is_category("element"):
                 raise InvalidParticleError(
                     f"Molecule symbol contains a particle that is not an element: {element.symbol}"
-                )
+                ) from exc
+
             mass += amount * element.mass
 
         if Z is None:
@@ -2431,8 +2445,8 @@ instances, are particle-like.
 
 See Also
 --------
-Particle
-CustomParticle
+~plasmapy.particles.particle_class.Particle
+~plasmapy.particles.particle_class.CustomParticle
 ~plasmapy.particles.decorators.particle_input
 
 Examples

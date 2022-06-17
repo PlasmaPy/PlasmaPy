@@ -16,7 +16,9 @@ from astropy.constants.si import e, eps0
 from numba import njit
 
 from plasmapy import particles
+from plasmapy.formulary import misc
 from plasmapy.particles import Particle
+from plasmapy.particles.exceptions import ChargeError, InvalidParticleError
 from plasmapy.utils.decorators import (
     angular_freq_to_hz,
     bind_lite_func,
@@ -101,7 +103,7 @@ def gyrofrequency(B: u.T, particle: Particle, signed=False, Z=None) -> u.rad / u
 
     The recommended way to convert from angular frequency to frequency
     is to use an equivalency between cycles per second and hertz, as
-    Astropy's `~astropy.units.dimensionles_angles` equivalency does not
+    Astropy's `~astropy.units.dimensionless_angles` equivalency does not
     account for the factor of :math:`2π` needed during this conversion.  The
     `~astropy.units.dimensionless_angles` equivalency is appropriate
     when dividing a velocity by an angular frequency to get a length scale.
@@ -131,16 +133,12 @@ def gyrofrequency(B: u.T, particle: Particle, signed=False, Z=None) -> u.rad / u
     279924... Hz
 
     """
-    from plasmapy.formulary.parameters import _grab_charge
-
     m = particles.particle_mass(particle)
-    Z = _grab_charge(particle, Z)
+    Z = misc._grab_charge(particle, Z)
     if not signed:
         Z = abs(Z)
 
-    omega_c = u.rad * (Z * e * np.abs(B) / m).to(1 / u.s)
-
-    return omega_c
+    return u.rad * (Z * e * np.abs(B) / m).to(1 / u.s)
 
 
 oc_ = gyrofrequency
@@ -229,7 +227,7 @@ def plasma_frequency_lite(
     },
 )
 @angular_freq_to_hz
-def plasma_frequency(n: u.m ** -3, particle: Particle, z_mean=None) -> u.rad / u.s:
+def plasma_frequency(n: u.m**-3, particle: Particle, z_mean=None) -> u.rad / u.s:
     r"""Calculate the particle plasma frequency.
 
     **Aliases:** `wp_`
@@ -250,7 +248,7 @@ def plasma_frequency(n: u.m ** -3, particle: Particle, z_mean=None) -> u.rad / u
     z_mean : `~numbers.Real`, optional
         The average ionization (arithmetic mean) for the particle
         species in the plasma.  Typically, the charge state will be
-        dervied from the ``particle`` argument, but this keyword will
+        derived from the ``particle`` argument, but this keyword will
         override that behavior.
 
     Returns
@@ -306,7 +304,7 @@ def plasma_frequency(n: u.m ** -3, particle: Particle, z_mean=None) -> u.rad / u
     >>> plasma_frequency(1e19*u.m**-3, 'e-', to_hz=True)
     <Quantity 2.83930...e+10 Hz>
 
-    For user convienence
+    For user convenience
     `~plasmapy.formulary.frequencies.plasma_frequency_lite` is bound to
     this function and can be used as follows.
 
@@ -326,18 +324,17 @@ def plasma_frequency(n: u.m ** -3, particle: Particle, z_mean=None) -> u.rad / u
             #               PhysicsWarning)
             try:
                 Z = particles.charge_number(particle)
-            except Exception:
+            except ChargeError:
                 Z = 1
         else:
             # using user provided average ionization
             Z = z_mean
         Z = np.abs(Z)
         # TODO REPLACE WITH Z = np.abs(_grab_charge(particle, z_mean)), some bugs atm
-    except Exception:
-        raise ValueError(f"Invalid particle, {particle}, in plasma_frequency.")
+    except InvalidParticleError as e:
+        raise ValueError(f"Invalid particle, {particle}, in plasma_frequency.") from e
 
-    omega_p = plasma_frequency_lite(n=n, mass=m, z_mean=Z) * u.rad / u.s
-    return omega_p
+    return plasma_frequency_lite(n=n, mass=m, z_mean=Z) * u.rad / u.s
 
 
 wp_ = plasma_frequency
@@ -352,7 +349,7 @@ wp_ = plasma_frequency
     },
 )
 @angular_freq_to_hz
-def lower_hybrid_frequency(B: u.T, n_i: u.m ** -3, ion: Particle) -> u.rad / u.s:
+def lower_hybrid_frequency(B: u.T, n_i: u.m**-3, ion: Particle) -> u.rad / u.s:
     r"""
     Return the lower hybrid frequency.
 
@@ -408,7 +405,7 @@ def lower_hybrid_frequency(B: u.T, n_i: u.m ** -3, ion: Particle) -> u.rad / u.s
     :math:`ω_{ce}` is the electron gyrofrequency, and
     :math:`ω_{pi}` is the ion plasma frequency.
 
-    The lower hybrid frequency consitutes a resonance for electromagnetic
+    The lower hybrid frequency constitutes a resonance for electromagnetic
     waves in magnetized plasmas, namely for the X-mode. These are waves
     with their wave electric field being perpendicular to the background
     magnetic field. For the lower hybrid frequency, ion and electron
@@ -429,17 +426,13 @@ def lower_hybrid_frequency(B: u.T, n_i: u.m ** -3, ion: Particle) -> u.rad / u.s
     # catch invalid ions.
     try:
         particles.charge_number(ion)
-    except Exception:
+    except InvalidParticleError:
         raise ValueError("Invalid ion in lower_hybrid_frequency.")
 
     omega_ci = gyrofrequency(B, particle=ion)
     omega_pi = plasma_frequency(n_i, particle=ion)
     omega_ce = gyrofrequency(B, particle="e-")
-    omega_lh = ((omega_ci * omega_ce) ** -1 + omega_pi ** -2) ** -0.5
-    # TODO possibly optimize the above line via np.sqrt
-    omega_lh = omega_lh
-
-    return omega_lh
+    return ((omega_ci * omega_ce) ** -1 + omega_pi**-2) ** -0.5
 
 
 wlh_ = lower_hybrid_frequency
@@ -454,7 +447,7 @@ wlh_ = lower_hybrid_frequency
     },
 )
 @angular_freq_to_hz
-def upper_hybrid_frequency(B: u.T, n_e: u.m ** -3) -> u.rad / u.s:
+def upper_hybrid_frequency(B: u.T, n_e: u.m**-3) -> u.rad / u.s:
     r"""
     Return the upper hybrid frequency.
 
@@ -521,9 +514,7 @@ def upper_hybrid_frequency(B: u.T, n_e: u.m ** -3) -> u.rad / u.s:
     """
     omega_pe = plasma_frequency(n=n_e, particle="e-")
     omega_ce = gyrofrequency(B, "e-")
-    omega_uh = np.sqrt(omega_pe ** 2 + omega_ce ** 2)
-
-    return omega_uh
+    return np.sqrt(omega_pe**2 + omega_ce**2)
 
 
 wuh_ = upper_hybrid_frequency

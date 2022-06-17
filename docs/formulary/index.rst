@@ -44,6 +44,9 @@ physical quantities helpful for plasma physics.
    | .. toctree:: Mathematics <mathematics>                 | `plasmapy.formulary.mathematics`        |
    |    :maxdepth: 1                                        |                                         |
    +--------------------------------------------------------+-----------------------------------------+
+   | .. toctree:: Miscellaneous Parameters <misc>           | `plasmapy.formulary.misc`               |
+   |    :maxdepth: 1                                        |                                         |
+   +--------------------------------------------------------+-----------------------------------------+
    | .. toctree:: Plasma Parameters <parameters>            | `plasmapy.formulary.parameters`         |
    |    :maxdepth: 1                                        |                                         |
    +--------------------------------------------------------+-----------------------------------------+
@@ -54,6 +57,9 @@ physical quantities helpful for plasma physics.
    |    :maxdepth: 1                                        |                                         |
    +--------------------------------------------------------+-----------------------------------------+
    | .. toctree:: Relativistic Relations <relativity>       | `plasmapy.formulary.relativity`         |
+   |    :maxdepth: 1                                        |                                         |
+   +--------------------------------------------------------+-----------------------------------------+
+   | .. toctree:: Speeds <speeds>                           | `plasmapy.formulary.speeds`             |
    |    :maxdepth: 1                                        |                                         |
    +--------------------------------------------------------+-----------------------------------------+
 

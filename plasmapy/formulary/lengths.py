@@ -9,7 +9,7 @@ import warnings
 from astropy.constants.si import c, e, eps0, k_B
 
 from plasmapy import particles
-from plasmapy.formulary.frequencies import gyrofrequency, plasma_frequency
+from plasmapy.formulary import frequencies, speeds
 from plasmapy.particles import Particle
 from plasmapy.utils.decorators import validate_quantities
 from plasmapy.utils.exceptions import PlasmaPyFutureWarning
@@ -21,7 +21,7 @@ __all__ += __aliases__
     T_e={"can_be_negative": False, "equivalencies": u.temperature_energy()},
     n_e={"can_be_negative": False},
 )
-def Debye_length(T_e: u.K, n_e: u.m ** -3) -> u.m:
+def Debye_length(T_e: u.K, n_e: u.m**-3) -> u.m:
     r"""Calculate the characteristic decay length for electric fields,
      due to charge screening.
 
@@ -74,7 +74,7 @@ def Debye_length(T_e: u.K, n_e: u.m ** -3) -> u.m:
 
     See Also
     --------
-    Debye_number
+    ~plasmapy.formulary.dimensionless.Debye_number
 
     Examples
     --------
@@ -83,8 +83,7 @@ def Debye_length(T_e: u.K, n_e: u.m ** -3) -> u.m:
     <Quantity 0.002182... m>
 
     """
-    lambda_D = np.sqrt(eps0 * k_B * T_e / (n_e * e ** 2))
-    return lambda_D
+    return np.sqrt(eps0 * k_B * T_e / (n_e * e**2))
 
 
 lambdaD_ = Debye_length
@@ -123,8 +122,8 @@ def gyroradius(
         The magnetic field magnitude in units convertible to tesla.
 
     particle : `~plasmapy.particles.particle_class.Particle`
-        Representation of the particle species (e.g., `'p'` for protons, `'D+'`
-        for deuterium, or `'He-4 +1'` for singly ionized helium-4).  If no
+        Representation of the particle species (e.g., ``'p'`` for protons, ``'D+'``
+        for deuterium, or ``'He-4 +1'`` for singly ionized helium-4).  If no
         charge state information is provided, then the particles are assumed
         to be singly charged.
 
@@ -137,7 +136,7 @@ def gyroradius(
 
     T_i : `~astropy.units.Quantity`, optional, keyword-only
         The particle temperature in units convertible to kelvin.
-        Note: Deprecated. Use T instead.
+        Note: Deprecated. Use ``T`` instead.
 
     Returns
     -------
@@ -145,7 +144,7 @@ def gyroradius(
         The particle gyroradius in units of meters.  This
         `~astropy.units.Quantity` will be based on either the
         perpendicular component of particle velocity as inputted, or
-        the most probable speed for an particle within a Maxwellian
+        the most probable speed for a particle within a Maxwellian
         distribution for the particle temperature.
 
     Raises
@@ -181,7 +180,7 @@ def gyroradius(
     where :math:`V_⟂` is the component of particle velocity that is
     perpendicular to the magnetic field and :math:`ω_{ci}` is the
     particle gyrofrequency.  If a temperature is provided, then
-    :math:`V_⟂` will be the most probable thermal velocity of an
+    :math:`V_⟂` will be the most probable thermal velocity of a
     particle at that temperature.
 
     Examples
@@ -206,9 +205,6 @@ def gyroradius(
     >>> gyroradius(400*u.G, 'e-', Vperp=1e7*u.m/u.s)
     <Quantity 0.001421... m>
     """
-
-    # TODO: remove when thermal_speed moves to plasmapy.formulary.speeds
-    from plasmapy.formulary.parameters import thermal_speed
 
     # Backwards Compatibility and Deprecation check for keyword T_i
     if T_i is not None:
@@ -244,10 +240,10 @@ def gyroradius(
         # we know exactly one of them is nan from check 1
         if isfinite_T:
             # T is valid, so use it to determine Vperp
-            Vperp = thermal_speed(T, particle=particle)
+            Vperp = speeds.thermal_speed(T, particle=particle)
         # else: Vperp is already valid, do nothing
     elif np.isscalar(Vperp.value):  # only T is an array
-        # this means either Vperp must be nan, or T must be array of all nan,
+        # this means either Vperp must be nan, or T must be an array of all nan,
         # or else we couldn't have gotten through check 1
         if isfinite_Vperp:
             # Vperp is valid, T is a vector that is all nan
@@ -255,14 +251,14 @@ def gyroradius(
             Vperp = np.repeat(Vperp, len(T))
         else:
             # normal case where Vperp is scalar nan and T is valid array
-            Vperp = thermal_speed(T, particle=particle)
+            Vperp = speeds.thermal_speed(T, particle=particle)
     elif np.isscalar(T.value):  # only Vperp is an array
-        # this means either T must be nan, or V_perp must be array of all nan,
+        # this means either T must be nan, or V_perp must be an array of all nan,
         # or else we couldn't have gotten through check 1
         if isfinite_T:
             # T is valid, V_perp is an array of all nan
             # uh...
-            Vperp = thermal_speed(np.repeat(T, len(Vperp)), particle=particle)
+            Vperp = speeds.thermal_speed(np.repeat(T, len(Vperp)), particle=particle)
         # else: normal case where T is scalar nan and Vperp is already a valid
         # array so, do nothing
     else:  # both T and Vperp are arrays
@@ -270,13 +266,11 @@ def gyroradius(
         # due to check 1 use the valid Vperps, and replace the others with those
         # calculated from T
         Vperp = Vperp.copy()  # avoid changing Vperp's value outside function
-        Vperp[isfinite_T] = thermal_speed(T[isfinite_T], particle=particle)
+        Vperp[isfinite_T] = speeds.thermal_speed(T[isfinite_T], particle=particle)
 
-    omega_ci = gyrofrequency(B, particle)
+    omega_ci = frequencies.gyrofrequency(B, particle)
 
-    r_Li = np.abs(Vperp) / omega_ci
-
-    return r_Li
+    return np.abs(Vperp) / omega_ci
 
 
 rc_ = gyroradius
@@ -291,7 +285,7 @@ rhoc_ = gyroradius
     validations_on_return={"equivalencies": u.dimensionless_angles()},
 )
 @particles.particle_input(require="charged")
-def inertial_length(n: u.m ** -3, particle: Particle) -> u.m:
+def inertial_length(n: u.m**-3, particle: Particle) -> u.m:
     r"""
     Calculate a charged particle's inertial length.
 
@@ -350,7 +344,7 @@ def inertial_length(n: u.m ** -3, particle: Particle) -> u.m:
     <Quantity 2376534.75... m>
 
     """
-    omega_p = plasma_frequency(n, particle=particle)
+    omega_p = frequencies.plasma_frequency(n, particle=particle)
 
     return c / omega_p
 

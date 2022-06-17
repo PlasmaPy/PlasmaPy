@@ -202,7 +202,7 @@ test_Particle_table = [
             "roman_symbol": None,
             "is_ion": False,
             "mass": m_e,
-            "mass_energy": (m_e * c ** 2).to("J"),
+            "mass_energy": (m_e * c**2).to("J"),
             "nuclide_mass": InvalidIsotopeError,
             "charge_number": 1,
             "spin": 1 / 2,
@@ -584,56 +584,59 @@ def test_Particle_equivalent_cases(equivalent_particles):
     run_test_equivalent_calls(Particle, *equivalent_particles)
 
 
-# arg, kwargs, attribute, exception
+# args, kwargs, attribute, exception
 test_Particle_error_table = [
-    ("a", {}, "", InvalidParticleError),
-    ("d+", {"mass_numb": 9}, "", InvalidParticleError),
-    ("H", {"mass_numb": 99}, "", InvalidParticleError),
-    ("Au-818", {}, "", InvalidParticleError),
-    ("Au-12", {}, "", InvalidParticleError),
-    ("Au", {"mass_numb": 13}, "", InvalidParticleError),
-    ("Au", {"mass_numb": 921}, "", InvalidParticleError),
-    ("e-", {"Z": -1}, "", InvalidParticleError),
-    ("e-", {}, ".atomic_number", InvalidElementError),
-    ("alpha", {}, ".standard_atomic_weight", InvalidElementError),
-    ("Fe-56", {}, ".standard_atomic_weight", InvalidElementError),
-    ("e-", {}, ".standard_atomic_weight", InvalidElementError),
-    ("tau-", {}, ".element_name", InvalidElementError),
-    ("tau+", {}, ".atomic_number", InvalidElementError),
-    ("neutron", {}, ".atomic_number", InvalidElementError),
-    ("H", {"Z": 0}, ".mass_number", InvalidIsotopeError),
-    ("neutron", {}, ".mass_number", InvalidIsotopeError),
-    ("He", {"mass_numb": 4}, ".charge", ChargeError),
-    ("He", {"mass_numb": 4}, ".charge_number", ChargeError),
-    ("Fe", {}, ".spin", MissingParticleDataError),
-    ("nu_e", {}, ".mass", MissingParticleDataError),
-    ("Og", {}, ".standard_atomic_weight", MissingParticleDataError),
-    (Particle("C-14"), {"mass_numb": 13}, "", InvalidParticleError),
-    (Particle("Au 1+"), {"Z": 2}, "", InvalidParticleError),
-    ([], {}, "", TypeError),
-    ("Fe", {}, ".ionize()", ChargeError),
-    ("D", {}, ".recombine()", ChargeError),
-    ("Fe 26+", {}, ".ionize()", InvalidIonError),
-    ("Fe 6+", {}, ".ionize(-1)", ValueError),
-    ("Fe 25+", {}, ".recombine(0)", ValueError),
-    ("Fe 6+", {}, ".ionize(4.6)", TypeError),
-    ("Fe 25+", {}, ".recombine(8.2)", TypeError),
-    ("e-", {}, ".ionize()", InvalidElementError),
-    ("e+", {}, ".recombine()", InvalidElementError),
+    (["a"], {}, "", InvalidParticleError),
+    (["d+"], {"mass_numb": 9}, "", InvalidParticleError),
+    (["H"], {"mass_numb": 99}, "", InvalidParticleError),
+    (["Au-818"], {}, "", InvalidParticleError),
+    (["Au-12"], {}, "", InvalidParticleError),
+    (["Au"], {"mass_numb": 13}, "", InvalidParticleError),
+    (["Au"], {"mass_numb": 921}, "", InvalidParticleError),
+    (["e-"], {"Z": -1}, "", InvalidParticleError),
+    (["e-"], {}, ".atomic_number", InvalidElementError),
+    (["alpha"], {}, ".standard_atomic_weight", InvalidElementError),
+    (["Fe-56"], {}, ".standard_atomic_weight", InvalidElementError),
+    (["e-"], {}, ".standard_atomic_weight", InvalidElementError),
+    (["tau-"], {}, ".element_name", InvalidElementError),
+    (["tau+"], {}, ".atomic_number", InvalidElementError),
+    (["neutron"], {}, ".atomic_number", InvalidElementError),
+    (["H"], {"Z": 0}, ".mass_number", InvalidIsotopeError),
+    (["neutron"], {}, ".mass_number", InvalidIsotopeError),
+    (["He"], {"mass_numb": 4}, ".charge", ChargeError),
+    (["He"], {"mass_numb": 4}, ".charge_number", ChargeError),
+    (["Fe"], {}, ".spin", MissingParticleDataError),
+    (["nu_e"], {}, ".mass", MissingParticleDataError),
+    (["Og"], {}, ".standard_atomic_weight", MissingParticleDataError),
+    ([Particle("C-14")], {"mass_numb": 13}, "", InvalidParticleError),
+    ([Particle("Au 1+")], {"Z": 2}, "", InvalidParticleError),
+    ([[]], {}, "", TypeError),
+    (["D"], {}, ".recombine()", ChargeError),
+    (["Fe 26+"], {}, ".ionize()", InvalidIonError),
+    (["Fe 6+"], {}, ".ionize(-1)", ValueError),
+    (["Fe 25+"], {}, ".recombine(0)", ValueError),
+    (["Fe 6+"], {}, ".ionize(4.6)", TypeError),
+    (["Fe 25+"], {}, ".recombine(8.2)", TypeError),
+    (["e-"], {}, ".ionize()", InvalidElementError),
+    (["e+"], {}, ".recombine()", InvalidElementError),
+    (["H", 1], {}, "", TypeError),
+    (["H", 1, 1], {}, "", TypeError),
 ]
 
 
-@pytest.mark.parametrize("arg, kwargs, attribute, exception", test_Particle_error_table)
-def test_Particle_errors(arg, kwargs, attribute, exception):
+@pytest.mark.parametrize(
+    "args, kwargs, attribute, exception", test_Particle_error_table
+)
+def test_Particle_errors(args, kwargs, attribute, exception):
     """
     Test that the appropriate exceptions are raised during the creation
     and use of a `~plasmapy.particles.Particle` object.
     """
     with pytest.raises(exception):
-        exec(f"Particle(arg, **kwargs){attribute}")
+        exec(f"Particle(*args, **kwargs){attribute}")
         pytest.fail(
             f"The following command: "
-            f"\n\n  {call_string(Particle, arg, kwargs)}{attribute}\n\n"
+            f"\n\n  {call_string(Particle, args, kwargs)}{attribute}\n\n"
             f"did not raise a {exception.__name__} as expected"
         )
 
@@ -1181,10 +1184,7 @@ def test_custom_particles_from_json_string(
     """Test the attributes of dimensionless and custom particles generated from
     JSON representation"""
     if expected_exception is None:
-        if "mass" not in kwargs or "charge" not in kwargs:
-            instance = cls(**kwargs)
-        else:
-            instance = cls(**kwargs)
+        instance = cls(**kwargs)
         instance_from_json = json_loads_particle(json_string)
         assert u.isclose(
             instance.mass, instance_from_json.mass, equal_nan=True
@@ -1437,7 +1437,6 @@ def test_CustomParticle_cmp():
     ), "CustomParticle instances that should be equal are not."
     assert particle1 != other, "CustomParticle instances should not be equal, but are."
 
-    assert not particle1 == 1
     assert particle1 != 1
 
 

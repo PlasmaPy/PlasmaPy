@@ -153,8 +153,8 @@ def characteristic_simulated():
     r"""Create a simulated probe characteristic (provisional)"""
 
     T_e_sim = 1 * u.eV
-    n_e_sim = 1e18 * u.m ** -3
-    probe_area_sim = 1 * u.cm ** 2
+    n_e_sim = 1e18 * u.m**-3
+    probe_area_sim = 1 * u.cm**2
     I_es_sim = (
         n_e_sim * probe_area_sim * const.e * np.sqrt(T_e_sim / (2 * np.pi * const.m_e))
     )
@@ -273,7 +273,7 @@ class Test__swept_probe_analysis:
         with pytest.raises(ValueError):
             with pytest.warns(FutureWarning):
                 langmuir.swept_probe_analysis(
-                    characteristic, np.nan * u.cm ** 2, "Ar-40 1+"
+                    characteristic, np.nan * u.cm**2, "Ar-40 1+"
                 )
 
     @staticmethod
@@ -291,7 +291,7 @@ class Test__swept_probe_analysis:
         with pytest.raises(ValueError):
             with pytest.warns(FutureWarning):
                 langmuir.swept_probe_analysis(
-                    characteristic, -1 * u.cm ** 2, "Ar-40 1+"
+                    characteristic, -1 * u.cm**2, "Ar-40 1+"
                 )
 
     @staticmethod
@@ -302,7 +302,7 @@ class Test__swept_probe_analysis:
         with pytest.warns(FutureWarning):
             sim_result = langmuir.swept_probe_analysis(
                 characteristic_simulated,
-                1 * u.cm ** 2,
+                1 * u.cm**2,
                 "Ar-40 1+",
                 bimaxwellian=bimaxwellian,
             )
@@ -310,7 +310,7 @@ class Test__swept_probe_analysis:
         with pytest.warns(FutureWarning):
             sim_result_shuffled = langmuir.swept_probe_analysis(
                 shuffle_characteristic(characteristic_simulated),
-                1 * u.cm ** 2,
+                1 * u.cm**2,
                 "Ar-40 1+",
                 bimaxwellian=bimaxwellian,
             )
@@ -335,7 +335,7 @@ def test_get_ion_density_OML_without_return_fit(characteristic):
 
     with pytest.warns(FutureWarning):
         density = langmuir.get_ion_density_OML(
-            characteristic, 5000000 * u.m ** 2, "p+", return_fit=False
+            characteristic, 5000000 * u.m**2, "p+", return_fit=False
         )
     assert np.isclose(density.value, 385344135.12064785)
 

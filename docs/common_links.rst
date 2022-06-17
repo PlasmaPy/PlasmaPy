@@ -20,6 +20,7 @@
 .. |particle_input| replace:: :func:`~plasmapy.particles.decorators.particle_input`
 .. |ParticleLike| replace:: :obj:`~plasmapy.particles.particle_class.ParticleLike`
 .. |ParticleList| replace:: :class:`~plasmapy.particles.particle_collections.ParticleList`
+.. |ParticleListLike| replace:: :obj:`~plasmapy.particles.particle_collections.ParticleListLike`
 
 .. |ChargeError| replace:: :class:`~plasmapy.particles.exceptions.ChargeError`
 .. |InvalidElementError| replace:: :class:`~plasmapy.particles.exceptions.InvalidElementError`
@@ -85,6 +86,7 @@
 .. |contributor guide| replace:: :ref:`contributor guide`\
 .. |documentation guide| replace:: :ref:`documentation guide`\
 .. |glossary| replace:: :ref:`glossary`\
+.. |minpython| replace:: 3.8
 .. |plasma-calculator| replace:: :ref:`plasmapy-calculator`\
 .. |release guide| replace:: :ref:`release guide`\
 .. |testing guide| replace:: :ref:`testing guide`\
@@ -98,11 +100,11 @@
 .. _BibTeX format: https://www.bibtex.com/g/bibtex-format
 .. _BibTeX: http://www.bibtex.org
 .. _black: https://black.readthedocs.io
-.. _Conda: https://conda.io
-.. _CSS: https://en.wikipedia.org/wiki/CSS
-.. _docstring: https://en.wikipedia.org/wiki/Docstring
+.. _Conda: https://docs.conda.io
+.. _create an issue: https://github.com/PlasmaPy/PlasmaPy/issues/new/choose
+.. _CSS: https://www.w3schools.com:443/css
 .. _DOI: https://www.doi.org
-.. _flake8: https://flake8.pycqa.org
+.. _flake8: https://flake8.pycqa.org/en/latest
 .. _git: https://git-scm.com
 .. _GitHub Actions: https://docs.github.com/en/actions
 .. _GitHub Discussions page: https://github.com/PlasmaPy/PlasmaPy/discussions
@@ -122,11 +124,10 @@
 .. _MathJax: https://www.mathjax.org
 .. _matplotlib: https://matplotlib.org
 .. _Matrix chat room: https://app.element.io/#/room/#plasmapy:openastronomy.org
-.. _Numba: https://numba.pydata.org/
 .. _numpydoc: https://numpydoc.readthedocs.io/en/latest/format.html#docstring-standard
 .. _NumPy: https://numpy.org
+.. _OpenPMD: https://www.openpmd.org/
 .. _pandas: https://pandas.pydata.org
-.. _persistent identifier: https://en.wikipedia.org/wiki/Persistent_identifier
 .. _pip: https://pip.pypa.io
 .. _Plasma Hack Week: https://hack.plasmapy.org
 .. _PlasmaPy: https://www.plasmapy.org
@@ -135,7 +136,8 @@
 .. _PlasmaPy's GitHub repository: https://github.com/PlasmaPy/plasmapy
 .. _PlasmaPy's Matrix chat room: https://app.element.io/#/room/#plasmapy:openastronomy.org
 .. _pre-commit: https://pre-commit.com
-.. _pydocstyle: https://www.pydocstyle.org
+.. _`pre-commit.ci`: https://pre-commit.ci
+.. _pydocstyle: https://www.pydocstyle.org/en/stable
 .. _pygments: https://pygments.org
 .. _PyPI: https://pypi.org
 .. _pytest: https://docs.pytest.org
@@ -144,13 +146,13 @@
 .. _Read the Docs: https://readthedocs.org
 .. _reST: https://docutils.sourceforge.io/rst.html
 .. _reStructuredText (reST): https://docutils.sourceforge.io/rst.html
-.. _SciPy: https://www.scipy.org
+.. _SciPy: https://scipy.org
 .. _sphinx_automodapi: https://sphinx-automodapi.readthedocs.io
 .. _sphinx-build: https://www.sphinx-doc.org/en/master/man/sphinx-build.html
 .. _Sphinx: https://www.sphinx-doc.org
 .. _suggestion box: https://docs.google.com/forms/d/e/1FAIpQLSdT3O5iHZrLJRuavFyzoR23PGy0Prfzx2SQOcwJGWtvHyT2lw/viewform?usp=sf_link
-.. _towncrier: https://towncrier.readthedocs.io/en/actual-freaking-docs
-.. _tox: https://tox.readthedocs.io
+.. _towncrier: https://github.com/twisted/towncrier
+.. _tox: https://tox.wiki/en/latest
 .. _virtualenv: https://pypi.org/project/virtualenv
 .. _Wikipedia: https://www.wikipedia.org
 .. _Zenodo: https://zenodo.org
@@ -164,11 +166,16 @@
    with the syntax for a substitution followed by an underscore to
    indicate that it's for a link: |docs/_static|_
 
+.. For these workarounds, if the replacement is something in single back
+   ticks (e.g., `xarray`), then it should also be added to
+   nitpick_ignore_regex in docs/conf.py so that it doesn't get counted
+   as an error in a nitpicky doc build (e.g., tox -e doc_build_nitpicky).
+
 .. _`docs/_static`: https://github.com/PlasmaPy/PlasmaPy/tree/main/docs/_static
 .. |docs/_static| replace:: :file:`docs/_static`
 
-.. _`docs/_static/sphinx_rtd_overrides.css`: https://github.com/PlasmaPy/PlasmaPy/blob/main/docs/_static/rtd_theme_overrides.css
-.. |docs/_static/sphinx_rtd_overrides.css| replace:: :file:`docs/_static/sphinx_rtd_overrides.css`
+.. _`docs/_static/css`: https://github.com/PlasmaPy/PlasmaPy/tree/main/docs/_static/css
+.. |docs/_static/css| replace:: :file:`docs/_static/css`
 
 .. _`docs/api_static`: https://github.com/PlasmaPy/PlasmaPy/tree/main/docs/api_static
 .. |docs/api_static| replace:: :file:`docs/api_static`
@@ -185,11 +192,23 @@
 .. _`docs/bibliography.bib`: https://github.com/PlasmaPy/PlasmaPy/blob/main/docs/bibliography.bib
 .. |docs/bibliography.bib| replace:: :file:`docs/bibliography.bib`
 
+.. _h5py: https://www.h5py.org/
+.. |h5py| replace:: `h5py`
+
 .. _`IPython.sphinxext.ipython_console_highlighting`: https://ipython.readthedocs.io/en/stable/sphinxext.html?highlight=IPython.sphinxext.ipython_console_highlighting#ipython-sphinx-directive-module
 .. |IPython.sphinxext.ipython_console_highlighting| replace:: `IPython.sphinxext.ipython_console_highlighting`
 
+.. _lmfit: https://lmfit.github.io/lmfit-py/
+.. |lmfit| replace:: `lmfit`
+
+.. _mpmath: https://mpmath.org/doc/current/
+.. |mpmath| replace:: `mpmath`
+
 .. _nbsphinx: https://nbsphinx.readthedocs.io
 .. |nbsphinx| replace:: `nbsphinx`
+
+.. _numba: https://numba.readthedocs.io
+.. |numba| replace:: `numba`
 
 .. _`setup.cfg`: https://github.com/PlasmaPy/PlasmaPy/blob/main/setup.cfg
 .. |setup.cfg| replace:: :file:`setup.cfg`
@@ -208,3 +227,12 @@
 
 .. _`sphinx-hoverxref`: https://sphinx-hoverxref.readthedocs.io
 .. |sphinx-hoverxref| replace:: `sphinx-hoverxref`
+
+.. _`sphinx-issues`: https://github.com/sloria/sphinx-issues
+.. |sphinx-issues| replace:: `sphinx-issues`
+
+.. _`sphinx-notfound-page`: https://sphinx-notfound-page.readthedocs.io
+.. |sphinx-notfound-page| replace:: `sphinx-notfound-page`
+
+.. _xarray: https://docs.xarray.dev
+.. |xarray| replace:: `xarray`
