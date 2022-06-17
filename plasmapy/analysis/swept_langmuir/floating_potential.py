@@ -43,7 +43,7 @@ def find_floating_potential(
 
     current: `numpy.ndarray`
         1-D numpy array of probe current (should be in amperes) corresponding
-        to the :data:`voltage` array
+        to the ``voltage`` array
 
     threshold: positive, non-zero `int`
         Max allowed index distance between crossing-points before a new
@@ -67,7 +67,7 @@ def find_floating_potential(
 
     fit_type: str
         The type of curve to be fitted to the Langmuir trace,  ``"linear"`` or
-        ``"exponential"`` (Default).  This selects which `FitFunction` class
+        ``"exponential"`` (Default).  This selects which ``FitFunction`` class
         should be applied to the trace.
 
         +-------------+----------------------------------------------------------+
@@ -79,10 +79,10 @@ def find_floating_potential(
     Returns
     -------
     vf: `float` or `numpy.nan`
-        The calculated floating potential (same units as the `voltage` array).
+        The calculated floating potential (same units as the ``voltage`` array).
         Returns `numpy.nan` if the floating potential can not be determined.
         How :math:`V_f` is calculated depends on the fit function.  This is
-        described in the `root_solve()` method of the relevant fit function
+        described in the ``root_solve()`` method of the relevant fit function
         (e.g. the
         :meth:`~plasmapy.analysis.fit_functions.ExponentialPlusOffset.root_solve`
         method of `~plasmapy.analysis.fit_functions.ExponentialPlusOffset`).
@@ -91,7 +91,7 @@ def find_floating_potential(
         The uncertainty associated with the floating potential calculation
         (units same as ``vf``).  Returns `numpy.nan` if the floating potential
         can not be determined.  Like :math:`V_f`:, the calculation depends on
-        the applied fit function.  The `root_solve()` method also describes
+        the applied fit function.  The ``root_solve()`` method also describes
         how this is calculated.
 
     rsq: `float`
@@ -105,7 +105,7 @@ def find_floating_potential(
     func: sub-class of `~plasmapy.analysis.fit_functions.AbstractFitFunction`
         The callable function :math:`f(x)` representing the fit and its results.
 
-    islands: `List[slice]`
+    islands: ``List[slice]``
         List of `slice` objects representing the indices of the identified
         crossing-islands.
 
@@ -163,19 +163,16 @@ def find_floating_potential(
     # check voltage and current arrays
     voltage, current = check_sweep(voltage, current, strip_units=True)
 
-    # condition kwarg threshold
-    if isinstance(threshold, numbers.Integral):
-        if threshold < 1:
-            raise ValueError(
-                f"Keyword 'threshold' has value ({threshold}) less than 1, "
-                f"value must be an int >= 1."
-            )
-    else:
+    if not isinstance(threshold, numbers.Integral):
         raise TypeError(
             f"Keyword 'threshold' is of type {type(threshold)}, expected an int "
             f"int >= 1."
         )
-
+    elif threshold < 1:
+        raise ValueError(
+            f"Keyword 'threshold' has value ({threshold}) less than 1, "
+            f"value must be an int >= 1."
+        )
     # condition min_points
     if min_points is None:
         min_points = int(np.max([5, np.around(min_point_factor * voltage.size)]))
@@ -196,7 +193,7 @@ def find_floating_potential(
 
     # find possible crossing points (cp)
     lower_vals = current < 0
-    upper_vals = 0 < current
+    upper_vals = current > 0
     cp_exact = (current == 0.0).nonzero()[0]
     cp_low2high = np.logical_and(np.roll(lower_vals, 1), upper_vals).nonzero()[0]
     cp_high2low = np.logical_and(np.roll(lower_vals, -1), upper_vals).nonzero()[0]
@@ -216,9 +213,7 @@ def find_floating_potential(
     threshold_indices = np.where(cp_intervals > threshold)[0]
     n_islands = threshold_indices.size + 1
 
-    if np.isinf(min_points):
-        rtn["islands"] = [slice(cp_candidates[0], cp_candidates[-1] + 1)]
-    elif n_islands == 1:
+    if np.isinf(min_points) or n_islands == 1:
         rtn["islands"] = [slice(cp_candidates[0], cp_candidates[-1] + 1)]
     else:
         # There are multiple crossing points
@@ -228,9 +223,9 @@ def find_floating_potential(
         isl_stop = np.concatenate(
             (cp_candidates[threshold_indices] + 1, [cp_candidates[-1] + 1])
         )
-        rtn["islands"] = []
-        for start, stop in zip(isl_start, isl_stop):
-            rtn["islands"].append(slice(start, stop))
+        rtn["islands"] = [
+            slice(start, stop) for start, stop in zip(isl_start, isl_stop)
+        ]
 
         # do islands fall within the min_points window?
         isl_window = (
@@ -260,12 +255,10 @@ def find_floating_potential(
             ipad_2_start = ipad_2_stop = int(np.ceil(-iadd / 2.0))
             if istart - ipad_2_start < 0:
                 ipad_2_stop += ipad_2_start - istart
-                ipad_2_start = 0
                 istart = 0
             else:
                 istart -= ipad_2_start
-                ipad_2_start = 0
-
+            ipad_2_start = 0
             # pad rear
             if ((current.size - 1) - (istop + ipad_2_stop)) < 0:
                 ipad_2_start += ipad_2_stop - (current.size - 1 - istop)
@@ -299,4 +292,7 @@ def find_floating_potential(
 
 
 find_vf_ = find_floating_potential
-"""Alias to :func:`find_floating_potential`."""
+"""
+Alias to
+:func:`~plasmapy.analysis.swept_langmuir.floating_potential.find_floating_potential`.
+"""

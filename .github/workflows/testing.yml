@@ -32,11 +32,11 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v2.4.0
+      uses: actions/checkout@v3
       with:
         fetch-depth: 0
     - name: Set up Python
-      uses: actions/setup-python@v2.3.1
+      uses: actions/setup-python@v4
       with:
         python-version: ${{ matrix.python }}
     - name: Install Python dependencies
@@ -52,15 +52,10 @@ jobs:
       matrix:
         include:
 
-        - name: Python 3.7 with minimal dependencies
+        - name: Python 3.8 with minimal dependencies
           os: ubuntu-latest
-          python: 3.7
-          toxenv: py37-all-minimal
-
-        - name: Python 3.7
-          os: ubuntu-latest
-          python: 3.7
-          toxenv: py37-all
+          python: 3.8
+          toxenv: py38-all-minimal
 
         - name: Python 3.8, all tests, code coverage
           os: ubuntu-latest
@@ -83,14 +78,13 @@ jobs:
           python: 3.9
           toxenv: py39
 
-
     steps:
     - name: Checkout code
-      uses: actions/checkout@v2.4.0
+      uses: actions/checkout@v3
       with:
         fetch-depth: 0
     - name: Set up Python
-      uses: actions/setup-python@v2.3.1
+      uses: actions/setup-python@v4
       with:
         python-version: ${{ matrix.python }}
     - name: Install Python dependencies
@@ -102,7 +96,7 @@ jobs:
       run: tox ${{ matrix.toxargs }} -e ${{ matrix.toxenv }} -- ${{ matrix.toxposargs }}
     - name: Upload coverage to codecov
       if: ${{ contains(matrix.toxenv,'-cov') }}
-      uses: codecov/codecov-action@v2.1.0
+      uses: codecov/codecov-action@v3
       with:
         file: ./coverage.xml
   documentation:
@@ -112,11 +106,11 @@ jobs:
       fail-fast: false
     steps:
     - name: Checkout code
-      uses: actions/checkout@v2.4.0
+      uses: actions/checkout@v3
       with:
         fetch-depth: 0
     - name: Set up Python
-      uses: actions/setup-python@v2.3.1
+      uses: actions/setup-python@v4
       with:
         python-version: 3.8
     - name: Install Python dependencies
@@ -124,7 +118,25 @@ jobs:
     - name: Install language-pack-fr and tzdata
       run: sudo apt-get install graphviz pandoc
     - name: Run tests
-      run: tox  -e build_docs -- -q
+      run: tox -e build_docs -- -q
+  codespell:
+    name: codespell
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: 3.9
+    - name: Install Python dependencies
+      run: python -m pip install --progress-bar off --upgrade tox
+    - name: Run tests
+      run: tox -e codespell -q
   build-n-publish:
     name: Packaging
     runs-on: ubuntu-18.04
@@ -132,15 +144,15 @@ jobs:
     - comprehensive-tests
     - documentation
     steps:
-    - uses: actions/checkout@v2.4.0
+    - uses: actions/checkout@v3
     - name: Get history and tags for SCM versioning to work
       run: |
         git fetch --prune --unshallow
         git fetch --depth=1 origin +refs/tags/*:refs/tags/*
-    - name: Set up Python 3.7
-      uses: actions/setup-python@v2.3.1
+    - name: Set up Python 3.8
+      uses: actions/setup-python@v4
       with:
-        python-version: 3.7
+        python-version: 3.8
     - name: Install requirements
       run: |
         pip install --progress-bar off --upgrade pip
@@ -161,3 +173,21 @@ jobs:
       uses: pypa/gh-action-pypi-publish@master
       with:
         password: ${{ secrets.pypi_access_token }}
+  import-plasmapy:
+    name: Importing PlasmaPy
+    runs-on: windows-latest
+    strategy:
+      fail-fast: false
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: 3.8
+    - name: Install Python dependencies
+      run: python -m pip install --progress-bar off --upgrade tox
+    - name: Import PlasmaPy
+      run: tox -e py38-minimal-pypi-import

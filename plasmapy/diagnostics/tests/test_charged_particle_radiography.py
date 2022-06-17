@@ -7,7 +7,6 @@ import astropy.units as u
 import numpy as np
 import os
 import pytest
-import warnings
 
 from scipy.special import erf
 
@@ -43,7 +42,7 @@ def _test_grid(
         as start and stop respectively. The default is 1 cm.
     num : int or list of three ints
         The number of points in each direction (or list of one for each dimension).
-        Passed to the grid cosntructor as the num argument. The default is 100.
+        Passed to the grid constructor as the num argument. The default is 100.
 
     E0, B0, phi0 : u.Quantities
         Scaling quantities used in the various examples
@@ -104,7 +103,7 @@ def _test_grid(
             b = L / 2
         radius = np.linalg.norm(grid.grid, axis=3)
         arg = (radius / a).to(u.dimensionless_unscaled)
-        potential = phi0 * np.exp(-(arg ** 2))
+        potential = phi0 * np.exp(-(arg**2))
 
         Ex, Ey, Ez = np.gradient(potential, grid.dax0, grid.dax1, grid.dax2)
 
@@ -134,7 +133,7 @@ def _test_grid(
 def run_1D_example(name):
     """
     Run a simulation through an example with parameters optimized to
-    sum up to a lineout along x. The goal is to run a realtively fast
+    sum up to a lineout along x. The goal is to run a relatively fast
     sim with a quasi-1D field grid that can then be summed to get good
     enough statistics to use as a test.
     """
@@ -271,7 +270,7 @@ def test_input_validation():
         sim = cpr.Tracker(grid, source, detector, verbose=False)
     Ex[0, 0, 0] = 0 * u.V / u.m
 
-    # Check what happens if a value is large realtive to the rest of the array
+    # Check what happens if a value is large relative to the rest of the array
     Ex[0, 0, 0] = 0.5 * np.max(Ex)
     grid.add_quantities(E_x=Ex)
     # with pytest.raises(ValueError):
@@ -388,7 +387,7 @@ def test_load_particles():
     with pytest.raises(ValueError):
         sim.load_particles(x, v)
 
-    # Test creating particles with explict keywords
+    # Test creating particles with explicit keywords
     x = sim.x * u.m
     v = sim.v * u.m / u.s
 
@@ -434,13 +433,13 @@ def test_run_options():
         sim.run(field_weighting="nearest neighbor", dt=1e-12 * u.s)
 
     # Test extreme deflections -> warns user
-    # This requires instatiating a whole new example field with a really
+    # This requires instantiating a whole new example field with a really
     # big B-field
     grid = _test_grid("constant_bz", num=50, B0=250 * u.T)
     source = (0 * u.mm, -10 * u.mm, 0 * u.mm)
     detector = (0 * u.mm, 200 * u.mm, 0 * u.mm)
 
-    # Expectwarnings because these fields aren't well-behaved at the edges
+    # Expect warnings because these fields aren't well-behaved at the edges
     with pytest.warns(
         RuntimeWarning, match="Fields should go to zero at edges of grid to avoid "
     ):
@@ -509,7 +508,7 @@ class TestSyntheticRadiograph:
         Test warning when less than half the particles reach the detector plane.
         """
         sim_results = self.sim_results.copy()
-        sim_results["nparticles"] = 3 * sim_results["nparticles"]
+        sim_results["nparticles"] *= 3
         with pytest.warns(RuntimeWarning):
             cpr.synthetic_radiograph(sim_results)
 
@@ -760,7 +759,7 @@ def test_add_wire_mesh():
     # Test a circular mesh
     run_mesh_example(extent=1 * u.mm)
 
-    # Test providng hdir
+    # Test providing hdir
     run_mesh_example(mesh_hdir=np.array([0.5, 0, 0.5]))
 
     # Test providing hdir and vdir
@@ -774,8 +773,8 @@ def test_add_wire_mesh():
     with pytest.raises(ValueError):
         run_mesh_example(extent=(1 * u.mm, 2 * u.mm, 3 * u.mm))
 
-    # Test wire mesh completely blocks all particles (in thise case because
-    # the wire diameter is absurdely large)
+    # Test wire mesh completely blocks all particles (in this case because
+    # the wire diameter is absurdly large)
     with pytest.raises(ValueError):
         run_mesh_example(wire_diameter=5 * u.mm)
 
@@ -830,10 +829,10 @@ def test_add_wire_mesh():
     dx = np.abs(size[0][1] - size[0][0]).to(u.mm).value / bins[0]
     fnyquist = int(bins[0] / 2)
     freqs = np.fft.fftfreq(h.size, d=dx)
-    freqs = freqs[0:fnyquist]
+    freqs = freqs[:fnyquist]
     # Calculate the positive frequency power spectrum
     pspect = np.abs(np.fft.fft(1 / line)) ** 2
-    pspect = pspect[0:fnyquist]
+    pspect = pspect[:fnyquist]
     pspect = np.where(np.abs(freqs) < 0.1, 0, pspect)  # Mask the low frequencies
 
     # Measured spacing is the inverse of the maximum spatial frequency
@@ -861,20 +860,3 @@ def test_add_wire_mesh():
 
     # Verify that the spacing is correct by checking the FFT
     assert np.isclose(measured_spacing, true_spacing, 0.5)
-
-
-if __name__ == "__main__":
-    """
-    test_coordinate_systems()
-    test_input_validation()
-    test_1D_deflections()
-    test_init()
-    test_create_particles()
-    test_load_particles()
-    test_run_options()
-    test_synthetic_radiograph()
-    test_add_wire_mesh()
-    test_gaussian_sphere_analytical_comparison()
-    test_cannot_modify_simulation_after_running()
-    """
-    pass

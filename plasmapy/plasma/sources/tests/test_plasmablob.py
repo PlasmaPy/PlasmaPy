@@ -48,10 +48,10 @@ def test_Plasma3D_setup(grid_dimensions, expected_size):
 
     # Core variable units and shapes
     assert test_plasma.density.size == expected_size
-    assert test_plasma.density.si.unit == u.kg / u.m ** 3
+    assert test_plasma.density.si.unit == u.kg / u.m**3
 
     assert test_plasma.momentum.size == 3 * expected_size
-    assert test_plasma.momentum.si.unit == u.kg / (u.m ** 2 * u.s)
+    assert test_plasma.momentum.si.unit == u.kg / (u.m**2 * u.s)
 
     assert test_plasma.pressure.size == expected_size
     assert test_plasma.pressure.si.unit == u.Pa
@@ -78,8 +78,8 @@ def test_Plasma3D_derived_vars():
     )
 
     # Set an arbitrary uniform values throughout the plasma
-    test_plasma.density[...] = 2.0 * u.kg / u.m ** 3
-    test_plasma.momentum[...] = 10.0 * u.kg / (u.m ** 2 * u.s)
+    test_plasma.density[...] = 2.0 * u.kg / u.m**3
+    test_plasma.momentum[...] = 10.0 * u.kg / (u.m**2 * u.s)
     test_plasma.pressure[...] = 1 * u.Pa
     test_plasma.magnetic_field[...] = 0.01 * u.T
     test_plasma.electric_field[...] = 0.01 * u.V / u.m
@@ -141,7 +141,7 @@ class Test_PlasmaBlobRegimes:
         """
 
         T_e = 25 * 15e3 * u.K
-        n_e = 1e26 * u.cm ** -3
+        n_e = 1e26 * u.cm**-3
         Z = 2.0 * u.dimensionless_unscaled
         particle = "p"
         blob = plasmablob.PlasmaBlob(T_e=T_e, n_e=n_e, Z=Z, particle=particle)
@@ -166,7 +166,7 @@ class Test_PlasmaBlobRegimes:
         """
 
         T_e = 5 * 15e3 * u.K
-        n_e = 1e26 * u.cm ** -3
+        n_e = 1e26 * u.cm**-3
         Z = 3.0 * u.dimensionless_unscaled
         particle = "p"
         blob = plasmablob.PlasmaBlob(T_e=T_e, n_e=n_e, Z=Z, particle=particle)
@@ -192,7 +192,7 @@ class Test_PlasmaBlobRegimes:
         """
 
         T_e = 15 * 11e3 * u.K
-        n_e = 1e15 * u.cm ** -3
+        n_e = 1e15 * u.cm**-3
         Z = 2.5 * u.dimensionless_unscaled
         particle = "p"
         with pytest.warns(
@@ -218,7 +218,7 @@ class Test_PlasmaBlobRegimes:
         """
 
         T_e = 10 * 11e3 * u.K
-        n_e = 1e20 * u.cm ** -3
+        n_e = 1e20 * u.cm**-3
         Z = 2.5 * u.dimensionless_unscaled
         particle = "p"
         blob = plasmablob.PlasmaBlob(T_e=T_e, n_e=n_e, Z=Z, particle=particle)
@@ -246,7 +246,7 @@ class Test_PlasmaBlobRegimes:
         """
 
         T_e = 6 * 15e3 * u.K
-        n_e = 1e26 * u.cm ** -3
+        n_e = 1e26 * u.cm**-3
         Z = 3.0 * u.dimensionless_unscaled
         particle = "p"
         blob = plasmablob.PlasmaBlob(T_e=T_e, n_e=n_e, Z=Z, particle=particle)
@@ -272,7 +272,7 @@ class Test_PlasmaBlobRegimes:
         """
 
         T_e = 5 * 15e3 * u.K
-        n_e = 1e25 * u.cm ** -3
+        n_e = 1e25 * u.cm**-3
         Z = 2.0 * u.dimensionless_unscaled
         particle = "p"
         blob = plasmablob.PlasmaBlob(T_e=T_e, n_e=n_e, Z=Z, particle=particle)
@@ -294,7 +294,7 @@ class Test_PlasmaBlob:
     def setup_class(self):
         """initializing parameters for tests"""
         self.T_e = 5 * 11e3 * u.K
-        self.n_e = 1e23 * u.cm ** -3
+        self.n_e = 1e23 * u.cm**-3
         self.Z = 2.5 * u.dimensionless_unscaled
         self.particle = "p"
         self.blob = plasmablob.PlasmaBlob(
