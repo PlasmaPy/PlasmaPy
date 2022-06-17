@@ -1,0 +1,2 @@
+Exposed `plasmapy.formulary.radiation` and functions therein to the
+`plasmapy.formulary` namespace.
