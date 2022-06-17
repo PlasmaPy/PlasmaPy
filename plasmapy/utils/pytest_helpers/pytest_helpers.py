@@ -706,7 +706,7 @@ def assert_can_handle_nparray(
             unit = u.eV
             magnitude = 1.0
         elif param_name in ["n", "n_i", "n_e", "density"]:
-            unit = u.m ** -3
+            unit = u.m**-3
             magnitude = 1e20
         elif param_name == "B":
             unit = u.G
@@ -721,7 +721,7 @@ def assert_can_handle_nparray(
             unit = u.m
             magnitude = 1.0
         elif param_name == "k":
-            unit = u.m ** -1
+            unit = u.m**-1
             magnitude = 1.0
 
         # else, last resort, if it has a default argument, go with that:

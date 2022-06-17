@@ -467,7 +467,7 @@ class Tracker:
             ] = False
         # Handle the case where the mesh is circular
         else:
-            loc_rad = np.sqrt(xloc ** 2 + yloc ** 2)
+            loc_rad = np.sqrt(xloc**2 + yloc**2)
             hit[loc_rad > radius] = False
 
             # In the case of a circular mesh, also create a round wire along the
@@ -529,7 +529,7 @@ class Tracker:
         n_per = np.floor(np.sqrt(self.nparticles)).astype(np.int32)
 
         # Set new nparticles to be a perfect square
-        self.nparticles = n_per ** 2
+        self.nparticles = n_per**2
 
         # Create an imaginary grid positioned 1 unit from the source
         # and spanning max_theta at the corners
@@ -539,7 +539,7 @@ class Tracker:
 
         # calculate the angles from the source for each point in
         # the grid.
-        theta = np.arctan(np.sqrt(harr ** 2 + varr ** 2))
+        theta = np.arctan(np.sqrt(harr**2 + varr**2))
         phi = np.arctan2(varr, harr)
 
         return theta.flatten(), phi.flatten()
@@ -626,7 +626,7 @@ class Tracker:
             self.max_theta = max_theta.to(u.rad).value
 
         # Calculate the velocity corresponding to the particle energy
-        ER = self.particle_energy * 1.6e-19 / (self.m * self._c ** 2)
+        ER = self.particle_energy * 1.6e-19 / (self.m * self._c**2)
         v0 = self._c * np.sqrt(1 - 1 / (ER + 1) ** 2)
 
         if distribution == "monte-carlo":
@@ -747,7 +747,7 @@ class Tracker:
 
         # If not, compute a number of possible timesteps
         # Compute the cyclotron gyroperiod
-        Bmag = np.max(np.sqrt(Bx ** 2 + By ** 2 + Bz ** 2)).to(u.T).value
+        Bmag = np.max(np.sqrt(Bx**2 + By**2 + Bz**2)).to(u.T).value
 
         # Compute the gyroperiod
         if Bmag == 0:
@@ -947,20 +947,20 @@ class Tracker:
         else:
             still_on = 0.0
 
-        if self.fract_entered > 0.1 and still_on < 0.001:
-            # Warn user if < 10% of the particles ended up on the grid
-            if self.num_entered < 0.1 * self.nparticles:
-                warnings.warn(
-                    f"Only {100*self.num_entered/self.nparticles:.2f}% of "
-                    "particles entered the field grid: consider "
-                    "decreasing the max_theta to increase this "
-                    "number.",
-                    RuntimeWarning,
-                )
-
-            return True
-        else:
+        if self.fract_entered <= 0.1 or still_on >= 0.001:
             return False
+
+        # Warn user if < 10% of the particles ended up on the grid
+        if self.num_entered < 0.1 * self.nparticles:
+            warnings.warn(
+                f"Only {100*self.num_entered/self.nparticles:.2f}% of "
+                "particles entered the field grid: consider "
+                "decreasing the max_theta to increase this "
+                "number.",
+                RuntimeWarning,
+            )
+
+        return True
 
     def run(
         self,
@@ -1015,11 +1015,8 @@ class Tracker:
                 f"{field_weightings}",
             )
 
-        if dt is None:
-            # Set dt as an infinite range by default (auto dt with no restrictions)
-            self.dt = np.array([0.0, np.inf]) * u.s
-        else:
-            self.dt = dt
+        # By default, set dt as an infinite range (auto dt with no restrictions)
+        self.dt = np.array([0.0, np.inf]) * u.s if dt is None else dt
         self.dt = (self.dt).to(u.s).value
 
         # Check to make sure particles have already been generated
@@ -1201,8 +1198,7 @@ class Tracker:
         v0[:, 1] = np.dot(self.v_init, self.det_hdir)
         v0[:, 2] = np.dot(self.v_init, self.det_vdir)
 
-        # Store output values in a dictionary
-        result_dict = dict(
+        return dict(
             source=self.source,
             detector=self.detector,
             mag=self.mag,
@@ -1215,8 +1211,6 @@ class Tracker:
             y0=y0loc,
             v0=v0,
         )
-
-        return result_dict
 
     def save_results(self, path):
         """

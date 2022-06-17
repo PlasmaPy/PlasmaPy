@@ -28,9 +28,9 @@ from plasmapy.utils.exceptions import PhysicsError
 @particle_input
 def thermal_bremsstrahlung(
     frequencies: u.Hz,
-    n_e: u.m ** -3,
+    n_e: u.m**-3,
     T_e: u.K,
-    n_i: u.m ** -3 = None,
+    n_i: u.m**-3 = None,
     ion_species: Particle = "H+",
     kmax: u.m = None,
 ) -> np.ndarray:
@@ -132,22 +132,22 @@ def thermal_bremsstrahlung(
     c1 = (
         (8 / 3)
         * np.sqrt(2 / np.pi)
-        * (const.e.si ** 2 / (4 * np.pi * const.eps0.si)) ** 3
+        * (const.e.si**2 / (4 * np.pi * const.eps0.si)) ** 3
         * 1
-        / (const.m_e.si * const.c.si ** 2) ** 1.5
+        / (const.m_e.si * const.c.si**2) ** 1.5
     )
 
     Zi = ion_species.charge_number
     c2 = (
-        np.sqrt(1 - ω_pe ** 2 / ω ** 2)
-        * Zi ** 2
+        np.sqrt(1 - ω_pe**2 / ω**2)
+        * Zi**2
         * n_i
         * n_e
         / np.sqrt(const.k_B.si * T_e)
     )
 
     # Dimensionless argument for exponential integral
-    arg = 0.5 * ω ** 2 * const.m_e.si / (kmax ** 2 * const.k_B.si * T_e) / u.rad ** 2
+    arg = 0.5 * ω**2 * const.m_e.si / (kmax**2 * const.k_B.si * T_e) / u.rad**2
     # Remove units, get ndarray of values
     arg = (arg.to(u.dimensionless_unscaled)).value
 

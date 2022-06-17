@@ -67,6 +67,7 @@ in parentheses are `ORCID author identifiers <https://orcid.org>`__.
 * :user:`Stuart Mumford <Cadair>` (:orcid:`0000-0003-4217-4642`)
 * :user:`Joshua Munn <jams2>`
 * :user:`Nick Murphy <namurphy>` (:orcid:`0000-0001-6628-8033`)
+* :user:`jota33` (:orcid:`0000-0001-5394-9445`)
 * :user:`Nismirno`
 * :user:`nrb1324`
 * :user:`Tulasi Parashar <tulasinandan>` (:orcid:`0000-0003-0602-8381`)

@@ -127,6 +127,7 @@ intersphinx_mapping = {
     ),
     "sphinx": ("https://www.sphinx-doc.org/en/master/", None),
     "numba": ("https://numba.readthedocs.io/en/stable/", None),
+    "lmfit": ("https://lmfit.github.io/lmfit-py/", None),
 }
 
 hoverxref_intersphinx = [
@@ -140,6 +141,7 @@ hoverxref_intersphinx = [
     "sphinx_automodapi",
     "sphinx",
     "numba",
+    "lmfit",
 ]
 
 autoclass_content = "both"
@@ -191,7 +193,7 @@ with open("common_links.rst") as cl:
 #
 # This is also used if you do content translation via gettext catalogs.
 # Usually you set "language" from the command line for these cases.
-language = None
+language = "en"
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
@@ -294,7 +296,7 @@ hoverxref_role_types = {
 
 extlinks = {
     "orcid": ("https://orcid.org/%s", "%s"),
-    "wikipedia": ("https://en.wikipedia.org/wiki/", "%s"),
+    "wikipedia": ("https://en.wikipedia.org/wiki/%s", "%s"),
 }
 
 # Specify patterns to ignore when doing a nitpicky documentation build.

@@ -159,7 +159,7 @@ def relativistic_energy(m: u.kg, v: u.m / u.s) -> u.Joule:
     ValueError: The argument 'm' to function relativistic_energy() can not contain negative numbers.
     """
     γ = Lorentz_factor(v)
-    return γ * m * c ** 2
+    return γ * m * c**2
 
 
 class RelativisticBody:
@@ -290,7 +290,7 @@ class RelativisticBody:
         -------
         ~astropy.units.Quantity
         """
-        return self.mass * c ** 2
+        return self.mass * c**2
 
     @property
     def total_energy(self) -> u.J:
@@ -302,7 +302,7 @@ class RelativisticBody:
         -------
         ~astropy.units.Quantity
         """
-        return np.sqrt(self.momentum ** 2 * c ** 2 + self.mass_energy ** 2)
+        return np.sqrt(self.momentum**2 * c**2 + self.mass_energy**2)
 
     @property
     def kinetic_energy(self) -> u.J:
@@ -337,7 +337,7 @@ class RelativisticBody:
         -------
         ~astropy.units.Quantity
         """
-        return self.momentum / np.sqrt(self.mass ** 2 - (self.momentum / c) ** 2)
+        return self.momentum / np.sqrt(self.mass**2 - (self.momentum / c) ** 2)
 
     @property
     def lorentz_factor(self) -> Real:
@@ -375,7 +375,7 @@ class RelativisticBody:
     @total_energy.setter
     #    @validate_quantities(E={"can_be_negative": False})
     def total_energy(self, E_tot: u.J):
-        self._momentum = np.sqrt(E_tot ** 2 - self.mass_energy ** 2) / c
+        self._momentum = np.sqrt(E_tot**2 - self.mass_energy**2) / c
 
     @v_over_c.setter
     def v_over_c(self, v_over_c_: Integral):
@@ -400,7 +400,7 @@ class RelativisticBody:
 
         if γ < 1:
             raise ValueError("The Lorentz factor must be ≥ 1")
-        self.velocity = c * np.sqrt(1 - γ ** -2)
+        self.velocity = c * np.sqrt(1 - γ**-2)
         assert self.velocity <= c
 
     @momentum.setter

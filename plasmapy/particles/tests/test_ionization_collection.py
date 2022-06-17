@@ -57,8 +57,8 @@ tests = {
     },
     "quantities": {
         "inputs": {
-            "H": np.array([10, 90]) * u.m ** -3,
-            "He": np.array([1, 9, 0]) * u.m ** -3,
+            "H": np.array([10, 90]) * u.m**-3,
+            "He": np.array([1, 9, 0]) * u.m**-3,
         }
     },
     "just H": {"inputs": {"H": [0.1, 0.9]}},
@@ -66,19 +66,19 @@ tests = {
     "n0": {
         "inputs": {"He": [1, 0, 0], "H": [1, 0]},
         "abundances": {"H": 1, "He": 0.1},
-        "n0": 1e9 * u.cm ** -3,
+        "n0": 1e9 * u.cm**-3,
     },
     "T_e and n": {
         "inputs": {"H": [0.9, 0.1], "helium": [0.5, 0.3, 0.2]},
         "abundances": {"H": 1, "He": 0.1},
         "T_e": 1e4 * u.K,
-        "n0": 1e15 * u.m ** -3,
+        "n0": 1e15 * u.m**-3,
         "kappa": np.inf,
     },
     "log_abundances": {
         "inputs": {"H": [1, 0], "He": [1, 0, 0]},
         "log_abundances": {"H": 1, "He": 0},
-        "n0": 1e9 * u.cm ** -3,
+        "n0": 1e9 * u.cm**-3,
     },
     "elements & isotopes": {
         "inputs": {
@@ -87,7 +87,7 @@ tests = {
             "He-4": [0.29, 0.69, 0.02],
         },
         "abundances": {"H": 1, "He-3": 1e-7, "He-4": 0.1},
-        "n0": 1e12 * u.m ** -3,
+        "n0": 1e12 * u.m**-3,
     },
     "ordered elements -> inputs": {"inputs": ["O", "C", "H", "Fe", "Ar"]},
     "mixed and unordered elements and isotopes": {
@@ -95,13 +95,13 @@ tests = {
     },
     "number densities -> inputs": {
         "inputs": {
-            "H": np.array([2, 3]) * u.m ** -3,
-            "He": np.array([5, 7, 11]) * u.m ** -3,
+            "H": np.array([2, 3]) * u.m**-3,
+            "He": np.array([5, 7, 11]) * u.m**-3,
         }
     },
     "number densities and n are both inputs": {
-        "inputs": {"H": [0.1, 0.3] * u.cm ** -3},
-        "n0": 1e-5 * u.mm ** -3,
+        "inputs": {"H": [0.1, 0.3] * u.cm**-3},
+        "n0": 1e-5 * u.mm**-3,
     },
 }
 
@@ -415,14 +415,14 @@ class TestIonizationStateCollectionDensities:
             "He": np.array([0.24, 0.37, 0.39]),
         }
         cls.abundances = {"H": 1.0, "He": 0.0835}
-        cls.n = 10 * u.m ** -3
+        cls.n = 10 * u.m**-3
 
         cls.expected_densities = {
-            "H": np.array([8.7, 1.3]) * u.m ** -3,
-            "He": np.array([0.2004, 0.30895, 0.32565]) * u.m ** -3,
+            "H": np.array([8.7, 1.3]) * u.m**-3,
+            "He": np.array([0.2004, 0.30895, 0.32565]) * u.m**-3,
         }
 
-        cls.expected_electron_density = 2.26025 * u.m ** -3
+        cls.expected_electron_density = 2.26025 * u.m**-3
         cls.states = IonizationStateCollection(
             cls.initial_ionfracs, abundances=cls.abundances, n0=cls.n
         )
@@ -453,7 +453,7 @@ class TestIonizationStateCollectionAttributes:
     def setup_class(cls):
         cls.elements = ["H", "He", "Li", "Fe"]
         cls.instance = IonizationStateCollection(cls.elements)
-        cls.new_n = 5.153 * u.cm ** -3
+        cls.new_n = 5.153 * u.cm**-3
 
     @pytest.mark.parametrize("uninitialized_attribute", ["T_e", "n0", "n_e"])
     def test_attribute_defaults_to_nan(self, uninitialized_attribute):
@@ -559,7 +559,7 @@ class TestIonizationStateCollectionAttributes:
             ("H", [0.5, 0.5, 0.0], ValueError),
             ("He", [0.5, 0.5], ValueError),
             ("He", [0.1, 0.9, 0.0, 0.0], ValueError),
-            ("He", [0.9, 0.1, 0.0] * u.m ** -2, ValueError),
+            ("He", [0.9, 0.1, 0.0] * u.m**-2, ValueError),
             ("He", [-0.01, 0.99, 0.02], ValueError),
             ("He", [1.01, -0.02, 0.01], ValueError),
         ],
@@ -666,7 +666,7 @@ class TestIonizationStateCollectionAttributes:
             pytest.fail("Unable to set number density scaling factor attribute")
         if not u.quantity.allclose(self.instance.n0, self.new_n):
             pytest.fail("Number density scaling factor was not set correctly.")
-        if self.instance.n0.unit != u.m ** -3:
+        if self.instance.n0.unit != u.m**-3:
             pytest.fail("Incorrect units for new number density.")
 
     def test_resetting_valid_densities(self):
@@ -751,7 +751,7 @@ class TestIonizationStateCollectionDensityEqualities:
 
         cls.ionic_fractions = {"H": [0.9, 0.1], "He": [0.99, 0.01, 0.0]}
         cls.abundances = {"H": 1, "He": 0.08}
-        cls.n = 5.3 * u.m ** -3
+        cls.n = 5.3 * u.m**-3
         cls.number_densities = {
             element: cls.ionic_fractions[element] * cls.n * cls.abundances[element]
             for element in cls.ionic_fractions
@@ -827,7 +827,7 @@ class TestIonizationStateCollectionDensityEqualities:
 
 def test_number_density_assignment():
     instance = IonizationStateCollection(["H", "He"])
-    number_densities = [2, 3, 5] * u.m ** -3
+    number_densities = [2, 3, 5] * u.m**-3
     instance["He"] = number_densities
 
 

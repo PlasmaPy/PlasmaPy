@@ -50,8 +50,8 @@ class Plasma3D(GenericPlasma):
         self._domain_shape = (len(self._x), len(self._y), len(self._z))
 
         # Initiate core plasma variables
-        self._density = np.zeros(self.domain_shape) * u.kg / u.m ** 3
-        self._momentum = np.zeros((3, *self.domain_shape)) * u.kg / (u.m ** 2 * u.s)
+        self._density = np.zeros(self.domain_shape) * u.kg / u.m**3
+        self._momentum = np.zeros((3, *self.domain_shape)) * u.kg / (u.m**2 * u.s)
         self._pressure = np.zeros(self.domain_shape) * u.Pa
         self._magnetic_field = np.zeros((3, *self.domain_shape)) * u.T
         self._electric_field = np.zeros((3, *self.domain_shape)) * u.V / u.m
