@@ -1,6 +1,6 @@
 """Collections of `~plasmapy.particles.particle_class.Particle` objects."""
 
-__all__ = ["ionic_levels", "ParticleList"]
+__all__ = ["ionic_levels", "ParticleList", "ParticleListLike"]
 
 import astropy.units as u
 import collections
