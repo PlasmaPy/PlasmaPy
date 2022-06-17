@@ -95,8 +95,7 @@ class Characteristic:
 
         """
 
-        b = Characteristic(self.bias[key], self.current[key])
-        return b
+        return Characteristic(self.bias[key], self.current[key])
 
     def __sub__(self, other):
         r"""Support current subtraction"""
@@ -137,11 +136,11 @@ class Characteristic:
             )
         current_unique *= u.A
 
-        if inplace:
-            self.bias = bias_unique
-            self.current = current_unique
-        else:
+        if not inplace:
             return Characteristic(bias_unique, current_unique)
+
+        self.bias = bias_unique
+        self.current = current_unique
 
     def _check_validity(self):
         r"""Check the unit and value validity of the characteristic."""
@@ -207,7 +206,7 @@ class Characteristic:
 )
 def swept_probe_analysis(
     probe_characteristic,
-    probe_area: u.m ** 2,
+    probe_area: u.m**2,
     gas_argument,
     bimaxwellian=False,
     visualize=False,
@@ -625,8 +624,8 @@ def get_ion_saturation_current(probe_characteristic):
     validations_on_return={"can_be_negative": False},
 )
 def get_ion_density_LM(
-    ion_saturation_current: u.A, T_e: u.eV, probe_area: u.m ** 2, gas
-) -> u.m ** -3:
+    ion_saturation_current: u.A, T_e: u.eV, probe_area: u.m**2, gas
+) -> u.m**-3:
     r"""Implement the Langmuir-Mottley (LM) method of obtaining the ion
     density.
 
@@ -668,9 +667,7 @@ def get_ion_density_LM(
     # Calculate the acoustic (Bohm) velocity
     c_s = np.sqrt(T_e / gas)
 
-    n_i = np.abs(ion_saturation_current) / (0.6 * const.e * probe_area * c_s)
-
-    return n_i
+    return np.abs(ion_saturation_current) / (0.6 * const.e * probe_area * c_s)
 
 
 @validate_quantities(
@@ -689,8 +686,8 @@ def get_ion_density_LM(
     validations_on_return={"can_be_negative": False},
 )
 def get_electron_density_LM(
-    electron_saturation_current: u.A, T_e: u.eV, probe_area: u.m ** 2
-) -> u.m ** -3:
+    electron_saturation_current: u.A, T_e: u.eV, probe_area: u.m**2
+) -> u.m**-3:
     r"""Implement the Langmuir-Mottley (LM) method of obtaining the electron
     density.
 
@@ -730,9 +727,7 @@ def get_electron_density_LM(
     # Calculate the thermal electron velocity
     v_th = np.sqrt(8 * T_e / (np.pi * const.m_e))
 
-    n_e = 4 * electron_saturation_current / (probe_area * const.e * v_th)
-
-    return n_e
+    return 4 * electron_saturation_current / (probe_area * const.e * v_th)
 
 
 def extract_exponential_section(probe_characteristic, T_e=None, ion_current=None):
@@ -833,9 +828,7 @@ def extract_ion_section(probe_characteristic):
 
     V_F = get_floating_potential(probe_characteristic)
 
-    ion_section = probe_characteristic[probe_characteristic.bias < V_F]
-
-    return ion_section
+    return probe_characteristic[probe_characteristic.bias < V_F]
 
 
 def get_electron_temperature(
@@ -1141,7 +1134,7 @@ def reduce_bimaxwellian_temperature(T_e: u.eV, hot_fraction: float) -> u.eV:
 
     # Return the electron temperature itself if it is not bi-Maxwellian
     # in the first place.
-    if hot_fraction is None or not np.array(T_e).size > 1:
+    if hot_fraction is None or np.array(T_e).size <= 1:
         return T_e
 
     return T_e[0] * (1 - hot_fraction) + T_e[1] * hot_fraction
@@ -1152,7 +1145,7 @@ def reduce_bimaxwellian_temperature(T_e: u.eV, hot_fraction: float) -> u.eV:
 )
 def get_ion_density_OML(
     probe_characteristic: Characteristic,
-    probe_area: u.m ** 2,
+    probe_area: u.m**2,
     gas,
     visualize=False,
     return_fit=False,
@@ -1224,11 +1217,11 @@ def get_ion_density_OML(
 
     n_i_OML = np.sqrt(
         -slope
-        * u.mA ** 2
+        * u.mA**2
         / u.V
-        * np.pi ** 2
+        * np.pi**2
         * ion.mass
-        / (probe_area ** 2 * const.e ** 3 * 2)
+        / (probe_area**2 * const.e**3 * 2)
     )
 
     if visualize:  # coverage: ignore
@@ -1249,9 +1242,9 @@ def get_ion_density_OML(
             plt.tight_layout()
 
     if return_fit:
-        return n_i_OML.to(u.m ** -3), fit
+        return n_i_OML.to(u.m**-3), fit
 
-    return n_i_OML.to(u.m ** -3)
+    return n_i_OML.to(u.m**-3)
 
 
 def extrapolate_ion_current_OML(probe_characteristic, fit, visualize=False):
@@ -1292,8 +1285,8 @@ def extrapolate_ion_current_OML(probe_characteristic, fit, visualize=False):
             f"and got {type(probe_characteristic)}"
         )
 
-    slope = fit[0] * u.mA ** 2 / u.V
-    offset = fit[1] * u.mA ** 2
+    slope = fit[0] * u.mA**2 / u.V
+    offset = fit[1] * u.mA**2
 
     ion_current = -np.sqrt(
         np.clip(slope * probe_characteristic.bias + offset, 0.0, None)

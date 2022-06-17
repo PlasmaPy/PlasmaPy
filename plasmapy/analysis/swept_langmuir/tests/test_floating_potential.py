@@ -67,7 +67,7 @@ class TestFindFloatingPotential:
 
         assert _sl.helpers.check_sweep is _sl.floating_potential.check_sweep
 
-        with mock.patch(_sl.floating_potential.__name__ + ".check_sweep") as mock_cs:
+        with mock.patch(f"{_sl.floating_potential.__name__}.check_sweep") as mock_cs:
             mock_cs.return_value = varr, carr
             find_floating_potential(voltage=varr, current=carr, fit_type="linear")
 
@@ -216,7 +216,7 @@ class TestFindFloatingPotential:
 
             if val is None:
                 assert rtn_val is None
-            elif key == "func" and val is not None:
+            elif key == "func":
                 assert isinstance(rtn_val, val.__class__)
             elif np.isscalar(val):
                 if np.isnan(val):
@@ -352,7 +352,7 @@ class TestFindFloatingPotential:
 
             if val is None:
                 assert rtn_val is None
-            elif key == "func" and val is not None:
+            elif key == "func":
                 assert isinstance(rtn_val, val.__class__)
             elif np.isscalar(val):
                 if np.isnan(val):

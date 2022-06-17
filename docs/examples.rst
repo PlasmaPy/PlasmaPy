@@ -11,9 +11,9 @@ Getting started
 ---------------
 
 .. nbgallery::
-  :glob:
 
-  notebooks/getting_started/*
+   notebooks/getting_started/units
+   notebooks/getting_started/particles
 
 General
 -------

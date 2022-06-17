@@ -25,7 +25,7 @@ B = 1.0 * u.T
 B_arr = np.array([0.001, 0.002]) * u.T
 B_nanarr = np.array([0.001, np.nan]) * u.T
 
-n_i = 5e19 * u.m ** -3
+n_i = 5e19 * u.m**-3
 
 T_e = 1e6 * u.K
 
@@ -51,14 +51,14 @@ class Test_mass_density:
     @pytest.mark.parametrize(
         "args, kwargs, conditional",
         [
-            ((-1 * u.kg * u.m ** -3, "He"), {}, pytest.raises(ValueError)),
-            ((-1 * u.m ** -3, "He"), {}, pytest.raises(ValueError)),
+            ((-1 * u.kg * u.m**-3, "He"), {}, pytest.raises(ValueError)),
+            ((-1 * u.m**-3, "He"), {}, pytest.raises(ValueError)),
             (("not a Quantity", "He"), {}, pytest.raises(TypeError)),
-            ((1 * u.m ** -3,), {}, pytest.raises(TypeError)),
+            ((1 * u.m**-3,), {}, pytest.raises(TypeError)),
             ((1 * u.J, "He"), {}, pytest.raises(u.UnitTypeError)),
-            ((1 * u.m ** -3, None), {}, pytest.raises(TypeError)),
+            ((1 * u.m**-3, None), {}, pytest.raises(TypeError)),
             (
-                (1 * u.m ** -3, "He"),
+                (1 * u.m**-3, "He"),
                 {"z_ratio": "not a ratio"},
                 pytest.raises(TypeError),
             ),
@@ -71,22 +71,22 @@ class Test_mass_density:
     @pytest.mark.parametrize(
         "args, kwargs, expected",
         [
-            ((1.0 * u.g * u.m ** -3, ""), {}, 1.0e-3 * u.kg * u.m ** -3),
-            ((5.0e12 * u.cm ** -3, "He"), {}, 3.32323849e-8 * u.kg * u.m ** -3),
+            ((1.0 * u.g * u.m**-3, ""), {}, 1.0e-3 * u.kg * u.m**-3),
+            ((5.0e12 * u.cm**-3, "He"), {}, 3.32323849e-8 * u.kg * u.m**-3),
             (
-                (5.0e12 * u.cm ** -3, Particle("He")),
+                (5.0e12 * u.cm**-3, Particle("He")),
                 {},
-                3.32323849e-8 * u.kg * u.m ** -3,
+                3.32323849e-8 * u.kg * u.m**-3,
             ),
             (
-                (5.0e12 * u.cm ** -3, "He"),
+                (5.0e12 * u.cm**-3, "He"),
                 {"z_ratio": 0.5},
-                1.66161925e-08 * u.kg * u.m ** -3,
+                1.66161925e-08 * u.kg * u.m**-3,
             ),
             (
-                (5.0e12 * u.cm ** -3, "He"),
+                (5.0e12 * u.cm**-3, "He"),
                 {"z_ratio": -0.5},
-                1.66161925e-08 * u.kg * u.m ** -3,
+                1.66161925e-08 * u.kg * u.m**-3,
             ),
         ],
     )
@@ -142,7 +142,7 @@ def test_magnetic_pressure():
 def test_magnetic_energy_density():
     r"""Test the magnetic_energy_density function in misc.py."""
 
-    assert magnetic_energy_density(B_arr).unit.is_equivalent(u.J / u.m ** 3)
+    assert magnetic_energy_density(B_arr).unit.is_equivalent(u.J / u.m**3)
 
     assert magnetic_energy_density(B).unit.is_equivalent("J / m3")
 
@@ -185,7 +185,7 @@ def test_Bohm_diffusion():
     T_e = 5000 * u.K
     B = 10 * u.T
 
-    assert (Bohm_diffusion(T_e, B)).unit == u.m ** 2 / u.s
+    assert (Bohm_diffusion(T_e, B)).unit == u.m**2 / u.s
 
     with pytest.warns(u.UnitsWarning):
         Bohm_diffusion(5000, B)
