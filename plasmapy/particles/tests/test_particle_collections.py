@@ -412,7 +412,7 @@ def test_root_mean_square_particle(use_rms_charge, use_rms_mass):
     assert u.isclose(average_particle.charge, expected_average_charge, rtol=1e-14)
 
     if use_rms_mass:
-        expected_average_mass = np.sqrt((proton.mass ** 2 + electron.mass ** 2) / 2)
+        expected_average_mass = np.sqrt((proton.mass**2 + electron.mass**2) / 2)
     else:
         expected_average_mass = (proton.mass + electron.mass) / 2
 

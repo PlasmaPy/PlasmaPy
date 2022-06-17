@@ -260,7 +260,7 @@ class ParticleList(collections.UserList):
         meet categorization criteria.
 
         Return a `list` in which each element will be `True` if the
-        corresponding particle is consistent with the categoziation
+        corresponding particle is consistent with the categorization
         criteria, and `False` otherwise.
 
         Please refer to the documentation of
@@ -386,7 +386,7 @@ class ParticleList(collections.UserList):
 
         def _average(array, weights, use_rms):
             if use_rms:
-                return np.sqrt(np.average(array ** 2, weights=weights))
+                return np.sqrt(np.average(array**2, weights=weights))
             else:
                 return np.average(array, weights=weights)
 

@@ -21,7 +21,7 @@ __all__ += __aliases__
     T_e={"can_be_negative": False, "equivalencies": u.temperature_energy()},
     n_e={"can_be_negative": False},
 )
-def Debye_length(T_e: u.K, n_e: u.m ** -3) -> u.m:
+def Debye_length(T_e: u.K, n_e: u.m**-3) -> u.m:
     r"""Calculate the characteristic decay length for electric fields,
      due to charge screening.
 
@@ -83,7 +83,7 @@ def Debye_length(T_e: u.K, n_e: u.m ** -3) -> u.m:
     <Quantity 0.002182... m>
 
     """
-    return np.sqrt(eps0 * k_B * T_e / (n_e * e ** 2))
+    return np.sqrt(eps0 * k_B * T_e / (n_e * e**2))
 
 
 lambdaD_ = Debye_length
@@ -285,7 +285,7 @@ rhoc_ = gyroradius
     validations_on_return={"equivalencies": u.dimensionless_angles()},
 )
 @particles.particle_input(require="charged")
-def inertial_length(n: u.m ** -3, particle: Particle) -> u.m:
+def inertial_length(n: u.m**-3, particle: Particle) -> u.m:
     r"""
     Calculate a charged particle's inertial length.
 
