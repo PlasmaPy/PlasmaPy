@@ -7,9 +7,7 @@ import scipy.integrate as spint
 from astropy import units as u
 from astropy.constants import k_B, m_e
 
-from plasmapy.formulary.speeds import kappa_thermal_speed, thermal_speed
-
-from ..distribution import (
+from plasmapy.formulary.distribution import (
     kappa_velocity_1D,
     kappa_velocity_3D,
     Maxwellian_1D,
@@ -19,9 +17,10 @@ from ..distribution import (
     Maxwellian_velocity_2D,
     Maxwellian_velocity_3D,
 )
+from plasmapy.formulary.speeds import kappa_thermal_speed, thermal_speed
 
 
-class Test_Maxwellian_1D(object):
+class Test_Maxwellian_1D:
     @classmethod
     def setup_class(self):
         """initializing parameters for tests"""
@@ -89,11 +88,11 @@ class Test_Maxwellian_1D(object):
         """
         std = (
             Maxwellian_1D(self.v_vect, T=self.T_e, particle=self.particle)
-            * self.v_vect ** 2
+            * self.v_vect**2
             * self.dv
         ).sum()
         std = np.sqrt(std)
-        T_distri = (std ** 2 / k_B * m_e).to(u.K)
+        T_distri = (std**2 / k_B * m_e).to(u.K)
         assert np.isclose(T_distri.value, self.T_e.value)
 
     def test_units_no_vTh(self):
@@ -186,7 +185,7 @@ class Test_Maxwellian_1D(object):
         """
         Testing vdrifts with values
         """
-        testVal = ((self.vTh ** 2 * np.pi) ** (-1 / 2)).si.value
+        testVal = ((self.vTh**2 * np.pi) ** (-1 / 2)).si.value
         distFunc = Maxwellian_1D(
             v=self.v,
             T=self.T_e,
@@ -198,7 +197,7 @@ class Test_Maxwellian_1D(object):
         assert np.isclose(distFunc.value, testVal, rtol=1e-5, atol=0.0), errStr
 
 
-class Test_Maxwellian_speed_1D(object):
+class Test_Maxwellian_speed_1D:
     @classmethod
     def setup_class(self):
         """initializing parameters for tests"""
@@ -210,7 +209,7 @@ class Test_Maxwellian_speed_1D(object):
         self.v_drift = 0 * u.m / u.s
         self.v_drift2 = 1e5 * u.m / u.s
         self.distFuncTrue = 1.72940389716217e-27
-        self.distFuncDrift = 2 * (self.vTh ** 2 * np.pi) ** (-1 / 2)
+        self.distFuncDrift = 2 * (self.vTh**2 * np.pi) ** (-1 / 2)
 
     def test_norm(self):
         """
@@ -327,7 +326,7 @@ class Test_Maxwellian_speed_1D(object):
         ), errStr
 
 
-class Test_Maxwellian_velocity_2D(object):
+class Test_Maxwellian_velocity_2D:
     @classmethod
     def setup_class(self):
         """initializing parameters for tests"""
@@ -470,7 +469,7 @@ class Test_Maxwellian_velocity_2D(object):
         """
         Testing vdrifts with values
         """
-        testVal = ((self.vTh ** 2 * np.pi) ** (-1)).si.value
+        testVal = ((self.vTh**2 * np.pi) ** (-1)).si.value
         distFunc = Maxwellian_velocity_2D(
             vx=self.vx,
             vy=self.vy,
@@ -485,7 +484,7 @@ class Test_Maxwellian_velocity_2D(object):
 
 
 @pytest.mark.slow
-class Test_Maxwellian_speed_2D(object):
+class Test_Maxwellian_speed_2D:
     @classmethod
     def setup_class(self):
         """initializing parameters for tests"""
@@ -611,7 +610,7 @@ class Test_Maxwellian_speed_2D(object):
 
 
 @pytest.mark.slow
-class Test_Maxwellian_velocity_3D(object):
+class Test_Maxwellian_velocity_3D:
     @classmethod
     def setup_class(self):
         """initializing parameters for tests"""
@@ -769,7 +768,7 @@ class Test_Maxwellian_velocity_3D(object):
         """
         Testing vdrifts with values
         """
-        testVal = ((self.vTh ** 2 * np.pi) ** (-3 / 2)).si.value
+        testVal = ((self.vTh**2 * np.pi) ** (-3 / 2)).si.value
         distFunc = Maxwellian_velocity_3D(
             vx=self.vx,
             vy=self.vy,
@@ -785,7 +784,7 @@ class Test_Maxwellian_velocity_3D(object):
         assert np.isclose(distFunc.value, testVal, rtol=1e-5, atol=0.0), errStr
 
 
-class Test_Maxwellian_speed_3D(object):
+class Test_Maxwellian_speed_3D:
     @classmethod
     def setup_class(self):
         """initializing parameters for tests"""
@@ -910,7 +909,7 @@ class Test_Maxwellian_speed_3D(object):
             )
 
 
-class Test_kappa_velocity_1D(object):
+class Test_kappa_velocity_1D:
     @classmethod
     def setup_class(self):
         """initializing parameters for tests"""
@@ -1011,11 +1010,11 @@ class Test_kappa_velocity_1D(object):
             kappa_velocity_1D(
                 self.v_vect, T=self.T_e, kappa=self.kappa, particle=self.particle
             )
-            * self.v_vect ** 2
+            * self.v_vect**2
             * self.dv
         ).sum()
         std = np.sqrt(std)
-        T_distri = (std ** 2 / k_B * m_e).to(u.K)
+        T_distri = (std**2 / k_B * m_e).to(u.K)
         assert np.isclose(T_distri.value, self.T_e.value)
 
     def test_units_no_vTh(self):
@@ -1137,7 +1136,7 @@ class Test_kappa_velocity_1D(object):
 
 
 @pytest.mark.slow
-class Test_kappa_velocity_3D(object):
+class Test_kappa_velocity_3D:
     @classmethod
     def setup_class(self):
         """initializing parameters for tests"""

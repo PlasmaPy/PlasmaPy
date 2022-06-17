@@ -18,13 +18,13 @@ TL;DR: use pre-commit
 
 PlasmaPy has a configuration for the `pre-commit framework
 <https://pre-commit.com/>`_ that takes care of style mostly automatically.
-Install it with `pip install pre-commit`, then use `pre-commit install` within
+Install it with ``pip install pre-commit``, then use ``pre-commit install`` within
 the repository.
 
 This will cause pre-commit to download the right versions of linters we use,
 then run an automated style checking suite on every commit.  Do note that this
-works better with a `git add`, then `git commit` workflow than a `git commit
--a` workflow — that way, you can check via `git diff` what the automated
+works better with a ``git add``, then ``git commit`` workflow than a ``git commit
+-a`` workflow — that way, you can check via ``git diff`` what the automated
 changes actually did.
 
 Note that the "Style linters / pre-commit (pull_request)" part of our
@@ -42,13 +42,13 @@ It includes
 * isort_ to automatically sort imports.
 * `nbqa <https://github.com/nbQA-dev/nbQA>`_ to automatically apply the above
   to example notebooks as well.
-* a few tools for `requirements.txt`, `.yml` files and the like.
+* a few tools for :file:`requirements.txt`, :file:`.yml` files and the like.
 
 PlasmaPy Code Style Guide, codified
 -----------------------------------
 
 * PlasmaPy follows the `PEP8 Style Guide for Python Code
-  <https://www.python.org/dev/peps/pep-0008/>`_.  This style choice
+  <https://peps.python.org/pep-0008>`__.  This style choice
   helps ensure that the code will be consistent and readable.
 
   * Line lengths should be chosen to maximize the readability and
@@ -79,11 +79,11 @@ PlasmaPy Code Style Guide, codified
   imports such as ``from ..particles import Particle``.
 
 * Use ``Optional[type]`` for type hinted keyword arguments with a
-  default value of ``None``.
+  default value of `None`.
 
 * There should be at least one pun per 1284 lines of code.
 
-* Avoid using `lambda` to define functions, as this notation may be
+* Avoid using ``lambda`` to define functions, as this notation may be
   unfamiliar to newcomers to Python.
 
 Branches, commits, and pull requests
@@ -106,9 +106,9 @@ branch for the specific feature that you would like to work on:
 
   git branch *your-new-feature*
 
-Descriptive branch names such as `grad-shafranov` or
-`adding-eigenfunction-poetry` are helpful, while vague names like
-`edits` are considered harmful.  After creating your branch locally,
+Descriptive branch names such as ``grad-shafranov`` or
+``adding-eigenfunction-poetry`` are helpful, while vague names like
+``edits`` are considered harmful.  After creating your branch locally,
 let your fork of PlasmaPy know about it by running:
 
 .. code-block:: bash
@@ -168,7 +168,7 @@ GitHub, you are ready to make a pull request.  Go to your fork of
 PlasmaPy in GitHub.  Select "Compare and pull request".  Add a
 descriptive title and some details about your changes.  Then select
 "Create pull request".  Other contributors will then have a chance to
-review the code and offer contructive suggestions.  You can continue
+review the code and offer constructive suggestions.  You can continue
 to edit the pull request by changing the corresponding branch on your
 PlasmaPy fork on GitHub.  After a pull request is merged into the
 code, you may delete the branch you created for that pull request.
@@ -180,7 +180,7 @@ developers and to our future selves.  They provide insight into why we
 chose a particular implementation, and help us avoid past mistakes.
 
 Suggestions on `how to write a git commit message
-<https://chris.beams.io/posts/git-commit/>`_:
+<https://cbea.ms/git-commit>`_:
 
 * Separate subject from body with a blank line
 
@@ -348,10 +348,10 @@ Please note that it is necessary to store notebooks with their outputs stripped
   Currently, reviewers should ensure that submitted notebooks have outputs stripped.
 
 If you have an example notebook that includes packages unavailable in the
-documentation building environment (e.g., `bokeh`) or runs some heavy
+documentation building environment (e.g., ``bokeh``) or runs some heavy
 computation that should not be executed on every commit, *keep the outputs in
-the notebook* but store it in the repository with a `preexecuted_` prefix, e.g.
-`preexecuted_full_3d_mhd_chaotic_turbulence_simulation.ipynb`.
+the notebook* but store it in the repository with a ``preexecuted_`` prefix, e.g.
+:file:`preexecuted_full_3d_mhd_chaotic_turbulence_simulation.ipynb`.
 
 Benchmarks
 ==========

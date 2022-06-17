@@ -9,7 +9,7 @@ from plasmapy.formulary import drifts
 
 class Test_diamagnetic_drift:
     q = 1 * u.C
-    n = 1 / u.m ** 3
+    n = 1 / u.m**3
 
     def test_isothermal_plasma(self):
         r"""
@@ -26,13 +26,13 @@ class Test_diamagnetic_drift:
         )
 
     def test_diamagnetic_drift_1d_arrays(self):
-        dp = u.Quantity([1, 0, 0], unit=u.N / u.m ** 3)
+        dp = u.Quantity([1, 0, 0], unit=u.N / u.m**3)
         B = u.Quantity([0, -1, 0], unit=u.T)
         result = drifts.diamagnetic_drift(2 * dp, 3 * B, self.n, self.q)
         assert_quantity_allclose(result, (2 / 3) * u.Quantity([0, 0, 1], u.m / u.s))
 
     def test_diamagnetic_drift_2d_array(self):
-        dp = u.Quantity([[1, 0, 0], [1, 0, 0], [1, 0, 0]], unit=u.N / u.m ** 3)
+        dp = u.Quantity([[1, 0, 0], [1, 0, 0], [1, 0, 0]], unit=u.N / u.m**3)
         B = -u.Quantity([[0, 1, 0], [0, 1, 0], [0, 1, 0]], unit=u.T)
 
         result = drifts.diamagnetic_drift(2 * dp, 3 * B, self.n, self.q)
@@ -42,7 +42,7 @@ class Test_diamagnetic_drift:
         )
 
     def test_diamagnetic_drift_3d_array(self):
-        dp = u.Quantity([[[1, 0, 0]]], unit=u.N / u.m ** 3)
+        dp = u.Quantity([[[1, 0, 0]]], unit=u.N / u.m**3)
         B = u.Quantity([[[0, -1, 0]]], unit=u.T)
 
         result = drifts.diamagnetic_drift(2 * dp, 3 * B, self.n, self.q)
@@ -54,7 +54,7 @@ class Test_diamagnetic_drift:
         dp = u.Quantity([[1, 0, 0], [1, 0, 0], [1, 0, 0]], unit=u.C)
         B = u.Quantity([[0, 1, 0], [0, 1, 0], [0, 1, 0]], unit=u.kg)
         q = 1 * u.C
-        n = 1 / u.m ** 3
+        n = 1 / u.m**3
 
         with pytest.raises(u.UnitTypeError):
             drifts.diamagnetic_drift(dp, B, n, q)

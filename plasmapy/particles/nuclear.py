@@ -231,9 +231,9 @@ def nuclear_reaction_energy(*args, **kwargs):
                 if particle.element and not particle.isotope:
                     raise ParticleError(errmsg)
 
-                [particles.append(particle) for i in range(multiplier)]
+                particles += [particle] * multiplier
 
-            except Exception:
+            except ParticleError:
                 raise ParticleError(
                     f"{original_item} is not a valid reactant or "
                     "product in a nuclear reaction."
@@ -246,10 +246,7 @@ def nuclear_reaction_energy(*args, **kwargs):
         Find the total number of baryons minus the number of
         antibaryons in a list of particles.
         """
-        total_baryon_number = 0
-        for particle in particles:
-            total_baryon_number += particle.baryon_number
-        return total_baryon_number
+        return sum(particle.baryon_number for particle in particles)
 
     def total_charge(particles: List[Particle]) -> int:
         """
@@ -308,7 +305,7 @@ def nuclear_reaction_energy(*args, **kwargs):
             RHS_list = re.split(r" \+ ", RHS_string)
             reactants = process_particles_list(LHS_list)
             products = process_particles_list(RHS_list)
-        except Exception as ex:
+        except ParticleError as ex:
             raise ParticleError(f"{reaction} is not a valid nuclear reaction.") from ex
 
     elif reactants_products_are_inputs:
@@ -318,7 +315,7 @@ def nuclear_reaction_energy(*args, **kwargs):
             products = process_particles_list(kwargs["products"])
         except TypeError as t:
             raise TypeError(input_err_msg) from t
-        except Exception as e:
+        except ParticleError as e:
             raise ParticleError(errmsg) from e
 
     if total_baryon_number(reactants) != total_baryon_number(products):
