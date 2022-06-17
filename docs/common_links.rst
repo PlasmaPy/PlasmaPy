@@ -20,7 +20,6 @@
 .. |particle_input| replace:: :func:`~plasmapy.particles.decorators.particle_input`
 .. |ParticleLike| replace:: :obj:`~plasmapy.particles.particle_class.ParticleLike`
 .. |ParticleList| replace:: :class:`~plasmapy.particles.particle_collections.ParticleList`
-.. |ParticleListLike| replace:: :obj:`~plasmapy.particles.particle_collections.ParticleListLike`
 
 .. |ChargeError| replace:: :class:`~plasmapy.particles.exceptions.ChargeError`
 .. |InvalidElementError| replace:: :class:`~plasmapy.particles.exceptions.InvalidElementError`
@@ -124,6 +123,7 @@
 .. _MathJax: https://www.mathjax.org
 .. _matplotlib: https://matplotlib.org
 .. _Matrix chat room: https://app.element.io/#/room/#plasmapy:openastronomy.org
+.. _numba: https://numba.readthedocs.io
 .. _numpydoc: https://numpydoc.readthedocs.io/en/latest/format.html#docstring-standard
 .. _NumPy: https://numpy.org
 .. _OpenPMD: https://www.openpmd.org/
@@ -206,9 +206,6 @@
 
 .. _nbsphinx: https://nbsphinx.readthedocs.io
 .. |nbsphinx| replace:: `nbsphinx`
-
-.. _numba: https://numba.readthedocs.io
-.. |numba| replace:: `numba`
 
 .. _`setup.cfg`: https://github.com/PlasmaPy/PlasmaPy/blob/main/setup.cfg
 .. |setup.cfg| replace:: :file:`setup.cfg`
