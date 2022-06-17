@@ -20,6 +20,7 @@
 .. |particle_input| replace:: :func:`~plasmapy.particles.decorators.particle_input`
 .. |ParticleLike| replace:: :obj:`~plasmapy.particles.particle_class.ParticleLike`
 .. |ParticleList| replace:: :class:`~plasmapy.particles.particle_collections.ParticleList`
+.. |ParticleListLike| replace:: :obj:`~plasmapy.particles.particle_collections.ParticleListLike`
 
 .. |ChargeError| replace:: :class:`~plasmapy.particles.exceptions.ChargeError`
 .. |InvalidElementError| replace:: :class:`~plasmapy.particles.exceptions.InvalidElementError`
@@ -101,8 +102,7 @@
 .. _black: https://black.readthedocs.io
 .. _Conda: https://docs.conda.io
 .. _create an issue: https://github.com/PlasmaPy/PlasmaPy/issues/new/choose
-.. _CSS: https://en.wikipedia.org/wiki/CSS
-.. _docstring: https://en.wikipedia.org/wiki/Docstring
+.. _CSS: https://www.w3schools.com:443/css
 .. _DOI: https://www.doi.org
 .. _flake8: https://flake8.pycqa.org/en/latest
 .. _git: https://git-scm.com
@@ -128,7 +128,6 @@
 .. _NumPy: https://numpy.org
 .. _OpenPMD: https://www.openpmd.org/
 .. _pandas: https://pandas.pydata.org
-.. _persistent identifier: https://en.wikipedia.org/wiki/Persistent_identifier
 .. _pip: https://pip.pypa.io
 .. _Plasma Hack Week: https://hack.plasmapy.org
 .. _PlasmaPy: https://www.plasmapy.org
@@ -228,6 +227,12 @@
 
 .. _`sphinx-hoverxref`: https://sphinx-hoverxref.readthedocs.io
 .. |sphinx-hoverxref| replace:: `sphinx-hoverxref`
+
+.. _`sphinx-issues`: https://github.com/sloria/sphinx-issues
+.. |sphinx-issues| replace:: `sphinx-issues`
+
+.. _`sphinx-notfound-page`: https://sphinx-notfound-page.readthedocs.io
+.. |sphinx-notfound-page| replace:: `sphinx-notfound-page`
 
 .. _xarray: https://docs.xarray.dev
 .. |xarray| replace:: `xarray`

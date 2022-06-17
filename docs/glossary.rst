@@ -107,6 +107,12 @@ Glossary
 
       For more complete details, refer to |ParticleLike|.
 
+   particle-list-like
+      An `object` is *particle-list-like* if it is a |ParticleList|, or
+      can be cast into one.
+
+      For more complete details, refer to |ParticleListLike|.
+
    real number
       Any numeric type that represents a real number. This could include
       a `float`, `int`, a dimensionless |Quantity|, or any of the

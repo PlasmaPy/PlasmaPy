@@ -18,6 +18,7 @@ from numba import njit
 from plasmapy import particles
 from plasmapy.formulary import misc
 from plasmapy.particles import Particle
+from plasmapy.particles.exceptions import ChargeError, InvalidParticleError
 from plasmapy.utils.decorators import (
     angular_freq_to_hz,
     bind_lite_func,
@@ -226,7 +227,7 @@ def plasma_frequency_lite(
     },
 )
 @angular_freq_to_hz
-def plasma_frequency(n: u.m ** -3, particle: Particle, z_mean=None) -> u.rad / u.s:
+def plasma_frequency(n: u.m**-3, particle: Particle, z_mean=None) -> u.rad / u.s:
     r"""Calculate the particle plasma frequency.
 
     **Aliases:** `wp_`
@@ -323,14 +324,14 @@ def plasma_frequency(n: u.m ** -3, particle: Particle, z_mean=None) -> u.rad / u
             #               PhysicsWarning)
             try:
                 Z = particles.charge_number(particle)
-            except Exception:
+            except ChargeError:
                 Z = 1
         else:
             # using user provided average ionization
             Z = z_mean
         Z = np.abs(Z)
         # TODO REPLACE WITH Z = np.abs(_grab_charge(particle, z_mean)), some bugs atm
-    except Exception as e:
+    except InvalidParticleError as e:
         raise ValueError(f"Invalid particle, {particle}, in plasma_frequency.") from e
 
     return plasma_frequency_lite(n=n, mass=m, z_mean=Z) * u.rad / u.s
@@ -348,7 +349,7 @@ wp_ = plasma_frequency
     },
 )
 @angular_freq_to_hz
-def lower_hybrid_frequency(B: u.T, n_i: u.m ** -3, ion: Particle) -> u.rad / u.s:
+def lower_hybrid_frequency(B: u.T, n_i: u.m**-3, ion: Particle) -> u.rad / u.s:
     r"""
     Return the lower hybrid frequency.
 
@@ -425,17 +426,13 @@ def lower_hybrid_frequency(B: u.T, n_i: u.m ** -3, ion: Particle) -> u.rad / u.s
     # catch invalid ions.
     try:
         particles.charge_number(ion)
-    except Exception:
+    except InvalidParticleError:
         raise ValueError("Invalid ion in lower_hybrid_frequency.")
 
     omega_ci = gyrofrequency(B, particle=ion)
     omega_pi = plasma_frequency(n_i, particle=ion)
     omega_ce = gyrofrequency(B, particle="e-")
-    omega_lh = ((omega_ci * omega_ce) ** -1 + omega_pi ** -2) ** -0.5
-    # TODO possibly optimize the above line via np.sqrt
-    omega_lh = omega_lh
-
-    return omega_lh
+    return ((omega_ci * omega_ce) ** -1 + omega_pi**-2) ** -0.5
 
 
 wlh_ = lower_hybrid_frequency
@@ -450,7 +447,7 @@ wlh_ = lower_hybrid_frequency
     },
 )
 @angular_freq_to_hz
-def upper_hybrid_frequency(B: u.T, n_e: u.m ** -3) -> u.rad / u.s:
+def upper_hybrid_frequency(B: u.T, n_e: u.m**-3) -> u.rad / u.s:
     r"""
     Return the upper hybrid frequency.
 
@@ -517,7 +514,7 @@ def upper_hybrid_frequency(B: u.T, n_e: u.m ** -3) -> u.rad / u.s:
     """
     omega_pe = plasma_frequency(n=n_e, particle="e-")
     omega_ce = gyrofrequency(B, "e-")
-    return np.sqrt(omega_pe ** 2 + omega_ce ** 2)
+    return np.sqrt(omega_pe**2 + omega_ce**2)
 
 
 wuh_ = upper_hybrid_frequency
