@@ -245,7 +245,7 @@ def test_add_particle_list_and_particle(various_particles):
     """
     new_particle_list = various_particles + electron
     assert new_particle_list[-1] == electron
-    assert new_particle_list[0:-1] == various_particles
+    assert new_particle_list[:-1] == various_particles
     assert isinstance(new_particle_list, ParticleList)
 
 
@@ -412,7 +412,7 @@ def test_root_mean_square_particle(use_rms_charge, use_rms_mass):
     assert u.isclose(average_particle.charge, expected_average_charge, rtol=1e-14)
 
     if use_rms_mass:
-        expected_average_mass = np.sqrt((proton.mass ** 2 + electron.mass ** 2) / 2)
+        expected_average_mass = np.sqrt((proton.mass**2 + electron.mass**2) / 2)
     else:
         expected_average_mass = (proton.mass + electron.mass) / 2
 

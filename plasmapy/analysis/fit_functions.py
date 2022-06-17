@@ -1,5 +1,5 @@
 """
-`FitFunction` classes designed to assist in curve fitting of swept Langmuir
+``FitFunction`` classes designed to assist in curve fitting of swept Langmuir
 traces.
 """
 __all__ = [
@@ -10,13 +10,14 @@ __all__ = [
     "Linear",
 ]
 
+import numbers
 import numpy as np
 
 from abc import ABC, abstractmethod
 from collections import namedtuple
 from scipy.optimize import curve_fit, fsolve
 from scipy.stats import linregress
-from typing import Tuple, Union
+from typing import Optional, Tuple, Union
 from warnings import warn
 
 from plasmapy.utils.decorators import modify_docstring
@@ -68,7 +69,7 @@ class AbstractFitFunction(ABC):
 
     def __call__(self, x, x_err=None, reterr=False):
         """
-        Direct call of the fit function :math:`f(x)``.
+        Direct call of the fit function :math:`f(x)`.
 
         Parameters
         ----------
@@ -220,13 +221,13 @@ class AbstractFitFunction(ABC):
     def FitParamTuple(self):
         """
         A `~collections.namedtuple` used for attributes :attr:`params` and
-        :attr:`param_errors`.  The attribute :attr:`parameter_names` defines
+        :attr:`param_errors`.  The attribute :attr:`param_names` defines
         the tuple field names.
         """
         return self._FitParamTuple
 
     @property
-    def params(self) -> Union[None, tuple]:
+    def params(self) -> Optional[tuple]:
         """The fitted parameters for the fit function."""
         if self._params is None:
             return self._params
@@ -235,12 +236,10 @@ class AbstractFitFunction(ABC):
 
     @params.setter
     def params(self, val) -> None:
-        if isinstance(val, self.FitParamTuple):
-            self._params = tuple(val)
-        elif (
+        if isinstance(val, self.FitParamTuple) or (
             isinstance(val, (tuple, list))
             and len(val) == len(self.param_names)
-            and all(isinstance(vv, (int, np.integer, float, np.floating)) for vv in val)
+            and all(isinstance(vv, numbers.Real) for vv in val)
         ):
             self._params = tuple(val)
         else:
@@ -250,7 +249,7 @@ class AbstractFitFunction(ABC):
             )
 
     @property
-    def param_errors(self) -> Union[None, tuple]:
+    def param_errors(self) -> Optional[tuple]:
         """The associated errors of the fitted :attr:`params`."""
         if self._param_errors is None:
             return self._param_errors
@@ -259,12 +258,10 @@ class AbstractFitFunction(ABC):
 
     @param_errors.setter
     def param_errors(self, val) -> None:
-        if isinstance(val, self.FitParamTuple):
-            self._param_errors = tuple(val)
-        elif (
+        if isinstance(val, self.FitParamTuple) or (
             isinstance(val, (tuple, list))
             and len(val) == len(self.param_names)
-            and all(isinstance(vv, (int, np.integer, float, np.floating)) for vv in val)
+            and all(isinstance(vv, numbers.Real) for vv in val)
         ):
             self._param_errors = tuple(val)
         else:
@@ -306,7 +303,7 @@ class AbstractFitFunction(ABC):
         class functionality.
         """
         for arg in args:
-            if not isinstance(arg, (int, np.integer, float, np.floating)):
+            if not isinstance(arg, numbers.Real):
                 raise TypeError(
                     f"Expected int or float for parameter argument, got "
                     f"{type(arg)}."
@@ -318,7 +315,7 @@ class AbstractFitFunction(ABC):
         Check the independent variable ``x`` so that it is an expected
         type for the class functionality.
         """
-        if isinstance(x, (int, float, np.integer, np.floating)):
+        if isinstance(x, numbers.Real):
             x = np.array(x)
         else:
             if not isinstance(x, np.ndarray):
@@ -343,7 +340,7 @@ class AbstractFitFunction(ABC):
     def root_solve(self, x0):
         """
         Solve for the root of the fit function (i.e. :math:`f(x_r) = 0`).  This
-        mehtod used `scipy.optimize.fsolve` to find the function roots.
+        method used `scipy.optimize.fsolve` to find the function roots.
 
         Parameters
         ----------
@@ -422,7 +419,7 @@ class AbstractFitFunction(ABC):
         """
         Use a non-linear least squares method to fit the fit function to
         (``xdata``, ``ydata``), using `scipy.optimize.curve_fit`.  This will set
-        the attributes :attr:`parameters`, :attr:`parameters_err`, and
+        the attributes :attr:`params`, :attr:`param_errors`, and
         :attr:`rsq`.
 
         The results of `scipy.optimize.curve_fit` can be obtained via
@@ -461,7 +458,7 @@ class AbstractFitFunction(ABC):
         # calc rsq
         # rsq = 1 - (ss_res / ss_tot)
         residuals = ydata - self.func(xdata, *self.params)
-        ss_res = np.sum(residuals ** 2)
+        ss_res = np.sum(residuals**2)
         ss_tot = np.sum((ydata - np.mean(ydata)) ** 2)
         self._rsq = 1 - (ss_res / ss_tot)
 
@@ -517,7 +514,7 @@ class Linear(AbstractFitFunction):
         Returns
         -------
         y: array_like
-            dependent variables corresponding to `:math:``x``
+            dependent variables corresponding to :math:`x`
 
         """
         x = self._check_x(x)
@@ -542,7 +539,7 @@ class Linear(AbstractFitFunction):
         m_err, b_err = self.param_errors
 
         m_term = (m_err * x) ** 2
-        b_term = b_err ** 2
+        b_term = b_err**2
         err = m_term + b_term
 
         if x_err is not None:
@@ -583,18 +580,18 @@ class Linear(AbstractFitFunction):
             Not needed.  This is to ensure signature comparability with
             `AbstractFitFunction`.
 
-        *kwargs
+        **kwargs
             Not needed.  This is to ensure signature comparability with
             `AbstractFitFunction`.
 
         Returns
         -------
         root: float
-            The root value for the given fit :attr:`parameters`.
+            The root value for the given fit :attr:`params`.
 
         err: float
             The uncertainty in the calculated root for the given fit
-            :attr:`parameters` and :attr:`parameters_err`.
+            :attr:`params` and :attr:`param_errors`.
         """
         m, b = self.params
 
@@ -618,7 +615,7 @@ class Linear(AbstractFitFunction):
         """
         Calculate a linear least-squares regression of (``xdata``, ``ydata``)
         using `scipy.stats.linregress`.  This will set the attributes
-        :attr:`parameters`, :attr:`parameters_err`, and :attr:`rsq`.
+        :attr:`params`, :attr:`param_errors`, and :attr:`rsq`.
 
         The results of `scipy.stats.linregress` can be obtained via
         :attr:`curve_fit_results`.
@@ -633,10 +630,10 @@ class Linear(AbstractFitFunction):
             The dependent data associated with ``xdata``.
 
         **kwargs
-            Any keywords accepted by `scipy.stats.linregress.curve_fit`.
+            Any keywords accepted by `scipy.stats.linregress`.
 
         """
-        results = linregress(xdata, ydata)
+        results = linregress(xdata, ydata, **kwargs)
         self._curve_fit_results = results
 
         m = results[0]
@@ -644,7 +641,7 @@ class Linear(AbstractFitFunction):
         self.params = (m, b)
 
         m_err = results[4]
-        b_err = np.sum(xdata ** 2) - ((np.sum(xdata) ** 2) / xdata.size)
+        b_err = np.sum(xdata**2) - ((np.sum(xdata) ** 2) / xdata.size)
         b_err = m_err * np.sqrt(1.0 / b_err)
         self.param_errors = (m_err, b_err)
 
@@ -760,18 +757,18 @@ class Exponential(AbstractFitFunction):
             Not needed.  This is to ensure signature compatibility with
             `AbstractFitFunction`.
 
-        *kwargs
+        **kwargs
             Not needed.  This is to ensure signature compatibility with
             `AbstractFitFunction`.
 
         Returns
         -------
         root: float
-            The root value for the given fit :attr:`parameters`.
+            The root value for the given fit :attr:`params`.
 
         err: float
             The uncertainty in the calculated root for the given fit
-            :attr:`parameters` and :attr:`parameters_err`.
+            :attr:`params` and :attr:`param_errors`.
         """
 
         return _RootResults(np.nan, np.nan)
@@ -822,7 +819,7 @@ class ExponentialPlusLinear(AbstractFitFunction):
     def latex_str(self) -> str:
         exp_str = self._exponential.latex_str
         lin_str = self._linear.latex_str
-        return fr"{exp_str} + {lin_str}"
+        return rf"{exp_str} + {lin_str}"
 
     @AbstractFitFunction.params.setter
     def params(self, val) -> None:
@@ -904,10 +901,10 @@ class ExponentialPlusLinear(AbstractFitFunction):
 
         exp_y, exp_err = self._exponential(x, x_err=x_err, reterr=True)
         lin_y, lin_err = self._linear(x, x_err=x_err, reterr=True)
-        err = exp_err ** 2 + lin_err ** 2
+        err = exp_err**2 + lin_err**2
 
         if x_err is not None:
-            blend_err = 2 * a * alpha * m * np.exp(alpha * x) * (x_err ** 2)
+            blend_err = 2 * a * alpha * m * np.exp(alpha * x) * (x_err**2)
             err += blend_err
         err = np.sqrt(err)
 
@@ -1051,18 +1048,18 @@ class ExponentialPlusOffset(AbstractFitFunction):
             Not needed.  This is to ensure signature compatibility with
             `AbstractFitFunction`.
 
-        *kwargs
-            Not needed.  This is to ensure signature compability with
+        **kwargs
+            Not needed.  This is to ensure signature compatibility with
             `AbstractFitFunction`.
 
         Returns
         -------
         root: float
-            The root value for the given fit :attr:`parameters`.
+            The root value for the given fit :attr:`params`.
 
         err: float
             The uncertainty in the calculated root for the given fit
-            :attr:`parameters` and :attr:`parameters_err`.
+            :attr:`params` and :attr:`param_errors`.
         """
         a, alpha, b = self.params
         a_err, b_err, c_err = self.param_errors
@@ -1072,6 +1069,6 @@ class ExponentialPlusOffset(AbstractFitFunction):
         a_term = a_err / (a * alpha)
         b_term = b_err * root / alpha
         c_term = c_err / (alpha * b)
-        err = np.sqrt(a_term ** 2 + b_term ** 2 + c_term ** 2)
+        err = np.sqrt(a_term**2 + b_term**2 + c_term**2)
 
         return _RootResults(root, err)

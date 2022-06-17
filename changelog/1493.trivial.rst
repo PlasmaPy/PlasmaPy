@@ -1,0 +1,2 @@
+Used `codespell <https://github.com/codespell-project/codespell>`__
+to fix typos.

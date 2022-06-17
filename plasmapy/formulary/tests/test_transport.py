@@ -55,7 +55,7 @@ class Test_classical_transport:
     def setup_class(self):
         """set up some initial values for tests"""
         self.T_e = 1000 * u.eV
-        self.n_e = 2e13 / u.cm ** 3
+        self.n_e = 2e13 / u.cm**3
         self.ion = "D +1"
         self.m_i = particle_mass(self.ion)
         self.Z = charge_number(self.ion)
@@ -782,7 +782,7 @@ class Test__nondim_tc_e_braginskii:
     def test_known_values_perp(self, Z, field_orientation, expected):
         """check some known values"""
         kappa_e_hat = _nondim_tc_e_braginskii(self.big_hall, Z, field_orientation)
-        assert np.isclose(kappa_e_hat * self.big_hall ** 2, expected, atol=1e-1)
+        assert np.isclose(kappa_e_hat * self.big_hall**2, expected, atol=1e-1)
 
     @pytest.mark.parametrize("Z", [1, 2, 3, 4, np.inf])
     def test_unmagnetized(self, Z):
@@ -822,7 +822,7 @@ class Test__nondim_tc_i_braginskii:
         """check some known values"""
         kappa_i_hat = _nondim_tc_i_braginskii(self.big_hall, field_orientation="perp")
         expected = 2.0  # Braginskii '65 eq (2.16)
-        assert np.isclose(kappa_i_hat * self.big_hall ** 2, expected, atol=1e-1)
+        assert np.isclose(kappa_i_hat * self.big_hall**2, expected, atol=1e-1)
 
     def test_unmagnetized(self):
         """confirm perp -> par as B -> 0"""
@@ -931,7 +931,7 @@ class Test__nondim_visc_i_braginskii:
     def test_known_values(self, expected, power):
         """check some known values"""
         eta_i_hat = _nondim_visc_i_braginskii(self.big_hall)
-        eta_i_hat_with_powers = eta_i_hat * self.big_hall ** power
+        eta_i_hat_with_powers = eta_i_hat * self.big_hall**power
         assert np.allclose(eta_i_hat_with_powers, expected, atol=1e-2)
 
     def test_vs_ji_held_K2(self):
@@ -966,9 +966,9 @@ class Test__nondim_visc_e_braginskii:
         beta_hat = _nondim_visc_e_braginskii(self.big_hall, Z)
         if idx == 0:
             assert np.isclose(beta_hat[idx], expected, atol=1e-2)
-        elif idx == 1 or idx == 2:
-            assert np.isclose(beta_hat[idx] * self.big_hall ** 2, expected, atol=1e-2)
-        elif idx == 3 or idx == 4:
+        elif idx in [1, 2]:
+            assert np.isclose(beta_hat[idx] * self.big_hall**2, expected, atol=1e-2)
+        elif idx in [3, 4]:
             assert np.isclose(beta_hat[idx] * self.big_hall, expected, atol=1e-1)
 
 
@@ -984,7 +984,7 @@ def test__nondim_tc_e_spitzer(Z):
     if Z == 1:
         kappa_check = 3.203
         rtol = 1e-3
-    elif Z == 2 or Z == 4:
+    elif Z in [2, 4]:
         kappa_check = _nondim_tc_e_braginskii(0, Z, "par")
         rtol = 2e-2
     elif Z == 16:
@@ -1003,7 +1003,7 @@ def test__nondim_resist_spitzer(Z):
     if Z == 1:
         alpha_check = 0.5064
         rtol = 1e-3
-    elif Z == 2 or Z == 4 or Z == np.inf:
+    elif Z in [2, 4, np.inf]:
         alpha_check = _nondim_resist_braginskii(0, Z, "par")
         rtol = 2e-2
     elif Z == 16:
@@ -1019,7 +1019,7 @@ def test__nondim_tec_spitzer(Z):
     if Z == 1:
         beta_check = 0.699
         rtol = 1e-3
-    elif Z == 2 or Z == 4 or Z == np.inf:
+    elif Z in [2, 4, np.inf]:
         beta_check = _nondim_tec_braginskii(0, Z, "par")
         rtol = 2e-2
     elif Z == 16:

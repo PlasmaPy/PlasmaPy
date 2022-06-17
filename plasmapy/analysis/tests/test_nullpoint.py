@@ -13,8 +13,14 @@ from plasmapy.analysis.nullpoint import (
     _trilinear_coeff_cal,
     _trilinear_jacobian,
     _vector_space,
+    _vspace_iterator,
+    MultipleNullPointWarning,
+    NonZeroDivergence,
     null_point_find,
+    NullPointError,
+    NullPointWarning,
     trilinear_approx,
+    uniform_null_point_find,
 )
 
 # Defining tolerance level for tests where the accuracy
@@ -27,7 +33,7 @@ def vspace_func_1(x, y, z):
 
 
 def vspace_func_2(x, y, z):
-    return [2 * y - z - 5.5, 3 * x + z - 22, x ** 2 - 11 * x + y + 24.75]
+    return [2 * y - z - 5.5, 3 * x + z - 22, x**2 - 11 * x + y + 24.75]
 
 
 def vspace_func_3(x, y, z):
@@ -248,7 +254,7 @@ def test_null_point_find1():
         "precision": [0.1, 0.1, 0.1],
         "func": vspace_func_1,
     }
-    npoints = null_point_find(**nullpoint_args)
+    npoints = uniform_null_point_find(**nullpoint_args)
     loc = npoints[0].loc.reshape(1, 3)
     assert len(npoints) == 1
     assert np.isclose(loc, [5.5, 5.5, 5.5], atol=_EQUALITY_ATOL).all()
@@ -257,13 +263,14 @@ def test_null_point_find1():
 def test_null_point_find2():
     r"""Test `~plasmapy.analysis.nullpoint.null_point_find`."""
     # Non-uniform grid
-    nullpoint2_args = {
+    vspace_args = {
         "x_arr": np.logspace(np.log10(5.48), np.log10(5.52), num=30),
         "y_arr": np.logspace(np.log10(5.48), np.log10(5.52), num=30),
         "z_arr": np.logspace(np.log10(5.48), np.log10(5.52), num=30),
         "func": vspace_func_1,
     }
-    npoints2 = null_point_find(**nullpoint2_args)
+    vspace = _vector_space(**vspace_args)
+    npoints2 = _vspace_iterator(vspace)
     loc2 = npoints2[0].loc.reshape(1, 3)
     assert len(npoints2) == 1
     assert np.isclose(loc2, [5.5, 5.5, 5.5], atol=_EQUALITY_ATOL).all()
@@ -273,10 +280,9 @@ def test_null_point_find3():
     r"""Test `~plasmapy.analysis.nullpoint.null_point_find`."""
     # Vector values passed by hand
     nullpoint3_args = {
-        "x_range": [5, 6],
-        "y_range": [5, 6],
-        "z_range": [5, 6],
-        "precision": [1, 1, 1],
+        "x_arr": [5, 6],
+        "y_arr": [5, 6],
+        "z_arr": [5, 6],
         "u_arr": np.array([[[-0.5, -0.5], [0.5, 0.5]], [[-0.5, -0.5], [0.5, 0.5]]]),
         "v_arr": np.array([[[-0.5, 0.5], [-0.5, 0.5]], [[-0.5, 0.5], [-0.5, 0.5]]]),
         "w_arr": np.array([[[-0.5, -0.5], [-0.5, -0.5]], [[0.5, 0.5], [0.5, 0.5]]]),
@@ -285,7 +291,6 @@ def test_null_point_find3():
     loc3 = npoints3[0].loc.reshape(1, 3)
     assert len(npoints3) == 1
     assert np.isclose(loc3, [5.5, 5.5, 5.5], atol=_EQUALITY_ATOL).all()
-    assert npoints3[0].get_type() == "N/A"
 
 
 def test_null_point_find4():
@@ -298,7 +303,7 @@ def test_null_point_find4():
         "precision": [0.07, 0.003, 0.07],
         "func": vspace_func_3,
     }
-    npoints4 = null_point_find(**nullpoint4_args)
+    npoints4 = uniform_null_point_find(**nullpoint4_args)
     first_loc4 = npoints4[0].loc.reshape(1, 3)
     second_loc4 = npoints4[1].loc.reshape(1, 3)
     assert len(npoints4) == 2
@@ -316,8 +321,23 @@ def test_null_point_find5():
         "precision": [0.01, 0.01, 0.01],
         "func": vspace_func_4,
     }
-    npoints5 = null_point_find(**nullpoint5_args)
-    assert len(npoints5) == 0
+    npoints5 = uniform_null_point_find(**nullpoint5_args)
+    for p in npoints5:
+        if np.allclose(p.loc, np.array([5.5, 5.5, 5.5]), _EQUALITY_ATOL):
+            assert (
+                p.classification
+                == "Anti-parallel lines with null plane OR Planes of parabolae with null line"
+            )
+        if np.allclose(p.loc, np.array([5.47, 5.5, 5.5]), _EQUALITY_ATOL):
+            assert (
+                p.classification
+                == "Anti-parallel lines with null plane OR Planes of parabolae with null line"
+            )
+        if np.allclose(p.loc, np.array([5.5, 5.5, 5.47]), _EQUALITY_ATOL):
+            assert (
+                p.classification
+                == "Anti-parallel lines with null plane OR Planes of parabolae with null line"
+            )
 
 
 def test_null_point_find6():
@@ -330,7 +350,7 @@ def test_null_point_find6():
         "precision": [0.08, 0.08, 0.08],
         "func": vspace_func_5,
     }
-    npoints6 = null_point_find(**nullpoint6_args)
+    npoints6 = uniform_null_point_find(**nullpoint6_args)
     assert len(npoints6) == 0
 
 
@@ -344,7 +364,7 @@ def test_null_point_find7():
         "precision": [1, 1, 1],
         "func": vspace_func_6,
     }
-    npoints7 = null_point_find(**nullpoint7_args)
+    npoints7 = uniform_null_point_find(**nullpoint7_args)
     assert len(npoints7) == 0
 
 
@@ -352,15 +372,141 @@ def test_null_point_find8():
     r"""Test `~plasmapy.analysis.nullpoint.null_point_find`."""
     # Non-linear field
     nullpoint8_args = {
-        "x_range": [-6, 6],
+        "x_range": [5, 6],
         "y_range": [-6, 6],
-        "z_range": [-6, 6],
+        "z_range": [5, 6],
         "precision": [0.3, 0.3, 0.3],
         "func": vspace_func_7,
     }
-    npoints8 = null_point_find(**nullpoint8_args)
+    npoints8 = uniform_null_point_find(**nullpoint8_args)
     assert len(npoints8) == 2
     loc1 = npoints8[0].loc.reshape(1, 3)
     loc2 = npoints8[1].loc.reshape(1, 3)
     assert np.allclose(loc1, [5.5, -5.5, 5.5], atol=_TESTING_ATOL)
     assert np.allclose(loc2, [5.5, 5.5, 5.5], atol=_TESTING_ATOL)
+
+
+class Test_classify_null_point:
+    r"""Test `~plasmapy.analysis.nullpoint._classify_null_point`."""
+
+    test_classify_null_point_values = [
+        (
+            {
+                "x_range": [-0.1, 0.1],
+                "y_range": [-0.1, 0.1],
+                "z_range": [-0.1, 0.1],
+                "precision": [0.03, 0.03, 0.03],
+                "func": lambda x, y, z: [x, 2 * y, -3 * z],
+            },
+            "Improper radial null",
+        ),
+        (
+            {
+                "x_range": [-0.1, 0.1],
+                "y_range": [-0.1, 0.1],
+                "z_range": [-0.1, 0.1],
+                "precision": [0.03, 0.03, 0.03],
+                "func": lambda x, y, z: [
+                    -1 * x + 2 * y - 4 * z,
+                    2 * x + 2 * y + 2 * z,
+                    -4 * x + 2 * y - 1 * z,
+                ],
+            },
+            "Proper radial null",
+        ),
+        (
+            {
+                "x_range": [5, 6],
+                "y_range": [-6, 6],
+                "z_range": [5, 6],
+                "precision": [0.3, 0.3, 0.3],
+                "func": lambda x, y, z: [(y - 5.5) * (y + 5.5), (z - 5.5), (x - 5.5)],
+            },
+            "Spiral null",
+        ),
+        (
+            {
+                "x_range": [-0.1, 0.1],
+                "y_range": [-0.1, 0.1],
+                "z_range": [-0.1, 0.1],
+                "precision": [0.03, 0.03, 0.03],
+                "func": lambda x, y, z: [
+                    0.5 * x - 2 * y + z,
+                    x - y + z,
+                    x + y + 0.5 * z,
+                ],
+            },
+            "Critical spiral null",
+        ),
+        (
+            {
+                "x_range": [-0.1, 0.1],
+                "y_range": [-0.1, 0.1],
+                "z_range": [-0.1, 0.1],
+                "precision": [0.03, 0.03, 0.03],
+                "func": lambda x, y, z: [0.5 * x - y + z, x - y + z, x + y + 0.5 * z],
+            },
+            "Skewed improper null",
+        ),
+    ]
+
+    @pytest.mark.parametrize("kwargs, expected", test_classify_null_point_values)
+    def test_classify_null_point_vals(self, kwargs, expected):
+        r"""Test expected values."""
+        assert uniform_null_point_find(**kwargs)[0].classification == expected
+
+
+def test_null_point_find9():
+    """Testing a magnetic field that violates the divergence constraint"""
+    nullpoint9_args = {
+        "x_range": [-0.1, 0.1],
+        "y_range": [-0.1, 0.1],
+        "z_range": [-0.1, 0.1],
+        "precision": [0.03, 0.03, 0.03],
+        "func": lambda x, y, z: [x, y, z],
+    }
+    with pytest.raises(NonZeroDivergence):
+        npoints = uniform_null_point_find(**nullpoint9_args)
+
+
+# Tests that capture the degenerate nulls/2D nulls
+def test_null_point_find10():
+    nullpoint10_args = {
+        "x_range": [-0.1, 0.1],
+        "y_range": [-0.1, 0.1],
+        "z_range": [-0.1, 0.1],
+        "precision": [0.01, 0.01, 0.01],
+        "func": lambda x, y, z: [y * z, -x * z, x * y],
+    }
+    npoints = uniform_null_point_find(**nullpoint10_args)
+    for p in npoints:
+        if np.allclose(p.loc, np.array([0, 0, 0]), _EQUALITY_ATOL):
+            assert p.classification == "Proper radial null"
+        if np.allclose(p.loc, np.array([0.01, 0, 0]), _EQUALITY_ATOL):
+            assert (
+                p.classification
+                == "Anti-parallel lines with null plane OR Planes of parabolae with null line"
+            )
+        if np.allclose(p.loc, np.array([0, 0, -0.01]), _EQUALITY_ATOL):
+            assert p.classification == "Continuous concentric ellipses"
+
+
+def test_null_point_find11():
+    nullpoint10_args = {
+        "x_range": [-0.1, 0.1],
+        "y_range": [-0.1, 0.1],
+        "z_range": [-0.1, 0.1],
+        "precision": [0.01, 0.01, 0.01],
+        "func": lambda x, y, z: [1.01 * y * z, -x * z, x * y],
+    }
+    npoints = uniform_null_point_find(**nullpoint10_args)
+    for p in npoints:
+        if np.allclose(p.loc, np.array([0, 0, 0]), _EQUALITY_ATOL):
+            assert p.classification == "Proper radial null"
+        if np.allclose(p.loc, np.array([0.01, 0, 0]), _EQUALITY_ATOL):
+            assert (
+                p.classification
+                == "Anti-parallel lines with null plane OR Planes of parabolae with null line"
+            )
+        if np.allclose(p.loc, np.array([0, 0, -0.01]), _EQUALITY_ATOL):
+            assert p.classification == "Continuous concentric ellipses"
