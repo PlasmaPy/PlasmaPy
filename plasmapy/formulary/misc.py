@@ -50,7 +50,7 @@ def _grab_charge(ion: Particle, z_mean=None):
     T_e={"can_be_negative": False, "equivalencies": u.temperature_energy()},
     B={"can_be_negative": False},
 )
-def Bohm_diffusion(T_e: u.K, B: u.T) -> u.m ** 2 / u.s:
+def Bohm_diffusion(T_e: u.K, B: u.T) -> u.m**2 / u.s:
     r"""
     Return the Bohm diffusion coefficient.
 
@@ -118,7 +118,7 @@ DB_ = Bohm_diffusion
 
 
 @validate_quantities
-def magnetic_energy_density(B: u.T) -> u.J / u.m ** 3:
+def magnetic_energy_density(B: u.T) -> u.J / u.m**3:
     r"""
     Calculate the magnetic energy density.
 
@@ -240,7 +240,7 @@ def magnetic_pressure(B: u.T) -> u.Pa:
     <Quantity 3978.87... Pa>
 
     """
-    return (B ** 2) / (2 * mu0)
+    return (B**2) / (2 * mu0)
 
 
 pmag_ = magnetic_pressure
@@ -251,10 +251,10 @@ pmag_ = magnetic_pressure
     density={"can_be_negative": False}, validations_on_return={"can_be_negative": False}
 )
 def mass_density(
-    density: (u.m ** -3, u.kg / (u.m ** 3)),
+    density: (u.m**-3, u.kg / (u.m**3)),
     particle: Union[Particle, str],
     z_ratio: Optional[numbers.Real] = 1,
-) -> u.kg / u.m ** 3:
+) -> u.kg / u.m**3:
     r"""
     Calculate the mass density from a number density.
 
@@ -329,7 +329,7 @@ def mass_density(
     >>> mass_density(1.0 * u.g * u.m ** -3, "")
     <Quantity 0.001 kg / m3>
     """
-    if density.unit.is_equivalent(u.kg / u.m ** 3):
+    if density.unit.is_equivalent(u.kg / u.m**3):
         return density
 
     if not isinstance(particle, Particle):
@@ -357,7 +357,7 @@ rho_ = mass_density
     T={"can_be_negative": False, "equivalencies": u.temperature_energy()},
     n={"can_be_negative": False},
 )
-def thermal_pressure(T: u.K, n: u.m ** -3) -> u.Pa:
+def thermal_pressure(T: u.K, n: u.m**-3) -> u.Pa:
     r"""
     Return the thermal pressure for a Maxwellian distribution.
 
