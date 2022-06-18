@@ -1,0 +1,3 @@
+Renamed the :file:`magnetic_statics.ipynb` to
+:file:`magnetostatics.ipynb`, and made some minor edits to the text
+and plotting code in this example notebook.
