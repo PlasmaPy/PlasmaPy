@@ -111,8 +111,7 @@ Glossary
       An `object` is *particle-list-like* if it is a |ParticleList|, or
       can be cast into one.
 
-      For more complete details, refer to
-      `~plasmapy.particles.particle_collections.ParticleListLike`.
+      For more complete details, refer to |ParticleListLike|.
 
    real number
       Any numeric type that represents a real number. This could include

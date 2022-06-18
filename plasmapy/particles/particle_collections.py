@@ -497,16 +497,16 @@ An `object` is :term:`particle-list-like` if it can be identified as a
 `~plasmapy.particles.particle_collections.ParticleList` or cast into
 one.
 
-When used as a type hint annotation, `ParticleListLike` indicates that
+When used as a type hint annotation, |ParticleListLike| indicates that
 the corresponding argument should represent a sequence of physical
-particles. Each item in a `ParticleListLike` must be
+particles. Each item in a |ParticleListLike| object must be
 `~plasmapy.particles.particle_class.ParticleLike`.
 
 Notes
 -----
 `~plasmapy.particles.particle_class.DimensionlessParticle` instances do
 not uniquely represent a physical particle, and are thus not
-|ParticleLike| and cannot be contained in a `ParticleListLike` object.
+|ParticleLike| and cannot be contained in a |ParticleListLike| object.
 
 See Also
 --------
@@ -516,7 +516,7 @@ See Also
 
 Examples
 --------
-Using `ParticleListLike` as a type hint annotation indicates that an
+Using |ParticleListLike| as a type hint annotation indicates that an
 argument or variable should represent a sequence of |ParticleLike|
 objects.
 
