@@ -1,0 +1,4 @@
+Increased the strictness of the ``build_docs`` tox_ environment so that
+broken reST_ links now emit warnings which are then treated as errors,
+removed the ``build_docs_nitpicky`` tox_ environment, and updated the
+|documentation guide| accordingly.
