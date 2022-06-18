@@ -1,2 +1,2 @@
-Created the |ParticleListLike| typing construct and added
-:term:`particle-list-like` to the |glossary|.
+Created the `~plasmapy.particles.particle_collections.ParticleListLike`
+typing construct and added :term:`particle-list-like` to the |glossary|.
