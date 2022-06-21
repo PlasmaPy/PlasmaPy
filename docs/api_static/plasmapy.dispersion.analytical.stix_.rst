@@ -13,4 +13,3 @@ Example Notebooks
 .. nbgallery::
 
     /notebooks/dispersion/stix_dispersion
-
