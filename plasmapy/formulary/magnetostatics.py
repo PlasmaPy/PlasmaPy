@@ -57,7 +57,7 @@ class MagneticDipole(MagnetoStatics):
     """
 
     @validate_quantities
-    def __init__(self, moment: u.A * u.m ** 2, p0: u.m):
+    def __init__(self, moment: u.A * u.m**2, p0: u.m):
         self.moment = moment.value
         self._moment_u = moment.unit
         self.p0 = p0.value
