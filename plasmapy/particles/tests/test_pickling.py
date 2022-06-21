@@ -24,7 +24,7 @@ class TestPickling:
             CustomParticle(mass=1 * u.kg, charge=1 * u.C),
             DimensionlessParticle(mass=5, charge=5),
             Particle("p+"),
-            IonicLevel("p+", 0.1, 1e9 * u.m ** -3),
+            IonicLevel("p+", 0.1, 1e9 * u.m**-3),
             IonizationState("H", [0.5, 0.5]),
             IonizationStateCollection({"H": [0.5, 0.5]}),
         ],

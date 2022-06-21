@@ -103,7 +103,7 @@ def _test_grid(
             b = L / 2
         radius = np.linalg.norm(grid.grid, axis=3)
         arg = (radius / a).to(u.dimensionless_unscaled)
-        potential = phi0 * np.exp(-(arg ** 2))
+        potential = phi0 * np.exp(-(arg**2))
 
         Ex, Ey, Ez = np.gradient(potential, grid.dax0, grid.dax1, grid.dax2)
 

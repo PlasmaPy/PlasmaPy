@@ -206,7 +206,7 @@ class Characteristic:
 )
 def swept_probe_analysis(
     probe_characteristic,
-    probe_area: u.m ** 2,
+    probe_area: u.m**2,
     gas_argument,
     bimaxwellian=False,
     visualize=False,
@@ -624,8 +624,8 @@ def get_ion_saturation_current(probe_characteristic):
     validations_on_return={"can_be_negative": False},
 )
 def get_ion_density_LM(
-    ion_saturation_current: u.A, T_e: u.eV, probe_area: u.m ** 2, gas
-) -> u.m ** -3:
+    ion_saturation_current: u.A, T_e: u.eV, probe_area: u.m**2, gas
+) -> u.m**-3:
     r"""Implement the Langmuir-Mottley (LM) method of obtaining the ion
     density.
 
@@ -686,8 +686,8 @@ def get_ion_density_LM(
     validations_on_return={"can_be_negative": False},
 )
 def get_electron_density_LM(
-    electron_saturation_current: u.A, T_e: u.eV, probe_area: u.m ** 2
-) -> u.m ** -3:
+    electron_saturation_current: u.A, T_e: u.eV, probe_area: u.m**2
+) -> u.m**-3:
     r"""Implement the Langmuir-Mottley (LM) method of obtaining the electron
     density.
 
@@ -1145,7 +1145,7 @@ def reduce_bimaxwellian_temperature(T_e: u.eV, hot_fraction: float) -> u.eV:
 )
 def get_ion_density_OML(
     probe_characteristic: Characteristic,
-    probe_area: u.m ** 2,
+    probe_area: u.m**2,
     gas,
     visualize=False,
     return_fit=False,
@@ -1217,11 +1217,11 @@ def get_ion_density_OML(
 
     n_i_OML = np.sqrt(
         -slope
-        * u.mA ** 2
+        * u.mA**2
         / u.V
-        * np.pi ** 2
+        * np.pi**2
         * ion.mass
-        / (probe_area ** 2 * const.e ** 3 * 2)
+        / (probe_area**2 * const.e**3 * 2)
     )
 
     if visualize:  # coverage: ignore
@@ -1242,9 +1242,9 @@ def get_ion_density_OML(
             plt.tight_layout()
 
     if return_fit:
-        return n_i_OML.to(u.m ** -3), fit
+        return n_i_OML.to(u.m**-3), fit
 
-    return n_i_OML.to(u.m ** -3)
+    return n_i_OML.to(u.m**-3)
 
 
 def extrapolate_ion_current_OML(probe_characteristic, fit, visualize=False):
@@ -1285,8 +1285,8 @@ def extrapolate_ion_current_OML(probe_characteristic, fit, visualize=False):
             f"and got {type(probe_characteristic)}"
         )
 
-    slope = fit[0] * u.mA ** 2 / u.V
-    offset = fit[1] * u.mA ** 2
+    slope = fit[0] * u.mA**2 / u.V
+    offset = fit[1] * u.mA**2
 
     ion_current = -np.sqrt(
         np.clip(slope * probe_characteristic.bias + offset, 0.0, None)

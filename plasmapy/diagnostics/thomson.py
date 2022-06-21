@@ -179,12 +179,12 @@ def spectral_density_lite(
 
     # Compute the wavenumbers in the plasma
     # See Sheffield Sec. 1.8.1 and Eqs. 5.4.1 and 5.4.2
-    ks = np.sqrt(ws ** 2 - wpe ** 2) / c_si_unitless
-    kl = np.sqrt(wl ** 2 - wpe ** 2) / c_si_unitless
+    ks = np.sqrt(ws**2 - wpe**2) / c_si_unitless
+    kl = np.sqrt(wl**2 - wpe**2) / c_si_unitless
 
     # Compute the wavenumber shift (required by momentum conservation)
     # Eq. 1.7.10 in Sheffield
-    k = np.sqrt(ks ** 2 + kl ** 2 - 2 * ks * kl * np.cos(scattering_angle))
+    k = np.sqrt(ks**2 + kl**2 - 2 * ks * kl * np.cos(scattering_angle))
     # Normal vector along k
     k_vec = scatter_vec - probe_vec
     k_vec = k_vec / np.linalg.norm(k_vec)
@@ -262,7 +262,7 @@ def spectral_density_lite(
 def spectral_density(
     wavelengths: u.nm,
     probe_wavelength: u.nm,
-    n: u.m ** -3,
+    n: u.m**-3,
     *,
     T_e: u.K,
     T_i: u.K,
@@ -546,7 +546,7 @@ def spectral_density(
     alpha, Skw = spectral_density_lite(
         wavelengths.to(u.m).value,
         probe_wavelength.to(u.m).value,
-        n.to(u.m ** -3).value,
+        n.to(u.m**-3).value,
         T_e.to(u.K).value,
         T_i.to(u.K).value,
         efract=efract,

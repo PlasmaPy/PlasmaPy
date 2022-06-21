@@ -57,18 +57,18 @@ from plasmapy.utils.exceptions import PlasmaPyFutureWarning
         # dimensionless
         #
         (
-            {"T_e": 58000 * u.K, "n_e": 1e18 * u.m ** -3},
+            {"T_e": 58000 * u.K, "n_e": 1e18 * u.m**-3},
             Debye_number,
             dimensionless.Debye_number,
         ),
         (
-            {"T_e": 58000 * u.K, "n_e": 1e18 * u.m ** -3},
+            {"T_e": 58000 * u.K, "n_e": 1e18 * u.m**-3},
             nD_,
             dimensionless.nD_,
         ),
         (
             {
-                "n": 1e18 * u.m ** -3,
+                "n": 1e18 * u.m**-3,
                 "T": 58000 * u.K,
                 "B": 0.4 * u.T,
                 "ion": "He+",
@@ -79,7 +79,7 @@ from plasmapy.utils.exceptions import PlasmaPyFutureWarning
         ),
         (
             {
-                "n": 1e18 * u.m ** -3,
+                "n": 1e18 * u.m**-3,
                 "T": 58000 * u.K,
                 "B": 0.4 * u.T,
                 "ion": "He+",
@@ -104,32 +104,32 @@ from plasmapy.utils.exceptions import PlasmaPyFutureWarning
             frequencies.plasma_frequency_lite,
         ),
         (
-            {"n": 1.0e18 * u.m ** -3, "particle": "He+"},
+            {"n": 1.0e18 * u.m**-3, "particle": "He+"},
             plasma_frequency,
             frequencies.plasma_frequency,
         ),
         (
-            {"n": 1.0e18 * u.m ** -3, "particle": "He+"},
+            {"n": 1.0e18 * u.m**-3, "particle": "He+"},
             wp_,
             frequencies.wp_,
         ),
         (
-            {"B": 0.4 * u.T, "n_i": 1.0e18 * u.m ** -3, "ion": "He+"},
+            {"B": 0.4 * u.T, "n_i": 1.0e18 * u.m**-3, "ion": "He+"},
             lower_hybrid_frequency,
             frequencies.lower_hybrid_frequency,
         ),
         (
-            {"B": 0.4 * u.T, "n_i": 1.0e18 * u.m ** -3, "ion": "He+"},
+            {"B": 0.4 * u.T, "n_i": 1.0e18 * u.m**-3, "ion": "He+"},
             wlh_,
             frequencies.wlh_,
         ),
         (
-            {"B": 0.4 * u.T, "n_e": 1.0e18 * u.m ** -3},
+            {"B": 0.4 * u.T, "n_e": 1.0e18 * u.m**-3},
             upper_hybrid_frequency,
             frequencies.upper_hybrid_frequency,
         ),
         (
-            {"B": 0.4 * u.T, "n_e": 1.0e18 * u.m ** -3},
+            {"B": 0.4 * u.T, "n_e": 1.0e18 * u.m**-3},
             wuh_,
             frequencies.wuh_,
         ),
@@ -137,22 +137,22 @@ from plasmapy.utils.exceptions import PlasmaPyFutureWarning
         # lengths
         #
         (
-            {"T_e": 58000 * u.K, "n_e": 1e18 * u.m ** -3},
+            {"T_e": 58000 * u.K, "n_e": 1e18 * u.m**-3},
             Debye_length,
             lengths.Debye_length,
         ),
         (
-            {"T_e": 58000 * u.K, "n_e": 1e18 * u.m ** -3},
+            {"T_e": 58000 * u.K, "n_e": 1e18 * u.m**-3},
             lambdaD_,
             lengths.lambdaD_,
         ),
         (
-            {"n": 1e18 * u.m ** -3, "particle": "p"},
+            {"n": 1e18 * u.m**-3, "particle": "p"},
             inertial_length,
             lengths.inertial_length,
         ),
         (
-            {"n": 1e18 * u.m ** -3, "particle": "p"},
+            {"n": 1e18 * u.m**-3, "particle": "p"},
             cwp_,
             lengths.cwp_,
         ),
@@ -182,26 +182,26 @@ from plasmapy.utils.exceptions import PlasmaPyFutureWarning
         ({"B": 0.4 * u.T}, magnetic_pressure, misc.magnetic_pressure),
         ({"B": 0.4 * u.T}, pmag_, misc.pmag_),
         (
-            {"density": 1e18 * u.m ** -3, "particle": "He+"},
+            {"density": 1e18 * u.m**-3, "particle": "He+"},
             mass_density,
             misc.mass_density,
         ),
-        ({"density": 1e18 * u.m ** -3, "particle": "He+"}, rho_, misc.rho_),
+        ({"density": 1e18 * u.m**-3, "particle": "He+"}, rho_, misc.rho_),
         (
-            {"T": 5800 * u.K, "n": 1e18 * u.m ** -3},
+            {"T": 5800 * u.K, "n": 1e18 * u.m**-3},
             thermal_pressure,
             misc.thermal_pressure,
         ),
-        ({"T": 5800 * u.K, "n": 1e18 * u.m ** -3}, pth_, misc.pth_),
+        ({"T": 5800 * u.K, "n": 1e18 * u.m**-3}, pth_, misc.pth_),
         #
         # speeds
         #
         (
-            {"B": 0.4 * u.T, "density": 1e18 * u.m ** -3, "ion": "He+"},
+            {"B": 0.4 * u.T, "density": 1e18 * u.m**-3, "ion": "He+"},
             Alfven_speed,
             speeds.Alfven_speed,
         ),
-        ({"B": 0.4 * u.T, "density": 1e18 * u.m ** -3, "ion": "He+"}, va_, speeds.va_),
+        ({"B": 0.4 * u.T, "density": 1e18 * u.m**-3, "ion": "He+"}, va_, speeds.va_),
         (
             {"T_e": 58000 * u.K, "T_i": 12000 * u.K, "ion": "He+"},
             ion_sound_speed,

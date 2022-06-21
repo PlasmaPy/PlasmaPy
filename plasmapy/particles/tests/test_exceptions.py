@@ -66,7 +66,7 @@ tests_for_exceptions = {
     "bad n_elem units": (
         IonizationState,
         [],
-        {"particle": "H", "ionic_fractions": [0, 1], "n_elem": 3 * u.m ** 3},
+        {"particle": "H", "ionic_fractions": [0, 1], "n_elem": 3 * u.m**3},
         u.UnitTypeError,
     ),
     "bad T_e units": (
@@ -81,7 +81,7 @@ tests_for_exceptions = {
         {
             "particle": "He",
             "ionic_fractions": [1.0, 0.0, 0.0],
-            "n_elem": -1 * u.m ** -3,
+            "n_elem": -1 * u.m**-3,
         },
         ParticleError,
     ),
@@ -96,8 +96,8 @@ tests_for_exceptions = {
         [],
         {
             "particle": "H",
-            "ionic_fractions": np.array([3, 4]) * u.m ** -3,
-            "n_elem": 4 * u.m ** -3,
+            "ionic_fractions": np.array([3, 4]) * u.m**-3,
+            "n_elem": 4 * u.m**-3,
         },
         ParticleError,
     ),
@@ -154,7 +154,7 @@ tests_for_exceptions = {
         IonizationStateCollection,
         [],
         {
-            "inputs": {"H": [10, 90] * u.m ** -3, "He": [0.1, 0.9, 0] * u.m ** -2},
+            "inputs": {"H": [10, 90] * u.m**-3, "He": [0.1, 0.9, 0] * u.m**-2},
             "abundances": {"H": 1, "He": 0.1},
         },
         ParticleError,
@@ -163,7 +163,7 @@ tests_for_exceptions = {
         IonizationStateCollection,
         [],
         {
-            "inputs": {"H": [10, 90] * u.m ** -3, "He": [0.1, 0.9, 0] * u.m ** -3},
+            "inputs": {"H": [10, 90] * u.m**-3, "He": [0.1, 0.9, 0] * u.m**-3},
             "abundances": {"H": 1, "He": 0.1},
         },
         ParticleError,
@@ -172,7 +172,7 @@ tests_for_exceptions = {
         IonizationStateCollection,
         [],
         {
-            "inputs": {"H": [10, 90] * u.m ** -3, "He": [0.1, 0.9, 0] * u.m ** -3},
+            "inputs": {"H": [10, 90] * u.m**-3, "He": [0.1, 0.9, 0] * u.m**-3},
             "abundances": {"H": 1, "He": 0.11},
         },
         ParticleError,
@@ -186,7 +186,7 @@ tests_for_exceptions = {
     "negative n": (
         IonizationStateCollection,
         [],
-        {"inputs": ["H"], "n0": -1 * u.cm ** -3},
+        {"inputs": ["H"], "n0": -1 * u.cm**-3},
         ParticleError,
     ),
     "negative T_e for collection": (
