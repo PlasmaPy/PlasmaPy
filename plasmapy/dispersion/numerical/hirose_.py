@@ -175,7 +175,7 @@ def hirose(
     >>> omegas
     {'fast_mode': <Quantity [1.51090997e+01+0.j, 1.27144874e+11+0.j] rad / s>,
     'alfven_mode': <Quantity [6.68925078e-01+0.j, 1.14921912e+03+0.j] rad / s>,
-    'acoustic_mode': <Quantity [0.0017725 +0.j, 0.12260315+0.j] rad / s>}
+    'acoustic_mode': <Quantity [0.0017725 +0.j, 0.12260315+0.j] rad / s>}s
     """
 
     # validate argument ion
