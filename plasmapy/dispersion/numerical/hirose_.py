@@ -238,7 +238,7 @@ def hirose(
 
     # validate argument theta
     theta = theta.squeeze()
-    if theta.ndim not in (0,1):
+    if theta.ndim not in (0, 1):
         raise ValueError(
             f"Argument 'theta' needs to be a single valued or 1D array astropy "
             f"Quantity, got array of shape {theta.shape}."
