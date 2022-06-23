@@ -63,13 +63,19 @@ There are two methods for building the documentation: make_ and tox_.
 Prerequisites
 -------------
 
-To install all dependencies required to develop PlasmaPy on your local
-computer, enter the top-level directory of the cloned repository and
-run:
+To install all Python dependencies required to develop PlasmaPy on your
+local computer, enter the top-level directory of the cloned repository
+and run:
 
 .. code-block:: bash
 
    pip install -r requirements.txt
+
+It may also be necessary to install the following software:
+
+* `graphviz <https://graphviz.org/download>`__
+* make_ (not necessary for building the documentation with tox_)
+* `pandoc <https://pandoc.org/installing.html>`__
 
 Building documentation with make
 --------------------------------
