@@ -32,7 +32,7 @@ def hirose(
     k: u.rad / u.m,
     n_i: u.m ** -3,
     T_e: u.K,
-    theta: u.deg,
+    theta: u.rad,
     gamma_e: Union[float, int] = 1,
     gamma_i: Union[float, int] = 3,
     z_mean: Union[float, int] = None,
@@ -238,7 +238,7 @@ def hirose(
 
     # validate argument theta
     theta = theta.squeeze()
-    if not (theta.ndim == 0 or theta.ndim == 1):
+    if theta.ndim not in (0,1):
         raise ValueError(
             f"Argument 'theta' needs to be a single valued or 1D array astropy "
             f"Quantity, got array of shape {theta.shape}."
