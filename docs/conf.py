@@ -461,6 +461,7 @@ nbsphinx_thumbnails = {
     "notebooks/getting_started/units": (
         "_static/notebook_images/astropy_logo_notext.png"
     ),  # CC BY-SA
+    "notebooks/formulary/solar_plasma_beta": "_static/notebook_images/coronal_loops.png",
     "notebooks/plasma/grids_cartesian": (
         "_static/notebook_images/uniform_grid_thumbnail.png"
     ),
