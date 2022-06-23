@@ -241,7 +241,7 @@ def hirose(
     if not (theta.ndim == 0 or theta.ndim == 1):
         raise ValueError(
             f"Argument 'theta' needs to be a single valued or 1D array astropy "
-            f"Quantity, got array of shape {k.shape}."
+            f"Quantity, got array of shape {theta.shape}."
         )
 
     # Single k value case
