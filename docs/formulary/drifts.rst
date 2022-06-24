@@ -11,4 +11,4 @@ Particle drifts (`plasmapy.formulary.drifts`)
 .. nbgallery::
     :caption: Examples
 
-    /notebooks/ExB_drift
+    /notebooks/formulary/ExB_drift

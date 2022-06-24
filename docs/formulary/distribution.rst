@@ -11,5 +11,5 @@ Distribution functions (`plasmapy.formulary.distribution`)
 .. nbgallery::
     :caption: Examples
 
-    /notebooks/distribution
+    /notebooks/formulary/distribution
     /notebooks/formulary/thermal_speed
