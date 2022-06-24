@@ -15,14 +15,6 @@ Getting started
    notebooks/getting_started/units
    notebooks/getting_started/particles
 
-General
--------
-
-.. nbgallery::
-   :glob:
-
-   notebooks/*
-
 Analyses & Diagnostics
 ----------------------
 
@@ -48,6 +40,14 @@ Formulary
    :glob:
 
    notebooks/formulary/*
+
+General
+-------
+
+.. nbgallery::
+   :glob:
+
+   notebooks/general/*
 
 .. Particles
    ---------
