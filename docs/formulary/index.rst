@@ -86,12 +86,12 @@ Examples
 
 .. nbgallery::
 
-    /notebooks/physics
+    /notebooks/formulary/*
 
 Notes for developers
 ====================
 
-Values should be returned as an Astropy Quantity in SI units.
+Values should be returned as an Astropy |Quantity| in SI units.
 
 If a quantity has several names, then the function name should be the
 one that provides the most physical insight into what the quantity
