@@ -95,10 +95,10 @@ Values should be returned as an Astropy |Quantity| in SI units.
 
 If a quantity has several names, then the function name should be the
 one that provides the most physical insight into what the quantity
-represents.  For example, 'gyrofrequency' indicates gyration, while
+represents.  For example, ``gyrofrequency`` indicates gyration, while
 Larmor frequency indicates that this frequency is somehow related to a
-human (or perhaps a cat?) named Larmor.  Similarly, using omega_ce as
-a function name for this quantity will make the code less readable to
+human (or perhaps a cat?) named Larmor.  Similarly, using ``omega_ce``
+as a function name for this quantity will make the code less readable to
 people who are unfamiliar with the notation or use a different symbol.
 
 The docstrings for plasma parameter methods should describe the
