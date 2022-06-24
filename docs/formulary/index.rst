@@ -86,7 +86,7 @@ Examples
 
 .. nbgallery::
 
-    ../notebooks/formulary/*
+    /notebooks/formulary/*
 
 Notes for developers
 ====================
