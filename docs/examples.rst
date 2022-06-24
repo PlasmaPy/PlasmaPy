@@ -41,14 +41,6 @@ Formulary
 
    notebooks/formulary/*
 
-General
--------
-
-.. nbgallery::
-   :glob:
-
-   notebooks/general/*
-
 .. Particles
    ---------
 
