@@ -95,6 +95,14 @@ class TestStix:
                 },
                 {"shape": (2, 4)},
             ),
+            (
+                {
+                    **_kwargs_single_valued,
+                    "w": [10, 20] * u.rad / u.s,
+                    "theta": [0, np.pi/2, np.pi] * u.rad,
+                },
+                {"shape": (2, 3, 4)},
+            ),
         ],
     )
     def test_return_structure(self, kwargs, expected):
