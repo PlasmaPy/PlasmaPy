@@ -71,8 +71,8 @@ def Alfven_speed(
         convertible to kg m\ :sup:`-3`\ .
 
     ion : `~plasmapy.particles.particle_class.Particle`, optional
-        Representation of the ion species (e.g., `'p'` for protons, `'D+'` for
-        deuterium, `'He-4 +1'` for singly ionized helium-4, etc.). If no charge
+        Representation of the ion species (e.g., ``'p'`` for protons, ``'D+'`` for
+        deuterium, ``'He-4 +1'`` for singly ionized helium-4, etc.). If no charge
         state information is provided, then the ions are assumed to be singly
         ionized. If the density is an ion number density, then this parameter
         is required in order to convert to mass density.
@@ -216,8 +216,8 @@ def ion_sound_speed(
         assumed to be zero.
 
     ion : `~plasmapy.particles.particle_class.Particle`
-        Representation of the ion species (e.g., `'p'` for protons,
-        `'D+'` for deuterium, or 'He-4 +1' for singly ionized
+        Representation of the ion species (e.g., ``'p'`` for protons,
+        ``'D+'`` for deuterium, or ``'He-4 +1'`` for singly ionized
         helium-4). If no charge state information is provided, then the
         ions are assumed to be singly charged.
 
@@ -245,7 +245,7 @@ def ion_sound_speed(
         along magnetic field lines.
 
     z_mean : `~astropy.units.Quantity`, optional
-        The average ionization (arithmetic mean) for a plasma where the
+        The average ionization (arithmetic mean) for a plasma where
         a macroscopic description is valid. If this quantity is not
         given then the charge number of the ion
         is used. This is effectively an average ion sound speed for the
@@ -359,7 +359,7 @@ def ion_sound_speed(
             m_i * (1 + klD2)
         )
         V_S = np.sqrt(V_S_squared).to(u.m / u.s)
-    except Exception:
+    except ValueError:
         raise ValueError("Unable to find ion sound speed.")
 
     return V_S
