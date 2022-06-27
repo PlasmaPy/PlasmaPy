@@ -18,7 +18,7 @@ class TestStix:
         "B": 8.3e-9 * u.T,
         "w": 0.001 * u.rad / u.s,
         "ions": [Particle("He+"), Particle("H+")],
-        "n_i": [4.0e5, 2.0e5] * u.m ** -3,
+        "n_i": [4.0e5, 2.0e5] * u.m**-3,
         "theta": 30 * u.deg,
     }
 
@@ -45,9 +45,9 @@ class TestStix:
                 TypeError,
             ),
             ({**_kwargs_single_valued, "ions": Particle("e-")}, ValueError),
-            ({**_kwargs_single_valued, "n_i": [4, 2, 3] * u.m ** -3}, ValueError),
+            ({**_kwargs_single_valued, "n_i": [4, 2, 3] * u.m**-3}, ValueError),
             (
-                {**_kwargs_single_valued, "n_i": np.ones((2, 2)) * u.m ** -3},
+                {**_kwargs_single_valued, "n_i": np.ones((2, 2)) * u.m**-3},
                 ValueError,
             ),
         ],
@@ -73,7 +73,7 @@ class TestStix:
                 {
                     **_kwargs_single_valued,
                     "ions": ["He+"],
-                    "n_i": [1] * u.m ** -3,
+                    "n_i": [1] * u.m**-3,
                 },
                 {"shape": (4,)},
             ),
@@ -82,7 +82,7 @@ class TestStix:
                 {
                     **_kwargs_single_valued,
                     "ions": ["He+", "H+"],
-                    "n_i": [1, 2] * u.m ** -3,
+                    "n_i": [1, 2] * u.m**-3,
                 },
                 {"shape": (4,)},
             ),
@@ -111,7 +111,7 @@ class TestStix:
                 {
                     "theta": 0 * u.rad,
                     "ions": [Particle("p")],
-                    "n_i": 1e12 * u.cm ** -3,
+                    "n_i": 1e12 * u.cm**-3,
                     "B": 0.434634 * u.T,
                     "w": 4.16321e4 * u.rad / u.s,
                 },
@@ -126,9 +126,9 @@ class TestStix:
                 {
                     "theta": 0 * u.rad,
                     "ions": [Particle("p")],
-                    "n_i": 1e12 * u.cm ** -3,
+                    "n_i": 1e12 * u.cm**-3,
                     "B": 0.434634 * u.T,
-                    "w": (41632 * 10 ** 3) * u.rad / u.s,
+                    "w": (41632 * 10**3) * u.rad / u.s,
                 },
                 {
                     "gamma": 1000,
@@ -143,9 +143,9 @@ class TestStix:
                 {
                     "theta": 0 * u.rad,
                     "ions": [Particle("p")],
-                    "n_i": 1e12 * u.cm ** -3,
+                    "n_i": 1e12 * u.cm**-3,
                     "B": 0.434634 * u.T,
-                    "w": (124896 * 10 ** 5) * u.rad / u.s,
+                    "w": (124896 * 10**5) * u.rad / u.s,
                 },
                 {
                     "gamma": 1000,
@@ -160,9 +160,9 @@ class TestStix:
                 {
                     "theta": 0 * u.rad,
                     "ions": [Particle("p")],
-                    "n_i": 1e12 * u.cm ** -3,
+                    "n_i": 1e12 * u.cm**-3,
                     "B": 0.434634 * u.T,
-                    "w": (4136 * 10 ** 7) * u.rad / u.s,
+                    "w": (4136 * 10**7) * u.rad / u.s,
                 },
                 {
                     "gamma": 1000,
@@ -175,9 +175,9 @@ class TestStix:
                 {
                     "theta": 0 * u.rad,
                     "ions": [Particle("p")],
-                    "n_i": 1e12 * u.cm ** -3,
+                    "n_i": 1e12 * u.cm**-3,
                     "B": 0.434634 * u.T,
-                    "w": (4136 * 10 ** 7) * u.rad / u.s,
+                    "w": (4136 * 10**7) * u.rad / u.s,
                 },
                 {
                     "gamma": 1000,
