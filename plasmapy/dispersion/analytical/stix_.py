@@ -25,7 +25,7 @@ def stix(
     B: u.T,
     w: u.rad / u.s,
     ions: Particle,
-    n_i: u.m ** -3,
+    n_i: u.m**-3,
     theta: u.rad,
 ):
     r"""
@@ -246,7 +246,7 @@ def stix(
     wps = []
     wcs = []
     for par, dens in zip(species, densities):
-        wps.append(plasma_frequency(n=dens * u.m ** -3, particle=par).value)
+        wps.append(plasma_frequency(n=dens * u.m**-3, particle=par).value)
         wcs.append(gyrofrequency(B=B, particle=par, signed=True).value)
 
     # Stix method implemented
@@ -254,9 +254,9 @@ def stix(
     P = np.ones_like(S)
     D = np.zeros_like(S)
     for wc, wp in zip(wcs, wps):
-        S -= (wp ** 2) / (w ** 2 - wc ** 2)
+        S -= (wp**2) / (w**2 - wc**2)
         P -= (wp / w) ** 2
-        D += ((wp ** 2) / (w ** 2 - wc ** 2)) * (wc / w)
+        D += ((wp**2) / (w**2 - wc**2)) * (wc / w)
 
     R = S + D
     L = S - D
@@ -270,9 +270,9 @@ def stix(
 
     # Solve for k values
     k = np.empty(w.shape + (4,), dtype=np.complex128)
-    k[..., 0] = np.emath.sqrt((-b + np.emath.sqrt(b ** 2 - 4 * a * c)) / (2 * a))
+    k[..., 0] = np.emath.sqrt((-b + np.emath.sqrt(b**2 - 4 * a * c)) / (2 * a))
     k[..., 1] = -k[..., 0]
-    k[..., 2] = np.emath.sqrt((-b - np.emath.sqrt(b ** 2 - 4 * a * c)) / (2 * a))
+    k[..., 2] = np.emath.sqrt((-b - np.emath.sqrt(b**2 - 4 * a * c)) / (2 * a))
     k[..., 3] = -k[..., 2]
 
     return k.squeeze() * u.rad / u.m
