@@ -177,7 +177,7 @@ def stix(
     """
 
     # Validate ions argument
-    if not isinstance(ions, (list, tuple)):
+    if not isinstance(ions, (list, tuple, ParticleList)):
         ions = [ions]
     ions = ParticleList(ions)
 
