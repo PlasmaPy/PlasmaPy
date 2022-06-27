@@ -50,7 +50,7 @@ def stix(
         ``"D+"`` for deuterium, ``["H+", "He+"]`` for hydrogen and
         helium, etc.).  All ions must be positively charged.
 
-    n_i: `~astropy.units.Quantity`, single valud or 1-D array
+    n_i: `~astropy.units.Quantity`, single valued or 1-D array
         Ion number density in units convertible to m\ :sup:`-3`.  Must
         be single valued or equal length to ``ions``.
 
@@ -121,7 +121,7 @@ def stix(
     .. math::
         S &= 1 - \sum_{s} \frac{\omega^{2}_{p,s}}{\omega^{2} -
             \omega^{2}_{c,s}}\\
-        P &= 1 - \sum_{\sigma} \frac{\omega^{2}_{p,s}}{\omega^{2}}\\
+        P &= 1 - \sum_{s} \frac{\omega^{2}_{p,s}}{\omega^{2}}\\
         D &= \sum_{s}
             \frac{\omega_{c,s}}{\omega}
             \frac{\omega^{2}_{p,s}}{\omega^{2} -
