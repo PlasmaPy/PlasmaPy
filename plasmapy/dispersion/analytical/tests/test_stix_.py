@@ -115,6 +115,8 @@ class TestStix:
     @pytest.mark.parametrize(
         "kwargs, expected",
         [
+            # case taken from Stix figure 1-1
+            # Note: ns = [n = k * c / w, ]
             (
                 {
                     "theta": 0 * u.rad,
@@ -130,6 +132,8 @@ class TestStix:
                     "ns": np.array([31.63146, -31.63146, 31.66306, -31.66306]),
                 },
             ),
+            #
+            # case taken from Stix figure 1-2
             (
                 {
                     "theta": 0 * u.rad,
@@ -147,6 +151,8 @@ class TestStix:
                     ),
                 },
             ),
+            #
+            # case taken from Stix figure 1-3
             (
                 {
                     "theta": 0 * u.rad,
@@ -164,6 +170,8 @@ class TestStix:
                     ),
                 },
             ),
+            #
+            # case taken from Stix figure 1-4
             (
                 {
                     "theta": 0 * u.rad,
@@ -179,6 +187,8 @@ class TestStix:
                     "ns": np.array([0.5880416, -0.5880416, 1.78668573, -1.78668573]),
                 },
             ),
+            #
+            # case taken from Stix figure 1-5
             (
                 {
                     "theta": 0 * u.rad,
