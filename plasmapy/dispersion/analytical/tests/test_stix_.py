@@ -234,7 +234,7 @@ class TestStix:
             ),
         ],
     )
-    def test_vals(self, kwargs, expected):
+    def test_vals_stix_figs(self, kwargs, expected):
         ion = kwargs["ions"][0]
 
         mu = ion.mass / Particle("e-").mass
