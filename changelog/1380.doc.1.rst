@@ -1,2 +1,2 @@
-Added a "getting started" page to the documentation sidebar and a "getting
-started" section to the examples gallery.
+Added a "Getting Started" page to the documentation sidebar and a "Getting
+Started" section to the examples gallery.
