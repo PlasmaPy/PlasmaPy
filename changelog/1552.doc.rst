@@ -1,0 +1,3 @@
+Added a notebook on using `~plasmapy.formulary.dimensionless.beta`
+from the `plasmapy.formulary` module to calculate plasma β in
+different parts of the solar atmosphere.
