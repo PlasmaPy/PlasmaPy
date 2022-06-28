@@ -268,9 +268,17 @@ def stix(
 
     # Solve for k values
     k = np.empty(w.shape + (4,), dtype=np.complex128)
-    k[..., 0] = np.emath.sqrt((-b + np.emath.sqrt(b**2 - 4 * a * c)) / (2 * a)) * w / c_si_unitless
+    k[..., 0] = (
+        np.emath.sqrt((-b + np.emath.sqrt(b**2 - 4 * a * c)) / (2 * a))
+        * w
+        / c_si_unitless
+    )
     k[..., 1] = -k[..., 0]
-    k[..., 2] = np.emath.sqrt((-b - np.emath.sqrt(b**2 - 4 * a * c)) / (2 * a)) * w / c_si_unitless
+    k[..., 2] = (
+        np.emath.sqrt((-b - np.emath.sqrt(b**2 - 4 * a * c)) / (2 * a))
+        * w
+        / c_si_unitless
+    )
     k[..., 3] = -k[..., 2]
 
     return k.squeeze() * u.rad / u.m

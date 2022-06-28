@@ -36,7 +36,7 @@ class TestStix:
         wps = []
         wcs = []
         for par, dens in zip(species, densities):
-            wps.append(plasma_frequency(n=dens * u.m ** -3, particle=par).value)
+            wps.append(plasma_frequency(n=dens * u.m**-3, particle=par).value)
             wcs.append(gyrofrequency(B=B, particle=par, signed=True).value)
 
         # Stix method implemented
@@ -44,9 +44,9 @@ class TestStix:
         P = np.ones_like(S)
         D = np.zeros_like(S)
         for wc, wp in zip(wcs, wps):
-            S -= (wp ** 2) / (w ** 2 - wc ** 2)
+            S -= (wp**2) / (w**2 - wc**2)
             P -= (wp / w) ** 2
-            D += ((wp ** 2) / (w ** 2 - wc ** 2)) * (wc / w)
+            D += ((wp**2) / (w**2 - wc**2)) * (wc / w)
 
         return S, P, D
 
@@ -127,7 +127,7 @@ class TestStix:
                 {
                     **_kwargs_single_valued,
                     "w": [10, 20] * u.rad / u.s,
-                    "theta": [0, np.pi/2, np.pi] * u.rad,
+                    "theta": [0, np.pi / 2, np.pi] * u.rad,
                 },
                 {"shape": (2, 3, 4)},
             ),
@@ -279,19 +279,23 @@ class TestStix:
             },
             {
                 "ions": ParticleList([Particle("p")]),
-                "n_i": [1e12] * u.cm ** -3,
+                "n_i": [1e12] * u.cm**-3,
                 "B": 0.300 * u.T,
                 "w": 6e5 * u.rad / u.s,
             },
             {
                 "ions": ParticleList([Particle("p")]),
-                "n_i": [1e12] * u.cm ** -3,
+                "n_i": [1e12] * u.cm**-3,
                 "B": 0.300 * u.T,
                 "w": np.linspace(6e5, 1e9, 10) * u.rad / u.s,
             },
             {
                 "ions": ParticleList([Particle("p"), Particle("He+")]),
-                "n_i": [0.3 * 1e13, 0.7 * 1e13,] * u.cm ** -3,
+                "n_i": [
+                    0.3 * 1e13,
+                    0.7 * 1e13,
+                ]
+                * u.cm**-3,
                 "B": 0.400 * u.T,
                 "w": np.linspace(6e5, 1e9, 10) * u.rad / u.s,
             },
@@ -328,19 +332,23 @@ class TestStix:
             },
             {
                 "ions": ParticleList([Particle("p")]),
-                "n_i": [1e12] * u.cm ** -3,
+                "n_i": [1e12] * u.cm**-3,
                 "B": 0.300 * u.T,
                 "w": 6e5 * u.rad / u.s,
             },
             {
                 "ions": ParticleList([Particle("p")]),
-                "n_i": [1e12] * u.cm ** -3,
+                "n_i": [1e12] * u.cm**-3,
                 "B": 0.300 * u.T,
                 "w": np.linspace(6e5, 1e9, 10) * u.rad / u.s,
             },
             {
                 "ions": ParticleList([Particle("p"), Particle("He+")]),
-                "n_i": [0.3 * 1e13, 0.7 * 1e13,] * u.cm ** -3,
+                "n_i": [
+                    0.3 * 1e13,
+                    0.7 * 1e13,
+                ]
+                * u.cm**-3,
                 "B": 0.400 * u.T,
                 "w": np.linspace(6e5, 1e9, 10) * u.rad / u.s,
             },
@@ -358,8 +366,12 @@ class TestStix:
         ks = stix(**{**kwargs, "theta": 0.5 * np.pi * u.rad})
         ns = ks.value * c_si_unitless / np.tile(kwargs["w"].value, (4, 1)).transpose()
 
-        n_soln1 = np.emath.sqrt((R * L + P * S + np.abs(R * L - P * S)) / (2 * S))  # n^2 = RL / S
-        n_soln2 = np.emath.sqrt((R * L + P * S - np.abs(R * L - P * S)) / (2 * S))  # n^2 = P
+        n_soln1 = np.emath.sqrt(
+            (R * L + P * S + np.abs(R * L - P * S)) / (2 * S)
+        )  # n^2 = RL / S
+        n_soln2 = np.emath.sqrt(
+            (R * L + P * S - np.abs(R * L - P * S)) / (2 * S)
+        )  # n^2 = P
 
         assert np.allclose(ns[..., 0], n_soln1)
         assert np.allclose(ns[..., 1], -n_soln1)
