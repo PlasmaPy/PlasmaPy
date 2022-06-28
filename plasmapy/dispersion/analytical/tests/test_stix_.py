@@ -7,7 +7,7 @@ from astropy.constants.si import c
 
 from plasmapy.dispersion.analytical.stix_ import stix
 from plasmapy.formulary import gyrofrequency, plasma_frequency
-from plasmapy.particles import Particle
+from plasmapy.particles import Particle, ParticleList
 from plasmapy.particles.exceptions import InvalidParticleError
 
 c_si_unitless = c.value
@@ -267,3 +267,53 @@ class TestStix:
         ns = ks.value * c_si_unitless / kwargs["w"].value
 
         assert np.allclose(ns, expected["ns"])
+
+    @pytest.mark.parametrize(
+        "kwargs",
+        [
+            {
+                "ions": ParticleList([Particle("p")]),
+                "n_i": [1e12] * u.cm**-3,
+                "B": 0.434634 * u.T,
+                "w": 4136e7 * u.rad / u.s,
+            },
+            {
+                "ions": ParticleList([Particle("p")]),
+                "n_i": [1e12] * u.cm ** -3,
+                "B": 0.300 * u.T,
+                "w": 6e5 * u.rad / u.s,
+            },
+            {
+                "ions": ParticleList([Particle("p")]),
+                "n_i": [1e12] * u.cm ** -3,
+                "B": 0.300 * u.T,
+                "w": np.linspace(6e5, 1e9, 10) * u.rad / u.s,
+            },
+            {
+                "ions": ParticleList([Particle("p"), Particle("He+")]),
+                "n_i": [0.3 * 1e13, 0.7 * 1e13,] * u.cm ** -3,
+                "B": 0.400 * u.T,
+                "w": np.linspace(6e5, 1e9, 10) * u.rad / u.s,
+            },
+        ],
+    )
+    def test_vals_theta_zero(self, kwargs):
+        """
+        Test on the known solutions for theta = 0,
+        see Stix ch. 1 eqn 37.
+        """
+        S, P, D = self.spd(**kwargs)
+        R = S + D
+        L = S - D
+
+        ks = stix(**{**kwargs, "theta": 0 * u.rad})
+        ns = ks.value * c_si_unitless / np.tile(kwargs["w"].value, (4, 1)).transpose()
+
+        n_soln1 = np.emath.sqrt(0.5 * (R + L - np.abs(R - L)))  # n^2 = L
+        n_soln2 = np.emath.sqrt(0.5 * (R + L + np.abs(R - L)))  # n^2 = R
+
+        assert np.allclose(ns[..., 0], n_soln1)
+        assert np.allclose(ns[..., 1], -n_soln1)
+        assert np.allclose(ns[..., 2], n_soln2)
+        assert np.allclose(ns[..., 3], -n_soln2)
+
