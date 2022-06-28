@@ -317,3 +317,51 @@ class TestStix:
         assert np.allclose(ns[..., 2], n_soln2)
         assert np.allclose(ns[..., 3], -n_soln2)
 
+    @pytest.mark.parametrize(
+        "kwargs",
+        [
+            {
+                "ions": ParticleList([Particle("p")]),
+                "n_i": [1e12] * u.cm**-3,
+                "B": 0.434634 * u.T,
+                "w": 4136e7 * u.rad / u.s,
+            },
+            {
+                "ions": ParticleList([Particle("p")]),
+                "n_i": [1e12] * u.cm ** -3,
+                "B": 0.300 * u.T,
+                "w": 6e5 * u.rad / u.s,
+            },
+            {
+                "ions": ParticleList([Particle("p")]),
+                "n_i": [1e12] * u.cm ** -3,
+                "B": 0.300 * u.T,
+                "w": np.linspace(6e5, 1e9, 10) * u.rad / u.s,
+            },
+            {
+                "ions": ParticleList([Particle("p"), Particle("He+")]),
+                "n_i": [0.3 * 1e13, 0.7 * 1e13,] * u.cm ** -3,
+                "B": 0.400 * u.T,
+                "w": np.linspace(6e5, 1e9, 10) * u.rad / u.s,
+            },
+        ],
+    )
+    def test_vals_theta_90deg(self, kwargs):
+        """
+        Test on the known solutions for theta = pi/2,
+        see Stix ch. 1 eqn 38.
+        """
+        S, P, D = self.spd(**kwargs)
+        R = S + D
+        L = S - D
+
+        ks = stix(**{**kwargs, "theta": 0.5 * np.pi * u.rad})
+        ns = ks.value * c_si_unitless / np.tile(kwargs["w"].value, (4, 1)).transpose()
+
+        n_soln1 = np.emath.sqrt((R * L + P * S + np.abs(R * L - P * S)) / (2 * S))  # n^2 = RL / S
+        n_soln2 = np.emath.sqrt((R * L + P * S - np.abs(R * L - P * S)) / (2 * S))  # n^2 = P
+
+        assert np.allclose(ns[..., 0], n_soln1)
+        assert np.allclose(ns[..., 1], -n_soln1)
+        assert np.allclose(ns[..., 2], n_soln2)
+        assert np.allclose(ns[..., 3], -n_soln2)
