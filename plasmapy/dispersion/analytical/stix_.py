@@ -250,7 +250,7 @@ def stix(
         wcs.append(gyrofrequency(B=B, particle=par, signed=True).value)
 
     # Stix method implemented
-    S = np.ones_like(w, dtype=np.complex128)
+    S = np.ones_like(w, dtype=np.float64)
     P = np.ones_like(S)
     D = np.zeros_like(S)
     for wc, wp in zip(wcs, wps):
