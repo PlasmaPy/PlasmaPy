@@ -1044,11 +1044,9 @@ class Particle(AbstractPhysicalParticle):
         For special particles, this attribute will return the standard
         value for the particle's mass.
 
-        Raises
-        ------
-        `~plasmapy.particles.exceptions.MissingParticleDataError`.
-            If the mass is unavailable (e.g., for neutrinos or elements
-            with no standard atomic weight.
+        For particles where the mass is unavailable (e.g., for neutrinos or
+        elements with no standard atomic weight), this attribute will return
+        numpy.nan multiplied by the expected units.
 
         Examples
         --------
@@ -1091,7 +1089,7 @@ class Particle(AbstractPhysicalParticle):
             if mass is not None:
                 return mass.to(u.kg)
 
-        raise MissingParticleDataError(f"The mass of {self} is not available.")
+        return np.nan * u.kg
 
     @property
     def nuclide_mass(self) -> u.kg:
@@ -1146,8 +1144,9 @@ class Particle(AbstractPhysicalParticle):
         If the particle is an isotope or nuclide, return the mass energy
         of the nucleus only.
 
-        If the mass of the particle is not known, then raise a
-        `~plasmapy.particles.exceptions.MissingParticleDataError`.
+        For particles where the mass is unavailable (e.g., for neutrinos or
+        elements with no standard atomic weight), this attribute will return
+        numpy.nan multiplied by the expected units.
 
         Examples
         --------
