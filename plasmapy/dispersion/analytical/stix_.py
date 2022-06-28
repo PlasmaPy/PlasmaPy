@@ -262,17 +262,15 @@ def stix(
     L = S - D
 
     # Generate coefficients to solve, a * k**4 + b * k**2 + c = 0
-    a = (c_si_unitless / w) ** 4 * (S * (np.sin(theta) ** 2) + P * (np.cos(theta) ** 2))
-    b = -((c_si_unitless / w) ** 2) * (
-        R * L * (np.sin(theta) ** 2) + P * S * (1 + (np.cos(theta) ** 2))
-    )
+    a = (S * np.sin(theta) ** 2) + (P * np.cos(theta) ** 2)
+    b = -((R * L * np.sin(theta) ** 2) + (P * S * (1 + np.cos(theta) ** 2)))
     c = P * R * L
 
     # Solve for k values
     k = np.empty(w.shape + (4,), dtype=np.complex128)
-    k[..., 0] = np.emath.sqrt((-b + np.emath.sqrt(b**2 - 4 * a * c)) / (2 * a))
+    k[..., 0] = np.emath.sqrt((-b + np.emath.sqrt(b**2 - 4 * a * c)) / (2 * a)) * w / c_si_unitless
     k[..., 1] = -k[..., 0]
-    k[..., 2] = np.emath.sqrt((-b - np.emath.sqrt(b**2 - 4 * a * c)) / (2 * a))
+    k[..., 2] = np.emath.sqrt((-b - np.emath.sqrt(b**2 - 4 * a * c)) / (2 * a)) * w / c_si_unitless
     k[..., 3] = -k[..., 2]
 
     return k.squeeze() * u.rad / u.m
