@@ -22,6 +22,34 @@ class TestStix:
         "theta": 30 * u.deg,
     }
 
+    @staticmethod
+    def spd(B, w, ions, n_i):
+        w = w.to(u.rad / u.s).value
+        n_i = n_i.to(u.m**-3).value
+
+        species = ions + [Particle("e-")]
+        densities = np.zeros(n_i.size + 1)
+        densities[:-1] = n_i
+        densities[-1] = np.sum(n_i * ions.charge_number)
+
+        # Generate the plasma parameters needed
+        wps = []
+        wcs = []
+        for par, dens in zip(species, densities):
+            wps.append(plasma_frequency(n=dens * u.m ** -3, particle=par).value)
+            wcs.append(gyrofrequency(B=B, particle=par, signed=True).value)
+
+        # Stix method implemented
+        S = np.ones_like(w, dtype=np.float64)
+        P = np.ones_like(S)
+        D = np.zeros_like(S)
+        for wc, wp in zip(wcs, wps):
+            S -= (wp ** 2) / (w ** 2 - wc ** 2)
+            P -= (wp / w) ** 2
+            D += ((wp ** 2) / (w ** 2 - wc ** 2)) * (wc / w)
+
+        return S, P, D
+
     @pytest.mark.parametrize(
         "kwargs, _error",
         [
