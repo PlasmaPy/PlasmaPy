@@ -1,0 +1,1 @@
+Added |sphinx-reredirects|_ as a Sphinx_ extension to allow website redirects.

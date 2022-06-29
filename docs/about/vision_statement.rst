@@ -129,8 +129,7 @@ New code should conform to the `PEP 8 style guide for Python
 code <https://www.python.org/dev/peps/pep-0008>`_ and the established
 coding style within PlasmaPy. New code should be submitted with
 documentation and tests. Documentation should be written primarily in
-docstrings and follow the `numpydoc documentation style
-guide <https://github.com/numpy/numpy/blob/main/doc/HOWTO_DOCUMENT.rst.txt>`_.
+docstrings and follow the numpydoc_ documentation style guide.
 Every new module, class and function should have an appropriate
 docstring. The documentation should describe the interface and the
 purpose for the method, but generally not the implementation. The code
