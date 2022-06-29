@@ -226,6 +226,9 @@
 .. _`sphinx_changelog`: https://sphinx-changelog.readthedocs.io
 .. |sphinx_changelog| replace:: `sphinx_changelog`
 
+.. _`sphinx-reredirects`: https://documatt.gitlab.io/sphinx-reredirects
+.. |sphinx-reredirects| replace:: `sphinx-reredirects`
+
 .. _`sphinx-hoverxref`: https://sphinx-hoverxref.readthedocs.io
 .. |sphinx-hoverxref| replace:: `sphinx-hoverxref`
 
