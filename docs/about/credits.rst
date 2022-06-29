@@ -29,7 +29,7 @@ in parentheses are `ORCID author identifiers <https://orcid.org>`__.
 * :user:`Alexis Jeandet <jeandet>` (:orcid:`0000-0003-2892-6924`)
 * :user:`Alf Köhn-Seemann <alfkoehn>` (:orcid:`0000-0002-1192-2057`)
 * :user:`Andrew <sandshrew118>`
-* :user: `Andrew Sheng <andrewsheng2>`
+* :user:`Andrew Sheng <andrewsheng2>`
 * :user:`Angad Singh <singha95>`
 * :user:`Ankit Singh <Griffintaur>`
 * :user:`Ankur Chattopadhyay <chttrjeankr>`
