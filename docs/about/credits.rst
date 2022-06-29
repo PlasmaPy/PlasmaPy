@@ -25,7 +25,10 @@ in parentheses are `ORCID author identifiers <https://orcid.org>`__.
    To sign up, please go to: https://orcid.org/register
 
 * :user:`Aditya Magarde <adityamagarde>`
+* :user:`Afzal Rao <thecasuist>`
+* :user:`Alexis Jeandet <jeandet>` (:orcid:`0000-0003-2892-6924`)
 * :user:`Alf Köhn-Seemann <alfkoehn>` (:orcid:`0000-0002-1192-2057`)
+* :user:`Andrew <sandshrew118>`
 * :user:`Angad Singh <singha95>`
 * :user:`Ankit Singh <Griffintaur>`
 * :user:`Ankur Chattopadhyay <chttrjeankr>`
@@ -36,13 +39,15 @@ in parentheses are `ORCID author identifiers <https://orcid.org>`__.
 * :user:`Armando Salcido <aksalcido>`
 * :user:`BH4`
 * :user:`Brian Goodall <goodab>`
-* :user:`Brigitta Sipőcz <bsipocz>`
-* :user:`Bryan Foo <bryancfoo>`
+* :user:`Brigitta Sipőcz <bsipocz>` (:orcid:`0000-0002-3713-6337`)
+* :user:`Bryan Foo <bryancfoo>` (:orcid:`0000-0001-5308-6870`)
 * :user:`Carol Zhang <carolyz>`
 * :user:`cclauss`
 * :user:`Chengcai Shen <ionizationcalc>` (:orcid:`0000-0002-9258-4490`)
+* :user:`Chris Hoang <bucket420>`
+* :user:`Christoper Arran <ChrisArran>` (:orcid:`0000-0002-8644-8118`)
 * :user:`Cody Skinner <cskinner74>`
-* :user:`Colby Haggerty <colbych>`
+* :user:`Colby Haggerty <colbych>` (:orcid:`0000-0002-2160-7288`)
 * :user:`David Drozdov <davemus>`
 * :user:`David Stansby <dstansby>` (:orcid:`0000-0002-1365-1908`)
 * :user:`Dawa Nurbu Sherpa <nurbu5>`
@@ -50,16 +55,20 @@ in parentheses are `ORCID author identifiers <https://orcid.org>`__.
 * :user:`Diego A. Diaz Riega <diego7319>`
 * :user:`Dominik Stańczak <StanczakDominik>` (:orcid:`0000-0001-6291-8843`)
 * :user:`Drew Leonard <SolarDrew>` (:orcid:`0000-0001-5270-7487`)
-* :user:`Erik Everson <rocco8773>`
+* :user:`Elliot Johnson <etjohnson>`
+* :user:`Erik Everson <rocco8773>` (:orcid:`0000-0001-6079-8307`)
 * :user:`Fionnlagh Mackenzie Dover <FinMacDov>` (:orcid:`0000-0002-1984-7303`)
+* :user:`flaixman`
 * :user:`Francisco Silva Pavon <silvafrancisco>`
 * :user:`Graham Goudeau <GrahamGoudeau>`
 * :user:`Haman Bagherianlemraski <haman80>` (:orcid:`0000-0001-7381-1996`)
 * :user:`Jacob Deal <Jac0bDeal>`
 * Jakub Polak
+* :user:`James Kent <jdkent>`
 * :user:`Jasper Beckers <jasperbeckers>`
+* :user:`Joao Victor Martinelli <JvPy>`
 * :user:`Joshua Munn <jams2>`
-* :user:`jota33` (:orcid:`0000-0001-5394-9445`)
+* :user:`Isaias McHardy <jota33>` (:orcid:`0000-0001-5394-9445`)
 * :user:`Julien Hillairet <jhillairet>` (:orcid:`0000-0002-1073-6383`)
 * :user:`Justin Bergeron <Justin-Bergeron>`
 * :user:`Kevin Montes <kjmontes>` (:orcid:`0000-0002-0762-3708`)
@@ -67,40 +76,50 @@ in parentheses are `ORCID author identifiers <https://orcid.org>`__.
 * :user:`Leah Einhorn <leahein>`
 * :user:`Leo Murphy <LeoMurphyWM24>`
 * :user:`lgoenner`
+* :user:`Luciano Silvestri <lucianogsilvestri>` (:orcid:`0000-0003-3530-7910`)
 * :user:`Ludovico Bessi <ludoro>`
 * :user:`Manas Bedmutha <manasbedmutha98>`
+* :user:`Marco Gorelli <MarcoGorelli>`
 * :user:`Maria Isupova <misupova>`
 * Michael Fischer
 * :user:`Nabil Humphrey <NabilHumphrey>`
 * :user:`Neil Patel <ministrike3>`
 * :user:`Nick Murphy <namurphy>` (:orcid:`0000-0001-6628-8033`)
 * :user:`Nicolas Lequette <Quettle>`
-* :user:`Nismirno`
-* :user:`nrb1324`
+* :user:`Nikita Smirnov <Nismirno>`
+* @nrb1324
 * :user:`Pawel Kozlowski <lemmatum>` (:orcid:`0000-0001-6849-3612`)
 * :user:`Peter Heuer <pheuer>` (:orcid:`0000-0001-5050-6606`)
+* :user:`Pey Lian Lim <pllim>` (:orcid:`0000-0003-0079-4114`)
 * :user:`Piotr Kuszaj <kuszaj>`
 * :user:`Poh Zi How <pohzipohzi>`
 * :user:`Raajit Raj <raajitr>`
+* :user:`Rajagopalan Gangadharan <RAJAGOPALAN-GANGADHARAN>`
 * :user:`Ramiz Qudsi <qudsiramiz>` (:orcid:`0000-0001-8358-0482`)
+* :user:`Raymon Skjørten Hansen <raymonshansen>`
 * :user:`Reynaldo Rojas Zelaya <userr2232>`
+* :user:`Riley Britten <riley-britten>`
 * :user:`Ritiek Malhotra <ritiek>`
 * :user:`Roberto Díaz Pérez <RoberTnf>`
-* :user:`Samaiyah I. Farid <samaiyahfarid>`
+* :user:`Samaiyah I. Farid <samaiyahfarid>` (:orcid:`0000-0003-0223-7004`)
 * :user:`Samuel Langendorf <samurai688>` (:orcid:`0000-0002-7757-5879`)
 * :user:`Sean Carroll <seanwilliamcarroll>`
 * :user:`Sean Chambers <schambers>`
-* Siddharth Kulshrestha
+* :user:`seanjunheng2`
+* :user:`Shane Brown <Sjbrownian>`
+* :user:`Siddharth Kulshrestha <siddharthk07>`
+* :user:`siddharthk07`
 * `Silvina Guidoni <https://www.american.edu/cas/faculty/guidoni.cfm>`_
 * :user:`Sixue Xu <hzxusx>`
 * :user:`Steve Richardson <arichar6>` (:orcid:`0000-0002-3056-6334`)
 * :user:`Stuart Mumford <Cadair>` (:orcid:`0000-0003-4217-4642`)
+* :user:`Suzanne Nie <suzannenie>`
 * :user:`Thomas Fan <thomasjpfan>`
 * :user:`Thomas Ulrich <Elfhelm>`
 * :user:`Thomas Varnish <tvarnish>`
-* :user:`Tien Vo <tien-vo>`
+* :user:`Tien Vo <tien-vo>` (:orcid:`0000-0002-8335-1441`)
 * :user:`Tiger Du <Tiger-Du>` (:orcid:`0000-0002-8676-1710`)
-* :user:`Tomas Stinson <14tstinson>`
+* :user:`Tomás Stinson <14tstinson>`
 * :user:`Tulasi Parashar <tulasinandan>` (:orcid:`0000-0003-0602-8381`)
 * :user:`Vishwas Rajashekar <DarkAEther>` (:orcid:`0000-0002-4914-6612`)
 * :user:`Yi-Min Huang <yopology>` (:orcid:`0000-0002-4237-2211`)
