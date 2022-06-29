@@ -1,0 +1,3 @@
+Alphabetized the author list in :file:`docs/about/credits.rst`, and
+added missing authors from using ``git log`` and the pull request
+history.
