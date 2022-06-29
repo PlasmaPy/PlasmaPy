@@ -37,7 +37,7 @@ Example highlights
    examples
    COMMUNICATION
    CONTRIBUTING
-   CODE_OF_CONDUCT
+   Code of Conduct <CODE_OF_CONDUCT.rst>
    about/citation
 
 .. toctree::
