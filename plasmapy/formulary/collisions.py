@@ -879,9 +879,9 @@ def impact_parameter(
     # it could be that bmin and bmax have different sizes. If Te is a scalar,
     # T and V will be scalar from _process_inputs, so bmin will scalar. However
     # if n_e is an array, then bmax will be an array. if this is the case,
-    # do we want to extend the scalar bmin to equal the length of bmax? Sure.
+    # we want to extend the scalar bmin to match the dimensions of bmax.
     if np.isscalar(bmin.value) and not np.isscalar(bmax.value):
-        bmin = np.repeat(bmin, len(bmax))
+        bmin = bmin * np.ones(bmax.shape)
 
     return bmin.to(u.m), bmax.to(u.m)
 
