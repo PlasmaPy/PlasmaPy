@@ -242,14 +242,14 @@ linkcheck_anchors_ignore = [
 ]
 
 redirects = {
-    "development/index": "../contributing/index",
-    "development/changelog_guide": "../contributing/changelog_guide",
-    "development/code_guide": "../contributing/code_guide",
-    "development/doc_guide": "../contributing/doc_guide",
-    "development/install_dev": "../contributing/install_dev",
-    "development/release_guide": "../contributing/release_guide",
-    "development/testing_guide": "../contributing/testing_guide",
-    "development/workflow": "../contributing/workflow",
+    "development/index": "../contributing/index.html",
+    "development/changelog_guide": "../contributing/changelog_guide.html",
+    "development/code_guide": "../contributing/code_guide.html",
+    "development/doc_guide": "../contributing/doc_guide.html",
+    "development/install_dev": "../contributing/install_dev.html",
+    "development/release_guide": "../contributing/release_guide.html",
+    "development/testing_guide": "../contributing/testing_guide.html",
+    "development/workflow": "../contributing/workflow.html",
 }
 
 # Use a code highlighting style that meets the WCAG AA contrast standard
