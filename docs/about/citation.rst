@@ -17,7 +17,7 @@ Version |version_to_cite| of PlasmaPy may be cited with the following
 reference:
 
    PlasmaPy Community et al. (|citation_year|). *PlasmaPy*, version
-   |version_to_cite|, Zenodo, https://doi.org/\ |version_to_cite|
+   |version_to_cite|, Zenodo, https://doi.org/\ |doi_for_version|
 
 This reference may be made, for example, by adding the following line to
 the methods or acknowledgements section of a paper.
