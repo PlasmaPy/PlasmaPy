@@ -77,4 +77,5 @@ repos:
   rev: v2.34.0
   hooks:
   - id: pyupgrade
-    args: [--keep-runtime-typing, --py38-plus, plasmapy]
+    args: [--keep-runtime-typing, --py38-plus]
+    files: ^plasmapy/
