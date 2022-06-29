@@ -1016,6 +1016,36 @@ class Test_impact_parameter:
         self.V = 1e4 * u.km / u.s
         self.True1 = np.array([7.200146594293746e-10, 2.3507660003984624e-08])
 
+    @pytest.mark.parametrize(
+        "n_e_shape,T_shape",
+        # Scalar T
+        [
+            ((2, 3, 5), (1,)),
+            # Scalar n
+            ((1,), (2, 3, 5)),
+            # Both arrays of equal size
+            ((2, 3, 5), (2, 3, 5)),
+            # Higher dimensional test
+            ((2, 3, 5, 4, 2), (2, 3, 5, 4, 2)),
+        ],
+    )
+    def test_handles_ND_arrays(self, n_e_shape, T_shape):
+
+        if len(T_shape) >= len(n_e_shape):
+            output_shape = T_shape
+        else:
+            output_shape = n_e_shape
+
+        n_e = self.n_e * np.ones(n_e_shape)
+        T = self.T * np.ones(T_shape)
+
+        bmin, bmax = impact_parameter(T, n_e, self.particles)
+
+        msg = f"wrong shape for n_e shape {n_e.shape} and " f"T shape {T.shape}"
+
+        assert bmin.shape == output_shape, "Bmin " + msg
+        assert bmax.shape == output_shape, "Bmax " + msg
+
     def test_symmetry(self):
         result = impact_parameter(self.T, self.n_e, self.particles)
         resultRev = impact_parameter(self.T, self.n_e, self.particles[::-1])
