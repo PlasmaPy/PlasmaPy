@@ -1,3 +1,1 @@
-Added the `sphinx-reredirects
-<https://documatt.gitlab.io/sphinx-reredirects/usage.html>`__ extension
-for Sphinx to allow website redirects.
+Added |sphinx-reredirects|_ as a Sphinx_ extension to allow website redirects.
