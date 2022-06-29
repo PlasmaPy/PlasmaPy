@@ -99,6 +99,7 @@ extensions = [
     "hoverxref.extension",
     "notfound.extension",
     "sphinx_issues",
+    "sphinx_reredirects",
     "plasmapy_sphinx",
 ]
 
@@ -239,6 +240,16 @@ linkcheck_anchors_ignore = [
     "L[0-9].+",
     "!forum/plasmapy",
 ]
+
+redirects = {
+    "development/index": "../contributing/index",
+    "development/changelog_guide": "../contributing/changelog_guide",
+    "development/code_guide": "../contributing/code_guide",
+    "development/doc_guide": "../contributing/doc_guide",
+    "development/install_dev": "../contributing/install_dev",
+    "development/release_guide": "../contributing/release_guide",
+    "development/testing_guide": "../contributing/testing_guide",
+}
 
 # Use a code highlighting style that meets the WCAG AA contrast standard
 pygments_style = "default"
