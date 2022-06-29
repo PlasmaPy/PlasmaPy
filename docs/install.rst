@@ -212,7 +212,7 @@ will be installed.
    fork a repository and create branches so that you may make
    contributions via pull requests.
 
-.. _Anaconda Navigator: https://www.anaconda.com/products/individual
+.. _Anaconda Navigator: https://www.anaconda.com/products/distribution
 .. _clone a repository using SSH: https://docs.github.com/en/get-started/getting-started-with-git/about-remote-repositories#cloning-with-ssh-urls
 .. _conda-forge: https://conda-forge.org
 .. _download Python: https://www.python.org/downloads/
