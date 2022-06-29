@@ -29,6 +29,7 @@ in parentheses are `ORCID author identifiers <https://orcid.org>`__.
 * :user:`Alexis Jeandet <jeandet>` (:orcid:`0000-0003-2892-6924`)
 * :user:`Alf Köhn-Seemann <alfkoehn>` (:orcid:`0000-0002-1192-2057`)
 * :user:`Andrew <sandshrew118>`
+* :user: `Andrew Sheng <andrewsheng2>`
 * :user:`Angad Singh <singha95>`
 * :user:`Ankit Singh <Griffintaur>`
 * :user:`Ankur Chattopadhyay <chttrjeankr>`
@@ -69,6 +70,7 @@ in parentheses are `ORCID author identifiers <https://orcid.org>`__.
 * :user:`Joao Victor Martinelli <JvPy>`
 * :user:`Joshua Munn <jams2>`
 * :user:`Isaias McHardy <jota33>` (:orcid:`0000-0001-5394-9445`)
+* :user:`itsraashi`
 * :user:`Julien Hillairet <jhillairet>` (:orcid:`0000-0002-1073-6383`)
 * :user:`Justin Bergeron <Justin-Bergeron>`
 * :user:`Kevin Montes <kjmontes>` (:orcid:`0000-0002-0762-3708`)
@@ -78,6 +80,7 @@ in parentheses are `ORCID author identifiers <https://orcid.org>`__.
 * :user:`lgoenner`
 * :user:`Luciano Silvestri <lucianogsilvestri>` (:orcid:`0000-0003-3530-7910`)
 * :user:`Ludovico Bessi <ludoro>`
+* :user:`Mahima Pannala <mahimapannala>`
 * :user:`Manas Bedmutha <manasbedmutha98>`
 * :user:`Marco Gorelli <MarcoGorelli>`
 * :user:`Maria Isupova <misupova>`
@@ -114,6 +117,7 @@ in parentheses are `ORCID author identifiers <https://orcid.org>`__.
 * :user:`Steve Richardson <arichar6>` (:orcid:`0000-0002-3056-6334`)
 * :user:`Stuart Mumford <Cadair>` (:orcid:`0000-0003-4217-4642`)
 * :user:`Suzanne Nie <suzannenie>`
+* :user:`Terrance Takho Lee <tlee0818>`
 * :user:`Thomas Fan <thomasjpfan>`
 * :user:`Thomas Ulrich <Elfhelm>`
 * :user:`Thomas Varnish <tvarnish>`
