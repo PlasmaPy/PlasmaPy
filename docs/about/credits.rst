@@ -47,6 +47,7 @@ in parentheses are `ORCID author identifiers <https://orcid.org>`__.
 * :user:`Chengcai Shen <ionizationcalc>` (:orcid:`0000-0002-9258-4490`)
 * :user:`Chris Hoang <bucket420>`
 * :user:`Christoper Arran <ChrisArran>` (:orcid:`0000-0002-8644-8118`)
+* :user:`Chun Hei Yip <syip1>`
 * :user:`Cody Skinner <cskinner74>`
 * :user:`Colby Haggerty <colbych>` (:orcid:`0000-0002-2160-7288`)
 * :user:`David Drozdov <davemus>`
