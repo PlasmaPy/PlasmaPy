@@ -242,6 +242,7 @@ linkcheck_anchors_ignore = [
 ]
 
 redirects = {
+    "development": "../contributing/",
     "development/index": "../contributing/index.html",
     "development/changelog_guide": "../contributing/changelog_guide.html",
     "development/code_guide": "../contributing/code_guide.html",
