@@ -249,6 +249,7 @@ redirects = {
     "development/install_dev": "../contributing/install_dev",
     "development/release_guide": "../contributing/release_guide",
     "development/testing_guide": "../contributing/testing_guide",
+    "development/workflow": "../contributing/workflow",
 }
 
 # Use a code highlighting style that meets the WCAG AA contrast standard
