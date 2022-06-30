@@ -675,7 +675,7 @@ class Test_IonizationStateNumberDensitiesSetter:
             self.instance.number_densities, self.valid_number_densities
         ), (
             f"The number densities of {self.element} were set to "
-            f"{self.instance.number_densities} instead of the expceted "
+            f"{self.instance.number_densities} instead of the expected "
             f"value of {self.valid_number_densities}."
         )
 

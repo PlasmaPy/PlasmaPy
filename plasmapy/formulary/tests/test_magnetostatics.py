@@ -52,7 +52,7 @@ class Test_GeneralWire:
         self.fw = FiniteStraightWire(p1, p2, 1 * u.A)
 
     def test_not_callable(self):
-        "Test that `GeneralWire` raises `ValueError` if its first argument is not callale"
+        "Test that `GeneralWire` raises `ValueError` if its first argument is not callable"
         with pytest.raises(ValueError):
             GeneralWire("wire", 0, 1, 1 * u.A)
 
@@ -100,7 +100,7 @@ class Test_FiniteStraightWire:
         self.current = 1 * u.A
 
     def test_same_point(self):
-        "Test that `FintiteStraightWire` raises `ValueError` if p1 == p2"
+        "Test that `FiniteStraightWire` raises `ValueError` if p1 == p2"
         with pytest.raises(ValueError):
             FiniteStraightWire(self.p1, self.p1, self.current)
 
@@ -153,7 +153,7 @@ class Test_CircularWire:
         self.current = 1 * u.A
 
     def test_negative_radius(self):
-        "Test that `FintiteStraightWire` raises `ValueError` if radius < 0"
+        "Test that `FiniteStraightWire` raises `ValueError` if radius < 0"
         with pytest.raises(ValueError):
             CircularWire(self.normalz, self.center, -1.0 * u.m, self.current)
 

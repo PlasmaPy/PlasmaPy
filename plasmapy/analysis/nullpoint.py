@@ -459,7 +459,7 @@ def _reduction(vspace, cell):
     r"""
     Return a true or false based on weather
     a grid cell passes the reduction phase,
-    meaning that they potentionally contain a null point.
+    meaning that they potentially contain a null point.
 
     Parameters
     ----------
@@ -631,7 +631,7 @@ def _trilinear_analysis(vspace, cell):
     -----
     :`UserWarning`
         If there is a possible lack of grid resolution, so
-        that a grid cell may contain more than one nullpoint.
+        that a grid cell may contain more than one null point.
     """
 
     # Critical Cell Corners
@@ -1114,7 +1114,7 @@ def _locate_null_point(vspace, cell, n, err):
     # Calculating the Jacobian and trilinear approximation functions for the cell
     tlApprox = trilinear_approx(vspace, cell)
     jcb = _trilinear_jacobian(vspace, cell)
-    # Calculatiung the deltas
+    # Calculating the deltas
     deltax, deltay, deltaz = vspace[2]
     deltax = deltax[cell[0]]
     deltay = deltay[cell[1]]
@@ -1342,7 +1342,7 @@ def _vspace_iterator(vspace, maxiter=500, err=1e-10):
     -------
     array_like of `~plasmapy.analysis.nullpoint.NullPoint`
         An array of `~plasmapy.analysis.nullpoint.NullPoint` objects
-        representing the nullpoints of the given vector space.
+        representing the null points of the given vector space.
 
     """
     nullpoints = []
@@ -1371,8 +1371,8 @@ def null_point_find(
     err=1e-10,
 ):
     r"""
-    Returns an array of nullpoint object, representing
-    the nullpoints of the given vector space.
+    Returns an array of ``~plasmapy.analysis.nullpoint.NullPoint` object, representing
+    the null points of the given vector space.
 
     .. note::
        Please note that this functionality is still under development
@@ -1424,7 +1424,7 @@ def null_point_find(
     -------
     array_like of `~plasmapy.analysis.nullpoint.NullPoint`
         An array of `~plasmapy.analysis.nullpoint.NullPoint` objects
-        representing the nullpoints of the given vector space.
+        representing the null points of the given vector space.
 
     Notes
     -----
@@ -1458,8 +1458,8 @@ def uniform_null_point_find(
     err=1e-10,
 ):
     r"""
-    Return an array of `~plasmapy.analysis.nullpoint.NullPoint` objects, representing
-    the null points of the given vector space.
+    Return an array of `~plasmapy.analysis.nullpoint.NullPoint` objects,
+    representing the null points of the given vector space.
 
     Parameters
     ----------
@@ -1489,7 +1489,7 @@ def uniform_null_point_find(
     -------
     array_like of `~plasmapy.analysis.nullpoint.NullPoint`
         An array of `~plasmapy.analysis.nullpoint.NullPoint` objects representing
-        the nullpoints of the given vector space.
+        the null points of the given vector space.
 
     Notes
     -----
