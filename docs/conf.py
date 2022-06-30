@@ -467,7 +467,7 @@ nbsphinx_thumbnails = {
     "notebooks/diagnostics/langmuir_analysis": (
         "_static/notebook_images/langmuir_analysis.png"
     ),
-    "notebooks/formulary/mms": (
+    "notebooks/formulary/magnetosphere": (
         "_static/notebook_images/mms.png"
     ),  # public domain
     "notebooks/getting_started/units": (
