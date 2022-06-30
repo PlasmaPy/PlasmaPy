@@ -455,9 +455,9 @@ nbsphinx_thumbnails = {
     "notebooks/diagnostics/langmuir_analysis": (
         "_static/notebook_images/langmuir_analysis.png"
     ),
-    "notebooks/formulary/satellite-constellation": (
-        "_static/notebook_images/mms.png"  # public domain
-    ),
+    "notebooks/formulary/mms": (
+        "_static/notebook_images/mms.png"
+    ),  # public domain
     "notebooks/getting_started/units": (
         "_static/notebook_images/astropy_logo_notext.png"
     ),  # CC BY-SA
