@@ -2,14 +2,13 @@ ci:
   autofix_prs: false
   autoupdate_schedule: quarterly
 
-# using default_language_version
 default_language_version:
   node: 16.15.0
 
 repos:
 
 - repo: https://github.com/pre-commit/pre-commit-hooks
-  rev: v4.1.0
+  rev: v4.3.0
   hooks:
   - id: check-ast
   - id: trailing-whitespace
@@ -35,7 +34,7 @@ repos:
     - python
 
 - repo: https://github.com/psf/black
-  rev: 22.3.0
+  rev: 22.6.0
   hooks:
   - id: black
 
@@ -44,7 +43,7 @@ repos:
   hooks:
   - id: nbqa-black
     additional_dependencies:
-    - black==22.3.0
+    - black==22.6.0
     args:
     - --nbqa-mutate
   - id: nbqa-isort
@@ -73,3 +72,10 @@ repos:
   hooks:
   - id: absolufy-imports
     exclude: docs/plasmapy_sphinx
+
+- repo: https://github.com/asottile/pyupgrade
+  rev: v2.34.0
+  hooks:
+  - id: pyupgrade
+    args: [--keep-runtime-typing, --py38-plus]
+    files: ^plasmapy/
