@@ -806,7 +806,7 @@ def kappa_velocity_1D(v, T, kappa, particle="e", v_drift=0, vTh=np.nan, units="u
     Returns
     -------
     f : `~astropy.units.Quantity`
-        Probability density in celocity\ :sup:`-1`\ , normalized so that
+        Probability density in velocity\ :sup:`-1`\ , normalized so that
         :math:`\int_{-∞}^{+∞} f(v) dv = 1`.
 
     Raises

@@ -222,7 +222,7 @@ def permittivity_1D_Maxwellian_lite(omega, kWave, vth, wp):
     Performs the same calculations as
     `~plasmapy.formulary.dielectric.permittivity_1D_Maxwellian`, but is
     intended for computational use and, thus, has data conditioning
-    safeguardsremoved.
+    safeguards removed.
 
     Parameters
     ----------
