@@ -1117,17 +1117,14 @@ class Test_impact_parameter:
 
         """
 
-        if len(T_shape) >= len(n_e_shape):
-            output_shape = T_shape
-        else:
-            output_shape = n_e_shape
+        output_shape = max(map(len, [T_shape, n_e_shape]))
 
         n_e = self.n_e * np.ones(n_e_shape)
         T = self.T * np.ones(T_shape)
 
         bmin, bmax = impact_parameter(T, n_e, self.particles)
 
-        msg = f"wrong shape for n_e shape {n_e.shape} and " f"T shape {T.shape}"
+        msg = f"wrong shape for {n_e.shape = } and {T.shape = }"
 
         assert bmin.shape == output_shape, "Bmin " + msg
         assert bmax.shape == output_shape, "Bmax " + msg
