@@ -16,6 +16,7 @@
     "isAccessibleForFree": true,
     "readme": "https://github.com/PlasmaPy/PlasmaPy/blob/main/README.md",
     "buildInstructions": "https://docs.plasmapy.org/en/v0.8.x/install.html",
+    "email": "team@plasmapy.org",
     "funder": [
         {
             "@id": "https://doi.org/10.13039/100000001",
@@ -89,7 +90,10 @@
         },
         {
             "@type": "Person",
-            "@id": "https://orcid.org/0000-0001-6628-8033",
+            "@id": [
+                "https://github.com/namurphy",
+                "https://orcid.org/0000-0001-6628-8033"
+            ],
             "givenName": "Nicholas",
             "familyName": "Murphy",
             "email": "namurphy@cfa.harvard.edu",
@@ -100,7 +104,10 @@
         },
         {
             "@type": "Person",
-            "@id": "https://orcid.org/0000-0001-6079-8307",
+            "@id": [
+                "https://github.com/rocco8773",
+                "https://orcid.org/0000-0001-6079-8307"
+            ],
             "givenName": "Erik",
             "familyName": "Everson",
             "email": "eeverson@ucla.edu",
@@ -111,7 +118,10 @@
         },
         {
             "@type": "Person",
-            "@id": "https://orcid.org/0000-0001-6291-8843",
+            "@id": [
+                "https://github.com/StanczakDominik",
+                "https://orcid.org/0000-0001-6291-8843"
+            ],
             "givenName": "Dominik",
             "familyName": "Stańczak",
             "email": "stanczakdominik@gmail.com",
@@ -122,7 +132,10 @@
         },
         {
             "@type": "Person",
-            "@id": "https://orcid.org/0000-0001-5050-6606",
+            "@id": [
+                "https://github.com/pheuer",
+                "https://orcid.org/0000-0001-5050-6606"
+            ],
             "givenName": "Peter",
             "familyName": "Heuer",
             "affiliation": {
@@ -132,7 +145,10 @@
         },
         {
             "@type": "Person",
-            "@id": "https://orcid.org/0000-0001-6849-3612",
+            "@id": [
+                "https://github.com/lemmatum",
+                "https://orcid.org/0000-0001-6849-3612"
+            ],
             "givenName": "Pawel",
             "familyName": "Kozlowski",
             "affiliation": {
@@ -142,6 +158,7 @@
         },
         {
             "@type": "Person",
+            "@id": "https://github.com/ritiek",
             "givenName": "Ritiek",
             "familyName": "Malhotra",
             "affiliation": {
@@ -151,7 +168,10 @@
         },
         {
             "@type": "Person",
-            "@id": "https://orcid.org/0000-0002-8644-8118",
+            "@id": [
+                "https://github.com/ChrisArran",
+                "https://orcid.org/0000-0002-8644-8118"
+            ],
             "givenName": "Christoper",
             "familyName": "Arran",
             "affiliation": {
@@ -161,7 +181,10 @@
         },
         {
             "@type": "Person",
-            "@id": "https://orcid.org/0000-0001-7381-1996",
+            "@id": [
+                "https://github.com/haman80",
+                "https://orcid.org/0000-0001-7381-1996"
+            ],
             "givenName": "Haman",
             "familyName": "Bagherianlemraski",
             "affiliation": {
@@ -171,31 +194,37 @@
         },
         {
             "@type": "Person",
+            "@id": "https://github.com/jasperbeckers",
             "givenName": "Jasper",
             "familyName": "Beckers"
         },
         {
             "@type": "Person",
+            "@id": "https://github.com/manasbedmutha98",
             "givenName": "Manas",
             "familyName": "Bedmutha"
         },
         {
             "@type": "Person",
+            "@id": "https://github.com/Justin-Bergeron",
             "givenName": "Justin",
             "familyName": "Bergeron"
         },
         {
             "@type": "Person",
+            "@id": "https://github.com/ludoro",
             "givenName": "Ludovico",
             "familyName": "Bessi"
         },
         {
             "@type": "Person",
+            "@id": "https://github.com/riley-britten",
             "givenName": "Riley",
             "familyName": "Britten"
         },
         {
             "@type": "Person",
+            "@id": "https://github.com/Sjbrownian",
             "givenName": "Shane",
             "familyName": "Brown",
             "affiliation": {
@@ -205,6 +234,7 @@
         },
         {
             "@type": "Person",
+            "@id": "https://github.com/KhalilBryant",
             "givenName": "Khalil",
             "familyName": "Bryant",
             "affiliation": {
@@ -214,32 +244,40 @@
         },
         {
             "@type": "Person",
+            "@id": "https://github.com/seanwilliamcarroll",
             "givenName": "Sean",
             "familyName": "Carroll"
         },
         {
             "@type": "Person",
+            "@id": "https://github.com/schambers",
             "givenName": "Sean",
             "familyName": "Chambers"
         },
         {
             "@type": "Person",
+            "@id": "https://github.com/chttrjeankr",
             "givenName": "Ankur",
             "familyName": "Chattopadhyay"
         },
         {
             "@type": "Person",
+            "@id": "https://github.com/apooravc",
             "givenName": "Apoorv",
             "familyName": "Choubey"
         },
         {
             "@type": "Person",
+            "@id": "https://github.com/Jac0bDeal",
             "givenName": "Jacob",
             "familyName": "Deal"
         },
         {
             "@type": "Person",
-            "@id": "https://orcid.org/0000-0002-1984-7303",
+            "@id": [
+                "https://github.com/FinMacDov",
+                "https://orcid.org/0000-0002-1984-7303"
+            ],
             "givenName": "Fionnlagh Mackenzie",
             "familyName": "Dover",
             "affiliation": {
@@ -249,12 +287,16 @@
         },
         {
             "@type": "Person",
+            "@id": "https://github.com/davemus",
             "givenName": "David",
             "familyName": "Drozdov"
         },
         {
             "@type": "Person",
-            "@id": "https://orcid.org/0000-0002-8676-1710",
+            "@id": [
+                "https://github.com/Tiger-Du",
+                "https://orcid.org/0000-0002-8676-1710"
+            ],
             "givenName": "Tiger",
             "familyName": "Du",
             "affiliation": {
@@ -264,17 +306,22 @@
         },
         {
             "@type": "Person",
+            "@id": "https://github.com/leahein",
             "givenName": "Leah",
             "familyName": "Einhorn"
         },
         {
             "@type": "Person",
+            "@id": "https://github.com/thomasjpfan",
             "givenName": "Thomas",
             "familyName": "Fan"
         },
         {
             "@type": "Person",
-            "@id": "https://orcid.org/0000-0003-0223-7004",
+            "@id": [
+                "https://github.com/samaiyahfarid",
+                "https://orcid.org/0000-0003-0223-7004"
+            ],
             "givenName": "Samaiyah I.",
             "familyName": "Farid",
             "affiliation": {
@@ -289,27 +336,33 @@
         },
         {
             "@type": "Person",
-            "@id": "https://orcid.org/0000-0001-5308-6870",
+            "@id": [
+                "https://github.com/bryancfoo"
+            ],
             "givenName": "Bryan",
             "familyName": "Foo"
         },
         {
             "@type": "Person",
+            "@id": "https://github.com/RAJAGOPALAN-GANGADHARAN",
             "givenName": "Rajagopalan",
             "familyName": "Gangadharan"
         },
         {
             "@type": "Person",
+            "@id": "https://github.com/goodab",
             "givenName": "Brian",
             "familyName": "Goodall"
         },
         {
             "@type": "Person",
+            "@id": "https://github.com/MarcoGorelli",
             "givenName": "Marco",
             "familyName": "Gorelli"
         },
         {
             "@type": "Person",
+            "@id": "https://github.com/GrahamGoudeau",
             "givenName": "Graham",
             "familyName": "Goudeau"
         },
@@ -324,7 +377,10 @@
         },
         {
             "@type": "Person",
-            "@id": "https://orcid.org/0000-0002-2160-7288",
+            "@id": [
+                "https://github.com/colbych",
+                "https://orcid.org/0000-0002-2160-7288"
+            ],
             "givenName": "Colby",
             "familyName": "Haggerty",
             "affiliation": {
@@ -334,12 +390,16 @@
         },
         {
             "@type": "Person",
+            "@id": "https://github.com/raymonshansen",
             "givenName": "Raymon Skjørten",
             "familyName": "Hansen"
         },
         {
             "@type": "Person",
-            "@id": "https://orcid.org/0000-0002-1073-6383",
+            "@id": [
+                "https://github.com/jhillairet",
+                "https://orcid.org/0000-0002-1073-6383"
+            ],
             "givenName": "Julien",
             "familyName": "Hillairet",
             "affiliation": {
@@ -349,17 +409,22 @@
         },
         {
             "@type": "Person",
+            "@id": "https://github.com/bucket420",
             "givenName": "Chris",
             "familyName": "Hoang"
         },
         {
             "@type": "Person",
+            "@id": "https://github.com/pohzipohzi",
             "givenName": "Poh Zi",
             "familyName": "How"
         },
         {
             "@type": "Person",
-            "@id": "https://orcid.org/0000-0002-4237-2211",
+            "@id": [
+                "https://github.com/yopology",
+                "https://orcid.org/0000-0002-4237-2211"
+            ],
             "givenName": "Yi-Min",
             "familyName": "Huang",
             "affiliation": {
@@ -369,17 +434,22 @@
         },
         {
             "@type": "Person",
+            "@id": "https://github.com/NabilHumphrey",
             "givenName": "Nabil",
             "familyName": "Humphrey"
         },
         {
             "@type": "Person",
+            "@id": "https://github.com/misupova",
             "givenName": "Maria",
             "familyName": "Isupova"
         },
         {
             "@type": "Person",
-            "@id": "https://orcid.org/0000-0003-2892-6924",
+            "@id": [
+                "https://github.com/jeandet",
+                "https://orcid.org/0000-0003-2892-6924"
+            ],
             "givenName": "Alexis",
             "familyName": "Jeandet",
             "affiliation": {
@@ -389,6 +459,7 @@
         },
         {
             "@type": "Person",
+            "@id": "https://github.com/etjohnson",
             "givenName": "Elliot",
             "familyName": "Johnson",
             "affiliation": {
@@ -398,22 +469,28 @@
         },
         {
             "@type": "Person",
+            "@id": "https://github.com/jdkent",
             "givenName": "James",
             "familyName": "Kent"
         },
         {
             "@type": "Person",
+            "@id": "https://github.com/siddharthk07",
             "givenName": "Siddharth",
             "familyName": "Kulshrestha"
         },
         {
             "@type": "Person",
+            "@id": "https://github.com/kuszaj",
             "givenName": "Piotr",
             "familyName": "Kuszaj"
         },
         {
             "@type": "Person",
-            "@id": "https://orcid.org/0000-0002-1192-2057",
+            "@id": [
+                "https://github.com/alfkoehn",
+                "https://orcid.org/0000-0002-1192-2057"
+            ],
             "givenName": "Alf",
             "familyName": "Köhn-Seemann",
             "affiliation": {
@@ -423,7 +500,9 @@
         },
         {
             "@type": "Person",
-            "@id": "https://orcid.org/0000-0002-7757-5879",
+            "@id": [
+                "https://github.com/samurai688",
+                "https://orcid.org/0000-0002-7757-5879"],
             "givenName": "Samuel",
             "familyName": "Langendorf",
             "affiliation": {
@@ -433,17 +512,22 @@
         },
         {
             "@type": "Person",
+            "@id": "https://github.com/alanteriBW",
             "givenName": "Anna",
             "familyName": "Lanteri"
         },
         {
             "@type": "Person",
+            "@id": "https://github.com/tlee0818",
             "givenName": "Terrance Takho",
             "familyName": "Lee"
         },
         {
             "@type": "Person",
-            "@id": "https://orcid.org/0000-0001-5270-7487",
+            "@id": [
+                "https://github.com/SolarDrew",
+                "https://orcid.org/0000-0001-5270-7487"
+            ],
             "givenName": "Drew",
             "familyName": "Leonard",
             "affiliation": {
@@ -453,6 +537,7 @@
         },
         {
             "@type": "Person",
+            "@id": "https://github.com/Quettle",
             "givenName": "Nicolas",
             "familyName": "Lequette",
             "affiliation": {
@@ -472,28 +557,36 @@
         },
         {
             "@type": "Person",
+            "@id": "https://github.com/adityamagarde",
             "givenName": "Aditya",
             "familyName": "Magarde"
         },
         {
             "@type": "Person",
+            "@id": "https://github.com/JvPy",
             "givenName": "Joao Victor",
             "familyName": "Martinelli"
         },
         {
             "@type": "Person",
-            "@id": "https://orcid.org/0000-0001-5394-9445",
+            "@id": [
+                "https://github.com/jota33",
+                "https://orcid.org/0000-0001-5394-9445"
+            ],
             "givenName": "Isaias",
             "familyName": "McHardy"
         },
         {
             "@type": "Person",
+            "@id": "https://github.com/Dhawal-Modi",
             "givenName": "Dhawal",
             "familyName": "Modi"
         },
         {
             "@type": "Person",
-            "@id": "https://orcid.org/0000-0002-0762-3708",
+            "@id": [
+                "https://github.com/kjmontes",
+                "https://orcid.org/0000-0002-0762-3708"],
             "givenName": "Kevin",
             "familyName": "Montes",
             "affiliation": {
@@ -503,7 +596,9 @@
         },
         {
             "@type": "Person",
-            "@id": "https://orcid.org/0000-0003-4217-4642",
+            "@id": [
+                "https://github.com/Cadair",
+                "https://orcid.org/0000-0003-4217-4642"],
             "givenName": "Stuart",
             "familyName": "Mumford",
             "affiliation": {
