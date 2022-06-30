@@ -4,7 +4,7 @@ Acknowledging and Citing
 ========================
 
 .. |version_to_cite| replace:: 0.8.0
-.. |doi_for_version| replace:: 10.5281/zenodo.6774350
+.. |doi_hyperlink| replace:: https://doi.org/10.5281/zenodo.6774350
 .. |citation_year| replace:: 2022
 
 If you use PlasmaPy for a project that results in a publication, we ask
@@ -17,7 +17,7 @@ Version |version_to_cite| of PlasmaPy may be cited with the following
 reference:
 
    PlasmaPy Community et al. (|citation_year|). *PlasmaPy*, version
-   |version_to_cite|, Zenodo, https://doi.org/|doi_for_version|
+   |version_to_cite|, Zenodo, |doi_hyperlink|
 
 This reference may be made, for example, by adding the following line to
 the methods or acknowledgements section of a paper.
