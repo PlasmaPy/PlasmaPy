@@ -216,7 +216,7 @@ project. Releases of PlasmaPy are available from the [PlasmaPy community
 on Zenodo], along with many other PlasmaPy resources. Please check our
 documentation for more detailed [citation instructions].
 
-## Acknowledgements
+## Acknowledgments
 
 Early development on PlasmaPy was supported in part by the U.S.
 [Department of Energy], the [Smithsonian Institution], [NASA], and

@@ -50,7 +50,7 @@ def _get_physical_type_dict(
     Examples
     --------
     >>> import astropy.units as u
-    >>> from plasmapy.utils.units_helpers import _get_physical_type_dict
+    >>> from plasmapy.utils._units_helpers import _get_physical_type_dict
     >>> quantities = [1 * u.m, 2 * u.kg]
     >>> _get_physical_type_dict(quantities)
     {PhysicalType('length'): <Quantity 1. m>, PhysicalType('mass'): <Quantity 2. kg>}
