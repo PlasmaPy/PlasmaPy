@@ -37,7 +37,7 @@ Example highlights
    examples
    COMMUNICATION
    CONTRIBUTING
-   CODE_OF_CONDUCT
+   Code of Conduct <CODE_OF_CONDUCT.rst>
    about/citation
 
 .. toctree::
@@ -55,13 +55,14 @@ Example highlights
 
 .. toctree::
    :maxdepth: 1
-   :caption: Guide for Contributors
+   :caption: Contributor Guide
 
-   Overview <development/index>
-   development/code_guide
-   development/changelog_guide
-   development/doc_guide
-   development/testing_guide
+   Overview <contributing/index>
+   contributing/code_guide
+   contributing/changelog_guide
+   contributing/doc_guide
+   contributing/testing_guide
+   contributing/release_guide
 
 .. toctree::
    :maxdepth: 1

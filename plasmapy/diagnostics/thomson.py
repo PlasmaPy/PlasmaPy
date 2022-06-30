@@ -471,7 +471,7 @@ def spectral_density(
         raise ValueError("At least one ion species needs to be defined.")
 
     try:
-        if sum([ion.charge_number <= 0 for ion in ions]):
+        if sum(ion.charge_number <= 0 for ion in ions):
             raise ValueError("All ions must be positively charged.")
     # Catch error if charge information is missing
     except ChargeError:
@@ -682,7 +682,7 @@ def _spectral_density_model(wavelengths, settings=None, **params):
 
 
 def spectral_density_model(wavelengths, settings, params):
-    """
+    r"""
     Returns a `lmfit.model.Model` function for Thomson spectral density function.
 
     Parameters
