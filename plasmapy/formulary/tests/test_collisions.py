@@ -1117,7 +1117,7 @@ class Test_impact_parameter:
 
         """
 
-        output_shape = max(map(len, [T_shape, n_e_shape]))
+        output_shape = T_shape if len(T_shape) >= len(n_e_shape) else n_e_shape
 
         n_e = self.n_e * np.ones(n_e_shape)
         T = self.T * np.ones(T_shape)
