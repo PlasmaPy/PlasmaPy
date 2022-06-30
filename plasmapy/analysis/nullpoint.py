@@ -1371,7 +1371,7 @@ def null_point_find(
     err=1e-10,
 ):
     r"""
-    Returns an array of ``~plasmapy.analysis.nullpoint.NullPoint` object, representing
+    Returns an array of `~plasmapy.analysis.nullpoint.NullPoint` object, representing
     the null points of the given vector space.
 
     .. note::
