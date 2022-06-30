@@ -344,12 +344,16 @@ nitpick_ignore_regex = [
     (python_role, "2 ints"),
     (python_role, "a single int"),
     (python_role, "Tuple of 1"),
+    # thomson
+    (python_role, "Ne"),
+    (python_role, "Ni"),
     # for reST workarounds defined in docs/common_links.rst
     (python_role, "h5py"),
     (python_role, "IPython.sphinxext.ipython_console_highlighting"),
     (python_role, "lmfit"),
     (python_role, "mpmath"),
     (python_role, "nbsphinx"),
+    (python_role, "numba"),
     (python_role, "xarray"),
     # plasmapy_sphinx
     (python_role, "automod.*"),

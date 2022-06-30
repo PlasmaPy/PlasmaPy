@@ -145,19 +145,11 @@ You can alternatively shorten the documentation build by running:
 This command will build the documentation without executing the
 :ref:`example notebooks <example_notebooks>`.
 
-You can check for broken reST_ links by running:
-
-.. code-block:: bash
-
-   tox -e build_docs_nitpicky
-
 .. tip::
 
    When writing documentation, please make sure to fix any warnings that
-   arise. To enforce this, the ``build_docs`` and ``build_docs_nitpicky``
-   tox_ environments will fail after completing the documentation build
-   if they encountered any warnings (via the ``-W`` and ``--keep-going``
-   flags to `sphinx-build`_).
+   arise. To enforce this, the ``build_docs`` tox_ environment will fail
+   after completing the documentation build if there are any warnings.
 
 Documentation tools
 ===================
