@@ -1,2 +1,2 @@
-Changed the behaviour of the ``__repr__`` method of |CustomParticle| to
+Changed the behavior of the ``__repr__`` method of |CustomParticle| to
 display the symbol as well if it was provided.
