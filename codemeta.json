@@ -5,33 +5,38 @@
     "codeRepository": "https://github.com/PlasmaPy/plasmapy",
     "contIntegration": "https://dev.azure.com/plasmapy/PlasmaPy",
     "issueTracker": "https://github.com/PlasmaPy/PlasmaPy/issues",
+    "downloadUrl": "https://pypi.org/project/plasmapy",
     "name": "PlasmaPy",
     "version": "0.8.0",
     "identifier": "http://doi.org/10.5281/zenodo.6774350",
     "description": "An open source Python package for plasma research and education",
     "applicationCategory": "Plasma Physics",
-    "developmentStatus": "wip",
+    "developmentStatus": "Active",
+    "copyrightYear": { "@id": "schema:copyrightYear"},
+    "isAccessibleForFree": true,
+    "readme": "https://github.com/PlasmaPy/PlasmaPy/blob/main/README.md",
+    "buildInstructions": "https://docs.plasmapy.org/en/v0.8.x/install.html",
     "funder": [
-    {
-      "@id": "https://doi.org/10.13039/100000001",
-      "@type": "Organization",
-      "name": "National Science Foundation"
-    },
-    {
-      "@id": "https://doi.org/10.13039/100000015",
-      "@type": "Organization",
-      "name": "U.S. Department of Energy"
-    },
-    {
-      "@id": "https://doi.org/10.03039/100000104",
-      "@type": "Organization",
-      "name": "NASA"
-    },
-    {
-      "@id": "https://doi.org/10.03039/100000014",
-      "@type": "Organization",
-      "name": "Smithsonian Institution"
-    }
+        {
+            "@id": "https://doi.org/10.13039/100000001",
+            "@type": "Organization",
+            "name": "National Science Foundation"
+        },
+        {
+            "@id": "https://doi.org/10.13039/100000015",
+            "@type": "Organization",
+            "name": "U.S. Department of Energy"
+        },
+        {
+            "@id": "https://doi.org/10.03039/100000104",
+            "@type": "Organization",
+            "name": "NASA"
+        },
+        {
+            "@id": "https://doi.org/10.03039/100000014",
+            "@type": "Organization",
+            "name": "Smithsonian Institution"
+        }
     ],
     "keywords": [
         "plasma physics",
@@ -79,8 +84,19 @@
     ],
     "author": [
         {
-          "@type": "Organization",
-          "name": "PlasmaPy Community"
+            "@type": "Organization",
+            "name": "PlasmaPy Community"
+        },
+        {
+            "@type": "Person",
+            "@id": "https://orcid.org/0000-0001-6628-8033",
+            "givenName": "Nicholas",
+            "familyName": "Murphy",
+            "email": "namurphy@cfa.harvard.edu",
+            "affiliation": {
+                "@type": "Organization",
+                "name": "Center for Astrophysics | Harvard & Smithsonian"
+            }
         },
         {
             "@type": "Person",
@@ -106,52 +122,12 @@
         },
         {
             "@type": "Person",
-            "@id": "https://orcid.org/0000-0001-6628-8033",
-            "givenName": "Nicholas",
-            "familyName": "Murphy",
-            "email": "namurphy@cfa.harvard.edu",
+            "@id": "https://orcid.org/0000-0001-5050-6606",
+            "givenName": "Peter",
+            "familyName": "Heuer",
             "affiliation": {
                 "@type": "Organization",
-                "name": "Center for Astrophysics | Harvard & Smithsonian"
-            }
-        },
-        {
-            "@type": "Person",
-            "givenName": "Cody",
-            "familyName": "Skinner",
-            "email": "cody@codyskinner.net",
-            "affiliation": {
-                "@type": "Organization",
-                "name": "Phoenix Security Labs"
-            }
-        },
-        {
-            "@type": "Person",
-            "givenName": "Steve",
-            "familyName": "Richardson",
-            "email": "steve.richardson@nrl.navy.mil",
-            "affiliation": {
-                "@type": "Organization",
-                "name": "US Naval Research Lab"
-            }
-        },
-        {
-            "@type": "Person",
-            "givenName": "Ramiz",
-            "familyName": "Qudsi",
-            "email": "ahmadr@udel.edu",
-            "affiliation": {
-                "@type": "Organization",
-                "name": "Boston University"
-            }
-        },
-        {
-            "@type": "Person",
-            "givenName": "Tiger",
-            "familyName": "Du",
-            "affiliation": {
-                "@type": "Organization",
-                "name": "Vanderbilt University"
+                "name": "University of Rochester"
             }
         },
         {
@@ -175,65 +151,32 @@
         },
         {
             "@type": "Person",
-            "@id": "https://orcid.org/0000-0002-7757-5879",
-            "givenName": "Samuel",
-            "familyName": "Langendorf",
+            "@id": "https://orcid.org/0000-0002-8644-8118",
+            "givenName": "Christoper",
+            "familyName": "Arran",
             "affiliation": {
                 "@type": "Organization",
-                "name": "Los Alamos National Laboratory"
+                "name": "University of York"
             }
         },
         {
             "@type": "Person",
-            "@id": "https://orcid.org/0000-0001-5270-7487",
-            "givenName": "Andrew",
-            "familyName": "Leonard",
+            "@id": "https://orcid.org/0000-0001-7381-1996",
+            "givenName": "Haman",
+            "familyName": "Bagherianlemraski",
             "affiliation": {
                 "@type": "Organization",
-                "name": "Aperio Software"
-            }
-        },
-        {
-            "@type": "Person",
-            "@id": "https://orcid.org/0000-0002-1365-1908",
-            "givenName": "David",
-            "familyName": "Stansby",
-            "affiliation": {
-                "@type": "Organization",
-                "name": "Imperial College London"
-            }
-        },
-        {
-            "@type": "Person",
-            "@id": "https://orcid.org/0000-0002-2160-7288",
-            "givenName": "Colby",
-            "familyName": "Haggerty",
-            "affiliation": {
-                "@type": "Organization",
-                "name": "University of Chicago"
-            }
-        },        {
-            "@type": "Person",
-            "@id": "https://orcid.org/0000-0003-4217-4642",
-            "givenName": "Stuart",
-            "familyName": "Mumford",
-            "affiliation": {
-                "@type": "Organization",
-                "name": "University of Sheffield"
+                "name": "University of Massachusetts Amherst"
             }
         },
         {
             "@type": "Person",
             "givenName": "Jasper",
-            "familyName": "Beckers",
-            "affiliation": {
-                "@type": "Organization",
-                "name": "ASML"
-            }
+            "familyName": "Beckers"
         },
         {
             "@type": "Person",
-            "givenName": "Manas Satish",
+            "givenName": "Manas",
             "familyName": "Bedmutha"
         },
         {
@@ -243,8 +186,22 @@
         },
         {
             "@type": "Person",
-            "givenName": "Bessi",
-            "familyName": "Ludovico"
+            "givenName": "Ludovico",
+            "familyName": "Bessi"
+        },
+        {
+            "@type": "Person",
+            "givenName": "Riley",
+            "familyName": "Britten"
+        },
+        {
+            "@type": "Person",
+            "givenName": "Shane",
+            "familyName": "Brown",
+            "affiliation": {
+                "@type": "Organization",
+                "name": "University of Delaware"
+            }
         },
         {
             "@type": "Person",
@@ -272,7 +229,6 @@
         },
         {
             "@type": "Person",
-            "@id": "",
             "givenName": "Apoorv",
             "familyName": "Choubey"
         },
@@ -283,13 +239,28 @@
         },
         {
             "@type": "Person",
-            "givenName": "Diego",
-            "familyName": "Diaz"
+            "@id": "https://orcid.org/0000-0002-1984-7303",
+            "givenName": "Fionnlagh Mackenzie",
+            "familyName": "Dover",
+            "affiliation": {
+                "@type": "Organization",
+                "name": "University of Sheffield"
+            }
         },
         {
             "@type": "Person",
-            "givenName": "Roberto",
-            "familyName": "Díaz Pérez"
+            "givenName": "David",
+            "familyName": "Drozdov"
+        },
+        {
+            "@type": "Person",
+            "@id": "https://orcid.org/0000-0002-8676-1710",
+            "givenName": "Tiger",
+            "familyName": "Du",
+            "affiliation": {
+                "@type": "Organization",
+                "name": "Vanderbilt University"
+            }
         },
         {
             "@type": "Person",
@@ -303,8 +274,39 @@
         },
         {
             "@type": "Person",
+            "@id": "https://orcid.org/0000-0003-0223-7004",
             "givenName": "Samaiyah I.",
-            "familyName": "Farid"
+            "familyName": "Farid",
+            "affiliation": {
+                "@type": "Organization",
+                "name": "Yale University"
+            }
+        },
+        {
+            "@type": "Person",
+            "givenName": "Michael",
+            "familyName": "Fischer"
+        },
+        {
+            "@type": "Person",
+            "@id": "https://orcid.org/0000-0001-5308-6870",
+            "givenName": "Bryan",
+            "familyName": "Foo"
+        },
+        {
+            "@type": "Person",
+            "givenName": "Rajagopalan",
+            "familyName": "Gangadharan"
+        },
+        {
+            "@type": "Person",
+            "givenName": "Brian",
+            "familyName": "Goodall"
+        },
+        {
+            "@type": "Person",
+            "givenName": "Marco",
+            "familyName": "Gorelli"
         },
         {
             "@type": "Person",
@@ -322,24 +324,33 @@
         },
         {
             "@type": "Person",
+            "@id": "https://orcid.org/0000-0002-2160-7288",
+            "givenName": "Colby",
+            "familyName": "Haggerty",
+            "affiliation": {
+                "@type": "Organization",
+                "name": "University of Hawaiʻi at Mānoa"
+            }
+        },
+        {
+            "@type": "Person",
             "givenName": "Raymon Skjørten",
             "familyName": "Hansen"
         },
         {
             "@type": "Person",
-            "@id": "https://orcid.org/0000-0001-5050-6606",
-            "givenName": "Peter",
-            "familyName": "Heuer",
+            "@id": "https://orcid.org/0000-0002-1073-6383",
+            "givenName": "Julien",
+            "familyName": "Hillairet",
             "affiliation": {
                 "@type": "Organization",
-                "name": "University of Rochester"
+                "name": "CEA"
             }
         },
         {
             "@type": "Person",
-            "@id": "https://orcid.org/0000-0002-1073-6383",
-            "givenName": "Julien",
-            "familyName": "Hillairet"
+            "givenName": "Chris",
+            "familyName": "Hoang"
         },
         {
             "@type": "Person",
@@ -368,6 +379,25 @@
         },
         {
             "@type": "Person",
+            "@id": "https://orcid.org/0000-0003-2892-6924",
+            "givenName": "Alexis",
+            "familyName": "Jeandet",
+            "affiliation": {
+                "@type": "Organization",
+                "name": "Laboratoire de Physique des Plasmas"
+            }
+        },
+        {
+            "@type": "Person",
+            "givenName": "Elliot",
+            "familyName": "Johnson",
+            "affiliation": {
+                "@type": "Organization",
+                "name": "University of Delaware"
+            }
+        },
+        {
+            "@type": "Person",
             "givenName": "James",
             "familyName": "Kent"
         },
@@ -380,6 +410,55 @@
             "@type": "Person",
             "givenName": "Piotr",
             "familyName": "Kuszaj"
+        },
+        {
+            "@type": "Person",
+            "@id": "https://orcid.org/0000-0002-1192-2057",
+            "givenName": "Alf",
+            "familyName": "Köhn-Seemann",
+            "affiliation": {
+                "@type": "Organization",
+                "name": "University of Stuttgart"
+            }
+        },
+        {
+            "@type": "Person",
+            "@id": "https://orcid.org/0000-0002-7757-5879",
+            "givenName": "Samuel",
+            "familyName": "Langendorf",
+            "affiliation": {
+                "@type": "Organization",
+                "name": "Los Alamos National Laboratory"
+            }
+        },
+        {
+            "@type": "Person",
+            "givenName": "Anna",
+            "familyName": "Lanteri"
+        },
+        {
+            "@type": "Person",
+            "givenName": "Terrance Takho",
+            "familyName": "Lee"
+        },
+        {
+            "@type": "Person",
+            "@id": "https://orcid.org/0000-0001-5270-7487",
+            "givenName": "Drew",
+            "familyName": "Leonard",
+            "affiliation": {
+                "@type": "Organization",
+                "name": "Aperio Software"
+            }
+        },
+        {
+            "@type": "Person",
+            "givenName": "Nicolas",
+            "familyName": "Lequette",
+            "affiliation": {
+                "@type": "Organization",
+                "name": "Laboratoire de Physique des Plasmas"
+            }
         },
         {
             "@type": "Person",
@@ -403,17 +482,67 @@
         },
         {
             "@type": "Person",
+            "@id": "https://orcid.org/0000-0001-5394-9445",
+            "givenName": "Isaias",
+            "familyName": "McHardy"
+        },
+        {
+            "@type": "Person",
+            "givenName": "Dhawal",
+            "familyName": "Modi"
+        },
+        {
+            "@type": "Person",
+            "@id": "https://orcid.org/0000-0002-0762-3708",
+            "givenName": "Kevin",
+            "familyName": "Montes",
+            "affiliation": {
+                "@type": "Organization",
+                "name": "MIT"
+            }
+        },
+        {
+            "@type": "Person",
+            "@id": "https://orcid.org/0000-0003-4217-4642",
+            "givenName": "Stuart",
+            "familyName": "Mumford",
+            "affiliation": {
+                "@type": "Organization",
+                "name": "Aperio Software"
+            }
+        },
+        {
+            "@type": "Person",
             "givenName": "Joshua",
             "familyName": "Munn"
         },
         {
             "@type": "Person",
+            "givenName": "Leo",
+            "familyName": "Murphy",
+            "affiliation": {
+                "@type": "Organization",
+                "name": "College of William & Mary"
+            }
+        },
+        {
+            "@type": "Person",
+            "givenName": "Suzanne",
+            "familyName": "Nie"
+        },
+        {
+            "@type": "Person",
+            "givenName": "Mahima",
+            "familyName": "Pannala"
+        },
+        {
+            "@type": "Person",
             "@id": "https://orcid.org/0000-0003-0602-8381",
-            "givenName": "Tulasi N.",
+            "givenName": "Tulasi",
             "familyName": "Parashar",
             "affiliation": {
                 "@type": "Organization",
-                "name": "University of Wellington"
+                "name": "Victoria University of Wellington"
             }
         },
         {
@@ -423,13 +552,28 @@
         },
         {
             "@type": "Person",
+            "givenName": "Francisco Silva",
+            "familyName": "Pavon"
+        },
+        {
+            "@type": "Person",
             "givenName": "Jakub",
             "familyName": "Polak"
         },
         {
             "@type": "Person",
-            "givenName": "Afzal",
-            "familyName": "Rao"
+            "givenName": "Roberto Díaz",
+            "familyName": "Pérez"
+        },
+        {
+            "@type": "Person",
+            "@id": "https://orcid.org/0000-0001-8358-0482",
+            "givenName": "Ramiz",
+            "familyName": "Qudsi",
+            "affiliation": {
+                "@type": "Organization",
+                "name": "Boston University"
+            }
         },
         {
             "@type": "Person",
@@ -440,7 +584,36 @@
             "@type": "Person",
             "@id": "https://orcid.org/0000-0002-4914-6612",
             "givenName": "Vishwas",
-            "familyName": "Rajashekar"
+            "familyName": "Rajashekar",
+            "affiliation": {
+                "@type": "Organization",
+                "name": "PES University"
+            }
+        },
+        {
+            "@type": "Person",
+            "givenName": "Afzal",
+            "familyName": "Rao"
+        },
+        {
+            "@type": "Person",
+            "@id": "https://orcid.org/0000-0002-3056-6334",
+            "givenName": "Steve",
+            "familyName": "Richardson",
+            "affiliation": {
+                "@type": "Organization",
+                "name": "U.S. Naval Research Laboratory"
+            }
+        },
+        {
+            "@type": "Person",
+            "givenName": "Diego A. Diaz",
+            "familyName": "Riega"
+        },
+        {
+            "@type": "Person",
+            "givenName": "Armando",
+            "familyName": "Salcido"
         },
         {
             "@type": "Person",
@@ -449,7 +622,7 @@
             "familyName": "Savcheva",
             "affiliation": {
                 "@type": "Organization",
-                "name": "Center for Astrophysics | Harvard & Smithsonian"
+                "name": "Planetary Science Institute"
             }
         },
         {
@@ -464,13 +637,23 @@
         },
         {
             "@type": "Person",
+            "givenName": "Andrew",
+            "familyName": "Sheng"
+        },
+        {
+            "@type": "Person",
             "givenName": "Dawa Nurbu",
             "familyName": "Sherpa"
         },
         {
             "@type": "Person",
-            "givenName": "Frank",
-            "familyName": "Silva"
+            "@id": "https://orcid.org/0000-0003-3530-7910",
+            "givenName": "Luciano",
+            "familyName": "Silvestri",
+            "affiliation": {
+                "@type": "Organization",
+                "name": "Michigan State University"
+            }
         },
         {
             "@type": "Person",
@@ -480,33 +663,79 @@
         {
             "@type": "Person",
             "givenName": "Ankit",
-            "familyName": "Singh,"
+            "familyName": "Singh"
         },
         {
             "@type": "Person",
             "@id": "https://orcid.org/0000-0002-3713-6337",
             "givenName": "Brigitta",
-            "familyName": "Sipőcz"
+            "familyName": "Sipőcz",
+            "affiliation": {
+                "@type": "Organization",
+                "name": "University of Washington"
+            }
         },
         {
             "@type": "Person",
-            "@id": "https://orcid.org/0000-0003-0010-8073",
+            "givenName": "Cody",
+            "familyName": "Skinner",
+            "affiliation": {
+                "@type": "Organization",
+                "name": "Phoenix Security Labs"
+            }
+        },
+        {
+            "@type": "Person",
+            "givenName": "Nikita",
+            "familyName": "Smirnov"
+        },
+        {
+            "@type": "Person",
+            "@id": "https://orcid.org/0000-0002-1365-1908",
+            "givenName": "David",
+            "familyName": "Stansby",
+            "affiliation": {
+                "@type": "Organization",
+                "name": "Mullard Space Science Laboratory"
+            }
+        },
+        {
+            "@type": "Person",
+            "givenName": "Tomás",
+            "familyName": "Stinson"
+        },
+        {
+            "@type": "Person",
             "givenName": "Antoine",
             "familyName": "Tavant",
             "affiliation": {
                 "@type": "Organization",
-                "name": "Laboratoire de Physique des Plasmas, Ecole Polytechnique"
+                "name": "Centre Spatial de l'École polytechnique"
             }
         },
         {
             "@type": "Person",
             "givenName": "Thomas",
-            "familyName": "Varnish"
+            "familyName": "Ulrich"
         },
         {
             "@type": "Person",
-            "givenName": "Anthony",
-            "familyName": "Vo"
+            "givenName": "Thomas",
+            "familyName": "Varnish",
+            "affiliation": {
+                "@type": "Organization",
+                "name": "MIT"
+            }
+        },
+        {
+            "@type": "Person",
+            "@id": "https://orcid.org/0000-0002-8335-1441",
+            "givenName": "Tien",
+            "familyName": "Vo",
+            "affiliation": {
+                "@type": "Organization",
+                "name": "Laboratory for Atmospheric and Space Physics"
+            }
         },
         {
             "@type": "Person",
@@ -516,28 +745,18 @@
         },
         {
             "@type": "Person",
+            "givenName": "Chun Hei",
+            "familyName": "Yip"
+        },
+        {
+            "@type": "Person",
+            "givenName": "Reynaldo Rojas",
+            "familyName": "Zelaya"
+        },
+        {
+            "@type": "Person",
             "givenName": "Carol",
             "familyName": "Zhang"
-        },
-        {
-            "@type": "Person",
-            "givenName": "Dhawal",
-            "familyName": "Modi"
-        },
-        {
-            "@type": "Person",
-            "givenName": "David",
-            "familyName": "Drozdov"
-        },
-        {
-            "@type": "Person",
-            "givenName": "Kevin",
-            "familyName": "Montes",
-            "@id": "https://orcid.org/0000-0002-0762-3708",
-            "affiliation": {
-                "@type": "Organization",
-                "name": "MIT PSFC"
-            }
         }
     ]
 }
