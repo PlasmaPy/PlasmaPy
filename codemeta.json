@@ -583,7 +583,10 @@
         },
         {
             "@type": "Person",
-            "@id": ["https://github.com/pllim", "https://orcid.org/0000-0003-0079-4114"],
+            "@id": [
+                "https://github.com/pllim",
+                "https://orcid.org/0000-0003-0079-4114"
+            ],
             "givenName": "Pey Lian",
             "familyName": "Lim",
             "affiliation": {
@@ -676,7 +679,10 @@
         },
         {
             "@type": "Person",
-            "@id": ["https://github.com/tulasinandan", "https://orcid.org/0000-0003-0602-8381"],
+            "@id": [
+                "https://github.com/tulasinandan",
+                "https://orcid.org/0000-0003-0602-8381"
+            ],
             "givenName": "Tulasi",
             "familyName": "Parashar",
             "affiliation": {
@@ -756,7 +762,10 @@
         },
         {
             "@type": "Person",
-            "@id": ["https://github.com/arichar6", "https://orcid.org/0000-0002-3056-6334"],
+            "@id": [
+                "https://github.com/arichar6",
+                "https://orcid.org/0000-0002-3056-6334"
+            ],
             "givenName": "Steve",
             "familyName": "Richardson",
             "affiliation": {
@@ -777,7 +786,10 @@
         },
         {
             "@type": "Person",
-            "@id": ["https://github.com/savcheva", "https://orcid.org/0000-0002-5598-046X"],
+            "@id": [
+                "https://github.com/savcheva",
+                "https://orcid.org/0000-0002-5598-046X"
+            ],
             "givenName": "Antonia",
             "familyName": "Savcheva",
             "affiliation": {
@@ -908,7 +920,10 @@
         },
         {
             "@type": "Person",
-            "@id": ["https://github.com/tien-vo", "https://orcid.org/0000-0002-8335-1441"],
+            "@id": [
+                "https://github.com/tien-vo",
+                "https://orcid.org/0000-0002-8335-1441"
+            ],
             "givenName": "Tien",
             "familyName": "Vo",
             "affiliation": {
@@ -918,7 +933,10 @@
         },
         {
             "@type": "Person",
-            "@id": ["https://github.com/hzxusx", ",https://orcid.org/0000-0001-7959-8495"],
+            "@id": [
+                "https://github.com/hzxusx",
+                "https://orcid.org/0000-0001-7959-8495"
+            ],
             "givenName": "Sixue",
             "familyName": "Xu"
         },
