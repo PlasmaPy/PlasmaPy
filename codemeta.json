@@ -12,7 +12,7 @@
     "description": "An open source Python package for plasma research and education",
     "applicationCategory": "Plasma Physics",
     "developmentStatus": "Active",
-    "copyrightYear": { "@id": "schema:copyrightYear"},
+    "copyrightYear": [2015, 2022],
     "isAccessibleForFree": true,
     "readme": "https://github.com/PlasmaPy/PlasmaPy/blob/main/README.md",
     "buildInstructions": "https://docs.plasmapy.org/en/v0.8.x/install.html",
@@ -80,8 +80,7 @@
         "https://github.com/PlasmaPy/PlasmaPy/discussions",
         "https://groups.google.com/forum/#!forum/plasmapy",
         "https://zenodo.org/communities/plasmapy",
-        "https://github.com/PlasmaPy/PlasmaPy-PLEPs",
-        ""
+        "https://github.com/PlasmaPy/PlasmaPy-PLEPs"
     ],
     "author": [
         {
