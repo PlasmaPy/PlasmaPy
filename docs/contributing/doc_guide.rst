@@ -26,12 +26,12 @@ PlasmaPy and affiliated packages.
 available at these locations:
 
 * The documentation corresponding to the most recent release to PyPI_ is
-  labelled ``stable`` and is found at https://docs.plasmapy.org or
+  labeled ``stable`` and is found at https://docs.plasmapy.org or
   https://docs.plasmapy.org/en/stable.
 
 * The documentation corresponding to the ongoing development on the
   ``main`` branch in `PlasmaPy's GitHub repository`_, which is often ahead
-  of the most recent release, is labelled ``latest`` and can be found at
+  of the most recent release, is labeled ``latest`` and can be found at
   https://docs.plasmapy.org/en/latest.
 
 .. tip::
@@ -457,7 +457,7 @@ PlasmaPy uses |sphinxcontrib-bibtex|_ to manage references for its
 documentation. This Sphinx_ extension allows us to store references
 in a BibTeX_ file which is then used to generate the
 :doc:`../bibliography`. References in the :doc:`../bibliography` are then
-citable from anywhere in the documentation.
+citeable from anywhere in the documentation.
 
 To add a new reference to the :doc:`../bibliography`, open
 |docs/bibliography.bib|_ and add the reference in `BibTeX format`_. The

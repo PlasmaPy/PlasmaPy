@@ -20,7 +20,7 @@ reference:
    |version_to_cite|, Zenodo, |doi_hyperlink|
 
 This reference may be made, for example, by adding the following line to
-the methods or acknowledgements section of a paper.
+the methods or acknowledgments section of a paper.
 
    This research made use of PlasmaPy version |version_to_cite|, a
    community-developed open source Python package for plasma research
