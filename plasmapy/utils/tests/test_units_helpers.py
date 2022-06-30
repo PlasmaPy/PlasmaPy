@@ -1,4 +1,4 @@
-"""Tests of `plasmapy.utils.units_helpers`."""
+"""Tests of `plasmapy.utils._units_helpers`."""
 
 import astropy.units as u
 import pytest
