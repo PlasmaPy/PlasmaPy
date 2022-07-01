@@ -11,7 +11,7 @@ Overview
 
 The Plasma Calculator is an interactive Jupyter notebook that is packaged
 with `plasmapy`, and allows users to input a set of plasma properties and
-immediate calculate multiple plasma parameters.
+immediately calculate multiple plasma parameters.
 
 .. note::
 
