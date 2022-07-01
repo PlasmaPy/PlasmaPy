@@ -1,4 +1,11 @@
-"""Functionality to find and analyze 3D magnetic null points."""
+"""
+Functionality to find and analyze 3D magnetic null points.
+
+.. note::
+
+   This module is still under development and the API may change in
+   future releases.
+"""
 
 __all__ = [
     "Point",
@@ -1375,8 +1382,9 @@ def null_point_find(
     the null points of the given vector space.
 
     .. note::
-       Please note that this functionality is still under development
-       and the API may change in future releases.
+
+       This functionality is still under development and the API may
+       change in future releases.
 
     Parameters
     ----------
@@ -1460,6 +1468,11 @@ def uniform_null_point_find(
     r"""
     Return an array of `~plasmapy.analysis.nullpoint.NullPoint` objects,
     representing the null points of the given vector space.
+
+    .. note::
+
+       This functionality is still under development and the API may
+       change in future releases.
 
     Parameters
     ----------
