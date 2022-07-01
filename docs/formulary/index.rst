@@ -63,23 +63,22 @@ physical quantities helpful for plasma physics.
    |    :maxdepth: 1                                        |                                         |
    +--------------------------------------------------------+-----------------------------------------+
 
-The subpackage makes heavy use of `astropy.units.Quantity` for handling
-conversions between different unit systems. This is especially important
-for electron-volts, commonly used in plasma physics to denote
-temperature, although it is technically a unit of energy.
+The subpackage makes heavy use of |Quantity| for handling conversions
+between different unit systems. This is especially important for
+electron-volts, commonly used in plasma physics to denote temperature,
+although it is technically a unit of energy.
 
-Most functions expect `astropy.units.Quantity` as input, however some
-will use the `~plasmapy.utils.decorators.validators.validate_quantities`
-decorator to automatically cast arguments to Quantities with appropriate
-units. If that happens, you will be notified via an
+Most functions expect |Quantity| objects as inputs, however some will
+use the `~plasmapy.utils.decorators.validators.validate_quantities`
+decorator to automatically cast arguments to |Quantity| objects with the
+appropriate units. If that happens, you will be notified via a
 `astropy.units.UnitsWarning`.
 
-Please note that well maintained physical constant data with units and
+Please note that well-maintained physical constant data with units and
 uncertainties can be found in `astropy.constants`.
 
 For a general overview of how unit-based input works, take a look at the
-following example:
-
+following examples:
 
 Examples
 ========
@@ -91,6 +90,8 @@ Examples
 
 Notes for developers
 ====================
+
+.. This section should be moved to the contributor guide.
 
 Values should be returned as an Astropy |Quantity| in SI units.
 
