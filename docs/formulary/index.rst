@@ -85,6 +85,7 @@ Examples
 ========
 
 .. nbgallery::
+   :glob:
 
     /notebooks/formulary/*
 
