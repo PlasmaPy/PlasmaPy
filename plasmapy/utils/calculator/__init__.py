@@ -8,12 +8,21 @@ import os
 import shlex
 import subprocess
 
+_description = """
+Plasma calculator is a tool that opens a page in a web browser for
+interactive calculation of plasma parameters.
+
+This tool is currently in the prototype stage and is expected to change
+in the future.  Please raise an issue in PlasmaPy's GitHub repository to
+provide suggestions and feedback.
+"""
+
 
 def main():
     """
     Stub function for command line tool that launches the plasma calculator notebook.
     """
-    parser = argparse.ArgumentParser(description="Plasma calculator")
+    parser = argparse.ArgumentParser(description=_description)
     parser.add_argument(
         "--port", type=int, default=8866, help="Port to run the notebook"
     )
