@@ -44,14 +44,6 @@ Formulary
 .. Particles
    ---------
 
-Simulation
-----------
-
-.. nbgallery::
-   :glob:
-
-   notebooks/simulation/*
-
 Plasma Objects
 --------------
 
@@ -59,3 +51,11 @@ Plasma Objects
    :glob:
 
    notebooks/plasma/*
+
+Simulation
+----------
+
+.. nbgallery::
+   :glob:
+
+   notebooks/simulation/*
