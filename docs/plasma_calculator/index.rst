@@ -6,13 +6,17 @@ Plasma Calculator
 
 .. currentmodule:: plasmapy.utils.calculator
 
-
 Overview
 --------
 
-Plasma calculator is an interactive notebook installed alongside PlasmaPy that
-allows users to input a set of plasma properties and get immediate output for
-various functions at once.
+Plasma calculator is an interactive notebook installed alongside
+PlasmaPy that allows users to input a set of plasma properties and get
+immediate output for multiple functions at once.
+
+.. note::
+
+   This functionality is still under development and the API may change
+   in future releases.
 
 Using Plasma Calculator
 -----------------------
