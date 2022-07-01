@@ -14,9 +14,7 @@ interactive calculation of plasma parameters.
 
 This tool is currently in the prototype stage and is expected to change in
 the future. Please raise an issue at the following link to provide suggestions
-
 and feedback: https://github.com/PlasmaPy/PlasmaPy/issues/new
-
 """
 
 
