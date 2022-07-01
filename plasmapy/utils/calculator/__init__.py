@@ -12,9 +12,10 @@ _description = """
 Plasma calculator is a tool that opens a page in a web browser for
 interactive calculation of plasma parameters.
 
-This tool is currently in the prototype stage and is expected to change
-in the future.  Please raise an issue in PlasmaPy's GitHub repository to
-provide suggestions and feedback.
+This tool is currently in the prototype stage and is expected to change in
+the future.  Please raise an issue at the following link to provide suggestions
+and feedback: https://github.com/PlasmaPy/PlasmaPy/issues/new
+
 """
 
 
