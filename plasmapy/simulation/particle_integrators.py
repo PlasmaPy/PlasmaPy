@@ -9,7 +9,7 @@ memory allocation.
 import numpy as np
 
 
-def boris_push(x, v, B, E, q, m, dt):
+def boris_push(x, v, B, E, q, m, dt, inplace = False):
     r"""
     The explicit Boris pusher.
 
@@ -36,28 +36,68 @@ def boris_push(x, v, B, E, q, m, dt):
     dt : `float`
         Timestep, in SI (second) units.
 
+    inplace : 'bool'
+        If True, v and x array are changed with boris_push, default False.
+
+    Returns
+    -------
+    x : `~numpy.ndarray`
+        Particle position x after Boris push algorithm, in SI (meter) units.
+
+    v : `~numpy.ndarray`
+        Particle velocity after Boris push algorithm, in SI (meter/second) units.
+
     Examples
     --------
-    >>> from plasmapy.simulation.particle_integrators import boris_push
-    >>> import numpy as np
-    >>> import matplotlib.pyplot as plt
-    >>>
-    >>> x_0 = np.array([0.0, 0.0, 0.0])
-    >>> v_0 = np.array([5.0, 0.0, 0.0])
-    >>> B = np.array([0.0, 0.0, -5.0])
-    >>> x = []
-    >>> y = []
-    >>>
-    >>> for _ in range(150):
-    >>>     boris_push(x = x_0, v = v_0, B=B, E=0, q=1.0, m=1.0, dt=0.01)
-    >>>     x.append(x_0[0,0])
-    >>>     y.append(x_0[0,1])
-    >>> plt.plot(x,y)
-    >>> plt.xlabel('x [m]')
-    >>> plt.ylabel('y [m]')
-    >>> plt.title(r"Single particle motion without $\vec{E}$ field")
-    >>> plt.grid()
-    >>> plt.gca().set_aspect('equal')
+    >>> B = np.array([[0.0, 0.0, 5.0]])
+    >>> E = np.array([[0.0, 0.0, 0.0]])
+    >>> x_t0 = np.array([[0.0, 0.0, 0.0]])
+    >>> v_t0 = np.array([[5.0, 0.0, 0.0]])
+    >>> x_t1, v_t1 = boris_push(x = x_t0, v = v_t0, B = B, E = E, q = 1.0, m = 1.0, dt = 0.01)
+    >>> x_t1
+    array([[ 0.04993754, -0.00249844,  0.        ]])
+    >>> v_t1
+    array([[ 4.9937539 , -0.24984385,  0.        ]])
+    >>> boris_push(x = x_t0, v = v_t0, B = B, E = E, q = 1.0, m = 1.0, dt = 0.01, inplace = True)
+    >>> x_t0
+    array([[ 0.04993754, -0.00249844,  0.        ]])
+    >>> v_t0
+    array([[ 4.9937539 , -0.24984385,  0.        ]])
+    >>> # B parallel to v
+    >>> B = np.array([[0.0, 0.0, 5.0]])
+    >>> v_t0 = np.array([[0.0, 0.0, 5.0]])
+    >>> x_t0 = np.array([[0.0, 0.0, 0.0]])
+    >>> boris_push(x = x_t0, v = v_t0, B = B, E = E, q = 1.0, m = 1.0, dt = 0.01, inplace = True)
+    >>> # no rotation of vector v
+    >>> v_t0
+    array([[0., 0., 5.]])
+    >>> x_t0
+    array([[0.  , 0.  , 0.05]])
+    >>> # B perpendicular to v
+    >>> B = np.array([[5.0, 0.0, 0.0]])
+    >>> v_t0 = np.array([[0.0, 5.0, 0.0]])
+    >>> x_t0 = np.array([[0.0, 0.0, 0.0]])
+    >>> boris_push(x = x_t0, v = v_t0, B = B, E = E, q = 1.0, m = 1.0, dt = 0.01, inplace = True)
+    >>> # rotation of vector v
+    >>> v_t0
+    array([[ 0.        ,  4.9937539 , -0.24984385]])
+    >>> x_t0
+    array([[ 0.        ,  0.04993754, -0.00249844]])
+    >>> # nonzero E and zero B
+    >>> E = np.array([[1.0, 1.0, 1.0]])
+    >>> B = np.array([[0.0, 0.0, 0.0]])
+    >>> v_t0 = np.array([[0.0, 0.0, 5.0]])
+    >>> x_t0 = np.array([[0.0, 0.0, 0.0]])
+    >>> boris_push(x = x_t0, v = v_t0, B = B, E = E, q = 1.0, m = 1.0, dt = 0.01, inplace = True)
+    >>> v_t0
+    array([[0.01, 0.01, 5.01]])
+    >>> x_t0
+    array([[0.0001, 0.0001, 0.0501]])
+    >>> boris_push(x = x_t0, v = v_t0, B = B, E = E, q = 1.0, m = 1.0, dt = 0.01, inplace = True)
+    >>> v_t0
+    array([[0.02, 0.02, 5.02]])
+    >>> x_t0
+    array([[0.0003, 0.0003, 0.1003]])
 
     Notes
     ----------
@@ -90,3 +130,6 @@ def boris_push(x, v, B, E, q, m, dt):
     v[...] = vplus + hqmdt * E
 
     x += v * dt
+
+    if not inplace:
+        return x, v
