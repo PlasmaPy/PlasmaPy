@@ -77,6 +77,9 @@ appropriate units. If that happens, you will be notified via a
 Please note that well-maintained physical constant data with units and
 uncertainties can be found in `astropy.constants`.
 
+Examples
+========
+
 For a general overview of how unit-based input works, take a look at the
 following examples:
 
