@@ -8,6 +8,9 @@ Length Plasma Parameters (`plasmapy.formulary.lengths`)
 
 .. automodapi:: plasmapy.formulary.lengths
 
+Examples
+========
+
 .. nbgallery::
     :caption: Examples
 

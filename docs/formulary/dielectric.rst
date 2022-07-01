@@ -8,6 +8,9 @@ Dielectric functions (`plasmapy.formulary.dielectric`)
 
 .. automodapi:: plasmapy.formulary.dielectric
 
+Examples
+========
+
 .. nbgallery::
     :caption: Examples
 
