@@ -80,13 +80,11 @@ uncertainties can be found in `astropy.constants`.
 For a general overview of how unit-based input works, take a look at the
 following examples:
 
-Examples
-========
-
 .. nbgallery::
-   :glob:
+    :caption: Examples
+    :glob:
 
-    /notebooks/formulary/*
+    ../notebooks/formulary/*
 
 Notes for developers
 ====================
