@@ -33,15 +33,24 @@ def main():
         "--no-browser", action="store_true", help="Do not open the browser"
     )
 
-    notebook_path = pathlib.Path(__file__).parent.absolute() / "plasma_calculator.ipynb"
+    module_path = pathlib.Path(__file__).parent.absolute()
+    notebook_path = module_path / "plasma_calculator.ipynb"
+    favicon_path = module_path / "favicon.ico"
 
     args = parser.parse_args()
     theme = "dark" if args.dark else "light"
     no_browser = "--no-browser" if args.no_browser else ""
 
-    command = f"voila {no_browser} --port={args.port} --theme={theme} {notebook_path} \
-        --VoilaConfiguration.file_whitelist favicon.ico"
+    command = [
+        "voila",
+        no_browser,
+        f"--port={args.port}" f"--{theme=}",
+        notebook_path,
+        "--VoilaConfiguration.file_whitelist",
+        favicon_path,
+    ]
+
     try:
-        subprocess.call(shlex.split(command))
+        subprocess.call(command)
     except KeyboardInterrupt:
         print("Stopping calculator! Bye")
