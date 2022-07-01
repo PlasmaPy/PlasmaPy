@@ -1,11 +1,22 @@
-"""Functionality to find and analyze 3D magnetic null points."""
+"""
+Functionality to find and analyze 3D magnetic null points.
+
+.. note::
+
+   This module is still under development and the API may change in
+   future releases.
+"""
 
 __all__ = [
-    "Point",
+    "MultipleNullPointWarning",
+    "NonZeroDivergence",
     "NullPoint",
+    "NullPointError",
+    "NullPointWarning",
+    "Point",
     "null_point_find",
-    "uniform_null_point_find",
     "trilinear_approx",
+    "uniform_null_point_find",
 ]
 
 import numpy as np
@@ -23,6 +34,11 @@ _recursion_level = 0
 class NullPointError(Exception):
     """
     A class for handling the exceptions of the null point finder functionality.
+
+    .. note::
+
+       This functionality is still under development and the API may
+       change in future releases.
     """
 
     pass
@@ -31,6 +47,11 @@ class NullPointError(Exception):
 class NullPointWarning(UserWarning):
     """
     A class for handling the warnings of the null point finder functionality.
+
+    .. note::
+
+       This functionality is still under development and the API may
+       change in future releases.
     """
 
     pass
@@ -40,6 +61,11 @@ class NonZeroDivergence(NullPointError):
     """
     A class for handling the exception raised by passing in a magnetic field
     that violates the zero divergence constraint.
+
+    .. note::
+
+       This functionality is still under development and the API may
+       change in future releases.
     """
 
     def __init__(self):
@@ -53,6 +79,11 @@ class MultipleNullPointWarning(NullPointWarning):
     A class for handling the warning raised by passing in a magnetic field
     grid that may contain multiple null points in close proximity due to low
     resolution.
+
+    .. note::
+
+       This functionality is still under development and the API may
+       change in future releases.
     """
 
     pass
@@ -61,6 +92,11 @@ class MultipleNullPointWarning(NullPointWarning):
 class Point:
     """
     Abstract class for defining a point in 3D space.
+
+    .. note::
+
+       This functionality is still under development and the API may
+       change in future releases.
     """
 
     def __init__(self, loc):
@@ -78,6 +114,11 @@ class Point:
 class NullPoint(Point):
     """
     A class for defining a null point in 3D space.
+
+    .. note::
+
+       This functionality is still under development and the API may
+       change in future releases.
     """
 
     def __init__(self, null_loc, classification):
@@ -332,6 +373,11 @@ def trilinear_approx(vspace, cell):
     Return a function whose input is a coordinate within a given grid cell
     and returns the trilinearly approximated vector value at that particular
     coordinate in that grid cell.
+
+    .. note::
+
+       This functionality is still under development and the API may
+       change in future releases.
 
     Parameters
     ----------
@@ -1375,8 +1421,9 @@ def null_point_find(
     the null points of the given vector space.
 
     .. note::
-       Please note that this functionality is still under development
-       and the API may change in future releases.
+
+       This functionality is still under development and the API may
+       change in future releases.
 
     Parameters
     ----------
@@ -1460,6 +1507,11 @@ def uniform_null_point_find(
     r"""
     Return an array of `~plasmapy.analysis.nullpoint.NullPoint` objects,
     representing the null points of the given vector space.
+
+    .. note::
+
+       This functionality is still under development and the API may
+       change in future releases.
 
     Parameters
     ----------
