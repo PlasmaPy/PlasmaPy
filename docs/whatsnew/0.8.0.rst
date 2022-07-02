@@ -35,7 +35,7 @@ The people who have contributed to the code for this release are:
 - Raymon Skjørten Hansen\ :sup:`*`
 - Reynaldo Rojas Zelaya\ :sup:`*`
 - Riley Britten\ :sup:`*`
-* sandshrew118\ :sup:`*`
+- sandshrew118\ :sup:`*`
 - seanjunheng2\ :sup:`*`
 - Shane Brown\ :sup:`*`
 - Suzanne Nie\ :sup:`*`
