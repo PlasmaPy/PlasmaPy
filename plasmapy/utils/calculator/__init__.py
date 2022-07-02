@@ -4,7 +4,7 @@ Script and utilities to launch the plasma calculator
 __all__ = ["main"]
 
 import argparse
-import os
+import pathlib
 import shlex
 import subprocess
 
@@ -33,17 +33,25 @@ def main():
         "--no-browser", action="store_true", help="Do not open the browser"
     )
 
-    # module_path = plasmapy.__path__[0]
-    module_path = os.path.dirname(os.path.abspath(__file__))
-    computed_calculator_path = os.path.join(module_path, "plasma_calculator.ipynb")
+    module_path = pathlib.Path(__file__).parent.absolute()
+    notebook_path = module_path / "plasma_calculator.ipynb"
+    favicon_path = module_path / "favicon.ico"
 
     args = parser.parse_args()
     theme = "dark" if args.dark else "light"
     no_browser = "--no-browser" if args.no_browser else ""
 
-    command = f"voila {no_browser} --port={args.port} --theme={theme} {computed_calculator_path} \
-        --VoilaConfiguration.file_whitelist favicon.ico"
+    command = [
+        "voila",
+        notebook_path,
+        f"--port={args.port}",
+        f"--theme={theme}",
+        f"--VoilaConfiguration.file_whitelist={favicon_path}",
+    ]
+    if no_browser:
+        command.append(no_browser)
+
     try:
-        subprocess.call(shlex.split(command))
+        subprocess.call(command)
     except KeyboardInterrupt:
         print("Stopping calculator! Bye")
