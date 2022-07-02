@@ -82,6 +82,8 @@ Release
      directive like the :samp: role which allows us to emphasize a part
      of a snippet when the part is in curly brackets.
 
+* Check fortnightly tests...
+
 * Create a new branch for the release that is separate from the ``main``
   branch.
 
