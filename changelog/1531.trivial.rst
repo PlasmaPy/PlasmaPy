@@ -1,3 +1,0 @@
-Added :file:`plasmapy/utils/units_definitions.py` to precompute units
-which were applied to optimize functionality in
-:file:`plasmapy/formulary/distribution.py`.

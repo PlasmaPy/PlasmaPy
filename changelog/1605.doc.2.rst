@@ -1,3 +1,0 @@
-Renamed :file:`docs/development` → :file:`docs/contributing`, and set up
-redirects from the original hyperlinks to the new ones for the
-contributor guide.
