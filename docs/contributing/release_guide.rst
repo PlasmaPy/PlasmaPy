@@ -67,14 +67,20 @@ Pre-release
 Release
 -------
 
-* Install `hub <https://hub.github.com/>`__ (if needed), and use it to
+* Go to `Actions <https://github.com/PlasmaPy/PlasmaPy/actions>`__, and
+  click on :guilabel:`Run workflow` under both the :guilabel:`CI` and
+  :guilabel:`fortnightly tests`. Verify that all continuous integration
+  checks are passing.
+
+.. I kept getting a "Not Found" error when using the hub tool, and I'm
+   not sure why.
+
+
+.. Install `hub <https://hub.github.com/>`__ (if needed), and use it to
   check that the continuous integration is passing.
-
-  .. code-block:: Shell
-
+  ... code-block:: Shell
      hub ci-status main -v [COMMIT]
-
-  Here, ``[COMMIT]`` is replaced by the hash from the latest commit on
+..  Here, ``[COMMIT]`` is replaced by the hash from the latest commit on
   the `main <https://github.com/PlasmaPy/PlasmaPy/commits/main>`__
   branch of `PlasmaPy's GitHub repository`_.
 
@@ -82,17 +88,15 @@ Release
      directive like the :samp: role which allows us to emphasize a part
      of a snippet when the part is in curly brackets.
 
-* Check fortnightly tests...
-
-* Create a new branch for the release that is separate from the ``main``
-  branch.
+* Enter the :file:`PlasmaPy` directory and create a new branch for the
+  release that is based off of the ``main`` branch. For a bugfix
+  release, this branch should already exist.
 
   .. code-block:: Shell
 
      git checkout -b v0.8.x upstream main
 
   The ``upstream`` remote corresponds to `PlasmaPy's GitHub repository`_.
-  For a bugfix release, this branch should already exist.
 
 * Push the branch to `PlasmaPy's GitHub repository`_.
 
