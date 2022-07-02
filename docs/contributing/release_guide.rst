@@ -13,8 +13,8 @@ and may refer to `Astropy's release procedures
 <https://docs.astropy.org/en/stable/development/releasing.html>`_ for
 guidance.
 
-Throughout this guide, ``0.6.0`` denotes the version you're releasing,
-and ``0.5.0`` denotes the last released version.
+Throughout this guide, ``0.9.0`` denotes the version you're releasing,
+and ``0.8.0`` denotes the last released version.
 
 Pre-release
 -----------
@@ -34,12 +34,12 @@ Pre-release
 Release
 -------
 
-* Reserve a digital object identifier (DOI) on Zenodo_ for version ``0.6.0``.
+* Reserve a digital object identifier (DOI) on Zenodo_ for version ``0.9.0``.
 
-* Update :file:`docs/about/citation.rst` with the DOI for version ``0.6.0``.
+* Update :file:`docs/about/citation.rst` with the DOI for version ``0.9.0``.
 
 * Update version metadata in :file:`codemeta.json`.  In particular, update the
-  ``"identifier"`` tag with the DOI for version ``0.6.0``.
+  ``"identifier"`` tag with the DOI for version ``0.9.0``.
 
 * Update the author list (with affiliations and ORCID_ numbers, when possible) to be
   consistent with the Zenodo_ record.  Update any other tags if necessary. Check
@@ -59,17 +59,17 @@ Release
 * ``git push -u upstream`` to create the branch on the main repository.
 
 * Turn changelog entries into a :file:`CHANGELOG.rst` file via ``towncrier --version
-  v0.6.0``. When asked about removing changelog entries, do so. Ensure
+  v0.9.0``. When asked about removing changelog entries, do so. Ensure
   the entries are in proper categories.
 
 * Copy the relevant part of the generated :file:`CHANGELOG.rst` file into
-  :file:`docs/whatsnew/0.6.0.rst`. Add the corresponding entry in the
+  :file:`docs/whatsnew/0.9.0.rst`. Add the corresponding entry in the
   table of contents in :file:`docs/whatsnew/index.rst`.
 
 * Add the note on new contributors to :file:`docs/whatsnew/{version_number}.rst`. To
   do this efficiently, borrow the `SunPy Xonsh script
   <https://github.com/sunpy/sunpy/blob/v2.1dev/tools/generate_releaserst.xsh>`_
-  ``generate_releaserst.xsh 0.5.0 --auth --project-name=plasmapy
+  ``generate_releaserst.xsh 0.8.0 --auth --project-name=plasmapy
   --pretty-project-name=PlasmaPy``.
 
     * Note that you'll need `a GitHub personal access token
