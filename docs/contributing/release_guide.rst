@@ -16,51 +16,92 @@ guidance.
 Throughout this guide, ``0.9.0`` denotes the version you're releasing,
 and ``0.8.0`` denotes the last released version.
 
+Pre-pre-release
+---------------
+
+* Create an issue on GitHub for the release.
+
+* Approximately ∼2–3 weeks before the release, announce that a feature
+  freeze will occur one week before the anticipated release date. Only
+  pull requests with a limited scope that do not significantly change
+  functionality should be merged during the feature freeze.
+
+* Announce a code freeze beginning ∼2–3 weekdays before the release.
+  Only pull requests directly related to the release should be merged
+  during the code freeze.
+
 Pre-release
 -----------
 
-* Enact a feature freeze that begins approximately one week before the
-  anticipated release date.  Only pull requests with a limited scope that
-  do not significantly change functionality should be merged during this
-  time period.
+* Review and revise changelog entries to make sure that they are
+  understandable and correctly categorized. For a pull request to revise
+  multiple changelog entries, apply the :guilabel:`No changelog entry
+  needed` label.
 
-* Plan a code freeze beginning approximately two weekdays before the release.
-  Only pull requests directly related to the release should be merged during
-  during the code freeze.
+* Update hooks in :file:`.pre-commit-config.yaml` to the most recent
+  versions, and run ``pre-commit run --all-files`` to apply all changes.
+  Skip this step for bugfix releases.
 
-* Revise changelog entries to make sure that they are understandable and
-  that reST_ links are working correctly.
+* Re-run the pre-executed notebooks, including those for charged
+  particle radiography.
+
+* Reserve a digital object identifier (DOI) on Zenodo_ for the new
+  release using the ``team@plasmapy.org`` login.
+
+* Update :file:`docs/about/citation.rst` for the new version, and
+  include the reserved DOI.
+
+* Update and alphabetize the author list in
+  :file:`docs/about/credits.rst`, with ORCID_ numbers when possible.
+
+* Update the author list, version, and other metadata in
+  :file:`codemeta.json`.  Update the ``"identifier"`` tag with the DOI
+  for the new release.
+
+* Update :file:`.mailmap`.  (Add bash command for this?)
+
+* Build the documentation using ``make linkcheck`` and fix broken links,
+  except for the reserved DOI link in :file:`docs/about/citation.rst`
+  which will not work until after the Zenodo_ record has been published.
 
 Release
 -------
 
-* Reserve a digital object identifier (DOI) on Zenodo_ for version ``0.9.0``.
+* Install `hub <https://hub.github.com/>`__ (if needed), and use it to
+  check that the continuous integration is passing for the correct
+  version (see the latest commit on `main
+  <https://github.com/PlasmaPy/PlasmaPy/commits/main>`__).
 
-* Update :file:`docs/about/citation.rst` with the DOI for version ``0.9.0``.
+  .. code-block:: Shell
 
-* Update version metadata in :file:`codemeta.json`.  In particular, update the
-  ``"identifier"`` tag with the DOI for version ``0.9.0``.
+     hub ci-status main -v
 
-* Update the author list (with affiliations and ORCID_ numbers, when possible) to be
-  consistent with the Zenodo_ record.  Update any other tags if necessary. Check
-  :file:`.mailmap`, :file:`codemeta.json`, and :file:`docs/about/credits.rst`.
+* Create a new branch for the release that is separate from the ``main``
+  branch.
 
-* ``hub ci-status main -v`` — Check that the Continuous Integration is passing
-  for the correct version `(see the latest commit on main)
-  <https://github.com/PlasmaPy/PlasmaPy/commits/main>`_. You can use the handy
-  `hub <https://github.com/github/hub>`_ command line interface (CLI) tool.
+  .. code-block:: Shell
 
-* ``git checkout -b v0.6.x`` — create a new branch for the release that is
-  separate from the main branch, with the bugfix version replaced by ``x``, for
-  example, ``v0.6.x``. This is the branch for the entire series of releases — if
-  you're releasing, say, ``0.6.1``, the main repository should already have a
-  branch for that.
+     git checkout -b v0.8.x upstream main
 
-* ``git push -u upstream`` to create the branch on the main repository.
+  The ``upstream`` remote corresponds to `PlasmaPy's GitHub repository`_.
+  For a bugfix release, this branch should already exist.
+
+* Push the branch to `PlasmaPy's GitHub repository`_.
+
+  .. code-block:: Shell
+
+     git push -u upstream
+
+* Turn changelog entries into a :file:`CHANGELOG.rst` file.
+
+  .. code-block::
+
+     towncrier --version 0.8.0
+
+  When asked about removing changelog entries, do so.
 
 * Turn changelog entries into a :file:`CHANGELOG.rst` file via ``towncrier --version
-  v0.9.0``. When asked about removing changelog entries, do so. Ensure
-  the entries are in proper categories.
+  v0.9.0``. When asked about removing changelog entries, do so.
 
 * Copy the relevant part of the generated :file:`CHANGELOG.rst` file into
   :file:`docs/whatsnew/0.9.0.rst`. Add the corresponding entry in the
