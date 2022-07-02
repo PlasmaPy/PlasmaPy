@@ -68,13 +68,19 @@ Release
 -------
 
 * Install `hub <https://hub.github.com/>`__ (if needed), and use it to
-  check that the continuous integration is passing for the correct
-  version (see the latest commit on `main
-  <https://github.com/PlasmaPy/PlasmaPy/commits/main>`__).
+  check that the continuous integration is passing.
 
   .. code-block:: Shell
 
-     hub ci-status main -v
+     hub ci-status main -v [COMMIT]
+
+  Here, ``[COMMIT]`` is replaced by the hash from the latest commit on
+  the `main <https://github.com/PlasmaPy/PlasmaPy/commits/main>`__
+  branch of `PlasmaPy's GitHub repository`_.
+
+  .. We might possibly use sphinxawesome-sampdirective to have a
+     directive like the :samp: role which allows us to emphasize a part
+     of a snippet when the part is in curly brackets.
 
 * Create a new branch for the release that is separate from the ``main``
   branch.
