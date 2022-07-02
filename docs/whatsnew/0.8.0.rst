@@ -1,5 +1,51 @@
-PlasmaPy 0.8.0 (2022-07-02)
+PlasmaPy 0.8.0 (2022-07-03)
 ===========================
+
+This release of PlasmaPy includes 158 pull requests closing 60 issues
+by 37 people, of which 31 are new contributors.
+
+The people who have contributed to the code for this release are:
+
+- Afzal Rao\ :sup:`*`
+- Alexis Jeandet\ :sup:`*`
+- Andrew Sheng\ :sup:`*`
+- Anna Lanteri\ :sup:`*`
+- Chris Hoang\ :sup:`*`
+- Christopher Arran\ :sup:`*`
+- Chun Hei Yip\ :sup:`*`
+- Dominik Stańczak
+- Elliot Johnson\ :sup:`*`
+- Erik Everson
+- flaixman\ :sup:`*`
+- Haman Bagherianlemraski\ :sup:`*`
+- Isaias McHardy\ :sup:`*`
+- itsraashi\ :sup:`*`
+- James Kent\ :sup:`*`
+- Joao Victor Martinelli\ :sup:`*`
+- Leo Murphy\ :sup:`*`
+- Luciano Silvestri\ :sup:`*`
+- Mahima Pannala\ :sup:`*`
+- Marco Gorelli\ :sup:`*`
+- Nick Murphy
+- Nicolas Lequette
+- Nikita Smirnov\ :sup:`*`
+- Peter Heuer
+- Pey Lian Lim\ :sup:`*`
+- Rajagopalan Gangadharan\ :sup:`*`
+- Raymon Skjørten Hansen\ :sup:`*`
+- Reynaldo Rojas Zelaya\ :sup:`*`
+- Riley Britten\ :sup:`*`
+* sandshrew118\ :sup:`*`
+- seanjunheng2\ :sup:`*`
+- Shane Brown\ :sup:`*`
+- Suzanne Nie\ :sup:`*`
+- Terrance Takho Lee\ :sup:`*`
+- Tien Vo\ :sup:`*`
+- Tiger Du
+- Tomás Stinson\ :sup:`*`
+
+A :sup:`*` indicates that this release contains their first contribution
+to PlasmaPy.
 
 Backwards Incompatible Changes
 ------------------------------
