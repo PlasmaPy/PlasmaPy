@@ -43,12 +43,13 @@ def main():
 
     command = [
         "voila",
-        no_browser,
-        f"--port={args.port}" f"--{theme=}",
         notebook_path,
-        "--VoilaConfiguration.file_whitelist",
-        favicon_path,
+        f"--port={args.port}",
+        f"--theme={theme}",
+        f"--VoilaConfiguration.file_whitelist={favicon_path}",
     ]
+    if no_browser:
+        command.append(no_browser)
 
     try:
         subprocess.call(command)
