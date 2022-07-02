@@ -20,13 +20,12 @@ Example highlights
 .. nbgallery::
    :hidden:
 
+   notebooks/getting_started/particles
    notebooks/diagnostics/charged_particle_radiography_particle_tracing
    notebooks/dispersion/two_fluid_dispersion
    notebooks/diagnostics/thomson
    notebooks/analysis/swept_langmuir/find_floating_potential
    notebooks/formulary/thermal_bremsstrahlung
-   notebooks/plasma/grids_nonuniform
-
 
 .. toctree::
    :caption: First Steps

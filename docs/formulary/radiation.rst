@@ -8,6 +8,9 @@ Electromagnetic Radiation Functions (`plasmapy.formulary.radiation`)
 
 .. automodapi:: plasmapy.formulary.radiation
 
+Examples
+========
+
 .. nbgallery::
     :caption: Examples
 
