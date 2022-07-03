@@ -8,7 +8,6 @@ This document lists the changes made during each release of PlasmaPy,
 including bug fixes and changes to the application programming interface
 (API).
 
-
 .. toctree::
    :maxdepth: 1
 
