@@ -1,4 +1,4 @@
-PlasmaPy 0.8.0 (2022-07-03)
+PlasmaPy 0.8.0 (2022-07-04)
 ===========================
 
 This release of PlasmaPy includes 158 pull requests closing 60 issues
