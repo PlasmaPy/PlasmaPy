@@ -158,7 +158,8 @@ Release
 
 * Create a GPG key, if not done previously.
 
-* Tag the new version with
+* After verifying that all continuous integration checks are passing for
+  a second time, tag the new version with
 
   .. code-block:: Shell
 
@@ -166,16 +167,16 @@ Release
 
   The ``-s`` signs the commit with your GPG key.
 
-* Push the tagged commit to the version's branch on GitHub.
+* After verifying that all continuous integration checks are passing for
+  a third time, push the tagged commit to the ``0.9.x`` branch on GitHub.
 
-  git push --force --follow-tags upstream v0.9.x
+  .. code-block:: Shell
+
+     git push --force --follow-tags upstream v0.9.x
 
   The ``--force`` is necessary to trigger a rebuild with the tagged
-  version.
-
-* Push the tagged commit to the version's branch on GitHub: ``git push --force
-  --follow-tags upstream v0.6.x``. Note that ``--force`` is necessary to trigger
-  a rebuild with the tagged version. This kicked us in the posterior for ``0.4.0``.
+  version. Be careful during this step, as tags cannot be deleted once
+  they have been pushed to GitHub.
 
 At this point, the GitHub Actions packaging workflow should do most of
 the work for you! `Ensure that the pipeline goes through.
