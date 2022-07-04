@@ -53,7 +53,7 @@ repos:
     - --nbqa-mutate
 
 - repo: https://github.com/macisamuele/language-formatters-pre-commit-hooks
-  rev: v2.3.0
+  rev: v2.4.0
   hooks:
   - id: pretty-format-ini
     args: [--autofix]
