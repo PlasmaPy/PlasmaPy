@@ -1,3 +1,0 @@
-Renamed ``units_definitions`` to ``_units_definitions`` and
-``units_helpers`` to ``_units_helpers`` in `plasmapy.utils` to mark
-these modules as private.

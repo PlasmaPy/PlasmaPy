@@ -1,3 +1,0 @@
-Added a :file:`robots.txt` file to the online documentation to tell web
-crawlers to ignore all but ``stable`` and ``latest`` documentation
-builds when indexing for search engines.

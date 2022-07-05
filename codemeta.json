@@ -7,7 +7,7 @@
     "issueTracker": "https://github.com/PlasmaPy/PlasmaPy/issues",
     "downloadUrl": "https://pypi.org/project/plasmapy",
     "name": "PlasmaPy",
-    "version": "0.8.0",
+    "version": "0.8.1",
     "identifier": "http://doi.org/10.5281/zenodo.6774350",
     "description": "An open source Python package for plasma research and education",
     "applicationCategory": "Plasma Physics",

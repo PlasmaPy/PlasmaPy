@@ -1,2 +1,0 @@
-Added a pre-commit_ hook that transforms relative imports to absolute
-imports, except in :file:`docs/plasmapy_sphinx`.
