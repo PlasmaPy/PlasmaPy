@@ -4,68 +4,149 @@
 Release Guide
 *************
 
-This document describes the procedure for making a release of PlasmaPy.
+.. _Astropy's release procedures: https://docs.astropy.org/en/stable/development/releasing.html
 
-The following is a partial list of tasks to be performed for each
-release.  This list is currently under development.  Developers should
-revise and expand the instructions while performing each release,
-and may refer to `Astropy's release procedures
-<https://docs.astropy.org/en/stable/development/releasing.html>`_ for
+This document describes the procedure for making a release of PlasmaPy.
+Developers should revise and expand these instructions while performing
+each release, and may refer to `Astropy's release procedures`_ for
 guidance.
 
 Throughout this guide, ``0.9.0`` denotes the version you're releasing,
 and ``0.8.0`` denotes the last released version.
 
-Pre-pre-release
----------------
+.. |exclude bugfix| replace:: *Skip this step for bugfix releases.*
 
-* Create an issue on GitHub for the release.
+.. tip::
 
-* Approximately ∼2–3 weeks before the release, announce that a feature
-  freeze will occur one week before the anticipated release date. Only
-  pull requests with a limited scope that do not significantly change
-  functionality should be merged during the feature freeze.
+   Split up pre-release tasks into multiple focused pull requests. Small
+   pull requests facilitate quicker code reviews.
+
+.. When updating this guide, make sure that each bullet point is for
+   doing exactly one task!
+
+Several weeks before release
+----------------------------
+
+* Create an issue on GitHub for the release with a checklist of tasks
+  to be performed.
+
+.. Should we create an issue template for this?  Should we convert the
+   checklist into an issue format?
+
+* Three weeks before the release, announce that a feature freeze will
+  occur one week before the anticipated release date. Only pull requests
+  with a limited scope that do not significantly change functionality
+  should be merged during the feature freeze. |exclude bugfix|
 
 * Announce a code freeze beginning ∼2–3 weekdays before the release.
-  Only pull requests directly related to the release should be merged
-  during the code freeze.
+  Only bug fixes and pull requests directly related to the release
+  should be merged during the code freeze. |exclude bugfix|
 
 Pre-release
 -----------
 
-* Review and revise changelog entries to make sure that they are
-  understandable and correctly categorized. For a pull request to revise
-  multiple changelog entries, apply the :guilabel:`No changelog entry
-  needed` label.
+* Create a pull request to revise changelog entries to make sure that
+  they are understandable and correctly categorized.
 
-* Update hooks in :file:`.pre-commit-config.yaml` to the most recent
-  versions, and run ``pre-commit run --all-files`` to apply all changes.
-  Skip this step for bugfix releases.
+  .. tip::
 
-* Re-run the pre-executed notebooks, including those for charged
-  particle radiography.
+     Apply the :guilabel:`No changelog entry needed` label to pull
+     requests that change multiple changelog entries in order to skip
+     the changelog entry check.
 
-* Reserve a digital object identifier (DOI) on Zenodo_ for the new
-  release using the ``team@plasmapy.org`` login.
+* Open a pull request to update hooks in :file:`.pre-commit-config.yaml`
+  to the most recent versions, and run ``pre-commit run --all-files`` to
+  apply all changes. |exclude bugfix|
 
-* Update :file:`docs/about/citation.rst` for the new version, and
-  include the reserved DOI.
+* Open a pull request to re-run pre-executed notebooks, including those
+  for charged particle radiography.
 
-* Update and alphabetize the author list in
-  :file:`docs/about/credits.rst`, with ORCID_ numbers when possible.
+* Begin an upload to Zenodo_ for the new release using the
+  ``team@plasmapy.org`` login, and reserve a digital object identifier
+  (DOI).
 
-* Update the author list, version, and other metadata in
-  :file:`codemeta.json`.  Update the ``"identifier"`` tag with the DOI
-  for the new release.
+* Open a pull request to update :file:`docs/about/citation.rst` to
+  reflect the new version, and include the reserved DOI.
 
-* Update :file:`.mailmap`.  (Add bash command for this?)
+.. Should we switch to Citation File Format?  It appears to be better
+   supported by Zenodo.
 
-* Build the documentation using ``make linkcheck`` and fix broken links,
-  except for the reserved DOI link in :file:`docs/about/citation.rst`
-  which will not work until after the Zenodo_ record has been published.
+* Open a pull request to update and alphabetize the author list in
+  :file:`docs/about/credits.rst`. Add ORCID_ identifiers, if needed.
+
+* Open a pull request to update :file:`codemeta.json`. Update the author
+  list, version, and other metadata, as needed. Update the
+  ``"identifier"`` tag with the DOI for the new release.
+
+* Open a pull request to update :file:`.mailmap`. (Add bash command for this?)
+
+* Run ``make linkcheck`` in :file:`docs/`, and if necessary, open a pull
+  request to update redirects and fix broken links. The reserved DOI
+  link in :file:`docs/about/citation.rst` will not work yet since the
+  Zenodo_ record will not be published until after the official release.
+
+  .. tip::
+
+     Use ``linkcheck_allowed_redirects`` in :file:`docs/conf.py` to
+     specify allowed redirects. For example, DOI links are more
+     persistent than most hyperlinks, but are always redirects.
+
+* Open a pull request to update the changelog.
+
+  - In the top-level directory, run:
+
+    ```Shell
+    towncrier build --version 0.9.0
+    ```
+
+    When asked about removing changelog entries, do so.
+
+  - Copy the relevant parts of the generated :file:`CHANGELOG.rst` file
+    into :file:`docs/whatsnew/0.9.0.rst`.
+
+  - Add the entry for :file:`docs/whatsnew/0.9.0.rst` in the table of
+    contents in :file:`docs/whatsnew/index.rst`.
+
+.. Use one of the following two methods to add the note on new
+  contributors to :file:`docs/whatsnew/0.9.0.rst`.
+
+..  If not done previously, add a `GitHub personal access token`_ and
+    install Xonsh_. Download the `SunPy Xonsh script`_, and run:
+    .. code-block::
+       generate_releaserst.xsh \
+           0.8.0 \
+           --auth \
+           --project-name=plasmapy \
+           --pretty-project-name=PlasmaPy \
+           --author-sort=alphabet
+    Note that the argument is for the previous release. Double check
+    that the above command works!!!!!!
+
+.. double check this ↑
+
+.. Use ``git shortlog -nse | cut -f 2 | vim -c "sort" -c "vsplit .mailmap" -c
+   "windo diffthis"`` to compare the old and new :file:`.mailmap` version. Make sure
+   the old addresses are preserved in the new version, then overwrite the
+   existing :file:`.mailmap` file.
+   This part may not be all that relevant anymore, except if we're using ``git
+   shortlog``. ← put this in pre-release?
 
 Release
 -------
+
+.. _Actions: https://github.com/PlasmaPy/PlasmaPy/actions
+
+* Make sure that all tests are passing.
+
+  - Go to the Actions_ page.
+  - Click on the :guilabel:`CI` tab → :guilabel:`Run workflow`.
+  - Click on the :guilabel:`fortnightly tests` tab →
+    :guilabel:`Run workflow`.
+  - Enjoy life for 15 minutes.
+  - Fix any failures, and then repeat these steps.
+
+.. There used to be a step here to use the hub tool with `hub ci-status
+   main -v [COMMIT]``, where
 
 .. I kept getting a "Not Found" error when using the hub tool, and I'm
    not sure why.
@@ -94,55 +175,62 @@ Release
 
      git push -u upstream
 
-* Turn changelog entries into a :file:`CHANGELOG.rst` file.
+.. _Draft a new release: https://github.com/PlasmaPy/PlasmaPy/releases/new
+.. _PlasmaPy releases on PyPI: https://pypi.org/project/plasmapy/#history
+.. _API token for PyPI: https://pypi.org/help/#apitoken
+.. _update the secret on GitHub: https://github.com/PlasmaPy/PlasmaPy/settings/secrets/actions
 
-  .. code-block::
+* Go to the GitHub page to `draft a new release`_. We will perform a
+  pre-release first.
 
-     towncrier build --version 0.9.0
+  - Set the :guilabel:`Target` to ``0.9.x``.
+  - For :guilabel:`Choose a tag`, put ``0.9.0rc1``.
+  - Under title, put ``v0.9.0``.
+  - Mark that this is a pre-release.
+  - Click on :guilabel:`Publish release`.
 
-  When asked about removing changelog entries, do so.
+  In a few minutes, check `PlasmaPy releases on PyPI`_ to make sure that
+  version ``0.9.0rc1`` has been released and is marked as pre-release.
 
-.. Turn changelog entries into a :file:`CHANGELOG.rst` file via ``towncrier --version
-   v0.9.0``. When asked about removing changelog entries, do so.
+  .. tip::
 
-* Copy the relevant part of the generated :file:`CHANGELOG.rst` file
-  into :file:`docs/whatsnew/0.9.0.rst`.
+     If the release did not work, it may be necessary to create a new
+     `API token for PyPI`_ and `update the secret on GitHub`_.
 
-* Add the entry for :file:`docs/whatsnew/0.9.0.rst` in the table of
-  contents in :file:`docs/whatsnew/index.rst`.
+* Test that the new release is working. In a new virtual or conda
+  environment, run
 
-* Use one of the following two methods to add the note on new
-  contributors to :file:`docs/whatsnew/0.9.0.rst`.
+  ```Shell
+  pip install plasmapy==0.9.0rc1
+  ```
 
-  * If not done previously, add a `GitHub personal access token`_ and
-    install Xonsh_. Download the `SunPy Xonsh script`_, and run:
+  to make sure that the new version installs correctly.
 
-    .. code-block::
+  - Open Python and run ``import plasmapy`` and ``dir(plasmapy)``.
+  - Run ``plasma-calculator`` to make sure that the plasma calculator is
+    behaving correctly.
 
-       generate_releaserst.xsh \
-           0.8.0 \
-           --auth \
-           --project-name=plasmapy \
-           --pretty-project-name=PlasmaPy \
-           --author-sort=alphabet
+  Fix any errors that arise, and re-run the :guilabel:`CI` and
+  :guilabel:`fortnightly tests` checks.
 
-    Note that the argument is for the previous release.  Double check
-    that the above command works!!!!!!
+* Go to the GitHub page to `draft a new release`_. We will now perform
+  the ``0.9.0`` release.
 
-.. double check this ↑
+  - Set the :guilabel:`Target` to ``0.9.x``.
+  - For :guilabel:`Choose a tag`, put ``0.9.0``.
+  - Under title, put ``v0.9.0``.
+  - Copy the release notes from the changelog, using the beginning of
+    :file:`docs/whatsnew/0.9.0.rst`
+  - Click on :guilabel:`Publish release`.
 
-.. Use ``git shortlog -nse | cut -f 2 | vim -c "sort" -c "vsplit .mailmap" -c
-   "windo diffthis"`` to compare the old and new :file:`.mailmap` version. Make sure
-   the old addresses are preserved in the new version, then overwrite the
-   existing :file:`.mailmap` file.
-   This part may not be all that relevant anymore, except if we're using ``git
-   shortlog``.  ← put this in pre-release?
+  In a few minutes, check `PlasmaPy releases on PyPI`_ to make sure that
+  the ``0.9.0`` release is present.
 
-* Commit and push your changes up until now.
+.. Commit and push your changes up until now.
 
-* Open a pull request from the ``0.9.x`` branch to the ``main`` branch.
+.. Open a pull request from the ``0.9.x`` branch to the ``main`` branch.
 
-* Go to `Actions <https://github.com/PlasmaPy/PlasmaPy/actions>`__, and
+.. Go to `Actions <https://github.com/PlasmaPy/PlasmaPy/actions>`__, and
   click on :guilabel:`Run workflow` under both the :guilabel:`CI` and
   :guilabel:`fortnightly tests`. Verify that all continuous integration
   checks are passing.
@@ -153,35 +241,30 @@ Release
     top, and by now, you want that cuppa tea anyway. Treat yourself! Celebrate
     the new release and let the darn tests pass.
 
-..    If you want to do any rebase to clean up the commit history on your ``0.6.x``
-    branch, now is the time to do that. Ensure that no tests broke.
+.. If you want to do any rebase to clean up the commit history on your ``0.6.x``
+   branch, now is the time to do that. Ensure that no tests broke.
 
-* Create a GPG key, if not done previously.
+.. Create a GPG key, if not done previously.
 
-* After verifying that all continuous integration checks are passing for
+.. After verifying that all continuous integration checks are passing for
   a second time, tag the new version with
 
-  .. code-block:: Shell
-
+.. .. code-block:: Shell
      git tag -s v0.9.0 -m "Version v0.9.0"
-
   The ``-s`` signs the commit with your GPG key.
 
-* After verifying that all continuous integration checks are passing for
+.. After verifying that all continuous integration checks are passing for
   a third time, push the tagged commit to the ``0.9.x`` branch on GitHub.
-
   .. code-block:: Shell
-
      git push --force --follow-tags upstream v0.9.x
-
   The ``--force`` is necessary to trigger a rebuild with the tagged
   version. Be careful during this step, as tags cannot be deleted once
   they have been pushed to GitHub.
 
-At this point, the GitHub Actions packaging workflow should do most of
-the work for you! `Ensure that the pipeline goes through.
-<https://dev.azure.com/plasmapy/PlasmaPy/_build>`_. When ``sdist`` and
-``wheels_universal`` finish, check PyPI_ for the new version!
+.. At this point, the GitHub Actions packaging workflow should do most of
+   the work for you! `Ensure that the pipeline goes through.
+   <https://dev.azure.com/plasmapy/PlasmaPy/_build>`_. When ``sdist`` and
+   ``wheels_universal`` finish, check PyPI_ for the new version!
 
 Post-release
 ------------
