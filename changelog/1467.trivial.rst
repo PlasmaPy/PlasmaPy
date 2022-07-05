@@ -1,1 +1,0 @@
-Added a workflow to label pull requests based on size.

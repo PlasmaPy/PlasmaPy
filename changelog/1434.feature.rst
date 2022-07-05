@@ -1,6 +1,0 @@
-Created `plasmapy.formulary.lengths` to contain length related plasma
-parameters, and migrated `~plasmapy.formulary.lengths.Debye_length`,
-`~plasmapy.formulary.lengths.gyroradius`, and
-`~plasmapy.formulary.lengths.inertial_length` from
-`plasmapy.formulary.parameters` to the new module.  Related aliases were
-also migrated.

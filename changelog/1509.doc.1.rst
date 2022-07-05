@@ -1,3 +1,0 @@
-Defined the :confval:`nitpick_ignore_regex` configuration variable in
-:file:`docs/conf.py` to specify regular expressions for objects to
-ignore in nitpicky documentation builds.

@@ -1,2 +1,0 @@
-Added an example notebook that calculates plasma parameters associated
-with the Magnetospheric Multiscale Mission (MMS).

@@ -1,1 +1,0 @@
-Added support for arbitrarily shaped input arrays to the function `plasmapy.formulary.collisions.impact_parameter`.

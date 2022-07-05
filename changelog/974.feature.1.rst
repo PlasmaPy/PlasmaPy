@@ -1,1 +1,0 @@
-Added a fitting function for 1D spectra, `~plasmapy.diagnostics.thomson.spectral_density_model`, to the Thomson scattering diagnostic module.

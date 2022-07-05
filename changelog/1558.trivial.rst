@@ -1,2 +1,0 @@
-Added `flake8-simplify <https://github.com/MartinThoma/flake8-simplify>`__
-as an extension for flake8_.

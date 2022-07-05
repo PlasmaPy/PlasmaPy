@@ -1,2 +1,0 @@
-Added examples sections to the documentation pages for several modules
-within `plasmapy.formulary`.
