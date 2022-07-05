@@ -1,4 +1,4 @@
-PlasmaPy v0.7.0 (2021-11-18)
+Plasmapy v0.7.0 (2021-11-18)
 ============================
 
 This release of PlasmaPy contains 127 commits in 73 merged pull requests closing 37 issues from 19 people, 14 of which are first-time contributors to PlasmaPy.

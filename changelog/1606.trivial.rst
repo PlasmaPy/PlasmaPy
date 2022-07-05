@@ -1,0 +1,2 @@
+Updated the :file:`codemeta.json` file with metadata for the
+version ``0.8.0`` release.

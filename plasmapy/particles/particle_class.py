@@ -1680,7 +1680,7 @@ class Particle(AbstractPhysicalParticle):
         |Particle|.  If ``inplace`` is `True`, then replace the current
         |Particle| with the newly ionized |Particle|.
 
-        New in version 0.8: If the |Particle| instance has no charge
+        New in version 0.8.0: If the |Particle| instance has no charge
         information (e.g., ``Particle("Li")``), this method assumes it
         to be electrically neutral.
 

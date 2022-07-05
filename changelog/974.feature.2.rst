@@ -1,0 +1,1 @@
+Created a :term:`lite-function` for `~plasmapy.diagnostics.thomson.spectral_density`, `~plasmapy.diagnostics.thomson.spectral_density_lite`.
