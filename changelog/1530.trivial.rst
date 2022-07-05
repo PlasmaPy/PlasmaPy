@@ -1,3 +1,0 @@
-Added a GitHub Action for `codespell
-<https://github.com/codespell-project/codespell>`__, and updated the
-corresponding tox_ environment to print out contextual information.

@@ -1,5 +1,5 @@
-Version 0.1.0
-=============
+PlasmaPy v0.1.0
+===============
 
 Version 0.1.0 is the initial development release of PlasmaPy.  This
 version is a prototype and a preview, and is not feature complete.
