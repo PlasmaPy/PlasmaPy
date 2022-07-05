@@ -1,4 +1,4 @@
-Plasmapy 0.8.0 (2022-07-02)
+Plasmapy 0.8.1 (2022-07-05)
 ===========================
 
 Backwards Incompatible Changes
@@ -451,7 +451,7 @@ Trivial/Internal Changes
   ``units_helpers`` to ``_units_helpers`` in `plasmapy.utils` to mark
   these modules as private. (`#1587 <https://github.com/plasmapy/plasmapy/pull/1587>`__)
 - Updated the :file:`codemeta.json` file with metadata for the
-  version ``0.8.0`` release. (`#1606 <https://github.com/plasmapy/plasmapy/pull/1606>`__)
+  version ``0.8.1`` release. (`#1606 <https://github.com/plasmapy/plasmapy/pull/1606>`__)
 
 
 Plasmapy v0.7.0 (2021-11-18)

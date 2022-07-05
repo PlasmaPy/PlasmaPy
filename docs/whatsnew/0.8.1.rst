@@ -1,4 +1,4 @@
-PlasmaPy v0.8.0 (2022-07-05)
+PlasmaPy v0.8.1 (2022-07-05)
 ============================
 
 This release of PlasmaPy includes 158 pull requests closing 60 issues
@@ -688,5 +688,5 @@ Trivial/Internal Changes
   these modules as private. (`#1587
   <https://github.com/plasmapy/plasmapy/pull/1587>`__)
 - Updated the :file:`codemeta.json` file with metadata for the version
-  ``0.8.0`` release. (`#1606
+  ``0.8.1`` release. (`#1606
   <https://github.com/plasmapy/plasmapy/pull/1606>`__)
