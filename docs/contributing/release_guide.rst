@@ -4,8 +4,6 @@
 Release Guide
 *************
 
-.. _Astropy's release procedures: https://docs.astropy.org/en/stable/development/releasing.html
-
 This document describes the procedure for making a release of PlasmaPy.
 Developers should revise and expand these instructions while performing
 each release, and may refer to `Astropy's release procedures`_ for
@@ -134,8 +132,6 @@ Pre-release
 Release
 -------
 
-.. _Actions: https://github.com/PlasmaPy/PlasmaPy/actions
-
 * Make sure that all tests are passing.
 
   - Go to the Actions_ page.
@@ -175,11 +171,6 @@ Release
 
      git push -u upstream
 
-.. _Draft a new release: https://github.com/PlasmaPy/PlasmaPy/releases/new
-.. _PlasmaPy releases on PyPI: https://pypi.org/project/plasmapy/#history
-.. _API token for PyPI: https://pypi.org/help/#apitoken
-.. _update the secret on GitHub: https://github.com/PlasmaPy/PlasmaPy/settings/secrets/actions
-
 * Go to the GitHub page to `draft a new release`_. We will perform a
   pre-release first.
 
@@ -188,6 +179,8 @@ Release
   - Under title, put ``v0.9.0``.
   - Mark that this is a pre-release.
   - Click on :guilabel:`Publish release`.
+
+.. Link to the GitHub Action that's doing the release on PyPI.
 
   In a few minutes, check `PlasmaPy releases on PyPI`_ to make sure that
   version ``0.9.0rc1`` has been released and is marked as pre-release.
@@ -224,7 +217,7 @@ Release
   - Click on :guilabel:`Publish release`.
 
   In a few minutes, check `PlasmaPy releases on PyPI`_ to make sure that
-  the ``0.9.0`` release is present.
+  the ``0.9.0`` release is present. If it is, congratulations!
 
 .. Commit and push your changes up until now.
 
@@ -362,7 +355,13 @@ Exceptions to these guidelines should only be made when there are major
 improvements or fixes to upstream functionality or when other required
 packages have stricter requirements.
 
+.. _Actions: https://github.com/PlasmaPy/PlasmaPy/actions
+.. _API token for PyPI: https://pypi.org/help/#apitoken
+.. _Astropy's release procedures: https://docs.astropy.org/en/stable/development/releasing.html
+.. _Draft a new release: https://github.com/PlasmaPy/PlasmaPy/releases/new
 .. _GitHub personal access token:
-.. _`NEP 29`: https://numpy.org/neps/nep-0029-deprecation_policy.html
+.. _NEP 29: https://numpy.org/neps/nep-0029-deprecation_policy.html
 .. _ORCID: https://orcid.org
+.. _PlasmaPy releases on PyPI: https://pypi.org/project/plasmapy/#history
 .. _SunPy Xonsh script: https://github.com/sunpy/sunpy/blob/v2.1dev/tools/generate_releaserst.xsh
+.. _update the secret on GitHub: https://github.com/PlasmaPy/PlasmaPy/settings/secrets/actions
