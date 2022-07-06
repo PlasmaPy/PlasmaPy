@@ -9,8 +9,12 @@ Developers should revise and expand these instructions while performing
 each release, and may refer to `Astropy's release procedures`_ for
 guidance.
 
-Throughout this guide, ``0.9.0`` denotes the version you're releasing,
-and ``0.8.0`` denotes the last released version.
+Throughout this guide, ``0.9.0`` denotes the version you're releasing.
+
+.. and ``0.8.0`` denotes the last released version.
+   ↑ We appear to only need that for the xonsh script that I wasn't
+   able to get working
+
 
 .. |exclude bugfix| replace:: *Skip this step for bugfix releases.*
 
@@ -93,9 +97,9 @@ Pre-release
 
   - In the top-level directory, run:
 
-    ```Shell
-    towncrier build --version 0.9.0
-    ```
+    .. code-block:: bash
+
+       towncrier build --version 0.9.0
 
     When asked about removing changelog entries, do so.
 
@@ -159,7 +163,7 @@ Release
   release that is based off of the ``main`` branch. For a bugfix
   release, this branch should already exist.
 
-  .. code-block:: Shell
+  .. code-block:: bash
 
      git checkout -b v0.9.x upstream main
 
@@ -167,17 +171,17 @@ Release
 
 * Push the branch to `PlasmaPy's GitHub repository`_.
 
-  .. code-block:: Shell
+  .. code-block:: bash
 
      git push -u upstream
 
 * Go to the GitHub page to `draft a new release`_. We will perform a
   pre-release first.
 
-  - Set the :guilabel:`Target` to ``0.9.x``.
+  - Set the :guilabel:`Target` to ``v0.9.x``.
   - For :guilabel:`Choose a tag`, put ``0.9.0rc1``.
   - Under title, put ``v0.9.0``.
-  - Mark that this is a pre-release.
+  - Mark this as a pre-release.
   - Click on :guilabel:`Publish release`.
 
 .. Link to the GitHub Action that's doing the release on PyPI.
@@ -193,9 +197,9 @@ Release
 * Test that the new release is working. In a new virtual or conda
   environment, run
 
-  ```Shell
-  pip install plasmapy==0.9.0rc1
-  ```
+  .. code-block:: bash
+
+     pip install plasmapy==0.9.0rc1
 
   to make sure that the new version installs correctly.
 
@@ -209,7 +213,7 @@ Release
 * Go to the GitHub page to `draft a new release`_. We will now perform
   the ``0.9.0`` release.
 
-  - Set the :guilabel:`Target` to ``0.9.x``.
+  - Set the :guilabel:`Target` to ``v0.9.x``.
   - For :guilabel:`Choose a tag`, put ``0.9.0``.
   - Under title, put ``v0.9.0``.
   - Copy the release notes from the changelog, using the beginning of
@@ -262,15 +266,15 @@ Release
 Post-release
 ------------
 
-* Merge the pull request from the ``0.9.x`` branch to ``main``.
+* Merge the pull request from the ``v0.9.x`` branch to ``main``.
 
 * For major and minor releases, activate the new branch's version on
   `on Read the Docs <https://readthedocs.org/projects/plasmapy/versions>`_.
 
-* In the ``0.9.x`` branch, change the line in
+* In the ``v0.9.x`` branch, change the line in
   :file:`binder/requirements.txt` that has ``.`` to ``plasmapy == 0.9``.
 
-  * Open one of the binder examples in the docs for ``0.9.x``, and run
+  * Open one of the binder examples in the docs for ``v0.9.x``, and run
     the following commands to verify that the released version of
     PlasmaPy begins with ``0.9``.
 
@@ -281,7 +285,7 @@ Post-release
 
 * Merge the ``v0.9.x`` branch into the ``stable`` branch on GitHub:
 
-  .. code-block::
+  .. code-block:: bash
 
      git checkout v0.9.x
      git pull
