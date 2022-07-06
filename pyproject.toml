@@ -36,33 +36,36 @@ lines_between_types = 1
 
 [tool.towncrier]
 package = "plasmapy"
-name = "PlasmaPy"
 filename = "CHANGELOG.rst"
 directory = "changelog/"
-wrap = true
-title_format = "{name} v{version} ({project_date})"
-issue_format = ":issue:`{issue}`"
+issue_format = "`#{issue} <https://github.com/plasmapy/plasmapy/pull/{issue}>`__"
 
-[tool.towncrier.type.breaking]
+[[tool.towncrier.type]]
+directory = "breaking"
 name = "Backwards Incompatible Changes"
 showcontent = true
 
-[tool.towncrier.type.bugfix]
-name = "Bug Fixes"
-showcontent = true
-
-[tool.towncrier.type.doc]
-name = "Improved Documentation"
-showcontent = true
-
-[tool.towncrier.type.feature]
-name = "Features"
-showcontent = true
-
-[tool.towncrier.type.removal]
+[[tool.towncrier.type]]
+directory = "removal"
 name = "Deprecations and Removals"
 showcontent = true
 
-[tool.towncrier.type.trivial]
+[[tool.towncrier.type]]
+directory = "feature"
+name = "Features"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "bugfix"
+name = "Bug Fixes"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "doc"
+name = "Improved Documentation"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "trivial"
 name = "Trivial/Internal Changes"
 showcontent = true
