@@ -41,20 +41,11 @@ Several weeks before release
   should be merged during the feature freeze. |exclude bugfix|
 
 * Announce a code freeze beginning ∼2–3 weekdays before the release.
-  Only bug fixes and pull requests directly related to the release
-  should be merged during the code freeze. |exclude bugfix|
+  Only bugfixes and pull requests that are directly related to the
+  release should be merged during the code freeze. |exclude bugfix|
 
 Pre-release
 -----------
-
-* Create a pull request to revise changelog entries to make sure that
-  they are understandable and correctly categorized.
-
-  .. tip::
-
-     Apply the :guilabel:`No changelog entry needed` label to pull
-     requests that change multiple changelog entries in order to skip
-     the changelog entry check.
 
 * Open a pull request to update hooks in :file:`.pre-commit-config.yaml`
   to the most recent versions, and run ``pre-commit run --all-files`` to
@@ -80,7 +71,18 @@ Pre-release
   list, version, and other metadata, as needed. Update the
   ``"identifier"`` tag with the DOI for the new release.
 
-* Open a pull request to update :file:`.mailmap`. (Add bash command for this?)
+* Open a pull request to update :file:`.mailmap`.
+
+  .. todo::
+
+     Add a Python script to update `.mailmap`.
+
+.. Use ``git shortlog -nse | cut -f 2 | vim -c "sort" -c "vsplit .mailmap" -c
+   "windo diffthis"`` to compare the old and new :file:`.mailmap` version. Make sure
+   the old addresses are preserved in the new version, then overwrite the
+   existing :file:`.mailmap` file.
+   This part may not be all that relevant anymore, except if we're using ``git
+   shortlog``. ← put this in pre-release?
 
 * Run ``make linkcheck`` in :file:`docs/`, and if necessary, open a pull
   request to update redirects and fix broken links. The reserved DOI
@@ -93,7 +95,17 @@ Pre-release
      specify allowed redirects. For example, DOI links are more
      persistent than most hyperlinks, but are always redirects.
 
-* Open a pull request to update the changelog.
+* Create a pull request to revise changelog entries to make sure that
+  they are understandable and correctly categorized.
+
+  .. tip::
+
+     Apply the :guilabel:`No changelog entry needed` label to pull
+     requests that change multiple changelog entries in order to skip
+     the changelog entry check.
+
+* Open a pull request to transform the news fragments in
+  :file:`changelog/` to a changelog page.
 
   - In the top-level directory, run:
 
@@ -108,6 +120,17 @@ Pre-release
 
   - Add the entry for :file:`docs/whatsnew/0.9.0.rst` in the table of
     contents in :file:`docs/whatsnew/index.rst`.
+
+    .. todo::
+
+        Immediately following the ``v0.8.1`` release, we made (or
+        planned to make) a few changes to the towncrier_ setup
+        (:pr:`1623`, :pr:`1626`, :issue:`1627`). This guide may require
+        some updates for the subsequent release.
+
+    .. todo::
+
+       We might be able to consolidate these steps into a single one.
 
 .. Use one of the following two methods to add the note on new
   contributors to :file:`docs/whatsnew/0.9.0.rst`.
@@ -126,12 +149,7 @@ Pre-release
 
 .. double check this ↑
 
-.. Use ``git shortlog -nse | cut -f 2 | vim -c "sort" -c "vsplit .mailmap" -c
-   "windo diffthis"`` to compare the old and new :file:`.mailmap` version. Make sure
-   the old addresses are preserved in the new version, then overwrite the
-   existing :file:`.mailmap` file.
-   This part may not be all that relevant anymore, except if we're using ``git
-   shortlog``. ← put this in pre-release?
+
 
 Release
 -------
