@@ -1,5 +1,2 @@
-Version v0.9.0 (TBD)
-====================
-
 .. changelog::
    :towncrier: ../../
