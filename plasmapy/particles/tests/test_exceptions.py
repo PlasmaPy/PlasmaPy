@@ -10,7 +10,6 @@ from plasmapy.particles.atomic import (
     common_isotopes,
     electric_charge,
     half_life,
-    integer_charge,
     is_stable,
     isotopic_abundance,
     known_isotopes,
@@ -826,7 +825,7 @@ tests_from_atomic = [
         pytest.warns(ParticleWarning),
     ],
     [
-        integer_charge,
+        charge_number,
         [
             "fads",
         ],
@@ -834,7 +833,7 @@ tests_from_atomic = [
         pytest.raises(InvalidParticleError),
     ],
     [
-        integer_charge,
+        charge_number,
         [
             "H++",
         ],
@@ -842,7 +841,7 @@ tests_from_atomic = [
         pytest.raises(InvalidParticleError),
     ],
     [
-        integer_charge,
+        charge_number,
         [
             "h+",
         ],
@@ -850,7 +849,7 @@ tests_from_atomic = [
         pytest.raises(InvalidParticleError),
     ],
     [
-        integer_charge,
+        charge_number,
         [
             "fe 1+",
         ],
@@ -858,7 +857,7 @@ tests_from_atomic = [
         pytest.raises(InvalidParticleError),
     ],
     [
-        integer_charge,
+        charge_number,
         [
             "d+",
         ],
@@ -866,7 +865,7 @@ tests_from_atomic = [
         pytest.raises(InvalidParticleError),
     ],
     [
-        integer_charge,
+        charge_number,
         [
             "Fe 29+",
         ],
@@ -874,7 +873,7 @@ tests_from_atomic = [
         pytest.raises(InvalidParticleError),
     ],
     [
-        integer_charge,
+        charge_number,
         [
             "H-1",
         ],
@@ -882,7 +881,7 @@ tests_from_atomic = [
         pytest.raises(ChargeError),
     ],
     [
-        integer_charge,
+        charge_number,
         [
             "H---",
         ],
@@ -890,7 +889,7 @@ tests_from_atomic = [
         pytest.warns(PlasmaPyFutureWarning),
     ],
     [
-        integer_charge,
+        charge_number,
         [
             "Fe -26",
         ],
@@ -898,7 +897,7 @@ tests_from_atomic = [
         pytest.warns(PlasmaPyFutureWarning),
     ],
     [
-        integer_charge,
+        charge_number,
         [
             "Og 10-",
         ],
@@ -1010,7 +1009,6 @@ atomic_ParticleErrors_funcs_table = [
     stable_isotopes,
     common_isotopes,
     isotopic_abundance,
-    integer_charge,
     electric_charge,
 ]
 
