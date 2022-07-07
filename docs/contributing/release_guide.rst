@@ -11,13 +11,6 @@ guidance.
 
 Throughout this guide, ``0.9.0`` denotes the version you're releasing.
 
-.. and ``0.8.0`` denotes the last released version.
-   ↑ We appear to only need that for the xonsh script that I wasn't
-   able to get working
-
-
-.. |exclude bugfix| replace:: *Skip this step for bugfix releases.*
-
 .. tip::
 
    Split up pre-release tasks into multiple focused pull requests. Small
@@ -32,24 +25,30 @@ Several weeks before release
 * Create an issue on GitHub for the release with a checklist of tasks
   to be performed.
 
-.. Should we create an issue template for this?  Should we convert the
-   checklist into an issue format?
+.. todo::
 
-* Three weeks before the release, announce that a feature freeze will
-  occur one week before the anticipated release date. Only pull requests
-  with a limited scope that do not significantly change functionality
-  should be merged during the feature freeze. |exclude bugfix|
+   Convert the release guide into an issue template with a checklist?
 
-* Announce a code freeze beginning ∼2–3 weekdays before the release.
-  Only bugfixes and pull requests that are directly related to the
-  release should be merged during the code freeze. |exclude bugfix|
+* Three weeks before a minor or major release, announce that a feature
+  freeze will occur one week before the anticipated release date. Only
+  pull requests with a limited scope that do not significantly change
+  functionality should be merged during the feature freeze.
+
+* Three weekdays before a minor or major release, announce a code
+  freeze. Only bugfixes and pull requests that are directly related to
+  the release should be merged during the code freeze.
 
 Pre-release
 -----------
 
-* Open a pull request to update hooks in :file:`.pre-commit-config.yaml`
-  to the most recent versions, and run ``pre-commit run --all-files`` to
-  apply all changes. |exclude bugfix|
+* Open a pull request to update hooks to their most recent versions in
+  :file:`.pre-commit-config.yaml` for major and minor releases, and run
+
+  .. code-block:: bash
+
+     pre-commit run --all-files
+
+  to apply all changes.
 
 * Open a pull request to re-run pre-executed notebooks, including those
   for charged particle radiography.
@@ -61,11 +60,14 @@ Pre-release
 * Open a pull request to update :file:`docs/about/citation.rst` to
   reflect the new version, and include the reserved DOI.
 
-.. Should we switch to Citation File Format?  It appears to be better
-   supported by Zenodo.
+  .. todo::
+
+     Should we switch to Citation File Format? It appears to be better
+     supported by Zenodo.
 
 * Open a pull request to update and alphabetize the author list in
-  :file:`docs/about/credits.rst`. Add ORCID_ identifiers, if needed.
+  :file:`docs/about/credits.rst`. Missing ORCID_ identifiers may be
+  added.
 
 * Open a pull request to update :file:`codemeta.json`. Update the author
   list, version, and other metadata, as needed. Update the
@@ -75,7 +77,7 @@ Pre-release
 
   .. todo::
 
-     Add a Python script to update `.mailmap`.
+     Add a Python script here to update `.mailmap`.
 
 .. Use ``git shortlog -nse | cut -f 2 | vim -c "sort" -c "vsplit .mailmap" -c
    "windo diffthis"`` to compare the old and new :file:`.mailmap` version. Make sure
@@ -92,11 +94,11 @@ Pre-release
   .. tip::
 
      Use ``linkcheck_allowed_redirects`` in :file:`docs/conf.py` to
-     specify allowed redirects. For example, DOI links are more
-     persistent than most hyperlinks, but are always redirects.
+     specify allowed redirects. For example, DOI links are always
+     redirects, but are significantly more persistent than hyperlinks.
 
 * Create a pull request to revise changelog entries to make sure that
-  they are understandable and correctly categorized.
+  they are categorized correctly, understandable, and necessary.
 
   .. tip::
 
@@ -376,6 +378,8 @@ patch releases.
 Exceptions to these guidelines should only be made when there are major
 improvements or fixes to upstream functionality or when other required
 packages have stricter requirements.
+
+.. |exclude bugfix| replace:: *Skip this step for bugfix releases.*
 
 .. _Actions: https://github.com/PlasmaPy/PlasmaPy/actions
 .. _API token for PyPI: https://pypi.org/help/#apitoken
