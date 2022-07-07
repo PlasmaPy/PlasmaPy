@@ -2,4 +2,4 @@
 -r ../requirements/install.txt
 -r ../requirements/extras.txt
 jupytext
-plasmapy == 0.8
+plasmapy >=0.8, <0.9
