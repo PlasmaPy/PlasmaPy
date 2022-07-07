@@ -33,7 +33,6 @@ from plasmapy.particles.exceptions import (
     ParticleWarning,
 )
 from plasmapy.particles.symbols import atomic_symbol, element_name, isotope_symbol
-from plasmapy.utils.exceptions import PlasmaPyFutureWarning
 from plasmapy.utils.pytest_helpers import run_test
 
 # function to be tested, argument(s), expected result/outcome

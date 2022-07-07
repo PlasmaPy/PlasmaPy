@@ -7,6 +7,7 @@ from astropy import units as u
 from plasmapy.particles import IonizationState, IonizationStateCollection
 from plasmapy.particles.atomic import (
     atomic_number,
+    charge_number,
     common_isotopes,
     electric_charge,
     half_life,
@@ -849,7 +850,7 @@ tests_from_atomic = [
         pytest.raises(InvalidParticleError),
     ],
     [
-        charge_number,
+        integer_charge,
         [
             "fe 1+",
         ],
@@ -857,7 +858,7 @@ tests_from_atomic = [
         pytest.raises(InvalidParticleError),
     ],
     [
-        charge_number,
+        integer_charge,
         [
             "d+",
         ],
@@ -865,7 +866,7 @@ tests_from_atomic = [
         pytest.raises(InvalidParticleError),
     ],
     [
-        charge_number,
+        integer_charge,
         [
             "Fe 29+",
         ],
@@ -873,7 +874,7 @@ tests_from_atomic = [
         pytest.raises(InvalidParticleError),
     ],
     [
-        charge_number,
+        integer_charge,
         [
             "H-1",
         ],
@@ -881,7 +882,7 @@ tests_from_atomic = [
         pytest.raises(ChargeError),
     ],
     [
-        charge_number,
+        integer_charge,
         [
             "H---",
         ],
@@ -889,7 +890,7 @@ tests_from_atomic = [
         pytest.warns(PlasmaPyFutureWarning),
     ],
     [
-        charge_number,
+        integer_charge,
         [
             "Fe -26",
         ],
@@ -897,7 +898,7 @@ tests_from_atomic = [
         pytest.warns(PlasmaPyFutureWarning),
     ],
     [
-        charge_number,
+        integer_charge,
         [
             "Og 10-",
         ],
