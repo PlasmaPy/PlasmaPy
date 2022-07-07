@@ -67,10 +67,10 @@ Example highlights
    :maxdepth: 1
    :caption: All the Rest
 
+   whatsnew/index
    about/credits
    bibliography
    glossary
-   whatsnew/index
    Vision Statement <about/vision_statement>
    PlasmaPy.org <https://www.plasmapy.org>
 
