@@ -39,6 +39,7 @@ package = "plasmapy"
 name = "PlasmaPy"
 filename = "CHANGELOG.rst"
 directory = "changelog/"
+title_format = "{name} v{version} ({project_date})"
 issue_format = ":issue:`{issue}`"
 wrap = true
 
