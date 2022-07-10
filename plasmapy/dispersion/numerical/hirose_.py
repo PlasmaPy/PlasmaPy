@@ -30,7 +30,7 @@ def hirose(
     B: u.T,
     ion: Union[str, Particle],
     k: u.rad / u.m,
-    n_i: u.m ** -3,
+    n_i: u.m**-3,
     T_e: u.K,
     theta: u.rad,
     gamma_e: Union[float, int] = 1,
@@ -271,16 +271,16 @@ def hirose(
     kz = np.cos(thetav) * kv
 
     # Define helpful parameters
-    A = (kz * v_A) ** 2
-    B = (kv * c_s) ** 2
-    C = (kv * v_A) ** 2
-    D = ((kv * c_si_unitless) / omega_pi) ** 2
+    A = (kz * v_A)**2
+    B = (kv * c_s)**2
+    C = (kv * v_A)**2
+    D = ((kv * c_si_unitless) / omega_pi)**2
 
     # Polynomial coefficients: c3*x^6 + c2*x^4 + c1*x^2 + c0
-    c3 = A ** 0
+    c3 = A**0
     c2 = -A * (1 + D) - B - C
     c1 = A * (2 * B + C + B * D)
-    c0 = -B * A ** 2
+    c0 = -B * A**2
 
     # Find roots of polynomial
     coefficients = np.array([c3, c2, c1, c0], ndmin=3)
