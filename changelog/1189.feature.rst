@@ -1,3 +1,0 @@
-Added the :file:`hollweg_.py` module to the `~plasmapy.dispersion.numerical`
-subpackage to numerically solve the dispersion relation using Hollweg's method
-:cite:p:`hollweg:1999,bellan:2012`.

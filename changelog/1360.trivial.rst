@@ -1,4 +1,0 @@
-Added a helper function that takes an iterable and creates a `dict` with
-physical types as keys and the corresponding objects from that iterable
-as values. This change updates the minimum required version of Astropy_
-to 4.3.1.

@@ -1,4 +1,0 @@
-Added `flake8-implicit-str-concat
-<https://github.com/flake8-implicit-str-concat/flake8-implicit-str-concat>`__
-and `flake8-mutable <https://github.com/ebeweber/flake8-mutable>`__
-as extensions for flake8_.
