@@ -271,10 +271,10 @@ def hirose(
     kz = np.cos(thetav) * kv
 
     # Define helpful parameters
-    A = (kz * v_A)**2
-    B = (kv * c_s)**2
-    C = (kv * v_A)**2
-    D = ((kv * c_si_unitless) / omega_pi)**2
+    A = (kz * v_A) ** 2
+    B = (kv * c_s) ** 2
+    C = (kv * v_A) ** 2
+    D = ((kv * c_si_unitless) / omega_pi) ** 2
 
     # Polynomial coefficients: c3*x^6 + c2*x^4 + c1*x^2 + c0
     c3 = A**0
