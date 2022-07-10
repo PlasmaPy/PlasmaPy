@@ -1,5 +1,0 @@
-Re-organized CSS_ files for the online documentation. The file
-:file:`docs/_static/rtd_theme_overrides.css` was re-organized,
-renamed to :file:`docs/_static/css/plasmapy.css`, and updated with
-comments to help someone unfamiliar with CSS_ to understand the file and
-syntax.
