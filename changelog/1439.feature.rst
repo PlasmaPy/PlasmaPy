@@ -1,9 +1,0 @@
-Created `plasmapy.formulary.frequencies` to contain frequency related
-plasma parameters, and migrated
-`~plasmapy.formulary.frequencies.gyrofrequency`,
-`~plasmapy.formulary.frequencies.plasma_frequency`,
-`~plasmapy.formulary.frequencies.plasma_frequency_lite`,
-`~plasmapy.formulary.frequencies.lower_hybrid_frequency`, and
-`~plasmapy.formulary.frequencies.upper_hybrid_frequency` from
-`plasmapy.formulary.parameters` to the new module.  Related aliases were
-also migrated.

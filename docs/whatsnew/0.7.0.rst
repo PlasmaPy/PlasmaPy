@@ -1,4 +1,4 @@
-Plasmapy v0.7.0 (2021-11-18)
+PlasmaPy v0.7.0 (2021-11-18)
 ============================
 
 This release of PlasmaPy contains 127 commits in 73 merged pull requests closing 37 issues from 19 people, 14 of which are first-time contributors to PlasmaPy.
@@ -124,7 +124,7 @@ Features
 - Created the `~plasmapy.particles.ionization_state.IonizationState.to_list`
   method of |IonizationState| to provide a |ParticleList| instance that
   contains the different ionic levels. (`#1154 <https://github.com/plasmapy/plasmapy/pull/1154>`__)
-- The behaviour of the function ``plasmapy.formulary.parameters.gyroradius`` has
+- The behavior of the function ``plasmapy.formulary.parameters.gyroradius`` has
   been changed. If `numpy.nan` values are provided for ``T_i`` or ``Vperp``,
   then instead of raising a slightly misleading error, `numpy.nan` in the
   appropriate units is returned. (`#1187 <https://github.com/plasmapy/plasmapy/pull/1187>`__)

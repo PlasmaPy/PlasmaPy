@@ -1,0 +1,2 @@
+Added :file:`docs/whatsnew/dev.rst` as a stub file for the changelogs
+between releases.

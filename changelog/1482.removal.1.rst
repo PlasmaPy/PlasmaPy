@@ -1,6 +1,0 @@
-The ``[all]`` option when using pip_ to install `plasmapy` is now
-deprecated and may be removed in a future release. Packages that were
-previously optional (|h5py|_, |lmfit|, |mpmath|_, and |numba|_) are now
-installed by default when running ``pip install plasmapy``. To install
-all packages required for code development of PlasmaPy, instead run
-``pip install plasmapy[developer]``.

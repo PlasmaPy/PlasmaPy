@@ -1,5 +1,5 @@
-Version 0.1.0
-=============
+PlasmaPy v0.1.0 (2018-04-29)
+============================
 
 Version 0.1.0 is the initial development release of PlasmaPy.  This
 version is a prototype and a preview, and is not feature complete.
@@ -9,7 +9,7 @@ Significant changes to the API are expected to occur between versions
 .. _change-log-0.1.0-new:
 
 New Features
-============
+------------
 
 * Composed :ref:`plasmapy-vision-statement`.
 
