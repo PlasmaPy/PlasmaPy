@@ -21,19 +21,23 @@ directory = '/Users/aminaahmed/Documents/Project_Plasma/'
 datafilename = '6202022_PracticeShots_9total_5or6areDecent.h5'
 data = load_hdf5(directory + datafilename ,verbose=True)
 
+
+#bdot_field function 
 test = Magnetics()
 Bdot = data['pos19']['Bdot']['theta'][1,:]
 tloop = 1.6129508E-6
 times = data['time']['time_s'][0,:]
 
-result = test.bdot_field(Bdot, tloop, times)
+result = test.bdot_field(Bdot, tloop, times, "Tesla")
 
 #plots
 timeB_s = data['time']['timeB_s'][0,:]
 comp = data['pos19']['B']['theta'][1,:]
+
 plt.plot(timeB_s, comp)
 plt.title('Magnetic Field of Shot')
 plt.show()
+
 plt.plot(timeB_s, result)
 plt.title("Magnetic field calculated")
 plt.show()

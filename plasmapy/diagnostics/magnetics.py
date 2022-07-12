@@ -12,7 +12,7 @@ import scipy.io as spio
 import matplotlib.pylab as plt
 import numpy as np
 import scipy.integrate as sp
-
+import astropy.units as u
 # class for magnetics
 class Magnetics:
     """
@@ -22,11 +22,19 @@ class Magnetics:
     def __init__(self):
         print("Class created")
 
-    def bdot_field(self, bdot, tloop_area, time_s):
+    def bdot_field(self, bdot, tloop_area, time_s, unit_flag = "Gauss"):
         """
         Function to Compute Magnetic Field for Bdots
-        @param Bdot: array, tloop_area: float, times_s: array
-        @return
+        @param Bdot: array - volts  
+               tloop_area: float - meters squared 
+               times_s: array - seconds 
+               
+        @return magnet field of bdot in gaus 
         """
         bdot[:] = [x / tloop_area for x in bdot]
-        return sp.cumtrapz(bdot , time_s)*1e4  # Gauss 
+        field_arr = sp.cumtrapz(bdot , time_s) #Tesla
+        
+        if unit_flag.lower() == "tesla":
+            return np.array(field_arr) * u.tesla
+        else:
+            return np.array(field_arr*1e4) * u.gauss  # Gauss  
