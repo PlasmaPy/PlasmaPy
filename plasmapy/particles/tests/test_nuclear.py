@@ -4,85 +4,12 @@ import pytest
 from astropy import constants as const
 from astropy import units as u
 
-from plasmapy.particles.exceptions import AtomicError, InvalidParticleError
+from plasmapy.particles.nuclear import (
+    mass_energy,
+    nuclear_binding_energy,
+    nuclear_reaction_energy,
+)
 from plasmapy.utils.pytest_helpers import run_test, run_test_equivalent_calls
-
-from ..nuclear import mass_energy, nuclear_binding_energy, nuclear_reaction_energy
-
-test_nuclear_table = [
-    [nuclear_binding_energy, "p", {}, 0 * u.J],
-    [nuclear_binding_energy, "n", {}, 0 * u.J],
-    [nuclear_binding_energy, "p", {}, 0 * u.J],
-    [nuclear_binding_energy, "H", {}, AtomicError],
-    [nuclear_binding_energy, "He-99", {}, InvalidParticleError],
-    [nuclear_binding_energy, "He", {"mass_numb": 99}, InvalidParticleError],
-    [nuclear_binding_energy, 3.1415926535j, {}, TypeError],
-    [mass_energy, "e-", {}, (const.m_e * const.c ** 2).to(u.J)],
-    [mass_energy, "p+", {}, (const.m_p * const.c ** 2).to(u.J)],
-    [mass_energy, "H-1", {}, (const.m_p * const.c ** 2).to(u.J)],
-    [mass_energy, "H-1 0+", {}, (const.m_p * const.c ** 2).to(u.J)],
-    [mass_energy, "n", {}, (const.m_n * const.c ** 2).to(u.J)],
-    [nuclear_reaction_energy, (), {"reactants": ["n"], "products": 3}, TypeError],
-    [
-        nuclear_reaction_energy,
-        (),
-        {"reactants": ["n"], "products": ["He-4"]},
-        AtomicError,
-    ],
-    [
-        nuclear_reaction_energy,
-        (),
-        {"reactants": ["h"], "products": ["H-1"]},
-        AtomicError,
-    ],
-    [
-        nuclear_reaction_energy,
-        (),
-        {"reactants": ["e-", "n"], "products": ["p+"]},
-        AtomicError,
-    ],
-    [
-        nuclear_reaction_energy,
-        (),
-        {"reactants": ["e+", "n"], "products": ["p-"]},
-        AtomicError,
-    ],
-    [
-        nuclear_reaction_energy,
-        (),
-        {"reactants": ["ksdf"], "products": ["H-3"]},
-        AtomicError,
-    ],
-    [
-        nuclear_reaction_energy,
-        (),
-        {"reactants": ["H"], "products": ["H-1"]},
-        AtomicError,
-    ],
-    [
-        nuclear_reaction_energy,
-        (),
-        {"reactants": ["p"], "products": ["n", "n", "e-"]},
-        AtomicError,
-    ],
-    [nuclear_reaction_energy, "H + H --> H", {}, AtomicError],
-    [nuclear_reaction_energy, "H + H", {}, AtomicError],
-    [nuclear_reaction_energy, 1, {}, TypeError],
-    [nuclear_reaction_energy, "H-1 + H-1 --> H-1", {}, AtomicError],
-    [nuclear_reaction_energy, "p --> n", {}, AtomicError],
-    [
-        nuclear_reaction_energy,
-        "p --> p",
-        {"reactants": "p", "products": "p"},
-        AtomicError,
-    ],
-]
-
-
-@pytest.mark.parametrize("test_inputs", test_nuclear_table)
-def test_nuclear(test_inputs):
-    run_test(*test_inputs, rtol=1e-3)
-
 
 test_nuclear_equivalent_calls_table = [
     [nuclear_binding_energy, ["He-4", {}], ["alpha", {}], ["He", {"mass_numb": 4}]]
@@ -167,3 +94,30 @@ def test_nuclear_reaction_energy_kwargs(reactants, products, expectedMeV, tol):
     energy = nuclear_reaction_energy(reactants=reactants, products=products).si
     expected = (expectedMeV * u.MeV).si
     assert np.isclose(expected.value, energy.value, atol=tol)
+
+
+def test_nuclear_reaction_energy():
+    reactants = ["D", "T"]
+    products = ["alpha", "n"]
+    expected = 17.6 * u.MeV
+    actual = nuclear_reaction_energy(reactants=reactants, products=products)
+    assert u.isclose(actual, expected, rtol=1e-3)
+
+
+table_of_nuclear_tests = [
+    [nuclear_binding_energy, ["p"], {}, 0 * u.J],
+    [nuclear_binding_energy, ["n"], {}, 0 * u.J],
+    [nuclear_binding_energy, ["p"], {}, 0 * u.J],
+    [mass_energy, ["e-"], {}, (const.m_e * const.c**2).to(u.J)],
+    [mass_energy, ["p+"], {}, (const.m_p * const.c**2).to(u.J)],
+    [mass_energy, ["H-1"], {}, (const.m_p * const.c**2).to(u.J)],
+    [mass_energy, ["H-1 0+"], {}, (const.m_p * const.c**2).to(u.J)],
+    [mass_energy, ["n"], {}, (const.m_n * const.c**2).to(u.J)],
+]
+
+
+@pytest.mark.parametrize(
+    ["tested_object", "args", "kwargs", "expected_value"], table_of_nuclear_tests
+)
+def test_nuclear_table(tested_object, args, kwargs, expected_value):
+    run_test(tested_object, args, kwargs, expected_value, rtol=1e-3)

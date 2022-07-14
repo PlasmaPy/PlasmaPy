@@ -24,12 +24,15 @@ class Plasma3D(GenericPlasma):
     domain_x : `~astropy.units.Quantity`
         1D array of x-coordinates for the plasma domain. Must have
         units convertible to length.
+
     domain_y : `~astropy.units.Quantity`
         1D array of y-coordinates for the plasma domain. Must have
         units convertible to length.
+
     domain_z : `~astropy.units.Quantity`
         1D array of z-coordinates for the plasma domain. Must have
         units convertible to length.
+
     **kwargs:
         Any keyword accepted by `~plasmapy.plasma.plasma_base.GenericPlasma`
     """
@@ -47,8 +50,8 @@ class Plasma3D(GenericPlasma):
         self._domain_shape = (len(self._x), len(self._y), len(self._z))
 
         # Initiate core plasma variables
-        self._density = np.zeros(self.domain_shape) * u.kg / u.m ** 3
-        self._momentum = np.zeros((3, *self.domain_shape)) * u.kg / (u.m ** 2 * u.s)
+        self._density = np.zeros(self.domain_shape) * u.kg / u.m**3
+        self._momentum = np.zeros((3, *self.domain_shape)) * u.kg / (u.m**2 * u.s)
         self._pressure = np.zeros(self.domain_shape) * u.Pa
         self._magnetic_field = np.zeros((3, *self.domain_shape)) * u.T
         self._electric_field = np.zeros((3, *self.domain_shape)) * u.V / u.m
@@ -57,7 +60,7 @@ class Plasma3D(GenericPlasma):
     def x(self):
         """
         (`~astropy.units.Quantity`) x-coordinates within the plasma domain. Equal to
-        the `domain_x` input parameter.
+        the ``domain_x`` input parameter.
         """
         return self._x
 
@@ -65,7 +68,7 @@ class Plasma3D(GenericPlasma):
     def y(self):
         """
         (`~astropy.units.Quantity`) y-coordinates within the plasma domain. Equal
-        to the `domain_y` input parameter.
+        to the ``domain_y`` input parameter.
         """
         return self._y
 
@@ -73,7 +76,7 @@ class Plasma3D(GenericPlasma):
     def z(self):
         """
         (`~astropy.units.Quantity`) z-coordinates within the plasma domain. Equal
-        to the `domain_z` input parameter.
+        to the ``domain_z`` input parameter.
         """
         return self._z
 
@@ -174,11 +177,11 @@ class Plasma3D(GenericPlasma):
 
     @classmethod
     def is_datasource_for(cls, **kwargs):
-        if len(kwargs) == 3:
-            match = all(f"domain_{direction}" in kwargs.keys() for direction in "xyz")
-        else:
-            match = False
-        return match
+        return (
+            all(f"domain_{direction}" in kwargs for direction in "xyz")
+            if len(kwargs) == 3
+            else False
+        )
 
     def add_magnetostatic(self, *mstats: MagnetoStatics):
         # for each MagnetoStatic argument

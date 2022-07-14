@@ -1,5 +1,5 @@
 """
-Common distribution functions for plasmas, such as the Maxwelian or
+Common distribution functions for plasmas, such as the Maxwellian or
 Kappa distributions. Functionality is intended to include generation,
 fitting and calculation.
 """
@@ -14,21 +14,24 @@ __all__ = [
     "kappa_velocity_3D",
 ]
 
-import astropy as astropy
+import astropy.units as u
 import numpy as np
 
-from astropy import units as u
 from scipy.special import gamma
 
-from plasmapy.formulary import parameters
+from plasmapy.formulary.speeds import kappa_thermal_speed, thermal_speed
+from plasmapy.utils._units_definitions import (
+    SPEED_DISTRIBUTION_UNITS_1D,
+    SPEED_DISTRIBUTION_UNITS_2D,
+    SPEED_DISTRIBUTION_UNITS_3D,
+    SPEED_UNITS,
+)
 
 
-def _v_drift_units(v_drift):
-    # Helper method to assign units to  v_drift if it takes a default value
-    if v_drift == 0 and not isinstance(v_drift, astropy.units.quantity.Quantity):
-        v_drift = v_drift * u.m / u.s
-    else:
-        v_drift = v_drift.to(u.m / u.s)
+def _v_drift_conversion(v_drift):
+    # Helper method to assign equivalent value in SPEED_UNITS and/or remove units
+    if isinstance(v_drift, u.Quantity):
+        v_drift = v_drift.to_value(SPEED_UNITS)
     return v_drift
 
 
@@ -37,32 +40,32 @@ def Maxwellian_1D(v, T, particle="e", v_drift=0, vTh=np.nan, units="units"):
     Probability distribution function of velocity for a Maxwellian
     distribution in 1D.
 
-    Returns the probability density function at the velocity `v` in m/s
-    to find a particle `particle` in a plasma of temperature `T`
+    Returns the probability density function at the velocity ``v`` in m/s
+    to find a particle ``particle`` in a plasma of temperature ``T``
     following the Maxwellian distribution function.
 
     Parameters
     ----------
-    v: ~astropy.units.Quantity
+    v : `~astropy.units.Quantity`
         The velocity in units convertible to m/s.
 
-    T: ~astropy.units.Quantity
-        The temperature in Kelvin.
+    T : `~astropy.units.Quantity`
+        The temperature in kelvin.
 
-    particle: str, optional
+    particle : `str`, optional
         Representation of the particle species(e.g., ``'p'`` for protons,
-        ``'D+'`` for deuterium, or ``'He-4 +1'`` for :math:`He_4^{+1}`
-        (singly ionized helium-4)), which defaults to electrons.
+        ``'D+'`` for deuterium, or ``'He-4 +1'`` for singly ionized
+        helium-4), which defaults to electrons.
 
-    v_drift: ~astropy.units.Quantity, optional
+    v_drift : `~astropy.units.Quantity`, optional
         The drift velocity in units convertible to m/s.
 
-    vTh: ~astropy.units.Quantity, optional
+    vTh : `~astropy.units.Quantity`, optional
         Thermal velocity (most probable velocity) in m/s. This is used for
-        optimization purposes to avoid re-calculating vTh, for example
+        optimization purposes to avoid re-calculating ``vTh``, for example
         when integrating over velocity-space.
 
-    units: str, optional
+    units : `str`, optional
         Selects whether to run function with units and unit checks (when
         equal to "units") or to run as unitless (when equal to "unitless").
         The unitless version is substantially faster for intensive
@@ -70,20 +73,20 @@ def Maxwellian_1D(v, T, particle="e", v_drift=0, vTh=np.nan, units="units"):
 
     Returns
     -------
-    f : ~astropy.units.Quantity
-        Probability density in units of Velocity^-1, normalized so that
-        :math:`\int_{-\infty}^{+\infty} f(v) dv = 1`.
+    f : `~astropy.units.Quantity`
+        Probability density in units of velocity\ :sup:`-1`\ , normalized so that
+        :math:`\int_{-∞}^{+∞} f(v) dv = 1`.
 
     Raises
     ------
-    TypeError
+    `TypeError`
         The parameter arguments are not Quantities and
         cannot be converted into Quantities.
 
-    ~astropy.units.UnitConversionError
+    `~astropy.units.UnitConversionError`
         If the parameters are not in appropriate units.
 
-    ValueError
+    `ValueError`
         If the temperature is negative, or the particle mass or charge state
         cannot be found.
 
@@ -110,25 +113,23 @@ def Maxwellian_1D(v, T, particle="e", v_drift=0, vTh=np.nan, units="units"):
     if units == "units":
         # unit checks and conversions
         # checking velocity units
-        v = v.to(u.m / u.s)
-        # Catching case where drift velocities have default values, they
-        # need to be assigned units
-        v_drift = _v_drift_units(v_drift)
-        # convert temperature to Kelvins
-        T = T.to(u.K, equivalencies=u.temperature_energy())
-        if np.isnan(vTh):
-            # get thermal velocity and thermal velocity squared
-            vTh = parameters.thermal_speed(T, particle=particle, method="most_probable")
-        elif not np.isnan(vTh):
+        v = v.to_value(SPEED_UNITS)
+        # Catching case where drift velocities have default values,
+        v_drift = _v_drift_conversion(v_drift)
+        # convert temperature to kelvin
+        T = T.to_value(u.K, equivalencies=u.temperature_energy())
+        if not np.isnan(vTh):
             # check units of thermal velocity
-            vTh = vTh.to(u.m / u.s)
-    elif np.isnan(vTh) and units == "unitless":
-        # assuming unitless temperature is in Kelvins
-        vTh = (
-            parameters.thermal_speed(T * u.K, particle=particle, method="most_probable")
-        ).si.value
+            vTh = vTh.to_value(SPEED_UNITS)
+
+    if np.isnan(vTh):
+        # get thermal speed
+        vTh = thermal_speed(
+            T << u.K, particle=particle, method="most_probable"
+        ).to_value(SPEED_UNITS)
+
     # Get thermal velocity squared
-    vThSq = vTh ** 2
+    vThSq = vTh**2
     # Get square of relative particle velocity
     vSq = (v - v_drift) ** 2
     # calculating distribution function
@@ -136,7 +137,7 @@ def Maxwellian_1D(v, T, particle="e", v_drift=0, vTh=np.nan, units="units"):
     expTerm = np.exp(-vSq / vThSq)
     distFunc = coeff * expTerm
     if units == "units":
-        return distFunc.to(u.s / u.m)
+        return distFunc << SPEED_DISTRIBUTION_UNITS_1D
     elif units == "unitless":
         return distFunc
 
@@ -149,38 +150,38 @@ def Maxwellian_velocity_2D(
     distribution in 2D.
 
     Return the probability density function for finding a particle with
-    velocity components `vx` and `vy` in m/s in an equilibrium plasma of
-    temperature `T` which follows the 2D Maxwellian distribution function.
+    velocity components ``vx`` and ``vy`` in m/s in an equilibrium plasma of
+    temperature ``T`` which follows the 2D Maxwellian distribution function.
     This function assumes Cartesian coordinates.
 
     Parameters
     ----------
-    vx: ~astropy.units.Quantity
+    vx : `~astropy.units.Quantity`
         The velocity in x-direction units convertible to m/s.
 
-    vy: ~astropy.units.Quantity
+    vy : `~astropy.units.Quantity`
         The velocity in y-direction units convertible to m/s.
 
-    T: ~astropy.units.Quantity
-        The temperature, preferably in Kelvin.
+    T : `~astropy.units.Quantity`
+        The temperature, preferably in kelvin.
 
-    particle: str, optional
-        Representation of the particle species (e.g., ``'p'`` for protons,
+    particle : `str`, optional
+        Representation of the particle species [e.g., ``'p'`` for protons,
         ``'D+'`` for deuterium, or ``'He-4 +1'`` for :math:`He_4^{+1}`
-        (singly ionized helium-4)), which defaults to electrons.
+        (singly ionized helium-4)], which defaults to electrons.
 
-    vx_drift: ~astropy.units.Quantity, optional
-        The drift velocity in x-direction units convertible to m/s.
+    vx_drift : `~astropy.units.Quantity`, optional
+        The drift velocity in x-direction in units convertible to m/s.
 
-    vy_drift: ~astropy.units.Quantity, optional
-        The drift velocity in y-direction units convertible to m/s.
+    vy_drift : `~astropy.units.Quantity`, optional
+        The drift velocity in y-direction in units convertible to m/s.
 
-    vTh: ~astropy.units.Quantity, optional
+    vTh : `~astropy.units.Quantity`, optional
         Thermal velocity (most probable) in m/s. This is used for
-        optimization purposes to avoid re-calculating `vTh`, for example
+        optimization purposes to avoid re-calculating ``vTh``, for example
         when integrating over velocity-space.
 
-    units: str, optional
+    units : `str`, optional
         Selects whether to run function with units and unit checks (when
         equal to "units") or to run as unitless (when equal to "unitless").
         The unitless version is substantially faster for intensive
@@ -188,9 +189,9 @@ def Maxwellian_velocity_2D(
 
     Returns
     -------
-    f : ~astropy.units.Quantity
-        Probability density in Velocity^-1, normalized so that
-        :math:`\iiint_{0}^{\infty} f(\vec{v}) d\vec{v} = 1`.
+    f : `~astropy.units.Quantity`
+        Probability density in Velocity\ :sup:`-1`\ , normalized so that
+        :math:`\iiint_{0}^∞ f(\vec{v}) d\vec{v} = 1`.
 
     Raises
     ------
@@ -218,12 +219,12 @@ def Maxwellian_velocity_2D(
 
     where :math:`v_{Th} = \sqrt{2 k_B T / m}` is the thermal speed.
 
-    See also
+    See Also
     --------
     Maxwellian_1D
 
-    Example
-    -------
+    Examples
+    --------
     >>> from astropy import units as u
     >>> v=1 * u.m / u.s
     >>> Maxwellian_velocity_2D(vx=v,
@@ -239,27 +240,27 @@ def Maxwellian_velocity_2D(
     if units == "units":
         # unit checks and conversions
         # checking velocity units
-        vx = vx.to(u.m / u.s)
-        vy = vy.to(u.m / u.s)
+        vx = vx.to_value(SPEED_UNITS)
+        vy = vy.to_value(SPEED_UNITS)
         # catching case where drift velocities have default values, they
         # need to be assigned units
-        vx_drift = _v_drift_units(vx_drift)
-        vy_drift = _v_drift_units(vy_drift)
-        # convert temperature to Kelvins
-        T = T.to(u.K, equivalencies=u.temperature_energy())
-        if np.isnan(vTh):
-            # get thermal velocity and thermal velocity squared
-            vTh = parameters.thermal_speed(T, particle=particle, method="most_probable")
-        elif not np.isnan(vTh):
+        vx_drift = _v_drift_conversion(vx_drift)
+        vy_drift = _v_drift_conversion(vy_drift)
+
+        # convert temperature to kelvin
+        T = T.to_value(u.K, equivalencies=u.temperature_energy())
+        if not np.isnan(vTh):
             # check units of thermal velocity
-            vTh = vTh.to(u.m / u.s)
-    elif np.isnan(vTh) and units == "unitless":
-        # assuming unitless temperature is in Kelvins
-        vTh = parameters.thermal_speed(
-            T * u.K, particle=particle, method="most_probable"
-        ).si.value
+            vTh = vTh.to_value(SPEED_UNITS)
+
+    if np.isnan(vTh):
+        # get thermal speed
+        vTh = thermal_speed(
+            T << u.K, particle=particle, method="most_probable"
+        ).to_value(SPEED_UNITS)
+
     # accounting for thermal velocity in 2D
-    vThSq = vTh ** 2
+    vThSq = vTh**2
     # Get square of relative particle velocity
     vSq = (vx - vx_drift) ** 2 + (vy - vy_drift) ** 2
     # calculating distribution function
@@ -267,7 +268,7 @@ def Maxwellian_velocity_2D(
     expTerm = np.exp(-vSq / vThSq)
     distFunc = coeff * expTerm
     if units == "units":
-        return distFunc.to((u.s / u.m) ** 2)
+        return distFunc << SPEED_DISTRIBUTION_UNITS_2D
     elif units == "unitless":
         return distFunc
 
@@ -289,44 +290,44 @@ def Maxwellian_velocity_3D(
     distribution in 3D.
 
     Return the probability density function for finding a particle with
-    velocity components `vx`, `vy`, and `vz` in m/s in an equilibrium
-    plasma of temperature `T` which follows the 3D Maxwellian distribution
+    velocity components ``vx``, ``vy``, and ``vz`` in m/s in an equilibrium
+    plasma of temperature ``T`` which follows the 3D Maxwellian distribution
     function. This function assumes Cartesian coordinates.
 
     Parameters
     ----------
-    vx: ~astropy.units.Quantity
-        The velocity in x-direction units convertible to m/s.
+    vx : `~astropy.units.Quantity`
+        The velocity in x-direction in units convertible to m/s.
 
-    vy: ~astropy.units.Quantity
+    vy : `~astropy.units.Quantity`
         The velocity in y-direction units convertible to m/s.
 
-    vz: ~astropy.units.Quantity
+    vz : `~astropy.units.Quantity`
         The velocity in z-direction units convertible to m/s.
 
-    T: ~astropy.units.Quantity
-        The temperature, preferably in Kelvin.
+    T : `~astropy.units.Quantity`
+        The temperature, preferably in kelvin.
 
-    particle: str, optional
+    particle : `str`, optional
         Representation of the particle species (e.g., ``'p'`` for protons,
-        ``'D+'`` for deuterium, or ``'He-4 +1'`` for :math:`He_4^{+1}`
-        (singly ionized helium-4)), which defaults to electrons.
+        ``'D+'`` for deuterium, or ``'He-4 +1'`` for
+        singly ionized helium-4), which defaults to electrons.
 
-    vx_drift: ~astropy.units.Quantity, optional
+    vx_drift : `~astropy.units.Quantity`, optional
         The drift velocity in x-direction units convertible to m/s.
 
-    vy_drift: ~astropy.units.Quantity, optional
+    vy_drift : `~astropy.units.Quantity`, optional
         The drift velocity in y-direction units convertible to m/s.
 
-    vz_drift: ~astropy.units.Quantity, optional
+    vz_drift : `~astropy.units.Quantity`, optional
         The drift velocity in z-direction units convertible to m/s.
 
-    vTh: ~astropy.units.Quantity, optional
+    vTh : `~astropy.units.Quantity`, optional
         Thermal velocity (most probable) in m/s. This is used for
-        optimization purposes to avoid re-calculating `vTh`, for example
+        optimization purposes to avoid re-calculating ``vTh``, for example
         when integrating over velocity-space.
 
-    units: str, optional
+    units : `str`, optional
         Selects whether to run function with units and unit checks (when
         equal to "units") or to run as unitless (when equal to "unitless").
         The unitless version is substantially faster for intensive
@@ -334,20 +335,20 @@ def Maxwellian_velocity_3D(
 
     Returns
     -------
-    f : ~astropy.units.Quantity
+    f : `~astropy.units.Quantity`
         Probability density in Velocity^-1, normalized so that
-        :math:`\iiint_{0}^{\infty} f(\vec{v}) d\vec{v} = 1`.
+        :math:`\iiint_{0}^∞ f(\vec{v}) d\vec{v} = 1`.
 
     Raises
     ------
-    TypeError
+    `TypeError`
         A parameter argument is not a `~astropy.units.Quantity` and
         cannot be converted into a `~astropy.units.Quantity`.
 
-    ~astropy.units.UnitConversionError
+    `~astropy.units.UnitConversionError`
         If the parameters is not in appropriate units.
 
-    ValueError
+    `ValueError`
         If the temperature is negative, or the particle mass or charge state
         cannot be found.
 
@@ -364,12 +365,12 @@ def Maxwellian_velocity_3D(
 
     where :math:`v_{Th} = \sqrt{2 k_B T / m}` is the thermal speed.
 
-    See also
+    See Also
     --------
     Maxwellian_1D
 
-    Example
-    -------
+    Examples
+    --------
     >>> from astropy import units as u
     >>> v=1 * u.m / u.s
     >>> Maxwellian_velocity_3D(vx=v,
@@ -387,29 +388,28 @@ def Maxwellian_velocity_3D(
     if units == "units":
         # unit checks and conversions
         # checking velocity units
-        vx = vx.to(u.m / u.s)
-        vy = vy.to(u.m / u.s)
-        vz = vz.to(u.m / u.s)
+        vx = vx.to_value(SPEED_UNITS)
+        vy = vy.to_value(SPEED_UNITS)
+        vz = vz.to_value(SPEED_UNITS)
         # catching case where drift velocities have default values, they
         # need to be assigned units
-        vx_drift = _v_drift_units(vx_drift)
-        vy_drift = _v_drift_units(vy_drift)
-        vz_drift = _v_drift_units(vz_drift)
-        # convert temperature to Kelvins
-        T = T.to(u.K, equivalencies=u.temperature_energy())
-        if np.isnan(vTh):
-            # get thermal velocity and thermal velocity squared
-            vTh = parameters.thermal_speed(T, particle=particle, method="most_probable")
-        elif not np.isnan(vTh):
+        vx_drift = _v_drift_conversion(vx_drift)
+        vy_drift = _v_drift_conversion(vy_drift)
+        vz_drift = _v_drift_conversion(vz_drift)
+        # convert temperature to kelvin
+        T = T.to_value(u.K, equivalencies=u.temperature_energy())
+        if not np.isnan(vTh):
             # check units of thermal velocity
-            vTh = vTh.to(u.m / u.s)
-    elif np.isnan(vTh) and units == "unitless":
-        # assuming unitless temperature is in Kelvins
-        vTh = parameters.thermal_speed(
-            T * u.K, particle=particle, method="most_probable"
-        ).si.value
+            vTh = vTh.to_value(SPEED_UNITS)
+
+    if np.isnan(vTh):
+        # get thermal velocity and thermal velocity squared
+        vTh = thermal_speed(
+            T << u.K, particle=particle, method="most_probable"
+        ).to_value(SPEED_UNITS)
+
     # accounting for thermal velocity in 3D
-    vThSq = vTh ** 2
+    vThSq = vTh**2
     # Get square of relative particle velocity
     vSq = (vx - vx_drift) ** 2 + (vy - vy_drift) ** 2 + (vz - vz_drift) ** 2
     # calculating distribution function
@@ -417,7 +417,7 @@ def Maxwellian_velocity_3D(
     expTerm = np.exp(-vSq / vThSq)
     distFunc = coeff * expTerm
     if units == "units":
-        return distFunc.to((u.s / u.m) ** 3)
+        return distFunc << SPEED_DISTRIBUTION_UNITS_3D
     elif units == "unitless":
         return distFunc
 
@@ -428,31 +428,31 @@ def Maxwellian_speed_1D(v, T, particle="e", v_drift=0, vTh=np.nan, units="units"
     in 1D.
 
     Return the probability density function for finding a particle with
-    speed `v` in m/s in an equilibrium plasma of temperature `T` which
+    speed ``v`` in m/s in an equilibrium plasma of temperature ``T`` which
     follows the Maxwellian distribution function.
 
     Parameters
     ----------
-    v: ~astropy.units.Quantity
+    v : `~astropy.units.Quantity`
         The speed in units convertible to m/s.
 
-    T: ~astropy.units.Quantity
-        The temperature, preferably in Kelvin.
+    T : `~astropy.units.Quantity`
+        The temperature, preferably in kelvin.
 
-    particle: str, optional
-        Representation of the particle species(e.g., `'p'` for protons, `'D+'`
-        for deuterium, or `'He-4 +1'` for :math:`He_4^{+1}`
-        (singly ionized helium-4)), which defaults to electrons.
+    particle : `str`, optional
+        Representation of the particle species [e.g., ``'p'`` for protons, ``'D+'``
+        for deuterium, or ``'He-4 +1'`` for :math:`He_4^{+1}`
+        (singly ionized helium-4)], which defaults to electrons.
 
-    v_drift: ~astropy.units.Quantity
+    v_drift : `~astropy.units.Quantity`
         The drift speed in units convertible to m/s.
 
-    vTh: ~astropy.units.Quantity, optional
+    vTh : `~astropy.units.Quantity`, optional
         Thermal velocity (most probable) in m/s. This is used for
-        optimization purposes to avoid re-calculating vTh, for example
+        optimization purposes to avoid re-calculating ``vTh``, for example
         when integrating over velocity-space.
 
-    units: str, optional
+    units : `str`, optional
         Selects whether to run function with units and unit checks (when
         equal to "units") or to run as unitless (when equal to "unitless").
         The unitless version is substantially faster for intensive
@@ -460,37 +460,37 @@ def Maxwellian_speed_1D(v, T, particle="e", v_drift=0, vTh=np.nan, units="units"
 
     Returns
     -------
-    f : ~astropy.units.Quantity
-        Probability density in speed^-1, normalized so that
-        :math:`\int_{0}^{\infty} f(v) dv = 1`.
+    f : `~astropy.units.Quantity`
+        Probability density in speed\ :sup:`-1`\ , normalized so that
+        :math:`\int_{0}^∞ f(v) dv = 1`.
 
     Raises
     ------
-    TypeError
+    `TypeError`
         The parameter arguments are not Quantities and
         cannot be converted into Quantities.
 
-    ~astropy.units.UnitConversionError
+    `~astropy.units.UnitConversionError`
         If the parameters is not in appropriate units.
 
-    ValueError
+    `ValueError`
         If the temperature is negative, or the particle mass or charge state
         cannot be found.
 
     Notes
     -----
     In one dimension, the Maxwellian speed distribution function describing
-    the distribution of particles with speed v in a plasma with temperature T
-    is given by:
+    the distribution of particles with speed :math:`v` in a plasma with
+    temperature :math:`T` is given by:
 
     .. math::
 
-       f(v) = 2 \frac{1}{(\pi v_{Th}^2)^{1/2}} \exp(-(v - V_{drift})^2 / v_{Th}^2 )
+       f(v) = 2 \frac{1}{(π v_{Th}^2)^{1/2}} \exp(-(v - V_{drift})^2 / v_{Th}^2 )
 
     where :math:`v_{Th} = \sqrt{2 k_B T / m}` is the thermal speed.
 
-    Example
-    -------
+    Examples
+    --------
     >>> from astropy import units as u
     >>> v=1 * u.m / u.s
     >>> Maxwellian_speed_1D(v=v, T=30000 * u.K, particle='e', v_drift=0 * u.m / u.s)
@@ -500,25 +500,24 @@ def Maxwellian_speed_1D(v, T, particle="e", v_drift=0, vTh=np.nan, units="units"
     if units == "units":
         # unit checks and conversions
         # checking velocity units
-        v = v.to(u.m / u.s)
+        v = v.to_value(SPEED_UNITS)
         # Catching case where drift velocities have default values, they
         # need to be assigned units
-        v_drift = _v_drift_units(v_drift)
-        # convert temperature to Kelvins
-        T = T.to(u.K, equivalencies=u.temperature_energy())
-        if np.isnan(vTh):
-            # get thermal velocity and thermal velocity squared
-            vTh = parameters.thermal_speed(T, particle=particle, method="most_probable")
-        elif not np.isnan(vTh):
+        v_drift = _v_drift_conversion(v_drift)
+        # convert temperature to kelvin
+        T = T.to_value(u.K, equivalencies=u.temperature_energy())
+        if not np.isnan(vTh):
             # check units of thermal velocity
-            vTh = vTh.to(u.m / u.s)
-    elif np.isnan(vTh) and units == "unitless":
-        # assuming unitless temperature is in Kelvins
-        vTh = (
-            parameters.thermal_speed(T * u.K, particle=particle, method="most_probable")
-        ).si.value
+            vTh = vTh.to_value(SPEED_UNITS)
+
+    if np.isnan(vTh):
+        # get thermal velocity and thermal velocity squared
+        vTh = thermal_speed(
+            T << u.K, particle=particle, method="most_probable"
+        ).to_value(SPEED_UNITS)
+
     # Get thermal velocity squared
-    vThSq = vTh ** 2
+    vThSq = vTh**2
     # Get square of relative particle velocity
     vSq = (v - v_drift) ** 2
     # calculating distribution function
@@ -526,7 +525,7 @@ def Maxwellian_speed_1D(v, T, particle="e", v_drift=0, vTh=np.nan, units="units"
     expTerm = np.exp(-vSq / vThSq)
     distFunc = coeff * expTerm
     if units == "units":
-        return distFunc.to(u.s / u.m)
+        return distFunc << SPEED_DISTRIBUTION_UNITS_1D
     elif units == "unitless":
         return distFunc
 
@@ -537,32 +536,32 @@ def Maxwellian_speed_2D(v, T, particle="e", v_drift=0, vTh=np.nan, units="units"
     in 2D.
 
     Return the probability density function of finding a particle with speed components
-    `vx` and `vy` in m/s in an equilibrium plasma of temperature
-    `T` which follows the 2D Maxwellian distribution function. This
+    ``vx`` and ``vy`` in m/s in an equilibrium plasma of temperature
+    ``T`` which follows the 2D Maxwellian distribution function. This
     function assumes Cartesian coordinates.
 
     Parameters
     ----------
-    v: ~astropy.units.Quantity
+    v: `~astropy.units.Quantity`
         The speed in units convertible to m/s.
 
-    T: ~astropy.units.Quantity
-        The temperature, preferably in Kelvin.
+    T: `~astropy.units.Quantity`
+        The temperature, preferably in kelvin.
 
-    particle: str, optional
-        Representation of the particle species(e.g., `'p'` for protons, `'D+'`
-        for deuterium, or `'He-4 +1'` for :math:`He_4^{+1}`
-        (singly ionized helium-4)), which defaults to electrons.
+    particle: `str`, optional
+        Representation of the particle species(e.g., ``'p'`` for protons, ``'D+'``
+        for deuterium, or ``'He-4 +1'`` for singly ionized helium-4),
+        which defaults to electrons.
 
-    v_drift: ~astropy.units.Quantity
+    v_drift: `~astropy.units.Quantity`
         The drift speed in units convertible to m/s.
 
-    vTh: ~astropy.units.Quantity, optional
+    vTh: `~astropy.units.Quantity`, optional
         Thermal velocity (most probable) in m/s. This is used for
-        optimization purposes to avoid re-calculating vTh, for example
+        optimization purposes to avoid re-calculating ``vTh``, for example
         when integrating over velocity-space.
 
-    units: str, optional
+    units: `str`, optional
         Selects whether to run function with units and unit checks (when
         equal to "units") or to run as unitless (when equal to "unitless").
         The unitless version is substantially faster for intensive
@@ -570,20 +569,20 @@ def Maxwellian_speed_2D(v, T, particle="e", v_drift=0, vTh=np.nan, units="units"
 
     Returns
     -------
-    f : ~astropy.units.Quantity
-        Probability density in speed^-1, normalized so that:
-        :math:`\iiint_{0}^{\infty} f(\vec{v}) d\vec{v} = 1`.
+    f : `~astropy.units.Quantity`
+        Probability density in \ :sup:`-1`\ , normalized so that:
+        :math:`\iiint_{0}^∞ f(\vec{v}) d\vec{v} = 1`.
 
     Raises
     ------
-    TypeError
+    `TypeError`
         A parameter argument is not a `~astropy.units.Quantity` and
         cannot be converted into a `~astropy.units.Quantity`.
 
-    ~astropy.units.UnitConversionError
+    `~astropy.units.UnitConversionError`
         If the parameters is not in appropriate units.
 
-    ValueError
+    `ValueError`
         If the temperature is negative, or the particle mass or charge state
         cannot be found.
 
@@ -595,16 +594,16 @@ def Maxwellian_speed_2D(v, T, particle="e", v_drift=0, vTh=np.nan, units="units"
 
     .. math::
 
-       f = 2 \pi v (\pi v_{Th}^2)^{-1} \exp(-v^2 / v_{Th}^2)
+       f = 2 π v (π v_{Th}^2)^{-1} \exp(-v^2 / v_{Th}^2)
 
     where :math:`v_{Th} = \sqrt{2 k_B T / m}` is the thermal speed.
 
-    See also
+    See Also
     --------
     Maxwellian_speed_1D
 
-    Example
-    -------
+    Examples
+    --------
     >>> from astropy import units as u
     >>> v=1 * u.m / u.s
     >>> Maxwellian_speed_2D(v=v, T=30000 * u.K, particle='e', v_drift=0 * u.m / u.s)
@@ -616,25 +615,24 @@ def Maxwellian_speed_2D(v, T, particle="e", v_drift=0, vTh=np.nan, units="units"
     if units == "units":
         # unit checks and conversions
         # checking velocity units
-        v = v.to(u.m / u.s)
+        v = v.to_value(SPEED_UNITS)
         # Catching case where drift velocity has default value, and
         # needs to be assigned units
-        v_drift = _v_drift_units(v_drift)
-        # convert temperature to Kelvins
-        T = T.to(u.K, equivalencies=u.temperature_energy())
-        if np.isnan(vTh):
-            # get thermal velocity and thermal velocity squared
-            vTh = parameters.thermal_speed(T, particle=particle, method="most_probable")
-        elif not np.isnan(vTh):
+        v_drift = _v_drift_conversion(v_drift)
+        # convert temperature to kelvin
+        T = T.to_value(u.K, equivalencies=u.temperature_energy())
+        if not np.isnan(vTh):
             # check units of thermal velocity
-            vTh = vTh.to(u.m / u.s)
-    elif np.isnan(vTh) and units == "unitless":
-        # assuming unitless temperature is in Kelvins
-        vTh = (
-            parameters.thermal_speed(T * u.K, particle=particle, method="most_probable")
-        ).si.value
+            vTh = vTh.to_value(SPEED_UNITS)
+
+    if np.isnan(vTh):
+        # get thermal velocity and thermal velocity squared
+        vTh = thermal_speed(
+            T << u.K, particle=particle, method="most_probable"
+        ).to_value(SPEED_UNITS)
+
     # getting square of thermal speed
-    vThSq = vTh ** 2
+    vThSq = vTh**2
     # get square of relative particle speed
     vSq = (v - v_drift) ** 2
     # calculating distribution function
@@ -643,7 +641,7 @@ def Maxwellian_speed_2D(v, T, particle="e", v_drift=0, vTh=np.nan, units="units"
     expTerm = np.exp(-vSq / vThSq)
     distFunc = coeff1 * coeff2 * expTerm
     if units == "units":
-        return distFunc.to(u.s / u.m)
+        return distFunc << SPEED_DISTRIBUTION_UNITS_1D
     elif units == "unitless":
         return distFunc
 
@@ -654,32 +652,32 @@ def Maxwellian_speed_3D(v, T, particle="e", v_drift=0, vTh=np.nan, units="units"
     distribution in 3D.
 
     Return the probability density function for finding a particle with
-    speed components `vx`, `vy`, and `vz` in m/s in an equilibrium
-    plasma of temperature `T` which follows the 3D Maxwellian
+    speed components ``vx``, ``vy``, and ``vz`` in m/s in an equilibrium
+    plasma of temperature ``T`` which follows the 3D Maxwellian
     distribution function. This function assumes Cartesian coordinates.
 
     Parameters
     ----------
-    v: ~astropy.units.Quantity
+    v : `~astropy.units.Quantity`
         The speed in units convertible to m/s.
 
-    T: ~astropy.units.Quantity
-        The temperature, preferably in Kelvin.
+    T : `~astropy.units.Quantity`
+        The temperature, preferably in kelvin.
 
-    particle: str, optional
-        Representation of the particle species(e.g., `'p'` for protons, `'D+'`
-        for deuterium, or `'He-4 +1'` for :math:`He_4^{+1}`
+    particle : `str`, optional
+        Representation of the particle species(e.g., ``'p'`` for protons, ``'D+'``
+        for deuterium, or ``'He-4 +1'`` for :math:`He_4^{+1}`
         (singly ionized helium-4)), which defaults to electrons.
 
-    v_drift: ~astropy.units.Quantity
+    v_drift : `~astropy.units.Quantity`
         The drift speed in units convertible to m/s.
 
-    vTh: ~astropy.units.Quantity, optional
+    vTh : `~astropy.units.Quantity`, optional
         Thermal velocity (most probable) in m/s. This is used for
         optimization purposes to avoid re-calculating vTh, for example
         when integrating over velocity-space.
 
-    units: str, optional
+    units : `str`, optional
         Selects whether to run function with units and unit checks (when
         equal to "units") or to run as unitless (when equal to "unitless").
         The unitless version is substantially faster for intensive
@@ -687,20 +685,20 @@ def Maxwellian_speed_3D(v, T, particle="e", v_drift=0, vTh=np.nan, units="units"
 
     Returns
     -------
-    f : ~astropy.units.Quantity
-        Probability density in speed^-1, normalized so that:
-        :math:`\iiint_{0}^{\infty} f(\vec{v}) d\vec{v} = 1`.
+    f : `~astropy.units.Quantity`
+        Probability density in speed\ :sup:`-1`\ , normalized so that:
+        :math:`\iiint_0^∞ f(\vec{v}) d\vec{v} = 1`.
 
     Raises
     ------
-    TypeError
+    `TypeError`
         A parameter argument is not a `~astropy.units.Quantity` and
         cannot be converted into a `~astropy.units.Quantity`.
 
-    ~astropy.units.UnitConversionError
+    `~astropy.units.UnitConversionError`
         If the parameters is not in appropriate units.
 
-    ValueError
+    `ValueError`
         If the temperature is negative, or the particle mass or charge state
         cannot be found.
 
@@ -712,16 +710,16 @@ def Maxwellian_speed_3D(v, T, particle="e", v_drift=0, vTh=np.nan, units="units"
 
     .. math::
 
-       f = 4 \pi v^{2} (\pi v_{Th}^2)^{-3/2} \exp(-v^{2} / v_{Th}^2)
+       f = 4 π v^{2} (π v_{Th}^2)^{-3/2} \exp(-v^{2} / v_{Th}^2)
 
     where :math:`v_{Th} = \sqrt{2 k_B T / m}` is the thermal speed.
 
-    See also
+    See Also
     --------
     Maxwellian_speed_1D
 
-    Example
-    -------
+    Examples
+    --------
     >>> from astropy import units as u
     >>> v=1 * u.m / u.s
     >>> Maxwellian_speed_3D(v=v, T=30000*u.K, particle='e', v_drift=0 * u.m / u.s)
@@ -733,25 +731,24 @@ def Maxwellian_speed_3D(v, T, particle="e", v_drift=0, vTh=np.nan, units="units"
     if units == "units":
         # unit checks and conversions
         # checking velocity units
-        v = v.to(u.m / u.s)
+        v = v.to_value(SPEED_UNITS)
         # Catching case where drift velocity has default value, and
         # needs to be assigned units
-        v_drift = _v_drift_units(v_drift)
-        # convert temperature to Kelvins
-        T = T.to(u.K, equivalencies=u.temperature_energy())
-        if np.isnan(vTh):
-            # get thermal velocity and thermal velocity squared
-            vTh = parameters.thermal_speed(T, particle=particle, method="most_probable")
-        elif not np.isnan(vTh):
+        v_drift = _v_drift_conversion(v_drift)
+        # convert temperature to kelvin
+        T = T.to_value(u.K, equivalencies=u.temperature_energy())
+        if not np.isnan(vTh):
             # check units of thermal velocity
-            vTh = vTh.to(u.m / u.s)
-    elif np.isnan(vTh) and units == "unitless":
-        # assuming unitless temperature is in Kelvins
-        vTh = (
-            parameters.thermal_speed(T * u.K, particle=particle, method="most_probable")
-        ).si.value
+            vTh = vTh.to_value(SPEED_UNITS)
+
+    if np.isnan(vTh):
+        # get thermal velocity and thermal velocity squared
+        vTh = thermal_speed(
+            T << u.K, particle=particle, method="most_probable"
+        ).to_value(SPEED_UNITS)
+
     # getting square of thermal speed
-    vThSq = vTh ** 2
+    vThSq = vTh**2
     # get square of relative particle speed
     vSq = (v - v_drift) ** 2
     # calculating distribution function
@@ -760,68 +757,68 @@ def Maxwellian_speed_3D(v, T, particle="e", v_drift=0, vTh=np.nan, units="units"
     expTerm = np.exp(-vSq / vThSq)
     distFunc = coeff1 * coeff2 * expTerm
     if units == "units":
-        return distFunc.to(u.s / u.m)
+        return distFunc << SPEED_DISTRIBUTION_UNITS_1D
     elif units == "unitless":
         return distFunc
 
 
 def kappa_velocity_1D(v, T, kappa, particle="e", v_drift=0, vTh=np.nan, units="units"):
     r"""
-    Return the probability density at the velocity `v` in m/s
-    to find a particle `particle` in a plasma of temperature `T`
+    Return the probability density at the velocity ``v`` in m/s
+    to find a particle ``particle`` in a plasma of temperature ``T``
     following the Kappa distribution function in 1D. The slope of the
     tail of the Kappa distribution function is set by 'kappa', which
     must be greater than :math:`1/2`.
 
     Parameters
     ----------
-    v: ~astropy.units.Quantity
+    v : `~astropy.units.Quantity`
         The velocity in units convertible to m/s.
 
-    T: ~astropy.units.Quantity
-        The temperature in Kelvin.
+    T : `~astropy.units.Quantity`
+        The temperature in kelvin.
 
-    kappa: ~astropy.units.Quantity
+    kappa : `~astropy.units.Quantity`
         The kappa parameter is a dimensionless number which sets the slope
         of the energy spectrum of suprathermal particles forming the tail
         of the Kappa velocity distribution function. Kappa must be greater
         than :math:`3/2`.
 
-    particle: str, optional
-        Representation of the particle species(e.g., `'p` for protons, `'D+'`
-        for deuterium, or `'He-4 +1'` for :math:`He_4^{+1}`
+    particle : `str`, optional
+        Representation of the particle species(e.g., ``'p`` for protons, ``'D+'``
+        for deuterium, or ``'He-4 +1'`` for :math:`He_4^{+1}`
         (singly ionized helium-4)), which defaults to electrons.
 
-    v_drift: ~astropy.units.Quantity, optional
+    v_drift : `~astropy.units.Quantity`, optional
         The drift velocity in units convertible to m/s.
 
-    vTh: ~astropy.units.Quantity, optional
+    vTh : `~astropy.units.Quantity`, optional
         Thermal velocity (most probable) in m/s. This is used for
-        optimization purposes to avoid re-calculating `vTh`, for example
+        optimization purposes to avoid re-calculating ``vTh``, for example
         when integrating over velocity-space.
 
-    units: str, optional
+    units : `str`, optional
         Selects whether to run function with units and unit checks (when
-        equal to "units") or to run as unitless (when equal to "unitless").
-        The unitless version is substantially faster for intensive
-        computations.
+        equal to ``"units"``) or to run as unitless (when equal to
+        ``"unitless"``). The unitless version is substantially faster for
+        intensive computations.
 
     Returns
     -------
-    f : ~astropy.units.Quantity
-        Probability density in Velocity^-1, normalized so that
-        :math:`\int_{-\infty}^{+\infty} f(v) dv = 1`.
+    f : `~astropy.units.Quantity`
+        Probability density in velocity\ :sup:`-1`\ , normalized so that
+        :math:`\int_{-∞}^{+∞} f(v) dv = 1`.
 
     Raises
     ------
-    TypeError
+    `TypeError`
         A parameter argument is not a `~astropy.units.Quantity` and
         cannot be converted into a `~astropy.units.Quantity`.
 
-    ~astropy.units.UnitConversionError
+    `~astropy.units.UnitConversionError`
         If the parameters is not in appropriate units.
 
-    ValueError
+    `ValueError`
         If the temperature is negative, or the particle mass or charge state
         cannot be found.
 
@@ -829,21 +826,21 @@ def kappa_velocity_1D(v, T, kappa, particle="e", v_drift=0, vTh=np.nan, units="u
     -----
     In one dimension, the Kappa velocity distribution function describing
     the distribution of particles with speed :math:`v` in a plasma with
-    temperature :math:`T` and suprathermal parameter :math:`\kappa` is
+    temperature :math:`T` and suprathermal parameter :math:`κ` is
     given by:
 
     .. math::
 
-       f = A_\kappa \left(1 + \frac{(\vec{v} -
-       \vec{V_{drift}})^2}{\kappa v_{Th},\kappa^2}\right)^{-\kappa}
+       f = A_κ \left(1 + \frac{(\vec{v} -
+       \vec{V_{drift}})^2}{κ v_{Th},κ^2}\right)^{-κ}
 
-    where :math:`v_{Th},\kappa` is the kappa thermal speed
-    and :math:`A_\kappa = \frac{1}{\sqrt{\pi} \kappa^{3/2} v_{Th},\kappa^2
-    \frac{\Gamma(\kappa + 1)}{\Gamma(\kappa - 1/2)}}`
+    where :math:`v_{Th},κ` is the kappa thermal speed
+    and :math:`A_κ = \frac{1}{\sqrt{π} κ^{3/2} v_{Th},κ^2
+    \frac{Γ(κ + 1)}{Γ(κ - 1/2)}}`
     is the normalization constant.
 
-    As :math:`\kappa` approaches infinity, the kappa distribution function
-    converges to the Maxwellian distribution function.
+    As :math:`κ → ∞`, the kappa distribution function converges to the
+    Maxwellian distribution function.
 
     Examples
     --------
@@ -855,37 +852,32 @@ def kappa_velocity_1D(v, T, kappa, particle="e", v_drift=0, vTh=np.nan, units="u
     See Also
     --------
     kappa_velocity_3D
-    kappa_thermal_speed
+    ~plasmapy.formulary.speeds.kappa_thermal_speed
     """
     # must have kappa > 3/2 for distribution function to be valid
     if kappa <= 3 / 2:
-        raise ValueError(f"Must have kappa > 3/2, instead of {kappa}.")
+        raise ValueError(f"Must have κ > 3/2, instead of {kappa}.")
     if units == "units":
         # unit checks and conversions
         # checking velocity units
-        v = v.to(u.m / u.s)
-        # catching case where drift velocities have default values, they
-        # need to be assigned units
-        if v_drift == 0:
-            if not isinstance(v_drift, astropy.units.quantity.Quantity):
-                v_drift = v_drift * u.m / u.s
-        # checking units of drift velocities
-        v_drift = v_drift.to(u.m / u.s)
-        # convert temperature to Kelvins
-        T = T.to(u.K, equivalencies=u.temperature_energy())
-        if np.isnan(vTh):
-            # get thermal velocity and thermal velocity squared
-            vTh = parameters.kappa_thermal_speed(T, kappa, particle=particle)
-        elif not np.isnan(vTh):
+        v = v.to_value(SPEED_UNITS)
+        # catching case where drift velocities have default values
+        v_drift = _v_drift_conversion(v_drift)
+
+        # convert temperature to kelvin
+        T = T.to_value(u.K, equivalencies=u.temperature_energy())
+        if not np.isnan(vTh):
             # check units of thermal velocity
-            vTh = vTh.to(u.m / u.s)
-    elif np.isnan(vTh) and units == "unitless":
-        # assuming unitless temperature is in Kelvins
-        vTh = (
-            parameters.kappa_thermal_speed(T * u.K, kappa, particle=particle)
-        ).si.value
+            vTh = vTh.to_value(SPEED_UNITS)
+
+    if np.isnan(vTh):
+        # get thermal velocity and thermal velocity squared
+        vTh = kappa_thermal_speed(T << u.K, kappa, particle=particle).to_value(
+            SPEED_UNITS
+        )
+
     # Get thermal velocity squared and accounting for 1D instead of 3D
-    vThSq = vTh ** 2
+    vThSq = vTh**2
     # Get square of relative particle velocity
     vSq = (v - v_drift) ** 2
     # calculating distribution function
@@ -894,7 +886,7 @@ def kappa_velocity_1D(v, T, kappa, particle="e", v_drift=0, vTh=np.nan, units="u
     coeff2 = gamma(kappa + 1) / (gamma(kappa - 1 / 2))
     distFunc = coeff1 * coeff2 * expTerm
     if units == "units":
-        return distFunc.to(u.s / u.m)
+        return distFunc << SPEED_DISTRIBUTION_UNITS_1D
     elif units == "unitless":
         return distFunc
 
@@ -914,51 +906,51 @@ def kappa_velocity_3D(
 ):
     r"""
     Return the probability density function for finding a particle with
-    velocity components `v_x`, `v_y`, and `v_z`in m/s in a suprathermal
-    plasma of temperature `T` and parameter 'kappa' which follows the
+    velocity components ``v_x``, ``v_y``, and ``v_z``in m/s in a suprathermal
+    plasma of temperature ``T`` and parameter ``kappa`` which follows the
     3D Kappa distribution function. This function assumes Cartesian
     coordinates.
 
     Parameters
     ----------
-    vx: ~astropy.units.Quantity
+    vx : `~astropy.units.Quantity`
         The velocity in x-direction units convertible to m/s.
 
-    vy: ~astropy.units.Quantity
+    vy : `~astropy.units.Quantity`
         The velocity in y-direction units convertible to m/s.
 
-    vz: ~astropy.units.Quantity
+    vz : `~astropy.units.Quantity`
         The velocity in z-direction units convertible to m/s.
 
-    T: ~astropy.units.Quantity
-        The temperature, preferably in Kelvin.
+    T : `~astropy.units.Quantity`
+        The temperature, preferably in kelvin.
 
-    kappa: ~astropy.units.Quantity
+    kappa : `~astropy.units.Quantity`
         The kappa parameter is a dimensionless number which sets the slope
         of the energy spectrum of suprathermal particles forming the tail
-        of the Kappa velocity distribution function. Kappa must be greater
+        of the Kappa velocity distribution function. ``kappa`` must be greater
         than :math:`3/2`.
 
-    particle: str, optional
+    particle : `str`, optional
         Representation of the particle species(e.g., 'p' for protons, 'D+'
         for deuterium, or 'He-4 +1' for :math:`He_4^{+1}` : singly ionized
         helium-4)), which defaults to electrons.
 
-    vx_drift: ~astropy.units.Quantity, optional
+    vx_drift : `~astropy.units.Quantity`, optional
         The drift velocity in x-direction units convertible to m/s.
 
-    vy_drift: ~astropy.units.Quantity, optional
+    vy_drift : `~astropy.units.Quantity`, optional
         The drift velocity in y-direction units convertible to m/s.
 
-    vz_drift: ~astropy.units.Quantity, optional
+    vz_drift : `~astropy.units.Quantity`, optional
         The drift velocity in z-direction units convertible to m/s.
 
-    vTh: ~astropy.units.Quantity, optional
+    vTh : `~astropy.units.Quantity`, optional
         Thermal velocity (most probable) in m/s. This is used for
-        optimization purposes to avoid re-calculating `vTh`, for example
+        optimization purposes to avoid re-calculating ``vTh``, for example
         when integrating over velocity-space.
 
-    units: str, optional
+    units : `str`, optional
         Selects whether to run function with units and unit checks (when
         equal to "units") or to run as unitless (when equal to "unitless").
         The unitless version is substantially faster for intensive
@@ -966,20 +958,20 @@ def kappa_velocity_3D(
 
     Returns
     -------
-    f : ~astropy.units.Quantity
-        Probability density in Velocity^-1, normalized so that:
-        :math:`\iiint_{0}^{\infty} f(\vec{v}) d\vec{v} = 1`
+    f : `~astropy.units.Quantity`
+        Probability density in units of inverse velocity, normalized so that:
+        :math:`\iiint_{0}^∞ f(\vec{v}) d\vec{v} = 1`
 
     Raises
     ------
-    TypeError
-        The parameter arguments are not Quantities and
-        cannot be converted into Quantities.
+    `TypeError`
+        If any of the parameters is not a `~astropy.units.Quantity` and
+        cannot be converted into one.
 
-    ~astropy.units.UnitConversionError
+    `~astropy.units.UnitConversionError`
         If the parameters is not in appropriate units.
 
-    ValueError
+    `ValueError`
         If the temperature is negative, or the particle mass or charge state
         cannot be found.
 
@@ -987,28 +979,28 @@ def kappa_velocity_3D(
     -----
     In three dimensions, the Kappa velocity distribution function describing
     the distribution of particles with speed :math:`v` in a plasma with
-    temperature :math:`T` and suprathermal parameter :math:`\kappa` is given by:
+    temperature :math:`T` and suprathermal parameter :math:`κ` is given by:
 
     .. math::
 
-       f = A_\kappa \left(1 + \frac{(\vec{v} -
-       \vec{V_{drift}})^2}{\kappa v_{Th},\kappa^2}\right)^{-(\kappa + 1)}
+       f = A_κ \left(1 + \frac{(\vec{v} -
+       \vec{V_{drift}})^2}{κ v_{Th},κ^2}\right)^{-(κ + 1)}
 
-    where :math:`v_{Th},\kappa` is the kappa thermal speed
-    and :math:`A_\kappa = \frac{1}{2 \pi (\kappa v_{Th},\kappa^2)^{3/2}}
-    \frac{\Gamma(\kappa + 1)}{\Gamma(\kappa - 1/2) \Gamma(3/2)}` is the
+    where :math:`v_{Th},κ` is the kappa thermal speed
+    and :math:`A_κ = \frac{1}{2 π (κ v_{Th},κ^2)^{3/2}}
+    \frac{Γ(κ + 1)}{Γ(κ - 1/2) Γ(3/2)}` is the
     normalization constant.
 
-    As :math:`\kappa` approaches infinity, the kappa distribution function
-    converges to the Maxwellian distribution function.
+    As :math:`κ → ∞`, the kappa distribution function converges to the
+    Maxwellian distribution function.
 
-    See also
+    See Also
     --------
     kappa_velocity_1D
-    kappa_thermal_speed
+    ~plasmapy.formulary.speeds.kappa_thermal_speed
 
-    Example
-    -------
+    Examples
+    --------
     >>> from astropy import units as u
     >>> v=1 * u.m / u.s
     >>> kappa_velocity_3D(vx=v,
@@ -1028,27 +1020,27 @@ def kappa_velocity_3D(
     if units == "units":
         # unit checks and conversions
         # checking velocity units
-        vx = vx.to(u.m / u.s)
-        vy = vy.to(u.m / u.s)
-        vz = vz.to(u.m / u.s)
-        # Catching case where drift velocities have default values, they
-        # need to be assigned units
-        vx_drift = _v_drift_units(vx_drift)
-        vy_drift = _v_drift_units(vy_drift)
-        vz_drift = _v_drift_units(vz_drift)
-        # convert temperature to Kelvins
-        T = T.to(u.K, equivalencies=u.temperature_energy())
-        if np.isnan(vTh):
-            # get thermal velocity and thermal velocity squared
-            vTh = parameters.kappa_thermal_speed(T, kappa, particle=particle)
-        elif not np.isnan(vTh):
+        vx = vx.to_value(SPEED_UNITS)
+        vy = vy.to_value(SPEED_UNITS)
+        vz = vz.to_value(SPEED_UNITS)
+        # Catching case where drift velocities have default values
+        vx_drift = _v_drift_conversion(vx_drift)
+        vy_drift = _v_drift_conversion(vy_drift)
+        vz_drift = _v_drift_conversion(vz_drift)
+        # convert temperature to kelvin
+        T = T.to_value(u.K, equivalencies=u.temperature_energy())
+        if not np.isnan(vTh):
             # check units of thermal velocity
-            vTh = vTh.to(u.m / u.s)
-    elif np.isnan(vTh) and units == "unitless":
-        # assuming unitless temperature is in Kelvins
-        vTh = parameters.kappa_thermal_speed(T * u.K, kappa, particle=particle).si.value
+            vTh = vTh.to_value(SPEED_UNITS)
+
+    if np.isnan(vTh):
+        # get thermal velocity and thermal velocity squared
+        vTh = kappa_thermal_speed(T << u.K, kappa, particle=particle).to_value(
+            SPEED_UNITS
+        )
+
     # getting square of thermal velocity
-    vThSq = vTh ** 2
+    vThSq = vTh**2
     # Get square of relative particle velocity
     vSq = (vx - vx_drift) ** 2 + (vy - vy_drift) ** 2 + (vz - vz_drift) ** 2
     # calculating distribution function
@@ -1057,6 +1049,6 @@ def kappa_velocity_3D(
     coeff2 = gamma(kappa + 1) / (gamma(kappa - 1 / 2) * gamma(3 / 2))
     distFunc = coeff1 * coeff2 * expTerm
     if units == "units":
-        return distFunc.to((u.s / u.m) ** 3)
+        return distFunc << SPEED_DISTRIBUTION_UNITS_3D
     elif units == "unitless":
         return distFunc

@@ -29,7 +29,7 @@ class ValidateQuantities(CheckUnits, CheckValues):
 
     **validations: dictionary of validation specifications
         Specifications for unit and value validations on the input arguments of the
-        function being wrapped.  Each keyword argument in `validations` is the
+        function being wrapped.  Each keyword argument in ``validations`` is the
         name of a function argument to be validated and the keyword value contains
         the unit and value validation specifications.
 
@@ -38,7 +38,7 @@ class ValidateQuantities(CheckUnits, CheckValues):
         Unit and value validations can be defined by passing one of the astropy
         :mod:`~astropy.units`, a list of astropy units, or a dictionary containing
         the keys defined below.  Units can also be defined with function annotations,
-        but must be consistent with decorator `**validations` arguments if used
+        but must be consistent with decorator ``**validations`` arguments if used
         concurrently.  If a key is omitted, then the default value will be assumed.
 
         ====================== ======= ================================================
@@ -57,16 +57,17 @@ class ValidateQuantities(CheckUnits, CheckValues):
         can_be_inf             `bool`  [DEFAULT `True`] values can be :data:`~numpy.inf`
         can_be_nan             `bool`  [DEFAULT `True`] values can be :data:`~numpy.nan`
         none_shall_pass        `bool`  [DEFAULT `False`] values can be a python `None`
+        can_be_zero            `bool`  [DEFAULT `True`] values can be zero
         ====================== ======= ================================================
 
     Notes
     -----
-    * Validation of function arguments `*args` and `**kwargs` is not supported.
+    * Validation of function arguments ``*args`` and ``**kwargs`` is not supported.
     * `None` values will pass when `None` is included in the list of specified units,
-      is set as a default value for the function argument, or `none_shall_pass` is
-      set to `True`.  If `none_shall_pass` is doubly/triply defined through the
+      is set as a default value for the function argument, or ``none_shall_pass`` is
+      set to `True`.  If ``none_shall_pass`` is doubly/triply defined through the
       mentioned options, then they all must be consistent with each other.
-    * If units are not specified in `validations`, then the decorator will attempt
+    * If units are not specified in ``validations``, then the decorator will attempt
       to identify desired units by examining the function annotations.
 
     Examples
@@ -148,9 +149,9 @@ class ValidateQuantities(CheckUnits, CheckValues):
 
         if "checks_on_return" in validations:
             raise TypeError(
-                f"keyword argument 'checks_on_return' is not allowed, "
-                f"use 'validations_on_return' to set validations "
-                f"on the return variable"
+                "keyword argument 'checks_on_return' is not allowed, "
+                "use 'validations_on_return' to set validations "
+                "on the return variable"
             )
 
         self._validations = validations
@@ -164,6 +165,8 @@ class ValidateQuantities(CheckUnits, CheckValues):
 
     def __call__(self, f):
         """
+        Decorate a function.
+
         Parameters
         ----------
         f
@@ -172,7 +175,7 @@ class ValidateQuantities(CheckUnits, CheckValues):
         Returns
         -------
         function
-            wrapped function of `f`
+            wrapped function of ``f``
         """
         self.f = f
         wrapped_sign = inspect.signature(f)
@@ -315,7 +318,7 @@ class ValidateQuantities(CheckUnits, CheckValues):
 
         # initialize str for error message
         if arg_name == "checks_on_return":
-            err_msg = f"The return value  "
+            err_msg = "The return value  "
         else:
             err_msg = f"The argument '{arg_name}' "
         err_msg += f"to function {self.f.__name__}()"
@@ -329,8 +332,8 @@ class ValidateQuantities(CheckUnits, CheckValues):
             typeerror_msg += f"{unit}"
 
             if ii != len(arg_validations["units"]) - 1:
-                typeerror_msg += f", "
-        typeerror_msg += f"]"
+                typeerror_msg += ", "
+        typeerror_msg += "]"
 
         # add units to arg if possible
         # * a None value will be taken care of by `_check_unit_core`
@@ -385,7 +388,7 @@ class ValidateQuantities(CheckUnits, CheckValues):
 
 def validate_quantities(func=None, validations_on_return=None, **validations):
     """
-    A decorator to 'validate' -- control and convert -- the units and values
+    A decorator to 'validate' — control and convert — the units and values
     of input and return arguments to a function or method.  Arguments are expected to
     be astropy :class:`~astropy.units.quantity.Quantity` objects.
 
@@ -401,7 +404,7 @@ def validate_quantities(func=None, validations_on_return=None, **validations):
 
     **validations: dictionary of validation specifications
         Specifications for unit and value validations on the input arguments of the
-        function being wrapped.  Each keyword argument in `validations` is the
+        function being wrapped.  Each keyword argument in ``validations`` is the
         name of a function argument to be validated and the keyword value contains
         the unit and value validation specifications.
 
@@ -410,7 +413,7 @@ def validate_quantities(func=None, validations_on_return=None, **validations):
         Unit and value validations can be defined by passing one of the astropy
         :mod:`~astropy.units`, a list of astropy units, or a dictionary containing
         the keys defined below.  Units can also be defined with function annotations,
-        but must be consistent with decorator `**validations` arguments if used
+        but must be consistent with decorator ``**validations`` arguments if used
         concurrently.  If a key is omitted, then the default value will be assumed.
 
         ====================== ======= ================================================
@@ -429,16 +432,17 @@ def validate_quantities(func=None, validations_on_return=None, **validations):
         can_be_inf             `bool`  [DEFAULT `True`] values can be :data:`~numpy.inf`
         can_be_nan             `bool`  [DEFAULT `True`] values can be :data:`~numpy.nan`
         none_shall_pass        `bool`  [DEFAULT `False`] values can be a python `None`
+        can_be_zero            `bool`  [DEFAULT `True`] values can be zero
         ====================== ======= ================================================
 
     Notes
     -----
-    * Validation of function arguments `*args` and `**kwargs` is not supported.
+    * Validation of function arguments ``*args`` and ``**kwargs`` is not supported.
     * `None` values will pass when `None` is included in the list of specified units,
-      is set as a default value for the function argument, or `none_shall_pass` is
-      set to `True`.  If `none_shall_pass` is doubly/triply defined through the
+      is set as a default value for the function argument, or ``none_shall_pass`` is
+      set to `True`.  If ``none_shall_pass`` is doubly/triply defined through the
       mentioned options, then they all must be consistent with each other.
-    * If units are not specified in `validations`, then the decorator will attempt
+    * If units are not specified in ``validations``, then the decorator will attempt
       to identify desired units by examining the function annotations.
     * Full functionality is defined by the class :class:`ValidateQuantities`.
 

@@ -4,13 +4,11 @@ when possible).
 """
 import inspect
 import pytest
-import warnings
 
 from astropy import units as u
 from typing import Any, Dict, List
 from unittest import mock
 
-from plasmapy.formulary.parameters import Debye_number
 from plasmapy.utils.decorators.checks import CheckUnits, CheckValues
 from plasmapy.utils.decorators.validators import validate_quantities, ValidateQuantities
 
@@ -144,6 +142,25 @@ class TestValidateQuantities:
                     },
                 },
                 "raises": ValueError,
+            },
+            {
+                "descr": "define both validations on args and validations_on_return",
+                "setup": {
+                    "function": self.foo,
+                    "args": (5,),
+                    "kwargs": {},
+                    "validations": {
+                        "x": {"units": [u.cm], "none_shall_pass": False},
+                        "validations_on_return": {
+                            "units": [u.cm],
+                            "can_be_zero": False,
+                        },
+                    },
+                },
+                "output": {
+                    "x": {"units": [u.cm], "none_shall_pass": False},
+                    "validations_on_return": {"units": [u.cm], "can_be_zero": False},
+                },
             },
         ]  # type: List[Dict[str, Any]]
 
@@ -382,14 +399,14 @@ class TestValidateQuantities:
                 "raises": u.UnitTypeError,
             },
             {
-                "descr": "decomposed units are still covnerted",
+                "descr": "decomposed units are still converted",
                 "setup": {
                     "function": self.foo,
-                    "args": (2 * u.kg * u.m / u.s ** 2,),
+                    "args": (2 * u.kg * u.m / u.s**2,),
                     "kwargs": {},
                     "validations": {"x": u.N},
                 },
-                "output": (2 * u.kg * u.m / u.s ** 2).to(u.N),
+                "output": (2 * u.kg * u.m / u.s**2).to(u.N),
                 "extra assert": lambda x: x.unit.to_string() == u.N.to_string(),
             },
         ]

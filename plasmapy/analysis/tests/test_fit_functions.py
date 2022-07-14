@@ -5,8 +5,7 @@ import numpy as np
 import pytest
 
 from abc import ABC, abstractmethod
-from contextlib import ExitStack as does_not_raise
-# ^ ExitStack can be replaced with nullcontext when we require >= python 3.7
+from contextlib import nullcontext as does_not_raise
 
 import plasmapy.analysis.fit_functions as ffuncs
 
@@ -53,7 +52,8 @@ class TestAbstractFitFunction:
             assert isinstance(getattr(self.ff_class, name), property)
 
     @pytest.mark.parametrize(
-        "name", ["__str__", "func", "func_err", "latex_str"],
+        "name",
+        ["__str__", "func", "func_err", "latex_str"],
     )
     def test_abstractmethods(self, name):
         """Test for required abstract methods."""
@@ -128,13 +128,12 @@ class BaseFFTests(ABC):
         if isproperty:
             assert isinstance(getattr(self.ff_class, name), property)
 
-        if name == "_param_names":
-            if self.ff_class._param_names == NotImplemented:
-                pytest.fail(
-                    f"{self.ff_class} class attribute '_param_names' needs to "
-                    f" be defined as a tuple of strings representing the names of "
-                    f"the fit parameters."
-                )
+        if name == "_param_names" and self.ff_class._param_names == NotImplemented:
+            pytest.fail(
+                f"{self.ff_class} class attribute '_param_names' needs to "
+                f" be defined as a tuple of strings representing the names of "
+                f"the fit parameters."
+            )
 
     @pytest.mark.parametrize(
         "name, value_ref_name",
@@ -323,9 +322,7 @@ class BaseFFTests(ABC):
                 y_err = results
                 y = None
 
-            x_err = None
-            if "x_err" in kwargs:
-                x_err = kwargs["x_err"]
+            x_err = kwargs["x_err"] if "x_err" in kwargs else None
             if isinstance(x, list):
                 x = np.array(x)
             y_err_expected = self.func_err(x, params, param_errors, x_err=x_err)
@@ -356,13 +353,8 @@ class BaseFFTests(ABC):
         param_errors = self._test_param_errors
         ff_obj = self.ff_class(params=params, param_errors=param_errors)
 
-        reterr = False
-        if "reterr" in kwargs:
-            reterr = kwargs["reterr"]
-        x_err = None
-        if "x_err" in kwargs:
-            x_err = kwargs["x_err"]
-
+        reterr = kwargs["reterr"] if "reterr" in kwargs else False
+        x_err = kwargs["x_err"] if "x_err" in kwargs else None
         with with_condition:
             results = ff_obj(x, **kwargs)
             if reterr:
@@ -402,7 +394,9 @@ class BaseFFTests(ABC):
         assert ff_obj.curve_fit_results is not None
         assert np.isclose(ff_obj.rsq, 1.0)
         assert np.allclose(
-            ff_obj.param_errors, tuple([0] * len(ff_obj.param_names)), atol=1.5e-8,
+            ff_obj.param_errors,
+            tuple([0] * len(ff_obj.param_names)),
+            atol=1.5e-8,
         )
         assert np.allclose(ff_obj.params, self._test_params)
 
@@ -416,8 +410,8 @@ class TestFFExponential(BaseFFTests):
     _test_params = (5.0, 1.0)
     _test_param_errors = (0.1, 0.1)
     _test_param_names = ("a", "alpha")
-    _test_latex_str = fr"a \, \exp(\alpha x)"
-    _test__str__ = f"f(x) = a exp(alpha x)"
+    _test_latex_str = r"a \, \exp(\alpha x)"
+    _test__str__ = "f(x) = a exp(alpha x)"
 
     @staticmethod
     def func(x, a, alpha):
@@ -458,8 +452,8 @@ class TestFFExponentialPlusLinear(BaseFFTests):
     _test_params = (2.0, 1.0, 5.0, -10.0)
     _test_param_errors = (0.1, 0.1, 0.1, 0.1)
     _test_param_names = ("a", "alpha", "m", "b")
-    _test_latex_str = fr"a \, \exp(\alpha x) + m x + b"
-    _test__str__ = f"f(x) = a exp(alpha x) + m x + b"
+    _test_latex_str = r"a \, \exp(\alpha x) + m x + b"
+    _test__str__ = "f(x) = a exp(alpha x) + m x + b"
 
     @staticmethod
     def func(x, a, alpha, m, b):
@@ -474,14 +468,14 @@ class TestFFExponentialPlusLinear(BaseFFTests):
         a_term = (exp_y * a_err / a) ** 2
         alpha_term = (exp_y * x * alpha_err) ** 2
         m_term = (m_err * x) ** 2
-        b_term = b_err ** 2
+        b_term = b_err**2
 
         err = a_term + alpha_term + m_term + b_term
 
         if x_err is not None:
             x_term = (exp_y * alpha * x_err) ** 2
             x_term += (m * x_err) ** 2
-            x_term += 2 * a * alpha * m * np.exp(alpha * x) * (x_err ** 2)
+            x_term += 2 * a * alpha * m * np.exp(alpha * x) * (x_err**2)
 
             err += x_term
 
@@ -506,8 +500,8 @@ class TestFFExponentialPlusOffset(BaseFFTests):
     _test_params = (2.0, 1.0, -10.0)
     _test_param_errors = (0.1, 0.1, 0.1)
     _test_param_names = ("a", "alpha", "b")
-    _test_latex_str = fr"a \, \exp(\alpha x) + b"
-    _test__str__ = f"f(x) = a exp(alpha x) + b"
+    _test_latex_str = r"a \, \exp(\alpha x) + b"
+    _test__str__ = "f(x) = a exp(alpha x) + b"
 
     @staticmethod
     def func(x, a, alpha, b):
@@ -521,7 +515,7 @@ class TestFFExponentialPlusOffset(BaseFFTests):
 
         a_term = (exp_y * a_err / a) ** 2
         alpha_term = (exp_y * x * alpha_err) ** 2
-        b_term = b_err ** 2
+        b_term = b_err**2
 
         err = a_term + alpha_term + b_term
 
@@ -540,9 +534,10 @@ class TestFFExponentialPlusOffset(BaseFFTests):
         assert err == 0
 
         ff_obj.params = (3.0, 0.5, 5.0)
-        root, err = ff_obj.root_solve()
-        assert np.isnan(root)
-        assert np.isnan(err)
+        with pytest.warns(RuntimeWarning, match="invalid value encountered in log"):
+            root, err = ff_obj.root_solve()
+            assert np.isnan(root)
+            assert np.isnan(err)
 
 
 class TestFFLinear(BaseFFTests):
@@ -554,8 +549,8 @@ class TestFFLinear(BaseFFTests):
     _test_params = (5.0, 4.0)
     _test_param_errors = (0.1, 0.1)
     _test_param_names = ("m", "b")
-    _test_latex_str = fr"m x + b"
-    _test__str__ = f"f(x) = m x + b"
+    _test_latex_str = r"m x + b"
+    _test__str__ = "f(x) = m x + b"
 
     @staticmethod
     def func(x, m, b):
@@ -566,7 +561,7 @@ class TestFFLinear(BaseFFTests):
         m_err, b_err = param_errors
 
         m_term = (m_err * x) ** 2
-        b_term = b_err ** 2
+        b_term = b_err**2
         err = m_term + b_term
 
         if x_err is not None:
@@ -576,12 +571,33 @@ class TestFFLinear(BaseFFTests):
 
         return err
 
-    def test_root_solve(self):
-        ff_obj = self.ff_class(params=(1, 1), param_errors=(0, 0))
-        assert ff_obj.root_solve() == (-1, 0)
+    @pytest.mark.parametrize(
+        "params, param_errors, root, root_err, conditional",
+        [
+            ((1, 1), (0, 0), -1, 0, does_not_raise()),
+            (
+                (5.0, 1.3),
+                (0.1, 0.1),
+                -1.3 / 5.0,
+                np.abs(-1.3 / 5.0) * np.sqrt((0.1 / 5.0) ** 2 + (0.1 / 1.3) ** 2),
+                does_not_raise(),
+            ),
+            ((0.3, 0.0), (0.1, 0.1), 0.0, np.abs(0.1 / 0.3), does_not_raise()),
+            ((0.0, 1.0), (0.1, 0.1), np.nan, np.nan, pytest.warns(RuntimeWarning)),
+        ],
+    )
+    def test_root_solve(self, params, param_errors, root, root_err, conditional):
+        with conditional:
+            ff_obj = self.ff_class(params=params, param_errors=param_errors)
+            results = ff_obj.root_solve()
 
-        ff_obj.params = (5.0, 1.3)
-        ff_obj.param_errors = (0.1, 0.1)
-        root, err = ff_obj.root_solve()
-        assert root == -1.3 / 5.0
-        assert err == np.abs(root) * np.sqrt((0.1 / 5.0) ** 2 + (0.1 / 1.3) ** 2)
+            if np.all(np.isnan([root, root_err])):
+                assert np.all(np.isnan(results))
+            elif np.isnan(root):
+                assert np.isnan(results[0])
+                assert np.isclose(results[1], root_err)
+            elif np.isnan(root_err):
+                assert np.isclose(results[0], root)
+                assert np.isnan(results[1])
+            else:
+                assert np.allclose(results, [root, root_err])

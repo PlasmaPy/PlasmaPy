@@ -4,5 +4,14 @@
 Collisions (`plasmapy.formulary.collisions`)
 ********************************************
 
+.. currentmodule:: plasmapy.formulary.collisions
+
 .. automodapi:: plasmapy.formulary.collisions
-      :no-heading:
+
+Examples
+========
+
+.. nbgallery::
+    :caption: Examples
+
+    /notebooks/formulary/coulomb

@@ -1,31 +1,19 @@
 import pytest
 
 from plasmapy.particles import Particle
+from plasmapy.particles._parsing import (
+    case_insensitive_aliases,
+    case_sensitive_aliases,
+    dealias_particle_aliases,
+    parse_and_check_atomic_input,
+)
+from plasmapy.particles._special_particles import particle_zoo
 from plasmapy.particles.exceptions import (
-    AtomicWarning,
     InvalidElementError,
     InvalidParticleError,
+    ParticleWarning,
 )
-from plasmapy.particles.parsing import (  # duplicate with utils.pytest_helpers.error_messages.call_string?
-    _case_insensitive_aliases,
-    _case_sensitive_aliases,
-    _dealias_particle_aliases,
-    _parse_and_check_atomic_input,
-)
-from plasmapy.particles.special_particles import ParticleZoo
-from plasmapy.utils import call_string
-
-
-def _particle_call_string(arg, kwargs=None) -> str:
-    """
-    Return a `str` that recreates the call to create a particular
-    `~plasmapy.particles.Particle` instance from the input.
-    """
-    if kwargs is None:
-        kwargs = {}
-
-    return call_string(Particle, arg, kwargs)
-
+from plasmapy.utils.code_repr import call_string
 
 aliases_and_symbols = [
     ("electron", "e-"),
@@ -52,6 +40,12 @@ aliases_and_symbols = [
     ("H-1+", "p+"),
     ("H-1 +1", "p+"),
     ("hydrogen-1+", "p+"),
+    ("α", "He-4 2+"),
+    ("β-", "e-"),
+    ("β⁻", "e-"),
+    ("β+", "e+"),
+    ("τ", "tau-"),
+    ("τ+", "tau+"),
 ]
 
 
@@ -60,16 +54,16 @@ def test_dealias_particle_aliases(alias, symbol):
     """Test that _dealias_particle_aliases correctly takes in aliases and
     returns the corresponding symbols, and returns the original argument
     if the argument does not correspond to an alias."""
-    result = _dealias_particle_aliases(alias)
+    result = dealias_particle_aliases(alias)
     assert result == symbol, (
         f"_dealias_particle_aliases({alias}) returns '{result}', which "
         f"differs from the expected symbol of '{symbol}'.\n\n"
-        f"_case_insensitive_aliases:\n{_case_insensitive_aliases}\n\n"
-        f"_case_sensitive_aliases:\n{_case_sensitive_aliases}"
+        f"_case_insensitive_aliases:\n{case_insensitive_aliases}\n\n"
+        f"_case_sensitive_aliases:\n{case_sensitive_aliases}"
     )
 
 
-alias_dictionaries = [_case_sensitive_aliases, _case_insensitive_aliases]
+alias_dictionaries = [case_sensitive_aliases, case_insensitive_aliases]
 
 
 @pytest.mark.parametrize("alias_dict", alias_dictionaries)
@@ -95,35 +89,35 @@ parse_check_table = [
         "He",
         {"Z": 1, "mass_numb": 4},
         {
-            "particle": "He-4 1+",
+            "symbol": "He-4 1+",
             "element": "He",
             "isotope": "He-4",
             "ion": "He-4 1+",
             "mass number": 4,
-            "integer charge": 1,
+            "charge number": 1,
         },
     ),
     (
         "alpha",
         {},
         {
-            "particle": "He-4 2+",
+            "symbol": "He-4 2+",
             "element": "He",
             "isotope": "He-4",
             "ion": "He-4 2+",
             "mass number": 4,
-            "integer charge": 2,
+            "charge number": 2,
         },
     ),
     (
         1,
         {},
         {
-            "particle": "H",
+            "symbol": "H",
             "element": "H",
             "isotope": None,
             "ion": None,
-            "integer charge": None,
+            "charge number": None,
             "mass number": None,
         },
     ),
@@ -131,11 +125,11 @@ parse_check_table = [
         "p",
         {},
         {
-            "particle": "p+",
+            "symbol": "p+",
             "element": "H",
             "isotope": "H-1",
             "ion": "p+",
-            "integer charge": 1,
+            "charge number": 1,
             "mass number": 1,
         },
     ),
@@ -143,11 +137,11 @@ parse_check_table = [
         "H",
         {"mass_numb": 2},
         {
-            "particle": "D",
+            "symbol": "D",
             "element": "H",
             "isotope": "D",
             "ion": None,
-            "integer charge": None,
+            "charge number": None,
             "mass number": 2,
         },
     ),
@@ -155,11 +149,11 @@ parse_check_table = [
         2,
         {},
         {
-            "particle": "He",
+            "symbol": "He",
             "element": "He",
             "isotope": None,
             "ion": None,
-            "integer charge": None,
+            "charge number": None,
             "mass number": None,
         },
     ),
@@ -167,11 +161,11 @@ parse_check_table = [
         "T",
         {"Z": 0},
         {
-            "particle": "T 0+",
+            "symbol": "T 0+",
             "element": "H",
             "isotope": "T",
             "ion": "T 0+",
-            "integer charge": 0,
+            "charge number": 0,
             "mass number": 3,
         },
     ),
@@ -179,11 +173,11 @@ parse_check_table = [
         "Fe-56+++++++",
         {},
         {
-            "particle": "Fe-56 7+",
+            "symbol": "Fe-56 7+",
             "element": "Fe",
             "isotope": "Fe-56",
             "ion": "Fe-56 7+",
-            "integer charge": 7,
+            "charge number": 7,
             "mass number": 56,
         },
     ),
@@ -191,11 +185,11 @@ parse_check_table = [
         "H-",
         {},
         {
-            "particle": "H 1-",
+            "symbol": "H 1-",
             "element": "H",
             "isotope": None,
             "ion": "H 1-",
-            "integer charge": -1,
+            "charge number": -1,
             "mass number": None,
         },
     ),
@@ -203,11 +197,11 @@ parse_check_table = [
         "D+",
         {},
         {
-            "particle": "D 1+",
+            "symbol": "D 1+",
             "element": "H",
             "isotope": "D",
             "ion": "D 1+",
-            "integer charge": 1,
+            "charge number": 1,
             "mass number": 2,
         },
     ),
@@ -215,11 +209,11 @@ parse_check_table = [
         "Au",
         {},
         {
-            "particle": "Au",
+            "symbol": "Au",
             "element": "Au",
             "isotope": None,
             "ion": None,
-            "integer charge": None,
+            "charge number": None,
             "mass number": None,
         },
     ),
@@ -227,11 +221,11 @@ parse_check_table = [
         "Ar 2-",
         {},
         {
-            "particle": "Ar 2-",
+            "symbol": "Ar 2-",
             "element": "Ar",
             "isotope": None,
             "ion": "Ar 2-",
-            "integer charge": -2,
+            "charge number": -2,
             "mass number": None,
         },
     ),
@@ -239,11 +233,11 @@ parse_check_table = [
         "Fe +24",
         {"mass_numb": 56},
         {
-            "particle": "Fe-56 24+",
+            "symbol": "Fe-56 24+",
             "element": "Fe",
             "isotope": "Fe-56",
             "ion": "Fe-56 24+",
-            "integer charge": 24,
+            "charge number": 24,
             "mass number": 56,
         },
     ),
@@ -251,11 +245,11 @@ parse_check_table = [
         "Be-8 +3",
         {},
         {
-            "particle": "Be-8 3+",
+            "symbol": "Be-8 3+",
             "element": "Be",
             "isotope": "Be-8",
             "ion": "Be-8 3+",
-            "integer charge": 3,
+            "charge number": 3,
             "mass number": 8,
         },
     ),
@@ -263,11 +257,11 @@ parse_check_table = [
         "p+",
         {},
         {
-            "particle": "p+",
+            "symbol": "p+",
             "element": "H",
             "isotope": "H-1",
             "ion": "p+",
-            "integer charge": 1,
+            "charge number": 1,
             "mass number": 1,
         },
     ),
@@ -276,7 +270,7 @@ parse_check_table = [
 
 @pytest.mark.parametrize("arg, kwargs, expected", parse_check_table)
 def test_parse_and_check_atomic_input(arg, kwargs, expected):
-    result = _parse_and_check_atomic_input(arg, **kwargs)
+    result = parse_and_check_atomic_input(arg, **kwargs)
     assert result == expected, (
         "Error in _parse_and_check_atomic_input.\n"
         "The resulting dictionary is:\n\n"
@@ -329,23 +323,25 @@ def test_parse_InvalidParticleErrors(arg, kwargs):
     InvalidParticleError when the input does not correspond
     to a real particle."""
     with pytest.raises(InvalidParticleError):
-        _parse_and_check_atomic_input(arg, **kwargs)
+        parse_and_check_atomic_input(arg, **kwargs)
         pytest.fail(
             "An InvalidParticleError was expected to be raised by "
-            f"{_particle_call_string(arg, kwargs)}, but no exception was raised."
+            f"{call_string(parse_and_check_atomic_input, arg, kwargs)}, "
+            f"but no exception was raised."
         )
 
 
-@pytest.mark.parametrize("arg", ParticleZoo.everything - {"p+"})
+@pytest.mark.parametrize("arg", particle_zoo.everything - {"p+"})
 def test_parse_InvalidElementErrors(arg):
     r"""Tests that _parse_and_check_atomic_input raises an
     InvalidElementError when the input corresponds to a valid
     particle but not a valid element, isotope, or ion."""
     with pytest.raises(InvalidElementError):
-        _parse_and_check_atomic_input(arg)
+        parse_and_check_atomic_input(arg)
         pytest.fail(
             "An InvalidElementError was expected to be raised by "
-            f"{_particle_call_string(arg)}, but no exception was raised."
+            f"{call_string(parse_and_check_atomic_input, arg)}, "
+            f"but no exception was raised."
         )
 
 
@@ -364,17 +360,23 @@ def test_parse_AtomicWarnings(arg, kwargs, num_warnings):
     r"""Tests that _parse_and_check_atomic_input issues an AtomicWarning
     under the required conditions."""
 
-    with pytest.warns(AtomicWarning) as record:
-        _parse_and_check_atomic_input(arg, **kwargs)
+    with pytest.warns(ParticleWarning) as record:
+        parse_and_check_atomic_input(arg, **kwargs)
         if not record:
             pytest.fail(
                 f"No AtomicWarning was issued by "
-                f"{_particle_call_string(arg, kwargs)} but the expected number "
+                f"{call_string(parse_and_check_atomic_input, arg, kwargs)} but the expected number "
                 f"of warnings was {num_warnings}"
             )
 
     assert len(record) == num_warnings, (
-        f"The number of AtomicWarnings issued by {_particle_call_string(arg, kwargs)} "
+        f"The number of AtomicWarnings issued by "
+        f"{call_string(parse_and_check_atomic_input, arg, kwargs)} "
         f"was {len(record)}, which differs from the expected number "
         f"of {num_warnings} warnings."
     )
+
+
+def test_Queen():
+    Queen = "Freddie Mercury (lead vocals, piano), Brian May (guitar, vocals), Roger Taylor (drums, vocals) and John Deacon (bass)"
+    assert Particle("Freddie").element_name.capitalize() in Queen

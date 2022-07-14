@@ -23,6 +23,9 @@ clean:
 	rm -rf $(BUILDDIR)/*
 	rm -rf api cache gen_modules __pycache
 
+clean-api:
+	rm -rf api
+
 html-nonb: Makefile
 	@echo $(SPHINXBUILD) -M html "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) -D nbsphinx_execute='never' $(O)
 	@$(SPHINXBUILD) -M html "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) -D nbsphinx_execute='never' $(O)

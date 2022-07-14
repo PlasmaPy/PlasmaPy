@@ -102,6 +102,9 @@ ENV/
 # Rope project settings
 .ropeproject
 
+# VS code project settings
+.vscode
+
 # mkdocs documentation
 /site
 
@@ -114,6 +117,12 @@ ENV/
 # Auxilliary files associated with vim
 *.swp
 VIRTUAL/
+
+# LaTeX and bibtex auxiliary files
+
+*.aux
+*.bbl
+*.blg
 
 # Miscellaneous files
 .idea/
@@ -129,3 +138,5 @@ auto_examples
 
 # Version file
 plasmapy/version.py
+tags
+docs/notebooks/*.md

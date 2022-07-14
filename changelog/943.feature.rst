@@ -1,2 +1,0 @@
-Create decorator `~plasmapy.utils.decorators.helpers.modify_docstring`, which allows
-for programmatically prepending and/or appending a docstring.

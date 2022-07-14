@@ -7,10 +7,11 @@ Electromagnetic Radiation Functions (`plasmapy.formulary.radiation`)
 .. currentmodule:: plasmapy.formulary.radiation
 
 .. automodapi:: plasmapy.formulary.radiation
-   :no-heading:
 
+Examples
+========
 
 .. nbgallery::
     :caption: Examples
 
-    /notebooks/thermal_bremsstrahlung
+    /notebooks/formulary/thermal_bremsstrahlung

@@ -1,4 +1,10 @@
+"""
+Module containing functionality focused on the plasma dispersion function
+:math:`Z(ζ)`.
+"""
 __all__ = ["plasma_dispersion_func", "plasma_dispersion_func_deriv"]
+
+__lite_funcs__ = ["plasma_dispersion_func_lite", "plasma_dispersion_func_deriv_lite"]
 
 import astropy.units as u
 import numbers
@@ -7,7 +13,46 @@ import numpy as np
 from scipy.special import wofz as Faddeeva_function
 from typing import Union
 
+from plasmapy.utils.decorators import bind_lite_func, preserve_signature
 
+__all__ += __lite_funcs__
+
+
+# TODO: Use cython to speed up the Faddeeva_function execution in
+#       plasma_dispersion_func_lite
+
+
+@preserve_signature
+def plasma_dispersion_func_lite(zeta):
+    r"""
+    The :term:`lite-function` version of
+    `~plasmapy.dispersion.dispersionfunction.plasma_dispersion_func`.
+    Performs the same calculation as
+    `~plasmapy.dispersion.dispersionfunction.plasma_dispersion_func`,
+    but is intended for computational use and, thus, has all data
+    conditioning safeguards removed.
+
+    Parameters
+    ----------
+    zeta : :term:`numpy:array_like` of real or complex values
+        Argument of the plasma dispersion function. ``zeta`` is
+        dimensionless.
+
+    Returns
+    -------
+    Z : :term:`numpy:array_like` of complex values
+        Value of plasma dispersion function.
+
+    See Also
+    --------
+    ~plasmapy.dispersion.dispersionfunction.plasma_dispersion_func
+
+    """
+
+    return 1j * np.sqrt(np.pi) * Faddeeva_function(zeta)
+
+
+@bind_lite_func(plasma_dispersion_func_lite)
 def plasma_dispersion_func(
     zeta: Union[complex, int, float, np.ndarray, u.Quantity]
 ) -> Union[complex, float, np.ndarray, u.Quantity]:
@@ -48,18 +93,12 @@ def plasma_dispersion_func(
         Z(\zeta) = \pi^{-0.5} \int_{-\infty}^{+\infty}
         \frac{e^{-x^2}}{x-\zeta} dx
 
-    where the argument is a complex number [#]_.
+    where the argument is a complex number :cite:p:`fried:1961`.
 
     In plasma wave theory, the plasma dispersion function appears
     frequently when the background medium has a Maxwellian
     distribution function.  The argument of this function then refers
     to the ratio of a wave's phase velocity to a thermal velocity.
-
-    References
-    ----------
-    .. [#] Fried, Burton D. and Samuel D. Conte. 1961.
-       The Plasma Dispersion Function: The Hilbert Transformation of the
-       Gaussian. Academic Press (New York and London). ISBN 9781483261737
 
     Examples
     --------
@@ -68,6 +107,17 @@ def plasma_dispersion_func(
     >>> plasma_dispersion_func(1j)
     0.757872156141312j
     >>> plasma_dispersion_func(-1.52+0.47j)
+    (0.6088888957234254+0.33494583882874024j)
+
+    For user convenience
+    `~plasmapy.dispersion.dispersionfunction.plasma_dispersion_func_lite`
+    is bound to this function and can be used as follows:
+
+    >>> plasma_dispersion_func.lite(0)
+    1.7724538509055159j
+    >>> plasma_dispersion_func.lite(1j)
+    0.757872156141312j
+    >>> plasma_dispersion_func.lite(-1.52+0.47j)
     (0.6088888957234254+0.33494583882874024j)
 
     """
@@ -92,11 +142,40 @@ def plasma_dispersion_func(
     if not np.all(np.isfinite(zeta)):
         raise ValueError("The argument to plasma_dispersion_function is not finite.")
 
-    Z = 1j * np.sqrt(np.pi) * Faddeeva_function(zeta)
-
-    return Z
+    return plasma_dispersion_func_lite(zeta)
 
 
+@preserve_signature
+def plasma_dispersion_func_deriv_lite(zeta):
+    r"""
+    The :term:`lite-function` version of
+    `~plasmapy.dispersion.dispersionfunction.plasma_dispersion_func_deriv`.
+    Performs the same calculation as
+    `~plasmapy.dispersion.dispersionfunction.plasma_dispersion_func_deriv`,
+    but is intended for computational use and, thus, has all data
+    conditioning safeguards removed.
+
+    Parameters
+    ----------
+    zeta : :term:`numpy:array_like` of real or complex values
+        Argument of the plasma dispersion function. ``zeta`` is
+        dimensionless.
+
+    Returns
+    -------
+    Zprime : :term:`numpy:array_like` of complex values
+        First derivative of plasma dispersion function.
+
+    See Also
+    --------
+    ~plasmapy.dispersion.dispersionfunction.plasma_dispersion_func_deriv
+
+    """
+
+    return -2 * (1 + zeta * plasma_dispersion_func_lite(zeta))
+
+
+@bind_lite_func(plasma_dispersion_func_deriv_lite)
 def plasma_dispersion_func_deriv(
     zeta: Union[complex, int, float, np.ndarray, u.Quantity]
 ) -> Union[complex, float, np.ndarray, u.Quantity]:
@@ -137,13 +216,7 @@ def plasma_dispersion_func_deriv(
         Z'(\zeta) = \pi^{-1/2} \int_{-\infty}^{+\infty}
         \frac{e^{-x^2}}{(x-\zeta)^2} dx
 
-    where the argument is a complex number [#]_.
-
-    References
-    ----------
-    .. [#] Fried, Burton D. and Samuel D. Conte. 1961.
-       The Plasma Dispersion Function: The Hilbert Transformation of the
-       Gaussian. Academic Press (New York and London). ISBN 9781483261737
+    where the argument is a complex number :cite:p:`fried:1961`.
 
     Examples
     --------
@@ -152,6 +225,17 @@ def plasma_dispersion_func_deriv(
     >>> plasma_dispersion_func_deriv(1j)
     (-0.484255687717376...+0j)
     >>> plasma_dispersion_func_deriv(-1.52+0.47j)
+    (0.165871331498228...+0.445879788059350...j)
+
+    For user convenience
+    `~plasmapy.dispersion.dispersionfunction.plasma_dispersion_func_deriv_lite`
+    is bound to this function and can be used as follows:
+
+    >>> plasma_dispersion_func_deriv.lite(0)
+    (-2+0j)
+    >>> plasma_dispersion_func_deriv.lite(1j)
+    (-0.484255687717376...+0j)
+    >>> plasma_dispersion_func_deriv.lite(-1.52+0.47j)
     (0.165871331498228...+0.445879788059350...j)
 
     """
@@ -179,6 +263,4 @@ def plasma_dispersion_func_deriv(
             "The argument to plasma_dispersion_function_deriv is not finite."
         )
 
-    Zprime = -2 * (1 + zeta * plasma_dispersion_func(zeta))
-
-    return Zprime
+    return plasma_dispersion_func_deriv_lite(zeta)

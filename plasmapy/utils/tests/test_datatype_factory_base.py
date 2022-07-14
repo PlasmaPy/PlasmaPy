@@ -7,7 +7,7 @@ from plasmapy.utils.datatype_factory_base import (
     ValidationFunctionError,
 )
 
-# SunPy is released under a BSD-style open source licence:
+# SunPy is released under a BSD-style open source license:
 
 # Copyright (c) 2013-2018 The SunPy developers
 # All rights reserved.
@@ -40,7 +40,7 @@ from plasmapy.utils.datatype_factory_base import (
 # Commit hash : f6330eea602ea796b5b004dee283b8877b24da23
 
 
-class BaseWidget(object):
+class BaseWidget:
     def __init__(self, *args, **kwargs):
         pass
 
@@ -95,7 +95,7 @@ class MissingClassMethodDifferentValidationWidget(BaseWidget):
         return kwargs.get("style") == "missing-different"
 
 
-class TestBasicRegistrationFactory(object):
+class TestBasicRegistrationFactory:
     def test_default_factory(self):
 
         DefaultFactory = BasicRegistrationFactory()

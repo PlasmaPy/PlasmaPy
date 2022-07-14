@@ -4,5 +4,14 @@
 Classical transport theory (`plasmapy.formulary.braginskii`)
 ************************************************************
 
+.. currentmodule:: plasmapy.formulary.braginskii
+
 .. automodapi:: plasmapy.formulary.braginskii
-    :no-heading:
+
+Examples
+========
+
+.. nbgallery::
+    :caption: Examples
+
+    /notebooks/formulary/braginskii

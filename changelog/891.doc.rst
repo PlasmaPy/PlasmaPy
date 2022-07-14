@@ -1,1 +1,0 @@
-Replaced references to Riot.im with references to Element.io or Matrix, as appropriate, following their recent rebranding.

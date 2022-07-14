@@ -6,13 +6,13 @@ __all__ = ["PlasmaBlob"]
 import astropy.units as u
 import warnings
 
-from plasmapy.formulary.collisions import coupling_parameter
-from plasmapy.formulary.dimensionless import quantum_theta
-from plasmapy.formulary.parameters import _grab_charge
+from plasmapy.formulary import coupling_parameter, quantum_theta
+from plasmapy.formulary.misc import _grab_charge
 from plasmapy.particles import particle_mass
 from plasmapy.plasma.plasma_base import GenericPlasma
-from plasmapy.utils import call_string, CouplingWarning
+from plasmapy.utils import code_repr
 from plasmapy.utils.decorators import validate_quantities
+from plasmapy.utils.exceptions import CouplingWarning
 
 
 class PlasmaBlob(GenericPlasma):
@@ -21,10 +21,10 @@ class PlasmaBlob(GenericPlasma):
     spatial/temporal description.
     """
 
-    @validate_quantities(T_e=u.K, n_e=u.m ** -3)
+    @validate_quantities(T_e=u.K, n_e=u.m**-3)
     def __init__(self, T_e, n_e, Z=None, particle="p"):
         """
-        Initialize plasma paramters.
+        Initialize plasma parameters.
         The most basic description is composition (ion), temperature,
         density, and ionization.
         """
@@ -37,7 +37,7 @@ class PlasmaBlob(GenericPlasma):
 
     def __str__(self):
         """
-        Fetches regimes for easy printing
+        Fetch regimes for easy printing.
 
         Examples
         --------
@@ -51,6 +51,7 @@ class PlasmaBlob(GenericPlasma):
 
     def __repr__(self):
         """
+        Return a string representation of this instance.
 
         Returns
         -------
@@ -69,7 +70,7 @@ class PlasmaBlob(GenericPlasma):
             "Z": self.Z,
         }
 
-        return call_string(PlasmaBlob, (), argument_dict)
+        return code_repr.call_string(PlasmaBlob, (), argument_dict)
 
     @property
     def electron_temperature(self):
@@ -124,9 +125,7 @@ class PlasmaBlob(GenericPlasma):
                 f"Both Fermi and thermal energy important: Theta = {quantum_theta}"
             )
 
-        # summarizing and printing/returning regimes
-        aggregateStrs = [coupling_str, quantum_theta_str]
-        return aggregateStrs
+        return [coupling_str, quantum_theta_str]
 
     def coupling(self):
         """
@@ -150,10 +149,8 @@ class PlasmaBlob(GenericPlasma):
         Quantum theta parameter, which compares Fermi kinetic energy to
         thermal kinetic energy to check if quantum effects are important.
         """
-        theta = quantum_theta(self.T_e, self.n_e)
-        return theta
+        return quantum_theta(self.T_e, self.n_e)
 
     @classmethod
     def is_datasource_for(cls, **kwargs):
-        match = "T_e" in kwargs.keys() and "n_e" in kwargs.keys()
-        return match
+        return "T_e" in kwargs and "n_e" in kwargs

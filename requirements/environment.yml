@@ -1,26 +1,7 @@
 name: plasmapy
 
-channels:
-  - astropy
-  - conda-forge
-
 dependencies:
-  - python=3.7
-  - numpy
-  - scipy
-  - astropy
-  - h5py
-  - matplotlib
-  - mpmath
-  - pillow
-  - colorama
-  - pip
-  - pip:
-    - numpydoc
-    - pytest
-    - lmfit
-    - pygments>=2.4.1
-    - sphinx>2
-    - sphinx-gallery
-    - sphinx-automodapi
-    - sphinx_rtd_theme
+- python=3.10
+- pip
+- pip:
+  - -r ../requirements.txt

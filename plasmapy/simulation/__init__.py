@@ -6,6 +6,7 @@ __all__ = [
 ]
 
 from plasmapy.simulation.abstractions import (
+    AbstractNormalizations,
     AbstractSimulation,
     AbstractTimeDependentSimulation,
 )

@@ -5,8 +5,11 @@ atoms, isotopes, ions, and other particles.
 # __all__ will be auto populated below
 __all__ = []
 
+import inspect
+
 from plasmapy.particles.atomic import (
     atomic_number,
+    charge_number,
     common_isotopes,
     electric_charge,
     half_life,
@@ -21,21 +24,28 @@ from plasmapy.particles.atomic import (
     standard_atomic_weight,
 )
 from plasmapy.particles.decorators import particle_input
-from plasmapy.particles.ionization_state import IonizationState, State
-from plasmapy.particles.ionization_states import IonizationStates
+from plasmapy.particles.ionization_state import IonicLevel, IonizationState
+from plasmapy.particles.ionization_state_collection import IonizationStateCollection
 from plasmapy.particles.nuclear import nuclear_binding_energy, nuclear_reaction_energy
 from plasmapy.particles.particle_class import (
     AbstractParticle,
+    AbstractPhysicalParticle,
     CustomParticle,
     DimensionlessParticle,
+    molecule,
     Particle,
+    ParticleLike,
+)
+from plasmapy.particles.particle_collections import (
+    ionic_levels,
+    ParticleList,
+    ParticleListLike,
 )
 from plasmapy.particles.serialization import (
     json_load_particle,
     json_loads_particle,
     ParticleJSONDecoder,
 )
-from plasmapy.particles.special_particles import ParticleZoo
 from plasmapy.particles.symbols import (
     atomic_symbol,
     element_name,
@@ -44,31 +54,37 @@ from plasmapy.particles.symbols import (
     particle_symbol,
 )
 
-# Create instances of the most commonly used particles
-
-#: PlasmaPy particle object for a proton
 proton = Particle("p+")
+"""A |Particle| instance representing a proton."""
 
-#: PlasmaPy particle object for an electron
 electron = Particle("e-")
+"""A |Particle| instance representing an electron."""
 
-#: PlasmaPy particle object for a neutron
 neutron = Particle("n")
+"""A |Particle| instance representing a neutron."""
 
-#: PlasmaPy particle object for a positron
 positron = Particle("e+")
+"""A |Particle| instance representing a positron."""
 
-#: PlasmaPy particle object for a deuteron
 deuteron = Particle("D 1+")
+"""A |Particle| instance representing a positively charged deuterium ion."""
 
-#: PlasmaPy particle object for a triton
 triton = Particle("T 1+")
+"""A |Particle| instance representing a positively charged tritium ion."""
 
-#: PlasmaPy particle object for an alpha particle
 alpha = Particle("He-4 2+")
+"""
+A |Particle| instance representing an alpha particle (doubly charged
+helium-4).
+"""
 
 # auto populate __all__
-for obj_name in list(globals()):
-    if not (obj_name.startswith("__") or obj_name.endswith("__")):
-        __all__.append(obj_name)
+for name, obj in list(globals().items()):
+    if inspect.ismodule(obj) or name.startswith("__") or name.endswith("__"):
+        continue
+
+    __all__.append(name)
+
 __all__.sort()
+
+del inspect, name, obj

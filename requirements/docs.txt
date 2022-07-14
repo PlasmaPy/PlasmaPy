@@ -1,0 +1,24 @@
+# These are dependencies required to build package documentation, and
+# ought to mirror 'docs' under options.extras_require in setup.cfg.
+# This lists the requirements that would be installed when doing:
+# pip install plasmapy[docs]
+-r extras.txt
+-r install.txt
+docutils
+ipykernel
+jinja2 != 3.1
+nbsphinx
+numpydoc
+pillow
+pygments >= 2.11.0
+sphinx >= 4.4
+sphinx-changelog
+sphinx-copybutton
+sphinx-gallery
+sphinx-hoverxref >= 1.1.1
+sphinx-issues >= 3.0.1
+sphinx-notfound-page >= 0.8
+sphinx-reredirects
+sphinx_rtd_theme >= 1.0.0
+sphinxcontrib-bibtex
+towncrier >= 19.2.0
