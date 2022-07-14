@@ -253,7 +253,7 @@ redirects = {
     "development/install_dev": "../contributing/install_dev.html",
     "development/release_guide": "../contributing/release_guide.html",
     "development/testing_guide": "../contributing/testing_guide.html",
-    "whatsnew/": "changelog/"
+    "whatsnew/*": "../changelog/$source.html",
 }
 
 # Use a code highlighting style that meets the WCAG AA contrast standard
