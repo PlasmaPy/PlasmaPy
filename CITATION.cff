@@ -1,27 +1,22 @@
-# This CITATION.cff file was generated with cffinit.
-# Visit https://bit.ly/cffinit to generate yours today!
-
-cff-version: 1.2.0
 title: PlasmaPy
-message: >-
-  Please cite the specific version of PlasmaPy used
-  during a research project.
 type: software
-authors:
-  - given-names: Nicholas
-    family-names: Murphy
-    email: namurphy@cfa.harvard.edu
-    affiliation: Center for Astrophysics | Harvard & Smithsonian
-    orcid: 'https://orcid.org/0000-0001-6628-8033'
+version: 0.8.1
 identifiers:
   - type: doi
     value: 10.5281/zenodo.6774350
-repository-code: 'https://github.com/PlasmaPy/PlasmaPy'
-url: 'https://docs.plasmapy.org'
-repository-artifact: 'https://pypi.org/project/plasmapy'
+date-released: "2022-07-05"
+message: >-
+  Please cite the specific version of PlasmaPy used
+  during a research project.
+repository-code: "https://github.com/PlasmaPy/PlasmaPy"
+url: "https://docs.plasmapy.org"
+repository-artifact: "https://pypi.org/project/plasmapy"
 abstract: >-
-  PlasmaPy is an open source Python package for
-  plasma research and education.
+  PlasmaPy is an open source Python package for plasma research and
+  education.
+contact:
+  - The PlasmaPy Team
+  - team@plasmapy.org
 keywords:
   - plasma
   - physics
