@@ -15,15 +15,18 @@ __all__ = [
     "Mag_Reynolds",
     "quantum_theta",
     "Reynolds_number",
+    "Lundquist_number"
 ]
 __aliases__ = ["betaH_", "nD_", "Re_", "Rm_"]
 
 import astropy.units as u
+import numbers
 import numpy as np
 
 from astropy.constants.si import k_B, mu0
+from typing import Optional
 
-from plasmapy.formulary import frequencies, lengths, misc, quantum
+from plasmapy.formulary import frequencies, lengths, misc, quantum, speeds
 from plasmapy.particles import Particle
 from plasmapy.utils.decorators import validate_quantities
 
@@ -89,6 +92,7 @@ def Debye_number(T_e: u.K, n_e: u.m**-3) -> u.dimensionless_unscaled:
     Examples
     --------
     >>> from astropy import units as u
+    >>> from astropy.constants.si import m_p, m_e
     >>> Debye_number(5e6*u.K, 5e9*u.cm**-3)
     <Quantity 2.17658...e+08>
 
@@ -483,3 +487,125 @@ def Mag_Reynolds(U: u.m / u.s, L: u.m, sigma: u.S / u.m) -> u.dimensionless_unsc
 
 Rm_ = Mag_Reynolds
 """Alias to `~plasmapy.formulary.dimensionless.Mag_Reynolds`."""
+
+
+def Lundquist_number(
+        L: u.m,
+        B: u.T,
+        density: (u.m**-3, u.kg / u.m**3),
+        sigma: u.S / u.m,
+        ion: Optional[Particle] = None,
+        z_mean: Optional[numbers.Real] = None
+) -> u.dimensionless_unscaled:
+    r"""
+    Compute the Lundquist number
+
+    The Lundquist number :math:`S` is a dimensionless quantity that compares the
+    Alfvén wave crossing timescale to the magnetic diffusion timescale in a
+    conducting medium. It is given by
+
+    .. math::
+
+        S = \frac{L V_A}{η}
+
+    where L is the length scale, :math:`V_A = B/\sqrt{\mu_0 \rho}` is the Alfvén
+    speed, :math:`η = \frac{1}{μ_0 σ}` is the magnetic diffusivity, :math:`\sigma`
+    is the electrical conductivity, and :math:`μ_0` is the permeability of free
+    space.
+
+    Parameters
+    ----------
+    L : `~astropy.units.Quantity`
+        The length scale of the plasma.
+
+    B : `~astropy.units.Quantity`
+        The magnetic field magnitude in units convertible to tesla.
+
+    density : `~astropy.units.Quantity`
+        Either the ion number density :math:`n_i` in units convertible to
+        m\ :sup:`-3` or the total mass density :math:`ρ` in units
+        convertible to kg m\ :sup:`-3`\ .
+
+    sigma : `~astropy.units.Quantity`
+        The conductivity of the plasma.
+
+    ion : `~plasmapy.particles.particle_class.Particle`, optional
+        Representation of the ion species (e.g., ``'p'`` for protons, ``'D+'`` for
+        deuterium, ``'He-4 +1'`` for singly ionized helium-4, etc.). If no charge
+        state information is provided, then the ions are assumed to be singly
+        ionized. If the density is an ion number density, then this parameter
+        is required in order to convert to mass density.
+
+    z_mean : `~numbers.Real`, optional
+        The average ionization state (arithmetic mean) of the ``ion`` composing
+        the plasma.  This is used in calculating the mass density
+        :math:`ρ = n_i (m_i + Z_{mean} m_e)`.  ``z_mean`` is ignored if
+        ``density`` is passed as a mass density and overrides any charge state
+        info provided by ``ion``.
+
+    Warns
+    -----
+    : `~plasmapy.utils.exceptions.RelativityWarning`
+        If the Alfvén velocity exceeds 5% of the speed of light.
+
+    : `~astropy.units.UnitsWarning`
+        If units are not provided, SI units are assumed.
+
+    Raises
+    ------
+    `~plasmapy.utils.exceptions.RelativityError`
+        If the Alfvén velocity is greater than or equal to the speed of light.
+
+    `TypeError`
+        If ``B`` and/or ``density`` are not of type `~astropy.units.Quantity`,
+        or convertible.
+
+    `TypeError`
+        If ``ion`` is not of type or convertible to `~plasmapy.particles.particle_class.Particle`.
+
+    `TypeError`
+        If ``z_mean`` is not of type `int` or `float`.
+
+    `~astropy.units.UnitTypeError`
+        If the magnetic field ``B`` does not have units equivalent to
+        tesla.
+
+    `~astropy.units.UnitTypeError`
+        If the ``density`` does not have units equivalent to a number density
+        or mass density.
+
+    `ValueError`
+        If ``density`` is negative.
+
+    Notes
+    -----
+    This expression does not account for relativistic effects, and
+    loses validity when the resulting Alfvén speed is a significant fraction
+    of the speed of light.
+
+    Examples
+    --------
+    >>> import astropy.units as u
+    >>> from astropy.constants.si import m_p, m_e
+    >>> L = 10e8 * u.m
+    >>> B = 10e2 * u.G
+    >>> rho = 10e-3 * u.kg / u.m**3
+    >>> sigma = 10e-6 * u.S / u.m
+    >>> Lundquist_number(L, B, rho, sigma)
+    <Quantity 11.20998244>
+
+    Returns
+    -------
+    S : `~astropy.units.Quantity`
+        The Lundquist number.
+
+    """
+
+    if density.unit.is_equivalent(u.kg / u.m**3):
+        rho = density
+    else:
+        rho = misc.mass_density(density, ion)\
+              + misc.mass_density(density, "e", z_ratio=abs(z_mean))
+
+    alfven = speeds.Alfven_speed(B, rho)
+    return Mag_Reynolds(alfven, L, sigma)
