@@ -9,11 +9,13 @@ __all__ = [
     "DimensionlessParticle",
     "Particle",
     "ParticleLike",
+    "Photon",
     "molecule",
 ]
 
 import astropy.constants as const
 import astropy.units as u
+from astropy.units.quantity import Quantity
 import json
 import numpy as np
 import warnings
@@ -37,7 +39,7 @@ from plasmapy.particles.exceptions import (
     ParticleWarning,
 )
 from plasmapy.utils import roman
-from plasmapy.utils.decorators import deprecated
+from plasmapy.utils.decorators import deprecated, validate_quantities
 from plasmapy.utils.exceptions import PlasmaPyFutureWarning
 
 _classification_categories = {
@@ -2458,3 +2460,113 @@ argument or variable should represent a physical particle.
 >>> def is_electron(particle: ParticleLike):
 ...     return particle == Particle("e-")
 """
+
+class Photon(AbstractParticle):
+    def __init__(self, quantity: Quantity = None):
+        self._set_default_photon_properties()
+        if quantity and not self._validate_quantity(quantity):
+            raise ValueError("Specify non negative quantity with units of Energy, wavelength, frequency or momentum.")
+
+        if quantity == None:
+            self.energy = None
+            self.frequency = None
+            self.momentum = None
+            self.wavelength = None
+        else:
+            if self._isMomentum(quantity):
+                # p = (h/λ), f = c/λ
+                self.momentum = quantity.to((u.kg * u.m / u.s))
+                self.wavelength = (const.h / self.momentum)
+                self.frequency = (const.c / self.wavelength)
+                self.energy = (const.h * self.frequency)
+            else:
+                self.energy = quantity.to(u.J, equivalencies=u.spectral())
+                self.frequency = quantity.to(u.s ** -1, equivalencies=u.spectral())
+                self.wavelength = quantity.to(u.m, equivalencies=u.spectral())
+                self.momentum = (const.h / self.wavelength)
+
+    def _set_default_photon_properties(self):
+        self._mass = 0 * u.kg
+        self._charge = 0 * u.C
+        self._charge_number = 0
+        self._spin = 1
+        self._half_life = np.inf * u.s
+        self._allowed_units = dict({
+            "Energy" : u.J,
+            "Wavelength" : u.m,
+            "Frequency" : u.s ** -1,
+            "Momentum" : u.kg * u.m / u.s
+        })
+
+    def _validate_quantity(self, quantity: Quantity):
+        allowed_physical_types = [u.get_physical_type(x) for x in self._allowed_units.values()]
+        isValidQuantity = (quantity.unit.physical_type in allowed_physical_types)
+        isNonNegativeQuantity = (quantity.value > 0)
+        return isValidQuantity and isNonNegativeQuantity
+
+    def _isMomentum(self, quantity: Quantity):
+        return quantity.unit.physical_type == u.get_physical_type(self._allowed_units["Momentum"])
+
+    @property
+    def mass(self) -> u.Kg:
+        return self._mass
+
+    @property
+    def charge(self) -> u.C:
+        return self._charge
+
+    @property
+    def charge_number(self) -> int:
+        return self._charge_number
+
+    @property
+    def spin(self) -> int:
+        return self._spin
+
+    @property
+    def half_life(self) -> u.s:
+        return self._half_life
+
+    @property
+    def energy(self) -> u.J:
+        return self._energy
+
+    @energy.setter
+    def energy(self, new_energy):
+        if new_energy == None:
+            self._energy = np.nan * u.J
+        else:
+            self._energy = new_energy
+
+    @property
+    def frequency(self) -> (u.s ** -1):
+        return self._frequency
+
+    @frequency.setter
+    def frequency(self, new_frequency):
+        if new_frequency == None:
+            self._frequency = np.nan * (u.s ** -1)
+        else:
+            self._frequency = new_frequency
+
+    @property
+    def momentum(self) -> (u.kg * u.m / u.s):
+        return self._momentum
+
+    @momentum.setter
+    def momentum(self, new_momentum):
+        if new_momentum == None:
+            self._momentum = np.nan * (u.kg * u.m / u.s)
+        else:
+            self._momentum = new_momentum
+
+    @property
+    def wavelength(self) -> u.m:
+        return self._wavelength
+
+    @wavelength.setter
+    def wavelength(self, new_wavelength):
+        if new_wavelength == None:
+            self._wavelength = np.nan * u.m
+        else:
+            self._wavelength = new_wavelength
