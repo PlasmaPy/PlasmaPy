@@ -16,6 +16,7 @@ from plasmapy.formulary.dimensionless import (
     Reynolds_number,
     Rm_,
     Lundquist_number,
+    Lu_,
 )
 from plasmapy.utils.pytest_helpers import assert_can_handle_nparray
 
@@ -37,6 +38,7 @@ T_e = 1e6 * u.K
         (betaH_, Hall_parameter),
         (Re_, Reynolds_number),
         (Rm_, Mag_Reynolds),
+        (Lu_, Lundquist_number),
     ],
 )
 def test_aliases(alias, parent):
