@@ -587,12 +587,22 @@ def Lundquist_number(
     --------
     >>> import astropy.units as u
     >>> from astropy.constants.si import m_p, m_e
-    >>> L = 10e8 * u.m
-    >>> B = 10e2 * u.G
-    >>> rho = 10e-3 * u.kg / u.m**3
-    >>> sigma = 10e-6 * u.S / u.m
+    >>> L = 10**8 * u.m
+    >>> B = 10**2 * u.G
+    >>> n = 10**19 * u.m**-3
+    >>> rho = n*(m_p + m_e)
+    >>> sigma = 10**-7 * u.S / u.m
     >>> Lundquist_number(L, B, rho, sigma)
-    <Quantity 11.20998244>
+    <Quantity 0.86653839>
+    >>> Lundquist_number(L, B, n, sigma, ion="p")
+    <Quantity 0.86653839>
+    >>> Lundquist_number(L, B, n, sigma, ion="He +2")
+    <Quantity 0.43481967>
+    >>> Lundquist_number(L, B, n, sigma, ion="He", z_mean=1.8)
+    <Quantity 0.43476604>
+    >>> sigma = 10**-2 * u.S / u.m
+    >>> Lundquist_number(L, B, n, sigma, ion="He", z_mean=1.8)
+    <Quantity 43476.60420832>
 
     Returns
     -------
@@ -601,11 +611,5 @@ def Lundquist_number(
 
     """
 
-    if density.unit.is_equivalent(u.kg / u.m**3):
-        rho = density
-    else:
-        rho = misc.mass_density(density, ion)\
-              + misc.mass_density(density, "e", z_ratio=abs(z_mean))
-
-    alfven = speeds.Alfven_speed(B, rho)
+    alfven = speeds.Alfven_speed(B, density, ion=ion, z_mean=z_mean)
     return Mag_Reynolds(alfven, L, sigma)
