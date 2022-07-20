@@ -508,10 +508,12 @@ def Lundquist_number(
 
         S = \frac{L V_A}{η}
 
-    where L is the length scale, :math:`V_A = B/\sqrt{\mu_0 \rho}` is the Alfvén
-    speed, :math:`η = \frac{1}{μ_0 σ}` is the magnetic diffusivity, :math:`\sigma`
-    is the electrical conductivity, and :math:`μ_0` is the permeability of free
-    space.
+    where L is the length scale, :math:`V_A = B / \sqrt{\mu_0 \rho}` is the Alfvén
+    speed, :math:`B` is the magnetic field, :math:`\rho` is the mass density,
+    :math:`μ_0` is the permeability of free space, :math:`η = 1 / (μ_0 \sigma)` is
+    the magnetic diffusivity, and :math:`\sigma` is the electrical conductivity.
+
+    **Aliases:** `Lu_`
 
     Parameters
     ----------
@@ -579,9 +581,22 @@ def Lundquist_number(
 
     Notes
     -----
-    This expression does not account for relativistic effects, and
-    loses validity when the resulting Alfvén speed is a significant fraction
-    of the speed of light.
+    For calculating the Alfvén speed `~plasmapy.formulary.speeds.Alfven_speed`
+    is used and for calculating the Lundquist number
+    `~plasmapy.formulary.dimensionless.magnetic_Reynolds` is used.
+
+    The Lundquist number is an important quantity in the study of
+    magnetic reconnection. For example, reconnection rates in both the
+    Sweet-Parker and Petschek models of magnetic reconnection can be expressed
+    in terms of the Lundquist number. In the Sweet-Parker model, a current
+    sheet with half-width :math:`L`, conductivity :math:`\sigma`, magnetic
+    diffusivity :math:`\eta = 1 / (\mu_0 \sigma)`, and Alfvén speed :math:`V_A`
+    at the inflow has a Lundquist number of
+    :math:`S = LV_A / \eta`. The dimensionless reconnection rate :math:`R`,
+    i.e., the ratio of the inflow to outflow speeds, can then be expressed as
+    :math:`R \sim 1 / \sqrt{S}`. Similarly, the maximum reconnection rate
+    in the Petschek model can be expressed as approximately
+    :math:`\pi / (8 \ln S)` :cite:p:`Priest:2000`.
 
     Examples
     --------
@@ -613,3 +628,7 @@ def Lundquist_number(
 
     alfven = speeds.Alfven_speed(B, density, ion=ion, z_mean=z_mean)
     return Mag_Reynolds(alfven, L, sigma)
+
+
+Lu_ = Lundquist_number
+"""Alias to `~plasmapy.formulary.dimensionless.Lundquist_number`."""
