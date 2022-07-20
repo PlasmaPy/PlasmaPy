@@ -1,6 +1,9 @@
 """
 This module tests the functions in the maagnetics class
+It is a scratch file
+will be removed 
 """
+
 import h5py
 from matplotlib import pyplot as plt
 from magnetics import Magnetics
