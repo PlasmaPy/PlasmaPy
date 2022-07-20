@@ -9,14 +9,14 @@ from plasmapy.formulary.dimensionless import (
     betaH_,
     Debye_number,
     Hall_parameter,
+    Lu_,
+    Lundquist_number,
     Mag_Reynolds,
     nD_,
     quantum_theta,
     Re_,
     Reynolds_number,
     Rm_,
-    Lundquist_number,
-    Lu_,
 )
 from plasmapy.utils.pytest_helpers import assert_can_handle_nparray
 
@@ -139,6 +139,7 @@ def test_Debye_number():
         assert Debye_number(1.1 * u.K, 1.1) == Debye_number(1.1, 1.1 * u.m**-3)
 
     assert_can_handle_nparray(Debye_number)
+
 
 def test_Lundquist_number():
     r"""Test the Lundquist_number function in dimensionless.py."""

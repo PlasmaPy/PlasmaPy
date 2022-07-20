@@ -15,7 +15,7 @@ __all__ = [
     "Mag_Reynolds",
     "quantum_theta",
     "Reynolds_number",
-    "Lundquist_number"
+    "Lundquist_number",
 ]
 __aliases__ = ["betaH_", "nD_", "Re_", "Rm_"]
 
@@ -490,12 +490,12 @@ Rm_ = Mag_Reynolds
 
 
 def Lundquist_number(
-        L: u.m,
-        B: u.T,
-        density: (u.m**-3, u.kg / u.m**3),
-        sigma: u.S / u.m,
-        ion: Optional[Particle] = None,
-        z_mean: Optional[numbers.Real] = None
+    L: u.m,
+    B: u.T,
+    density: (u.m**-3, u.kg / u.m**3),
+    sigma: u.S / u.m,
+    ion: Optional[Particle] = None,
+    z_mean: Optional[numbers.Real] = None,
 ) -> u.dimensionless_unscaled:
     r"""
     Compute the Lundquist number
