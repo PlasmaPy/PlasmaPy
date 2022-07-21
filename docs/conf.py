@@ -205,7 +205,6 @@ exclude_patterns = [
     ".DS_Store",
     "notebooks/langmuir_samples",
     "**.ipynb_checkpoints",
-    "plasmapy_sphinx",
     "common_links.rst",
     "**Untitled*",
 ]
