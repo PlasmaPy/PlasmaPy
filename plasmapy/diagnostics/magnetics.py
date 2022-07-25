@@ -34,6 +34,9 @@ class Magnetics:
         Returns:
             field_arr : array of magnetic field values for the bdots
         """
+        if len(bdot) != len(time_s):
+            raise Exception("Length of time and voltage arrays in not equal")
+
         bdot[:] = [x / tloop_area for x in bdot]
         field_arr = sp.cumtrapz(bdot, time_s)  # Tesla
 
@@ -70,7 +73,9 @@ class Magnetics:
         Returns:
             filtered_arr : array with filter applied 
         """
-
+        if cutoff > sampling_frequency:
+            raise ValueError(
+                "Sampling frequency must be greater than cutoff Value")
         nyq = 0.5 * sampling_frequency
         normal_cutoff = cutoff/nyq
         b, a = signal.butter(order, normal_cutoff,

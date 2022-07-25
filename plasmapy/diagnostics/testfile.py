@@ -28,13 +28,13 @@ test = Magnetics()
 timeB_s = data['time']['timeB_s'][0,:]
 time_s = data['time']['time_s'][0,:]
 
-"""
+
 #bdot_field function 
 Bdot = data['pos19']['Bdot']['theta'][1,:]
 tloop = 1.6129508E-6
 times = data['time']['time_s'][0,:]
 
-result = test.bdot_field(Bdot, tloop, times, "Tesla")
+result = test.bdot_field(Bdot, tloop, time_s, "Tesla")
 
 #plots
 timeB_s = data['time']['timeB_s'][0,:]
@@ -47,7 +47,7 @@ plt.show()
 plt.plot(timeB_s, result)
 plt.title("Magnetic field calculated")
 plt.show()
-"""
+
 
 #finding screwed up shots
 #pos19
@@ -66,7 +66,7 @@ for arr in b19_r:
 """
 
 test2_array = b19_r[1,:]
-subbed_array = test.band_pass_filter(test2_array, 5e4, 125e6, 3)
+subbed_array = test.band_pass_filter(test2_array,  5e4, 125e6,  3)
 
 plt.plot(timeB_s, test2_array)
 plt.title("Array before filter" )
