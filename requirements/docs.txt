@@ -11,7 +11,7 @@ nbsphinx
 numpydoc
 pillow
 pygments >= 2.11.0
-sphinx >= 4.4
+sphinx >= 4.4, != 5.1
 sphinx-changelog
 sphinx-copybutton
 sphinx-gallery
