@@ -88,8 +88,8 @@ To create a new environment with `plasmapy` installed in it, run:
 
     conda create -n env_name -c conda-forge plasmapy
 
-where :samp:`{env_name}` is replaced by the name of the environment. To
-activate this environment, run:
+where :samp:`{env_name}` is replaced by the name of the environment.
+This step may take several minutes. To activate this environment, run:
 
 .. code-block:: bash
 
@@ -139,7 +139,8 @@ that you would like to install `plasmapy` in. The default is generally
 ``base (root)``. Optionally, you may select :guilabel:`Create` to start
 a new environment. In the search bar, enter ``plasmapy``. Click on the
 checkbox next to ``plasmapy``, and select :guilabel:`Apply` to begin the
-installation process.
+installation process. It may take several minutes for Anaconda Navigator
+to solve package specifications.
 
 To test the installation, click on the :guilabel:`▶` icon that should be
 present next to the activated environment, and select
@@ -211,7 +212,7 @@ will be installed.
    fork a repository and create branches so that you may make
    contributions via pull requests.
 
-.. _Anaconda Navigator: https://www.anaconda.com/products/individual
+.. _Anaconda Navigator: https://www.anaconda.com/products/distribution
 .. _clone a repository using SSH: https://docs.github.com/en/get-started/getting-started-with-git/about-remote-repositories#cloning-with-ssh-urls
 .. _conda-forge: https://conda-forge.org
 .. _download Python: https://www.python.org/downloads/

@@ -77,8 +77,8 @@ grid_data = [
         *_create_widget(
             _FloatBox,
             property_name="n",
-            unit=units.m ** -3,
-            opts=[units.m ** -3, units.cm ** -3, units.mm ** -3],
+            unit=units.m**-3,
+            opts=[units.m**-3, units.cm**-3, units.mm**-3],
         ),
     ],
     [
@@ -86,8 +86,8 @@ grid_data = [
         *_create_widget(
             _FloatBox,
             property_name="n_e",
-            unit=units.m ** -3,
-            opts=[units.m ** -3, units.cm ** -3, units.mm ** -3],
+            unit=units.m**-3,
+            opts=[units.m**-3, units.cm**-3, units.mm**-3],
         ),
     ],
     [
@@ -95,8 +95,8 @@ grid_data = [
         *_create_widget(
             _FloatBox,
             property_name="n_i",
-            unit=units.m ** -3,
-            opts=[units.m ** -3, units.cm ** -3, units.mm ** -3],
+            unit=units.m**-3,
+            opts=[units.m**-3, units.cm**-3, units.mm**-3],
         ),
     ],
     [

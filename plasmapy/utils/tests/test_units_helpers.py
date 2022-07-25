@@ -1,4 +1,4 @@
-"""Tests of `plasmapy.utils.units_helpers`."""
+"""Tests of `plasmapy.utils._units_helpers`."""
 
 import astropy.units as u
 import pytest
@@ -6,11 +6,11 @@ import pytest
 from astropy.constants import c, m_e
 from collections import namedtuple
 
-from plasmapy.utils.units_helpers import _get_physical_type_dict
+from plasmapy.utils._units_helpers import _get_physical_type_dict
 
 
 def test_get_physical_type_dict_specific_example():
-    units = [u.m, u.m ** -3, u.m * u.s]
+    units = [u.m, u.m**-3, u.m * u.s]
     quantities = [5 * unit for unit in units]
     expected = {quantity.unit.physical_type: quantity for quantity in quantities}
     new_physical_type_dict = _get_physical_type_dict(quantities)

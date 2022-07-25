@@ -1,2 +1,0 @@
-Applied `pytest.warns` in several tests to catch warnings that are being
-issued during execution of the test suite.

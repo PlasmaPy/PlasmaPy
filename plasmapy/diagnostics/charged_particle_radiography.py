@@ -467,7 +467,7 @@ class Tracker:
             ] = False
         # Handle the case where the mesh is circular
         else:
-            loc_rad = np.sqrt(xloc ** 2 + yloc ** 2)
+            loc_rad = np.sqrt(xloc**2 + yloc**2)
             hit[loc_rad > radius] = False
 
             # In the case of a circular mesh, also create a round wire along the
@@ -529,7 +529,7 @@ class Tracker:
         n_per = np.floor(np.sqrt(self.nparticles)).astype(np.int32)
 
         # Set new nparticles to be a perfect square
-        self.nparticles = n_per ** 2
+        self.nparticles = n_per**2
 
         # Create an imaginary grid positioned 1 unit from the source
         # and spanning max_theta at the corners
@@ -539,7 +539,7 @@ class Tracker:
 
         # calculate the angles from the source for each point in
         # the grid.
-        theta = np.arctan(np.sqrt(harr ** 2 + varr ** 2))
+        theta = np.arctan(np.sqrt(harr**2 + varr**2))
         phi = np.arctan2(varr, harr)
 
         return theta.flatten(), phi.flatten()
@@ -626,7 +626,7 @@ class Tracker:
             self.max_theta = max_theta.to(u.rad).value
 
         # Calculate the velocity corresponding to the particle energy
-        ER = self.particle_energy * 1.6e-19 / (self.m * self._c ** 2)
+        ER = self.particle_energy * 1.6e-19 / (self.m * self._c**2)
         v0 = self._c * np.sqrt(1 - 1 / (ER + 1) ** 2)
 
         if distribution == "monte-carlo":
@@ -687,7 +687,7 @@ class Tracker:
                     such that the flux per solid angle is uniform.
 
                 - 'uniform': velocities will be distributed such that,
-                   left unpreturbed,they will form a uniform pattern
+                   left unperturbed,they will form a uniform pattern
                    on the detection plane.
 
             Simulations run in the ``'uniform'`` mode will imprint a grid pattern
@@ -747,7 +747,7 @@ class Tracker:
 
         # If not, compute a number of possible timesteps
         # Compute the cyclotron gyroperiod
-        Bmag = np.max(np.sqrt(Bx ** 2 + By ** 2 + Bz ** 2)).to(u.T).value
+        Bmag = np.max(np.sqrt(Bx**2 + By**2 + Bz**2)).to(u.T).value
 
         # Compute the gyroperiod
         if Bmag == 0:
@@ -772,7 +772,7 @@ class Tracker:
         be entering the grid. Doing in this in one step (rather than pushing
         the particles through zero fields) saves computation time.
         """
-        # Distance from the source to the nearest gridpoint
+        # Distance from the source to the nearest grid point
         dist = np.min(np.linalg.norm(self.grid_arr - self.source, axis=3))
 
         # Find the particle with the highest speed towards the grid
@@ -915,7 +915,7 @@ class Tracker:
 
         # Calculate the adaptive timestep from the fields currently experienced
         # by the particles
-        # If user sets dt explicitly, that's handled in _adpative_dt
+        # If user sets dt explicitly, that's handled in _adaptive_dt
         dt = self._adaptive_dt(Ex, Ey, Ez, Bx, By, Bz)
 
         # TODO: Test v/c and implement relativistic Boris push when required
@@ -983,7 +983,7 @@ class Tracker:
             An explicitly set timestep in units convertible to seconds.
             Setting this optional keyword overrules the adaptive time step
             capability and forces the use of this timestep throughout. If a tuple
-            of timesteps is provided, the adaptive timstep will be clamped
+            of timesteps is provided, the adaptive timestep will be clamped
             between the first and second values.
 
         field_weighting : str

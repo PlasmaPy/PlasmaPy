@@ -36,7 +36,7 @@ jobs:
       with:
         fetch-depth: 0
     - name: Set up Python
-      uses: actions/setup-python@v3
+      uses: actions/setup-python@v4
       with:
         python-version: ${{ matrix.python }}
     - name: Install Python dependencies
@@ -84,7 +84,7 @@ jobs:
       with:
         fetch-depth: 0
     - name: Set up Python
-      uses: actions/setup-python@v3
+      uses: actions/setup-python@v4
       with:
         python-version: ${{ matrix.python }}
     - name: Install Python dependencies
@@ -99,6 +99,7 @@ jobs:
       uses: codecov/codecov-action@v3
       with:
         file: ./coverage.xml
+
   documentation:
     name: Documentation
     runs-on: ubuntu-latest
@@ -110,7 +111,7 @@ jobs:
       with:
         fetch-depth: 0
     - name: Set up Python
-      uses: actions/setup-python@v3
+      uses: actions/setup-python@v4
       with:
         python-version: 3.8
     - name: Install Python dependencies
@@ -119,6 +120,7 @@ jobs:
       run: sudo apt-get install graphviz pandoc
     - name: Run tests
       run: tox -e build_docs -- -q
+
   codespell:
     name: codespell
     runs-on: ubuntu-latest
@@ -130,19 +132,42 @@ jobs:
       with:
         fetch-depth: 0
     - name: Set up Python
-      uses: actions/setup-python@v3
+      uses: actions/setup-python@v4
       with:
         python-version: 3.9
     - name: Install Python dependencies
       run: python -m pip install --progress-bar off --upgrade tox
     - name: Run tests
       run: tox -e codespell -q
+
+  import-plasmapy:
+    name: Importing PlasmaPy
+    runs-on: windows-latest
+    strategy:
+      fail-fast: false
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: 3.8
+    - name: Install Python dependencies
+      run: python -m pip install --progress-bar off --upgrade tox
+    - name: Import PlasmaPy
+      run: tox -e py38-minimal-pypi-import
+
   build-n-publish:
     name: Packaging
     runs-on: ubuntu-18.04
     needs:
+    - initial-tests
     - comprehensive-tests
     - documentation
+    - codespell
+    - import-plasmapy
     steps:
     - uses: actions/checkout@v3
     - name: Get history and tags for SCM versioning to work
@@ -150,7 +175,7 @@ jobs:
         git fetch --prune --unshallow
         git fetch --depth=1 origin +refs/tags/*:refs/tags/*
     - name: Set up Python 3.8
-      uses: actions/setup-python@v3
+      uses: actions/setup-python@v4
       with:
         python-version: 3.8
     - name: Install requirements
@@ -168,26 +193,3 @@ jobs:
         pip install --progress-bar off .[all,dev]
         pip install --progress-bar off -e .[all,dev]
         python setup.py develop
-    - name: Publish distribution, if tagged, 📦 to PyPI
-      if: ${{ startsWith(github.ref, 'refs/tags') && !endsWith(github.ref, 'dev') }}
-      uses: pypa/gh-action-pypi-publish@master
-      with:
-        password: ${{ secrets.pypi_access_token }}
-  import-plasmapy:
-    name: Importing PlasmaPy
-    runs-on: windows-latest
-    strategy:
-      fail-fast: false
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
-      with:
-        fetch-depth: 0
-    - name: Set up Python
-      uses: actions/setup-python@v3
-      with:
-        python-version: 3.8
-    - name: Install Python dependencies
-      run: python -m pip install --progress-bar off --upgrade tox
-    - name: Import PlasmaPy
-      run: tox -e py38-minimal-pypi-import

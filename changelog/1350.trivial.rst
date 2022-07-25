@@ -1,5 +1,0 @@
-Split the tests running on pull requests into multiple stages. The
-various pytest_ test environments, including code coverage, now run
-conditionally given successful execution of a basic test environment and
-the linter checks. This change also prevents code coverage prompts from
-appearing twice, with incomplete information on the first time.

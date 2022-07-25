@@ -82,7 +82,7 @@ from plasmapy.utils.decorators.checks import _check_relativistic
 @particles.particle_input
 def Coulomb_logarithm(
     T: u.K,
-    n_e: u.m ** -3,
+    n_e: u.m**-3,
     species: (particles.Particle, particles.Particle),
     z_mean: Real = np.nan,
     V: u.m / u.s = np.nan * u.m / u.s,
@@ -495,7 +495,7 @@ def Coulomb_logarithm(
         "hls_full_interp",
         "GMS-6",
     ):
-        ln_Lambda = 0.5 * np.log(1 + bmax ** 2 / bmin ** 2)
+        ln_Lambda = 0.5 * np.log(1 + bmax**2 / bmin**2)
     else:
         raise ValueError(
             'Unknown method. Choose from "classical", "ls_min_interp", '
@@ -664,7 +664,7 @@ def impact_parameter_perp(
 
     T, masses, charges, reduced_mass, V = _process_inputs(T=T, species=species, V=V)
 
-    return charges[0] * charges[1] / (4 * pi * eps0 * reduced_mass * V ** 2)
+    return charges[0] * charges[1] / (4 * pi * eps0 * reduced_mass * V**2)
 
 
 @validate_quantities(
@@ -674,7 +674,7 @@ def impact_parameter_perp(
 )
 def impact_parameter(
     T: u.K,
-    n_e: u.m ** -3,
+    n_e: u.m**-3,
     species,
     z_mean: Real = np.nan,
     V: u.m / u.s = np.nan * u.m / u.s,
@@ -791,18 +791,14 @@ def impact_parameter(
     T, masses, charges, reduced_mass, V = _process_inputs(T=T, species=species, V=V)
     # catching error where mean charge state is not given for non-classical
     # methods that require the ion density
-    if (
-        method
-        in (
-            "ls_full_interp",
-            "GMS-2",
-            "hls_max_interp",
-            "GMS-5",
-            "hls_full_interp",
-            "GMS-6",
-        )
-        and np.isnan(z_mean)
-    ):
+    if method in (
+        "ls_full_interp",
+        "GMS-2",
+        "hls_max_interp",
+        "GMS-5",
+        "hls_full_interp",
+        "GMS-6",
+    ) and np.isnan(z_mean):
         raise ValueError(
             'Must provide a z_mean for "ls_full_interp", '
             '"hls_max_interp", and "hls_full_interp" methods.'
@@ -837,7 +833,7 @@ def impact_parameter(
         # approach, but bmin is interpolated between the de Broglie
         # wavelength and distance of closest approach.
         bmax = lambdaDe
-        bmin = (lambdaBroglie ** 2 + bPerp ** 2) ** (1 / 2)
+        bmin = (lambdaBroglie**2 + bPerp**2) ** (1 / 2)
     elif method in ["ls_full_interp", "GMS-2"]:
         # 2nd method listed in Table 1 of reference [1]
         # Another Landau-Spitzer like approach, but now bmax is also
@@ -848,25 +844,25 @@ def impact_parameter(
         n_i = n_e / z_mean
         # mean ion sphere radius.
         ionRadius = Wigner_Seitz_radius(n_i)
-        bmax = (lambdaDe ** 2 + ionRadius ** 2) ** (1 / 2)
-        bmin = (lambdaBroglie ** 2 + bPerp ** 2) ** (1 / 2)
+        bmax = (lambdaDe**2 + ionRadius**2) ** (1 / 2)
+        bmin = (lambdaBroglie**2 + bPerp**2) ** (1 / 2)
     elif method in ["ls_clamp_mininterp", "GMS-3"]:
         # 3rd method listed in Table 1 of reference [1]
         # same as GMS-1, but not Lambda has a clamp at Lambda_min = 2
         # where Lambda is the argument to the Coulomb logarithm.
         bmax = lambdaDe
-        bmin = (lambdaBroglie ** 2 + bPerp ** 2) ** (1 / 2)
+        bmin = (lambdaBroglie**2 + bPerp**2) ** (1 / 2)
     elif method in ["hls_min_interp", "GMS-4"]:
         # 4th method listed in Table 1 of reference [1]
         bmax = lambdaDe
-        bmin = (lambdaBroglie ** 2 + bPerp ** 2) ** (1 / 2)
+        bmin = (lambdaBroglie**2 + bPerp**2) ** (1 / 2)
     elif method in ["hls_max_interp", "GMS-5"]:
         # 5th method listed in Table 1 of reference [1]
         # Mean ion density.
         n_i = n_e / z_mean
         # mean ion sphere radius.
         ionRadius = Wigner_Seitz_radius(n_i)
-        bmax = (lambdaDe ** 2 + ionRadius ** 2) ** (1 / 2)
+        bmax = (lambdaDe**2 + ionRadius**2) ** (1 / 2)
         bmin = bPerp
     elif method in ["hls_full_interp", "GMS-6"]:
         # 6th method listed in Table 1 of reference [1]
@@ -874,8 +870,8 @@ def impact_parameter(
         n_i = n_e / z_mean
         # mean ion sphere radius.
         ionRadius = Wigner_Seitz_radius(n_i)
-        bmax = (lambdaDe ** 2 + ionRadius ** 2) ** (1 / 2)
-        bmin = (lambdaBroglie ** 2 + bPerp ** 2) ** (1 / 2)
+        bmax = (lambdaDe**2 + ionRadius**2) ** (1 / 2)
+        bmin = (lambdaBroglie**2 + bPerp**2) ** (1 / 2)
     else:
         raise ValueError(f"Method {method} not found!")
 
@@ -883,9 +879,9 @@ def impact_parameter(
     # it could be that bmin and bmax have different sizes. If Te is a scalar,
     # T and V will be scalar from _process_inputs, so bmin will scalar. However
     # if n_e is an array, then bmax will be an array. if this is the case,
-    # do we want to extend the scalar bmin to equal the length of bmax? Sure.
-    if np.isscalar(bmin.value) and not np.isscalar(bmax.value):
-        bmin = np.repeat(bmin, len(bmax))
+    # we want to extend the scalar bmin to match the dimensions of bmax.
+    if bmin.size == 1 and bmax.size != 1:
+        bmin = bmin * np.ones(bmax.shape)
 
     return bmin.to(u.m), bmax.to(u.m)
 
@@ -896,7 +892,7 @@ def impact_parameter(
 )
 def collision_frequency(
     T: u.K,
-    n: u.m ** -3,
+    n: u.m**-3,
     species,
     z_mean: Real = np.nan,
     V: u.m / u.s = np.nan * u.m / u.s,
@@ -1041,7 +1037,7 @@ def collision_frequency(
 
 
 @validate_quantities(impact_param={"can_be_negative": False})
-def Coulomb_cross_section(impact_param: u.m) -> u.m ** 2:
+def Coulomb_cross_section(impact_param: u.m) -> u.m**2:
     r"""
     Cross section for a large angle Coulomb collision.
 
@@ -1086,12 +1082,12 @@ def Coulomb_cross_section(impact_param: u.m) -> u.m ** 2:
 )
 def fundamental_electron_collision_freq(
     T_e: u.K,
-    n_e: u.m ** -3,
+    n_e: u.m**-3,
     ion,
     coulomb_log=None,
     V=None,
     coulomb_log_method="classical",
-) -> u.s ** -1:
+) -> u.s**-1:
     r"""
     Average momentum relaxation rate for a slowly flowing Maxwellian
     distribution of electrons.
@@ -1214,12 +1210,12 @@ def fundamental_electron_collision_freq(
 )
 def fundamental_ion_collision_freq(
     T_i: u.K,
-    n_i: u.m ** -3,
+    n_i: u.m**-3,
     ion,
     coulomb_log=None,
     V=None,
     coulomb_log_method="classical",
-) -> u.s ** -1:
+) -> u.s**-1:
     r"""
     Average momentum relaxation rate for a slowly flowing Maxwellian
     distribution of ions.
@@ -1351,7 +1347,7 @@ def fundamental_ion_collision_freq(
 )
 def mean_free_path(
     T: u.K,
-    n_e: u.m ** -3,
+    n_e: u.m**-3,
     species,
     z_mean: Real = np.nan,
     V: u.m / u.s = np.nan * u.m / u.s,
@@ -1470,7 +1466,7 @@ def mean_free_path(
 )
 def Spitzer_resistivity(
     T: u.K,
-    n: u.m ** -3,
+    n: u.m**-3,
     species,
     z_mean: Real = np.nan,
     V: u.m / u.s = np.nan * u.m / u.s,
@@ -1598,12 +1594,12 @@ def Spitzer_resistivity(
 )
 def mobility(
     T: u.K,
-    n_e: u.m ** -3,
+    n_e: u.m**-3,
     species,
     z_mean: Real = np.nan,
     V: u.m / u.s = np.nan * u.m / u.s,
     method="classical",
-) -> u.m ** 2 / (u.V * u.s):
+) -> u.m**2 / (u.V * u.s):
     r"""
     Return the electrical mobility.
 
@@ -1727,7 +1723,7 @@ def mobility(
 def Knudsen_number(
     characteristic_length,
     T: u.K,
-    n_e: u.m ** -3,
+    n_e: u.m**-3,
     species,
     z_mean: Real = np.nan,
     V: u.m / u.s = np.nan * u.m / u.s,
@@ -1851,7 +1847,7 @@ def Knudsen_number(
 )
 def coupling_parameter(
     T: u.K,
-    n_e: u.m ** -3,
+    n_e: u.m**-3,
     species,
     z_mean: Real = np.nan,
     V: u.m / u.s = np.nan * u.m / u.s,
@@ -2021,7 +2017,7 @@ def coupling_parameter(
         lambda_deBroglie = thermal_deBroglie_wavelength(T)
         chem_potential = chemical_potential(n_e, T)
         fermi_integral = Fermi_integral(chem_potential.si.value, 1.5)
-        denominator = (n_e * lambda_deBroglie ** 3) * fermi_integral
+        denominator = (n_e * lambda_deBroglie**3) * fermi_integral
         kinetic_energy = 2 * k_B * T / denominator
         if np.all(np.imag(kinetic_energy) == 0):
             kinetic_energy = np.real(kinetic_energy)
