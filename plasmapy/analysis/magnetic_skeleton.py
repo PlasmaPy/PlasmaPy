@@ -49,6 +49,64 @@ class FanPoint:
     index = property(get_index)
 
 
+class Separator:
+    """
+    Abstract class for defining a Separator in 3D space.
+    """
+
+    def __init__(self, points, starting_null, end_null):
+        self._points = points
+        self._starting_null = starting_null
+        self._end_null = end_null
+
+    def get_points(self):
+        r"""
+        Returns the points of the Separator object.
+        """
+        return self._points
+
+    def get_starting_null(self):
+        r"""
+        Returns the starting null of the Separator object.
+        """
+        return self._starting_null
+
+    def get_end_null(self):
+        r"""
+        Returns the ending null of the Separator object.
+        """
+        return self._end_null
+
+    points = property(get_points)
+    starting_null = property(get_starting_null)
+    end_null = property(get_end_null)
+
+
+class Fan:
+    """
+    Abstract class for defining a Fan in 3D space.
+    """
+
+    def __init__(self, ring_list, generating_null):
+        self._ring_list = ring_list
+        self._generating_null = generating_null
+
+    def get_ring_list(self):
+        r"""
+        Returns the ring list of the Fan object.
+        """
+        return self._ring_list
+
+    def get_generating_null(self):
+        r"""
+        Returns the generating null of the Fan object.
+        """
+        return self._generating_null
+
+    ring_list = property(get_ring_list)
+    generating_null = property(get_generating_null)
+
+
 _EQUALITY_ATOL = 1e-10
 _INDEX_CONST = 1048576
 # Finds the eigen vectors that determine the fan plane
