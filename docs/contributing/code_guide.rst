@@ -10,6 +10,134 @@ followed during the development of PlasmaPy and affiliated packages.
 Code written for PlasmaPy must be compatible with Python 3.8 and
 later.
 
+Names
+=====
+
+Names are the most fundamental means of communicating the intent and
+purpose of code. Judicious choices of names can greatly improve the
+understandability of code, while inadequate naming can obfuscate what
+the code is supposed to be doing.
+
+* Use :pep:`8` conventions for naming variables, functions, classes, and
+  constants (except as described later in this list).
+
+  - Use lowercase words separated by underscores for function and
+    variable names (e.g., ``function_name`` and ``variable_name``).
+
+  - Use capitalized words without separators when naming a :term:`class`
+    or an exception (e.g., ``ClassName`` or ``ExceptionName``). However,
+    keep acronyms capitalized (e.g., ``MHDEquations``).
+
+  - Use capital letters words separated by underscores for constants
+    (e.g., ``CONSTANT`` or ``CONSTANT_NAME``).
+
+* Choose names that are pronounceable so that they are easier to
+  remember and more compatible with text-to-speech technology.
+
+* Choose names that can be used in searches on the World Wide Web™.
+
+* Avoid unnecessary abbreviations, as these can make code more difficult
+  to read. Clarity is more important than brevity, except for code that
+  is used frequently and interactively (e.g., :command:`ls` or
+  :command:`cd` in the Unix shell).
+
+  .. tip::
+
+     Measure the length of a variable not by the number of characters,
+     but rather by the time needed to understand its meaning.
+
+     By this measure, ``cggglm`` is significantly longer than
+     ``solve_gauss_markov_linear_model``.
+
+* Use a capital letter for a :term:`parameter` when it matches the
+  standard usage in plasma science. For example, use ``B`` for magnetic
+  field strength and ``T`` for temperature.
+
+* Avoid potentially ambiguous names. Does ``temp`` mean "temperature",
+  "temporary", or "template"?
+
+* Functions based on plasma parameters that are named after people may
+  be capitalized (e.g., ``Alfven_speed``).
+
+* Append ``_e`` to the name of a :term:`parameter` to indicate that it
+  refers to electrons, ``_i`` to indicate that it refers to ions, and
+  ``_p`` to indicate that it refers to protons (e.g., ``T_e``, ``T_i``,
+  and ``T_p``).
+
+* Only use ASCII_ characters in code that is part of the public API_.
+
+* Python allows alphanumeric Unicode characters to be used in object
+  names (e.g., ``πλάσμα`` or ``φυσική``). These characters may be used
+  for internal code when doing so improves readability (i.e. to match a
+  commonly used symbol).
+
+* If a plasma parameter has multiple names, then use the name that
+  provides the most physical insight. For example, ``gyrofrequency``
+  indicates gyration but ``Larmor_frequency`` does not.
+
+* It is *usually* preferable to name a variable after its name rather
+  than its symbol.  An object named ``Debye_length`` is more broadly
+  understandable than ``lambda_D``. However, there are some exceptions
+  to this guideline.
+
+  * Symbols used widely across plasma science can be used with low risk
+    of confusion, such as when using :math:`T` for temperature or
+    :math:`β` for plasma `~plasmapy.formulary.dimensionless.beta`.
+    However, different symbols may be used for different subfields of
+    plasma science.
+
+  * Symbols defined in docstrings can be used with decreased likelihood
+    of confusion.
+
+  * If the implementation of a function is based on a journal article,
+    then the function might be more readable and maintainable if the
+    variable names are based on the symbols used in that article. The
+    article should be cited in the docstring of that function so that it
+    appears in the |bibliography|.
+
+  * Sometimes code that represents an equation will be most readable if
+    the Unicode characters for the symbols are used. For example,
+    ``λ = c / ν`` will be
+    ``lambda = c / nu`` or ``wavelength = speed_of_light / frequency``.
+    Using Unicode characters for variable names is most beneficial for
+    complex equations.
+
+* To mark that an object is not part of PlasmaPy's public API_, begin
+  its name with a leading underscore (e.g., ``_private_variable``).
+  Private variables should not be included in ``__all__``.
+
+* In most situations, avoid single character variable names. Single
+  character variable names may be used for standard plasma physics
+  symbols (i.e., ``B``) or as indices in ``for`` loops (though more
+  descriptive names are preferred).
+
+* In general, avoid encoding type information in a variable name.
+
+* Intermediate variable names can provide additional context and
+  meaning. For example, suppose we have a conditional operating on a
+  complicated expression:
+
+  .. code-block:: python
+
+     if u[0] < x < u[1] and v[0] < y < v[1] and w[0] < z < w[1]: ...
+
+  Defining an intermediate variable allows us to communicate the meaning
+  and intent of the expression.
+
+  .. code-block:: python
+
+     point_is_in_grid_cell = u[0] < x < u[1] and v[0] < y < v[1] and w[0] < z < w[1]
+
+     if point_is_in_grid_cell:
+         ...
+
+.. hint::
+
+   Most IDEs_ have a built-in tool for simultaneously renaming a
+   variable throughout a project. For example, a `rename refactoring in
+   PyCharm`_ can be done with :kbd:`Shift+F6` on Windows or Linux, and
+   :kbd:`⇧F6` or :kbd:`⌥⌘R` on macOS.
+
 Coding Style
 ============
 
@@ -369,3 +497,6 @@ generated from results located in `benchmarks-repo`_. Detailed
 instructions on writing such benchmarks can be found at `asv-docs`_.
 Up-to-date instructions on running the benchmark suite will be located in
 the README file of `benchmarks-repo`_.
+
+.. _cggglm: http://www.netlib.org/lapack/explore-html/d9/d98/group__complex_o_t_h_e_reigen_ga4be128ffc05552459683f0aade5a7937.html
+.. |cggglm| replace:: ``cggglm``
