@@ -1,5 +1,3 @@
-.. _code-development-guidelines:
-
 ************
 Coding Guide
 ************
