@@ -9,7 +9,6 @@ from plasmapy.formulary.dimensionless import (
     betaH_,
     Debye_number,
     Hall_parameter,
-    Lu_,
     Lundquist_number,
     Mag_Reynolds,
     nD_,
@@ -38,7 +37,6 @@ T_e = 1e6 * u.K
         (betaH_, Hall_parameter),
         (Re_, Reynolds_number),
         (Rm_, Mag_Reynolds),
-        (Lu_, Lundquist_number),
     ],
 )
 def test_aliases(alias, parent):

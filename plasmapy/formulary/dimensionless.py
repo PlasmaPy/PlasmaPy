@@ -513,8 +513,6 @@ def Lundquist_number(
     :math:`μ_0` is the permeability of free space, :math:`η = 1 / (μ_0 \sigma)` is
     the magnetic diffusivity, and :math:`\sigma` is the electrical conductivity.
 
-    **Aliases:** `Lu_`
-
     Parameters
     ----------
     L : `~astropy.units.Quantity`
@@ -628,7 +626,3 @@ def Lundquist_number(
 
     alfven = speeds.Alfven_speed(B, density, ion=ion, z_mean=z_mean)
     return Mag_Reynolds(alfven, L, sigma)
-
-
-Lu_ = Lundquist_number
-"""Alias to `~plasmapy.formulary.dimensionless.Lundquist_number`."""
