@@ -1,14 +1,23 @@
 .. _code-development-guidelines:
 
-***************************
-Code Development Guidelines
-***************************
+************
+Coding Guide
+************
 
-This document describes the coding requirements and guidelines to be
-followed during the development of PlasmaPy and affiliated packages.
+This guide describes common conventions, guidelines, and strategies for
+contributing code to PlasmaPy. The purpose of this guide is not to
+provide a set of rigid guidelines that must be adhered to, but rather to
+provide a common framework that helps us develop PlasmaPy together as a
+community.
 
-Code written for PlasmaPy must be compatible with Python 3.8 and
-later.
+Having a shared coding style makes it easier to understand code written
+by multiple contributors. The particulars of the coding style are not as
+important as consistency, readability, and maintainability.
+
+This guide can (and should!) be regularly refined by the PlasmaPy
+community as we collectively learn new practices and our shared coding
+style changes. Please feel free to propose revisions to this guide by
+submitting a pull request or bringing up an idea at a community meeting.
 
 Coding Style
 ============
