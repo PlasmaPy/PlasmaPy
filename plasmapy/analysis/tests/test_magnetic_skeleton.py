@@ -85,5 +85,6 @@ def test_3():
         x_arr, y_arr, z_arr, u, v, w
     )
     for elem in seperators:
+        print("###########")
         for p in elem:
             print(p.loc)

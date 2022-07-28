@@ -111,6 +111,30 @@ _EQUALITY_ATOL = 1e-10
 _INDEX_CONST = 1048576
 # Finds the eigen vectors that determine the fan plane
 def eigen_handler(eigen_vals, eigen_vectors):
+    r"""
+    Separates the eigen vectors that define the fan from
+    the eigen vector that defines the spine and returns
+    them.
+
+    Parameters
+    ----------
+    eigen_vals: array_like
+        The eigen values of the Jacobian matrix stored
+        in a 1 by 3 array
+
+    eigen_vectors: array_like
+        The eigen vectors of the Jacobian matrix, each
+        of which are represented by a 1 by 3 array,
+         stored in a 1 by 3 array.
+
+    Returns
+    -------
+    array_like
+        A 1 by 2 numpy array which separately stores the
+        two eigen vectors that define the fan, and the third
+        eigen value which defines the direction of the spine.
+
+    """
     lambda1_vector = None
     lambda2_vector = None
     lambda3_vector = None
@@ -147,7 +171,32 @@ def eigen_handler(eigen_vals, eigen_vectors):
 
 # Approximates the field at any point using tl approximation
 def B_approx(vspace, loc):
-    # return np.array([np.NaN,np.NaN,np.NaN ]).reshape(3,)
+    r"""
+    Return the coordinates of a null point within
+    a given grid cell in a vector space using the
+    Newton-Rapshon method.
+
+    Parameters
+    ----------
+    vspace: array_like
+        The vector space as constructed by the vector_space function which is
+        A 1 by 3 array with the first element containing the coordinates,
+        the second element containing the vector values,
+        and the third element containing the delta values for each dimension.
+
+    loc: array_like
+        The location, represented by a 1 by 3 array, in 3D space,
+        for which the magnetic field values will be approximated
+        using trilinear approximation.
+
+    Returns
+    -------
+    array_like
+        A 1 by 3 numpy array which represents the trilinearly
+        approximated vector field value calculated at the given
+        location.
+
+    """
     # Find the cell
     # Maybe use numpy.argwhere or numpy.where
     x, y, z = vspace[0]
@@ -169,12 +218,42 @@ def B_approx(vspace, loc):
     return tlApprox(loc[0], loc[1], loc[2])
 
 
-# Returns list of spines for each nullpoint
+# Returns list of spines for each null point
 def spine_find(
     vspace,
     nullpoint_list,
     alpha=1,
 ):
+    r"""
+    Returns a list of the spines of the given vector space.
+
+    Parameters
+    ----------
+    vspace: array_like
+        The vector space as constructed by the vector_space function which is
+        A 1 by 3 array with the first element containing the coordinates,
+        the second element containing the vector values,
+        and the third element containing the delta values for each dimension.
+
+    nullpoint_list: array_like
+        An array containing the null points of the given vector space,
+        represented by NullPoint objects, calculated using null point finder.
+
+    alpha: float
+        A parameter which determines how far from the null point the initial
+        seed points would be. The seed points are used to generate the rest of
+        the points of the spine on both sides of the null point. The bigger value
+        of alpha, the further away from the null point the initial seed points
+        would be.
+
+    Returns
+    -------
+    array_like
+        An numpy array containing the spines. Each spine is represented by a
+        numpy array, storing the points that construct the spine. Each point is
+        represented by a 1 by 3 array which represents a coordinate in 3D space.
+
+    """
     spine_list = []
     # Maybe add a check so that you would not add the same spine twice
     for nullp in nullpoint_list:
@@ -261,6 +340,28 @@ def spine_find(
 
 
 def null_sign(vspace, nullp):
+    r"""
+    Returns the sign of a given null point.
+
+    Parameters
+    ----------
+    vspace: array_like
+        The vector space as constructed by the vector_space function which is
+        A 1 by 3 array with the first element containing the coordinates,
+        the second element containing the vector values,
+        and the third element containing the delta values for each dimension.
+
+    nullp: NullPoint Object
+        The given null point represented by the NullPoint object.
+
+    Returns
+    -------
+    int
+        Either 1, 0, or -1 with 1 representing a positive null, -1
+        representing a negative null, and 0 representing a degenerate
+        null.
+
+    """
     jcb = _trilinear_jacobian(vspace, nullp.cell)
     M = jcb(nullp.loc[0], nullp.loc[1], nullp.loc[2])
     if np.isclose(np.linalg.det(M), 0, atol=_EQUALITY_ATOL):
@@ -272,6 +373,33 @@ def null_sign(vspace, nullp):
 
 
 def seed_from_null(vspace, nullp, alpha):
+    r"""
+    Returns two seed points along the spine of the
+    given null point, on opposite sides of the null.
+
+    Parameters
+    ----------
+    vspace: array_like
+        The vector space as constructed by the vector_space function which is
+        A 1 by 3 array with the first element containing the coordinates,
+        the second element containing the vector values,
+        and the third element containing the delta values for each dimension.
+
+    nullp: NullPoint Object
+        The given null point represented by the NullPoint object.
+
+    alpha: float
+        A parameter which determines how far from the null point the initial
+        seed points would be. The bigger value of alpha, the further away
+        from the null point the initial seed points would be.
+
+    Returns
+    -------
+    tuple
+        A tuple containing the two seed points, each of which are
+        represented by a 1 by 3 array representing a 3D coordinate.
+
+    """
     jcb = _trilinear_jacobian(vspace, nullp.cell)
     M = jcb(nullp.loc[0], nullp.loc[1], nullp.loc[2])
     eigen_vals, eigen_vectors = np.linalg.eig(M)
@@ -283,6 +411,42 @@ def seed_from_null(vspace, nullp, alpha):
 
 
 def can_null_break(starting_null, nullp, alpha, vspace, phi):
+    r"""
+    Returns a boolean value determining if a given null point
+    is eligible for null breaking.
+
+    Parameters
+    ----------
+    starting_null: NullPoint Object
+        The generating null point for the fan, represented by the
+        NullPoint object.
+
+    nullp: NullPoint Object
+        The given null point represented by the NullPoint object,
+        whose eligibility is being determined.
+
+    alpha: float
+        A parameter which determines how far from the null point the initial
+        seed points would be. The bigger value of alpha, the further away
+        from the null point the initial seed points would be.
+
+    vspace: array_like
+        The vector space as constructed by the vector_space function which is
+        A 1 by 3 array with the first element containing the coordinates,
+        the second element containing the vector values,
+        and the third element containing the delta values for each dimension.
+
+    phi: float
+        The angle threshold given that is used to determine if the pair of points
+        on either side of the null point lie in a cone around different spines.
+
+    Returns
+    -------
+    boolean
+        A boolean value determining if a given null point
+        is eligible for null breaking.
+
+    """
     # Must have opposite sign to the starting null point
     if null_sign(vspace, starting_null) * null_sign(vspace, nullp) >= 0:
         return False
@@ -309,7 +473,6 @@ def can_null_break(starting_null, nullp, alpha, vspace, phi):
     expression = np.dot(
         np.squeeze((seed2 - xk)), np.squeeze(v3), out=None
     ) / np.linalg.norm(np.squeeze((seed1 - xk)))
-    print(expression)
     # if expression<= np.cos(phi):
     #     a=5/0
     #     return False
@@ -326,9 +489,34 @@ def mid_point(p1, p2):
     return temp
 
 
-# May need to call multiple times in a for loop to ensure proper density
-# Maybe seperate adding/removing points and then call both in while loops
+# Helper functions for interpolating points on new ring layers
 def intrp_ring(ring_layer, min_density_tol, max_density_tol):
+    r"""
+    This function adds newly interpolated points to the given
+    ring layer so that the layer is dense enough. It also removes
+    points from ring layer, if they are too densely packed. It then
+    returns the modified layer.
+
+    Parameters
+    ----------
+    ring_layer: array_like
+        The given ring layer represented by an array containing the
+        points that construct the ring. Each point is represented
+        by a 1 by 3 array which represents a coordinate in 3D space.
+
+    min_density_tol: float
+        The minimum distance two adjacent points on the ring have to be
+        from each other. Otherwise, one of those points will be removed.
+
+    max_density_tol: float
+        The maximum distance that two adjacent points on the ring can
+        have. Otherwise, a new point will be interpolated between them.
+
+    Returns
+    -------
+    array_like
+        The modified ring layer with the appropriate number of point.
+    """
     # Populate if not enough points
     pop_ring_layer = add_intrp_ring(ring_layer, max_density_tol)
     # Remove if too many points
@@ -337,6 +525,27 @@ def intrp_ring(ring_layer, min_density_tol, max_density_tol):
 
 
 def add_intrp_ring(ring_layer, max_density_tol):
+    r"""
+    This function adds newly interpolated points to the given
+    ring layer so that the layer is dense enough. It then
+    returns the modified layer.
+
+    Parameters
+    ----------
+    ring_layer: array_like
+        The given ring layer represented by an array containing the
+        points that construct the ring. Each point is represented
+        by a 1 by 3 array which represents a coordinate in 3D space.
+
+    max_density_tol: float
+        The maximum distance that two adjacent points on the ring can
+        have. Otherwise, a new point will be interpolated between them.
+
+    Returns
+    -------
+    array_like
+        The modified ring layer with interpolated points.
+    """
     pop_ring_layer = copy.deepcopy(ring_layer)
     # Populate if not enough points
     done = False
@@ -377,6 +586,27 @@ def add_intrp_ring(ring_layer, max_density_tol):
 
 
 def rm_intrp_ring(pop_ring_layer, min_density_tol):
+    r"""
+    This function removes points from ring layer, if
+    they are too densely packed. It then returns the
+    modified layer.
+
+    Parameters
+    ----------
+    ring_layer: array_like
+        The given ring layer represented by an array containing the
+        points that construct the ring. Each point is represented
+        by a 1 by 3 array which represents a coordinate in 3D space.
+
+    min_density_tol: float
+        The minimum distance two adjacent points on the ring have to be
+        from each other. Otherwise, one of those points will be removed.
+
+    Returns
+    -------
+    array_like
+        The modified ring layer with some points removed.
+    """
     rm_ring_layer = copy.deepcopy(pop_ring_layer)
     # Remove if too many points
     done = False
@@ -400,6 +630,34 @@ def rm_intrp_ring(pop_ring_layer, min_density_tol):
 
 
 def trace_one_step(point, step_size, vspace, backward=False):
+    r"""
+    Returns a 3D point in vspace that is the result of integrating
+    a small step from a given point.
+
+    Parameters
+    ----------
+    point: array_like
+        The given point to start the integration from, represented
+        by a 1 by 3 array that represents a 3D point in space.
+
+    step_size: float
+        The step size of the integration.
+
+    vspace: array_like
+        The vector space as constructed by the vector_space function which is
+        A 1 by 3 array with the first element containing the coordinates,
+        the second element containing the vector values,
+        and the third element containing the delta values for each dimension.
+
+    backward: boolean
+        A boolean variable which determines the direction of integration
+        along the field line.
+
+    Returns
+    -------
+    array_like
+        A 1 by 3 array representing the resulting point in space.
+    """
     flag = 1
     if backward:
         flag = -1
@@ -430,6 +688,38 @@ def trace_one_step(point, step_size, vspace, backward=False):
 
 
 def init_ring(ring_list, vspace, alpha, seed_nums, nullp):
+    r"""
+    Initializes the first two ring layers of the given
+    ring list.
+
+    Parameters
+    ----------
+    ring_list: array_like
+        An array which will contain all of the ring layers of the fan.
+
+    vspace: array_like
+        The vector space as constructed by the vector_space function which is
+        A 1 by 3 array with the first element containing the coordinates,
+        the second element containing the vector values,
+        and the third element containing the delta values for each dimension.
+
+    alpha: float
+        A parameter which determines how far from the null point the initial
+        seed points would be. The bigger value of alpha, the further away
+        from the null point the initial seed points would be.
+
+    seed_nums: int
+        Number of points to be generated on the first ring layer.
+
+    nullp: NullPoint Object
+        The generating null for the fan.
+
+
+    Returns
+    -------
+    NoneType
+        None
+    """
     # Initialization
     # Adding the first null point as the zeroth layer
     ring_list.append([FanPoint(nullp.loc, 0)])
@@ -473,12 +763,56 @@ def fan_find(
     vspace,
     nullpoint_original_list,
     alpha,
-    seed_nums=100,
+    seed_nums=1000,
     ring_nums=38,
     min_density_tol=10 ** -10,
     max_density_tol=10 ** -(2),
     phi=np.pi,
 ):
+    r"""
+    Returns the fan and the separators of a given vector space.
+
+    Parameters
+    ----------
+
+    vspace: array_like
+        The vector space as constructed by the vector_space function which is
+        A 1 by 3 array with the first element containing the coordinates,
+        the second element containing the vector values,
+        and the third element containing the delta values for each dimension.
+
+    nullpoint_original_list: array_like
+        An array containing the null points of the given vector space,
+        represented by NullPoint objects, calculated using null point finder.
+
+    alpha: float
+        A parameter which determines how far from the null point the initial
+        seed points would be. The bigger value of alpha, the further away
+        from the null point the initial seed points would be.
+
+    seed_nums: int
+        Number of points to be generated on the first ring layer.
+
+    ring_nums: int
+        Number of ring layers to be generated for the fan.
+
+    min_density_tol: float
+        The minimum distance two adjacent points on the ring have to be
+        from each other. Otherwise, one of those points will be removed.
+
+    max_density_tol: float
+        The maximum distance that two adjacent points on the ring can
+        have. Otherwise, a new point will be interpolated between them.
+
+    phi: float
+        The angle threshold given that is used to determine if the pair of points
+        on either side of the null point lie in a cone around different spines.
+
+    Returns
+    -------
+    NoneType
+        None
+    """
     # Make a copy of null point list
     nullpoint_list = copy.deepcopy(nullpoint_original_list)
     # Initilization of the ring list
@@ -562,7 +896,6 @@ def fan_find(
             # print(p.index)
             DATA.append(p.loc)
             color_arr.append(p.index)
-    # DATA = DATA[3:]
     Xs = []
     Ys = []
     Zs = []
@@ -591,6 +924,27 @@ def fan_find(
 
 
 def seperator_find(seperator, ring_list, starting_ring_layer):
+    r"""
+    Populates the given separator with points that construct it.
+
+    Parameters
+    ----------
+    seperator: array_like
+        An array which will contain all of the points of the separator.
+
+    ring_list: array_like
+        An array which will contain all of the ring layers of the fan.
+
+    starting_ring_layer: int
+        The ring layer on which the null break occurred, and where the
+        trace back will begin.
+
+    Returns
+    -------
+    NoneType
+        None
+    """
+
     def intrp_sep_point(ring_layer, fanpoint):
         for i in range(len(ring_layer)):
             if ring_layer[i].index == fanpoint.index:
@@ -629,6 +983,56 @@ def magnetic_skeleton_find(
     v_arr=None,
     w_arr=None,
 ):
+    r"""
+    Returns the null points, spines, fan, separators of the given vector space.
+
+    .. note::
+       Please note that this functionality is still under development
+       and the API may change in future releases.
+
+    Parameters
+    ----------
+    x_arr: array_like
+        The array representing the coordinates in the x-dimension.
+        If not given, then range values are used to construct a
+        uniform array on that interval.
+
+    y_arr: array_like
+        The array representing the coordinates in the y-dimension.
+        If not given, then range values are used to construct a
+        uniform array on that interval.
+
+    z_arr: array_like
+        The array representing the coordinates in the z-dimension.
+        If not given, then range values are used to construct a
+        uniform array on that interval.
+
+    u_arr: array_like
+        A 3D array containing the x-component of the vector values for the vector
+        space. If not given, the vector values are generated over the vector space
+        using the function func.
+
+    v_arr: array_like
+        A 3D array containing the y-component of the vector values for the vector
+        space. If not given, the vector values are generated over the vector space
+        using the function func.
+
+    w_arr: array_like
+        A 3D array containing the z-component of the vector values for the vector
+        space. If not given, the vector values are generated over the vector space
+        using the function func.
+
+
+    Returns
+    -------
+    tuple
+        tuple of the null points, spines, fan, separators of the given vector space.
+
+    Notes
+    -----
+    This method is described by :cite:t:`haynes:2010`.
+
+    """
     vspace = _vector_space(
         x_arr,
         y_arr,
@@ -645,6 +1049,7 @@ def magnetic_skeleton_find(
     nullpoints = null_point_find(x_arr, y_arr, z_arr, u_arr, v_arr, w_arr)
     for p in nullpoints:
         print(p.loc)
+    print("##############")
     spines = spine_find(vspace, nullpoints, 0.1)
     fan, seperators = fan_find(vspace, nullpoints, 0.05)
     nullpoints = list(map(lambda elem: elem.loc, nullpoints))
