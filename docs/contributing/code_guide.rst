@@ -17,7 +17,8 @@ important as consistency, readability, and maintainability.
 This guide can (and should!) be regularly refined by the PlasmaPy
 community as we collectively learn new practices and our shared coding
 style changes. Please feel free to propose revisions to this guide by
-submitting a pull request or bringing up an idea at a community meeting.
+`submitting a pull request <code-contribution>`_ or bringing up an idea
+at a community meeting.
 
 Coding Style
 ============
@@ -94,6 +95,8 @@ PlasmaPy Code Style Guide, codified
 
 * Avoid using ``lambda`` to define functions, as this notation may be
   unfamiliar to newcomers to Python.
+
+.. _code-contribution:
 
 Branches, commits, and pull requests
 ====================================
