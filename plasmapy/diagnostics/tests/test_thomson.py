@@ -21,7 +21,7 @@ def example_instr_func(w):
     """
     sigma = 0.5 * u.nm
     arg = (w / sigma).to(u.dimensionless_unscaled).value
-    inst = np.exp(-(arg ** 2))
+    inst = np.exp(-(arg**2))
     inst *= 1 / np.sum(inst)
     return inst
 
@@ -35,7 +35,7 @@ def example_invalid_instr_func_bad_type(w):
     """
     sigma = 0.5 * u.nm
     arg = (w / sigma).to(u.dimensionless_unscaled)
-    inst = np.exp(-(arg ** 2))
+    inst = np.exp(-(arg**2))
     inst *= 1 / np.sum(inst)
     return inst * u.m
 
@@ -49,7 +49,7 @@ def example_invalid_instr_func_bad_shape(w):
     """
     sigma = 0.5 * u.nm
     arg = (w / sigma).to(u.dimensionless_unscaled).value
-    inst = np.exp(-(arg ** 2))
+    inst = np.exp(-(arg**2))
     inst *= 1 / np.sum(inst)
     return inst[2:]
 
@@ -74,7 +74,7 @@ def spectral_density_args_kwargs(kwargs):
     """
     This helper function separates positional arguments and keyword arguments
     for the spectral_density function from a dictionary of both that is
-    easy to use in parameterized tests.
+    easy to use in parametrized tests.
     """
 
     # Pull out the non-keyword arguments
@@ -105,7 +105,7 @@ def args_to_lite_args(kwargs):
     if "probe_wavelength" in keys:
         kwargs["probe_wavelength"] = kwargs["probe_wavelength"].to(u.m).value
     if "n" in keys:
-        kwargs["n"] = kwargs["n"].to(u.m ** -3).value
+        kwargs["n"] = kwargs["n"].to(u.m**-3).value
     if "T_e" in keys:
         kwargs["T_e"] = (kwargs["T_e"] / const.k_B).to(u.K).value
     if "T_i" in keys:
@@ -160,7 +160,7 @@ def single_species_collective_args():
     kwargs = {}
     kwargs["wavelengths"] = np.arange(520, 545, 0.01) * u.nm
     kwargs["probe_wavelength"] = 532 * u.nm
-    kwargs["n"] = 5e17 * u.cm ** -3
+    kwargs["n"] = 5e17 * u.cm**-3
     kwargs["T_e"] = 10 * u.eV
     kwargs["T_i"] = 10 * u.eV
     kwargs["efract"] = np.array([1.0])
@@ -288,7 +288,7 @@ def multiple_species_collective_args():
     kwargs = {}
     kwargs["wavelengths"] = np.arange(520, 545, 0.01) * u.nm
     kwargs["probe_wavelength"] = 532 * u.nm
-    kwargs["n"] = 5e17 * u.cm ** -3
+    kwargs["n"] = 5e17 * u.cm**-3
     kwargs["T_e"] = 10 * u.eV
     kwargs["T_i"] = np.array([5, 5]) * u.eV
     kwargs["ions"] = [Particle("p+"), Particle("C-12 5+")]
@@ -378,7 +378,7 @@ def single_species_non_collective_args():
     kwargs = {}
     kwargs["wavelengths"] = np.arange(500, 570, 0.01) * u.nm
     kwargs["probe_wavelength"] = 532 * u.nm
-    kwargs["n"] = 5e15 * u.cm ** -3
+    kwargs["n"] = 5e15 * u.cm**-3
     kwargs["T_e"] = 100 * u.eV
     kwargs["T_i"] = np.array([10]) * u.eV
     kwargs["efract"] = np.array([1.0])
@@ -550,7 +550,7 @@ def test_split_populations():
 
     wavelengths = np.arange(520, 545, 0.01) * u.nm
     probe_wavelength = 532 * u.nm
-    n = 5e17 * u.cm ** -3
+    n = 5e17 * u.cm**-3
     probe_vec = np.array([1, 0, 0])
     scatter_vec = np.array([0, 1, 0])
 
@@ -736,7 +736,7 @@ def run_fit(
     alpha, Skw = thomson.spectral_density(
         wavelengths,
         probe_wavelength * u.m,
-        n * u.m ** -3,
+        n * u.m**-3,
         T_e=T_e * u.eV,
         T_i=T_i * u.eV,
         ifract=ifract,
@@ -1149,7 +1149,7 @@ def test_fit_with_minimal_parameters():
     wavelengths = np.linspace(w0 - 5, w0 + 5, num=512) * u.nm
 
     ions = ["H+"]
-    n = 2e17 * u.cm ** -3
+    n = 2e17 * u.cm**-3
     T_i = 20 * u.eV
     T_e = 10 * u.eV
 
@@ -1194,7 +1194,7 @@ def test_fit_with_minimal_parameters():
     with pytest.raises(ValueError):
         model = thomson.spectral_density_model(wavelengths, settings, params)
 
-    params.add("n", value=n.to(u.m ** -3).value, vary=False)
+    params.add("n", value=n.to(u.m**-3).value, vary=False)
 
     # Make the model, then perform the fit
     model = thomson.spectral_density_model(wavelengths.to(u.m).value, settings, params)

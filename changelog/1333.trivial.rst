@@ -1,3 +1,0 @@
-Added cron tests of the development versions of matplotlib_ and SciPy_,
-while changing the cadence of cron tests to be run approximately
-fortnightly.

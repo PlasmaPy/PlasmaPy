@@ -20,7 +20,7 @@ from plasmapy.particles.particle_collections import ionic_levels, ParticleList
 from plasmapy.utils.exceptions import PlasmaPyFutureWarning
 
 ionic_fraction_table = [
-    ("Fe 6+", 0.52, 5.2e-6 * u.m ** -3),
+    ("Fe 6+", 0.52, 5.2e-6 * u.m**-3),
     ("He 1+", None, None),
     ("H-2 0+", None, None),
 ]
@@ -38,7 +38,7 @@ def test_ionic_level_attributes(ion, ionic_fraction, number_density):
     if ionic_fraction is None:
         ionic_fraction = np.nan
     if number_density is None:
-        number_density = np.nan * u.m ** -3
+        number_density = np.nan * u.m**-3
 
     assert Particle(ion) == Particle(instance.ionic_symbol)
     assert u.isclose(instance.ionic_fraction, ionic_fraction, equal_nan=True)
@@ -123,16 +123,16 @@ test_cases = {
         "particle": "deuterium",
         "ionic_fractions": [0.7, 0.3],
         "tol": 1e-15,
-        "n_elem": 3e14 * u.m ** -3,
+        "n_elem": 3e14 * u.m**-3,
     },
     "He": {
         "particle": "He",
         "ionic_fractions": [0.5, 0.3, 0.2],
-        "n_elem": 1e20 * u.m ** -3,
+        "n_elem": 1e20 * u.m**-3,
     },
     "number densities": {
         "particle": "T",
-        "ionic_fractions": np.array([1e4, 1]) * u.cm ** -3,
+        "ionic_fractions": np.array([1e4, 1]) * u.cm**-3,
     },
 }
 
@@ -191,7 +191,7 @@ class Test_IonizationState:
         instance = self.instances[test_name]
         inputted_fractions = test_cases[test_name]["ionic_fractions"]
         if isinstance(inputted_fractions, u.Quantity):
-            inputted_fractions = inputted_fractions.to(u.m ** -3)
+            inputted_fractions = inputted_fractions.to(u.m**-3)
             inputted_fractions = (inputted_fractions / inputted_fractions.sum()).value
         if not np.allclose(instance.ionic_fractions, inputted_fractions):
             pytest.fail(f"Mismatch in ionic fractions for test {test_name}.")
@@ -384,7 +384,7 @@ class Test_IonizationState:
             instance.n_e,
             np.sum(n_elem * ionic_fractions * np.arange(instance.atomic_number + 1)),
             rtol=1e-12,
-            atol=0 * u.m ** -3,
+            atol=0 * u.m**-3,
         ), "n_e is not the expected value."
 
     @pytest.mark.parametrize("test_name", test_names)
@@ -505,12 +505,12 @@ expected_properties = {
     "atomic_number": 2,
     "Z_mean": 1.3,
     "Z_rms": 1.51657508881031,
-    "n_e": 1.3e19 * u.m ** -3,
-    "n_elem": 1e19 * u.m ** -3,
+    "n_e": 1.3e19 * u.m**-3,
+    "n_elem": 1e19 * u.m**-3,
     "charge_numbers": [0, 1, 2],
     "ionic_fractions": np.array([0.2, 0.3, 0.5]),
     "ionic_symbols": ["He-4 0+", "He-4 1+", "He-4 2+"],
-    "number_densities": np.array([2e18, 3e18, 5e18]) * u.m ** -3,
+    "number_densities": np.array([2e18, 3e18, 5e18]) * u.m**-3,
     "tol": 2e-14,
 }
 
@@ -522,7 +522,7 @@ def instance():
         "ionic_fractions": [0.2, 0.3, 0.5],
         "T_e": 5.0 * u.kK,
         "tol": 2e-14,
-        "n_elem": 1e13 * u.cm ** -3,
+        "n_elem": 1e13 * u.cm**-3,
     }
 
     return IonizationState(**kwargs)
@@ -650,7 +650,7 @@ class Test_IonizationStateNumberDensitiesSetter:
 
     def setup_class(self):
         self.element = "H"
-        self.valid_number_densities = u.Quantity([0.1, 0.2], unit=u.m ** -3)
+        self.valid_number_densities = u.Quantity([0.1, 0.2], unit=u.m**-3)
         self.expected_n_elem = np.sum(self.valid_number_densities)
         self.expected_ionic_fractions = (
             self.valid_number_densities / self.expected_n_elem
@@ -675,7 +675,7 @@ class Test_IonizationStateNumberDensitiesSetter:
             self.instance.number_densities, self.valid_number_densities
         ), (
             f"The number densities of {self.element} were set to "
-            f"{self.instance.number_densities} instead of the expceted "
+            f"{self.instance.number_densities} instead of the expected "
             f"value of {self.valid_number_densities}."
         )
 
@@ -700,11 +700,11 @@ class Test_IonizationStateNumberDensitiesSetter:
 
     def test_that_negative_density_raises_error(self):
         with pytest.raises(ParticleError, match="cannot be negative"):
-            self.instance.number_densities = u.Quantity([-0.1, 0.2], unit=u.m ** -3)
+            self.instance.number_densities = u.Quantity([-0.1, 0.2], unit=u.m**-3)
 
     def test_incorrect_number_of_charge_states_error(self):
         with pytest.raises(ParticleError, match="Incorrect number of charge states"):
-            self.instance.number_densities = u.Quantity([0.1, 0.2, 0.3], unit=u.m ** -3)
+            self.instance.number_densities = u.Quantity([0.1, 0.2, 0.3], unit=u.m**-3)
 
     def test_incorrect_units_error(self):
         with pytest.raises(u.UnitsError):
@@ -721,7 +721,7 @@ class Test_IonizationStateNumberDensitiesSetter:
 
 
 def test_iteration_with_nested_iterator():
-    hydrogen = IonizationState("p+", n_elem=1e20 * u.m ** -3, T_e=10 * u.eV)
+    hydrogen = IonizationState("p+", n_elem=1e20 * u.m**-3, T_e=10 * u.eV)
 
     i = 0
     for _, __ in itertools.product(hydrogen, hydrogen):
@@ -730,8 +730,8 @@ def test_iteration_with_nested_iterator():
 
 
 def test_ionization_state_inequality_and_identity():
-    deuterium_states = IonizationState("D+", n_elem=1e20 * u.m ** -3, T_e=10 * u.eV)
-    tritium_states = IonizationState("T+", n_elem=1e20 * u.m ** -3, T_e=10 * u.eV)
+    deuterium_states = IonizationState("D+", n_elem=1e20 * u.m**-3, T_e=10 * u.eV)
+    tritium_states = IonizationState("T+", n_elem=1e20 * u.m**-3, T_e=10 * u.eV)
     assert deuterium_states != tritium_states
 
 
@@ -775,7 +775,7 @@ def test_weighted_rms_ion(base_particle, ionic_fractions, physical_property):
     ions = ionic_levels(base_particle)
     physical_quantity = getattr(ions, physical_property)
     expected_rms_quantity = np.sqrt(
-        np.average(physical_quantity ** 2, weights=ionic_fractions)
+        np.average(physical_quantity**2, weights=ionic_fractions)
     )
     kwargs = {f"use_rms_{physical_property}": True}
     rms_ion = ionization_state.average_ion(**kwargs)

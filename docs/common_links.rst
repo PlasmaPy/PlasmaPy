@@ -83,6 +83,7 @@
    used just before a period.
 
 .. |bibliography| replace:: :ref:`bibliography`\
+.. |coding guide| replace:: :ref:`coding guide`\
 .. |contributor guide| replace:: :ref:`contributor guide`\
 .. |documentation guide| replace:: :ref:`documentation guide`\
 .. |glossary| replace:: :ref:`glossary`\
@@ -101,6 +102,7 @@
 .. _BibTeX: http://www.bibtex.org
 .. _black: https://black.readthedocs.io
 .. _Conda: https://docs.conda.io
+.. _Contributor Covenant: https://www.contributor-covenant.org
 .. _create an issue: https://github.com/PlasmaPy/PlasmaPy/issues/new/choose
 .. _CSS: https://www.w3schools.com:443/css
 .. _DOI: https://www.doi.org
@@ -224,6 +226,9 @@
 
 .. _`sphinx_changelog`: https://sphinx-changelog.readthedocs.io
 .. |sphinx_changelog| replace:: `sphinx_changelog`
+
+.. _`sphinx-reredirects`: https://documatt.gitlab.io/sphinx-reredirects
+.. |sphinx-reredirects| replace:: `sphinx-reredirects`
 
 .. _`sphinx-hoverxref`: https://sphinx-hoverxref.readthedocs.io
 .. |sphinx-hoverxref| replace:: `sphinx-hoverxref`

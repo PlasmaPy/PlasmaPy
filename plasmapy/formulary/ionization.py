@@ -14,7 +14,7 @@ from plasmapy.utils.decorators import validate_quantities
 @validate_quantities(
     T_e={"can_be_negative": False, "equivalencies": u.temperature_energy()}
 )
-def ionization_balance(n: u.m ** -3, T_e: u.K) -> u.dimensionless_unscaled:
+def ionization_balance(n: u.m**-3, T_e: u.K) -> u.dimensionless_unscaled:
     r"""
     Return the average ionization state of ions in a plasma assuming that
     the numbers of ions in each state are equal.
@@ -84,7 +84,7 @@ def ionization_balance(n: u.m ** -3, T_e: u.K) -> u.dimensionless_unscaled:
     E_H = 1 * u.Ry
 
     A = sqrt(k_B * T_e / E_H)
-    B = log(1 / (4 * n * a0 ** 3) * (k_B * T_e / (pi * E_H)) ** (3 / 2))
+    B = log(1 / (4 * n * a0**3) * (k_B * T_e / (pi * E_H)) ** (3 / 2))
 
     return A * sqrt(B) - 1 / 2
 
@@ -96,7 +96,7 @@ Z_bal_ = ionization_balance
 @validate_quantities(
     T_e={"can_be_negative": False, "equivalencies": u.temperature_energy()}
 )
-def Saha(g_j, g_k, n_e: u.m ** -3, E_jk: u.J, T_e: u.K) -> u.dimensionless_unscaled:
+def Saha(g_j, g_k, n_e: u.m**-3, E_jk: u.J, T_e: u.K) -> u.dimensionless_unscaled:
     r"""
     Return the ratio of populations of two ionization states.
 
@@ -184,7 +184,7 @@ def Saha(g_j, g_k, n_e: u.m ** -3, E_jk: u.J, T_e: u.K) -> u.dimensionless_unsca
     """
     E_h = 1 * u.Ry
 
-    degeneracy_factor = (1 / n_e) * g_j / (4 * g_k * a0 ** 3)
+    degeneracy_factor = (1 / n_e) * g_j / (4 * g_k * a0**3)
     physical_constants = (k_B * T_e / (pi * E_h)) ** (3 / 2)
     boltzmann_factor = exp(-E_jk / (k_B * T_e))
 

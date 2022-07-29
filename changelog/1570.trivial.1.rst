@@ -1,6 +1,0 @@
-Changed the type hints for ``z_mean`` in `plasmapy.formulary.collisions`
-functions from ``astropy.units.dimensionless_unscaled`` to
-`~numbers.Real`. Consequently, ``z_mean`` will no longer be processed by
-`~plasmapy.utils.decorators.validators.validate_quantities`. Previously,
-``z_mean`` issued a warning when a real number was provided instead of a
-dimensionless |Quantity|.

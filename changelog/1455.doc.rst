@@ -1,1 +1,0 @@
-Updated the docstring for `plasmapy.particles.particle_class.molecule`.
