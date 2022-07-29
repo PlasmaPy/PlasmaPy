@@ -17,8 +17,8 @@ important as consistency, readability, and maintainability.
 This guide can (and should!) be regularly refined by the PlasmaPy
 community as we collectively learn new practices and our shared coding
 style changes. Please feel free to propose revisions to this guide by
-`submitting a pull request <code-contribution>`_ or by bringing up an
-idea at a community meeting.
+:ref:`submitting a pull request <code-contribution>` or by bringing up
+an idea at a community meeting.
 
 Coding Style
 ============
