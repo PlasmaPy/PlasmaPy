@@ -35,7 +35,7 @@ def test_1():
         indexing="ij",
     )
     u, v, w = vspace_func_1(x, y, z)
-    nullpoints, spines, fan, seperators = magnetic_skeleton_find(
+    nullpoints, spines, fan, separators = magnetic_skeleton_find(
         x_arr, y_arr, z_arr, u, v, w
     )
     # print(nullpoints)
@@ -44,7 +44,7 @@ def test_1():
     # print("##############")
     # print(fan)
     # print("##############")
-    # print(seperators)
+    # print(separators)
 
 
 def test_2():
@@ -58,7 +58,7 @@ def test_2():
         indexing="ij",
     )
     u, v, w = vspace_func_2(x, y, z)
-    nullpoints, spines, fan, seperators = magnetic_skeleton_find(
+    nullpoints, spines, fan, separators = magnetic_skeleton_find(
         x_arr, y_arr, z_arr, u, v, w
     )
     # print(nullpoints)
@@ -67,7 +67,7 @@ def test_2():
     # print("##############")
     # print(fan)
     # print("##############")
-    # print(seperators)
+    # print(separators)
 
 
 def test_3():
@@ -81,10 +81,10 @@ def test_3():
         indexing="ij",
     )
     u, v, w = vspace_func_3(x, y, z)
-    nullpoints, spines, fan, seperators = magnetic_skeleton_find(
+    nullpoints, spines, fan, separators = magnetic_skeleton_find(
         x_arr, y_arr, z_arr, u, v, w
     )
-    # for elem in seperators:
+    # for elem in separators:
     #     print("###########")
     #     for p in elem:
     #         print(p.loc)
