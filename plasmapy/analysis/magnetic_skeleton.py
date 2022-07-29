@@ -826,9 +826,9 @@ def fan_find(
     """
     # Make a copy of null point list
     nullpoint_list = copy.deepcopy(nullpoint_original_list)
-    # Initilization of the ring list
+    # Initialization of the ring list
     ring_list = []
-    seperators = []
+    separators = []
     starting_ring_layer_for_seperators = []
     nullp = nullpoint_list.pop(0)
     init_ring(ring_list, vspace, alpha, seed_nums, nullp)
@@ -880,7 +880,7 @@ def fan_find(
                     index = q
                     next_ring_layer.pop(q)
                     break
-            seperators.append([FanPoint(value.loc, elem[0].index)])
+            separators.append([FanPoint(value.loc, elem[0].index)])
             starting_ring_layer_for_seperators.append(i)
             # next_ring_layer.append(value.loc)
             seed1, seed2 = seed_from_null(vspace, value, alpha)
@@ -900,18 +900,18 @@ def fan_find(
         ring_list.append(np.array(next_ring_layer))
 
     # Trace Back
-    for n in range(len(seperators)):
-        seperator_find(seperators[n], ring_list, starting_ring_layer_for_seperators[n])
-    return ring_list, seperators
+    for n in range(len(separators)):
+        seperator_find(separators[n], ring_list, starting_ring_layer_for_seperators[n])
+    return ring_list, separators
 
 
-def seperator_find(seperator, ring_list, starting_ring_layer):
+def seperator_find(separator, ring_list, starting_ring_layer):
     r"""
     Populates the given separator with points that construct it.
 
     Parameters
     ----------
-    seperator: array_like
+    separator: array_like
         An array which will contain all of the points of the separator.
 
     ring_list: array_like
@@ -947,12 +947,12 @@ def seperator_find(seperator, ring_list, starting_ring_layer):
             fanpoint.index,
         )
 
-    start = seperator[0]
+    start = separator[0]
     # Traverse the ring backwards
     for i in range(starting_ring_layer - 1, 0, -1):
         start = intrp_sep_point(ring_list[i], start)
-        seperator.append(start)
-    seperator.append(ring_list[0][0])
+        separator.append(start)
+    separator.append(ring_list[0][0])
     return None
 
 
@@ -1033,13 +1033,13 @@ def magnetic_skeleton_find(
     #     print(p.loc)
     # print("##############")
     spines = spine_find(vspace, nullpoints, 0.1)
-    fan, seperators = fan_find(vspace, nullpoints, 0.05)
+    fan, separators = fan_find(vspace, nullpoints, 0.05)
     nullpoints = list(map(lambda elem: elem.loc, nullpoints))
-    visualize(nullpoints, spines, fan, seperators)
-    return nullpoints, spines, fan, seperators
+    visualize(nullpoints, spines, fan, separators)
+    return nullpoints, spines, fan, separators
 
 
-def visualize(nullpoints, spines, fan, seperators):
+def visualize(nullpoints, spines, fan, separators):
     DATA = []
     color_arr = []
     for layer in fan:
@@ -1049,7 +1049,7 @@ def visualize(nullpoints, spines, fan, seperators):
             # print(p.index)
             DATA.append(p.loc)
             color_arr.append(p.index)
-    for sep in seperators:
+    for sep in separators:
         # print("###############")
         # print(len(layer))
         for p in sep:
@@ -1066,7 +1066,7 @@ def visualize(nullpoints, spines, fan, seperators):
     for nullp in nullpoints:
         DATA.append(nullp)
         color_arr.append(300)
-    # Seperating the X, Y, and Z coordinates
+    # Separating the X, Y, and Z coordinates
     Xs = []
     Ys = []
     Zs = []
