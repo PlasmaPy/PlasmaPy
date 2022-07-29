@@ -48,9 +48,9 @@ def test_1():
 
 
 def test_2():
-    x_arr = np.linspace(-1, 1, 60)
-    y_arr = np.linspace(-1, 1, 60)
-    z_arr = np.linspace(-1, 1, 60)
+    x_arr = np.linspace(-5, 5, 60)
+    y_arr = np.linspace(-5, 5, 60)
+    z_arr = np.linspace(-5, 5, 60)
     x, y, z = np.meshgrid(
         x_arr,
         y_arr,

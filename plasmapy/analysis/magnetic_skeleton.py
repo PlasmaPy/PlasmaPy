@@ -222,7 +222,7 @@ def B_approx(vspace, loc):
 def spine_find(
     vspace,
     nullpoint_list,
-    alpha=1,
+    alpha,
 ):
     r"""
     Returns a list of the spines of the given vector space.
@@ -257,6 +257,7 @@ def spine_find(
     spine_list = []
     # Maybe add a check so that you would not add the same spine twice
     for nullp in nullpoint_list:
+        flag = null_sign(vspace, nullp)
         jcb = _trilinear_jacobian(vspace, nullp.cell)
         M = jcb(nullp.loc[0], nullp.loc[1], nullp.loc[2])
         # if not np.isclose(np.trace(M), 0, atol=_EQUALITY_ATOL):
@@ -323,14 +324,18 @@ def spine_find(
         sol1 = scipy.integrate.solve_ivp(
             fun=f,
             y0=seed1,
-            t_span=(t1, 10),
+            t_span=(t1, -10),
             events=[event0, event1, event2, event3, event4, event5],
+            min_step=(1 / 12) * alpha,
+            max_step=alpha,
         )
         sol2 = scipy.integrate.solve_ivp(
             fun=f,
-            t_span=(t2, 10),
+            t_span=(t2, -10),
             y0=seed2,
             events=[event0, event1, event2, event3, event4, event5],
+            min_step=(1 / 12) * alpha,
+            max_step=alpha,
         )
         s1 = sol1.y.T
         s2 = sol2.y.T
@@ -469,7 +474,10 @@ def can_null_break(starting_null, nullp, alpha, vspace, phi):
         <= 0
     ):
         return False
-    # Check the angle condition
+    # Check the angle condition, meaning the pair of points on either side of
+    # the null point must lie in a cone around different spines
+    # Currently the program skips this check due to the confusing nature
+    # of the condition. Should be checked later
     expression = np.dot(
         np.squeeze((seed2 - xk)), np.squeeze(v3), out=None
     ) / np.linalg.norm(np.squeeze((seed1 - xk)))
@@ -658,6 +666,7 @@ def trace_one_step(point, step_size, vspace, backward=False):
     array_like
         A 1 by 3 array representing the resulting point in space.
     """
+    # IMPORTANT: Check for null sign, and flip the order of integration if required
     flag = 1
     if backward:
         flag = -1
@@ -683,7 +692,6 @@ def trace_one_step(point, step_size, vspace, backward=False):
         min_step=(1 / 12) * step_size,
         max_step=step_size,
     ).y.T[-1]
-    # Don't forget to change the index to -1 to get last point
     return sol
 
 
@@ -763,7 +771,7 @@ def fan_find(
     vspace,
     nullpoint_original_list,
     alpha,
-    seed_nums=1000,
+    seed_nums=100,
     ring_nums=38,
     min_density_tol=10 ** -10,
     max_density_tol=10 ** -(2),
@@ -887,36 +895,7 @@ def fan_find(
                 FanPoint(seed2, prev.index + 2 * (next.index - prev.index) / 3),
             )
         ring_list.append(np.array(next_ring_layer))
-    DATA = []
-    color_arr = []
-    for layer in ring_list:
-        # print("###############")
-        # print(len(layer))
-        for p in layer:
-            # print(p.index)
-            DATA.append(p.loc)
-            color_arr.append(p.index)
-    Xs = []
-    Ys = []
-    Zs = []
-    for p in DATA:
-        Xs.append(p[0])
-        Ys.append(p[1])
-        Zs.append(p[2])
-    trace = go.Scatter3d(
-        x=Xs,
-        y=Ys,
-        z=Zs,
-        mode="markers",
-        marker=dict(
-            size=12,
-            color=color_arr,  # set color to an array/list of desired values
-            colorscale="Turbo",
-        ),
-    )
-    layout = go.Layout(title="3D Scatter plot")
-    fig = go.Figure(data=[trace], layout=layout)
-    fig.show()
+
     # Trace Back
     for n in range(len(seperators)):
         seperator_find(seperators[n], ring_list, starting_ring_layer_for_seperators[n])
@@ -1053,4 +1032,56 @@ def magnetic_skeleton_find(
     spines = spine_find(vspace, nullpoints, 0.1)
     fan, seperators = fan_find(vspace, nullpoints, 0.05)
     nullpoints = list(map(lambda elem: elem.loc, nullpoints))
+    visualize(nullpoints, spines, fan, seperators)
     return nullpoints, spines, fan, seperators
+
+
+def visualize(nullpoints, spines, fan, seperators):
+    DATA = []
+    color_arr = []
+    for layer in fan:
+        # print("###############")
+        # print(len(layer))
+        for p in layer:
+            # print(p.index)
+            DATA.append(p.loc)
+            color_arr.append(p.index)
+    for sep in seperators:
+        # print("###############")
+        # print(len(layer))
+        for p in sep:
+            # print(p.index)
+            DATA.append(p.loc)
+            color_arr.append(100)
+    for spine in spines:
+        # print("###############")
+        # print(len(layer))
+        for p in spine:
+            # print(p.index)
+            DATA.append(p)
+            color_arr.append(0)
+    for nullp in nullpoints:
+        DATA.append(nullp)
+        color_arr.append(300)
+    # Seperating the X, Y, and Z coordinates
+    Xs = []
+    Ys = []
+    Zs = []
+    for p in DATA:
+        Xs.append(p[0])
+        Ys.append(p[1])
+        Zs.append(p[2])
+    trace = go.Scatter3d(
+        x=Xs,
+        y=Ys,
+        z=Zs,
+        mode="markers",
+        marker=dict(
+            size=12,
+            color=color_arr,  # set color to an array/list of desired values
+            colorscale="Turbo",
+        ),
+    )
+    layout = go.Layout(title="3D Scatter plot")
+    fig = go.Figure(data=[trace], layout=layout)
+    fig.show()
