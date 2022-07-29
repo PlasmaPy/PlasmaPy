@@ -17,11 +17,11 @@ def vspace_func_1(x, y, z):
 
 
 def vspace_func_2(x, y, z):
-    return [(1 - z) * x + y + 0.1, -2 * x - (1 + z) * y, z ** 2 + 0.3 * y - 0.2]
+    return [(1 - z) * x + y + 0.1, -2 * x - (1 + z) * y, z**2 + 0.3 * y - 0.2]
 
 
 def vspace_func_3(x, y, z):
-    return [(2 - z) * x - y + 0.2, 3 * x - (2 + z) * y - 0.2, z ** 2 - 0.2]
+    return [(2 - z) * x - y + 0.2, 3 * x - (2 + z) * y - 0.2, z**2 - 0.2]
 
 
 def test_1():

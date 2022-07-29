@@ -468,12 +468,12 @@ def can_null_break(starting_null, nullp, alpha, vspace, phi):
     v3 = eigen_handler(eigen_vals, eigen_vectors)[1]
     # Check that seeds will be traced in opposite directions
     if (
-        np.dot(np.squeeze(B_approx(vspace, seed1)), np.squeeze((seed1 - xk)), out=None)
+        np.dot(np.squeeze(B_approx(vspace, seed1)), np.squeeze(seed1 - xk), out=None)
         <= 0
     ):
         return False
     if (
-        np.dot(np.squeeze(B_approx(vspace, seed2)), np.squeeze((seed2 - xk)), out=None)
+        np.dot(np.squeeze(B_approx(vspace, seed2)), np.squeeze(seed2 - xk), out=None)
         <= 0
     ):
         return False
@@ -482,8 +482,8 @@ def can_null_break(starting_null, nullp, alpha, vspace, phi):
     # Currently the program skips this check due to the confusing nature
     # of the condition. Should be checked later
     expression = np.dot(
-        np.squeeze((seed2 - xk)), np.squeeze(v3), out=None
-    ) / np.linalg.norm(np.squeeze((seed1 - xk)))
+        np.squeeze(seed2 - xk), np.squeeze(v3), out=None
+    ) / np.linalg.norm(np.squeeze(seed1 - xk))
     # if expression<= np.cos(phi):
     #     a=5/0
     #     return False
@@ -776,7 +776,7 @@ def fan_find(
     alpha,
     seed_nums=100,
     ring_nums=38,
-    min_density_tol=10 ** -10,
+    min_density_tol=10**-10,
     max_density_tol=10 ** -(2),
     phi=np.pi,
 ):
@@ -861,7 +861,7 @@ def fan_find(
                         3,
                     )
                 )
-                if np.isclose(norm, 0, atol=10 ** -2):
+                if np.isclose(norm, 0, atol=10**-2):
                     if can_null_break(nullp, candidate_null, alpha, vspace, phi):
                         prev = next_ring_layer[k - 1]
                         next = next_ring_layer[k + 1]
