@@ -84,7 +84,7 @@ def test_3():
     nullpoints, spines, fan, seperators = magnetic_skeleton_find(
         x_arr, y_arr, z_arr, u, v, w
     )
-    for elem in seperators:
-        print("###########")
-        for p in elem:
-            print(p.loc)
+    # for elem in seperators:
+    #     print("###########")
+    #     for p in elem:
+    #         print(p.loc)

@@ -321,6 +321,9 @@ def spine_find(
             )
             return result
 
+        # Integration direction seems to have to be the same
+        # for nulls with the same sign. That should not be the case
+        # needs to be investigated further
         sol1 = scipy.integrate.solve_ivp(
             fun=f,
             y0=seed1,
@@ -1026,9 +1029,9 @@ def magnetic_skeleton_find(
         None,
     )
     nullpoints = null_point_find(x_arr, y_arr, z_arr, u_arr, v_arr, w_arr)
-    for p in nullpoints:
-        print(p.loc)
-    print("##############")
+    # for p in nullpoints:
+    #     print(p.loc)
+    # print("##############")
     spines = spine_find(vspace, nullpoints, 0.1)
     fan, seperators = fan_find(vspace, nullpoints, 0.05)
     nullpoints = list(map(lambda elem: elem.loc, nullpoints))
