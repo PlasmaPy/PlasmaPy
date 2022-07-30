@@ -275,3 +275,6 @@ apply the changes to all files.
 .. code-block:: bash
 
    pre-commit run --all-files
+
+.. _nbqa: https://nbqa.readthedocs.io
+.. _pull the changes: https://docs.github.com/en/get-started/using-git/getting-changes-from-a-remote-repository#pulling-changes-from-a-remote-repository
