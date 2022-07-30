@@ -9,7 +9,7 @@ memory allocation.
 import numpy as np
 
 
-def boris_push(x, v, B, E, q, m, dt, inplace=False):
+def boris_push(x, v, B, E, q, m, dt, inplace=True):
     r"""
     The explicit Boris pusher.
 
