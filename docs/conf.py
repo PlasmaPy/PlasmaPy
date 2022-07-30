@@ -84,6 +84,7 @@ needs_sphinx = "4.4"
 
 extensions = [
     # plasmapy extensions & setups
+    "plasmapy_sphinx.theme",
     "plasmapy_sphinx.ext.autodoc",
     "plasmapy_sphinx.ext.directives",
     # other 3rd party extensions
