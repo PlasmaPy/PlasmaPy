@@ -236,34 +236,93 @@ Warnings and Exceptions
 Units
 =====
 
-* Code within PlasmaPy must use SI units to minimize the chance of
-  ambiguity, and for consistency with the recognized international
-  standard.  Physical formulae and expressions should be in base SI
-  units.
+* PlasmaPy uses |astropy.units|_ to give physical units to values in the
+  form of a |Quantity|.
 
-  * Functions should not accept floats when an Astropy Quantity is
-    expected.  In particular, functions should not accept floats and
-    make the assumption that the value will be in SI units.
+  .. code-block:: pycon
 
-  * A common convention among plasma physicists is to use
-    electron-volts (eV) as a unit of temperature.  Strictly speaking,
-    this unit corresponds not to temperature but is rather a measure
-    of the thermal energy per particle.  Code within PlasmaPy must use
-    the kelvin (K) as the unit of temperature to avoid unnecessary
-    ambiguity.
+     >>> import astropy.units as u
+     >>> 5 * u.m / u.s
+     <Quantity 5. m / s>
 
-* PlasmaPy uses the astropy.units package to give physical units to
-  values.
+  Using |astropy.units| improves compatibility with Python packages in
+  adjacent fields such as astronomy and heliophysics.
 
-  * All units packages available in Python presently have some
-    limitations, including incompatibility with some NumPy and SciPy
-    functions.  These limitations are due to issues within NumPy
-    itself.  Many of these limitations are being resolved, but require
-    upstream fixes.
+* Use SI units within PlasmaPy, unless there is a strong justification
+  to do otherwise. Example notebooks may use other unit systems.
 
-* Dimensionless units may be used when appropriate, such as for
-  certain numerical simulations.  The conventions and normalizations
-  should be clearly described in docstrings.
+* Use |Unit| annotations with the |validate_quantities| decorator to
+  validate |Quantity| arguments and return values.
+
+  .. code-block:: python
+
+     from plasmapy.utils.decorators.validators import validate_quantities
+
+     @validate_quantities(
+        n={"can_be_negative": False},
+        validations_on_return={"equivalencies": u.dimensionless_angles()},
+     )
+     def inertial_length(n: u.m ** -3, ...) -> u.m:
+         ...
+
+* Avoid using electron-volts as a unit of temperature within PlasmaPy
+  because it is defined as a unit of energy. However, functions in
+  `plasmapy.formulary` and elsewhere should accept temperatures in units
+  of electron-volts, which can be done using |validate_quantities|.
+
+* Non-standard unit conversions can be made using equivalencies_ such
+  as `~astropy.units.temperature_energy`.
+
+  .. code-block:: pycon
+
+     >>> (1 * u.eV).to(u.K, equivalencies=u.temperature_energy())
+     11604.518...
+
+* Do not capitalize the names of units except at the beginning of a
+  sentence, including when they are named after a person (except for
+  "degree Celsius").
+
+* Use operations between |Quantity| objects except when needed for
+  performance. To improve performance in |Quantity| operations, check
+  out
+
+* All units packages available in Python have some limitations. For
+  example, some NumPy and SciPy operations silently drop units. Many of
+  the limitations of Python units packages are being resolved over time,
+  but many of the limitations still exist and require changes in
+  upstream packages.
+
+Particles
+=========
+
+* The |Particle| class provides an object-oriented interface for
+  accessing basic particle data. |Particle| accepts
+  :term:`particle-like` inputs.
+
+  .. code-block:: pycon
+
+     >>> from plasmapy.particles import Particle
+     >>> alpha = Particle("He-4 2+")
+     >>> alpha.mass
+     <Quantity 6.6446...e-27 kg>
+     >>> alpha.charge
+     <Quantity 3.20435...e-19 C>
+
+* The |particle_input| decorator can automatically transform a
+  :term:`particle-like` :term:`argument` into a |Particle| object, if
+  the corresponding :term:`parameter` is decorated with |Particle|.
+
+  .. code-block::
+
+     from plasmapy.particles import particle_input, Particle
+
+     @particle_input
+     def recombine(ion: Particle):
+          # ion is now a Particle instance
+          return ion.recombine()
+
+  The documentation for |particle_input| describes ways to ensure that
+  the particle meets certain categorization criteria.
 
 Equations and Physical Formulae
 ===============================
@@ -312,6 +371,9 @@ Equations and Physical Formulae
 * SI units that were named after a person should be lower case except at
   the beginning of a sentence, even if their symbol is capitalized. For
   example, kelvin is a unit while Kelvin was a scientist.
+
+
+
 
 
 Angular Frequencies
