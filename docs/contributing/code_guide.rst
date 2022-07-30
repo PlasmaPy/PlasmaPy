@@ -251,6 +251,12 @@ Units
 * Use SI units within PlasmaPy, unless there is a strong justification
   to do otherwise. Example notebooks may use other unit systems.
 
+* Use operations between |Quantity| objects except when needed for
+  performance. To improve performance in |Quantity| operations, check
+  out `performance tips
+  <https://docs.astropy.org/en/stable/units/index.html#performance-tips>`__
+  for |astropy.units|.
+
 * Use |Unit| annotations with the |validate_quantities| decorator to
   validate |Quantity| arguments and return values.
 
@@ -278,19 +284,14 @@ Units
      >>> (1 * u.eV).to(u.K, equivalencies=u.temperature_energy())
      11604.518...
 
-* Do not capitalize the names of units except at the beginning of a
-  sentence, including when they are named after a person (except for
-  "degree Celsius").
+* The names of SI units should not be capitalized except at the
+  beginning of a sentence, including when they are named after a person.
+  The sole exception is "degree Celsius".
 
-* Use operations between |Quantity| objects except when needed for
-  performance. To improve performance in |Quantity| operations, check
-  out
+.. caution::
 
-* All units packages available in Python have some limitations. For
-  example, some NumPy and SciPy operations silently drop units. Many of
-  the limitations of Python units packages are being resolved over time,
-  but many of the limitations still exist and require changes in
-  upstream packages.
+   Some `scipy` functions silently drop units when used on |Quantity|
+   objects.
 
 Particles
 =========
