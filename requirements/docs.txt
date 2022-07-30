@@ -12,10 +12,10 @@ numpydoc
 pillow
 git+https://github.com/PlasmaPy/plasmapy_sphinx@main#egg=plasmapy_sphinx
 pygments >= 2.11.0
-sphinx >= 4.4
+sphinx >= 4.4, != 5.1
 sphinx-changelog
 sphinx-copybutton
-sphinx-gallery
+sphinx-gallery < 0.11.0
 sphinx-hoverxref >= 1.1.1
 sphinx-issues >= 3.0.1
 sphinx-notfound-page >= 0.8
