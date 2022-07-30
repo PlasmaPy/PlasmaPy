@@ -442,7 +442,6 @@ Equations and Physical Formulae
   the beginning of a sentence, even if their symbol is capitalized. For
   example, kelvin is a unit while Kelvin was a scientist.
 
-
 Angular Frequencies
 ===================
 
@@ -497,7 +496,6 @@ the notebook* but store it in the repository with a ``preexecuted_`` prefix, e.g
 Benchmarks
 ==========
 
-
 .. _benchmarks: https://www.plasmapy.org/plasmapy-benchmarks
 .. _benchmarks-repo: https://github.com/PlasmaPy/plasmapy-benchmarks
 .. _asv: https://github.com/airspeed-velocity/asv
@@ -511,7 +509,8 @@ instructions on writing such benchmarks can be found at `asv-docs`_.
 Up-to-date instructions on running the benchmark suite will be located in
 the README file of `benchmarks-repo`_.
 
- .. _ASCII: https://en.wikipedia.org/wiki/ASCII
+.. _ASCII: https://en.wikipedia.org/wiki/ASCII
+.. _nbqa: https://nbqa.readthedocs.io
 
 .. _cggglm: http://www.netlib.org/lapack/explore-html/d9/d98/group__complex_o_t_h_e_reigen_ga4be128ffc05552459683f0aade5a7937.html
 .. |cggglm| replace:: ``cggglm``
