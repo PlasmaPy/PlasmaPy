@@ -96,6 +96,7 @@
 .. Websites
 .. --------
 
+.. _API: https://en.wikipedia.org/wiki/API
 .. _Astropy docs: https://docs.astropy.org
 .. _Astropy: https://www.astropy.org
 .. _BibTeX format: https://www.bibtex.com/g/bibtex-format
@@ -115,6 +116,7 @@
 .. _Gitter bridge: https://gitter.im/PlasmaPy/Lobby
 .. _Graphviz: https://graphviz.org
 .. _hypothesis: https://hypothesis.readthedocs.io
+.. _ide: https://en.wikipedia.org/wiki/Integrated_development_environment
 .. _intersphinx: https://www.sphinx-doc.org/en/master/usage/extensions/intersphinx.html
 .. _isort: https://pycqa.github.io/isort
 .. _Jinja: https://jinja.palletsprojects.com

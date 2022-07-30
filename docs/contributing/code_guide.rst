@@ -143,10 +143,11 @@ the code is supposed to be doing.
 
 .. hint::
 
-   Most IDEs_ have a built-in tool for simultaneously renaming a
-   variable throughout a project. For example, a `rename refactoring in
-   PyCharm`_ can be done with :kbd:`Shift+F6` on Windows or Linux, and
-   :kbd:`⇧F6` or :kbd:`⌥⌘R` on macOS.
+   Most `integrated development environments <IDE>`_ (IDEs) have a
+   built-in tool for simultaneously renaming a variable throughout a
+   project. For example, a `rename refactoring in PyCharm`_ can be done
+   with :kbd:`Shift+F6` on Windows or Linux, and :kbd:`⇧F6` or
+   :kbd:`⌥⌘R` on macOS.
 
 Coding Style
 ============
@@ -509,6 +510,8 @@ generated from results located in `benchmarks-repo`_. Detailed
 instructions on writing such benchmarks can be found at `asv-docs`_.
 Up-to-date instructions on running the benchmark suite will be located in
 the README file of `benchmarks-repo`_.
+
+ .. _ASCII: https://en.wikipedia.org/wiki/ASCII
 
 .. _cggglm: http://www.netlib.org/lapack/explore-html/d9/d98/group__complex_o_t_h_e_reigen_ga4be128ffc05552459683f0aade5a7937.html
 .. |cggglm| replace:: ``cggglm``
