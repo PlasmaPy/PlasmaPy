@@ -4,39 +4,42 @@
 How to contribute to PlasmaPy
 =============================
 
+This page describes the workflow for contributing code, documentation,
+and tests to PlasmaPy.
+
+.. getting help: Element chat, OH, community meeting
+
+Preliminaries
+=============
+
+The steps described on this page are performed using a terminal running
+the `Unix shell`_.  Here are guides on using `terminals on Linux`_ and
+`terminals on macOS`_.
 
 
-Many ways to contribute
-=======================
 
-There are many ways to contribute to an open source project such as
-PlasmaPy beyond contributing code. You can create educational notebooks
-that introduce plasma concepts using PlasmaPy. You can
+For
+Windows users, we recommend installing Windows Subsystem for Linux.
 
-* `Request new features`_.
-* `Report bugs`_.
-* Write tutorials on how to use different PlasmaPy features.
-* Create educational notebooks that introduce plasma concepts using PlasmaPy.
-* Improve the project's documentation.
-* Translate PlasmaPy's documentation into another language.
-* Organize events such as `Plasma Hack Week`_.
+The command on this are intended for the Unix shell.
+
+.. How to open a terminal on macOS and Linux
+.. How to install and use WSL
 
 
-Resources
-========
 
-* `GitHub Documentation`_
-  - `Collaborating with pull requests`_
-* `How to Contribute to Open Source`_
+* `Create a GitHub account`_
+* `Install git`_
 
-.. _`Collaborating with pull requests`: https://docs.github.com/en/github/collaborating-with-pull-requests
-.. _`GitHub Documentation`: https://docs.github.com/
-.. _`How to Contribute to Open Source`: https://opensource.guide/how-to-contribute/
-.. _`Plasma Hack Week`: https://hack.plasmapy.org
-.. _`Request new features`: https://github.com/PlasmaPy/PlasmaPy/issues/new?assignees=&labels=&template=Feature_request.md
-.. _`Report bugs`: https://github.com/PlasmaPy/PlasmaPy/issues/new?assignees=&labels=&template=Bug_report.md
 
-.. _code-contribution:
+Additionally, it will be necessary to `install Python`_.
+
+
+.. _terminals on macOS: https://support.apple.com/guide/terminal/welcome/mac
+.. _Unix shell: https://en.wikipedia.org/wiki/Unix_shell
+.. _Windows Subsystem for Linux: https://docs.microsoft.com/en-us/windows/wsl/install
+
+
 
 Branches, commits, and pull requests
 ====================================
@@ -186,3 +189,37 @@ Code review
 
 Getting help
 ============
+
+
+
+Many ways to contribute
+=======================
+
+There are many ways to contribute to an open source project such as
+PlasmaPy beyond contributing code. You can create educational notebooks
+that introduce plasma concepts using PlasmaPy. You can
+
+* `Request new features`_.
+* `Report bugs`_.
+* Write tutorials on how to use different PlasmaPy features.
+* Create educational notebooks that introduce plasma concepts using PlasmaPy.
+* Improve the project's documentation.
+* Translate PlasmaPy's documentation into another language.
+* Organize events such as `Plasma Hack Week`_.
+
+
+Resources
+========
+
+* `GitHub Documentation`_
+  - `Collaborating with pull requests`_
+* `How to Contribute to Open Source`_
+
+.. _`Collaborating with pull requests`: https://docs.github.com/en/github/collaborating-with-pull-requests
+.. _`GitHub Documentation`: https://docs.github.com/
+.. _`How to Contribute to Open Source`: https://opensource.guide/how-to-contribute/
+.. _`Plasma Hack Week`: https://hack.plasmapy.org
+.. _`Request new features`: https://github.com/PlasmaPy/PlasmaPy/issues/new?assignees=&labels=&template=Feature_request.md
+.. _`Report bugs`: https://github.com/PlasmaPy/PlasmaPy/issues/new?assignees=&labels=&template=Bug_report.md
+
+.. _code-contribution:
