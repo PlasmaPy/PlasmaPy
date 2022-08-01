@@ -8,8 +8,8 @@ Contributor Guide
    :maxdepth: 3
 
    ../CONTRIBUTING
-   ../CODE_OF_CONDUCT
    install_dev
+   workflow
    code_guide
    changelog_guide
    testing_guide
