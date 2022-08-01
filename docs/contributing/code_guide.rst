@@ -180,8 +180,7 @@ It includes
 * black_ to automatically format code and ensure a consistent code style
   throughout the package
 * isort_ to automatically sort imports.
-* `nbqa <https://github.com/nbQA-dev/nbQA>`_ to automatically apply the above
-  to example notebooks as well.
+* nbqa_ to automatically apply the above to example notebooks as well.
 * a few tools for :file:`requirements.txt`, :file:`.yml` files and the like.
 
 PlasmaPy Code Style Guide, codified
