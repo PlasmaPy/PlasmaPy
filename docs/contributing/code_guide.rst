@@ -245,17 +245,23 @@ Units
      >>> 5 * u.m / u.s
      <Quantity 5. m / s>
 
-  Using |astropy.units| improves compatibility with Python packages in
+  Using |astropy.units|_ improves compatibility with Python packages in
   adjacent fields such as astronomy and heliophysics.
 
-* Use SI units within PlasmaPy, unless there is a strong justification
-  to do otherwise. Example notebooks may use other unit systems.
+  .. caution::
 
-* Use operations between |Quantity| objects except when needed for
+     Some `scipy` functions silently drop units when used on |Quantity|
+     instances.
+
+* Only SI units should be used within PlasmaPy, unless there is a strong
+  justification to do otherwise. Example notebooks may occasionally use
+  other unit systems to show the flexibility of |astropy.units|_.
+
+* Use operations between |Quantity| instances except when needed for
   performance. To improve performance in |Quantity| operations, check
   out `performance tips
   <https://docs.astropy.org/en/stable/units/index.html#performance-tips>`__
-  for |astropy.units|.
+  for |astropy.units|_.
 
 * Use |Unit| annotations with the |validate_quantities| decorator to
   validate |Quantity| arguments and return values.
@@ -270,6 +276,12 @@ Units
      )
      def inertial_length(n: u.m ** -3, ...) -> u.m:
          ...
+
+  .. caution::
+
+     Recent versions of `astropy` allow unit-aware |Quantity|
+     annotations such as ``u.Quantity[u.m]``. However, these annotations
+     are not yet compatible with |validate_quantities|.
 
 * Avoid using electron-volts as a unit of temperature within PlasmaPy
   because it is defined as a unit of energy. However, functions in
@@ -288,11 +300,6 @@ Units
   beginning of a sentence, including when they are named after a person.
   The sole exception is "degree Celsius".
 
-.. caution::
-
-   Some `scipy` functions silently drop units when used on |Quantity|
-   objects.
-
 Particles
 =========
 
@@ -309,8 +316,11 @@ Particles
      >>> alpha.charge
      <Quantity 3.20435...e-19 C>
 
+* Avoid using implicit default particle assumptions for function
+  arguments (see issue :issue:`453`).
+
 * The |particle_input| decorator can automatically transform a
-  :term:`particle-like` :term:`argument` into a |Particle| object, if
+  :term:`particle-like` :term:`argument` into a |Particle| instance when
   the corresponding :term:`parameter` is decorated with |Particle|.
 
   .. code-block::
@@ -318,9 +328,16 @@ Particles
      from plasmapy.particles import particle_input, Particle
 
      @particle_input
-     def recombine(ion: Particle):
-          # ion is now a Particle instance
-          return ion.recombine()
+     def get_particle(particle: Particle):
+          return particle
+
+  Then if we use ``get_particle`` on something :term:`particle-like`,
+  then it will return the corresponding |Particle|.
+
+  .. code-block:: pycon
+
+     >>> return_particle("p+")
+     Particle("p+")
 
   The documentation for |particle_input| describes ways to ensure that
   the particle meets certain categorization criteria.
@@ -340,12 +357,12 @@ Equations and Physical Formulae
   the physical constants.  For example, the following line of code
   obscures information about the physics being represented:
 
->>> omega_ce = 1.76e7*(B/u.G)*u.rad/u.s   # doctest: +SKIP
+>>> omega_ce = 1.76e7*(B/u.G)*u.rad/u.s  # doctest: +SKIP
 
   In contrast, the following line of code shows the exact formula
   which makes the code much more readable.
 
->>> omega_ce = (e * B) / (m_e * c)       # doctest: +SKIP
+>>> omega_ce = (e * B) / (m_e * c)  # doctest: +SKIP
 
   The origins of numerical coefficients in formulae should be
   documented.
@@ -362,20 +379,12 @@ Equations and Physical Formulae
   the same units.  In the following line, it is difficult to discern which
   is the electron temperature and which is the ion temperature.
 
-  >>> ion_sound_speed(1e6*u.K, 2e6*u.K)  # doctest: +SKIP
+  >>> ion_sound_speed(1e6 * u.K, 2e6 * u.K)  # doctest: +SKIP
 
   Remembering that "explicit is better than implicit", it is more
   readable and less prone to errors to write:
 
-  >>> ion_sound_speed(T_i=1e6*u.K, T_e=2e6*u.K)    # doctest: +SKIP
-
-* SI units that were named after a person should be lower case except at
-  the beginning of a sentence, even if their symbol is capitalized. For
-  example, kelvin is a unit while Kelvin was a scientist.
-
-
-
-
+  >>> ion_sound_speed(T_i = 1e6 * u.K, T_e = 2e6 * u.K)  # doctest: +SKIP
 
 Angular Frequencies
 ===================
@@ -391,12 +400,12 @@ s) and angular frequency (rad / s).  An explicit way to do this
 conversion is to set up an equivalency between cycles/s and Hz:
 
 >>> from astropy import units as u
->>> f_ce = omega_ce.to(u.Hz, equivalencies=[(u.cy/u.s, u.Hz)])   # doctest: +SKIP
+>>> f_ce = omega_ce.to(u.Hz, equivalencies=[(u.cy/u.s, u.Hz)])  # doctest: +SKIP
 
 However, ``dimensionless_angles`` does work when dividing a velocity
 by an angular frequency to get a length scale:
 
->>> d_i = (c/omega_pi).to(u.m, equivalencies=u.dimensionless_angles())    # doctest: +SKIP
+>>> d_i = (c/omega_pi).to(u.m, equivalencies=u.dimensionless_angles())  # doctest: +SKIP
 
 .. _example_notebooks:
 
