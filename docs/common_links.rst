@@ -173,6 +173,9 @@
    nitpick_ignore_regex in docs/conf.py so that it doesn't get counted
    as an error in a nitpicky doc build (e.g., tox -e doc_build_nitpicky).
 
+.. _`astropy.units`: https://docs.astropy.org/en/stable/units/index.html
+.. |astropy.units| replace:: `astropy.units`
+
 .. _`docs/_static`: https://github.com/PlasmaPy/PlasmaPy/tree/main/docs/_static
 .. |docs/_static| replace:: :file:`docs/_static`
 

@@ -316,6 +316,8 @@ Particles
      >>> alpha.charge
      <Quantity 3.20435...e-19 C>
 
+  To get started with |astropy.units|_, check out the
+
 * Avoid using implicit default particle assumptions for function
   arguments (see issue :issue:`453`).
 
