@@ -248,6 +248,9 @@ Units
   Using |astropy.units|_ improves compatibility with Python packages in
   adjacent fields such as astronomy and heliophysics.
 
+* To get started with |astropy.units|_, check out the notebook on
+  :ref:`../notebooks/getting_started/units.ipynb`.
+
   .. caution::
 
      Some `scipy` functions silently drop units when used on |Quantity|
@@ -316,7 +319,8 @@ Particles
      >>> alpha.charge
      <Quantity 3.20435...e-19 C>
 
-  To get started with |astropy.units|_, check out the
+  To get started with `plasmapy.particles`, check out the notebook on
+  :ref:`../notebooks/getting_started/particles.ipynb`.
 
 * Avoid using implicit default particle assumptions for function
   arguments (see issue :issue:`453`).
