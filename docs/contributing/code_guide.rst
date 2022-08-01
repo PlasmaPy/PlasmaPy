@@ -145,9 +145,10 @@ the code is supposed to be doing.
 
    Most `integrated development environments <IDE>`_ (IDEs) have a
    built-in tool for simultaneously renaming a variable throughout a
-   project. For example, a `rename refactoring in PyCharm`_ can be done
-   with :kbd:`Shift+F6` on Windows or Linux, and :kbd:`⇧F6` or
-   :kbd:`⌥⌘R` on macOS.
+   project. For example, a `rename refactoring in PyCharm
+   <https://www.jetbrains.com/help/pycharm/rename-refactorings.html>`__
+   can be done with :kbd:`Shift+F6` on Windows or Linux, and :kbd:`⇧F6`
+   or :kbd:`⌥⌘R` on macOS.
 
 Coding Style
 ============
@@ -510,7 +511,7 @@ Up-to-date instructions on running the benchmark suite will be located in
 the README file of `benchmarks-repo`_.
 
 .. _ASCII: https://en.wikipedia.org/wiki/ASCII
-.. _nbqa: https://nbqa.readthedocs.io
+.. _rename refactoring in PyCharm: https://www.jetbrains.com/help/pycharm/rename-refactorings.html
 
 .. _cggglm: http://www.netlib.org/lapack/explore-html/d9/d98/group__complex_o_t_h_e_reigen_ga4be128ffc05552459683f0aade5a7937.html
 .. |cggglm| replace:: ``cggglm``
