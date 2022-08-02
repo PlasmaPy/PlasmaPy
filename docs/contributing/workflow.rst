@@ -9,6 +9,11 @@ and tests to PlasmaPy.
 
 .. getting help: Element chat, OH, community meeting
 
+.. tip::
+
+   Use the good first contribution label to find good issues to
+   contribute to.
+
 Pre-requisites
 ==============
 
@@ -93,9 +98,59 @@ Setup
 
       git remote add upstream git@github.com:PlasmaPy/PlasmaPy.git
 
+   .. tip::
+
+      The remote named ``origin`` refers to the
+
+      The ``upstream
+
+      .. code-block:: bash
+
+         git remote rename origin username
+         git remote rename upstream plasmapy
+
 .. _clone: https://github.com/git-guides/git-clone
 .. _fork: https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/about-forks
 .. _remote: https://github.com/git-guides/git-remote
+
+#. Add a conda environment (or a virtual environment?)
+
+Making a code contribution
+==========================
+
+Creating a new branch
+---------------------
+
+#. Open a terminal, and navigate to the :file:`PlasmaPy` directory that
+   was created above.
+
+#. Run ``git fetch upstream`` to download and make ``git`` aware of the
+   current status of `PlasmaPy's GitHub repository`_.
+
+#. Create a branch_ and immediately switch to it using this command,
+   with ``branch-name`` changed to the name of the branch you want to
+   create.
+
+   .. code-block::
+
+      git checkout -b branch-name upstream main
+
+   .. tip::
+
+      Use descriptive branch names like ``refactor-particles-tests`` to
+      make it easier to remember the purpose of each branch.
+
+#. Connect your local branch to your fork_ of PlasmaPy on GitHub_ by
+   running:
+
+   .. code-block::
+
+      git push --set-upstream origin new-branch-name
+
+.. hint::
+
+   Avoid making a pull request from the ``main`` branch, as this often
+   leads to problems.  State more on why...
 
 Branches, commits, and pull requests
 ====================================
