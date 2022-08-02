@@ -83,6 +83,7 @@
    used just before a period.
 
 .. |bibliography| replace:: :ref:`bibliography`\
+.. |coding guide| replace:: :ref:`coding guide`\
 .. |contributor guide| replace:: :ref:`contributor guide`\
 .. |documentation guide| replace:: :ref:`documentation guide`\
 .. |glossary| replace:: :ref:`glossary`\
@@ -101,6 +102,7 @@
 .. _BibTeX: http://www.bibtex.org
 .. _black: https://black.readthedocs.io
 .. _Conda: https://docs.conda.io
+.. _Contributor Covenant: https://www.contributor-covenant.org
 .. _create an issue: https://github.com/PlasmaPy/PlasmaPy/issues/new/choose
 .. _CSS: https://www.w3schools.com:443/css
 .. _DOI: https://www.doi.org
@@ -135,7 +137,6 @@
 .. _PlasmaPy's documentation: https://docs.plasmapy.org/en/stable
 .. _PlasmaPy's GitHub repository: https://github.com/PlasmaPy/plasmapy
 .. _PlasmaPy's Matrix chat room: https://app.element.io/#/room/#plasmapy:openastronomy.org
-.. _pre-commit: https://pre-commit.com
 .. _`pre-commit.ci`: https://pre-commit.ci
 .. _pydocstyle: https://www.pydocstyle.org/en/stable
 .. _pygments: https://pygments.org
@@ -210,6 +211,12 @@
 .. _numba: https://numba.readthedocs.io
 .. |numba| replace:: `numba`
 
+.. _pre-commit: https://pre-commit.com
+.. |pre-commit| replace:: ``pre-commit``
+
+.. _`.pre-commit-config.yaml`: https://github.com/PlasmaPy/PlasmaPy/blob/main/.pre-commit-config.yaml
+.. |.pre-commit-config.yaml| replace:: :file:`.pre-commit-config.yaml`
+
 .. _`setup.cfg`: https://github.com/PlasmaPy/PlasmaPy/blob/main/setup.cfg
 .. |setup.cfg| replace:: :file:`setup.cfg`
 
@@ -224,6 +231,9 @@
 
 .. _`sphinx_changelog`: https://sphinx-changelog.readthedocs.io
 .. |sphinx_changelog| replace:: `sphinx_changelog`
+
+.. _`sphinx-reredirects`: https://documatt.gitlab.io/sphinx-reredirects
+.. |sphinx-reredirects| replace:: `sphinx-reredirects`
 
 .. _`sphinx-hoverxref`: https://sphinx-hoverxref.readthedocs.io
 .. |sphinx-hoverxref| replace:: `sphinx-hoverxref`

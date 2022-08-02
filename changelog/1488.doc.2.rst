@@ -1,1 +1,0 @@
-Set minimum version of `sphinx` to ``v4.4``.

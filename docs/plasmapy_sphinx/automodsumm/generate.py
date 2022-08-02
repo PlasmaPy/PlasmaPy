@@ -66,21 +66,16 @@ class AutomodsummRenderer(AutosummaryRenderer):
 
     app : `sphinx.application.Sphinx`
         Instance of the `sphinx` application.
-
-    template_dir : str
-        Path to a specified template directory.
     """
 
-    def __init__(
-        self,
-        app: Union["Builder", "Sphinx"],
-        template_dir: str = None,
-    ) -> None:
+    def __init__(self, app: "Sphinx") -> None:
 
+        # add plasmapy_sphinx templates directory to the overall templates path
         asumm_path = templates_dir
         relpath = os.path.relpath(asumm_path, start=app.srcdir)
         app.config.templates_path.append(relpath)
-        super().__init__(app, template_dir)
+
+        super().__init__(app)
 
     def render(self, template_name: str, context: Dict) -> str:
         """
