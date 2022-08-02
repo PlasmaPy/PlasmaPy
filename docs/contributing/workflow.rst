@@ -9,37 +9,93 @@ and tests to PlasmaPy.
 
 .. getting help: Element chat, OH, community meeting
 
-Preliminaries
-=============
+Pre-requisites
+==============
 
-The steps described on this page are performed using a terminal running
-the `Unix shell`_.  Here are guides on using `terminals on Linux`_ and
-`terminals on macOS`_.
+Using a terminal
+----------------
 
+The commands described on this page are intended for use in a terminal
+running the `Unix shell`_. For Windows users, we recommend installing
+`Windows Subsystem for Linux`_ (WSL). Here are instructions for
+`opening a terminal on macOS`_. A terminal can be opened on Linux by
+doing :kbd:`Ctrl + Alt + t`. Here are some essential `Unix commands`_.
 
+Using git and GitHub
+--------------------
 
-For
-Windows users, we recommend installing Windows Subsystem for Linux.
+Plasma code development is done using |git|_ and GitHub_. Before
+contributing code to PlasmaPy, it is necessary to:
 
-The command on this are intended for the Unix shell.
+#. `Sign up on GitHub`_ for a free account.
 
-.. How to open a terminal on macOS and Linux
-.. How to install and use WSL
+#. `Install git`_ on your local computer.
 
+   .. note::
 
+      WSL and some Linux distributions often come with |git|_ already
+      installed, so this step might not be necessary.
 
-* `Create a GitHub account`_
-* `Install git`_
+#. Configure |git|_ with your name and email with the following
+   commands, where the name and email are replaced with your own.
 
+   .. code-block:: bash
 
-Additionally, it will be necessary to `install Python`_.
+      git config --global user.name "Spacecat Q. Spacecat"
+      git config --global user.email "spacecat@spacecat.com"
 
+  .. note::
 
-.. _terminals on macOS: https://support.apple.com/guide/terminal/welcome/mac
+     These optional configuration commands will help ensure that you get
+     proper credit for your code contributions and make it easier to
+     contact you about co-authorship in case we submit a journal article
+     on PlasmaPy.
+
+#. `Add a new SSH key to your GitHub account`_.
+
+Installing Python
+-----------------
+
+.. _Add a new SSH key to your GitHub account: https://docs.github.com/en/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account
+.. _install git: https://github.com/git-guides/install-git
+.. _sign up on GitHub: https://github.com/join
+.. _opening a terminal on macOS: https://support.apple.com/guide/terminal/open-or-quit-terminal-apd5265185d-f365-44cb-8b09-71a064a42125/mac
+.. _Unix commands: https://www.unixtutorial.org/basic-unix-commands
 .. _Unix shell: https://en.wikipedia.org/wiki/Unix_shell
 .. _Windows Subsystem for Linux: https://docs.microsoft.com/en-us/windows/wsl/install
 
+Setup
+=====
 
+#. Log onto GitHub_.
+
+#. Go to `PlasmaPy's GitHub repository`_.
+
+#. Create a fork_ of PlasmaPy by clicking on :guilabel:`Fork`, and then
+   on the next page, :guilabel:`Create fork`.
+
+#. Open a terminal, and create and/or navigate to the folder (e.g.,
+   :file:`code`) in which you want to download PlasmaPy.
+
+#. Clone_ PlasmaPy with the following command, replacing ``username``
+   with your GitHub username.
+
+   .. code-block:: bash
+
+      git clone git@github.com:username/PlasmaPy.git
+
+#. Enter the newly created directory with ``cd PlasmaPy``.
+
+#. Add a remote_ called ``upstream`` for `PlasmaPy's GitHub repository`_
+   by using the following command.
+
+   .. code-block:: bash
+
+      git remote add upstream git@github.com:PlasmaPy/PlasmaPy.git
+
+.. _clone: https://github.com/git-guides/git-clone
+.. _fork: https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/about-forks
+.. _remote: https://github.com/git-guides/git-remote
 
 Branches, commits, and pull requests
 ====================================
@@ -54,7 +110,7 @@ repository:
 
 Changes to PlasmaPy should be made using branches.  It is usually best
 to avoid making changes on your main branch so that it can be kept
-consistent with the upstream repository.  Instead we can create a new
+consistent with the upstream repository. Instead we can create a new
 branch for the specific feature that you would like to work on:
 
 .. code-block:: bash

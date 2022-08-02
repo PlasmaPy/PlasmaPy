@@ -107,7 +107,6 @@
 .. _CSS: https://www.w3schools.com:443/css
 .. _DOI: https://www.doi.org
 .. _flake8: https://flake8.pycqa.org/en/latest
-.. _git: https://git-scm.com
 .. _GitHub Actions: https://docs.github.com/en/actions
 .. _GitHub Discussions page: https://github.com/PlasmaPy/PlasmaPy/discussions
 .. _GitHub Flavored Markdown: https://github.github.com/gfm
@@ -193,6 +192,9 @@
 
 .. _`docs/bibliography.bib`: https://github.com/PlasmaPy/PlasmaPy/blob/main/docs/bibliography.bib
 .. |docs/bibliography.bib| replace:: :file:`docs/bibliography.bib`
+
+.. _git: https://git-scm.com
+.. |git| replace:: `git`
 
 .. _h5py: https://www.h5py.org/
 .. |h5py| replace:: `h5py`
