@@ -148,8 +148,8 @@ def find_ion_saturation_current(
     ion-saturation current, since, while ideal planar Langmuir probes
     reach a steady-state ion-saturation current, real world Langmuir
     probes "suffer" from expanding sheaths as the bias voltage
-    increases.  This sheath expansion results the ion-saturation
-    current also increasing.
+    becomes increasingly negative.  This sheath expansion results the
+    ion-saturation current also increasing.
     """
     rtn_extras = ISatExtras(rsq=None, fitted_func=None, fitted_indices=None)._asdict()
 
