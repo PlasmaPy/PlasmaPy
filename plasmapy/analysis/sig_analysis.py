@@ -9,14 +9,25 @@ from warnings import warn
 
 
 def remove_offset(data_array: np.ndarray, start_idx: int, end_idx: int) -> np.ndarray:
-    """_summary_ : Function which preforms mean subtraction
+    """
+    Removes the offset from the given data array and then returns it.
 
-    Args:     
-       data_array (array): array containing values from which to mean sub
-       start_idx (int): idx of where to start obtaining mean from
-       end_idx (int): idx of where to stop obtaining mean from
-    Returns:
-       data_array (array): array after mean_sub is preformed 
+    Parameters
+    ----------
+    data_array: `numpy.ndarray`
+       An array containing data from which offset should be removed.
+
+    start_idx: int
+       Index of value in array from where to start calulating offset.
+
+    end_idx: int
+       Index of value in array from where to end calulating offset.
+
+    Returns
+    -------
+    data_array: `numpy.ndarray`
+       the original data array with the offset removed.
+
     """
     data_array = np.array(data_array)
     meansub = np.mean(data_array[start_idx:end_idx])
@@ -25,15 +36,33 @@ def remove_offset(data_array: np.ndarray, start_idx: int, end_idx: int) -> np.nd
 
 
 def high_pass_filter(data_array: np.ndarray, cutoff: float, sampling_frequency: float, order: int) -> np.ndarray:
-    """_summary_ : Function which applies a band_pass_filter
+    """
+    Applies a high pass filter to the data array to imporve 
+    proper integration. 
 
-    Args:
-       data_array (array): _description_
-       cuttoff (_type_): _description_
-       sampling_frequency (_type_): _description_
-       order (_type_): _description_
-    Returns:
-       filtered_arr : array with filter applied 
+    Parameters
+    ----------
+    data_array: `numpy.ndarray`
+       An array containing data from to which filter
+       is to be applied.
+
+    cutoff: float
+       The lowest frequency passed into the filter. Frequencies
+       lower than the cutoff are removed from the dataset. 
+
+    sampling_frequency: float
+       The maximum frequency passed into the filter based
+       on the sampling rate of the data set. 
+
+    order: int
+       The order of the filter created 
+
+    Returns
+    -------
+    filt_arr: `numpy.ndarray`
+       The original data aray with the frequencies below 
+       the cuttoff removed 
+
     """
     if cutoff > sampling_frequency:
         raise ValueError(

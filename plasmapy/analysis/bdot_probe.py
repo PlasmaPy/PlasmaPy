@@ -5,26 +5,38 @@ __all__ = []
 
 from warnings import warn
 import scipy.integrate as sp
-import matplotlib.pylab as plt
 from typing import Tuple
 import numpy as np
 
 
-def compute_bfield(bdot_data: np.ndarray, times: np.ndarray, tloop_area: float) -> Tuple[np.ndarray, np.ndarray]:
-    """_summary_ : Function to compute magnetic field for bdots
-         Args:
-             Bdot (array): - volts  
-             tloop_area (float): - meters squared 
-             times_s (array): - seconds   
-         Returns:
-             field_arr : array of magnetic field values for the bdots
-             new_time: corrsponding time array  
+def compute_bfield(bdot_data: np.ndarray, times: np.ndarray, loop_area: float) -> Tuple[np.ndarray, np.ndarray]:
+    """
+    Returns array of the magnetic field and the corresponding time array
 
+    Parameters
+    ----------
+    bdot_data: `numpy.ndarray`
+        A data array containing voltage fluctuations from a bdot probe. The
+        array values are proportional to time changing magnetic field via Faradays Law
+
+    times: `numpy.ndarray`
+        The time series to the data collection.
+
+    loop_area: float
+        The area through which the changing flux is measured. 
+
+    Returns
+    -------
+    field_arr: `numpy.ndarray`
+        The array containing the magnetic field fluctuations. 
+
+    new_time: `numpy.ndarray`
+        The corresponding time series.   
     """
     if len(bdot_data) != len(times):
         raise Exception("length of time and voltage arrays in not equal\n")
 
-    bdot_data[:] = [x / tloop_area for x in bdot_data]
+    bdot_data[:] = [x / loop_area for x in bdot_data]
     field_arr = sp.cumtrapz(bdot_data, times)  # Tesla
     new_time = times[1:]
 
