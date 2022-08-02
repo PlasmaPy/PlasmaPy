@@ -84,9 +84,9 @@ def find_ion_saturation_current(
 
     current_bound: `float`
         A fraction representing a percentile window around the minimum
-        current for which to collect the points.  For example, a value
-        of ``0.1`` indicates to use all points within 10% of the
-        minimum current.  (DEFAULT ``None``)
+        current.  The points to be fitted are defined to be within this
+        window.  For example, a value of ``0.1`` indicates to use all
+        points within 10% of the minimum current.  (DEFAULT ``None``)
 
         |
 
