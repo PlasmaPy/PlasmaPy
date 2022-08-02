@@ -594,7 +594,7 @@ def Lundquist_number(
     i.e., the ratio of the inflow to outflow speeds, can then be expressed as
     :math:`R \sim 1 / \sqrt{S}`. Similarly, the maximum reconnection rate
     in the Petschek model can be expressed as approximately
-    :math:`\pi / (8 \ln S)` :cite:p:`Priest:2000`.
+    :math:`\pi / (8 \ln S)` :cite:p:`priest:2000`.
 
     Examples
     --------
