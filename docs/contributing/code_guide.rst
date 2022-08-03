@@ -20,8 +20,12 @@ style changes. Please feel free to propose revisions to this guide by
 :ref:`submitting a pull request <code-contribution>` or by bringing up
 an idea at a community meeting.
 
-Coding Style
-============
+Coding guidelines
+=================
+
+* Use array operations when possible.  (expand this!)
+
+* Use existing NumPy & SciPy operations when possible.
 
 * Use formatted string literals (f-strings) instead of legacy formatting
   for strings.
@@ -33,19 +37,6 @@ Coding Style
   package_name='PlasmaPy'
   >>> print(f"{package_name!r}")  # shortcut for f"{repr(package_name)}"
   'PlasmaPy'
-
-* Do not use :term:`mutable` objects as default values in the function
-  or method declaration. This can lead to unexpected behavior.
-
-  .. code:: pycon
-
-     >>> def function(l=[]):
-     ...     l.append("x")
-     ...     print(l)
-     >>> function()
-     ['x']
-     >>> function()
-     ['x', 'x']
 
 * Use the `property` :term:`decorator` instead of getters and setters.
 
@@ -105,14 +96,25 @@ Coding Style
      ... }
      {0: 0, 2: 4, 4: 16, 6: 36, 8: 64, 10: 100, 12: 144, 14: 196, 16: 256}
 
-* Avoid using global variables when possible.
-
-* Use ``Optional[type]`` for type hinted keyword arguments with a
-  default value of `None`.
-
 * Avoid putting any significant implementation code in
   :file:`__init__.py` files. Implementation details should be contained
   in a different file, and then imported into :file:`__init__.py`.
+
+* Do not use :term:`mutable` objects as default values in the function
+  or method declaration. This can lead to unexpected behavior.
+
+  .. code:: pycon
+
+     >>> def function(l=[]):
+     ...     l.append("x")
+     ...     print(l)
+     >>> function()
+     ['x']
+     >>> function()
+     ['x', 'x']
+
+* Avoid using global variables when possible.
+
 
 .. _code-contribution:
 
