@@ -120,7 +120,7 @@ def find_ion_saturation_current(
     -------
     isat: `~plasmapy.analysis.fit_functions.Linear`
         A :term:`fit-function` representing the linear portion of the
-        fitter curve.
+        fitted curve.
 
     extras: `ISatExtras`
         Additional information from the curve fit:
