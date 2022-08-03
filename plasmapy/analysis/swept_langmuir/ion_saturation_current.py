@@ -7,7 +7,7 @@ __aliases__ = ["find_isat_"]
 import numbers
 import numpy as np
 
-from typing import NamedTuple, Optional, Tuple
+from typing import Any, Dict, NamedTuple, Optional, Tuple
 
 from plasmapy.analysis import fit_functions as ffuncs
 from plasmapy.analysis.swept_langmuir.helpers import check_sweep
@@ -166,7 +166,7 @@ def find_ion_saturation_current(
             "func": ffuncs.ExponentialPlusOffset,
             "current_bound": 1.0,
         },
-    }
+    }  # type: Dict[str, Dict[str, Any]]
     try:
         default_current_bound = _settings[fit_type]["current_bound"]
         fit_func = _settings[fit_type]["func"]()
