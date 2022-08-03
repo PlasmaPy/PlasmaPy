@@ -251,7 +251,7 @@ Units
 
   .. caution::
 
-     Recent versions of `astropy` allow unit-aware |Quantity|
+     Recent versions of Astropy_ allow unit-aware |Quantity|
      annotations such as ``u.Quantity[u.m]``. However, these annotations
      are not yet compatible with |validate_quantities|.
 
