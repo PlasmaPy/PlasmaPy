@@ -152,36 +152,6 @@ the code is supposed to be doing.
 Coding Style
 ============
 
-TL;DR: use pre-commit
----------------------
-
-PlasmaPy has a configuration for the `pre-commit framework
-<https://pre-commit.com/>`_ that takes care of style mostly automatically.
-Install it with ``pip install pre-commit``, then use ``pre-commit install`` within
-the repository.
-
-This will cause pre-commit to download the right versions of linters we use,
-then run an automated style checking suite on every commit.  Do note that this
-works better with a ``git add``, then ``git commit`` workflow than a ``git commit
--a`` workflow — that way, you can check via ``git diff`` what the automated
-changes actually did.
-
-Note that the "Style linters / pre-commit (pull_request)" part of our
-Continuous Integration system can and will (metaphorically) shout at you if it
-finds you didn't apply the linters. Also note that the linters' output may vary
-with version, so, rather than apply black_ and isort_ manually, let
-pre-commit do the version management for you instead!
-
-Our pre-commit suite can be found in `.pre-commit-config.yaml
-<https://github.com/PlasmaPy/PlasmaPy/blob/main/.pre-commit-config.yaml>`_.
-It includes
-
-* black_ to automatically format code and ensure a consistent code style
-  throughout the package
-* isort_ to automatically sort imports.
-* nbqa_ to automatically apply the above to example notebooks as well.
-* a few tools for :file:`requirements.txt`, :file:`.yml` files and the like.
-
 PlasmaPy Code Style Guide, codified
 -----------------------------------
 
