@@ -53,8 +53,8 @@ def find_ion_saturation_current(
     current-voltage (IV) curve obtained from a swept Langmuir probe.
     The current collected by a Langmuir probe reaches ion-saturation
     when the probe is sufficiently biased so the influx of electrons is
-    completely repelled, which leads to only the collection of ions.  (For
-    additional details see the **Notes** section below.)
+    completely repelled, which leads to only the collection of ions.
+    (For additional details see the **Notes** section below.)
 
     **Aliases:** `find_isat_`
 
