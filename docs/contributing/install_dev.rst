@@ -216,3 +216,65 @@ repository root and use one of
 Either one of these commands will create a soft link to your cloned
 repository.  Any changes in Python code you make there will be there
 when you ``import plasmapy`` from an interactive session.
+
+Installing pre-commit
+=====================
+
+PlasmaPy uses the |pre-commit|_ framework to perform validations and
+automatically apply a consistent style to code contributions. Using
+|pre-commit|_ helps us find errors and shortens code reviews. PlasmaPy's
+pre-commit suite includes hooks such as:
+
+* ``check-ast`` to verify that the Python code is valid.
+* ``trailing-whitespace`` to remove trailing whitespace.
+* black_ to format code.
+* isort_ to sort imports.
+* nbqa_ to format notebooks.
+
+Most of the changes required by |pre-commit|_ can be applied
+automatically. To apply these changes in a pull request, add a comment
+that says ``pre-commit.ci autofix``. After doing this, be sure to `pull
+the changes`_ from GitHub to your computer with ``git pull``.
+
+To enable |pre-commit|_ locally, open a terminal, enter the directory of
+the PlasmaPy repository, and run:
+
+.. code-block:: bash
+
+   pip install pre-commit
+   pre-commit install
+
+Now suppose we added some trailing whitespace to :file:`some_file.py`
+and attempted to commit it. If |pre-commit|_ has been installed, then
+the ``trailing-whitespace`` hook will cause |pre-commit|_ to fail while
+modifying :file:`some_file.py` to remove the trailing whitespace.
+
+.. code-block:: console
+
+   $ git add some_file.py
+   $ git commit -m "Add trailing whitespace"
+   Trim Trailing Whitespace.................................................Failed
+   - hook id: trailing-whitespace
+   - exit code: 1
+   - files were modified by this hook
+
+At this point it will be necessary to run these two commands again to
+commit the changes. The changes made by |pre-commit|_ will be unstaged and
+thus could be seen by running ``git diff``. Sometimes |pre-commit|_ will
+not be able to automatically fix the files, such as when there are
+syntax errors in Python code. In these cases, the files will need to be
+changed manually before running the ``git add`` and ``git commit``
+commands again. Alternatively, the |pre-commit|_ hooks can be skipped
+using ``git commit --no-verify`` instead.
+
+The |pre-commit|_ configuration is given in |.pre-commit-config.yaml|_.
+
+After adding or updating |pre-commit|_ hooks, run the following command to
+apply the changes to all files.
+
+.. code-block:: bash
+
+   pre-commit run --all-files
+
+.. _nbqa: https://nbqa.readthedocs.io
+.. _pull the changes: https://docs.github.com/en/get-started/using-git/getting-changes-from-a-remote-repository#pulling-changes-from-a-remote-repository
