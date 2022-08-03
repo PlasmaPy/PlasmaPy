@@ -77,7 +77,7 @@ the code is supposed to be doing.
 
 * Python allows alphanumeric Unicode characters to be used in object
   names (e.g., ``πλάσμα`` or ``φυσική``). These characters may be used
-  for *internal* code when doing so improves readability (i.e. to match
+  for *internal* code when doing so improves readability (i.e., to match
   a commonly used symbol).
 
 * Only ASCII_ characters should be used in code that is part of the
@@ -306,16 +306,6 @@ Suggestions on `how to write a git commit message
 
 * Use the body to explain what and why vs. how
 
-Documentation
-=============
-
-* All public classes, methods, and functions should have docstrings
-  using the numpydoc format.
-
-* Docstrings may be checked locally using pydocstyle_.
-
-* These docstrings should include usage examples.
-
 Warnings and Exceptions
 =======================
 
@@ -459,7 +449,7 @@ Please note that it is necessary to store notebooks with their outputs stripped
 If you have an example notebook that includes packages unavailable in the
 documentation building environment (e.g., ``bokeh``) or runs some heavy
 computation that should not be executed on every commit, *keep the outputs in
-the notebook* but store it in the repository with a ``preexecuted_`` prefix, e.g.
+the notebook* but store it in the repository with a ``preexecuted_`` prefix, e.g.,
 :file:`preexecuted_full_3d_mhd_chaotic_turbulence_simulation.ipynb`.
 
 Benchmarks
