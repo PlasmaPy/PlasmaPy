@@ -15,13 +15,13 @@ def remove_offset(data_array: np.ndarray, start_idx: int, end_idx: int) -> np.nd
     Parameters
     ----------
     data_array: `numpy.ndarray`
-       An array containing data from which offset should be removed.
+        An array containing data from which offset should be removed.
 
     start_idx: int
-       Index of value in array from where to start calulating offset.
+        Index of value in array from where to start calculating offset.
 
     end_idx: int
-       Index of value in array from where to end calulating offset.
+        Index of value in array from where to end calculating offset.
 
     Returns
     -------
