@@ -29,7 +29,7 @@ Coding Style
   >>> package_name = "PlasmaPy"
   >>> print(f"The name of the package is {package_name}.")
   The name of the package is PlasmaPy.
-  >>> print(f"{package_name=}")  # Python 3.8+ debugging shortcut
+  >>> print(f"{package_name=}")
   package_name='PlasmaPy'
   >>> print(f"{package_name!r}")  # shortcut for f"{repr(package_name)}"
   'PlasmaPy'
@@ -71,7 +71,7 @@ Coding Style
      f(T_i = 1e6 * u.K, T_e = 2e6 * u.K)
 
   Similarly, when a function has parameters named ``T_e`` and ``T_i``,
-  these parameters should be make :term:`keyword-only` to avoid
+  these parameters should be made :term:`keyword-only` to avoid
   ambiguity and reduce the chance of errors.
 
   .. code-block::
@@ -92,7 +92,17 @@ Coding Style
 
      >>> [x ** 2 for x in range(17) if x % 2 == 0]
      [0, 4, 16, 36, 64, 100, 144, 196, 256]
-     >>> {x: x ** 2 for x in range(17) if x % 2 == 0}
+
+  A comprehension might be more readable when spread out over multiple
+  lines.
+
+  .. code-block::
+
+     >>> {
+     ...     x: x ** 2
+     ...     for x in range(17)
+     ...     if x % 2 == 0
+     ... }
      {0: 0, 2: 4, 4: 16, 6: 36, 8: 64, 10: 100, 12: 144, 14: 196, 16: 256}
 
 * Avoid using global variables when possible.
