@@ -155,8 +155,8 @@ Coding Style
 PlasmaPy Code Style Guide, codified
 -----------------------------------
 
-* PlasmaPy generally follows the :pep:`8` style guide for Python code.
-  This style choice helps ensure that the code will be consistent and
+* PlasmaPy generally follows the :pep:`8` style guide for Python code and the black_ code style.
+  This helps ensure that the code will be consistent and
   readable.
 
   * Docstrings and comments should generally be limited to
