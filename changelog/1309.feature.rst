@@ -1,2 +1,0 @@
-Added the `~plasmapy.particles.particle_class.molecule` function to build
-|CustomParticle| objects from a `str` representing a molecule symbol.

@@ -153,7 +153,7 @@ class ParticleTracker:
         `~astropy.units.Quantity`
             Array of kinetic energies, shape (nt, n).
         """
-        return (self.velocity_history ** 2).sum(axis=-1) * self.eff_m / 2
+        return (self.velocity_history**2).sum(axis=-1) * self.eff_m / 2
 
     def boris_push(self, init=False):
         r"""

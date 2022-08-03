@@ -23,7 +23,7 @@ def _fetch_units(openPMD_dims):
 
     units = u.dimensionless_unscaled
     for factor, unit in zip(openPMD_dims, _UNITS):
-        units *= unit ** factor
+        units *= unit**factor
     units, *_ = units.compose()
     return units
 
