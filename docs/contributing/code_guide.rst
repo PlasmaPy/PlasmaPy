@@ -23,9 +23,9 @@ an idea at a community meeting.
 Names
 =====
 
-Names are the most fundamental means of communicating the intent and
-purpose of code. Wise choices of names can greatly improve the
-understandability of code, while inadequate naming can obfuscate what
+Names are our most fundamental means of communicating the intent and
+purpose of code. Wisely chosen names can greatly improve the
+understandability of code, while inadequate names can obfuscate what
 the code is supposed to be doing.
 
 * PlasmaPy generally uses the :pep:`8` conventions for variable names.
@@ -33,12 +33,12 @@ the code is supposed to be doing.
   - Use lowercase words separated by underscores for function and
     variable names (e.g., ``function_name`` and ``variable_name``).
 
-  - Use capitalized words without separators when naming a :term:`class`
-    (e.g., ``ClassName``), but keep acronyms capitalized (e.g.,
+  - Use capitalized words without separators when naming a class (e.g.,
+    ``ClassName``), but keep acronyms capitalized (e.g.,
     ``MHDEquations``).
 
-  - Use capital letters words separated by underscores for constants
-    (e.g., ``CONSTANT`` or ``CONSTANT_NAME``).
+  - Use capital letters words separated by underscores when naming
+    constants (e.g., ``CONSTANT`` or ``CONSTANT_NAME``).
 
   There are some situations in PlasmaPy which justify a departure from
   the :pep:`8` conventions.
@@ -50,10 +50,11 @@ the code is supposed to be doing.
     standard usage in plasma science (e.g., ``B`` for magnetic field and
     ``T`` for temperature).
 
-* Pronounceable names are more memorable and compatible with
-  text-to-speech technology.
+* Choose names that are pronounceable to make them more memorable and
+  compatible with text-to-speech technology.
 
-* Choose names will produce more relevant results in internet searches.
+* Choose names will produce more relevant results when searching the
+  internet.
 
 * Avoid unnecessary abbreviations, as these make code harder to read.
   Prefer clarity over brevity, except for code that is used frequently
@@ -70,18 +71,17 @@ the code is supposed to be doing.
 * Avoid ambiguity. Does ``temp`` mean "temperature", "temporary", or
   "template"?
 
-* Append ``_e`` to the name of a :term:`parameter` to indicate that it
-  refers to electrons, ``_i`` to indicate that it refers to ions, and
-  ``_p`` to indicate that it refers to protons (e.g., ``T_e``, ``T_i``,
-  and ``T_p``).
+* Append ``_e`` to a variable name to indicate that it refers to
+  electrons, ``_i`` for ions, and ``_p`` for protons (e.g., ``T_e``,
+  ``T_i``, and ``T_p``).
+
+* Only ASCII_ characters should be used in code that is part of the
+  public API_.
 
 * Python allows alphanumeric Unicode characters to be used in object
   names (e.g., ``πλάσμα`` or ``φυσική``). These characters may be used
   for *internal* code when doing so improves readability (i.e., to match
-  a commonly used symbol).
-
-* Only ASCII_ characters should be used in code that is part of the
-  public API_.
+  a commonly used symbol) and in Jupyter_ notebooks.
 
 * If a plasma parameter has multiple names, then use the name that
   provides the most physical insight. For example, ``gyrofrequency``
@@ -90,7 +90,7 @@ the code is supposed to be doing.
 * It is *usually* preferable to name a variable after its name rather
   than its symbol.  An object named ``Debye_length`` is more broadly
   understandable and searchable than ``lambda_D``. However, there are
-  some exceptions to this guideline:
+  some exceptions to this guideline.
 
   * Symbols used widely across plasma science can be used with low risk
     of confusion, such as :math:`T` for temperature or :math:`β` for
@@ -105,10 +105,10 @@ the code is supposed to be doing.
     ``λ = c / ν`` will be more readable than ``lambda = c / nu`` or
     ``wavelength = speed_of_light / frequency``.
 
-  * If an implementation is based on a journal article, then it might be
-    more readable and maintainable if the variable names are based on
-    the symbols used in that article. The article should be cited in the
-    appropriate docstring so that it appears in the |bibliography|.
+  * If an implementation is based on a journal article, then variable
+    names may be based on the symbols used in that article. The article
+    should be :ref:`cited <citation-instructions>` in the appropriate
+    docstring so that it appears in the |bibliography|.
 
 * To mark that an object is not part of PlasmaPy's public API_, begin
   its name with a leading underscore (e.g., ``_private_variable``).
@@ -140,7 +140,7 @@ the code is supposed to be doing.
   In ``for`` loops, this may take the form of assignment expressions
   with the walrus operator (``:=``).
 
-.. hint::
+.. tip::
 
    Most `integrated development environments <IDE>`_ (IDEs) have a
    built-in tool for simultaneously renaming a variable throughout a
@@ -155,9 +155,9 @@ Coding Style
 PlasmaPy Code Style Guide, codified
 -----------------------------------
 
-* PlasmaPy generally follows the `PEP8 Style Guide for Python Code
-  <https://peps.python.org/pep-0008>`__.  This style choice
-  helps ensure that the code will be consistent and readable.
+* PlasmaPy generally follows the :pep:`8` style guide for Python code.
+  This style choice helps ensure that the code will be consistent and
+  readable.
 
   * Docstrings and comments should generally be limited to
     about 72 characters.
