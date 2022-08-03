@@ -60,7 +60,6 @@ def find_ion_saturation_current(
 
     Parameters
     ----------
-
     voltage: `numpy.ndarray`
         1-D numpy array of monotonically increasing probe biases
         (should be in volts).
@@ -152,7 +151,7 @@ def find_ion_saturation_current(
     ion-saturation current, since, while ideal planar Langmuir probes
     reach a steady-state ion-saturation current, real world Langmuir
     probes "suffer" from expanding sheaths as the bias voltage
-    becomes increasingly negative.  This sheath expansion results the
+    becomes increasingly negative.  This sheath expansion results in the
     ion-saturation current also increasing.
     """
     rtn_extras = ISatExtras(rsq=None, fitted_func=None, fitted_indices=None)._asdict()
