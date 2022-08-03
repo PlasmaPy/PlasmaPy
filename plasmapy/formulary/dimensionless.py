@@ -581,7 +581,7 @@ def Lundquist_number(
     -----
     For calculating the Alfvén speed `~plasmapy.formulary.speeds.Alfven_speed`
     is used and for calculating the Lundquist number
-    `~plasmapy.formulary.dimensionless.magnetic_Reynolds` is used.
+    `~plasmapy.formulary.dimensionless.Mag_Reynolds` is used.
 
     The Lundquist number is an important quantity in the study of
     magnetic reconnection. For example, reconnection rates in both the
