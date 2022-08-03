@@ -23,47 +23,86 @@ an idea at a community meeting.
 Coding Style
 ============
 
-PlasmaPy Code Style Guide, codified
------------------------------------
+* Use formatted string literals (f-strings) instead of legacy formatting
+  for strings.
 
-* PlasmaPy follows the `PEP8 Style Guide for Python Code
-  <https://peps.python.org/pep-0008>`__.  This style choice
-  helps ensure that the code will be consistent and readable.
+  >>> package_name = "PlasmaPy"
+  >>> print(f"The name of the package is {package_name}.")
+  The name of the package is PlasmaPy.
+  >>> print(f"{package_name=}")  # Python 3.8+ debugging shortcut
+  package_name='PlasmaPy'
+  >>> print(f"{package_name!r}")  # shortcut for f"{repr(package_name)}"
+  'PlasmaPy'
 
-  * Line lengths should be chosen to maximize the readability and
-    elegance of the code.  The maximum line length for Python code in
-    PlasmaPy is 88 characters.
+* Do not use :term:`mutable` objects as default values in the function
+  or method declaration. This can lead to unexpected behavior.
 
-  * Docstrings and comments should generally be limited to
-    about 72 characters.
+  .. code:: pycon
 
-* During code development, use black_ to automatically format code and
-  ensure a consistent code style throughout the package and isort_ to
-  automatically sort imports.
+     >>> def function(l=[]):
+     ...     l.append("x")
+     ...     print(l)
+     >>> function()
+     ['x']
+     >>> function()
+     ['x', 'x']
 
-* Follow the existing coding style within a subpackage.  This includes,
-  for example, variable naming conventions.
+* Use the `property` :term:`decorator` instead of getters and setters.
 
-* Use standard abbreviations for imported packages when possible, such
-  as ``import numpy as np``, ``import matplotlib as mpl``, ``import
-  matplotlib.pyplot as plt``, and ``import astropy.units as u``.
+* Only use `lambda` functions for one-liners that are only used near
+  where they are defined (e.g., when defining the default factory for a
+  `~collections.defaultdict`). For anything longer than one line, define
+  a define a function with ``def`` instead.
 
-* ``__init__.py`` files for modules should not contain any significant
-  implementation code, but it can contain a docstring describing the
-  module and code related to importing the module.  Any substantial
-  functionality should be put into a separate file.
+* Some plasma parameters depend on more than one |Quantity| of the same
+  physical type. For example, when reading the following line of code,
+  we cannot tell which is the electron temperature and which is the ion
+  temperature without going to the function itself.
 
-* Use absolute imports, such as
-  ``from plasmapy.particles import Particle``, rather than relative
-  imports such as ``from ..particles import Particle``.
+  .. code-block:: python
+
+     f(1e6 * u.K, 2e6 * u.K)
+
+  Spell out the :term:`parameter` names to improve readability and
+  reduce the likelihood of errors.
+
+  .. code-block:: python
+
+     f(T_i = 1e6 * u.K, T_e = 2e6 * u.K)
+
+  Similarly, when a function has parameters named ``T_e`` and ``T_i``,
+  these parameters should be make :term:`keyword-only` to avoid
+  ambiguity and reduce the chance of errors.
+
+  .. code-block::
+
+     def f(*, T_i, T_e):
+         ...
+
+* The ``__eq__`` and ``__ne__`` methods of a class should not raise
+  exceptions. If the comparison for equality is being made between
+  objects of different types, these methods should return `False`
+  instead. This behavior is for consistency with operations like
+  ``1 == "1"`` which will return `False`.
+
+* List and dictionary comprehensions should be used for simple ``for``
+  loops, like:
+
+  .. code-block:: pycon
+
+     >>> [x ** 2 for x in range(17) if x % 2 == 0]
+     [0, 4, 16, 36, 64, 100, 144, 196, 256]
+     >>> {x: x ** 2 for x in range(17) if x % 2 == 0}
+     {0: 0, 2: 4, 4: 16, 6: 36, 8: 64, 10: 100, 12: 144, 14: 196, 16: 256}
+
+* Avoid using global variables when possible.
 
 * Use ``Optional[type]`` for type hinted keyword arguments with a
   default value of `None`.
 
-* There should be at least one pun per 1284 lines of code.
-
-* Avoid using ``lambda`` to define functions, as this notation may be
-  unfamiliar to newcomers to Python.
+* Avoid putting any significant implementation code in
+  :file:`__init__.py` files. Implementation details should be contained
+  in a different file, and then imported into :file:`__init__.py`.
 
 .. _code-contribution:
 
