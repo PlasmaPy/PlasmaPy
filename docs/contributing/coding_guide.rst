@@ -20,6 +20,105 @@ style changes. Please feel free to propose revisions to this guide by
 :ref:`submitting a pull request <code-contribution>` or by bringing up
 an idea at a community meeting.
 
+Coding guidelines
+=================
+
+* PlasmaPy generally follows the :pep:`8` style guide for Python code
+  and the black_ code style. This helps ensure that the code will be
+  consistent and readable.
+
+* Use array operations when possible.  (expand this!)
+
+* Use existing NumPy & SciPy operations when possible.
+
+* Use formatted string literals (f-strings) instead of legacy formatting
+  for strings.
+
+  >>> package_name = "PlasmaPy"
+  >>> print(f"The name of the package is {package_name}.")
+  The name of the package is PlasmaPy.
+  >>> print(f"{package_name=}")
+  package_name='PlasmaPy'
+  >>> print(f"{package_name!r}")  # shortcut for f"{repr(package_name)}"
+  'PlasmaPy'
+
+* Use the `property` :term:`decorator` instead of getters and setters.
+
+* Only use `lambda` functions for one-liners that are only used near
+  where they are defined (e.g., when defining the default factory for a
+  `~collections.defaultdict`). For anything longer than one line, define
+  a define a function with ``def`` instead.
+
+* Some plasma parameters depend on more than one |Quantity| of the same
+  physical type. For example, when reading the following line of code,
+  we cannot tell which is the electron temperature and which is the ion
+  temperature without going to the function itself.
+
+  .. code-block:: python
+
+     f(1e6 * u.K, 2e6 * u.K)
+
+  Spell out the :term:`parameter` names to improve readability and
+  reduce the likelihood of errors.
+
+  .. code-block:: python
+
+     f(T_i = 1e6 * u.K, T_e = 2e6 * u.K)
+
+  Similarly, when a function has parameters named ``T_e`` and ``T_i``,
+  these parameters should be made :term:`keyword-only` to avoid
+  ambiguity and reduce the chance of errors.
+
+  .. code-block::
+
+     def f(*, T_i, T_e):
+         ...
+
+* The ``__eq__`` and ``__ne__`` methods of a class should not raise
+  exceptions. If the comparison for equality is being made between
+  objects of different types, these methods should return `False`
+  instead. This behavior is for consistency with operations like
+  ``1 == "1"`` which will return `False`.
+
+* List and dictionary comprehensions should be used for simple ``for``
+  loops, like:
+
+  .. code-block:: pycon
+
+     >>> [x ** 2 for x in range(17) if x % 2 == 0]
+     [0, 4, 16, 36, 64, 100, 144, 196, 256]
+
+  A comprehension might be more readable when spread out over multiple
+  lines.
+
+  .. code-block::
+
+     >>> {
+     ...     x: x ** 2
+     ...     for x in range(17)
+     ...     if x % 2 == 0
+     ... }
+     {0: 0, 2: 4, 4: 16, 6: 36, 8: 64, 10: 100, 12: 144, 14: 196, 16: 256}
+
+* Avoid putting any significant implementation code in
+  :file:`__init__.py` files. Implementation details should be contained
+  in a different file, and then imported into :file:`__init__.py`.
+
+* Do not use :term:`mutable` objects as default values in the function
+  or method declaration. This can lead to unexpected behavior.
+
+  .. code:: pycon
+
+     >>> def function(l=[]):
+     ...     l.append("x")
+     ...     print(l)
+     >>> function()
+     ['x']
+     >>> function()
+     ['x', 'x']
+
+* Avoid using global variables when possible.
+
 Names
 =====
 
@@ -148,105 +247,6 @@ the code is supposed to be doing.
    <https://www.jetbrains.com/help/pycharm/rename-refactorings.html>`__
    can be done with :kbd:`Shift+F6` on Windows or Linux, and :kbd:`⇧F6`
    or :kbd:`⌥⌘R` on macOS.
-
-Coding guidelines
-=================
-
-* PlasmaPy generally follows the :pep:`8` style guide for Python code
-  and the black_ code style. This helps ensure that the code will be
-  consistent and readable.
-
-* Use array operations when possible.  (expand this!)
-
-* Use existing NumPy & SciPy operations when possible.
-
-* Use formatted string literals (f-strings) instead of legacy formatting
-  for strings.
-
-  >>> package_name = "PlasmaPy"
-  >>> print(f"The name of the package is {package_name}.")
-  The name of the package is PlasmaPy.
-  >>> print(f"{package_name=}")
-  package_name='PlasmaPy'
-  >>> print(f"{package_name!r}")  # shortcut for f"{repr(package_name)}"
-  'PlasmaPy'
-
-* Use the `property` :term:`decorator` instead of getters and setters.
-
-* Only use `lambda` functions for one-liners that are only used near
-  where they are defined (e.g., when defining the default factory for a
-  `~collections.defaultdict`). For anything longer than one line, define
-  a define a function with ``def`` instead.
-
-* Some plasma parameters depend on more than one |Quantity| of the same
-  physical type. For example, when reading the following line of code,
-  we cannot tell which is the electron temperature and which is the ion
-  temperature without going to the function itself.
-
-  .. code-block:: python
-
-     f(1e6 * u.K, 2e6 * u.K)
-
-  Spell out the :term:`parameter` names to improve readability and
-  reduce the likelihood of errors.
-
-  .. code-block:: python
-
-     f(T_i = 1e6 * u.K, T_e = 2e6 * u.K)
-
-  Similarly, when a function has parameters named ``T_e`` and ``T_i``,
-  these parameters should be made :term:`keyword-only` to avoid
-  ambiguity and reduce the chance of errors.
-
-  .. code-block::
-
-     def f(*, T_i, T_e):
-         ...
-
-* The ``__eq__`` and ``__ne__`` methods of a class should not raise
-  exceptions. If the comparison for equality is being made between
-  objects of different types, these methods should return `False`
-  instead. This behavior is for consistency with operations like
-  ``1 == "1"`` which will return `False`.
-
-* List and dictionary comprehensions should be used for simple ``for``
-  loops, like:
-
-  .. code-block:: pycon
-
-     >>> [x ** 2 for x in range(17) if x % 2 == 0]
-     [0, 4, 16, 36, 64, 100, 144, 196, 256]
-
-  A comprehension might be more readable when spread out over multiple
-  lines.
-
-  .. code-block::
-
-     >>> {
-     ...     x: x ** 2
-     ...     for x in range(17)
-     ...     if x % 2 == 0
-     ... }
-     {0: 0, 2: 4, 4: 16, 6: 36, 8: 64, 10: 100, 12: 144, 14: 196, 16: 256}
-
-* Avoid putting any significant implementation code in
-  :file:`__init__.py` files. Implementation details should be contained
-  in a different file, and then imported into :file:`__init__.py`.
-
-* Do not use :term:`mutable` objects as default values in the function
-  or method declaration. This can lead to unexpected behavior.
-
-  .. code:: pycon
-
-     >>> def function(l=[]):
-     ...     l.append("x")
-     ...     print(l)
-     >>> function()
-     ['x']
-     >>> function()
-     ['x', 'x']
-
-* Avoid using global variables when possible.
 
 .. _code-contribution:
 
