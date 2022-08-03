@@ -31,7 +31,7 @@ def remove_offset(data_array: np.ndarray, start_idx: int, end_idx: int) -> np.nd
     """
     data_array = np.array(data_array)
     meansub = np.mean(data_array[start_idx:end_idx])
-    data_array[:] = [x - meansub for x in data_array]
+    data_array[:] -= meansub
     return data_array
 
 
