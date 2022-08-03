@@ -9,7 +9,7 @@ from typing import Tuple
 import numpy as np
 
 
-def compute_bfield(bdot_data: np.ndarray, times: np.ndarray, loop_area: float) -> Tuple[np.ndarray, np.ndarray]:
+def compute_bfield(bdot_data: np.ndarray, times: np.ndarray, loop_area: float) -> np.ndarray:
     """
     Returns array of the magnetic field and the corresponding time array
 
@@ -36,8 +36,7 @@ def compute_bfield(bdot_data: np.ndarray, times: np.ndarray, loop_area: float) -
     if len(bdot_data) != len(times):
         raise Exception("length of time and voltage arrays in not equal\n")
 
-    bdot_data[:] = [x / loop_area for x in bdot_data]
-    field_arr = sp.cumtrapz(bdot_data, times)  # Tesla
-    new_time = times[1:]
+    bdot_data /= loop_area
+    field_arr = sp.cumtrapz(bdot_data, times, initial=0)  # Tesla
 
-    return field_arr, new_time
+    return field_arr

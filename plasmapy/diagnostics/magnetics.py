@@ -32,14 +32,14 @@ class Bdot:
         }
 
     @validate_quantities
-    def calc_bfield(self) -> Tuple(u.T, u.s):
+    def calc_bfield(self) -> u.T:
         """_summary_
 
         """
-        bfield, new_time = compute_bfield(
+        bfield = compute_bfield(
             self._signal,
             self._time,
             self._area,
             #    ** self._settings,
         )
-        return bfield * u.T, new_time * u.s
+        return bfield * u.T
