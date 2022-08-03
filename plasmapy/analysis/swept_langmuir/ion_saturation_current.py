@@ -120,7 +120,11 @@ def find_ion_saturation_current(
     -------
     isat: `~plasmapy.analysis.fit_functions.Linear`
         A :term:`fit-function` representing the linear portion of the
-        fitted curve.
+        fitted curve.  **Note:** All ``isat`` parameters will be in the
+        same units as those of ``voltage`` and ``current``.  For
+        example, if the ``voltage`` array is in milli-volts and the
+        ``current`` array is in milli-amperes, then all parameters and
+        computed values of ``isat`` will have the same units.
 
     extras: `ISatExtras`
         Additional information from the curve fit:
