@@ -155,13 +155,9 @@ Coding Style
 PlasmaPy Code Style Guide, codified
 -----------------------------------
 
-* PlasmaPy follows the `PEP8 Style Guide for Python Code
+* PlasmaPy generally follows the `PEP8 Style Guide for Python Code
   <https://peps.python.org/pep-0008>`__.  This style choice
   helps ensure that the code will be consistent and readable.
-
-  * Line lengths should be chosen to maximize the readability and
-    elegance of the code.  The maximum line length for Python code in
-    PlasmaPy is 88 characters.
 
   * Docstrings and comments should generally be limited to
     about 72 characters.
