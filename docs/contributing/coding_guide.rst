@@ -20,34 +20,19 @@ style changes. Please feel free to propose revisions to this guide by
 :ref:`submitting a pull request <code-contribution>` or by bringing up
 an idea at a community meeting.
 
+PlasmaPy generally follows the :pep:`8` style guide for Python code,
+using auto-formatters such as black_ and isort_ that are executed using
+pre-commit_.
+
 Coding guidelines
 =================
 
-* PlasmaPy generally follows the :pep:`8` style guide for Python code
-  and the black_ code style. This helps ensure that the code will be
-  consistent and readable.
+* Use array operations when possible.  (say why!  add an example!)
 
-* Use array operations when possible.  (expand this!)
-
-* Use existing NumPy & SciPy operations when possible.
-
-* Use formatted string literals (f-strings) instead of legacy formatting
-  for strings.
-
-  >>> package_name = "PlasmaPy"
-  >>> print(f"The name of the package is {package_name}.")
-  The name of the package is PlasmaPy.
-  >>> print(f"{package_name=}")
-  package_name='PlasmaPy'
-  >>> print(f"{package_name!r}")  # shortcut for f"{repr(package_name)}"
-  'PlasmaPy'
+* Use existing NumPy & SciPy operations when possible. (say why! add an
+  example!)
 
 * Use the `property` :term:`decorator` instead of getters and setters.
-
-* Only use `lambda` functions for one-liners that are only used near
-  where they are defined (e.g., when defining the default factory for a
-  `~collections.defaultdict`). For anything longer than one line, define
-  a define a function with ``def`` instead.
 
 * Some plasma parameters depend on more than one |Quantity| of the same
   physical type. For example, when reading the following line of code,
@@ -80,6 +65,11 @@ Coding guidelines
   instead. This behavior is for consistency with operations like
   ``1 == "1"`` which will return `False`.
 
+* Limit usage of ``lambda`` functions to one-liners (e.g., when defining
+  the default factory of a `~collections.defaultdict`). For anything
+  longer than one line, use ``def`` to create a named function instead.
+  ``lambda`` functions should be defined very near where they are used.
+
 * List and dictionary comprehensions should be used for simple ``for``
   loops, like:
 
@@ -104,6 +94,19 @@ Coding guidelines
   :file:`__init__.py` files. Implementation details should be contained
   in a different file, and then imported into :file:`__init__.py`.
 
+* Avoid using global variables when possible.
+
+* Use formatted string literals (f-strings) instead of legacy formatting
+  for strings.
+
+  >>> package_name = "PlasmaPy"
+  >>> print(f"The name of the package is {package_name}.")
+  The name of the package is PlasmaPy.
+  >>> print(f"{package_name=}")
+  package_name='PlasmaPy'
+  >>> print(f"{package_name!r}")  # shortcut for f"{repr(package_name)}"
+  'PlasmaPy'
+
 * Do not use :term:`mutable` objects as default values in the function
   or method declaration. This can lead to unexpected behavior.
 
@@ -116,8 +119,6 @@ Coding guidelines
      ['x']
      >>> function()
      ['x', 'x']
-
-* Avoid using global variables when possible.
 
 Names
 =====
