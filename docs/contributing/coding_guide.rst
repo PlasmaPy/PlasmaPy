@@ -27,17 +27,18 @@ pre-commit_.
 Coding guidelines
 =================
 
-* Use array operations when possible.  (say why!  add an example!)
+* Use NumPy_ array options instead of ``for`` loops to make code more
+  compact, readable, and performant.
 
-* Use existing NumPy & SciPy operations when possible. (say why! add an
-  example!)
+* Instead of defining variables like ``a0``, ``a1``, & ``a2``, define
+  these values in a collection such as an |ndarray| or a `list`.
 
 * Use the `property` :term:`decorator` instead of getters and setters.
 
 * Some plasma parameters depend on more than one |Quantity| of the same
   physical type. For example, when reading the following line of code,
-  we cannot tell which is the electron temperature and which is the ion
-  temperature without going to the function itself.
+  we cannot immediately tell which is the electron temperature and which
+  is the ion temperature.
 
   .. code-block:: python
 
@@ -65,12 +66,11 @@ Coding guidelines
   instead. This behavior is for consistency with operations like
   ``1 == "1"`` which will return `False`.
 
-* Limit usage of ``lambda`` functions to one-liners (e.g., when defining
-  the default factory of a `~collections.defaultdict`). For anything
-  longer than one line, use ``def`` to create a named function instead.
-  ``lambda`` functions should be defined very near where they are used.
+* Limit usage of ``lambda`` functions to one-liners, such as when
+  defining the default factory of a `~collections.defaultdict`). For
+  anything longer than one line, use ``def`` instead.
 
-* List and dictionary comprehensions should be used for simple ``for``
+* List and dictionary comprehensions can be used for simple ``for``
   loops, like:
 
   .. code-block:: pycon
@@ -94,7 +94,9 @@ Coding guidelines
   :file:`__init__.py` files. Implementation details should be contained
   in a different file, and then imported into :file:`__init__.py`.
 
-* Avoid using global variables when possible.
+* Avoid defining global variables when possible.
+
+* Use ``assert`` statements only in tests.
 
 * Use formatted string literals (f-strings) instead of legacy formatting
   for strings.
