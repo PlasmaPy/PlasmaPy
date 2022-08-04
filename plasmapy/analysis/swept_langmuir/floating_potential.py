@@ -61,10 +61,11 @@ def find_floating_potential(
     fit_type: str = "exponential",
 ) -> Tuple[np.floating, VFExtras]:
     """
-    Determines the floating potential (:math:`V_f`) for a given current-voltage
-    (IV) curve obtained from a swept Langmuir probe.  The floating potential is
-    the probe bias where the collected current equals zero :math:`I = 0`.  (For
-    additional details see the **Notes** section below.)
+    Determines the floating potential (:math:`V_f`) for a given
+    current-voltage (IV) curve obtained from a swept Langmuir probe.
+    The floating potential is the probe bias where the collected
+    current equals zero :math:`I = 0`.  (For additional details see
+    the **Notes** section below.)
 
     **Aliases:** `find_vf_`
 
@@ -72,36 +73,38 @@ def find_floating_potential(
     ----------
 
     voltage: `numpy.ndarray`
-        1-D numpy array of monotonically ascending probe biases (should be in volts)
+        1-D numpy array of monotonically ascending probe biases
+        (should be in volts)
 
     current: `numpy.ndarray`
-        1-D numpy array of probe current (should be in amperes) corresponding
-        to the ``voltage`` array
+        1-D numpy array of probe current (should be in amperes)
+        corresponding to the ``voltage`` array
 
     threshold: positive, non-zero `int`
         Max allowed index distance between crossing-points before a new
-        crossing-island is formed.  That is, if ``threshold=5`` then consecutive
-        crossing-points are considered to be in the same crossing-island if
-        they are within 5 index steps of each other. (Default: 1)
+        crossing-island is formed.  That is, if ``threshold=5`` then
+        consecutive crossing-points are considered to be in the same
+        crossing-island if they are within 5 index steps of each other.
+        (Default: 1)
 
     min_points: positive `int` or `float`
-        Minimum number of data points required for the fitting to be applied to.
-        See **Notes** section below for additional details.  The following list
-        specifies the optional values:
+        Minimum number of data points required for the fitting to be
+        applied to.  See **Notes** section below for additional details.
+        The following list specifies the optional values:
 
         - ``min_points = None`` (Default) The largest of 5 and
-          ``factor * array_size`` is taken, where ``array_size`` is the size of
-          ``voltage`` and ``factor = 0.1`` for ``fit_type = "linear"`` and
-          ``0.2`` for ``"exponential"``.
+          ``factor * array_size`` is taken, where ``array_size`` is the
+          size of ``voltage`` and ``factor = 0.1`` for
+          ``fit_type = "linear"`` and ``0.2`` for ``"exponential"``.
         - ``min_points = numpy.inf`` The entire passed array is fitted.
         - ``min_points >= 1`` Exact minimum number of points.
-        - ``0 < min_points < 0`` The minimum number of points is taken as
-          ``min_points * array_size``.
+        - ``0 < min_points < 0`` The minimum number of points is taken
+          as ``min_points * array_size``.
 
     fit_type: str
-        The type of curve to be fitted to the Langmuir trace,  ``"linear"`` or
-        ``"exponential"`` (Default).  This selects which ``FitFunction`` class
-        should be applied to the trace.
+        The type of curve to be fitted to the Langmuir trace,
+        ``"linear"`` or ``"exponential"`` (Default).  This selects
+        which ``FitFunction`` class should be applied to the trace.
 
         +-------------+----------------------------------------------------------+
         | linear      | `~plasmapy.analysis.fit_functions.Linear`                |
