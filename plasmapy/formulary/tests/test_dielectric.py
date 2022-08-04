@@ -172,8 +172,7 @@ class Test_permittivity_1D_Maxwellian:
         kwargs["kWave"] = kwargs["omega"] / vth
 
         val = permittivity_1D_Maxwellian(**kwargs)
-        assert (
-            np.isclose(val, expected, rtol=1e-6, atol=0.0),
+        assert np.isclose(val, expected, rtol=1e-6, atol=0.0), (
             f"Permittivity value should be {expected} and not {val}.",
         )
 
@@ -189,8 +188,7 @@ class Test_permittivity_1D_Maxwellian:
         val = permittivity_1D_Maxwellian(**kwargs)
 
         expected += 1e-15
-        assert (
-            not np.isclose(val, expected, rtol=1e-16, atol=0.0),
+        assert not np.isclose(val, expected, rtol=1e-16, atol=0.0), (
             f"Permittivity value test gives {val} and should not be "
             f"equal to {expected}.",
         )
@@ -218,8 +216,7 @@ class Test_permittivity_1D_Maxwellian_lite:
             wp.value,
         )
 
-        assert (
-            np.isclose(val, val_lite, rtol=1e-6, atol=0.0),
+        assert np.isclose(val, val_lite, rtol=1e-6, atol=0.0), (
             "'permittivity_1D_Maxwellian' and 'permittivity_1D_Maxwellian_lite' "
             "do not agree.",
         )

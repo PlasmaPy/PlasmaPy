@@ -1,2 +1,0 @@
-Added the |sphinx-issues|_ extension to Sphinx_ to simplify linking to
-GitHub issues, pull requests, users, and commits.
