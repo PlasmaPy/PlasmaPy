@@ -385,12 +385,13 @@ in seconds, while a cryptic or missing error message can lead to hours
 of frustration.
 
 * Use error messages to indicate the source of the problem while
-  providing enough information for the user to fix it. Make sure that it
-  is clear what the user should do next.
+  providing enough information for the user to fix it. When possible,
+  make it clear what the user should do next.
 
-* Include diagnostic information when appropriate. For example, if an
-  operation is being performed on every point in a grid, include the
-  coordinates where the error happened.
+* Include diagnostic information when appropriate.  If an occurred at
+  a single point in an array operation, including the coordinates of
+  where the error happened can help the user better understand the cause
+  of the error.
 
 * Write error messages that are concise when possible, as users often
   skim or skip long error messages.
