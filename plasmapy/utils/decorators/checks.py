@@ -566,7 +566,7 @@ class CheckUnits(CheckBase):
                 continue
 
             # grab the checks dictionary for the desired parameter
-            param_checks = self.checks.get(param.name, default=None)
+            param_checks = self.checks.get(param.name)
 
             # -- Determine target units `_units` --
             # target units can be defined in one of three ways (in
@@ -590,19 +590,17 @@ class CheckUnits(CheckBase):
             if param_checks is not None:
                 # checks for argument were defined with decorator
                 try:
-                    _units = param_checks["units"]
+                    _units = param_checks.get("units")
+                    # if checks does NOT have 'units' but is still a dictionary,
+                    # then other check conditions may have been specified and the
+                    # user is relying on function annotations to define desired
+                    # units
                 except TypeError:
                     # if checks is NOT None and is NOT a dictionary, then assume
                     # only units were specified
                     #   e.g. CheckUnits(x=u.cm)
                     #
                     _units = param_checks
-                except KeyError:
-                    # if checks does NOT have 'units' but is still a dictionary,
-                    # then other check conditions may have been specified and the
-                    # user is relying on function annotations to define desired
-                    # units
-                    _units = None
 
             # If no units have been specified by decorator checks, then look for
             # function annotations.
