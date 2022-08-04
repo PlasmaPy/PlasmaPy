@@ -149,6 +149,93 @@ the code is supposed to be doing.
    can be done with :kbd:`Shift+F6` on Windows or Linux, and :kbd:`⇧F6`
    or :kbd:`⌥⌘R` on macOS.
 
+Imports
+=======
+
+* PlasmaPy uses isort_ to sort import statements via a |pre-commit|_
+  hook.
+
+* Use absolute imports (e.g., ``from plasmapy.particles import Particle``)
+  rather than relative imports (e.g., ``from ..particles import Particle``).
+
+* Avoid using star imports (e.g., ``from package.subpackage import *``)
+  except in special situations.
+
+* Importing a package, subpackage, or module rather than an individual
+  code object has the benefit that the namespace provides helpful
+  contextual information that can make code more understandable. For
+  example, using ``json.loads`` is more understandable than using only
+  ``loads``.
+
+  For frequently used objects (e.g., |Particle|), using the full
+  namespace will increase the clutter of the code without providing
+  commensurately more information. This is also true for objects used as
+  type hint annotations. For example, ``Optional[Union[Real, Complex]``
+  is more understandable than
+  ``typing.Optional[typing.Union[numbers.Real, numbers.Complex]]``.
+
+* Use standard abbreviations for imported packages.
+
+  .. code-block::
+
+     import numpy as np
+     import astropy.units as u
+     import astropy.constants as const
+     import matplotlib.pyplot as plt
+     import numba as nb
+     import xarray as xr
+     import pandas as pd
+
+Requirements
+============
+
+* Package requirements are specified in multiple locations that need to
+  be updated simultaneously.
+
+  - The |requirements|_ directory contains multiple text files that
+    contain build, installation, testing, documentation, and extra
+    requirements.
+
+  - The ``build-system.requires`` section of |pyproject.toml|_ includes
+    the requirements for building PlasmaPy. This section must mirror
+    :file:`requirements/build.txt`.
+
+  - |setup.cfg|_ includes sections for the install, docs, tests, and
+    extra requirements that must mirror the corresponding files in
+    the |requirements|_ directory.
+
+  - :file:`requirements/environment.yml` contains a Conda_ environment
+    for PlasmaPy.
+
+  - The :file:`tox.ini` file contains a testing environment for the
+    minimal dependencies.
+
+* Each release of `plasmapy` should support all minor versions of
+  Python that have been released in the prior 42 months, and all minor
+  versions of `numpy` that have been released in the last 24 months.
+  This schedule was proposed in `NumPy Enhancement Proposal 29`_ for
+  the scientific Python ecosystem, and has been adopted by upstream
+  packages such as `numpy`, `matplotlib`, and `astropy`.
+
+  .. tip::
+
+     Tools like pyupgrade_ help automatically upgrade the code base to
+     the minimum supported version of Python for the next release.
+
+* In general, it is preferable to support minor releases of dependencies
+  from the last ≲ 24 months, unless there is a new feature in a
+  dependency that would be greatly beneficial for `plasmapy` development.
+
+* Set maximum requirements (e.g., ``sphinx <= 2.4.4``) only when
+  necessary, as this can lead to version conflicts when `plasmapy` is
+  installed alongside other packages. It is preferable to update
+  `plasmapy` to be compatible with the newest versions of each of its
+  dependencies.
+
+* Minor versions of Python are generally released in October of each
+  year. However, it may take a few months before packages like NumPy_
+  and Numba_ become compatible with the newest minor version of Python_.
+
 Coding Style
 ============
 
