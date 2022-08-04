@@ -4,9 +4,10 @@
 Installing PlasmaPy for Development
 ***********************************
 
-.. toctree::
-   :caption: Installing PlasmaPy for Development
-   :maxdepth: 2
+.. contents:: Table of Contents
+   :depth: 1
+   :local:
+   :backlinks: none
 
 Obtaining PlasmaPy source code
 ==============================

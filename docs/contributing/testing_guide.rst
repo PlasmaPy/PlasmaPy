@@ -4,9 +4,10 @@
 Testing Guide
 *************
 
-.. toctree::
-   :caption: Testing Guide
-   :maxdepth: 2
+.. contents:: Table of Contents
+   :depth: 1
+   :local:
+   :backlinks: none
 
 Introduction
 ============

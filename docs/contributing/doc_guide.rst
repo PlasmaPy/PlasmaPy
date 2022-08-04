@@ -4,9 +4,13 @@
 Documentation Guide
 *******************
 
-.. toctree::
-   :caption: Documentation Guide
-   :maxdepth: 2
+.. contents:: Table of Contents
+   :depth: 1
+   :local:
+   :backlinks: none
+
+Introduction
+============
 
 Documentation that is up-to-date and understandable is vital to the
 health of a software project. This page describes the documentation
