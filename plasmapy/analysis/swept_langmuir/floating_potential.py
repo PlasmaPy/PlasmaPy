@@ -114,37 +114,36 @@ def find_floating_potential(
     vf: `float` or `numpy.nan`
         The calculated floating potential (same units as the ``voltage`` array).
         Returns `numpy.nan` if the floating potential can not be determined.
-        How :math:`V_f` is calculated depends on the fit function.  This is
-        described in the ``root_solve()`` method of the relevant fit function
-        (e.g. the
-        :meth:`~plasmapy.analysis.fit_functions.ExponentialPlusOffset.root_solve`
-        method of `~plasmapy.analysis.fit_functions.ExponentialPlusOffset`).
 
-    vf_err: `float` or `numpy.nan`
-        The uncertainty associated with the floating potential calculation
-        (units same as ``vf``).  Returns `numpy.nan` if the floating potential
-        can not be determined.  Like :math:`V_f`:, the calculation depends on
-        the applied fit function.  The ``root_solve()`` method also describes
-        how this is calculated.
+    extras: `VFExtras`
+        Additional information from the fit:
 
-    rsq: `float`
-        The coefficient of determination (r-squared) value of the fit.  See the
-        documentation of the ``rsq`` property on the associated fit function
-        (e.g. the
-        `~plasmapy.analysis.fit_functions.ExponentialPlusOffset.rsq`
-        property of
-        `~plasmapy.analysis.fit_functions.ExponentialPlusOffset`).
+        ``extras.vf_err`` (`float` or `numpy.nan`)
+            The uncertainty associated with the floating potential
+            calculation (units same as ``vf``).  Returns `numpy.nan`
+            if the floating potential can not be determined.  Like
+            :math:`V_f`:, the calculation depends on the applied fit
+            function.  The ``root_solve()`` method also describes how
+            this is calculated.
 
-    func: sub-class of `~plasmapy.analysis.fit_functions.AbstractFitFunction`
-        The callable function :math:`f(x)` representing the fit and its results.
+        ``extras.rsq`` (`float`)
+            The coefficient of determination (r-squared) value of the
+            fit.  See the documentation of the ``rsq`` property on the
+            associated fit function (e.g. the
+            `~plasmapy.analysis.fit_functions.ExponentialPlusOffset.rsq`
+            property of
+            `~plasmapy.analysis.fit_functions.ExponentialPlusOffset`).
 
-    islands: ``List[slice]``
-        List of `slice` objects representing the indices of the identified
-        crossing-islands.
+        ``extras.fitted_func`` (:term:`fit-function`)
+            The computed :term:`fit-function` specified by ``fit_type``.
 
-    indices: `slice`
-        A `slice` object representing the indices of ``voltage`` and ``current``
-        arrays used for the fit.
+        ``extras.islands`` (`List[slice]`)
+            List of `slice` objects representing the indices of the
+            identified crossing-islands.
+
+    `   `extras.fitted_indices`` (`slice`)
+            A `slice` object representing the indices of the ``voltage``
+            and ``current`` arrays used for the fit.
 
     Notes
     -----
