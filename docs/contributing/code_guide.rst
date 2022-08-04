@@ -426,8 +426,8 @@ that is intended for interactive use. For example,
 `~plasmapy.formulary.speeds.va_` is an alias to
 `~plasmapy.formulary.speeds.Alfven_speed`.
 
-Here is a minimal example of an alias ``f_`` that would be for
-``plasmapy.subpackage.module.function``.
+Here is a minimal example of an alias ``f_`` to ``function`` as would be
+defined in :file:`plasmapy/subpackage/module.py`.
 
 .. code-block:: python
 
@@ -472,8 +472,13 @@ performance penalty can become substantial for numerically intensive
 applications.
 
 A :term:`lite-function` is a lightweight version of another `plasmapy`
-function. Most lite-functions are defined in `plasmapy.formulary`. Here
-is a minimal implementation of a lite-function.
+function that accepts numbers and NumPy_ arrays in assumed SI units.
+Lite-functions skip all validations to instead focus on performance.
+Most lite-functions are defined in `plasmapy.formulary`.
+
+Here is a minimal example of a lite-function ``function_lite`` that
+corresponds to ``function`` as would be defined in
+:file:`plasmapy/subpackage/module.py`.
 
 .. code-block:: python
 
