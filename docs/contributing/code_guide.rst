@@ -567,5 +567,4 @@ the README file of `benchmarks-repo`_.
 .. _ASCII: https://en.wikipedia.org/wiki/ASCII
 .. _cognitive complexity: https://www.sonarsource.com/docs/CognitiveComplexity.pdf
 .. _extract function refactoring pattern: https://refactoring.guru/extract-method
-.. _raises: https://numpydoc.readthedocs.io/en/latest/format.html#raises
 .. _rename refactoring in PyCharm: https://www.jetbrains.com/help/pycharm/rename-refactorings.html
