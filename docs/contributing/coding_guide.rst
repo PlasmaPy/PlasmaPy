@@ -27,6 +27,8 @@ pre-commit_.
 Coding guidelines
 =================
 
+* Write short functions that do exactly one thing with no side effects.
+
 * Use NumPy_ array options instead of ``for`` loops to make code more
   compact, readable, and performant.
 
