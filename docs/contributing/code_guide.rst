@@ -552,4 +552,5 @@ Up-to-date instructions on running the benchmark suite will be located in
 the README file of `benchmarks-repo`_.
 
 .. _ASCII: https://en.wikipedia.org/wiki/ASCII
+.. _extract function refactoring pattern: https://refactoring.guru/extract-method
 .. _rename refactoring in PyCharm: https://www.jetbrains.com/help/pycharm/rename-refactorings.html
