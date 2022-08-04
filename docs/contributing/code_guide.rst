@@ -412,9 +412,12 @@ of frustration.
 * Write error messages that are friendly, supportive, and helpful. Error
   message should never be condescending or blame the user.
 
-* The exceptions raised by a method should be described in the
-  method's docstring.  Documenting exceptions makes it easier for
-  future developers to plan exception handling.
+* Docstrings may include a Raises_ section that describes which
+  exceptions get raised and under what conditions. This section should
+  be used only for errors that are non-obvious or have a large chance of
+  getting raised. Documenting exceptions makes it easier for future
+  developers to plan exception handling. However, in practice this
+  section often becomes outdated.
 
 Units
 =====
@@ -565,4 +568,5 @@ the README file of `benchmarks-repo`_.
 
 .. _ASCII: https://en.wikipedia.org/wiki/ASCII
 .. _extract function refactoring pattern: https://refactoring.guru/extract-method
+.. _raises: https://numpydoc.readthedocs.io/en/latest/format.html#raises
 .. _rename refactoring in PyCharm: https://www.jetbrains.com/help/pycharm/rename-refactorings.html
