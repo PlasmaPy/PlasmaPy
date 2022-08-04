@@ -328,7 +328,7 @@ unmaintained comment may contain inaccurate or misleading information
 
 * Remove commented out code before merging a pull request.
 
-* When updating code, be sure to update the comments too!
+* When updating code, be sure to review and update, if necessary, associated comments too!
 
 * When a comment is used as the header for a section of code, consider
   extracting that section of code into its own function. For example, we
@@ -385,8 +385,8 @@ in seconds, while a cryptic or missing error message can lead to hours
 of frustration.
 
 * Use error messages to indicate the source of the problem while
-  providing enough information for the user to fix it. When possible,
-  make it clear what the user should do next.
+  providing enough information for the user to troubleshoot it. When
+  possible, make it clear what the user should do next.
 
 * Include diagnostic information when appropriate.  If an occurred at
   a single point in an array operation, including the coordinates of
