@@ -302,11 +302,11 @@ unmaintained comment may contain inaccurate or misleading information
      # collision frequency
      nu = 1e6 * u.s ** -1
 
-  could be changed to:
+  could be achieved with no comment by doing:
 
   .. code-block:: python
 
-     collision_frequency = 1e6 * u.s ** -1  # no comment needed!
+     collision_frequency = 1e6 * u.s ** -1
 
 * Use comments to communicate information that you wish you knew before
   starting to work on a particular section of code, including
