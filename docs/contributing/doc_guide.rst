@@ -938,6 +938,13 @@ Docstring guidelines
   derivations and extensive discussions of mathematics in the "Notes"
   section.
 
+* Docstrings may include a Raises_ section that describes which
+  exceptions get raised and under what conditions. This section should
+  be used only for errors that are non-obvious or have a large chance of
+  getting raised. Documenting exceptions makes it easier for future
+  developers to plan exception handling. However, in practice this
+  section often becomes outdated.
+
 * Private code objects (e.g., code objects that begin with a single
   underscore, like ``_private_object``) should have docstrings. A
   docstring for a private code object may be a single line, and
