@@ -4,6 +4,10 @@
 Documentation Guide
 *******************
 
+.. toctree::
+   :caption: Documentation Guide
+   :maxdepth: 2
+
 Documentation that is up-to-date and understandable is vital to the
 health of a software project. This page describes the documentation
 requirements and guidelines to be followed during the development of

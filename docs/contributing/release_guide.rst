@@ -4,6 +4,10 @@
 Release Guide
 *************
 
+.. toctree::
+   :caption: Release Guide
+   :maxdepth: 2
+
 This document describes the procedure for making a release of PlasmaPy.
 
 The following is a partial list of tasks to be performed for each

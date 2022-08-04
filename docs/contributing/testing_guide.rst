@@ -4,6 +4,10 @@
 Testing Guide
 *************
 
+.. toctree::
+   :caption: Testing Guide
+   :maxdepth: 2
+
 Introduction
 ============
 

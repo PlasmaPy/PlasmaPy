@@ -4,6 +4,10 @@
 Coding Guide
 ************
 
+.. toctree::
+   :caption: Coding Guide
+   :maxdepth: 2
+
 This guide describes common conventions, guidelines, and strategies for
 contributing code to PlasmaPy. The purpose of this guide is not to
 provide a set of rigid guidelines that must be adhered to, but rather to
