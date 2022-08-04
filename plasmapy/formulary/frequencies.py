@@ -39,7 +39,9 @@ eps0_si_unitless = eps0.value
     }
 )
 @angular_freq_to_hz
-def gyrofrequency(B: u.T, particle: Particle, signed=False, Z=None) -> u.rad / u.s:
+def gyrofrequency(
+    B: u.Quantity[u.T], particle: Particle, signed=False, Z=None
+) -> u.rad / u.s:
     r"""
     Calculate the particle gyrofrequency in units of radians per second.
 
