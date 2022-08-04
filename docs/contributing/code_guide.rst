@@ -320,20 +320,18 @@ Warnings and Exceptions
 Units
 =====
 
-* PlasmaPy uses |astropy.units|_ to give physical units to values in the
-  form of a |Quantity|.
+PlasmaPy uses |astropy.units|_ to assign physical units to values in the
+form of a |Quantity|.
 
-  .. code-block:: pycon
+.. code-block:: pycon
 
-     >>> import astropy.units as u
-     >>> 5 * u.m / u.s
-     <Quantity 5. m / s>
+   >>> import astropy.units as u
+   >>> 5 * u.m / u.s
+   <Quantity 5. m / s>
 
-  Using |astropy.units|_ improves compatibility with Python packages in
-  adjacent fields such as astronomy and heliophysics.
-
-* To get started with |astropy.units|_, check out the notebook on
-  :ref:`../notebooks/getting_started/units.ipynb`.
+Using |astropy.units|_ improves compatibility with Python packages in
+adjacent fields such as astronomy and heliophysics. To get started with
+|astropy.units|_, check out this `example notebook on units`_.
 
   .. caution::
 
@@ -390,21 +388,20 @@ Units
 Particles
 =========
 
-* The |Particle| class provides an object-oriented interface for
-  accessing basic particle data. |Particle| accepts
-  :term:`particle-like` inputs.
+The |Particle| class provides an object-oriented interface for accessing
+basic particle data. |Particle| accepts :term:`particle-like` inputs.
 
-  .. code-block:: pycon
+.. code-block:: pycon
 
-     >>> from plasmapy.particles import Particle
-     >>> alpha = Particle("He-4 2+")
-     >>> alpha.mass
-     <Quantity 6.6446...e-27 kg>
-     >>> alpha.charge
-     <Quantity 3.20435...e-19 C>
+   >>> from plasmapy.particles import Particle
+   >>> alpha = Particle("He-4 2+")
+   >>> alpha.mass
+   <Quantity 6.6446...e-27 kg>
+   >>> alpha.charge
+   <Quantity 3.20435...e-19 C>
 
-  To get started with `plasmapy.particles`, check out the notebook on
-  :ref:`../notebooks/getting_started/particles.ipynb`.
+To get started with `plasmapy.particles`, check out this `example
+notebook on particles`_.
 
 * Avoid using implicit default particle assumptions for function
   arguments (see issue :issue:`453`).
@@ -526,4 +523,6 @@ Up-to-date instructions on running the benchmark suite will be located in
 the README file of `benchmarks-repo`_.
 
 .. _ASCII: https://en.wikipedia.org/wiki/ASCII
+.. _example notebook on particles: ../notebooks/getting_started/particles.ipynb
+.. _example notebook on units: ../notebooks/getting_started/units.ipynb
 .. _rename refactoring in PyCharm: https://www.jetbrains.com/help/pycharm/rename-refactorings.html
