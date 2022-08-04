@@ -302,11 +302,11 @@ unmaintained comment may contain inaccurate or misleading information
      # collision frequency
      nu = 1e6 * u.s ** -1
 
-  could be changed to:
+  could be achieved with no comment by doing:
 
   .. code-block:: python
 
-     collision_frequency = 1e6 * u.s ** -1  # no comment needed!
+     collision_frequency = 1e6 * u.s ** -1
 
 * Use comments to communicate information that you wish you knew before
   starting to work on a particular section of code, including
@@ -328,7 +328,7 @@ unmaintained comment may contain inaccurate or misleading information
 
 * Remove commented out code before merging a pull request.
 
-* When updating code, be sure to update the comments too!
+* When updating code, be sure to review and update, if necessary, associated comments too!
 
 * When a comment is used as the header for a section of code, consider
   extracting that section of code into its own function. For example, we
@@ -385,13 +385,13 @@ in seconds, while a cryptic or missing error message can lead to hours
 of frustration.
 
 * Use error messages to indicate the source of the problem while
-  providing enough information for the user to fix it. When possible,
-  make it clear what the user should do next.
+  providing enough information for the user to troubleshoot it. When
+  possible, make it clear what the user should do next.
 
-* Include diagnostic information when appropriate.  If an occurred at
-  a single point in an array operation, including the coordinates of
-  where the error happened can help the user better understand the cause
-  of the error.
+* Include diagnostic information when appropriate.  For example, if an
+  error occurred at a single index in an array operation, then including
+  the index where the error happened can help the user better understand
+  the cause of the error.
 
 * Write error messages that are concise when possible, as users often
   skim or skip long error messages.
