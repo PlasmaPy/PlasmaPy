@@ -212,12 +212,12 @@ Requirements
   - The :file:`tox.ini` file contains a testing environment for the
     minimal dependencies.
 
-* Each release of `plasmapy` should support all minor versions of
+* Each release of PlasmaPy should support all minor versions of
   Python that have been released in the prior 42 months, and all minor
-  versions of `numpy` that have been released in the last 24 months.
+  versions of NumPy_ that have been released in the last 24 months.
   This schedule was proposed in `NumPy Enhancement Proposal 29`_ for
   the scientific Python ecosystem, and has been adopted by upstream
-  packages such as `numpy`, `matplotlib`, and `astropy`.
+  packages such as NumPy_, matplotlib_, and Astropy_.
 
   .. tip::
 
@@ -229,9 +229,9 @@ Requirements
   dependency that would be greatly beneficial for `plasmapy` development.
 
 * Set maximum requirements (e.g., ``sphinx <= 2.4.4``) only when
-  necessary, as this can lead to version conflicts when `plasmapy` is
+  necessary, as this can lead to version conflicts when PlasmaPy is
   installed alongside other packages. It is preferable to update
-  `plasmapy` to be compatible with the newest versions of each of its
+  PlasmaPy to be compatible with the newest versions of each of its
   dependencies.
 
 * Minor versions of Python are generally released in October of each
@@ -554,4 +554,6 @@ Up-to-date instructions on running the benchmark suite will be located in
 the README file of `benchmarks-repo`_.
 
 .. _ASCII: https://en.wikipedia.org/wiki/ASCII
+.. _NumPy Enhancement Proposal 29: https://numpy.org/neps/nep-0029-deprecation_policy.html
+.. _pyupgrade: https://github.com/asottile/pyupgrade
 .. _rename refactoring in PyCharm: https://www.jetbrains.com/help/pycharm/rename-refactorings.html
