@@ -463,17 +463,16 @@ defined in :file:`plasmapy/subpackage/module.py`.
 Lite Functions
 ==============
 
-Most functions in `plasmapy.formulary` use |astropy.units|_ to attach
-units to values in the form of a |Quantity|, and also perform checks to
-make sure that each :term:`argument` that is provided to a function is
-valid. The use of |Quantity| operations and validations do not have a
-noticeable performance penalty during typical interactive use, but the
-performance penalty can become substantial for numerically intensive
+Most functions in `plasmapy.formulary` accept |Quantity| instances as
+arguments and use |validate_quantities| to verify that |Quantity|
+arguments are valid. The use of |Quantity| operations and validations do
+not noticeably impact performance during typical interactive use, but
+the performance penalty can become significant for numerically intensive
 applications.
 
 A :term:`lite-function` is a lightweight version of another `plasmapy`
 function that accepts numbers and NumPy_ arrays in assumed SI units.
-Lite-functions skip all validations to instead focus on performance.
+Lite-functions skip all validations and instead prioritize performance.
 Most lite-functions are defined in `plasmapy.formulary`.
 
 Here is a minimal example of a lite-function ``function_lite`` that
@@ -525,7 +524,7 @@ corresponds to ``function`` as would be defined in
 
 * A lite-function should usually be decorated with ``@numba.njit`` (or
   the like) as a just-in-time compiler. If a decorator from `numba` is
-  not able to be used, then it might be possible to use Cython_.
+  not able to be used, then an alternative is Cython_.
 
 .. _example_notebooks:
 
