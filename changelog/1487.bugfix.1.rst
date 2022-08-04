@@ -1,3 +1,0 @@
-Replaced misuse of ``max_exp_bias - max_exp_bias`` with ``max_exp_bias - min_exp_bias``
-when creating seed parameters for the bimaxwellian fit function inside
-:func:`~plasmapy.diagnostics.langmuir.get_electron_temperature`.

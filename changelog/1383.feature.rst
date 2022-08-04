@@ -1,3 +1,0 @@
-Created the analysis tool `plasmapy.analysis.nullpoint` for finding the
-null points in a vector space using the trilinear analysis method of
-:cite:t:`haynes:2007`.

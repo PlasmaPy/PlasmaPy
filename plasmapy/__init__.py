@@ -111,7 +111,7 @@ def online_help(query: str):
 
     url = (
         "http://docs.plasmapy.org/en/stable/search.html?"
-        "{0}&check_keywords=yes&area=default"
+        "{}&check_keywords=yes&area=default"
     ).format(urlencode({"q": query}))
 
     if query.lower() in ("unit", "units", "quantity", "quantities"):
