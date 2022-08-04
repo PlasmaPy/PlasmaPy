@@ -24,10 +24,6 @@ PlasmaPy generally follows the :pep:`8` style guide for Python code,
 using auto-formatters such as black_ and isort_ that are executed using
 pre-commit_.
 
-.. contents::
-   :caption: Coding Guide
-   :maxdepth: 2
-
 Coding guidelines
 =================
 
