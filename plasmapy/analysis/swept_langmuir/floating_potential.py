@@ -5,7 +5,7 @@ __aliases__ = ["find_vf_"]
 import numbers
 import numpy as np
 
-from typing import List, NamedTuple, Optional, Union
+from typing import List, NamedTuple, Optional, Tuple, Union
 from warnings import warn
 
 from plasmapy.analysis import fit_functions as ffuncs
@@ -59,7 +59,7 @@ def find_floating_potential(
     threshold: int = 1,
     min_points: Union[int, float] = None,
     fit_type: str = "exponential",
-):
+) -> Tuple[np.floating, VFExtras]:
     """
     Determines the floating potential (:math:`V_f`) for a given current-voltage
     (IV) curve obtained from a swept Langmuir probe.  The floating potential is
