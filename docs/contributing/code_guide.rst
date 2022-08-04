@@ -284,24 +284,29 @@ Comments
 ========
 
 A well-placed and well-written comment can prevent future frustrations.
-However, comments are not inherent good. As code evolves, an
-unmaintained comment may become outdated or get separated from the
-section of code that it was meant to describe. Cryptic comments may end
-up confusing contributors. In the worst case, an unmaintained comment
-may contain inaccurate or misleading information.
+However, comments are not inherently good. As code evolves, an
+unmaintained comment may become outdated, or get separated from the
+section of code that it was meant to describe. Cryptic and obsolete
+comments may end up confusing contributors. In the worst case, an
+unmaintained comment may contain inaccurate or misleading information
+(hence the saying that "a comment is a lie waiting to happen").
 
 * Refactor code to make it more readable, rather than explaining how it
-  works.
+  works :cite:p:`wilson:2014`.
 
-* When a comment is used to define a variable, try renaming the
-  variable to encode its meaning and intent.
+* Instead of using a comment to define a variable, rename the variable
+  to encode its meaning and intent.  For example, code like:
 
   .. code-block:: python
 
      # collision frequency
      nu = 1e6 * u.s ** -1
 
-     collision_frequency = 1e6 * u.s ** -1
+  could be changed to:
+
+  .. code-block:: python
+
+     collision_frequency = 1e6 * u.s ** -1  # no comment needed!
 
 * Use comments to communicate information that you wish you knew before
   starting to work on a particular section of code, including
@@ -310,15 +315,15 @@ may contain inaccurate or misleading information.
 * Use comments to communicate information that the code cannot,
   such as why an alternative approach was *not* taken.
 
-* Include enough contextual information that the comment will ideally
-  make sense even if it is displaced from the code it was originally
-  describing.
+* When possible, include enough contextual information that the comment
+  will make sense even if it is displaced from the code it was
+  originally describing.
 
 * Use comments to include references to books or articles that describe
   the equation, algorithm, or software design pattern that is being
-  implemented.
+  implemented. Even better, include these references in docstrings.
 
-* Include enough contextual information in the comment for a new user
+* Provide enough contextual information in the comment for a new user
   to be able to understand it.
 
 * Remove commented out code before merging a pull request.
@@ -326,7 +331,7 @@ may contain inaccurate or misleading information.
 * When updating code, be sure to update the comments too!
 
 * When a comment is used as the header for a section of code, consider
-  extracting that section of code into. For example, we
+  extracting that section of code into its own function. For example, we
   might start out with a function that includes multiple lines of code
   for each step.
 
@@ -340,7 +345,7 @@ may contain inaccurate or misleading information.
 
   We can apply the `extract function refactoring pattern`_ by creating a
   separate function for each of these steps. The name of each function
-  can often be very close to the comment.
+  can often be extracted directly from the comment.
 
   .. code-block:: python
 
@@ -348,7 +353,7 @@ may contain inaccurate or misleading information.
          ...
          return calibrated_data
 
-     def normalized_data(data):
+     def normalize_data(data):
          ...
          return normalized_data
 
@@ -361,9 +366,15 @@ may contain inaccurate or misleading information.
   leads to functions that are shorter, more focused, more reusable, and
   easier to test. The original function no longer includes
   implementation details, and thus gives a high level view of what the
-  function is doing. This pattern might not be appropriate if the
-  different sections of code are intertwined with each other, like if
-  both sections use the same intermediate variables.
+  function is doing.
+
+  .. hint::
+
+     The `extract function refactoring pattern`_ might not be
+     appropriate if the different sections of code are intertwined with
+     each other (e.g., if both sections require the same intermediate
+     variables). An alternative in such cases would be to create a class
+     instead.
 
 Error messages
 ==============
