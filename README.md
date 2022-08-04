@@ -16,6 +16,7 @@ distribution. These could be cached, however for the sake of simplicity
 there is currently no caching functionality.
 
 ### Dependencies
+- LaTeX
 - Python 3.X
 - Jupyterlab
 - matplotlib
