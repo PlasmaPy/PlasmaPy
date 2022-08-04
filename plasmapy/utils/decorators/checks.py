@@ -566,7 +566,10 @@ class CheckUnits(CheckBase):
                 continue
 
             # grab the checks dictionary for the desired parameter
-            param_checks = self.checks.get(param.name, default=None)
+            try:
+                param_checks = self.checks[param.name]
+            except KeyError:
+                param_checks = None
 
             # -- Determine target units `_units` --
             # target units can be defined in one of three ways (in
