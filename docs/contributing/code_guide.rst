@@ -158,8 +158,8 @@ Imports
 * Use absolute imports (e.g., ``from plasmapy.particles import Particle``)
   rather than relative imports (e.g., ``from ..particles import Particle``).
 
-* Avoid using star imports (e.g., ``from package.subpackage import *``)
-  except in special situations.
+* Do not use star imports (e.g., ``from package.subpackage import *``),
+  except in very limited situations.
 
 * Importing a package, subpackage, or module rather than an individual
   code object has the benefit that the namespace provides helpful
@@ -167,16 +167,16 @@ Imports
   example, using ``json.loads`` is more understandable than using only
   ``loads``.
 
-  For frequently used objects (e.g., |Particle|), using the full
+* For frequently used objects (e.g., |Particle|), using the full
   namespace will increase the clutter of the code without providing
   commensurately more information. This is also true for objects used as
   type hint annotations. For example, ``Optional[Union[Real, Complex]``
   is more understandable than
   ``typing.Optional[typing.Union[numbers.Real, numbers.Complex]]``.
 
-* Use standard abbreviations for imported packages.
+* Use standard abbreviations for imported packages:
 
-  .. code-block::
+  .. code-block:: python
 
      import numpy as np
      import astropy.units as u
@@ -188,6 +188,8 @@ Imports
 
 Requirements
 ============
+
+.. Add actual links to the different requirements files?
 
 * Package requirements are specified in multiple locations that need to
   be updated simultaneously.
