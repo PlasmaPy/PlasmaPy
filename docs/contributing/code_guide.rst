@@ -512,15 +512,15 @@ is a minimal implementation of a lite-function.
   of the function.
 
 * Lite-functions are bound to their normal version as the ``lite``
-  attribute using the `~plasmapy.utils.decorators.bind_lite_func`
-  decorator.
+  attribute using the
+  `~plasmapy.utils.decorators.lite_func.bind_lite_func` decorator.
 
 * Each lite-function should be decorated with
-  `~plasmapy.utils.decorators.preserve_signature`.
+  `~plasmapy.utils.decorators.helpers.preserve_signature`.
 
-* A lite-function should usually be decorated with `numba.njit` (or the
-  like) as a just-in-time compiler. If a decorator from `numba` is not
-  able to be used, then it might be possible to use Cython_.
+* A lite-function should usually be decorated with ``@numba.njit`` (or
+  the like) as a just-in-time compiler. If a decorator from `numba` is
+  not able to be used, then it might be possible to use Cython_.
 
 .. _example_notebooks:
 
