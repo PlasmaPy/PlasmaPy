@@ -388,10 +388,10 @@ of frustration.
   providing enough information for the user to troubleshoot it. When
   possible, make it clear what the user should do next.
 
-* Include diagnostic information when appropriate.  If an occurred at
-  a single point in an array operation, including the coordinates of
-  where the error happened can help the user better understand the cause
-  of the error.
+* Include diagnostic information when appropriate.  For example, if an
+  error occurred at a single index in an array operation, then including
+  the index where the error happened can help the user better understand
+  the cause of the error.
 
 * Write error messages that are concise when possible, as users often
   skim or skip long error messages.
