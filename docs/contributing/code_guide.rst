@@ -410,7 +410,7 @@ notebook on particles`_.
   :term:`particle-like` :term:`argument` into a |Particle| instance when
   the corresponding :term:`parameter` is decorated with |Particle|.
 
-  .. code-block::
+  .. code-block:: python
 
      from plasmapy.particles import particle_input, Particle
 
