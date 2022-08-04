@@ -348,7 +348,7 @@ adjacent fields such as astronomy and heliophysics. To get started with
   <https://docs.astropy.org/en/stable/units/index.html#performance-tips>`__
   for |astropy.units|_.
 
-* Use |Unit| annotations with the |validate_quantities| decorator to
+* Use unit annotations with the |validate_quantities| decorator to
   validate |Quantity| arguments and return values.
 
   .. code-block:: python
