@@ -361,12 +361,17 @@ unmaintained comment may contain inaccurate or misleading information
          calibrated_data = calibrate_data(data)
          normalized_data = normalize_data(calibrated_data)
 
-  This refactoring strategy is appropriate for long functions where the
+  This refactoring pattern is appropriate for long functions where the
   different steps can be cleanly separated from each other. This pattern
-  leads to functions that are shorter, more focused, more reusable, and
-  easier to test. The original function no longer includes
-  implementation details, and thus gives a high level view of what the
-  function is doing.
+  leads to functions that are shorter, more reusable, and easier to
+  test. The original function contains fewer low-level implementation
+  details and thus gives a higher level view of what the function is
+  doing. This pattern reduces `cognitive complexity`_.
+
+  The `extract function refactoring pattern`_ should be used
+  judiciously, as taking it to an extreme and applying it at too fine of
+  a scale can reduce readability and maintainability by producing overly
+  fragmented code.
 
   .. hint::
 
@@ -560,6 +565,7 @@ Up-to-date instructions on running the benchmark suite will be located in
 the README file of `benchmarks-repo`_.
 
 .. _ASCII: https://en.wikipedia.org/wiki/ASCII
+.. _cognitive complexity: https://www.sonarsource.com/docs/CognitiveComplexity.pdf
 .. _extract function refactoring pattern: https://refactoring.guru/extract-method
 .. _raises: https://numpydoc.readthedocs.io/en/latest/format.html#raises
 .. _rename refactoring in PyCharm: https://www.jetbrains.com/help/pycharm/rename-refactorings.html
