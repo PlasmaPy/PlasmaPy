@@ -418,6 +418,110 @@ by an angular frequency to get a length scale:
 
 >>> d_i = (c/omega_pi).to(u.m, equivalencies=u.dimensionless_angles())    # doctest: +SKIP
 
+Aliases
+=======
+
+An :term:`alias` is an abbreviated version of a commonly used function
+that is intended for interactive use. For example,
+`~plasmapy.formulary.speeds.va_` is an alias to
+`~plasmapy.formulary.speeds.Alfven_speed`.
+
+Here is a minimal example of an alias ``f_`` that would be for
+``plasmapy.subpackage.module.function``.
+
+.. code-block:: python
+
+   __all__ = ["function"]
+   __aliases__ = ["f_"]
+
+   __all__ += __aliases__
+
+   def function():
+       ...
+
+   f_ = function
+   """Alias to `~plasmapy.subpackage.module.function`."""
+
+
+* Aliases should only be defined for the most commonly used functions.
+
+* An alias should be defined immediately after the original function.
+
+* The name of an alias should in some way indicate what the alias is
+  for. For example, `~plasmapy.formulary.lengths.cwp_` is a shortcut for
+  for :math:`c/ω_p`\ .
+
+* The name of an alias should end with a trailing underscore.
+
+* Each alias should have a one-line docstring that refers users to the
+  original function.
+
+* The name of the main function should be included in ``__all__`` near
+  the top of each module, and the name of the alias should be included
+  in ``__aliases__``, which will then get appended to ``__all__``.
+
+Lite Functions
+==============
+
+Most functions in `plasmapy.formulary` use |astropy.units|_ to attach
+units to values in the form of a |Quantity|, and also perform checks to
+make sure that each :term:`argument` that is provided to a function is
+valid. The use of |Quantity| operations and validations do not have a
+noticeable performance penalty during typical interactive use, but the
+performance penalty can become substantial for numerically intensive
+applications.
+
+A :term:`lite-function` is a lightweight version of another `plasmapy`
+function. Most lite-functions are defined in `plasmapy.formulary`. Here
+is a minimal implementation of a lite-function.
+
+.. code-block:: python
+
+   __all__ = ["function"]
+   __lite_funcs__ = ["function_lite"]
+
+   from numba import njit
+   from numbers import Real
+   from plasmapy.utils.decorators import bind_lite_func, preserve_signature
+
+   __all__ += __lite_funcs__
+
+   @preserve_signature
+   @njit
+   def function_lite(v: Real) -> Real:
+       """
+       The lite-function which accepts and returns real numbers in
+       assumed SI units.
+       """
+       ...
+
+   @bind_lite_func(function_lite)
+   def function(v):
+       """A function that accepts and returns Quantity arguments."""
+       ...
+
+* The name of each lite-function should be the name of the original
+  function with ``_lite`` appended at the end. For example,
+  `~plasmapy.formulary.speeds.thermal_speed_lite` is the lite-function
+  associated with `~plasmapy.formulary.speeds.thermal_speed`.
+
+* Lite-functions assume SI units for all of arguments that represent
+  physical quantities.
+
+* Lite-functions should be defined immediately before the normal version
+  of the function.
+
+* Lite-functions are bound to their normal version as the ``lite``
+  attribute using the `~plasmapy.utils.decorators.bind_lite_func`
+  decorator.
+
+* Each lite-function should be decorated with
+  `~plasmapy.utils.decorators.preserve_signature`.
+
+* A lite-function should usually be decorated with `numba.njit` (or the
+  like) as a just-in-time compiler. If a decorator from `numba` is not
+  able to be used, then it might be possible to use Cython_.
+
 .. _example_notebooks:
 
 Examples
