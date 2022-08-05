@@ -13,5 +13,5 @@ Example Notebooks
 .. nbgallery::
 
     /notebooks/dispersion/two_fluid_dispersion
-    /notebooks/dispersion/stix
+    /notebooks/dispersion/stix_dispersion
     
