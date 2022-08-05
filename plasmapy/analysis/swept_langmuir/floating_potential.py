@@ -144,7 +144,7 @@ def find_floating_potential(
             List of `slice` objects representing the indices of the
             identified crossing-islands.
 
-    `   `extras.fitted_indices`` (`slice`)
+        ``extras.fitted_indices`` (`slice`)
             A `slice` object representing the indices of the ``voltage``
             and ``current`` arrays used for the fit.
 
