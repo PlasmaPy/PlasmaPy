@@ -18,7 +18,7 @@ __all__ += __aliases__
 class VFExtras(NamedTuple):
     """
     Create a `tuple` containing the extra parameters calculated by
-    `find_floating_potential`.
+    `~plasmapy.analysis.swept_langmuir.floating_potential.find_floating_potential`.
     """
 
     vf_err: Optional[float]
@@ -67,7 +67,7 @@ def find_floating_potential(
     current equals zero :math:`I = 0`.  (For additional details see
     the **Notes** section below.)
 
-    **Aliases:** `find_vf_`
+    **Aliases:** :func:`~plasmapy.analysis.swept_langmuir.floating_potential.find_vf_`
 
     Parameters
     ----------

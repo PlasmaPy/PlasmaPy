@@ -18,7 +18,7 @@ __all__ += __aliases__
 class ISatExtras(NamedTuple):
     """
     Create a `tuple` containing the extra parameters calculated by
-    `find_ion_saturation_current`.
+    `~plasmapy.analysis.swept_langmuir.ion_saturation_current.find_ion_saturation_current`.
     """
 
     rsq: Optional[float]
@@ -56,7 +56,7 @@ def find_ion_saturation_current(
     completely repelled, which leads to only the collection of ions.
     (For additional details see the **Notes** section below.)
 
-    **Aliases:** `find_isat_`
+    **Aliases:** :func:`~plasmapy.analysis.swept_langmuir.ion_saturation_current.find_isat_`
 
     Parameters
     ----------
