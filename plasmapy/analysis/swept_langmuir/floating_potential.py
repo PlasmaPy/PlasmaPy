@@ -140,7 +140,7 @@ def find_floating_potential(
         ``extras.fitted_func`` (:term:`fit-function`)
             The computed :term:`fit-function` specified by ``fit_type``.
 
-        ``extras.islands`` (`List[slice]`)
+        ``extras.islands`` (``List[slice]``)
             List of `slice` objects representing the indices of the
             identified crossing-islands.
 
