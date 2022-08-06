@@ -115,8 +115,9 @@ def find_floating_potential(
     Returns
     -------
     vf: `float` or `numpy.nan`
-        The calculated floating potential (same units as the ``voltage`` array).
-        Returns `numpy.nan` if the floating potential can not be determined.
+        The calculated floating potential (same units as the
+        ``voltage`` array).  Returns `numpy.nan` if the floating
+        potential can not be determined.
 
     extras: `VFExtras`
         Additional information from the fit:
@@ -152,27 +153,29 @@ def find_floating_potential(
     -----
     The internal functionality works like:
 
-    1. The current array ``current`` is scanned for all points equal to zero and
-       point pairs that straddle :math:`I = 0`.  This forms an array of
-       "crossing-points."
-    2. The crossing-points are then grouped into "crossing-islands" in based on
-       the ``threshold`` keyword.
+    1. The current array ``current`` is scanned for all points equal to
+       zero and point pairs that straddle :math:`I = 0`.  This forms an
+       array of "crossing-points."
+    2. The crossing-points are then grouped into "crossing-islands" in
+       based on the ``threshold`` keyword.
 
-       - A new island is formed when a successive crossing-point is more (index)
-         steps away from the previous crossing-point than allowed by
-         ``threshold``.
-       - If multiple crossing-islands are identified, then the span from the
-         first point in the first island to the last point in the last island is
-         compared to ``min_points``.  If the span is less than or equal to
-         ``min_points``, then that span is taken as one larger crossing-island
-         for the fit; otherwise, the function is incapable of identifying
-         :math:`V_f` and will return `numpy.nan` values.
+       - A new island is formed when a successive crossing-point is more
+         (index) steps away from the previous crossing-point than
+         allowed by ``threshold``.
+       - If multiple crossing-islands are identified, then the span
+         from the first point in the first island to the last point in
+         the last island is compared to ``min_points``.  If the span is
+         less than or equal to ``min_points``, then that span is taken
+         as one larger crossing-island for the fit; otherwise, the
+         function is incapable of identifying :math:`V_f` and will
+         return `numpy.nan` values.
 
     3. To calculate the floating potential...
 
-       - If the crossing-island contains fewer points than ``min_points``, then
-         each side of the crossing-island is equally padded with the nearest
-         neighbor points until ``min_points`` is satisfied.
+       - If the crossing-island contains fewer points than
+         ``min_points``, then each side of the crossing-island is
+         equally padded with the nearest neighbor points until
+         ``min_points`` is satisfied.
        - A fit is then performed using `scipy.stats.linregress` for
          ``fit_type="linear"`` and `scipy.optimize.curve_fit` for
          ``fit_type="exponential"``.
