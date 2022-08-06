@@ -1,4 +1,7 @@
-"""Functionality for determining the floating potential of a Langmuir sweep."""
+"""
+Functionality for determining the floating potential of a Langmuir
+sweep.
+"""
 __all__ = ["find_floating_potential", "plot_floating_potential", "VFExtras"]
 __aliases__ = ["find_vf_"]
 
@@ -348,7 +351,9 @@ Alias to
 """
 
 
-def plot_floating_potential(voltage, current, *, vf, vf_extras: VFExtras, ax: "Axes" = None):
+def plot_floating_potential(
+    voltage, current, *, vf, vf_extras: VFExtras, ax: "Axes" = None
+):
     import matplotlib.pyplot as plt
 
     if ax is None:
@@ -358,9 +363,6 @@ def plot_floating_potential(voltage, current, *, vf, vf_extras: VFExtras, ax: "A
 
     if not isinstance(vf_extras, VFExtras):
         raise ValueError
-
-    # # zoom on fit
-    # for ii, label, fit in zip([1, 2], ["Exponential", "Linear"], [results, results_lin]):
 
     # calc island points
     isl_pts = np.array([], dtype=np.int64)
