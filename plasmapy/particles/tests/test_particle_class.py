@@ -28,7 +28,7 @@ from plasmapy.particles.particle_class import (
     CustomParticle,
     DimensionlessParticle,
     Particle,
-    Photon
+    Photon,
 )
 from plasmapy.utils import roman
 from plasmapy.utils.code_repr import call_string
@@ -1480,6 +1480,7 @@ def test_molecule_other():
             "I2 1+", Z=1
         )
 
+
 def test_photon_creation():
     """Test Photon creation with various quantities."""
     p1 = Photon()
@@ -1496,11 +1497,11 @@ def test_photon_creation():
     with pytest.raises(ValueError):
         p2 = Photon(10 * u.s)
 
-    frequency = 5 * (u.s ** -1)
+    frequency = 5 * (u.s**-1)
     p3 = Photon(5 * u.Hz)
     assert p3.energy == (const.h * frequency)
     assert p3.wavelength == (const.c / frequency)
-    assert f'{p3.momentum.value:.5f}' == f'{(const.h * frequency / const.c).value:.5f}'
+    assert f"{p3.momentum.value:.5f}" == f"{(const.h * frequency / const.c).value:.5f}"
 
     p4 = Photon(20 * u.nJ)
     assert p4.energy == (20 * u.nJ).to(u.J)

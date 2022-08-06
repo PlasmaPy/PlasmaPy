@@ -15,12 +15,12 @@ __all__ = [
 
 import astropy.constants as const
 import astropy.units as u
-from astropy.units.quantity import Quantity
 import json
 import numpy as np
 import warnings
 
 from abc import ABC, abstractmethod
+from astropy.units.quantity import Quantity
 from collections import defaultdict, namedtuple
 from datetime import datetime
 from numbers import Integral, Real
@@ -2461,11 +2461,14 @@ argument or variable should represent a physical particle.
 ...     return particle == Particle("e-")
 """
 
+
 class Photon(AbstractParticle):
     def __init__(self, quantity: Quantity = None):
         self._set_default_photon_properties()
         if quantity and not self._validate_quantity(quantity):
-            raise ValueError("Specify non negative quantity with units of Energy, wavelength, frequency or momentum.")
+            raise ValueError(
+                "Specify non negative quantity with units of Energy, wavelength, frequency or momentum."
+            )
 
         if quantity == None:
             self.energy = None
@@ -2475,15 +2478,15 @@ class Photon(AbstractParticle):
         else:
             if self._isMomentum(quantity):
                 # p = (h/λ), f = c/λ
-                self.momentum = quantity.to((u.kg * u.m / u.s))
-                self.wavelength = (const.h / self.momentum)
-                self.frequency = (const.c / self.wavelength)
-                self.energy = (const.h * self.frequency)
+                self.momentum = quantity.to(u.kg * u.m / u.s)
+                self.wavelength = const.h / self.momentum
+                self.frequency = const.c / self.wavelength
+                self.energy = const.h * self.frequency
             else:
                 self.energy = quantity.to(u.J, equivalencies=u.spectral())
-                self.frequency = quantity.to(u.s ** -1, equivalencies=u.spectral())
+                self.frequency = quantity.to(u.s**-1, equivalencies=u.spectral())
                 self.wavelength = quantity.to(u.m, equivalencies=u.spectral())
-                self.momentum = (const.h / self.wavelength)
+                self.momentum = const.h / self.wavelength
 
     def _set_default_photon_properties(self):
         self._mass = 0 * u.kg
@@ -2491,21 +2494,27 @@ class Photon(AbstractParticle):
         self._charge_number = 0
         self._spin = 1
         self._half_life = np.inf * u.s
-        self._allowed_units = dict({
-            "Energy" : u.J,
-            "Wavelength" : u.m,
-            "Frequency" : u.s ** -1,
-            "Momentum" : u.kg * u.m / u.s
-        })
+        self._allowed_units = dict(
+            {
+                "Energy": u.J,
+                "Wavelength": u.m,
+                "Frequency": u.s**-1,
+                "Momentum": u.kg * u.m / u.s,
+            }
+        )
 
     def _validate_quantity(self, quantity: Quantity):
-        allowed_physical_types = [u.get_physical_type(x) for x in self._allowed_units.values()]
-        isValidQuantity = (quantity.unit.physical_type in allowed_physical_types)
-        isNonNegativeQuantity = (quantity.value > 0)
+        allowed_physical_types = [
+            u.get_physical_type(x) for x in self._allowed_units.values()
+        ]
+        isValidQuantity = quantity.unit.physical_type in allowed_physical_types
+        isNonNegativeQuantity = quantity.value > 0
         return isValidQuantity and isNonNegativeQuantity
 
     def _isMomentum(self, quantity: Quantity):
-        return quantity.unit.physical_type == u.get_physical_type(self._allowed_units["Momentum"])
+        return quantity.unit.physical_type == u.get_physical_type(
+            self._allowed_units["Momentum"]
+        )
 
     @property
     def mass(self) -> u.Kg:
@@ -2539,13 +2548,13 @@ class Photon(AbstractParticle):
             self._energy = new_energy
 
     @property
-    def frequency(self) -> (u.s ** -1):
+    def frequency(self) -> (u.s**-1):
         return self._frequency
 
     @frequency.setter
     def frequency(self, new_frequency):
         if new_frequency == None:
-            self._frequency = np.nan * (u.s ** -1)
+            self._frequency = np.nan * (u.s**-1)
         else:
             self._frequency = new_frequency
 
