@@ -21,7 +21,7 @@ __all__ += __aliases__
     T_e={"can_be_negative": False, "equivalencies": u.temperature_energy()},
     n_e={"can_be_negative": False},
 )
-def Debye_length(T_e: u.K, n_e: u.m**-3) -> u.m:
+def Debye_length(T_e: u.Quantity[u.K], n_e: u.Quantity[u.m**-3]) -> u.Quantity[u.m]:
     r"""Calculate the characteristic decay length for electric fields,
      due to charge screening.
 
@@ -105,13 +105,13 @@ lambdaD_ = Debye_length
     validations_on_return={"equivalencies": u.dimensionless_angles()},
 )
 def gyroradius(
-    B: u.T,
+    B: u.Quantity[u.T],
     particle: Particle,
     *,
-    Vperp: u.m / u.s = np.nan * u.m / u.s,
-    T_i: u.K = None,
-    T: u.K = None,
-) -> u.m:
+    Vperp: u.Quantity[u.m / u.s] = np.nan * u.m / u.s,
+    T_i: u.Quantity[u.K] = None,
+    T: u.Quantity[u.K] = None,
+) -> u.Quantity[u.m]:
     r"""Return the particle gyroradius.
 
     **Aliases:** `rc_`, `rhoc_`
@@ -285,7 +285,7 @@ rhoc_ = gyroradius
     validations_on_return={"equivalencies": u.dimensionless_angles()},
 )
 @particles.particle_input(require="charged")
-def inertial_length(n: u.m**-3, particle: Particle) -> u.m:
+def inertial_length(n: u.Quantity[u.m**-3], particle: Particle) -> u.Quantity[u.m]:
     r"""
     Calculate a charged particle's inertial length.
 
