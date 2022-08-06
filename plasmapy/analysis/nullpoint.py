@@ -1,11 +1,22 @@
-"""Functionality to find and analyze 3D magnetic null points."""
+"""
+Functionality to find and analyze 3D magnetic null points.
+
+.. note::
+
+   This module is still under development and the API may change in
+   future releases.
+"""
 
 __all__ = [
-    "Point",
+    "MultipleNullPointWarning",
+    "NonZeroDivergence",
     "NullPoint",
+    "NullPointError",
+    "NullPointWarning",
+    "Point",
     "null_point_find",
-    "uniform_null_point_find",
     "trilinear_approx",
+    "uniform_null_point_find",
 ]
 
 import numpy as np
@@ -23,6 +34,11 @@ _recursion_level = 0
 class NullPointError(Exception):
     """
     A class for handling the exceptions of the null point finder functionality.
+
+    .. note::
+
+       This functionality is still under development and the API may
+       change in future releases.
     """
 
     pass
@@ -31,6 +47,11 @@ class NullPointError(Exception):
 class NullPointWarning(UserWarning):
     """
     A class for handling the warnings of the null point finder functionality.
+
+    .. note::
+
+       This functionality is still under development and the API may
+       change in future releases.
     """
 
     pass
@@ -40,6 +61,11 @@ class NonZeroDivergence(NullPointError):
     """
     A class for handling the exception raised by passing in a magnetic field
     that violates the zero divergence constraint.
+
+    .. note::
+
+       This functionality is still under development and the API may
+       change in future releases.
     """
 
     def __init__(self):
@@ -53,6 +79,11 @@ class MultipleNullPointWarning(NullPointWarning):
     A class for handling the warning raised by passing in a magnetic field
     grid that may contain multiple null points in close proximity due to low
     resolution.
+
+    .. note::
+
+       This functionality is still under development and the API may
+       change in future releases.
     """
 
     pass
@@ -61,6 +92,11 @@ class MultipleNullPointWarning(NullPointWarning):
 class Point:
     """
     Abstract class for defining a point in 3D space.
+
+    .. note::
+
+       This functionality is still under development and the API may
+       change in future releases.
     """
 
     def __init__(self, loc):
@@ -78,6 +114,11 @@ class Point:
 class NullPoint(Point):
     """
     A class for defining a null point in 3D space.
+
+    .. note::
+
+       This functionality is still under development and the API may
+       change in future releases.
     """
 
     def __init__(self, null_loc, classification):
@@ -333,6 +374,11 @@ def trilinear_approx(vspace, cell):
     and returns the trilinearly approximated vector value at that particular
     coordinate in that grid cell.
 
+    .. note::
+
+       This functionality is still under development and the API may
+       change in future releases.
+
     Parameters
     ----------
 
@@ -459,7 +505,7 @@ def _reduction(vspace, cell):
     r"""
     Return a true or false based on weather
     a grid cell passes the reduction phase,
-    meaning that they potentionally contain a null point.
+    meaning that they potentially contain a null point.
 
     Parameters
     ----------
@@ -566,11 +612,11 @@ def _bilinear_root(a1, b1, c1, d1, a2, b2, c2, d2):
             x2 = (-1.0 * c) / b
 
     else:
-        if (b ** 2 - 4.0 * a * c) < 0:
+        if (b**2 - 4.0 * a * c) < 0:
             return np.array([])
         else:
-            x1 = (-1.0 * b + (b ** 2 - 4.0 * a * c) ** 0.5) / (2.0 * a)
-            x2 = (-1.0 * b - (b ** 2 - 4.0 * a * c) ** 0.5) / (2.0 * a)
+            x1 = (-1.0 * b + (b**2 - 4.0 * a * c) ** 0.5) / (2.0 * a)
+            x2 = (-1.0 * b - (b**2 - 4.0 * a * c) ** 0.5) / (2.0 * a)
 
     y1 = None
     y2 = None
@@ -631,7 +677,7 @@ def _trilinear_analysis(vspace, cell):
     -----
     :`UserWarning`
         If there is a possible lack of grid resolution, so
-        that a grid cell may contain more than one nullpoint.
+        that a grid cell may contain more than one null point.
     """
 
     # Critical Cell Corners
@@ -1114,7 +1160,7 @@ def _locate_null_point(vspace, cell, n, err):
     # Calculating the Jacobian and trilinear approximation functions for the cell
     tlApprox = trilinear_approx(vspace, cell)
     jcb = _trilinear_jacobian(vspace, cell)
-    # Calculatiung the deltas
+    # Calculating the deltas
     deltax, deltay, deltaz = vspace[2]
     deltax = deltax[cell[0]]
     deltay = deltay[cell[1]]
@@ -1287,7 +1333,7 @@ def _classify_null_point(vspace, cell, loc):
     R = -1.0 * np.linalg.det(M)
     Q = -0.5 * np.trace(np.matmul(M, M))
 
-    discriminant = (Q ** 3 / 27.0) + (R ** 2 / 4.0)
+    discriminant = (Q**3 / 27.0) + (R**2 / 4.0)
     determinant = -1.0 * R
     if np.isclose(discriminant, 0, atol=_EQUALITY_ATOL):
         if np.allclose(M, M.T, atol=_EQUALITY_ATOL):  # Checking if M is symmetric
@@ -1342,7 +1388,7 @@ def _vspace_iterator(vspace, maxiter=500, err=1e-10):
     -------
     array_like of `~plasmapy.analysis.nullpoint.NullPoint`
         An array of `~plasmapy.analysis.nullpoint.NullPoint` objects
-        representing the nullpoints of the given vector space.
+        representing the null points of the given vector space.
 
     """
     nullpoints = []
@@ -1371,12 +1417,13 @@ def null_point_find(
     err=1e-10,
 ):
     r"""
-    Returns an array of nullpoint object, representing
-    the nullpoints of the given vector space.
+    Returns an array of `~plasmapy.analysis.nullpoint.NullPoint` object, representing
+    the null points of the given vector space.
 
     .. note::
-       Please note that this functionality is still under development
-       and the API may change in future releases.
+
+       This functionality is still under development and the API may
+       change in future releases.
 
     Parameters
     ----------
@@ -1424,7 +1471,7 @@ def null_point_find(
     -------
     array_like of `~plasmapy.analysis.nullpoint.NullPoint`
         An array of `~plasmapy.analysis.nullpoint.NullPoint` objects
-        representing the nullpoints of the given vector space.
+        representing the null points of the given vector space.
 
     Notes
     -----
@@ -1458,8 +1505,13 @@ def uniform_null_point_find(
     err=1e-10,
 ):
     r"""
-    Return an array of `~plasmapy.analysis.nullpoint.NullPoint` objects, representing
-    the null points of the given vector space.
+    Return an array of `~plasmapy.analysis.nullpoint.NullPoint` objects,
+    representing the null points of the given vector space.
+
+    .. note::
+
+       This functionality is still under development and the API may
+       change in future releases.
 
     Parameters
     ----------
@@ -1489,7 +1541,7 @@ def uniform_null_point_find(
     -------
     array_like of `~plasmapy.analysis.nullpoint.NullPoint`
         An array of `~plasmapy.analysis.nullpoint.NullPoint` objects representing
-        the nullpoints of the given vector space.
+        the null points of the given vector space.
 
     Notes
     -----
