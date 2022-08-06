@@ -2470,7 +2470,7 @@ class Photon(AbstractParticle):
                 "Specify non negative quantity with units of Energy, wavelength, frequency or momentum."
             )
 
-        if quantity == None:
+        if quantity is None:
             self.energy = None
             self.frequency = None
             self.momentum = None
@@ -2542,7 +2542,7 @@ class Photon(AbstractParticle):
 
     @energy.setter
     def energy(self, new_energy):
-        if new_energy == None:
+        if new_energy is None:
             self._energy = np.nan * u.J
         else:
             self._energy = new_energy
@@ -2553,7 +2553,7 @@ class Photon(AbstractParticle):
 
     @frequency.setter
     def frequency(self, new_frequency):
-        if new_frequency == None:
+        if new_frequency is None:
             self._frequency = np.nan * (u.s**-1)
         else:
             self._frequency = new_frequency
@@ -2564,7 +2564,7 @@ class Photon(AbstractParticle):
 
     @momentum.setter
     def momentum(self, new_momentum):
-        if new_momentum == None:
+        if new_momentum is None:
             self._momentum = np.nan * (u.kg * u.m / u.s)
         else:
             self._momentum = new_momentum
@@ -2575,7 +2575,7 @@ class Photon(AbstractParticle):
 
     @wavelength.setter
     def wavelength(self, new_wavelength):
-        if new_wavelength == None:
+        if new_wavelength is None:
             self._wavelength = np.nan * u.m
         else:
             self._wavelength = new_wavelength
