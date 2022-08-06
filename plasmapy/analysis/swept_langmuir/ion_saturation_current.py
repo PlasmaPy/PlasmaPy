@@ -128,13 +128,17 @@ def find_ion_saturation_current(
     extras: `ISatExtras`
         Additional information from the curve fit:
 
-        * ``extras.fitted_func`` is the :term:`fit-function` (specified
-          by ``fit_type``) fitted to the IV-curve
-        * ``extras.rsq`` is the coefficient of determination
-          (r-squared) value of the ``extras.fitted_func`` to the IV-curve
-        * ``extras.fitted_indices`` is a `slice` object representing the
-          points used in the curve fit (i.e.
-          ``(voltage[extras.fitted_indices], current[extras.fitted_indices])``).
+        ``extras.fitted_func`` (:term:`fit-functions`)
+            The computed :term:`fit-function` specified by
+            ``fit_type``.
+
+        ``extras.rsq`` (`float`)
+            The coefficient of determination (r-squared) value of the
+            fit, that is of ``extras.fitted_func``.
+
+        ``extras.fitted_indices`` (`slice`)
+            A `slice` object representing the indices of the ``voltage``
+            and ``current`` arrays used for the fit.
 
     Notes
     -----
