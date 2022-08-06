@@ -30,7 +30,7 @@ on some of following key areas...
 #. A more human-friendly way of managing data by building an interface around
    |xarray|_ arrays and datasets via custom diagnostic accessors.
 
-   - |xarray|_ provides labelled multi-dimensional arrays and datasets.
+   - |xarray|_ provides labeled multi-dimensional arrays and datasets.
    - Diagnostics self-manage the computed analysis data within a |xarray|_
      dataset while maintaining the computed data's relation to the original
      data.

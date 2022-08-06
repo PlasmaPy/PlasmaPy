@@ -7,7 +7,7 @@ __aliases__ = ["find_isat_"]
 import numbers
 import numpy as np
 
-from typing import NamedTuple, Optional, Tuple
+from typing import Any, Dict, NamedTuple, Optional, Tuple
 
 from plasmapy.analysis import fit_functions as ffuncs
 from plasmapy.analysis.swept_langmuir.helpers import check_sweep
@@ -53,14 +53,13 @@ def find_ion_saturation_current(
     current-voltage (IV) curve obtained from a swept Langmuir probe.
     The current collected by a Langmuir probe reaches ion-saturation
     when the probe is sufficiently biased so the influx of electrons is
-    completely repelled, which leads to only the collection of ions.  (For
-    additional details see the **Notes** section below.)
+    completely repelled, which leads to only the collection of ions.
+    (For additional details see the **Notes** section below.)
 
     **Aliases:** `find_isat_`
 
     Parameters
     ----------
-
     voltage: `numpy.ndarray`
         1-D numpy array of monotonically increasing probe biases
         (should be in volts).
@@ -84,9 +83,9 @@ def find_ion_saturation_current(
 
     current_bound: `float`
         A fraction representing a percentile window around the minimum
-        current for which to collect the points.  For example, a value
-        of ``0.1`` indicates to use all points within 10% of the
-        minimum current.  (DEFAULT ``None``)
+        current.  The points to be fitted are defined to be within this
+        window.  For example, a value of ``0.1`` indicates to use all
+        points within 10% of the minimum current.  (DEFAULT ``None``)
 
         |
 
@@ -120,7 +119,11 @@ def find_ion_saturation_current(
     -------
     isat: `~plasmapy.analysis.fit_functions.Linear`
         A :term:`fit-function` representing the linear portion of the
-        fitter curve.
+        fitted curve.  **Note:** All ``isat`` parameters will be in the
+        same units as those of ``voltage`` and ``current``.  For
+        example, if the ``voltage`` array is in milli-volts and the
+        ``current`` array is in milli-amperes, then all parameters and
+        computed values of ``isat`` will have the same units.
 
     extras: `ISatExtras`
         Additional information from the curve fit:
@@ -148,8 +151,8 @@ def find_ion_saturation_current(
     ion-saturation current, since, while ideal planar Langmuir probes
     reach a steady-state ion-saturation current, real world Langmuir
     probes "suffer" from expanding sheaths as the bias voltage
-    increases.  This sheath expansion results the ion-saturation
-    current also increasing.
+    becomes increasingly negative.  This sheath expansion results in the
+    ion-saturation current also increasing.
     """
     rtn_extras = ISatExtras(rsq=None, fitted_func=None, fitted_indices=None)._asdict()
 
@@ -166,7 +169,7 @@ def find_ion_saturation_current(
             "func": ffuncs.ExponentialPlusOffset,
             "current_bound": 1.0,
         },
-    }
+    }  # type: Dict[str, Dict[str, Any]]
     try:
         default_current_bound = _settings[fit_type]["current_bound"]
         fit_func = _settings[fit_type]["func"]()

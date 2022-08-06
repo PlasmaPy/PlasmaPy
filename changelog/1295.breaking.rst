@@ -1,4 +1,0 @@
-Moved the ``grid_resolution`` attribute from `~plasmapy.plasma.grids.AbstractGrid`
-to `~plasmapy.plasma.grids.CartesianGrid` and `~plasmapy.plasma.grids.NonUniformCartesianGrid`
-separately. This fixes a potential future bug, because this attribute is only valid as written
-when all axes share the same units.

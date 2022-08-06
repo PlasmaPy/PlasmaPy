@@ -1,2 +1,0 @@
-In `~plasmapy.diagnostics.thomson.spectral_density`, the arguments``Te`` and ``Ti`` have been renamed ``T_e`` and ``T_i``
-and are now required keyword-only arguments.
