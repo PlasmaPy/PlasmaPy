@@ -1,6 +1,7 @@
 """
 This module contains functionality for calculating various numerical
-solutions to Hirose's two fluid dispersion relation
+solutions to Hirose's two fluid dispersion relation, see
+:cite:t:`hirose:2004` and :cite:t:`bellan:2012`.
 """
 
 import astropy.units as u
