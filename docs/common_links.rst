@@ -83,6 +83,7 @@
    used just before a period.
 
 .. |bibliography| replace:: :ref:`bibliography`\
+.. |coding guide| replace:: :ref:`coding guide`\
 .. |contributor guide| replace:: :ref:`contributor guide`\
 .. |documentation guide| replace:: :ref:`documentation guide`\
 .. |glossary| replace:: :ref:`glossary`\
@@ -95,6 +96,7 @@
 .. Websites
 .. --------
 
+.. _API: https://en.wikipedia.org/wiki/API
 .. _Astropy docs: https://docs.astropy.org
 .. _Astropy: https://www.astropy.org
 .. _BibTeX format: https://www.bibtex.com/g/bibtex-format
@@ -114,6 +116,7 @@
 .. _Gitter bridge: https://gitter.im/PlasmaPy/Lobby
 .. _Graphviz: https://graphviz.org
 .. _hypothesis: https://hypothesis.readthedocs.io
+.. _ide: https://en.wikipedia.org/wiki/Integrated_development_environment
 .. _intersphinx: https://www.sphinx-doc.org/en/master/usage/extensions/intersphinx.html
 .. _isort: https://pycqa.github.io/isort
 .. _Jinja: https://jinja.palletsprojects.com
@@ -125,6 +128,7 @@
 .. _MathJax: https://www.mathjax.org
 .. _matplotlib: https://matplotlib.org
 .. _Matrix chat room: https://app.element.io/#/room/#plasmapy:openastronomy.org
+.. _nbqa: https://nbqa.readthedocs.io
 .. _numpydoc: https://numpydoc.readthedocs.io/en/latest/format.html#docstring-standard
 .. _NumPy: https://numpy.org
 .. _OpenPMD: https://www.openpmd.org/
@@ -136,7 +140,6 @@
 .. _PlasmaPy's documentation: https://docs.plasmapy.org/en/stable
 .. _PlasmaPy's GitHub repository: https://github.com/PlasmaPy/plasmapy
 .. _PlasmaPy's Matrix chat room: https://app.element.io/#/room/#plasmapy:openastronomy.org
-.. _pre-commit: https://pre-commit.com
 .. _`pre-commit.ci`: https://pre-commit.ci
 .. _pydocstyle: https://www.pydocstyle.org/en/stable
 .. _pygments: https://pygments.org
@@ -210,6 +213,12 @@
 
 .. _numba: https://numba.readthedocs.io
 .. |numba| replace:: `numba`
+
+.. _pre-commit: https://pre-commit.com
+.. |pre-commit| replace:: ``pre-commit``
+
+.. _`.pre-commit-config.yaml`: https://github.com/PlasmaPy/PlasmaPy/blob/main/.pre-commit-config.yaml
+.. |.pre-commit-config.yaml| replace:: :file:`.pre-commit-config.yaml`
 
 .. _`setup.cfg`: https://github.com/PlasmaPy/PlasmaPy/blob/main/setup.cfg
 .. |setup.cfg| replace:: :file:`setup.cfg`

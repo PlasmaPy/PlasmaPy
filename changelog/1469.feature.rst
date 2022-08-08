@@ -1,0 +1,4 @@
+Added the `~plasmapy.analysis.swept_langmuir.ion_saturation_current.find_ion_saturation_current`
+function to the `~plasmapy.analysis.swept_langmuir` module.  The function
+fits the tail of a swept Langmuir probe trace and returns the linear
+fit corresponding to the ion-saturation current.
