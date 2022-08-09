@@ -6,9 +6,9 @@ from astropy import units as u
 from astropy.constants.si import c
 
 from plasmapy.dispersion.numerical.kinetic_alfven_ import kinetic_alfven
-from plasmapy.formulary import gyrofrequency, plasma_frequency
 from plasmapy.particles import Particle
-from plasmapy.particles.exceptions import InvalidParticleError
+from plasmapy.particles.exceptions import ChargeError, InvalidParticleError
+from plasmapy.utils.exceptions import PhysicsWarning
 
 c_si_unitless = c.value
 
@@ -56,6 +56,7 @@ class TestKinetic_Alfven:
             ({**_kwargs_single_valued, "theta": 5 * u.eV}, u.UnitTypeError),
             ({**_kwargs_single_valued, "gamma_e": "wrong type"}, TypeError),
             ({**_kwargs_single_valued, "gamma_i": "wrong type"}, TypeError),
+            ({**_kwargs_single_valued, "z_mean": "wrong type"}, TypeError),
         ],
     )
     def test_raises(self, kwargs, _error):
@@ -63,4 +64,116 @@ class TestKinetic_Alfven:
         with pytest.raises(_error):
             kinetic_alfven(**kwargs)
 
+    @pytest.mark.parametrize(
+        "kwargs, expected",
+        [
+            (
+                {
+                    **_kwargs_single_valued,
+                    "ion": Particle("He"),
+                    "z_mean": 2.0,
+                    "theta": 0 * u.deg,
+                },
+                {**_kwargs_single_valued, "ion": Particle("He +2"), "theta": 0 * u.deg},
+            ),
+            #
+            # z_mean defaults to 1
+            (
+                {**_kwargs_single_valued, "ion": Particle("He"), "theta": 0 * u.deg},
+                {**_kwargs_single_valued, "ion": Particle("He+"), "theta": 0 * u.deg},
+            ),
+        ],
+    )
+    def test_z_mean_override(self, kwargs, expected):
+        """Test overriding behavior of kw 'z_mean'."""
+        ws = kinetic_alfven(**kwargs)
+        ws_expected = kinetic_alfven(**expected)
 
+        for theta in ws:
+            assert np.allclose(ws[theta], ws_expected[theta], atol=0, rtol=1e-2)
+
+    @pytest.mark.parametrize(
+        "kwargs, expected",
+        [
+            ({**_kwargs_single_valued, "theta": 0 * u.deg}, {"shape": (2,)}),
+            (
+                {
+                    **_kwargs_single_valued,
+                    "theta": 0 * u.deg,
+                    "k": [1, 2, 3] * u.rad / u.m,
+                },
+                {"shape": (3,)},
+            ),
+            (
+                {
+                    **_kwargs_single_valued,
+                    "theta": [10, 20, 30, 40, 50] * u.deg,
+                    "k": [1, 2, 3] * u.rad / u.m,
+                },
+                {"shape": (3,)},
+            ),
+            (
+                {**_kwargs_single_valued, "theta": [10, 20, 30, 40, 50] * u.deg},
+                {"shape": (2,)},
+            ),
+        ],
+    )
+    def test_return_structure(self, kwargs, expected):
+        """Test the structure of the returned values."""
+        ws = kinetic_alfven(**kwargs)
+
+        assert isinstance(ws, dict)
+
+        for mode, val in ws.items():
+            assert isinstance(val, u.Quantity)
+            assert val.unit == u.rad / u.s
+            assert val.shape == expected["shape"]
+
+    @pytest.mark.parametrize(
+        "kwargs, _warning",
+        [
+            # w/vT min PhysicsWarning
+            (
+                {
+                    "k": 0.000001 * u.rad / u.m,
+                    "theta": 88 * u.deg,
+                    "n_i": 0.05 * u.cm ** -3,
+                    "B": 2.2e-8 * u.T,
+                    "T_e": 1.6e6 * u.K,
+                    "T_i": 4.0e5 * u.K,
+                    "ion": Particle("p+"),
+                },
+                PhysicsWarning,
+            ),
+            # w/vT max PhysicsWarning
+            (
+                {
+                    "k": 0.01 * u.rad / u.m,
+                    "theta": 88 * u.deg,
+                    "n_i": 0.05 * u.cm ** -3,
+                    "B": 2.2e-8 * u.T,
+                    "T_e": 1.6e6 * u.K,
+                    "T_i": 4.0e5 * u.K,
+                    "ion": Particle("p+"),
+                },
+                PhysicsWarning,
+            ),
+            # w << w_ci PhysicsWarning
+            (
+                {
+                    "k": 10e-8 * u.rad / u.m,
+                    "theta": 88 * u.deg,
+                    "n_i": 5 * u.cm ** -3,
+                    "B": 6.98e-8 * u.T,
+                    "T_e": 1.6e6 * u.K,
+                    "T_i": 4.0e5 * u.K,
+                    "ion": Particle("p+"),
+                },
+                PhysicsWarning,
+            ),
+        ],
+    )
+    def test_warning(self, kwargs, _warning):
+        """Test scenarios that raise a `Warning`."""
+        with pytest.warns(_warning):
+            kinetic_alfven(**kwargs)
