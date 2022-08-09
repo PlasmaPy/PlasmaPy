@@ -123,7 +123,7 @@ def kinetic_alfven(
     :math:`rad/s`. This approach comes from :cite:t:`hasegawa:1982`,
     :cite:t:`morales:1997` and :cite:t:`william:1996`; who argueed that
     a 3 x 3 matrix that describes warm plasma waves, is able to be
-    represented as a 2 x 2 matrix because the compressional
+    re-presented as a 2 x 2 matrix because the compressional
     (i.e., fast) mode can be factored out. This results in the
     determinant, when in the limit of
     :math:`\omega \gg k_{z}^{2} c^{2}_{\rm s}`, reduces to the kinetic
