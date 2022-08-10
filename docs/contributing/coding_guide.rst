@@ -342,47 +342,6 @@ Requirements
   year. However, it may take a few months before packages like NumPy_
   and Numba_ become compatible with the newest minor version of Python_.
 
-Coding Style
-============
-
-PlasmaPy Code Style Guide, codified
------------------------------------
-
-* PlasmaPy generally follows the :pep:`8` style guide for Python code and the black_ code style.
-  This helps ensure that the code will be consistent and
-  readable.
-
-  * Docstrings and comments should generally be limited to
-    about 72 characters.
-
-* During code development, use black_ to automatically format code and
-  ensure a consistent code style throughout the package and isort_ to
-  automatically sort imports.
-
-* Follow the existing coding style within a subpackage.  This includes,
-  for example, variable naming conventions.
-
-* Use standard abbreviations for imported packages when possible, such
-  as ``import numpy as np``, ``import matplotlib as mpl``, ``import
-  matplotlib.pyplot as plt``, and ``import astropy.units as u``.
-
-* ``__init__.py`` files for modules should not contain any significant
-  implementation code, but it can contain a docstring describing the
-  module and code related to importing the module.  Any substantial
-  functionality should be put into a separate file.
-
-* Use absolute imports, such as
-  ``from plasmapy.particles import Particle``, rather than relative
-  imports such as ``from ..particles import Particle``.
-
-* Use ``Optional[type]`` for type hinted keyword arguments with a
-  default value of `None`.
-
-* There should be at least one pun per 1284 lines of code.
-
-* Avoid using ``lambda`` to define functions, as this notation may be
-  unfamiliar to newcomers to Python.
-
 .. _code-contribution:
 
 Branches, commits, and pull requests
