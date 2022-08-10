@@ -1,1 +1,1 @@
-Add sections to the |coding guide| on imports and requirements.
+Added sections to the |coding guide| on imports and requirements.
