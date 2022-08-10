@@ -19,8 +19,8 @@ Throughout this guide, ``0.9.0`` denotes the version you're releasing.
 .. When updating this guide, make sure that each bullet point is for
    doing exactly one task!
 
-Several weeks before release
-----------------------------
+Announce timeline
+=================
 
 * Create an issue on GitHub for the release with a checklist of tasks
   to be performed.
@@ -38,20 +38,8 @@ Several weeks before release
   freeze. Only bugfixes and pull requests that are directly related to
   the release should be merged during the code freeze.
 
-Pre-release
------------
-
-* Open a pull request to update hooks to their most recent versions in
-  :file:`.pre-commit-config.yaml` for major and minor releases, and run
-
-  .. code-block:: bash
-
-     pre-commit run --all-files
-
-  to apply all changes.
-
-* Open a pull request to re-run pre-executed notebooks, including those
-  for charged particle radiography.
+Update metadata
+===============
 
 * Begin an upload to Zenodo_ for the new release using the
   ``team@plasmapy.org`` login, and reserve a digital object identifier
@@ -77,7 +65,7 @@ Pre-release
 
   .. todo::
 
-     Add a Python script here to update `.mailmap`.
+     Add a Python script here to update :file:`.mailmap`.
 
 .. Use ``git shortlog -nse | cut -f 2 | vim -c "sort" -c "vsplit .mailmap" -c
    "windo diffthis"`` to compare the old and new :file:`.mailmap` version. Make sure
@@ -85,6 +73,32 @@ Pre-release
    existing :file:`.mailmap` file.
    This part may not be all that relevant anymore, except if we're using ``git
    shortlog``. ← put this in pre-release?
+
+Generate changelog
+==================
+
+* Create a pull request to revise changelog entries to make sure that
+  they are categorized correctly, understandable, and necessary.
+
+  .. tip::
+
+     Apply the :guilabel:`No changelog entry needed` label to pull
+     requests that change multiple changelog entries in order to skip
+     the changelog entry check.
+
+Perform code quality checks
+===========================
+
+* Open a pull request to ``main`` to update black_ and other pre-commit_
+  hooks to their most recent versions in :file:`.pre-commit-config.yaml`
+  for major and minor releases. Apply all changes by running:
+
+  .. code-block:: bash
+
+     pre-commit run --all-files
+
+* Open a pull request to re-execute pre-executed notebooks, such as
+  those for charged particle radiography.
 
 * Run ``make linkcheck`` in :file:`docs/`, and if necessary, open a pull
   request to update redirects and fix broken links. The reserved DOI
@@ -97,14 +111,33 @@ Pre-release
      specify allowed redirects. For example, DOI links are always
      redirects, but are significantly more persistent than hyperlinks.
 
-* Create a pull request to revise changelog entries to make sure that
-  they are categorized correctly, understandable, and necessary.
+* Make sure that all tests are passing.
 
-  .. tip::
+  - Go to the Actions_ page.
+  - Click on the :guilabel:`CI` tab → :guilabel:`Run workflow`.
+  - Click on the :guilabel:`fortnightly tests` tab →
+    :guilabel:`Run workflow`.
+  - Enjoy life for 15 minutes.
+  - Fix any failures, and then repeat these steps.
 
-     Apply the :guilabel:`No changelog entry needed` label to pull
-     requests that change multiple changelog entries in order to skip
-     the changelog entry check.
+Create the release branch
+=========================
+
+* Enter the :file:`PlasmaPy` directory and create a new branch for the
+  release that is based off of the ``main`` branch. For a bugfix
+  release, this branch should already exist.
+
+  .. code-block:: bash
+
+     git checkout -b v0.9.x upstream main
+
+  The ``upstream`` remote corresponds to `PlasmaPy's GitHub repository`_.
+
+* Push the branch to `PlasmaPy's GitHub repository`_.
+
+  .. code-block:: bash
+
+     git push -u upstream
 
 * Open a pull request to transform the news fragments in
   :file:`changelog/` to a changelog page.
@@ -134,6 +167,9 @@ Pre-release
 
        We might be able to consolidate these steps into a single one.
 
+* For major and minor releases, activate the new branch's version on
+  `on Read the Docs <https://readthedocs.org/projects/plasmapy/versions>`_.
+
 .. Use one of the following two methods to add the note on new
   contributors to :file:`docs/whatsnew/0.9.0.rst`.
 
@@ -151,19 +187,8 @@ Pre-release
 
 .. double check this ↑
 
-
-
-Release
--------
-
-* Make sure that all tests are passing.
-
-  - Go to the Actions_ page.
-  - Click on the :guilabel:`CI` tab → :guilabel:`Run workflow`.
-  - Click on the :guilabel:`fortnightly tests` tab →
-    :guilabel:`Run workflow`.
-  - Enjoy life for 15 minutes.
-  - Fix any failures, and then repeat these steps.
+Publish the release
+===================
 
 .. There used to be a step here to use the hub tool with `hub ci-status
    main -v [COMMIT]``, where
@@ -179,28 +204,13 @@ Release
    the `main <https://github.com/PlasmaPy/PlasmaPy/commits/main>`__
    branch of `PlasmaPy's GitHub repository`_.
 
-* Enter the :file:`PlasmaPy` directory and create a new branch for the
-  release that is based off of the ``main`` branch. For a bugfix
-  release, this branch should already exist.
-
-  .. code-block:: bash
-
-     git checkout -b v0.9.x upstream main
-
-  The ``upstream`` remote corresponds to `PlasmaPy's GitHub repository`_.
-
-* Push the branch to `PlasmaPy's GitHub repository`_.
-
-  .. code-block:: bash
-
-     git push -u upstream
 
 * Go to the GitHub page to `draft a new release`_. We will perform a
   pre-release first.
 
   - Set the :guilabel:`Target` to ``v0.9.x``.
   - For :guilabel:`Choose a tag`, put ``0.9.0rc1``.
-  - Under title, put ``v0.9.0``.
+  - Under title, put ``v0.9.0rc1``.
   - Mark this as a pre-release.
   - Click on :guilabel:`Publish release`.
 
@@ -224,8 +234,8 @@ Release
   to make sure that the new version installs correctly.
 
   - Open Python and run ``import plasmapy`` and ``dir(plasmapy)``.
-  - Run ``plasma-calculator`` to make sure that the plasma calculator is
-    behaving correctly.
+  - Run ``plasma-calculator`` from the terminal to make sure that the
+    plasma calculator is behaving correctly.
 
   Fix any errors that arise, and re-run the :guilabel:`CI` and
   :guilabel:`fortnightly tests` checks.
@@ -283,13 +293,7 @@ Release
    <https://dev.azure.com/plasmapy/PlasmaPy/_build>`_. When ``sdist`` and
    ``wheels_universal`` finish, check PyPI_ for the new version!
 
-Post-release
-------------
-
 * Merge the pull request from the ``v0.9.x`` branch to ``main``.
-
-* For major and minor releases, activate the new branch's version on
-  `on Read the Docs <https://readthedocs.org/projects/plasmapy/versions>`_.
 
 * In the ``v0.9.x`` branch, change the line in
   :file:`binder/requirements.txt` that has ``.`` to ``plasmapy == 0.9``.
@@ -313,10 +317,13 @@ Post-release
      git merge v0.9.x
      git push
 
+Post-release
+============
+
 * Make the release on conda-forge. The helpful conda-forge bots should
   automatically open up a PR on `conda-forge/plasmapy-feedstock
   <https://github.com/conda-forge/plasmapy-feedstock/pulls>`_. If nothing
-  breaks, it'll even get automerged.
+  breaks, it'll even get auto-merged.
 
     * If tests fail, look at the :file:`recipe.yaml` file — usually it's
       either changed dependencies or the simple import tests there.
@@ -327,7 +334,10 @@ Post-release
 .. As of July 2022, Zenodo doesn't have CodeMeta support but does have
    Citation File Format (CFF) support. Should we switch to CFF?
 
-* Write a short post on the PlasmaPy release on PlasmaPy's website.
+Advertise the release
+=====================
+
+* Write a post on the PlasmaPy release on `PlasmaPy's website`_.
 
 * Notify plasma physics communities about the release.
 
@@ -343,7 +353,7 @@ Post-release
 * Discuss how the release procedure went during the next community
   meeting.
 
-* Update this very release guide to reflect any changes.
+* Update the release guide to reflect any changes.
 
 * Drop support for the versions of Python_ that will have been released
   more than 42 months prior to the next expected PlasmaPy release, as
