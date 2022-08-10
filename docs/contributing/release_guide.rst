@@ -13,28 +13,27 @@ Throughout this guide, ``0.9.0`` denotes the version you're releasing.
 
 .. tip::
 
-   Split up pre-release tasks into multiple focused pull requests. Small
-   pull requests facilitate quicker code reviews.
+   Split up pre-release tasks into multiple focused pull requests to
+   facilitate quicker code reviews.
 
 .. When updating this guide, make sure that each bullet point is for
    doing exactly one task!
 
-Announce timeline
-=================
+Announce the release timeline
+=============================
 
 * Create an issue on GitHub for the release with a checklist of tasks
   to be performed.
 
-.. todo::
+.. Convert the release guide into an issue template with a checklist?
 
-   Convert the release guide into an issue template with a checklist?
+* About three weeks before a minor or major release, announce that a
+  feature freeze will occur one week before the anticipated release
+  date. Only pull requests with a limited scope that do not
+  significantly change functionality should be merged during the feature
+  freeze.
 
-* Three weeks before a minor or major release, announce that a feature
-  freeze will occur one week before the anticipated release date. Only
-  pull requests with a limited scope that do not significantly change
-  functionality should be merged during the feature freeze.
-
-* Three weekdays before a minor or major release, announce a code
+* About three weekdays before a minor or major release, announce a code
   freeze. Only bugfixes and pull requests that are directly related to
   the release should be merged during the code freeze.
 
@@ -48,11 +47,6 @@ Update metadata
 * Open a pull request to update :file:`docs/about/citation.rst` to
   reflect the new version, and include the reserved DOI.
 
-  .. todo::
-
-     Should we switch to Citation File Format? It appears to be better
-     supported by Zenodo.
-
 * Open a pull request to update and alphabetize the author list in
   :file:`docs/about/credits.rst`. Missing ORCID_ identifiers may be
   added.
@@ -63,9 +57,7 @@ Update metadata
 
 * Open a pull request to update :file:`.mailmap`.
 
-  .. todo::
-
-     Add a Python script here to update :file:`.mailmap`.
+.. Add a Python script here to update :file:`.mailmap`.
 
 .. Use ``git shortlog -nse | cut -f 2 | vim -c "sort" -c "vsplit .mailmap" -c
    "windo diffthis"`` to compare the old and new :file:`.mailmap` version. Make sure
@@ -74,8 +66,8 @@ Update metadata
    This part may not be all that relevant anymore, except if we're using ``git
    shortlog``. ← put this in pre-release?
 
-Generate changelog
-==================
+Perform code quality checks
+===========================
 
 * Create a pull request to revise changelog entries to make sure that
   they are categorized correctly, understandable, and necessary.
@@ -85,9 +77,6 @@ Generate changelog
      Apply the :guilabel:`No changelog entry needed` label to pull
      requests that change multiple changelog entries in order to skip
      the changelog entry check.
-
-Perform code quality checks
-===========================
 
 * Open a pull request to ``main`` to update black_ and other pre-commit_
   hooks to their most recent versions in :file:`.pre-commit-config.yaml`
@@ -203,7 +192,6 @@ Publish the release
    Here, ``[COMMIT]`` is replaced by the hash from the latest commit on
    the `main <https://github.com/PlasmaPy/PlasmaPy/commits/main>`__
    branch of `PlasmaPy's GitHub repository`_.
-
 
 * Go to the GitHub page to `draft a new release`_. We will perform a
   pre-release first.
