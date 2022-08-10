@@ -28,6 +28,110 @@ style changes. Please feel free to propose revisions to this guide by
 :ref:`submitting a pull request <code-contribution>` or by bringing up
 an idea at a community meeting.
 
+PlasmaPy generally follows the :pep:`8` style guide for Python code,
+using auto-formatters such as black_ and isort_ that are executed using
+pre-commit_.
+
+Coding guidelines
+=================
+
+* Write short functions that do exactly one thing with no side effects.
+
+* Use NumPy_ array options instead of ``for`` loops to make code more
+  compact, readable, and performant.
+
+* Instead of defining variables like ``a0``, ``a1``, & ``a2``, define
+  these values in a collection such as an |ndarray| or a `list`.
+
+* Use the `property` :term:`decorator` instead of getters and setters.
+
+* Some plasma parameters depend on more than one |Quantity| of the same
+  physical type. For example, when reading the following line of code,
+  we cannot immediately tell which is the electron temperature and which
+  is the ion temperature.
+
+  .. code-block:: python
+
+     f(1e6 * u.K, 2e6 * u.K)
+
+  Spell out the :term:`parameter` names to improve readability and
+  reduce the likelihood of errors.
+
+  .. code-block:: python
+
+     f(T_i = 1e6 * u.K, T_e = 2e6 * u.K)
+
+  Similarly, when a function has parameters named ``T_e`` and ``T_i``,
+  these parameters should be made :term:`keyword-only` to avoid
+  ambiguity and reduce the chance of errors.
+
+  .. code-block::
+
+     def f(*, T_i, T_e):
+         ...
+
+* The ``__eq__`` and ``__ne__`` methods of a class should not raise
+  exceptions. If the comparison for equality is being made between
+  objects of different types, these methods should return `False`
+  instead. This behavior is for consistency with operations like
+  ``1 == "1"`` which will return `False`.
+
+* Limit usage of ``lambda`` functions to one-liners, such as when
+  defining the default factory of a `~collections.defaultdict`). For
+  anything longer than one line, use ``def`` instead.
+
+* List and dictionary comprehensions can be used for simple ``for``
+  loops, like:
+
+  .. code-block:: pycon
+
+     >>> [x ** 2 for x in range(17) if x % 2 == 0]
+     [0, 4, 16, 36, 64, 100, 144, 196, 256]
+
+  A comprehension might be more readable when spread out over multiple
+  lines.
+
+  .. code-block::
+
+     >>> {
+     ...     x: x ** 2
+     ...     for x in range(17)
+     ...     if x % 2 == 0
+     ... }
+     {0: 0, 2: 4, 4: 16, 6: 36, 8: 64, 10: 100, 12: 144, 14: 196, 16: 256}
+
+* Avoid putting any significant implementation code in
+  :file:`__init__.py` files. Implementation details should be contained
+  in a different file, and then imported into :file:`__init__.py`.
+
+* Avoid defining global variables when possible.
+
+* Use ``assert`` statements only in tests.
+
+* Use formatted string literals (f-strings) instead of legacy formatting
+  for strings.
+
+  >>> package_name = "PlasmaPy"
+  >>> print(f"The name of the package is {package_name}.")
+  The name of the package is PlasmaPy.
+  >>> print(f"{package_name=}")
+  package_name='PlasmaPy'
+  >>> print(f"{package_name!r}")  # shortcut for f"{repr(package_name)}"
+  'PlasmaPy'
+
+* Do not use :term:`mutable` objects as default values in the function
+  or method declaration. This can lead to unexpected behavior.
+
+  .. code:: pycon
+
+     >>> def function(l=[]):
+     ...     l.append("x")
+     ...     print(l)
+     >>> function()
+     ['x']
+     >>> function()
+     ['x', 'x']
+
 Names
 =====
 
@@ -156,47 +260,6 @@ the code is supposed to be doing.
    <https://www.jetbrains.com/help/pycharm/rename-refactorings.html>`__
    can be done with :kbd:`Shift+F6` on Windows or Linux, and :kbd:`⇧F6`
    or :kbd:`⌥⌘R` on macOS.
-
-Coding Style
-============
-
-PlasmaPy Code Style Guide, codified
------------------------------------
-
-* PlasmaPy generally follows the :pep:`8` style guide for Python code and the black_ code style.
-  This helps ensure that the code will be consistent and
-  readable.
-
-  * Docstrings and comments should generally be limited to
-    about 72 characters.
-
-* During code development, use black_ to automatically format code and
-  ensure a consistent code style throughout the package and isort_ to
-  automatically sort imports.
-
-* Follow the existing coding style within a subpackage.  This includes,
-  for example, variable naming conventions.
-
-* Use standard abbreviations for imported packages when possible, such
-  as ``import numpy as np``, ``import matplotlib as mpl``, ``import
-  matplotlib.pyplot as plt``, and ``import astropy.units as u``.
-
-* ``__init__.py`` files for modules should not contain any significant
-  implementation code, but it can contain a docstring describing the
-  module and code related to importing the module.  Any substantial
-  functionality should be put into a separate file.
-
-* Use absolute imports, such as
-  ``from plasmapy.particles import Particle``, rather than relative
-  imports such as ``from ..particles import Particle``.
-
-* Use ``Optional[type]`` for type hinted keyword arguments with a
-  default value of `None`.
-
-* There should be at least one pun per 1284 lines of code.
-
-* Avoid using ``lambda`` to define functions, as this notation may be
-  unfamiliar to newcomers to Python.
 
 .. _code-contribution:
 
