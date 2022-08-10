@@ -360,8 +360,6 @@ Advertise the release
   per the drop schedule in `NEP 29`_. Consider bumping the minimum
   supported versions of NumPy_ and Astropy_ too.
 
-
-
 .. |exclude bugfix| replace:: *Skip this step for bugfix releases.*
 
 .. _Actions: https://github.com/PlasmaPy/PlasmaPy/actions
