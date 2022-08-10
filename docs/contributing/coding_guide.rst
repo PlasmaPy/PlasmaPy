@@ -20,6 +20,110 @@ style changes. Please feel free to propose revisions to this guide by
 :ref:`submitting a pull request <code-contribution>` or by bringing up
 an idea at a community meeting.
 
+PlasmaPy generally follows the :pep:`8` style guide for Python code,
+using auto-formatters such as black_ and isort_ that are executed using
+pre-commit_.
+
+Coding guidelines
+=================
+
+* Write short functions that do exactly one thing with no side effects.
+
+* Use NumPy_ array options instead of ``for`` loops to make code more
+  compact, readable, and performant.
+
+* Instead of defining variables like ``a0``, ``a1``, & ``a2``, define
+  these values in a collection such as an |ndarray| or a `list`.
+
+* Use the `property` :term:`decorator` instead of getters and setters.
+
+* Some plasma parameters depend on more than one |Quantity| of the same
+  physical type. For example, when reading the following line of code,
+  we cannot immediately tell which is the electron temperature and which
+  is the ion temperature.
+
+  .. code-block:: python
+
+     f(1e6 * u.K, 2e6 * u.K)
+
+  Spell out the :term:`parameter` names to improve readability and
+  reduce the likelihood of errors.
+
+  .. code-block:: python
+
+     f(T_i = 1e6 * u.K, T_e = 2e6 * u.K)
+
+  Similarly, when a function has parameters named ``T_e`` and ``T_i``,
+  these parameters should be made :term:`keyword-only` to avoid
+  ambiguity and reduce the chance of errors.
+
+  .. code-block::
+
+     def f(*, T_i, T_e):
+         ...
+
+* The ``__eq__`` and ``__ne__`` methods of a class should not raise
+  exceptions. If the comparison for equality is being made between
+  objects of different types, these methods should return `False`
+  instead. This behavior is for consistency with operations like
+  ``1 == "1"`` which will return `False`.
+
+* Limit usage of ``lambda`` functions to one-liners, such as when
+  defining the default factory of a `~collections.defaultdict`). For
+  anything longer than one line, use ``def`` instead.
+
+* List and dictionary comprehensions can be used for simple ``for``
+  loops, like:
+
+  .. code-block:: pycon
+
+     >>> [x ** 2 for x in range(17) if x % 2 == 0]
+     [0, 4, 16, 36, 64, 100, 144, 196, 256]
+
+  A comprehension might be more readable when spread out over multiple
+  lines.
+
+  .. code-block::
+
+     >>> {
+     ...     x: x ** 2
+     ...     for x in range(17)
+     ...     if x % 2 == 0
+     ... }
+     {0: 0, 2: 4, 4: 16, 6: 36, 8: 64, 10: 100, 12: 144, 14: 196, 16: 256}
+
+* Avoid putting any significant implementation code in
+  :file:`__init__.py` files. Implementation details should be contained
+  in a different file, and then imported into :file:`__init__.py`.
+
+* Avoid defining global variables when possible.
+
+* Use ``assert`` statements only in tests.
+
+* Use formatted string literals (f-strings) instead of legacy formatting
+  for strings.
+
+  >>> package_name = "PlasmaPy"
+  >>> print(f"The name of the package is {package_name}.")
+  The name of the package is PlasmaPy.
+  >>> print(f"{package_name=}")
+  package_name='PlasmaPy'
+  >>> print(f"{package_name!r}")  # shortcut for f"{repr(package_name)}"
+  'PlasmaPy'
+
+* Do not use :term:`mutable` objects as default values in the function
+  or method declaration. This can lead to unexpected behavior.
+
+  .. code:: pycon
+
+     >>> def function(l=[]):
+     ...     l.append("x")
+     ...     print(l)
+     >>> function()
+     ['x']
+     >>> function()
+     ['x', 'x']
+
 Names
 =====
 
