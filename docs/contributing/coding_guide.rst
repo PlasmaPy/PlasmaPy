@@ -586,7 +586,7 @@ corresponds to ``function`` as would be defined in
   `~plasmapy.utils.decorators.helpers.preserve_signature`.
 
 * A lite-function should usually be decorated with ``@numba.njit`` (or
-  the like) as a just-in-time compiler. If a decorator from `numba` is
+  the like) for just-in-time compilation. If a decorator from `numba` is
   not able to be used, then an alternative is Cython_.
 
 .. _example_notebooks:
