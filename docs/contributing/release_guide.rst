@@ -360,34 +360,7 @@ Advertise the release
   per the drop schedule in `NEP 29`_. Consider bumping the minimum
   supported versions of NumPy_ and Astropy_ too.
 
-Compatibility with Prior Versions of Python, NumPy, and Astropy
-===============================================================
 
-PlasmaPy releases will generally abide by the following standards,
-which are adapted from `NEP 29`_ for the support of old versions of
-Python_, NumPy_, and Astropy_.
-
-* PlasmaPy should support at least the minor versions of Python
-  initially released 42 months prior to a planned project release date.
-
-* PlasmaPy should support at least the 3 latest minor versions of
-  Python.
-
-* PlasmaPy should support minor versions of NumPy initially released
-  in the 24 months prior to a planned project release date or the
-  oldest version that supports the minimum Python version (whichever is
-  higher).
-
-* PlasmaPy should support at least the 3 latest minor versions of
-  NumPy and Astropy.
-
-The required major and minor version numbers of upstream packages may
-only change during major or minor releases of PlasmaPy, and never during
-patch releases.
-
-Exceptions to these guidelines should only be made when there are major
-improvements or fixes to upstream functionality or when other required
-packages have stricter requirements.
 
 .. |exclude bugfix| replace:: *Skip this step for bugfix releases.*
 
@@ -396,7 +369,6 @@ packages have stricter requirements.
 .. _Astropy's release procedures: https://docs.astropy.org/en/stable/development/releasing.html
 .. _Draft a new release: https://github.com/PlasmaPy/PlasmaPy/releases/new
 .. _GitHub personal access token:
-.. _NEP 29: https://numpy.org/neps/nep-0029-deprecation_policy.html
 .. _ORCID: https://orcid.org
 .. _PlasmaPy releases on PyPI: https://pypi.org/project/plasmapy/#history
 .. _SunPy Xonsh script: https://github.com/sunpy/sunpy/blob/v2.1dev/tools/generate_releaserst.xsh
