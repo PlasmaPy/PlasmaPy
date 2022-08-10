@@ -1,0 +1,2 @@
+Added a section to the |coding guide| on best practices for variable
+names.

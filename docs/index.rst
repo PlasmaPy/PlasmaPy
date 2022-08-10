@@ -57,7 +57,7 @@ Example highlights
    :caption: Contributor Guide
 
    Overview <contributing/index>
-   contributing/code_guide
+   contributing/coding_guide
    contributing/changelog_guide
    contributing/doc_guide
    contributing/testing_guide
@@ -67,10 +67,10 @@ Example highlights
    :maxdepth: 1
    :caption: All the Rest
 
+   whatsnew/index
    about/credits
    bibliography
    glossary
-   whatsnew/index
    Vision Statement <about/vision_statement>
    PlasmaPy.org <https://www.plasmapy.org>
 

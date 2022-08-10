@@ -1,90 +1,259 @@
-.. _code-development-guidelines:
+.. _coding guide:
 
-***************************
-Code Development Guidelines
-***************************
+************
+Coding Guide
+************
 
-This document describes the coding requirements and guidelines to be
-followed during the development of PlasmaPy and affiliated packages.
+This guide describes common conventions, guidelines, and strategies for
+contributing code to PlasmaPy. The purpose of this guide is not to
+provide a set of rigid guidelines that must be adhered to, but rather to
+provide a common framework that helps us develop PlasmaPy together as a
+community.
 
-Code written for PlasmaPy must be compatible with Python 3.8 and
-later.
+Having a shared coding style makes it easier to understand code written
+by multiple contributors. The particulars of the coding style are not as
+important as consistency, readability, and maintainability.
 
-Coding Style
-============
+This guide can (and should!) be regularly refined by the PlasmaPy
+community as we collectively learn new practices and our shared coding
+style changes. Please feel free to propose revisions to this guide by
+:ref:`submitting a pull request <code-contribution>` or by bringing up
+an idea at a community meeting.
 
-TL;DR: use pre-commit
----------------------
+PlasmaPy generally follows the :pep:`8` style guide for Python code,
+using auto-formatters such as black_ and isort_ that are executed using
+pre-commit_.
 
-PlasmaPy has a configuration for the `pre-commit framework
-<https://pre-commit.com/>`_ that takes care of style mostly automatically.
-Install it with ``pip install pre-commit``, then use ``pre-commit install`` within
-the repository.
+Coding guidelines
+=================
 
-This will cause pre-commit to download the right versions of linters we use,
-then run an automated style checking suite on every commit.  Do note that this
-works better with a ``git add``, then ``git commit`` workflow than a ``git commit
--a`` workflow — that way, you can check via ``git diff`` what the automated
-changes actually did.
+* Write short functions that do exactly one thing with no side effects.
 
-Note that the "Style linters / pre-commit (pull_request)" part of our
-Continuous Integration system can and will (metaphorically) shout at you if it
-finds you didn't apply the linters. Also note that the linters' output may vary
-with version, so, rather than apply black_ and isort_ manually, let
-pre-commit do the version management for you instead!
+* Use NumPy_ array options instead of ``for`` loops to make code more
+  compact, readable, and performant.
 
-Our pre-commit suite can be found in `.pre-commit-config.yaml
-<https://github.com/PlasmaPy/PlasmaPy/blob/main/.pre-commit-config.yaml>`_.
-It includes
+* Instead of defining variables like ``a0``, ``a1``, & ``a2``, define
+  these values in a collection such as an |ndarray| or a `list`.
 
-* black_ to automatically format code and ensure a consistent code style
-  throughout the package
-* isort_ to automatically sort imports.
-* `nbqa <https://github.com/nbQA-dev/nbQA>`_ to automatically apply the above
-  to example notebooks as well.
-* a few tools for :file:`requirements.txt`, :file:`.yml` files and the like.
+* Use the `property` :term:`decorator` instead of getters and setters.
 
-PlasmaPy Code Style Guide, codified
------------------------------------
+* Some plasma parameters depend on more than one |Quantity| of the same
+  physical type. For example, when reading the following line of code,
+  we cannot immediately tell which is the electron temperature and which
+  is the ion temperature.
 
-* PlasmaPy follows the `PEP8 Style Guide for Python Code
-  <https://peps.python.org/pep-0008>`__.  This style choice
-  helps ensure that the code will be consistent and readable.
+  .. code-block:: python
 
-  * Line lengths should be chosen to maximize the readability and
-    elegance of the code.  The maximum line length for Python code in
-    PlasmaPy is 88 characters.
+     f(1e6 * u.K, 2e6 * u.K)
 
-  * Docstrings and comments should generally be limited to
-    about 72 characters.
+  Spell out the :term:`parameter` names to improve readability and
+  reduce the likelihood of errors.
 
-* During code development, use black_ to automatically format code and
-  ensure a consistent code style throughout the package and isort_ to
-  automatically sort imports.
+  .. code-block:: python
 
-* Follow the existing coding style within a subpackage.  This includes,
-  for example, variable naming conventions.
+     f(T_i = 1e6 * u.K, T_e = 2e6 * u.K)
 
-* Use standard abbreviations for imported packages when possible, such
-  as ``import numpy as np``, ``import matplotlib as mpl``, ``import
-  matplotlib.pyplot as plt``, and ``import astropy.units as u``.
+  Similarly, when a function has parameters named ``T_e`` and ``T_i``,
+  these parameters should be made :term:`keyword-only` to avoid
+  ambiguity and reduce the chance of errors.
 
-* ``__init__.py`` files for modules should not contain any significant
-  implementation code, but it can contain a docstring describing the
-  module and code related to importing the module.  Any substantial
-  functionality should be put into a separate file.
+  .. code-block::
 
-* Use absolute imports, such as
-  ``from plasmapy.particles import Particle``, rather than relative
-  imports such as ``from ..particles import Particle``.
+     def f(*, T_i, T_e):
+         ...
 
-* Use ``Optional[type]`` for type hinted keyword arguments with a
-  default value of `None`.
+* The ``__eq__`` and ``__ne__`` methods of a class should not raise
+  exceptions. If the comparison for equality is being made between
+  objects of different types, these methods should return `False`
+  instead. This behavior is for consistency with operations like
+  ``1 == "1"`` which will return `False`.
 
-* There should be at least one pun per 1284 lines of code.
+* Limit usage of ``lambda`` functions to one-liners, such as when
+  defining the default factory of a `~collections.defaultdict`). For
+  anything longer than one line, use ``def`` instead.
 
-* Avoid using ``lambda`` to define functions, as this notation may be
-  unfamiliar to newcomers to Python.
+* List and dictionary comprehensions can be used for simple ``for``
+  loops, like:
+
+  .. code-block:: pycon
+
+     >>> [x ** 2 for x in range(17) if x % 2 == 0]
+     [0, 4, 16, 36, 64, 100, 144, 196, 256]
+
+  A comprehension might be more readable when spread out over multiple
+  lines.
+
+  .. code-block::
+
+     >>> {
+     ...     x: x ** 2
+     ...     for x in range(17)
+     ...     if x % 2 == 0
+     ... }
+     {0: 0, 2: 4, 4: 16, 6: 36, 8: 64, 10: 100, 12: 144, 14: 196, 16: 256}
+
+* Avoid putting any significant implementation code in
+  :file:`__init__.py` files. Implementation details should be contained
+  in a different file, and then imported into :file:`__init__.py`.
+
+* Avoid defining global variables when possible.
+
+* Use ``assert`` statements only in tests.
+
+* Use formatted string literals (f-strings) instead of legacy formatting
+  for strings.
+
+  >>> package_name = "PlasmaPy"
+  >>> print(f"The name of the package is {package_name}.")
+  The name of the package is PlasmaPy.
+  >>> print(f"{package_name=}")
+  package_name='PlasmaPy'
+  >>> print(f"{package_name!r}")  # shortcut for f"{repr(package_name)}"
+  'PlasmaPy'
+
+* Do not use :term:`mutable` objects as default values in the function
+  or method declaration. This can lead to unexpected behavior.
+
+  .. code:: pycon
+
+     >>> def function(l=[]):
+     ...     l.append("x")
+     ...     print(l)
+     >>> function()
+     ['x']
+     >>> function()
+     ['x', 'x']
+
+Names
+=====
+
+Names are our most fundamental means of communicating the intent and
+purpose of code. Wisely chosen names can greatly improve the
+understandability of code, while inadequate names can obfuscate what
+the code is supposed to be doing.
+
+* PlasmaPy generally uses the :pep:`8` conventions for variable names.
+
+  - Use lowercase words separated by underscores for function and
+    variable names (e.g., ``function_name`` and ``variable_name``).
+
+  - Use capitalized words without separators when naming a class (e.g.,
+    ``ClassName``), but keep acronyms capitalized (e.g.,
+    ``MHDEquations``).
+
+  - Use capital letters words separated by underscores when naming
+    constants (e.g., ``CONSTANT`` or ``CONSTANT_NAME``).
+
+  There are some situations in PlasmaPy which justify a departure from
+  the :pep:`8` conventions.
+
+  - Functions based on plasma parameters that are named after people may
+    be capitalized (e.g., ``Alfven_speed``).
+
+  - Capital letters may be used for a variable when it matches the
+    standard usage in plasma science (e.g., ``B`` for magnetic field and
+    ``T`` for temperature).
+
+* Choose names that are pronounceable to make them more memorable and
+  compatible with text-to-speech technology.
+
+* Choose names will produce more relevant results when searching the
+  internet.
+
+* Avoid unnecessary abbreviations, as these make code harder to read.
+  Prefer clarity over brevity, except for code that is used frequently
+  and interactively (e.g., :command:`cd` or :command:`ls`).
+
+  .. tip::
+
+     Measure the length of a variable not by the number of characters,
+     but rather by the time needed to understand its meaning.
+
+     By this measure, ``cggglm`` is significantly longer than
+     ``solve_gauss_markov_linear_model``.
+
+* Avoid ambiguity. Does ``temp`` mean "temperature", "temporary", or
+  "template"?
+
+* Append ``_e`` to a variable name to indicate that it refers to
+  electrons, ``_i`` for ions, and ``_p`` for protons (e.g., ``T_e``,
+  ``T_i``, and ``T_p``).
+
+* Only ASCII_ characters should be used in code that is part of the
+  public API_.
+
+* Python allows alphanumeric Unicode characters to be used in object
+  names (e.g., ``πλάσμα`` or ``φυσική``). These characters may be used
+  for *internal* code when doing so improves readability (i.e., to match
+  a commonly used symbol) and in Jupyter_ notebooks.
+
+* If a plasma parameter has multiple names, then use the name that
+  provides the most physical insight. For example, ``gyrofrequency``
+  indicates gyration but ``Larmor_frequency`` does not.
+
+* It is *usually* preferable to name a variable after its name rather
+  than its symbol.  An object named ``Debye_length`` is more broadly
+  understandable and searchable than ``lambda_D``. However, there are
+  some exceptions to this guideline.
+
+  * Symbols used widely across plasma science can be used with low risk
+    of confusion, such as :math:`T` for temperature or :math:`β` for
+    plasma `~plasmapy.formulary.dimensionless.beta`.
+
+  * Symbols that are defined in docstrings can be used with decreased
+    likelihood of confusion.
+
+  * Sometimes code that represents an equation will be more readable if
+    the Unicode characters for the symbols are used, especially for
+    complex equations. For someone who is familiar with the symbols,
+    ``λ = c / ν`` will be more readable than ``lambda = c / nu`` or
+    ``wavelength = speed_of_light / frequency``.
+
+  * If an implementation is based on a journal article, then variable
+    names may be based on the symbols used in that article. The article
+    should be :ref:`cited <citation-instructions>` in the appropriate
+    docstring so that it appears in the |bibliography|.
+
+* To mark that an object is not part of PlasmaPy's public API_, begin
+  its name with a leading underscore (e.g., ``_private_variable``).
+  Private variables should not be included in ``__all__``.
+
+* Avoid single character variable names except for standard plasma
+  physics symbols (e.g., ``B``) or as indices in ``for`` loops.
+
+* Avoid encoding type information in a variable name.
+
+* Intermediate variable names can provide additional context and
+  meaning. For example, suppose we have a conditional operating on a
+  complicated expression:
+
+  .. code-block:: python
+
+     if u[0] < x < u[1] and v[0] < y < v[1] and w[0] < z < w[1]: ...
+
+  Defining an intermediate variable allows us to communicate the meaning
+  and intent of the expression.
+
+  .. code-block:: python
+
+     point_is_in_grid_cell = u[0] < x < u[1] and v[0] < y < v[1] and w[0] < z < w[1]
+
+     if point_is_in_grid_cell:
+         ...
+
+  In ``for`` loops, this may take the form of assignment expressions
+  with the walrus operator (``:=``).
+
+.. tip::
+
+   Most `integrated development environments <IDE>`_ (IDEs) have a
+   built-in tool for simultaneously renaming a variable throughout a
+   project. For example, a `rename refactoring in PyCharm
+   <https://www.jetbrains.com/help/pycharm/rename-refactorings.html>`__
+   can be done with :kbd:`Shift+F6` on Windows or Linux, and :kbd:`⇧F6`
+   or :kbd:`⌥⌘R` on macOS.
+
+.. _code-contribution:
 
 Branches, commits, and pull requests
 ====================================
@@ -196,16 +365,6 @@ Suggestions on `how to write a git commit message
 
 * Use the body to explain what and why vs. how
 
-Documentation
-=============
-
-* All public classes, methods, and functions should have docstrings
-  using the numpydoc format.
-
-* Docstrings may be checked locally using pydocstyle_.
-
-* These docstrings should include usage examples.
-
 Warnings and Exceptions
 =======================
 
@@ -301,7 +460,6 @@ Equations and Physical Formulae
   the beginning of a sentence, even if their symbol is capitalized. For
   example, kelvin is a unit while Kelvin was a scientist.
 
-
 Angular Frequencies
 ===================
 
@@ -350,12 +508,11 @@ Please note that it is necessary to store notebooks with their outputs stripped
 If you have an example notebook that includes packages unavailable in the
 documentation building environment (e.g., ``bokeh``) or runs some heavy
 computation that should not be executed on every commit, *keep the outputs in
-the notebook* but store it in the repository with a ``preexecuted_`` prefix, e.g.
+the notebook* but store it in the repository with a ``preexecuted_`` prefix, e.g.,
 :file:`preexecuted_full_3d_mhd_chaotic_turbulence_simulation.ipynb`.
 
 Benchmarks
 ==========
-
 
 .. _benchmarks: https://www.plasmapy.org/plasmapy-benchmarks
 .. _benchmarks-repo: https://github.com/PlasmaPy/plasmapy-benchmarks
@@ -369,3 +526,6 @@ generated from results located in `benchmarks-repo`_. Detailed
 instructions on writing such benchmarks can be found at `asv-docs`_.
 Up-to-date instructions on running the benchmark suite will be located in
 the README file of `benchmarks-repo`_.
+
+.. _ASCII: https://en.wikipedia.org/wiki/ASCII
+.. _rename refactoring in PyCharm: https://www.jetbrains.com/help/pycharm/rename-refactorings.html
