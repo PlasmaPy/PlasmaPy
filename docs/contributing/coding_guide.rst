@@ -265,18 +265,18 @@ Imports
 * Do not use star imports (e.g., ``from package.subpackage import *``),
   except in very limited situations.
 
-* Importing a package, subpackage, or module rather than an individual
-  code object has the benefit that the namespace provides helpful
-  contextual information that can make code more understandable. For
-  example, using ``json.loads`` is more understandable than using only
-  ``loads``.
+* For infrequently used objects, import the package, subpackage, or
+  module rather than the individual code object. Including more of the
+  namespace provides helpful contextual information that can make code
+  more understandable. For example, ``json.loads`` is more
+  understandable than using only ``loads``.
 
-* For frequently used objects (e.g., |Particle|), using the full
-  namespace will increase the clutter of the code without providing
-  commensurately more information. This is also true for objects used as
-  type hint annotations. For example, ``Optional[Union[Real, Complex]``
-  is more understandable than
-  ``typing.Optional[typing.Union[numbers.Real, numbers.Complex]]``.
+* For frequently used objects (e.g., |Particle|) and type hint
+  annotations (e.g., `~typing.Optional` and `~numbers.Real`), import the
+  object directly instead of importing the package, subpackage, or
+  module. Including more of the namespace would increase clutter and
+  decrease readability without providing commensurately more
+  information.
 
 * Use standard abbreviations for imported packages:
 
@@ -292,8 +292,6 @@ Imports
 
 Requirements
 ============
-
-.. Add actual links to the different requirements files?
 
 * Package requirements are specified in multiple locations that need to
   be updated simultaneously.
@@ -332,11 +330,12 @@ Requirements
   from the last ≲ 24 months, unless there is a new feature in a
   dependency that would be greatly beneficial for `plasmapy` development.
 
-* Set maximum requirements (e.g., ``sphinx <= 2.4.4``) only when
-  necessary, as this can lead to version conflicts when PlasmaPy is
-  installed alongside other packages. It is preferable to update
-  PlasmaPy to be compatible with the newest versions of each of its
-  dependencies.
+* Do not set maximum requirements (e.g., ``numpy <= 1.22.3``) unless
+  absolutely necessary. Maximum requirements can lead to version
+  conflicts when installed alongside other packages. Instead, update
+  PlasmaPy to become compatible with the latest versions of its
+  dependencies. Similarly, do not require exact versions of packages
+  (e.g., ``scipy == 1.5.3``).
 
 * Minor versions of Python are generally released in October of each
   year. However, it may take a few months before packages like NumPy_
