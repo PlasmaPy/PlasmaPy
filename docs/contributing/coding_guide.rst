@@ -317,7 +317,7 @@ Requirements
   - |requirements/environment.yml|_ contains a Conda_ environment
     for PlasmaPy.
 
-  - |`tox.ini`|_ contains a testing environment for the minimal
+  - |tox.ini|_ contains a testing environment for the minimal
     dependencies.
 
 * Each release of PlasmaPy should support all minor versions of
