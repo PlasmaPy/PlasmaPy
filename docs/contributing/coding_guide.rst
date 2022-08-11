@@ -354,6 +354,13 @@ comments may end up confusing contributors. In the worst case, an
 unmaintained comment may contain inaccurate or misleading information
 (hence the saying that "a comment is a lie waiting to happen").
 
+.. important::
+
+   The code we write should read like a book. The full meaning of code's
+   functionality should be attainable by reading the code. Comments
+   should only be used when the code itself cannot communicate its full
+   meaning.
+
 * Refactor code to make it more readable, rather than explaining how it
   works :cite:p:`wilson:2014`.
 
