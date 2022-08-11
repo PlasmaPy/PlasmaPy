@@ -60,6 +60,12 @@ Glossary
 
    lite-function
    lite-functions
+
+      .. A lightweight version of an existing `plasmapy` function, usually
+         from `plasmapy.formulary`. These functions are intended for
+         computational use where speed matters more than anything else, and
+         include no safeguards.
+
       A lite weight version of an existing `plasmapy` function,
       typically a formulary function.  These functions are intended for
       computational use where speed matters more than anything else, and
@@ -83,6 +89,17 @@ Glossary
         the user to pass in parameters with the correct units.
       - When possible, lite-functions are decorated with `numba.jit`
         (or the like) for an additional speed boost.
+
+.. Much of PlasmaPy's functionality incorporates `Astropy units
+   <https://docs.astropy.org/en/stable/units/>`_ for user convenience and
+   to mitigate calculation errors from inappropriate units, but this
+   comes at the sacrifice of speed.  While this penalty is not significant
+   for typical use, it can become substantial during intensive numerical
+   calculations. **Lite-functions** are introduced for the specific case
+   where speed matters, but **[USER NOTICE]** this comes with the
+   reduction of safeguards so a user needs to know what they are doing!
+   For additional details look to the glossary entry for
+   :term:`lite-function`.
 
    particle-like
       An `object` is *particle-like* if it is a |Particle| or
