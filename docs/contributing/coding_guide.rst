@@ -308,17 +308,17 @@ Requirements
 
   - The ``build-system.requires`` section of |pyproject.toml|_ includes
     the requirements for building PlasmaPy. This section must mirror
-    :file:`requirements/build.txt`.
+    |requirements/build.txt|_.
 
   - |setup.cfg|_ includes sections for the install, docs, tests, and
     extra requirements that must mirror the corresponding files in
     the |requirements|_ directory.
 
-  - :file:`requirements/environment.yml` contains a Conda_ environment
+  - |requirements/environment.yml|_ contains a Conda_ environment
     for PlasmaPy.
 
-  - The :file:`tox.ini` file contains a testing environment for the
-    minimal dependencies.
+  - |`tox.ini`|_ contains a testing environment for the minimal
+    dependencies.
 
 * Each release of PlasmaPy should support all minor versions of
   Python that have been released in the prior 42 months, and all minor

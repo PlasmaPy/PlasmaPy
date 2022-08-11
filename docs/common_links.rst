@@ -227,6 +227,12 @@
 .. _`requirements`: https://github.com/PlasmaPy/PlasmaPy/blob/main/requirements
 .. |requirements| replace:: :file:`requirements`
 
+.. _`requirements/build.rst`: https://github.com/PlasmaPy/PlasmaPy/blob/main/requirements/build.rst
+.. |requirements/build.rst| replace:: :file:`requirements/build.rst`
+
+.. _`requirements/environment.yml`: https://github.com/PlasmaPy/PlasmaPy/blob/main/requirements/environment.yml
+.. |requirements/environment.yml| replace:: :file:`requirements/environment.yml`
+
 .. _`setup.cfg`: https://github.com/PlasmaPy/PlasmaPy/blob/main/setup.cfg
 .. |setup.cfg| replace:: :file:`setup.cfg`
 
