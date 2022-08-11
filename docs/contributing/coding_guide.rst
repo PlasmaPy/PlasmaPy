@@ -385,10 +385,6 @@ unmaintained comment may contain inaccurate or misleading information
 * Use comments to communicate information that the code cannot,
   such as why an alternative approach was *not* taken.
 
-* When possible, include enough contextual information that the comment
-  will make sense even if it is displaced from the code it was
-  originally describing.
-
 * Use comments to include references to books or articles that describe
   the equation, algorithm, or software design pattern that is being
   implemented. Even better, include these references in docstrings.
