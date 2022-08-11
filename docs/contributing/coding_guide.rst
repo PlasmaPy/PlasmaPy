@@ -264,28 +264,6 @@ the code is supposed to be doing.
 Imports
 =======
 
-* PlasmaPy uses isort_ to sort import statements via a |pre-commit|_
-  hook.
-
-* Use absolute imports (e.g., ``from plasmapy.particles import Particle``)
-  rather than relative imports (e.g., ``from ..particles import Particle``).
-
-* Do not use star imports (e.g., ``from package.subpackage import *``),
-  except in very limited situations.
-
-* For infrequently used objects, import the package, subpackage, or
-  module rather than the individual code object. Including more of the
-  namespace provides helpful contextual information that can make code
-  more understandable. For example, ``json.loads`` is more
-  understandable than using only ``loads``.
-
-* For frequently used objects (e.g., |Particle|) and type hint
-  annotations (e.g., `~typing.Optional` and `~numbers.Real`), import the
-  object directly instead of importing the package, subpackage, or
-  module. Including more of the namespace would increase clutter and
-  decrease readability without providing commensurately more
-  information.
-
 * Use standard abbreviations for imported packages:
 
   .. code-block:: python
@@ -294,9 +272,29 @@ Imports
      import astropy.units as u
      import astropy.constants as const
      import matplotlib.pyplot as plt
-     import numba as nb
-     import xarray as xr
      import pandas as pd
+
+* PlasmaPy uses isort_ to sort import statements via a |pre-commit|_
+  hook.
+
+* For infrequently used objects, import the package, subpackage, or
+  module rather than the individual code object. Including more of the
+  namespace provides contextual information that can make code easier to
+  read. For example, ``json.loads`` is more readable than using only
+  ``loads``.
+
+* For frequently used objects (e.g., |Particle|) and type hint
+  annotations (e.g., `~typing.Optional` and `~numbers.Real`), import the
+  object directly instead of importing the package, subpackage, or
+  module. Including more of the namespace would increase clutter and
+  decrease readability without providing commensurately more
+  information.
+
+* Use absolute imports (e.g., ``from plasmapy.particles import Particle``)
+  rather than relative imports (e.g., ``from ..particles import Particle``).
+
+* Do not use star imports (e.g., ``from package.subpackage import *``),
+  except in very limited situations.
 
 Requirements
 ============
