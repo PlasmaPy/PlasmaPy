@@ -1,5 +1,6 @@
 """Tests for functionality contained in `plasmapy.formulary.frequencies`."""
 import astropy.units as u
+import numpy as np
 import pytest
 
 from plasmapy.formulary.densities import plasma_critical_density
@@ -15,7 +16,9 @@ def test_plasma_critical_density():
     omega_p = plasma_frequency(n=n_i, particle=ion)
     n_c = plasma_critical_density(omega_p)
 
-    assert n_c.unit.is_equivalent(1 / u.m**3)
+    assert n_c.unit.is_equivalent(u.m**-3)
+
+    assert np.isclose(n_c, 5e19 * u.m**-3)
 
     with pytest.raises(TypeError):
         plasma_critical_density("Lorem Ipsum")
