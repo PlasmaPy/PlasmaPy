@@ -4,6 +4,14 @@
 Coding Guide
 ************
 
+.. contents:: Table of Contents
+   :depth: 2
+   :local:
+   :backlinks: none
+
+Introduction
+============
+
 This guide describes common conventions, guidelines, and strategies for
 contributing code to PlasmaPy. The purpose of this guide is not to
 provide a set of rigid guidelines that must be adhered to, but rather to
