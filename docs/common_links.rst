@@ -65,6 +65,7 @@
 .. |inf| replace:: `~numpy.inf`
 .. |nan| replace:: `~numpy.nan`
 .. |ndarray| replace:: :class:`~numpy.ndarray`
+.. |array_like| replace:: :term:`numpy:array_like`
 
 .. --------------------
 .. Astropy replacements
