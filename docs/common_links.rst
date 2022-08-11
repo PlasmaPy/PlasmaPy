@@ -227,8 +227,8 @@
 .. _`requirements`: https://github.com/PlasmaPy/PlasmaPy/blob/main/requirements
 .. |requirements| replace:: :file:`requirements`
 
-.. _`requirements/build.rst`: https://github.com/PlasmaPy/PlasmaPy/blob/main/requirements/build.rst
-.. |requirements/build.rst| replace:: :file:`requirements/build.rst`
+.. _`requirements/build.txt`: https://github.com/PlasmaPy/PlasmaPy/blob/main/requirements/build.txt
+.. |requirements/build.txt| replace:: :file:`requirements/build.txt`
 
 .. _`requirements/environment.yml`: https://github.com/PlasmaPy/PlasmaPy/blob/main/requirements/environment.yml
 .. |requirements/environment.yml| replace:: :file:`requirements/environment.yml`
@@ -259,6 +259,9 @@
 
 .. _`sphinx-notfound-page`: https://sphinx-notfound-page.readthedocs.io
 .. |sphinx-notfound-page| replace:: `sphinx-notfound-page`
+
+.. _`tox.ini`: https://github.com/PlasmaPy/PlasmaPy/blob/main/tox.ini
+.. |tox.ini| replace:: :file:`tox.ini`
 
 .. _xarray: https://docs.xarray.dev
 .. |xarray| replace:: `xarray`
