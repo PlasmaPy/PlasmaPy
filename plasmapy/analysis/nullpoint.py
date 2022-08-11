@@ -165,54 +165,54 @@ def _vector_space(
     Parameters
     ----------
 
-    x_arr: array_like
+    x_arr : |array_like|
         The array representing the coordinates in the x-dimension.
         If not given, then range values are used to construct a
         uniform array on that interval.
 
-    y_arr: array_like
+    y_arr : |array_like|
         The array representing the coordinates in the y-dimension.
         If not given, then range values are used to construct a
         uniform array on that interval.
 
-    z_arr: array_like
+    z_arr : |array_like|
         The array representing the coordinates in the z-dimension.
         If not given, then range values are used to construct a
         uniform array on that interval.
 
-    x_range: array_like
+    x_range : |array_like|
         A 1 by 2 array containing the range of x-values for the vector spaces.
         If not given, the default interval [0,1] is assumed.
 
-    y_range: array_like
+    y_range : |array_like|
         A 1 by 2 array containing the range of y-values for the vector spaces.
         If not given, the default interval [0,1] is assumed.
 
-    z_range: array_like
+    z_range : |array_like|
         A 1 by 2 array containing the range of z-values for the vector spaces.
         If not given, the default interval [0,1] is assumed.
 
-    u_arr: array_like
+    u_arr : |array_like|
         A 3D array containing the x-component of the vector values for the vector
         space. If not given, the vector values are generated over the vector space
         using the function func.
 
-    v_arr: array_like
+    v_arr : |array_like|
         A 3D array containing the y-component of the vector values for the vector
         space. If not given, the vector values are generated over the vector space
         using the function func.
 
-    w_arr: array_like
+    w_arr : |array_like|
         A 3D array containing the z-component of the vector values for the vector
         space. If not given, the vector values are generated over the vector space
         using the function func.
 
-    func: function
+    func : function
         A function that takes in 3 arguments, respectively representing a x, y, and z
         coordinate of a point and returns the vector value for that point in the form
         of a 1 by 3 array.
 
-    precision: array_like
+    precision : |array_like|
         A 1 by 3 array containing the approximate precision values for each dimension,
         in the case where uniform arrays are being used.
         The default value is [0.05, 0.05, 0.05].
@@ -268,13 +268,13 @@ def _trilinear_coeff_cal(vspace, cell):
     Parameters
     ----------
 
-    vspace: array_like
+    vspace: |array_like|
         The vector space as constructed by the vector_space function which is
         A 1 by 3 array with the first element containing the coordinates,
         the second element containing the vector values,
         and the third element containing the delta values for each dimension.
 
-    cell: array_like of integers
+    cell: |array_like| of integers
         A grid cell, represented by a 1 by 3 array
         of integers, which correspond to a grid cell
         in the vector space.
@@ -382,13 +382,13 @@ def trilinear_approx(vspace, cell):
     Parameters
     ----------
 
-    vspace: array_like
+    vspace: |array_like|
         The vector space as constructed by the vector_space function which is
         A 1 by 3 array with the first element containing the coordinates,
         the second element containing the vector values,
         and the third element containing the delta values for each dimension.
 
-    cell: array_like of integers
+    cell: |array_like| of integers
         A grid cell, represented by a 1 by 3 array
         of integers, which correspond to a grid cell
         in the vector space.
@@ -451,13 +451,13 @@ def _trilinear_jacobian(vspace, cell):
     Parameters
     ----------
 
-    vspace: array_like
+    vspace: |array_like|
         The vector space as constructed by the vector_space function which is
         A 1 by 3 array with the first element containing the coordinates,
         the second element containing the vector values,
         and the third element containing the delta values for each dimension.
 
-    cell: array_like of integers
+    cell: |array_like| of integers
         A grid cell, represented by a 1 by 3 array
         of integers, which correspond to a grid cell
         in the vector space.
@@ -510,13 +510,13 @@ def _reduction(vspace, cell):
     Parameters
     ----------
 
-    vspace: array_like
+    vspace: |array_like|
         The vector space as constructed by the vector_space function which is
         A 1 by 3 array with the first element containing the coordinates,
         the second element containing the vector values,
         and the third element containing the delta values for each dimension.
 
-    cell: array_like of integers
+    cell: |array_like| of integers
         A grid cell, represented by a 1 by 3 array
         of integers, which correspond to a grid cell
         in the vector space.
@@ -592,7 +592,7 @@ def _bilinear_root(a1, b1, c1, d1, a2, b2, c2, d2):
 
     Returns
     -------
-    roots : array_like of floats
+    roots : |array_like| of floats
         A 1 by 2 array containing the two roots
     """
     m1 = np.array([[a1, a2], [c1, c2]])
@@ -652,13 +652,13 @@ def _trilinear_analysis(vspace, cell):
     Parameters
     ----------
 
-    vspace: array_like
+    vspace: |array_like|
         The vector space as constructed by the vector_space function which is
         A 1 by 3 array with the first element containing the coordinates,
         the second element containing the vector values,
         and the third element containing the delta values for each dimension.
 
-    cell: array_like of integers
+    cell: |array_like| of integers
         A grid cell, represented by a 1 by 3 array
         of integers, which correspond to a grid cell
         in the vector space.
@@ -1122,13 +1122,13 @@ def _locate_null_point(vspace, cell, n, err):
     Parameters
     ----------
 
-    vspace: array_like
+    vspace: |array_like|
         The vector space as constructed by the vector_space function which is
         A 1 by 3 array with the first element containing the coordinates,
         the second element containing the vector values,
         and the third element containing the delta values for each dimension.
 
-    cell: array_like of integers
+    cell: |array_like| of integers
         A grid cell, represented by a 1 by 3 array
         of integers, which correspond to a grid cell
         in the vector space.
@@ -1143,7 +1143,7 @@ def _locate_null_point(vspace, cell, n, err):
 
     Returns
     -------
-    array_like of floats
+    |array_like| of floats
         A 1 by 3 array containing the converged coordinates of the
         null point.
     NoneType
@@ -1297,13 +1297,13 @@ def _classify_null_point(vspace, cell, loc):
 
     Parameters
     ----------
-    vspace: array_like
+    vspace: |array_like|
         The vector space as constructed by the vector_space function which is
         A 1 by 3 array with the first element containing the coordinates,
         the second element containing the vector values,
         and the third element containing the delta values for each dimension.
 
-    cell: array_like of integers
+    cell: |array_like| of integers
         A grid cell, represented by a 1 by 3 array
         of integers, which correspond to a grid cell
         in the vector space.
@@ -1369,7 +1369,7 @@ def _vspace_iterator(vspace, maxiter=500, err=1e-10):
 
     Parameters
     ----------
-    vspace: array_like
+    vspace: |array_like|
         The vector space as constructed by the ``_vector_space`` function which is
         A 1 by 3 array with the first element containing the coordinates,
         the second element containing the vector values,
@@ -1386,7 +1386,7 @@ def _vspace_iterator(vspace, maxiter=500, err=1e-10):
 
     Returns
     -------
-    array_like of `~plasmapy.analysis.nullpoint.NullPoint`
+    |array_like| of `~plasmapy.analysis.nullpoint.NullPoint`
         An array of `~plasmapy.analysis.nullpoint.NullPoint` objects
         representing the null points of the given vector space.
 
@@ -1427,32 +1427,32 @@ def null_point_find(
 
     Parameters
     ----------
-    x_arr: array_like
+    x_arr: |array_like|
         The array representing the coordinates in the x-dimension.
         If not given, then range values are used to construct a
         uniform array on that interval.
 
-    y_arr: array_like
+    y_arr: |array_like|
         The array representing the coordinates in the y-dimension.
         If not given, then range values are used to construct a
         uniform array on that interval.
 
-    z_arr: array_like
+    z_arr: |array_like|
         The array representing the coordinates in the z-dimension.
         If not given, then range values are used to construct a
         uniform array on that interval.
 
-    u_arr: array_like
+    u_arr: |array_like|
         A 3D array containing the x-component of the vector values for the vector
         space. If not given, the vector values are generated over the vector space
         using the function func.
 
-    v_arr: array_like
+    v_arr: |array_like|
         A 3D array containing the y-component of the vector values for the vector
         space. If not given, the vector values are generated over the vector space
         using the function func.
 
-    w_arr: array_like
+    w_arr: |array_like|
         A 3D array containing the z-component of the vector values for the vector
         space. If not given, the vector values are generated over the vector space
         using the function func.
@@ -1469,7 +1469,7 @@ def null_point_find(
 
     Returns
     -------
-    array_like of `~plasmapy.analysis.nullpoint.NullPoint`
+    |array_like| of `~plasmapy.analysis.nullpoint.NullPoint`
         An array of `~plasmapy.analysis.nullpoint.NullPoint` objects
         representing the null points of the given vector space.
 
@@ -1515,15 +1515,15 @@ def uniform_null_point_find(
 
     Parameters
     ----------
-    x_range: array_like
+    x_range: |array_like|
         A 1 by 2 array containing the range of x-values for the vector spaces.
         If not given, the default interval [0,1] is assumed.
 
-    y_range: array_like
+    y_range: |array_like|
         A 1 by 2 array containing the range of y-values for the vector spaces.
         If not given, the default interval [0,1] is assumed.
 
-    z_range: array_like
+    z_range: |array_like|
         A 1 by 2 array containing the range of z-values for the vector spaces.
         If not given, the default interval [0,1] is assumed.
 
@@ -1532,14 +1532,14 @@ def uniform_null_point_find(
         coordinate of a point and returns the vector value for that point in the form
         of a 1 by 3 array.
 
-    precision: array_like
+    precision: |array_like|
         A 1 by 3 array containing the approximate precision values for each dimension,
         in the case where uniform arrays are being used.
         The default value is [0.05, 0.05, 0.05].
 
     Returns
     -------
-    array_like of `~plasmapy.analysis.nullpoint.NullPoint`
+    |array_like| of `~plasmapy.analysis.nullpoint.NullPoint`
         An array of `~plasmapy.analysis.nullpoint.NullPoint` objects representing
         the null points of the given vector space.
 
