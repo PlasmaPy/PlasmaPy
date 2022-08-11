@@ -217,7 +217,7 @@ def cold_plasma_permittivity_LRP(B: u.T, species, n, omega: u.rad / u.s):
 @preserve_signature
 def permittivity_1D_Maxwellian_lite(omega, kWave, vth, wp):
     r"""
-    The :term:`lite-function` version of
+    The :term:`lite-function` for
     `~plasmapy.formulary.dielectric.permittivity_1D_Maxwellian`.
     Performs the same calculations as
     `~plasmapy.formulary.dielectric.permittivity_1D_Maxwellian`, but is
@@ -236,7 +236,7 @@ def permittivity_1D_Maxwellian_lite(omega, kWave, vth, wp):
 
     vth : `~numbers.Real`
         The 3D, most probable thermal speed, in m/s. (i.e. it includes
-        the factor of √2, see
+        the factor of :math:`\sqrt{2}`, see
         :ref:`thermal speed notes <thermal-speed-notes>`)
 
     wp : `~numbers.Real`
