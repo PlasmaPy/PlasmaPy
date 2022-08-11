@@ -58,6 +58,12 @@
 
 .. |ParticleTracker| replace:: :class:`~plasmapy.simulation.particletracker.ParticleTracker`
 
+.. --------------
+.. plasmapy.utils
+.. --------------
+
+.. |validate_quantities| replace:: :func:`~plasmapy.utils.decorators.validators.validate_quantities`
+
 .. ------------------
 .. NumPy replacements
 .. ------------------
