@@ -1,0 +1,3 @@
+Updated the |documentation guide| to state that the "Raises" section of
+docstrings should include exceptions raised by the function itself and
+not exceptions raised by decorators that are applied to that function.
