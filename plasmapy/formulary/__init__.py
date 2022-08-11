@@ -37,6 +37,7 @@ import contextlib  # isort:skip
 for modname in (
     "braginskii",
     "collisions",
+    "densities",
     "dielectric",
     "dimensionless",
     "distribution",

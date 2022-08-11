@@ -4,7 +4,6 @@ __all__ = [
     "lower_hybrid_frequency",
     "plasma_frequency",
     "upper_hybrid_frequency",
-    "plasma_critical_density",
 ]
 __aliases__ = ["oc_", "wc_", "wlh_", "wp_", "wuh_"]
 __lite_funcs__ = ["plasma_frequency_lite"]
@@ -520,56 +519,3 @@ def upper_hybrid_frequency(B: u.T, n_e: u.m**-3) -> u.rad / u.s:
 
 wuh_ = upper_hybrid_frequency
 """Alias to `~plasmapy.formulary.frequencies.upper_hybrid_frequency`."""
-
-
-@validate_quantities(
-    omega_p={"can_be_negative": False},
-    validations_on_return={
-        "units": [u.m**-3],
-        "equivalencies": [
-            (u.F * u.kg * u.rad**2 / (u.C**2 * u.m * u.s**2), u.m**-3)
-        ],
-    },
-)
-def plasma_critical_density(omega_p: u.rad / u.s) -> u.m**-3:
-    r"""Calculate the plasma critical density.
-
-    Parameters
-    ----------
-    omega_p : `~astropy.units.Quantity`
-        The plasma frequency in radians per second.
-
-    Returns
-    -------
-    n_c : `~astropy.units.Quantity`
-        The plasma critical density.
-
-    Raises
-    ------
-    `TypeError`
-        If ``omega_p`` is not a `~astropy.units.Quantity`.
-
-    `~astropy.units.UnitConversionError`
-        If ``omega_p`` is not in correct units.
-
-    `ValueError`
-        If ``omega_p`` is an invalid value.
-
-    Warns
-    -----
-    : `~astropy.units.UnitsWarning`
-        If units are not provided, SI units are assumed.
-
-    Notes
-    -----
-
-
-    Examples
-    --------
-    >>> from astropy import units as u
-    >>> plasma_critical_density(1 * u.rad/u.s)
-    <Quantity 0.00031421 1 / m3>
-
-    """
-
-    return m_e * eps0 * omega_p**2 / (e**2)

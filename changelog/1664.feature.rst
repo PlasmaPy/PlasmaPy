@@ -1,2 +1,2 @@
-Added the `~plasmapy.formulary.frequencies.plasma_critical_density`
-function to the `~plasmapy.formulary.frequencies` module. This function calculates the critical density of the plasma for a given plasma frequency.
+Add the `~plasmapy.formulary.densities` submodule
+Add the `~plasmapy.formulary.densities.plasma_critical_density` function to the `~plasmapy.formulary.densities` module. This function calculates the critical density of a plasma for a given frequency of radiation.
