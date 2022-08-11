@@ -946,12 +946,16 @@ Docstring guidelines
   derivations and extensive discussions of mathematics in the "Notes"
   section.
 
-* Docstrings may include a Raises_ section that describes which
+* Docstrings may include a "Raises_" section that describes which
   exceptions get raised and under what conditions. This section should
   be used only for errors that are non-obvious or have a large chance of
   getting raised. Documenting exceptions makes it easier for future
-  developers to plan exception handling. However, in practice this
-  section often becomes outdated.
+  developers to plan exception handling.
+
+  * The "Raises_" section of a docstring should include exceptions that
+    are raised by the function itself, but not exceptions that are
+    raised by decorators such as |validate_quantities| and
+    |particle_input|.
 
 * Private code objects (e.g., code objects that begin with a single
   underscore, like ``_private_object``) should have docstrings. A
