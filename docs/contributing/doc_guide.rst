@@ -946,6 +946,13 @@ Docstring guidelines
   derivations and extensive discussions of mathematics in the "Notes"
   section.
 
+* Docstrings may include a Raises_ section that describes which
+  exceptions get raised and under what conditions. This section should
+  be used only for errors that are non-obvious or have a large chance of
+  getting raised. Documenting exceptions makes it easier for future
+  developers to plan exception handling. However, in practice this
+  section often becomes outdated.
+
 * Private code objects (e.g., code objects that begin with a single
   underscore, like ``_private_object``) should have docstrings. A
   docstring for a private code object may be a single line, and
@@ -1045,6 +1052,7 @@ Narrative documentation guidelines
 .. _nested inline markup: https://docutils.sphinx-users.jp/docutils/docs/dev/rst/alternatives.html#nested-inline-markup
 .. _options to sphinx-build: https://www.sphinx-doc.org/en/master/man/sphinx-build.html#options
 .. _raise an issue: https://github.com/PlasmaPy/PlasmaPy/issues/new?title=Improve+documentation+for...&labels=Documentation
+.. _raises: https://numpydoc.readthedocs.io/en/latest/format.html#raises
 .. _raw string: https://docs.python.org/3/reference/lexical_analysis.html#literals
 .. _Read the Docs Sphinx Theme: https://sphinx-rtd-theme.readthedocs.io
 .. _Sphinx's glossary: https://www.sphinx-doc.org/en/master/glossary.html
