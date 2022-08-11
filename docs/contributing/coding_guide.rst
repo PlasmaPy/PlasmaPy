@@ -4,6 +4,14 @@
 Coding Guide
 ************
 
+.. contents:: Table of Contents
+   :depth: 2
+   :local:
+   :backlinks: none
+
+Introduction
+============
+
 This guide describes common conventions, guidelines, and strategies for
 contributing code to PlasmaPy. The purpose of this guide is not to
 provide a set of rigid guidelines that must be adhered to, but rather to
@@ -342,43 +350,146 @@ to edit the pull request by changing the corresponding branch on your
 PlasmaPy fork on GitHub.  After a pull request is merged into the
 code, you may delete the branch you created for that pull request.
 
-Commit Messages
----------------
-Good commit messages communicate context and intention to other
-developers and to our future selves.  They provide insight into why we
-chose a particular implementation, and help us avoid past mistakes.
 
-Suggestions on `how to write a git commit message
-<https://cbea.ms/git-commit>`_:
+Comments
+========
 
-* Separate subject from body with a blank line
+A well-placed and well-written comment can prevent future frustrations.
+However, comments are not inherently good. As code evolves, an
+unmaintained comment may become outdated, or get separated from the
+section of code that it was meant to describe. Cryptic and obsolete
+comments may end up confusing contributors. In the worst case, an
+unmaintained comment may contain inaccurate or misleading information
+(hence the saying that "a comment is a lie waiting to happen").
 
-* Limit the subject line to 50 characters
+.. important::
 
-* Capitalize the subject line
+   The code we write should read like a book. The full meaning of code's
+   functionality should be attainable by reading the code. Comments
+   should only be used when the code itself cannot communicate its full
+   meaning.
 
-* Do not end the subject line with a period
+* Refactor code to make it more readable, rather than explaining how it
+  works :cite:p:`wilson:2014`.
 
-* Use the imperative mood in the subject line
+* Instead of using a comment to define a variable, rename the variable
+  to encode its meaning and intent.  For example, code like:
 
-* Wrap the body at 72 characters
+  .. code-block:: python
 
-* Use the body to explain what and why vs. how
+     # collision frequency
+     nu = 1e6 * u.s ** -1
 
-Warnings and Exceptions
-=======================
+  could be achieved with no comment by doing:
 
-* Debugging can be intensely frustrating when problems arise and the
-  associated error messages do not provide useful information on the
-  source of the problem.  Warnings and error messages must be helpful
-  enough for new users to quickly understand any problems that arise.
+  .. code-block:: python
 
-* "Errors should never pass silently."  Users should be notified when
-  problems arise by either issuing a warning or raising an exception.
+     collision_frequency = 1e6 * u.s ** -1
 
-* The exceptions raised by a method should be described in the
-  method's docstring.  Documenting exceptions makes it easier for
-  future developers to plan exception handling.
+* Use comments to communicate information that you wish you knew before
+  starting to work on a particular section of code, including
+  information that took some time to learn.
+
+* Use comments to communicate information that the code cannot,
+  such as why an alternative approach was *not* taken.
+
+* Use comments to include references to books or articles that describe
+  the equation, algorithm, or software design pattern that is being
+  implemented. Even better, include these references in docstrings.
+
+* Provide enough contextual information in the comment for a new user
+  to be able to understand it.
+
+* Remove commented out code before merging a pull request.
+
+* When updating code, be sure to review and update, if necessary, associated comments too!
+
+* When a comment is used as the header for a section of code, consider
+  extracting that section of code into its own function. For example, we
+  might start out with a function that includes multiple lines of code
+  for each step.
+
+  .. code-block:: python
+
+     def analyze_experiment(data):
+         # Step 1: calibrate the data
+         ...
+         # Step 2: normalize the data
+         ...
+
+  We can apply the `extract function refactoring pattern`_ by creating a
+  separate function for each of these steps. The name of each function
+  can often be extracted directly from the comment.
+
+  .. code-block:: python
+
+     def calibrate_data(data):
+         ...
+         return calibrated_data
+
+     def normalize_data(data):
+         ...
+         return normalized_data
+
+     def analyze_experiment(data):
+         calibrated_data = calibrate_data(data)
+         normalized_data = normalize_data(calibrated_data)
+
+  This refactoring pattern is appropriate for long functions where the
+  different steps can be cleanly separated from each other. This pattern
+  leads to functions that are shorter, more reusable, and easier to
+  test. The original function contains fewer low-level implementation
+  details and thus gives a higher level view of what the function is
+  doing. This pattern reduces `cognitive complexity`_.
+
+  The `extract function refactoring pattern`_ should be used
+  judiciously, as taking it to an extreme and applying it at too fine of
+  a scale can reduce readability and maintainability by producing overly
+  fragmented code.
+
+  .. hint::
+
+     The `extract function refactoring pattern`_ might not be
+     appropriate if the different sections of code are intertwined with
+     each other (e.g., if both sections require the same intermediate
+     variables). An alternative in such cases would be to create a class
+     instead.
+
+Error messages
+==============
+
+Error messages are a vital but underappreciated form of documentation.
+A good error message can help someone pinpoint the source of a problem
+in seconds, while a cryptic or missing error message can lead to hours
+of frustration.
+
+* Use error messages to indicate the source of the problem while
+  providing enough information for the user to troubleshoot it. When
+  possible, make it clear what the user should do next.
+
+* Include diagnostic information when appropriate.  For example, if an
+  error occurred at a single index in an array operation, then including
+  the index where the error happened can help the user better understand
+  the cause of the error.
+
+* Write error messages that are concise when possible, as users often
+  skim or skip long error messages.
+
+* Avoid including information that is irrelevant to the source of the
+  problem.
+
+* Write error messages in language that is plain enough to be
+  understandable to someone who is undertaking their first research
+  project.
+
+  - If necessary, technical information may be placed after a plain
+    language summary statement.
+
+  - Alternatively, an error message may reference a docstring or a page
+    in the narrative documentation.
+
+* Write error messages that are friendly, supportive, and helpful. Error
+  message should never be condescending or blame the user.
 
 Units
 =====
@@ -586,6 +697,8 @@ Up-to-date instructions on running the benchmark suite will be located in
 the README file of `benchmarks-repo`_.
 
 .. _ASCII: https://en.wikipedia.org/wiki/ASCII
+.. _cognitive complexity: https://www.sonarsource.com/docs/CognitiveComplexity.pdf
 .. _example notebook on particles: ../notebooks/getting_started/particles.ipynb
 .. _example notebook on units: ../notebooks/getting_started/units.ipynb
+.. _extract function refactoring pattern: https://refactoring.guru/extract-method
 .. _rename refactoring in PyCharm: https://www.jetbrains.com/help/pycharm/rename-refactorings.html

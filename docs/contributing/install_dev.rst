@@ -4,6 +4,11 @@
 Installing PlasmaPy for Development
 ***********************************
 
+.. contents:: Table of Contents
+   :depth: 2
+   :local:
+   :backlinks: none
+
 Obtaining PlasmaPy source code
 ==============================
 
