@@ -14,18 +14,21 @@ class TestPlasmaCriticalDensity:
     omega_p = plasma_frequency(n=n_i, particle="e-")
 
     @pytest.fixture()
-    def get_return(self):
+    def n_c(self):
         """Get the critical density for the example frequency"""
         return plasma_critical_density(self.omega_p)
 
-    def test_units(self, get_return):
+    def test_units(self, n_c):
         """Test the return units"""
-        n_c = get_return
 
         assert n_c.unit.is_equivalent(u.m**-3)
 
-    def test_value(self, get_return):
-        """Compare the calculated critical density with the expected value"""
-        n_c = get_return
+    def test_value(self, n_c):
+        """
+        Compare the calculated critical density with the expected value.
+
+        The plasma critical density is defined as the value at which the plasma frequency
+        equals the frequency of radiation.
+        """
 
         assert np.isclose(n_c.value, self.n_i.value)
