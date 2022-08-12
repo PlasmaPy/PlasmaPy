@@ -14,9 +14,6 @@ from plasmapy.utils.decorators import validate_quantities
     omega_p={"can_be_negative": False},
     validations_on_return={
         "units": [u.m**-3],
-        "equivalencies": [
-            (u.F * u.kg * u.rad**2 / (u.C**2 * u.m * u.s**2), u.m**-3)
-        ],
     },
 )
 def plasma_critical_density(omega_p: u.rad / u.s) -> u.m**-3:
@@ -53,4 +50,4 @@ def plasma_critical_density(omega_p: u.rad / u.s) -> u.m**-3:
 
     n_c = m_e * eps0 * omega_p**2 / (e**2)
 
-    return n_c
+    return (n_c/u.rad**2).to(u.m**-3)
