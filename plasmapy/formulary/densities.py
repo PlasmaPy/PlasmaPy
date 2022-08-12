@@ -32,25 +32,16 @@ def plasma_critical_density(omega_p: u.rad / u.s) -> u.m**-3:
     n_c : `~astropy.units.Quantity`
         The plasma critical density.
 
-    Raises
-    ------
-    `TypeError`
-        If ``omega_p`` is not a `~astropy.units.Quantity`.
-
-    `~astropy.units.UnitTypeError`
-        If ``omega_p`` is not in correct units.
-
-    `ValueError`
-        If ``omega_p`` is an invalid value.
-
-    Warns
-    -----
-    : `~astropy.units.UnitsWarning`
-        If units are not provided, SI units are assumed.
-
     Notes
     -----
+    The plasma critical density is given by the formula
 
+    .. math::
+        n_{c}=\frac{m_{e}\varepsilon_0\omega_{p}^{2}}{e^{2}}
+
+    where :math:`m_{e}` is the mass of an electron,
+    :math:`\varepsilon_0` is the permittivity of free space, :math:`\omega_{p}`
+    is the plasma frequency, and :math:`e` is the elementary charge.
 
     Examples
     --------
@@ -60,4 +51,6 @@ def plasma_critical_density(omega_p: u.rad / u.s) -> u.m**-3:
 
     """
 
-    return m_e * eps0 * omega_p**2 / (e**2)
+    n_c = m_e * eps0 * omega_p**2 / (e**2)
+
+    return n_c

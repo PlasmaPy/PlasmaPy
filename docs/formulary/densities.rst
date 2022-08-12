@@ -1,7 +1,7 @@
 .. _densities:
 
 ******************************************************************
-Density related functionality (`plasmapy.formulary.densities`)
+Density Plasma Parameters (`plasmapy.formulary.densities`)
 ******************************************************************
 
 .. currentmodule:: plasmapy.formulary.densities
