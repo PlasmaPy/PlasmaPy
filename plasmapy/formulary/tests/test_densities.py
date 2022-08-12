@@ -22,7 +22,7 @@ class TestPlasmaCriticalDensity:
         """Test the return units"""
         n_c = get_return
 
-        assert n_c.unit.is_equivalent(u.m ** -3)
+        assert n_c.unit.is_equivalent(u.m**-3)
 
     def test_value(self, get_return):
         """Compare the calculated critical density with the expected value"""
