@@ -992,21 +992,27 @@ Docstring guidelines
 
 * Docstrings may include a "Raises_" section that describes which
   exceptions get raised and under what conditions, and a "Warns_"
-  section that describes which warnings will be issued and for which
+  section that describes which warnings will be issued and for what
   reasons.
 
   * The "Raises_" and "Warns_" sections should only include exceptions
-    and warnings that are non-obvious or have a high probability of
-    occurring. For example, the "Raises_" section should not include a
-    `TypeError` for when an :term:`argument` is not of the type that is
-    listed in the "Parameters_" section of the docstring.
+    and warnings that are not obvious or have a high probability of
+    occurring. For example, the "Raises_" section should usually not
+    include a `TypeError` for when an :term:`argument` is not of the
+    type that is listed in the "Parameters_" section of the docstring.
+
+  * The "Raises_" section should include all exceptions that could
+    reasonably be expected to require exception handling.
+
+  * The "Raises_" section should be more complete for functionality that
+    is frequently used (e.g., |Particle|).
 
   * The "Raises_" and "Warns_" sections should typically only include
     exceptions and warnings that are raised or issued by the function
     itself. Exceptions and warnings from commonly used decorators like
     |validate_quantities| and |particle_input| should usually not be
     included in these sections, but may be included if there is
-    sufficient justification to do so.
+    strong justification to do so.
 
 * Private code objects (e.g., code objects that begin with a single
   underscore, like ``_private_object``) should have docstrings. A
