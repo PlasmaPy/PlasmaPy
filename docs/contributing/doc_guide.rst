@@ -970,8 +970,8 @@ Docstring guidelines
 
   * If the shapes and sizes of the parameters are interrelated, then
     include that information in parentheses immediately before the type
-    information. A trailing comma should be included inside the
-    parentheses when the parameter is 1D::
+    information. Include a trailing comma inside the parentheses when
+    the parameter is 1D.
 
     .. code-block:: rst
 
@@ -985,6 +985,10 @@ Docstring guidelines
 
        out : (M, N) ndarray, optional
            A location where the result is stored.
+
+    Use an asterisk (``*``) for a dimension that can be of arbitrary
+    size, and an ellipsis (``...``) to represent an arbitrary number of
+    dimensions that can each be of arbitrary size.
 
 * Docstrings may include a "Raises_" section that describes which
   exceptions get raised and under what conditions. This section should
