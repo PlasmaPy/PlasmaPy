@@ -562,7 +562,7 @@ Here is an example docstring in the numpydoc_ format:
 
       Returns
       -------
-      difference : float
+      float
           The difference between ``a`` and ``b``.
 
       Raises
@@ -946,6 +946,46 @@ Docstring guidelines
   derivations and extensive discussions of mathematics in the "Notes"
   section.
 
+* Describe each :term:`parameter` in the "Parameters_" section of the
+  docstring.
+
+  .. code-block:: rst
+
+     Parameters
+     ----------
+     x : float
+        Description of ``x``.
+
+     y : bool, optional, default: True
+        Description of ``y``.
+
+  * Place type information to the right of the parameter name, along
+    with ``optional`` and/or ``keyword-only`` if necessary.
+
+  * Describe any requirements for the parameter, including preconditions
+    specified using |validate_quantities| or |particle_input|.
+
+  * Use the substitution ``|array_like|`` to indicate that an argument
+    should be able to be converted into an |ndarray|.
+
+  * If the shapes and sizes of the parameters are interrelated, then
+    include that information in parentheses immediately before the type
+    information. A trailing comma should be included inside the
+    parentheses when the parameter is 1D::
+
+    .. code-block:: rst
+
+       Parameters
+       ----------
+       a : (M,) array_like
+           First input vector.
+
+       b : (N,) array_like
+           Second input vector.
+
+       out : (M, N) ndarray, optional
+           A location where the result is stored.
+
 * Docstrings may include a "Raises_" section that describes which
   exceptions get raised and under what conditions. This section should
   be used only for errors that are non-obvious or have a large chance of
@@ -1055,6 +1095,7 @@ Narrative documentation guidelines
 .. _doctests: https://docs.pytest.org/en/6.2.x/doctest.html
 .. _nested inline markup: https://docutils.sphinx-users.jp/docutils/docs/dev/rst/alternatives.html#nested-inline-markup
 .. _options to sphinx-build: https://www.sphinx-doc.org/en/master/man/sphinx-build.html#options
+.. _parameters: https://numpydoc.readthedocs.io/en/latest/format.html#parameters
 .. _raise an issue: https://github.com/PlasmaPy/PlasmaPy/issues/new?title=Improve+documentation+for...&labels=Documentation
 .. _raises: https://numpydoc.readthedocs.io/en/latest/format.html#raises
 .. _raw string: https://docs.python.org/3/reference/lexical_analysis.html#literals
