@@ -20,6 +20,12 @@ Glossary
    charge number
       The charge of a particle in units of elementary charge.
 
+   fit-function
+   fit-functions
+      Any instance of a subclass of
+      `~plasmapy.analysis.fit_functions.AbstractFitFunction`.  Also see
+      module `~plasmapy.analysis.fit_functions`.
+
    integration test
       An **integration test** verifies that multiple software
       components work together as intended.
