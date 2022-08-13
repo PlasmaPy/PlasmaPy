@@ -850,7 +850,7 @@ tests_from_atomic = [
         pytest.raises(InvalidParticleError),
     ],
     [
-        integer_charge,
+        charge_number,
         [
             "fe 1+",
         ],
@@ -858,7 +858,7 @@ tests_from_atomic = [
         pytest.raises(InvalidParticleError),
     ],
     [
-        integer_charge,
+        charge_number,
         [
             "d+",
         ],
@@ -866,7 +866,7 @@ tests_from_atomic = [
         pytest.raises(InvalidParticleError),
     ],
     [
-        integer_charge,
+        charge_number,
         [
             "Fe 29+",
         ],
@@ -874,7 +874,7 @@ tests_from_atomic = [
         pytest.raises(InvalidParticleError),
     ],
     [
-        integer_charge,
+        charge_number,
         [
             "H-1",
         ],
@@ -882,7 +882,7 @@ tests_from_atomic = [
         pytest.raises(ChargeError),
     ],
     [
-        integer_charge,
+        charge_number,
         [
             "H---",
         ],
@@ -890,7 +890,7 @@ tests_from_atomic = [
         pytest.warns(PlasmaPyFutureWarning),
     ],
     [
-        integer_charge,
+        charge_number,
         [
             "Fe -26",
         ],
@@ -898,7 +898,7 @@ tests_from_atomic = [
         pytest.warns(PlasmaPyFutureWarning),
     ],
     [
-        integer_charge,
+        charge_number,
         [
             "Og 10-",
         ],
