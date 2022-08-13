@@ -48,7 +48,7 @@ def plasma_critical_density(omega: u.rad / u.s) -> u.m**-3:
     --------
     >>> from astropy import units as u
     >>> plasma_critical_density(5e15 * u.rad/u.s)
-    <Quantity 7.8551 1 / m3>
+    <Quantity 7.85519457e+27 1 / m3>
 
     """
 
