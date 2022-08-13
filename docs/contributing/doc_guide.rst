@@ -991,15 +991,22 @@ Docstring guidelines
     dimensions that can each be of arbitrary size.
 
 * Docstrings may include a "Raises_" section that describes which
-  exceptions get raised and under what conditions. This section should
-  be used only for errors that are non-obvious or have a large chance of
-  getting raised. Documenting exceptions makes it easier for future
-  developers to plan exception handling.
+  exceptions get raised and under what conditions, and a "Warns_"
+  section that describes which warnings will be issued and for which
+  reasons.
 
-  * The "Raises_" section of a docstring should include exceptions that
-    are raised by the function itself, but not exceptions that are
-    raised by decorators such as |validate_quantities| and
-    |particle_input|.
+  * The "Raises_" and "Warns_" sections should only include exceptions
+    and warnings that are non-obvious or have a high probability of
+    occurring. For example, the "Raises_" section should not include a
+    `TypeError` for when an :term:`argument` is not of the type that is
+    listed in the "Parameters_" section of the docstring.
+
+  * The "Raises_" and "Warns_" sections should typically only include
+    exceptions and warnings that are raised or issued by the function
+    itself. Exceptions and warnings from commonly used decorators like
+    |validate_quantities| and |particle_input| should usually not be
+    included in these sections, but may be included if there is
+    sufficient justification to do so.
 
 * Private code objects (e.g., code objects that begin with a single
   underscore, like ``_private_object``) should have docstrings. A
