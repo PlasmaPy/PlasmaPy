@@ -60,46 +60,20 @@ Glossary
 
    lite-function
    lite-functions
+      A lightweight version of an existing `plasmapy` function intended
+      for applications where computational efficiency is most important.
+      While most `~plasmapy.formulary` functions accept |Quantity|
+      objects created using `astropy.units`, lite-functions accept
+      numbers and |array_like| inputs that are implicitly assumed to be
+      in SI units. The name of a lite-function ends with ``_lite``. A
+      lite-function can be accessed as the ``lite`` attribute of the
+      corresponding regular function.
 
-      .. A lightweight version of an existing `plasmapy` function, usually
-         from `plasmapy.formulary`. These functions are intended for
-         computational use where speed matters more than anything else, and
-         include no safeguards.
+      .. caution::
 
-      A lite weight version of an existing `plasmapy` function,
-      typically a formulary function.  These functions are intended for
-      computational use where speed matters more than anything else, and
-      as such **all argument safeguards have been stripped away** to
-      leave the most fundamental calculation possible.  A few things
-      to know about lite-functions:
-
-      - Lite-functions are a flavor of existing `plasmapy`
-        functionality and are denoted with a trailing ``_lite`` to the
-        name. For example,
-        `~plasmapy.formulary.speeds.thermal_speed_lite` is the
-        lite-function associated with
-        `~plasmapy.formulary.speeds.thermal_speed`.
-      - Lite-functions are typically bound to their normal version as
-        the ``lite`` attribute.  For example,
-        `~plasmapy.formulary.speeds.thermal_speed_lite` can be
-        accessed as ``thermal_speed.lite``.
-      - Lite-functions view all input and output arguments as being in
-        SI units.
-      - **UNITS ARE NOT VALIDATED BY THE FUNCTIONS.**  It is solely up to
-        the user to pass in parameters with the correct units.
-      - When possible, lite-functions are decorated with `numba.jit`
-        (or the like) for an additional speed boost.
-
-.. Much of PlasmaPy's functionality incorporates `Astropy units
-   <https://docs.astropy.org/en/stable/units/>`_ for user convenience and
-   to mitigate calculation errors from inappropriate units, but this
-   comes at the sacrifice of speed.  While this penalty is not significant
-   for typical use, it can become substantial during intensive numerical
-   calculations. **Lite-functions** are introduced for the specific case
-   where speed matters, but **[USER NOTICE]** this comes with the
-   reduction of safeguards so a user needs to know what they are doing!
-   For additional details look to the glossary entry for
-   :term:`lite-function`.
+         Unlike most `~plasmapy.formulary` functions, no validations are
+         performed on the arguments provided to a lite-function for the
+         sake of computational efficiency.
 
    particle-like
       An `object` is *particle-like* if it is a |Particle| or
