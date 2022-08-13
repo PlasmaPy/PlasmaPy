@@ -54,4 +54,4 @@ def plasma_critical_density(omega: u.rad / u.s) -> u.m**-3:
 
     n_c = m_e * eps0 * omega**2 / (e**2)
 
-    return (n_c / u.rad**2).to(u.m**-3)
+    return n_c.to(u.m**-3, equivalencies=u.dimensionless_angles())
