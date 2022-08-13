@@ -1,4 +1,4 @@
-Plasmapy v0.3.0 (2020-01-25)
+PlasmaPy v0.3.0 (2020-01-25)
 ============================
 
 Backwards Incompatible Changes

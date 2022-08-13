@@ -42,7 +42,7 @@ reproduce, and present a significant barrier to entry for new users.
 
 The plasma physics community is slowly moving in the open source
 direction. Several different types of packages and software have been
-released under open source licences, including the UCLA PIC codes,
+released under open source licenses, including the UCLA PIC codes,
 PICCANTE, EPOCH, VPIC, PIConGPU, WARP, the FLASH framework, Athena, and
 PENCIL. These projects are built as individual packages, are written in
 different programming languages, and often have many dependencies on

@@ -41,12 +41,12 @@ in parentheses are `ORCID author identifiers <https://orcid.org>`__.
 * :user:`BH4`
 * :user:`Brian Goodall <goodab>`
 * :user:`Brigitta Sipőcz <bsipocz>` (:orcid:`0000-0002-3713-6337`)
-* :user:`Bryan Foo <bryancfoo>` (:orcid:`0000-0001-5308-6870`)
+* :user:`Bryan Foo <bryancfoo>`
 * :user:`Carol Zhang <carolyz>`
 * :user:`cclauss`
 * :user:`Chengcai Shen <ionizationcalc>` (:orcid:`0000-0002-9258-4490`)
 * :user:`Chris Hoang <bucket420>`
-* :user:`Christoper Arran <ChrisArran>` (:orcid:`0000-0002-8644-8118`)
+* :user:`Christopher Arran <ChrisArran>` (:orcid:`0000-0002-8644-8118`)
 * :user:`Chun Hei Yip <syip1>`
 * :user:`Cody Skinner <cskinner74>`
 * :user:`Colby Haggerty <colbych>` (:orcid:`0000-0002-2160-7288`)

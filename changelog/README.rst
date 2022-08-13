@@ -10,6 +10,14 @@ Changelog Guide
    documentation at:
    https://docs.plasmapy.org/en/latest/development/changelog_guide.html
 
+.. contents:: Table of Contents
+   :depth: 2
+   :local:
+   :backlinks: none
+
+Introduction
+============
+
 A changelog tells users and contributors what notable changes have been
 made between each release. Pull requests to PlasmaPy need changelog
 entries before they can be merged, except when the changes are very

@@ -210,6 +210,8 @@ exclude_patterns = [
     "**Untitled*",
 ]
 
+html_extra_path = ["robots.txt"]
+
 # If true, `todo` and `todoList` produce output, else they produce nothing.
 todo_include_todos = False
 
@@ -344,12 +346,16 @@ nitpick_ignore_regex = [
     (python_role, "2 ints"),
     (python_role, "a single int"),
     (python_role, "Tuple of 1"),
+    # thomson
+    (python_role, "Ne"),
+    (python_role, "Ni"),
     # for reST workarounds defined in docs/common_links.rst
     (python_role, "h5py"),
     (python_role, "IPython.sphinxext.ipython_console_highlighting"),
     (python_role, "lmfit"),
     (python_role, "mpmath"),
     (python_role, "nbsphinx"),
+    (python_role, "numba"),
     (python_role, "xarray"),
     # plasmapy_sphinx
     (python_role, "automod.*"),
@@ -467,8 +473,13 @@ nbsphinx_thumbnails = {
     "notebooks/diagnostics/langmuir_analysis": (
         "_static/notebook_images/langmuir_analysis.png"
     ),
+    "notebooks/formulary/magnetosphere": (
+        "_static/notebook_images/mms.png"
+    ),  # public domain
+    "notebooks/getting_started/units": (
+        "_static/notebook_images/astropy_logo_notext.png"
+    ),  # CC BY-SA
     "notebooks/formulary/solar_plasma_beta": "_static/notebook_images/coronal_loops.png",
-    "notebooks/getting_started/units": "_static/notebook_images/astropy_logo_notext.png",  # CC BY-SA
     "notebooks/plasma/grids_cartesian": (
         "_static/notebook_images/uniform_grid_thumbnail.png"
     ),

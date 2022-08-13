@@ -1,2 +1,0 @@
-The parameters ``Z`` and ``mass_numb`` to |Particle| are now
-:term:`keyword-only`.

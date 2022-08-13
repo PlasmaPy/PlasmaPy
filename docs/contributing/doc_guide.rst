@@ -4,6 +4,14 @@
 Documentation Guide
 *******************
 
+.. contents:: Table of Contents
+   :depth: 2
+   :local:
+   :backlinks: none
+
+Introduction
+============
+
 Documentation that is up-to-date and understandable is vital to the
 health of a software project. This page describes the documentation
 requirements and guidelines to be followed during the development of
@@ -26,12 +34,12 @@ PlasmaPy and affiliated packages.
 available at these locations:
 
 * The documentation corresponding to the most recent release to PyPI_ is
-  labelled ``stable`` and is found at https://docs.plasmapy.org or
+  labeled ``stable`` and is found at https://docs.plasmapy.org or
   https://docs.plasmapy.org/en/stable.
 
 * The documentation corresponding to the ongoing development on the
   ``main`` branch in `PlasmaPy's GitHub repository`_, which is often ahead
-  of the most recent release, is labelled ``latest`` and can be found at
+  of the most recent release, is labeled ``latest`` and can be found at
   https://docs.plasmapy.org/en/latest.
 
 .. tip::
@@ -145,19 +153,11 @@ You can alternatively shorten the documentation build by running:
 This command will build the documentation without executing the
 :ref:`example notebooks <example_notebooks>`.
 
-You can check for broken reST_ links by running:
-
-.. code-block:: bash
-
-   tox -e build_docs_nitpicky
-
 .. tip::
 
    When writing documentation, please make sure to fix any warnings that
-   arise. To enforce this, the ``build_docs`` and ``build_docs_nitpicky``
-   tox_ environments will fail after completing the documentation build
-   if they encountered any warnings (via the ``-W`` and ``--keep-going``
-   flags to `sphinx-build`_).
+   arise. To enforce this, the ``build_docs`` tox_ environment will fail
+   after completing the documentation build if there are any warnings.
 
 Documentation tools
 ===================
@@ -458,6 +458,8 @@ substitutions should not be used in docstrings when it is important that
 users have quick access to the full path of the `object` (such as in the
 ``See Also`` section).
 
+.. _citation-instructions:
+
 Bibliography
 ~~~~~~~~~~~~
 
@@ -465,7 +467,7 @@ PlasmaPy uses |sphinxcontrib-bibtex|_ to manage references for its
 documentation. This Sphinx_ extension allows us to store references
 in a BibTeX_ file which is then used to generate the
 :doc:`../bibliography`. References in the :doc:`../bibliography` are then
-citable from anywhere in the documentation.
+citeable from anywhere in the documentation.
 
 To add a new reference to the :doc:`../bibliography`, open
 |docs/bibliography.bib|_ and add the reference in `BibTeX format`_. The
@@ -944,6 +946,13 @@ Docstring guidelines
   derivations and extensive discussions of mathematics in the "Notes"
   section.
 
+* Docstrings may include a Raises_ section that describes which
+  exceptions get raised and under what conditions. This section should
+  be used only for errors that are non-obvious or have a large chance of
+  getting raised. Documenting exceptions makes it easier for future
+  developers to plan exception handling. However, in practice this
+  section often becomes outdated.
+
 * Private code objects (e.g., code objects that begin with a single
   underscore, like ``_private_object``) should have docstrings. A
   docstring for a private code object may be a single line, and
@@ -1043,6 +1052,7 @@ Narrative documentation guidelines
 .. _nested inline markup: https://docutils.sphinx-users.jp/docutils/docs/dev/rst/alternatives.html#nested-inline-markup
 .. _options to sphinx-build: https://www.sphinx-doc.org/en/master/man/sphinx-build.html#options
 .. _raise an issue: https://github.com/PlasmaPy/PlasmaPy/issues/new?title=Improve+documentation+for...&labels=Documentation
+.. _raises: https://numpydoc.readthedocs.io/en/latest/format.html#raises
 .. _raw string: https://docs.python.org/3/reference/lexical_analysis.html#literals
 .. _Read the Docs Sphinx Theme: https://sphinx-rtd-theme.readthedocs.io
 .. _Sphinx's glossary: https://www.sphinx-doc.org/en/master/glossary.html
