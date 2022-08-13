@@ -1114,3 +1114,4 @@ Narrative documentation guidelines
 .. _Sphinx's glossary: https://www.sphinx-doc.org/en/master/glossary.html
 .. _Sphinx's templating page: https://www.sphinx-doc.org/en/master/templating.html
 .. _style overrides: https://docs.readthedocs.io/en/stable/guides/adding-custom-css.html
+.. _warns: https://numpydoc.readthedocs.io/en/latest/format.html#warns
