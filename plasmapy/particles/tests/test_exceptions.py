@@ -30,7 +30,6 @@ from plasmapy.particles.exceptions import (
 )
 from plasmapy.particles.nuclear import nuclear_binding_energy, nuclear_reaction_energy
 from plasmapy.particles.symbols import atomic_symbol, element_name, isotope_symbol
-from plasmapy.utils.exceptions import PlasmaPyFutureWarning
 
 tests_for_exceptions = {
     "too few nstates": (
@@ -880,30 +879,6 @@ tests_from_atomic = [
         ],
         {},
         pytest.raises(ChargeError),
-    ],
-    [
-        charge_number,
-        [
-            "H---",
-        ],
-        {},
-        pytest.warns(PlasmaPyFutureWarning),
-    ],
-    [
-        charge_number,
-        [
-            "Fe -26",
-        ],
-        {},
-        pytest.warns(PlasmaPyFutureWarning),
-    ],
-    [
-        charge_number,
-        [
-            "Og 10-",
-        ],
-        {},
-        pytest.warns(PlasmaPyFutureWarning),
     ],
     [
         isotope_symbol,
