@@ -1,4 +1,0 @@
-Added a :term:`lite-function` group to the configuration value
-:confval:`automodapi_custom_groups` that introduces the
-``__lite_funcs__`` dunder for listing the lite-functions in a module
-(akin to the ``__all__`` dunder).

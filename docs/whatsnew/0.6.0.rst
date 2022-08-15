@@ -1,4 +1,4 @@
-Plasmapy v0.6.0 (2021-03-14)
+PlasmaPy v0.6.0 (2021-03-14)
 ============================
 
 The people who have contributed to the code for this release are:

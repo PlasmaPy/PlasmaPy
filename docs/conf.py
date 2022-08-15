@@ -99,6 +99,7 @@ extensions = [
     "hoverxref.extension",
     "notfound.extension",
     "sphinx_issues",
+    "sphinx_reredirects",
     "plasmapy_sphinx",
 ]
 
@@ -209,6 +210,8 @@ exclude_patterns = [
     "**Untitled*",
 ]
 
+html_extra_path = ["robots.txt"]
+
 # If true, `todo` and `todoList` produce output, else they produce nothing.
 todo_include_todos = False
 
@@ -239,6 +242,17 @@ linkcheck_anchors_ignore = [
     "L[0-9].+",
     "!forum/plasmapy",
 ]
+
+redirects = {
+    "development": "../contributing/",
+    "development/index": "../contributing/index.html",
+    "development/changelog_guide": "../contributing/changelog_guide.html",
+    "development/code_guide": "../contributing/code_guide.html",
+    "development/doc_guide": "../contributing/doc_guide.html",
+    "development/install_dev": "../contributing/install_dev.html",
+    "development/release_guide": "../contributing/release_guide.html",
+    "development/testing_guide": "../contributing/testing_guide.html",
+}
 
 # Use a code highlighting style that meets the WCAG AA contrast standard
 pygments_style = "default"
@@ -332,12 +346,16 @@ nitpick_ignore_regex = [
     (python_role, "2 ints"),
     (python_role, "a single int"),
     (python_role, "Tuple of 1"),
+    # thomson
+    (python_role, "Ne"),
+    (python_role, "Ni"),
     # for reST workarounds defined in docs/common_links.rst
     (python_role, "h5py"),
     (python_role, "IPython.sphinxext.ipython_console_highlighting"),
     (python_role, "lmfit"),
     (python_role, "mpmath"),
     (python_role, "nbsphinx"),
+    (python_role, "numba"),
     (python_role, "xarray"),
     # plasmapy_sphinx
     (python_role, "automod.*"),
@@ -455,13 +473,19 @@ nbsphinx_thumbnails = {
     "notebooks/diagnostics/langmuir_analysis": (
         "_static/notebook_images/langmuir_analysis.png"
     ),
+    "notebooks/formulary/magnetosphere": (
+        "_static/notebook_images/mms.png"
+    ),  # public domain
+    "notebooks/getting_started/units": (
+        "_static/notebook_images/astropy_logo_notext.png"
+    ),  # CC BY-SA
+    "notebooks/formulary/solar_plasma_beta": "_static/notebook_images/coronal_loops.png",
     "notebooks/plasma/grids_cartesian": (
         "_static/notebook_images/uniform_grid_thumbnail.png"
     ),
     "notebooks/plasma/grids_nonuniform": (
         "_static/notebook_images/nonuniform_grid_thumbnail.png"
     ),
-    "notebooks/getting_started/units": "_static/notebook_images/astropy_logo_notext.png",  # CC BY-SA
 }
 
 # adapted from

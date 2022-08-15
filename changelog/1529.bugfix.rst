@@ -1,3 +1,0 @@
-Fixed bug in :func:`~plasmapy.dispersion.numerical.hollweg_.hollweg`
-that did not allow for arguments ``theta`` and ``k`` to simultaneously
-be arrays.

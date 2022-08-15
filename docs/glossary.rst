@@ -20,6 +20,12 @@ Glossary
    charge number
       The charge of a particle in units of elementary charge.
 
+   fit-function
+   fit-functions
+      Any instance of a subclass of
+      `~plasmapy.analysis.fit_functions.AbstractFitFunction`.  Also see
+      module `~plasmapy.analysis.fit_functions`.
+
    integration test
       An **integration test** verifies that multiple software
       components work together as intended.
@@ -119,6 +125,13 @@ Glossary
       `numpy.number` types. Note that if a PlasmaPy function expects a
       dimensional |Quantity| and a real number is provided, then the
       real number is often assumed to have the appropriate SI units.
+
+   temperature
+      Most functions in PlasmaPy accept temperature, :math:`T`, as a
+      `~astropy.units.Quantity` with units of temperature (e.g., kelvin)
+      or energy (e.g., electron-volts). A value for energy that is
+      provided will be divided by the Boltzmann constant, :math:`k_B`,
+      to be converted into units of temperature.
 
    unit test
       A **unit test** verifies a single unit of behavior, does it

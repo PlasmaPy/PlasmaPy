@@ -1,5 +1,5 @@
-Version 0.1.1
-=============
+PlasmaPy v0.1.1 (2018-05-27)
+============================
 
 Version 0.1.1 is a bugfix patch release correcting a number of issues
 that arose during the release process and adding two minor convenience

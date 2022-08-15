@@ -1,4 +1,4 @@
-Plasmapy v0.4.0 (2020-07-20)
+PlasmaPy v0.4.0 (2020-07-20)
 ============================
 
 This release of PlasmaPy contains 50 commits in 46 merged pull requests closing 25 issues from 9 people, 5 of which are first-time contributors to PlasmaPy.
@@ -44,7 +44,7 @@ Features
   Maxwellian plasmas in both the collective and non-collective regimes. As
   a followup to PR #835, set the minimal required Numpy version to 1.18.1 to
   finally fix unit dropping bugs. (`#831 <https://github.com/plasmapy/plasmapy/pull/831>`__)
-- Revised parameters.thermal_speed to support 1D and 2D distributions as well as 3D, and added an example notebook for this function. (`#850 <https://github.com/plasmapy/plasmapy/pull/850>`__)
+- Revised ``plasmapy.formulary.parameters.thermal_speed`` to support 1D and 2D distributions as well as 3D, and added an example notebook for this function. (`#850 <https://github.com/plasmapy/plasmapy/pull/850>`__)
 - Create :file:`plasmapy/formulary/ionization.py`
   Create ``plasmapy.formulary.ionization.Z_bal`` function. (`#851 <https://github.com/plasmapy/plasmapy/pull/851>`__)
 - Create :func:`~plasmapy.formulary.ionization.Saha` function. (`#860 <https://github.com/plasmapy/plasmapy/pull/860>`__)
