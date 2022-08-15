@@ -103,10 +103,10 @@ def test_uhech_v_over_c(ultra_relativistic_proton):
 
 
 def test_ultra_relativistic_proton_speed(ultra_relativistic_proton):
-    assert u.isclose(ultra_relativistic_proton.speed, c, rtol=1e-14)
+    assert u.isclose(ultra_relativistic_proton.velocity, c, rtol=1e-14)
 
 
-proton_at_half_warp_inputs = [
+proton_at_half_c_inputs = [
     ("v_over_c", 0.5),
     ("V", 0.5 * c),
     ("lorentz_factor", 1.1547005383792517),
@@ -118,31 +118,33 @@ proton_at_half_warp_inputs = [
 # Need to add a test for mass_energy, which can't be used as an input
 
 
-@pytest.mark.parametrize("attr, expected", proton_at_half_warp_inputs)
-@pytest.mark.parametrize("parameter, argument", proton_at_half_warp_inputs)
+@pytest.mark.parametrize("attr, expected", proton_at_half_c_inputs)
+@pytest.mark.parametrize("parameter, argument", proton_at_half_c_inputs)
 def test_relativistic_body(parameter, argument, attr, expected):
     """Test attributes of RelativisticBody."""
     kwargs = {"particle": proton, parameter: argument}
     call_str = call_string(RelativisticBody, kwargs=kwargs)
 
-    print("\n", call_str, "\n")
-    print(parameter)
+    try:
+        relativistic_body = RelativisticBody(**kwargs)
+    except Exception as exc:
+        raise Exception(f"Could not run: {call_str}") from exc
 
-    relativistic_body = RelativisticBody(**kwargs)
-
-    actual = getattr(relativistic_body, attr, None)
-
-    print(f"{actual=}")
+    try:
+        actual = getattr(relativistic_body, attr, None)
+    except Exception as exc:
+        raise Exception(f"Could not run: {call_str}.{attr}.") from exc
 
     actual_unit = getattr(actual, "unit", None)
     expected_unit = getattr(expected, "unit", None)
 
     assert actual_unit == expected_unit, (
-        f"Expected units of {expected_unit} for {parameter}, "
-        f"but got units of {actual_unit}."
+        f"{call_str}.{attr}.unit was expected to give "
+        f"{expected_unit}, but instead gave {actual_unit}."
     )
 
-    assert u.isclose(actual, expected, rtol=1e-7)
-
-
-# Need to test setattr
+    if not u.isclose(actual, expected, rtol=1e-6):
+        pytest.fail(
+            f"{call_str}.{attr} was expected to be {expected}, but instead "
+            f"gave {actual}."
+        )
