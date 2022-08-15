@@ -261,6 +261,92 @@ the code is supposed to be doing.
    can be done with :kbd:`Shift+F6` on Windows or Linux, and :kbd:`⇧F6`
    or :kbd:`⌥⌘R` on macOS.
 
+Imports
+=======
+
+* Use standard abbreviations for imported packages:
+
+  .. code-block:: python
+
+     import numpy as np
+     import astropy.units as u
+     import astropy.constants as const
+     import matplotlib.pyplot as plt
+     import pandas as pd
+
+* PlasmaPy uses isort_ to sort import statements via a |pre-commit|_
+  hook.
+
+* For infrequently used objects, import the package, subpackage, or
+  module rather than the individual code object. Including more of the
+  namespace provides contextual information that can make code easier to
+  read. For example, ``json.loads`` is more readable than using only
+  ``loads``.
+
+* For frequently used objects (e.g., |Particle|) and type hint
+  annotations (e.g., `~typing.Optional` and `~numbers.Real`), import the
+  object directly instead of importing the package, subpackage, or
+  module. Including more of the namespace would increase clutter and
+  decrease readability without providing commensurately more
+  information.
+
+* Use absolute imports (e.g., ``from plasmapy.particles import Particle``)
+  rather than relative imports (e.g., ``from ..particles import Particle``).
+
+* Do not use star imports (e.g., ``from package.subpackage import *``),
+  except in very limited situations.
+
+Requirements
+============
+
+* Package requirements are specified in multiple locations that need to
+  be updated simultaneously.
+
+  - The |requirements|_ directory contains multiple text files that
+    contain build, installation, testing, documentation, and extra
+    requirements.
+
+  - The ``build-system.requires`` section of |pyproject.toml|_ includes
+    the requirements for building PlasmaPy. This section must mirror
+    |requirements/build.txt|_.
+
+  - |setup.cfg|_ includes sections for the install, docs, tests, and
+    extra requirements that must mirror the corresponding files in
+    the |requirements|_ directory.
+
+  - |requirements/environment.yml|_ contains a Conda_ environment
+    for PlasmaPy.
+
+  - |tox.ini|_ contains a testing environment for the minimal
+    dependencies.
+
+* Each release of PlasmaPy should support all minor versions of
+  Python that have been released in the prior 42 months, and all minor
+  versions of NumPy_ that have been released in the last 24 months.
+  This schedule was proposed in `NumPy Enhancement Proposal 29`_ for
+  the scientific Python ecosystem, and has been adopted by upstream
+  packages such as NumPy_, matplotlib_, and Astropy_.
+
+  .. tip::
+
+     Tools like pyupgrade_ help automatically upgrade the code base to
+     the minimum supported version of Python for the next release.
+
+* In general, it is preferable to support minor releases of dependencies
+  from the last ≲ 24 months, unless there is a new feature in a
+  dependency that would be greatly beneficial for `plasmapy` development.
+
+* Do not set maximum requirements (e.g., ``numpy <= 1.22.3``) unless
+  absolutely necessary. Maximum requirements can lead to version
+  conflicts when installed alongside other packages. Instead, update
+  PlasmaPy to become compatible with the latest versions of its
+  dependencies. Similarly, do not require exact versions of packages
+  (e.g., ``scipy == 1.5.3``).
+
+* Minor versions of Python are generally released in October of each
+  year. However, it may take a few months before packages like NumPy_
+  and Numba_ become compatible with the newest minor version of Python_.
+
 .. _code-contribution:
 
 Branches, commits, and pull requests
@@ -641,4 +727,6 @@ the README file of `benchmarks-repo`_.
 .. _ASCII: https://en.wikipedia.org/wiki/ASCII
 .. _cognitive complexity: https://www.sonarsource.com/docs/CognitiveComplexity.pdf
 .. _extract function refactoring pattern: https://refactoring.guru/extract-method
+.. _NumPy Enhancement Proposal 29: https://numpy.org/neps/nep-0029-deprecation_policy.html
+.. _pyupgrade: https://github.com/asottile/pyupgrade
 .. _rename refactoring in PyCharm: https://www.jetbrains.com/help/pycharm/rename-refactorings.html

@@ -221,6 +221,18 @@
 .. _`.pre-commit-config.yaml`: https://github.com/PlasmaPy/PlasmaPy/blob/main/.pre-commit-config.yaml
 .. |.pre-commit-config.yaml| replace:: :file:`.pre-commit-config.yaml`
 
+.. _`pyproject.toml`: https://github.com/PlasmaPy/PlasmaPy/blob/main/pyproject.toml
+.. |pyproject.toml| replace:: :file:`pyproject.toml`
+
+.. _`requirements`: https://github.com/PlasmaPy/PlasmaPy/blob/main/requirements
+.. |requirements| replace:: :file:`requirements`
+
+.. _`requirements/build.txt`: https://github.com/PlasmaPy/PlasmaPy/blob/main/requirements/build.txt
+.. |requirements/build.txt| replace:: :file:`requirements/build.txt`
+
+.. _`requirements/environment.yml`: https://github.com/PlasmaPy/PlasmaPy/blob/main/requirements/environment.yml
+.. |requirements/environment.yml| replace:: :file:`requirements/environment.yml`
+
 .. _`setup.cfg`: https://github.com/PlasmaPy/PlasmaPy/blob/main/setup.cfg
 .. |setup.cfg| replace:: :file:`setup.cfg`
 
@@ -247,6 +259,9 @@
 
 .. _`sphinx-notfound-page`: https://sphinx-notfound-page.readthedocs.io
 .. |sphinx-notfound-page| replace:: `sphinx-notfound-page`
+
+.. _`tox.ini`: https://github.com/PlasmaPy/PlasmaPy/blob/main/tox.ini
+.. |tox.ini| replace:: :file:`tox.ini`
 
 .. _xarray: https://docs.xarray.dev
 .. |xarray| replace:: `xarray`
