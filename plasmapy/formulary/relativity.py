@@ -14,9 +14,6 @@ from plasmapy.particles.particle_class import CustomParticle, Particle, Particle
 from plasmapy.particles.particle_collections import ParticleList
 from plasmapy.utils.decorators import validate_quantities
 
-# from plasmapy.utils.exceptions import RelativityError
-
-
 c = np.float128(299792458) * (u.m / u.s)
 
 
