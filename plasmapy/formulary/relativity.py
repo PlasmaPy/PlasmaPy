@@ -423,18 +423,18 @@ class RelativisticBody:
     def momentum(self, p: u.kg * u.m / u.s):
         self._momentum = p.to(u.kg * u.m / u.s)
 
-    _attributes_to_compare = (
-        "particle",
-        "rest_mass",
-        "kinetic_energy",
-        "mass_energy",
-        "total_energy",
-        "v_over_c",
-        "momentum",
-    )
-
     def __eq__(self, other) -> bool:
-        for attr in self._attributes_to_compare:
+
+        _attributes_to_compare = (
+            "particle",
+            "kinetic_energy",
+            "mass_energy",
+            "total_energy",
+            "v_over_c",
+            "momentum",
+        )
+
+        for attr in _attributes_to_compare:
             if not hasattr(other, attr):
                 return False
             self_value = getattr(self, attr)
