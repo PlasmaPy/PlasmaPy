@@ -190,3 +190,20 @@ def test_relativistic_body_init_exceptions(kwargs, exception):
     """
     with pytest.raises(exception):
         RelativisticBody(proton, **kwargs)
+
+
+def test_relativistic_body_equality():
+    relativistic_body = RelativisticBody(particle=proton, v_over_c=0.34)
+    assert relativistic_body == relativistic_body
+
+
+def test_relativistic_body_inequality1():
+    slower_body = RelativisticBody(particle=proton, v_over_c=0.23)
+    faster_body = RelativisticBody(particle=proton, v_over_c=0.24)
+    assert slower_body != faster_body
+
+
+def test_relativistic_body_inequality_with_different_particles():
+    relativistic_proton = RelativisticBody(particle=proton, v_over_c=0.23)
+    relativistic_electron = RelativisticBody(particle=electron, v_over_c=0.23)
+    assert relativistic_proton != relativistic_electron
