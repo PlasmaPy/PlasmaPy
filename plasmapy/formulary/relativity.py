@@ -438,7 +438,7 @@ class RelativisticBody:
             if not hasattr(other, attr):
                 return False
             self_value = getattr(self, attr)
-            other_value = getattr(self, attr)
+            other_value = getattr(other, attr)
             if self_value != other_value:
                 return False
         return True
