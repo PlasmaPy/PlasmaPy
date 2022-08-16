@@ -2,11 +2,7 @@
 """
 
 import numpy as np
-import scipy.integrate as sp
-import scipy.io as spio
-
-from scipy import signal
-from warnings import warn
+import scipy.signal
 
 
 def high_pass_filter(
@@ -45,6 +41,6 @@ def high_pass_filter(
 
     nyq = 0.5 * sampling_frequency
     normal_cutoff = cutoff / nyq
-    b, a = signal.butter(order, normal_cutoff, btype="highpass", analog=False)
-    filt_arr = signal.filtfilt(b, a, data_array)
+    b, a = scipy.signal.butter(order, normal_cutoff, btype="highpass", analog=False)
+    filt_arr = scipy.signal.filtfilt(b, a, data_array)
     return filt_arr
