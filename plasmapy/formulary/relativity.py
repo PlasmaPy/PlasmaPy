@@ -155,7 +155,7 @@ def relativistic_energy(m: u.kg, v: u.m / u.s) -> u.Joule:
     ValueError: The argument 'm' to function relativistic_energy() can not contain negative numbers.
     """
     γ = Lorentz_factor(v)
-    return γ * m * c**2
+    return γ * m * _c**2
 
 
 class RelativisticBody:
@@ -319,7 +319,7 @@ class RelativisticBody:
         -------
         ~astropy.units.Quantity
         """
-        return np.sqrt(self.momentum**2 * c**2 + self.mass_energy**2)
+        return np.sqrt(self.momentum**2 * _c**2 + self.mass_energy**2)
 
     @property
     def kinetic_energy(self) -> u.J:
@@ -342,7 +342,7 @@ class RelativisticBody:
         -------
         float
         """
-        return (self.velocity / c).to(u.dimensionless_unscaled).value
+        return (self.velocity / _c).to(u.dimensionless_unscaled).value
 
     @property
     def velocity(self) -> u.m / u.s:
