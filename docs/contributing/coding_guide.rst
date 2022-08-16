@@ -481,6 +481,8 @@ by an angular frequency to get a length scale:
 
 >>> d_i = (c/omega_pi).to(u.m, equivalencies=u.dimensionless_angles())    # doctest: +SKIP
 
+.. _aliases:
+
 Aliases
 =======
 
@@ -522,6 +524,8 @@ defined in :file:`plasmapy/subpackage/module.py`.
 * The name of the main function should be included in ``__all__`` near
   the top of each module, and the name of the alias should be included
   in ``__aliases__``, which will then get appended to ``__all__``.
+
+.. _lite-functions:
 
 Lite Functions
 ==============
