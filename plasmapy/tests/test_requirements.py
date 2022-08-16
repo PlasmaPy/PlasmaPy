@@ -53,12 +53,11 @@ def get_requirements_from_txt() -> Dict[str, Set[str]]:
 def get_requirements_from_setup_cfg() -> Dict[str, Set[str]]:
     """Get the requirements that are contained in ``setup.cfg``."""
     configuration = setuptools.config.read_configuration(f"{base_directory}/setup.cfg")
-    return {
-        "docs": set(configuration["options"]["extras_require"]["docs"]),
-        "extras": set(configuration["options"]["extras_require"]["extras"]),
-        "install": set(configuration["options"]["install_requires"]),
-        "tests": set(configuration["options"]["extras_require"]["tests"]),
-    }
+   d = {
+        key: set(configuration["options"]["extras_require"][key]) for key in "docs extras tests".split()
+        }
+    d["install"] = set(configuration["options"]["install_requires"])
+    return d
 
 
 def get_requirements_from_pyproject_toml() -> Dict[str, Set[str]]:
