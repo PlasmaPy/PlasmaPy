@@ -9,33 +9,6 @@ from scipy import signal
 from warnings import warn
 
 
-def remove_offset(data_array: np.ndarray, start_idx: int, end_idx: int) -> np.ndarray:
-    """
-    Removes the offset from the given data array and then returns it.
-
-    Parameters
-    ----------
-    data_array: `numpy.ndarray`
-        An array containing data from which offset should be removed.
-
-    start_idx: int
-        Index of value in array from where to start calculating offset.
-
-    end_idx: int
-        Index of value in array from where to end calculating offset.
-
-    Returns
-    -------
-    data_array: `numpy.ndarray`
-       the original data array with the offset removed.
-
-    """
-    data_array = np.array(data_array)
-    meansub = np.mean(data_array[start_idx:end_idx])
-    data_array[:] -= meansub
-    return data_array
-
-
 def high_pass_filter(
     data_array: np.ndarray, cutoff: float, sampling_frequency: float, order: int
 ) -> np.ndarray:
