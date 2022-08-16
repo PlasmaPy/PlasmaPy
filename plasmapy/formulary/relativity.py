@@ -13,7 +13,7 @@ from plasmapy.particles.particle_class import CustomParticle, Particle, Particle
 from plasmapy.particles.particle_collections import ParticleList
 from plasmapy.utils.decorators import validate_quantities
 
-_c = np.float128(299792458) * (u.m / u.s)
+_c = np.float64(299792458) * (u.m / u.s)
 
 
 @validate_quantities(V={"can_be_negative": True})
