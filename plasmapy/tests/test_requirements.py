@@ -1,6 +1,7 @@
 """Tests for the consistency of requirements."""
 
 import os
+import pathlib
 import pytest
 import setuptools
 import tomli
@@ -9,7 +10,6 @@ from typing import Dict, Set
 
 import plasmapy
 
-import pathlib
 base_directory = pathlib.Path(__file__).parents[2]
 requirements_directory = base_directory / "requirements"
 requirements_prefixes = ("build", "docs", "extras", "install", "tests")
