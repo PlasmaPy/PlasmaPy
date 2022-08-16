@@ -4,7 +4,6 @@ __all__ = ["Lorentz_factor", "relativistic_energy", "RelativisticBody"]
 import astropy.units as u
 import numpy as np
 
-# from astropy.constants import c
 from numbers import Integral, Real
 from typing import Dict, Optional, Union
 
@@ -14,7 +13,7 @@ from plasmapy.particles.particle_class import CustomParticle, Particle, Particle
 from plasmapy.particles.particle_collections import ParticleList
 from plasmapy.utils.decorators import validate_quantities
 
-c = np.float128(299792458) * (u.m / u.s)
+_c = np.float128(299792458) * (u.m / u.s)
 
 
 @validate_quantities(V={"can_be_negative": True})
@@ -87,7 +86,7 @@ def Lorentz_factor(V: u.m / u.s):
         γ[equals_c] = np.inf
 
     else:
-        γ = np.inf if np.abs(V) == c else ((1 - (V / c) ** 2) ** -0.5).value
+        γ = np.inf if np.abs(V) == _c else ((1 - (V / c) ** 2) ** -0.5).value
     return γ
 
 
@@ -308,7 +307,7 @@ class RelativisticBody:
         -------
         ~astropy.units.Quantity
         """
-        return self.mass * c**2
+        return self.mass * _c**2
 
     @property
     def total_energy(self) -> u.J:
@@ -417,7 +416,7 @@ class RelativisticBody:
         if γ < 1:
             raise ValueError("The Lorentz factor must be ≥ 1")
 
-        self.velocity = c * np.sqrt(1 - γ**-2)
+        self.velocity = _c * np.sqrt(1 - γ**-2)
 
     @momentum.setter
     def momentum(self, p: u.kg * u.m / u.s):
