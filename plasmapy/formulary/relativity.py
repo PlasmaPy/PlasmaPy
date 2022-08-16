@@ -69,7 +69,7 @@ def Lorentz_factor(V: u.m / u.s):
     inf
     """
 
-    if not np.all(np.abs(V) <= c):
+    if not np.all(np.abs(V) <= _c):
         raise utils.RelativityError(
             "The Lorentz factor cannot be calculated for "
             "speeds faster than the speed of light."
@@ -79,14 +79,14 @@ def Lorentz_factor(V: u.m / u.s):
 
         γ = np.zeros_like(V.value)
 
-        equals_c = np.abs(V) == c
+        equals_c = np.abs(V) == _c
         is_slow = ~equals_c
 
-        γ[is_slow] = ((1 - (V[is_slow] / c) ** 2) ** -0.5).value
+        γ[is_slow] = ((1 - (V[is_slow] / _c) ** 2) ** -0.5).value
         γ[equals_c] = np.inf
 
     else:
-        γ = np.inf if np.abs(V) == _c else ((1 - (V / c) ** 2) ** -0.5).value
+        γ = np.inf if np.abs(V) == _c else ((1 - (V / _c) ** 2) ** -0.5).value
     return γ
 
 
@@ -353,7 +353,9 @@ class RelativisticBody:
         -------
         ~astropy.units.Quantity
         """
-        velocity = self.momentum / np.sqrt(self.mass**2 + self.momentum**2 / c**2)
+        velocity = self.momentum / np.sqrt(
+            self.mass**2 + self.momentum**2 / _c**2
+        )
         return velocity.to(u.m / u.s)
 
     @property
@@ -390,11 +392,11 @@ class RelativisticBody:
 
     @total_energy.setter
     def total_energy(self, E_tot: u.J):
-        self._momentum = np.sqrt(E_tot**2 - self.mass_energy**2) / c
+        self._momentum = np.sqrt(E_tot**2 - self.mass_energy**2) / _c
 
     @v_over_c.setter
     def v_over_c(self, v_over_c_: Integral):
-        self.velocity = v_over_c_ * c
+        self.velocity = v_over_c_ * _c
 
     @velocity.setter
     def velocity(self, V: u.m / u.s):
