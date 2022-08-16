@@ -12,7 +12,7 @@ import astropy.units as u
 import numbers
 import numpy as np
 
-from astropy.constants.si import e, eps0, m_e
+from astropy.constants.si import e, eps0
 from numba import njit
 
 from plasmapy import particles

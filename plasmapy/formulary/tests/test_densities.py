@@ -3,11 +3,11 @@ import astropy.units as u
 import numpy as np
 import pytest
 
-from plasmapy.formulary.densities import plasma_critical_density
+from plasmapy.formulary.densities import critical_density
 from plasmapy.formulary.frequencies import plasma_frequency
 
 
-class TestPlasmaCriticalDensity:
+class TestCriticalDensity:
     """Test the plasma_critical_density function in densities.py."""
 
     n_i = 5e19 * u.m**-3
@@ -16,7 +16,7 @@ class TestPlasmaCriticalDensity:
     @pytest.fixture()
     def n_c(self):
         """Get the critical density for the example frequency"""
-        return plasma_critical_density(self.omega)
+        return critical_density(self.omega)
 
     def test_units(self, n_c):
         """Test the return units"""

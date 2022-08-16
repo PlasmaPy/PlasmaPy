@@ -1,6 +1,6 @@
 """Functions to calculate plasma density parameters."""
 __all__ = [
-    "plasma_critical_density",
+    "critical_density",
 ]
 
 import astropy.units as u
@@ -16,7 +16,7 @@ from plasmapy.utils.decorators import validate_quantities
         "units": [u.m**-3],
     },
 )
-def plasma_critical_density(omega: u.rad / u.s) -> u.m**-3:
+def critical_density(omega: u.rad / u.s) -> u.m**-3:
     r"""Calculate the plasma critical density for a radiation of a given frequency.
 
     Parameters
@@ -31,11 +31,11 @@ def plasma_critical_density(omega: u.rad / u.s) -> u.m**-3:
 
     Notes
     -----
-    The plasma critical density for a given frequency of radiation is
+    The critical density for a given frequency of radiation is
     defined as the value at which the electron plasma frequency equals
     the frequency of the radiation.
 
-    The plasma critical density is given by the formula
+    The critical density is given by the formula
 
     .. math::
         n_{c}=\frac{m_{e}\varepsilon_0\omega^{2}}{e^{2}}
@@ -47,7 +47,7 @@ def plasma_critical_density(omega: u.rad / u.s) -> u.m**-3:
     Examples
     --------
     >>> from astropy import units as u
-    >>> plasma_critical_density(5e15 * u.rad/u.s)
+    >>> critical_density(5e15 * u.rad/u.s)
     <Quantity 7.85519457e+27 1 / m3>
 
     """
