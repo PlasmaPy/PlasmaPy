@@ -2,8 +2,9 @@
 """
 
 import numpy as np
-import scipy.io as spio
 import scipy.integrate as sp
+import scipy.io as spio
+
 from scipy import signal
 from warnings import warn
 
@@ -35,10 +36,12 @@ def remove_offset(data_array: np.ndarray, start_idx: int, end_idx: int) -> np.nd
     return data_array
 
 
-def high_pass_filter(data_array: np.ndarray, cutoff: float, sampling_frequency: float, order: int) -> np.ndarray:
+def high_pass_filter(
+    data_array: np.ndarray, cutoff: float, sampling_frequency: float, order: int
+) -> np.ndarray:
     """
-    Applies a high pass filter to the data array to imporve 
-    proper integration. 
+    Applies a high pass filter to the data array to imporve
+    proper integration.
 
     Parameters
     ----------
@@ -48,28 +51,27 @@ def high_pass_filter(data_array: np.ndarray, cutoff: float, sampling_frequency: 
 
     cutoff: float
        The lowest frequency passed into the filter. Frequencies
-       lower than the cutoff are removed from the dataset. 
+       lower than the cutoff are removed from the dataset.
 
     sampling_frequency: float
        The maximum frequency passed into the filter based
-       on the sampling rate of the data set. 
+       on the sampling rate of the data set.
 
     order: int
-       The order of the filter created 
+       The order of the filter created
 
     Returns
     -------
     filt_arr: `numpy.ndarray`
-       The original data aray with the frequencies below 
-       the cuttoff removed 
+       The original data aray with the frequencies below
+       the cuttoff removed
 
     """
     if cutoff > sampling_frequency:
-        raise ValueError(
-            "sampling frequency must be greater than cutoff value\n")
+        raise ValueError("sampling frequency must be greater than cutoff value\n")
 
     nyq = 0.5 * sampling_frequency
-    normal_cutoff = cutoff/nyq
-    b, a = signal.butter(order, normal_cutoff, btype='highpass', analog=False)
+    normal_cutoff = cutoff / nyq
+    b, a = signal.butter(order, normal_cutoff, btype="highpass", analog=False)
     filt_arr = signal.filtfilt(b, a, data_array)
     return filt_arr
