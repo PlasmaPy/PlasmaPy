@@ -36,7 +36,7 @@ def boris_push(x, v, B, E, q, m, dt, inplace=True):
     dt : `float`
         Timestep, in SI (second) units.
 
-    inplace : 'bool'
+    inplace : `bool`
         If set, data in the v and x arrays is changed during execution.
         Defaults to True for performance reasons.
         If False, this function returns `None`.
