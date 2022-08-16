@@ -193,17 +193,26 @@ def test_relativistic_body_init_exceptions(kwargs, exception):
 
 
 def test_relativistic_body_equality():
+    """Test that a `RelativisticBody` instance equals itself."""
     relativistic_body = RelativisticBody(particle=proton, v_over_c=0.34)
     assert relativistic_body == relativistic_body
 
 
-def test_relativistic_body_inequality1():
+def test_relativistic_body_inequality_with_different_velocities():
+    """
+    Test that `RelativisticBody` instances are not equal when the
+    velocity provided to them is different.
+    """
     slower_body = RelativisticBody(particle=proton, v_over_c=0.23)
     faster_body = RelativisticBody(particle=proton, v_over_c=0.24)
     assert slower_body != faster_body
 
 
 def test_relativistic_body_inequality_with_different_particles():
+    """
+    Test that `RelativisticBody` instances are not equal when the
+    particles are different.
+    """
     relativistic_proton = RelativisticBody(particle=proton, v_over_c=0.23)
     relativistic_electron = RelativisticBody(particle=electron, v_over_c=0.23)
     assert relativistic_proton != relativistic_electron
