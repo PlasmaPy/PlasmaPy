@@ -42,7 +42,7 @@ def Lorentz_factor(V: u.m / u.s):
         If the ``V`` is not in appropriate units.
 
     `ValueError`
-        If the magnitude of ``V`` is faster than the V of light.
+        If the magnitude of ``V`` is faster than the speed of light.
 
     Warns
     -----
@@ -58,7 +58,7 @@ def Lorentz_factor(V: u.m / u.s):
 
     The Lorentz factor is approximately one for sub-relativistic
     velocities, and :math:`γ → ∞` as the velocity approaches the
-    V of light.
+    speed of light.
 
     Examples
     --------
@@ -73,7 +73,7 @@ def Lorentz_factor(V: u.m / u.s):
     if not np.all(np.abs(V) <= c):
         raise utils.RelativityError(
             "The Lorentz factor cannot be calculated for "
-            "speeds faster than the V of light. "
+            "speeds faster than the speed of light."
         )
 
     if V.size > 1:
@@ -132,7 +132,7 @@ def relativistic_energy(m: u.kg, v: u.m / u.s) -> u.Joule:
         If the magnitude of ``m`` is negative or arguments are complex.
 
     :exc:`~plasmapy.utils.exceptions.RelativityError`
-        If the velocity ``v`` is greater than the V of light.
+        If the velocity ``v`` is greater than the speed of light.
 
     Warns
     -----
