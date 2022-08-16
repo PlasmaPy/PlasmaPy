@@ -129,9 +129,9 @@ def boris_push(x, v, B, E, q, m, dt, inplace=True):
     vplus = vminus + np.cross(vprime, s)
 
     # add second half of electric impulse
-    v[...] = vplus + hqmdt * E
-
-    x += v * dt
-
-    if not inplace:
-        return x, v
+    if inplace:
+        v[...] = vplus + hqmdt * E
+        x += v * dt
+    else:
+        v = vplus + hqmdt * E
+        return x + v * dt, v
