@@ -11,7 +11,7 @@ from plasmapy.formulary.relativity import (
     relativistic_energy,
     RelativisticBody,
 )
-from plasmapy.particles import proton
+from plasmapy.particles import electron, proton
 from plasmapy.utils.code_repr import call_string
 from plasmapy.utils.exceptions import RelativityError
 
@@ -115,8 +115,6 @@ proton_at_half_c_inputs = [
     ("momentum", 2.8950619440057805e-19 * u.kg * u.m / u.s),
 ]
 
-# Need to add a test for mass_energy, which can't be used as an input
-
 
 @pytest.mark.parametrize("attr, expected", proton_at_half_c_inputs)
 @pytest.mark.parametrize("parameter, argument", proton_at_half_c_inputs)
@@ -143,3 +141,12 @@ def test_relativistic_body(parameter, argument, attr, expected):
         f"{call_str}.{attr} was expected to be {expected}, but instead "
         f"gave {actual}."
     )
+
+
+@pytest.mark.parametrize("particle", [electron, proton])
+def test_relativistic_body_mass_energy(particle):
+    """Test `RelativisticBody.mass_energy`."""
+    relativistic_body = RelativisticBody(particle, v_over_c=0)
+    actual = relativistic_body.mass_energy
+    expected = particle.mass * c**2
+    assert u.isclose(actual, expected, rtol=1e-9)
