@@ -16,6 +16,9 @@ Glossary
       trailing underscore. For example, `~plasmapy.formulary.speeds.va_`
       is an alias for `~plasmapy.formulary.speeds.Alfven_speed`).
 
+      For further details, please refer to the :ref:`contributor guide's
+      section on aliases <aliases>`.
+
    args
       An abbreviation for `positional arguments`_.
 
@@ -73,7 +76,10 @@ Glossary
 
          Unlike most `~plasmapy.formulary` functions, no validations are
          performed on the arguments provided to a lite-function for the
-         sake of computational efficiency.
+         sake of computational efficiency. When using lite-functions.
+
+      For further details, please refer to the :ref:`contributor guide's
+      section on lite-functions <lite-functions>`.
 
    particle-like
       An `object` is *particle-like* if it is a |Particle| or
