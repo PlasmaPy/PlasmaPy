@@ -208,15 +208,6 @@ class RelativisticBody:
     provided. If none of these arguments are supplied, then the
     """
 
-    _speed_like_inputs = (
-        "V",
-        "momentum",
-        "total_energy",
-        "kinetic_energy",
-        "v_over_c",
-        "lorentz_factor",
-    )
-
     def _get_speed_like_input(
         self,
         velocity_like_arguments: Dict[str, Union[u.Quantity, Real]],
