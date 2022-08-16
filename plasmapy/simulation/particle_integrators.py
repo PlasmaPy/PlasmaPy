@@ -62,9 +62,9 @@ def boris_push(x, v, B, E, q, m, dt, inplace=True):
     array([[ 4.9937539 , -0.24984385,  0.        ]])
     >>> boris_push(x = x_t0, v = v_t0, B = B, E = E, q = 1.0, m = 1.0, dt = 0.01, inplace = True)
     >>> x_t0
-    array([[ 0.09968785, -0.00748907,  0.        ]])
+    array([[ 0.04993754, -0.00249844,  0.        ]])
     >>> v_t0
-    array([[ 4.97503122, -0.49906348,  0.        ]])
+    array([[ 4.9937539 , -0.24984385,  0.        ]])
     >>> # B parallel to v
     >>> B = np.array([[0.0, 0.0, 5.0]])
     >>> v_t0 = np.array([[0.0, 0.0, 5.0]])
