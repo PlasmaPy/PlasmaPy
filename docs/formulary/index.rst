@@ -17,6 +17,9 @@ physical quantities helpful for plasma physics.
    | .. toctree:: Collisions <collisions>                   | `plasmapy.formulary.collisions`         |
    |    :maxdepth: 1                                        |                                         |
    +--------------------------------------------------------+-----------------------------------------+
+   | .. toctree:: Densities <densities>                     | `plasmapy.formulary.densities`          |
+   |    :maxdepth: 1                                        |                                         |
+   +--------------------------------------------------------+-----------------------------------------+
    | .. toctree:: Dielectrics <dielectric>                  | `plasmapy.formulary.dielectric`         |
    |    :maxdepth: 1                                        |                                         |
    +--------------------------------------------------------+-----------------------------------------+
