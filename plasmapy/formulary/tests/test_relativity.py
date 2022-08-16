@@ -150,3 +150,24 @@ def test_relativistic_body_mass_energy(particle):
     actual = relativistic_body.mass_energy
     expected = particle.mass * c**2
     assert u.isclose(actual, expected, rtol=1e-9)
+
+
+@pytest.mark.parametrize(
+    "kwargs, exception",
+    [
+        ({"V": 299792459 * (u.m / u.s)}, RelativityError),
+        ({"v_over_c": 1.00001}, RelativityError),
+        ({"total_energy": -1 * u.J}, ValueError),
+        ({"kinetic_energy": -1 * u.J}, ValueError),
+        ({"lorentz_factor": 0.99}, ValueError),
+        ({"lorentz_factor": 0}, ValueError),
+        ({"lorentz_factor": -1}, ValueError),
+    ],
+)
+def test_relativistic_body_init_exceptions(kwargs, exception):
+    """
+    Test that `RelativisticBody` raises the appropriate exceptions
+    during instantiation.
+    """
+    with pytest.raises(exception):
+        RelativisticBody(proton, **kwargs)
