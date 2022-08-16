@@ -257,8 +257,8 @@ class RelativisticBody:
         velocity_like_inputs = {
             "velocity": V,
             "momentum": momentum,
-            "total energy": total_energy,
-            "kinetic energy": kinetic_energy,
+            "total_energy": total_energy,
+            "kinetic_energy": kinetic_energy,
             "v_over_c": v_over_c,
             "lorentz_factor": lorentz_factor,
         }
@@ -338,7 +338,6 @@ class RelativisticBody:
         return (self.velocity / c).to(u.dimensionless_unscaled).value
 
     @property
-    #    @u.quantity_input
     def velocity(self) -> u.m / u.s:
         r"""
         The velocity of the body, :math:`V`\ .
@@ -347,7 +346,8 @@ class RelativisticBody:
         -------
         ~astropy.units.Quantity
         """
-        return self.momentum / np.sqrt(self.mass**2 - (self.momentum / c) ** 2)
+        velocity = self.momentum / np.sqrt(self.mass**2 + self.momentum**2 / c**2)
+        return velocity.to(u.m / u.s)
 
     @property
     def lorentz_factor(self) -> Real:
@@ -371,7 +371,7 @@ class RelativisticBody:
         -------
         ~astropy.units.Quantity
         """
-        return self._momentum
+        return getattr(self, "_momentum")
 
     @particle.setter
     def particle(self, particle: ParticleLike):
@@ -391,7 +391,9 @@ class RelativisticBody:
 
     @velocity.setter
     def velocity(self, V: u.m / u.s):
-        self._momentum = Lorentz_factor(V) * (self.mass * V).to("kg * m / s")
+        self._momentum = (Lorentz_factor(V) * self.mass * V).to(
+            u.kg * u.m / u.s
+        )  # correct
 
     @lorentz_factor.setter
     def lorentz_factor(self, γ: Union[Real, u.Quantity]):
@@ -408,8 +410,8 @@ class RelativisticBody:
 
         if γ < 1:
             raise ValueError("The Lorentz factor must be ≥ 1")
-        self.velocity = c * np.sqrt(1 - γ**-2)
-        assert self.velocity <= c
+
+        self.velocity = c * np.sqrt(1 - γ**-2)  # correct
 
     @momentum.setter
     def momentum(self, p: u.kg * u.m / u.s):

@@ -125,15 +125,11 @@ def test_relativistic_body(parameter, argument, attr, expected):
     kwargs = {"particle": proton, parameter: argument}
     call_str = call_string(RelativisticBody, kwargs=kwargs)
 
-    try:
-        relativistic_body = RelativisticBody(**kwargs)
-    except Exception as exc:
-        raise Exception(f"Could not run: {call_str}") from exc
+    if attr == "V":
+        attr = "velocity"
 
-    try:
-        actual = getattr(relativistic_body, attr, None)
-    except Exception as exc:
-        raise Exception(f"Could not run: {call_str}.{attr}.") from exc
+    relativistic_body = RelativisticBody(**kwargs)
+    actual = getattr(relativistic_body, attr)
 
     actual_unit = getattr(actual, "unit", None)
     expected_unit = getattr(expected, "unit", None)
@@ -143,8 +139,7 @@ def test_relativistic_body(parameter, argument, attr, expected):
         f"{expected_unit}, but instead gave {actual_unit}."
     )
 
-    if not u.isclose(actual, expected, rtol=1e-6):
-        pytest.fail(
-            f"{call_str}.{attr} was expected to be {expected}, but instead "
-            f"gave {actual}."
-        )
+    assert u.isclose(actual, expected, rtol=1e-6), (
+        f"{call_str}.{attr} was expected to be {expected}, but instead "
+        f"gave {actual}."
+    )
