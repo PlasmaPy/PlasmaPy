@@ -164,7 +164,8 @@ def relativistic_energy(m: u.kg, v: u.m / u.s) -> u.Joule:
 
 class RelativisticBody:
     """
-    A physical object that is moving a speed.
+    A physical body that is moving a velocity relative to the speed of
+    light.
 
     Parameters
     ----------
@@ -182,18 +183,18 @@ class RelativisticBody:
 
     total_energy : |Quantity|, optional
        The sum of the mass energy and the kinetic energy in units
-       convertible to joules.
+       convertible to joules. Must be non-negative.
 
     kinetic_energy : |Quantity|, optional
        The kinetic energy of the relativistic body in units convertible
-       to joules.
+       to joules. Must be non-negative.
 
     v_over_c : real number or |Quantity|, optional
        The ratio of the velocity to the speed of light.
 
     lorentz_factor : real number or |Quantity|, optional
-       The Lorentz factor of the relativistic body, which must be
-       greater than or equal to one.
+       The Lorentz factor of the relativistic body. Must be greater than
+       or equal to one.
 
     Z : integer, optional
         The charge number associated with ``particle``.
@@ -205,7 +206,7 @@ class RelativisticBody:
     -----
     At most one of ``V``, ``momentum``, ``total_energy``,
     ``kinetic_energy``, ``v_over_c``, and ``lorentz_factor`` must be
-    provided. If none of these arguments are supplied, then the
+    provided.
     """
 
     def _get_speed_like_input(
@@ -219,7 +220,7 @@ class RelativisticBody:
             if value is not None
         }
 
-        if len(not_none_arguments) > 1:
+        if len(not_none_arguments) != 1:
             raise ValueError(
                 "Exactly one speed-like input must be provided to RelativisticBody."
             )
@@ -232,12 +233,20 @@ class RelativisticBody:
     def _store_velocity_like_argument(
         self, speed_like_input: Dict[str, Union[u.Quantity, Real]]
     ):
-        """..."""
+        """
+        Take the velocity-like argument and store it via the setter for
+        the corresponding attribute.
+        """
         name = list(speed_like_input.keys())[0]
         value = speed_like_input[name]
         setattr(self, name, value)
 
-    @validate_quantities
+    @validate_quantities(
+        V={"can_be_inf": False, "none_shall_pass": True},
+        p={"can_be_inf": False, "none_shall_pass": True},
+        total_energy={"can_be_negative": False, "none_shall_pass": True},
+        kinetic_energy={"can_be_negative": False, "none_shall_pass": True},
+    )
     def __init__(
         self,
         particle: ParticleLike,
@@ -440,7 +449,7 @@ class RelativisticBody:
     def __add__(self, other):
         if not isinstance(other, u.Quantity):
             return NotImplemented
-        if other.unit.physical_type == "V":
+        if other.unit.physical_type == "velocity":
             new_speed = self.velocity + other
             return RelativisticBody(self.particle, V=new_speed)
         if other.unit.physical_type == "energy":
