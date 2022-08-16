@@ -50,8 +50,8 @@ class Plasma3D(GenericPlasma):
         self._domain_shape = (len(self._x), len(self._y), len(self._z))
 
         # Initiate core plasma variables
-        self._density = np.zeros(self.domain_shape) * u.kg / u.m ** 3
-        self._momentum = np.zeros((3, *self.domain_shape)) * u.kg / (u.m ** 2 * u.s)
+        self._density = np.zeros(self.domain_shape) * u.kg / u.m**3
+        self._momentum = np.zeros((3, *self.domain_shape)) * u.kg / (u.m**2 * u.s)
         self._pressure = np.zeros(self.domain_shape) * u.Pa
         self._magnetic_field = np.zeros((3, *self.domain_shape)) * u.T
         self._electric_field = np.zeros((3, *self.domain_shape)) * u.V / u.m
@@ -178,7 +178,7 @@ class Plasma3D(GenericPlasma):
     @classmethod
     def is_datasource_for(cls, **kwargs):
         return (
-            all(f"domain_{direction}" in kwargs.keys() for direction in "xyz")
+            all(f"domain_{direction}" in kwargs for direction in "xyz")
             if len(kwargs) == 3
             else False
         )

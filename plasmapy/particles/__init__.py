@@ -13,7 +13,6 @@ from plasmapy.particles.atomic import (
     common_isotopes,
     electric_charge,
     half_life,
-    integer_charge,
     is_stable,
     isotopic_abundance,
     known_isotopes,
@@ -36,7 +35,11 @@ from plasmapy.particles.particle_class import (
     Particle,
     ParticleLike,
 )
-from plasmapy.particles.particle_collections import ionic_levels, ParticleList
+from plasmapy.particles.particle_collections import (
+    ionic_levels,
+    ParticleList,
+    ParticleListLike,
+)
 from plasmapy.particles.serialization import (
     json_load_particle,
     json_loads_particle,
@@ -76,9 +79,7 @@ helium-4).
 
 # auto populate __all__
 for name, obj in list(globals().items()):
-    if inspect.ismodule(obj):
-        continue
-    elif name.startswith("__") or name.endswith("__"):
+    if inspect.ismodule(obj) or name.startswith("__") or name.endswith("__"):
         continue
 
     __all__.append(name)

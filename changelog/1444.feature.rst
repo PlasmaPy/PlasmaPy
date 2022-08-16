@@ -1,5 +1,0 @@
-Migrated
-`~plasmapy.formulary.dimensionless.Debye_number`, and
-`~plasmapy.formulary.dimensionless.Hall_parameter` from
-`plasmapy.formulary.parameters` to `plasmapy.formulary.dimensionless`.
-Related aliases were also migrated.

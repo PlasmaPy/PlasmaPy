@@ -120,9 +120,9 @@ def cold_plasma_permittivity_SDP(B: u.T, species, n, omega: u.rad / u.s):
         omega_c = gyrofrequency(B=B, particle=s, signed=True)
         omega_p = plasma_frequency(n=n_s, particle=s)
 
-        S += -(omega_p ** 2) / (omega ** 2 - omega_c ** 2)
-        D += omega_c / omega * omega_p ** 2 / (omega ** 2 - omega_c ** 2)
-        P += -(omega_p ** 2) / omega ** 2
+        S += -(omega_p**2) / (omega**2 - omega_c**2)
+        D += omega_c / omega * omega_p**2 / (omega**2 - omega_c**2)
+        P += -(omega_p**2) / omega**2
     return StixTensorElements(S, D, P)
 
 
@@ -208,9 +208,9 @@ def cold_plasma_permittivity_LRP(B: u.T, species, n, omega: u.rad / u.s):
         omega_c = gyrofrequency(B=B, particle=s, signed=True)
         omega_p = plasma_frequency(n=n_s, particle=s)
 
-        L += -(omega_p ** 2) / (omega * (omega - omega_c))
-        R += -(omega_p ** 2) / (omega * (omega + omega_c))
-        P += -(omega_p ** 2) / omega ** 2
+        L += -(omega_p**2) / (omega * (omega - omega_c))
+        R += -(omega_p**2) / (omega * (omega + omega_c))
+        P += -(omega_p**2) / omega**2
     return RotatingTensorElements(L, R, P)
 
 
@@ -222,15 +222,15 @@ def permittivity_1D_Maxwellian_lite(omega, kWave, vth, wp):
     Performs the same calculations as
     `~plasmapy.formulary.dielectric.permittivity_1D_Maxwellian`, but is
     intended for computational use and, thus, has data conditioning
-    safeguardsremoved.
+    safeguards removed.
 
     Parameters
     ----------
-    omega : :term:`numpy:array_like` of real positive values
+    omega : |array_like| of real positive values
         The frequency, in rad/s, of the electromagnetic wave propagating
         through the plasma.
 
-    kWave : :term:`numpy:array_like` of real values
+    kWave : |array_like| of real values
         The corresponding wavenumber, in rad/m, of the electromagnetic
         wave propagating through the plasma.
 
@@ -244,7 +244,7 @@ def permittivity_1D_Maxwellian_lite(omega, kWave, vth, wp):
 
     Returns
     -------
-    chi : :term:`numpy:array_like` of complex values
+    chi : |array_like| of complex values
         The ion or the electron dielectric permittivity of the plasma.
         This is a dimensionless quantity.
 
@@ -273,7 +273,7 @@ def permittivity_1D_Maxwellian_lite(omega, kWave, vth, wp):
     alpha = np.sqrt(2) * wp / (kWave * vth)
     # The dimensionless phase velocity of the propagating EM wave.
     zeta = omega / (kWave * vth)
-    return -0.5 * (alpha ** 2) * plasma_dispersion_func_deriv_lite(zeta)
+    return -0.5 * (alpha**2) * plasma_dispersion_func_deriv_lite(zeta)
 
 
 @bind_lite_func(permittivity_1D_Maxwellian_lite)
@@ -284,7 +284,7 @@ def permittivity_1D_Maxwellian(
     omega: u.rad / u.s,
     kWave: u.rad / u.m,
     T: u.K,
-    n: u.m ** -3,
+    n: u.m**-3,
     particle,
     z_mean: u.dimensionless_unscaled = None,
 ) -> u.dimensionless_unscaled:

@@ -1,4 +1,0 @@
-Added the module ``plasmapy.particles._factory`` which contains a
-private function that accepts arguments that can be provided to
-|Particle|, |CustomParticle|, or |ParticleList| and returns the
-appropriate instance of one of those three classes.

@@ -1,2 +1,0 @@
-Defined ``autodoc_typehints_format="short"`` so signature type hints
-are displayed in short form, i.e. without the leading module names.

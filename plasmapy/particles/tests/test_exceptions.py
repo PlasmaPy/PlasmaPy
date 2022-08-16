@@ -7,10 +7,10 @@ from astropy import units as u
 from plasmapy.particles import IonizationState, IonizationStateCollection
 from plasmapy.particles.atomic import (
     atomic_number,
+    charge_number,
     common_isotopes,
     electric_charge,
     half_life,
-    integer_charge,
     is_stable,
     isotopic_abundance,
     known_isotopes,
@@ -30,7 +30,6 @@ from plasmapy.particles.exceptions import (
 )
 from plasmapy.particles.nuclear import nuclear_binding_energy, nuclear_reaction_energy
 from plasmapy.particles.symbols import atomic_symbol, element_name, isotope_symbol
-from plasmapy.utils.exceptions import PlasmaPyFutureWarning
 
 tests_for_exceptions = {
     "too few nstates": (
@@ -66,7 +65,7 @@ tests_for_exceptions = {
     "bad n_elem units": (
         IonizationState,
         [],
-        {"particle": "H", "ionic_fractions": [0, 1], "n_elem": 3 * u.m ** 3},
+        {"particle": "H", "ionic_fractions": [0, 1], "n_elem": 3 * u.m**3},
         u.UnitTypeError,
     ),
     "bad T_e units": (
@@ -81,7 +80,7 @@ tests_for_exceptions = {
         {
             "particle": "He",
             "ionic_fractions": [1.0, 0.0, 0.0],
-            "n_elem": -1 * u.m ** -3,
+            "n_elem": -1 * u.m**-3,
         },
         ParticleError,
     ),
@@ -96,8 +95,8 @@ tests_for_exceptions = {
         [],
         {
             "particle": "H",
-            "ionic_fractions": np.array([3, 4]) * u.m ** -3,
-            "n_elem": 4 * u.m ** -3,
+            "ionic_fractions": np.array([3, 4]) * u.m**-3,
+            "n_elem": 4 * u.m**-3,
         },
         ParticleError,
     ),
@@ -154,7 +153,7 @@ tests_for_exceptions = {
         IonizationStateCollection,
         [],
         {
-            "inputs": {"H": [10, 90] * u.m ** -3, "He": [0.1, 0.9, 0] * u.m ** -2},
+            "inputs": {"H": [10, 90] * u.m**-3, "He": [0.1, 0.9, 0] * u.m**-2},
             "abundances": {"H": 1, "He": 0.1},
         },
         ParticleError,
@@ -163,7 +162,7 @@ tests_for_exceptions = {
         IonizationStateCollection,
         [],
         {
-            "inputs": {"H": [10, 90] * u.m ** -3, "He": [0.1, 0.9, 0] * u.m ** -3},
+            "inputs": {"H": [10, 90] * u.m**-3, "He": [0.1, 0.9, 0] * u.m**-3},
             "abundances": {"H": 1, "He": 0.1},
         },
         ParticleError,
@@ -172,7 +171,7 @@ tests_for_exceptions = {
         IonizationStateCollection,
         [],
         {
-            "inputs": {"H": [10, 90] * u.m ** -3, "He": [0.1, 0.9, 0] * u.m ** -3},
+            "inputs": {"H": [10, 90] * u.m**-3, "He": [0.1, 0.9, 0] * u.m**-3},
             "abundances": {"H": 1, "He": 0.11},
         },
         ParticleError,
@@ -186,7 +185,7 @@ tests_for_exceptions = {
     "negative n": (
         IonizationStateCollection,
         [],
-        {"inputs": ["H"], "n0": -1 * u.cm ** -3},
+        {"inputs": ["H"], "n0": -1 * u.cm**-3},
         ParticleError,
     ),
     "negative T_e for collection": (
@@ -826,7 +825,7 @@ tests_from_atomic = [
         pytest.warns(ParticleWarning),
     ],
     [
-        integer_charge,
+        charge_number,
         [
             "fads",
         ],
@@ -834,7 +833,7 @@ tests_from_atomic = [
         pytest.raises(InvalidParticleError),
     ],
     [
-        integer_charge,
+        charge_number,
         [
             "H++",
         ],
@@ -842,7 +841,7 @@ tests_from_atomic = [
         pytest.raises(InvalidParticleError),
     ],
     [
-        integer_charge,
+        charge_number,
         [
             "h+",
         ],
@@ -850,7 +849,7 @@ tests_from_atomic = [
         pytest.raises(InvalidParticleError),
     ],
     [
-        integer_charge,
+        charge_number,
         [
             "fe 1+",
         ],
@@ -858,7 +857,7 @@ tests_from_atomic = [
         pytest.raises(InvalidParticleError),
     ],
     [
-        integer_charge,
+        charge_number,
         [
             "d+",
         ],
@@ -866,7 +865,7 @@ tests_from_atomic = [
         pytest.raises(InvalidParticleError),
     ],
     [
-        integer_charge,
+        charge_number,
         [
             "Fe 29+",
         ],
@@ -874,36 +873,12 @@ tests_from_atomic = [
         pytest.raises(InvalidParticleError),
     ],
     [
-        integer_charge,
+        charge_number,
         [
             "H-1",
         ],
         {},
         pytest.raises(ChargeError),
-    ],
-    [
-        integer_charge,
-        [
-            "H---",
-        ],
-        {},
-        pytest.warns(PlasmaPyFutureWarning),
-    ],
-    [
-        integer_charge,
-        [
-            "Fe -26",
-        ],
-        {},
-        pytest.warns(PlasmaPyFutureWarning),
-    ],
-    [
-        integer_charge,
-        [
-            "Og 10-",
-        ],
-        {},
-        pytest.warns(PlasmaPyFutureWarning),
     ],
     [
         isotope_symbol,
@@ -1010,7 +985,6 @@ atomic_ParticleErrors_funcs_table = [
     stable_isotopes,
     common_isotopes,
     isotopic_abundance,
-    integer_charge,
     electric_charge,
 ]
 

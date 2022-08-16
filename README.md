@@ -6,6 +6,7 @@
 [![Conda version](https://img.shields.io/conda/v/conda-forge/plasmapy?style=flat&logo=anaconda)](https://img.shields.io/conda/v/conda-forge/plasmapy)
 [![PyPI version](https://img.shields.io/pypi/pyversions/plasmapy?style=flat&logo=python)](https://img.shields.io/pypi/pyversions/plasmapy?style=plastic)
 [![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](./LICENSE.md)
+[![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg)](https://docs.plasmapy.org/en/latest/CODE_OF_CONDUCT.html)
 
 [![Matrix](https://img.shields.io/badge/Matrix-join%20chat-blueviolet?style=flat&logo=matrix)](https://app.element.io/#/room/#plasmapy:openastronomy.org)
 [![Twitter](https://img.shields.io/badge/Twitter%20-follow-red?style=flat&logo=twitter)](https://twitter.com/plasmapy)
@@ -27,7 +28,7 @@
 [Astropy]: https://www.astropy.org
 [calendar]: https://calendar.google.com/calendar/embed?src=c_sqqq390s24jjfjp3q86pv41pi8%40group.calendar.google.com&ctz=America%2FNew_York
 [citation instructions]: https://docs.plasmapy.org/en/latest/about/citation.html
-[code of conduct]: http://docs.plasmapy.org/en/stable/CODE_OF_CONDUCT.html
+[code of conduct]: http://docs.plasmapy.org/en/latest/CODE_OF_CONDUCT.html
 [collaborative award]: https://doi.org/10.5281/zenodo.2633286
 [command line]: https://tutorial.djangogirls.org/en/intro_to_command_line/
 [community meetings]: https://www.plasmapy.org/meetings/weekly
@@ -215,7 +216,7 @@ project. Releases of PlasmaPy are available from the [PlasmaPy community
 on Zenodo], along with many other PlasmaPy resources. Please check our
 documentation for more detailed [citation instructions].
 
-## Acknowledgements
+## Acknowledgments
 
 Early development on PlasmaPy was supported in part by the U.S.
 [Department of Energy], the [Smithsonian Institution], [NASA], and

@@ -1,11 +1,22 @@
-"""Functionality to find and analyze 3D magnetic null points."""
+"""
+Functionality to find and analyze 3D magnetic null points.
+
+.. note::
+
+   This module is still under development and the API may change in
+   future releases.
+"""
 
 __all__ = [
-    "Point",
+    "MultipleNullPointWarning",
+    "NonZeroDivergence",
     "NullPoint",
+    "NullPointError",
+    "NullPointWarning",
+    "Point",
     "null_point_find",
-    "uniform_nullpoint_find",
     "trilinear_approx",
+    "uniform_null_point_find",
 ]
 
 import numpy as np
@@ -14,15 +25,78 @@ import warnings
 from typing import Callable
 
 # Declare Constants & global variables
-_EQUALITY_ATOL = 1e-15
+_EQUALITY_ATOL = 1e-10
 _MAX_RECURSION_LEVEL = 10
 global _recursion_level
 _recursion_level = 0
 
 
+class NullPointError(Exception):
+    """
+    A class for handling the exceptions of the null point finder functionality.
+
+    .. note::
+
+       This functionality is still under development and the API may
+       change in future releases.
+    """
+
+    pass
+
+
+class NullPointWarning(UserWarning):
+    """
+    A class for handling the warnings of the null point finder functionality.
+
+    .. note::
+
+       This functionality is still under development and the API may
+       change in future releases.
+    """
+
+    pass
+
+
+class NonZeroDivergence(NullPointError):
+    """
+    A class for handling the exception raised by passing in a magnetic field
+    that violates the zero divergence constraint.
+
+    .. note::
+
+       This functionality is still under development and the API may
+       change in future releases.
+    """
+
+    def __init__(self):
+        super().__init__(
+            "The divergence constraint does not hold for the provided magnetic field."
+        )
+
+
+class MultipleNullPointWarning(NullPointWarning):
+    """
+    A class for handling the warning raised by passing in a magnetic field
+    grid that may contain multiple null points in close proximity due to low
+    resolution.
+
+    .. note::
+
+       This functionality is still under development and the API may
+       change in future releases.
+    """
+
+    pass
+
+
 class Point:
     """
     Abstract class for defining a point in 3D space.
+
+    .. note::
+
+       This functionality is still under development and the API may
+       change in future releases.
     """
 
     def __init__(self, loc):
@@ -40,17 +114,22 @@ class Point:
 class NullPoint(Point):
     """
     A class for defining a null point in 3D space.
+
+    .. note::
+
+       This functionality is still under development and the API may
+       change in future releases.
     """
 
-    def __init__(self, null_loc, type):
+    def __init__(self, null_loc, classification):
         super().__init__(null_loc)
-        self.type = type
+        self._classification = classification
 
-    def get_type(self):
+    def get_classification(self):
         r"""
         Returns the type of the null point object.
         """
-        return self.type
+        return self._classification
 
     def __eq__(self, point):
         r"""
@@ -63,6 +142,8 @@ class NullPoint(Point):
             + (self.loc[2] - point.loc[2]) ** 2
         )
         return np.isclose(d, 0, atol=_EQUALITY_ATOL)
+
+    classification = property(get_classification)
 
 
 def _vector_space(
@@ -84,54 +165,54 @@ def _vector_space(
     Parameters
     ----------
 
-    x_arr: array_like
+    x_arr : |array_like|
         The array representing the coordinates in the x-dimension.
         If not given, then range values are used to construct a
         uniform array on that interval.
 
-    y_arr: array_like
+    y_arr : |array_like|
         The array representing the coordinates in the y-dimension.
         If not given, then range values are used to construct a
         uniform array on that interval.
 
-    z_arr: array_like
+    z_arr : |array_like|
         The array representing the coordinates in the z-dimension.
         If not given, then range values are used to construct a
         uniform array on that interval.
 
-    x_range: array_like
+    x_range : |array_like|
         A 1 by 2 array containing the range of x-values for the vector spaces.
         If not given, the default interval [0,1] is assumed.
 
-    y_range: array_like
+    y_range : |array_like|
         A 1 by 2 array containing the range of y-values for the vector spaces.
         If not given, the default interval [0,1] is assumed.
 
-    z_range: array_like
+    z_range : |array_like|
         A 1 by 2 array containing the range of z-values for the vector spaces.
         If not given, the default interval [0,1] is assumed.
 
-    u_arr: array_like
+    u_arr : |array_like|
         A 3D array containing the x-component of the vector values for the vector
         space. If not given, the vector values are generated over the vector space
         using the function func.
 
-    v_arr: array_like
+    v_arr : |array_like|
         A 3D array containing the y-component of the vector values for the vector
         space. If not given, the vector values are generated over the vector space
         using the function func.
 
-    w_arr: array_like
+    w_arr : |array_like|
         A 3D array containing the z-component of the vector values for the vector
         space. If not given, the vector values are generated over the vector space
         using the function func.
 
-    func: <class 'function'>
+    func : function
         A function that takes in 3 arguments, respectively representing a x, y, and z
         coordinate of a point and returns the vector value for that point in the form
         of a 1 by 3 array.
 
-    precision: array_like
+    precision : |array_like|
         A 1 by 3 array containing the approximate precision values for each dimension,
         in the case where uniform arrays are being used.
         The default value is [0.05, 0.05, 0.05].
@@ -187,13 +268,13 @@ def _trilinear_coeff_cal(vspace, cell):
     Parameters
     ----------
 
-    vspace: array_like
+    vspace: |array_like|
         The vector space as constructed by the vector_space function which is
         A 1 by 3 array with the first element containing the coordinates,
         the second element containing the vector values,
         and the third element containing the delta values for each dimension.
 
-    cell: array_like of integers
+    cell: |array_like| of integers
         A grid cell, represented by a 1 by 3 array
         of integers, which correspond to a grid cell
         in the vector space.
@@ -293,23 +374,28 @@ def trilinear_approx(vspace, cell):
     and returns the trilinearly approximated vector value at that particular
     coordinate in that grid cell.
 
+    .. note::
+
+       This functionality is still under development and the API may
+       change in future releases.
+
     Parameters
     ----------
 
-    vspace: array_like
+    vspace: |array_like|
         The vector space as constructed by the vector_space function which is
         A 1 by 3 array with the first element containing the coordinates,
         the second element containing the vector values,
         and the third element containing the delta values for each dimension.
 
-    cell: array_like of integers
+    cell: |array_like| of integers
         A grid cell, represented by a 1 by 3 array
         of integers, which correspond to a grid cell
         in the vector space.
 
     Returns
     -------
-    <class 'function'>
+    function
         A function whose input is a coordinate within a given grid cell
         and returns the trilinearly approximated vector value at that particular
         coordinate in that grid cell.
@@ -365,13 +451,13 @@ def _trilinear_jacobian(vspace, cell):
     Parameters
     ----------
 
-    vspace: array_like
+    vspace: |array_like|
         The vector space as constructed by the vector_space function which is
         A 1 by 3 array with the first element containing the coordinates,
         the second element containing the vector values,
         and the third element containing the delta values for each dimension.
 
-    cell: array_like of integers
+    cell: |array_like| of integers
         A grid cell, represented by a 1 by 3 array
         of integers, which correspond to a grid cell
         in the vector space.
@@ -419,18 +505,18 @@ def _reduction(vspace, cell):
     r"""
     Return a true or false based on weather
     a grid cell passes the reduction phase,
-    meaning that they potentionally contain a null point.
+    meaning that they potentially contain a null point.
 
     Parameters
     ----------
 
-    vspace: array_like
+    vspace: |array_like|
         The vector space as constructed by the vector_space function which is
         A 1 by 3 array with the first element containing the coordinates,
         the second element containing the vector values,
         and the third element containing the delta values for each dimension.
 
-    cell: array_like of integers
+    cell: |array_like| of integers
         A grid cell, represented by a 1 by 3 array
         of integers, which correspond to a grid cell
         in the vector space.
@@ -506,7 +592,7 @@ def _bilinear_root(a1, b1, c1, d1, a2, b2, c2, d2):
 
     Returns
     -------
-    roots : array_like of floats
+    roots : |array_like| of floats
         A 1 by 2 array containing the two roots
     """
     m1 = np.array([[a1, a2], [c1, c2]])
@@ -526,11 +612,11 @@ def _bilinear_root(a1, b1, c1, d1, a2, b2, c2, d2):
             x2 = (-1.0 * c) / b
 
     else:
-        if (b ** 2 - 4.0 * a * c) < 0:
+        if (b**2 - 4.0 * a * c) < 0:
             return np.array([])
         else:
-            x1 = (-1.0 * b + (b ** 2 - 4.0 * a * c) ** 0.5) / (2.0 * a)
-            x2 = (-1.0 * b - (b ** 2 - 4.0 * a * c) ** 0.5) / (2.0 * a)
+            x1 = (-1.0 * b + (b**2 - 4.0 * a * c) ** 0.5) / (2.0 * a)
+            x2 = (-1.0 * b - (b**2 - 4.0 * a * c) ** 0.5) / (2.0 * a)
 
     y1 = None
     y2 = None
@@ -566,13 +652,13 @@ def _trilinear_analysis(vspace, cell):
     Parameters
     ----------
 
-    vspace: array_like
+    vspace: |array_like|
         The vector space as constructed by the vector_space function which is
         A 1 by 3 array with the first element containing the coordinates,
         the second element containing the vector values,
         and the third element containing the delta values for each dimension.
 
-    cell: array_like of integers
+    cell: |array_like| of integers
         A grid cell, represented by a 1 by 3 array
         of integers, which correspond to a grid cell
         in the vector space.
@@ -591,7 +677,7 @@ def _trilinear_analysis(vspace, cell):
     -----
     :`UserWarning`
         If there is a possible lack of grid resolution, so
-        that a grid cell may contain more than one nullpoint.
+        that a grid cell may contain more than one null point.
     """
 
     # Critical Cell Corners
@@ -617,6 +703,16 @@ def _trilinear_analysis(vspace, cell):
     BxBzEndpoints = []
     ByBzEndpoints = []
 
+    # Check if the null point already exists in root list
+    def is_root_in_list(root, arr):
+        for r in arr:
+            x_close = np.isclose(root[0], r[0], atol=_EQUALITY_ATOL)
+            y_close = np.isclose(root[1], r[1], atol=_EQUALITY_ATOL)
+            z_close = np.isclose(root[2], r[2], atol=_EQUALITY_ATOL)
+            if x_close and y_close and z_close:
+                return True
+        return False
+
     # Front Surface
     yConst1 = vspace[0][1][f000[0]][f000[1]][
         f000[2]
@@ -634,9 +730,10 @@ def _trilinear_analysis(vspace, cell):
         fy + hy * yConst1,
     )
     for root in root_list:
-        BxByEndpoints.append((root[0], yConst1, root[1]))
+        if not is_root_in_list((root[0], yConst1, root[1]), BxByEndpoints):
+            BxByEndpoints.append((root[0], yConst1, root[1]))
 
-    # Bx=BZ=0 Curve Endpoint
+    # Bx=Bz=0 Curve Endpoint
     root_list = _bilinear_root(
         ax + cx * yConst1,
         bx + ex * yConst1,
@@ -649,7 +746,8 @@ def _trilinear_analysis(vspace, cell):
     )
 
     for root in root_list:
-        BxBzEndpoints.append((root[0], yConst1, root[1]))
+        if not is_root_in_list((root[0], yConst1, root[1]), BxBzEndpoints):
+            BxBzEndpoints.append((root[0], yConst1, root[1]))
 
     # By=Bz=0 Curve Endpoint
     root_list = _bilinear_root(
@@ -664,7 +762,8 @@ def _trilinear_analysis(vspace, cell):
     )
 
     for root in root_list:
-        ByBzEndpoints.append((root[0], yConst1, root[1]))
+        if not is_root_in_list((root[0], yConst1, root[1]), ByBzEndpoints):
+            ByBzEndpoints.append((root[0], yConst1, root[1]))
 
     # Back Surface
     yConst2 = vspace[0][1][f111[0]][f111[1]][
@@ -683,7 +782,8 @@ def _trilinear_analysis(vspace, cell):
     )
 
     for root in root_list:
-        BxByEndpoints.append((root[0], yConst2, root[1]))
+        if not is_root_in_list((root[0], yConst2, root[1]), BxByEndpoints):
+            BxByEndpoints.append((root[0], yConst2, root[1]))
 
     # Bx=Bz=0 Curve Endpoint
     root_list = _bilinear_root(
@@ -698,7 +798,8 @@ def _trilinear_analysis(vspace, cell):
     )
 
     for root in root_list:
-        BxBzEndpoints.append((root[0], yConst2, root[1]))
+        if not is_root_in_list((root[0], yConst2, root[1]), BxBzEndpoints):
+            BxBzEndpoints.append((root[0], yConst2, root[1]))
 
     # By=Bz=0 Curve Endpoint
     root_list = _bilinear_root(
@@ -713,7 +814,8 @@ def _trilinear_analysis(vspace, cell):
     )
 
     for root in root_list:
-        ByBzEndpoints.append((root[0], yConst2, root[1]))
+        if not is_root_in_list((root[0], yConst2, root[1]), ByBzEndpoints):
+            ByBzEndpoints.append((root[0], yConst2, root[1]))
 
     # Right Surface
     xConst1 = vspace[0][0][f111[0]][f111[1]][f111[2]]
@@ -730,7 +832,8 @@ def _trilinear_analysis(vspace, cell):
     )
 
     for root in root_list:
-        BxByEndpoints.append((xConst1, root[0], root[1]))
+        if not is_root_in_list((xConst1, root[0], root[1]), BxByEndpoints):
+            BxByEndpoints.append((xConst1, root[0], root[1]))
 
     # Bx=BZ=0 Curve Endpoint
     root_list = _bilinear_root(
@@ -745,7 +848,8 @@ def _trilinear_analysis(vspace, cell):
     )
 
     for root in root_list:
-        BxBzEndpoints.append((xConst1, root[0], root[1]))
+        if not is_root_in_list((xConst1, root[0], root[1]), BxBzEndpoints):
+            BxBzEndpoints.append((xConst1, root[0], root[1]))
 
     # By=Bz=0 Curve Endpoint
     root_list = _bilinear_root(
@@ -760,7 +864,8 @@ def _trilinear_analysis(vspace, cell):
     )
 
     for root in root_list:
-        ByBzEndpoints.append((xConst1, root[0], root[1]))
+        if not is_root_in_list((xConst1, root[0], root[1]), ByBzEndpoints):
+            ByBzEndpoints.append((xConst1, root[0], root[1]))
 
     # Left Surface
     xConst2 = vspace[0][0][f000[0]][f000[1]][f000[2]]
@@ -777,7 +882,8 @@ def _trilinear_analysis(vspace, cell):
     )
 
     for root in root_list:
-        BxByEndpoints.append((xConst2, root[0], root[1]))
+        if not is_root_in_list((xConst2, root[0], root[1]), BxByEndpoints):
+            BxByEndpoints.append((xConst2, root[0], root[1]))
 
     # Bx=BZ=0 Curve Endpoint
     root_list = _bilinear_root(
@@ -792,7 +898,8 @@ def _trilinear_analysis(vspace, cell):
     )
 
     for root in root_list:
-        BxBzEndpoints.append((xConst2, root[0], root[1]))
+        if not is_root_in_list((xConst2, root[0], root[1]), BxBzEndpoints):
+            BxBzEndpoints.append((xConst2, root[0], root[1]))
 
     # By=Bz=0 Curve Endpoint
     root_list = _bilinear_root(
@@ -807,7 +914,8 @@ def _trilinear_analysis(vspace, cell):
     )
 
     for root in root_list:
-        ByBzEndpoints.append((xConst2, root[0], root[1]))
+        if not is_root_in_list((xConst2, root[0], root[1]), ByBzEndpoints):
+            ByBzEndpoints.append((xConst2, root[0], root[1]))
 
     # Up Surface
     zConst1 = vspace[0][2][f111[0]][f111[1]][f111[2]]
@@ -824,7 +932,8 @@ def _trilinear_analysis(vspace, cell):
     )
 
     for root in root_list:
-        BxByEndpoints.append((root[0], root[1], zConst1))
+        if not is_root_in_list((root[0], root[1], zConst1), BxByEndpoints):
+            BxByEndpoints.append((root[0], root[1], zConst1))
 
     # Bx=Bz=0 Curve Endpoint
     root_list = _bilinear_root(
@@ -839,7 +948,8 @@ def _trilinear_analysis(vspace, cell):
     )
 
     for root in root_list:
-        BxBzEndpoints.append((root[0], root[1], zConst1))
+        if not is_root_in_list((root[0], root[1], zConst1), BxBzEndpoints):
+            BxBzEndpoints.append((root[0], root[1], zConst1))
 
     # By=Bz=0 Curve Endpoint
     root_list = _bilinear_root(
@@ -854,7 +964,8 @@ def _trilinear_analysis(vspace, cell):
     )
 
     for root in root_list:
-        ByBzEndpoints.append((root[0], root[1], zConst1))
+        if not is_root_in_list((root[0], root[1], zConst1), ByBzEndpoints):
+            ByBzEndpoints.append((root[0], root[1], zConst1))
 
     # Down Surface
     zConst2 = vspace[0][2][f000[0]][f000[1]][f000[2]]
@@ -871,7 +982,8 @@ def _trilinear_analysis(vspace, cell):
     )
 
     for root in root_list:
-        BxByEndpoints.append((root[0], root[1], zConst2))
+        if not is_root_in_list((root[0], root[1], zConst2), BxByEndpoints):
+            BxByEndpoints.append((root[0], root[1], zConst2))
 
     # Bx=Bz=0 Curve Endpoint
     root_list = _bilinear_root(
@@ -886,7 +998,8 @@ def _trilinear_analysis(vspace, cell):
     )
 
     for root in root_list:
-        BxBzEndpoints.append((root[0], root[1], zConst2))
+        if not is_root_in_list((root[0], root[1], zConst2), BxBzEndpoints):
+            BxBzEndpoints.append((root[0], root[1], zConst2))
 
     # By=Bz=0 Curve Endpoint
     root_list = _bilinear_root(
@@ -901,7 +1014,8 @@ def _trilinear_analysis(vspace, cell):
     )
 
     for root in root_list:
-        ByBzEndpoints.append((root[0], root[1], zConst2))
+        if not is_root_in_list((root[0], root[1], zConst2), ByBzEndpoints):
+            ByBzEndpoints.append((root[0], root[1], zConst2))
 
     xbound = vspace[0][0][f111[0]][f111[1]][f111[2]]
     ybound = vspace[0][1][f111[0]][f111[1]][f111[2]]
@@ -928,23 +1042,31 @@ def _trilinear_analysis(vspace, cell):
     BxByEndpoints = list(filter(bound, BxByEndpoints))
     BxBzEndpoints = list(filter(bound, BxBzEndpoints))
     ByBzEndpoints = list(filter(bound, ByBzEndpoints))
-
     tlApprox = trilinear_approx(vspace, cell)
 
-    # # Check on the Surfaces
-    # for p in BxByEndpoints:
-    #     if np.linalg.norm(tlApprox(p[0], p[1], p[2])) < _EQUALITY_ATOL:
-    #         return True
-    # for p in BxBzEndpoints:
-    #     if np.linalg.norm(tlApprox(p[0], p[1], p[2])) < _EQUALITY_ATOL:
-    #         return True
-    # for p in ByBzEndpoints:
-    #     if np.linalg.norm(tlApprox(p[0], p[1], p[2])) < _EQUALITY_ATOL:
-    #         return True
+    # Check on the Surfaces
+    for p in BxByEndpoints:
+        if np.linalg.norm(tlApprox(p[0], p[1], p[2])) < _EQUALITY_ATOL:
+            # print(cell)
+            # print(tlApprox(p[0], p[1], p[2]))
+            return True
+    for p in BxBzEndpoints:
+        if np.linalg.norm(tlApprox(p[0], p[1], p[2])) < _EQUALITY_ATOL:
+            # print(cell)
+            # print(tlApprox(p[0], p[1], p[2]))
+            return True
+    for p in ByBzEndpoints:
+        if np.linalg.norm(tlApprox(p[0], p[1], p[2])) < _EQUALITY_ATOL:
+            # print(cell)
+            # print(tlApprox(p[0], p[1], p[2]))
+            return True
 
     # Check Grid Resolution
     if len(BxByEndpoints) == 0 and len(BxBzEndpoints) == 0 and len(ByBzEndpoints) == 0:
-        warnings.warn("Possible Lack of Grid Resolution")
+        warnings.warn(
+            "Multiple null points suspected. Trilinear method may not work as intended.",
+            MultipleNullPointWarning,
+        )
         return False
 
     if len(BxByEndpoints) != 2 or len(BxBzEndpoints) != 2 or len(ByBzEndpoints) != 2:
@@ -957,31 +1079,29 @@ def _trilinear_analysis(vspace, cell):
             index = 1
         elif curve_name == "z":
             index = 2
-        if (
-            np.sign(
-                tlApprox(
-                    curve_endpoints[0][0], curve_endpoints[0][1], curve_endpoints[0][2]
-                )[index]
-            )
-            * np.sign(
-                tlApprox(
-                    curve_endpoints[1][0], curve_endpoints[1][1], curve_endpoints[1][2]
-                )[index]
-            )
-            > 0
+
+        first_endpoint = tlApprox(
+            curve_endpoints[0][0], curve_endpoints[0][1], curve_endpoints[0][2]
+        )[index]
+        second_endpoint = tlApprox(
+            curve_endpoints[1][0], curve_endpoints[1][1], curve_endpoints[1][2]
+        )[index]
+        if np.isclose(first_endpoint, 0, atol=_EQUALITY_ATOL) or np.isclose(
+            second_endpoint, 0, atol=_EQUALITY_ATOL
         ):
+            return True
+        if np.sign(first_endpoint) * np.sign(second_endpoint) > 0:
             return False
         else:
             return True
 
-    if (
-        (not endpoint_sign_check(BxByEndpoints, "z"))
-        or (not endpoint_sign_check(BxBzEndpoints, "y"))
-        or (not endpoint_sign_check(ByBzEndpoints, "x"))
-    ):
-        return False
-    else:
+    opposite_sign_z = endpoint_sign_check(BxByEndpoints, "z")
+    opposite_sign_y = endpoint_sign_check(BxBzEndpoints, "y")
+    opposite_sign_x = endpoint_sign_check(ByBzEndpoints, "x")
+    if opposite_sign_x and opposite_sign_y and opposite_sign_z:
         return True
+    else:
+        return False
 
 
 def _locate_null_point(vspace, cell, n, err):
@@ -1002,13 +1122,13 @@ def _locate_null_point(vspace, cell, n, err):
     Parameters
     ----------
 
-    vspace: array_like
+    vspace: |array_like|
         The vector space as constructed by the vector_space function which is
         A 1 by 3 array with the first element containing the coordinates,
         the second element containing the vector values,
         and the third element containing the delta values for each dimension.
 
-    cell: array_like of integers
+    cell: |array_like| of integers
         A grid cell, represented by a 1 by 3 array
         of integers, which correspond to a grid cell
         in the vector space.
@@ -1023,7 +1143,7 @@ def _locate_null_point(vspace, cell, n, err):
 
     Returns
     -------
-    array_like of floats
+    |array_like| of floats
         A 1 by 3 array containing the converged coordinates of the
         null point.
     NoneType
@@ -1036,12 +1156,11 @@ def _locate_null_point(vspace, cell, n, err):
         If the maximum number of iteration has been
         reached, but convergence has not occurred.
     """
-
     global _recursion_level
     # Calculating the Jacobian and trilinear approximation functions for the cell
     tlApprox = trilinear_approx(vspace, cell)
     jcb = _trilinear_jacobian(vspace, cell)
-    # Calculatiung the deltas
+    # Calculating the deltas
     deltax, deltay, deltaz = vspace[2]
     deltax = deltax[cell[0]]
     deltay = deltay[cell[1]]
@@ -1124,37 +1243,123 @@ def _locate_null_point(vspace, cell, n, err):
             Bx0 = np.array([locx, locy, locz])
             Bx0 = Bx0.reshape(3, 1)
             prev_norm = np.linalg.norm(x0)
-            # Too many null points if the jacobian is zero
+            # Too many null points if the determinant of the Jacobian is zero
             if np.isclose(
                 np.linalg.det(jcb(x0[0], x0[1], x0[2])), 0, atol=_EQUALITY_ATOL
             ):
-                warnings.warn("Multiple null points")
-                return None
+                warnings.warn(
+                    "Multiple null points suspected. Trilinear method may not work as intended.",
+                    MultipleNullPointWarning,
+                )
+                if (
+                    np.isclose(locx, 0, atol=_EQUALITY_ATOL)
+                    and np.isclose(locy, 0, atol=_EQUALITY_ATOL)
+                    and np.isclose(locz, 0, atol=_EQUALITY_ATOL)
+                ):
+                    return x0
+                else:
+                    break
             # Adjust position
             x0 = np.subtract(
                 x0, np.matmul(np.linalg.inv(jcb(x0[0], x0[1], x0[2])), Bx0)
             )
             norm = np.linalg.norm(x0)
-            if np.abs(norm - prev_norm) < err and in_bound(x0):
+            if np.abs((norm - prev_norm) / (prev_norm + 1e-10)) < err and in_bound(x0):
                 return x0
         if in_bound(x0):
-            warnings.warn("Max Iterations Reached")
-            return x0
+            warnings.warn("Max Iterations Reached without Convergence")
+            if (
+                np.isclose(locx, 0, atol=_EQUALITY_ATOL)
+                and np.isclose(locy, 0, atol=_EQUALITY_ATOL)
+                and np.isclose(locz, 0, atol=_EQUALITY_ATOL)
+            ):
+                return x0
+    warnings.warn("Various starting points did not locate possible null point.")
+    # Generate new starting points localized into 8 small cells?
+    return None
 
-    # Break Up the Cell into 8 smaller cells and try again
-    _recursion_level = _recursion_level + 1
-    if _recursion_level > _MAX_RECURSION_LEVEL:
-        warnings.warn("Could not locate a possible null point")
-        return None
-    null_point_args = {
-        "func": tlApprox,
-        "x_range": [pos_000[0], pos_111[0]],
-        "y_range": [pos_000[1], pos_111[1]],
-        "z_range": [pos_000[2], pos_111[2]],
-        "precision": [deltax / 2, deltay / 2, deltaz / 2],
-    }
 
-    return null_point_find(**null_point_args)
+def _classify_null_point(vspace, cell, loc):
+    r"""
+    Return the coordinates of a null point within
+    a given grid cell in a vector space using the
+    Newton-Rapshon method.
+
+    Multiple initial positions are tried until either
+    one converges inside a the grid cell, or the maximum
+    iteration is reached.
+    If neither occurs, more starting positions are tried,
+    by breaking up the cell into 8 smaller sub-grid cells,
+    until one starting position does converge or stop inside
+    the grid cell.
+    This process is repeated a finite amount of times, after which
+    the function returns None.
+
+    Parameters
+    ----------
+    vspace: |array_like|
+        The vector space as constructed by the vector_space function which is
+        A 1 by 3 array with the first element containing the coordinates,
+        the second element containing the vector values,
+        and the third element containing the delta values for each dimension.
+
+    cell: |array_like| of integers
+        A grid cell, represented by a 1 by 3 array
+        of integers, which correspond to a grid cell
+        in the vector space.
+
+    Returns
+    -------
+    str
+        A string describing the null point type.
+
+    Raises
+    ------
+    NonZeroDivergence
+        If the divergence of the given vector space is not sufficiently close
+        to zero at the null point.
+
+    Notes
+    -----
+    This method is described by :cite:t:`parnell:1996`.
+
+    """
+    jcb = _trilinear_jacobian(vspace, cell)
+    M = jcb(loc[0], loc[1], loc[2])
+    if not np.isclose(np.trace(M), 0, atol=_EQUALITY_ATOL):
+        raise NonZeroDivergence()
+    eigen_vals, eigen_vectors = np.linalg.eig(M)
+    # using the notation from Parnell et al. (1996)
+    R = -1.0 * np.linalg.det(M)
+    Q = -0.5 * np.trace(np.matmul(M, M))
+
+    discriminant = (Q**3 / 27.0) + (R**2 / 4.0)
+    determinant = -1.0 * R
+    if np.isclose(discriminant, 0, atol=_EQUALITY_ATOL):
+        if np.allclose(M, M.T, atol=_EQUALITY_ATOL):  # Checking if M is symmetric
+            null_point_type = "Proper radial null"
+        else:
+            if np.isclose(determinant, 0, atol=_EQUALITY_ATOL):
+                null_point_type = "Anti-parallel lines with null plane OR Planes of parabolae with null line"
+            else:
+                null_point_type = "Critical spiral null"
+    elif discriminant < 0:
+        if np.allclose(M, M.T, atol=_EQUALITY_ATOL):
+            if np.isclose(determinant, 0, atol=_EQUALITY_ATOL):
+                null_point_type = "Continuous potential X-points"
+            else:
+                null_point_type = "Improper radial null"
+        else:
+            if np.isclose(determinant, 0, atol=_EQUALITY_ATOL):
+                null_point_type = "Continuous X-points"
+            else:
+                null_point_type = "Skewed improper null"
+    else:
+        if np.isclose(determinant, 0, atol=_EQUALITY_ATOL):
+            null_point_type = "Continuous concentric ellipses"
+        else:
+            null_point_type = "Spiral null"
+    return null_point_type
 
 
 def _vspace_iterator(vspace, maxiter=500, err=1e-10):
@@ -1164,7 +1369,7 @@ def _vspace_iterator(vspace, maxiter=500, err=1e-10):
 
     Parameters
     ----------
-    vspace: array_like
+    vspace: |array_like|
         The vector space as constructed by the ``_vector_space`` function which is
         A 1 by 3 array with the first element containing the coordinates,
         the second element containing the vector values,
@@ -1181,9 +1386,9 @@ def _vspace_iterator(vspace, maxiter=500, err=1e-10):
 
     Returns
     -------
-    array_like of `~plasmapy.analysis.nullpoint.NullPoint`
+    |array_like| of `~plasmapy.analysis.nullpoint.NullPoint`
         An array of `~plasmapy.analysis.nullpoint.NullPoint` objects
-        representing the nullpoints of the given vector space.
+        representing the null points of the given vector space.
 
     """
     nullpoints = []
@@ -1194,7 +1399,8 @@ def _vspace_iterator(vspace, maxiter=500, err=1e-10):
                     if _trilinear_analysis(vspace, [i, j, k]):
                         loc = _locate_null_point(vspace, [i, j, k], maxiter, err)
                         if loc is not None:
-                            p = NullPoint(loc, "N/A")
+                            null_type = _classify_null_point(vspace, [i, j, k], loc)
+                            p = NullPoint(loc, null_type)
                             if p not in nullpoints:
                                 nullpoints.append(p)
     return nullpoints
@@ -1211,37 +1417,42 @@ def null_point_find(
     err=1e-10,
 ):
     r"""
-    Returns an array of nullpoint object, representing
-    the nullpoints of the given vector space.
+    Returns an array of `~plasmapy.analysis.nullpoint.NullPoint` object, representing
+    the null points of the given vector space.
+
+    .. note::
+
+       This functionality is still under development and the API may
+       change in future releases.
 
     Parameters
     ----------
-    x_arr: array_like
+    x_arr: |array_like|
         The array representing the coordinates in the x-dimension.
         If not given, then range values are used to construct a
         uniform array on that interval.
 
-    y_arr: array_like
+    y_arr: |array_like|
         The array representing the coordinates in the y-dimension.
         If not given, then range values are used to construct a
         uniform array on that interval.
 
-    z_arr: array_like
+    z_arr: |array_like|
         The array representing the coordinates in the z-dimension.
         If not given, then range values are used to construct a
         uniform array on that interval.
 
-    u_arr: array_like
+    u_arr: |array_like|
         A 3D array containing the x-component of the vector values for the vector
         space. If not given, the vector values are generated over the vector space
         using the function func.
 
-    v_arr: array_like
+    v_arr: |array_like|
         A 3D array containing the y-component of the vector values for the vector
         space. If not given, the vector values are generated over the vector space
         using the function func.
 
-    w_arr: array_like
+    w_arr: |array_like|
         A 3D array containing the z-component of the vector values for the vector
         space. If not given, the vector values are generated over the vector space
         using the function func.
@@ -1258,9 +1469,9 @@ def null_point_find(
 
     Returns
     -------
-    array_like of `~plasmapy.analysis.nullpoint.NullPoint`
+    |array_like| of `~plasmapy.analysis.nullpoint.NullPoint`
         An array of `~plasmapy.analysis.nullpoint.NullPoint` objects
-        representing the nullpoints of the given vector space.
+        representing the null points of the given vector space.
 
     Notes
     -----
@@ -1284,7 +1495,7 @@ def null_point_find(
     return _vspace_iterator(vspace, maxiter, err)
 
 
-def uniform_nullpoint_find(
+def uniform_null_point_find(
     x_range,
     y_range,
     z_range,
@@ -1294,38 +1505,43 @@ def uniform_nullpoint_find(
     err=1e-10,
 ):
     r"""
-    Return an array of `~plasmapy.analysis.nullpoint.NullPoint` objects, representing
-    the null points of the given vector space.
+    Return an array of `~plasmapy.analysis.nullpoint.NullPoint` objects,
+    representing the null points of the given vector space.
+
+    .. note::
+
+       This functionality is still under development and the API may
+       change in future releases.
 
     Parameters
     ----------
-    x_range: array_like
+    x_range: |array_like|
         A 1 by 2 array containing the range of x-values for the vector spaces.
         If not given, the default interval [0,1] is assumed.
 
-    y_range: array_like
+    y_range: |array_like|
         A 1 by 2 array containing the range of y-values for the vector spaces.
         If not given, the default interval [0,1] is assumed.
 
-    z_range: array_like
+    z_range: |array_like|
         A 1 by 2 array containing the range of z-values for the vector spaces.
         If not given, the default interval [0,1] is assumed.
 
-    func: <class 'function'>
+    func: function
         A function that takes in 3 arguments, respectively representing a x, y, and z
         coordinate of a point and returns the vector value for that point in the form
         of a 1 by 3 array.
 
-    precision: array_like
+    precision: |array_like|
         A 1 by 3 array containing the approximate precision values for each dimension,
         in the case where uniform arrays are being used.
         The default value is [0.05, 0.05, 0.05].
 
     Returns
     -------
-    array_like of `~plasmapy.analysis.nullpoint.NullPoint`
+    |array_like| of `~plasmapy.analysis.nullpoint.NullPoint`
         An array of `~plasmapy.analysis.nullpoint.NullPoint` objects representing
-        the nullpoints of the given vector space.
+        the null points of the given vector space.
 
     Notes
     -----

@@ -1,3 +1,0 @@
-Removed a block of code that printed out special particle properties
-when ``plasmapy.particles.special_particles`` (renamed to
-``plasmapy.particles._special_particles``) was executed.
