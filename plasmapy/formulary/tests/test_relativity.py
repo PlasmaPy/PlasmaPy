@@ -108,7 +108,7 @@ def test_ultra_relativistic_proton_speed(ultra_relativistic_proton):
 
 proton_at_half_c_inputs = [
     ("v_over_c", 0.5),
-    ("V", 0.5 * c),
+    ("velocity", 0.5 * c),
     ("lorentz_factor", 1.1547005383792517),
     ("total_energy", 1.7358354725115025e-10 * u.J),
     ("kinetic_energy", 2.3255785652637692e-11 * u.J),
@@ -120,11 +120,12 @@ proton_at_half_c_inputs = [
 @pytest.mark.parametrize("parameter, argument", proton_at_half_c_inputs)
 def test_relativistic_body(parameter, argument, attr, expected):
     """Test attributes of RelativisticBody."""
+
+    if parameter == "velocity":
+        parameter = "V"
+
     kwargs = {"particle": proton, parameter: argument}
     call_str = call_string(RelativisticBody, kwargs=kwargs)
-
-    if attr == "V":
-        attr = "velocity"
 
     relativistic_body = RelativisticBody(**kwargs)
     actual = getattr(relativistic_body, attr)
@@ -143,12 +144,30 @@ def test_relativistic_body(parameter, argument, attr, expected):
     )
 
 
+@pytest.mark.parametrize("attr_to_set, set_value", proton_at_half_c_inputs)
+@pytest.mark.parametrize("attr_to_test, expected", proton_at_half_c_inputs)
+def test_relativistic_body_setters(attr_to_set, set_value, attr_to_test, expected):
+    """Test setting RelativisticBody attributes."""
+    relativistic_body = RelativisticBody(proton, v_over_c=0.1)
+    setattr(relativistic_body, attr_to_set, set_value)
+
+    actual = getattr(relativistic_body, attr_to_test)
+
+    assert u.isclose(expected, actual, rtol=1e-8), (
+        f"When setting {attr_to_set} to {set_value!r} in a "
+        f"RelativisticBody instance, the value of {attr_to_test} was "
+        f"expected to be {expected!r}, but was instead {actual!r}."
+    )
+
+
 @pytest.mark.parametrize("particle", [electron, proton])
 def test_relativistic_body_mass_energy(particle):
     """Test `RelativisticBody.mass_energy`."""
     relativistic_body = RelativisticBody(particle, v_over_c=0)
-    actual = relativistic_body.mass_energy
     expected = particle.mass * c**2
+
+    actual = relativistic_body.mass_energy
+
     assert u.isclose(actual, expected, rtol=1e-9)
 
 
