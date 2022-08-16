@@ -169,31 +169,43 @@ class RelativisticBody:
     Parameters
     ----------
     particle : |ParticleLike|, |ParticleList|, or |Quantity|
+        A representation of a particle from which to get the mass
+        of the relativistic body.
 
     V : |Quantity|, optional
+        The velocity of the relativistic body in units convertible to
+        m/s.
 
     momentum : |Quantity|, optional
+        The momentum of the relativistic body in units convertible to
+        kg·m/s.
 
     total_energy : |Quantity|, optional
-       The sum of the mass energy
+       The sum of the mass energy and the kinetic energy in units
+       convertible to joules.
 
     kinetic_energy : |Quantity|, optional
+       The kinetic energy of the relativistic body in units convertible
+       to joules.
 
-    v_over_c : |Quantity|, optional
+    v_over_c : real number or |Quantity|, optional
+       The ratio of the velocity to the speed of light.
 
-    lorentz_factor : |Quantity|, optional
+    lorentz_factor : real number or |Quantity|, optional
+       The Lorentz factor of the relativistic body, which must be
+       greater than or equal to one.
 
     Z : integer, optional
         The charge number associated with ``particle``.
 
     mass_numb : integer, optional
-        The mass number of an isotope.
+        The mass number associated with ``particle``.
 
     Notes
     -----
-    Only one of ``V``, ``momentum``, ``total_energy``,
-    ``kinetic_energy``, ``v_over_c``, and ``lorentz_factor`` may be
-    provided.
+    At most one of ``V``, ``momentum``, ``total_energy``,
+    ``kinetic_energy``, ``v_over_c``, and ``lorentz_factor`` must be
+    provided. If none of these arguments are supplied, then the
     """
 
     _speed_like_inputs = (
@@ -209,7 +221,6 @@ class RelativisticBody:
         self,
         velocity_like_arguments: Dict[str, Union[u.Quantity, Real]],
     ):
-        """ """
 
         not_none_arguments = {
             key: value
@@ -391,9 +402,7 @@ class RelativisticBody:
 
     @velocity.setter
     def velocity(self, V: u.m / u.s):
-        self._momentum = (Lorentz_factor(V) * self.mass * V).to(
-            u.kg * u.m / u.s
-        )  # correct
+        self._momentum = (Lorentz_factor(V) * self.mass * V).to(u.kg * u.m / u.s)
 
     @lorentz_factor.setter
     def lorentz_factor(self, γ: Union[Real, u.Quantity]):
@@ -411,7 +420,7 @@ class RelativisticBody:
         if γ < 1:
             raise ValueError("The Lorentz factor must be ≥ 1")
 
-        self.velocity = c * np.sqrt(1 - γ**-2)  # correct
+        self.velocity = c * np.sqrt(1 - γ**-2)
 
     @momentum.setter
     def momentum(self, p: u.kg * u.m / u.s):
@@ -437,7 +446,7 @@ class RelativisticBody:
                 return False
         return True
 
-    def __add__(self, other: [u.m / u.s, u.kg * u.m / u.s, u.J]):
+    def __add__(self, other):
         if not isinstance(other, u.Quantity):
             return NotImplemented
         if other.unit.physical_type == "V":
@@ -451,4 +460,8 @@ class RelativisticBody:
             return RelativisticBody(self.particle, momentum=new_momentum)
 
     def __sub__(self, other: [u.m / u.s, u.kg * u.m / u.s, u.J]):
-        return self.__add__(other)
+        # is this dunder method necessary?
+        return self.__add__(-other)
+
+    def __neg__(self):
+        return RelativisticBody(particle=self.particle, momentum=-self.momentum)
