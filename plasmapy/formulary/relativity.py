@@ -221,7 +221,7 @@ class RelativisticBody:
 
         if len(not_none_arguments) > 1:
             raise ValueError(
-                "Exactly one speed-like input must be provided to " "RelativisticBody."
+                "Exactly one speed-like input must be provided to RelativisticBody."
             )
 
         if not not_none_arguments:
