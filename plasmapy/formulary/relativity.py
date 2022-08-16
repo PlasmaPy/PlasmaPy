@@ -443,23 +443,3 @@ class RelativisticBody:
             if self_value != other_value:
                 return False
         return True
-
-    def __add__(self, other):
-        if not isinstance(other, u.Quantity):
-            return NotImplemented
-        if other.unit.physical_type == "velocity":
-            new_speed = self.velocity + other
-            return RelativisticBody(self.particle, V=new_speed)
-        if other.unit.physical_type == "energy":
-            new_total_energy = self.total_energy + other
-            return RelativisticBody(self.particle, total_energy=new_total_energy)
-        if other.unit.physical_type == "momentum":
-            new_momentum = self.momentum + other
-            return RelativisticBody(self.particle, momentum=new_momentum)
-
-    def __sub__(self, other: [u.m / u.s, u.kg * u.m / u.s, u.J]):
-        # is this dunder method necessary?
-        return self.__add__(-other)
-
-    def __neg__(self):
-        return RelativisticBody(particle=self.particle, momentum=-self.momentum)

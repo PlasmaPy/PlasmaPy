@@ -216,21 +216,3 @@ def test_relativistic_body_inequality_with_different_particles():
     relativistic_proton = RelativisticBody(particle=proton, v_over_c=0.23)
     relativistic_electron = RelativisticBody(particle=electron, v_over_c=0.23)
     assert relativistic_proton != relativistic_electron
-
-
-def test_relativistic_body_adding_velocity():
-    relativistic_body = RelativisticBody(proton, v_over_c=0.25)
-    sped_up_relativistic_body = relativistic_body + c / 4
-    assert u.isclose(sped_up_relativistic_body.velocity, c / 2, rtol=1e-6)
-
-
-def test_relativistic_body_adding_energy():
-    relativistic_body = RelativisticBody(proton, v_over_c=0.25)
-    sped_up_relativistic_body = relativistic_body + relativistic_body.kinetic_energy
-    assert u.isclose(sped_up_relativistic_body.velocity, c / 2, rtol=1e-6)
-
-
-def test_relativistic_body_adding_momentum():
-    relativistic_body = RelativisticBody(proton, v_over_c=0.25)
-    sped_up_relativistic_body = relativistic_body + relativistic_body.momentum
-    assert u.isclose(sped_up_relativistic_body.velocity, c / 2, rtol=1e-6)
