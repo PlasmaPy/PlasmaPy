@@ -927,7 +927,7 @@ Improved Documentation
 - Put the docstring for `plasmapy.particles.Particle.is_category` into
   `numpydoc` format. (`#1039 <https://github.com/plasmapy/plasmapy/pull/1039>`__)
 - Adds formulas (which were missing) to the docstrings of
-  ``~plasmapy.formulary.dimensionless.quantum_theta`` and
+  ``plasmapy.formulary.dimensionless.quantum_theta`` and
   `~plasmapy.formulary.dimensionless.beta`. (`#1041 <https://github.com/plasmapy/plasmapy/pull/1041>`__)
 - Add live rendering of changelog entries on documentation builds, based on
   `sphinx-changelog <https://github.com/OpenAstronomy/sphinx-changelog>`_. (`#1052 <https://github.com/plasmapy/plasmapy/pull/1052>`__)
