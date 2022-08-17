@@ -119,6 +119,17 @@ Coding guidelines
   >>> print(f"{package_name!r}")  # shortcut for f"{repr(package_name)}"
   'PlasmaPy'
 
+* Functions that accept |array_like| or |Quantity| inputs should accept
+  and return |nan| values. This guideline applies when |nan| is the
+  input as well as when |nan| is included in an array.
+
+  .. tip::
+
+     Normally, ``numpy.nan == numpy.nan`` evaluates to `False`, which
+     complicates testing |nan| behavior. Functions such as
+     `numpy.allclose` often have an ``equal_nan`` keyword such that
+     ``allclose(nan, nan, equal_nan=True)`` will return `True` instead.
+
 * Do not use :term:`mutable` objects as default values in the function
   or method declaration. This can lead to unexpected behavior.
 
