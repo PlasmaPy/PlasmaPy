@@ -37,7 +37,9 @@ automodapi_custom_groups = {
             """
             PlasmaPy provides :term:`aliases` of the most common plasma
             functionality for user convenience. Aliases in PlasmaPy are
-            denoted with a trailing underscore (e.g., ``alias_``).
+            denoted with a trailing underscore (e.g., ``alias_``). For
+            further details, please refer to the :ref:`contributor
+            guide's section on aliases <aliases>`.
             """
         ),
         "dunder": "__aliases__",
