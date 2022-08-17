@@ -55,7 +55,9 @@ __all__ = [
 ]
 
 import astropy.units as u
+import math
 import numpy as np
+import scipy.integrate
 import warnings
 
 from astropy.constants.si import e, eps0, hbar, k_B, m_e
@@ -2033,3 +2035,44 @@ def coupling_parameter(
         )
 
     return coulomb_energy / kinetic_energy
+
+
+class RelaxationRates:
+    def __init__(
+        self,
+        species: (particles.Particle, particles.Particle),
+        /,
+        v_a: u.m / u.s,
+        n_b: u.m**-3,
+        T_b: u.eV,
+    ):
+        self.species = species
+        self.v_a = v_a
+        self.n_b = n_b
+        self.T_b = T_b
+
+    def _v_0(self):
+        coulomb_log = Coulomb_logarithm(self.T_b, self.n_b, self.species, V=self.v_a)
+
+        return (
+            4
+            * math.pi
+            * self.species[0].charge ** 2
+            * self.species[1].charge ** 2
+            * coulomb_log
+            * self.n_b
+            / (self.species[0].mass ** 2 * self.v_a**3)
+        )
+
+    def x(self):
+        return (self.species[1].mass * self.v_a**2 / (2 * k_B * self.T_b)).to(
+            u.dimensionless_unscaled, equivalencies=u.temperature_energy()
+        )
+
+    @staticmethod
+    def _phi_integrand(t: u.dimensionless_unscaled):
+        return t**0.5 * math.exp(-t)
+
+    def _phi(self, x: u.dimensionless_unscaled):
+        integral, _ = scipy.integrate.quad(self._phi_integrand, 0, x)
+        return 2 / math.pi**0.5 * integral
