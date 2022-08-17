@@ -488,11 +488,12 @@ Aliases
 
 An :term:`alias` is an abbreviated version of a commonly used function.
 For example, `~plasmapy.formulary.speeds.va_` is an alias to
-`~plasmapy.formulary.speeds.Alfven_speed`.  It is intended to give
-users the option for shortening their code while maintaining
-readability and explicit meaning.  As such, :term:`aliases` are given
-to functionality that already has a widely used symbol in the
-community's literature.
+`~plasmapy.formulary.speeds.Alfven_speed`.
+
+:term:`Aliases` are intended to give users the option for shortening
+their code while maintaining some readability and explicit meaning. As
+such, :term:`aliases` are given to functionality that already has a
+widely-used symbol in plasma literature.
 
 Here is a minimal example of an alias ``f_`` to ``function`` as would be
 defined in :file:`plasmapy/subpackage/module.py`.
@@ -510,30 +511,29 @@ defined in :file:`plasmapy/subpackage/module.py`.
    f_ = function
    """Alias to `~plasmapy.subpackage.module.function`."""
 
-
-* Aliases should only be defined for functionality that already has
-  a symbol that is widely used in the community's literature.  This is
-  to ensure an abbreviate function name is still widely understandable.
-
-* An alias should be defined immediately after the original function.
-
-* The name of an alias should in some way indicate what the alias is
-  for. For example, `~plasmapy.formulary.lengths.cwp_` is a shortcut for
-  for :math:`c/ω_p`\ .
+* Aliases should only be defined for functionality that already has a
+  symbol that is widely used in the community's literature.  This is to
+  ensure that the abbreviated function name is still widely
+  understandable. For example, `~plasmapy.formulary.lengths.cwp_` is a
+  shortcut for :math:`c/ω_p`\ .
 
 * The name of an alias should end with a trailing underscore.
+
+* An alias should be defined immediately after the original function.
 
 * Each alias should have a one-line docstring that refers users to the
   original function.
 
-* The name of the main function should be included in ``__all__`` near
-  the top of each module, and the name of the alias should be included
-  in ``__aliases__``, which will then get appended to ``__all__``.
-  This is done so both the :term:`alias` and its parent function get
-  properly documented.
+* The name of the original function should be included in ``__all__``
+  near the top of each module, and the name of the alias should be
+  included in ``__aliases__``, which will then get appended to
+  ``__all__``. This is done so both the :term:`alias` and the original
+  function get properly documented.
 
-* Aliases are intended for end users, and should not be used inside
-  PlasmaPy.
+* Aliases are intended for end users, and should not be used in PlasmaPy
+  or other collaborative software development efforts because of
+  reduced readability and searchability for someone new to plasma
+  science.
 
 .. _lite-functions:
 
@@ -616,7 +616,7 @@ corresponds to ``function`` as would be defined in
   give hints about function arguments.
 
 * When possible, a lite-function should incorporate `numba's
-  just-in-time compilation 
+  just-in-time compilation
   <https://numba.pydata.org/numba-doc/latest/reference/jit-compilation.html>`__
   or utilize Cython_.  At a minimum any "extra" code beyond the raw
   calculation should be removed.
