@@ -511,7 +511,9 @@ defined in :file:`plasmapy/subpackage/module.py`.
    """Alias to `~plasmapy.subpackage.module.function`."""
 
 
-* Aliases should only be defined for the most commonly used functions.
+* Aliases should only be defined for functionality that already has
+  a symbol that is widely used in the community's literature.  This is
+  to ensure an abbreviate function name is still widely understandable.
 
 * An alias should be defined immediately after the original function.
 
