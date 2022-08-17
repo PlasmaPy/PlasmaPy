@@ -542,6 +542,13 @@ function that accepts numbers and NumPy_ arrays in assumed SI units.
 Lite-functions skip all validations and instead prioritize performance.
 Most lite-functions are defined in `plasmapy.formulary`.
 
+.. caution::
+
+   Unlike most `~plasmapy.formulary` functions, no validations are
+   performed on the arguments provided to a lite-function for the
+   sake of computational efficiency. When using lite-functions, it
+   is vital to double-check your implementation!
+
 Here is a minimal example of a lite-function ``function_lite`` that
 corresponds to ``function`` as would be defined in
 :file:`plasmapy/subpackage/module.py`.
