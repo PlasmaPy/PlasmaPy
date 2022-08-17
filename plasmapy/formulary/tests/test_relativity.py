@@ -11,7 +11,7 @@ from plasmapy.formulary.relativity import (
     relativistic_energy,
     RelativisticBody,
 )
-from plasmapy.particles import electron, proton
+from plasmapy.particles import CustomParticle, electron, proton
 from plasmapy.utils.code_repr import call_string
 from plasmapy.utils.exceptions import RelativityError
 
@@ -220,3 +220,27 @@ def test_relativistic_body_inequality_with_different_particles():
     relativistic_proton = RelativisticBody(particle=proton, v_over_c=0.23)
     relativistic_electron = RelativisticBody(particle=electron, v_over_c=0.23)
     assert relativistic_proton != relativistic_electron
+
+
+@pytest.mark.parametrize(
+    "attr",
+    [
+        "lorentz_factor",
+        "v_over_c",
+        "velocity",
+        "momentum",
+        "total_energy",
+        "kinetic_energy",
+    ],
+)
+def test_relativistic_body_defined_using_mass(attr):
+    """Test that a RelativisticBody can be provided a mass as the particle."""
+    V = c / 2
+
+    relativistic_proton = RelativisticBody(proton, V=V)
+    expected = getattr(relativistic_proton, attr)
+
+    relativistic_custom_particle = RelativisticBody(proton.mass, V=V)
+    actual = getattr(relativistic_custom_particle, attr)
+
+    assert u.isclose(actual, expected, rtol=1e-9)
