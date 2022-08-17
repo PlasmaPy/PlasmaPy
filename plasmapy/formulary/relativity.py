@@ -158,7 +158,7 @@ def relativistic_energy(m: u.kg, v: u.m / u.s) -> u.Joule:
 
 
 class RelativisticBody:
-    """
+    r"""
     A physical body that is moving a velocity relative to the speed of
     light.
 
@@ -170,7 +170,7 @@ class RelativisticBody:
 
     V : |Quantity|, optional
         The velocity of the relativistic body in units convertible to
-        m/s.
+        m/s. Must be :math:`≤ c`\ .
 
     momentum : |Quantity|, optional
         The momentum of the relativistic body in units convertible to
@@ -185,11 +185,11 @@ class RelativisticBody:
        to joules. Must be non-negative.
 
     v_over_c : real number or |Quantity|, optional, |keyword-only|
-       The ratio of the velocity to the speed of light.
+       The ratio of the velocity to the speed of light. Must have an
+       absolute magnitude :math:`≤ 1`\ .
 
     lorentz_factor : real number or |Quantity|, optional, |keyword-only|
-       The Lorentz factor of the relativistic body. Must be greater than
-       or equal to one.
+       The Lorentz factor of the relativistic body. Must be :math:`≥ 1`\ .
 
     Z : integer, optional, |keyword-only|
         The charge number associated with ``particle``.
@@ -338,7 +338,11 @@ class RelativisticBody:
     def total_energy(self) -> u.J:
         r"""
         The sum of the rest mass energy and the kinetic energy of the
-        body, :math:`γ m_0 c^2`\ .
+        body,
+
+        .. math::
+
+           E_\mathrm{tot} ≡ γ m_0 c^2.
 
         Returns
         -------
@@ -349,8 +353,12 @@ class RelativisticBody:
     @property
     @validate_quantities
     def kinetic_energy(self) -> u.J:
-        r"""
-        The kinetic energy of the body, :math:`m_0 c^2 (γ-1)`\ .
+        """
+        The kinetic energy of the body,
+
+        .. math::
+
+           E_K ≡ m_0 c^2 (γ-1).
 
         Returns
         -------
@@ -361,9 +369,9 @@ class RelativisticBody:
     @property
     @validate_quantities
     def v_over_c(self) -> Real:
-        """
+        r"""
         The velocity of the body divided by the velocity of light:
-        :math:`\frac{V}{c}`\\ .
+        :math:`\frac{V}{c}`\ .
 
         Returns
         -------
@@ -387,9 +395,12 @@ class RelativisticBody:
     @property
     @validate_quantities
     def lorentz_factor(self) -> Real:
-        """
+        r"""
         The Lorentz factor of the body,
-        :math:`γ ≡ \frac{1}{\\sqrt{1 - \frac{V^2}{c^2}}}`\\ .
+
+        .. math::
+
+           γ ≡ \frac{1}{\sqrt{1 - \frac{V^2}{c^2}}}.
 
         Returns
         -------
@@ -402,7 +413,10 @@ class RelativisticBody:
     def momentum(self) -> u.kg * u.m / u.s:
         r"""
         The magnitude of the momentum of the body,
-        :math:`p ≡ γ m_0 V`\ .
+
+        .. math::
+
+           p ≡ γ m_0 V.
 
         Returns
         -------
