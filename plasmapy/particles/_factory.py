@@ -49,6 +49,12 @@ def _physical_particle_factory(
     ~plasmapy.particles.particle_class.CustomParticle
     ~plasmapy.particles.particle_class.ParticleList
 
+    Notes
+    -=---
+    If ``Z`` or ``mass_numb`` is provided as keyword arguments but are
+    equal to `None`, then they will not be provided to any of the calls.
+    This is to allow |CustomParticle| instances to be created.
+
     Examples
     --------
     >>> from plasmapy.particles._factory import _physical_particle_factory
@@ -66,6 +72,10 @@ def _physical_particle_factory(
         and isinstance(args[0], (Particle, CustomParticle, ParticleList))
     ):
         return args[0]
+
+    for parameter in ["Z", "mass_numb"]:
+        if parameter in kwargs and kwargs[parameter] is None:
+            kwargs.pop(parameter)
 
     if not args and not kwargs:
         raise TypeError("Particle information has not been provided.")
