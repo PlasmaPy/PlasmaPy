@@ -75,8 +75,8 @@ Glossary
 
          Unlike most `~plasmapy.formulary` functions, no validations are
          performed on the arguments provided to a lite-function for the
-         sake of computational efficiency. When using lite-functions,
-         it is vital to double check your implementation!
+         sake of computational efficiency. When using lite-functions, it
+         is vital to double-check your implementation!
 
       For further details, please refer to the :ref:`contributor guide's
       section on lite-functions <lite-functions>`.

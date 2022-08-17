@@ -55,7 +55,9 @@ automodapi_custom_groups = {
             .. caution::
 
                Lite-functions do not include the safeguards that are
-               included in most `plasmapy.formulary` functions.
+               included in most `plasmapy.formulary` functions. When
+               using lite-functions, it is vital to double-check your
+               implementation!
             """
         ),
         "dunder": "__lite_funcs__",
