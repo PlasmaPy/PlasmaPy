@@ -525,6 +525,9 @@ defined in :file:`plasmapy/subpackage/module.py`.
   the top of each module, and the name of the alias should be included
   in ``__aliases__``, which will then get appended to ``__all__``.
 
+* Aliases are intended for end users, and should not be used inside
+  PlasmaPy.
+
 .. _lite-functions:
 
 Lite Functions
