@@ -381,10 +381,6 @@ class RelativisticBody:
         """
         return getattr(self, "_momentum")
 
-    @particle.setter
-    def particle(self, particle: ParticleLike):
-        self._data["particle"] = _physical_particle_factory(particle)
-
     @kinetic_energy.setter
     def kinetic_energy(self, E_K: u.J):
         self.total_energy = E_K + self.mass_energy
