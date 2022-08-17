@@ -599,16 +599,27 @@ corresponds to ``function`` as would be defined in
 * Lite-functions should be defined immediately before the normal version
   of the function.
 
+* Lite-functions should be used by their associate non-lite counterpart,
+  except for well reasoned exceptions.  This is done to reduce code
+  duplication.
+
 * Lite-functions are bound to their normal version as the ``lite``
   attribute using the
-  `~plasmapy.utils.decorators.lite_func.bind_lite_func` decorator.
+  `~plasmapy.utils.decorators.lite_func.bind_lite_func` decorator.  This
+  allows the lite function to also be accessed like
+  ``thermal_speed.lite()``.
 
-* Each lite-function should be decorated with
-  `~plasmapy.utils.decorators.helpers.preserve_signature`.
+* If a lite-function is decorated with something like ``@njit``,
+  then it should also be decorated with
+  `~plasmapy.utils.decorators.helpers.preserve_signature`.  This
+  preserves the function signature so interpreters can still
+  give hints about function arguments.
 
-* A lite-function should usually be decorated with ``@numba.njit`` (or
-  the like) for just-in-time compilation. If a decorator from `numba` is
-  not able to be used, then an alternative is Cython_.
+* When possible, a lite-function should incorporate `numba's
+  just-in-time compilation 
+  <https://numba.pydata.org/numba-doc/latest/reference/jit-compilation.html>`__
+  or utilize Cython_.  At a minimum any "extra" code beyond the raw
+  calculation should be removed.
 
 .. _example_notebooks:
 
