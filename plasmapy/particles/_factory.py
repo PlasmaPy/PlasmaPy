@@ -24,6 +24,12 @@ def _physical_particle_factory(
     This function will select the appropriate type among |Particle|,
     |CustomParticle|, and |ParticleList|.
 
+    .. caution::
+
+       If |Quantity| instances are provided to this function as
+       positional arguments, then they must presently be in the order
+       expected by |CustomParticle|.
+
     Parameters
     ----------
     *args
