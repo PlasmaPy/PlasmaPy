@@ -7,10 +7,10 @@ __all__ = [
     "chemical_potential",
     "deBroglie_wavelength",
     "Fermi_energy",
+    "quantum_theta",
     "Thomas_Fermi_length",
     "thermal_deBroglie_wavelength",
     "Wigner_Seitz_radius",
-    "quantum_theta",
 ]
 __aliases__ = ["Ef_", "lambdaDB_", "lambdaDB_th_"]
 
