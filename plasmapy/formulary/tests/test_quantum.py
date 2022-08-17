@@ -237,21 +237,25 @@ def test_quantum_aliases():
 class TestQuantumTheta:
     """Test the quantum_theta function in quantum.py."""
 
-    T = 1 * u.eV
-    n_e = 1e26 * u.m**-3
-
-    @pytest.fixture()
-    def theta(self):
-        """Calculate theta for the given example parameters"""
-
-        return quantum_theta(self.T, self.n_e)
-
-    def test_units(self, theta):
+    def test_units(self):
         """Test the return units"""
+
+        theta = quantum_theta(1 * u.eV, 1e26 * u.m**-3)
 
         assert theta.unit.is_equivalent(u.dimensionless_unscaled)
 
-    def test_value(self, theta):
+    @pytest.mark.parametrize(
+        "T, n_e, expected_theta",
+        [
+            (1 * u.eV, 1e26 * u.m**-3, 12.72906),  # Both regimes are present
+            (2 / 3 * u.eV, 1e40 * u.m**-3, 3.93887e-9),  # Fermi regime
+            (8.61e2 * u.eV, 1e12 * u.m**-3, 2.36120e13),  # Thermal regime
+            (1 * u.K, 1e26 * u.m**-3, 1.09690e-3),  # Specify temperature in Kelvin
+        ],
+    )
+    def test_value(self, T, n_e, expected_theta):
         """Compare the calculated theta with the expected value."""
 
-        assert np.isclose(theta.value, 12.72906)
+        theta = quantum_theta(T, n_e)
+
+        assert np.isclose(theta.value, expected_theta)
