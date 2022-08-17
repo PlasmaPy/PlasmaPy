@@ -125,6 +125,29 @@ Changelog guidelines
   superseded or reverted and include a link to the appropriate pull
   request.
 
+.. _fixing-obsolete-rest-links:
+
+.. tip::
+
+   When removing or moving an object, reST_ links that follow the
+   original namespace will break, causing the documentation build to
+   fail.
+
+   Text in single back ticks is used to link to code objects, while text
+   in double back ticks is treated as an `inline literal`_. To remedy
+   this problem in old changelog entries, change the broken link into an
+   inline literal by surrounding it with double back ticks instead.
+   Remove the tilde if present. For example,
+   ```~plasmapy.subpackage.module.function``` should be changed
+   to:
+
+   .. code-block:: rst
+
+      ``plasmapy.subpackage.module.function``
+
+   Outside of the changelog, the namespace should be corrected rather
+   than changed into an inline literal.
+
 Building the changelog
 ======================
 
@@ -168,3 +191,5 @@ steps to update the changelog are described in the :ref:`Release Guide`.
    Here, ``⟨number⟩`` is replaced with the pull request number and
    ``⟨type⟩`` is replaced with the one of the changelog types as
    described above.
+
+.. _inline literal: https://docutils.sourceforge.io/docs/user/rst/quickref.html#inline-markup
