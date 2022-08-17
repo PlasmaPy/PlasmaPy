@@ -91,7 +91,7 @@ def test_relativistic_energy():
 @pytest.fixture
 def ultra_relativistic_proton():
     """Representing an ultra high energy cosmic ray (UHECR)."""
-    return RelativisticBody(particle="p+", kinetic_energy=np.float128(1e21) * u.eV)
+    return RelativisticBody(particle="p+", kinetic_energy=np.longdouble(1e21) * u.eV)
 
 
 def test_ultra_relativistic_proton_lorentz_factor(ultra_relativistic_proton):
