@@ -310,6 +310,7 @@ class RelativisticBody:
         return self._data["particle"]
 
     @property
+    @validate_quantities
     def mass(self) -> u.kg:
         r"""
         The rest mass of the body, :math:`m_0`\ .
@@ -321,6 +322,7 @@ class RelativisticBody:
         return self.particle.mass
 
     @property
+    @validate_quantities
     def mass_energy(self) -> u.J:
         r"""
         The rest mass energy of the body, :math:`m_0 c^2`\ .
@@ -332,6 +334,7 @@ class RelativisticBody:
         return self.mass * c**2
 
     @property
+    @validate_quantities
     def total_energy(self) -> u.J:
         r"""
         The sum of the rest mass energy and the kinetic energy of the
@@ -344,6 +347,7 @@ class RelativisticBody:
         return np.sqrt(self.momentum**2 * c**2 + self.mass_energy**2)
 
     @property
+    @validate_quantities
     def kinetic_energy(self) -> u.J:
         r"""
         The kinetic energy of the body, :math:`m_0 c^2 (γ-1)`\ .
@@ -355,6 +359,7 @@ class RelativisticBody:
         return self.total_energy - self.mass_energy
 
     @property
+    @validate_quantities
     def v_over_c(self) -> Real:
         """
         The velocity of the body divided by the velocity of light:
@@ -367,6 +372,7 @@ class RelativisticBody:
         return (self.velocity / c).to(u.dimensionless_unscaled).value
 
     @property
+    @validate_quantities
     def velocity(self) -> u.m / u.s:
         r"""
         The velocity of the body, :math:`V`\ .
@@ -379,6 +385,7 @@ class RelativisticBody:
         return velocity.to(u.m / u.s)
 
     @property
+    @validate_quantities
     def lorentz_factor(self) -> Real:
         """
         The Lorentz factor of the body,
@@ -391,6 +398,7 @@ class RelativisticBody:
         return Lorentz_factor(self.velocity)
 
     @property
+    @validate_quantities
     def momentum(self) -> u.kg * u.m / u.s:
         r"""
         The magnitude of the momentum of the body,
@@ -403,10 +411,12 @@ class RelativisticBody:
         return getattr(self, "_momentum")
 
     @kinetic_energy.setter
+    @validate_quantities(E_K={"can_be_negative": False})
     def kinetic_energy(self, E_K: u.J):
         self.total_energy = E_K + self.mass_energy
 
     @total_energy.setter
+    @validate_quantities(E_tot={"can_be_negative": False})
     def total_energy(self, E_tot: u.J):
         self._momentum = np.sqrt(E_tot**2 - self.mass_energy**2) / c
 
@@ -415,6 +425,7 @@ class RelativisticBody:
         self.velocity = v_over_c_ * c
 
     @velocity.setter
+    @validate_quantities
     def velocity(self, V: u.m / u.s):
         self._momentum = (Lorentz_factor(V) * self.mass * V).to(u.kg * u.m / u.s)
 
@@ -437,6 +448,7 @@ class RelativisticBody:
         self.velocity = c * np.sqrt(1 - γ**-2)
 
     @momentum.setter
+    @validate_quantities
     def momentum(self, p: u.kg * u.m / u.s):
         self._momentum = p.to(u.kg * u.m / u.s)
 
