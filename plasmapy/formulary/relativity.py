@@ -246,7 +246,7 @@ class RelativisticBody:
     )
     def __init__(
         self,
-        particle: ParticleLike,
+        particle: Union[ParticleLike, u.Quantity],
         V: u.m / u.s = None,
         momentum: u.kg * u.m / u.s = None,
         *,
