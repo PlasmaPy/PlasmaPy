@@ -95,6 +95,7 @@
 .. |contributor guide| replace:: :ref:`contributor guide`\
 .. |documentation guide| replace:: :ref:`documentation guide`\
 .. |glossary| replace:: :ref:`glossary`\
+.. |keyword-only| replace:: :term:`keyword-only`\
 .. |minpython| replace:: 3.8
 .. |plasma-calculator| replace:: :ref:`plasmapy-calculator`\
 .. |release guide| replace:: :ref:`release guide`\
