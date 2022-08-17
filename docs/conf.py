@@ -37,7 +37,7 @@ automodapi_custom_groups = {
             """
             PlasmaPy provides :term:`aliases` of the most common plasma
             functionality for user convenience. Aliases in PlasmaPy are
-            denoted with a trailing underscore, e.g. ``alias_``.
+            denoted with a trailing underscore (e.g., ``alias_``).
             """
         ),
         "dunder": "__aliases__",
@@ -51,6 +51,8 @@ automodapi_custom_groups = {
             computational efficiency matters most. Lite-functions accept
             numbers and NumPy arrays that are implicitly assumed to be
             in SI units, and do not accept |Quantity| objects as inputs.
+            For further details, please refer to the :ref:`contributor
+            guide's section on lite-functions <lite-functions>`.
 
             .. caution::
 
