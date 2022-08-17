@@ -524,6 +524,8 @@ defined in :file:`plasmapy/subpackage/module.py`.
 * The name of the main function should be included in ``__all__`` near
   the top of each module, and the name of the alias should be included
   in ``__aliases__``, which will then get appended to ``__all__``.
+  This is done so both the :term:`alias` and its parent function get
+  properly documented.
 
 * Aliases are intended for end users, and should not be used inside
   PlasmaPy.
