@@ -138,8 +138,8 @@ Changelog guidelines
    this problem in old changelog entries, change the broken link into an
    inline literal by surrounding it with double back ticks instead.
    Remove the tilde if present. For example,
-   ``` `~plasmapy.subpackage.module.function` ``` should be changed
-   to ``` ``plasmapy.subpackage.module.function`` ```.
+   ```~plasmapy.subpackage.module.function``` should be changed
+   to ```plasmapy.subpackage.module.function```.
 
    Outside of the changelog, the namespace should be corrected rather
    than changed into an inline literal.
