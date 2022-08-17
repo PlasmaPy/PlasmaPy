@@ -486,10 +486,13 @@ by an angular frequency to get a length scale:
 Aliases
 =======
 
-An :term:`alias` is an abbreviated version of a commonly used function
-that is intended for interactive use. For example,
-`~plasmapy.formulary.speeds.va_` is an alias to
-`~plasmapy.formulary.speeds.Alfven_speed`.
+An :term:`alias` is an abbreviated version of a commonly used function.
+For example, `~plasmapy.formulary.speeds.va_` is an alias to
+`~plasmapy.formulary.speeds.Alfven_speed`.  It is intended to give
+users the option for shortening their code while maintaining
+readability and explicit meaning.  As such, :term:`aliases` are given
+to functionality that already has a widely used symbol in the
+community's literature.
 
 Here is a minimal example of an alias ``f_`` to ``function`` as would be
 defined in :file:`plasmapy/subpackage/module.py`.
