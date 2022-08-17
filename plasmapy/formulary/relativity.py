@@ -215,9 +215,11 @@ class RelativisticBody:
             if value is not None
         }
 
-        if len(not_none_arguments) != 1:
+        if len(not_none_arguments) > 1:
             raise ValueError(
-                "Exactly one speed-like input must be provided to RelativisticBody."
+                "RelativisticBody can accept no more than one of the "
+                "following arguments: V, v_over_c, momentum, total_energy, "
+                "kinetic_energy, and lorentz_factor."
             )
 
         if not not_none_arguments:
