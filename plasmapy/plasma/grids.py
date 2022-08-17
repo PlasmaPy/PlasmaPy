@@ -979,7 +979,7 @@ class AbstractGrid(ABC):
         ------
 
         KeyError
-            A KeyError is raised if one of the args does not corrrespond
+            A KeyError is raised if one of the args does not correspond
             to a DataArray in the DataSet.
         """
 

@@ -1,0 +1,8 @@
+Restricted dependency of
+`sphinx-gallery <https://sphinx-gallery.github.io/stable/index.html>`__
+to ``< 0.11.0``, since
+``sphinx-gallery`` changed their thumbnail containers to flex containers,
+see PR
+`sphinx-gallery/#906 <https://github.com/sphinx-gallery/sphinx-gallery/pull/906>`__
+and issue
+`sphinx-gallery/#905 <https://github.com/sphinx-gallery/sphinx-gallery/issues/905>`__\ .

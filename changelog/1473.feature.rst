@@ -1,6 +1,0 @@
-Created :term:`lite-functions`
-`~plasmapy.dispersion.dispersionfunction.plasma_dispersion_func_lite` and
-`~plasmapy.dispersion.dispersionfunction.plasma_dispersion_func_deriv_lite`
-for `~plasmapy.dispersion.dispersionfunction.plasma_dispersion_func`
-and `~plasmapy.dispersion.dispersionfunction.plasma_dispersion_func_deriv`
-respectively.

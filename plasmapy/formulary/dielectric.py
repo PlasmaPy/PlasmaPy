@@ -222,15 +222,15 @@ def permittivity_1D_Maxwellian_lite(omega, kWave, vth, wp):
     Performs the same calculations as
     `~plasmapy.formulary.dielectric.permittivity_1D_Maxwellian`, but is
     intended for computational use and, thus, has data conditioning
-    safeguardsremoved.
+    safeguards removed.
 
     Parameters
     ----------
-    omega : :term:`numpy:array_like` of real positive values
+    omega : |array_like| of real positive values
         The frequency, in rad/s, of the electromagnetic wave propagating
         through the plasma.
 
-    kWave : :term:`numpy:array_like` of real values
+    kWave : |array_like| of real values
         The corresponding wavenumber, in rad/m, of the electromagnetic
         wave propagating through the plasma.
 
@@ -244,7 +244,7 @@ def permittivity_1D_Maxwellian_lite(omega, kWave, vth, wp):
 
     Returns
     -------
-    chi : :term:`numpy:array_like` of complex values
+    chi : |array_like| of complex values
         The ion or the electron dielectric permittivity of the plasma.
         This is a dimensionless quantity.
 

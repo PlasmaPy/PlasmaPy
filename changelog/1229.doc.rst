@@ -1,1 +1,0 @@
-Created an example notebook that lets users input plasma properties and get plasma parameters.
