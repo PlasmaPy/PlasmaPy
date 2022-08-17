@@ -202,6 +202,27 @@ class RelativisticBody:
     At most one of ``V``, ``momentum``, ``total_energy``,
     ``kinetic_energy``, ``v_over_c``, and ``lorentz_factor`` must be
     provided.
+
+    Examples
+    --------
+    >>> import astropy.units as u
+    >>> relativistic_body = RelativisticBody("p+", total_energy = 1 * u.GeV)
+    >>> relativistic_body.particle
+    Particle("p+")
+    >>> relativistic_body.velocity
+    <Quantity 1.03697...e+08 m / s>
+    >>> relativistic_body.v_over_c
+    0.3458980898746...
+    >>> relativistic_body.lorentz_factor
+    1.0657889247888...
+    >>> relativistic_body.momentum
+    <Quantity 1.84857...e-19 kg m / s>
+    >>> relativistic_body.mass_energy.to("GeV")
+    <Quantity 0.93827... GeV>
+    >>> relativistic_body.total_energy.to("GeV")
+    <Quantity 1. GeV>
+    >>> relativistic_body.mass
+    <Quantity 1.67262...e-27 kg>
     """
 
     def _get_speed_like_input(
