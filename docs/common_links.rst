@@ -91,6 +91,7 @@
    used just before a period.
 
 .. |bibliography| replace:: :ref:`bibliography`\
+.. |changelog guide| replace:: :ref:`changelog guide`\
 .. |coding guide| replace:: :ref:`coding guide`\
 .. |contributor guide| replace:: :ref:`contributor guide`\
 .. |documentation guide| replace:: :ref:`documentation guide`\
@@ -116,6 +117,7 @@
 .. _create an issue: https://github.com/PlasmaPy/PlasmaPy/issues/new/choose
 .. _CSS: https://www.w3schools.com:443/css
 .. _DOI: https://www.doi.org
+.. _equivalencies: https://docs.astropy.org/en/stable/units/equivalencies.html
 .. _flake8: https://flake8.pycqa.org/en/latest
 .. _git: https://git-scm.com
 .. _GitHub Actions: https://docs.github.com/en/actions
@@ -183,6 +185,9 @@
    ticks (e.g., `xarray`), then it should also be added to
    nitpick_ignore_regex in docs/conf.py so that it doesn't get counted
    as an error in a nitpicky doc build (e.g., tox -e doc_build_nitpicky).
+
+.. _`astropy.units`: https://docs.astropy.org/en/stable/units/index.html
+.. |astropy.units| replace:: `astropy.units`
 
 .. _`docs/_static`: https://github.com/PlasmaPy/PlasmaPy/tree/main/docs/_static
 .. |docs/_static| replace:: :file:`docs/_static`
