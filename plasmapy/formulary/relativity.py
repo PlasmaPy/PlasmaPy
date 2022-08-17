@@ -176,25 +176,25 @@ class RelativisticBody:
         The momentum of the relativistic body in units convertible to
         kg·m/s.
 
-    total_energy : |Quantity|, optional
+    total_energy : |Quantity|, optional, |keyword-only|
        The sum of the mass energy and the kinetic energy in units
        convertible to joules. Must be non-negative.
 
-    kinetic_energy : |Quantity|, optional
+    kinetic_energy : |Quantity|, optional, |keyword-only|
        The kinetic energy of the relativistic body in units convertible
        to joules. Must be non-negative.
 
-    v_over_c : real number or |Quantity|, optional
+    v_over_c : real number or |Quantity|, optional, |keyword-only|
        The ratio of the velocity to the speed of light.
 
-    lorentz_factor : real number or |Quantity|, optional
+    lorentz_factor : real number or |Quantity|, optional, |keyword-only|
        The Lorentz factor of the relativistic body. Must be greater than
        or equal to one.
 
-    Z : integer, optional
+    Z : integer, optional, |keyword-only|
         The charge number associated with ``particle``.
 
-    mass_numb : integer, optional
+    mass_numb : integer, optional, |keyword-only|
         The mass number associated with ``particle``.
 
     Notes
