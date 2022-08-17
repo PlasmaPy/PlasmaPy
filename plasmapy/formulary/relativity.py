@@ -4,6 +4,7 @@ __all__ = ["Lorentz_factor", "relativistic_energy", "RelativisticBody"]
 import astropy.units as u
 import numpy as np
 
+from astropy.constants import c
 from numbers import Integral, Real
 from typing import Dict, Optional, Union
 
@@ -12,8 +13,6 @@ from plasmapy.particles._factory import _physical_particle_factory
 from plasmapy.particles.particle_class import CustomParticle, Particle, ParticleLike
 from plasmapy.particles.particle_collections import ParticleList
 from plasmapy.utils.decorators import validate_quantities
-
-_c = np.float64(299792458) * (u.m / u.s)
 
 
 @validate_quantities(V={"can_be_negative": True})
@@ -69,7 +68,7 @@ def Lorentz_factor(V: u.m / u.s):
     inf
     """
 
-    if not np.all(np.abs(V) <= _c):
+    if not np.all(np.abs(V) <= c):
         raise utils.RelativityError(
             "The Lorentz factor cannot be calculated for "
             "speeds faster than the speed of light."
@@ -79,14 +78,14 @@ def Lorentz_factor(V: u.m / u.s):
 
         γ = np.zeros_like(V.value)
 
-        equals_c = np.abs(V) == _c
+        equals_c = np.abs(V) == c
         is_slow = ~equals_c
 
-        γ[is_slow] = ((1 - (V[is_slow] / _c) ** 2) ** -0.5).value
+        γ[is_slow] = ((1 - (V[is_slow] / c) ** 2) ** -0.5).value
         γ[equals_c] = np.inf
 
     else:
-        γ = np.inf if np.abs(V) == _c else ((1 - (V / _c) ** 2) ** -0.5).value
+        γ = np.inf if np.abs(V) == c else ((1 - (V / c) ** 2) ** -0.5).value
     return γ
 
 
@@ -155,7 +154,7 @@ def relativistic_energy(m: u.kg, v: u.m / u.s) -> u.Joule:
     ValueError: The argument 'm' to function relativistic_energy() can not contain negative numbers.
     """
     γ = Lorentz_factor(v)
-    return γ * m * _c**2
+    return γ * m * c**2
 
 
 class RelativisticBody:
@@ -307,7 +306,7 @@ class RelativisticBody:
         -------
         ~astropy.units.Quantity
         """
-        return self.mass * _c**2
+        return self.mass * c**2
 
     @property
     def total_energy(self) -> u.J:
@@ -319,7 +318,7 @@ class RelativisticBody:
         -------
         ~astropy.units.Quantity
         """
-        return np.sqrt(self.momentum**2 * _c**2 + self.mass_energy**2)
+        return np.sqrt(self.momentum**2 * c**2 + self.mass_energy**2)
 
     @property
     def kinetic_energy(self) -> u.J:
@@ -342,7 +341,7 @@ class RelativisticBody:
         -------
         float
         """
-        return (self.velocity / _c).to(u.dimensionless_unscaled).value
+        return (self.velocity / c).to(u.dimensionless_unscaled).value
 
     @property
     def velocity(self) -> u.m / u.s:
@@ -353,9 +352,7 @@ class RelativisticBody:
         -------
         ~astropy.units.Quantity
         """
-        velocity = self.momentum / np.sqrt(
-            self.mass**2 + self.momentum**2 / _c**2
-        )
+        velocity = self.momentum / np.sqrt(self.mass**2 + self.momentum**2 / c**2)
         return velocity.to(u.m / u.s)
 
     @property
@@ -392,11 +389,11 @@ class RelativisticBody:
 
     @total_energy.setter
     def total_energy(self, E_tot: u.J):
-        self._momentum = np.sqrt(E_tot**2 - self.mass_energy**2) / _c
+        self._momentum = np.sqrt(E_tot**2 - self.mass_energy**2) / c
 
     @v_over_c.setter
     def v_over_c(self, v_over_c_: Integral):
-        self.velocity = v_over_c_ * _c
+        self.velocity = v_over_c_ * c
 
     @velocity.setter
     def velocity(self, V: u.m / u.s):
@@ -418,7 +415,7 @@ class RelativisticBody:
         if γ < 1:
             raise ValueError("The Lorentz factor must be ≥ 1")
 
-        self.velocity = _c * np.sqrt(1 - γ**-2)
+        self.velocity = c * np.sqrt(1 - γ**-2)
 
     @momentum.setter
     def momentum(self, p: u.kg * u.m / u.s):
