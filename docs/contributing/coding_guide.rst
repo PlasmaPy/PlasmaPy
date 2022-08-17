@@ -127,9 +127,9 @@ Coding guidelines
   .. tip::
 
      Normally, ``numpy.nan == numpy.nan`` evaluates to `False`, which
-     complicates testing |nan| behavior. Functions such as
-     `numpy.allclose` often have an ``equal_nan`` keyword such that
-     ``allclose(nan, nan, equal_nan=True)`` will return `True` instead.
+     complicates testing |nan| behavior. The ``equal_nan`` keyword of
+     functions like `numpy.allclose` and `numpy.testing.assert_allclose`
+     makes it so that |nan| is considered equal to itself.
 
 * Do not use :term:`mutable` objects as default values in the function
   or method declaration. This can lead to unexpected behavior.
