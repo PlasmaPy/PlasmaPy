@@ -120,8 +120,9 @@ Coding guidelines
   'PlasmaPy'
 
 * Functions that accept |array_like| or |Quantity| inputs should accept
-  and return |nan| values. This guideline applies when |nan| is the
-  input as well as when |nan| is included in an array.
+  and return |nan| (not a number) values. This guideline applies when
+  |nan| is the input as well as when |nan| values are included in an
+  array.
 
   .. tip::
 
