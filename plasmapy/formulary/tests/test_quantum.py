@@ -12,6 +12,7 @@ from plasmapy.formulary.quantum import (
     Fermi_energy,
     lambdaDB_,
     lambdaDB_th_,
+    quantum_theta,
     thermal_deBroglie_wavelength,
     Thomas_Fermi_length,
     Wigner_Seitz_radius,
@@ -231,3 +232,26 @@ def test_quantum_aliases():
     assert Ef_ is Fermi_energy
     assert lambdaDB_ is deBroglie_wavelength
     assert lambdaDB_th_ is thermal_deBroglie_wavelength
+
+
+class TestQuantumTheta:
+    """Test the quantum_theta function in quantum.py."""
+
+    T = 1 * u.eV
+    n_e = 1e26 * u.m**-3
+
+    @pytest.fixture()
+    def theta(self):
+        """Calculate theta for the given example parameters"""
+
+        return quantum_theta(self.T, self.n_e)
+
+    def test_units(self, theta):
+        """Test the return units"""
+
+        assert theta.unit.is_equivalent(u.dimensionless_unscaled)
+
+    def test_value(self, theta):
+        """Compare the calculated theta with the expected value."""
+
+        assert np.isclose(theta.value, 12.72906)
