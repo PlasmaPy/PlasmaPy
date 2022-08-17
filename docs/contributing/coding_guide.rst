@@ -119,6 +119,18 @@ Coding guidelines
   >>> print(f"{package_name!r}")  # shortcut for f"{repr(package_name)}"
   'PlasmaPy'
 
+* Functions that accept |array_like| or |Quantity| inputs should accept
+  and return |nan| (`not a number`_) values. This guideline applies when
+  |nan| is the input as well as when |nan| values are included in an
+  array.
+
+  .. tip::
+
+     Normally, ``numpy.nan == numpy.nan`` evaluates to `False`, which
+     complicates testing |nan| behavior. The ``equal_nan`` keyword of
+     functions like `numpy.allclose` and `numpy.testing.assert_allclose`
+     makes it so that |nan| is considered equal to itself.
+
 * Do not use :term:`mutable` objects as default values in the function
   or method declaration. This can lead to unexpected behavior.
 
@@ -787,6 +799,7 @@ the README file of `benchmarks-repo`_.
 .. _example notebook on particles: ../notebooks/getting_started/particles.ipynb
 .. _example notebook on units: ../notebooks/getting_started/units.ipynb
 .. _extract function refactoring pattern: https://refactoring.guru/extract-method
+.. _not a number: https://en.wikipedia.org/wiki/NaN
 .. _NumPy Enhancement Proposal 29: https://numpy.org/neps/nep-0029-deprecation_policy.html
 .. _pyupgrade: https://github.com/asottile/pyupgrade
 .. _rename refactoring in PyCharm: https://www.jetbrains.com/help/pycharm/rename-refactorings.html
