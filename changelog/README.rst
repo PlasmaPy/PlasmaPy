@@ -125,6 +125,24 @@ Changelog guidelines
   superseded or reverted and include a link to the appropriate pull
   request.
 
+.. _fixing-obsolete-rest-links:
+
+.. tip::
+
+   When removing or moving an object, reST_ links that follow the
+   original namespace will break, causing the documentation build to
+   fail.
+
+   To remedy this problem in old changelog entries, change the broken
+   reST_ link into an inline literal by surrounding the old link with
+   double back ticks (instead of single back ticks) and remove the
+   preceding tilde (if present). For example,
+   ``` `~plasmapy.subpackage.module.old_function` ``` should be changed
+   to ``` ``plasmapy.subpackage.module.old_function`` ```.
+
+   In the rest of the documentation, the namespace should be corrected
+   but not changed into an inline literal.
+
 Building the changelog
 ======================
 
