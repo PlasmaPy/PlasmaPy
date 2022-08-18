@@ -302,12 +302,12 @@ def spectral_density(
         Temperature of each ion component. Shape (Ni, ) must be equal to the
         number of ion populations Ni. (in K or convertible to eV)
 
-    efract : array_like, shape (Ne, ), optional
+    efract : |array_like|, shape (Ne, ), optional
         An array-like object representing :math:`F_e` (defined above).
         Must sum to 1.0. Default is [1.0], representing a single
         electron component.
 
-    ifract : array_like, shape (Ni, ), optional
+    ifract : |array_like|, shape (Ni, ), optional
         An array-like object representing :math:`F_i` (defined above).
         Must sum to 1.0. Default is [1.0], representing a single
         ion component.

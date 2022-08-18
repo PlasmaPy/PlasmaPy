@@ -68,6 +68,7 @@ in parentheses are `ORCID author identifiers <https://orcid.org>`__.
 * Jakub Polak
 * :user:`James Kent <jdkent>`
 * :user:`Jasper Beckers <jasperbeckers>`
+* :user:`Jayden Roberts <JaydenR2305>`
 * :user:`Joao Victor Martinelli <JvPy>`
 * :user:`Joshua Munn <jams2>`
 * :user:`Isaias McHardy <jota33>` (:orcid:`0000-0001-5394-9445`)

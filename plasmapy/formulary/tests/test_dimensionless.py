@@ -12,7 +12,6 @@ from plasmapy.formulary.dimensionless import (
     Lundquist_number,
     Mag_Reynolds,
     nD_,
-    quantum_theta,
     Re_,
     Reynolds_number,
     Rm_,
@@ -47,11 +46,6 @@ def test_aliases(alias, parent):
 def test_beta_dimensionless():
     # Check that beta is dimensionless
     float(beta(T, n, B))
-
-
-def test_quantum_theta_dimensionless():
-    # Check that quantum theta is dimensionless
-    float(quantum_theta(T, n))
 
 
 def test_beta_nan():
