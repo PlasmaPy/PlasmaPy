@@ -1,5 +1,7 @@
 Continuous integration: .github/**/*
 
+Contributor Guide: docs/contributing/*
+
 Diagnostics: plasmapy/diagnostics/**/*
 
 Formulary: plasmapy/formulary/**/*
