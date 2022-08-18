@@ -2041,19 +2041,32 @@ def coupling_parameter(
 
 class CollisionFrequencies:
     @validate_quantities(
+        v_a={"none_shall_pass": True},
+        T_a={"none_shall_pass": True},
         n_b={"can_be_negative": False},
         T_b={"can_be_negative": False, "equivalencies": u.temperature_energy()},
     )
     def __init__(
         self,
+        *,
         test_particle: particles.Particle,
         field_particle: particles.Particle,
-        v_a: u.cm / u.s,
+        v_a: u.cm / u.s = None,
+        T_a: u.K = None,
         n_b: u.cm**-3,
         T_b: u.K,
         coulomb_log: u.dimensionless_unscaled,
         dx: float = 1e-20,
     ):
+        if v_a is None:
+            if T_a is None:
+                raise ValueError("Please specify either v_a or T_a.")
+
+            v_a = thermal_speed(T_a, test_particle)
+        else:
+            if T_a is not None:
+                raise ValueError("Please specify either v_a or T_a, not both.")
+
         self.test_particle = test_particle
         self.field_particle = field_particle
         self.v_a = v_a
@@ -2062,17 +2075,17 @@ class CollisionFrequencies:
         self.coulomb_log = coulomb_log
         self.dx = dx
 
-        v_0 = self._v_0()
         x = self._x()
         phi = self._phi(x)
         phi_prime = self._phi_prime(x)
 
-        particle_mass_ratio = test_particle.mass / field_particle.mass
+        mass_ratio = test_particle.mass / field_particle.mass
 
-        self.slowing_down = (1 + particle_mass_ratio) * phi * v_0
-        self.transverse_diffusion = 2 * ((1 - 1 / (2 * x)) * phi + phi_prime) * v_0
-        self.parallel_diffusion = (phi / x) * v_0
-        self.energy_loss = 2 * (particle_mass_ratio * phi - phi_prime) * v_0
+        self.v_0 = self._v_0()
+        self.slowing_down = (1 + mass_ratio) * phi * self.v_0
+        self.transverse_diffusion = 2 * ((1 - 1 / (2 * x)) * phi + phi_prime) * self.v_0
+        self.parallel_diffusion = (phi / x) * self.v_0
+        self.energy_loss = 2 * (mass_ratio * phi - phi_prime) * self.v_0
 
     def _v_0(self):
         return (
