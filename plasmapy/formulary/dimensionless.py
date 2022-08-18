@@ -26,7 +26,6 @@ import numpy as np
 from astropy.constants.si import k_B, mu0
 from typing import Optional
 
-
 from plasmapy.formulary import frequencies, lengths, misc, speeds
 from plasmapy.formulary.quantum import quantum_theta
 from plasmapy.particles import Particle
