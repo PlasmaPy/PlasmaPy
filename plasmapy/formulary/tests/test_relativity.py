@@ -98,7 +98,7 @@ def test_ultra_relativistic_proton_lorentz_factor(ultra_relativistic_proton):
     assert ultra_relativistic_proton.lorentz_factor >= 1e6
 
 
-def test_uhech_v_over_c(ultra_relativistic_proton):
+def test_uhecr_v_over_c(ultra_relativistic_proton):
     assert u.isclose(ultra_relativistic_proton.v_over_c, 1, atol=1e-10)
 
 
