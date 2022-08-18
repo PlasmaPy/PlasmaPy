@@ -2038,11 +2038,11 @@ def coupling_parameter(
     return coulomb_energy / kinetic_energy
 
 
-@validate_quantities(
-    n_b={"can_be_negative": False},
-    T_b={"can_be_negative": False, "equivalencies": u.temperature_energy()},
-)
 class RelaxationRates:
+	@validate_quantities(
+	    n_b={"can_be_negative": False},
+	    T_b={"can_be_negative": False, "equivalencies": u.temperature_energy()},
+	)
     def __init__(
         self,
         species: (particles.Particle, particles.Particle),
