@@ -48,7 +48,7 @@ automodapi_custom_groups = {
         "title": "Lite-Functions",
         "description": (
             """
-            :term:`Lite-functions` are lightweight versions of existing
+            :term:`Lite-functions` are optimized versions of existing
             `plasmapy` functions that are intended for applications where
             computational efficiency matters most. Lite-functions accept
             numbers and NumPy arrays that are implicitly assumed to be
