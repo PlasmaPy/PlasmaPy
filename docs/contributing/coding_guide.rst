@@ -547,7 +547,7 @@ not noticeably impact performance during typical interactive use, but
 the performance penalty can become significant for numerically intensive
 applications.
 
-A :term:`lite-function` is a lightweight version of another `plasmapy`
+A :term:`lite-function` is a lite-weight version of another `plasmapy`
 function that accepts numbers and NumPy_ arrays in assumed SI units.
 Lite-functions skip all validations and instead prioritize performance.
 Most lite-functions are defined in `plasmapy.formulary`.
@@ -606,7 +606,7 @@ corresponds to ``function`` as would be defined in
 * Lite-functions are bound to their normal version as the ``lite``
   attribute using the
   `~plasmapy.utils.decorators.lite_func.bind_lite_func` decorator.  This
-  allows the lite function to also be accessed like
+  allows the lite-function to also be accessed like
   ``thermal_speed.lite()``.
 
 * If a lite-function is decorated with something like ``@njit``,
