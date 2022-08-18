@@ -1,6 +1,6 @@
 Refactored the return pattern
 of `~plasmapy.analysis.swept_langmuir.floating_potential.find_floating_potential`
-follow ``(vf, extras)``, where ``vf`` is the computed floating
-potential and ``extras`` is an instance of
-`~plasmapy.analysis.swept_langmuir.floating_potential.VFExtras` contains
-extra parameters from the computation.
+to follow the ``(vf, extras)`` pattern, where ``vf`` is the computed
+floating potential and ``extras`` is an instance of
+`~plasmapy.analysis.swept_langmuir.floating_potential.VFExtras`
+containing extra parameters from the computation.

@@ -58,6 +58,12 @@
 
 .. |ParticleTracker| replace:: :class:`~plasmapy.simulation.particletracker.ParticleTracker`
 
+.. --------------
+.. plasmapy.utils
+.. --------------
+
+.. |validate_quantities| replace:: :func:`~plasmapy.utils.decorators.validators.validate_quantities`
+
 .. ------------------
 .. NumPy replacements
 .. ------------------
@@ -65,6 +71,7 @@
 .. |inf| replace:: `~numpy.inf`
 .. |nan| replace:: `~numpy.nan`
 .. |ndarray| replace:: :class:`~numpy.ndarray`
+.. |array_like| replace:: :term:`numpy:array_like`
 
 .. --------------------
 .. Astropy replacements
@@ -83,6 +90,7 @@
    used just before a period.
 
 .. |bibliography| replace:: :ref:`bibliography`\
+.. |changelog guide| replace:: :ref:`changelog guide`\
 .. |coding guide| replace:: :ref:`coding guide`\
 .. |contributor guide| replace:: :ref:`contributor guide`\
 .. |documentation guide| replace:: :ref:`documentation guide`\
@@ -107,6 +115,7 @@
 .. _create an issue: https://github.com/PlasmaPy/PlasmaPy/issues/new/choose
 .. _CSS: https://www.w3schools.com:443/css
 .. _DOI: https://www.doi.org
+.. _equivalencies: https://docs.astropy.org/en/stable/units/equivalencies.html
 .. _flake8: https://flake8.pycqa.org/en/latest
 .. _git: https://git-scm.com
 .. _GitHub Actions: https://docs.github.com/en/actions
@@ -175,6 +184,9 @@
    nitpick_ignore_regex in docs/conf.py so that it doesn't get counted
    as an error in a nitpicky doc build (e.g., tox -e doc_build_nitpicky).
 
+.. _`astropy.units`: https://docs.astropy.org/en/stable/units/index.html
+.. |astropy.units| replace:: `astropy.units`
+
 .. _`docs/_static`: https://github.com/PlasmaPy/PlasmaPy/tree/main/docs/_static
 .. |docs/_static| replace:: :file:`docs/_static`
 
@@ -220,6 +232,18 @@
 .. _`.pre-commit-config.yaml`: https://github.com/PlasmaPy/PlasmaPy/blob/main/.pre-commit-config.yaml
 .. |.pre-commit-config.yaml| replace:: :file:`.pre-commit-config.yaml`
 
+.. _`pyproject.toml`: https://github.com/PlasmaPy/PlasmaPy/blob/main/pyproject.toml
+.. |pyproject.toml| replace:: :file:`pyproject.toml`
+
+.. _`requirements`: https://github.com/PlasmaPy/PlasmaPy/blob/main/requirements
+.. |requirements| replace:: :file:`requirements`
+
+.. _`requirements/build.txt`: https://github.com/PlasmaPy/PlasmaPy/blob/main/requirements/build.txt
+.. |requirements/build.txt| replace:: :file:`requirements/build.txt`
+
+.. _`requirements/environment.yml`: https://github.com/PlasmaPy/PlasmaPy/blob/main/requirements/environment.yml
+.. |requirements/environment.yml| replace:: :file:`requirements/environment.yml`
+
 .. _`setup.cfg`: https://github.com/PlasmaPy/PlasmaPy/blob/main/setup.cfg
 .. |setup.cfg| replace:: :file:`setup.cfg`
 
@@ -246,6 +270,9 @@
 
 .. _`sphinx-notfound-page`: https://sphinx-notfound-page.readthedocs.io
 .. |sphinx-notfound-page| replace:: `sphinx-notfound-page`
+
+.. _`tox.ini`: https://github.com/PlasmaPy/PlasmaPy/blob/main/tox.ini
+.. |tox.ini| replace:: :file:`tox.ini`
 
 .. _xarray: https://docs.xarray.dev
 .. |xarray| replace:: `xarray`

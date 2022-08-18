@@ -98,7 +98,7 @@ Deprecations and Removals
 Features
 --------
 
-- Add the `~plasmapy.particles.ionization_state.IonizationState.average_ion`
+- Added the `~plasmapy.particles.ionization_state.IonizationState.average_ion`
   method to |IonizationState|. (`#1028 <https://github.com/plasmapy/plasmapy/pull/1028>`__)
 - Added the
   `~plasmapy.particles.ionization_state_collection.IonizationStateCollection.average_ion`
