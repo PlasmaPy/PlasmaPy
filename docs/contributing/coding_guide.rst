@@ -748,6 +748,155 @@ by an angular frequency to get a length scale:
 
 >>> d_i = (c/omega_pi).to(u.m, equivalencies=u.dimensionless_angles())  # doctest: +SKIP
 
+.. _aliases:
+
+Aliases
+=======
+
+An :term:`alias` is an abbreviated version of a commonly used function.
+For example, `~plasmapy.formulary.speeds.va_` is an alias to
+`~plasmapy.formulary.speeds.Alfven_speed`.
+
+:term:`Aliases` are intended to give users the option for shortening
+their code while maintaining some readability and explicit meaning. As
+such, :term:`aliases` are given to functionality that already has a
+widely-used symbol in plasma literature.
+
+Here is a minimal example of an alias ``f_`` to ``function`` as would be
+defined in :file:`plasmapy/subpackage/module.py`.
+
+.. code-block:: python
+
+   __all__ = ["function"]
+   __aliases__ = ["f_"]
+
+   __all__ += __aliases__
+
+   def function():
+       ...
+
+   f_ = function
+   """Alias to `~plasmapy.subpackage.module.function`."""
+
+* Aliases should only be defined for functionality that already has a
+  symbol that is widely used in the community's literature.  This is to
+  ensure that the abbreviated function name is still widely
+  understandable. For example, `~plasmapy.formulary.lengths.cwp_` is a
+  shortcut for :math:`c/ω_p`\ .
+
+* The name of an alias should end with a trailing underscore.
+
+* An alias should be defined immediately after the original function.
+
+* Each alias should have a one-line docstring that refers users to the
+  original function.
+
+* The name of the original function should be included in ``__all__``
+  near the top of each module, and the name of the alias should be
+  included in ``__aliases__``, which will then get appended to
+  ``__all__``. This is done so both the :term:`alias` and the original
+  function get properly documented.
+
+* Aliases are intended for end users, and should not be used in PlasmaPy
+  or other collaborative software development efforts because of
+  reduced readability and searchability for someone new to plasma
+  science.
+
+.. _lite-functions:
+
+Lite Functions
+==============
+
+Most functions in `plasmapy.formulary` accept |Quantity| instances as
+arguments and use |validate_quantities| to verify that |Quantity|
+arguments are valid. The use of |Quantity| operations and validations do
+not noticeably impact performance during typical interactive use, but
+the performance penalty can become significant for numerically intensive
+applications.
+
+A :term:`lite-function` is an optimized version of another `plasmapy`
+function that accepts numbers and NumPy_ arrays in assumed SI units.
+:term:`Lite-functions` skip all validations and instead prioritize
+performance. Most :term:`lite-functions` are defined in
+`plasmapy.formulary`.
+
+.. caution::
+
+   Unlike most `~plasmapy.formulary` functions, no validations are
+   performed on the arguments provided to a :term:`lite-function` for
+   the sake of computational efficiency. When using
+   :term:`lite-functions`, it is vital to double-check your
+   implementation!
+
+Here is a minimal example of a :term:`lite-function` ``function_lite``
+that corresponds to ``function`` as would be defined in
+:file:`plasmapy/subpackage/module.py`.
+
+.. code-block:: python
+
+   __all__ = ["function"]
+   __lite_funcs__ = ["function_lite"]
+
+   from numba import njit
+   from numbers import Real
+   from plasmapy.utils.decorators import bind_lite_func, preserve_signature
+
+   __all__ += __lite_funcs__
+
+   @preserve_signature
+   @njit
+   def function_lite(v: Real) -> Real:
+       """
+       The lite-function which accepts and returns real numbers in
+       assumed SI units.
+       """
+       ...
+
+   @bind_lite_func(function_lite)
+   def function(v):
+       """A function that accepts and returns Quantity arguments."""
+       ...
+
+* The name of each :term:`lite-function` should be the name of the
+  original function with ``_lite`` appended at the end. For example,
+  `~plasmapy.formulary.speeds.thermal_speed_lite` is the
+  :term:`lite-function` associated with
+  `~plasmapy.formulary.speeds.thermal_speed`.
+
+* :term:`Lite-functions` assume SI units for all arguments that
+  represent physical quantities.
+
+* :term:`Lite-functions` should be defined immediately before the normal
+  version of the function.
+
+* :term:`Lite-functions` should be used by their associate non-lite
+  counterpart, except for well reasoned exceptions. This is done to
+  reduce code duplication.
+
+* :term:`Lite-functions` are bound to their normal version as the
+  ``lite`` attribute using the
+  `~plasmapy.utils.decorators.lite_func.bind_lite_func` decorator. This
+  allows the :term:`lite-function` to also be accessed like
+  ``thermal_speed.lite()``.
+
+* If a :term:`lite-function` is decorated with something like ``@njit``,
+  then it should also be decorated with
+  `~plasmapy.utils.decorators.helpers.preserve_signature`.  This
+  preserves the function signature so interpreters can still
+  give hints about function arguments.
+
+* When possible, a :term:`lite-function` should incorporate `numba's
+  just-in-time compilation
+  <https://numba.pydata.org/numba-doc/latest/reference/jit-compilation.html>`__
+  or utilize Cython_.  At a minimum any "extra" code beyond the raw
+  calculation should be removed.
+
+* The name of the original function should be included in ``__all__``
+  near the top of each module, and the name of the :term:`lite-function`
+  should be included in ``__lite_funcs__``, which will then get
+  appended to ``__all__``. This is done so both the :term:`lite-function`
+  and the original function get properly documented.
+
 .. _example_notebooks:
 
 Examples

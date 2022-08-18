@@ -114,6 +114,7 @@
 .. _Contributor Covenant: https://www.contributor-covenant.org
 .. _create an issue: https://github.com/PlasmaPy/PlasmaPy/issues/new/choose
 .. _CSS: https://www.w3schools.com:443/css
+.. _Cython: https://cython.org/
 .. _DOI: https://www.doi.org
 .. _equivalencies: https://docs.astropy.org/en/stable/units/equivalencies.html
 .. _flake8: https://flake8.pycqa.org/en/latest
