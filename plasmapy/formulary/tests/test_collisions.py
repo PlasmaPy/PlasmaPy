@@ -1764,3 +1764,38 @@ class TestRelaxationRates:
             calculated_value = getattr(value_test_case, name)
 
             assert np.isclose(calculated_value.value, expected_value)
+
+    @pytest.mark.parametrize(
+        "expected_error, constructor_arguments, constructor_keyword_arguments",
+        [
+            (
+                ValueError,
+                (Particle("e-"), Particle("e-")),
+                {
+                    "v_a": 1 * u.cm / u.s,
+                    "T_a": 1 * u.eV,
+                    "T_b": 1 * u.eV,
+                    "n_b": 1 * u.cm**-3,
+                    "coulomb_log": 1,
+                },
+            ),
+            (
+                ValueError,
+                (Particle("e-"), Particle("e-")),
+                {
+                    "T_b": 1 * u.eV,
+                    "n_b": 1 * u.cm**-3,
+                    "coulomb_log": 1,
+                },
+            ),
+        ],
+    )
+    def test_errors(
+        self, expected_error, constructor_arguments, constructor_keyword_arguments
+    ):
+        """Test errors raised in the function body"""
+
+        with pytest.raises(expected_error):
+            CollisionFrequencies(
+                *constructor_arguments, **constructor_keyword_arguments
+            )
