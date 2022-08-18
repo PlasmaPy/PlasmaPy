@@ -52,6 +52,7 @@ __all__ = [
     "mobility",
     "Knudsen_number",
     "coupling_parameter",
+    "CollisionFrequencies",
 ]
 
 import astropy.units as u
@@ -2038,7 +2039,7 @@ def coupling_parameter(
     return coulomb_energy / kinetic_energy
 
 
-class RelaxationRates:
+class CollisionFrequencies:
     @validate_quantities(
         n_b={"can_be_negative": False},
         T_b={"can_be_negative": False, "equivalencies": u.temperature_energy()},
