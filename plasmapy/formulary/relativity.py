@@ -164,13 +164,14 @@ class RelativisticBody:
 
     Parameters
     ----------
-    particle : |ParticleLike|, |ParticleList|, or |Quantity|
+    particle : |ParticleLike|, |CustomParticle|, |ParticleList|, or |Quantity|
         A representation of a particle from which to get the mass
         of the relativistic body.
 
     V : |Quantity|, optional
         The velocity of the relativistic body in units convertible to
-        m/s. Must be :math:`≤ c`\ .
+        m/s. The absolute magnitude of ``V`` cannot be greater than
+        :math:`c`\ .
 
     momentum : |Quantity|, optional
         The momentum of the relativistic body in units convertible to
@@ -189,7 +190,8 @@ class RelativisticBody:
        absolute magnitude :math:`≤ 1`\ .
 
     lorentz_factor : real number or |Quantity|, optional, |keyword-only|
-       The Lorentz factor of the relativistic body. Must be :math:`≥ 1`\ .
+       The Lorentz factor of the relativistic body. Must be
+       :math:`≥ 1`\ .
 
     Z : integer, optional, |keyword-only|
         The charge number associated with ``particle``.

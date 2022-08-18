@@ -250,7 +250,51 @@ def test_relativistic_body_defined_using_mass(attr):
 def test_relativistic_body_nan_velocity():
     """
     Test that RelativisticBody can be created with no velocity defined,
-    and then have the velocity be nan
+    and then have the velocity be nan.
     """
     relativistic_body = RelativisticBody("p+")
     assert np.isnan(relativistic_body.velocity)
+
+
+def test_relativistic_body_for_custom_particle():
+    """Test that `RelativisticBody` can be created using a `CustomParticle`."""
+    mass = 1e-27 * u.kg
+    custom_particle = CustomParticle(mass=mass)
+    velocity = 0 * u.m / u.s
+    relativistic_custom_particle = RelativisticBody(
+        particle=custom_particle, V=velocity
+    )
+    assert u.isclose(relativistic_custom_particle.lorentz_factor, 1, rtol=1e-9)
+
+
+def test_relativistic_body_with_particle_list():
+    """
+    Test that `RelativisticBody` can be instantiated with multiple
+    particles.
+    """
+    particles = ["p+", "e-"]
+    relativistic_particles = RelativisticBody(particle=particles, V=0 * u.m / u.s)
+    np.testing.assert_allclose(relativistic_particles.lorentz_factor, 1)
+
+
+def test_relativistic_body_with_multiple_velocities():
+    """
+    Test that `RelativisticBody` can be instantiated with an array of
+    velocities.
+    """
+    velocities = np.array([0, 0.5]) * c
+    relativistic_particles = RelativisticBody("p+", V=velocities)
+    np.testing.assert_allclose(
+        relativistic_particles.lorentz_factor, [1, 1.1547005383792517]
+    )
+
+
+def test_relativistic_body_with_multiple_particles_and_velocities():
+    """
+    Test that `RelativisticBody` can be instantiated with multiple
+    particles and multiple velocities.
+    """
+    velocities = np.array([0.5, 0.7]) * c
+    particles = ["p+", "e-"]
+    relativistic_particles = RelativisticBody(particle=particles, V=velocities)
+    np.testing.assert_allclose(relativistic_particles.velocity, velocities)
