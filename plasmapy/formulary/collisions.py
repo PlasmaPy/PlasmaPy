@@ -59,6 +59,7 @@ import numpy as np
 import warnings
 
 from astropy.constants.si import e, eps0, hbar, k_B, m_e
+import math
 from numbers import Real
 from numpy import pi
 
@@ -2034,6 +2035,7 @@ def coupling_parameter(
 
     return coulomb_energy / kinetic_energy
 
+
 @validate_quantities(
     n_b={"can_be_negative": False},
     T_b={"can_be_negative": False, "equivalencies": u.temperature_energy()},
@@ -2061,9 +2063,7 @@ class RelaxationRates:
         mu = species[0].mass / species[1].mass
 
         self.slowing_down = (1 + mu) * phi * v_0
-        self.transverse_diffusion = (
-            2 * ((1 - 1 / (2 * x)) * phi + phi_prime) * v_0
-        )
+        self.transverse_diffusion = 2 * ((1 - 1 / (2 * x)) * phi + phi_prime) * v_0
         self.parallel_diffusion = (phi / x) * v_0
         self.energy_loss = 2 * (mu * phi - phi_prime) * v_0
 
