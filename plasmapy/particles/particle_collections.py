@@ -352,7 +352,7 @@ class ParticleList(collections.UserList):
 
         Parameters
         ----------
-        abundances : array_like, optional
+        abundances : |array_like|, optional
             Real numbers representing relative abundances of the particles in
             the |ParticleList|. Must have the same number of elements as the
             |ParticleList|. This parameter gets passed to `numpy.average` via
