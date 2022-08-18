@@ -2052,9 +2052,9 @@ class CollisionFrequencies:
     )
     def __init__(
         self,
-        *,
         test_particle: particles.Particle,
         field_particle: particles.Particle,
+        *,
         v_a: u.cm / u.s = None,
         T_a: u.K = None,
         n_b: u.cm**-3,

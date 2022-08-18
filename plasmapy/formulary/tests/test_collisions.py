@@ -10,6 +10,7 @@ import plasmapy.particles.exceptions
 from plasmapy.formulary.braginskii import Coulomb_logarithm
 from plasmapy.formulary.collisions import (
     collision_frequency,
+    CollisionFrequencies,
     coupling_parameter,
     fundamental_electron_collision_freq,
     fundamental_ion_collision_freq,
@@ -20,6 +21,7 @@ from plasmapy.formulary.collisions import (
     mobility,
     Spitzer_resistivity,
 )
+from plasmapy.particles import Particle
 from plasmapy.utils import exceptions
 from plasmapy.utils.exceptions import CouplingWarning
 from plasmapy.utils.pytest_helpers import assert_can_handle_nparray
@@ -1698,3 +1700,67 @@ class Test_coupling_parameter:
         """Testing kwarg `method` fails is not 'classical' or 'quantum'"""
         with pytest.raises(ValueError):
             coupling_parameter(self.T, self.n_e, self.particles, method="not a method")
+
+
+class TestRelaxationRates:
+    """Test the RelaxationRates class in collisions.py."""
+
+    attribute_test_case = CollisionFrequencies(
+        Particle("e-"),
+        Particle("e-"),
+        v_a=1 * u.m / u.s,
+        T_b=1 * u.K,
+        n_b=1 * u.m**-3,
+        coulomb_log=1 * u.dimensionless_unscaled,
+    )
+
+    attributes_to_test = [
+        "slowing_down",
+        "transverse_diffusion",
+        "parallel_diffusion",
+        "energy_loss",
+        "v_0",
+    ]
+
+    @pytest.mark.parametrize("attribute_to_test", attributes_to_test)
+    def test_units(self, attribute_to_test):
+        """Test the return units"""
+
+        assert getattr(self.attribute_test_case, attribute_to_test).unit.is_equivalent(
+            u.Hz
+        )
+
+    # TODO: Add more test value cases
+    @pytest.mark.parametrize(
+        "expected_attribute_values, constructor_arguments, constructor_keyword_arguments",
+        [
+            (
+                {
+                    "v_0": 2429740657174.494,
+                },
+                (Particle("e-"), Particle("e-")),
+                {
+                    "T_a": 1e2 * u.eV,
+                    "T_b": 1e2 * u.eV,
+                    "n_b": 1e20 * u.cm**-3,
+                    "coulomb_log": 6.2889877978064606,
+                },
+            ),
+        ],
+    )
+    def test_values(
+        self,
+        expected_attribute_values,
+        constructor_arguments,
+        constructor_keyword_arguments,
+    ):
+        """Test the return values"""
+
+        value_test_case = CollisionFrequencies(
+            *constructor_arguments, **constructor_keyword_arguments
+        )
+
+        for _, (name, expected_value) in enumerate(expected_attribute_values.items()):
+            calculated_value = getattr(value_test_case, name)
+
+            assert np.isclose(calculated_value.value, expected_value)
