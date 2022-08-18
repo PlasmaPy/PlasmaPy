@@ -14,8 +14,8 @@ Glossary
       An abbreviated version of a commonly used function.  For
       example, `~plasmapy.formulary.speeds.va_` is an alias for
       `~plasmapy.formulary.speeds.Alfven_speed`.  Aliases are
-      named with a trailing underscore. 
-      
+      named with a trailing underscore.
+
       For further details, please refer to the :ref:`contributor guide's
       section on aliases <aliases>`.
 
