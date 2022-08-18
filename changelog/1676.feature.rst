@@ -1,0 +1,1 @@
+Added the `~plasmapy.formulary.collisions.RelaxationRates` class. This class can be used to calculate the four relaxation parameters for two interacting plasmas.
