@@ -6,7 +6,6 @@ __all__ = [
     "common_isotopes",
     "electric_charge",
     "half_life",
-    "integer_charge",
     "isotopic_abundance",
     "is_stable",
     "known_isotopes",
@@ -352,20 +351,6 @@ def charge_number(particle: Particle) -> Integral:
     2
     """
     return particle.charge_number
-
-
-@deprecated(
-    since="0.7.0",
-    warning_type=PlasmaPyFutureWarning,
-    message=(
-        "integer_charge has been deprecated and will be removed in a "
-        "future release.  Use charge_number instead."
-    ),
-)
-@particle_input(any_of={"charged", "uncharged"})
-def integer_charge(particle: Particle):
-    """Return the charge number of the particle."""
-    return charge_number(particle)
 
 
 @particle_input(any_of={"charged", "uncharged"})
