@@ -896,6 +896,7 @@ that corresponds to ``function`` as would be defined in
   should be included in ``__lite_funcs__``, which will then get
   appended to ``__all__``. This is done so both the :term:`lite-function`
   and the original function get properly documented.
+
 .. _example_notebooks:
 
 Examples
