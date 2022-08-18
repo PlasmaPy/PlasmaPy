@@ -73,6 +73,8 @@
 .. |nan| replace:: `~numpy.nan`
 .. |ndarray| replace:: :class:`~numpy.ndarray`
 .. |array_like| replace:: :term:`numpy:array_like`
+.. |ArrayLike| replace:: `~numpy.typing.ArrayLike`
+.. |DTypeLike| replace:: `~numpy.typing.DTypeLike`
 
 .. --------------------
 .. Astropy replacements
