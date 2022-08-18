@@ -89,21 +89,21 @@ def test_relativistic_energy():
 
 
 @pytest.fixture
-def ultra_relativistic_electron():
+def ultra_relativistic_proton():
     """Representing an ultra high energy cosmic ray (UHECR)."""
-    return RelativisticBody(particle="e-", kinetic_energy=1e23 * u.eV)
+    return RelativisticBody(particle="p+", kinetic_energy=1e22 * u.eV)
 
 
-def test_uhecr_v_over_c(ultra_relativistic_electron):
+def test_uhecr_v_over_c(ultra_relativistic_proton):
     """Test that V/c is really close to but less than 1."""
-    assert u.isclose(ultra_relativistic_electron.v_over_c, 1, atol=1e-16)
-    assert ultra_relativistic_electron.v_over_c < 1
+    assert u.isclose(ultra_relativistic_proton.v_over_c, 1, atol=1e-16)
+    assert ultra_relativistic_proton.v_over_c < 1
 
 
-def test_uhecr_velocity(ultra_relativistic_electron):
+def test_uhecr_velocity(ultra_relativistic_proton):
     """Test that the velocity is really close to but less than c."""
-    assert u.isclose(ultra_relativistic_electron.velocity, c, rtol=1e-16)
-    assert ultra_relativistic_electron.velocity < c
+    assert u.isclose(ultra_relativistic_proton.velocity, c, rtol=1e-16)
+    assert ultra_relativistic_proton.velocity < c
 
 
 proton_at_half_c_inputs = [
