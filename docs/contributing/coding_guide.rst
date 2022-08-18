@@ -816,18 +816,20 @@ applications.
 
 A :term:`lite-function` is a lite-weight version of another `plasmapy`
 function that accepts numbers and NumPy_ arrays in assumed SI units.
-Lite-functions skip all validations and instead prioritize performance.
-Most lite-functions are defined in `plasmapy.formulary`.
+:term:`Lite-functions` skip all validations and instead prioritize
+performance. Most :term:`lite-functions` are defined in
+`plasmapy.formulary`.
 
 .. caution::
 
    Unlike most `~plasmapy.formulary` functions, no validations are
-   performed on the arguments provided to a lite-function for the
-   sake of computational efficiency. When using lite-functions, it
-   is vital to double-check your implementation!
+   performed on the arguments provided to a :term:`lite-function` for
+   the sake of computational efficiency. When using
+   :term:`lite-functions`, it is vital to double-check your
+   implementation!
 
-Here is a minimal example of a lite-function ``function_lite`` that
-corresponds to ``function`` as would be defined in
+Here is a minimal example of a :term:`lite-function` ``function_lite``
+that corresponds to ``function`` as would be defined in
 :file:`plasmapy/subpackage/module.py`.
 
 .. code-block:: python
@@ -855,41 +857,42 @@ corresponds to ``function`` as would be defined in
        """A function that accepts and returns Quantity arguments."""
        ...
 
-* The name of each lite-function should be the name of the original
-  function with ``_lite`` appended at the end. For example,
-  `~plasmapy.formulary.speeds.thermal_speed_lite` is the lite-function
-  associated with `~plasmapy.formulary.speeds.thermal_speed`.
+* The name of each :term:`lite-function` should be the name of the
+  original function with ``_lite`` appended at the end. For example,
+  `~plasmapy.formulary.speeds.thermal_speed_lite` is the
+  :term:`lite-function` associated with
+  `~plasmapy.formulary.speeds.thermal_speed`.
 
-* Lite-functions assume SI units for all of arguments that represent
-  physical quantities.
+* :term:`Lite-functions` assume SI units for all arguments that
+  represent physical quantities.
 
-* Lite-functions should be defined immediately before the normal version
-  of the function.
+* :term:`Lite-functions` should be defined immediately before the normal
+  version of the function.
 
-* Lite-functions should be used by their associate non-lite counterpart,
-  except for well reasoned exceptions.  This is done to reduce code
-  duplication.
+* :term:`Lite-functions` should be used by their associate non-lite
+  counterpart, except for well reasoned exceptions. This is done to
+  reduce code duplication.
 
-* Lite-functions are bound to their normal version as the ``lite``
-  attribute using the
-  `~plasmapy.utils.decorators.lite_func.bind_lite_func` decorator.  This
-  allows the lite-function to also be accessed like
+* :term:`Lite-functions` are bound to their normal version as the
+  ``lite`` attribute using the
+  `~plasmapy.utils.decorators.lite_func.bind_lite_func` decorator. This
+  allows the :term:`lite-function` to also be accessed like
   ``thermal_speed.lite()``.
 
-* If a lite-function is decorated with something like ``@njit``,
+* If a :term:`lite-function` is decorated with something like ``@njit``,
   then it should also be decorated with
   `~plasmapy.utils.decorators.helpers.preserve_signature`.  This
   preserves the function signature so interpreters can still
   give hints about function arguments.
 
-* When possible, a lite-function should incorporate `numba's
+* When possible, a :term:`lite-function` should incorporate `numba's
   just-in-time compilation
   <https://numba.pydata.org/numba-doc/latest/reference/jit-compilation.html>`__
   or utilize Cython_.  At a minimum any "extra" code beyond the raw
   calculation should be removed.
 
 * The name of the original function should be included in ``__all__``
-  near the top of each module, and the name of the lite-function
+  near the top of each module, and the name of the :term:`lite-function`
   should be included in ``__lite_funcs__``, which will then get
   appended to ``__all__``. This is done so both the :term:`lite-function`
   and the original function get properly documented.
