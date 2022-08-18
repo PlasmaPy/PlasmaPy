@@ -2046,8 +2046,8 @@ class RelaxationRates:
     def __init__(
         self,
         species: (particles.Particle, particles.Particle),
-        v_a: u.m / u.s,
-        n_b: u.m**-3,
+        v_a: u.cm / u.s,
+        n_b: u.cm**-3,
         T_b: u.K,
         coulomb_log: u.dimensionless_unscaled,
         dx: float = 1e-20,
@@ -2075,15 +2075,15 @@ class RelaxationRates:
         return (
             4
             * math.pi
-            * self.species[0].charge ** 2
-            * self.species[1].charge ** 2
+            * (self.species[0].charge_number * e.esu) ** 2
+            * (self.species[1].charge_number * e.esu) ** 2
             * self.coulomb_log
             * self.n_b
-            / (self.species[0].mass ** 2 * self.v_a**3)
-        )
+            / (self.species[0].mass.to(u.g) ** 2 * self.v_a**3)
+        ).to(u.Hz)
 
     def _x(self) -> u.dimensionless_unscaled:
-        x = self.species[1].mass * self.v_a**2 / (2 * k_B * self.T_b)
+        x = self.species[1].mass.to(u.g) * self.v_a**2 / (2 * k_B.cgs * self.T_b)
         return x.to(u.dimensionless_unscaled)
 
     @staticmethod
