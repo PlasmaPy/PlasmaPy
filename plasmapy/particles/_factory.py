@@ -72,16 +72,25 @@ def _physical_particle_factory(
     >>> _physical_particle_factory(["p+", "e-"])
     ParticleList(['p+', 'e-'])
     """
-    if (
-        len(args) == 1
-        and not kwargs
-        and isinstance(args[0], (Particle, CustomParticle, ParticleList))
-    ):
-        return args[0]
 
+    # We need to remove Z and mass_numb from kwargs when they are `None`
+    # because they are not allowed as arguments to `CustomParticle`, and
+    # are not needed in kwargs if they are their default values. Note
+    # that this affects `not kwargs` below.
     for parameter in ["Z", "mass_numb"]:
         if parameter in kwargs and kwargs[parameter] is None:
             kwargs.pop(parameter)
+
+    already_a_particle = all(
+        [
+            len(args) == 1,
+            not kwargs,
+            isinstance(args[0], (Particle, CustomParticle, ParticleList)),
+        ]
+    )
+
+    if already_a_particle:
+        return args[0]
 
     if not args and not kwargs:
         raise TypeError("Particle information has not been provided.")
