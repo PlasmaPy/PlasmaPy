@@ -621,6 +621,11 @@ corresponds to ``function`` as would be defined in
   or utilize Cython_.  At a minimum any "extra" code beyond the raw
   calculation should be removed.
 
+* The name of the original function should be included in ``__all__``
+  near the top of each module, and the name of the lite-function
+  should be included in ``__lite_funcs__``, which will then get
+  appended to ``__all__``. This is done so both the :term:`lite-function`
+  and the original function get properly documented.
 .. _example_notebooks:
 
 Examples
