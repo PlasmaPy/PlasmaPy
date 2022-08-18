@@ -2045,14 +2045,16 @@ class RelaxationRates:
     )
     def __init__(
         self,
-        species: (particles.Particle, particles.Particle),
+        test_particle: particles.Particle,
+        field_particle: particles.Particle,
         v_a: u.cm / u.s,
         n_b: u.cm**-3,
         T_b: u.K,
         coulomb_log: u.dimensionless_unscaled,
         dx: float = 1e-20,
     ):
-        self.species = species
+        self.test_particle = test_particle
+        self.field_particle = field_particle
         self.v_a = v_a
         self.n_b = n_b
         self.T_b = T_b
@@ -2064,26 +2066,26 @@ class RelaxationRates:
         phi = self._phi(x)
         phi_prime = self._phi_prime(x)
 
-        mu = species[0].mass / species[1].mass
+        particle_mass_ratio = test_particle.mass / field_particle.mass
 
-        self.slowing_down = (1 + mu) * phi * v_0
+        self.slowing_down = (1 + particle_mass_ratio) * phi * v_0
         self.transverse_diffusion = 2 * ((1 - 1 / (2 * x)) * phi + phi_prime) * v_0
         self.parallel_diffusion = (phi / x) * v_0
-        self.energy_loss = 2 * (mu * phi - phi_prime) * v_0
+        self.energy_loss = 2 * (particle_mass_ratio * phi - phi_prime) * v_0
 
     def _v_0(self):
         return (
             4
             * math.pi
-            * (self.species[0].charge_number * e.esu) ** 2
-            * (self.species[1].charge_number * e.esu) ** 2
+            * (self.test_particle.charge_number * e.esu) ** 2
+            * (self.field_particle.charge_number * e.esu) ** 2
             * self.coulomb_log
             * self.n_b
-            / (self.species[0].mass.to(u.g) ** 2 * self.v_a**3)
+            / (self.test_particle.mass.to(u.g) ** 2 * self.v_a**3)
         ).to(u.Hz)
 
     def _x(self) -> u.dimensionless_unscaled:
-        x = self.species[1].mass.to(u.g) * self.v_a**2 / (2 * k_B.cgs * self.T_b)
+        x = self.field_particle.mass.to(u.g) * self.v_a**2 / (2 * k_B.cgs * self.T_b)
         return x.to(u.dimensionless_unscaled)
 
     @staticmethod
