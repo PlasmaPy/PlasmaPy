@@ -12,4 +12,4 @@ Thomson scattering
     :caption: Examples
 
     /notebooks/diagnostics/thomson
-	/notebooks/diagnostics/thomson_fitting
+    /notebooks/diagnostics/thomson_fitting
