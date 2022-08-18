@@ -209,7 +209,7 @@ def test_relativistic_body_equality():
     [
         (RelativisticBody("p+", v_over_c=0.2), RelativisticBody("p+", v_over_c=0.5)),
         (RelativisticBody("p+", v_over_c=0.2), RelativisticBody("e-", v_over_c=0.2)),
-        (RelativisticBody("p+", v=c / 2), "different type"),
+        (RelativisticBody("p+", V=c / 2), "different type"),
     ],
 )
 def test_relativistic_body_inequalities(this, that):
