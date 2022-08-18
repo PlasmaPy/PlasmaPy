@@ -1,22 +1,56 @@
 """Functionality for determining the floating potential of a Langmuir sweep."""
-__all__ = ["find_floating_potential", "find_vf_"]
+__all__ = ["find_floating_potential", "VFExtras"]
 __aliases__ = ["find_vf_"]
 
 import numbers
 import numpy as np
 
-from collections import namedtuple
-from typing import Union
+from typing import List, NamedTuple, Optional, Tuple, Union
 from warnings import warn
 
 from plasmapy.analysis import fit_functions as ffuncs
 from plasmapy.analysis.swept_langmuir.helpers import check_sweep
 from plasmapy.utils.exceptions import PlasmaPyWarning
 
-FloatingPotentialResults = namedtuple(
-    "FloatingPotentialResults",
-    ("vf", "vf_err", "rsq", "func", "islands", "indices"),
-)
+__all__ += __aliases__
+
+
+class VFExtras(NamedTuple):
+    """
+    Create a `tuple` containing the extra parameters calculated by
+    `~plasmapy.analysis.swept_langmuir.floating_potential.find_floating_potential`.
+    """
+
+    vf_err: Optional[float]
+    """
+    Alias for field number 0, the error in the calculated floating
+    potential from the floating potential curve fit.
+    """
+
+    rsq: Optional[float]
+    """
+    Alias for field number 1, the r-squared value of the ion-saturation
+    curve fit.
+    """
+
+    fitted_func: Optional[float]
+    """
+    Alias for field number 2, the :term:`fit-function` fitted during
+    the floating potential curve fit.
+    """
+
+    islands: Optional[List[slice]]
+    """
+    Alias for field number 3, a list of `slice` objects representing
+    the indices of the identified crossing-islands discovered during
+    the floating potential curve fit.
+    """
+
+    fitted_indices: Optional[slice]
+    """
+    Alias for field number 4, the indices used in the floating potential
+    curve fit.
+    """
 
 
 def find_floating_potential(
@@ -25,49 +59,52 @@ def find_floating_potential(
     threshold: int = 1,
     min_points: Union[int, float] = None,
     fit_type: str = "exponential",
-):
+) -> Tuple[np.floating, VFExtras]:
     """
-    Determines the floating potential (:math:`V_f`) for a given current-voltage
-    (IV) curve obtained from a swept Langmuir probe.  The floating potential is
-    the probe bias where the collected current equals zero :math:`I = 0`.  (For
-    additional details see the **Notes** section below.)
+    Determines the floating potential (:math:`V_f`) for a given
+    current-voltage (IV) curve obtained from a swept Langmuir probe.
+    The floating potential is the probe bias where the collected
+    current equals zero :math:`I = 0`.  (For additional details see
+    the **Notes** section below.)
 
-    **Aliases:** `find_vf_`
+    **Aliases:** :func:`~plasmapy.analysis.swept_langmuir.floating_potential.find_vf_`
 
     Parameters
     ----------
 
     voltage: `numpy.ndarray`
-        1-D numpy array of monotonically ascending probe biases (should be in volts)
+        1-D numpy array of monotonically ascending probe biases
+        (should be in volts)
 
     current: `numpy.ndarray`
-        1-D numpy array of probe current (should be in amperes) corresponding
-        to the ``voltage`` array
+        1-D numpy array of probe current (should be in amperes)
+        corresponding to the ``voltage`` array
 
     threshold: positive, non-zero `int`
         Max allowed index distance between crossing-points before a new
-        crossing-island is formed.  That is, if ``threshold=5`` then consecutive
-        crossing-points are considered to be in the same crossing-island if
-        they are within 5 index steps of each other. (Default: 1)
+        crossing-island is formed.  That is, if ``threshold=5`` then
+        consecutive crossing-points are considered to be in the same
+        crossing-island if they are within 5 index steps of each other.
+        (Default: 1)
 
     min_points: positive `int` or `float`
-        Minimum number of data points required for the fitting to be applied to.
-        See **Notes** section below for additional details.  The following list
-        specifies the optional values:
+        Minimum number of data points required for the fitting to be
+        applied to.  See **Notes** section below for additional details.
+        The following list specifies the optional values:
 
         - ``min_points = None`` (Default) The largest of 5 and
-          ``factor * array_size`` is taken, where ``array_size`` is the size of
-          ``voltage`` and ``factor = 0.1`` for ``fit_type = "linear"`` and
-          ``0.2`` for ``"exponential"``.
+          ``factor * array_size`` is taken, where ``array_size`` is the
+          size of ``voltage`` and ``factor = 0.1`` for
+          ``fit_type = "linear"`` and ``0.2`` for ``"exponential"``.
         - ``min_points = numpy.inf`` The entire passed array is fitted.
         - ``min_points >= 1`` Exact minimum number of points.
-        - ``0 < min_points < 0`` The minimum number of points is taken as
-          ``min_points * array_size``.
+        - ``0 < min_points < 0`` The minimum number of points is taken
+          as ``min_points * array_size``.
 
     fit_type: str
-        The type of curve to be fitted to the Langmuir trace,  ``"linear"`` or
-        ``"exponential"`` (Default).  This selects which ``FitFunction`` class
-        should be applied to the trace.
+        The type of curve to be fitted to the Langmuir trace,
+        ``"linear"`` or ``"exponential"`` (Default).  This selects
+        which ``FitFunction`` class should be applied to the trace.
 
         +-------------+----------------------------------------------------------+
         | linear      | `~plasmapy.analysis.fit_functions.Linear`                |
@@ -78,71 +115,73 @@ def find_floating_potential(
     Returns
     -------
     vf: `float` or `numpy.nan`
-        The calculated floating potential (same units as the ``voltage`` array).
-        Returns `numpy.nan` if the floating potential can not be determined.
-        How :math:`V_f` is calculated depends on the fit function.  This is
-        described in the ``root_solve()`` method of the relevant fit function
-        (e.g. the
-        :meth:`~plasmapy.analysis.fit_functions.ExponentialPlusOffset.root_solve`
-        method of `~plasmapy.analysis.fit_functions.ExponentialPlusOffset`).
+        The calculated floating potential (same units as the
+        ``voltage`` array).  Returns `numpy.nan` if the floating
+        potential can not be determined.
 
-    vf_err: `float` or `numpy.nan`
-        The uncertainty associated with the floating potential calculation
-        (units same as ``vf``).  Returns `numpy.nan` if the floating potential
-        can not be determined.  Like :math:`V_f`:, the calculation depends on
-        the applied fit function.  The ``root_solve()`` method also describes
-        how this is calculated.
+    extras: `VFExtras`
+        Additional information from the fit:
 
-    rsq: `float`
-        The coefficient of determination (r-squared) value of the fit.  See the
-        documentation of the ``rsq`` property on the associated fit function
-        (e.g. the
-        `~plasmapy.analysis.fit_functions.ExponentialPlusOffset.rsq`
-        property of
-        `~plasmapy.analysis.fit_functions.ExponentialPlusOffset`).
+        ``extras.vf_err`` (`float` or `numpy.nan`)
+            The uncertainty associated with the floating potential
+            calculation (units same as ``vf``).  Returns `numpy.nan`
+            if the floating potential can not be determined.  Like
+            :math:`V_f`:, the calculation depends on the applied fit
+            function.  The ``root_solve()`` method also describes how
+            this is calculated.
 
-    func: sub-class of `~plasmapy.analysis.fit_functions.AbstractFitFunction`
-        The callable function :math:`f(x)` representing the fit and its results.
+        ``extras.rsq`` (`float`)
+            The coefficient of determination (r-squared) value of the
+            fit.  See the documentation of the ``rsq`` property on the
+            associated fit function (e.g. the
+            `~plasmapy.analysis.fit_functions.ExponentialPlusOffset.rsq`
+            property of
+            `~plasmapy.analysis.fit_functions.ExponentialPlusOffset`).
 
-    islands: ``List[slice]``
-        List of `slice` objects representing the indices of the identified
-        crossing-islands.
+        ``extras.fitted_func`` (:term:`fit-function`)
+            The computed :term:`fit-function` specified by ``fit_type``.
 
-    indices: `slice`
-        A `slice` object representing the indices of ``voltage`` and ``current``
-        arrays used for the fit.
+        ``extras.islands`` (``List[slice]``)
+            List of `slice` objects representing the indices of the
+            identified crossing-islands.
+
+        ``extras.fitted_indices`` (`slice`)
+            A `slice` object representing the indices of the ``voltage``
+            and ``current`` arrays used for the fit.
 
     Notes
     -----
     The internal functionality works like:
 
-    1. The current array ``current`` is scanned for all points equal to zero and
-       point pairs that straddle :math:`I = 0`.  This forms an array of
-       "crossing-points."
-    2. The crossing-points are then grouped into "crossing-islands" in based on
-       the ``threshold`` keyword.
+    1. The current array ``current`` is scanned for all points equal to
+       zero and point pairs that straddle :math:`I = 0`.  This forms an
+       array of "crossing-points."
+    2. The crossing-points are then grouped into "crossing-islands" in
+       based on the ``threshold`` keyword.
 
-       - A new island is formed when a successive crossing-point is more (index)
-         steps away from the previous crossing-point than allowed by
-         ``threshold``.
-       - If multiple crossing-islands are identified, then the span from the
-         first point in the first island to the last point in the last island is
-         compared to ``min_points``.  If the span is less than or equal to
-         ``min_points``, then that span is taken as one larger crossing-island
-         for the fit; otherwise, the function is incapable of identifying
-         :math:`V_f` and will return `numpy.nan` values.
+       - A new island is formed when a successive crossing-point is more
+         (index) steps away from the previous crossing-point than
+         allowed by ``threshold``.
+       - If multiple crossing-islands are identified, then the span
+         from the first point in the first island to the last point in
+         the last island is compared to ``min_points``.  If the span is
+         less than or equal to ``min_points``, then that span is taken
+         as one larger crossing-island for the fit; otherwise, the
+         function is incapable of identifying :math:`V_f` and will
+         return `numpy.nan` values.
 
     3. To calculate the floating potential...
 
-       - If the crossing-island contains fewer points than ``min_points``, then
-         each side of the crossing-island is equally padded with the nearest
-         neighbor points until ``min_points`` is satisfied.
+       - If the crossing-island contains fewer points than
+         ``min_points``, then each side of the crossing-island is
+         equally padded with the nearest neighbor points until
+         ``min_points`` is satisfied.
        - A fit is then performed using `scipy.stats.linregress` for
          ``fit_type="linear"`` and `scipy.optimize.curve_fit` for
          ``fit_type="exponential"``.
     """
-    rtn = FloatingPotentialResults(
-        vf=np.nan, vf_err=np.nan, rsq=None, func=None, islands=None, indices=None
+    rtn_extras = VFExtras(
+        vf_err=np.nan, rsq=None, fitted_func=None, islands=None, fitted_indices=None
     )._asdict()
 
     _settings = {
@@ -152,7 +191,7 @@ def find_floating_potential(
     try:
         min_point_factor = _settings[fit_type]["min_point_factor"]
         fit_func = _settings[fit_type]["func"]()
-        rtn["func"] = fit_func
+        rtn_extras["fitted_func"] = fit_func
     except KeyError:
         raise ValueError(
             f"Requested fit '{fit_type}' is not a valid option.  Valid options "
@@ -162,6 +201,7 @@ def find_floating_potential(
     # check voltage and current arrays
     voltage, current = check_sweep(voltage, current, strip_units=True)
 
+    # condition kwarg threshold
     if not isinstance(threshold, numbers.Integral):
         raise TypeError(
             f"Keyword 'threshold' is of type {type(threshold)}, expected an int "
@@ -172,6 +212,7 @@ def find_floating_potential(
             f"Keyword 'threshold' has value ({threshold}) less than 1, "
             f"value must be an int >= 1."
         )
+
     # condition min_points
     if min_points is None:
         min_points = int(np.max([5, np.around(min_point_factor * voltage.size)]))
@@ -213,7 +254,7 @@ def find_floating_potential(
     n_islands = threshold_indices.size + 1
 
     if np.isinf(min_points) or n_islands == 1:
-        rtn["islands"] = [slice(cp_candidates[0], cp_candidates[-1] + 1)]
+        rtn_extras["islands"] = [slice(cp_candidates[0], cp_candidates[-1] + 1)]
     else:
         # There are multiple crossing points
         isl_start = np.concatenate(
@@ -222,13 +263,17 @@ def find_floating_potential(
         isl_stop = np.concatenate(
             (cp_candidates[threshold_indices] + 1, [cp_candidates[-1] + 1])
         )
-        rtn["islands"] = [
+        rtn_extras["islands"] = [
             slice(start, stop) for start, stop in zip(isl_start, isl_stop)
         ]
 
         # do islands fall within the min_points window?
         isl_window = (
-            np.abs(np.r_[rtn["islands"][-1]][-1] - np.r_[rtn["islands"][0]][0]) + 1
+            np.abs(
+                np.r_[rtn_extras["islands"][-1]][-1]
+                - np.r_[rtn_extras["islands"][0]][0]
+            )
+            + 1
         )
         if isl_window > min_points:
             warn(
@@ -238,7 +283,7 @@ def find_floating_potential(
                 PlasmaPyWarning,
             )
 
-            return FloatingPotentialResults(**rtn)
+            return np.nan, VFExtras(**rtn_extras)
 
     # Construct crossing-island (pad if needed)
     if np.isinf(min_points):
@@ -258,6 +303,7 @@ def find_floating_potential(
             else:
                 istart -= ipad_2_start
             ipad_2_start = 0
+
             # pad rear
             if ((current.size - 1) - (istop + ipad_2_stop)) < 0:
                 ipad_2_start += ipad_2_stop - (current.size - 1 - istop)
@@ -284,10 +330,10 @@ def find_floating_potential(
     curr_sub = current[istart : istop + 1]
     fit_func.curve_fit(volt_sub, curr_sub)
 
-    rtn["vf"], rtn["vf_err"] = fit_func.root_solve()
-    rtn.update({"rsq": fit_func.rsq, "indices": slice(istart, istop + 1)})
+    vf, rtn_extras["vf_err"] = fit_func.root_solve()
+    rtn_extras.update({"rsq": fit_func.rsq, "fitted_indices": slice(istart, istop + 1)})
 
-    return FloatingPotentialResults(**rtn)
+    return vf, VFExtras(**rtn_extras)
 
 
 find_vf_ = find_floating_potential
