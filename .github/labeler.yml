@@ -1,8 +1,12 @@
+Analysis: plasmapy/analysis/**/*
+
 Continuous integration: .github/**/*
 
 Contributor Guide: docs/contributing/*
 
 Diagnostics: plasmapy/diagnostics/**/*
+
+Dispersion: plasmapy/dispersion/**/*
 
 Formulary: plasmapy/formulary/**/*
 
@@ -15,13 +19,13 @@ Particles: plasmapy/particles/**/*
 # Add Documentation label to any change in docs but notebooks
 Documentation:
 - any: [docs/**/*]
-  all: ['!docs/notebooks/**/*']
+  all: ['!docs/notebooks/**/*', '!docs/contributing/*']
 
 Notebooks: docs/notebooks/**/*
 
 Plasma class: plasmapy/plasma/**/*
 
-simulations: plasmapy/simulations/**/*
+simulations: plasmapy/simulation/**/*
 
 Utilities: plasmapy/utils/**/*
 
