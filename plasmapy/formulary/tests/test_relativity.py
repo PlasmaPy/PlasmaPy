@@ -246,7 +246,7 @@ def test_relativistic_body_defined_using_mass(attr):
     assert u.isclose(actual, expected, rtol=1e-9)
 
 
-@pytest.mark.xfail(reason="RelativisticBody does not accept nan velocities yet")
+@pytest.mark.xfail(reason="RelativisticBody does not yet accept nan velocities")
 def test_relativistic_body_nan_velocity():
     """
     Test that RelativisticBody can be created with no velocity defined,
