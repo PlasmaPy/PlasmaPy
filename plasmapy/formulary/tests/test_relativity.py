@@ -313,3 +313,12 @@ def test_relativistic_body_with_multiple_particles_and_velocities():
     particles = ["p+", "e-"]
     relativistic_particles = RelativisticBody(particle=particles, V=velocities)
     np.testing.assert_allclose(relativistic_particles.velocity, velocities)
+
+
+@pytest.mark.parametrize("function", [repr, str])
+def test_relativistic_body_into_string(function):
+    """Test that `repr` and `str` work on RelativisticBody."""
+    relativistic_body = RelativisticBody("p+", V=1e8 * u.m / u.s)
+    expected = "RelativisticBody(p+, 5.0 m / s)"
+    actual = function(relativistic_body)
+    assert actual == expected
