@@ -81,15 +81,11 @@ def _physical_particle_factory(
         if parameter in kwargs and kwargs[parameter] is None:
             kwargs.pop(parameter)
 
-    already_a_particle = all(
-        [
-            len(args) == 1,
-            not kwargs,
-            isinstance(args[0], (Particle, CustomParticle, ParticleList)),
-        ]
-    )
-
-    if already_a_particle:
+    if (
+        len(args) == 1
+        and not kwargs
+        and isinstance(args[0], (Particle, CustomParticle, ParticleList))
+    ):
         return args[0]
 
     if not args and not kwargs:
