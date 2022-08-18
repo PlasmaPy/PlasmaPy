@@ -57,7 +57,7 @@ def test_particle_factory_custom_particle_with_none_kwargs():
     """
     Test that when `_physical_particle_factory` is provided with a
     `CustomParticle` along with ``Z=None`` and ``mass_numb=None`` as
-    keyword arguments, thenn it will return the `CustomParticle`.
+    keyword arguments, then it will return the `CustomParticle`.
     """
     expected = CustomParticle(mass=1.27 * u.kg, charge=1 * u.C)
     actual = _physical_particle_factory(expected, Z=None, mass_numb=None)
