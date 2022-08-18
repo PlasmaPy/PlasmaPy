@@ -185,6 +185,7 @@ def test_relativistic_body_mass_energy(particle):
         ({"lorentz_factor": -1, "v_over_c": 0.5}, ValueError),
         ({"total_energy": 1 * u.J, "momentum": 1 * u.kg * u.m / u.s}, ValueError),
         ({}, ValueError),
+        ({"lorentz_factor": "wrong type"}, TypeError),
     ],
 )
 def test_relativistic_body_init_exceptions(kwargs, exception):
@@ -200,6 +201,19 @@ def test_relativistic_body_equality():
     """Test that a `RelativisticBody` instance equals itself."""
     relativistic_body = RelativisticBody(particle=proton, v_over_c=0.34)
     assert relativistic_body == relativistic_body
+
+
+@pytest.mark.parametrize(
+    "this, that",
+    [
+        (RelativisticBody("p+", v_over_c=0.2), RelativisticBody("p+", v_over_c=0.5)),
+        (RelativisticBody("p+", v_over_c=0.2), RelativisticBody("e-", v_over_c=0.2)),
+        (RelativisticBody("p+", v=c / 2), "different type"),
+    ],
+)
+def test_relativistic_body_inequalities(this, that):
+    """Test the inequality properties of `RelativisticBody`."""
+    assert this != that
 
 
 def test_relativistic_body_inequality_with_different_velocities():
