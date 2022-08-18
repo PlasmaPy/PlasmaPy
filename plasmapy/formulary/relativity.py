@@ -6,6 +6,7 @@ import numpy as np
 
 from astropy.constants import c
 from numbers import Integral, Real
+from numpy.typing import DTypeLike
 from typing import Dict, Optional, Union
 
 from plasmapy import utils
@@ -200,11 +201,20 @@ class RelativisticBody:
     mass_numb : integer, optional, |keyword-only|
         The mass number associated with ``particle``.
 
+    dtype : |DTypeLike|, optional, |keyword-only|, default: `numpy.longdouble`
+        The `numpy` data type to use to store the inputs.
+
     Notes
     -----
     At most one of ``V``, ``momentum``, ``total_energy``,
     ``kinetic_energy``, ``v_over_c``, and ``lorentz_factor`` must be
     provided.
+
+    .. caution::
+
+       For ultra-high-energy cosmic rays (UHECRs), the velocity may be
+       within roundoff error of :math:`c` and :math:`\frac{V}{c}` may be
+       within roundoff error of 1.
 
     Examples
     --------
@@ -267,11 +277,13 @@ class RelativisticBody:
         """
         name = list(speed_like_input.keys())[0]
         value = speed_like_input[name]
+        if self._dtype:
+            value = u.Quantity(value, dtype=self._dtype)
         setattr(self, name, value)
 
     @validate_quantities(
         V={"can_be_inf": False, "none_shall_pass": True},
-        p={"can_be_inf": False, "none_shall_pass": True},
+        momentum={"can_be_inf": False, "none_shall_pass": True},
         total_energy={"can_be_negative": False, "none_shall_pass": True},
         kinetic_energy={"can_be_negative": False, "none_shall_pass": True},
     )
@@ -287,11 +299,11 @@ class RelativisticBody:
         lorentz_factor: Optional[Real] = None,
         Z: Optional[Integral] = None,
         mass_numb: Optional[Integral] = None,
+        dtype: Optional[DTypeLike] = np.longdouble,
     ):
 
-        self._data = {
-            "particle": _physical_particle_factory(particle, Z=Z, mass_numb=mass_numb)
-        }
+        self._particle = _physical_particle_factory(particle, Z=Z, mass_numb=mass_numb)
+        self._dtype = dtype
 
         velocity_like_inputs = {
             "velocity": V,
@@ -317,7 +329,7 @@ class RelativisticBody:
         -------
         |Particle|, |CustomParticle|, or |ParticleList|
         """
-        return self._data["particle"]
+        return self._particle
 
     @property
     @validate_quantities
@@ -329,7 +341,7 @@ class RelativisticBody:
         -------
         ~astropy.units.Quantity
         """
-        return self.particle.mass
+        return u.Quantity(self.particle.mass, dtype=self._dtype)
 
     @property
     @validate_quantities
@@ -445,7 +457,7 @@ class RelativisticBody:
         self._momentum = np.sqrt(E_tot**2 - self.mass_energy**2) / c
 
     @v_over_c.setter
-    def v_over_c(self, v_over_c_: Integral):
+    def v_over_c(self, v_over_c_: Real):
         self.velocity = v_over_c_ * c
 
     @velocity.setter
