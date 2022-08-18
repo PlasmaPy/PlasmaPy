@@ -397,9 +397,6 @@ def Wigner_Seitz_radius(n: u.m**-3) -> u.m:
     return (3 / (4 * np.pi * n)) ** (1 / 3)
 
 
-# TODO: remove NotImplementedError and 'doctest: +SKIP' when the following issues are addressed...
-#       https://github.com/PlasmaPy/PlasmaPy/issues/726
-#       https://github.com/astropy/astropy/issues/9721
 @validate_quantities(
     n_e={"can_be_negative": False},
     T={"can_be_negative": False, "equivalencies": u.temperature_energy()},
@@ -470,16 +467,10 @@ def chemical_potential(n_e: u.m**-3, T: u.K) -> u.dimensionless_unscaled:
     Examples
     --------
     >>> from astropy import units as u
-    >>> chemical_potential(n_e=1e21*u.cm**-3,T=11000*u.K)  # doctest: +SKIP
-    <Quantity 2.00039985e-12>
+    >>> chemical_potential(n_e=1e21*u.cm**-3,T=11000*u.K)
+    <Quantity 9.28146e-14>
     """
 
-    raise NotImplementedError(
-        "This function has been temporarily disabled due to a bug.\n"
-        "Please refer to https://github.com/PlasmaPy/PlasmaPy/issues/726 \n"
-        "and https://github.com/astropy/astropy/issues/9721 "
-        "for progress in fixing it."
-    )
     # deBroglie wavelength
     lambdaDB = thermal_deBroglie_wavelength(T)
     # degeneracy parameter
@@ -505,10 +496,6 @@ def chemical_potential(n_e: u.m**-3, T: u.K) -> u.dimensionless_unscaled:
     return beta_mu
 
 
-# TODO: decorate with validate_quantities
-# TODO: remove NotImplementedError and 'doctest: +SKIP' when the following issues are addressed...
-#       https://github.com/PlasmaPy/PlasmaPy/issues/726
-#       https://github.com/astropy/astropy/issues/9721
 def _chemical_potential_interp(n_e, T):
     r"""
     Fitting formula for interpolating chemical potential between classical
@@ -575,16 +562,10 @@ def _chemical_potential_interp(n_e, T):
     Examples
     --------
     >>> from astropy import units as u
-    >>> _chemical_potential_interp(n_e=1e23*u.cm**-3, T=11000*u.K)  # doctest: +SKIP
+    >>> _chemical_potential_interp(n_e=1e23*u.cm**-3, T=11000*u.K)
     <Quantity 8.17649>
 
     """
-    raise NotImplementedError(
-        "This function has been temporarily disabled due to a bug.\n"
-        "Please refer to https://github.com/PlasmaPy/PlasmaPy/issues/726 \n"
-        "and https://github.com/astropy/astropy/issues/9721 "
-        "for progress in fixing it."
-    )
     A = 0.25945
     B = 0.072
     b = 0.858
