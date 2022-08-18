@@ -2033,3 +2033,62 @@ def coupling_parameter(
         )
 
     return coulomb_energy / kinetic_energy
+
+@validate_quantities(
+    n_b={"can_be_negative": False},
+    T_b={"can_be_negative": False, "equivalencies": u.temperature_energy()},
+)
+class RelaxationRates:
+    def __init__(
+        self,
+        species: (particles.Particle, particles.Particle),
+        v_a: u.m / u.s,
+        n_b: u.m**-3,
+        T_b: u.K,
+        coulomb_log: u.dimensionless_unscaled,
+    ):
+        self.species = species
+        self.v_a = v_a
+        self.n_b = n_b
+        self.T_b = T_b
+        self.coulomb_log = coulomb_log
+
+        v_0 = self._v_0()
+        x = self._x()
+        phi = self._phi(x)
+        phi_prime = self._phi_prime(x)
+
+        mu = species[0].mass / species[1].mass
+
+        self.slowing_down = (1 + mu) * phi * v_0
+        self.transverse_diffusion = (
+            2 * ((1 - 1 / (2 * x)) * phi + phi_prime) * v_0
+        )
+        self.parallel_diffusion = (phi / x) * v_0
+        self.energy_loss = 2 * (mu * phi - phi_prime) * v_0
+
+    def _v_0(self):
+        return (
+            4
+            * math.pi
+            * self.species[0].charge ** 2
+            * self.species[1].charge ** 2
+            * self.coulomb_log
+            * self.n_b
+            / (self.species[0].mass ** 2 * self.v_a**3)
+        )
+
+    def _x(self) -> u.dimensionless_unscaled:
+        x = self.species[1].mass * self.v_a**2 / (2 * k_B * self.T_b)
+        return x.to(u.dimensionless_unscaled)
+
+    @staticmethod
+    def _phi_integrand(t: u.dimensionless_unscaled):
+        return t**0.5 * math.exp(-t)
+
+    def _phi(self, x: u.dimensionless_unscaled):
+        integral, _ = scipy.integrate.quad(self._phi_integrand, 0, x)
+        return 2 / math.pi**0.5 * integral
+
+    def _phi_prime(self, x: u.dimensionless_unscaled):
+        return scipy.misc.derivative(self._phi, x)
