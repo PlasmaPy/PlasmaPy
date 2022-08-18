@@ -166,7 +166,8 @@ class RelativisticBody:
     ----------
     particle : |ParticleLike|, |CustomParticle|, |ParticleList|, or |Quantity|
         A representation of a particle from which to get the mass
-        of the relativistic body.
+        of the relativistic body. If it is a |Quantity|, then it must
+        have units of mass.
 
     V : |Quantity|, optional
         The velocity of the relativistic body in units convertible to
@@ -208,23 +209,30 @@ class RelativisticBody:
     Examples
     --------
     >>> import astropy.units as u
-    >>> relativistic_body = RelativisticBody("p+", total_energy = 1 * u.GeV)
-    >>> relativistic_body.particle
+    >>> relativistic_proton = RelativisticBody("p+", total_energy = 1 * u.GeV)
+    >>> relativistic_proton.particle
     Particle("p+")
-    >>> relativistic_body.velocity
+    >>> relativistic_proton.velocity
     <Quantity 1.03697...e+08 m / s>
-    >>> relativistic_body.v_over_c
+    >>> relativistic_proton.v_over_c
     0.3458980898746...
-    >>> relativistic_body.lorentz_factor
+    >>> relativistic_proton.lorentz_factor
     1.0657889247888...
-    >>> relativistic_body.momentum
-    <Quantity 1.84857...e-19 kg m / s>
-    >>> relativistic_body.mass_energy.to("GeV")
+    >>> relativistic_proton.mass_energy.to("GeV")
     <Quantity 0.93827... GeV>
-    >>> relativistic_body.total_energy.to("GeV")
+    >>> relativistic_proton.total_energy.to("GeV")
     <Quantity 1. GeV>
-    >>> relativistic_body.mass
+    >>> relativistic_proton.mass
     <Quantity 1.67262...e-27 kg>
+
+    |RelativisticBody| also works with multiple particles and/or
+    velocities.
+
+    >>> particles = ["p+", "e-"]
+    >>> velocities = [2e5, 2e8] * u.m / u.s
+    >>> relativistic_particles = RelativisticBody(particles, velocities)
+    >>> relativistic_particles.momentum
+    <Quantity [3.345244...e-22, 2.445659...e-22] kg m / s>
     """
 
     def _get_speed_like_input(
