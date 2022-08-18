@@ -89,21 +89,21 @@ def test_relativistic_energy():
 
 
 @pytest.fixture
-def ultra_relativistic_proton():
+def ultra_relativistic_electron():
     """Representing an ultra high energy cosmic ray (UHECR)."""
-    return RelativisticBody(particle="p+", kinetic_energy=np.longdouble(1e21) * u.eV)
+    return RelativisticBody(particle="e-", kinetic_energy=1e23 * u.eV)
 
 
-def test_ultra_relativistic_proton_lorentz_factor(ultra_relativistic_proton):
-    assert ultra_relativistic_proton.lorentz_factor >= 1e6
+def test_uhecr_v_over_c(ultra_relativistic_electron):
+    """Test that V/c is really close to but less than 1."""
+    assert u.isclose(ultra_relativistic_electron.v_over_c, 1, atol=1e-16)
+    assert ultra_relativistic_electron.v_over_c < 1
 
 
-def test_uhecr_v_over_c(ultra_relativistic_proton):
-    assert u.isclose(ultra_relativistic_proton.v_over_c, 1, atol=1e-10)
-
-
-def test_ultra_relativistic_proton_speed(ultra_relativistic_proton):
-    assert u.isclose(ultra_relativistic_proton.velocity, c, rtol=1e-14)
+def test_uhecr_velocity(ultra_relativistic_electron):
+    """Test that the velocity is really close to but less than c."""
+    assert u.isclose(ultra_relativistic_electron.velocity, c, rtol=1e-16)
+    assert ultra_relativistic_electron.velocity < c
 
 
 proton_at_half_c_inputs = [
@@ -318,7 +318,7 @@ def test_relativistic_body_with_multiple_particles_and_velocities():
 @pytest.mark.parametrize("function", [repr, str])
 def test_relativistic_body_into_string(function):
     """Test that `repr` and `str` work on RelativisticBody."""
-    relativistic_body = RelativisticBody("p+", V=1e8 * u.m / u.s)
+    relativistic_body = RelativisticBody("p+", V=5.0 * u.m / u.s)
     expected = "RelativisticBody(p+, 5.0 m / s)"
     actual = function(relativistic_body)
     assert actual == expected
