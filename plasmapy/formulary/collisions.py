@@ -2039,10 +2039,10 @@ def coupling_parameter(
 
 
 class RelaxationRates:
-	@validate_quantities(
-	    n_b={"can_be_negative": False},
-	    T_b={"can_be_negative": False, "equivalencies": u.temperature_energy()},
-	)
+    @validate_quantities(
+        n_b={"can_be_negative": False},
+        T_b={"can_be_negative": False, "equivalencies": u.temperature_energy()},
+    )
     def __init__(
         self,
         species: (particles.Particle, particles.Particle),
@@ -2050,12 +2050,14 @@ class RelaxationRates:
         n_b: u.m**-3,
         T_b: u.K,
         coulomb_log: u.dimensionless_unscaled,
+        dx: float = 1e-20,
     ):
         self.species = species
         self.v_a = v_a
         self.n_b = n_b
         self.T_b = T_b
         self.coulomb_log = coulomb_log
+        self.dx = dx
 
         v_0 = self._v_0()
         x = self._x()
@@ -2093,4 +2095,4 @@ class RelaxationRates:
         return 2 / math.pi**0.5 * integral
 
     def _phi_prime(self, x: u.dimensionless_unscaled):
-        return scipy.misc.derivative(self._phi, x)
+        return scipy.misc.derivative(self._phi, x, dx=self.dx)
