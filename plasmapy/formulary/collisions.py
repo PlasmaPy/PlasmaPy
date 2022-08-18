@@ -55,11 +55,13 @@ __all__ = [
 ]
 
 import astropy.units as u
+import math
 import numpy as np
+import scipy.integrate
+import scipy.misc
 import warnings
 
 from astropy.constants.si import e, eps0, hbar, k_B, m_e
-import math
 from numbers import Real
 from numpy import pi
 
