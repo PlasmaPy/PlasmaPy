@@ -186,6 +186,7 @@ def test_relativistic_body_mass_energy(particle):
         ({"total_energy": 1 * u.J, "momentum": 1 * u.kg * u.m / u.s}, ValueError),
         ({}, ValueError),
         ({"lorentz_factor": "wrong type"}, TypeError),
+        ({"lorentz_factor": 3 * u.m / u.s}, u.UnitConversionError),
     ],
 )
 def test_relativistic_body_init_exceptions(kwargs, exception):
