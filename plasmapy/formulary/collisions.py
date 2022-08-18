@@ -2042,7 +2042,11 @@ def coupling_parameter(
 class CollisionFrequencies:
     @validate_quantities(
         v_a={"none_shall_pass": True},
-        T_a={"none_shall_pass": True},
+        T_a={
+            "none_shall_pass": True,
+            "can_be_negative": False,
+            "equivalencies": u.temperature_energy(),
+        },
         n_b={"can_be_negative": False},
         T_b={"can_be_negative": False, "equivalencies": u.temperature_energy()},
     )
