@@ -476,7 +476,7 @@ def chemical_potential(n_e: u.m**-3, T: u.K) -> u.dimensionless_unscaled:
         # note that alpha = mu / (k_B * T)
         model = mathematics.Fermi_integral(alpha, 0.5)
         complexResidue = (data - model) / eps_data
-        return complexResidue.view(np.float)
+        return complexResidue.view(np.float64)
 
     # setting parameters for fitting along with bounds
     alphaGuess = 1 * u.dimensionless_unscaled
