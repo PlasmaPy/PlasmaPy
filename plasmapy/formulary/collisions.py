@@ -2063,7 +2063,7 @@ class CollisionFrequencies:
         n_b: u.cm**-3,
         T_b: u.K,
         coulomb_log: u.dimensionless_unscaled,
-        dx: float = 1e-20,
+        dx: float = 1e-15,
     ):
 
         if np.any(np.logical_and(np.isnan(v_a), np.isnan(T_a))):
