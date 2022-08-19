@@ -2019,7 +2019,7 @@ def coupling_parameter(
         fermi_integral = Fermi_integral(chem_potential.si.value, 1.5)
         denominator = (n_e * lambda_deBroglie**3) * fermi_integral
         kinetic_energy = 2 * k_B * T / denominator
-        if np.all(np.imag(kinetic_energy) == 0):
+        if np.all(np.imag(kinetic_energy) < 1e-15 * u.J):
             kinetic_energy = np.real(kinetic_energy)
         else:  # coverage: ignore
             raise ValueError(
