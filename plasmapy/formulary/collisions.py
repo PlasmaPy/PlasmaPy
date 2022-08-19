@@ -559,7 +559,9 @@ def _process_inputs(T: u.K, species: (particles.Particle, particles.Particle), V
     return T, masses, charges, reduced_mass, V
 
 
-def _replace_nan_velocity_with_thermal_velocity(V, T, m):
+def _replace_nan_velocity_with_thermal_velocity(
+    V, T, m, species=particles.Particle("e-")
+):
     """
     Get thermal velocity of system if no velocity is given, for a given
     mass.  Handles vector checks for ``V``, you must already know that
@@ -569,21 +571,21 @@ def _replace_nan_velocity_with_thermal_velocity(V, T, m):
         raise utils.PhysicsError("Collisions are not possible with a zero velocity.")
 
     if V is None:
-        return thermal_speed(T, "e-", mass=m)
+        return thermal_speed(T, species, mass=m)
 
     if not np.any(np.isnan(V)):
         return V
 
     if not (np.isscalar(V.value) or np.isscalar(T.value)):
         V = V.copy()
-        V[np.isnan(V)] = thermal_speed(T[np.isnan(V)], "e-", mass=m)
+        V[np.isnan(V)] = thermal_speed(T[np.isnan(V)], species, mass=m)
         return V
 
     if np.isscalar(V.value):
-        return thermal_speed(T, "e-", mass=m)
+        return thermal_speed(T, species, mass=m)
 
     if np.isscalar(T.value):
-        V[np.isnan(V)] = thermal_speed(T, "e-", mass=m)
+        V[np.isnan(V)] = thermal_speed(T, species, mass=m)
 
     return V
 
@@ -2050,13 +2052,14 @@ class CollisionFrequencies:
         n_b={"can_be_negative": False},
         T_b={"can_be_negative": False, "equivalencies": u.temperature_energy()},
     )
+    @particles.particle_input
     def __init__(
         self,
         test_particle: particles.Particle,
         field_particle: particles.Particle,
         *,
-        v_a: u.cm / u.s = np.nan,
-        T_a: u.K = np.nan,
+        v_a: u.cm / u.s = np.nan * u.cm / u.s,
+        T_a: u.K = np.nan * u.K,
         n_b: u.cm**-3,
         T_b: u.K,
         coulomb_log: u.dimensionless_unscaled,
@@ -2069,7 +2072,9 @@ class CollisionFrequencies:
         if np.any(np.logical_and(np.isfinite(v_a), np.isfinite(T_a))):
             raise ValueError("Please specify either v_a or T_a, not both.")
 
-        v_a = _replace_nan_velocity_with_thermal_velocity(v_a, T_a, test_particle.mass)
+        v_a = _replace_nan_velocity_with_thermal_velocity(
+            v_a, T_a, test_particle.mass, test_particle
+        ).to(u.cm / u.s)
 
         self.test_particle = test_particle
         self.field_particle = field_particle
