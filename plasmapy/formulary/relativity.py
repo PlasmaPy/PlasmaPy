@@ -63,7 +63,7 @@ def Lorentz_factor(V: u.m / u.s):
     inf
     """
 
-    if not np.all(np.abs(V) <= c):
+    if not np.all((np.abs(V) <= c) + (np.isnan(V))):
         raise utils.RelativityError(
             "The Lorentz factor cannot be calculated for "
             "speeds faster than the speed of light. "
