@@ -33,7 +33,9 @@ def test_Lorentz_factor():
 
     assert np.all(np.isnan(Lorentz_factor(np.array([np.nan, np.nan]) * u.m / u.s)))
 
-    assert np.isnan(Lorentz_factor(np.array([1, np.nan]) * u.m / u.s))[1]
+    numerical_result, nan_result = Lorentz_factor(np.array([1, np.nan]) * u.m / u.s)
+    assert np.isnan(nan_result)
+    assert not np.isnan(numerical_result)
 
     with pytest.raises(RelativityError):
         Lorentz_factor(1.0000000001 * c)
