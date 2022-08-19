@@ -1765,7 +1765,7 @@ class TestCollisionFrequencies:
         for _, (name, expected_value) in enumerate(expected_attribute_values.items()):
             calculated_value = getattr(value_test_case, name)
 
-            assert np.isclose(calculated_value.value, expected_value)
+            assert np.allclose(calculated_value.value, expected_value)
 
     @pytest.mark.parametrize(
         "expected_error, constructor_arguments, constructor_keyword_arguments",
@@ -1818,4 +1818,4 @@ class TestCollisionFrequencies:
     def test_handle_nparrays(self, constructor_keyword_arguments):
         """Test for ability to handle numpy array quantities"""
 
-        case = CollisionFrequencies(**constructor_keyword_arguments)
+        CollisionFrequencies(**constructor_keyword_arguments)
