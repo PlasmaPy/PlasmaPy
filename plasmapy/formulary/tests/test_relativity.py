@@ -112,18 +112,8 @@ def test_relativistic_body(parameter, argument, attr, expected):
     relativistic_body = RelativisticBody(**kwargs)
     actual = getattr(relativistic_body, attr)
 
-    actual_unit = getattr(actual, "unit", None)
-    expected_unit = getattr(expected, "unit", None)
-
-    assert actual_unit == expected_unit, (
-        f"{call_str}.{attr}.unit was expected to give "
-        f"{expected_unit}, but instead gave {actual_unit}."
-    )
-
-    assert u.isclose(actual, expected, rtol=1e-6), (
-        f"{call_str}.{attr} was expected to be {expected}, but instead "
-        f"gave {actual}."
-    )
+    from astropy.tests.helper import assert_quantity_allclose
+    assert_quantity_allclose(actual, expected, rtol=1e-6)
 
 
 @pytest.mark.parametrize("attr_to_set, set_value", proton_at_half_c_inputs)
