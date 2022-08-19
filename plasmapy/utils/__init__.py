@@ -24,17 +24,6 @@ from plasmapy.utils import (
     exceptions,
     roman,
 )
-from plasmapy.utils.exceptions import (
-    CouplingWarning,
-    PhysicsError,
-    PhysicsWarning,
-    PlasmaPyDeprecationWarning,
-    PlasmaPyError,
-    PlasmaPyFutureWarning,
-    PlasmaPyWarning,
-    RelativityError,
-    RelativityWarning,
-)
 
 with contextlib.suppress(ModuleNotFoundError):
     # pytest is not a hard dependency, so only import pytest_helpers if pytest
