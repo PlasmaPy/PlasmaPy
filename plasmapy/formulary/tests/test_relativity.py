@@ -88,24 +88,6 @@ def test_relativistic_energy():
         relativistic_energy(-m, v)
 
 
-@pytest.fixture
-def high_energy_cosmic_ray():
-    """A high energy cosmic ray."""
-    return RelativisticBody(particle="p+", kinetic_energy=1e16 * u.eV)
-
-
-def test_uhecr_v_over_c(high_energy_cosmic_ray):
-    """Test that V/c is really close to but less than 1."""
-    assert u.isclose(high_energy_cosmic_ray.v_over_c, 1, atol=1e-16)
-    assert high_energy_cosmic_ray.v_over_c < 1
-
-
-def test_uhecr_velocity(high_energy_cosmic_ray):
-    """Test that the velocity is really close to but less than c."""
-    assert u.isclose(high_energy_cosmic_ray.velocity, c, rtol=1e-16)
-    assert high_energy_cosmic_ray.velocity < c
-
-
 proton_at_half_c_inputs = [
     ("v_over_c", 0.5),
     ("velocity", 0.5 * c),
