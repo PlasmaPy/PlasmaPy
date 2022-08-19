@@ -1702,8 +1702,8 @@ class Test_coupling_parameter:
             coupling_parameter(self.T, self.n_e, self.particles, method="not a method")
 
 
-class TestRelaxationRates:
-    """Test the RelaxationRates class in collisions.py."""
+class TestCollisionFrequencies:
+    """Test the CollisionFrequencies class in collisions.py."""
 
     attribute_test_case = CollisionFrequencies(
         Particle("e-"),
@@ -1721,6 +1721,8 @@ class TestRelaxationRates:
         "energy_loss",
         "v_0",
     ]
+
+    ones_array = np.ones(5)
 
     @pytest.mark.parametrize("attribute_to_test", attributes_to_test)
     def test_units(self, attribute_to_test):
@@ -1743,7 +1745,7 @@ class TestRelaxationRates:
                     "T_a": 1e2 * u.eV,
                     "T_b": 1e2 * u.eV,
                     "n_b": 1e20 * u.cm**-3,
-                    "coulomb_log": 6.2889877978064606,
+                    "coulomb_log": 6.2889877978064606 * u.dimensionless_unscaled,
                 },
             ),
         ],
@@ -1776,7 +1778,7 @@ class TestRelaxationRates:
                     "T_a": 1 * u.eV,
                     "T_b": 1 * u.eV,
                     "n_b": 1 * u.cm**-3,
-                    "coulomb_log": 1,
+                    "coulomb_log": 1 * u.dimensionless_unscaled,
                 },
             ),
             (
@@ -1785,7 +1787,7 @@ class TestRelaxationRates:
                 {
                     "T_b": 1 * u.eV,
                     "n_b": 1 * u.cm**-3,
-                    "coulomb_log": 1,
+                    "coulomb_log": 1 * u.dimensionless_unscaled,
                 },
             ),
         ],
@@ -1799,3 +1801,21 @@ class TestRelaxationRates:
             CollisionFrequencies(
                 *constructor_arguments, **constructor_keyword_arguments
             )
+
+    @pytest.mark.parametrize(
+        "constructor_keyword_arguments",
+        [
+            {
+                "test_particle": Particle("e-"),
+                "field_particle": Particle("e-"),
+                "T_a": ones_array * u.eV,
+                "T_b": ones_array * u.eV,
+                "n_b": ones_array * u.cm**-3,
+                "coulomb_log": ones_array * u.dimensionless_unscaled,
+            },
+        ],
+    )
+    def test_handle_nparrays(self, constructor_keyword_arguments):
+        """Test for ability to handle numpy array quantities"""
+
+        case = CollisionFrequencies(**constructor_keyword_arguments)

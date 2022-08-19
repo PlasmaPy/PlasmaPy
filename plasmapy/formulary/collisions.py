@@ -2055,21 +2055,21 @@ class CollisionFrequencies:
         test_particle: particles.Particle,
         field_particle: particles.Particle,
         *,
-        v_a: u.cm / u.s = None,
-        T_a: u.K = None,
+        v_a: u.cm / u.s = np.nan,
+        T_a: u.K = np.nan,
         n_b: u.cm**-3,
         T_b: u.K,
         coulomb_log: u.dimensionless_unscaled,
         dx: float = 1e-20,
     ):
-        if v_a is None:
-            if T_a is None:
-                raise ValueError("Please specify either v_a or T_a.")
 
-            v_a = thermal_speed(T_a, test_particle)
-        else:
-            if T_a is not None:
-                raise ValueError("Please specify either v_a or T_a, not both.")
+        if np.any(np.logical_and(np.isnan(v_a), np.isnan(T_a))):
+            raise ValueError("Please specify either v_a or T_a.")
+
+        if np.any(np.logical_and(np.isfinite(v_a), np.isfinite(T_a))):
+            raise ValueError("Please specify either v_a or T_a, not both.")
+
+        v_a = _replace_nan_velocity_with_thermal_velocity(v_a, T_a, test_particle.mass)
 
         self.test_particle = test_particle
         self.field_particle = field_particle
@@ -2110,9 +2110,15 @@ class CollisionFrequencies:
     def _phi_integrand(t: u.dimensionless_unscaled):
         return t**0.5 * math.exp(-t)
 
-    def _phi(self, x: u.dimensionless_unscaled):
+    def _phi_explicit(self, x: float) -> float:
         integral, _ = scipy.integrate.quad(self._phi_integrand, 0, x)
-        return 2 / math.pi**0.5 * integral
+
+        return integral
+
+    def _phi(self, x: u.dimensionless_unscaled):
+        vectorized_integral = np.vectorize(self._phi_explicit)
+
+        return 2 / math.pi**0.5 * vectorized_integral(x.value)
 
     def _phi_prime(self, x: u.dimensionless_unscaled):
         return scipy.misc.derivative(self._phi, x, dx=self.dx)
