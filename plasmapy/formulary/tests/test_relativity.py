@@ -5,6 +5,7 @@ import pytest
 
 from astropy import units as u
 from astropy.constants import c
+from astropy.tests.helper import assert_quantity_allclose
 
 from plasmapy.formulary.relativity import (
     Lorentz_factor,
@@ -12,7 +13,6 @@ from plasmapy.formulary.relativity import (
     RelativisticBody,
 )
 from plasmapy.particles import CustomParticle, electron, proton
-from plasmapy.utils.code_repr import call_string
 from plasmapy.utils.exceptions import RelativityError
 
 
@@ -98,21 +98,23 @@ proton_at_half_c_inputs = [
 ]
 
 
-@pytest.mark.parametrize("attr, expected", proton_at_half_c_inputs)
+@pytest.mark.parametrize("attribute, expected", proton_at_half_c_inputs)
 @pytest.mark.parametrize("parameter, argument", proton_at_half_c_inputs)
-def test_relativistic_body(parameter, argument, attr, expected):
-    """Test attributes of RelativisticBody."""
+def test_relativistic_body(parameter, argument, attribute, expected):
+    """
+    Test that when we create `RelativisticBody` instances for each of
+    the different velocity-like arguments, that each of the resulting
+    `RelativisticBody` attributes end up providing the correct value.
+    """
 
     if parameter == "velocity":
         parameter = "V"
 
     kwargs = {"particle": proton, parameter: argument}
-    call_str = call_string(RelativisticBody, kwargs=kwargs)
 
     relativistic_body = RelativisticBody(**kwargs)
-    actual = getattr(relativistic_body, attr)
+    actual = getattr(relativistic_body, attribute)
 
-    from astropy.tests.helper import assert_quantity_allclose
     assert_quantity_allclose(actual, expected, rtol=1e-6)
 
 
