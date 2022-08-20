@@ -687,7 +687,7 @@ class Tracker:
                     such that the flux per solid angle is uniform.
 
                 - 'uniform': velocities will be distributed such that,
-                   left unpreturbed,they will form a uniform pattern
+                   left unperturbed,they will form a uniform pattern
                    on the detection plane.
 
             Simulations run in the ``'uniform'`` mode will imprint a grid pattern
@@ -772,7 +772,7 @@ class Tracker:
         be entering the grid. Doing in this in one step (rather than pushing
         the particles through zero fields) saves computation time.
         """
-        # Distance from the source to the nearest gridpoint
+        # Distance from the source to the nearest grid point
         dist = np.min(np.linalg.norm(self.grid_arr - self.source, axis=3))
 
         # Find the particle with the highest speed towards the grid
@@ -915,7 +915,7 @@ class Tracker:
 
         # Calculate the adaptive timestep from the fields currently experienced
         # by the particles
-        # If user sets dt explicitly, that's handled in _adpative_dt
+        # If user sets dt explicitly, that's handled in _adaptive_dt
         dt = self._adaptive_dt(Ex, Ey, Ez, Bx, By, Bz)
 
         # TODO: Test v/c and implement relativistic Boris push when required
@@ -983,7 +983,7 @@ class Tracker:
             An explicitly set timestep in units convertible to seconds.
             Setting this optional keyword overrules the adaptive time step
             capability and forces the use of this timestep throughout. If a tuple
-            of timesteps is provided, the adaptive timstep will be clamped
+            of timesteps is provided, the adaptive timestep will be clamped
             between the first and second values.
 
         field_weighting : str

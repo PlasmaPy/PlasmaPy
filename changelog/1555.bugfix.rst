@@ -1,5 +1,0 @@
-Updated the regular expression matching used by
-`~plasmapy.particles.particle_class.Particle` to parse and identify a
-:term:`particle-like` string.  This fixes the bug where a string with
-a trailing space (e.g. ``"Ar "``) was converted into a negatively charged
-ion (e.g. ``"Ar -1"``).

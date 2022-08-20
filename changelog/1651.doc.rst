@@ -1,0 +1,2 @@
+Updated the section of the contributor guide on |pre-commit|_, and
+moved it to :file:`docs/contributing/install_dev.rst`.

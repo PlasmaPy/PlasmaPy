@@ -1,6 +1,0 @@
-Changed the :meth:`~plasmapy.analysis.fit_functions.Linear.curve_fit`
-method on `plasmapy.analysis.fit_functions.Linear` so that the
-arbitrary keyword arguments get passed to `scipy.stats.linregress`.
-Previously, :meth:`~plasmapy.analysis.fit_functions.Linear.curve_fit`
-had accepted arbitrary keyword arguments but did not pass them along to
-`~scipy.stats.linregress`.

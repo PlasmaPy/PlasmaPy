@@ -1094,13 +1094,40 @@ class Test_impact_parameter:
             impact_parameter, insert_some_nans, insert_all_nans, kwargs
         )
 
-    def test_extend_scalar_bmin(self):
+    @pytest.mark.parametrize(
+        "n_e_shape,T_shape",
+        # Scalar T
+        [
+            ((2, 3, 5), (1,)),
+            # Scalar n
+            ((1,), (2, 3, 5)),
+            # Both arrays of equal size
+            ((2, 3, 5), (2, 3, 5)),
+            # Higher dimensional test
+            ((2, 3, 5, 4, 2), (2, 3, 5, 4, 2)),
+        ],
+    )
+    def test_extend_output_for_array_input(self, n_e_shape, T_shape):
         """
-        Test to verify that if T is scalar and n is vector, bmin will be extended
-        to the same length as bmax
+        Test to verify that if either/or T and n_e are arrays, the resulting
+        bmin and bmax have the correct shapes.
+
+        This is necessary in addition to test_handle_nparrays to ensure that
+        the output arrays are extended correctly.
+
         """
-        (bmin, bmax) = impact_parameter(1 * u.eV, self.n_e_arr, self.particles)
-        assert len(bmin) == len(bmax)
+
+        output_shape = T_shape if len(T_shape) >= len(n_e_shape) else n_e_shape
+
+        n_e = self.n_e * np.ones(n_e_shape)
+        T = self.T * np.ones(T_shape)
+
+        bmin, bmax = impact_parameter(T, n_e, self.particles)
+
+        msg = f"wrong shape for {n_e.shape = } and {T.shape = }"
+
+        assert bmin.shape == output_shape, "Bmin " + msg
+        assert bmax.shape == output_shape, "Bmax " + msg
 
 
 class Test_collision_frequency:

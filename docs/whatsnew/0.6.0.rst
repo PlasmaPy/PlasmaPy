@@ -1,4 +1,4 @@
-Plasmapy v0.6.0 (2021-03-14)
+PlasmaPy v0.6.0 (2021-03-14)
 ============================
 
 The people who have contributed to the code for this release are:
@@ -184,7 +184,7 @@ Improved Documentation
 - Put the docstring for `plasmapy.particles.particle_class.Particle.is_category` into
   ``numpydoc`` format. (`#1039 <https://github.com/plasmapy/plasmapy/pull/1039>`__)
 - Adds formulas (which were missing) to the docstrings of
-  `~plasmapy.formulary.dimensionless.quantum_theta` and
+  ``plasmapy.formulary.dimensionless.quantum_theta`` and
   `~plasmapy.formulary.dimensionless.beta`. (`#1041 <https://github.com/plasmapy/plasmapy/pull/1041>`__)
 - Add live rendering of changelog entries on documentation builds, based on
   `sphinx-changelog <https://github.com/OpenAstronomy/sphinx-changelog>`_. (`#1052 <https://github.com/plasmapy/plasmapy/pull/1052>`__)

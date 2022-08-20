@@ -1,5 +1,0 @@
-Added ``dlint``, flake8_, ``flake8-absolute-import``,
-``flake8-rst-docstrings``, ``flake8-use-fstring``,
-pydocstyle_, and pygments_ into the ``tests`` requirements category and
-pre-commit_ into the ``extras`` requirements category. These
-dependencies are not required for basic installation with pip_.
