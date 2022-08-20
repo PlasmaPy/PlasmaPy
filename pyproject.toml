@@ -36,9 +36,12 @@ lines_between_types = 1
 
 [tool.towncrier]
 package = "plasmapy"
+name = "PlasmaPy"
 filename = "CHANGELOG.rst"
 directory = "changelog/"
-issue_format = "`#{issue} <https://github.com/plasmapy/plasmapy/pull/{issue}>`__"
+title_format = "{name} v{version} ({project_date})"
+issue_format = ":issue:`{issue}`"
+wrap = true
 
 [[tool.towncrier.type]]
 directory = "breaking"

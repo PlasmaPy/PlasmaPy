@@ -1,4 +1,4 @@
-# SunPy is released under a BSD-style open source licence:
+# SunPy is released under a BSD-style open source license:
 
 # Copyright (c) 2013-2018 The SunPy developers
 # All rights reserved.
