@@ -56,7 +56,6 @@ __all__ = [
 ]
 
 import astropy.units as u
-import math
 import numpy as np
 import scipy.integrate
 import scipy.misc
@@ -2099,7 +2098,7 @@ class CollisionFrequencies:
     def _v_0(self):
         return (
             4
-            * math.pi
+            * np.pi
             * (self.test_particle.charge_number * e.esu) ** 2
             * (self.field_particle.charge_number * e.esu) ** 2
             * self.coulomb_log
@@ -2113,7 +2112,7 @@ class CollisionFrequencies:
 
     @staticmethod
     def _phi_integrand(t: u.dimensionless_unscaled):
-        return t**0.5 * math.exp(-t)
+        return t**0.5 * np.exp(-t)
 
     def _phi_explicit(self, x: float) -> float:
         integral, _ = scipy.integrate.quad(self._phi_integrand, 0, x)
@@ -2123,7 +2122,7 @@ class CollisionFrequencies:
     def _phi(self, x: u.dimensionless_unscaled):
         vectorized_integral = np.vectorize(self._phi_explicit)
 
-        return 2 / math.pi**0.5 * vectorized_integral(x.value)
+        return 2 / np.pi**0.5 * vectorized_integral(x.value)
 
     def _phi_prime(self, x: u.dimensionless_unscaled):
-        return scipy.misc.derivative(self._phi, x, dx=self.dx)
+        return 2 / np.pi**0.5 * self._phi_integrand(x)
