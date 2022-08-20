@@ -1,4 +1,0 @@
-Fixed the ``Z`` dependence in
-`~plasmapy.formulary.collisions.fundamental_electron_collision_freq`,
-by replacing ``n_e`` with ``n_i`` while calling
-`~plasmapy.formulary.collisions.collision_frequency`.

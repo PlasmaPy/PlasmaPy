@@ -17,3 +17,4 @@ pydocstyle
 pytest >= 5.4.0
 pytest-regressions
 pytest-xdist
+tomli

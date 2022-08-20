@@ -1,3 +1,0 @@
-Moved |h5py|_, |lmfit|_, |mpmath|_, and |numba|_ out of the ``extras``
-requirements category and into the ``install`` requirements category.
-These packages are now installed when running ``pip install plasmapy``.

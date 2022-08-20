@@ -958,21 +958,6 @@ class Particle(AbstractPhysicalParticle):
         return self._attributes["charge number"]
 
     @property
-    @deprecated(
-        since="0.7.0",
-        name="integer_charge",
-        message=(
-            "The integer_charge attribute of Particle has been "
-            "deprecated and will be removed in a future release.  Use "
-            "charge_number instead."
-        ),
-        warning_type=PlasmaPyFutureWarning,
-    )
-    def integer_charge(self) -> Integral:
-        """The particle's electrical charge in units of the elementary charge."""
-        return self.charge_number
-
-    @property
     def charge(self) -> u.C:
         """
         The particle's electrical charge in coulombs.
@@ -1680,9 +1665,9 @@ class Particle(AbstractPhysicalParticle):
         |Particle|.  If ``inplace`` is `True`, then replace the current
         |Particle| with the newly ionized |Particle|.
 
-        New in version 0.8.0: If the |Particle| instance has no charge
-        information (e.g. `Particle("Li")`), it is assumed to be electrically
-        neutral.
+        New in version 0.8: If the |Particle| instance has no charge
+        information (e.g., ``Particle("Li")``), this method assumes it
+        to be electrically neutral.
 
         Parameters
         ----------
@@ -2270,7 +2255,7 @@ class CustomParticle(AbstractPhysicalParticle):
 def molecule(
     symbol: str, Z: Optional[Integral] = None
 ) -> Union[Particle, CustomParticle]:
-    """
+    r"""
     Parse a molecule symbol into a |CustomParticle| or |Particle|.
 
     Parameters

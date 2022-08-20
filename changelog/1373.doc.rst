@@ -1,2 +1,0 @@
-Described additional environments for building the documentation with make_
-in the |documentation guide|.
