@@ -1,7 +1,0 @@
-Introduced the concept of :term:`lite-functions`, by creating the lite-function
-`~plasmapy.formulary.parameters.thermal_speed_lite`, which is a simplified
-and Numba_ jitted version of `~plasmapy.formulary.parameters.thermal_speed`.
-These functions are intended for computational use and as such have no
-validation of input or output values.
-`~plasmapy.formulary.parameters.thermal_speed_lite` is also bound to
-`~plasmapy.formulary.parameters.thermal_speed` as the ``lite`` attribute.

@@ -1,5 +1,0 @@
-For `~plasmapy.formulary.parameters.gyroradius`, updated the default
-keyword arguments and conditional for issuing the
-`~plasmapy.utils.exceptions.PlasmaPyFutureWarning`.  This addresses the
-incorrect behavior where a `ValueError` is raised if an array is passed
-to the deprecated keyword ``T_i``.

@@ -1,2 +1,0 @@
-Made numerous minor updates and fixes to reST_ links in docstrings and
-the narrative documentation.

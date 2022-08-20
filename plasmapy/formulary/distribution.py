@@ -20,7 +20,7 @@ import numpy as np
 from scipy.special import gamma
 
 from plasmapy.formulary.speeds import kappa_thermal_speed, thermal_speed
-from plasmapy.utils.units_definitions import (
+from plasmapy.utils._units_definitions import (
     SPEED_DISTRIBUTION_UNITS_1D,
     SPEED_DISTRIBUTION_UNITS_2D,
     SPEED_DISTRIBUTION_UNITS_3D,
@@ -806,7 +806,7 @@ def kappa_velocity_1D(v, T, kappa, particle="e", v_drift=0, vTh=np.nan, units="u
     Returns
     -------
     f : `~astropy.units.Quantity`
-        Probability density in celocity\ :sup:`-1`\ , normalized so that
+        Probability density in velocity\ :sup:`-1`\ , normalized so that
         :math:`\int_{-∞}^{+∞} f(v) dv = 1`.
 
     Raises

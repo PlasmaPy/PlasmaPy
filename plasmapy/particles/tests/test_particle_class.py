@@ -1436,11 +1436,6 @@ def test_particle_is_category_valid_categories():
     assert some_valid_categories.issubset(Particle.is_category.valid_categories)
 
 
-def test_deprecated_integer_charge():
-    with pytest.warns(PlasmaPyFutureWarning):
-        assert Particle("e-").integer_charge == -1
-
-
 def test_CustomParticle_cmp():
     """Test ``__eq__`` and ``__ne__`` in the CustomParticle class."""
     particle1 = CustomParticle(2 * 126.90447 * u.u, 0 * u.C, "I2")
