@@ -9,6 +9,16 @@ Glossary
 .. glossary::
    :sorted:
 
+   alias
+   aliases
+      An abbreviated version of a commonly used function.  For
+      example, `~plasmapy.formulary.speeds.va_` is an alias for
+      `~plasmapy.formulary.speeds.Alfven_speed`.  Aliases are
+      named with a trailing underscore.
+
+      For further details, please refer to the :ref:`contributor guide's
+      section on aliases <aliases>`.
+
    args
       An abbreviation for `positional arguments`_.
 
@@ -19,6 +29,12 @@ Glossary
 
    charge number
       The charge of a particle in units of elementary charge.
+
+   fit-function
+   fit-functions
+      Any instance of a subclass of
+      `~plasmapy.analysis.fit_functions.AbstractFitFunction`.  Also see
+      module `~plasmapy.analysis.fit_functions`.
 
    integration test
       An **integration test** verifies that multiple software
@@ -47,29 +63,24 @@ Glossary
 
    lite-function
    lite-functions
-      A lite weight version of an existing `plasmapy` function,
-      typically a formulary function.  These functions are intended for
-      computational use where speed matters more than anything else, and
-      as such **all argument safeguards have been stripped away** to
-      leave the most fundamental calculation possible.  A few things
-      to know about lite-functions:
+      An optimized version of an existing `plasmapy` function intended
+      for applications where computational efficiency is most important.
+      While most `~plasmapy.formulary` functions accept |Quantity|
+      objects created using `astropy.units`, lite-functions accept
+      numbers and |array_like| inputs that are implicitly assumed to be
+      in SI units. The name of a lite-function ends with ``_lite``. A
+      lite-function can be accessed as the ``lite`` attribute of the
+      corresponding regular function.
 
-      - Lite-functions are a flavor of existing `plasmapy`
-        functionality and are denoted with a trailing ``_lite`` to the
-        name. For example,
-        `~plasmapy.formulary.speeds.thermal_speed_lite` is the
-        lite-function associated with
-        `~plasmapy.formulary.speeds.thermal_speed`.
-      - Lite-functions are typically bound to their normal version as
-        the ``lite`` attribute.  For example,
-        `~plasmapy.formulary.speeds.thermal_speed_lite` can be
-        accessed as ``thermal_speed.lite``.
-      - Lite-functions view all input and output arguments as being in
-        SI units.
-      - **UNITS ARE NOT VALIDATED BY THE FUNCTIONS.**  It is solely up to
-        the user to pass in parameters with the correct units.
-      - When possible, lite-functions are decorated with `numba.jit`
-        (or the like) for an additional speed boost.
+      .. caution::
+
+         Unlike most `~plasmapy.formulary` functions, no validations are
+         performed on the arguments provided to a lite-function for the
+         sake of computational efficiency. When using lite-functions, it
+         is vital to double-check your implementation!
+
+      For further details, please refer to the :ref:`contributor guide's
+      section on lite-functions <lite-functions>`.
 
    particle-like
       An `object` is *particle-like* if it is a |Particle| or
@@ -119,6 +130,13 @@ Glossary
       `numpy.number` types. Note that if a PlasmaPy function expects a
       dimensional |Quantity| and a real number is provided, then the
       real number is often assumed to have the appropriate SI units.
+
+   temperature
+      Most functions in PlasmaPy accept temperature, :math:`T`, as a
+      `~astropy.units.Quantity` with units of temperature (e.g., kelvin)
+      or energy (e.g., electron-volts). A value for energy that is
+      provided will be divided by the Boltzmann constant, :math:`k_B`,
+      to be converted into units of temperature.
 
    unit test
       A **unit test** verifies a single unit of behavior, does it

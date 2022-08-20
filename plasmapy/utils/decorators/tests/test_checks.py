@@ -914,7 +914,7 @@ class TestCheckValues:
                     "args": [
                         complex(5),
                         complex(2, 3),
-                        np.complex(3.0),
+                        np.complex128(3.0),
                         complex(4.0, 2.0) * u.cm,
                         np.array([complex(4, 5), complex(1)]) * u.kg,
                     ],
@@ -928,7 +928,7 @@ class TestCheckValues:
                     "args": [
                         complex(5),
                         complex(2, 3),
-                        np.complex(3.0),
+                        np.complex128(3.0),
                         complex(4.0, 2.0) * u.cm,
                         np.array([complex(4, 5), complex(1)]) * u.kg,
                     ],

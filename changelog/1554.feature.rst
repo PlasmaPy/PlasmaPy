@@ -1,2 +1,0 @@
-Added a null point classifier function which determines the
-type of a given 3D magnetic null point.

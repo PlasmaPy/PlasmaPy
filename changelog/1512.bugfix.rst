@@ -1,2 +1,0 @@
-Exposed the `~plasmapy.analysis` and `~plasmapy.dispersion` subpackages
-to the `plasmapy` namespace.
