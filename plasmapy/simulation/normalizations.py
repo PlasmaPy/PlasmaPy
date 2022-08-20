@@ -3,7 +3,8 @@ import numpy as np
 
 from astropy.constants import k_B
 from astropy.constants import mu0 as μ0
-from typing import List
+from numbers import Integral
+from typing import List, Union
 
 from plasmapy.formulary import Alfven_speed
 from plasmapy.particles import Particle, particle_input, ParticleLike
@@ -12,11 +13,11 @@ from plasmapy.particles.exceptions import InvalidIonError, ParticleError
 from plasmapy.simulation.abstractions import AbstractNormalizations
 from plasmapy.utils._units_helpers import _get_physical_type_dict
 
-_LENGTH = u.get_physical_type(u.m)
-_MAGNETIC_FIELD = u.get_physical_type(u.T)
-_TIME = u.get_physical_type(u.s)
-_NUMBER_DENSITY = u.get_physical_type(u.m**-3)
-_VELOCITY = u.get_physical_type(u.m / u.s)
+_length = u.get_physical_type(u.m)
+_magnetic_field = u.get_physical_type(u.T)
+_time = u.get_physical_type(u.s)
+_number_density = u.get_physical_type(u.m**-3)
+_velocity = u.get_physical_type(u.m / u.s)
 
 
 class MHDNormalizations(AbstractNormalizations):
@@ -32,18 +33,60 @@ class MHDNormalizations(AbstractNormalizations):
 
     mass_numb : integer
         The mass number of the isotope of the ion.
+
+    Examples
+    --------
+    >>> import astropy.units as u
+    >>> from plasmapy.simulation import MHDNormalizations
+    >>> n0 = 1e19 * u.m**-3
+    >>> L0 = 1 * u.km
+    >>> B0 = 10 * u.G
+    >>> normalizations = MHDNormalizations("p+", n0, L0, B0)
+    >>> normalizations.ion
+    Particle("p+")
+    >>> normalizations.number_density
+    <Quantity 1.e+19 1 / m3>
+    >>> normalizations.magnetic_field
+    <Quantity 0.001 T>
+    >>> normalizations.length
+    <Quantity 1000. m>
     """
 
+    @particle_input
     def _store_ion(self, ion: Particle):
-        pass
+        self._ion = ion
 
-    def _store_quantites(self, quantities: List[u.Quantity]):
-        pass
+    def _process_quantities(self, quantities: List[u.Quantity]):
+        self._quantities = _get_physical_type_dict(quantities)
+        self._get_length()
+        self._get_magnetic_field()
+        self._get_number_density()
 
-    def __init__(self, *args, Z=None, mass_numb=None):
+    def _get_length(self):
+        if _length not in self._quantities:
+            ...
+
+    def _get_magnetic_field(self):
+        if _magnetic_field not in self._quantities:
+            ...
+
+    def _get_number_density(self):
+        if _number_density not in self._quantities:
+            ...
+
+    # Make sure that when there are duplicates of a physical type in
+    # args, that there is a ValueError or something.  This is (or should
+    # be) done in _get_physical_type_dict.
+
+    def __init__(
+        self,
+        *args: Union[u.Quantity, ParticleLike],
+        Z: Integral = None,
+        mass_numb: Integral = None,
+    ):
 
         wrong_type_error_message = (
-            "MHDNormalizations can only accept Quantity positinal "
+            "MHDNormalizations can only accept Quantity positional "
             "arguments and one particle-like argument that represents "
             "an ion."
         )
@@ -52,18 +95,20 @@ class MHDNormalizations(AbstractNormalizations):
         particles = []
         for arg in args:
             if isinstance(arg, u.Quantity):
-                quantities.append(arg)
+                quantities.append(arg.si)
             elif isinstance(arg, ParticleLike):
                 particles.append(Particle(arg, Z=Z, mass_numb=mass_numb))
             else:
                 raise TypeError(wrong_type_error_message)
 
+        # Should we allow a ParticleList?
         # Should we allow the ion to not be defined?
+
         if len(particles) != 1:
             raise TypeError(wrong_type_error_message)
 
         self._store_ion(particles[0])
-        self._store_quantities(quantities)
+        self._process_quantities(quantities)
 
     @property
     def current_density(self) -> u.A * u.m**-2:
@@ -81,6 +126,17 @@ class MHDNormalizations(AbstractNormalizations):
         return self.magnetic_field / (μ0 * self.length)
 
     @property
+    def electric_field(self) -> u.V / u.m:
+        """
+        The electric field normalization,
+
+        .. math::
+
+           E_⭑ ≡ V_⭑ B_⭑
+        """
+        return self.velocity * self.magnetic_field
+
+    @property
     def ion(self) -> Particle:
         """
         The particle...
@@ -89,7 +145,7 @@ class MHDNormalizations(AbstractNormalizations):
         -------
         |Particle|
         """
-        pass
+        return self._ion
 
     @property
     def length(self) -> u.m:
@@ -100,7 +156,7 @@ class MHDNormalizations(AbstractNormalizations):
         -------
         |Quantity|
         """
-        return self._length
+        return self._quantities[_length]
 
     @property
     def magnetic_field(self) -> u.T:
@@ -111,7 +167,7 @@ class MHDNormalizations(AbstractNormalizations):
         -------
         |Quantity|
         """
-        return self._magnetic_field
+        return self._quantities[_magnetic_field]
 
     @property
     def mass(self) -> u.kg:
@@ -148,7 +204,7 @@ class MHDNormalizations(AbstractNormalizations):
         -------
         |Quantity|
         """
-        return self._number_density
+        return self._quantities[_number_density]
 
     @property
     def pressure(self):
