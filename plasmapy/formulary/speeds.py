@@ -458,7 +458,7 @@ def thermal_speed_lite(
     T: numbers.Real, mass: numbers.Real, coeff: numbers.Real
 ) -> numbers.Real:
     r"""
-    The ":term:`lite-function`" version of
+    The :term:`lite-function` for
     `~plasmapy.formulary.speeds.thermal_speed`.  Performs the same
     thermal speed calculations as
     `~plasmapy.formulary.speeds.thermal_speed`, but is intended for

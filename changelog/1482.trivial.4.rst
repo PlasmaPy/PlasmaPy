@@ -1,3 +1,0 @@
-Updated :file:`docs/environment.yml` to use pip_ to install all
-requirements specified by :file:`requirements.txt` when creating a
-Conda_ environment.

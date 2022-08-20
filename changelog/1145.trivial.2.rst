@@ -1,3 +1,0 @@
-Moved all tests associated with calculating the thermal speed from test
-file :file:`plasmapy/formulary/tests/test_parameters.py` to
-:file:`plasmapy/formulary/tests/test_thermal_speed.py`.

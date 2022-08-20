@@ -1,3 +1,0 @@
-Fixed a bug in the ``_make_grid`` method of `~plasmapy.plasma.grids.AbstractGrid`
-that would fail to smoothly handle invalid user input if the start, stop, or num
-keywords were not the correct type.

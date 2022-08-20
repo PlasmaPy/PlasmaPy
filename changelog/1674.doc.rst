@@ -1,0 +1,3 @@
+Added an admonition to the |changelog guide| that describes how to
+change reST_ links for removed code objects into inline literals in old
+changelog entries.

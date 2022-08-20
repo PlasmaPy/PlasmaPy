@@ -1,8 +1,0 @@
-Corrected the improper inversion of the electron temperature for the
-non-bimaxwellian case for
-:func:`~plasmapy.diagnostics.langmuir.get_electron_temperature`.
-The electron temperature, and not the slope, is a fit parameter of the
-curve used by
-:func:`~plasmapy.diagnostics.langmuir.get_electron_temperature`,
-so there is no need for the inversion.  The returned value is now the
-electron temperature and not its reciprocal.
