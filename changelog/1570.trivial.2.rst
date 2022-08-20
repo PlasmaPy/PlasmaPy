@@ -1,3 +1,0 @@
-Removed an extraneous `print` statement from
-`~plasmapy.formulary.collisions.collision_frequency` that
-activated when the colliding particles were both electrons.

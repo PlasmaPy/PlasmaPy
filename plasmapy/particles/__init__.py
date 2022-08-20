@@ -13,7 +13,6 @@ from plasmapy.particles.atomic import (
     common_isotopes,
     electric_charge,
     half_life,
-    integer_charge,
     ionic_levels,
     is_stable,
     isotopic_abundance,

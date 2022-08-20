@@ -1,6 +1,0 @@
-The file
-:file:`docs/_static/css/admonition_color_contrast.css` was added to
-include color customizations for Sphinx_ admonitions that originally
-came from
-`sphinx_rtd_theme_ext_color_contrast
-<https://github.com/AaltoSciComp/sphinx_rtd_theme_ext_color_contrast>`_.

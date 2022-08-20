@@ -1,1 +1,0 @@
-Added an example notebook that introduces how to use `astropy.units`.

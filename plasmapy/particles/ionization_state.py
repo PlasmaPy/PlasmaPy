@@ -120,21 +120,6 @@ class IonicLevel:
         return self.ion.charge_number
 
     @property
-    @deprecated(
-        since="0.7.0",
-        name="integer_charge",
-        message=(
-            "The integer_charge attribute of IonicLevel has been "
-            "deprecated and will be removed in a future release.  Use "
-            "charge_number instead."
-        ),
-        warning_type=PlasmaPyFutureWarning,
-    )
-    def integer_charge(self) -> Integral:
-        """The charge number of the ion."""
-        return self.charge_number
-
-    @property
     def ionic_fraction(self) -> Real:
         r"""
         The fraction of particles of an element that are at this
@@ -730,21 +715,6 @@ class IonizationState:
     def charge_numbers(self) -> np.ndarray:
         """An array of the charge numbers."""
         return self.to_list().charge_number
-
-    @property
-    @deprecated(
-        since="0.7.0",
-        name="integer_charges",
-        message=(
-            "The integer_charges attribute of IonizationState has been "
-            "deprecated and will be removed in a future release.  Use "
-            "charge_numbers instead."
-        ),
-        warning_type=PlasmaPyFutureWarning,
-    )
-    def integer_charges(self) -> np.ndarray:
-        """An array of the charge numbers."""
-        return self.charge_numbers
 
     @property
     def Z_mean(self) -> np.float64:

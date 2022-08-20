@@ -74,7 +74,7 @@ def spectral_density_args_kwargs(kwargs):
     """
     This helper function separates positional arguments and keyword arguments
     for the spectral_density function from a dictionary of both that is
-    easy to use in parameterized tests.
+    easy to use in parametrized tests.
     """
 
     # Pull out the non-keyword arguments

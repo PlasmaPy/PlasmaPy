@@ -1,6 +1,0 @@
-Implemented non-breaking speed improvements on the methods
-`~plasmapy.plasma.grids.CartesianGrid.nearest_neighbor_interpolator`
-and `~plasmapy.plasma.grids.CartesianGrid.volume_averaged_interpolator`
-for `~plasmapy.plasma.grids.CartesianGrid`. The new interpolators now
-require that the grid axes be sorted, which is always true for uniform
-grids. Added a new test to ensure this stays true.

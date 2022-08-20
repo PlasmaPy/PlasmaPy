@@ -46,11 +46,6 @@ def test_ionic_level_attributes(ion, ionic_fraction, number_density):
     assert u.isclose(instance.number_density, number_density, equal_nan=True)
     assert instance.charge_number == charge_number(ion)
 
-    # TODO: remove when IonicLevel.integer_charge is removed
-    with pytest.warns(PlasmaPyFutureWarning):
-        integer_charge = instance.integer_charge
-    assert integer_charge == charge_number(ion)
-
 
 @pytest.mark.parametrize(
     "invalid_fraction, expected_exception",
@@ -166,19 +161,6 @@ class Test_IonizationState:
         instance = self.instances[test_name]
         expected_charge_numbers = np.arange(instance.atomic_number + 1)
         assert np.allclose(instance.charge_numbers, expected_charge_numbers)
-
-    @pytest.mark.parametrize("test_name", test_names)
-    def test_integer_charges(self, test_name):
-        """
-        Test that `IonizationState.integer_charges` has the
-        correct charge numbers and issues a future warning.
-        """
-        # TODO: remove when IonizationState.integer_charge is removed
-        instance = self.instances[test_name]
-        expected_charge_numbers = np.arange(instance.atomic_number + 1)
-        with pytest.warns(PlasmaPyFutureWarning):
-            actual_integer_charges = instance.integer_charges
-        assert np.allclose(actual_integer_charges, expected_charge_numbers)
 
     @pytest.mark.parametrize(
         "test_name",
@@ -475,7 +457,7 @@ def test_IonizationState_ionfracs_from_ion_input(ion):
         actual_ionic_fractions,
         atol=1e-16,
         err_msg=f"The returned ionic fraction for IonizationState({repr(ion)}) "
-        f"should have entirely been in the Z = {ion_particle.integer_charge} "
+        f"should have entirely been in the Z = {ion_particle.charge_number} "
         f"level.",
     )
 
@@ -676,7 +658,7 @@ class Test_IonizationStateNumberDensitiesSetter:
             self.instance.number_densities, self.valid_number_densities
         ), (
             f"The number densities of {self.element} were set to "
-            f"{self.instance.number_densities} instead of the expceted "
+            f"{self.instance.number_densities} instead of the expected "
             f"value of {self.valid_number_densities}."
         )
 

@@ -12,7 +12,6 @@ from plasmapy.particles.atomic import (
     common_isotopes,
     electric_charge,
     half_life,
-    integer_charge,
     ionic_levels,
     is_stable,
     isotopic_abundance,
@@ -37,7 +36,6 @@ from plasmapy.particles.exceptions import (
 )
 from plasmapy.particles.particle_class import Particle
 from plasmapy.particles.symbols import atomic_symbol, element_name, isotope_symbol
-from plasmapy.utils.exceptions import PlasmaPyFutureWarning
 from plasmapy.utils.pytest_helpers import run_test
 
 # function to be tested, argument(s), expected result/outcome
