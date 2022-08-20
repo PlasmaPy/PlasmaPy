@@ -1,2 +1,0 @@
-`~plasmapy.diagnostics.thomson.spectral_density` and `~plasmapy.diagnostics.thomson.spectral_density_model`
-now support `~plasmapy.particles.particle_collections` objects as input to the ``ions`` keywords.

@@ -1,3 +1,0 @@
-Added tests for passing array valued ``k`` and ``theta`` arguments
-to :func:`~plasmapy.dispersion.numerical.hollweg_.hollweg`, which was
-an added feature in :pr:`1529`.

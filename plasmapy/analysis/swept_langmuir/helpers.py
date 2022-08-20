@@ -4,12 +4,14 @@ __all__ = ["check_sweep"]
 import astropy.units as u
 import numpy as np
 
+from typing import Tuple
+
 
 def check_sweep(
     voltage: np.ndarray,
     current: np.ndarray,
     strip_units: bool = True,
-) -> (np.ndarray, np.ndarray):
+) -> Tuple[np.ndarray, np.ndarray]:
     """
     Function for checking that the voltage and current arrays are properly
     formatted for analysis by `plasmapy.analysis.swept_langmuir`.
@@ -85,7 +87,7 @@ def check_sweep(
     ):
         raise ValueError(
             f"Expected 1D numpy array of floats or integers for voltage, but"
-            f" got an array with dytpe '{voltage.dtype}'."
+            f" got an array with dtype '{voltage.dtype}'."
         )
     elif voltage.ndim != 1:
         raise ValueError(
@@ -117,7 +119,7 @@ def check_sweep(
     ):
         raise ValueError(
             f"Expected 1D numpy array of floats or integers for current, but"
-            f" got an array with dytpe '{current.dtype}'."
+            f" got an array with dtype '{current.dtype}'."
         )
     elif current.ndim != 1:
         raise ValueError(

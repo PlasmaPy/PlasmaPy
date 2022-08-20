@@ -1,1 +1,0 @@
-Parametrized tests for `~plasmapy.formulary.parameters.ion_sound_speed`.
