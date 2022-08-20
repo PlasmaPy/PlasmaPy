@@ -1,4 +1,0 @@
-Refactored the interpolator methods on objects defined in `~plasmapy.plasma.grids`.
-All interpolators are now defined in the subclasses of `~plasmapy.plasma.grids.AbstractGrid`.
-Calling the interpolator methods on `~plasmapy.plasma.grids.AbstractGrid`
-raises a `NotImplementedError` exception.
