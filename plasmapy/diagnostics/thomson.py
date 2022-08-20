@@ -302,12 +302,12 @@ def spectral_density(
         Temperature of each ion component. Shape (Ni, ) must be equal to the
         number of ion populations Ni. (in K or convertible to eV)
 
-    efract : array_like, shape (Ne, ), optional
+    efract : |array_like|, shape (Ne, ), optional
         An array-like object representing :math:`F_e` (defined above).
         Must sum to 1.0. Default is [1.0], representing a single
         electron component.
 
-    ifract : array_like, shape (Ni, ), optional
+    ifract : |array_like|, shape (Ni, ), optional
         An array-like object representing :math:`F_i` (defined above).
         Must sum to 1.0. Default is [1.0], representing a single
         ion component.
@@ -471,7 +471,7 @@ def spectral_density(
         raise ValueError("At least one ion species needs to be defined.")
 
     try:
-        if sum([ion.charge_number <= 0 for ion in ions]):
+        if sum(ion.charge_number <= 0 for ion in ions):
             raise ValueError("All ions must be positively charged.")
     # Catch error if charge information is missing
     except ChargeError:
@@ -682,7 +682,7 @@ def _spectral_density_model(wavelengths, settings=None, **params):
 
 
 def spectral_density_model(wavelengths, settings, params):
-    """
+    r"""
     Returns a `lmfit.model.Model` function for Thomson spectral density function.
 
     Parameters

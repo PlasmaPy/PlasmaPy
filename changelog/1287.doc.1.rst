@@ -1,4 +1,0 @@
-Changed the color contrast of links and admonitions to be consistent
-with the `Web Content Accessibility Guidelines 2 Level AA Conformance
-<https://www.w3.org/TR/2021/WD-WCAG22-20210521/#contrast-minimum>`__
-for contrast.

@@ -11,13 +11,14 @@ nbsphinx
 numpydoc
 pillow
 pygments >= 2.11.0
-sphinx >= 4.4
+sphinx >= 4.4, != 5.1
 sphinx-changelog
 sphinx-copybutton
-sphinx-gallery
-sphinx-hoverxref >= 1.0.0
+sphinx-gallery < 0.11.0
+sphinx-hoverxref >= 1.1.1
 sphinx-issues >= 3.0.1
 sphinx-notfound-page >= 0.8
+sphinx-reredirects
 sphinx_rtd_theme >= 1.0.0
 sphinxcontrib-bibtex
 towncrier >= 19.2.0

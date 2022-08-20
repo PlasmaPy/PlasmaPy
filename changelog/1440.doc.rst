@@ -1,7 +1,0 @@
-Removed the following files from :file:`docs/api_static`\ :
-``plasmapy.particles.elements.rst``,
-``plasmapy.particles.isotopes.rst``,
-``plasmapy.particles.parsing.rst``, and
-``plasmapy.particles.special_particles.rst``. These files corresponded
-to modules that were renamed with a leading underscore to indicate that
-they are no longer part of the public API.

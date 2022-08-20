@@ -1,3 +1,0 @@
-Changed the raised exception to `ImportError` (from a general `Exception`)
-when attempting to import `plasmapy` from a Python version below the
-minimum supported version.

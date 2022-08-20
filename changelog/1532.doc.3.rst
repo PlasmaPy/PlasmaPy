@@ -1,2 +1,0 @@
-Added the `sphinx.ext.extlinks` extension to Sphinx_ to simplify adding
-links to external domains which have a common base URL.

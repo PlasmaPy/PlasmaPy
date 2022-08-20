@@ -1,0 +1,4 @@
+The ``integer_charges`` attributes of |IonizationState| has been
+removed after being deprecated in ``v0.7.0``. Use
+`~plasmapy.particles.ionization_state.IonizationState.charge_numbers`
+instead.

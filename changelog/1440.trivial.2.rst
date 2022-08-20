@@ -1,4 +1,0 @@
-Within `plasmapy.particles` modules, the ``_elements``, ``_isotopes``,
-``_parsing``, and ``_special_particles`` modules are now imported
-directly. Before this, objects within these modules were typically
-imported.
