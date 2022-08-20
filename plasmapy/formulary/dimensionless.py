@@ -23,7 +23,8 @@ import numpy as np
 
 from astropy.constants.si import k_B, mu0
 
-from plasmapy.formulary import frequencies, lengths, misc, quantum
+from plasmapy.formulary import frequencies, lengths, misc
+from plasmapy.formulary.quantum import quantum_theta
 from plasmapy.particles import Particle
 from plasmapy.utils.decorators import validate_quantities
 
@@ -223,66 +224,6 @@ def Hall_parameter(
 
 betaH_ = Hall_parameter
 """Alias to `~plasmapy.formulary.dimensionless.Hall_parameter`."""
-
-
-@validate_quantities(
-    T={"can_be_negative": False, "equivalencies": u.temperature_energy()},
-    n_e={"can_be_negative": False},
-)
-def quantum_theta(T: u.K, n_e: u.m**-3) -> u.dimensionless_unscaled:
-    r"""
-    Compare Fermi energy to thermal kinetic energy to check if quantum
-    effects are important.
-
-    The quantum theta (:math:`θ`) of a plasma is defined by
-
-    .. math::
-        θ = \frac{E_T}{E_F}
-
-    where :math:`E_T` is the thermal energy of the plasma
-    and :math:`E_F` is the Fermi energy of the plasma.
-
-    Parameters
-    ----------
-    T : `~astropy.units.Quantity`
-        The temperature of the plasma.
-
-    n_e : `~astropy.units.Quantity`
-          The electron number density of the plasma.
-
-    Examples
-    --------
-    >>> import astropy.units as u
-    >>> quantum_theta(1*u.eV, 1e20*u.m**-3)
-    <Quantity 127290.619...>
-    >>> quantum_theta(1*u.eV, 1e16*u.m**-3)
-    <Quantity 59083071...>
-    >>> quantum_theta(1*u.eV, 1e26*u.m**-3)
-    <Quantity 12.72906...>
-    >>> quantum_theta(1*u.K, 1e26*u.m**-3)
-    <Quantity 0.00109...>
-
-    Returns
-    -------
-    theta : `~astropy.units.Quantity`
-
-    Notes
-    -----
-    The thermal energy of the plasma (:math:`E_T`) is defined by
-
-    .. math::
-        E_T = k_B T
-
-    where :math:`k_B` is the Boltzmann constant
-    and :math:`T` is the temperature of the plasma.
-
-    See Also
-    --------
-    ~plasmapy.formulary.quantum.Fermi_energy
-    """
-    fermi_energy = quantum.Fermi_energy(n_e)
-    thermal_energy = k_B * T
-    return thermal_energy / fermi_energy
 
 
 @validate_quantities(

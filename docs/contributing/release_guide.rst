@@ -4,6 +4,14 @@
 Release Guide
 *************
 
+.. contents:: Table of Contents
+   :depth: 2
+   :local:
+   :backlinks: none
+
+Introduction
+------------
+
 This document describes the procedure for making a release of PlasmaPy.
 
 The following is a partial list of tasks to be performed for each

@@ -34,12 +34,13 @@ automodapi_custom_groups = {
     "aliases": {
         "title": "Aliases",
         "description": (
-            "PlasmaPy provides short-named (alias) versions of the most "
-            "common plasma functionality.  These aliases are only given to "
-            "functionality where there is a common lexicon in the community, "
-            "for example `~plasmapy.formulary.frequencies.plasma_frequency` "
-            " has the alias `~plasmapy.formulary.frequencies.wp_`.  All aliases "
-            "in PlasmaPy are denoted with a trailing underscore ``_``."
+            """
+            PlasmaPy provides :term:`aliases` of the most common plasma
+            functionality for user convenience. Aliases in PlasmaPy are
+            denoted with a trailing underscore (e.g., ``alias_``). For
+            further details, please refer to the :ref:`contributor
+            guide's section on aliases <aliases>`.
+            """
         ),
         "dunder": "__aliases__",
     },
@@ -47,16 +48,20 @@ automodapi_custom_groups = {
         "title": "Lite-Functions",
         "description": (
             """
-            Much of PlasmaPy's functionality incorporates `Astropy units
-            <https://docs.astropy.org/en/stable/units/>`_ for user convenience and
-            to mitigate calculation errors from inappropriate units, but this
-            comes at the sacrifice of speed.  While this penalty is not significant
-            for typical use, it can become substantial during intensive numerical
-            calculations. **Lite-functions** are introduced for the specific case
-            where speed matters, but **[USER NOTICE]** this comes with the
-            reduction of safeguards so a user needs to know what they are doing!
-            For additional details look to the glossary entry for
-            :term:`lite-function`.
+            :term:`Lite-functions` are optimized versions of existing
+            `plasmapy` functions that are intended for applications where
+            computational efficiency matters most. Lite-functions accept
+            numbers and NumPy arrays that are implicitly assumed to be
+            in SI units, and do not accept |Quantity| objects as inputs.
+            For further details, please refer to the :ref:`contributor
+            guide's section on lite-functions <lite-functions>`.
+
+            .. caution::
+
+               Lite-functions do not include the safeguards that are
+               included in most `plasmapy.formulary` functions. When
+               using lite-functions, it is vital to double-check your
+               implementation!
             """
         ),
         "dunder": "__lite_funcs__",

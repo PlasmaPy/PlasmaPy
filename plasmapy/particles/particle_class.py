@@ -958,21 +958,6 @@ class Particle(AbstractPhysicalParticle):
         return self._attributes["charge number"]
 
     @property
-    @deprecated(
-        since="0.7.0",
-        name="integer_charge",
-        message=(
-            "The integer_charge attribute of Particle has been "
-            "deprecated and will be removed in a future release.  Use "
-            "charge_number instead."
-        ),
-        warning_type=PlasmaPyFutureWarning,
-    )
-    def integer_charge(self) -> Integral:
-        """The particle's electrical charge in units of the elementary charge."""
-        return self.charge_number
-
-    @property
     def charge(self) -> u.C:
         """
         The particle's electrical charge in coulombs.

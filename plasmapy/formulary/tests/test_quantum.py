@@ -12,6 +12,7 @@ from plasmapy.formulary.quantum import (
     Fermi_energy,
     lambdaDB_,
     lambdaDB_th_,
+    quantum_theta,
     thermal_deBroglie_wavelength,
     Thomas_Fermi_length,
     Wigner_Seitz_radius,
@@ -231,3 +232,30 @@ def test_quantum_aliases():
     assert Ef_ is Fermi_energy
     assert lambdaDB_ is deBroglie_wavelength
     assert lambdaDB_th_ is thermal_deBroglie_wavelength
+
+
+class TestQuantumTheta:
+    """Test the quantum_theta function in quantum.py."""
+
+    def test_units(self):
+        """Test the return units"""
+
+        theta = quantum_theta(1 * u.eV, 1e26 * u.m**-3)
+
+        assert theta.unit.is_equivalent(u.dimensionless_unscaled)
+
+    @pytest.mark.parametrize(
+        "T, n_e, expected_theta",
+        [
+            (1 * u.eV, 1e26 * u.m**-3, 12.72906),  # Both regimes are present
+            (2 / 3 * u.eV, 1e40 * u.m**-3, 3.93887e-9),  # Fermi regime
+            (8.61e2 * u.eV, 1e12 * u.m**-3, 2.36120e13),  # Thermal regime
+            (1 * u.K, 1e26 * u.m**-3, 1.09690e-3),  # Specify temperature in Kelvin
+        ],
+    )
+    def test_value(self, T, n_e, expected_theta):
+        """Compare the calculated theta with the expected value."""
+
+        theta = quantum_theta(T, n_e)
+
+        assert np.isclose(theta.value, expected_theta)

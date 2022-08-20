@@ -10,7 +10,7 @@ Contributor Guide
    ../CONTRIBUTING
    ../CODE_OF_CONDUCT
    install_dev
-   code_guide
+   coding_guide
    changelog_guide
    testing_guide
    doc_guide
