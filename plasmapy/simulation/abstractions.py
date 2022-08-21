@@ -56,8 +56,8 @@ class AbstractTimeDependentSimulation(AbstractSimulation):
 
 class AbstractNormalizations(ABC):
     """
-    An abstract base class to represent the normalization constants for
-    systems of equations describing plasmas.
+    An abstract base class to represent the :term:`normalization`
+    constants for systems of equations describing plasmas.
 
     .. warning::
         This interface is unstable and is subject to change.
@@ -65,119 +65,127 @@ class AbstractNormalizations(ABC):
 
     @property
     @abstractmethod
+    def acceleration(self) -> u.m / u.s**2:
+        r"""The acceleration :term:`normalization`\ , :math:`a_⭑`\ ."""
+
+    @property
+    @abstractmethod
     def current_density(self) -> u.A / u.m**2:
-        """The current density normalization."""
+        r"""The current density :term:`normalization`\ ."""
         ...
 
-        #    @property
-        #    @abstractmethod
-        #    def diffusivity(self) -> u.m**2 / u.s:
-        #        """The normalization for diffusivity."""
-        #        ...
+    @property
+    @abstractmethod
+    def diffusivity(self) -> u.m**2 / u.s:
+        """The :term:`normalization` for diffusivity."""
+        ...
 
-        #    @property
-        #    @abstractmethod
-        #    def dynamic_viscosity(self) -> u.Pa * u.s:
-        #        """The normalization for dynamic viscosity."""
-        #        ...
+    @property
+    @abstractmethod
+    def dynamic_viscosity(self) -> u.Pa * u.s:
+        """The :term:`normalization` for dynamic viscosity."""
+        ...
 
-        #    @property
-        #    @abstractmethod
-        #    def electric_field(self) -> u.V / u.m:
-        #        """The electric field normalization."""
-        #        ...
+    @property
+    @abstractmethod
+    def electric_field(self) -> u.V / u.m:
+        r"""The electric field :term:`normalization`\ ."""
+        ...
 
-        #    @property
-        #    @abstractmethod
-        #    def heat_flux(self) -> u.J * u.m**-2 * u.s**-1:
-        #        """The normalization for heat flux."""
+    @property
+    @abstractmethod
+    def frequency(self) -> u.s**-1:
+        r"""The frequency :term:`normalization`\ ."""
+
+    @property
+    @abstractmethod
+    def heat_flux(self) -> u.J * u.m**-2 * u.s**-1:
+        """The :term:`normalization` for heat flux."""
         ...
 
     @property
     @abstractmethod
     def length(self) -> u.m:
-        """The normalization for length."""
+        """The :term:`normalization` for length."""
         ...
 
     @property
     @abstractmethod
     def magnetic_field(self) -> u.T:
-        """The magnetic field normalization."""
+        r"""The magnetic field :term:`normalization`\ ."""
         ...
 
-    #    @property
-    #    @abstractmethod
-    #    def magnetic_flux(self) -> u.T * u.m:
-    #        """The normalization for the magnetic flux or vector potential."""
-    #        ...
+    @property
+    @abstractmethod
+    def magnetic_flux(self) -> u.T * u.m:
+        """
+        The :term:`normalization` for the magnetic flux or vector
+        potential.
+        """
+        ...
 
     @property
     @abstractmethod
     def mass(self) -> u.kg:
-        """The normalization for mass."""
+        """The :term:`normalization` for mass."""
         ...
 
     @property
     @abstractmethod
     def mass_density(self) -> u.kg / u.m**3:
-        """The normalization for mass density."""
+        """The :term:`normalization` for mass density."""
         ...
 
     @property
     @abstractmethod
     def number_density(self) -> u.m**-3:
-        """The normalization for number density."""
+        """The :term:`normalization` for number density."""
         ...
 
     @property
     @abstractmethod
     def pressure(self) -> u.Pa:
-        """The normalization for pressure."""
+        """The :term:`normalization` for pressure."""
         ...
 
     @property
     @abstractmethod
     def temperature(self) -> u.K:
-        """The normalization for temperature."""
+        """The :term:`normalization` for temperature."""
         ...
 
-    #    @property
-    #    @abstractmethod
-    #    def thermal_conductivity(self) -> u.W / (u.K * u.m):
-    #        """The normalization for thermal conductivity."""
-    #        ...
+    @property
+    @abstractmethod
+    def thermal_conductivity(self) -> u.W / (u.K * u.m):
+        """The :term:`normalization` for thermal conductivity."""
+        ...
 
     @property
     @abstractmethod
     def time(self) -> u.s:
-        """The normalization for time."""
+        """The :term:`normalization` for time."""
         ...
-
-    #    @property
-    #    @abstractmethod
-    #    def wavenumber(self) -> u.m**-1:
-    #        """The normalization for inverse length."""
-    #        ...
 
     @property
     @abstractmethod
     def velocity(self) -> u.m / u.s:
-        """The normalization for velocity."""
+        """The :term:`normalization` for velocity."""
         ...
 
+    @property
+    @abstractmethod
+    def volumetric_heating_rate(self) -> u.J * u.m**-3 * u.s**-1:
+        """The :term:`normalization` for volumetric heating rate."""
+        ...
 
-#    @property
-#    @abstractmethod
-#    def volumetric_heating_rate(self) -> u.J * u.m**-3 * u.s**-1:
-#        ...
+    @property
+    @abstractmethod
+    def volumetric_rate(self) -> u.m**-3 * u.s**-1:
+        """The :term:`normalization` for a volumetric rate."""
+        ...
 
-#    @property
-#    @abstractmethod
-#    def volumetric_rate(self) -> u.m**-3 * u.s**-1:
-#        """
-#        The normalization for a volumetric rate.
-#
-#        This normalization is applicable to, for example, the number
-#        of collisions per unit volume per unit time.
-#        """
-#        ...
+    @property
+    @abstractmethod
+    def wavenumber(self) -> u.m**-1:
+        """The :term:`normalization` for inverse length."""
+        ...
