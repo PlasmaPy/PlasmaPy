@@ -35,6 +35,11 @@ class MHDNormalizations(AbstractNormalizations):
     mass_numb : integer
         The mass number of the isotope of the ion.
 
+    Notes
+    -----
+
+
+
     Examples
     --------
     >>> import astropy.units as u
