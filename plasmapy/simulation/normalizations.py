@@ -22,7 +22,8 @@ _velocity = u.get_physical_type(u.m / u.s)
 
 class MHDNormalizations(AbstractNormalizations):
     r"""
-    Normalizations commonly used for the equations of magnetohydrodynamics.
+    :term:`Normalizations` commonly used for the equations of
+    magnetohydrodynamics.
 
     Parameters
     ----------
@@ -63,12 +64,12 @@ class MHDNormalizations(AbstractNormalizations):
         self._get_number_density()
 
     def _get_length(self):
-        if _length not in self._quantities:
-            ...
+        if _length in self._quantities:
+            return
 
     def _get_magnetic_field(self):
         if _magnetic_field not in self._quantities:
-            ...
+            return
 
     def _get_number_density(self):
         if _number_density not in self._quantities:
@@ -111,9 +112,22 @@ class MHDNormalizations(AbstractNormalizations):
         self._process_quantities(quantities)
 
     @property
+    def acceleration(self) -> u.m * u.s**-2:
+        r"""
+        The acceleration :term:`normalization`,
+
+        .. math::
+
+           a_⭑ ≡ \frac{L_⭑}{t_⭑^2}.
+
+        Double check this fits in with MHD equations!
+
+        """
+
+    @property
     def current_density(self) -> u.A * u.m**-2:
         r"""
-        The current density normalization,
+        The current density :term:`normalization`,
 
         .. math::
 
@@ -126,15 +140,75 @@ class MHDNormalizations(AbstractNormalizations):
         return self.magnetic_field / (μ0 * self.length)
 
     @property
-    def electric_field(self) -> u.V / u.m:
+    def diffusivity(self) -> u.m**2 / u.s:
+        r"""
+        The diffusivity :term:`normalization`,
+
+        .. math:
+
+           D_⭑
+
+        Returns
+        -------
+        |Quantity|
         """
-        The electric field normalization,
+
+    @property
+    def dynamic_viscosity(self) -> u.Pa * u.s:
+        r"""
+        The dynamic viscosity :term:`normalization`,
 
         .. math::
 
-           E_⭑ ≡ V_⭑ B_⭑
+           _⭑ ≡
+
+        Returns
+        -------
+        |Quantity|
+        """
+
+    @property
+    def electric_field(self) -> u.V / u.m:
+        """
+        The electric field :term:`normalization`,
+
+        .. math::
+
+           E_⭑ ≡ V_⭑ B_⭑.
+
+        Returns
+        -------
+        |Quantity|
         """
         return self.velocity * self.magnetic_field
+
+    @property
+    def frequency(self) -> u.s**-1:
+        """
+        The frequency :term:`normalization`,
+
+        .. math::
+
+           f_⭑ ≡ t_⭑^{-1}.
+
+        Returns
+        -------
+        |Quantity|
+        """
+
+    @property
+    def heat_flux(self) -> u.J * u.m**-2 * u.s**-1:
+        r"""
+        The heat flux :term:`normalization`,
+
+        .. math::
+
+           _⭑ ≡
+
+        Returns
+        -------
+        |Quantity|
+        """
 
     @property
     def ion(self) -> Particle:
@@ -150,7 +224,7 @@ class MHDNormalizations(AbstractNormalizations):
     @property
     def length(self) -> u.m:
         r"""
-        The length normalization, :math:`L_⭑`\ .
+        The length :term:`normalization`, :math:`L_⭑`\ .
 
         Returns
         -------
@@ -161,7 +235,7 @@ class MHDNormalizations(AbstractNormalizations):
     @property
     def magnetic_field(self) -> u.T:
         r"""
-        The magnetic field normalization, :math:`B_⭑`\ .
+        The magnetic field :term:`normalization`, :math:`B_⭑`\ .
 
         Returns
         -------
@@ -170,9 +244,23 @@ class MHDNormalizations(AbstractNormalizations):
         return self._quantities[_magnetic_field]
 
     @property
+    def magnetic_flux(self) -> u.Wb:
+        r"""
+        The magnetic flux :term:`normalization`,
+
+        .. math::
+
+           _⭑ ≡
+
+        Returns
+        -------
+        |Quantity|
+        """
+
+    @property
     def mass(self) -> u.kg:
         r"""
-        The mass normalization,
+        The mass :term:`normalization`,
 
         .. math::
 
@@ -187,7 +275,7 @@ class MHDNormalizations(AbstractNormalizations):
     @property
     def mass_density(self) -> u.kg * u.m**-3:
         r"""
-        The mass density normalization, :math:`m_⭑=`\ ...
+        The mass density :term:`normalization`, :math:`m_⭑=`\ ...
 
         Returns
         -------
@@ -198,7 +286,7 @@ class MHDNormalizations(AbstractNormalizations):
     @property
     def number_density(self) -> u.m**-3:
         r"""
-        The number density normalization, :math:`n_⭑`\ .
+        The number density :term:`normalization`, :math:`n_⭑`\ .
 
         Returns
         -------
@@ -209,7 +297,7 @@ class MHDNormalizations(AbstractNormalizations):
     @property
     def pressure(self):
         r"""
-        The pressure normalization,
+        The pressure :term:`normalization`,
 
         .. math::
 
@@ -224,7 +312,7 @@ class MHDNormalizations(AbstractNormalizations):
     @property
     def resistivity(self) -> u.ohm * u.m:
         r"""
-        The resistivity normalization,
+        The resistivity :term:`normalization`,
 
         .. math::
 
@@ -239,7 +327,7 @@ class MHDNormalizations(AbstractNormalizations):
     @property
     def temperature(self) -> u.K:
         r"""
-        The temperature normalization,
+        The temperature :term:`normalization`,
 
         .. math::
 
@@ -252,9 +340,23 @@ class MHDNormalizations(AbstractNormalizations):
         return self.magnetic_field**2 / (k_B * μ0 * self.number_density)
 
     @property
+    def thermal_conduction(self) -> u.W * u.K**-1 * u.m**-1:
+        r"""
+        The thermal conduction :term:`normalization`,
+
+        .. math::
+
+           _⭑ ≡
+
+        Returns
+        -------
+        |Quantity|
+        """
+
+    @property
     def time(self) -> u.s:
         r"""
-        The time normalization,
+        The time :term:`normalization`,
 
         t_⭑ ≡ \frac{L_⭑}{V_⭑}.
 
@@ -267,7 +369,7 @@ class MHDNormalizations(AbstractNormalizations):
     @property
     def velocity(self) -> u.m / u.s:
         r"""
-        The velocity normalization,
+        The velocity :term:`normalization`,
 
         .. math::
 
@@ -278,3 +380,32 @@ class MHDNormalizations(AbstractNormalizations):
         |Quantity|
         """
         return Alfven_speed(B=self.magnetic_field, density=self.mass_density)
+
+    @property
+    def volumetric_heating_rate(self) -> u.J * u.m**-3 * u.s**-1:
+        r"""
+        The volumetric heating rate :term:`normalization`,
+
+        .. math::
+
+           _⭑ ≡
+
+        Returns
+        -------
+        |Quantity|
+
+        Notes
+        -----
+        This :term:`normalization` is applicable to, for example, the number of
+        collisions per unit volume per unit time.
+        """
+
+    @property
+    def wavenumber(self) -> u.m**-1:
+        r"""
+        The wavenumber :term:`normalization`,
+
+        .. math::
+
+           k_⭑ ≡ \frac{1}{L_⭑}
+        """
