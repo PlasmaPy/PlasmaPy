@@ -82,6 +82,25 @@ Glossary
       For further details, please refer to the :ref:`contributor guide's
       section on lite-functions <lite-functions>`.
 
+   normalization
+   normalizations
+      A numerical factor that is used to transform a physical
+      quantity into a dimensionless number and vice versa. For example,
+      using the sound speed as a normalization for velocity will provide
+      us with the `Mach number`_.
+
+      Normalizations are often employed to provide a convenient
+      reference value for the interpretation of data, to avoid
+      calculations between very large and very small numbers in
+      numerical simulations, and/or to simplify systems of equations for
+      analytical theory or numerical solution.
+
+      In PlasmaPy's documentation, a normalization is denoted with a
+      subscript :math:`⭑` and dimensionless quantities are denoted by a
+      tilde diacritic over the symbol. For example, in this equation for
+      the velocity :math:`V = V_⭑ Ṽ`\ , :math:`V_⭑` is the normalization
+      for velocity and :math:`Ṽ` is the dimensionless velocity.
+
    particle-like
       An `object` is *particle-like* if it is a |Particle| or
       |CustomParticle|, or can be cast into one.
@@ -166,4 +185,5 @@ Glossary
 .. |parameter| replace:: :term:`parameter`
 
 .. _`keyword arguments`: https://docs.python.org/3/glossary.html#term-argument
+.. _`mach number`: https://en.wikipedia.org/wiki/Mach_number
 .. _`positional arguments`: https://docs.python.org/3/glossary.html#term-argument
