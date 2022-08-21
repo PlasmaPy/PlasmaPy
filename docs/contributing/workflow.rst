@@ -14,6 +14,21 @@ and tests to PlasmaPy.
    Use the good first contribution label to find good issues to
    contribute to.
 
+Many ways to contribute
+=======================
+
+There are many ways to contribute to an open source project such as
+PlasmaPy beyond contributing code. You can create educational notebooks
+that introduce plasma concepts using PlasmaPy. You can
+
+* `Request new features`_.
+* `Report bugs`_.
+* Write tutorials on how to use different PlasmaPy features.
+* Create educational notebooks that introduce plasma concepts using PlasmaPy.
+* Improve the project's documentation.
+* Translate PlasmaPy's documentation into another language.
+* Organize events such as `Plasma Hack Week`_.
+
 Pre-requisites
 ==============
 
