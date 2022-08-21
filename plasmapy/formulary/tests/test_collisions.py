@@ -1732,26 +1732,79 @@ class TestCollisionFrequencies:
             u.Hz
         )
 
-    # TODO: Add more test value cases
+    # TODO: Add tests for interactions where x >> 0
     @pytest.mark.parametrize(
-        "expected_attribute_values, constructor_arguments, constructor_keyword_arguments",
+        "interaction_type, expected_attribute_values, constructor_arguments, constructor_keyword_arguments",
         [
             (
+                "e|e",
                 {
-                    "v_0": 2429740657174.494,
+                    "slowing_down": 5.8e-12,
+                    "transverse_diffusion": 5.8e-8,
+                    "parallel_diffusion": 2.9e-8,
+                    "energy_loss": -8.72e8,
                 },
                 (Particle("e-"), Particle("e-")),
                 {
-                    "T_a": 1e2 * u.eV,
-                    "T_b": 1e2 * u.eV,
+                    "T_a": 1 * u.eV,
+                    "T_b": 1e4 * u.eV,
+                    "n_b": 1e15 * u.cm**-3,
+                    "coulomb_log": 10 * u.dimensionless_unscaled,
+                },
+            ),
+            (
+                "e|i",
+                {
+                    "slowing_down": 2.5e-5,
+                    "transverse_diffusion": 1.2e-1,
+                    "parallel_diffusion": 5.7e-2,
+                    "energy_loss": -1.8e20,
+                },
+                (Particle("e-"), Particle("Na+")),
+                {
+                    "T_a": 1e-4 * u.eV,
+                    "T_b": 1e4 * u.eV,
                     "n_b": 1e20 * u.cm**-3,
-                    "coulomb_log": 6.2889877978064606 * u.dimensionless_unscaled,
+                    "coulomb_log": 10 * u.dimensionless_unscaled,
+                },
+            ),
+            (
+                "i|e",
+                {
+                    "slowing_down": 6.9e-14,
+                    "transverse_diffusion": 1.39e-11,
+                    "parallel_diffusion": 6.94e-12,
+                    "energy_loss": -2.1,
+                },
+                (Particle("Na+"), Particle("e-")),
+                {
+                    "T_a": 1 * u.eV,
+                    "T_b": 1e2 * u.eV,
+                    "n_b": 1e10 * u.cm**-3,
+                    "coulomb_log": 10 * u.dimensionless_unscaled,
+                },
+            ),
+            (
+                "i|i",
+                {
+                    "slowing_down": 4.4e-14,
+                    "transverse_diffusion": 3.5e-12,
+                    "parallel_diffusion": 1.75e-12,
+                    "energy_loss": -5.17e9,
+                },
+                (Particle("Na+"), Particle("Cl-")),
+                {
+                    "T_a": 1e2 * u.eV,
+                    "T_b": 1e4 * u.eV,
+                    "n_b": 1e20 * u.cm**-3,
+                    "coulomb_log": 10 * u.dimensionless_unscaled,
                 },
             ),
         ],
     )
-    def test_values(
+    def test_electron_electron_values(
         self,
+        interaction_type,
         expected_attribute_values,
         constructor_arguments,
         constructor_keyword_arguments,
@@ -1762,10 +1815,20 @@ class TestCollisionFrequencies:
             *constructor_arguments, **constructor_keyword_arguments
         )
 
-        for _, (name, expected_value) in enumerate(expected_attribute_values.items()):
-            calculated_value = getattr(value_test_case, name)
+        coulomb_density_constant = (
+            constructor_keyword_arguments["coulomb_log"].value
+            * constructor_keyword_arguments["n_b"].value
+        )
 
-            assert np.allclose(calculated_value.value, expected_value)
+        for _, (name, expected_value) in enumerate(expected_attribute_values.items()):
+            calculated_value = getattr(value_test_case, name).value
+
+            # We are able to lump these interactions together because we are using a species where Z = 1
+            if interaction_type in ["e|e", "e|i", "i|e", "i|i"]:
+                if name != "energy_loss":
+                    calculated_value = calculated_value / coulomb_density_constant
+
+            assert np.allclose(calculated_value, expected_value, rtol=5e-2, atol=0)
 
     @pytest.mark.parametrize(
         "expected_error, constructor_arguments, constructor_keyword_arguments",
