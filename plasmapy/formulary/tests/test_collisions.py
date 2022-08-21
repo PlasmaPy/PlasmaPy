@@ -1802,7 +1802,7 @@ class TestCollisionFrequencies:
             ),
         ],
     )
-    def test_electron_electron_values(
+    def test_return_values(
         self,
         interaction_type,
         expected_attribute_values,
