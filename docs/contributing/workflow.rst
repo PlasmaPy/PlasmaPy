@@ -1,8 +1,8 @@
 .. _how-to-contribute:
 
-=============================
-How to contribute to PlasmaPy
-=============================
+==========================
+Code Contribution Workflow
+==========================
 
 This page describes the workflow for contributing code, documentation,
 and tests to PlasmaPy.
@@ -61,6 +61,13 @@ contributing code to PlasmaPy, it is necessary to:
 Installing Python
 -----------------
 
+
+We recommend installing `Windows Subsystem for Linux`_.
+
+`Real Python`_ has a helpful guide on `setting up a Python coding
+environment on Windows`_ which uses Powershell_.
+
+.. _real python: https://realpython.com/python-coding-setup-windows/
 .. _Add a new SSH key to your GitHub account: https://docs.github.com/en/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account
 .. _install git: https://github.com/git-guides/install-git
 .. _sign up on GitHub: https://github.com/join
@@ -68,6 +75,7 @@ Installing Python
 .. _Unix commands: https://www.unixtutorial.org/basic-unix-commands
 .. _Unix shell: https://en.wikipedia.org/wiki/Unix_shell
 .. _Windows Subsystem for Linux: https://docs.microsoft.com/en-us/windows/wsl/install
+
 
 Setup
 =====
