@@ -2057,23 +2057,20 @@ class CollisionFrequencies:
         test_particle: particles.Particle,
         field_particle: particles.Particle,
         *,
-        v_a: u.cm / u.s = np.nan * u.cm / u.s,
-        T_a: u.K = np.nan * u.K,
+        v_a: u.cm / u.s = None,
+        T_a: u.K = None,
         n_b: u.cm**-3,
         T_b: u.K,
         coulomb_log: u.dimensionless_unscaled,
-        dx: float = 1e-15,
     ):
 
-        if np.any(np.logical_and(np.isnan(v_a), np.isnan(T_a))):
-            raise ValueError("Please specify either v_a or T_a.")
-
-        if np.any(np.logical_and(np.isfinite(v_a), np.isfinite(T_a))):
+        if v_a is None:
+            if T_a is not None:
+                v_a = thermal_speed(T_a, test_particle).to(u.cm / u.s)
+            else:
+                raise ValueError("Please specify either v_a or T_a.")
+        elif T_a is not None:
             raise ValueError("Please specify either v_a or T_a, not both.")
-
-        v_a = _replace_nan_velocity_with_thermal_velocity(
-            v_a, T_a, test_particle.mass, test_particle
-        ).to(u.cm / u.s)
 
         self.test_particle = test_particle
         self.field_particle = field_particle
@@ -2081,7 +2078,6 @@ class CollisionFrequencies:
         self.n_b = n_b
         self.T_b = T_b
         self.coulomb_log = coulomb_log
-        self.dx = dx
 
         x = self._x()
         phi = self._phi(x)
