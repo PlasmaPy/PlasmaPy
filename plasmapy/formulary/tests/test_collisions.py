@@ -1740,15 +1740,15 @@ class TestCollisionFrequencies:
         )
 
     @staticmethod
-    def get_limit_value(interaction_type, limit_type, frequencies):
+    def get_limit_value(interaction_type, limit_type, cases):
         """
         Get the limiting values for frequencies given the two particles interacting, and their frequencies class.
 
         These formulae are taken from page 31 of the NRL Formulary.
         """
 
-        T_a = (frequencies.T_a * k_B).to(u.eV).value
-        T_b = (frequencies.T_b * k_B).to(u.eV).value
+        T_a = (cases.T_a * k_B).to(u.eV).value
+        T_b = (cases.T_b * k_B).to(u.eV).value
 
         limit_values = []
 
@@ -1756,107 +1756,87 @@ class TestCollisionFrequencies:
             if limit_type == "slow":
                 limit_values.extend(
                     [
-                        5.8 * 10**-6 * T_b ** (-3 / 2),
-                        5.8 * 10**-6 * T_b ** (-1 / 2) * T_a ** (-1),
-                        2.9 * 10**-6 * T_b ** (-1 / 2) * T_a ** (-1),
+                        5.8e-6 * T_b ** (-1.5),
+                        5.8e-6 * T_b ** (-0.5) * T_a ** (-1),
+                        2.9e-6 * T_b ** (-0.5) * T_a ** (-1),
                     ]
                 )
             elif limit_type == "fast":
                 limit_values.extend(
                     [
-                        7.7 * 10**-6 * T_a ** (-3 / 2),
-                        7.7 * 10**-6 * T_a ** (-3 / 2),
-                        3.9 * 10**-6 * T_b * T_a ** (-5 / 2),
+                        7.7e-6 * T_a ** (-1.5),
+                        7.7e-6 * T_a ** (-1.5),
+                        3.9e-6 * T_b * T_a ** (-2.5),
                     ]
                 )
         elif interaction_type == "e|i":
-            mu = (frequencies.field_particle.mass / m_p).value
+            mu = (cases.field_particle.mass / m_p).value
 
             if limit_type == "slow":
                 limit_values.extend(
                     [
-                        0.23 * mu ** (3 / 2) * T_b ** (-3 / 2),
-                        2.5 * 10**-4 * mu ** (1 / 2) * T_b ** (-1 / 2) * T_a ** (-1),
-                        1.2 * 10**-4 * mu ** (1 / 2) * T_b ** (-1 / 2) * T_a ** (-1),
+                        0.23 * mu**1.5 * T_b**-1.5,
+                        2.5e-4 * mu**0.5 * T_b**-0.5 * T_a**-1,
+                        1.2e-4 * mu**0.5 * T_b**-0.5 * T_a**-1,
                     ]
                 )
             elif limit_type == "fast":
                 limit_values.extend(
                     [
-                        3.9 * 10**-6 * T_a ** (-3 / 2),
-                        7.7 * 10**-6 * T_a ** (-3 / 2),
-                        2.1 * 10**-9 * mu ** (-1) * T_b * T_a ** (-5 / 2),
+                        3.9e-6 * T_a**-1.5,
+                        7.7e-6 * T_a**-1.5,
+                        2.1e-9 * mu**-1 * T_b * T_a**-2.5,
                     ]
                 )
         elif interaction_type == "i|e":
-            mu = (frequencies.test_particle.mass / m_p).value
+            mu = (cases.test_particle.mass / m_p).value
 
             if limit_type == "slow":
                 limit_values.extend(
                     [
-                        1.6 * 10**-9 * mu ** (-1) * T_b ** (-3 / 2),
-                        3.2 * 10**-9 * mu ** (-1) * T_b ** (-1 / 2) * T_a ** (-1),
-                        1.6 * 10**-9 * mu ** (-1) * T_b ** (-1 / 2) * T_a ** (-1),
+                        1.6e-9 * mu**-1 * T_b ** (-1.5),
+                        3.2e-9 * mu**-1 * T_b ** (-0.5) * T_a**-1,
+                        1.6e-9 * mu**-1 * T_b ** (-0.5) * T_a**-1,
                     ]
                 )
             elif limit_type == "fast":
                 limit_values.extend(
                     [
-                        1.7 * 10**-4 * mu ** (1 / 2) * T_a ** (-3 / 2),
-                        1.8 * 10**-7 * mu ** (-1 / 2) * T_a ** (-3 / 2),
-                        1.7 * 10**-4 * mu ** (1 / 2) * T_b * T_a ** (-5 / 2),
+                        1.7e-4 * mu**0.5 * T_a**-1.5,
+                        1.8e-7 * mu**-0.5 * T_a**-1.5,
+                        1.7e-4 * mu**0.5 * T_b * T_a**-2.5,
                     ]
                 )
 
         elif interaction_type == "i|i":
-            mu = (frequencies.test_particle.mass / m_p).value
-            mu_prime = (frequencies.field_particle.mass / m_p).value
+            mu = (cases.test_particle.mass / m_p).value
+            mu_prime = (cases.field_particle.mass / m_p).value
 
             if limit_type == "slow":
                 limit_values.extend(
                     [
-                        6.8
-                        * 10**-8
-                        * mu_prime ** (1 / 2)
-                        * mu ** (-1)
-                        * (1 + mu_prime / mu) 
-                        * T_b ** (-3 / 2),
-                        1.4
-                        * 10**-7
-                        * mu_prime ** (1 / 2)
-                        * mu ** (-1)
-                        * T_b ** (-1 / 2)
-                        * T_a ** (-1),
-                        6.8
-                        * 10**-8
-                        * mu_prime ** (1 / 2)
-                        * mu ** (-1)
-                        * T_b ** (-1 / 2)
-                        * T_a ** (-1),
+                        6.8e-8
+                        * mu_prime**0.5
+                        * mu**-1
+                        * (1 + mu_prime / mu)
+                        * T_b**-1.5,
+                        1.4e-7 * mu_prime**0.5 * mu**-1 * T_b**-0.5 * T_a**-1,
+                        6.8e-8 * mu_prime**0.5 * mu**-1 * T_b**-0.5 * T_a**-1,
                     ]
                 )
             elif limit_type == "fast":
                 limit_values.extend(
                     [
-                        9
-                        * 10**-8
-                        * (1 / mu + 1 / mu_prime)
-                        * mu ** (1 / 2)
-                        * T_a ** (-3 / 2),
-                        1.8 * 10**-7 * mu ** (-1 / 2) * T_a ** (-3 / 2),
-                        9
-                        * 10**-8
-                        * mu ** (1 / 2)
-                        * mu_prime ** (-1)
-                        * T_b
-                        * T_a ** (-5 / 2),
+                        9e-8 * (1 / mu + 1 / mu_prime) * mu**0.5 * T_a**-1.5,
+                        1.8 * 10**-7 * mu**-0.5 * T_a**-1.5,
+                        9e-8 * mu**0.5 * mu_prime**-1 * T_b * T_a**-2.5,
                     ]
                 )
 
         limit_values.append(
-            2 * frequencies.slowing_down.value
-            - frequencies.transverse_diffusion.value
-            - frequencies.parallel_diffusion.value
+            2 * cases.slowing_down.value
+            - cases.transverse_diffusion.value
+            - cases.parallel_diffusion.value
         )
 
         return limit_values
@@ -1915,7 +1895,7 @@ class TestCollisionFrequencies:
                 "fast",
                 (Particle("e-"), Particle("e-")),
                 {
-                    "T_a": 1e2 * u.eV,
+                    "v_a": 6e8 * u.cm / u.s,
                     "T_b": 1e-1 * u.eV,
                     "n_b": 1e20 * u.cm**-3,
                     "Coulomb_log": 10 * u.dimensionless_unscaled,
@@ -1926,7 +1906,7 @@ class TestCollisionFrequencies:
                 "fast",
                 (Particle("e-"), Particle("Na+")),
                 {
-                    "T_a": 1e-4 * u.eV,
+                    "v_a": 6e5 * u.cm / u.s,
                     "T_b": 1e-3 * u.eV,
                     "n_b": 1e20 * u.cm**-3,
                     "Coulomb_log": 10 * u.dimensionless_unscaled,
@@ -1937,7 +1917,7 @@ class TestCollisionFrequencies:
                 "fast",
                 (Particle("Na+"), Particle("e-")),
                 {
-                    "T_a": 1e4 * u.eV,
+                    "v_a": 3e7 * u.cm / u.s,
                     "T_b": 1e-3 * u.eV,
                     "n_b": 1e20 * u.cm**-3,
                     "Coulomb_log": 10 * u.dimensionless_unscaled,
@@ -1948,7 +1928,7 @@ class TestCollisionFrequencies:
                 "fast",
                 (Particle("Na+"), Particle("Cl-")),
                 {
-                    "T_a": 1e4 * u.eV,
+                    "v_a": 3e7 * u.cm / u.s,
                     "T_b": 1e2 * u.eV,
                     "n_b": 1e20 * u.cm**-3,
                     "Coulomb_log": 10 * u.dimensionless_unscaled,
@@ -1971,7 +1951,7 @@ class TestCollisionFrequencies:
 
         coulomb_density_constant = (
             constructor_keyword_arguments["Coulomb_log"].value
-            * constructor_keyword_arguments["n_b"].value
+            * constructor_keyword_arguments["n_b"].to(u.cm**-3).value
         )
 
         expected_limit_values = self.get_limit_value(
@@ -1995,6 +1975,7 @@ class TestCollisionFrequencies:
     @pytest.mark.parametrize(
         "expected_error, constructor_arguments, constructor_keyword_arguments",
         [
+            # Both T_a and v_a specified error
             (
                 ValueError,
                 (Particle("e-"), Particle("e-")),
@@ -2006,6 +1987,7 @@ class TestCollisionFrequencies:
                     "Coulomb_log": 1 * u.dimensionless_unscaled,
                 },
             ),
+            # Neither T_a nor v_a specified error
             (
                 ValueError,
                 (Particle("e-"), Particle("e-")),
@@ -2040,7 +2022,7 @@ class TestCollisionFrequencies:
             },
         ],
     )
-    def test_handle_nparrays(self, constructor_keyword_arguments):
+    def test_handle_ndarrays(self, constructor_keyword_arguments):
         """Test for ability to handle numpy array quantities"""
 
         CollisionFrequencies(**constructor_keyword_arguments)
