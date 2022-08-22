@@ -2114,17 +2114,15 @@ class CollisionFrequencies:
         Examples
         --------
         >>> import astropy.units as u
-        >>> test_particle = Particle("e-")
-        >>> field_particle = Particle("e-")
         >>> T_a = 1 * u.eV
         >>> n_b = 1e20 * u.cm**-3
         >>> T_b = 1e3 * u.eV
         >>> Coulomb_log = 10 * u.dimensionless_unscaled
         >>> frequencies = CollisionFrequencies(
-        >>>     test_particle, field_particle, T_a=T_a, n_b=n_b, T_b=T_b, Coulomb_log=Coulomb_log
-        >>> )
+        ...     "e-", "e-", T_a=T_a, n_b=n_b, T_b=T_b, Coulomb_log=Coulomb_log
+        ... )
         >>> frequencies.slowing_down
-        <Quantity 183701431620.49692>
+        <Quantity 1.83701432e+11 Hz>
         """
 
         if v_a is None:
