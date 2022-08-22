@@ -2099,7 +2099,7 @@ class CollisionFrequencies:
 
         Notes
         -----
-        The collision frequencies between two interacting particles is given by four differential equations:
+        The collision frequencies between two interacting particles are given by four differential equations:
 
             slowing down - :math:`\frac{d\textbf{v}_{α}}{dt}=-ν_{s}^{α\backslashβ}\textbf{v}_{α}`
 
