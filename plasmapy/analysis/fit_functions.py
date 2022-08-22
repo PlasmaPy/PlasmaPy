@@ -73,10 +73,10 @@ class AbstractFitFunction(ABC):
 
         Parameters
         ----------
-        x: array_like
+        x: |array_like|
             Dependent variables.
 
-        x_err: array_like, optional
+        x_err: |array_like|, optional
             Errors associated with the independent variables ``x``.  Must be of
             size one or equal to the size of ``x``.
 
@@ -119,7 +119,7 @@ class AbstractFitFunction(ABC):
 
         Parameters
         ----------
-        x: array_like
+        x: |array_like|
             Independent variables to be passed to the fit function.
 
         *args: Tuple[Union[float, int],...]
@@ -176,10 +176,10 @@ class AbstractFitFunction(ABC):
         """
         Parameters
         ----------
-        x: array_like
+        x: |array_like|
             Independent variables to be passed to the fit function.
 
-        x_err: array_like, optional
+        x_err: |array_like|, optional
             Errors associated with the independent variables ``x``.  Must be of
             size one or equal to the size of ``x``.
 
@@ -427,11 +427,11 @@ class AbstractFitFunction(ABC):
 
         Parameters
         ----------
-        xdata: array_like
+        xdata: |array_like|
             The independent variable where data is measured.  Should be 1D of
             length M.
 
-        ydata: array_like
+        ydata: |array_like|
             The dependent data associated with ``xdata``.
 
         **kwargs
@@ -502,7 +502,7 @@ class Linear(AbstractFitFunction):
 
         Parameters
         ----------
-        x: array_like
+        x: |array_like|
             Independent variable.
 
         m: float
@@ -513,7 +513,7 @@ class Linear(AbstractFitFunction):
 
         Returns
         -------
-        y: array_like
+        y: |array_like|
             dependent variables corresponding to :math:`x`
 
         """
@@ -622,11 +622,11 @@ class Linear(AbstractFitFunction):
 
         Parameters
         ----------
-        xdata: array_like
+        xdata: |array_like|
             The independent variable where data is measured.  Should be 1D of
             length M.
 
-        ydata: array_like
+        ydata: |array_like|
             The dependent data associated with ``xdata``.
 
         **kwargs
@@ -690,7 +690,7 @@ class Exponential(AbstractFitFunction):
 
         Parameters
         ----------
-        x: array_like
+        x: |array_like|
             Independent variable.
 
         a: float
@@ -701,7 +701,7 @@ class Exponential(AbstractFitFunction):
 
         Returns
         -------
-        y: array_like
+        y: |array_like|
             dependent variables corresponding to ``x``
 
         """
@@ -849,7 +849,7 @@ class ExponentialPlusLinear(AbstractFitFunction):
 
         Parameters
         ----------
-        x: array_like
+        x: |array_like|
             Independent variable.
 
         a: float
@@ -866,7 +866,7 @@ class ExponentialPlusLinear(AbstractFitFunction):
 
         Returns
         -------
-        y: array_like
+        y: |array_like|
             dependent variables corresponding to ``x``
 
         """
@@ -989,7 +989,7 @@ class ExponentialPlusOffset(AbstractFitFunction):
 
         Parameters
         ----------
-        x: array_like
+        x: |array_like|
             Independent variable.
 
         a: float
@@ -1003,7 +1003,7 @@ class ExponentialPlusOffset(AbstractFitFunction):
 
         Returns
         -------
-        y: array_like
+        y: |array_like|
             dependent variables corresponding to ``x``
 
         """

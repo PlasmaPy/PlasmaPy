@@ -29,17 +29,29 @@ def test_Lorentz_factor():
         Lorentz_factor(3 * u.m / u.s) * u.dimensionless_unscaled
     ).unit == u.dimensionless_unscaled
 
-    with pytest.raises(RelativityError):
-        Lorentz_factor(1.0000000001 * c)
+    def test_lorentz_factor_nan_input():
+        assert np.isnan(Lorentz_factor(np.nan * u.m / u.s))
 
-    with pytest.raises(ValueError), pytest.warns(u.UnitsWarning):
-        Lorentz_factor(299792459)
+    def test_lorentz_factor_array_of_nans():
+        assert np.all(np.isnan(Lorentz_factor(np.array([np.nan, np.nan]) * u.m / u.s)))
 
-    with pytest.warns(u.UnitsWarning):
-        Lorentz_factor(2.2)
+    def test_lorentz_factor_nan_in_array():
+        numerical_result, nan_result = Lorentz_factor(np.array([1, np.nan]) * u.m / u.s)
+        assert np.isnan(nan_result)
+        assert not np.isnan(numerical_result)
 
-    with pytest.raises(u.UnitTypeError):
-        Lorentz_factor(4 * u.kg)
+    def test_lorentz_factor_exceptions():
+        with pytest.raises(RelativityError):
+            Lorentz_factor(1.0000000001 * c)
+
+        with pytest.raises(ValueError), pytest.warns(u.UnitsWarning):
+            Lorentz_factor(299792459)
+
+        with pytest.warns(u.UnitsWarning):
+            Lorentz_factor(2.2)
+
+        with pytest.raises(u.UnitTypeError):
+            Lorentz_factor(4 * u.kg)
 
 
 def test_relativistic_energy():

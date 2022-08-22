@@ -57,7 +57,7 @@ Example highlights
    :caption: Contributor Guide
 
    Overview <contributing/index>
-   contributing/code_guide
+   contributing/coding_guide
    contributing/changelog_guide
    contributing/doc_guide
    contributing/testing_guide
