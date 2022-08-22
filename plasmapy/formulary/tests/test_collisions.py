@@ -1732,15 +1732,15 @@ class TestCollisionFrequencies:
             u.Hz
         )
 
-    # TODO: Add tests for interactions where x >> 0
     @pytest.mark.parametrize(
         "interaction_type, expected_attribute_values, constructor_arguments, constructor_keyword_arguments",
         [
+            # Slow limit (x << 1)
             (
                 "e|e",
                 {
-                    "slowing_down": 5.8e-12,
-                    "transverse_diffusion": 5.8e-8,
+                    "slowing_down": 5.812e-12,
+                    "transverse_diffusion": 5.812e-8,
                     "parallel_diffusion": 2.9e-8,
                     "energy_loss": -8.72e8,
                 },
@@ -1757,7 +1757,7 @@ class TestCollisionFrequencies:
                 {
                     "slowing_down": 2.5e-5,
                     "transverse_diffusion": 1.2e-1,
-                    "parallel_diffusion": 5.7e-2,
+                    "parallel_diffusion": 5.9e-2,
                     "energy_loss": -1.8e20,
                 },
                 (Particle("e-"), Particle("Na+")),
@@ -1771,10 +1771,10 @@ class TestCollisionFrequencies:
             (
                 "i|e",
                 {
-                    "slowing_down": 6.9e-14,
+                    "slowing_down": 6.935e-14,
                     "transverse_diffusion": 1.39e-11,
                     "parallel_diffusion": 6.94e-12,
-                    "energy_loss": -2.1,
+                    "energy_loss": -2.07,
                 },
                 (Particle("Na+"), Particle("e-")),
                 {
@@ -1787,7 +1787,7 @@ class TestCollisionFrequencies:
             (
                 "i|i",
                 {
-                    "slowing_down": 4.4e-14,
+                    "slowing_down": 4.440e-14,
                     "transverse_diffusion": 3.5e-12,
                     "parallel_diffusion": 1.75e-12,
                     "energy_loss": -5.17e9,
@@ -1796,6 +1796,71 @@ class TestCollisionFrequencies:
                 {
                     "T_a": 1e2 * u.eV,
                     "T_b": 1e4 * u.eV,
+                    "n_b": 1e20 * u.cm**-3,
+                    "Coulomb_log": 10 * u.dimensionless_unscaled,
+                },
+            ),
+            # Fast limit (x >> 1)
+            (
+                "e|e",
+                {
+                    "slowing_down": 7.727e-9,
+                    "transverse_diffusion": 7.727e-9,
+                    "parallel_diffusion": 3.9e-12,
+                    "energy_loss": 7.727e12,
+                },
+                (Particle("e-"), Particle("e-")),
+                {
+                    "T_a": 1e2 * u.eV,
+                    "T_b": 1e-1 * u.eV,
+                    "n_b": 1e20 * u.cm**-3,
+                    "Coulomb_log": 10 * u.dimensionless_unscaled,
+                },
+            ),
+            (
+                "e|i",
+                {
+                    "slowing_down": 3.900,
+                    "transverse_diffusion": 7.700,
+                    "parallel_diffusion": 9.201e-4,
+                    "energy_loss": 1.844e17,
+                },
+                (Particle("e-"), Particle("Na+")),
+                {
+                    "T_a": 1e-4 * u.eV,
+                    "T_b": 1e-3 * u.eV,
+                    "n_b": 1e20 * u.cm**-3,
+                    "Coulomb_log": 10 * u.dimensionless_unscaled,
+                },
+            ),
+            (
+                "i|e",
+                {
+                    "slowing_down": 7.909e-10,
+                    "transverse_diffusion": 3.767e-14,
+                    "parallel_diffusion": 7.909e-17,
+                    "energy_loss": 1.582e12,
+                },
+                (Particle("Na+"), Particle("e-")),
+                {
+                    "T_a": 1e4 * u.eV,
+                    "T_b": 1e-3 * u.eV,
+                    "n_b": 1e20 * u.cm**-3,
+                    "Coulomb_log": 10 * u.dimensionless_unscaled,
+                },
+            ),
+            (
+                "i|i",
+                {
+                    "slowing_down": 3.101e-14,
+                    "transverse_diffusion": 3.768e-14,
+                    "parallel_diffusion": 1.222e-16,
+                    "energy_loss": 2.448e7,
+                },
+                (Particle("Na+"), Particle("Cl-")),
+                {
+                    "T_a": 1e4 * u.eV,
+                    "T_b": 1e2 * u.eV,
                     "n_b": 1e20 * u.cm**-3,
                     "Coulomb_log": 10 * u.dimensionless_unscaled,
                 },
@@ -1828,7 +1893,7 @@ class TestCollisionFrequencies:
                 if name != "energy_loss":
                     calculated_value = calculated_value / coulomb_density_constant
 
-            assert np.allclose(calculated_value, expected_value, rtol=5e-2, atol=0)
+            assert np.allclose(calculated_value, expected_value, rtol=1e-2, atol=0)
 
     @pytest.mark.parametrize(
         "expected_error, constructor_arguments, constructor_keyword_arguments",

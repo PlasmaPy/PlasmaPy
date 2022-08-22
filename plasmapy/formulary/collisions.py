@@ -2111,6 +2111,8 @@ class CollisionFrequencies:
 
         For general solutions and limiting cases we encourage the curious reader to refer to p. 31 of :cite:t:`nrlformulary:2019`
 
+        This function uses CGS units under the hood to coincide with our references, but passing MKS units is acceptable.
+
         Examples
         --------
         >>> import astropy.units as u
@@ -2123,11 +2125,18 @@ class CollisionFrequencies:
         ... )
         >>> frequencies.slowing_down
         <Quantity 1.83701432e+11 Hz>
+
+        See Also
+        --------
+        ~plasmapy.formulary.collisions.Coulomb_log : Evaluates the Coulomb
+            logarithm for two interacting electron species.
+
+        ~plasmapy.formulary.collisions.collision_frequency : The Lorentz collision frequency.
         """
 
         if v_a is None:
             if T_a is not None:
-                v_a = thermal_speed(T_a, test_particle).to(u.cm / u.s)
+                v_a = thermal_speed(T_a, test_particle)  # .to(u.cm / u.s)
             else:
                 raise ValueError("Please specify either v_a or T_a.")
         elif T_a is not None:
