@@ -40,6 +40,7 @@ These include:
 * `~plasmapy.formulary.collisions.coupling_parameter`
 """
 __all__ = [
+    "CollisionFrequencies",
     "Coulomb_logarithm",
     "impact_parameter_perp",
     "impact_parameter",
@@ -52,7 +53,6 @@ __all__ = [
     "mobility",
     "Knudsen_number",
     "coupling_parameter",
-    "CollisionFrequencies",
 ]
 
 import astropy.units as u
