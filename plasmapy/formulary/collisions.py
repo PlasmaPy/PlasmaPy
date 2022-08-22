@@ -2145,6 +2145,11 @@ class CollisionFrequencies:
         self.test_particle = test_particle
         self.field_particle = field_particle
         self.v_a = v_a
+        self.T_a = (
+            T_a
+            if T_a is not None
+            else (0.5 * test_particle.mass.to(u.g) * v_a**2 / k_B).to(u.K)
+        )
         self.n_b = n_b
         self.T_b = T_b
         self.Coulomb_log = Coulomb_log
@@ -2155,13 +2160,29 @@ class CollisionFrequencies:
 
         mass_ratio = test_particle.mass / field_particle.mass
 
-        self.v_0 = self.v_0()
+        self.v_0 = self.Lorentz_collision_frequency()
         self.slowing_down = (1 + mass_ratio) * phi * self.v_0
         self.transverse_diffusion = 2 * ((1 - 1 / (2 * x)) * phi + phi_prime) * self.v_0
         self.parallel_diffusion = (phi / x) * self.v_0
         self.energy_loss = 2 * (mass_ratio * phi - phi_prime) * self.v_0
 
-    def v_0(self):
+    def Lorentz_collision_frequency(self):
+        r"""
+        The Lorentz collision frequency (see Ch. 5 of :cite:t:`chen:2016`) is given
+        by
+
+        .. math::
+
+            ν = n σ v \ln{Λ}
+
+        where :math:`n` is the particle density, :math:`σ` is the
+        collisional cross-section, :math:`v` is the inter-particle velocity
+        (typically taken as the thermal velocity), and :math:`\ln{Λ}` is the
+        Coulomb logarithm accounting for small angle collisions.
+
+        See Equation (2.14) in :cite:t:`callen:unpublished`.
+        """
+
         return (
             4
             * np.pi
