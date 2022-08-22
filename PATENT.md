@@ -1,6 +1,8 @@
 # Patent grant
 
-Subject to the terms and conditions of this license, each copyright
+[license]: ./LICENSE.md
+
+Subject to the terms and conditions of this [license], each copyright
 holder and contributor hereby grants to those receiving rights under
 this license a perpetual, worldwide, non-exclusive, no-charge,
 royalty-free, irrevocable (except for failure to satisfy the
