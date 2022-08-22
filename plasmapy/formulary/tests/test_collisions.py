@@ -1825,7 +1825,7 @@ class TestCollisionFrequencies:
                         9e-8 * mu**0.5 * mu_prime**-1 * T_b * T_a**-2.5,
                     ]
                 )
-
+# The expected energy loss collision frequency should always equal this
         limit_values.append(
             2 * cases.slowing_down.value
             - cases.transverse_diffusion.value
