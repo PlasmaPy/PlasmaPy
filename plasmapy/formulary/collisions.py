@@ -2080,7 +2080,7 @@ class CollisionFrequencies:
             :math:`μ` is the reduced mass.
 
         T_a : `~astropy.units.Quantity`, optional
-            The temperature of the test species. Only necessary if `v_a` is not provided.
+            The temperature of the test species. Only necessary if :math:`v_a` is not provided.
 
         n_b : `~astropy.units.Quantity`
             The number density of the background field particles.
@@ -2094,8 +2094,8 @@ class CollisionFrequencies:
         Raises
         ------
         `ValueError`
-            If both `v_a` and `T_a` are specified, or neither
-            `v_a` nor `T_a` are specified.
+            If both :math:`v_a` and :math:`T_a` are specified, or neither
+            :math:`v_a` nor :math:`T_a` are specified.
 
         Notes
         -----
