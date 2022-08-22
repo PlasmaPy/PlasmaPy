@@ -144,6 +144,8 @@ Coding guidelines
      >>> function()
      ['x', 'x']
 
+* Use `pathlib` when working with paths to data files.
+
 Names
 =====
 
