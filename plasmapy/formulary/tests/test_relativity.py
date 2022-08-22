@@ -45,17 +45,17 @@ def test_Lorentz_factor():
 
 
     def test_lorentz_factor_exceptions():
-    with pytest.raises(RelativityError):
-        Lorentz_factor(1.0000000001 * c)
+        with pytest.raises(RelativityError):
+            Lorentz_factor(1.0000000001 * c)
 
-    with pytest.raises(ValueError), pytest.warns(u.UnitsWarning):
-        Lorentz_factor(299792459)
+        with pytest.raises(ValueError), pytest.warns(u.UnitsWarning):
+            Lorentz_factor(299792459)
 
-    with pytest.warns(u.UnitsWarning):
-        Lorentz_factor(2.2)
+        with pytest.warns(u.UnitsWarning):
+            Lorentz_factor(2.2)
 
-    with pytest.raises(u.UnitTypeError):
-        Lorentz_factor(4 * u.kg)
+        with pytest.raises(u.UnitTypeError):
+            Lorentz_factor(4 * u.kg)
 
 
 def test_relativistic_energy():
