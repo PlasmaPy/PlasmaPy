@@ -2033,7 +2033,7 @@ class TestCollisionFrequencies:
             zip(self.return_values_to_test, expected_limit_values)
         ):
             calculated_limit_value = getattr(value_test_case, attribute_name).value
-
+# Energy loss limit value is already in units of frequencies because of the way it is calculated
             if attribute_name != "energy_loss":
                 calculated_limit_value = calculated_limit_value / (
                     coulomb_density_constant * charge_constant
