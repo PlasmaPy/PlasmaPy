@@ -279,7 +279,7 @@ def hirose(
     D = ((kv * c_si_unitless) / omega_pi) ** 2
 
     # Polynomial coefficients: c3*x^6 + c2*x^4 + c1*x^2 + c0
-    c3 = A**0
+    c3 = np.ones_like(A)
     c2 = -A * (1 + D) - B - C
     c1 = A * (2 * B + C + B * D)
     c0 = -B * A**2
