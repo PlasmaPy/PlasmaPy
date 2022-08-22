@@ -1868,6 +1868,17 @@ class TestCollisionFrequencies:
                 },
             ),
             (
+                "e|i",
+                "slow",
+                (Particle("e-"), Particle("Ba 2+")),
+                {
+                    "T_a": 1e-4 * u.eV,
+                    "T_b": 1e4 * u.eV,
+                    "n_b": 1e20 * u.cm**-3,
+                    "Coulomb_log": 10 * u.dimensionless_unscaled,
+                },
+            ),
+            (
                 "i|e",
                 "slow",
                 (Particle("Na+"), Particle("e-")),
@@ -1879,9 +1890,31 @@ class TestCollisionFrequencies:
                 },
             ),
             (
+                "i|e",
+                "slow",
+                (Particle("Be 2+"), Particle("e-")),
+                {
+                    "T_a": 1 * u.eV,
+                    "T_b": 1e2 * u.eV,
+                    "n_b": 1e10 * u.cm**-3,
+                    "Coulomb_log": 10 * u.dimensionless_unscaled,
+                },
+            ),
+            (
                 "i|i",
                 "slow",
                 (Particle("Na+"), Particle("Cl-")),
+                {
+                    "T_a": 1e2 * u.eV,
+                    "T_b": 1e4 * u.eV,
+                    "n_b": 1e20 * u.cm**-3,
+                    "Coulomb_log": 10 * u.dimensionless_unscaled,
+                },
+            ),
+            (
+                "i|i",
+                "slow",
+                (Particle("Na+"), Particle("S 2-")),
                 {
                     "T_a": 1e2 * u.eV,
                     "T_b": 1e4 * u.eV,
@@ -1913,6 +1946,17 @@ class TestCollisionFrequencies:
                 },
             ),
             (
+                "e|i",
+                "fast",
+                (Particle("e-"), Particle("Zn 2+")),
+                {
+                    "v_a": 6e5 * u.cm / u.s,
+                    "T_b": 1e-3 * u.eV,
+                    "n_b": 1e20 * u.cm**-3,
+                    "Coulomb_log": 10 * u.dimensionless_unscaled,
+                },
+            ),
+            (
                 "i|e",
                 "fast",
                 (Particle("Na+"), Particle("e-")),
@@ -1924,9 +1968,31 @@ class TestCollisionFrequencies:
                 },
             ),
             (
+                "i|e",
+                "fast",
+                (Particle("Ca 2+"), Particle("e-")),
+                {
+                    "v_a": 3e7 * u.cm / u.s,
+                    "T_b": 1e-3 * u.eV,
+                    "n_b": 1e20 * u.cm**-3,
+                    "Coulomb_log": 10 * u.dimensionless_unscaled,
+                },
+            ),
+            (
                 "i|i",
                 "fast",
                 (Particle("Na+"), Particle("Cl-")),
+                {
+                    "v_a": 3e7 * u.cm / u.s,
+                    "T_b": 1e2 * u.eV,
+                    "n_b": 1e20 * u.cm**-3,
+                    "Coulomb_log": 10 * u.dimensionless_unscaled,
+                },
+            ),
+            (
+                "i|i",
+                "fast",
+                (Particle("Be 2+"), Particle("Cl-")),
                 {
                     "v_a": 3e7 * u.cm / u.s,
                     "T_b": 1e2 * u.eV,
@@ -1958,14 +2024,26 @@ class TestCollisionFrequencies:
             interaction_type, limit_type, value_test_case
         )
 
+        if interaction_type == "e|e":
+            charge_constant = 1
+        elif interaction_type == "e|i":
+            charge_constant = value_test_case.field_particle.charge_number**2
+        elif interaction_type == "i|e":
+            charge_constant = value_test_case.test_particle.charge_number**2
+        elif interaction_type == "i|i":
+            charge_constant = (
+                value_test_case.test_particle.charge_number
+                * value_test_case.field_particle.charge_number
+            ) ** 2
+
         for i, (attribute_name, expected_limit_value) in enumerate(
             zip(self.return_values_to_test, expected_limit_values)
         ):
             calculated_limit_value = getattr(value_test_case, attribute_name).value
 
             if attribute_name != "energy_loss":
-                calculated_limit_value = (
-                    calculated_limit_value / coulomb_density_constant
+                calculated_limit_value = calculated_limit_value / (
+                    coulomb_density_constant * charge_constant
                 )
 
             assert np.allclose(
