@@ -1819,7 +1819,7 @@ class TestCollisionFrequencies:
                         * 10**-8
                         * mu_prime ** (1 / 2)
                         * mu ** (-1)
-                        * (1 + mu_prime / mu) ** (-1 / 2)
+                        * (1 + mu_prime / mu) 
                         * T_b ** (-3 / 2),
                         1.4
                         * 10**-7
