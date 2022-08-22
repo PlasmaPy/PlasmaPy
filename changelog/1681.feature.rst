@@ -1,2 +1,2 @@
-Allowed for `~plasmapy.formulary.relativity.Lorentz_factor` to accept 
+Allowed for `~plasmapy.formulary.relativity.Lorentz_factor` to accept
 and return |nan| values.
