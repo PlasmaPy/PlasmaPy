@@ -4,6 +4,14 @@
 Documentation Guide
 *******************
 
+.. contents:: Table of Contents
+   :depth: 2
+   :local:
+   :backlinks: none
+
+Introduction
+============
+
 Documentation that is up-to-date and understandable is vital to the
 health of a software project. This page describes the documentation
 requirements and guidelines to be followed during the development of
@@ -554,7 +562,7 @@ Here is an example docstring in the numpydoc_ format:
 
       Returns
       -------
-      difference : float
+      float
           The difference between ``a`` and ``b``.
 
       Raises
@@ -938,6 +946,74 @@ Docstring guidelines
   derivations and extensive discussions of mathematics in the "Notes"
   section.
 
+* Describe each :term:`parameter` in the "Parameters_" section of the
+  docstring.
+
+  .. code-block:: rst
+
+     Parameters
+     ----------
+     x : float
+        Description of ``x``.
+
+     y : bool, optional, default: True
+        Description of ``y``.
+
+  * Place type information to the right of the parameter name, along
+    with ``optional`` and/or ``keyword-only`` if necessary.
+
+  * Describe any requirements for the parameter, including preconditions
+    specified using |validate_quantities| or |particle_input|.
+
+  * Use the substitution ``|array_like|`` to indicate that an argument
+    should be able to be converted into an |ndarray|.
+
+  * If the shapes and sizes of the parameters are interrelated, then
+    include that information in parentheses immediately before the type
+    information. Include a trailing comma inside the parentheses when
+    the parameter is 1D.
+
+    .. code-block:: rst
+
+       Parameters
+       ----------
+       a : (M,) array_like
+           First input vector.
+
+       b : (N,) array_like
+           Second input vector.
+
+       out : (M, N) ndarray, optional
+           A location where the result is stored.
+
+    Use an asterisk (``*``) for a dimension that can be of arbitrary
+    size, and an ellipsis (``...``) to represent an arbitrary number of
+    dimensions that can each be of arbitrary size.
+
+* Docstrings may include a "Raises_" section that describes which
+  exceptions get raised and under what conditions, and a "Warns_"
+  section that describes which warnings will be issued and for what
+  reasons.
+
+  * The "Raises_" and "Warns_" sections should only include exceptions
+    and warnings that are not obvious or have a high probability of
+    occurring. For example, the "Raises_" section should usually not
+    include a `TypeError` for when an :term:`argument` is not of the
+    type that is listed in the "Parameters_" section of the docstring.
+
+  * The "Raises_" section should include all exceptions that could
+    reasonably be expected to require exception handling.
+
+  * The "Raises_" section should be more complete for functionality that
+    is frequently used (e.g., |Particle|).
+
+  * The "Raises_" and "Warns_" sections should typically only include
+    exceptions and warnings that are raised or issued by the function
+    itself. Exceptions and warnings from commonly used decorators like
+    |validate_quantities| and |particle_input| should usually not be
+    included in these sections, but may be included if there is
+    strong justification to do so.
+
 * Private code objects (e.g., code objects that begin with a single
   underscore, like ``_private_object``) should have docstrings. A
   docstring for a private code object may be a single line, and
@@ -1036,9 +1112,12 @@ Narrative documentation guidelines
 .. _doctests: https://docs.pytest.org/en/6.2.x/doctest.html
 .. _nested inline markup: https://docutils.sphinx-users.jp/docutils/docs/dev/rst/alternatives.html#nested-inline-markup
 .. _options to sphinx-build: https://www.sphinx-doc.org/en/master/man/sphinx-build.html#options
+.. _parameters: https://numpydoc.readthedocs.io/en/latest/format.html#parameters
 .. _raise an issue: https://github.com/PlasmaPy/PlasmaPy/issues/new?title=Improve+documentation+for...&labels=Documentation
+.. _raises: https://numpydoc.readthedocs.io/en/latest/format.html#raises
 .. _raw string: https://docs.python.org/3/reference/lexical_analysis.html#literals
 .. _Read the Docs Sphinx Theme: https://sphinx-rtd-theme.readthedocs.io
 .. _Sphinx's glossary: https://www.sphinx-doc.org/en/master/glossary.html
 .. _Sphinx's templating page: https://www.sphinx-doc.org/en/master/templating.html
 .. _style overrides: https://docs.readthedocs.io/en/stable/guides/adding-custom-css.html
+.. _warns: https://numpydoc.readthedocs.io/en/latest/format.html#warns

@@ -4,6 +4,14 @@
 Release Guide
 *************
 
+.. contents:: Table of Contents
+   :depth: 2
+   :local:
+   :backlinks: none
+
+Introduction
+------------
+
 This document describes the procedure for making a release of PlasmaPy.
 Developers should revise and expand these instructions while performing
 each release, and may refer to `Astropy's release procedures`_ for
