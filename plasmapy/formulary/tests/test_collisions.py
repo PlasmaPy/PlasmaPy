@@ -1711,7 +1711,7 @@ class TestCollisionFrequencies:
         v_a=1 * u.m / u.s,
         T_b=1 * u.K,
         n_b=1 * u.m**-3,
-        coulomb_log=1 * u.dimensionless_unscaled,
+        Coulomb_log=1 * u.dimensionless_unscaled,
     )
 
     attributes_to_test = [
@@ -1749,7 +1749,7 @@ class TestCollisionFrequencies:
                     "T_a": 1 * u.eV,
                     "T_b": 1e4 * u.eV,
                     "n_b": 1e15 * u.cm**-3,
-                    "coulomb_log": 10 * u.dimensionless_unscaled,
+                    "Coulomb_log": 10 * u.dimensionless_unscaled,
                 },
             ),
             (
@@ -1765,7 +1765,7 @@ class TestCollisionFrequencies:
                     "T_a": 1e-4 * u.eV,
                     "T_b": 1e4 * u.eV,
                     "n_b": 1e20 * u.cm**-3,
-                    "coulomb_log": 10 * u.dimensionless_unscaled,
+                    "Coulomb_log": 10 * u.dimensionless_unscaled,
                 },
             ),
             (
@@ -1781,7 +1781,7 @@ class TestCollisionFrequencies:
                     "T_a": 1 * u.eV,
                     "T_b": 1e2 * u.eV,
                     "n_b": 1e10 * u.cm**-3,
-                    "coulomb_log": 10 * u.dimensionless_unscaled,
+                    "Coulomb_log": 10 * u.dimensionless_unscaled,
                 },
             ),
             (
@@ -1797,7 +1797,7 @@ class TestCollisionFrequencies:
                     "T_a": 1e2 * u.eV,
                     "T_b": 1e4 * u.eV,
                     "n_b": 1e20 * u.cm**-3,
-                    "coulomb_log": 10 * u.dimensionless_unscaled,
+                    "Coulomb_log": 10 * u.dimensionless_unscaled,
                 },
             ),
         ],
@@ -1816,7 +1816,7 @@ class TestCollisionFrequencies:
         )
 
         coulomb_density_constant = (
-            constructor_keyword_arguments["coulomb_log"].value
+            constructor_keyword_arguments["Coulomb_log"].value
             * constructor_keyword_arguments["n_b"].value
         )
 
@@ -1841,7 +1841,7 @@ class TestCollisionFrequencies:
                     "T_a": 1 * u.eV,
                     "T_b": 1 * u.eV,
                     "n_b": 1 * u.cm**-3,
-                    "coulomb_log": 1 * u.dimensionless_unscaled,
+                    "Coulomb_log": 1 * u.dimensionless_unscaled,
                 },
             ),
             (
@@ -1850,7 +1850,7 @@ class TestCollisionFrequencies:
                 {
                     "T_b": 1 * u.eV,
                     "n_b": 1 * u.cm**-3,
-                    "coulomb_log": 1 * u.dimensionless_unscaled,
+                    "Coulomb_log": 1 * u.dimensionless_unscaled,
                 },
             ),
         ],
@@ -1874,7 +1874,7 @@ class TestCollisionFrequencies:
                 "T_a": ones_array * u.eV,
                 "T_b": ones_array * u.eV,
                 "n_b": ones_array * u.cm**-3,
-                "coulomb_log": ones_array * u.dimensionless_unscaled,
+                "Coulomb_log": ones_array * u.dimensionless_unscaled,
             },
         ],
     )

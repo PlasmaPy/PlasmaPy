@@ -2061,8 +2061,71 @@ class CollisionFrequencies:
         T_a: u.K = None,
         n_b: u.cm**-3,
         T_b: u.K,
-        coulomb_log: u.dimensionless_unscaled,
+        Coulomb_log: u.dimensionless_unscaled,
     ):
+        r"""
+        Compute collision frequencies
+
+        Parameters
+        ----------
+        test_particle : |Particle|
+            The test particle streaming through a background of field particles.
+
+        field_particle : |Particle|
+            The background particle being interacted with.
+
+        v_a : `~astropy.units.Quantity`, optional
+            The relative velocity between particles. If not provided,
+            thermal velocity is assumed: :math:`μ v_a^2 \sim 2 k_B T_a` where
+            :math:`μ` is the reduced mass.
+
+        T_a : `~astropy.units.Quantity`, optional
+            The temperature of the test species. Only necessary if `v_a` is not provided.
+
+        n_b : `~astropy.units.Quantity`
+            The number density of the background field particles.
+
+        T_b : `~astropy.units.Quantity`
+            The temperature of the background field particles.
+
+        Coulomb_log : `~astropy.units.Quantity`
+            The value of the Coulomb logarithm evaluated for the two interacting particles.
+
+        Raises
+        ------
+        `ValueError`
+            If both `v_a` and `T_a` are specified, or neither
+            `v_a` nor `T_a` are specified.
+
+        Notes
+        -----
+        The collision frequencies between two interacting particles is given by four differential equations:
+
+            slowing down - :math:`\frac{d\textbf{v}_{α}}{dt}=-ν_{s}^{α\backslashβ}\textbf{v}_{α}`
+
+            transverse diffusion - :math:`\frac{d}{dt}\left(\overline{\textbf{v}}_{α}-\overline{\textbf{v}}_{α}\right)_{⊥}^{2}=ν_{⊥}^{α\backslashβ}v_{α}^{2}`
+
+            parallel diffusion - :math:`\frac{d}{dt}\left(\overline{\textbf{v}}_{α}-\overline{\textbf{v}}_{α}\right)_{∥}^{2}=ν_{∥}^{α\backslashβ}v_{α}^{2}`
+
+            energy loss - :math:`\frac{d}{dt}v_{α}^{2}=-ν_{ϵ}^{α\backslashβ}v_{α}^{2}`
+
+        For general solutions and limiting cases we encourage the curious reader to refer to p. 31 of :cite:t:`nrlformulary:2019`
+
+        Examples
+        --------
+        >>> import astropy.units as u
+        >>> test_particle = Particle("e-")
+        >>> field_particle = Particle("e-")
+        >>> T_a = 1 * u.eV
+        >>> n_b = 1e20 * u.cm**-3
+        >>> T_b = 1e3 * u.eV
+        >>> Coulomb_log = 10 * u.dimensionless_unscaled
+        >>> frequencies = CollisionFrequencies(
+        >>>     test_particle, field_particle, T_a=T_a, n_b=n_b, T_b=T_b, Coulomb_log=Coulomb_log
+        >>> )
+        >>> frequencies.slowing_down
+        <Quantity 183701431620.49692>
+        """
 
         if v_a is None:
             if T_a is not None:
@@ -2077,7 +2140,7 @@ class CollisionFrequencies:
         self.v_a = v_a
         self.n_b = n_b
         self.T_b = T_b
-        self.coulomb_log = coulomb_log
+        self.Coulomb_log = Coulomb_log
 
         x = self._x()
         phi = self._phi(x)
@@ -2097,7 +2160,7 @@ class CollisionFrequencies:
             * np.pi
             * (self.test_particle.charge_number * e.esu) ** 2
             * (self.field_particle.charge_number * e.esu) ** 2
-            * self.coulomb_log
+            * self.Coulomb_log
             * self.n_b
             / (self.test_particle.mass.to(u.g) ** 2 * self.v_a**3)
         ).to(u.Hz)
