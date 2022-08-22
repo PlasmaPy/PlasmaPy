@@ -1719,15 +1719,8 @@ class TestCollisionFrequencies:
         "transverse_diffusion",
         "parallel_diffusion",
         "energy_loss",
-        "v_0",
     ]
-
-    return_values_to_test = [
-        "slowing_down",
-        "transverse_diffusion",
-        "parallel_diffusion",
-        "energy_loss",
-    ]
+    return_values_to_test = attributes_to_test + ["v_0",]
 
     ones_array = np.ones(5)
 
