@@ -9,7 +9,7 @@ import numpy as np
 import warnings
 
 from astropy.constants.si import c
-from typing import Union
+from typing import Optional, Union
 
 from plasmapy.formulary.frequencies import gyrofrequency, plasma_frequency
 from plasmapy.formulary.speeds import Alfven_speed, ion_sound_speed
@@ -34,9 +34,9 @@ def hirose(
     n_i: u.m**-3,
     T_e: u.K,
     theta: u.rad,
-    gamma_e: Union[float, int] = 1,
-    gamma_i: Union[float, int] = 3,
-    z_mean: Union[float, int] = None,
+    gamma_e: Optional[float, int] = 1,
+    gamma_i: Optional[float, int] = 3,
+    z_mean: Optional[float, int] = None,
     **kwargs,
 ):
 
@@ -51,10 +51,10 @@ def hirose(
     B : `~astropy.units.Quantity`
         The magnetic field magnitude in units convertible to T.
     ion : `str` or `~plasmapy.particles.particle_class.Particle`
-        Representation of the ion species (e.g., ``'p'`` for protons, ``'D+'``
-        for deuterium, ``'He-4 +1'`` for singly ionized helium-4, etc.). If no
-        charge state information is provided, then the ions are assumed to be
-        singly ionized.
+        Representation of the ion species (e.g., ``"p"`` for protons,
+        ``"D+"`` for deuterium, ``"He-4 +1"`` for singly ionized
+        helium-4, etc.). If no charge state information is provided,
+        then the ions are assumed to be singly ionized.
     k : `~astropy.units.Quantity`, single valued or 1-D array
         Wavenumber in units convertible to rad/m.  Either single
         valued or 1-D array of length :math:`N`.
@@ -71,19 +71,19 @@ def hirose(
         The adiabatic index for electrons, which defaults to 1.  This
         value assumes that the electrons are able to equalize their
         temperature rapidly enough that the electrons are effectively
-        isothermal.
+        isothermal.  (DEFAULT ``1``)
     gamma_i : `float` or `int`, optional
         The adiabatic index for ions, which defaults to 3. This value
         assumes that ion motion has only one degree of freedom, namely
-        along magnetic field lines.
+        along magnetic field lines.  (DEFAULT ``3``)
     z_mean : `float` or int, optional
         The average ionization state (arithmetic mean) of the ``ion``
         composing the plasma.  Will override any charge state defined
-        by argument ``ion``.
+        by argument ``ion``.  (DEFAULT `None`)
 
     Returns
     -------
-    omega : Dict[str, `~astropy.units.Quantity`]
+    omega : Dict[`str`, `~astropy.units.Quantity`]
         A dictionary of computed wave frequencies in units rad/s.  The
         dictionary contains three keys: ``'fast_mode'`` for the fast
         mode, ``'alfven_mode'`` for the Alfvén mode, and
@@ -101,7 +101,7 @@ def hirose(
         `~plasmapy.particles.particle_class.Particle`.
 
     TypeError
-        If ``gamma_e``, ``gamma_i``, or``z_mean`` are not of type `int`
+        If ``gamma_e``, ``gamma_i``, or ``z_mean`` are not of type `int`
         or `float`.
 
     ~astropy.units.UnitTypeError
@@ -119,7 +119,7 @@ def hirose(
 
     ValueError
         If ``B``, ``n_i``, or ``T_e`` are not single valued
-        `astropy.units.Quantity` (i.e. an array).
+        `astropy.units.Quantity`.
 
     ValueError
         If ``k`` or ``theta`` are not single valued or a 1-D array.
@@ -163,7 +163,7 @@ def hirose(
     Examples
     --------
     >>> from astropy import units as u
-    >>> from plasmapy.dispersion.numerical import hirose_
+    >>> from plasmapy.dispersion.numerical import hirose
     >>> inputs = {
     ...    "k": np.logspace(-7,-2,2) * u.rad / u.m,
     ...    "theta": 30 * u.deg,
@@ -195,7 +195,8 @@ def hirose(
         try:
             z_mean = abs(ion.charge_number)
         except ChargeError:
-            z_mean = 1
+            ion.ionize(n=1, inplace=True)
+            z_mean = abs(ion.charge_number)
     else:
         if not isinstance(z_mean, (int, np.integer, float, np.floating)):
             raise TypeError(
@@ -229,7 +230,7 @@ def hirose(
 
     # validate argument k
     k = k.squeeze()
-    if not (k.ndim == 0 or k.ndim == 1):
+    if k.ndim not in (0, 1):
         raise ValueError(
             f"Argument 'k' needs to be a single valued or 1D array astropy Quantity,"
             f" got array of shape {k.shape}."
@@ -250,9 +251,12 @@ def hirose(
         k = np.array([k.value]) * u.rad / u.m
 
     # Calc needed plasma parameters
+    n_e = z_mean * n_i
+    v_A = Alfven_speed(B, n_i, ion=ion, z_mean=z_mean).value
+    omega_ci = gyrofrequency(B=B, particle=ion, signed=False, Z=z_mean).value
+    omega_pi = plasma_frequency(n=n_i, particle=ion, z_mean=z_mean).value
     with warnings.catch_warnings():
         warnings.simplefilter("ignore", category=PhysicsWarning)
-        n_e = z_mean * n_i
         c_s = ion_sound_speed(
             T_e=T_e,
             T_i=0 * u.K,
@@ -262,9 +266,6 @@ def hirose(
             gamma_i=gamma_i,
             z_mean=z_mean,
         ).value
-        v_A = Alfven_speed(B, n_i, ion=ion, z_mean=z_mean).value
-        omega_ci = gyrofrequency(B=B, particle=ion, signed=False, Z=z_mean).value
-        omega_pi = plasma_frequency(n=n_i, particle=ion, z_mean=z_mean).value
 
     thetav, kv = np.meshgrid(theta.value, k.value)
 
