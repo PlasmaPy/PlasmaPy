@@ -77,14 +77,14 @@ class TestHirose:
         with pytest.warns(_warning):
             hirose(**kwargs)
 
-    @pytest.skip(
+    @pytest.mark.skip(
         "kwargs, expected",
     )
     def test_handle_k_theta_arrays(self, kwargs, expected):
         """Test scenarios involving k and theta arrays."""
         ...
 
-    @pytest.skip(
+    @pytest.mark.skip(
         "kwargs, expected",
     )
     def test_hirose2004_vals(self, kwargs, expected):
