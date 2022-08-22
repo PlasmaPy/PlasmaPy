@@ -2064,7 +2064,7 @@ class CollisionFrequencies:
         Coulomb_log: u.dimensionless_unscaled,
     ):
         r"""
-        Compute collision frequencies
+        Compute collision frequencies between test particles (labeled 'a') and field particles (labeled 'b')
 
         Parameters
         ----------
@@ -2075,7 +2075,7 @@ class CollisionFrequencies:
             The background particle being interacted with.
 
         v_a : `~astropy.units.Quantity`, optional
-            The relative velocity between particles. If not provided,
+            The relative velocity between particles. If not provided, T_a must be specified and
             thermal velocity is assumed: :math:`μ v_a^2 \sim 2 k_B T_a` where
             :math:`μ` is the reduced mass.
 
@@ -2128,7 +2128,7 @@ class CollisionFrequencies:
 
         See Also
         --------
-        ~plasmapy.formulary.collisions.Coulomb_log : Evaluates the Coulomb
+        ~plasmapy.formulary.collisions.Coulomb_logarithm : Evaluates the Coulomb
             logarithm for two interacting electron species.
 
         ~plasmapy.formulary.collisions.collision_frequency : The Lorentz collision frequency.
@@ -2136,7 +2136,7 @@ class CollisionFrequencies:
 
         if v_a is None:
             if T_a is not None:
-                v_a = thermal_speed(T_a, test_particle)  # .to(u.cm / u.s)
+                v_a = thermal_speed(T_a, test_particle).to(u.cm / u.s)
             else:
                 raise ValueError("Please specify either v_a or T_a.")
         elif T_a is not None:
@@ -2155,13 +2155,13 @@ class CollisionFrequencies:
 
         mass_ratio = test_particle.mass / field_particle.mass
 
-        self.v_0 = self._v_0()
+        self.v_0 = self.v_0()
         self.slowing_down = (1 + mass_ratio) * phi * self.v_0
         self.transverse_diffusion = 2 * ((1 - 1 / (2 * x)) * phi + phi_prime) * self.v_0
         self.parallel_diffusion = (phi / x) * self.v_0
         self.energy_loss = 2 * (mass_ratio * phi - phi_prime) * self.v_0
 
-    def _v_0(self):
+    def v_0(self):
         return (
             4
             * np.pi
