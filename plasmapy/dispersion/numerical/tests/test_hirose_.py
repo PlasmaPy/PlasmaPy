@@ -79,6 +79,19 @@ class TestHirose:
 
     @pytest.mark.parametrize(
         "kwargs, expected",
+    )
+    def test_handle_k_theta_arrays(self, kwargs, expected):
+        """Test scenarios involving k and theta arrays."""
+
+    @pytest.mark.parametrize(
+        "kwargs, expected",
+    )
+    def test_hirose2004_vals(self, kwargs, expected, desired_beta):
+        # No values in Hirose2004 paper to test values against.
+        # Alternatives?
+
+    @pytest.mark.parametrize(
+        "kwargs, expected",
         [
             (
                 {
