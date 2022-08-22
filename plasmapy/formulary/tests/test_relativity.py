@@ -29,14 +29,22 @@ def test_Lorentz_factor():
         Lorentz_factor(3 * u.m / u.s) * u.dimensionless_unscaled
     ).unit == u.dimensionless_unscaled
 
-    assert np.isnan(Lorentz_factor(np.nan * u.m / u.s))
 
-    assert np.all(np.isnan(Lorentz_factor(np.array([np.nan, np.nan]) * u.m / u.s)))
+    def test_lorentz_factor_nan_input():
+        assert np.isnan(Lorentz_factor(np.nan * u.m / u.s))
 
-    numerical_result, nan_result = Lorentz_factor(np.array([1, np.nan]) * u.m / u.s)
-    assert np.isnan(nan_result)
-    assert not np.isnan(numerical_result)
 
+    def test_lorentz_factor_array_of_nans():
+        assert np.all(np.isnan(Lorentz_factor(np.array([np.nan, np.nan]) * u.m / u.s)))
+
+
+    def test_lorentz_factor_nan_in_array():
+        numerical_result, nan_result = Lorentz_factor(np.array([1, np.nan]) * u.m / u.s)
+        assert np.isnan(nan_result)
+        assert not np.isnan(numerical_result)
+
+
+    def test_lorentz_factor_exceptions():
     with pytest.raises(RelativityError):
         Lorentz_factor(1.0000000001 * c)
 
