@@ -34,9 +34,9 @@ def hirose(
     n_i: u.m**-3,
     T_e: u.K,
     theta: u.rad,
-    gamma_e: Optional[float, int] = 1,
-    gamma_i: Optional[float, int] = 3,
-    z_mean: Optional[float, int] = None,
+    gamma_e: Optional[float] = 1,
+    gamma_i: Optional[float] = 3,
+    z_mean: Optional[float] = None,
     **kwargs,
 ):
 
