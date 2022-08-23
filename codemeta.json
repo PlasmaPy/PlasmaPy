@@ -1,7 +1,7 @@
 {
     "@context": "https://doi.org/10.5063/schema/codemeta-2.0",
     "@type": "SoftwareSourceCode",
-    "license": "https://spdx.org/licenses/BSD-2-Clause-Patent",
+    "license": "https://spdx.org/licenses/BSD-3-Clause",
     "codeRepository": "https://github.com/PlasmaPy/plasmapy",
     "contIntegration": "https://dev.azure.com/plasmapy/PlasmaPy",
     "issueTracker": "https://github.com/PlasmaPy/PlasmaPy/issues",
