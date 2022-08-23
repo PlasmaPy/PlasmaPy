@@ -1715,7 +1715,7 @@ class TestCollisionFrequencies:
     )
 
     attributes_to_test = [
-        "slowing_down",
+        "momentum_loss",
         "transverse_diffusion",
         "parallel_diffusion",
         "energy_loss",
@@ -1829,7 +1829,7 @@ class TestCollisionFrequencies:
                 )
         # The expected energy loss collision frequency should always equal this
         limit_values.append(
-            2 * cases.slowing_down.value
+            2 * cases.momentum_loss.value
             - cases.transverse_diffusion.value
             - cases.parallel_diffusion.value
         )

@@ -1002,6 +1002,11 @@ def collision_frequency(
     >>> species = ('e', 'p')
     >>> collision_frequency(T, n, species)
     <Quantity 70249... Hz>
+
+    See Also
+    --------
+    ~plasmapy.formulary.collisions.CollisionFrequencies.Lorentz_collision_frequency
+
     """
 
     deprecated(
@@ -2088,18 +2093,18 @@ class CollisionFrequencies:
             The background particle being interacted with.
 
         v_a : `~astropy.units.Quantity`, optional
-            The relative velocity between particles. If not provided, T_a must be specified and
+            The relative speed between particles. If not provided, T_a must be specified and
             thermal velocity is assumed: :math:`μ v_a^2 \sim 2 k_B T_a` where
-            :math:`μ` is the reduced mass.
+            :math:`μ` is the reduced mass. Cannot be negative.
 
         T_a : `~astropy.units.Quantity`, optional
             The temperature of the test species. Only necessary if :math:`v_a` is not provided.
 
         n_b : `~astropy.units.Quantity`
-            The number density of the background field particles.
+            The number density of the background field particles in units convertable to :math:`\frac{1}{m^{3}}`
 
         T_b : `~astropy.units.Quantity`
-            The temperature of the background field particles.
+            The temperature of the background field particles in units convertable to degrees Kelvin.
 
         Coulomb_log : `~astropy.units.Quantity`
             The value of the Coulomb logarithm evaluated for the two interacting particles.
@@ -2114,7 +2119,7 @@ class CollisionFrequencies:
         -----
         The collision frequencies between two interacting particles are given by four differential equations:
 
-            slowing down - :math:`\frac{d\textbf{v}_{α}}{dt}=-ν_{s}^{α\backslashβ}\textbf{v}_{α}`
+            momentum loss - :math:`\frac{d\textbf{v}_{α}}{dt}=-ν_{s}^{α\backslashβ}\textbf{v}_{α}`
 
             transverse diffusion - :math:`\frac{d}{dt}\left(\overline{\textbf{v}}_{α}-\overline{\textbf{v}}_{α}\right)_{⊥}^{2}=ν_{⊥}^{α\backslashβ}v_{α}^{2}`
 
@@ -2136,15 +2141,13 @@ class CollisionFrequencies:
         >>> frequencies = CollisionFrequencies(
         ...     "e-", "e-", T_a=T_a, n_b=n_b, T_b=T_b, Coulomb_log=Coulomb_log
         ... )
-        >>> frequencies.slowing_down
+        >>> frequencies.momentum_loss
         <Quantity 1.83701432e+11 Hz>
 
         See Also
         --------
         ~plasmapy.formulary.collisions.Coulomb_logarithm : Evaluates the Coulomb
             logarithm for two interacting electron species.
-
-        ~plasmapy.formulary.collisions.collision_frequency : The Lorentz collision frequency.
         """
 
         if v_a is None:
@@ -2161,24 +2164,25 @@ class CollisionFrequencies:
         self.T_a = (
             T_a
             if T_a is not None
-            else (0.5 * test_particle.mass.to(u.g) * v_a**2 / k_B).to(u.K)
+            else (0.5 * test_particle.mass * v_a**2 / k_B).to(u.K)
         )
         self.n_b = n_b
         self.T_b = T_b
         self.Coulomb_log = Coulomb_log
 
         x = self._x()
+        v_0 = self.Lorentz_collision_frequency
         phi = self._phi(x)
         phi_prime = self._phi_prime(x)
 
         mass_ratio = test_particle.mass / field_particle.mass
 
-        self.v_0 = self.Lorentz_collision_frequency()
-        self.slowing_down = (1 + mass_ratio) * phi * self.v_0
-        self.transverse_diffusion = 2 * ((1 - 1 / (2 * x)) * phi + phi_prime) * self.v_0
-        self.parallel_diffusion = (phi / x) * self.v_0
-        self.energy_loss = 2 * (mass_ratio * phi - phi_prime) * self.v_0
+        self.momentum_loss = (1 + mass_ratio) * phi * v_0
+        self.transverse_diffusion = 2 * ((1 - 1 / (2 * x)) * phi + phi_prime) * v_0
+        self.parallel_diffusion = (phi / x) * v_0
+        self.energy_loss = 2 * (mass_ratio * phi - phi_prime) * v_0
 
+    @property
     def Lorentz_collision_frequency(self):
         r"""
         The Lorentz collision frequency (see Ch. 5 of :cite:t:`chen:2016`) is given
@@ -2194,6 +2198,9 @@ class CollisionFrequencies:
         Coulomb logarithm accounting for small angle collisions.
 
         See Equation (2.14) in :cite:t:`callen:unpublished`.
+
+        The Lorentz collision frequency is equivalent to the variable
+        :math:`\nu_0^{\alpha/\beta}` on p. 31 of :cite:t:`nrlformulary:2019`.
         """
 
         return (
