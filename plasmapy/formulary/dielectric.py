@@ -217,7 +217,7 @@ def cold_plasma_permittivity_LRP(B: u.T, species, n, omega: u.rad / u.s):
 @preserve_signature
 def permittivity_1D_Maxwellian_lite(omega, kWave, vth, wp):
     r"""
-    The :term:`lite-function` version of
+    The :term:`lite-function` for
     `~plasmapy.formulary.dielectric.permittivity_1D_Maxwellian`.
     Performs the same calculations as
     `~plasmapy.formulary.dielectric.permittivity_1D_Maxwellian`, but is
@@ -226,17 +226,17 @@ def permittivity_1D_Maxwellian_lite(omega, kWave, vth, wp):
 
     Parameters
     ----------
-    omega : :term:`numpy:array_like` of real positive values
+    omega : |array_like| of real positive values
         The frequency, in rad/s, of the electromagnetic wave propagating
         through the plasma.
 
-    kWave : :term:`numpy:array_like` of real values
+    kWave : |array_like| of real values
         The corresponding wavenumber, in rad/m, of the electromagnetic
         wave propagating through the plasma.
 
     vth : `~numbers.Real`
         The 3D, most probable thermal speed, in m/s. (i.e. it includes
-        the factor of √2, see
+        the factor of :math:`\sqrt{2}`, see
         :ref:`thermal speed notes <thermal-speed-notes>`)
 
     wp : `~numbers.Real`
@@ -244,7 +244,7 @@ def permittivity_1D_Maxwellian_lite(omega, kWave, vth, wp):
 
     Returns
     -------
-    chi : :term:`numpy:array_like` of complex values
+    chi : |array_like| of complex values
         The ion or the electron dielectric permittivity of the plasma.
         This is a dimensionless quantity.
 
