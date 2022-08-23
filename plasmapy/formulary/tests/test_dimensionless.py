@@ -9,6 +9,7 @@ from plasmapy.formulary.dimensionless import (
     betaH_,
     Debye_number,
     Hall_parameter,
+    Lundquist_number,
     Mag_Reynolds,
     nD_,
     Re_,
@@ -130,3 +131,18 @@ def test_Debye_number():
         assert Debye_number(1.1 * u.K, 1.1) == Debye_number(1.1, 1.1 * u.m**-3)
 
     assert_can_handle_nparray(Debye_number)
+
+
+def test_Lundquist_number():
+    r"""Test the Lundquist_number function in dimensionless.py."""
+    L = 0.05 * u.m
+    rho = 1490 * u.kg / u.m**3
+    sigma = 1e8 * u.S / u.m
+
+    Lundquist_number(L, B, rho, sigma).unit.is_equivalent(u.dimensionless_unscaled)
+
+    with pytest.warns(u.UnitsWarning):
+        Lundquist_number(3.3, B, rho, sigma)
+
+    with pytest.raises(u.UnitTypeError):
+        Lundquist_number(3.3 * u.kg, B, rho, sigma)
