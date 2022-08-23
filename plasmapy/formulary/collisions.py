@@ -1005,7 +1005,7 @@ def collision_frequency(
 
     See Also
     --------
-    ~plasmapy.formulary.collisions.CollisionFrequencies.Lorentz_collision_frequency
+    ~plasmapy.formulary.collisions.CollisionFrequencies
 
     """
 
