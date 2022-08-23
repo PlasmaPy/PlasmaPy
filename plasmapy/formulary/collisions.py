@@ -2055,7 +2055,7 @@ def coupling_parameter(
 
 class CollisionFrequencies:
     @validate_quantities(
-        v_a={"none_shall_pass": True},
+        v_a={"none_shall_pass": True, "can_be_negative": False},
         T_a={
             "none_shall_pass": True,
             "can_be_negative": False,
@@ -2070,9 +2070,9 @@ class CollisionFrequencies:
         test_particle: particles.Particle,
         field_particle: particles.Particle,
         *,
-        v_a: u.cm / u.s = None,
+        v_a: u.m / u.s = None,
         T_a: u.K = None,
-        n_b: u.cm**-3,
+        n_b: u.m**-3,
         T_b: u.K,
         Coulomb_log: u.dimensionless_unscaled,
     ):
