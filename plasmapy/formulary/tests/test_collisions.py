@@ -1738,8 +1738,6 @@ class TestCollisionFrequencies:
 
         value = getattr(self.attribute_test_case, attribute_to_test)
 
-        print(f"\n {value.unit} =? {expected_attribute_units}")
-
         assert getattr(self.attribute_test_case, attribute_to_test).unit.is_equivalent(
             expected_attribute_units
         )
@@ -2028,9 +2026,6 @@ class TestCollisionFrequencies:
         expected_limit_values = self.get_limit_value(
             interaction_type, limit_type, value_test_case
         )
-
-        print(f"\nX: {value_test_case.x}")
-        print(self.return_values_to_test)
 
         if interaction_type == "e|e":
             charge_constant = 1
