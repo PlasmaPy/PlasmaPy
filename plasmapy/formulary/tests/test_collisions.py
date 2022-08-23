@@ -1720,7 +1720,9 @@ class TestCollisionFrequencies:
         "parallel_diffusion",
         "energy_loss",
     ]
-    return_values_to_test = attributes_to_test + ["v_0",]
+    return_values_to_test = attributes_to_test + [
+        "v_0",
+    ]
 
     ones_array = np.ones(5)
 
@@ -1825,7 +1827,7 @@ class TestCollisionFrequencies:
                         9e-8 * mu**0.5 * mu_prime**-1 * T_b * T_a**-2.5,
                     ]
                 )
-# The expected energy loss collision frequency should always equal this
+        # The expected energy loss collision frequency should always equal this
         limit_values.append(
             2 * cases.slowing_down.value
             - cases.transverse_diffusion.value
@@ -2033,7 +2035,7 @@ class TestCollisionFrequencies:
             zip(self.return_values_to_test, expected_limit_values)
         ):
             calculated_limit_value = getattr(value_test_case, attribute_name).value
-# Energy loss limit value is already in units of frequencies because of the way it is calculated
+            # Energy loss limit value is already in units of frequencies because of the way it is calculated
             if attribute_name != "energy_loss":
                 calculated_limit_value = calculated_limit_value / (
                     coulomb_density_constant * charge_constant
