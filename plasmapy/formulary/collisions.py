@@ -27,7 +27,7 @@ Collision rates
 
 The module gathers a few functions helpful for calculating collision
 rates between particles. The most general of these is
-`~plasmapy.formulary.collisions.collision_frequency`.
+`~plasmapy.formulary.collisions.CollisionFrequencies`.
 
 Macroscopic properties
 ======================
@@ -74,8 +74,9 @@ from plasmapy.formulary.quantum import (
     Wigner_Seitz_radius,
 )
 from plasmapy.formulary.speeds import thermal_speed
-from plasmapy.utils.decorators import validate_quantities
+from plasmapy.utils.decorators import deprecated, validate_quantities
 from plasmapy.utils.decorators.checks import _check_relativistic
+from plasmapy.utils.exceptions import PlasmaPyFutureWarning
 
 
 @validate_quantities(
@@ -1002,6 +1003,18 @@ def collision_frequency(
     >>> collision_frequency(T, n, species)
     <Quantity 70249... Hz>
     """
+
+    deprecated(
+        since="0.8.0",
+        warning_type=PlasmaPyFutureWarning,
+        message=(
+            "The collision_frequency function has been replaced by the more general "
+            "CollisionFrequency class. To replicate the functionality of collision_frequency, "
+            "create a CollisionFrequency class and access the `Lorentz_collision_frequency` "
+            "attribute."
+        ),
+    )
+
     T, masses, charges, reduced_mass, V_r = _process_inputs(T=T, species=species, V=V)
     # using a more descriptive name for the thermal velocity using
     # reduced mass
