@@ -2101,10 +2101,10 @@ class CollisionFrequencies:
             The temperature of the test species. Only necessary if :math:`v_a` is not provided.
 
         n_b : `~astropy.units.Quantity`
-            The number density of the background field particles in units convertable to :math:`\frac{1}{m^{3}}`
+            The number density of the background field particles in units convertible to :math:`\frac{1}{m^{3}}`
 
         T_b : `~astropy.units.Quantity`
-            The temperature of the background field particles in units convertable to degrees Kelvin.
+            The temperature of the background field particles in units convertible to degrees Kelvin.
 
         Coulomb_log : `~astropy.units.Quantity`
             The value of the Coulomb logarithm evaluated for the two interacting particles.
