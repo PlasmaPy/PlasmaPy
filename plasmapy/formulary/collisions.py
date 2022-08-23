@@ -2150,6 +2150,9 @@ class CollisionFrequencies:
             logarithm for two interacting electron species.
         """
 
+        # Note: This function uses CGS units internally to coincide with our references.
+        # Input is taken in MKS units and then converted as necessary. Output is in MKS units.
+
         if v_a is None:
             if T_a is not None:
                 v_a = thermal_speed(T_a, test_particle).to(u.cm / u.s)
@@ -2170,17 +2173,21 @@ class CollisionFrequencies:
         self.T_b = T_b
         self.Coulomb_log = Coulomb_log
 
-        x = self._x()
-        v_0 = self.Lorentz_collision_frequency
-        phi = self._phi(x)
-        phi_prime = self._phi_prime(x)
+        # These attributes are used in testing
+        self._x = self.x
+        self._v_0 = self.Lorentz_collision_frequency
+
+        phi = self._phi(self.x)
+        phi_prime = self._phi_prime(self.x)
 
         mass_ratio = test_particle.mass / field_particle.mass
 
-        self.momentum_loss = (1 + mass_ratio) * phi * v_0
-        self.transverse_diffusion = 2 * ((1 - 1 / (2 * x)) * phi + phi_prime) * v_0
-        self.parallel_diffusion = (phi / x) * v_0
-        self.energy_loss = 2 * (mass_ratio * phi - phi_prime) * v_0
+        self.momentum_loss = (1 + mass_ratio) * phi * self._v_0
+        self.transverse_diffusion = (
+            2 * ((1 - 1 / (2 * self.x)) * phi + phi_prime) * self._v_0
+        )
+        self.parallel_diffusion = (phi / self.x) * self._v_0
+        self.energy_loss = 2 * (mass_ratio * phi - phi_prime) * self._v_0
 
     @property
     def Lorentz_collision_frequency(self):
@@ -2210,26 +2217,48 @@ class CollisionFrequencies:
             * (self.field_particle.charge_number * e.esu) ** 2
             * self.Coulomb_log
             * self.n_b
-            / (self.test_particle.mass.to(u.g) ** 2 * self.v_a**3)
+            / (self.test_particle.mass**2 * self.v_a**3)
         ).to(u.Hz)
 
-    def _x(self) -> u.dimensionless_unscaled:
-        x = self.field_particle.mass.to(u.g) * self.v_a**2 / (2 * k_B.cgs * self.T_b)
+    @property
+    def x(self) -> u.dimensionless_unscaled:
+        """
+        The ratio of kinetic energy in the test particle to the thermal energy of the field particle.
+        This parameter determines the regime in which the collision falls (fast or slow).
+
+        """
+
+        x = self.field_particle.mass * self.v_a**2 / (2 * k_B.cgs * self.T_b)
         return x.to(u.dimensionless_unscaled)
 
     @staticmethod
     def _phi_integrand(t: u.dimensionless_unscaled):
+        """
+        The phi integrand used in calculating phi
+        """
+
         return t**0.5 * np.exp(-t)
 
     def _phi_explicit(self, x: float) -> float:
+        """
+        The non-vectorized method for evaluating the integral for phi
+        """
         integral, _ = scipy.integrate.quad(self._phi_integrand, 0, x)
 
         return integral
 
     def _phi(self, x: u.dimensionless_unscaled):
+        """
+        The parameter phi used in calculating collision frequencies
+        For more information refer to page 19 of the NRL Formulary
+        """
         vectorized_integral = np.vectorize(self._phi_explicit)
 
         return 2 / np.pi**0.5 * vectorized_integral(x.value)
 
     def _phi_prime(self, x: u.dimensionless_unscaled):
+        """
+        The derivative of phi evaluated at x
+        """
+
         return 2 / np.pi**0.5 * self._phi_integrand(x)

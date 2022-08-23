@@ -1714,24 +1714,34 @@ class TestCollisionFrequencies:
         Coulomb_log=1 * u.dimensionless_unscaled,
     )
 
-    attributes_to_test = [
+    return_values_to_test = [
         "momentum_loss",
         "transverse_diffusion",
         "parallel_diffusion",
         "energy_loss",
     ]
-    return_values_to_test = attributes_to_test + [
-        "v_0",
-    ]
 
     ones_array = np.ones(5)
 
-    @pytest.mark.parametrize("attribute_to_test", attributes_to_test)
-    def test_units(self, attribute_to_test):
+    @pytest.mark.parametrize(
+        "attribute_to_test, expected_attribute_units",
+        [
+            ("momentum_loss", u.Hz),
+            ("transverse_diffusion", u.Hz),
+            ("parallel_diffusion", u.Hz),
+            ("energy_loss", u.Hz),
+            ("_x", u.dimensionless_unscaled),
+        ],
+    )
+    def test_units(self, attribute_to_test, expected_attribute_units):
         """Test the return units"""
 
+        value = getattr(self.attribute_test_case, attribute_to_test)
+
+        print(f"\n {value.unit} =? {expected_attribute_units}")
+
         assert getattr(self.attribute_test_case, attribute_to_test).unit.is_equivalent(
-            u.Hz
+            expected_attribute_units
         )
 
     @staticmethod
@@ -1742,7 +1752,7 @@ class TestCollisionFrequencies:
         These formulae are taken from page 31 of the NRL Formulary.
         """
 
-        T_a = (cases.T_a * k_B).to(u.eV).value
+        v_a = (cases.T_a * k_B).to(u.eV).value
         T_b = (cases.T_b * k_B).to(u.eV).value
 
         limit_values = []
@@ -1752,16 +1762,16 @@ class TestCollisionFrequencies:
                 limit_values.extend(
                     [
                         5.8e-6 * T_b ** (-1.5),
-                        5.8e-6 * T_b ** (-0.5) * T_a ** (-1),
-                        2.9e-6 * T_b ** (-0.5) * T_a ** (-1),
+                        5.8e-6 * T_b ** (-0.5) * v_a ** (-1),
+                        2.9e-6 * T_b ** (-0.5) * v_a ** (-1),
                     ]
                 )
             elif limit_type == "fast":
                 limit_values.extend(
                     [
-                        7.7e-6 * T_a ** (-1.5),
-                        7.7e-6 * T_a ** (-1.5),
-                        3.9e-6 * T_b * T_a ** (-2.5),
+                        7.7e-6 * v_a ** (-1.5),
+                        7.7e-6 * v_a ** (-1.5),
+                        3.9e-6 * T_b * v_a ** (-2.5),
                     ]
                 )
         elif interaction_type == "e|i":
@@ -1771,16 +1781,16 @@ class TestCollisionFrequencies:
                 limit_values.extend(
                     [
                         0.23 * mu**1.5 * T_b**-1.5,
-                        2.5e-4 * mu**0.5 * T_b**-0.5 * T_a**-1,
-                        1.2e-4 * mu**0.5 * T_b**-0.5 * T_a**-1,
+                        2.5e-4 * mu**0.5 * T_b**-0.5 * v_a**-1,
+                        1.2e-4 * mu**0.5 * T_b**-0.5 * v_a**-1,
                     ]
                 )
             elif limit_type == "fast":
                 limit_values.extend(
                     [
-                        3.9e-6 * T_a**-1.5,
-                        7.7e-6 * T_a**-1.5,
-                        2.1e-9 * mu**-1 * T_b * T_a**-2.5,
+                        3.9e-6 * v_a**-1.5,
+                        7.7e-6 * v_a**-1.5,
+                        2.1e-9 * mu**-1 * T_b * v_a**-2.5,
                     ]
                 )
         elif interaction_type == "i|e":
@@ -1790,16 +1800,16 @@ class TestCollisionFrequencies:
                 limit_values.extend(
                     [
                         1.6e-9 * mu**-1 * T_b ** (-1.5),
-                        3.2e-9 * mu**-1 * T_b ** (-0.5) * T_a**-1,
-                        1.6e-9 * mu**-1 * T_b ** (-0.5) * T_a**-1,
+                        3.2e-9 * mu**-1 * T_b ** (-0.5) * v_a**-1,
+                        1.6e-9 * mu**-1 * T_b ** (-0.5) * v_a**-1,
                     ]
                 )
             elif limit_type == "fast":
                 limit_values.extend(
                     [
-                        1.7e-4 * mu**0.5 * T_a**-1.5,
-                        1.8e-7 * mu**-0.5 * T_a**-1.5,
-                        1.7e-4 * mu**0.5 * T_b * T_a**-2.5,
+                        1.7e-4 * mu**0.5 * v_a**-1.5,
+                        1.8e-7 * mu**-0.5 * v_a**-1.5,
+                        1.7e-4 * mu**0.5 * T_b * v_a**-2.5,
                     ]
                 )
 
@@ -1815,16 +1825,16 @@ class TestCollisionFrequencies:
                         * mu**-1
                         * (1 + mu_prime / mu)
                         * T_b**-1.5,
-                        1.4e-7 * mu_prime**0.5 * mu**-1 * T_b**-0.5 * T_a**-1,
-                        6.8e-8 * mu_prime**0.5 * mu**-1 * T_b**-0.5 * T_a**-1,
+                        1.4e-7 * mu_prime**0.5 * mu**-1 * T_b**-0.5 * v_a**-1,
+                        6.8e-8 * mu_prime**0.5 * mu**-1 * T_b**-0.5 * v_a**-1,
                     ]
                 )
             elif limit_type == "fast":
                 limit_values.extend(
                     [
-                        9e-8 * (1 / mu + 1 / mu_prime) * mu**0.5 * T_a**-1.5,
-                        1.8 * 10**-7 * mu**-0.5 * T_a**-1.5,
-                        9e-8 * mu**0.5 * mu_prime**-1 * T_b * T_a**-2.5,
+                        9e-8 * (1 / mu + 1 / mu_prime) * mu**0.5 * v_a**-1.5,
+                        1.8 * 10**-7 * mu**-0.5 * v_a**-1.5,
+                        9e-8 * mu**0.5 * mu_prime**-1 * T_b * v_a**-2.5,
                     ]
                 )
         # The expected energy loss collision frequency should always equal this
@@ -2019,6 +2029,9 @@ class TestCollisionFrequencies:
             interaction_type, limit_type, value_test_case
         )
 
+        print(f"\nX: {value_test_case.x}")
+        print(self.return_values_to_test)
+
         if interaction_type == "e|e":
             charge_constant = 1
         elif interaction_type == "e|i":
@@ -2042,7 +2055,7 @@ class TestCollisionFrequencies:
                 )
 
             assert np.allclose(
-                calculated_limit_value, expected_limit_value, rtol=0.1, atol=0
+                calculated_limit_value, expected_limit_value, rtol=0.05, atol=0
             )
 
     @pytest.mark.parametrize(
