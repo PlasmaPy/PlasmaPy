@@ -148,8 +148,7 @@ class HDF5Reader(GenericPlasma):
         hdf5 = kwargs.get("hdf5")
         openPMD = kwargs.get("openPMD")
 
-        isfile = Path(hdf5).is_file()
-        if not isfile:
+        if not Path(hdf5).is_file():
             raise FileNotFoundError(f"Could not find file: '{hdf5}'")
 
         if "openPMD" not in kwargs:
