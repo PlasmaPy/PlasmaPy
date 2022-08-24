@@ -612,7 +612,7 @@ def test_saving_output(tmp_path):
     results_1 = sim.results_dict
 
     # Save result
-    path = os.path.join(tmp_path, "temp.npz")
+    path = str(tmp_path.joinpath("temp.npz"))
     sim.save_results(path)
 
     # Load result
