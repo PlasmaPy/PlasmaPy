@@ -79,3 +79,9 @@ repos:
   - id: pyupgrade
     args: [--keep-runtime-typing, --py38-plus]
     files: ^plasmapy/
+
+- repo: https://github.com/pre-commit/pygrep-hooks
+  rev: v1.9.0
+  hooks:
+  - id: rst-directive-colons
+  - id: rst-inline-touching-normal

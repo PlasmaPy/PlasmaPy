@@ -154,7 +154,7 @@ def plasma_frequency_lite(
     n: numbers.Real, mass: numbers.Real, z_mean: numbers.Real, to_hz: bool = False
 ) -> numbers.Real:
     r"""
-    The ":term:`lite-function`" version of
+    The :term:`lite-function` for
     `~plasmapy.formulary.frequencies.plasma_frequency`.  Performs the
     same plasma frequency calculation as
     `~plasmapy.formulary.frequencies.plasma_frequency`, but is intended

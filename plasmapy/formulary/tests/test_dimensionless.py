@@ -9,9 +9,9 @@ from plasmapy.formulary.dimensionless import (
     betaH_,
     Debye_number,
     Hall_parameter,
+    Lundquist_number,
     Mag_Reynolds,
     nD_,
-    quantum_theta,
     Re_,
     Reynolds_number,
     Rm_,
@@ -48,11 +48,6 @@ def test_aliases(alias, parent):
 def test_beta_dimensionless():
     # Check that beta is dimensionless
     float(beta(T, n, B))
-
-
-def test_quantum_theta_dimensionless():
-    # Check that quantum theta is dimensionless
-    float(quantum_theta(T, n))
 
 
 def test_beta_nan():
@@ -140,6 +135,7 @@ def test_Debye_number():
     assert_can_handle_nparray(Debye_number)
 
 
+
 def test_Hall_parameter():
     r"""Test Hall_parameter in dimensionless.py"""
 
@@ -173,3 +169,16 @@ def test_Hall_parameter():
 
 
 
+def test_Lundquist_number():
+    r"""Test the Lundquist_number function in dimensionless.py."""
+    L = 0.05 * u.m
+    rho = 1490 * u.kg / u.m**3
+    sigma = 1e8 * u.S / u.m
+
+    Lundquist_number(L, B, rho, sigma).unit.is_equivalent(u.dimensionless_unscaled)
+
+    with pytest.warns(u.UnitsWarning):
+        Lundquist_number(3.3, B, rho, sigma)
+
+    with pytest.raises(u.UnitTypeError):
+        Lundquist_number(3.3 * u.kg, B, rho, sigma)

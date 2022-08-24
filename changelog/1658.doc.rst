@@ -1,0 +1,2 @@
+Added sections to the |coding guide| on :term:`lite-functions` and
+:term:`aliases`.
