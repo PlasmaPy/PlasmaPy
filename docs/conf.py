@@ -88,6 +88,11 @@ needs_sphinx = "4.4"
 # in docs/doc_guide.rst on Sphinx extensions.
 
 extensions = [
+    # plasmapy extensions & setups
+    "plasmapy_sphinx.theme",
+    "plasmapy_sphinx.ext.autodoc",
+    "plasmapy_sphinx.ext.directives",
+    # other 3rd party extensions
     "sphinx.ext.autodoc",
     "sphinx.ext.extlinks",
     "sphinx.ext.graphviz",
@@ -105,7 +110,6 @@ extensions = [
     "notfound.extension",
     "sphinx_issues",
     "sphinx_reredirects",
-    "plasmapy_sphinx",
 ]
 
 # Configure sphinxcontrib-bibtex
@@ -210,7 +214,6 @@ exclude_patterns = [
     ".DS_Store",
     "notebooks/langmuir_samples",
     "**.ipynb_checkpoints",
-    "plasmapy_sphinx",
     "common_links.rst",
     "**Untitled*",
 ]
@@ -386,7 +389,8 @@ nitpick_ignore_regex = [
 # html_theme = 'alabaster'
 # html_theme = 'traditional'
 # html_theme = 'agogo'
-html_theme = "sphinx_rtd_theme"
+# html_theme = "sphinx_rtd_theme"
+html_theme = "plasmapy_theme"
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
@@ -525,5 +529,4 @@ nbsphinx_prolog = r"""
 
 def setup(app: Sphinx) -> None:
     app.add_config_value("revision", "", True)
-    app.add_css_file("css/admonition_color_contrast.css")
-    app.add_css_file("css/plasmapy.css", priority=600)
+    app.add_css_file("css/overrides.css", priority=600)
