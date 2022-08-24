@@ -84,6 +84,7 @@ in parentheses are `ORCID author identifiers <https://orcid.org>`__.
 * :user:`Ludovico Bessi <ludoro>`
 * :user:`Mahima Pannala <mahimapannala>`
 * :user:`Manas Bedmutha <manasbedmutha98>`
+* :user:`Marcin Kastek <MKastek>`
 * :user:`Marco Gorelli <MarcoGorelli>`
 * :user:`Maria Isupova <misupova>`
 * Michael Fischer
@@ -130,6 +131,7 @@ in parentheses are `ORCID author identifiers <https://orcid.org>`__.
 * :user:`Tulasi Parashar <tulasinandan>` (:orcid:`0000-0003-0602-8381`)
 * :user:`Vishwas Rajashekar <DarkAEther>` (:orcid:`0000-0002-4914-6612`)
 * :user:`Yi-Min Huang <yopology>` (:orcid:`0000-0002-4237-2211`)
+
 
 This list contains contributors to PlasmaPy's core package and vision
 statement, including a few people who do not show up as `PlasmaPy

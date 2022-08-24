@@ -16,6 +16,8 @@ from plasmapy.formulary.dimensionless import (
     Reynolds_number,
     Rm_,
 )
+from plasmapy.particles import Particle
+from plasmapy.utils import RelativityWarning
 from plasmapy.utils.pytest_helpers import assert_can_handle_nparray
 
 Z = 1
@@ -131,6 +133,40 @@ def test_Debye_number():
         assert Debye_number(1.1 * u.K, 1.1) == Debye_number(1.1, 1.1 * u.m**-3)
 
     assert_can_handle_nparray(Debye_number)
+
+
+def test_Hall_parameter():
+    r"""Test Hall_parameter in dimensionless.py"""
+
+    ion = Particle("He-4 +1")
+    particle = Particle("e-")
+
+    assert Hall_parameter(n, T, B, ion, particle).unit.is_equivalent(
+        u.dimensionless_unscaled
+    )
+
+    assert np.isclose(Hall_parameter(n, T, B, ion, particle).value, 70461.38821149625)
+
+    with pytest.warns(u.UnitsWarning):
+        Hall_parameter(n, T, 1.0, ion, particle)
+
+    with pytest.raises(u.UnitTypeError):
+        Hall_parameter(n, T, 1.0 * u.kg, ion, particle)
+
+    with pytest.raises(TypeError):
+        Hall_parameter(n, T, B, None, particle)
+
+    with pytest.raises(ValueError):
+        Hall_parameter(n, T, B, ion, particle, coulomb_log_method="test")
+
+    with pytest.warns(u.UnitsWarning):
+        Hall_parameter(n, T, B, ion, particle, V=100)
+
+    with pytest.raises(TypeError):
+        Hall_parameter(n, T, B, ion, particle, coulomb_log="test")
+
+    with pytest.warns(RelativityWarning):
+        Hall_parameter(1e10 * u.m**-3, 5.8e3 * u.eV, 2.3 * u.T, ion, particle)
 
 
 def test_Lundquist_number():
