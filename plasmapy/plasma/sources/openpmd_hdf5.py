@@ -4,9 +4,9 @@ import astropy.units as u
 import h5py
 import numpy as np
 import os
-from pathlib import Path
 
 from packaging.version import Version
+from pathlib import Path
 
 from plasmapy.plasma.exceptions import DataStandardError
 from plasmapy.plasma.plasma_base import GenericPlasma
