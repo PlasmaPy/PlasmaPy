@@ -3,7 +3,6 @@ __all__ = ["HDF5Reader"]
 import astropy.units as u
 import h5py
 import numpy as np
-import os
 
 from packaging.version import Version
 from pathlib import Path
