@@ -2126,15 +2126,35 @@ class CollisionFrequencies:
         -----
         The collision frequencies between two interacting particles are given by four differential equations:
 
-            momentum loss - :math:`\frac{d\textbf{v}_{α}}{dt}=-ν_{s}^{α\backslashβ}\textbf{v}_{α}`
+            :math:`\frac{d\textbf{v}_{α}}{dt}=-ν_{s}^{α\backslashβ}\textbf{v}_{α}`
 
-            transverse diffusion - :math:`\frac{d}{dt}\left(\overline{\textbf{v}}_{α}-\overline{\textbf{v}}_{α}\right)_{⊥}^{2}=ν_{⊥}^{α\backslashβ}v_{α}^{2}`
+            :math:`\frac{d}{dt}\left(\overline{\textbf{v}}_{α}-\overline{\textbf{v}}_{α}\right)_{⊥}^{2}=ν_{⊥}^{α\backslashβ}v_{α}^{2}`
 
-            parallel diffusion - :math:`\frac{d}{dt}\left(\overline{\textbf{v}}_{α}-\overline{\textbf{v}}_{α}\right)_{∥}^{2}=ν_{∥}^{α\backslashβ}v_{α}^{2}`
+            :math:`\frac{d}{dt}\left(\overline{\textbf{v}}_{α}-\overline{\textbf{v}}_{α}\right)_{∥}^{2}=ν_{∥}^{α\backslashβ}v_{α}^{2}`
 
-            energy loss - :math:`\frac{d}{dt}v_{α}^{2}=-ν_{ϵ}^{α\backslashβ}v_{α}^{2}`
+            :math:`\frac{d}{dt}v_{α}^{2}=-ν_{ϵ}^{α\backslashβ}v_{α}^{2}`
 
-        For general solutions and limiting cases we encourage the curious reader to refer to p. 31 of :cite:t:`nrlformulary:2019`
+        These equations yield the exact formulas:
+
+            momentum loss - :math:`ν_{s}^{α\backslashβ}=\left(1+\frac{m_{α}}{m_{β}}\right)ψ\left(x^{α\backslashβ}\right)ν_{0}^{α\backslashβ}`
+
+            transverse diffusion - :math:`ν_{⊥}^{α\backslashβ}=2\left[\left(1-\frac{1}{2x^{α\backslashβ}}\right)ψ\left(x^{α\backslashβ}\right)\ +ψ'\left(x^{α\backslashβ}\right)\right]ν_{0}^{α\backslashβ}`
+
+            parallel diffusion - :math:`ν_{||}^{α\backslashβ}=\left[\frac{ψ\left(x^{α\backslashβ}\right)}{x^{α\backslashβ}}\right]ν_{0}^{α\backslashβ}`
+
+            energy loss - :math:`ν_{ε}^{α\backslashβ}=2\left[\left(\frac{m_{α}}{m_{β}}\right)ψ\left(x^{α\backslashβ}\right)-ψ'\left(x^{α\backslashβ}\right)\right]ν_{0}^{α\backslashβ}`
+
+        where,
+
+            :math:`ν_{0}^{α\backslashβ}=\frac{4\pi e_{α}^{2}e_{β}^{2}λ_{αβ}n_{β}}{m_{α}^{2}v_{α}^{3}}`,
+
+            :math:`x^{α\backslashβ}=\frac{m_{β}v_{α}^{2}}{2kT_{β}}`,
+
+            :math:`ψ\left(x\right)=\frac{2}{\sqrt{\pi}}\int_{0}^{x}t^{\frac{1}{2}}e^{-t}dt`, and
+
+            :math:`ψ'\left(x\right)=\frac{dψ}{dx}`
+
+        For limiting cases we encourage the curious reader to refer to p. 31 of :cite:t:`nrlformulary:2019`
 
         This function uses CGS units under the hood to coincide with our references, but passing MKS units is acceptable.
 
