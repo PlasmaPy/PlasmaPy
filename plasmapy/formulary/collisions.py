@@ -559,6 +559,7 @@ def _process_inputs(T: u.K, species: (particles.Particle, particles.Particle), V
     return T, masses, charges, reduced_mass, V
 
 
+# TODO: Remove redundant mass parameter
 def _replace_nan_velocity_with_thermal_velocity(
     V, T, m, species=particles.Particle("e-")
 ):
