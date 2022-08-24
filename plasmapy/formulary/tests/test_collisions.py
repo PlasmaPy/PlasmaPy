@@ -1670,17 +1670,19 @@ class Test_coupling_parameter:
     # TODO vector z_mean
     @pytest.mark.parametrize("insert_some_nans", [[], ["V"]])
     @pytest.mark.parametrize("insert_all_nans", [[], ["V"]])
-    # @pytest.mark.parametrize("kwargs", [{"method": "classical"},
-    #                                     {"method": "quantum"},])   # TODO quantum issues
-    def test_handle_nparrays(self, insert_some_nans, insert_all_nans):
+    @pytest.mark.parametrize(
+        "kwargs",
+        [
+            {"method": "classical"},
+            {"method": "quantum"},
+        ],
+    )
+    def test_handle_nparrays(self, insert_some_nans, insert_all_nans, kwargs):
         """Test for ability to handle numpy array quantities"""
         assert_can_handle_nparray(
-            coupling_parameter, insert_some_nans, insert_all_nans, {}
+            coupling_parameter, insert_some_nans, insert_all_nans, kwargs
         )
 
-    @pytest.mark.xfail(
-        reason="see issue https://github.com/PlasmaPy/PlasmaPy/issues/726"
-    )
     def test_quantum(self):
         """
         Testing quantum method for coupling parameter.
