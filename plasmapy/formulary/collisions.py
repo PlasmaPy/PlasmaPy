@@ -905,6 +905,12 @@ def collision_frequency(
     method="classical",
 ) -> u.Hz:
     r"""
+    .. note::
+        The `~plasmapy.formulary.collisions.collision_frequency` function has been
+        replaced by the more general `~plasmapy.formulary.collisions.CollisionFrequencies` class.
+        To replicate the functionality of collision_frequency, create a
+        `~plasmapy.formulary.collisions.CollisionFrequencies` class and access the `Lorentz_collision_frequency` attribute.
+
     Collision frequency of particles in a plasma.
 
     Parameters
@@ -1014,8 +1020,8 @@ def collision_frequency(
         warning_type=PlasmaPyFutureWarning,
         message=(
             "The collision_frequency function has been replaced by the more general "
-            "CollisionFrequency class. To replicate the functionality of collision_frequency, "
-            "create a CollisionFrequency class and access the `Lorentz_collision_frequency` "
+            "CollisionFrequencies class. To replicate the functionality of collision_frequency, "
+            "create a CollisionFrequencies class and access the `Lorentz_collision_frequency` "
             "attribute."
         ),
     )
@@ -2252,7 +2258,7 @@ class CollisionFrequencies:
     def phi(self):
         """
         The parameter phi used in calculating collision frequencies
-        calculated using the default error tolerances of`~scipy.integrate.quad`
+        calculated using the default error tolerances of `~scipy.integrate.quad`
 
         For more information refer to page 31 of the NRL Formulary.
         """
