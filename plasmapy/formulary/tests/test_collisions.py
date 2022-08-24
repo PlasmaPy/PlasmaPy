@@ -1730,13 +1730,11 @@ class TestCollisionFrequencies:
             ("transverse_diffusion", u.Hz),
             ("parallel_diffusion", u.Hz),
             ("energy_loss", u.Hz),
-            ("_x", u.dimensionless_unscaled),
+            ("x", u.dimensionless_unscaled),
         ],
     )
     def test_units(self, attribute_to_test, expected_attribute_units):
         """Test the return units"""
-
-        value = getattr(self.attribute_test_case, attribute_to_test)
 
         assert getattr(self.attribute_test_case, attribute_to_test).unit.is_equivalent(
             expected_attribute_units

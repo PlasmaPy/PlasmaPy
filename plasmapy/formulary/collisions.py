@@ -2173,21 +2173,22 @@ class CollisionFrequencies:
         self.T_b = T_b
         self.Coulomb_log = Coulomb_log
 
-        # These attributes are used in testing
-        self._x = self.x
-        self._v_0 = self.Lorentz_collision_frequency
-
-        phi = self._phi(self.x)
-        phi_prime = self._phi_prime(self.x)
-
         mass_ratio = test_particle.mass / field_particle.mass
 
-        self.momentum_loss = (1 + mass_ratio) * phi * self._v_0
-        self.transverse_diffusion = (
-            2 * ((1 - 1 / (2 * self.x)) * phi + phi_prime) * self._v_0
+        self.momentum_loss = (
+            (1 + mass_ratio) * self.phi * self.Lorentz_collision_frequency
         )
-        self.parallel_diffusion = (phi / self.x) * self._v_0
-        self.energy_loss = 2 * (mass_ratio * phi - phi_prime) * self._v_0
+        self.transverse_diffusion = (
+            2
+            * ((1 - 1 / (2 * self.x)) * self.phi + self._phi_prime)
+            * self.Lorentz_collision_frequency
+        )
+        self.parallel_diffusion = (self.phi / self.x) * self.Lorentz_collision_frequency
+        self.energy_loss = (
+            2
+            * (mass_ratio * self.phi - self._phi_prime)
+            * self.Lorentz_collision_frequency
+        )
 
     @property
     def Lorentz_collision_frequency(self):
@@ -2247,18 +2248,22 @@ class CollisionFrequencies:
 
         return integral
 
-    def _phi(self, x: u.dimensionless_unscaled):
+    @property
+    def phi(self):
         """
         The parameter phi used in calculating collision frequencies
-        For more information refer to page 19 of the NRL Formulary
+        calculated using the default error tolerances of`~scipy.integrate.quad`
+
+        For more information refer to page 31 of the NRL Formulary.
         """
         vectorized_integral = np.vectorize(self._phi_explicit)
 
-        return 2 / np.pi**0.5 * vectorized_integral(x.value)
+        return 2 / np.pi**0.5 * vectorized_integral(self.x.value)
 
-    def _phi_prime(self, x: u.dimensionless_unscaled):
+    @property
+    def _phi_prime(self):
         """
         The derivative of phi evaluated at x
         """
 
-        return 2 / np.pi**0.5 * self._phi_integrand(x)
+        return 2 / np.pi**0.5 * self._phi_integrand(self.x)
