@@ -2145,7 +2145,7 @@ class CollisionFrequencies:
 
             parallel diffusion: :math:`ν_{||}^{α\backslashβ}=\left[\frac{ψ\left(x^{α\backslashβ}\right)}{x^{α\backslashβ}}\right]ν_{0}^{α\backslashβ}`
 
-            energy loss: :math:`ν_{ε}^{α\backslashβ}=2\left[\left(\frac{m_{α}}{m_{β}}\right)ψ\left(x^{α\backslashβ}\right)-ψ'\left(x^{α\backslashβ}\right)\right]ν_{0}^{α\backslashβ}`
+            energy loss: :math:`ν_{ϵ}^{α\backslashβ}=2\left[\left(\frac{m_{α}}{m_{β}}\right)ψ\left(x^{α\backslashβ}\right)-ψ'\left(x^{α\backslashβ}\right)\right]ν_{0}^{α\backslashβ}`
 
         where,
 
