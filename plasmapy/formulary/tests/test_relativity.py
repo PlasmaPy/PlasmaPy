@@ -127,7 +127,7 @@ def test_relativistic_body(parameter, argument, attribute, expected):
     relativistic_body = RelativisticBody(**kwargs)
     actual = getattr(relativistic_body, attribute)
 
-    assert_quantity_allclose(actual, expected, rtol=1e-6)
+    assert_quantity_allclose(actual, expected, rtol=1e-9)
 
 
 @pytest.mark.parametrize("attr_to_set, set_value", proton_at_half_c_inputs)
