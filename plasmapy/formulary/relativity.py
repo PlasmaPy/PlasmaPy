@@ -247,7 +247,7 @@ class RelativisticBody:
 
     @staticmethod
     def _get_speed_like_input(
-        velocity_like_arguments: Dict[str, Union[u.Quantity, Real]],
+        velocity_like_arguments: Dict[str, Union[u.Quantity, Real]]
     ):
 
         not_none_arguments = {
@@ -256,17 +256,14 @@ class RelativisticBody:
             if value is not None
         }
 
-        if len(not_none_arguments) > 1:
+        if len(not_none_arguments) != 1:
             raise ValueError(
-                "RelativisticBody can accept no more than one of the "
-                "following arguments: V, v_over_c, momentum, total_energy, "
-                "kinetic_energy, and lorentz_factor."
+                "RelativisticBody can accept no more than one of the following "
+                "arguments: V, v_over_c, momentum, total_energy, kinetic_energy, "
+                "and lorentz_factor."
             )
 
-        if not not_none_arguments:
-            return {"velocity": np.nan * u.m / u.s}
-
-        return not_none_arguments
+        return not_none_arguments or {"velocity": np.nan * u.m / u.s}
 
     def _store_velocity_like_argument(
         self, speed_like_input: Dict[str, Union[u.Quantity, Real]]
