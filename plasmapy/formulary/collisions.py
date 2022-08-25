@@ -2184,7 +2184,7 @@ class CollisionFrequencies:
         ...     "e-", "e-", v_a=v_a, n_b=n_b, T_b=T_b, Coulomb_log=Coulomb_log
         ... )
         >>> frequencies_using_velocity.energy_loss
-        <Quantity 193756965.39266655 Hz>
+        <Quantity -9.69828719e+15 Hz>
 
         See Also
         --------
