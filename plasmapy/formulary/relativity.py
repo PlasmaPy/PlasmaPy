@@ -160,15 +160,15 @@ def relativistic_energy(m: u.kg, v: u.m / u.s) -> u.Joule:
 
 class RelativisticBody:
     r"""
-    A physical body that is moving a velocity relative to the speed of
-    light.
+    A physical body that is moving at a velocity relative to the speed 
+    of light.
 
     Parameters
     ----------
     particle : |ParticleLike|, |CustomParticle|, |ParticleList|, or |Quantity|
         A representation of a particle from which to get the mass
         of the relativistic body. If it is a |Quantity|, then it must
-        have units of mass.
+        have units of mass and describe the body's rest mass. 
 
     V : |Quantity|, optional
         The velocity of the relativistic body in units convertible to
@@ -245,8 +245,8 @@ class RelativisticBody:
     <Quantity [3.345244...e-22, 2.445659...e-22] kg m / s>
     """
 
+    @staticmethod
     def _get_speed_like_input(
-        self,
         velocity_like_arguments: Dict[str, Union[u.Quantity, Real]],
     ):
 
