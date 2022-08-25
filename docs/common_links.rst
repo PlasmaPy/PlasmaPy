@@ -6,6 +6,7 @@
 .. ------------------
 
 .. |ClassicalTransport| replace:: :class:`~plasmapy.formulary.braginskii.ClassicalTransport`
+.. |RelativisticBody| replace:: :class:`~plasmapy.formulary.relativity.RelativisticBody`
 
 .. ------------------
 .. plasmapy.particles
@@ -72,6 +73,8 @@
 .. |nan| replace:: `~numpy.nan`
 .. |ndarray| replace:: :class:`~numpy.ndarray`
 .. |array_like| replace:: :term:`numpy:array_like`
+.. |ArrayLike| replace:: `~numpy.typing.ArrayLike`
+.. |DTypeLike| replace:: `~numpy.typing.DTypeLike`
 
 .. --------------------
 .. Astropy replacements
@@ -95,6 +98,7 @@
 .. |contributor guide| replace:: :ref:`contributor guide`\
 .. |documentation guide| replace:: :ref:`documentation guide`\
 .. |glossary| replace:: :ref:`glossary`\
+.. |keyword-only| replace:: :term:`keyword-only`\
 .. |minpython| replace:: 3.8
 .. |plasma-calculator| replace:: :ref:`plasmapy-calculator`\
 .. |release guide| replace:: :ref:`release guide`\
