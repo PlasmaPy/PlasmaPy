@@ -28,7 +28,8 @@ if sys.version_info < (3, 8):  # coverage: ignore
 # Packages may add whatever they like to this file, but
 # should keep this content at the top.
 # ----------------------------------------------------------------------------
-from importlib.metadata import version, PackageNotFoundError
+from importlib.metadata import PackageNotFoundError, version
+
 from plasmapy import (
     analysis,
     diagnostics,
