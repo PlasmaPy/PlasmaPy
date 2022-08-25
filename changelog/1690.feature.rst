@@ -1,1 +1,1 @@
-Change os.path to Pathlib
+Replace ``os.path`` with the more modern ``pathlib``.
