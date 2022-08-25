@@ -2153,14 +2153,14 @@ class CollisionFrequencies:
 
             :math:`x^{α\backslashβ}=\frac{m_{β}v_{α}^{2}}{2k_B T_{β}}`,
 
-            :math:`ψ\left(x\right)=\frac{2}{\sqrt{\pi}}\int_{0}^{x}t^{\frac{1}{2}}e^{-t}dt`, and
+            :math:`ψ\left(x\right)=\frac{2}{\sqrt{\pi}}\int_{0}^{x}t^{\frac{1}{2}}e^{-t}dt`,
 
-            :math:`ψ'\left(x\right)=\frac{dψ}{dx}`
+            :math:`ψ'\left(x\right)=\frac{dψ}{dx}`,
 
-        where :math:`\lambda_{\alpha \beta}` is the Coulomb logarithm for the collisions,
+        and :math:`\lambda_{\alpha \beta}` is the Coulomb logarithm for the collisions,
         :math:`n_\beta` is the number density of the field particles, :math:`v_\alpha` is
         the speed of the test particles relative to the field particles, :math:`k_B` is Boltzmann's
-        constant and :math:`T_\beta` is the temperature of the field particles.
+        constant, and :math:`T_\beta` is the temperature of the field particles.
 
         For values of x<<1 (the 'slow' or 'thermal' limit) or x>>1 (the 'fast' or 'beam' limit),
         :math:`\psi` asymptotes to zero or one respectively. For simplified expressions in these limits
