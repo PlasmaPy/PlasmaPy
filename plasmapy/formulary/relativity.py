@@ -160,7 +160,7 @@ def relativistic_energy(m: u.kg, v: u.m / u.s) -> u.Joule:
 
 class RelativisticBody:
     r"""
-    A physical body that is moving at a velocity relative to the speed 
+    A physical body that is moving at a velocity relative to the speed
     of light.
 
     Parameters
@@ -168,7 +168,7 @@ class RelativisticBody:
     particle : |ParticleLike|, |CustomParticle|, |ParticleList|, or |Quantity|
         A representation of a particle from which to get the mass
         of the relativistic body. If it is a |Quantity|, then it must
-        have units of mass and describe the body's rest mass. 
+        have units of mass and describe the body's rest mass.
 
     V : |Quantity|, optional
         The velocity of the relativistic body in units convertible to
