@@ -9,7 +9,7 @@ from plasmapy.particles.data.test import data_dir
 
 @pytest.fixture(scope="module")
 def h5(request):
-    h5 = plasmapy.plasma.Plasma(hdf5=data_dir.joinpath("data00000255.h5"))
+    h5 = plasmapy.plasma.Plasma(hdf5=data_dir / "data00000255.h5")
     yield h5
     h5.close()
 

@@ -12,21 +12,21 @@ from plasmapy.plasma.sources import openpmd_hdf5
 
 @pytest.fixture(scope="module")
 def h5_2d(request):
-    h5 = openpmd_hdf5.HDF5Reader(hdf5=data_dir.joinpath("data00000255.h5"))
+    h5 = openpmd_hdf5.HDF5Reader(hdf5=data_dir / "data00000255.h5")
     yield h5
     h5.close()
 
 
 @pytest.fixture(scope="module")
 def h5_3d(request):
-    h5 = openpmd_hdf5.HDF5Reader(hdf5=data_dir.joinpath("data00000100.h5"))
+    h5 = openpmd_hdf5.HDF5Reader(hdf5=data_dir / "data00000100.h5")
     yield h5
     h5.close()
 
 
 @pytest.fixture(scope="module")
 def h5_theta(request):
-    h5 = openpmd_hdf5.HDF5Reader(hdf5=data_dir.joinpath("data00000200.h5"))
+    h5 = openpmd_hdf5.HDF5Reader(hdf5=data_dir / "data00000200.h5")
     yield h5
     h5.close()
 

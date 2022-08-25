@@ -7,4 +7,4 @@ import glob
 from pathlib import Path
 
 data_dir = Path(__file__).parents[0]
-data_files = glob.glob(str(data_dir.joinpath("*.[!p]*")))
+data_files = list(data_dir.glob("*.[!p]*"))
