@@ -1722,6 +1722,7 @@ class TestCollisionFrequencies:
     ]
 
     ones_array = np.ones(5)
+    ones_array2d = np.ones([5, 5])
 
     @pytest.mark.parametrize(
         "attribute_to_test, expected_attribute_units",
@@ -1731,6 +1732,7 @@ class TestCollisionFrequencies:
             ("parallel_diffusion", u.Hz),
             ("energy_loss", u.Hz),
             ("x", u.dimensionless_unscaled),
+            ("Lorentz_collision_frequency", u.Hz),
         ],
     )
     def test_units(self, attribute_to_test, expected_attribute_units):
@@ -2098,6 +2100,14 @@ class TestCollisionFrequencies:
                 "T_b": ones_array * u.eV,
                 "n_b": ones_array * u.cm**-3,
                 "Coulomb_log": ones_array * u.dimensionless_unscaled,
+            },
+            {
+                "test_particle": Particle("e-"),
+                "field_particle": Particle("e-"),
+                "T_a": ones_array2d * u.eV,
+                "T_b": ones_array2d * u.eV,
+                "n_b": ones_array2d * u.cm**-3,
+                "Coulomb_log": ones_array2d * u.dimensionless_unscaled,
             },
         ],
     )

@@ -62,6 +62,7 @@ import scipy.misc
 import warnings
 
 from astropy.constants.si import e, eps0, hbar, k_B, m_e
+from functools import cached_property
 from numbers import Real
 from numpy import pi
 
@@ -2124,39 +2125,46 @@ class CollisionFrequencies:
 
         Notes
         -----
-        The collision frequencies between two interacting particles are given by four differential equations:
+        The frequency of collisions between a test particle (subscript :math:`\alpha`) and
+        a field particle (subscript :math:`\beta`)  each with mass  :math:`m` and charge :math:`e`
+        are given by four differential equations:
 
-            :math:`\frac{d\textbf{v}_{α}}{dt}=-ν_{s}^{α\backslashβ}\textbf{v}_{α}`
+            momentum loss: :math:`\frac{d\textbf{v}_{α}}{dt}=-ν_{s}^{α\backslashβ}\textbf{v}_{α}`
 
-            :math:`\frac{d}{dt}\left(\overline{\textbf{v}}_{α}-\overline{\textbf{v}}_{α}\right)_{⊥}^{2}=ν_{⊥}^{α\backslashβ}v_{α}^{2}`
+            transverse diffusion: :math:`\frac{d}{dt}\left(\textbf{v}_{α}-\overline{\textbf{v}}_{α}\right)_{⊥}^{2}=ν_{⊥}^{α\backslashβ}v_{α}^{2}`
 
-            :math:`\frac{d}{dt}\left(\overline{\textbf{v}}_{α}-\overline{\textbf{v}}_{α}\right)_{∥}^{2}=ν_{∥}^{α\backslashβ}v_{α}^{2}`
+            parallel diffusion: :math:`\frac{d}{dt}\left(\textbf{v}_{α}-\overline{\textbf{v}}_{α}\right)_{∥}^{2}=ν_{∥}^{α\backslashβ}v_{α}^{2}`
 
-            :math:`\frac{d}{dt}v_{α}^{2}=-ν_{ϵ}^{α\backslashβ}v_{α}^{2}`
+            energy loss: :math:`\frac{d}{dt}v_{α}^{2}=-ν_{ϵ}^{α\backslashβ}v_{α}^{2}`
 
         These equations yield the exact formulas:
 
-            momentum loss - :math:`ν_{s}^{α\backslashβ}=\left(1+\frac{m_{α}}{m_{β}}\right)ψ\left(x^{α\backslashβ}\right)ν_{0}^{α\backslashβ}`
+            momentum loss: :math:`ν_{s}^{α\backslashβ}=\left(1+\frac{m_{α}}{m_{β}}\right)ψ\left(x^{α\backslashβ}\right)ν_{0}^{α\backslashβ}`
 
-            transverse diffusion - :math:`ν_{⊥}^{α\backslashβ}=2\left[\left(1-\frac{1}{2x^{α\backslashβ}}\right)ψ\left(x^{α\backslashβ}\right)\ +ψ'\left(x^{α\backslashβ}\right)\right]ν_{0}^{α\backslashβ}`
+            transverse diffusion: :math:`ν_{⊥}^{α\backslashβ}=2\left[\left(1-\frac{1}{2x^{α\backslashβ}}\right)ψ\left(x^{α\backslashβ}\right)\ +ψ'\left(x^{α\backslashβ}\right)\right]ν_{0}^{α\backslashβ}`
 
-            parallel diffusion - :math:`ν_{||}^{α\backslashβ}=\left[\frac{ψ\left(x^{α\backslashβ}\right)}{x^{α\backslashβ}}\right]ν_{0}^{α\backslashβ}`
+            parallel diffusion: :math:`ν_{||}^{α\backslashβ}=\left[\frac{ψ\left(x^{α\backslashβ}\right)}{x^{α\backslashβ}}\right]ν_{0}^{α\backslashβ}`
 
-            energy loss - :math:`ν_{ε}^{α\backslashβ}=2\left[\left(\frac{m_{α}}{m_{β}}\right)ψ\left(x^{α\backslashβ}\right)-ψ'\left(x^{α\backslashβ}\right)\right]ν_{0}^{α\backslashβ}`
+            energy loss: :math:`ν_{ε}^{α\backslashβ}=2\left[\left(\frac{m_{α}}{m_{β}}\right)ψ\left(x^{α\backslashβ}\right)-ψ'\left(x^{α\backslashβ}\right)\right]ν_{0}^{α\backslashβ}`
 
         where,
 
             :math:`ν_{0}^{α\backslashβ}=\frac{4\pi e_{α}^{2}e_{β}^{2}λ_{αβ}n_{β}}{m_{α}^{2}v_{α}^{3}}`,
 
-            :math:`x^{α\backslashβ}=\frac{m_{β}v_{α}^{2}}{2kT_{β}}`,
+            :math:`x^{α\backslashβ}=\frac{m_{β}v_{α}^{2}}{2k_B T_{β}}`,
 
             :math:`ψ\left(x\right)=\frac{2}{\sqrt{\pi}}\int_{0}^{x}t^{\frac{1}{2}}e^{-t}dt`, and
 
             :math:`ψ'\left(x\right)=\frac{dψ}{dx}`
 
-        For limiting cases we encourage the curious reader to refer to p. 31 of :cite:t:`nrlformulary:2019`
+        where :math:`\lambda_{\alpha \beta}` is the Coulomb logarithm for the collisions,
+        :math:`n_\beta` is the number density of the field particles, :math:`v_\alpha` is
+        the speed of the test particles relative to the field particles, :math:`k_B` is Boltzmann's
+        constant and :math:`T_\beta` is the temperature of the field particles.
 
-        This function uses CGS units under the hood to coincide with our references, but passing MKS units is acceptable.
+        For values of x<<1 (the 'slow' or 'thermal' limit) or x>>1 (the 'fast' or 'beam' limit),
+        :math:`\psi` asymptotes to zero or one respectively. For simplified expressions in these limits
+        we encourage the curious reader to refer to p. 31 of :cite:t:`nrlformulary:2019`
 
         Examples
         --------
@@ -2165,11 +2173,18 @@ class CollisionFrequencies:
         >>> n_b = 1e20 * u.cm**-3
         >>> T_b = 1e3 * u.eV
         >>> Coulomb_log = 10 * u.dimensionless_unscaled
-        >>> frequencies = CollisionFrequencies(
+        >>> frequencies_using_temperature = CollisionFrequencies(
         ...     "e-", "e-", T_a=T_a, n_b=n_b, T_b=T_b, Coulomb_log=Coulomb_log
         ... )
-        >>> frequencies.momentum_loss
+        >>> frequencies_using_temperature.momentum_loss
         <Quantity 1.83701432e+11 Hz>
+
+        >>> v_a = 1e7 * u.cm / u.s
+        >>> frequencies_using_velocity = CollisionFrequencies(
+        ...     "e-", "e-", v_a=v_a, n_b=n_b, T_b=T_b, Coulomb_log=Coulomb_log
+        ... )
+        >>> frequencies_using_velocity.energy_loss
+        <Quantity 193756965.39266655 Hz>
 
         See Also
         --------
@@ -2200,24 +2215,47 @@ class CollisionFrequencies:
         self.T_b = T_b
         self.Coulomb_log = Coulomb_log
 
-        mass_ratio = test_particle.mass / field_particle.mass
+    @cached_property
+    def _mass_ratio(self):
+        return self.test_particle.mass / self.field_particle.mass
 
-        self.momentum_loss = (
-            (1 + mass_ratio) * self.phi * self.Lorentz_collision_frequency
-        )
-        self.transverse_diffusion = (
+    @cached_property
+    def momentum_loss(self):
+        """
+        The momentum loss for the specified particles.
+        """
+        return (1 + self._mass_ratio) * self.phi * self.Lorentz_collision_frequency
+
+    @cached_property
+    def transverse_diffusion(self):
+        """
+        The transverse diffusion for the specified particles.
+        """
+        return (
             2
             * ((1 - 1 / (2 * self.x)) * self.phi + self._phi_prime)
             * self.Lorentz_collision_frequency
         )
-        self.parallel_diffusion = (self.phi / self.x) * self.Lorentz_collision_frequency
-        self.energy_loss = (
+
+    @cached_property
+    def parallel_diffusion(self):
+        """
+        The parallel diffusion for the specified particles.
+        """
+        return (self.phi / self.x) * self.Lorentz_collision_frequency
+
+    @cached_property
+    def energy_loss(self):
+        """
+        The energy loss for the specified particles.
+        """
+        return (
             2
-            * (mass_ratio * self.phi - self._phi_prime)
+            * (self._mass_ratio * self.phi - self._phi_prime)
             * self.Lorentz_collision_frequency
         )
 
-    @property
+    @cached_property
     def Lorentz_collision_frequency(self):
         r"""
         The Lorentz collision frequency (see Ch. 5 of :cite:t:`chen:2016`) is given
@@ -2248,12 +2286,12 @@ class CollisionFrequencies:
             / (self.test_particle.mass**2 * self.v_a**3)
         ).to(u.Hz)
 
-    @property
+    @cached_property
     def x(self) -> u.dimensionless_unscaled:
         """
         The ratio of kinetic energy in the test particle to the thermal energy of the field particle.
-        This parameter determines the regime in which the collision falls (fast or slow).
-
+        This parameter determines the regime in which the collision falls
+        (see documentation for the `~plasmapy.formulary.collisions.CollisionFrequencies` class for details).
         """
 
         x = self.field_particle.mass * self.v_a**2 / (2 * k_B.cgs * self.T_b)
@@ -2275,7 +2313,7 @@ class CollisionFrequencies:
 
         return integral
 
-    @property
+    @cached_property
     def phi(self):
         """
         The parameter phi used in calculating collision frequencies
@@ -2287,7 +2325,7 @@ class CollisionFrequencies:
 
         return 2 / np.pi**0.5 * vectorized_integral(self.x.value)
 
-    @property
+    @cached_property
     def _phi_prime(self):
         """
         The derivative of phi evaluated at x
