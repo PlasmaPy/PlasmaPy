@@ -25,6 +25,12 @@ def _physical_particle_factory(
     This function will select the appropriate type among |Particle|,
     |CustomParticle|, and |ParticleList|.
 
+    .. caution::
+
+       If |Quantity| instances are provided to this function as
+       positional arguments, then they must presently be in the order
+       expected by |CustomParticle|.
+
     Parameters
     ----------
     *args
@@ -50,6 +56,12 @@ def _physical_particle_factory(
     ~plasmapy.particles.particle_class.CustomParticle
     ~plasmapy.particles.particle_class.ParticleList
 
+    Notes
+    -=---
+    If ``Z`` or ``mass_numb`` is provided as keyword arguments but are
+    equal to `None`, then they will not be provided to any of the calls.
+    This is to allow |CustomParticle| instances to be created.
+
     Examples
     --------
     >>> from plasmapy.particles._factory import _physical_particle_factory
@@ -61,6 +73,15 @@ def _physical_particle_factory(
     >>> _physical_particle_factory(["p+", "e-"])
     ParticleList(['p+', 'e-'])
     """
+
+    # We need to remove Z and mass_numb from kwargs when they are `None`
+    # because they are not allowed as arguments to `CustomParticle`, and
+    # are not needed in kwargs if they are their default values. Note
+    # that this affects `not kwargs` below.
+    for parameter in ["Z", "mass_numb"]:
+        if parameter in kwargs and kwargs[parameter] is None:
+            kwargs.pop(parameter)
+
     if (
         len(args) == 1
         and not kwargs
