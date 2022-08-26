@@ -1,0 +1,2 @@
+Moved ``plasmapy.particles.particle_collections.ionic_levels`` to
+`plasmapy.particle.atomic.ionic_levels`.
