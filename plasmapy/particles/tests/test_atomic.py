@@ -520,6 +520,39 @@ class TestReducedMassInput:
             reduced_mass("Og", "H")
 
 
+def test_ion_list_example():
+    ions = ionic_levels("He-4")
+    np.testing.assert_equal(ions.charge_number, [0, 1, 2])
+    assert ions.symbols == ["He-4 0+", "He-4 1+", "He-4 2+"]
+
+
+@pytest.mark.parametrize(
+    "particle, min_charge, max_charge, expected_charge_numbers",
+    [
+        ("H-1", 0, 1, [0, 1]),
+        ("p+", 1, 1, [1]),
+        (Particle("p+"), 0, 0, [0]),
+        ("C", 3, 5, [3, 4, 5]),
+    ],
+)
+def test_ion_list(particle, min_charge, max_charge, expected_charge_numbers):
+    """Test that inputs to ionic_levels are interpreted correctly."""
+    particle = Particle(particle)
+    ions = ionic_levels(particle, min_charge, max_charge)
+    np.testing.assert_equal(ions.charge_number, expected_charge_numbers)
+    assert ions[0].element == particle.element
+    if particle.is_category("isotope"):
+        assert ions[0].isotope == particle.isotope
+
+
+@pytest.mark.parametrize(
+    "element, min_charge, max_charge", [("Li", 0, 4), ("Li", 3, 2)]
+)
+def test_invalid_inputs_to_ion_list(element, min_charge, max_charge):
+    with pytest.raises(ChargeError):
+        ionic_levels(element, min_charge, max_charge)
+
+
 str_electron_table = [
     ("e-", True),
     ("e+", False),

@@ -10,6 +10,7 @@ from plasmapy.particles import (
     atomic_number,
     atomic_symbol,
     charge_number,
+    ionic_levels,
     isotope_symbol,
     particle_symbol,
 )
@@ -18,7 +19,6 @@ from plasmapy.particles.exceptions import InvalidIsotopeError, ParticleError
 from plasmapy.particles.ionization_state import IonicLevel, IonizationState
 from plasmapy.particles.particle_class import Particle
 from plasmapy.particles.particle_collections import ParticleList
-from plasmapy.utils.exceptions import PlasmaPyFutureWarning
 
 ionic_fraction_table = [
     ("Fe 6+", 0.52, 5.2e-6 * u.m**-3),

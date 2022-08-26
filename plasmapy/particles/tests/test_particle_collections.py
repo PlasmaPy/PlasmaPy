@@ -7,7 +7,7 @@ from typing import Dict
 
 from plasmapy.particles import alpha, electron, neutron, proton
 from plasmapy.particles.atomic import atomic_number
-from plasmapy.particles.exceptions import ChargeError, InvalidParticleError
+from plasmapy.particles.exceptions import InvalidParticleError
 from plasmapy.particles.nuclear import nuclear_reaction_energy
 from plasmapy.particles.particle_class import (
     CustomParticle,

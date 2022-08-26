@@ -22,8 +22,6 @@ from plasmapy.particles.exceptions import (
 from plasmapy.particles.particle_class import CustomParticle, Particle
 from plasmapy.particles.particle_collections import ParticleList
 from plasmapy.utils.decorators import validate_quantities
-from plasmapy.utils.decorators.deprecation import deprecated
-from plasmapy.utils.exceptions import PlasmaPyFutureWarning
 
 _number_density_errmsg = (
     "Number densities must be Quantity objects with units of inverse volume."
