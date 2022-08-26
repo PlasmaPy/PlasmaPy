@@ -14,7 +14,6 @@ from plasmapy.particles import (
     isotope_symbol,
     particle_symbol,
 )
-from plasmapy.particles.atomic import ionic_levels
 from plasmapy.particles.exceptions import InvalidIsotopeError, ParticleError
 from plasmapy.particles.ionization_state import IonicLevel, IonizationState
 from plasmapy.particles.particle_class import Particle
