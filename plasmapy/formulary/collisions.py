@@ -2222,14 +2222,14 @@ class CollisionFrequencies:
     @cached_property
     def momentum_loss(self):
         """
-        The momentum loss for the specified particles.
+        The momentum loss rate due to collisions.
         """
         return (1 + self._mass_ratio) * self.phi * self.Lorentz_collision_frequency
 
     @cached_property
     def transverse_diffusion(self):
         """
-        The transverse diffusion for the specified particles.
+        The rate of transverse diffusion due to collisions.
         """
         return (
             2
@@ -2240,14 +2240,14 @@ class CollisionFrequencies:
     @cached_property
     def parallel_diffusion(self):
         """
-        The parallel diffusion for the specified particles.
+        The rate of parallel diffusion due to collisions.
         """
         return (self.phi / self.x) * self.Lorentz_collision_frequency
 
     @cached_property
     def energy_loss(self):
         """
-        The energy loss for the specified particles.
+        The energy loss rate due to collisions.
         """
         return (
             2
