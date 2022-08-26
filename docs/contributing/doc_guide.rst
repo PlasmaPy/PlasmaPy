@@ -203,7 +203,7 @@ We can link to code objects by enclosing them in single back ticks.
 This linking will work for Python_ commands as well as certain packages
 like NumPy_, SciPy_, Astropy_, and pandas_. This linking is described in
 the section on :ref:`external-references`. In-line code examples may be
-enclosed in double back ticks or specified using the ``:python:`` role.
+enclosed in double back ticks or specified using the ``:py:`` role.
 
 .. code-block:: rst
 
@@ -218,7 +218,7 @@ enclosed in double back ticks or specified using the ``:python:`` role.
    cross-referenced: ``plasmapy.particles``.
 
    The ``:py:`` role can be used for inline code highlighting:
-   :py:`import astropy.units as u``.
+   :py:`import astropy.units as u`.
 
 This reST_ block renders as:
 
