@@ -36,9 +36,8 @@ from plasmapy.particles.exceptions import (
     MissingParticleDataError,
 )
 from plasmapy.particles.particle_class import Particle
+from plasmapy.particles.particle_collections import ParticleList
 from plasmapy.particles.symbols import atomic_symbol
-from plasmapy.utils.decorators.deprecation import deprecated
-from plasmapy.utils.exceptions import PlasmaPyFutureWarning
 
 __all__.sort()
 
