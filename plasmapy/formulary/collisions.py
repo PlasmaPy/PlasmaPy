@@ -2258,6 +2258,8 @@ class CollisionFrequencies:
     @cached_property
     def Lorentz_collision_frequency(self):
         r"""
+        The Lorentz collision frequency.
+        
         The Lorentz collision frequency (see Ch. 5 of :cite:t:`chen:2016`) is given
         by
 
