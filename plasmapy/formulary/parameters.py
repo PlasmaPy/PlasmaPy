@@ -19,6 +19,8 @@ Functions to calculate fundamental plasma parameters.
 
 __all__ = []
 
+import contextlib
+
 from plasmapy.utils.decorators import deprecated
 from plasmapy.utils.exceptions import PlasmaPyFutureWarning
 
@@ -53,18 +55,13 @@ for name in (
     "Re_",
     "Reynolds_number",
     "Rm_",
+    "Lundquist_number",
 ):  # coverage: ignore
-    try:
+    with contextlib.suppress(ValueError):  # ValueError if name was not in __aliases__
         __aliases__.remove(name)
-    except ValueError:
-        # name was not in __aliases__
-        pass
 
-    try:
+    with contextlib.suppress(ValueError):  # ValueError if name was not in __all__
         __all__.remove(name)
-    except ValueError:
-        # name was not in __all__
-        pass
 
 funcs_to_deprecate_wrap = [  # (module_name, func_name)
     ("dimensionless", "Debye_number"),

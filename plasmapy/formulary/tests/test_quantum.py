@@ -12,6 +12,7 @@ from plasmapy.formulary.quantum import (
     Fermi_energy,
     lambdaDB_,
     lambdaDB_th_,
+    quantum_theta,
     thermal_deBroglie_wavelength,
     Thomas_Fermi_length,
     Wigner_Seitz_radius,
@@ -69,7 +70,7 @@ def test_deBroglie_wavelength():
 
 # defining some plasma parameters for tests
 T_e = 1 * u.eV
-n_e = 1e23 * u.cm ** -3
+n_e = 1e23 * u.cm**-3
 # should probably change this to use unittest module
 # add tests for numpy arrays as inputs
 # add tests for different astropy units (random fuzzing method?)
@@ -113,7 +114,7 @@ def test_Fermi_energy():
     with pytest.raises(TypeError):
         Fermi_energy("Bad Input")
     with pytest.raises(ValueError):
-        Fermi_energy(n_e=-1 * u.m ** -3)
+        Fermi_energy(n_e=-1 * u.m**-3)
 
 
 def test_Thomas_Fermi_length():
@@ -133,14 +134,14 @@ def test_Thomas_Fermi_length():
     with pytest.raises(TypeError):
         Thomas_Fermi_length("Bad Input")
     with pytest.raises(ValueError):
-        Thomas_Fermi_length(n_e=-1 * u.m ** -3)
+        Thomas_Fermi_length(n_e=-1 * u.m**-3)
 
 
 def test_Wigner_Seitz_radius():
     """
     Checks Wigner-Seitz radius for a known value.
     """
-    n_e = 1e23 * u.cm ** -3
+    n_e = 1e23 * u.cm**-3
     radiusTrue = 1.3365046175719772e-10 * u.m
     radiusMeth = Wigner_Seitz_radius(n_e)
     testTrue = u.isclose(radiusMeth, radiusTrue, rtol=1e-5)
@@ -152,14 +153,11 @@ class Test_chemical_potential:
     @classmethod
     def setup_class(self):
         """initializing parameters for tests"""
-        self.n_e = 1e20 * u.cm ** -3
-        self.n_e_fail = 1e23 * u.cm ** -3
+        self.n_e = 1e20 * u.cm**-3
+        self.n_e_fail = 1e23 * u.cm**-3
         self.T = 11604 * u.K
-        self.True1 = 1.234345958778249e-11
+        self.True1 = 6.133671348607095e-11
 
-    @pytest.mark.xfail(
-        reason="see issue https://github.com/PlasmaPy/PlasmaPy/issues/726"
-    )
     def test_known1(self):
         """
         Tests Fermi_integral for expected value.
@@ -169,9 +167,6 @@ class Test_chemical_potential:
         errStr = f"Chemical potential value should be {self.True1} and not {methodVal}."
         assert testTrue, errStr
 
-    @pytest.mark.xfail(
-        reason="see issue https://github.com/PlasmaPy/PlasmaPy/issues/726"
-    )
     def test_fail1(self):
         """
         Tests if test_known1() would fail if we slightly adjusted the
@@ -191,13 +186,10 @@ class Test__chemical_potential_interp:
     @classmethod
     def setup_class(self):
         """initializing parameters for tests"""
-        self.n_e = 1e23 * u.cm ** -3
+        self.n_e = 1e23 * u.cm**-3
         self.T = 11604 * u.K
-        self.True1 = 7.741256653579105
+        self.True1 = 7.741254037813922
 
-    @pytest.mark.xfail(
-        reason="see issue https://github.com/PlasmaPy/PlasmaPy/issues/726"
-    )
     def test_known1(self):
         """
         Tests Fermi_integral for expected value.
@@ -207,9 +199,6 @@ class Test__chemical_potential_interp:
         errStr = f"Chemical potential value should be {self.True1} and not {methodVal}."
         assert testTrue, errStr
 
-    @pytest.mark.xfail(
-        reason="see issue https://github.com/PlasmaPy/PlasmaPy/issues/726"
-    )
     def test_fail1(self):
         """
         Tests if test_known1() would fail if we slightly adjusted the
@@ -231,3 +220,30 @@ def test_quantum_aliases():
     assert Ef_ is Fermi_energy
     assert lambdaDB_ is deBroglie_wavelength
     assert lambdaDB_th_ is thermal_deBroglie_wavelength
+
+
+class TestQuantumTheta:
+    """Test the quantum_theta function in quantum.py."""
+
+    def test_units(self):
+        """Test the return units"""
+
+        theta = quantum_theta(1 * u.eV, 1e26 * u.m**-3)
+
+        assert theta.unit.is_equivalent(u.dimensionless_unscaled)
+
+    @pytest.mark.parametrize(
+        "T, n_e, expected_theta",
+        [
+            (1 * u.eV, 1e26 * u.m**-3, 12.72906),  # Both regimes are present
+            (2 / 3 * u.eV, 1e40 * u.m**-3, 3.93887e-9),  # Fermi regime
+            (8.61e2 * u.eV, 1e12 * u.m**-3, 2.36120e13),  # Thermal regime
+            (1 * u.K, 1e26 * u.m**-3, 1.09690e-3),  # Specify temperature in Kelvin
+        ],
+    )
+    def test_value(self, T, n_e, expected_theta):
+        """Compare the calculated theta with the expected value."""
+
+        theta = quantum_theta(T, n_e)
+
+        assert np.isclose(theta.value, expected_theta)

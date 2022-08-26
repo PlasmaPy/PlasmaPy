@@ -28,7 +28,7 @@ if sys.version_info < (3, 8):  # coverage: ignore
 # Packages may add whatever they like to this file, but
 # should keep this content at the top.
 # ----------------------------------------------------------------------------
-import pkg_resources
+from importlib.metadata import PackageNotFoundError, version
 
 from plasmapy import (
     analysis,
@@ -53,8 +53,8 @@ try:
     #       frozen to the version at time of install.
     #
     #: PlasmaPy version string
-    __version__ = pkg_resources.get_distribution("plasmapy").version
-except pkg_resources.DistributionNotFound:
+    __version__ = version("plasmapy")
+except PackageNotFoundError:
     # package is not installed
     fallback_version = "unknown"
     try:
@@ -111,7 +111,7 @@ def online_help(query: str):
 
     url = (
         "http://docs.plasmapy.org/en/stable/search.html?"
-        "{0}&check_keywords=yes&area=default"
+        "{}&check_keywords=yes&area=default"
     ).format(urlencode({"q": query}))
 
     if query.lower() in ("unit", "units", "quantity", "quantities"):
@@ -120,4 +120,4 @@ def online_help(query: str):
     webbrowser.open(url)
 
 
-del pkg_resources, sys
+del sys

@@ -1,1 +1,0 @@
-``Particle("Li").ionize()`` no longer results in a `~plasmapy.particles.exceptions.ChargeError`. Instead, ionization of a neutral atom is assumed.

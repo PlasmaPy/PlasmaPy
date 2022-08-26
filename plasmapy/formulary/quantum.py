@@ -7,6 +7,7 @@ __all__ = [
     "chemical_potential",
     "deBroglie_wavelength",
     "Fermi_energy",
+    "quantum_theta",
     "Thomas_Fermi_length",
     "thermal_deBroglie_wavelength",
     "Wigner_Seitz_radius",
@@ -22,6 +23,7 @@ from lmfit import minimize, Parameters
 from plasmapy import particles
 from plasmapy.formulary import mathematics
 from plasmapy.formulary.relativity import Lorentz_factor
+from plasmapy.particles.exceptions import InvalidParticleError
 from plasmapy.utils import RelativityError
 from plasmapy.utils.decorators import validate_quantities
 
@@ -107,12 +109,12 @@ def deBroglie_wavelength(V: u.m / u.s, particle) -> u.m:
         try:
             # TODO: Replace with more general routine!
             m = particles.particle_mass(particle)
-        except Exception:
+        except InvalidParticleError:
             raise ValueError("Unable to find particle mass.")
     else:
         try:
             m = particle.to(u.kg)
-        except Exception as e:
+        except u.UnitConversionError as e:
             raise u.UnitConversionError(
                 "The second argument for deBroglie_wavelength must be either a "
                 "representation of a particle or a"
@@ -198,7 +200,7 @@ lambdaDB_th_ = thermal_deBroglie_wavelength
 @validate_quantities(
     n_e={"can_be_negative": False}, validations_on_return={"can_be_negative": False}
 )
-def Fermi_energy(n_e: u.m ** -3) -> u.J:
+def Fermi_energy(n_e: u.m**-3) -> u.J:
     r"""
     Calculate the kinetic energy in a degenerate electron gas.
 
@@ -264,7 +266,7 @@ Ef_ = Fermi_energy
 @validate_quantities(
     n_e={"can_be_negative": False}, validations_on_return={"can_be_negative": False}
 )
-def Thomas_Fermi_length(n_e: u.m ** -3) -> u.m:
+def Thomas_Fermi_length(n_e: u.m**-3) -> u.m:
     r"""
     Calculate the exponential scale length for charge screening
     for cold and dense plasmas.
@@ -328,13 +330,13 @@ def Thomas_Fermi_length(n_e: u.m ** -3) -> u.m:
 
     """
     energy_F = Fermi_energy(n_e)
-    return np.sqrt(2 * eps0 * energy_F / (3 * n_e * e ** 2))
+    return np.sqrt(2 * eps0 * energy_F / (3 * n_e * e**2))
 
 
 @validate_quantities(
     n={"can_be_negative": False}, validations_on_return={"can_be_negative": False}
 )
-def Wigner_Seitz_radius(n: u.m ** -3) -> u.m:
+def Wigner_Seitz_radius(n: u.m**-3) -> u.m:
     r"""
     Calculate the Wigner-Seitz radius, which approximates the inter-particle
     spacing.
@@ -395,14 +397,11 @@ def Wigner_Seitz_radius(n: u.m ** -3) -> u.m:
     return (3 / (4 * np.pi * n)) ** (1 / 3)
 
 
-# TODO: remove NotImplementedError and 'doctest: +SKIP' when the following issues are addressed...
-#       https://github.com/PlasmaPy/PlasmaPy/issues/726
-#       https://github.com/astropy/astropy/issues/9721
 @validate_quantities(
     n_e={"can_be_negative": False},
     T={"can_be_negative": False, "equivalencies": u.temperature_energy()},
 )
-def chemical_potential(n_e: u.m ** -3, T: u.K) -> u.dimensionless_unscaled:
+def chemical_potential(n_e: u.m**-3, T: u.K) -> u.dimensionless_unscaled:
     r"""
     Calculate the ideal chemical potential.
 
@@ -459,29 +458,17 @@ def chemical_potential(n_e: u.m ** -3, T: u.K) -> u.dimensionless_unscaled:
     This function returns :math:`β μ^{ideal}` the dimensionless
     ideal chemical potential.
 
-    Warnings
-    --------
-    At present this function is limited to relatively small arguments
-    due to limitations in the ``mpmath.polylog``, which PlasmaPy uses in
-    calculating the Fermi integral.
-
     Examples
     --------
     >>> from astropy import units as u
-    >>> chemical_potential(n_e=1e21*u.cm**-3,T=11000*u.K)  # doctest: +SKIP
-    <Quantity 2.00039985e-12>
+    >>> chemical_potential(n_e=1e21*u.cm**-3,T=11000*u.K)
+    <Quantity 9.28146e-14>
     """
 
-    raise NotImplementedError(
-        "This function has been temporarily disabled due to a bug.\n"
-        "Please refer to https://github.com/PlasmaPy/PlasmaPy/issues/726 \n"
-        "and https://github.com/astropy/astropy/issues/9721 "
-        "for progress in fixing it."
-    )
     # deBroglie wavelength
     lambdaDB = thermal_deBroglie_wavelength(T)
     # degeneracy parameter
-    degen = (n_e * lambdaDB ** 3).to(u.dimensionless_unscaled)
+    degen = (n_e * lambdaDB**3).to(u.dimensionless_unscaled)
 
     def residual(params, data, eps_data):
         """Residual function for fitting parameters to Fermi_integral."""
@@ -489,7 +476,7 @@ def chemical_potential(n_e: u.m ** -3, T: u.K) -> u.dimensionless_unscaled:
         # note that alpha = mu / (k_B * T)
         model = mathematics.Fermi_integral(alpha, 0.5)
         complexResidue = (data - model) / eps_data
-        return complexResidue.view(np.float)
+        return complexResidue.view(np.float64)
 
     # setting parameters for fitting along with bounds
     alphaGuess = 1 * u.dimensionless_unscaled
@@ -503,10 +490,6 @@ def chemical_potential(n_e: u.m ** -3, T: u.K) -> u.dimensionless_unscaled:
     return beta_mu
 
 
-# TODO: decorate with validate_quantities
-# TODO: remove NotImplementedError and 'doctest: +SKIP' when the following issues are addressed...
-#       https://github.com/PlasmaPy/PlasmaPy/issues/726
-#       https://github.com/astropy/astropy/issues/9721
 def _chemical_potential_interp(n_e, T):
     r"""
     Fitting formula for interpolating chemical potential between classical
@@ -573,16 +556,10 @@ def _chemical_potential_interp(n_e, T):
     Examples
     --------
     >>> from astropy import units as u
-    >>> _chemical_potential_interp(n_e=1e23*u.cm**-3, T=11000*u.K)  # doctest: +SKIP
+    >>> _chemical_potential_interp(n_e=1e23*u.cm**-3, T=11000*u.K)
     <Quantity 8.17649>
 
     """
-    raise NotImplementedError(
-        "This function has been temporarily disabled due to a bug.\n"
-        "Please refer to https://github.com/PlasmaPy/PlasmaPy/issues/726 \n"
-        "and https://github.com/astropy/astropy/issues/9721 "
-        "for progress in fixing it."
-    )
     A = 0.25945
     B = 0.072
     b = 0.858
@@ -594,3 +571,63 @@ def _chemical_potential_interp(n_e, T):
     term3 = term3num / term3den
     beta_mu = term1 + term2 + term3
     return beta_mu.to(u.dimensionless_unscaled)
+
+
+@validate_quantities(
+    T={"can_be_negative": False, "equivalencies": u.temperature_energy()},
+    n_e={"can_be_negative": False},
+)
+def quantum_theta(T: u.K, n_e: u.m**-3) -> u.dimensionless_unscaled:
+    r"""
+    Compare Fermi energy to thermal kinetic energy to check if quantum
+    effects are important.
+
+    The quantum theta (:math:`θ`) of a plasma is defined by
+
+    .. math::
+        θ = \frac{E_T}{E_F}
+
+    where :math:`E_T` is the thermal energy of the plasma
+    and :math:`E_F` is the Fermi energy of the plasma.
+
+    Parameters
+    ----------
+    T : `~astropy.units.Quantity`
+        The temperature of the plasma.
+
+    n_e : `~astropy.units.Quantity`
+          The electron number density of the plasma.
+
+    Examples
+    --------
+    >>> import astropy.units as u
+    >>> quantum_theta(1*u.eV, 1e20*u.m**-3)
+    <Quantity 127290.619...>
+    >>> quantum_theta(1*u.eV, 1e16*u.m**-3)
+    <Quantity 59083071...>
+    >>> quantum_theta(1*u.eV, 1e26*u.m**-3)
+    <Quantity 12.72906...>
+    >>> quantum_theta(1*u.K, 1e26*u.m**-3)
+    <Quantity 0.00109...>
+
+    Returns
+    -------
+    theta : `~astropy.units.Quantity`
+
+    Notes
+    -----
+    The thermal energy of the plasma (:math:`E_T`) is defined by
+
+    .. math::
+        E_T = k_B T
+
+    where :math:`k_B` is the Boltzmann constant
+    and :math:`T` is the temperature of the plasma.
+
+    See Also
+    --------
+    ~plasmapy.formulary.quantum.Fermi_energy
+    """
+    fermi_energy = Fermi_energy(n_e)
+    thermal_energy = k_B * T
+    return thermal_energy / fermi_energy

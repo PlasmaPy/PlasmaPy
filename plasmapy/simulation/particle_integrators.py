@@ -9,7 +9,7 @@ memory allocation.
 import numpy as np
 
 
-def boris_push(x, v, B, E, q, m, dt):
+def boris_push(x, v, B, E, q, m, dt, inplace: bool = True):
     r"""
     The explicit Boris pusher.
 
@@ -35,6 +35,71 @@ def boris_push(x, v, B, E, q, m, dt):
 
     dt : `float`
         Timestep, in SI (second) units.
+
+    inplace : `bool`
+        If set, data in the v and x arrays is changed during execution.
+        Defaults to True for performance reasons.
+        If False, this function returns `None`.
+
+    Returns
+    -------
+    x : `~numpy.ndarray`
+        Particle position x after Boris push algorithm, in SI (meter) units.
+
+    v : `~numpy.ndarray`
+        Particle velocity after Boris push algorithm, in SI (meter/second) units.
+
+    Examples
+    --------
+    >>> B = np.array([[0.0, 0.0, 5.0]])
+    >>> E = np.array([[0.0, 0.0, 0.0]])
+    >>> x_t0 = np.array([[0.0, 0.0, 0.0]])
+    >>> v_t0 = np.array([[5.0, 0.0, 0.0]])
+    >>> x_t1, v_t1 = boris_push(x = x_t0, v = v_t0, B = B, E = E, q = 1.0, m = 1.0, dt = 0.01, inplace=False)
+    >>> x_t1
+    array([[ 0.04993754, -0.00249844,  0.        ]])
+    >>> v_t1
+    array([[ 4.9937539 , -0.24984385,  0.        ]])
+    >>> boris_push(x = x_t0, v = v_t0, B = B, E = E, q = 1.0, m = 1.0, dt = 0.01, inplace = True)
+    >>> x_t0
+    array([[ 0.04993754, -0.00249844,  0.        ]])
+    >>> v_t0
+    array([[ 4.9937539 , -0.24984385,  0.        ]])
+    >>> # B parallel to v
+    >>> B = np.array([[0.0, 0.0, 5.0]])
+    >>> v_t0 = np.array([[0.0, 0.0, 5.0]])
+    >>> x_t0 = np.array([[0.0, 0.0, 0.0]])
+    >>> boris_push(x = x_t0, v = v_t0, B = B, E = E, q = 1.0, m = 1.0, dt = 0.01, inplace = True)
+    >>> # no rotation of vector v
+    >>> v_t0
+    array([[0., 0., 5.]])
+    >>> x_t0
+    array([[0.  , 0.  , 0.05]])
+    >>> # B perpendicular to v
+    >>> B = np.array([[5.0, 0.0, 0.0]])
+    >>> v_t0 = np.array([[0.0, 5.0, 0.0]])
+    >>> x_t0 = np.array([[0.0, 0.0, 0.0]])
+    >>> boris_push(x = x_t0, v = v_t0, B = B, E = E, q = 1.0, m = 1.0, dt = 0.01, inplace = True)
+    >>> # rotation of vector v
+    >>> v_t0
+    array([[ 0.        ,  4.9937539 , -0.24984385]])
+    >>> x_t0
+    array([[ 0.        ,  0.04993754, -0.00249844]])
+    >>> # nonzero E and zero B
+    >>> E = np.array([[1.0, 1.0, 1.0]])
+    >>> B = np.array([[0.0, 0.0, 0.0]])
+    >>> v_t0 = np.array([[0.0, 0.0, 5.0]])
+    >>> x_t0 = np.array([[0.0, 0.0, 0.0]])
+    >>> boris_push(x = x_t0, v = v_t0, B = B, E = E, q = 1.0, m = 1.0, dt = 0.01, inplace = True)
+    >>> v_t0
+    array([[0.01, 0.01, 5.01]])
+    >>> x_t0
+    array([[0.0001, 0.0001, 0.0501]])
+    >>> boris_push(x = x_t0, v = v_t0, B = B, E = E, q = 1.0, m = 1.0, dt = 0.01, inplace = True)
+    >>> v_t0
+    array([[0.02, 0.02, 5.02]])
+    >>> x_t0
+    array([[0.0003, 0.0003, 0.1003]])
 
     Notes
     ----------
@@ -64,6 +129,9 @@ def boris_push(x, v, B, E, q, m, dt):
     vplus = vminus + np.cross(vprime, s)
 
     # add second half of electric impulse
-    v[...] = vplus + hqmdt * E
-
-    x += v * dt
+    if inplace:
+        v[...] = vplus + hqmdt * E
+        x += v * dt
+    else:
+        v = vplus + hqmdt * E
+        return x + v * dt, v

@@ -11,17 +11,9 @@ Getting started
 ---------------
 
 .. nbgallery::
-  :glob:
 
-  notebooks/getting_started/*
-
-General
--------
-
-.. nbgallery::
-   :glob:
-
-   notebooks/*
+   notebooks/getting_started/units
+   notebooks/getting_started/particles
 
 Analyses & Diagnostics
 ----------------------
@@ -52,14 +44,6 @@ Formulary
 .. Particles
    ---------
 
-Simulation
-----------
-
-.. nbgallery::
-   :glob:
-
-   notebooks/simulation/*
-
 Plasma Objects
 --------------
 
@@ -67,3 +51,11 @@ Plasma Objects
    :glob:
 
    notebooks/plasma/*
+
+Simulation
+----------
+
+.. nbgallery::
+   :glob:
+
+   notebooks/simulation/*

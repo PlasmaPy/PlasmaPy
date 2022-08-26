@@ -1,0 +1,392 @@
+title: PlasmaPy
+type: software
+version: 0.8.1
+identifiers:
+  - type: doi
+    value: 10.5281/zenodo.6774350
+date-released: "2022-07-05"
+message: >-
+  Please cite the specific version of PlasmaPy used
+  during a research project.
+repository-code: "https://github.com/PlasmaPy/PlasmaPy"
+url: "https://docs.plasmapy.org"
+repository-artifact: "https://pypi.org/project/plasmapy"
+abstract: >-
+  PlasmaPy is an open source Python package for plasma research and
+  education.
+contact:
+  - The PlasmaPy Team
+  - team@plasmapy.org
+keywords:
+  - plasma
+  - physics
+  - particles
+  - science
+license: BSD-3-Clause
+cff-version: 1.2.0
+authors:
+  - given-names: Nicholas
+    family-names: Murphy
+    email: namurphy@cfa.harvard.edu
+    affiliation: Center for Astrophysics | Harvard & Smithsonian
+    orcid: "https://orcid.org/0000-0001-6628-8033"
+    alias: namurphy
+  - given-names: Erik
+    family-names: Everson
+    email: eeverson@ucla.edu
+    affiliation: UCLA
+    orcid: "https://orcid.org/0000-0001-6079-8307"
+    alias: rocco8773
+  - given-names: Dominik
+    family-names: Stańczak
+    email: stanczakdominik@gmail.com
+    affiliation: IPPLM
+    orcid: "https://orcid.org/0000-0001-6291-8843"
+    alias: StanczakDominik
+  - given-names: Peter
+    family-names: Heuer
+    affiliation: University of Rochester
+    orcid: "https://orcid.org/0000-0001-5050-6606"
+    alias: pheuer
+  - given-names: Pawel
+    family-names: Kozlowski
+    affiliation: Los Alamos National Laboratory
+    orcid: "https://orcid.org/0000-0001-6849-3612"
+    alias: lemmatum
+  - given-names: Ritiek
+    family-names: Malhotra
+    affiliation: Chandigarh University
+    alias: ritiek
+  - given-names: Christoper
+    family-names: Arran
+    affiliation: University of York
+    orcid: "https://orcid.org/0000-0002-8644-8118"
+    alias: ChrisArran
+  - given-names: Haman
+    family-names: Bagherianlemraski
+    affiliation: University of Massachusetts Amherst
+    orcid: "https://orcid.org/0000-0001-7381-1996"
+    alias: haman80
+  - given-names: Jasper
+    family-names: Beckers
+    alias: jasperbeckers
+  - given-names: Manas
+    family-names: Bedmutha
+    alias: manasbedmutha98
+  - given-names: Justin
+    family-names: Bergeron
+    alias: Justin-Bergeron
+  - given-names: Ludovico
+    family-names: Bessi
+    alias: ludoro
+  - alias: BH4
+  - given-names: Riley
+    family-names: Britten
+    alias: riley-britten
+  - given-names: Shane
+    family-names: Brown
+    affiliation: University of Delaware
+    alias: Sjbrownian
+  - given-names: Khalil
+    family-names: Bryant
+    affiliation: University of Michigan
+    alias: KhalilBryant
+  - given-names: Sean
+    family-names: Carroll
+    alias: seanwilliamcarroll
+  - alias: cclauss
+  - given-names: Sean
+    family-names: Chambers
+    alias: schambers
+  - given-names: Ankur
+    family-names: Chattopadhyay
+    alias: chttrjeankr
+  - given-names: Apoorv
+    family-names: Choubey
+    alias: apooravc
+  - given-names: Jacob
+    family-names: Deal
+    alias: Jac0bDeal
+  - given-names: Diego A.
+    family-names: Diaz Riega
+    alias: diego7319
+  - given-names: Fionnlagh Mackenzie
+    family-names: Dover
+    affiliation: University of Sheffield
+    orcid: "https://orcid.org/0000-0002-1984-7303"
+    alias: FinMacDov
+  - given-names: David
+    family-names: Drozdov
+    alias: davemus
+  - given-names: Tiger
+    family-names: Du
+    affiliation: Vanderbilt University
+    orcid: "https://orcid.org/0000-0002-8676-1710"
+    alias: Tiger-Du
+  - given-names: Leah
+    family-names: Einhorn
+    alias: leahein
+  - given-names: Thomas
+    family-names: Fan
+  - given-names: Samaiyah I.
+    family-names: Farid
+    affiliation: Yale University
+    orcid: "https://orcid.org/0000-0003-0223-7004"
+    alias: samaiyahfarid
+  - given-names: Michael
+    family-names: Fischer
+  - alias: flaixman
+  - given-names: Bryan
+    family-names: Foo
+    alias: bryancfoo
+  - given-names: Rajagopalan
+    family-names: Gangadharan
+    alias: RAJAGOPALAN-GANGADHARAN
+  - given-names: Brian
+    family-names: Goodall
+    alias: goodab
+  - given-names: Marco
+    family-names: Gorelli
+    alias: MarcoGorelli
+  - given-names: Graham
+    family-names: Goudeau
+    alias: GrahamGoudeau
+  - given-names: Silvina
+    family-names: Guidoni
+    affiliation: American University
+  - given-names: Colby
+    family-names: Haggerty
+    affiliation: University of Hawaiʻi at Mānoa
+    orcid: "https://orcid.org/0000-0002-2160-7288"
+    alias: colbych
+  - given-names: Raymon Skjørten
+    family-names: Hansen
+    alias: raymonshansen
+  - given-names: Julien
+    family-names: Hillairet
+    affiliation: CEA
+    orcid: "https://orcid.org/0000-0002-1073-6383"
+    alias: jhillairet
+  - given-names: Chris
+    family-names: Hoang
+    alias: bucket420
+  - given-names: Poh Zi
+    family-names: How
+    alias: pohzipohzi
+  - given-names: Yi-Min
+    family-names: Huang
+    affiliation: Princeton University
+    orcid: "https://orcid.org/0000-0002-4237-2211"
+    alias: yopology
+  - given-names: Nabil
+    family-names: Humphrey
+    alias: NabilHumphrey
+  - alias: itsraasshi
+  - given-names: Maria
+    family-names: Isupova
+    alias: misupova
+  - given-names: Alexis
+    family-names: Jeandet
+    affiliation: Laboratoire de Physique des Plasmas
+    orcid: "https://orcid.org/0000-0003-2892-6924"
+    alias: jeandet
+  - given-names: Elliot
+    family-names: Johnson
+    affiliation: University of Delaware
+    alias: etjohnson
+  - given-names: James
+    family-names: Kent
+    alias: jdkent
+  - given-names: Siddharth
+    family-names: Kulshrestha
+    alias: siddharthk07
+  - given-names: Piotr
+    family-names: Kuszaj
+    alias: kuszaj
+  - given-names: Alf
+    family-names: Köhn-Seemann
+    affiliation: University of Stuttgart
+    orcid: "https://orcid.org/0000-0002-1192-2057"
+    alias: alfkoehn
+  - given-names: Samuel
+    family-names: Langendorf
+    affiliation: Los Alamos National Laboratory
+    orcid: "https://orcid.org/0000-0002-7757-5879"
+    alias: samurai688
+  - given-names: Anna
+    family-names: Lanteri
+    alias: alanteriBW
+  - given-names: Terrance Takho
+    family-names: Lee
+    alias: tlee0818
+  - given-names: Drew
+    family-names: Leonard
+    affiliation: Aperio Software
+    orcid: "https://orcid.org/0000-0001-5270-7487"
+    alias: SolarDrew
+  - given-names: Nicolas
+    family-names: Lequette
+    affiliation: Laboratoire de Physique des Plasmas
+    alias: Quettle
+  - alias: lgoenner
+  - given-names: Pey Lian
+    family-names: Lim
+    affiliation: Space Telescope Science Institute
+    orcid: "https://orcid.org/0000-0003-0079-4114"
+    alias: pllim
+  - given-names: Aditya
+    family-names: Magarde
+    alias: adityamagarde
+  - given-names: Joao Victor
+    family-names: Martinelli
+    alias: JvPy
+  - given-names: Isaias
+    family-names: McHardy
+    orcid: "https://orcid.org/0000-0001-5394-9445"
+    alias: jota33
+  - given-names: Dhawal
+    family-names: Modi
+    alias: Dhawal-Modi
+  - given-names: Kevin
+    family-names: Montes
+    affiliation: MIT
+    orcid: "https://orcid.org/0000-0002-0762-3708"
+    alias: kjmontes
+  - given-names: Stuart
+    family-names: Mumford
+    affiliation: Aperio Software
+    orcid: "https://orcid.org/0000-0003-4217-4642"
+    alias: Cadair
+  - given-names: Joshua
+    family-names: Munn
+    alias: jams2
+  - given-names: Leo
+    family-names: Murphy
+    affiliation: College of William & Mary
+    alias: LeoMurphyWM24
+  - given-names: Suzanne
+    family-names: Nie
+    alias: suzannenie
+  - alias: nrb1234
+  - given-names: Mahima
+    family-names: Pannala
+    alias: mahimapannala
+  - given-names: Tulasi
+    family-names: Parashar
+    affiliation: Victoria University of Wellington
+    orcid: "https://orcid.org/0000-0003-0602-8381"
+    alias: tulasinandan
+  - given-names: Neil
+    family-names: Patel
+    alias: ministrike3
+  - given-names: Francisco Silva
+    family-names: Pavon
+    alias: silvafrancisco
+  - given-names: Jakub
+    family-names: Polak
+  - given-names: Roberto Díaz
+    family-names: Pérez
+    alias: RoberTnf
+  - given-names: Ramiz
+    family-names: Qudsi
+    affiliation: Boston University
+    orcid: "https://orcid.org/0000-0001-8358-0482"
+    alias: qudsiramiz
+  - given-names: Raajit
+    family-names: Raj
+    alias: raajitr
+  - given-names: Vishwas
+    family-names: Rajashekar
+    affiliation: PES University
+    orcid: "https://orcid.org/0000-0002-4914-6612"
+    alias: DarkAEther
+  - given-names: Afzal
+    family-names: Rao
+    alias: thecasuist
+  - alias: seanjunheng2
+  - alias: siddharthk07
+  - given-names: Steve
+    family-names: Richardson
+    affiliation: U.S. Naval Research Laboratory
+    orcid: "https://orcid.org/0000-0002-3056-6334"
+    alias: arichar6
+  - given-names: Reynaldo
+    family-names: Rojas Zelaya
+    alias: userr2232
+  - given-names: Armando
+    family-names: Salcido
+    alias: aksalcido
+  - alias: sandshrew118
+  - given-names: Antonia
+    family-names: Savcheva
+    affiliation: Planetary Science Institute
+    orcid: "https://orcid.org/0000-0002-5598-046X"
+    alias: savcheva
+  - given-names: Chengcai
+    family-names: Shen
+    affiliation: Center for Astrophysics | Harvard & Smithsonian
+    orcid: "https://orcid.org/0000-0002-9258-4490"
+    alias: ionizationcalc
+  - given-names: Andrew
+    family-names: Sheng
+    alias: andrewsheng2
+  - given-names: Dawa Nurbu
+    family-names: Sherpa
+    alias: nurbu5
+  - given-names: Luciano
+    family-names: Silvestri
+    affiliation: Michigan State University
+    orcid: "https://orcid.org/0000-0003-3530-7910"
+    alias: lucianogsilvestri
+  - given-names: Angad
+    family-names: Singh
+    alias: singha95
+  - given-names: Ankit
+    family-names: Singh
+    alias: Griffintaur
+  - given-names: Brigitta
+    family-names: Sipőcz
+    affiliation: University of Washington
+    orcid: "https://orcid.org/0000-0002-3713-6337"
+    alias: bsipocz
+  - given-names: Cody
+    family-names: Skinner
+    affiliation: Phoenix Security Labs
+    alias: cskinner74
+  - given-names: Nikita
+    family-names: Smirnov
+    alias: Nismirno
+  - given-names: David
+    family-names: Stansby
+    affiliation: Mullard Space Science Laboratory
+    orcid: "https://orcid.org/0000-0002-1365-1908"
+    alias: dstansby
+  - given-names: Tomás
+    family-names: Stinson
+    alias: 14tstinson
+  - given-names: Antoine
+    family-names: Tavant
+    affiliation: Centre Spatial de l'École Polytechnique
+    alias: antoinetavant
+  - given-names: Thomas
+    family-names: Ulrich
+    alias: Elfhelm
+  - given-names: Thomas
+    family-names: Varnish
+    affiliation: MIT
+    alias: tvarnish
+  - given-names: Tien
+    family-names: Vo
+    affiliation: Laboratory for Atmospheric and Space Physics
+    orcid: "https://orcid.org/0000-0002-8335-1441"
+    alias: tien-vo
+  - given-names: Sixue
+    family-names: Xu
+    orcid: "https://orcid.org/0000-0001-7959-8495"
+    alias: hzxusx
+  - given-names: Chun Hei
+    family-names: Yip
+    alias: syip1
+  - given-names: Carol
+    family-names: Zhang
+    alias: carolyz

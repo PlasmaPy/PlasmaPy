@@ -1,2 +1,0 @@
-Fixed a bug with |Particle| where ``Particle("p+") == Particle("H", Z=1,
-mass_numb=1)`` led to a |ParticleError|.

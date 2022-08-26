@@ -1,0 +1,2 @@
+Updated the section of the |documentation guide| with more detail on the
+"Parameters", "Raises", and "Warns" sections of docstrings.

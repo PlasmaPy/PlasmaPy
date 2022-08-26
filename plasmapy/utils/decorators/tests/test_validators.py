@@ -402,11 +402,11 @@ class TestValidateQuantities:
                 "descr": "decomposed units are still converted",
                 "setup": {
                     "function": self.foo,
-                    "args": (2 * u.kg * u.m / u.s ** 2,),
+                    "args": (2 * u.kg * u.m / u.s**2,),
                     "kwargs": {},
                     "validations": {"x": u.N},
                 },
-                "output": (2 * u.kg * u.m / u.s ** 2).to(u.N),
+                "output": (2 * u.kg * u.m / u.s**2).to(u.N),
                 "extra assert": lambda x: x.unit.to_string() == u.N.to_string(),
             },
         ]

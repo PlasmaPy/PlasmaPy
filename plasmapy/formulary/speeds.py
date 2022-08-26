@@ -39,7 +39,7 @@ k_B_si_unitless = k_B.value
 @validate_quantities(density={"can_be_negative": False})
 def Alfven_speed(
     B: u.T,
-    density: (u.m ** -3, u.kg / u.m ** 3),
+    density: (u.m**-3, u.kg / u.m**3),
     ion: Optional[Particle] = None,
     z_mean: Optional[numbers.Real] = None,
 ) -> u.m / u.s:
@@ -152,7 +152,7 @@ def Alfven_speed(
     <Quantity 21661.51... m / s>
     """
 
-    if density.unit.is_equivalent(u.kg / u.m ** 3):
+    if density.unit.is_equivalent(u.kg / u.m**3):
         rho = density
     else:
         if not isinstance(ion, Particle):
@@ -192,8 +192,8 @@ def ion_sound_speed(
     T_e: u.K,
     T_i: u.K,
     ion: Particle,
-    n_e: u.m ** -3 = None,
-    k: u.m ** -1 = None,
+    n_e: u.m**-3 = None,
+    k: u.m**-1 = None,
     gamma_e=1,
     gamma_i=3,
     z_mean=None,
@@ -359,7 +359,7 @@ def ion_sound_speed(
             m_i * (1 + klD2)
         )
         V_S = np.sqrt(V_S_squared).to(u.m / u.s)
-    except Exception:
+    except ValueError:
         raise ValueError("Unable to find ion sound speed.")
 
     return V_S
@@ -458,7 +458,7 @@ def thermal_speed_lite(
     T: numbers.Real, mass: numbers.Real, coeff: numbers.Real
 ) -> numbers.Real:
     r"""
-    The ":term:`lite-function`" version of
+    The :term:`lite-function` for
     `~plasmapy.formulary.speeds.thermal_speed`.  Performs the same
     thermal speed calculations as
     `~plasmapy.formulary.speeds.thermal_speed`, but is intended for

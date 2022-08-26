@@ -30,8 +30,8 @@ def abstract_grid_uniform():
     grid.add_quantities(y=grid.grids[1])
     grid.add_quantities(z=grid.grids[2])
 
-    radius = np.sqrt(grid.pts0 ** 2 + grid.pts1 ** 2 + grid.pts2 ** 2)
-    rho = radius.to(u.mm).value ** 4 * u.kg * u.m ** -3
+    radius = np.sqrt(grid.pts0**2 + grid.pts1**2 + grid.pts2**2)
+    rho = radius.to(u.mm).value ** 4 * u.kg * u.m**-3
     grid.add_quantities(rho=rho)
 
     return grid
@@ -61,8 +61,8 @@ def abstract_grid_nonuniform():
     grid.add_quantities(y=grid.grids[1])
     grid.add_quantities(z=grid.grids[2])
 
-    radius = np.sqrt(grid.pts0 ** 2 + grid.pts1 ** 2 + grid.pts2 ** 2)
-    rho = radius.to(u.mm).value ** 4 * u.kg * u.m ** -3
+    radius = np.sqrt(grid.pts0**2 + grid.pts1**2 + grid.pts2**2)
+    rho = radius.to(u.mm).value ** 4 * u.kg * u.m**-3
     grid.add_quantities(rho=rho)
 
     return grid
@@ -479,8 +479,8 @@ def uniform_cartesian_grid():
     grid.add_quantities(y=grid.grids[1])
     grid.add_quantities(z=grid.grids[2])
 
-    radius = np.sqrt(grid.pts0 ** 2 + grid.pts1 ** 2 + grid.pts2 ** 2)
-    rho = radius.to(u.mm).value ** 4 * u.kg * u.m ** -3
+    radius = np.sqrt(grid.pts0**2 + grid.pts1**2 + grid.pts2**2)
+    rho = radius.to(u.mm).value ** 4 * u.kg * u.m**-3
     grid.add_quantities(rho=rho)
 
     return grid
@@ -625,8 +625,8 @@ def nonuniform_cartesian_grid():
     grid.add_quantities(y=y)
     grid.add_quantities(z=z)
 
-    radius = np.sqrt(grid.pts0 ** 2 + grid.pts1 ** 2 + grid.pts2 ** 2)
-    rho = radius.to(u.mm).value ** 4 * u.kg * u.m ** -3
+    radius = np.sqrt(grid.pts0**2 + grid.pts1**2 + grid.pts2**2)
+    rho = radius.to(u.mm).value ** 4 * u.kg * u.m**-3
     grid.add_quantities(rho=rho)
 
     return grid
@@ -860,7 +860,7 @@ def test_volume_averaged_interpolator_compare_NN_1D(uniform_cartesian_grid):
     nn_rho = uniform_cartesian_grid.nearest_neighbor_interpolator(interp_pts, "rho")
 
     a, b = np.argmin(np.abs(interp_hax + 9)), np.argmin(np.abs(interp_hax - 9))
-    analytic = interp_hax ** 4
+    analytic = interp_hax**4
     va_error = np.sum(np.abs(analytic[a:b] - va_rho.value[a:b]))
     nn_error = np.sum(np.abs(analytic[a:b] - nn_rho.value[a:b]))
 
@@ -888,7 +888,7 @@ def test_volume_averaged_interpolator_compare_NN_3D(uniform_cartesian_grid):
     xax = interp_pts[:, 0].to(u.mm).value
     yax = interp_pts[:, 1].to(u.mm).value
     zax = interp_pts[:, 2].to(u.mm).value
-    analytic = np.sqrt(xax ** 2 + yax ** 2 + zax ** 2)
+    analytic = np.sqrt(xax**2 + yax**2 + zax**2)
 
     va_rho = uniform_cartesian_grid.volume_averaged_interpolator(interp_pts, "rho")
     nn_rho = uniform_cartesian_grid.nearest_neighbor_interpolator(interp_pts, "rho")
@@ -916,7 +916,7 @@ def test_NonUniformCartesianGrid():
     assert not grid.is_uniform
 
     # Test assigning a quantity
-    q1 = rs.randn(10, 10, 10) * u.kg / u.cm ** 3
+    q1 = rs.randn(10, 10, 10) * u.kg / u.cm**3
     grid.add_quantities(rho=q1)
 
     # Test grid resolution for non-uniform grids
@@ -957,8 +957,8 @@ def debug_volume_avg_interpolator():
     grid.add_quantities(y=grid.grids[1])
 
     # add a mass density to grid
-    radius = np.sqrt(grid.pts0 ** 2 + grid.pts1 ** 2 + grid.pts2 ** 2)
-    rho = radius.to(u.mm).value ** 4 * u.kg * u.m ** -3
+    radius = np.sqrt(grid.pts0**2 + grid.pts1**2 + grid.pts2**2)
+    rho = radius.to(u.mm).value ** 4 * u.kg * u.m**-3
     grid.add_quantities(rho=rho)
 
     # Create a low resolution test grid
@@ -974,7 +974,7 @@ def debug_volume_avg_interpolator():
     va_rho = grid.volume_averaged_interpolator(interp_pts, "rho")
     nn_rho = grid.nearest_neighbor_interpolator(interp_pts, "rho")
 
-    analytic = interp_hax ** 4
+    analytic = interp_hax**4
 
     raw_hax = grid.ax0.to(u.mm).value
     half = 12

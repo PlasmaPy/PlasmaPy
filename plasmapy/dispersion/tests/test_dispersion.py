@@ -159,7 +159,7 @@ class TestPlasmaDispersionFunction:
 
         Z_power_series = np.zeros_like(w_array)
 
-        for n in range(0, 200):
+        for n in range(200):
             Z_power_series += 1j * np.sqrt(π) * (1j * w_array) ** n / Γ(n / 2 + 1)
 
         assert np.allclose(
