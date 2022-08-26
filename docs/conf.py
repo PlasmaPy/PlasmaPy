@@ -196,7 +196,7 @@ with open("common_links.rst") as cl:
     rst_epilog += cl.read()
 
 rst_prolog = """
-.. role:: python(code)
+.. role:: py(code)
    :language: python
 """
 
