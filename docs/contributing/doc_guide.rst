@@ -233,7 +233,7 @@ This reST_ block renders as:
    cross-referenced: ``plasmapy.particles``.
 
    The ``:py:`` role can be used for inline code highlighting:
-   :py:`import astropy.units as u``.
+   :py:`import astropy.units as u`.
 
 Sphinx_ can format code blocks for Python_ and the Python_ console
 using the :rst:dir:`code-block` :term:`directive`.
