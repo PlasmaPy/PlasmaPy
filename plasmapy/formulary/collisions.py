@@ -2170,7 +2170,7 @@ class CollisionFrequencies:
         --------
         >>> import astropy.units as u
         >>> T_a = 1 * u.eV
-        >>> n_b = 1e20 * u.cm**-3
+        >>> n_b = 1e26 * u.m**-3
         >>> T_b = 1e3 * u.eV
         >>> Coulomb_log = 10 * u.dimensionless_unscaled
         >>> frequencies_using_temperature = CollisionFrequencies(
@@ -2179,7 +2179,7 @@ class CollisionFrequencies:
         >>> frequencies_using_temperature.momentum_loss
         <Quantity 1.83701432e+11 Hz>
 
-        >>> v_a = 1e7 * u.cm / u.s
+        >>> v_a = 1e5 * u.m / u.s
         >>> frequencies_using_velocity = CollisionFrequencies(
         ...     "e-", "e-", v_a=v_a, n_b=n_b, T_b=T_b, Coulomb_log=Coulomb_log
         ... )
@@ -2197,7 +2197,7 @@ class CollisionFrequencies:
 
         if v_a is None:
             if T_a is not None:
-                v_a = thermal_speed(T_a, test_particle).to(u.cm / u.s)
+                v_a = thermal_speed(T_a, test_particle)
             else:
                 raise ValueError("Please specify either v_a or T_a.")
         elif T_a is not None:
