@@ -217,8 +217,8 @@ enclosed in double back ticks or specified using the ``:python:`` role.
    Double backticks are used to show inline code that is not
    cross-referenced: ``plasmapy.particles``.
 
-   The ``:python:`` role can be used for inline code highlighting:
-   :python:`import astropy.units as u``.
+   The ``:py:`` role can be used for inline code highlighting:
+   :py:`import astropy.units as u``.
 
 This reST_ block renders as:
 
@@ -232,8 +232,8 @@ This reST_ block renders as:
    Double backticks are used to show inline code that is not
    cross-referenced: ``plasmapy.particles``.
 
-   The ``:python:`` role can be used for inline code highlighting:
-   :python:`import astropy.units as u``.
+   The ``:py:`` role can be used for inline code highlighting:
+   :py:`import astropy.units as u``.
 
 Sphinx_ can format code blocks for Python_ and the Python_ console
 using the :rst:dir:`code-block` :term:`directive`.

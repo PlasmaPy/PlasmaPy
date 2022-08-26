@@ -74,7 +74,7 @@ Coding guidelines
   exceptions. If the comparison for equality is being made between
   objects of different types, these methods should return `False`
   instead. This behavior is for consistency with operations like
-  :python:`1 == "1"` which will return `False`.
+  :py:`1 == "1"` which will return `False`.
 
 * Limit usage of ``lambda`` functions to one-liners, such as when
   defining the default factory of a `~collections.defaultdict`). For
@@ -126,11 +126,10 @@ Coding guidelines
 
   .. tip::
 
-     Normally, :python:`numpy.nan == numpy.nan` evaluates to `False`,
-     which complicates testing |nan| behavior. The ``equal_nan`` keyword
-     of functions like `numpy.allclose` and
-     `numpy.testing.assert_allclose` makes it so that |nan| is
-     considered equal to itself.
+     Normally, :py:`numpy.nan == numpy.nan` evaluates to `False`, which
+     complicates testing |nan| behavior. The ``equal_nan`` keyword of
+     functions like `numpy.allclose` and `numpy.testing.assert_allclose`
+     makes it so that |nan| is considered equal to itself.
 
 * Do not use :term:`mutable` objects as default values in the function
   or method declaration. This can lead to unexpected behavior.
@@ -227,8 +226,8 @@ the code is supposed to be doing.
   * Sometimes code that represents an equation will be more readable if
     the Unicode characters for the symbols are used, especially for
     complex equations. For someone who is familiar with the symbols,
-    :python:`λ = c / ν` will be more readable than :python:`lambda = c /
-    nu` or :python:`wavelength = speed_of_light / frequency`.
+    :py:`λ = c / ν` will be more readable than :py:`lambda = c / nu` or
+    :py:`wavelength = speed_of_light / frequency`.
 
   * If an implementation is based on a journal article, then variable
     names may be based on the symbols used in that article. The article
@@ -303,12 +302,12 @@ Imports
   decrease readability without providing commensurately more
   information.
 
-* Use absolute imports (e.g., :python:`from plasmapy.particles import
-  Particle`) rather than relative imports (e.g., :python:`from
-  ..particles import Particle`).
+* Use absolute imports (e.g., :py:`from plasmapy.particles import
+  Particle`) rather than relative imports (e.g., :py:`from ..particles
+  import Particle`).
 
-* Do not use star imports (e.g., :python:`from package.subpackage import
-  *`), except in very limited situations.
+* Do not use star imports (e.g., :py:`from package.subpackage import *`),
+  except in very limited situations.
 
 Requirements
 ============
@@ -639,7 +638,7 @@ adjacent fields such as astronomy and heliophysics. To get started with
   .. caution::
 
      Recent versions of Astropy_ allow unit-aware |Quantity|
-     annotations such as :python:`u.Quantity[u.m]`. However, these
+     annotations such as :py:`u.Quantity[u.m]`. However, these
      annotations are not yet compatible with |validate_quantities|.
 
 * Avoid using electron-volts as a unit of temperature within PlasmaPy
@@ -879,10 +878,10 @@ that corresponds to ``function`` as would be defined in
   ``lite`` attribute using the
   `~plasmapy.utils.decorators.lite_func.bind_lite_func` decorator. This
   allows the :term:`lite-function` to also be accessed like
-  :python:`thermal_speed.lite()`.
+  :py:`thermal_speed.lite()`.
 
 * If a :term:`lite-function` is decorated with something like
-  :python:`@njit`, then it should also be decorated with
+  :py:`@njit`, then it should also be decorated with
   `~plasmapy.utils.decorators.helpers.preserve_signature`.  This
   preserves the function signature so interpreters can still
   give hints about function arguments.
