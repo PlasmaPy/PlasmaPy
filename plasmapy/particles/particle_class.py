@@ -2227,6 +2227,13 @@ class CustomParticle(AbstractPhysicalParticle):
         else:
             raise TypeError("symbol needs to be a string.")
 
+    @property
+    def categories(self) -> Set[str]:
+        """Categories for the |CustomParticle|."""
+        if np.isnan(self.charge):
+            return set()
+        return {"charged"} if self.charge == 0 * u.C else {"uncharged"}
+
     def __eq__(self, other) -> bool:
         """
         Determine if two objects correspond to the same particle.
