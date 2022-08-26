@@ -1734,8 +1734,6 @@ class TestCollisionFrequencies:
             argument_to_convert
         ] = CGS_unit_conversion_test_constructor_arguments[argument_to_convert].cgs
 
-    print(CGS_unit_conversion_test_constructor_arguments)
-
     MKS_test_case = CollisionFrequencies(
         **MKS_unit_conversion_test_constructor_arguments
     )
