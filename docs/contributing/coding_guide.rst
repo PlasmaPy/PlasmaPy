@@ -226,8 +226,8 @@ the code is supposed to be doing.
   * Sometimes code that represents an equation will be more readable if
     the Unicode characters for the symbols are used, especially for
     complex equations. For someone who is familiar with the symbols,
-    `λ = c / ν` will be more readable than `lambda = c / nu` or
-    `wavelength = speed_of_light / frequency`.
+    ``λ = c / ν`` will be more readable than ``lambda = c / nu`` or
+    ``wavelength = speed_of_light / frequency``.
 
   * If an implementation is based on a journal article, then variable
     names may be based on the symbols used in that article. The article
