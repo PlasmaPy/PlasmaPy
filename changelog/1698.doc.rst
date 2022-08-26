@@ -1,0 +1,2 @@
+Enabled ``:python:`` as a reST_ role for inline code formatting. For
+example, ``:python:`import this``` will appear as :python:`import this`.
