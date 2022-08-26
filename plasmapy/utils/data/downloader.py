@@ -63,9 +63,16 @@ def get_file(basename, base_url=_BASE_URL, directory=None):
 
         # Missing files on GitHub will resolve to a 404 html page, so we use
         # this as an indicator that the file may not exist.
+        # If the URL resolves in an actual 404 error we catch that separately
         if "text/html" in reply.headers["Content-Type"]:
             raise OSError(
                 "The requested URL returned an html file, which "
+                "likely indicates that the file does not exist at the "
+                "URL provided."
+            )
+        elif reply.status_code == 404:
+            raise OSError(
+                "The requested URL returned a 404 code, which "
                 "likely indicates that the file does not exist at the "
                 "URL provided."
             )
