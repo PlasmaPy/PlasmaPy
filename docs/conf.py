@@ -80,7 +80,7 @@ automodapi_group_order = (
 
 # If your documentation needs a minimal Sphinx version, state it here.
 
-needs_sphinx = "4.4"
+needs_sphinx = "5.0.0"
 
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
@@ -383,9 +383,6 @@ nitpick_ignore_regex = [
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-# html_theme = 'alabaster'
-# html_theme = 'traditional'
-# html_theme = 'agogo'
 html_theme = "sphinx_rtd_theme"
 
 # Theme options are theme-specific and customize the look and feel of a theme
@@ -520,6 +517,9 @@ nbsphinx_prolog = r"""
     \nbsphinxstartnotebook{\scriptsize\noindent\strut
     \textcolor{gray}{The following section was generated from
     \sphinxcode{\sphinxupquote{\strut {{ docname | escape_latex }}}} \dotfill}}
+
+.. role:: python(code)
+   :language: python
 """
 
 
