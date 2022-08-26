@@ -14,7 +14,7 @@ __all__ = ["get_file"]
 # Note: GitHub links have a problem where the Content-Encoding is set to
 # 'gzip' but the file is not actually compressed. This header is just ignored
 # by the get_file function.
-_BASE_URL = "https://github.com/PlasmaPy/PlasmaPy-data/raw/main/data/"
+_BASE_URL = "https://raw.githubusercontent.com/PlasmaPy/PlasmaPy-data/main/"
 
 # TODO: use a config file variable to allow users to set a location for this folder?
 _DOWNLOADS_PATH = os.path.join(os.path.dirname(__file__), "downloads")
