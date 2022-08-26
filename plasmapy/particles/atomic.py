@@ -1119,20 +1119,25 @@ def ionic_levels(
     """
     Return a |ParticleList| that includes different ionic levels of a
     base atom.
+
     Parameters
     ----------
     particle : `~plasmapy.particles.particle_class.ParticleLike`
         Representation of an element, ion, or isotope.
+
     min_charge : integer, optional
         The starting charge number. Defaults to ``0``.
+
     max_charge : integer, optional
         The ending charge number, which will be included in the
         |ParticleList|.  Defaults to the atomic number.
+
     Returns
     -------
     `~plasmapy.particles.particle_collections.ParticleList`
         The ionic levels of the atom provided from ``min_charge`` to
         ``max_charge``.
+
     Examples
     --------
     >>> from plasmapy.particles import ionic_levels
