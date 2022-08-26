@@ -401,10 +401,6 @@ class ValidateParticles:
 
         mass_numb : integer
             The mass number of an isotope.
-
-        Raises
-        ------
-        CategoryError
         """
         annotation = self.annotations.get(parameter, None)
 
