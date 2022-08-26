@@ -1705,13 +1705,42 @@ class Test_coupling_parameter:
 class TestCollisionFrequencies:
     """Test the CollisionFrequencies class in collisions.py."""
 
-    attribute_test_case = CollisionFrequencies(
+    attribute_units_test_case = CollisionFrequencies(
         Particle("e-"),
         Particle("e-"),
         v_a=1 * u.m / u.s,
         T_b=1 * u.K,
         n_b=1 * u.m**-3,
         Coulomb_log=1 * u.dimensionless_unscaled,
+    )
+
+    MKS_unit_conversion_test_constructor_arguments = {
+        "test_particle": Particle("e-"),
+        "field_particle": Particle("e-"),
+        "v_a": 1e5 * u.m / u.s,
+        "T_b": 1e3 * u.eV,
+        "n_b": 1e26 * u.m**-3,
+        "Coulomb_log": 10 * u.dimensionless_unscaled,
+    }
+
+    arguments_to_convert = ["v_a", "n_b"]
+
+    CGS_unit_conversion_test_constructor_arguments = (
+        MKS_unit_conversion_test_constructor_arguments
+    )
+
+    for argument_to_convert in arguments_to_convert:
+        CGS_unit_conversion_test_constructor_arguments[
+            argument_to_convert
+        ] = CGS_unit_conversion_test_constructor_arguments[argument_to_convert].cgs
+
+    print(CGS_unit_conversion_test_constructor_arguments)
+
+    MKS_test_case = CollisionFrequencies(
+        **MKS_unit_conversion_test_constructor_arguments
+    )
+    CGS_test_case = CollisionFrequencies(
+        **CGS_unit_conversion_test_constructor_arguments
     )
 
     return_values_to_test = [
@@ -1738,9 +1767,28 @@ class TestCollisionFrequencies:
     def test_units(self, attribute_to_test, expected_attribute_units):
         """Test the return units"""
 
-        assert getattr(self.attribute_test_case, attribute_to_test).unit.is_equivalent(
-            expected_attribute_units
-        )
+        assert getattr(
+            self.attribute_units_test_case, attribute_to_test
+        ).unit.is_equivalent(expected_attribute_units)
+
+    @pytest.mark.parametrize(
+        "attribute_to_test",
+        [
+            "momentum_loss",
+            "transverse_diffusion",
+            "parallel_diffusion",
+            "energy_loss",
+            "x",
+            "Lorentz_collision_frequency",
+        ],
+    )
+    def test_conversion_consistency(self, attribute_to_test):
+        """Test that a consistent value is computed for attributes regardless of argument units"""
+
+        MKS_result = getattr(self.MKS_test_case, attribute_to_test)
+        CGS_result = getattr(self.CGS_test_case, attribute_to_test)
+
+        assert MKS_result == CGS_result
 
     @staticmethod
     def get_limit_value(interaction_type, limit_type, cases):
