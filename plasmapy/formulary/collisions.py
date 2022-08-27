@@ -2196,9 +2196,6 @@ class CollisionFrequencies:
         # Note: This function uses CGS units internally to coincide with our references.
         # Input is taken in MKS units and then converted as necessary. Output is in MKS units.
 
-        if not isinstance(Coulomb_log, u.Quantity):
-            Coulomb_log *= u.dimensionless_unscaled
-
         if v_a is None:
             if T_a is not None:
                 v_a = thermal_speed(T_a, test_particle)
@@ -2224,7 +2221,11 @@ class CollisionFrequencies:
         )
         self.n_b = n_b
         self.T_b = T_b
-        self.Coulomb_log = Coulomb_log
+        self.Coulomb_log = (
+            Coulomb_log
+            if isinstance(Coulomb_log, u.Quantity)
+            else Coulomb_log * u.dimensionless_unscaled
+        )
 
     @cached_property
     def _mass_ratio(self):
