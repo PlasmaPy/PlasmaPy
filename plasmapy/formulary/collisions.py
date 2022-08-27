@@ -61,7 +61,7 @@ import scipy.integrate
 import scipy.misc
 import warnings
 
-from astropy.constants.si import e, eps0, hbar, k_B, m_e
+from astropy.constants.si import e, eps0, hbar, k_B, m_e, m_p
 from functools import cached_property
 from numbers import Real
 from numpy import pi
@@ -2085,8 +2085,9 @@ class CollisionFrequencies:
         *,
         v_a: u.m / u.s = None,
         T_a: u.K = None,
-        n_b: u.m**-3,
+        n_a: u.m**-3 = None,
         T_b: u.K,
+        n_b: u.m**-3,
         Coulomb_log: u.dimensionless_unscaled,
     ):
         r"""
@@ -2106,13 +2107,17 @@ class CollisionFrequencies:
             :math:`μ` is the reduced mass. Cannot be negative.
 
         T_a : `~astropy.units.Quantity`, optional
-            The temperature of the test species. Only necessary if :math:`v_a` is not provided.
+            The temperature of the test particles. Only necessary if :math:`v_a` is not provided.
 
-        n_b : `~astropy.units.Quantity`
-            The number density of the background field particles in units convertible to :math:`\frac{1}{m^{3}}`
+        n_a : `~astropy.units.Quantity`
+            The number density of the test particles in units convertible to :math:`\frac{1}{m^{3}}`.
+            Only necessary if accessing ``v_e`` and ``v_i``.
 
         T_b : `~astropy.units.Quantity`
             The temperature of the background field particles in units convertible to degrees Kelvin.
+
+        n_b : `~astropy.units.Quantity`
+            The number density of the background field particles in units convertible to :math:`\frac{1}{m^{3}}`
 
         Coulomb_log : `~astropy.units.Quantity`
             The value of the Coulomb logarithm evaluated for the two interacting particles.
@@ -2211,8 +2216,9 @@ class CollisionFrequencies:
             if T_a is not None
             else (0.5 * test_particle.mass * v_a**2 / k_B).to(u.K)
         )
-        self.n_b = n_b
+        self.n_a = n_a
         self.T_b = T_b
+        self.n_b = n_b
         self.Coulomb_log = Coulomb_log
 
     @cached_property
@@ -2287,6 +2293,27 @@ class CollisionFrequencies:
             * self.n_b
             / (self.test_particle.mass**2 * self.v_a**3)
         ).to(u.Hz)
+
+    @cached_property
+    def v_e(self):
+        return (
+            2.9e-6
+            * self.n_a.to(u.cm**-3)
+            * self.Coulomb_log
+            * (self.T_a * k_B).to(u.eV) ** -1.5
+        ).value * u.Hz
+
+    @cached_property
+    def v_i(self):
+        mu = self.test_particle.mass / m_p
+
+        return (
+            4.8e-8
+            * self.n_a.to(u.cm**-3)
+            * self.Coulomb_log
+            * (self.T_a * k_B).to(u.eV) ** -1.5
+            * mu**-0.5
+        ).value * u.Hz
 
     @cached_property
     def x(self) -> u.dimensionless_unscaled:
