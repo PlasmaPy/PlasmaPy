@@ -969,9 +969,6 @@ customized_particle_tests = [
     (CustomParticle, {"mass": "100.0 g"}, "mass", 100.0 * u.g),
     (CustomParticle, {"charge": -np.inf * u.kC}, "charge", -np.inf * u.C),
     (CustomParticle, {"charge": "5.0 C"}, "charge", 5.0 * u.C),
-    (CustomParticle, {"charge": 0.0 * u.C}, "categories", {"uncharged"}),
-    (CustomParticle, {"charge": 1.0 * u.C}, "categories", {"charged"}),
-    (CustomParticle, {}, "categories", set()),
 ]
 
 
@@ -1001,6 +998,20 @@ def test_custom_particle_symbol(cls, symbol, expected):
     assert instance.symbol == expected
 
 
+custom_particle_categories_table = [
+    ({"charge": 0.0 * u.C}, {"uncharged"}),
+    ({"charge": 1.0 * u.C}, {"charged"}),
+    ({}, set()),
+]
+
+
+@pytest.mark.parametrize("kwargs, expected", custom_particle_categories_table)
+def test_custom_particle_categories(kwargs, expected):
+    """Test that CustomParticle.categories behaves as expected."""
+    custom_particle = CustomParticle(**kwargs)
+    assert custom_particle.categories == expected
+
+
 custom_particle_is_category_table = [
     ({"charge": 0 * u.C}, {"require": "charged"}, False),
     ({"charge": 0 * u.C}, {"exclude": "charged"}, True),
@@ -1023,6 +1034,7 @@ def test_custom_particle_is_category(
     kwargs_to_is_category,
     expected,
 ):
+    """Test that CustomParticle.is_category works as expected."""
     custom_particle = CustomParticle(**kwargs_to_custom_particle)
     actual = custom_particle.is_category(**kwargs_to_is_category)
     assert actual == expected
