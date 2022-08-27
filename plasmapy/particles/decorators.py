@@ -37,14 +37,8 @@ _allowed_annotations = _basic_allowed_annotations + _optional_allowed_annotation
 
 
 def _get_annotations(f: Callable):
-    """
-    Access the annotations of a callable `object`.
-
-    Notes
-    -----
-    This function should be replaced with inspect.get_annotations when
-    support for Python 3.9 is dropped.
-    """
+    """Access the annotations of a callable `object`."""
+    # Python 3.10: Replace this with inspect.get_annotations
     return getattr(f, "__annotations__", None)
 
 
@@ -66,7 +60,7 @@ def _bind_arguments(
     args: Optional[Tuple] = None,
     kwargs: Optional[Dict[str, Any]] = None,
     instance=None,
-):
+) -> Dict:
     """
     Bind the arguments provided by ``args`` and ``kwargs`` to
     the corresponding parameters in the signature of the function
@@ -77,10 +71,10 @@ def _bind_arguments(
     func : callable
         The function or method to which to bind ``args`` and ``kwargs``.
 
-    args : tuple
+    args : tuple, optional
         Positional arguments.
 
-    kwargs : dict
+    kwargs : dict, optional,
         Keyword arguments.
 
     instance
@@ -127,18 +121,15 @@ class ValidateParticles:
 
     require : `str`, `set`, `list`, or `tuple`, optional
         Categories that a particle must be in.  If a particle is not in
-        all of these categories, then a
-        `~plasmapy.particles.exceptions.ParticleError` will be raised.
+        all of these categories, then a |ParticleError| will be raised.
 
     any_of : `str`, `set`, `list`, or `tuple`, optional
         Categories that a particle may be in.  If a particle is not in
-        any of these categories, then a
-        `~plasmapy.particles.exceptions.ParticleError` will be raised.
+        any of these categories, then a |ParticleError| will be raised.
 
     exclude : `str`, `set`, `list`, or `tuple`, optional
         Categories that a particle cannot be in.  If a particle is in
-        any of these categories, then a
-        `~plasmapy.particles.exceptions.ParticleError` will be raised.
+        any of these categories, then a |ParticleError| will be raised.
 
     allow_custom_particles : bool, default: `True`
         If `True`, allow |CustomParticle| instances to be passed through.
@@ -184,8 +175,8 @@ class ValidateParticles:
 
     def find_parameters_to_process(self) -> List[str]:
         """
-        Identify the parameters that have annotations that indicate that
-        the
+        Identify the parameters that have annotations to indicate that
+        they should be processed.
 
         Returns
         -------
@@ -301,12 +292,12 @@ class ValidateParticles:
     def _verify_charge_categorization(self, particle) -> NoReturn:
         """
         Raise an exception if the particle is required to have charge
-        information and does not, or if the particle is required to be
-        charged and is not.
+        information but does not, or if the particle is required to be
+        charged but is not.
 
         Raises
         ------
-        ~plasmapy.particles.exceptions.ChargeError
+        |ChargeError|
             If the particle is required to have charge information and
             does not, or if the particle is required to be charged and
             is either uncharged or lacks charge information.
@@ -365,7 +356,7 @@ class ValidateParticles:
 
         Raises
         ------
-        ~plasmapy.particles.exceptions.ParticleError
+        |ParticleError|
             If the particle does not meet the categorization criteria.
 
         See Also
@@ -407,7 +398,10 @@ class ValidateParticles:
                 )
 
     def _verify_allowed_types(self, particle):
-        """"""
+        """
+        Verify that the particle object contains only the allowed types
+        of particles.
+        """
         if not self.allow_custom_particles and isinstance(particle, CustomParticle):
             raise InvalidParticleError(
                 f"{self.wrapped.__name__} does not accept CustomParticle "
@@ -530,6 +524,7 @@ def particle_input(
     any_of: Union[str, Set, List, Tuple] = None,
     exclude: Union[str, Set, List, Tuple] = None,
     allow_custom_particles: bool = True,
+    allow_particle_lists: bool = True,
 ):
     """
     Convert appropriately annotated arguments to particle objects.
@@ -553,82 +548,80 @@ def particle_input(
     wrapped_function : `callable`
         The function or method to be decorated.
 
-    require : `str`, `set`, `list`, or `tuple`, keyword-only, optional
+    require : `str`, `set`, `list`, or `tuple`, |keyword-only|, optional
         Categories that a particle must be in.  If a particle is not in
         all of these categories, then a |ParticleError| will be raised.
 
-    any_of : `str`, `set`, `list`, or `tuple`, keyword-only, optional
+    any_of : `str`, `set`, `list`, or `tuple`, |keyword-only|, optional
         Categories that a particle may be in.  If a particle is not in
         any of these categories, then a |ParticleError| will be raised.
 
-    exclude : `str`, `set`, `list`, or `tuple`, keyword-only, optional
+    exclude : `str`, `set`, `list`, or `tuple`, |keyword-only|, optional
         Categories that a particle cannot be in.  If a particle is in
         any of these categories, then a |ParticleError| will be raised.
 
-    allow_custom_particles : bool, keyword-only, optional
-        ...
+    allow_custom_particles : bool, default: `True`
+        If `True`, allow |CustomParticle| instances to be passed through.
+
+    allow_particle_lists : bool, default: `True`
+        If `True`, allow |ParticleList| instances to be passed through.
 
     Notes
     -----
-    If the annotated argument is named ``element``, ``isotope``, or ``ion``,
-    then the decorator will raise an
-    `~plasmapy.particles.exceptions.InvalidElementError`,
-    `~plasmapy.particles.exceptions.InvalidIsotopeError`, or
-    `~plasmapy.particles.exceptions.InvalidIonError` if the particle
-    does not correspond to an element, isotope, or ion, respectively.
+    If the annotated argument is named ``element``, ``isotope``, or
+    ``ion``, then the decorator will raise an |InvalidElementError|,
+    |InvalidIsotopeError|, or |InvalidIonError| if the particle does
+    not correspond to an element, isotope, or ion, respectively.
 
-    If exactly one argument is annotated with
-    `~plasmapy.particles.particle_class.ParticleLike`, then the keywords
-    ``Z`` and ``mass_numb`` may be used to specify the charge number
-    and/or mass number of an ion or isotope.  However, the decorated
-    function must allow ``Z`` and/or ``mass_numb`` as keywords in order
-    to enable this functionality.
+    If exactly one argument is annotated with |ParticleLike|, then the
+    keywords ``Z`` and ``mass_numb`` may be used to specify the charge
+    number and/or mass number of an ion or isotope.  However, the
+    decorated function must allow ``Z`` and/or ``mass_numb`` as keywords
+    in order to enable this functionality.
 
     Raises
     ------
     `TypeError`
         If the annotated argument is not a `str`, `int`, `tuple`, `list`
-        or `~plasmapy.particles.particle_class.Particle`; or if ``Z`` or
-        ``mass_numb`` is not an `int`.
+        or |Particle|; or if ``Z`` or ``mass_numb`` is not an `int`.
 
     `ValueError`
         If the number of input elements in a collection do not match the
         number of expected elements.
 
-    `~plasmapy.particles.exceptions.InvalidParticleError`
+    |InvalidParticleError|
         If the annotated argument does not correspond to a valid
         particle.
 
-    `~plasmapy.particles.exceptions.InvalidElementError`
+    |InvalidElementError|
         If an annotated argument is named ``element``, and the input
         does not correspond to an element, isotope, or ion.
 
-    `~plasmapy.particles.exceptions.InvalidIsotopeError`
+    |InvalidIsotopeError|
         If an annotated argument is named ``isotope``, and the input
         does not correspond to an isotope or an ion of an isotope.
 
-    `~plasmapy.particles.exceptions.InvalidIonError`
+    |InvalidIonError|
         If an annotated argument is named ``ion``, and the input does
         not correspond to an ion.
 
-    `~plasmapy.particles.exceptions.ChargeError`
+    |ChargeError|
         If ``'charged'`` is in the ``require`` argument and the particle
         is not explicitly charged, or if ``any_of = {'charged',
         'uncharged'}`` and the particle does not have charge information
         associated with it.
 
-    `~plasmapy.particles.exceptions.ParticleError`
+    |ParticleError|
         If an annotated argument does not meet the criteria set by the
         categories in the ``require``, ``any_of``, and ``exclude``
         keywords; if more than one argument is annotated and ``Z`` or
         ``mass_numb`` are used as arguments; or if none of the arguments
-        have been annotated with `~plasmapy.particles.particle_class.Particle`.
+        have been annotated with |ParticleLike|.
 
     Examples
     --------
     The following simple decorated function returns the
-    `~plasmapy.particles.particle_class.Particle` object created from
-    the function's sole argument: ← needs updating
+    |Particle| object created from the function's sole argument: ← needs updating
 
     .. code-block:: python
 
@@ -683,6 +676,7 @@ def particle_input(
             any_of=any_of,
             exclude=exclude,
             allow_custom_particles=allow_custom_particles,
+            allow_particle_lists=allow_particle_lists,
         )
 
     particle_validator = ValidateParticles(
@@ -691,6 +685,7 @@ def particle_input(
         any_of=any_of,
         exclude=exclude,
         allow_custom_particles=allow_custom_particles,
+        allow_particle_lists=allow_particle_lists,
     )
 
     @wrapt.decorator

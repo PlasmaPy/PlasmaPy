@@ -533,8 +533,8 @@ def test_annotated_classmethod():
     """
 
     class HasAnnotatedClassMethod:
-        @classmethod
         @particle_input
+        @classmethod
         def f(cls, particle: ParticleLike):
             return particle
 
