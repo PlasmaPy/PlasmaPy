@@ -2232,7 +2232,7 @@ class CustomParticle(AbstractPhysicalParticle):
         """Categories for the |CustomParticle|."""
         if np.isnan(self.charge):
             return set()
-        return {"charged"} if self.charge == 0 * u.C else {"uncharged"}
+        return {"uncharged"} if self.charge == 0 * u.C else {"charged"}
 
     def __eq__(self, other) -> bool:
         """
