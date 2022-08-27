@@ -1,4 +1,4 @@
-"""The Particle class."""
+"""Classes to represent particles."""
 
 from __future__ import annotations
 
