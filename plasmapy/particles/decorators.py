@@ -293,8 +293,12 @@ class ValidateParticles:
         must_be_charged = self.require is not None and "charged" in self.require
         must_have_charge_info = self.any_of == {"charged", "uncharged"}
 
-        uncharged = particle._attributes["charge number"] == 0
-        lacks_charge_info = particle._attributes["charge number"] is None
+        uncharged = particle.is_category("uncharged")
+        lacks_charge_info = particle.is_category(exclude={"charged", "uncharged"})
+
+        if isinstance(particle, ParticleList):
+            uncharged = any(uncharged)
+            lacks_charge_info = any(uncharged)
 
         if must_be_charged and (uncharged or must_have_charge_info):
             raise ChargeError(f"A charged particle is required for {self.wrapped}.")
