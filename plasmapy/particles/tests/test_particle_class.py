@@ -969,6 +969,9 @@ customized_particle_tests = [
     (CustomParticle, {"mass": "100.0 g"}, "mass", 100.0 * u.g),
     (CustomParticle, {"charge": -np.inf * u.kC}, "charge", -np.inf * u.C),
     (CustomParticle, {"charge": "5.0 C"}, "charge", 5.0 * u.C),
+    (CustomParticle, {"charge": 0.0 * u.C}, "categories", {"uncharged"}),
+    (CustomParticle, {"charge": 1.0 * u.C}, "categories", {"charged"}),
+    (CustomParticle, {}, "categories", set()),
 ]
 
 
