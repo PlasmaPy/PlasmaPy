@@ -53,6 +53,7 @@ _classification_categories = {
     "unstable",
     "charged",
     "uncharged",
+    "custom",
 }
 
 _periodic_table_categories = {
@@ -2230,9 +2231,14 @@ class CustomParticle(AbstractPhysicalParticle):
     @property
     def categories(self) -> Set[str]:
         """Categories for the |CustomParticle|."""
-        if np.isnan(self.charge):
-            return set()
-        return {"uncharged"} if self.charge == 0 * u.C else {"charged"}
+        categories_ = {"custom"}
+
+        if self.charge == 0 * u.C:
+            categories_ &= {"uncharged"}
+        elif not np.isnan(self.charge):
+            categories_ &= {"charged"}
+
+        return categories_
 
     def __eq__(self, other) -> bool:
         """
