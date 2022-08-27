@@ -1123,6 +1123,13 @@ def fundamental_electron_collision_freq(
     Average momentum relaxation rate for a slowly flowing Maxwellian
     distribution of electrons.
 
+    .. note::
+        The `~plasmapy.formulary.collisions.fundamental_electron_collision_freq` function has been
+        replaced by the more general `~plasmapy.formulary.collisions.CollisionFrequencies` class.
+        To replicate the functionality of `~plasmapy.formulary.collisions.fundamental_electron_collision_freq`, create a
+        `~plasmapy.formulary.collisions.CollisionFrequencies` class and access the ``v_e`` attribute.
+
+
     :cite:t:`braginskii:1965` provides a derivation of this as an
     average collision frequency between electrons and ions for a
     Maxwellian distribution. It is thus a special case of the collision
@@ -1250,6 +1257,13 @@ def fundamental_ion_collision_freq(
     r"""
     Average momentum relaxation rate for a slowly flowing Maxwellian
     distribution of ions.
+
+    .. note::
+        The `~plasmapy.formulary.collisions.fundamental_ion_collision_freq` function has been
+        replaced by the more general `~plasmapy.formulary.collisions.CollisionFrequencies` class.
+        To replicate the functionality of `~plasmapy.formulary.collisions.fundamental_ion_collision_freq`, create a
+        `~plasmapy.formulary.collisions.CollisionFrequencies` class and access the ``v_i`` attribute.
+
 
     :cite:t:`braginskii:1965` provides a derivation of this as an
     average collision frequency between ions and ions for a Maxwellian
@@ -2296,12 +2310,31 @@ class CollisionFrequencies:
 
     @cached_property
     def v_e(self):
+        r"""Average momentum relaxation rate for a slowly flowing Maxwellian
+        `distribution of electrons.
+
+        :cite:t:`braginskii:1965` provides a derivation of this as an
+        average collision frequency between electrons and ions for a
+        Maxwellian distribution. It is thus a special case of the collision
+        frequency with an averaging factor, and is on many occasions
+        in transport theory the most relevant collision frequency that has
+        to be considered. It is heavily related to diffusion and resistivity
+        in plasmas.
+        """
         coeff = 4 / (np.sqrt(np.pi) * 3)
 
         return coeff * self.Lorentz_collision_frequency
 
     @cached_property
     def v_i(self):
+        r"""Average momentum relaxation rate for a slowly flowing Maxwellian
+        distribution of ions.
+
+        :cite:t:`braginskii:1965` provides a derivation of this as an
+        average collision frequency between ions and ions for a Maxwellian
+        distribution. It is thus a special case of the collision frequency
+        with an averaging factor.
+        """
         coeff = np.sqrt(8 / np.pi) / 3 / 4
 
         return coeff * self.Lorentz_collision_frequency
