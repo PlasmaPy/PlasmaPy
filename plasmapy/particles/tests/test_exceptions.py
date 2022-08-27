@@ -946,7 +946,7 @@ tests_from_atomic = [
     [particle_mass, ["fe-56 1+"], {}, pytest.raises(InvalidParticleError)],
     [is_stable, ["hydrogen-444444"], {}, pytest.raises(InvalidParticleError)],
     [is_stable, ["hydrogen", 0], {}, pytest.raises(InvalidParticleError)],
-    [is_stable, [""], {}, pytest.raises(InvalidParticleError)],
+    [is_stable, [""], {}, pytest.raises(ParticleError)],
     [is_stable, ["pb-209"], {}, pytest.raises(InvalidParticleError)],
     [is_stable, ["h"], {}, pytest.raises(InvalidParticleError)],
     [is_stable, ["He"], {}, pytest.raises(InvalidIsotopeError)],
@@ -1029,21 +1029,21 @@ type_error_tests = [
 
 
 @pytest.mark.parametrize(
-    ["tested_object", "args", "kwargs", "expectation"],
+    ["tested_object", "args", "kwargs", "expected"],
     tests_from_nuclear + tests_from_atomic + particle_error_tests + type_error_tests,
 )
-def test_unnamed_tests_exceptions(tested_object, args, kwargs, expectation):
+def test_unnamed_tests_exceptions(tested_object, args, kwargs, expected):
     """
     Test that appropriate exceptions are raised for inappropriate inputs
-    to `IonizationState`.
+    to different functions.
     """
-    with expectation as exc_info:
+    with expected as exc_info:
         tested_object(*args, **kwargs)
 
-    if hasattr(expectation, "expected_exception"):
-        assert type(expectation.expected_exception()) == exc_info.type
+    if hasattr(expected, "expected_exception"):
+        assert type(expected.expected_exception()) == exc_info.type
 
-    if hasattr(expectation, "expected_warning"):
+    if hasattr(expected, "expected_warning"):
         for expected_warning, recorded_warning in zip(
             exc_info.expected_warning, exc_info.list
         ):
