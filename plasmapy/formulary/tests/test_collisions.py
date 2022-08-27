@@ -2128,15 +2128,60 @@ class TestCollisionFrequencies:
             ),
         ],
     )
-    def test_errors(
+    def test_init_errors(
         self, expected_error, constructor_arguments, constructor_keyword_arguments
     ):
-        """Test errors raised in the function body"""
+        """Test errors raised in the __init__ function body"""
 
         with pytest.raises(expected_error):
             CollisionFrequencies(
                 *constructor_arguments, **constructor_keyword_arguments
             )
+
+    @pytest.mark.parametrize(
+        "attribute_name, expected_error, constructor_arguments, constructor_keyword_arguments",
+        [
+            # Specified reaction isn't electron-ion error
+            (
+                "v_e",
+                ValueError,
+                (Particle("e-"), Particle("e-")),
+                {
+                    "v_a": 1 * u.cm / u.s,
+                    "T_b": 1 * u.eV,
+                    "n_b": 1 * u.cm**-3,
+                    "Coulomb_log": 1 * u.dimensionless_unscaled,
+                },
+            ),
+            # Specified reaction isn't ion-electron error
+            (
+                "v_i",
+                ValueError,
+                (Particle("e-"), Particle("e-")),
+                {
+                    "v_a": 1 * u.cm / u.s,
+                    "T_b": 1 * u.eV,
+                    "n_b": 1 * u.cm**-3,
+                    "Coulomb_log": 1 * u.dimensionless_unscaled,
+                },
+            ),
+        ],
+    )
+    def test_attribute_errors(
+        self,
+        attribute_name,
+        expected_error,
+        constructor_arguments,
+        constructor_keyword_arguments,
+    ):
+        """Test errors raised in attributes"""
+
+        test_case = CollisionFrequencies(
+            *constructor_arguments, **constructor_keyword_arguments
+        )
+
+        with pytest.raises(expected_error):
+            getattr(test_case, attribute_name)
 
     @pytest.mark.parametrize(
         "constructor_keyword_arguments",
