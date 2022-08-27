@@ -15,9 +15,10 @@ from plasmapy.particles.exceptions import (
     InvalidElementError,
     InvalidIonError,
     InvalidIsotopeError,
+    InvalidParticleError,
     ParticleError,
 )
-from plasmapy.particles.particle_class import Particle, ParticleLike
+from plasmapy.particles.particle_class import CustomParticle, Particle, ParticleLike
 from plasmapy.particles.particle_collections import ParticleList, ParticleListLike
 
 _basic_allowed_annotations = (
@@ -139,9 +140,11 @@ class ValidateParticles:
         any of these categories, then a
         `~plasmapy.particles.exceptions.ParticleError` will be raised.
 
-    allow_custom_particles : bool
+    allow_custom_particles : bool, default: `True`
         If `True`, allow |CustomParticle| instances to be passed through.
-        Defaults to `True`.
+
+    allow_particle_lists : bool, default: `True`
+        If `True`, allow |ParticleList| instances to be passed through.
     """
 
     def __init__(
@@ -152,6 +155,7 @@ class ValidateParticles:
         any_of: Optional[Union[str, Set, List, Tuple]] = None,
         exclude: Optional[Union[str, Set, List, Tuple]] = None,
         allow_custom_particles: bool = True,
+        allow_particle_lists: bool = True,
     ):
         self._data = {}
         self.wrapped = wrapped
@@ -159,6 +163,7 @@ class ValidateParticles:
         self.any_of = any_of
         self.exclude = exclude
         self.allow_custom_particles = allow_custom_particles
+        self.allow_particle_lists = allow_particle_lists
 
     @property
     def wrapped(self) -> Callable:
@@ -251,7 +256,7 @@ class ValidateParticles:
     @property
     def allow_custom_particles(self) -> bool:
         """
-        If `True`,  then the decorated argument may be or include
+        If `True`, then the decorated argument may be or include
         |CustomParticle| instances. Defaults to `True`.
 
         Returns
@@ -263,6 +268,22 @@ class ValidateParticles:
     @allow_custom_particles.setter
     def allow_custom_particles(self, allow_custom_particles_: bool):
         self._data["allow_custom_particles"] = allow_custom_particles_
+
+    @property
+    def allow_particle_lists(self) -> bool:
+        """
+        If `True`, then the decorated argument may be a |ParticleList|.
+        Defaults to `True`.
+
+        Returns
+        -------
+        bool
+        """
+        return self._data["allow_particle_lists"]
+
+    @allow_particle_lists.setter
+    def allow_particle_lists(self, allow_particle_lists_: bool):
+        self._data["allow_particle_lists"] = allow_particle_lists_
 
     @property
     def parameters_to_process(self) -> List[str]:
@@ -296,15 +317,18 @@ class ValidateParticles:
         uncharged = particle.is_category("uncharged")
         lacks_charge_info = particle.is_category(exclude={"charged", "uncharged"})
 
-        if isinstance(particle, ParticleList):
+        if hasattr(uncharged, "__len__"):
             uncharged = any(uncharged)
-            lacks_charge_info = any(uncharged)
+            lacks_charge_info = any(lacks_charge_info)
 
         if must_be_charged and (uncharged or must_have_charge_info):
-            raise ChargeError(f"A charged particle is required for {self.wrapped}.")
+            raise ChargeError(f"{self.wrapped} can only accept charged particles.")
 
         if must_have_charge_info and lacks_charge_info:
-            raise ChargeError(f"Charge information is required for {self.wrapped}.")
+            raise ChargeError(
+                f"{self.wrapped} can only accept particles which have "
+                f"explicit charge information."
+            )
 
     @staticmethod
     def _category_errmsg(particle, require, exclude, any_of, funcname) -> str:
@@ -369,9 +393,9 @@ class ValidateParticles:
         """
 
         category_table = (
-            ("element", particle.element, InvalidElementError),
-            ("isotope", particle.isotope, InvalidIsotopeError),
-            ("ion", particle.ionic_symbol, InvalidIonError),
+            ("element", getattr(particle, "element", None), InvalidElementError),
+            ("isotope", getattr(particle, "isotope", None), InvalidIsotopeError),
+            ("ion", getattr(particle, "ionic_symbol", None), InvalidIonError),
         )
 
         for category_name, category_symbol, CategoryError in category_table:
@@ -380,6 +404,27 @@ class ValidateParticles:
                     f"The argument {parameter} = {parameter!r} to "
                     f"{self.wrapped.__name__} does not correspond to a "
                     f"valid {parameter}."
+                )
+
+    def _verify_allowed_types(self, particle):
+        """"""
+        if not self.allow_custom_particles and isinstance(particle, CustomParticle):
+            raise InvalidParticleError(
+                f"{self.wrapped.__name__} does not accept CustomParticle "
+                f"or CustomParticle-like inputs."
+            )
+
+        if not self.allow_particle_lists and isinstance(particle, ParticleList):
+            raise InvalidParticleError(
+                f"{self.wrapped.__name__} does not accept ParticleList "
+                "or ParticleList-like inputs."
+            )
+
+        if not self.allow_custom_particles and isinstance(particle, ParticleList):
+            if any(self.is_category("custom")):
+                raise InvalidParticleError(
+                    f"{self.wrapped.__name__} does not accept CustomParticle "
+                    f"or CustomParticle-like inputs."
                 )
 
     def process_argument(
@@ -430,6 +475,7 @@ class ValidateParticles:
         self._verify_charge_categorization(particle)
         self._verify_particle_categorization(particle)
         self._verify_particle_name_criteria(parameter, particle)
+        self._verify_allowed_types(particle)
 
         return particle
 
