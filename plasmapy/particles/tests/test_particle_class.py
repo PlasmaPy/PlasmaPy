@@ -1001,6 +1001,33 @@ def test_custom_particle_symbol(cls, symbol, expected):
     assert instance.symbol == expected
 
 
+custom_particle_is_category_table = [
+    ({"charge": 0 * u.C}, {"require": "charged"}, False),
+    ({"charge": 0 * u.C}, {"exclude": "charged"}, True),
+    ({"charge": 0 * u.C}, {"require": "uncharged"}, True),
+    ({"charge": 0 * u.C}, {"exclude": "uncharged"}, False),
+    ({"charge": 1 * u.C}, {"require": "charged"}, True),
+    ({"charge": 1 * u.C}, {"exclude": "charged"}, False),
+    ({"charge": 1 * u.C}, {"require": "uncharged"}, False),
+    ({"charge": 1 * u.C}, {"exclude": "uncharged"}, True),
+    ({}, {"any_of": {"charged", "uncharged"}}, False),
+]
+
+
+@pytest.mark.parametrize(
+    "kwargs_to_custom_particle, kwargs_to_is_category, expected",
+    custom_particle_is_category_table,
+)
+def test_custom_particle_is_category(
+    kwargs_to_custom_particle,
+    kwargs_to_is_category,
+    expected,
+):
+    custom_particle = CustomParticle(**kwargs_to_custom_particle)
+    actual = custom_particle.is_category(**kwargs_to_is_category)
+    assert actual == expected
+
+
 custom_particle_errors = [
     (DimensionlessParticle, {"mass": -1e-36}, InvalidParticleError),
     (DimensionlessParticle, {"mass": [1, 1]}, InvalidParticleError),
