@@ -2333,7 +2333,7 @@ class CollisionFrequencies:
         The parameter phi used in calculating collision frequencies
         calculated using the default error tolerances of `~scipy.integrate.quad`.
 
-        For more information refer to page 31 of the NRL Formulary.
+        For more information refer to page 31 of :cite:t:`nrlformulary:2019`.
         """
         vectorized_integral = np.vectorize(self._phi_explicit)
 
