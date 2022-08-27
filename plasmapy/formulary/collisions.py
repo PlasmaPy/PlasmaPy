@@ -2296,24 +2296,15 @@ class CollisionFrequencies:
 
     @cached_property
     def v_e(self):
-        return (
-            2.9e-6
-            * self.n_a.to(u.cm**-3)
-            * self.Coulomb_log
-            * (self.T_a * k_B).to(u.eV) ** -1.5
-        ).value * u.Hz
+        coeff = 4 / (np.sqrt(np.pi) * 3)
+
+        return coeff * self.Lorentz_collision_frequency
 
     @cached_property
     def v_i(self):
-        mu = self.test_particle.mass / m_p
+        coeff = np.sqrt(8 / np.pi) / 3 / 4
 
-        return (
-            4.8e-8
-            * self.n_a.to(u.cm**-3)
-            * self.Coulomb_log
-            * (self.T_a * k_B).to(u.eV) ** -1.5
-            * mu**-0.5
-        ).value * u.Hz
+        return coeff * self.Lorentz_collision_frequency
 
     @cached_property
     def x(self) -> u.dimensionless_unscaled:
