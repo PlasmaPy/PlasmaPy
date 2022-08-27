@@ -2088,8 +2088,9 @@ class CollisionFrequencies:
             "can_be_negative": False,
             "equivalencies": u.temperature_energy(),
         },
-        n_b={"can_be_negative": False},
+        n_a={"can_be_negative": False},
         T_b={"can_be_negative": False, "equivalencies": u.temperature_energy()},
+        n_b={"can_be_negative": False},
     )
     @particles.particle_input
     def __init__(
@@ -2311,7 +2312,10 @@ class CollisionFrequencies:
     @cached_property
     def v_e(self):
         r"""Average momentum relaxation rate for a slowly flowing Maxwellian
-        `distribution of electrons.
+        distribution of electrons.
+
+        In order to use this attribute, ``test_particle`` must be an electron
+        and ``field_particle`` must be an ion.
 
         :cite:t:`braginskii:1965` provides a derivation of this as an
         average collision frequency between electrons and ions for a
@@ -2320,7 +2324,32 @@ class CollisionFrequencies:
         in transport theory the most relevant collision frequency that has
         to be considered. It is heavily related to diffusion and resistivity
         in plasmas.
+
+        Raises
+        ------
+        `ValueError`
+            If the specified interaction isn't electron-ion
+
+        Examples
+        --------
+        >>> import astropy.units as u
+        >>> n_a = 1e26 * u.m**-3
+        >>> T_a = 1 * u.eV
+        >>> n_b = 1e26 * u.m**-3
+        >>> T_b = 1e3 * u.eV
+        >>> Coulomb_log = 10 * u.dimensionless_unscaled
+        >>> electron_ion_collisions = CollisionFrequencies(
+        ...     "e-", "Na+", n_a=n_a, T_a=T_a, n_b=n_b, T_b=T_b, Coulomb_log=Coulomb_log
+        ... )
+        >>> electron_ion_collisions.v_e
+        <Quantity 2906316911556553.5 Hz>
         """
+
+        if not self.test_particle.is_electron or not self.field_particle.is_ion:
+            raise ValueError(
+                "Please specify an electron-ion interaction to use the v_e attribute"
+            )
+
         coeff = 4 / (np.sqrt(np.pi) * 3)
 
         return coeff * self.Lorentz_collision_frequency
@@ -2330,11 +2359,39 @@ class CollisionFrequencies:
         r"""Average momentum relaxation rate for a slowly flowing Maxwellian
         distribution of ions.
 
+        In order to use this attribute, ``test_particle`` must be an ion
+        and ``field_particle`` must be an electron.
+
         :cite:t:`braginskii:1965` provides a derivation of this as an
         average collision frequency between ions and ions for a Maxwellian
         distribution. It is thus a special case of the collision frequency
         with an averaging factor.
+
+        Raises
+        ------
+        `ValueError`
+            If the specified interaction isn't ion-electron
+
+        Examples
+        --------
+        >>> import astropy.units as u
+        >>> n_a = 1e26 * u.m**-3
+        >>> T_a = 1 * u.eV
+        >>> n_b = 1e26 * u.m**-3
+        >>> T_b = 1e3 * u.eV
+        >>> Coulomb_log = 10 * u.dimensionless_unscaled
+        >>> ion_electron_collisions = CollisionFrequencies(
+        ...     "Na+", "e-", n_a=n_a, T_a=T_a, n_b=n_b, T_b=T_b, Coulomb_log=Coulomb_log
+        ... )
+        >>> ion_electron_collisions.v_i
+        <Quantity 2509723077602.2725 Hz>
         """
+
+        if not self.test_particle.is_ion or not self.field_particle.is_electron:
+            raise ValueError(
+                "Please specify an ion-electron interaction to use the v_i attribute"
+            )
+
         coeff = np.sqrt(8 / np.pi) / 3 / 4
 
         return coeff * self.Lorentz_collision_frequency
