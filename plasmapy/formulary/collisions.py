@@ -910,7 +910,7 @@ def collision_frequency(
     .. note::
         The `~plasmapy.formulary.collisions.collision_frequency` function has been
         replaced by the more general `~plasmapy.formulary.collisions.CollisionFrequencies` class.
-        To replicate the functionality of collision_frequency, create a
+        To replicate the functionality of `~plasmapy.formulary.collisions.collision_frequency`, create a
         `~plasmapy.formulary.collisions.CollisionFrequencies` class and access the ``Lorentz_collision_frequency`` attribute.
 
     Collision frequency of particles in a plasma.
