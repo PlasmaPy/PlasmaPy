@@ -2120,8 +2120,9 @@ class CollisionFrequencies:
         Raises
         ------
         `ValueError`
-            If both :math:`v_a` and :math:`T_a` are specified, or neither
-            :math:`v_a` nor :math:`T_a` are specified.
+            If both :math:`v_a` and :math:`T_a` are specified, neither
+            :math:`v_a` nor :math:`T_a` are specified, or specified arrays
+            don't have equal size.
 
         Notes
         -----
@@ -2195,6 +2196,9 @@ class CollisionFrequencies:
         # Note: This function uses CGS units internally to coincide with our references.
         # Input is taken in MKS units and then converted as necessary. Output is in MKS units.
 
+        if not isinstance(Coulomb_log, u.Quantity):
+            Coulomb_log *= u.dimensionless_unscaled
+
         if v_a is None:
             if T_a is not None:
                 v_a = thermal_speed(T_a, test_particle)
@@ -2202,6 +2206,13 @@ class CollisionFrequencies:
                 raise ValueError("Please specify either v_a or T_a.")
         elif T_a is not None:
             raise ValueError("Please specify either v_a or T_a, not both.")
+
+        if (
+            isinstance(v_a, np.ndarray)
+            and isinstance(n_b, np.ndarray)
+            and v_a.shape != n_b.shape
+        ):
+            raise ValueError("Please specify arrays of equal length.")
 
         self.test_particle = test_particle
         self.field_particle = field_particle

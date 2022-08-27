@@ -2126,6 +2126,17 @@ class TestCollisionFrequencies:
                     "Coulomb_log": 1 * u.dimensionless_unscaled,
                 },
             ),
+            # Arrays of unequal shape error
+            (
+                ValueError,
+                (Particle("e-"), Particle("e-")),
+                {
+                    "v_a": np.ndarray([1, 1]) * u.cm / u.s,
+                    "T_b": 1 * u.eV,
+                    "n_b": ones_array * u.cm**-3,
+                    "Coulomb_log": 1 * u.dimensionless_unscaled,
+                },
+            ),
         ],
     )
     def test_errors(
