@@ -1001,7 +1001,7 @@ def test_custom_particle_symbol(cls, symbol, expected):
     assert instance.symbol == expected
 
 
-customized_particle_errors = [
+custom_particle_errors = [
     (DimensionlessParticle, {"mass": -1e-36}, InvalidParticleError),
     (DimensionlessParticle, {"mass": [1, 1]}, InvalidParticleError),
     (DimensionlessParticle, {"charge": [-1, 1]}, InvalidParticleError),
@@ -1039,7 +1039,7 @@ customized_particle_errors = [
 ]
 
 
-@pytest.mark.parametrize("cls, kwargs, exception", customized_particle_errors)
+@pytest.mark.parametrize("cls, kwargs, exception", custom_particle_errors)
 def test_customized_particles_errors(cls, kwargs, exception):
     """
     Test that attempting to create invalid dimensionless or custom particles
