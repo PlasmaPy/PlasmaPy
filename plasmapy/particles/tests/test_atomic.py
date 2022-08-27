@@ -573,11 +573,6 @@ def test_is_electron(particle, electron):
     assert _is_electron(particle) == electron
 
 
-def test_integer_charge():
-    with pytest.warns(PlasmaPyFutureWarning):
-        assert integer_charge("Fe 20+") == 20
-
-
 def test_ion_list_example():
     ions = ionic_levels("He-4")
     np.testing.assert_equal(ions.charge_number, [0, 1, 2])
