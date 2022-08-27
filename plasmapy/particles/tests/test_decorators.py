@@ -613,6 +613,21 @@ def test_particle_input_with_validate_quantities(outer_decorator, inner_decorato
 
 
 def test_allow_custom_particles_is_true():
+    """Test the allow_custom_particles keyword argument to particle_input."""
+
+    @particle_input(allow_custom_particles=False)
+    def f(particle: ParticleLike):
+        return particle
+
+    custom_particle = CustomParticle()
+
+    with pytest.raises(InvalidParticleError):
+        f(custom_particle)
+
+
+def test_allow_custom_particles_is_true():
+    """Test the allow_custom_particles keyword argument to particle_input."""
+
     @particle_input(allow_custom_particles=False)
     def f(particle: ParticleLike):
         return particle
