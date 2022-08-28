@@ -999,9 +999,9 @@ def test_custom_particle_symbol(cls, symbol, expected):
 
 
 custom_particle_categories_table = [
-    ({"charge": 0.0 * u.C}, {"uncharged"}),
-    ({"charge": 1.0 * u.C}, {"charged"}),
-    ({}, set()),
+    ({"charge": 0.0 * u.C}, {"custom", "uncharged"}),
+    ({"charge": 1.0 * u.C}, {"custom", "charged"}),
+    ({}, {"custom"}),
 ]
 
 
