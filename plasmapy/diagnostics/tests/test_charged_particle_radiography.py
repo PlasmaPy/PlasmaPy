@@ -236,10 +236,10 @@ def test_coordinate_systems():
     detector = (0.1 * u.m, 90 * u.deg, 45 * u.deg)
     sim3 = cpr.Tracker(grid, source, detector, verbose=False)
 
-    assert np.allclose(sim1.source, sim2.source, atol=1e-2)
-    assert np.allclose(sim2.source, sim3.source, atol=1e-2)
-    assert np.allclose(sim1.detector, sim2.detector, atol=1e-2)
-    assert np.allclose(sim2.detector, sim3.detector, atol=1e-2)
+    np.testing.assert_allclose(sim1.source, sim2.source, atol=1e-2)
+    np.testing.assert_allclose(sim2.source, sim3.source, atol=1e-2)
+    np.testing.assert_allclose(sim1.detector, sim2.detector, atol=1e-2)
+    np.testing.assert_allclose(sim2.detector, sim3.detector, atol=1e-2)
 
 
 @pytest.mark.slow
@@ -589,8 +589,8 @@ class TestSyntheticRadiograph:
             sim_results, size=size, bins=bins, optical_density=True
         )
 
-        assert np.allclose(intensity_results[0], od_results[0], rtol=1e-4, atol=1e-7)
-        assert np.allclose(intensity_results[1], od_results[1], rtol=1e-4, atol=1e-7)
+        np.testing.assert_allclose(intensity_results[0], od_results[0], rtol=1e-4, atol=1e-7)
+        np.testing.assert_allclose(intensity_results[1], od_results[1], rtol=1e-4, atol=1e-7)
 
         # Manually calculate the OD and check that it agrees with the values
         # returned from the function
@@ -601,7 +601,7 @@ class TestSyntheticRadiograph:
             od = -np.log10(intensity_results[2] / i0)
 
         # Assert that the calculated od is close to that returned by the function
-        assert np.allclose(
+        np.testing.assert_allclose(
             od[~zero_mask], od_results[2][~zero_mask], rtol=1e-4, atol=1e-7
         )
 
@@ -631,7 +631,7 @@ def test_saving_output(tmp_path):
 
     assert set(results_1.keys()) == set(results_2.keys())
     for key in results_1.keys():
-        assert np.allclose(results_1[key], results_2[key])
+        np.testing.assert_allclose(results_1[key], results_2[key])
 
 
 @pytest.mark.parametrize(
