@@ -2507,6 +2507,7 @@ class Photon(AbstractParticle):
     >>> photon.spin
     1
     """
+
     def __init__(self, quantity: Quantity = None):
         self._set_default_photon_properties()
         if (quantity is not None) and (not self._validate_quantity(quantity)):

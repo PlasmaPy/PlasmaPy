@@ -35,7 +35,7 @@ from plasmapy.particles.particle_class import (
     molecule,
     Particle,
     ParticleLike,
-    Photon
+    Photon,
 )
 from plasmapy.particles.particle_collections import (
     ionic_levels,
