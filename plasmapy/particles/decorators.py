@@ -116,25 +116,25 @@ class ValidateParticles:
 
     Parameters
     ----------
-    wrapped : function
+    wrapped : callable
         The function or method to be decorated.
 
-    require : `str`, `set`, `list`, or `tuple`, optional
+    require : `str`, `set`, `list`, or `tuple`, optional, |keyword-only|
         Categories that a particle must be in.  If a particle is not in
         all of these categories, then a |ParticleError| will be raised.
 
-    any_of : `str`, `set`, `list`, or `tuple`, optional
+    any_of : `str`, `set`, `list`, or `tuple`, optional, |keyword-only|
         Categories that a particle may be in.  If a particle is not in
         any of these categories, then a |ParticleError| will be raised.
 
-    exclude : `str`, `set`, `list`, or `tuple`, optional
+    exclude : `str`, `set`, `list`, or `tuple`, optional, |keyword-only|
         Categories that a particle cannot be in.  If a particle is in
         any of these categories, then a |ParticleError| will be raised.
 
-    allow_custom_particles : bool, default: `True`
+    allow_custom_particles : bool, optional, |keyword-only|, default: `True`
         If `True`, allow |CustomParticle| instances to be passed through.
 
-    allow_particle_lists : bool, default: `True`
+    allow_particle_lists : bool, optional, |keyword-only|, default: `True`
         If `True`, allow |ParticleList| instances to be passed through.
     """
 
@@ -195,7 +195,7 @@ class ValidateParticles:
 
         Returns
         -------
-        dict
+        `dict` of `str` to `object`
         """
         return self._data.get("annotations", None)
 
@@ -291,9 +291,8 @@ class ValidateParticles:
 
     def _verify_charge_categorization(self, particle) -> NoReturn:
         """
-        Raise an exception if the particle is required to have charge
-        information but does not, or if the particle is required to be
-        charged but is not.
+        Raise an exception if the particle does not meet charge
+        categorization criteria.
 
         Raises
         ------
