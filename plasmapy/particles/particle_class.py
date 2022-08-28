@@ -233,10 +233,10 @@ class Particle(AbstractPhysicalParticle):
         integer representing the atomic number of an element; or a
         |Particle| instance.
 
-    mass_numb : `int`, optional, keyword-only
+    mass_numb : `int`, optional, |keyword-only|
         The mass number of an isotope or nuclide.
 
-    Z : `int`, optional, keyword-only
+    Z : `int`, optional, |keyword-only|
         The charge number of the particle.
 
     Raises
@@ -1512,16 +1512,16 @@ class Particle(AbstractPhysicalParticle):
             Required categories in the form of one or more `str` objects
             or an iterable.
 
-        require : `str` or iterable providing `str` objects, optional, keyword-only
+        require : `str` or iterable providing `str` objects, optional, |keyword-only|
             One or more categories.  This method will return `False` if
             the |Particle| does not belong to all of these categories.
 
-        any_of : `str` or iterable providing `str` objects, optional, keyword-only
+        any_of : `str` or iterable providing `str` objects, optional, |keyword-only|
             One or more categories. This method will return `False` if
             the |Particle| does not belong to at least one of these
             categories.
 
-        exclude : `str` or iterable providing `str` objects, optional, keyword-only
+        exclude : `str` or iterable providing `str` objects, optional, |keyword-only|
             One or more categories.  This method will return `False` if
             the |Particle| belongs to any of these categories.
 
@@ -1824,10 +1824,10 @@ class DimensionlessParticle(AbstractParticle):
 
     Parameters
     ----------
-    mass : positive real number, keyword-only, optional
+    mass : positive real number, |keyword-only|, optional
         The mass of the dimensionless particle.  Defaults to `numpy.nan`.
 
-    charge : real number, keyword-only, optional
+    charge : real number, |keyword-only|, optional
         The electric charge of the dimensionless particle.  Defaults to
         `numpy.nan`.
 

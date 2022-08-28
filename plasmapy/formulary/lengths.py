@@ -127,14 +127,14 @@ def gyroradius(
         charge state information is provided, then the particles are assumed
         to be singly charged.
 
-    Vperp : `~astropy.units.Quantity`, optional, keyword-only
+    Vperp : `~astropy.units.Quantity`, optional, |keyword-only|
         The component of particle velocity that is perpendicular to the
         magnetic field in units convertible to meters per second.
 
-    T : `~astropy.units.Quantity`, optional, keyword-only
+    T : `~astropy.units.Quantity`, optional, |keyword-only|
         The particle temperature in units convertible to kelvin.
 
-    T_i : `~astropy.units.Quantity`, optional, keyword-only
+    T_i : `~astropy.units.Quantity`, optional, |keyword-only|
         The particle temperature in units convertible to kelvin.
         Note: Deprecated. Use ``T`` instead.
 

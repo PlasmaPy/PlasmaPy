@@ -193,14 +193,14 @@ class IonizationState:
         the number densities of each neutral/ion.  This argument cannot
         be specified when ``particle`` is an ion.
 
-    T_e: `~astropy.units.Quantity`, keyword-only, optional
+    T_e: `~astropy.units.Quantity`, |keyword-only|, optional
         The electron temperature or thermal energy per electron.
 
-    n_elem: `~astropy.units.Quantity`, keyword-only, optional
+    n_elem: `~astropy.units.Quantity`, |keyword-only|, optional
         The number density of the element, including neutrals and all
         ions.
 
-    tol: `float` or integer, keyword-only, optional
+    tol: `float` or integer, |keyword-only|, optional
         The absolute tolerance used by `~numpy.isclose` and similar
         functions when testing normalizations and making comparisons.
         Defaults to ``1e-15``.
@@ -828,16 +828,16 @@ class IonizationState:
 
         Parameters
         ----------
-        include_neutrals : `bool`, optional, keyword-only
+        include_neutrals : `bool`, optional, |keyword-only|
             If `True`, include neutrals when calculating the mean values
             of the different particles.  If `False`, exclude neutrals.
             Defaults to `True`.
 
-        use_rms_charge : `bool`, optional, keyword-only
+        use_rms_charge : `bool`, optional, |keyword-only|
             If `True`, use the root mean square charge instead of the
             mean charge. Defaults to `False`.
 
-        use_rms_mass : `bool`, optional, keyword-only
+        use_rms_mass : `bool`, optional, |keyword-only|
             If `True`, use the root mean square mass instead of the mean
             mass. Defaults to `False`.
 
