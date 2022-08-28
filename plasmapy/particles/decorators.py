@@ -415,7 +415,7 @@ class ValidateParticles:
             )
 
         if not self.allow_custom_particles and isinstance(particle, ParticleList):
-            if any(self.is_category("custom")):
+            if any(particle.is_category("custom")):
                 raise InvalidParticleError(
                     f"{self.wrapped.__name__} does not accept CustomParticle "
                     f"or CustomParticle-like inputs."

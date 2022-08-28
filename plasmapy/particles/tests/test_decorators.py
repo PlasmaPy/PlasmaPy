@@ -5,6 +5,7 @@ import sys
 
 from typing import List, Optional, Tuple, Union
 
+from plasmapy.particles import ParticleList
 from plasmapy.particles.decorators import particle_input
 from plasmapy.particles.exceptions import (
     ChargeError,
@@ -71,27 +72,11 @@ def test_particle_input_simple(func, args, kwargs, symbol):
     Test that simple functions decorated by particle_input correctly
     return the correct Particle object.
     """
-    try:
-        expected = Particle(symbol)
-    except Exception as e:
-        raise ParticleError(f"Cannot create Particle class from symbol {symbol}") from e
-
-    try:
-        result = func(*args, **kwargs)
-    except Exception as e:
-        raise ParticleError(
-            f"An exception was raised while trying to execute:\n\n "
-            f"{call_string(func, args, kwargs)}\n"
-        ) from e
-
+    expected = Particle(symbol)
+    result = func(*args, **kwargs)
     assert result == expected, (
-        f"The result {repr(result)} does not equal the expected value of "
-        f"{repr(expected)}.\n\n"
-        f"func = {func}\n"
-        f"args = {args}\n"
-        f"kwargs = {kwargs}\nsymbol = {symbol}\n"
-        f"{result._attributes}\n"
-        f"{expected._attributes}\n"
+        f"The result {result!r} does not equal the expected value of "
+        f"{expected!r} with {func =}, {args =}, and {kwargs =}."
     )
 
 
@@ -104,7 +89,7 @@ particle_input_error_table = [
 @pytest.mark.parametrize("func, kwargs, expected_error", particle_input_error_table)
 def test_particle_input_errors(func, kwargs, expected_error):
     """
-    Test that functions decorated with particle_input raise the
+    Test that functions decorated with `@particle_input` raise the
     expected errors.
     """
     with pytest.raises(expected_error):
@@ -112,52 +97,60 @@ def test_particle_input_errors(func, kwargs, expected_error):
         pytest.fail(f"{func} did not raise {expected_error} with kwargs = {kwargs}")
 
 
-class HasDecoratedMethods:
+class ClassWithDecoratedMethods:
     """
     A sample class with methods that will be used to check that
     @particle_input works both with and without parentheses.
     """
 
     @particle_input
-    def method_noparens(self, particle: ParticleLike) -> Particle:
+    def method_decorated_with_no_parentheses(self, particle: ParticleLike) -> Particle:
         return particle
 
     @particle_input()
-    def method_parens(self, particle: ParticleLike) -> Particle:
+    def method_decorated_with_parentheses(self, particle: ParticleLike) -> Particle:
         return particle
 
 
-@pytest.mark.parametrize("symbol", ["muon", "He 3+"])
+@pytest.mark.parametrize("symbol", ["muon", "He 2+"])
 def test_particle_input_classes(symbol):
-    instance = HasDecoratedMethods()
-
-    symbol = "muon"
+    """Test that @particle_input works for instance methods."""
     expected = Particle(symbol)
+    instance = ClassWithDecoratedMethods()
 
-    result_noparens = instance.method_noparens(symbol)
-    result_parens = instance.method_parens(symbol)
+    result_noparens = instance.method_decorated_with_no_parentheses(symbol)
+    result_parens = instance.method_decorated_with_parentheses(symbol)
+
+    assert isinstance(result_noparens, Particle)
+    assert isinstance(result_parens, Particle)
 
     assert result_parens == result_noparens == expected
 
 
 @particle_input
 def function_with_no_annotations():
-    """A trivial function that is incorrectly decorated with
-    particle_input because no arguments are annotated with Particle."""
+    """
+    A trivial function that is incorrectly decorated with @particle_input
+    because no arguments are annotated with Particle.
+    """
     pass
 
 
 def test_no_annotations_exception():
-    """Test that a function decorated with particle_input that has no
-    annotated arguments will raise an ParticleError."""
+    """
+    Test that a function decorated with @particle_input that has no
+    annotated arguments will raise a ParticleError.
+    """
     with pytest.raises(ParticleError):
         function_with_no_annotations()
 
 
 @particle_input
 def ambiguous_keywords(p1: ParticleLike, p2: ParticleLike, Z=None, mass_numb=None):
-    """A trivial function with two annotated arguments plus the keyword
-    arguments `Z` and `mass_numb`."""
+    """
+    A trivial function with two annotated arguments plus the keyword
+    arguments `Z` and `mass_numb`.
+    """
     pass
 
 
@@ -184,8 +177,7 @@ def function_to_test_annotations(particles: Union[Tuple, List], resulting_partic
     =========
     particles: tuple or list
         A collection containing many items, each of which may be a valid
-        representation of a particle or a `~plasmapy.particles.Particle`
-        instance
+        representation of a particle or a |Particle| instance.
     """
 
     expected = [
@@ -210,15 +202,15 @@ def function_to_test_annotations(particles: Union[Tuple, List], resulting_partic
         raise ParticleError(
             f"A function decorated by particle_input did not return "
             f"a collection of Particle instances for input of "
-            f"{repr(particles)}, and instead returned"
-            f"{repr(resulting_particles)}."
+            f"{particles!r}, and instead returned"
+            f"{resulting_particles!r}."
         )
 
     if not returned_correct_instances:
         raise ParticleError(
             f"A function decorated by particle_input did not return "
-            f"{repr(expected)} as expected, and instead returned "
-            f"{repr(resulting_particles)}."
+            f"{expected!r} as expected, and instead returned "
+            f"{resulting_particles!r}."
         )
 
 
@@ -569,6 +561,32 @@ def test_self_stacked_decorator(outer_decorator, inner_decorator):
     assert isinstance(result, Particle)
 
 
+@pytest.mark.parametrize(
+    "inner_decorator, outer_decorator",
+    [
+        (particle_input, particle_input),
+        (particle_input, particle_input()),
+        (particle_input(), particle_input),
+        (particle_input(), particle_input()),
+    ],
+)
+def test_class_stacked_decorator(outer_decorator, inner_decorator):
+    """
+    Test that particle_input can be stacked with itself for an
+    instance method.
+    """
+
+    class Sample:
+        @outer_decorator
+        @inner_decorator
+        def __init__(self, particle: ParticleLike):
+            self.particle = particle
+
+    result = Sample("p+")
+    assert result.particle == "p+"
+    assert isinstance(result.particle, Particle)
+
+
 validate_quantities_ = validate_quantities(
     T_e={"equivalencies": u.temperature_energy()}
 )
@@ -617,27 +635,23 @@ def test_particle_input_with_validate_quantities(outer_decorator, inner_decorato
     assert instance.T_e.unit == u.K
 
 
-def test_allow_custom_particles_is_true():
+rename_this = [
+    ({"allow_custom_particles": False}, CustomParticle()),
+    ({"allow_particle_lists": False}, ParticleList()),
+    (
+        {"allow_custom_particles": False, "allow_particle_lists": True},
+        ParticleList([CustomParticle()]),
+    ),
+]
+
+
+@pytest.mark.parametrize("kwargs_to_particle_input, arg", rename_this)
+def test_particle_input_verification(kwargs_to_particle_input, arg):
     """Test the allow_custom_particles keyword argument to particle_input."""
 
-    @particle_input(allow_custom_particles=False)
+    @particle_input(**kwargs_to_particle_input)
     def f(particle: ParticleLike):
         return particle
 
-    custom_particle = CustomParticle()
-
-    with pytest.raises(InvalidParticleError):
-        f(custom_particle)
-
-
-def test_allow_custom_particles_is_true():
-    """Test the allow_custom_particles keyword argument to particle_input."""
-
-    @particle_input(allow_custom_particles=False)
-    def f(particle: ParticleLike):
-        return particle
-
-    custom_particle = CustomParticle()
-
-    with pytest.raises(InvalidParticleError):
-        f(custom_particle)
+    with pytest.raises(ParticleError):
+        f(arg)
