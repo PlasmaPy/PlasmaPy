@@ -214,6 +214,7 @@ test_Particle_table = [
             'is_category(any_of={"positron"})': True,
             'is_category(exclude="positron")': False,
             'is_category("ion")': False,
+            'is_category("invalid_category")': ParticleError,
             "__str__()": "e+",
             "__repr__()": 'Particle("e+")',
             "periodic_table.group": InvalidElementError,
