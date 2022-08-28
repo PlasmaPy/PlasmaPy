@@ -910,7 +910,7 @@ def collision_frequency(
     .. note::
         The `~plasmapy.formulary.collisions.collision_frequency` function has been
         replaced by the more general `~plasmapy.formulary.collisions.CollisionFrequencies` class.
-        To replicate the functionality of collision_frequency, create a
+        To replicate the functionality of `~plasmapy.formulary.collisions.collision_frequency`, create a
         `~plasmapy.formulary.collisions.CollisionFrequencies` class and access the ``Lorentz_collision_frequency`` attribute.
 
     Collision frequency of particles in a plasma.
@@ -2140,8 +2140,9 @@ class CollisionFrequencies:
         Raises
         ------
         `ValueError`
-            If both :math:`v_a` and :math:`T_a` are specified, or neither
-            :math:`v_a` nor :math:`T_a` are specified.
+            If both :math:`v_a` and :math:`T_a` are specified, neither
+            :math:`v_a` nor :math:`T_a` are specified, or specified arrays
+            don't have equal size.
 
         Notes
         -----
@@ -2223,6 +2224,13 @@ class CollisionFrequencies:
         elif T_a is not None:
             raise ValueError("Please specify either v_a or T_a, not both.")
 
+        if (
+            isinstance(v_a, np.ndarray)
+            and isinstance(n_b, np.ndarray)
+            and v_a.shape != n_b.shape
+        ):
+            raise ValueError("Please specify arrays of equal length.")
+
         self.test_particle = test_particle
         self.field_particle = field_particle
         self.v_a = v_a
@@ -2234,7 +2242,11 @@ class CollisionFrequencies:
         self.n_a = n_a
         self.T_b = T_b
         self.n_b = n_b
-        self.Coulomb_log = Coulomb_log
+        self.Coulomb_log = (
+            Coulomb_log
+            if isinstance(Coulomb_log, u.Quantity)
+            else Coulomb_log * u.dimensionless_unscaled
+        )
 
     @cached_property
     def _mass_ratio(self):
@@ -2429,7 +2441,7 @@ class CollisionFrequencies:
         The parameter phi used in calculating collision frequencies
         calculated using the default error tolerances of `~scipy.integrate.quad`.
 
-        For more information refer to page 31 of the NRL Formulary.
+        For more information refer to page 31 of :cite:t:`nrlformulary:2019`.
         """
         vectorized_integral = np.vectorize(self._phi_explicit)
 

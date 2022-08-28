@@ -209,10 +209,10 @@ def particle_mass(
         particle; an integer representing an atomic number; or an
         instance of the Particle class.
 
-    Z: `int`, optional, keyword-only
+    Z: `int`, optional, |keyword-only|
         The ionization state of the ion.
 
-    mass_numb: `int`, optional, keyword-only
+    mass_numb: `int`, optional, |keyword-only|
         The mass number of an isotope.
 
     Returns

@@ -62,8 +62,8 @@ Coding guidelines
      f(T_i = 1e6 * u.K, T_e = 2e6 * u.K)
 
   Similarly, when a function has parameters named ``T_e`` and ``T_i``,
-  these parameters should be made :term:`keyword-only` to avoid
-  ambiguity and reduce the chance of errors.
+  these parameters should be made |keyword-only| to avoid ambiguity and
+  reduce the chance of errors.
 
   .. code-block:: python
 
