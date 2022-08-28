@@ -1713,7 +1713,7 @@ class TestCollisionFrequencies:
         v_a=1 * u.m / u.s,
         T_b=1 * u.K,
         n_b=1 * u.m**-3,
-        Coulomb_log=1 * u.dimensionless_unscaled,
+        Coulomb_log=1,
     )
 
     MKS_unit_conversion_test_constructor_arguments = {
@@ -1762,6 +1762,7 @@ class TestCollisionFrequencies:
             ("energy_loss", u.Hz),
             ("x", u.dimensionless_unscaled),
             ("Lorentz_collision_frequency", u.Hz),
+            ("Coulomb_log", u.dimensionless_unscaled),
         ],
     )
     def test_units(self, attribute_to_test, expected_attribute_units):
@@ -2123,6 +2124,17 @@ class TestCollisionFrequencies:
                 {
                     "T_b": 1 * u.eV,
                     "n_b": 1 * u.cm**-3,
+                    "Coulomb_log": 1 * u.dimensionless_unscaled,
+                },
+            ),
+            # Arrays of unequal shape error
+            (
+                ValueError,
+                (Particle("e-"), Particle("e-")),
+                {
+                    "v_a": np.ndarray([1, 1]) * u.cm / u.s,
+                    "T_b": 1 * u.eV,
+                    "n_b": ones_array * u.cm**-3,
                     "Coulomb_log": 1 * u.dimensionless_unscaled,
                 },
             ),
