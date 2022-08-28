@@ -2465,7 +2465,7 @@ argument or variable should represent a physical particle.
 class Photon(AbstractParticle):
     def __init__(self, quantity: Quantity = None):
         self._set_default_photon_properties()
-        if quantity and not self._validate_quantity(quantity):
+        if (quantity is not None) and (not self._validate_quantity(quantity)):
             raise ValueError(
                 "Specify non negative quantity with units of Energy, wavelength, frequency or momentum."
             )
