@@ -2370,26 +2370,26 @@ class CollisionFrequencies:
         Raises
         ------
         `ValueError`
-            If the specified interaction isn't ion-electron
+            If the specified interaction isn't ion-ion
 
         Examples
         --------
         >>> import astropy.units as u
         >>> n_a = 1e26 * u.m**-3
-        >>> T_a = 1 * u.eV
+        >>> T_a = 1e3 * u.eV
         >>> n_b = 1e26 * u.m**-3
         >>> T_b = 1e3 * u.eV
         >>> Coulomb_log = 10 * u.dimensionless_unscaled
-        >>> ion_electron_collisions = CollisionFrequencies(
-        ...     "Na+", "e-", n_a=n_a, T_a=T_a, n_b=n_b, T_b=T_b, Coulomb_log=Coulomb_log
+        >>> ion_ion_collisions = CollisionFrequencies(
+        ...     "Na+", "Na+", n_a=n_a, T_a=T_a, n_b=n_b, T_b=T_b, Coulomb_log=Coulomb_log
         ... )
-        >>> ion_electron_collisions.v_i
-        <Quantity 2509723077602.2725 Hz>
+        >>> ion_ion_collisions.v_i
+        <Quantity 79364412.21510696 Hz>
         """
 
-        if not self.test_particle.is_ion or not self.field_particle.is_electron:
+        if not self.test_particle.is_ion or not self.field_particle.is_ion:
             raise ValueError(
-                "Please specify an ion-electron interaction to use the v_i attribute"
+                "Please specify an ion-ion interaction to use the v_i attribute"
             )
 
         coeff = 8 * np.sqrt(1 / np.pi) / 3 / 4

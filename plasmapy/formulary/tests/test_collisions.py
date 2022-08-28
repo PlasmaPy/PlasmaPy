@@ -2134,7 +2134,7 @@ class TestCollisionFrequencies:
                 "v_i",
                 {
                     "test_particle": Particle("Li+"),
-                    "field_particle": Particle("e-"),
+                    "field_particle": Particle("Li+"),
                     "T_a": 1e4 * u.K,
                     "n_a": 1e10 * u.cm**-3,
                     "T_b": 1e4 * u.K,
@@ -2211,11 +2211,11 @@ class TestCollisionFrequencies:
                     "Coulomb_log": 1 * u.dimensionless_unscaled,
                 },
             ),
-            # Specified reaction isn't ion-electron error
+            # Specified reaction isn't ion-ion error
             (
                 "v_i",
                 ValueError,
-                (Particle("e-"), Particle("e-")),
+                (Particle("Na+"), Particle("e-")),
                 {
                     "v_a": 1 * u.cm / u.s,
                     "T_b": 1 * u.eV,
