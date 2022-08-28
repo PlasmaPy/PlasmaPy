@@ -2392,7 +2392,7 @@ class CollisionFrequencies:
                 "Please specify an ion-electron interaction to use the v_i attribute"
             )
 
-        coeff = np.sqrt(8 / np.pi) / 3 / 4
+        coeff = 8 * np.sqrt(1 / np.pi) / 3 / 4
 
         return coeff * self.Lorentz_collision_frequency
 
