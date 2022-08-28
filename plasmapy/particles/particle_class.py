@@ -2369,9 +2369,9 @@ class CustomParticle(AbstractPhysicalParticle):
         categories_ = {"custom"}
 
         if self.charge == 0 * u.C:
-            categories_ &= {"uncharged"}
+            categories_ |= {"uncharged"}
         elif not np.isnan(self.charge):
-            categories_ &= {"charged"}
+            categories_ |= {"charged"}
 
         return categories_
 
