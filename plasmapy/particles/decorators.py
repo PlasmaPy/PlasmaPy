@@ -411,7 +411,7 @@ class ValidateParticles:
         if not self.allow_particle_lists and isinstance(particle, ParticleList):
             raise InvalidParticleError(
                 f"{self.wrapped.__name__} does not accept ParticleList "
-                "or ParticleList-like inputs."
+                "or particle-list-like inputs."
             )
 
         if not self.allow_custom_particles and isinstance(particle, ParticleList):

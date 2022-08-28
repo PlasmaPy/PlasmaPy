@@ -637,7 +637,7 @@ def test_particle_input_with_validate_quantities(outer_decorator, inner_decorato
 
 rename_this = [
     ({"allow_custom_particles": False}, CustomParticle()),
-    ({"allow_particle_lists": False}, ParticleList()),
+    ({"allow_particle_lists": False}, ParticleList(["p+", "Fe"])),
     (
         {"allow_custom_particles": False, "allow_particle_lists": True},
         ParticleList([CustomParticle()]),
