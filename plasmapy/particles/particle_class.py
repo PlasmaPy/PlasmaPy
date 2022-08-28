@@ -370,10 +370,10 @@ class Particle(AbstractPhysicalParticle):
         integer representing the atomic number of an element; or a
         |Particle| instance.
 
-    mass_numb : `int`, optional, keyword-only
+    mass_numb : `int`, optional, |keyword-only|
         The mass number of an isotope or nuclide.
 
-    Z : `int`, optional, keyword-only
+    Z : `int`, optional, |keyword-only|
         The charge number of the particle.
 
     Raises
@@ -1630,6 +1630,137 @@ class Particle(AbstractPhysicalParticle):
         """
         return self._categories
 
+    def is_category(
+        self,
+        *category_tuple,
+        require: Union[str, Iterable[str]] = None,
+        any_of: Union[str, Iterable[str]] = None,
+        exclude: Union[str, Iterable[str]] = None,
+    ) -> bool:
+        """
+        Determine if the particle meets categorization criteria.
+
+        Return `True` if the particle is consistent with the provided
+        categories, and `False` otherwise.
+
+        Parameters
+        ----------
+        *category_tuple
+            Required categories in the form of one or more `str` objects
+            or an iterable.
+
+        require : `str` or iterable providing `str` objects, optional, |keyword-only|
+            One or more categories.  This method will return `False` if
+            the |Particle| does not belong to all of these categories.
+
+        any_of : `str` or iterable providing `str` objects, optional, |keyword-only|
+            One or more categories. This method will return `False` if
+            the |Particle| does not belong to at least one of these
+            categories.
+
+        exclude : `str` or iterable providing `str` objects, optional, |keyword-only|
+            One or more categories.  This method will return `False` if
+            the |Particle| belongs to any of these categories.
+
+        Notes
+        -----
+        A `set` containing all valid categories may be accessed by the
+        ``valid_categories`` attribute of
+        `~plasmapy.particles.particle_class.Particle.is_category`.
+
+        Examples
+        --------
+        Required categories may be entered as positional arguments,
+        including as a `list`, `set`, or `tuple` of required categories.
+
+        >>> electron = Particle("e-")
+        >>> electron.is_category("lepton")
+        True
+        >>> electron.is_category("lepton", "baryon")
+        False
+        >>> electron.is_category(["fermion", "matter"])
+        True
+
+        Required arguments may also be provided using the ``require``
+        keyword argument.
+
+        >>> electron.is_category(require="lepton")
+        True
+        >>> electron.is_category(require=["lepton", "baryon"])
+        False
+
+        This method will return `False` if the particle does not belong
+        to at least one of the categories provided with the ``any_of``
+        keyword argument.
+
+        >>> electron.is_category(any_of=["lepton", "baryon"])
+        True
+        >>> electron.is_category(any_of=("noble gas", "lanthanide", "halogen"))
+        False
+
+        This method will return `False` if the particle belongs to any
+        of the categories provided in the ``exclude`` keyword argument.
+
+        >>> electron.is_category(exclude="baryon")
+        True
+        >>> electron.is_category(exclude={"lepton", "baryon"})
+        False
+
+        The ``require``, ``any_of``, and ``exclude`` keywords may be
+        combined.  If the particle matches all of the provided criteria,
+        then `~plasmapy.particles.particle_class.Particle.is_category`
+        will return `True`.
+
+        >>> electron.is_category(
+        ...     require="fermion", any_of={'lepton', 'baryon'}, exclude='charged',
+        ... )
+        False
+        """
+
+        def become_set(arg: Union[str, Set, Tuple, List]) -> Set[str]:
+            """Change the argument into a `set`."""
+            if arg is None:
+                return set()
+            if isinstance(arg, set):
+                return arg
+            if isinstance(arg, str):
+                return {arg}
+            return set(arg[0]) if isinstance(arg[0], (tuple, list, set)) else set(arg)
+
+        if category_tuple and require:  # coverage: ignore
+            raise ParticleError(
+                "No positional arguments are allowed if the `require` keyword "
+                "is set in is_category."
+            )
+
+        require = become_set(category_tuple) if category_tuple else become_set(require)
+        exclude = become_set(exclude)
+        any_of = become_set(any_of)
+
+        invalid_categories = (require | exclude | any_of) - _valid_categories
+
+        duplicate_categories = require & exclude | exclude & any_of | require & any_of
+
+        categories_and_adjectives = [
+            (invalid_categories, "invalid"),
+            (duplicate_categories, "duplicated"),
+        ]
+
+        for problem_categories, adjective in categories_and_adjectives:
+            if problem_categories:
+                raise ParticleError(
+                    f"The following categories in {self.__repr__()}"
+                    f".is_category are {adjective}: {problem_categories}"
+                )
+
+        if exclude and exclude & self._categories:
+            return False
+
+        if any_of and not any_of & self._categories:
+            return False
+
+        return require <= self._categories
+
     @property
     def is_electron(self) -> bool:
         """
@@ -1826,10 +1957,10 @@ class DimensionlessParticle(AbstractParticle):
 
     Parameters
     ----------
-    mass : positive real number, keyword-only, optional
+    mass : positive real number, |keyword-only|, optional
         The mass of the dimensionless particle.  Defaults to `numpy.nan`.
 
-    charge : real number, keyword-only, optional
+    charge : real number, |keyword-only|, optional
         The electric charge of the dimensionless particle.  Defaults to
         `numpy.nan`.
 

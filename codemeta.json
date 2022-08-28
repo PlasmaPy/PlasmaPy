@@ -51,27 +51,6 @@
     "operatingSystem": [
         "OS Independent"
     ],
-    "softwareRequirements": [
-        "python >= 3.8",
-        "astropy >= 4.3.1",
-        "cached-property >= 1.5.2",
-        "h5py >= 3.0.0",
-        "ipywidgets >= 7.6.5",
-        "lmfit >= 1.0.0",
-        "matplotlib >= 3.3.0",
-        "mpmath >= 1.2.1",
-        "numba",
-        "numpy >= 1.20.0",
-        "packaging",
-        "pandas >= 1.0.0",
-        "scipy >= 1.5.0",
-        "setuptools >= 41.2",
-        "setuptools_scm",
-        "wheel >= 0.29.0",
-        "tqdm >= 4.41.0",
-        "voila >= 0.2.15",
-        "xarray >= 0.15.0"
-    ],
     "relatedLink": [
         "https://www.plasmapy.org",
         "https://docs.plasmapy.org",
