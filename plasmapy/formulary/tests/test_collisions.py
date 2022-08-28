@@ -1892,6 +1892,20 @@ class TestCollisionFrequencies:
 
         return limit_values
 
+    @staticmethod
+    def get_fundamental_frequency(species, n, T, Coulomb_log):
+        # This special case for computing the fundamental frequencies comes from page 33 of the NRL Formulary
+        # Strip the units from these quantities and ensure they are in CGS units
+        n = n.to(u.cm**-3).value
+        T = T.value if T.unit == u.eV else (T * k_B).to(u.eV).value
+
+        if species.is_electron:
+            return (2.9e-6 * n * Coulomb_log * T**-1.5) * u.Hz
+        elif species.is_ion:
+            mu = (species.mass / m_p).value
+
+            return (4.8e-8 * n * Coulomb_log * T**-1.5 * mu**-0.5) * u.Hz
+
     @pytest.mark.parametrize(
         "interaction_type, limit_type, constructor_arguments, constructor_keyword_arguments",
         [
@@ -2100,6 +2114,50 @@ class TestCollisionFrequencies:
             assert np.allclose(
                 calculated_limit_value, expected_limit_value, rtol=0.05, atol=0
             )
+
+    @pytest.mark.parametrize(
+        "frequency_to_test, constructor_keyword_arguments",
+        [
+            (
+                "v_e",
+                {
+                    "test_particle": Particle("e-"),
+                    "field_particle": Particle("Li+"),
+                    "T_a": 1e4 * u.K,
+                    "n_a": 1e10 * u.cm**-3,
+                    "T_b": 1e4 * u.K,
+                    "n_b": 1e10 * u.cm**-3,
+                    "Coulomb_log": 10 * u.dimensionless_unscaled,
+                },
+            ),
+            (
+                "v_i",
+                {
+                    "test_particle": Particle("Li+"),
+                    "field_particle": Particle("e-"),
+                    "T_a": 1e4 * u.K,
+                    "n_a": 1e10 * u.cm**-3,
+                    "T_b": 1e4 * u.K,
+                    "n_b": 1e10 * u.cm**-3,
+                    "Coulomb_log": 10 * u.dimensionless_unscaled,
+                },
+            ),
+        ],
+    )
+    def test_fundamental_frequency_values(
+        self, frequency_to_test, constructor_keyword_arguments
+    ):
+        value_test_case = CollisionFrequencies(**constructor_keyword_arguments)
+
+        calculated_value = getattr(value_test_case, frequency_to_test)
+        expected_value = self.get_fundamental_frequency(
+            constructor_keyword_arguments["test_particle"],
+            constructor_keyword_arguments["n_a"],
+            constructor_keyword_arguments["T_a"],
+            constructor_keyword_arguments["Coulomb_log"],
+        )
+
+        assert np.allclose(calculated_value, expected_value, rtol=0.01, atol=0)
 
     @pytest.mark.parametrize(
         "expected_error, constructor_arguments, constructor_keyword_arguments",
