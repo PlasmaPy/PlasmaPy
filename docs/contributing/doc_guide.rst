@@ -562,7 +562,7 @@ Here is an example docstring in the numpydoc_ format:
       b : `float`
           The right multiplicand.
 
-      switch_order : `bool`, optional, keyword-only
+      switch_order : `bool`, optional, |keyword-only|
           If `True`, return :math:`a - b`. If `False`, then return
           :math:`b - a`. Defaults to `True`.
 
