@@ -7,6 +7,7 @@ import astropy.units as u
 import copy
 import numpy as np
 import pytest
+from flaky import flaky
 
 from scipy.special import erf
 
@@ -571,6 +572,7 @@ class TestSyntheticRadiograph:
         assert isinstance(histogram, np.ndarray)
         assert histogram.shape == expected["bins"]
 
+    @flaky(max_runs=15, min_passes=10)
     def test_optical_density_histogram(self):
         """
         Test the optical density calculation is correct and stuffed
