@@ -1,0 +1,5 @@
+Moved ``plasmapy.formulary.collisions.fundamental_electron_collision_freq`` to
+`~plasmapy.formulary.collisions.CollisionFrequencies`.
+
+Moved ``plasmapy.formulary.collisions.fundamental_ion_collision_freq`` to
+`~plasmapy.formulary.collisions.CollisionFrequencies`.
