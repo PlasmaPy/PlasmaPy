@@ -2463,6 +2463,50 @@ argument or variable should represent a physical particle.
 
 
 class Photon(AbstractParticle):
+    """
+    A class to represent a Photon.
+
+    Special case of an Abstract Particle with hardcoded mass,
+    charge, charge_number, spin and half_life to that of a
+    photon.
+
+    Parameters
+    ----------
+    quantity : ~astropy.units.Quantity, optional
+        The defining parameter of a Photon. It can be in the units of
+        Energy, Frequency, Momentum or Wavelength.
+
+    Raises
+    ------
+    ValueError
+        If the quantity is either not of allowed type or it's a negative quantity.
+
+    See Also
+    --------
+    ~plasmapy.particles.particle_class.Particle
+
+    Notes
+    -----
+    If the quantity is not specified, then the corresponding values of Energy,
+    Frequency, Momentum and Wavelength will be set to ``numpy.nan`` in
+    the appropriate units.
+
+    Examples
+    --------
+    >>> from astropy import units as u
+    >>> from plasmapy.particles import Photon
+    >>> photon = Photon(5 * u.m)
+    >>> photon.wavelength
+    <Quantity 5. m>
+    >>> photon.energy
+    <Quantity 3.97289171e-26 J>
+    >>> photon.momentum
+    <Quantity 1.32521403e-34 J s / m>
+    >>> photon.frequency
+    <Quantity 59958491.6 1 / s>
+    >>> photon.spin
+    1
+    """
     def __init__(self, quantity: Quantity = None):
         self._set_default_photon_properties()
         if (quantity is not None) and (not self._validate_quantity(quantity)):
@@ -2477,7 +2521,6 @@ class Photon(AbstractParticle):
             self.wavelength = None
         else:
             if self._isMomentum(quantity):
-                # p = (h/λ), f = c/λ
                 self.momentum = quantity.to(u.kg * u.m / u.s)
                 self.wavelength = const.h / self.momentum
                 self.frequency = const.c / self.wavelength
@@ -2489,6 +2532,7 @@ class Photon(AbstractParticle):
                 self.momentum = const.h / self.wavelength
 
     def _set_default_photon_properties(self):
+        """Set default properties of a Photon."""
         self._mass = 0 * u.kg
         self._charge = 0 * u.C
         self._charge_number = 0
@@ -2504,6 +2548,10 @@ class Photon(AbstractParticle):
         )
 
     def _validate_quantity(self, quantity: Quantity):
+        """
+        Checks if the type of ``quantity`` is one of the ``_allowed_units`` and
+        validates it's a valid non negative |Quantity|.
+        """
         allowed_physical_types = [
             u.get_physical_type(x) for x in self._allowed_units.values()
         ]
@@ -2512,32 +2560,39 @@ class Photon(AbstractParticle):
         return isValidQuantity and isNonNegativeQuantity
 
     def _isMomentum(self, quantity: Quantity):
+        """Checks if the ``quantity`` is Momentum."""
         return quantity.unit.physical_type == u.get_physical_type(
             self._allowed_units["Momentum"]
         )
 
     @property
     def mass(self) -> u.Kg:
+        """The mass of the |Photon| in Kilograms."""
         return self._mass
 
     @property
     def charge(self) -> u.C:
+        """The electric charge of the |Photon| in Coulombs."""
         return self._charge
 
     @property
-    def charge_number(self) -> int:
+    def charge_number(self) -> Integral:
+        """The |Photon|'s electrical charge in units of the elementary charge."""
         return self._charge_number
 
     @property
-    def spin(self) -> int:
+    def spin(self) -> Real:
+        """The intrinsic spin of the |Photon|."""
         return self._spin
 
     @property
     def half_life(self) -> u.s:
+        """Half-life of the |Photon| in seconds."""
         return self._half_life
 
     @property
     def energy(self) -> u.J:
+        """Energy of the |Photon| in Joules."""
         return self._energy
 
     @energy.setter
@@ -2549,6 +2604,7 @@ class Photon(AbstractParticle):
 
     @property
     def frequency(self) -> (u.s**-1):
+        """Frequency of the |Photon| in Hertz."""
         return self._frequency
 
     @frequency.setter
@@ -2560,6 +2616,7 @@ class Photon(AbstractParticle):
 
     @property
     def momentum(self) -> (u.kg * u.m / u.s):
+        """Momentum of the |Photon| in SI units."""
         return self._momentum
 
     @momentum.setter
@@ -2571,6 +2628,7 @@ class Photon(AbstractParticle):
 
     @property
     def wavelength(self) -> u.m:
+        """Wavelength of the |Photon| in meters."""
         return self._wavelength
 
     @wavelength.setter
