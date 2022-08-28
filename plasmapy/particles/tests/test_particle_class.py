@@ -1505,3 +1505,7 @@ def test_photon_creation():
 
     p4 = Photon(20 * u.nJ)
     assert p4.energy == (20 * u.nJ).to(u.J)
+
+    momentum = 1 * u.kg * u.m / u.s
+    p5 = Photon(momentum)
+    assert p5.wavelength == (const.h / momentum)
