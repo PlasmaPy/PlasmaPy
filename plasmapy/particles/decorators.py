@@ -540,7 +540,7 @@ class ValidateParticles:
 
 
 def particle_input(
-    wrapped: Optional[Callable] = None,
+    wrapped: Callable,
     require: Union[str, Set, List, Tuple] = None,
     any_of: Union[str, Set, List, Tuple] = None,
     exclude: Union[str, Set, List, Tuple] = None,
