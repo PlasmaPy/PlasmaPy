@@ -56,7 +56,7 @@ def _make_into_set_or_none(obj) -> Optional[Set]:
 
 
 def _bind_arguments(
-    func: Callable,
+    function: Callable,
     args: Optional[Tuple] = None,
     kwargs: Optional[Dict[str, Any]] = None,
     instance=None,
@@ -68,13 +68,13 @@ def _bind_arguments(
 
     Parameters
     ----------
-    func : callable
+    function : callable
         The function or method to which to bind ``args`` and ``kwargs``.
 
     args : tuple, optional
         Positional arguments.
 
-    kwargs : dict, optional,
+    kwargs : `dict` of `str` to `object`, optional
         Keyword arguments.
 
     instance
@@ -88,7 +88,7 @@ def _bind_arguments(
         as keys and the corresponding arguments as values,
         but removing ``self`` and ``cls``.
     """
-    wrapped_signature = inspect.signature(func)
+    wrapped_signature = inspect.signature(function)
 
     # When decorating a function or staticmethod, instance will
     # be None. When decorating a class instance method, instance
@@ -165,15 +165,15 @@ class ValidateParticles:
         -------
         callable
         """
-        return self._data["wrapped_function"]
+        return self._data["wrapped"]
 
     @wrapped.setter
     def wrapped(self, function: Callable):
-        self._data["wrapped_function"] = function
+        self._data["wrapped"] = function
         self._data["annotations"] = _get_annotations(function)
-        self._data["parameters_to_process"] = self.find_parameters_to_process()
+        self._data["parameters_to_process"] = self._find_parameters_to_process()
 
-    def find_parameters_to_process(self) -> List[str]:
+    def _find_parameters_to_process(self) -> List[str]:
         """
         Identify the parameters that have annotations to indicate that
         they should be processed.
@@ -206,7 +206,7 @@ class ValidateParticles:
 
         Returns
         -------
-        `set` of `str` or `None`
+        `set` of `str`, or `None`
         """
         return self._data["require"]
 
@@ -221,7 +221,7 @@ class ValidateParticles:
 
         Returns
         -------
-        `set` of `str` or `None`
+        `set` of `str`, or `None`
         """
         return self._data["any_of"]
 
@@ -236,7 +236,7 @@ class ValidateParticles:
 
         Returns
         -------
-        `set` of `str` or `None`
+        `set` of `str`, or `None`
         """
         return self._data["exclude"]
 
@@ -321,10 +321,10 @@ class ValidateParticles:
             )
 
     @staticmethod
-    def _category_errmsg(particle, require, exclude, any_of, funcname) -> str:
+    def _category_errmsg(particle, require, exclude, any_of, function_name) -> str:
         """
-        Return an appropriate error message for when a particle does not
-        meet the required categorical specifications.
+        Return an error message for when a particle does not meet
+        categorization criteria.
 
         Returns
         -------
@@ -332,7 +332,7 @@ class ValidateParticles:
         """
         category_errmsg = (
             f"The particle {particle} does not meet the required "
-            f"classification criteria to be a valid input to {funcname}. "
+            f"classification criteria to be a valid input to {function_name}. "
         )
 
         errmsg_table = [
@@ -379,7 +379,7 @@ class ValidateParticles:
     def _verify_particle_name_criteria(self, parameter, particle):
         """
         Check that parameters with special names meet the expected
-        criteria.
+        categorization criteria.
         """
 
         category_table = (
@@ -424,6 +424,7 @@ class ValidateParticles:
         self,
         parameter: str,
         argument: Any,
+        *,
         Z: Optional[Integral],
         mass_numb: Optional[Integral],
     ) -> Any:
@@ -438,10 +439,10 @@ class ValidateParticles:
         argument : object
             The value of the :term:`argument` associated with ``parameter``.
 
-        Z : integer
+        Z : integer, optional, |keyword-only|
             The charge number of an ion or neutral particle.
 
-        mass_numb : integer
+        mass_numb : integer, optional, |keyword-only|
             The mass number of an isotope.
         """
         annotation = self.annotations.get(parameter, None)
@@ -475,6 +476,11 @@ class ValidateParticles:
     parameters_to_skip = ("Z", "mass_numb")
 
     def _perform_pre_validations(self, Z, mass_numb):
+        """
+        Check that there are annotated parameters, that ``Z`` and
+        ``mass_numb`` are integers, and that ``Z`` and ``mass_numb`` are
+        not parameters when more than one parameter is annotated.
+        """
 
         if not self.parameters_to_process:
             raise ParticleError(
@@ -500,6 +506,22 @@ class ValidateParticles:
     def process_arguments(
         self, args: tuple, kwargs: Dict[str, Any], instance=None
     ) -> Dict[str, Any]:
+        """
+        Process the arguments passed to the wrapped callable.
+
+        Parameters
+        ----------
+        args : tuple
+            Positional arguments passed to the wrapped callable.
+
+        kwargs : `dict` of `str` to `object`
+            Keyword arguments provided to the wrapped callable.
+
+        instance : `object`, optional
+            If the wrapped callable is a class instance method, then
+            ``instance`` should be the class instance to which ``func``
+            belongs.
+        """
 
         arguments = _bind_arguments(self.wrapped, args, kwargs, instance)
 
@@ -518,46 +540,53 @@ class ValidateParticles:
 
 
 def particle_input(
-    wrapped_function=None,
+    wrapped: Callable,
     require: Union[str, Set, List, Tuple] = None,
     any_of: Union[str, Set, List, Tuple] = None,
     exclude: Union[str, Set, List, Tuple] = None,
     allow_custom_particles: bool = True,
     allow_particle_lists: bool = True,
-):
+) -> Callable:
     """
-    Convert appropriately annotated arguments to particle objects.
+    Convert |arguments| provided to a callable into particle objects.
 
-    Take |particle-like| or |particle-list-like| arguments that are
-    appropriately annotated (for example, with |ParticleLike| or
-    |ParticleListLike|), and convert them to a |Particle|,
-    |CustomParticle|, or |ParticleList|.
+    When a callable is |decorated| with |particle_input|,
+    |particle-like| |arguments| that are appropriately |annotated|
+    (e.g., with |ParticleLike| or |ParticleListLike|) will be converted
+    into a |Particle|, |CustomParticle|, or |ParticleList|.
 
-    If the particle(s) do not satisfy provided categorization criteria,
-    then raise an appropriate exception. If the annotated parameter is
-    named ``element``, ``isotope``, ``ion``, or ``ionic_level``, then
-    the corresponding particle must be consistent with the name.
+    The parameters ``Z`` and ``mass_numb`` may be used to specify the
+    |charge number| of an ion and mass number of an isotope,
+    respectively, as long as ``Z`` and/or ``mass_numb`` are |parameters|
+    accepted by the callable and only one |parameter| is appropriately
+    |annotated|.
 
-    The conversion of objects to a |Particle|, |CustomParticle|, or
-    |ParticleList| is done in
-    `~plasmapy.particles.decorators.ValidateParticles`.
+    If the particle representation does not satisfy any categorization
+    criteria that have been provided, then |particle_input| will raise
+    an exception.
+
+    If the |annotated| |parameter| is named ``element``, ``isotope``,
+    ``ion``, or ``ionic_level``, then |particle_input| will raise an
+    exception if the |argument| provided to the callable is not
+    consistent with the |parameter| name.
+
+    If the |annotation| is created using `~typing.Optional` (e.g.,
+    `Optional[ParticleLike]`), then `None` can be provided to the
+    wrapped callable.
 
     Parameters
     ----------
-    wrapped_function : `callable`
+    wrapped : callable
         The function or method to be decorated.
 
     require : `str`, `set`, `list`, or `tuple`, |keyword-only|, optional
-        Categories that a particle must be in.  If a particle is not in
-        all of these categories, then a |ParticleError| will be raised.
+        Categories that each particle is required to be in.
 
     any_of : `str`, `set`, `list`, or `tuple`, |keyword-only|, optional
-        Categories that a particle may be in.  If a particle is not in
-        any of these categories, then a |ParticleError| will be raised.
+        Categories of which each particle must belong to at least one.
 
     exclude : `str`, `set`, `list`, or `tuple`, |keyword-only|, optional
-        Categories that a particle cannot be in.  If a particle is in
-        any of these categories, then a |ParticleError| will be raised.
+        Categories that each particle cannot be in.
 
     allow_custom_particles : bool, default: `True`
         If `True`, allow |CustomParticle| instances to be passed through.
@@ -565,18 +594,20 @@ def particle_input(
     allow_particle_lists : bool, default: `True`
         If `True`, allow |ParticleList| instances to be passed through.
 
+    Returns
+    -------
+    callable
+
     Notes
     -----
-    If the annotated argument is named ``element``, ``isotope``, or
-    ``ion``, then the decorator will raise an |InvalidElementError|,
-    |InvalidIsotopeError|, or |InvalidIonError| if the particle does
-    not correspond to an element, isotope, or ion, respectively.
+    The valid annotations are:
 
-    If exactly one argument is annotated with |ParticleLike|, then the
-    keywords ``Z`` and ``mass_numb`` may be used to specify the charge
-    number and/or mass number of an ion or isotope.  However, the
-    decorated function must allow ``Z`` and/or ``mass_numb`` as keywords
-    in order to enable this functionality.
+    * |ParticleLike|
+    * |ParticleListLike|
+    * ``typing.Optional[ParticleLike]``
+    * ``typing.Optional[ParticleListLike]``
+    * |Particle| (deprecated)
+    * ``(Particle, Particle)`` (deprecated)
 
     Raises
     ------
@@ -611,64 +642,96 @@ def particle_input(
         associated with it.
 
     |ParticleError|
-        If an annotated argument does not meet the criteria set by the
-        categories in the ``require``, ``any_of``, and ``exclude``
-        keywords; if more than one argument is annotated and ``Z`` or
-        ``mass_numb`` are used as arguments; or if none of the arguments
-        have been annotated with |ParticleLike|.
+        If the resulting particle is not in all of the categories
+        specified in ``require``, is not in any of the categories
+        specified in ``any_of``, or is in any of the categories
+        specified in ``exclude``; or if none of the parameters of the
+        wrapped callable have been appropriately annotated.
+
+    See Also
+    --------
+    ~plasmapy.particles.decorators.ValidateParticles
+    |validate_quantities|
+
+    Notes
+    -----
 
     Examples
     --------
-    The following simple decorated function returns the
-    |Particle| object created from the function's sole argument: ← needs updating
 
-    .. code-block:: python
+    The |particle_input| decorator takes appropriately annotated
+    arguments
 
-        from plasmapy.particles import particle_input, ParticleLike
 
-        @particle_input
-        def decorated_function(particle: ParticleLike):
-            return particle
+    The following decorated function returns the particle object created
+    from the sole argument provided
 
-    This decorator may be used for methods in instances of classes, as
-    in the following example:
-
-    .. code-block:: python
-
-        from plasmapy.particles import particle_input, ParticleLike
-
-        class SampleClass:
-            @particle_input
-            def decorated_method(self, particle: ParticleLike):
-                return particle
-
-        sample_instance = SampleClass()
-        sample_instance.decorated_method('Fe')
-
-    Some functions may be intended to be used with only certain categories
-    of particles.  The ``require``, ``any_of``, and ``exclude`` keyword
-    arguments enable this functionality.
-
-    .. code-block:: python
-
-        from plasmapy.particles import particle_input, ParticleLike
-
-        @particle_input(
-            require={'matter'},
-            any_of={'charged', 'uncharged},
-            exclude={'neutrino', 'antineutrino'},
-        )
-        def selective_function(particle: ParticleLike):
-            return particle
-
-    * Discuss annotated class methods!  Include that ``@particle_input``
-      should be the inner decorator and ``@classmethod`` should be the
-      outer decorator in order for this to work correctly.
+    .. |annotated| replace:: :term:`annotated <function annotation>`
+    .. |annotation| replace:: :term:`annotation <function annotation>`
+    .. |argument| replace:: :term:`argument`
+    .. |arguments| replace:: :term:`arguments <argument>`
+    .. |charge number| replace:: :term:`charge number`
+    .. |decorated| replace:: :term:`decorated <decorator>`
+    .. |parameter| replace:: :term:`parameter`
+    .. |parameters| replace:: :term:`parameters <parameter>`
     """
+    #
+    #    Examples
+    #    --------
+    #    The following simple decorated function returns the
+    #    |Particle| object created from the function's sole argument: ← needs updating
+    #
+    #    .. code-block:: python
+    #
+    #        from plasmapy.particles import particle_input, ParticleLike
+    #
+    #        @particle_input
+    #        def decorated_function(particle: ParticleLike):
+    #            return particle
+    #
+    #    This decorator may be used for methods in instances of classes, as
+    #    in the following example:
+    #
+    #    .. code-block:: python
+    #
+    #        from plasmapy.particles import particle_input, ParticleLike
+    #
+    #        class SampleClass:
+    #            @particle_input
+    #            def decorated_method(self, particle: ParticleLike):
+    #                return particle
+    #
+    #        sample_instance = SampleClass()
+    #        sample_instance.decorated_method('Fe')
+    #
+    #    Some functions may be intended to be used with only certain categories
+    #    of particles.  The ``require``, ``any_of``, and ``exclude`` keyword
+    #    arguments enable this functionality.
+    #
+    #    .. code-block:: python
+    #
+    #        from plasmapy.particles import particle_input, ParticleLike
+    #
+    #        @particle_input(
+    #            require={'matter'},
+    #            any_of={'charged', 'uncharged},
+    #            exclude={'neutrino', 'antineutrino'},
+    #        )
+    #        def selective_function(particle: ParticleLike):
+    #            return particle
+    #
+    #    * Discuss annotated class methods!  Include that ``@particle_input``
+    #      should be the inner decorator and ``@classmethod`` should be the
+    #      outer decorator in order for this to work correctly.
+    #
+    #    .. notes::
+    #
+    #       The
+    #    """
 
     # The following pattern comes from the docs for wrapt, and requires
     # that the arguments to the decorator are keyword-only.
-    if wrapped_function is None:
+    if wrapped is None:
         return functools.partial(
             particle_input,
             require=require,
@@ -679,7 +742,7 @@ def particle_input(
         )
 
     particle_validator = ValidateParticles(
-        wrapped=wrapped_function,
+        wrapped=wrapped,
         require=require,
         any_of=any_of,
         exclude=exclude,
@@ -692,4 +755,4 @@ def particle_input(
         new_kwargs = particle_validator.process_arguments(args, kwargs, instance)
         return wrapped(**new_kwargs)
 
-    return wrapper(wrapped_function)
+    return wrapper(wrapped)
