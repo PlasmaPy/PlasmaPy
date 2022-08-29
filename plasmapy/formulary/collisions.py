@@ -2358,7 +2358,7 @@ class CollisionFrequencies:
 
             b.) :math:`T_{i} \lesssim T_{e}`
 
-        :cite:t:`braginskii:1965` provides a derivation of this as an
+        :cite:t:`callen:unpublished` provides a derivation of this as an
         average collision frequency between electrons and ions for a
         Maxwellian distribution. It is thus a special case of the collision
         frequency with an averaging factor, and is on many occasions
@@ -2413,7 +2413,7 @@ class CollisionFrequencies:
 
             b.) :math:`T_{i} \lesssim T_{e}`
 
-        :cite:t:`braginskii:1965` provides a derivation of this as an
+        :cite:t:`callen:unpublished` provides a derivation of this as an
         average collision frequency between ions and ions for a Maxwellian
         distribution. It is thus a special case of the collision frequency
         with an averaging factor.
