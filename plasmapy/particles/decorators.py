@@ -535,9 +535,6 @@ class ValidateParticles:
         }
 
 
-# TODO: add ionic_level naming scheme
-
-
 def particle_input(
     wrapped: Optional[Callable] = None,
     *,
@@ -568,9 +565,9 @@ def particle_input(
     an exception.
 
     If the |annotated| |parameter| is named ``element``, ``isotope``,
-    ``ion``, or ``ionic_level``, then |particle_input| will raise an
-    exception if the |argument| provided to the callable is not
-    consistent with the |parameter| name.
+    or ``ion``,then |particle_input| will raise an exception if the
+    |argument| provided to the callable is not consistent with the
+    |parameter|.
 
     If the |annotation| is created using `~typing.Optional` (e.g.,
     `Optional[ParticleLike]`), then `None` can be provided to the
@@ -644,18 +641,6 @@ def particle_input(
     ~plasmapy.particles.decorators.ValidateParticles
     |validate_quantities|
 
-    Notes
-    -----
-    In most cases, |particle_input| and |validate_quantities| may be
-    applied to
-
-    .. code-block: python
-
-       class SampleClass:
-           @classmethod
-           @particle_input
-           def
-
     Examples
     --------
     The |particle_input| decorator takes appropriately annotated
@@ -670,31 +655,61 @@ def particle_input(
     >>> import astropy.units as u
 
     >>> @particle_input
-    ... def make_into_particle(particle: ParticleLike):
+    ... def get_particle(particle: ParticleLike):
     ...     return particle
 
-    >>> make_into_particle("p+")
+    >>> get_particle("p+")
     Particle("p+")
-    >>> make_into_particle(["p+", "e-"])
+    >>> get_particle(["p+", "e-"])
     ParticleList(['p+', 'e-'])
-    >>> make_into_particle(1e-26 * u.kg)
+    >>> get_particle(1e-26 * u.kg)
     CustomParticle(mass=1e-26 kg, charge=nan C)
 
-    |particle_input| may be used for instance methods in classes, so
-    long as the first argument (representing the instance) is ``self``.
+    If the annotation is constructed using `typing.Optional`, then the
+    decorated callable will allow `None` to pass.
+
+    >>> from typing import Optional
+    >>> @particle_input
+    ... def get_particle_or_none(particle: Optional[ParticleLike]):
+    ...     return particle
+    >>> get_particle_or_none("p+")
+    Particle("p+")
+    >>> print(get_particle_or_none(None))
+    None
+
+    If the decorated callable has parameters named ``Z`` and/or
+    ``mass_numb`` and exactly one annotated parameter, then ``Z`` may
+    be used to provide the |charge number| and ``mass_numb`` may be used
+    to provide the mass number. Making ``Z`` and ``mass_numb``
+    |keyword-only| reduces the chances of confusion or mistakes.
+
+    >>> @particle_input
+    ... def make_particle(particle: ParticleLike, *, Z=None, mass_numb=None):
+    ...     return particle
+    >>> make_particle("H", Z=0, mass_numb=3)
+    Particle("T 0+")
+
+    Instance methods can also be decorated with |particle_input| as long
+    as the first argument (representing the instance itself) is named
+    ``self`` following standard convention.
 
     >>> class SampleClass:
+    ...
     ...     @particle_input
     ...     def __init__(self, particle: ParticleLike):
     ...         self.particle = particle
+    ...
     ...     @particle_input
     ...     def return_particle(self, new_particle: ParticleLike):
     ...         return new_particle
+
     >>> instance = SampleClass("α")
     >>> instance.particle
     Particle("He-4 2+")
     >>> instance.return_particle("T+")
     Particle("T 1+")
+
+    ``Z`` and ``mass_numb``!!!!!!!!!!!!!!!!!!!!!!!1
 
     The ``allow_custom_particles`` and ``allow_particle_lists`` keyword
     arguments indicate whether or not ``wrapped`` should accept
@@ -706,7 +721,9 @@ def particle_input(
     >>> get_atomic_number("Fe")
     26
 
-    For more details, please refer to the docstring for
+    The ``require``, ``any_of``, and ``exclude`` keyword arguments may
+    be used to specify categorization criteria that a particle must be
+    consistent with. For more details, please refer to the docstring for
     `~plasmapy.particles.particle_class.Particle.is_category`.
 
     >>> @particle_input(require="element", any_of={"charged", "uncharged"})
@@ -715,35 +732,34 @@ def particle_input(
     >>> return_ionic_level("Fe-56 0+")
     Particle("Fe-56 0+")
 
-    """
+    When the |parameter| is named ``element``, ``isotope``, or ``ion``,
+    the corresponding |argument| must be consistent with the name.
 
-    #    Some functions may be intended to be used with only certain categories
-    #    of particles.  The ``require``, ``any_of``, and ``exclude`` keyword
-    #    arguments enable this functionality.
-    #
-    #    .. code-block:: python
-    #
-    #        from plasmapy.particles import particle_input, ParticleLike
-    #
-    #        @particle_input(
-    #            require={'matter'},
-    #            any_of={'charged', 'uncharged},
-    #            exclude={'neutrino', 'antineutrino'},
-    #        )
-    #        def selective_function(particle: ParticleLike):
-    #            return particle
-    #
-    #    * Discuss annotated class methods!  Include that ``@particle_input``
-    #      should be the inner decorator and ``@classmethod`` should be the
-    #      outer decorator in order for this to work correctly.
-    #
-    #    .. notes::
-    #
-    #       The
-    #    """
+    >>> @particle_input
+    ... def mass_number(isotope: ParticleLike):
+    ...     return isotope.mass_number
+    >>> mass_number("D")
+    2
+
+    .. note::
+
+       When using both |particle_input| and |validate_quantities| to
+       decorate an instance method, |particle_input| should be the
+       outer decorator and |validate_quantities| should be the inner
+       decorator.
+
+    .. note::
+
+       When decorating a class method with |particle_input|,
+       `classmethod` should be the outer decorator and |particle_input|
+       should be the inner decorator, and the first argument
+       (representing the class) must be named ``cls``. However,
+       stacking `classmethod` and |particle_input| requires Python 3.9+.
+    """
 
     # The following pattern comes from the docs for wrapt, and requires
     # that the arguments to the decorator are keyword-only.
+
     if wrapped is None:
         return functools.partial(
             particle_input,
