@@ -206,7 +206,7 @@ class ValidateParticles:
 
         Returns
         -------
-        `set` of `str` or `None`
+        `set` of `str`, or `None`
         """
         return self._data["require"]
 
@@ -221,7 +221,7 @@ class ValidateParticles:
 
         Returns
         -------
-        `set` of `str` or `None`
+        `set` of `str`, or `None`
         """
         return self._data["any_of"]
 
@@ -236,7 +236,7 @@ class ValidateParticles:
 
         Returns
         -------
-        `set` of `str` or `None`
+        `set` of `str`, or `None`
         """
         return self._data["exclude"]
 
