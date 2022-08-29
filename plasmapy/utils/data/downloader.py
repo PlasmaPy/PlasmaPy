@@ -61,7 +61,6 @@ def get_file(basename, base_url=_BASE_URL, directory=None):
 
         reply = requests.get(url)
 
-        # If a 404 code is returned, the file does not exist.
         if reply.status_code == 404:
             raise OSError(
                 "The requested URL returned a 404 code, which "
