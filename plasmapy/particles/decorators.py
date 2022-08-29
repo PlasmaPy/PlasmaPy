@@ -549,14 +549,12 @@ def particle_input(
     allow_particle_lists: bool = True,
 ) -> Callable:
     """
-    Convert :term:`arguments <argument>` provided to a callable into
-    particle objects.
+    Convert |arguments| provided to a callable into particle objects.
 
-    When a callable is :term:`decorated <decorator>` with
-    |particle_input|, |particle-like| :term:`arguments <argument>` that
-    are appropriately :term:`annotated `function annotation` (e.g., with
-    |ParticleLike| or |ParticleListLike|) will be converted into a
-    |Particle|, |CustomParticle|, or |ParticleList|.
+    When a callable is |decorated| with |particle_input|,
+    |particle-like| |arguments| that are appropriately |annotated|
+    (e.g., with |ParticleLike| or |ParticleListLike|) will be converted
+    into a |Particle|, |CustomParticle|, or |ParticleList|.
 
     The parameters ``Z`` and ``mass_numb`` may be used to specify the
     |charge number| of an ion and mass number of an isotope,
@@ -580,7 +578,7 @@ def particle_input(
     Parameters
     ----------
     wrapped : callable, optional
-        The function, method, or other callable to be decorated.
+        The function or method to be decorated.
 
     require : `str`, `set`, `list`, or `tuple`, |keyword-only|, optional
         Categories that each particle is required to be in.
@@ -600,6 +598,17 @@ def particle_input(
     Returns
     -------
     callable
+
+    Notes
+    -----
+    The valid annotations are:
+
+    * |ParticleLike|
+    * |ParticleListLike|
+    * ``typing.Optional[ParticleLike]``
+    * ``typing.Optional[ParticleListLike]``
+    * |Particle| (deprecated)
+    * ``(Particle, Particle)`` (deprecated)
 
     Raises
     ------
@@ -647,77 +656,55 @@ def particle_input(
 
     Notes
     -----
-    In most cases, |particle_input| and |validate_quantities| may be
-    applied to
-
-    .. code-block: python
-
-       class SampleClass:
-           @classmethod
-           @particle_input
-           def
 
     Examples
     --------
+
     The |particle_input| decorator takes appropriately annotated
-    |particle-like| or |particle-list-like| arguments that are provided
-    to ``wrapped``, and converts them into a |Particle|,
-    |CustomParticle|, or |ParticleList| object.
+    arguments
 
-    The following decorated function accepts a |particle-like| input and
-    returns the corresponding particle object.
 
-    >>> from plasmapy.particles import particle_input, ParticleLike
-    >>> import astropy.units as u
+    The following decorated function returns the particle object created
+    from the sole argument provided
 
-    >>> @particle_input
-    ... def make_into_particle(particle: ParticleLike):
-    ...     return particle
-
-    >>> make_into_particle("p+")
-    Particle("p+")
-    >>> make_into_particle(["p+", "e-"])
-    ParticleList(["p+", "e-"])
-    >>> make_into_particle(1e-26 * u.kg)
-    CustomParticle()
-
-    |particle_input| may be used for instance methods in classes, so
-    long as the first argument (representing the instance) is ``self``.
-
-    >>> class SampleClass:
-    ...     @particle_input
-    ...     def __init__(self, particle: ParticleLike):
-    ...         self.particle = particle
-    ...     @particle_input
-    ...     def return_particle(self, new_particle: ParticleLike):
-    ...         return new_particle
-    >>> instance = SampleClass("α")
-    >>> instance.particle
-    Particle("He-4 2+")
-    >>> instance.return_particle("T+")
-    Particle("T 1+")
-
-    The ``allow_custom_particles`` and ``allow_particle_lists`` keyword
-    arguments indicate whether or not ``wrapped`` should accept
-    |CustomParticle| and |ParticleList| objects, respectively.
-
-    >>> @particle_input(allow_custom_particles=False, allow_particle_lists=False)
-    ... def get_atomic_number(particle: ParticleLike):
-    ...     return particle.atomic_number
-    >>> get_atomic_number("Fe")
-    26
-
-    For more details, please refer to the docstring for
-    `~plasmapy.particles.particle_class.Particle.is_category`.
-
-    >>> @particle_input(require="element", any_of={"charged", "uncharged"})
-    >>> def return_ionic_level(particle: ParticleLike)
-    ...     return particle
-    >>> return_ionic_level("Fe-56 0+")
-    Particle("Fe-56 0+")
-
+    .. |annotated| replace:: :term:`annotated <function annotation>`
+    .. |annotation| replace:: :term:`annotation <function annotation>`
+    .. |argument| replace:: :term:`argument`
+    .. |arguments| replace:: :term:`arguments <argument>`
+    .. |charge number| replace:: :term:`charge number`
+    .. |decorated| replace:: :term:`decorated <decorator>`
+    .. |parameter| replace:: :term:`parameter`
+    .. |parameters| replace:: :term:`parameters <parameter>`
     """
-
+    #
+    #    Examples
+    #    --------
+    #    The following simple decorated function returns the
+    #    |Particle| object created from the function's sole argument: ← needs updating
+    #
+    #    .. code-block:: python
+    #
+    #        from plasmapy.particles import particle_input, ParticleLike
+    #
+    #        @particle_input
+    #        def decorated_function(particle: ParticleLike):
+    #            return particle
+    #
+    #    This decorator may be used for methods in instances of classes, as
+    #    in the following example:
+    #
+    #    .. code-block:: python
+    #
+    #        from plasmapy.particles import particle_input, ParticleLike
+    #
+    #        class SampleClass:
+    #            @particle_input
+    #            def decorated_method(self, particle: ParticleLike):
+    #                return particle
+    #
+    #        sample_instance = SampleClass()
+    #        sample_instance.decorated_method('Fe')
+    #
     #    Some functions may be intended to be used with only certain categories
     #    of particles.  The ``require``, ``any_of``, and ``exclude`` keyword
     #    arguments enable this functionality.
