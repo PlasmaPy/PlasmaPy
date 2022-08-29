@@ -171,9 +171,9 @@ class ValidateParticles:
     def wrapped(self, function: Callable):
         self._data["wrapped_function"] = function
         self._data["annotations"] = _get_annotations(function)
-        self._data["parameters_to_process"] = self.find_parameters_to_process()
+        self._data["parameters_to_process"] = self._find_parameters_to_process()
 
-    def find_parameters_to_process(self) -> List[str]:
+    def _find_parameters_to_process(self) -> List[str]:
         """
         Identify the parameters that have annotations to indicate that
         they should be processed.
