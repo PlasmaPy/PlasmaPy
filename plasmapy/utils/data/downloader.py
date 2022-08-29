@@ -31,7 +31,7 @@ def get_file(basename, base_url=_BASE_URL, directory=None):
         Name of the file to be downloaded (extension included).
 
     base_url : str, optional
-        The base URL of the file to be downloaded. Defaults to the main
+        The base URL of the file to be downloaded. Defaults to the root
         directory of `PlasmaPy's data repository`_.
 
     directory : str, optional
