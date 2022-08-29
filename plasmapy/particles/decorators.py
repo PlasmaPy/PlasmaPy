@@ -379,7 +379,7 @@ class ValidateParticles:
     def _verify_particle_name_criteria(self, parameter, particle):
         """
         Check that parameters with special names meet the expected
-        criteria.
+        categorization criteria.
         """
 
         category_table = (
@@ -476,6 +476,11 @@ class ValidateParticles:
     parameters_to_skip = ("Z", "mass_numb")
 
     def _perform_pre_validations(self, Z, mass_numb):
+        """
+        Check that there are annotated parameters, that ``Z`` and
+        ``mass_numb`` are integers, and that ``Z`` and ``mass_numb`` are
+        not parameters when more than one parameter is annotated.
+        """
 
         if not self.parameters_to_process:
             raise ParticleError(
@@ -501,6 +506,22 @@ class ValidateParticles:
     def process_arguments(
         self, args: tuple, kwargs: Dict[str, Any], instance=None
     ) -> Dict[str, Any]:
+        """
+        Process the arguments passed to the wrapped callable.
+
+        Parameters
+        ----------
+        args : tuple
+            Positional arguments passed to the wrapped callable.
+
+        kwargs : `dict` of `str` to `object`
+            Keyword arguments provided to the wrapped callable.
+
+        instance : `object`, optional
+            If the wrapped callable is a class instance method, then
+            ``instance`` should be the class instance to which ``func``
+            belongs.
+        """
 
         arguments = _bind_arguments(self.wrapped, args, kwargs, instance)
 
