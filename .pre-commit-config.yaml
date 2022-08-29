@@ -91,4 +91,3 @@ repos:
   hooks:
     - id: docstrfmt
       language_version: python3
-      types_or: [rst] # only needed if you want to include txt files.
