@@ -321,10 +321,10 @@ class ValidateParticles:
             )
 
     @staticmethod
-    def _category_errmsg(particle, require, exclude, any_of, funcname) -> str:
+    def _category_errmsg(particle, require, exclude, any_of, function_name) -> str:
         """
-        Return an appropriate error message for when a particle does not
-        meet the required categorical specifications.
+        Return an error message for when a particle does not meet
+        categorization criteria.
 
         Returns
         -------
@@ -332,7 +332,7 @@ class ValidateParticles:
         """
         category_errmsg = (
             f"The particle {particle} does not meet the required "
-            f"classification criteria to be a valid input to {funcname}. "
+            f"classification criteria to be a valid input to {function_name}. "
         )
 
         errmsg_table = [
