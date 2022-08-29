@@ -4,9 +4,9 @@ downloading files from the PlasmaPy data repository.
 
 """
 
-import os
 import requests
 
+from pathlib import Path
 from urllib.parse import urljoin
 
 __all__ = ["get_file"]
@@ -16,8 +16,8 @@ __all__ = ["get_file"]
 # by the get_file function.
 _BASE_URL = "https://raw.githubusercontent.com/PlasmaPy/PlasmaPy-data/main/"
 
-# TODO: use a config file variable to allow users to set a location for this folder?
-_DOWNLOADS_PATH = os.path.join(os.path.dirname(__file__), "downloads")
+# TODO: use a config file variable to allow users to set a location
+# for the data download folder?
 
 
 def get_file(basename, base_url=_BASE_URL, directory=None):
@@ -50,13 +50,17 @@ def get_file(basename, base_url=_BASE_URL, directory=None):
         raise ValueError(f"'filename' ({basename}) must include an extension.")
 
     if directory is None:  # coverage: ignore
-        directory = _DOWNLOADS_PATH
+        directory = Path(Path.home(), ".plasmapy", "downloads")
 
-    path = os.path.join(directory, basename)
+        # Create the .plasmapy/downloads directory if it does not already
+        # exist
+        if not directory.is_dir():
+            directory.mkdir()
+
+    path = Path(directory, basename)
 
     # If file doesn't exist locally, download it
-    if not os.path.exists(path):
-
+    if not path.is_file():
         url = urljoin(base_url, basename)
 
         reply = requests.get(url)
