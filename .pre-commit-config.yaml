@@ -86,4 +86,7 @@ repos:
   - id: rst-directive-colons
   - id: rst-inline-touching-normal
 
-
+- repo: https://github.com/dzhu/rstfmt
+  rev: master
+  hooks:
+  - id: rstfmt
