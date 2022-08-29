@@ -424,6 +424,7 @@ class ValidateParticles:
         self,
         parameter: str,
         argument: Any,
+        *,
         Z: Optional[Integral],
         mass_numb: Optional[Integral],
     ) -> Any:
@@ -438,10 +439,10 @@ class ValidateParticles:
         argument : object
             The value of the :term:`argument` associated with ``parameter``.
 
-        Z : integer
+        Z : integer, optional, |keyword-only|
             The charge number of an ion or neutral particle.
 
-        mass_numb : integer
+        mass_numb : integer, optional, |keyword-only|
             The mass number of an isotope.
         """
         annotation = self.annotations.get(parameter, None)
