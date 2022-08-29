@@ -77,7 +77,7 @@ from plasmapy.formulary.quantum import (
 from plasmapy.formulary.speeds import thermal_speed
 from plasmapy.utils.decorators import deprecated, validate_quantities
 from plasmapy.utils.decorators.checks import _check_relativistic
-from plasmapy.utils.exceptions import PlasmaPyFutureWarning
+from plasmapy.utils.exceptions import PhysicsError, PlasmaPyFutureWarning
 
 
 @validate_quantities(
@@ -2240,10 +2240,11 @@ class CollisionFrequencies:
         # Note: This function uses CGS units internally to coincide with our references.
         # Input is taken in MKS units and then converted as necessary. Output is in MKS units.
 
+        # _v_a and _T_a denote attributes only to be used in cases in which a conversion between
+        # temperature and velocity is acceptable based on the assumptions of a collision frequency
+
         if v_a is None:
-            if T_a is not None:
-                v_a = thermal_speed(T_a, test_particle)
-            else:
+            if T_a is None:
                 raise ValueError("Please specify either v_a or T_a.")
         elif T_a is not None:
             raise ValueError("Please specify either v_a or T_a, not both.")
@@ -2258,10 +2259,12 @@ class CollisionFrequencies:
         self.test_particle = test_particle
         self.field_particle = field_particle
         self.v_a = v_a
-        self.T_a = (
+        self._v_a = v_a if v_a is not None else thermal_speed(T_a, test_particle)
+        self.T_a = T_a
+        self._T_a = (
             T_a
             if T_a is not None
-            else (0.5 * test_particle.mass * v_a**2 / k_B).to(u.K)
+            else (0.5 * test_particle.mass * self._v_a**2 / k_B).to(u.K)
         )
         self.n_a = n_a
         self.T_b = T_b
@@ -2342,13 +2345,33 @@ class CollisionFrequencies:
             * (self.field_particle.charge_number * e.esu) ** 2
             * self.Coulomb_log
             * self.n_b
-            / (self.test_particle.mass**2 * self.v_a**3)
+            / (self.test_particle.mass**2 * self._v_a**3)
         ).to(u.Hz)
+
+    @cached_property
+    def _mean_thermal_velocity(self):
+        """
+        Parameter used in enforcing the definition of "slowly flowing" Maxwellian
+        particles. See Callen (Eq. 2.113).
+        """
+
+        v_T_b = thermal_speed(self.T_b, self.field_particle)
+
+        return (self.v_a**2 + v_T_b**2) ** 0.5
+
+    @cached_property
+    def _is_slowly_flowing(self):
+        """
+        Criteria used in determining whether `Maxwellian_avg_ei_collision_freq` and
+        `Maxwellian_avg_ii_collision_freq` can be applied to the specified species.
+        """
+
+        return self.v_a / self._mean_thermal_velocity < 0.1
 
     @cached_property
     def Maxwellian_avg_ei_collision_freq(self):
         r"""Average momentum relaxation rate for a slowly flowing Maxwellian
-        distribution of electrons.
+        distribution of electrons, relative to a population of stationary ions.
 
         In order to use this attribute, ``test_particle`` must be an electron
         and ``field_particle`` must be an ion.
@@ -2368,6 +2391,9 @@ class CollisionFrequencies:
 
         Raises
         ------
+        `~plasmapy.utils.exceptions.PhysicsError`
+            The specified species aren't slowly flowing
+
         `ValueError`
             If the specified interaction isn't electron-ion, or ``n_a`` isn't specified.
 
@@ -2386,6 +2412,11 @@ class CollisionFrequencies:
         <Quantity 2906316911556553.5 Hz>
         """
 
+        if self.v_a is None:
+            raise ValueError(
+                "Please specify v_a to use the Maxwellian_avg_ei_collision_freq attribute."
+            )
+
         if not self.test_particle.is_electron or not self.field_particle.is_ion:
             raise ValueError(
                 "Please specify an electron-ion interaction to use the Maxwellian_avg_ei_collision_freq attribute"
@@ -2396,6 +2427,11 @@ class CollisionFrequencies:
                 "Please specify the test particle number density to use the Maxwellian_avg_ei_collision_freq attribute"
             )
 
+        if not self._is_slowly_flowing:
+            raise PhysicsError(
+                "This frequency is only defined for slowly flowing species."
+            )
+
         coeff = 4 / (3 * np.sqrt(np.pi))
 
         return coeff * self.Lorentz_collision_frequency
@@ -2403,7 +2439,7 @@ class CollisionFrequencies:
     @cached_property
     def Maxwellian_avg_ii_collision_freq(self):
         r"""Average momentum relaxation rate for a slowly flowing Maxwellian
-        distribution of ions.
+        distribution of ions, relative to a population of stationary ions.
 
         In order to use this attribute, ``test_particle`` must be an ion
         and ``field_particle`` must be an electron.
@@ -2420,6 +2456,9 @@ class CollisionFrequencies:
 
         Raises
         ------
+        `~plasmapy.utils.exceptions.PhysicsError`
+            The specified species aren't slowly flowing
+
         `ValueError`
             If the specified interaction isn't ion-ion, or ``n_a`` isn't specified.
 
@@ -2438,6 +2477,11 @@ class CollisionFrequencies:
         <Quantity 79364412.21510696 Hz>
         """
 
+        if self.v_a is None:
+            raise ValueError(
+                "Please specify v_a to use the Maxwellian_avg_ii_collision_freq attribute."
+            )
+
         if not self.test_particle.is_ion or not self.field_particle.is_ion:
             raise ValueError(
                 "Please specify an ion-ion interaction to use the Maxwellian_avg_ii_collision_freq attribute"
@@ -2445,7 +2489,12 @@ class CollisionFrequencies:
 
         if not self.n_a:
             raise ValueError(
-                "Please specify the test particle number density to use the Maxwellian_avg_ei_collision_freq attribute"
+                "Please specify the test particle number density to use the Maxwellian_avg_ii_collision_freq attribute"
+            )
+
+        if not self._is_slowly_flowing:
+            raise PhysicsError(
+                "This frequency is only defined for slowly flowing species."
             )
 
         coeff = 4 / (3 * np.sqrt(2 * np.pi))
@@ -2460,7 +2509,7 @@ class CollisionFrequencies:
         (see documentation for the `~plasmapy.formulary.collisions.CollisionFrequencies` class for details).
         """
 
-        x = self.field_particle.mass * self.v_a**2 / (2 * k_B.cgs * self.T_b)
+        x = self.field_particle.mass * self._v_a**2 / (2 * k_B.cgs * self.T_b)
         return x.to(u.dimensionless_unscaled)
 
     @staticmethod

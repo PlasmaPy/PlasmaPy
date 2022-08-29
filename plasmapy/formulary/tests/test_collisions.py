@@ -23,7 +23,7 @@ from plasmapy.formulary.collisions import (
 )
 from plasmapy.particles import Particle
 from plasmapy.utils import exceptions
-from plasmapy.utils.exceptions import CouplingWarning
+from plasmapy.utils.exceptions import CouplingWarning, PhysicsError
 from plasmapy.utils.pytest_helpers import assert_can_handle_nparray
 
 
@@ -1799,7 +1799,7 @@ class TestCollisionFrequencies:
         These formulae are taken from page 31 of the NRL Formulary.
         """
 
-        v_a = (cases.T_a * k_B).to(u.eV).value
+        v_a = (cases._T_a * k_B).to(u.eV).value
         T_b = (cases.T_b * k_B).to(u.eV).value
 
         limit_values = []
@@ -1894,11 +1894,11 @@ class TestCollisionFrequencies:
         return limit_values
 
     @staticmethod
-    def get_fundamental_frequency(species, n, T, Coulomb_log):
+    def get_fundamental_frequency(species, n, v_a, Coulomb_log):
         # This special case for computing the fundamental frequencies comes from page 33 of the NRL Formulary
         # Strip the units from these quantities and ensure they are in CGS units
         n = n.to(u.cm**-3).value
-        T = T.value if T.unit == u.eV else (T * k_B).to(u.eV).value
+        T = (0.5 * species.mass * v_a**2).to(u.eV).value
 
         if species.is_electron:
             return (2.9e-6 * n * Coulomb_log * T**-1.5) * u.Hz
@@ -2124,7 +2124,7 @@ class TestCollisionFrequencies:
                 {
                     "test_particle": Particle("e-"),
                     "field_particle": Particle("Li+"),
-                    "T_a": 1e4 * u.K,
+                    "v_a": 1e-5 * u.cm / u.s,
                     "n_a": 1e10 * u.cm**-3,
                     "T_b": 1e4 * u.K,
                     "n_b": 1e10 * u.cm**-3,
@@ -2136,7 +2136,7 @@ class TestCollisionFrequencies:
                 {
                     "test_particle": Particle("Li+"),
                     "field_particle": Particle("Li+"),
-                    "T_a": 1e4 * u.K,
+                    "v_a": 1e-5 * u.cm / u.s,
                     "n_a": 1e10 * u.cm**-3,
                     "T_b": 1e4 * u.K,
                     "n_b": 1e10 * u.cm**-3,
@@ -2154,7 +2154,7 @@ class TestCollisionFrequencies:
         expected_value = self.get_fundamental_frequency(
             constructor_keyword_arguments["test_particle"],
             constructor_keyword_arguments["n_a"],
-            constructor_keyword_arguments["T_a"],
+            constructor_keyword_arguments["v_a"],
             constructor_keyword_arguments["Coulomb_log"],
         )
 
@@ -2256,6 +2256,58 @@ class TestCollisionFrequencies:
                 (Particle("Na+"), Particle("Cl-")),
                 {
                     "v_a": 1 * u.cm / u.s,
+                    "T_b": 1 * u.eV,
+                    "n_b": 1 * u.cm**-3,
+                    "Coulomb_log": 1 * u.dimensionless_unscaled,
+                },
+            ),
+            # Species aren't slowly flowing error
+            (
+                "Maxwellian_avg_ei_collision_freq",
+                PhysicsError,
+                (Particle("e-"), Particle("Na+")),
+                {
+                    "v_a": 1e10 * u.cm / u.s,
+                    "n_a": 1 * u.cm**-3,
+                    "T_b": 1 * u.eV,
+                    "n_b": 1 * u.cm**-3,
+                    "Coulomb_log": 1 * u.dimensionless_unscaled,
+                },
+            ),
+            # Species aren't slowly flowing error
+            (
+                "Maxwellian_avg_ii_collision_freq",
+                PhysicsError,
+                (Particle("Na+"), Particle("Cl-")),
+                {
+                    "v_a": 1e10 * u.cm / u.s,
+                    "n_a": 1 * u.cm**-3,
+                    "T_b": 1 * u.eV,
+                    "n_b": 1 * u.cm**-3,
+                    "Coulomb_log": 1 * u.dimensionless_unscaled,
+                },
+            ),
+            # Specify v_a not T_a error
+            (
+                "Maxwellian_avg_ei_collision_freq",
+                ValueError,
+                (Particle("e-"), Particle("Na+")),
+                {
+                    "T_a": 1 * u.eV,
+                    "n_a": 1 * u.cm**-3,
+                    "T_b": 1 * u.eV,
+                    "n_b": 1 * u.cm**-3,
+                    "Coulomb_log": 1 * u.dimensionless_unscaled,
+                },
+            ),
+            # Specify v_a not T_a error
+            (
+                "Maxwellian_avg_ii_collision_freq",
+                ValueError,
+                (Particle("Na+"), Particle("Cl-")),
+                {
+                    "T_a": 1 * u.eV,
+                    "n_a": 1 * u.cm**-3,
                     "T_b": 1 * u.eV,
                     "n_b": 1 * u.cm**-3,
                     "Coulomb_log": 1 * u.dimensionless_unscaled,
