@@ -2329,6 +2329,10 @@ class CollisionFrequencies:
         In order to use this attribute, ``test_particle`` must be an electron
         and ``field_particle`` must be an ion.
 
+        This function assumes that the following conditions are satisfied:
+            a.) Both populations are Maxwellian
+            b.) :math:`T_{i}\lesssimT_{e}`
+
         :cite:t:`braginskii:1965` provides a derivation of this as an
         average collision frequency between electrons and ions for a
         Maxwellian distribution. It is thus a special case of the collision
@@ -2362,7 +2366,7 @@ class CollisionFrequencies:
                 "Please specify an electron-ion interaction to use the v_e attribute"
             )
 
-        coeff = 4 / (np.sqrt(np.pi) * 3)
+        coeff = 4 / (3 * np.sqrt(np.pi))
 
         return coeff * self.Lorentz_collision_frequency
 
@@ -2373,6 +2377,10 @@ class CollisionFrequencies:
 
         In order to use this attribute, ``test_particle`` must be an ion
         and ``field_particle`` must be an electron.
+
+        This function assumes that the following conditions are satisfied:
+            a.) Both populations are Maxwellian
+            b.) :math:`T_{i}\lesssimT_{e}`
 
         :cite:t:`braginskii:1965` provides a derivation of this as an
         average collision frequency between ions and ions for a Maxwellian
@@ -2404,7 +2412,7 @@ class CollisionFrequencies:
                 "Please specify an ion-ion interaction to use the v_i attribute"
             )
 
-        coeff = 8 * np.sqrt(1 / np.pi) / 3 / 4
+        coeff = 4 / (3 * np.sqrt(2 * np.pi))
 
         return coeff * self.Lorentz_collision_frequency
 
