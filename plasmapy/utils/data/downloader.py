@@ -22,8 +22,8 @@ _DOWNLOADS_PATH = os.path.join(os.path.dirname(__file__), "downloads")
 
 def get_file(basename, base_url=_BASE_URL, directory=None):
     r"""
-    Downloads a file from a URL (if the file does not already exist) and
-    returns the full local path to the file.
+    Download a file from a URL (if the file does not already exist) and
+    return the full local path to the file.
 
     Parameters
     ----------
