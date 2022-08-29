@@ -1,6 +1,6 @@
 """
 Contains functionality for downloading files from a URL. Intended for
-downloading files from the PlasmaPy data repository.
+downloading files from `PlasmaPy's data repository`_.
 
 """
 
