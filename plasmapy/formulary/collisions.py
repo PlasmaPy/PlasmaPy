@@ -1127,7 +1127,7 @@ def fundamental_electron_collision_freq(
         The `~plasmapy.formulary.collisions.fundamental_electron_collision_freq` function has been
         replaced by the more general `~plasmapy.formulary.collisions.CollisionFrequencies` class.
         To replicate the functionality of `~plasmapy.formulary.collisions.fundamental_electron_collision_freq`, create a
-        `~plasmapy.formulary.collisions.CollisionFrequencies` class and access the ``v_e`` attribute.
+        `~plasmapy.formulary.collisions.CollisionFrequencies` class and access the ``Maxwellian_avg_ei_collision_freq`` attribute.
 
 
     :cite:t:`braginskii:1965` provides a derivation of this as an
@@ -1217,6 +1217,18 @@ def fundamental_electron_collision_freq(
     ~plasmapy.formulary.collisions.collision_frequency
     ~plasmapy.formulary.collisions.fundamental_ion_collision_freq
     """
+
+    deprecated(
+        since="0.8.0",
+        warning_type=PlasmaPyFutureWarning,
+        message=(
+            "The `fundamental_electron_collision_freq` function has been"
+            "replaced by the more general `CollisionFrequencies` class."
+            "To replicate the functionality of `fundamental_electron_collision_freq`, create a"
+            "`CollisionFrequencies` class and access the `Maxwellian_avg_ei_collision_freq` attribute."
+        ),
+    )
+
     # specify to use electron thermal velocity (most probable), not based on reduced mass
     V = _replace_nan_velocity_with_thermal_velocity(V, T_e, m_e)
 
@@ -1262,7 +1274,7 @@ def fundamental_ion_collision_freq(
         The `~plasmapy.formulary.collisions.fundamental_ion_collision_freq` function has been
         replaced by the more general `~plasmapy.formulary.collisions.CollisionFrequencies` class.
         To replicate the functionality of `~plasmapy.formulary.collisions.fundamental_ion_collision_freq`, create a
-        `~plasmapy.formulary.collisions.CollisionFrequencies` class and access the ``v_i`` attribute.
+        `~plasmapy.formulary.collisions.CollisionFrequencies` class and access the ``Maxwellian_avg_ii_collision_freq`` attribute.
 
 
     :cite:t:`braginskii:1965` provides a derivation of this as an
@@ -2126,7 +2138,7 @@ class CollisionFrequencies:
 
         n_a : `~astropy.units.Quantity`
             The number density of the test particles in units convertible to :math:`\frac{1}{m^{3}}`.
-            Only necessary if accessing ``v_e`` and ``v_i``.
+            Only necessary if accessing ``Maxwellian_avg_ei_collision_freq`` and ``Maxwellian_avg_ii_collision_freq``.
 
         T_b : `~astropy.units.Quantity`
             The temperature of the background field particles in units convertible to degrees Kelvin.
@@ -2322,7 +2334,7 @@ class CollisionFrequencies:
         ).to(u.Hz)
 
     @cached_property
-    def v_e(self):
+    def Maxwellian_avg_ei_collision_freq(self):
         r"""Average momentum relaxation rate for a slowly flowing Maxwellian
         distribution of electrons.
 
@@ -2357,13 +2369,13 @@ class CollisionFrequencies:
         >>> electron_ion_collisions = CollisionFrequencies(
         ...     "e-", "Na+", n_a=n_a, T_a=T_a, n_b=n_b, T_b=T_b, Coulomb_log=Coulomb_log
         ... )
-        >>> electron_ion_collisions.v_e
+        >>> electron_ion_collisions.Maxwellian_avg_ei_collision_freq
         <Quantity 2906316911556553.5 Hz>
         """
 
         if not self.test_particle.is_electron or not self.field_particle.is_ion:
             raise ValueError(
-                "Please specify an electron-ion interaction to use the v_e attribute"
+                "Please specify an electron-ion interaction to use the Maxwellian_avg_ei_collision_freq attribute"
             )
 
         coeff = 4 / (3 * np.sqrt(np.pi))
@@ -2371,7 +2383,7 @@ class CollisionFrequencies:
         return coeff * self.Lorentz_collision_frequency
 
     @cached_property
-    def v_i(self):
+    def Maxwellian_avg_ii_collision_freq(self):
         r"""Average momentum relaxation rate for a slowly flowing Maxwellian
         distribution of ions.
 
@@ -2403,13 +2415,13 @@ class CollisionFrequencies:
         >>> ion_ion_collisions = CollisionFrequencies(
         ...     "Na+", "Na+", n_a=n_a, T_a=T_a, n_b=n_b, T_b=T_b, Coulomb_log=Coulomb_log
         ... )
-        >>> ion_ion_collisions.v_i
+        >>> ion_ion_collisions.Maxwellian_avg_ii_collision_freq
         <Quantity 79364412.21510696 Hz>
         """
 
         if not self.test_particle.is_ion or not self.field_particle.is_ion:
             raise ValueError(
-                "Please specify an ion-ion interaction to use the v_i attribute"
+                "Please specify an ion-ion interaction to use the Maxwellian_avg_ii_collision_freq attribute"
             )
 
         coeff = 4 / (3 * np.sqrt(2 * np.pi))

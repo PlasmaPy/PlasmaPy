@@ -2120,7 +2120,7 @@ class TestCollisionFrequencies:
         "frequency_to_test, constructor_keyword_arguments",
         [
             (
-                "v_e",
+                "Maxwellian_avg_ei_collision_freq",
                 {
                     "test_particle": Particle("e-"),
                     "field_particle": Particle("Li+"),
@@ -2132,7 +2132,7 @@ class TestCollisionFrequencies:
                 },
             ),
             (
-                "v_i",
+                "Maxwellian_avg_ii_collision_freq",
                 {
                     "test_particle": Particle("Li+"),
                     "field_particle": Particle("Li+"),
@@ -2213,7 +2213,7 @@ class TestCollisionFrequencies:
         [
             # Specified reaction isn't electron-ion error
             (
-                "v_e",
+                "Maxwellian_avg_ei_collision_freq",
                 ValueError,
                 (Particle("e-"), Particle("e-")),
                 {
@@ -2225,7 +2225,7 @@ class TestCollisionFrequencies:
             ),
             # Specified reaction isn't ion-ion error
             (
-                "v_i",
+                "Maxwellian_avg_ii_collision_freq",
                 ValueError,
                 (Particle("Na+"), Particle("e-")),
                 {
