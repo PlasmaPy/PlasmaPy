@@ -106,7 +106,7 @@ extensions = [
     "sphinx_issues",
     "sphinx_reredirects",
     "plasmapy_sphinx",
-    "file"
+    "sphinx.ext.file"
 ]
 
 # Configure sphinxcontrib-bibtex
