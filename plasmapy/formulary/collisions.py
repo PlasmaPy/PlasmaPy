@@ -1369,6 +1369,18 @@ def fundamental_ion_collision_freq(
     ~plasmapy.formulary.collisions.collision_frequency
     ~plasmapy.formulary.collisions.fundamental_electron_collision_freq
     """
+
+    deprecated(
+        since="0.8.0",
+        warning_type=PlasmaPyFutureWarning,
+        message=(
+            "The `fundamental_ion_collision_freq` function has been"
+            "replaced by the more general `CollisionFrequencies` class."
+            "To replicate the functionality of `fundamental_ion_collision_freq`, create a"
+            "`CollisionFrequencies` class and access the `Maxwellian_avg_ii_collision_freq` attribute."
+        ),
+    )
+
     m_i = particles.particle_mass(ion)
     species = [ion, ion]
 
@@ -2341,9 +2353,10 @@ class CollisionFrequencies:
         In order to use this attribute, ``test_particle`` must be an electron
         and ``field_particle`` must be an ion.
 
-        This function assumes that the following conditions are satisfied:
+        This function assumes that the following conditions are satisfied
             a.) Both populations are Maxwellian
-            b.) :math:`T_{i}\lesssimT_{e}`
+
+            b.) :math:`T_{i} \lesssim T_{e}`
 
         :cite:t:`braginskii:1965` provides a derivation of this as an
         average collision frequency between electrons and ions for a
@@ -2390,9 +2403,10 @@ class CollisionFrequencies:
         In order to use this attribute, ``test_particle`` must be an ion
         and ``field_particle`` must be an electron.
 
-        This function assumes that the following conditions are satisfied:
+        This function assumes that the following conditions are satisfied
             a.) Both populations are Maxwellian
-            b.) :math:`T_{i}\lesssimT_{e}`
+
+            b.) :math:`T_{i} \lesssim T_{e}`
 
         :cite:t:`braginskii:1965` provides a derivation of this as an
         average collision frequency between ions and ions for a Maxwellian
