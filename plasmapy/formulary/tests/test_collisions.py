@@ -2,7 +2,7 @@ import numpy as np
 import pytest
 
 from astropy import units as u
-from astropy.constants import c
+from astropy.constants import c, k_B, m_p
 from astropy.tests.helper import assert_quantity_allclose
 
 import plasmapy.particles.exceptions
@@ -10,6 +10,7 @@ import plasmapy.particles.exceptions
 from plasmapy.formulary.braginskii import Coulomb_logarithm
 from plasmapy.formulary.collisions import (
     collision_frequency,
+    CollisionFrequencies,
     coupling_parameter,
     fundamental_electron_collision_freq,
     fundamental_ion_collision_freq,
@@ -20,6 +21,7 @@ from plasmapy.formulary.collisions import (
     mobility,
     Spitzer_resistivity,
 )
+from plasmapy.particles import Particle
 from plasmapy.utils import exceptions
 from plasmapy.utils.exceptions import CouplingWarning
 from plasmapy.utils.pytest_helpers import assert_can_handle_nparray
@@ -1700,3 +1702,476 @@ class Test_coupling_parameter:
         """Testing kwarg `method` fails is not 'classical' or 'quantum'"""
         with pytest.raises(ValueError):
             coupling_parameter(self.T, self.n_e, self.particles, method="not a method")
+
+
+class TestCollisionFrequencies:
+    """Test the CollisionFrequencies class in collisions.py."""
+
+    attribute_units_test_case = CollisionFrequencies(
+        Particle("e-"),
+        Particle("e-"),
+        v_a=1 * u.m / u.s,
+        T_b=1 * u.K,
+        n_b=1 * u.m**-3,
+        Coulomb_log=1,
+    )
+
+    MKS_unit_conversion_test_constructor_arguments = {
+        "test_particle": Particle("e-"),
+        "field_particle": Particle("e-"),
+        "v_a": 1e5 * u.m / u.s,
+        "T_b": 1e3 * u.eV,
+        "n_b": 1e26 * u.m**-3,
+        "Coulomb_log": 10 * u.dimensionless_unscaled,
+    }
+
+    arguments_to_convert = ["v_a", "n_b"]
+
+    CGS_unit_conversion_test_constructor_arguments = (
+        MKS_unit_conversion_test_constructor_arguments
+    )
+
+    for argument_to_convert in arguments_to_convert:
+        CGS_unit_conversion_test_constructor_arguments[
+            argument_to_convert
+        ] = CGS_unit_conversion_test_constructor_arguments[argument_to_convert].cgs
+
+    MKS_test_case = CollisionFrequencies(
+        **MKS_unit_conversion_test_constructor_arguments
+    )
+    CGS_test_case = CollisionFrequencies(
+        **CGS_unit_conversion_test_constructor_arguments
+    )
+
+    return_values_to_test = [
+        "momentum_loss",
+        "transverse_diffusion",
+        "parallel_diffusion",
+        "energy_loss",
+    ]
+
+    ones_array = np.ones(5)
+    ones_array2d = np.ones([5, 5])
+
+    @pytest.mark.parametrize(
+        "attribute_to_test, expected_attribute_units",
+        [
+            ("momentum_loss", u.Hz),
+            ("transverse_diffusion", u.Hz),
+            ("parallel_diffusion", u.Hz),
+            ("energy_loss", u.Hz),
+            ("x", u.dimensionless_unscaled),
+            ("Lorentz_collision_frequency", u.Hz),
+            ("Coulomb_log", u.dimensionless_unscaled),
+        ],
+    )
+    def test_units(self, attribute_to_test, expected_attribute_units):
+        """Test the return units"""
+
+        assert getattr(
+            self.attribute_units_test_case, attribute_to_test
+        ).unit.is_equivalent(expected_attribute_units)
+
+    @pytest.mark.parametrize(
+        "attribute_to_test",
+        [
+            "momentum_loss",
+            "transverse_diffusion",
+            "parallel_diffusion",
+            "energy_loss",
+            "x",
+            "Lorentz_collision_frequency",
+        ],
+    )
+    def test_conversion_consistency(self, attribute_to_test):
+        """Test that a consistent value is computed for attributes regardless of argument units"""
+
+        MKS_result = getattr(self.MKS_test_case, attribute_to_test)
+        CGS_result = getattr(self.CGS_test_case, attribute_to_test)
+
+        assert MKS_result == CGS_result
+
+    @staticmethod
+    def get_limit_value(interaction_type, limit_type, cases):
+        """
+        Get the limiting values for frequencies given the two particles interacting, and their frequencies class.
+
+        These formulae are taken from page 31 of the NRL Formulary.
+        """
+
+        v_a = (cases.T_a * k_B).to(u.eV).value
+        T_b = (cases.T_b * k_B).to(u.eV).value
+
+        limit_values = []
+
+        if interaction_type == "e|e":
+            if limit_type == "slow":
+                limit_values.extend(
+                    [
+                        5.8e-6 * T_b ** (-1.5),
+                        5.8e-6 * T_b ** (-0.5) * v_a ** (-1),
+                        2.9e-6 * T_b ** (-0.5) * v_a ** (-1),
+                    ]
+                )
+            elif limit_type == "fast":
+                limit_values.extend(
+                    [
+                        7.7e-6 * v_a ** (-1.5),
+                        7.7e-6 * v_a ** (-1.5),
+                        3.9e-6 * T_b * v_a ** (-2.5),
+                    ]
+                )
+        elif interaction_type == "e|i":
+            mu = (cases.field_particle.mass / m_p).value
+
+            if limit_type == "slow":
+                limit_values.extend(
+                    [
+                        0.23 * mu**1.5 * T_b**-1.5,
+                        2.5e-4 * mu**0.5 * T_b**-0.5 * v_a**-1,
+                        1.2e-4 * mu**0.5 * T_b**-0.5 * v_a**-1,
+                    ]
+                )
+            elif limit_type == "fast":
+                limit_values.extend(
+                    [
+                        3.9e-6 * v_a**-1.5,
+                        7.7e-6 * v_a**-1.5,
+                        2.1e-9 * mu**-1 * T_b * v_a**-2.5,
+                    ]
+                )
+        elif interaction_type == "i|e":
+            mu = (cases.test_particle.mass / m_p).value
+
+            if limit_type == "slow":
+                limit_values.extend(
+                    [
+                        1.6e-9 * mu**-1 * T_b ** (-1.5),
+                        3.2e-9 * mu**-1 * T_b ** (-0.5) * v_a**-1,
+                        1.6e-9 * mu**-1 * T_b ** (-0.5) * v_a**-1,
+                    ]
+                )
+            elif limit_type == "fast":
+                limit_values.extend(
+                    [
+                        1.7e-4 * mu**0.5 * v_a**-1.5,
+                        1.8e-7 * mu**-0.5 * v_a**-1.5,
+                        1.7e-4 * mu**0.5 * T_b * v_a**-2.5,
+                    ]
+                )
+
+        elif interaction_type == "i|i":
+            mu = (cases.test_particle.mass / m_p).value
+            mu_prime = (cases.field_particle.mass / m_p).value
+
+            if limit_type == "slow":
+                limit_values.extend(
+                    [
+                        6.8e-8
+                        * mu_prime**0.5
+                        * mu**-1
+                        * (1 + mu_prime / mu)
+                        * T_b**-1.5,
+                        1.4e-7 * mu_prime**0.5 * mu**-1 * T_b**-0.5 * v_a**-1,
+                        6.8e-8 * mu_prime**0.5 * mu**-1 * T_b**-0.5 * v_a**-1,
+                    ]
+                )
+            elif limit_type == "fast":
+                limit_values.extend(
+                    [
+                        9e-8 * (1 / mu + 1 / mu_prime) * mu**0.5 * v_a**-1.5,
+                        1.8 * 10**-7 * mu**-0.5 * v_a**-1.5,
+                        9e-8 * mu**0.5 * mu_prime**-1 * T_b * v_a**-2.5,
+                    ]
+                )
+        # The expected energy loss collision frequency should always equal this
+        limit_values.append(
+            2 * cases.momentum_loss.value
+            - cases.transverse_diffusion.value
+            - cases.parallel_diffusion.value
+        )
+
+        return limit_values
+
+    @pytest.mark.parametrize(
+        "interaction_type, limit_type, constructor_arguments, constructor_keyword_arguments",
+        [
+            # Slow limit (x << 1)
+            (
+                "e|e",
+                "slow",
+                (Particle("e-"), Particle("e-")),
+                {
+                    "T_a": 1 * u.eV,
+                    "T_b": 1e4 * u.eV,
+                    "n_b": 1e15 * u.cm**-3,
+                    "Coulomb_log": 10 * u.dimensionless_unscaled,
+                },
+            ),
+            (
+                "e|i",
+                "slow",
+                (Particle("e-"), Particle("Na+")),
+                {
+                    "T_a": 1e-4 * u.eV,
+                    "T_b": 1e4 * u.eV,
+                    "n_b": 1e20 * u.cm**-3,
+                    "Coulomb_log": 10 * u.dimensionless_unscaled,
+                },
+            ),
+            (
+                "e|i",
+                "slow",
+                (Particle("e-"), Particle("Ba 2+")),
+                {
+                    "T_a": 1e-4 * u.eV,
+                    "T_b": 1e4 * u.eV,
+                    "n_b": 1e20 * u.cm**-3,
+                    "Coulomb_log": 10 * u.dimensionless_unscaled,
+                },
+            ),
+            (
+                "i|e",
+                "slow",
+                (Particle("Na+"), Particle("e-")),
+                {
+                    "T_a": 1 * u.eV,
+                    "T_b": 1e2 * u.eV,
+                    "n_b": 1e10 * u.cm**-3,
+                    "Coulomb_log": 10 * u.dimensionless_unscaled,
+                },
+            ),
+            (
+                "i|e",
+                "slow",
+                (Particle("Be 2+"), Particle("e-")),
+                {
+                    "T_a": 1 * u.eV,
+                    "T_b": 1e2 * u.eV,
+                    "n_b": 1e10 * u.cm**-3,
+                    "Coulomb_log": 10 * u.dimensionless_unscaled,
+                },
+            ),
+            (
+                "i|i",
+                "slow",
+                (Particle("Na+"), Particle("Cl-")),
+                {
+                    "T_a": 1e2 * u.eV,
+                    "T_b": 1e4 * u.eV,
+                    "n_b": 1e20 * u.cm**-3,
+                    "Coulomb_log": 10 * u.dimensionless_unscaled,
+                },
+            ),
+            (
+                "i|i",
+                "slow",
+                (Particle("Na+"), Particle("S 2-")),
+                {
+                    "T_a": 1e2 * u.eV,
+                    "T_b": 1e4 * u.eV,
+                    "n_b": 1e20 * u.cm**-3,
+                    "Coulomb_log": 10 * u.dimensionless_unscaled,
+                },
+            ),
+            # Fast limit (x >> 1)
+            (
+                "e|e",
+                "fast",
+                (Particle("e-"), Particle("e-")),
+                {
+                    "v_a": 6e8 * u.cm / u.s,
+                    "T_b": 1e-1 * u.eV,
+                    "n_b": 1e20 * u.cm**-3,
+                    "Coulomb_log": 10 * u.dimensionless_unscaled,
+                },
+            ),
+            (
+                "e|i",
+                "fast",
+                (Particle("e-"), Particle("Na+")),
+                {
+                    "v_a": 6e5 * u.cm / u.s,
+                    "T_b": 1e-3 * u.eV,
+                    "n_b": 1e20 * u.cm**-3,
+                    "Coulomb_log": 10 * u.dimensionless_unscaled,
+                },
+            ),
+            (
+                "e|i",
+                "fast",
+                (Particle("e-"), Particle("Zn 2+")),
+                {
+                    "v_a": 6e5 * u.cm / u.s,
+                    "T_b": 1e-3 * u.eV,
+                    "n_b": 1e20 * u.cm**-3,
+                    "Coulomb_log": 10 * u.dimensionless_unscaled,
+                },
+            ),
+            (
+                "i|e",
+                "fast",
+                (Particle("Na+"), Particle("e-")),
+                {
+                    "v_a": 3e7 * u.cm / u.s,
+                    "T_b": 1e-3 * u.eV,
+                    "n_b": 1e20 * u.cm**-3,
+                    "Coulomb_log": 10 * u.dimensionless_unscaled,
+                },
+            ),
+            (
+                "i|e",
+                "fast",
+                (Particle("Ca 2+"), Particle("e-")),
+                {
+                    "v_a": 3e7 * u.cm / u.s,
+                    "T_b": 1e-3 * u.eV,
+                    "n_b": 1e20 * u.cm**-3,
+                    "Coulomb_log": 10 * u.dimensionless_unscaled,
+                },
+            ),
+            (
+                "i|i",
+                "fast",
+                (Particle("Na+"), Particle("Cl-")),
+                {
+                    "v_a": 3e7 * u.cm / u.s,
+                    "T_b": 1e2 * u.eV,
+                    "n_b": 1e20 * u.cm**-3,
+                    "Coulomb_log": 10 * u.dimensionless_unscaled,
+                },
+            ),
+            (
+                "i|i",
+                "fast",
+                (Particle("Be 2+"), Particle("Cl-")),
+                {
+                    "v_a": 3e7 * u.cm / u.s,
+                    "T_b": 1e2 * u.eV,
+                    "n_b": 1e20 * u.cm**-3,
+                    "Coulomb_log": 10 * u.dimensionless_unscaled,
+                },
+            ),
+        ],
+    )
+    def test_limit_values(
+        self,
+        interaction_type,
+        limit_type,
+        constructor_arguments,
+        constructor_keyword_arguments,
+    ):
+        """Test the return values"""
+
+        value_test_case = CollisionFrequencies(
+            *constructor_arguments, **constructor_keyword_arguments
+        )
+
+        coulomb_density_constant = (
+            constructor_keyword_arguments["Coulomb_log"].value
+            * constructor_keyword_arguments["n_b"].to(u.cm**-3).value
+        )
+
+        expected_limit_values = self.get_limit_value(
+            interaction_type, limit_type, value_test_case
+        )
+
+        if interaction_type == "e|e":
+            charge_constant = 1
+        elif interaction_type == "e|i":
+            charge_constant = value_test_case.field_particle.charge_number**2
+        elif interaction_type == "i|e":
+            charge_constant = value_test_case.test_particle.charge_number**2
+        elif interaction_type == "i|i":
+            charge_constant = (
+                value_test_case.test_particle.charge_number
+                * value_test_case.field_particle.charge_number
+            ) ** 2
+
+        for i, (attribute_name, expected_limit_value) in enumerate(
+            zip(self.return_values_to_test, expected_limit_values)
+        ):
+            calculated_limit_value = getattr(value_test_case, attribute_name).value
+            # Energy loss limit value is already in units of frequencies because of the way it is calculated
+            if attribute_name != "energy_loss":
+                calculated_limit_value = calculated_limit_value / (
+                    coulomb_density_constant * charge_constant
+                )
+
+            assert np.allclose(
+                calculated_limit_value, expected_limit_value, rtol=0.05, atol=0
+            )
+
+    @pytest.mark.parametrize(
+        "expected_error, constructor_arguments, constructor_keyword_arguments",
+        [
+            # Both T_a and v_a specified error
+            (
+                ValueError,
+                (Particle("e-"), Particle("e-")),
+                {
+                    "v_a": 1 * u.cm / u.s,
+                    "T_a": 1 * u.eV,
+                    "T_b": 1 * u.eV,
+                    "n_b": 1 * u.cm**-3,
+                    "Coulomb_log": 1 * u.dimensionless_unscaled,
+                },
+            ),
+            # Neither T_a nor v_a specified error
+            (
+                ValueError,
+                (Particle("e-"), Particle("e-")),
+                {
+                    "T_b": 1 * u.eV,
+                    "n_b": 1 * u.cm**-3,
+                    "Coulomb_log": 1 * u.dimensionless_unscaled,
+                },
+            ),
+            # Arrays of unequal shape error
+            (
+                ValueError,
+                (Particle("e-"), Particle("e-")),
+                {
+                    "v_a": np.ndarray([1, 1]) * u.cm / u.s,
+                    "T_b": 1 * u.eV,
+                    "n_b": ones_array * u.cm**-3,
+                    "Coulomb_log": 1 * u.dimensionless_unscaled,
+                },
+            ),
+        ],
+    )
+    def test_errors(
+        self, expected_error, constructor_arguments, constructor_keyword_arguments
+    ):
+        """Test errors raised in the function body"""
+
+        with pytest.raises(expected_error):
+            CollisionFrequencies(
+                *constructor_arguments, **constructor_keyword_arguments
+            )
+
+    @pytest.mark.parametrize(
+        "constructor_keyword_arguments",
+        [
+            {
+                "test_particle": Particle("e-"),
+                "field_particle": Particle("e-"),
+                "T_a": ones_array * u.eV,
+                "T_b": ones_array * u.eV,
+                "n_b": ones_array * u.cm**-3,
+                "Coulomb_log": ones_array * u.dimensionless_unscaled,
+            },
+            {
+                "test_particle": Particle("e-"),
+                "field_particle": Particle("e-"),
+                "T_a": ones_array2d * u.eV,
+                "T_b": ones_array2d * u.eV,
+                "n_b": ones_array2d * u.cm**-3,
+                "Coulomb_log": ones_array2d * u.dimensionless_unscaled,
+            },
+        ],
+    )
+    def test_handle_ndarrays(self, constructor_keyword_arguments):
+        """Test for ability to handle numpy array quantities"""
+
+        CollisionFrequencies(**constructor_keyword_arguments)
