@@ -2112,7 +2112,7 @@ class CollisionFrequencies:
             "can_be_negative": False,
             "equivalencies": u.temperature_energy(),
         },
-        n_a={"can_be_negative": False},
+        n_a={"none_shall_pass": True, "can_be_negative": False},
         T_b={"can_be_negative": False, "equivalencies": u.temperature_energy()},
         n_b={"can_be_negative": False},
     )
@@ -2369,7 +2369,7 @@ class CollisionFrequencies:
         Raises
         ------
         `ValueError`
-            If the specified interaction isn't electron-ion
+            If the specified interaction isn't electron-ion, or ``n_a`` isn't specified.
 
         Examples
         --------
@@ -2389,6 +2389,11 @@ class CollisionFrequencies:
         if not self.test_particle.is_electron or not self.field_particle.is_ion:
             raise ValueError(
                 "Please specify an electron-ion interaction to use the Maxwellian_avg_ei_collision_freq attribute"
+            )
+
+        if not self.n_a:
+            raise ValueError(
+                "Please specify the test particle number density to use the Maxwellian_avg_ei_collision_freq attribute"
             )
 
         coeff = 4 / (3 * np.sqrt(np.pi))
@@ -2416,7 +2421,7 @@ class CollisionFrequencies:
         Raises
         ------
         `ValueError`
-            If the specified interaction isn't ion-ion
+            If the specified interaction isn't ion-ion, or ``n_a`` isn't specified.
 
         Examples
         --------
@@ -2436,6 +2441,11 @@ class CollisionFrequencies:
         if not self.test_particle.is_ion or not self.field_particle.is_ion:
             raise ValueError(
                 "Please specify an ion-ion interaction to use the Maxwellian_avg_ii_collision_freq attribute"
+            )
+
+        if not self.n_a:
+            raise ValueError(
+                "Please specify the test particle number density to use the Maxwellian_avg_ei_collision_freq attribute"
             )
 
         coeff = 4 / (3 * np.sqrt(2 * np.pi))

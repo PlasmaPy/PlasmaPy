@@ -2218,6 +2218,7 @@ class TestCollisionFrequencies:
                 (Particle("e-"), Particle("e-")),
                 {
                     "v_a": 1 * u.cm / u.s,
+                    "n_a": 1 * u.cm**-3,
                     "T_b": 1 * u.eV,
                     "n_b": 1 * u.cm**-3,
                     "Coulomb_log": 1 * u.dimensionless_unscaled,
@@ -2228,6 +2229,31 @@ class TestCollisionFrequencies:
                 "Maxwellian_avg_ii_collision_freq",
                 ValueError,
                 (Particle("Na+"), Particle("e-")),
+                {
+                    "v_a": 1 * u.cm / u.s,
+                    "n_a": 1 * u.cm**-3,
+                    "T_b": 1 * u.eV,
+                    "n_b": 1 * u.cm**-3,
+                    "Coulomb_log": 1 * u.dimensionless_unscaled,
+                },
+            ),
+            # n_a not specified error
+            (
+                "Maxwellian_avg_ei_collision_freq",
+                ValueError,
+                (Particle("e-"), Particle("Na+")),
+                {
+                    "v_a": 1 * u.cm / u.s,
+                    "T_b": 1 * u.eV,
+                    "n_b": 1 * u.cm**-3,
+                    "Coulomb_log": 1 * u.dimensionless_unscaled,
+                },
+            ),
+            # n_a not specified error
+            (
+                "Maxwellian_avg_ii_collision_freq",
+                ValueError,
+                (Particle("Na+"), Particle("Cl-")),
                 {
                     "v_a": 1 * u.cm / u.s,
                     "T_b": 1 * u.eV,
