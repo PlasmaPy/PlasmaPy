@@ -56,7 +56,7 @@ def _make_into_set_or_none(obj) -> Optional[Set]:
 
 
 def _bind_arguments(
-    func: Callable,
+    function: Callable,
     args: Optional[Tuple] = None,
     kwargs: Optional[Dict[str, Any]] = None,
     instance=None,
@@ -68,13 +68,13 @@ def _bind_arguments(
 
     Parameters
     ----------
-    func : callable
+    function : callable
         The function or method to which to bind ``args`` and ``kwargs``.
 
     args : tuple, optional
         Positional arguments.
 
-    kwargs : dict, optional,
+    kwargs : `dict` of `str` to `object`, optional
         Keyword arguments.
 
     instance
@@ -88,7 +88,7 @@ def _bind_arguments(
         as keys and the corresponding arguments as values,
         but removing ``self`` and ``cls``.
     """
-    wrapped_signature = inspect.signature(func)
+    wrapped_signature = inspect.signature(function)
 
     # When decorating a function or staticmethod, instance will
     # be None. When decorating a class instance method, instance
