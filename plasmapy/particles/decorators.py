@@ -541,6 +541,7 @@ class ValidateParticles:
 
 def particle_input(
     wrapped: Optional[Callable] = None,
+    *,
     require: Union[str, Set, List, Tuple] = None,
     any_of: Union[str, Set, List, Tuple] = None,
     exclude: Union[str, Set, List, Tuple] = None,
@@ -576,7 +577,7 @@ def particle_input(
 
     Parameters
     ----------
-    wrapped : callable
+    wrapped : callable, optional
         The function or method to be decorated.
 
     require : `str`, `set`, `list`, or `tuple`, |keyword-only|, optional
@@ -588,10 +589,10 @@ def particle_input(
     exclude : `str`, `set`, `list`, or `tuple`, |keyword-only|, optional
         Categories that each particle cannot be in.
 
-    allow_custom_particles : bool, default: `True`
+    allow_custom_particles : bool, |keyword-only|, optional, default: `True`
         If `True`, allow |CustomParticle| instances to be passed through.
 
-    allow_particle_lists : bool, default: `True`
+    allow_particle_lists : bool, |keyword-only|, optional, default: `True`
         If `True`, allow |ParticleList| instances to be passed through.
 
     Returns
