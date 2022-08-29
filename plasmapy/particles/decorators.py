@@ -165,11 +165,11 @@ class ValidateParticles:
         -------
         callable
         """
-        return self._data["wrapped_function"]
+        return self._data["wrapped"]
 
     @wrapped.setter
     def wrapped(self, function: Callable):
-        self._data["wrapped_function"] = function
+        self._data["wrapped"] = function
         self._data["annotations"] = _get_annotations(function)
         self._data["parameters_to_process"] = self._find_parameters_to_process()
 
