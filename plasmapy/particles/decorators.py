@@ -385,8 +385,15 @@ class _ParticleInput:
         name_categorization_exception = [
             ("element", {"require": "element"}, InvalidElementError),
             ("isotope", {"require": "isotope"}, InvalidIsotopeError),
+            # In the future, "ion" should be changed to allow only
+            # ions and not neutral atoms with an explicit charge.
             (
                 "ion",
+                {"require": "element", "any_of": {"charged", "uncharged"}},
+                InvalidIonError,
+            ),
+            (
+                "ionic_level",
                 {"require": "element", "any_of": {"charged", "uncharged"}},
                 InvalidIonError,
             ),
@@ -574,14 +581,21 @@ def particle_input(
     criteria that have been provided, then |particle_input| will raise
     an exception.
 
-    If the |annotated| |parameter| is named ``element``, ``isotope``,
-    or ``ion``,then |particle_input| will raise an exception if the
-    |argument| provided to the callable is not consistent with the
-    |parameter|.
-
     If the |annotation| is created using `~typing.Optional` (e.g.,
     `Optional[ParticleLike]`), then `None` can be provided to the
     wrapped callable.
+
+    If the |annotated| |parameter| is named ``element``, ``isotope``,
+    ``ion``, or ``ionic_level``, then |particle_input| will raise an
+    exception if the |argument| provided to the callable is not
+    consistent with the |parameter|.
+
+    .. note::
+
+       |Annotated| |parameters| named ``ion`` and ``ionic_level`` accept
+       neutral atoms as long as the charge number is explicitly defined.
+       In the future, this functionality may change so that |parameters|
+       named ``ion`` require a nonzero |charge number|.
 
     Parameters
     ----------
@@ -721,7 +735,7 @@ def particle_input(
     Particle("T 1+")
 
     The ``allow_custom_particles`` and ``allow_particle_lists`` keyword
-    arguments indicate whether or not ``wrapped`` should accept
+    arguments indicate whether ``wrapped`` should accept
     |CustomParticle| and |ParticleList| objects, respectively.
 
     >>> @particle_input(allow_custom_particles=False, allow_particle_lists=False)
@@ -741,8 +755,11 @@ def particle_input(
     >>> return_ionic_level("Fe-56 0+")
     Particle("Fe-56 0+")
 
-    When the |parameter| is named ``element``, ``isotope``, or ``ion``,
-    the corresponding |argument| must be consistent with the name.
+    When the |parameter| is named ``element``, ``isotope``, ``ion``, or
+    ``ionic_level``, then the corresponding |argument| must be
+    consistent with the name. When the |parameter| is named ``ion`` or
+    ``ionic_charge``, then the particle(s) may also be neutral atoms as
+    long as the |charge number| is explicitly defined.
 
     >>> @particle_input
     ... def mass_number(isotope: ParticleLike):
