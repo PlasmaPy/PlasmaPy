@@ -195,7 +195,7 @@ class ParticleList(collections.UserList):
         self.data.append(particle)
 
     @property
-    def charge(self) -> u.C:
+    def charge(self) -> u.Quantity[u.C]:
         """
         The electric charges of the particles.
 
@@ -237,7 +237,7 @@ class ParticleList(collections.UserList):
                 self.append(obj)
 
     @property
-    def half_life(self) -> u.s:
+    def half_life(self) -> u.Quantity[u.s]:
         """
         The half-lives of the particles.
 
@@ -311,7 +311,7 @@ class ParticleList(collections.UserList):
         return np.array(self._get_particle_attribute("charge_number", default=np.nan))
 
     @property
-    def mass(self) -> u.kg:
+    def mass(self) -> u.Quantity[u.kg]:
         """
         The masses of the particles.
 
@@ -322,7 +322,7 @@ class ParticleList(collections.UserList):
         return self._get_particle_attribute("mass", unit=u.kg, default=np.nan * u.J)
 
     @property
-    def mass_energy(self) -> u.J:
+    def mass_energy(self) -> u.Quantity[u.J]:
         """
         The mass energies of the particles.
 
