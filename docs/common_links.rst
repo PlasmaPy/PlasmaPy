@@ -110,6 +110,7 @@
 .. |annotated| replace:: :term:`annotated <annotation>`\
 .. |annotation| replace:: :term:`annotation`\
 .. |argument| replace:: :term:`argument`\
+.. |arguments| replace:: :term:`arguments <argument>`\
 .. |charge number| replace:: :term:`charge number`\
 .. |decorated| replace:: :term:`decorated <decorator>`\
 .. |decorator| replace:: :term:`decorator`\
