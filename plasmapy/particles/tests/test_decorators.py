@@ -527,131 +527,93 @@ def test_particle_input_verification(kwargs_to_particle_input, arg):
         f(arg)
 
 
-# TODO: The following tests might be able to be cleaned up and/or
-# further parametrized since there's a fair bit of repetition.
-
-sample_elements = ["H", "Fe-56", "p+", "alpha", "Fe", "D+", "T 1-"]
-not_element = ["e-", "e+", "n", "mu-", "tau+"]
-
-sample_isotopes = ["D", "T", "alpha", "proton", "Fe-56", "Be-8"]
-not_isotope = ["H", "e-", "n", "p-", "e+", "Fe", "Au", "Og"]
-
-sample_ions = ["p+", "D+", "T+", "alpha", "Be-8+", "Fe 26+"]
-not_ion = ["D", "T", "H-1", "He-4", "e-", "e+", "n"]
+class ParameterNamesCase:
+    def __init__(
+        self,
+        category,
+        function,
+        particles_in_category,
+        particles_not_in_category,
+        exception,
+    ):
+        self.category = category
+        self.function = function
+        self.particles_in_category = particles_in_category
+        self.particles_not_in_category = particles_not_in_category
+        self.particles_some_in_category = (
+            particles_in_category + particles_not_in_category
+        )
+        self.exception = exception
 
 
 @particle_input
-def function_with_element_argument(element: ParticleLike) -> Particle:
-    """A function decorated with `~plasmapy.particles.particle_input`
-    where the argument annotated with `~plasmapy.particles.Particle`
-    is named `element`.  This function should raise an
-    `~plasmapy.utils.InvalidElementError` when the argument is not
-    an element, isotope, or ion."""
+def get_element(element: ParticleLike):
     return element
 
 
 @particle_input
-def function_with_isotope_argument(isotope: ParticleLike) -> Particle:
-    """A function decorated with `~plasmapy.particles.particle_input`
-    where the argument annotated with `~plasmapy.particles.Particle`
-    is named `isotope`.  This function should raise an
-    `~plasmapy.utils.InvalidIsotopeError` when the argument is not an
-    isotope or an ion of an isotope."""
+def get_isotope(isotope: ParticleLike):
     return isotope
 
 
 @particle_input
-def function_with_ion_argument(ion: ParticleLike) -> Particle:
-    """
-    A function decorated with `~plasmapy.particles.particle_input`
-    where the argument annotated with `~plasmapy.particles.Particle`
-    is named `ion`.  This function should raise an
-    `~plasmapy.utils.InvalidIonError` when the argument is not an
-    ion.
-    """
+def get_ion(ion: ParticleLike):
     return ion
 
 
-@pytest.mark.parametrize("element", sample_elements)
-def test_is_element(element):
-    """
-    Test that particle_input will not raise an
-    `~plasmapy.utils.InvalidElementError` if the annotated argument is
-    named 'element' and is assigned values that are elements, isotopes,
-    or ions.
-    """
-    particle = function_with_element_argument(element)
-    assert particle.is_category("element")
+cases = [
+    ParameterNamesCase(
+        category="element",
+        function=get_element,
+        particles_in_category=["H", "Fe-56", "p+", "alpha", "Fe", "D+", "T 1-"],
+        particles_not_in_category=["e-", "e+", "n", "mu-", "tau+"],
+        exception=InvalidElementError,
+    ),
+    ParameterNamesCase(
+        category="isotope",
+        function=get_isotope,
+        particles_in_category=["D", "T", "alpha", "proton", "Fe-56", "Be-8"],
+        particles_not_in_category=["H", "e-", "n", "p-", "e+", "Fe", "Au", "Og"],
+        exception=InvalidIsotopeError,
+    ),
+    ParameterNamesCase(
+        category="ion",
+        function=get_ion,
+        particles_in_category=["p+", "D+", "T+", "alpha", "Be-8+", "Fe 26+"],
+        particles_not_in_category=["D", "T", "H-1", "He-4", "e-", "e+", "n"],
+        exception=InvalidIonError,
+    ),
+]
 
 
-@pytest.mark.parametrize("particle", not_element)
-def test_not_element(particle):
-    """
-    Test that particle_input will raise an
-    `~plasmapy.utils.InvalidElementError` if an argument decorated with
-    `~plasmapy.particles.Particle` is named 'element', but the annotated
-    argument ends up not being an element, isotope, or ion.
-    """
-    with pytest.raises(InvalidElementError):
-        function_with_element_argument(particle)
-        pytest.fail(
-            "@particle_input is not raising an InvalidElementError for "
-            f"{repr(particle)} even though the annotated argument is "
-            f"named 'element'."
-        )
+@pytest.mark.parametrize("case", cases)
+def test_particle_input_naming_exceptions_particles(case):
+    for particle in case.particles_not_in_category:
+        with pytest.raises(case.exception):
+            case.function(particle)
 
 
-@pytest.mark.parametrize("isotope", sample_isotopes)
-def test_is_isotope(isotope):
-    """
-    Test that particle_input will not raise an
-    `~plasmapy.utils.InvalidIsotopeError` if the annotated argument is
-    named 'isotope' and is assigned values that are isotopes or
-    ions of isotopes."""
-    particle = function_with_isotope_argument(isotope)
-    assert particle.is_category("isotope")
+@pytest.mark.parametrize("case", cases)
+def test_particle_input_naming_exceptions_particle_list(case):
+
+    with pytest.raises(case.exception):
+        case.function(case.particles_not_in_category)
 
 
-@pytest.mark.parametrize("particle", not_isotope)
-def test_not_isotope(particle):
-    """
-    Test that particle_input will raise an
-    `~plasmapy.utils.InvalidIsotopeError` if an argument decorated with
-    `~plasmapy.particles.Particle` is named 'isotope', but the annotated
-    argument ends up not being an isotope or an ion of an isotope.
-    """
-    with pytest.raises(InvalidIsotopeError):
-        function_with_isotope_argument(particle)
-        pytest.fail(
-            "@particle_input is not raising an InvalidIsotopeError for "
-            f"{repr(particle)} even though the annotated argument is named "
-            "'isotope'."
-        )
+@pytest.mark.parametrize("case", cases)
+def test_particle_input_naming_exceptions_some_particle_list(case):
+    with pytest.raises(case.exception):
+        case.function(case.particles_some_in_category)
 
 
-@pytest.mark.parametrize("ion", sample_ions)
-def test_is_ion(ion):
-    """
-    Test that particle_input will not raise an
-    `~plasmapy.utils.InvalidIonError` if the annotated argument is
-    named 'ion' and is assigned values that are ions.
-    """
-    particle = function_with_ion_argument(ion)
-    assert particle.is_category("ion")
+@pytest.mark.parametrize("case", cases)
+def test_particle_input_naming(case):
+    for particle in case.particles_in_category:
+        result = case.function(particle)
+        assert result.is_category(require=case.category)
 
 
-@pytest.mark.parametrize("particle", not_ion)
-def test_not_ion(particle):
-    """
-    Test that particle_input will raise an
-    `~plasmapy.utils.InvalidIonError` if an argument decorated with
-    `~plasmapy.particles.Particle` is named 'ion', but the annotated
-    argument ends up not being an ion.
-    """
-    with pytest.raises(InvalidIonError):
-        function_with_ion_argument(particle)
-        pytest.fail(
-            "@particle_input is not raising an InvalidIonError for "
-            f"{repr(particle)} even though the annotated argument is named "
-            "'ion'."
-        )
+@pytest.mark.parametrize("case", cases)
+def test_particle_input_naming2(case):
+    particle_list = case.function(case.particles_in_category)
+    assert all(particle_list.is_category(case.category))

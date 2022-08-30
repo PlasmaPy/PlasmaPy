@@ -382,16 +382,28 @@ class _ParticleInput:
         categorization criteria.
         """
 
-        category_table = (
-            ("element", getattr(particle, "element", None), InvalidElementError),
-            ("isotope", getattr(particle, "isotope", None), InvalidIsotopeError),
-            ("ion", getattr(particle, "ionic_symbol", None), InvalidIonError),
-        )
+        name_categorization_exception = [
+            ("element", {"require": "element"}, InvalidElementError),
+            ("isotope", {"require": "isotope"}, InvalidIsotopeError),
+            (
+                "ion",
+                {"require": "element", "any_of": {"charged", "uncharged"}},
+                InvalidIonError,
+            ),
+        ]
 
-        for category_name, category_symbol, CategoryError in category_table:
-            if parameter == category_name and not category_symbol:
-                raise CategoryError(
-                    f"The argument {parameter} = {parameter!r} to "
+        for name, categorization, exception in name_categorization_exception:
+            if parameter != name:
+                continue
+
+            meets_name_criteria = particle.is_category(**categorization)
+
+            if hasattr(particle, "__len__") and not isinstance(particle, str):
+                meets_name_criteria = all(meets_name_criteria)
+
+            if not meets_name_criteria:
+                raise exception(
+                    f"The argument {parameter} = {particle!r} to "
                     f"{self.wrapped.__name__} does not correspond to a "
                     f"valid {parameter}."
                 )
