@@ -433,10 +433,10 @@ class ValidateParticles:
         Parameters
         ----------
         parameter : str
-            The name of the :term:`parameter` that was decorated.
+            The name of the |parameter| that was decorated.
 
         argument : object
-            The value of the :term:`argument` associated with ``parameter``.
+            The value of the |argument| associated with ``parameter``.
 
         Z : integer, optional
             The charge number of an ion or neutral particle.
@@ -545,14 +545,12 @@ def particle_input(
     allow_particle_lists: bool = True,
 ) -> Callable:
     """
-    Convert :term:`arguments <argument>` provided to a callable into
-    particle objects.
+    Convert |arguments| provided to a callable into particle objects.
 
-    When a callable is :term:`decorated <decorator>` with
-    |particle_input|, |particle-like| :term:`arguments <argument>` that
-    are appropriately :term:`annotated `function annotation` (e.g., with
-    |ParticleLike| or |ParticleListLike|) will be converted into a
-    |Particle|, |CustomParticle|, or |ParticleList|.
+    When a callable is |decorated| with |particle_input|,
+    |particle-like| |arguments| that are appropriately |annotated|
+    (e.g., with |ParticleLike| or |ParticleListLike|) will be converted
+    into a |Particle|, |CustomParticle|, or |ParticleList|.
 
     The parameters ``Z`` and ``mass_numb`` may be used to specify the
     |charge number| of an ion and mass number of an isotope,

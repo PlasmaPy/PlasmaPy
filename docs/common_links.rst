@@ -111,6 +111,7 @@
 .. |annotation| replace:: :term:`annotation`\
 .. |argument| replace:: :term:`argument`\
 .. |charge number| replace:: :term:`charge number`\
+.. |decorated| replace:: :term:`decorated <decorator>`\
 .. |decorator| replace:: :term:`decorator`\
 .. |keyword-only| replace:: :term:`keyword-only`\
 .. |parameter| replace:: :term:`parameter`\
