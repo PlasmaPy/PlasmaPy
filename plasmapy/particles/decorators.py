@@ -1,6 +1,6 @@
 """Decorators for `plasmapy.particles`."""
 
-__all__ = ["ValidateParticles", "particle_input"]
+__all__ = ["_ParticleInput", "particle_input"]
 
 import functools
 import inspect
@@ -110,7 +110,7 @@ def _bind_arguments(
     return arguments_to_be_processed
 
 
-class ValidateParticles:
+class _ParticleInput:
     """
     Processes arguments for |particle_input|.
 
@@ -171,9 +171,9 @@ class ValidateParticles:
     def wrapped(self, function: Callable):
         self._data["wrapped"] = function
         self._data["annotations"] = _get_annotations(function)
-        self._data["parameters_to_process"] = self._find_parameters_to_process()
+        self._data["parameters_to_process"] = self.find_parameters_to_process()
 
-    def _find_parameters_to_process(self) -> List[str]:
+    def find_parameters_to_process(self) -> List[str]:
         """
         Identify the parameters that have annotations to indicate that
         they should be processed.
@@ -280,8 +280,8 @@ class ValidateParticles:
     def parameters_to_process(self) -> List[str]:
         """
         The parameters of
-        `~plasmapy.particles.decorators.ValidateParticles.wrapped`
-        that have annotations to be processed by |particle_input|.
+        `~plasmapy.particles.decorators._ParticleInput.wrapped` that have
+        annotations to be processed by |particle_input|.
 
         Returns
         -------
@@ -289,7 +289,7 @@ class ValidateParticles:
         """
         return self._data["parameters_to_process"]
 
-    def _verify_charge_categorization(self, particle) -> NoReturn:
+    def verify_charge_categorization(self, particle) -> NoReturn:
         """
         Raise an exception if the particle does not meet charge
         categorization criteria.
@@ -321,7 +321,7 @@ class ValidateParticles:
             )
 
     @staticmethod
-    def _category_errmsg(particle, require, exclude, any_of, function_name) -> str:
+    def category_errmsg(particle, require, exclude, any_of, function_name) -> str:
         """
         Return an error message for when a particle does not meet
         categorization criteria.
@@ -349,7 +349,7 @@ class ValidateParticles:
 
         return category_errmsg
 
-    def _verify_particle_categorization(self, particle) -> NoReturn:
+    def verify_particle_categorization(self, particle) -> NoReturn:
         """
         Verify that the particle meets the categorization criteria.
 
@@ -367,7 +367,7 @@ class ValidateParticles:
             any_of=self.any_of,
             exclude=self.exclude,
         ):
-            errmsg = self._category_errmsg(
+            errmsg = self.category_errmsg(
                 particle,
                 self.require,
                 self.exclude,
@@ -376,7 +376,7 @@ class ValidateParticles:
             )
             raise ParticleError(errmsg)
 
-    def _verify_particle_name_criteria(self, parameter, particle):
+    def verify_particle_name_criteria(self, parameter, particle):
         """
         Check that parameters with special names meet the expected
         categorization criteria.
@@ -396,7 +396,7 @@ class ValidateParticles:
                     f"valid {parameter}."
                 )
 
-    def _verify_allowed_types(self, particle):
+    def verify_allowed_types(self, particle):
         """
         Verify that the particle object contains only the allowed types
         of particles.
@@ -465,16 +465,16 @@ class ValidateParticles:
 
         particle = _physical_particle_factory(argument, Z=Z, mass_numb=mass_numb)
 
-        self._verify_charge_categorization(particle)
-        self._verify_particle_categorization(particle)
-        self._verify_particle_name_criteria(parameter, particle)
-        self._verify_allowed_types(particle)
+        self.verify_charge_categorization(particle)
+        self.verify_particle_categorization(particle)
+        self.verify_particle_name_criteria(parameter, particle)
+        self.verify_allowed_types(particle)
 
         return particle
 
     parameters_to_skip = ("Z", "mass_numb")
 
-    def _perform_pre_validations(self, Z, mass_numb):
+    def perform_pre_validations(self, Z, mass_numb):
         """
         Check that there are annotated parameters, that ``Z`` and
         ``mass_numb`` are integers, and that ``Z`` and ``mass_numb`` are
@@ -527,7 +527,7 @@ class ValidateParticles:
         Z = arguments.pop("Z", None)
         mass_numb = arguments.pop("mass_numb", None)
 
-        self._perform_pre_validations(Z, mass_numb)
+        self.perform_pre_validations(Z, mass_numb)
 
         return {
             parameter: self.process_argument(parameter, argument, Z, mass_numb)
@@ -636,7 +636,7 @@ def particle_input(
 
     See Also
     --------
-    ~plasmapy.particles.decorators.ValidateParticles
+    ~plasmapy.particles.decorators._ParticleInput
     |validate_quantities|
 
     Examples
@@ -768,7 +768,7 @@ def particle_input(
             allow_particle_lists=allow_particle_lists,
         )
 
-    particle_validator = ValidateParticles(
+    particle_validator = _ParticleInput(
         wrapped=wrapped,
         require=require,
         any_of=any_of,
