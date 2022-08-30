@@ -107,7 +107,7 @@
 .. Glossary terms
 .. --------------
 
-.. |annotated| replace:: :term:`annotated <function annotation>`\
+.. |annotated| replace:: :term:`annotated <annotation>`\
 .. |annotation| replace:: :term:`annotation`\
 .. |argument| replace:: :term:`argument`\
 .. |charge number| replace:: :term:`charge number`\
