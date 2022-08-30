@@ -564,7 +564,7 @@ def particle_input(
     allow_particle_lists: bool = True,
 ) -> Callable:
     """
-    Convert |arguments| provided to a callable into particle objects.
+    Convert |particle-like| |arguments| into particle objects.
 
     When a callable is |decorated| with |particle_input|,
     |particle-like| |arguments| that are appropriately |annotated|
@@ -646,9 +646,9 @@ def particle_input(
         not correspond to an ion.
 
     |ChargeError|
-        If ``'charged'`` is in the ``require`` argument and the particle
-        is not explicitly charged, or if ``any_of = {'charged',
-        'uncharged'}`` and the particle does not have charge information
+        If ``"charged"`` is in the ``require`` argument and the particle
+        is not explicitly charged, or if ``any_of = {"charged",
+        "uncharged"}`` and the particle does not have charge information
         associated with it.
 
     |ParticleError|
