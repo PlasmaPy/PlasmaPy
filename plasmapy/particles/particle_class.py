@@ -1818,10 +1818,6 @@ class Particle(AbstractPhysicalParticle):
             return Particle(base_particle, Z=new_charge_number)
 
 
-Particle.is_category.valid_categories = _valid_categories
-"""All valid particle categories."""
-
-
 class DimensionlessParticle(AbstractParticle):
     """
     A class to represent dimensionless custom particles.
@@ -2269,10 +2265,6 @@ class CustomParticle(AbstractPhysicalParticle):
         as a key in a `dict`.
         """
         return hash(self.__repr__())
-
-
-CustomParticle.is_category.valid_categories = _valid_categories
-"""All valid particle categories."""
 
 
 def molecule(
