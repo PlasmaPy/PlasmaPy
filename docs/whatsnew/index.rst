@@ -11,7 +11,6 @@ including bug fixes and changes to the application programming interface
 .. toctree::
    :maxdepth: 1
 
-   dev
    0.8.1
    0.7.0
    0.6.0
