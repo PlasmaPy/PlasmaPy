@@ -694,8 +694,8 @@ notebook on particles`_.
      def get_particle(particle: ParticleLike):
           return particle
 
-  Then if we use ``get_particle`` on something |particle-like|, then it
-  will return the corresponding particle object.
+  If we use ``get_particle`` on something |particle-like|, it will
+  return the corresponding particle object.
 
   .. code-block:: pycon
 
