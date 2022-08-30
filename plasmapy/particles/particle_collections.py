@@ -22,35 +22,34 @@ from plasmapy.particles.particle_class import (
 
 class ParticleList(collections.UserList):
     """
-    A `list` like collection of
-    `~plasmapy.particles.particle_class.Particle` and/or
-    `~plasmapy.particles.particle_class.CustomParticle` objects.
+    A `list` like collection of |Particle| and/or |CustomParticle|
+    objects.
 
     Parameters
     ----------
-    particles : iterable, optional
-        An iterable that provides a sequence of
-        `~plasmapy.particles.particle_class.ParticleLike` objects.
-        Objects that are not a `~plasmapy.particles.particle_class.Particle`
-        or `~plasmapy.particles.particle_class.CustomParticle` instance
-        will be cast into a `~plasmapy.particles.particle_class.Particle`
-        instance.
+    particles : iterable of |particle-like|, optional
+        An iterable that provides a sequence of |particle-like| objects.
+        Objects that are not a |Particle| or |CustomParticle| will be
+        cast into a |Particle| or |CustomParticle|.
 
     Raises
     ------
     `~plasmapy.particles.exceptions.InvalidParticleError`
-        If an object supplied to |ParticleList| is not
-        `~plasmapy.particles.particle_class.ParticleLike`.
+        If an object supplied to |ParticleList| is not |particle-like|.
 
     TypeError
         If a `~plasmapy.particles.particle_class.DimensionlessParticle`
         is provided.
 
+    See Also
+    --------
+    ~plasmapy.particles.particle_class.CustomParticle
+    ~plasmapy.particles.particle_class.Particle
+
     Examples
     --------
     A |ParticleList| can be created by calling it with a `list`,
-    `tuple`, or other iterable that provides
-    `~plasmapy.particles.particle_class.ParticleLike` objects.
+    `tuple`, or other iterable that provides |particle-like| objects.
 
     >>> from plasmapy.particles import ParticleList
     >>> particle_list = ParticleList(["e-", "e+"])
@@ -72,9 +71,8 @@ class ParticleList(collections.UserList):
     ['e-', 'e+']
 
     |ParticleList| instances can also be created through addition and
-    multiplication with `~plasmapy.particles.particle_class.Particle`,
-    `~plasmapy.particles.particle_class.CustomParticle`, and
-    |ParticleList| instances.
+    multiplication with |Particle|, |CustomParticle|, and |ParticleList|
+    instances.
 
     >>> from plasmapy.particles import Particle, CustomParticle
     >>> import astropy.units as u
@@ -83,24 +81,21 @@ class ParticleList(collections.UserList):
     >>> 2 * proton + custom_particle
     ParticleList(['p+', 'p+', 'CustomParticle(mass=1e-26 kg, charge=6e-19 C)'])
 
-    These operations may also be performed using
-    `~plasmapy.particles.particle_class.ParticleLike` objects.
+    These operations may also be performed using |particle-like| objects.
 
     >>> particle_list + "deuteron"
     ParticleList(['e-', 'e+', 'D 1+'])
 
     Normal `list` methods may also be used on |ParticleList| objects.
-    When a `~plasmapy.particles.particle_class.ParticleLike` object is
-    appended to a |ParticleList|, that object will be cast into a
-    `~plasmapy.particles.particle_class.Particle`.
+    When a |particle-like| object is appended to a |ParticleList|, that
+    object will be cast into a |Particle| or |CustomParticle|.
 
     >>> noble_gases = ParticleList(["He", "Ar", "Kr", "Xe", "Rn"])
     >>> noble_gases.append("Og")
     >>> noble_gases[-1]
     Particle("Og")
 
-    The ``>`` operator may be used with
-    `~plasmapy.particles.particle_class.Particle` and |ParticleList|
+    The ``>`` operator may be used with |Particle| and |ParticleList|
     instances to access the nuclear reaction energy.
 
     >>> reactants = ParticleList(["deuterium", "tritium"])
@@ -382,29 +377,30 @@ class ParticleList(collections.UserList):
         """
         Return a particle with the average mass and charge.
 
-        By default, the mean will be used as the average. If the ``abundances``
-        are provided, then this method will return the weighted mean. If
-        ``use_rms_charge`` or ``use_rms_mass`` is `True`, then this method will
-        return the root mean square of the charge or mass, respectively. If all
-        items in the |ParticleList| are the same, then this method will return
-        that item.
+        By default, the mean will be used as the average. If the
+        ``abundances`` are provided, then this method will return the
+        weighted mean. If ``use_rms_charge`` or ``use_rms_mass`` is
+        `True`, then this method will return the root mean square of the
+        charge or mass, respectively. If all items in the |ParticleList|
+        are the same, then this method will return that item.
 
         Parameters
         ----------
         abundances : |array_like|, optional
-            Real numbers representing relative abundances of the particles in
-            the |ParticleList|. Must have the same number of elements as the
-            |ParticleList|. This parameter gets passed to `numpy.average` via
-            that function's ``weights`` parameter. If not provided, the
-            particles contained in the |ParticleList| are assumed to be
-            equally abundant.
+            Real numbers representing relative abundances of the
+            particles in the |ParticleList|. Must have the same number
+            of elements as the |ParticleList|. This parameter gets
+            passed to `numpy.average` via that function's ``weights``
+            parameter. If not provided, the particles contained in the
+            |ParticleList| are assumed to be equally abundant.
 
         use_rms_charge : `bool`, optional, |keyword-only|, default: `False`
-            If `True`, use the root mean square charge instead of the mean
-            charge.
+            If `True`, use the root mean square charge instead of the
+            mean charge.
 
         use_rms_mass : `bool`, optional, |keyword-only|, default: `False`
-            If `True`, use the root mean square mass instead of the mean mass.
+            If `True`, use the root mean square mass instead of the mean
+            mass.
 
         Examples
         --------
