@@ -620,6 +620,7 @@ test_Particle_error_table = [
     (["Fe 25+"], {}, ".recombine(8.2)", TypeError),
     (["e-"], {}, ".ionize()", InvalidElementError),
     (["e+"], {}, ".recombine()", InvalidElementError),
+    (["e+"], {}, ".is_category('invalid_category')", ParticleError),
     (["H", 1], {}, "", TypeError),
     (["H", 1, 1], {}, "", TypeError),
 ]
