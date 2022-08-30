@@ -1,6 +1,6 @@
 """Decorators for `plasmapy.particles`."""
 
-__all__ = ["_ParticleInput", "particle_input"]
+__all__ = ["particle_input"]
 
 import functools
 import inspect
