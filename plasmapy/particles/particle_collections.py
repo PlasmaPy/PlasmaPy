@@ -20,15 +20,15 @@ from plasmapy.particles.particle_class import (
 
 class ParticleList(collections.UserList):
     """
-    A `list` like collection of |Particle| and/or |CustomParticle|
-    objects.
+    A `list` like collection of particle objects.
 
     Parameters
     ----------
     particles : iterable of |particle-like|, optional
         An iterable that provides a sequence of |particle-like| objects.
         Objects that are not a |Particle| or |CustomParticle| will be
-        cast into a |Particle| or |CustomParticle|.
+        cast into a |Particle| or |CustomParticle|. If not provided, an
+        empty |ParticleList| will be created.
 
     Raises
     ------
@@ -197,11 +197,11 @@ class ParticleList(collections.UserList):
     @property
     def charge(self) -> u.C:
         """
-        A |Quantity| array of the electric charges of the particles.
+        The electric charges of the particles.
 
         Returns
         -------
-        ~astropy.units.Quantity
+        `~astropy.units.Quantity`
         """
         return self._get_particle_attribute("charge", unit=u.C, default=np.nan * u.C)
 
@@ -213,8 +213,7 @@ class ParticleList(collections.UserList):
 
         .. important::
 
-           The `~plasmapy.particles.particle_collections.ParticleList.data`
-           attribute should not be modified directly.
+           This attribute should not be modified directly.
 
         Returns
         -------
@@ -240,7 +239,7 @@ class ParticleList(collections.UserList):
     @property
     def half_life(self) -> u.s:
         """
-        A |Quantity| array of the half-lives of the particles.
+        The half-lives of the particles.
 
         Returns
         -------
@@ -302,8 +301,8 @@ class ParticleList(collections.UserList):
     @property
     def charge_number(self) -> np.array:
         """
-        An array of the quantized charges of the particles, as
-        multiples of the elementary charge.
+        The charges of the particles in units of the elementary
+        positive charge.
 
         Returns
         -------
@@ -314,7 +313,7 @@ class ParticleList(collections.UserList):
     @property
     def mass(self) -> u.kg:
         """
-        An array of the masses of the particles.
+        The masses of the particles.
 
         Returns
         -------
@@ -325,7 +324,7 @@ class ParticleList(collections.UserList):
     @property
     def mass_energy(self) -> u.J:
         """
-        An array of the mass energies of the particles.
+        The mass energies of the particles.
 
         If the particle is an isotope or nuclide, return the mass energy
         of the nucleus only.
@@ -366,8 +365,8 @@ class ParticleList(collections.UserList):
 
         Examples
         --------
-        To sort a |ParticleList| by atomic number, we can set ``key``
-        equal to |atomic_number|.
+        To sort a |ParticleList| by atomic number, set ``key`` to
+        |atomic_number|.
 
         >>> from plasmapy.particles import ParticleList, atomic_number
         >>> elements = ParticleList(["Li", "H", "He"])
@@ -414,9 +413,10 @@ class ParticleList(collections.UserList):
         By default, the mean will be used as the average. If the
         ``abundances`` are provided, then this method will return the
         weighted mean. If ``use_rms_charge`` or ``use_rms_mass`` is
-        `True`, then this method will return the root mean square of the
+        `True`, then this method will return the root-mean-square of the
         charge or mass, respectively. If all items in the |ParticleList|
-        are the same, then this method will return that item.
+        are equal to each other, then this method will return the first
+        item in the |ParticleList|.
 
         Parameters
         ----------
@@ -429,11 +429,11 @@ class ParticleList(collections.UserList):
             |ParticleList| are assumed to be equally abundant.
 
         use_rms_charge : `bool`, optional, |keyword-only|, default: `False`
-            If `True`, use the root mean square charge instead of the
+            If `True`, use the root-mean-square charge instead of the
             mean charge.
 
         use_rms_mass : `bool`, optional, |keyword-only|, default: `False`
-            If `True`, use the root mean square mass instead of the mean
+            If `True`, use the root-mean-square mass instead of the mean
             mass.
 
         Returns
@@ -476,32 +476,41 @@ ParticleList.clear.__doc__ = """Remove all items from the |ParticleList|."""
 ParticleList.copy.__doc__ = """Return a shallow copy of the |ParticleList|."""
 
 ParticleList.count.__doc__ = """
-Return the number of occurrences of ``item``.  Here, ``item`` may be a
-`~plasmapy.particles.particle_class.Particle`,
-`~plasmapy.particles.particle_class.CustomParticle`, or |particle-like|
-representation of a particle.
+Return the number of occurrences of ``item``.  Here, ``item`` must be
+|particle-like|.
 """
 
 ParticleList.extend.__doc__ = """
-Extend |ParticleList| by casting
-|particle-like| items from
+Extend |ParticleList| by casting |particle-like| items from
 ``iterable`` into `~plasmapy.particles.particle_class.Particle` or
 `~plasmapy.particles.particle_class.CustomParticle` instances.
 """
 
 ParticleList.index.__doc__ = """
-Return first index of a |particle-like|
-value. Raise `ValueError` if the value is not present.
+Return first index of a |particle-like| value.
+
+Raises
+------
+`ValueError`
+    If the value is not present.
 """
 
 ParticleList.pop.__doc__ = """
-Remove and return item at index (default last).  Raise `IndexError` if
-the |ParticleList| is empty or the index is out of range.
+Remove and return item at index (default last).
+
+Raises
+------
+`IndexError`
+    If the |ParticleList| is empty or the index is out of range.
 """
 
 ParticleList.remove.__doc__ = """
-Remove the first occurrence of a |particle-like| item.  Raise
-`ValueError` if the value is not present.
+Remove the first occurrence of a |particle-like| item.
+
+Raises
+------
+`ValueError`
+    If the value is not present.
 """
 
 ParticleList.reverse.__doc__ = """Reverse the |ParticleList| in place."""
