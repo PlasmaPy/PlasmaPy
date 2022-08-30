@@ -55,18 +55,15 @@ def func_simple_parens(
 
 
 particle_input_simple_table = [
-    (func_simple_noparens, (1, "p+"), {"b": 2}, "p+"),
-    (func_simple_parens, (1, "p+"), {"b": 2}, "p+"),
-    (func_simple_noparens, (1, "Fe"), {"mass_numb": 56, "Z": 3}, "Fe-56 3+"),
-    (func_simple_parens, (1, "Fe"), {"mass_numb": 56, "Z": 3}, "Fe-56 3+"),
-    (func_simple_parens, (1,), {"particle": "e-"}, "e-"),
-    (func_simple_noparens, (1,), {"particle": "e-"}, "e-"),
-    (func_simple_noparens, (1,), {"particle": Particle("e-")}, "e-"),
-    (func_simple_parens, (1,), {"particle": Particle("e-")}, "e-"),
+    ((1, "p+"), {"b": 2}, "p+"),
+    ((1, "Fe"), {"mass_numb": 56, "Z": 3}, "Fe-56 3+"),
+    ((1,), {"particle": "e-"}, "e-"),
+    ((1,), {"particle": Particle("e-")}, "e-"),
 ]
 
 
-@pytest.mark.parametrize("func, args, kwargs, symbol", particle_input_simple_table)
+@pytest.mark.parametrize("func", [func_simple_parens, func_simple_noparens])
+@pytest.mark.parametrize("args, kwargs, symbol", particle_input_simple_table)
 def test_particle_input_simple(func, args, kwargs, symbol):
     """
     Test that simple functions decorated by particle_input correctly
