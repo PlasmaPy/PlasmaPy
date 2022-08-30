@@ -583,37 +583,67 @@ cases = [
         particles_not_in_category=["D", "T", "H-1", "He-4", "e-", "e+", "n"],
         exception=InvalidIonError,
     ),
+    ParameterNamesCase(
+        category="ionic_level",
+        function=get_ion,
+        particles_in_category=["p+", "D+", "T+", "alpha", "Be-8+", "Fe 26+"],
+        particles_not_in_category=["D", "T", "H-1", "He-4", "e-", "e+", "n"],
+        exception=InvalidIonError,
+    ),
 ]
 
 
 @pytest.mark.parametrize("case", cases)
-def test_particle_input_naming_exceptions_particles(case):
-    for particle in case.particles_not_in_category:
+class TestParticleInputParameterNames:
+    """
+    Test the behavior associated with annotated special parameter names
+    such as ``element``, ``isotope``, ``ion``, and ``ionic_level``. In
+    particular, make sure that the resulting particle(s) belong to the
+    expected categories.
+    """
+
+    def test_individual_particles_not_in_category(self, case):
+        """
+        Test that the appropriate exception is raised when the function
+        is provided with individual particles that are not in the
+        category.
+        """
+        for particle in case.particles_not_in_category:
+            with pytest.raises(case.exception):
+                case.function(particle)
+
+    def test_particle_list_not_in_category(self, case):
+        """
+        Test that the appropriate exception is raised when the function
+        is provided with multiple particles at once that are all not in
+        the category.
+        """
         with pytest.raises(case.exception):
+            case.function(case.particles_not_in_category)
+
+    def test_particle_list_some_in_category(self, case):
+        """
+        Test that the appropriate exception is raised when the function
+        is provided with multiple particles at once, of which some are
+        in the category and some are not.
+        """
+        with pytest.raises(case.exception):
+            case.function(case.particles_some_in_category)
+
+    # If "ionic_level" gets added as a particle category, then add
+    # assertions to the following test using is_category.
+
+    def test_individual_particles_all_in_category(self, case):
+        """
+        Test that no exception is raised when the function is provided
+        with individual particles that are all in the category.
+        """
+        for particle in case.particles_in_category:
             case.function(particle)
 
-
-@pytest.mark.parametrize("case", cases)
-def test_particle_input_naming_exceptions_particle_list(case):
-
-    with pytest.raises(case.exception):
-        case.function(case.particles_not_in_category)
-
-
-@pytest.mark.parametrize("case", cases)
-def test_particle_input_naming_exceptions_some_particle_list(case):
-    with pytest.raises(case.exception):
-        case.function(case.particles_some_in_category)
-
-
-@pytest.mark.parametrize("case", cases)
-def test_particle_input_naming(case):
-    for particle in case.particles_in_category:
-        result = case.function(particle)
-        assert result.is_category(require=case.category)
-
-
-@pytest.mark.parametrize("case", cases)
-def test_particle_input_naming2(case):
-    particle_list = case.function(case.particles_in_category)
-    assert all(particle_list.is_category(case.category))
+    def test_particle_list_all_in_category(self, case):
+        """
+        Test that no exception is raised when the function is provided
+        with multiple particles at once which are all in the category.
+        """
+        case.function(case.particles_in_category)
