@@ -1,4 +1,4 @@
-"""Collections of `~plasmapy.particles.particle_class.Particle` objects."""
+"""Collections of particle objects."""
 
 __all__ = ["ParticleList", "ParticleListLike"]
 
@@ -110,10 +110,8 @@ class ParticleList(collections.UserList):
         particles: Optional[Iterable[ParticleLike]],
     ) -> List[Union[Particle, CustomParticle]]:  # TODO #687
         """
-        Convert an iterable that provides
-        `~plasmapy.particles.particle_class.ParticleLike` objects into a
-        `list` containing `~plasmapy.particles.particle_class.Particle`
-        and `~plasmapy.particles.particle_class.CustomParticle` instances.
+        Convert an iterable that provides |particle-like| objects into a
+        `list` containing |Particle| and |CustomParticle| instances.
         """
         new_particles = []
         if particles is None:
@@ -201,8 +199,11 @@ class ParticleList(collections.UserList):
     @property
     def charge(self) -> u.C:
         """
-        A `~astropy.units.Quantity` array of the electric charges
-        of the particles.
+        A |Quantity| array of the electric charges of the particles.
+
+        Returns
+        -------
+        ~astropy.units.Quantity
         """
         return self._get_particle_attribute("charge", unit=u.C, default=np.nan * u.C)
 
@@ -212,16 +213,25 @@ class ParticleList(collections.UserList):
         A `list` containing the particles contained in the
         |ParticleList| instance.
 
-        The `~plasmapy.particles.particle_collections.ParticleList.data`
-        attribute should not be modified directly.
+        .. important::
+
+           The `~plasmapy.particles.particle_collections.ParticleList.data`
+           attribute should not be modified directly.
+
+        Returns
+        -------
+        `list` of |Particle| or |CustomParticle|
         """
         return self._data
 
     def extend(self, iterable: Iterable[ParticleLike]):
         """
-        Extend the sequence by appending
-        `~plasmapy.particles.particle_class.ParticleLike` elements from
+        Extend the sequence by appending |particle-like| elements from
         ``iterable``.
+
+        See Also
+        --------
+        list.extend
         """
         if isinstance(iterable, ParticleList):
             self.data.extend(iterable)
@@ -232,8 +242,11 @@ class ParticleList(collections.UserList):
     @property
     def half_life(self) -> u.s:
         """
-        A `~astropy.units.Quantity` array of the half-lives of the
-        particles.
+        A |Quantity| array of the half-lives of the particles.
+
+        Returns
+        -------
+        `~astropy.units.Quantity`
         """
         return self._get_particle_attribute("half_life", unit=u.s, default=np.nan * u.s)
 
@@ -264,6 +277,10 @@ class ParticleList(collections.UserList):
         for information on the parameters and categories, as well as
         more extensive examples.
 
+        Returns
+        -------
+        `list` of `bool`
+
         Examples
         --------
         >>> particles = ParticleList(["proton", "electron", "tau neutrino"])
@@ -289,22 +306,35 @@ class ParticleList(collections.UserList):
         """
         An array of the quantized charges of the particles, as
         multiples of the elementary charge.
+
+        Returns
+        -------
+        |ndarray|
         """
         return np.array(self._get_particle_attribute("charge_number", default=np.nan))
 
     @property
     def mass(self) -> u.kg:
-        """A `~astropy.units.Quantity` array of the masses of the particles."""
+        """
+        An array of the masses of the particles.
+
+        Returns
+        -------
+        `~astropy.units.Quantity`
+        """
         return self._get_particle_attribute("mass", unit=u.kg, default=np.nan * u.J)
 
     @property
     def mass_energy(self) -> u.J:
         """
-        A `~astropy.units.Quantity` array of the mass energies of the
-        particles.
+        An array of the mass energies of the particles.
 
         If the particle is an isotope or nuclide, return the mass energy
         of the nucleus only.
+
+        Returns
+        -------
+        `~astropy.units.Quantity`
         """
         return self._get_particle_attribute(
             "mass_energy",
@@ -364,7 +394,13 @@ class ParticleList(collections.UserList):
 
     @property
     def symbols(self) -> List[str]:
-        """A `list` of the symbols of the particles."""
+        """
+        A `list` of the symbols of the particles.
+
+        Returns
+        -------
+        `list` of `str`
+        """
         return self._get_particle_attribute("symbol")
 
     def average_particle(
@@ -401,6 +437,10 @@ class ParticleList(collections.UserList):
         use_rms_mass : `bool`, optional, |keyword-only|, default: `False`
             If `True`, use the root mean square mass instead of the mean
             mass.
+
+        Returns
+        -------
+        |Particle| or |CustomParticle|
 
         Examples
         --------
@@ -440,20 +480,19 @@ ParticleList.copy.__doc__ = """Return a shallow copy of the |ParticleList|."""
 ParticleList.count.__doc__ = """
 Return the number of occurrences of ``item``.  Here, ``item`` may be a
 `~plasmapy.particles.particle_class.Particle`,
-`~plasmapy.particles.particle_class.CustomParticle`, or
-`~plasmapy.particles.particle_class.ParticleLike` representation of a
-particle.
+`~plasmapy.particles.particle_class.CustomParticle`, or |particle-like|
+representation of a particle.
 """
 
 ParticleList.extend.__doc__ = """
 Extend |ParticleList| by casting
-`~plasmapy.particles.particle_class.ParticleLike` items from
+|particle-like| items from
 ``iterable`` into `~plasmapy.particles.particle_class.Particle` or
 `~plasmapy.particles.particle_class.CustomParticle` instances.
 """
 
 ParticleList.index.__doc__ = """
-Return first index of a `~plasmapy.particles.particle_class.ParticleLike`
+Return first index of a |particle-like|
 value. Raise `ValueError` if the value is not present.
 """
 
@@ -463,8 +502,7 @@ the |ParticleList| is empty or the index is out of range.
 """
 
 ParticleList.remove.__doc__ = """
-Remove the first occurrence of a
-`~plasmapy.particles.particle_class.ParticleLike` item.  Raise
+Remove the first occurrence of a |particle-like| item.  Raise
 `ValueError` if the value is not present.
 """
 
@@ -473,14 +511,13 @@ ParticleList.reverse.__doc__ = """Reverse the |ParticleList| in place."""
 ParticleListLike = Union[ParticleList, Sequence[ParticleLike]]
 
 ParticleListLike.__doc__ = r"""
-An `object` is :term:`particle-list-like` if it can be identified as a
-`~plasmapy.particles.particle_collections.ParticleList` or cast into
-one.
+An `object` is |particle-list-like| if it can be identified as a
+|ParticleList| or cast into one.
 
 When used as a type hint annotation, |ParticleListLike| indicates that
 the corresponding argument should represent a sequence of physical
 particles. Each item in a |ParticleListLike| object must be
-`~plasmapy.particles.particle_class.ParticleLike`.
+|particle-like|.
 
 Notes
 -----
