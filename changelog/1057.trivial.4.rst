@@ -1,2 +1,0 @@
-Added `wrapt <https://wrapt.readthedocs.io>`__ as a dependency needed
-for installation.
