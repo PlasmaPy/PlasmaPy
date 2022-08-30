@@ -151,17 +151,19 @@ def ambiguous_keywords(p1: ParticleLike, p2: ParticleLike, Z=None, mass_numb=Non
     pass
 
 
-def test_function_with_ambiguity():
+ambiguous_arguments = [
+    [("H", "He"), {"Z": 1, "mass_numb": 4}],
+    [("H", "He"), {"Z": 1}],
+    [("H", "He"), {"mass_numb": 4}],
+]
+
+
+@pytest.mark.parametrize("args, kwargs", ambiguous_arguments)
+def test_function_with_ambiguity(args, kwargs):
     """Test that a function decorated with particle_input that has two
     annotated arguments"""
     with pytest.raises(ParticleError):
-        ambiguous_keywords("H", "He", Z=1, mass_numb=4)
-    with pytest.raises(ParticleError):
-        ambiguous_keywords("H", "He", Z=1)
-    with pytest.raises(ParticleError):
-        ambiguous_keywords("H", "He", mass_numb=4)
-    # TODO: should particle_input raise an exception when Z and mass_numb
-    # are given as keyword arguments but are not explicitly set?
+        ambiguous_keywords(*args, **kwargs)
 
 
 def function_to_test_annotations(particles: Union[Tuple, List], resulting_particles):
@@ -181,11 +183,6 @@ def function_to_test_annotations(particles: Union[Tuple, List], resulting_partic
         particle if isinstance(particle, Particle) else Particle(particle)
         for particle in particles
     ]
-
-    # Check that the returned values are Particle instances because
-    # running:
-    #     Particle('p+') == 'p+'
-    # will return True because of how Particle.__eq__ is set up.
 
     returned_particle_instances = all(
         isinstance(p, Particle) for p in resulting_particles
