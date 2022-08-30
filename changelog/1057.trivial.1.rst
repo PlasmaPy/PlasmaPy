@@ -1,0 +1,4 @@
+Moved the functionality responsible for converting |particle-like|
+arguments to particle objects from the |particle_input| decorator into
+the new `~plasmapy.particles.decorators.ValidateParticles` class, which
+is now used within |particle_input|.
