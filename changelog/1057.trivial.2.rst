@@ -1,2 +1,2 @@
-Added `wrapt <https://wrapt.readthedocs.io>`__ as a dependency needed
-for installation.
+The |particle_input| decorator now processes arguments annotated with
+|ParticleLike|.

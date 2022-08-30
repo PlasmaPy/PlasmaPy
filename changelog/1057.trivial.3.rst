@@ -1,2 +1,3 @@
-The |particle_input| decorator now processes arguments annotated with
-|ParticleLike|.
+For a function decorated with |particle_input| has an argument marked as
+optional with `typing.Optional` (e.g., ``Optional[ParticleLike]``), then
+|particle_input| will allow a value of `None` to pass as that argument.
