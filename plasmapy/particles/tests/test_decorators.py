@@ -160,8 +160,10 @@ ambiguous_arguments = [
 
 @pytest.mark.parametrize("args, kwargs", ambiguous_arguments)
 def test_function_with_ambiguity(args, kwargs):
-    """Test that a function decorated with particle_input that has two
-    annotated arguments"""
+    """
+    Test that a function decorated with particle_input that has two
+    annotated arguments.
+    """
     with pytest.raises(ParticleError):
         ambiguous_keywords(*args, **kwargs)
 
@@ -171,6 +173,10 @@ def function_to_test_annotations(particles: Union[Tuple, List], resulting_partic
     Test that a function with an argument annotated with (Particle,
     Particle, ...) or [Particle] returns a tuple of expected Particle
     instances.
+
+    .. deprecated::
+
+        This capability has been deprecated.
 
     Arguments
     =========
@@ -221,15 +227,6 @@ class TestOptionalArgs:
 
         assert has_default_particle() == Particle(particle)
         assert has_default_particle("Ne") == Particle("Ne")
-
-
-def test_no_annotations_found():
-    @particle_input
-    def invalid_list_type(particles):
-        pass
-
-    with pytest.raises(ParticleError):
-        invalid_list_type((Particle("He"), "Ne"))
 
 
 def test_nonhashable_annotation():
