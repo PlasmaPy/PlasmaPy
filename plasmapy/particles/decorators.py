@@ -582,7 +582,7 @@ def particle_input(
     an exception.
 
     If the |annotation| is created using `~typing.Optional` (e.g.,
-    `Optional[ParticleLike]`), then `None` can be provided to the
+    ``Optional[ParticleLike]``), then `None` can be provided to the
     wrapped callable.
 
     If the |annotated| |parameter| is named ``element``, ``isotope``,
