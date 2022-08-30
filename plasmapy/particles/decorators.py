@@ -439,7 +439,7 @@ class _ParticleInput:
             The value of the |argument| associated with ``parameter``.
 
         Z : integer, optional
-            The charge number of an ion or neutral particle.
+            The |charge number| of an ion or neutral particle.
 
         mass_numb : integer, optional
             The mass number of an isotope.
