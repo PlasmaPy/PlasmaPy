@@ -328,7 +328,7 @@ class AbstractPhysicalParticle(AbstractParticle):
                 raise ParticleError(
                     f"The following categories in {self.__repr__()}"
                     f".is_category are {adjective}: {problem_categories}"
-                )  # NEEDS A TEST
+                )
 
         if exclude and exclude & self.categories:
             return False
