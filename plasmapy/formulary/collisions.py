@@ -2376,10 +2376,7 @@ class CollisionFrequencies:
         In order to use this attribute, ``test_particle`` must be an electron
         and ``field_particle`` must be an ion.
 
-        This function assumes that the following conditions are satisfied
-            a.) Both populations are Maxwellian
-
-            b.) :math:`T_{i} \lesssim T_{e}`
+        This function assumes that both populations are Maxwellian, and :math:`T_{i} \lesssim T_{e}`
 
         :cite:t:`callen:unpublished` provides a derivation of this as an
         average collision frequency between electrons and ions for a
@@ -2444,10 +2441,7 @@ class CollisionFrequencies:
         In order to use this attribute, ``test_particle`` must be an ion
         and ``field_particle`` must be an electron.
 
-        This function assumes that the following conditions are satisfied
-            a.) Both populations are Maxwellian
-
-            b.) :math:`T_{i} \lesssim T_{e}`
+        This function assumes that both populations are Maxwellian, and :math:`T_{i} \lesssim T_{e}`
 
         :cite:t:`callen:unpublished` provides a derivation of this as an
         average collision frequency between ions and ions for a Maxwellian
