@@ -409,7 +409,7 @@ def test_particle_input_with_validate_quantities(outer_decorator, inner_decorato
     assert instance.T_e.unit == u.K
 
 
-rename_this = [
+kwargs_to_decorator_and_args = [
     ({"allow_custom_particles": False}, CustomParticle()),
     ({"allow_particle_lists": False}, ParticleList(["p+", "Fe"])),
     (
@@ -419,7 +419,7 @@ rename_this = [
 ]
 
 
-@pytest.mark.parametrize("kwargs_to_particle_input, arg", rename_this)
+@pytest.mark.parametrize("kwargs_to_particle_input, arg", kwargs_to_decorator_and_args)
 def test_particle_input_verification(kwargs_to_particle_input, arg):
     """Test the allow_custom_particles keyword argument to particle_input."""
 
@@ -432,6 +432,11 @@ def test_particle_input_verification(kwargs_to_particle_input, arg):
 
 
 class ParameterNamesCase:
+    """
+    A class to store test case information for when particle_input is
+    used and the parameters are given special names.
+    """
+
     def __init__(
         self,
         category,
