@@ -476,14 +476,13 @@ ParticleList.clear.__doc__ = """Remove all items from the |ParticleList|."""
 ParticleList.copy.__doc__ = """Return a shallow copy of the |ParticleList|."""
 
 ParticleList.count.__doc__ = """
-Return the number of occurrences of ``item``.  Here, ``item`` must be
+Return the number of occurrences of ``item``. Here, ``item`` must be
 |particle-like|.
 """
 
 ParticleList.extend.__doc__ = """
 Extend |ParticleList| by casting |particle-like| items from
-``iterable`` into `~plasmapy.particles.particle_class.Particle` or
-`~plasmapy.particles.particle_class.CustomParticle` instances.
+``iterable`` into particle objects.
 """
 
 ParticleList.index.__doc__ = """
