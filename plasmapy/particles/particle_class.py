@@ -22,7 +22,7 @@ from abc import ABC, abstractmethod
 from collections import defaultdict, namedtuple
 from datetime import datetime
 from numbers import Integral, Real
-from typing import Iterable, List, Optional, Set, Tuple, Union
+from typing import Iterable, List, Optional, Sequence, Set, Tuple, Union
 
 from plasmapy.particles import _elements, _isotopes, _parsing, _special_particles
 from plasmapy.particles.exceptions import (
@@ -296,15 +296,13 @@ class AbstractPhysicalParticle(AbstractParticle):
         False
         """
 
-        def become_set(arg: Union[str, Set, Tuple, List]) -> Set[str]:
+        def become_set(arg: Union[str, Set, Sequence]) -> Set[str]:
             """Change the argument into a `set`."""
             if arg is None:
                 return set()
             if isinstance(arg, set):
                 return arg
-            if isinstance(arg, str):
-                return {arg}
-            return set(arg[0]) if isinstance(arg[0], (tuple, list, set)) else set(arg)
+            return {arg} if isinstance(arg, str) else set(arg)
 
         if category_tuple and require:  # coverage: ignore
             raise ParticleError(
@@ -330,7 +328,7 @@ class AbstractPhysicalParticle(AbstractParticle):
                 raise ParticleError(
                     f"The following categories in {self.__repr__()}"
                     f".is_category are {adjective}: {problem_categories}"
-                )
+                )  # NEEDS A TEST
 
         if exclude and exclude & self.categories:
             return False
