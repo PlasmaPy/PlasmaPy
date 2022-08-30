@@ -1018,7 +1018,7 @@ def collision_frequency(
     """
 
     deprecated(
-        since="0.8.0",
+        since="0.9.0",
         warning_type=PlasmaPyFutureWarning,
         message=(
             "The collision_frequency function has been replaced by the more general "
@@ -1219,7 +1219,7 @@ def fundamental_electron_collision_freq(
     """
 
     deprecated(
-        since="0.8.0",
+        since="0.9.0",
         warning_type=PlasmaPyFutureWarning,
         message=(
             "The `fundamental_electron_collision_freq` function has been"
@@ -1371,7 +1371,7 @@ def fundamental_ion_collision_freq(
     """
 
     deprecated(
-        since="0.8.0",
+        since="0.9.0",
         warning_type=PlasmaPyFutureWarning,
         message=(
             "The `fundamental_ion_collision_freq` function has been"
