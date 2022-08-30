@@ -107,13 +107,14 @@
 .. Glossary terms
 .. --------------
 
+.. |annotated| replace:: :term:`annotated <function annotation>`\
 .. |argument| replace:: :term:`argument`\
 .. |charge number| replace:: :term:`charge number`\
 .. |decorator| replace:: :term:`decorator`\
 .. |keyword-only| replace:: :term:`keyword-only`\
 .. |parameter| replace:: :term:`parameter`\
-.. |particle-like| replace:: :term:`particle-like`
-.. |particle-list-like| replace:: :term:`particle-list-like`
+.. |particle-like| replace:: :term:`particle-like`\
+.. |particle-list-like| replace:: :term:`particle-list-like`\
 
 .. --------
 .. Websites
