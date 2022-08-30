@@ -400,7 +400,7 @@ class _ParticleInput:
         ]
 
         for name, categorization, exception in name_categorization_exception:
-            if parameter != name:
+            if parameter != name or particle is None:
                 continue
 
             meets_name_criteria = particle.is_category(**categorization)
