@@ -321,12 +321,51 @@ class ParticleList(collections.UserList):
         """
         Sort the |ParticleList| in-place.
 
-        For more information, refer to the documentation for `list.sort`.
+        Parameters
+        ----------
+        key : callable
+            A function of one argument that is used to extract a
+            comparison key for each item in the |ParticleList|.
+
+        reverse : `bool`, default: `False`
+            If `True`, the items in the |ParticleList| are sorted as if
+            each comparison were reversed.
+
+        Raises
+        ------
+        TypeError
+            If ``key`` is not provided.
+
+        See Also
+        --------
+        list.sort
+        sorted
+
+        Examples
+        --------
+        To sort a |ParticleList| by atomic number, we can set ``key``
+        equal to |atomic_number|.
+
+        >>> from plasmapy.particles import ParticleList, atomic_number
+        >>> elements = ParticleList(["Li", "H", "He"])
+        >>> elements.sort(key=atomic_number)
+        >>> print(elements)
+        ParticleList(['H', 'He', 'Li'])
+
+        We can also create a function that we then pass to ``key``. In
+        this example, we sort by atomic number, mass_number, and
+        charge number using different attributes of |Particle|.
+
+        >>> def sort_key(ion):
+        ...     return ion.atomic_number, ion.mass_number, ion.charge_number
+        >>> ions = ParticleList(["α", "p+", "He-3 1+", "He-3 0+", "H-1 0+"])
+        >>> ions.sort(key=sort_key)
+        >>> print(ions)
+        ParticleList(['H-1 0+', 'p+', 'He-3 0+', 'He-3 1+', 'He-4 2+'])
         """
         if key is None:
             raise TypeError("Unable to sort a ParticleList without a key.")
-        else:
-            self._data.sort(key=key, reverse=reverse)
+        super().sort(key=key, reverse=reverse)
 
     @property
     def symbols(self) -> List[str]:
