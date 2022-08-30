@@ -382,8 +382,6 @@ class _ParticleInput:
         categorization criteria.
         """
 
-        # TODO: MAKE THIS WORK WITH PARTICLELIST
-
         category_table = (
             ("element", getattr(particle, "element", None), InvalidElementError),
             ("isotope", getattr(particle, "isotope", None), InvalidIsotopeError),
