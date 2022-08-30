@@ -382,6 +382,8 @@ class _ParticleInput:
         categorization criteria.
         """
 
+        # TODO: MAKE THIS WORK WITH PARTICLELIST
+
         category_table = (
             ("element", getattr(particle, "element", None), InvalidElementError),
             ("isotope", getattr(particle, "isotope", None), InvalidIsotopeError),
@@ -577,7 +579,7 @@ def particle_input(
         The function, method, or other callable to be decorated.
 
     require : `str`, `set`, `list`, or `tuple`, |keyword-only|, optional
-        Categories that each particle is required to be in.
+        Categories that each particle are required to be in.
 
     any_of : `str`, `set`, `list`, or `tuple`, |keyword-only|, optional
         Categories of which each particle must belong to at least one.
@@ -598,16 +600,18 @@ def particle_input(
     Raises
     ------
     `TypeError`
-        If the annotated argument is not a `str`, `int`, `tuple`, `list`
-        or |Particle|; or if ``Z`` or ``mass_numb`` is not an `int`.
+        If the annotated argument is not |particle-like|; or if ``Z`` or
+        ``mass_numb`` is not an integer.
 
     `ValueError`
-        If the number of input elements in a collection do not match the
-        number of expected elements.
+        If the annotation is ``(Particle, Particle)`` and the argument
+        does have a length of two.  Deprecated.
 
     |InvalidParticleError|
         If the annotated argument does not correspond to a valid
-        particle.
+        particle, ``allow_custom_particles`` is `False` and the argument
+        corresponds to a |CustomParticle|, or ``allow_particle_lists``
+        is `False` and the argument corresponds to a |ParticleList|.
 
     |InvalidElementError|
         If an annotated argument is named ``element``, and the input
@@ -628,11 +632,10 @@ def particle_input(
         associated with it.
 
     |ParticleError|
-        If the resulting particle is not in all of the categories
-        specified in ``require``, is not in any of the categories
-        specified in ``any_of``, or is in any of the categories
-        specified in ``exclude``; or if none of the parameters of the
-        wrapped callable have been appropriately annotated.
+        If the returned particle(s) do not meet the categorization
+        criteria specified through ``require``, ``any_of``, or
+        ``exclude``; or if none of the |parameters| of ``wrapped`` have
+        been appropriately annotated.
 
     See Also
     --------
@@ -706,8 +709,6 @@ def particle_input(
     Particle("He-4 2+")
     >>> instance.return_particle("T+")
     Particle("T 1+")
-
-    ``Z`` and ``mass_numb``!!!!!!!!!!!!!!!!!!!!!!!1
 
     The ``allow_custom_particles`` and ``allow_particle_lists`` keyword
     arguments indicate whether or not ``wrapped`` should accept
