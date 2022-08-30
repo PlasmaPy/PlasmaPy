@@ -568,7 +568,7 @@ def particle_input(
 
     When a callable is |decorated| with |particle_input|,
     |particle-like| |arguments| that are appropriately |annotated|
-    (e.g., with |ParticleLike| or |ParticleListLike|) will be converted
+    (i.e., with |ParticleLike| or |ParticleListLike|) will be converted
     into a |Particle|, |CustomParticle|, or |ParticleList|.
 
     The parameters ``Z`` and ``mass_numb`` may be used to specify the
@@ -626,10 +626,6 @@ def particle_input(
     `TypeError`
         If the annotated argument is not |particle-like|; or if ``Z`` or
         ``mass_numb`` is not an integer.
-
-    `ValueError`
-        If the annotation is ``(Particle, Particle)`` and the argument
-        does have a length of two.  Deprecated.
 
     |InvalidParticleError|
         If the annotated argument does not correspond to a valid
