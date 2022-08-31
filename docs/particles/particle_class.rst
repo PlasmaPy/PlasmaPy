@@ -126,15 +126,15 @@ True
 Calling the `~plasmapy.particles.particle_class.Particle.is_category`
 method with no arguments returns a set containing all of the valid
 categories for any particle.  Valid categories include:
-``'actinide'``, ``'alkali metal'``, ``'alkaline earth metal'``,
-``'antibaryon'``, ``'antilepton'``, ``'antimatter'``,
-``'antineutrino'``, ``'baryon'``, ``'boson'``, ``'charged'``,
-``'electron'``, ``'element'``, ``'fermion'``, ``'halogen'``,
-``'ion'``, ``'isotope'``, ``'lanthanide'``, ``'lepton'``,
-``'matter'``, ``'metal'``, ``'metalloid'``, ``'neutrino'``,
-``'neutron'``, ``'noble gas'``, ``'nonmetal'``, ``'positron'``,
-``'post-transition metal'``, ``'proton'``, ``'stable'``,
-``'transition metal'``, ``'uncharged'``, and ``'unstable'``.
+``"actinide"``, ``"alkali metal"``, ``"alkaline earth metal"``,
+``"antibaryon"``, ``"antilepton"``, ``"antimatter"``,
+``"antineutrino"``, ``"baryon"``, ``"boson"``, ``"charged"``,
+``"custom"``, ``"electron"``, ``"element"``, ``"fermion"``,
+``"halogen"``, ``"ion"``, ``"isotope"``, ``"lanthanide"``, ``"lepton"``,
+``"matter"``, ``"metal"``, ``"metalloid"``, ``"neutrino"``,
+``"neutron"``, ``"noble gas"``, ``"nonmetal"``, ``"positron"``,
+``"post-transition metal"``, ``"proton"``, ``"stable"``,
+``"transition metal"``, ``"uncharged"``, and ``"unstable"``.
 
 .. _particle-class-conditionals-equality:
 
