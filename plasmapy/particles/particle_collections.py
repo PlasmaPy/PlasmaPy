@@ -20,7 +20,7 @@ from plasmapy.particles.particle_class import (
 
 class ParticleList(collections.UserList):
     """
-    A `list` like collection of particle objects.
+    A `list` like collection of |Particle| and |CustomParticle| objects.
 
     Parameters
     ----------
