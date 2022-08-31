@@ -2295,13 +2295,6 @@ class CollisionFrequencies:
         # Note: This function uses CGS units internally to coincide with our references.
         # Input is taken in MKS units and then converted as necessary. Output is in MKS units.
 
-        # v_T_a and _T_a represent quantities resulting from conversion between temperature and drift velocity.
-        # They are only applicable in cases where a conversion between temperature and velocity is acceptable
-        # based on the assumptions made of the respective collision frequency.
-
-        if v_a is None and T_a is None:
-            raise ValueError("Please specify either v_a or T_a.")
-
         if (
             isinstance(v_a, np.ndarray)
             and isinstance(n_b, np.ndarray)
@@ -2312,13 +2305,7 @@ class CollisionFrequencies:
         self.test_particle = test_particle
         self.field_particle = field_particle
         self.v_a = v_a
-        self.v_T_a = v_a if v_a is not None else thermal_speed(T_a, test_particle)
         self.T_a = T_a
-        self._T_a = (
-            T_a
-            if T_a is not None
-            else (0.5 * test_particle.mass * self.v_T_a**2 / k_B).to(u.K)
-        )
         self.n_a = n_a
         self.T_b = T_b
         self.n_b = n_b
@@ -2326,6 +2313,18 @@ class CollisionFrequencies:
             Coulomb_log
             if isinstance(Coulomb_log, u.Quantity)
             else Coulomb_log * u.dimensionless_unscaled
+        )
+
+    @cached_property
+    def _v_T_a(self):
+        """
+        The thermal velocity of the test particle species.
+        """
+
+        return (
+            self.v_a
+            if self.v_a is not None
+            else thermal_speed(self.T_a, self.test_particle)
         )
 
     @cached_property
@@ -2418,7 +2417,7 @@ class CollisionFrequencies:
             * (self.field_particle.charge_number * e.esu) ** 2
             * self.Coulomb_log
             * self.n_b
-            / (self.test_particle.mass**2 * self.v_T_a**3)
+            / (self.test_particle.mass**2 * self._v_T_a**3)
         ).to(u.Hz)
 
     @cached_property
@@ -2430,7 +2429,7 @@ class CollisionFrequencies:
 
         v_T_b = thermal_speed(self.T_b, self.field_particle)
 
-        return (self.v_T_a**2 + v_T_b**2) ** 0.5
+        return (self._v_T_a**2 + v_T_b**2) ** 0.5
 
     @cached_property
     def _is_slowly_flowing(self):
@@ -2570,7 +2569,7 @@ class CollisionFrequencies:
         (see documentation for the `~plasmapy.formulary.collisions.CollisionFrequencies` class for details)
         """
 
-        x = self.field_particle.mass * self.v_T_a**2 / (2 * k_B.cgs * self.T_b)
+        x = self.field_particle.mass * self._v_T_a**2 / (2 * k_B.cgs * self.T_b)
         return x.to(u.dimensionless_unscaled)
 
     @staticmethod
