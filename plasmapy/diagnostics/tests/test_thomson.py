@@ -650,12 +650,12 @@ def test_param_to_array_fcns():
     # Create two groups of test variables, one of scalars and one of vectors
     prefix = "T_e"
     for i in range(3):
-        params.add(prefix + f"_{i}", value=2)
+        params.add(f"{prefix}_{i}", value=2)
 
     prefix = "ion_vel"
     for i in range(2):
         for j in ["x", "y", "z"]:
-            params.add(prefix + f"_{j}_{i}", value=2)
+            params.add(f"{prefix}_{j}_{i}", value=2)
 
     arr = thomson._params_to_array(params, "T_e", vector=False)
     assert arr.shape == (3,)
