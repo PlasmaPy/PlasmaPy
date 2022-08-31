@@ -2088,8 +2088,8 @@ class TestCollisionFrequencies:
                 * value_test_case.field_particle.charge_number
             ) ** 2
 
-        for i, (attribute_name, expected_limit_value) in enumerate(
-            zip(self.return_values_to_test, expected_limit_values)
+        for attribute_name, expected_limit_value in zip(
+            self.return_values_to_test, expected_limit_values
         ):
             calculated_limit_value = getattr(value_test_case, attribute_name).value
             # Energy loss limit value is already in units of frequencies because of the way it is calculated
