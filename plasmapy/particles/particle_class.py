@@ -81,7 +81,17 @@ valid_categories = (
     | _atomic_property_categories
     | _specific_particle_categories
 )
-"""All valid particle categories."""
+"""
+All valid particle categories.
+
+To add a new particle category, update
+`~plasmapy.particles.particle_class.valid_categories` with a new string
+representing the category.
+
+See Also
+--------
+:py:meth:`~plasmapy.particles.particle_class.AbstractPhysicalParticle.is_category`
+"""
 
 
 def _category_errmsg(particle, category: str) -> str:
@@ -249,7 +259,15 @@ class AbstractPhysicalParticle(AbstractParticle):
         See Also
         --------
         ~plasmapy.particles.particle_class.valid_categories :
-            All valid particle categories.
+            A `set` containing all valid particle categories.
+
+        Notes
+        -----
+        Valid particle categories are given in
+        `~plasmapy.particles.particle_class.valid_categories` and
+        include:
+
+
 
         Examples
         --------

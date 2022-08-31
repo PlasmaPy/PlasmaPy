@@ -102,7 +102,8 @@ the particle.
 ['charged', 'electron', 'fermion', 'lepton', 'matter', 'stable']
 
 Membership of a particle within a category may be checked using the
-`~plasmapy.particles.particle_class.Particle.is_category` method.
+`~plasmapy.particles.particle_class.Particle.is_category` method, which
+also lists all valid particle categories.
 
 >>> alpha.is_category('lepton')
 False
@@ -122,15 +123,6 @@ True
 False
 >>> alpha.is_category(exclude='lepton')
 True
-
-Particle categories
--------------------
-
-Valid particle categories are available in
-`~plasmapy.particles.particle_class.valid_categories`:
-
->>> from plasmapy.particles.particle_class import valid_categories
->>> print(sorted(valid_categories))
 
 .. _particle-class-conditionals-equality:
 
