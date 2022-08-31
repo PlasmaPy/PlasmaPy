@@ -75,7 +75,11 @@ from plasmapy.formulary.quantum import (
     Wigner_Seitz_radius,
 )
 from plasmapy.formulary.speeds import thermal_speed
-from plasmapy.utils.decorators import deprecated, validate_quantities
+from plasmapy.utils.decorators import (
+    deprecated,
+    validate_class_attributes,
+    validate_quantities,
+)
 from plasmapy.utils.decorators.checks import _check_relativistic
 from plasmapy.utils.exceptions import PhysicsError, PlasmaPyFutureWarning
 
@@ -2104,56 +2108,6 @@ def coupling_parameter(
     return coulomb_energy / kinetic_energy
 
 
-def _get_arguments_not_provided(self, expected_arguments):
-    """
-    Collect parameters that weren't provided during instantiation needed
-    to access a specific attribute.
-    """
-
-    arguments_not_provided = []
-
-    for required_argument in expected_arguments:
-        if isinstance(required_argument, str):
-            if getattr(self, required_argument) is None:
-                arguments_not_provided.append(required_argument)
-        elif isinstance(required_argument, tuple):
-            number_of_both_or_either_provided = 0
-
-            for mutually_exclusive_argument in required_argument:
-                if getattr(self, mutually_exclusive_argument) is not None:
-                    number_of_both_or_either_provided += 1
-
-            if number_of_both_or_either_provided == 0:
-                arguments_not_provided.append("/".join(required_argument))
-
-    return arguments_not_provided
-
-
-def _validate_arguments(expected_arguments):
-    """
-    A decorator responsible for raising errors if the expected arguments weren't
-    provided during class instantiation.
-    """
-
-    def decorator(attribute):
-        def wrapper(self, *args, **kwargs):
-            arguments_not_provided = _get_arguments_not_provided(
-                self, expected_arguments
-            )
-
-            if len(arguments_not_provided) > 0:
-                raise ValueError(
-                    f"{attribute.__name__} expected the following "
-                    f"additional arguments: {', '.join(arguments_not_provided)}"
-                )
-
-            return attribute(self, *args, **kwargs)
-
-        return wrapper
-
-    return decorator
-
-
 class CollisionFrequencies:
     @validate_quantities(
         v_a={"none_shall_pass": True, "can_be_negative": False},
@@ -2332,7 +2286,7 @@ class CollisionFrequencies:
         return self.test_particle.mass / self.field_particle.mass
 
     @cached_property
-    @_validate_arguments(expected_arguments=["n_b", ("T_a", "v_a")])
+    @validate_class_attributes(expected_attributes=["n_b", ("T_a", "v_a")])
     def momentum_loss(self):
         """
         The momentum loss rate due to collisions.
@@ -2343,7 +2297,7 @@ class CollisionFrequencies:
         return (1 + self._mass_ratio) * self.phi * self.Lorentz_collision_frequency
 
     @cached_property
-    @_validate_arguments(expected_arguments=["n_b", ("T_a", "v_a")])
+    @validate_class_attributes(expected_attributes=["n_b", ("T_a", "v_a")])
     def transverse_diffusion(self):
         """
         The rate of transverse diffusion due to collisions.
@@ -2358,7 +2312,7 @@ class CollisionFrequencies:
         )
 
     @cached_property
-    @_validate_arguments(expected_arguments=["n_b", ("T_a", "v_a")])
+    @validate_class_attributes(expected_attributes=["n_b", ("T_a", "v_a")])
     def parallel_diffusion(self):
         """
         The rate of parallel diffusion due to collisions.
@@ -2369,7 +2323,7 @@ class CollisionFrequencies:
         return (self.phi / self.x) * self.Lorentz_collision_frequency
 
     @cached_property
-    @_validate_arguments(expected_arguments=["n_b", ("T_a", "v_a")])
+    @validate_class_attributes(expected_attributes=["n_b", ("T_a", "v_a")])
     def energy_loss(self):
         """
         The energy loss rate due to collisions.
@@ -2384,7 +2338,7 @@ class CollisionFrequencies:
         )
 
     @cached_property
-    @_validate_arguments(expected_arguments=["n_b", ("T_a", "v_a")])
+    @validate_class_attributes(expected_attributes=["n_b", ("T_a", "v_a")])
     def Lorentz_collision_frequency(self):
         r"""
         The Lorentz collision frequency.
@@ -2441,7 +2395,7 @@ class CollisionFrequencies:
         return self.v_a / self._mean_thermal_velocity < 0.1
 
     @cached_property
-    @_validate_arguments(expected_arguments=["T_a", "v_a", "n_a", "n_b"])
+    @validate_class_attributes(expected_attributes=["T_a", "v_a", "n_a", "n_b"])
     def Maxwellian_avg_ei_collision_freq(self):
         r"""Average momentum relaxation rate for a slowly flowing Maxwellian
         distribution of electrons, relative to a population of stationary ions.
@@ -2501,7 +2455,7 @@ class CollisionFrequencies:
         return coeff * self.Lorentz_collision_frequency
 
     @cached_property
-    @_validate_arguments(expected_arguments=["T_a", "v_a", "n_a", "n_b"])
+    @validate_class_attributes(expected_attributes=["T_a", "v_a", "n_a", "n_b"])
     def Maxwellian_avg_ii_collision_freq(self):
         r"""Average momentum relaxation rate for a slowly flowing Maxwellian
         distribution of ions, relative to a population of stationary ions.
@@ -2557,7 +2511,7 @@ class CollisionFrequencies:
         return coeff * self.Lorentz_collision_frequency
 
     @cached_property
-    @_validate_arguments(expected_arguments=["T_b", ("T_a", "v_a")])
+    @validate_class_attributes(expected_attributes=["T_b", ("T_a", "v_a")])
     def x(self) -> u.dimensionless_unscaled:
         """
         The ratio of kinetic energy in the test particle to the thermal energy of the field particle.
@@ -2589,7 +2543,7 @@ class CollisionFrequencies:
         return integral
 
     @cached_property
-    @_validate_arguments(expected_arguments=["T_b", ("T_a", "v_a")])
+    @validate_class_attributes(expected_attributes=["T_b", ("T_a", "v_a")])
     def phi(self):
         """
         The parameter phi used in calculating collision frequencies

@@ -1,7 +1,7 @@
 """
 Various decorators to validate input/output arguments to functions.
 """
-__all__ = ["validate_quantities", "ValidateQuantities"]
+__all__ = ["validate_class_attributes", "validate_quantities", "ValidateQuantities"]
 
 import astropy.units as u
 import functools
@@ -536,3 +536,53 @@ def validate_quantities(func=None, validations_on_return=None, **validations):
     else:
         # `validate_quantities` called as a decorator "sugar-syntax"
         return ValidateQuantities(**validations)
+
+
+def get_attributes_not_provided(self, expected_attributes):
+    """
+    Collect attributes that weren't provided during instantiation needed
+    to access a method.
+    """
+
+    attributes_not_provided = []
+
+    for required_attribute in expected_attributes:
+        if isinstance(required_attribute, str):
+            if getattr(self, required_attribute) is None:
+                attributes_not_provided.append(required_attribute)
+        elif isinstance(required_attribute, tuple):
+            number_of_both_or_either_provided = 0
+
+            for mutually_exclusive_argument in required_attribute:
+                if getattr(self, mutually_exclusive_argument) is not None:
+                    number_of_both_or_either_provided += 1
+
+            if number_of_both_or_either_provided == 0:
+                attributes_not_provided.append("/".join(required_attribute))
+
+    return attributes_not_provided
+
+
+def validate_class_attributes(expected_attributes):
+    """
+    A decorator responsible for raising errors if the expected arguments weren't
+    provided during class instantiation.
+    """
+
+    def decorator(attribute):
+        def wrapper(self, *args, **kwargs):
+            arguments_not_provided = get_attributes_not_provided(
+                self, expected_attributes
+            )
+
+            if len(arguments_not_provided) > 0:
+                raise ValueError(
+                    f"{attribute.__name__} expected the following "
+                    f"additional arguments: {', '.join(arguments_not_provided)}"
+                )
+
+            return attribute(self, *args, **kwargs)
+
+        return wrapper
+
+    return decorator
