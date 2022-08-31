@@ -2140,8 +2140,8 @@ class CollisionFrequencies:
         r"""
         Compute collision frequencies between test particles (labeled 'a') and field particles (labeled 'b').
 
-        For information regarding what parameters are necessary for an attribute, refer to attribute
-        documentation.
+        For information regarding what parameters must be provided to calculate each attribute,
+        refer to the documentation for each attribute.
 
         Parameters
         ----------
@@ -2447,7 +2447,7 @@ class CollisionFrequencies:
         if not self._is_slowly_flowing:
             raise PhysicsError(
                 "This frequency is only defined for slowly flowing species."
-                "(see documentation for further details)"
+                "(see CollisionFrequencies class documentation for further details)"
             )
 
         coeff = 4 / (3 * np.sqrt(np.pi))
@@ -2503,7 +2503,7 @@ class CollisionFrequencies:
         if not self._is_slowly_flowing:
             raise PhysicsError(
                 "This frequency is only defined for slowly flowing species."
-                "(see documentation for further details)"
+                "(see CollisionFrequencies class documentation for further details)"
             )
 
         coeff = 4 / (3 * np.sqrt(2 * np.pi))
@@ -2523,7 +2523,7 @@ class CollisionFrequencies:
         (see documentation for the `~plasmapy.formulary.collisions.CollisionFrequencies` class for details)
         """
 
-        x = self.field_particle.mass * self._v_T_a**2 / (2 * k_B.cgs * self.T_b)
+        x = self.field_particle.mass * self.v_a**2 / (2 * k_B.cgs * self.T_b)
         return x.to(u.dimensionless_unscaled)
 
     @staticmethod
