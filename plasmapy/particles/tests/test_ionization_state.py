@@ -705,9 +705,7 @@ class Test_IonizationStateNumberDensitiesSetter:
 def test_iteration_with_nested_iterator():
     hydrogen = IonizationState("p+", n_elem=1e20 * u.m**-3, T_e=10 * u.eV)
 
-    i = 0
-    for _, __ in itertools.product(hydrogen, hydrogen):
-        i += 1
+    i = sum(1 for _, __ in itertools.product(hydrogen, hydrogen))
     assert i == 4
 
 
