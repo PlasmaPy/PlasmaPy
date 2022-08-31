@@ -1128,8 +1128,8 @@ class Test_impact_parameter:
 
         msg = f"wrong shape for {n_e.shape = } and {T.shape = }"
 
-        assert bmin.shape == output_shape, "Bmin " + msg
-        assert bmax.shape == output_shape, "Bmax " + msg
+        assert bmin.shape == output_shape, f"Bmin {msg}"
+        assert bmax.shape == output_shape, f"Bmax {msg}"
 
 
 class Test_collision_frequency:
