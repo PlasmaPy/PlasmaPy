@@ -375,8 +375,8 @@ class ParticleList(collections.UserList):
         ParticleList(['H', 'He', 'Li'])
 
         We can also create a function to pass to ``key``. In this
-        example, we sort by atomic number and mass number using
-        different attributes of |Particle|.
+        example, we sort first by atomic number and second by mass
+        number using different attributes of |Particle|.
 
         >>> def sort_key(isotope):
         ...     return isotope.atomic_number, isotope.mass_number
