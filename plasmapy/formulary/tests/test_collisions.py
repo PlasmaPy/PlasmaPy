@@ -2124,6 +2124,7 @@ class TestCollisionFrequencies:
                 {
                     "test_particle": Particle("e-"),
                     "field_particle": Particle("Li+"),
+                    "T_a": 1e3 * u.K,
                     "v_a": 1e-5 * u.cm / u.s,
                     "n_a": 1e10 * u.cm**-3,
                     "T_b": 1e4 * u.K,
@@ -2136,6 +2137,7 @@ class TestCollisionFrequencies:
                 {
                     "test_particle": Particle("Li+"),
                     "field_particle": Particle("Li+"),
+                    "T_a": 1e3 * u.K,
                     "v_a": 1e-5 * u.cm / u.s,
                     "n_a": 1e10 * u.cm**-3,
                     "T_b": 1e4 * u.K,
@@ -2163,18 +2165,6 @@ class TestCollisionFrequencies:
     @pytest.mark.parametrize(
         "expected_error, constructor_arguments, constructor_keyword_arguments",
         [
-            # Both T_a and v_a specified error
-            (
-                ValueError,
-                (Particle("e-"), Particle("e-")),
-                {
-                    "v_a": 1 * u.cm / u.s,
-                    "T_a": 1 * u.eV,
-                    "T_b": 1 * u.eV,
-                    "n_b": 1 * u.cm**-3,
-                    "Coulomb_log": 1 * u.dimensionless_unscaled,
-                },
-            ),
             # Neither T_a nor v_a specified error
             (
                 ValueError,
@@ -2267,6 +2257,7 @@ class TestCollisionFrequencies:
                 PhysicsError,
                 (Particle("e-"), Particle("Na+")),
                 {
+                    "T_a": 1 * u.eV,
                     "v_a": 1e10 * u.cm / u.s,
                     "n_a": 1 * u.cm**-3,
                     "T_b": 1 * u.eV,
@@ -2280,6 +2271,7 @@ class TestCollisionFrequencies:
                 PhysicsError,
                 (Particle("Na+"), Particle("Cl-")),
                 {
+                    "T_a": 1 * u.eV,
                     "v_a": 1e10 * u.cm / u.s,
                     "n_a": 1 * u.cm**-3,
                     "T_b": 1 * u.eV,
