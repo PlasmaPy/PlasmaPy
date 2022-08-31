@@ -496,7 +496,7 @@ class IonizationStateCollection:
             # The particles whose ionization states are to be recorded
             # should be elements or isotopes but not ions or neutrals.
 
-            for key in particles.keys():
+            for key in particles:
                 is_element = particles[key].is_category("element")
                 has_charge_info = particles[key].is_category(
                     any_of=["charged", "uncharged"]
