@@ -302,7 +302,7 @@ class ParticleList(collections.UserList):
     def charge_number(self) -> np.array:
         """
         The charges of the particles in units of the elementary
-        positive charge.
+        charge.
 
         Returns
         -------
