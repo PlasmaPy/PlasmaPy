@@ -62,7 +62,7 @@ import scipy.misc
 import warnings
 
 from astropy.constants.si import e, eps0, hbar, k_B, m_e
-from functools import cached_property, wraps
+from functools import cached_property
 from numbers import Real
 from numpy import pi
 
