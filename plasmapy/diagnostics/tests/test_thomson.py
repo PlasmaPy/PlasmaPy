@@ -773,10 +773,12 @@ def run_fit(
                 low=params[p].min, high=params[p].max, size=1
             )
 
-    # Make the model, then perform the fit
-    model = thomson.spectral_density_model(wavelengths.to(u.m).value, settings, params)
-
     if run_fit:
+        # Make the model, then perform the fit
+        model = thomson.spectral_density_model(
+            wavelengths.to(u.m).value, settings, params
+        )
+
         result = model.fit(
             data,
             params,
