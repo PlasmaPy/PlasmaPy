@@ -34,7 +34,7 @@ class IonicLevel:
 
     Parameters
     ----------
-    ion: `~plasmapy.particles.particle_class.ParticleLike`
+    ion: |particle-like|
         The ion for the corresponding ionic fraction.
 
     ionic_fraction: real number between 0 and 1, optional
@@ -179,7 +179,7 @@ class IonizationState:
 
     Parameters
     ----------
-    particle: `~plasmapy.particles.particle_class.ParticleLike`
+    particle: |particle-like|
         A `str` or `~plasmapy.particles.particle_class.Particle` instance
         representing an element, isotope, or ion; or an integer representing
         the atomic number of an element.

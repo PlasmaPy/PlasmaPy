@@ -33,7 +33,7 @@ def atomic_symbol(element: Particle) -> str:
 
     Parameters
     ----------
-    element: `str`, `int`, or `~plasmapy.particles.particle_class.Particle`
+    element: |particle-like|
         A `str` representing an element, isotope, or ion; or an
         `int` or `str` representing an atomic number.
 
@@ -103,7 +103,7 @@ def isotope_symbol(isotope: Particle, mass_numb: Optional[Integral] = None) -> s
 
     Parameters
     ----------
-    isotope: `str`, `int`, or `~plasmapy.particles.particle_class.Particle`
+    isotope: |particle-like|
         A `str` representing an element, isotope, or ion or an
         `int` representing an atomic number
 
@@ -165,7 +165,7 @@ def ionic_symbol(
 
     Parameters
     ----------
-    particle: `int`, `str`, or `~plasmapy.particles.particle_class.Particle`
+    particle : |particle-like|
         A `str` representing an element, isotope, or ion; or an
         `int` representing an atomic number.
 
@@ -234,7 +234,7 @@ def particle_symbol(
 
     Parameters
     ----------
-    particle: `int`, `str`, or `~plasmapy.particles.particle_class.Particle`
+    particle: |particle-like|
         A `str` representing a particle, element, isotope, or ion or an
         `int` representing an atomic number
 
@@ -296,7 +296,7 @@ def element_name(element: Particle) -> str:
 
     Parameters
     ----------
-    argument : `str`, `int`, or `~plasmapy.particles.particle_class.Particle`
+    argument : |particle-like|
         A `str` representing an element, isotope, or ion or an
         `int` representing an atomic number
 

@@ -7,11 +7,9 @@ import collections
 import contextlib
 import numpy as np
 
-from numbers import Integral
-from typing import Callable, Iterable, List, Optional, Sequence, Tuple, Union
+from typing import Callable, Iterable, List, Optional, Sequence, Union
 
-from plasmapy.particles.decorators import particle_input
-from plasmapy.particles.exceptions import ChargeError, InvalidParticleError
+from plasmapy.particles.exceptions import InvalidParticleError
 from plasmapy.particles.particle_class import (
     CustomParticle,
     DimensionlessParticle,
@@ -28,7 +26,7 @@ class ParticleList(collections.UserList):
 
     Parameters
     ----------
-    particles : iterable, optional
+    particles : |particle-list-like|, optional
         An iterable that provides a sequence of
         `~plasmapy.particles.particle_class.ParticleLike` objects.
         Objects that are not a `~plasmapy.particles.particle_class.Particle`

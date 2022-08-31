@@ -50,7 +50,7 @@ def atomic_number(element: Particle) -> Integral:
 
     Parameters
     ----------
-    element: `str` or `~plasmapy.particles.particle_class.Particle`
+    element: |particle-like|
         A string representing an element, isotope, or ion; or an
         instance of the `~plasmapy.particles.particle_class.Particle` class.
 
@@ -96,7 +96,7 @@ def mass_number(isotope: Particle) -> Integral:
 
     Parameters
     ----------
-    isotope : `str` or `~plasmapy.particles.particle_class.Particle`
+    isotope : |particle-like|
         A string representing an isotope or a neutron; or an instance of
         the `plasmapy.particles.particle_class.Particle` class.
 
@@ -143,7 +143,7 @@ def standard_atomic_weight(element: Particle) -> u.Quantity:
 
     Parameters
     ----------
-    element: `str`, `int`, or `~plasmapy.particles.particle_class.Particle`
+    element: |particle-like|
         A string representing an element or an integer representing an
         atomic number, or an instance of the Particle class.
 
@@ -204,7 +204,7 @@ def particle_mass(
 
     Parameters
     ----------
-    particle: `str`, `int`, or `~plasmapy.particles.particle_class.Particle`
+    particle: |particle-like|
         A string representing an element, isotope, ion, or special
         particle; an integer representing an atomic number; or an
         instance of the Particle class.
@@ -256,7 +256,7 @@ def isotopic_abundance(isotope: Particle, mass_numb: Optional[Integral] = None) 
 
     Parameters
     ----------
-    isotope: `str` or `int`
+    isotope: |particle-like|
         A string representing an element or isotope, or an integer
         representing the atomic number of an element.
 
@@ -306,7 +306,7 @@ def charge_number(particle: Particle) -> Integral:
 
     Parameters
     ----------
-    particle : `str`
+    particle : |particle-like|
         String representing a particle.
 
     Returns
@@ -361,7 +361,7 @@ def electric_charge(particle: Particle) -> u.C:
 
     Parameters
     ----------
-    particle : `str`
+    particle : |particle-like|
         String representing an element or isotope followed by integer
         charge information.
 
@@ -416,7 +416,7 @@ def is_stable(particle: Particle, mass_numb: Optional[Integral] = None) -> bool:
 
     Parameters
     ----------
-    particle: `int`, `str`, or `~plasmapy.particles.particle_class.Particle`
+    particle: |particle-like|
         A string representing an isotope or particle, or an integer
         representing an atomic number.
 
@@ -469,7 +469,7 @@ def half_life(particle: Particle, mass_numb: Optional[Integral] = None) -> u.Qua
 
     Parameters
     ----------
-    particle: `int`, `str`, or `~plasmapy.particles.particle_class.Particle`
+    particle: |particle-like|
         A string representing an isotope or particle, an integer
         representing an atomic number, or an instance of the Particle
         class.
@@ -523,7 +523,7 @@ def known_isotopes(argument: Union[str, Integral] = None) -> List[str]:
 
     Parameters
     ----------
-    argument: `int` or `str`, optional
+    argument: |particle-like|
         A string representing an element, isotope, or ion or an
         integer representing an atomic number
 
@@ -618,7 +618,7 @@ def common_isotopes(
 
     Parameters
     ----------
-    argument: `int` or `str`, optional
+    argument: |particle-like|, optional
         A string or integer representing an atomic number or element,
         or a string representing an isotope.
 
@@ -738,7 +738,7 @@ def stable_isotopes(
 
     Parameters
     ----------
-    argument: `int` or `str`
+    argument: |particle-like|
         A string or integer representing an atomic number or element,
         or a string representing an isotope.
 
@@ -835,9 +835,7 @@ def reduced_mass(test_particle, target_particle) -> u.Quantity:
 
     Parameters
     ----------
-    test_particle, target_particle : `str`, `int`, `~plasmapy.particles.particle_class.Particle`,
-    `~astropy.units.Quantity`, or `~astropy.constants.Constant`
-
+    test_particle, target_particle : |particle-like| or |Quantity|
         The test particle as represented by a string, an integer
         representing atomic number, a `~plasmapy.particles.particle_class.Particle`
         object, or a `~astropy.units.Quantity` or
@@ -911,7 +909,7 @@ def periodic_table_period(argument: Union[str, Integral]) -> Integral:
 
     Parameters
     ----------
-    argument: `str` or `int`
+    argument: |particle-like|
         Atomic number (either integer or string), atomic symbol (e.g.,
         ``"H"``, string), or element name (e.g. ``"Francium"``, string).
 
@@ -959,7 +957,7 @@ def periodic_table_group(argument: Union[str, Integral]) -> Integral:
 
     Parameters
     ----------
-    argument: `str` or `int`
+    argument: |particle-like|
         Atomic number (either integer or string), atomic symbol (e.g.,
         ``"H"``, string), or element name (e.g., ``"francium"``,
         string).
@@ -1012,7 +1010,7 @@ def periodic_table_block(argument: Union[str, Integral]) -> str:
 
     Parameters
     ----------
-    argument: `str` or `int`
+    argument: |particle-like|
         Atomic number (either integer or string), atomic symbol (e.g.,
         ``"H"``, string), or element name (e.g., ``"francium"``,
         string).
@@ -1065,7 +1063,7 @@ def periodic_table_category(argument: Union[str, Integral]) -> str:
 
     Parameters
     ----------
-    argument: `str` or `int`
+    argument: |particle-like|
         Atomic number (either integer or string), atomic symbol (e.g.,
         ``"H"``, string), or element name (e.g., ``"francium"``,
         string).
@@ -1122,7 +1120,7 @@ def ionic_levels(
 
     Parameters
     ----------
-    particle : `~plasmapy.particles.particle_class.ParticleLike`
+    particle : |particle-like|
         Representation of an element, ion, or isotope.
 
     min_charge : integer, optional
