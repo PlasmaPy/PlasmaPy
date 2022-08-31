@@ -22,22 +22,20 @@ from plasmapy.formulary.speeds import kappa_thermal_speed, thermal_speed
 
 class Test_Maxwellian_1D:
     @classmethod
-    def setup_class(self):
+    def setup_class(cls):
         """initializing parameters for tests"""
-        self.T_e = 30000 * u.K
-        self.v = 1e5 * u.m / u.s
-        self.v_drift = 1000000 * u.m / u.s
-        self.v_drift2 = 0 * u.m / u.s
-        self.v_drift3 = 1e5 * u.m / u.s
-        self.start = -5000
-        self.stop = -self.start
-        self.dv = 10000 * u.m / u.s
-        self.v_vect = np.arange(self.start, self.stop, dtype="float64") * self.dv
-        self.particle = "e"
-        self.vTh = thermal_speed(
-            self.T_e, particle=self.particle, method="most_probable"
-        )
-        self.distFuncTrue = 5.851627151617136e-07
+        cls.T_e = 30000 * u.K
+        cls.v = 1e5 * u.m / u.s
+        cls.v_drift = 1000000 * u.m / u.s
+        cls.v_drift2 = 0 * u.m / u.s
+        cls.v_drift3 = 1e5 * u.m / u.s
+        cls.start = -5000
+        cls.stop = -cls.start
+        cls.dv = 10000 * u.m / u.s
+        cls.v_vect = np.arange(cls.start, cls.stop, dtype="float64") * cls.dv
+        cls.particle = "e"
+        cls.vTh = thermal_speed(cls.T_e, particle=cls.particle, method="most_probable")
+        cls.distFuncTrue = 5.851627151617136e-07
 
     def test_max_noDrift(self):
         """
