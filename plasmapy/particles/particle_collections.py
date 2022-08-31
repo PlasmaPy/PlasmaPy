@@ -346,8 +346,8 @@ class ParticleList(collections.UserList):
         Parameters
         ----------
         key : callable
-            A function of one argument that is used to extract a
-            comparison key for each item in the |ParticleList|.
+            A function that accepts one argument that is used to extract
+            a comparison key for each item in the |ParticleList|.
 
         reverse : `bool`, default: `False`
             If `True`, the items in the |ParticleList| are sorted as if
