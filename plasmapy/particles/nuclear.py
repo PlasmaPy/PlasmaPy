@@ -20,7 +20,7 @@ def nuclear_binding_energy(
 
     Parameters
     ----------
-    particle: |particle-like|
+    particle: |atom-like|
         A Particle object, a string representing an element or isotope,
         or an integer representing the atomic number of an element.
 
@@ -123,12 +123,12 @@ def nuclear_reaction_energy(*args, **kwargs):
         A string representing the reaction, like
         ``"D + T --> alpha + n"`` or ``"Be-8 --> 2 * He-4"``.
 
-    reactants: `list`, `tuple`, or `str`, optional, |keyword-only|
+    reactants: |particle-like| or |particle-list-like|, optional, |keyword-only|
         A `list` or `tuple` containing the reactants of a nuclear
         reaction (e.g., ``['D', 'T']``), or a string representing the
         sole reactant.
 
-    products: `list`, `tuple`, or `str`, optional, |keyword-only|
+    products: |particle-like| or |particle-list-like|, optional, |keyword-only|
         A list or tuple containing the products of a nuclear reaction
         (e.g., ``['alpha', 'n']``), or a string representing the sole
         product.

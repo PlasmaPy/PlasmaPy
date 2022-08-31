@@ -34,7 +34,7 @@ class IonicLevel:
 
     Parameters
     ----------
-    ion: |particle-like|
+    ion: |ion-like|
         The ion for the corresponding ionic fraction.
 
     ionic_fraction: real number between 0 and 1, optional

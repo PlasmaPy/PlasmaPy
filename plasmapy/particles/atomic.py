@@ -50,7 +50,7 @@ def atomic_number(element: Particle) -> Integral:
 
     Parameters
     ----------
-    element: |particle-like|
+    element: |atom-like|
         A string representing an element, isotope, or ion; or an
         instance of the `~plasmapy.particles.particle_class.Particle` class.
 
@@ -96,7 +96,7 @@ def mass_number(isotope: Particle) -> Integral:
 
     Parameters
     ----------
-    isotope : |particle-like|
+    isotope : |isotope-like|
         A string representing an isotope or a neutron; or an instance of
         the `plasmapy.particles.particle_class.Particle` class.
 
@@ -143,7 +143,7 @@ def standard_atomic_weight(element: Particle) -> u.Quantity:
 
     Parameters
     ----------
-    element: |particle-like|
+    element: |atom-like|
         A string representing an element or an integer representing an
         atomic number, or an instance of the Particle class.
 
@@ -256,7 +256,7 @@ def isotopic_abundance(isotope: Particle, mass_numb: Optional[Integral] = None) 
 
     Parameters
     ----------
-    isotope: |particle-like|
+    isotope: |isotope-like|
         A string representing an element or isotope, or an integer
         representing the atomic number of an element.
 
@@ -523,7 +523,7 @@ def known_isotopes(argument: Union[str, Integral] = None) -> List[str]:
 
     Parameters
     ----------
-    argument: |particle-like|
+    argument: |isotope-like|
         A string representing an element, isotope, or ion or an
         integer representing an atomic number
 
@@ -618,7 +618,7 @@ def common_isotopes(
 
     Parameters
     ----------
-    argument: |particle-like|, optional
+    argument: |atom-like|, optional
         A string or integer representing an atomic number or element,
         or a string representing an isotope.
 
@@ -738,7 +738,7 @@ def stable_isotopes(
 
     Parameters
     ----------
-    argument: |particle-like|
+    argument: |atom-like|
         A string or integer representing an atomic number or element,
         or a string representing an isotope.
 
@@ -909,7 +909,7 @@ def periodic_table_period(argument: Union[str, Integral]) -> Integral:
 
     Parameters
     ----------
-    argument: |particle-like|
+    argument: |atom-like|
         Atomic number (either integer or string), atomic symbol (e.g.,
         ``"H"``, string), or element name (e.g. ``"Francium"``, string).
 
@@ -957,7 +957,7 @@ def periodic_table_group(argument: Union[str, Integral]) -> Integral:
 
     Parameters
     ----------
-    argument: |particle-like|
+    argument: |atom-like|
         Atomic number (either integer or string), atomic symbol (e.g.,
         ``"H"``, string), or element name (e.g., ``"francium"``,
         string).
@@ -1010,7 +1010,7 @@ def periodic_table_block(argument: Union[str, Integral]) -> str:
 
     Parameters
     ----------
-    argument: |particle-like|
+    argument: |atom-like|
         Atomic number (either integer or string), atomic symbol (e.g.,
         ``"H"``, string), or element name (e.g., ``"francium"``,
         string).
@@ -1063,7 +1063,7 @@ def periodic_table_category(argument: Union[str, Integral]) -> str:
 
     Parameters
     ----------
-    argument: |particle-like|
+    argument: |atom-like|
         Atomic number (either integer or string), atomic symbol (e.g.,
         ``"H"``, string), or element name (e.g., ``"francium"``,
         string).
@@ -1120,7 +1120,7 @@ def ionic_levels(
 
     Parameters
     ----------
-    particle : |particle-like|
+    particle : |atom-like|
         Representation of an element, ion, or isotope.
 
     min_charge : integer, optional
