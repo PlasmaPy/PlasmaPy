@@ -2299,12 +2299,8 @@ class CollisionFrequencies:
         # They are only applicable in cases where a conversion between temperature and velocity is acceptable
         # based on the assumptions made of the respective collision frequency.
 
-        # TODO: Ensure only needed parameters are given in docstring examples
-        # TODO: Double check errors provide proper error messages for needed parameters
-
-        if v_a is None:
-            if T_a is None:
-                raise ValueError("Please specify either v_a or T_a.")
+        if v_a is None and T_a is None:
+            raise ValueError("Please specify either v_a or T_a.")
 
         if (
             isinstance(v_a, np.ndarray)
