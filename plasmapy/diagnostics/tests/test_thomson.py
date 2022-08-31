@@ -1174,11 +1174,7 @@ def test_fit_with_minimal_parameters():
     # intentionally leave out a few required values to check to make sure an
     # exception is raised
 
-    settings = {}
-    settings["probe_vec"] = probe_vec
-    settings["scatter_vec"] = scatter_vec
-    settings["ions"] = ions
-
+    settings = {"probe_vec": probe_vec, "scatter_vec": scatter_vec, "ions": ions}
     params = Parameters()
 
     params.add("T_e_0", value=T_e.value, vary=False, min=5, max=20)
