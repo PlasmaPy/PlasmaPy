@@ -232,23 +232,24 @@ class AbstractPhysicalParticle(AbstractParticle):
             Required categories in the form of one or more `str` objects
             or an iterable.
 
-        require : `str` or iterable providing `str` objects, optional, keyword-only
-            One or more categories.  This method will return `False` if
-            the particle does not belong to all of these categories.
-
-        any_of : `str` or iterable providing `str` objects, optional, keyword-only
-            One or more categories. This method will return `False` if
-            the particle does not belong to at least one of these
+        require : `str` or iterable of `str`, optional, |keyword-only|
+            One or more particle categories. This method will return
+            `False` if the particle does not belong to all of these
             categories.
 
-        exclude : `str` or iterable providing `str` objects, optional, keyword-only
-            One or more categories.  This method will return `False` if
-            the particle belongs to any of these categories.
+        any_of : `str` or iterable of `str`, optional, |keyword-only|
+            One or more particle categories. This method will return
+            `False` if the particle does not belong to at least one of
+            these categories.
 
-        Notes
-        -----
-        A `set` containing all valid categories may be accessed by the
-        ``valid_categories`` attribute of ``is_category``.
+        exclude : `str` or iterable of `str`, optional, |keyword-only|
+            One or more particle categories.  This method will return
+            `False` if the particle belongs to any of these categories.
+
+        See Also
+        --------
+        ~plasmapy.particles.particle_class.valid_categories :
+            All valid particle categories.
 
         Examples
         --------
