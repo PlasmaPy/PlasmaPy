@@ -10,6 +10,7 @@ __all__ = [
     "Particle",
     "ParticleLike",
     "molecule",
+    "valid_categories",
 ]
 
 import astropy.constants as const
@@ -74,12 +75,13 @@ _atomic_property_categories = {"element", "isotope", "ion"}
 
 _specific_particle_categories = {"electron", "positron", "proton", "neutron"}
 
-_valid_categories = (
+valid_categories = frozenset(
     _periodic_table_categories
     | _classification_categories
     | _atomic_property_categories
     | _specific_particle_categories
 )
+"""All valid particle categories."""
 
 
 def _category_errmsg(particle, category: str) -> str:
@@ -316,7 +318,7 @@ class AbstractPhysicalParticle(AbstractParticle):
         exclude = become_set(exclude)
         any_of = become_set(any_of)
 
-        invalid_categories = (require | exclude | any_of) - _valid_categories
+        invalid_categories = (require | exclude | any_of) - valid_categories
 
         duplicate_categories = require & exclude | exclude & any_of | require & any_of
 
@@ -354,10 +356,6 @@ class AbstractPhysicalParticle(AbstractParticle):
 
     def __gt__(self, other):
         return self._as_particle_list.__gt__(other)
-
-
-AbstractPhysicalParticle.is_category.valid_categories = _valid_categories
-"""All valid particle categories."""
 
 
 class Particle(AbstractPhysicalParticle):
@@ -413,6 +411,20 @@ class Particle(AbstractPhysicalParticle):
     CustomParticle
     DimensionlessParticle
     ~plasmapy.particles.particle_collections.ParticleList
+    ~plasmapy.particles.particle_class.valid_categories
+
+    Notes
+    -----
+    Valid particle categories include: ``"actinide"``, ``"alkali
+    metal"``, ``"alkaline earth metal"``, ``"antibaryon"``,
+    ``"antilepton"``, ``"antimatter"``, ``"antineutrino"``,
+    ``"baryon"``, ``"boson"``, ``"charged"``, ``"custom"``,
+    ``"electron"``, ``"element"``, ``"fermion"``, ``"halogen"``,
+    ``"ion"``, ``"isotope"``, ``"lanthanide"``, ``"lepton"``,
+    ``"matter"``, ``"metal"``, ``"metalloid"``, ``"neutrino"``,
+    ``"neutron"``, ``"noble gas"``, ``"nonmetal"``, ``"positron"``,
+    ``"post-transition metal"``, ``"proton"``, ``"stable"``,
+    ``"transition metal"``, ``"uncharged"``, and ``"unstable"``.
 
     Examples
     --------
@@ -534,17 +546,6 @@ class Particle(AbstractPhysicalParticle):
     The `~plasmapy.particles.particle_class.Particle.categories` attribute
     and `~plasmapy.particles.particle_class.Particle.is_category` method
     may be used to find and test particle membership in categories.
-
-    Valid particle categories include: ``'actinide'``, ``'alkali
-    metal'``, ``'alkaline earth metal'``, ``'antibaryon'``,
-    ``'antilepton'``, ``'antimatter'``, ``'antineutrino'``,
-    ``'baryon'``, ``'boson'``, ``'charged'``, ``'electron'``,
-    ``'element'``, ``'fermion'``, ``'halogen'``, ``'ion'``,
-    ``'isotope'``, ``'lanthanide'``, ``'lepton'``, ``'matter'``,
-    ``'metal'``, ``'metalloid'``, ``'neutrino'``, ``'neutron'``,
-    ``'noble gas'``, ``'nonmetal'``, ``'positron'``,
-    ``'post-transition metal'``, ``'proton'``, ``'stable'``,
-    ``'transition metal'``, ``'uncharged'``, and ``'unstable'``.
     """
 
     def __init__(
