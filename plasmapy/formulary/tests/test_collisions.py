@@ -1895,7 +1895,10 @@ class TestCollisionFrequencies:
 
     @staticmethod
     def get_fundamental_frequency(species, n, v_a, Coulomb_log):
-        # This special case for computing the fundamental frequencies comes from page 33 of the NRL Formulary
+        """
+        This special case for computing the fundamental frequencies comes from page 33 of the NRL Formulary
+        """
+
         # Strip the units from these quantities and ensure they are in CGS units
         n = n.to(u.cm**-3).value
         T = (0.5 * species.mass * v_a**2).to(u.eV).value
