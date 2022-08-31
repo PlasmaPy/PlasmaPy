@@ -123,18 +123,14 @@ False
 >>> alpha.is_category(exclude='lepton')
 True
 
-Calling the `~plasmapy.particles.particle_class.Particle.is_category`
-method with no arguments returns a set containing all of the valid
-categories for any particle.  Valid categories include:
-``"actinide"``, ``"alkali metal"``, ``"alkaline earth metal"``,
-``"antibaryon"``, ``"antilepton"``, ``"antimatter"``,
-``"antineutrino"``, ``"baryon"``, ``"boson"``, ``"charged"``,
-``"custom"``, ``"electron"``, ``"element"``, ``"fermion"``,
-``"halogen"``, ``"ion"``, ``"isotope"``, ``"lanthanide"``, ``"lepton"``,
-``"matter"``, ``"metal"``, ``"metalloid"``, ``"neutrino"``,
-``"neutron"``, ``"noble gas"``, ``"nonmetal"``, ``"positron"``,
-``"post-transition metal"``, ``"proton"``, ``"stable"``,
-``"transition metal"``, ``"uncharged"``, and ``"unstable"``.
+Particle categories
+-------------------
+
+Valid particle categories are available in
+`~plasmapy.particles.particle_class.valid_categories`:
+
+>>> from plasmapy.particles.particle_class import valid_categories
+>>> print(sorted(valid_categories))
 
 .. _particle-class-conditionals-equality:
 
