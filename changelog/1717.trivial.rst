@@ -1,0 +1,2 @@
+Changed the minimum version of towncrier_ to 22.8.0 and the minimum
+version of |sphinx_changelog|_ to 1.2.0.
