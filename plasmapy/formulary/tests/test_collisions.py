@@ -29,42 +29,42 @@ from plasmapy.utils.pytest_helpers import assert_can_handle_nparray
 
 class Test_Coulomb_logarithm:
     @classmethod
-    def setup_class(self):
+    def setup_class(cls):
         """initializing parameters for tests"""
-        self.temperature1 = 10 * 11604 * u.K
-        self.T_arr = np.array([1, 2]) * u.eV
-        self.density1 = 1e20 * u.cm**-3
-        self.n_arr = np.array([1e20, 2e20]) * u.cm**-3
-        self.temperature2 = 1 * 11604 * u.K
-        self.density2 = 1e23 * u.cm**-3
-        self.z_mean = 2.5 * u.dimensionless_unscaled
-        self.particles = ("e", "p")
-        self.ls_min_interp = 3.4014290066940966
-        self.gms1 = 3.4014290066940966
-        self.ls_min_interp_negative = -3.4310536971592493
-        self.gms1_negative = -3.4310536971592493
-        self.ls_full_interp = 3.6349941014645157
-        self.gms2 = 3.6349941014645157
-        self.ls_full_interp_negative = -1.379394033464292
-        self.gms2_negative = -1.379394033464292
-        self.ls_clamp_mininterp = 3.4014290066940966
-        self.gms3 = 3.4014290066940966
-        self.ls_clamp_mininterp_negative = 2
-        self.gms3_negative = 2
-        self.ls_clamp_mininterp_non_scalar = (2, 2)
-        self.gms3_non_scalar = (2, 2)
-        self.hls_min_interp = 3.401983996820073
-        self.gms4 = 3.401983996820073
-        self.hls_min_interp_negative = 0.0005230791851781715
-        self.gms4_negative = 0.0005230791851781715
-        self.hls_max_interp = 3.7196690506837693
-        self.gms5 = 3.7196690506837693
-        self.hls_max_interp_negative = 0.03126832674323108
-        self.gms5_negative = 0.03126832674323108
-        self.hls_full_interp = 3.635342040477818
-        self.gms6 = 3.635342040477818
-        self.hls_full_interp_negative = 0.030720859361047514
-        self.gms6_negative = 0.030720859361047514
+        cls.temperature1 = 10 * 11604 * u.K
+        cls.T_arr = np.array([1, 2]) * u.eV
+        cls.density1 = 1e20 * u.cm**-3
+        cls.n_arr = np.array([1e20, 2e20]) * u.cm**-3
+        cls.temperature2 = 1 * 11604 * u.K
+        cls.density2 = 1e23 * u.cm**-3
+        cls.z_mean = 2.5 * u.dimensionless_unscaled
+        cls.particles = ("e", "p")
+        cls.ls_min_interp = 3.4014290066940966
+        cls.gms1 = 3.4014290066940966
+        cls.ls_min_interp_negative = -3.4310536971592493
+        cls.gms1_negative = -3.4310536971592493
+        cls.ls_full_interp = 3.6349941014645157
+        cls.gms2 = 3.6349941014645157
+        cls.ls_full_interp_negative = -1.379394033464292
+        cls.gms2_negative = -1.379394033464292
+        cls.ls_clamp_mininterp = 3.4014290066940966
+        cls.gms3 = 3.4014290066940966
+        cls.ls_clamp_mininterp_negative = 2
+        cls.gms3_negative = 2
+        cls.ls_clamp_mininterp_non_scalar = (2, 2)
+        cls.gms3_non_scalar = (2, 2)
+        cls.hls_min_interp = 3.401983996820073
+        cls.gms4 = 3.401983996820073
+        cls.hls_min_interp_negative = 0.0005230791851781715
+        cls.gms4_negative = 0.0005230791851781715
+        cls.hls_max_interp = 3.7196690506837693
+        cls.gms5 = 3.7196690506837693
+        cls.hls_max_interp_negative = 0.03126832674323108
+        cls.gms5_negative = 0.03126832674323108
+        cls.hls_full_interp = 3.635342040477818
+        cls.gms6 = 3.635342040477818
+        cls.hls_full_interp_negative = 0.030720859361047514
+        cls.gms6_negative = 0.030720859361047514
 
     @pytest.mark.parametrize("insert_some_nans", [[], ["V"]])
     @pytest.mark.parametrize("insert_all_nans", [[], ["V"]])
@@ -952,12 +952,12 @@ class Test_Coulomb_logarithm:
 
 class Test_impact_parameter_perp:
     @classmethod
-    def setup_class(self):
+    def setup_class(cls):
         """initializing parameters for tests"""
-        self.T = 11604 * u.K
-        self.particles = ("e", "p")
-        self.V = 1e4 * u.km / u.s
-        self.True1 = 7.200146594293746e-10
+        cls.T = 11604 * u.K
+        cls.particles = ("e", "p")
+        cls.V = 1e4 * u.km / u.s
+        cls.True1 = 7.200146594293746e-10
 
     def test_symmetry(self):
         result = impact_parameter_perp(self.T, self.particles)
@@ -1007,16 +1007,16 @@ class Test_impact_parameter_perp:
 
 class Test_impact_parameter:
     @classmethod
-    def setup_class(self):
+    def setup_class(cls):
         """initializing parameters for tests"""
-        self.T = 11604 * u.K
-        self.T_arr = np.array([1, 2]) * u.eV
-        self.n_e = 1e17 * u.cm**-3
-        self.n_e_arr = np.array([1e17, 2e17]) * u.cm**-3
-        self.particles = ("e", "p")
-        self.z_mean = 2.5 * u.dimensionless_unscaled
-        self.V = 1e4 * u.km / u.s
-        self.True1 = np.array([7.200146594293746e-10, 2.3507660003984624e-08])
+        cls.T = 11604 * u.K
+        cls.T_arr = np.array([1, 2]) * u.eV
+        cls.n_e = 1e17 * u.cm**-3
+        cls.n_e_arr = np.array([1e17, 2e17]) * u.cm**-3
+        cls.particles = ("e", "p")
+        cls.z_mean = 2.5 * u.dimensionless_unscaled
+        cls.V = 1e4 * u.km / u.s
+        cls.True1 = np.array([7.200146594293746e-10, 2.3507660003984624e-08])
 
     def test_symmetry(self):
         result = impact_parameter(self.T, self.n_e, self.particles)
@@ -1134,19 +1134,19 @@ class Test_impact_parameter:
 
 class Test_collision_frequency:
     @classmethod
-    def setup_class(self):
+    def setup_class(cls):
         """initializing parameters for tests"""
-        self.T = 11604 * u.K
-        self.n = 1e17 * u.cm**-3
-        self.particles = ("e", "p")
-        self.electrons = ("e", "e")
-        self.protons = ("p", "p")
-        self.z_mean = 2.5 * u.dimensionless_unscaled
-        self.V = 1e4 * u.km / u.s
-        self.True1 = 1.3468281539854646e12
-        self.True_electrons = 1904702641552.1638
-        self.True_protons = 44450104815.91857
-        self.True_zmean = 1346828153985.4646
+        cls.T = 11604 * u.K
+        cls.n = 1e17 * u.cm**-3
+        cls.particles = ("e", "p")
+        cls.electrons = ("e", "e")
+        cls.protons = ("p", "p")
+        cls.z_mean = 2.5 * u.dimensionless_unscaled
+        cls.V = 1e4 * u.km / u.s
+        cls.True1 = 1.3468281539854646e12
+        cls.True_electrons = 1904702641552.1638
+        cls.True_protons = 44450104815.91857
+        cls.True_zmean = 1346828153985.4646
 
     def test_symmetry(self):
         with pytest.warns(CouplingWarning):
@@ -1273,12 +1273,12 @@ class Test_collision_frequency:
 
 class Test_fundamental_electron_collision_freq:
     @classmethod
-    def setup_class(self):
+    def setup_class(cls):
         """initializing parameters for tests"""
-        self.T_arr = np.array([1, 2]) * u.eV
-        self.n_arr = np.array([1e20, 2e20]) * u.cm**-3
-        self.ion = "p"
-        self.coulomb_log = 10
+        cls.T_arr = np.array([1, 2]) * u.eV
+        cls.n_arr = np.array([1e20, 2e20]) * u.cm**-3
+        cls.ion = "p"
+        cls.coulomb_log = 10
 
     # TODO: array coulomb log
     @pytest.mark.parametrize("insert_some_nans", [[], ["V"]])
@@ -1292,12 +1292,12 @@ class Test_fundamental_electron_collision_freq:
 
 class Test_fundamental_ion_collision_freq:
     @classmethod
-    def setup_class(self):
+    def setup_class(cls):
         """initializing parameters for tests"""
-        self.T_arr = np.array([1, 2]) * u.eV
-        self.n_arr = np.array([1e20, 2e20]) * u.cm**-3
-        self.ion = "p"
-        self.coulomb_log = 10
+        cls.T_arr = np.array([1, 2]) * u.eV
+        cls.n_arr = np.array([1e20, 2e20]) * u.cm**-3
+        cls.ion = "p"
+        cls.coulomb_log = 10
 
     # TODO: array coulomb log
     @pytest.mark.parametrize("insert_some_nans", [[], ["V"]])
@@ -1311,14 +1311,14 @@ class Test_fundamental_ion_collision_freq:
 
 class Test_mean_free_path:
     @classmethod
-    def setup_class(self):
+    def setup_class(cls):
         """initializing parameters for tests"""
-        self.T = 11604 * u.K
-        self.n_e = 1e17 * u.cm**-3
-        self.particles = ("e", "p")
-        self.z_mean = 2.5 * u.dimensionless_unscaled
-        self.V = 1e4 * u.km / u.s
-        self.True1 = 4.4047571877932046e-07
+        cls.T = 11604 * u.K
+        cls.n_e = 1e17 * u.cm**-3
+        cls.particles = ("e", "p")
+        cls.z_mean = 2.5 * u.dimensionless_unscaled
+        cls.V = 1e4 * u.km / u.s
+        cls.True1 = 4.4047571877932046e-07
 
     def test_symmetry(self):
         with pytest.warns(CouplingWarning):
@@ -1374,15 +1374,15 @@ class Test_mean_free_path:
 
 class Test_Spitzer_resistivity:
     @classmethod
-    def setup_class(self):
+    def setup_class(cls):
         """initializing parameters for tests"""
-        self.T = 11604 * u.K
-        self.n = 1e12 * u.cm**-3
-        self.particles = ("e", "p")
-        self.z_mean = 2.5 * u.dimensionless_unscaled
-        self.V = 1e4 * u.km / u.s
-        self.True1 = 1.2665402649805445e-3
-        self.True_zmean = 0.00020264644239688712
+        cls.T = 11604 * u.K
+        cls.n = 1e12 * u.cm**-3
+        cls.particles = ("e", "p")
+        cls.z_mean = 2.5 * u.dimensionless_unscaled
+        cls.V = 1e4 * u.km / u.s
+        cls.True1 = 1.2665402649805445e-3
+        cls.True_zmean = 0.00020264644239688712
 
     def test_symmetry(self):
         result = Spitzer_resistivity(self.T, self.n, self.particles)
@@ -1452,15 +1452,15 @@ class Test_Spitzer_resistivity:
 
 class Test_mobility:
     @classmethod
-    def setup_class(self):
+    def setup_class(cls):
         """initializing parameters for tests"""
-        self.T = 11604 * u.K
-        self.n_e = 1e17 * u.cm**-3
-        self.particles = ("e", "p")
-        self.z_mean = 2.5 * u.dimensionless_unscaled
-        self.V = 1e4 * u.km / u.s
-        self.True1 = 0.13066090887074902
-        self.True_zmean = 0.32665227217687254
+        cls.T = 11604 * u.K
+        cls.n_e = 1e17 * u.cm**-3
+        cls.particles = ("e", "p")
+        cls.z_mean = 2.5 * u.dimensionless_unscaled
+        cls.V = 1e4 * u.km / u.s
+        cls.True1 = 0.13066090887074902
+        cls.True_zmean = 0.32665227217687254
 
     def test_symmetry(self):
         with pytest.warns(CouplingWarning):
@@ -1532,15 +1532,15 @@ class Test_mobility:
 
 class Test_Knudsen_number:
     @classmethod
-    def setup_class(self):
+    def setup_class(cls):
         """initializing parameters for tests"""
-        self.length = 1 * u.nm
-        self.T = 11604 * u.K
-        self.n_e = 1e17 * u.cm**-3
-        self.particles = ("e", "p")
-        self.z_mean = 2.5 * u.dimensionless_unscaled
-        self.V = 1e4 * u.km / u.s
-        self.True1 = 440.4757187793204
+        cls.length = 1 * u.nm
+        cls.T = 11604 * u.K
+        cls.n_e = 1e17 * u.cm**-3
+        cls.particles = ("e", "p")
+        cls.z_mean = 2.5 * u.dimensionless_unscaled
+        cls.V = 1e4 * u.km / u.s
+        cls.True1 = 440.4757187793204
 
     def test_symmetry(self):
         with pytest.warns(CouplingWarning):
@@ -1600,16 +1600,16 @@ class Test_Knudsen_number:
 
 class Test_coupling_parameter:
     @classmethod
-    def setup_class(self):
+    def setup_class(cls):
         """initializing parameters for tests"""
-        self.T = 11604 * u.K
-        self.n_e = 1e21 * u.cm**-3
-        self.particles = ("e", "p")
-        self.z_mean = 2.5 * u.dimensionless_unscaled
-        self.V = 1e4 * u.km / u.s
-        self.True1 = 2.3213156755481195
-        self.True_zmean = 10.689750083758698
-        self.True_quantum = 0.3334662805238162
+        cls.T = 11604 * u.K
+        cls.n_e = 1e21 * u.cm**-3
+        cls.particles = ("e", "p")
+        cls.z_mean = 2.5 * u.dimensionless_unscaled
+        cls.V = 1e4 * u.km / u.s
+        cls.True1 = 2.3213156755481195
+        cls.True_zmean = 10.689750083758698
+        cls.True_quantum = 0.3334662805238162
 
     def test_symmetry(self):
         result = coupling_parameter(self.T, self.n_e, self.particles)
