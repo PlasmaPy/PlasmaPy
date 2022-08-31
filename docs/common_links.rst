@@ -92,6 +92,7 @@
 .. The backslash is needed for the substitution to work correctly when
    used just before a period.
 
+.. |atom-like| replace:: :term:`atom-like`\
 .. |bibliography| replace:: :ref:`bibliography`\
 .. |changelog guide| replace:: :ref:`changelog guide`\
 .. |coding guide| replace:: :ref:`coding guide`\
@@ -100,6 +101,7 @@
 .. |glossary| replace:: :ref:`glossary`\
 .. |keyword-only| replace:: :term:`keyword-only`\
 .. |minpython| replace:: 3.8
+.. |particle-like| replace:: :term:`particle-like`\
 .. |plasma-calculator| replace:: :ref:`plasmapy-calculator`\
 .. |release guide| replace:: :ref:`release guide`\
 .. |testing guide| replace:: :ref:`testing guide`\
