@@ -75,7 +75,7 @@ _atomic_property_categories = {"element", "isotope", "ion"}
 
 _specific_particle_categories = {"electron", "positron", "proton", "neutron"}
 
-valid_categories = frozenset(
+valid_categories = (
     _periodic_table_categories
     | _classification_categories
     | _atomic_property_categories
