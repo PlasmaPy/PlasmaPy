@@ -1135,7 +1135,7 @@ def fundamental_electron_collision_freq(
     Maxwellian distribution. It is thus a special case of the collision
     frequency with an averaging factor, and is on many occasions
     in transport theory the most relevant collision frequency that has
-    to be considered. It is heavily related to diffusion and resistivity
+    to be considered. It commonly occurs in relation to diffusion and resistivity
     in plasmas.
 
     Parameters
@@ -2458,7 +2458,7 @@ class CollisionFrequencies:
         Maxwellian distribution. It is thus a special case of the collision
         frequency with an averaging factor, and is on many occasions
         in transport theory the most relevant collision frequency that has
-        to be considered. It is heavily related to diffusion and resistivity
+        to be considered. It commonly occurs in relation to diffusion and resistivity
         in plasmas.
 
         Raises
