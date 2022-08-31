@@ -209,7 +209,7 @@ class AbstractPhysicalParticle(AbstractParticle):
     @abstractmethod
     def categories(self) -> Set[str]:
         """Provide the particle's categories."""
-        raise NotImplementedError
+        ...
 
     def is_category(
         self,
