@@ -214,6 +214,7 @@ test_Particle_table = [
             'is_category(any_of={"positron"})': True,
             'is_category(exclude="positron")': False,
             'is_category("ion")': False,
+            'is_category("invalid_category")': ParticleError,
             "__str__()": "e+",
             "__repr__()": 'Particle("e+")',
             "periodic_table.group": InvalidElementError,
@@ -619,6 +620,8 @@ test_Particle_error_table = [
     (["Fe 25+"], {}, ".recombine(8.2)", TypeError),
     (["e-"], {}, ".ionize()", InvalidElementError),
     (["e+"], {}, ".recombine()", InvalidElementError),
+    (["e+"], {}, ".is_category('invalid_category')", ParticleError),
+    (["e+"], {}, ".is_category(require='element', exclude='element')", ParticleError),
     (["H", 1], {}, "", TypeError),
     (["H", 1, 1], {}, "", TypeError),
 ]
