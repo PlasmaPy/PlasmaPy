@@ -374,16 +374,16 @@ class ParticleList(collections.UserList):
         >>> print(elements)
         ParticleList(['H', 'He', 'Li'])
 
-        We can also create a function that we then pass to ``key``. In
-        this example, we sort by atomic number, mass_number, and
-        charge number using different attributes of |Particle|.
+        We can also create a function to pass to ``key``. In this
+        example, we sort by atomic number and mass number using
+        different attributes of |Particle|.
 
-        >>> def sort_key(ion):
-        ...     return ion.atomic_number, ion.mass_number, ion.charge_number
-        >>> ions = ParticleList(["α", "p+", "He-3 1+", "He-3 0+", "H-1 0+"])
-        >>> ions.sort(key=sort_key)
-        >>> print(ions)
-        ParticleList(['H-1 0+', 'p+', 'He-3 0+', 'He-3 1+', 'He-4 2+'])
+        >>> def sort_key(isotope):
+        ...     return isotope.atomic_number, isotope.mass_number
+        >>> isotopes = ParticleList(["He-3", "T", "H-1", "He-4", "D"])
+        >>> isotopes.sort(key=sort_key)
+        >>> print(isotopes)
+        ParticleList(['H-1', 'D', 'T', 'He-3', 'He-4'])
         """
         if key is None:
             raise TypeError("Unable to sort a ParticleList without a key.")
