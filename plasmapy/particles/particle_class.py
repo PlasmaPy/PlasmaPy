@@ -22,7 +22,7 @@ from abc import ABC, abstractmethod
 from collections import defaultdict, namedtuple
 from datetime import datetime
 from numbers import Integral, Real
-from typing import Iterable, List, Optional, Sequence, Set, Tuple, Union
+from typing import Iterable, Optional, Sequence, Set, Union
 
 from plasmapy.particles import _elements, _isotopes, _parsing, _special_particles
 from plasmapy.particles.exceptions import (
