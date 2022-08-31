@@ -2494,6 +2494,7 @@ class CollisionFrequencies:
         if not self._is_slowly_flowing:
             raise PhysicsError(
                 "This frequency is only defined for slowly flowing species."
+                "(see documentation for further details)"
             )
 
         coeff = 4 / (3 * np.sqrt(np.pi))
@@ -2549,6 +2550,7 @@ class CollisionFrequencies:
         if not self._is_slowly_flowing:
             raise PhysicsError(
                 "This frequency is only defined for slowly flowing species."
+                "(see documentation for further details)"
             )
 
         coeff = 4 / (3 * np.sqrt(2 * np.pi))
