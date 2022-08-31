@@ -1896,7 +1896,9 @@ class TestCollisionFrequencies:
     @staticmethod
     def get_fundamental_frequency(species, n, v_a, Coulomb_log):
         """
-        This special case for computing the fundamental frequencies comes from page 33 of the NRL Formulary
+        This special case for computing the fundamental frequencies comes from page 33 of the NRL Formulary.
+        The formulary provides limiting cases for the `Maxwellian_avg_##_collision_freq` family of attributes
+        in the case that T_a ~ T_b.
         """
 
         # Strip the units from these quantities and ensure they are in CGS units
