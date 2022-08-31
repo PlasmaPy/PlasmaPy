@@ -20,7 +20,7 @@ from numba import njit
 from typing import Optional
 
 from plasmapy.formulary import lengths, misc
-from plasmapy.particles import Particle, particle_input, particle_mass
+from plasmapy.particles import Particle, particle_input, particle_mass, ParticleLike
 from plasmapy.particles.exceptions import ChargeError
 from plasmapy.utils.decorators import (
     bind_lite_func,
@@ -40,7 +40,7 @@ k_B_si_unitless = k_B.value
 def Alfven_speed(
     B: u.T,
     density: (u.m**-3, u.kg / u.m**3),
-    ion: Optional[Particle] = None,
+    ion: Optional[ParticleLike] = None,
     z_mean: Optional[numbers.Real] = None,
 ) -> u.m / u.s:
     r"""
@@ -191,7 +191,7 @@ va_ = Alfven_speed
 def ion_sound_speed(
     T_e: u.K,
     T_i: u.K,
-    ion: Particle,
+    ion: ParticleLike,
     n_e: u.m**-3 = None,
     k: u.m**-1 = None,
     gamma_e=1,
@@ -517,7 +517,7 @@ def thermal_speed_lite(
 @particle_input
 def thermal_speed(
     T: u.K,
-    particle: Particle,
+    particle: ParticleLike,
     method="most_probable",
     mass: u.kg = None,
     ndim=3,
@@ -722,7 +722,7 @@ vth_ = thermal_speed
     T={"can_be_negative": False, "equivalencies": u.temperature_energy()}
 )
 def kappa_thermal_speed(
-    T: u.K, kappa, particle: Particle, method="most_probable"
+    T: u.K, kappa, particle: ParticleLike, method="most_probable"
 ) -> u.m / u.s:
     r"""Return the most probable speed for a particle within a Kappa
     distribution.
