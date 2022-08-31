@@ -2468,7 +2468,7 @@ class CollisionFrequencies:
         Raises
         ------
         `~plasmapy.utils.exceptions.PhysicsError`
-            The specified species aren't slowly flowing
+            The test particles are not 'slowly flowing' relative to the field particles (see notes).
 
         `ValueError`
             If the specified interaction isn't electron-ion, or the necessary
@@ -2523,7 +2523,7 @@ class CollisionFrequencies:
         Raises
         ------
         `~plasmapy.utils.exceptions.PhysicsError`
-            The specified species aren't slowly flowing
+            The test particles are not 'slowly flowing' relative to the field particles (see notes).
 
         `ValueError`
             If the specified interaction isn't electron-ion, or the necessary
