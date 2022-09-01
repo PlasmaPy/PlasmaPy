@@ -128,7 +128,7 @@ class IonicLevel:
         An ionic fraction must be in the interval :math:`[0, 1]`.
 
         If no ionic fraction is specified, then this attribute will be
-        assigned the value of |numpy.nan|.
+        assigned the value of |nan|.
         """
         return self._ionic_fraction
 
