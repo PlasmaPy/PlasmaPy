@@ -21,18 +21,18 @@ def nuclear_binding_energy(
 
     Parameters
     ----------
-    particle: |atom-like|
+    particle : |atom-like|
         A Particle object, a string representing an element or isotope,
         or an integer representing the atomic number of an element.
 
-    mass_numb: `int`, optional
+    mass_numb : integer, optional
         The mass number of an isotope, which is required if and only
         if the first argument can only be used to determine the
         element and not the isotope.
 
     Returns
     -------
-    binding_energy: `~astropy.units.Quantity`
+    binding_energy : `~astropy.units.Quantity`
         The binding energy of the nucleus in units of joules.
 
     Raises
@@ -80,18 +80,18 @@ def mass_energy(particle: Particle, mass_numb: Optional[Integral] = None) -> u.J
 
     Parameters
     ----------
-    particle: |particle-like|
+    particle : |particle-like|
         A Particle object, a string representing an element or isotope,
         or an integer representing the atomic number of an element.
 
-    mass_numb: `int` (optional)
+    mass_numb : integer, optional
         The mass number of an isotope, which is required if and only
         if the first argument can only be used to determine the
         element and not the isotope.
 
     Returns
     -------
-    mass_energy: `~astropy.units.Quantity`
+    mass_energy : `~astropy.units.Quantity`
         The mass energy of the particle (or, in the case of an isotope,
         its nuclide) in units of joules.
 
@@ -120,23 +120,23 @@ def nuclear_reaction_energy(*args, **kwargs) -> u.J:
 
     Parameters
     ----------
-    reaction: `str` (optional, positional argument only)
+    reaction : `str`, optional, positional-only
         A string representing the reaction, like
         ``"D + T --> alpha + n"`` or ``"Be-8 --> 2 * He-4"``.
 
-    reactants: |particle-like| or |particle-list-like|, optional, |keyword-only|
+    reactants : |particle-like| or |particle-list-like|, optional, |keyword-only|
         A `list` or `tuple` containing the reactants of a nuclear
         reaction (e.g., ``['D', 'T']``), or a string representing the
         sole reactant.
 
-    products: |particle-like| or |particle-list-like|, optional, |keyword-only|
+    products : |particle-like| or |particle-list-like|, optional, |keyword-only|
         A list or tuple containing the products of a nuclear reaction
         (e.g., ``['alpha', 'n']``), or a string representing the sole
         product.
 
     Returns
     -------
-    energy: `~astropy.units.Quantity`
+    energy : `~astropy.units.Quantity`
         The difference between the mass energy of the reactants and
         the mass energy of the products in a nuclear reaction.  This
         quantity will be positive if the reaction is exothermic
@@ -145,12 +145,12 @@ def nuclear_reaction_energy(*args, **kwargs) -> u.J:
 
     Raises
     ------
-    `ParticleError`:
+    `ParticleError`
         If the reaction is not valid, there is insufficient
         information to determine an isotope, the baryon number is
         not conserved, or the charge is not conserved.
 
-    `TypeError`:
+    `TypeError`
         If the positional input for the reaction is not a string, or
         reactants and/or products is not of an appropriate type.
 
