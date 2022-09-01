@@ -1,0 +1,2 @@
+Adds the `~plasmapy.utils.decorators.validate_class_attributes` decorator to the `~plasmapy.utils.decorators` module.
+This decorator is useful for class methods that require optional parameters to be specified during class instantiation.
