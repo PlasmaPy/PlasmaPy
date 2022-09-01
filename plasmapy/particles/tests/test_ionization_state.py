@@ -212,6 +212,9 @@ class Test_IonizationState:
             self.instances["Li ground state"] != self.instances["Li"]
         ), "Different IonizationState instances are equal."
 
+    def test_inequality_with_different_type(self):
+        assert self.instance["Li ground state"] != "different type"
+
     def test_equality_no_more_exception(self):
         """
         Test that comparisons of `IonizationState` instances for
