@@ -1,2 +1,2 @@
-Updated the docstrings for `plasmapy.particles`, including by marking
-arguments as |particle-like| or |atom-like|.
+Updated docstrings and annotations in `plasmapy.particles`, including by
+marking parameters as |particle-like| or |atom-like|.
