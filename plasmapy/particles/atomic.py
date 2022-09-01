@@ -96,7 +96,7 @@ def mass_number(isotope: Particle) -> Integral:
 
     Parameters
     ----------
-    isotope : |isotope-like|
+    isotope : |atom-like|
         A string representing an isotope or a neutron; or an instance of
         the `plasmapy.particles.particle_class.Particle` class.
 
@@ -256,7 +256,7 @@ def isotopic_abundance(isotope: Particle, mass_numb: Optional[Integral] = None) 
 
     Parameters
     ----------
-    isotope: |isotope-like|
+    isotope: |atom-like|
         A string representing an element or isotope, or an integer
         representing the atomic number of an element.
 
@@ -523,7 +523,7 @@ def known_isotopes(argument: Union[str, Integral] = None) -> List[str]:
 
     Parameters
     ----------
-    argument: |isotope-like|
+    argument: |atom-like|
         A string representing an element, isotope, or ion or an
         integer representing an atomic number
 
@@ -1123,8 +1123,8 @@ def ionic_levels(
     particle : |atom-like|
         Representation of an element, ion, or isotope.
 
-    min_charge : integer, optional
-        The starting charge number. Defaults to ``0``.
+    min_charge : integer, optional, default: ``0``
+        The starting charge number.
 
     max_charge : integer, optional
         The ending charge number, which will be included in the
