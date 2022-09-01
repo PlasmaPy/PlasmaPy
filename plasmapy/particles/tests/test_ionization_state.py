@@ -84,7 +84,7 @@ def test_ionic_level_comparison_with_different_ions(ion1, ion2):
 
 
 def test_ionic_level_inequality_with_different_type():
-    instance = IonicLevel("H", 0.3)
+    instance = IonicLevel("H 1+", 0.3)
     assert instance != "different type"
 
 
@@ -213,7 +213,7 @@ class Test_IonizationState:
         ), "Different IonizationState instances are equal."
 
     def test_inequality_with_different_type(self):
-        assert self.instance["Li ground state"] != "different type"
+        assert self.instances["Li ground state"] != "different type"
 
     def test_equality_no_more_exception(self):
         """
