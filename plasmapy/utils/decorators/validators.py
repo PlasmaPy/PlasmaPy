@@ -553,9 +553,8 @@ def get_attributes_not_provided(
 
     if expected_attributes is not None:
         for attribute in expected_attributes:
-            if isinstance(attribute, str):
-                if getattr(self, attribute) is None:
-                    attributes_not_provided.append(attribute)
+            if isinstance(attribute, str) and getattr(self, attribute) is None:
+                attributes_not_provided.append(attribute)
 
     if both_or_either_attributes is not None:
         for attribute_tuple in both_or_either_attributes:
