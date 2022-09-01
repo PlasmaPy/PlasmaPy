@@ -17,10 +17,11 @@ from plasmapy.particles.exceptions import (
     ParticleError,
 )
 from plasmapy.particles.ionization_state import IonicLevel, IonizationState
-from plasmapy.particles.particle_class import CustomParticle, Particle, ParticleLike
+from plasmapy.particles.particle_class import CustomParticle, Particle
 from plasmapy.particles.particle_collections import ParticleList
 from plasmapy.particles.symbols import particle_symbol
 from plasmapy.utils.decorators import validate_quantities
+from plasmapy.utils.typing import ParticleLike
 
 
 def _atomic_number_and_mass_number(p: Particle):

@@ -34,9 +34,8 @@ from plasmapy.particles.particle_class import (
     DimensionlessParticle,
     molecule,
     Particle,
-    ParticleLike,
 )
-from plasmapy.particles.particle_collections import ParticleList, ParticleListLike
+from plasmapy.particles.particle_collections import ParticleList
 from plasmapy.particles.serialization import (
     json_load_particle,
     json_loads_particle,
@@ -49,6 +48,7 @@ from plasmapy.particles.symbols import (
     isotope_symbol,
     particle_symbol,
 )
+from plasmapy.utils.typing import ParticleLike, ParticleListLike
 
 proton = Particle("p+")
 """A |Particle| instance representing a proton."""

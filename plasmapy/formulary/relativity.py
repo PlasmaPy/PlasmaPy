@@ -11,9 +11,10 @@ from typing import Dict, Optional, Union
 
 from plasmapy import utils
 from plasmapy.particles._factory import _physical_particle_factory
-from plasmapy.particles.particle_class import CustomParticle, Particle, ParticleLike
+from plasmapy.particles.particle_class import CustomParticle, Particle
 from plasmapy.particles.particle_collections import ParticleList
 from plasmapy.utils.decorators import validate_quantities
+from plasmapy.utils.typing import ParticleLike
 
 
 @validate_quantities(V={"can_be_negative": True})

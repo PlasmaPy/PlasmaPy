@@ -1,21 +1,21 @@
 """Collections of particle objects."""
 
-__all__ = ["ParticleList", "ParticleListLike"]
+__all__ = ["ParticleList"]
 
 import astropy.units as u
 import collections
 import contextlib
 import numpy as np
 
-from typing import Callable, Iterable, List, Optional, Sequence, Union
+from typing import Callable, Iterable, List, Optional, Union
 
 from plasmapy.particles.exceptions import InvalidParticleError
 from plasmapy.particles.particle_class import (
     CustomParticle,
     DimensionlessParticle,
     Particle,
-    ParticleLike,
 )
+from plasmapy.utils.typing import ParticleLike, ParticleListLike
 
 
 class ParticleList(collections.UserList):
@@ -132,7 +132,7 @@ class ParticleList(collections.UserList):
 
         return new_particles
 
-    def __init__(self, particles: Optional[Iterable] = None):
+    def __init__(self, particles: Optional[Iterable[ParticleLike]] = None):
         self._data = self._list_of_particles_and_custom_particles(particles)
 
     @staticmethod
@@ -513,40 +513,3 @@ Raises
 """
 
 ParticleList.reverse.__doc__ = """Reverse the |ParticleList| in place."""
-
-ParticleListLike = Union[ParticleList, Sequence[ParticleLike]]
-
-ParticleListLike.__doc__ = r"""
-An `object` is |particle-list-like| if it can be identified as a
-|ParticleList| or cast into one.
-
-When used as a type hint annotation, |ParticleListLike| indicates that
-the corresponding argument should represent a sequence of physical
-particles. Each item in a |ParticleListLike| object must be
-|particle-like|.
-
-Notes
------
-`~plasmapy.particles.particle_class.DimensionlessParticle` instances do
-not uniquely represent a physical particle, and are thus not
-|ParticleLike| and cannot be contained in a |ParticleListLike| object.
-
-See Also
---------
-~plasmapy.particles.particle_collections.ParticleList
-~plasmapy.particles.particle_class.ParticleLike
-~plasmapy.particles.decorators.particle_input
-
-Examples
---------
-Using |ParticleListLike| as a type hint annotation indicates that an
-argument or variable should represent a sequence of |ParticleLike|
-objects.
-
->>> from plasmapy.particles import ParticleList, ParticleListLike
->>> def contains_only_leptons(particles: ParticleListLike):
-...     particle_list = ParticleList(particles)
-...     return all(particle_list.is_category("lepton"))
->>> contains_only_leptons(["electron", "muon"])
-True
-"""

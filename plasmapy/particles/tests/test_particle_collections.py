@@ -13,9 +13,9 @@ from plasmapy.particles.particle_class import (
     CustomParticle,
     DimensionlessParticle,
     Particle,
-    ParticleLike,
 )
 from plasmapy.particles.particle_collections import ParticleList
+from plasmapy.utils.typing import ParticleLike
 
 custom_particle = CustomParticle(mass=1e-25 * u.kg, charge=1e-18 * u.C)
 dimensionless_particle = DimensionlessParticle(mass=1.25, charge=1.58)
