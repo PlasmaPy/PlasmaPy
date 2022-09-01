@@ -35,7 +35,6 @@ from plasmapy.particles.particle_class import (
     molecule,
     Particle,
     ParticleLike,
-    valid_categories,
 )
 from plasmapy.particles.particle_collections import ParticleList, ParticleListLike
 from plasmapy.particles.serialization import (
