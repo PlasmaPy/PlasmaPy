@@ -91,6 +91,10 @@ representing the category.
 See Also
 --------
 :py:meth:`~plasmapy.particles.particle_class.AbstractPhysicalParticle.is_category`
+
+Examples
+--------
+To add a new 
 """
 
 
@@ -264,21 +268,16 @@ class AbstractPhysicalParticle(AbstractParticle):
         -----
         Valid particle categories are given in
         `~plasmapy.particles.particle_class.valid_categories` and
-        include:
-
-        Calling `~plasmapy.particles.particle_class.Particle.is_category`
-        with no arguments returns a set containing all of the
-        valid categories for any particle.  Valid categories include:
-        ``"actinide"``, ``"alkali metal"``, ``"alkaline earth
-        metal"``, ``"antibaryon"``, ``"antilepton"``,
-        ``"antimatter"``, ``"antineutrino"``, ``"baryon"``,
-        ``"boson"``, ``"charged"``, ``"custom"``, ``"electron"``,
-        ``"element"``, ``"fermion"``, ``"halogen"``, ``"ion"``,
-        ``"isotope"``, ``"lanthanide"``, ``"lepton"``, ``"matter"``,
-        ``"metal"``, ``"metalloid"``, ``"neutrino"``, ``"neutron"``,
-        ``"noble gas"``, ``"nonmetal"``, ``"positron"``,
-        ``"post-transition metal"``, ``"proton"``, ``"stable"``,
-        ``"transition metal"``, ``"uncharged"``, and ``"unstable"``.
+        include: ``"actinide"``, ``"alkali metal"``, ``"alkaline earth
+        metal"``, ``"antibaryon"``, ``"antilepton"``, ``"antimatter"``,
+        ``"antineutrino"``, ``"baryon"``, ``"boson"``, ``"charged"``,
+        ``"custom"``, ``"electron"``, ``"element"``, ``"fermion"``,
+        ``"halogen"``, ``"ion"``, ``"isotope"``, ``"lanthanide"``,
+        ``"lepton"``, ``"matter"``, ``"metal"``, ``"metalloid"``,
+        ``"neutrino"``, ``"neutron"``, ``"noble gas"``, ``"nonmetal"``,
+        ``"positron"``, ``"post-transition metal"``, ``"proton"``,
+        ``"stable"``, ``"transition metal"``, ``"uncharged"``, and
+        ``"unstable"``.
 
         Examples
         --------
