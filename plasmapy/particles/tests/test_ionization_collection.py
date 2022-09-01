@@ -954,3 +954,8 @@ def test_average_particle_exception():
 
     with pytest.raises(ParticleError):
         ionization_states.average_ion()
+
+
+def test_inequality_with_different_type():
+    ionization_states = IonizationStateCollection({"H": [1, 0], "He": [1, 0, 0]})
+    assert ionization_states != "different type"
