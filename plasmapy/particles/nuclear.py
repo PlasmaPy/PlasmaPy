@@ -43,9 +43,6 @@ def nuclear_binding_energy(
     `~plasmapy.particles.exceptions.ParticleError`
         If the inputs do not correspond to a valid isotope or nucleon.
 
-    `TypeError`
-        If the inputs are not of the correct types.
-
     See Also
     --------
     nuclear_reaction_energy : Return the change in
@@ -103,9 +100,6 @@ def mass_energy(particle: Particle, mass_numb: Optional[Integral] = None) -> u.J
     `~plasmapy.particles.exceptions.ParticleError`
         If the inputs do not correspond to a valid isotope or nucleon.
 
-    `TypeError`
-        If the inputs are not of the correct types.
-
     Examples
     --------
     >>> mass_energy('He-4')
@@ -149,10 +143,6 @@ def nuclear_reaction_energy(*args, **kwargs) -> u.J:
         If the reaction is not valid, there is insufficient
         information to determine an isotope, the baryon number is
         not conserved, or the charge is not conserved.
-
-    `TypeError`
-        If the positional input for the reaction is not a string, or
-        reactants and/or products is not of an appropriate type.
 
     See Also
     --------

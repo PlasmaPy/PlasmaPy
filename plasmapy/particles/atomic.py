@@ -67,13 +67,9 @@ def atomic_number(element: Particle) -> Integral:
     `~plasmapy.particles.exceptions.InvalidParticleError`
         If the argument does not correspond to a valid particle.
 
-    `TypeError`
-        If the argument is not a `str`.
-
     See Also
     --------
-    mass_number : returns the mass number (the total number of protons
-        and neutrons) of an isotope.
+    ~plasmapy.particles.atomic.mass_number
 
     Examples
     --------
@@ -113,13 +109,9 @@ def mass_number(isotope: Particle) -> Integral:
     `~plasmapy.particles.exceptions.InvalidIsotopeError`
         If the argument does not correspond to a valid isotope.
 
-    `TypeError`
-        The argument is not a `str`.
-
-
     See Also
     --------
-    atomic_number : returns the number of protons in an isotope or element
+    ~plasmapy.particles.atomic.atomic_number
 
     Examples
     --------
@@ -161,12 +153,9 @@ def standard_atomic_weight(element: Particle) -> u.Quantity:
     `~plasmapy.particles.exceptions.InvalidParticleError`
         If the argument does not correspond to a valid particle.
 
-    `TypeError`
-        If the argument is not a `str` or `int`.
-
     See Also
     --------
-    particle_mass
+    ~plasmapy.particles.atomic.particle_mass
 
     Notes
     -----
@@ -225,9 +214,6 @@ def particle_mass(
 
     Raises
     ------
-    `TypeError`
-        The argument is not a string, integer, or |Quantity|.
-
     `~plasmapy.particles.exceptions.InvalidParticleError`
         If the argument does not correspond to a valid particle.
 
@@ -237,7 +223,7 @@ def particle_mass(
 
     See Also
     --------
-    standard_atomic_weight
+    ~plasmapy.particles.atomic.standard_atomic_weight
 
     Notes
     -----
@@ -279,9 +265,6 @@ def isotopic_abundance(isotope: Particle, mass_numb: Optional[Integral] = None) 
     `~plasmapy.particles.exceptions.InvalidParticleError`
         If the argument does not correspond to a valid particle
         or contradictory information is provided.
-
-    `TypeError`
-        If the argument is not a `str` or `int`.
 
     Notes
     -----
@@ -439,9 +422,6 @@ def is_stable(particle: Particle, mass_numb: Optional[Integral] = None) -> bool:
     `~plasmapy.particles.exceptions.InvalidParticleError`
         If the arguments do not correspond to a valid particle.
 
-    `TypeError`
-        If the argument is not a `str` or `int`.
-
     `~plasmapy.particles.exceptions.MissingParticleDataError`
         If stability information is not available.
 
@@ -493,10 +473,6 @@ def half_life(particle: Particle, mass_numb: Optional[Integral] = None) -> u.Qua
     `~plasmapy.particles.exceptions.MissingParticleDataError`
         If no half-life data is available for the isotope.
 
-    `TypeError`
-        The argument is not an `int` or `str` or the mass number is
-        not an `int`.
-
     Notes
     -----
     Accurate half-life data is not known for all isotopes. Some isotopes
@@ -533,11 +509,10 @@ def known_isotopes(argument: Union[str, Integral] = None) -> List[str]:
     -------
     `list` of `str`
         List of all the isotopes of an element that have been
-        discovered, sorted from lowest mass number to highest mass
-        number.  If no argument is provided, then a list of all known
-        isotopes of every element will be returned that is sorted by
-        atomic number, with entries for each element sorted by mass
-        number.
+        discovered, sorted from low to high mass number. If no argument
+        is provided, then a list of all known isotopes of every element
+        will be returned that is sorted first by atomic number and
+        second by mass number.
 
     Raises
     ------
@@ -547,18 +522,17 @@ def known_isotopes(argument: Union[str, Integral] = None) -> List[str]:
     `~plasmapy.particles.exceptions.InvalidParticleError`
         If the argument does not correspond to a valid particle.
 
-    `TypeError`
-        If the argument is not a `str` or `int`.
-
     Notes
     -----
     This list returns both natural and artificially produced isotopes.
 
     See Also
     --------
-    common_isotopes : returns isotopes with non-zero isotopic abundances.
+    ~plasmapy.particles.atomic.common_isotopes :
+        Returns isotopes with non-zero isotopic abundances.
 
-    stable_isotopes : returns isotopes that are stable against radioactive decay.
+    ~plasmapy.particles.atomic.stable_isotopes :
+        Returns isotopes that are stable against radioactive decay.
 
     Examples
     --------
@@ -635,9 +609,9 @@ def common_isotopes(
         abundant.  If no isotopes have isotopic abundances greater
         than zero, this function will return an empty list.  If no
         arguments are provided, then a list of all common isotopes of
-        all elements will be provided that is sorted by atomic number,
-        with entries for each element sorted from most abundant to
-        least abundant.
+        all elements will be provided that is sorted first by low to
+        high atomic number and second by most abundant to least abundant
+        isotope.
 
     Raises
     ------
@@ -647,9 +621,6 @@ def common_isotopes(
     `~plasmapy.particles.exceptions.InvalidParticleError`
         If the argument does not correspond to a valid particle.
 
-    `TypeError`
-        If the argument is not a string or integer.
-
     Notes
     -----
     The isotopic abundances are based on the terrestrial environment
@@ -657,11 +628,14 @@ def common_isotopes(
 
     See Also
     --------
-    known_isotopes : returns a list of isotopes that have been discovered.
+    ~plasmapy.particles.atomic.known_isotopes :
+        Returns a list of isotopes that have been discovered.
 
-    stable_isotopes : returns isotopes that are stable against radioactive decay.
+    ~plasmapy.particles.atomic.stable_isotopes :
+        Returns isotopes that are stable against radioactive decay.
 
-    isotopic_abundance : returns the relative isotopic abundance.
+    ~plasmapy.particles.atomic.isotopic_abundance :
+        Returns the relative isotopic abundance.
 
     Examples
     --------
@@ -751,8 +725,8 @@ def stable_isotopes(
     Returns
     -------
     `list` of `str`
-        List of all stable isotopes of an element, sorted from lowest
-        mass number.  If an element has no stable isotopes, this
+        List of all stable isotopes of an element, sorted from low to
+        high mass number.  If an element has no stable isotopes, this
         function returns an empty list.
 
     Raises
@@ -762,9 +736,6 @@ def stable_isotopes(
 
     `~plasmapy.particles.exceptions.InvalidParticleError`
         If the argument does not correspond to a valid particle.
-
-    `TypeError`
-        If the argument is not a string or integer.
 
     Notes
     -----
@@ -777,9 +748,11 @@ def stable_isotopes(
 
     See Also
     --------
-    known_isotopes : returns a list of isotopes that have been discovered.
+    ~plasmapy.particles.atomic.known_isotopes :
+        Returns a list of isotopes that have been discovered.
 
-    common_isotopes : returns isotopes with non-zero isotopic abundances.
+    ~plasmapy.particles.atomic.common_isotopes :
+        Returns isotopes with non-zero isotopic abundances.
 
     Examples
     --------
@@ -860,11 +833,6 @@ def reduced_mass(test_particle, target_particle) -> u.Quantity:
     `~plasmapy.particles.exceptions.MissingParticleDataError`
         If the mass of either particle is not known.
 
-    `TypeError`
-        If either argument is not a `str`, `int`,
-        `~plasmapy.particles.particle_class.Particle`,
-        `~astropy.units.Quantity`, or `~astropy.constants.Constant`.
-
     Examples
     --------
     >>> from astropy import units as u
@@ -920,11 +888,6 @@ def periodic_table_period(argument: Union[str, Integral]) -> Integral:
     `int`
         The periodic table period of the element.
 
-    Raises
-    ------
-    `TypeError`
-        If the argument is not a `str` or `int`.
-
     See Also
     --------
     periodic_table_group : returns periodic table group of element.
@@ -968,11 +931,6 @@ def periodic_table_group(argument: Union[str, Integral]) -> Integral:
     -------
     `int`
         The periodic table group of the element.
-
-    Raises
-    ------
-    `TypeError`
-        If the argument is not a `str` or `int`.
 
     See Also
     --------
@@ -1022,18 +980,16 @@ def periodic_table_block(argument: Union[str, Integral]) -> str:
     `str`
         The periodic table block of the element.
 
-    Raises
-    ------
-    `TypeError`
-        If the argument is not a `str` or `int`.
-
     See Also
     --------
-    periodic_table_period : returns periodic table period of element.
+    ~plasmapy.particles.atomic.periodic_table_period :
+        Returns periodic table period of element.
 
-    periodic_table_group : returns periodic table group of element.
+    ~plasmapy.particles.atomic.periodic_table_group :
+        Returns periodic table group of element.
 
-    periodic_table_category : returns periodic table category of element.
+    ~plasmapy.particles.atomic.periodic_table_category :
+        Returns periodic table category of element.
 
     Examples
     --------
@@ -1074,11 +1030,6 @@ def periodic_table_category(argument: Union[str, Integral]) -> str:
     -------
     `str`
         The periodic table category of the element.
-
-    Raises
-    ------
-    `TypeError`
-        If the argument is not a `str` or `int`.
 
     See Also
     --------

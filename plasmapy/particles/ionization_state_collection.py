@@ -437,12 +437,6 @@ class IonizationStateCollection:
         ------
         `~plasmapy.particles.exceptions.ParticleError`
             If the ionic fractions cannot be set.
-
-        `TypeError`
-            If ``inputs`` is not a `list`, `tuple`, or `dict` during
-            instantiation, or if ``inputs`` is not a `dict` when it is
-            being set.
-
         """
 
         # A potential problem is that using item assignment on the
