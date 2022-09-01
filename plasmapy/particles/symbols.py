@@ -284,7 +284,7 @@ def element_name(element: Particle) -> str:
 
     Parameters
     ----------
-    argument : |atom-like|
+    element : |atom-like|
         A `str` representing an element, isotope, or ion or an
         `int` representing an atomic number
 
