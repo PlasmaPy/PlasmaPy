@@ -69,13 +69,13 @@ class IonicLevel:
 
             ionic_fraction_within_rtol = u.isclose(
                 self.ionic_fraction,
-                getattr(other, "ionic_fraction", None),
+                getattr(other, "ionic_fraction"),
                 rtol=1e-15,
             )
 
             number_density_within_rtol = u.isclose(
                 self.number_density,
-                getattr(other, "number_density", None),
+                other_number_density,
                 rtol=1e-15,
             )
 
@@ -402,7 +402,10 @@ class IonizationState:
 
         """
         if not isinstance(other, IonizationState):
-            return False
+            raise TypeError(
+                "An instance of the IonizationState class may only be "
+                "compared with another IonizationState instance."
+            )
 
         same_element = self.element == other.element
         same_isotope = self.isotope == other.isotope
