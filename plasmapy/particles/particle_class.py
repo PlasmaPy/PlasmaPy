@@ -82,11 +82,11 @@ valid_categories = (
     | _specific_particle_categories
 )
 """
-All valid particle categories.
+A `set` containing all valid particle categories.
 
 To add a new particle category, update
 `~plasmapy.particles.particle_class.valid_categories` with a new string
-representing the category (e.g., by doing 
+representing the category (e.g., by doing
 :py:`valid_categories |= {"new_category"}`\ ).
 
 See Also
