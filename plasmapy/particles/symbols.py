@@ -33,13 +33,13 @@ def atomic_symbol(element: Particle) -> str:
 
     Parameters
     ----------
-    element: |particle-like|
+    element : |particle-like|
         A `str` representing an element, isotope, or ion; or an
         `int` or `str` representing an atomic number.
 
     Returns
     -------
-    symbol: `str`
+    symbol : `str`
         The atomic symbol of the element, isotope, or ion.
 
     Raises
@@ -103,16 +103,16 @@ def isotope_symbol(isotope: Particle, mass_numb: Optional[Integral] = None) -> s
 
     Parameters
     ----------
-    isotope: |particle-like|
+    isotope : |particle-like|
         A `str` representing an element, isotope, or ion or an
         `int` representing an atomic number
 
-    mass_numb: `int` or `str`, optional
+    mass_numb : `int` or `str`, optional
         The mass number of the isotope.
 
     Returns
     -------
-    symbol: `str`
+    symbol : `str`
         The isotopic symbol. The result will generally be returned as
         something like ``'He-4'`` or ``'Au-197'``.  This function will
         return ``'D'`` for deuterium and ``'T'`` for tritium.
@@ -136,9 +136,9 @@ def isotope_symbol(isotope: Particle, mass_numb: Optional[Integral] = None) -> s
 
     See Also
     --------
-    atomic_symbol
-    ionic_symbol
-    particle_symbol
+    ~plasmapy.particles.symbols.atomic_symbol
+    ~plasmapy.particles.symbols.ionic_symbol
+    ~plasmapy.particles.symbols.particle_symbol
 
     Examples
     --------
@@ -172,12 +172,12 @@ def ionic_symbol(
     mass_numb: `int` or `str`, optional
         The mass number of the ion or neutral atom.
 
-    Z: `int` or `str`, optional
+    Z : `int` or `str`, optional
         The charge number of the ion or neutral atom.
 
     Returns
     -------
-    symbol: `str`
+    symbol : `str`
         The ionic symbol. The result will generally be returned as
         something like ``'He-4 2+'``, ``'D 1+'``, or ``'p+'``.
 
@@ -234,19 +234,19 @@ def particle_symbol(
 
     Parameters
     ----------
-    particle: |particle-like|
+    particle : |particle-like|
         A `str` representing a particle, element, isotope, or ion or an
         `int` representing an atomic number
 
-    mass_numb: `int` or `str`, optional
+    mass_numb : `int` or `str`, optional
         The mass number of an isotope.
 
-    Z: `int` or `str`, optional
+    Z : `int` or `str`, optional
         The charge number of an ion.
 
     Returns
     -------
-    symbol: `str`
+    symbol : `str`
         The particle symbol, containing charge and mass number
         information when available. The result will generally be
         returned as something like ``'e-'``, ``'Fe'``, ``'He-4 2+'``,
