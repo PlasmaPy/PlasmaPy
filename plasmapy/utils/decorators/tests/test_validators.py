@@ -580,12 +580,14 @@ class TestValidateClassAttributes:
             return self.x + self.y
 
         @cached_property
-        @validate_class_attributes(expected_attributes=[("x", "y")])
+        @validate_class_attributes(both_or_either_attributes=[("x", "y")])
         def require_x_or_y(self):
             return self.x if self.x is not None else self.y
 
         @cached_property
-        @validate_class_attributes(expected_attributes=["x", ("y", "z")])
+        @validate_class_attributes(
+            expected_attributes=["x"], both_or_either_attributes=[("y", "z")]
+        )
         def require_x_and_either_y_or_z(self):
             return self.x
 
