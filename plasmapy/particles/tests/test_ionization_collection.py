@@ -962,5 +962,6 @@ def test_inequality_with_different_type():
 
 
 def test_inequality_with_different_base_particles():
-    ionization_states = IonizationStateCollection({"H": [1, 0], "He": [1, 0, 0]})
-    IonizationStateCollection({"H": [1, 0], "Li": [1, 0, 0, 0]})
+    instance1 = IonizationStateCollection({"H": [1, 0], "He": [1, 0, 0]})
+    instance2 = IonizationStateCollection({"H": [1, 0], "Li": [1, 0, 0, 0]})
+    assert instance1 != instance2
