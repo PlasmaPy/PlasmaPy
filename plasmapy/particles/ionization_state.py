@@ -65,7 +65,7 @@ class IonicLevel:
         if not isinstance(other, IonicLevel):
             return False
 
-        if self.ionic_symbol != getattr(other, "ionic_symbol", None):
+        if self.ionic_symbol != other.ionic_symbol:
             return False
 
         ionic_fraction_within_rtol = u.isclose(
