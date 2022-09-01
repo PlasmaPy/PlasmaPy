@@ -62,32 +62,27 @@ class IonicLevel:
 
     def __eq__(self, other):
 
+        if self.ionic_symbol != getattr(other, "ionic_symbol", None):
+            return False
+
         try:
-            if self.ionic_symbol != other.ionic_symbol:
-                return False
 
-            ionic_fraction_within_tolerance = np.isclose(
+            ionic_fraction_within_rtol = u.isclose(
                 self.ionic_fraction,
-                other.ionic_fraction,
+                getattr(other, "ionic_fraction", None),
                 rtol=1e-15,
             )
 
-            number_density_within_tolerance = u.isclose(
+            number_density_within_rtol = u.isclose(
                 self.number_density,
-                other.number_density,
+                getattr(other, "number_density", None),
                 rtol=1e-15,
             )
 
-            return all(
-                [ionic_fraction_within_tolerance, number_density_within_tolerance]
-            )
+            return ionic_fraction_within_rtol and number_density_within_rtol
 
-        except TypeError as exc:
-            raise TypeError(
-                "Unable to ascertain equality between the following objects:\n"
-                f"  {self}\n"
-                f"  {other}"
-            ) from exc
+        except TypeError:
+            return False
 
     @particle_input
     def __init__(
