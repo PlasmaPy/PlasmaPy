@@ -60,7 +60,7 @@ def test_ionic_level_invalid_inputs(invalid_fraction, expected_exception):
 
 
 @pytest.mark.parametrize("invalid_particle", ["H", "e-", "Fe-56"])
-def test_ionic_fraction_invalid_particles(invalid_particle):
+def test_ionic_level_invalid_particles(invalid_particle):
     """
     Test that `~plasmapy.particles.IonicLevel` raises the appropriate
     exception when passed a particle that isn't a neutral or ion.
@@ -70,7 +70,7 @@ def test_ionic_fraction_invalid_particles(invalid_particle):
 
 
 @pytest.mark.parametrize("ion1, ion2", [("Fe-56 6+", "Fe-56 5+"), ("H 1+", "D 1+")])
-def test_ionic_fraction_comparison_with_different_ions(ion1, ion2):
+def test_ionic_level_comparison_with_different_ions(ion1, ion2):
     """
     Test that a `TypeError` is raised when an `IonicLevel` object
     is compared to an `IonicLevel` object of a different ion.
@@ -81,6 +81,11 @@ def test_ionic_fraction_comparison_with_different_ions(ion1, ion2):
     ionic_fraction_2 = IonicLevel(ion=ion2, ionic_fraction=fraction)
 
     assert ionic_fraction_1 != ionic_fraction_2
+
+
+def test_ionic_level_inequality_with_different_type():
+    instance = IonicLevel("H", 0.3)
+    assert instance != "different type"
 
 
 def test_ionization_state_ion_input_error():
