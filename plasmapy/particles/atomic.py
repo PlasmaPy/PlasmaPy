@@ -206,8 +206,8 @@ def particle_mass(
     ----------
     particle : |particle-like|
         A string representing an element, isotope, ion, or special
-        particle; an integer representing an atomic number; or an
-        instance of the Particle class.
+        particle; an integer representing an atomic number; or a
+        |Particle|.
 
     Z : integer, optional, |keyword-only|
         The ionization state of the ion.
@@ -223,7 +223,7 @@ def particle_mass(
     Raises
     ------
     `TypeError`
-        The argument is not a string, integer, or Quantity.
+        The argument is not a string, integer, or |Quantity|.
 
     `~plasmapy.particles.exceptions.InvalidParticleError`
         If the argument does not correspond to a valid particle.
@@ -471,7 +471,7 @@ def half_life(particle: Particle, mass_numb: Optional[Integral] = None) -> u.Qua
     ----------
     particle : |particle-like|
         A string representing an isotope or particle, an integer
-        representing an atomic number, or an instance of the Particle
+        representing an atomic number, or an instance of the |Particle|
         class.
 
     mass_numb : integer, optional
