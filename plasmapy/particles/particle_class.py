@@ -372,10 +372,10 @@ class Particle(AbstractPhysicalParticle):
         |Particle|.
 
     mass_numb : integer, optional, |keyword-only|
-        The mass number of an isotope or nuclide.
+        The mass number of an isotope.
 
     Z : integer, optional, |keyword-only|
-        The charge number of the particle.
+        The |charge number| of an ion or neutral atom.
 
     Raises
     ------
@@ -543,8 +543,8 @@ class Particle(AbstractPhysicalParticle):
         self,
         argument: ParticleLike,
         *_,
-        mass_numb: Integral = None,
-        Z: Integral = None,
+        mass_numb: Optional[Integral] = None,
+        Z: Optional[Integral] = None,
     ):
 
         # TODO: Remove the following block during or after the 0.9.0 release
@@ -1819,13 +1819,13 @@ class DimensionlessParticle(AbstractParticle):
 
     Parameters
     ----------
-    mass : positive real number, |keyword-only|, optional, default: |nan|
+    mass : positive real number, optional, |keyword-only|, default: |nan|
         The mass of the dimensionless particle.
 
-    charge : real number, |keyword-only|, optional, default: |nan|
+    charge : real number, optional, |keyword-only|, default: |nan|
         The electric charge of the dimensionless particle.
 
-    symbol : str, |keyword-only|, optional
+    symbol : str, optional, |keyword-only|
         The symbol to be assigned to the dimensionless particle.
 
     See Also
@@ -2276,7 +2276,7 @@ def molecule(
         ``"CO +1"``, or ``"CO+"``.
 
     Z : integer, optional
-        The charge number if not present in the symbol.
+        The |charge number| of the molecule.
 
     Returns
     -------
