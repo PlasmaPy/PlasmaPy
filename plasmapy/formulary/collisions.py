@@ -2110,7 +2110,7 @@ def coupling_parameter(
 
 class CollisionFrequencies:
     @validate_quantities(
-        v_a={"none_shall_pass": True, "can_be_negative": False},
+        v_drift={"none_shall_pass": True, "can_be_negative": False},
         T_a={
             "none_shall_pass": True,
             "can_be_negative": False,
@@ -2130,7 +2130,7 @@ class CollisionFrequencies:
         test_particle: particles.Particle,
         field_particle: particles.Particle,
         *,
-        v_a: u.m / u.s = None,
+        v_drift: u.m / u.s = None,
         T_a: u.K = None,
         n_a: u.m**-3 = None,
         T_b: u.K = None,
@@ -2151,13 +2151,13 @@ class CollisionFrequencies:
         field_particle : |Particle|
             The background particle being interacted with.
 
-        v_a : `~astropy.units.Quantity`, optional
-            The relative speed between particles. If not provided, T_a must be specified and
-            thermal velocity is assumed: :math:`μ v_a^2 \sim 2 k_B T_a` where
+        v_drift : `~astropy.units.Quantity`, optional
+            The relative drift between the test and field particles. If not provided, T_a must be specified and
+            thermal velocity is assumed to be dominant: :math:`μ v_a^2 \sim 2 k_B T_a` where
             :math:`μ` is the reduced mass. Cannot be negative.
 
         T_a : `~astropy.units.Quantity`, optional
-            The temperature of the test particles. Only necessary if :math:`v_a` is not provided.
+            The temperature of the test particles.
 
         n_a : `~astropy.units.Quantity`, optional
             The number density of the test particles in units convertible to :math:`\frac{1}{m^{3}}`.
@@ -2174,8 +2174,7 @@ class CollisionFrequencies:
         Raises
         ------
         `ValueError`
-            If neither :math:`v_a` nor :math:`T_a` are specified, or specified arrays
-            don't have equal size.
+            If specified arrays don't have equal size.
 
         Notes
         -----
@@ -2233,11 +2232,11 @@ class CollisionFrequencies:
         >>> frequencies_using_temperature.momentum_loss
         <Quantity 1.83701432e+11 Hz>
 
-        >>> v_a = 1e5 * u.m / u.s
-        >>> frequencies_using_velocity = CollisionFrequencies(
-        ...     "e-", "e-", v_a=v_a, n_b=n_b, T_b=T_b, Coulomb_log=Coulomb_log
+        >>> v_drift = 1e5 * u.m / u.s
+        >>> frequencies_using_drift = CollisionFrequencies(
+        ...     "e-", "e-", v_drift=v_drift, n_b=n_b, T_b=T_b, Coulomb_log=Coulomb_log
         ... )
-        >>> frequencies_using_velocity.energy_loss
+        >>> frequencies_using_drift.energy_loss
         <Quantity -9.69828719e+15 Hz>
 
         See Also
@@ -2250,15 +2249,15 @@ class CollisionFrequencies:
         # Input is taken in MKS units and then converted as necessary. Output is in MKS units.
 
         if (
-            isinstance(v_a, np.ndarray)
+            isinstance(v_drift, np.ndarray)
             and isinstance(n_b, np.ndarray)
-            and v_a.shape != n_b.shape
+            and v_drift.shape != n_b.shape
         ):
             raise ValueError("Please specify arrays of equal length.")
 
         self.test_particle = test_particle
         self.field_particle = field_particle
-        self.v_a = v_a
+        self.v_drift = v_drift
         self.T_a = T_a
         self.n_a = n_a
         self.T_b = T_b
@@ -2270,40 +2269,53 @@ class CollisionFrequencies:
         )
 
     @cached_property
+    @validate_class_attributes(expected_attributes=["T_a"])
     def _v_T_a(self):
         """
         The thermal velocity of the test particle species.
         """
 
-        return (
-            self.v_a
-            if self.v_a is not None
-            else thermal_speed(self.T_a, self.test_particle)
-        )
+        return thermal_speed(self.T_a, self.test_particle)
+
+    @cached_property
+    @validate_class_attributes(both_or_either_attributes=[("T_a", "v_drift")])
+    def _v_a(self):
+        """
+        The net velocity of the test particle species due to both drift and thermal motions.
+        If T_a is not specified, then the net velocity is assumed to be dominated by drift.
+        If v_drift is not specified, then the net velocity is assumed to be dominated by thermal motion.
+        """
+
+        if self.T_a is not None and self.v_drift is not None:
+            return self._v_T_a + self.v_drift
+        elif self.T_a is not None:
+            return self._v_T_a
+        elif self.v_drift is not None:
+            return self.v_drift
 
     @cached_property
     def _mass_ratio(self):
         return self.test_particle.mass / self.field_particle.mass
 
     @cached_property
-    @validate_class_attributes(expected_attributes=["n_b", ("T_a", "v_a")])
+    @validate_class_attributes(mutually_exclusive_attributes=[("v_drift", "T_a")])
     def momentum_loss(self):
         """
         The momentum loss rate due to collisions.
 
         In order to access this attribute, ``n_b`` must be specified in addition
-        to either ``T_a`` or ``v_a``.
+        to either ``T_a`` or ``v_drift``.
         """
         return (1 + self._mass_ratio) * self.phi * self.Lorentz_collision_frequency
 
     @cached_property
-    @validate_class_attributes(expected_attributes=["n_b", ("T_a", "v_a")])
+    @validate_class_attributes(mutually_exclusive_attributes=[("v_drift", "T_a")])
     def transverse_diffusion(self):
         """
         The rate of transverse diffusion due to collisions.
 
         In order to access this attribute, ``n_b`` must be specified in addition
-        to either ``T_a`` or ``v_a``.
+        to either ``T_a`` or ``v_drift``.
         """
         return (
             2
@@ -2312,24 +2324,24 @@ class CollisionFrequencies:
         )
 
     @cached_property
-    @validate_class_attributes(expected_attributes=["n_b", ("T_a", "v_a")])
+    @validate_class_attributes(mutually_exclusive_attributes=[("v_drift", "T_a")])
     def parallel_diffusion(self):
         """
         The rate of parallel diffusion due to collisions.
 
         In order to access this attribute, ``n_b`` must be specified in addition
-        to either ``T_a`` or ``v_a``.
+        to either ``T_a`` or ``v_drift``.
         """
         return (self.phi / self.x) * self.Lorentz_collision_frequency
 
     @cached_property
-    @validate_class_attributes(expected_attributes=["n_b", ("T_a", "v_a")])
+    @validate_class_attributes(mutually_exclusive_attributes=[("v_drift", "T_a")])
     def energy_loss(self):
         """
         The energy loss rate due to collisions.
 
         In order to access this attribute, ``n_b`` must be specified in addition
-        to either ``T_a`` or ``v_a``.
+        to either ``T_a`` or ``v_drift``.
         """
         return (
             2
@@ -2338,13 +2350,15 @@ class CollisionFrequencies:
         )
 
     @cached_property
-    @validate_class_attributes(expected_attributes=["n_b", ("T_a", "v_a")])
+    @validate_class_attributes(
+        expected_attributes=["n_b"], both_or_either_attributes=[("v_drift", "T_a")]
+    )
     def Lorentz_collision_frequency(self):
         r"""
         The Lorentz collision frequency.
 
         In order to access this attribute, ``n_b`` must be specified in addition
-        to either ``T_a`` or ``v_a``.
+        to either ``T_a`` or ``v_drift``.
 
         The Lorentz collision frequency (see Ch. 5 of :cite:t:`chen:2016`) is given
         by
@@ -2371,10 +2385,11 @@ class CollisionFrequencies:
             * (self.field_particle.charge_number * e.esu) ** 2
             * self.Coulomb_log
             * self.n_b
-            / (self.test_particle.mass**2 * self._v_T_a**3)
+            / (self.test_particle.mass**2 * self._v_a**3)
         ).to(u.Hz)
 
     @cached_property
+    @validate_class_attributes(expected_attributes=["T_b"])
     def _mean_thermal_velocity(self):
         """
         Parameter used in enforcing the definition of "slowly flowing" Maxwellian
@@ -2386,22 +2401,23 @@ class CollisionFrequencies:
         return (self._v_T_a**2 + v_T_b**2) ** 0.5
 
     @cached_property
+    @validate_class_attributes(expected_attributes=["v_drift"])
     def _is_slowly_flowing(self):
         """
         Criteria used in determining whether `Maxwellian_avg_ei_collision_freq` and
         `Maxwellian_avg_ii_collision_freq` can be applied to the specified species.
         """
 
-        return self.v_a / self._mean_thermal_velocity < 0.1
+        return self.v_drift / self._mean_thermal_velocity < 0.1
 
     @cached_property
-    @validate_class_attributes(expected_attributes=["T_a", "v_a", "n_a", "n_b"])
+    @validate_class_attributes(expected_attributes=["T_a", "v_drift", "n_a", "n_b"])
     def Maxwellian_avg_ei_collision_freq(self):
         r"""Average momentum relaxation rate for a slowly flowing Maxwellian
         distribution of electrons, relative to a population of stationary ions.
 
         In order to use this attribute, ``test_particle`` must be an electron
-        and ``field_particle`` must be an ion. Additionally, ``T_a``, ``v_a``,
+        and ``field_particle`` must be an ion. Additionally, ``T_a``, ``v_drift``,
         ``n_a``, and ``n_b`` must be specified.
 
         This function assumes that both populations are Maxwellian, and :math:`T_{i} \lesssim T_{e}`.
@@ -2426,14 +2442,14 @@ class CollisionFrequencies:
         Examples
         --------
         >>> import astropy.units as u
-        >>> v_a = 1 * u.m / u.s
+        >>> v_drift = 1 * u.m / u.s
         >>> n_a = 1e26 * u.m**-3
         >>> T_a = 1 * u.eV
         >>> n_b = 1e26 * u.m**-3
         >>> T_b = 1e3 * u.eV
         >>> Coulomb_log = 10 * u.dimensionless_unscaled
         >>> electron_ion_collisions = CollisionFrequencies(
-        ...     "e-", "Na+", v_a=v_a, n_a=n_a, T_a=T_a, n_b=n_b, T_b=T_b, Coulomb_log=Coulomb_log
+        ...     "e-", "Na+", v_drift=v_drift, n_a=n_a, T_a=T_a, n_b=n_b, T_b=T_b, Coulomb_log=Coulomb_log
         ... )
         >>> electron_ion_collisions.Maxwellian_avg_ei_collision_freq
         <Quantity 2906316911556553.5 Hz>
@@ -2455,13 +2471,13 @@ class CollisionFrequencies:
         return coeff * self.Lorentz_collision_frequency
 
     @cached_property
-    @validate_class_attributes(expected_attributes=["T_a", "v_a", "n_a", "n_b"])
+    @validate_class_attributes(expected_attributes=["T_a", "v_drift", "n_a", "n_b"])
     def Maxwellian_avg_ii_collision_freq(self):
         r"""Average momentum relaxation rate for a slowly flowing Maxwellian
         distribution of ions, relative to a population of stationary ions.
 
         In order to use this attribute, ``test_particle`` and ``field_particle``
-        must be ions. Additionally, ``T_a``, ``v_a``, ``n_a``, and ``n_b`` must be specified.
+        must be ions. Additionally, ``T_a``, ``v_drift``, ``n_a``, and ``n_b`` must be specified.
 
         This function assumes that both populations are Maxwellian, and :math:`T_{i} \lesssim T_{e}`.
 
@@ -2482,14 +2498,14 @@ class CollisionFrequencies:
         Examples
         --------
         >>> import astropy.units as u
-        >>> v_a = 1 * u.m / u.s
+        >>> v_drift = 1 * u.m / u.s
         >>> n_a = 1e26 * u.m**-3
         >>> T_a = 1e3 * u.eV
         >>> n_b = 1e26 * u.m**-3
         >>> T_b = 1e3 * u.eV
         >>> Coulomb_log = 10 * u.dimensionless_unscaled
         >>> ion_ion_collisions = CollisionFrequencies(
-        ...     "Na+", "Na+", v_a=v_a, n_a=n_a, T_a=T_a, n_b=n_b, T_b=T_b, Coulomb_log=Coulomb_log
+        ...     "Na+", "Na+", v_drift=v_drift, n_a=n_a, T_a=T_a, n_b=n_b, T_b=T_b, Coulomb_log=Coulomb_log
         ... )
         >>> ion_ion_collisions.Maxwellian_avg_ii_collision_freq
         <Quantity 79364412.21510696 Hz>
@@ -2511,19 +2527,21 @@ class CollisionFrequencies:
         return coeff * self.Lorentz_collision_frequency
 
     @cached_property
-    @validate_class_attributes(expected_attributes=["T_b", ("T_a", "v_a")])
+    @validate_class_attributes(
+        expected_attributes=["T_b"], mutually_exclusive_attributes=[("v_drift", "T_a")]
+    )
     def x(self) -> u.dimensionless_unscaled:
         """
         The ratio of kinetic energy in the test particle to the thermal energy of the field particle.
         This parameter determines the regime in which the collision falls.
 
         In order to use this attribute, ``T_b`` must be specified in addition to
-        either ``T_a`` or ``v_a``.
+        either ``T_a`` or ``v_drift``.
 
         (see documentation for the `~plasmapy.formulary.collisions.CollisionFrequencies` class for details)
         """
 
-        x = self.field_particle.mass * self.v_a**2 / (2 * k_B.cgs * self.T_b)
+        x = self.field_particle.mass * self._v_a**2 / (2 * k_B.cgs * self.T_b)
         return x.to(u.dimensionless_unscaled)
 
     @staticmethod
@@ -2534,7 +2552,7 @@ class CollisionFrequencies:
 
         return t**0.5 * np.exp(-t)
 
-    def _phi_explicit(self, x: float) -> float:
+    def _phi_explicit(self, x: float):
         """
         The non-vectorized method for evaluating the integral for phi
         """
@@ -2543,14 +2561,13 @@ class CollisionFrequencies:
         return integral
 
     @cached_property
-    @validate_class_attributes(expected_attributes=["T_b", ("T_a", "v_a")])
     def phi(self):
         """
         The parameter phi used in calculating collision frequencies
         calculated using the default error tolerances of `~scipy.integrate.quad`.
 
         In order to use this attribute, ``T_b`` must be specified in addition to
-        either ``T_a`` or ``v_a``.
+        either ``T_a`` or ``v_drift``.
 
         For more information refer to page 31 of :cite:t:`nrlformulary:2019`.
         """

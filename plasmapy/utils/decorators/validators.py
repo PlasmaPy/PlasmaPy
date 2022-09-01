@@ -538,7 +538,12 @@ def validate_quantities(func=None, validations_on_return=None, **validations):
         return ValidateQuantities(**validations)
 
 
-def get_attributes_not_provided(self, expected_attributes):
+def get_attributes_not_provided(
+    self,
+    expected_attributes=None,
+    both_or_either_attributes=None,
+    mutually_exclusive_attributes=None,
+):
     """
     Collect attributes that weren't provided during instantiation needed
     to access a method.
@@ -546,24 +551,46 @@ def get_attributes_not_provided(self, expected_attributes):
 
     attributes_not_provided = []
 
-    for required_attribute in expected_attributes:
-        if isinstance(required_attribute, str):
-            if getattr(self, required_attribute) is None:
-                attributes_not_provided.append(required_attribute)
-        elif isinstance(required_attribute, tuple):
-            number_of_both_or_either_provided = 0
+    if expected_attributes is not None:
+        for attribute in expected_attributes:
+            if isinstance(attribute, str):
+                if getattr(self, attribute) is None:
+                    attributes_not_provided.append(attribute)
 
-            for mutually_exclusive_argument in required_attribute:
-                if getattr(self, mutually_exclusive_argument) is not None:
-                    number_of_both_or_either_provided += 1
+    if both_or_either_attributes is not None:
+        for attribute_tuple in both_or_either_attributes:
+            number_of_attributes_provided = 0
 
-            if number_of_both_or_either_provided == 0:
-                attributes_not_provided.append("/".join(required_attribute))
+            for attribute in attribute_tuple:
+                if getattr(self, attribute) is not None:
+                    number_of_attributes_provided += 1
+
+            if number_of_attributes_provided == 0:
+                attributes_not_provided.append(
+                    f"at least one of {' or '.join(attribute_tuple)}"
+                )
+
+    if mutually_exclusive_attributes is not None:
+        for attribute_tuple in mutually_exclusive_attributes:
+            number_of_attributes_provided = 0
+
+            for attribute in attribute_tuple:
+                if getattr(self, attribute) is not None:
+                    number_of_attributes_provided += 1
+
+            if number_of_attributes_provided != 1:
+                attributes_not_provided.append(
+                    f"exactly one of {' or '.join(attribute_tuple)}"
+                )
 
     return attributes_not_provided
 
 
-def validate_class_attributes(expected_attributes):
+def validate_class_attributes(
+    expected_attributes=None,
+    both_or_either_attributes=None,
+    mutually_exclusive_attributes=None,
+):
     """
     A decorator responsible for raising errors if the expected arguments weren't
     provided during class instantiation.
@@ -572,7 +599,10 @@ def validate_class_attributes(expected_attributes):
     def decorator(attribute):
         def wrapper(self, *args, **kwargs):
             arguments_not_provided = get_attributes_not_provided(
-                self, expected_attributes
+                self,
+                expected_attributes,
+                both_or_either_attributes,
+                mutually_exclusive_attributes,
             )
 
             if len(arguments_not_provided) > 0:
