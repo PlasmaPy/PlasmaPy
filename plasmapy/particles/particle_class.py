@@ -86,15 +86,12 @@ All valid particle categories.
 
 To add a new particle category, update
 `~plasmapy.particles.particle_class.valid_categories` with a new string
-representing the category.
+representing the category (e.g., by doing 
+:py:`valid_categories |= {"new_category"}`\ ).
 
 See Also
 --------
 :py:meth:`~plasmapy.particles.particle_class.AbstractPhysicalParticle.is_category`
-
-Examples
---------
-To add a new 
 """
 
 
