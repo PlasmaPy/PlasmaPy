@@ -8,7 +8,7 @@ import astropy.units as u
 import numpy as np
 
 from numbers import Integral, Real
-from typing import Dict, List, Optional, Tuple, Union
+from typing import Dict, List, NoReturn, Optional, Tuple, Union
 
 from plasmapy.particles.atomic import atomic_number
 from plasmapy.particles.exceptions import (
@@ -23,8 +23,8 @@ from plasmapy.particles.symbols import particle_symbol
 from plasmapy.utils.decorators import validate_quantities
 
 
-def _atomic_number_and_mass_number(p: Particle):
-    return (p.atomic_number, p.mass_number if p.isotope else 0)
+def _atomic_number_and_mass_number(p: ParticleLike):
+    return p.atomic_number, p.mass_number if p.isotope else 0
 
 
 class IonizationStateCollection:
@@ -64,9 +64,9 @@ class IonizationStateCollection:
     kappa: `float`, optional, |keyword-only|
         The value of kappa for a kappa distribution function.
 
-    tol: `float` or `integer`, optional, |keyword-only|
+    tol: `float` or `integer`, optional, |keyword-only|, default: ``1e-15``
         The absolute tolerance used by `~numpy.isclose` when testing
-        normalizations and making comparisons.  Defaults to ``1e-15``.
+        normalizations and making comparisons.
 
     Raises
     ------
@@ -874,18 +874,17 @@ class IonizationStateCollection:
 
         Parameters
         ----------
-        include_neutrals : `bool`, optional, |keyword-only|
+        include_neutrals : `bool`, optional, |keyword-only|, default: `True`
             If `True`, include neutrals when calculating the mean values
             of the different particles.  If `False`, exclude neutrals.
-            Defaults to `True`.
 
-        use_rms_charge : `bool`, optional, |keyword-only|
-            If `True`, use the root mean square charge instead of the
-            mean charge. Defaults to `False`.
+        use_rms_charge : `bool`, optional, |keyword-only|, default: `False`
+            If `True`, use the root-mean-square charge instead of the
+            mean charge.
 
-        use_rms_mass : `bool`, optional, |keyword-only|
-            If `True`, use the root mean square mass instead of the mean
-            mass. Defaults to `False`.
+        use_rms_mass : `bool`, optional, |keyword-only|, default: `False`
+            If `True`, use the root-mean-square mass instead of the mean
+            mass.
 
         Raises
         ------
@@ -940,18 +939,16 @@ class IonizationStateCollection:
             abundances=all_abundances,
         )
 
-    def summarize(self, minimum_ionic_fraction: Real = 0.01) -> None:
+    def summarize(self, minimum_ionic_fraction: Real = 0.01) -> NoReturn:
         """
-        Print quicklook information for an
-        `~plasmapy.particles.ionization_state_collection.IonizationStateCollection`
-        instance.
+        Print quicklook information.
 
         Parameters
         ----------
-        minimum_ionic_fraction: `Real`
+        minimum_ionic_fraction : `Real`, default: ``0.01``
             If the ionic fraction for a particular ionization state is
             below this level, then information for it will not be
-            printed.  Defaults to 0.01.
+            printed.
 
         Examples
         --------
@@ -975,7 +972,6 @@ class IonizationStateCollection:
         T_e = 1.20e+04 K
         kappa = 3.40
         ----------------------------------------------------------------
-
         """
         separator_line = 64 * "-"
 
