@@ -37,7 +37,9 @@ Glossary
       because it can be used to instantiate |Particle|.
 
    charge number
-      The charge of a particle in units of elementary charge.
+      The charge of a particle in units of the elementary charge. The
+      charge number of an ion or neutral particle is usually denoted as
+      ``Z``.
 
    fit-function
    fit-functions

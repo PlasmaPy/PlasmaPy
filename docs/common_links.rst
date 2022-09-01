@@ -95,6 +95,7 @@
 .. |atom-like| replace:: :term:`atom-like`\
 .. |bibliography| replace:: :ref:`bibliography`\
 .. |changelog guide| replace:: :ref:`changelog guide`\
+.. |charge number| replace:: :term:`charge number`\
 .. |coding guide| replace:: :ref:`coding guide`\
 .. |contributor guide| replace:: :ref:`contributor guide`\
 .. |documentation guide| replace:: :ref:`documentation guide`\
