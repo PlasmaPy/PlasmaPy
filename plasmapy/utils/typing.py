@@ -1,3 +1,12 @@
+"""
+Typing annotations for `plasmapy`.
+
+.. important::
+
+   This module is under development and the API may change in the
+   near future.
+"""
+
 from __future__ import annotations
 
 import astropy.units as u
