@@ -210,7 +210,7 @@ def particle_mass(
         |Particle|.
 
     Z : integer, optional, |keyword-only|
-        The ionization state of the ion.
+        The |charge number| of an ion.
 
     mass_numb : integer, optional, |keyword-only|
         The mass number of an isotope.
