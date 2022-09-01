@@ -40,6 +40,10 @@ def _physical_particle_factory(
         Keyword arguments to be supplied to |Particle|,
         |CustomParticle|, or |ParticleList|.
 
+    Returns
+    -------
+    |Particle|, |CustomParticle|, or |ParticleList|
+
     Raises
     ------
     `InvalidParticleError`
