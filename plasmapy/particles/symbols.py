@@ -33,13 +33,13 @@ def atomic_symbol(element: Particle) -> str:
 
     Parameters
     ----------
-    element : |particle-like|
+    element : |atom-like|
         A `str` representing an element, isotope, or ion; or an
         `int` or `str` representing an atomic number.
 
     Returns
     -------
-    symbol : `str`
+    `str`
         The atomic symbol of the element, isotope, or ion.
 
     Raises
@@ -49,9 +49,6 @@ def atomic_symbol(element: Particle) -> str:
 
     `~plasmapy.particles.exceptions.InvalidParticleError`
         If the argument does not correspond to a valid particle.
-
-    `TypeError`
-        If the argument is not a `str` or `int`.
 
     See Also
     --------
@@ -103,7 +100,7 @@ def isotope_symbol(isotope: Particle, mass_numb: Optional[Integral] = None) -> s
 
     Parameters
     ----------
-    isotope : |particle-like|
+    isotope : |atom-like|
         A `str` representing an element, isotope, or ion or an
         `int` representing an atomic number
 
@@ -112,7 +109,7 @@ def isotope_symbol(isotope: Particle, mass_numb: Optional[Integral] = None) -> s
 
     Returns
     -------
-    symbol : `str`
+    `str`
         The isotopic symbol. The result will generally be returned as
         something like ``'He-4'`` or ``'Au-197'``.  This function will
         return ``'D'`` for deuterium and ``'T'`` for tritium.
@@ -125,9 +122,6 @@ def isotope_symbol(isotope: Particle, mass_numb: Optional[Integral] = None) -> s
     `~plasmapy.particles.exceptions.InvalidParticleError`
         If the argument does not correspond to a valid particle
         or contradictory information is provided.
-
-    `TypeError`
-        If the argument is not a `str`, `int`, or |Particle|.
 
     Warns
     -----
@@ -158,26 +152,29 @@ def isotope_symbol(isotope: Particle, mass_numb: Optional[Integral] = None) -> s
 
 @particle_input(require="element", any_of=("charged", "uncharged"))
 def ionic_symbol(
-    particle: Particle, mass_numb: Integral = None, Z: Integral = None
+    particle: Particle,
+    *,
+    mass_numb: Optional[Integral] = None,
+    Z: Optional[Integral] = None,
 ) -> str:
     """
     Return the ionic symbol of an ion or neutral atom.
 
     Parameters
     ----------
-    particle : |particle-like|
+    particle : |atom-like|
         A `str` representing an element, isotope, or ion; or an
         `int` representing an atomic number.
 
-    mass_numb: `int` or `str`, optional
-        The mass number of the ion or neutral atom.
+    mass_numb : integer, optional, |keyword-only|
+        The mass number of an isotope.
 
-    Z : `int` or `str`, optional
-        The charge number of the ion or neutral atom.
+    Z : integer, optional, |keyword-only|
+        The |charge number| of an ion or neutral atom.
 
     Returns
     -------
-    symbol : `str`
+    `str`
         The ionic symbol. The result will generally be returned as
         something like ``'He-4 2+'``, ``'D 1+'``, or ``'p+'``.
 
@@ -190,12 +187,6 @@ def ionic_symbol(
     `~plasmapy.particles.exceptions.InvalidParticleError`
         If arguments do not correspond to a valid particle or
         contradictory information is provided.
-
-    `TypeError`
-        If ``particle`` is not a `str`, `int`, or
-        `~plasmapy.particles.particle_class.Particle`; or if either of
-        ``mass_numb`` or ``Z`` is not an `int` or `str` representing an
-        integer.
 
     Warns
     -----
@@ -227,7 +218,10 @@ def ionic_symbol(
 
 @particle_input
 def particle_symbol(
-    particle: Particle, mass_numb: Integral = None, Z: Integral = None
+    particle: Particle,
+    *,
+    mass_numb: Optional[Integral] = None,
+    Z: Optional[Integral] = None,
 ) -> str:
     """
     Return the symbol of a particle.
@@ -238,15 +232,15 @@ def particle_symbol(
         A `str` representing a particle, element, isotope, or ion or an
         `int` representing an atomic number
 
-    mass_numb : `int` or `str`, optional
+    mass_numb : integer, optional, |keyword-only|
         The mass number of an isotope.
 
-    Z : `int` or `str`, optional
-        The charge number of an ion.
+    Z : integer, optional, |keyword-only|
+        The |charge number| of an ion or neutral atom.
 
     Returns
     -------
-    symbol : `str`
+    `str`
         The particle symbol, containing charge and mass number
         information when available. The result will generally be
         returned as something like ``'e-'``, ``'Fe'``, ``'He-4 2+'``,
@@ -257,12 +251,6 @@ def particle_symbol(
     `~plasmapy.particles.exceptions.InvalidParticleError`
         If arguments do not correspond to a valid particle or
         contradictory information is provided.
-
-    `TypeError`
-        If ion is not a `str`, `int`, or
-        `~plasmapy.particles.particle_class.Particle`; or if either of
-        ``mass_numb`` or ``Z`` is not an `int` or a `str` representing
-        an integer.
 
     Warns
     -----
@@ -296,13 +284,13 @@ def element_name(element: Particle) -> str:
 
     Parameters
     ----------
-    argument : |particle-like|
+    argument : |atom-like|
         A `str` representing an element, isotope, or ion or an
         `int` representing an atomic number
 
     Returns
     -------
-    name : `str`
+    `str`
         The name of the element.
 
     Raises
@@ -312,9 +300,6 @@ def element_name(element: Particle) -> str:
 
     `~plasmapy.particles.exceptions.InvalidParticleError`
         If the argument does not correspond to a valid particle.
-
-    `TypeError`
-        If the argument is not a `str` or `int`.
 
     See Also
     --------
