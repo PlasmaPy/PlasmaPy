@@ -81,7 +81,7 @@ valid_categories = (
     | _atomic_property_categories
     | _specific_particle_categories
 )
-"""
+r"""
 A `set` containing all valid particle categories.
 
 To add a new particle category, update
