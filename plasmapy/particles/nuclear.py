@@ -4,6 +4,7 @@ __all__ = ["nuclear_binding_energy", "nuclear_reaction_energy", "mass_energy"]
 import astropy.units as u
 import re
 
+from numbers import Integral
 from typing import List, Optional, Union
 
 from plasmapy.particles.decorators import particle_input
@@ -13,8 +14,8 @@ from plasmapy.particles.particle_class import Particle
 
 @particle_input(any_of={"isotope", "baryon"})
 def nuclear_binding_energy(
-    particle: Particle, mass_numb: Optional[int] = None
-) -> u.Quantity:
+    particle: Particle, mass_numb: Optional[Integral] = None
+) -> u.J:
     """
     Return the nuclear binding energy associated with an isotope.
 
@@ -72,7 +73,7 @@ def nuclear_binding_energy(
 
 
 @particle_input
-def mass_energy(particle: Particle, mass_numb: Optional[int] = None) -> u.Quantity:
+def mass_energy(particle: Particle, mass_numb: Optional[Integral] = None) -> u.J:
     """
     Return a particle's mass energy.  If the particle is an isotope or
     nuclide, return the nuclear mass energy only.
@@ -113,7 +114,7 @@ def mass_energy(particle: Particle, mass_numb: Optional[int] = None) -> u.Quanti
     return particle.mass_energy
 
 
-def nuclear_reaction_energy(*args, **kwargs):
+def nuclear_reaction_energy(*args, **kwargs) -> u.J:
     """
     Return the released energy from a nuclear reaction.
 
@@ -320,14 +321,12 @@ def nuclear_reaction_energy(*args, **kwargs):
 
     if total_baryon_number(reactants) != total_baryon_number(products):
         raise ParticleError(
-            "The baryon number is not conserved for "
-            f"reactants = {reactants} and products = {products}."
+            f"The baryon number is not conserved for {reactants = } and {products = }."
         )
 
     if total_charge(reactants) != total_charge(products):
         raise ParticleError(
-            "Total charge is not conserved for reactants = "
-            f"{reactants} and products = {products}."
+            f"Total charge is not conserved for {reactants = } and {products = }."
         )
 
     released_energy = add_mass_energy(reactants) - add_mass_energy(products)
