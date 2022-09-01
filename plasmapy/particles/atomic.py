@@ -36,7 +36,7 @@ from plasmapy.particles.exceptions import (
     InvalidParticleError,
     MissingParticleDataError,
 )
-from plasmapy.particles.particle_class import Particle
+from plasmapy.particles.particle_class import Particle, ParticleLike
 from plasmapy.particles.particle_collections import ParticleList
 from plasmapy.particles.symbols import atomic_symbol
 
@@ -197,8 +197,11 @@ def standard_atomic_weight(element: Particle) -> u.Quantity:
 
 @particle_input(exclude={"neutrino", "antineutrino"})
 def particle_mass(
-    particle: Particle, *, Z: Integral = None, mass_numb: Integral = None
-) -> u.Quantity:
+    particle: Particle,
+    *,
+    mass_numb: Optional[Integral] = None,
+    Z: Optional[Integral] = None,
+) -> u.kg:
     """
     Return the mass of a particle.
 
@@ -209,11 +212,11 @@ def particle_mass(
         particle; an integer representing an atomic number; or a
         |Particle|.
 
-    Z : integer, optional, |keyword-only|
-        The |charge number| of an ion.
-
     mass_numb : integer, optional, |keyword-only|
         The mass number of an isotope.
+
+    Z : integer, optional, |keyword-only|
+        The |charge number| of an ion or neutral atom.
 
     Returns
     -------
@@ -261,8 +264,7 @@ def isotopic_abundance(isotope: Particle, mass_numb: Optional[Integral] = None) 
         representing the atomic number of an element.
 
     mass_numb : integer, optional
-        The mass number of an isotope, which is required if and only
-        if the first argument can only be used.
+        The mass number of an isotope.
 
     Returns
     -------
@@ -730,7 +732,7 @@ def common_isotopes(
 
 
 def stable_isotopes(
-    argument: Union[str, Integral] = None, unstable: bool = False
+    argument: Optional[ParticleLike] = None, unstable: bool = False
 ) -> List[str]:
     """
     Return a list of all stable isotopes of an element, or if no input is
@@ -1128,7 +1130,7 @@ def ionic_levels(
 
     max_charge : integer, optional
         The ending charge number, which will be included in the
-        |ParticleList|.  Defaults to the atomic number.
+        |ParticleList|.  Defaults to the atomic number of ``particle``.
 
     Returns
     -------
