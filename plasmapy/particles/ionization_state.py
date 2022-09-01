@@ -402,10 +402,7 @@ class IonizationState:
 
         """
         if not isinstance(other, IonizationState):
-            raise TypeError(
-                "An instance of the IonizationState class may only be "
-                "compared with another IonizationState instance."
-            )
+            return False
 
         same_element = self.element == other.element
         same_isotope = self.isotope == other.isotope
