@@ -849,8 +849,8 @@ def test_iteration_with_nested_iterator():
 
 
 @pytest.mark.xfail()
-def test_hydrogen_deuterium():
-    instance = IonizationStateCollection(["H", "D"])
+def test_two_isotopes_of_same_element():
+    instance = IonizationStateCollection(["H-1", "D"])
 
 
 example_ionic_fractions = [
