@@ -24,7 +24,7 @@ class ParticleList(collections.UserList):
 
     Parameters
     ----------
-    particles : |particle-list-like|, optional
+    particles : iterable of |particle-like|, optional
         An iterable that provides a sequence of |particle-like| objects.
         Objects that are not a |Particle| or |CustomParticle| will be
         cast into a |Particle| or |CustomParticle|. If not provided, an
