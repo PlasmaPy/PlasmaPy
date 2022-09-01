@@ -62,27 +62,27 @@ class IonicLevel:
 
     def __eq__(self, other):
 
+        if not isinstance(other, IonicLevel):
+            return False
+
         if self.ionic_symbol != getattr(other, "ionic_symbol", None):
             return False
 
-        try:
+        ionic_fraction_within_rtol = u.isclose(
+            self.ionic_fraction,
+            other.ionic_fraction,
+            rtol=1e-15,
+            equal_nan=True,
+        )
 
-            ionic_fraction_within_rtol = u.isclose(
-                self.ionic_fraction,
-                getattr(other, "ionic_fraction"),
-                rtol=1e-15,
-            )
+        number_density_within_rtol = u.isclose(
+            self.number_density,
+            other_number_density,
+            rtol=1e-15,
+            equal_nan=True,
+        )
 
-            number_density_within_rtol = u.isclose(
-                self.number_density,
-                other_number_density,
-                rtol=1e-15,
-            )
-
-            return ionic_fraction_within_rtol and number_density_within_rtol
-
-        except TypeError:
-            return False
+        return ionic_fraction_within_rtol and number_density_within_rtol
 
     @particle_input
     def __init__(
