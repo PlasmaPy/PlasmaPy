@@ -465,7 +465,7 @@ def is_stable(particle: Particle, mass_numb: Optional[Integral] = None) -> bool:
 def half_life(particle: Particle, mass_numb: Optional[Integral] = None) -> u.Quantity:
     """
     Return the half-life in seconds for unstable isotopes and particles,
-    and `~numpy.inf` in seconds for stable isotopes and particles.
+    and |inf| seconds for stable isotopes and particles.
 
     Parameters
     ----------
