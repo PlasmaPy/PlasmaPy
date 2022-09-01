@@ -77,7 +77,7 @@ class IonicLevel:
 
         number_density_within_rtol = u.isclose(
             self.number_density,
-            other_number_density,
+            other.number_density,
             rtol=1e-15,
             equal_nan=True,
         )
