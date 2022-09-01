@@ -50,13 +50,13 @@ def atomic_number(element: Particle) -> Integral:
 
     Parameters
     ----------
-    element: |atom-like|
+    element : |atom-like|
         A string representing an element, isotope, or ion; or an
         instance of the `~plasmapy.particles.particle_class.Particle` class.
 
     Returns
     -------
-    atomic_number: `int`
+    `int`
         The atomic number of an element.
 
     Raises
@@ -102,7 +102,7 @@ def mass_number(isotope: Particle) -> Integral:
 
     Returns
     -------
-    mass_number : `int`
+    `int`
        The total number of protons plus neutrons in a nuclide.
 
     Raises
@@ -143,13 +143,13 @@ def standard_atomic_weight(element: Particle) -> u.Quantity:
 
     Parameters
     ----------
-    element: |atom-like|
+    element : |atom-like|
         A string representing an element or an integer representing an
         atomic number, or an instance of the Particle class.
 
     Returns
     -------
-    atomic_weight: `~astropy.units.Quantity`
+    `~astropy.units.Quantity`
         The standard atomic weight of an element based on values from
         NIST.
 
@@ -204,20 +204,20 @@ def particle_mass(
 
     Parameters
     ----------
-    particle: |particle-like|
+    particle : |particle-like|
         A string representing an element, isotope, ion, or special
         particle; an integer representing an atomic number; or an
         instance of the Particle class.
 
-    Z: `int`, optional, |keyword-only|
+    Z : integer, optional, |keyword-only|
         The ionization state of the ion.
 
-    mass_numb: `int`, optional, |keyword-only|
+    mass_numb : integer, optional, |keyword-only|
         The mass number of an isotope.
 
     Returns
     -------
-    mass: `~astropy.units.Quantity`
+    `~astropy.units.Quantity`
         The mass of the particle.
 
     Raises
@@ -256,17 +256,17 @@ def isotopic_abundance(isotope: Particle, mass_numb: Optional[Integral] = None) 
 
     Parameters
     ----------
-    isotope: |atom-like|
+    isotope : |atom-like|
         A string representing an element or isotope, or an integer
         representing the atomic number of an element.
 
-    mass_numb: `int`, optional
+    mass_numb : integer, optional
         The mass number of an isotope, which is required if and only
         if the first argument can only be used.
 
     Returns
     -------
-    iso_comp: `float`
+    `float`
         The relative isotopic abundance in the terrestrial environment.
 
     Raises
@@ -311,7 +311,7 @@ def charge_number(particle: Particle) -> Integral:
 
     Returns
     -------
-    Z : `int`
+    `int`
         The charge as a multiple of the elementary charge.
 
     Raises
@@ -367,7 +367,7 @@ def electric_charge(particle: Particle) -> u.C:
 
     Returns
     -------
-    charge: `~astropy.units.Quantity`
+    `~astropy.units.Quantity`
         The electric charge in coulombs.
 
     Raises
@@ -416,16 +416,16 @@ def is_stable(particle: Particle, mass_numb: Optional[Integral] = None) -> bool:
 
     Parameters
     ----------
-    particle: |particle-like|
+    particle : |particle-like|
         A string representing an isotope or particle, or an integer
         representing an atomic number.
 
-    mass_numb: `int`, optional
+    mass_numb : integer, optional
         The mass number of the isotope.
 
     Returns
     -------
-    is_stable: `bool`
+    `bool`
         `True` if the isotope is stable, `False` if it is unstable.
 
     Raises
@@ -469,17 +469,17 @@ def half_life(particle: Particle, mass_numb: Optional[Integral] = None) -> u.Qua
 
     Parameters
     ----------
-    particle: |particle-like|
+    particle : |particle-like|
         A string representing an isotope or particle, an integer
         representing an atomic number, or an instance of the Particle
         class.
 
-    mass_numb: `int`, optional
+    mass_numb : integer, optional
         The mass number of an isotope.
 
     Returns
     -------
-    half_life_sec: `~astropy.units.Quantity`
+    `~astropy.units.Quantity`
         The half-life of the isotope or particle in units of seconds.
 
     Raises
@@ -523,14 +523,14 @@ def known_isotopes(argument: Union[str, Integral] = None) -> List[str]:
 
     Parameters
     ----------
-    argument: |atom-like|
+    argument : |atom-like|
         A string representing an element, isotope, or ion or an
         integer representing an atomic number
 
     Returns
     -------
-    isotopes_list: `list` containing `str` items or an empty `list`
-        List of all of the isotopes of an element that have been
+    `list` of `str`
+        List of all the isotopes of an element that have been
         discovered, sorted from lowest mass number to highest mass
         number.  If no argument is provided, then a list of all known
         isotopes of every element will be returned that is sorted by
@@ -618,16 +618,16 @@ def common_isotopes(
 
     Parameters
     ----------
-    argument: |atom-like|, optional
+    argument : |atom-like|, optional
         A string or integer representing an atomic number or element,
         or a string representing an isotope.
 
-    most_common_only: `bool`
+    most_common_only : `bool`
         If set to `True`, return only the most common isotope.
 
     Returns
     -------
-    isotopes_list: `list` of `str` or empty `list`
+    `list` of `str`
         List of all isotopes of an element with isotopic abundances
         greater than zero, sorted from most abundant to least
         abundant.  If no isotopes have isotopic abundances greater
@@ -738,17 +738,17 @@ def stable_isotopes(
 
     Parameters
     ----------
-    argument: |atom-like|
+    argument : |atom-like|
         A string or integer representing an atomic number or element,
         or a string representing an isotope.
 
-    unstable: `bool`
+    unstable : `bool`
         If set to `True`, this function will return a list of the
         unstable isotopes instead of the stable isotopes.
 
     Returns
     -------
-    StableIsotopes: `list` of strings or empty list
+    `list` of `str`
         List of all stable isotopes of an element, sorted from lowest
         mass number.  If an element has no stable isotopes, this
         function returns an empty list.
@@ -770,8 +770,8 @@ def stable_isotopes(
     observed.  It is possible that some isotopes will be discovered to
     be unstable but with extremely long half-lives.  For example,
     bismuth-209 was recently discovered to have a half-life of about
-    1.9e19 years.  However, such isotopes can be regarded as virtually
-    stable for most applications.
+    :math:`1.9 × 10^{19}` years.  However, such isotopes can be regarded
+    as virtually stable for most applications.
 
     See Also
     --------
@@ -843,7 +843,7 @@ def reduced_mass(test_particle, target_particle) -> u.Quantity:
 
     Returns
     -------
-    reduced_mass : `~astropy.units.Quantity`
+    `~astropy.units.Quantity`
         The reduced mass between the test particle and target particle.
 
     Raises
@@ -909,13 +909,13 @@ def periodic_table_period(argument: Union[str, Integral]) -> Integral:
 
     Parameters
     ----------
-    argument: |atom-like|
+    argument : |atom-like|
         Atomic number (either integer or string), atomic symbol (e.g.,
         ``"H"``, string), or element name (e.g. ``"Francium"``, string).
 
     Returns
     -------
-    period: `int`
+    `int`
         The periodic table period of the element.
 
     Raises
@@ -957,14 +957,14 @@ def periodic_table_group(argument: Union[str, Integral]) -> Integral:
 
     Parameters
     ----------
-    argument: |atom-like|
+    argument : |atom-like|
         Atomic number (either integer or string), atomic symbol (e.g.,
         ``"H"``, string), or element name (e.g., ``"francium"``,
         string).
 
     Returns
     -------
-    group: `int`
+    `int`
         The periodic table group of the element.
 
     Raises
@@ -1010,14 +1010,14 @@ def periodic_table_block(argument: Union[str, Integral]) -> str:
 
     Parameters
     ----------
-    argument: |atom-like|
+    argument : |atom-like|
         Atomic number (either integer or string), atomic symbol (e.g.,
         ``"H"``, string), or element name (e.g., ``"francium"``,
         string).
 
     Returns
     -------
-    block: `str`
+    `str`
         The periodic table block of the element.
 
     Raises
@@ -1063,14 +1063,14 @@ def periodic_table_category(argument: Union[str, Integral]) -> str:
 
     Parameters
     ----------
-    argument: |atom-like|
+    argument : |atom-like|
         Atomic number (either integer or string), atomic symbol (e.g.,
         ``"H"``, string), or element name (e.g., ``"francium"``,
         string).
 
     Returns
     -------
-    category: `str`
+    `str`
         The periodic table category of the element.
 
     Raises
