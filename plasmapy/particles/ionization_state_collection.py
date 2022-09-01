@@ -34,7 +34,7 @@ class IonizationStateCollection:
 
     Parameters
     ----------
-    inputs: `list`, `tuple`, or `dict`
+    inputs : `list`, `tuple`, or `dict`
         A `list` or `tuple` of elements or isotopes (if ``T_e`` is
         provided); a `list` of `~plasmapy.particles.ionization_state.IonizationState`
         instances; a `dict` with elements or isotopes as keys and
@@ -42,29 +42,29 @@ class IonizationStateCollection:
         with elements or isotopes as keys and `~astropy.units.Quantity`
         instances with units of number density.
 
-    abundances: `dict`, optional, |keyword-only|
+    abundances : `dict`, optional, |keyword-only|
         A `dict` with `~plasmapy.particles.particle_class.ParticleLike`
         objects used as the keys and the corresponding relative abundance as the
         values.  The values must be positive real numbers.
 
-    log_abundances: `dict`, optional, |keyword-only|
+    log_abundances : `dict`, optional, |keyword-only|
         A `dict` with `~plasmapy.particles.particle_class.ParticleLike`
         objects used as the keys and the corresponding base 10 logarithms of their
         relative abundances as the values.  The values must be real numbers.
 
-    n0: `~astropy.units.Quantity`, optional, |keyword-only|
+    n0 : `~astropy.units.Quantity`, optional, |keyword-only|
         The number density normalization factor corresponding to the
         abundances.  The number density of each element is the product
         of its abundance and ``n0``.
 
-    T_e: `~astropy.units.Quantity`, optional, |keyword-only|
+    T_e : `~astropy.units.Quantity`, optional, |keyword-only|
         The electron temperature in units of temperature or thermal
         energy per particle.
 
-    kappa: `float`, optional, |keyword-only|
+    kappa : `float`, optional, |keyword-only|
         The value of kappa for a kappa distribution function.
 
-    tol: `float` or `integer`, optional, |keyword-only|, default: ``1e-15``
+    tol : `float` or `integer`, optional, |keyword-only|, default: ``1e-15``
         The absolute tolerance used by `~numpy.isclose` when testing
         normalizations and making comparisons.
 
