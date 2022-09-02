@@ -914,9 +914,9 @@ def collision_frequency(
     r"""
     .. note::
         The `~plasmapy.formulary.collisions.collision_frequency` function has been
-        replaced by the more general `~plasmapy.formulary.collisions.CollisionFrequencies` class.
+        replaced by the more general `~plasmapy.formulary.collisions.SingleParticleCollisionFrequencies` class.
         To replicate the functionality of `~plasmapy.formulary.collisions.collision_frequency`, create a
-        `~plasmapy.formulary.collisions.CollisionFrequencies` class and access the ``Lorentz_collision_frequency`` attribute.
+        `~plasmapy.formulary.collisions.SingleParticleCollisionFrequencies` class and access the ``Lorentz_collision_frequency`` attribute.
 
     Collision frequency of particles in a plasma.
 
@@ -1018,7 +1018,7 @@ def collision_frequency(
 
     See Also
     --------
-    ~plasmapy.formulary.collisions.CollisionFrequencies
+    ~plasmapy.formulary.collisions.SingleParticleCollisionFrequencies
 
     """
 
@@ -1027,8 +1027,8 @@ def collision_frequency(
         warning_type=PlasmaPyFutureWarning,
         message=(
             "The collision_frequency function has been replaced by the more general "
-            "CollisionFrequencies class. To replicate the functionality of collision_frequency, "
-            "create a CollisionFrequencies class and access the `Lorentz_collision_frequency` "
+            "SingleParticleCollisionFrequencies class. To replicate the functionality of collision_frequency, "
+            "create a SingleParticleCollisionFrequencies class and access the `Lorentz_collision_frequency` "
             "attribute."
         ),
     )
@@ -1130,9 +1130,9 @@ def fundamental_electron_collision_freq(
 
     .. note::
         The `~plasmapy.formulary.collisions.fundamental_electron_collision_freq` function has been
-        replaced by the more general `~plasmapy.formulary.collisions.CollisionFrequencies` class.
+        replaced by the more general `~plasmapy.formulary.collisions.MaxwellianCollisionFrequencies` class.
         To replicate the functionality of `~plasmapy.formulary.collisions.fundamental_electron_collision_freq`, create a
-        `~plasmapy.formulary.collisions.CollisionFrequencies` class and access the ``Maxwellian_avg_ei_collision_freq`` attribute.
+        `~plasmapy.formulary.collisions.MaxwellianCollisionFrequencies` class and access the ``Maxwellian_avg_ei_collision_freq`` attribute.
 
 
     :cite:t:`braginskii:1965` provides a derivation of this as an
@@ -1228,9 +1228,9 @@ def fundamental_electron_collision_freq(
         warning_type=PlasmaPyFutureWarning,
         message=(
             "The `fundamental_electron_collision_freq` function has been"
-            "replaced by the more general `CollisionFrequencies` class."
+            "replaced by the more general `MaxwellianCollisionFrequencies` class."
             "To replicate the functionality of `fundamental_electron_collision_freq`, create a"
-            "`CollisionFrequencies` class and access the `Maxwellian_avg_ei_collision_freq` attribute."
+            "`MaxwellianCollisionFrequencies` class and access the `Maxwellian_avg_ei_collision_freq` attribute."
         ),
     )
 
@@ -1277,9 +1277,9 @@ def fundamental_ion_collision_freq(
 
     .. note::
         The `~plasmapy.formulary.collisions.fundamental_ion_collision_freq` function has been
-        replaced by the more general `~plasmapy.formulary.collisions.CollisionFrequencies` class.
+        replaced by the more general `~plasmapy.formulary.collisions.MaxwellianCollisionFrequencies` class.
         To replicate the functionality of `~plasmapy.formulary.collisions.fundamental_ion_collision_freq`, create a
-        `~plasmapy.formulary.collisions.CollisionFrequencies` class and access the ``Maxwellian_avg_ii_collision_freq`` attribute.
+        `~plasmapy.formulary.collisions.MaxwellianCollisionFrequencies` class and access the ``Maxwellian_avg_ii_collision_freq`` attribute.
 
 
     :cite:t:`braginskii:1965` provides a derivation of this as an
@@ -1380,9 +1380,9 @@ def fundamental_ion_collision_freq(
         warning_type=PlasmaPyFutureWarning,
         message=(
             "The `fundamental_ion_collision_freq` function has been"
-            "replaced by the more general `CollisionFrequencies` class."
+            "replaced by the more general `MaxwellianCollisionFrequencies` class."
             "To replicate the functionality of `fundamental_ion_collision_freq`, create a"
-            "`CollisionFrequencies` class and access the `Maxwellian_avg_ii_collision_freq` attribute."
+            "`MaxwellianCollisionFrequencies` class and access the `Maxwellian_avg_ii_collision_freq` attribute."
         ),
     )
 
@@ -2513,7 +2513,7 @@ class MaxwellianCollisionFrequencies:
         if not self._is_slowly_flowing:
             raise PhysicsError(
                 "This frequency is only defined for slowly flowing species."
-                "(see CollisionFrequencies class documentation for further details)"
+                "(see MaxwellianCollisionFrequencies class documentation for further details)"
             )
 
         coeff = 4 / (3 * np.sqrt(np.pi))
@@ -2564,7 +2564,7 @@ class MaxwellianCollisionFrequencies:
         if not self._is_slowly_flowing:
             raise PhysicsError(
                 "This frequency is only defined for slowly flowing species."
-                "(see CollisionFrequencies class documentation for further details)"
+                "(see MaxwellianCollisionFrequencies class documentation for further details)"
             )
 
         coeff = 4 / (3 * np.sqrt(2 * np.pi))
