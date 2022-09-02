@@ -1904,7 +1904,7 @@ class TestSingleParticleCollisionFrequencies:
                 "slow",
                 (Particle("e-"), Particle("e-")),
                 {
-                    "v_a": 6e7 * u.cm / u.s,
+                    "v_a": 1 * u.cm / u.s,
                     "T_b": 1e4 * u.eV,
                     "n_b": 1e15 * u.cm**-3,
                     "Coulomb_log": 10 * u.dimensionless_unscaled,
@@ -1915,7 +1915,7 @@ class TestSingleParticleCollisionFrequencies:
                 "slow",
                 (Particle("e-"), Particle("Na+")),
                 {
-                    "v_a": 6e7 * u.cm / u.s,
+                    "v_a": 1 * u.cm / u.s,
                     "T_b": 1e4 * u.eV,
                     "n_b": 1e20 * u.cm**-3,
                     "Coulomb_log": 10 * u.dimensionless_unscaled,
@@ -1926,7 +1926,7 @@ class TestSingleParticleCollisionFrequencies:
                 "slow",
                 (Particle("e-"), Particle("Ba 2+")),
                 {
-                    "v_a": 6e7 * u.cm / u.s,
+                    "v_a": 1 * u.cm / u.s,
                     "T_b": 1e4 * u.eV,
                     "n_b": 1e20 * u.cm**-3,
                     "Coulomb_log": 10 * u.dimensionless_unscaled,
@@ -1937,7 +1937,7 @@ class TestSingleParticleCollisionFrequencies:
                 "slow",
                 (Particle("Na+"), Particle("e-")),
                 {
-                    "v_a": 6e7 * u.cm / u.s,
+                    "v_a": 1 * u.cm / u.s,
                     "T_b": 1e2 * u.eV,
                     "n_b": 1e10 * u.cm**-3,
                     "Coulomb_log": 10 * u.dimensionless_unscaled,
@@ -1948,7 +1948,7 @@ class TestSingleParticleCollisionFrequencies:
                 "slow",
                 (Particle("Be 2+"), Particle("e-")),
                 {
-                    "v_a": 6e7 * u.cm / u.s,
+                    "v_a": 1 * u.cm / u.s,
                     "T_b": 1e2 * u.eV,
                     "n_b": 1e10 * u.cm**-3,
                     "Coulomb_log": 10 * u.dimensionless_unscaled,
@@ -1959,7 +1959,7 @@ class TestSingleParticleCollisionFrequencies:
                 "slow",
                 (Particle("Na+"), Particle("Cl-")),
                 {
-                    "v_a": 6e7 * u.cm / u.s,
+                    "v_a": 1 * u.cm / u.s,
                     "T_b": 1e4 * u.eV,
                     "n_b": 1e20 * u.cm**-3,
                     "Coulomb_log": 10 * u.dimensionless_unscaled,
@@ -1970,7 +1970,7 @@ class TestSingleParticleCollisionFrequencies:
                 "slow",
                 (Particle("Na+"), Particle("S 2-")),
                 {
-                    "v_a": 6e7 * u.cm / u.s,
+                    "v_a": 1 * u.cm / u.s,
                     "T_b": 1e4 * u.eV,
                     "n_b": 1e20 * u.cm**-3,
                     "Coulomb_log": 10 * u.dimensionless_unscaled,
@@ -2216,9 +2216,9 @@ class TestMaxwellianCollisionFrequencies:
                     "test_particle": Particle("e-"),
                     "field_particle": Particle("Li+"),
                     "v_drift": 1e-5 * u.cm / u.s,
-                    "T_a": 1e3 * u.K,
+                    "T_a": 1e3 * u.eV,
                     "n_a": 1e10 * u.cm**-3,
-                    "T_b": 1e3 * u.K,
+                    "T_b": 1e3 * u.eV,
                     "n_b": 1e10 * u.cm**-3,
                     "Coulomb_log": 10 * u.dimensionless_unscaled,
                 },
@@ -2227,11 +2227,11 @@ class TestMaxwellianCollisionFrequencies:
                 "Maxwellian_avg_ii_collision_freq",
                 {
                     "test_particle": Particle("Li+"),
-                    "field_particle": Particle("Li+"),
-                    "v_drift": 1e-10 * u.cm / u.s,
-                    "T_a": 1e3 * u.K,
+                    "field_particle": Particle("Cl-"),
+                    "v_drift": 1 * u.cm / u.s,
+                    "T_a": 1e3 * u.eV,
                     "n_a": 1e10 * u.cm**-3,
-                    "T_b": 1e3 * u.K,
+                    "T_b": 1 * u.eV,
                     "n_b": 1e10 * u.cm**-3,
                     "Coulomb_log": 10 * u.dimensionless_unscaled,
                 },
@@ -2249,7 +2249,7 @@ class TestMaxwellianCollisionFrequencies:
         expected_value = self.get_fundamental_frequency(
             constructor_keyword_arguments["test_particle"],
             constructor_keyword_arguments["n_a"],
-            constructor_keyword_arguments["T_a"] * k_B,
+            constructor_keyword_arguments["T_a"],
             constructor_keyword_arguments["Coulomb_log"],
         )
 
