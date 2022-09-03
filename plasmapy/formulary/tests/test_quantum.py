@@ -156,7 +156,7 @@ class Test_chemical_potential:
         self.n_e = 1e20 * u.cm**-3
         self.n_e_fail = 1e23 * u.cm**-3
         self.T = 11604 * u.K
-        self.True1 = 6.133671348607095e-11
+        self.True1 = 0
 
     def test_known1(self):
         """
