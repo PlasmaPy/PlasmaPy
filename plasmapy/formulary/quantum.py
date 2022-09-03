@@ -462,7 +462,7 @@ def chemical_potential(n_e: u.m**-3, T: u.K) -> u.dimensionless_unscaled:
     --------
     >>> from astropy import units as u
     >>> chemical_potential(n_e=1e21*u.cm**-3,T=11000*u.K)
-    <Quantity 9.28146e-14>
+    <Quantity 0.0>
     """
 
     # deBroglie wavelength
@@ -470,23 +470,23 @@ def chemical_potential(n_e: u.m**-3, T: u.K) -> u.dimensionless_unscaled:
     # degeneracy parameter
     degen = (n_e * lambdaDB**3).to(u.dimensionless_unscaled)
 
-    def residual(params, data, eps_data):
+    def residual(params, data):
         """Residual function for fitting parameters to Fermi_integral."""
         alpha = params["alpha"].value
         # note that alpha = mu / (k_B * T)
         model = mathematics.Fermi_integral(alpha, 0.5)
-        complexResidue = (data - model) / eps_data
-        return complexResidue.view(np.float64)
+        complexResidue = abs(data - model)
+        return complexResidue
 
     # setting parameters for fitting along with bounds
     alphaGuess = 1 * u.dimensionless_unscaled
     params = Parameters()
     params.add("alpha", value=alphaGuess, min=0.0)
     # calling minimize function from lmfit to fit by minimizing the residual
-    data = np.array([degen])  # result of Fermi_integral - degen should be zero
-    eps_data = np.array([1e-15])  # numerical error
-    minFit = minimize(residual, params, args=(data, eps_data))
+    data = np.array(degen)  # result of Fermi_integral - degen should be zero
+    minFit = minimize(residual, params, args=(data,), method="bfgsb")
     beta_mu = minFit.params["alpha"].value * u.dimensionless_unscaled
+
     return beta_mu
 
 
