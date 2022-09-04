@@ -451,9 +451,9 @@ def chemical_potential(n_e: u.m**-3, T: u.K) -> u.dimensionless_unscaled:
     be obtained numerically by solving for the Fermi integral for values
     of chemical potential approaching the degeneracy parameter. Since values
     returned from the `~plasmapy.formulary.mathematics.Fermi_integral`
-    are complex, a nonlinear Levenberg-Marquardt least squares method is
+    are complex, the Broyden–Fletcher–Goldfarb–Shanno algorithm is
     used to iteratively approach a value of :math:`μ` which minimizes
-    :math:`I_{1/2}(β μ_a^{ideal}) - χ_a`
+    :math:`\lvert I_{1/2}(β μ_a^{ideal}) - χ_a \rvert`
 
     This function returns :math:`β μ^{ideal}` the dimensionless
     ideal chemical potential.
