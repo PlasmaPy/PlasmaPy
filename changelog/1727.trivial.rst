@@ -1,0 +1,1 @@
+Bump minimum astropy version to 5.0
