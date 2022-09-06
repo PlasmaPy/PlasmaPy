@@ -1,1 +1,1 @@
-Set minimum dependency version for numba to 0.56.0 in minimal test environment
+Bump minimum astropy version to 5.0
