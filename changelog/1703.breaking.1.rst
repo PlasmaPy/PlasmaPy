@@ -1,5 +1,5 @@
-Deprecates ``plasmapy.formulary.collisions.fundamental_electron_collision_freq`` and replaces it
+Deprecated ``plasmapy.formulary.collisions.fundamental_electron_collision_freq`` and replaced it
 with the ``Maxwellian_avg_ei_collision_freq`` attribute in `~plasmapy.formulary.collisions.CollisionFrequencies`.
 
-Deprecates ``plasmapy.formulary.collisions.fundamental_ion_collision_freq`` and replaces it
+Deprecated ``plasmapy.formulary.collisions.fundamental_ion_collision_freq`` and replaced it
 with the ``Maxwellian_avg_ii_collision_freq`` attribute in `~plasmapy.formulary.collisions.CollisionFrequencies`.
