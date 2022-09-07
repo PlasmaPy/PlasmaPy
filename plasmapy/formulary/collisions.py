@@ -2322,7 +2322,7 @@ class SingleParticleCollisionFrequencies:
         The ratio of kinetic energy in the test particle to the thermal energy of the field particle.
         This parameter determines the regime in which the collision falls.
 
-        (see documentation for the `~plasmapy.formulary.collisions.SingleParticleCollisionFrequencies` class for details)
+        (see documentation for the `~plasmapy.formulary.collisions.CollisionFrequencies` class for details)
         """
 
         x = self.field_particle.mass * self.v_a**2 / (2 * k_B.cgs * self.T_b)
