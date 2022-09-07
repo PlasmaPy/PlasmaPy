@@ -2111,8 +2111,7 @@ def coupling_parameter(
 
 class SingleParticleCollisionFrequencies:
     @validate_quantities(
-        v_a={"can_be_negative": False},
-        n_a={"can_be_negative": False},
+        v_drift={"can_be_negative": False},
         T_b={
             "can_be_negative": False,
             "equivalencies": u.temperature_energy(),
@@ -2125,7 +2124,7 @@ class SingleParticleCollisionFrequencies:
         test_particle: particles.Particle,
         field_particle: particles.Particle,
         *,
-        v_a: u.m / u.s,
+        v_drift: u.m / u.s,
         T_b: u.K,
         n_b: u.m**-3,
         Coulomb_log: u.dimensionless_unscaled,
@@ -2153,12 +2152,12 @@ class SingleParticleCollisionFrequencies:
             The number density of the background field particles in units convertible to :math:`\frac{1}{m^{3}}`.
 
         Coulomb_log : `~astropy.units.Quantity`
-            The value of the Coulomb logarithm evaluated for the two interacting particles.
+            The value of the Coulomb logarithm for the interaction.
 
         Raises
         ------
         `ValueError`
-            If specified arrays don't have equal size.
+            If the spcified v_drift and T_a arrays don't have equal size.
 
         Notes
         -----
@@ -2206,12 +2205,12 @@ class SingleParticleCollisionFrequencies:
         Examples
         --------
         >>> import astropy.units as u
-        >>> v_a = 1e5 * u.m / u.s
+        >>> v_drift = 1e5 * u.m / u.s
         >>> n_b = 1e26 * u.m**-3
         >>> T_b = 1e3 * u.eV
         >>> Coulomb_log = 10 * u.dimensionless_unscaled
         >>> frequencies = SingleParticleCollisionFrequencies(
-        ...     "e-", "e-", v_a=v_a, n_b=n_b, T_b=T_b, Coulomb_log=Coulomb_log
+        ...     "e-", "e-", v_drift=v_drift, n_b=n_b, T_b=T_b, Coulomb_log=Coulomb_log
         ... )
         >>> frequencies.energy_loss
         <Quantity -9.69828719e+15 Hz>
@@ -2226,15 +2225,15 @@ class SingleParticleCollisionFrequencies:
         # Input is taken in MKS units and then converted as necessary. Output is in MKS units.
 
         if (
-            isinstance(v_a, np.ndarray)
+            isinstance(v_drift, np.ndarray)
             and isinstance(n_b, np.ndarray)
-            and v_a.shape != n_b.shape
+            and v_drift.shape != n_b.shape
         ):
             raise ValueError("Please specify arrays of equal length.")
 
         self.test_particle = test_particle
         self.field_particle = field_particle
-        self.v_a = v_a
+        self.v_drift = v_drift
         self.T_b = T_b
         self.n_b = n_b
         self.Coulomb_log = (
@@ -2313,7 +2312,7 @@ class SingleParticleCollisionFrequencies:
             * (self.field_particle.charge_number * e.esu) ** 2
             * self.Coulomb_log
             * self.n_b
-            / (self.test_particle.mass**2 * self.v_a**3)
+            / (self.test_particle.mass**2 * self.v_drift**3)
         ).to(u.Hz)
 
     @cached_property
@@ -2322,10 +2321,10 @@ class SingleParticleCollisionFrequencies:
         The ratio of kinetic energy in the test particle to the thermal energy of the field particle.
         This parameter determines the regime in which the collision falls.
 
-        (see documentation for the `~plasmapy.formulary.collisions.CollisionFrequencies` class for details)
+        (see documentation for the `~plasmapy.formulary.collisions.SingleParticleCollisionFrequencies` class for details)
         """
 
-        x = self.field_particle.mass * self.v_a**2 / (2 * k_B.cgs * self.T_b)
+        x = self.field_particle.mass * self.v_drift**2 / (2 * k_B.cgs * self.T_b)
         return x.to(u.dimensionless_unscaled)
 
     @staticmethod
