@@ -1,1 +1,1 @@
-Bump minimum astropy version to 5.0.1
+Increased minimum version of Astropy_ to 5.0.1.
