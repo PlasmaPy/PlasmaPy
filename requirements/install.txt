@@ -1,7 +1,7 @@
 # these are dependencies required to use the package
 # ought to mirror 'install_requires' under 'options' in setup.cfg
 -r build.txt
-astropy >= 4.3.1
+astropy >= 5.0.1
 cached-property >= 1.5.2
 h5py >= 3.0.0
 ipywidgets >= 7.6.5
