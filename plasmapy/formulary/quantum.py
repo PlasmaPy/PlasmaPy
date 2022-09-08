@@ -23,6 +23,7 @@ from lmfit import minimize, Parameters
 from plasmapy import particles
 from plasmapy.formulary import mathematics
 from plasmapy.formulary.relativity import Lorentz_factor
+from plasmapy.particles import particle_input
 from plasmapy.particles.exceptions import InvalidParticleError
 from plasmapy.utils import RelativityError
 from plasmapy.utils.decorators import validate_quantities
@@ -30,10 +31,11 @@ from plasmapy.utils.decorators import validate_quantities
 __all__ += __aliases__
 
 
-# TODO: Use @check_relativistic and @particle_input
+# TODO: Use @check_relativistic
 @validate_quantities(
     V={"can_be_negative": True}, validations_on_return={"can_be_negative": False}
 )
+@particle_input
 def deBroglie_wavelength(V: u.m / u.s, particle) -> u.m:
     r"""
     Return the de Broglie wavelength.
