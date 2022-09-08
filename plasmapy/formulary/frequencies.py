@@ -17,7 +17,7 @@ from numba import njit
 
 from plasmapy import particles
 from plasmapy.formulary import misc
-from plasmapy.particles import Particle
+from plasmapy.particles import Particle, particle_input
 from plasmapy.particles.exceptions import ChargeError, InvalidParticleError
 from plasmapy.utils.decorators import (
     angular_freq_to_hz,
@@ -39,6 +39,7 @@ eps0_si_unitless = eps0.value
     }
 )
 @angular_freq_to_hz
+@particle_input(any_of={"charged", "uncharged"})
 def gyrofrequency(B: u.T, particle: Particle, signed=False, Z=None) -> u.rad / u.s:
     r"""
     Calculate the particle gyrofrequency in units of radians per second.
@@ -227,6 +228,7 @@ def plasma_frequency_lite(
     },
 )
 @angular_freq_to_hz
+@particle_input(any_of={"charged", "uncharged"})
 def plasma_frequency(n: u.m**-3, particle: Particle, z_mean=None) -> u.rad / u.s:
     r"""Calculate the particle plasma frequency.
 
@@ -349,6 +351,7 @@ wp_ = plasma_frequency
     },
 )
 @angular_freq_to_hz
+@particle_input
 def lower_hybrid_frequency(B: u.T, n_i: u.m**-3, ion: Particle) -> u.rad / u.s:
     r"""
     Return the lower hybrid frequency.
@@ -422,13 +425,6 @@ def lower_hybrid_frequency(B: u.T, n_i: u.m**-3, ion: Particle) -> u.rad / u.s:
     <Quantity 92050879.3... Hz>
 
     """
-    # We do not need a charge state here, so the sole intent is to
-    # catch invalid ions.
-    try:
-        particles.charge_number(ion)
-    except InvalidParticleError:
-        raise ValueError("Invalid ion in lower_hybrid_frequency.")
-
     omega_ci = gyrofrequency(B, particle=ion)
     omega_pi = plasma_frequency(n_i, particle=ion)
     omega_ce = gyrofrequency(B, particle="e-")
