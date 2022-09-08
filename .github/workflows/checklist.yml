@@ -1,0 +1,12 @@
+name: Add PR checklist
+
+on:
+- pull_request_target
+
+jobs:
+  checklist:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: NejcZdovc/comment-pr@v1
+      with:
+        file: checklist.md
