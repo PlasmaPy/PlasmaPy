@@ -437,7 +437,7 @@ def chemical_potential(n_e: u.m**-3, T: u.K) -> u.dimensionless_unscaled:
 
     Notes
     -----
-    The ideal chemical potential is implictly given by Eq. 1.2 in :cite:p:`bonitz:1998`\:
+    The ideal chemical potential is implicitly given by Eq. 1.2 in :cite:p:`bonitz:1998`\:
 
     .. math::
         χ = nΛ^{3} = I_{1/2}(β μ^{ideal})
