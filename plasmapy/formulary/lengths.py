@@ -10,7 +10,7 @@ from astropy.constants.si import c, e, eps0, k_B
 
 from plasmapy import particles
 from plasmapy.formulary import frequencies, speeds
-from plasmapy.particles import Particle
+from plasmapy.particles import Particle, particle_input
 from plasmapy.utils.decorators import validate_quantities
 from plasmapy.utils.exceptions import PlasmaPyFutureWarning
 
@@ -104,6 +104,7 @@ lambdaD_ = Debye_length
     },
     validations_on_return={"equivalencies": u.dimensionless_angles()},
 )
+@particle_input(any_of={"charged", "uncharged"})
 def gyroradius(
     B: u.T,
     particle: Particle,
@@ -279,12 +280,11 @@ rc_ = gyroradius
 rhoc_ = gyroradius
 """Alias to `~plasmapy.formulary.lengths.gyroradius`."""
 
-
 @validate_quantities(
     n={"can_be_negative": False},
     validations_on_return={"equivalencies": u.dimensionless_angles()},
 )
-@particles.particle_input(require="charged")
+@particle_input(require="charged")
 def inertial_length(n: u.m**-3, particle: Particle) -> u.m:
     r"""
     Calculate a charged particle's inertial length.
