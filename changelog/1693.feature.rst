@@ -1,3 +1,2 @@
 Added the :file:`stix_dispersion.ipynb` notebook to the `docs.notebooks.dispersion`
 subpackage which contains the Stix cold-plasma notebook.
-
