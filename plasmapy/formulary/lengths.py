@@ -280,6 +280,7 @@ rc_ = gyroradius
 rhoc_ = gyroradius
 """Alias to `~plasmapy.formulary.lengths.gyroradius`."""
 
+
 @validate_quantities(
     n={"can_be_negative": False},
     validations_on_return={"equivalencies": u.dimensionless_angles()},
