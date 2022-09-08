@@ -130,6 +130,14 @@ class Tracker:
     ):
 
         # self.grid is the grid object
+        
+        ## Todo:
+        ## Allow a list of 'grid' objects to be passed into the 'grid' argument. 
+        ## If only one grid is passed, wrap it in a list so that there is always a list.
+        ## e.g.:
+        ## if isinstance(grid, AbstractGrid):
+        ##    grid = [grid, ]
+
         self.grid = grid
         # self.grid_arr is the grid positions in si units. This is created here
         # so that it isn't continuously called later
@@ -177,6 +185,10 @@ class Tracker:
         # these particles can be ignored until the end of the simulation,
         # then immediately advanced to the detector grid with their original
         # velocities
+
+        ## Todo: 
+        ## here, calculate the max theta hit grid for each grid in the list, 
+        ## then take the maximum
         self.max_theta_hit_grid = self._max_theta_hit_grid()
 
         # ************************************************************************
