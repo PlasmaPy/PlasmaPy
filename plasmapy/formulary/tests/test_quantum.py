@@ -158,13 +158,23 @@ class Test_chemical_potential:
         self.T = 11604 * u.K
         self.True1 = 0
 
-    def test_known1(self):
+    @staticmethod
+    @pytest.mark.parametrize(
+        "n_e, T, expected_beta",
+        [
+            (1e20 * u.cm**-3, 11604 * u.K, 0),
+            (1e25 * u.cm**-3, 11604 * u.K, 268.68166791746324),
+        ],
+    )
+    def test_knowns(n_e, T, expected_beta):
         """
-        Tests Fermi_integral for expected value.
+        Tests chemical_potential for expected value.
         """
-        methodVal = chemical_potential(self.n_e, self.T)
-        testTrue = u.isclose(methodVal, self.True1, rtol=1e-16, atol=0.0)
-        errStr = f"Chemical potential value should be {self.True1} and not {methodVal}."
+        methodVal = chemical_potential(n_e, T).value
+        testTrue = np.isclose(methodVal, expected_beta, rtol=1e-16, atol=0.0)
+        errStr = (
+            f"Chemical potential value should be {expected_beta} and not {methodVal}."
+        )
         assert testTrue, errStr
 
     def test_fail1(self):

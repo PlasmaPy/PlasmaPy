@@ -460,8 +460,8 @@ def chemical_potential(n_e: u.m**-3, T: u.K) -> u.dimensionless_unscaled:
     Examples
     --------
     >>> from astropy import units as u
-    >>> chemical_potential(n_e=1e21*u.cm**-3,T=11000*u.K)
-    <Quantity 0.0>
+    >>> chemical_potential(n_e=1e25*u.cm**-3,T=11000*u.K)
+    <Quantity 283.43506297>
     """
 
     # deBroglie wavelength
