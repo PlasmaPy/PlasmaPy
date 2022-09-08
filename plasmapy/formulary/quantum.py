@@ -437,26 +437,25 @@ def chemical_potential(n_e: u.m**-3, T: u.K) -> u.dimensionless_unscaled:
 
     Notes
     -----
-    The ideal chemical potential is given by :cite:p:`bonitz:1998`\ :
+    The ideal chemical potential is implictly given by Eq. 1.2 in :cite:p:`bonitz:1998`\:
 
     .. math::
-        χ_a = I_{1/2}(β μ_a^{ideal})
+        χ = nΛ^{3} = I_{1/2}(β μ^{ideal})
 
-    where :math:`χ` is the degeneracy parameter, :math:`I_{1/2}` is the
-    Fermi integral with order 1/2, :math:`β` is the inverse thermal
-    energy :math:`β = 1/(k_B T)`, and :math:`μ_a^{ideal}`
-    is the ideal chemical potential.
+    where :math:`χ` is the degeneracy parameter, :math:`n` is the species
+    number density, :math:`Λ` is the thermal de Broglie wavelength, :math:`I_{1/2}`
+    is the Fermi integral with order 1/2, :math:`β` is the inverse thermal
+    energy :math:`β = 1/(k_B T)`, and :math:`μ^{ideal}` is the ideal chemical potential.
 
     The definition for the ideal chemical potential is implicit, so it must
     be obtained numerically by solving for the Fermi integral for values
     of chemical potential approaching the degeneracy parameter. Since values
     returned from the `~plasmapy.formulary.mathematics.Fermi_integral`
     are complex, the Broyden–Fletcher–Goldfarb–Shanno algorithm is
-    used to iteratively approach a value of :math:`μ` which minimizes
-    :math:`\lvert I_{1/2}(β μ_a^{ideal}) - χ_a \rvert`
+    used to iteratively approach a value of :math:`μ^{ideal}` which minimizes
+    :math:`\lvert I_{1/2}(β μ^{ideal}) - χ \rvert`.
 
-    This function returns :math:`β μ^{ideal}` the dimensionless
-    ideal chemical potential.
+    This function returns the dimensionless ideal chemical potential :math:`β μ^{ideal}`.
 
     Examples
     --------
