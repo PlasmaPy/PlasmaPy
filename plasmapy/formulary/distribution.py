@@ -20,6 +20,7 @@ import numpy as np
 from scipy.special import gamma
 
 from plasmapy.formulary.speeds import kappa_thermal_speed, thermal_speed
+from plasmapy.particles import particle_input
 from plasmapy.utils._units_definitions import (
     SPEED_DISTRIBUTION_UNITS_1D,
     SPEED_DISTRIBUTION_UNITS_2D,
@@ -35,7 +36,8 @@ def _v_drift_conversion(v_drift):
     return v_drift
 
 
-def Maxwellian_1D(v, T, particle="e", v_drift=0, vTh=np.nan, units="units"):
+@particle_input
+def Maxwellian_1D(v, T, particle: Particle="e", v_drift=0, vTh=np.nan, units="units"):
     r"""
     Probability distribution function of velocity for a Maxwellian
     distribution in 1D.
@@ -142,6 +144,7 @@ def Maxwellian_1D(v, T, particle="e", v_drift=0, vTh=np.nan, units="units"):
         return distFunc
 
 
+@particle_input
 def Maxwellian_velocity_2D(
     vx, vy, T, particle="e", vx_drift=0, vy_drift=0, vTh=np.nan, units="units"
 ):
@@ -273,12 +276,13 @@ def Maxwellian_velocity_2D(
         return distFunc
 
 
+@particle_input
 def Maxwellian_velocity_3D(
     vx,
     vy,
     vz,
     T,
-    particle="e",
+    particle: Particle="e",
     vx_drift=0,
     vy_drift=0,
     vz_drift=0,
@@ -422,7 +426,8 @@ def Maxwellian_velocity_3D(
         return distFunc
 
 
-def Maxwellian_speed_1D(v, T, particle="e", v_drift=0, vTh=np.nan, units="units"):
+@particle_input
+def Maxwellian_speed_1D(v, T, particle: Particle="e", v_drift=0, vTh=np.nan, units="units"):
     r"""
     Probability distribution function of speed for a Maxwellian distribution
     in 1D.
@@ -530,7 +535,8 @@ def Maxwellian_speed_1D(v, T, particle="e", v_drift=0, vTh=np.nan, units="units"
         return distFunc
 
 
-def Maxwellian_speed_2D(v, T, particle="e", v_drift=0, vTh=np.nan, units="units"):
+@particle_input
+def Maxwellian_speed_2D(v, T, particle: Particle="e", v_drift=0, vTh=np.nan, units="units"):
     r"""
     Probability distribution function of speed for a Maxwellian distribution
     in 2D.
@@ -646,7 +652,8 @@ def Maxwellian_speed_2D(v, T, particle="e", v_drift=0, vTh=np.nan, units="units"
         return distFunc
 
 
-def Maxwellian_speed_3D(v, T, particle="e", v_drift=0, vTh=np.nan, units="units"):
+@particle_input
+def Maxwellian_speed_3D(v, T, particle: Particle="e", v_drift=0, vTh=np.nan, units="units"):
     r"""
     Probability distribution function of speed for a Maxwellian
     distribution in 3D.
@@ -762,7 +769,8 @@ def Maxwellian_speed_3D(v, T, particle="e", v_drift=0, vTh=np.nan, units="units"
         return distFunc
 
 
-def kappa_velocity_1D(v, T, kappa, particle="e", v_drift=0, vTh=np.nan, units="units"):
+@particle_input
+def kappa_velocity_1D(v, T, kappa, particle: Particle="e", v_drift=0, vTh=np.nan, units="units"):
     r"""
     Return the probability density at the velocity ``v`` in m/s
     to find a particle ``particle`` in a plasma of temperature ``T``
@@ -891,13 +899,14 @@ def kappa_velocity_1D(v, T, kappa, particle="e", v_drift=0, vTh=np.nan, units="u
         return distFunc
 
 
+@particle_input
 def kappa_velocity_3D(
     vx,
     vy,
     vz,
     T,
     kappa,
-    particle="e",
+    particle: Particle="e",
     vx_drift=0,
     vy_drift=0,
     vz_drift=0,
