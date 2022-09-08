@@ -936,7 +936,7 @@ def test_that_object_can_be_dict_key(key):
         dictionary = {key: value}
     except Exception as exc:
         error_message = f"{key} is not a valid key for a dict. "
-        if not isinstance(key, collections.Hashable):
+        if not isinstance(key, collections.abc.Hashable):
             error_message += f"{key} is not hashable. "
         try:
             key_equals_itself = key == key
