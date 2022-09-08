@@ -20,7 +20,7 @@ import numpy as np
 from scipy.special import gamma
 
 from plasmapy.formulary.speeds import kappa_thermal_speed, thermal_speed
-from plasmapy.particles import particle_input
+from plasmapy.particles import Particle, particle_input
 from plasmapy.utils._units_definitions import (
     SPEED_DISTRIBUTION_UNITS_1D,
     SPEED_DISTRIBUTION_UNITS_2D,
