@@ -23,16 +23,16 @@ body:
 - type: textarea
   id: versions
   attributes:
-    label: Versions
+    label: Package versions
     description: |
-      What version of PlasmaPy were you using when the problem occurred? This can be found using `plasmapy.__version__`. Optional.
+      What version of PlasmaPy were you using when the problem occurred? This information can be found with `plasmapy.__version__`. (optional)
 
 - type: textarea
   id: sample-code
   attributes:
     label: Minimal complete verifiable example
     description: |
-      Provide a minimal self-contained example to help us reproduce the problem. This will be automatically formatted into code, so no need for Markdown backticks. This is optional, but incredibly helpful!
+      Provide a minimal self-contained example to help us reproduce the problem. This will be automatically formatted into code, so no need for Markdown backticks. (optional, but incredibly helpful!)
     render: Python
   validations:
     required: false
