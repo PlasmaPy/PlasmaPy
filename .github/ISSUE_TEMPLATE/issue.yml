@@ -1,5 +1,5 @@
 name: 📝 Issue
-description: A general issue that's not a bug report or feature request
+description: Raise a general issue that doesn't fit the other categories
 body:
 - type: textarea
   id: description
@@ -7,15 +7,5 @@ body:
     label: Description of issue
     description: |
       Please describe the issue here.
-  validations:
-    required: true
-
-
-- type: textarea
-  id: issue-description
-  attributes:
-    label: Description of issue
-    description: |
-      Thank you for raising an issue! Please enter the issue description here.
   validations:
     required: true

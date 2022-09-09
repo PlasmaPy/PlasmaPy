@@ -1,5 +1,5 @@
 name: 🐛 Bug Report
-description: File a bug report to help us improve
+description: Report a problem that you encountered when using PlasmaPy
 labels: [Bug]
 body:
 - type: textarea
