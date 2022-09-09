@@ -7,25 +7,25 @@ body:
   attributes:
     label: Description of problem
     description: |
-      Thank you for reporting a What were you doing and what went wrong?
+      Thank you for submitting a bug report — we really appreciate it! Please describe what you were doing and what went wrong.
   validations:
     required: true
 
 - type: textarea
-  id: what-did-you-expect-to-happen
+  id: expected-outcome
   attributes:
     label: Expected outcome
     description: |
-      What did you expect to happen instead? (optional)
+      What did you expect to happen? (optional)
   validations:
     required: false
 
 - type: textarea
   id: versions
   attributes:
-    label: Version
+    label: Versions
     description: |
-      What version of PlasmaPy were you using?  This can be found with `plasmapy.__version__` in Python or `pip show plasmapy` in the command line. (optional)
+      What version of PlasmaPy were you using when the problem occurred? This can be found using `plasmapy.__version__`. Optional.
 
 - type: textarea
   id: sample-code
