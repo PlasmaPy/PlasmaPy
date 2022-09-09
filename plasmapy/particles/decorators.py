@@ -116,7 +116,7 @@ class _ParticleInput:
 
     Parameters
     ----------
-    wrapped : callable
+    callable_ : callable
         The function or method to be decorated.
 
     require : `str`, `set`, `list`, or `tuple`, optional, |keyword-only|
@@ -140,7 +140,7 @@ class _ParticleInput:
 
     def __init__(
         self,
-        wrapped: Callable,
+        callable_: Callable,
         *,
         require: Optional[Union[str, Set, List, Tuple]] = None,
         any_of: Optional[Union[str, Set, List, Tuple]] = None,
@@ -149,7 +149,7 @@ class _ParticleInput:
         allow_particle_lists: bool = True,
     ):
         self._data = {}
-        self.wrapped = wrapped
+        self.callable_ = callable_
         self.require = require
         self.any_of = any_of
         self.exclude = exclude
@@ -157,7 +157,7 @@ class _ParticleInput:
         self.allow_particle_lists = allow_particle_lists
 
     @property
-    def wrapped(self) -> Callable:
+    def callable_(self) -> Callable:
         """
         The function that is being decorated.
 
@@ -167,8 +167,8 @@ class _ParticleInput:
         """
         return self._data["callable_"]
 
-    @wrapped.setter
-    def wrapped(self, function: Callable):
+    @callable_.setter
+    def callable_(self, function: Callable):
         self._data["callable_"] = function
         self._data["annotations"] = _get_annotations(function)
         self._data["parameters_to_process"] = self.find_parameters_to_process()
@@ -312,11 +312,11 @@ class _ParticleInput:
             lacks_charge_info = any(lacks_charge_info)
 
         if must_be_charged and (uncharged or must_have_charge_info):
-            raise ChargeError(f"{self.wrapped} can only accept charged particles.")
+            raise ChargeError(f"{self.callable_} can only accept charged particles.")
 
         if must_have_charge_info and lacks_charge_info:
             raise ChargeError(
-                f"{self.wrapped} can only accept particles which have "
+                f"{self.callable_} can only accept particles which have "
                 f"explicit charge information."
             )
 
@@ -372,7 +372,7 @@ class _ParticleInput:
                 self.require,
                 self.exclude,
                 self.any_of,
-                self.wrapped.__name__,
+                self.callable_.__name__,
             )
             raise ParticleError(errmsg)
 
@@ -411,7 +411,7 @@ class _ParticleInput:
             if not meets_name_criteria:
                 raise exception(
                     f"The argument {parameter} = {particle!r} to "
-                    f"{self.wrapped.__name__} does not correspond to a "
+                    f"{self.callable_.__name__} does not correspond to a "
                     f"valid {parameter}."
                 )
 
@@ -422,20 +422,20 @@ class _ParticleInput:
         """
         if not self.allow_custom_particles and isinstance(particle, CustomParticle):
             raise InvalidParticleError(
-                f"{self.wrapped.__name__} does not accept CustomParticle "
+                f"{self.callable_.__name__} does not accept CustomParticle "
                 f"or CustomParticle-like inputs."
             )
 
         if not self.allow_particle_lists and isinstance(particle, ParticleList):
             raise InvalidParticleError(
-                f"{self.wrapped.__name__} does not accept ParticleList "
+                f"{self.callable_.__name__} does not accept ParticleList "
                 "or particle-list-like inputs."
             )
 
         if not self.allow_custom_particles and isinstance(particle, ParticleList):
             if any(particle.is_category("custom")):
                 raise InvalidParticleError(
-                    f"{self.wrapped.__name__} does not accept CustomParticle "
+                    f"{self.callable_.__name__} does not accept CustomParticle "
                     f"or CustomParticle-like inputs."
                 )
 
@@ -541,7 +541,7 @@ class _ParticleInput:
             belongs.
         """
 
-        arguments = _bind_arguments(self.wrapped, args, kwargs, instance)
+        arguments = _bind_arguments(self.callable_, args, kwargs, instance)
 
         Z = arguments.pop("Z", None)
         mass_numb = arguments.pop("mass_numb", None)
@@ -583,7 +583,7 @@ def particle_input(
 
     If the |annotation| is created using `~typing.Optional` (e.g.,
     ``Optional[ParticleLike]``), then `None` can be provided to the
-    wrapped callable.
+    callable_ callable.
 
     If the |annotated| |parameter| is named ``element``, ``isotope``,
     ``ion``, or ``ionic_level``, then |particle_input| will raise an
@@ -654,19 +654,21 @@ def particle_input(
     |ParticleError|
         If the returned particle(s) do not meet the categorization
         criteria specified through ``require``, ``any_of``, or
-        ``exclude``; or if none of the |parameters| of ``wrapped`` have
+        ``exclude``; or if none of the |parameters| of ``callable_`` have
         been appropriately annotated.
 
     See Also
     --------
-    ~plasmapy.particles.decorators._ParticleInput
-    |validate_quantities|
+    ~plasmapy.particles.particle_class.CustomParticle
+    ~plasmapy.particles.particle_class.Particle
+    ~plasmapy.particles.particle_collections.ParticleList
+    ~plasmapy.utils.decorators.validators.validate_quantities
 
     Examples
     --------
     The |particle_input| decorator takes appropriately annotated
     |particle-like| or |particle-list-like| arguments that are provided
-    to ``wrapped``, and converts them into a |Particle|,
+    to ``callable_``, and converts them into a |Particle|,
     |CustomParticle|, or |ParticleList| object.
 
     The following decorated function accepts a |particle-like| input and
@@ -731,7 +733,7 @@ def particle_input(
     Particle("T 1+")
 
     The ``allow_custom_particles`` and ``allow_particle_lists`` keyword
-    arguments indicate whether ``wrapped`` should accept
+    arguments indicate whether ``callable_`` should accept
     |CustomParticle| and |ParticleList| objects, respectively.
 
     >>> @particle_input(allow_custom_particles=False, allow_particle_lists=False)
@@ -793,7 +795,7 @@ def particle_input(
         )
 
     particle_validator = _ParticleInput(
-        wrapped=callable_,
+        callable_=callable_,
         require=require,
         any_of=any_of,
         exclude=exclude,
@@ -802,8 +804,10 @@ def particle_input(
     )
 
     @wrapt.decorator
-    def wrapper(wrapped: Callable, instance: Any, args: Tuple, kwargs: Dict[str, Any]):
+    def wrapper(
+        callable_: Callable, instance: Any, args: Tuple, kwargs: Dict[str, Any]
+    ):
         new_kwargs = particle_validator.process_arguments(args, kwargs, instance)
-        return wrapped(**new_kwargs)
+        return callable_(**new_kwargs)
 
     return wrapper(callable_)
