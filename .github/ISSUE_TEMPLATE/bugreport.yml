@@ -3,7 +3,7 @@ description: Report a problem that you encountered when using PlasmaPy
 labels: [Bug]
 body:
 - type: textarea
-  id: what-happened
+  id: description
   attributes:
     label: Description of problem
     description: |
@@ -21,34 +21,24 @@ body:
     required: false
 
 - type: textarea
-  id: versions
+  id: minimal-example
+  attributes:
+    label: Minimal complete verifiable example
+    description: |
+      Provide a minimal self-contained example to help us reproduce the problem, along with any relevant output. This will be automatically formatted into code, so no need for Markdown backticks. (optional, but incredibly helpful!)
+    render: Python
+  validations:
+    required: false
+
+- type: textarea
+  id: package-versions
   attributes:
     label: Package versions
     description: |
       What version of PlasmaPy were you using when the problem occurred? This information can be found with `plasmapy.__version__`. (optional)
 
 - type: textarea
-  id: sample-code
-  attributes:
-    label: Minimal complete verifiable example
-    description: |
-      Provide a minimal self-contained example to help us reproduce the problem. This will be automatically formatted into code, so no need for Markdown backticks. (optional, but incredibly helpful!)
-    render: Python
-  validations:
-    required: false
-
-- type: textarea
-  id: log-output
-  attributes:
-    label: Relevant output
-    description: |
-      Copy and paste any relevant output here, such as a [traceback](https://docs.python.org/3/library/traceback.html) from the error. This will be automatically formatted into code, so no need for Markdown backticks. (optional)
-    render: Python
-  validations:
-    required: false
-
-- type: textarea
-  id: extra
+  id: context
   attributes:
     label: Additional context
     description: |
