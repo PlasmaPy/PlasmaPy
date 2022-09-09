@@ -1,5 +1,5 @@
 name: 📝 Issue
-description: Raise a general issue that doesn't fit the other categories
+description: Create a general issue that doesn't fit the other categories
 body:
 - type: textarea
   id: description
