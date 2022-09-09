@@ -25,7 +25,7 @@ def func_simple_noparens(
     a, particle: ParticleLike, b=None, Z: int = None, mass_numb: int = None
 ) -> Particle:
     """
-    A simple callable_ that, when decorated with `@particle_input`,
+    A simple function that, when decorated with `@particle_input`,
     returns the instance of the Particle class corresponding to the
     inputs.
     """
@@ -42,7 +42,7 @@ def func_simple_parens(
     a, particle: ParticleLike, b=None, Z: int = None, mass_numb: int = None
 ) -> Particle:
     """
-    A simple callable_ that, when decorated with `@particle_input()`,
+    A simple function that, when decorated with `@particle_input()`,
     returns the instance of the Particle class corresponding to the
     inputs.
     """
@@ -77,7 +77,7 @@ def test_particle_input_simple(func, args, kwargs, symbol):
     )
 
 
-# callable_, kwargs, expected_error
+# func, kwargs, expected_error
 particle_input_error_table = [
     (func_simple_noparens, {"a": 1, "particle": "asdf"}, InvalidParticleError)
 ]
@@ -126,7 +126,7 @@ def test_particle_input_classes(symbol):
 
 def test_no_annotations_exception():
     """
-    Test that a callable_ decorated with @particle_input that has no
+    Test that a function decorated with @particle_input that has no
     annotated arguments will raise a ParticleError.
     """
 
@@ -141,7 +141,7 @@ def test_no_annotations_exception():
 @particle_input
 def ambiguous_keywords(p1: ParticleLike, p2: ParticleLike, Z=None, mass_numb=None):
     """
-    A trivial callable_ with two annotated arguments plus the keyword
+    A trivial function with two annotated arguments plus the keyword
     arguments ``Z`` and ``mass_numb``.
     """
     pass
@@ -157,7 +157,7 @@ ambiguous_arguments = [
 @pytest.mark.parametrize("args, kwargs", ambiguous_arguments)
 def test_function_with_ambiguity(args, kwargs):
     """
-    Test that a callable_ decorated with particle_input that has two
+    Test that a function decorated with particle_input that has two
     annotated arguments.
     """
     with pytest.raises(ParticleError):
@@ -243,9 +243,9 @@ def test_decorator_categories(categorization, particle, exception):
 
 def test_optional_particle_annotation_parameter():
     """
-    Tests the `Optional[Particle]` annotation argument in a callable_
+    Tests the `Optional[Particle]` annotation argument in a function
     decorated by `@particle_input` such that the annotated argument allows
-    `None` to be passed through to the decorated callable_.
+    `None` to be passed through to the decorated function.
     """
 
     @particle_input
@@ -295,7 +295,7 @@ def test_stacking_decorators(decorator1, decorator2):
 def test_preserving_signature_with_stacked_decorators(decorator1, decorator2):
     """
     Test that |particle_input| & |validate_quantities| preserve the
-    callable_ signature after being stacked.
+    function signature after being stacked.
     """
     decorated_function_1_2 = decorator1(decorator2(undecorated_function))
     decorated_function_2_1 = decorator2(decorator1(undecorated_function))
@@ -513,7 +513,7 @@ class TestParticleInputParameterNames:
 
     def test_individual_particles_not_in_category(self, case):
         """
-        Test that the appropriate exception is raised when the callable_
+        Test that the appropriate exception is raised when the function
         is provided with individual particles that are not in the
         category.
         """
@@ -523,7 +523,7 @@ class TestParticleInputParameterNames:
 
     def test_particle_list_not_in_category(self, case):
         """
-        Test that the appropriate exception is raised when the callable_
+        Test that the appropriate exception is raised when the function
         is provided with multiple particles at once that are all not in
         the category.
         """
@@ -532,7 +532,7 @@ class TestParticleInputParameterNames:
 
     def test_particle_list_some_in_category(self, case):
         """
-        Test that the appropriate exception is raised when the callable_
+        Test that the appropriate exception is raised when the function
         is provided with multiple particles at once, of which some are
         in the category and some are not.
         """
@@ -544,7 +544,7 @@ class TestParticleInputParameterNames:
 
     def test_individual_particles_all_in_category(self, case):
         """
-        Test that no exception is raised when the callable_ is provided
+        Test that no exception is raised when the function is provided
         with individual particles that are all in the category.
         """
         for particle in case.particles_in_category:
@@ -552,7 +552,7 @@ class TestParticleInputParameterNames:
 
     def test_particle_list_all_in_category(self, case):
         """
-        Test that no exception is raised when the callable_ is provided
+        Test that no exception is raised when the function is provided
         with multiple particles at once which are all in the category.
         """
         case.function(case.particles_in_category)
