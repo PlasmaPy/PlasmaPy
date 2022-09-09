@@ -17,8 +17,8 @@ body:
   attributes:
     label: Motivation
     description: >
-      What would be the benefits from adding this feature? What problems
-      would this feature solve? (optional)
+      What are the benefits from adding this feature? What problems or
+      limitations would be solved? (optional)
 
 - type: textarea
   id: solution
