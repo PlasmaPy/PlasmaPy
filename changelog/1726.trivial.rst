@@ -1,2 +1,2 @@
 Changed `~plasmapy.formulary.quantum.chemical_potential` to use the
-Broyden-Fletcher-Goldfarb-Shanno algorithm to implicitly solve for beta.
+Broyden-Fletcher-Goldfarb-Shanno algorithm to implicitly solve for the ideal chemical potential.
