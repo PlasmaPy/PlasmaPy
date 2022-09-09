@@ -10,6 +10,7 @@ __all__ = [
     "Particle",
     "ParticleLike",
     "molecule",
+    "valid_categories",
 ]
 
 import astropy.constants as const
@@ -74,12 +75,19 @@ _atomic_property_categories = {"element", "isotope", "ion"}
 
 _specific_particle_categories = {"electron", "positron", "proton", "neutron"}
 
-_valid_categories = (
+valid_categories = (
     _periodic_table_categories
     | _classification_categories
     | _atomic_property_categories
     | _specific_particle_categories
 )
+r"""
+A `set` containing all valid particle categories.
+
+See Also
+--------
+:py:meth:`~plasmapy.particles.particle_class.AbstractPhysicalParticle.is_category`
+"""
 
 
 def _category_errmsg(particle, category: str) -> str:
@@ -218,8 +226,7 @@ class AbstractPhysicalParticle(AbstractParticle):
         any_of: Union[str, Iterable[str]] = None,
         exclude: Union[str, Iterable[str]] = None,
     ) -> bool:
-        """
-        Determine if the particle meets categorization criteria.
+        """Determine if the particle meets categorization criteria.
 
         Return `True` if the particle is consistent with the provided
         categories, and `False` otherwise.
@@ -230,23 +237,39 @@ class AbstractPhysicalParticle(AbstractParticle):
             Required categories in the form of one or more `str` objects
             or an iterable.
 
-        require : `str` or iterable providing `str` objects, optional, keyword-only
-            One or more categories.  This method will return `False` if
-            the particle does not belong to all of these categories.
-
-        any_of : `str` or iterable providing `str` objects, optional, keyword-only
-            One or more categories. This method will return `False` if
-            the particle does not belong to at least one of these
+        require : `str` or iterable of `str`, optional, |keyword-only|
+            One or more particle categories. This method will return
+            `False` if the particle does not belong to all of these
             categories.
 
-        exclude : `str` or iterable providing `str` objects, optional, keyword-only
-            One or more categories.  This method will return `False` if
-            the particle belongs to any of these categories.
+        any_of : `str` or iterable of `str`, optional, |keyword-only|
+            One or more particle categories. This method will return
+            `False` if the particle does not belong to at least one of
+            these categories.
+
+        exclude : `str` or iterable of `str`, optional, |keyword-only|
+            One or more particle categories.  This method will return
+            `False` if the particle belongs to any of these categories.
+
+        See Also
+        --------
+        ~plasmapy.particles.particle_class.valid_categories :
+            A `set` containing all valid particle categories.
 
         Notes
         -----
-        A `set` containing all valid categories may be accessed by the
-        ``valid_categories`` attribute of ``is_category``.
+        Valid particle categories are given in
+        `~plasmapy.particles.particle_class.valid_categories` and
+        include: ``"actinide"``, ``"alkali metal"``, ``"alkaline earth
+        metal"``, ``"antibaryon"``, ``"antilepton"``, ``"antimatter"``,
+        ``"antineutrino"``, ``"baryon"``, ``"boson"``, ``"charged"``,
+        ``"custom"``, ``"electron"``, ``"element"``, ``"fermion"``,
+        ``"halogen"``, ``"ion"``, ``"isotope"``, ``"lanthanide"``,
+        ``"lepton"``, ``"matter"``, ``"metal"``, ``"metalloid"``,
+        ``"neutrino"``, ``"neutron"``, ``"noble gas"``, ``"nonmetal"``,
+        ``"positron"``, ``"post-transition metal"``, ``"proton"``,
+        ``"stable"``, ``"transition metal"``, ``"uncharged"``, and
+        ``"unstable"``.
 
         Examples
         --------
@@ -316,7 +339,7 @@ class AbstractPhysicalParticle(AbstractParticle):
         exclude = become_set(exclude)
         any_of = become_set(any_of)
 
-        invalid_categories = (require | exclude | any_of) - _valid_categories
+        invalid_categories = (require | exclude | any_of) - valid_categories
 
         duplicate_categories = require & exclude | exclude & any_of | require & any_of
 
@@ -354,10 +377,6 @@ class AbstractPhysicalParticle(AbstractParticle):
 
     def __gt__(self, other):
         return self._as_particle_list.__gt__(other)
-
-
-AbstractPhysicalParticle.is_category.valid_categories = _valid_categories
-"""All valid particle categories."""
 
 
 class Particle(AbstractPhysicalParticle):
@@ -413,6 +432,20 @@ class Particle(AbstractPhysicalParticle):
     CustomParticle
     DimensionlessParticle
     ~plasmapy.particles.particle_collections.ParticleList
+    ~plasmapy.particles.particle_class.valid_categories
+
+    Notes
+    -----
+    Valid particle categories include: ``"actinide"``, ``"alkali
+    metal"``, ``"alkaline earth metal"``, ``"antibaryon"``,
+    ``"antilepton"``, ``"antimatter"``, ``"antineutrino"``,
+    ``"baryon"``, ``"boson"``, ``"charged"``, ``"custom"``,
+    ``"electron"``, ``"element"``, ``"fermion"``, ``"halogen"``,
+    ``"ion"``, ``"isotope"``, ``"lanthanide"``, ``"lepton"``,
+    ``"matter"``, ``"metal"``, ``"metalloid"``, ``"neutrino"``,
+    ``"neutron"``, ``"noble gas"``, ``"nonmetal"``, ``"positron"``,
+    ``"post-transition metal"``, ``"proton"``, ``"stable"``,
+    ``"transition metal"``, ``"uncharged"``, and ``"unstable"``.
 
     Examples
     --------
@@ -534,17 +567,6 @@ class Particle(AbstractPhysicalParticle):
     The `~plasmapy.particles.particle_class.Particle.categories` attribute
     and `~plasmapy.particles.particle_class.Particle.is_category` method
     may be used to find and test particle membership in categories.
-
-    Valid particle categories include: ``'actinide'``, ``'alkali
-    metal'``, ``'alkaline earth metal'``, ``'antibaryon'``,
-    ``'antilepton'``, ``'antimatter'``, ``'antineutrino'``,
-    ``'baryon'``, ``'boson'``, ``'charged'``, ``'electron'``,
-    ``'element'``, ``'fermion'``, ``'halogen'``, ``'ion'``,
-    ``'isotope'``, ``'lanthanide'``, ``'lepton'``, ``'matter'``,
-    ``'metal'``, ``'metalloid'``, ``'neutrino'``, ``'neutron'``,
-    ``'noble gas'``, ``'nonmetal'``, ``'positron'``,
-    ``'post-transition metal'``, ``'proton'``, ``'stable'``,
-    ``'transition metal'``, ``'uncharged'``, and ``'unstable'``.
     """
 
     def __init__(
