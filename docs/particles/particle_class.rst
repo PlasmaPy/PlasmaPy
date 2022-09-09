@@ -101,8 +101,8 @@ the particle.
 >>> sorted(electron.categories)
 ['charged', 'electron', 'fermion', 'lepton', 'matter', 'stable']
 
-Membership of a particle within a category may be checked using the
-`~plasmapy.particles.particle_class.Particle.is_category` method.
+Membership of a particle within a category may be checked using
+|is_category|.
 
 >>> alpha.is_category('lepton')
 False
@@ -123,18 +123,7 @@ False
 >>> alpha.is_category(exclude='lepton')
 True
 
-Calling the `~plasmapy.particles.particle_class.Particle.is_category`
-method with no arguments returns a set containing all of the valid
-categories for any particle.  Valid categories include:
-``"actinide"``, ``"alkali metal"``, ``"alkaline earth metal"``,
-``"antibaryon"``, ``"antilepton"``, ``"antimatter"``,
-``"antineutrino"``, ``"baryon"``, ``"boson"``, ``"charged"``,
-``"custom"``, ``"electron"``, ``"element"``, ``"fermion"``,
-``"halogen"``, ``"ion"``, ``"isotope"``, ``"lanthanide"``, ``"lepton"``,
-``"matter"``, ``"metal"``, ``"metalloid"``, ``"neutrino"``,
-``"neutron"``, ``"noble gas"``, ``"nonmetal"``, ``"positron"``,
-``"post-transition metal"``, ``"proton"``, ``"stable"``,
-``"transition metal"``, ``"uncharged"``, and ``"unstable"``.
+Valid particle categories are listed in the docstring for |is_category|.
 
 .. _particle-class-conditionals-equality:
 
@@ -193,3 +182,5 @@ of a |Particle| object.
 Particle("e+")
 >>> antimuon.antiparticle
 Particle("mu-")
+
+.. |is_category| replace:: `~plasmapy.particles.particle_class.AbstractPhysicalParticle.is_category`
