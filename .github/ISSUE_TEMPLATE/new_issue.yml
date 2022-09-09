@@ -5,7 +5,7 @@ body:
   id: description
   attributes:
     label: Description
-    description: |
+    description: >
       Please describe the issue here.
   validations:
     required: true

@@ -7,7 +7,7 @@ body:
   id: description
   attributes:
     label: Feature description
-    description: |
+    description: >
       What new capability would you like added to PlasmaPy?
   validations:
     required: true
@@ -16,14 +16,15 @@ body:
   id: motivation
   attributes:
     label: Motivation
-    description: |
-      What would be the benefits from adding this feature? What problems would this feature solve? (optional)
+    description: >
+      What would be the benefits from adding this feature? What problems
+      would this feature solve? (optional)
 
 - type: textarea
   id: solution
   attributes:
     label: Implementation strategy
-    description: |
+    description: >
       How might we go about implementing this new capability? (optional)
   validations:
     required: false
@@ -32,7 +33,7 @@ body:
   id: additional-context
   attributes:
     label: Additional context
-    description: |
+    description: >
       Please provide any additional helpful details here. (optional)
   validations:
     required: false
