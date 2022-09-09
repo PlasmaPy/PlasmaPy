@@ -36,10 +36,17 @@ _optional_allowed_annotations = tuple(
 _allowed_annotations = _basic_allowed_annotations + _optional_allowed_annotations
 
 
-def _get_annotations(f: Callable):
-    """Access the annotations of a callable `object`."""
+def _get_annotations(callable_: Callable):
+    """
+    Access the annotations of a callable.
+
+    .. note::
+
+       For Python 3.10+, this should be replaced with
+       `inspect.get_annotations`.
+    """
     # Python 3.10: Replace this with inspect.get_annotations
-    return getattr(f, "__annotations__", None)
+    return getattr(callable_, "__annotations__", None)
 
 
 def _make_into_set_or_none(obj) -> Optional[Set]:
@@ -56,19 +63,19 @@ def _make_into_set_or_none(obj) -> Optional[Set]:
 
 
 def _bind_arguments(
-    function: Callable,
+    callable_: Callable,
     args: Optional[Tuple] = None,
     kwargs: Optional[Dict[str, Any]] = None,
     instance=None,
 ) -> Dict:
     """
     Bind the arguments provided by ``args`` and ``kwargs`` to
-    the corresponding parameters in the signature of the function
+    the corresponding parameters in the signature of the callable_
     or method being decorated.
 
     Parameters
     ----------
-    function : callable
+    callable_ : callable
         The function or method to which to bind ``args`` and ``kwargs``.
 
     args : tuple, optional
@@ -78,19 +85,19 @@ def _bind_arguments(
         Keyword arguments.
 
     instance
-        If ``func`` is a class instance method, then ``instance`` should
-        be the instance to which ``func`` belongs.
+        If ``callable_`` is a class instance method, then ``instance``
+        should be the instance to which ``callable_`` belongs.
 
     Returns
     -------
     dict
-        A dictionary with the parameters of the callable_ function
-        as keys and the corresponding arguments as values,
-        but removing ``self`` and ``cls``.
+        A dictionary with the parameters of ``callable_`` as keys and
+        the corresponding arguments as values, but removing ``self`` and
+        ``cls``.
     """
-    wrapped_signature = inspect.signature(function)
+    wrapped_signature = inspect.signature(callable_)
 
-    # When decorating a function or staticmethod, instance will
+    # When decorating a callable_ or staticmethod, instance will
     # be None. When decorating a class instance method, instance
     # will be the class instance, and will need to be bound to
     # the "self" parameter but later removed. For a class method,
@@ -117,7 +124,7 @@ class _ParticleInput:
     Parameters
     ----------
     callable_ : callable
-        The function or method to be decorated.
+        The callable_ or method to be decorated.
 
     require : `str`, `set`, `list`, or `tuple`, optional, |keyword-only|
         Categories that a particle must be in.  If a particle is not in
@@ -159,18 +166,18 @@ class _ParticleInput:
     @property
     def callable_(self) -> Callable:
         """
-        The function that is being decorated.
+        The callable that is being decorated.
 
         Returns
         -------
         callable
         """
-        return self._data["callable_"]
+        return self._data["callable"]
 
     @callable_.setter
-    def callable_(self, function: Callable):
-        self._data["callable_"] = function
-        self._data["annotations"] = _get_annotations(function)
+    def callable_(self, callable_: Callable):
+        self._data["callable"] = callable_
+        self._data["annotations"] = _get_annotations(callable_)
         self._data["parameters_to_process"] = self.find_parameters_to_process()
 
     def find_parameters_to_process(self) -> List[str]:
@@ -191,7 +198,7 @@ class _ParticleInput:
     @property
     def annotations(self) -> Dict[str, Any]:
         """
-        The annotations of the decorated function.
+        The annotations of the decorated callable_.
 
         Returns
         -------
@@ -321,7 +328,7 @@ class _ParticleInput:
             )
 
     @staticmethod
-    def category_errmsg(particle, require, exclude, any_of, function_name) -> str:
+    def category_errmsg(particle, require, exclude, any_of, callable_name) -> str:
         """
         Return an error message for when a particle does not meet
         categorization criteria.
@@ -332,7 +339,7 @@ class _ParticleInput:
         """
         category_errmsg = (
             f"The particle {particle} does not meet the required "
-            f"classification criteria to be a valid input to {function_name}. "
+            f"classification criteria to be a valid input to {callable_name}. "
         )
 
         errmsg_table = [
@@ -518,7 +525,7 @@ class _ParticleInput:
             raise ParticleError(
                 "The arguments Z and mass_numb are not allowed when more "
                 "than one argument or keyword is annotated with Particle "
-                "in functions decorated with particle_input."
+                "in callables decorated with particle_input."
             )
 
     def process_arguments(
@@ -582,8 +589,8 @@ def particle_input(
     an exception.
 
     If the |annotation| is created using `~typing.Optional` (e.g.,
-    ``Optional[ParticleLike]``), then `None` can be provided to the
-    callable_ callable.
+    ``Optional[ParticleLike]``), then `None` can be provided to
+    ``callable_``.
 
     If the |annotated| |parameter| is named ``element``, ``isotope``,
     ``ion``, or ``ionic_level``, then |particle_input| will raise an
@@ -600,7 +607,7 @@ def particle_input(
     Parameters
     ----------
     callable_ : callable, optional
-        The function, method, or other callable to be decorated.
+        The function or method to be decorated.
 
     require : `str`, `set`, `list`, or `tuple`, |keyword-only|, optional
         Categories that each particle are required to be in.
@@ -654,8 +661,8 @@ def particle_input(
     |ParticleError|
         If the returned particle(s) do not meet the categorization
         criteria specified through ``require``, ``any_of``, or
-        ``exclude``; or if none of the |parameters| of ``callable_`` have
-        been appropriately annotated.
+        ``exclude``; or if none of the |parameters| of ``callable_``
+        have been appropriately annotated.
 
     See Also
     --------
@@ -805,9 +812,9 @@ def particle_input(
 
     @wrapt.decorator
     def wrapper(
-        callable_: Callable, instance: Any, args: Tuple, kwargs: Dict[str, Any]
+        callable__: Callable, instance: Any, args: Tuple, kwargs: Dict[str, Any]
     ):
         new_kwargs = particle_validator.process_arguments(args, kwargs, instance)
-        return callable_(**new_kwargs)
+        return callable__(**new_kwargs)
 
     return wrapper(callable_)
