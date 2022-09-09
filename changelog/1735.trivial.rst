@@ -1,0 +1,2 @@
+Added :file:`noxfile.py` as a configuration file for running tests with
+`nox <https://nox.thea.codes/en/stable/>`__.
