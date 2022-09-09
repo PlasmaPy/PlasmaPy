@@ -1,10 +1,10 @@
 name: 📝 Issue
-description: Create a general issue that doesn't fit the other categories
+description: Create an issue that doesn't fit in the other categories
 body:
 - type: textarea
   id: description
   attributes:
-    label: Description of issue
+    label: Description
     description: |
       Please describe the issue here.
   validations:
