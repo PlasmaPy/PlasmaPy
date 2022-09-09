@@ -5,7 +5,7 @@ body:
 - type: textarea
   id: description
   attributes:
-    label: Description of problem
+    label: Bug description
     description: |
       Thank you for submitting a bug report — we really appreciate it! Please describe what you were doing and what went wrong.
   validations:
@@ -16,7 +16,7 @@ body:
   attributes:
     label: Expected outcome
     description: |
-      What did you expect to happen? (optional)
+      What did you expect to happen instead? (optional)
   validations:
     required: false
 
@@ -25,7 +25,7 @@ body:
   attributes:
     label: Minimal complete verifiable example
     description: |
-      Provide a minimal self-contained example to help us reproduce the problem, along with any relevant output. This will be automatically formatted into code, so no need for Markdown backticks. (optional, but incredibly helpful!)
+      Provide a minimal self-contained example to help us reproduce the bug, along with any relevant output. This will be automatically formatted into code, so no need for Markdown backticks. (optional, but incredibly helpful!)
     render: Python
   validations:
     required: false
@@ -35,13 +35,13 @@ body:
   attributes:
     label: Package versions
     description: |
-      What version of PlasmaPy were you using when the problem occurred? The version is given by `plasmapy.__version__`, or `pip show plasmapy` on the command line. (optional)
+      What version of PlasmaPy (`plasmapy.__version__`) were you using when the problem occurred? (optional)
 
 - type: textarea
   id: context
   attributes:
     label: Additional context
     description: |
-      Please provide any contextual information that would help us fix the bug. (optional)
+      Please provide any additional context that would help us understand and fix the bug. (optional)
   validations:
     required: false
