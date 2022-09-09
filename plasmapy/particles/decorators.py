@@ -84,7 +84,7 @@ def _bind_arguments(
     Returns
     -------
     dict
-        A dictionary with the parameters of the wrapped function
+        A dictionary with the parameters of the callable_ function
         as keys and the corresponding arguments as values,
         but removing ``self`` and ``cls``.
     """
@@ -165,11 +165,11 @@ class _ParticleInput:
         -------
         callable
         """
-        return self._data["wrapped"]
+        return self._data["callable_"]
 
     @wrapped.setter
     def wrapped(self, function: Callable):
-        self._data["wrapped"] = function
+        self._data["callable_"] = function
         self._data["annotations"] = _get_annotations(function)
         self._data["parameters_to_process"] = self.find_parameters_to_process()
 
@@ -280,7 +280,7 @@ class _ParticleInput:
     def parameters_to_process(self) -> List[str]:
         """
         The parameters of
-        `~plasmapy.particles.decorators._ParticleInput.wrapped` that have
+        `~plasmapy.particles.decorators._ParticleInput.callable_` that have
         annotations to be processed by |particle_input|.
 
         Returns
@@ -525,18 +525,18 @@ class _ParticleInput:
         self, args: tuple, kwargs: Dict[str, Any], instance=None
     ) -> Dict[str, Any]:
         """
-        Process the arguments passed to the wrapped callable.
+        Process the arguments passed to the callable_ callable.
 
         Parameters
         ----------
         args : tuple
-            Positional arguments passed to the wrapped callable.
+            Positional arguments passed to the callable_ callable.
 
         kwargs : `dict` of `str` to `object`
-            Keyword arguments provided to the wrapped callable.
+            Keyword arguments provided to the callable_ callable.
 
         instance : `object`, optional
-            If the wrapped callable is a class instance method, then
+            If the callable_ callable is a class instance method, then
             ``instance`` should be the class instance to which ``func``
             belongs.
         """
@@ -555,7 +555,7 @@ class _ParticleInput:
 
 
 def particle_input(
-    wrapped: Optional[Callable] = None,
+    callable_: Optional[Callable] = None,
     *,
     require: Union[str, Set, List, Tuple] = None,
     any_of: Union[str, Set, List, Tuple] = None,
@@ -599,7 +599,7 @@ def particle_input(
 
     Parameters
     ----------
-    wrapped : callable, optional
+    callable_ : callable, optional
         The function, method, or other callable to be decorated.
 
     require : `str`, `set`, `list`, or `tuple`, |keyword-only|, optional
@@ -782,7 +782,7 @@ def particle_input(
     # The following pattern comes from the docs for wrapt, and requires
     # that the arguments to the decorator are keyword-only.
 
-    if wrapped is None:
+    if callable_ is None:
         return functools.partial(
             particle_input,
             require=require,
@@ -793,7 +793,7 @@ def particle_input(
         )
 
     particle_validator = _ParticleInput(
-        wrapped=wrapped,
+        wrapped=callable_,
         require=require,
         any_of=any_of,
         exclude=exclude,
@@ -806,4 +806,4 @@ def particle_input(
         new_kwargs = particle_validator.process_arguments(args, kwargs, instance)
         return wrapped(**new_kwargs)
 
-    return wrapper(wrapped)
+    return wrapper(callable_)
