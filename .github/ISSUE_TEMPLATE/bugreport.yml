@@ -1,0 +1,53 @@
+name: 🐛 Bug Report
+description: File a bug report
+labels: [Bug]
+body:
+- type: textarea
+  id: what-happened
+  attributes:
+    label: What happened?
+    description: |
+      Thank you for reporting a bug — we really appreciate it! Please
+      describe what you were doing and what went wrong.
+  validations:
+    required: true
+
+- type: textarea
+  id: what-did-you-expect-to-happen
+  attributes:
+    label: What did you expect to happen?
+  validations:
+    required: false
+
+- type: textarea
+  id: sample-code
+  attributes:
+    label: Minimal complete verifiable example
+    description: |
+      Minimal, self-contained example that can reproduce the problem.
+      This will be automatically formatted into code, so no need for Markdown backticks.
+    render: Python
+  validations:
+    required: false
+
+- type: textarea
+  id: log-output
+  attributes:
+    label: Relevant output (optional)
+    description: |
+      Please copy and paste any relevant output here.
+      This will be automatically formatted into code, so no need for Markdown backticks.
+    render: Python
+  validations:
+    required: false
+
+- type: textarea
+  id: extra
+  attributes:
+    label: Anything else we need to know? (optional)
+    description: |
+      Please describe any other information you want to share, such as
+      the version(s) of PlasmaPy (`plasmapy.__version__`) or Python
+      that you were using.
+  validations:
+    required: false
