@@ -2,12 +2,18 @@ name: 🐛 Bug Report
 description: Report a problem that you encountered when using PlasmaPy
 labels: [Bug]
 body:
+
+- type: markdown
+  attributes:
+    value: |
+      Thank you for submitting a bug report — we really appreciate it! Please fill out
+
 - type: textarea
   id: description
   attributes:
     label: Bug description
     description: |
-      Thank you for submitting a bug report — we really appreciate it! Please describe what you were doing and what went wrong.
+      Please describe what you were doing and what went wrong.
   validations:
     required: true
 
