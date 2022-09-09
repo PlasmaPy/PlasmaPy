@@ -149,37 +149,47 @@ def test_Wigner_Seitz_radius():
     assert testTrue, errStr
 
 
-class Test_chemical_potential:
-    @classmethod
-    def setup_class(cls):
-        """initializing parameters for tests"""
-        cls.n_e = 1e20 * u.cm**-3
-        cls.n_e_fail = 1e23 * u.cm**-3
-        cls.T = 11604 * u.K
-        cls.True1 = 6.133671348607095e-11
+class TestChemicalPotential:
 
-    def test_known1(self):
-        """
-        Tests Fermi_integral for expected value.
-        """
-        methodVal = chemical_potential(self.n_e, self.T)
-        testTrue = u.isclose(methodVal, self.True1, rtol=1e-16, atol=0.0)
-        errStr = f"Chemical potential value should be {self.True1} and not {methodVal}."
-        assert testTrue, errStr
+    value_test_parameters = (
+        "n_e, T, expected_value",
+        [
+            (1e20 * u.cm**-3, 11604 * u.K, 0),
+            (1e25 * u.cm**-3, 11604 * u.K, 268.68166791746324),
+        ],
+    )
 
-    def test_fail1(self):
+    @staticmethod
+    @pytest.mark.parametrize(*value_test_parameters)
+    def test_return_value(n_e, T, expected_value):
         """
-        Tests if test_known1() would fail if we slightly adjusted the
+        Tests chemical_potential for expected value.
+        """
+        calculated_value = chemical_potential(n_e, T)
+
+        error_message = f"Chemical potential value should be {expected_value} and not {calculated_value.value}."
+        assert np.isclose(
+            calculated_value.value, expected_value, rtol=1e-16, atol=0.0
+        ), error_message
+        assert calculated_value.unit == u.dimensionless_unscaled
+
+    @staticmethod
+    @pytest.mark.parametrize(*value_test_parameters)
+    def test_fail1(n_e, T, expected_value):
+        """
+        Tests if test_return_value would fail if we slightly adjusted the
         value comparison by some quantity close to numerical error.
         """
-        fail1 = self.True1 + 1e-15
-        methodVal = chemical_potential(self.n_e, self.T)
-        testTrue = not u.isclose(methodVal, fail1, rtol=1e-16, atol=0.0)
-        errStr = (
-            f"Chemical potential value test gives {methodVal} and "
-            f"should not be equal to {fail1}."
+        expected_failure_value = expected_value + 1e-10
+        calculated_value = chemical_potential(n_e, T)
+
+        error_message = (
+            f"Chemical potential value test gives {calculated_value.value} and "
+            f"should not be equal to {expected_failure_value}."
         )
-        assert testTrue, errStr
+        assert not u.isclose(
+            calculated_value.value, expected_failure_value, rtol=1e-16, atol=0.0
+        ), error_message
 
 
 class Test__chemical_potential_interp:
