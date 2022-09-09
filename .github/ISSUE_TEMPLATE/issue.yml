@@ -1,7 +1,6 @@
 name: 📝 Issue
-description: General issue
+description: A general issue that's not a bug report or feature request
 body:
-
 - type: textarea
   id: description
   attributes:

@@ -1,5 +1,5 @@
 name: 💡 Feature Request
-description: Suggest a new capability to be added to PlasmaPy.
+description: Suggest a new capability to be added to PlasmaPy
 labels: [Feature request]
 body:
 - type: textarea

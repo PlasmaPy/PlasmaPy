@@ -1,5 +1,5 @@
 name: 🐛 Bug Report
-description: Thank you for reporting a bug — we really appreciate it! Please use this form to describe the problem.
+description: File a bug report to help us improve
 labels: [Bug]
 body:
 - type: textarea
