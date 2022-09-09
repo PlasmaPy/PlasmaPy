@@ -1,5 +1,5 @@
 name: 🐛 Bug Report
-description: Report a problem that you encountered when using PlasmaPy
+description: Help us by reporting a problem that you encountered when using PlasmaPy
 labels: [Bug]
 body:
 - type: textarea
@@ -35,7 +35,7 @@ body:
   attributes:
     label: Package versions
     description: |
-      What version of PlasmaPy were you using when the problem occurred? This information can be found with `plasmapy.__version__`. (optional)
+      What version of PlasmaPy were you using when the problem occurred? The version is given by `plasmapy.__version__`, or `pip show plasmapy` on the command line. (optional)
 
 - type: textarea
   id: context
