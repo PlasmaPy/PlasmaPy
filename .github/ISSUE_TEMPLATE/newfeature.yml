@@ -1,39 +1,37 @@
 name: 💡 Feature Request
-description: Suggest an idea for a new capability
-labels: [enhancement]
+description: Suggest a new capability to be added to PlasmaPy.
+labels: [Feature request]
 body:
 - type: textarea
   id: description
   attributes:
-    label: What new feature would you like added?
+    label: Feature description
     description: |
-      Please describe what new capability you would like PlasmaPy to have.
+      What new feature would you like added to PlasmaPy?
   validations:
     required: true
 
 - type: textarea
-  id: solution
+  id: motivation
   attributes:
-    label: How might this new feature be implemented?
+    label: Motivation
     description: |
-      Provide suggestions how or where to implement this capability. Optional.
-  validations:
-    required: false
+      What would be the benefits from adding this feature? (optional)
 
 - type: textarea
-  id: alternatives
+  id: solution
   attributes:
-    label: Are there alternative possibilities that you've considered?
+    label: Implementation strategy
     description: |
-      Optionally, describe any alternative changes that you've considered
+      How might we implement this new feature? (optional)
   validations:
     required: false
 
 - type: textarea
   id: additional-context
   attributes:
-    label: Additional context (optional)
+    label: Additional context
     description: |
-      Add any other contextual information here, such as
+      Please provide any additional details here. (optional)
   validations:
     required: false

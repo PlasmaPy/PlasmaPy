@@ -1,21 +1,22 @@
 name: 📝 Issue
 description: General issue
 body:
-- type: markdown
+
+- type: textarea
+  id: description
   attributes:
-    value: |
-      Please describe your issue here.
+    label: Description of issue
+    description: |
+      Please describe the issue here.
+  validations:
+    required: true
+
 
 - type: textarea
   id: issue-description
   attributes:
-    label: What is your issue?
+    label: Description of issue
     description: |
-      Thank you for filing an issue! Please give us further information on how we can help you.
+      Thank you for raising an issue! Please enter the issue description here.
   validations:
     required: true
-
-- type: textarea
-  id: context
-  attributes:
-    label: Additional context (optional)
