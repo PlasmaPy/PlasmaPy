@@ -22,7 +22,6 @@ from plasmapy.formulary.collisions import (
     SingleParticleCollisionFrequencies,
     Spitzer_resistivity,
 )
-from plasmapy.formulary.speeds import thermal_speed
 from plasmapy.particles import Particle
 from plasmapy.utils import exceptions
 from plasmapy.utils.exceptions import CouplingWarning, PhysicsError

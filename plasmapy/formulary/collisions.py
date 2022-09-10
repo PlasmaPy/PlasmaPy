@@ -76,11 +76,7 @@ from plasmapy.formulary.quantum import (
     Wigner_Seitz_radius,
 )
 from plasmapy.formulary.speeds import thermal_speed
-from plasmapy.utils.decorators import (
-    deprecated,
-    validate_class_attributes,
-    validate_quantities,
-)
+from plasmapy.utils.decorators import deprecated, validate_quantities
 from plasmapy.utils.decorators.checks import _check_relativistic
 from plasmapy.utils.exceptions import PhysicsError, PlasmaPyFutureWarning
 
