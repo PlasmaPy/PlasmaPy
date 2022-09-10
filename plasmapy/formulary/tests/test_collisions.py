@@ -1712,7 +1712,7 @@ class TestSingleParticleCollisionFrequencies:
     attribute_units_test_case = SingleParticleCollisionFrequencies(
         Particle("e-"),
         Particle("e-"),
-        v_a=1 * u.m / u.s,
+        v_drift=1 * u.m / u.s,
         T_b=1 * u.K,
         n_b=1 * u.m**-3,
         Coulomb_log=1,
@@ -1721,13 +1721,13 @@ class TestSingleParticleCollisionFrequencies:
     MKS_unit_conversion_test_constructor_arguments = {
         "test_particle": Particle("e-"),
         "field_particle": Particle("e-"),
-        "v_a": 1e5 * u.m / u.s,
+        "v_drift": 1e5 * u.m / u.s,
         "T_b": 1e3 * u.eV,
         "n_b": 1e26 * u.m**-3,
         "Coulomb_log": 10 * u.dimensionless_unscaled,
     }
 
-    arguments_to_convert = ["v_a", "n_b"]
+    arguments_to_convert = ["v_drift", "n_b"]
 
     CGS_unit_conversion_test_constructor_arguments = (
         MKS_unit_conversion_test_constructor_arguments
@@ -1801,7 +1801,7 @@ class TestSingleParticleCollisionFrequencies:
         These formulae are taken from page 31 of the NRL Formulary.
         """
 
-        v_a = (0.5 * cases.test_particle.mass * cases.v_a**2).to(u.eV).value
+        v_a = (0.5 * cases.test_particle.mass * cases.v_drift**2).to(u.eV).value
         T_b = (cases.T_b * k_B).to(u.eV).value
 
         limit_values = []
@@ -1904,7 +1904,7 @@ class TestSingleParticleCollisionFrequencies:
                 "slow",
                 (Particle("e-"), Particle("e-")),
                 {
-                    "v_a": 1 * u.cm / u.s,
+                    "v_drift": 1 * u.cm / u.s,
                     "T_b": 1e4 * u.eV,
                     "n_b": 1e15 * u.cm**-3,
                     "Coulomb_log": 10 * u.dimensionless_unscaled,
@@ -1915,7 +1915,7 @@ class TestSingleParticleCollisionFrequencies:
                 "slow",
                 (Particle("e-"), Particle("Na+")),
                 {
-                    "v_a": 1 * u.cm / u.s,
+                    "v_drift": 1 * u.cm / u.s,
                     "T_b": 1e4 * u.eV,
                     "n_b": 1e20 * u.cm**-3,
                     "Coulomb_log": 10 * u.dimensionless_unscaled,
@@ -1926,7 +1926,7 @@ class TestSingleParticleCollisionFrequencies:
                 "slow",
                 (Particle("e-"), Particle("Ba 2+")),
                 {
-                    "v_a": 1 * u.cm / u.s,
+                    "v_drift": 1 * u.cm / u.s,
                     "T_b": 1e4 * u.eV,
                     "n_b": 1e20 * u.cm**-3,
                     "Coulomb_log": 10 * u.dimensionless_unscaled,
@@ -1937,7 +1937,7 @@ class TestSingleParticleCollisionFrequencies:
                 "slow",
                 (Particle("Na+"), Particle("e-")),
                 {
-                    "v_a": 1 * u.cm / u.s,
+                    "v_drift": 1 * u.cm / u.s,
                     "T_b": 1e2 * u.eV,
                     "n_b": 1e10 * u.cm**-3,
                     "Coulomb_log": 10 * u.dimensionless_unscaled,
@@ -1948,7 +1948,7 @@ class TestSingleParticleCollisionFrequencies:
                 "slow",
                 (Particle("Be 2+"), Particle("e-")),
                 {
-                    "v_a": 1 * u.cm / u.s,
+                    "v_drift": 1 * u.cm / u.s,
                     "T_b": 1e2 * u.eV,
                     "n_b": 1e10 * u.cm**-3,
                     "Coulomb_log": 10 * u.dimensionless_unscaled,
@@ -1959,7 +1959,7 @@ class TestSingleParticleCollisionFrequencies:
                 "slow",
                 (Particle("Na+"), Particle("Cl-")),
                 {
-                    "v_a": 1 * u.cm / u.s,
+                    "v_drift": 1 * u.cm / u.s,
                     "T_b": 1e4 * u.eV,
                     "n_b": 1e20 * u.cm**-3,
                     "Coulomb_log": 10 * u.dimensionless_unscaled,
@@ -1970,7 +1970,7 @@ class TestSingleParticleCollisionFrequencies:
                 "slow",
                 (Particle("Na+"), Particle("S 2-")),
                 {
-                    "v_a": 1 * u.cm / u.s,
+                    "v_drift": 1 * u.cm / u.s,
                     "T_b": 1e4 * u.eV,
                     "n_b": 1e20 * u.cm**-3,
                     "Coulomb_log": 10 * u.dimensionless_unscaled,
@@ -1982,7 +1982,7 @@ class TestSingleParticleCollisionFrequencies:
                 "fast",
                 (Particle("e-"), Particle("e-")),
                 {
-                    "v_a": 6e8 * u.cm / u.s,
+                    "v_drift": 6e8 * u.cm / u.s,
                     "T_b": 1e-1 * u.eV,
                     "n_b": 1e20 * u.cm**-3,
                     "Coulomb_log": 10 * u.dimensionless_unscaled,
@@ -1993,7 +1993,7 @@ class TestSingleParticleCollisionFrequencies:
                 "fast",
                 (Particle("e-"), Particle("Na+")),
                 {
-                    "v_a": 6e5 * u.cm / u.s,
+                    "v_drift": 6e5 * u.cm / u.s,
                     "T_b": 1e-3 * u.eV,
                     "n_b": 1e20 * u.cm**-3,
                     "Coulomb_log": 10 * u.dimensionless_unscaled,
@@ -2004,7 +2004,7 @@ class TestSingleParticleCollisionFrequencies:
                 "fast",
                 (Particle("e-"), Particle("Zn 2+")),
                 {
-                    "v_a": 6e5 * u.cm / u.s,
+                    "v_drift": 6e5 * u.cm / u.s,
                     "T_b": 1e-3 * u.eV,
                     "n_b": 1e20 * u.cm**-3,
                     "Coulomb_log": 10 * u.dimensionless_unscaled,
@@ -2015,7 +2015,7 @@ class TestSingleParticleCollisionFrequencies:
                 "fast",
                 (Particle("Na+"), Particle("e-")),
                 {
-                    "v_a": 3e7 * u.cm / u.s,
+                    "v_drift": 3e7 * u.cm / u.s,
                     "T_b": 1e-3 * u.eV,
                     "n_b": 1e20 * u.cm**-3,
                     "Coulomb_log": 10 * u.dimensionless_unscaled,
@@ -2026,7 +2026,7 @@ class TestSingleParticleCollisionFrequencies:
                 "fast",
                 (Particle("Ca 2+"), Particle("e-")),
                 {
-                    "v_a": 3e7 * u.cm / u.s,
+                    "v_drift": 3e7 * u.cm / u.s,
                     "T_b": 1e-3 * u.eV,
                     "n_b": 1e20 * u.cm**-3,
                     "Coulomb_log": 10 * u.dimensionless_unscaled,
@@ -2037,7 +2037,7 @@ class TestSingleParticleCollisionFrequencies:
                 "fast",
                 (Particle("Na+"), Particle("Cl-")),
                 {
-                    "v_a": 3e7 * u.cm / u.s,
+                    "v_drift": 3e7 * u.cm / u.s,
                     "T_b": 1e2 * u.eV,
                     "n_b": 1e20 * u.cm**-3,
                     "Coulomb_log": 10 * u.dimensionless_unscaled,
@@ -2048,7 +2048,7 @@ class TestSingleParticleCollisionFrequencies:
                 "fast",
                 (Particle("Be 2+"), Particle("Cl-")),
                 {
-                    "v_a": 3e7 * u.cm / u.s,
+                    "v_drift": 3e7 * u.cm / u.s,
                     "T_b": 1e2 * u.eV,
                     "n_b": 1e20 * u.cm**-3,
                     "Coulomb_log": 10 * u.dimensionless_unscaled,
@@ -2112,7 +2112,7 @@ class TestSingleParticleCollisionFrequencies:
                 ValueError,
                 (Particle("e-"), Particle("e-")),
                 {
-                    "v_a": np.ndarray([1, 1]) * u.cm / u.s,
+                    "v_drift": np.ndarray([1, 1]) * u.cm / u.s,
                     "T_b": 1 * u.eV,
                     "n_b": ones_array * u.cm**-3,
                     "Coulomb_log": 1 * u.dimensionless_unscaled,
@@ -2136,7 +2136,7 @@ class TestSingleParticleCollisionFrequencies:
             {
                 "test_particle": Particle("e-"),
                 "field_particle": Particle("e-"),
-                "v_a": ones_array * u.cm / u.s,
+                "v_drift": ones_array * u.cm / u.s,
                 "T_b": ones_array * u.eV,
                 "n_b": ones_array * u.cm**-3,
                 "Coulomb_log": ones_array * u.dimensionless_unscaled,
@@ -2144,7 +2144,7 @@ class TestSingleParticleCollisionFrequencies:
             {
                 "test_particle": Particle("e-"),
                 "field_particle": Particle("e-"),
-                "v_a": ones_array2d * u.m / u.s,
+                "v_drift": ones_array2d * u.m / u.s,
                 "T_b": ones_array2d * u.eV,
                 "n_b": ones_array2d * u.cm**-3,
                 "Coulomb_log": ones_array2d * u.dimensionless_unscaled,
