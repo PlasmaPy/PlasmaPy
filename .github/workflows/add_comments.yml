@@ -24,7 +24,7 @@ jobs:
 
           As described in our [documentation guide](https://docs.plasmapy.org/en/latest/development/doc_guide.html), [PlasmaPy's documentation](https://docs.plasmapy.org/en/latest) is written in [reStructuredText](https://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html) using the [numpydoc docstring standard](https://numpydoc.readthedocs.io/en/latest/format.html#docstring-standard). To see a preview of the documentation from this PR, click on *Details* next to the `docs/readthedocs.org:plasmapy` check.
 
-          To automagically fix most linter problems, comment on this PR with `pre-commit.ci autofix`, followed by a `git pull`to bring the changes home to your own computer.
+          To automagically fix most linter problems, comment on this PR with `pre-commit.ci autofix`, followed by a `git pull` to bring the changes home to your own computer.
 
           A code maintainer should come by soon to begin a code review. This step often includes suggestions for fixing bugs, adding tests, or simplifying the implementation. After that you'll have a chance to make changes. If you'd like more time before a code review happens, you can [convert this PR to a draft](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/changing-the-stage-of-a-pull-request#converting-a-pull-request-to-a-draft) now and [mark it as ready for review](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/changing-the-stage-of-a-pull-request#marking-a-pull-request-as-ready-for-review) later.
 
