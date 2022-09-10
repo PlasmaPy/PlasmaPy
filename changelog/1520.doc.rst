@@ -1,0 +1,1 @@
+Creates an example notebook for fitting Thomson scattering spectra using the `~plasmapy.diagnostics.thomson.spectral_density_model` function.
