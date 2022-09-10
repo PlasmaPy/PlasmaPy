@@ -10,4 +10,4 @@ jobs:
     - uses: NejcZdovc/comment-pr@v1
       with:
         file: checklist.md
-        repo-token: ${{ secrets.GITHUB_TOKEN }}
+        github-token: ${{ secrets.GITHUB_TOKEN }}
