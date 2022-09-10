@@ -1,13 +1,13 @@
-name: Code review checklist
-
-on:
-- pull_request_target
-
+name: Add comment
+on: pull_request
 jobs:
-  checklist:
+  comment:
+    name: Code review checklist
     runs-on: ubuntu-latest
     steps:
-    - uses: NejcZdovc/comment-pr@v1
+    - uses: actions/checkout@master
+    - uses: harupy/comment-on-pr@master
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        file: checklist.md
-        github_token: ${{ secrets.GITHUB_TOKEN }}
+        filename: checklist.md
