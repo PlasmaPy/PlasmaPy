@@ -572,24 +572,29 @@ class TestValidateClassAttributes:
         @cached_property
         @validate_class_attributes(expected_attributes=["x"])
         def require_x(self):
-            return self.x
+            return 0
 
         @cached_property
         @validate_class_attributes(expected_attributes=["x", "y"])
         def require_x_and_y(self):
-            return self.x + self.y
+            return 0
 
         @cached_property
         @validate_class_attributes(both_or_either_attributes=[("x", "y")])
         def require_x_or_y(self):
-            return self.x if self.x is not None else self.y
+            return 0
 
         @cached_property
         @validate_class_attributes(
             expected_attributes=["x"], both_or_either_attributes=[("y", "z")]
         )
         def require_x_and_either_y_or_z(self):
-            return self.x
+            return 0
+
+        @cached_property
+        @validate_class_attributes(mutually_exclusive_attributes=[("x", "y")])
+        def require_only_either_x_or_y(self):
+            return 0
 
     @pytest.mark.parametrize(
         "test_case_constructor_keyword_arguments",
@@ -618,6 +623,8 @@ class TestValidateClassAttributes:
             "require_x_and_y": has_x and has_y,
             "require_x_or_y": has_x or has_y,
             "require_x_and_either_y_or_z": has_x and (has_y or has_z),
+            "require_only_either_x_or_y": (has_x and not has_y)
+            or (has_y and not has_x),
         }
 
         for method, expected_to_return in method_return_dictionary.items():

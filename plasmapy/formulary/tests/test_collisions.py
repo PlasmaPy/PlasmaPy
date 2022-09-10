@@ -2208,6 +2208,83 @@ class TestMaxwellianCollisionFrequencies:
             )
 
     @pytest.mark.parametrize(
+        "expected_error, constructor_arguments, constructor_keyword_arguments, attribute_name",
+        [
+            # Specified interaction isn't electron-ion
+            (
+                ValueError,
+                ("e-", "e-"),
+                {
+                    "v_drift": 1e-5 * u.cm / u.s,
+                    "T_a": 1e3 * u.eV,
+                    "n_a": 1e10 * u.cm**-3,
+                    "T_b": 1e3 * u.eV,
+                    "n_b": 1e10 * u.cm**-3,
+                    "Coulomb_log": 10 * u.dimensionless_unscaled,
+                },
+                "Maxwellian_avg_ei_collision_freq",
+            ),
+            # Specified interaction isn't ion-ion
+            (
+                ValueError,
+                ("Na+", "e-"),
+                {
+                    "v_drift": 1e-5 * u.cm / u.s,
+                    "T_a": 1e3 * u.eV,
+                    "n_a": 1e10 * u.cm**-3,
+                    "T_b": 1e3 * u.eV,
+                    "n_b": 1e10 * u.cm**-3,
+                    "Coulomb_log": 10 * u.dimensionless_unscaled,
+                },
+                "Maxwellian_avg_ii_collision_freq",
+            ),
+            # Populations are not slowly flowing error
+            (
+                PhysicsError,
+                ("e-", "Na+"),
+                {
+                    "v_drift": 1e10 * u.cm / u.s,
+                    "T_a": 1e3 * u.eV,
+                    "n_a": 1e10 * u.cm**-3,
+                    "T_b": 1e3 * u.eV,
+                    "n_b": 1e10 * u.cm**-3,
+                    "Coulomb_log": 10 * u.dimensionless_unscaled,
+                },
+                "Maxwellian_avg_ei_collision_freq",
+            ),
+            # Populations are not slowly flowing error
+            (
+                PhysicsError,
+                ("Na+", "Na+"),
+                {
+                    "v_drift": 1e10 * u.cm / u.s,
+                    "T_a": 1e3 * u.eV,
+                    "n_a": 1e10 * u.cm**-3,
+                    "T_b": 1e3 * u.eV,
+                    "n_b": 1e10 * u.cm**-3,
+                    "Coulomb_log": 10 * u.dimensionless_unscaled,
+                },
+                "Maxwellian_avg_ii_collision_freq",
+            ),
+        ],
+    )
+    def test_attribute_errors(
+        self,
+        expected_error,
+        constructor_arguments,
+        constructor_keyword_arguments,
+        attribute_name,
+    ):
+        """Test errors raised in attribute bodies"""
+
+        test_case = MaxwellianCollisionFrequencies(
+            *constructor_arguments, **constructor_keyword_arguments
+        )
+
+        with pytest.raises(expected_error):
+            getattr(test_case, attribute_name)
+
+    @pytest.mark.parametrize(
         "frequency_to_test, constructor_keyword_arguments",
         [
             (
