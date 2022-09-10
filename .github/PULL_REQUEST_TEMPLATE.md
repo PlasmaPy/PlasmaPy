@@ -1,7 +1,7 @@
 <!--
 Thank you for submitting a pull request (PR) to PlasmaPy — we really appreciate it!
 
-Please include a descriptive title (e.g., "Add function to calculate beta") and fill out the relevant sections below.
+Please include a descriptive title above (e.g., "Add function to calculate gyroradius") and fill out the relevant sections below.
 
 Please feel free to chat with other contributors at: https://app.element.io/#/room/#plasmapy:openastronomy.org
 
