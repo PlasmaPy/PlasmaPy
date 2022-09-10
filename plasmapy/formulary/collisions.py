@@ -2157,7 +2157,7 @@ class SingleParticleCollisionFrequencies:
         Raises
         ------
         `ValueError`
-            If the spcified v_drift and T_a arrays don't have equal size.
+            If the specified v_drift and n_b arrays don't have equal size.
 
         Notes
         -----
@@ -2299,7 +2299,7 @@ class SingleParticleCollisionFrequencies:
         (typically taken as the thermal velocity), and :math:`\ln{Λ}` is the
         Coulomb logarithm accounting for small angle collisions.
 
-        See Equation (2.14) in :cite:t:`callen:unpublished`.
+        See Equation (2.86) in :cite:t:`callen:unpublished`.
 
         The Lorentz collision frequency is equivalent to the variable
         :math:`\nu_0^{\alpha/\beta}` on p. 31 of :cite:t:`nrlformulary:2019`.
@@ -2391,10 +2391,50 @@ class MaxwellianCollisionFrequencies:
         n_b: u.m**-3,
         Coulomb_log: u.dimensionless_unscaled,
     ):
+        r"""Compute collision frequencies between two slowly flowing
+        Maxwellian populations.
+
+        Parameters
+        ----------
+        test_particle : |Particle|
+            The test particle streaming through a background of field particles.
+
+        field_particle : |Particle|
+            The background particle being interacted with.
+
+        v_drift : `~astropy.units.Quantity`, optional
+            The relative drift between the test and field particles.
+
+        T_a : `~astropy.units.Quantity`, optional
+            The temperature of the test particles in units convertible to degrees Kelvin.
+
+        n_a : `~astropy.units.Quantity`, optional
+            The number density of the test particles in units convertible to :math:`\frac{1}{m^{3}}`.
+
+        T_b : `~astropy.units.Quantity`, optional
+            The temperature of the background field particles in units convertible to degrees Kelvin.
+
+        n_b : `~astropy.units.Quantity`, optional
+            The number density of the background field particles in units convertible to :math:`\frac{1}{m^{3}}`.
+
+        Coulomb_log : `~astropy.units.Quantity`
+            The value of the Coulomb logarithm for the interaction.
+
+        Raises
+        ------
+        `ValueError`
+            If the specified v_drift and T_a arrays don't have equal size.
+
+        See Also
+        --------
+        ~plasmapy.formulary.collisions.Coulomb_logarithm : Evaluates the Coulomb
+            logarithm for two interacting electron species.
+        """
+
         if (
             isinstance(v_drift, np.ndarray)
-            and isinstance(n_b, np.ndarray)
-            and v_drift.shape != n_b.shape
+            and isinstance(T_a, np.ndarray)
+            and v_drift.shape != T_a.shape
         ):
             raise ValueError("Please specify arrays of equal length.")
 
@@ -2445,14 +2485,11 @@ class MaxwellianCollisionFrequencies:
             ν = n σ v \ln{Λ}
 
         where :math:`n` is the particle density, :math:`σ` is the
-        collisional cross-section, :math:`v` is the inter-particle velocity
-        (typically taken as the thermal velocity), and :math:`\ln{Λ}` is the
+        collisional cross-section, :math:`v` is the mean thermal velocity between particle species
+        (see Equation 2.133 in :cite:t:`callen:unpublished`), and :math:`\ln{Λ}` is the
         Coulomb logarithm accounting for small angle collisions.
 
-        See Equation (2.14) in :cite:t:`callen:unpublished`.
-
-        The Lorentz collision frequency is equivalent to the variable
-        :math:`\nu_0^{\alpha/\beta}` on p. 31 of :cite:t:`nrlformulary:2019`.
+        See Equation (2.86) in :cite:t:`callen:unpublished`.
         """
 
         return (
