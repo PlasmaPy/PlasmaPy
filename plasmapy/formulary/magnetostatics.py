@@ -219,7 +219,7 @@ class GeneralWire(Wire):
         :math:`n` straight pieces of equal length. The :math:`i\text{th}`
         wire element can be written as
         :math:`\Delta\vec{l}_i = \vec{l}(t_i) - \vec{l}(t_{i - 1})`
-        where :math:`t_i = t_{\min} + i(t_{\max}-t_{\min})/n`. further,
+        where :math:`t_i = t_{\min} + i(t_{\max}-t_{\min})/n`. Further,
         the displacement vector from the center of the :math:`i\text{th}`
         wire element to the position :math:`\vec{p}` is
         :math:`\vec{r}_i = \vec{p} - \frac{\vec{l}(t_i) + \vec{l}(t_{i-1})}{2}`.
