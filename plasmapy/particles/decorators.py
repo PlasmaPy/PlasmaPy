@@ -51,7 +51,7 @@ def _get_annotations(callable_: Callable):
 
 def _make_into_set_or_none(obj) -> Optional[Set]:
     """
-    Return `None` is ``obj`` is `None`, and otherwise convert ``obj``
+    Return `None` if ``obj`` is `None`, and otherwise convert ``obj``
     into a `set`.
 
     If ``obj`` is a string, then a `set` containing only ``obj`` will
@@ -392,7 +392,7 @@ class _ParticleInput:
         name_categorization_exception = [
             ("element", {"require": "element"}, InvalidElementError),
             ("isotope", {"require": "isotope"}, InvalidIsotopeError),
-            # In the future, "ion" should be changed to allow only
+            # TODO: In the future, "ion" should be changed to allow only
             # ions and not neutral atoms with an explicit charge.
             (
                 "ion",
