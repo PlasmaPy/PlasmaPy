@@ -315,10 +315,10 @@ class FiniteStraightWire(Wire):
         :math:`\vec{p}_{ij} = \vec{p}_j - \vec{p}_i`.
 
         Next, consider the triangle with the points :math:`p_0`,
-        :math:`p_1`, and :math:`p_2` as vertices. The foot of
-        perpendicular opposite the vertex :math:`p_0`, which will be
-        used to find the unit vector in the direction of the magnetic
-        field, can be expressed as
+        :math:`p_1`, and :math:`p_2` as vertices. The vector from the
+        vertex :math:`p_0` to the perpendicular foot opposite the
+        vertex :math:`p_0`, which will be used to find the unit vector
+        in the direction of the magnetic field, can be expressed as
 
         .. math::
             \vec{p}_f = \vec{p}_1 + \vec{p}_{12}
