@@ -17,7 +17,7 @@ from abc import ABC, abstractmethod
 from collections import namedtuple
 from scipy.optimize import curve_fit, fsolve
 from scipy.stats import linregress
-from typing import Optional, Tuple, Union
+from typing import Optional, Tuple
 from warnings import warn
 
 from plasmapy.utils.decorators import modify_docstring
