@@ -343,16 +343,10 @@ class IonizationStateCollection:
     def __eq__(self, other):
 
         if not isinstance(other, IonizationStateCollection):
-            raise TypeError(
-                "IonizationStateCollection instance can only be compared with "
-                "other IonizationStateCollection instances."
-            )
+            return False
 
         if self.base_particles != other.base_particles:
-            raise ParticleError(
-                "Two IonizationStateCollection instances can be compared only "
-                "if the base particles are the same."
-            )
+            return False
 
         min_tol = np.min([self.tol, other.tol])
 
@@ -362,10 +356,6 @@ class IonizationStateCollection:
         for attribute in ["T_e", "n_e", "kappa"]:
             this = getattr(self, attribute)
             that = getattr(other, attribute)
-
-            # TODO: Maybe create a function in utils called same_enough
-            # TODO: that would take care of all of these disparate
-            # TODO: equality measures.
 
             this_equals_that = np.any(
                 [
