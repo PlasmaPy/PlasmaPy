@@ -604,17 +604,17 @@ def _params_to_array(
     """
 
     if vector:
-        npop = _count_populations_in_params(params, prefix + "_x")
+        npop = _count_populations_in_params(params, f"{prefix}_x")
         output = np.zeros([npop, 3])
         for i in range(npop):
             for j, ax in enumerate(["x", "y", "z"]):
-                output[i, j] = params[prefix + f"_{ax}_{i}"].value
+                output[i, j] = params[f"{prefix}_{ax}_{i}"].value
 
     else:
         npop = _count_populations_in_params(params, prefix)
         output = np.zeros([npop])
         for i in range(npop):
-            output[i] = params[prefix + f"_{i}"]
+            output[i] = params[f"{prefix}_{i}"]
 
     return output
 
