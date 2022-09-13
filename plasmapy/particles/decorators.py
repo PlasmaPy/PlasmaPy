@@ -7,7 +7,18 @@ import inspect
 import wrapt
 
 from numbers import Integral
-from typing import Any, Callable, Dict, List, NoReturn, Optional, Set, Tuple, Union
+from typing import (
+    Any,
+    Callable,
+    Dict,
+    Iterable,
+    List,
+    NoReturn,
+    Optional,
+    Set,
+    Tuple,
+    Union,
+)
 
 from plasmapy.particles._factory import _physical_particle_factory
 from plasmapy.particles.exceptions import (
@@ -314,7 +325,7 @@ class _ParticleInput:
         uncharged = particle.is_category("uncharged")
         lacks_charge_info = particle.is_category(exclude={"charged", "uncharged"})
 
-        if hasattr(uncharged, "__len__"):
+        if isinstance(uncharged, Iterable):
             uncharged = any(uncharged)
             lacks_charge_info = any(lacks_charge_info)
 
@@ -412,7 +423,7 @@ class _ParticleInput:
 
             meets_name_criteria = particle.is_category(**categorization)
 
-            if hasattr(particle, "__len__") and not isinstance(particle, str):
+            if isinstance(particle, Iterable) and not isinstance(particle, str):
                 meets_name_criteria = all(meets_name_criteria)
 
             if not meets_name_criteria:
