@@ -42,6 +42,7 @@ def import_package(session):
 
 @nox.session
 def build_docs(session):
+    session.install("-r", "requirements/tests.txt")
     session.install("-r", "requirements/docs.txt")
     session.install(".")
     session.run(
@@ -53,6 +54,7 @@ def build_docs(session):
 
 @nox.session
 def build_docs_nitpicky(session):
+    session.install("-r", "requirements/tests.txt")
     session.install("-r", "requirements/docs.txt")
     session.install(".")
     session.run(
