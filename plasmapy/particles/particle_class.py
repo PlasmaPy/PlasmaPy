@@ -2288,10 +2288,6 @@ class CustomParticle(AbstractPhysicalParticle):
         return hash(self.__repr__())
 
 
-CustomParticle.is_category.valid_categories = _valid_categories
-"""All valid particle categories."""
-
-
 def molecule(
     symbol: str, Z: Optional[Integral] = None
 ) -> Union[Particle, CustomParticle]:
