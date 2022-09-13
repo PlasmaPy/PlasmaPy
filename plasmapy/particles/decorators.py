@@ -480,6 +480,14 @@ class _ParticleInput:
 
         mass_numb : integer, optional
             The mass number of an isotope.
+
+        Returns
+        -------
+        object
+            This method will return a |Particle|, |CustomParticle|,
+            |ParticleList|, or `None` if the parameter has an annotation
+            as described in the docstring for |particle_input|. For all
+            other annotations, this method will return ``argument``.
         """
         annotation = self.annotations.get(parameter, None)
 
