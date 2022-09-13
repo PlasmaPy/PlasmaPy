@@ -584,13 +584,13 @@ def particle_input(
     accepted by the callable and only one |parameter| is appropriately
     |annotated|.
 
-    If the particle representation does not satisfy any categorization
-    criteria that have been provided, then |particle_input| will raise
-    an exception.
-
     If the |annotation| is created using `~typing.Optional` (e.g.,
     ``Optional[ParticleLike]``), then `None` can be provided to
     ``callable_``.
+
+    If the particle representation does not satisfy any categorization
+    criteria that have been provided, then |particle_input| will raise
+    an exception.
 
     If the |annotated| |parameter| is named ``element``, ``isotope``,
     ``ion``, or ``ionic_level``, then |particle_input| will raise an
@@ -603,6 +603,23 @@ def particle_input(
        neutral atoms as long as the charge number is explicitly defined.
        In the future, this functionality may change so that |parameters|
        named ``ion`` require a nonzero |charge number|.
+
+    .. note::
+
+       When both |particle_input| and |validate_quantities| are used to
+       decorate a :term:`function`, they may be used in either order.
+       When using both |particle_input| and |validate_quantities| to
+       decorate a :term:`method`, |particle_input| should be the outer
+       decorator and |validate_quantities| should be the inner
+       decorator.
+
+    .. note::
+
+       When decorating a class method with |particle_input|,
+       `classmethod` should be the outer decorator and |particle_input|
+       should be the inner decorator, and the first argument
+       (representing the class) must be named ``cls``. However,
+       stacking `classmethod` and |particle_input| requires Python 3.9+.
 
     Parameters
     ----------
@@ -771,21 +788,6 @@ def particle_input(
     ...     return isotope.mass_number
     >>> mass_number("D")
     2
-
-    .. note::
-
-       When using both |particle_input| and |validate_quantities| to
-       decorate an instance method, |particle_input| should be the
-       outer decorator and |validate_quantities| should be the inner
-       decorator.
-
-    .. note::
-
-       When decorating a class method with |particle_input|,
-       `classmethod` should be the outer decorator and |particle_input|
-       should be the inner decorator, and the first argument
-       (representing the class) must be named ``cls``. However,
-       stacking `classmethod` and |particle_input| requires Python 3.9+.
     """
 
     # The following pattern comes from the docs for wrapt, and requires
