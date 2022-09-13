@@ -98,11 +98,10 @@ def _category_errmsg(particle, category: str) -> str:
     `~plasmapy.particles.exceptions.InvalidIsotopeError`.
     """
     article = "an" if category[0] in "aeiouAEIOU" else "a"
-    errmsg = (
-        f"The particle {particle} is not {article} {category}, "
-        f"so this attribute is not available."
+    return (
+        f"The particle {particle} is not {article} {category}, so this "
+        f"attribute is not available."
     )
-    return errmsg
 
 
 class AbstractParticle(ABC):

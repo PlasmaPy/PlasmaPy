@@ -212,10 +212,7 @@ def plasma_frequency_lite(
     """
     omega_p = z_mean * e_si_unitless * np.sqrt(n / (eps0_si_unitless * mass))
 
-    if to_hz:
-        return omega_p / (2.0 * np.pi)
-
-    return omega_p
+    return omega_p / (2.0 * np.pi) if to_hz else omega_p
 
 
 @bind_lite_func(plasma_frequency_lite)

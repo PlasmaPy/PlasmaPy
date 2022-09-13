@@ -62,32 +62,27 @@ class IonicLevel:
 
     def __eq__(self, other):
 
-        try:
-            if self.ionic_symbol != other.ionic_symbol:
-                return False
+        if not isinstance(other, IonicLevel):
+            return False
 
-            ionic_fraction_within_tolerance = np.isclose(
-                self.ionic_fraction,
-                other.ionic_fraction,
-                rtol=1e-15,
-            )
+        if self.ionic_symbol != other.ionic_symbol:
+            return False
 
-            number_density_within_tolerance = u.isclose(
-                self.number_density,
-                other.number_density,
-                rtol=1e-15,
-            )
+        ionic_fraction_within_rtol = u.isclose(
+            self.ionic_fraction,
+            other.ionic_fraction,
+            rtol=1e-15,
+            equal_nan=True,
+        )
 
-            return all(
-                [ionic_fraction_within_tolerance, number_density_within_tolerance]
-            )
+        number_density_within_rtol = u.isclose(
+            self.number_density,
+            other.number_density,
+            rtol=1e-15,
+            equal_nan=True,
+        )
 
-        except TypeError as exc:
-            raise TypeError(
-                "Unable to ascertain equality between the following objects:\n"
-                f"  {self}\n"
-                f"  {other}"
-            ) from exc
+        return ionic_fraction_within_rtol and number_density_within_rtol
 
     @particle_input
     def __init__(
@@ -407,10 +402,7 @@ class IonizationState:
 
         """
         if not isinstance(other, IonizationState):
-            raise TypeError(
-                "An instance of the IonizationState class may only be "
-                "compared with another IonizationState instance."
-            )
+            return False
 
         same_element = self.element == other.element
         same_isotope = self.isotope == other.isotope
