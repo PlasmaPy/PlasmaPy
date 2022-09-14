@@ -487,7 +487,8 @@ class _ParticleInput:
             This method will return a |Particle|, |CustomParticle|,
             |ParticleList|, or `None` if the parameter has an annotation
             as described in the docstring for |particle_input|. For all
-            other annotations, this method will return ``argument``.
+            other annotations, this method will return ``argument``
+            without alteration.
         """
         annotation = self.annotations.get(parameter, None)
 
