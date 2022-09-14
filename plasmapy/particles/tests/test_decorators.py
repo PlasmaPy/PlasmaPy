@@ -93,9 +93,14 @@ def test_particle_input_simple(func, args, kwargs, symbol):
 particle_input_error_table = [
     (
         function_decorated_with_particle_input,
-        {"a": 1, "particle": "asdf"},
+        {"a": 1, "particle": "invalid particle"},
         InvalidParticleError,
-    )
+    ),
+    (
+        function_decorated_with_particle_input,
+        {"a": 1, "particle": 5 * u.m},
+        u.UnitConversionError,
+    ),
 ]
 
 
