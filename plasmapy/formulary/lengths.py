@@ -8,9 +8,8 @@ import warnings
 
 from astropy.constants.si import c, e, eps0, k_B
 
-from plasmapy import particles
 from plasmapy.formulary import frequencies, speeds
-from plasmapy.particles import Particle, particle_input, ParticleLike
+from plasmapy.particles import particle_input, ParticleLike
 from plasmapy.utils.decorators import validate_quantities
 from plasmapy.utils.exceptions import PlasmaPyFutureWarning
 

@@ -17,7 +17,7 @@ from astropy.constants.si import e, k_B, mu0
 from typing import Optional
 
 from plasmapy import particles
-from plasmapy.particles import Particle, particle_input, ParticleLike
+from plasmapy.particles import Particle, ParticleLike
 from plasmapy.utils.decorators import validate_quantities
 
 __all__ += __aliases__
@@ -250,7 +250,6 @@ pmag_ = magnetic_pressure
 @validate_quantities(
     density={"can_be_negative": False}, validations_on_return={"can_be_negative": False}
 )
-@particle_input
 def mass_density(
     density: (u.m**-3, u.kg / (u.m**3)),
     particle: ParticleLike,
@@ -332,6 +331,15 @@ def mass_density(
     """
     if density.unit.is_equivalent(u.kg / u.m**3):
         return density
+
+    if not isinstance(particle, Particle):
+        try:
+            particle = Particle(particle)
+        except TypeError as e:
+            raise TypeError(
+                f"If passing a number density, you must pass a plasmapy Particle "
+                f"(not type {type(particle)}) to calculate the mass density!"
+            ) from e
 
     if not isinstance(z_ratio, (float, np.floating, int, np.integer)):
         raise TypeError(

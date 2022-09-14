@@ -431,7 +431,6 @@ Rm_ = Mag_Reynolds
 """Alias to `~plasmapy.formulary.dimensionless.Mag_Reynolds`."""
 
 
-@particle_input
 def Lundquist_number(
     L: u.m,
     B: u.T,

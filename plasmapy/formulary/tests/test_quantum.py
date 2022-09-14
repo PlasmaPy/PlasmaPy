@@ -17,6 +17,7 @@ from plasmapy.formulary.quantum import (
     Thomas_Fermi_length,
     Wigner_Seitz_radius,
 )
+from plasmapy.particles.exceptions import InvalidParticleError
 from plasmapy.utils.exceptions import RelativityError
 
 
@@ -64,8 +65,8 @@ def test_deBroglie_wavelength():
     with pytest.raises(u.UnitConversionError):
         deBroglie_wavelength(8 * u.m / u.s, 5 * u.m)
 
-    with pytest.raises(ValueError):
-        deBroglie_wavelength(8 * u.m / u.s, "sddsf")
+    with pytest.raises(InvalidParticleError):
+        deBroglie_wavelength(8 * u.m / u.s, "invalid particle")
 
 
 # defining some plasma parameters for tests
