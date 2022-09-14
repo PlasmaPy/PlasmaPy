@@ -849,8 +849,8 @@ def test_iteration_with_nested_iterator():
 
 
 @pytest.mark.xfail()
-def test_hydrogen_deuterium():
-    instance = IonizationStateCollection(["H", "D"])
+def test_two_isotopes_of_same_element():
+    instance = IonizationStateCollection(["H-1", "D"])
 
 
 example_ionic_fractions = [
@@ -954,3 +954,14 @@ def test_average_particle_exception():
 
     with pytest.raises(ParticleError):
         ionization_states.average_ion()
+
+
+def test_inequality_with_different_type():
+    ionization_states = IonizationStateCollection({"H": [1, 0], "He": [1, 0, 0]})
+    assert ionization_states != "different type"
+
+
+def test_inequality_with_different_base_particles():
+    instance1 = IonizationStateCollection({"H": [1, 0], "He": [1, 0, 0]})
+    instance2 = IonizationStateCollection({"H": [1, 0], "Li": [1, 0, 0, 0]})
+    assert instance1 != instance2

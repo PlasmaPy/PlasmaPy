@@ -1,0 +1,1 @@
+Modified tests in the class ``TestSyntheticRadiograph`` to try to fix an intermittent failure of ``test_optical_density_histogram``.

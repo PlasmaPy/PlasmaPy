@@ -10,14 +10,14 @@ from plasmapy.particles import (
     atomic_number,
     atomic_symbol,
     charge_number,
+    ionic_levels,
     isotope_symbol,
     particle_symbol,
 )
 from plasmapy.particles.exceptions import InvalidIsotopeError, ParticleError
 from plasmapy.particles.ionization_state import IonicLevel, IonizationState
 from plasmapy.particles.particle_class import Particle
-from plasmapy.particles.particle_collections import ionic_levels, ParticleList
-from plasmapy.utils.exceptions import PlasmaPyFutureWarning
+from plasmapy.particles.particle_collections import ParticleList
 
 ionic_fraction_table = [
     ("Fe 6+", 0.52, 5.2e-6 * u.m**-3),
@@ -60,7 +60,7 @@ def test_ionic_level_invalid_inputs(invalid_fraction, expected_exception):
 
 
 @pytest.mark.parametrize("invalid_particle", ["H", "e-", "Fe-56"])
-def test_ionic_fraction_invalid_particles(invalid_particle):
+def test_ionic_level_invalid_particles(invalid_particle):
     """
     Test that `~plasmapy.particles.IonicLevel` raises the appropriate
     exception when passed a particle that isn't a neutral or ion.
@@ -70,7 +70,7 @@ def test_ionic_fraction_invalid_particles(invalid_particle):
 
 
 @pytest.mark.parametrize("ion1, ion2", [("Fe-56 6+", "Fe-56 5+"), ("H 1+", "D 1+")])
-def test_ionic_fraction_comparison_with_different_ions(ion1, ion2):
+def test_ionic_level_comparison_with_different_ions(ion1, ion2):
     """
     Test that a `TypeError` is raised when an `IonicLevel` object
     is compared to an `IonicLevel` object of a different ion.
@@ -81,6 +81,11 @@ def test_ionic_fraction_comparison_with_different_ions(ion1, ion2):
     ionic_fraction_2 = IonicLevel(ion=ion2, ionic_fraction=fraction)
 
     assert ionic_fraction_1 != ionic_fraction_2
+
+
+def test_ionic_level_inequality_with_different_type():
+    instance = IonicLevel("H 1+", 0.3)
+    assert instance != "different type"
 
 
 def test_ionization_state_ion_input_error():
@@ -206,6 +211,9 @@ class Test_IonizationState:
         assert (
             self.instances["Li ground state"] != self.instances["Li"]
         ), "Different IonizationState instances are equal."
+
+    def test_inequality_with_different_type(self):
+        assert self.instances["Li ground state"] != "different type"
 
     def test_equality_no_more_exception(self):
         """
@@ -705,9 +713,7 @@ class Test_IonizationStateNumberDensitiesSetter:
 def test_iteration_with_nested_iterator():
     hydrogen = IonizationState("p+", n_elem=1e20 * u.m**-3, T_e=10 * u.eV)
 
-    i = 0
-    for _, __ in itertools.product(hydrogen, hydrogen):
-        i += 1
+    i = sum(1 for _, __ in itertools.product(hydrogen, hydrogen))
     assert i == 4
 
 

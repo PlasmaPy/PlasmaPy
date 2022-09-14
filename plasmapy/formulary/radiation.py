@@ -14,7 +14,7 @@ import numpy as np
 from scipy.special import exp1
 
 from plasmapy.formulary.frequencies import plasma_frequency
-from plasmapy.particles import Particle, particle_input
+from plasmapy.particles import particle_input, ParticleLike
 from plasmapy.utils.decorators import validate_quantities
 from plasmapy.utils.exceptions import PhysicsError
 
@@ -31,7 +31,7 @@ def thermal_bremsstrahlung(
     n_e: u.m**-3,
     T_e: u.K,
     n_i: u.m**-3 = None,
-    ion_species: Particle = "H+",
+    ion_species: ParticleLike = "H+",
     kmax: u.m = None,
 ) -> np.ndarray:
     r"""

@@ -52,7 +52,7 @@ Backwards Incompatible Changes
 
 - In `~plasmapy.diagnostics.thomson.spectral_density`, the arguments
   ``Te`` and ``Ti`` have been renamed ``T_e`` and ``T_i`` and are now
-  required :term:`keyword-only` arguments. (`#974
+  required |keyword-only| arguments. (`#974
   <https://github.com/plasmapy/plasmapy/pull/974>`__)
 - Moved the ``grid_resolution`` attribute from
   `~plasmapy.plasma.grids.AbstractGrid` to
@@ -81,7 +81,7 @@ Backwards Incompatible Changes
   and removed from the public API. (`#1440
   <https://github.com/plasmapy/plasmapy/pull/1440>`__)
 - The parameters ``Z`` and ``mass_numb`` to |Particle| are now
-  :term:`keyword-only`. (`#1456
+  |keyword-only|. (`#1456
   <https://github.com/plasmapy/plasmapy/pull/1456>`__)
 
 

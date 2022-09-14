@@ -1,0 +1,1 @@
+Split the patent clause from the license into its own file.

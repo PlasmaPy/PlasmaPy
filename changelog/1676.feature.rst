@@ -1,0 +1,3 @@
+Added the `~plasmapy.formulary.collisions.CollisionFrequencies` class. This class can be used to calculate collision frequencies for two interacting plasmas.
+
+Deprecated the `~plasmapy.formulary.collisions.collision_frequency` in favor of the ``Lorentz_collision_frequency`` attribute in the `~plasmapy.formulary.collisions.CollisionFrequencies` class.

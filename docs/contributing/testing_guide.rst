@@ -460,7 +460,7 @@ both will be run.
 However, this approach can lead to cumbersome, repeated code if you are
 calling the same function over and over. If you wish to run multiple
 tests for the same function, the preferred method is to decorate it with
-``@pytest.mark.parametrize``.
+:py:`@pytest.mark.parametrize`.
 
 .. code-block:: python
 
@@ -468,8 +468,8 @@ tests for the same function, the preferred method is to decorate it with
    def test_proof_if_riemann(truth_value):
         assert proof_by_riemann(truth_value)
 
-This code snippet will run ``proof_by_riemann(truth_value)`` for each
-``truth_value`` in ``[True, False]``. Both of the above
+This code snippet will run :py:`proof_by_riemann(truth_value)` for each
+``truth_value`` in :py:`[True, False]`. Both of the above
 tests will be run regardless of failures. This approach is much cleaner
 for long lists of arguments, and has the advantage that you would only
 need to change the function call in one place if the function changes.
@@ -549,7 +549,7 @@ Property-based testing
 ----------------------
 
 Suppose a function :math:`f(x)` has a property that :math:`f(x) > 0` for
-all :math:`x`. A property-based test would verify that ``f(x)`` — the
+all :math:`x`. A property-based test would verify that :py:`f(x)` — the
 code implementation of :math:`f(x)` — returns positive output for
 multiple values of :math:`x`. The hypothesis_ package simplifies
 `property-based testing`_ for Python.
@@ -660,7 +660,7 @@ should be balanced with each other rather than absolute principles.
   increases the probability that we will lose track of what we are
   doing and slows down progress.
 
-  Decorate unavoidably slow tests with ``@pytest.mark.slow``:
+  Decorate unavoidably slow tests with :py:`@pytest.mark.slow`:
 
   .. code-block:: python
 

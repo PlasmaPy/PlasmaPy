@@ -294,11 +294,11 @@ def spectral_density(
         Total combined number density of all electron populations.
         (convertible to cm\ :sup:`-3`)
 
-    T_e : `~astropy.units.Quantity`, keyword-only, shape (Ne, )
+    T_e : `~astropy.units.Quantity`, |keyword-only|, shape (Ne, )
         Temperature of each electron component. Shape (Ne, ) must be equal to the
         number of electron populations Ne. (in K or convertible to eV)
 
-    T_i : `~astropy.units.Quantity`, keyword-only, shape (Ni, )
+    T_i : `~astropy.units.Quantity`, |keyword-only|, shape (Ni, )
         Temperature of each ion component. Shape (Ni, ) must be equal to the
         number of ion populations Ni. (in K or convertible to eV)
 
@@ -604,17 +604,17 @@ def _params_to_array(
     """
 
     if vector:
-        npop = _count_populations_in_params(params, prefix + "_x")
+        npop = _count_populations_in_params(params, f"{prefix}_x")
         output = np.zeros([npop, 3])
         for i in range(npop):
             for j, ax in enumerate(["x", "y", "z"]):
-                output[i, j] = params[prefix + f"_{ax}_{i}"].value
+                output[i, j] = params[f"{prefix}_{ax}_{i}"].value
 
     else:
         npop = _count_populations_in_params(params, prefix)
         output = np.zeros([npop])
         for i in range(npop):
-            output[i] = params[prefix + f"_{i}"]
+            output[i] = params[f"{prefix}_{i}"]
 
     return output
 
