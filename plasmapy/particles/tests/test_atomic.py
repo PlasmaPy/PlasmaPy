@@ -573,7 +573,11 @@ def test_is_electron(particle, electron):
     assert _is_electron(particle) == electron
 
 
-def test_ion_list_example():
+def test_ionic_levels_example():
+    """
+    Test that `ionic_levels` can be used to create a |ParticleList|
+    containing all the ions for a particular element.
+    """
     ions = ionic_levels("He-4")
     np.testing.assert_equal(ions.charge_number, [0, 1, 2])
     assert ions.symbols == ["He-4 0+", "He-4 1+", "He-4 2+"]
