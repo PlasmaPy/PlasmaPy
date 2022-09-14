@@ -37,9 +37,9 @@ Glossary
       can be used to instantiate |Particle|.
 
    charge number
-      The charge of a particle in units of the elementary charge. The
-      charge number of an ion or neutral particle is usually denoted as
-      ``Z``.
+      The electrical charge of a particle in units of the elementary
+      charge. The charge number of an ion or neutral particle is usually
+      denoted as ``Z``.
 
    fit-function
    fit-functions
@@ -112,9 +112,9 @@ Glossary
       An **ion** or **neutral atom** may be represented by a string that
       contains a representation of an element or isotope, followed by
       charge information which is typically an integer representing the
-      charge number and a plus or minus sign to indicate the charge. For
-      example, a deuteron may be represented as ``"D 1+"`` and
-      :sup:`56`\ Fe\ :sup:`1+` may be represented as ``"Fe-56 1+"``.
+      charge number and a plus or minus sign to indicate the electrical
+      charge. For example, a deuteron may be represented as ``"D 1+"``
+      and :sup:`56`\ Fe\ :sup:`1+` may be represented as ``"Fe-56 1+"``.
 
       A **special particle** may be represented by a string that
       contains the name of the particle (case insensitive) or a
