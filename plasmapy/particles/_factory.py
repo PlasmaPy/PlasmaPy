@@ -8,6 +8,7 @@ __all__ = []
 
 import contextlib
 
+from numbers import Integral
 from typing import Union
 
 from plasmapy.particles.exceptions import InvalidParticleError
@@ -98,6 +99,9 @@ def _physical_particle_factory(
     for particle_type in (Particle, CustomParticle, ParticleList):
         with contextlib.suppress(TypeError, InvalidParticleError):
             return particle_type(*args, **kwargs)
+
+    if not isinstance(args[0], (str, Integral, CustomParticle, Particle, ParticleList)):
+        raise TypeError("Invalid type for particle.")
 
     raise InvalidParticleError(
         f"Unable to create an appropriate particle object with "

@@ -6,7 +6,6 @@ import pytest
 from numba import jit, njit
 
 from plasmapy.utils.decorators.lite_func import bind_lite_func
-from plasmapy.utils.exceptions import PlasmaPyWarning
 
 
 def foo(x):

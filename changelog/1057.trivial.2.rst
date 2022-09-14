@@ -1,0 +1,2 @@
+The |particle_input| decorator now processes arguments annotated with
+|ParticleLike|.
