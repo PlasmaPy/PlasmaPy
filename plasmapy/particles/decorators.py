@@ -32,19 +32,21 @@ from plasmapy.particles.exceptions import (
 from plasmapy.particles.particle_class import CustomParticle, Particle, ParticleLike
 from plasmapy.particles.particle_collections import ParticleList, ParticleListLike
 
-_basic_allowed_annotations = (
+_basic_particle_input_annotations = (
     Particle,  # deprecated
     ParticleLike,
     ParticleListLike,
     Union[ParticleLike, ParticleListLike],
     (Particle, Particle),  # deprecated
 )
-_optional_allowed_annotations = tuple(
+_optional_particle_input_annotations = tuple(
     Optional[annotation]
-    for annotation in _basic_allowed_annotations
+    for annotation in _basic_particle_input_annotations
     if annotation != (Particle, Particle)  # temporary hack
 )
-_allowed_annotations = _basic_allowed_annotations + _optional_allowed_annotations
+_particle_input_annotations = (
+    _basic_particle_input_annotations + _optional_particle_input_annotations
+)
 
 
 def _get_annotations(callable_: Callable):
@@ -203,7 +205,7 @@ class _ParticleInput:
         return [
             parameter
             for parameter, annotation in self.annotations.items()
-            if annotation in _allowed_annotations and parameter != "return"
+            if annotation in _particle_input_annotations and parameter != "return"
         ]
 
     @property
@@ -506,10 +508,10 @@ class _ParticleInput:
         """
         annotation = self.annotations.get(parameter, None)
 
-        if annotation not in _allowed_annotations:
+        if annotation not in _particle_input_annotations:
             return argument
 
-        if annotation in _optional_allowed_annotations and argument is None:
+        if annotation in _optional_particle_input_annotations and argument is None:
             return argument
 
         # This does not yet include cases like Optional[ParticleList],
@@ -520,7 +522,7 @@ class _ParticleInput:
                 raise ValueError(f"The length of {argument} must be 2.")
             return Particle(argument[0]), Particle(argument[1])
 
-        if annotation in _basic_allowed_annotations and argument is None:
+        if annotation in _basic_particle_input_annotations and argument is None:
             raise TypeError(f"{parameter} may not be None.")
 
         particle = _physical_particle_factory(argument, Z=Z, mass_numb=mass_numb)
