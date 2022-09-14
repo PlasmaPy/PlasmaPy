@@ -1,0 +1,12 @@
+Decorated the following functions with |particle_input|\ :
+`~plasmapy.formulary.dimensionless.Hall_parameter`,
+`~plasmapy.formulary.distribution.kappa_velocity_1D`,
+`~plasmapy.formulary.distribution.kappa_velocity_3D`,
+`~plasmapy.formulary.distribution.Maxwellian_1D`,
+`~plasmapy.formulary.distribution.Maxwellian_2D`,
+`~plasmapy.formulary.distribution.Maxwellian_3D`,
+`~plasmapy.formulary.distribution.Maxwellian_speed_1D`,
+`~plasmapy.formulary.distribution.Maxwellian_speed_2D`,
+`~plasmapy.formulary.distribution.Maxwellian_speed_3D`,
+`~plasmapy.formulary.lengths.gyroradius`, and
+`~plasmapy.formulary.quantum.deBroglie_wavelength`.
