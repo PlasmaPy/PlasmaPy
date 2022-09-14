@@ -6,7 +6,7 @@ __all__ = [
     "common_isotopes",
     "electric_charge",
     "half_life",
-    "integer_charge",
+    "ionic_levels",
     "isotopic_abundance",
     "is_stable",
     "known_isotopes",
@@ -30,15 +30,15 @@ from typing import Any, List, Optional, Union
 from plasmapy.particles import _elements, _isotopes
 from plasmapy.particles.decorators import particle_input
 from plasmapy.particles.exceptions import (
+    ChargeError,
     InvalidElementError,
     InvalidIsotopeError,
     InvalidParticleError,
     MissingParticleDataError,
 )
 from plasmapy.particles.particle_class import Particle
+from plasmapy.particles.particle_collections import ParticleList
 from plasmapy.particles.symbols import atomic_symbol
-from plasmapy.utils.decorators.deprecation import deprecated
-from plasmapy.utils.exceptions import PlasmaPyFutureWarning
 
 __all__.sort()
 
@@ -209,10 +209,10 @@ def particle_mass(
         particle; an integer representing an atomic number; or an
         instance of the Particle class.
 
-    Z: `int`, optional, keyword-only
+    Z: `int`, optional, |keyword-only|
         The ionization state of the ion.
 
-    mass_numb: `int`, optional, keyword-only
+    mass_numb: `int`, optional, |keyword-only|
         The mass number of an isotope.
 
     Returns
@@ -352,20 +352,6 @@ def charge_number(particle: Particle) -> Integral:
     2
     """
     return particle.charge_number
-
-
-@deprecated(
-    since="0.7.0",
-    warning_type=PlasmaPyFutureWarning,
-    message=(
-        "integer_charge has been deprecated and will be removed in a "
-        "future release.  Use charge_number instead."
-    ),
-)
-@particle_input(any_of={"charged", "uncharged"})
-def integer_charge(particle: Particle):
-    """Return the charge number of the particle."""
-    return charge_number(particle)
 
 
 @particle_input(any_of={"charged", "uncharged"})
@@ -1122,6 +1108,59 @@ def periodic_table_category(argument: Union[str, Integral]) -> str:
         )
     symbol = atomic_symbol(argument)
     return _elements.data_about_elements[symbol]["category"]
+
+
+@particle_input(any_of={"element", "isotope", "ion"})
+def ionic_levels(
+    particle: Particle,
+    min_charge: Integral = 0,
+    max_charge: Optional[Integral] = None,
+) -> ParticleList:
+    """
+    Return a |ParticleList| that includes different ionic levels of a
+    base atom.
+
+    Parameters
+    ----------
+    particle : `~plasmapy.particles.particle_class.ParticleLike`
+        Representation of an element, ion, or isotope.
+
+    min_charge : integer, optional
+        The starting charge number. Defaults to ``0``.
+
+    max_charge : integer, optional
+        The ending charge number, which will be included in the
+        |ParticleList|.  Defaults to the atomic number.
+
+    Returns
+    -------
+    `~plasmapy.particles.particle_collections.ParticleList`
+        The ionic levels of the atom provided from ``min_charge`` to
+        ``max_charge``.
+
+    Examples
+    --------
+    >>> from plasmapy.particles import ionic_levels
+    >>> ionic_levels("He")
+    ParticleList(['He 0+', 'He 1+', 'He 2+'])
+    >>> ionic_levels("Fe-56", min_charge=13, max_charge=15)
+    ParticleList(['Fe-56 13+', 'Fe-56 14+', 'Fe-56 15+'])
+    """
+    base_particle = Particle(particle.isotope or particle.element)
+
+    if max_charge is None:
+        max_charge = particle.atomic_number
+
+    if not min_charge <= max_charge <= particle.atomic_number:
+        raise ChargeError(
+            f"Need min_charge ({min_charge}) "
+            f"≤ max_charge ({max_charge}) "
+            f"≤ atomic number ({base_particle.atomic_number})."
+        )
+
+    return ParticleList(
+        [Particle(base_particle, Z=Z) for Z in range(min_charge, max_charge + 1)]
+    )
 
 
 def _is_electron(arg: Any) -> bool:

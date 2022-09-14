@@ -1,0 +1,1 @@
+Updated the section of the |coding guide| on code style.

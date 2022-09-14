@@ -1,0 +1,3 @@
+Added the `~plasmapy.particles.particle_class.CustomParticle.categories`
+attribute to |CustomParticle|, and added the ``"custom"`` particle
+category.

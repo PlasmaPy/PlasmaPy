@@ -10,7 +10,7 @@ Contributor Guide
    ../CONTRIBUTING
    install_dev
    workflow
-   code_guide
+   coding_guide
    changelog_guide
    testing_guide
    doc_guide

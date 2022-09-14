@@ -7,6 +7,7 @@ __all__ = [
     "chemical_potential",
     "deBroglie_wavelength",
     "Fermi_energy",
+    "quantum_theta",
     "Thomas_Fermi_length",
     "thermal_deBroglie_wavelength",
     "Wigner_Seitz_radius",
@@ -396,9 +397,6 @@ def Wigner_Seitz_radius(n: u.m**-3) -> u.m:
     return (3 / (4 * np.pi * n)) ** (1 / 3)
 
 
-# TODO: remove NotImplementedError and 'doctest: +SKIP' when the following issues are addressed...
-#       https://github.com/PlasmaPy/PlasmaPy/issues/726
-#       https://github.com/astropy/astropy/issues/9721
 @validate_quantities(
     n_e={"can_be_negative": False},
     T={"can_be_negative": False, "equivalencies": u.temperature_energy()},
@@ -439,75 +437,58 @@ def chemical_potential(n_e: u.m**-3, T: u.K) -> u.dimensionless_unscaled:
 
     Notes
     -----
-    The ideal chemical potential is given by :cite:p:`bonitz:1998`\ :
+    The ideal chemical potential is implicitly given by Eq. 1.2 in :cite:p:`bonitz:1998`\:
 
     .. math::
-        χ_a = I_{1/2}(β μ_a^{ideal})
+        χ = nΛ^{3} = I_{1/2}(β μ^{ideal})
 
-    where :math:`χ` is the degeneracy parameter, :math:`I_{1/2}` is the
-    Fermi integral with order 1/2, :math:`β` is the inverse thermal
-    energy :math:`β = 1/(k_B T)`, and :math:`μ_a^{ideal}`
-    is the ideal chemical potential.
+    where :math:`χ` is the degeneracy parameter, :math:`n` is the species
+    number density, :math:`Λ` is the thermal de Broglie wavelength, :math:`I_{1/2}`
+    is the Fermi integral with order 1/2, :math:`β` is the inverse thermal
+    energy :math:`β = 1/(k_B T)`, and :math:`μ^{ideal}` is the ideal chemical potential.
 
     The definition for the ideal chemical potential is implicit, so it must
     be obtained numerically by solving for the Fermi integral for values
     of chemical potential approaching the degeneracy parameter. Since values
     returned from the `~plasmapy.formulary.mathematics.Fermi_integral`
-    are complex, a nonlinear Levenberg-Marquardt least squares method is
-    used to iteratively approach a value of :math:`μ` which minimizes
-    :math:`I_{1/2}(β μ_a^{ideal}) - χ_a`
+    are complex, the Broyden–Fletcher–Goldfarb–Shanno algorithm is
+    used to iteratively approach a value of :math:`μ^{ideal}` which minimizes
+    :math:`\lvert I_{1/2}(β μ^{ideal}) - χ \rvert`.
 
-    This function returns :math:`β μ^{ideal}` the dimensionless
-    ideal chemical potential.
-
-    Warnings
-    --------
-    At present this function is limited to relatively small arguments
-    due to limitations in the ``mpmath.polylog``, which PlasmaPy uses in
-    calculating the Fermi integral.
+    This function returns the dimensionless ideal chemical potential :math:`β μ^{ideal}`.
 
     Examples
     --------
     >>> from astropy import units as u
-    >>> chemical_potential(n_e=1e21*u.cm**-3,T=11000*u.K)  # doctest: +SKIP
-    <Quantity 2.00039985e-12>
+    >>> chemical_potential(n_e=1e25*u.cm**-3,T=11000*u.K)
+    <Quantity 283.43506297>
     """
 
-    raise NotImplementedError(
-        "This function has been temporarily disabled due to a bug.\n"
-        "Please refer to https://github.com/PlasmaPy/PlasmaPy/issues/726 \n"
-        "and https://github.com/astropy/astropy/issues/9721 "
-        "for progress in fixing it."
-    )
     # deBroglie wavelength
     lambdaDB = thermal_deBroglie_wavelength(T)
     # degeneracy parameter
     degen = (n_e * lambdaDB**3).to(u.dimensionless_unscaled)
 
-    def residual(params, data, eps_data):
+    def residual(params, data):
         """Residual function for fitting parameters to Fermi_integral."""
         alpha = params["alpha"].value
         # note that alpha = mu / (k_B * T)
         model = mathematics.Fermi_integral(alpha, 0.5)
-        complexResidue = (data - model) / eps_data
-        return complexResidue.view(np.float)
+        complexResidue = abs(data - model)
+        return complexResidue
 
     # setting parameters for fitting along with bounds
     alphaGuess = 1 * u.dimensionless_unscaled
     params = Parameters()
     params.add("alpha", value=alphaGuess, min=0.0)
     # calling minimize function from lmfit to fit by minimizing the residual
-    data = np.array([degen])  # result of Fermi_integral - degen should be zero
-    eps_data = np.array([1e-15])  # numerical error
-    minFit = minimize(residual, params, args=(data, eps_data))
+    data = np.array(degen)  # result of Fermi_integral - degen should be zero
+    minFit = minimize(residual, params, args=(data,), method="bfgsb")
     beta_mu = minFit.params["alpha"].value * u.dimensionless_unscaled
+
     return beta_mu
 
 
-# TODO: decorate with validate_quantities
-# TODO: remove NotImplementedError and 'doctest: +SKIP' when the following issues are addressed...
-#       https://github.com/PlasmaPy/PlasmaPy/issues/726
-#       https://github.com/astropy/astropy/issues/9721
 def _chemical_potential_interp(n_e, T):
     r"""
     Fitting formula for interpolating chemical potential between classical
@@ -574,16 +555,10 @@ def _chemical_potential_interp(n_e, T):
     Examples
     --------
     >>> from astropy import units as u
-    >>> _chemical_potential_interp(n_e=1e23*u.cm**-3, T=11000*u.K)  # doctest: +SKIP
+    >>> _chemical_potential_interp(n_e=1e23*u.cm**-3, T=11000*u.K)
     <Quantity 8.17649>
 
     """
-    raise NotImplementedError(
-        "This function has been temporarily disabled due to a bug.\n"
-        "Please refer to https://github.com/PlasmaPy/PlasmaPy/issues/726 \n"
-        "and https://github.com/astropy/astropy/issues/9721 "
-        "for progress in fixing it."
-    )
     A = 0.25945
     B = 0.072
     b = 0.858
@@ -595,3 +570,63 @@ def _chemical_potential_interp(n_e, T):
     term3 = term3num / term3den
     beta_mu = term1 + term2 + term3
     return beta_mu.to(u.dimensionless_unscaled)
+
+
+@validate_quantities(
+    T={"can_be_negative": False, "equivalencies": u.temperature_energy()},
+    n_e={"can_be_negative": False},
+)
+def quantum_theta(T: u.K, n_e: u.m**-3) -> u.dimensionless_unscaled:
+    r"""
+    Compare Fermi energy to thermal kinetic energy to check if quantum
+    effects are important.
+
+    The quantum theta (:math:`θ`) of a plasma is defined by
+
+    .. math::
+        θ = \frac{E_T}{E_F}
+
+    where :math:`E_T` is the thermal energy of the plasma
+    and :math:`E_F` is the Fermi energy of the plasma.
+
+    Parameters
+    ----------
+    T : `~astropy.units.Quantity`
+        The temperature of the plasma.
+
+    n_e : `~astropy.units.Quantity`
+          The electron number density of the plasma.
+
+    Examples
+    --------
+    >>> import astropy.units as u
+    >>> quantum_theta(1*u.eV, 1e20*u.m**-3)
+    <Quantity 127290.619...>
+    >>> quantum_theta(1*u.eV, 1e16*u.m**-3)
+    <Quantity 59083071...>
+    >>> quantum_theta(1*u.eV, 1e26*u.m**-3)
+    <Quantity 12.72906...>
+    >>> quantum_theta(1*u.K, 1e26*u.m**-3)
+    <Quantity 0.00109...>
+
+    Returns
+    -------
+    theta : `~astropy.units.Quantity`
+
+    Notes
+    -----
+    The thermal energy of the plasma (:math:`E_T`) is defined by
+
+    .. math::
+        E_T = k_B T
+
+    where :math:`k_B` is the Boltzmann constant
+    and :math:`T` is the temperature of the plasma.
+
+    See Also
+    --------
+    ~plasmapy.formulary.quantum.Fermi_energy
+    """
+    fermi_energy = Fermi_energy(n_e)
+    thermal_energy = k_B * T
+    return thermal_energy / fermi_energy

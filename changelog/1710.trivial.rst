@@ -1,0 +1,2 @@
+Changed the towncrier_ version to ``>= 19.2.0, < 22.8.0``. Superseded by
+:pr:`1717`\ .
