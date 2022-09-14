@@ -6,6 +6,7 @@
 .. ------------------
 
 .. |ClassicalTransport| replace:: :class:`~plasmapy.formulary.braginskii.ClassicalTransport`
+.. |RelativisticBody| replace:: :class:`~plasmapy.formulary.relativity.RelativisticBody`
 
 .. ------------------
 .. plasmapy.particles
@@ -72,6 +73,8 @@
 .. |nan| replace:: `~numpy.nan`
 .. |ndarray| replace:: :class:`~numpy.ndarray`
 .. |array_like| replace:: :term:`numpy:array_like`
+.. |ArrayLike| replace:: `~numpy.typing.ArrayLike`
+.. |DTypeLike| replace:: `~numpy.typing.DTypeLike`
 
 .. --------------------
 .. Astropy replacements
@@ -99,6 +102,23 @@
 .. |plasma-calculator| replace:: :ref:`plasmapy-calculator`\
 .. |release guide| replace:: :ref:`release guide`\
 .. |testing guide| replace:: :ref:`testing guide`\
+
+.. --------------
+.. Glossary terms
+.. --------------
+
+.. |annotated| replace:: :term:`annotated <annotation>`\
+.. |annotation| replace:: :term:`annotation`\
+.. |argument| replace:: :term:`argument`\
+.. |arguments| replace:: :term:`arguments <argument>`\
+.. |charge number| replace:: :term:`charge number`\
+.. |decorated| replace:: :term:`decorated <decorator>`\
+.. |decorator| replace:: :term:`decorator`\
+.. |keyword-only| replace:: :term:`keyword-only`\
+.. |parameter| replace:: :term:`parameter`\
+.. |parameters| replace:: :term:`parameters <parameter>`\
+.. |particle-like| replace:: :term:`particle-like`\
+.. |particle-list-like| replace:: :term:`particle-list-like`\
 
 .. --------
 .. Websites
@@ -149,6 +169,7 @@
 .. _PlasmaPy meetings: https://www.plasmapy.org/meetings
 .. _PlasmaPy's documentation: https://docs.plasmapy.org/en/stable
 .. _PlasmaPy's GitHub repository: https://github.com/PlasmaPy/plasmapy
+.. _PlasmaPy's data repository: https://github.com/PlasmaPy/PlasmaPy-data
 .. _PlasmaPy's Matrix chat room: https://app.element.io/#/room/#plasmapy:openastronomy.org
 .. _`pre-commit.ci`: https://pre-commit.ci
 .. _pydocstyle: https://www.pydocstyle.org/en/stable

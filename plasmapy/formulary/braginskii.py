@@ -1688,7 +1688,7 @@ def _nondim_tc_e_ji_held(hall, Z, field_orientation):
     k_5 = [0.166, 0.255, f_k_5(Z)]
 
     kappa_par = kappa_par_e[Z_idx]
-    if field_orientation == "parallel" or field_orientation == "par":
+    if field_orientation in {"parallel", "par"}:
         return Z * kappa_par
 
     def f_kappa_perp(Z_idx):
@@ -1704,7 +1704,7 @@ def _nondim_tc_e_ji_held(hall, Z, field_orientation):
         return numerator / denominator
 
     kappa_perp = f_kappa_perp(Z_idx)
-    if field_orientation == "perpendicular" or field_orientation == "perp":
+    if field_orientation in {"perpendicular", "perp"}:
         return Z * kappa_perp
 
     def f_kappa_cross(Z_idx):
@@ -1785,7 +1785,7 @@ def _nondim_resist_ji_held(hall, Z, field_orientation):
     a_5 = [5.070, 9.671, f_a_5(Z)]
 
     alpha_par = alpha_par_e[Z_idx]
-    if field_orientation == "parallel" or field_orientation == "par":
+    if field_orientation in {"parallel", "par"}:
         return alpha_par
 
     def f_alpha_perp(Z_idx):
@@ -1799,7 +1799,7 @@ def _nondim_resist_ji_held(hall, Z, field_orientation):
         return 1 - numerator / denominator
 
     alpha_perp = f_alpha_perp(Z_idx)
-    if field_orientation == "perpendicular" or field_orientation == "perp":
+    if field_orientation in {"perpendicular", "perp"}:
         return alpha_perp
 
     def f_alpha_cross(Z_idx):
@@ -1890,7 +1890,7 @@ def _nondim_tec_ji_held(hall, Z, field_orientation):
     b_5 = [1.131, 2.202, f_b_5(Z)]
 
     beta_par = beta_par_e[Z_idx]
-    if field_orientation == "parallel" or field_orientation == "par":
+    if field_orientation in {"parallel", "par"}:
         return beta_par
 
     def f_beta_perp(Z_idx):
@@ -1906,7 +1906,7 @@ def _nondim_tec_ji_held(hall, Z, field_orientation):
         return numerator / denominator
 
     beta_perp = f_beta_perp(Z_idx)
-    if field_orientation == "perpendicular" or field_orientation == "perp":
+    if field_orientation in {"perpendicular", "perp"}:
         return beta_perp
 
     def f_beta_cross(Z_idx):
