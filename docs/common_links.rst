@@ -92,10 +92,8 @@
 .. The backslash is needed for the substitution to work correctly when
    used just before a period.
 
-.. |atom-like| replace:: :term:`atom-like`\
 .. |bibliography| replace:: :ref:`bibliography`\
 .. |changelog guide| replace:: :ref:`changelog guide`\
-.. |charge number| replace:: :term:`charge number`\
 .. |coding guide| replace:: :ref:`coding guide`\
 .. |contributor guide| replace:: :ref:`contributor guide`\
 .. |documentation guide| replace:: :ref:`documentation guide`\
@@ -113,6 +111,7 @@
 .. |annotation| replace:: :term:`annotation`\
 .. |argument| replace:: :term:`argument`\
 .. |arguments| replace:: :term:`arguments <argument>`\
+.. |atom-like| replace:: :term:`atom-like`\
 .. |charge number| replace:: :term:`charge number`\
 .. |decorated| replace:: :term:`decorated <decorator>`\
 .. |decorator| replace:: :term:`decorator`\
