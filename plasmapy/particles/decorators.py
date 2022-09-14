@@ -693,6 +693,11 @@ def particle_input(
         corresponds to a |CustomParticle|, or ``allow_particle_lists``
         is `False` and the argument corresponds to a |ParticleList|.
 
+    |InvalidParticleError|
+        If the decorated argument has charge and/or mass number
+        information, and ``Z`` and/or ``mass_numb`` contain
+        contradictory information.
+
     |InvalidElementError|
         If an annotated argument is named ``element``, and the input
         does not correspond to an element, isotope, or ion.
