@@ -467,6 +467,20 @@ class _ParticleInput:
         """
         Process an argument that has an appropriate annotation.
 
+        If the annotation is not one covered by |particle_input|, then
+        this method will return ``argument`` without alteration.
+
+        Otherwise, if the annotation is ``Optional[...]`` and
+        ``argument`` is `None`, then this method will return `None`.
+
+        Otherwise, this method will use ``argument`` (and possibly ``Z``
+        and/or ``mass_numb``) to create a |Particle|, |CustomParticle|,
+        or |ParticleList|. If the resulting particle object does not
+        meet the specified criteria (if provided), then this method will
+        raise an exception. Otherwise, the resulting particle object
+        will be returned. See the docstring for |particle_input| for
+        more details.
+
         Parameters
         ----------
         parameter : str
