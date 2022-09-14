@@ -56,17 +56,23 @@ def test_deBroglie_wavelength():
         100 * u.cm / u.s, 5000 * u.g
     )
 
-    with pytest.raises(RelativityError):
-        deBroglie_wavelength(c * 1.000000001, "e")
 
+@pytest.mark.parametrize(
+    "kwargs, exception",
+    [
+        ({"V": c * 1.00000001, "particle": "e-"}, RelativityError),
+        ({"V": 8 * u.m / u.s, "particle": 5 * u.m}, u.UnitConversionError),
+        ({"V": 8 * u.m / u.s, "particle": "invalid particle"}, InvalidParticleError),
+    ],
+)
+def test_deBroglie_exceptions(kwargs, exception):
+    with pytest.raises(exception):
+        deBroglie_wavelength(**kwargs)
+
+
+def test_deBroglie_warning():
     with pytest.warns(u.UnitsWarning):
         deBroglie_wavelength(0.79450719277, "Be-7 1+")
-
-    with pytest.raises(u.UnitConversionError):
-        deBroglie_wavelength(8 * u.m / u.s, 5 * u.m)
-
-    with pytest.raises(InvalidParticleError):
-        deBroglie_wavelength(8 * u.m / u.s, "invalid particle")
 
 
 # defining some plasma parameters for tests
