@@ -1,0 +1,2 @@
+Added a GitHub Action to automatically comment on pull requests with a
+code review checklist, and simplified the pull request template.

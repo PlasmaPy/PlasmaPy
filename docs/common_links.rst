@@ -98,13 +98,27 @@
 .. |contributor guide| replace:: :ref:`contributor guide`\
 .. |documentation guide| replace:: :ref:`documentation guide`\
 .. |glossary| replace:: :ref:`glossary`\
-.. |keyword-only| replace:: :term:`keyword-only`\
 .. |minpython| replace:: 3.8
-.. |particle-like| replace:: :term:`particle-like`\
-.. |particle-list-like| replace:: :term:`particle-list-like`\
 .. |plasma-calculator| replace:: :ref:`plasmapy-calculator`\
 .. |release guide| replace:: :ref:`release guide`\
 .. |testing guide| replace:: :ref:`testing guide`\
+
+.. --------------
+.. Glossary terms
+.. --------------
+
+.. |annotated| replace:: :term:`annotated <annotation>`\
+.. |annotation| replace:: :term:`annotation`\
+.. |argument| replace:: :term:`argument`\
+.. |arguments| replace:: :term:`arguments <argument>`\
+.. |charge number| replace:: :term:`charge number`\
+.. |decorated| replace:: :term:`decorated <decorator>`\
+.. |decorator| replace:: :term:`decorator`\
+.. |keyword-only| replace:: :term:`keyword-only`\
+.. |parameter| replace:: :term:`parameter`\
+.. |parameters| replace:: :term:`parameters <parameter>`\
+.. |particle-like| replace:: :term:`particle-like`\
+.. |particle-list-like| replace:: :term:`particle-list-like`\
 
 .. --------
 .. Websites
