@@ -24,8 +24,8 @@ Glossary
 
    -like
       Used to indicate an `object` of that type or that can instantiate
-      that type.  For example, ``"He 2+"`` is :term:`particle-like`
-      because it can be used to instantiate |Particle|.
+      that type.  For example, ``"He 2+"`` is |particle-like| because it
+      can be used to instantiate |Particle|.
 
    charge number
       The charge of a particle in units of elementary charge.
@@ -161,9 +161,6 @@ Glossary
       phase occurs when the function is called with those inputs. The
       *assert* phase is when the value returned by the function is
       compared to the expected result.
-
-.. |argument| replace:: :term:`argument`
-.. |parameter| replace:: :term:`parameter`
 
 .. _`keyword arguments`: https://docs.python.org/3/glossary.html#term-argument
 .. _`positional arguments`: https://docs.python.org/3/glossary.html#term-argument

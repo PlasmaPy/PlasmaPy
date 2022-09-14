@@ -28,10 +28,10 @@ from plasmapy.particles.particle_class import (
     CustomParticle,
     DimensionlessParticle,
     Particle,
+    valid_categories,
 )
 from plasmapy.utils import roman
 from plasmapy.utils.code_repr import call_string
-from plasmapy.utils.exceptions import PlasmaPyFutureWarning
 from plasmapy.utils.pytest_helpers import run_test_equivalent_calls
 
 # (arg, kwargs, results_dict)
@@ -214,6 +214,7 @@ test_Particle_table = [
             'is_category(any_of={"positron"})': True,
             'is_category(exclude="positron")': False,
             'is_category("ion")': False,
+            'is_category("invalid_category")': ParticleError,
             "__str__()": "e+",
             "__repr__()": 'Particle("e+")',
             "periodic_table.group": InvalidElementError,
@@ -619,6 +620,8 @@ test_Particle_error_table = [
     (["Fe 25+"], {}, ".recombine(8.2)", TypeError),
     (["e-"], {}, ".ionize()", InvalidElementError),
     (["e+"], {}, ".recombine()", InvalidElementError),
+    (["e+"], {}, ".is_category('invalid_category')", ParticleError),
+    (["e+"], {}, ".is_category(require='element', exclude='element')", ParticleError),
     (["H", 1], {}, "", TypeError),
     (["H", 1, 1], {}, "", TypeError),
 ]
@@ -933,7 +936,7 @@ def test_that_object_can_be_dict_key(key):
         dictionary = {key: value}
     except Exception as exc:
         error_message = f"{key} is not a valid key for a dict. "
-        if not isinstance(key, collections.Hashable):
+        if not isinstance(key, collections.abc.Hashable):
             error_message += f"{key} is not hashable. "
         try:
             key_equals_itself = key == key
@@ -998,7 +1001,49 @@ def test_custom_particle_symbol(cls, symbol, expected):
     assert instance.symbol == expected
 
 
-customized_particle_errors = [
+custom_particle_categories_table = [
+    ({"charge": 0.0 * u.C}, {"custom", "uncharged"}),
+    ({"charge": 1.0 * u.C}, {"custom", "charged"}),
+    ({}, {"custom"}),
+]
+
+
+@pytest.mark.parametrize("kwargs, expected", custom_particle_categories_table)
+def test_custom_particle_categories(kwargs, expected):
+    """Test that CustomParticle.categories behaves as expected."""
+    custom_particle = CustomParticle(**kwargs)
+    assert custom_particle.categories == expected
+
+
+custom_particle_is_category_table = [
+    ({"charge": 0 * u.C}, {"require": "charged"}, False),
+    ({"charge": 0 * u.C}, {"exclude": "charged"}, True),
+    ({"charge": 0 * u.C}, {"require": "uncharged"}, True),
+    ({"charge": 0 * u.C}, {"exclude": "uncharged"}, False),
+    ({"charge": 1 * u.C}, {"require": "charged"}, True),
+    ({"charge": 1 * u.C}, {"exclude": "charged"}, False),
+    ({"charge": 1 * u.C}, {"require": "uncharged"}, False),
+    ({"charge": 1 * u.C}, {"exclude": "uncharged"}, True),
+    ({}, {"any_of": {"charged", "uncharged"}}, False),
+]
+
+
+@pytest.mark.parametrize(
+    "kwargs_to_custom_particle, kwargs_to_is_category, expected",
+    custom_particle_is_category_table,
+)
+def test_custom_particle_is_category(
+    kwargs_to_custom_particle,
+    kwargs_to_is_category,
+    expected,
+):
+    """Test that CustomParticle.is_category works as expected."""
+    custom_particle = CustomParticle(**kwargs_to_custom_particle)
+    actual = custom_particle.is_category(**kwargs_to_is_category)
+    assert actual == expected
+
+
+custom_particle_errors = [
     (DimensionlessParticle, {"mass": -1e-36}, InvalidParticleError),
     (DimensionlessParticle, {"mass": [1, 1]}, InvalidParticleError),
     (DimensionlessParticle, {"charge": [-1, 1]}, InvalidParticleError),
@@ -1051,7 +1096,7 @@ def test_custom_particle_switched_order(charge, mass):
     assert CustomParticle(charge, mass) == CustomParticle(mass, charge)
 
 
-@pytest.mark.parametrize("cls, kwargs, exception", customized_particle_errors)
+@pytest.mark.parametrize("cls, kwargs, exception", custom_particle_errors)
 def test_customized_particles_errors(cls, kwargs, exception):
     """
     Test that attempting to create invalid dimensionless or custom particles
@@ -1421,19 +1466,19 @@ def test_particle_to_json_file(cls, kwargs, expected_repr):
 
 def test_particle_is_category_valid_categories():
     """Test the location where valid categories may be accessed."""
-    assert hasattr(Particle.is_category, "valid_categories")
     some_valid_categories = {
-        "lepton",
-        "fermion",
-        "matter",
-        "nonmetal",
+        "charged",
+        "custom",
         "electron",
+        "fermion",
         "ion",
         "isotope",
-        "charged",
+        "lepton",
+        "matter",
+        "nonmetal",
         "uncharged",
     }
-    assert some_valid_categories.issubset(Particle.is_category.valid_categories)
+    assert some_valid_categories.issubset(valid_categories)
 
 
 def test_CustomParticle_cmp():
