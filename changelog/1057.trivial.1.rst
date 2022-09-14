@@ -1,0 +1,3 @@
+Moved the functionality responsible for converting |particle-like|
+arguments to particle objects from the |particle_input| decorator into a
+separate class that is now used inside |particle_input|.

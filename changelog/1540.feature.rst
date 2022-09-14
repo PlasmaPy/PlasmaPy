@@ -1,0 +1,2 @@
+Added the |RelativisticBody| class to facilitate calculation of the
+relativistic properties of a body in motion.

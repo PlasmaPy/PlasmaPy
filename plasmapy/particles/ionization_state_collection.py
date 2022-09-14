@@ -42,29 +42,29 @@ class IonizationStateCollection:
         with elements or isotopes as keys and `~astropy.units.Quantity`
         instances with units of number density.
 
-    abundances: `dict`, optional, keyword-only
+    abundances: `dict`, optional, |keyword-only|
         A `dict` with `~plasmapy.particles.particle_class.ParticleLike`
         objects used as the keys and the corresponding relative abundance as the
         values.  The values must be positive real numbers.
 
-    log_abundances: `dict`, optional, keyword-only
+    log_abundances: `dict`, optional, |keyword-only|
         A `dict` with `~plasmapy.particles.particle_class.ParticleLike`
         objects used as the keys and the corresponding base 10 logarithms of their
         relative abundances as the values.  The values must be real numbers.
 
-    n0: `~astropy.units.Quantity`, optional, keyword-only
+    n0: `~astropy.units.Quantity`, optional, |keyword-only|
         The number density normalization factor corresponding to the
         abundances.  The number density of each element is the product
         of its abundance and ``n0``.
 
-    T_e: `~astropy.units.Quantity`, optional, keyword-only
+    T_e: `~astropy.units.Quantity`, optional, |keyword-only|
         The electron temperature in units of temperature or thermal
         energy per particle.
 
-    kappa: `float`, optional, keyword-only
+    kappa: `float`, optional, |keyword-only|
         The value of kappa for a kappa distribution function.
 
-    tol: `float` or `integer`, optional, keyword-only
+    tol: `float` or `integer`, optional, |keyword-only|
         The absolute tolerance used by `~numpy.isclose` when testing
         normalizations and making comparisons.  Defaults to ``1e-15``.
 
@@ -343,16 +343,10 @@ class IonizationStateCollection:
     def __eq__(self, other):
 
         if not isinstance(other, IonizationStateCollection):
-            raise TypeError(
-                "IonizationStateCollection instance can only be compared with "
-                "other IonizationStateCollection instances."
-            )
+            return False
 
         if self.base_particles != other.base_particles:
-            raise ParticleError(
-                "Two IonizationStateCollection instances can be compared only "
-                "if the base particles are the same."
-            )
+            return False
 
         min_tol = np.min([self.tol, other.tol])
 
@@ -362,10 +356,6 @@ class IonizationStateCollection:
         for attribute in ["T_e", "n_e", "kappa"]:
             this = getattr(self, attribute)
             that = getattr(other, attribute)
-
-            # TODO: Maybe create a function in utils called same_enough
-            # TODO: that would take care of all of these disparate
-            # TODO: equality measures.
 
             this_equals_that = np.any(
                 [
@@ -496,7 +486,7 @@ class IonizationStateCollection:
             # The particles whose ionization states are to be recorded
             # should be elements or isotopes but not ions or neutrals.
 
-            for key in particles.keys():
+            for key in particles:
                 is_element = particles[key].is_category("element")
                 has_charge_info = particles[key].is_category(
                     any_of=["charged", "uncharged"]
@@ -874,16 +864,16 @@ class IonizationStateCollection:
 
         Parameters
         ----------
-        include_neutrals : `bool`, optional, keyword-only
+        include_neutrals : `bool`, optional, |keyword-only|
             If `True`, include neutrals when calculating the mean values
             of the different particles.  If `False`, exclude neutrals.
             Defaults to `True`.
 
-        use_rms_charge : `bool`, optional, keyword-only
+        use_rms_charge : `bool`, optional, |keyword-only|
             If `True`, use the root mean square charge instead of the
             mean charge. Defaults to `False`.
 
-        use_rms_mass : `bool`, optional, keyword-only
+        use_rms_mass : `bool`, optional, |keyword-only|
             If `True`, use the root mean square mass instead of the mean
             mass. Defaults to `False`.
 

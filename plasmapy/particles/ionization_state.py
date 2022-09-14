@@ -12,6 +12,7 @@ from astropy import units as u
 from numbers import Integral, Real
 from typing import List, Optional, Union
 
+from plasmapy.particles.atomic import ionic_levels
 from plasmapy.particles.decorators import particle_input
 from plasmapy.particles.exceptions import (
     ChargeError,
@@ -19,10 +20,8 @@ from plasmapy.particles.exceptions import (
     ParticleError,
 )
 from plasmapy.particles.particle_class import CustomParticle, Particle
-from plasmapy.particles.particle_collections import ionic_levels, ParticleList
+from plasmapy.particles.particle_collections import ParticleList
 from plasmapy.utils.decorators import validate_quantities
-from plasmapy.utils.decorators.deprecation import deprecated
-from plasmapy.utils.exceptions import PlasmaPyFutureWarning
 
 _number_density_errmsg = (
     "Number densities must be Quantity objects with units of inverse volume."
@@ -63,32 +62,27 @@ class IonicLevel:
 
     def __eq__(self, other):
 
-        try:
-            if self.ionic_symbol != other.ionic_symbol:
-                return False
+        if not isinstance(other, IonicLevel):
+            return False
 
-            ionic_fraction_within_tolerance = np.isclose(
-                self.ionic_fraction,
-                other.ionic_fraction,
-                rtol=1e-15,
-            )
+        if self.ionic_symbol != other.ionic_symbol:
+            return False
 
-            number_density_within_tolerance = u.isclose(
-                self.number_density,
-                other.number_density,
-                rtol=1e-15,
-            )
+        ionic_fraction_within_rtol = u.isclose(
+            self.ionic_fraction,
+            other.ionic_fraction,
+            rtol=1e-15,
+            equal_nan=True,
+        )
 
-            return all(
-                [ionic_fraction_within_tolerance, number_density_within_tolerance]
-            )
+        number_density_within_rtol = u.isclose(
+            self.number_density,
+            other.number_density,
+            rtol=1e-15,
+            equal_nan=True,
+        )
 
-        except TypeError as exc:
-            raise TypeError(
-                "Unable to ascertain equality between the following objects:\n"
-                f"  {self}\n"
-                f"  {other}"
-            ) from exc
+        return ionic_fraction_within_rtol and number_density_within_rtol
 
     @particle_input
     def __init__(
@@ -194,14 +188,14 @@ class IonizationState:
         the number densities of each neutral/ion.  This argument cannot
         be specified when ``particle`` is an ion.
 
-    T_e: `~astropy.units.Quantity`, keyword-only, optional
+    T_e: `~astropy.units.Quantity`, |keyword-only|, optional
         The electron temperature or thermal energy per electron.
 
-    n_elem: `~astropy.units.Quantity`, keyword-only, optional
+    n_elem: `~astropy.units.Quantity`, |keyword-only|, optional
         The number density of the element, including neutrals and all
         ions.
 
-    tol: `float` or integer, keyword-only, optional
+    tol: `float` or integer, |keyword-only|, optional
         The absolute tolerance used by `~numpy.isclose` and similar
         functions when testing normalizations and making comparisons.
         Defaults to ``1e-15``.
@@ -250,6 +244,7 @@ class IonizationState:
 
     # TODO: Add in functionality to find equilibrium ionization states.
 
+    @particle_input(require="element")
     @validate_quantities(
         T_e={"unit": u.K, "equivalencies": u.temperature_energy()},
         T_i={
@@ -258,7 +253,6 @@ class IonizationState:
             "none_shall_pass": True,
         },
     )
-    @particle_input(require="element")
     def __init__(
         self,
         particle: Particle,
@@ -408,10 +402,7 @@ class IonizationState:
 
         """
         if not isinstance(other, IonizationState):
-            raise TypeError(
-                "An instance of the IonizationState class may only be "
-                "compared with another IonizationState instance."
-            )
+            return False
 
         same_element = self.element == other.element
         same_isotope = self.isotope == other.isotope
@@ -829,16 +820,16 @@ class IonizationState:
 
         Parameters
         ----------
-        include_neutrals : `bool`, optional, keyword-only
+        include_neutrals : `bool`, optional, |keyword-only|
             If `True`, include neutrals when calculating the mean values
             of the different particles.  If `False`, exclude neutrals.
             Defaults to `True`.
 
-        use_rms_charge : `bool`, optional, keyword-only
+        use_rms_charge : `bool`, optional, |keyword-only|
             If `True`, use the root mean square charge instead of the
             mean charge. Defaults to `False`.
 
-        use_rms_mass : `bool`, optional, keyword-only
+        use_rms_mass : `bool`, optional, |keyword-only|
             If `True`, use the root mean square mass instead of the mean
             mass. Defaults to `False`.
 
