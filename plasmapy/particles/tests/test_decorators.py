@@ -21,35 +21,41 @@ from plasmapy.utils.decorators.validators import validate_quantities
 
 
 @particle_input
-def func_simple_noparens(
+def function_decorated_with_particle_input(
     a, particle: ParticleLike, b=None, Z: int = None, mass_numb: int = None
 ) -> Particle:
     """
-    A simple function that, when decorated with `@particle_input`,
-    returns the instance of the Particle class corresponding to the
-    inputs.
+    A simple function that is decorated with `particle_input` and
+    returns the particle instance corresponding to the inputs.
+
+    .. important::
+
+       For this function, `particle_input` **is not** called (i.e.,
+       there are no parentheses after the decorator).
     """
     if not isinstance(particle, Particle):
         raise TypeError(
-            "The argument `particle` in func_simple_noparens should be "
-            f"a Particle. Instead, {particle=}."
+            f"The argument `particle` should be a Particle. Instead, {particle = }."
         )
     return particle
 
 
 @particle_input()
-def func_simple_parens(
+def function_decorated_with_call_of_particle_input(
     a, particle: ParticleLike, b=None, Z: int = None, mass_numb: int = None
 ) -> Particle:
     """
-    A simple function that, when decorated with `@particle_input()`,
-    returns the instance of the Particle class corresponding to the
-    inputs.
+    A simple function that is decorated with `@particle_input()` and
+    returns the Particle instance corresponding to the inputs.
+
+    .. important::
+
+       For this function, `particle_input` **is** called (i.e., there
+       are parentheses after the decorator).
     """
     if not isinstance(particle, Particle):
         raise TypeError(
-            "The argument `particle` in func_simple_parens should be "
-            f"a Particle. Instead, {particle=}."
+            f"The argument `particle` should be a Particle. Instead, {particle=}."
         )
     return particle
 
@@ -62,7 +68,13 @@ particle_input_simple_table = [
 ]
 
 
-@pytest.mark.parametrize("func", [func_simple_parens, func_simple_noparens])
+@pytest.mark.parametrize(
+    "func",
+    [
+        function_decorated_with_call_of_particle_input,
+        function_decorated_with_particle_input,
+    ],
+)
 @pytest.mark.parametrize("args, kwargs, symbol", particle_input_simple_table)
 def test_particle_input_simple(func, args, kwargs, symbol):
     """
@@ -79,7 +91,11 @@ def test_particle_input_simple(func, args, kwargs, symbol):
 
 # func, kwargs, expected_error
 particle_input_error_table = [
-    (func_simple_noparens, {"a": 1, "particle": "asdf"}, InvalidParticleError)
+    (
+        function_decorated_with_particle_input,
+        {"a": 1, "particle": "asdf"},
+        InvalidParticleError,
+    )
 ]
 
 
