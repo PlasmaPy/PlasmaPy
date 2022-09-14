@@ -17,7 +17,7 @@ from numba import njit
 
 from plasmapy import particles
 from plasmapy.formulary import misc
-from plasmapy.particles import Particle, particle_input, ParticleLike
+from plasmapy.particles import particle_input, ParticleLike
 from plasmapy.particles.exceptions import ChargeError, InvalidParticleError
 from plasmapy.utils.decorators import (
     angular_freq_to_hz,
@@ -38,8 +38,8 @@ eps0_si_unitless = eps0.value
         "equivalencies": [(u.cy / u.s, u.Hz)],
     }
 )
-@angular_freq_to_hz
 @particle_input(any_of={"charged", "uncharged"})
+@angular_freq_to_hz
 def gyrofrequency(B: u.T, particle: ParticleLike, signed=False, Z=None) -> u.rad / u.s:
     r"""
     Calculate the particle gyrofrequency in units of radians per second.
@@ -224,8 +224,8 @@ def plasma_frequency_lite(
         "equivalencies": [(u.cy / u.s, u.Hz)],
     },
 )
-@angular_freq_to_hz
 @particle_input(any_of={"charged", "uncharged"})
+@angular_freq_to_hz
 def plasma_frequency(n: u.m**-3, particle: ParticleLike, z_mean=None) -> u.rad / u.s:
     r"""Calculate the particle plasma frequency.
 
@@ -347,8 +347,8 @@ wp_ = plasma_frequency
         "equivalencies": [(u.cy / u.s, u.Hz)],
     },
 )
-@angular_freq_to_hz
 @particle_input
+@angular_freq_to_hz
 def lower_hybrid_frequency(B: u.T, n_i: u.m**-3, ion: ParticleLike) -> u.rad / u.s:
     r"""
     Return the lower hybrid frequency.
