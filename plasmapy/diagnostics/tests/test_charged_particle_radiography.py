@@ -6,7 +6,6 @@ import astropy.constants as const
 import astropy.units as u
 import copy
 import numpy as np
-import os
 import pytest
 
 from scipy.special import erf
@@ -622,7 +621,7 @@ def test_saving_output(tmp_path):
     results_1 = sim.results_dict
 
     # Save result
-    path = os.path.join(tmp_path, "temp.npz")
+    path = str(tmp_path / "temp.npz")
     sim.save_results(path)
 
     # Load result

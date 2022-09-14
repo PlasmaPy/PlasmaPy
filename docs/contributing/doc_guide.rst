@@ -202,8 +202,8 @@ the same length as that heading.
 We can link to code objects by enclosing them in single back ticks.
 This linking will work for Python_ commands as well as certain packages
 like NumPy_, SciPy_, Astropy_, and pandas_. This linking is described in
-the section on :ref:`external-references`. In-line code examples are
-enclosed in double back ticks.
+the section on :ref:`external-references`. In-line code examples may be
+enclosed in double back ticks or specified using the ``:py:`` role.
 
 .. code-block:: rst
 
@@ -215,7 +215,10 @@ enclosed in double back ticks.
    but shortens the display so only "particles" is displayed.
 
    Double backticks are used to show inline code that is not
-   cross-referenced: ``import astropy.units as u``.
+   cross-referenced: ``plasmapy.particles``.
+
+   The ``:py:`` role can be used for inline code highlighting:
+   :py:`import astropy.units as u`.
 
 This reST_ block renders as:
 
@@ -227,7 +230,10 @@ This reST_ block renders as:
    but shortens the display so only "particles" is displayed.
 
    Double backticks are used to show inline code that is not
-   cross-referenced: ``import astropy.units as u``.
+   cross-referenced: ``plasmapy.particles``.
+
+   The ``:py:`` role can be used for inline code highlighting:
+   :py:`import astropy.units as u`.
 
 Sphinx_ can format code blocks for Python_ and the Python_ console
 using the :rst:dir:`code-block` :term:`directive`.
@@ -556,7 +562,7 @@ Here is an example docstring in the numpydoc_ format:
       b : `float`
           The right multiplicand.
 
-      switch_order : `bool`, optional, keyword-only
+      switch_order : `bool`, optional, |keyword-only|
           If `True`, return :math:`a - b`. If `False`, then return
           :math:`b - a`. Defaults to `True`.
 
