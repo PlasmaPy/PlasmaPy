@@ -717,6 +717,12 @@ def particle_input(
         ``exclude``; or if none of the |parameters| of ``callable_``
         have been appropriately annotated.
 
+    Warns
+    -----
+    |ParticleWarning|
+        If decorated argument has charge and/or mass number information,
+        and ``Z`` and/or ``mass_numb`` contain redundant information.
+
     See Also
     --------
     ~plasmapy.particles.particle_class.CustomParticle
