@@ -14,16 +14,16 @@ import numbers
 import numpy as np
 
 from astropy.constants.si import e, k_B, mu0
-from typing import Optional, Union
+from typing import Optional
 
 from plasmapy import particles
-from plasmapy.particles import Particle, particle_input
+from plasmapy.particles import Particle, particle_input, ParticleLike
 from plasmapy.utils.decorators import validate_quantities
 
 __all__ += __aliases__
 
 
-def _grab_charge(ion: Particle, z_mean=None):
+def _grab_charge(ion: ParticleLike, z_mean=None):
     """
     Merge two possible inputs for particle charge.
 
@@ -253,7 +253,7 @@ pmag_ = magnetic_pressure
 @particle_input
 def mass_density(
     density: (u.m**-3, u.kg / (u.m**3)),
-    particle: Particle,
+    particle: ParticleLike,
     z_ratio: Optional[numbers.Real] = 1,
 ) -> u.kg / u.m**3:
     r"""

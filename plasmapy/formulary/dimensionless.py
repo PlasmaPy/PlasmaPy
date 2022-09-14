@@ -28,7 +28,7 @@ from typing import Optional
 
 from plasmapy.formulary import frequencies, lengths, misc, speeds
 from plasmapy.formulary.quantum import quantum_theta
-from plasmapy.particles import Particle, particle_input
+from plasmapy.particles import Particle, particle_input, ParticleLike
 from plasmapy.utils.decorators import validate_quantities
 
 __all__ += __aliases__
@@ -116,8 +116,8 @@ def Hall_parameter(
     n: u.m**-3,
     T: u.K,
     B: u.T,
-    ion: Particle,
-    particle: Particle,
+    ion: ParticleLike,
+    particle: ParticleLike,
     coulomb_log=None,
     V=None,
     coulomb_log_method="classical",
@@ -437,7 +437,7 @@ def Lundquist_number(
     B: u.T,
     density: (u.m**-3, u.kg / u.m**3),
     sigma: u.S / u.m,
-    ion: Optional[Particle] = None,
+    ion: Optional[ParticleLike] = None,
     z_mean: Optional[numbers.Real] = None,
 ) -> u.dimensionless_unscaled:
     r"""
