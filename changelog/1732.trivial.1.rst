@@ -1,4 +1,4 @@
-Decorated the following functions with |particle_input|\ :
+The following functions now support |particle_input|\ :
 `~plasmapy.formulary.dimensionless.Hall_parameter`,
 `~plasmapy.formulary.distribution.kappa_velocity_1D`,
 `~plasmapy.formulary.distribution.kappa_velocity_3D`,
