@@ -39,7 +39,7 @@ class IonicLevel:
 
     ionic_fraction : real number, optional
         The fraction of an element or isotope that is at this ionization
-        level. Must be between 0 and 1.
+        level. Must be between 0 and 1, inclusive.
 
     number_density : `~astropy.units.Quantity`, optional
         The number density of this ion.
