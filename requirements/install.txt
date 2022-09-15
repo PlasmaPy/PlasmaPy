@@ -16,4 +16,5 @@ requests >= 2.27.1
 scipy >= 1.5.0
 tqdm >= 4.41.0
 voila >= 0.2.15
+wrapt
 xarray >= 0.15.0
