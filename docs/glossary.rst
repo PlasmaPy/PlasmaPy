@@ -29,7 +29,8 @@ Glossary
       * A |Particle| representing an element, isotope, or ion; or
       * A |ParticleList| including only elements, isotopes, or ions.
 
-      For full details, please refer to |particle-like|.
+      Fundamental particles are not atom-like, except for protons. For
+      full details, please refer to |particle-like|.
 
    -like
       Used to indicate an `object` of that type or that can instantiate
