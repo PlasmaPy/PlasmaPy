@@ -2106,6 +2106,7 @@ def coupling_parameter(
 
 
 class SingleParticleCollisionFrequencies:
+    @particles.particle_input
     @validate_quantities(
         v_drift={"can_be_negative": False},
         T_b={
@@ -2114,7 +2115,6 @@ class SingleParticleCollisionFrequencies:
         },
         n_b={"can_be_negative": False},
     )
-    @particles.particle_input
     def __init__(
         self,
         test_particle: particles.Particle,
@@ -2361,6 +2361,7 @@ class SingleParticleCollisionFrequencies:
 
 
 class MaxwellianCollisionFrequencies:
+    @particles.particle_input
     @validate_quantities(
         v_drift={"can_be_negative": False},
         T_a={
@@ -2374,7 +2375,6 @@ class MaxwellianCollisionFrequencies:
         },
         n_b={"can_be_negative": False},
     )
-    @particles.particle_input
     def __init__(
         self,
         test_particle: particles.Particle,
