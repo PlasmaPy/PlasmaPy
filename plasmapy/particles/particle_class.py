@@ -17,8 +17,8 @@ import astropy.constants as const
 import astropy.units as u
 import json
 import numpy as np
-import warnings
 import textwrap
+import warnings
 
 from abc import ABC, abstractmethod
 from collections import defaultdict, namedtuple
@@ -102,7 +102,7 @@ class SetFormatter:
                 self.str += f"``'{element}'``, "
 
     def __format__(self, format_spec) -> str:
-        return '\n\t\t'.join(textwrap.wrap(self.str, 72))
+        return "\n\t\t".join(textwrap.wrap(self.str, 72))
 
 
 def _category_errmsg(particle, category: str) -> str:
