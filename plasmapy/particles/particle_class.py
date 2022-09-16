@@ -277,7 +277,9 @@ class AbstractPhysicalParticle(AbstractParticle):
         Valid particle categories are given in
         `~plasmapy.particles.particle_class.valid_categories` and
         include: {valid_categories}
-        """.format(valid_categories= SetFormatter())
+        """.format(
+            valid_categories=SetFormatter()
+        )
         """
         Examples
         --------
