@@ -17,6 +17,7 @@ import astropy.units as u
 import json
 import numpy as np
 import warnings
+import textwrap
 
 from abc import ABC, abstractmethod
 from collections import defaultdict, namedtuple
@@ -81,6 +82,20 @@ _valid_categories = (
     | _atomic_property_categories
     | _specific_particle_categories
 )
+
+
+class SetFormatter:
+    def __init__(self, set: Set[str]):
+        self.set = sorted(set)
+        self.str = ""
+        for i, element in enumerate(self.set):
+            if i == len(self.set) - 1:
+                self.str += f"and ``'{element}'``."
+            else:
+                self.str += f"``'{element}'``, "
+
+    def __format__(self, format_spec) -> str:
+        return '\n'.join(textwrap.wrap(self.str, 72))
 
 
 def _category_errmsg(particle, category: str) -> str:
@@ -223,7 +238,7 @@ class AbstractPhysicalParticle(AbstractParticle):
 
 
 class Particle(AbstractPhysicalParticle):
-    """
+    f"""
     A class for an individual particle or antiparticle.
 
     Parameters
@@ -397,16 +412,7 @@ class Particle(AbstractPhysicalParticle):
     and `~plasmapy.particles.particle_class.Particle.is_category` method
     may be used to find and test particle membership in categories.
 
-    Valid particle categories include: ``'actinide'``, ``'alkali
-    metal'``, ``'alkaline earth metal'``, ``'antibaryon'``,
-    ``'antilepton'``, ``'antimatter'``, ``'antineutrino'``,
-    ``'baryon'``, ``'boson'``, ``'charged'``, ``'electron'``,
-    ``'element'``, ``'fermion'``, ``'halogen'``, ``'ion'``,
-    ``'isotope'``, ``'lanthanide'``, ``'lepton'``, ``'matter'``,
-    ``'metal'``, ``'metalloid'``, ``'neutrino'``, ``'neutron'``,
-    ``'noble gas'``, ``'nonmetal'``, ``'positron'``,
-    ``'post-transition metal'``, ``'proton'``, ``'stable'``,
-    ``'transition metal'``, ``'uncharged'``, and ``'unstable'``.
+    Valid particle categories include: {SetFormatter(_valid_categories)}
     """
 
     def __init__(
