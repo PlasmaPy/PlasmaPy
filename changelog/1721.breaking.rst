@@ -1,0 +1,4 @@
+Changed the behavior of |IonicLevel|, |IonizationState|, and
+|IonizationStateCollection| so that an equality comparison with an
+`object` of a different type returns `False` instead of raising a
+`TypeError`.

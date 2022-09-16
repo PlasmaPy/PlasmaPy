@@ -8,9 +8,8 @@ import warnings
 
 from astropy.constants.si import c, e, eps0, k_B
 
-from plasmapy import particles
 from plasmapy.formulary import frequencies, speeds
-from plasmapy.particles import Particle
+from plasmapy.particles import particle_input, ParticleLike
 from plasmapy.utils.decorators import validate_quantities
 from plasmapy.utils.exceptions import PlasmaPyFutureWarning
 
@@ -104,9 +103,10 @@ lambdaD_ = Debye_length
     },
     validations_on_return={"equivalencies": u.dimensionless_angles()},
 )
+@particle_input(any_of={"charged", "uncharged"})
 def gyroradius(
     B: u.T,
-    particle: Particle,
+    particle: ParticleLike,
     *,
     Vperp: u.m / u.s = np.nan * u.m / u.s,
     T_i: u.K = None,
@@ -127,14 +127,14 @@ def gyroradius(
         charge state information is provided, then the particles are assumed
         to be singly charged.
 
-    Vperp : `~astropy.units.Quantity`, optional, keyword-only
+    Vperp : `~astropy.units.Quantity`, optional, |keyword-only|
         The component of particle velocity that is perpendicular to the
         magnetic field in units convertible to meters per second.
 
-    T : `~astropy.units.Quantity`, optional, keyword-only
+    T : `~astropy.units.Quantity`, optional, |keyword-only|
         The particle temperature in units convertible to kelvin.
 
-    T_i : `~astropy.units.Quantity`, optional, keyword-only
+    T_i : `~astropy.units.Quantity`, optional, |keyword-only|
         The particle temperature in units convertible to kelvin.
         Note: Deprecated. Use ``T`` instead.
 
@@ -284,8 +284,8 @@ rhoc_ = gyroradius
     n={"can_be_negative": False},
     validations_on_return={"equivalencies": u.dimensionless_angles()},
 )
-@particles.particle_input(require="charged")
-def inertial_length(n: u.m**-3, particle: Particle) -> u.m:
+@particle_input(require="charged")
+def inertial_length(n: u.m**-3, particle: ParticleLike) -> u.m:
     r"""
     Calculate a charged particle's inertial length.
 
