@@ -242,7 +242,7 @@ class AbstractPhysicalParticle(AbstractParticle):
         any_of: Union[str, Iterable[str]] = None,
         exclude: Union[str, Iterable[str]] = None,
     ) -> bool:
-        f"""Determine if the particle meets categorization criteria.
+        """Determine if the particle meets categorization criteria.
 
         Return `True` if the particle is consistent with the provided
         categories, and `False` otherwise.
@@ -276,8 +276,9 @@ class AbstractPhysicalParticle(AbstractParticle):
         -----
         Valid particle categories are given in
         `~plasmapy.particles.particle_class.valid_categories` and
-        include: {SetFormatter()}
-
+        include: {valid_categories}
+        """.format(valid_categories= SetFormatter())
+        """
         Examples
         --------
         Required categories may be entered as positional arguments,
