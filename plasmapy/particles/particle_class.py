@@ -95,7 +95,7 @@ class SetFormatter:
                 self.str += f"``'{element}'``, "
 
     def __format__(self, format_spec) -> str:
-        return '\n'.join(textwrap.wrap(self.str, 72))
+        return '\n\t\t'.join(textwrap.wrap(self.str, 72))
 
 
 def _category_errmsg(particle, category: str) -> str:
