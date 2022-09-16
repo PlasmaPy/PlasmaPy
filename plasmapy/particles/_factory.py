@@ -6,8 +6,10 @@ appropriate instance of one of those three classes.
 
 __all__ = []
 
+import astropy.units as u
 import contextlib
 
+from astropy.units.physical import electrical_charge, mass
 from numbers import Integral
 from typing import Union
 
@@ -99,6 +101,14 @@ def _physical_particle_factory(
     for particle_type in (Particle, CustomParticle, ParticleList):
         with contextlib.suppress(TypeError, InvalidParticleError):
             return particle_type(*args, **kwargs)
+
+    if isinstance(args[0], u.Quantity):
+        physical_type = u.get_physical_type(args[0])
+        if physical_type not in (electrical_charge, mass):
+            raise u.UnitConversionError(
+                "Cannot create a particle object with a Quantity with a "
+                f"physical type of {physical_type}."
+            )
 
     if not isinstance(args[0], (str, Integral, CustomParticle, Particle, ParticleList)):
         raise TypeError("Invalid type for particle.")
