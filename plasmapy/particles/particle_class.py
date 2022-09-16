@@ -277,8 +277,7 @@ class AbstractPhysicalParticle(AbstractParticle):
         Valid particle categories are given in
         `~plasmapy.particles.particle_class.valid_categories` and
         include: {valid_categories}
-        """.format(valid_categories= SetFormatter())
-        """
+    
         Examples
         --------
         Required categories may be entered as positional arguments,
@@ -325,7 +324,7 @@ class AbstractPhysicalParticle(AbstractParticle):
         ...     require="fermion", any_of={'lepton', 'baryon'}, exclude='charged',
         ... )
         False
-        """
+        """.format(valid_categories= SetFormatter())
 
         def become_set(arg: Union[str, Set, Sequence]) -> Set[str]:
             """Change the argument into a `set`."""
