@@ -27,7 +27,7 @@ Collision rates
 
 The module gathers a few functions helpful for calculating collision
 rates between particles. The most general of these is
-`~plasmapy.formulary.collisions.collision_frequency`.
+`~plasmapy.formulary.collisions.CollisionFrequencies`.
 
 Macroscopic properties
 ======================
@@ -40,6 +40,7 @@ These include:
 * `~plasmapy.formulary.collisions.coupling_parameter`
 """
 __all__ = [
+    "CollisionFrequencies",
     "Coulomb_logarithm",
     "impact_parameter_perp",
     "impact_parameter",
@@ -56,9 +57,12 @@ __all__ = [
 
 import astropy.units as u
 import numpy as np
+import scipy.integrate
+import scipy.misc
 import warnings
 
 from astropy.constants.si import e, eps0, hbar, k_B, m_e
+from functools import cached_property
 from numbers import Real
 from numpy import pi
 
@@ -71,8 +75,9 @@ from plasmapy.formulary.quantum import (
     Wigner_Seitz_radius,
 )
 from plasmapy.formulary.speeds import thermal_speed
-from plasmapy.utils.decorators import validate_quantities
+from plasmapy.utils.decorators import deprecated, validate_quantities
 from plasmapy.utils.decorators.checks import _check_relativistic
+from plasmapy.utils.exceptions import PlasmaPyFutureWarning
 
 
 @validate_quantities(
@@ -555,7 +560,10 @@ def _process_inputs(T: u.K, species: (particles.Particle, particles.Particle), V
     return T, masses, charges, reduced_mass, V
 
 
-def _replace_nan_velocity_with_thermal_velocity(V, T, m):
+# TODO: Remove redundant mass parameter
+def _replace_nan_velocity_with_thermal_velocity(
+    V, T, m, species=particles.Particle("e-")
+):
     """
     Get thermal velocity of system if no velocity is given, for a given
     mass.  Handles vector checks for ``V``, you must already know that
@@ -565,21 +573,21 @@ def _replace_nan_velocity_with_thermal_velocity(V, T, m):
         raise utils.PhysicsError("Collisions are not possible with a zero velocity.")
 
     if V is None:
-        return thermal_speed(T, "e-", mass=m)
+        return thermal_speed(T, species, mass=m)
 
     if not np.any(np.isnan(V)):
         return V
 
     if not (np.isscalar(V.value) or np.isscalar(T.value)):
         V = V.copy()
-        V[np.isnan(V)] = thermal_speed(T[np.isnan(V)], "e-", mass=m)
+        V[np.isnan(V)] = thermal_speed(T[np.isnan(V)], species, mass=m)
         return V
 
     if np.isscalar(V.value):
-        return thermal_speed(T, "e-", mass=m)
+        return thermal_speed(T, species, mass=m)
 
     if np.isscalar(T.value):
-        V[np.isnan(V)] = thermal_speed(T, "e-", mass=m)
+        V[np.isnan(V)] = thermal_speed(T, species, mass=m)
 
     return V
 
@@ -899,6 +907,12 @@ def collision_frequency(
     method="classical",
 ) -> u.Hz:
     r"""
+    .. note::
+        The `~plasmapy.formulary.collisions.collision_frequency` function has been
+        replaced by the more general `~plasmapy.formulary.collisions.CollisionFrequencies` class.
+        To replicate the functionality of `~plasmapy.formulary.collisions.collision_frequency`, create a
+        `~plasmapy.formulary.collisions.CollisionFrequencies` class and access the ``Lorentz_collision_frequency`` attribute.
+
     Collision frequency of particles in a plasma.
 
     Parameters
@@ -996,7 +1010,24 @@ def collision_frequency(
     >>> species = ('e', 'p')
     >>> collision_frequency(T, n, species)
     <Quantity 70249... Hz>
+
+    See Also
+    --------
+    ~plasmapy.formulary.collisions.CollisionFrequencies
+
     """
+
+    deprecated(
+        since="0.8.0",
+        warning_type=PlasmaPyFutureWarning,
+        message=(
+            "The collision_frequency function has been replaced by the more general "
+            "CollisionFrequencies class. To replicate the functionality of collision_frequency, "
+            "create a CollisionFrequencies class and access the `Lorentz_collision_frequency` "
+            "attribute."
+        ),
+    )
+
     T, masses, charges, reduced_mass, V_r = _process_inputs(T=T, species=species, V=V)
     # using a more descriptive name for the thermal velocity using
     # reduced mass
@@ -2033,3 +2064,285 @@ def coupling_parameter(
         )
 
     return coulomb_energy / kinetic_energy
+
+
+class CollisionFrequencies:
+    @particles.particle_input
+    @validate_quantities(
+        v_a={"none_shall_pass": True, "can_be_negative": False},
+        T_a={
+            "none_shall_pass": True,
+            "can_be_negative": False,
+            "equivalencies": u.temperature_energy(),
+        },
+        n_b={"can_be_negative": False},
+        T_b={"can_be_negative": False, "equivalencies": u.temperature_energy()},
+    )
+    def __init__(
+        self,
+        test_particle: particles.Particle,
+        field_particle: particles.Particle,
+        *,
+        v_a: u.m / u.s = None,
+        T_a: u.K = None,
+        n_b: u.m**-3,
+        T_b: u.K,
+        Coulomb_log: u.dimensionless_unscaled,
+    ):
+        r"""
+        Compute collision frequencies between test particles (labeled 'a') and field particles (labeled 'b')
+
+        Parameters
+        ----------
+        test_particle : |Particle|
+            The test particle streaming through a background of field particles.
+
+        field_particle : |Particle|
+            The background particle being interacted with.
+
+        v_a : `~astropy.units.Quantity`, optional
+            The relative speed between particles. If not provided, T_a must be specified and
+            thermal velocity is assumed: :math:`μ v_a^2 \sim 2 k_B T_a` where
+            :math:`μ` is the reduced mass. Cannot be negative.
+
+        T_a : `~astropy.units.Quantity`, optional
+            The temperature of the test species. Only necessary if :math:`v_a` is not provided.
+
+        n_b : `~astropy.units.Quantity`
+            The number density of the background field particles in units convertible to :math:`\frac{1}{m^{3}}`
+
+        T_b : `~astropy.units.Quantity`
+            The temperature of the background field particles in units convertible to degrees Kelvin.
+
+        Coulomb_log : `~astropy.units.Quantity`
+            The value of the Coulomb logarithm evaluated for the two interacting particles.
+
+        Raises
+        ------
+        `ValueError`
+            If both :math:`v_a` and :math:`T_a` are specified, neither
+            :math:`v_a` nor :math:`T_a` are specified, or specified arrays
+            don't have equal size.
+
+        Notes
+        -----
+        The frequency of collisions between a test particle (subscript :math:`\alpha`) and
+        a field particle (subscript :math:`\beta`)  each with mass  :math:`m` and charge :math:`e`
+        are given by four differential equations:
+
+            momentum loss: :math:`\frac{d\textbf{v}_{α}}{dt}=-ν_{s}^{α\backslashβ}\textbf{v}_{α}`
+
+            transverse diffusion: :math:`\frac{d}{dt}\left(\textbf{v}_{α}-\overline{\textbf{v}}_{α}\right)_{⊥}^{2}=ν_{⊥}^{α\backslashβ}v_{α}^{2}`
+
+            parallel diffusion: :math:`\frac{d}{dt}\left(\textbf{v}_{α}-\overline{\textbf{v}}_{α}\right)_{∥}^{2}=ν_{∥}^{α\backslashβ}v_{α}^{2}`
+
+            energy loss: :math:`\frac{d}{dt}v_{α}^{2}=-ν_{ϵ}^{α\backslashβ}v_{α}^{2}`
+
+        These equations yield the exact formulas:
+
+            momentum loss: :math:`ν_{s}^{α\backslashβ}=\left(1+\frac{m_{α}}{m_{β}}\right)ψ\left(x^{α\backslashβ}\right)ν_{0}^{α\backslashβ}`
+
+            transverse diffusion: :math:`ν_{⊥}^{α\backslashβ}=2\left[\left(1-\frac{1}{2x^{α\backslashβ}}\right)ψ\left(x^{α\backslashβ}\right)\ +ψ'\left(x^{α\backslashβ}\right)\right]ν_{0}^{α\backslashβ}`
+
+            parallel diffusion: :math:`ν_{||}^{α\backslashβ}=\left[\frac{ψ\left(x^{α\backslashβ}\right)}{x^{α\backslashβ}}\right]ν_{0}^{α\backslashβ}`
+
+            energy loss: :math:`ν_{ϵ}^{α\backslashβ}=2\left[\left(\frac{m_{α}}{m_{β}}\right)ψ\left(x^{α\backslashβ}\right)-ψ'\left(x^{α\backslashβ}\right)\right]ν_{0}^{α\backslashβ}`
+
+        where,
+
+            :math:`ν_{0}^{α\backslashβ}=\frac{4\pi e_{α}^{2}e_{β}^{2}λ_{αβ}n_{β}}{m_{α}^{2}v_{α}^{3}}`,
+
+            :math:`x^{α\backslashβ}=\frac{m_{β}v_{α}^{2}}{2k_B T_{β}}`,
+
+            :math:`ψ\left(x\right)=\frac{2}{\sqrt{\pi}}\int_{0}^{x}t^{\frac{1}{2}}e^{-t}dt`,
+
+            :math:`ψ'\left(x\right)=\frac{dψ}{dx}`,
+
+        and :math:`\lambda_{\alpha \beta}` is the Coulomb logarithm for the collisions,
+        :math:`n_\beta` is the number density of the field particles, :math:`v_\alpha` is
+        the speed of the test particles relative to the field particles, :math:`k_B` is Boltzmann's
+        constant, and :math:`T_\beta` is the temperature of the field particles.
+
+        For values of x<<1 (the 'slow' or 'thermal' limit) or x>>1 (the 'fast' or 'beam' limit),
+        :math:`\psi` asymptotes to zero or one respectively. For simplified expressions in these limits
+        we encourage the curious reader to refer to p. 31 of :cite:t:`nrlformulary:2019`
+
+        Examples
+        --------
+        >>> import astropy.units as u
+        >>> T_a = 1 * u.eV
+        >>> n_b = 1e26 * u.m**-3
+        >>> T_b = 1e3 * u.eV
+        >>> Coulomb_log = 10 * u.dimensionless_unscaled
+        >>> frequencies_using_temperature = CollisionFrequencies(
+        ...     "e-", "e-", T_a=T_a, n_b=n_b, T_b=T_b, Coulomb_log=Coulomb_log
+        ... )
+        >>> frequencies_using_temperature.momentum_loss
+        <Quantity 1.83701432e+11 Hz>
+
+        >>> v_a = 1e5 * u.m / u.s
+        >>> frequencies_using_velocity = CollisionFrequencies(
+        ...     "e-", "e-", v_a=v_a, n_b=n_b, T_b=T_b, Coulomb_log=Coulomb_log
+        ... )
+        >>> frequencies_using_velocity.energy_loss
+        <Quantity -9.69828719e+15 Hz>
+
+        See Also
+        --------
+        ~plasmapy.formulary.collisions.Coulomb_logarithm : Evaluates the Coulomb
+            logarithm for two interacting electron species.
+        """
+
+        # Note: This function uses CGS units internally to coincide with our references.
+        # Input is taken in MKS units and then converted as necessary. Output is in MKS units.
+
+        if v_a is None:
+            if T_a is not None:
+                v_a = thermal_speed(T_a, test_particle)
+            else:
+                raise ValueError("Please specify either v_a or T_a.")
+        elif T_a is not None:
+            raise ValueError("Please specify either v_a or T_a, not both.")
+
+        if (
+            isinstance(v_a, np.ndarray)
+            and isinstance(n_b, np.ndarray)
+            and v_a.shape != n_b.shape
+        ):
+            raise ValueError("Please specify arrays of equal length.")
+
+        self.test_particle = test_particle
+        self.field_particle = field_particle
+        self.v_a = v_a
+        self.T_a = (
+            T_a
+            if T_a is not None
+            else (0.5 * test_particle.mass * v_a**2 / k_B).to(u.K)
+        )
+        self.n_b = n_b
+        self.T_b = T_b
+        self.Coulomb_log = (
+            Coulomb_log
+            if isinstance(Coulomb_log, u.Quantity)
+            else Coulomb_log * u.dimensionless_unscaled
+        )
+
+    @cached_property
+    def _mass_ratio(self):
+        return self.test_particle.mass / self.field_particle.mass
+
+    @cached_property
+    def momentum_loss(self):
+        """
+        The momentum loss rate due to collisions.
+        """
+        return (1 + self._mass_ratio) * self.phi * self.Lorentz_collision_frequency
+
+    @cached_property
+    def transverse_diffusion(self):
+        """
+        The rate of transverse diffusion due to collisions.
+        """
+        return (
+            2
+            * ((1 - 1 / (2 * self.x)) * self.phi + self._phi_prime)
+            * self.Lorentz_collision_frequency
+        )
+
+    @cached_property
+    def parallel_diffusion(self):
+        """
+        The rate of parallel diffusion due to collisions.
+        """
+        return (self.phi / self.x) * self.Lorentz_collision_frequency
+
+    @cached_property
+    def energy_loss(self):
+        """
+        The energy loss rate due to collisions.
+        """
+        return (
+            2
+            * (self._mass_ratio * self.phi - self._phi_prime)
+            * self.Lorentz_collision_frequency
+        )
+
+    @cached_property
+    def Lorentz_collision_frequency(self):
+        r"""
+        The Lorentz collision frequency.
+
+        The Lorentz collision frequency (see Ch. 5 of :cite:t:`chen:2016`) is given
+        by
+
+        .. math::
+
+            ν = n σ v \ln{Λ}
+
+        where :math:`n` is the particle density, :math:`σ` is the
+        collisional cross-section, :math:`v` is the inter-particle velocity
+        (typically taken as the thermal velocity), and :math:`\ln{Λ}` is the
+        Coulomb logarithm accounting for small angle collisions.
+
+        See Equation (2.14) in :cite:t:`callen:unpublished`.
+
+        The Lorentz collision frequency is equivalent to the variable
+        :math:`\nu_0^{\alpha/\beta}` on p. 31 of :cite:t:`nrlformulary:2019`.
+        """
+
+        return (
+            4
+            * np.pi
+            * (self.test_particle.charge_number * e.esu) ** 2
+            * (self.field_particle.charge_number * e.esu) ** 2
+            * self.Coulomb_log
+            * self.n_b
+            / (self.test_particle.mass**2 * self.v_a**3)
+        ).to(u.Hz)
+
+    @cached_property
+    def x(self) -> u.dimensionless_unscaled:
+        """
+        The ratio of kinetic energy in the test particle to the thermal energy of the field particle.
+        This parameter determines the regime in which the collision falls
+        (see documentation for the `~plasmapy.formulary.collisions.CollisionFrequencies` class for details).
+        """
+
+        x = self.field_particle.mass * self.v_a**2 / (2 * k_B.cgs * self.T_b)
+        return x.to(u.dimensionless_unscaled)
+
+    @staticmethod
+    def _phi_integrand(t: u.dimensionless_unscaled):
+        """
+        The phi integrand used in calculating phi
+        """
+
+        return t**0.5 * np.exp(-t)
+
+    def _phi_explicit(self, x: float) -> float:
+        """
+        The non-vectorized method for evaluating the integral for phi
+        """
+        integral, _ = scipy.integrate.quad(self._phi_integrand, 0, x)
+
+        return integral
+
+    @cached_property
+    def phi(self):
+        """
+        The parameter phi used in calculating collision frequencies
+        calculated using the default error tolerances of `~scipy.integrate.quad`.
+
+        For more information refer to page 31 of :cite:t:`nrlformulary:2019`.
+        """
+        vectorized_integral = np.vectorize(self._phi_explicit)
+
+        return 2 / np.pi**0.5 * vectorized_integral(self.x.value)
+
+    @cached_property
+    def _phi_prime(self):
+        """
+        The derivative of phi evaluated at x
+        """
+
+        return 2 / np.pi**0.5 * self._phi_integrand(self.x)
