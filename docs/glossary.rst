@@ -26,11 +26,20 @@ Glossary
       A |particle-like| `object` is **atom-like** if it is or could be
       cast into:
 
-      * A |Particle| representing an element, isotope, or ion; or
-      * A |ParticleList| including only elements, isotopes, or ions.
+      * A |Particle| representing an element, isotope, or ionic level; or
+      * A |ParticleList| including only elements, isotopes, or ionic levels.
 
-      Fundamental particles are not atom-like, except for protons. For
-      full details, please refer to |particle-like|.
+      For example, ``"p+"``, ``"C-14"``, ``"deuterium"``, ``"O 0+"``,
+      ``Particle("Fe-56 16+)"``, ``["He-4 1+", "He-4 2+"]``,  and
+      integers representing atomic numbers are all atom-like.
+
+      Examples of objects that are |particle-like| but *not* atom-like
+      include ``"neutron"``, ``"e-"``, ``["e-", "e+"]``, and
+      ``["He-4", "e-"]``.
+
+      Please refer to the glossary entry for |particle-like| for a full
+      description of valid representations of elements, isotopes, and
+      ions.
 
    -like
       Used to indicate an `object` of that type or that can instantiate
