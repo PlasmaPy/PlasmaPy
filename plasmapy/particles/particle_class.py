@@ -94,7 +94,7 @@ See Also
 class SetFormatter:
     def __init__(self, set=None):
         if set is None:
-            set = _valid_categories
+            set = valid_categories
         self.set = sorted(set)
         self.str = ""
         for i, element in enumerate(self.set):
@@ -452,16 +452,7 @@ class Particle(AbstractPhysicalParticle):
 
     Notes
     -----
-    Valid particle categories include: ``"actinide"``, ``"alkali
-    metal"``, ``"alkaline earth metal"``, ``"antibaryon"``,
-    ``"antilepton"``, ``"antimatter"``, ``"antineutrino"``,
-    ``"baryon"``, ``"boson"``, ``"charged"``, ``"custom"``,
-    ``"electron"``, ``"element"``, ``"fermion"``, ``"halogen"``,
-    ``"ion"``, ``"isotope"``, ``"lanthanide"``, ``"lepton"``,
-    ``"matter"``, ``"metal"``, ``"metalloid"``, ``"neutrino"``,
-    ``"neutron"``, ``"noble gas"``, ``"nonmetal"``, ``"positron"``,
-    ``"post-transition metal"``, ``"proton"``, ``"stable"``,
-    ``"transition metal"``, ``"uncharged"``, and ``"unstable"``.
+    Valid particle categories include: {SetFormatter()}
 
     Examples
     --------
@@ -583,8 +574,6 @@ class Particle(AbstractPhysicalParticle):
     The `~plasmapy.particles.particle_class.Particle.categories` attribute
     and `~plasmapy.particles.particle_class.Particle.is_category` method
     may be used to find and test particle membership in categories.
-
-    Valid particle categories include: {SetFormatter()}
     """
 
     def __init__(
