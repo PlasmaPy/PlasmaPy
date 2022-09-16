@@ -85,7 +85,9 @@ _valid_categories = (
 
 
 class SetFormatter:
-    def __init__(self, set: Set[str]):
+    def __init__(self, set=None):
+        if set is None:
+            set = _valid_categories
         self.set = sorted(set)
         self.str = ""
         for i, element in enumerate(self.set):
@@ -412,7 +414,7 @@ class Particle(AbstractPhysicalParticle):
     and `~plasmapy.particles.particle_class.Particle.is_category` method
     may be used to find and test particle membership in categories.
 
-    Valid particle categories include: {SetFormatter(_valid_categories)}
+    Valid particle categories include: {SetFormatter()}
     """
 
     def __init__(
