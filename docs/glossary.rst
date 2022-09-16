@@ -29,13 +29,14 @@ Glossary
       * A |Particle| representing an element, isotope, or ionic level; or
       * A |ParticleList| including only elements, isotopes, or ionic levels.
 
-      For example, ``"p+"``, ``"C-14"``, ``"deuterium"``, ``"O 0+"``,
+      For example, ``"p+"``, ``"He-4"``, ``"deuterium"``, ``"O 0+"``,
       ``Particle("Fe-56 16+)"``, ``["He-4 1+", "He-4 2+"]``,  and
       integers representing atomic numbers are all atom-like.
 
       Examples of objects that are |particle-like| but *not* atom-like
-      include ``"neutron"``, ``"e-"``, ``["e-", "e+"]``, and
-      ``["He-4", "e-"]``.
+      include ``"neutron"``, ``"e-"``, and ``["e-", "e+"]``.
+      Additionally, ``["He-4", "e-"]`` is not atom-like because this
+      `list` contains an item that is not atom-like.
 
       Please refer to the glossary entry for |particle-like| for a full
       description of valid representations of elements, isotopes, and
