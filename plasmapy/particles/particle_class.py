@@ -39,6 +39,7 @@ from plasmapy.particles.exceptions import (
     ParticleWarning,
 )
 from plasmapy.utils import roman
+from plasmapy.utils.decorators import modify_docstring
 
 _classification_categories = {
     "lepton",
@@ -235,6 +236,7 @@ class AbstractPhysicalParticle(AbstractParticle):
         """Provide the particle's categories."""
         ...
 
+    @modify_docstring(append="""{}""".format(SetFormatter()))
     def is_category(
         self,
         *category_tuple,
@@ -242,6 +244,7 @@ class AbstractPhysicalParticle(AbstractParticle):
         any_of: Union[str, Iterable[str]] = None,
         exclude: Union[str, Iterable[str]] = None,
     ) -> bool:
+
         """Determine if the particle meets categorization criteria.
 
         Return `True` if the particle is consistent with the provided
@@ -272,11 +275,6 @@ class AbstractPhysicalParticle(AbstractParticle):
         ~plasmapy.particles.particle_class.valid_categories :
             A `set` containing all valid particle categories.
 
-        Notes
-        -----
-        Valid particle categories are given in
-        `~plasmapy.particles.particle_class.valid_categories` and
-        include: {valid_categories}
     
         Examples
         --------
@@ -324,7 +322,13 @@ class AbstractPhysicalParticle(AbstractParticle):
         ...     require="fermion", any_of={'lepton', 'baryon'}, exclude='charged',
         ... )
         False
-        """.format(valid_categories= SetFormatter())
+
+        Notes
+        -----
+        Valid particle categories are given in
+        `~plasmapy.particles.particle_class.valid_categories` and
+        include:
+        """
 
         def become_set(arg: Union[str, Set, Sequence]) -> Set[str]:
             """Change the argument into a `set`."""
@@ -387,7 +391,7 @@ class AbstractPhysicalParticle(AbstractParticle):
 
 
 class Particle(AbstractPhysicalParticle):
-    f"""
+    """
     A class for an individual particle or antiparticle.
 
     Parameters
@@ -441,9 +445,6 @@ class Particle(AbstractPhysicalParticle):
     ~plasmapy.particles.particle_collections.ParticleList
     ~plasmapy.particles.particle_class.valid_categories
 
-    Notes
-    -----
-    Valid particle categories include: {SetFormatter()}
 
     Examples
     --------
@@ -565,6 +566,10 @@ class Particle(AbstractPhysicalParticle):
     The `~plasmapy.particles.particle_class.Particle.categories` attribute
     and `~plasmapy.particles.particle_class.Particle.is_category` method
     may be used to find and test particle membership in categories.
+
+    Notes
+    -----
+    Valid particle categories include:
     """
 
     def __init__(
