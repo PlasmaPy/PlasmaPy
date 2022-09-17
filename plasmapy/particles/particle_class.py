@@ -445,7 +445,7 @@ class Particle(AbstractPhysicalParticle):
     ~plasmapy.particles.particle_class.DimensionlessParticle
     ~plasmapy.particles.particle_collections.ParticleList
     ~plasmapy.particles.particle_class.valid_categories
-    
+
     Notes
     -----
     Valid particle categories include:
@@ -578,6 +578,7 @@ class Particle(AbstractPhysicalParticle):
     details, including a list of all valid particle categories.
 
     """
+
 
     def __init__(
         self,
