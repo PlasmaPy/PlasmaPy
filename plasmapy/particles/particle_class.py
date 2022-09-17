@@ -445,6 +445,10 @@ class Particle(AbstractPhysicalParticle):
     ~plasmapy.particles.particle_class.DimensionlessParticle
     ~plasmapy.particles.particle_collections.ParticleList
     ~plasmapy.particles.particle_class.valid_categories
+    
+    Notes
+    -----
+    Valid particle categories include:{}
 
 
     Examples
@@ -569,15 +573,11 @@ class Particle(AbstractPhysicalParticle):
     may be used to find and test particle membership in categories.
 
 
-    Notes
-    -----
-    Valid particle categories include:
-
     Please refer to
     `~plasmapy.particles.particle_class.Particle.is_category` for more
     details, including a list of all valid particle categories.
 
-    """
+    """.format(_SetFormatter(set=valid_categories))
 
     def __init__(
         self,
