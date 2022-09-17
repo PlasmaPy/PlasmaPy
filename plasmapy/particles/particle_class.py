@@ -236,7 +236,7 @@ class AbstractPhysicalParticle(AbstractParticle):
         """Provide the particle's categories."""
         ...
 
-    @modify_docstring(append="""{}""".format(_SetFormatter(set=valid_categories)))
+    @modify_docstring(append=f"""{_SetFormatter(set=valid_categories)}""")
     def is_category(
         self,
         *category_tuple,
@@ -388,7 +388,6 @@ class AbstractPhysicalParticle(AbstractParticle):
 
     def __gt__(self, other):
         return self._as_particle_list.__gt__(other)
-
 
 
 class Particle(AbstractPhysicalParticle):
