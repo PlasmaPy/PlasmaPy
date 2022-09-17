@@ -93,6 +93,7 @@ See Also
 
 
 class _SetFormatter:
+
     def __init__(self, set=None):
         if set is None:
             set = valid_categories
@@ -447,7 +448,7 @@ class Particle(AbstractPhysicalParticle):
     
     Notes
     -----
-    Valid particle categories include:{}
+    Valid particle categories include:
 
 
     Examples
@@ -576,7 +577,7 @@ class Particle(AbstractPhysicalParticle):
     `~plasmapy.particles.particle_class.Particle.is_category` for more
     details, including a list of all valid particle categories.
 
-    """.format(_SetFormatter(set=valid_categories))
+    """
 
     def __init__(
         self,
