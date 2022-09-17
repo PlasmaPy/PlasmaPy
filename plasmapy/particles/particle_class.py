@@ -236,7 +236,7 @@ class AbstractPhysicalParticle(AbstractParticle):
         """Provide the particle's categories."""
         ...
 
-    @modify_docstring(append="""{}""".format(SetFormatter()))
+    @modify_docstring(append=f"""{SetFormatter()}""")
     def is_category(
         self,
         *category_tuple,
@@ -275,7 +275,7 @@ class AbstractPhysicalParticle(AbstractParticle):
         ~plasmapy.particles.particle_class.valid_categories :
             A `set` containing all valid particle categories.
 
-    
+
         Examples
         --------
         Required categories may be entered as positional arguments,
