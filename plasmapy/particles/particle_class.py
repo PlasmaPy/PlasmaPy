@@ -92,7 +92,7 @@ See Also
 """
 
 
-class SetFormatter:
+class _SetFormatter:
     def __init__(self, set=None):
         if set is None:
             set = valid_categories
@@ -236,7 +236,7 @@ class AbstractPhysicalParticle(AbstractParticle):
         """Provide the particle's categories."""
         ...
 
-    @modify_docstring(append="""{}""".format(SetFormatter()))
+    @modify_docstring(append="""{}""".format(_SetFormatter(set=valid_categories)))
     def is_category(
         self,
         *category_tuple,
@@ -388,6 +388,7 @@ class AbstractPhysicalParticle(AbstractParticle):
 
     def __gt__(self, other):
         return self._as_particle_list.__gt__(other)
+
 
 
 class Particle(AbstractPhysicalParticle):
@@ -570,6 +571,11 @@ class Particle(AbstractPhysicalParticle):
     Notes
     -----
     Valid particle categories include:
+
+    Please refer to
+    `~plasmapy.particles.particle_class.Particle.is_category` for more
+    details, including a list of all valid particle categories.
+
     """
 
     def __init__(
