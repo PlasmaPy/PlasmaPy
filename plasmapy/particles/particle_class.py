@@ -93,7 +93,6 @@ See Also
 
 
 class _SetFormatter:
-
     def __init__(self, set=None):
         if set is None:
             set = valid_categories
@@ -578,7 +577,6 @@ class Particle(AbstractPhysicalParticle):
     details, including a list of all valid particle categories.
 
     """
-
 
     def __init__(
         self,
