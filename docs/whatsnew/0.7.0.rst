@@ -1,4 +1,4 @@
-Plasmapy v0.7.0 (2021-11-18)
+PlasmaPy v0.7.0 (2021-11-18)
 ============================
 
 This release of PlasmaPy contains 127 commits in 73 merged pull requests closing 37 issues from 19 people, 14 of which are first-time contributors to PlasmaPy.
@@ -98,7 +98,7 @@ Deprecations and Removals
 Features
 --------
 
-- Add the `~plasmapy.particles.ionization_state.IonizationState.average_ion`
+- Added the `~plasmapy.particles.ionization_state.IonizationState.average_ion`
   method to |IonizationState|. (`#1028 <https://github.com/plasmapy/plasmapy/pull/1028>`__)
 - Added the
   `~plasmapy.particles.ionization_state_collection.IonizationStateCollection.average_ion`
@@ -139,7 +139,7 @@ Features
   related to analytical dispersion solutions. (`#1208 <https://github.com/plasmapy/plasmapy/pull/1208>`__)
 - Implemented ``__eq__``, ``__ne__`` and ``__hash__`` to allow
   |CustomParticle| instances to be used as `dict` keys. (`#1216 <https://github.com/plasmapy/plasmapy/pull/1216>`__)
-- Added the `~plasmapy.particles.particle_collections.ionic_levels` function to create a
+- Added the ``plasmapy.particles.particle_collections.ionic_levels`` function to create a
   |ParticleList| initialized with different ionic levels of an element or isotope. (`#1223 <https://github.com/plasmapy/plasmapy/pull/1223>`__)
 
 

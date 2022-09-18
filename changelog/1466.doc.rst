@@ -1,2 +1,0 @@
-Hid the documentation page that contained the subpackage stability
-matrix.

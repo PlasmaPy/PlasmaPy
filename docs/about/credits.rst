@@ -41,12 +41,12 @@ in parentheses are `ORCID author identifiers <https://orcid.org>`__.
 * :user:`BH4`
 * :user:`Brian Goodall <goodab>`
 * :user:`Brigitta Sipőcz <bsipocz>` (:orcid:`0000-0002-3713-6337`)
-* :user:`Bryan Foo <bryancfoo>` (:orcid:`0000-0001-5308-6870`)
+* :user:`Bryan Foo <bryancfoo>`
 * :user:`Carol Zhang <carolyz>`
 * :user:`cclauss`
 * :user:`Chengcai Shen <ionizationcalc>` (:orcid:`0000-0002-9258-4490`)
 * :user:`Chris Hoang <bucket420>`
-* :user:`Christoper Arran <ChrisArran>` (:orcid:`0000-0002-8644-8118`)
+* :user:`Christopher Arran <ChrisArran>` (:orcid:`0000-0002-8644-8118`)
 * :user:`Chun Hei Yip <syip1>`
 * :user:`Cody Skinner <cskinner74>`
 * :user:`Colby Haggerty <colbych>` (:orcid:`0000-0002-2160-7288`)
@@ -68,6 +68,7 @@ in parentheses are `ORCID author identifiers <https://orcid.org>`__.
 * Jakub Polak
 * :user:`James Kent <jdkent>`
 * :user:`Jasper Beckers <jasperbeckers>`
+* :user:`Jayden Roberts <JaydenR2305>`
 * :user:`Joao Victor Martinelli <JvPy>`
 * :user:`Joshua Munn <jams2>`
 * :user:`Isaias McHardy <jota33>` (:orcid:`0000-0001-5394-9445`)
@@ -83,6 +84,7 @@ in parentheses are `ORCID author identifiers <https://orcid.org>`__.
 * :user:`Ludovico Bessi <ludoro>`
 * :user:`Mahima Pannala <mahimapannala>`
 * :user:`Manas Bedmutha <manasbedmutha98>`
+* :user:`Marcin Kastek <MKastek>`
 * :user:`Marco Gorelli <MarcoGorelli>`
 * :user:`Maria Isupova <misupova>`
 * Michael Fischer
@@ -125,9 +127,11 @@ in parentheses are `ORCID author identifiers <https://orcid.org>`__.
 * :user:`Tien Vo <tien-vo>` (:orcid:`0000-0002-8335-1441`)
 * :user:`Tiger Du <Tiger-Du>` (:orcid:`0000-0002-8676-1710`)
 * :user:`Tomás Stinson <14tstinson>`
+* :user:`Trestan Simon <TrestanSimon>`
 * :user:`Tulasi Parashar <tulasinandan>` (:orcid:`0000-0003-0602-8381`)
 * :user:`Vishwas Rajashekar <DarkAEther>` (:orcid:`0000-0002-4914-6612`)
 * :user:`Yi-Min Huang <yopology>` (:orcid:`0000-0002-4237-2211`)
+
 
 This list contains contributors to PlasmaPy's core package and vision
 statement, including a few people who do not show up as `PlasmaPy

@@ -1,2 +1,0 @@
-Updated the cold magnetized plasma dielectric permittivity tensor
-notebook.

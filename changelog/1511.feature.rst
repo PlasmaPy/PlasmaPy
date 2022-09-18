@@ -1,4 +1,0 @@
-Added the :file:`stix_.py` module to the `~plasmapy.dispersion.analytical`
-subpackage which contains the Stix cold-plasma dispersion solution
-:func:`~plasmapy.dispersion.analytical.stix_.stix`,
-:cite:p:`stix:1992,bellan:2012`.
