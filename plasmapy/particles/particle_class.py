@@ -578,10 +578,7 @@ class Particle(AbstractPhysicalParticle):
 
     """
 
-
-    __doc__ = __doc__.format(valid_categories = _SetFormatter(set=valid_categories))
-
-
+    __doc__ = __doc__.format(valid_categories=_SetFormatter(set=valid_categories))
 
     def __init__(
         self,
