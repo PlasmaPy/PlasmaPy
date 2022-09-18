@@ -578,12 +578,11 @@ class Particle(AbstractPhysicalParticle):
 
     """
 
-<<<<<<< HEAD
+
     __doc__ = __doc__.format(valid_categories = _SetFormatter(set=valid_categories))
 
 
-=======
->>>>>>> 7d6b4d24960732b874f962693b05f2e7c2cc34df
+
     def __init__(
         self,
         argument: ParticleLike,
