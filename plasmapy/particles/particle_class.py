@@ -448,7 +448,7 @@ class Particle(AbstractPhysicalParticle):
 
     Notes
     -----
-    Valid particle categories include:
+    Valid particle categories include: {valid_categories}
 
 
     Examples
@@ -578,6 +578,8 @@ class Particle(AbstractPhysicalParticle):
     details, including a list of all valid particle categories.
 
     """
+
+    __doc__ = __doc__.format(valid_categories = _SetFormatter(set=valid_categories))
 
 
     def __init__(
