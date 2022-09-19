@@ -106,7 +106,8 @@ class _SetFormatter:
                 self.str += f"``'{element}'``, "
 
     def __format__(self, format_spec) -> str:
-        return "\n{}".format("\t" * self.indentation).join(textwrap.wrap(self.str, 72))
+        tab = '\t'
+        return f"\n{tab * self.indentation}".join(textwrap.wrap(self.str, 72))
 
 
 def _category_errmsg(particle, category: str) -> str:
