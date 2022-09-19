@@ -447,7 +447,8 @@ class Particle(AbstractPhysicalParticle):
 
     Notes
     -----
-    Valid particle categories include: {valid_categories}
+    Valid particle categories include:
+    {valid_categories}
 
 
     Examples
