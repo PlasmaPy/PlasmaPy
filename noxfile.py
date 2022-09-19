@@ -11,7 +11,7 @@ sphinx_opts = sphinx_paths + sphinx_fail_on_warnings + sphinx_builder
 sphinx_no_notebooks = ["-D", "nbsphinx_execute=never"]
 sphinx_nitpicky = ["-n"]
 
-pytest_options = []
+pytest_options = ["--showlocals"]
 
 
 @nox.session(python=python_versions)
