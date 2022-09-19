@@ -93,10 +93,11 @@ See Also
 
 
 class _SetFormatter:
-    def __init__(self, set=None):
+    def __init__(self, set=None, indentation=2):
         if set is None:
             set = valid_categories
         self.set = sorted(set)
+        self.indentation = indentation
         self.str = ""
         for i, element in enumerate(self.set):
             if i == len(self.set) - 1:
@@ -105,7 +106,7 @@ class _SetFormatter:
                 self.str += f"``'{element}'``, "
 
     def __format__(self, format_spec) -> str:
-        return "\n\t\t".join(textwrap.wrap(self.str, 72))
+        return "\n{}".format('\t'*self.indentation).join(textwrap.wrap(self.str, 72))
 
 
 def _category_errmsg(particle, category: str) -> str:
@@ -579,7 +580,7 @@ class Particle(AbstractPhysicalParticle):
 
     """
 
-    __doc__ = __doc__.format(valid_categories=_SetFormatter(set=valid_categories))
+    __doc__ = __doc__.format(valid_categories=_SetFormatter(set=valid_categories, indentation=1))
 
     def __init__(
         self,
