@@ -106,7 +106,7 @@ class _SetFormatter:
                 self.str += f"``'{element}'``, "
 
     def __format__(self, format_spec) -> str:
-        return "\n{}".format('\t'*self.indentation).join(textwrap.wrap(self.str, 72))
+        return "\n{}".format("\t" * self.indentation).join(textwrap.wrap(self.str, 72))
 
 
 def _category_errmsg(particle, category: str) -> str:
@@ -580,7 +580,9 @@ class Particle(AbstractPhysicalParticle):
 
     """
 
-    __doc__ = __doc__.format(valid_categories=_SetFormatter(set=valid_categories, indentation=1))
+    __doc__ = __doc__.format(
+        valid_categories=_SetFormatter(set=valid_categories, indentation=1)
+    )
 
     def __init__(
         self,
