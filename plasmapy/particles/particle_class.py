@@ -106,7 +106,7 @@ class _SetFormatter:
                 self.str += f"``'{element}'``, "
 
     def __format__(self, format_spec) -> str:
-        tab = '\t'
+        tab = "\t"
         return f"\n{tab * self.indentation}".join(textwrap.wrap(self.str, 72))
 
 
