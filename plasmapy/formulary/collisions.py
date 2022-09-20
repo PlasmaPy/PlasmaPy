@@ -2106,6 +2106,7 @@ def coupling_parameter(
 
 
 class SingleParticleCollisionFrequencies:
+    @particles.particle_input
     @validate_quantities(
         v_drift={"can_be_negative": False},
         T_b={
@@ -2114,7 +2115,6 @@ class SingleParticleCollisionFrequencies:
         },
         n_b={"can_be_negative": False},
     )
-    @particles.particle_input
     def __init__(
         self,
         test_particle: particles.Particle,
@@ -2362,6 +2362,7 @@ class SingleParticleCollisionFrequencies:
 
 
 class MaxwellianCollisionFrequencies:
+    @particles.particle_input
     @validate_quantities(
         v_drift={"can_be_negative": False},
         T_a={
@@ -2375,7 +2376,6 @@ class MaxwellianCollisionFrequencies:
         },
         n_b={"can_be_negative": False},
     )
-    @particles.particle_input
     def __init__(
         self,
         test_particle: particles.Particle,
@@ -2390,6 +2390,17 @@ class MaxwellianCollisionFrequencies:
     ):
         r"""Compute collision frequencies between two slowly flowing
         Maxwellian populations.
+
+        The condition of "slowly flowing", outlined by Eq. 2.133 in :cite:t:`callen:unpublished`
+        requires that
+
+        .. math::
+
+            v_{drift} << \sqrt{v_{T_a}^{2}+v_{T_b}^{2}}
+
+        where :math:`v_{drift}` is the relative drift between the two species, :math:`v_{T_a}`
+        is the thermal velocity of species "a", and :math:`v_{T_b}` is the thermal
+        velocity of species "b".
 
         Parameters
         ----------
@@ -2455,7 +2466,7 @@ class MaxwellianCollisionFrequencies:
     def _mean_thermal_velocity(self):
         """
         Parameter used in enforcing the definition of "slowly flowing" Maxwellian
-        particles. See Callen (Eq. 2.113).
+        particles. See Eq. 2.133 in :cite:t:`callen:unpublished`.
         """
 
         return (self.v_T_a**2 + self.v_T_b**2) ** 0.5
