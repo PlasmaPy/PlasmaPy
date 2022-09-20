@@ -2136,13 +2136,13 @@ class SingleParticleCollisionFrequencies:
         field_particle : |Particle|
             The background particle being interacted with.
 
-        v_drift : `~astropy.units.Quantity`, optional
+        v_drift : `~astropy.units.Quantity`
             The relative drift between the test and field particles. Cannot be negative.
 
-        T_b : `~astropy.units.Quantity`, optional
+        T_b : `~astropy.units.Quantity`
             The temperature of the background field particles in units convertible to degrees Kelvin.
 
-        n_b : `~astropy.units.Quantity`, optional
+        n_b : `~astropy.units.Quantity`
             The number density of the background field particles in units convertible to :math:`\frac{1}{m^{3}}`.
 
         Coulomb_log : `~astropy.units.Quantity`
@@ -2395,19 +2395,19 @@ class MaxwellianCollisionFrequencies:
         field_particle : |Particle|
             The background particle being interacted with.
 
-        v_drift : `~astropy.units.Quantity`, optional
+        v_drift : `~astropy.units.Quantity`
             The relative drift between the test and field particles.
 
-        T_a : `~astropy.units.Quantity`, optional
+        T_a : `~astropy.units.Quantity`
             The temperature of the test particles in units convertible to degrees Kelvin.
 
-        n_a : `~astropy.units.Quantity`, optional
+        n_a : `~astropy.units.Quantity`
             The number density of the test particles in units convertible to :math:`\frac{1}{m^{3}}`.
 
-        T_b : `~astropy.units.Quantity`, optional
+        T_b : `~astropy.units.Quantity`
             The temperature of the background field particles in units convertible to degrees Kelvin.
 
-        n_b : `~astropy.units.Quantity`, optional
+        n_b : `~astropy.units.Quantity`
             The number density of the background field particles in units convertible to :math:`\frac{1}{m^{3}}`.
 
         Coulomb_log : `~astropy.units.Quantity`
