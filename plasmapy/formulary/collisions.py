@@ -2137,9 +2137,7 @@ class SingleParticleCollisionFrequencies:
             The background particle being interacted with.
 
         v_drift : `~astropy.units.Quantity`, optional
-            The relative drift between the test and field particles. If not provided, T_a must be specified and
-            thermal velocity is assumed to be dominant: :math:`μ v_a^2 \sim 2 k_B T_a` where
-            :math:`μ` is the reduced mass. Cannot be negative.
+            The relative drift between the test and field particles. Cannot be negative.
 
         T_b : `~astropy.units.Quantity`, optional
             The temperature of the background field particles in units convertible to degrees Kelvin.
