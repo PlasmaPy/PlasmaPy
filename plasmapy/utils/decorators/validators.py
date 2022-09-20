@@ -8,7 +8,7 @@ import functools
 import inspect
 import warnings
 
-from typing import Any, Dict
+from typing import Any, Dict, Iterable
 
 from plasmapy.utils.decorators.checks import CheckUnits, CheckValues
 from plasmapy.utils.decorators.helpers import preserve_signature
@@ -540,9 +540,9 @@ def validate_quantities(func=None, validations_on_return=None, **validations):
 
 def get_attributes_not_provided(
     self,
-    expected_attributes=None,
-    both_or_either_attributes=None,
-    mutually_exclusive_attributes=None,
+    expected_attributes: list[str] = None,
+    both_or_either_attributes: list[Iterable] = None,
+    mutually_exclusive_attributes: list[Iterable] = None,
 ):
     """
     Collect attributes that weren't provided during instantiation needed
@@ -553,7 +553,7 @@ def get_attributes_not_provided(
 
     if expected_attributes is not None:
         for attribute in expected_attributes:
-            if isinstance(attribute, str) and getattr(self, attribute) is None:
+            if getattr(self, attribute) is None:
                 attributes_not_provided.append(attribute)
 
     if both_or_either_attributes is not None:
@@ -586,9 +586,9 @@ def get_attributes_not_provided(
 
 
 def validate_class_attributes(
-    expected_attributes=None,
-    both_or_either_attributes=None,
-    mutually_exclusive_attributes=None,
+    expected_attributes: list[str] = None,
+    both_or_either_attributes: list[Iterable[str]] = None,
+    mutually_exclusive_attributes: list[Iterable[str]] = None,
 ):
     """
     A decorator responsible for raising errors if the expected arguments weren't
