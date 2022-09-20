@@ -2296,6 +2296,10 @@ class SingleParticleCollisionFrequencies:
 
         The Lorentz collision frequency is equivalent to the variable
         :math:`\nu_0^{\alpha/\beta}` on p. 31 of :cite:t:`nrlformulary:2019`.
+
+        This form of the Lorentz collision frequency differs from the form found in `~plasmapy.formulary.collisions.MaxwellianCollisionFrequencies`
+        in that :math:`v` is the drift velocity (as opposed to the mean thermal
+        velocity between species).
         """
 
         return (
@@ -2483,6 +2487,10 @@ class MaxwellianCollisionFrequencies:
         Coulomb logarithm accounting for small angle collisions.
 
         See Equation (2.86) in :cite:t:`callen:unpublished`.
+
+        This form of the Lorentz collision frequency differs from the form found in `~plasmapy.formulary.collisions.SingleParticleCollisionFrequencies`
+        in that :math:`v` is the mean thermal velocity between particle species
+        in this method (as opposed to the drift velocity between species).
         """
 
         return (
