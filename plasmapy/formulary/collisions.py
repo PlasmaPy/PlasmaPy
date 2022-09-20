@@ -2289,9 +2289,8 @@ class SingleParticleCollisionFrequencies:
             ν = n σ v \ln{Λ}
 
         where :math:`n` is the particle density, :math:`σ` is the
-        collisional cross-section, :math:`v` is the inter-particle velocity
-        (typically taken as the thermal velocity), and :math:`\ln{Λ}` is the
-        Coulomb logarithm accounting for small angle collisions.
+        collisional cross-section, :math:`v` is the inter-particle velocity,
+        and :math:`\ln{Λ}` is the Coulomb logarithm accounting for small angle collisions.
 
         See Equation (2.86) in :cite:t:`callen:unpublished`.
 
