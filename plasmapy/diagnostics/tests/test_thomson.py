@@ -650,12 +650,12 @@ def test_param_to_array_fcns():
     # Create two groups of test variables, one of scalars and one of vectors
     prefix = "T_e"
     for i in range(3):
-        params.add(prefix + f"_{i}", value=2)
+        params.add(f"{prefix}_{i}", value=2)
 
     prefix = "ion_vel"
     for i in range(2):
         for j in ["x", "y", "z"]:
-            params.add(prefix + f"_{j}_{i}", value=2)
+            params.add(f"{prefix}_{j}_{i}", value=2)
 
     arr = thomson._params_to_array(params, "T_e", vector=False)
     assert arr.shape == (3,)
@@ -1172,11 +1172,7 @@ def test_fit_with_minimal_parameters():
     # intentionally leave out a few required values to check to make sure an
     # exception is raised
 
-    settings = {}
-    settings["probe_vec"] = probe_vec
-    settings["scatter_vec"] = scatter_vec
-    settings["ions"] = ions
-
+    settings = {"probe_vec": probe_vec, "scatter_vec": scatter_vec, "ions": ions}
     params = Parameters()
 
     params.add("T_e_0", value=T_e.value, vary=False, min=5, max=20)

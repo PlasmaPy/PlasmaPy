@@ -2067,6 +2067,7 @@ def coupling_parameter(
 
 
 class CollisionFrequencies:
+    @particles.particle_input
     @validate_quantities(
         v_a={"none_shall_pass": True, "can_be_negative": False},
         T_a={
@@ -2077,7 +2078,6 @@ class CollisionFrequencies:
         n_b={"can_be_negative": False},
         T_b={"can_be_negative": False, "equivalencies": u.temperature_energy()},
     )
-    @particles.particle_input
     def __init__(
         self,
         test_particle: particles.Particle,

@@ -10,7 +10,7 @@ import warnings
 
 from astropy import units as u
 from numbers import Integral, Real
-from typing import List, Optional, Union
+from typing import List, NoReturn, Optional, Union
 
 from plasmapy.particles.atomic import ionic_levels
 from plasmapy.particles.decorators import particle_input
@@ -34,14 +34,14 @@ class IonicLevel:
 
     Parameters
     ----------
-    ion: `~plasmapy.particles.particle_class.ParticleLike`
+    ion : |atom-like|
         The ion for the corresponding ionic fraction.
 
-    ionic_fraction: real number between 0 and 1, optional
+    ionic_fraction : real number, optional
         The fraction of an element or isotope that is at this ionization
-        level.
+        level. Must be between 0 and 1, inclusive.
 
-    number_density: `~astropy.units.Quantity`, optional
+    number_density : `~astropy.units.Quantity`, optional
         The number density of this ion.
 
     See Also
@@ -62,32 +62,27 @@ class IonicLevel:
 
     def __eq__(self, other):
 
-        try:
-            if self.ionic_symbol != other.ionic_symbol:
-                return False
+        if not isinstance(other, IonicLevel):
+            return False
 
-            ionic_fraction_within_tolerance = np.isclose(
-                self.ionic_fraction,
-                other.ionic_fraction,
-                rtol=1e-15,
-            )
+        if self.ionic_symbol != other.ionic_symbol:
+            return False
 
-            number_density_within_tolerance = u.isclose(
-                self.number_density,
-                other.number_density,
-                rtol=1e-15,
-            )
+        ionic_fraction_within_rtol = u.isclose(
+            self.ionic_fraction,
+            other.ionic_fraction,
+            rtol=1e-15,
+            equal_nan=True,
+        )
 
-            return all(
-                [ionic_fraction_within_tolerance, number_density_within_tolerance]
-            )
+        number_density_within_rtol = u.isclose(
+            self.number_density,
+            other.number_density,
+            rtol=1e-15,
+            equal_nan=True,
+        )
 
-        except TypeError as exc:
-            raise TypeError(
-                "Unable to ascertain equality between the following objects:\n"
-                f"  {self}\n"
-                f"  {other}"
-            ) from exc
+        return ionic_fraction_within_rtol and number_density_within_rtol
 
     @particle_input
     def __init__(
@@ -128,7 +123,7 @@ class IonicLevel:
         An ionic fraction must be in the interval :math:`[0, 1]`.
 
         If no ionic fraction is specified, then this attribute will be
-        assigned the value of `~numpy.nan`.
+        assigned the value of |nan|.
         """
         return self._ionic_fraction
 
@@ -179,12 +174,12 @@ class IonizationState:
 
     Parameters
     ----------
-    particle: `~plasmapy.particles.particle_class.ParticleLike`
+    particle : |particle-like|
         A `str` or `~plasmapy.particles.particle_class.Particle` instance
         representing an element, isotope, or ion; or an integer representing
         the atomic number of an element.
 
-    ionic_fractions: `~numpy.ndarray`, `list`, `tuple`, or `~astropy.units.Quantity`; optional
+    ionic_fractions : `~numpy.ndarray`, `list`, `tuple`, or `~astropy.units.Quantity`; optional
         The ionization fractions of an element, where the indices
         correspond to the charge number.  This argument should contain the
         atomic number plus one items, and must sum to one within an
@@ -193,17 +188,16 @@ class IonizationState:
         the number densities of each neutral/ion.  This argument cannot
         be specified when ``particle`` is an ion.
 
-    T_e: `~astropy.units.Quantity`, |keyword-only|, optional
+    T_e : `~astropy.units.Quantity`, |keyword-only|, optional
         The electron temperature or thermal energy per electron.
 
-    n_elem: `~astropy.units.Quantity`, |keyword-only|, optional
+    n_elem : `~astropy.units.Quantity`, |keyword-only|, optional
         The number density of the element, including neutrals and all
         ions.
 
-    tol: `float` or integer, |keyword-only|, optional
+    tol : `float` or integer, |keyword-only|, optional, default: ``1e-15``
         The absolute tolerance used by `~numpy.isclose` and similar
         functions when testing normalizations and making comparisons.
-        Defaults to ``1e-15``.
 
     Raises
     ------
@@ -249,6 +243,7 @@ class IonizationState:
 
     # TODO: Add in functionality to find equilibrium ionization states.
 
+    @particle_input(require="element")
     @validate_quantities(
         T_e={"unit": u.K, "equivalencies": u.temperature_energy()},
         T_i={
@@ -257,7 +252,6 @@ class IonizationState:
             "none_shall_pass": True,
         },
     )
-    @particle_input(require="element")
     def __init__(
         self,
         particle: Particle,
@@ -269,10 +263,6 @@ class IonizationState:
         n_elem: u.m**-3 = np.nan * u.m**-3,
         tol: Union[float, int] = 1e-15,
     ):
-        """
-        Initialize an `~plasmapy.particles.ionization_state.IonizationState`
-        instance.
-        """
         self._number_of_particles = particle.atomic_number + 1
 
         if particle.is_ion or particle.is_category(require=("uncharged", "element")):
@@ -407,10 +397,7 @@ class IonizationState:
 
         """
         if not isinstance(other, IonizationState):
-            raise TypeError(
-                "An instance of the IonizationState class may only be "
-                "compared with another IonizationState instance."
-            )
+            return False
 
         same_element = self.element == other.element
         same_isotope = self.isotope == other.isotope
@@ -525,7 +512,7 @@ class IonizationState:
         total = np.sum(self._ionic_fractions)
         return np.isclose(total, 1, atol=tol, rtol=0)
 
-    def normalize(self) -> None:
+    def normalize(self) -> NoReturn:
         """
         Normalize the ionization state distribution (if set) so that the
         sum of the ionic fractions becomes equal to one.
@@ -646,7 +633,7 @@ class IonizationState:
             raise ParticleError(error_str)
 
     @property
-    def kappa(self) -> np.real:
+    def kappa(self) -> Real:
         """
         The κ parameter for a kappa distribution function for electrons.
 
@@ -726,7 +713,7 @@ class IonizationState:
 
     @property
     def Z_rms(self) -> np.float64:
-        """The root mean square charge number."""
+        """The root-mean-square charge number."""
         return np.sqrt(np.sum(self.ionic_fractions * self.charge_numbers**2))
 
     @property
@@ -828,18 +815,17 @@ class IonizationState:
 
         Parameters
         ----------
-        include_neutrals : `bool`, optional, |keyword-only|
+        include_neutrals : `bool`, optional, |keyword-only|, default: `True`
             If `True`, include neutrals when calculating the mean values
             of the different particles.  If `False`, exclude neutrals.
-            Defaults to `True`.
 
-        use_rms_charge : `bool`, optional, |keyword-only|
-            If `True`, use the root mean square charge instead of the
-            mean charge. Defaults to `False`.
+        use_rms_charge : `bool`, optional, |keyword-only|, default: `False`
+            If `True`, use the root-mean-square charge instead of the
+            mean charge.
 
-        use_rms_mass : `bool`, optional, |keyword-only|
-            If `True`, use the root mean square mass instead of the mean
-            mass. Defaults to `False`.
+        use_rms_mass : `bool`, optional, |keyword-only|, default: `False`
+            If `True`, use the root-mean-square mass instead of the mean
+            mass.
 
         Returns
         -------
@@ -868,15 +854,14 @@ class IonizationState:
 
     def summarize(self, minimum_ionic_fraction: Real = 0.01) -> None:
         """
-        Print quicklook information for an
-        `~plasmapy.particles.ionization_state.IonizationState` instance.
+        Print quicklook information.
 
         Parameters
         ----------
-        minimum_ionic_fraction: real number
+        minimum_ionic_fraction : real number, default: ``0.01``
             If the ionic fraction for a particular ionization state is
             below this level, then information for it will not be
-            printed.  Defaults to 0.01.
+            printed.
 
         Examples
         --------

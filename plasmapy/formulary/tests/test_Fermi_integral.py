@@ -10,14 +10,14 @@ from plasmapy.formulary.mathematics import Fermi_integral
 
 class Test_Fermi_integral:
     @classmethod
-    def setup_class(self):
+    def setup_class(cls):
         """Initialize parameters for tests."""
-        self.arg1 = 3.889780
-        self.True1 = 6.272518847136373 - 8.673617379884035e-19j
-        self.argFail1 = 3.889781
-        self.order1 = 0.5
-        self.args = np.array([0.5, 1, 2])
-        self.Trues = np.array(
+        cls.arg1 = 3.889780
+        cls.True1 = 6.272518847136373 - 8.673617379884035e-19j
+        cls.argFail1 = 3.889781
+        cls.order1 = 0.5
+        cls.args = np.array([0.5, 1, 2])
+        cls.Trues = np.array(
             [
                 (1.1173314873128224 - 0j),
                 (1.5756407761513003 - 0j),

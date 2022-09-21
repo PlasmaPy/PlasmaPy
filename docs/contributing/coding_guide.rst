@@ -682,19 +682,20 @@ notebook on particles`_.
   arguments (see issue :issue:`453`).
 
 * The |particle_input| decorator can automatically transform a
-  :term:`particle-like` :term:`argument` into a |Particle| instance when
-  the corresponding :term:`parameter` is decorated with |Particle|.
+  |particle-like| |argument| into a |Particle|, |CustomParticle|, or
+  |ParticleList| instance when the corresponding |parameter| is
+  decorated with |ParticleLike|.
 
   .. code-block:: python
 
-     from plasmapy.particles import particle_input, Particle
+     from plasmapy.particles import particle_input, ParticleLike
 
      @particle_input
-     def get_particle(particle: Particle):
+     def get_particle(particle: ParticleLike):
           return particle
 
-  Then if we use ``get_particle`` on something :term:`particle-like`,
-  then it will return the corresponding |Particle|.
+  If we use ``get_particle`` on something |particle-like|, it will
+  return the corresponding particle object.
 
   .. code-block:: pycon
 
