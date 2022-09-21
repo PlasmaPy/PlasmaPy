@@ -2381,7 +2381,7 @@ class MaxwellianCollisionFrequencies:
         test_particle: particles.Particle,
         field_particle: particles.Particle,
         *,
-        v_drift: u.m / u.s,
+        v_drift: u.m / u.s = 0 * u.m / u.s,
         T_a: u.K,
         n_a: u.m**-3,
         T_b: u.K,
@@ -2410,8 +2410,8 @@ class MaxwellianCollisionFrequencies:
         field_particle : |Particle|
             The background particle being interacted with.
 
-        v_drift : `~astropy.units.Quantity`
-            The relative drift between the test and field particles.
+        v_drift : `~astropy.units.Quantity`, optional
+            The relative drift between the test and field particles. Defaults to zero.
 
         T_a : `~astropy.units.Quantity`
             The temperature of the test particles in units convertible to degrees Kelvin.
