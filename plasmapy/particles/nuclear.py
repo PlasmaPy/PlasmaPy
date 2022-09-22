@@ -4,6 +4,7 @@ __all__ = ["nuclear_binding_energy", "nuclear_reaction_energy", "mass_energy"]
 import astropy.units as u
 import re
 
+from numbers import Integral
 from typing import List, Optional, Union
 
 from plasmapy.particles.decorators import particle_input
@@ -13,25 +14,25 @@ from plasmapy.particles.particle_class import Particle
 
 @particle_input(any_of={"isotope", "baryon"})
 def nuclear_binding_energy(
-    particle: Particle, mass_numb: Optional[int] = None
-) -> u.Quantity:
+    particle: Particle, mass_numb: Optional[Integral] = None
+) -> u.J:
     """
     Return the nuclear binding energy associated with an isotope.
 
     Parameters
     ----------
-    particle: `str`, `int`, or `~plasmapy.particles.particle_class.Particle`
+    particle : |atom-like|
         A Particle object, a string representing an element or isotope,
         or an integer representing the atomic number of an element.
 
-    mass_numb: `int`, optional
+    mass_numb : integer, optional
         The mass number of an isotope, which is required if and only
         if the first argument can only be used to determine the
         element and not the isotope.
 
     Returns
     -------
-    binding_energy: `~astropy.units.Quantity`
+    binding_energy : `~astropy.units.Quantity`
         The binding energy of the nucleus in units of joules.
 
     Raises
@@ -41,9 +42,6 @@ def nuclear_binding_energy(
 
     `~plasmapy.particles.exceptions.ParticleError`
         If the inputs do not correspond to a valid isotope or nucleon.
-
-    `TypeError`
-        If the inputs are not of the correct types.
 
     See Also
     --------
@@ -72,25 +70,25 @@ def nuclear_binding_energy(
 
 
 @particle_input
-def mass_energy(particle: Particle, mass_numb: Optional[int] = None) -> u.Quantity:
+def mass_energy(particle: Particle, mass_numb: Optional[Integral] = None) -> u.J:
     """
     Return a particle's mass energy.  If the particle is an isotope or
     nuclide, return the nuclear mass energy only.
 
     Parameters
     ----------
-    particle: `str`, `int`, or `~plasmapy.particles.particle_class.Particle`
+    particle : |particle-like|
         A Particle object, a string representing an element or isotope,
         or an integer representing the atomic number of an element.
 
-    mass_numb: `int` (optional)
+    mass_numb : integer, optional
         The mass number of an isotope, which is required if and only
         if the first argument can only be used to determine the
         element and not the isotope.
 
     Returns
     -------
-    mass_energy: `~astropy.units.Quantity`
+    mass_energy : `~astropy.units.Quantity`
         The mass energy of the particle (or, in the case of an isotope,
         its nuclide) in units of joules.
 
@@ -102,9 +100,6 @@ def mass_energy(particle: Particle, mass_numb: Optional[int] = None) -> u.Quanti
     `~plasmapy.particles.exceptions.ParticleError`
         If the inputs do not correspond to a valid isotope or nucleon.
 
-    `TypeError`
-        If the inputs are not of the correct types.
-
     Examples
     --------
     >>> mass_energy('He-4')
@@ -113,29 +108,29 @@ def mass_energy(particle: Particle, mass_numb: Optional[int] = None) -> u.Quanti
     return particle.mass_energy
 
 
-def nuclear_reaction_energy(*args, **kwargs):
+def nuclear_reaction_energy(*args, **kwargs) -> u.J:
     """
     Return the released energy from a nuclear reaction.
 
     Parameters
     ----------
-    reaction: `str` (optional, positional argument only)
+    reaction : `str`, optional, positional-only
         A string representing the reaction, like
         ``"D + T --> alpha + n"`` or ``"Be-8 --> 2 * He-4"``.
 
-    reactants: `list`, `tuple`, or `str`, optional, |keyword-only|
+    reactants : |particle-like| or |particle-list-like|, optional, |keyword-only|
         A `list` or `tuple` containing the reactants of a nuclear
         reaction (e.g., ``['D', 'T']``), or a string representing the
         sole reactant.
 
-    products: `list`, `tuple`, or `str`, optional, |keyword-only|
+    products : |particle-like| or |particle-list-like|, optional, |keyword-only|
         A list or tuple containing the products of a nuclear reaction
         (e.g., ``['alpha', 'n']``), or a string representing the sole
         product.
 
     Returns
     -------
-    energy: `~astropy.units.Quantity`
+    energy : `~astropy.units.Quantity`
         The difference between the mass energy of the reactants and
         the mass energy of the products in a nuclear reaction.  This
         quantity will be positive if the reaction is exothermic
@@ -144,14 +139,10 @@ def nuclear_reaction_energy(*args, **kwargs):
 
     Raises
     ------
-    `ParticleError`:
+    `ParticleError`
         If the reaction is not valid, there is insufficient
         information to determine an isotope, the baryon number is
         not conserved, or the charge is not conserved.
-
-    `TypeError`:
-        If the positional input for the reaction is not a string, or
-        reactants and/or products is not of an appropriate type.
 
     See Also
     --------
@@ -320,14 +311,12 @@ def nuclear_reaction_energy(*args, **kwargs):
 
     if total_baryon_number(reactants) != total_baryon_number(products):
         raise ParticleError(
-            "The baryon number is not conserved for "
-            f"reactants = {reactants} and products = {products}."
+            f"The baryon number is not conserved for {reactants = } and {products = }."
         )
 
     if total_charge(reactants) != total_charge(products):
         raise ParticleError(
-            "Total charge is not conserved for reactants = "
-            f"{reactants} and products = {products}."
+            f"Total charge is not conserved for {reactants = } and {products = }."
         )
 
     released_energy = add_mass_energy(reactants) - add_mass_energy(products)
