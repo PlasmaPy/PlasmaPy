@@ -2117,8 +2117,8 @@ class SingleParticleCollisionFrequencies:
     )
     def __init__(
         self,
-        test_particle: particles.Particle,
-        field_particle: particles.Particle,
+        test_particle: particles.ParticleLike,
+        field_particle: particles.ParticleLike,
         *,
         v_drift: u.m / u.s,
         T_b: u.K,
@@ -2130,10 +2130,10 @@ class SingleParticleCollisionFrequencies:
 
         Parameters
         ----------
-        test_particle : |Particle|
+        test_particle : `~plasmapy.particles.ParticleLike`
             The test particle streaming through a background of field particles.
 
-        field_particle : |Particle|
+        field_particle : `~plasmapy.particles.ParticleLike`
             The background particle being interacted with.
 
         v_drift : `~astropy.units.Quantity`
@@ -2378,8 +2378,8 @@ class MaxwellianCollisionFrequencies:
     )
     def __init__(
         self,
-        test_particle: particles.Particle,
-        field_particle: particles.Particle,
+        test_particle: particles.ParticleLike,
+        field_particle: particles.ParticleLike,
         *,
         v_drift: u.m / u.s = 0 * u.m / u.s,
         T_a: u.K,
@@ -2404,10 +2404,10 @@ class MaxwellianCollisionFrequencies:
 
         Parameters
         ----------
-        test_particle : |Particle|
+        test_particle : `~plasmapy.particles.ParticleLike`
             The test particle streaming through a background of field particles.
 
-        field_particle : |Particle|
+        field_particle : `~plasmapy.particles.ParticleLike`
             The background particle being interacted with.
 
         v_drift : `~astropy.units.Quantity`, optional
