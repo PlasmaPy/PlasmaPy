@@ -1,0 +1,4 @@
+The capability of |particle_input| to process arguments annotated with
+|Particle| or ``(Particle, Particle)`` is now deprecated and will be
+removed in a future release. Use |ParticleLike| as an annotation
+instead.

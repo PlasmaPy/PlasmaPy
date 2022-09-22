@@ -6,7 +6,6 @@ __all__ = [
 ]
 __lite_funcs__ = ["permittivity_1D_Maxwellian_lite"]
 
-import numbers
 import numpy as np
 
 from astropy import units as u
