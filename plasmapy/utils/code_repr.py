@@ -345,7 +345,7 @@ def method_call_string(
         other type of `object` if there is only one positional argument,
         to be used during instantiation of ``cls``.
 
-    kwargs_to_cls: `dict`, keyword-only optional
+    kwargs_to_cls: `dict`, |keyword-only| optional
         A `dict` containing the keyword arguments to be used during
         instantiation of ``cls``.
 
@@ -354,11 +354,11 @@ def method_call_string(
         used in the method call, or any other `object` if there is only
         one positional argument.
 
-    kwargs_to_method: `dict`, keyword-only, optional
+    kwargs_to_method: `dict`, |keyword-only|, optional
         A `dict` containing the keyword arguments to be used during
         the method call.
 
-    max_items : int, keyword-only, optional
+    max_items : int, |keyword-only|, optional
         The maximum number of items to include in a `~numpy.ndarray` or
         `~astropy.units.Quantity`; additional items will be truncated
         with an ellipsis.  Defaults to 12.
