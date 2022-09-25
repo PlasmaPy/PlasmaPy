@@ -66,6 +66,7 @@ from astropy.constants.si import e, eps0, hbar, k_B, m_e
 from functools import cached_property
 from numbers import Real
 from numpy import pi
+from typing import Optional
 
 from plasmapy import particles, utils
 from plasmapy.formulary.lengths import Debye_length
@@ -76,7 +77,11 @@ from plasmapy.formulary.quantum import (
     Wigner_Seitz_radius,
 )
 from plasmapy.formulary.speeds import thermal_speed
-from plasmapy.utils.decorators import deprecated, validate_quantities
+from plasmapy.utils.decorators import (
+    deprecated,
+    validate_class_attributes,
+    validate_quantities,
+)
 from plasmapy.utils.decorators.checks import _check_relativistic
 from plasmapy.utils.exceptions import PhysicsError, PlasmaPyFutureWarning
 
@@ -2375,6 +2380,14 @@ class MaxwellianCollisionFrequencies:
             "equivalencies": u.temperature_energy(),
         },
         n_b={"can_be_negative": False},
+        T_parallel={
+            "can_be_negative": False,
+            "equivalencies": u.temperature_energy(),
+        },
+        T_perp={
+            "can_be_negative": False,
+            "equivalencies": u.temperature_energy(),
+        },
     )
     def __init__(
         self,
@@ -2387,6 +2400,8 @@ class MaxwellianCollisionFrequencies:
         T_b: u.K,
         n_b: u.m**-3,
         Coulomb_log: u.dimensionless_unscaled,
+        T_parallel: Optional[u.K] = None,
+        T_perp: Optional[u.K] = None,
     ):
         r"""Compute collision frequencies between two slowly flowing
         Maxwellian populations.
@@ -2458,6 +2473,8 @@ class MaxwellianCollisionFrequencies:
             if isinstance(Coulomb_log, u.Quantity)
             else Coulomb_log * u.dimensionless_unscaled
         )
+        self.T_parallel = T_parallel
+        self.T_perp = T_perp
 
         self.v_T_a = thermal_speed(self.T_a, self.test_particle)
         self.v_T_b = thermal_speed(self.T_b, self.field_particle)
@@ -2618,3 +2635,25 @@ class MaxwellianCollisionFrequencies:
         coeff = 4 / (3 * np.sqrt(2 * np.pi))
 
         return coeff * self.Lorentz_collision_frequency
+
+    @cached_property
+    @validate_class_attributes(expected_attributes=["T_parallel", "T_perp"])
+    def temperature_isotropization(self):
+        A = self.T_perp / self.T_parallel - 1
+
+        if A < 0:
+            coefficient = np.arctanh(-A) ** 0.5 / -(A**0.5)
+        else:
+            coefficient = np.arctan(A**0.5) / A**0.5
+
+        return (
+            2
+            * np.sqrt(np.pi)
+            * (self.test_particle.charge_number * e.esu) ** 2
+            * (self.field_particle.charge_number * e.esu) ** 2
+            * self.n_a
+            * self.Coulomb_log
+            / (self.test_particle.mass**0.5 * (k_B * self.T_perp) ** 1.5)
+            * A**-2
+            * (-3 + (A + 3) * coefficient)
+        )
