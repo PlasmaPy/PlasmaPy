@@ -27,7 +27,7 @@ Collision rates
 
 The module gathers a few functions helpful for calculating collision
 rates between particles. The most general of these is
-`~plasmapy.formulary.collisions.CollisionFrequencies`.
+`~plasmapy.formulary.collisions.SingleParticleCollisionFrequencies`.
 
 Macroscopic properties
 ======================
@@ -40,7 +40,8 @@ These include:
 * `~plasmapy.formulary.collisions.coupling_parameter`
 """
 __all__ = [
-    "CollisionFrequencies",
+    "SingleParticleCollisionFrequencies",
+    "MaxwellianCollisionFrequencies",
     "Coulomb_logarithm",
     "impact_parameter_perp",
     "impact_parameter",
@@ -77,7 +78,7 @@ from plasmapy.formulary.quantum import (
 from plasmapy.formulary.speeds import thermal_speed
 from plasmapy.utils.decorators import deprecated, validate_quantities
 from plasmapy.utils.decorators.checks import _check_relativistic
-from plasmapy.utils.exceptions import PlasmaPyFutureWarning
+from plasmapy.utils.exceptions import PhysicsError, PlasmaPyFutureWarning
 
 
 @validate_quantities(
@@ -909,9 +910,9 @@ def collision_frequency(
     r"""
     .. note::
         The `~plasmapy.formulary.collisions.collision_frequency` function has been
-        replaced by the more general `~plasmapy.formulary.collisions.CollisionFrequencies` class.
+        replaced by the more general `~plasmapy.formulary.collisions.SingleParticleCollisionFrequencies` class.
         To replicate the functionality of `~plasmapy.formulary.collisions.collision_frequency`, create a
-        `~plasmapy.formulary.collisions.CollisionFrequencies` class and access the ``Lorentz_collision_frequency`` attribute.
+        `~plasmapy.formulary.collisions.SingleParticleCollisionFrequencies` class and access the ``Lorentz_collision_frequency`` attribute.
 
     Collision frequency of particles in a plasma.
 
@@ -1013,17 +1014,17 @@ def collision_frequency(
 
     See Also
     --------
-    ~plasmapy.formulary.collisions.CollisionFrequencies
+    ~plasmapy.formulary.collisions.SingleParticleCollisionFrequencies
 
     """
 
     deprecated(
-        since="0.8.0",
+        since="0.9.0",
         warning_type=PlasmaPyFutureWarning,
         message=(
             "The collision_frequency function has been replaced by the more general "
-            "CollisionFrequencies class. To replicate the functionality of collision_frequency, "
-            "create a CollisionFrequencies class and access the `Lorentz_collision_frequency` "
+            "SingleParticleCollisionFrequencies class. To replicate the functionality of collision_frequency, "
+            "create a SingleParticleCollisionFrequencies class and access the `Lorentz_collision_frequency` "
             "attribute."
         ),
     )
@@ -1123,12 +1124,19 @@ def fundamental_electron_collision_freq(
     Average momentum relaxation rate for a slowly flowing Maxwellian
     distribution of electrons.
 
+    .. note::
+        The `~plasmapy.formulary.collisions.fundamental_electron_collision_freq` function has been
+        replaced by the more general `~plasmapy.formulary.collisions.MaxwellianCollisionFrequencies` class.
+        To replicate the functionality of `~plasmapy.formulary.collisions.fundamental_electron_collision_freq`, create a
+        `~plasmapy.formulary.collisions.MaxwellianCollisionFrequencies` class and access the ``Maxwellian_avg_ei_collision_freq`` attribute.
+
+
     :cite:t:`braginskii:1965` provides a derivation of this as an
     average collision frequency between electrons and ions for a
     Maxwellian distribution. It is thus a special case of the collision
     frequency with an averaging factor, and is on many occasions
     in transport theory the most relevant collision frequency that has
-    to be considered. It is heavily related to diffusion and resistivity
+    to be considered. It commonly occurs in relation to diffusion and resistivity
     in plasmas.
 
     Parameters
@@ -1210,6 +1218,18 @@ def fundamental_electron_collision_freq(
     ~plasmapy.formulary.collisions.collision_frequency
     ~plasmapy.formulary.collisions.fundamental_ion_collision_freq
     """
+
+    deprecated(
+        since="0.9.0",
+        warning_type=PlasmaPyFutureWarning,
+        message=(
+            "The `fundamental_electron_collision_freq` function has been"
+            "replaced by the more general `MaxwellianCollisionFrequencies` class."
+            "To replicate the functionality of `fundamental_electron_collision_freq`, create a"
+            "`MaxwellianCollisionFrequencies` class and access the `Maxwellian_avg_ei_collision_freq` attribute."
+        ),
+    )
+
     # specify to use electron thermal velocity (most probable), not based on reduced mass
     V = _replace_nan_velocity_with_thermal_velocity(V, T_e, m_e)
 
@@ -1250,6 +1270,13 @@ def fundamental_ion_collision_freq(
     r"""
     Average momentum relaxation rate for a slowly flowing Maxwellian
     distribution of ions.
+
+    .. note::
+        The `~plasmapy.formulary.collisions.fundamental_ion_collision_freq` function has been
+        replaced by the more general `~plasmapy.formulary.collisions.MaxwellianCollisionFrequencies` class.
+        To replicate the functionality of `~plasmapy.formulary.collisions.fundamental_ion_collision_freq`, create a
+        `~plasmapy.formulary.collisions.MaxwellianCollisionFrequencies` class and access the ``Maxwellian_avg_ii_collision_freq`` attribute.
+
 
     :cite:t:`braginskii:1965` provides a derivation of this as an
     average collision frequency between ions and ions for a Maxwellian
@@ -1343,6 +1370,18 @@ def fundamental_ion_collision_freq(
     ~plasmapy.formulary.collisions.collision_frequency
     ~plasmapy.formulary.collisions.fundamental_electron_collision_freq
     """
+
+    deprecated(
+        since="0.9.0",
+        warning_type=PlasmaPyFutureWarning,
+        message=(
+            "The `fundamental_ion_collision_freq` function has been"
+            "replaced by the more general `MaxwellianCollisionFrequencies` class."
+            "To replicate the functionality of `fundamental_ion_collision_freq`, create a"
+            "`MaxwellianCollisionFrequencies` class and access the `Maxwellian_avg_ii_collision_freq` attribute."
+        ),
+    )
+
     m_i = particles.particle_mass(ion)
     species = [ion, ion]
 
@@ -2066,63 +2105,53 @@ def coupling_parameter(
     return coulomb_energy / kinetic_energy
 
 
-class CollisionFrequencies:
+class SingleParticleCollisionFrequencies:
     @particles.particle_input
     @validate_quantities(
-        v_a={"none_shall_pass": True, "can_be_negative": False},
-        T_a={
-            "none_shall_pass": True,
+        v_drift={"can_be_negative": False},
+        T_b={
             "can_be_negative": False,
             "equivalencies": u.temperature_energy(),
         },
         n_b={"can_be_negative": False},
-        T_b={"can_be_negative": False, "equivalencies": u.temperature_energy()},
     )
     def __init__(
         self,
-        test_particle: particles.Particle,
-        field_particle: particles.Particle,
+        test_particle: particles.ParticleLike,
+        field_particle: particles.ParticleLike,
         *,
-        v_a: u.m / u.s = None,
-        T_a: u.K = None,
-        n_b: u.m**-3,
+        v_drift: u.m / u.s,
         T_b: u.K,
+        n_b: u.m**-3,
         Coulomb_log: u.dimensionless_unscaled,
     ):
         r"""
-        Compute collision frequencies between test particles (labeled 'a') and field particles (labeled 'b')
+        Compute collision frequencies between test particles (labeled 'a') and field particles (labeled 'b').
 
         Parameters
         ----------
-        test_particle : |Particle|
+        test_particle : `~plasmapy.particles.ParticleLike`
             The test particle streaming through a background of field particles.
 
-        field_particle : |Particle|
+        field_particle : `~plasmapy.particles.ParticleLike`
             The background particle being interacted with.
 
-        v_a : `~astropy.units.Quantity`, optional
-            The relative speed between particles. If not provided, T_a must be specified and
-            thermal velocity is assumed: :math:`μ v_a^2 \sim 2 k_B T_a` where
-            :math:`μ` is the reduced mass. Cannot be negative.
-
-        T_a : `~astropy.units.Quantity`, optional
-            The temperature of the test species. Only necessary if :math:`v_a` is not provided.
-
-        n_b : `~astropy.units.Quantity`
-            The number density of the background field particles in units convertible to :math:`\frac{1}{m^{3}}`
+        v_drift : `~astropy.units.Quantity`
+            The relative drift between the test and field particles. Cannot be negative.
 
         T_b : `~astropy.units.Quantity`
             The temperature of the background field particles in units convertible to degrees Kelvin.
 
+        n_b : `~astropy.units.Quantity`
+            The number density of the background field particles in units convertible to :math:`\frac{1}{m^{3}}`.
+
         Coulomb_log : `~astropy.units.Quantity`
-            The value of the Coulomb logarithm evaluated for the two interacting particles.
+            The value of the Coulomb logarithm for the interaction.
 
         Raises
         ------
         `ValueError`
-            If both :math:`v_a` and :math:`T_a` are specified, neither
-            :math:`v_a` nor :math:`T_a` are specified, or specified arrays
-            don't have equal size.
+            If the specified v_drift and n_b arrays don't have equal size.
 
         Notes
         -----
@@ -2170,21 +2199,14 @@ class CollisionFrequencies:
         Examples
         --------
         >>> import astropy.units as u
-        >>> T_a = 1 * u.eV
+        >>> v_drift = 1e5 * u.m / u.s
         >>> n_b = 1e26 * u.m**-3
         >>> T_b = 1e3 * u.eV
         >>> Coulomb_log = 10 * u.dimensionless_unscaled
-        >>> frequencies_using_temperature = CollisionFrequencies(
-        ...     "e-", "e-", T_a=T_a, n_b=n_b, T_b=T_b, Coulomb_log=Coulomb_log
+        >>> frequencies = SingleParticleCollisionFrequencies(
+        ...     "e-", "e-", v_drift=v_drift, n_b=n_b, T_b=T_b, Coulomb_log=Coulomb_log
         ... )
-        >>> frequencies_using_temperature.momentum_loss
-        <Quantity 1.83701432e+11 Hz>
-
-        >>> v_a = 1e5 * u.m / u.s
-        >>> frequencies_using_velocity = CollisionFrequencies(
-        ...     "e-", "e-", v_a=v_a, n_b=n_b, T_b=T_b, Coulomb_log=Coulomb_log
-        ... )
-        >>> frequencies_using_velocity.energy_loss
+        >>> frequencies.energy_loss
         <Quantity -9.69828719e+15 Hz>
 
         See Also
@@ -2196,31 +2218,18 @@ class CollisionFrequencies:
         # Note: This function uses CGS units internally to coincide with our references.
         # Input is taken in MKS units and then converted as necessary. Output is in MKS units.
 
-        if v_a is None:
-            if T_a is not None:
-                v_a = thermal_speed(T_a, test_particle)
-            else:
-                raise ValueError("Please specify either v_a or T_a.")
-        elif T_a is not None:
-            raise ValueError("Please specify either v_a or T_a, not both.")
-
         if (
-            isinstance(v_a, np.ndarray)
+            isinstance(v_drift, np.ndarray)
             and isinstance(n_b, np.ndarray)
-            and v_a.shape != n_b.shape
+            and v_drift.shape != n_b.shape
         ):
             raise ValueError("Please specify arrays of equal length.")
 
         self.test_particle = test_particle
         self.field_particle = field_particle
-        self.v_a = v_a
-        self.T_a = (
-            T_a
-            if T_a is not None
-            else (0.5 * test_particle.mass * v_a**2 / k_B).to(u.K)
-        )
-        self.n_b = n_b
+        self.v_drift = v_drift
         self.T_b = T_b
+        self.n_b = n_b
         self.Coulomb_log = (
             Coulomb_log
             if isinstance(Coulomb_log, u.Quantity)
@@ -2280,14 +2289,17 @@ class CollisionFrequencies:
             ν = n σ v \ln{Λ}
 
         where :math:`n` is the particle density, :math:`σ` is the
-        collisional cross-section, :math:`v` is the inter-particle velocity
-        (typically taken as the thermal velocity), and :math:`\ln{Λ}` is the
-        Coulomb logarithm accounting for small angle collisions.
+        collisional cross-section, :math:`v` is the inter-particle velocity,
+        and :math:`\ln{Λ}` is the Coulomb logarithm accounting for small angle collisions.
 
-        See Equation (2.14) in :cite:t:`callen:unpublished`.
+        See Equation (2.86) in :cite:t:`callen:unpublished`.
 
         The Lorentz collision frequency is equivalent to the variable
         :math:`\nu_0^{\alpha/\beta}` on p. 31 of :cite:t:`nrlformulary:2019`.
+
+        This form of the Lorentz collision frequency differs from the form found in `~plasmapy.formulary.collisions.MaxwellianCollisionFrequencies`
+        in that :math:`v` is the drift velocity (as opposed to the mean thermal
+        velocity between species).
         """
 
         return (
@@ -2297,18 +2309,19 @@ class CollisionFrequencies:
             * (self.field_particle.charge_number * e.esu) ** 2
             * self.Coulomb_log
             * self.n_b
-            / (self.test_particle.mass**2 * self.v_a**3)
+            / (self.test_particle.mass**2 * self.v_drift**3)
         ).to(u.Hz)
 
     @cached_property
     def x(self) -> u.dimensionless_unscaled:
         """
         The ratio of kinetic energy in the test particle to the thermal energy of the field particle.
-        This parameter determines the regime in which the collision falls
-        (see documentation for the `~plasmapy.formulary.collisions.CollisionFrequencies` class for details).
+        This parameter determines the regime in which the collision falls.
+
+        (see documentation for the `~plasmapy.formulary.collisions.SingleParticleCollisionFrequencies` class for details)
         """
 
-        x = self.field_particle.mass * self.v_a**2 / (2 * k_B.cgs * self.T_b)
+        x = self.field_particle.mass * self.v_drift**2 / (2 * k_B.cgs * self.T_b)
         return x.to(u.dimensionless_unscaled)
 
     @staticmethod
@@ -2319,7 +2332,7 @@ class CollisionFrequencies:
 
         return t**0.5 * np.exp(-t)
 
-    def _phi_explicit(self, x: float) -> float:
+    def _phi_explicit(self, x: float):
         """
         The non-vectorized method for evaluating the integral for phi
         """
@@ -2346,3 +2359,262 @@ class CollisionFrequencies:
         """
 
         return 2 / np.pi**0.5 * self._phi_integrand(self.x)
+
+
+class MaxwellianCollisionFrequencies:
+    @particles.particle_input
+    @validate_quantities(
+        v_drift={"can_be_negative": False},
+        T_a={
+            "can_be_negative": False,
+            "equivalencies": u.temperature_energy(),
+        },
+        n_a={"can_be_negative": False},
+        T_b={
+            "can_be_negative": False,
+            "equivalencies": u.temperature_energy(),
+        },
+        n_b={"can_be_negative": False},
+    )
+    def __init__(
+        self,
+        test_particle: particles.ParticleLike,
+        field_particle: particles.ParticleLike,
+        *,
+        v_drift: u.m / u.s = 0 * u.m / u.s,
+        T_a: u.K,
+        n_a: u.m**-3,
+        T_b: u.K,
+        n_b: u.m**-3,
+        Coulomb_log: u.dimensionless_unscaled,
+    ):
+        r"""Compute collision frequencies between two slowly flowing
+        Maxwellian populations.
+
+        The condition of "slowly flowing", outlined by Eq. 2.133 in :cite:t:`callen:unpublished`
+        requires that
+
+        .. math::
+
+            v_{drift} << \sqrt{v_{T_a}^{2}+v_{T_b}^{2}}
+
+        where :math:`v_{drift}` is the relative drift between the two species, :math:`v_{T_a}`
+        is the thermal velocity of species "a", and :math:`v_{T_b}` is the thermal
+        velocity of species "b".
+
+        Parameters
+        ----------
+        test_particle : `~plasmapy.particles.ParticleLike`
+            The test particle streaming through a background of field particles.
+
+        field_particle : `~plasmapy.particles.ParticleLike`
+            The background particle being interacted with.
+
+        v_drift : `~astropy.units.Quantity`, optional
+            The relative drift between the test and field particles. Defaults to zero.
+
+        T_a : `~astropy.units.Quantity`
+            The temperature of the test particles in units convertible to degrees Kelvin.
+
+        n_a : `~astropy.units.Quantity`
+            The number density of the test particles in units convertible to :math:`\frac{1}{m^{3}}`.
+
+        T_b : `~astropy.units.Quantity`
+            The temperature of the background field particles in units convertible to degrees Kelvin.
+
+        n_b : `~astropy.units.Quantity`
+            The number density of the background field particles in units convertible to :math:`\frac{1}{m^{3}}`.
+
+        Coulomb_log : `~astropy.units.Quantity`
+            The value of the Coulomb logarithm for the interaction.
+
+        Raises
+        ------
+        `ValueError`
+            If the specified v_drift and T_a arrays don't have equal size.
+
+        See Also
+        --------
+        ~plasmapy.formulary.collisions.Coulomb_logarithm : Evaluates the Coulomb
+            logarithm for two interacting electron species.
+        """
+
+        if (
+            isinstance(v_drift, np.ndarray)
+            and isinstance(T_a, np.ndarray)
+            and v_drift.shape != T_a.shape
+        ):
+            raise ValueError("Please specify arrays of equal length.")
+
+        self.test_particle = test_particle
+        self.field_particle = field_particle
+        self.v_drift = v_drift
+        self.T_a = T_a
+        self.n_a = n_a
+        self.T_b = T_b
+        self.n_b = n_b
+        self.Coulomb_log = (
+            Coulomb_log
+            if isinstance(Coulomb_log, u.Quantity)
+            else Coulomb_log * u.dimensionless_unscaled
+        )
+
+        self.v_T_a = thermal_speed(self.T_a, self.test_particle)
+        self.v_T_b = thermal_speed(self.T_b, self.field_particle)
+
+    @cached_property
+    def _mean_thermal_velocity(self):
+        """
+        Parameter used in enforcing the definition of "slowly flowing" Maxwellian
+        particles. See Eq. 2.133 in :cite:t:`callen:unpublished`.
+        """
+
+        return (self.v_T_a**2 + self.v_T_b**2) ** 0.5
+
+    @cached_property
+    def _is_slowly_flowing(self):
+        """
+        Criteria used in determining whether `Maxwellian_avg_ei_collision_freq` and
+        `Maxwellian_avg_ii_collision_freq` can be applied to the specified species.
+        """
+
+        return self.v_drift / self._mean_thermal_velocity < 0.1
+
+    @cached_property
+    def Lorentz_collision_frequency(self):
+        r"""
+        The Lorentz collision frequency.
+
+        The Lorentz collision frequency (see Ch. 5 of :cite:t:`chen:2016`) is given
+        by
+
+        .. math::
+
+            ν = n σ v \ln{Λ}
+
+        where :math:`n` is the particle density, :math:`σ` is the
+        collisional cross-section, :math:`v` is the mean thermal velocity between particle species
+        (see Equation 2.133 in :cite:t:`callen:unpublished`), and :math:`\ln{Λ}` is the
+        Coulomb logarithm accounting for small angle collisions.
+
+        See Equation (2.86) in :cite:t:`callen:unpublished`.
+
+        This form of the Lorentz collision frequency differs from the form found in `~plasmapy.formulary.collisions.SingleParticleCollisionFrequencies`
+        in that :math:`v` is the mean thermal velocity between particle species
+        in this method (as opposed to the drift velocity between species).
+        """
+
+        return (
+            4
+            * np.pi
+            * (self.test_particle.charge_number * e.esu) ** 2
+            * (self.field_particle.charge_number * e.esu) ** 2
+            * self.Coulomb_log
+            * self.n_b
+            / (self.test_particle.mass**2 * self._mean_thermal_velocity**3)
+        ).to(u.Hz)
+
+    @cached_property
+    def Maxwellian_avg_ei_collision_freq(self):
+        r"""Average momentum relaxation rate for a slowly flowing Maxwellian
+        distribution of electrons, relative to a population of stationary ions.
+
+        This function assumes that both populations are Maxwellian, and :math:`T_{i} \lesssim T_{e}`.
+
+        :cite:t:`callen:unpublished` provides a derivation of this as an
+        average collision frequency between electrons and ions for a
+        Maxwellian distribution. It is thus a special case of the collision
+        frequency with an averaging factor, and is on many occasions
+        in transport theory the most relevant collision frequency that has
+        to be considered. It commonly occurs in relation to diffusion and resistivity
+        in plasmas.
+
+        Raises
+        ------
+        `~plasmapy.utils.exceptions.PhysicsError`
+            The test particles are not 'slowly flowing' relative to the field particles (see notes).
+
+        `ValueError`
+            If the specified interaction isn't electron-ion.
+
+        Examples
+        --------
+        >>> import astropy.units as u
+        >>> v_drift = 1 * u.m / u.s
+        >>> n_a = 1e26 * u.m**-3
+        >>> T_a = 1 * u.eV
+        >>> n_b = 1e26 * u.m**-3
+        >>> T_b = 1e3 * u.eV
+        >>> Coulomb_log = 10 * u.dimensionless_unscaled
+        >>> electron_ion_collisions = MaxwellianCollisionFrequencies(
+        ...     "e-", "Na+", v_drift=v_drift, n_a=n_a, T_a=T_a, n_b=n_b, T_b=T_b, Coulomb_log=Coulomb_log
+        ... )
+        >>> electron_ion_collisions.Maxwellian_avg_ei_collision_freq
+        <Quantity 2906316911556553.5 Hz>
+        """
+
+        if not self.test_particle.is_electron or not self.field_particle.is_ion:
+            raise ValueError(
+                "Please specify an electron-ion interaction to use the Maxwellian_avg_ei_collision_freq attribute."
+            )
+
+        if not self._is_slowly_flowing:
+            raise PhysicsError(
+                "This frequency is only defined for slowly flowing species."
+                "(see MaxwellianCollisionFrequencies class documentation for further details)"
+            )
+
+        coeff = 4 / (3 * np.sqrt(np.pi))
+
+        return coeff * self.Lorentz_collision_frequency
+
+    @cached_property
+    def Maxwellian_avg_ii_collision_freq(self):
+        r"""Average momentum relaxation rate for a slowly flowing Maxwellian
+        distribution of ions, relative to a population of stationary ions.
+
+        This function assumes that both populations are Maxwellian, and :math:`T_{i} \lesssim T_{e}`.
+
+        :cite:t:`callen:unpublished` provides a derivation of this as an
+        average collision frequency between ions and ions for a Maxwellian
+        distribution. It is thus a special case of the collision frequency
+        with an averaging factor.
+
+        Raises
+        ------
+        `~plasmapy.utils.exceptions.PhysicsError`
+            The test particles are not 'slowly flowing' relative to the field particles (see notes).
+
+        `ValueError`
+            If the specified interaction isn't ion-ion.
+
+        Examples
+        --------
+        >>> import astropy.units as u
+        >>> v_drift = 1 * u.m / u.s
+        >>> n_a = 1e26 * u.m**-3
+        >>> T_a = 1e3 * u.eV
+        >>> n_b = 1e26 * u.m**-3
+        >>> T_b = 1e3 * u.eV
+        >>> Coulomb_log = 10 * u.dimensionless_unscaled
+        >>> ion_ion_collisions = MaxwellianCollisionFrequencies(
+        ...     "Na+", "Na+", v_drift=v_drift, n_a=n_a, T_a=T_a, n_b=n_b, T_b=T_b, Coulomb_log=Coulomb_log
+        ... )
+        >>> ion_ion_collisions.Maxwellian_avg_ii_collision_freq
+        <Quantity 79364412.21510696 Hz>
+        """
+
+        if not self.test_particle.is_ion or not self.field_particle.is_ion:
+            raise ValueError(
+                "Please specify an ion-ion interaction to use the Maxwellian_avg_ii_collision_freq attribute"
+            )
+
+        if not self._is_slowly_flowing:
+            raise PhysicsError(
+                "This frequency is only defined for slowly flowing species."
+                "(see MaxwellianCollisionFrequencies class documentation for further details)"
+            )
+
+        coeff = 4 / (3 * np.sqrt(2 * np.pi))
+
+        return coeff * self.Lorentz_collision_frequency
