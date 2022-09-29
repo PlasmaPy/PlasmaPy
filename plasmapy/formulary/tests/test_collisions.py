@@ -2,7 +2,7 @@ import numpy as np
 import pytest
 
 from astropy import units as u
-from astropy.constants import c
+from astropy.constants import c, k_B, m_p
 from astropy.tests.helper import assert_quantity_allclose
 
 import plasmapy.particles.exceptions
@@ -16,53 +16,56 @@ from plasmapy.formulary.collisions import (
     impact_parameter,
     impact_parameter_perp,
     Knudsen_number,
+    MaxwellianCollisionFrequencies,
     mean_free_path,
     mobility,
+    SingleParticleCollisionFrequencies,
     Spitzer_resistivity,
 )
+from plasmapy.particles import Particle
 from plasmapy.utils import exceptions
-from plasmapy.utils.exceptions import CouplingWarning
+from plasmapy.utils.exceptions import CouplingWarning, PhysicsError
 from plasmapy.utils.pytest_helpers import assert_can_handle_nparray
 
 
 class Test_Coulomb_logarithm:
     @classmethod
-    def setup_class(self):
+    def setup_class(cls):
         """initializing parameters for tests"""
-        self.temperature1 = 10 * 11604 * u.K
-        self.T_arr = np.array([1, 2]) * u.eV
-        self.density1 = 1e20 * u.cm**-3
-        self.n_arr = np.array([1e20, 2e20]) * u.cm**-3
-        self.temperature2 = 1 * 11604 * u.K
-        self.density2 = 1e23 * u.cm**-3
-        self.z_mean = 2.5 * u.dimensionless_unscaled
-        self.particles = ("e", "p")
-        self.ls_min_interp = 3.4014290066940966
-        self.gms1 = 3.4014290066940966
-        self.ls_min_interp_negative = -3.4310536971592493
-        self.gms1_negative = -3.4310536971592493
-        self.ls_full_interp = 3.6349941014645157
-        self.gms2 = 3.6349941014645157
-        self.ls_full_interp_negative = -1.379394033464292
-        self.gms2_negative = -1.379394033464292
-        self.ls_clamp_mininterp = 3.4014290066940966
-        self.gms3 = 3.4014290066940966
-        self.ls_clamp_mininterp_negative = 2
-        self.gms3_negative = 2
-        self.ls_clamp_mininterp_non_scalar = (2, 2)
-        self.gms3_non_scalar = (2, 2)
-        self.hls_min_interp = 3.401983996820073
-        self.gms4 = 3.401983996820073
-        self.hls_min_interp_negative = 0.0005230791851781715
-        self.gms4_negative = 0.0005230791851781715
-        self.hls_max_interp = 3.7196690506837693
-        self.gms5 = 3.7196690506837693
-        self.hls_max_interp_negative = 0.03126832674323108
-        self.gms5_negative = 0.03126832674323108
-        self.hls_full_interp = 3.635342040477818
-        self.gms6 = 3.635342040477818
-        self.hls_full_interp_negative = 0.030720859361047514
-        self.gms6_negative = 0.030720859361047514
+        cls.temperature1 = 10 * 11604 * u.K
+        cls.T_arr = np.array([1, 2]) * u.eV
+        cls.density1 = 1e20 * u.cm**-3
+        cls.n_arr = np.array([1e20, 2e20]) * u.cm**-3
+        cls.temperature2 = 1 * 11604 * u.K
+        cls.density2 = 1e23 * u.cm**-3
+        cls.z_mean = 2.5 * u.dimensionless_unscaled
+        cls.particles = ("e", "p")
+        cls.ls_min_interp = 3.4014290066940966
+        cls.gms1 = 3.4014290066940966
+        cls.ls_min_interp_negative = -3.4310536971592493
+        cls.gms1_negative = -3.4310536971592493
+        cls.ls_full_interp = 3.6349941014645157
+        cls.gms2 = 3.6349941014645157
+        cls.ls_full_interp_negative = -1.379394033464292
+        cls.gms2_negative = -1.379394033464292
+        cls.ls_clamp_mininterp = 3.4014290066940966
+        cls.gms3 = 3.4014290066940966
+        cls.ls_clamp_mininterp_negative = 2
+        cls.gms3_negative = 2
+        cls.ls_clamp_mininterp_non_scalar = (2, 2)
+        cls.gms3_non_scalar = (2, 2)
+        cls.hls_min_interp = 3.401983996820073
+        cls.gms4 = 3.401983996820073
+        cls.hls_min_interp_negative = 0.0005230791851781715
+        cls.gms4_negative = 0.0005230791851781715
+        cls.hls_max_interp = 3.7196690506837693
+        cls.gms5 = 3.7196690506837693
+        cls.hls_max_interp_negative = 0.03126832674323108
+        cls.gms5_negative = 0.03126832674323108
+        cls.hls_full_interp = 3.635342040477818
+        cls.gms6 = 3.635342040477818
+        cls.hls_full_interp_negative = 0.030720859361047514
+        cls.gms6_negative = 0.030720859361047514
 
     @pytest.mark.parametrize("insert_some_nans", [[], ["V"]])
     @pytest.mark.parametrize("insert_all_nans", [[], ["V"]])
@@ -950,12 +953,12 @@ class Test_Coulomb_logarithm:
 
 class Test_impact_parameter_perp:
     @classmethod
-    def setup_class(self):
+    def setup_class(cls):
         """initializing parameters for tests"""
-        self.T = 11604 * u.K
-        self.particles = ("e", "p")
-        self.V = 1e4 * u.km / u.s
-        self.True1 = 7.200146594293746e-10
+        cls.T = 11604 * u.K
+        cls.particles = ("e", "p")
+        cls.V = 1e4 * u.km / u.s
+        cls.True1 = 7.200146594293746e-10
 
     def test_symmetry(self):
         result = impact_parameter_perp(self.T, self.particles)
@@ -1005,16 +1008,16 @@ class Test_impact_parameter_perp:
 
 class Test_impact_parameter:
     @classmethod
-    def setup_class(self):
+    def setup_class(cls):
         """initializing parameters for tests"""
-        self.T = 11604 * u.K
-        self.T_arr = np.array([1, 2]) * u.eV
-        self.n_e = 1e17 * u.cm**-3
-        self.n_e_arr = np.array([1e17, 2e17]) * u.cm**-3
-        self.particles = ("e", "p")
-        self.z_mean = 2.5 * u.dimensionless_unscaled
-        self.V = 1e4 * u.km / u.s
-        self.True1 = np.array([7.200146594293746e-10, 2.3507660003984624e-08])
+        cls.T = 11604 * u.K
+        cls.T_arr = np.array([1, 2]) * u.eV
+        cls.n_e = 1e17 * u.cm**-3
+        cls.n_e_arr = np.array([1e17, 2e17]) * u.cm**-3
+        cls.particles = ("e", "p")
+        cls.z_mean = 2.5 * u.dimensionless_unscaled
+        cls.V = 1e4 * u.km / u.s
+        cls.True1 = np.array([7.200146594293746e-10, 2.3507660003984624e-08])
 
     def test_symmetry(self):
         result = impact_parameter(self.T, self.n_e, self.particles)
@@ -1126,25 +1129,25 @@ class Test_impact_parameter:
 
         msg = f"wrong shape for {n_e.shape = } and {T.shape = }"
 
-        assert bmin.shape == output_shape, "Bmin " + msg
-        assert bmax.shape == output_shape, "Bmax " + msg
+        assert bmin.shape == output_shape, f"Bmin {msg}"
+        assert bmax.shape == output_shape, f"Bmax {msg}"
 
 
 class Test_collision_frequency:
     @classmethod
-    def setup_class(self):
+    def setup_class(cls):
         """initializing parameters for tests"""
-        self.T = 11604 * u.K
-        self.n = 1e17 * u.cm**-3
-        self.particles = ("e", "p")
-        self.electrons = ("e", "e")
-        self.protons = ("p", "p")
-        self.z_mean = 2.5 * u.dimensionless_unscaled
-        self.V = 1e4 * u.km / u.s
-        self.True1 = 1.3468281539854646e12
-        self.True_electrons = 1904702641552.1638
-        self.True_protons = 44450104815.91857
-        self.True_zmean = 1346828153985.4646
+        cls.T = 11604 * u.K
+        cls.n = 1e17 * u.cm**-3
+        cls.particles = ("e", "p")
+        cls.electrons = ("e", "e")
+        cls.protons = ("p", "p")
+        cls.z_mean = 2.5 * u.dimensionless_unscaled
+        cls.V = 1e4 * u.km / u.s
+        cls.True1 = 1.3468281539854646e12
+        cls.True_electrons = 1904702641552.1638
+        cls.True_protons = 44450104815.91857
+        cls.True_zmean = 1346828153985.4646
 
     def test_symmetry(self):
         with pytest.warns(CouplingWarning):
@@ -1271,12 +1274,12 @@ class Test_collision_frequency:
 
 class Test_fundamental_electron_collision_freq:
     @classmethod
-    def setup_class(self):
+    def setup_class(cls):
         """initializing parameters for tests"""
-        self.T_arr = np.array([1, 2]) * u.eV
-        self.n_arr = np.array([1e20, 2e20]) * u.cm**-3
-        self.ion = "p"
-        self.coulomb_log = 10
+        cls.T_arr = np.array([1, 2]) * u.eV
+        cls.n_arr = np.array([1e20, 2e20]) * u.cm**-3
+        cls.ion = "p"
+        cls.coulomb_log = 10
 
     # TODO: array coulomb log
     @pytest.mark.parametrize("insert_some_nans", [[], ["V"]])
@@ -1290,12 +1293,12 @@ class Test_fundamental_electron_collision_freq:
 
 class Test_fundamental_ion_collision_freq:
     @classmethod
-    def setup_class(self):
+    def setup_class(cls):
         """initializing parameters for tests"""
-        self.T_arr = np.array([1, 2]) * u.eV
-        self.n_arr = np.array([1e20, 2e20]) * u.cm**-3
-        self.ion = "p"
-        self.coulomb_log = 10
+        cls.T_arr = np.array([1, 2]) * u.eV
+        cls.n_arr = np.array([1e20, 2e20]) * u.cm**-3
+        cls.ion = "p"
+        cls.coulomb_log = 10
 
     # TODO: array coulomb log
     @pytest.mark.parametrize("insert_some_nans", [[], ["V"]])
@@ -1309,14 +1312,14 @@ class Test_fundamental_ion_collision_freq:
 
 class Test_mean_free_path:
     @classmethod
-    def setup_class(self):
+    def setup_class(cls):
         """initializing parameters for tests"""
-        self.T = 11604 * u.K
-        self.n_e = 1e17 * u.cm**-3
-        self.particles = ("e", "p")
-        self.z_mean = 2.5 * u.dimensionless_unscaled
-        self.V = 1e4 * u.km / u.s
-        self.True1 = 4.4047571877932046e-07
+        cls.T = 11604 * u.K
+        cls.n_e = 1e17 * u.cm**-3
+        cls.particles = ("e", "p")
+        cls.z_mean = 2.5 * u.dimensionless_unscaled
+        cls.V = 1e4 * u.km / u.s
+        cls.True1 = 4.4047571877932046e-07
 
     def test_symmetry(self):
         with pytest.warns(CouplingWarning):
@@ -1372,15 +1375,15 @@ class Test_mean_free_path:
 
 class Test_Spitzer_resistivity:
     @classmethod
-    def setup_class(self):
+    def setup_class(cls):
         """initializing parameters for tests"""
-        self.T = 11604 * u.K
-        self.n = 1e12 * u.cm**-3
-        self.particles = ("e", "p")
-        self.z_mean = 2.5 * u.dimensionless_unscaled
-        self.V = 1e4 * u.km / u.s
-        self.True1 = 1.2665402649805445e-3
-        self.True_zmean = 0.00020264644239688712
+        cls.T = 11604 * u.K
+        cls.n = 1e12 * u.cm**-3
+        cls.particles = ("e", "p")
+        cls.z_mean = 2.5 * u.dimensionless_unscaled
+        cls.V = 1e4 * u.km / u.s
+        cls.True1 = 1.2665402649805445e-3
+        cls.True_zmean = 0.00020264644239688712
 
     def test_symmetry(self):
         result = Spitzer_resistivity(self.T, self.n, self.particles)
@@ -1450,15 +1453,15 @@ class Test_Spitzer_resistivity:
 
 class Test_mobility:
     @classmethod
-    def setup_class(self):
+    def setup_class(cls):
         """initializing parameters for tests"""
-        self.T = 11604 * u.K
-        self.n_e = 1e17 * u.cm**-3
-        self.particles = ("e", "p")
-        self.z_mean = 2.5 * u.dimensionless_unscaled
-        self.V = 1e4 * u.km / u.s
-        self.True1 = 0.13066090887074902
-        self.True_zmean = 0.32665227217687254
+        cls.T = 11604 * u.K
+        cls.n_e = 1e17 * u.cm**-3
+        cls.particles = ("e", "p")
+        cls.z_mean = 2.5 * u.dimensionless_unscaled
+        cls.V = 1e4 * u.km / u.s
+        cls.True1 = 0.13066090887074902
+        cls.True_zmean = 0.32665227217687254
 
     def test_symmetry(self):
         with pytest.warns(CouplingWarning):
@@ -1530,15 +1533,15 @@ class Test_mobility:
 
 class Test_Knudsen_number:
     @classmethod
-    def setup_class(self):
+    def setup_class(cls):
         """initializing parameters for tests"""
-        self.length = 1 * u.nm
-        self.T = 11604 * u.K
-        self.n_e = 1e17 * u.cm**-3
-        self.particles = ("e", "p")
-        self.z_mean = 2.5 * u.dimensionless_unscaled
-        self.V = 1e4 * u.km / u.s
-        self.True1 = 440.4757187793204
+        cls.length = 1 * u.nm
+        cls.T = 11604 * u.K
+        cls.n_e = 1e17 * u.cm**-3
+        cls.particles = ("e", "p")
+        cls.z_mean = 2.5 * u.dimensionless_unscaled
+        cls.V = 1e4 * u.km / u.s
+        cls.True1 = 440.4757187793204
 
     def test_symmetry(self):
         with pytest.warns(CouplingWarning):
@@ -1598,16 +1601,16 @@ class Test_Knudsen_number:
 
 class Test_coupling_parameter:
     @classmethod
-    def setup_class(self):
+    def setup_class(cls):
         """initializing parameters for tests"""
-        self.T = 11604 * u.K
-        self.n_e = 1e21 * u.cm**-3
-        self.particles = ("e", "p")
-        self.z_mean = 2.5 * u.dimensionless_unscaled
-        self.V = 1e4 * u.km / u.s
-        self.True1 = 2.3213156755481195
-        self.True_zmean = 10.689750083758698
-        self.True_quantum = 0.3334662805238162
+        cls.T = 11604 * u.K
+        cls.n_e = 1e21 * u.cm**-3
+        cls.particles = ("e", "p")
+        cls.z_mean = 2.5 * u.dimensionless_unscaled
+        cls.V = 1e4 * u.km / u.s
+        cls.True1 = 2.3213156755481195
+        cls.True_zmean = 10.689750083758698
+        cls.True_quantum = 0.3334662805238162
 
     def test_symmetry(self):
         result = coupling_parameter(self.T, self.n_e, self.particles)
@@ -1670,17 +1673,19 @@ class Test_coupling_parameter:
     # TODO vector z_mean
     @pytest.mark.parametrize("insert_some_nans", [[], ["V"]])
     @pytest.mark.parametrize("insert_all_nans", [[], ["V"]])
-    # @pytest.mark.parametrize("kwargs", [{"method": "classical"},
-    #                                     {"method": "quantum"},])   # TODO quantum issues
-    def test_handle_nparrays(self, insert_some_nans, insert_all_nans):
+    @pytest.mark.parametrize(
+        "kwargs",
+        [
+            {"method": "classical"},
+            {"method": "quantum"},
+        ],
+    )
+    def test_handle_nparrays(self, insert_some_nans, insert_all_nans, kwargs):
         """Test for ability to handle numpy array quantities"""
         assert_can_handle_nparray(
-            coupling_parameter, insert_some_nans, insert_all_nans, {}
+            coupling_parameter, insert_some_nans, insert_all_nans, kwargs
         )
 
-    @pytest.mark.xfail(
-        reason="see issue https://github.com/PlasmaPy/PlasmaPy/issues/726"
-    )
     def test_quantum(self):
         """
         Testing quantum method for coupling parameter.
@@ -1698,3 +1703,630 @@ class Test_coupling_parameter:
         """Testing kwarg `method` fails is not 'classical' or 'quantum'"""
         with pytest.raises(ValueError):
             coupling_parameter(self.T, self.n_e, self.particles, method="not a method")
+
+
+class TestSingleParticleCollisionFrequencies:
+    """Test the SingleParticleCollisionFrequencies class in collisions.py."""
+
+    attribute_units_test_case = SingleParticleCollisionFrequencies(
+        Particle("e-"),
+        Particle("e-"),
+        v_drift=1 * u.m / u.s,
+        T_b=1 * u.K,
+        n_b=1 * u.m**-3,
+        Coulomb_log=1,
+    )
+
+    MKS_unit_conversion_test_constructor_arguments = {
+        "test_particle": Particle("e-"),
+        "field_particle": Particle("e-"),
+        "v_drift": 1e5 * u.m / u.s,
+        "T_b": 1e3 * u.eV,
+        "n_b": 1e26 * u.m**-3,
+        "Coulomb_log": 10 * u.dimensionless_unscaled,
+    }
+
+    arguments_to_convert = ["v_drift", "n_b"]
+
+    CGS_unit_conversion_test_constructor_arguments = (
+        MKS_unit_conversion_test_constructor_arguments
+    )
+
+    for argument_to_convert in arguments_to_convert:
+        CGS_unit_conversion_test_constructor_arguments[
+            argument_to_convert
+        ] = CGS_unit_conversion_test_constructor_arguments[argument_to_convert].cgs
+
+    MKS_test_case = SingleParticleCollisionFrequencies(
+        **MKS_unit_conversion_test_constructor_arguments
+    )
+    CGS_test_case = SingleParticleCollisionFrequencies(
+        **CGS_unit_conversion_test_constructor_arguments
+    )
+
+    return_values_to_test = [
+        "momentum_loss",
+        "transverse_diffusion",
+        "parallel_diffusion",
+        "energy_loss",
+    ]
+
+    ones_array = np.ones(5)
+    ones_array2d = np.ones([5, 5])
+
+    @pytest.mark.parametrize(
+        "attribute_to_test, expected_attribute_units",
+        [
+            ("momentum_loss", u.Hz),
+            ("transverse_diffusion", u.Hz),
+            ("parallel_diffusion", u.Hz),
+            ("energy_loss", u.Hz),
+            ("x", u.dimensionless_unscaled),
+            ("Lorentz_collision_frequency", u.Hz),
+            ("Coulomb_log", u.dimensionless_unscaled),
+        ],
+    )
+    def test_units(self, attribute_to_test, expected_attribute_units):
+        """Test the return units"""
+
+        assert getattr(
+            self.attribute_units_test_case, attribute_to_test
+        ).unit.is_equivalent(expected_attribute_units)
+
+    @pytest.mark.parametrize(
+        "attribute_to_test",
+        [
+            "momentum_loss",
+            "transverse_diffusion",
+            "parallel_diffusion",
+            "energy_loss",
+            "x",
+            "Lorentz_collision_frequency",
+        ],
+    )
+    def test_conversion_consistency(self, attribute_to_test):
+        """Test that a consistent value is computed for attributes regardless of argument units"""
+
+        MKS_result = getattr(self.MKS_test_case, attribute_to_test)
+        CGS_result = getattr(self.CGS_test_case, attribute_to_test)
+
+        assert MKS_result == CGS_result
+
+    @staticmethod
+    def get_limit_value(interaction_type, limit_type, cases):
+        """
+        Get the limiting values for frequencies given the two particles interacting, and their frequencies class.
+
+        These formulae are taken from page 31 of the NRL Formulary.
+        """
+
+        v_a = (0.5 * cases.test_particle.mass * cases.v_drift**2).to(u.eV).value
+        T_b = (cases.T_b * k_B).to(u.eV).value
+
+        limit_values = []
+
+        if interaction_type == "e|e":
+            if limit_type == "slow":
+                limit_values.extend(
+                    [
+                        5.8e-6 * T_b ** (-1.5),
+                        5.8e-6 * T_b ** (-0.5) * v_a ** (-1),
+                        2.9e-6 * T_b ** (-0.5) * v_a ** (-1),
+                    ]
+                )
+            elif limit_type == "fast":
+                limit_values.extend(
+                    [
+                        7.7e-6 * v_a ** (-1.5),
+                        7.7e-6 * v_a ** (-1.5),
+                        3.9e-6 * T_b * v_a ** (-2.5),
+                    ]
+                )
+        elif interaction_type == "e|i":
+            mu = (cases.field_particle.mass / m_p).value
+
+            if limit_type == "slow":
+                limit_values.extend(
+                    [
+                        0.23 * mu**1.5 * T_b**-1.5,
+                        2.5e-4 * mu**0.5 * T_b**-0.5 * v_a**-1,
+                        1.2e-4 * mu**0.5 * T_b**-0.5 * v_a**-1,
+                    ]
+                )
+            elif limit_type == "fast":
+                limit_values.extend(
+                    [
+                        3.9e-6 * v_a**-1.5,
+                        7.7e-6 * v_a**-1.5,
+                        2.1e-9 * mu**-1 * T_b * v_a**-2.5,
+                    ]
+                )
+        elif interaction_type == "i|e":
+            mu = (cases.test_particle.mass / m_p).value
+
+            if limit_type == "slow":
+                limit_values.extend(
+                    [
+                        1.6e-9 * mu**-1 * T_b ** (-1.5),
+                        3.2e-9 * mu**-1 * T_b ** (-0.5) * v_a**-1,
+                        1.6e-9 * mu**-1 * T_b ** (-0.5) * v_a**-1,
+                    ]
+                )
+            elif limit_type == "fast":
+                limit_values.extend(
+                    [
+                        1.7e-4 * mu**0.5 * v_a**-1.5,
+                        1.8e-7 * mu**-0.5 * v_a**-1.5,
+                        1.7e-4 * mu**0.5 * T_b * v_a**-2.5,
+                    ]
+                )
+
+        elif interaction_type == "i|i":
+            mu = (cases.test_particle.mass / m_p).value
+            mu_prime = (cases.field_particle.mass / m_p).value
+
+            if limit_type == "slow":
+                limit_values.extend(
+                    [
+                        6.8e-8
+                        * mu_prime**0.5
+                        * mu**-1
+                        * (1 + mu_prime / mu)
+                        * T_b**-1.5,
+                        1.4e-7 * mu_prime**0.5 * mu**-1 * T_b**-0.5 * v_a**-1,
+                        6.8e-8 * mu_prime**0.5 * mu**-1 * T_b**-0.5 * v_a**-1,
+                    ]
+                )
+            elif limit_type == "fast":
+                limit_values.extend(
+                    [
+                        9e-8 * (1 / mu + 1 / mu_prime) * mu**0.5 * v_a**-1.5,
+                        1.8 * 10**-7 * mu**-0.5 * v_a**-1.5,
+                        9e-8 * mu**0.5 * mu_prime**-1 * T_b * v_a**-2.5,
+                    ]
+                )
+        # The expected energy loss collision frequency should always equal this
+        limit_values.append(
+            2 * cases.momentum_loss.value
+            - cases.transverse_diffusion.value
+            - cases.parallel_diffusion.value
+        )
+
+        return limit_values
+
+    @pytest.mark.parametrize(
+        "interaction_type, limit_type, constructor_arguments, constructor_keyword_arguments",
+        [
+            # Slow limit (x << 1)
+            (
+                "e|e",
+                "slow",
+                (Particle("e-"), Particle("e-")),
+                {
+                    "v_drift": 1 * u.cm / u.s,
+                    "T_b": 1e4 * u.eV,
+                    "n_b": 1e15 * u.cm**-3,
+                    "Coulomb_log": 10 * u.dimensionless_unscaled,
+                },
+            ),
+            (
+                "e|i",
+                "slow",
+                (Particle("e-"), Particle("Na+")),
+                {
+                    "v_drift": 1 * u.cm / u.s,
+                    "T_b": 1e4 * u.eV,
+                    "n_b": 1e20 * u.cm**-3,
+                    "Coulomb_log": 10 * u.dimensionless_unscaled,
+                },
+            ),
+            (
+                "e|i",
+                "slow",
+                (Particle("e-"), Particle("Ba 2+")),
+                {
+                    "v_drift": 1 * u.cm / u.s,
+                    "T_b": 1e4 * u.eV,
+                    "n_b": 1e20 * u.cm**-3,
+                    "Coulomb_log": 10 * u.dimensionless_unscaled,
+                },
+            ),
+            (
+                "i|e",
+                "slow",
+                (Particle("Na+"), Particle("e-")),
+                {
+                    "v_drift": 1 * u.cm / u.s,
+                    "T_b": 1e2 * u.eV,
+                    "n_b": 1e10 * u.cm**-3,
+                    "Coulomb_log": 10 * u.dimensionless_unscaled,
+                },
+            ),
+            (
+                "i|e",
+                "slow",
+                (Particle("Be 2+"), Particle("e-")),
+                {
+                    "v_drift": 1 * u.cm / u.s,
+                    "T_b": 1e2 * u.eV,
+                    "n_b": 1e10 * u.cm**-3,
+                    "Coulomb_log": 10 * u.dimensionless_unscaled,
+                },
+            ),
+            (
+                "i|i",
+                "slow",
+                (Particle("Na+"), Particle("Cl-")),
+                {
+                    "v_drift": 1 * u.cm / u.s,
+                    "T_b": 1e4 * u.eV,
+                    "n_b": 1e20 * u.cm**-3,
+                    "Coulomb_log": 10 * u.dimensionless_unscaled,
+                },
+            ),
+            (
+                "i|i",
+                "slow",
+                (Particle("Na+"), Particle("S 2-")),
+                {
+                    "v_drift": 1 * u.cm / u.s,
+                    "T_b": 1e4 * u.eV,
+                    "n_b": 1e20 * u.cm**-3,
+                    "Coulomb_log": 10 * u.dimensionless_unscaled,
+                },
+            ),
+            # Fast limit (x >> 1)
+            (
+                "e|e",
+                "fast",
+                (Particle("e-"), Particle("e-")),
+                {
+                    "v_drift": 6e8 * u.cm / u.s,
+                    "T_b": 1e-1 * u.eV,
+                    "n_b": 1e20 * u.cm**-3,
+                    "Coulomb_log": 10 * u.dimensionless_unscaled,
+                },
+            ),
+            (
+                "e|i",
+                "fast",
+                (Particle("e-"), Particle("Na+")),
+                {
+                    "v_drift": 6e5 * u.cm / u.s,
+                    "T_b": 1e-3 * u.eV,
+                    "n_b": 1e20 * u.cm**-3,
+                    "Coulomb_log": 10 * u.dimensionless_unscaled,
+                },
+            ),
+            (
+                "e|i",
+                "fast",
+                (Particle("e-"), Particle("Zn 2+")),
+                {
+                    "v_drift": 6e5 * u.cm / u.s,
+                    "T_b": 1e-3 * u.eV,
+                    "n_b": 1e20 * u.cm**-3,
+                    "Coulomb_log": 10 * u.dimensionless_unscaled,
+                },
+            ),
+            (
+                "i|e",
+                "fast",
+                (Particle("Na+"), Particle("e-")),
+                {
+                    "v_drift": 3e7 * u.cm / u.s,
+                    "T_b": 1e-3 * u.eV,
+                    "n_b": 1e20 * u.cm**-3,
+                    "Coulomb_log": 10 * u.dimensionless_unscaled,
+                },
+            ),
+            (
+                "i|e",
+                "fast",
+                (Particle("Ca 2+"), Particle("e-")),
+                {
+                    "v_drift": 3e7 * u.cm / u.s,
+                    "T_b": 1e-3 * u.eV,
+                    "n_b": 1e20 * u.cm**-3,
+                    "Coulomb_log": 10 * u.dimensionless_unscaled,
+                },
+            ),
+            (
+                "i|i",
+                "fast",
+                (Particle("Na+"), Particle("Cl-")),
+                {
+                    "v_drift": 3e7 * u.cm / u.s,
+                    "T_b": 1e2 * u.eV,
+                    "n_b": 1e20 * u.cm**-3,
+                    "Coulomb_log": 10 * u.dimensionless_unscaled,
+                },
+            ),
+            (
+                "i|i",
+                "fast",
+                (Particle("Be 2+"), Particle("Cl-")),
+                {
+                    "v_drift": 3e7 * u.cm / u.s,
+                    "T_b": 1e2 * u.eV,
+                    "n_b": 1e20 * u.cm**-3,
+                    "Coulomb_log": 10 * u.dimensionless_unscaled,
+                },
+            ),
+        ],
+    )
+    def test_limit_values(
+        self,
+        interaction_type,
+        limit_type,
+        constructor_arguments,
+        constructor_keyword_arguments,
+    ):
+        """Test the return values"""
+
+        value_test_case = SingleParticleCollisionFrequencies(
+            *constructor_arguments, **constructor_keyword_arguments
+        )
+
+        coulomb_density_constant = (
+            constructor_keyword_arguments["Coulomb_log"].value
+            * constructor_keyword_arguments["n_b"].to(u.cm**-3).value
+        )
+
+        expected_limit_values = self.get_limit_value(
+            interaction_type, limit_type, value_test_case
+        )
+
+        if interaction_type == "e|e":
+            charge_constant = 1
+        elif interaction_type == "e|i":
+            charge_constant = value_test_case.field_particle.charge_number**2
+        elif interaction_type == "i|e":
+            charge_constant = value_test_case.test_particle.charge_number**2
+        elif interaction_type == "i|i":
+            charge_constant = (
+                value_test_case.test_particle.charge_number
+                * value_test_case.field_particle.charge_number
+            ) ** 2
+
+        for attribute_name, expected_limit_value in zip(
+            self.return_values_to_test, expected_limit_values
+        ):
+            calculated_limit_value = getattr(value_test_case, attribute_name).value
+            # Energy loss limit value is already in units of frequencies because of the way it is calculated
+            if attribute_name != "energy_loss":
+                calculated_limit_value = calculated_limit_value / (
+                    coulomb_density_constant * charge_constant
+                )
+
+            assert np.allclose(
+                calculated_limit_value, expected_limit_value, rtol=0.05, atol=0
+            )
+
+    @pytest.mark.parametrize(
+        "expected_error, constructor_arguments, constructor_keyword_arguments",
+        [
+            # Arrays of unequal shape error
+            (
+                ValueError,
+                (Particle("e-"), Particle("e-")),
+                {
+                    "v_drift": np.ndarray([1, 1]) * u.cm / u.s,
+                    "T_b": 1 * u.eV,
+                    "n_b": ones_array * u.cm**-3,
+                    "Coulomb_log": 1 * u.dimensionless_unscaled,
+                },
+            ),
+        ],
+    )
+    def test_init_errors(
+        self, expected_error, constructor_arguments, constructor_keyword_arguments
+    ):
+        """Test errors raised in the __init__ function body"""
+
+        with pytest.raises(expected_error):
+            SingleParticleCollisionFrequencies(
+                *constructor_arguments, **constructor_keyword_arguments
+            )
+
+    @pytest.mark.parametrize(
+        "constructor_keyword_arguments",
+        [
+            {
+                "test_particle": Particle("e-"),
+                "field_particle": Particle("e-"),
+                "v_drift": ones_array * u.cm / u.s,
+                "T_b": ones_array * u.eV,
+                "n_b": ones_array * u.cm**-3,
+                "Coulomb_log": ones_array * u.dimensionless_unscaled,
+            },
+            {
+                "test_particle": Particle("e-"),
+                "field_particle": Particle("e-"),
+                "v_drift": ones_array2d * u.m / u.s,
+                "T_b": ones_array2d * u.eV,
+                "n_b": ones_array2d * u.cm**-3,
+                "Coulomb_log": ones_array2d * u.dimensionless_unscaled,
+            },
+        ],
+    )
+    def test_handle_ndarrays(self, constructor_keyword_arguments):
+        """Test for ability to handle numpy array quantities"""
+
+        SingleParticleCollisionFrequencies(**constructor_keyword_arguments)
+
+
+class TestMaxwellianCollisionFrequencies:
+    ones_array = np.ones(5)
+
+    @staticmethod
+    def get_fundamental_frequency(species, n, T_a, Coulomb_log):
+        """
+        This special case for computing the fundamental frequencies comes from page 33 of the NRL Formulary.
+        The formulary provides limiting cases for the `Maxwellian_avg_##_collision_freq` family of attributes
+        in the case that T_a ~ T_b.
+        """
+
+        # Strip the units from these quantities and ensure they are in CGS units
+        n = n.to(u.cm**-3).value
+        T_a = T_a.to(u.eV).value
+
+        if species.is_electron:
+            return (2.9e-6 * n * Coulomb_log * T_a**-1.5) * u.Hz
+        elif species.is_ion:
+            mu = (species.mass / m_p).value
+
+            return (4.8e-8 * n * Coulomb_log * T_a**-1.5 * mu**-0.5) * u.Hz
+
+    @pytest.mark.parametrize(
+        "expected_error, constructor_arguments, constructor_keyword_arguments",
+        [
+            # Arrays of unequal shape error
+            (
+                ValueError,
+                (Particle("e-"), Particle("e-")),
+                {
+                    "v_drift": np.array([1, 1]) * u.m / u.s,
+                    "T_a": 1 * u.K,
+                    "n_a": 1 * u.m**-3,
+                    "T_b": 1 * u.K,
+                    "n_b": ones_array * u.m**-3,
+                    "Coulomb_log": 1 * u.dimensionless_unscaled,
+                },
+            ),
+        ],
+    )
+    def test_init_errors(
+        self, expected_error, constructor_arguments, constructor_keyword_arguments
+    ):
+        """Test errors raised in the __init__ function body"""
+
+        with pytest.raises(expected_error):
+            MaxwellianCollisionFrequencies(
+                *constructor_arguments, **constructor_keyword_arguments
+            )
+
+    @pytest.mark.parametrize(
+        "expected_error, constructor_arguments, constructor_keyword_arguments, attribute_name",
+        [
+            # Specified interaction isn't electron-ion
+            (
+                ValueError,
+                ("e-", "e-"),
+                {
+                    "v_drift": 1e-5 * u.cm / u.s,
+                    "T_a": 1e3 * u.eV,
+                    "n_a": 1e10 * u.cm**-3,
+                    "T_b": 1e3 * u.eV,
+                    "n_b": 1e10 * u.cm**-3,
+                    "Coulomb_log": 10 * u.dimensionless_unscaled,
+                },
+                "Maxwellian_avg_ei_collision_freq",
+            ),
+            # Specified interaction isn't ion-ion
+            (
+                ValueError,
+                ("Na+", "e-"),
+                {
+                    "v_drift": 1e-5 * u.cm / u.s,
+                    "T_a": 1e3 * u.eV,
+                    "n_a": 1e10 * u.cm**-3,
+                    "T_b": 1e3 * u.eV,
+                    "n_b": 1e10 * u.cm**-3,
+                    "Coulomb_log": 10 * u.dimensionless_unscaled,
+                },
+                "Maxwellian_avg_ii_collision_freq",
+            ),
+            # Populations are not slowly flowing error
+            (
+                PhysicsError,
+                ("e-", "Na+"),
+                {
+                    "v_drift": 1e10 * u.cm / u.s,
+                    "T_a": 1e3 * u.eV,
+                    "n_a": 1e10 * u.cm**-3,
+                    "T_b": 1e3 * u.eV,
+                    "n_b": 1e10 * u.cm**-3,
+                    "Coulomb_log": 10 * u.dimensionless_unscaled,
+                },
+                "Maxwellian_avg_ei_collision_freq",
+            ),
+            # Populations are not slowly flowing error
+            (
+                PhysicsError,
+                ("Na+", "Na+"),
+                {
+                    "v_drift": 1e10 * u.cm / u.s,
+                    "T_a": 1e3 * u.eV,
+                    "n_a": 1e10 * u.cm**-3,
+                    "T_b": 1e3 * u.eV,
+                    "n_b": 1e10 * u.cm**-3,
+                    "Coulomb_log": 10 * u.dimensionless_unscaled,
+                },
+                "Maxwellian_avg_ii_collision_freq",
+            ),
+        ],
+    )
+    def test_attribute_errors(
+        self,
+        expected_error,
+        constructor_arguments,
+        constructor_keyword_arguments,
+        attribute_name,
+    ):
+        """Test errors raised in attribute bodies"""
+
+        test_case = MaxwellianCollisionFrequencies(
+            *constructor_arguments, **constructor_keyword_arguments
+        )
+
+        with pytest.raises(expected_error):
+            getattr(test_case, attribute_name)
+
+    @pytest.mark.parametrize(
+        "frequency_to_test, constructor_keyword_arguments",
+        [
+            (
+                "Maxwellian_avg_ei_collision_freq",
+                {
+                    "test_particle": Particle("e-"),
+                    "field_particle": Particle("Li+"),
+                    "v_drift": 1e-5 * u.cm / u.s,
+                    "T_a": 1e3 * u.eV,
+                    "n_a": 1e10 * u.cm**-3,
+                    "T_b": 1e3 * u.eV,
+                    "n_b": 1e10 * u.cm**-3,
+                    "Coulomb_log": 10 * u.dimensionless_unscaled,
+                },
+            ),
+            (
+                "Maxwellian_avg_ii_collision_freq",
+                {
+                    "test_particle": Particle("Li+"),
+                    "field_particle": Particle("Cl-"),
+                    "v_drift": 1 * u.cm / u.s,
+                    "T_a": 1e3 * u.eV,
+                    "n_a": 1e10 * u.cm**-3,
+                    "T_b": 1 * u.eV,
+                    "n_b": 1e10 * u.cm**-3,
+                    "Coulomb_log": 10 * u.dimensionless_unscaled,
+                },
+            ),
+        ],
+    )
+    def test_fundamental_frequency_values(
+        self, frequency_to_test, constructor_keyword_arguments
+    ):
+        value_test_case = MaxwellianCollisionFrequencies(
+            **constructor_keyword_arguments
+        )
+
+        calculated_value = getattr(value_test_case, frequency_to_test)
+        expected_value = self.get_fundamental_frequency(
+            constructor_keyword_arguments["test_particle"],
+            constructor_keyword_arguments["n_a"],
+            constructor_keyword_arguments["T_a"],
+            constructor_keyword_arguments["Coulomb_log"],
+        )
+
+        assert np.allclose(calculated_value, expected_value, rtol=5e-3, atol=0)
