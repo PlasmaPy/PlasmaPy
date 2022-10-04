@@ -1107,6 +1107,28 @@ Narrative documentation guidelines
    Remember: your happiness and well-being are more important than
    `nested inline markup`_!
 
+Troubleshooting
+===============
+
+* Errors like ``WARNING: py:class reference target not found: ...``
+  occur when Sphinx is unable to interpret text as a Python object.
+
+  - If the text is meant to be a code sample, make sure that the text is
+    in double back ticks.
+
+  - If the text should refer to a code object, make sure that the full
+    namespace is provided correctly.
+
+  - If the text is in the type line for a parameter in a docstring, then
+    either:
+
+    - Change the type line to include only Python types and words or
+      patterns defined in ``nitpick_ignore_regex`` in |docs/conf.py|_
+      (preferred), or
+
+    - Add the text as a regular expression to ``nitpick_ignore_regex``
+      so that Sphinx knows not to issue a warning for this text.
+
 .. |role| replace:: :term:`role`
 .. |roles| replace:: :term:`roles <role>`
 .. |directive| replace:: :term:`directive`
