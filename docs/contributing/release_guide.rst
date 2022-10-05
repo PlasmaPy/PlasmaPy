@@ -57,9 +57,10 @@ Update metadata
   :file:`docs/about/credits.rst`. Missing ORCID_ identifiers may be
   added.
 
-* Open a pull request to update :file:`codemeta.json`. Update the author
-  list, version, and other metadata, as needed. Update the
-  ``"identifier"`` tag with the DOI for the new release.
+* Open a pull request to update :file:`codemeta.json` and
+  :file:`CITATION.cff`. Update the author list, version, and other
+  metadata, as needed. Update the ``"identifier"`` tag with the DOI for
+  the new release.
 
 * Open a pull request to update :file:`.mailmap`.
 
