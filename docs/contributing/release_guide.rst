@@ -10,7 +10,7 @@ Release Guide
    :backlinks: none
 
 Introduction
-------------
+============
 
 This document describes the procedure for making a release of PlasmaPy.
 Developers should revise and expand these instructions while performing
@@ -25,15 +25,13 @@ Throughout this guide, ``0.9.0`` denotes the version you're releasing.
    facilitate quicker code reviews.
 
 .. When updating this guide, make sure that each bullet point is for
-   doing exactly one task!
+   doing exactly one task.
 
 Announce the release timeline
 =============================
 
 * Create an issue on GitHub for the release with a checklist of tasks
-  to be performed.
-
-.. Convert the release guide into an issue template with a checklist?
+  to be performed roughly one month before.
 
 * About three weeks before a minor or major release, announce that a
   feature freeze will occur one week before the anticipated release
@@ -41,9 +39,9 @@ Announce the release timeline
   significantly change functionality should be merged during the feature
   freeze.
 
-* About three weekdays before a minor or major release, announce a code
-  freeze. Only bugfixes and pull requests that are directly related to
-  the release should be merged during the code freeze.
+* Begin a code freeze about three weekdays before a release. Only
+  bugfixes and pull requests that are directly related to the release
+  should be merged during the code freeze.
 
 Update metadata
 ===============
@@ -78,7 +76,7 @@ Perform code quality checks
 ===========================
 
 * Create a pull request to revise changelog entries to make sure that
-  they are categorized correctly, understandable, and necessary.
+  they are understandable, necessary, and in the correct category.
 
   .. tip::
 
@@ -182,16 +180,12 @@ Create the release branch
     Note that the argument is for the previous release. Double check
     that the above command works!!!!!!
 
-.. double check this ↑
-
 Publish the release
 ===================
 
 .. There used to be a step here to use the hub tool with `hub ci-status
-   main -v [COMMIT]``, where
-
-.. I kept getting a "Not Found" error when using the hub tool, and I'm
-   not sure why.
+   main -v [COMMIT]``. I kept getting a "Not Found" error when using the
+   hub tool, and I'm not sure why.
 
 .. Install `hub <https://hub.github.com/>`__ (if needed), and use it to
    check that the continuous integration is passing.
@@ -210,7 +204,7 @@ Publish the release
   - Mark this as a pre-release.
   - Click on :guilabel:`Publish release`.
 
-.. Link to the GitHub Action that's doing the release on PyPI.
+  The release is handled via |.github/workflows/python-publish.yml|_.
 
   In a few minutes, check `PlasmaPy releases on PyPI`_ to make sure that
   version ``0.9.0rc1`` has been released and is marked as pre-release.
@@ -249,46 +243,6 @@ Publish the release
   In a few minutes, check `PlasmaPy releases on PyPI`_ to make sure that
   the ``0.9.0`` release is present. If it is, congratulations!
 
-.. Commit and push your changes up until now.
-
-.. Open a pull request from the ``0.9.x`` branch to the ``main`` branch.
-
-.. Go to `Actions <https://github.com/PlasmaPy/PlasmaPy/actions>`__, and
-  click on :guilabel:`Run workflow` under both the :guilabel:`CI` and
-  :guilabel:`fortnightly tests`. Verify that all continuous integration
-  checks are passing.
-
-.. Make sure that tests pass and that documentation builds without issue.
-
-.. No, really, check twice. Let the tests do their thing. You want things tip
-    top, and by now, you want that cuppa tea anyway. Treat yourself! Celebrate
-    the new release and let the darn tests pass.
-
-.. If you want to do any rebase to clean up the commit history on your ``0.6.x``
-   branch, now is the time to do that. Ensure that no tests broke.
-
-.. Create a GPG key, if not done previously.
-
-.. After verifying that all continuous integration checks are passing for
-  a second time, tag the new version with
-
-.. .. code-block:: Shell
-     git tag -s v0.9.0 -m "Version v0.9.0"
-  The ``-s`` signs the commit with your GPG key.
-
-.. After verifying that all continuous integration checks are passing for
-  a third time, push the tagged commit to the ``0.9.x`` branch on GitHub.
-  .. code-block:: Shell
-     git push --force --follow-tags upstream v0.9.x
-  The ``--force`` is necessary to trigger a rebuild with the tagged
-  version. Be careful during this step, as tags cannot be deleted once
-  they have been pushed to GitHub.
-
-.. At this point, the GitHub Actions packaging workflow should do most of
-   the work for you! `Ensure that the pipeline goes through.
-   <https://dev.azure.com/plasmapy/PlasmaPy/_build>`_. When ``sdist`` and
-   ``wheels_universal`` finish, check PyPI_ for the new version!
-
 * Merge the pull request from the ``v0.9.x`` branch to ``main``.
 
 * In the ``v0.9.x`` branch, change the line in
@@ -318,8 +272,8 @@ Post-release
 
 * Make the release on conda-forge. The helpful conda-forge bots should
   automatically open up a PR on `conda-forge/plasmapy-feedstock
-  <https://github.com/conda-forge/plasmapy-feedstock/pulls>`_. If nothing
-  breaks, it'll even get auto-merged.
+  <https://github.com/conda-forge/plasmapy-feedstock/pulls>`_. If
+  nothing breaks, it'll even get auto-merged.
 
     * If tests fail, look at the :file:`recipe.yaml` file — usually it's
       either changed dependencies or the simple import tests there.
@@ -327,34 +281,22 @@ Post-release
 * Upload the release to the Zenodo_ record corresponding to the reserved
   DOI, making the metadata consistent with :file:`codemeta.json`.
 
-.. As of July 2022, Zenodo doesn't have CodeMeta support but does have
-   Citation File Format (CFF) support. Should we switch to CFF?
-
 Advertise the release
 =====================
 
 * Write a post on the PlasmaPy release on `PlasmaPy's website`_.
 
-* Notify plasma physics communities about the release.
+* Notify plasma physics communities about the release on:
 
-  * Post the release announcement in PlasmaPy's chat room.
-
-  * Post the release announcement on social media sites (Twitter,
-    Facebook).
-
-  * Send the release announcement to the mailing list.
-
-  * Post on the APS DPP Engage forum.
+  * PlasmaPy's chat room
+  * PlasmaPy mailing list
+  * Facebook_, LinkedIn_, and Twitter_
+  * APS DPP Engage forum (requires login)
 
 * Discuss how the release procedure went during the next community
   meeting.
 
 * Update the release guide to reflect any changes.
-
-* Drop support for the versions of Python_ that will have been released
-  more than 42 months prior to the next expected PlasmaPy release, as
-  per the drop schedule in `NEP 29`_. Consider bumping the minimum
-  supported versions of NumPy_ and Astropy_ too.
 
 .. |exclude bugfix| replace:: *Skip this step for bugfix releases.*
 
@@ -362,8 +304,13 @@ Advertise the release
 .. _API token for PyPI: https://pypi.org/help/#apitoken
 .. _Astropy's release procedures: https://docs.astropy.org/en/stable/development/releasing.html
 .. _Draft a new release: https://github.com/PlasmaPy/PlasmaPy/releases/new
-.. _GitHub personal access token:
+.. _Facebook: https://www.facebook.com/people/PlasmaPy/100064083033291/
+.. _LinkedIn: https://www.linkedin.com/company/plasmapy/
 .. _ORCID: https://orcid.org
 .. _PlasmaPy releases on PyPI: https://pypi.org/project/plasmapy/#history
 .. _SunPy Xonsh script: https://github.com/sunpy/sunpy/blob/v2.1dev/tools/generate_releaserst.xsh
+.. _Twitter: https://twitter.com/plasmapy
 .. _update the secret on GitHub: https://github.com/PlasmaPy/PlasmaPy/settings/secrets/actions
+
+.. _`.github/workflows/python-publish.yml`: https://github.com/PlasmaPy/PlasmaPy/blob/main/.github/workflows/python-publish.yml
+.. |.github/workflows/python-publish.yml| replace:: :file:`.github/workflows/python-publish.yml`
