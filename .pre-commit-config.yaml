@@ -39,7 +39,7 @@ repos:
   - id: black
 
 - repo: https://github.com/nbQA-dev/nbQA
-  rev: 1.4.0
+  rev: 1.5.2
   hooks:
   - id: nbqa-black
     additional_dependencies:
@@ -74,7 +74,7 @@ repos:
     exclude: docs/plasmapy_sphinx
 
 - repo: https://github.com/asottile/pyupgrade
-  rev: v2.37.3
+  rev: v2.38.2
   hooks:
   - id: pyupgrade
     args: [--keep-runtime-typing, --py38-plus]

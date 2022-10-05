@@ -1,0 +1,2 @@
+Made ``pytest`` an ``install`` requirement instead of a ``testing``
+requirement.
