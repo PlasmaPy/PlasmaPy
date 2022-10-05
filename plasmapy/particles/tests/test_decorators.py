@@ -93,9 +93,14 @@ def test_particle_input_simple(func, args, kwargs, symbol):
 particle_input_error_table = [
     (
         function_decorated_with_particle_input,
-        {"a": 1, "particle": "asdf"},
+        {"a": 1, "particle": "invalid particle"},
         InvalidParticleError,
-    )
+    ),
+    (
+        function_decorated_with_particle_input,
+        {"a": 1, "particle": 5 * u.m},
+        u.UnitConversionError,
+    ),
 ]
 
 
@@ -174,7 +179,9 @@ ambiguous_arguments = [
 def test_function_with_ambiguity(args, kwargs):
     """
     Test that a function decorated with particle_input that has two
-    annotated arguments.
+    annotated arguments along with `Z` and `mass_numb` raises an
+    exception because it is not clear which argument that `Z` and
+    `mass_numb` should belong to.
     """
     with pytest.raises(ParticleError):
         ambiguous_keywords(*args, **kwargs)

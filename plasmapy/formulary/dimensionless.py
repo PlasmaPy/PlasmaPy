@@ -28,7 +28,7 @@ from typing import Optional
 
 from plasmapy.formulary import frequencies, lengths, misc, speeds
 from plasmapy.formulary.quantum import quantum_theta
-from plasmapy.particles import Particle, ParticleLike
+from plasmapy.particles import Particle, particle_input, ParticleLike
 from plasmapy.utils.decorators import validate_quantities
 
 __all__ += __aliases__
@@ -111,6 +111,7 @@ nD_ = Debye_number
     n={"can_be_negative": False},
     T={"can_be_negative": False, "equivalencies": u.temperature_energy()},
 )
+@particle_input
 def Hall_parameter(
     n: u.m**-3,
     T: u.K,

@@ -722,6 +722,10 @@ def particle_input(
         ``exclude``; or if none of the |parameters| of ``callable_``
         have been appropriately annotated.
 
+    |UnitConversionError|
+        If the annotated argument is a |Quantity|, but does not have a
+        physical type of mass or charge.
+
     Warns
     -----
     |ParticleWarning|

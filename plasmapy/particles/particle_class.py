@@ -23,7 +23,7 @@ from abc import ABC, abstractmethod
 from collections import defaultdict, namedtuple
 from datetime import datetime
 from numbers import Integral, Real
-from typing import Iterable, Optional, Sequence, Set, Union
+from typing import Iterable, NoReturn, Optional, Sequence, Set, Union
 
 from plasmapy.particles import _elements, _isotopes, _parsing, _special_particles
 from plasmapy.particles.exceptions import (
@@ -384,16 +384,16 @@ class Particle(AbstractPhysicalParticle):
 
     Parameters
     ----------
-    argument : `ParticleLike`, excluding `CustomParticle` instances
+    argument : |particle-like|
         A string representing a particle, element, isotope, or ion; an
         integer representing the atomic number of an element; or a
-        |Particle| instance.
+        |Particle|.
 
-    mass_numb : `int`, optional, |keyword-only|
-        The mass number of an isotope or nuclide.
+    mass_numb : integer, optional, |keyword-only|
+        The mass number of an isotope.
 
-    Z : `int`, optional, |keyword-only|
-        The charge number of the particle.
+    Z : integer, optional, |keyword-only|
+        The |charge number| of an ion or neutral atom.
 
     Raises
     ------
@@ -428,8 +428,8 @@ class Particle(AbstractPhysicalParticle):
 
     See Also
     --------
-    CustomParticle
-    DimensionlessParticle
+    ~plasmapy.particles.particle_class.CustomParticle
+    ~plasmapy.particles.particle_class.DimensionlessParticle
     ~plasmapy.particles.particle_collections.ParticleList
     ~plasmapy.particles.particle_class.valid_categories
 
@@ -566,14 +566,17 @@ class Particle(AbstractPhysicalParticle):
     The `~plasmapy.particles.particle_class.Particle.categories` attribute
     and `~plasmapy.particles.particle_class.Particle.is_category` method
     may be used to find and test particle membership in categories.
+    Please refer to
+    `~plasmapy.particles.particle_class.Particle.is_category` for more
+    details, including a list of all valid particle categories.
     """
 
     def __init__(
         self,
         argument: ParticleLike,
         *_,
-        mass_numb: Integral = None,
-        Z: Integral = None,
+        mass_numb: Optional[Integral] = None,
+        Z: Optional[Integral] = None,
     ):
 
         # TODO: Remove the following block during or after the 0.9.0 release
@@ -604,12 +607,12 @@ class Particle(AbstractPhysicalParticle):
 
         self.__name__ = self.__repr__()
 
-    def _initialize_attributes_and_categories(self):
+    def _initialize_attributes_and_categories(self) -> NoReturn:
         """Create empty collections for attributes and categories."""
         self._attributes = defaultdict(type(None))
         self._categories = set()
 
-    def _validate_inputs(self):
+    def _validate_inputs(self) -> NoReturn:
         """Raise appropriate exceptions when inputs are invalid."""
         argument, mass_numb, Z = self.__inputs
 
@@ -626,7 +629,7 @@ class Particle(AbstractPhysicalParticle):
         if Z is not None and not isinstance(Z, Integral):
             raise TypeError("Z is not an integer.")
 
-    def _store_particle_identity(self):
+    def _store_particle_identity(self) -> NoReturn:
         """Store the particle's symbol and identifying information."""
         self._validate_inputs()
         argument, mass_numb, Z = self.__inputs
@@ -636,7 +639,7 @@ class Particle(AbstractPhysicalParticle):
         else:
             self._store_identity_of_atom(argument)
 
-    def _store_identity_of_atom(self, argument):
+    def _store_identity_of_atom(self, argument) -> NoReturn:
         """
         Store the particle's symbol, element, isotope, ion, mass number,
         and charge number.
@@ -660,14 +663,14 @@ class Particle(AbstractPhysicalParticle):
         for key in information_about_atom:
             self._attributes[key] = information_about_atom[key]
 
-    def _assign_particle_attributes(self):
+    def _assign_particle_attributes(self) -> NoReturn:
         """Assign particle attributes and categories."""
         if self.symbol in _special_particles.data_about_special_particles:
             self._assign_special_particle_attributes()
         else:
             self._assign_atom_attributes()
 
-    def _assign_special_particle_attributes(self):
+    def _assign_special_particle_attributes(self) -> NoReturn:
         """Initialize special particles."""
         attributes = self._attributes
         categories = self._categories
@@ -708,7 +711,7 @@ class Particle(AbstractPhysicalParticle):
                     f"use:  Particle({repr(attributes['particle'])})"
                 )
 
-    def _assign_atom_attributes(self):
+    def _assign_atom_attributes(self) -> NoReturn:
         """Assign attributes and categories to elements, isotopes, and ions."""
         attributes = self._attributes
         categories = self._categories
@@ -765,7 +768,7 @@ class Particle(AbstractPhysicalParticle):
 
         categories.add(this_element["category"])
 
-    def _add_charge_information(self):
+    def _add_charge_information(self) -> NoReturn:
         """Assign attributes and categories related to charge information."""
         if self._attributes["charge number"] == 1:
             self._attributes["charge"] = const.e.si
@@ -777,7 +780,7 @@ class Particle(AbstractPhysicalParticle):
         elif self._attributes["charge number"] == 0:
             self._categories.add("uncharged")
 
-    def _add_half_life_information(self):
+    def _add_half_life_information(self) -> NoReturn:
         """Assign categories related to stability."""
         if self._attributes["half-life"] is not None:
             if isinstance(self._attributes["half-life"], str):
@@ -1699,9 +1702,9 @@ class Particle(AbstractPhysicalParticle):
 
         Parameters
         ----------
-        n : positive integer
+        n : positive integer, optional, default: ``1``
             The number of bound electrons to remove from the |Particle|
-            object.  Defaults to ``1``.
+            object.
 
         inplace : bool, optional
             If `True`, then replace the current |Particle| instance
@@ -1848,14 +1851,13 @@ class DimensionlessParticle(AbstractParticle):
 
     Parameters
     ----------
-    mass : positive real number, |keyword-only|, optional
-        The mass of the dimensionless particle.  Defaults to `numpy.nan`.
+    mass : positive real number, optional, |keyword-only|, default: |nan|
+        The mass of the dimensionless particle.
 
-    charge : real number, |keyword-only|, optional
-        The electric charge of the dimensionless particle.  Defaults to
-        `numpy.nan`.
+    charge : real number, optional, |keyword-only|, default: |nan|
+        The electric charge of the dimensionless particle.
 
-    symbol : str, optional
+    symbol : str, optional, |keyword-only|
         The symbol to be assigned to the dimensionless particle.
 
     See Also
@@ -1865,10 +1867,9 @@ class DimensionlessParticle(AbstractParticle):
 
     Notes
     -----
-    |DimensionlessParticle| instances are not considered
-    `~plasmapy.particles.particle_class.ParticleLike` because
-    dimensionless particles cannot uniquely identify a physical particle
-    without normalization information.
+    |DimensionlessParticle| instances are not considered |particle-like|
+    because dimensionless particles cannot uniquely identify a physical
+    particle without normalization information.
 
     Examples
     --------
@@ -1893,7 +1894,7 @@ class DimensionlessParticle(AbstractParticle):
                 f"{mass} and a charge of {charge}."
             ) from exc
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         """
         Return a string representation of a |DimensionlessParticle|.
 
@@ -2028,13 +2029,15 @@ class CustomParticle(AbstractPhysicalParticle):
     Parameters
     ----------
     mass : ~astropy.units.Quantity, optional
-        The mass of the custom particle in units of mass.
+        The mass of the custom particle in units of mass.  Defaults to
+        |nan| kg.
 
     charge : ~astropy.units.Quantity or ~numbers.Real, optional
         The electric charge of the custom particle.  If provided as a
         `~astropy.units.Quantity`, then it must be in units of electric
         charge.  If provided as a real number, then it is treated as the
-        ratio of the charge to the elementary charge.
+        ratio of the charge to the elementary charge. Defaults to |nan|
+        C.
 
     symbol : str, optional
         The symbol to be assigned to the custom particle.
@@ -2053,7 +2056,7 @@ class CustomParticle(AbstractPhysicalParticle):
     Notes
     -----
     If the charge or mass is not specified, then the corresponding value
-    will be set to ``numpy.nan`` in the appropriate units.
+    will be set to |nan| in the appropriate units.
 
     Examples
     --------
@@ -2087,7 +2090,7 @@ class CustomParticle(AbstractPhysicalParticle):
                 f"{mass} and a charge of {charge}."
             ) from exc
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         """
         Return a string representation of a |CustomParticle|.
 
@@ -2304,8 +2307,8 @@ def molecule(
         ``"CO2"`` and CO\ :sup:`+` can be represented as ``"CO 1+"``,
         ``"CO +1"``, or ``"CO+"``.
 
-    Z : `int`, optional
-        The charge number if not present in the symbol.
+    Z : integer, optional
+        The |charge number| of the molecule.
 
     Returns
     -------
@@ -2472,7 +2475,7 @@ See Also
 
 Examples
 --------
-Using `ParticleLike` as a type hint annotation indicates that an
+Using |ParticleLike| as a type hint annotation indicates that an
 argument or variable should represent a physical particle.
 
 >>> from plasmapy.particles import ParticleLike, Particle
