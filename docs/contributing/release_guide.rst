@@ -244,6 +244,12 @@ Publish the release
   In a few minutes, check `PlasmaPy releases on PyPI`_ to make sure that
   the ``0.9.0`` release is present. If it is, congratulations!
 
+  .. tip::
+
+     When creating the release notes, the number of merged PRs can be
+     found via ``is:pr merged:>=2021-11-19`` and the number of closed
+     issues can be found via ``is:issue closed:>=2021-11-19``.
+
 * Merge the pull request from the ``v0.9.x`` branch to ``main``.
 
 * In the ``v0.9.x`` branch, change the line in
