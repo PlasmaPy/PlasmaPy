@@ -1,2 +1,2 @@
-Make ``pytest`` an ``install`` requirement instead of a ``testing``
+Made ``pytest`` an ``install`` requirement instead of a ``testing``
 requirement.
