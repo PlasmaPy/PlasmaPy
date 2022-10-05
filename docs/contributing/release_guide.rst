@@ -288,8 +288,8 @@ Advertise the release
 
 * Notify plasma physics communities about the release on:
 
-  * PlasmaPy's chat room
-  * PlasmaPy mailing list
+  * `PlasmaPy's Matrix chat room`_
+  * PlasmaPy newsletter
   * Facebook_, LinkedIn_, and Twitter_
   * APS DPP Engage forum (requires login)
 
