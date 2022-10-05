@@ -246,9 +246,10 @@ Publish the release
 
   .. tip::
 
-     When creating the release notes, the number of merged PRs can be
-     found via ``is:pr merged:>=2021-11-19`` and the number of closed
-     issues can be found via ``is:issue closed:>=2021-11-19``.
+     To get the number of PRs merged and issues closed since the last
+     release for the release notes, perform GitHub searches like
+     ``is:pr merged:>=2021-11-19`` and ``is:issue closed:>=2021-11-19``,
+     using the date one day after the last release.
 
 * Merge the pull request from the ``v0.9.x`` branch to ``main``.
 
