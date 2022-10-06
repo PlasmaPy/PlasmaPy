@@ -292,7 +292,7 @@ Post-release
 Advertise the release
 =====================
 
-* Write a post on the PlasmaPy release on `PlasmaPy's website`_.
+* Write a post on the release on `PlasmaPy's website`_.
 
 * Notify plasma physics communities about the release on:
 
@@ -316,6 +316,7 @@ Advertise the release
 .. _LinkedIn: https://www.linkedin.com/company/plasmapy/
 .. _ORCID: https://orcid.org
 .. _PlasmaPy releases on PyPI: https://pypi.org/project/plasmapy/#history
+.. _PlasmaPy's website: https://www.plasmapy.org
 .. _SunPy Xonsh script: https://github.com/sunpy/sunpy/blob/v2.1dev/tools/generate_releaserst.xsh
 .. _Twitter: https://twitter.com/plasmapy
 .. _update the secret on GitHub: https://github.com/PlasmaPy/PlasmaPy/settings/secrets/actions
