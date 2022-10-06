@@ -10,20 +10,21 @@ import plasmapy.particles.exceptions
 from plasmapy.formulary.braginskii import Coulomb_logarithm
 from plasmapy.formulary.collisions import (
     collision_frequency,
-    CollisionFrequencies,
     coupling_parameter,
     fundamental_electron_collision_freq,
     fundamental_ion_collision_freq,
     impact_parameter,
     impact_parameter_perp,
     Knudsen_number,
+    MaxwellianCollisionFrequencies,
     mean_free_path,
     mobility,
+    SingleParticleCollisionFrequencies,
     Spitzer_resistivity,
 )
 from plasmapy.particles import Particle
 from plasmapy.utils import exceptions
-from plasmapy.utils.exceptions import CouplingWarning
+from plasmapy.utils.exceptions import CouplingWarning, PhysicsError
 from plasmapy.utils.pytest_helpers import assert_can_handle_nparray
 
 
@@ -1704,13 +1705,13 @@ class Test_coupling_parameter:
             coupling_parameter(self.T, self.n_e, self.particles, method="not a method")
 
 
-class TestCollisionFrequencies:
-    """Test the CollisionFrequencies class in collisions.py."""
+class TestSingleParticleCollisionFrequencies:
+    """Test the SingleParticleCollisionFrequencies class in collisions.py."""
 
-    attribute_units_test_case = CollisionFrequencies(
+    attribute_units_test_case = SingleParticleCollisionFrequencies(
         Particle("e-"),
         Particle("e-"),
-        v_a=1 * u.m / u.s,
+        v_drift=1 * u.m / u.s,
         T_b=1 * u.K,
         n_b=1 * u.m**-3,
         Coulomb_log=1,
@@ -1719,13 +1720,13 @@ class TestCollisionFrequencies:
     MKS_unit_conversion_test_constructor_arguments = {
         "test_particle": Particle("e-"),
         "field_particle": Particle("e-"),
-        "v_a": 1e5 * u.m / u.s,
+        "v_drift": 1e5 * u.m / u.s,
         "T_b": 1e3 * u.eV,
         "n_b": 1e26 * u.m**-3,
         "Coulomb_log": 10 * u.dimensionless_unscaled,
     }
 
-    arguments_to_convert = ["v_a", "n_b"]
+    arguments_to_convert = ["v_drift", "n_b"]
 
     CGS_unit_conversion_test_constructor_arguments = (
         MKS_unit_conversion_test_constructor_arguments
@@ -1736,10 +1737,10 @@ class TestCollisionFrequencies:
             argument_to_convert
         ] = CGS_unit_conversion_test_constructor_arguments[argument_to_convert].cgs
 
-    MKS_test_case = CollisionFrequencies(
+    MKS_test_case = SingleParticleCollisionFrequencies(
         **MKS_unit_conversion_test_constructor_arguments
     )
-    CGS_test_case = CollisionFrequencies(
+    CGS_test_case = SingleParticleCollisionFrequencies(
         **CGS_unit_conversion_test_constructor_arguments
     )
 
@@ -1799,7 +1800,7 @@ class TestCollisionFrequencies:
         These formulae are taken from page 31 of the NRL Formulary.
         """
 
-        v_a = (cases.T_a * k_B).to(u.eV).value
+        v_a = (0.5 * cases.test_particle.mass * cases.v_drift**2).to(u.eV).value
         T_b = (cases.T_b * k_B).to(u.eV).value
 
         limit_values = []
@@ -1902,7 +1903,7 @@ class TestCollisionFrequencies:
                 "slow",
                 (Particle("e-"), Particle("e-")),
                 {
-                    "T_a": 1 * u.eV,
+                    "v_drift": 1 * u.cm / u.s,
                     "T_b": 1e4 * u.eV,
                     "n_b": 1e15 * u.cm**-3,
                     "Coulomb_log": 10 * u.dimensionless_unscaled,
@@ -1913,7 +1914,7 @@ class TestCollisionFrequencies:
                 "slow",
                 (Particle("e-"), Particle("Na+")),
                 {
-                    "T_a": 1e-4 * u.eV,
+                    "v_drift": 1 * u.cm / u.s,
                     "T_b": 1e4 * u.eV,
                     "n_b": 1e20 * u.cm**-3,
                     "Coulomb_log": 10 * u.dimensionless_unscaled,
@@ -1924,7 +1925,7 @@ class TestCollisionFrequencies:
                 "slow",
                 (Particle("e-"), Particle("Ba 2+")),
                 {
-                    "T_a": 1e-4 * u.eV,
+                    "v_drift": 1 * u.cm / u.s,
                     "T_b": 1e4 * u.eV,
                     "n_b": 1e20 * u.cm**-3,
                     "Coulomb_log": 10 * u.dimensionless_unscaled,
@@ -1935,7 +1936,7 @@ class TestCollisionFrequencies:
                 "slow",
                 (Particle("Na+"), Particle("e-")),
                 {
-                    "T_a": 1 * u.eV,
+                    "v_drift": 1 * u.cm / u.s,
                     "T_b": 1e2 * u.eV,
                     "n_b": 1e10 * u.cm**-3,
                     "Coulomb_log": 10 * u.dimensionless_unscaled,
@@ -1946,7 +1947,7 @@ class TestCollisionFrequencies:
                 "slow",
                 (Particle("Be 2+"), Particle("e-")),
                 {
-                    "T_a": 1 * u.eV,
+                    "v_drift": 1 * u.cm / u.s,
                     "T_b": 1e2 * u.eV,
                     "n_b": 1e10 * u.cm**-3,
                     "Coulomb_log": 10 * u.dimensionless_unscaled,
@@ -1957,7 +1958,7 @@ class TestCollisionFrequencies:
                 "slow",
                 (Particle("Na+"), Particle("Cl-")),
                 {
-                    "T_a": 1e2 * u.eV,
+                    "v_drift": 1 * u.cm / u.s,
                     "T_b": 1e4 * u.eV,
                     "n_b": 1e20 * u.cm**-3,
                     "Coulomb_log": 10 * u.dimensionless_unscaled,
@@ -1968,7 +1969,7 @@ class TestCollisionFrequencies:
                 "slow",
                 (Particle("Na+"), Particle("S 2-")),
                 {
-                    "T_a": 1e2 * u.eV,
+                    "v_drift": 1 * u.cm / u.s,
                     "T_b": 1e4 * u.eV,
                     "n_b": 1e20 * u.cm**-3,
                     "Coulomb_log": 10 * u.dimensionless_unscaled,
@@ -1980,7 +1981,7 @@ class TestCollisionFrequencies:
                 "fast",
                 (Particle("e-"), Particle("e-")),
                 {
-                    "v_a": 6e8 * u.cm / u.s,
+                    "v_drift": 6e8 * u.cm / u.s,
                     "T_b": 1e-1 * u.eV,
                     "n_b": 1e20 * u.cm**-3,
                     "Coulomb_log": 10 * u.dimensionless_unscaled,
@@ -1991,7 +1992,7 @@ class TestCollisionFrequencies:
                 "fast",
                 (Particle("e-"), Particle("Na+")),
                 {
-                    "v_a": 6e5 * u.cm / u.s,
+                    "v_drift": 6e5 * u.cm / u.s,
                     "T_b": 1e-3 * u.eV,
                     "n_b": 1e20 * u.cm**-3,
                     "Coulomb_log": 10 * u.dimensionless_unscaled,
@@ -2002,7 +2003,7 @@ class TestCollisionFrequencies:
                 "fast",
                 (Particle("e-"), Particle("Zn 2+")),
                 {
-                    "v_a": 6e5 * u.cm / u.s,
+                    "v_drift": 6e5 * u.cm / u.s,
                     "T_b": 1e-3 * u.eV,
                     "n_b": 1e20 * u.cm**-3,
                     "Coulomb_log": 10 * u.dimensionless_unscaled,
@@ -2013,7 +2014,7 @@ class TestCollisionFrequencies:
                 "fast",
                 (Particle("Na+"), Particle("e-")),
                 {
-                    "v_a": 3e7 * u.cm / u.s,
+                    "v_drift": 3e7 * u.cm / u.s,
                     "T_b": 1e-3 * u.eV,
                     "n_b": 1e20 * u.cm**-3,
                     "Coulomb_log": 10 * u.dimensionless_unscaled,
@@ -2024,7 +2025,7 @@ class TestCollisionFrequencies:
                 "fast",
                 (Particle("Ca 2+"), Particle("e-")),
                 {
-                    "v_a": 3e7 * u.cm / u.s,
+                    "v_drift": 3e7 * u.cm / u.s,
                     "T_b": 1e-3 * u.eV,
                     "n_b": 1e20 * u.cm**-3,
                     "Coulomb_log": 10 * u.dimensionless_unscaled,
@@ -2035,7 +2036,7 @@ class TestCollisionFrequencies:
                 "fast",
                 (Particle("Na+"), Particle("Cl-")),
                 {
-                    "v_a": 3e7 * u.cm / u.s,
+                    "v_drift": 3e7 * u.cm / u.s,
                     "T_b": 1e2 * u.eV,
                     "n_b": 1e20 * u.cm**-3,
                     "Coulomb_log": 10 * u.dimensionless_unscaled,
@@ -2046,7 +2047,7 @@ class TestCollisionFrequencies:
                 "fast",
                 (Particle("Be 2+"), Particle("Cl-")),
                 {
-                    "v_a": 3e7 * u.cm / u.s,
+                    "v_drift": 3e7 * u.cm / u.s,
                     "T_b": 1e2 * u.eV,
                     "n_b": 1e20 * u.cm**-3,
                     "Coulomb_log": 10 * u.dimensionless_unscaled,
@@ -2063,7 +2064,7 @@ class TestCollisionFrequencies:
     ):
         """Test the return values"""
 
-        value_test_case = CollisionFrequencies(
+        value_test_case = SingleParticleCollisionFrequencies(
             *constructor_arguments, **constructor_keyword_arguments
         )
 
@@ -2105,34 +2106,12 @@ class TestCollisionFrequencies:
     @pytest.mark.parametrize(
         "expected_error, constructor_arguments, constructor_keyword_arguments",
         [
-            # Both T_a and v_a specified error
-            (
-                ValueError,
-                (Particle("e-"), Particle("e-")),
-                {
-                    "v_a": 1 * u.cm / u.s,
-                    "T_a": 1 * u.eV,
-                    "T_b": 1 * u.eV,
-                    "n_b": 1 * u.cm**-3,
-                    "Coulomb_log": 1 * u.dimensionless_unscaled,
-                },
-            ),
-            # Neither T_a nor v_a specified error
-            (
-                ValueError,
-                (Particle("e-"), Particle("e-")),
-                {
-                    "T_b": 1 * u.eV,
-                    "n_b": 1 * u.cm**-3,
-                    "Coulomb_log": 1 * u.dimensionless_unscaled,
-                },
-            ),
             # Arrays of unequal shape error
             (
                 ValueError,
                 (Particle("e-"), Particle("e-")),
                 {
-                    "v_a": np.ndarray([1, 1]) * u.cm / u.s,
+                    "v_drift": np.ndarray([1, 1]) * u.cm / u.s,
                     "T_b": 1 * u.eV,
                     "n_b": ones_array * u.cm**-3,
                     "Coulomb_log": 1 * u.dimensionless_unscaled,
@@ -2140,13 +2119,13 @@ class TestCollisionFrequencies:
             ),
         ],
     )
-    def test_errors(
+    def test_init_errors(
         self, expected_error, constructor_arguments, constructor_keyword_arguments
     ):
-        """Test errors raised in the function body"""
+        """Test errors raised in the __init__ function body"""
 
         with pytest.raises(expected_error):
-            CollisionFrequencies(
+            SingleParticleCollisionFrequencies(
                 *constructor_arguments, **constructor_keyword_arguments
             )
 
@@ -2156,7 +2135,7 @@ class TestCollisionFrequencies:
             {
                 "test_particle": Particle("e-"),
                 "field_particle": Particle("e-"),
-                "T_a": ones_array * u.eV,
+                "v_drift": ones_array * u.cm / u.s,
                 "T_b": ones_array * u.eV,
                 "n_b": ones_array * u.cm**-3,
                 "Coulomb_log": ones_array * u.dimensionless_unscaled,
@@ -2164,7 +2143,7 @@ class TestCollisionFrequencies:
             {
                 "test_particle": Particle("e-"),
                 "field_particle": Particle("e-"),
-                "T_a": ones_array2d * u.eV,
+                "v_drift": ones_array2d * u.m / u.s,
                 "T_b": ones_array2d * u.eV,
                 "n_b": ones_array2d * u.cm**-3,
                 "Coulomb_log": ones_array2d * u.dimensionless_unscaled,
@@ -2174,4 +2153,180 @@ class TestCollisionFrequencies:
     def test_handle_ndarrays(self, constructor_keyword_arguments):
         """Test for ability to handle numpy array quantities"""
 
-        CollisionFrequencies(**constructor_keyword_arguments)
+        SingleParticleCollisionFrequencies(**constructor_keyword_arguments)
+
+
+class TestMaxwellianCollisionFrequencies:
+    ones_array = np.ones(5)
+
+    @staticmethod
+    def get_fundamental_frequency(species, n, T_a, Coulomb_log):
+        """
+        This special case for computing the fundamental frequencies comes from page 33 of the NRL Formulary.
+        The formulary provides limiting cases for the `Maxwellian_avg_##_collision_freq` family of attributes
+        in the case that T_a ~ T_b.
+        """
+
+        # Strip the units from these quantities and ensure they are in CGS units
+        n = n.to(u.cm**-3).value
+        T_a = T_a.to(u.eV).value
+
+        if species.is_electron:
+            return (2.9e-6 * n * Coulomb_log * T_a**-1.5) * u.Hz
+        elif species.is_ion:
+            mu = (species.mass / m_p).value
+
+            return (4.8e-8 * n * Coulomb_log * T_a**-1.5 * mu**-0.5) * u.Hz
+
+    @pytest.mark.parametrize(
+        "expected_error, constructor_arguments, constructor_keyword_arguments",
+        [
+            # Arrays of unequal shape error
+            (
+                ValueError,
+                (Particle("e-"), Particle("e-")),
+                {
+                    "v_drift": np.array([1, 1]) * u.m / u.s,
+                    "T_a": 1 * u.K,
+                    "n_a": 1 * u.m**-3,
+                    "T_b": 1 * u.K,
+                    "n_b": ones_array * u.m**-3,
+                    "Coulomb_log": 1 * u.dimensionless_unscaled,
+                },
+            ),
+        ],
+    )
+    def test_init_errors(
+        self, expected_error, constructor_arguments, constructor_keyword_arguments
+    ):
+        """Test errors raised in the __init__ function body"""
+
+        with pytest.raises(expected_error):
+            MaxwellianCollisionFrequencies(
+                *constructor_arguments, **constructor_keyword_arguments
+            )
+
+    @pytest.mark.parametrize(
+        "expected_error, constructor_arguments, constructor_keyword_arguments, attribute_name",
+        [
+            # Specified interaction isn't electron-ion
+            (
+                ValueError,
+                ("e-", "e-"),
+                {
+                    "v_drift": 1e-5 * u.cm / u.s,
+                    "T_a": 1e3 * u.eV,
+                    "n_a": 1e10 * u.cm**-3,
+                    "T_b": 1e3 * u.eV,
+                    "n_b": 1e10 * u.cm**-3,
+                    "Coulomb_log": 10 * u.dimensionless_unscaled,
+                },
+                "Maxwellian_avg_ei_collision_freq",
+            ),
+            # Specified interaction isn't ion-ion
+            (
+                ValueError,
+                ("Na+", "e-"),
+                {
+                    "v_drift": 1e-5 * u.cm / u.s,
+                    "T_a": 1e3 * u.eV,
+                    "n_a": 1e10 * u.cm**-3,
+                    "T_b": 1e3 * u.eV,
+                    "n_b": 1e10 * u.cm**-3,
+                    "Coulomb_log": 10 * u.dimensionless_unscaled,
+                },
+                "Maxwellian_avg_ii_collision_freq",
+            ),
+            # Populations are not slowly flowing error
+            (
+                PhysicsError,
+                ("e-", "Na+"),
+                {
+                    "v_drift": 1e10 * u.cm / u.s,
+                    "T_a": 1e3 * u.eV,
+                    "n_a": 1e10 * u.cm**-3,
+                    "T_b": 1e3 * u.eV,
+                    "n_b": 1e10 * u.cm**-3,
+                    "Coulomb_log": 10 * u.dimensionless_unscaled,
+                },
+                "Maxwellian_avg_ei_collision_freq",
+            ),
+            # Populations are not slowly flowing error
+            (
+                PhysicsError,
+                ("Na+", "Na+"),
+                {
+                    "v_drift": 1e10 * u.cm / u.s,
+                    "T_a": 1e3 * u.eV,
+                    "n_a": 1e10 * u.cm**-3,
+                    "T_b": 1e3 * u.eV,
+                    "n_b": 1e10 * u.cm**-3,
+                    "Coulomb_log": 10 * u.dimensionless_unscaled,
+                },
+                "Maxwellian_avg_ii_collision_freq",
+            ),
+        ],
+    )
+    def test_attribute_errors(
+        self,
+        expected_error,
+        constructor_arguments,
+        constructor_keyword_arguments,
+        attribute_name,
+    ):
+        """Test errors raised in attribute bodies"""
+
+        test_case = MaxwellianCollisionFrequencies(
+            *constructor_arguments, **constructor_keyword_arguments
+        )
+
+        with pytest.raises(expected_error):
+            getattr(test_case, attribute_name)
+
+    @pytest.mark.parametrize(
+        "frequency_to_test, constructor_keyword_arguments",
+        [
+            (
+                "Maxwellian_avg_ei_collision_freq",
+                {
+                    "test_particle": Particle("e-"),
+                    "field_particle": Particle("Li+"),
+                    "v_drift": 1e-5 * u.cm / u.s,
+                    "T_a": 1e3 * u.eV,
+                    "n_a": 1e10 * u.cm**-3,
+                    "T_b": 1e3 * u.eV,
+                    "n_b": 1e10 * u.cm**-3,
+                    "Coulomb_log": 10 * u.dimensionless_unscaled,
+                },
+            ),
+            (
+                "Maxwellian_avg_ii_collision_freq",
+                {
+                    "test_particle": Particle("Li+"),
+                    "field_particle": Particle("Cl-"),
+                    "v_drift": 1 * u.cm / u.s,
+                    "T_a": 1e3 * u.eV,
+                    "n_a": 1e10 * u.cm**-3,
+                    "T_b": 1 * u.eV,
+                    "n_b": 1e10 * u.cm**-3,
+                    "Coulomb_log": 10 * u.dimensionless_unscaled,
+                },
+            ),
+        ],
+    )
+    def test_fundamental_frequency_values(
+        self, frequency_to_test, constructor_keyword_arguments
+    ):
+        value_test_case = MaxwellianCollisionFrequencies(
+            **constructor_keyword_arguments
+        )
+
+        calculated_value = getattr(value_test_case, frequency_to_test)
+        expected_value = self.get_fundamental_frequency(
+            constructor_keyword_arguments["test_particle"],
+            constructor_keyword_arguments["n_a"],
+            constructor_keyword_arguments["T_a"],
+            constructor_keyword_arguments["Coulomb_log"],
+        )
+
+        assert np.allclose(calculated_value, expected_value, rtol=5e-3, atol=0)
