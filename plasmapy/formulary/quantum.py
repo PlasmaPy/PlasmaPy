@@ -23,6 +23,7 @@ from lmfit import minimize, Parameters
 from plasmapy import particles
 from plasmapy.formulary import mathematics
 from plasmapy.formulary.relativity import Lorentz_factor
+from plasmapy.particles import particle_input, ParticleLike
 from plasmapy.particles.exceptions import InvalidParticleError
 from plasmapy.utils import RelativityError
 from plasmapy.utils.decorators import validate_quantities
@@ -30,11 +31,12 @@ from plasmapy.utils.decorators import validate_quantities
 __all__ += __aliases__
 
 
-# TODO: Use @check_relativistic and @particle_input
+# TODO: Use @check_relativistic
 @validate_quantities(
     V={"can_be_negative": True}, validations_on_return={"can_be_negative": False}
 )
-def deBroglie_wavelength(V: u.m / u.s, particle) -> u.m:
+@particle_input
+def deBroglie_wavelength(V: u.m / u.s, particle: ParticleLike) -> u.m:
     r"""
     Return the de Broglie wavelength.
 
@@ -105,32 +107,18 @@ def deBroglie_wavelength(V: u.m / u.s, particle) -> u.m:
             "light."
         )
 
-    if not isinstance(particle, u.Quantity):
-        try:
-            # TODO: Replace with more general routine!
-            m = particles.particle_mass(particle)
-        except InvalidParticleError:
-            raise ValueError("Unable to find particle mass.")
-    else:
-        try:
-            m = particle.to(u.kg)
-        except u.UnitConversionError as e:
-            raise u.UnitConversionError(
-                "The second argument for deBroglie_wavelength must be either a "
-                "representation of a particle or a"
-                " Quantity with units of mass."
-            ) from e
-
     if V.size > 1:
 
         lambda_dBr = np.ones(V.shape) * np.inf * u.m
         indices = V.value != 0
-        lambda_dBr[indices] = h / (m * V[indices] * Lorentz_factor(V[indices]))
+        lambda_dBr[indices] = h / (
+            particle.mass * V[indices] * Lorentz_factor(V[indices])
+        )
 
     elif V == 0 * u.m / u.s:
         lambda_dBr = np.inf * u.m
     else:
-        lambda_dBr = h / (Lorentz_factor(V) * m * V)
+        lambda_dBr = h / (Lorentz_factor(V) * particle.mass * V)
 
     return lambda_dBr
 

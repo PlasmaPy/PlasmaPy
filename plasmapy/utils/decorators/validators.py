@@ -1,14 +1,14 @@
 """
 Various decorators to validate input/output arguments to functions.
 """
-__all__ = ["validate_quantities", "ValidateQuantities"]
+__all__ = ["validate_class_attributes", "validate_quantities", "ValidateQuantities"]
 
 import astropy.units as u
 import functools
 import inspect
 import warnings
 
-from typing import Any, Dict
+from typing import Any, Dict, Iterable, List, Optional
 
 from plasmapy.utils.decorators.checks import CheckUnits, CheckValues
 from plasmapy.utils.decorators.helpers import preserve_signature
@@ -536,3 +536,82 @@ def validate_quantities(func=None, validations_on_return=None, **validations):
     else:
         # `validate_quantities` called as a decorator "sugar-syntax"
         return ValidateQuantities(**validations)
+
+
+def get_attributes_not_provided(
+    self,
+    expected_attributes: Optional[List[str]] = None,
+    both_or_either_attributes: Optional[List[Iterable[str]]] = None,
+    mutually_exclusive_attributes: Optional[List[Iterable[str]]] = None,
+):
+    """
+    Collect attributes that weren't provided during instantiation needed
+    to access a method.
+    """
+
+    attributes_not_provided = []
+
+    if expected_attributes is not None:
+        for attribute in expected_attributes:
+            if getattr(self, attribute) is None:
+                attributes_not_provided.append(attribute)
+
+    if both_or_either_attributes is not None:
+        for attribute_tuple in both_or_either_attributes:
+            number_of_attributes_provided = 0
+
+            for attribute in attribute_tuple:
+                if getattr(self, attribute) is not None:
+                    number_of_attributes_provided += 1
+
+            if number_of_attributes_provided == 0:
+                attributes_not_provided.append(
+                    f"at least one of {' or '.join(attribute_tuple)}"
+                )
+
+    if mutually_exclusive_attributes is not None:
+        for attribute_tuple in mutually_exclusive_attributes:
+            number_of_attributes_provided = 0
+
+            for attribute in attribute_tuple:
+                if getattr(self, attribute) is not None:
+                    number_of_attributes_provided += 1
+
+            if number_of_attributes_provided != 1:
+                attributes_not_provided.append(
+                    f"exactly one of {' or '.join(attribute_tuple)}"
+                )
+
+    return attributes_not_provided
+
+
+def validate_class_attributes(
+    expected_attributes: Optional[List[str]] = None,
+    both_or_either_attributes: Optional[List[Iterable[str]]] = None,
+    mutually_exclusive_attributes: Optional[List[Iterable[str]]] = None,
+):
+    """
+    A decorator responsible for raising errors if the expected arguments weren't
+    provided during class instantiation.
+    """
+
+    def decorator(attribute):
+        def wrapper(self, *args, **kwargs):
+            arguments_not_provided = get_attributes_not_provided(
+                self,
+                expected_attributes,
+                both_or_either_attributes,
+                mutually_exclusive_attributes,
+            )
+
+            if len(arguments_not_provided) > 0:
+                raise ValueError(
+                    f"{attribute.__name__} expected the following "
+                    f"additional arguments: {', '.join(arguments_not_provided)}"
+                )
+
+            return attribute(self, *args, **kwargs)
+
+        return wrapper
+
+    return decorator

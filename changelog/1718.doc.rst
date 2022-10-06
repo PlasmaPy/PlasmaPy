@@ -1,0 +1,2 @@
+Updated docstrings and annotations in `plasmapy.particles`, including by
+marking parameters as |particle-like| or |atom-like|.

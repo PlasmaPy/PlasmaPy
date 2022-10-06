@@ -1,0 +1,3 @@
+Changed |particle_input| to raise a `~astropy.units.UnitConversionError`
+when the annotated argument has a physical type other than mass or
+electrical charge.
