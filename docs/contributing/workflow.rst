@@ -4,6 +4,14 @@
 Code Contribution Workflow
 ==========================
 
+.. contents:: Table of Contents
+   :depth: 2
+   :local:
+   :backlinks: none
+
+Introduction
+============
+
 This page describes the workflow for contributing code, documentation,
 and tests to PlasmaPy.
 
@@ -13,130 +21,6 @@ and tests to PlasmaPy.
 
    Use the good first contribution label to find good issues to
    contribute to.
-
-Many ways to contribute
-=======================
-
-There are many ways to contribute to an open source project such as
-PlasmaPy beyond contributing code. You can create educational notebooks
-that introduce plasma concepts using PlasmaPy. You can
-
-* `Request new features`_.
-* `Report bugs`_.
-* Write tutorials on how to use different PlasmaPy features.
-* Create educational notebooks that introduce plasma concepts using PlasmaPy.
-* Improve the project's documentation.
-* Translate PlasmaPy's documentation into another language.
-* Organize events such as `Plasma Hack Week`_.
-
-Pre-requisites
-==============
-
-Using a terminal
-----------------
-
-The commands described on this page are intended for use in a terminal
-running the `Unix shell`_. For Windows users, we recommend installing
-`Windows Subsystem for Linux`_ (WSL). Here are instructions for
-`opening a terminal on macOS`_. A terminal can be opened on Linux by
-doing :kbd:`Ctrl + Alt + t`. Here are some essential `Unix commands`_.
-
-Using git and GitHub
---------------------
-
-Plasma code development is done using |git|_ and GitHub_. Before
-contributing code to PlasmaPy, it is necessary to:
-
-#. `Sign up on GitHub`_ for a free account.
-
-#. `Install git`_ on your local computer.
-
-   .. note::
-
-      WSL and some Linux distributions often come with |git|_ already
-      installed, so this step might not be necessary.
-
-#. Configure |git|_ with your name and email with the following
-   commands, where the name and email are replaced with your own.
-
-   .. code-block:: bash
-
-      git config --global user.name "Spacecat Q. Spacecat"
-      git config --global user.email "spacecat@spacecat.com"
-
-  .. note::
-
-     These optional configuration commands will help ensure that you get
-     proper credit for your code contributions and make it easier to
-     contact you about co-authorship in case we submit a journal article
-     on PlasmaPy.
-
-#. `Add a new SSH key to your GitHub account`_.
-
-Installing Python
------------------
-
-
-We recommend installing `Windows Subsystem for Linux`_.
-
-`Real Python`_ has a helpful guide on `setting up a Python coding
-environment on Windows`_ which uses Powershell_.
-
-.. _real python: https://realpython.com/python-coding-setup-windows/
-.. _Add a new SSH key to your GitHub account: https://docs.github.com/en/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account
-.. _install git: https://github.com/git-guides/install-git
-.. _sign up on GitHub: https://github.com/join
-.. _opening a terminal on macOS: https://support.apple.com/guide/terminal/open-or-quit-terminal-apd5265185d-f365-44cb-8b09-71a064a42125/mac
-.. _Unix commands: https://www.unixtutorial.org/basic-unix-commands
-.. _Unix shell: https://en.wikipedia.org/wiki/Unix_shell
-.. _Windows Subsystem for Linux: https://docs.microsoft.com/en-us/windows/wsl/install
-
-
-Setup
-=====
-
-#. Log onto GitHub_.
-
-#. Go to `PlasmaPy's GitHub repository`_.
-
-#. Create a fork_ of PlasmaPy by clicking on :guilabel:`Fork`, and then
-   on the next page, :guilabel:`Create fork`.
-
-#. Open a terminal, and create and/or navigate to the folder (e.g.,
-   :file:`code`) in which you want to download PlasmaPy.
-
-#. Clone_ PlasmaPy with the following command, replacing ``username``
-   with your GitHub username.
-
-   .. code-block:: bash
-
-      git clone git@github.com:username/PlasmaPy.git
-
-#. Enter the newly created directory with ``cd PlasmaPy``.
-
-#. Add a remote_ called ``upstream`` for `PlasmaPy's GitHub repository`_
-   by using the following command.
-
-   .. code-block:: bash
-
-      git remote add upstream git@github.com:PlasmaPy/PlasmaPy.git
-
-   .. tip::
-
-      The remote named ``origin`` refers to the
-
-      The ``upstream
-
-      .. code-block:: bash
-
-         git remote rename origin username
-         git remote rename upstream plasmapy
-
-.. _clone: https://github.com/git-guides/git-clone
-.. _fork: https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/about-forks
-.. _remote: https://github.com/git-guides/git-remote
-
-#. Add a conda environment (or a virtual environment?)
 
 Making a code contribution
 ==========================
@@ -355,5 +239,12 @@ Resources
 .. _`Plasma Hack Week`: https://hack.plasmapy.org
 .. _`Request new features`: https://github.com/PlasmaPy/PlasmaPy/issues/new?assignees=&labels=&template=Feature_request.md
 .. _`Report bugs`: https://github.com/PlasmaPy/PlasmaPy/issues/new?assignees=&labels=&template=Bug_report.md
-
-.. _code-contribution:
+.. _real python: https://realpython.com/python-coding-setup-windows/
+.. _Add a new SSH key to your GitHub account: https://docs.github.com/en/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account
+.. _install git: https://github.com/git-guides/install-git
+.. _sign up on GitHub: https://github.com/join
+.. _opening a terminal on macOS: https://support.apple.com/guide/terminal/open-or-quit-terminal-apd5265185d-f365-44cb-8b09-71a064a42125/mac
+.. _Powershell: https://learn.microsoft.com/en-us/powershell/
+.. _Unix commands: https://www.unixtutorial.org/basic-unix-commands
+.. _Unix shell: https://en.wikipedia.org/wiki/Unix_shell
+.. _Windows Subsystem for Linux: https://docs.microsoft.com/en-us/windows/wsl/install
