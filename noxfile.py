@@ -22,25 +22,6 @@ def tests(session):
 
 
 @nox.session
-def linters(session):
-    session.install("-r", "requirements/tests.txt")
-    flake8_options = ["--count", "--show-source", "--statistics"]
-    session.run("flake8", "plasmapy", *flake8_options, *session.posargs)
-
-
-@nox.session
-def codespell(session):
-    session.install("codespell")
-    session.run("codespell", ".")
-
-
-@nox.session
-def import_package(session):
-    session.install(".")
-    session.run("python", "-c", 'import plasmapy')  # fmt: skip
-
-
-@nox.session
 def build_docs(session):
     session.install("-r", "requirements/tests.txt")
     session.install("-r", "requirements/docs.txt")
@@ -75,3 +56,22 @@ def build_docs_no_examples(session):
         *sphinx_no_notebooks,
         *session.posargs,
     )
+
+
+@nox.session
+def linters(session):
+    session.install("-r", "requirements/tests.txt")
+    flake8_options = ["--count", "--show-source", "--statistics"]
+    session.run("flake8", "plasmapy", *flake8_options, *session.posargs)
+
+
+@nox.session
+def codespell(session):
+    session.install("codespell")
+    session.run("codespell", ".")
+
+
+@nox.session
+def import_package(session):
+    session.install(".")
+    session.run("python", "-c", 'import plasmapy')  # fmt: skip
