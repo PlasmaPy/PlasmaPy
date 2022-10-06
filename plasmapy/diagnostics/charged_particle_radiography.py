@@ -122,7 +122,7 @@ class Tracker:
 
     def __init__(
         self,
-        grid: AbstractGrid,
+        grids: AbstractGrid,
         source: u.m,
         detector: u.m,
         detector_hdir=None,
@@ -131,17 +131,19 @@ class Tracker:
 
         # self.grid is the grid object
         
-        ## Todo:
+        # self.grid = grid
         ## Allow a list of 'grid' objects to be passed into the 'grid' argument. 
         ## If only one grid is passed, wrap it in a list so that there is always a list.
-        ## e.g.:
-        ## if isinstance(grid, AbstractGrid):
-        ##    grid = [grid, ]
-
-        self.grid = grid
+        if isinstance(grids, AbstractGrid):
+            self.grids = [grids, ]
+        elif isinstance(grids, list):
+            self.grids = grids
         # self.grid_arr is the grid positions in si units. This is created here
         # so that it isn't continuously called later
-        self.grid_arr = grid.grid.to(u.m).value
+        # self.grid_arr = grid.grid.to(u.m).value
+        self.grid_arrs = []
+        for grids in self.grids:
+            self.grid_arrs.append(grids.grids.to(u.um).value)
 
         self.verbose = verbose
 
@@ -175,7 +177,7 @@ class Tracker:
         self._log(f"Magnification: {self.mag}")
 
         # Check that source-detector vector actually passes through the grid
-        if not self.grid.vector_intersects(self.source * u.m, self.detector * u.m):
+        if not self.grids.vector_intersects(self.source * u.m, self.detector * u.m):
             raise ValueError(
                 "The vector between the source and the detector "
                 "does not intersect the grid provided!"
@@ -189,7 +191,9 @@ class Tracker:
         ## Todo: 
         ## here, calculate the max theta hit grid for each grid in the list, 
         ## then take the maximum
-        self.max_theta_hit_grid = self._max_theta_hit_grid()
+        ## tried.
+
+        self.max_theta_hit_grid = self._max_theta_hit_grids()
 
         # ************************************************************************
         # Define the detector plane
@@ -211,46 +215,48 @@ class Tracker:
 
         req_quantities = ["E_x", "E_y", "E_z", "B_x", "B_y", "B_z"]
 
-        self.grid.require_quantities(req_quantities, replace_with_zeros=True)
+        for grids in self.grids:
+            grids.require_quantities(req_quantities, replace_with_zeros=True)
 
         for rq in req_quantities:
 
             # Check that there are no infinite values
-            if not np.isfinite(self.grid[rq].value).all():
-                raise ValueError(
-                    f"Input arrays must be finite: {rq} contains "
-                    "either NaN or infinite values."
+            for grids in self.grids:
+                if not np.isfinite(grids[rq].value).all():
+                    raise ValueError(
+                        f"Input arrays must be finite: {rq} contains "
+                        "either NaN or infinite values."
+                    )
+
+                # Check that the max values on the edges of the arrays are
+                # small relative to the maximum values on that grid
+                #
+                # Array must be dimensionless to re-assemble it into an array
+                # of max values like this
+                arr = np.abs(grids[rq]).value
+                edge_max = np.max(
+                    np.array(
+                        [
+                            np.max(arr[0, :, :]),
+                            np.max(arr[-1, :, :]),
+                            np.max(arr[:, 0, :]),
+                            np.max(arr[:, -1, :]),
+                            np.max(arr[:, :, 0]),
+                            np.max(arr[:, :, -1]),
+                        ]
+                    )
                 )
 
-            # Check that the max values on the edges of the arrays are
-            # small relative to the maximum values on that grid
-            #
-            # Array must be dimensionless to re-assemble it into an array
-            # of max values like this
-            arr = np.abs(self.grid[rq]).value
-            edge_max = np.max(
-                np.array(
-                    [
-                        np.max(arr[0, :, :]),
-                        np.max(arr[-1, :, :]),
-                        np.max(arr[:, 0, :]),
-                        np.max(arr[:, -1, :]),
-                        np.max(arr[:, :, 0]),
-                        np.max(arr[:, :, -1]),
-                    ]
-                )
-            )
-
-            if edge_max > 1e-3 * np.max(arr):
-                unit = grid.recognized_quantities[rq].unit
-                warnings.warn(
-                    "Fields should go to zero at edges of grid to avoid "
-                    f"non-physical effects, but a value of {edge_max:.2E} {unit} was "
-                    f"found on the edge of the {rq} array. Consider applying a "
-                    "envelope function to force the fields at the edge to go to "
-                    "zero.",
-                    RuntimeWarning,
-                )
+                if edge_max > 1e-3 * np.max(arr):
+                    unit = grids.recognized_quantities[rq].unit
+                    warnings.warn(
+                        "Fields should go to zero at edges of grid to avoid "
+                        f"non-physical effects, but a value of {edge_max:.2E} {unit} was "
+                        f"found on the edge of the {rq} array. Consider applying a "
+                        "envelope function to force the fields at the edge to go to "
+                        "zero.",
+                        RuntimeWarning,
+                    )
 
     def _default_detector_hdir(self):
         """
@@ -266,7 +272,7 @@ class Tracker:
         nx = nx / np.linalg.norm(nx)
         return nx
 
-    def _max_theta_hit_grid(self):
+    def _max_theta_hit_grids(self):
         r"""
         Using the grid and the source position, compute the maximum particle
         theta that will impact the grid. This value can be used to determine
@@ -278,17 +284,24 @@ class Tracker:
             for y in [0, -1]:
                 for z in [0, -1]:
                     # Source to grid corner vector
-                    vec = self.grid_arr[x, y, z, :] - self.source
+                    vecs = []
+                    thetas = []
+                    for grid_arrs in self.grid_arrs:
+                        vecs.append(grid_arrs[x, y, z, :] - self.source)
+
+                    # vec = self.grid_arr[x, y, z, :] - self.source
 
                     # Calculate angle between vec and the source-to-detector
                     # axis, which is the central axis of the particle beam
-                    theta[ind] = np.arccos(
-                        np.dot(vec, self.src_det)
-                        / np.linalg.norm(vec)
-                        / np.linalg.norm(self.src_det)
-                    )
-                    ind += 1
-        return np.max(theta)
+                        theta[ind] = np.arccos(
+                            np.dot(vec, self.src_det)
+                            / np.linalg.norm(vec)
+                            / np.linalg.norm(self.src_det)
+                        )
+                        ind += 1       
+                        thetas.append(theta[ind])
+        # return np.max(theta)
+        return np.max(thetas)
 
     def _log(self, msg):
         if self.verbose:
