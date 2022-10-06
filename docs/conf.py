@@ -239,6 +239,11 @@ linkcheck_allowed_redirects = {
     r"https://www.python.org/dev/peps/pep.+": "https://peps.python.org/pep.+",
 }
 
+# Hyperlinks for `make linkcheck` to ignore, such as links that point to
+# setting options in PlasmaPy's GitHub account that require a login.
+
+linkcheck_ignore = ["https://github.com/PlasmaPy/PlasmaPy/settings/secrets/actions"]
+
 linkcheck_anchors = True
 linkcheck_anchors_ignore = [
     "/room",
