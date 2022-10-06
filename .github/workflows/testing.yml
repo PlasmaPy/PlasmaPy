@@ -28,17 +28,21 @@ jobs:
           noxenv: tests-3.8
 
         - name: Python 3.10
+          os: ubuntu-latest
           noxenv: tests-3.10
           noxposargs: --durations=10
           python: '3.10'
 
         - name: Linters
+          os: ubuntu-latest
           noxenv: linters
 
         - name: Codespell
+          os: ubuntu-latest
           noxenv: codespell
 
         - name: Import package
+          os: windows-latest
           noxenv: import_package
 
     steps:
