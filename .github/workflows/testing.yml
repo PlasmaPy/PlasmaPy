@@ -5,6 +5,9 @@ on:
     branches:
     - main
     - stable
+    - v*.*.x
+    tags:
+    - v*
   pull_request:
   workflow_dispatch:
 
@@ -23,11 +26,6 @@ jobs:
           os: windows-latest
           python: 3.8
           noxenv: tests-3.8
-
-        - name: Python 3.9 (MacOS X)
-          os: ubuntu-latest
-          python: 3.9
-          noxenv: tests-3.9
 
         - name: Python 3.10
           noxenv: tests-3.10
@@ -50,15 +48,34 @@ jobs:
       with:
         fetch-depth: 0
 
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: ${{ matrix.python }}
+    - name: ${{ matrix.name }}
+      uses: excitedleigh/setup-nox@v2.0.0
+      run: nox -s ${{ matrix.noxenv }} -- ${{ matrix.noxposargs }}
 
-    - name: Install nox
-      run: python -m pip install --progress-bar off --upgrade nox
+  comprehensive-tests:
+    name: ${{ matrix.name }}
+    runs-on: ${{ matrix.os }}
+    needs: initial-tests
+    strategy:
+      fail-fast: false
+
+      matrix:
+        include:
+
+        - name: Python 3.9 (MacOS X)
+          os: ubuntu-latest
+          python: 3.9
+          noxenv: tests-3.9
+
+    steps:
+
+    - name: Checkout code
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
 
     - name: ${{ matrix.name }}
+      uses: excitedleigh/setup-nox@v2.0.0
       run: nox -s ${{ matrix.noxenv }} -- ${{ matrix.noxposargs }}
 
   documentation:
