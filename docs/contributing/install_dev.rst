@@ -152,7 +152,7 @@ You should now see that your shell session is prepended with
    (plasmapy) user@name:~/programming/plasmapy$
 
 This indicates that the virtualenv is running. Congratulations!  When
-your're done working on PlasmaPy, you can deactivate the virtualenv by
+you're done working on PlasmaPy, you can deactivate the virtualenv by
 running
 
 .. code-block:: bash
