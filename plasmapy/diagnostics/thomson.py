@@ -16,7 +16,8 @@ import numpy as np
 import warnings
 
 from lmfit import Model
-from typing import Any, Dict, List, Optional, Tuple, Union
+from numpy.typing import ArrayLike
+from typing import Any, Callable, Dict, List, Optional, Tuple, Union
 
 from plasmapy.formulary import (
     permittivity_1D_Maxwellian_lite,
@@ -24,7 +25,7 @@ from plasmapy.formulary import (
     thermal_speed_coefficients,
     thermal_speed_lite,
 )
-from plasmapy.particles import Particle, particle_mass
+from plasmapy.particles import Particle
 from plasmapy.particles.exceptions import ChargeError
 from plasmapy.particles.particle_collections import ParticleList
 from plasmapy.utils.decorators import (
@@ -266,14 +267,14 @@ def spectral_density(
     *,
     T_e: u.K,
     T_i: u.K,
-    efract: np.ndarray = None,
-    ifract: np.ndarray = None,
-    ions: Union[str, List[str], Particle, List[Particle]] = "p",
+    efract: Optional[ArrayLike] = None,
+    ifract: Optional[ArrayLike] = None,
+    ions: Union[str, List[str], Particle, List[Particle]] = "p+",
     electron_vel: u.m / u.s = None,
     ion_vel: u.m / u.s = None,
     probe_vec=None,
     scatter_vec=None,
-    instr_func=None,
+    instr_func: Optional[Callable] = None,
 ) -> Tuple[Union[np.floating, np.ndarray], np.ndarray]:
     r"""
     Calculate the spectral density function for Thomson scattering of a
@@ -282,7 +283,6 @@ def spectral_density(
 
     Parameters
     ----------
-
     wavelengths : `~astropy.units.Quantity`
         Array of wavelengths over which the spectral density function
         will be calculated. (convertible to nm)
@@ -294,54 +294,51 @@ def spectral_density(
         Total combined number density of all electron populations.
         (convertible to cm\ :sup:`-3`)
 
-    T_e : `~astropy.units.Quantity`, |keyword-only|, shape (Ne, )
+    T_e : (Ne,) `~astropy.units.Quantity`, |keyword-only|
         Temperature of each electron component. Shape (Ne, ) must be equal to the
         number of electron populations Ne. (in K or convertible to eV)
 
-    T_i : `~astropy.units.Quantity`, |keyword-only|, shape (Ni, )
+    T_i : (Ni,) `~astropy.units.Quantity`, |keyword-only|
         Temperature of each ion component. Shape (Ni, ) must be equal to the
         number of ion populations Ni. (in K or convertible to eV)
 
-    efract : |array_like|, shape (Ne, ), optional
+    efract : (Ne,) |array_like|, |keyword-only|, optional
         An array-like object representing :math:`F_e` (defined above).
-        Must sum to 1.0. Default is [1.0], representing a single
+        Must sum to 1.0. Default is ``[1.0]``, representing a single
         electron component.
 
-    ifract : |array_like|, shape (Ni, ), optional
-        An array-like object representing :math:`F_i` (defined above).
-        Must sum to 1.0. Default is [1.0], representing a single
+    ifract : (Ni,) |array_like|, |keyword-only|, optional
+        An |array-like| object representing :math:`F_i` (defined above).
+        Must sum to 1.0. Default is ``[1.0]``, representing a single
         ion component.
 
-    ions : `str` or `~plasmapy.particles.particle_class.Particle` or
-           `~plasmapy.particles.particle_collections.ParticleList`,
-           shape (Ni, ), optional
-
+    ions : (Ni,) |particle-like|, |keyword-only|
         A list or single instance of `~plasmapy.particles.particle_class.Particle`, or
         strings convertible to `~plasmapy.particles.particle_class.Particle`,
         or a `~plasmapy.particles.particle_collections.ParticleList`. All ions
         must be positively charged. Default is ``'H+'`` corresponding to a
         single species of hydrogen ions.
 
-    electron_vel : `~astropy.units.Quantity`, shape (Ne, 3), optional
+    electron_vel : (Ne, 3) `~astropy.units.Quantity`, |keyword-only|, optional
         Velocity of each electron population in the rest frame. (convertible to m/s)
         If set, overrides ``electron_vdir`` and ``electron_speed``.
         Defaults to a stationary plasma [0, 0, 0] m/s.
 
-    ion_vel : `~astropy.units.Quantity`, shape (Ni, 3), optional
+    ion_vel : (Ni, 3) `~astropy.units.Quantity`, |keyword-only|, optional
         Velocity vectors for each electron population in the rest frame
         (convertible to m/s). If set, overrides ``ion_vdir`` and ``ion_speed``.
         Defaults to zero drift for all specified ion species.
 
-    probe_vec : float `~numpy.ndarray`, shape (3, )
+    probe_vec : (3,) float `~numpy.ndarray`, |keyword-only|, optional
         Unit vector in the direction of the probe laser. Defaults to
         [1, 0, 0].
 
-    scatter_vec : float `~numpy.ndarray`, shape (3, )
+    scatter_vec : (3,) float `~numpy.ndarray`, |keyword-only|, optional
         Unit vector pointing from the scattering volume to the detector.
         Defaults to [0, 1, 0] which, along with the default ``probe_vec``,
         corresponds to a 90° scattering angle geometry.
 
-    instr_func : function
+    instr_func : callable, |keyword-only|, optional
         A function representing the instrument function that takes a `~astropy.units.Quantity`
         of wavelengths (centered on zero) and returns the instrument point
         spread function. The resulting array will be convolved with the
@@ -360,7 +357,6 @@ def spectral_density(
 
     Notes
     -----
-
     This function calculates the spectral density function for Thomson
     scattering of a probe laser beam by a plasma consisting of one or more ion
     species and one or more thermal electron populations (the entire plasma
