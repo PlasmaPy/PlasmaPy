@@ -277,9 +277,9 @@ def spectral_density(
     instr_func: Optional[Callable] = None,
 ) -> Tuple[Union[np.floating, np.ndarray], np.ndarray]:
     r"""
-    Calculate the spectral density function for Thomson scattering of a
-    probe laser beam by a multi-species Maxwellian plasma. See **Notes**
-    section below for additional details.
+    Calculate the spectral density function for Thomson scattering of
+    a probe laser beam by a multi-species Maxwellian plasma. See the
+    **Notes** section below for additional details.
 
     Parameters
     ----------
@@ -295,12 +295,14 @@ def spectral_density(
         (convertible to cm\ :sup:`-3`)
 
     T_e : (Ne,) `~astropy.units.Quantity`, |keyword-only|
-        Temperature of each electron component. Shape (Ne, ) must be equal to the
-        number of electron populations Ne. (in K or convertible to eV)
+        Temperature of each electron component. Shape (Ne, ) must be
+        equal to the number of electron populations Ne. (in K or
+        convertible to eV)
 
     T_i : (Ni,) `~astropy.units.Quantity`, |keyword-only|
-        Temperature of each ion component. Shape (Ni, ) must be equal to the
-        number of ion populations Ni. (in K or convertible to eV)
+        Temperature of each ion component. Shape (Ni, ) must be equal
+        to the number of ion populations Ni. (in K or convertible to
+        eV)
 
     efract : (Ne,) |array_like|, |keyword-only|, optional
         An array-like object representing :math:`F_e` (defined above).
@@ -308,59 +310,66 @@ def spectral_density(
         electron component.
 
     ifract : (Ni,) |array_like|, |keyword-only|, optional
-        An |array-like| object representing :math:`F_i` (defined above).
-        Must sum to 1.0. Default is ``[1.0]``, representing a single
-        ion component.
+        An |array-like| object representing :math:`F_i` (defined
+        above).  Must sum to 1.0. Default is ``[1.0]``, representing a
+        single ion component.
 
     ions : (Ni,) |particle-like|, |keyword-only|
-        A list or single instance of `~plasmapy.particles.particle_class.Particle`, or
-        strings convertible to `~plasmapy.particles.particle_class.Particle`,
-        or a `~plasmapy.particles.particle_collections.ParticleList`. All ions
-        must be positively charged. Default is ``'H+'`` corresponding to a
-        single species of hydrogen ions.
+        A list or single instance of
+        `~plasmapy.particles.particle_class.Particle`, or strings
+        convertible to `~plasmapy.particles.particle_class.Particle`,
+        or a
+        `~plasmapy.particles.particle_collections.ParticleList`. All
+        ions must be positively charged. Default is ``'H+'``
+        corresponding to a single species of hydrogen ions.
 
     electron_vel : (Ne, 3) `~astropy.units.Quantity`, |keyword-only|, optional
-        Velocity of each electron population in the rest frame. (convertible to m/s)
-        If set, overrides ``electron_vdir`` and ``electron_speed``.
-        Defaults to a stationary plasma [0, 0, 0] m/s.
+        Velocity of each electron population in the rest
+        frame. (convertible to m/s) If set, overrides
+        ``electron_vdir`` and ``electron_speed``.  Defaults to a
+        stationary plasma [0, 0, 0] m/s.
 
     ion_vel : (Ni, 3) `~astropy.units.Quantity`, |keyword-only|, optional
-        Velocity vectors for each electron population in the rest frame
-        (convertible to m/s). If set, overrides ``ion_vdir`` and ``ion_speed``.
-        Defaults to zero drift for all specified ion species.
+        Velocity vectors for each electron population in the rest
+        frame (convertible to m/s). If set, overrides ``ion_vdir`` and
+        ``ion_speed``.  Defaults to zero drift for all specified ion
+        species.
 
     probe_vec : (3,) float `~numpy.ndarray`, |keyword-only|, optional
         Unit vector in the direction of the probe laser. Defaults to
-        [1, 0, 0].
+        ``[1, 0, 0]``.
 
     scatter_vec : (3,) float `~numpy.ndarray`, |keyword-only|, optional
-        Unit vector pointing from the scattering volume to the detector.
-        Defaults to [0, 1, 0] which, along with the default ``probe_vec``,
-        corresponds to a 90° scattering angle geometry.
+        Unit vector pointing from the scattering volume to the
+        detector.  Defaults to ``[0, 1, 0]`` which, along with the
+        default ``probe_vec``, corresponds to a 90° scattering angle
+        geometry.
 
     instr_func : callable, |keyword-only|, optional
-        A function representing the instrument function that takes a `~astropy.units.Quantity`
-        of wavelengths (centered on zero) and returns the instrument point
-        spread function. The resulting array will be convolved with the
-        spectral density function before it is returned.
+        A function representing the instrument function that takes a
+        `~astropy.units.Quantity` of wavelengths (centered on zero)
+        and returns the instrument point spread function. The
+        resulting array will be convolved with the spectral density
+        function before it is returned.
 
     Returns
     -------
     alpha : `float`
-        Mean scattering parameter, where ``alpha`` > 1 corresponds to collective
-        scattering and ``alpha`` < 1 indicates non-collective scattering. The
-        scattering parameter is calculated based on the total plasma density ``n``.
+        Mean scattering parameter, where ``alpha`` > 1 corresponds to
+        collective scattering and ``alpha`` < 1 indicates
+        non-collective scattering. The scattering parameter is
+        calculated based on the total plasma density ``n``.
 
     Skw : `~astropy.units.Quantity`
-        Computed spectral density function over the input ``wavelengths`` array
-        with units of s/rad.
+        Computed spectral density function over the input
+        ``wavelengths`` array with units of s/rad.
 
     Notes
     -----
     This function calculates the spectral density function for Thomson
-    scattering of a probe laser beam by a plasma consisting of one or more ion
-    species and one or more thermal electron populations (the entire plasma
-    is assumed to be quasi-neutral)
+    scattering of a probe laser beam by a plasma consisting of one or
+    more ion species and one or more thermal electron populations (the
+    entire plasma is assumed to be quasi-neutral)
 
     .. math::
         S(k,ω) = \sum_e \frac{2π}{k}
@@ -372,22 +381,24 @@ def spectral_density(
 
     where :math:`χ_e` is the electron component susceptibility of the
     plasma and :math:`ε = 1 + \sum_e χ_e + \sum_i χ_i` is the total
-    plasma dielectric function (with :math:`χ_i` being the ion component
-    of the susceptibility), :math:`Z_i` is the charge of each ion, :math:`k`
-    is the scattering wavenumber, :math:`ω` is the scattering frequency,
-    and :math:`f_{e0,e}` and :math:`f_{i0,i}` are the electron and ion velocity
-    distribution functions respectively. In this function the electron and ion
-    velocity distribution functions are assumed to be Maxwellian, making this
+    plasma dielectric function (with :math:`χ_i` being the ion
+    component of the susceptibility), :math:`Z_i` is the charge of
+    each ion, :math:`k` is the scattering wavenumber, :math:`ω` is the
+    scattering frequency, and :math:`f_{e0,e}` and :math:`f_{i0,i}`
+    are the electron and ion velocity distribution functions
+    respectively. In this function the electron and ion velocity
+    distribution functions are assumed to be Maxwellian, making this
     function equivalent to Eq. 3.4.6 in :cite:t:`sheffield:2011`\ .
 
-    The number density of the e\ :sup:`th` electron populations is defined as
+    The number density of the e\ :sup:`th` electron populations is
+    defined as
 
     .. math::
         n_e = F_e n
 
-    where :math:`n` is total density of all electron population combined and
-    :math:`F_e` is the fractional density of each electron population such
-    that
+    where :math:`n` is total density of all electron population
+    combined and :math:`F_e` is the fractional density of each
+    electron population such that
 
     .. math::
         \sum_e n_e = n
@@ -395,17 +406,17 @@ def spectral_density(
     .. math::
         \sum_e F_e = 1
 
-    The plasma is assumed to be charge neutral, and therefore the number
-    density of the i\ :sup:`th` ion population is
+    The plasma is assumed to be charge neutral, and therefore the
+    number density of the i\ :sup:`th` ion population is
 
     .. math::
         n_i = \frac{F_i n}{\sum_i F_i Z_i}
 
     with :math:`F_i` defined in the same way as :math:`F_e`.
 
-    For details, see "Plasma Scattering of Electromagnetic Radiation" by
-    :cite:t:`sheffield:2011`. This code is a modified version of the
-    program described therein.
+    For details, see "Plasma Scattering of Electromagnetic Radiation"
+    by :cite:t:`sheffield:2011`. This code is a modified version of
+    the program described therein.
 
     For a concise summary of the relevant physics, see Chapter 5 of
     the :cite:t:`schaeffer:2014` thesis.
