@@ -304,15 +304,15 @@ def spectral_density(
         to the number of ion populations Ni. (in K or convertible to
         eV)
 
-    efract : (Ne,) |array_like|, |keyword-only|, optional
+    efract : (Ne,) |array_like|, |keyword-only|, optional, default: ``[1.0]``
         An array-like object representing :math:`F_e` (defined above).
-        Must sum to 1.0. Default is ``[1.0]``, representing a single
-        electron component.
+        Must sum to 1.0. The default represents a single electron
+        component.
 
-    ifract : (Ni,) |array_like|, |keyword-only|, optional
+    ifract : (Ni,) |array_like|, |keyword-only|, optional, default: ``[1.0]``
         An |array-like| object representing :math:`F_i` (defined
-        above).  Must sum to 1.0. Default is ``[1.0]``, representing a
-        single ion component.
+        above).  Must sum to 1.0. The default represents a single ion
+        component.
 
     ions : (Ni,) |particle-like|, |keyword-only|
         A list or single instance of
@@ -320,8 +320,8 @@ def spectral_density(
         convertible to `~plasmapy.particles.particle_class.Particle`,
         or a
         `~plasmapy.particles.particle_collections.ParticleList`. All
-        ions must be positively charged. Default is ``'H+'``
-        corresponding to a single species of hydrogen ions.
+        ions must be positively charged. Default is ``'p+'``
+        corresponding to a single species of protons.
 
     electron_vel : (Ne, 3) `~astropy.units.Quantity`, |keyword-only|, optional
         Velocity of each electron population in the rest
@@ -335,15 +335,13 @@ def spectral_density(
         ``ion_speed``.  Defaults to zero drift for all specified ion
         species.
 
-    probe_vec : (3,) float `~numpy.ndarray`, |keyword-only|, optional
-        Unit vector in the direction of the probe laser. Defaults to
-        ``[1, 0, 0]``.
+    probe_vec : (3,) |array-like|, |keyword-only|, optional, default: ``[1, 0, 0]``
+        Unit vector in the direction of the probe laser.
 
-    scatter_vec : (3,) float `~numpy.ndarray`, |keyword-only|, optional
+    scatter_vec : (3,) |array-like|, |keyword-only|, optional, default: ``[0, 1, 0]``
         Unit vector pointing from the scattering volume to the
-        detector.  Defaults to ``[0, 1, 0]`` which, along with the
-        default ``probe_vec``, corresponds to a 90° scattering angle
-        geometry.
+        detector. The default, along with the default for ``probe_vec``,
+        corresponds to a 90° scattering angle geometry.
 
     instr_func : callable, |keyword-only|, optional
         A function representing the instrument function that takes a
