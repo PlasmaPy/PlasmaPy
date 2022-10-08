@@ -14,6 +14,7 @@ flake8-simplify
 flake8-use-fstring
 hypothesis
 pydocstyle
+pyproject-flake8
 pytest-regressions
 pytest-xdist
 tomli

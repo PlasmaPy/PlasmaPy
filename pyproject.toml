@@ -1,8 +1,324 @@
 [build-system]
-requires = ["setuptools >= 41.2",
-            "setuptools_scm",
+requires = ["setuptools>=61.2",
+            "setuptools-scm",
             "wheel >= 0.29.0"]  # ought to mirror 'requirements/build.txt'
 build-backend = "setuptools.build_meta"
+
+[project]
+name = "plasmapy"
+description = "Python package for plasma physics"
+readme = "README.md"
+license = {file = "LICENSE.md"}
+keywords = ["plasma physics", "plasma", "science", "atomic"]
+dynamic = ["version"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: BSD License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Topic :: Scientific/Engineering :: Physics",
+    "Topic :: Scientific/Engineering :: Astronomy",
+]
+requires-python = ">=3.8"
+dependencies = [
+    "astropy >= 5.0.1",
+    "cached-property >= 1.5.2",
+    "h5py >= 3.0.0",
+    "ipywidgets >= 7.6.5",
+    "lmfit >= 1.0.0",
+    "matplotlib >= 3.3.0",
+    "mpmath >= 1.2.1",
+    "numba",
+    "numpy >= 1.20.0",
+    "packaging",
+    "pandas >= 1.0.0",
+    "pytest >= 5.4.0",
+    "scipy >= 1.5.0",
+    "tqdm >= 4.41.0",
+    "voila >= 0.2.15",
+    "wrapt",
+    "xarray >= 0.15.0",
+    "requests >= 2.27.1",
+]
+
+[project.optional-dependencies]
+extras = [
+    "codespell",
+    "pre-commit",
+    "tox",
+]
+tests = [
+    "codespell",
+    "pre-commit",
+    "tox",
+    "dlint",
+    "flake8",
+    "pyproject-flake8",
+    "flake8-absolute-import",
+    "flake8-implicit-str-concat",
+    "flake8-mutable",
+    "flake8-rst-docstrings",
+    "flake8-simplify",
+    "flake8-use-fstring",
+    "hypothesis",
+    "pydocstyle",
+    "pytest-regressions",
+    "pytest-xdist",
+    "tomli",
+]
+docs = [
+    "codespell",
+    "pre-commit",
+    "tox",
+    "docutils",
+    "ipykernel",
+    "jinja2 != 3.1",
+    "nbsphinx",
+    "numpydoc",
+    "pillow",
+    "pygments >= 2.11.0",
+    "sphinx >= 4.4, != 5.1",
+    "sphinx-changelog >= 1.2.0",
+    "sphinx-copybutton",
+    "sphinx-gallery < 0.11.0",
+    "sphinx-hoverxref >= 1.1.1",
+    "sphinx-issues >= 3.0.1",
+    "sphinx-notfound-page >= 0.8",
+    "sphinx-reredirects",
+    "sphinx_rtd_theme >= 1.0.0",
+    "sphinxcontrib-bibtex",
+    "towncrier >= 22.8.0",
+]
+developer = [
+    "codespell",
+    "pre-commit",
+    "tox",
+    "docutils",
+    "ipykernel",
+    "jinja2 != 3.1",
+    "nbsphinx",
+    "numpydoc",
+    "pillow",
+    "pygments >= 2.11.0",
+    "sphinx >= 4.4, != 5.1",
+    "sphinx-changelog >= 1.2.0",
+    "sphinx-copybutton",
+    "sphinx-gallery < 0.11.0",
+    "sphinx-hoverxref >= 1.1.1",
+    "sphinx-issues >= 3.0.1",
+    "sphinx-notfound-page >= 0.8",
+    "sphinx-reredirects",
+    "sphinx_rtd_theme >= 1.0.0",
+    "sphinxcontrib-bibtex",
+    "towncrier >= 22.8.0",
+    "codespell",
+    "pre-commit",
+    "tox",
+    "codespell",
+    "pre-commit",
+    "tox",
+    "dlint",
+    "flake8",
+    "flake8-absolute-import",
+    "flake8-implicit-str-concat",
+    "flake8-mutable",
+    "flake8-rst-docstrings",
+    "flake8-simplify",
+    "flake8-use-fstring",
+    "hypothesis",
+    "pydocstyle",
+    "pytest-regressions",
+    "pytest-xdist",
+    "tomli",
+]
+all = [
+    "codespell",
+    "pre-commit",
+    "tox",
+]
+
+[project.scripts]
+plasma-calculator = "plasmapy.utils.calculator:main"
+
+[project.urls]
+website = "https://www.plasmapy.org"
+Documentation = "https://docs.plasmapy.org/"
+Changelog = "https://docs.plasmapy.org/en/stable/whatsnew/index.html"
+Source = "https://github.com/plasmapy/plasmapy"
+Issues = "https://github.com/plasmapy/plasmapy/issues/"
+Twitter = "https://twitter.com/PlasmaPy"
+Chat = "https://plasmapy.org/chat"
+
+[tool.build_docs]
+source-dir = "docs"
+build-dir = "docs/_build"
+all_files = "1"
+
+[tool.codespell]
+skip = "*.png,*cache*,*egg*,.git,.hypothesis,.idea,.tox,_build,*charged_particle*.ipynb,venv"
+ignore-words-list = """
+aci,
+afe,
+ans,
+ba,
+bu,
+circularly,
+ded,
+dne,
+ect,
+explin,
+fo,
+fof,
+gud,
+hax,
+hist,
+hve,
+nd,
+noo,
+nwo,
+ot,
+recuse,
+ro,
+te,
+ue,
+ue,
+windo"""
+
+[tool.coverage.report]
+exclude_lines = [
+    "coverage: ignore",
+    "ImportError",
+    "ModuleNotFoundError",
+    "@vectorize",
+    "@numba.vectorize",
+    "@numba.jit",
+    "@jit",
+    "@numba.njit",
+    "@njit",
+    "@abstractmethod",
+]
+
+[tool.coverage.run]
+omit = [
+    "ci-helpers/*",
+    "*/tests/*",
+    "plasmapy/utils/calculator/*",
+    "plasmapy/version.py",
+]
+
+[tool.flake8]
+convention = "numpy"
+extend-ignore = """
+D105,
+D107,
+D202,
+D205,
+D302,
+D400,
+D403,
+E203,
+E501,
+E731,
+F401,
+F405,
+W605,
+RST210,
+RST213,
+RST305,
+RST306"""
+exclude = """
+extern,
+sphinx,
+*test*,
+*parsetab.py,
+conftest.py,
+docs/conf.py,
+setup.py,
+.jupyter"""
+rst-roles = """
+abbr
+any
+attr
+cite
+cite:ct
+cite:cts
+cite:p
+cite:ps
+cite:t
+cite:ts
+class
+command
+commit
+confval
+data
+dfn
+doc
+download
+envvar
+eq
+event
+exc
+file
+func
+guilabel
+issue
+kbd
+keyword
+makevar
+manpage
+menuselection
+meth
+mod
+numref
+option
+orcid
+pep
+pr
+program
+ref
+regexp
+rst:dir
+samp
+term
+token
+user
+wikipedia"""
+rst-directives = """
+codeauthor
+confval
+deprecated
+event
+highlight
+hlist
+index
+literalinclude
+nbgallery
+only
+rst:directive
+samp
+sectionauthor
+seealso
+tabularcolumns
+todo
+versionadded
+versionchanged"""
+enable-extensions = """
+FS003"""
+per-file-ignores = """
+plasmapy/__init__.py:FS003
+plasmapy/analysis/fit_functions.py:RST499
+plasmapy/analysis/nullpoint.py:SIM102,SIM103
+plasmapy/diagnostics/charged_particle_radiography.py:FS003
+plasmapy/formulary/__init__.py:E402,F403
+plasmapy/formulary/collisions.py:SIM114
+plasmapy/particles/decorators.py:SIM102
+plasmapy/particles/ionization_state_collection.py:SIM102"""
 
 [tool.gilesbot]
 
@@ -33,6 +349,30 @@ include_trailing_comma = true
 force_alphabetical_sort_within_sections = true
 honor_noqa = true
 lines_between_types = 1
+
+[tool.pytest.ini_options]
+minversion = "5.1"
+testpaths = ['"plasmapy"']
+norecursedirs = ['"build"', '"docs/"']
+doctest_optionflags = """
+NORMALIZE_WHITESPACE
+ELLIPSIS
+NUMBER"""
+addopts = "--doctest-modules --doctest-continue-on-failure"
+filterwarnings = ["ignore:.*Creating", "a", "LegacyVersion.*:DeprecationWarning"]
+looponfailroots = "plasmapy"
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.package-data]
+"plasmapy.particles.data" = ["*"]
+"plasmapy.tests" = ["coveragerc"]
+"plasmapy.utils.calculator" = ["*"]
+
+[tool.setuptools.packages.find]
+exclude = ["docs/automodapi"]
+namespaces = false
 
 [tool.towncrier]
 package = "plasmapy"
