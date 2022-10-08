@@ -13,7 +13,7 @@ build:
   tools:
     python: '3.10'
   jobs:
-    pre_build:
+    pre_install:
     # Note that this HTML won't be automatically uploaded,
     # unless your documentation build includes it somehow.
     - pip install --upgrade setuptools
