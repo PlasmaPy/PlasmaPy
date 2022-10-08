@@ -1,9 +1,7 @@
 include README.md
 include LICENSE.md
-include setup.py
 include pyproject.toml
 
-include setup.cfg
 include plasmapy/tests/coveragerc
 
 recursive-include plasmapy *.json *.npy

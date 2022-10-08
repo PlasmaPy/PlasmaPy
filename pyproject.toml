@@ -239,7 +239,6 @@ sphinx,
 *parsetab.py,
 conftest.py,
 docs/conf.py,
-setup.py,
 .jupyter"""
 rst-roles = """
 abbr
