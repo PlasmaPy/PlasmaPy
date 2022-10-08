@@ -38,7 +38,7 @@ dependencies = [
     "numpy >= 1.20.0",
     "packaging",
     "pandas >= 1.0.0",
-    "pytest >= 5.4.0",
+    "pytest >= 6.0",
     "scipy >= 1.5.0",
     "tqdm >= 4.41.0",
     "voila >= 0.2.15",
@@ -351,7 +351,7 @@ honor_noqa = true
 lines_between_types = 1
 
 [tool.pytest.ini_options]
-minversion = "5.1"
+minversion = "6.0"
 testpaths = ['"plasmapy"']
 norecursedirs = ['"build"', '"docs/"']
 doctest_optionflags = """
