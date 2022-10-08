@@ -40,7 +40,7 @@ jobs:
         python-version: ${{ matrix.python }}
         dependencies: tox codecov
     - name: Run tests
-      run: tox ${{ matrix.toxargs }} -e ${{ matrix.toxenv }} -- ${{ matrix.toxposargs }}
+      run: python -m tox ${{ matrix.toxargs }} -e ${{ matrix.toxenv }} -- ${{ matrix.toxposargs }}
 
   comprehensive-tests:
     name: ${{ matrix.name }}
@@ -90,7 +90,7 @@ jobs:
       if: startsWith(matrix.name, 'Documentation')
       run: sudo apt-get install graphviz pandoc
     - name: Run tests
-      run: tox ${{ matrix.toxargs }} -e ${{ matrix.toxenv }} -- ${{ matrix.toxposargs }}
+      run: python -m tox ${{ matrix.toxargs }} -e ${{ matrix.toxenv }} -- ${{ matrix.toxposargs }}
     - name: Upload coverage to codecov
       if: ${{ contains(matrix.toxenv,'-cov') }}
       uses: codecov/codecov-action@v3
@@ -113,7 +113,7 @@ jobs:
     - name: Install language-pack-fr and tzdata
       run: sudo apt-get install graphviz pandoc
     - name: Run tests
-      run: tox -e build_docs -- -q
+      run: python -m tox -e build_docs -- -q
 
   codespell:
     name: codespell
@@ -129,7 +129,7 @@ jobs:
       with:
         python-version: 3.8
     - name: Run tests
-      run: tox -e codespell -q
+      run: python -m tox -e codespell -q
 
   import-plasmapy:
     name: Importing PlasmaPy
@@ -145,7 +145,7 @@ jobs:
       with:
         python-version: 3.8
     - name: Import PlasmaPy
-      run: tox -e py38-minimal-pypi-import
+      run: python -m tox -e py38-minimal-pypi-import
 
   build-n-publish:
     name: Packaging
