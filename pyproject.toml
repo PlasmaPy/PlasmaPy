@@ -48,11 +48,6 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-extras = [
-    "codespell",
-    "pre-commit",
-    "tox",
-]
 tests = [
     "codespell",
     "pre-commit",
@@ -136,11 +131,6 @@ developer = [
     "pytest-regressions",
     "pytest-xdist",
     "tomli",
-]
-all = [
-    "codespell",
-    "pre-commit",
-    "tox",
 ]
 
 [project.scripts]
