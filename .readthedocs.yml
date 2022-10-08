@@ -14,7 +14,7 @@ build:
     python: '3.10'
   jobs:
     pre_install:
-    - pip install --upgrade setuptools
+    - pip install --upgrade setuptools pip
 
 
 # Optionally set the version of Python and requirements required to build your docs
