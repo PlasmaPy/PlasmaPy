@@ -27,3 +27,4 @@ runs:
       python-version: ${{ inputs.python-version }}
   - name: Install Python dependencies
     run: python -m pip install --progress-bar off --upgrade ${{ inputs.dependencies }}
+    shell: bash -el {0}
