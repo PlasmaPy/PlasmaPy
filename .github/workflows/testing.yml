@@ -31,7 +31,11 @@ jobs:
           toxenv: linters
 
     steps:
-    - uses: .github/workflows/prepare_env.yml
+    - name: Checkout code
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+    - uses: ./.github/workflows/prepare_env.yml
       with:
         python-version: ${{ matrix.python }}
         dependencies: tox codecov
@@ -74,7 +78,11 @@ jobs:
           toxenv: py39
 
     steps:
-    - uses: .github/workflows/prepare_env.yml
+    - name: Checkout code
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+    - uses: ./.github/workflows/prepare_env.yml
       with:
         python-version: ${{ matrix.python }}
         dependencies: tox codecov
@@ -95,7 +103,11 @@ jobs:
     strategy:
       fail-fast: false
     steps:
-    - uses: .github/workflows/prepare_env.yml
+    - name: Checkout code
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+    - uses: ./.github/workflows/prepare_env.yml
       with:
         python-version: 3.8
     - name: Install language-pack-fr and tzdata
@@ -109,7 +121,11 @@ jobs:
     strategy:
       fail-fast: false
     steps:
-    - uses: .github/workflows/prepare_env.yml
+    - name: Checkout code
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+    - uses: ./.github/workflows/prepare_env.yml
       with:
         python-version: 3.8
     - name: Run tests
@@ -121,7 +137,11 @@ jobs:
     strategy:
       fail-fast: false
     steps:
-    - uses: .github/workflows/prepare_env.yml
+    - name: Checkout code
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+    - uses: ./.github/workflows/prepare_env.yml
       with:
         python-version: 3.8
     - name: Import PlasmaPy
@@ -137,7 +157,11 @@ jobs:
     - codespell
     - import-plasmapy
     steps:
-    - uses: .github/workflows/prepare_env.yml
+    - name: Checkout code
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+    - uses: ./.github/workflows/prepare_env.yml
       with:
         python-version: 3.8
         dependencies: setuptools numpy wheel setuptools_scm twine build pip
