@@ -54,7 +54,6 @@ tests = [
     "tox",
     "dlint",
     "flake8",
-    "pyproject-flake8",
     "flake8-absolute-import",
     "flake8-implicit-str-concat",
     "flake8-mutable",
@@ -201,113 +200,6 @@ omit = [
     "plasmapy/utils/calculator/*",
     "plasmapy/version.py",
 ]
-
-[tool.flake8]
-convention = "numpy"
-extend-ignore = """
-D105,
-D107,
-D202,
-D205,
-D302,
-D400,
-D403,
-E203,
-E501,
-E731,
-F401,
-F405,
-W605,
-RST210,
-RST213,
-RST305,
-RST306"""
-exclude = """
-extern,
-sphinx,
-*test*,
-*parsetab.py,
-conftest.py,
-docs/conf.py,
-.jupyter"""
-rst-roles = """
-abbr
-any
-attr
-cite
-cite:ct
-cite:cts
-cite:p
-cite:ps
-cite:t
-cite:ts
-class
-command
-commit
-confval
-data
-dfn
-doc
-download
-envvar
-eq
-event
-exc
-file
-func
-guilabel
-issue
-kbd
-keyword
-makevar
-manpage
-menuselection
-meth
-mod
-numref
-option
-orcid
-pep
-pr
-program
-ref
-regexp
-rst:dir
-samp
-term
-token
-user
-wikipedia"""
-rst-directives = """
-codeauthor
-confval
-deprecated
-event
-highlight
-hlist
-index
-literalinclude
-nbgallery
-only
-rst:directive
-samp
-sectionauthor
-seealso
-tabularcolumns
-todo
-versionadded
-versionchanged"""
-enable-extensions = """
-FS003"""
-per-file-ignores = """
-plasmapy/__init__.py:FS003
-plasmapy/analysis/fit_functions.py:RST499
-plasmapy/analysis/nullpoint.py:SIM102,SIM103
-plasmapy/diagnostics/charged_particle_radiography.py:FS003
-plasmapy/formulary/__init__.py:E402,F403
-plasmapy/formulary/collisions.py:SIM114
-plasmapy/particles/decorators.py:SIM102
-plasmapy/particles/ionization_state_collection.py:SIM102"""
 
 [tool.gilesbot]
 
