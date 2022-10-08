@@ -187,6 +187,5 @@ jobs:
       run: twine check dist/*
     - name: Install PlasmaPy in all variants
       run: |
-        pip install --progress-bar off .[all,dev]
-        pip install --progress-bar off -e .[all,dev]
-        python setup.py develop
+        pip install --progress-bar off .[dev]
+        pip install --progress-bar off -e .[dev]
