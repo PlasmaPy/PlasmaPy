@@ -31,18 +31,13 @@ jobs:
           toxenv: linters
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
-      with:
-        fetch-depth: 0
-    - name: Set up Python
-      uses: actions/setup-python@v4
+    - uses: .github/workflows/prepare_env.yml
       with:
         python-version: ${{ matrix.python }}
-    - name: Install Python dependencies
-      run: python -m pip install --progress-bar off --upgrade tox codecov
+        dependencies: tox codecov
     - name: Run tests
       run: tox ${{ matrix.toxargs }} -e ${{ matrix.toxenv }} -- ${{ matrix.toxposargs }}
+
   comprehensive-tests:
     name: ${{ matrix.name }}
     runs-on: ${{ matrix.os }}
@@ -79,16 +74,10 @@ jobs:
           toxenv: py39
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
-      with:
-        fetch-depth: 0
-    - name: Set up Python
-      uses: actions/setup-python@v4
+    - uses: .github/workflows/prepare_env.yml
       with:
         python-version: ${{ matrix.python }}
-    - name: Install Python dependencies
-      run: python -m pip install --progress-bar off --upgrade tox codecov
+        dependencies: tox codecov
     - name: Install language-pack-fr and tzdata
       if: startsWith(matrix.name, 'Documentation')
       run: sudo apt-get install graphviz pandoc
@@ -106,16 +95,9 @@ jobs:
     strategy:
       fail-fast: false
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
-      with:
-        fetch-depth: 0
-    - name: Set up Python
-      uses: actions/setup-python@v4
+    - uses: .github/workflows/prepare_env.yml
       with:
         python-version: 3.8
-    - name: Install Python dependencies
-      run: python -m pip install --progress-bar off --upgrade tox
     - name: Install language-pack-fr and tzdata
       run: sudo apt-get install graphviz pandoc
     - name: Run tests
@@ -127,16 +109,9 @@ jobs:
     strategy:
       fail-fast: false
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
+    - uses: .github/workflows/prepare_env.yml
       with:
-        fetch-depth: 0
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: 3.9
-    - name: Install Python dependencies
-      run: python -m pip install --progress-bar off --upgrade tox
+        python-version: 3.8
     - name: Run tests
       run: tox -e codespell -q
 
@@ -146,16 +121,9 @@ jobs:
     strategy:
       fail-fast: false
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
-      with:
-        fetch-depth: 0
-    - name: Set up Python
-      uses: actions/setup-python@v4
+    - uses: .github/workflows/prepare_env.yml
       with:
         python-version: 3.8
-    - name: Install Python dependencies
-      run: python -m pip install --progress-bar off --upgrade tox
     - name: Import PlasmaPy
       run: tox -e py38-minimal-pypi-import
 
@@ -169,19 +137,14 @@ jobs:
     - codespell
     - import-plasmapy
     steps:
-    - uses: actions/checkout@v3
+    - uses: .github/workflows/prepare_env.yml
+      with:
+        python-version: 3.8
+        dependencies: setuptools numpy wheel setuptools_scm twine build pip
     - name: Get history and tags for SCM versioning to work
       run: |
         git fetch --prune --unshallow
         git fetch --depth=1 origin +refs/tags/*:refs/tags/*
-    - name: Set up Python 3.8
-      uses: actions/setup-python@v4
-      with:
-        python-version: 3.8
-    - name: Install requirements
-      run: |
-        pip install --progress-bar off --upgrade pip
-        pip install --progress-bar off setuptools numpy wheel setuptools_scm twine
     - name: Build a binary wheel
       run: python setup.py bdist_wheel
     - name: Build a source tarball
