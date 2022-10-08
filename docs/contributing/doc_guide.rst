@@ -395,7 +395,7 @@ value in |docs/conf.py|_.
 
 When an extension contains new |roles| or |directives|, it may be
 necessary to add them to ``rst-roles`` and ``rst-directives`` in the
-``[flake8]`` section of |setup.cfg|_ to avoid linter errors during
+``[flake8]`` section of |tox.ini|_ to avoid linter errors during
 continuous integration tests in pull requests.
 
 .. _external-references:
