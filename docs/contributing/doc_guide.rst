@@ -947,13 +947,19 @@ Docstring guidelines
          """
 
 * When a function calculates a formula, put the formula in the extended
-  summary section when it can be included concisely. When the formula is
-  particularly complicated, put it in the "Notes" section. Put
-  derivations and extensive discussions of mathematics in the "Notes"
-  section.
+  summary section when it can be included concisely. Put complicated
+  formulae, derivations, and extensive discussions of physics or math in
+  the "Notes" section.
 
 * Describe each :term:`parameter` in the "Parameters_" section of the
-  docstring.
+  docstring with the following format:
+
+  .. code-block:: rst
+
+     parameter_name : type line
+        Parameter description.
+
+  Some examples are:
 
   .. code-block:: rst
 
@@ -965,14 +971,19 @@ Docstring guidelines
      y : bool, optional, default: True
         Description of ``y``.
 
+  The type line should include type and size information, whether the
+  parameter is optional or |keyword-only|, and/or the default value.
+
+
   * Place type information to the right of the parameter name, along
     with ``optional`` and/or ``keyword-only`` if necessary.
 
   * Describe any requirements for the parameter, including preconditions
     specified using |validate_quantities| or |particle_input|.
 
-  * Use the substitution ``|array_like|`` to indicate that an argument
-    should be able to be converted into an |ndarray|.
+  * Use the substitution ``|array_like|`` to indicate that an
+    |array_like| argument should be able to be converted into an
+    |ndarray|.
 
   * If the shapes and sizes of the parameters are interrelated, then
     include that information in parentheses immediately before the type
