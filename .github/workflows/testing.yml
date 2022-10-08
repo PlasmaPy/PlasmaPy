@@ -190,4 +190,4 @@ jobs:
     - name: Install PlasmaPy in all variants
       run: |
         pip install --progress-bar off .[dev]
-        pip install --progress-bar off -e .[dev
+        pip install --progress-bar off -e .[dev]
