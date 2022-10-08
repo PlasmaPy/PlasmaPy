@@ -90,7 +90,7 @@ docs = [
     "sphinxcontrib-bibtex",
     "towncrier >= 22.8.0",
 ]
-developer = [
+dev = [
     "codespell",
     "pre-commit",
     "tox",
