@@ -181,11 +181,13 @@ jobs:
     - name: Install requirements
       run: |
         pip install --progress-bar off setuptools numpy wheel setuptools_scm twine build pip
+    - name: Build a source tarball
+      run: python -m build --sdist --outdir dist/
     - name: Build a binary wheel
-      run: python -m build
+      run: python -m build --wheel --outdir dist/
     - name: Twine check
       run: twine check dist/*
     - name: Install PlasmaPy in all variants
       run: |
         pip install --progress-bar off .[dev]
-        pip install --progress-bar off -e .[dev]
+        pip install --progress-bar off -e .[dev
