@@ -96,9 +96,6 @@ docs = [
     "towncrier >= 22.8.0",
 ]
 developer = [
-    "codespell",
-    "pre-commit",
-    "tox",
     "docutils",
     "ipykernel",
     "jinja2 != 3.1",
@@ -117,10 +114,7 @@ developer = [
     "sphinx_rtd_theme >= 1.0.0",
     "sphinxcontrib-bibtex",
     "towncrier >= 22.8.0",
-    "codespell",
-    "pre-commit",
-    "tox",
-    "codespell",
+    "git+https://github.com/codespell-project/codespell@fd1d5c0d8dd5d8072d0422ce4f05b6202aa89ba0",
     "pre-commit",
     "tox",
     "dlint",
