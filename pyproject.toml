@@ -49,7 +49,7 @@ dependencies = [
 
 [project.optional-dependencies]
 tests = [
-    "codespell",
+    "codespell @ git+https://github.com/codespell-project/codespell/",
     "pre-commit",
     "tox",
     "dlint",
