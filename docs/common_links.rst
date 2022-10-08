@@ -258,18 +258,6 @@
 .. _`pyproject.toml`: https://github.com/PlasmaPy/PlasmaPy/blob/main/pyproject.toml
 .. |pyproject.toml| replace:: :file:`pyproject.toml`
 
-.. _`requirements`: https://github.com/PlasmaPy/PlasmaPy/blob/main/requirements
-.. |requirements| replace:: :file:`requirements`
-
-.. _`requirements/build.txt`: https://github.com/PlasmaPy/PlasmaPy/blob/main/requirements/build.txt
-.. |requirements/build.txt| replace:: :file:`requirements/build.txt`
-
-.. _`requirements/environment.yml`: https://github.com/PlasmaPy/PlasmaPy/blob/main/requirements/environment.yml
-.. |requirements/environment.yml| replace:: :file:`requirements/environment.yml`
-
-.. _`setup.cfg`: https://github.com/PlasmaPy/PlasmaPy/blob/main/setup.cfg
-.. |setup.cfg| replace:: :file:`setup.cfg`
-
 .. _`sphinxcontrib-bibtex`: https://sphinxcontrib-bibtex.readthedocs.io
 .. |sphinxcontrib-bibtex| replace:: `sphinxcontrib-bibtex`
 

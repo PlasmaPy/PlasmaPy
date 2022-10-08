@@ -175,7 +175,7 @@ The following checks are performed with each pull request.
 
   * Occasionally codespell_ will report false positives. Please add
     false positives to ``ignore-words-list`` under ``codespell`` in
-    :file:`setup.cfg`.
+    :file:`pyproject.toml`.
 
 .. note::
 

@@ -314,26 +314,8 @@ Imports
 Requirements
 ============
 
-* Package requirements are specified in multiple locations that need to
-  be updated simultaneously.
-
-  - The |requirements|_ directory contains multiple text files that
-    contain build, installation, testing, documentation, and extra
-    requirements.
-
-  - The ``build-system.requires`` section of |pyproject.toml|_ includes
-    the requirements for building PlasmaPy. This section must mirror
-    |requirements/build.txt|_.
-
-  - |setup.cfg|_ includes sections for the install, docs, tests, and
-    extra requirements that must mirror the corresponding files in
-    the |requirements|_ directory.
-
-  - |requirements/environment.yml|_ contains a Conda_ environment
-    for PlasmaPy.
-
-  - |tox.ini|_ contains a testing environment for the minimal
-    dependencies.
+* Package requirements are specified in |pyproject.toml|_. |tox.ini|_
+  also contains a testing environment for the minimal dependencies.
 
 * Each release of PlasmaPy should support all minor versions of
   Python that have been released in the prior 42 months, and all minor

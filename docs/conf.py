@@ -314,7 +314,7 @@ hoverxref_role_types = {
 # a new role, and the corresponding tuple contains the base url and the
 # caption. For example, we can now do :orcid:`0000-0000-0000-0000` and
 # have a link create to the corresponding ORCID page. New roles should
-# be added to rst-roles in setup.cfg to avoid being caught by
+# be added to rst-roles in tox.ini to avoid being caught by
 # flake8-rst-docstrings.
 
 extlinks = {
