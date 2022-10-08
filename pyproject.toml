@@ -363,6 +363,8 @@ include-package-data = true
 exclude = ["docs/automodapi"]
 namespaces = false
 
+[tool.setuptools_scm]
+
 [tool.towncrier]
 package = "plasmapy"
 name = "PlasmaPy"
