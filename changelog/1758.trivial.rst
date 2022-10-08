@@ -1,0 +1,1 @@
+Replaced ``setup.py`` with ``pyproject.toml``. Simplified ``extras`` (``pip install plasmapy[all]`` and ``[extras]`` are gone).
