@@ -80,8 +80,10 @@ jobs:
       with:
         fetch-depth: 0
 
-    - name: ${{ matrix.name }}
+    - name: Setup nox
       uses: excitedleigh/setup-nox@v2.0.0
+
+    - name: ${{ matrix.name }}
       run: nox -s ${{ matrix.noxenv }} -- ${{ matrix.noxposargs }}
 
   documentation:
@@ -99,6 +101,8 @@ jobs:
     - name: Install language-pack-fr and tzdata
       run: sudo apt-get install graphviz pandoc
 
-    - name: Build documentation
+    - name: Setup nox
       uses: excitedleigh/setup-nox@v2.0.0
+
+    - name: Build docs
       run: nox -e build_docs -- -q
