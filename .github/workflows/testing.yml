@@ -53,7 +53,7 @@ jobs:
         fetch-depth: 0
 
     - name: Setup nox
-      uses: excitedleigh/setup-nox@v2.0.0
+      uses: daisylb/setup-nox@v2.1.0
 
     - name: Run tests on ${{ matrix.name }}
       run: nox -s ${{ matrix.noxenv }} -- ${{ matrix.noxposargs }}
@@ -81,7 +81,7 @@ jobs:
         fetch-depth: 0
 
     - name: Setup nox
-      uses: excitedleigh/setup-nox@v2.0.0
+      uses: daisylb/setup-nox@v2.1.0
 
     - name: ${{ matrix.name }}
       run: nox -s ${{ matrix.noxenv }} -- ${{ matrix.noxposargs }}
@@ -102,7 +102,7 @@ jobs:
       run: sudo apt-get install graphviz pandoc
 
     - name: Setup nox
-      uses: excitedleigh/setup-nox@v2.0.0
+      uses: daisylb/setup-nox@v2.1.0
 
     - name: Build docs
       run: nox -e build_docs -- -q
