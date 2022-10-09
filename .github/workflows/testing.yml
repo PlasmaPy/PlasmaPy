@@ -52,8 +52,10 @@ jobs:
       with:
         fetch-depth: 0
 
-    - name: ${{ matrix.name }}
+    - name: Setup nox
       uses: excitedleigh/setup-nox@v2.0.0
+
+    - name: Run tests on ${{ matrix.name }}
       run: nox -s ${{ matrix.noxenv }} -- ${{ matrix.noxposargs }}
 
   comprehensive-tests:
