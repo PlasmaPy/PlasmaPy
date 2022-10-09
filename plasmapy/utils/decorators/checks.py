@@ -1044,6 +1044,9 @@ class CheckUnits(CheckBase):
         return new_list
 
 
+# TODO rewrite as per https://github.com/astropy/astropy/pull/12335/files
+
+
 def check_units(
     func=None, checks_on_return: Dict[str, Any] = None, **checks: Dict[str, Any]
 ):
