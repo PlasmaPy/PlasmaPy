@@ -1436,10 +1436,12 @@ class Layer:
         layer (the actual film medium) or an inactive layer (a filter or
         inactive part of the film, such as a substrate.)
 
-        Tabulated stopping powers for protons and electrons can be found
-        `here <https://physics.nist.gov/PhysRefData/Star/Text/PSTAR.html>`_
-        and
-        `here <https://physics.nist.gov/PhysRefData/Star/Text/ESTAR.html>`_.
+        Tabulated stopping powers for protons and electrons can be found in the
+        `NIST PSTAR database
+        <https://physics.nist.gov/PhysRefData/Star/Text/PSTAR.html>`_
+        and the
+        `NIST ESTAR database
+        <https://physics.nist.gov/PhysRefData/Star/Text/ESTAR.html>`_.
 
         Parameters
         ----------
