@@ -1436,10 +1436,10 @@ class Layer:
         layer (the actual film medium) or an inactive layer (a filter or
         inactive part of the film, such as a substrate.)
 
-        Tabulated stopping powers for protons and electrons can be found at
-        https://physics.nist.gov/PhysRefData/Star/Text/PSTAR.html
+        Tabulated stopping powers for protons and electrons can be found
+        `here <https://physics.nist.gov/PhysRefData/Star/Text/PSTAR.html>`_
         and
-        https://physics.nist.gov/PhysRefData/Star/Text/ESTAR.html
+        `here <https://physics.nist.gov/PhysRefData/Star/Text/ESTAR.html>`_.
 
         Parameters
         ----------
@@ -1471,15 +1471,15 @@ class Layer:
 
 class Stack:
     r"""
-    A `~plasmapy.diagnostic.charged_particle_radiography.Stack` is an ordered
-    list of `~plasmapy.diagnostic.charged_particle_radiography.Layer` objects.
+    An ordered list of
+    `~plasmapy.diagnostics.charged_particle_radiography.Layer` objects.
 
 
     Parameters
     ----------
 
-    layers : list of `~plasmapy.diagnostic.charged_particle_radiography.Layer` objects
-        A list of the `~plasmapy.diagnostic.charged_particle_radiography.Layer` objects that make up the film stack.
+    layers : list of `~plasmapy.diagnostics.charged_particle_radiography.Layer` objects
+        A list of the `~plasmapy.diagnostics.charged_particle_radiography.Layer` objects that make up the film stack.
     """
 
     def __init__(self, layers):
@@ -1518,8 +1518,8 @@ class Stack:
         Parameters
         ----------
 
-        stack : list of `~plasmapy.diagnostic.charged_particle_radiography.Layer` objects
-            This list of `~plasmapy.diagnostic.charged_particle_radiography.Layer`
+        stack : list of `~plasmapy.diagnostics.charged_particle_radiography.Layer` objects
+            This list of `~plasmapy.diagnostics.charged_particle_radiography.Layer`
             objects defines the composition of the film stack.
 
         energies : `~astropy.units.Quantity` array, shape [nenergies,]
@@ -1604,8 +1604,8 @@ class Stack:
 
         Parameters
         ----------
-        stack : list of `~plasmapy.diagnostic.charged_particle_radiography.Layer` objects
-            This list of `~plasmapy.diagnostic.charged_particle_radiography.Layer`
+        stack : list of `~plasmapy.diagnostics.charged_particle_radiography.Layer` objects
+            This list of `~plasmapy.diagnostics.charged_particle_radiography.Layer`
             objects defines the composition of the film stack.
 
         energy_range : `~astropy.units.Quantity` list, shape [2,]
