@@ -41,13 +41,28 @@ jobs:
           python: 3.8
           toxenv: py38-xarraydev
 
+        - name: Import PlasmaPy (Windows)
+          os: windows-latest
+          python: 3.8
+          toxenv: py38-minimal-pypi-import
+
+        - name: Import PlasmaPy (macOS X)
+          os: macos-latest
+          python: 3.8
+          toxenv: py38-minimal-pypi-import
+
+        - name: Import PlasmaPy (Ubuntu)
+          os: ubuntu-latest
+          python: 3.8
+          toxenv: py38-minimal-pypi-import
+
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
       with:
         fetch-depth: 0
     - name: Set up Python
-      uses: actions/setup-python@v3
+      uses: actions/setup-python@v4
       with:
         python-version: ${{ matrix.python }}
     - name: Install Python dependencies

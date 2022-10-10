@@ -1,4 +1,3 @@
-import os
 import pytest
 
 from astropy import units as u
@@ -13,21 +12,21 @@ from plasmapy.plasma.sources import openpmd_hdf5
 
 @pytest.fixture(scope="module")
 def h5_2d(request):
-    h5 = openpmd_hdf5.HDF5Reader(hdf5=os.path.join(data_dir, "data00000255.h5"))
+    h5 = openpmd_hdf5.HDF5Reader(hdf5=data_dir / "data00000255.h5")
     yield h5
     h5.close()
 
 
 @pytest.fixture(scope="module")
 def h5_3d(request):
-    h5 = openpmd_hdf5.HDF5Reader(hdf5=os.path.join(data_dir, "data00000100.h5"))
+    h5 = openpmd_hdf5.HDF5Reader(hdf5=data_dir / "data00000100.h5")
     yield h5
     h5.close()
 
 
 @pytest.fixture(scope="module")
 def h5_theta(request):
-    h5 = openpmd_hdf5.HDF5Reader(hdf5=os.path.join(data_dir, "data00000200.h5"))
+    h5 = openpmd_hdf5.HDF5Reader(hdf5=data_dir / "data00000200.h5")
     yield h5
     h5.close()
 
@@ -48,7 +47,7 @@ class TestOpenPMD2D:
 
     def test_has_charge_density_with_units(self, h5_2d):
         # this should simply pass without exception
-        h5_2d.charge_density.to(u.C / u.m ** 3)
+        h5_2d.charge_density.to(u.C / u.m**3)
 
     def test_correct_shape_charge_density(self, h5_2d):
         assert h5_2d.charge_density.shape == (51, 201)
@@ -76,7 +75,7 @@ class TestOpenPMD3D:
         assert h5_3d.electric_field.shape == (3, 26, 26, 201)
 
     def test_has_charge_density_with_units(self, h5_3d):
-        assert isinstance(h5_3d.charge_density.to(u.C / u.m ** 3), u.Quantity)
+        assert isinstance(h5_3d.charge_density.to(u.C / u.m**3), u.Quantity)
 
     def test_correct_shape_charge_density(self, h5_3d):
         assert h5_3d.charge_density.shape == (26, 26, 201)
@@ -105,7 +104,7 @@ class TestOpenPMDThetaMode:
         assert h5_theta.electric_field.shape == (3, 3, 51, 201)
 
     def test_has_charge_density_with_units(self, h5_theta):
-        assert isinstance(h5_theta.charge_density.to(u.C / u.m ** 3), u.Quantity)
+        assert isinstance(h5_theta.charge_density.to(u.C / u.m**3), u.Quantity)
 
     def test_correct_shape_charge_density(self, h5_theta):
         assert h5_theta.charge_density.shape == (3, 51, 201)
@@ -118,7 +117,7 @@ class TestOpenPMDThetaMode:
 
     def test_has_electric_current_with_units(self, h5_theta):
         assert isinstance(
-            h5_theta.electric_current.to(u.A * u.kg / u.m ** 3), u.Quantity
+            h5_theta.electric_current.to(u.A * u.kg / u.m**3), u.Quantity
         )
 
     def test_correct_shape_electric_current(self, h5_theta):
@@ -126,9 +125,9 @@ class TestOpenPMDThetaMode:
 
 
 units_test_table = [
-    ((1.0, 1.0, 0.0, -1.0, 0.0, 0.0, 2.0), u.m * u.kg / u.amp * u.cd ** 2),
-    ((1, 0, 1, 2, 0, 0, 0), u.m * u.s * u.amp ** 2),
-    ([-3.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0], u.coulomb / u.m ** 3),
+    ((1.0, 1.0, 0.0, -1.0, 0.0, 0.0, 2.0), u.m * u.kg / u.amp * u.cd**2),
+    ((1, 0, 1, 2, 0, 0, 0), u.m * u.s * u.amp**2),
+    ([-3.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0], u.coulomb / u.m**3),
     ([2, 1, -3, -2, 0, 0, 0], u.ohm),
 ]
 
@@ -147,7 +146,7 @@ def test_unavailable_hdf5():
 
 def test_non_openpmd_hdf5():
     with pytest.raises(DataStandardError):
-        openpmd_hdf5.HDF5Reader(hdf5=os.path.join(data_dir, "blank.h5"))
+        openpmd_hdf5.HDF5Reader(hdf5=data_dir.joinpath("blank.h5"))
 
 
 def test_HDF5Reader(h5_2d):

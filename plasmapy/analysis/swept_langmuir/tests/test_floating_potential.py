@@ -9,11 +9,11 @@ import pytest
 from unittest import mock
 
 from plasmapy.analysis import fit_functions as ffuncs
-from plasmapy.analysis import swept_langmuir as _sl
+from plasmapy.analysis import swept_langmuir as sla
 from plasmapy.analysis.swept_langmuir.floating_potential import (
     find_floating_potential,
     find_vf_,
-    FloatingPotentialResults,
+    VFExtras,
 )
 from plasmapy.utils.exceptions import PlasmaPyWarning
 
@@ -24,18 +24,17 @@ def test_floating_potential_namedtuple():
     data.
     """
 
-    assert issubclass(FloatingPotentialResults, tuple)
-    assert hasattr(FloatingPotentialResults, "_fields")
-    assert FloatingPotentialResults._fields == (
-        "vf",
+    assert issubclass(VFExtras, tuple)
+    assert hasattr(VFExtras, "_fields")
+    assert VFExtras._fields == (
         "vf_err",
         "rsq",
-        "func",
+        "fitted_func",
         "islands",
-        "indices",
+        "fitted_indices",
     )
-    assert hasattr(FloatingPotentialResults, "_field_defaults")
-    assert FloatingPotentialResults._field_defaults == {}
+    assert hasattr(VFExtras, "_field_defaults")
+    assert VFExtras._field_defaults == {}
 
 
 class TestFindFloatingPotential:
@@ -44,9 +43,13 @@ class TestFindFloatingPotential:
     `~plasmapy.analysis.swept_langmuir.floating_potential.find_floating_potential`.
     """
 
-    _null_result = FloatingPotentialResults(
-        vf=np.nan, vf_err=np.nan, rsq=None, func=None, islands=None, indices=None
-    )._asdict()
+    _null_result = {
+        **VFExtras(
+            vf_err=np.nan, rsq=None, fitted_func=None, islands=None, fitted_indices=None
+        )._asdict(),
+        "vf": np.nan,
+    }
+
     _voltage = np.linspace(-10.0, 15, 70)
     _linear_current = np.linspace(-3.1, 4.1, 70)
     _linear_p_sine_current = _linear_current + 1.2 * np.sin(1.2 * _voltage)
@@ -65,9 +68,9 @@ class TestFindFloatingPotential:
         varr = np.linspace(-20.0, 20.0, 100)
         carr = np.linspace(-20.0, 20.0, 100)
 
-        assert _sl.helpers.check_sweep is _sl.floating_potential.check_sweep
+        assert sla.helpers.check_sweep is sla.floating_potential.check_sweep
 
-        with mock.patch(_sl.floating_potential.__name__ + ".check_sweep") as mock_cs:
+        with mock.patch(f"{sla.floating_potential.__name__}.check_sweep") as mock_cs:
             mock_cs.return_value = varr, carr
             find_floating_potential(voltage=varr, current=carr, fit_type="linear")
 
@@ -177,7 +180,7 @@ class TestFindFloatingPotential:
                 },
                 {
                     **_null_result,
-                    "func": ffuncs.Linear(),
+                    "fitted_func": ffuncs.Linear(),
                     "islands": [slice(27, 29), slice(36, 38), slice(39, 41)],
                 },
                 PlasmaPyWarning,
@@ -197,9 +200,9 @@ class TestFindFloatingPotential:
                     "vf": 0.6355491,
                     "vf_err": 0.03306472,
                     "rsq": 0.8446441,
-                    "func": ffuncs.Linear(),
+                    "fitted_func": ffuncs.Linear(),
                     "islands": [slice(27, 41)],
-                    "indices": slice(0, 70),
+                    "fitted_indices": slice(0, 70),
                 },
                 PlasmaPyWarning,
             ),
@@ -208,15 +211,14 @@ class TestFindFloatingPotential:
     def test_warnings(self, kwargs, expected, _warning):
         """Test scenarios that issue warnings."""
         with pytest.warns(_warning):
-            results = find_floating_potential(**kwargs)
-            assert isinstance(results, FloatingPotentialResults)
+            vf, extras = find_floating_potential(**kwargs)
+            assert isinstance(extras, VFExtras)
 
         for key, val in expected.items():
-            rtn_val = getattr(results, key)
-
+            rtn_val = vf if key == "vf" else getattr(extras, key)
             if val is None:
                 assert rtn_val is None
-            elif key == "func" and val is not None:
+            elif key == "fitted_func":
                 assert isinstance(rtn_val, val.__class__)
             elif np.isscalar(val):
                 if np.isnan(val):
@@ -249,16 +251,16 @@ class TestFindFloatingPotential:
         """
         voltage = self._voltage
         current = self._linear_current if fit_type == "linear" else self._exp_current
-        results = find_floating_potential(
+        vf, extras = find_floating_potential(
             voltage,
             current,
             min_points=min_points,
             fit_type=fit_type,
         )
-        assert isinstance(results, FloatingPotentialResults)
+        assert isinstance(extras, VFExtras)
 
-        assert results.islands == islands
-        assert results.indices == indices
+        assert extras.islands == islands
+        assert extras.fitted_indices == indices
 
     @pytest.mark.parametrize(
         "kwargs, expected",
@@ -276,9 +278,9 @@ class TestFindFloatingPotential:
                     "vf": 0.7638889,
                     "vf_err": 0.0,
                     "rsq": 1.0,
-                    "func": ffuncs.Linear(),
+                    "fitted_func": ffuncs.Linear(),
                     "islands": [slice(29, 31)],
-                    "indices": slice(22, 38),
+                    "fitted_indices": slice(22, 38),
                 },
             ),
             #
@@ -295,9 +297,9 @@ class TestFindFloatingPotential:
                     "vf": -8.8243208,
                     "vf_err": 032.9961,
                     "rsq": 0.005084178,
-                    "func": ffuncs.Linear(),
+                    "fitted_func": ffuncs.Linear(),
                     "islands": [slice(27, 29), slice(36, 38), slice(39, 41)],
-                    "indices": slice(26, 42),
+                    "fitted_indices": slice(26, 42),
                 },
             ),
             #
@@ -314,9 +316,9 @@ class TestFindFloatingPotential:
                     "vf": -7.91666667,
                     "vf_err": 3.153378e-8,
                     "rsq": 1.0,
-                    "func": ffuncs.Linear(),
+                    "fitted_func": ffuncs.Linear(),
                     "islands": [slice(5, 7)],
-                    "indices": slice(0, 16),
+                    "fitted_indices": slice(0, 16),
                 },
             ),
             #
@@ -333,9 +335,9 @@ class TestFindFloatingPotential:
                     "vf": 14.6527778,
                     "vf_err": 0.0,
                     "rsq": 1.0,
-                    "func": ffuncs.Linear(),
+                    "fitted_func": ffuncs.Linear(),
                     "islands": [slice(68, 70)],
-                    "indices": slice(54, 70),
+                    "fitted_indices": slice(54, 70),
                 },
             ),
         ],
@@ -344,15 +346,14 @@ class TestFindFloatingPotential:
         """
         Test scenarios related to the identification of crossing-point islands.
         """
-        results = find_floating_potential(**kwargs)
-        assert isinstance(results, FloatingPotentialResults)
+        vf, extras = find_floating_potential(**kwargs)
+        assert isinstance(extras, VFExtras)
 
         for key, val in expected.items():
-            rtn_val = getattr(results, key)
-
+            rtn_val = vf if key == "vf" else getattr(extras, key)
             if val is None:
                 assert rtn_val is None
-            elif key == "func" and val is not None:
+            elif key == "fitted_func":
                 assert isinstance(rtn_val, val.__class__)
             elif np.isscalar(val):
                 if np.isnan(val):
@@ -368,20 +369,20 @@ class TestFindFloatingPotential:
         voltage = self._voltage
         current = m * voltage + b
 
-        results = find_floating_potential(
+        vf, extras = find_floating_potential(
             voltage=voltage,
             current=current,
             fit_type="linear",
             min_points=0.8,
         )
 
-        assert isinstance(results, FloatingPotentialResults)
-        assert np.isclose(results.vf, -b / m)
-        assert np.isclose(results.vf_err, 0.0)
-        assert np.isclose(results.rsq, 1.0)
-        assert isinstance(results.func, ffuncs.Linear)
-        assert np.allclose(results.func.params, (m, b))
-        assert np.allclose(results.func.param_errors, (0.0, 0.0), atol=2e-8)
+        assert isinstance(extras, VFExtras)
+        assert np.isclose(vf, -b / m)
+        assert np.isclose(extras.vf_err, 0.0)
+        assert np.isclose(extras.rsq, 1.0)
+        assert isinstance(extras.fitted_func, ffuncs.Linear)
+        assert np.allclose(extras.fitted_func.params, (m, b))
+        assert np.allclose(extras.fitted_func.param_errors, (0.0, 0.0), atol=2e-8)
 
     @pytest.mark.parametrize(
         "a, alpha, b",
@@ -392,17 +393,17 @@ class TestFindFloatingPotential:
         voltage = self._voltage
         current = a * np.exp(alpha * voltage) + b
 
-        results = find_floating_potential(
+        vf, extras = find_floating_potential(
             voltage=voltage,
             current=current,
             fit_type="exponential",
             min_points=0.8,
         )
 
-        assert isinstance(results, FloatingPotentialResults)
-        assert np.isclose(results.vf, np.log(-b / a) / alpha)
-        assert np.isclose(results.vf_err, 0.0, 1e-7)
-        assert np.isclose(results.rsq, 1.0)
-        assert isinstance(results.func, ffuncs.ExponentialPlusOffset)
-        assert np.allclose(results.func.params, (a, alpha, b))
-        assert np.allclose(results.func.param_errors, (0.0, 0.0, 0.0), atol=2e-8)
+        assert isinstance(extras, VFExtras)
+        assert np.isclose(vf, np.log(-b / a) / alpha)
+        assert np.isclose(extras.vf_err, 0.0, 1e-7)
+        assert np.isclose(extras.rsq, 1.0)
+        assert isinstance(extras.fitted_func, ffuncs.ExponentialPlusOffset)
+        assert np.allclose(extras.fitted_func.params, (a, alpha, b))
+        assert np.allclose(extras.fitted_func.param_errors, (0.0, 0.0, 0.0), atol=2e-8)

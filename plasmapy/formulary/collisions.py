@@ -27,7 +27,7 @@ Collision rates
 
 The module gathers a few functions helpful for calculating collision
 rates between particles. The most general of these is
-`~plasmapy.formulary.collisions.collision_frequency`.
+`~plasmapy.formulary.collisions.SingleParticleCollisionFrequencies`.
 
 Macroscopic properties
 ======================
@@ -40,6 +40,8 @@ These include:
 * `~plasmapy.formulary.collisions.coupling_parameter`
 """
 __all__ = [
+    "SingleParticleCollisionFrequencies",
+    "MaxwellianCollisionFrequencies",
     "Coulomb_logarithm",
     "impact_parameter_perp",
     "impact_parameter",
@@ -56,9 +58,13 @@ __all__ = [
 
 import astropy.units as u
 import numpy as np
+import scipy.integrate
+import scipy.misc
 import warnings
 
 from astropy.constants.si import e, eps0, hbar, k_B, m_e
+from functools import cached_property
+from numbers import Real
 from numpy import pi
 
 from plasmapy import particles, utils
@@ -70,21 +76,21 @@ from plasmapy.formulary.quantum import (
     Wigner_Seitz_radius,
 )
 from plasmapy.formulary.speeds import thermal_speed
-from plasmapy.utils.decorators import validate_quantities
+from plasmapy.utils.decorators import deprecated, validate_quantities
 from plasmapy.utils.decorators.checks import _check_relativistic
+from plasmapy.utils.exceptions import PhysicsError, PlasmaPyFutureWarning
 
 
 @validate_quantities(
     T={"can_be_negative": False, "equivalencies": u.temperature_energy()},
-    z_mean={"none_shall_pass": True},
     V={"none_shall_pass": True},
 )
 @particles.particle_input
 def Coulomb_logarithm(
     T: u.K,
-    n_e: u.m ** -3,
+    n_e: u.m**-3,
     species: (particles.Particle, particles.Particle),
-    z_mean: u.dimensionless_unscaled = np.nan * u.dimensionless_unscaled,
+    z_mean: Real = np.nan,
     V: u.m / u.s = np.nan * u.m / u.s,
     method="classical",
 ):
@@ -495,7 +501,7 @@ def Coulomb_logarithm(
         "hls_full_interp",
         "GMS-6",
     ):
-        ln_Lambda = 0.5 * np.log(1 + bmax ** 2 / bmin ** 2)
+        ln_Lambda = 0.5 * np.log(1 + bmax**2 / bmin**2)
     else:
         raise ValueError(
             'Unknown method. Choose from "classical", "ls_min_interp", '
@@ -520,7 +526,7 @@ def Coulomb_logarithm(
         ]:
             warnings.warn(
                 f"The Coulomb logarithm is {ln_Lambda}, and the specified "
-                + f'method, "{method}", depends on weak coupling.',
+                f'method, "{method}", depends on weak coupling.',
                 utils.CouplingWarning,
             )
         elif np.any(ln_Lambda < 4):
@@ -535,10 +541,10 @@ def Coulomb_logarithm(
 
 @validate_quantities(T={"equivalencies": u.temperature_energy()})
 @particles.particle_input
-def _boilerPlate(T: u.K, species: (particles.Particle, particles.Particle), V):
+def _process_inputs(T: u.K, species: (particles.Particle, particles.Particle), V):
     """
     Check the inputs to functions in ``collisions.py``.  Also obtains
-    reduced in mass in a 2 particle collision system along with thermal
+    the reduced mass in a 2 particle collision system along with thermal
     velocity.
     """
     masses = [p.mass for p in species]
@@ -548,34 +554,41 @@ def _boilerPlate(T: u.K, species: (particles.Particle, particles.Particle), V):
     reduced_mass = particles.reduced_mass(*species)
 
     # getting thermal velocity of system if no velocity is given
-    V = _replaceNanVwithThermalV(V, T, reduced_mass)
+    V = _replace_nan_velocity_with_thermal_velocity(V, T, reduced_mass)
 
     _check_relativistic(V, "V")
 
     return T, masses, charges, reduced_mass, V
 
 
-def _replaceNanVwithThermalV(V, T, m):
+# TODO: Remove redundant mass parameter
+def _replace_nan_velocity_with_thermal_velocity(
+    V, T, m, species=particles.Particle("e-")
+):
     """
     Get thermal velocity of system if no velocity is given, for a given
     mass.  Handles vector checks for ``V``, you must already know that
     ``T`` and ``m`` are okay.
     """
     if np.any(V == 0):
-        raise utils.PhysicsError("You cannot have a collision for zero velocity!")
-    # getting thermal velocity of system if no velocity is given
+        raise utils.PhysicsError("Collisions are not possible with a zero velocity.")
 
     if V is None:
-        V = thermal_speed(T, "e-", mass=m)
-    elif np.any(np.isnan(V)):
-        if np.isscalar(V.value) or np.isscalar(T.value):
-            if np.isscalar(V.value):
-                V = thermal_speed(T, "e-", mass=m)
-            if np.isscalar(T.value):
-                V[np.isnan(V)] = thermal_speed(T, "e-", mass=m)
-        else:
-            V = V.copy()
-            V[np.isnan(V)] = thermal_speed(T[np.isnan(V)], "e-", mass=m)
+        return thermal_speed(T, species, mass=m)
+
+    if not np.any(np.isnan(V)):
+        return V
+
+    if not (np.isscalar(V.value) or np.isscalar(T.value)):
+        V = V.copy()
+        V[np.isnan(V)] = thermal_speed(T[np.isnan(V)], species, mass=m)
+        return V
+
+    if np.isscalar(V.value):
+        return thermal_speed(T, species, mass=m)
+
+    if np.isscalar(T.value):
+        V[np.isnan(V)] = thermal_speed(T, species, mass=m)
 
     return V
 
@@ -649,32 +662,30 @@ def impact_parameter_perp(
     Examples
     --------
     >>> import astropy.units as u
-    >>> T = 1e6*u.K
+    >>> T = 1e6 * u.K
     >>> species = ('e', 'p')
     >>> impact_parameter_perp(T, species)
     <Quantity 8.3550...e-12 m>
     """
-    # boiler plate checks
-    T, masses, charges, reduced_mass, V = _boilerPlate(T=T, species=species, V=V)
-    # Corresponds to a deflection of 90°s, which is valid when
-    # classical effects dominate.
-    # !!!Note: an average ionization parameter will have to be
-    # included here in the future
-    bPerp = charges[0] * charges[1] / (4 * pi * eps0 * reduced_mass * V ** 2)
-    return bPerp
+    # Note: This formulation corresponds to collisions that result in a deflection of 90°s,
+    #       which is valid when classical effects dominate.
+    # TODO: need to incorporate an average ionization parameter
+
+    T, masses, charges, reduced_mass, V = _process_inputs(T=T, species=species, V=V)
+
+    return charges[0] * charges[1] / (4 * pi * eps0 * reduced_mass * V**2)
 
 
 @validate_quantities(
     T={"can_be_negative": False, "equivalencies": u.temperature_energy()},
     n_e={"can_be_negative": False},
-    z_mean={"none_shall_pass": True},
     V={"none_shall_pass": True},
 )
 def impact_parameter(
     T: u.K,
-    n_e: u.m ** -3,
+    n_e: u.m**-3,
     species,
-    z_mean: u.dimensionless_unscaled = np.nan * u.dimensionless_unscaled,
+    z_mean: Real = np.nan,
     V: u.m / u.s = np.nan * u.m / u.s,
     method="classical",
 ):
@@ -778,30 +789,25 @@ def impact_parameter(
     Examples
     --------
     >>> import astropy.units as u
-    >>> n = 1e19*u.m**-3
-    >>> T = 1e6*u.K
+    >>> n = 1e19 * u.m**-3
+    >>> T = 1e6 * u.K
     >>> species = ('e', 'p')
     >>> impact_parameter(T, n, species)
     (<Quantity 1.051...e-11 m>, <Quantity 2.182...e-05 m>)
     >>> impact_parameter(T, n, species, V=1e6 * u.m / u.s)
     (<Quantity 2.534...e-10 m>, <Quantity 2.182...e-05 m>)
     """
-    # boiler plate checks
-    T, masses, charges, reduced_mass, V = _boilerPlate(T=T, species=species, V=V)
+    T, masses, charges, reduced_mass, V = _process_inputs(T=T, species=species, V=V)
     # catching error where mean charge state is not given for non-classical
     # methods that require the ion density
-    if (
-        method
-        in (
-            "ls_full_interp",
-            "GMS-2",
-            "hls_max_interp",
-            "GMS-5",
-            "hls_full_interp",
-            "GMS-6",
-        )
-        and np.isnan(z_mean)
-    ):
+    if method in (
+        "ls_full_interp",
+        "GMS-2",
+        "hls_max_interp",
+        "GMS-5",
+        "hls_full_interp",
+        "GMS-6",
+    ) and np.isnan(z_mean):
         raise ValueError(
             'Must provide a z_mean for "ls_full_interp", '
             '"hls_max_interp", and "hls_full_interp" methods.'
@@ -822,7 +828,7 @@ def impact_parameter(
         # the larger of these two possibilities. That is, between the
         # de Broglie wavelength and the distance of closest approach.
         # ARRAY NOTES
-        # T and V should be guaranteed to be same size inputs from _boilerplate
+        # T and V should be guaranteed to be same size inputs from _process_inputs
         # therefore, lambdaBroglie and bPerp are either both scalar or both array
         # if np.isscalar(bPerp.value) and np.isscalar(lambdaBroglie.value):  # both scalar
         try:  # assume both scalar
@@ -836,7 +842,7 @@ def impact_parameter(
         # approach, but bmin is interpolated between the de Broglie
         # wavelength and distance of closest approach.
         bmax = lambdaDe
-        bmin = (lambdaBroglie ** 2 + bPerp ** 2) ** (1 / 2)
+        bmin = (lambdaBroglie**2 + bPerp**2) ** (1 / 2)
     elif method in ["ls_full_interp", "GMS-2"]:
         # 2nd method listed in Table 1 of reference [1]
         # Another Landau-Spitzer like approach, but now bmax is also
@@ -847,25 +853,25 @@ def impact_parameter(
         n_i = n_e / z_mean
         # mean ion sphere radius.
         ionRadius = Wigner_Seitz_radius(n_i)
-        bmax = (lambdaDe ** 2 + ionRadius ** 2) ** (1 / 2)
-        bmin = (lambdaBroglie ** 2 + bPerp ** 2) ** (1 / 2)
+        bmax = (lambdaDe**2 + ionRadius**2) ** (1 / 2)
+        bmin = (lambdaBroglie**2 + bPerp**2) ** (1 / 2)
     elif method in ["ls_clamp_mininterp", "GMS-3"]:
         # 3rd method listed in Table 1 of reference [1]
         # same as GMS-1, but not Lambda has a clamp at Lambda_min = 2
         # where Lambda is the argument to the Coulomb logarithm.
         bmax = lambdaDe
-        bmin = (lambdaBroglie ** 2 + bPerp ** 2) ** (1 / 2)
+        bmin = (lambdaBroglie**2 + bPerp**2) ** (1 / 2)
     elif method in ["hls_min_interp", "GMS-4"]:
         # 4th method listed in Table 1 of reference [1]
         bmax = lambdaDe
-        bmin = (lambdaBroglie ** 2 + bPerp ** 2) ** (1 / 2)
+        bmin = (lambdaBroglie**2 + bPerp**2) ** (1 / 2)
     elif method in ["hls_max_interp", "GMS-5"]:
         # 5th method listed in Table 1 of reference [1]
         # Mean ion density.
         n_i = n_e / z_mean
         # mean ion sphere radius.
         ionRadius = Wigner_Seitz_radius(n_i)
-        bmax = (lambdaDe ** 2 + ionRadius ** 2) ** (1 / 2)
+        bmax = (lambdaDe**2 + ionRadius**2) ** (1 / 2)
         bmin = bPerp
     elif method in ["hls_full_interp", "GMS-6"]:
         # 6th method listed in Table 1 of reference [1]
@@ -873,18 +879,18 @@ def impact_parameter(
         n_i = n_e / z_mean
         # mean ion sphere radius.
         ionRadius = Wigner_Seitz_radius(n_i)
-        bmax = (lambdaDe ** 2 + ionRadius ** 2) ** (1 / 2)
-        bmin = (lambdaBroglie ** 2 + bPerp ** 2) ** (1 / 2)
+        bmax = (lambdaDe**2 + ionRadius**2) ** (1 / 2)
+        bmin = (lambdaBroglie**2 + bPerp**2) ** (1 / 2)
     else:
         raise ValueError(f"Method {method} not found!")
 
     # ARRAY NOTES
     # it could be that bmin and bmax have different sizes. If Te is a scalar,
-    # T and V will be scalar from _boilerplate, so bmin will scalar.  However
+    # T and V will be scalar from _process_inputs, so bmin will scalar. However
     # if n_e is an array, then bmax will be an array. if this is the case,
-    # do we want to extend the scalar bmin to equal the length of bmax? Sure.
-    if np.isscalar(bmin.value) and not np.isscalar(bmax.value):
-        bmin = np.repeat(bmin, len(bmax))
+    # we want to extend the scalar bmin to match the dimensions of bmax.
+    if bmin.size == 1 and bmax.size != 1:
+        bmin = bmin * np.ones(bmax.shape)
 
     return bmin.to(u.m), bmax.to(u.m)
 
@@ -892,17 +898,22 @@ def impact_parameter(
 @validate_quantities(
     T={"can_be_negative": False, "equivalencies": u.temperature_energy()},
     n={"can_be_negative": False},
-    z_mean={"none_shall_pass": True},
 )
 def collision_frequency(
     T: u.K,
-    n: u.m ** -3,
+    n: u.m**-3,
     species,
-    z_mean: u.dimensionless_unscaled = np.nan * u.dimensionless_unscaled,
+    z_mean: Real = np.nan,
     V: u.m / u.s = np.nan * u.m / u.s,
     method="classical",
 ) -> u.Hz:
     r"""
+    .. note::
+        The `~plasmapy.formulary.collisions.collision_frequency` function has been
+        replaced by the more general `~plasmapy.formulary.collisions.SingleParticleCollisionFrequencies` class.
+        To replicate the functionality of `~plasmapy.formulary.collisions.collision_frequency`, create a
+        `~plasmapy.formulary.collisions.SingleParticleCollisionFrequencies` class and access the ``Lorentz_collision_frequency`` attribute.
+
     Collision frequency of particles in a plasma.
 
     Parameters
@@ -995,14 +1006,30 @@ def collision_frequency(
     Examples
     --------
     >>> import astropy.units as u
-    >>> n = 1e19*u.m**-3
-    >>> T = 1e6*u.K
+    >>> n = 1e19 * u.m**-3
+    >>> T = 1e6 * u.K
     >>> species = ('e', 'p')
     >>> collision_frequency(T, n, species)
     <Quantity 70249... Hz>
+
+    See Also
+    --------
+    ~plasmapy.formulary.collisions.SingleParticleCollisionFrequencies
+
     """
-    # boiler plate checks
-    T, masses, charges, reduced_mass, V_r = _boilerPlate(T=T, species=species, V=V)
+
+    deprecated(
+        since="0.9.0",
+        warning_type=PlasmaPyFutureWarning,
+        message=(
+            "The collision_frequency function has been replaced by the more general "
+            "SingleParticleCollisionFrequencies class. To replicate the functionality of collision_frequency, "
+            "create a SingleParticleCollisionFrequencies class and access the `Lorentz_collision_frequency` "
+            "attribute."
+        ),
+    )
+
+    T, masses, charges, reduced_mass, V_r = _process_inputs(T=T, species=species, V=V)
     # using a more descriptive name for the thermal velocity using
     # reduced mass
     V_reduced = V_r
@@ -1011,17 +1038,16 @@ def collision_frequency(
         # electron-electron collision
         # if a velocity was passed, we use that instead of the reduced
         # thermal velocity
-        V = _replaceNanVwithThermalV(V, T, reduced_mass)
+        V = _replace_nan_velocity_with_thermal_velocity(V, T, reduced_mass)
         # impact parameter for 90° collision
         bPerp = impact_parameter_perp(T=T, species=species, V=V_reduced)
-        print(T, n, species, z_mean, method)
     elif species[0] in ("e", "e-") or species[1] in ("e", "e-"):
         # electron-ion collision
         # Need to manually pass electron thermal velocity to obtain
         # correct perpendicular collision radius
         # we ignore the reduced velocity and use the electron thermal
         # velocity instead
-        V = _replaceNanVwithThermalV(V, T, m_e)
+        V = _replace_nan_velocity_with_thermal_velocity(V, T, m_e)
         # need to also correct mass in collision radius from reduced
         # mass to electron mass
         bPerp = impact_parameter_perp(T=T, species=species, V=V) * reduced_mass / m_e
@@ -1031,7 +1057,7 @@ def collision_frequency(
         # ion-ion collision
         # if a velocity was passed, we use that instead of the reduced
         # thermal velocity
-        V = _replaceNanVwithThermalV(V, T, reduced_mass)
+        V = _replace_nan_velocity_with_thermal_velocity(V, T, reduced_mass)
         bPerp = impact_parameter_perp(T=T, species=species, V=V)
     cou_log = Coulomb_logarithm(T, n, species, z_mean, V=V, method=method)
     # collisional cross section
@@ -1039,12 +1065,11 @@ def collision_frequency(
     # collision frequency where Coulomb logarithm accounts for
     # small angle collisions, which are more frequent than large
     # angle collisions.
-    freq = n * sigma * V * cou_log
-    return freq
+    return n * sigma * V * cou_log
 
 
 @validate_quantities(impact_param={"can_be_negative": False})
-def Coulomb_cross_section(impact_param: u.m) -> u.m ** 2:
+def Coulomb_cross_section(impact_param: u.m) -> u.m**2:
     r"""
     Cross section for a large angle Coulomb collision.
 
@@ -1089,22 +1114,29 @@ def Coulomb_cross_section(impact_param: u.m) -> u.m ** 2:
 )
 def fundamental_electron_collision_freq(
     T_e: u.K,
-    n_e: u.m ** -3,
+    n_e: u.m**-3,
     ion,
     coulomb_log=None,
     V=None,
     coulomb_log_method="classical",
-) -> u.s ** -1:
+) -> u.s**-1:
     r"""
     Average momentum relaxation rate for a slowly flowing Maxwellian
     distribution of electrons.
+
+    .. note::
+        The `~plasmapy.formulary.collisions.fundamental_electron_collision_freq` function has been
+        replaced by the more general `~plasmapy.formulary.collisions.MaxwellianCollisionFrequencies` class.
+        To replicate the functionality of `~plasmapy.formulary.collisions.fundamental_electron_collision_freq`, create a
+        `~plasmapy.formulary.collisions.MaxwellianCollisionFrequencies` class and access the ``Maxwellian_avg_ei_collision_freq`` attribute.
+
 
     :cite:t:`braginskii:1965` provides a derivation of this as an
     average collision frequency between electrons and ions for a
     Maxwellian distribution. It is thus a special case of the collision
     frequency with an averaging factor, and is on many occasions
     in transport theory the most relevant collision frequency that has
-    to be considered. It is heavily related to diffusion and resistivity
+    to be considered. It commonly occurs in relation to diffusion and resistivity
     in plasmas.
 
     Parameters
@@ -1186,13 +1218,26 @@ def fundamental_electron_collision_freq(
     ~plasmapy.formulary.collisions.collision_frequency
     ~plasmapy.formulary.collisions.fundamental_ion_collision_freq
     """
+
+    deprecated(
+        since="0.9.0",
+        warning_type=PlasmaPyFutureWarning,
+        message=(
+            "The `fundamental_electron_collision_freq` function has been"
+            "replaced by the more general `MaxwellianCollisionFrequencies` class."
+            "To replicate the functionality of `fundamental_electron_collision_freq`, create a"
+            "`MaxwellianCollisionFrequencies` class and access the `Maxwellian_avg_ei_collision_freq` attribute."
+        ),
+    )
+
     # specify to use electron thermal velocity (most probable), not based on reduced mass
-    V = _replaceNanVwithThermalV(V, T_e, m_e)
+    V = _replace_nan_velocity_with_thermal_velocity(V, T_e, m_e)
 
     species = [ion, "e-"]
     Z_i = particles.charge_number(ion) * u.dimensionless_unscaled
+    n_i = n_e / Z_i
     nu = collision_frequency(
-        T_e, n_e, species, z_mean=Z_i, V=V, method=coulomb_log_method
+        T_e, n_i, species, z_mean=Z_i, V=V, method=coulomb_log_method
     )
     coeff = 4 / np.sqrt(np.pi) / 3
 
@@ -1216,15 +1261,22 @@ def fundamental_electron_collision_freq(
 )
 def fundamental_ion_collision_freq(
     T_i: u.K,
-    n_i: u.m ** -3,
+    n_i: u.m**-3,
     ion,
     coulomb_log=None,
     V=None,
     coulomb_log_method="classical",
-) -> u.s ** -1:
+) -> u.s**-1:
     r"""
     Average momentum relaxation rate for a slowly flowing Maxwellian
     distribution of ions.
+
+    .. note::
+        The `~plasmapy.formulary.collisions.fundamental_ion_collision_freq` function has been
+        replaced by the more general `~plasmapy.formulary.collisions.MaxwellianCollisionFrequencies` class.
+        To replicate the functionality of `~plasmapy.formulary.collisions.fundamental_ion_collision_freq`, create a
+        `~plasmapy.formulary.collisions.MaxwellianCollisionFrequencies` class and access the ``Maxwellian_avg_ii_collision_freq`` attribute.
+
 
     :cite:t:`braginskii:1965` provides a derivation of this as an
     average collision frequency between ions and ions for a Maxwellian
@@ -1318,11 +1370,23 @@ def fundamental_ion_collision_freq(
     ~plasmapy.formulary.collisions.collision_frequency
     ~plasmapy.formulary.collisions.fundamental_electron_collision_freq
     """
+
+    deprecated(
+        since="0.9.0",
+        warning_type=PlasmaPyFutureWarning,
+        message=(
+            "The `fundamental_ion_collision_freq` function has been"
+            "replaced by the more general `MaxwellianCollisionFrequencies` class."
+            "To replicate the functionality of `fundamental_ion_collision_freq`, create a"
+            "`MaxwellianCollisionFrequencies` class and access the `Maxwellian_avg_ii_collision_freq` attribute."
+        ),
+    )
+
     m_i = particles.particle_mass(ion)
     species = [ion, ion]
 
     # specify to use ion thermal velocity (most probable), not based on reduced mass
-    V = _replaceNanVwithThermalV(V, T_i, m_i)
+    V = _replace_nan_velocity_with_thermal_velocity(V, T_i, m_i)
 
     Z_i = particles.charge_number(ion) * u.dimensionless_unscaled
 
@@ -1350,13 +1414,12 @@ def fundamental_ion_collision_freq(
 @validate_quantities(
     T={"can_be_negative": False, "equivalencies": u.temperature_energy()},
     n_e={"can_be_negative": False},
-    z_mean={"none_shall_pass": True},
 )
 def mean_free_path(
     T: u.K,
-    n_e: u.m ** -3,
+    n_e: u.m**-3,
     species,
-    z_mean: u.dimensionless_unscaled = np.nan * u.dimensionless_unscaled,
+    z_mean: Real = np.nan,
     V: u.m / u.s = np.nan * u.m / u.s,
     method="classical",
 ) -> u.m:
@@ -1461,22 +1524,21 @@ def mean_free_path(
     # boiler plate to fetch velocity
     # this has been moved to after collision_frequency to avoid use of
     # reduced mass thermal velocity in electron-ion collision case.
-    # Should be fine since collision_frequency has its own boiler_plate
+    # Should be fine since collision_frequency has its own _process_inputs
     # check, and we are only using this here to get the velocity.
-    T, masses, charges, reduced_mass, V = _boilerPlate(T=T, species=species, V=V)
+    T, masses, charges, reduced_mass, V = _process_inputs(T=T, species=species, V=V)
     return V / freq
 
 
 @validate_quantities(
     T={"can_be_negative": False, "equivalencies": u.temperature_energy()},
     n={"can_be_negative": False},
-    z_mean={"none_shall_pass": True},
 )
 def Spitzer_resistivity(
     T: u.K,
-    n: u.m ** -3,
+    n: u.m**-3,
     species,
-    z_mean: u.dimensionless_unscaled = np.nan * u.dimensionless_unscaled,
+    z_mean: Real = np.nan,
     V: u.m / u.s = np.nan * u.m / u.s,
     method="classical",
 ) -> u.Ohm * u.m:
@@ -1587,9 +1649,8 @@ def Spitzer_resistivity(
     freq = collision_frequency(
         T=T, n=n, species=species, z_mean=z_mean, V=V, method=method
     )
-    # boiler plate checks
     # fetching additional parameters
-    T, masses, charges, reduced_mass, V = _boilerPlate(T=T, species=species, V=V)
+    T, masses, charges, reduced_mass, V = _process_inputs(T=T, species=species, V=V)
     return (
         freq * reduced_mass / (n * charges[0] * charges[1])
         if np.isnan(z_mean)
@@ -1600,16 +1661,15 @@ def Spitzer_resistivity(
 @validate_quantities(
     T={"can_be_negative": False, "equivalencies": u.temperature_energy()},
     n_e={"can_be_negative": False},
-    z_mean={"none_shall_pass": True},
 )
 def mobility(
     T: u.K,
-    n_e: u.m ** -3,
+    n_e: u.m**-3,
     species,
-    z_mean: u.dimensionless_unscaled = np.nan * u.dimensionless_unscaled,
+    z_mean: Real = np.nan,
     V: u.m / u.s = np.nan * u.m / u.s,
     method="classical",
-) -> u.m ** 2 / (u.V * u.s):
+) -> u.m**2 / (u.V * u.s):
     r"""
     Return the electrical mobility.
 
@@ -1718,11 +1778,10 @@ def mobility(
     freq = collision_frequency(
         T=T, n=n_e, species=species, z_mean=z_mean, V=V, method=method
     )
-    # boiler plate checks
     # we do this after collision_frequency since collision_frequency
-    # already has a boiler_plate check and we are doing this just
+    # already has a _process_inputs check and we are doing this just
     # to recover the charges, mass, etc.
-    T, masses, charges, reduced_mass, V = _boilerPlate(T=T, species=species, V=V)
+    T, masses, charges, reduced_mass, V = _process_inputs(T=T, species=species, V=V)
     z_val = (charges[0] + charges[1]) / 2 if np.isnan(z_mean) else z_mean * e
     return z_val / (reduced_mass * freq)
 
@@ -1730,14 +1789,13 @@ def mobility(
 @validate_quantities(
     T={"can_be_negative": False, "equivalencies": u.temperature_energy()},
     n_e={"can_be_negative": False},
-    z_mean={"none_shall_pass": True},
 )
 def Knudsen_number(
     characteristic_length,
     T: u.K,
-    n_e: u.m ** -3,
+    n_e: u.m**-3,
     species,
-    z_mean: u.dimensionless_unscaled = np.nan * u.dimensionless_unscaled,
+    z_mean: Real = np.nan,
     V: u.m / u.s = np.nan * u.m / u.s,
     method="classical",
 ) -> u.dimensionless_unscaled:
@@ -1856,13 +1914,12 @@ def Knudsen_number(
 @validate_quantities(
     T={"can_be_negative": False, "equivalencies": u.temperature_energy()},
     n_e={"can_be_negative": False},
-    z_mean={"none_shall_pass": True},
 )
 def coupling_parameter(
     T: u.K,
-    n_e: u.m ** -3,
+    n_e: u.m**-3,
     species,
-    z_mean: u.dimensionless_unscaled = np.nan * u.dimensionless_unscaled,
+    z_mean: Real = np.nan,
     V: u.m / u.s = np.nan * u.m / u.s,
     method="classical",
 ) -> u.dimensionless_unscaled:
@@ -1992,16 +2049,15 @@ def coupling_parameter(
     Examples
     --------
     >>> import astropy.units as u
-    >>> n = 1e19*u.m**-3
-    >>> T = 1e6*u.K
+    >>> n = 1e19 * u.m**-3
+    >>> T = 1e6 * u.K
     >>> species = ('e', 'p')
     >>> coupling_parameter(T, n, species)
     <Quantity 5.8033...e-05>
     >>> coupling_parameter(T, n, species, V=1e6 * u.m / u.s)
     <Quantity 5.8033...e-05>
     """
-    # boiler plate checks
-    T, masses, charges, reduced_mass, V = _boilerPlate(T=T, species=species, V=V)
+    T, masses, charges, reduced_mass, V = _process_inputs(T=T, species=species, V=V)
 
     if np.isnan(z_mean):
         # using mean charge to get average ion density.
@@ -2031,9 +2087,9 @@ def coupling_parameter(
         lambda_deBroglie = thermal_deBroglie_wavelength(T)
         chem_potential = chemical_potential(n_e, T)
         fermi_integral = Fermi_integral(chem_potential.si.value, 1.5)
-        denominator = (n_e * lambda_deBroglie ** 3) * fermi_integral
+        denominator = (n_e * lambda_deBroglie**3) * fermi_integral
         kinetic_energy = 2 * k_B * T / denominator
-        if np.all(np.imag(kinetic_energy) == 0):
+        if np.all(np.imag(kinetic_energy) < 1e-15 * u.J):
             kinetic_energy = np.real(kinetic_energy)
         else:  # coverage: ignore
             raise ValueError(
@@ -2046,5 +2102,519 @@ def coupling_parameter(
             f"'quantum', instead of '{method}'."
         )
 
-    coupling = coulomb_energy / kinetic_energy
-    return coupling
+    return coulomb_energy / kinetic_energy
+
+
+class SingleParticleCollisionFrequencies:
+    @particles.particle_input
+    @validate_quantities(
+        v_drift={"can_be_negative": False},
+        T_b={
+            "can_be_negative": False,
+            "equivalencies": u.temperature_energy(),
+        },
+        n_b={"can_be_negative": False},
+    )
+    def __init__(
+        self,
+        test_particle: particles.ParticleLike,
+        field_particle: particles.ParticleLike,
+        *,
+        v_drift: u.m / u.s,
+        T_b: u.K,
+        n_b: u.m**-3,
+        Coulomb_log: u.dimensionless_unscaled,
+    ):
+        r"""
+        Compute collision frequencies between test particles (labeled 'a') and field particles (labeled 'b').
+
+        Parameters
+        ----------
+        test_particle : `~plasmapy.particles.ParticleLike`
+            The test particle streaming through a background of field particles.
+
+        field_particle : `~plasmapy.particles.ParticleLike`
+            The background particle being interacted with.
+
+        v_drift : `~astropy.units.Quantity`
+            The relative drift between the test and field particles. Cannot be negative.
+
+        T_b : `~astropy.units.Quantity`
+            The temperature of the background field particles in units convertible to degrees Kelvin.
+
+        n_b : `~astropy.units.Quantity`
+            The number density of the background field particles in units convertible to :math:`\frac{1}{m^{3}}`.
+
+        Coulomb_log : `~astropy.units.Quantity`
+            The value of the Coulomb logarithm for the interaction.
+
+        Raises
+        ------
+        `ValueError`
+            If the specified v_drift and n_b arrays don't have equal size.
+
+        Notes
+        -----
+        The frequency of collisions between a test particle (subscript :math:`\alpha`) and
+        a field particle (subscript :math:`\beta`)  each with mass  :math:`m` and charge :math:`e`
+        are given by four differential equations:
+
+            momentum loss: :math:`\frac{d\textbf{v}_{α}}{dt}=-ν_{s}^{α\backslashβ}\textbf{v}_{α}`
+
+            transverse diffusion: :math:`\frac{d}{dt}\left(\textbf{v}_{α}-\overline{\textbf{v}}_{α}\right)_{⊥}^{2}=ν_{⊥}^{α\backslashβ}v_{α}^{2}`
+
+            parallel diffusion: :math:`\frac{d}{dt}\left(\textbf{v}_{α}-\overline{\textbf{v}}_{α}\right)_{∥}^{2}=ν_{∥}^{α\backslashβ}v_{α}^{2}`
+
+            energy loss: :math:`\frac{d}{dt}v_{α}^{2}=-ν_{ϵ}^{α\backslashβ}v_{α}^{2}`
+
+        These equations yield the exact formulas:
+
+            momentum loss: :math:`ν_{s}^{α\backslashβ}=\left(1+\frac{m_{α}}{m_{β}}\right)ψ\left(x^{α\backslashβ}\right)ν_{0}^{α\backslashβ}`
+
+            transverse diffusion: :math:`ν_{⊥}^{α\backslashβ}=2\left[\left(1-\frac{1}{2x^{α\backslashβ}}\right)ψ\left(x^{α\backslashβ}\right)\ +ψ'\left(x^{α\backslashβ}\right)\right]ν_{0}^{α\backslashβ}`
+
+            parallel diffusion: :math:`ν_{||}^{α\backslashβ}=\left[\frac{ψ\left(x^{α\backslashβ}\right)}{x^{α\backslashβ}}\right]ν_{0}^{α\backslashβ}`
+
+            energy loss: :math:`ν_{ϵ}^{α\backslashβ}=2\left[\left(\frac{m_{α}}{m_{β}}\right)ψ\left(x^{α\backslashβ}\right)-ψ'\left(x^{α\backslashβ}\right)\right]ν_{0}^{α\backslashβ}`
+
+        where,
+
+            :math:`ν_{0}^{α\backslashβ}=\frac{4\pi e_{α}^{2}e_{β}^{2}λ_{αβ}n_{β}}{m_{α}^{2}v_{α}^{3}}`,
+
+            :math:`x^{α\backslashβ}=\frac{m_{β}v_{α}^{2}}{2k_B T_{β}}`,
+
+            :math:`ψ\left(x\right)=\frac{2}{\sqrt{\pi}}\int_{0}^{x}t^{\frac{1}{2}}e^{-t}dt`,
+
+            :math:`ψ'\left(x\right)=\frac{dψ}{dx}`,
+
+        and :math:`\lambda_{\alpha \beta}` is the Coulomb logarithm for the collisions,
+        :math:`n_\beta` is the number density of the field particles, :math:`v_\alpha` is
+        the speed of the test particles relative to the field particles, :math:`k_B` is Boltzmann's
+        constant, and :math:`T_\beta` is the temperature of the field particles.
+
+        For values of x<<1 (the 'slow' or 'thermal' limit) or x>>1 (the 'fast' or 'beam' limit),
+        :math:`\psi` asymptotes to zero or one respectively. For simplified expressions in these limits
+        we encourage the curious reader to refer to p. 31 of :cite:t:`nrlformulary:2019`
+
+        Examples
+        --------
+        >>> import astropy.units as u
+        >>> v_drift = 1e5 * u.m / u.s
+        >>> n_b = 1e26 * u.m**-3
+        >>> T_b = 1e3 * u.eV
+        >>> Coulomb_log = 10 * u.dimensionless_unscaled
+        >>> frequencies = SingleParticleCollisionFrequencies(
+        ...     "e-", "e-", v_drift=v_drift, n_b=n_b, T_b=T_b, Coulomb_log=Coulomb_log
+        ... )
+        >>> frequencies.energy_loss
+        <Quantity -9.69828719e+15 Hz>
+
+        See Also
+        --------
+        ~plasmapy.formulary.collisions.Coulomb_logarithm : Evaluates the Coulomb
+            logarithm for two interacting electron species.
+        """
+
+        # Note: This function uses CGS units internally to coincide with our references.
+        # Input is taken in MKS units and then converted as necessary. Output is in MKS units.
+
+        if (
+            isinstance(v_drift, np.ndarray)
+            and isinstance(n_b, np.ndarray)
+            and v_drift.shape != n_b.shape
+        ):
+            raise ValueError("Please specify arrays of equal length.")
+
+        self.test_particle = test_particle
+        self.field_particle = field_particle
+        self.v_drift = v_drift
+        self.T_b = T_b
+        self.n_b = n_b
+        self.Coulomb_log = (
+            Coulomb_log
+            if isinstance(Coulomb_log, u.Quantity)
+            else Coulomb_log * u.dimensionless_unscaled
+        )
+
+    @cached_property
+    def _mass_ratio(self):
+        return self.test_particle.mass / self.field_particle.mass
+
+    @cached_property
+    def momentum_loss(self):
+        """
+        The momentum loss rate due to collisions.
+        """
+        return (1 + self._mass_ratio) * self.phi * self.Lorentz_collision_frequency
+
+    @cached_property
+    def transverse_diffusion(self):
+        """
+        The rate of transverse diffusion due to collisions.
+        """
+        return (
+            2
+            * ((1 - 1 / (2 * self.x)) * self.phi + self._phi_prime)
+            * self.Lorentz_collision_frequency
+        )
+
+    @cached_property
+    def parallel_diffusion(self):
+        """
+        The rate of parallel diffusion due to collisions.
+        """
+        return (self.phi / self.x) * self.Lorentz_collision_frequency
+
+    @cached_property
+    def energy_loss(self):
+        """
+        The energy loss rate due to collisions.
+        """
+        return (
+            2
+            * (self._mass_ratio * self.phi - self._phi_prime)
+            * self.Lorentz_collision_frequency
+        )
+
+    @cached_property
+    def Lorentz_collision_frequency(self):
+        r"""
+        The Lorentz collision frequency.
+
+        The Lorentz collision frequency (see Ch. 5 of :cite:t:`chen:2016`) is given
+        by
+
+        .. math::
+
+            ν = n σ v \ln{Λ}
+
+        where :math:`n` is the particle density, :math:`σ` is the
+        collisional cross-section, :math:`v` is the inter-particle velocity,
+        and :math:`\ln{Λ}` is the Coulomb logarithm accounting for small angle collisions.
+
+        See Equation (2.86) in :cite:t:`callen:unpublished`.
+
+        The Lorentz collision frequency is equivalent to the variable
+        :math:`\nu_0^{\alpha/\beta}` on p. 31 of :cite:t:`nrlformulary:2019`.
+
+        This form of the Lorentz collision frequency differs from the form found in `~plasmapy.formulary.collisions.MaxwellianCollisionFrequencies`
+        in that :math:`v` is the drift velocity (as opposed to the mean thermal
+        velocity between species).
+        """
+
+        return (
+            4
+            * np.pi
+            * (self.test_particle.charge_number * e.esu) ** 2
+            * (self.field_particle.charge_number * e.esu) ** 2
+            * self.Coulomb_log
+            * self.n_b
+            / (self.test_particle.mass**2 * self.v_drift**3)
+        ).to(u.Hz)
+
+    @cached_property
+    def x(self) -> u.dimensionless_unscaled:
+        """
+        The ratio of kinetic energy in the test particle to the thermal energy of the field particle.
+        This parameter determines the regime in which the collision falls.
+
+        (see documentation for the `~plasmapy.formulary.collisions.SingleParticleCollisionFrequencies` class for details)
+        """
+
+        x = self.field_particle.mass * self.v_drift**2 / (2 * k_B.cgs * self.T_b)
+        return x.to(u.dimensionless_unscaled)
+
+    @staticmethod
+    def _phi_integrand(t: u.dimensionless_unscaled):
+        """
+        The phi integrand used in calculating phi
+        """
+
+        return t**0.5 * np.exp(-t)
+
+    def _phi_explicit(self, x: float):
+        """
+        The non-vectorized method for evaluating the integral for phi
+        """
+        integral, _ = scipy.integrate.quad(self._phi_integrand, 0, x)
+
+        return integral
+
+    @cached_property
+    def phi(self):
+        """
+        The parameter phi used in calculating collision frequencies
+        calculated using the default error tolerances of `~scipy.integrate.quad`.
+
+        For more information refer to page 31 of :cite:t:`nrlformulary:2019`.
+        """
+        vectorized_integral = np.vectorize(self._phi_explicit)
+
+        return 2 / np.pi**0.5 * vectorized_integral(self.x.value)
+
+    @cached_property
+    def _phi_prime(self):
+        """
+        The derivative of phi evaluated at x
+        """
+
+        return 2 / np.pi**0.5 * self._phi_integrand(self.x)
+
+
+class MaxwellianCollisionFrequencies:
+    @particles.particle_input
+    @validate_quantities(
+        v_drift={"can_be_negative": False},
+        T_a={
+            "can_be_negative": False,
+            "equivalencies": u.temperature_energy(),
+        },
+        n_a={"can_be_negative": False},
+        T_b={
+            "can_be_negative": False,
+            "equivalencies": u.temperature_energy(),
+        },
+        n_b={"can_be_negative": False},
+    )
+    def __init__(
+        self,
+        test_particle: particles.ParticleLike,
+        field_particle: particles.ParticleLike,
+        *,
+        v_drift: u.m / u.s = 0 * u.m / u.s,
+        T_a: u.K,
+        n_a: u.m**-3,
+        T_b: u.K,
+        n_b: u.m**-3,
+        Coulomb_log: u.dimensionless_unscaled,
+    ):
+        r"""Compute collision frequencies between two slowly flowing
+        Maxwellian populations.
+
+        The condition of "slowly flowing", outlined by Eq. 2.133 in :cite:t:`callen:unpublished`
+        requires that
+
+        .. math::
+
+            v_{drift} << \sqrt{v_{T_a}^{2}+v_{T_b}^{2}}
+
+        where :math:`v_{drift}` is the relative drift between the two species, :math:`v_{T_a}`
+        is the thermal velocity of species "a", and :math:`v_{T_b}` is the thermal
+        velocity of species "b".
+
+        Parameters
+        ----------
+        test_particle : `~plasmapy.particles.ParticleLike`
+            The test particle streaming through a background of field particles.
+
+        field_particle : `~plasmapy.particles.ParticleLike`
+            The background particle being interacted with.
+
+        v_drift : `~astropy.units.Quantity`, optional
+            The relative drift between the test and field particles. Defaults to zero.
+
+        T_a : `~astropy.units.Quantity`
+            The temperature of the test particles in units convertible to degrees Kelvin.
+
+        n_a : `~astropy.units.Quantity`
+            The number density of the test particles in units convertible to :math:`\frac{1}{m^{3}}`.
+
+        T_b : `~astropy.units.Quantity`
+            The temperature of the background field particles in units convertible to degrees Kelvin.
+
+        n_b : `~astropy.units.Quantity`
+            The number density of the background field particles in units convertible to :math:`\frac{1}{m^{3}}`.
+
+        Coulomb_log : `~astropy.units.Quantity`
+            The value of the Coulomb logarithm for the interaction.
+
+        Raises
+        ------
+        `ValueError`
+            If the specified v_drift and T_a arrays don't have equal size.
+
+        See Also
+        --------
+        ~plasmapy.formulary.collisions.Coulomb_logarithm : Evaluates the Coulomb
+            logarithm for two interacting electron species.
+        """
+
+        if (
+            isinstance(v_drift, np.ndarray)
+            and isinstance(T_a, np.ndarray)
+            and v_drift.shape != T_a.shape
+        ):
+            raise ValueError("Please specify arrays of equal length.")
+
+        self.test_particle = test_particle
+        self.field_particle = field_particle
+        self.v_drift = v_drift
+        self.T_a = T_a
+        self.n_a = n_a
+        self.T_b = T_b
+        self.n_b = n_b
+        self.Coulomb_log = (
+            Coulomb_log
+            if isinstance(Coulomb_log, u.Quantity)
+            else Coulomb_log * u.dimensionless_unscaled
+        )
+
+        self.v_T_a = thermal_speed(self.T_a, self.test_particle)
+        self.v_T_b = thermal_speed(self.T_b, self.field_particle)
+
+    @cached_property
+    def _mean_thermal_velocity(self):
+        """
+        Parameter used in enforcing the definition of "slowly flowing" Maxwellian
+        particles. See Eq. 2.133 in :cite:t:`callen:unpublished`.
+        """
+
+        return (self.v_T_a**2 + self.v_T_b**2) ** 0.5
+
+    @cached_property
+    def _is_slowly_flowing(self):
+        """
+        Criteria used in determining whether `Maxwellian_avg_ei_collision_freq` and
+        `Maxwellian_avg_ii_collision_freq` can be applied to the specified species.
+        """
+
+        return self.v_drift / self._mean_thermal_velocity < 0.1
+
+    @cached_property
+    def Lorentz_collision_frequency(self):
+        r"""
+        The Lorentz collision frequency.
+
+        The Lorentz collision frequency (see Ch. 5 of :cite:t:`chen:2016`) is given
+        by
+
+        .. math::
+
+            ν = n σ v \ln{Λ}
+
+        where :math:`n` is the particle density, :math:`σ` is the
+        collisional cross-section, :math:`v` is the mean thermal velocity between particle species
+        (see Equation 2.133 in :cite:t:`callen:unpublished`), and :math:`\ln{Λ}` is the
+        Coulomb logarithm accounting for small angle collisions.
+
+        See Equation (2.86) in :cite:t:`callen:unpublished`.
+
+        This form of the Lorentz collision frequency differs from the form found in `~plasmapy.formulary.collisions.SingleParticleCollisionFrequencies`
+        in that :math:`v` is the mean thermal velocity between particle species
+        in this method (as opposed to the drift velocity between species).
+        """
+
+        return (
+            4
+            * np.pi
+            * (self.test_particle.charge_number * e.esu) ** 2
+            * (self.field_particle.charge_number * e.esu) ** 2
+            * self.Coulomb_log
+            * self.n_b
+            / (self.test_particle.mass**2 * self._mean_thermal_velocity**3)
+        ).to(u.Hz)
+
+    @cached_property
+    def Maxwellian_avg_ei_collision_freq(self):
+        r"""Average momentum relaxation rate for a slowly flowing Maxwellian
+        distribution of electrons, relative to a population of stationary ions.
+
+        This function assumes that both populations are Maxwellian, and :math:`T_{i} \lesssim T_{e}`.
+
+        :cite:t:`callen:unpublished` provides a derivation of this as an
+        average collision frequency between electrons and ions for a
+        Maxwellian distribution. It is thus a special case of the collision
+        frequency with an averaging factor, and is on many occasions
+        in transport theory the most relevant collision frequency that has
+        to be considered. It commonly occurs in relation to diffusion and resistivity
+        in plasmas.
+
+        Raises
+        ------
+        `~plasmapy.utils.exceptions.PhysicsError`
+            The test particles are not 'slowly flowing' relative to the field particles (see notes).
+
+        `ValueError`
+            If the specified interaction isn't electron-ion.
+
+        Examples
+        --------
+        >>> import astropy.units as u
+        >>> v_drift = 1 * u.m / u.s
+        >>> n_a = 1e26 * u.m**-3
+        >>> T_a = 1 * u.eV
+        >>> n_b = 1e26 * u.m**-3
+        >>> T_b = 1e3 * u.eV
+        >>> Coulomb_log = 10 * u.dimensionless_unscaled
+        >>> electron_ion_collisions = MaxwellianCollisionFrequencies(
+        ...     "e-", "Na+", v_drift=v_drift, n_a=n_a, T_a=T_a, n_b=n_b, T_b=T_b, Coulomb_log=Coulomb_log
+        ... )
+        >>> electron_ion_collisions.Maxwellian_avg_ei_collision_freq
+        <Quantity 2906316911556553.5 Hz>
+        """
+
+        if not self.test_particle.is_electron or not self.field_particle.is_ion:
+            raise ValueError(
+                "Please specify an electron-ion interaction to use the Maxwellian_avg_ei_collision_freq attribute."
+            )
+
+        if not self._is_slowly_flowing:
+            raise PhysicsError(
+                "This frequency is only defined for slowly flowing species."
+                "(see MaxwellianCollisionFrequencies class documentation for further details)"
+            )
+
+        coeff = 4 / (3 * np.sqrt(np.pi))
+
+        return coeff * self.Lorentz_collision_frequency
+
+    @cached_property
+    def Maxwellian_avg_ii_collision_freq(self):
+        r"""Average momentum relaxation rate for a slowly flowing Maxwellian
+        distribution of ions, relative to a population of stationary ions.
+
+        This function assumes that both populations are Maxwellian, and :math:`T_{i} \lesssim T_{e}`.
+
+        :cite:t:`callen:unpublished` provides a derivation of this as an
+        average collision frequency between ions and ions for a Maxwellian
+        distribution. It is thus a special case of the collision frequency
+        with an averaging factor.
+
+        Raises
+        ------
+        `~plasmapy.utils.exceptions.PhysicsError`
+            The test particles are not 'slowly flowing' relative to the field particles (see notes).
+
+        `ValueError`
+            If the specified interaction isn't ion-ion.
+
+        Examples
+        --------
+        >>> import astropy.units as u
+        >>> v_drift = 1 * u.m / u.s
+        >>> n_a = 1e26 * u.m**-3
+        >>> T_a = 1e3 * u.eV
+        >>> n_b = 1e26 * u.m**-3
+        >>> T_b = 1e3 * u.eV
+        >>> Coulomb_log = 10 * u.dimensionless_unscaled
+        >>> ion_ion_collisions = MaxwellianCollisionFrequencies(
+        ...     "Na+", "Na+", v_drift=v_drift, n_a=n_a, T_a=T_a, n_b=n_b, T_b=T_b, Coulomb_log=Coulomb_log
+        ... )
+        >>> ion_ion_collisions.Maxwellian_avg_ii_collision_freq
+        <Quantity 79364412.21510696 Hz>
+        """
+
+        if not self.test_particle.is_ion or not self.field_particle.is_ion:
+            raise ValueError(
+                "Please specify an ion-ion interaction to use the Maxwellian_avg_ii_collision_freq attribute"
+            )
+
+        if not self._is_slowly_flowing:
+            raise PhysicsError(
+                "This frequency is only defined for slowly flowing species."
+                "(see MaxwellianCollisionFrequencies class documentation for further details)"
+            )
+
+        coeff = 4 / (3 * np.sqrt(2 * np.pi))
+
+        return coeff * self.Lorentz_collision_frequency
