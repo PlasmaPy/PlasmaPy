@@ -1533,7 +1533,7 @@ class Stack:
             Defaults to 1 um.
 
         return_only_active : `bool`, optional
-            If `True`, only the deposition in layers in which the `active` property
+            If `True`, only the deposition in layers in which the active property
             is `True` will be returned. This is usually desirable, since particles
             captured in other layers will not be measured. If `False`, deposition in
             all layers of the stack are returned. The default is `True`.
@@ -1623,7 +1623,7 @@ class Stack:
             Passed directly to the `~deposition_curves` method. Defaults to 1 um.
 
         return_only_active : `bool`, optional
-            If `True`, only the energy bands of layers in which the `active` property
+            If `True`, only the energy bands of layers in which the active property
             is `True` will be returned. This is usually desirable, since particles
             captured in other layers will not be measured. If `False`, energy bands in
             all layers of the stack are returned. The default is `True`.
