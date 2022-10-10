@@ -105,7 +105,7 @@ def _test_grid(
             b = L / 2
         radius = np.linalg.norm(grid.grid, axis=3)
         arg = (radius / a).to(u.dimensionless_unscaled)
-        potential = phi0 * np.exp(-(arg ** 2))
+        potential = phi0 * np.exp(-(arg**2))
 
         Ex, Ey, Ez = np.gradient(potential, grid.dax0, grid.dax1, grid.dax2)
 
@@ -870,12 +870,12 @@ def hdv2_stack(tmp_path):
 
     arr = np.loadtxt(tissue_path, skiprows=8)
     eaxis = arr[:, 0] * u.MeV
-    tissue_density = 1.04 * u.g / u.cm ** 3
-    tissue_equivalent = arr[:, 1] * u.MeV * u.cm ** 2 / u.g * tissue_density
+    tissue_density = 1.04 * u.g / u.cm**3
+    tissue_equivalent = arr[:, 1] * u.MeV * u.cm**2 / u.g * tissue_density
 
     arr = np.loadtxt(aluminum_path, skiprows=8)
-    aluminum_density = 2.7 * u.g / u.cm ** 3
-    aluminum = arr[:, 1] * u.MeV * u.cm ** 2 / u.g * aluminum_density
+    aluminum_density = 2.7 * u.g / u.cm**3
+    aluminum = arr[:, 1] * u.MeV * u.cm**2 / u.g * aluminum_density
 
     # Defines the geometry of
     HDV2 = [

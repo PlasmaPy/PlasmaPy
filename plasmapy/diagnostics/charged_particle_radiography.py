@@ -1445,7 +1445,7 @@ class Layer:
         ----------
 
         thickness : `~astropy.units.Quantity`
-            The thickness of the layer, in units convertable to meters.
+            The thickness of the layer, in units convertible to meters.
 
         energy_axis : `~astropy.units.Quantity`
             The energies corresponding to the stopping power array.
@@ -1523,7 +1523,7 @@ class Stack:
             objects defines the composition of the film stack.
 
         energies : `~astropy.units.Quantity` array, shape [nenergies,]
-            Energies axis over which to calculate the deposition. Units convertable
+            Energies axis over which to calculate the deposition. Units convertible
             to eV.
 
         dx : `~astropy.units.Quantity`, optional
@@ -1609,11 +1609,11 @@ class Stack:
             objects defines the composition of the film stack.
 
         energy_range : `~astropy.units.Quantity` list, shape [2,]
-            A range of energies to include in the calculation. Units convertable
+            A range of energies to include in the calculation. Units convertible
             to eV.
 
         dE :  `~astropy.units.Quantity`
-            Spacing between energy bins in the calculation. Units convertable
+            Spacing between energy bins in the calculation. Units convertible
             to eV.
 
         dx : `~astropy.units.Quantity`, optional
