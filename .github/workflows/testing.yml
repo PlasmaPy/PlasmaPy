@@ -68,10 +68,31 @@ jobs:
       matrix:
         include:
 
+        - name: Python 3.8, all tests, code coverage
+          os: ubuntu-latest
+          python: 3.8
+          noxenv: py38-all-cov
+
         - name: Python 3.9 (MacOS X)
           os: ubuntu-latest
           python: 3.9
           noxenv: tests-3.9
+
+        - name: Python 3.8 (Windows)
+          os: windows-latest
+          python: 3.8
+          noxenv: py38-all
+          noxposargs: --durations=50
+
+        - name: Python 3.8 (MacOS X)
+          os: macos-latest
+          python: 3.8
+          noxenv: py38-all
+
+        - name: Python 3.8 with minimal dependencies
+          os: ubuntu-latest
+          python: 3.8
+          noxenv: py38-all-minimal
 
     steps:
 
