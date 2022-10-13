@@ -145,7 +145,7 @@ jobs:
       with:
         python-version: 3.8
     - name: Import PlasmaPy
-      run: python -m tox -e py38-minimal-pypi-import
+      run: python3 -m tox -e py38-minimal-pypi-import
 
   build-n-publish:
     name: Packaging
