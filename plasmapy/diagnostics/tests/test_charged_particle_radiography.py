@@ -433,7 +433,7 @@ def test_run_options():
         sim.run(field_weighting="nearest neighbor", dt=1e-12 * u.s)
 
     # Test extreme deflections -> warns user
-    # This requires instatiating a whole new example field with a really
+    # This requires instantiating a whole new example field with a really
     # big B-field
     grid = _test_grid("constant_bz", num=50, B0=250 * u.T)
     source = (0 * u.mm, -10 * u.mm, 0 * u.mm)
