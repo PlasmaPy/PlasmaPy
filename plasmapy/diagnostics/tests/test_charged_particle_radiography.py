@@ -588,10 +588,10 @@ class TestSyntheticRadiograph:
 
         intensity = intensity_results[2]
         zero_mask = intensity == 0
-        i0 = np.mean(intensity[~zero_mask])
-        od = -np.log10(intensity / i0)
+        initial_intensity = np.mean(intensity[~zero_mask])
+        optical_density = -np.log10(intensity / initial_intensity)
 
-        assert np.allclose(od[~zero_mask], od_results[2][~zero_mask])
+        assert np.allclose(optical_density[~zero_mask], od_results[2][~zero_mask])
         assert np.all(np.isposinf(od_results[2][zero_mask]))
 
 
