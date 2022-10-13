@@ -439,7 +439,7 @@ def test_run_options():
     source = (0 * u.mm, -10 * u.mm, 0 * u.mm)
     detector = (0 * u.mm, 200 * u.mm, 0 * u.mm)
 
-    # Expectwarnings because these fields aren't well-behaved at the edges
+    # Expect warnings because these fields aren't well-behaved at the edges
     with pytest.warns(
         RuntimeWarning, match="Fields should go to zero at edges of grid to avoid "
     ):
