@@ -1590,7 +1590,7 @@ class Stack:
         # Normalize the deposited energy array so that each number represents
         # the fraction of a population of particles of that energy stopped
         # in that layer.
-        deposited = deposited / np.sum(deposited, axis=0)
+        deposited /= np.sum(deposited, axis=0)
 
         # If this flag is set, return only the layers that correspond to active
         # medium, ignoring the filter and substrate layers
