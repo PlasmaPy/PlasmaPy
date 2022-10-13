@@ -6,8 +6,7 @@ import astropy.units as u
 import numpy as np
 import pytest
 
-
-from plasmapy.diagnostics.detector_stacks import Stack, Layer
+from plasmapy.diagnostics.detector_stacks import Layer, Stack
 from plasmapy.utils.data.downloader import get_file
 
 

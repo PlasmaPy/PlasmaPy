@@ -10,12 +10,20 @@ __all__ = [
 
 import astropy.units as u
 import numpy as np
-from scipy.interpolate import interp1d
 
+from scipy.interpolate import interp1d
+from typing import List
 
 
 class Layer:
-    def __init__(self, thickness: u.m, energy_axis: u.J, stopping_power: u.MeV/u.cm, active: bool = True, name: str =""):
+    def __init__(
+        self,
+        thickness: u.m,
+        energy_axis: u.J,
+        stopping_power: u.MeV / u.cm,
+        active: bool = True,
+        name: str = "",
+    ):
         r"""
         A layer in a detector film stack. The layer could either be an active
         layer (the actual film medium) or an inum_active layer (a filter or
@@ -69,7 +77,7 @@ class Stack:
         A list of the `~plasmapy.diagnostics.charged_particle_radiography.Layer` objects that make up the film stack.
     """
 
-    def __init__(self, layers):
+    def __init__(self, layers: List[Layer]):
         self._layers = layers
         self._energy_bands = None
 
@@ -105,10 +113,6 @@ class Stack:
         Parameters
         ----------
 
-        stack : list of `~plasmapy.diagnostics.charged_particle_radiography.Layer` objects
-            This list of `~plasmapy.diagnostics.charged_particle_radiography.Layer`
-            objects defines the composition of the film stack.
-
         energies : `~astropy.units.Quantity` array, shape [nenergies,]
             Energies axis over which to calculate the deposition. Units convertible
             to eV.
@@ -127,8 +131,8 @@ class Stack:
         -------
 
         deposited : `~numpy.ndarray`, shape [num_layers, nenergies]
-            The fraction of an ensemble of each energy that will be deposited in
-            each layer of film. The array is normalized such that the sum
+            The fraction of particles at each energy that will be deposited in
+            each layer of the film. The array is normalized such that the sum
             along the first dimension (all of the layers) for each population
             is unity.
 
@@ -185,15 +189,14 @@ class Stack:
 
         return deposited
 
-    def energy_bands(self, energy_range, dE, dx=1 * u.um, return_only_active=True):
+    def energy_bands(
+        self, energy_range: u.MeV, dE: u.MeV, dx=1 * u.um, return_only_active=True
+    ):
         """
         Calculate the energy bands in each of the active layers of a film stack.
 
         Parameters
         ----------
-        stack : list of `~plasmapy.diagnostics.charged_particle_radiography.Layer` objects
-            This list of `~plasmapy.diagnostics.charged_particle_radiography.Layer`
-            objects defines the composition of the film stack.
 
         energy_range : `~astropy.units.Quantity` list, shape [2,]
             A range of energies to include in the calculation. Units convertible
