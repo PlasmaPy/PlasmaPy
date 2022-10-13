@@ -6,7 +6,7 @@ import astropy.units as u
 import numpy as np
 import pytest
 
-from plasmapy.diagnostics.detector_stacks import Layer, Stack
+from plasmapy.diagnostics._detector_stacks import Layer, Stack
 from plasmapy.utils.data.downloader import get_file
 
 
@@ -47,8 +47,8 @@ def hdv2_stack(tmp_path):
 
 def test_film_stack_properties(hdv2_stack):
 
-    # Test nlayers property
-    assert hdv2_stack.nlayers == 21
+    # Test num_layers property
+    assert hdv2_stack.num_layers == 21
 
     # Test num_active property
     assert hdv2_stack.num_active == 10
