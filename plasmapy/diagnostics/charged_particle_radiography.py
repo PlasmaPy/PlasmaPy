@@ -1639,8 +1639,7 @@ class Stack:
 
         energies = (
             np.arange(
-                energy_range[0].to(u.MeV).value,
-                energy_range[1].to(u.MeV).value,
+                *energy_range.to(u.MeV).value,
                 dE.to(u.MeV).value,
             )
             * u.MeV
