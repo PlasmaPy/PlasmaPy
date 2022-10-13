@@ -2,18 +2,15 @@
 Tests for proton radiography functions
 """
 
-import astropy.constants as const
 import astropy.units as u
 import numpy as np
 import os
 import pytest
-import warnings
 
 from scipy.special import erf
 
 from plasmapy.diagnostics import charged_particle_radiography as cpr
 from plasmapy.plasma.grids import CartesianGrid
-from plasmapy.utils.data.downloader import get_file
 
 
 def _test_grid(
@@ -860,98 +857,3 @@ def test_add_wire_mesh():
 
     # Verify that the spacing is correct by checking the FFT
     assert np.isclose(measured_spacing, true_spacing, 0.5)
-
-
-@pytest.fixture
-def hdv2_stack(tmp_path):
-    # Fetch stopping power data files from data module
-    tissue_path = get_file("NIST_PSTAR_tissue_equivalent.txt", directory=tmp_path)
-    aluminum_path = get_file("NIST_PSTAR_aluminum.txt", directory=tmp_path)
-
-    arr = np.loadtxt(tissue_path, skiprows=8)
-    eaxis = arr[:, 0] * u.MeV
-    tissue_density = 1.04 * u.g / u.cm**3
-    tissue_equivalent = arr[:, 1] * u.MeV * u.cm**2 / u.g * tissue_density
-
-    arr = np.loadtxt(aluminum_path, skiprows=8)
-    aluminum_density = 2.7 * u.g / u.cm**3
-    aluminum = arr[:, 1] * u.MeV * u.cm**2 / u.g * aluminum_density
-
-    # Defines the geometry of
-    HDV2 = [
-        cpr.Layer(12 * u.um, eaxis, tissue_equivalent, name="2-HDV2-active"),
-        cpr.Layer(
-            97 * u.um, eaxis, tissue_equivalent, name="2-HDV2-substrate", active=False
-        ),
-    ]
-
-    # Define a film pack
-    layers = [*HDV2] * 10
-    layers = [
-        cpr.Layer(100 * u.um, eaxis, aluminum, name="1-aluminum filter", active=False),
-        *layers,
-    ]
-
-    stack = cpr.Stack(layers)
-
-    return stack
-
-
-def test_film_stack_properties(hdv2_stack):
-
-    # Test nlayers property
-    assert hdv2_stack.nlayers == 21
-
-    # Test nactive property
-    assert hdv2_stack.nactive == 10
-
-    # Test thickness property
-    assert np.isclose(hdv2_stack.thickness.to(u.mm).value, 1.19)
-
-
-def test_film_stack_deposition_curves(hdv2_stack):
-    energies = np.arange(1, 60, 1) * u.MeV
-
-    # Test deposition curves
-    deposition_curves = hdv2_stack.deposition_curves(energies, return_only_active=False)
-
-    # Test that integral over all layers for each particle species is unity
-    integral = np.sum(deposition_curves, axis=0)
-    assert np.allclose(integral, 1.0)
-
-
-def test_film_stack_energy_bands_active(hdv2_stack):
-    # Test energy bands
-    ebands = hdv2_stack.energy_bands([0.1, 60] * u.MeV, 0.1 * u.MeV, dx=1 * u.um)
-
-    # Expected energy bands, in MeV (only in active layers)
-    expected = np.array([[3.5, 3.8], [4.6, 4.9], [5.6, 5.7], [6.4, 6.5], [7.1, 7.2]])
-
-    assert np.allclose(ebands.to(u.MeV).value[0:5, :], expected)
-
-
-def test_film_stack_energy_bands_inactive(hdv2_stack):
-    # Test including inactive layers
-    ebands = hdv2_stack.energy_bands(
-        [0.1, 60] * u.MeV, 0.1 * u.MeV, dx=1 * u.um, return_only_active=False
-    )
-    # Expected first 5 energy bands
-    expected = np.array([[0.1, 4.2], [3.5, 3.8], [3.9, 5.1], [4.6, 4.9], [4.9, 6]])
-    assert np.allclose(ebands.to(u.MeV).value[0:5, :], expected)
-
-
-if __name__ == "__main__":
-    """
-    test_coordinate_systems()
-    test_input_validation()
-    test_1D_deflections()
-    test_init()
-    test_create_particles()
-    test_load_particles()
-    test_run_options()
-    test_synthetic_radiograph()
-    test_add_wire_mesh()
-    test_gaussian_sphere_analytical_comparison()
-    test_cannot_modify_simulation_after_running()
-    """
-    pass
