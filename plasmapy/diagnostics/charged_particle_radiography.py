@@ -1430,7 +1430,7 @@ def synthetic_radiograph(
 
 
 class Layer:
-    def __init__(self, thickness, energy_axis, stopping_power, active=True, name=""):
+    def __init__(self, thickness: u.m, energy_axis: u.J, stopping_power: u.Unit("MeV/cm"), active: bool = True, name: str =""):
         r"""
         A layer in a detector film stack. The layer could either be an active
         layer (the actual film medium) or an inactive layer (a filter or
