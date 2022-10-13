@@ -135,7 +135,7 @@ def _test_grid(
 def run_1D_example(name):
     """
     Run a simulation through an example with parameters optimized to
-    sum up to a lineout along x. The goal is to run a realtively fast
+    sum up to a lineout along x. The goal is to run a relatively fast
     sim with a quasi-1D field grid that can then be summed to get good
     enough statistics to use as a test.
     """
