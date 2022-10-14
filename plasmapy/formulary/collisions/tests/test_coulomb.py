@@ -2,12 +2,12 @@ import numpy as np
 import pytest
 
 from astropy import units as u
-from astropy.constants import c, k_B, m_p
+from astropy.constants import c
 from astropy.tests.helper import assert_quantity_allclose
 
 import plasmapy.particles.exceptions
 
-from plasmapy.collisions.coulomb import Coulomb_logarithm
+from plasmapy.formulary.collisions.coulomb import Coulomb_logarithm
 from plasmapy.utils import exceptions
 from plasmapy.utils.exceptions import CouplingWarning
 from plasmapy.utils.pytest_helpers import assert_can_handle_nparray

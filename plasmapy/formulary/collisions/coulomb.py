@@ -48,7 +48,7 @@ import warnings
 from numbers import Real
 
 from plasmapy import particles, utils
-from plasmapy.collisions.lengths import impact_parameter
+from plasmapy.formulary.collisions.lengths import impact_parameter
 from plasmapy.utils.decorators import validate_quantities
 
 

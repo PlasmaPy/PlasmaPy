@@ -1,16 +1,19 @@
 import astropy.units as u
 import numpy as np
 
-from astropy.constants.si import e, eps0, hbar, k_B, m_e
+from astropy.constants.si import e, eps0, k_B
 from numbers import Real
 
 from plasmapy import particles
-from plasmapy.collisions.lengths import mean_free_path
-from plasmapy.collisions.misc import _process_inputs
+from plasmapy.formulary.collisions import lengths
+from plasmapy.formulary.collisions import misc
 from plasmapy.formulary.mathematics import Fermi_integral
 from plasmapy.formulary.quantum import chemical_potential, \
     thermal_deBroglie_wavelength, Wigner_Seitz_radius
 from plasmapy.utils.decorators import validate_quantities
+
+__all__ = ["coupling_parameter", "Knudsen_number", ]
+
 
 
 @validate_quantities(
@@ -159,7 +162,7 @@ def coupling_parameter(
     >>> coupling_parameter(T, n, species, V=1e6 * u.m / u.s)
     <Quantity 5.8033...e-05>
     """
-    T, masses, charges, reduced_mass, V = _process_inputs(T=T, species=species, V=V)
+    T, masses, charges, reduced_mass, V = misc._process_inputs(T=T, species=species, V=V)
 
     if np.isnan(z_mean):
         # using mean charge to get average ion density.
@@ -326,7 +329,7 @@ def Knudsen_number(
     >>> Knudsen_number(L, T, n, species, V=1e6 * u.m / u.s)
     <Quantity 10.91773...>
     """
-    path_length = mean_free_path(
+    path_length = lengths.mean_free_path(
         T=T, n_e=n_e, species=species, z_mean=z_mean, V=V, method=method
     )
     return path_length / characteristic_length

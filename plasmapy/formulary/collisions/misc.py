@@ -8,10 +8,13 @@ from numbers import Real
 from plasmapy import particles
 from plasmapy import utils
 from plasmapy.formulary.speeds import thermal_speed
-from plasmapy.collisions.frequencies import collision_frequency
+from plasmapy.formulary.collisions import frequencies
 from plasmapy.utils.decorators import validate_quantities
 from plasmapy.utils.decorators.checks import _check_relativistic
 
+
+__all__ = ["_process_inputs", "_replace_nan_velocity_with_thermal_velocity",
+           "mobility", "Spitzer_resistivity"]
 
 @validate_quantities(T={"equivalencies": u.temperature_energy()})
 @particles.particle_input
@@ -186,7 +189,7 @@ def mobility(
     >>> mobility(T, n, species, V=1e6 * u.m / u.s)
     <Quantity 1921.2784... m2 / (s V)>
     """
-    freq = collision_frequency(
+    freq = frequencies.collision_frequency(
         T=T, n=n_e, species=species, z_mean=z_mean, V=V, method=method
     )
     # we do this after collision_frequency since collision_frequency
@@ -314,7 +317,7 @@ def Spitzer_resistivity(
     <Quantity 0.000324... m Ohm>
     """
     # collisional frequency
-    freq = collision_frequency(
+    freq = frequencies.collision_frequency(
         T=T, n=n, species=species, z_mean=z_mean, V=V, method=method
     )
     # fetching additional parameters

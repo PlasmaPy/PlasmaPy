@@ -3,19 +3,22 @@ import numpy as np
 import scipy.integrate
 import scipy.misc
 
-from astropy.constants.si import e, eps0, hbar, k_B, m_e
-
+from astropy.constants.si import e, k_B, m_e
 
 from numbers import Real
 
 from functools import cached_property
 from plasmapy import particles
-from plasmapy.collisions.coulomb import Coulomb_logarithm, Coulomb_cross_section
-from plasmapy.collisions.lengths import impact_parameter_perp
-from plasmapy.collisions.misc import _process_inputs, _replace_nan_velocity_with_thermal_velocity
+from plasmapy.formulary.collisions import coulomb #import Coulomb_logarithm, Coulomb_cross_section
+from plasmapy.formulary.collisions import lengths #import impact_parameter_perp
+from plasmapy.formulary.collisions import misc #import _process_inputs, _replace_nan_velocity_with_thermal_velocity
 from plasmapy.formulary.speeds import thermal_speed
 from plasmapy.utils.decorators import deprecated, validate_quantities
 from plasmapy.utils.exceptions import PhysicsError, PlasmaPyFutureWarning
+
+
+__all__ = ["SingleParticleCollisionFrequencies", "MaxwellianCollisionFrequencies",
+           "collision_frequency", "fundamental_electron_collision_freq", "fundamental_ion_collision_freq"]
 
 
 class SingleParticleCollisionFrequencies:
@@ -667,7 +670,7 @@ def collision_frequency(
         ),
     )
 
-    T, masses, charges, reduced_mass, V_r = _process_inputs(T=T, species=species, V=V)
+    T, masses, charges, reduced_mass, V_r = misc._process_inputs(T=T, species=species, V=V)
     # using a more descriptive name for the thermal velocity using
     # reduced mass
     V_reduced = V_r
@@ -676,30 +679,30 @@ def collision_frequency(
         # electron-electron collision
         # if a velocity was passed, we use that instead of the reduced
         # thermal velocity
-        V = _replace_nan_velocity_with_thermal_velocity(V, T, reduced_mass)
+        V = misc._replace_nan_velocity_with_thermal_velocity(V, T, reduced_mass)
         # impact parameter for 90° collision
-        bPerp = impact_parameter_perp(T=T, species=species, V=V_reduced)
+        bPerp = lengths.impact_parameter_perp(T=T, species=species, V=V_reduced)
     elif species[0] in ("e", "e-") or species[1] in ("e", "e-"):
         # electron-ion collision
         # Need to manually pass electron thermal velocity to obtain
         # correct perpendicular collision radius
         # we ignore the reduced velocity and use the electron thermal
         # velocity instead
-        V = _replace_nan_velocity_with_thermal_velocity(V, T, m_e)
+        V = misc._replace_nan_velocity_with_thermal_velocity(V, T, m_e)
         # need to also correct mass in collision radius from reduced
         # mass to electron mass
-        bPerp = impact_parameter_perp(T=T, species=species, V=V) * reduced_mass / m_e
+        bPerp = lengths.impact_parameter_perp(T=T, species=species, V=V) * reduced_mass / m_e
         # !!! may also need to correct Coulomb logarithm to be
         # electron-electron version !!!
     else:
         # ion-ion collision
         # if a velocity was passed, we use that instead of the reduced
         # thermal velocity
-        V = _replace_nan_velocity_with_thermal_velocity(V, T, reduced_mass)
-        bPerp = impact_parameter_perp(T=T, species=species, V=V)
-    cou_log = Coulomb_logarithm(T, n, species, z_mean, V=V, method=method)
+        V = misc._replace_nan_velocity_with_thermal_velocity(V, T, reduced_mass)
+        bPerp = lengths.impact_parameter_perp(T=T, species=species, V=V)
+    cou_log = coulomb.Coulomb_logarithm(T, n, species, z_mean, V=V, method=method)
     # collisional cross section
-    sigma = Coulomb_cross_section(bPerp)
+    sigma = coulomb.Coulomb_cross_section(bPerp)
     # collision frequency where Coulomb logarithm accounts for
     # small angle collisions, which are more frequent than large
     # angle collisions.
@@ -829,7 +832,7 @@ def fundamental_electron_collision_freq(
     )
 
     # specify to use electron thermal velocity (most probable), not based on reduced mass
-    V = _replace_nan_velocity_with_thermal_velocity(V, T_e, m_e)
+    V = misc._replace_nan_velocity_with_thermal_velocity(V, T_e, m_e)
 
     species = [ion, "e-"]
     Z_i = particles.charge_number(ion) * u.dimensionless_unscaled
@@ -841,7 +844,7 @@ def fundamental_electron_collision_freq(
 
     # accounting for when a Coulomb logarithm value is passed
     if np.any(coulomb_log):
-        cLog = Coulomb_logarithm(
+        cLog = coulomb.Coulomb_logarithm(
             T_e, n_e, species, z_mean=Z_i, V=V, method=coulomb_log_method
         )
         # dividing out by typical Coulomb logarithm value implicit in
@@ -984,7 +987,7 @@ def fundamental_ion_collision_freq(
     species = [ion, ion]
 
     # specify to use ion thermal velocity (most probable), not based on reduced mass
-    V = _replace_nan_velocity_with_thermal_velocity(V, T_i, m_i)
+    V = misc._replace_nan_velocity_with_thermal_velocity(V, T_i, m_i)
 
     Z_i = particles.charge_number(ion) * u.dimensionless_unscaled
 
@@ -997,7 +1000,7 @@ def fundamental_ion_collision_freq(
 
     # accounting for when a Coulomb logarithm value is passed
     if np.any(coulomb_log):
-        cLog = Coulomb_logarithm(
+        cLog = coulomb.Coulomb_logarithm(
             T_i, n_i, species, z_mean=Z_i, V=V, method=coulomb_log_method
         )
         # dividing out by typical Coulomb logarithm value implicit in

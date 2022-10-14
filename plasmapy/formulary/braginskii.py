@@ -126,8 +126,8 @@ from astropy import units as u
 from astropy.constants.si import e, k_B, m_e
 
 from plasmapy import particles, utils
-from plasmapy.formulary.collisions import (
-    Coulomb_logarithm,
+from plasmapy.formulary.collisions.coulomb import Coulomb_logarithm
+from plasmapy.formulary.collisions.frequencies import (
     fundamental_electron_collision_freq,
     fundamental_ion_collision_freq,
 )

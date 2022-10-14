@@ -1,17 +1,18 @@
 import astropy.units as u
 import numpy as np
 
-from astropy.constants.si import e, eps0, hbar, k_B, m_e
+from astropy.constants.si import eps0, hbar
 from numbers import Real
 from numpy import pi
 
 from plasmapy import particles
-from plasmapy.collisions.frequencies import collision_frequency
-from plasmapy.collisions.misc import _process_inputs
+from plasmapy.formulary.collisions.frequencies import collision_frequency
+from plasmapy.formulary.collisions.misc import _process_inputs
 from plasmapy.formulary.lengths import Debye_length
 from plasmapy.formulary.quantum import Wigner_Seitz_radius
 from plasmapy.utils.decorators import validate_quantities
 
+__all__ = ["impact_parameter_perp", "impact_parameter", "mean_free_path"]
 
 @validate_quantities(
     T={"can_be_negative": False, "equivalencies": u.temperature_energy()}

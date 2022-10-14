@@ -2,9 +2,9 @@ import astropy.units as u
 import numpy as np
 import pytest
 
-from astropy.constants import c, k_B, m_p
+from astropy.constants import k_B, m_p
 
-from plasmapy.collisions.frequencies import SingleParticleCollisionFrequencies, \
+from plasmapy.formulary.collisions.frequencies import SingleParticleCollisionFrequencies, \
     MaxwellianCollisionFrequencies, collision_frequency, fundamental_electron_collision_freq, \
     fundamental_ion_collision_freq
 from plasmapy.particles import Particle

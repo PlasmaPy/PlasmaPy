@@ -3,8 +3,10 @@ import pytest
 
 from astropy import units as u
 
-from plasmapy.collisions.coulomb import Coulomb_logarithm
-from plasmapy.collisions.lengths import impact_parameter, impact_parameter_perp, mean_free_path
+from plasmapy.formulary.collisions import coulomb, lengths
+
+# from plasmapy.formulary.collisions.coulomb import Coulomb_logarithm
+# from plasmapy.formulary.collisions.lengths import impact_parameter, impact_parameter_perp, mean_free_path
 from plasmapy.utils.exceptions import CouplingWarning
 from plasmapy.utils.pytest_helpers import assert_can_handle_nparray
 from plasmapy.utils import exceptions
@@ -20,15 +22,15 @@ class Test_impact_parameter_perp:
         cls.True1 = 7.200146594293746e-10
 
     def test_symmetry(self):
-        result = impact_parameter_perp(self.T, self.particles)
-        resultRev = impact_parameter_perp(self.T, self.particles[::-1])
+        result = lengths.impact_parameter_perp(self.T, self.particles)
+        resultRev = lengths.impact_parameter_perp(self.T, self.particles[::-1])
         assert result == resultRev
 
     def test_known1(self):
         """
         Test for known value.
         """
-        methodVal = impact_parameter_perp(self.T, self.particles, V=np.nan * u.m / u.s)
+        methodVal = lengths.impact_parameter_perp(self.T, self.particles, V=np.nan * u.m / u.s)
         testTrue = np.isclose(self.True1, methodVal.si.value, rtol=1e-1, atol=0.0)
         errStr = (
             "Distance of closest approach for 90 degree Coulomb "
@@ -43,7 +45,7 @@ class Test_impact_parameter_perp:
         value comparison by some quantity close to numerical error.
         """
         fail1 = self.True1 + 1e-15
-        methodVal = impact_parameter_perp(self.T, self.particles, V=np.nan * u.m / u.s)
+        methodVal = lengths.impact_parameter_perp(self.T, self.particles, V=np.nan * u.m / u.s)
         testTrue = not np.isclose(methodVal.si.value, fail1, rtol=1e-16, atol=0.0)
         errStr = (
             f"impact_parameter_perp value test gives {methodVal} and "
@@ -56,12 +58,12 @@ class Test_impact_parameter_perp:
     def test_handle_nparrays(self, insert_some_nans, insert_all_nans):
         """Test for ability to handle numpy array quantities"""
         assert_can_handle_nparray(
-            impact_parameter_perp, insert_some_nans, insert_all_nans, {}
+            lengths.impact_parameter_perp, insert_some_nans, insert_all_nans, {}
         )
 
     assert np.isclose(
-        Coulomb_logarithm(1 * u.eV, 5 * u.m**-3, ("e", "e")),
-        Coulomb_logarithm(11604.5220 * u.K, 5 * u.m**-3, ("e", "e")),
+        coulomb.Coulomb_logarithm(1 * u.eV, 5 * u.m**-3, ("e", "e")),
+        coulomb.Coulomb_logarithm(11604.5220 * u.K, 5 * u.m**-3, ("e", "e")),
     )
 
 
@@ -79,15 +81,15 @@ class Test_impact_parameter:
         cls.True1 = np.array([7.200146594293746e-10, 2.3507660003984624e-08])
 
     def test_symmetry(self):
-        result = impact_parameter(self.T, self.n_e, self.particles)
-        resultRev = impact_parameter(self.T, self.n_e, self.particles[::-1])
+        result = lengths.impact_parameter(self.T, self.n_e, self.particles)
+        resultRev = lengths.impact_parameter(self.T, self.n_e, self.particles[::-1])
         assert result == resultRev
 
     def test_known1(self):
         """
         Test for known value.
         """
-        methodVal = impact_parameter(
+        methodVal = lengths.impact_parameter(
             self.T,
             self.n_e,
             self.particles,
@@ -107,7 +109,7 @@ class Test_impact_parameter:
         value comparison by some quantity close to numerical error.
         """
         fail1 = self.True1 * (1 + 1e-15)
-        methodVal = impact_parameter(
+        methodVal = lengths.impact_parameter(
             self.T,
             self.n_e,
             self.particles,
@@ -127,7 +129,7 @@ class Test_impact_parameter:
     def test_bad_method(self):
         """Testing failure when invalid method is passed."""
         with pytest.raises(ValueError):
-            impact_parameter(
+            lengths.impact_parameter(
                 self.T,
                 self.n_e,
                 self.particles,
@@ -153,7 +155,7 @@ class Test_impact_parameter:
     def test_handle_nparrays(self, insert_some_nans, insert_all_nans, kwargs):
         """Test for ability to handle numpy array quantities"""
         assert_can_handle_nparray(
-            impact_parameter, insert_some_nans, insert_all_nans, kwargs
+            lengths.impact_parameter, insert_some_nans, insert_all_nans, kwargs
         )
 
     @pytest.mark.parametrize(
@@ -184,7 +186,7 @@ class Test_impact_parameter:
         n_e = self.n_e * np.ones(n_e_shape)
         T = self.T * np.ones(T_shape)
 
-        bmin, bmax = impact_parameter(T, n_e, self.particles)
+        bmin, bmax = lengths.impact_parameter(T, n_e, self.particles)
 
         msg = f"wrong shape for {n_e.shape = } and {T.shape = }"
 
@@ -205,8 +207,8 @@ class Test_mean_free_path:
 
     def test_symmetry(self):
         with pytest.warns(CouplingWarning):
-            result = mean_free_path(self.T, self.n_e, self.particles)
-            resultRev = mean_free_path(self.T, self.n_e, self.particles[::-1])
+            result = lengths.mean_free_path(self.T, self.n_e, self.particles)
+            resultRev = lengths.mean_free_path(self.T, self.n_e, self.particles[::-1])
         assert result == resultRev
 
     def test_known1(self):
@@ -214,7 +216,7 @@ class Test_mean_free_path:
         Test for known value.
         """
         with pytest.warns(exceptions.PhysicsWarning, match="strong coupling effects"):
-            methodVal = mean_free_path(
+            methodVal = lengths.mean_free_path(
                 self.T,
                 self.n_e,
                 self.particles,
@@ -233,7 +235,7 @@ class Test_mean_free_path:
         """
         fail1 = self.True1 * (1 + 1e-15)
         with pytest.warns(exceptions.PhysicsWarning, match="strong coupling effects"):
-            methodVal = mean_free_path(
+            methodVal = lengths.mean_free_path(
                 self.T,
                 self.n_e,
                 self.particles,
@@ -252,7 +254,7 @@ class Test_mean_free_path:
     @pytest.mark.parametrize("insert_all_nans", [[], ["V"]])
     def test_handle_nparrays(self, insert_some_nans, insert_all_nans):
         """Test for ability to handle numpy array quantities"""
-        assert_can_handle_nparray(mean_free_path, insert_some_nans, insert_all_nans, {})
+        assert_can_handle_nparray(lengths.mean_free_path, insert_some_nans, insert_all_nans, {})
 
 
 

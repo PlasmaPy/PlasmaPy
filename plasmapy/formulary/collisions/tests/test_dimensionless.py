@@ -2,7 +2,7 @@ import astropy.units as u
 import numpy as np
 import pytest
 
-from plasmapy.collisions.dimensionless import coupling_parameter, Knudsen_number
+from plasmapy.formulary.collisions.dimensionless import coupling_parameter, Knudsen_number
 from plasmapy.utils import exceptions
 from plasmapy.utils.exceptions import CouplingWarning
 from plasmapy.utils.pytest_helpers import assert_can_handle_nparray
