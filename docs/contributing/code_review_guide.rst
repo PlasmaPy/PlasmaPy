@@ -14,14 +14,24 @@ Introduction
 
 The purposes of code review are to:
 
+* Share knowledge
+* Build community
+* Support new contributors
 * Ensure quality
 * Catch bugs
-* Share knowledge
-* Train contributors
-* Build community
 
-Contributor responsibilities
-============================
+How contributors can help reviewers
+===================================
+
+* Describe the changes in the pull request,
+
+* Put "Closes #325."
+
+* Ask the reviewers questions.
+
+* Submit the pull request as a "draft" while you are working on it, and
+  mark it as ready when it is time for a review.
+
 
 * Include enough detail in the description for reviewers (and future
   contributors) to understand.
@@ -30,6 +40,9 @@ Contributor responsibilities
 
 * Specify feedback you are hoping to receive (e.g., by asking if there
   is a better way to
+
+* Remember that you do not necessarily have to follow suggestions by the
+  reviewers or do exactly what they request. For example
 
 Logistics
 =========
