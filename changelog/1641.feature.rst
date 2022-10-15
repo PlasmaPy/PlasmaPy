@@ -1,2 +1,1 @@
-Created a Photon class that inherits Particles
-Basic unit testing for the Photon class
+Added the |Photon| class to `plasmapy.particles`.
