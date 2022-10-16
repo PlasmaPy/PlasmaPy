@@ -73,10 +73,11 @@ jobs:
           python: 3.8
           toxenv: py38-all
 
-        - name: Python 3.9
+        - name: Python 3.9, develop mode
           os: ubuntu-latest
           python: 3.9
           toxenv: py39
+          toxargs: --develop
 
     steps:
     - name: Checkout code

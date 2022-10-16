@@ -233,8 +233,8 @@ lines_between_types = 1
 
 [tool.pytest.ini_options]
 minversion = "6.0"
-testpaths = ['"plasmapy"']
-norecursedirs = ['"build"', '"docs/"']
+testpaths = ['plasmapy']
+norecursedirs = ['build', 'docs', 'plasmapy[\/]_dev']
 doctest_optionflags = """
 NORMALIZE_WHITESPACE
 ELLIPSIS
@@ -252,7 +252,7 @@ include-package-data = true
 "plasmapy.utils.calculator" = ["*"]
 
 [tool.setuptools.packages.find]
-exclude = ["docs/automodapi"]
+exclude = ["docs/automodapi", "plasmapy/_dev"]
 namespaces = false
 
 [tool.setuptools_scm]
