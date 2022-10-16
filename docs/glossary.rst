@@ -22,13 +22,35 @@ Glossary
    args
       An abbreviation for `positional arguments`_.
 
+   atom-like
+      A |particle-like| `object` is **atom-like** if it is or could be
+      cast into:
+
+      * A |Particle| representing an element, isotope, or ionic level; or
+      * A |ParticleList| including only elements, isotopes, or ionic levels.
+
+      For example, ``"p+"``, ``"He-4"``, ``"deuterium"``, ``"O 0+"``,
+      ``Particle("Fe-56 16+)"``, ``["He-4 1+", "He-4 2+"]``,  and
+      integers representing atomic numbers are all atom-like.
+
+      Examples of objects that are |particle-like| but *not* atom-like
+      include ``"neutron"``, ``"e-"``, and ``["e-", "e+"]``.
+      Additionally, ``["He-4", "e-"]`` is not atom-like because this
+      `list` contains an item that is not atom-like.
+
+      Please refer to the glossary entry for |particle-like| for a full
+      description of valid representations of elements, isotopes, and
+      ions.
+
    -like
       Used to indicate an `object` of that type or that can instantiate
       that type.  For example, ``"He 2+"`` is |particle-like| because it
       can be used to instantiate |Particle|.
 
    charge number
-      The charge of a particle in units of elementary charge.
+      The electrical charge of a particle in units of the elementary
+      charge. The charge number of an ion or neutral particle is usually
+      denoted as ``Z``.
 
    fit-function
    fit-functions
@@ -120,9 +142,9 @@ Glossary
       An **ion** or **neutral atom** may be represented by a string that
       contains a representation of an element or isotope, followed by
       charge information which is typically an integer representing the
-      charge number and a plus or minus sign to indicate the charge. For
-      example, a deuteron may be represented as ``"D 1+"`` and
-      :sup:`56`\ Fe\ :sup:`1+` may be represented as ``"Fe-56 1+"``.
+      charge number and a plus or minus sign to indicate the electrical
+      charge. For example, a deuteron may be represented as ``"D 1+"``
+      and :sup:`56`\ Fe\ :sup:`1+` may be represented as ``"Fe-56 1+"``.
 
       A **special particle** may be represented by a string that
       contains the name of the particle (case insensitive) or a
