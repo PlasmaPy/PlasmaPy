@@ -2535,7 +2535,7 @@ class Photon(AbstractParticle):
     >>> photon.frequency
     <Quantity 2.46606775e+15 1 / s>
     >>> photon.spin
-    1
+    """
 
     def __init__(self, quantity: Quantity = None):
         self._set_default_photon_properties()
@@ -2562,7 +2562,7 @@ class Photon(AbstractParticle):
                 self.momentum = const.h / self.wavelength
 
     def _set_default_photon_properties(self):
-        """Set default properties of a Photon."""
+        """Set default properties of a |Photon|."""
         self._mass = 0 * u.kg
         self._charge = 0 * u.C
         self._charge_number = 0
