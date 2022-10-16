@@ -54,8 +54,8 @@ except Exception:
     from warnings import warn
 
     warn(
-        f"plasmapy.__version__ not generated (set to '0.0.0'), this looks like"
-        f"the installation's broken. Ask on Element!",
+        "plasmapy.__version__ not generated (set to '0.0.0'), this looks like "
+        "the installation's broken. Ask on Element!",
     )
 
     del warn
