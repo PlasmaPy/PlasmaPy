@@ -2491,7 +2491,7 @@ class Photon(AbstractParticle):
     A class to represent a photon.
 
     Special case of an `~plasmapy.particles.particle_class.AbstractParticle`
-    with the mass, charge, charge number, spin and half-life hard-coded to 
+    with the mass, charge, charge number, spin and half-life hard-coded to
     that of a photon.
 
     Parameters
@@ -2511,7 +2511,7 @@ class Photon(AbstractParticle):
 
     Notes
     -----
-    If ``quantity`` is not specified, then the corresponding values of 
+    If ``quantity`` is not specified, then the corresponding values of
     energy, frequency, momentum and wavelength will be set to |nan| in
     the appropriate units.
 
