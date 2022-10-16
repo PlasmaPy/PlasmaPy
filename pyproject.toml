@@ -199,6 +199,7 @@ omit = [
     "*/tests/*",
     "plasmapy/utils/calculator/*",
     "plasmapy/version.py",
+    "plasmapy/_dev/*",
 ]
 
 [tool.gilesbot]
