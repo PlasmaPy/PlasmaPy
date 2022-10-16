@@ -47,35 +47,18 @@ try:
         from plasmapy._dev.scm_version import version as __version__
     except ImportError:
         from plasmapy._version import version as __version__
-except PackageNotFoundError:
+except Exception:
     # package is not installed
-    fallback_version = "unknown"
-    try:
-        # code most likely being used from source
-        # if setuptools_scm is installed then generate a version
-        from setuptools_scm import get_version
+    __version = "0.0.0"
 
-        __version__ = get_version(
-            root="..", relative_to=__file__, fallback_version=fallback_version
-        )
-        del get_version
-        warn_add = "setuptools_scm failed to detect the version"
-    except ModuleNotFoundError:
-        # setuptools_scm is not installed
-        __version__ = fallback_version
-        warn_add = "setuptools_scm is not installed"
+    from warnings import warn
 
-    if __version__ == fallback_version:
-        from warnings import warn
+    warn(
+        f"plasmapy.__version__ not generated (set to '0.0.0'), this looks like"
+        f"the installation's broken. Ask on Element!",
+    )
 
-        warn(
-            f"plasmapy.__version__ not generated (set to 'unknown'), PlasmaPy is "
-            f"not an installed package and {warn_add}.",
-            RuntimeWarning,
-        )
-
-        del warn
-    del fallback_version, warn_add
+    del warn
 
 # ----------------------------------------------------------------------------
 #: PlasmaPy citation instructions
