@@ -947,11 +947,41 @@ instructions on writing such benchmarks can be found at `asv-docs`_.
 Up-to-date instructions on running the benchmark suite will be located in
 the README file of `benchmarks-repo`_.
 
+Compatibility with Prior Versions of Python, NumPy, and Astropy
+===============================================================
+
+PlasmaPy releases will generally abide by the following standards,
+which are adapted from `NEP 29`_ for the support of old versions of
+Python_, NumPy_, and Astropy_.
+
+* PlasmaPy should support at least the minor versions of Python
+  initially released 42 months prior to a planned project release date.
+
+* PlasmaPy should support at least the 3 latest minor versions of
+  Python.
+
+* PlasmaPy should support minor versions of NumPy initially released
+  in the 24 months prior to a planned project release date or the
+  oldest version that supports the minimum Python version (whichever is
+  higher).
+
+* PlasmaPy should support at least the 3 latest minor versions of
+  NumPy and Astropy.
+
+The required major and minor version numbers of upstream packages may
+only change during major or minor releases of PlasmaPy, and never during
+patch releases.
+
+Exceptions to these guidelines should only be made when there are major
+improvements or fixes to upstream functionality or when other required
+packages have stricter requirements.
+
 .. _ASCII: https://en.wikipedia.org/wiki/ASCII
 .. _cognitive complexity: https://www.sonarsource.com/docs/CognitiveComplexity.pdf
 .. _example notebook on particles: ../notebooks/getting_started/particles.ipynb
 .. _example notebook on units: ../notebooks/getting_started/units.ipynb
 .. _extract function refactoring pattern: https://refactoring.guru/extract-method
+.. _NEP 29: https://numpy.org/neps/nep-0029-deprecation_policy.html
 .. _not a number: https://en.wikipedia.org/wiki/NaN
 .. _NumPy Enhancement Proposal 29: https://numpy.org/neps/nep-0029-deprecation_policy.html
 .. _pyupgrade: https://github.com/asottile/pyupgrade
