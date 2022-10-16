@@ -8,6 +8,9 @@ recursive-include plasmapy *.json *.npy
 recursive-include docs *
 recursive-include licenses *
 
+# Only for editable installs
+prune plasmapy/_dev
+
 prune build
 prune docs/_build
 prune docs/api

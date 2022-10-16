@@ -28,7 +28,7 @@ if sys.version_info < (3, 8):  # coverage: ignore
 # Packages may add whatever they like to this file, but
 # should keep this content at the top.
 # ----------------------------------------------------------------------------
-from importlib.metadata import PackageNotFoundError, version
+from importlib.metadata import PackageNotFoundError
 
 from plasmapy import (
     analysis,
@@ -43,17 +43,10 @@ from plasmapy import (
 
 # define version
 try:
-    # this places a runtime dependency on setuptools
-    #
-    # note: if there's any distribution metadata in your source files, then this
-    #       will find a version based on those files.  Keep distribution metadata
-    #       out of your repository unless you've intentionally installed the package
-    #       as editable (e.g. `pip install -e {plasmapy_directory_root}`),
-    #       but then __version__ will not be updated with each commit, it is
-    #       frozen to the version at time of install.
-    #
-    #: PlasmaPy version string
-    __version__ = version("plasmapy")
+    try:
+        from plasmapy._dev.scm_version import version as __version__
+    except ImportError:
+        from plasmapy._version import version as __version__
 except PackageNotFoundError:
     # package is not installed
     fallback_version = "unknown"

@@ -256,6 +256,7 @@ exclude = ["docs/automodapi"]
 namespaces = false
 
 [tool.setuptools_scm]
+write_to = "plasmapy/_version.py"
 
 [tool.towncrier]
 package = "plasmapy"
