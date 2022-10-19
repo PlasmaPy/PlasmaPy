@@ -117,7 +117,7 @@ class AbstractGrid(ABC):
         RecognizedQuantity("x", "x spatial position", u.m),
         RecognizedQuantity("y", "y spatial position", u.m),
         RecognizedQuantity("z", "z spatial position", u.m),
-        RecognizedQuantity("rho", "Mass density", u.kg / u.m ** 3),
+        RecognizedQuantity("rho", "Mass density", u.kg / u.m**3),
         RecognizedQuantity("E_x", "Electric field (x component)", u.V / u.m),
         RecognizedQuantity("E_y", "Electric field (y component)", u.V / u.m),
         RecognizedQuantity("E_z", "Electric field (z component)", u.V / u.m),
@@ -979,7 +979,7 @@ class AbstractGrid(ABC):
         ------
 
         KeyError
-            A KeyError is raised if one of the args does not corrrespond
+            A KeyError is raised if one of the args does not correspond
             to a DataArray in the DataSet.
         """
 

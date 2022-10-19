@@ -17,7 +17,7 @@ from abc import ABC, abstractmethod
 from collections import namedtuple
 from scipy.optimize import curve_fit, fsolve
 from scipy.stats import linregress
-from typing import Optional, Tuple, Union
+from typing import Optional, Tuple
 from warnings import warn
 
 from plasmapy.utils.decorators import modify_docstring
@@ -73,10 +73,10 @@ class AbstractFitFunction(ABC):
 
         Parameters
         ----------
-        x: array_like
+        x: |array_like|
             Dependent variables.
 
-        x_err: array_like, optional
+        x_err: |array_like|, optional
             Errors associated with the independent variables ``x``.  Must be of
             size one or equal to the size of ``x``.
 
@@ -119,7 +119,7 @@ class AbstractFitFunction(ABC):
 
         Parameters
         ----------
-        x: array_like
+        x: |array_like|
             Independent variables to be passed to the fit function.
 
         *args: Tuple[Union[float, int],...]
@@ -176,10 +176,10 @@ class AbstractFitFunction(ABC):
         """
         Parameters
         ----------
-        x: array_like
+        x: |array_like|
             Independent variables to be passed to the fit function.
 
-        x_err: array_like, optional
+        x_err: |array_like|, optional
             Errors associated with the independent variables ``x``.  Must be of
             size one or equal to the size of ``x``.
 
@@ -427,11 +427,11 @@ class AbstractFitFunction(ABC):
 
         Parameters
         ----------
-        xdata: array_like
+        xdata: |array_like|
             The independent variable where data is measured.  Should be 1D of
             length M.
 
-        ydata: array_like
+        ydata: |array_like|
             The dependent data associated with ``xdata``.
 
         **kwargs
@@ -458,7 +458,7 @@ class AbstractFitFunction(ABC):
         # calc rsq
         # rsq = 1 - (ss_res / ss_tot)
         residuals = ydata - self.func(xdata, *self.params)
-        ss_res = np.sum(residuals ** 2)
+        ss_res = np.sum(residuals**2)
         ss_tot = np.sum((ydata - np.mean(ydata)) ** 2)
         self._rsq = 1 - (ss_res / ss_tot)
 
@@ -502,7 +502,7 @@ class Linear(AbstractFitFunction):
 
         Parameters
         ----------
-        x: array_like
+        x: |array_like|
             Independent variable.
 
         m: float
@@ -513,7 +513,7 @@ class Linear(AbstractFitFunction):
 
         Returns
         -------
-        y: array_like
+        y: |array_like|
             dependent variables corresponding to :math:`x`
 
         """
@@ -539,7 +539,7 @@ class Linear(AbstractFitFunction):
         m_err, b_err = self.param_errors
 
         m_term = (m_err * x) ** 2
-        b_term = b_err ** 2
+        b_term = b_err**2
         err = m_term + b_term
 
         if x_err is not None:
@@ -622,11 +622,11 @@ class Linear(AbstractFitFunction):
 
         Parameters
         ----------
-        xdata: array_like
+        xdata: |array_like|
             The independent variable where data is measured.  Should be 1D of
             length M.
 
-        ydata: array_like
+        ydata: |array_like|
             The dependent data associated with ``xdata``.
 
         **kwargs
@@ -641,7 +641,7 @@ class Linear(AbstractFitFunction):
         self.params = (m, b)
 
         m_err = results[4]
-        b_err = np.sum(xdata ** 2) - ((np.sum(xdata) ** 2) / xdata.size)
+        b_err = np.sum(xdata**2) - ((np.sum(xdata) ** 2) / xdata.size)
         b_err = m_err * np.sqrt(1.0 / b_err)
         self.param_errors = (m_err, b_err)
 
@@ -690,7 +690,7 @@ class Exponential(AbstractFitFunction):
 
         Parameters
         ----------
-        x: array_like
+        x: |array_like|
             Independent variable.
 
         a: float
@@ -701,7 +701,7 @@ class Exponential(AbstractFitFunction):
 
         Returns
         -------
-        y: array_like
+        y: |array_like|
             dependent variables corresponding to ``x``
 
         """
@@ -741,10 +741,7 @@ class Exponential(AbstractFitFunction):
 
         err = np.abs(y) * np.sqrt(err)
 
-        if rety:
-            return err, y
-
-        return err
+        return (err, y) if rety else err
 
     def root_solve(self, *args, **kwargs):
         """
@@ -819,7 +816,7 @@ class ExponentialPlusLinear(AbstractFitFunction):
     def latex_str(self) -> str:
         exp_str = self._exponential.latex_str
         lin_str = self._linear.latex_str
-        return fr"{exp_str} + {lin_str}"
+        return rf"{exp_str} + {lin_str}"
 
     @AbstractFitFunction.params.setter
     def params(self, val) -> None:
@@ -849,7 +846,7 @@ class ExponentialPlusLinear(AbstractFitFunction):
 
         Parameters
         ----------
-        x: array_like
+        x: |array_like|
             Independent variable.
 
         a: float
@@ -866,7 +863,7 @@ class ExponentialPlusLinear(AbstractFitFunction):
 
         Returns
         -------
-        y: array_like
+        y: |array_like|
             dependent variables corresponding to ``x``
 
         """
@@ -901,17 +898,14 @@ class ExponentialPlusLinear(AbstractFitFunction):
 
         exp_y, exp_err = self._exponential(x, x_err=x_err, reterr=True)
         lin_y, lin_err = self._linear(x, x_err=x_err, reterr=True)
-        err = exp_err ** 2 + lin_err ** 2
+        err = exp_err**2 + lin_err**2
 
         if x_err is not None:
-            blend_err = 2 * a * alpha * m * np.exp(alpha * x) * (x_err ** 2)
+            blend_err = 2 * a * alpha * m * np.exp(alpha * x) * (x_err**2)
             err += blend_err
         err = np.sqrt(err)
 
-        if rety:
-            return err, exp_y + lin_y
-
-        return err
+        return (err, exp_y + lin_y) if rety else err
 
 
 class ExponentialPlusOffset(AbstractFitFunction):
@@ -989,7 +983,7 @@ class ExponentialPlusOffset(AbstractFitFunction):
 
         Parameters
         ----------
-        x: array_like
+        x: |array_like|
             Independent variable.
 
         a: float
@@ -1003,7 +997,7 @@ class ExponentialPlusOffset(AbstractFitFunction):
 
         Returns
         -------
-        y: array_like
+        y: |array_like|
             dependent variables corresponding to ``x``
 
         """
@@ -1069,6 +1063,6 @@ class ExponentialPlusOffset(AbstractFitFunction):
         a_term = a_err / (a * alpha)
         b_term = b_err * root / alpha
         c_term = c_err / (alpha * b)
-        err = np.sqrt(a_term ** 2 + b_term ** 2 + c_term ** 2)
+        err = np.sqrt(a_term**2 + b_term**2 + c_term**2)
 
         return _RootResults(root, err)

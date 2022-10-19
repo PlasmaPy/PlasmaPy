@@ -8,6 +8,7 @@ __lite_funcs__ = []
 
 from plasmapy.formulary.braginskii import *
 from plasmapy.formulary.collisions import *
+from plasmapy.formulary.densities import *
 from plasmapy.formulary.dielectric import *
 from plasmapy.formulary.dimensionless import *
 from plasmapy.formulary.distribution import *
@@ -19,6 +20,7 @@ from plasmapy.formulary.magnetostatics import *
 from plasmapy.formulary.mathematics import *
 from plasmapy.formulary.misc import *
 from plasmapy.formulary.quantum import *
+from plasmapy.formulary.radiation import *
 from plasmapy.formulary.relativity import *
 from plasmapy.formulary.speeds import *
 
@@ -36,6 +38,7 @@ import contextlib  # isort:skip
 for modname in (
     "braginskii",
     "collisions",
+    "densities",
     "dielectric",
     "dimensionless",
     "distribution",
@@ -48,6 +51,7 @@ for modname in (
     "misc",
     "parameters",
     "quantum",
+    "radiation",
     "relativity",
     "speeds",
 ):

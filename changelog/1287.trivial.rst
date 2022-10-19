@@ -1,3 +1,0 @@
-Added `csslint <https://github.com/CSSLint/csslint>`_ to the
-`pre-commit`_ configuration to check the formatting and style of CSS_
-files.

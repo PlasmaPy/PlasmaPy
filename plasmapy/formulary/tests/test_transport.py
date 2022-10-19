@@ -52,60 +52,62 @@ def count_decimal_places(digits):
 @pytest.mark.slow
 class Test_classical_transport:
     @classmethod
-    def setup_class(self):
+    def setup_class(cls):
         """set up some initial values for tests"""
-        self.T_e = 1000 * u.eV
-        self.n_e = 2e13 / u.cm ** 3
-        self.ion = "D +1"
-        self.m_i = particle_mass(self.ion)
-        self.Z = charge_number(self.ion)
-        self.T_i = self.T_e
-        self.n_i = self.n_e / self.Z
-        self.B = 0.01 * u.T
-        self.coulomb_log_val_ei = 17
-        self.coulomb_log_val_ii = 17
-        self.hall_e = None
-        self.hall_i = None
-        self.V_ei = None
-        self.V_ii = None
-        self.mu = m_e / self.m_i
-        self.theta = self.T_e / self.T_i
-        self.model = "Braginskii"
-        self.field_orientation = "all"
+        cls.T_e = 1000 * u.eV
+        cls.n_e = 2e13 / u.cm**3
+        cls.ion = "D +1"
+        cls.m_i = particle_mass(cls.ion)
+        cls.Z = charge_number(cls.ion)
+        cls.T_i = cls.T_e
+        cls.n_i = cls.n_e / cls.Z
+        cls.B = 0.01 * u.T
+        cls.coulomb_log_val_ei = 17
+        cls.coulomb_log_val_ii = 17
+        cls.hall_e = None
+        cls.hall_i = None
+        cls.V_ei = None
+        cls.V_ii = None
+        cls.mu = m_e / cls.m_i
+        cls.theta = cls.T_e / cls.T_i
+        cls.model = "Braginskii"
+        cls.field_orientation = "all"
         with pytest.warns(RelativityWarning):
-            self.ct = ClassicalTransport(
-                T_e=self.T_e,
-                n_e=self.n_e,
-                T_i=self.T_i,
-                n_i=self.n_i,
-                ion=self.ion,
-                Z=self.Z,
-                B=self.B,
-                model=self.model,
-                field_orientation=self.field_orientation,
-                coulomb_log_ei=self.coulomb_log_val_ei,
-                coulomb_log_ii=self.coulomb_log_val_ii,
-                V_ei=self.V_ei,
-                V_ii=self.V_ii,
-                hall_e=self.hall_e,
-                hall_i=self.hall_i,
-                mu=self.mu,
-                theta=self.theta,
+            cls.ct = ClassicalTransport(
+                T_e=cls.T_e,
+                n_e=cls.n_e,
+                T_i=cls.T_i,
+                n_i=cls.n_i,
+                ion=cls.ion,
+                Z=cls.Z,
+                B=cls.B,
+                model=cls.model,
+                field_orientation=cls.field_orientation,
+                coulomb_log_ei=cls.coulomb_log_val_ei,
+                coulomb_log_ii=cls.coulomb_log_val_ii,
+                V_ei=cls.V_ei,
+                V_ii=cls.V_ii,
+                hall_e=cls.hall_e,
+                hall_i=cls.hall_i,
+                mu=cls.mu,
+                theta=cls.theta,
             )
-            self.ct_wrapper = ClassicalTransport(
-                T_e=self.T_e,
-                n_e=self.n_e,
-                T_i=self.T_i,
-                n_i=self.n_i,
-                ion=self.ion,
-                Z=self.Z,
-                B=self.B,
-                model=self.model,
-                field_orientation=self.field_orientation,
-                mu=self.mu,
-                theta=self.theta,
+
+            cls.ct_wrapper = ClassicalTransport(
+                T_e=cls.T_e,
+                n_e=cls.n_e,
+                T_i=cls.T_i,
+                n_i=cls.n_i,
+                ion=cls.ion,
+                Z=cls.Z,
+                B=cls.B,
+                model=cls.model,
+                field_orientation=cls.field_orientation,
+                mu=cls.mu,
+                theta=cls.theta,
             )
-            self.all_variables = self.ct.all_variables
+
+            cls.all_variables = cls.ct.all_variables
 
     def test_spitzer_vs_formulary(self):
         """Spitzer resistivity should agree with approx. in NRL formulary"""
@@ -747,10 +749,10 @@ def test_nondim_viscosity_unrecognized_model(particle):
 # test class for _nondim_tc_e_braginskii function:
 class Test__nondim_tc_e_braginskii:
     @classmethod
-    def setup_class(self):
+    def setup_class(cls):
         """set up some initial values for tests"""
-        self.big_hall = 1000
-        self.small_hall = 0
+        cls.big_hall = 1000
+        cls.small_hall = 0
 
     # values from Braginskii '65
     @pytest.mark.parametrize(
@@ -782,7 +784,7 @@ class Test__nondim_tc_e_braginskii:
     def test_known_values_perp(self, Z, field_orientation, expected):
         """check some known values"""
         kappa_e_hat = _nondim_tc_e_braginskii(self.big_hall, Z, field_orientation)
-        assert np.isclose(kappa_e_hat * self.big_hall ** 2, expected, atol=1e-1)
+        assert np.isclose(kappa_e_hat * self.big_hall**2, expected, atol=1e-1)
 
     @pytest.mark.parametrize("Z", [1, 2, 3, 4, np.inf])
     def test_unmagnetized(self, Z):
@@ -807,10 +809,10 @@ class Test__nondim_tc_e_braginskii:
 # test class for _nondim_tc_i_braginskii function:
 class Test__nondim_tc_i_braginskii:
     @classmethod
-    def setup_class(self):
+    def setup_class(cls):
         """set up some initial values for tests"""
-        self.big_hall = 1000
-        self.small_hall = 0
+        cls.big_hall = 1000
+        cls.small_hall = 0
 
     def test_known_values_par(self):
         """check some known values"""
@@ -822,7 +824,7 @@ class Test__nondim_tc_i_braginskii:
         """check some known values"""
         kappa_i_hat = _nondim_tc_i_braginskii(self.big_hall, field_orientation="perp")
         expected = 2.0  # Braginskii '65 eq (2.16)
-        assert np.isclose(kappa_i_hat * self.big_hall ** 2, expected, atol=1e-1)
+        assert np.isclose(kappa_i_hat * self.big_hall**2, expected, atol=1e-1)
 
     def test_unmagnetized(self):
         """confirm perp -> par as B -> 0"""
@@ -840,10 +842,10 @@ class Test__nondim_tc_i_braginskii:
 # test class for _nondim_tec_braginskii function:
 class Test__nondim_tec_braginskii:
     @classmethod
-    def setup_class(self):
+    def setup_class(cls):
         """set up some initial values for tests"""
-        self.big_hall = 1000
-        self.small_hall = 0
+        cls.big_hall = 1000
+        cls.small_hall = 0
 
     # values from Braginskii '65
     @pytest.mark.parametrize(
@@ -879,10 +881,10 @@ class Test__nondim_tec_braginskii:
 # test class for _nondim_resist_braginskii function:
 class Test__nondim_resist_braginskii:
     @classmethod
-    def setup_class(self):
+    def setup_class(cls):
         """set up some initial values for tests"""
-        self.big_hall = 1000
-        self.small_hall = 0
+        cls.big_hall = 1000
+        cls.small_hall = 0
 
     # values from Braginskii '65
     @pytest.mark.parametrize(
@@ -918,10 +920,10 @@ class Test__nondim_resist_braginskii:
 # test class for _nondim_visc_i_braginskii function:
 class Test__nondim_visc_i_braginskii:
     @classmethod
-    def setup_class(self):
+    def setup_class(cls):
         """set up some initial values for tests"""
-        self.big_hall = 1000
-        self.small_hall = 0
+        cls.big_hall = 1000
+        cls.small_hall = 0
 
     # values from Braginskii '65, eqs. 2.22 to 2.24
     @pytest.mark.parametrize(
@@ -931,7 +933,7 @@ class Test__nondim_visc_i_braginskii:
     def test_known_values(self, expected, power):
         """check some known values"""
         eta_i_hat = _nondim_visc_i_braginskii(self.big_hall)
-        eta_i_hat_with_powers = eta_i_hat * self.big_hall ** power
+        eta_i_hat_with_powers = eta_i_hat * self.big_hall**power
         assert np.allclose(eta_i_hat_with_powers, expected, atol=1e-2)
 
     def test_vs_ji_held_K2(self):
@@ -945,10 +947,10 @@ class Test__nondim_visc_i_braginskii:
 # test class for _nondim_visc_e_braginskii function:
 class Test__nondim_visc_e_braginskii:
     @classmethod
-    def setup_class(self):
+    def setup_class(cls):
         """set up some initial values for tests"""
-        self.big_hall = 1000
-        self.small_hall = 0
+        cls.big_hall = 1000
+        cls.small_hall = 0
 
     # values from Braginskii '65
     @pytest.mark.parametrize(
@@ -967,7 +969,7 @@ class Test__nondim_visc_e_braginskii:
         if idx == 0:
             assert np.isclose(beta_hat[idx], expected, atol=1e-2)
         elif idx in [1, 2]:
-            assert np.isclose(beta_hat[idx] * self.big_hall ** 2, expected, atol=1e-2)
+            assert np.isclose(beta_hat[idx] * self.big_hall**2, expected, atol=1e-2)
         elif idx in [3, 4]:
             assert np.isclose(beta_hat[idx] * self.big_hall, expected, atol=1e-1)
 

@@ -8,7 +8,7 @@ import astropy.units as u
 import numpy as np
 
 from numbers import Integral, Real
-from typing import Dict, List, Optional, Tuple, Union
+from typing import Dict, List, NoReturn, Optional, Tuple, Union
 
 from plasmapy.particles.atomic import atomic_number
 from plasmapy.particles.exceptions import (
@@ -23,8 +23,8 @@ from plasmapy.particles.symbols import particle_symbol
 from plasmapy.utils.decorators import validate_quantities
 
 
-def _atomic_number_and_mass_number(p: Particle):
-    return (p.atomic_number, p.mass_number if p.isotope else 0)
+def _atomic_number_and_mass_number(p: ParticleLike):
+    return p.atomic_number, p.mass_number if p.isotope else 0
 
 
 class IonizationStateCollection:
@@ -34,7 +34,7 @@ class IonizationStateCollection:
 
     Parameters
     ----------
-    inputs: `list`, `tuple`, or `dict`
+    inputs : `list`, `tuple`, or `dict`
         A `list` or `tuple` of elements or isotopes (if ``T_e`` is
         provided); a `list` of `~plasmapy.particles.ionization_state.IonizationState`
         instances; a `dict` with elements or isotopes as keys and
@@ -42,31 +42,31 @@ class IonizationStateCollection:
         with elements or isotopes as keys and `~astropy.units.Quantity`
         instances with units of number density.
 
-    abundances: `dict`, optional, keyword-only
+    abundances : `dict`, optional, |keyword-only|
         A `dict` with `~plasmapy.particles.particle_class.ParticleLike`
         objects used as the keys and the corresponding relative abundance as the
         values.  The values must be positive real numbers.
 
-    log_abundances: `dict`, optional, keyword-only
+    log_abundances : `dict`, optional, |keyword-only|
         A `dict` with `~plasmapy.particles.particle_class.ParticleLike`
         objects used as the keys and the corresponding base 10 logarithms of their
         relative abundances as the values.  The values must be real numbers.
 
-    n0: `~astropy.units.Quantity`, optional, keyword-only
+    n0 : `~astropy.units.Quantity`, optional, |keyword-only|
         The number density normalization factor corresponding to the
         abundances.  The number density of each element is the product
         of its abundance and ``n0``.
 
-    T_e: `~astropy.units.Quantity`, optional, keyword-only
+    T_e : `~astropy.units.Quantity`, optional, |keyword-only|
         The electron temperature in units of temperature or thermal
         energy per particle.
 
-    kappa: `float`, optional, keyword-only
+    kappa : `float`, optional, |keyword-only|
         The value of kappa for a kappa distribution function.
 
-    tol: `float` or `integer`, optional, keyword-only
+    tol : `float` or `integer`, optional, |keyword-only|, default: ``1e-15``
         The absolute tolerance used by `~numpy.isclose` when testing
-        normalizations and making comparisons.  Defaults to ``1e-15``.
+        normalizations and making comparisons.
 
     Raises
     ------
@@ -141,7 +141,7 @@ class IonizationStateCollection:
         T_e: u.K = np.nan * u.K,
         abundances: Optional[Dict[str, Real]] = None,
         log_abundances: Optional[Dict[str, Real]] = None,
-        n0: u.m ** -3 = np.nan * u.m ** -3,
+        n0: u.m**-3 = np.nan * u.m**-3,
         tol: Real = 1e-15,
         kappa: Real = np.inf,
     ):
@@ -153,7 +153,7 @@ class IonizationStateCollection:
             )
             if all_quantities:
                 right_units = np.all(
-                    [fracs[0].si.unit == u.m ** -3 for fracs in inputs.values()]
+                    [fracs[0].si.unit == u.m**-3 for fracs in inputs.values()]
                 )
                 if not right_units:
                     raise ParticleError(
@@ -253,7 +253,7 @@ class IonizationStateCollection:
 
         if isinstance(value, u.Quantity) and value.unit != u.dimensionless_unscaled:
             try:
-                new_number_densities = value.to(u.m ** -3)
+                new_number_densities = value.to(u.m**-3)
             except u.UnitConversionError:
                 raise ValueError(
                     f"{errmsg} because the units of value do not "
@@ -343,16 +343,10 @@ class IonizationStateCollection:
     def __eq__(self, other):
 
         if not isinstance(other, IonizationStateCollection):
-            raise TypeError(
-                "IonizationStateCollection instance can only be compared with "
-                "other IonizationStateCollection instances."
-            )
+            return False
 
         if self.base_particles != other.base_particles:
-            raise ParticleError(
-                "Two IonizationStateCollection instances can be compared only "
-                "if the base particles are the same."
-            )
+            return False
 
         min_tol = np.min([self.tol, other.tol])
 
@@ -362,10 +356,6 @@ class IonizationStateCollection:
         for attribute in ["T_e", "n_e", "kappa"]:
             this = getattr(self, attribute)
             that = getattr(other, attribute)
-
-            # TODO: Maybe create a function in utils called same_enough
-            # TODO: that would take care of all of these disparate
-            # TODO: equality measures.
 
             this_equals_that = np.any(
                 [
@@ -437,12 +427,6 @@ class IonizationStateCollection:
         ------
         `~plasmapy.particles.exceptions.ParticleError`
             If the ionic fractions cannot be set.
-
-        `TypeError`
-            If ``inputs`` is not a `list`, `tuple`, or `dict` during
-            instantiation, or if ``inputs`` is not a `dict` when it is
-            being set.
-
         """
 
         # A potential problem is that using item assignment on the
@@ -496,7 +480,7 @@ class IonizationStateCollection:
             # The particles whose ionization states are to be recorded
             # should be elements or isotopes but not ions or neutrals.
 
-            for key in particles.keys():
+            for key in particles:
                 is_element = particles[key].is_category("element")
                 has_charge_info = particles[key].is_category(
                     any_of=["charged", "uncharged"]
@@ -548,7 +532,7 @@ class IonizationStateCollection:
                 _elements_and_isotopes.append(new_key)
                 if inputs_have_quantities:
                     try:
-                        number_densities = inputs[key].to(u.m ** -3)
+                        number_densities = inputs[key].to(u.m**-3)
                         n_elem = np.sum(number_densities)
                         new_ionic_fractions[new_key] = np.array(
                             number_densities / n_elem
@@ -596,7 +580,7 @@ class IonizationStateCollection:
 
             if inputs_have_quantities:
                 if np.isnan(self.n0):
-                    new_n = 0 * u.m ** -3
+                    new_n = 0 * u.m**-3
                     for key in _elements_and_isotopes:
                         new_n += n_elems[key]
                     self.n0 = new_n
@@ -655,10 +639,10 @@ class IonizationStateCollection:
 
     @property
     @validate_quantities
-    def n_e(self) -> u.m ** -3:
+    def n_e(self) -> u.m**-3:
         """The electron number density under the assumption of quasineutrality."""
         number_densities = self.number_densities
-        n_e = 0.0 * u.m ** -3
+        n_e = 0.0 * u.m**-3
         for elem in self.base_particles:
             atomic_numb = atomic_number(elem)
             number_of_ionization_states = atomic_numb + 1
@@ -668,23 +652,23 @@ class IonizationStateCollection:
 
     @property
     @validate_quantities
-    def n0(self) -> u.m ** -3:
+    def n0(self) -> u.m**-3:
         """The number density scaling factor."""
         return self._pars["n"]
 
     @n0.setter
     @validate_quantities
-    def n0(self, n: u.m ** -3):
+    def n0(self, n: u.m**-3):
         """Set the number density scaling factor."""
         try:
-            n = n.to(u.m ** -3)
+            n = n.to(u.m**-3)
         except u.UnitConversionError as exc:
             raise ParticleError("Units cannot be converted to u.m ** -3.") from exc
         except ParticleError as exc:
             raise ParticleError(f"{n} is not a valid number density.") from exc
-        if n < 0 * u.m ** -3:
+        if n < 0 * u.m**-3:
             raise ParticleError("Number density cannot be negative.")
-        self._pars["n"] = n.to(u.m ** -3)
+        self._pars["n"] = n.to(u.m**-3)
 
     @property
     def number_densities(self) -> Dict[str, u.Quantity]:
@@ -775,7 +759,7 @@ class IonizationStateCollection:
         if value is not None:
             try:
                 new_abundances_input = {
-                    atom: 10 ** log_abundance for atom, log_abundance in value.items()
+                    atom: 10**log_abundance for atom, log_abundance in value.items()
                 }
                 self.abundances = new_abundances_input
             except ParticleError:
@@ -874,18 +858,17 @@ class IonizationStateCollection:
 
         Parameters
         ----------
-        include_neutrals : `bool`, optional, keyword-only
+        include_neutrals : `bool`, optional, |keyword-only|, default: `True`
             If `True`, include neutrals when calculating the mean values
             of the different particles.  If `False`, exclude neutrals.
-            Defaults to `True`.
 
-        use_rms_charge : `bool`, optional, keyword-only
-            If `True`, use the root mean square charge instead of the
-            mean charge. Defaults to `False`.
+        use_rms_charge : `bool`, optional, |keyword-only|, default: `False`
+            If `True`, use the root-mean-square charge instead of the
+            mean charge.
 
-        use_rms_mass : `bool`, optional, keyword-only
-            If `True`, use the root mean square mass instead of the mean
-            mass. Defaults to `False`.
+        use_rms_mass : `bool`, optional, |keyword-only|, default: `False`
+            If `True`, use the root-mean-square mass instead of the mean
+            mass.
 
         Raises
         ------
@@ -940,18 +923,16 @@ class IonizationStateCollection:
             abundances=all_abundances,
         )
 
-    def summarize(self, minimum_ionic_fraction: Real = 0.01) -> None:
+    def summarize(self, minimum_ionic_fraction: Real = 0.01) -> NoReturn:
         """
-        Print quicklook information for an
-        `~plasmapy.particles.ionization_state_collection.IonizationStateCollection`
-        instance.
+        Print quicklook information.
 
         Parameters
         ----------
-        minimum_ionic_fraction: `Real`
+        minimum_ionic_fraction : `Real`, default: ``0.01``
             If the ionic fraction for a particular ionization state is
             below this level, then information for it will not be
-            printed.  Defaults to 0.01.
+            printed.
 
         Examples
         --------
@@ -975,7 +956,6 @@ class IonizationStateCollection:
         T_e = 1.20e+04 K
         kappa = 3.40
         ----------------------------------------------------------------
-
         """
         separator_line = 64 * "-"
 

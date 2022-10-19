@@ -1,2 +1,0 @@
-Consolidated and parametrized tests associated with
-`~plasmapy.formulary.parameters.gyroradius`.

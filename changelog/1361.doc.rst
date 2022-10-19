@@ -1,4 +1,0 @@
-Reverted the code syntax highlighting style back to the pygments_
-default. The minimum version of pygments_ was set to ``2.11.0`` because
-the default style was changed to meet accessibility guidelines for
-contrast in this release.

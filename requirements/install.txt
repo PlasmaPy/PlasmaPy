@@ -1,7 +1,7 @@
 # these are dependencies required to use the package
 # ought to mirror 'install_requires' under 'options' in setup.cfg
 -r build.txt
-astropy >= 4.3.1
+astropy >= 5.0.1
 cached-property >= 1.5.2
 h5py >= 3.0.0
 ipywidgets >= 7.6.5
@@ -9,10 +9,13 @@ lmfit >= 1.0.0
 matplotlib >= 3.3.0
 mpmath >= 1.2.1
 numba
-numpy >= 1.19.0
+numpy >= 1.20.0
 packaging
 pandas >= 1.0.0
+pytest >= 5.4.0
+requests >= 2.27.1
 scipy >= 1.5.0
 tqdm >= 4.41.0
 voila >= 0.2.15
+wrapt
 xarray >= 0.15.0

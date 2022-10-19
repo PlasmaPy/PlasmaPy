@@ -17,7 +17,7 @@ from numba import njit
 
 from plasmapy import particles
 from plasmapy.formulary import misc
-from plasmapy.particles import Particle
+from plasmapy.particles import ParticleLike
 from plasmapy.particles.exceptions import ChargeError, InvalidParticleError
 from plasmapy.utils.decorators import (
     angular_freq_to_hz,
@@ -39,7 +39,7 @@ eps0_si_unitless = eps0.value
     }
 )
 @angular_freq_to_hz
-def gyrofrequency(B: u.T, particle: Particle, signed=False, Z=None) -> u.rad / u.s:
+def gyrofrequency(B: u.T, particle: ParticleLike, signed=False, Z=None) -> u.rad / u.s:
     r"""
     Calculate the particle gyrofrequency in units of radians per second.
 
@@ -154,7 +154,7 @@ def plasma_frequency_lite(
     n: numbers.Real, mass: numbers.Real, z_mean: numbers.Real, to_hz: bool = False
 ) -> numbers.Real:
     r"""
-    The ":term:`lite-function`" version of
+    The :term:`lite-function` for
     `~plasmapy.formulary.frequencies.plasma_frequency`.  Performs the
     same plasma frequency calculation as
     `~plasmapy.formulary.frequencies.plasma_frequency`, but is intended
@@ -212,10 +212,7 @@ def plasma_frequency_lite(
     """
     omega_p = z_mean * e_si_unitless * np.sqrt(n / (eps0_si_unitless * mass))
 
-    if to_hz:
-        return omega_p / (2.0 * np.pi)
-
-    return omega_p
+    return omega_p / (2.0 * np.pi) if to_hz else omega_p
 
 
 @bind_lite_func(plasma_frequency_lite)
@@ -227,7 +224,7 @@ def plasma_frequency_lite(
     },
 )
 @angular_freq_to_hz
-def plasma_frequency(n: u.m ** -3, particle: Particle, z_mean=None) -> u.rad / u.s:
+def plasma_frequency(n: u.m**-3, particle: ParticleLike, z_mean=None) -> u.rad / u.s:
     r"""Calculate the particle plasma frequency.
 
     **Aliases:** `wp_`
@@ -349,7 +346,7 @@ wp_ = plasma_frequency
     },
 )
 @angular_freq_to_hz
-def lower_hybrid_frequency(B: u.T, n_i: u.m ** -3, ion: Particle) -> u.rad / u.s:
+def lower_hybrid_frequency(B: u.T, n_i: u.m**-3, ion: ParticleLike) -> u.rad / u.s:
     r"""
     Return the lower hybrid frequency.
 
@@ -432,7 +429,7 @@ def lower_hybrid_frequency(B: u.T, n_i: u.m ** -3, ion: Particle) -> u.rad / u.s
     omega_ci = gyrofrequency(B, particle=ion)
     omega_pi = plasma_frequency(n_i, particle=ion)
     omega_ce = gyrofrequency(B, particle="e-")
-    return ((omega_ci * omega_ce) ** -1 + omega_pi ** -2) ** -0.5
+    return ((omega_ci * omega_ce) ** -1 + omega_pi**-2) ** -0.5
 
 
 wlh_ = lower_hybrid_frequency
@@ -447,7 +444,7 @@ wlh_ = lower_hybrid_frequency
     },
 )
 @angular_freq_to_hz
-def upper_hybrid_frequency(B: u.T, n_e: u.m ** -3) -> u.rad / u.s:
+def upper_hybrid_frequency(B: u.T, n_e: u.m**-3) -> u.rad / u.s:
     r"""
     Return the upper hybrid frequency.
 
@@ -514,7 +511,7 @@ def upper_hybrid_frequency(B: u.T, n_e: u.m ** -3) -> u.rad / u.s:
     """
     omega_pe = plasma_frequency(n=n_e, particle="e-")
     omega_ce = gyrofrequency(B, "e-")
-    return np.sqrt(omega_pe ** 2 + omega_ce ** 2)
+    return np.sqrt(omega_pe**2 + omega_ce**2)
 
 
 wuh_ = upper_hybrid_frequency

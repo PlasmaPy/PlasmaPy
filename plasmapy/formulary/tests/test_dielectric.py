@@ -18,7 +18,7 @@ from plasmapy.formulary.frequencies import gyrofrequency, plasma_frequency
 from plasmapy.formulary.speeds import thermal_speed
 
 B = 1.0 * u.T
-n = [1e18 / u.m ** 3]
+n = [1e18 / u.m**3]
 omega = 55e6 * u.rad / u.s
 
 single_species = ["e"]
@@ -33,7 +33,7 @@ class Test_ColdPlasmaPermittivity:
         analytical formulas
         """
         B = 1 * u.T
-        n = [1, 1] * 1 / u.m ** 3
+        n = [1, 1] * 1 / u.m**3
         omega = 1 * u.rad / u.s
         omega_ce = gyrofrequency(B, particle="e", signed=True)
         omega_pe = plasma_frequency(n[0], particle="e")
@@ -42,15 +42,15 @@ class Test_ColdPlasmaPermittivity:
 
         S_analytical = (
             1
-            - omega_pe ** 2 / (omega ** 2 - omega_ce ** 2)
-            - omega_pp ** 2 / (omega ** 2 - omega_cp ** 2)
+            - omega_pe**2 / (omega**2 - omega_ce**2)
+            - omega_pp**2 / (omega**2 - omega_cp**2)
         )
 
-        D_analytical = +omega_ce / omega * omega_pe ** 2 / (
-            omega ** 2 - omega_ce ** 2
-        ) + omega_cp / omega * omega_pp ** 2 / (omega ** 2 - omega_cp ** 2)
+        D_analytical = +omega_ce / omega * omega_pe**2 / (
+            omega**2 - omega_ce**2
+        ) + omega_cp / omega * omega_pp**2 / (omega**2 - omega_cp**2)
 
-        P_analytical = 1 - (omega_pe ** 2 + omega_pp ** 2) / omega ** 2
+        P_analytical = 1 - (omega_pe**2 + omega_pp**2) / omega**2
 
         species = ["e", "p"]
         S, D, P = tuple_result = cold_plasma_permittivity_SDP(B, species, n, omega)
@@ -76,7 +76,7 @@ class Test_ColdPlasmaPermittivity:
         """
         Test with three species (2 ions): D plasma with 5%H minority fraction
         """
-        n_3 = np.array([1, 1, 5 / 100]) * 1e19 / u.m ** 3
+        n_3 = np.array([1, 1, 5 / 100]) * 1e19 / u.m**3
         S, D, P = cold_plasma_permittivity_SDP(B, three_species, n_3, omega)
         assert np.isclose(S, -11753.3)
         assert np.isclose(D, 13408.99181054283)
@@ -104,7 +104,7 @@ class Test_ColdPlasmaPermittivity:
         As per @jhillairet at:
         https://github.com/PlasmaPy/PlasmaPy/issues/539#issuecomment-425337810
         """
-        ns = np.logspace(17, 19, 50) / u.m ** 3
+        ns = np.logspace(17, 19, 50) / u.m**3
         B0 = 4 * u.T
         omega_RF = 2 * np.pi * 50e6 * (u.rad / u.s)
 
@@ -126,7 +126,7 @@ class Test_permittivity_1D_Maxwellian:
         (
             {
                 "T": 30 * 11600 * u.K,
-                "n": 1e18 * u.cm ** -3,
+                "n": 1e18 * u.cm**-3,
                 "particle": "Ne",
                 "z_mean": 8 * u.dimensionless_unscaled,
                 "omega": 5.635e14 * 2 * np.pi * u.rad / u.s,
@@ -172,8 +172,7 @@ class Test_permittivity_1D_Maxwellian:
         kwargs["kWave"] = kwargs["omega"] / vth
 
         val = permittivity_1D_Maxwellian(**kwargs)
-        assert (
-            np.isclose(val, expected, rtol=1e-6, atol=0.0),
+        assert np.isclose(val, expected, rtol=1e-6, atol=0.0), (
             f"Permittivity value should be {expected} and not {val}.",
         )
 
@@ -189,8 +188,7 @@ class Test_permittivity_1D_Maxwellian:
         val = permittivity_1D_Maxwellian(**kwargs)
 
         expected += 1e-15
-        assert (
-            not np.isclose(val, expected, rtol=1e-16, atol=0.0),
+        assert not np.isclose(val, expected, rtol=1e-16, atol=0.0), (
             f"Permittivity value test gives {val} and should not be "
             f"equal to {expected}.",
         )
@@ -218,8 +216,7 @@ class Test_permittivity_1D_Maxwellian_lite:
             wp.value,
         )
 
-        assert (
-            np.isclose(val, val_lite, rtol=1e-6, atol=0.0),
+        assert np.isclose(val, val_lite, rtol=1e-6, atol=0.0), (
             "'permittivity_1D_Maxwellian' and 'permittivity_1D_Maxwellian_lite' "
             "do not agree.",
         )
