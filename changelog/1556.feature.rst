@@ -1,1 +1,6 @@
-Added an optional, enabled by default ``inplace`` flag to `~plasmapy.simulation.particle_integrators.boris_push` that allows the user to, instead of modifying the position and velocity arrays in place, return modified copies of them. This is useful for demonstration and testing purposes.
+Added ``inplace`` as a |parameter| to
+`~plasmapy.simulation.particle_integrators.boris_push` that defaults to
+`True`. When `False`,
+
+
+Added an optional, enabled by default ``inplace`` flag to  that allows the user to, instead of modifying the position and velocity arrays in place, return modified copies of them. This is useful for demonstration and testing purposes.
