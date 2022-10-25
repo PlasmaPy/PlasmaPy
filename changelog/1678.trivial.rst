@@ -1,0 +1,2 @@
+Re-enabled value testing for the ``quantum`` keyword argument in
+`~plasmapy.formulary.collisions.coupling_parameter`.

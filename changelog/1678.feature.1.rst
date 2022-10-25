@@ -1,1 +1,1 @@
-Reimplemented `~plasmapy.formulary.quantum.chemical_potential`
+Reimplemented `~plasmapy.formulary.quantum.chemical_potential`.
