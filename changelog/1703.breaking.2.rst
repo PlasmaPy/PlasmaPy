@@ -1,0 +1,6 @@
+Deprecated
+``plasmapy.formulary.collisions.fundamental_ion_collision_freq``
+and replaced it with the
+`~plasmapy.formulary.collisions.MaxwellianCollisionFrequencies.Maxwellian_avg_ii_collision_freq`
+attribute in
+`~plasmapy.formulary.collisions.MaxwellianCollisionFrequencies`.
