@@ -1,0 +1,3 @@
+Deprecated `plasmapy.formulary.collisions.collision_frequency` in favor
+of collision frequency classes in `plasmapy.formulary.collisions`. See
+also :pr:`1703`.

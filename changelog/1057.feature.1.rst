@@ -1,5 +1,6 @@
 Expanded the functionality of the |particle_input| decorator to convert
 |particle-like| and |particle-list-like| arguments into |Particle|,
-|CustomParticle|, and |ParticleList| objects. This change improves
-compatibility of functions in subpackages like `plasmapy.particles` and
-`plasmapy.formulary` with |CustomParticle| and |ParticleList| objects.
+|CustomParticle|, and |ParticleList| objects. This change is part of an
+ongoing effort to improve compatibility of functions in subpackages like
+`plasmapy.particles` and `plasmapy.formulary` with |CustomParticle| and
+|ParticleList| objects.
