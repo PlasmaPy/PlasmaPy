@@ -1,1 +1,1 @@
-Replaced `pkg_resources` with the more modern `importlib.metadata`.
+Replaced ``pkg_resources`` with the more modern `importlib.metadata`.
