@@ -1,3 +1,4 @@
 Deprecated `plasmapy.formulary.collisions.collision_frequency` in favor
-of the `~plasmapy.formulary.collisions.CollisionFrequencies.Lorentz_collision_frequency` attribute of
-`~plasmapy.formulary.collisions.CollisionFrequencies`.
+of the ``plasmapy.formulary.collisions.CollisionFrequencies.Lorentz_collision_frequency`` attribute of
+``plasmapy.formulary.collisions.CollisionFrequencies``. Superseded by
+:pr:`1703`.
