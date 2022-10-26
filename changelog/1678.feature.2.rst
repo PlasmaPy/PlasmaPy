@@ -1,1 +1,0 @@
-Reimplemented `~plasmapy.formulary.quantum._chemical_potential_interp`.
