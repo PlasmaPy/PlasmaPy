@@ -1,2 +1,3 @@
-Added a guideline to the coding guide specifying how |nan| values should
-be treated in functions that accept |array_like| or |Quantity| inputs.
+Added a guideline to the |coding guide| specifying how |nan| values
+should be treated in functions that accept |array_like| or |Quantity|
+inputs.

@@ -1,0 +1,2 @@
+Added `~plasmapy.formulary.densities.critical_density` to calculate the
+critical density of a plasma for a given frequency of radiation.
