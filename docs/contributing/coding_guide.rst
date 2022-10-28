@@ -202,7 +202,7 @@ the code is supposed to be doing.
   ``T_i``, and ``T_p``).
 
 * Only ASCII_ characters should be used in code that is part of the
-  public API_.
+  public :wikipedia:`API`.
 
 * Python allows alphanumeric Unicode characters to be used in object
   names (e.g., ``πλάσμα`` or ``φυσική``). These characters may be used
@@ -236,9 +236,10 @@ the code is supposed to be doing.
     should be :ref:`cited <citation-instructions>` in the appropriate
     docstring so that it appears in the |bibliography|.
 
-* To mark that an object is not part of PlasmaPy's public API_, begin
-  its name with a leading underscore (e.g., ``_private_variable``).
-  Private variables should not be included in ``__all__``.
+* To mark that an object is not part of PlasmaPy's public
+  :wikipedia:`API`, begin its name with a leading underscore (e.g.,
+  ``_private_variable``). Private variables should not be included in
+  ``__all__``.
 
 * Avoid single character variable names except for standard plasma
   physics symbols (e.g., ``B``) or as indices in ``for`` loops.

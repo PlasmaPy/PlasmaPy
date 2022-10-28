@@ -125,7 +125,6 @@
 .. Websites
 .. --------
 
-.. _API: https://en.wikipedia.org/wiki/API
 .. _Astropy docs: https://docs.astropy.org
 .. _Astropy: https://www.astropy.org
 .. _BibTeX format: https://www.bibtex.com/g/bibtex-format
