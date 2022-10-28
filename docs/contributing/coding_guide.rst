@@ -268,7 +268,7 @@ the code is supposed to be doing.
 
 .. tip::
 
-   Most `integrated development environments <ide>`_ (IDEs) have a
+   Most :wikipedia:`integrated development environments` (IDEs) have a
    built-in tool for simultaneously renaming a variable throughout a
    project. For example, a `rename refactoring in PyCharm
    <https://www.jetbrains.com/help/pycharm/rename-refactorings.html>`__
