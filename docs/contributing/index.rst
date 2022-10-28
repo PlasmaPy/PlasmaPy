@@ -31,10 +31,6 @@ that introduce plasma concepts using PlasmaPy. You can
 * Translate PlasmaPy's documentation into another language.
 * Organize events such as `Plasma Hack Week`_.
 
-Getting help
-============
-
-
 .. _impostor-syndrome-disclaimer:
 
 Impostor syndrome disclaimer
@@ -63,17 +59,12 @@ most valuable to the project as a whole, because you're coming to the
 project with fresh eyes, so you can see the errors and assumptions that
 seasoned contributors have glossed over.
 
-*This disclaimer_ was originally written by `Adrienne Lowe` for a `PyCon
-talk`_, and then adapted in the README files for MetPy_ and yt_before
-being adapted by PlasmaPy.*
+*This `imposter syndrome disclaimer`_ was originally written by
+`Adrienne Lowe`_ for a `PyCon talk`_. It was adapted in the README files
+for MetPy_ and yt_, before being adapted for PlasmaPy.*
 
-
-The `imposter syndrome disclaimer
-       <https://github.com/adriennefriend/imposter-syndrome-disclaimer>`_
-       was originally written by `Adrienne Lowe
-       <https://github.com/adriennefriend>`_ for a `PyCon talk
-       <https://www.youtube.com/watch?v=6Uj746j9Heo>`_.  It was adapted
-       in the README files for
-       `MetPy <https://github.com/Unidata/MetPy>`_ and `yt
-       <https://github.com/yt-project/yt>`_, and was then adapted by
-       PlasmaPy.
+.. _Adrienne Lowe: https://github.com/adriennefriend
+.. _imposter syndrome disclaimer: https://github.com/adriennefriend/imposter-syndrome-disclaimer
+.. _MetPy: https://unidata.github.io/MetPy/latest/index.html
+.. _PyCon talk: https://www.youtube.com/watch?v=6Uj746j9Heo
+.. _yt: https://yt-project.org/
