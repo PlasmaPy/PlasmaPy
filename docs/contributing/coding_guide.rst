@@ -730,8 +730,6 @@ Equations and Physical Formulae
   taking their first course in plasma physics while still being useful
   to experienced plasma physicists.
 
-.. _angular-frequencies:
-
 Angular Frequencies
 ===================
 
