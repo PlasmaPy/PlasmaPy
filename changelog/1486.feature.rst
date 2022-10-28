@@ -1,3 +1,3 @@
 Created `plasmapy.utils.data` to contain functionality for downloading data from
-`PlasmaPy's data repository`_. This module contains a new function
+`PlasmaPy's data repository`_. This module contains a new prototype function
 `plasmapy.utils.data.downloader.get_file` which downloads a file from the repository.
