@@ -258,7 +258,7 @@
 .. _`pyproject.toml`: https://github.com/PlasmaPy/PlasmaPy/blob/main/pyproject.toml
 .. |pyproject.toml| replace:: :file:`pyproject.toml`
 
-.. _`requirements`: https://github.com/PlasmaPy/PlasmaPy/blob/main/requirements
+.. _`requirements`: https://github.com/PlasmaPy/PlasmaPy/tree/main/requirements
 .. |requirements| replace:: :file:`requirements`
 
 .. _`requirements/build.txt`: https://github.com/PlasmaPy/PlasmaPy/blob/main/requirements/build.txt
