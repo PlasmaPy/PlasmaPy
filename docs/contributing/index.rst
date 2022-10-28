@@ -7,7 +7,7 @@ Contributor Guide
 .. toctree::
    :maxdepth: 2
 
-   ../CONTRIBUTING
+   getting_ready
    install_dev
    workflow
    coding_guide
