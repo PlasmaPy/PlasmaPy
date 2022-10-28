@@ -40,7 +40,7 @@ name = "PlasmaPy"
 filename = "CHANGELOG.rst"
 directory = "changelog/"
 title_format = "{name} v{version} ({project_date})"
-issue_format = ":pr:`{issue}`"
+issue_format = ":pr:`{issue}`"  # Despite the name mismatch, we use this for linking to PRs
 wrap = true
 
 [[tool.towncrier.type]]
