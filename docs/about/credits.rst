@@ -57,7 +57,7 @@ in parentheses are `ORCID author identifiers <https://orcid.org>`__.
 * :user:`Diego A. Diaz Riega <diego7319>`
 * :user:`Dominik Stańczak <StanczakDominik>` (:orcid:`0000-0001-6291-8843`)
 * :user:`Drew Leonard <SolarDrew>` (:orcid:`0000-0001-5270-7487`)
-* :user:`Elliot Johnson <etjohnson>`
+* :user:`Elliot Johnson <ejohnson-96>`
 * :user:`Erik Everson <rocco8773>` (:orcid:`0000-0001-6079-8307`)
 * :user:`Fionnlagh Mackenzie Dover <FinMacDov>` (:orcid:`0000-0002-1984-7303`)
 * :user:`flaixman`
