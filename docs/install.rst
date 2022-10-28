@@ -212,14 +212,14 @@ will be installed.
    fork a repository and create branches so that you may make
    contributions via pull requests.
 
-.. _Anaconda Navigator: https://docs.anaconda.com/navigator/install/
+.. _Anaconda Navigator: https://docs.anaconda.com/navigator/install
 .. _clone a repository using SSH: https://docs.github.com/en/get-started/getting-started-with-git/about-remote-repositories#cloning-with-ssh-urls
 .. _conda-forge: https://conda-forge.org
-.. _download Python: https://www.python.org/downloads/
+.. _download Python: https://www.python.org/downloads
 .. _from PyPI: https://pypi.org/project/plasmapy
 .. _from Zenodo: https://doi.org/10.5281/zenodo.1436011
 .. _improving Conda performance: https://docs.conda.io/projects/conda/en/latest/user-guide/concepts/conda-performance.html#improving-conda-performance
-.. _installing Anaconda Navigator: https://docs.anaconda.com/anaconda/navigator/install/
+.. _installing Anaconda Navigator: https://docs.anaconda.com/navigator/install
 .. _installing Conda: https://docs.conda.io/projects/conda/en/latest/user-guide/install/index.html
 .. _installing packages: https://packaging.python.org/en/latest/tutorials/installing-packages/#installing-from-vcs
 .. _managing packages: https://docs.anaconda.com/navigator/tutorials/manage-packages/#installing-a-package
