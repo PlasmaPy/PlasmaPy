@@ -212,7 +212,7 @@ will be installed.
    fork a repository and create branches so that you may make
    contributions via pull requests.
 
-.. _Anaconda Navigator: https://www.anaconda.com/products/distribution
+.. _Anaconda Navigator: https://docs.anaconda.com/navigator/install/
 .. _clone a repository using SSH: https://docs.github.com/en/get-started/getting-started-with-git/about-remote-repositories#cloning-with-ssh-urls
 .. _conda-forge: https://conda-forge.org
 .. _download Python: https://www.python.org/downloads/
@@ -222,7 +222,7 @@ will be installed.
 .. _installing Anaconda Navigator: https://docs.anaconda.com/anaconda/navigator/install/
 .. _installing Conda: https://docs.conda.io/projects/conda/en/latest/user-guide/install/index.html
 .. _installing packages: https://packaging.python.org/en/latest/tutorials/installing-packages/#installing-from-vcs
-.. _managing packages: https://docs.anaconda.com/anaconda/navigator/tutorials/manage-packages/#installing-a-package
+.. _managing packages: https://docs.anaconda.com/navigator/tutorials/manage-packages/#installing-a-package
 .. _miniconda: https://docs.conda.io/en/latest/miniconda.html
 .. _releases: https://github.com/PlasmaPy/PlasmaPy/releases
 .. _ZIP: https://en.wikipedia.org/wiki/ZIP_(file_format)
