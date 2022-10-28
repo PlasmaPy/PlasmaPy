@@ -268,7 +268,7 @@ the code is supposed to be doing.
 
 .. tip::
 
-   Most `integrated development environments <IDE>`_ (IDEs) have a
+   Most `integrated development environments <ide>`_ (IDEs) have a
    built-in tool for simultaneously renaming a variable throughout a
    project. For example, a `rename refactoring in PyCharm
    <https://www.jetbrains.com/help/pycharm/rename-refactorings.html>`__
@@ -450,7 +450,6 @@ review the code and offer constructive suggestions.  You can continue
 to edit the pull request by changing the corresponding branch on your
 PlasmaPy fork on GitHub.  After a pull request is merged into the
 code, you may delete the branch you created for that pull request.
-
 
 Comments
 ========
@@ -730,6 +729,8 @@ Equations and Physical Formulae
   quantities in ways that are understandable to students who are
   taking their first course in plasma physics while still being useful
   to experienced plasma physicists.
+
+.. _angular-frequencies:
 
 Angular Frequencies
 ===================
