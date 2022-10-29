@@ -269,9 +269,9 @@ the code is supposed to be doing.
 
 .. tip::
 
-   Most :wikipedia:`integrated development environments` (IDEs) have a
-   built-in tool for simultaneously renaming a variable throughout a
-   project. For example, a `rename refactoring in PyCharm
+   It is common for an :wikipedia:`integrated development environment`
+   (IDE) to have a built-in tool for simultaneously renaming a variable
+   throughout a project. For example, a `rename refactoring in PyCharm
    <https://www.jetbrains.com/help/pycharm/rename-refactorings.html>`__
    can be done with :kbd:`Shift+F6` on Windows or Linux, and :kbd:`⇧F6`
    or :kbd:`⌥⌘R` on macOS.
@@ -289,7 +289,7 @@ Imports
      import matplotlib.pyplot as plt
      import pandas as pd
 
-* PlasmaPy uses isort_ to sort import statements via a |pre-commit|_
+* PlasmaPy uses isort_ to organize import statements via a |pre-commit|_
   hook.
 
 * For infrequently used objects, import the package, subpackage, or
