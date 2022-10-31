@@ -15,8 +15,8 @@ abstract: >-
   PlasmaPy is an open source Python package for plasma research and
   education.
 contact:
-- The PlasmaPy Team
-- team@plasmapy.org
+  - email: team@plasmapy.org
+    name: The PlasmaPy Team
 keywords:
 - plasma
 - physics
