@@ -1,0 +1,6 @@
+Deleted :file:`codemeta.json`, which recorded project metadata using
+the `CodeMeta <https://codemeta.github.io>`__ metadata
+schema. Instead, project metadata is now stored in
+:file:`CITATION.cff` which uses the `Citation File Format
+<https://citation-file-format.github.io>`__ and was created in
+:pr:`1640`. See also :pr:`676` and :issue:`794`.
