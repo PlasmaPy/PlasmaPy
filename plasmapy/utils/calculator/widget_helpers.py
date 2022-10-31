@@ -257,17 +257,17 @@ class _FloatBox(_GenericWidget):
     property_name: `str`
         Name of the property the widget is associated with.
 
-    minval: `float`
+    min_: `float`
         Minimum value the widget can take
 
-    maxval: `float`
+    max_: `float`
         Maximum value the widget can take
     """
 
-    def __init__(self, property_name, minval=-1e50, maxval=1e50):
+    def __init__(self, property_name, min_=-1e50, max_=1e50):
         super().__init__(property_name)
-        self.minval = minval
-        self.maxval = maxval
+        self.min_ = min_
+        self.max_ = max_
 
     def create_widget(self, style={"description_width": "initial"}):
         """
@@ -276,8 +276,8 @@ class _FloatBox(_GenericWidget):
         """
         self.widget = widgets.BoundedFloatText(
             name=self.property_name,
-            min=self.minval,
-            max=self.maxval,
+            min=self.min_,
+            max=self.max_,
             value=0,
             step=0.1,
             style=style,
