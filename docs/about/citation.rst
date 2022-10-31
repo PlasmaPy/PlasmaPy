@@ -39,6 +39,11 @@ on, including but not limited to
 `NumPy <https://numpy.org/citing-numpy>`__, and
 `SciPy <https://scipy.org/citing-scipy>`__.
 
+.. note::
+
+   Project metadata is stored in |CITATION.cff|_, which uses the
+   `Citation File Format`_.
+
 .. important::
 
    A development version of PlasmaPy should not be cited or used in
