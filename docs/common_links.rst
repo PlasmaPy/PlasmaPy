@@ -125,7 +125,6 @@
 .. Websites
 .. --------
 
-.. _API: https://en.wikipedia.org/wiki/API
 .. _Astropy docs: https://docs.astropy.org
 .. _Astropy: https://www.astropy.org
 .. _BibTeX format: https://www.bibtex.com/g/bibtex-format
@@ -147,7 +146,6 @@
 .. _Gitter bridge: https://gitter.im/PlasmaPy/Lobby
 .. _Graphviz: https://graphviz.org
 .. _hypothesis: https://hypothesis.readthedocs.io
-.. _ide: https://en.wikipedia.org/wiki/Integrated_development_environment
 .. _intersphinx: https://www.sphinx-doc.org/en/master/usage/extensions/intersphinx.html
 .. _isort: https://pycqa.github.io/isort
 .. _Jinja: https://jinja.palletsprojects.com
@@ -258,7 +256,7 @@
 .. _`pyproject.toml`: https://github.com/PlasmaPy/PlasmaPy/blob/main/pyproject.toml
 .. |pyproject.toml| replace:: :file:`pyproject.toml`
 
-.. _`requirements`: https://github.com/PlasmaPy/PlasmaPy/blob/main/requirements
+.. _`requirements`: https://github.com/PlasmaPy/PlasmaPy/tree/main/requirements
 .. |requirements| replace:: :file:`requirements`
 
 .. _`requirements/build.txt`: https://github.com/PlasmaPy/PlasmaPy/blob/main/requirements/build.txt

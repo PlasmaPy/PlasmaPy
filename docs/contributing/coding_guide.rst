@@ -202,7 +202,7 @@ the code is supposed to be doing.
   ``T_i``, and ``T_p``).
 
 * Only ASCII_ characters should be used in code that is part of the
-  public API_.
+  public :wikipedia:`API`.
 
 * Python allows alphanumeric Unicode characters to be used in object
   names (e.g., ``πλάσμα`` or ``φυσική``). These characters may be used
@@ -236,9 +236,10 @@ the code is supposed to be doing.
     should be :ref:`cited <citation-instructions>` in the appropriate
     docstring so that it appears in the |bibliography|.
 
-* To mark that an object is not part of PlasmaPy's public API_, begin
-  its name with a leading underscore (e.g., ``_private_variable``).
-  Private variables should not be included in ``__all__``.
+* To mark that an object is not part of PlasmaPy's public
+  :wikipedia:`API`, begin its name with a leading underscore (e.g.,
+  ``_private_variable``). Private variables should not be included in
+  ``__all__``.
 
 * Avoid single character variable names except for standard plasma
   physics symbols (e.g., ``B``) or as indices in ``for`` loops.
@@ -268,9 +269,9 @@ the code is supposed to be doing.
 
 .. tip::
 
-   Most `integrated development environments <IDE>`_ (IDEs) have a
-   built-in tool for simultaneously renaming a variable throughout a
-   project. For example, a `rename refactoring in PyCharm
+   It is common for an :wikipedia:`integrated development environment`
+   (IDE) to have a built-in tool for simultaneously renaming a variable
+   throughout a project. For example, a `rename refactoring in PyCharm
    <https://www.jetbrains.com/help/pycharm/rename-refactorings.html>`__
    can be done with :kbd:`Shift+F6` on Windows or Linux, and :kbd:`⇧F6`
    or :kbd:`⌥⌘R` on macOS.
@@ -288,7 +289,7 @@ Imports
      import matplotlib.pyplot as plt
      import pandas as pd
 
-* PlasmaPy uses isort_ to sort import statements via a |pre-commit|_
+* PlasmaPy uses isort_ to organize import statements via a |pre-commit|_
   hook.
 
 * For infrequently used objects, import the package, subpackage, or
@@ -450,7 +451,6 @@ review the code and offer constructive suggestions.  You can continue
 to edit the pull request by changing the corresponding branch on your
 PlasmaPy fork on GitHub.  After a pull request is merged into the
 code, you may delete the branch you created for that pull request.
-
 
 Comments
 ========
