@@ -1,0 +1,2 @@
+Refactor of `~plasmapy.formulary.collisions` to split the module
+into sub packages and have the ability to implement new functionality
