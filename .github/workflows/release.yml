@@ -10,6 +10,7 @@ on:
 
 jobs:
   tests:
+    name: CI
     uses: ./.github/workflows/testing.yml  # use the callable tests job to run tests
   deploy:
     name: Deploy
