@@ -2,7 +2,10 @@ import astropy.units as u
 import numpy as np
 import pytest
 
-from plasmapy.formulary.collisions.dimensionless import coupling_parameter, Knudsen_number
+from plasmapy.formulary.collisions.dimensionless import (
+    coupling_parameter,
+    Knudsen_number,
+)
 from plasmapy.utils import exceptions
 from plasmapy.utils.exceptions import CouplingWarning
 from plasmapy.utils.pytest_helpers import assert_can_handle_nparray
@@ -13,7 +16,7 @@ class Test_coupling_parameter:
     def setup_class(cls):
         """initializing parameters for tests"""
         cls.T = 11604 * u.K
-        cls.n_e = 1e21 * u.cm ** -3
+        cls.n_e = 1e21 * u.cm**-3
         cls.particles = ("e", "p")
         cls.z_mean = 2.5 * u.dimensionless_unscaled
         cls.V = 1e4 * u.km / u.s

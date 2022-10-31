@@ -14,6 +14,7 @@ from plasmapy.utils.decorators import validate_quantities
 
 __all__ = ["impact_parameter_perp", "impact_parameter", "mean_free_path"]
 
+
 @validate_quantities(
     T={"can_be_negative": False, "equivalencies": u.temperature_energy()}
 )

@@ -5,15 +5,19 @@ from astropy.constants.si import e, eps0, k_B
 from numbers import Real
 
 from plasmapy import particles
-from plasmapy.formulary.collisions import lengths
-from plasmapy.formulary.collisions import misc
+from plasmapy.formulary.collisions import lengths, misc
 from plasmapy.formulary.mathematics import Fermi_integral
-from plasmapy.formulary.quantum import chemical_potential, \
-    thermal_deBroglie_wavelength, Wigner_Seitz_radius
+from plasmapy.formulary.quantum import (
+    chemical_potential,
+    thermal_deBroglie_wavelength,
+    Wigner_Seitz_radius,
+)
 from plasmapy.utils.decorators import validate_quantities
 
-__all__ = ["coupling_parameter", "Knudsen_number", ]
-
+__all__ = [
+    "coupling_parameter",
+    "Knudsen_number",
+]
 
 
 @validate_quantities(
@@ -162,7 +166,9 @@ def coupling_parameter(
     >>> coupling_parameter(T, n, species, V=1e6 * u.m / u.s)
     <Quantity 5.8033...e-05>
     """
-    T, masses, charges, reduced_mass, V = misc._process_inputs(T=T, species=species, V=V)
+    T, masses, charges, reduced_mass, V = misc._process_inputs(
+        T=T, species=species, V=V
+    )
 
     if np.isnan(z_mean):
         # using mean charge to get average ion density.

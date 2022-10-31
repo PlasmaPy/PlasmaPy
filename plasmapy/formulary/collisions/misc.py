@@ -2,19 +2,21 @@ import astropy.units as u
 import numpy as np
 
 from astropy.constants.si import e
-
 from numbers import Real
 
-from plasmapy import particles
-from plasmapy import utils
-from plasmapy.formulary.speeds import thermal_speed
+from plasmapy import particles, utils
 from plasmapy.formulary.collisions import frequencies
+from plasmapy.formulary.speeds import thermal_speed
 from plasmapy.utils.decorators import validate_quantities
 from plasmapy.utils.decorators.checks import _check_relativistic
 
+__all__ = [
+    "_process_inputs",
+    "_replace_nan_velocity_with_thermal_velocity",
+    "mobility",
+    "Spitzer_resistivity",
+]
 
-__all__ = ["_process_inputs", "_replace_nan_velocity_with_thermal_velocity",
-           "mobility", "Spitzer_resistivity"]
 
 @validate_quantities(T={"equivalencies": u.temperature_energy()})
 @particles.particle_input
@@ -68,8 +70,6 @@ def _replace_nan_velocity_with_thermal_velocity(
         V[np.isnan(V)] = thermal_speed(T, species, mass=m)
 
     return V
-
-
 
 
 @validate_quantities(
@@ -198,7 +198,6 @@ def mobility(
     T, masses, charges, reduced_mass, V = _process_inputs(T=T, species=species, V=V)
     z_val = (charges[0] + charges[1]) / 2 if np.isnan(z_mean) else z_mean * e
     return z_val / (reduced_mass * freq)
-
 
 
 @validate_quantities(

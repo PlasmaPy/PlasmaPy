@@ -39,7 +39,12 @@ These include:
 * `~plasmapy.collisions.misc.mobility`
 """
 
-__all__ = ["Coulomb_number", "Coulomb_age", "Coulomb_logarithm", "Coulomb_cross_section"]
+__all__ = [
+    "Coulomb_number",
+    "Coulomb_age",
+    "Coulomb_logarithm",
+    "Coulomb_cross_section",
+]
 
 import astropy.units as u
 import numpy as np
@@ -52,12 +57,8 @@ from plasmapy.formulary.collisions.lengths import impact_parameter
 from plasmapy.utils.decorators import validate_quantities
 
 
-@validate_quantities(
-
-)
-def Coulomb_number(
-
-):
+@validate_quantities()
+def Coulomb_number():
     r"""
     Calculate the Coulomb number presented in :cite:t:`verscharen:2019`
 
@@ -68,12 +69,8 @@ def Coulomb_number(
     return
 
 
-@validate_quantities(
-
-)
-def Coulomb_age(
-
-):
+@validate_quantities()
+def Coulomb_age():
     r"""
     Calculate the Coulomb age presented in :cite:t:`verscharen:2019`
 
@@ -90,12 +87,12 @@ def Coulomb_age(
 )
 @particles.particle_input
 def Coulomb_logarithm(
-        T: u.K,
-        n_e: u.m ** -3,
-        species: (particles.Particle, particles.Particle),
-        z_mean: Real = np.nan,
-        V: u.m / u.s = np.nan * u.m / u.s,
-        method="classical",
+    T: u.K,
+    n_e: u.m**-3,
+    species: (particles.Particle, particles.Particle),
+    z_mean: Real = np.nan,
+    V: u.m / u.s = np.nan * u.m / u.s,
+    method="classical",
 ):
     r"""
     Compute the Coulomb logarithm.
@@ -481,12 +478,12 @@ def Coulomb_logarithm(
     )
 
     if method in (
-            "classical",
-            "ls",
-            "ls_min_interp",
-            "GMS-1",
-            "ls_full_interp",
-            "GMS-2",
+        "classical",
+        "ls",
+        "ls_min_interp",
+        "GMS-1",
+        "ls_full_interp",
+        "GMS-2",
     ):
         ln_Lambda = np.log(bmax / bmin)
     elif method in ("ls_clamp_mininterp", "GMS-3"):
@@ -497,14 +494,14 @@ def Coulomb_logarithm(
             else:
                 ln_Lambda[ln_Lambda < 2] = 2 * u.dimensionless_unscaled
     elif method in (
-            "hls_min_interp",
-            "GMS-4",
-            "hls_max_interp",
-            "GMS-5",
-            "hls_full_interp",
-            "GMS-6",
+        "hls_min_interp",
+        "GMS-4",
+        "hls_max_interp",
+        "GMS-5",
+        "hls_full_interp",
+        "GMS-6",
     ):
-        ln_Lambda = 0.5 * np.log(1 + bmax ** 2 / bmin ** 2)
+        ln_Lambda = 0.5 * np.log(1 + bmax**2 / bmin**2)
     else:
         raise ValueError(
             'Unknown method. Choose from "classical", "ls_min_interp", '
@@ -543,7 +540,7 @@ def Coulomb_logarithm(
 
 
 @validate_quantities(impact_param={"can_be_negative": False})
-def Coulomb_cross_section(impact_param: u.m) -> u.m ** 2:
+def Coulomb_cross_section(impact_param: u.m) -> u.m**2:
     r"""
     Cross-section for a large angle Coulomb collision.
 

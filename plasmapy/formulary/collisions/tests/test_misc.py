@@ -2,8 +2,7 @@ import astropy.units as u
 import numpy as np
 import pytest
 
-from plasmapy.formulary.collisions.misc import Spitzer_resistivity, mobility
-
+from plasmapy.formulary.collisions.misc import mobility, Spitzer_resistivity
 from plasmapy.utils import exceptions
 from plasmapy.utils.exceptions import CouplingWarning
 from plasmapy.utils.pytest_helpers import assert_can_handle_nparray
@@ -14,7 +13,7 @@ class Test_Spitzer_resistivity:
     def setup_class(cls):
         """initializing parameters for tests"""
         cls.T = 11604 * u.K
-        cls.n = 1e12 * u.cm ** -3
+        cls.n = 1e12 * u.cm**-3
         cls.particles = ("e", "p")
         cls.z_mean = 2.5 * u.dimensionless_unscaled
         cls.V = 1e4 * u.km / u.s
@@ -92,7 +91,7 @@ class Test_mobility:
     def setup_class(cls):
         """initializing parameters for tests"""
         cls.T = 11604 * u.K
-        cls.n_e = 1e17 * u.cm ** -3
+        cls.n_e = 1e17 * u.cm**-3
         cls.particles = ("e", "p")
         cls.z_mean = 2.5 * u.dimensionless_unscaled
         cls.V = 1e4 * u.km / u.s

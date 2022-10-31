@@ -4,12 +4,12 @@ import pytest
 from astropy import units as u
 
 from plasmapy.formulary.collisions import coulomb, lengths
+from plasmapy.utils import exceptions
 
 # from plasmapy.formulary.collisions.coulomb import Coulomb_logarithm
 # from plasmapy.formulary.collisions.lengths import impact_parameter, impact_parameter_perp, mean_free_path
 from plasmapy.utils.exceptions import CouplingWarning
 from plasmapy.utils.pytest_helpers import assert_can_handle_nparray
-from plasmapy.utils import exceptions
 
 
 class Test_impact_parameter_perp:
@@ -30,7 +30,9 @@ class Test_impact_parameter_perp:
         """
         Test for known value.
         """
-        methodVal = lengths.impact_parameter_perp(self.T, self.particles, V=np.nan * u.m / u.s)
+        methodVal = lengths.impact_parameter_perp(
+            self.T, self.particles, V=np.nan * u.m / u.s
+        )
         testTrue = np.isclose(self.True1, methodVal.si.value, rtol=1e-1, atol=0.0)
         errStr = (
             "Distance of closest approach for 90 degree Coulomb "
@@ -45,7 +47,9 @@ class Test_impact_parameter_perp:
         value comparison by some quantity close to numerical error.
         """
         fail1 = self.True1 + 1e-15
-        methodVal = lengths.impact_parameter_perp(self.T, self.particles, V=np.nan * u.m / u.s)
+        methodVal = lengths.impact_parameter_perp(
+            self.T, self.particles, V=np.nan * u.m / u.s
+        )
         testTrue = not np.isclose(methodVal.si.value, fail1, rtol=1e-16, atol=0.0)
         errStr = (
             f"impact_parameter_perp value test gives {methodVal} and "
@@ -254,7 +258,6 @@ class Test_mean_free_path:
     @pytest.mark.parametrize("insert_all_nans", [[], ["V"]])
     def test_handle_nparrays(self, insert_some_nans, insert_all_nans):
         """Test for ability to handle numpy array quantities"""
-        assert_can_handle_nparray(lengths.mean_free_path, insert_some_nans, insert_all_nans, {})
-
-
-
+        assert_can_handle_nparray(
+            lengths.mean_free_path, insert_some_nans, insert_all_nans, {}
+        )

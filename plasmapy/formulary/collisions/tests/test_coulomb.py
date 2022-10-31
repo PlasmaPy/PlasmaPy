@@ -19,10 +19,10 @@ class Test_Coulomb_logarithm:
         """initializing parameters for tests"""
         cls.temperature1 = 10 * 11604 * u.K
         cls.T_arr = np.array([1, 2]) * u.eV
-        cls.density1 = 1e20 * u.cm ** -3
-        cls.n_arr = np.array([1e20, 2e20]) * u.cm ** -3
+        cls.density1 = 1e20 * u.cm**-3
+        cls.n_arr = np.array([1e20, 2e20]) * u.cm**-3
         cls.temperature2 = 1 * 11604 * u.K
-        cls.density2 = 1e23 * u.cm ** -3
+        cls.density2 = 1e23 * u.cm**-3
         cls.z_mean = 2.5 * u.dimensionless_unscaled
         cls.particles = ("e", "p")
         cls.ls_min_interp = 3.4014290066940966
@@ -171,7 +171,7 @@ class Test_Coulomb_logarithm:
         """
         T = 0.2 * u.eV
         T = T.to(u.K, equivalencies=u.temperature_energy())
-        n = 1e15 * u.m ** -3
+        n = 1e15 * u.m**-3
         # factor of np.log(2) corrects for different definitions of thermal
         # velocity. Chen uses v**2 = k * T / m  whereas we use
         # v ** 2 = 2 * k * T / m
@@ -192,7 +192,7 @@ class Test_Coulomb_logarithm:
         """
         T = 2 * u.eV
         T = T.to(u.K, equivalencies=u.temperature_energy())
-        n = 1e17 * u.m ** -3
+        n = 1e17 * u.m**-3
         # factor of np.log(2) corrects for different definitions of thermal
         # velocity. Chen uses v**2 = k * T / m  whereas we use
         # v ** 2 = 2 * k * T / m
@@ -213,7 +213,7 @@ class Test_Coulomb_logarithm:
         """
         T = 100 * u.eV
         T = T.to(u.K, equivalencies=u.temperature_energy())
-        n = 1e19 * u.m ** -3
+        n = 1e19 * u.m**-3
         # factor of np.log(2) corrects for different definitions of thermal
         # velocity. Chen uses v**2 = k * T / m  whereas we use
         # v ** 2 = 2 * k * T / m
@@ -234,7 +234,7 @@ class Test_Coulomb_logarithm:
         """
         T = 1e4 * u.eV
         T = T.to(u.K, equivalencies=u.temperature_energy())
-        n = 1e21 * u.m ** -3
+        n = 1e21 * u.m**-3
         # factor of np.log(2) corrects for different definitions of thermal
         # velocity. Chen uses v**2 = k * T / m  whereas we use
         # v ** 2 = 2 * k * T / m
@@ -256,7 +256,7 @@ class Test_Coulomb_logarithm:
         """
         T = 1e3 * u.eV
         T = T.to(u.K, equivalencies=u.temperature_energy())
-        n = 1e27 * u.m ** -3
+        n = 1e27 * u.m**-3
         # factor of np.log(2) corrects for different definitions of thermal
         # velocity. Chen uses v**2 = k * T / m  whereas we use
         # v ** 2 = 2 * k * T / m
@@ -518,7 +518,7 @@ class Test_Coulomb_logarithm:
         with pytest.warns(exceptions.PhysicsWarning, match="strong coupling effects"):
             methodVal = Coulomb_logarithm(
                 10 * 1160 * u.K,
-                (1e23 * u.cm ** -3, 1e20 * u.cm ** -3),
+                (1e23 * u.cm**-3, 1e20 * u.cm**-3),
                 self.particles,
                 z_mean=self.z_mean,
                 V=np.nan * u.m / u.s,
@@ -543,7 +543,7 @@ class Test_Coulomb_logarithm:
         with pytest.warns(exceptions.PhysicsWarning, match="strong coupling effects"):
             methodVal = Coulomb_logarithm(
                 10 * 1160 * u.K,
-                (1e23 * u.cm ** -3, 1e20 * u.cm ** -3),
+                (1e23 * u.cm**-3, 1e20 * u.cm**-3),
                 self.particles,
                 z_mean=self.z_mean,
                 V=np.nan * u.m / u.s,
@@ -898,12 +898,12 @@ class Test_Coulomb_logarithm:
     def test_relativity_warn(self):
         """Tests whether relativity warning is raised at high velocity."""
         with pytest.warns(exceptions.RelativityWarning):
-            Coulomb_logarithm(1e5 * u.K, 1 * u.m ** -3, ("e", "p"), V=0.9 * c)
+            Coulomb_logarithm(1e5 * u.K, 1 * u.m**-3, ("e", "p"), V=0.9 * c)
 
     def test_relativity_error(self):
         """Tests whether relativity error is raised at light speed."""
         with pytest.raises(exceptions.RelativityError):
-            Coulomb_logarithm(1e5 * u.K, 1 * u.m ** -3, ("e", "p"), V=1.1 * c)
+            Coulomb_logarithm(1e5 * u.K, 1 * u.m**-3, ("e", "p"), V=1.1 * c)
 
     def test_unit_conversion_error(self):
         """
@@ -912,7 +912,7 @@ class Test_Coulomb_logarithm:
         """
         with pytest.raises(u.UnitTypeError):
             Coulomb_logarithm(
-                1e5 * u.g, 1 * u.m ** -3, ("e", "p"), V=29979245 * u.m / u.s
+                1e5 * u.g, 1 * u.m**-3, ("e", "p"), V=29979245 * u.m / u.s
             )
 
     def test_single_particle_error(self):
@@ -920,7 +920,7 @@ class Test_Coulomb_logarithm:
         Tests whether an error is raised if only a single particle is given.
         """
         with pytest.raises(ValueError):
-            Coulomb_logarithm(1 * u.K, 5 * u.m ** -3, "e")
+            Coulomb_logarithm(1 * u.K, 5 * u.m**-3, "e")
 
     def test_invalid_particle_error(self):
         """
@@ -928,13 +928,12 @@ class Test_Coulomb_logarithm:
         is given.
         """
         with pytest.raises(plasmapy.particles.exceptions.InvalidParticleError):
-            Coulomb_logarithm(1 * u.K, 5 * u.m ** -3, ("e", "g"))
+            Coulomb_logarithm(1 * u.K, 5 * u.m**-3, ("e", "g"))
 
-    n_e = np.array([1e9, 1e9, 1e24]) * u.cm ** -3
+    n_e = np.array([1e9, 1e9, 1e24]) * u.cm**-3
     T = np.array([1e2, 1e7, 1e8]) * u.K
     Lambda = np.array([5.97, 21.66, 6.69])
     particles = ("e", "p")
 
 
-
-#class Test_Coulomb_cross_section:
+# class Test_Coulomb_cross_section:

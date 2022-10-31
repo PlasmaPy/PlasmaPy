@@ -4,21 +4,28 @@ import scipy.integrate
 import scipy.misc
 
 from astropy.constants.si import e, k_B, m_e
-
+from functools import cached_property
 from numbers import Real
 
-from functools import cached_property
 from plasmapy import particles
-from plasmapy.formulary.collisions import coulomb #import Coulomb_logarithm, Coulomb_cross_section
-from plasmapy.formulary.collisions import lengths #import impact_parameter_perp
-from plasmapy.formulary.collisions import misc #import _process_inputs, _replace_nan_velocity_with_thermal_velocity
+from plasmapy.formulary.collisions import (
+    coulomb,  # import Coulomb_logarithm, Coulomb_cross_section
+)
+from plasmapy.formulary.collisions import lengths  # import impact_parameter_perp
+from plasmapy.formulary.collisions import (
+    misc,  # import _process_inputs, _replace_nan_velocity_with_thermal_velocity
+)
 from plasmapy.formulary.speeds import thermal_speed
 from plasmapy.utils.decorators import deprecated, validate_quantities
 from plasmapy.utils.exceptions import PhysicsError, PlasmaPyFutureWarning
 
-
-__all__ = ["SingleParticleCollisionFrequencies", "MaxwellianCollisionFrequencies",
-           "collision_frequency", "fundamental_electron_collision_freq", "fundamental_ion_collision_freq"]
+__all__ = [
+    "SingleParticleCollisionFrequencies",
+    "MaxwellianCollisionFrequencies",
+    "collision_frequency",
+    "fundamental_electron_collision_freq",
+    "fundamental_ion_collision_freq",
+]
 
 
 class SingleParticleCollisionFrequencies:
@@ -670,7 +677,9 @@ def collision_frequency(
         ),
     )
 
-    T, masses, charges, reduced_mass, V_r = misc._process_inputs(T=T, species=species, V=V)
+    T, masses, charges, reduced_mass, V_r = misc._process_inputs(
+        T=T, species=species, V=V
+    )
     # using a more descriptive name for the thermal velocity using
     # reduced mass
     V_reduced = V_r
@@ -691,7 +700,11 @@ def collision_frequency(
         V = misc._replace_nan_velocity_with_thermal_velocity(V, T, m_e)
         # need to also correct mass in collision radius from reduced
         # mass to electron mass
-        bPerp = lengths.impact_parameter_perp(T=T, species=species, V=V) * reduced_mass / m_e
+        bPerp = (
+            lengths.impact_parameter_perp(T=T, species=species, V=V)
+            * reduced_mass
+            / m_e
+        )
         # !!! may also need to correct Coulomb logarithm to be
         # electron-electron version !!!
     else:
@@ -714,13 +727,13 @@ def collision_frequency(
     n_e={"can_be_negative": False},
 )
 def fundamental_electron_collision_freq(
-        T_e: u.K,
-        n_e: u.m ** -3,
-        ion,
-        coulomb_log=None,
-        V=None,
-        coulomb_log_method="classical",
-) -> u.s ** -1:
+    T_e: u.K,
+    n_e: u.m**-3,
+    ion,
+    coulomb_log=None,
+    V=None,
+    coulomb_log_method="classical",
+) -> u.s**-1:
     r"""
     Average momentum relaxation rate for a slowly flowing Maxwellian
     distribution of electrons.
@@ -861,13 +874,13 @@ def fundamental_electron_collision_freq(
     n_i={"can_be_negative": False},
 )
 def fundamental_ion_collision_freq(
-        T_i: u.K,
-        n_i: u.m ** -3,
-        ion,
-        coulomb_log=None,
-        V=None,
-        coulomb_log_method="classical",
-) -> u.s ** -1:
+    T_i: u.K,
+    n_i: u.m**-3,
+    ion,
+    coulomb_log=None,
+    V=None,
+    coulomb_log_method="classical",
+) -> u.s**-1:
     r"""
     Average momentum relaxation rate for a slowly flowing Maxwellian
     distribution of ions.
@@ -1010,4 +1023,3 @@ def fundamental_ion_collision_freq(
         return coeff * nu_mod
     else:
         return coeff * nu
-
