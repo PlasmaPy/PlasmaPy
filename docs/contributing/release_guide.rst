@@ -47,8 +47,7 @@ Update metadata
 ===============
 
 * Begin an upload to Zenodo_ for the new release using the
-  ``team@plasmapy.org`` login, and reserve a digital object identifier
-  (DOI).
+  ``team@plasmapy.org`` login, and reserve a DOI_.
 
 * Open a pull request to update :file:`docs/about/citation.rst` to
   reflect the new version, and include the reserved DOI.
@@ -57,10 +56,9 @@ Update metadata
   :file:`docs/about/credits.rst`. Missing ORCID_ identifiers may be
   added.
 
-* Open a pull request to update :file:`codemeta.json` and
-  :file:`CITATION.cff`. Update the author list, version, and other
-  metadata, as needed. Update the ``"identifier"`` tag with the DOI for
-  the new release.
+* Open a pull request to update |CITATION.cff|_. Update the author list,
+  version, and other metadata, as needed. Update the DOI for the new
+  release.
 
 * Open a pull request to update :file:`.mailmap`.
 
@@ -104,7 +102,7 @@ Perform code quality checks
   .. tip::
 
      Use ``linkcheck_allowed_redirects`` in :file:`docs/conf.py` to
-     specify allowed redirects. For example, DOI links are always
+     specify allowed redirects. For example, DOI_ links are always
      redirects, but are significantly more persistent than hyperlinks.
 
 * Make sure that all tests are passing.
@@ -287,7 +285,7 @@ Post-release
       either changed dependencies or the simple import tests there.
 
 * Upload the release to the Zenodo_ record corresponding to the reserved
-  DOI, making the metadata consistent with :file:`codemeta.json`.
+  DOI, making the metadata consistent with |CITATION.cff|_.
 
 Advertise the release
 =====================
