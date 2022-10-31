@@ -9,13 +9,9 @@ on:
         default: v0.9.0
 
 jobs:
-  tests:
-    name: CI
-    uses: ./.github/workflows/testing.yml  # use the callable tests job to run tests
   deploy:
     name: Deploy
     runs-on: ubuntu-latest
-    needs: [CI]
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
