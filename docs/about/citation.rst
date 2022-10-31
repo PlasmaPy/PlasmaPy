@@ -41,8 +41,8 @@ on, including but not limited to
 
 .. note::
 
-   Project metadata is stored in |CITATION.cff|_, which uses the
-   `Citation File Format`_.
+   Citation information and project metadata are stored in
+   |CITATION.cff|_, which uses the `Citation File Format`_.
 
 .. important::
 
