@@ -9,8 +9,6 @@ on:
         default: v0.9.0
 
 jobs:
-  tests:
-    uses: ./.github/workflows/testing.yml
   deploy:
     name: Deploy
     needs: [build]
