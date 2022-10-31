@@ -4,6 +4,7 @@
 # pip install plasmapy[tests]
 -r extras.txt
 -r install.txt
+cffconvert
 dlint
 flake8
 flake8-absolute-import
