@@ -58,7 +58,7 @@ Update metadata
 
 * Open a pull request to update |CITATION.cff|_. Update the author list,
   version, and other metadata, as needed. Update the DOI for the new
-  release.
+  release. This file uses the `Citation File Format`_.
 
 * Open a pull request to update :file:`.mailmap`.
 
