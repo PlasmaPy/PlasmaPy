@@ -6,6 +6,8 @@ __all__ = []
 __aliases__ = []
 __lite_funcs__ = []
 
+import inspect
+
 from plasmapy.formulary.braginskii import *
 from plasmapy.formulary.collisions import *
 from plasmapy.formulary.densities import *
@@ -26,9 +28,13 @@ from plasmapy.formulary.speeds import *
 
 # auto populate __all__
 for obj_name in list(globals()):
-    if not (obj_name.startswith("__") or obj_name.endswith("__")):
+    if not (
+        obj_name.startswith("__") or obj_name.endswith("__")
+    ) and not inspect.ismodule(globals()[obj_name]):
         __all__.append(obj_name)
 __all__.sort()
+
+del inspect
 
 # Put non-formulary imports here so that they don't get included in __all__
 

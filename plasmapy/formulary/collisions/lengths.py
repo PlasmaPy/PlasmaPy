@@ -6,8 +6,7 @@ from numbers import Real
 from numpy import pi
 
 from plasmapy import particles
-from plasmapy.formulary.collisions.frequencies import collision_frequency
-from plasmapy.formulary.collisions.misc import _process_inputs
+from plasmapy.formulary.collisions import frequencies, misc
 from plasmapy.formulary.lengths import Debye_length
 from plasmapy.formulary.quantum import Wigner_Seitz_radius
 from plasmapy.utils.decorators import validate_quantities
@@ -93,7 +92,9 @@ def impact_parameter_perp(
     #       which is valid when classical effects dominate.
     # TODO: need to incorporate an average ionization parameter
 
-    T, masses, charges, reduced_mass, V = _process_inputs(T=T, species=species, V=V)
+    T, masses, charges, reduced_mass, V = misc._process_inputs(
+        T=T, species=species, V=V
+    )
 
     return charges[0] * charges[1] / (4 * pi * eps0 * reduced_mass * V**2)
 
@@ -219,7 +220,9 @@ def impact_parameter(
     >>> impact_parameter(T, n, species, V=1e6 * u.m / u.s)
     (<Quantity 2.534...e-10 m>, <Quantity 2.182...e-05 m>)
     """
-    T, masses, charges, reduced_mass, V = _process_inputs(T=T, species=species, V=V)
+    T, masses, charges, reduced_mass, V = misc._process_inputs(
+        T=T, species=species, V=V
+    )
     # catching error where mean charge state is not given for non-classical
     # methods that require the ion density
     if method in (
@@ -424,7 +427,7 @@ def mean_free_path(
     <Quantity 0.0109... m>
     """
     # collisional frequency
-    freq = collision_frequency(
+    freq = frequencies.collision_frequency(
         T=T, n=n_e, species=species, z_mean=z_mean, V=V, method=method
     )
     # boiler plate to fetch velocity
@@ -432,5 +435,7 @@ def mean_free_path(
     # reduced mass thermal velocity in electron-ion collision case.
     # Should be fine since collision_frequency has its own _process_inputs
     # check, and we are only using this here to get the velocity.
-    T, masses, charges, reduced_mass, V = _process_inputs(T=T, species=species, V=V)
+    T, masses, charges, reduced_mass, V = misc._process_inputs(
+        T=T, species=species, V=V
+    )
     return V / freq

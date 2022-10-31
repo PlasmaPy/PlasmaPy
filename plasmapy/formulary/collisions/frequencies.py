@@ -8,13 +8,7 @@ from functools import cached_property
 from numbers import Real
 
 from plasmapy import particles
-from plasmapy.formulary.collisions import (
-    coulomb,  # import Coulomb_logarithm, Coulomb_cross_section
-)
-from plasmapy.formulary.collisions import lengths  # import impact_parameter_perp
-from plasmapy.formulary.collisions import (
-    misc,  # import _process_inputs, _replace_nan_velocity_with_thermal_velocity
-)
+from plasmapy.formulary.collisions import coulomb, lengths, misc
 from plasmapy.formulary.speeds import thermal_speed
 from plasmapy.utils.decorators import deprecated, validate_quantities
 from plasmapy.utils.exceptions import PhysicsError, PlasmaPyFutureWarning

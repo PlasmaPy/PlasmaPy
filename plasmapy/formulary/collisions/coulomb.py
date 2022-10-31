@@ -2,46 +2,9 @@
 parameters for different configurations. Including a number of
 functions for handling Coulomb collisions spanning weakly coupled
 (low density) to strongly coupled (high density) regimes.
-
-Coulomb collisions
-==================
-
-Coulomb collisions are collisions where the interaction force is
-conveyed via the electric field, instead of any kind of contact
-force. They usually result in relatively small deflections of particle
-trajectories. However, given that there are many charged particles in a
-plasma, one has to take into account the cumulative effects of many such
-collisions.
-
-Coulomb logarithms
-==================
-
-Please read the documentation of
-`~plasmapy.collisions.coulomb.Coulomb_logarithm` below for an
-explanation of the seven PlasmaPy-supported methods of computing the
-Coulomb logarithm.
-
-Collision rates
-===============
-
-The module gathers a few functions helpful for calculating collision
-rates between particles. The most general of these is
-`~plasmapy.collisions.frequencies.SingleParticleCollisionFrequencies`.
-
-Macroscopic properties
-======================
-
-These include:
-
-* `~plasmapy.collisions.dimensionless.Knudsen_number`
-* `~plasmapy.collisions.dimensionless.coupling_parameter`
-* `~plasmapy.collisions.misc.Spitzer_resistivity`
-* `~plasmapy.collisions.misc.mobility`
 """
 
 __all__ = [
-    "Coulomb_number",
-    "Coulomb_age",
     "Coulomb_logarithm",
     "Coulomb_cross_section",
 ]
@@ -53,32 +16,8 @@ import warnings
 from numbers import Real
 
 from plasmapy import particles, utils
-from plasmapy.formulary.collisions.lengths import impact_parameter
+from plasmapy.formulary.collisions import lengths
 from plasmapy.utils.decorators import validate_quantities
-
-
-@validate_quantities()
-def Coulomb_number():
-    r"""
-    Calculate the Coulomb number presented in :cite:t:`verscharen:2019`
-
-
-
-    """
-
-    return
-
-
-@validate_quantities()
-def Coulomb_age():
-    r"""
-    Calculate the Coulomb age presented in :cite:t:`verscharen:2019`
-
-
-
-    """
-
-    return
 
 
 @validate_quantities(
@@ -95,7 +34,40 @@ def Coulomb_logarithm(
     method="classical",
 ):
     r"""
-    Compute the Coulomb logarithm.
+    Coulomb logarithms
+    ==================
+
+    Please read the documentation of
+    `~plasmapy.collisions.coulomb.Coulomb_logarithm` below for an
+    explanation of the seven PlasmaPy-supported methods of computing the
+    Coulomb logarithm.
+
+    Coulomb collisions
+    ==================
+
+    Coulomb collisions are collisions where the interaction force is
+    conveyed via the electric field, instead of any kind of contact
+    force. They usually result in relatively small deflections of particle
+    trajectories. However, given that there are many charged particles in a
+    plasma, one has to take into account the cumulative effects of many such
+    collisions.
+
+    Collision rates
+    ===============
+
+    The module gathers a few functions helpful for calculating collision
+    rates between particles. The most general of these is
+    `~plasmapy.collisions.frequencies.SingleParticleCollisionFrequencies`.
+
+    Macroscopic properties
+    ======================
+
+    These include:
+
+    * `~plasmapy.formulary.collisions.dimensionless.Knudsen_number`
+    * `~plasmapy.formulary.collisions.dimensionless.coupling_parameter`
+    * `~plasmapy.formulary.collisions.misc.Spitzer_resistivity`
+    * `~plasmapy.formulary.collisions.misc.mobility`
 
     Parameters
     ----------
@@ -201,7 +173,7 @@ def Coulomb_logarithm(
     impact parameter and the outer impact parameter, respectively, for
     Coulomb collisions :cite:p:`spitzer:1962`\ ; :math:`b_{min}` and
     :math:`b_{max}` are each computed by
-    `~plasmapy.formulary.collisions.impact_parameter`.
+    `~plasmapy.formulary.collisions.lengths.impact_parameter`.
 
     The abbreviations of Options 2–7 (``"GMS-..."``) refer to the first
     initials of the three authors of :cite:t:`gericke:2002`.
@@ -469,11 +441,11 @@ def Coulomb_logarithm(
 
     See Also
     --------
-    ~plasmapy.formulary.collisions.impact_parameter : Computes
+    ~plasmapy.formulary.collisions.legnths.impact_parameter : Computes
         :math:`b_{min}` and :math:`b_{max}`.
     """
     # fetching impact min and max impact parameters
-    bmin, bmax = impact_parameter(
+    bmin, bmax = lengths.impact_parameter(
         T=T, n_e=n_e, species=species, z_mean=z_mean, V=V, method=method
     )
 
