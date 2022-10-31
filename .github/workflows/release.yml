@@ -1,0 +1,28 @@
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Release tag
+        required: true
+        default: v0.9.0
+
+jobs:
+  tests:
+    uses: ./.github/workflows/testing.yml
+  deploy:
+    name: Deploy
+    needs: [build]
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python }}
+    - name: Confirmatory message
+    - run: |
+        echo "Log level: ${{ github.event.inputs.tag }}"

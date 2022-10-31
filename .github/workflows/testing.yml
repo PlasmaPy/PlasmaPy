@@ -10,6 +10,7 @@ on:
     - v*
   pull_request:
   workflow_dispatch:
+  workflow_call:
 
 jobs:
   initial-tests:
@@ -159,7 +160,7 @@ jobs:
     - name: Import PlasmaPy
       run: tox -e py38-minimal-pypi-import
 
-  build-n-publish:
+  build:
     name: Packaging
     runs-on: ubuntu-18.04
     needs:
