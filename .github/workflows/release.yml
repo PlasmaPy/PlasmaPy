@@ -9,8 +9,11 @@ on:
         default: v0.9.0
 
 jobs:
+  tests:
+    uses: ./.github/workflows/testing.yml  # use the callable tests job to run tests
   deploy:
     name: Deploy
+    needs: [build]
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
@@ -21,5 +24,5 @@ jobs:
       with:
         python-version: ${{ matrix.python }}
     - name: Confirmatory message
-    - run: |
+      run: |
         echo "Log level: ${{ github.event.inputs.tag }}"
