@@ -113,7 +113,9 @@ authors:
   family-names: Carroll
   alias: seanwilliamcarroll
 
-- alias: cclauss
+- given-names: Christian
+  family-names: Clauss
+  alias: cclauss
 
 - given-names: Sean
   family-names: Chambers
@@ -393,8 +395,6 @@ authors:
   alias: JaydenR2305
 
 - alias: seanjunheng2
-
-- alias: siddharthk07
 
 - given-names: Steve
   family-names: Richardson
