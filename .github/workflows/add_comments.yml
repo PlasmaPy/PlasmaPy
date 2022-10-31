@@ -31,14 +31,3 @@ jobs:
           Finally, we try to be the best community we can be. We have a [Code of Conduct](https://www.plasmapy.org/conduct) to foster a community of care and appreciation.
 
           We thank you once again! :sparkles:
-
-  comment:
-    name: Checklist
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@master
-    - uses: harupy/comment-on-pr@master
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        filename: checklist.md
