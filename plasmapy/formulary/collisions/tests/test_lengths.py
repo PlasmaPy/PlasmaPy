@@ -5,7 +5,6 @@ from astropy import units as u
 
 from plasmapy.formulary.collisions import coulomb, lengths
 from plasmapy.utils import exceptions
-
 # from plasmapy.formulary.collisions.coulomb import Coulomb_logarithm
 # from plasmapy.formulary.collisions.lengths import impact_parameter, impact_parameter_perp, mean_free_path
 from plasmapy.utils.exceptions import CouplingWarning
