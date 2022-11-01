@@ -56,6 +56,7 @@ jobs:
         towncrier --yes --version ${{ github.event.inputs.tag }}
         # Copy the relevant parts of the generated CHANGELOG.rst file into docs/whatsnew/0.9.0.rst.
         # Add the entry for docs/whatsnew/0.9.0.rst in the table of contents in docs/whatsnew/index.rst.
+        git add .
         git commit -nm "Add changelog entries for ${{ github.event.inputs.tag }}"
 
     - name: Tag the release
