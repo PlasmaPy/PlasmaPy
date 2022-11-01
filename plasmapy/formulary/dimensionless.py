@@ -211,19 +211,17 @@ def Hall_parameter(
     ...     Hall_parameter(1e10 * u.m**-3, 5.8e3 * u.eV, 2.3 * u.T, 'He-4 +1', 'e-')
     <Quantity 2.11158...e+17>
     """
-    from plasmapy.formulary.collisions import (
-        fundamental_electron_collision_freq,
-        fundamental_ion_collision_freq,
-    )
+    from plasmapy.formulary.collisions import frequencies
+    from plasmapy.formulary.frequencies import gyrofrequency
 
-    gyro_frequency = frequencies.gyrofrequency(B, particle)
+    gyro_frequency = gyrofrequency(B, particle)
     gyro_frequency = gyro_frequency / u.radian
     if Particle(particle).symbol == "e-":
-        coll_rate = fundamental_electron_collision_freq(
+        coll_rate = frequencies.fundamental_electron_collision_freq(
             T, n, ion, coulomb_log, V, coulomb_log_method=coulomb_log_method
         )
     else:
-        coll_rate = fundamental_ion_collision_freq(T, n, ion, coulomb_log, V)
+        coll_rate = frequencies.fundamental_ion_collision_freq(T, n, ion, coulomb_log, V)
     return gyro_frequency / coll_rate
 
 

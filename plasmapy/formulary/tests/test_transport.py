@@ -36,7 +36,7 @@ from plasmapy.formulary.braginskii import (
     resistivity,
     thermoelectric_conductivity,
 )
-from plasmapy.formulary.collisions import Coulomb_logarithm
+from plasmapy.formulary.collisions import coulomb
 from plasmapy.formulary.dimensionless import Hall_parameter
 from plasmapy.particles.atomic import charge_number, particle_mass
 from plasmapy.particles.exceptions import InvalidParticleError
@@ -285,10 +285,10 @@ class Test_classical_transport:
             ct2 = ClassicalTransport(
                 T_e=self.T_e, n_e=self.n_e, T_i=self.T_i, n_i=self.n_i, ion=self.ion
             )
-            cl_ii = Coulomb_logarithm(
+            cl_ii = coulomb.Coulomb_logarithm(
                 self.T_i, self.n_e, [self.ion, self.ion], self.V_ii
             )
-            cl_ei = Coulomb_logarithm(self.T_e, self.n_e, ["e", self.ion], self.V_ei)
+            cl_ei = coulomb.Coulomb_logarithm(self.T_e, self.n_e, ["e", self.ion], self.V_ei)
             testTrue = cl_ii == ct2.coulomb_log_ii
             errStr = (
                 f"Ion-ion coulomb logarithm should be {cl_ii} "
