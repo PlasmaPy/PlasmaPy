@@ -204,24 +204,24 @@ class ClassicalTransport:
     coulomb_log_ei : `float` or dimensionless `~astropy.units.Quantity`, optional
         Force a particular value to be used for the electron-ion Coulomb
         logarithm (test electrons on field ions). If `None`,
-        `~plasmapy.formulary.collisions.Coulomb_logarithm` will be used.
+        `~plasmapy.formulary.collisions.coulomb.Coulomb_logarithm` will be used.
         Useful for comparing calculations.
 
     V_ei : `~astropy.units.Quantity`, optional
        The relative velocity between particles.  Supplied to
-       `~plasmapy.formulary.collisions.Coulomb_logarithm`
+       `~plasmapy.formulary.collisions.coulomb.Coulomb_logarithm`
        function, not otherwise used.  If not provided, thermal velocity is
        assumed: :math:`μ V^2 \sim 2 k_B T` where :math:`μ` is the reduced mass.
 
     coulomb_log_ii : `float` or dimensionless `~astropy.units.Quantity`, optional
         Force a particular value to be used for the ion-ion Coulomb logarithm
         (test ions on field ions). If `None`, the PlasmaPy function
-        `~plasmapy.formulary.collisions.Coulomb_logarithm` will be used.
+        `~plasmapy.formulary.collisions.coulomb.Coulomb_logarithm` will be used.
         Useful for comparing calculations.
 
     V_ii : `~astropy.units.Quantity`, optional
        The relative velocity between particles.  Supplied to
-       `~plasmapy.formulary.collisions.Coulomb_logarithm` function, not
+       `~plasmapy.formulary.collisions.coulomb.Coulomb_logarithm` function, not
        otherwise used. If not provided, thermal velocity is assumed:
        :math:`μ V^2 \sim 2 k_B T` where :math`μ` is the reduced mass.
 
@@ -252,7 +252,7 @@ class ClassicalTransport:
         are ``"ls_min_interp"``, ``"ls_full_interp"``, ``"ls_clamp_mininterp"``,
         ``"hls_min_interp"``, ``"hls_max_interp"``, and ``"hls_full_interp"``.
         Please refer to the docstring of
-        `~plasmapy.formulary.collisions.Coulomb_logarithm` for more
+        `~plasmapy.formulary.collisions.coulomb.Coulomb_logarithm` for more
         information about these methods.
 
     Raises

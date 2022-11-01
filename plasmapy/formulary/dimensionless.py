@@ -174,15 +174,15 @@ def Hall_parameter(
         are ``"ls_min_interp"``, ``"ls_full_interp"``, ``"ls_clamp_mininterp"``,
         ``"hls_min_interp"``, ``"hls_max_interp"``, and ``"hls_full_interp"``.
         Please refer to the docstring of
-        `~plasmapy.formulary.collisions.Coulomb_logarithm` for more
+        `~plasmapy.formulary.collisions.coulomb.Coulomb_logarithm` for more
         information about these methods.
 
     See Also
     --------
     ~plasmapy.formulary.frequencies.gyrofrequency
-    ~plasmapy.formulary.collisions.fundamental_electron_collision_freq
-    ~plasmapy.formulary.collisions.fundamental_ion_collision_freq
-    ~plasmapy.formulary.collisions.Coulomb_logarithm
+    ~plasmapy.formulary.collisions.frequencies.fundamental_electron_collision_freq
+    ~plasmapy.formulary.collisions.frequencies.fundamental_ion_collision_freq
+    ~plasmapy.formulary.collisions.coulomb.Coulomb_logarithm
 
     Returns
     -------
@@ -192,9 +192,9 @@ def Hall_parameter(
     Notes
     -----
     * For calculating the collision frequency
-      `~plasmapy.formulary.collisions.fundamental_electron_collision_freq` is used
+      `~plasmapy.formulary.collisions.frequencies.fundamental_electron_collision_freq` is used
       when ``particle`` is an electron and
-      `~plasmapy.formulary.collisions.fundamental_ion_collision_freq` when
+      `~plasmapy.formulary.collisions.frequencies.fundamental_ion_collision_freq` when
       ``particle`` is an ion.
     * The collision frequencies are calculated assuming a slowly moving
       Maxwellian distribution.
