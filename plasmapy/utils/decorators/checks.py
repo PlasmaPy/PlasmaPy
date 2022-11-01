@@ -943,7 +943,7 @@ class CheckUnits(CheckBase):
             try:
                 target_unit = u.Unit(target)
                 allowed_units.append(target_unit)
-            except TypeError as err:
+            except TypeError:
                 # not a unit type
                 if not from_annotations:
                     raise
