@@ -32,17 +32,19 @@ jobs:
       run: |
         pip install towncrier pre-commit ruamel.yaml
 
-    - name: Update CITATION.cff, docs/about/citation.rst with the DOI for the new version.
-      run: |
-        python .github/workflows/citation_updater.py CITATION.cff --version=${{ github.event.inputs.tag}} --doi=${{ github.event.inputs.doi}}
-        echo "TODO docs/about/citation.rst, |version_to_cite|, |doi_hyperlink|, |citation_year|"
-
-    # out of scope - name: Update and alphabetize the author list in docs/about/credits.rst; mailmap
-
     - name: Setup git
       run: |
         git config --global user.email "team@plasmapy.org"
         git config --global user.name "PlasmaPy Automated Release Process"
+
+
+    - name: Update CITATION.cff, docs/about/citation.rst with the DOI for the new version.
+      run: |
+        python .github/workflows/citation_updater.py CITATION.cff docs/about/citation.rst --version=${{ github.event.inputs.tag}} --doi=${{ github.event.inputs.doi}}
+        git add .
+        git commit -m "Update CITATION.cff"
+
+    # out of scope - name: Update and alphabetize the author list in docs/about/credits.rst; mailmap
 
     - name: Create changelog
       run: |
