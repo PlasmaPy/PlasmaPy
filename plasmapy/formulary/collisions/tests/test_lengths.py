@@ -174,12 +174,11 @@ class Test_impact_parameter:
     )
     def test_extend_output_for_array_input(self, n_e_shape, T_shape):
         """
-        Test to verify that if either/or T and n_e are arrays, the resulting
-        bmin and bmax have the correct shapes.
+        Test to verify that if either/or T and n_e are arrays, the
+        resulting bmin and bmax have the correct shapes.
 
-        This is necessary in addition to test_handle_nparrays to ensure that
-        the output arrays are extended correctly.
-
+        This is necessary in addition to test_handle_nparrays to ensure
+        that the output arrays are extended correctly.
         """
 
         output_shape = T_shape if len(T_shape) >= len(n_e_shape) else n_e_shape

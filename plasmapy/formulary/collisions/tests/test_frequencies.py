@@ -97,7 +97,10 @@ class TestSingleParticleCollisionFrequencies:
         ],
     )
     def test_conversion_consistency(self, attribute_to_test):
-        """Test that a consistent value is computed for attributes regardless of argument units"""
+        """
+        Test that a consistent value is computed for attributes
+        regardless of argument units.
+        """
 
         MKS_result = getattr(self.MKS_test_case, attribute_to_test)
         CGS_result = getattr(self.CGS_test_case, attribute_to_test)
@@ -107,7 +110,8 @@ class TestSingleParticleCollisionFrequencies:
     @staticmethod
     def get_limit_value(interaction_type, limit_type, cases):
         """
-        Get the limiting values for frequencies given the two particles interacting, and their frequencies class.
+        Get the limiting values for frequencies given the two particles
+        interacting, and their frequencies class.
 
         These formulae are taken from page 31 of the NRL Formulary.
         """
@@ -207,7 +211,8 @@ class TestSingleParticleCollisionFrequencies:
         return limit_values
 
     @pytest.mark.parametrize(
-        "interaction_type, limit_type, constructor_arguments, constructor_keyword_arguments",
+        "interaction_type, limit_type, constructor_arguments, "
+        "constructor_keyword_arguments",
         [
             # Slow limit (x << 1)
             (
@@ -405,7 +410,8 @@ class TestSingleParticleCollisionFrequencies:
             self.return_values_to_test, expected_limit_values
         ):
             calculated_limit_value = getattr(value_test_case, attribute_name).value
-            # Energy loss limit value is already in units of frequencies because of the way it is calculated
+            # Energy loss limit value is already in units of
+            # frequencies because of the way it is calculated
             if attribute_name != "energy_loss":
                 calculated_limit_value = calculated_limit_value / (
                     coulomb_density_constant * charge_constant
@@ -474,9 +480,11 @@ class TestMaxwellianCollisionFrequencies:
     @staticmethod
     def get_fundamental_frequency(species, n, T_a, Coulomb_log):
         """
-        This special case for computing the fundamental frequencies comes from page 33 of the NRL Formulary.
-        The formulary provides limiting cases for the `Maxwellian_avg_##_collision_freq` family of attributes
-        in the case that T_a ~ T_b.
+        This special case for computing the fundamental frequencies
+        comes from page 33 of the NRL Formulary.  The formulary
+        provides limiting cases for the
+        `Maxwellian_avg_##_collision_freq` family of attributes in the
+        case that T_a ~ T_b.
         """
 
         # Strip the units from these quantities and ensure they are in CGS units
@@ -519,7 +527,8 @@ class TestMaxwellianCollisionFrequencies:
             )
 
     @pytest.mark.parametrize(
-        "expected_error, constructor_arguments, constructor_keyword_arguments, attribute_name",
+        "expected_error, constructor_arguments, "
+        "constructor_keyword_arguments, attribute_name",
         [
             # Specified interaction isn't electron-ion
             (
