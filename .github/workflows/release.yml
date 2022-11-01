@@ -71,14 +71,3 @@ jobs:
         BRANCH="${VERSION%?}x"  # replace last char with x
         git switch -c $BRANCH
         git push -u origin $VERSION $BRANCH
-  deploy:
-    name: Deploy
-    uses: OpenAstronomy/github-actions-workflows/.github/workflows/publish_pure_python.yml@v1
-    needs: [tag]
-    with:
-      test_extras: tests
-      test_command: pytest --pyargs plasmapy
-      repository_url: https://test.pypi.org/legacy/
-      upload_to_pypi: true
-    secrets:
-      pypi_token: ${{ secrets.TEST_PYPI_API_TOKEN }}
