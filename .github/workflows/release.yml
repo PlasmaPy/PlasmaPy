@@ -34,7 +34,7 @@ jobs:
 
     - name: Update CITATION.cff, docs/about/citation.rst with the DOI for the new version.
       run: |
-        python .github/workflows/citation_updater CITATION.cff --version=${{ github.event.inputs.tag}} --doi=${{ github.event.inputs.doi}}
+        python .github/workflows/citation_updater.py CITATION.cff --version=${{ github.event.inputs.tag}} --doi=${{ github.event.inputs.doi}}
         echo "TODO docs/about/citation.rst, |version_to_cite|, |doi_hyperlink|, |citation_year|"
 
     # out of scope - name: Update and alphabetize the author list in docs/about/credits.rst; mailmap
