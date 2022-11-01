@@ -1,3 +1,11 @@
+"""
+Module of dimensionless parameters related to collisions.
+"""
+__all__ = [
+    "coupling_parameter",
+    "Knudsen_number",
+]
+
 import astropy.units as u
 import numpy as np
 
@@ -13,11 +21,6 @@ from plasmapy.formulary.quantum import (
     Wigner_Seitz_radius,
 )
 from plasmapy.utils.decorators import validate_quantities
-
-__all__ = [
-    "coupling_parameter",
-    "Knudsen_number",
-]
 
 
 @validate_quantities(
@@ -71,9 +74,9 @@ def coupling_parameter(
 
     method : `str`, optional
         The method by which to compute the coupling parameter: either
-        ``"classical"`` or ``"quantum"``. The default method is ``"classical"``.
-        The Notes section of this docstring has more information about
-        these two methods.
+        ``"classical"`` or ``"quantum"``. The default method is
+        ``"classical"``.  The Notes section of this docstring has more
+        information about these two methods.
 
     Returns
     -------
