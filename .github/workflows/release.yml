@@ -40,16 +40,17 @@ jobs:
 
     - name: Update CITATION.cff, docs/about/citation.rst with the DOI for the new version.
       run: |
-        python .github/workflows/citation_updater.py CITATION.cff docs/about/citation.rst --version=${{ github.event.inputs.tag}} --doi=${{ github.event.inputs.doi}}
+        python .github/workflows/citation_updater.py CITATION.cff docs/about/citation.rst docs/whatsnew/index.rst --version=${{ github.event.inputs.tag}} --doi=${{ github.event.inputs.doi}}
         git add .
-        git commit -m "Update CITATION.cff"
+        git commit -m "Update citation and whatsnew index entry"
 
     # out of scope - name: Update and alphabetize the author list in docs/about/credits.rst; mailmap
 
     - name: Create changelog
       run: |
+        towncrier build --yes --version ${{ github.event.inputs.tag }} --draft > docs/whatsnew/${{ github.events.inputs.tag}}.rst
+        git add .
         towncrier build --yes --version ${{ github.event.inputs.tag }}
-        # TODO Copy the relevant parts of the generated CHANGELOG.rst file into docs/whatsnew/0.9.0.rst.
         # TODO Add the entry for docs/whatsnew/0.9.0.rst in the table of contents in docs/whatsnew/index.rst.
         git commit -nm "Add changelog entries for v${{ github.event.inputs.tag }}"
 
@@ -64,11 +65,11 @@ jobs:
       run: |
         git tag "v${{ github.event.inputs.tag }}" -m "Version v${{ github.event.inputs.tag }}"
         git tag
-    - name: Create branch and push to it # TODO push tag
+    - name: Create branch and push to it
       run: |
         VERSION="v${{ github.event.inputs.tag }}"
-        BRANCH="${VERSION%?}x"
-        git switch -c $BRANCH  # replace last char with x
+        BRANCH="${VERSION%?}x"  # replace last char with x
+        git switch -c $BRANCH
         git push -u origin $VERSION $BRANCH
   deploy:
     name: Deploy

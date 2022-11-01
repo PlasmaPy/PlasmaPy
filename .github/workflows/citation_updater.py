@@ -9,6 +9,7 @@ parser = argparse.ArgumentParser()
 
 parser.add_argument("citation_cff_file")
 parser.add_argument("citation_rst_file")
+parser.add_argument("whatsnew_index_rst_file")
 parser.add_argument("--version")
 parser.add_argument("--doi")
 parser.add_argument(
@@ -55,3 +56,11 @@ for source_regex, target_value in [
     citation_rst_text = re.compile(source_regex).sub(target_value, citation_rst_text)
 with citation_rst_file.open("w") as f:
     f.write(citation_rst_text)
+
+whatsnew_index_rst_file = pathlib.Path(args.whatsnew_index_rst_file)
+whatsnew_index_text = whatsnew_index_rst_file.read_text()
+whatsnew_index_text = re.compile(r".. toctree::\n   :maxdepth: 1\n\n   dev").sub(
+    f".. toctree::\n   :maxdepth: 1\n\n   dev\n   {args.version}", whatsnew_index_text
+)
+with whatsnew_index_rst_file.open("w") as f:
+    f.write(whatsnew_index_text)
