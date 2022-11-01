@@ -48,7 +48,7 @@ jobs:
 
     - name: Create changelog
       run: |
-        towncrier build --yes --version ${{ github.event.inputs.tag }} --draft > docs/whatsnew/${{ github.events.inputs.tag}}.rst
+        towncrier build --yes --version ${{ github.event.inputs.tag }} --draft > docs/whatsnew/${{ github.event.inputs.tag }}.rst
         git add .
         towncrier build --yes --version ${{ github.event.inputs.tag }}
         # TODO Add the entry for docs/whatsnew/0.9.0.rst in the table of contents in docs/whatsnew/index.rst.
