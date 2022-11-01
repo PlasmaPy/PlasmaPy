@@ -280,10 +280,14 @@ def impact_parameter(
         ionRadius = Wigner_Seitz_radius(n_i)
         bmax = (lambdaDe**2 + ionRadius**2) ** (1 / 2)
         bmin = (lambdaBroglie**2 + bPerp**2) ** (1 / 2)
-    elif method in ["ls_clamp_mininterp", "GMS-3"] + ["hls_min_interp", "GMS-4"]:
-        # 3rd and 4th method listed in Table 1 of reference [1]
+    elif method in ["ls_clamp_mininterp", "GMS-3"]:
+        # 3rd method listed in Table 1 of reference [1]
         # same as GMS-1, but not Lambda has a clamp at Lambda_min = 2
         # where Lambda is the argument to the Coulomb logarithm.
+        bmax = lambdaDe
+        bmin = (lambdaBroglie**2 + bPerp**2) ** (1 / 2)
+    elif method in ["hls_min_interp", "GMS-4"]:
+        # 4th method listed in Table 1 of reference [1]
         bmax = lambdaDe
         bmin = (lambdaBroglie**2 + bPerp**2) ** (1 / 2)
     elif method in ["hls_max_interp", "GMS-5"]:
