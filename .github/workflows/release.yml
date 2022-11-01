@@ -26,7 +26,7 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
-        python-version: ${{ matrix.python }}
+        python-version: 3.10
 
     - name: Install dependencies
       run: |
@@ -37,6 +37,11 @@ jobs:
         git config --global user.email "team@plasmapy.org"
         git config --global user.name "PlasmaPy Automated Release Process"
 
+    - name: Create or checkout branch
+      run: |
+        VERSION="v${{ github.event.inputs.tag }}"
+        BRANCH="${VERSION%?}x"  # replace last char with x
+        git checkout $BRANCH
 
     - name: Update CITATION.cff, docs/about/citation.rst with the DOI for the new version.
       run: |
@@ -65,9 +70,9 @@ jobs:
       run: |
         git tag "v${{ github.event.inputs.tag }}" -m "Version v${{ github.event.inputs.tag }}"
         git tag
-    - name: Create branch and push to it
+
+    - name: Push tag, branch state
       run: |
         VERSION="v${{ github.event.inputs.tag }}"
         BRANCH="${VERSION%?}x"  # replace last char with x
-        git switch -c $BRANCH
         git push -u origin $VERSION $BRANCH
