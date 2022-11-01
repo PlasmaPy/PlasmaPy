@@ -141,7 +141,7 @@ class SingleParticleCollisionFrequencies:
 
         See Also
         --------
-        ~plasmapy.formulary.collisions.Coulomb_logarithm : Evaluates the
+        ~plasmapy.formulary.collisions.coulomb.Coulomb_logarithm : Evaluates the
             Coulomb logarithm for two interacting electron species.
         """
 
@@ -232,7 +232,7 @@ class SingleParticleCollisionFrequencies:
 
         This form of the Lorentz collision frequency differs from the
         form found in
-        `~plasmapy.formulary.collisions.MaxwellianCollisionFrequencies`
+        `~plasmapy.formulary.collisions.frequencies.MaxwellianCollisionFrequencies`
         in that :math:`v` is the drift velocity (as opposed to the mean
         thermal velocity between species).
         """
@@ -255,7 +255,7 @@ class SingleParticleCollisionFrequencies:
         regime in which the collision falls.
 
         (see documentation for the
-        `~plasmapy.formulary.collisions.SingleParticleCollisionFrequencies`
+        `~plasmapy.formulary.collisions.frequencies.SingleParticleCollisionFrequencies`
         class for details)
         """
 
@@ -383,7 +383,7 @@ class MaxwellianCollisionFrequencies:
 
         See Also
         --------
-        ~plasmapy.formulary.collisions.Coulomb_logarithm : Evaluates
+        ~plasmapy.formulary.collisions.coulomb.Coulomb_logarithm : Evaluates
             the Coulomb logarithm for two interacting electron species.
         """
 
@@ -453,7 +453,7 @@ class MaxwellianCollisionFrequencies:
 
         This form of the Lorentz collision frequency differs from the
         form found in
-        `~plasmapy.formulary.collisions.SingleParticleCollisionFrequencies`
+        `~plasmapy.formulary.collisions.frequencies.SingleParticleCollisionFrequencies`
         in that :math:`v` is the mean thermal velocity between particle
         species in this method (as opposed to the drift velocity
         between species).
@@ -600,12 +600,12 @@ def collision_frequency(
 ) -> u.Hz:
     r"""
     .. note::
-        The `~plasmapy.formulary.collisions.collision_frequency`
+        The `~plasmapy.formulary.collisions.frequencies.collision_frequency`
         function has been replaced by the more general
-        `~plasmapy.formulary.collisions.SingleParticleCollisionFrequencies`
+        `~plasmapy.formulary.collisions.frequencies.SingleParticleCollisionFrequencies`
         class.  To replicate the functionality of
-        `~plasmapy.formulary.collisions.collision_frequency`, create a
-        `~plasmapy.formulary.collisions.SingleParticleCollisionFrequencies`
+        `~plasmapy.formulary.collisions.frequencies.collision_frequency`, create a
+        `~plasmapy.formulary.collisions.frequencies.SingleParticleCollisionFrequencies`
         class and access the ``Lorentz_collision_frequency`` attribute.
 
     Collision frequency of particles in a plasma.
@@ -648,7 +648,7 @@ def collision_frequency(
         ``"ls_clamp_mininterp"``, ``"hls_min_interp"``,
         ``"hls_max_interp"``, and ``"hls_full_interp"``.  Please refer
         to the docstring of
-        `~plasmapy.formulary.collisions.Coulomb_logarithm` for more
+        `~plasmapy.formulary.collisions.coulomb.Coulomb_logarithm` for more
         information about these methods.
 
     Returns
@@ -708,7 +708,7 @@ def collision_frequency(
 
     See Also
     --------
-    ~plasmapy.formulary.collisions.SingleParticleCollisionFrequencies
+    ~plasmapy.formulary.collisions.frequencies.SingleParticleCollisionFrequencies
 
     """
 
@@ -786,13 +786,13 @@ def fundamental_electron_collision_freq(
     distribution of electrons.
 
     .. note::
-        The `~plasmapy.formulary.collisions.fundamental_electron_collision_freq`
+        The `~plasmapy.formulary.collisions.frequencies.fundamental_electron_collision_freq`
         function has been replaced by the more general
-        `~plasmapy.formulary.collisions.MaxwellianCollisionFrequencies`
+        `~plasmapy.formulary.collisions.frequencies.MaxwellianCollisionFrequencies`
         class.  To replicate the functionality of
-        `~plasmapy.formulary.collisions.fundamental_electron_collision_freq`,
+        `~plasmapy.formulary.collisions.frequencies.fundamental_electron_collision_freq`,
         create a
-        `~plasmapy.formulary.collisions.MaxwellianCollisionFrequencies`
+        `~plasmapy.formulary.collisions.frequencies.MaxwellianCollisionFrequencies`
         class and access the ``Maxwellian_avg_ei_collision_freq``
         attribute.
 
@@ -825,7 +825,7 @@ def fundamental_electron_collision_freq(
     coulomb_log : `float` or dimensionless `~astropy.units.Quantity`, optional
         Option to specify a Coulomb logarithm of the electrons on the
         ions.  If not specified, the Coulomb log will is calculated
-        using the `~plasmapy.formulary.collisions.Coulomb_logarithm`
+        using the `~plasmapy.formulary.collisions.coulomb.Coulomb_logarithm`
         function.
 
     coulomb_log_method : `str`, optional
@@ -883,8 +883,8 @@ def fundamental_electron_collision_freq(
 
     See Also
     --------
-    ~plasmapy.formulary.collisions.collision_frequency
-    ~plasmapy.formulary.collisions.fundamental_ion_collision_freq
+    ~plasmapy.formulary.collisions.frequencies.collision_frequency
+    ~plasmapy.formulary.collisions.frequencies.fundamental_ion_collision_freq
     """
 
     deprecated(
@@ -942,13 +942,13 @@ def fundamental_ion_collision_freq(
     distribution of ions.
 
     .. note::
-        The `~plasmapy.formulary.collisions.fundamental_ion_collision_freq`
+        The `~plasmapy.formulary.collisions.frequencies.fundamental_ion_collision_freq`
         function has been replaced by the more general
-        `~plasmapy.formulary.collisions.MaxwellianCollisionFrequencies`
+        `~plasmapy.formulary.collisions.frequencies.MaxwellianCollisionFrequencies`
         class.  To replicate the functionality of
-        `~plasmapy.formulary.collisions.fundamental_ion_collision_freq`,
+        `~plasmapy.formulary.collisions.frequencies.fundamental_ion_collision_freq`,
         create a
-        `~plasmapy.formulary.collisions.MaxwellianCollisionFrequencies`
+        `~plasmapy.formulary.collisions.frequencies..MaxwellianCollisionFrequencies`
         class and access the ``Maxwellian_avg_ii_collision_freq``
         attribute.
 
@@ -1042,8 +1042,8 @@ def fundamental_ion_collision_freq(
 
     See Also
     --------
-    ~plasmapy.formulary.collisions.collision_frequency
-    ~plasmapy.formulary.collisions.fundamental_electron_collision_freq
+    ~plasmapy.formulary.collisions.frequencies.collision_frequency
+    ~plasmapy.formulary.collisions.frequencies.fundamental_electron_collision_freq
     """
 
     deprecated(

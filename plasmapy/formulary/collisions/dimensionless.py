@@ -275,7 +275,7 @@ def Knudsen_number(
         ``"ls_clamp_mininterp"``, ``"hls_min_interp"``,
         ``"hls_max_interp"``, and ``"hls_full_interp"``.  Please refer
         to the docstring of
-        `~plasmapy.formulary.collisions.Coulomb_logarithm` for more
+        `~plasmapy.formulary.collisions.coulomb.Coulomb_logarithm` for more
         information about these methods.
 
     Returns
