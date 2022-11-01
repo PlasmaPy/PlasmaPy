@@ -858,7 +858,7 @@ def reduced_mass(test_particle, target_particle) -> u.Quantity:
                 return particle.to(u.kg)
             if not isinstance(particle, Particle):
                 particle = Particle(particle)
-            return particle.mass.to(u.kg)
+
         except u.UnitConversionError as exc1:
             raise u.UnitConversionError("Incorrect units in reduced_mass.") from exc1
         except MissingParticleDataError:
@@ -866,6 +866,8 @@ def reduced_mass(test_particle, target_particle) -> u.Quantity:
                 f"Unable to find the reduced mass because the mass of "
                 f"{particle} is not available."
             ) from None
+        else:
+            return particle.mass.to(u.kg)
 
     test_mass = get_particle_mass(test_particle)
     target_mass = get_particle_mass(target_particle)
