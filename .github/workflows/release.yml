@@ -53,11 +53,11 @@ jobs:
         # TODO Add the entry for docs/whatsnew/0.9.0.rst in the table of contents in docs/whatsnew/index.rst.
         git commit -nm "Add changelog entries for v${{ github.event.inputs.tag }}"
 
-    # - name: Update and run pre-commit  # TODO maybe out of scope
-    #   run: |
-    #     pre-commit autoupdate
-    #     pre-commit run --all-files
-    #     git commit -nm "Apply pre-commit fixes"
+    - name: Update and run pre-commit
+      run: |
+        pre-commit autoupdate
+        pre-commit run --all-files
+        git commit -nm "Apply pre-commit fixes"
 
     - name: Tag the release
       run: |
@@ -77,6 +77,6 @@ jobs:
       test_extras: tests
       test_command: pytest --pyargs plasmapy
       repository_url: https://test.pypi.org/legacy/
-      upload_to_pypi: refs/tags/v
+      upload_to_pypi: refs/tags/
     secrets:
       pypi_token: ${{ secrets.TEST_PYPI_API_TOKEN }}
