@@ -1,3 +1,13 @@
+"""
+Module of miscellaneous parameters related to collisions.
+"""
+__all__ = [
+    "_process_inputs",
+    "_replace_nan_velocity_with_thermal_velocity",
+    "mobility",
+    "Spitzer_resistivity",
+]
+
 import astropy.units as u
 import numpy as np
 
@@ -10,21 +20,16 @@ from plasmapy.formulary.speeds import thermal_speed
 from plasmapy.utils.decorators import validate_quantities
 from plasmapy.utils.decorators.checks import _check_relativistic
 
-__all__ = [
-    "_process_inputs",
-    "_replace_nan_velocity_with_thermal_velocity",
-    "mobility",
-    "Spitzer_resistivity",
-]
-
 
 @validate_quantities(T={"equivalencies": u.temperature_energy()})
 @particles.particle_input
 def _process_inputs(T: u.K, species: (particles.Particle, particles.Particle), V):
     """
-    Check the inputs to functions in ``collisions.py``.  Also obtains
-    the reduced mass in a 2 particle collision system along with thermal
-    velocity.
+    Helper function for processing inputs to functionality contained
+    in `plasmapy.formulary.collisions`.
+
+    Also obtains the reduced mass in a 2 particle collision system
+    along with thermal velocity.
     """
     masses = [p.mass for p in species]
     charges = [np.abs(p.charge) for p in species]
