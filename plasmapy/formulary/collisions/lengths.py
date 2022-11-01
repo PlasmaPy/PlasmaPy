@@ -1,3 +1,8 @@
+"""
+Module of length parameters related to collisions.
+"""
+__all__ = ["impact_parameter_perp", "impact_parameter", "mean_free_path"]
+
 import astropy.units as u
 import numpy as np
 
@@ -10,8 +15,6 @@ from plasmapy.formulary.collisions import frequencies, misc
 from plasmapy.formulary.lengths import Debye_length
 from plasmapy.formulary.quantum import Wigner_Seitz_radius
 from plasmapy.utils.decorators import validate_quantities
-
-__all__ = ["impact_parameter_perp", "impact_parameter", "mean_free_path"]
 
 
 @validate_quantities(
@@ -88,8 +91,9 @@ def impact_parameter_perp(
     >>> impact_parameter_perp(T, species)
     <Quantity 8.3550...e-12 m>
     """
-    # Note: This formulation corresponds to collisions that result in a deflection of 90°s,
-    #       which is valid when classical effects dominate.
+    # Note: This formulation corresponds to collisions that result in a
+    #       deflection of 90°s, which is valid when classical effects
+    #       dominate.
     # TODO: need to incorporate an average ionization parameter
 
     T, masses, charges, reduced_mass, V = misc._process_inputs(
