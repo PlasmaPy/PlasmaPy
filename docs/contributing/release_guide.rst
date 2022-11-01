@@ -127,7 +127,7 @@ Create the release branch
 Publish the release
 ===================
 
-  The release is handled via |.github/workflows/release.yml|_.
+  The release is handled via :file:`.github/workflows/release.yml`.
 
   In a few minutes, check `PlasmaPy releases on PyPI`_ to make sure that
   version ``0.9.0rc1`` has been released and is marked as pre-release.
