@@ -49,18 +49,10 @@ Update metadata
 * Begin an upload to Zenodo_ for the new release using the
   ``team@plasmapy.org`` login, and reserve a DOI_.
 
-* Open a pull request to update :file:`docs/about/citation.rst` to
-  reflect the new version, and include the reserved DOI.
-
 * Open a pull request to update and alphabetize the author list in
-  :file:`docs/about/credits.rst`. Missing ORCID_ identifiers may be
+  :file:`docs/about/credits.rst`, :file:`.mailmap`, and |CITATION.cff|_, the
+  latter using the `Citation File Format`_. Missing ORCID_ identifiers may be
   added.
-
-* Open a pull request to update |CITATION.cff|_. Update the author list,
-  version, and other metadata, as needed. Update the DOI for the new
-  release. This file uses the `Citation File Format`_.
-
-* Open a pull request to update :file:`.mailmap`.
 
 .. Add a Python script here to update :file:`.mailmap`.
 
@@ -82,14 +74,6 @@ Perform code quality checks
      Apply the :guilabel:`No changelog entry needed` label to pull
      requests that change multiple changelog entries in order to skip
      the changelog entry check.
-
-* Open a pull request to ``main`` to update black_ and other pre-commit_
-  hooks to their most recent versions in :file:`.pre-commit-config.yaml`
-  for major and minor releases. Apply all changes by running:
-
-  .. code-block:: bash
-
-     pre-commit run --all-files
 
 * Open a pull request to re-execute pre-executed notebooks, such as
   those for charged particle radiography.
@@ -117,49 +101,10 @@ Perform code quality checks
 Create the release branch
 =========================
 
-* Enter the :file:`PlasmaPy` directory and create a new branch for the
-  release that is based off of the ``main`` branch. For a bugfix
-  release, this branch should already exist.
-
-  .. code-block:: bash
-
-     git checkout -b v0.9.x upstream main
-
-  The ``upstream`` remote corresponds to `PlasmaPy's GitHub repository`_.
-
-* Push the branch to `PlasmaPy's GitHub repository`_.
-
-  .. code-block:: bash
-
-     git push -u upstream
-
-* Open a pull request to transform the news fragments in
-  :file:`changelog/` to a changelog page.
-
-  - In the top-level directory, run:
-
-    .. code-block:: bash
-
-       towncrier build --version 0.9.0
-
-    When asked about removing changelog entries, do so.
-
-  - Copy the relevant parts of the generated :file:`CHANGELOG.rst` file
-    into :file:`docs/whatsnew/0.9.0.rst`.
-
-  - Add the entry for :file:`docs/whatsnew/0.9.0.rst` in the table of
-    contents in :file:`docs/whatsnew/index.rst`.
-
-    .. todo::
-
-        Immediately following the ``v0.8.1`` release, we made (or
-        planned to make) a few changes to the towncrier_ setup
-        (:pr:`1623`, :pr:`1626`, :issue:`1627`). This guide may require
-        some updates for the subsequent release.
-
-    .. todo::
-
-       We might be able to consolidate these steps into a single one.
+* Go to `the Release action <https://github.com/StanczakDominik/PlasmaPy/actions/workflows/release.yml>`_,
+  hit the Run workflow button, fill in the required values and hit Run
+  Workflow. Refresh the page and make sure the new job goes through. Fix
+  whatever made it fail.
 
 * For major and minor releases, activate the new branch's version on
   `on Read the Docs <https://readthedocs.org/projects/plasmapy/versions>`_.
@@ -182,28 +127,7 @@ Create the release branch
 Publish the release
 ===================
 
-.. There used to be a step here to use the hub tool with `hub ci-status
-   main -v [COMMIT]``. I kept getting a "Not Found" error when using the
-   hub tool, and I'm not sure why.
-
-.. Install `hub <https://hub.github.com/>`__ (if needed), and use it to
-   check that the continuous integration is passing.
-   ... code-block:: Shell
-      hub ci-status main -v [COMMIT]
-   Here, ``[COMMIT]`` is replaced by the hash from the latest commit on
-   the `main <https://github.com/PlasmaPy/PlasmaPy/commits/main>`__
-   branch of `PlasmaPy's GitHub repository`_.
-
-* Go to the GitHub page to `draft a new release`_. We will perform a
-  pre-release first.
-
-  - Set the :guilabel:`Target` to ``v0.9.x``.
-  - For :guilabel:`Choose a tag`, put ``0.9.0rc1``.
-  - Under title, put ``v0.9.0rc1``.
-  - Mark this as a pre-release.
-  - Click on :guilabel:`Publish release`.
-
-  The release is handled via |.github/workflows/python-publish.yml|_.
+  The release is handled via |.github/workflows/release.yml|_.
 
   In a few minutes, check `PlasmaPy releases on PyPI`_ to make sure that
   version ``0.9.0rc1`` has been released and is marked as pre-release.
@@ -229,7 +153,7 @@ Publish the release
   Fix any errors that arise, and re-run the :guilabel:`CI` and
   :guilabel:`fortnightly tests` checks.
 
-* Go to the GitHub page to `draft a new release`_. We will now perform
+* TODO this is out of date: Go to the GitHub page to `draft a new release`_. We will now perform
   the ``0.9.0`` release.
 
   - Set the :guilabel:`Target` to ``v0.9.x``.
