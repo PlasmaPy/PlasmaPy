@@ -827,9 +827,10 @@ class Particle(AbstractPhysicalParticle):
         if isinstance(other, str):
             try:
                 other_particle = Particle(other)
-                return self.symbol == other_particle.symbol
             except InvalidParticleError:
                 return False
+            else:
+                return self.symbol == other_particle.symbol
 
         if not isinstance(other, self.__class__):
             return NotImplemented
@@ -1313,12 +1314,13 @@ class Particle(AbstractPhysicalParticle):
         try:
             mass = self.nuclide_mass if self.isotope else self.mass
             energy = mass * const.c**2
-            return energy.to(u.J)
         except MissingParticleDataError:
             raise MissingParticleDataError(
                 f"The mass energy of {self.symbol} is not available "
                 f"because the mass is unknown."
             ) from None
+        else:
+            return energy.to(u.J)
 
     @property
     def binding_energy(self) -> u.J:
