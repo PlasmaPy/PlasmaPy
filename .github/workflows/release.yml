@@ -48,14 +48,17 @@ jobs:
 
     - name: Tag the release
       run: |
+        git config --global user.email "team@plasmapy.org"
+        git config --global user.name "PlasmaPy Automated Release Process"
         git tag "v${{ github.event.inputs.tag }}" -m "Version v{{ github.event.inputs.tag }}"
         git tag
   deploy:
     name: Deploy
     uses: OpenAstronomy/github-actions-workflows/.github/workflows/publish_pure_python.yml@v1
+    needs: [tag]
     with:
       test_extras: tests
-      test_command: pytest
+      test_command: pytest --pyargs plasmapy
       repository_url: https://test.pypi.org/legacy/
     secrets:
       pypi_token: ${{ secrets.TEST_PYPI_API_TOKEN }}
