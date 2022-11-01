@@ -461,7 +461,7 @@ def spectral_density(
             ions[ii] = Particle(ion)
         ions = ParticleList(ions)
     else:
-        raise ValueError(
+        raise TypeError(
             "The type of object provided to the ``ions`` keyword "
             f"is not supported: {type(ions)}"
         )
@@ -812,7 +812,7 @@ def spectral_density_model(wavelengths, settings, params):
             ions[ii] = Particle(ion)
         ions = ParticleList(ions)
     else:
-        raise ValueError(
+        raise TypeError(
             "The type of object provided to the ``ions`` keyword "
             f"is not supported: {type(ions)}"
         )

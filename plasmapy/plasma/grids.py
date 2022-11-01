@@ -734,7 +734,7 @@ class AbstractGrid(ABC):
                 # Case of >1 but != 3 is handled later
                 var[k] = [var[k]] * 3 if var[k].size == 1 else list(var[k])
             else:
-                raise ValueError(
+                raise TypeError(
                     f"The argument `{k}` must be an "
                     "`astropy.units.Quantity` or a list of same, "
                     f"but a {type(var[k])} was given."
@@ -750,7 +750,7 @@ class AbstractGrid(ABC):
         elif isinstance(var["num"], int):
             var["num"] = [var["num"]] * 3
         else:
-            raise ValueError(
+            raise TypeError(
                 f"The argument `num` must be an int or list of "
                 f"same, but a {type(var[k])} was given."
             )
