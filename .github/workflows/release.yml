@@ -34,17 +34,10 @@ jobs:
 
     - name: Update CITATION.cff, docs/about/citation.rst with the DOI for the new version.
       run: |
-        echo "TODO"
+        echo "TODO citation.cff: version, date-released, identifiers.value"
+        echo "TODO docs/about/citation.rst, |version_to_cite|, |doi_hyperlink|, |citation_year|"
 
-    - name: Update and alphabetize the author list in docs/about/credits.rst
-      run: |
-        echo "TODO, just alphabetize"
-    # Open a pull request to update .mailmap. - out of scope
-    #
-
-    # - name: Run pre-commit checks
-    #   run: pre-commit run --all-files
-    # - n
+    # out of scope - name: Update and alphabetize the author list in docs/about/credits.rst; mailmap
 
     - name: Setup git
       run: |
@@ -82,5 +75,6 @@ jobs:
       test_extras: tests
       test_command: pytest --pyargs plasmapy
       repository_url: https://test.pypi.org/legacy/
+      upload_to_pypi: refs/tags/v
     secrets:
       pypi_token: ${{ secrets.TEST_PYPI_API_TOKEN }}
