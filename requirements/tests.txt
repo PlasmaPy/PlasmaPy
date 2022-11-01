@@ -16,7 +16,6 @@ flake8-rst-docstrings
 flake8-simplify
 flake8-use-fstring
 flake8-use-pathlib
-flake8-useless-assert
 hypothesis
 pydocstyle
 pytest-regressions
