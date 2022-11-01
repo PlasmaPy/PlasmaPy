@@ -334,10 +334,10 @@ class ClassicalTransport:
         if m_i is None:
             try:
                 self.m_i = particles.particle_mass(ion)
-            except InvalidParticleError:
+            except InvalidParticleError as ex:
                 raise ValueError(
                     f"Unable to find mass of particle: {ion} in ClassicalTransport"
-                )
+                ) from ex
         else:
             self.m_i = m_i
         self.Z = _grab_charge(ion, Z) * u.dimensionless_unscaled

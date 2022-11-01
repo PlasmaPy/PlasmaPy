@@ -1923,8 +1923,8 @@ class DimensionlessParticle(AbstractParticle):
 
         try:
             new_obj = np.float64(obj)
-        except TypeError:
-            raise TypeError(f"Cannot convert {obj} to numpy.float64.")
+        except TypeError as ex:
+            raise TypeError(f"Cannot convert {obj} to numpy.float64.") from ex
 
         if hasattr(new_obj, "__len__"):
             raise TypeError("Expecting a real number, not a collection.")

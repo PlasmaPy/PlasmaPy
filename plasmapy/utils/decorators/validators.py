@@ -345,8 +345,8 @@ class ValidateQuantities(CheckUnits, CheckValues):
         else:
             try:
                 arg = arg * arg_validations["units"][0]
-            except (TypeError, ValueError):
-                raise TypeError(typeerror_msg)
+            except (TypeError, ValueError) as ex:
+                raise TypeError(typeerror_msg) from ex
             else:
                 warnings.warn(
                     u.UnitsWarning(

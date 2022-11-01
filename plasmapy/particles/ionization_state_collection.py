@@ -707,11 +707,11 @@ class IonizationStateCollection:
                 new_keys_dict = {}
                 for old_key in old_keys:
                     new_keys_dict[particle_symbol(old_key)] = old_key
-            except ParticleError:
+            except ParticleError as ex:
                 raise ParticleError(
                     f"The key {repr(old_key)} in the abundances "
                     f"dictionary is not a valid element or isotope."
-                )
+                ) from ex
 
             new_elements = new_keys_dict.keys()
 

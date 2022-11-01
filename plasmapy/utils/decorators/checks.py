@@ -946,7 +946,7 @@ class CheckUnits(CheckBase):
             except TypeError as err:
                 # not a unit type
                 if not from_annotations:
-                    raise err
+                    raise
 
                 continue
 
@@ -1374,8 +1374,8 @@ def _check_relativistic(V, funcname, betafrac=0.05):
 
     try:
         V_over_c = (V / c).to_value(u.dimensionless_unscaled)
-    except u.UnitConversionError:
-        raise u.UnitConversionError(errmsg)
+    except u.UnitConversionError as ex:
+        raise u.UnitConversionError(errmsg) from ex
 
     beta = np.max(np.abs(V_over_c))
 

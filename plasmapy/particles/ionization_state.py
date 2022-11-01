@@ -134,8 +134,8 @@ class IonicLevel:
         else:
             try:
                 out_of_range = ionfrac < 0 or ionfrac > 1
-            except TypeError:
-                raise TypeError(f"Invalid ionic fraction: {ionfrac}")
+            except TypeError as ex:
+                raise TypeError(f"Invalid ionic fraction: {ionfrac}") from ex
             else:
                 if out_of_range:
                     raise ValueError("The ionic fraction must be between 0 and 1.")
