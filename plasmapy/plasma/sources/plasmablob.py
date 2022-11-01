@@ -7,7 +7,7 @@ import astropy.units as u
 import warnings
 
 from plasmapy.formulary import quantum_theta
-from plasmapy.formulary.collisions import lengths
+from plasmapy.formulary.collisions import dimensionless
 from plasmapy.formulary.misc import _grab_charge
 from plasmapy.particles import particle_mass
 from plasmapy.plasma.plasma_base import GenericPlasma
@@ -134,7 +134,7 @@ class PlasmaBlob(GenericPlasma):
         are important. This compares Coulomb potential energy to thermal
         kinetic energy.
         """
-        couple = lengths.coupling_parameter(
+        couple = dimensionless.coupling_parameter(
             self.T_e, self.n_e, (self.particle, self.particle), self.Z
         )
         if couple < 0.01:
