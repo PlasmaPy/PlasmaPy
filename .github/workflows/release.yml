@@ -79,6 +79,6 @@ jobs:
       test_extras: tests
       test_command: pytest --pyargs plasmapy
       repository_url: https://test.pypi.org/legacy/
-      upload_to_pypi: refs/tags/
+      upload_to_pypi: true
     secrets:
       pypi_token: ${{ secrets.TEST_PYPI_API_TOKEN }}
