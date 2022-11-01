@@ -71,7 +71,7 @@ jobs:
     - name: Create branch and push to it # TODO push tag
       run: |
         git switch -c "v${{ github.event.inputs.tag }}"
-        git push
+        git push -u origin
   deploy:
     name: Deploy
     uses: OpenAstronomy/github-actions-workflows/.github/workflows/publish_pure_python.yml@v1
