@@ -57,7 +57,7 @@ jobs:
         sed -i -e :a -e '/^\n*$/{$d;N;ba' -e '}' docs/whatsnew/${{ github.event.inputs.tag }}.rst   # strip empty lines
         git add .
         towncrier build --yes --version ${{ github.event.inputs.tag }}
-        git commit -nm "Add changelog entries for v${{ github.event.inputs.tag }}"
+        git commit --allow-empty -nm "Add changelog entries for v${{ github.event.inputs.tag }}"
 
     - name: Update and run pre-commit
       run: |
