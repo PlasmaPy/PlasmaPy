@@ -57,7 +57,8 @@ jobs:
       run: |
         pre-commit autoupdate
         pre-commit run --all-files
-        git commit -nm "Apply pre-commit fixes"
+        git add .
+        git commit -nm "Apply pre-commit autoupdates and fixes"
 
     - name: Tag the release
       run: |
