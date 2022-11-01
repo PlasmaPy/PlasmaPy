@@ -71,8 +71,9 @@ jobs:
     - name: Create branch and push to it # TODO push tag
       run: |
         VERSION="v${{ github.event.inputs.tag }}"
-        git switch -c "${VERSION%?}x"  # replace last char with x
-        git push -u origin "v${{ github.event.inputs.tag }}"
+        BRANCH="${VERSION%?}x"
+        git switch -c $BRANCH  # replace last char with x
+        git push -u origin $VERSION $BRANCH
   deploy:
     name: Deploy
     uses: OpenAstronomy/github-actions-workflows/.github/workflows/publish_pure_python.yml@v1
