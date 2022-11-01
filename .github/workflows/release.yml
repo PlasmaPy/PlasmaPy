@@ -16,19 +16,36 @@ on:
 jobs:
   tag:
     runs-on: ubuntu-latest
-    needs: [CI]
     steps:
+
     - name: Checkout code
       uses: actions/checkout@v3
       with:
         fetch-depth: 0
+
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
         python-version: ${{ matrix.python }}
+
     - name: Install dependencies
       run: |
-        pip install towncrier xonsh
+        pip install towncrier xonsh pre-commit
+
+    - name: Update CITATION.cff, docs/about/citation.rst with the DOI for the new version.
+      run: |
+        echo "TODO"
+
+    - name: Update and alphabetize the author list in docs/about/credits.rst
+      run: |
+        echo "TODO, just alphabetize"
+    # Open a pull request to update .mailmap. - out of scope
+    #
+
+    # - name: Run pre-commit checks
+    #   run: pre-commit run --all-files
+    # - n
+
     - name: Tag the release
       run: |
         git tag "v${{ github.event.inputs.tag }}" -m "Version v{{ github.event.inputs.tag }}"
