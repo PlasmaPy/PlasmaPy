@@ -1599,6 +1599,7 @@ class Test_Knudsen_number:
         assert_can_handle_nparray(Knudsen_number, insert_some_nans, insert_all_nans, {})
 
 
+@pytest.mark.slow
 class Test_coupling_parameter:
     @classmethod
     def setup_class(cls):
