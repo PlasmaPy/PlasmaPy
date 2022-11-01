@@ -265,7 +265,7 @@ class ValidateQuantities(CheckUnits, CheckValues):
                         f"inconsistent between function annotations "
                         f"({validations[arg_name]['none_shall_pass']}) and decorator "
                         f"argument ({_none_shall_pass})."
-                    )
+                    )  # noqa: TC301
 
                 validations[arg_name]["none_shall_pass"] = _none_shall_pass
             except (KeyError, TypeError):
