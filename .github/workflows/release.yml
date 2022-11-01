@@ -6,12 +6,17 @@ on:
       tag:
         description: Release tag
         required: true
-        default: v0.9.0
+        default: v0.9.0.relasetest
+      DOI:
+        description: Reserved DOI from Zenodo
+        required: true
+        default: 10.5281/zenodo.1238132
+
 
 jobs:
-  deploy:
-    name: Deploy
+  tag:
     runs-on: ubuntu-latest
+    needs: [CI]
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
@@ -21,6 +26,19 @@ jobs:
       uses: actions/setup-python@v4
       with:
         python-version: ${{ matrix.python }}
-    - name: Confirmatory message
+    - name: Install dependencies
       run: |
-        echo "Log level: ${{ github.event.inputs.tag }}"
+        pip install towncrier xonsh
+    - name: Tag the release
+      run: |
+        git tag "v${{ github.event.inputs.tag }}" -m "Version v{{ github.event.inputs.tag }}"
+        git tag
+  deploy:
+    name: Deploy
+    uses: OpenAstronomy/github-actions-workflows/.github/workflows/publish_pure_python.yml@v1
+    with:
+      test_extras: tests
+      test_command: pytest
+      repository_url: https://test.pypi.org/legacy/
+    secrets:
+      pypi_token: ${{ secrets.TEST_PYPI_API_TOKEN }}
