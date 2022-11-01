@@ -46,11 +46,13 @@ jobs:
     #   run: pre-commit run --all-files
     # - n
 
-    - name: Tag the release
+    - name: Setup git
       run: |
         git config --global user.email "team@plasmapy.org"
         git config --global user.name "PlasmaPy Automated Release Process"
-        git tag "v${{ github.event.inputs.tag }}" -m "Version v{{ github.event.inputs.tag }}"
+    - name: Tag the release
+      run: |
+        git tag "${{ github.event.inputs.tag }}" -m "Version {{ github.event.inputs.tag }}"
         git tag
   deploy:
     name: Deploy
