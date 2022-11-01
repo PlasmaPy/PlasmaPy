@@ -34,40 +34,7 @@ def Coulomb_logarithm(
     method="classical",
 ):
     r"""
-    Coulomb logarithms
-    ==================
-
-    Please read the documentation of
-    `~plasmapy.collisions.coulomb.Coulomb_logarithm` below for an
-    explanation of the seven PlasmaPy-supported methods of computing the
-    Coulomb logarithm.
-
-    Coulomb collisions
-    ==================
-
-    Coulomb collisions are collisions where the interaction force is
-    conveyed via the electric field, instead of any kind of contact
-    force. They usually result in relatively small deflections of particle
-    trajectories. However, given that there are many charged particles in a
-    plasma, one has to take into account the cumulative effects of many such
-    collisions.
-
-    Collision rates
-    ===============
-
-    The module gathers a few functions helpful for calculating collision
-    rates between particles. The most general of these is
-    `~plasmapy.collisions.frequencies.SingleParticleCollisionFrequencies`.
-
-    Macroscopic properties
-    ======================
-
-    These include:
-
-    * `~plasmapy.formulary.collisions.dimensionless.Knudsen_number`
-    * `~plasmapy.formulary.collisions.dimensionless.coupling_parameter`
-    * `~plasmapy.formulary.collisions.misc.Spitzer_resistivity`
-    * `~plasmapy.formulary.collisions.misc.mobility`
+    Compute the Coulomb logarithm.
 
     Parameters
     ----------
