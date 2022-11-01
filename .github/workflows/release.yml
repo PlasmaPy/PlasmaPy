@@ -70,7 +70,7 @@ jobs:
         git tag
     - name: Create branch and push to it # TODO push tag
       run: |
-        git switch -c "v{{ github.event.inputs.tag }}"
+        git switch -c "v${{ github.event.inputs.tag }}"
         git push
   deploy:
     name: Deploy
