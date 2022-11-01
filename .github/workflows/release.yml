@@ -6,7 +6,7 @@ on:
       tag:
         description: Release tag
         required: true
-        default: v0.9.0.relasetest
+        default: 0.9.0.relasetest
       DOI:
         description: Reserved DOI from Zenodo
         required: true
@@ -53,15 +53,14 @@ jobs:
 
     - name: Create changelog
       run: |
-        towncrier --yes --version ${{ github.event.inputs.tag }}
-        # Copy the relevant parts of the generated CHANGELOG.rst file into docs/whatsnew/0.9.0.rst.
-        # Add the entry for docs/whatsnew/0.9.0.rst in the table of contents in docs/whatsnew/index.rst.
-        git add .
-        git commit -nm "Add changelog entries for ${{ github.event.inputs.tag }}"
+        towncrier build --yes --version ${{ github.event.inputs.tag }}
+        # TODO Copy the relevant parts of the generated CHANGELOG.rst file into docs/whatsnew/0.9.0.rst.
+        # TODO Add the entry for docs/whatsnew/0.9.0.rst in the table of contents in docs/whatsnew/index.rst.
+        git commit -nm "Add changelog entries for v${{ github.event.inputs.tag }}"
 
     - name: Tag the release
       run: |
-        git tag "${{ github.event.inputs.tag }}" -m "Version {{ github.event.inputs.tag }}"
+        git tag "v${{ github.event.inputs.tag }}" -m "Version v{{ github.event.inputs.tag }}"
         git tag
   deploy:
     name: Deploy
