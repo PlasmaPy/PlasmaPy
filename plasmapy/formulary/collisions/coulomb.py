@@ -1,7 +1,15 @@
-"""This module contains functionality for calculating Coulomb
+"""
+This module contains functionality for calculating Coulomb
 parameters for different configurations. Including a number of
 functions for handling Coulomb collisions spanning weakly coupled
 (low density) to strongly coupled (high density) regimes.
+
+Coulomb collisions are collisions where the interaction force is
+conveyed via the electric field, instead of any kind of contact
+force. They usually result in relatively small deflections of particle
+trajectories. However, given that there are many charged particles in a
+plasma, one has to take into account the cumulative effects of many such
+collisions.
 """
 
 __all__ = [
