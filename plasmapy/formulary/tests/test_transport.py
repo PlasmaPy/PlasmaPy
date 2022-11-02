@@ -288,9 +288,7 @@ class Test_classical_transport:
             cl_ii = Coulomb_logarithm(
                 self.T_i, self.n_e, [self.ion, self.ion], self.V_ii
             )
-            cl_ei = coulomb.Coulomb_logarithm(
-                self.T_e, self.n_e, ["e", self.ion], self.V_ei
-            )
+            cl_ei = Coulomb_logarithm(self.T_e, self.n_e, ["e", self.ion], self.V_ei)
             testTrue = cl_ii == ct2.coulomb_log_ii
             errStr = (
                 f"Ion-ion coulomb logarithm should be {cl_ii} "
