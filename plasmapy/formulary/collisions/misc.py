@@ -2,8 +2,6 @@
 Module of miscellaneous parameters related to collisions.
 """
 __all__ = [
-    "_process_inputs",
-    "_replace_nan_velocity_with_thermal_velocity",
     "mobility",
     "Spitzer_resistivity",
 ]
