@@ -36,7 +36,7 @@ from plasmapy.formulary.braginskii import (
     resistivity,
     thermoelectric_conductivity,
 )
-from plasmapy.formulary.collisions import coulomb
+from plasmapy.formulary.collisions import Coulomb_logarithm
 from plasmapy.formulary.dimensionless import Hall_parameter
 from plasmapy.particles.atomic import charge_number, particle_mass
 from plasmapy.particles.exceptions import InvalidParticleError
