@@ -1,0 +1,2 @@
+Refactored `~plasmapy.formulary.collisions`, resolve
+issue with plasmapy/formulary/tests/test_collisions.py
