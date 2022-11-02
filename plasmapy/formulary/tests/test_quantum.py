@@ -156,6 +156,7 @@ def test_Wigner_Seitz_radius():
     assert testTrue, errStr
 
 
+@pytest.mark.slow
 class TestChemicalPotential:
 
     value_test_parameters = (
