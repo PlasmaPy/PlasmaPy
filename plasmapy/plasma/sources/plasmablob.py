@@ -133,7 +133,7 @@ class PlasmaBlob(GenericPlasma):
         are important. This compares Coulomb potential energy to thermal
         kinetic energy.
         """
-        couple = dimensionless.coupling_parameter(
+        couple = coupling_parameter(
             self.T_e, self.n_e, (self.particle, self.particle), self.Z
         )
         if couple < 0.01:
