@@ -6,8 +6,7 @@ __all__ = ["PlasmaBlob"]
 import astropy.units as u
 import warnings
 
-from plasmapy.formulary import quantum_theta
-from plasmapy.formulary.collisions import dimensionless
+from plasmapy.formulary import coupling_parameter, quantum_theta
 from plasmapy.formulary.misc import _grab_charge
 from plasmapy.particles import particle_mass
 from plasmapy.plasma.plasma_base import GenericPlasma
