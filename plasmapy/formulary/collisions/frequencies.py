@@ -835,8 +835,9 @@ def fundamental_electron_collision_freq(
         methods are ``"ls_min_interp"``, ``"ls_full_interp"``,
         ``"ls_clamp_mininterp"``, ``"hls_min_interp"``,
         ``"hls_max_interp"``, and ``"hls_full_interp"``.  Please refer
-        to the docstring of `Coulomb_logarithm` for more information
-        about these methods.
+        to the docstring of
+        `~plasmapy.formulary.collisions.coulomb.Coulomb_logarithm` for
+        more information about these methods.
 
     Returns
     -------
@@ -948,7 +949,7 @@ def fundamental_ion_collision_freq(
         class.  To replicate the functionality of
         `~plasmapy.formulary.collisions.frequencies.fundamental_ion_collision_freq`,
         create a
-        `~plasmapy.formulary.collisions.frequencies..MaxwellianCollisionFrequencies`
+        `~plasmapy.formulary.collisions.frequencies.MaxwellianCollisionFrequencies`
         class and access the ``Maxwellian_avg_ii_collision_freq``
         attribute.
 
@@ -979,7 +980,9 @@ def fundamental_ion_collision_freq(
     coulomb_log : `float` or dimensionless `~astropy.units.Quantity`, optional
         Option to specify a Coulomb logarithm of the electrons on the
         ions.  If not specified, the Coulomb log will is calculated
-        using the ~plasmapy.formulary.Coulomb_logarithm function.
+        using the
+        `~plasmapy.formulary.collisions.coulomb.Coulomb_logarithm`
+        function.
 
     coulomb_log_method : `str`, optional
         The method by which to compute the Coulomb logarithm.  The
@@ -988,8 +991,9 @@ def fundamental_ion_collision_freq(
         methods are ``"ls_min_interp"``, ``"ls_full_interp"``,
         ``"ls_clamp_mininterp"``, ``"hls_min_interp"``,
         ``"hls_max_interp"``, and ``"hls_full_interp"``.  Please refer
-        to the docstring of `Coulomb_logarithm` for more information
-        about these methods.
+        to the docstring of
+        `~plasmapy.formulary.collisions.coulomb.Coulomb_logarithm` for
+        more information about these methods.
 
     Returns
     -------

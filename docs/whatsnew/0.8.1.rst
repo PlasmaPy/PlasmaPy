@@ -313,7 +313,7 @@ Bug Fixes
 - Fixed the ``Z`` dependence in
   `~plasmapy.formulary.collisions.frequencies.fundamental_electron_collision_freq`,
   by replacing ``n_e`` with ``n_i`` while calling
-  `~plasmapy.formulary.collisions.frequencies.frequencies.collision_frequency`. (`#1546
+  `~plasmapy.formulary.collisions.frequencies.collision_frequency`. (`#1546
   <https://github.com/plasmapy/plasmapy/pull/1546>`__)
 - Updated the regular expression matching used by
   `~plasmapy.particles.particle_class.Particle` to parse and identify

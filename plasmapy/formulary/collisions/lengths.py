@@ -155,8 +155,9 @@ def impact_parameter(
         methods are ``"ls_min_interp"``, ``"ls_full_interp"``,
         ``"ls_clamp_mininterp"``, ``"hls_min_interp"``,
         ``"hls_max_interp"``, and ``"hls_full_interp"``.  Please refer
-        to the docstring of `Coulomb_logarithm` for more information
-        about these methods.
+        to the docstring of
+        `~plasmapy.formulary.collisions.coulomb.Coulomb_logarithm` for
+        more information about these methods.
 
     Returns
     -------
