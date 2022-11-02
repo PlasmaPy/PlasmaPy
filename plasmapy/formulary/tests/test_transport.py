@@ -285,7 +285,7 @@ class Test_classical_transport:
             ct2 = ClassicalTransport(
                 T_e=self.T_e, n_e=self.n_e, T_i=self.T_i, n_i=self.n_i, ion=self.ion
             )
-            cl_ii = coulomb.Coulomb_logarithm(
+            cl_ii = Coulomb_logarithm(
                 self.T_i, self.n_e, [self.ion, self.ion], self.V_ii
             )
             cl_ei = coulomb.Coulomb_logarithm(
