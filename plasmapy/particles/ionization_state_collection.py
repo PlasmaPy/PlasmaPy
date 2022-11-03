@@ -218,19 +218,19 @@ class IonizationStateCollection:
                     tol=self.tol,
                 )
 
-        except (ChargeError, KeyError, TypeError) as exc:
-            raise IndexError(errmsg) from exc
-        else:
             if not isinstance(int_charge, Integral):
-                raise TypeError(f"{int_charge} is not a valid charge for {particle}.")
+                raise TypeError(  # noqa: TC301
+                    f"{int_charge} is not a valid charge for {particle}."
+                )
             elif not 0 <= int_charge <= atomic_number(particle):
                 raise ChargeError(f"{int_charge} is not a valid charge for {particle}.")
-        finally:
             return IonicLevel(
                 ion=particle_symbol(particle, Z=int_charge),
                 ionic_fraction=self.ionic_fractions[particle][int_charge],
                 number_density=self.number_densities[particle][int_charge],
             )
+        except (ChargeError, KeyError, TypeError) as exc:
+            raise IndexError(errmsg) from exc
 
     def __setitem__(self, key, value):
 
@@ -302,7 +302,7 @@ class IonizationStateCollection:
                         f"defined."
                     )
 
-        try:  # noqa: TC101
+        try:
             new_fractions = np.array(value, dtype=float)
         except TypeError as exc:
             raise TypeError(
