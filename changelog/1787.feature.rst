@@ -1,2 +1,2 @@
-Added the timescale functionaly contained in
+Added the timescale functionality contained in
 the ``plasmapy.formulary`` module.
