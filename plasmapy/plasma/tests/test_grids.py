@@ -147,7 +147,7 @@ create_args = [
     # Test incompatible grid units
     ([1 * u.cm, 1 * u.eV], {"num": 10}, None, ValueError),
     # Non-integer num
-    ([-1 * u.cm, 1 * u.cm], {"num": 10.1}, (10, 10, 10), ValueError),
+    ([-1 * u.cm, 1 * u.cm], {"num": 10.1}, (10, 10, 10), TypeError),
 ]
 
 
@@ -166,11 +166,7 @@ def test_AbstractGrid_creation(args, kwargs, shape, error):
     # If an exception is expected, verify that it is raised
     else:
         with pytest.raises(error):
-            print()
-            print(f"{args = }")
-            print(f"{kwargs = }")
-            print()
-            grid = grids.CartesianGrid(*args, **kwargs)
+            grids.CartesianGrid(*args, **kwargs)
 
 
 def test_print_summary(abstract_grid_uniform, abstract_grid_nonuniform):
