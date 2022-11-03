@@ -304,7 +304,7 @@ class IonizationStateCollection:
                         f"defined."
                     )
 
-        try:
+        try:  # noqa: TC101
             new_fractions = np.array(value, dtype=float)
         except TypeError as exc:
             raise TypeError(
