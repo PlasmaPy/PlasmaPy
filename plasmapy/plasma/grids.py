@@ -724,7 +724,7 @@ class AbstractGrid(ABC):
 
                 # Make sure it's a list of quantities
                 if not all(isinstance(v, u.Quantity) for v in var[k]):
-                    raise ValueError(
+                    raise TypeError(
                         f"The argument `{k}` must be an "
                         "`astropy.units.Quantity` or a list of same, "
                         f"but a {type(var[k])} was given."
@@ -759,7 +759,7 @@ class AbstractGrid(ABC):
         # (throws exception if user supplies a list of two, say)
         for k in var:
             if len(var[k]) != 3:
-                raise ValueError(
+                raise TypeError(
                     f"{k} must be either a single value or a "
                     "list of three values, but "
                     f"({len(var[k])} values were given)."
