@@ -472,7 +472,7 @@ def spectral_density(
 
     try:
         if sum(ion.charge_number <= 0 for ion in ions):
-            raise ValueError("All ions must be positively charged.")
+            raise ValueError("All ions must be positively charged.")  # noqa: TC301
     # Catch error if charge information is missing
     except ChargeError as ex:
         raise ValueError("All ions must be positively charged.") from ex
@@ -823,7 +823,7 @@ def spectral_density_model(wavelengths, settings, params):
 
     try:
         if sum(ion.charge_number <= 0 for ion in ions):
-            raise ValueError("All ions must be positively charged.")
+            raise ValueError("All ions must be positively charged.")  # noqa: TC301
     # Catch error if charge information is missing
     except ChargeError as ex:
         raise ValueError("All ions must be positively charged.") from ex
