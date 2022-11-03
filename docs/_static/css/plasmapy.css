@@ -67,6 +67,14 @@ div.graphviz {
     margin-bottom: 0 !important;
 }
 
+/*
+ * Patch for overflow wrapping caused by sphinx_rtd_theme==1.1.0
+ * See https://github.com/PlasmaPy/PlasmaPy/issues/1784
+ */
+.rst-content p a code {
+    overflow-wrap: normal;
+}
+
 /* Remove excess bottom margin for table headings */
 .rst-content table.docutils thead p {
     margin-bottom: 0;

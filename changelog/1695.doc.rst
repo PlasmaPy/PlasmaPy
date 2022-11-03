@@ -1,2 +1,2 @@
-Added explanatory text to Notes sections in the docstrings for
+Added explanatory text to the "Notes" sections in the docstrings for
 functions within `~plasmapy.formulary.magnetostatics`.

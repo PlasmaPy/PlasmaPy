@@ -1,0 +1,4 @@
+Refactored `~plasmapy.formulary.collisions`.  The file
+:file:`collisions.py` was converted into a subpackage (directory) and
+it's contents was split into appropriately categorized and named
+sub-modules (files).

@@ -1,0 +1,2 @@
+Added a step to validate |CITATION.cff|_ as part of the ``linters``
+tox_ testing environment.
