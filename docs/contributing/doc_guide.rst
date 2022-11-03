@@ -951,103 +951,130 @@ Docstring guidelines
   formulae, derivations, and extensive discussions of physics or math in
   the "Notes" section.
 
-* Describe each :term:`parameter` in the "Parameters_" section of the
-  docstring with the following format:
+* Private code objects (e.g., code objects that begin with a single
+  underscore, like ``_private_object``) should have docstrings. A
+  docstring for a private code object may be a single line, and
+  otherwise should be in numpydoc_ format.
 
-  .. code-block:: rst
+* Docstrings for private code objects do not get rendered in the
+  online documentation, and should be intended for contributors.
 
-     parameter_name : type description
-        Parameter description.
+Parameters
+~~~~~~~~~~
 
-  Some examples are:
+Describe each :term:`parameter` in the "Parameters_" section of the
+docstring using the following format:
+
+.. code-block:: rst
+
+   parameter_name : type description
+      Parameter description.
+
+Some examples are:
+
+.. code-block:: rst
+
+   x : `float`
+      Description of ``x``.
+
+   y : `int`
+      Description of ``y``.
+
+   settings : `dict` of `str` to `int`
+      Description of ``settings``.
+
+The **type description** should include size information; type
+information; valid options for the parameter; whether the parameter
+is optional, |keyword-only|, or positional-only; and/or default values.
+
+Example of type descriptions include:
+
+.. code-block:: rst
+
+   |particle-like|
+   `list` of `str`
+   |array_like| of `int`, default: [-1, 1]
+   |Quantity| [length], default: 10 m
+   |Quantity| [temperature, energy], |keyword-only|, default: 0 K
+
+* If the shapes and sizes of the parameters are interrelated, then
+  include that information in parentheses immediately before the type
+  information. Include a trailing comma inside the parentheses when the
+  parameter is 1D. Use ``...`` to represent an arbitrary number of
+  dimensions of arbitrary size.
 
   .. code-block:: rst
 
      Parameters
      ----------
-     x : float
-        Description of ``x``.
+     x_positions : (M,) |array_like|
+         ...
 
-     y : bool, default: True
-        Description of ``y``.
+     y_positions : (N,) |array_like|
+         ...
 
-  * The **type description** should include size information; type
-    information; available choices for the parameter; whether the
-    parameter is optional, |keyword-only|, or positional-only; and
-    default values.
+     image : (M, N) |array_like|
+         ...
 
-    Size information should be included in parentheses at the beginning
-    of the type description:
+* Use the substitution ``|array_like|`` to indicate that an |array_like|
+  argument should be able to be converted into an |ndarray|.
 
-    .. link to section on substitutions
+* Use the substitution ``|particle-like|`` to indicate that a
+  |particle-like| argument should be convertible into a |Particle|,
+  |CustomParticle|, or |ParticleList|. Similarly, use
+  ``|particle-list-like|`` to indicate that an argument should be
+  convertible into a |ParticleList|.
 
-    .. code-block:: rst
+* Use |atom-like| to...
 
-       (M,) |array_like|
-       (N,) |array_like|
-       (M, N) |array_like|
-       (M, N, ...) |array_like|
 
-    Additional examples for type descriptions include:
+If a default is given, it is not necessary to state that the
+parameter is optional. When the default is `None`, use ``optional``
+instead of ``default: `None```.
 
-    .. code-block:: rst
+.. note::
 
-       |particle-like|
-       `list` of `str`
-       |array_like| of `int`, default: [-1, 1]
-       |Quantity| [length], default: 10 m
-       |Quantity| [temperature, energy], |keyword-only|, default: 0 K
+   Many of these conventions and examples come from the `numpydoc
+   style guide
+   <https://numpydoc.readthedocs.io/en/latest/format.html#parameters>`__
+   or the `matplotlib documentation guide
+   <https://matplotlib.org/stable/devel/documenting_mpl.html#parameter-type-descriptions>`__.
 
-    If a default is given, it is not necessary to state that the
-    parameter is optional. When the default is `None`, use ``optional``
-    instead of ``default: `None```.
-
-    .. note::
-
-       Many of these conventions and examples come from the `numpydoc
-       style guide
-       <https://numpydoc.readthedocs.io/en/latest/format.html#parameters>`__
-       or the `matplotlib documentation guide
-       <https://matplotlib.org/stable/devel/documenting_mpl.html#parameter-type-descriptions>`__.
-
-  * The **parameter description** should include the meaning of the
-    parameter. Information from the type description may be included if
-    the information is complicated and/or different types correspond to
-    different meanings.
+* The **parameter description** should include the meaning of the
+  parameter. Information from the type description may be included if
+  the information is complicated and/or different types correspond to
+  different meanings.
 
 
 
 
 
 
-  * Describe any requirements for the parameter, including preconditions
-    specified using |validate_quantities| or |particle_input|.
+* Describe any requirements for the parameter, including preconditions
+  specified using |validate_quantities| or |particle_input|.
 
-  * Use the substitution ``|array_like|`` to indicate that an
-    |array_like| argument should be able to be converted into an
-    |ndarray|.
 
-  * If the shapes and sizes of the parameters are interrelated, then
-    include that information in parentheses immediately before the type
-    information. Include a trailing comma inside the parentheses when
-    the parameter is 1D.
 
-    .. code-block:: rst
 
-       Parameters
-       ----------
-       a : (M,) array_like
-           First input vector.
 
-       b : (N,) array_like
-           Second input vector.
+  Use an asterisk (``*``) for a dimension that can be of arbitrary
+  size, and an ellipsis (``...``) to represent an arbitrary number of
+  dimensions that can each be of arbitrary size.
 
-       out : (M, N) ndarray, optional
-           A location where the result is stored.
+* For functions that accept an arbitrary number of positional and/or
+  keyword arguments, include them in the "Parameters_" section with the
+  preceding asterisk(s).
 
-    Use an asterisk (``*``) for a dimension that can be of arbitrary
-    size, and an ellipsis (``...``) to represent an arbitrary number of
-    dimensions that can each be of arbitrary size.
+  .. code-block:: rst
+
+     *args : tuple, optional
+         Description of positional arguments.
+
+     **kwargs : dict, optional
+         Description of keyword arguments.
+
+Exceptions and warnings
+~~~~~~~~~~~~~~~~~~~~~~~
 
 * Docstrings may include a "Raises_" section that describes which
   exceptions get raised and under what conditions, and a "Warns_"
@@ -1073,13 +1100,8 @@ Docstring guidelines
     included in these sections, but may be included if there is
     strong justification to do so.
 
-* Private code objects (e.g., code objects that begin with a single
-  underscore, like ``_private_object``) should have docstrings. A
-  docstring for a private code object may be a single line, and
-  otherwise should be in numpydoc_ format.
-
-  * Docstrings for private code objects do not get rendered in the
-    online documentation, and should be intended for contributors.
+Attributes
+~~~~~~~~~~
 
 * Dunder methods (e.g., code objects like ``__add__`` that begin and end
   with two underscores) only need docstrings if it is necessary to
