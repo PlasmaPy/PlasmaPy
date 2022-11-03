@@ -113,7 +113,9 @@ authors:
   family-names: Carroll
   alias: seanwilliamcarroll
 
-- alias: cclauss
+- given-names: Christian
+  family-names: Clauss
+  alias: cclauss
 
 - given-names: Sean
   family-names: Chambers
@@ -243,6 +245,10 @@ authors:
   family-names: Johnson
   affiliation: University of Delaware
   alias: etjohnson
+
+- given-names: Marcin
+  family-names: Kastek
+  alias: MKastek
 
 - given-names: James
   family-names: Kent
@@ -384,9 +390,11 @@ authors:
   family-names: Rao
   alias: thecasuist
 
-- alias: seanjunheng2
+- given-names: Jayden
+  family-names: Roberts
+  alias: JaydenR2305
 
-- alias: siddharthk07
+- alias: seanjunheng2
 
 - given-names: Steve
   family-names: Richardson
@@ -429,6 +437,10 @@ authors:
   affiliation: Michigan State University
   orcid: https://orcid.org/0000-0003-3530-7910
   alias: lucianogsilvestri
+
+- given-names: Trestan
+  family-names: Simon
+  alias: TrestanSimon
 
 - given-names: Angad
   family-names: Singh
@@ -482,6 +494,11 @@ authors:
   affiliation: Laboratory for Atmospheric and Space Physics
   orcid: https://orcid.org/0000-0002-8335-1441
   alias: tien-vo
+
+- given-names: Tingfeng
+  family-names: Wu
+  orcid: https://orcid.org/0000-0001-8745-204X
+  alias: elliotwutingfeng
 
 - given-names: Sixue
   family-names: Xu

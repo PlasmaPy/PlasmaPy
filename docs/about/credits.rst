@@ -114,7 +114,6 @@ in parentheses are `ORCID author identifiers <https://orcid.org>`__.
 * :user:`seanjunheng2`
 * :user:`Shane Brown <Sjbrownian>`
 * :user:`Siddharth Kulshrestha <siddharthk07>`
-* :user:`siddharthk07`
 * `Silvina Guidoni <https://www.american.edu/cas/faculty/guidoni.cfm>`_
 * :user:`Sixue Xu <hzxusx>`
 * :user:`Steve Richardson <arichar6>` (:orcid:`0000-0002-3056-6334`)
