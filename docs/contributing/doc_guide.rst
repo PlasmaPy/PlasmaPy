@@ -956,7 +956,7 @@ Docstring guidelines
 
   .. code-block:: rst
 
-     parameter_name : type line
+     parameter_name : type description
         Parameter description.
 
   Some examples are:
@@ -968,15 +968,57 @@ Docstring guidelines
      x : float
         Description of ``x``.
 
-     y : bool, optional, default: True
+     y : bool, default: True
         Description of ``y``.
 
-  The type line should include type and size information, whether the
-  parameter is optional or |keyword-only|, and/or the default value.
+  * The **type description** should include size information; type
+    information; available choices for the parameter; whether the
+    parameter is optional, |keyword-only|, or positional-only; and
+    default values.
+
+    Size information should be included in parentheses at the beginning
+    of the type description:
+
+    .. link to section on substitutions
+
+    .. code-block:: rst
+
+       (M,) |array_like|
+       (N,) |array_like|
+       (M, N) |array_like|
+       (M, N, ...) |array_like|
+
+    Additional examples for type descriptions include:
+
+    .. code-block:: rst
+
+       |particle-like|
+       `list` of `str`
+       |array_like| of `int`, default: [-1, 1]
+       |Quantity| [length], default: 10 m
+       |Quantity| [temperature, energy], |keyword-only|, default: 0 K
+
+    If a default is given, it is not necessary to state that the
+    parameter is optional. When the default is `None`, use ``optional``
+    instead of ``default: `None```.
+
+    .. note::
+
+       Many of these conventions and examples come from the `numpydoc
+       style guide
+       <https://numpydoc.readthedocs.io/en/latest/format.html#parameters>`__
+       or the `matplotlib documentation guide
+       <https://matplotlib.org/stable/devel/documenting_mpl.html#parameter-type-descriptions>`__.
+
+  * The **parameter description** should include the meaning of the
+    parameter. Information from the type description may be included if
+    the information is complicated and/or different types correspond to
+    different meanings.
 
 
-  * Place type information to the right of the parameter name, along
-    with ``optional`` and/or ``keyword-only`` if necessary.
+
+
+
 
   * Describe any requirements for the parameter, including preconditions
     specified using |validate_quantities| or |particle_input|.
