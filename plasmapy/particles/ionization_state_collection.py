@@ -218,14 +218,14 @@ class IonizationStateCollection:
                     tol=self.tol,
                 )
 
+        except (ChargeError, KeyError, TypeError) as exc:
+            raise IndexError(errmsg) from exc
+        else:
             if not isinstance(int_charge, Integral):
                 raise TypeError(f"{int_charge} is not a valid charge for {particle}.")
             elif not 0 <= int_charge <= atomic_number(particle):
                 raise ChargeError(f"{int_charge} is not a valid charge for {particle}.")
-
-        except (ChargeError, KeyError, TypeError) as exc:
-            raise IndexError(errmsg) from exc
-        else:
+        finally:
             return IonicLevel(
                 ion=particle_symbol(particle, Z=int_charge),
                 ionic_fraction=self.ionic_fractions[particle][int_charge],
