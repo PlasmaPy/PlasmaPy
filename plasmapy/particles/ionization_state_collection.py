@@ -224,13 +224,15 @@ class IonizationStateCollection:
                 )
             elif not 0 <= int_charge <= atomic_number(particle):
                 raise ChargeError(f"{int_charge} is not a valid charge for {particle}.")
+
+        except (ChargeError, KeyError, TypeError) as exc:
+            raise IndexError(errmsg) from exc
+        else:
             return IonicLevel(
                 ion=particle_symbol(particle, Z=int_charge),
                 ionic_fraction=self.ionic_fractions[particle][int_charge],
                 number_density=self.number_densities[particle][int_charge],
             )
-        except (ChargeError, KeyError, TypeError) as exc:
-            raise IndexError(errmsg) from exc
 
     def __setitem__(self, key, value):
 
