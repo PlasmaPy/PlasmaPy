@@ -71,7 +71,7 @@ class MagneticDipole(MagnetoStatics):
         p0_u = self._p0_u
         return f"{name}(moment={moment}{moment_u}, p0={p0}{p0_u})"
 
-    def magnetic_field(self, p: u.m) -> u.T:
+    def magnetic_field(self, **kwargs) -> u.T:
         r"""
         Calculate magnetic field from this magnetic dipole at position ``p``.
 
@@ -111,7 +111,20 @@ class MagneticDipole(MagnetoStatics):
 
         where :math:`\mu_0` is vacuum permeability.
         """
-        r = p - self.p0
+        if "p" in kwargs:
+            r = kwargs["p"] - self.p0
+        elif "x" in kwargs and "y" in kwargs and "z" in kwargs:
+            r = [kwargs["x"], kwargs["y"], kwargs["z"]] - self.p0
+        elif "r" in kwargs and "theta" in kwargs and "phi" in kwargs:
+            rho = kwargs["r"]
+            theta = kwargs["theta"]
+            phi = kwargs["phi"]
+            r = [
+                rho * np.sin(theta) * np.cos(phi),
+                rho * np.sin(theta) * np.sin(phi),
+                rho * np.cos(theta),
+            ] - self.p0
+
         m = self.moment
         B = (
             constants.mu0.value

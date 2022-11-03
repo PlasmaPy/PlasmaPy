@@ -23,7 +23,7 @@ class Test_MagneticDipole:
     def test_value1(self):
         "Test a known solution"
         p = np.array([1, 0, 0])
-        B1 = MagneticDipole(self.moment, self.p0).magnetic_field(p)
+        B1 = MagneticDipole(self.moment, self.p0).magnetic_field(p=p)
         B1_expected = np.array([0, 0, -1]) * 1e-7 * u.T
         assert np.all(np.isclose(B1.value, B1_expected.value))
         assert B1.unit == u.T
@@ -31,7 +31,37 @@ class Test_MagneticDipole:
     def test_value2(self):
         "Test a known solution"
         p = np.array([0, 0, 1])
-        B2 = MagneticDipole(self.moment, self.p0).magnetic_field(p)
+        B2 = MagneticDipole(self.moment, self.p0).magnetic_field(p=p)
+        B2_expected = np.array([0, 0, 2]) * 1e-7 * u.T
+        assert np.all(np.isclose(B2.value, B2_expected.value))
+        assert B2.unit == u.T
+
+    def test_value3(self):
+        "Test a known solution"
+        B1 = MagneticDipole(self.moment, self.p0).magnetic_field(x=1, y=0, z=0)
+        B1_expected = np.array([0, 0, -1]) * 1e-7 * u.T
+        assert np.all(np.isclose(B1.value, B1_expected.value))
+        assert B1.unit == u.T
+
+    def test_value4(self):
+        "Test a known solution"
+        B2 = MagneticDipole(self.moment, self.p0).magnetic_field(x=0, y=0, z=1)
+        B2_expected = np.array([0, 0, 2]) * 1e-7 * u.T
+        assert np.all(np.isclose(B2.value, B2_expected.value))
+        assert B2.unit == u.T
+
+    def test_value5(self):
+        "Test a known solution"
+        B1 = MagneticDipole(self.moment, self.p0).magnetic_field(
+            r=1, theta=np.pi / 2.0, phi=0
+        )
+        B1_expected = np.array([0, 0, -1]) * 1e-7 * u.T
+        assert np.all(np.isclose(B1.value, B1_expected.value))
+        assert B1.unit == u.T
+
+    def test_value6(self):
+        "Test a known solution"
+        B2 = MagneticDipole(self.moment, self.p0).magnetic_field(r=1, theta=0, phi=0)
         B2_expected = np.array([0, 0, 2]) * 1e-7 * u.T
         assert np.all(np.isclose(B2.value, B2_expected.value))
         assert B2.unit == u.T
