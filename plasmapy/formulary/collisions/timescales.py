@@ -5,5 +5,3 @@ timescales commonly associated with collisions.
 __all__ = [
     "",
 ]
-
-
