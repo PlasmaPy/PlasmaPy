@@ -371,7 +371,6 @@ class ValidateQuantities(CheckUnits, CheckValues):
         elif err is not None:
             raise err
 
-        # check value
         self._check_value(arg, arg_name, arg_validations)
 
         return arg

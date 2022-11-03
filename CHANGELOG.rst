@@ -150,7 +150,7 @@ Features
   :term:`particle-list-like` to the |glossary|. (`#1528 <https://github.com/plasmapy/plasmapy/pull/1528>`__)
 - Added a null point classifier function which determines the
   type of a given 3D magnetic null point. (`#1554 <https://github.com/plasmapy/plasmapy/pull/1554>`__)
-- Added support for arbitrarily shaped input arrays to the function `plasmapy.formulary.collisions.impact_parameter`. (`#1604 <https://github.com/plasmapy/plasmapy/pull/1604>`__)
+- Added support for arbitrarily shaped input arrays to the function `plasmapy.formulary.collisions.lengths.impact_parameter`. (`#1604 <https://github.com/plasmapy/plasmapy/pull/1604>`__)
 
 
 Bug Fixes
@@ -190,9 +190,9 @@ Bug Fixes
   that did not allow for arguments ``theta`` and ``k`` to simultaneously
   be arrays. (`#1529 <https://github.com/plasmapy/plasmapy/pull/1529>`__)
 - Fixed the ``Z`` dependence in
-  `~plasmapy.formulary.collisions.fundamental_electron_collision_freq`,
+  `~plasmapy.formulary.collisions.frequencies.fundamental_electron_collision_freq`,
   by replacing ``n_e`` with ``n_i`` while calling
-  `~plasmapy.formulary.collisions.collision_frequency`. (`#1546 <https://github.com/plasmapy/plasmapy/pull/1546>`__)
+  `~plasmapy.formulary.collisions.frequencies.collision_frequency`. (`#1546 <https://github.com/plasmapy/plasmapy/pull/1546>`__)
 - Updated the regular expression matching used by
   `~plasmapy.particles.particle_class.Particle` to parse and identify a
   :term:`particle-like` string.  This fixes the bug where a string with
@@ -248,7 +248,7 @@ Improved Documentation
 - Described additional environments for building the documentation with make_
   in the |documentation guide|. (`#1373 <https://github.com/plasmapy/plasmapy/pull/1373>`__)
 - Moved references from individual docstrings to the |bibliography|. (`#1374 <https://github.com/plasmapy/plasmapy/pull/1374>`__)
-- Fixed the docstring of `~plasmapy.formulary.collisions.coupling_parameter`. (`#1379 <https://github.com/plasmapy/plasmapy/pull/1379>`__)
+- Fixed the docstring of `~plasmapy.formulary.collisions.dimensionless.coupling_parameter`. (`#1379 <https://github.com/plasmapy/plasmapy/pull/1379>`__)
 - Added an example notebook that introduces how to use `astropy.units`. (`#1380 <https://github.com/plasmapy/plasmapy/pull/1380>`__)
 - Added a "Getting Started" page to the documentation sidebar and a "Getting
   Started" section to the examples gallery. (`#1380 <https://github.com/plasmapy/plasmapy/pull/1380>`__)
@@ -435,7 +435,7 @@ Trivial/Internal Changes
 - Applied automated refactorings from
   `Sourcery <https://sourcery.ai/>`__ to `plasmapy.analysis`. (`#1564 <https://github.com/plasmapy/plasmapy/pull/1564>`__)
 - Removed an extraneous `print` statement from
-  `~plasmapy.formulary.collisions.collision_frequency` that
+  `~plasmapy.formulary.collisions.frequencies.frequencies.collision_frequency` that
   activated when the colliding particles were both electrons. (`#1570 <https://github.com/plasmapy/plasmapy/pull/1570>`__)
 - Changed the type hints for ``z_mean`` in `plasmapy.formulary.collisions`
   functions from ``astropy.units.dimensionless_unscaled`` to
@@ -778,8 +778,8 @@ Backwards Incompatible Changes
   ``plasmapy.utils.error_messages`` to `plasmapy.utils.code_repr`. (`#920 <https://github.com/plasmapy/plasmapy/pull/920>`__)
 - Renamed the available "methods" for computing the Coulomb logarithm in an attempt
   to make the names more explicit.  This is implemented using the ``method`` keyword
-  for functions `~plasmapy.formulary.collisions.Coulomb_logarithm` and
-  `~plasmapy.formulary.collisions.impact_parameter`, and then propagated throughout
+  for functions `~plasmapy.formulary.collisions.coulomb.Coulomb_logarithm` and
+  `~plasmapy.formulary.collisions.lengths.impact_parameter`, and then propagated throughout
   the functionality in `plasmapy.formulary.collisions`. (`#962 <https://github.com/plasmapy/plasmapy/pull/962>`__)
 - Add dependency ``pandas >= 1.0.0``.  Modify |xarray|_ dependency to be
   ``xarray >= 0.14.0``. (`#963 <https://github.com/plasmapy/plasmapy/pull/963>`__)
