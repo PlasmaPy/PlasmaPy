@@ -147,7 +147,7 @@ create_args = [
     # Test incompatible grid units
     ([1 * u.cm, 1 * u.eV], {"num": 10}, None, ValueError),
     # Non-integer num
-    ([-1 * u.cm, 1 * u.cm], {"num": 10.1}, (10, 10, 10), TypeError),
+    ([-1 * u.cm, 1 * u.cm], {"num": 10.1}, (10, 10, 10), ValueError),
 ]
 
 

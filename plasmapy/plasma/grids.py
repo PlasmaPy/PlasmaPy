@@ -628,12 +628,12 @@ class AbstractGrid(ABC):
             if key in self.recognized_quantities:
                 try:
                     quantity.to(self.recognized_quantities[key].unit)
-                except u.UnitConversionError as ex:
+                except u.UnitConversionError:
                     raise ValueError(
                         f"Units provided for {key} ({quantity.unit}) "
                         "are not compatible with the correct units "
                         f"for that recognized key ({self.recognized_quantities[key]})."
-                    ) from ex
+                    )
 
             else:
                 warnings.warn(
@@ -734,7 +734,7 @@ class AbstractGrid(ABC):
                 # Case of >1 but != 3 is handled later
                 var[k] = [var[k]] * 3 if var[k].size == 1 else list(var[k])
             else:
-                raise TypeError(
+                raise ValueError(
                     f"The argument `{k}` must be an "
                     "`astropy.units.Quantity` or a list of same, "
                     f"but a {type(var[k])} was given."
@@ -750,7 +750,7 @@ class AbstractGrid(ABC):
         elif isinstance(var["num"], int):
             var["num"] = [var["num"]] * 3
         else:
-            raise TypeError(
+            raise ValueError(
                 f"The argument `num` must be an int or list of "
                 f"same, but a {type(var[k])} was given."
             )
@@ -782,10 +782,8 @@ class AbstractGrid(ABC):
             try:
                 stop[i] = stop[i].to(unit)
 
-            except u.UnitConversionError as ex:
-                raise ValueError(
-                    f"Units of {stop[i]} and {unit} are not compatible"
-                ) from ex
+            except u.UnitConversionError:
+                raise ValueError(f"Units of {stop[i]} and {unit} are not compatible")
 
             # strip units
             stop[i] = stop[i].value
@@ -1057,11 +1055,11 @@ class CartesianGrid(AbstractGrid):
         for i in range(3):
             try:
                 self.units[i].to(u.m)
-            except u.UnitConversionError as ex:
+            except u.UnitConversionError:
                 raise ValueError(
                     "Units of grid are not valid for a Cartesian "
                     f"grid: {self.units}."
-                ) from ex
+                )
 
     @property
     def grid_resolution(self):
@@ -1326,11 +1324,11 @@ class NonUniformCartesianGrid(AbstractGrid):
         for i in range(3):
             try:
                 self.units[i].to(u.m)
-            except u.UnitConversionError as ex:
+            except u.UnitConversionError:
                 raise ValueError(
                     "Units of grid are not valid for a Cartesian "
                     f"grid: {self.units}."
-                ) from ex
+                )
 
     @property
     def grid_resolution(self):
