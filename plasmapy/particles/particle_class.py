@@ -2214,16 +2214,13 @@ class CustomParticle(AbstractPhysicalParticle):
                     "with units of mass."
                 )
             try:
-                _mass = m.to(u.kg)
+                self._mass = m.to(u.kg)
+                if self.mass < 0 * u.kg:
+                    raise ValueError("The mass of a particle must be nonnegative.")
             except u.UnitsError as exc:
                 raise u.UnitsError(
                     "The mass of a custom particle must have units of mass."
                 ) from exc
-            else:
-                if _mass < 0 * u.kg:
-                    raise ValueError("The mass of a particle must be nonnegative.")
-            finally:
-                self._mass = _mass
 
     @property
     def mass_energy(self) -> u.J:
