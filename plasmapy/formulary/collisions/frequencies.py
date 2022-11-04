@@ -49,26 +49,27 @@ class SingleParticleCollisionFrequencies:
 
         Parameters
         ----------
-        test_particle : `~plasmapy.particles.ParticleLike`
+        test_particle : |particle-like|
             The test particle streaming through a background of field
             particles.
 
-        field_particle : `~plasmapy.particles.ParticleLike`
-            The background particle being interacted with.
+        field_particle : |particle-like|
+            The background particle that ``test_particle`` is
+            interacting with.
 
-        v_drift : `~astropy.units.Quantity`
-            The relative drift between the test and field particles.
-            Cannot be negative.
+        v_drift : `~astropy.units.Quantity`, |keyword-only|
+            The relative drift velocity between the test and field
+            particles. Cannot be negative.
 
-        T_b : `~astropy.units.Quantity`
+        T_b : `~astropy.units.Quantity`, |keyword-only|
             The temperature of the background field particles in units
-            convertible to degrees Kelvin.
+            convertible to kelvin or eV per particle.
 
-        n_b : `~astropy.units.Quantity`
-            The number density of the background field particles in
-            units convertible to :math:`\frac{1}{m^{3}}`.
+        n_b : `~astropy.units.Quantity`, |keyword-only|
+            The number density of ``field_particle`` in units
+            convertible to m\ :sup:`-3`.
 
-        Coulomb_log : `~astropy.units.Quantity`
+        Coulomb_log : `~astropy.units.Quantity`, |keyword-only|
             The value of the Coulomb logarithm for the interaction.
 
         Raises
