@@ -35,7 +35,7 @@ jobs:
     - name: Setup git
       run: |
         git config --global user.email "team@plasmapy.org"
-        git config --global user.name "PlasmaPy Automated Release Process"
+        git config --global user.name "PlasmaPy Release Bot"
 
     - name: Create or checkout branch
       run: |
