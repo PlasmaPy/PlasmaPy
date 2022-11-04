@@ -81,50 +81,67 @@ class SingleParticleCollisionFrequencies:
         Notes
         -----
         The frequency of collisions between a test particle (subscript
-        :math:`\alpha`) and a field particle (subscript :math:`\beta`)
+        :math:`α`) and a field particle (subscript :math:`β`)
         each with mass  :math:`m` and charge :math:`e` are given by
         four differential equations:
 
-            momentum loss: :math:`\frac{d\textbf{v}_{α}}{dt}=-ν_{s}^{α\backslashβ}\textbf{v}_{α}`
+            momentum loss: :math:`\frac{d\mathbf{v}_α}{dt}
+            = - ν_{s}^{α \backslash β} \mathbf{v}_α`
 
-            transverse diffusion: :math:`\frac{d}{dt}\left(\textbf{v}_{α}-\overline{\textbf{v}}_{α}\right)_{⊥}^{2}=ν_{⊥}^{α\backslashβ}v_{α}^{2}`
+            transverse diffusion: :math:`\frac{d}{dt}
+            \left( \mathbf{v}_α - \overline{\mathbf{v}}_α \right)_⊥^2
+            = ν_⊥^{α \backslash β} v_α^2`
 
-            parallel diffusion: :math:`\frac{d}{dt}\left(\textbf{v}_{α}-\overline{\textbf{v}}_{α}\right)_{∥}^{2}=ν_{∥}^{α\backslashβ}v_{α}^{2}`
+            parallel diffusion: :math:`\frac{d}{dt}
+            \left(\mathbf{v}_α-\overline{\mathbf{v}}_α\right)_∥^2
+            = ν_∥^{α \backslash β} v_α^2`
 
-            energy loss: :math:`\frac{d}{dt}v_{α}^{2}=-ν_{ϵ}^{α\backslashβ}v_{α}^{2}`
+            energy loss: :math:`\frac{d}{dt} v_α^2
+            = -ν_ϵ^{α \backslash β} v_α^2`
 
         These equations yield the exact formulas:
 
-            momentum loss: :math:`ν_{s}^{α\backslashβ}=\left(1+\frac{m_{α}}{m_{β}}\right)ψ\left(x^{α\backslashβ}\right)ν_{0}^{α\backslashβ}`
+            momentum loss: :math:`ν_{s}^{α \backslash β}
+            = \left( 1 + \frac{m_α}{m_β} \right) ψ
+            \left( x^{α \backslash β} \right) ν_{0}^{α \backslash β}`
 
-            transverse diffusion: :math:`ν_{⊥}^{α\backslashβ}=2\left[\left(1-\frac{1}{2x^{α\backslashβ}}\right)ψ\left(x^{α\backslashβ}\right)\ +ψ'\left(x^{α\backslashβ}\right)\right]ν_{0}^{α\backslashβ}`
+            transverse diffusion: :math:`ν_⊥^{α \backslash β}
+            = 2 \left[ \left( 1-\frac{1}{2x^{α \backslash β}} \right)
+            ψ \left( x^{α \backslash β} \right) \
+            + ψ' \left( x^{α \backslash β} \right) \right]
+            ν_0^{α \backslash β}`
 
             parallel diffusion: :math:`ν_{||}^{α\backslashβ}=\left[\frac{ψ\left(x^{α\backslashβ}\right)}{x^{α\backslashβ}}\right]ν_{0}^{α\backslashβ}`
 
-            energy loss: :math:`ν_{ϵ}^{α\backslashβ}=2\left[\left(\frac{m_{α}}{m_{β}}\right)ψ\left(x^{α\backslashβ}\right)-ψ'\left(x^{α\backslashβ}\right)\right]ν_{0}^{α\backslashβ}`
+            energy loss: :math:`ν_ϵ^{α \backslash β}
+            = 2\left[ \left( \frac{m_α}{m_β} \right)
+            ψ \left( x^{α \backslash β} \right)
+            - ψ' \left(x^{α \backslash β} \right)
+            \right] ν_0^{α \backslash β}`
 
         where,
 
-            :math:`ν_{0}^{α\backslashβ}=\frac{4\pi e_{α}^{2}e_{β}^{2}λ_{αβ}n_{β}}{m_{α}^{2}v_{α}^{3}}`,
+            :math:`ν_{0}^{α \backslash β}
+            = \frac{4π e_α^2 e_β^2 λ_{αβ} n_β}{m_α^2 v_α^3}`,
 
-            :math:`x^{α\backslashβ}=\frac{m_{β}v_{α}^{2}}{2k_B T_{β}}`,
+            :math:`x^{α \backslash β} = \frac{m_β v_α^2}{2 k_B T_β}`,
 
-            :math:`ψ\left(x\right)=\frac{2}{\sqrt{\pi}}\int_{0}^{x}t^{\frac{1}{2}}e^{-t}dt`,
+            :math:`ψ \left( x \right) = \frac{2}{\sqrt{π}}
+            \int_0^x t^{ \frac{1}{2} } e^{-t} dt`,
 
             :math:`ψ'\left(x\right)=\frac{dψ}{dx}`,
 
-        and :math:`\lambda_{\alpha \beta}` is the Coulomb logarithm for
-        the collisions, :math:`n_\beta` is the number density of the
-        field particles, :math:`v_\alpha` is the speed of the test
-        particles relative to the field particles, :math:`k_B` is
-        Boltzmann's constant, and :math:`T_\beta` is the temperature of
-        the field particles.
+        and :math:`\lambda_{α β}` is the Coulomb logarithm for the
+        collisions, :math:`n_β` is the number density of the field
+        particles, :math:`v_α` is the speed of the test particles
+        relative to the field particles, :math:`k_B` is Boltzmann's
+        constant, and :math:`T_β` is the temperature of the field
+        particles.
 
-        For values of x<<1 (the 'slow' or 'thermal' limit) or x>>1 (the
-        'fast' or 'beam' limit), :math:`\psi` asymptotes to zero or one
-        respectively. For simplified expressions in these limits we
-        encourage the curious reader to refer to p. 31 of
-        :cite:t:`nrlformulary:2019`
+        For values of :math:`x ≪ 1` (the 'slow' or 'thermal' limit) or
+        :math:`x ≫ 1` (the 'fast' or 'beam' limit), :math:`ψ` asymptotes
+        to zero or one respectively. For simplified expressions in these
+        limits, please refer to p. 31 of :cite:t:`nrlformulary:2019`.
 
         Examples
         --------
@@ -227,8 +244,7 @@ class SingleParticleCollisionFrequencies:
         See Equation (2.86) in :cite:t:`callen:unpublished`.
 
         The Lorentz collision frequency is equivalent to the variable
-        :math:`\nu_0^{\alpha/\beta}` on p. 31 of
-        :cite:t:`nrlformulary:2019`.
+        :math:`ν_0^{α/β}` on p. 31 of :cite:t:`nrlformulary:2019`.
 
         This form of the Lorentz collision frequency differs from the
         form found in
