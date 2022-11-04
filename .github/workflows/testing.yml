@@ -164,5 +164,6 @@ jobs:
       test_command: pytest --pyargs plasmapy
       repository_url: ${{ github.event.inputs.tag }}
       upload_to_pypi: true
+      runs-on: ubuntu-22.04
     secrets:
       pypi_token: ${{ secrets.TEST_PYPI_API_TOKEN }}
