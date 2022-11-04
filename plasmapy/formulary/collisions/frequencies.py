@@ -284,8 +284,7 @@ class SingleParticleCollisionFrequencies:
         """
         The phi integrand used in calculating phi.
         """
-
-        return t**0.5 * np.exp(-t)
+        return np.sqrt(t) * np.exp(-t)
 
     def _phi_explicit(self, x: float):
         """The non-vectorized method for evaluating the integral for phi."""
