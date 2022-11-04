@@ -158,8 +158,7 @@ class SingleParticleCollisionFrequencies:
 
         See Also
         --------
-        ~plasmapy.formulary.collisions.coulomb.Coulomb_logarithm : Evaluates the
-            Coulomb logarithm for two interacting electron species.
+        ~plasmapy.formulary.collisions.coulomb.Coulomb_logarithm
         """
 
         # Note: This function uses CGS units internally to coincide
