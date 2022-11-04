@@ -24,6 +24,125 @@ from plasmapy.utils.exceptions import PhysicsError, PlasmaPyFutureWarning
 
 
 class SingleParticleCollisionFrequencies:
+    r"""
+    Compute collision frequencies between test particles (labeled 'a')
+    and field particles (labeled 'b').
+
+    Parameters
+    ----------
+    test_particle : |particle-like|
+        The test particle streaming through a background of field
+        particles.
+
+    field_particle : |particle-like|
+        The background particle that ``test_particle`` is interacting
+        with.
+
+    v_drift : `~astropy.units.Quantity`, |keyword-only|
+        The relative drift velocity between the test and field
+        particles. Cannot be negative.
+
+    T_b : `~astropy.units.Quantity`, |keyword-only|
+        The temperature of the background field particles in units
+        convertible to kelvin or eV per particle.
+
+    n_b : `~astropy.units.Quantity`, |keyword-only|
+        The number density of ``field_particle`` in units convertible to
+        m\ :sup:`-3`.
+
+    Coulomb_log : `~astropy.units.Quantity`, |keyword-only|
+        The value of the Coulomb logarithm for the interaction.
+
+    Raises
+    ------
+    `ValueError`
+        If the specified ``v_drift`` and ``n_b`` arrays do not have
+        equal size.
+
+    Notes
+    -----
+    The frequency of collisions between a test particle (subscript
+    :math:`α`) and a field particle (subscript :math:`β`) each with mass
+    :math:`m` and charge :math:`e` are given by four differential
+    equations:
+
+        momentum loss: :math:`\frac{d\mathbf{v}_α}{dt}
+        = - ν_{s}^{α \backslash β} \mathbf{v}_α`
+
+        transverse diffusion: :math:`\frac{d}{dt}
+        \left( \mathbf{v}_α - \overline{\mathbf{v}}_α \right)_⊥^2
+        = ν_⊥^{α \backslash β} v_α^2`
+
+        parallel diffusion: :math:`\frac{d}{dt}
+        \left(\mathbf{v}_α-\overline{\mathbf{v}}_α\right)_∥^2
+        = ν_∥^{α \backslash β} v_α^2`
+
+        energy loss: :math:`\frac{d}{dt} v_α^2
+        = -ν_ϵ^{α \backslash β} v_α^2`
+
+    These equations yield the exact formulas:
+
+        momentum loss: :math:`ν_{s}^{α \backslash β}
+        = \left( 1 + \frac{m_α}{m_β} \right) ψ
+        \left( x^{α \backslash β} \right) ν_{0}^{α \backslash β}`
+
+        transverse diffusion: :math:`ν_⊥^{α \backslash β}
+        = 2 \left[ \left( 1-\frac{1}{2x^{α \backslash β}} \right)
+        ψ \left( x^{α \backslash β} \right) \
+        + ψ' \left( x^{α \backslash β} \right) \right]
+        ν_0^{α \backslash β}`
+
+        parallel diffusion: :math:`ν_{||}^{α \backslash β}
+        = \left[ \frac{ψ \left( x^{α \backslash β} \right)
+        }{x^{α \backslash β}} \right] ν_{0}^{α \backslash β}`
+
+        energy loss: :math:`ν_ϵ^{α \backslash β}
+        = 2\left[ \left( \frac{m_α}{m_β} \right)
+        ψ \left( x^{α \backslash β} \right)
+        - ψ' \left(x^{α \backslash β} \right)
+        \right] ν_0^{α \backslash β}`
+
+    where,
+
+        :math:`ν_{0}^{α \backslash β}
+        = \frac{4π e_α^2 e_β^2 λ_{αβ} n_β}{m_α^2 v_α^3}`,
+
+        :math:`x^{α \backslash β} = \frac{m_β v_α^2}{2 k_B T_β}`,
+
+        :math:`ψ \left( x \right) = \frac{2}{\sqrt{π}}
+        \int_0^x t^{ \frac{1}{2} } e^{-t} dt`,
+
+        :math:`ψ' \left( x \right) = \frac{dψ}{dx}`,
+
+    and :math:`\lambda_{α β}` is the Coulomb logarithm for the
+    collisions, :math:`n_β` is the number density of the field
+    particles, :math:`v_α` is the speed of the test particles relative
+    to the field particles, :math:`k_B` is Boltzmann's constant, and
+    :math:`T_β` is the temperature of the field particles.
+
+    For values of :math:`x ≪ 1` (the 'slow' or 'thermal' limit) or
+    :math:`x ≫ 1` (the 'fast' or 'beam' limit), :math:`ψ` asymptotes to
+    zero or one respectively. For simplified expressions in these
+    limits, please refer to p. 31 of :cite:t:`nrlformulary:2019`.
+
+    Examples
+    --------
+    >>> import astropy.units as u
+    >>> v_drift = 1e5 * u.m / u.s
+    >>> n_b = 1e26 * u.m**-3
+    >>> T_b = 1e3 * u.eV
+    >>> Coulomb_log = 10 * u.dimensionless_unscaled
+    >>> frequencies = SingleParticleCollisionFrequencies(
+    ...     "e-", "e-", v_drift=v_drift, n_b=n_b, T_b=T_b, Coulomb_log=Coulomb_log
+    ... )
+    >>> frequencies.energy_loss
+    <Quantity -9.69828719e+15 Hz>
+
+    See Also
+    --------
+    ~plasmapy.formulary.collisions.coulomb.Coulomb_logarithm
+    """
+
     @particles.particle_input
     @validate_quantities(
         v_drift={"can_be_negative": False},
@@ -43,125 +162,6 @@ class SingleParticleCollisionFrequencies:
         n_b: u.m**-3,
         Coulomb_log: u.dimensionless_unscaled,
     ):
-        r"""
-        Compute collision frequencies between test particles (labeled
-        'a') and field particles (labeled 'b').
-
-        Parameters
-        ----------
-        test_particle : |particle-like|
-            The test particle streaming through a background of field
-            particles.
-
-        field_particle : |particle-like|
-            The background particle that ``test_particle`` is
-            interacting with.
-
-        v_drift : `~astropy.units.Quantity`, |keyword-only|
-            The relative drift velocity between the test and field
-            particles. Cannot be negative.
-
-        T_b : `~astropy.units.Quantity`, |keyword-only|
-            The temperature of the background field particles in units
-            convertible to kelvin or eV per particle.
-
-        n_b : `~astropy.units.Quantity`, |keyword-only|
-            The number density of ``field_particle`` in units
-            convertible to m\ :sup:`-3`.
-
-        Coulomb_log : `~astropy.units.Quantity`, |keyword-only|
-            The value of the Coulomb logarithm for the interaction.
-
-        Raises
-        ------
-        `ValueError`
-            If the specified ``v_drift`` and ``n_b`` arrays do not have
-            equal size.
-
-        Notes
-        -----
-        The frequency of collisions between a test particle (subscript
-        :math:`α`) and a field particle (subscript :math:`β`)
-        each with mass  :math:`m` and charge :math:`e` are given by
-        four differential equations:
-
-            momentum loss: :math:`\frac{d\mathbf{v}_α}{dt}
-            = - ν_{s}^{α \backslash β} \mathbf{v}_α`
-
-            transverse diffusion: :math:`\frac{d}{dt}
-            \left( \mathbf{v}_α - \overline{\mathbf{v}}_α \right)_⊥^2
-            = ν_⊥^{α \backslash β} v_α^2`
-
-            parallel diffusion: :math:`\frac{d}{dt}
-            \left(\mathbf{v}_α-\overline{\mathbf{v}}_α\right)_∥^2
-            = ν_∥^{α \backslash β} v_α^2`
-
-            energy loss: :math:`\frac{d}{dt} v_α^2
-            = -ν_ϵ^{α \backslash β} v_α^2`
-
-        These equations yield the exact formulas:
-
-            momentum loss: :math:`ν_{s}^{α \backslash β}
-            = \left( 1 + \frac{m_α}{m_β} \right) ψ
-            \left( x^{α \backslash β} \right) ν_{0}^{α \backslash β}`
-
-            transverse diffusion: :math:`ν_⊥^{α \backslash β}
-            = 2 \left[ \left( 1-\frac{1}{2x^{α \backslash β}} \right)
-            ψ \left( x^{α \backslash β} \right) \
-            + ψ' \left( x^{α \backslash β} \right) \right]
-            ν_0^{α \backslash β}`
-
-            parallel diffusion: :math:`ν_{||}^{α \backslash β}
-            = \left[ \frac{ψ \left( x^{α \backslash β} \right)
-            }{x^{α \backslash β}} \right] ν_{0}^{α \backslash β}`
-
-            energy loss: :math:`ν_ϵ^{α \backslash β}
-            = 2\left[ \left( \frac{m_α}{m_β} \right)
-            ψ \left( x^{α \backslash β} \right)
-            - ψ' \left(x^{α \backslash β} \right)
-            \right] ν_0^{α \backslash β}`
-
-        where,
-
-            :math:`ν_{0}^{α \backslash β}
-            = \frac{4π e_α^2 e_β^2 λ_{αβ} n_β}{m_α^2 v_α^3}`,
-
-            :math:`x^{α \backslash β} = \frac{m_β v_α^2}{2 k_B T_β}`,
-
-            :math:`ψ \left( x \right) = \frac{2}{\sqrt{π}}
-            \int_0^x t^{ \frac{1}{2} } e^{-t} dt`,
-
-            :math:`ψ' \left( x \right) = \frac{dψ}{dx}`,
-
-        and :math:`\lambda_{α β}` is the Coulomb logarithm for the
-        collisions, :math:`n_β` is the number density of the field
-        particles, :math:`v_α` is the speed of the test particles
-        relative to the field particles, :math:`k_B` is Boltzmann's
-        constant, and :math:`T_β` is the temperature of the field
-        particles.
-
-        For values of :math:`x ≪ 1` (the 'slow' or 'thermal' limit) or
-        :math:`x ≫ 1` (the 'fast' or 'beam' limit), :math:`ψ` asymptotes
-        to zero or one respectively. For simplified expressions in these
-        limits, please refer to p. 31 of :cite:t:`nrlformulary:2019`.
-
-        Examples
-        --------
-        >>> import astropy.units as u
-        >>> v_drift = 1e5 * u.m / u.s
-        >>> n_b = 1e26 * u.m**-3
-        >>> T_b = 1e3 * u.eV
-        >>> Coulomb_log = 10 * u.dimensionless_unscaled
-        >>> frequencies = SingleParticleCollisionFrequencies(
-        ...     "e-", "e-", v_drift=v_drift, n_b=n_b, T_b=T_b, Coulomb_log=Coulomb_log
-        ... )
-        >>> frequencies.energy_loss
-        <Quantity -9.69828719e+15 Hz>
-
-        See Also
-        --------
-        ~plasmapy.formulary.collisions.coulomb.Coulomb_logarithm
-        """
 
         # Note: This function uses CGS units internally to coincide
         #       with our references.  Input is taken in MKS units and
@@ -198,9 +198,7 @@ class SingleParticleCollisionFrequencies:
 
     @cached_property
     def transverse_diffusion(self):
-        """
-        The rate of transverse diffusion due to collisions.
-        """
+        """The rate of transverse diffusion due to collisions."""
         return (
             2
             * ((1 - 1 / (2 * self.x)) * self.phi + self._phi_prime)
@@ -316,6 +314,63 @@ class SingleParticleCollisionFrequencies:
 
 
 class MaxwellianCollisionFrequencies:
+    r"""
+    Compute collision frequencies between two slowly flowing Maxwellian
+    populations.
+
+    The condition of "slowly flowing", outlined by Eq. 2.133 in
+    :cite:t:`callen:unpublished` requires that
+
+    .. math::
+
+        v_{drift} << \sqrt{ v_{T_a}^2 + v_{T_b}^2 }
+
+    where :math:`v_{drift}` is the relative drift between the two
+    species, :math:`v_{T_a}` is the thermal velocity of species "a", and
+    :math:`v_{T_b}` is the thermal velocity of species "b".
+
+    Parameters
+    ----------
+    test_particle : `~plasmapy.particles.ParticleLike`
+        The test particle streaming through a background of field
+        particles.
+
+    field_particle : `~plasmapy.particles.ParticleLike`
+        The background particle being interacted with.
+
+    v_drift : `~astropy.units.Quantity`, default: 0 m/s
+        The relative drift between the test and field particles.
+
+    T_a : `~astropy.units.Quantity`
+        The temperature of the test particles in units convertible to
+        kelvin or eV per particle.
+
+    n_a : `~astropy.units.Quantity`
+        The number density of the test particles in units convertible to
+        m\ :sup:`-3`\ .
+
+    T_b : `~astropy.units.Quantity`
+        The temperature of the background field particles in units
+        convertible kelvin or eV per particle.
+
+    n_b : `~astropy.units.Quantity`
+        The number density of the background field particles in units
+        convertible to :math:`\frac{1}{m^3}`.
+
+    Coulomb_log : `~astropy.units.Quantity`
+        The value of the Coulomb logarithm for the interaction.
+
+    Raises
+    ------
+    `ValueError`
+        If the specified ``v_drift`` and ``T_a`` arrays do not have
+        equal size.
+
+    See Also
+    --------
+    ~plasmapy.formulary.collisions.coulomb.Coulomb_logarithm
+    """
+
     @particles.particle_input
     @validate_quantities(
         v_drift={"can_be_negative": False},
@@ -342,62 +397,6 @@ class MaxwellianCollisionFrequencies:
         n_b: u.m**-3,
         Coulomb_log: u.dimensionless_unscaled,
     ):
-        r"""
-        Compute collision frequencies between two slowly flowing
-        Maxwellian populations.
-
-        The condition of "slowly flowing", outlined by Eq. 2.133 in
-        :cite:t:`callen:unpublished` requires that
-
-        .. math::
-
-            v_{drift} << \sqrt{ v_{T_a}^2 + v_{T_b}^2 }
-
-        where :math:`v_{drift}` is the relative drift between the two
-        species, :math:`v_{T_a}` is the thermal velocity of species
-        "a", and :math:`v_{T_b}` is the thermal velocity of species "b".
-
-        Parameters
-        ----------
-        test_particle : `~plasmapy.particles.ParticleLike`
-            The test particle streaming through a background of field
-            particles.
-
-        field_particle : `~plasmapy.particles.ParticleLike`
-            The background particle being interacted with.
-
-        v_drift : `~astropy.units.Quantity`, default: 0 m/s
-            The relative drift between the test and field particles.
-
-        T_a : `~astropy.units.Quantity`
-            The temperature of the test particles in units convertible
-            to kelvin or eV per particle.
-
-        n_a : `~astropy.units.Quantity`
-            The number density of the test particles in units
-            convertible to m\ :sup:`-3`\ .
-
-        T_b : `~astropy.units.Quantity`
-            The temperature of the background field particles in units
-            convertible kelvin or eV per particle.
-
-        n_b : `~astropy.units.Quantity`
-            The number density of the background field particles in
-            units convertible to :math:`\frac{1}{m^3}`.
-
-        Coulomb_log : `~astropy.units.Quantity`
-            The value of the Coulomb logarithm for the interaction.
-
-        Raises
-        ------
-        `ValueError`
-            If the specified ``v_drift`` and ``T_a`` arrays do not have
-            equal size.
-
-        See Also
-        --------
-        ~plasmapy.formulary.collisions.coulomb.Coulomb_logarithm
-        """
 
         if (
             isinstance(v_drift, np.ndarray)
@@ -455,8 +454,8 @@ class MaxwellianCollisionFrequencies:
 
             ν = n σ v \ln{Λ}
 
-        where :math:`n` is the particle number density, :math:`σ` is
-        the collisional cross-section, :math:`v` is the mean thermal
+        where :math:`n` is the particle number density, :math:`σ` is the
+        collisional cross-section, :math:`v` is the mean thermal
         velocity between particle species (see Equation 2.133 in
         :cite:t:`callen:unpublished`), and :math:`\ln{Λ}` is the Coulomb
         logarithm accounting for small angle collisions.
@@ -501,11 +500,11 @@ class MaxwellianCollisionFrequencies:
         Raises
         ------
         `~plasmapy.utils.exceptions.PhysicsError`
-            The test particles are not 'slowly flowing' relative to the
-            field particles (see notes).
+            If the test particles are not 'slowly flowing' relative to
+            the field particles (see notes).
 
         `ValueError`
-            If the specified interaction isn't electron-ion.
+            If the specified interaction is not electron-ion.
 
         Examples
         --------
@@ -543,9 +542,9 @@ class MaxwellianCollisionFrequencies:
     @cached_property
     def Maxwellian_avg_ii_collision_freq(self):
         r"""
-        Average momentum relaxation rate for a slowly flowing
-        Maxwellian distribution of ions, relative to a population of
-        stationary ions.
+        Average momentum relaxation rate for a slowly flowing Maxwellian
+        distribution of ions, relative to a population of stationary
+        ions.
 
         This function assumes that both populations are Maxwellian, and
         :math:`T_i ≲ T_e`.
@@ -562,7 +561,7 @@ class MaxwellianCollisionFrequencies:
             field particles (see notes).
 
         `ValueError`
-            If the specified interaction isn't ion-ion.
+            If the specified interaction is not ion-ion.
 
         Examples
         --------
@@ -625,14 +624,14 @@ def collision_frequency(
     Parameters
     ----------
     T : `~astropy.units.Quantity`
-        Temperature in units of temperature.  This should be the
-        electron temperature for electron-electron and electron-ion
-        collisions, and the ion temperature for ion-ion collisions.
+        Temperature in units of temperature. This should be the electron
+        temperature for electron-electron and electron-ion collisions,
+        and the ion temperature for ion-ion collisions.
 
     n : `~astropy.units.Quantity`
-        The density in units convertible to per cubic meter.  This
-        should be the electron density for electron-electron collisions,
-        and the ion density for electron-ion and ion-ion collisions.
+        The density in units convertible to per cubic meter. This should
+        be the electron density for electron-electron collisions, and
+        the ion density for electron-ion and ion-ion collisions.
 
     species : `tuple`
         A tuple containing string representations of the test particle
@@ -682,8 +681,8 @@ def collision_frequency(
         `~astropy.units.Quantity`.
 
     `~plasmapy.utils.exceptions.RelativityError`
-        If the input velocity is same or greater than the speed
-        of light.
+        If the input velocity is same or greater than the speed of
+        light.
 
     Warns
     -----
@@ -721,7 +720,6 @@ def collision_frequency(
     See Also
     --------
     ~plasmapy.formulary.collisions.frequencies.SingleParticleCollisionFrequencies
-
     """
 
     deprecated(
