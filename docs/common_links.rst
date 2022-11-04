@@ -7,6 +7,7 @@
 
 .. |ClassicalTransport| replace:: :class:`~plasmapy.formulary.braginskii.ClassicalTransport`
 .. |RelativisticBody| replace:: :class:`~plasmapy.formulary.relativity.RelativisticBody`
+.. |SingleParticleCollisionFrequencies| replace:: :class:`~plasmapy.formulary.collisions.frequencies.SingleParticleCollisionFrequencies`
 
 .. ------------------
 .. plasmapy.particles
