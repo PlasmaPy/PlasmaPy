@@ -368,25 +368,24 @@ class MaxwellianCollisionFrequencies:
         field_particle : `~plasmapy.particles.ParticleLike`
             The background particle being interacted with.
 
-        v_drift : `~astropy.units.Quantity`, optional
+        v_drift : `~astropy.units.Quantity`, default: 0 m/s
             The relative drift between the test and field particles.
-            Defaults to zero.
 
         T_a : `~astropy.units.Quantity`
             The temperature of the test particles in units convertible
-            to degrees Kelvin.
+            to kelvin or eV per particle.
 
         n_a : `~astropy.units.Quantity`
             The number density of the test particles in units
-            convertible to :math:`\frac{1}{m^{3}}`.
+            convertible to m\ :sup:`-3`\ .
 
         T_b : `~astropy.units.Quantity`
             The temperature of the background field particles in units
-            convertible to degrees Kelvin.
+            convertible kelvin or eV per particle.
 
         n_b : `~astropy.units.Quantity`
             The number density of the background field particles in
-            units convertible to :math:`\frac{1}{m^{3}}`.
+            units convertible to :math:`\frac{1}{m^3}`.
 
         Coulomb_log : `~astropy.units.Quantity`
             The value of the Coulomb logarithm for the interaction.
@@ -394,13 +393,12 @@ class MaxwellianCollisionFrequencies:
         Raises
         ------
         `ValueError`
-            If the specified v_drift and T_a arrays don't have equal
-            size.
+            If the specified ``v_drift`` and ``T_a`` arrays do not have
+            equal size.
 
         See Also
         --------
-        ~plasmapy.formulary.collisions.coulomb.Coulomb_logarithm : Evaluates
-            the Coulomb logarithm for two interacting electron species.
+        ~plasmapy.formulary.collisions.coulomb.Coulomb_logarithm
         """
 
         if (
