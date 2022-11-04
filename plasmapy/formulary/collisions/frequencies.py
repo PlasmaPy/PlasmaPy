@@ -457,8 +457,8 @@ class MaxwellianCollisionFrequencies:
 
             ν = n σ v \ln{Λ}
 
-        where :math:`n` is the particle density, :math:`σ` is the
-        collisional cross-section, :math:`v` is the mean thermal
+        where :math:`n` is the particle number density, :math:`σ` is
+        the collisional cross-section, :math:`v` is the mean thermal
         velocity between particle species (see Equation 2.133 in
         :cite:t:`callen:unpublished`), and :math:`\ln{Λ}` is the
         Coulomb logarithm accounting for small angle collisions.
@@ -466,11 +466,10 @@ class MaxwellianCollisionFrequencies:
         See Equation (2.86) in :cite:t:`callen:unpublished`.
 
         This form of the Lorentz collision frequency differs from the
-        form found in
-        `~plasmapy.formulary.collisions.frequencies.SingleParticleCollisionFrequencies`
-        in that :math:`v` is the mean thermal velocity between particle
-        species in this method (as opposed to the drift velocity
-        between species).
+        form found in |SingleParticleCollisionFrequencies| in that
+        :math:`v` is the mean thermal velocity between particle species
+        in this method (as opposed to the drift velocity between
+        species).
         """
 
         return (
@@ -490,7 +489,7 @@ class MaxwellianCollisionFrequencies:
         of stationary ions.
 
         This function assumes that both populations are Maxwellian, and
-        :math:`T_{i} \lesssim T_{e}`.
+        :math:`T_i ≲ T_e`.
 
         :cite:t:`callen:unpublished` provides a derivation of this as an
         average collision frequency between electrons and ions for a
@@ -550,7 +549,7 @@ class MaxwellianCollisionFrequencies:
         stationary ions.
 
         This function assumes that both populations are Maxwellian, and
-        :math:`T_{i} \lesssim T_{e}`.
+        :math:`T_i ≲ T_e`.
 
         :cite:t:`callen:unpublished` provides a derivation of this as an
         average collision frequency between ions and ions for a
@@ -613,7 +612,9 @@ def collision_frequency(
     method="classical",
 ) -> u.Hz:
     r"""
-    .. note::
+    Collision frequency of particles in a plasma.
+
+    .. deprecated::
         The `~plasmapy.formulary.collisions.frequencies.collision_frequency`
         function has been replaced by the more general
         `~plasmapy.formulary.collisions.frequencies.SingleParticleCollisionFrequencies`
@@ -621,8 +622,6 @@ def collision_frequency(
         `~plasmapy.formulary.collisions.frequencies.collision_frequency`, create a
         `~plasmapy.formulary.collisions.frequencies.SingleParticleCollisionFrequencies`
         class and access the ``Lorentz_collision_frequency`` attribute.
-
-    Collision frequency of particles in a plasma.
 
     Parameters
     ----------
