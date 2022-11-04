@@ -19,6 +19,7 @@ from numbers import Real
 from plasmapy import particles
 from plasmapy.formulary.collisions import coulomb, lengths, misc
 from plasmapy.formulary.speeds import thermal_speed
+from plasmapy.particles import ParticleLike
 from plasmapy.utils.decorators import deprecated, validate_quantities
 from plasmapy.utils.exceptions import PhysicsError, PlasmaPyFutureWarning
 
@@ -154,8 +155,8 @@ class SingleParticleCollisionFrequencies:
     )
     def __init__(
         self,
-        test_particle: particles.ParticleLike,
-        field_particle: particles.ParticleLike,
+        test_particle: ParticleLike,
+        field_particle: ParticleLike,
         *,
         v_drift: u.m / u.s,
         T_b: u.K,
@@ -331,11 +332,11 @@ class MaxwellianCollisionFrequencies:
 
     Parameters
     ----------
-    test_particle : `~plasmapy.particles.ParticleLike`
+    test_particle : |particle-like|
         The test particle streaming through a background of field
         particles.
 
-    field_particle : `~plasmapy.particles.ParticleLike`
+    field_particle : |particle-like|
         The background particle being interacted with.
 
     v_drift : `~astropy.units.Quantity`, default: 0 m/s
@@ -387,8 +388,8 @@ class MaxwellianCollisionFrequencies:
     )
     def __init__(
         self,
-        test_particle: particles.ParticleLike,
-        field_particle: particles.ParticleLike,
+        test_particle: ParticleLike,
+        field_particle: ParticleLike,
         *,
         v_drift: u.m / u.s = 0 * u.m / u.s,
         T_a: u.K,
