@@ -1,6 +1,5 @@
-"""
-Module of frequency parameters related to collisions.
-"""
+"""Frequency parameters related to collisions."""
+
 __all__ = [
     "SingleParticleCollisionFrequencies",
     "MaxwellianCollisionFrequencies",
