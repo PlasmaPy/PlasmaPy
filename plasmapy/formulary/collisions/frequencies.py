@@ -353,7 +353,7 @@ class MaxwellianCollisionFrequencies:
 
         .. math::
 
-            v_{drift} << \sqrt{v_{T_a}^{2}+v_{T_b}^{2}}
+            v_{drift} << \sqrt{ v_{T_a}^2 + v_{T_b}^2 }
 
         where :math:`v_{drift}` is the relative drift between the two
         species, :math:`v_{T_a}` is the thermal velocity of species
