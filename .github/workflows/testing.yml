@@ -10,6 +10,15 @@ on:
     - v*
   pull_request:
   workflow_dispatch:
+    inputs:
+      target_pypi:
+        description: Test PyPI or main PyPI?
+        required: true
+        default: https://test.pypi.org/legacy/
+        type: choice
+        options:
+        - https://test.pypi.org/legacy/
+        - https://pypi.org/legacy/
   workflow_call:
 
 jobs:
@@ -153,7 +162,7 @@ jobs:
     with:
       test_extras: tests
       test_command: pytest --pyargs plasmapy
-      repository_url: https://test.pypi.org/legacy/
+      repository_url: ${{ github.event.inputs.tag }}
       upload_to_pypi: true
     secrets:
       pypi_token: ${{ secrets.TEST_PYPI_API_TOKEN }}

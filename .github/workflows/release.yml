@@ -6,7 +6,7 @@ on:
       tag:
         description: Release tag
         required: true
-        default: 0.9.0.relasetest
+        default: 0.9.0rc1
       DOI:
         description: Reserved DOI from Zenodo
         required: true
