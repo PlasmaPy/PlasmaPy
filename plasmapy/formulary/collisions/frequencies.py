@@ -75,8 +75,8 @@ class SingleParticleCollisionFrequencies:
         Raises
         ------
         `ValueError`
-            If the specified v_drift and n_b arrays don't have equal
-            size.
+            If the specified ``v_drift`` and ``n_b`` arrays do not have
+            equal size.
 
         Notes
         -----
@@ -267,12 +267,14 @@ class SingleParticleCollisionFrequencies:
     def x(self) -> u.dimensionless_unscaled:
         """
         The ratio of kinetic energy in the test particle to the thermal
-        energy of the field particle.  This parameter determines the
-        regime in which the collision falls.
+        energy of the field particle.
 
-        (see documentation for the
-        `~plasmapy.formulary.collisions.frequencies.SingleParticleCollisionFrequencies`
-        class for details)
+        This parameter determines the regime in which the collision
+        falls.
+
+        See Also
+        --------
+        |SingleParticleCollisionFrequencies|
         """
 
         x = self.field_particle.mass * self.v_drift**2 / (2 * k_B.cgs * self.T_b)
@@ -281,15 +283,13 @@ class SingleParticleCollisionFrequencies:
     @staticmethod
     def _phi_integrand(t: u.dimensionless_unscaled):
         """
-        The phi integrand used in calculating phi
+        The phi integrand used in calculating phi.
         """
 
         return t**0.5 * np.exp(-t)
 
     def _phi_explicit(self, x: float):
-        """
-        The non-vectorized method for evaluating the integral for phi
-        """
+        """The non-vectorized method for evaluating the integral for phi."""
         integral, _ = scipy.integrate.quad(self._phi_integrand, 0, x)
 
         return integral
@@ -311,7 +311,7 @@ class SingleParticleCollisionFrequencies:
     @cached_property
     def _phi_prime(self):
         """
-        The derivative of phi evaluated at x
+        The derivative of phi evaluated at x.
         """
 
         return 2 / np.pi**0.5 * self._phi_integrand(self.x)
