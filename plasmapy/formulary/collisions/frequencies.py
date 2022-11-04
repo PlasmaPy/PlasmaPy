@@ -44,8 +44,8 @@ class SingleParticleCollisionFrequencies:
         Coulomb_log: u.dimensionless_unscaled,
     ):
         r"""
-        Compute collision frequencies between test particles
-        (labeled 'a') and field particles (labeled 'b').
+        Compute collision frequencies between test particles (labeled
+        'a') and field particles (labeled 'b').
 
         Parameters
         ----------
@@ -111,7 +111,9 @@ class SingleParticleCollisionFrequencies:
             + ψ' \left( x^{α \backslash β} \right) \right]
             ν_0^{α \backslash β}`
 
-            parallel diffusion: :math:`ν_{||}^{α\backslashβ}=\left[\frac{ψ\left(x^{α\backslashβ}\right)}{x^{α\backslashβ}}\right]ν_{0}^{α\backslashβ}`
+            parallel diffusion: :math:`ν_{||}^{α \backslash β}
+            = \left[ \frac{ψ \left( x^{α \backslash β} \right)
+            }{x^{α \backslash β}} \right] ν_{0}^{α \backslash β}`
 
             energy loss: :math:`ν_ϵ^{α \backslash β}
             = 2\left[ \left( \frac{m_α}{m_β} \right)
@@ -129,7 +131,7 @@ class SingleParticleCollisionFrequencies:
             :math:`ψ \left( x \right) = \frac{2}{\sqrt{π}}
             \int_0^x t^{ \frac{1}{2} } e^{-t} dt`,
 
-            :math:`ψ'\left(x\right)=\frac{dψ}{dx}`,
+            :math:`ψ' \left( x \right) = \frac{dψ}{dx}`,
 
         and :math:`\lambda_{α β}` is the Coulomb logarithm for the
         collisions, :math:`n_β` is the number density of the field
@@ -289,7 +291,6 @@ class SingleParticleCollisionFrequencies:
     def _phi_explicit(self, x: float):
         """The non-vectorized method for evaluating the integral for phi."""
         integral, _ = scipy.integrate.quad(self._phi_integrand, 0, x)
-
         return integral
 
     @cached_property
@@ -311,7 +312,6 @@ class SingleParticleCollisionFrequencies:
         """
         The derivative of phi evaluated at x.
         """
-
         return 2 / np.pi**0.5 * self._phi_integrand(self.x)
 
 
@@ -458,8 +458,8 @@ class MaxwellianCollisionFrequencies:
         where :math:`n` is the particle number density, :math:`σ` is
         the collisional cross-section, :math:`v` is the mean thermal
         velocity between particle species (see Equation 2.133 in
-        :cite:t:`callen:unpublished`), and :math:`\ln{Λ}` is the
-        Coulomb logarithm accounting for small angle collisions.
+        :cite:t:`callen:unpublished`), and :math:`\ln{Λ}` is the Coulomb
+        logarithm accounting for small angle collisions.
 
         See Equation (2.86) in :cite:t:`callen:unpublished`.
 
@@ -482,7 +482,8 @@ class MaxwellianCollisionFrequencies:
 
     @cached_property
     def Maxwellian_avg_ei_collision_freq(self):
-        r"""Average momentum relaxation rate for a slowly flowing
+        r"""
+        Average momentum relaxation rate for a slowly flowing
         Maxwellian distribution of electrons, relative to a population
         of stationary ions.
 
@@ -615,10 +616,10 @@ def collision_frequency(
     .. deprecated::
         The `~plasmapy.formulary.collisions.frequencies.collision_frequency`
         function has been replaced by the more general
-        `~plasmapy.formulary.collisions.frequencies.SingleParticleCollisionFrequencies`
+        |SingleParticleCollisionFrequencies|
         class.  To replicate the functionality of
         `~plasmapy.formulary.collisions.frequencies.collision_frequency`, create a
-        `~plasmapy.formulary.collisions.frequencies.SingleParticleCollisionFrequencies`
+        |SingleParticleCollisionFrequencies|
         class and access the ``Lorentz_collision_frequency`` attribute.
 
     Parameters
@@ -806,7 +807,6 @@ def fundamental_electron_collision_freq(
         `~plasmapy.formulary.collisions.frequencies.MaxwellianCollisionFrequencies`
         class and access the ``Maxwellian_avg_ei_collision_freq``
         attribute.
-
 
     :cite:t:`braginskii:1965` provides a derivation of this as an
     average collision frequency between electrons and ions for a
