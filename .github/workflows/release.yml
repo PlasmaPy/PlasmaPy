@@ -40,7 +40,7 @@ jobs:
     - name: Create or checkout branch
       run: |
         VERSION="v${{ github.event.inputs.tag }}"
-        BRANCH=$(awk 'BEGIN{FS=OFS="."} {$3="x"} 1' | cut -f1,2,3 -d'.' | cut -f1 -d'rc')
+        BRANCH=$(echo $VERSION | awk 'BEGIN{FS=OFS="."} {$3="x"} 1' | cut -f1,2,3 -d'.' | awk -F'rc' '{print $1 ORS $2}')
         git checkout $BRANCH
 
     - name: Update CITATION.cff, docs/about/citation.rst with the DOI for the new version.
@@ -74,5 +74,5 @@ jobs:
     - name: Push tag, branch state
       run: |
         VERSION="v${{ github.event.inputs.tag }}"
-        BRANCH=$(awk 'BEGIN{FS=OFS="."} {$3="x"} 1' | cut -f1,2,3 -d'.' | cut -f1 -d'rc')
+        BRANCH=$(echo $VERSION | awk 'BEGIN{FS=OFS="."} {$3="x"} 1' | cut -f1,2,3 -d'.' | awk -F'rc' '{print $1 ORS $2}')
         git push -u origin $VERSION $BRANCH
