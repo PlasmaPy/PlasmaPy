@@ -423,8 +423,8 @@ def lower_hybrid_frequency(B: u.T, n_i: u.m**-3, ion: ParticleLike) -> u.rad / u
     # catch invalid ions.
     try:
         particles.charge_number(ion)
-    except InvalidParticleError:
-        raise ValueError("Invalid ion in lower_hybrid_frequency.")
+    except InvalidParticleError as ex:
+        raise ValueError("Invalid ion in lower_hybrid_frequency.") from ex
 
     omega_ci = gyrofrequency(B, particle=ion)
     omega_pi = plasma_frequency(n_i, particle=ion)
