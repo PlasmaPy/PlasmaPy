@@ -101,10 +101,10 @@ Perform code quality checks
 Create the release branch
 =========================
 
-* Go to `the Release action <https://github.com/StanczakDominik/PlasmaPy/actions/workflows/release.yml>`_,
-  hit the Run workflow button, fill in the required values and hit Run
-  Workflow. Refresh the page and make sure the new job goes through. Fix
-  whatever made it fail.
+* Go to `the Release action <https://github.com/PlasmaPy/PlasmaPy/actions/workflows/release.yml>`_,
+  hit the :guilabel:`Run workflow` button, fill in the required values 
+  and hit :guilabel:`Run Workflow`. Refresh the page and make sure the
+  new job goes through. Fix whatever made it fail.
 
 * For major and minor releases, activate the new branch's version on
   `on Read the Docs <https://readthedocs.org/projects/plasmapy/versions>`_.
