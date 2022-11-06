@@ -10,15 +10,6 @@ on:
     - v*
   pull_request:
   workflow_dispatch:
-    inputs:
-      target_pypi:
-        description: Test PyPI or main PyPI?
-        required: true
-        default: https://test.pypi.org/legacy/
-        type: choice
-        options:
-        - https://test.pypi.org/legacy/
-        - https://pypi.org/legacy/
   workflow_call:
 
 jobs:
