@@ -102,7 +102,7 @@ Create the release branch
 =========================
 
 * Go to `the Release action <https://github.com/PlasmaPy/PlasmaPy/actions/workflows/release.yml>`_,
-  hit the :guilabel:`Run workflow` button, fill in the required values 
+  hit the :guilabel:`Run workflow` button, fill in the required values
   and hit :guilabel:`Run Workflow`. Refresh the page and make sure the
   new job goes through. Fix whatever made it fail.
 
@@ -127,7 +127,28 @@ Create the release branch
 Publish the release
 ===================
 
-  The release is handled via :file:`.github/workflows/release.yml`.
+.. There used to be a step here to use the hub tool with `hub ci-status
+   main -v [COMMIT]``. I kept getting a "Not Found" error when using the
+   hub tool, and I'm not sure why.
+
+.. Install `hub <https://hub.github.com/>`__ (if needed), and use it to
+   check that the continuous integration is passing.
+   ... code-block:: Shell
+      hub ci-status main -v [COMMIT]
+   Here, ``[COMMIT]`` is replaced by the hash from the latest commit on
+   the `main <https://github.com/PlasmaPy/PlasmaPy/commits/main>`__
+   branch of `PlasmaPy's GitHub repository`_.
+
+* Go to the GitHub page to `draft a new release`_. We will perform a
+  pre-release first.
+
+  - Set the :guilabel:`Target` to ``v0.9.x``.
+  - For :guilabel:`Choose a tag`, put ``0.9.0rc1``.
+  - Under title, put ``v0.9.0rc1``.
+  - Mark this as a pre-release.
+  - Click on :guilabel:`Publish release`.
+
+  The release is handled via |.github/workflows/python-publish.yml|_.
 
   In a few minutes, check `PlasmaPy releases on PyPI`_ to make sure that
   version ``0.9.0rc1`` has been released and is marked as pre-release.
@@ -153,7 +174,7 @@ Publish the release
   Fix any errors that arise, and re-run the :guilabel:`CI` and
   :guilabel:`fortnightly tests` checks.
 
-* TODO this is out of date: Go to the GitHub page to `draft a new release`_. We will now perform
+* Go to the GitHub page to `draft a new release`_. We will now perform
   the ``0.9.0`` release.
 
   - Set the :guilabel:`Target` to ``v0.9.x``.
