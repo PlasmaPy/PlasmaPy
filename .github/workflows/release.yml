@@ -41,8 +41,7 @@ jobs:
       run: |
         VERSION="v${{ github.event.inputs.tag }}"
         BRANCH=$(echo $VERSION | awk 'BEGIN{FS=OFS="."} {$3="x"} 1' | cut -f1,2,3 -d'.' | awk -F'rc' '{print $1 ORS $2}')
-        git ls-remote origin $BRANCH && git merge --ff-only origin/$BRANCH
-        git checkout $BRANCH 2>/dev/null || git checkout -b $BRANCH
+        git checkout $BRANCH
 
     - name: Update CITATION.cff, docs/about/citation.rst with the DOI for the new version.
       run: |
