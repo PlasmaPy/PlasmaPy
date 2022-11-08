@@ -1,1 +1,3 @@
-Move the ``plasmapy.formulary.dimensionless.quantum_theta`` function to the `~plasmapy.formulary.quantum` module. Note, this function can still be called from the `plasmapy.formulary.dimensionless` module without issue.
+Moved the ``plasmapy.formulary.dimensionless.quantum_theta`` function to
+`plasmapy.formulary.quantum.quantum_theta`. This function can still be
+called from the `plasmapy.formulary.dimensionless` module without issue.

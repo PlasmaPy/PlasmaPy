@@ -1,1 +1,1 @@
-Increase the minimum version of Sphinx_ to 5.0.0.
+Increased the minimum version of Sphinx_ to 5.0.0.

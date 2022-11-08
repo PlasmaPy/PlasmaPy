@@ -178,11 +178,11 @@ def find_ion_saturation_current(
         default_current_bound = _settings[fit_type]["current_bound"]
         fit_func = _settings[fit_type]["func"]()
         rtn_extras["fitted_func"] = fit_func
-    except KeyError:
+    except KeyError as ex:
         raise ValueError(
             f"Requested fit '{fit_type}' is not a valid option.  Valid options "
             f"are {list(_settings.keys())}."
-        )
+        ) from ex
 
     # check voltage and current arrays
     voltage, current = check_sweep(voltage, current, strip_units=True)

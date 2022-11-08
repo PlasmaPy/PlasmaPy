@@ -1,1 +1,1 @@
-Added a function to calculate the dimensionless Lundquist number
+Added a function to calculate the dimensionless Lundquist number.

@@ -1,1 +1,1 @@
-Replace ``os.path`` with the more modern ``pathlib``.
+Replaced usage of `os.path` with the more modern `pathlib`.

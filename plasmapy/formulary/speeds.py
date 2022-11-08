@@ -158,11 +158,11 @@ def Alfven_speed(
         if not isinstance(ion, Particle):
             try:
                 ion = Particle(ion)
-            except TypeError:
+            except TypeError as ex:
                 raise TypeError(
                     f"If passing a number density, you must pass a plasmapy Particle "
                     f"(not type {type(ion)}) to calculate the mass density!"
-                )
+                ) from ex
         if z_mean is None:
             try:
                 z_mean = abs(ion.charge_number)
@@ -359,8 +359,8 @@ def ion_sound_speed(
             m_i * (1 + klD2)
         )
         V_S = np.sqrt(V_S_squared).to(u.m / u.s)
-    except ValueError:
-        raise ValueError("Unable to find ion sound speed.")
+    except ValueError as ex:
+        raise ValueError("Unable to find ion sound speed.") from ex
 
     return V_S
 
@@ -444,10 +444,10 @@ def thermal_speed_coefficients(method: str, ndim: int) -> float:
 
     try:
         coeff = _coefficients[(ndim, method)]
-    except KeyError:
+    except KeyError as ex:
         raise ValueError(
             f"Value for (ndim, method) pair not valid, got '({ndim}, {method})'."
-        )
+        ) from ex
 
     return coeff
 

@@ -1,0 +1,3 @@
+In `~plasmapy.plasma.grids.AbstractGrid`, a `TypeError` is now raised
+instead of a `ValueError` when ``start`` or ``stop`` are not of the
+appropriate type.
