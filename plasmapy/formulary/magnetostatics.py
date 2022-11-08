@@ -81,22 +81,22 @@ class MagneticDipole(MagnetoStatics):
             Three-dimensional position vector.
         
         x : `~astropy.units.Quantity`, optional
-            x-component in Cartesian coordinate.
+            x-component in Cartesian coordinates.
         
         y : `~astropy.units.Quantity`, optional
-            y-component in Cartesian coordinate.
+            y-component in Cartesian coordinates.
             
         z : `~astropy.units.Quantity`, optional
-            z-component in Cartesian or cylindrical coordinate.
+            z-component in Cartesian or cylindrical coordinates.
             
         r : `~astropy.units.Quantity`, optional
-            radius in spherical or cylindrical coordinate.
+            radius in spherical or cylindrical coordinates.
             
         theta : `~astropy.units.Quantity`, optional
-            polar angle in spherical coordinate.
+            polar angle in spherical coordinates.
             
         phi : `~astropy.units.Quantity`, optional
-            azimuthal angle spherical or cylindrical coordinate.
+            azimuthal angle spherical or cylindrical coordinates.
                         
         Returns
         -------
@@ -145,7 +145,6 @@ class MagneticDipole(MagnetoStatics):
                 r * np.sin(theta) * np.sin(phi),
                 r * np.cos(theta),
             ]) - self.p0
-        
         m = self.moment
         B = (
             constants.mu0.value
