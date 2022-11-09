@@ -1,2 +1,2 @@
 Added sections on best practices for comments and error messages to the
-coding guide.
+|coding guide|.

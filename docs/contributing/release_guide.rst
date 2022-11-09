@@ -47,22 +47,12 @@ Update metadata
 ===============
 
 * Begin an upload to Zenodo_ for the new release using the
-  ``team@plasmapy.org`` login, and reserve a digital object identifier
-  (DOI).
-
-* Open a pull request to update :file:`docs/about/citation.rst` to
-  reflect the new version, and include the reserved DOI.
+  ``team@plasmapy.org`` login, and reserve a DOI_.
 
 * Open a pull request to update and alphabetize the author list in
-  :file:`docs/about/credits.rst`. Missing ORCID_ identifiers may be
+  :file:`docs/about/credits.rst`, :file:`.mailmap`, and |CITATION.cff|_, the
+  latter using the `Citation File Format`_. Missing ORCID_ identifiers may be
   added.
-
-* Open a pull request to update :file:`codemeta.json` and
-  :file:`CITATION.cff`. Update the author list, version, and other
-  metadata, as needed. Update the ``"identifier"`` tag with the DOI for
-  the new release.
-
-* Open a pull request to update :file:`.mailmap`.
 
 .. Add a Python script here to update :file:`.mailmap`.
 
@@ -85,14 +75,6 @@ Perform code quality checks
      requests that change multiple changelog entries in order to skip
      the changelog entry check.
 
-* Open a pull request to ``main`` to update black_ and other pre-commit_
-  hooks to their most recent versions in :file:`.pre-commit-config.yaml`
-  for major and minor releases. Apply all changes by running:
-
-  .. code-block:: bash
-
-     pre-commit run --all-files
-
 * Open a pull request to re-execute pre-executed notebooks, such as
   those for charged particle radiography.
 
@@ -104,7 +86,7 @@ Perform code quality checks
   .. tip::
 
      Use ``linkcheck_allowed_redirects`` in :file:`docs/conf.py` to
-     specify allowed redirects. For example, DOI links are always
+     specify allowed redirects. For example, DOI_ links are always
      redirects, but are significantly more persistent than hyperlinks.
 
 * Make sure that all tests are passing.
@@ -119,49 +101,10 @@ Perform code quality checks
 Create the release branch
 =========================
 
-* Enter the :file:`PlasmaPy` directory and create a new branch for the
-  release that is based off of the ``main`` branch. For a bugfix
-  release, this branch should already exist.
-
-  .. code-block:: bash
-
-     git checkout -b v0.9.x upstream main
-
-  The ``upstream`` remote corresponds to `PlasmaPy's GitHub repository`_.
-
-* Push the branch to `PlasmaPy's GitHub repository`_.
-
-  .. code-block:: bash
-
-     git push -u upstream
-
-* Open a pull request to transform the news fragments in
-  :file:`changelog/` to a changelog page.
-
-  - In the top-level directory, run:
-
-    .. code-block:: bash
-
-       towncrier build --version 0.9.0
-
-    When asked about removing changelog entries, do so.
-
-  - Copy the relevant parts of the generated :file:`CHANGELOG.rst` file
-    into :file:`docs/whatsnew/0.9.0.rst`.
-
-  - Add the entry for :file:`docs/whatsnew/0.9.0.rst` in the table of
-    contents in :file:`docs/whatsnew/index.rst`.
-
-    .. todo::
-
-        Immediately following the ``v0.8.1`` release, we made (or
-        planned to make) a few changes to the towncrier_ setup
-        (:pr:`1623`, :pr:`1626`, :issue:`1627`). This guide may require
-        some updates for the subsequent release.
-
-    .. todo::
-
-       We might be able to consolidate these steps into a single one.
+* Go to `the Release action <https://github.com/PlasmaPy/PlasmaPy/actions/workflows/release.yml>`_,
+  hit the :guilabel:`Run workflow` button, fill in the required values
+  and hit :guilabel:`Run Workflow`. Refresh the page and make sure the
+  new job goes through. Fix whatever made it fail.
 
 * For major and minor releases, activate the new branch's version on
   `on Read the Docs <https://readthedocs.org/projects/plasmapy/versions>`_.
@@ -287,7 +230,7 @@ Post-release
       either changed dependencies or the simple import tests there.
 
 * Upload the release to the Zenodo_ record corresponding to the reserved
-  DOI, making the metadata consistent with :file:`codemeta.json`.
+  DOI, making the metadata consistent with |CITATION.cff|_.
 
 Advertise the release
 =====================

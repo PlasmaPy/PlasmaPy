@@ -288,7 +288,7 @@ def run_test(
                     f"{_name_with_article(expected_exception)} as expected, but "
                     f"instead raised {_name_with_article(resulting_exception)} "
                     f"which is a subclass of the expected exception."
-                )
+                ) from exc_result
         except Exception as exc_unexpected_exception:
             unexpected_exception = exc_unexpected_exception.__reduce__()[0]
             raise UnexpectedExceptionFail(
@@ -589,7 +589,7 @@ def run_test_equivalent_calls(*test_inputs, require_same_type: bool = True):
         except Exception as exc:
             raise UnexpectedExceptionFail(
                 f"Unable to evaluate {test_case['call string']}."
-            )
+            ) from exc
 
     # Make sure that all of the results evaluate as equal to the first
     # result.

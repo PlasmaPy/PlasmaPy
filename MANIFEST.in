@@ -3,6 +3,7 @@ include LICENSE.md
 include pyproject.toml
 
 include plasmapy/tests/coveragerc
+include CITATION.cff
 
 recursive-include plasmapy *.json *.npy
 recursive-include docs *
