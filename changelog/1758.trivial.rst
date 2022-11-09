@@ -1,1 +1,3 @@
-Replaced ``setup.py`` with ``pyproject.toml``. Simplified ``extras`` (``pip install plasmapy[all]`` and ``[extras]`` are gone).
+Replaced ``setup.py`` with ``pyproject.toml`` (see :pep:`518` and :pep:`621`).
+Simplified ``extras`` requirements (``pip install plasmapy[all]`` and ``[extras]``
+are gone).
