@@ -1,10 +1,10 @@
 title: PlasmaPy
 type: software
-version: 0.8.1
+version: 0.9.0
 identifiers:
 - type: doi
-  value: 10.5281/zenodo.6774350
-date-released: '2022-07-05'
+  value: 10.5281/zenodo.7303557
+date-released: '2022-11-11'
 message: >-
   Please cite the specific version of PlasmaPy used
   during a research project.
@@ -15,8 +15,8 @@ abstract: >-
   PlasmaPy is an open source Python package for plasma research and
   education.
 contact:
-  - email: team@plasmapy.org
-    name: The PlasmaPy Team
+- email: team@plasmapy.org
+  name: The PlasmaPy Team
 keywords:
 - plasma
 - physics
