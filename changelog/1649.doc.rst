@@ -1,1 +1,0 @@
-Updated the introductory paragraphs of the |coding guide|.
