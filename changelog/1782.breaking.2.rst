@@ -1,3 +1,0 @@
-In `~plasmapy.diagnostics.thomson.spectral_density` and
-`~plasmapy.diagnostics.thomson.spectral_density_model`, a `TypeError` is
-now raised when ``ions`` is an unsupported type.

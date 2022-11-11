@@ -1,3 +1,0 @@
-When the argument provided to
-`~plasmapy.formulary.magnetostatics.GeneralWire` is not callable, a
-`TypeError` will be raised instead of a `ValueError`.
