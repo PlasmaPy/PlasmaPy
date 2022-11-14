@@ -7,8 +7,9 @@ import numpy as np
 
 def check_sweep(
     variable: np.ndarray,
-    strip_units: bool = True)
-"""
+    strip_units: bool = True):
+
+    """
     Function for checking that the delta array is properly
     formatted for analysis by `plasmapy.analysis.intermittency`.
     Parameters
@@ -55,32 +56,20 @@ def check_sweep(
             f"Expected 1D numpy array of floats or integers for variable, but"
             f" got an array with dtype '{variable.dtype}'."
         )
-    elif voltage.ndim != 1:
+    elif variable.ndim != 1:
         raise ValueError(
             f"Expected 1D numpy array for variable, but got array with "
             f"{variable.ndim} dimensions.",
         )
 
-    if isinstance(variable, u.Quantity) and strip_units:
-        variable = variable.value
-
-    # check array structure
-    if not (
-        np.issubdtype(current.dtype, np.floating)
-        or np.issubdtype(current.dtype, np.integer)
-    ):
-        raise ValueError(
-            f"Expected 1D numpy array of floats or integers for current, but"
-            f" got an array with dtype '{current.dtype}'."
-        )
-
-    if isinstance(current, u.Quantity) and strip_units:
-        current = current.value
+    #if isinstance(variable, u.Quantity) and strip_units:
+        #variable = variable.value
 
     return variable
 
 
 def generate_deltas_list(timeseries,dt,timestep):
+    check_sweep(timeseries)
     deltas=[]
     indexstep = np.round(timestep/dt)
     total = len(timeseries)
