@@ -219,16 +219,20 @@ class IonizationStateCollection:
                 )
 
             if not isinstance(int_charge, Integral):
-                raise TypeError(f"{int_charge} is not a valid charge for {particle}.")
+                raise TypeError(  # noqa: TC301
+                    f"{int_charge} is not a valid charge for {particle}."
+                )
             elif not 0 <= int_charge <= atomic_number(particle):
                 raise ChargeError(f"{int_charge} is not a valid charge for {particle}.")
+
+        except (ChargeError, KeyError, TypeError) as exc:
+            raise IndexError(errmsg) from exc
+        else:
             return IonicLevel(
                 ion=particle_symbol(particle, Z=int_charge),
                 ionic_fraction=self.ionic_fractions[particle][int_charge],
                 number_density=self.number_densities[particle][int_charge],
             )
-        except (ChargeError, KeyError, TypeError) as exc:
-            raise IndexError(errmsg) from exc
 
     def __setitem__(self, key, value):
 
@@ -300,7 +304,7 @@ class IonizationStateCollection:
                         f"defined."
                     )
 
-        try:
+        try:  # noqa: TC101
             new_fractions = np.array(value, dtype=float)
         except TypeError as exc:
             raise TypeError(
@@ -707,11 +711,11 @@ class IonizationStateCollection:
                 new_keys_dict = {}
                 for old_key in old_keys:
                     new_keys_dict[particle_symbol(old_key)] = old_key
-            except ParticleError:
+            except ParticleError as ex:
                 raise ParticleError(
                     f"The key {repr(old_key)} in the abundances "
                     f"dictionary is not a valid element or isotope."
-                )
+                ) from ex
 
             new_elements = new_keys_dict.keys()
 

@@ -1,2 +1,0 @@
-Set up issue forms on `PlasmaPy's GitHub repository`_ to replace
-issue templates.

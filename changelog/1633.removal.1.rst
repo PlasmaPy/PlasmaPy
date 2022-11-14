@@ -1,3 +1,0 @@
-The ``integer_charge`` attributes of |Particle| and |IonicLevel| have
-been removed after being deprecated in ``v0.7.0``. Use the
-``charge_number`` attribute instead.

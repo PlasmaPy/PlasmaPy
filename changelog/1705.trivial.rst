@@ -1,1 +1,0 @@
-Made minor improvements to ``plasmapy.formulary.collisions.CollisionFrequencies``.
