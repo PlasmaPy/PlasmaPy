@@ -1,3 +1,0 @@
-Moved the ``is_category`` method of |Particle| to
-`~plasmapy.particles.particle_class.AbstractPhysicalParticle`. This
-method is now inherited by both |Particle| and |CustomParticle|.
