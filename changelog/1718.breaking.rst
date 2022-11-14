@@ -1,3 +1,0 @@
-The parameters ``Z`` and ``mass_numb`` are now |keyword-only| for
-`~plasmapy.particles.symbols.ionic_symbol` and
-`~plasmapy.particles.symbols.particle_symbol`.

@@ -1,2 +1,0 @@
-Added `~plasmapy.formulary.collisions.frequencies.MaxwellianCollisionFrequencies` for
-calculating relevant collision frequencies for Maxwellian populations.
