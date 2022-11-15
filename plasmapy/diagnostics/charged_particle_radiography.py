@@ -762,7 +762,7 @@ class Tracker:
         if self.dt.size == 1:
             return self.dt
 
-        # candidate timesteps inlcudes one per grid (based on the grid resolution)
+        # candidate timesteps includes one per grid (based on the grid resolution)
         # plus additional candidates based on the field at each particle
         candidates = np.ones([self.nparticles_grid, self.num_grids + 1]) * np.inf
 
@@ -949,7 +949,7 @@ class Tracker:
                 )
 
             # Interpret any NaN values (points off the grid) as zero
-            # Do this before adding to the totals, beause 0 + nan = nan
+            # Do this before adding to the totals, because 0 + nan = nan
             _Ex = np.nan_to_num(_Ex, nan=0.0 * u.V / u.m)
             _Ey = np.nan_to_num(_Ey, nan=0.0 * u.V / u.m)
             _Ez = np.nan_to_num(_Ez, nan=0.0 * u.V / u.m)
@@ -981,7 +981,7 @@ class Tracker:
         # TODO: Test v/c and implement relativistic Boris push when required
         # vc = np.max(v)/_c
 
-        # If dt is not a scalar, make sure it can be multipled by an
+        # If dt is not a scalar, make sure it can be multiplied by an
         # [nparticles, 3] shape field array
         if dt.size > 1:
             dt = dt[:, np.newaxis]
