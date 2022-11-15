@@ -253,6 +253,10 @@ class Tracker:
                         RuntimeWarning,
                     )
 
+    @property
+    def num_grids(self):
+        return len(self.grids)
+
     def _default_detector_hdir(self):
         """
         Calculates the default horizontal unit vector for the detector plane
@@ -274,21 +278,24 @@ class Tracker:
         which particles are worth tracking.
         """
         ind = 0
-        theta = np.zeros([8])
-        for x in [0, -1]:
-            for y in [0, -1]:
-                for z in [0, -1]:
-                    # Source to grid corner vector
-                    vec = self.grid_arr[x, y, z, :] - self.source
+        theta = np.zeros([8, self.num_grids])
 
-                    # Calculate angle between vec and the source-to-detector
-                    # axis, which is the central axis of the particle beam
-                    theta[ind] = np.arccos(
-                        np.dot(vec, self.src_det)
-                        / np.linalg.norm(vec)
-                        / np.linalg.norm(self.src_det)
-                    )
-                    ind += 1
+        for i, grid in enumerate(self.grids):
+            for x in [0, -1]:
+                for y in [0, -1]:
+                    for z in [0, -1]:
+                        # Source to grid corner vector
+                        vec = self.grids_arr[i][x, y, z, :] - self.source
+
+                        # Calculate angle between vec and the source-to-detector
+                        # axis, which is the central axis of the particle beam
+                        theta[ind, i] = np.arccos(
+                            np.dot(vec, self.src_det)
+                            / np.linalg.norm(vec)
+                            / np.linalg.norm(self.src_det)
+                        )
+                        ind += 1
+
         return np.max(theta)
 
     def _log(self, msg):
