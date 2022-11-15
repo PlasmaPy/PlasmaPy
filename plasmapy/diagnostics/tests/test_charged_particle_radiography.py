@@ -876,4 +876,7 @@ def test_add_wire_mesh():
 
 
 if __name__ == "__main__":
-    test_input_validation()
+    # test_input_validation()
+    # test_run_options()
+    # run_mesh_example()
+    test_add_wire_mesh()

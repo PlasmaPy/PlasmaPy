@@ -981,9 +981,14 @@ class Tracker:
         # TODO: Test v/c and implement relativistic Boris push when required
         # vc = np.max(v)/_c
 
+        # If dt is not a scalar, make sure it can be multipled by an
+        # [nparticles, 3] shape field array
+        if dt.size > 1:
+            dt = dt[:, np.newaxis]
+
         x = self.x[self.grid_ind, :]
         v = self.v[self.grid_ind, :]
-        boris_push(x, v, B, E, self.q, self.m, dt[:, np.newaxis])
+        boris_push(x, v, B, E, self.q, self.m, dt)
         self.x[self.grid_ind, :] = x
         self.v[self.grid_ind, :] = v
 
