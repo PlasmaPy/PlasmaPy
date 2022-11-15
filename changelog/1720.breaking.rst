@@ -1,3 +1,0 @@
-Moved the ``valid_categories`` attribute of
-`~plasmapy.particles.particle_class.AbstractPhysicalParticle.is_category`
-to `plasmapy.particles.particle_class.valid_categories`.

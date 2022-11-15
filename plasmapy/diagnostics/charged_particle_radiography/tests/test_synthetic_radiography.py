@@ -323,6 +323,7 @@ def test_input_validation():
         hax, vax, values = cpr.synthetic_radiograph(sim, size=size)
 
 
+@pytest.mark.slow
 def test_init():
     grid = _test_grid("electrostatic_gaussian_sphere", num=50)
 
@@ -349,6 +350,7 @@ def test_init():
     assert all(sim.det_hdir == np.array([1, 0, 0]))
 
 
+@pytest.mark.slow
 def test_create_particles():
     grid = _test_grid("electrostatic_gaussian_sphere", num=50)
 
@@ -597,6 +599,7 @@ class TestSyntheticRadiograph:
         assert np.all(np.isposinf(od_results[2][zero_mask]))
 
 
+@pytest.mark.slow
 def test_saving_output(tmp_path):
     """Test behavior of Tracker.save_results."""
 
@@ -622,6 +625,7 @@ def test_saving_output(tmp_path):
         assert np.allclose(results_1[key], results_2[key])
 
 
+@pytest.mark.slow
 @pytest.mark.parametrize(
     "case",
     ["creating particles", "loading particles", "adding a wire mesh"],
