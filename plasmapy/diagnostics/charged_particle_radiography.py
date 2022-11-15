@@ -277,10 +277,10 @@ class Tracker:
         theta that will impact the grid. This value can be used to determine
         which particles are worth tracking.
         """
-        ind = 0
         theta = np.zeros([8, self.num_grids])
 
         for i, grid in enumerate(self.grids):
+            ind = 0
             for x in [0, -1]:
                 for y in [0, -1]:
                     for z in [0, -1]:
@@ -992,6 +992,14 @@ class Tracker:
         self.x[self.grid_ind, :] = x
         self.v[self.grid_ind, :] = v
 
+    @property
+    def on_any_grid(self):
+        """
+        Binary array for each particle indicating whether it is currently
+        on ANY grid.
+        """
+        return np.sum(self.on_grid, axis=-1) > 0
+
     def _stop_condition(self):
         r"""
         The stop condition is that most of the particles have entered the grid
@@ -1008,11 +1016,8 @@ class Tracker:
         # on the grid?
         # if/else avoids dividing by zero
         if np.sum(self.num_entered) > 0:
-            # The number of particles that are currently on at least
-            # one grid
-            still_on = np.sum(np.sum(self.on_grid, axis=-1) > 0)
             # Normalize to the number that have entered a grid
-            still_on /= np.sum(self.num_entered)
+            still_on = np.sum(self.on_any_grid) / np.sum(self.num_entered)
         else:
             still_on = 0.0
 
@@ -1143,7 +1148,7 @@ class Tracker:
         # Push the particles until the stop condition is satisfied
         # (no more particles on the simulation grid)
         while not self._stop_condition():
-            n_on_grid = np.sum(self.on_grid)
+            n_on_grid = np.sum(self.on_any_grid)
             pbar.n = n_on_grid
             pbar.last_print_n = n_on_grid
             pbar.update()
