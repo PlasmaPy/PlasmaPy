@@ -122,7 +122,7 @@ class Tracker:
 
     def __init__(
         self,
-        grid: AbstractGrid,
+        grids: AbstractGrid,
         source: u.m,
         detector: u.m,
         detector_hdir=None,
@@ -130,10 +130,18 @@ class Tracker:
     ):
 
         # self.grid is the grid object
-        self.grid = grid
+        if isinstance(grids, AbstractGrid):
+            self.grids = [
+                grids,
+            ]
+        elif isinstance(grids, list):
+            self.grids = grids
+        else:
+            raise ValueError("Type of argument `grids` not recognized.")
+
         # self.grid_arr is the grid positions in si units. This is created here
         # so that it isn't continuously called later
-        self.grid_arr = grid.grid.to(u.m).value
+        self.grids_arr = [grid.grid.to(u.m).value for grid in self.grids]
 
         self.verbose = verbose
 
@@ -167,7 +175,11 @@ class Tracker:
         self._log(f"Magnification: {self.mag}")
 
         # Check that source-detector vector actually passes through the grid
-        if not self.grid.vector_intersects(self.source * u.m, self.detector * u.m):
+        test = [
+            grid.vector_intersects(self.source * u.m, self.detector * u.m)
+            for grid in self.grids
+        ]
+        if not any(test):
             raise ValueError(
                 "The vector between the source and the detector "
                 "does not intersect the grid provided!"
@@ -199,46 +211,47 @@ class Tracker:
 
         req_quantities = ["E_x", "E_y", "E_z", "B_x", "B_y", "B_z"]
 
-        self.grid.require_quantities(req_quantities, replace_with_zeros=True)
+        for grid in self.grids:
+            grid.require_quantities(req_quantities, replace_with_zeros=True)
 
-        for rq in req_quantities:
+            for rq in req_quantities:
 
-            # Check that there are no infinite values
-            if not np.isfinite(self.grid[rq].value).all():
-                raise ValueError(
-                    f"Input arrays must be finite: {rq} contains "
-                    "either NaN or infinite values."
+                # Check that there are no infinite values
+                if not np.isfinite(grid[rq].value).all():
+                    raise ValueError(
+                        f"Input arrays must be finite: {rq} contains "
+                        "either NaN or infinite values."
+                    )
+
+                # Check that the max values on the edges of the arrays are
+                # small relative to the maximum values on that grid
+                #
+                # Array must be dimensionless to re-assemble it into an array
+                # of max values like this
+                arr = np.abs(grid[rq]).value
+                edge_max = np.max(
+                    np.array(
+                        [
+                            np.max(arr[0, :, :]),
+                            np.max(arr[-1, :, :]),
+                            np.max(arr[:, 0, :]),
+                            np.max(arr[:, -1, :]),
+                            np.max(arr[:, :, 0]),
+                            np.max(arr[:, :, -1]),
+                        ]
+                    )
                 )
 
-            # Check that the max values on the edges of the arrays are
-            # small relative to the maximum values on that grid
-            #
-            # Array must be dimensionless to re-assemble it into an array
-            # of max values like this
-            arr = np.abs(self.grid[rq]).value
-            edge_max = np.max(
-                np.array(
-                    [
-                        np.max(arr[0, :, :]),
-                        np.max(arr[-1, :, :]),
-                        np.max(arr[:, 0, :]),
-                        np.max(arr[:, -1, :]),
-                        np.max(arr[:, :, 0]),
-                        np.max(arr[:, :, -1]),
-                    ]
-                )
-            )
-
-            if edge_max > 1e-3 * np.max(arr):
-                unit = grid.recognized_quantities[rq].unit
-                warnings.warn(
-                    "Fields should go to zero at edges of grid to avoid "
-                    f"non-physical effects, but a value of {edge_max:.2E} {unit} was "
-                    f"found on the edge of the {rq} array. Consider applying a "
-                    "envelope function to force the fields at the edge to go to "
-                    "zero.",
-                    RuntimeWarning,
-                )
+                if edge_max > 1e-3 * np.max(arr):
+                    unit = grid.recognized_quantities[rq].unit
+                    warnings.warn(
+                        "Fields should go to zero at edges of grid to avoid "
+                        f"non-physical effects, but a value of {edge_max:.2E} {unit} was "
+                        f"found on the edge of the {rq} array. Consider applying a "
+                        "envelope function to force the fields at the edge to go to "
+                        "zero.",
+                        RuntimeWarning,
+                    )
 
     def _default_detector_hdir(self):
         """
