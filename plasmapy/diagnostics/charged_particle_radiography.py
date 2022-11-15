@@ -139,7 +139,7 @@ class Tracker:
         elif isinstance(grids, list):
             self.grids = grids
         else:
-            raise ValueError("Type of argument `grids` not recognized.")
+            raise TypeError("Type of argument `grids` not recognized.")
 
         # self.grid_arr is the grid positions in si units. This is created here
         # so that it isn't continuously called later
