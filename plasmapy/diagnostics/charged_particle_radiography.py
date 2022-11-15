@@ -758,38 +758,42 @@ class Tracker:
         including the local grid resolution (ds) and the gyroperiod of the
         particles in the current fields.
         """
-
-        # TODO: need ongrid as an input here
-        # calculate once per push, [nparticles, ngrids]?
-
         # If dt was explicitly set, skip the rest of this function
         if self.dt.size == 1:
             return self.dt
+
+        # candidate timesteps inlcudes one per grid (based on the grid resolution)
+        # plus additional candidates based on the field at each particle
+        candidates = np.ones([self.nparticles_grid, self.num_grids + 1]) * np.inf
 
         # Compute the timestep indicated by the grid resolution
         ds = np.array([grid.grid_resolution.to(u.m).value for grid in self.grids])
         gridstep = 0.5 * (np.min(ds) / self.vmax)
 
+        # Wherever a particle is on a grid, include that grid's gridstep
+        # in the list of candidate timesteps
+        for i, grid in enumerate(self.grids):
+            candidates[:, i] = np.where(self.on_grid[:, i] > 0, gridstep[i], np.inf)
+
         # If not, compute a number of possible timesteps
         # Compute the cyclotron gyroperiod
         Bmag = np.max(np.sqrt(Bx**2 + By**2 + Bz**2)).to(u.T).value
-
         # Compute the gyroperiod
         if Bmag == 0:
             gyroperiod = np.inf
         else:
             gyroperiod = 2 * np.pi * self.m / (self.q * np.max(Bmag))
 
-        # TODO: introduce a minimum timestep based on electric fields too!
+        candidates[:, self.num_grids] = gyroperiod / 12
 
-        # Create an array of all the possible time steps we computed
-        candidates = np.array([gyroperiod / 12, gridstep])
+        # TODO: introduce a minimum timestep based on electric fields too!
 
         # Enforce limits on dt
         candidates = np.clip(candidates, self.dt[0], self.dt[1])
 
-        # dt is the min of the remaining candidates
-        return np.min(candidates)
+        # dt is the min of all the candidates for each particle
+        # a separate dt is returned for each particle
+        return np.min(candidates, axis=-1)
 
     def _coast_to_grid(self):
         r"""
@@ -905,13 +909,12 @@ class Tracker:
         # entered any grid
         self.entered_grid += np.sum(self.on_grid, axis=-1)
 
-        num = pos.shape[0]
-        Ex = np.zeros(num) * u.V / u.m
-        Ey = np.zeros(num) * u.V / u.m
-        Ez = np.zeros(num) * u.V / u.m
-        Bx = np.zeros(num) * u.T
-        By = np.zeros(num) * u.T
-        Bz = np.zeros(num) * u.T
+        Ex = np.zeros(self.nparticles_grid) * u.V / u.m
+        Ey = np.zeros(self.nparticles_grid) * u.V / u.m
+        Ez = np.zeros(self.nparticles_grid) * u.V / u.m
+        Bx = np.zeros(self.nparticles_grid) * u.T
+        By = np.zeros(self.nparticles_grid) * u.T
+        Bz = np.zeros(self.nparticles_grid) * u.T
         for grid in self.grids:
             # Estimate the E and B fields for each particle
             # Note that this interpolation step is BY FAR the slowest part of the push
@@ -1102,8 +1105,9 @@ class Tracker:
 
         # Create flags for tracking when particles during the simulation
         # on_grid -> zero if the particle is off grid, 1
-        self.on_grid = np.zeros([self.nparticles_grid])
-        # Entered grid -> non-zero if particle EVER entered the grid
+        # shape [nparticles, ngrids]
+        self.on_grid = np.zeros([self.nparticles_grid, self.num_grids])
+        # Entered grid -> non-zero if particle EVER entered a grid
         self.entered_grid = np.zeros([self.nparticles_grid])
 
         # Generate a null distribution of points (the result in the absence of
