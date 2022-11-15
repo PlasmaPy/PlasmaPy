@@ -873,3 +873,7 @@ def test_add_wire_mesh():
 
     # Verify that the spacing is correct by checking the FFT
     assert np.isclose(measured_spacing, true_spacing, 0.5)
+
+
+if __name__ == "__main__":
+    test_input_validation()

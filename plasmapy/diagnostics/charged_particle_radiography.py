@@ -768,7 +768,7 @@ class Tracker:
 
         # Compute the timestep indicated by the grid resolution
         ds = np.array([grid.grid_resolution.to(u.m).value for grid in self.grids])
-        gridstep = 0.5 * (np.min(ds) / self.vmax)
+        gridstep = 0.5 * (ds / self.vmax)
 
         # Wherever a particle is on a grid, include that grid's gridstep
         # in the list of candidate timesteps
@@ -824,7 +824,7 @@ class Tracker:
         t = dist / vmax
 
         # Coast the particles to the advanced position
-        self.x = self.x + self.v * t
+        self.x = self.x + self.v * t[:, np.newaxis]
 
     def _coast_to_plane(self, center, hdir, vdir, x=None):
         """
@@ -926,7 +926,7 @@ class Tracker:
             # Note that this interpolation step is BY FAR the slowest part of the push
             # loop. Any speed improvements will have to come from here.
             if self.field_weighting == "volume averaged":
-                _Ex, _Ey, _Ez, _Bx, _By, _Bz = self.grid.volume_averaged_interpolator(
+                _Ex, _Ey, _Ez, _Bx, _By, _Bz = grid.volume_averaged_interpolator(
                     pos,
                     "E_x",
                     "E_y",
@@ -937,7 +937,7 @@ class Tracker:
                     persistent=True,
                 )
             elif self.field_weighting == "nearest neighbor":
-                _Ex, _Ey, _Ez, _Bx, _By, _Bz = self.grid.nearest_neighbor_interpolator(
+                _Ex, _Ey, _Ez, _Bx, _By, _Bz = grid.nearest_neighbor_interpolator(
                     pos,
                     "E_x",
                     "E_y",
@@ -983,7 +983,7 @@ class Tracker:
 
         x = self.x[self.grid_ind, :]
         v = self.v[self.grid_ind, :]
-        boris_push(x, v, B, E, self.q, self.m, dt)
+        boris_push(x, v, B, E, self.q, self.m, dt[:, np.newaxis])
         self.x[self.grid_ind, :] = x
         self.v[self.grid_ind, :] = v
 
