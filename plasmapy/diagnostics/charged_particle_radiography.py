@@ -898,44 +898,63 @@ class Tracker:
         pos = self.x[self.grid_ind, :] * u.m
 
         # Update the list of particles on and off the grid
-        self.on_grid = self.grid.on_grid(pos)
+        # shape [nparticles, ngrids]
+        self.on_grid = np.array([grid.on_grid(pos) for grid in self.grids]).T
+
         # entered_grid is zero at the end if a particle has never
-        # entered the grid
-        self.entered_grid += self.on_grid
+        # entered any grid
+        self.entered_grid += np.sum(self.on_grid, axis=-1)
 
-        # Estimate the E and B fields for each particle
-        # Note that this interpolation step is BY FAR the slowest part of the push
-        # loop. Any speed improvements will have to come from here.
-        if self.field_weighting == "volume averaged":
-            Ex, Ey, Ez, Bx, By, Bz = self.grid.volume_averaged_interpolator(
-                pos,
-                "E_x",
-                "E_y",
-                "E_z",
-                "B_x",
-                "B_y",
-                "B_z",
-                persistent=True,
-            )
-        elif self.field_weighting == "nearest neighbor":
-            Ex, Ey, Ez, Bx, By, Bz = self.grid.nearest_neighbor_interpolator(
-                pos,
-                "E_x",
-                "E_y",
-                "E_z",
-                "B_x",
-                "B_y",
-                "B_z",
-                persistent=True,
-            )
+        num = pos.shape[0]
+        Ex = np.zeros(num) * u.V / u.m
+        Ey = np.zeros(num) * u.V / u.m
+        Ez = np.zeros(num) * u.V / u.m
+        Bx = np.zeros(num) * u.T
+        By = np.zeros(num) * u.T
+        Bz = np.zeros(num) * u.T
+        for grid in self.grids:
+            # Estimate the E and B fields for each particle
+            # Note that this interpolation step is BY FAR the slowest part of the push
+            # loop. Any speed improvements will have to come from here.
+            if self.field_weighting == "volume averaged":
+                _Ex, _Ey, _Ez, _Bx, _By, _Bz = self.grid.volume_averaged_interpolator(
+                    pos,
+                    "E_x",
+                    "E_y",
+                    "E_z",
+                    "B_x",
+                    "B_y",
+                    "B_z",
+                    persistent=True,
+                )
+            elif self.field_weighting == "nearest neighbor":
+                _Ex, _Ey, _Ez, _Bx, _By, _Bz = self.grid.nearest_neighbor_interpolator(
+                    pos,
+                    "E_x",
+                    "E_y",
+                    "E_z",
+                    "B_x",
+                    "B_y",
+                    "B_z",
+                    persistent=True,
+                )
 
-        # Interpret any NaN values (points off the grid) as zero
-        Ex = np.nan_to_num(Ex, nan=0.0 * u.V / u.m)
-        Ey = np.nan_to_num(Ey, nan=0.0 * u.V / u.m)
-        Ez = np.nan_to_num(Ez, nan=0.0 * u.V / u.m)
-        Bx = np.nan_to_num(Bx, nan=0.0 * u.T)
-        By = np.nan_to_num(By, nan=0.0 * u.T)
-        Bz = np.nan_to_num(Bz, nan=0.0 * u.T)
+            # Interpret any NaN values (points off the grid) as zero
+            # Do this before adding to the totals, beause 0 + nan = nan
+            _Ex = np.nan_to_num(_Ex, nan=0.0 * u.V / u.m)
+            _Ey = np.nan_to_num(_Ey, nan=0.0 * u.V / u.m)
+            _Ez = np.nan_to_num(_Ez, nan=0.0 * u.V / u.m)
+            _Bx = np.nan_to_num(_Bx, nan=0.0 * u.T)
+            _By = np.nan_to_num(_By, nan=0.0 * u.T)
+            _Bz = np.nan_to_num(_Bz, nan=0.0 * u.T)
+
+            # Add the values interpolated for this grid to the totals
+            Ex += _Ex
+            Ey += _Ey
+            Ez += _Ez
+            Bx += _Bx
+            By += _By
+            Bz += _Bz
 
         # Create arrays of E and B as required by push algorithm
         E = np.array(
@@ -975,7 +994,11 @@ class Tracker:
         # on the grid?
         # if/else avoids dividing by zero
         if np.sum(self.num_entered) > 0:
-            still_on = np.sum(self.on_grid) / np.sum(self.num_entered)
+            # The number of particles that are currently on at least
+            # one grid
+            still_on = np.sum(np.sum(self.on_grid, axis=-1) > 0)
+            # Normalize to the number that have entered a grid
+            still_on /= np.sum(self.num_entered)
         else:
             still_on = 0.0
 
