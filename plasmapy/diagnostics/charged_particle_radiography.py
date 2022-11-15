@@ -80,8 +80,10 @@ class Tracker:
 
     Parameters
     ----------
-    grid : `~plasmapy.plasma.grids.AbstractGrid` or subclass thereof
-        A Grid object containing the required quantities [E_x, E_y, E_z, B_x, B_y, B_z].
+    grids : `~plasmapy.plasma.grids.AbstractGrid` or subclass thereof, or list
+        of same.
+        A Grid object or list of grid objects containing the required
+        quantities [E_x, E_y, E_z, B_x, B_y, B_z].
         If any of these quantities are missing, a warning will be given and that
         quantity will be assumed to be zero everywhere.
 
@@ -122,7 +124,7 @@ class Tracker:
 
     def __init__(
         self,
-        grids: AbstractGrid,
+        grids: [AbstractGrid, list],
         source: u.m,
         detector: u.m,
         detector_hdir=None,
