@@ -20,7 +20,8 @@ class Layer:
         self,
         thickness: u.m,
         energy_axis: u.J,
-        stopping_power: u.MeV / u.cm,
+        stopping_power: [u.J / u.m, u.J * u.m**2 / u.kg],
+        mass_density: [u.kg / u.m**3, None] = None,
         active: bool = True,
         name: str = "",
     ):
@@ -46,9 +47,16 @@ class Layer:
             The energies corresponding to the stopping power array.
 
         stopping_power : `~astropy.units.Quantity`
-            The stopping power in the material, multiplied by the material
-            mass density. The stopping power is tabulated in units of
-            MeV cm\ :sup:`^2` / g, so this variable has units of MeV/cm.
+            The stopping power in the material. Either the linear stopping
+            power (units of J/m) or the mass stopping power
+            (units convertable to J m\ :sup:`^2` / kg) can be provided. If the
+            mass stopping power is provided, the material_density keyword
+            is required.
+
+        mass_density : `~astropy.units.Quantity`, optional
+            The material mass density in units convertable to kg/m\ :sup:`^3`.
+            This keyword is required if the provided stopping power is the
+            mass stopping power.
 
         active : `bool`, optional
             If `True`, this layer is marked as an active layer. The default is `True`.
@@ -59,9 +67,38 @@ class Layer:
         """
         self.thickness = thickness
         self.energy_axis = energy_axis
-        self.stopping_power = stopping_power
         self.active = active
         self.name = name
+
+        # Handle stopping power provided as either linear or
+        # mass stopping power
+        if stopping_power.unit.is_equivalent(u.J / u.m):
+            self.linear_stopping_power = stopping_power.to(u.J / u.m)
+
+        elif stopping_power.unit.is_equivalent(u.J * u.m**2 / u.kg):
+
+            if mass_density is None:
+                raise ValueError(
+                    "mass_density keyword is required if "
+                    "stopping power is not provided in units "
+                    "convertable to J/m"
+                )
+
+            # Ensure the mass density has the right units
+            try:
+                mass_density = mass_density.to(u.kg / u.m**3)
+            except u.UnitConversionError:
+                raise ValueError(
+                    "mass_density keyword must have units " "convertable to kg/m^3."
+                )
+
+            self.linear_stopping_power = (stopping_power * mass_density).to(u.J / u.m)
+
+        else:
+            raise ValueError(
+                "Units of stopping_power keyword not recognized:"
+                f"{stopping_power.unit}"
+            )
 
 
 class Stack:
@@ -102,10 +139,10 @@ class Stack:
         r"""
         The total thickness of the stack.
         """
-        thickness = np.array([layer.thickness.to(u.mm).value for layer in self._layers])
-        return np.sum(thickness) * u.mm
+        thickness = np.array([layer.thickness.to(u.m).value for layer in self._layers])
+        return np.sum(thickness) * u.m
 
-    def deposition_curves(self, energies: u.MeV, dx=1 * u.um, return_only_active=True):
+    def deposition_curves(self, energies: u.J, dx=1 * u.um, return_only_active=True):
         """
         Calculates the deposition of an ensemble of particles over a range of
         energies in a stack of films and filters.
@@ -115,7 +152,7 @@ class Stack:
 
         energies : `~astropy.units.Quantity` array, shape [nenergies,]
             Energies axis over which to calculate the deposition. Units convertible
-            to eV.
+            to J.
 
         dx : `~astropy.units.Quantity`, optional
             The spatial resolution of the numerical integration of the stopping power.
@@ -138,7 +175,7 @@ class Stack:
 
         """
 
-        energies = energies.to(u.MeV).value
+        energies = energies.to(u.J).value
 
         # Deposited energy in MeV
         deposited = np.zeros([len(self._layers), energies.size])
@@ -148,19 +185,17 @@ class Stack:
             # Interpolate stopping power for each energy
             # stopping power here is in MeV/cm
             sp_fcn = interp1d(
-                layer.energy_axis.to(u.MeV).value,
-                layer.stopping_power.to(u.MeV / u.cm).value,
+                layer.energy_axis.to(u.J).value,
+                layer.linear_stopping_power.to(u.J / u.m).value,
                 fill_value=(0, np.inf),
                 bounds_error=False,
             )
 
             # Slice the layer into sublayer dx thick
-            nsublayers = int(
-                np.floor(layer.thickness.to(u.um).value / dx.to(u.um).value)
-            )
-            sublayers = np.ones(nsublayers) * dx.to(u.um)
+            nsublayers = int(np.floor(layer.thickness.to(u.m).value / dx.to(u.m).value))
+            sublayers = np.ones(nsublayers) * dx.to(u.m)
             # Include any remainder in the last sublayer
-            sublayers[-1] += layer.thickness.to(u.um) % dx.to(u.um)
+            sublayers[-1] += layer.thickness.to(u.m) % dx.to(u.m)
 
             # Calculate the energy deposited in each sublayer
             # This is essentially numerically integrating the stopping power
@@ -168,7 +203,7 @@ class Stack:
                 # Interpolate the stopping power at the current energies
                 interpolated_stopping_power = sp_fcn(energies)
                 # dE is in MeV
-                dE = interpolated_stopping_power * ds.to(u.cm).value
+                dE = interpolated_stopping_power * ds.to(u.m).value
 
                 # If dE > E for a given energy, set dE=E (stop the particle)
                 dE = np.where(dE > energies, energies, dE)
@@ -190,7 +225,7 @@ class Stack:
         return deposited
 
     def energy_bands(
-        self, energy_range: u.MeV, dE: u.MeV, dx=1 * u.um, return_only_active=True
+        self, energy_range: u.J, dE: u.J, dx=1e-6 * u.m, return_only_active=True
     ):
         """
         Calculate the energy bands in each of the active layers of a film stack.
@@ -204,7 +239,7 @@ class Stack:
 
         dE :  `~astropy.units.Quantity`
             Spacing between energy bins in the calculation. Units convertible
-            to eV.
+            to J.
 
         dx : `~astropy.units.Quantity`, optional
             The spatial resolution of the numerical integration of the stopping power.
@@ -221,23 +256,23 @@ class Stack:
 
         energy_bands : `~astropy.units.Quantity`, shape [num_layers, 2]
             The full-width-half-max energy range of the Bragg peak in each
-            active layer of the film stack, in MeV.
+            active layer of the film stack, in J.
 
         """
 
         energies = (
             np.arange(
-                *energy_range.to(u.MeV).value,
-                dE.to(u.MeV).value,
+                *energy_range.to(u.J).value,
+                dE.to(u.J).value,
             )
-            * u.MeV
+            * u.J
         )
 
         deposited = self.deposition_curves(
             energies, return_only_active=return_only_active
         )
 
-        energy_bands = np.zeros([deposited.shape[0], 2]) * u.MeV
+        energy_bands = np.zeros([deposited.shape[0], 2]) * u.J
 
         for i in range(deposited.shape[0]):
             bragg_curve = deposited[i, :]

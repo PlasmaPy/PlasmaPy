@@ -48,6 +48,39 @@ def hdv2_stack(tmp_path):
     return stack
 
 
+def test_create_layer_with_different_stopping_powers(tmp_path):
+    """
+    Tests the input validation for creating a Layer with either the linear
+    stopping power or the mass stopping power.
+    """
+
+    aluminum_path = get_file("NIST_PSTAR_aluminum.txt", directory=tmp_path)
+    arr = np.loadtxt(aluminum_path, skiprows=8)
+    eaxis = arr[:, 0] * u.MeV
+    mass_stopping_power = arr[:, 1] * u.MeV * u.cm**2 / u.g
+    mass_density = 2.7 * u.g / u.cm**3
+
+    # No error should be raised initializing one of these ways
+    layer = Layer(100 * u.um, eaxis, mass_stopping_power * mass_density)
+    layer = Layer(100 * u.um, eaxis, mass_stopping_power, mass_density=mass_density)
+
+    # Error should be raised if the wrong units are provided
+    with pytest.raises(ValueError):
+        layer = Layer(100 * u.um, eaxis, mass_stopping_power.value * u.kg)
+    with pytest.raises(ValueError):
+        layer = Layer(
+            100 * u.um,
+            eaxis,
+            mass_stopping_power,
+            mass_density=mass_density.value * u.m,
+        )
+
+    # Error should be raised if mass_density keyword is not provided when
+    # the mass stopping power is given
+    with pytest.raises(ValueError):
+        layer = Layer(100 * u.um, eaxis, mass_stopping_power, mass_density=None)
+
+
 def test_film_stack_properties(hdv2_stack):
 
     # Test num_layers property
@@ -78,7 +111,7 @@ def test_film_stack_energy_bands_active(hdv2_stack):
     # Expected energy bands, in MeV (only in active layers)
     expected = np.array([[3.5, 3.8], [4.6, 4.9], [5.6, 5.7], [6.4, 6.5], [7.1, 7.2]])
 
-    assert np.allclose(ebands.to(u.MeV).value[0:5, :], expected)
+    assert np.allclose(ebands.to(u.MeV).value[0:5, :], expected, atol=0.15)
 
 
 def test_film_stack_energy_bands_inum_active(hdv2_stack):
@@ -88,4 +121,4 @@ def test_film_stack_energy_bands_inum_active(hdv2_stack):
     )
     # Expected first 5 energy bands
     expected = np.array([[0.1, 4.2], [3.5, 3.8], [3.9, 5.1], [4.6, 4.9], [4.9, 6]])
-    assert np.allclose(ebands.to(u.MeV).value[0:5, :], expected)
+    assert np.allclose(ebands.to(u.MeV).value[0:5, :], expected, atol=0.15)
