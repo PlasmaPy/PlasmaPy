@@ -753,16 +753,21 @@ class Tracker:
 
     def _adaptive_dt(self, Ex, Ey, Ez, Bx, By, Bz):
         r"""
-        Calculate the appropriate dt based on a number of considerations
+        Calculate the appropriate dt for each grid based on a number of
+        considerations
         including the local grid resolution (ds) and the gyroperiod of the
         particles in the current fields.
         """
+
+        # TODO: need ongrid as an input here
+        # calculate once per push, [nparticles, ngrids]?
+
         # If dt was explicitly set, skip the rest of this function
         if self.dt.size == 1:
             return self.dt
 
         # Compute the timestep indicated by the grid resolution
-        ds = self.grid.grid_resolution.to(u.m).value
+        ds = np.array([grid.grid_resolution.to(u.m).value for grid in self.grids])
         gridstep = 0.5 * (np.min(ds) / self.vmax)
 
         # If not, compute a number of possible timesteps
@@ -792,13 +797,20 @@ class Tracker:
         be entering the grid. Doing in this in one step (rather than pushing
         the particles through zero fields) saves computation time.
         """
-        # Distance from the source to the nearest grid point
-        dist = np.min(np.linalg.norm(self.grid_arr - self.source, axis=3))
+        # Distance from the source to the nearest point on any grid
+        dist = np.min(
+            np.array(
+                [
+                    np.min(np.linalg.norm(arr - self.source, axis=3))
+                    for arr in self.grids_arr
+                ]
+            )
+        )
 
-        # Find the particle with the highest speed towards the grid
-        vmax = np.max(np.dot(self.v, self.src_n))
+        # Find speed of each particle towards the grid.
+        vmax = np.dot(self.v, self.src_n)
 
-        # Time for fastest possible particle to reach the grid.
+        # Time for each particle to reach the grid
         t = dist / vmax
 
         # Coast the particles to the advanced position
