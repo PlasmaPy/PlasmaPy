@@ -16,7 +16,10 @@ import warnings
 from tqdm import tqdm
 
 from plasmapy import particles
-from plasmapy.diagnostics._detector_stacks import Layer, Stack
+from plasmapy.diagnostics.charged_particle_radiography.detector_stacks import (
+    Layer,
+    Stack,
+)
 from plasmapy.formulary.mathematics import rot_a_to_b
 from plasmapy.particles import Particle
 from plasmapy.plasma.grids import AbstractGrid

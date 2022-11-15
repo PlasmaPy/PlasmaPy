@@ -1,12 +1,12 @@
 .. _charged_particle_radiography:
 
 *************************************
-Charged particle radiography analysis
+Synthetic Charged Particle Radiography
 *************************************
 
-.. currentmodule:: plasmapy.diagnostics.charged_particle_radiography
+.. currentmodule:: plasmapy.diagnostics.charged_particle_radiography.synthetic_radiography
 
-.. automodapi:: plasmapy.diagnostics.charged_particle_radiography
+.. automodapi:: plasmapy.diagnostics.charged_particle_radiography.synthetic_radiography
 
 .. nbgallery::
     :caption: Examples

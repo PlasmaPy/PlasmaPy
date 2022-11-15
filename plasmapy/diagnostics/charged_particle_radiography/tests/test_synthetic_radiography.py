@@ -9,7 +9,9 @@ import pytest
 
 from scipy.special import erf
 
-from plasmapy.diagnostics import charged_particle_radiography as cpr
+from plasmapy.diagnostics.charged_particle_radiography import (
+    synthetic_radiography as cpr,
+)
 from plasmapy.plasma.grids import CartesianGrid
 
 
