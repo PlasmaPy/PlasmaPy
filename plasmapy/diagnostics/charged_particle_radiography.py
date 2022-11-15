@@ -793,7 +793,13 @@ class Tracker:
 
         # dt is the min of all the candidates for each particle
         # a separate dt is returned for each particle
-        return np.min(candidates, axis=-1)
+        dt = np.min(candidates, axis=-1)
+
+        # dt should never actually be infinite, so replace any infinities
+        # with the largest gridstep
+        dt = np.where(dt == np.inf, np.max(gridstep), dt)
+
+        return dt
 
     def _coast_to_grid(self):
         r"""
