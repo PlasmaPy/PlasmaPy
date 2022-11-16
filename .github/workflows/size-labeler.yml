@@ -5,7 +5,7 @@ on: [pull_request]
 jobs:
   labeler:
     runs-on: ubuntu-latest
-    name: Label PR size
+    name: Label pull request size
     steps:
     - uses: codelytv/pr-size-labeler@v1
       with:
