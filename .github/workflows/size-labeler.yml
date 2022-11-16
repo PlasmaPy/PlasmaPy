@@ -1,18 +1,13 @@
-name: Pull Request Labeler
-on:
-- pull_request_target
+name: size labeler
+
+on: [pull_request]
 
 jobs:
-  triage:
+  labeler:
     runs-on: ubuntu-latest
+    name: Label pull request size
     steps:
-    - name: Add Labels to PR
-      uses: actions/labeler@main
-      with:
-        repo-token: ${{ secrets.GITHUB_TOKEN }}
-        sync-labels: true
-    - name: Add Size Label to PR
-      uses: codelytv/pr-size-labeler@v1
+    - uses: codelytv/pr-size-labeler@v1
       with:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         xs_label: size/very-small
@@ -27,3 +22,4 @@ jobs:
         fail_if_xl: 'false'
         message_if_xl: ''
         github_api_url: api.github.com
+        files_to_ignore: ''
