@@ -24,9 +24,9 @@ from plasmapy.utils.decorators import validate_quantities
 
 
 def validate(
-        n_i,
-        ions,
-        par_speeds,
+        n_i: u.m**-3,
+        ions: (Particle, Particle),
+        par_speeds: (u.m/u.s, u.m/u.s),
 ):
     # Validate ions argument
     if not isinstance(ions, (list, tuple, ParticleList)):
@@ -78,6 +78,29 @@ def validate(
                     f"Argument {par_speeds[j].value} is of incorrect type, "
                     f"type int or float require and got {type(par_speeds[j].value)}"
                 )
+
+
+def validate_temp(
+        T: u.K,
+):
+    # Validate temperature argument
+    if T.shape != ():
+        raise ValueError(
+            "Argument 'T' must be single value and not an array of"
+            f" shape {T.shape}."
+        )
+    elif not isinstance(T.value, (int, float)):
+        raise TypeError(
+            f"Argument 'T' must be an integer or float, received {T} "
+            f"with type of {type(T)}."
+        )
+    elif not T.value > 0:
+        raise ValueError(
+            f"Argument 'T' must be a positive argument, received "
+            f"{T} of type {type(T)}."
+        )
+
+    return T
 
 
 def Hellinger(
@@ -153,8 +176,6 @@ def Hellinger(
 
     species s on species t.
 
-
-
     Example
     -------
     >>> from astropy import units as u
@@ -191,27 +212,14 @@ def Hellinger(
 def Hellinger_2009(
         T: u.K,
         n_i: u.m**-3,
-
-
+        ions: (Particle, Particle),
+        par_speeds: (u.m/u.s, u.m/u.s),
 ):
-    # Validate temperature argument
-    if T.shape != ():
-        raise ValueError(
-            "Argument 'T' must be single value and not an array of"
-            f" shape {T.shape}."
-        )
-    elif not isinstance(T.value, (int, float)):
-        raise TypeError(
-            f"Argument 'T' must be an integer or float, received {T} "
-            f"with type of {type(T)}."
-        )
-    elif not T.value > 0:
-        raise ValueError(
-            f"Argument 'T' must be a positive argument, received "
-            f"{T} of type {type(T)}."
-        )
+    # Validate temperature aguments
+    T = validate_temp(T)
 
-    # Validate n_i argument
+    # Validate other arguments argument
+    n_i, ions, par_speeds = validate(n_i, ions, par_speeds)
 
     v_par = np.sqrt((par_speeds[0].value ** 2 + par_speeds[1].value ** 2) / 2)
 
@@ -224,9 +232,7 @@ def Hellinger_2009(
     return ((a / b.value) * c) / u.s
 
 
-# Hellinger and Trávnícek 2010
 def Hellinger_2010(
-        self,
         T_par: u.K,
         T_perp: u.K,
         n_i: u.m ** -3,
@@ -235,7 +241,11 @@ def Hellinger_2010(
 ):
 
     # Validate t_par and t_perp
+    T_perp = validate_temp(T_perp)
+    T_par = validate_temp(T_par)
 
+    #Validate other arguments
+    n_i, ions, par_speeds = validate(n_i, ions, par_speeds)
 
     if T_par == 0:
         raise ValueError(
@@ -247,8 +257,33 @@ def Hellinger_2010(
 
 
 def Hellinger_2016(
-
+    T_par: (u.K, u.K),
+    T_perp: (u.K, u.K),
+    n_i: u.m ** -3,
+    ions: (Particle, Particle),
+    par_speeds: (u.m / u.s, u.m / u.s)
 ):
+    # Validate temperature arguments
+    for arg in (T_par, T_perp):
+        if arg.shape != 2:
+            raise ValueError(
+                f"Argument {arg} must be single value and not an array of"
+                f" shape {arg.shape}."
+            )
+        for i in range(2):
+            arg[i] = validate_temp(arg[i])
+
+    # Validate other arguments
+    n_i, ions, par_speeds = validate(n_i, ions, par_speeds)
+
+    if T_par == 0:
+        raise ValueError(
+            "Argument T_par must be a non zero value, please try again."
+        )
+    else:
+        T = (2 * T_perp + T_par) / 3
+        return Hellinger.CoulombCollisionsBiMaxwellian(T, n_i, ions, par_speeds) * gh(a=2, b=1.5, c=7 / 2,
+                                                                                              x=(1 - (T_perp / T_par)))
 
 
     return
