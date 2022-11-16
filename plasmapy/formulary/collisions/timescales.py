@@ -293,9 +293,9 @@ def Hellinger_2016(
 
         Ast = (ions.mass[0]*T_perp[1] + ions.mass[1]*T_perp[0])/(ions.mass[0]*T_par[1] + ions.mass[1]*T_par[0])
 
-        vs = 1
-        vt = 1
+        vs = (par_speeds[0]**2 + 2*perp_speeds[0]**2)/3
+        vt = (par_speeds[1]**2 + 2*perp_speeds[1]**2)/3
 
         vst = vs - vt
 
-        return Hellinger_2009(T, n_i, ions, par_speeds) * hyper2d(1, 1.5, 2.5, )
+        return Hellinger_2009(T, n_i, ions, par_speeds) * hyper2d(1, 1.5, 2.5, 1 - Ast, Ast*(vst**2/4*vstpar**2))
