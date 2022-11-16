@@ -1,25 +1,12 @@
-name: Size Labeler
+name: 🏷 PR Size Labeler
 
-on: [pull_request]
+on: pull_request
 
 jobs:
-  labeler:
+  pr-labeler:
     runs-on: ubuntu-latest
-    name: Label pull request size
+    name: Label the PR size
     steps:
-    - uses: codelytv/pr-size-labeler@v1
+    - uses: BedrockStreaming/pr-size-labeler@v1
       with:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        xs_label: 'vs'
-        xs_max_size: '25'
-        s_label: size/small
-        s_max_size: '200'
-        m_label: size/medium
-        m_max_size: '400'
-        l_label: size/large
-        l_max_size: '600'
-        xl_label: size/very-large
-        fail_if_xl: 'false'
-        message_if_xl: ''
-        github_api_url: api.github.com
-        files_to_ignore: ''
+        token: ${{ secrets.GITHUB_TOKEN }}
