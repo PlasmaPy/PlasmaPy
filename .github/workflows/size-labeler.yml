@@ -11,13 +11,13 @@ jobs:
       with:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         xs_label: size/very-small
-        xs_max_size: '10'
+        xs_max_size: '25'
         s_label: size/small
-        s_max_size: '50'
+        s_max_size: '200'
         m_label: size/medium
-        m_max_size: '200'
+        m_max_size: '400'
         l_label: size/large
-        l_max_size: '400'
+        l_max_size: '600'
         xl_label: size/very-large
         fail_if_xl: 'false'
         message_if_xl: ''
