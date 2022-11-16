@@ -95,24 +95,32 @@ def kinetic_alfven(
     TypeError
         If applicable arguments are not instances of
         `~astropy.units.Quantity` or cannot be converted into one.
+
     TypeError
         If ``ion`` is not of type or convertible to
         `~plasmapy.particles.Particle`.
+
     TypeError
         If ``gamma_e``, ``gamma_i``, or``z_mean`` are not of type
         `int` or `float`.
+
     ~astropy.units.UnitTypeError
         If applicable arguments do not have units convertible to the
         expected units.
+
     ValueError
         If any of ``B``, ``k``, ``n_i``, ``T_e``, or ``T_i`` is negative.
+
     ValueError
         If ``k`` is negative or zero.
+
     ValueError
         If ``ion`` is not of category ion or element.
+
     ValueError
         If ``B``, ``n_i``, ``T_e``, or ``T_I`` are not single valued
         `astropy.units.Quantity` (i.e. an array).
+
     ValueError
         If ``k`` or ``theta`` are not single valued or a 1-D array.
 
@@ -120,7 +128,7 @@ def kinetic_alfven(
     -----
     Using the 2 x 2 matrix approach method from :cite:t:`bellan:2012`,
     this function computes the coresonding wave frequencies in units
-    :math:`rad/s`. This approach comes from :cite:t:`hasegawa:1982`,
+    :math:`rad/s`. This approach comes from :cite:t:`k`,
     :cite:t:`morales:1997` and :cite:t:`william:1996`; who argueed that
     a 3 x 3 matrix that describes warm plasma waves, is able to be
     re-presented as a 2 x 2 matrix because the compressional
