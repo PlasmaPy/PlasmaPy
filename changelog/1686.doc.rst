@@ -1,2 +1,0 @@
-Split the patent clause from the license file (:file:`LICENSE.md`) into
-its own file (:file:`PATENT.md`).

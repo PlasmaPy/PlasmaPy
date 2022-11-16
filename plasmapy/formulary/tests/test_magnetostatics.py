@@ -52,8 +52,8 @@ class Test_GeneralWire:
         self.fw = FiniteStraightWire(p1, p2, 1 * u.A)
 
     def test_not_callable(self):
-        "Test that `GeneralWire` raises `ValueError` if its first argument is not callable"
-        with pytest.raises(ValueError):
+        "Test that `GeneralWire` raises `TypeError` if its first argument is not callable"
+        with pytest.raises(TypeError):
             GeneralWire("wire", 0, 1, 1 * u.A)
 
     def test_close_cw(self):

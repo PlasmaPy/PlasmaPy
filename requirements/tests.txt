@@ -21,3 +21,4 @@ pydocstyle
 pytest-regressions
 pytest-xdist
 tomli
+tryceratops
