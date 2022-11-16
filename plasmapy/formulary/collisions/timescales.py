@@ -27,7 +27,7 @@ from plasmapy.utils.decorators import validate_quantities
 def validate(
         n_i: u.m**-3,
         ions: (Particle, Particle),
-        par_speeds: (u.m/u.s, u.m/u.s),
+        speeds: (u.m/u.s, u.m/u.s),
 ):
     # Validate ions argument
     if not isinstance(ions, (list, tuple, ParticleList)):
@@ -67,17 +67,17 @@ def validate(
         )
 
     # Validate par_speeds argument
-    if len(par_speeds) != 2:
+    if len(speeds) != 2:
         raise ValueError(
-            "Argument 'par_speeds' can only take 2 inputs, received "
-            f"{par_speeds} with {len(par_speeds)} inputs."
+            "Argument 'speeds' can only take 2 inputs, received "
+            f"{speeds} with {len(speeds)} inputs."
         )
     else:
         for j in range(2):
-            if not isinstance(par_speeds[j].value, (float, int)):
+            if not isinstance(speeds[j].value, (float, int)):
                 raise TypeError(
-                    f"Argument {par_speeds[j].value} is of incorrect type, "
-                    f"type int or float require and got {type(par_speeds[j].value)}"
+                    f"Argument {speeds[j].value} is of incorrect type, "
+                    f"type int or float require and got {type(speeds[j].value)}"
                 )
 
 
