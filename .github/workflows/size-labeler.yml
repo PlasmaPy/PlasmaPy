@@ -1,4 +1,4 @@
-name: 🏷 PR Size Labeler
+name: 🏷 Size Labeler
 
 on: pull_request
 
