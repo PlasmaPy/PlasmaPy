@@ -15,7 +15,7 @@ class TestHollweg:
     _kwargs_single_valued = {
         "k": 0.01 * u.rad / u.m,
         "theta": 88 * u.deg,
-        "n_i": 5 * u.cm ** -3,
+        "n_i": 5 * u.cm**-3,
         "B": 2.2e-8 * u.T,
         "T_e": 1.6e6 * u.K,
         "T_i": 4.0e5 * u.K,
@@ -24,7 +24,7 @@ class TestHollweg:
 
     _kwargs_hollweg1999 = {
         "theta": 90 * u.deg,
-        "n_i": 5 * u.cm ** -3,
+        "n_i": 5 * u.cm**-3,
         "T_e": 1.6e6 * u.K,
         "T_i": 4.0e5 * u.K,
         "ion": Particle("p+"),
@@ -45,8 +45,8 @@ class TestHollweg:
             ({**_kwargs_single_valued, "k": -1.0 * u.rad / u.m}, ValueError),
             ({**_kwargs_single_valued, "k": 5 * u.s}, u.UnitTypeError),
             ({**_kwargs_single_valued, "n_i": "wrong type"}, TypeError),
-            ({**_kwargs_single_valued, "n_i": [5e6, 6e6] * u.m ** -3}, ValueError),
-            ({**_kwargs_single_valued, "n_i": -5e6 * u.m ** -3}, ValueError),
+            ({**_kwargs_single_valued, "n_i": [5e6, 6e6] * u.m**-3}, ValueError),
+            ({**_kwargs_single_valued, "n_i": -5e6 * u.m**-3}, ValueError),
             ({**_kwargs_single_valued, "n_i": 2 * u.s}, u.UnitTypeError),
             ({**_kwargs_single_valued, "T_e": "wrong type"}, TypeError),
             ({**_kwargs_single_valued, "T_e": [1.4e6, 1.7e6] * u.K}, ValueError),
@@ -75,7 +75,7 @@ class TestHollweg:
                 {
                     "k": 0.01 * u.rad / u.m,
                     "theta": 88 * u.deg,
-                    "n_i": 0.05 * u.cm ** -3,
+                    "n_i": 0.05 * u.cm**-3,
                     "B": 2.2e-8 * u.T,
                     "T_e": 1.6e6 * u.K,
                     "T_i": 4.0e5 * u.K,
@@ -88,7 +88,7 @@ class TestHollweg:
                 {
                     "k": 10e-8 * u.rad / u.m,
                     "theta": 88 * u.deg,
-                    "n_i": 5 * u.cm ** -3,
+                    "n_i": 5 * u.cm**-3,
                     "B": 6.98e-8 * u.T,
                     "T_e": 1.6e6 * u.K,
                     "T_i": 4.0e5 * u.K,
@@ -101,7 +101,7 @@ class TestHollweg:
                 {
                     "k": 10e-8 * u.rad / u.m,
                     "theta": 84 * u.deg,
-                    "n_i": 1 * u.cm ** -3,
+                    "n_i": 1 * u.cm**-3,
                     "B": 6.98e-8 * u.T,
                     "T_e": 1.6e6 * u.K,
                     "T_i": 4.0e5 * u.K,

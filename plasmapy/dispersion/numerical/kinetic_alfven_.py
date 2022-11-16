@@ -32,7 +32,7 @@ def kinetic_alfven(
     B: u.T,
     ion: Union[str, Particle],
     k: u.rad / u.m,
-    n_i: u.m ** -3,
+    n_i: u.m**-3,
     T_e: u.K,
     T_i: u.K,
     theta: u.deg,
@@ -245,7 +245,7 @@ def kinetic_alfven(
     omega = {}
     for i in range(len(theta)):
         kz = np.cos(theta[i]) * k
-        kx = np.sqrt(k ** 2 - kz ** 2)
+        kx = np.sqrt(k**2 - kz**2)
 
         # parameters sigma, D, and F to simplify equation 3
         A = (kz * v_A) ** 2
