@@ -64,11 +64,13 @@ class ParticleJSONDecoder(json.JSONDecoder):
             partype = pardict["type"]
             args = pardict["__init__"]["args"]
             kwargs = pardict["__init__"]["kwargs"]
-            return particle_types[partype](*args, **kwargs)
-        except KeyError:
+
+        except KeyError as ex:
             raise InvalidElementError(
                 "json file does not define a valid plasmapy particle"
-            )
+            ) from ex
+        else:
+            return particle_types[partype](*args, **kwargs)
 
 
 def json_load_particle(fp, *, cls=ParticleJSONDecoder, **kwargs):

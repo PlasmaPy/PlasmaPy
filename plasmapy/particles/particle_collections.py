@@ -145,8 +145,10 @@ class ParticleList(collections.UserList):
 
         try:
             return ParticleList([other])
-        except (InvalidParticleError, TypeError):
-            raise InvalidParticleError(f"Cannot cast {other} into a ParticleList")
+        except (InvalidParticleError, TypeError) as ex:
+            raise InvalidParticleError(
+                f"Cannot cast {other} into a ParticleList"
+            ) from ex
 
     def __add__(self, other):
         try:
