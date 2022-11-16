@@ -216,7 +216,7 @@ def Hellinger_2009(
         ions: (Particle, Particle),
         par_speeds: (u.m/u.s, u.m/u.s),
 ):
-    # Validate temperature aguments
+    # Validate temperature arguments
     T = validate_temp(T)
 
     # Validate other arguments argument
@@ -299,6 +299,3 @@ def Hellinger_2016(
         vst = vs - vt
 
         return Hellinger_2009(T, n_i, ions, par_speeds) * hyper2d(1, 1.5, 2.5, )
-
-
-    return
