@@ -1,12 +1,10 @@
-name: 🏷 Size Labeler
-
+name: size-label
 on: pull_request
-
 jobs:
-  pr-labeler:
+  size-label:
     runs-on: ubuntu-latest
-    name: Label PR size
     steps:
-    - uses: BedrockStreaming/pr-size-labeler@v1.1.0
-      with:
-        token: ${{ secrets.GITHUB_TOKEN }}
+    - name: size-label
+      uses: pascalgn/size-label-action@v0.4.3
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
