@@ -43,7 +43,6 @@ def get_file(basename, base_url=_BASE_URL, directory=None):
     -------
     path : str
         The full local path to the downloaded file.
-
     """
 
     if "." not in str(basename):
@@ -72,7 +71,7 @@ def get_file(basename, base_url=_BASE_URL, directory=None):
                 "URL provided."
             )
 
-        with open(path, "wb") as f:
+        with path.open(mode="wb") as f:
             f.write(reply.content)
 
     return path
