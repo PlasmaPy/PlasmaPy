@@ -9,7 +9,7 @@ This module contains functionality for calculating the timescales
 for a range of configurations.
 """
 
-__all__ = ["Hellinger", "USSR"]
+__all__ = ["Hellinger", "Hellinger_2009", "Hellinger_2010", "Hellinger_2016"]
 
 import numpy as np
 from math import pi as pi, gamma as gamma, factorial as fact
@@ -17,6 +17,7 @@ import astropy.units as u
 
 from astropy.constants.si import eps0
 from scipy.stats import gausshyper as gh
+from mpmath import hyper2d
 
 from plasmapy.formulary.collisions import coulomb
 from plasmapy.particles import Particle, ParticleList
@@ -253,7 +254,7 @@ def Hellinger_2010(
         )
     else:
         T = (2*T_perp + T_par)/3
-        return Hellinger.CoulombCollisionsBiMaxwellian(T, n_i, ions, par_speeds) * 3 / 5 * gh(a=2, b=1.5, c=7 / 2, x=(1 - (T_perp / T_par)))
+        return Hellinger_2009(T, n_i, ions, par_speeds) * 3 / 5 * gh(a=2, b=1.5, c=7 / 2, x=(1 - (T_perp / T_par)))
 
 
 def Hellinger_2016(
@@ -261,7 +262,8 @@ def Hellinger_2016(
     T_perp: (u.K, u.K),
     n_i: u.m ** -3,
     ions: (Particle, Particle),
-    par_speeds: (u.m / u.s, u.m / u.s)
+    par_speeds: (u.m / u.s, u.m / u.s),
+    perp_speeds: (u.m / u.s, u.m / u.s),
 ):
     # Validate temperature arguments
     for arg in (T_par, T_perp):
@@ -275,15 +277,28 @@ def Hellinger_2016(
 
     # Validate other arguments
     n_i, ions, par_speeds = validate(n_i, ions, par_speeds)
+    n_i, ions, perp_speeds = validate(n_i, ions, perp_speeds)
 
+    # Validate speeds argument
+
+    # Check for divide by zero error with t_par
     if T_par == 0:
         raise ValueError(
             "Argument T_par must be a non zero value, please try again."
         )
     else:
         T = (2 * T_perp + T_par) / 3
-        return Hellinger.CoulombCollisionsBiMaxwellian(T, n_i, ions, par_speeds) * gh(a=2, b=1.5, c=7 / 2,
-                                                                                              x=(1 - (T_perp / T_par)))
+
+        vstpar = np.sqrt((par_speeds[0]**2+par_speeds[1]**2)/2)
+
+        Ast = (ions.mass[0]*T_perp[1] + ions.mass[1]*T_perp[0])/(ions.mass[0]*T_par[1] + ions.mass[1]*T_par[0])
+
+        vs = 1
+        vt = 1
+
+        vst = vs - vt
+
+        return Hellinger_2009(T, n_i, ions, par_speeds) * hyper2d(1, 1.5, 2.5, )
 
 
     return
