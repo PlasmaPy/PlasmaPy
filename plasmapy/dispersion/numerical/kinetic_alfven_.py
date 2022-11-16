@@ -41,134 +41,134 @@ def kinetic_alfven(
     z_mean: Union[float, int] = None,
 ):
     r"""
-     Using the equation provided in :cite:t:`bellan:2012`, this function
-     calculates the numerical solution to the kinetic Alfven dispersion
-     relation presented by :cite:t:`hirose:2004`.
+    Using the equation provided in :cite:t:`bellan:2012`, this function
+    calculates the numerical solution to the kinetic Alfven dispersion
+    relation presented by :cite:t:`hirose:2004`.
 
-     Parameters
-     ----------
-     B : `~astropy.units.Quantity`
-         The magnetic field magnitude in units convertible to :math:`T`.
-     ion : `str` or `~plasmapy.particles.particle_class.Particle`
-         Representation of the ion species (e.g., ``'p'`` for protons,
-         ``'D+'`` for Deuterium, ``'He-4 +1'`` for singly ionized
-         Helium-4, etc.). If no charge state information is provided,
-         then the ions are assumed to be singly ionized.
-     k : `~astropy.units.Quantity`, single valued or 1-D array
-         Wavenumber in units convertible to :math:`rad / m`.  Either
-         single valued or 1-D array of length :math:`N`.
-     n_i : `~astropy.units.Quantity`
-         Ion number density in units convertible to :math:`m^{-3}`.
-     T_e : `~astropy.units.Quantity`
-         The electron temperature in units of :math:`K` or :math:`eV`.
-     T_i : `~astropy.units.Quantity`
-         The ion temperature in units of :math:`K` or :math:`eV`.
-     theta : `~astropy.units.Quantity`, single valued or 1-D array
-         The angle of propagation of the wave with respect to the
-         magnetic field, :math:`\cos^{-1}(k_z / k)`, in units must be
-         convertible to :math:`rad`. Either single valued or 1-D array
-         of size :math:`M`.
-     gamma_e : `float` or `int`, optional
-         The adiabatic index for electrons, which defaults to 1.  This
-         value assumes that the electrons are able to equalize their
-         temperature rapidly enough that the electrons are effectively
-         isothermal.
-     gamma_i : `float` or `int`, optional
-         The adiabatic index for ions, which defaults to 3. This value
-         assumes that ion motion has only one degree of freedom, namely
-         along magnetic field lines.
-     z_mean : `float` or int, optional
-         The average ionization state (arithmetic mean) of the ``ion``
-         composing the plasma.  Will override any charge state defined
-         by argument ``ion``.
+    Parameters
+    ----------
+    B : `~astropy.units.Quantity`
+        The magnetic field magnitude in units convertible to :math:`T`.
+    ion : `str` or `~plasmapy.particles.particle_class.Particle`
+        Representation of the ion species (e.g., ``'p'`` for protons,
+        ``'D+'`` for Deuterium, ``'He-4 +1'`` for singly ionized
+        Helium-4, etc.). If no charge state information is provided,
+        then the ions are assumed to be singly ionized.
+    k : `~astropy.units.Quantity`, single valued or 1-D array
+        Wavenumber in units convertible to :math:`rad / m`.  Either
+        single valued or 1-D array of length :math:`N`.
+    n_i : `~astropy.units.Quantity`
+        Ion number density in units convertible to :math:`m^{-3}`.
+    T_e : `~astropy.units.Quantity`
+        The electron temperature in units of :math:`K` or :math:`eV`.
+    T_i : `~astropy.units.Quantity`
+        The ion temperature in units of :math:`K` or :math:`eV`.
+    theta : `~astropy.units.Quantity`, single valued or 1-D array
+        The angle of propagation of the wave with respect to the
+        magnetic field, :math:`\cos^{-1}(k_z / k)`, in units must be
+        convertible to :math:`rad`. Either single valued or 1-D array
+        of size :math:`M`.
+    gamma_e : `float` or `int`, optional
+        The adiabatic index for electrons, which defaults to 1.  This
+        value assumes that the electrons are able to equalize their
+        temperature rapidly enough that the electrons are effectively
+        isothermal.
+    gamma_i : `float` or `int`, optional
+        The adiabatic index for ions, which defaults to 3. This value
+        assumes that ion motion has only one degree of freedom, namely
+        along magnetic field lines.
+    z_mean : `float` or int, optional
+        The average ionization state (arithmetic mean) of the ``ion``
+        composing the plasma.  Will override any charge state defined
+        by argument ``ion``.
 
-     Returns
-     -------
-     omega : Dict[str, `~astropy.units.Quantity`]
-         A dictionary of computed wave frequencies in units
-         :math:`rad/s`.  The dictionary contains a key for each:
-         theta value provided. The value for each key will be
-         a :math:`N x M` array.
+    Returns
+    -------
+    omega : Dict[str, `~astropy.units.Quantity`]
+        A dictionary of computed wave frequencies in units
+        :math:`rad/s`.  The dictionary contains a key for each:
+        theta value provided. The value for each key will be
+        a :math:`N x M` array.
 
-     Raises
-     ------
-     TypeError
-         If applicable arguments are not instances of
-         `~astropy.units.Quantity` or cannot be converted into one.
+    Raises
+    ------
+    TypeError
+        If applicable arguments are not instances of
+        `~astropy.units.Quantity` or cannot be converted into one.
 
     TypeError
-         If ``ion`` is not of type or convertible to
-         `~plasmapy.particles.particle_class.Particle`.
+        If ``ion`` is not of type or convertible to
+        `~plasmapy.particles.particle_class.Particle`.
 
-     TypeError
-         If ``gamma_e``, ``gamma_i``, or``z_mean`` are not of type
-         `int` or `float`.
+    TypeError
+        If ``gamma_e``, ``gamma_i``, or``z_mean`` are not of type
+        `int` or `float`.
 
-     ~astropy.units.UnitTypeError
-         If applicable arguments do not have units convertible to the
-         expected units.
+    ~astropy.units.UnitTypeError
+        If applicable arguments do not have units convertible to the
+        expected units.
 
-     ValueError
-         If any of ``B``, ``k``, ``n_i``, ``T_e``, or ``T_i`` is negative.
+    ValueError
+        If any of ``B``, ``k``, ``n_i``, ``T_e``, or ``T_i`` is negative.
 
-     ValueError
-         If ``k`` is negative or zero.
+    ValueError
+        If ``k`` is negative or zero.
 
-     ValueError
-         If ``ion`` is not of category ion or element.
+    ValueError
+        If ``ion`` is not of category ion or element.
 
-     ValueError
-         If ``B``, ``n_i``, ``T_e``, or ``T_I`` are not single valued
-         `astropy.units.Quantity` (i.e. an array).
+    ValueError
+        If ``B``, ``n_i``, ``T_e``, or ``T_I`` are not single valued
+        `astropy.units.Quantity` (i.e. an array).
 
-     ValueError
-         If ``k`` or ``theta`` are not single valued or a 1-D array.
+    ValueError
+        If ``k`` or ``theta`` are not single valued or a 1-D array.
 
-     Notes
-     -----
-     Using the 2 x 2 matrix approach method from :cite:t:`bellan:2012`,
-     this function computes the coresonding wave frequencies in units
-     :math:`rad/s`. This approach comes from :cite:t:`hasegawa:1982`,
-     :cite:t:`morales:1997` and :cite:t:`william:1996`; who argueed that
-     a 3 x 3 matrix that describes warm plasma waves, is able to be
-     re-presented as a 2 x 2 matrix because the compressional
-     (i.e., fast) mode can be factored out. This results in the
-     determinant, when in the limit of
-     :math:`\omega \gg k_{z}^{2} c^{2}_{\rm s}`, reduces to the kinetic
-     Alfv\'{e}n disersion relation.
+    Notes
+    -----
+    Using the 2 x 2 matrix approach method from :cite:t:`bellan:2012`,
+    this function computes the coresonding wave frequencies in units
+    :math:`rad/s`. This approach comes from :cite:t:`hasegawa:1982`,
+    :cite:t:`morales:1997` and :cite:t:`william:1996`; who argueed that
+    a 3 x 3 matrix that describes warm plasma waves, is able to be
+    re-presented as a 2 x 2 matrix because the compressional
+    (i.e., fast) mode can be factored out. This results in the
+    determinant, when in the limit of
+    :math:`\omega \gg k_{z}^{2} c^{2}_{\rm s}`, reduces to the kinetic
+    Alfv\'{e}n disersion relation.
 
-     .. math::
-         \omega^2 = k_{\rm z}^2 v_{\rm A}^2 \left(1 + \frac{k_{\rm x}^2 &
-         c_{\rm s}^2}{\omega_{\rm ci}^2} \right)
+    .. math::
+        \omega^2 = k_{\rm z}^2 v_{\rm A}^2 \left(1 + \frac{k_{\rm x}^2 &
+        c_{\rm s}^2}{\omega_{\rm ci}^2} \right)
 
-     With :math:`c_{\rm s}` being the wave speed and
-     :math:`\omega_{\rm ci}` as the gyrofrequency of the respective ion.
-     The regions in which this is valid are
-     :math:`\omega \ll \omega_{\rm ci}` and
-     :math:`\nu_{\rm Te} \gg \frac{\omega}{k_{z}} \gg \nu_{\rm Ti}, with
-     :math:`\nu_{\rm Ti}` standing for the thermal speed of the
-     respective ion. There is no restriction on propagation angle..
+    With :math:`c_{\rm s}` being the wave speed and
+    :math:`\omega_{\rm ci}` as the gyrofrequency of the respective ion.
+    The regions in which this is valid are
+    :math:`\omega \ll \omega_{\rm ci}` and
+    :math:`\nu_{\rm Te} \gg \frac{\omega}{k_{z}} \gg \nu_{\rm Ti}, with
+    :math:`\nu_{\rm Ti}` standing for the thermal speed of the
+    respective ion. There is no restriction on propagation angle..
 
-     Examples
-     --------
-     >>> import numpy as np
-     >>> from astropy import units as u
-     >>> from plasmapy.particles import Particle
-     >>> from plasmapy.dispersion.numerical import kinetic_alfven_
-     >>> inputs = {
-     ...     "B": 8.3e-9 * u.T,
-     ...     "ion": Particle("p+"),
-     ...     "k": np.logspace(-7, -2, 2) * u.rad / u.m,
-     ...     "n_i": 5 * u.m ** -3,
-     ...     "T_e": 1.6e6 * u.K,
-     ...     "T_i": 4.0e5 * u.K,
-     ...     "theta": 30 * u.deg,
-     ...     "gamma_e": 3,
-     ...     "gamma_i": 3,
-     ...     "z_mean": 1,
-     ... }
-     >>> kinetic_alfven(**inputs)
-     {30.0: <Quantity [1.24901116e+00, 3.45301796e+08] rad / s>}
+    Examples
+    --------
+    >>> import numpy as np
+    >>> from astropy import units as u
+    >>> from plasmapy.particles import Particle
+    >>> from plasmapy.dispersion.numerical import kinetic_alfven_
+    >>> inputs = {
+    ...     "B": 8.3e-9 * u.T,
+    ...     "ion": Particle("p+"),
+    ...     "k": np.logspace(-7, -2, 2) * u.rad / u.m,
+    ...     "n_i": 5 * u.m ** -3,
+    ...     "T_e": 1.6e6 * u.K,
+    ...     "T_i": 4.0e5 * u.K,
+    ...     "theta": 30 * u.deg,
+    ...     "gamma_e": 3,
+    ...     "gamma_i": 3,
+    ...     "z_mean": 1,
+    ... }
+    >>> kinetic_alfven(**inputs)
+    {30.0: <Quantity [1.24901116e+00, 3.45301796e+08] rad / s>}
     """
 
     # Validate argument ion
