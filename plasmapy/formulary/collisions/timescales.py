@@ -205,8 +205,8 @@ def Hellinger(
             "Argument 'version' is not a valid entry, valid entries "
             f"are {valid_versions}. Please try again."
         )
-
-    return valid_functions[valid_versions.index(version)](*inputs)
+    print(inputs)
+    return valid_functions[valid_versions.index(version)](**inputs)
 
 
 
@@ -217,6 +217,7 @@ def Hellinger_2009(
         par_speeds: (u.m/u.s, u.m/u.s),
 ):
     # Validate temperature arguments
+    print(T, type(T))
     T = validate_temp(T)
 
     # Validate other arguments argument
@@ -299,3 +300,16 @@ def Hellinger_2016(
         vst = vs - vt
 
         return Hellinger_2009(T, n_i, ions, par_speeds) * hyper2d(1, 1.5, 2.5, 1 - Ast, Ast*(vst**2/4*vstpar**2))
+
+
+inputs = {
+    "T": 10 * u.K,
+    "n_i": 1*10**8*u.m**-3,
+    "ions": [Particle('alpha'), Particle('p')],
+    "par_speeds": [400*u.m/u.s, 500*u.m/u.s]
+}
+
+version = 2009
+x = Hellinger(inputs, version)
+
+print(x)
