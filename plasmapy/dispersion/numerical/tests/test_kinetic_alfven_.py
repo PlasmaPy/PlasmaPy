@@ -148,12 +148,12 @@ class TestKinetic_Alfven:
             # w/vT max PhysicsWarning
             (
                 {
-                    "k": 0.01 * u.rad / u.m,
-                    "theta": 88 * u.deg,
-                    "n_i": 0.05 * u.cm**-3,
-                    "B": 2.2e-8 * u.T,
-                    "T_e": 1.6e6 * u.K,
-                    "T_i": 4.0 * u.K,
+                    "k": 10e-12 * u.rad / u.m,
+                    "theta": 10 * u.deg,
+                    "n_i": 5 * u.cm**-3,
+                    "B": 6.98e-8 * u.T,
+                    "T_e": 1.6e8 * u.K,
+                    "T_i": 4.0e5 * u.K,
                     "ion": Particle("p+"),
                 },
                 PhysicsWarning,
