@@ -131,10 +131,39 @@ class Tracker:
         The detector vertical axis is then defined
         to be orthogonal to both the source-to-detector vector and the
         detector horizontal axis.
+        
+    L_rad : `~astropy.units.Quantity` or list of same, shape [ngrids,], optional
+        The radiation length for the grid mass density material. Units must
+        be convertable to meters.
+        If multiple grids are given, one value must be provided for each grid.
+        The default value is None, corresponding to no particle scattering
+        in that grid.
+        
+        
+    mass_stopping_power : tuple or list of same, shape [ngrids,], optional
+        Each tuple should contain two elements: an energy axis in units
+        convertable to J and the mass stopping power for the grid mass 
+        density material convertable to J m^2/kg. 
+        If multiple grids are given, one value must be provided for each grid.
+        The default value is np.inf, corresponding to no particle scattering.
+        
 
+    
+    
     verbose : bool, optional
         If true, updates on the status of the program will be printed
         into the standard output while running.
+        
+    Notes
+    -----
+    
+    Tabluated radiation lengths can be found here: https://pdg.lbl.gov/2022/AtomicNuclearProperties/index.html
+    
+    Tablulated proton and electron stopping power curves can be found here:
+        https://physics.nist.gov/PhysRefData/Star/Text/PSTAR.html
+        https://physics.nist.gov/PhysRefData/Star/Text/ESTAR.html
+        
+        
     """
 
     def __init__(
@@ -143,6 +172,8 @@ class Tracker:
         source: u.m,
         detector: u.m,
         detector_hdir=None,
+        L_rad: [u.m, list] = None,
+        mass_stopping_power: [tuple, list] = None,
         verbose=True,
     ):
 
@@ -155,6 +186,47 @@ class Tracker:
             self.grids = grids
         else:
             raise TypeError("Type of argument `grids` not recognized.")
+            
+            
+        if isinstance(L_rad, u.Quantity):
+            self.L_rad = [L_rad,]
+        elif isinstance(L_rad, list):
+            self.L_rad = L_rad
+        elif L_rad is None:
+            self.L_rad = L_rad
+        else:
+            raise TypeError("Type of argument `L_rad` not recognized.")
+            
+        
+        if isinstance(mass_stopping_power, tuple):
+           mass_stopping_power = [mass_stopping_power,]
+           
+        if isinstance(mass_stopping_power, list):
+            for elem in mass_stopping_power:
+                if len(elem) != 2:
+                    raise ValueError("All tuples in the mass_stopping_power"
+                                     "list must have two elements.")
+                if not elem[0].is_equivalent(u.J):
+                    raise ValueError("First element of each tuple in the "
+                                     "mass_stopping_power list must be an"
+                                     "axis with units of energy.")
+                    
+                if not elem[1].is_equivalent(u.J*u.m**2/u.kg):
+                    raise ValueError("Second element of each tuple in the "
+                                     "mass_stopping_power list must be an"
+                                     "axis with units convertable to "
+                                     "J m^2/kg.")
+
+                if elem[0].size != elem[1].size:
+                    raise ValueError("The energy axis and stopping power arrays "
+                                     "must have equal size.")
+                    
+            self.mass_stopping_power = mass_stopping_power
+        
+        elif mass_stopping_power is None:
+            self.mass_stopping_power = None
+        else:
+            raise TypeError("Type of argument `mass_stopping_power` not recognized.")
 
         # self.grid_arr is the grid positions in si units. This is created here
         # so that it isn't continuously called later
@@ -1032,6 +1104,10 @@ class Tracker:
         
         # Apply the scattering
         self.v[self.grid_ind, :] = self.v[self.grid_ind, :] + delta
+        
+        # Renormalize v to the original vmag so that energy is conserved
+        self.v[self.grid_ind, :] /= np.linalg.norm(self.v[self.grid_ind, :], axis=-1)[:, np.newaxis]
+        self.v[self.grid_ind, :] *= vmag[:, np.newaxis]               
         
     
         # TODO: Test v/c and implement relativistic Boris push when required

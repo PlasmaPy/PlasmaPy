@@ -934,7 +934,7 @@ def test_proton_scattering():
 
     #grid = _test_grid("dense_cylinder", L=0.5 * u.mm, num=200, rho0=1e3*u.kg/u.m**3)
     rho0 = 1e3*u.kg/u.m**3
-    energy = 3 *u.MeV
+    energy = 15 *u.MeV
     
     # Create the cylinder
     grid1 = CartesianGrid([-0.5*u.mm, -0.5*u.mm, -1.5*u.mm], 
@@ -951,6 +951,7 @@ def test_proton_scattering():
     
     
     # Create the coils
+    rho0 = 1e5*u.kg/u.m**3
     grid2 = CartesianGrid([-2.5*u.mm, -2.5*u.mm, -5*u.mm], 
                          [2.5*u.mm, 2.5*u.mm, 5*u.mm], num=(100, 100, 100))
     
@@ -972,7 +973,7 @@ def test_proton_scattering():
 
     sim = cpr.Tracker(grids, source, detector, verbose=True)
 
-    sim.create_particles(5e5, energy, max_theta=12 * u.deg)
+    sim.create_particles(1e4, energy, max_theta=12 * u.deg)
 
     sim.run(field_weighting="nearest neighbor")
 
