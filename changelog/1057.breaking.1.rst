@@ -1,3 +1,0 @@
-Removed the ``none_shall_pass`` parameter from
-|particle_input|. Instead, use `typing.Optional` to create the
-annotation (e.g., ``Optional[ParticleLike]``).

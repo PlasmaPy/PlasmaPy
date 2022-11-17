@@ -7,6 +7,7 @@ import astropy.units as units
 import json
 
 from ipywidgets import widgets
+from pathlib import Path
 
 from plasmapy.utils.calculator.widget_helpers import (
     _calculate_button,
@@ -148,7 +149,9 @@ def _create_output_layout():
     app = widgets.Tab()
     children = []
 
-    with open("properties_metadata.json") as f:
+    properties_metadata = Path("properties_metadata.json")
+
+    with properties_metadata.open() as f:
         data = json.load(f)
 
     for i, title in enumerate(data):

@@ -125,16 +125,17 @@ def Hall_parameter(
     r"""
     Calculate the ``particle`` Hall parameter for a plasma.
 
-    The Hall parameter for plasma species :math:`s` (``particle``) is given by:
+    The Hall parameter for plasma species :math:`s` (``particle``) is
+    given by:
 
     .. math::
 
         β_{s} = \frac{Ω_{c s}}{ν_{s s^{\prime}}}
 
-    where :math:`Ω_{c s}` is the gyrofrequncy for plasma species :math:`s`
-    (``particle``) and :math:`ν_{s s^{\prime}}` is the collision frequency
-    between plasma species :math:`s` (``particle``) and species
-    :math:`s^{\prime}` (``ion``).
+    where :math:`Ω_{c s}` is the gyrofrequncy for plasma species
+    :math:`s` (``particle``) and :math:`ν_{s s^{\prime}}` is the
+    collision frequency between plasma species :math:`s` (``particle``)
+    and species :math:`s^{\prime}` (``ion``).
 
     **Aliases:** `betaH_`
 
@@ -153,36 +154,38 @@ def Hall_parameter(
         The type of ion ``particle`` is colliding with.
 
     particle : `~plasmapy.particles.particle_class.Particle`
-        The particle species for which the Hall parameter is calculated for.
-        Representation of the particle species (e.g., ``'p'`` for protons,
-        ``'D+'`` for deuterium, or ``'He-4 +1'`` for singly ionized helium-4).
-        If no charge state information is provided, then the particles are
-        assumed to be singly charged.
+        The particle species for which the Hall parameter is calculated
+        for.  Representation of the particle species (e.g., ``'p'`` for
+        protons, ``'D+'`` for deuterium, or ``'He-4 +1'`` for singly
+        ionized helium-4).  If no charge state information is provided,
+        then the particles are assumed to be singly charged.
 
     coulomb_log : `float`, optional
-        Preset value for the Coulomb logarithm. Used mostly for testing purposes.
+        Preset value for the Coulomb logarithm. Used mostly for testing
+        purposes.
 
     V : `~astropy.units.quantity.Quantity`
-        The relative velocity between ``particle`` and ``ion``.  If not provided,
-        then the ``particle`` thermal velocity is assumed
+        The relative velocity between ``particle`` and ``ion``.  If not
+        provided, then the ``particle`` thermal velocity is assumed
         (`~plasmapy.formulary.speeds.thermal_speed`).
 
     coulomb_log_method : `str`, optional
         The method by which to compute the Coulomb logarithm.
-        The default method is the classical straight-line Landau-Spitzer
-        method (``"classical"`` or ``"ls"``). The other 6 supported methods
-        are ``"ls_min_interp"``, ``"ls_full_interp"``, ``"ls_clamp_mininterp"``,
-        ``"hls_min_interp"``, ``"hls_max_interp"``, and ``"hls_full_interp"``.
-        Please refer to the docstring of
-        `~plasmapy.formulary.collisions.Coulomb_logarithm` for more
-        information about these methods.
+        The default method is the classical straight-line
+        Landau-Spitzer method (``"classical"`` or ``"ls"``). The other
+        6 supported methods are ``"ls_min_interp"``,
+        ``"ls_full_interp"``, ``"ls_clamp_mininterp"``,
+        ``"hls_min_interp"``, ``"hls_max_interp"``, and
+        ``"hls_full_interp"``.  Please refer to the docstring of
+        `~plasmapy.formulary.collisions.coulomb.Coulomb_logarithm` for
+        more information about these methods.
 
     See Also
     --------
     ~plasmapy.formulary.frequencies.gyrofrequency
-    ~plasmapy.formulary.collisions.fundamental_electron_collision_freq
-    ~plasmapy.formulary.collisions.fundamental_ion_collision_freq
-    ~plasmapy.formulary.collisions.Coulomb_logarithm
+    ~plasmapy.formulary.collisions.frequencies.fundamental_electron_collision_freq
+    ~plasmapy.formulary.collisions.frequencies.fundamental_ion_collision_freq
+    ~plasmapy.formulary.collisions.coulomb.Coulomb_logarithm
 
     Returns
     -------
@@ -192,10 +195,10 @@ def Hall_parameter(
     Notes
     -----
     * For calculating the collision frequency
-      `~plasmapy.formulary.collisions.fundamental_electron_collision_freq` is used
-      when ``particle`` is an electron and
-      `~plasmapy.formulary.collisions.fundamental_ion_collision_freq` when
-      ``particle`` is an ion.
+      `~plasmapy.formulary.collisions.frequencies.fundamental_electron_collision_freq`
+      is used when ``particle`` is an electron and
+      `~plasmapy.formulary.collisions.frequencies.fundamental_ion_collision_freq`
+      when ``particle`` is an ion.
     * The collision frequencies are calculated assuming a slowly moving
       Maxwellian distribution.
 
