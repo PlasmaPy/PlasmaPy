@@ -968,10 +968,15 @@ def test_proton_scattering():
     grids = [grid1, grid2]
     
     
+    
+    mass_L_rad = [63.04*u.g/u.cm**2]*2
+    
+    
     source = (-11*u.mm, (90-26.57) * u.deg, 0 * u.deg)
     detector = (270*u.mm, (90-26.57) * u.deg, 0 * u.deg)
 
-    sim = cpr.Tracker(grids, source, detector, verbose=True)
+    sim = cpr.Tracker(grids, source, detector, verbose=True,
+                      mass_L_rad = mass_L_rad)
 
     sim.create_particles(1e4, energy, max_theta=12 * u.deg)
 

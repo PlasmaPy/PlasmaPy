@@ -132,9 +132,10 @@ class Tracker:
         to be orthogonal to both the source-to-detector vector and the
         detector horizontal axis.
         
-    L_rad : `~astropy.units.Quantity` or list of same, shape [ngrids,], optional
+    mass_L_rad : `~astropy.units.Quantity` or list of same, shape [ngrids,], optional
         The radiation length for the grid mass density material. Units must
-        be convertable to meters.
+        be convertable to kg/m^2. If `None` is provided for a given grid,
+        scattering will not be calculated on that grid.
         If multiple grids are given, one value must be provided for each grid.
         The default value is None, corresponding to no particle scattering
         in that grid.
@@ -143,9 +144,10 @@ class Tracker:
     mass_stopping_power : tuple or list of same, shape [ngrids,], optional
         Each tuple should contain two elements: an energy axis in units
         convertable to J and the mass stopping power for the grid mass 
-        density material convertable to J m^2/kg. 
+        density material convertable to J m^2/kg. If `None` is provided for a 
+        given grid, particle stopping will not be calculated on that grid.
         If multiple grids are given, one value must be provided for each grid.
-        The default value is np.inf, corresponding to no particle scattering.
+        
         
 
     
@@ -172,7 +174,7 @@ class Tracker:
         source: u.m,
         detector: u.m,
         detector_hdir=None,
-        L_rad: [u.m, list] = None,
+        mass_L_rad: [u.kg/u.m**2, list] = None,
         mass_stopping_power: [tuple, list] = None,
         verbose=True,
     ):
@@ -186,16 +188,21 @@ class Tracker:
             self.grids = grids
         else:
             raise TypeError("Type of argument `grids` not recognized.")
+ 
+        if isinstance(mass_L_rad, u.Quantity):
+            mass_L_rad = [mass_L_rad,]
+        
+        if isinstance(mass_L_rad, list):
+            self.mass_L_rad = mass_L_rad
             
-            
-        if isinstance(L_rad, u.Quantity):
-            self.L_rad = [L_rad,]
-        elif isinstance(L_rad, list):
-            self.L_rad = L_rad
-        elif L_rad is None:
-            self.L_rad = L_rad
+            if len(self.mass_L_rad) != len(self.grids):
+                raise ValueError("The size of mass_L_rad "
+                                 f"({len(self.mass_L_rad)}) must match the "
+                                 f"number of grids ({len(self.grids)}).")
+        elif mass_L_rad is None:
+            self.mass_L_rad = None
         else:
-            raise TypeError("Type of argument `L_rad` not recognized.")
+            raise TypeError("Type of argument `mass_L_rad` not recognized.")
             
         
         if isinstance(mass_stopping_power, tuple):
@@ -203,6 +210,12 @@ class Tracker:
            
         if isinstance(mass_stopping_power, list):
             for elem in mass_stopping_power:
+                
+                if len(mass_stopping_power) != len(self.grids):
+                    raise ValueError("The size of the mass_stopping_power list "
+                                     f"({len(mass_stopping_power)}) must match the "
+                                     f"number of grids ({len(self.grids)}).")
+                
                 if len(elem) != 2:
                     raise ValueError("All tuples in the mass_stopping_power"
                                      "list must have two elements.")
@@ -1011,7 +1024,10 @@ class Tracker:
         By = np.zeros(self.nparticles_grid) * u.T
         Bz = np.zeros(self.nparticles_grid) * u.T
         rho = np.zeros(self.nparticles_grid) * u.kg/u.m**3
-        for grid in self.grids:
+        
+        L_rad = np.zeros([self.nparticles_grid, len(self.grids)])*u.m
+        
+        for i, grid in enumerate(self.grids):
             # Estimate the E and B fields for each particle
             # Note that this interpolation step is BY FAR the slowest part of the push
             # loop. Any speed improvements will have to come from here.
@@ -1058,6 +1074,9 @@ class Tracker:
             By += _By
             Bz += _Bz
             rho += _rho
+            
+            if self.mass_L_rad is not None:
+                L_rad[:, i] = (self.mass_L_rad[i]/_rho).to(u.m)
 
         # Create arrays of E and B as required by push algorithm
         E = np.array(
@@ -1073,41 +1092,45 @@ class Tracker:
         dt = self._adaptive_dt(Ex, Ey, Ez, Bx, By, Bz)
         
         
-        # TODO: Add a switch keyword in run() determine whether this step gets
-        # run. The calculation is inaccurate for low  densities (since it assumes
+        # The calculation is inaccurate for low  densities (since it assumes
         # a Maxwellian angle spread) and is a bit computationally intensive
-        # (when drawing the angles) so users may want to turn it off
+        # (when drawing the angles).
         
-        # Carry out particle scattering calculation
-        vmag = np.linalg.norm(self.v[self.grid_ind, :], axis=-1)
-        L_m = vmag * dt #Length scale for the next time step 
-        
-        
-        # TODO: store L_rad_per_mass in the grid, calculate L_rad per grid and sum
-        # so grids can have different materials
-        L_rad_per_mass = 63.04*u.g/u.cm**2
-        L_rad = (L_rad_per_mass/rho).to(u.m).value
-        
-        sigmas = 2.804e-12/(self.m*vmag**2)*np.sqrt(L_m/L_rad)
-        
-        
-        thetas = draw_from_normal(sigmas) # polar angle
-        
-        # Get normal vector perpendicular to each V by doing
-        # cross-product with a random vector, then normalize it
-        delta = np.random.uniform(size=[thetas.size, 3])
-        delta = np.cross(self.v[self.grid_ind, :], delta)
-        delta /= np.linalg.norm(delta, axis=-1)[:, np.newaxis]
-        
-        # Rescale normalize delta using the calculate theta
-        delta *= (vmag*np.sin(thetas))[:, np.newaxis]
-        
-        # Apply the scattering
-        self.v[self.grid_ind, :] = self.v[self.grid_ind, :] + delta
-        
-        # Renormalize v to the original vmag so that energy is conserved
-        self.v[self.grid_ind, :] /= np.linalg.norm(self.v[self.grid_ind, :], axis=-1)[:, np.newaxis]
-        self.v[self.grid_ind, :] *= vmag[:, np.newaxis]               
+        if self.mass_L_rad is not None:
+            
+            # Carry out particle scattering calculation
+            vmag = np.linalg.norm(self.v[self.grid_ind, :], axis=-1)
+            L_m = vmag * dt #Length scale for the next time step 
+            
+            # Since theta \propto \sqrt(rho/L_rad_mass),
+            # theta is not a linear combination of rho's and so we
+            # need to apply scattering separately for each material
+            # 
+            # Scattering in particular grids can be turned off by setting those
+            # to 'None'
+            for i in range(self.num_grids):
+                
+                if self.mass_L_rad[i] is not None:
+                    sigmas = (2.804e-12/(self.m*vmag**2)*
+                                np.sqrt(L_m/L_rad[:,i].to(u.m).value) )
+                    
+                    thetas = draw_from_normal(sigmas) # polar angle
+                    
+                    # Get normal vector perpendicular to each V by doing
+                    # cross-product with a random vector, then normalize it
+                    delta = np.random.uniform(size=[thetas.size, 3])
+                    delta = np.cross(self.v[self.grid_ind, :], delta)
+                    delta /= np.linalg.norm(delta, axis=-1)[:, np.newaxis]
+                    
+                    # Rescale normalize delta using the calculate theta
+                    delta *= (vmag*np.sin(thetas))[:, np.newaxis]
+                    
+                    # Apply the scattering
+                    self.v[self.grid_ind, :] = self.v[self.grid_ind, :] + delta
+                    
+                    # Renormalize v to the original vmag so that energy is conserved
+                    self.v[self.grid_ind, :] /= np.linalg.norm(self.v[self.grid_ind, :], axis=-1)[:, np.newaxis]
+                    self.v[self.grid_ind, :] *= vmag[:, np.newaxis]               
         
     
         # TODO: Test v/c and implement relativistic Boris push when required
