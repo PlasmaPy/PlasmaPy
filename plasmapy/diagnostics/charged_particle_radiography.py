@@ -18,11 +18,26 @@ import warnings
 
 from tqdm import tqdm
 
+from numba import njit
+
 from plasmapy import particles
 from plasmapy.formulary.mathematics import rot_a_to_b
 from plasmapy.particles import Particle
 from plasmapy.plasma.grids import AbstractGrid
 from plasmapy.simulation.particle_integrators import boris_push
+
+
+@njit
+def draw_from_normal(sigmas):
+    """
+    Draw samples from a set of normal distributions where each 
+    distribution has a different standard deviation.
+    """
+    output = np.zeros(sigmas.size)
+    for i in range(sigmas.size):
+        output[i] = np.random.normal(loc=0, scale=sigmas[i])
+    return output
+
 
 
 def _coerce_to_cartesian_si(pos):
@@ -211,7 +226,7 @@ class Tracker:
         # Validate the E and B fields
         # ************************************************************************
 
-        req_quantities = ["E_x", "E_y", "E_z", "B_x", "B_y", "B_z"]
+        req_quantities = ["E_x", "E_y", "E_z", "B_x", "B_y", "B_z", 'rho']
 
         for grid in self.grids:
             grid.require_quantities(req_quantities, replace_with_zeros=True)
@@ -923,12 +938,13 @@ class Tracker:
         Bx = np.zeros(self.nparticles_grid) * u.T
         By = np.zeros(self.nparticles_grid) * u.T
         Bz = np.zeros(self.nparticles_grid) * u.T
+        rho = np.zeros(self.nparticles_grid) * u.kg/u.m**3
         for grid in self.grids:
             # Estimate the E and B fields for each particle
             # Note that this interpolation step is BY FAR the slowest part of the push
             # loop. Any speed improvements will have to come from here.
             if self.field_weighting == "volume averaged":
-                _Ex, _Ey, _Ez, _Bx, _By, _Bz = grid.volume_averaged_interpolator(
+                _Ex, _Ey, _Ez, _Bx, _By, _Bz, _rho = grid.volume_averaged_interpolator(
                     pos,
                     "E_x",
                     "E_y",
@@ -936,10 +952,11 @@ class Tracker:
                     "B_x",
                     "B_y",
                     "B_z",
+                    "rho",
                     persistent=True,
                 )
             elif self.field_weighting == "nearest neighbor":
-                _Ex, _Ey, _Ez, _Bx, _By, _Bz = grid.nearest_neighbor_interpolator(
+                _Ex, _Ey, _Ez, _Bx, _By, _Bz, _rho = grid.nearest_neighbor_interpolator(
                     pos,
                     "E_x",
                     "E_y",
@@ -947,6 +964,7 @@ class Tracker:
                     "B_x",
                     "B_y",
                     "B_z",
+                    "rho",
                     persistent=True,
                 )
 
@@ -958,6 +976,7 @@ class Tracker:
             _Bx = np.nan_to_num(_Bx, nan=0.0 * u.T)
             _By = np.nan_to_num(_By, nan=0.0 * u.T)
             _Bz = np.nan_to_num(_Bz, nan=0.0 * u.T)
+            _rho = np.nan_to_num(_rho, nan=0.0 * u.kg/u.m**3)
 
             # Add the values interpolated for this grid to the totals
             Ex += _Ex
@@ -966,6 +985,7 @@ class Tracker:
             Bx += _Bx
             By += _By
             Bz += _Bz
+            rho += _rho
 
         # Create arrays of E and B as required by push algorithm
         E = np.array(
@@ -979,7 +999,41 @@ class Tracker:
         # by the particles
         # If user sets dt explicitly, that's handled in _adaptive_dt
         dt = self._adaptive_dt(Ex, Ey, Ez, Bx, By, Bz)
-
+        
+        
+        # TODO: Add a switch keyword in run() determine whether this step gets
+        # run. The calculation is inaccurate for low  densities (since it assumes
+        # a Maxwellian angle spread) and is a bit computationally intensive
+        # (when drawing the angles) so users may want to turn it off
+        
+        # Carry out particle scattering calculation
+        vmag = np.linalg.norm(self.v[self.grid_ind, :], axis=-1)
+        L_m = vmag * dt #Length scale for the next time step 
+        
+        
+        # TODO: store L_rad_per_mass in the grid, calculate L_rad per grid and sum
+        # so grids can have different materials
+        L_rad_per_mass = 63.04*u.g/u.cm**2
+        L_rad = (L_rad_per_mass/rho).to(u.m).value
+        
+        sigmas = 2.804e-12/(self.m*vmag**2)*np.sqrt(L_m/L_rad)
+        
+        
+        thetas = draw_from_normal(sigmas) # polar angle
+        
+        # Get normal vector perpendicular to each V by doing
+        # cross-product with a random vector, then normalize it
+        delta = np.random.uniform(size=[thetas.size, 3])
+        delta = np.cross(self.v[self.grid_ind, :], delta)
+        delta /= np.linalg.norm(delta, axis=-1)[:, np.newaxis]
+        
+        # Rescale normalize delta using the calculate theta
+        delta *= (vmag*np.sin(thetas))[:, np.newaxis]
+        
+        # Apply the scattering
+        self.v[self.grid_ind, :] = self.v[self.grid_ind, :] + delta
+        
+    
         # TODO: Test v/c and implement relativistic Boris push when required
         # vc = np.max(v)/_c
 
