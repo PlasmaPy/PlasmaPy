@@ -284,7 +284,7 @@ def kinetic_alfven(
             )
 
         # Minimum value for w/kz test
-        elif omega_kz_min / v_Te > 0.1 or v_Ti / omega_kz_min > 0.1:
+        if omega_kz_min / v_Te > 0.1 or v_Ti / omega_kz_min > 0.1:
             warnings.warn(
                 "This calculation produced one or more invalid w/kz "
                 "value(s) which violates the regime in which the "
