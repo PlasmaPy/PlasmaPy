@@ -219,12 +219,12 @@ class Tracker:
                 if len(elem) != 2:
                     raise ValueError("All tuples in the mass_stopping_power"
                                      "list must have two elements.")
-                if not elem[0].is_equivalent(u.J):
+                if not elem[0].unit.is_equivalent(u.J):
                     raise ValueError("First element of each tuple in the "
                                      "mass_stopping_power list must be an"
                                      "axis with units of energy.")
                     
-                if not elem[1].is_equivalent(u.J*u.m**2/u.kg):
+                if not elem[1].unit.is_equivalent(u.J*u.m**2/u.kg):
                     raise ValueError("Second element of each tuple in the "
                                      "mass_stopping_power list must be an"
                                      "axis with units convertable to "
@@ -1023,16 +1023,20 @@ class Tracker:
         Bx = np.zeros(self.nparticles_grid) * u.T
         By = np.zeros(self.nparticles_grid) * u.T
         Bz = np.zeros(self.nparticles_grid) * u.T
-        rho = np.zeros(self.nparticles_grid) * u.kg/u.m**3
         
+        
+        # Radiation length - used for computing scattering
         L_rad = np.zeros([self.nparticles_grid, len(self.grids)])*u.m
+        
+        # Mass density per layer - used for computing absorption
+        _rho = np.zeros([self.nparticles_grid, len(self.grids)]) * u.kg/u.m**3
         
         for i, grid in enumerate(self.grids):
             # Estimate the E and B fields for each particle
             # Note that this interpolation step is BY FAR the slowest part of the push
             # loop. Any speed improvements will have to come from here.
             if self.field_weighting == "volume averaged":
-                _Ex, _Ey, _Ez, _Bx, _By, _Bz, _rho = grid.volume_averaged_interpolator(
+                _Ex, _Ey, _Ez, _Bx, _By, _Bz, _rho[:,i] = grid.volume_averaged_interpolator(
                     pos,
                     "E_x",
                     "E_y",
@@ -1044,7 +1048,7 @@ class Tracker:
                     persistent=True,
                 )
             elif self.field_weighting == "nearest neighbor":
-                _Ex, _Ey, _Ez, _Bx, _By, _Bz, _rho = grid.nearest_neighbor_interpolator(
+                _Ex, _Ey, _Ez, _Bx, _By, _Bz, _rho[:,i] = grid.nearest_neighbor_interpolator(
                     pos,
                     "E_x",
                     "E_y",
@@ -1064,7 +1068,7 @@ class Tracker:
             _Bx = np.nan_to_num(_Bx, nan=0.0 * u.T)
             _By = np.nan_to_num(_By, nan=0.0 * u.T)
             _Bz = np.nan_to_num(_Bz, nan=0.0 * u.T)
-            _rho = np.nan_to_num(_rho, nan=0.0 * u.kg/u.m**3)
+            _rho[:,i] = np.nan_to_num(_rho[:,i], nan=0.0 * u.kg/u.m**3)
 
             # Add the values interpolated for this grid to the totals
             Ex += _Ex
@@ -1073,7 +1077,6 @@ class Tracker:
             Bx += _Bx
             By += _By
             Bz += _Bz
-            rho += _rho
             
             if self.mass_L_rad is not None:
                 L_rad[:, i] = (self.mass_L_rad[i]/_rho).to(u.m)
@@ -1092,12 +1095,11 @@ class Tracker:
         dt = self._adaptive_dt(Ex, Ey, Ez, Bx, By, Bz)
         
         
-        # The calculation is inaccurate for low  densities (since it assumes
-        # a Maxwellian angle spread) and is a bit computationally intensive
+        # The scattering calculation is inaccurate for low  densities 
+        # (since it assumes a Maxwellian angle spread) and is a bit
+        # computationally intensive
         # (when drawing the angles).
-        
         if self.mass_L_rad is not None:
-            
             # Carry out particle scattering calculation
             vmag = np.linalg.norm(self.v[self.grid_ind, :], axis=-1)
             L_m = vmag * dt #Length scale for the next time step 
@@ -1105,11 +1107,10 @@ class Tracker:
             # Since theta \propto \sqrt(rho/L_rad_mass),
             # theta is not a linear combination of rho's and so we
             # need to apply scattering separately for each material
-            # 
-            # Scattering in particular grids can be turned off by setting those
-            # to 'None'
             for i in range(self.num_grids):
                 
+                # Scattering in particular grids can be turned off by setting those
+                # to 'None'
                 if self.mass_L_rad[i] is not None:
                     sigmas = (2.804e-12/(self.m*vmag**2)*
                                 np.sqrt(L_m/L_rad[:,i].to(u.m).value) )
@@ -1130,9 +1131,47 @@ class Tracker:
                     
                     # Renormalize v to the original vmag so that energy is conserved
                     self.v[self.grid_ind, :] /= np.linalg.norm(self.v[self.grid_ind, :], axis=-1)[:, np.newaxis]
-                    self.v[self.grid_ind, :] *= vmag[:, np.newaxis]               
+                    self.v[self.grid_ind, :] *= vmag[:, np.newaxis]            
+                    
+                    
+                    
+        # Stopping power calculating
         
-    
+        # Interpolate the linear stopping power for each particle
+        # given the interpolated density
+        if self.mass_stopping_power is not None:
+            for i in range(self.num_grids):
+                vmag = np.linalg.norm(self.v[self.grid_ind, :], axis=-1)
+                L_m = vmag * dt #Length scale for the next time step 
+                
+                KE = (0.5*self.m*vmag**2)
+
+                eaxis = self.mass_stopping_power[i][0].to(u.J).value
+                sp = self.mass_stopping_power[i][1].to(u.J*u.m**2/u.kg).value
+                
+                if self.mass_stopping_power is not None:
+                    mass_stopping_power = np.interp(KE, eaxis, sp) # J m^2/kg
+                    # J/m
+                    linear_stopping_power = (mass_stopping_power * 
+                                             _rho[:,i].to(u.kg/u.m**3).value)
+                
+                    # J
+                    new_energy = KE - (linear_stopping_power * L_m)
+                    # m/s
+                    new_vmag = np.sqrt(2*new_energy / self.m)
+                    
+                    # Renormalize v to the new vmag
+                    self.v[self.grid_ind, :] /= np.linalg.norm(self.v[self.grid_ind, :], axis=-1)[:, np.newaxis]
+                    self.v[self.grid_ind, :] *= new_vmag[:, np.newaxis]     
+                    
+                    # Remove particles which have 'stopped'
+                    # Threshold is 0.1 MeV ~ 1.6e-14 J
+                    ind = np.nonzero(new_energy < 1.6e-14)
+                    self._remove_particles(ind)
+                    
+        
+                    
+                    
         # TODO: Test v/c and implement relativistic Boris push when required
         # vc = np.max(v)/_c
 
@@ -1146,6 +1185,8 @@ class Tracker:
         boris_push(x, v, B, E, self.q, self.m, dt)
         self.x[self.grid_ind, :] = x
         self.v[self.grid_ind, :] = v
+        
+        
 
     @property
     def on_any_grid(self):
@@ -1190,6 +1231,16 @@ class Tracker:
             )
 
         return True
+    
+    def _remove_particles(self, indices):
+        """
+        Remove the particles whose indices are provided and correctly modify
+        all of the internal variables accordingly
+        """
+        self.x = self.x[~indices, :]
+        self.v = self.v[~indices, :]
+        
+    
 
     def run(
         self,
