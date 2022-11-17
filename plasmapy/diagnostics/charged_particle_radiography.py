@@ -595,25 +595,19 @@ class Tracker:
             # In the case of a circular mesh, also create a round wire along the
             # outside edge
             hit[np.isclose(loc_rad, radius, atol=wire_radius)] = True
-
-        # Identify the particles that have hit something, then remove them from
-        # all of the arrays
-        keep_these_particles = ~hit
-        number_kept_particles = keep_these_particles.sum()
-        nremoved = self.nparticles - number_kept_particles
-
-        if self.nparticles - nremoved <= 0:
+            
+            
+        if self.nparticles - np.sum(hit) <= 0:
             raise ValueError(
                 "The specified mesh is blocking all of the particles. "
                 f"The wire diameter ({2*wire_radius}) may be too large."
             )
 
-        self.x = self.x[keep_these_particles, :]
-        self.v = self.v[keep_these_particles, :]
-        self.theta = self.theta[
-            keep_these_particles
-        ]  # Important to apply here to get correct grid_ind
-        self.nparticles = number_kept_particles
+        # Identify the particles that have hit something, then remove them from
+        # all of the arrays
+        self._remove_particles(hit)
+        
+
 
     # *************************************************************************
     # Particle creation methods
@@ -866,7 +860,7 @@ class Tracker:
 
         # candidate timesteps includes one per grid (based on the grid resolution)
         # plus additional candidates based on the field at each particle
-        candidates = np.ones([self.nparticles_grid, self.num_grids + 1]) * np.inf
+        candidates = np.ones([self._num_tracked, self.num_grids + 1]) * np.inf
 
         # Compute the timestep indicated by the grid resolution
         ds = np.array([grid.grid_resolution.to(u.m).value for grid in self.grids])
@@ -978,18 +972,12 @@ class Tracker:
         # away from it, they will never reach the detector.
         # So, we can remove them from the arrays
 
-        # Find the indices of all particles that we should keep:
-        # i.e. those still moving towards the detector.
-        ind = np.logical_not((v_towards_det < 0) & (dist_remaining > 0)).nonzero()[0]
-
-        # Drop the other particles
-        self.x = self.x[ind, :]
-        self.v = self.v[ind, :]
-        self.v_init = self.v_init[ind, :]
-        self.nparticles_grid = self.x.shape[0]
+        # Find the indices of all particles that we should remove
+        to_remove = ((v_towards_det < 0) & (dist_remaining > 0))
+        self._remove_particles(to_remove)
 
         # Store the number of particles deflected
-        self.fract_deflected = (self.nparticles - ind.size) / self.nparticles
+        self.fract_deflected = np.sum(to_remove) / self.nparticles_init
 
         # Warn the user if a large number of particles are being deflected
         if self.fract_deflected > 0.05:
@@ -1007,7 +995,7 @@ class Tracker:
         Boris algorithm
         """
         # Get a list of positions (input for interpolator)
-        pos = self.x[self.grid_ind, :] * u.m
+        pos = self.x[self._track_ind, :] * u.m
 
         # Update the list of particles on and off the grid
         # shape [nparticles, ngrids]
@@ -1017,19 +1005,19 @@ class Tracker:
         # entered any grid
         self.entered_grid += np.sum(self.on_grid, axis=-1)
 
-        Ex = np.zeros(self.nparticles_grid) * u.V / u.m
-        Ey = np.zeros(self.nparticles_grid) * u.V / u.m
-        Ez = np.zeros(self.nparticles_grid) * u.V / u.m
-        Bx = np.zeros(self.nparticles_grid) * u.T
-        By = np.zeros(self.nparticles_grid) * u.T
-        Bz = np.zeros(self.nparticles_grid) * u.T
+        Ex = np.zeros(self._num_tracked) * u.V / u.m
+        Ey = np.zeros(self._num_tracked) * u.V / u.m
+        Ez = np.zeros(self._num_tracked) * u.V / u.m
+        Bx = np.zeros(self._num_tracked) * u.T
+        By = np.zeros(self._num_tracked) * u.T
+        Bz = np.zeros(self._num_tracked) * u.T
         
         
         # Radiation length - used for computing scattering
-        L_rad = np.zeros([self.nparticles_grid, len(self.grids)])*u.m
+        L_rad = np.zeros([self._num_tracked, len(self.grids)])*u.m
         
         # Mass density per layer - used for computing absorption
-        _rho = np.zeros([self.nparticles_grid, len(self.grids)]) * u.kg/u.m**3
+        _rho = np.zeros([self._num_tracked, len(self.grids)]) * u.kg/u.m**3
         
         for i, grid in enumerate(self.grids):
             # Estimate the E and B fields for each particle
@@ -1101,7 +1089,7 @@ class Tracker:
         # (when drawing the angles).
         if self.mass_L_rad is not None:
             # Carry out particle scattering calculation
-            vmag = np.linalg.norm(self.v[self.grid_ind, :], axis=-1)
+            vmag = np.linalg.norm(self.v[self._track_ind, :], axis=-1)
             L_m = vmag * dt #Length scale for the next time step 
             
             # Since theta \propto \sqrt(rho/L_rad_mass),
@@ -1120,18 +1108,18 @@ class Tracker:
                     # Get normal vector perpendicular to each V by doing
                     # cross-product with a random vector, then normalize it
                     delta = np.random.uniform(size=[thetas.size, 3])
-                    delta = np.cross(self.v[self.grid_ind, :], delta)
+                    delta = np.cross(self.v[self._track_ind, :], delta)
                     delta /= np.linalg.norm(delta, axis=-1)[:, np.newaxis]
                     
                     # Rescale normalize delta using the calculate theta
                     delta *= (vmag*np.sin(thetas))[:, np.newaxis]
                     
                     # Apply the scattering
-                    self.v[self.grid_ind, :] = self.v[self.grid_ind, :] + delta
+                    self.v[self._track_ind, :] = self.v[self._track_ind, :] + delta
                     
                     # Renormalize v to the original vmag so that energy is conserved
-                    self.v[self.grid_ind, :] /= np.linalg.norm(self.v[self.grid_ind, :], axis=-1)[:, np.newaxis]
-                    self.v[self.grid_ind, :] *= vmag[:, np.newaxis]            
+                    self.v[self._track_ind, :] /= np.linalg.norm(self.v[self._track_ind, :], axis=-1)[:, np.newaxis]
+                    self.v[self._track_ind, :] *= vmag[:, np.newaxis]            
                     
                     
                     
@@ -1141,7 +1129,7 @@ class Tracker:
         # given the interpolated density
         if self.mass_stopping_power is not None:
             for i in range(self.num_grids):
-                vmag = np.linalg.norm(self.v[self.grid_ind, :], axis=-1)
+                vmag = np.linalg.norm(self.v[self._track_ind, :], axis=-1)
                 L_m = vmag * dt #Length scale for the next time step 
                 
                 KE = (0.5*self.m*vmag**2)
@@ -1157,17 +1145,26 @@ class Tracker:
                 
                     # J
                     new_energy = KE - (linear_stopping_power * L_m)
+                    
+                    # Remove particles which have 'stopped'
+                    # Threshold is 0.1 MeV ~ 1.6e-14 J
+                    to_remove = new_energy < 1.6e-14
+                    self._remove_particles(to_remove)
+                    # Remove particles from some local variables too
+                    new_energy = new_energy[~to_remove]
+                    E = E[~to_remove, :]
+                    B = B[~to_remove, :]
+                    dt = dt[~to_remove]
+                    
+
                     # m/s
                     new_vmag = np.sqrt(2*new_energy / self.m)
                     
                     # Renormalize v to the new vmag
-                    self.v[self.grid_ind, :] /= np.linalg.norm(self.v[self.grid_ind, :], axis=-1)[:, np.newaxis]
-                    self.v[self.grid_ind, :] *= new_vmag[:, np.newaxis]     
+                    self.v[self._track_ind, :] /= np.linalg.norm(self.v[self._track_ind, :], axis=-1)[:, np.newaxis]
+                    self.v[self._track_ind, :] *= new_vmag[:, np.newaxis]     
                     
-                    # Remove particles which have 'stopped'
-                    # Threshold is 0.1 MeV ~ 1.6e-14 J
-                    ind = np.nonzero(new_energy < 1.6e-14)
-                    self._remove_particles(ind)
+                    
                     
         
                     
@@ -1180,11 +1177,13 @@ class Tracker:
         if dt.size > 1:
             dt = dt[:, np.newaxis]
 
-        x = self.x[self.grid_ind, :]
-        v = self.v[self.grid_ind, :]
+        x = self.x[self._track_ind, :]
+        v = self.v[self._track_ind, :]
+        
+        
         boris_push(x, v, B, E, self.q, self.m, dt)
-        self.x[self.grid_ind, :] = x
-        self.v[self.grid_ind, :] = v
+        self.x[self._track_ind, :] = x
+        self.v[self._track_ind, :] = v
         
         
 
@@ -1206,7 +1205,7 @@ class Tracker:
         self.num_entered = np.nonzero(self.entered_grid)[0].size
 
         # How many of the particles have entered the grid
-        self.fract_entered = np.sum(self.num_entered) / self.nparticles_grid
+        self.fract_entered = np.sum(self.num_entered) / self._num_tracked
 
         # Of the particles that have entered the grid, how many are currently
         # on the grid?
@@ -1232,14 +1231,76 @@ class Tracker:
 
         return True
     
-    def _remove_particles(self, indices):
+    def _remove_particles(self, remove):
         """
-        Remove the particles whose indices are provided and correctly modify
+        Remove the particles  and correctly modify
         all of the internal variables accordingly
-        """
-        self.x = self.x[~indices, :]
-        self.v = self.v[~indices, :]
         
+        Paramters
+        ---------
+        
+        remove : np.array [nparticles,]
+        
+            Boolean array with length [nparticles]. Particles with non-zero
+            values will be removed.
+        
+        """
+        
+        # If the remove is relative to the list of tracked particles, 
+        # pad it out to all particles, removing none of the non-tracked
+        # particles
+        if remove.size == self._num_tracked:
+            tracked_remove = np.copy(remove)
+            total_remove = np.zeros(self.nparticles, dtype=bool)
+            total_remove[self.do_track] = tracked_remove
+        elif remove.size == self.nparticles:
+            total_remove = remove
+            tracked_remove = remove[self._track_ind]
+        else:
+            raise ValueError(f"Unexpected length of remove: {remove.size}")
+        
+        
+        
+        
+        self.x = self.x[~total_remove, :]
+        self.v = self.v[~total_remove, :]
+        self.v_init = self.v_init[~total_remove, :]
+        self.theta = self.theta[~total_remove]
+        self.do_track = self.do_track[~total_remove]
+        
+        self.nparticles -= np.sum(total_remove)
+        
+        # These arrays only contain the tracked particles, so modify
+        # the indexing array accordingly
+        self.on_grid = self.on_grid[~tracked_remove, :]
+        self.entered_grid = self.entered_grid[~tracked_remove]
+
+           
+
+    
+    @property
+    def _track_ind(self):
+        """
+        Returns the indices of all of the particles being actively
+        tracked.
+        """
+        return np.where(self.do_track)[0]
+    
+    
+    @property
+    def _num_tracked(self):
+        """
+        Returns the total number of particles being tracked
+        """
+        return np.sum(self.do_track)
+    
+    
+    @property
+    def _fract_tracked(self):
+        """
+        The fraction of particles currently being tracked
+        """
+        return self._num_tracked / self.nparticles
     
 
     def run(
@@ -1313,6 +1374,8 @@ class Tracker:
         # Store a copy of the initial velocity distribution in memory
         # This will be used later to calculate the maximum deflection
         self.v_init = np.copy(self.v)
+        # Same for number of particles
+        self.nparticles_init = np.copy(self.nparticles)
 
         # Calculate the maximum velocity
         # Used for determining the grid crossing maximum timestep
@@ -1321,16 +1384,15 @@ class Tracker:
         # Determine which particles should be tracked
         # This array holds the indices of all particles that WILL hit the grid
         # Only these particles will actually be pushed through the fields
-        self.grid_ind = np.where(self.theta < self.max_theta_hit_grid)[0]
-        self.nparticles_grid = len(self.grid_ind)
-        self.fract_tracked = self.nparticles_grid / self.nparticles
+        self.do_track = self.theta < self.max_theta_hit_grid
+        
 
         # Create flags for tracking when particles during the simulation
         # on_grid -> zero if the particle is off grid, 1
         # shape [nparticles, ngrids]
-        self.on_grid = np.zeros([self.nparticles_grid, self.num_grids])
+        self.on_grid = np.zeros([self._num_tracked, self.num_grids])
         # Entered grid -> non-zero if particle EVER entered a grid
-        self.entered_grid = np.zeros([self.nparticles_grid])
+        self.entered_grid = np.zeros([self._num_tracked])
 
         # Generate a null distribution of points (the result in the absence of
         # any fields) for statistical comparison
@@ -1343,7 +1405,7 @@ class Tracker:
         # Setting sys.stdout lets this play nicely with regular print()
         pbar = tqdm(
             initial=0,
-            total=self.nparticles_grid + 1,
+            total=self._num_tracked + 1,
             disable=not self.verbose,
             desc="Particles on grid",
             unit="particles",
@@ -1372,7 +1434,7 @@ class Tracker:
 
         self._log("Run completed")
 
-        self._log(f"Fraction of particles tracked: {self.fract_tracked:.1%}")
+        self._log(f"Fraction of particles tracked: {self._fract_tracked:.1%}")
 
         self._log(
             "Fraction of tracked particles that entered the grid: "
@@ -1533,6 +1595,7 @@ class Tracker:
             The maximum deflection in radians
 
         """
+        
         # Normalize the initial and final velocities
         v_norm = self.v / np.linalg.norm(self.v, axis=1, keepdims=True)
         v_init_norm = self.v_init / np.linalg.norm(self.v_init, axis=1, keepdims=True)
