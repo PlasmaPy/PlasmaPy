@@ -15,8 +15,6 @@ import astropy.units as u
 import numpy as np
 
 from astropy.constants.si import eps0
-from math import factorial as fact
-from math import gamma as gamma
 from math import pi as pi
 from mpmath import hyper2d
 from scipy.stats import gausshyper as gh
@@ -90,13 +88,6 @@ class validate:
                 "Argument 'speeds' can only take 2 inputs, received "
                 f"{speeds} with {speeds.ndim} inputs."
             )
-        else:
-            for j in range(2):
-                if not isinstance(speeds[j].value, (float, int)):
-                    raise TypeError(
-                        f"Argument {speeds[j].value} is of incorrect type, "
-                        f"type int or float require and got {type(speeds[j].value)}"
-                    )
         return speeds
 
     @validate_quantities(
