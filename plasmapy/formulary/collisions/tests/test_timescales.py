@@ -11,7 +11,7 @@ from plasmapy.particles.exceptions import InvalidParticleError
 
 
 class TestTimescales:
-    version = 2009
+    version_2009 = 2009
     args_2009 = {
         "T": 8 * u.K,
         "n_i": 4.0e5 * u.m**-3,
@@ -19,7 +19,17 @@ class TestTimescales:
         "par_speeds": [30 * u.m / u.s, 50 * u.m / u.s],
     }
 
-    _kwargs_2009 = {"version": version, "kwargs": args_2009}
+    version_2010 = 2010
+    args_2010 = {
+        "T_par": 100 * u.K,
+        "T_perp": 200 * u.K,
+        "n_i": 4.06e10 * u.m ** -3,
+        "ions": [Particle("He+"), Particle("H+")],
+        "par_speeds": [30 * u.m / u.s, 50 * u.m / u.s],
+    }
+
+    _kwargs_2009 = {"version": version_2009, "kwargs": args_2009}
+    _kwargs_2010 = {"version": version_2010, "kwargs": args_2010}
 
     @pytest.mark.parametrize(
         "version, kwargs, _error",
@@ -80,7 +90,13 @@ class TestTimescales:
                 {**_kwargs_2009["kwargs"], "par_speeds": [10, 40] * u.rad / u.s},
                 u.UnitTypeError,
             ),
-
+            # 2010
+            (
+                    "wrong type", _kwargs_2010["kwargs"], TypeError,
+            ),
+            (
+                    2000, _kwargs_2010["kwargs"], ValueError,
+            ),
         ],
     )
     def test_raises(self, version, kwargs, _error):
