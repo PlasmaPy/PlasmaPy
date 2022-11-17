@@ -115,7 +115,6 @@ class validate:
 
         return T
 
-        return
 
 
 def Hellinger(
@@ -257,7 +256,7 @@ def Hellinger_2010(
     T_perp: u.K,
     n_i: u.m**-3,
     ions: (Particle, Particle),
-    par_speeds: (u.m / u.s, u.m / u.s),
+    par_speeds: u.m / u.s,
 ):
 
     # Validate other arguments

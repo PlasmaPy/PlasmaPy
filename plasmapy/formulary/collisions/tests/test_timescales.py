@@ -3,7 +3,6 @@ import numpy as np
 import pytest
 
 from astropy import units as u
-from astropy.constants.si import c
 
 from plasmapy.formulary.collisions.timescales import Hellinger
 from plasmapy.particles import Particle
@@ -96,6 +95,36 @@ class TestTimescales:
             ),
             (
                     2000, _kwargs_2010["kwargs"], ValueError,
+            ),
+            (
+                    _kwargs_2010["version"],
+                    {**_kwargs_2010["kwargs"], "T_par": "wrong type"},
+                    TypeError,
+            ),
+            (
+                    _kwargs_2010["version"],
+                    {**_kwargs_2010["kwargs"], "T_par": [8e-9, 8.5e-9] * u.K},
+                    ValueError,
+            ),
+            (
+                    _kwargs_2010["version"],
+                    {**_kwargs_2010["kwargs"], "T_par": -1 * u.K},
+                    ValueError,
+            ),
+            (
+                    _kwargs_2010["version"],
+                    {**_kwargs_2010["kwargs"], "T_perp": "wrong type"},
+                    TypeError,
+            ),
+            (
+                    _kwargs_2010["version"],
+                    {**_kwargs_2010["kwargs"], "T_perp": [8e-9, 8.5e-9] * u.K},
+                    ValueError,
+            ),
+            (
+                    _kwargs_2010["version"],
+                    {**_kwargs_2010["kwargs"], "T_perp": -1 * u.K},
+                    ValueError,
             ),
         ],
     )
