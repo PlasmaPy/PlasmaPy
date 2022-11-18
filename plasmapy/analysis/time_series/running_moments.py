@@ -80,7 +80,7 @@ def running_moment(signal, radius, moment=1, time=None):
         if signal and time don't have same length
 
     'ValueError
-        if len(singal) <= 4*radius if moment > 1
+        if len(signal) <= 4*radius if moment > 1
 
 
     Notes
