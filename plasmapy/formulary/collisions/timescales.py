@@ -239,6 +239,9 @@ def Hellinger_2009(
 
     Notes
     -----
+    Assuming a dominance of small angle deflections,
+
+    we assume that all considered species have bi-Maxwellian velocity distribtion functions with a mean velocity parallel to the ambient magnetic field
 
     Example
     _______
@@ -302,6 +305,29 @@ def Hellinger_2010(
     Returns
     -------
 
+    Raises
+    ______
+
+    Notes
+    _____
+    The Hellinger_2009 timescale is defined by :cite:t:`hellinger:2009`,
+     as denoted in equation 14. The equation assumes the dominance of
+    two-particle small-angle collisions and that the distribution
+    function is exactly bi-Maxwellian.
+
+    .. math::
+        \nu_{\alpha \beta} = \frac{q^{2}_{\alpha}q^{2}_{\beta}n_{\beta}}{12\pi^{3/2}\epsilon_{0}^{2}m_{\alpha}m_{\beta} v}
+
+    index s and t denotes different species,
+    The collisional variation in the distribution function of species s
+    is given by a sum of terms giving the scattering on all species t in the form8
+
+    :math:`q` is the charge of the respective species, :math:`n_{\gamma}` is the
+    particle density of the target ion.
+
+
+
+
     """
 
     # Validate other arguments
@@ -359,6 +385,15 @@ def Hellinger_2016(
 
     Returns
     -------
+
+    Raises
+    ______
+
+    Notes
+    _____
+    assume a homogeneous plasma consisting of species with bi-Maxwellian velocity distribution functions
+    We estimated the importance of these parameters assuming isotropic populations
+
 
     """
 
