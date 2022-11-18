@@ -3,7 +3,7 @@ import astropy.units as u
 import numpy as np
 import pytest
 
-from plasmapy.analysis.time_series.running_moments import running_mean
+from plasmapy.analysis.time_series.running_moments import running_mean, running_moment
 
 
 @pytest.mark.parametrize(
@@ -15,7 +15,51 @@ from plasmapy.analysis.time_series.running_moments import running_mean
         (np.array([-0.5, -0.0, 0.5, 1.0, 1.5]), 2, [0.5]),
     ],
 )
-def test_runnine_mean(signal, radius, expected):
+def test_running_mean(signal, radius, expected):
     """test running_mean function"""
     result = running_mean(signal=signal, radius=radius)
     assert np.allclose(result, expected)
+
+
+def test_running_mean_exception():
+    """test whether exception is risen"""
+    with pytest.raises(ValueError):
+        running_mean([1, 2], 1)
+
+
+@pytest.mark.parametrize(
+    "signal, radius, moment, time, expected",
+    [
+        ([1, 2, 3], 1, 1, [1, 2, 3], ([2], [2])),
+        ([1, 2, 3] * u.eV, 1, 1, [1, 2, 3], ([2] * u.eV, [2])),
+        ([1, 2, 3, 2, 1], 1, 2, [1, 2, 3, 4, 5], ([2 / 27**0.5], [3])),
+        ([1, 2, 3, 2, 1] * u.eV, 1, 2, [1, 2, 3, 4, 5], ([2 / 27**0.5] * u.eV, [3])),
+        (
+            [1, 2, 3, 2, 1] * u.eV,
+            1,
+            3,
+            [1, 2, 3, 4, 5],
+            ([1.7320508075688772] * u.eV, [3]),
+        ),
+        ([1, 2, 3, 2, 1] * u.eV, 1, 4, [1, 2, 3, 4, 5], ([3] * u.eV, [3])),
+    ],
+)
+def test_running_moment(signal, radius, moment, time, expected):
+    """test running_moment_function"""
+    result = running_moment(signal, radius, moment, time)
+    assert np.allclose(result, expected)
+
+
+@pytest.mark.parametrize(
+    "signal, radius, moment, time",
+    [
+        ([1, 2, 3, 4, 5], 1, 0, None),
+        ([1, 2, 3, 4, 5], 1, 6, None),
+        ([1, 2, 3, 4], 1, 2, None),
+        ([1, 2, 3, 4, 5], 1, 2, [1, 2, 3, 4]),
+    ],
+)
+def test_running_moment_exception(signal, radius, moment, time):
+    """test whether exception is risen"""
+    with pytest.raises(ValueError):
+        running_moment(signal, radius, moment, time)
