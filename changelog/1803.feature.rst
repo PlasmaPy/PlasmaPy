@@ -1,1 +1,1 @@
-Added plasmapy/analysis/time_series folder including two funtions for calculating running moments of time series.
+Added plasmapy/analysis/time_series folder including two functions for calculating running moments of time series.
