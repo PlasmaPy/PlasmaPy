@@ -7,14 +7,11 @@ import pickle
 from scipy import integrate
 
 from plasmapy.reaction_rates import cross_section
+from plasmapy.reaction_rates.config import config
 from plasmapy.reaction_rates.exceptions import (
     ReactivityTemperatureTooHighError,
     ReactivityTemperatureTooLowError,
 )
-
-# Import the reactivity coefficients from config file
-config = configparser.ConfigParser()
-config.read("config/reactions.ini")
 
 
 def reactivity(T_i, reaction, method="parameterized", zero_low_temperatures=False):

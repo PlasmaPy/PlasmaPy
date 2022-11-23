@@ -1,11 +1,7 @@
-import configparser
 import math
 
+from plasmapy.reaction_rates.config import config
 from plasmapy.reaction_rates.exceptions import CrossSectionEnergyRangeError
-
-# Import the reactivity coefficients from config file
-config = configparser.ConfigParser()
-config.read("config/reactions.ini")
 
 cross_section_energy_ranges = {
     "T(d,n)4He": [
