@@ -21,10 +21,11 @@ def test_running_mean(signal, radius, expected):
     assert np.allclose(result, expected)
 
 
-def test_running_mean_exception():
+@pytest.mark.parametrize("signal, radius", [([1, 2], 1), ([1, 2, 3, 4], 1.2)])
+def test_running_mean_exception(signal, radius):
     """test whether exception is risen"""
-    with pytest.raises(ValueError):
-        running_mean([1, 2], 1)
+    with pytest.raises((ValueError, TypeError)):
+        running_mean(signal, radius)
 
 
 @pytest.mark.parametrize(
@@ -57,10 +58,9 @@ def test_running_moment(signal, radius, moment, time, expected):
         ([1, 2, 3, 4, 5], 1, 6, None),
         ([1, 2, 3, 4], 1, 2, None),
         ([1, 2, 3, 4, 5], 1, 2, [1, 2, 3, 4]),
-        ([1, 2, 3, 4], 1.2, 2, [1, 2, 3, 4]),
     ],
 )
 def test_running_moment_exception(signal, radius, moment, time):
     """test whether exception is risen"""
-    with pytest.raises((ValueError, TypeError)):
+    with pytest.raises(ValueError):
         running_moment(signal, radius, moment, time)
