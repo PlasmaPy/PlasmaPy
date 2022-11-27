@@ -85,20 +85,8 @@ Coding guidelines
 
   .. code-block:: pycon
 
-     >>> [x ** 2 for x in range(17) if x % 2 == 0]
+     >>> [x**2 for x in range(17) if x % 2 == 0]
      [0, 4, 16, 36, 64, 100, 144, 196, 256]
-
-  A comprehension might be more readable when spread out over multiple
-  lines.
-
-  .. code-block:: pycon
-
-     >>> {
-     ...     x: x ** 2
-     ...     for x in range(17)
-     ...     if x % 2 == 0
-     ... }
-     {0: 0, 2: 4, 4: 16, 6: 36, 8: 64, 10: 100, 12: 144, 14: 196, 16: 256}
 
 * Avoid putting any significant implementation code in
   :file:`__init__.py` files. Implementation details should be contained
@@ -139,6 +127,7 @@ Coding guidelines
      >>> def function(l=[]):
      ...     l.append("x")
      ...     print(l)
+     ...
      >>> function()
      ['x']
      >>> function()
@@ -719,7 +708,7 @@ Equations and Physical Formulae
 
   .. code-block:: pycon
 
-     >>> omega_ce = 1.76e7*(B/u.G)*u.rad/u.s  # doctest: +SKIP
+     >>> omega_ce = 1.76e7 * (B / u.G) * u.rad / u.s  # doctest: +SKIP
 
   In contrast, the following line of code shows the exact formula
   which makes the code much more readable.
