@@ -104,7 +104,7 @@ class CheckValues(CheckBase):
 
         @CheckValues(arg1={'can_be_negative': False, 'can_be_nan': False},
                      arg2={'can_be_inf': False},
-                     checks_on_return={'none_shall_pass': True)
+                     checks_on_return={'none_shall_pass': True})
         def foo(arg1, arg2):
             return None
 
@@ -112,7 +112,7 @@ class CheckValues(CheckBase):
         class Foo:
             @CheckValues(arg1={'can_be_negative': False, 'can_be_nan': False},
                          arg2={'can_be_inf': False},
-                         checks_on_return={'none_shall_pass': True)
+                         checks_on_return={'none_shall_pass': True})
             def bar(self, arg1, arg2):
                 return None
     """
