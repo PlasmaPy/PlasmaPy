@@ -708,7 +708,7 @@ Equations and Physical Formulae
 
   .. code-block:: pycon
 
-     >>> omega_ce = 1.76e7 * (B / u.G) * u.rad / u.s  # doctest: +SKIP
+     >>> omega_ce = 1.76e7*(B/u.G)*u.rad/u.s  # doctest: +SKIP
 
   In contrast, the following line of code shows the exact formula
   which makes the code much more readable.
