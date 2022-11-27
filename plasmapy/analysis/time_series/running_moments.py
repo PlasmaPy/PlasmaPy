@@ -2,6 +2,8 @@
 
 __all__ = ["running_mean", "running_moment"]
 
+
+import numbers
 import numpy as np
 
 from collections import namedtuple
@@ -29,6 +31,9 @@ def running_mean(signal, radius):
     `ValueError`
         If ``len(signal) <= 2 * radius``.
 
+    `TypeError`
+        If ``radius`` is not of type int.
+
     Example
     -------
     >>> from plasmapy.analysis.time_series.running_moments import running_mean
@@ -38,6 +43,9 @@ def running_mean(signal, radius):
     if len(signal) <= 2 * radius:
         raise ValueError("len(signal) must be bigger than 2*radius")
 
+    if not isinstance(radius, numbers.Integral):
+        raise TypeError("radius must be of type integer")
+
     window = 2 * radius + 1
     run_mean = np.cumsum(signal, dtype=float)
     run_mean[window:] = run_mean[window:] - run_mean[:-window]
@@ -46,63 +54,63 @@ def running_mean(signal, radius):
 
 def running_moment(signal, radius, moment=1, time=None):
     """
-        Calculate either the running mean, standard deviation, skewness or
-        excess kurtosis of a sequence.
+    Calculate either the running mean, standard deviation, skewness or
+    excess kurtosis of a sequence.
 
-        Parameters
-        ----------
-        signal: 1D |array_like|
-           Signal to be averaged.
+    Parameters
+    ----------
+    signal: 1D |array_like|
+       Signal to be averaged.
 
-        radius: int
-            Window size is ``2 * radius + 1`` for running mean and
-            ``4 * radius + 1`` for higher moments.
+    radius: int
+        Window size is ``2 * radius + 1`` for running mean and
+        ``4 * radius + 1`` for higher moments.
 
-        moment: int
-            which running moment to compute
-                    1: running mean.
-                    2: running standard deviation.
-                    3: running skewness
-                    4: running excess kurtosis
+    moment: int
+        which running moment to compute
+                1: running mean.
+                2: running standard deviation.
+                3: running skewness
+                4: running excess kurtosis
 
-        time: 1D |array_like|, optional
-            Time base of ``signal``.
+    time: 1D |array_like|, optional
+        Time base of ``signal``.
 
-        Returns
-        -------
-        Results are return as a namedtuple
-        Running_Moment(run_moment, time).
-    .
-        run_moment: 1D |array_like|
-            Running moment of signal.
-            length is ``(len(signal) - 2 * radius)`` for running mean
-            length is ``(len(signal) - 4 * signal)`` for higher moments
+    Returns
+    -------
+    Results are return as a namedtuple
+    Running_Moment(run_moment, time).
 
-        time: 1D |array_like|
-            Time base corresponding to ``run_moment`` if ``time`` is
-            not `None`.
+    run_moment: 1D |array_like|
+        Running moment of signal.
+        length is ``(len(signal) - 2 * radius)`` for running mean
+        length is ``(len(signal) - 4 * signal)`` for higher moments
 
-        Raises
-        ------
-        `ValueError`
-            If ``moment`` is not in (1, 2, 3, 4).
+    time: 1D |array_like|
+        Time base corresponding to ``run_moment`` if ``time`` is
+        not `None`.
 
-        `ValueError`
-            If ``signal`` and ``time`` don't have same length.
+    Raises
+    ------
+    `ValueError`
+        If ``moment`` is not in (1, 2, 3, 4).
 
-        `ValueError`
-            If ``len(signal) <= 4 * radius`` and ``moment > 1``.
+    `ValueError`
+        If ``signal`` and ``time`` don't have same length.
+
+    `ValueError`
+        If ``len(signal) <= 4 * radius`` and ``moment > 1``.
 
 
-        Notes
-        -----
-        The running rms divides by ``window``, not ``(window - 1)``.
+    Notes
+    -----
+    The running rms divides by ``window``, not ``(window - 1)``.
 
-        Example
-        -------
-        >>> from plasmapy.analysis.time_series.running_moments import running_moment
-        >>> running_moment([1, 2, 3, 2, 1], 1, 4, [1, 2, 3, 4, 5])
-        Running_Moment(run_moment=array([3.]), time=[3])
+    Example
+    -------
+    >>> from plasmapy.analysis.time_series.running_moments import running_moment
+    >>> running_moment([1, 2, 3, 2, 1], 1, 4, [1, 2, 3, 4, 5])
+    Running_Moment(run_moment=array([3.]), time=[3])
     """
     if moment not in range(1, 5):
         raise ValueError("Only first four moments implemented")

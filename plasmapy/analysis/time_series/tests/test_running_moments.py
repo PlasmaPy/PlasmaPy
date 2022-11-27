@@ -57,9 +57,10 @@ def test_running_moment(signal, radius, moment, time, expected):
         ([1, 2, 3, 4, 5], 1, 6, None),
         ([1, 2, 3, 4], 1, 2, None),
         ([1, 2, 3, 4, 5], 1, 2, [1, 2, 3, 4]),
+        ([1, 2, 3, 4], 1.2, 2, [1, 2, 3, 4]),
     ],
 )
 def test_running_moment_exception(signal, radius, moment, time):
     """test whether exception is risen"""
-    with pytest.raises(ValueError):
+    with pytest.raises((ValueError, TypeError)):
         running_moment(signal, radius, moment, time)
