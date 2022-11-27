@@ -102,17 +102,23 @@ class CheckValues(CheckBase):
 
         from plasmapy.utils.decorators.checks import CheckValues
 
-        @CheckValues(arg1={'can_be_negative': False, 'can_be_nan': False},
-                     arg2={'can_be_inf': False},
-                     checks_on_return={'none_shall_pass': True})
+
+        @CheckValues(
+            arg1={"can_be_negative": False, "can_be_nan": False},
+            arg2={"can_be_inf": False},
+            checks_on_return={"none_shall_pass": True},
+        )
         def foo(arg1, arg2):
             return None
 
+
         # on a method
         class Foo:
-            @CheckValues(arg1={'can_be_negative': False, 'can_be_nan': False},
-                         arg2={'can_be_inf': False},
-                         checks_on_return={'none_shall_pass': True})
+            @CheckValues(
+                arg1={"can_be_negative": False, "can_be_nan": False},
+                arg2={"can_be_inf": False},
+                checks_on_return={"none_shall_pass": True},
+            )
             def bar(self, arg1, arg2):
                 return None
     """
@@ -1226,17 +1232,23 @@ def check_values(
 
         from plasmapy.utils.decorators import check_values
 
-        @check_values(arg1={'can_be_negative': False, 'can_be_nan': False},
-                      arg2={'can_be_inf': False},
-                      checks_on_return={'none_shall_pass': True)
+
+        @check_values(
+            arg1={"can_be_negative": False, "can_be_nan": False},
+            arg2={"can_be_inf": False},
+            checks_on_return={"none_shall_pass": True},
+        )
         def foo(arg1, arg2):
             return None
 
+
         # on a method
         class Foo:
-            @check_values(arg1={'can_be_negative': False, 'can_be_nan': False},
-                          arg2={'can_be_inf': False},
-                          checks_on_return={'none_shall_pass': True)
+            @check_values(
+                arg1={"can_be_negative": False, "can_be_nan": False},
+                arg2={"can_be_inf": False},
+                checks_on_return={"none_shall_pass": True},
+            )
             def bar(self, arg1, arg2):
                 return None
     """
