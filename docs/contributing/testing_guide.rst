@@ -395,10 +395,14 @@ To test that a function issues an appropriate warning, use
 
 .. code-block:: python
 
-   import pytest, warnings
+   import warnings
+
+   import pytest
+
 
    def issue_warning():
        warnings.warn("warning message", UserWarning)
+
 
    def test_that_a_warning_is_issued():
        with pytest.warns(UserWarning):
@@ -409,7 +413,7 @@ To test that a function raises an appropriate exception, use
 
 .. code-block:: python
 
-  import pytest
+   import pytest
 
    def raise_exception():
        raise Exception
@@ -440,8 +444,8 @@ function.
 .. code-block:: python
 
    def test_proof_by_riemann_hypothesis():
-        assert proof_by_riemann(False)
-        assert proof_by_riemann(True)  # will only be run if the previous test passes
+       assert proof_by_riemann(False)
+       assert proof_by_riemann(True)  # will only be run if the previous test passes
 
 If the first test were to fail, then the second test would never be run.
 We would therefore not know the potentially useful results of the second
@@ -451,10 +455,11 @@ both will be run.
 .. code-block:: python
 
    def test_proof_if_riemann_false():
-        assert proof_by_riemann(False)
+       assert proof_by_riemann(False)
+
 
    def test_proof_if_riemann_true():
-        assert proof_by_riemann(True)
+       assert proof_by_riemann(True)
 
 However, this approach can lead to cumbersome, repeated code if you are
 calling the same function over and over. If you wish to run multiple
@@ -465,7 +470,7 @@ tests for the same function, the preferred method is to decorate it with
 
    @pytest.mark.parametrize("truth_value", [True, False])
    def test_proof_if_riemann(truth_value):
-        assert proof_by_riemann(truth_value)
+       assert proof_by_riemann(truth_value)
 
 This code snippet will run :py:`proof_by_riemann(truth_value)` for each
 ``truth_value`` in :py:`[True, False]`. Both of the above
@@ -494,7 +499,7 @@ positional arguments (``a`` and ``b``) and one optional keyword argument
 
 .. code-block:: python
 
-   def add(a, b, reverse_order = False):
+   def add(a, b, reverse_order=False):
        if reverse_order:
            return a + b
        return a + b
@@ -531,7 +536,7 @@ and unpacking_ them inside of the test function.
            (["1", "2"], {"reverse_order": True}, "21"),
            # test that add("1", "2") == "12"
            (["1", "2"], {}, "12"),  # if no keyword arguments, use an empty dict
-       ]
+       ],
    )
    def test_add(args, kwargs, expected):
        assert add(*args, **kwargs) == expected
