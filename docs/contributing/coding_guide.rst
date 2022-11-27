@@ -633,11 +633,12 @@ adjacent fields such as astronomy and heliophysics. To get started with
 
      from plasmapy.utils.decorators.validators import validate_quantities
 
+
      @validate_quantities(
-        n={"can_be_negative": False},
-        validations_on_return={"equivalencies": u.dimensionless_angles()},
+         n={"can_be_negative": False},
+         validations_on_return={"equivalencies": u.dimensionless_angles()},
      )
-     def inertial_length(n: u.m ** -3, particle) -> u.m:
+     def inertial_length(n: u.m**-3, particle) -> u.m:
          ...
 
   .. caution::

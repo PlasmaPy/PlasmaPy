@@ -415,8 +415,10 @@ To test that a function raises an appropriate exception, use
 
    import pytest
 
+
    def raise_exception():
        raise Exception
+
 
    def test_that_an_exception_is_raised():
        with pytest.raises(Exception):
