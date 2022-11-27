@@ -539,8 +539,10 @@ Here is an example docstring in the numpydoc_ format:
 .. code-block:: python
    :caption: Example docstring
 
-   import numpy as np
    import warnings
+
+   import numpy as np
+
 
    def subtract(a, b, *, switch_order=False):
        r"""
