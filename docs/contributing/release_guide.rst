@@ -206,6 +206,7 @@ Publish the release
     .. code-block:: python
 
        import plasmapy
+
        print(plasmapy.__version__)
 
 * Merge the ``v0.9.x`` branch into the ``stable`` branch on GitHub:
