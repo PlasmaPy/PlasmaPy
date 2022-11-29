@@ -2,7 +2,7 @@ name: fortnightly tests
 
 on:
   schedule:
-  - cron: 17 7 1,15 * *
+  - cron: 17 7 * * 2
   workflow_dispatch:
 
 jobs:
