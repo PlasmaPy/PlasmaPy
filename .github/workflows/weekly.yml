@@ -15,31 +15,31 @@ jobs:
       matrix:
         include:
 
-        - name: Python 3.8 with Astropy dev
+        - name: Python 3.9 with Astropy dev
           os: ubuntu-latest
-          python: 3.8
-          toxenv: py38-astropydev
+          python: 3.9
+          toxenv: py39-astropydev
 
-        - name: Python 3.8 with matplotlib dev
+        - name: Python 3.9 with matplotlib dev
           os: ubuntu-latest
-          python: 3.8
-          toxenv: py38-matplotlibdev
+          python: 3.9
+          toxenv: py39-matplotlibdev
 
-        - name: Python 3.8 with NumPy dev
+        - name: Python 3.9 with NumPy dev
           os: ubuntu-latest
-          python: 3.8
-          toxenv: py38-numpydev
+          python: 3.9
+          toxenv: py39-numpydev
 
         - name: Documentation with Sphinx dev
           os: ubuntu-latest
-          python: 3.8
+          python: 3.10
           toxenv: build_docs-sphinxdev
           toxposargs: -q
 
-        - name: Python 3.8 with xarray dev
+        - name: Python 3.9 with xarray dev
           os: ubuntu-latest
-          python: 3.8
-          toxenv: py38-xarraydev
+          python: 3.9
+          toxenv: py39-xarraydev
 
         - name: Import PlasmaPy (Windows)
           os: windows-latest
