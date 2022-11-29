@@ -1,4 +1,4 @@
-name: fortnightly tests
+name: weekly tests
 
 on:
   schedule:
@@ -14,6 +14,21 @@ jobs:
       fail-fast: false
       matrix:
         include:
+
+        - name: Python 3.8
+          os: windows-latest
+          python: 3.8
+          toxenv: py38
+
+        - name: Python 3.9
+          os: macos-latest
+          python: 3.9
+          toxenv: py39
+
+        - name: Python 3.10
+          os: ubuntu-latest
+          python: 3.10
+          toxenv: py310
 
         - name: Python 3.9 with Astropy dev
           os: ubuntu-latest
