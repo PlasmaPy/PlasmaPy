@@ -161,7 +161,7 @@ jobs:
 
   build-n-publish:
     name: Packaging
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     needs:
     - initial-tests
     - comprehensive-tests
