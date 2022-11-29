@@ -5,7 +5,7 @@
 -r extras.txt
 -r install.txt
 docutils
-ipykernel
+ipykernel != 6.18.0
 jinja2 != 3.1
 nbsphinx
 numpydoc
