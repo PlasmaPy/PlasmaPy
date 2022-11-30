@@ -67,28 +67,28 @@ def running_moment(signal, radius, moment=1, time=None):
         ``4 * radius + 1`` for higher moments.
 
     moment: int
-        which running moment to compute
-                1: running mean.
-                2: running standard deviation.
-                3: running skewness
-                4: running excess kurtosis
+        Choose between:\n
+        - ``1``: running mean\n
+        - ``2``: running standard deviation\n
+        - ``3``: running skewness\n
+        - ``4``: running excess kurtosis
 
     time: 1D |array_like|, optional
         Time base of ``signal``.
 
     Returns
     -------
-    Results are return as a namedtuple
-    Running_Moment(run_moment, time).
+    Running_Moment
+        namedtuple with the following fields:
 
-    run_moment: 1D |array_like|
-        Running moment of signal.
-        length is ``(len(signal) - 2 * radius)`` for running mean
-        length is ``(len(signal) - 4 * signal)`` for higher moments
+        - run_moment: 1D |array_like|
+            Running moment of signal.
+            length is ``(len(signal) - 2 * radius)`` for running mean
+            length is ``(len(signal) - 4 * signal)`` for higher moments
 
-    time: 1D |array_like|
-        Time base corresponding to ``run_moment`` if ``time`` is
-        not `None`.
+        - time: 1D |array_like|
+            Time base corresponding to ``run_moment`` if ``time`` is
+            not `None`.
 
     Raises
     ------
