@@ -1,16 +1,11 @@
 """
-Module contains the functionality for computing different
-timescales commonly associated with collisions.
-"""
-import astropy.units
-
-"""
 This module contains functionality for calculating the timescales
 for a range of configurations.
 """
 
 __all__ = ["Hellinger", "Hellinger_2009", "Hellinger_2010", "Hellinger_2016"]
 
+import astropy.units
 import astropy.units as u
 import numpy as np
 
@@ -25,6 +20,7 @@ from plasmapy.utils.decorators import validate_quantities
 
 
 class validate:
+
     # Validate n_i argument
     def n_i(
         n_i: u.m**-3,
@@ -69,8 +65,6 @@ class validate:
                 " ion. The following particle(s) is(are) not allowed "
                 f"{[ion for ion, fail in zip(ions, failed) if not fail]}"
             )
-
-        # Validate ions dimension
         if len(ions) != 2:
             raise ValueError(
                 f"Argument 'ions' can only take 2 inputs, received {ions}"
@@ -90,14 +84,19 @@ class validate:
             )
         return speeds
 
+    # Validate any temperature argument
     @validate_quantities(
         T={"can_be_negative": False, "equivalencies": u.temperature_energy()},
     )
     def temp(
         T: u.K,
     ):
-        # Validate temperature argument
-        if T.shape != ():
+        if not isinstance(T, astropy.units.Quantity):
+            raise TypeError(
+                "Argument 'T' must be an 'astropy.units.Quantity' with "
+                f"a unit of K. Instead got type of {type(T)}."
+            )
+        elif T.shape != ():
             raise ValueError(
                 "Argument 'T' must be single value and not an array of"
                 f" shape {T.shape}."
@@ -112,7 +111,6 @@ class validate:
                 f"Argument 'T' must be a positive argument, received "
                 f"{T} of type {type(T)}."
             )
-
         return T
 
     def method(
@@ -129,73 +127,63 @@ class validate:
 
 def Hellinger(
     inputs,
-    version,
+    method,
 ):
     r"""
-    Compute the collisional timescale as presented in either
-    :cite:t:`hellinger:2009`, :cite:t:`hellinger:2010` or
-    :cite:t:`hellinger:2016`. Provide inputs for the respective
-    function and then specify the version.
+
 
     Parameters
     ----------
-    inputs : `~astropy.units.Quantity`
-        A `Dict` containing the inputs for the desired function.
+    method: int or float
+        An integer or float representing the year of the desired method.
+        Current options are ``'2009'``, ``'2010'`` and ``'2016'``.
+        Please see the note's section below for additional details.
 
-    version : `int` or `float`
-        Specify which version you wish to use, currently 2009,
-        2010 and 2016 are included.
+    kwargs: dict
+        Arguments required for the specified method, each method
+        requires differing inputs. See notes section below for
+        additinoal details.
 
     Returns
     -------
-    :math:`\tau` : `~astropy.units.Quantity`
-        The collisional timescale in units of seconds.
+
 
     Raises
     ------
-    `TypeError`
-        If version is not an instance of `int` or `float`
 
-    `ValueError`
-        If the value entered for version is not supported,
-        supported values are 2009, 2010 and 2016.
 
     Notes
     -----
+
+    +----------+------------------+
+    |  Method  |     Function     |
+    +----------+------------------+
+    |   2009   | `Hellinger_2009` |
+    |   2010   | `Hellinger_2010` |
+    |   2016   | `Hellinger_2016` |
+    +----------+------------------+
 
     species s on species t.
 
     Example
     -------
-    >>> from astropy import units as u
-    >>> from plasmapy.particles import Particle
-    >>> from plasmapy.formulary.collisions.timescales import Hellinger
-    >>> inputs = {
-    ...     "T": 8.3e-9 * u.T,
-    ...     "n_i": 4.0e5 * u.m**-3,
-    ...     "ions": [Particle("H+"), Particle("He+")],
-    ...     "par_speeds":  [500, 750] * u.m /u.s,
-    ...     "logarithm": None,
-    ... }
-    >>>
-    <Quantity 1 / s>
+
     """
 
-    valid_versions = [2009, 2010, 2016]
-    valid_functions = [Hellinger_2009, Hellinger_2010, Hellinger_2016]
+    functions = {2009: Hellinger_2009, 2010: Hellinger_2010, 2016: Hellinger_2016}
 
-    if not isinstance(version, (float, int)):
+    if not isinstance(method, (float, int)):
         raise TypeError(
-            "Argument 'version' must be of type float or integer, "
-            f"instead got type of {type(version)}."
+            "Argument 'method' must be of type float or integer, "
+            f"instead got type of {type(method)}."
         )
-    elif version not in valid_versions:
+    elif method not in functions.keys():
         raise ValueError(
-            "Argument 'version' is not a valid entry, valid entries "
-            f"are {valid_versions}. Please try again."
+            f"Argument 'method' is not a valid entry, received {method} "
+            f" and valid methods are {functions.keys()}. Please try again."
         )
 
-    return valid_functions[valid_versions.index(version)](**inputs)
+    return functions[method](**inputs)
 
 
 def Hellinger_2009(
@@ -308,6 +296,7 @@ def Hellinger_2009(
     5. ``"hls_min_interp"`` or ``"GMS-4"``
     6. ``"hls_max_interp"`` or ``"GMS-5"``
     7. ``"hls_full_interp"`` or ``"GMS-6"``
+
 
     Example
     _______
@@ -462,6 +451,7 @@ def Hellinger_2010(
 
     Example
     _______
+
     """
 
     # Validate other arguments
@@ -472,7 +462,10 @@ def Hellinger_2010(
     par_speeds = validate.speeds(par_speeds)
 
     if T_par == 0:
-        raise ValueError("Argument 'T_par' must be a non zero value, please try again.")
+        raise ValueError(
+            "Argument 'T_par' must be a non zero value, received a "
+            f"value of {T_par}. Please try again."
+        )
     else:
         T = (2 * T_perp + T_par) / 3
         return (
@@ -630,7 +623,10 @@ def Hellinger_2016(
 
     # Check for divide by zero error with t_par
     if T_par == 0:
-        raise ValueError("Argument 'T_par' must be a non zero value, please try again.")
+        raise ValueError(
+            "Argument 'T_par' must be a non zero value, received a "
+            f"value of {T_par}. Please try again."
+        )
     else:
         T = (2 * T_perp + T_par) / 3
 
