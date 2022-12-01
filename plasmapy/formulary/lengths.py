@@ -173,7 +173,7 @@ def gyroradius(
     One but not both of ``Vperp`` and ``T`` must be inputted.
 
     If ``lorentzfactor`` is inputted then the previous two can be
-    ommited although at high energies this can lead to rounding errors
+    omitted although at high energies this can lead to rounding errors
 
     If any of ``B``, ``Vperp``, or ``T`` is a number rather than a
     `~astropy.units.Quantity`, then SI units will be assumed and a
