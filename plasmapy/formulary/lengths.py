@@ -289,7 +289,7 @@ def gyroradius(
 
     omega_ci = frequencies.gyrofrequency(B, particle)
 
-    if np.isscalar(lorentzfactor):
+    if not np.isnan(lorentzfactor):
         # if it is not finite aka not defined then calc from vperp
         if not isfinite_lorentzfactor:
             lorentzfactor = np.copy(lorentzfactor)
