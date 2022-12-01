@@ -1,0 +1,1 @@
+Added lorentzfactor optional keyword depending on needs of user - can also be set to 1.0 if they want the old functionality back.
