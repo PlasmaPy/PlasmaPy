@@ -9,6 +9,7 @@ import warnings
 from astropy.constants.si import c, e, eps0, k_B
 
 from plasmapy.formulary import frequencies, speeds
+from plasmapy.formulary.relativity import RelativisticBody
 from plasmapy.particles import particle_input, ParticleLike
 from plasmapy.utils.decorators import validate_quantities
 from plasmapy.utils.exceptions import PlasmaPyFutureWarning
@@ -111,6 +112,7 @@ def gyroradius(
     Vperp: u.m / u.s = np.nan * u.m / u.s,
     T_i: u.K = None,
     T: u.K = None,
+    lorentzfactor=np.nan,
 ) -> u.m:
     r"""Return the particle gyroradius.
 
@@ -138,6 +140,9 @@ def gyroradius(
         The particle temperature in units convertible to kelvin.
         Note: Deprecated. Use ``T`` instead.
 
+    lorentzfactor : `float` or `~numpy.ndarray`, optional, |keyword-only|
+        The Lorentz factor for the particles, set to 1.0 if you want to use the nonrelativistic approximation.
+
     Returns
     -------
     r_Li : `~astropy.units.Quantity`
@@ -145,7 +150,7 @@ def gyroradius(
         `~astropy.units.Quantity` will be based on either the
         perpendicular component of particle velocity as inputted, or
         the most probable speed for a particle within a Maxwellian
-        distribution for the particle temperature.
+        distribution for the particle temperature. It is relativistically accurate.
 
     Raises
     ------
@@ -167,6 +172,9 @@ def gyroradius(
     -----
     One but not both of ``Vperp`` and ``T`` must be inputted.
 
+    If ``lorentzfactor`` is inputted then the previous two can be
+    ommited although at high energies this can lead to rounding errors
+
     If any of ``B``, ``Vperp``, or ``T`` is a number rather than a
     `~astropy.units.Quantity`, then SI units will be assumed and a
     warning will be raised.
@@ -175,13 +183,13 @@ def gyroradius(
     radius and is given by
 
     .. math::
-        r_{Li} = \frac{V_{\perp}}{ω_{ci}}
+        r_{Li} = \frac{\gamma V_{\perp}}{ω_{ci}}
 
     where :math:`V_⟂` is the component of particle velocity that is
-    perpendicular to the magnetic field and :math:`ω_{ci}` is the
-    particle gyrofrequency.  If a temperature is provided, then
+    perpendicular to the magnetic field, :math:`ω_{ci}` is the
+    particle gyrofrequency, and :math: `γ` is the lorentz factor.  If a temperature is provided, then
     :math:`V_⟂` will be the most probable thermal velocity of a
-    particle at that temperature.
+    particle at that temperature. :math: `γ` can manually be set to 1 to avoid the relativistic correction
 
     Examples
     --------
@@ -193,16 +201,18 @@ def gyroradius(
     >>> gyroradius(5*u.uG, particle='alpha', T=1*u.eV)
     <Quantity 288002.38... m>
     >>> gyroradius(400*u.G, particle='Fe+++', Vperp=1e7*u.m/u.s)
-    <Quantity 48.23129... m>
+    <Quantity 48.25815... m>
     >>> gyroradius(B=0.01*u.T, particle='e-', T=1e6*u.K)
     <Quantity 0.003130... m>
     >>> gyroradius(0.01*u.T, 'e-', Vperp=1e6*u.m/u.s)
     <Quantity 0.000568... m>
     >>> gyroradius(0.2*u.T, 'e-', T=1e5*u.K)
-    <Quantity 4.94949...e-05 m>
+    <Quantity 4.94957...e-05 m>
     >>> gyroradius(5*u.uG, 'e-', T=1*u.eV)
-    <Quantity 6744.25... m>
+    <Quantity 6744.27... m>
     >>> gyroradius(400*u.G, 'e-', Vperp=1e7*u.m/u.s)
+    <Quantity 0.001422... m>
+    >>> gyroradius(400*u.G, 'e-', Vperp=1e7*u.m/u.s, lorentzfactor=1.0)
     <Quantity 0.001421... m>
     """
 
@@ -225,12 +235,21 @@ def gyroradius(
 
     isfinite_T = np.isfinite(T)
     isfinite_Vperp = np.isfinite(Vperp)
+    isfinite_lorentzfactor = np.isfinite(lorentzfactor)
 
     # check 1: ensure either Vperp or T invalid, keeping in mind that
     # the underlying values of the astropy quantity may be numpy arrays
-    if np.any(np.logical_and(isfinite_Vperp, isfinite_T)):
-        raise ValueError(
-            "Must give Vperp or T, but not both, as arguments to gyroradius"
+    if np.any(np.logical_not(np.logical_xor(isfinite_Vperp, isfinite_T))):
+        # if neither are provided calc Vperp from lorentz factor but but you need lorentz factor to have no undefined elements
+        if np.all(isfinite_lorentzfactor):
+            Vperp = RelativisticBody(particle, lorentzfactor).velocity
+        else:
+            raise ValueError(
+                "Must give one of Vperp or T, but not both, as arguments to gyroradius, and if not then provide the lorentzfactor"
+            )
+    elif np.any(isfinite_lorentzfactor):
+        warnings.warn(
+            "Both lorentz factor and velocity or temperature are inputted, if they are inconsistent then this prediction may not physically accurate"
         )
 
     # check 2: get Vperp as the thermal speed if is not already a valid input
@@ -270,7 +289,22 @@ def gyroradius(
 
     omega_ci = frequencies.gyrofrequency(B, particle)
 
-    return np.abs(Vperp) / omega_ci
+    if np.isscalar(lorentzfactor):
+        # if it is not finite aka not defined then calc from vperp
+        if not isfinite_lorentzfactor:
+            lorentzfactor = np.copy(lorentzfactor)
+            lorentzfactor = RelativisticBody(particle, Vperp).lorentz_factor
+        # else it is defined already so you are all good and don't need to do anything
+    elif np.all(
+        isfinite_lorentzfactor
+    ):  # if it is not a scalar you want to calculate Lorentz factor based on Vperp for all undefined entries of the array
+        rbody = RelativisticBody(particle, Vperp)
+        lorentzfactor = np.copy(lorentzfactor)
+        lorentzfactor[not isfinite_lorentzfactor] = rbody.lorentz_factor()[
+            not isfinite_lorentzfactor
+        ]
+
+    return lorentzfactor * np.abs(Vperp) / omega_ci
 
 
 rc_ = gyroradius
