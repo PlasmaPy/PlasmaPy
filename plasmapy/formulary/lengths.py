@@ -300,8 +300,8 @@ def gyroradius(
     ):  # if it is not a scalar you want to calculate Lorentz factor based on Vperp for all undefined entries of the array
         rbody = RelativisticBody(particle, Vperp)
         lorentzfactor = np.copy(lorentzfactor)
-        lorentzfactor[not isfinite_lorentzfactor] = rbody.lorentz_factor()[
-            not isfinite_lorentzfactor
+        lorentzfactor[~isfinite_lorentzfactor] = rbody.lorentz_factor()[
+            ~isfinite_lorentzfactor
         ]
 
     return lorentzfactor * np.abs(Vperp) / omega_ci
