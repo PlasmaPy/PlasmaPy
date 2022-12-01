@@ -22,16 +22,16 @@ class TestTimescales:
     args_2010 = {
         "T_par": 100 * u.K,
         "T_perp": 200 * u.K,
-        "n_i": 4.06e10 * u.m ** -3,
+        "n_i": 4.06e10 * u.m**-3,
         "ions": [Particle("He+"), Particle("H+")],
         "par_speeds": [30 * u.m / u.s, 50 * u.m / u.s],
     }
 
     version_2016 = 2016
     args_2016 = {
-        "T_par": [100*u.K, 500*u.K],
-        "T_perp": [600*u.K, 900*u.K],
-        "n_i": 5000*u.m ** -3,
+        "T_par": [100 * u.K, 500 * u.K],
+        "T_perp": [600 * u.K, 900 * u.K],
+        "n_i": 5000 * u.m**-3,
         "ions": [Particle("He+"), Particle("H+")],
         "par_speeds": [600, 700] * u.m / u.s,
         "perp_speeds": [800, 900] * u.m / u.s,
@@ -45,10 +45,14 @@ class TestTimescales:
         "version, kwargs, _error",
         [
             (
-                    "wrong type", _kwargs_2009["kwargs"], TypeError,
+                "wrong type",
+                _kwargs_2009["kwargs"],
+                TypeError,
             ),
             (
-                    2000, _kwargs_2009["kwargs"], ValueError,
+                2000,
+                _kwargs_2009["kwargs"],
+                ValueError,
             ),
             (
                 _kwargs_2009["version"],
@@ -102,40 +106,44 @@ class TestTimescales:
             ),
             # 2010
             (
-                    "wrong type", _kwargs_2010["kwargs"], TypeError,
+                "wrong type",
+                _kwargs_2010["kwargs"],
+                TypeError,
             ),
             (
-                    2000, _kwargs_2010["kwargs"], ValueError,
+                2000,
+                _kwargs_2010["kwargs"],
+                ValueError,
             ),
             (
-                    _kwargs_2010["version"],
-                    {**_kwargs_2010["kwargs"], "T_par": "wrong type"},
-                    TypeError,
+                _kwargs_2010["version"],
+                {**_kwargs_2010["kwargs"], "T_par": "wrong type"},
+                TypeError,
             ),
             (
-                    _kwargs_2010["version"],
-                    {**_kwargs_2010["kwargs"], "T_par": [8e-9, 8.5e-9] * u.K},
-                    ValueError,
+                _kwargs_2010["version"],
+                {**_kwargs_2010["kwargs"], "T_par": [8e-9, 8.5e-9] * u.K},
+                ValueError,
             ),
             (
-                    _kwargs_2010["version"],
-                    {**_kwargs_2010["kwargs"], "T_par": -1 * u.K},
-                    ValueError,
+                _kwargs_2010["version"],
+                {**_kwargs_2010["kwargs"], "T_par": -1 * u.K},
+                ValueError,
             ),
             (
-                    _kwargs_2010["version"],
-                    {**_kwargs_2010["kwargs"], "T_perp": "wrong type"},
-                    TypeError,
+                _kwargs_2010["version"],
+                {**_kwargs_2010["kwargs"], "T_perp": "wrong type"},
+                TypeError,
             ),
             (
-                    _kwargs_2010["version"],
-                    {**_kwargs_2010["kwargs"], "T_perp": [8e-9, 8.5e-9] * u.K},
-                    ValueError,
+                _kwargs_2010["version"],
+                {**_kwargs_2010["kwargs"], "T_perp": [8e-9, 8.5e-9] * u.K},
+                ValueError,
             ),
             (
-                    _kwargs_2010["version"],
-                    {**_kwargs_2010["kwargs"], "T_perp": -1 * u.K},
-                    ValueError,
+                _kwargs_2010["version"],
+                {**_kwargs_2010["kwargs"], "T_perp": -1 * u.K},
+                ValueError,
             ),
         ],
     )

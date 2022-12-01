@@ -191,7 +191,7 @@ def Hellinger_2009(
     n_i: u.m**-3,
     ions: (Particle, Particle),
     par_speeds: u.m / u.s,
-    method: None
+    method: None,
 ):
     r"""
     Compute the collisional timescale as presented by :cite:t:`hellinger:2009`.
@@ -320,7 +320,7 @@ def Hellinger_2009(
         * (v_par**3)
     )
 
-    c = coulomb.Coulomb_logarithm(T, n_i, ions,method=method)
+    c = coulomb.Coulomb_logarithm(T, n_i, ions, method=method)
 
     return ((a / b.value) * c) / u.s
 
@@ -460,6 +460,7 @@ def Hellinger_2010(
     n_i = validate.n_i(n_i)
     ions = validate.ions(ions)
     par_speeds = validate.speeds(par_speeds)
+    method = validate.method(method)
 
     if T_par == 0:
         raise ValueError(
@@ -641,6 +642,6 @@ def Hellinger_2016(
 
         vst = vs - vt
 
-        return Hellinger_2009(T, n_i, ions, par_speeds) * hyper2d(
+        return Hellinger_2009(T, n_i, ions, par_speeds, method) * hyper2d(
             1, 1.5, 2.5, 1 - Ast, Ast * (vst**2 / 4 * vstpar**2)
         )
