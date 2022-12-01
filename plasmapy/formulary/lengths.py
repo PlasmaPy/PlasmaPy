@@ -245,7 +245,7 @@ def gyroradius(
             Vperp = RelativisticBody(particle, lorentzfactor).velocity
         else:
             raise ValueError(
-                "Must give one of Vperp or T, but not both, as arguments to gyroradius, and if not then provide the lorentzfactor"
+                "Must give either the lorentzfactor or one of: Vperp or T"
             )
     elif np.any(isfinite_lorentzfactor):
         warnings.warn(
