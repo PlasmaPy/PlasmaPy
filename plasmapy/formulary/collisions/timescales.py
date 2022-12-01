@@ -116,8 +116,9 @@ class validate:
     def method(
         method,
     ):
-        if isinstance(method, None):
-            return "classical"
+        print(method, type(method))
+        if method is None:
+            return
         elif not isinstance(method, str):
             raise TypeError(
                 "Argument 'method' is of incorrect type, got type "
@@ -191,7 +192,7 @@ def Hellinger_2009(
     n_i: u.m**-3,
     ions: (Particle, Particle),
     par_speeds: u.m / u.s,
-    method: None,
+    method=None,
 ):
     r"""
     Compute the collisional timescale as presented by :cite:t:`hellinger:2009`.
@@ -307,6 +308,7 @@ def Hellinger_2009(
     n_i = validate.n_i(n_i)
     ions = validate.ions(ions)
     par_speeds = validate.speeds(par_speeds)
+    print(method, 'here')
     method = validate.method(method)
 
     v_par = np.sqrt((par_speeds[0].value ** 2 + par_speeds[1].value ** 2) / 2)
@@ -331,7 +333,7 @@ def Hellinger_2010(
     n_i: u.m**-3,
     ions: (Particle, Particle),
     par_speeds: u.m / u.s,
-    method: None,
+    method=None,
 ):
     r"""
     Compute the collisional timescale as presented by :cite:t:`hellinger:2010`.
@@ -484,7 +486,7 @@ def Hellinger_2016(
     ions: (Particle, Particle),
     par_speeds: (u.m / u.s, u.m / u.s),
     perp_speeds: (u.m / u.s, u.m / u.s),
-    method: None,
+    method=None,
 ):
     r"""
     Compute the collisional timescale as presented by :cite:t:`hellinger:2016`.
