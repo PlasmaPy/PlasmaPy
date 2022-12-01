@@ -93,7 +93,7 @@ Perform code quality checks
 
   - Go to the Actions_ page.
   - Click on the :guilabel:`CI` tab → :guilabel:`Run workflow`.
-  - Click on the :guilabel:`fortnightly tests` tab →
+  - Click on the :guilabel:`weekly tests` tab →
     :guilabel:`Run workflow`.
   - Enjoy life for 15 minutes.
   - Fix any failures, and then repeat these steps.
@@ -172,7 +172,7 @@ Publish the release
     plasma calculator is behaving correctly.
 
   Fix any errors that arise, and re-run the :guilabel:`CI` and
-  :guilabel:`fortnightly tests` checks.
+  :guilabel:`weekly tests` checks.
 
 * Go to the GitHub page to `draft a new release`_. We will now perform
   the ``0.9.0`` release.
