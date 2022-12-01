@@ -1,0 +1,1 @@
+Modified an error message to properly trigger if both `T` and `Vperp` (and `lorentzfactor`) are missing as well, instead of just when there are both of them.
