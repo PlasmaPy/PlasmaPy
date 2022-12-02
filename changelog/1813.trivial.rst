@@ -1,0 +1,1 @@
+changed margin of error for gyroradius test from 1e-8 to 1e-5 for Gyroradius::test_value 6 10 and 12 since it assumes the nonrelativistic case
