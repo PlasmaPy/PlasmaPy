@@ -239,17 +239,16 @@ def gyroradius(
 
     # check 1: ensure either Vperp or T invalid, keeping in mind that
     # the underlying values of the astropy quantity may be numpy arrays
-    if np.any(np.logical_not(np.logical_xor(isfinite_Vperp, isfinite_T))):
-        # if neither are provided calc Vperp from lorentz factor but but you need lorentz factor to have no undefined elements
-        if np.all(isfinite_lorentzfactor):
-            Vperp = RelativisticBody(particle, lorentzfactor).velocity
-        else:
-            raise ValueError(
-                "Must give either the lorentzfactor or one of: Vperp or T"
-            )
+    if np.any(np.logical_and(isfinite_Vperp, isfinite_T)):
+        raise ValueError(
+            "Must give Vperp or T, but not both, as arguments to gyroradius"
+        )
+    elif np.all(np.logical_not(isfinite_T)) and np.all(np.logical_not(isfinite_Vperp)):
+        # if both are all nan, try to calc from lorentzfactor, but lorentz factor needs to be completely valid
+        Vperp = RelativisticBody(particle, lorentzfactor).velocity
     elif np.any(isfinite_lorentzfactor):
         warnings.warn(
-            "Both lorentz factor and velocity or temperature are inputted, if they are inconsistent then this prediction may not physically accurate"
+            "lorentzfactor is given along with Vperp or T, will lead to inaccurate predicitions unless they correspond"
         )
 
     # check 2: get Vperp as the thermal speed if is not already a valid input
@@ -289,22 +288,21 @@ def gyroradius(
 
     omega_ci = frequencies.gyrofrequency(B, particle)
 
-    if not np.isnan(lorentzfactor):
-        # if it is not finite aka not defined then calc from vperp
-        if not isfinite_lorentzfactor:
-            lorentzfactor = np.copy(lorentzfactor)
-            lorentzfactor = RelativisticBody(particle, Vperp).lorentz_factor
-        # else it is defined already so you are all good and don't need to do anything
-    elif np.all(
-        isfinite_lorentzfactor
-    ):  # if it is not a scalar you want to calculate Lorentz factor based on Vperp for all undefined entries of the array
+    if np.all(isfinite_lorentzfactor):
+        return lorentzfactor * np.abs(Vperp) / omega_ci
+    elif not np.all(isfinite_lorentzfactor):
+        lorentzfactor = RelativisticBody(particle, Vperp).lorentz_factor
+        return lorentzfactor * np.abs(Vperp) / omega_ci
+    else:
+        # the lorentzfactor is neither completely valid nor completely invalid,
+        # so we have to correct the missing parts, note that we don't actually
+        # have to check if it is a scalar since scalars cannot be partially valid
         rbody = RelativisticBody(particle, Vperp)
         lorentzfactor = np.copy(lorentzfactor)
-        lorentzfactor[~isfinite_lorentzfactor] = rbody.lorentz_factor()[
+        lorentzfactor[~isfinite_lorentzfactor] = rbody.lorentz_factor[
             ~isfinite_lorentzfactor
         ]
-
-    return lorentzfactor * np.abs(Vperp) / omega_ci
+    return np.abs(Vperp) / omega_ci
 
 
 rc_ = gyroradius
