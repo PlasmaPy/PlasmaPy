@@ -201,6 +201,18 @@ class TestGyroradius:
                 1e-5,
             ),
             (
+                (B_arr,),
+                {"particle": "e-", "T": T_arr, "lorentzfactor": 1.0},
+                [0.03130334, 0.02213481] * u.m,
+                None,
+            ),
+            (
+                (B_arr,),
+                {"particle": "e-", "T": T_arr, "lorentzfactor": [1.0, 1.0]},
+                [0.03130334, 0.02213481] * u.m,
+                None,
+            ),
+            (
                 ([0.4, 0.6, 0.8] * u.T,),
                 {"particle": "e-", "T": [6, 4, 2] * u.eV},
                 [2.06499941e-05, 1.12404331e-05, 5.96113984e-06] * u.m,
@@ -236,6 +248,24 @@ class TestGyroradius:
                 {"Vperp": [np.nan, np.nan] * u.m / u.s, "T": 1e6 * u.K},
                 [0.03130334, 0.01565167] * u.m,
                 1e-5,
+            ),
+            (
+                (1 * u.T,),
+                {"particle": "e-", "lorentzfactor": 2.0},
+                0.0029522962 * u.m,
+                None,
+            ),
+            (
+                ([0.001, 0.002] * u.T, "e-"),
+                {"Vperp": [20.5, 10.5] * u.m / u.s, "lorentzfactor": [2.0, 1.0]},
+                [2.33110834e-07, 2.98495580e-08] * u.m,
+                None,
+            ),
+            (
+                ([0.001, 0.002] * u.T, "e-"),
+                {"Vperp": [20.5, 10.5] * u.m / u.s, "lorentzfactor": [1.0, np.nan]},
+                [1.16555417e-07, 2.98495580e-08] * u.m,
+                None,
             ),
         ],
     )
