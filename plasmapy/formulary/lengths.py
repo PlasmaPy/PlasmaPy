@@ -296,7 +296,7 @@ def gyroradius(
 
     if np.all(isfinite_lorentzfactor):
         return lorentzfactor * np.abs(Vperp) / omega_ci
-    elif not np.all(isfinite_lorentzfactor):
+    elif not np.any(isfinite_lorentzfactor):
         lorentzfactor = RelativisticBody(particle, V=Vperp).lorentz_factor
         return lorentzfactor * np.abs(Vperp) / omega_ci
     else:
