@@ -198,7 +198,7 @@ class TestGyroradius:
                 (B_arr,),
                 {"particle": "e-", "T": T_arr},
                 [0.03130334, 0.02213481] * u.m,
-                None,
+                1e-5,
             ),
             (
                 ([0.4, 0.6, 0.8] * u.T,),
@@ -220,7 +220,7 @@ class TestGyroradius:
                 ([0.001, 0.002] * u.T, "e-"),
                 {"Vperp": [25, np.nan] * u.m / u.s, "T": [np.nan, 2e6] * u.K},
                 [1.42140753e-07, 2.21348073e-02] * u.m,
-                None,
+                1e-5,
             ),
             #
             # If either Vperp or T is a valid scalar and the other is a Qarray of
@@ -235,7 +235,7 @@ class TestGyroradius:
                 ([0.001, 0.002] * u.T, "e-"),
                 {"Vperp": [np.nan, np.nan] * u.m / u.s, "T": 1e6 * u.K},
                 [0.03130334, 0.01565167] * u.m,
-                None,
+                1e-5,
             ),
         ],
     )
