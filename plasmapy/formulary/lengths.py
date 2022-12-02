@@ -302,7 +302,7 @@ def gyroradius(
         lorentzfactor[~isfinite_lorentzfactor] = rbody.lorentz_factor[
             ~isfinite_lorentzfactor
         ]
-    return np.abs(Vperp) / omega_ci
+        return lorentzfactor * np.abs(Vperp) / omega_ci
 
 
 rc_ = gyroradius
