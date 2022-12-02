@@ -243,9 +243,15 @@ def gyroradius(
         raise ValueError(
             "Must give Vperp or T, but not both, as arguments to gyroradius"
         )
-    elif np.all(np.logical_not(isfinite_T)) and np.all(np.logical_not(isfinite_Vperp)):
-        # if both are all nan, try to calc from lorentzfactor, but lorentz factor needs to be completely valid
-        Vperp = RelativisticBody(particle, lorentzfactor).velocity
+    elif np.any(np.logical_not(isfinite_T)) and np.any(np.logical_not(isfinite_Vperp)):
+        # any parts that are both nan, try to calc from lorentzfactor
+        if not np.isscalar(lorentzfactor):
+            raise ValueError(
+                "Inferring velocity(s) from more than one lorentz factor is not currently supported"
+            )
+        Vperp = np.copy(Vperp)
+        rbody = RelativisticBody(particle, lorentz_factor=lorentzfactor)
+        Vperp[~isfinite_Vperp] = rbody.velocity
     elif np.any(isfinite_lorentzfactor):
         warnings.warn(
             "lorentzfactor is given along with Vperp or T, will lead to inaccurate predicitions unless they correspond"
@@ -291,13 +297,13 @@ def gyroradius(
     if np.all(isfinite_lorentzfactor):
         return lorentzfactor * np.abs(Vperp) / omega_ci
     elif not np.all(isfinite_lorentzfactor):
-        lorentzfactor = RelativisticBody(particle, Vperp).lorentz_factor
+        lorentzfactor = RelativisticBody(particle, V=Vperp).lorentz_factor
         return lorentzfactor * np.abs(Vperp) / omega_ci
     else:
         # the lorentzfactor is neither completely valid nor completely invalid,
         # so we have to correct the missing parts, note that we don't actually
         # have to check if it is a scalar since scalars cannot be partially valid
-        rbody = RelativisticBody(particle, Vperp)
+        rbody = RelativisticBody(particle, V=Vperp)
         lorentzfactor = np.copy(lorentzfactor)
         lorentzfactor[~isfinite_lorentzfactor] = rbody.lorentz_factor[
             ~isfinite_lorentzfactor
