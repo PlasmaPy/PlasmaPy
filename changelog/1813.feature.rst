@@ -1,1 +1,2 @@
 Added ``lorentzfactor`` optional keyword to `~plasmapy.formulary.lengths.gyroradius` depending on needs of user.
+Also added ``relativistic`` optional keyword to `~plasmapy.formulary.lengths.gyroradius` which can be set to false for the nonrelativistic approximation
