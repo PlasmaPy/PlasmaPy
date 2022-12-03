@@ -146,7 +146,7 @@ def gyroradius(
 
     relativistic : `bool`, optional, |keyword-only|
         Whether or not you want to use a relativistic approximation.
-        True by default.
+        `True` by default.
 
 
     Returns
@@ -179,7 +179,7 @@ def gyroradius(
     One but not both of ``Vperp`` and ``T`` must be inputted.
 
     ``lorentzfactor`` can be inferred from ``Vperp`` or ``T`` but
-    near the speed of light, this can lead to rounding errors
+    near the speed of light, this can lead to rounding errors.
 
     If any of ``B``, ``Vperp``, or ``T`` is a number rather than a
     `~astropy.units.Quantity`, then SI units will be assumed and a
@@ -189,14 +189,15 @@ def gyroradius(
     radius and is given by
 
     .. math::
-        r_{Li} = \frac{\gamma V_{\perp}}{ω_{ci}}
+        r_{Li} = \frac{γ V_⟂}{ω_{ci}}
 
     where :math:`V_⟂` is the component of particle velocity that is
     perpendicular to the magnetic field, :math:`ω_{ci}` is the
-    particle gyrofrequency, and :math:`γ` is the lorentz factor.  If a temperature is provided, then
+    particle gyrofrequency, and :math:`γ` is the Lorentz factor.
+    If a temperature is provided, then
     :math:`V_⟂` will be the most probable thermal velocity of a
-    particle at that temperature. The relativistic keyword can be set to false
-    to avoid the relativsitic correction
+    particle at that temperature. The ``relativistic`` keyword can be
+    set to `False` to avoid the relativistic correction.
 
     Examples
     --------
@@ -263,7 +264,7 @@ def gyroradius(
         # any parts that are both nan, try to calc from lorentzfactor
         if not np.isscalar(lorentzfactor):
             raise ValueError(
-                "Inferring velocity(s) from more than one lorentz factor is not currently supported"
+                "Inferring velocity(s) from more than one Lorentz factor is not currently supported"
             )
         if relativistic:
             Vperp = np.copy(Vperp)
