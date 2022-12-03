@@ -141,7 +141,7 @@ def gyroradius(
         Note: Deprecated. Use ``T`` instead.
 
     lorentzfactor : `float` or `~numpy.ndarray`, optional, |keyword-only|
-        The Lorentz factor for the particles, set to 1.0 if you want to use
+        The Lorentz factor for the particles. Set to 1.0 if you want to use
         the nonrelativistic approximation.
 
     Returns
