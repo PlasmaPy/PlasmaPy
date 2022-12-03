@@ -190,7 +190,8 @@ def gyroradius(
     perpendicular to the magnetic field, :math:`ω_{ci}` is the
     particle gyrofrequency, and :math: `γ` is the lorentz factor.  If a temperature is provided, then
     :math:`V_⟂` will be the most probable thermal velocity of a
-    particle at that temperature. :math: `γ` can manually be set to 1 to avoid the relativistic correction
+    particle at that temperature. :math:`γ` can manually be set
+    to 1 to avoid the relativistic correction.
 
     Examples
     --------
