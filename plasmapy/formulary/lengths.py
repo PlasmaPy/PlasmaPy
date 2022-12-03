@@ -256,7 +256,7 @@ def gyroradius(
         Vperp[~isfinite_Vperp] = rbody.velocity
     elif np.any(isfinite_lorentzfactor):
         warnings.warn(
-            "lorentzfactor is given along with Vperp or T, will lead to inaccurate predicitions unless they correspond"
+            "lorentzfactor is given along with Vperp or T, will lead to inaccurate predictions unless they correspond"
         )
 
     # check 2: get Vperp as the thermal speed if is not already a valid input
