@@ -2109,7 +2109,7 @@ class CustomParticle(AbstractPhysicalParticle):
         >>> charge = 9.2e-19 * u.C
         >>> custom_particle = CustomParticle(mass=mass, charge=charge)
         >>> repr(custom_particle)
-        'CustomParticle(mass=1.2...e-26 kg, charge=9.2...e-19 C)'
+        'CustomParticle(mass=1.2e-26 kg, charge=9.2e-19 C)'
 
         If present, the symbol is displayed as well.
 
