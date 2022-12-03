@@ -118,6 +118,11 @@ class TestGyroradius:
                 {"Vperp": [25, np.nan] * u.m / u.s, "lorentzfactor": [3.0, 2.0]},
                 ValueError,
             ),
+            (
+                (1 * u.T,),
+                {"particle": "e-", "lorentzfactor": 2.0, "relativistic": False},
+                ValueError,
+            ),
         ],
     )
     def test_raises(self, args, kwargs, _error):
@@ -272,6 +277,12 @@ class TestGyroradius:
                 {"Vperp": [20.5, 10.5] * u.m / u.s, "lorentzfactor": [1.0, np.nan]},
                 [1.16555417e-07, 2.98495580e-08] * u.m,
                 None,
+            ),
+            (
+                (0.2 * u.T, "e-"),
+                {"T": 100000 * u.K, "relativistic": False},
+                4.94949337e-05 * u.m,
+                1e-5,
             ),
         ],
     )

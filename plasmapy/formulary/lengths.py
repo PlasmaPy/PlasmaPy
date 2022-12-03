@@ -113,6 +113,7 @@ def gyroradius(
     T_i: u.K = None,
     T: u.K = None,
     lorentzfactor=np.nan,
+    relativistic: bool = True,
 ) -> u.m:
     r"""Return the particle gyroradius.
 
@@ -141,8 +142,10 @@ def gyroradius(
         Note: Deprecated. Use ``T`` instead.
 
     lorentzfactor : `float` or `~numpy.ndarray`, optional, |keyword-only|
-        The Lorentz factor for the particles, set to 1.0 if you want to use
-        the nonrelativistic approximation.
+        The Lorentz factor for the particles, use for high precision.
+
+    relativistic : `bool`, optional, |keyword-only|
+        Whether or not you want to use a relativistic approximation. True by default.
 
     Returns
     -------
@@ -190,8 +193,8 @@ def gyroradius(
     perpendicular to the magnetic field, :math:`ω_{ci}` is the
     particle gyrofrequency, and :math: `γ` is the lorentz factor.  If a temperature is provided, then
     :math:`V_⟂` will be the most probable thermal velocity of a
-    particle at that temperature. :math:`γ` can manually be set
-    to 1 to avoid the relativistic correction.
+    particle at that temperature. The relativistic keyword can be set to false
+    to avoid the relativsitic approximation
 
     Examples
     --------
@@ -232,6 +235,13 @@ def gyroradius(
                 "please use T only."
             )
 
+    if not relativistic:
+        if not np.isnan(lorentzfactor):
+            raise ValueError(
+                "Lorentz factor is provided but relativistic is set to false"
+            )
+        lorentzfactor = 1.0
+
     if T is None:
         T = np.nan * u.K
 
@@ -254,7 +264,7 @@ def gyroradius(
         Vperp = np.copy(Vperp)
         rbody = RelativisticBody(particle, lorentz_factor=lorentzfactor)
         Vperp[~isfinite_Vperp] = rbody.velocity
-    elif np.any(isfinite_lorentzfactor):
+    elif np.any(isfinite_lorentzfactor) and relativistic is True:
         warnings.warn(
             "lorentzfactor is given along with Vperp or T, will lead to inaccurate predicitions unless they correspond"
         )
