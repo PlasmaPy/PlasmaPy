@@ -145,7 +145,8 @@ def gyroradius(
         The Lorentz factor for the particles, use for high precision.
 
     relativistic : `bool`, optional, |keyword-only|
-        Whether or not you want to use a relativistic approximation. True by default.
+        Whether or not you want to use a relativistic approximation.
+        True by default.
 
 
     Returns
@@ -192,10 +193,10 @@ def gyroradius(
 
     where :math:`V_⟂` is the component of particle velocity that is
     perpendicular to the magnetic field, :math:`ω_{ci}` is the
-    particle gyrofrequency, and :math: `γ` is the lorentz factor.  If a temperature is provided, then
+    particle gyrofrequency, and :math:`γ` is the lorentz factor.  If a temperature is provided, then
     :math:`V_⟂` will be the most probable thermal velocity of a
     particle at that temperature. The relativistic keyword can be set to false
-    to avoid the relativsitic approximation
+    to avoid the relativsitic correction
 
     Examples
     --------
@@ -219,6 +220,8 @@ def gyroradius(
     >>> gyroradius(400*u.G, 'e-', Vperp=1e7*u.m/u.s)
     <Quantity 0.001422... m>
     >>> gyroradius(400*u.G, 'e-', Vperp=1e7*u.m/u.s, lorentzfactor=1.0)
+    <Quantity 0.001421... m>
+    >>> gyroradius(400*u.G, 'e-', Vperp=1e7*u.m/u.s, relativistic=False)
     <Quantity 0.001421... m>
     """
 
