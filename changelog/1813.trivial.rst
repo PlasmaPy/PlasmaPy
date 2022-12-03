@@ -1,2 +1,0 @@
-changed Gyroradius::test_value 6 10 and 12 since it errors due to assuming the nonrelativistic case
-added more tests to check functionality for new relativistic features
