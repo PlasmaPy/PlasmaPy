@@ -282,7 +282,7 @@ class TestGyroradius:
                 (0.2 * u.T, "e-"),
                 {"T": 100000 * u.K, "relativistic": False},
                 4.94949337e-05 * u.m,
-                1e-5,
+                None,
             ),
         ],
     )

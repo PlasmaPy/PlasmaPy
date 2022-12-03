@@ -1,1 +1,1 @@
-Added ``lorentzfactor`` optional keyword to `~plasmapy.formulary.lengths.gyroradius` depending on needs of user — can also be set to 1.0 if they want the old functionality back.
+Added ``lorentzfactor`` optional keyword to `~plasmapy.formulary.lengths.gyroradius` depending on needs of user.
