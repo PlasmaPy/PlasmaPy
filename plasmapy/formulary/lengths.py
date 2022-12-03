@@ -262,9 +262,10 @@ def gyroradius(
             raise ValueError(
                 "Inferring velocity(s) from more than one lorentz factor is not currently supported"
             )
-        Vperp = np.copy(Vperp)
-        rbody = RelativisticBody(particle, lorentz_factor=lorentzfactor)
-        Vperp[~isfinite_Vperp] = rbody.velocity
+        if relativistic:
+            Vperp = np.copy(Vperp)
+            rbody = RelativisticBody(particle, lorentz_factor=lorentzfactor)
+            Vperp[~isfinite_Vperp] = rbody.velocity
     elif np.any(isfinite_lorentzfactor) and relativistic is True:
         warnings.warn(
             "lorentzfactor is given along with Vperp or T, will lead to inaccurate predictions unless they correspond"
