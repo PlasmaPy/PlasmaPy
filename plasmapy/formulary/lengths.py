@@ -147,6 +147,7 @@ def gyroradius(
     relativistic : `bool`, optional, |keyword-only|
         Whether or not you want to use a relativistic approximation. True by default.
 
+
     Returns
     -------
     r_Li : `~astropy.units.Quantity`
@@ -266,7 +267,7 @@ def gyroradius(
         Vperp[~isfinite_Vperp] = rbody.velocity
     elif np.any(isfinite_lorentzfactor) and relativistic is True:
         warnings.warn(
-            "lorentzfactor is given along with Vperp or T, will lead to inaccurate predicitions unless they correspond"
+            "lorentzfactor is given along with Vperp or T, will lead to inaccurate predictions unless they correspond"
         )
 
     # check 2: get Vperp as the thermal speed if is not already a valid input
