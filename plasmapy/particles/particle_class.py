@@ -1874,12 +1874,12 @@ class DimensionlessParticle(AbstractParticle):
     Examples
     --------
     >>> from plasmapy.particles import DimensionlessParticle
-    >>> dimensionless_particle = DimensionlessParticle(mass=1.0, charge=-1.0, symbol="ξ")
-    >>> dimensionless_particle.mass
+    >>> particle = DimensionlessParticle(mass=1.0, charge=-1.0, symbol="ξ")
+    >>> particle.mass
     1.0
-    >>> dimensionless_particle.charge
+    >>> particle.charge
     -1.0
-    >>> dimensionless_particle.symbol
+    >>> particle.symbol
     'ξ'
     """
 
@@ -2062,7 +2062,11 @@ class CustomParticle(AbstractPhysicalParticle):
     --------
     >>> from astropy import units as u
     >>> from plasmapy.particles import CustomParticle
-    >>> custom_particle = CustomParticle(mass=1.2e-26 * u.kg, charge=9.2e-19 * u.C, symbol="Ξ")
+    >>> custom_particle = CustomParticle(
+    ...     mass=1.2e-26 * u.kg,
+    ...     charge=9.2e-19 * u.C,
+    ...     symbol="Ξ",
+    ... )
     >>> custom_particle.mass
     <Quantity 1.2e-26 kg>
     >>> custom_particle.charge
@@ -2070,7 +2074,12 @@ class CustomParticle(AbstractPhysicalParticle):
     >>> custom_particle.symbol
     'Ξ'
     >>> import pytest
-    >>> with pytest.warns(UserWarning): custom_particle = CustomParticle(mass=1.5e-26 * u.kg, charge=-1, symbol="Ξ")
+    >>> with pytest.warns(UserWarning):
+    ...    custom_particle = CustomParticle(
+    ...        mass=1.5e-26 * u.kg,
+    ...        charge=-1,
+    ...        symbol="Ξ",
+    ...    )
     >>> custom_particle.mass
     <Quantity 1.5e-26 kg>
     >>> custom_particle.charge
@@ -2096,13 +2105,19 @@ class CustomParticle(AbstractPhysicalParticle):
 
         Examples
         --------
-        >>> custom_particle = CustomParticle(mass=1.2e-26 * u.kg, charge=9.2e-19 * u.C)
+        >>> mass = 1.2e-25 * u.kg
+        >>> charge = 9.2e-19 * u.C
+        >>> custom_particle = CustomParticle(mass=mass, charge=charge)
         >>> repr(custom_particle)
         'CustomParticle(mass=1.2...e-26 kg, charge=9.2...e-19 C)'
 
         If present, the symbol is displayed as well.
 
-        >>> custom_particle = CustomParticle(mass=4.21e-25 * u.kg, charge=1.6e-19 * u.C, symbol="I2+")
+        >>> custom_particle = CustomParticle(
+        ...     mass=4.21e-25 * u.kg,
+        ...     charge=1.6e-19 * u.C,
+        ...     symbol="I2+",
+        ... )
         >>> repr(custom_particle)
         'CustomParticle(mass=4.21e-25 kg, charge=1.6e-19 C, symbol=I2+)'
         """
@@ -2122,7 +2137,11 @@ class CustomParticle(AbstractPhysicalParticle):
 
         Examples
         --------
-        >>> custom_particle = CustomParticle(mass=5.12 * u.kg, charge=6.2 * u.C, symbol="ξ")
+        >>> custom_particle = CustomParticle(
+        ...     mass=5.12 * u.kg,
+        ...     charge=6.2 * u.C,
+        ...     symbol="ξ",
+        ... )
         >>> custom_particle.json_dict
         {'plasmapy_particle': {'type': 'CustomParticle',
             'module': 'plasmapy.particles.particle_class',
@@ -2332,23 +2351,25 @@ def molecule(
     --------
     >>> from plasmapy.particles import molecule
     >>> molecule("I2")
-    CustomParticle(mass=4.214596603223354e-25 kg, charge=0.0 C, symbol=I2)
+    CustomParticle(mass=4.214...e-25 kg, charge=0.0 C, symbol=I2)
 
-    Charge information is given either within the symbol or as a second parameter.
+    Charge information is given either within the symbol or as a second
+    parameter.
 
     >>> molecule("I2+")
-    CustomParticle(mass=4.214596603223354e-25 kg, charge=1.602176634e-19 C, symbol=I2 1+)
+    CustomParticle(mass=4.214...e-25 kg, charge=1.602...e-19 C, symbol=I2 1+)
 
     >>> molecule("I2", 1)
-    CustomParticle(mass=4.214596603223354e-25 kg, charge=1.602176634e-19 C, symbol=I2 1+)
+    CustomParticle(mass=4.214...e-25 kg, charge=1.602...e-19 C, symbol=I2 1+)
 
-    Inputs that can be interpreted as |Particle| instances are returned as such.
+    Inputs that can be interpreted as |Particle| instances are returned
+    as such.
 
     >>> molecule("Xe")
     Particle("Xe")
 
-    The given symbol is preserved in the |CustomParticle| instance. This permits
-    us to differentiate between isomers:
+    The given symbol is preserved in the |CustomParticle| instance. This
+    permits us to differentiate between isomers:
 
     >>> molecule("CH4O2") == molecule("CH3OOH")
     False
