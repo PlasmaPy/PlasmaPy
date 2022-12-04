@@ -871,7 +871,13 @@ def kappa_velocity_1D(
     --------
     >>> from astropy import units as u
     >>> v=1 * u.m / u.s
-    >>> kappa_velocity_1D(v=v, T=30000*u.K, kappa=4, particle='e', v_drift=0 * u.m / u.s)
+    >>> kappa_velocity_1D(
+    ...     v=v,
+    ...     T=30000*u.K,
+    ...     kappa=4,
+    ...     particle='e',
+    ...     v_drift=0 * u.m / u.s,
+    ... )
     <Quantity 6.75549...e-07 s / m>
 
     See Also
