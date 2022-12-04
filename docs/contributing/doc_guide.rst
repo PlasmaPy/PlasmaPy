@@ -1129,8 +1129,8 @@ For example, if a docstring includes ```y```, Sphinx will attempt
 to link to an object named ``y``. If there is no object named ``y``,
 then Sphinx will issue this warning, which gets treated like an error.
 
-If the text is meant to be a code sample, surround it with double
-backticks instead of single backticks.
+If the text is meant to be an in-line code snippet, surround it with
+double backticks instead of single backticks.
 
 This warning may also occur when there is an extra space between a
 |role| and the argument it is intended to act on. For example, this
@@ -1138,27 +1138,27 @@ warning would be fixed by changing ``:math: `y``` to
 ``:math:`y```.
 
 When the text is meant to represent a code object like
-```astropy.units.Quantity``` , then this warning usually indicates
-either a typo or that the namespace is incorrect. For example, the
-warning resulting from ```astropy.Quantity``` can be resolved by
-changing it to ```astropy.units.Quantity```).
+```astropy.units.Quantity```, then this warning usually indicates
+either a typo or an error in the namespace. For example, the warning
+resulting from ```astropy.Quantity``` can be resolved by changing it to
+```astropy.units.Quantity```.
 
-This warnings sometimes occurs in the type line of a |parameter| in a
-docstring. Sphinx attempts to interpret words in type lines as code
-objects that can be linked to. Type lines are intended to provide
-concise information about the types, sizes, shapes, physical types, and
-default values of a parameter. To resolve this warning, first move any
-information about the meaning of a parameter into the type description
-instead of the type line. To add to the list of allowed words or
+This warning sometimes occurs in the type line of a |parameter| in a
+docstring. Sphinx attempts to link words in type lines to code objects.
+Type lines are intended to provide concise information about allowed
+types, sizes, shapes, physical types, and default values of a parameter.
+To resolve this warning, first move information about the *meaning* of
+a parameter from the type line into the parameter description that
+begins on the following line. To expand the list of allowed words or
 patterns in type lines, add a regular expression to
 ``nitpick_ignore_regex`` in |docs/conf.py|_.
 
 Missing documentation pages for new modules
 -------------------------------------------
 
-When a new module (i.e., a ``.py`` file) is created, it is usually
-necessary to create a stub file for it in |docs/api_static|_. See above
-for information on :ref:`how to create module stub files <api-static>`.
+When a new module or subpackage is created, it is usually necessary to
+:ref:`create a stub file <api-static>` for it in for it in
+|docs/api_static|_.
 
 .. |role| replace:: :term:`role`
 .. |roles| replace:: :term:`roles <role>`
