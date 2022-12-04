@@ -199,11 +199,11 @@ the same length as that heading.
    Heading 3
    ~~~~~~~~~
 
-We can link to code objects by enclosing them in single back ticks.
+We can link to code objects by enclosing them in single backticks.
 This linking will work for Python_ commands as well as certain packages
 like NumPy_, SciPy_, Astropy_, and pandas_. This linking is described in
 the section on :ref:`external-references`. In-line code examples may be
-enclosed in double back ticks or specified using the ``:py:`` role.
+enclosed in double backticks or specified using the ``:py:`` role.
 
 .. code-block:: rst
 
@@ -496,6 +496,30 @@ example, ``:cite:p:`wilson:2014``` will show up as :cite:p:`wilson:2014`,
 ``:cite:t:`wilson:2014``` will show up as :cite:t:`wilson:2014`, and
 ``:cite:p:`wilson:2014, wilson:2017``` will show up as
 :cite:p:`wilson:2014, wilson:2017`.
+
+.. _api-static:
+
+Creating a documentation stub file for a new module
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+When the narrative documentation does not index a subpackage (a
+directory) or module (a :file:`.py` file) with ``automodule``,
+``automodapi``, or the like, then it is required to create a stub file
+for that particular subpackage or module in |docs/api_static|_. For
+example, the stub file for `plasmapy.particles.atomic` is placed at
+:file:`docs/api_static/plasmapy.particles.atomic.rst` and its contents
+look like:
+
+  .. code-block:: rst
+
+     :orphan:
+
+     `plasmapy.particles.atomic`
+     ===========================
+
+     .. currentmodule:: plasmapy.particles.atomic
+
+     .. automodapi::  plasmapy.particles.atomic
 
 Templating
 ~~~~~~~~~~
@@ -1078,25 +1102,6 @@ Narrative documentation guidelines
 * Use title case for page titles (e.g., "This is Title Case") and
   sentence case for all other headings (e.g., "This is sentence case").
 
-* When the narrative documentation does not index a subpackage (a
-  directory) or module (a :file:`.py` file) with ``automodule``,
-  ``automodapi``, or the like, then it is required to create a stub file
-  for that particular subpackage or module in |docs/api_static|_ . For
-  example, the stub file for `plasmapy.particles.atomic` is placed at
-  :file:`docs/api_static/plasmapy.particles.atomic.rst` and its contents
-  look like:
-
-  .. code-block:: rst
-
-     :orphan:
-
-     `plasmapy.particles.atomic`
-     ===========================
-
-     .. currentmodule:: plasmapy.particles.atomic
-
-     .. automodapi::  plasmapy.particles.atomic
-
 .. danger::
 
    There are certain tasks that one would expect to be straightforward
@@ -1112,24 +1117,47 @@ Narrative documentation guidelines
 Troubleshooting
 ===============
 
-* Errors like ``WARNING: py:class reference target not found: ...``
-  occur when Sphinx is unable to interpret text as a Python object.
+This section contains suggestions about how to fix common documentation
+errors and warnings.
 
-  - If the text is meant to be a code sample, make sure that the text is
-    in double back ticks.
+Reference target not found
+--------------------------
 
-  - If the text should refer to a code object, make sure that the full
-    namespace is provided correctly.
+Warnings like ``py:obj reference target not found`` occur when Sphinx_
+attempts to interpret text as a Python object, but is unable to do so.
+For example, if a docstring includes `` `y` ``, Sphinx will attempt
+to link to an object named ``y``. If there is no object named ``y``,
+then Sphinx will issue this warning, which gets treated like an error.
 
-  - If the text is in the type line for a parameter in a docstring, then
-    either:
+If the text is meant to be a code sample, surround it with double
+backticks. For example, change `` `y` `` to ``` ``y`` ```.
 
-    - Change the type line to include only Python types and words or
-      patterns defined in ``nitpick_ignore_regex`` in |docs/conf.py|_
-      (preferred), or
+This warning may also occur when there is an extra space between a
+|role| and the argument it is intended to act on. For example, this
+warning would be fixed by changing `` :math: `y` `` to `` :math:`y` ``.
 
-    - Add the text as a regular expression to ``nitpick_ignore_regex``
-      so that Sphinx knows not to issue a warning for this text.
+When the text is meant to represent a code object like
+`` `astropy.units.Quantity` ``, then this warning usually indicates
+either a typo or that the namespace is incorrect. For example, the
+warning resulting from `` `astropy.Quantity` `` can be resolved by
+changing it to `` `astropy.units.Quantity` ``).
+
+This warnings sometimes occurs in the type line of a |parameter| in a
+docstring. Sphinx attempts to interpret words in type lines as code
+objects that can be linked to. Type lines are intended to provide
+concise information about the types, sizes, shapes, physical types, and
+default values of a parameter. To resolve this warning, first move any
+information about the meaning of a parameter into the type description
+instead of the type line. To add to the list of allowed words or
+patterns in type lines, add a regular expression to
+``nitpick_ignore_regex`` in |docs/conf.py|_.
+
+Missing documentation pages for new modules
+-------------------------------------------
+
+When a new module (i.e., a ``.py`` file) is created, it is usually
+necessary to create a stub file for it in |docs/api_static|_. See above
+for information on :ref:`how to create module stub files <api-static>`.
 
 .. |role| replace:: :term:`role`
 .. |roles| replace:: :term:`roles <role>`
