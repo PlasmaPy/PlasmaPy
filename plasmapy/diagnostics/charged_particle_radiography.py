@@ -582,7 +582,7 @@ class Tracker:
             guess will be made based on the size of the grid.
             Units must be convertible to radians.
 
-        particle : ~plasmapy.particles.particle_class.Particle or string representation of same, optional
+        particle : |particle-like|
             Representation of the particle species as either a |Particle| object
             or a string representation. The default particle is protons.
 
@@ -675,7 +675,7 @@ class Tracker:
         v: `~astropy.units.Quantity`, shape (N,3)
             Velocities for N particles
 
-        particle : ~plasmapy.particles.particle_class.Particle or string representation of same, optional
+        particle : |particle-like|, optional
             Representation of the particle species as either a |Particle| object
             or a string representation. The default particle is protons.
 
