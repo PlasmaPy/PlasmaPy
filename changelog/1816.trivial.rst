@@ -1,0 +1,2 @@
+Added a flake8_ check to limit line length in docstrings, and applied
+associated changes.
