@@ -2105,7 +2105,7 @@ class CustomParticle(AbstractPhysicalParticle):
 
         Examples
         --------
-        >>> mass = 1.2e-25 * u.kg
+        >>> mass = 1.2e-26 * u.kg
         >>> charge = 9.2e-19 * u.C
         >>> custom_particle = CustomParticle(mass=mass, charge=charge)
         >>> repr(custom_particle)
