@@ -1130,7 +1130,7 @@ to link to an object named ``y``. If there is no object named ``y``,
 then Sphinx will issue this warning, which gets treated like an error.
 
 If the text is meant to be a code sample, surround it with double
-backticks. For example, change ```y``` to ``` ``y`` ```.
+backticks instead of single backticks.
 
 This warning may also occur when there is an extra space between a
 |role| and the argument it is intended to act on. For example, this
