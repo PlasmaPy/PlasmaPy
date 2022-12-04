@@ -328,7 +328,12 @@ extlinks = {
 
 python_role = "py:.*"
 
+number_like = r"[\-\+]?[0-9]*\.?e?\-?[0-9]*?"  # allows scientific notation
+start_collection = r"[\(\[\{]"
+end_collection_or_comma = r"[\)\]\}\,]?"
+
 nitpick_ignore_regex = [
+    (python_role, rf"{start_collection}?{number_like}{end_collection_or_comma}?"),
     (python_role, "and"),
     (python_role, "array .*"),
     (python_role, "array_like"),
