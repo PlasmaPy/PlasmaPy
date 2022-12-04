@@ -1125,22 +1125,23 @@ Reference target not found
 
 Warnings like ``py:obj reference target not found`` occur when Sphinx_
 attempts to interpret text as a Python object, but is unable to do so.
-For example, if a docstring includes `` `y` ``, Sphinx will attempt
+For example, if a docstring includes ```y```, Sphinx will attempt
 to link to an object named ``y``. If there is no object named ``y``,
 then Sphinx will issue this warning, which gets treated like an error.
 
 If the text is meant to be a code sample, surround it with double
-backticks. For example, change `` `y` `` to ``` ``y`` ```.
+backticks. For example, change ```y``` to ``` ``y`` ```.
 
 This warning may also occur when there is an extra space between a
 |role| and the argument it is intended to act on. For example, this
-warning would be fixed by changing `` :math: `y` `` to `` :math:`y` ``.
+warning would be fixed by changing ``:math: `y``` to
+``:math:`y```.
 
 When the text is meant to represent a code object like
-`` `astropy.units.Quantity` ``, then this warning usually indicates
+```astropy.units.Quantity``` , then this warning usually indicates
 either a typo or that the namespace is incorrect. For example, the
-warning resulting from `` `astropy.Quantity` `` can be resolved by
-changing it to `` `astropy.units.Quantity` ``).
+warning resulting from ```astropy.Quantity``` can be resolved by
+changing it to ```astropy.units.Quantity```).
 
 This warnings sometimes occurs in the type line of a |parameter| in a
 docstring. Sphinx attempts to interpret words in type lines as code
