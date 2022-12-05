@@ -1,4 +1,4 @@
-name: CI
+name: Documentation
 
 on:
   push:
@@ -22,7 +22,7 @@ jobs:
       matrix:
         include:
 
-        - name: Documentation
+        - name: Build documentation
           python: '3.10'
           noxenv: build_docs
 
