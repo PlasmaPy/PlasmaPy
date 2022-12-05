@@ -170,6 +170,11 @@ def compute_coulomb(
         return coulomb.Coulomb_logarithm(T, n_i, ions, method=Coulomb)
     elif isinstance(Coulomb, (float, int)):
         return Coulomb
+    else:
+        raise ValueError(
+            "Argument 'Coulomb' is of incorrect type, received "
+            f"{Coulomb} of type {type(Coulomb)}."
+        )
 
 
 def Hellinger(
@@ -189,7 +194,7 @@ def Hellinger(
     kwargs: dict
         Arguments required for the specified method, each method
         requires differing inputs. See notes section below for
-        additinoal details.
+        additional details.
 
     Returns
     -------
@@ -328,13 +333,13 @@ def Hellinger_2009(
     and
 
     .. math::
-        v_{\alpha \beta} = \sqrt{\frac{v_{\alpha \parallel}^{2} +
+        v_{\alpha \beta \parallel} = \sqrt{\frac{v_{\alpha \parallel}^{2} +
         v_{\beta \parallel}^{2}}{2}}
 
     such that :math:`q` is the charge of the respective species,
     :math:`n` is the ion density of the species of interest,
     :math:`m` is the mass of the respective species and
-    :math:`v_{parallel}` is the parallel speed of the respective
+    :math:`v_{\parallel}` is the parallel speed of the respective
     species.
 
     The following methods are supported by the Coulomb Logarithm
@@ -481,13 +486,13 @@ def Hellinger_2010(
     and
 
     .. math::
-        v_{\alpha \beta} = \sqrt{\frac{v_{\alpha \parallel}^{2} +
+        v_{\alpha \beta \parallel} = \sqrt{\frac{v_{\alpha \parallel}^{2} +
         v_{\beta \parallel}^{2}}{2}}
 
     such that :math:`q` is the charge of the respective species,
     :math:`n` is the ion density of the species of interest,
     :math:`m` is the mass of the respective species and
-    :math:`v_{parallel}` is the parallel speed of the respective
+    :math:`v_{\parallel}` is the parallel speed of the respective
     species. Note :math:`\,_2F_1` is the standard Gauss hyper geometric
     function.
 
@@ -640,12 +645,12 @@ def Hellinger_2016(
     and
 
     .. math::
-        v_{\alpha \beta} = \sqrt{\frac{v_{\alpha \parallel}^{2} +
+        v_{\alpha \beta \parallel} = \sqrt{\frac{v_{\alpha \parallel}^{2} +
         v_{\beta \parallel}^{2}}{2}}
 
     such that :math:`q` is the charge of the respective species,
     :math:`n` is the ion density, :math:`m` is the mass of the
-    respective species and :math:`v_{parallel}` is the parallel speed
+    respective species and :math:`v_{\parallel}` is the parallel speed
     of the respective species.
 
     Note :math:`\,_2F_1` is the standard
