@@ -82,7 +82,37 @@ class validate:
                 "Argument 'speeds' can only take 2 inputs, received "
                 f"{speeds} with {speeds.ndim} inputs."
             )
+            for speed in speeds:
+                if not isinstance(speed, astropy.units.Quantity):
+                    raise TypeError(
+                        f"Argument in 'speeds' {speed} is of incorrect"
+                        f" type, received {type(speed)} but expected "
+                        f"type of `astropy.units.Quantity`."
+                    )
         return speeds
+
+    def Coulomb(
+        Coulomb,
+    ):
+        valid_str = ["classical", "ls", "ls_min_interp", "GMS-1", "ls_full_interp", "GMS-2", "ls_clamp_mininterp", "GMS-3", "hls_min_interp", "GMS-4", "hls_max_interp", "GMS-5", "hls_full_interp", "GMS-6"]
+
+        if Coulomb is None:
+            return "classical"
+        elif isinstance(Coulomb, str):
+            if Coulomb not in valid_str:
+                raise ValueError(
+                    "Argument 'Coulomb' was received as a str, but the"
+                    " specific method type provided is not supported. "
+                    f"Received {Coulomb} and valid entries are {valid_str}."
+                )
+        elif isinstance(Coulomb, (float, int)):
+            return Coulomb
+        else:
+            raise TypeError(
+                "Argument, 'Coulomb' can either be a numerical value, "
+                "float or int, or a str specifying the desired method."
+                " Currently supported methods are listed in notes"
+            )
 
     # Validate any temperature argument
     @validate_quantities(
@@ -113,17 +143,18 @@ class validate:
             )
         return T
 
-    def method(
-        method,
-    ):
-        print(method, type(method))
-        if method is None:
-            return
-        elif not isinstance(method, str):
-            raise TypeError(
-                "Argument 'method' is of incorrect type, got type "
-                f"of {type(method)} and type of str is required."
-            )
+
+def compute_coulomb(
+    Coulomb,
+    T,
+    n_i,
+    ions,
+):
+    Coulomb = validate.Coulomb(Coulomb)
+    if isinstance(Coulomb, str):
+        return coulomb.Coulomb_logarithm(T, n_i, ions, method=Coulomb)
+    elif isinstance(Coulomb, (float, int)):
+        return Coulomb
 
 
 def Hellinger(
@@ -186,13 +217,12 @@ def Hellinger(
 
     return functions[method](**inputs)
 
-
 def Hellinger_2009(
     T: u.K,
     n_i: u.m**-3,
     ions: (Particle, Particle),
     par_speeds: u.m / u.s,
-    method=None,
+    Coulomb=None,
 ):
     r"""
     Compute the collisional timescale as presented by :cite:t:`hellinger:2009`.
@@ -218,9 +248,11 @@ def Hellinger_2009(
         the PARALLEL velocity with units of  in each entry. (e.g [
         500 * u.m / u.s, 745 * u.m / u.s]).
 
-    method : `str`
-        A string specifying the desired method for the Coulomb
-        logarithm, for options please the notes section below.
+    Coulomb : `str`, `int` or `float`
+        Can either be a string specifying the desired method for the
+        Coulomb logarithm, for options please the notes section below.
+        Or can be a numerical value specified for use instead, if no
+        value is provided then option will default to classical.
 
     Returns
     -------
@@ -308,8 +340,8 @@ def Hellinger_2009(
     n_i = validate.n_i(n_i)
     ions = validate.ions(ions)
     par_speeds = validate.speeds(par_speeds)
-    print(method, 'here')
-    method = validate.method(method)
+
+    Coulomb = compute_coulomb(Coulomb, T, n_i, ions)
 
     v_par = np.sqrt((par_speeds[0].value ** 2 + par_speeds[1].value ** 2) / 2)
 
@@ -322,9 +354,7 @@ def Hellinger_2009(
         * (v_par**3)
     )
 
-    c = coulomb.Coulomb_logarithm(T, n_i, ions, method=method)
-
-    return ((a / b.value) * c) / u.s
+    return ((a / b.value) * Coulomb) / u.s
 
 
 def Hellinger_2010(
@@ -333,7 +363,7 @@ def Hellinger_2010(
     n_i: u.m**-3,
     ions: (Particle, Particle),
     par_speeds: u.m / u.s,
-    method=None,
+    Coulomb=None,
 ):
     r"""
     Compute the collisional timescale as presented by :cite:t:`hellinger:2010`.
@@ -362,9 +392,12 @@ def Hellinger_2010(
         the PARALLEL velocity with units of  in each entry. (e.g [
         500 * u.m / u.s, 745 * u.m / u.s]).
 
-    method : `str`
-        A string specifying the desired method for the Coulomb
-        logarithm, for options please the notes section below.
+    Coulomb : `str`, `int` or `float`
+        Can either be a string specifying the desired method for the
+        Coulomb logarithm, for options please the notes section below.
+        Or can be a numerical value specified for use instead, if no
+        value is provided then option will default and compute the
+        Coulomb logarithm as classical.
 
     Returns
     -------
@@ -456,13 +489,12 @@ def Hellinger_2010(
 
     """
 
-    # Validate other arguments
+    # Validate arguments
     T_par = validate.temp(T_par)
     T_perp = validate.temp(T_perp)
     n_i = validate.n_i(n_i)
     ions = validate.ions(ions)
     par_speeds = validate.speeds(par_speeds)
-    method = validate.method(method)
 
     if T_par == 0:
         raise ValueError(
@@ -472,7 +504,7 @@ def Hellinger_2010(
     else:
         T = (2 * T_perp + T_par) / 3
         return (
-            Hellinger_2009(T, n_i, ions, par_speeds, method)
+            Hellinger_2009(T, n_i, ions, par_speeds, Coulomb)
             * 3
             / 5
             * gh(a=2, b=1.5, c=7 / 2, x=(1 - (T_perp / T_par)))
@@ -486,7 +518,7 @@ def Hellinger_2016(
     ions: (Particle, Particle),
     par_speeds: (u.m / u.s, u.m / u.s),
     perp_speeds: (u.m / u.s, u.m / u.s),
-    method=None,
+    Coulomb=None,
 ):
     r"""
     Compute the collisional timescale as presented by :cite:t:`hellinger:2016`.
@@ -520,7 +552,7 @@ def Hellinger_2016(
         the PERPENDICULAR velocity with units of  in each entry. (e.g [
         500 * u.m / u.s, 745 * u.m / u.s]).
 
-    method : `str`
+    Coulomb : `str`
         A string specifying the desired method for the Coulomb
         logarithm, for options please the notes section below.
 
@@ -622,7 +654,6 @@ def Hellinger_2016(
     ions = validate.ions(ions)
     par_speeds = validate.speeds(par_speeds)
     perp_speeds = validate.speeds(perp_speeds)
-    method = validate.method(method)
 
     # Check for divide by zero error with t_par
     if T_par == 0:
@@ -632,7 +663,7 @@ def Hellinger_2016(
         )
     else:
         T = (2 * T_perp + T_par) / 3
-
+        Coulomb = compute_coulomb(Coulomb, T, n_i, ions)
         vstpar = np.sqrt((par_speeds[0] ** 2 + par_speeds[1] ** 2) / 2)
 
         Ast = (ions.mass[0] * T_perp[1] + ions.mass[1] * T_perp[0]) / (
@@ -644,6 +675,6 @@ def Hellinger_2016(
 
         vst = vs - vt
 
-        return Hellinger_2009(T, n_i, ions, par_speeds, method) * hyper2d(
+        return Hellinger_2009(T, n_i, ions, par_speeds, Coulomb) * hyper2d(
             1, 1.5, 2.5, 1 - Ast, Ast * (vst**2 / 4 * vstpar**2)
         )
