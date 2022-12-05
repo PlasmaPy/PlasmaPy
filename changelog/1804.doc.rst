@@ -1,1 +1,1 @@
-created a notebook that demonstrates how to use the stix() function 
+created a notebook that demonstrates how to use the stix() function
