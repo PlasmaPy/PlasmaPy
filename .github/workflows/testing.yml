@@ -123,10 +123,12 @@ jobs:
         python-version: '3.10'
 
     - name: Install nox
+      # Use a setup-nox action?
       run: python -m pip install --progress-bar off --upgrade nox
 
     - name: Install graphviz and pandoc
-      run: brew install graphviz pandoc
+      # Use setup-graphviz and/or setup-pandoc actions?
+      run: brew install graphviz pandoc --quiet
 
     - name: Build documentation
       run: nox -e build_docs -- -q
