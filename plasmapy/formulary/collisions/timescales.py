@@ -94,7 +94,22 @@ class validate:
     def Coulomb(
         Coulomb,
     ):
-        valid_str = ["classical", "ls", "ls_min_interp", "GMS-1", "ls_full_interp", "GMS-2", "ls_clamp_mininterp", "GMS-3", "hls_min_interp", "GMS-4", "hls_max_interp", "GMS-5", "hls_full_interp", "GMS-6"]
+        valid_str = [
+            "classical",
+            "ls",
+            "ls_min_interp",
+            "GMS-1",
+            "ls_full_interp",
+            "GMS-2",
+            "ls_clamp_mininterp",
+            "GMS-3",
+            "hls_min_interp",
+            "GMS-4",
+            "hls_max_interp",
+            "GMS-5",
+            "hls_full_interp",
+            "GMS-6",
+        ]
 
         if Coulomb is None:
             return "classical"
@@ -216,6 +231,7 @@ def Hellinger(
         )
 
     return functions[method](**inputs)
+
 
 def Hellinger_2009(
     T: u.K,
