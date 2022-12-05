@@ -1,4 +1,4 @@
-name: CI with nox
+name: CI
 
 on:
   push:
@@ -126,7 +126,7 @@ jobs:
       run: python -m pip install --progress-bar off --upgrade nox
 
     - name: Install graphviz and pandoc
-      run: sudo apt-get install graphviz pandoc
+      run: brew install graphviz pandoc
 
     - name: Build documentation
       run: nox -e build_docs -- -q -j auto
