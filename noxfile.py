@@ -4,13 +4,6 @@ nox.options.sessions = ["tests", "linters"]
 
 python_versions = ("3.8", "3.9", "3.10")
 
-sphinx_paths = ["docs", "docs/_build/html"]
-sphinx_fail_on_warnings = ["-W", "--keep-going"]
-sphinx_builder = ["-b", "html"]
-sphinx_opts = sphinx_paths + sphinx_fail_on_warnings + sphinx_builder
-sphinx_no_notebooks = ["-D", "nbsphinx_execute=never"]
-sphinx_nitpicky = ["-n"]
-
 pytest_options = ["--showlocals"]
 
 
@@ -40,6 +33,13 @@ def import_package(session):
     session.run("python", "-c", "import plasmapy")
 
 
+sphinx_paths = ["docs", "docs/_build/html"]
+sphinx_fail_on_warnings = ["-W", "--keep-going"]
+sphinx_builder = ["-b", "html", "-n"]
+sphinx_opts = sphinx_paths + sphinx_fail_on_warnings + sphinx_builder
+sphinx_skip_notebooks = ["-D", "nbsphinx_execute=never"]
+
+
 @nox.session
 def build_docs(session):
     session.install("-r", "requirements/docs.txt")
@@ -52,24 +52,12 @@ def build_docs(session):
 
 
 @nox.session
-def build_docs_nitpicky(session):
-    session.install("-r", "requirements/docs.txt")
-    session.install(".")
-    session.run(
-        "sphinx-build",
-        *sphinx_opts,
-        *sphinx_nitpicky,
-        *session.posargs,
-    )
-
-
-@nox.session
 def build_docs_no_examples(session):
     session.install("-r", "requirements/docs.txt")
     session.install(".")
     session.run(
         "sphinx-build",
         *sphinx_opts,
-        *sphinx_no_notebooks,
+        *sphinx_skip_notebooks,
         *session.posargs,
     )
