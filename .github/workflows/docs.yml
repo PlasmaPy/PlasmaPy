@@ -44,7 +44,7 @@ jobs:
 
     - name: Install graphviz and pandoc
       # Use setup-graphviz and/or setup-pandoc actions?
-      run: brew install graphviz pandoc --quiet
+      run: sudo apt install graphviz pandoc
 
     - name: Build documentation
       run: nox -e build_docs -- -q
