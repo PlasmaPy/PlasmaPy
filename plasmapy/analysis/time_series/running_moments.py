@@ -78,7 +78,7 @@ def running_moment(signal, radius, moment=1, time=None):
 
     Returns
     -------
-    Running_Moment
+    tuple
         namedtuple with the following fields:
 
         - run_moment: 1D |array_like|
