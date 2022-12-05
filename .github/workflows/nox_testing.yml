@@ -1,0 +1,103 @@
+name: CI
+
+on:
+  push:
+    branches:
+    - main
+    - stable
+    - v*.*.x
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+
+  initial-tests:
+    name: ${{ matrix.name }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+
+      matrix:
+        include:
+
+        - name: Python 3.11 (Windows)
+          os: windows-latest
+          noxenv: tests-3.11
+          python: '3.11'
+          noxposargs: --durations=10
+
+        - name: Linters
+          os: ubuntu-latest
+          python: '3.11'
+          noxenv: linters
+
+        - name: Import package
+          os: windows-latest
+          python: '3.11'
+          noxenv: import_package
+
+    steps:
+
+    - name: Checkout code
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python }}
+
+    - name: Install nox
+      run: python -m pip install --progress-bar off --upgrade nox
+
+    - name: ${{ matrix.name }}
+      run: nox -s ${{ matrix.noxenv }} -- ${{ matrix.noxposargs }}
+
+  comprehensive-tests:
+    name: ${{ matrix.name }}
+    runs-on: ${{ matrix.os }}
+    needs: initial-tests
+    strategy:
+      fail-fast: false
+
+      matrix:
+        include:
+
+        - name: Python 3.10 (Mac OS)
+          os: macos-latest
+          noxenv: tests-3.10
+          python: '3.10'
+
+        - name: Python 3.8 (Windows)
+          os: windows-latest
+          python: 3.8
+          noxenv: tests-3.8
+
+        - name: Python 3.9 (Ubuntu)
+          os: ubuntu-latest
+          python: 3.9
+          noxenv: tests-3.9
+
+        - name: Import package
+          os: windows-latest
+          python: 3.9
+          noxenv: import_package
+
+    steps:
+
+    - name: Checkout code
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python }}
+
+    - name: Install nox
+      run: python -m pip install --progress-bar off --upgrade nox
+
+    - name: ${{ matrix.name }}
+      run: nox -s ${{ matrix.noxenv }} -- ${{ matrix.noxposargs }}
