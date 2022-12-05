@@ -112,6 +112,17 @@ class TestGyroradius:
             ((B_arr, "e-"), {"Vperp": V, "T": T_nanarr}, ValueError),
             ((B_arr, "e-"), {"Vperp": V_nanarr, "T": T_i}, ValueError),
             ((0.4 * u.T, "e-"), {"T": 5 * u.eV, "T_i": 7 * u.eV}, ValueError),
+            ((B_arr, "e-"), {"lorentzfactor": [3.0, 2.0]}, ValueError),
+            (
+                (B_arr, "e-"),
+                {"Vperp": [25, np.nan] * u.m / u.s, "lorentzfactor": [3.0, 2.0]},
+                ValueError,
+            ),
+            (
+                (1 * u.T,),
+                {"particle": "e-", "lorentzfactor": 2.0, "relativistic": False},
+                ValueError,
+            ),
         ],
     )
     def test_raises(self, args, kwargs, _error):
@@ -198,6 +209,18 @@ class TestGyroradius:
                 (B_arr,),
                 {"particle": "e-", "T": T_arr},
                 [0.03130334, 0.02213481] * u.m,
+                1e-5,
+            ),
+            (
+                (B_arr,),
+                {"particle": "e-", "T": T_arr, "lorentzfactor": 1.0},
+                [0.03130334, 0.02213481] * u.m,
+                None,
+            ),
+            (
+                (B_arr,),
+                {"particle": "e-", "T": T_arr, "lorentzfactor": [1.0, 1.0]},
+                [0.03130334, 0.02213481] * u.m,
                 None,
             ),
             (
@@ -220,7 +243,7 @@ class TestGyroradius:
                 ([0.001, 0.002] * u.T, "e-"),
                 {"Vperp": [25, np.nan] * u.m / u.s, "T": [np.nan, 2e6] * u.K},
                 [1.42140753e-07, 2.21348073e-02] * u.m,
-                None,
+                1e-5,
             ),
             #
             # If either Vperp or T is a valid scalar and the other is a Qarray of
@@ -235,6 +258,30 @@ class TestGyroradius:
                 ([0.001, 0.002] * u.T, "e-"),
                 {"Vperp": [np.nan, np.nan] * u.m / u.s, "T": 1e6 * u.K},
                 [0.03130334, 0.01565167] * u.m,
+                1e-5,
+            ),
+            (
+                (1 * u.T,),
+                {"particle": "e-", "lorentzfactor": 2.0},
+                0.0029522962 * u.m,
+                None,
+            ),
+            (
+                ([0.001, 0.002] * u.T, "e-"),
+                {"Vperp": [20.5, 10.5] * u.m / u.s, "lorentzfactor": [2.0, 1.0]},
+                [2.33110834e-07, 2.98495580e-08] * u.m,
+                None,
+            ),
+            (
+                ([0.001, 0.002] * u.T, "e-"),
+                {"Vperp": [20.5, 10.5] * u.m / u.s, "lorentzfactor": [1.0, np.nan]},
+                [1.16555417e-07, 2.98495580e-08] * u.m,
+                None,
+            ),
+            (
+                (0.2 * u.T, "e-"),
+                {"T": 100000 * u.K, "relativistic": False},
+                4.94949337e-05 * u.m,
                 None,
             ),
         ],
