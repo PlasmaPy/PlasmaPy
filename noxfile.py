@@ -10,14 +10,13 @@ pytest_options = ["--showlocals"]
 
 @nox.session(python=python_versions)
 def tests(session):
-    session.install("-r", "requirements/tests.txt")
-    session.install(".")
+    session.install(".[tests]")
     session.run("pytest", *pytest_options)
 
 
 @nox.session
 def linters(session):
-    session.install("-r", "requirements/tests.txt")
+    session.install(".[tests]")
     flake8_options = ["--count", "--show-source", "--statistics"]
     session.run("flake8", "plasmapy", *flake8_options, *session.posargs)
 
@@ -48,22 +47,22 @@ https://docs.plasmapy.org/en/latest/contributing/doc_guide.html#troubleshooting
 
 @nox.session
 def build_docs(session):
-    session.install("-r", "requirements/docs.txt")
-    session.install(".")
+    session.install(".[docs]")
     session.run(
         "sphinx-build",
         *sphinx_opts,
         *session.posargs,
     )
+    print(post_doc_build_comments)
 
 
 @nox.session
 def build_docs_no_examples(session):
-    session.install("-r", "requirements/docs.txt")
-    session.install(".")
+    session.install(".[docs]")
     session.run(
         "sphinx-build",
         *sphinx_opts,
         *sphinx_skip_notebooks,
         *session.posargs,
     )
+    print(post_doc_build_comments)
