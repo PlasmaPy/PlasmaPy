@@ -1,8 +1,9 @@
 import nox
 
-nox.options.sessions = ["tests", "linters"]
+nox.options.sessions = ["tests", "linters", "codespell"]
 
 python_versions = ("3.8", "3.9", "3.10")
+newest_python_version = python_versions[-1]
 
 pytest_options = ["--showlocals"]
 
@@ -38,6 +39,11 @@ sphinx_fail_on_warnings = ["-W", "--keep-going"]
 sphinx_builder = ["-b", "html", "-n"]
 sphinx_opts = sphinx_paths + sphinx_fail_on_warnings + sphinx_builder
 sphinx_skip_notebooks = ["-D", "nbsphinx_execute=never"]
+
+post_doc_build_comments = """
+For troubleshooting documentation builds, check out:
+https://docs.plasmapy.org/en/latest/contributing/doc_guide.html#troubleshooting
+"""
 
 
 @nox.session
