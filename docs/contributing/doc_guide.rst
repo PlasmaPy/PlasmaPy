@@ -967,27 +967,33 @@ docstring using the following format:
 
 .. code-block:: rst
 
-   parameter_name : type description
-      Parameter description.
+   parameter_name : type line
+       Parameter description.
 
 Some examples are:
 
 .. code-block:: rst
 
    x : `float`
-      Description of ``x``.
+       Description of ``x``.
 
    y : `int`
-      Description of ``y``.
+       Description of ``y``.
 
    settings : `dict` of `str` to `int`
-      Description of ``settings``.
+       Description of ``settings``.
 
-The **type description** should include size information; type
-information; valid options for the parameter; whether the parameter
-is optional, |keyword-only|, or positional-only; and/or default values.
+The **type line** may include:
 
-Example of type descriptions include:
+* Size and/or shape information
+* Type information
+* Valid choices for the parameter
+* Whether the parameter is optional, |keyword-only|, and/or
+  positional-only
+* Default values
+
+The type line should not include information about the *meaning* of the
+parameter. Here are some example type lines:
 
 .. code-block:: rst
 
@@ -997,27 +1003,8 @@ Example of type descriptions include:
    |Quantity| [length], default: 10 m
    |Quantity| [temperature, energy], |keyword-only|, default: 0 K
 
-* If the shapes and sizes of the parameters are interrelated, then
-  include that information in parentheses immediately before the type
-  information. Include a trailing comma inside the parentheses when the
-  parameter is 1D. Use ``...`` to represent an arbitrary number of
-  dimensions of arbitrary size.
-
-  .. code-block:: rst
-
-     Parameters
-     ----------
-     x_positions : (M,) |array_like|
-         ...
-
-     y_positions : (N,) |array_like|
-         ...
-
-     image : (M, N) |array_like|
-         ...
-
-* Use the substitution ``|array_like|`` to indicate that an |array_like|
-  argument should be able to be converted into an |ndarray|.
+* Use the substitution ``|array_like|`` to indicate that an |argument|
+  must be |array_like| (i.e., convertible into an |ndarray|.
 
 * Use the substitution ``|particle-like|`` to indicate that a
   |particle-like| argument should be convertible into a |Particle|,
@@ -1025,8 +1012,25 @@ Example of type descriptions include:
   ``|particle-list-like|`` to indicate that an argument should be
   convertible into a |ParticleList|.
 
-* Use |atom-like| to...
+* Use ``|atom-like|`` to indicate that an argument must be |atom-like|
+  (i.e., an element, isotope, and/or ion).
 
+* If the shapes and sizes of the parameters are interrelated, then
+  include that information in parentheses immediately before the type
+  information. Include a trailing comma inside the parentheses when the
+  parameter is 1D. Use ``...`` to represent an arbitrary number of
+  dimensions of arbitrary size and a ``:`` to represent a single
+  dimension of arbitrary size.
+
+  .. code-block:: rst
+
+     (M,) |array_like|
+     (N,) |array_like|
+     (M, N) |array_like|
+     (M, N, ...) |array_like|
+     (N, :) |array_like|
+     1D |array_like|
+     3D |array_like|
 
 If a default is given, it is not necessary to state that the
 parameter is optional. When the default is `None`, use ``optional``
@@ -1040,38 +1044,26 @@ instead of ``default: `None```.
    or the `matplotlib documentation guide
    <https://matplotlib.org/stable/devel/documenting_mpl.html#parameter-type-descriptions>`__.
 
-* The **parameter description** should include the meaning of the
-  parameter. Information from the type description may be included if
-  the information is complicated and/or different types correspond to
-  different meanings.
+The **parameter description** should concisely describe the meaning of
+the parameter, as well as any requirements or restrictions on allowed
+values of the parameter (including those specified by
+|validate_quantities| or |particle_input|. The parameter description may
+include information that does not fit in the type line.
 
+For functions that accept an arbitrary number of positional and/or
+keyword arguments, include them in the "Parameters_" section with the
+preceding asterisk(s).
 
+.. code-block:: rst
 
+   *args : tuple, optional
+       Description of positional arguments.
 
+   **kwargs : dict, optional
+       Description of keyword arguments.
 
-
-* Describe any requirements for the parameter, including preconditions
-  specified using |validate_quantities| or |particle_input|.
-
-
-
-
-
-  Use an asterisk (``*``) for a dimension that can be of arbitrary
-  size, and an ellipsis (``...``) to represent an arbitrary number of
-  dimensions that can each be of arbitrary size.
-
-* For functions that accept an arbitrary number of positional and/or
-  keyword arguments, include them in the "Parameters_" section with the
-  preceding asterisk(s).
-
-  .. code-block:: rst
-
-     *args : tuple, optional
-         Description of positional arguments.
-
-     **kwargs : dict, optional
-         Description of keyword arguments.
+When the type line exceeds ∼72 characters, use the following indentation
+pattern to split it up over multiple lines:
 
 Exceptions and warnings
 ~~~~~~~~~~~~~~~~~~~~~~~
