@@ -49,7 +49,9 @@ class MagneticDipole(MagnetoStatics):
 
     Parameters
     ----------
-    moment: `~astropy.units.Quantity`
+    moment: `~astropy.units.Quantity` or `plasmapy.particles.particle_class.Particle`
+            or `int` or `str` or `TypeError`
+
         Magnetic moment vector, in units of A m\ :sup:`2`\ .
 
     p0: `~astropy.units.Quantity`
