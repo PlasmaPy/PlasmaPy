@@ -551,13 +551,13 @@ def Maxwellian_speed_2D(
     v, T, particle: ParticleLike = "e", v_drift=0, vTh=np.nan, units="units"
 ):
     r"""
-    Probability distribution function of speed for a Maxwellian distribution
-    in 2D.
+    Probability distribution function of speed for a Maxwellian
+    distribution in 2D.
 
-    Return the probability density function of finding a particle with speed components
-    ``vx`` and ``vy`` in m/s in an equilibrium plasma of temperature
-    ``T`` which follows the 2D Maxwellian distribution function. This
-    function assumes Cartesian coordinates.
+    Return the probability density function of finding a particle with
+    speed components ``vx`` and ``vy`` in m/s in an equilibrium plasma
+    of temperature ``T`` which follows the 2D Maxwellian distribution
+    function. This function assumes Cartesian coordinates.
 
     Parameters
     ----------
@@ -567,18 +567,18 @@ def Maxwellian_speed_2D(
     T: `~astropy.units.Quantity`
         The temperature, preferably in kelvin.
 
-    particle: `str`, optional
-        Representation of the particle species(e.g., ``'p'`` for protons, ``'D+'``
-        for deuterium, or ``'He-4 +1'`` for singly ionized helium-4),
-        which defaults to electrons.
+    particle: |particle-like|, optional
+        Representation of the particle species(e.g., ``'p'`` for protons,
+        ``'D+'`` for deuterium, or ``'He-4 +1'`` for singly ionized
+        helium-4), which defaults to electrons.
 
     v_drift: `~astropy.units.Quantity`
         The drift speed in units convertible to m/s.
 
     vTh: `~astropy.units.Quantity`, optional
         Thermal velocity (most probable) in m/s. This is used for
-        optimization purposes to avoid re-calculating ``vTh``, for example
-        when integrating over velocity-space.
+        optimization purposes to avoid re-calculating ``vTh``, for
+        example when integrating over velocity-space.
 
     units: `str`, optional
         Selects whether to run function with units and unit checks (when
@@ -602,13 +602,13 @@ def Maxwellian_speed_2D(
         If the parameters is not in appropriate units.
 
     `ValueError`
-        If the temperature is negative, or the particle mass or charge state
-        cannot be found.
+        If the temperature is negative, or the particle mass or charge
+        state cannot be found.
 
     Notes
     -----
-    In 2D, the Maxwellian speed distribution function describing
-    the distribution of particles with speed :math:`v` in a plasma with
+    In 2D, the Maxwellian speed distribution function describing the
+    distribution of particles with speed :math:`v` in a plasma with
     temperature :math:`T` is given by:
 
     .. math::

@@ -1,8 +1,8 @@
 """
-Welcome to the `plasmapy` package, an open source community-developed Python
-package for the plasma community.  Documentation is available in the docstrings
-and online at https://docs.plasmapy.org (accessible also using the
-:func:`~plasmapy.online_help` function).
+Welcome to the `plasmapy` package, an open source community-developed
+Python package for the plasma community. Documentation is available in
+the docstrings and `online <https://docs.plasmapy.org>`__ (accessible
+also using the :func:`plasmapy.online_help` function).
 """
 __all__ = [
     "online_help",

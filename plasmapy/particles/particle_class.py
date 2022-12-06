@@ -1910,7 +1910,8 @@ class DimensionlessParticle(AbstractParticle):
     def _validate_parameter(obj, can_be_negative=True) -> np.float64:
         """Verify that the argument corresponds to a valid real number."""
 
-        # TODO: Replace with validator? Use an equivalency between coulombs and reals.
+        # TODO: Replace with validator? Use an equivalency between
+        # coulombs and reals
 
         if obj is None or obj is np.nan:
             return np.nan
