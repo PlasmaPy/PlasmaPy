@@ -967,7 +967,7 @@ docstring using the following format:
 
 .. code-block:: rst
 
-   parameter_name : type line
+   parameter_name : type specification
        Parameter description.
 
 Some examples are:
@@ -983,7 +983,10 @@ Some examples are:
    settings : `dict` of `str` to `int`
        Description of ``settings``.
 
-The **type line** may include:
+Type specifications
+^^^^^^^^^^^^^^^^^^^
+
+The **type specification** may include:
 
 * Size and/or shape information
 * Type information
@@ -992,8 +995,8 @@ The **type line** may include:
   positional-only
 * Default values
 
-The type line should not include information about the *meaning* of the
-parameter. Here are some example type lines:
+The type specification should not include information about the
+*meaning* of the parameter. Here are some example type specifications:
 
 .. code-block:: rst
 
@@ -1032,27 +1035,43 @@ parameter. Here are some example type lines:
      1D |array_like|
      3D |array_like|
 
-If a default is given, it is not necessary to state that the
-parameter is optional. When the default is `None`, use ``optional``
-instead of ``default: `None```.
+* If the parameter can only be specific values, enclose them in curly
+  brackets. The options may be listed with the default value first,
+  sorted alphanumerically, or ordered so as to maximize readability.
 
-.. note::
+  .. code-block::
 
-   Many of these conventions and examples come from the `numpydoc
-   style guide
-   <https://numpydoc.readthedocs.io/en/latest/format.html#parameters>`__
-   or the `matplotlib documentation guide
-   <https://matplotlib.org/stable/devel/documenting_mpl.html#parameter-type-descriptions>`__.
+     {"classical postmodernist", "retrofuturistic"}
+     {"p+", "e-"}, default: "p+"
+     {1, 2, 3, 4}, default: 3
+
+* If a default is given, it is not necessary to state that the
+  parameter is optional. When the default is `None`, use ``optional``
+  instead of ``default: `None```.
+
+.. tip::
+
+   If a particular type specification is not covered above,
+   look for conventions from the `numpydoc style guide
+   <https://numpydoc.readthedocs.io/en/latest/format.html#parameters>`__,
+   the `matplotlib documentation guide
+   <https://matplotlib.org/stable/devel/documenting_mpl.html#parameter-type-descriptions>`__,
+   or the `LSST docstring guide
+   <https://developer.lsst.io/python/numpydoc.html>`__.
+
+Parameter descriptions
+^^^^^^^^^^^^^^^^^^^^^^
 
 The **parameter description** should concisely describe the meaning of
 the parameter, as well as any requirements or restrictions on allowed
 values of the parameter (including those specified by
 |validate_quantities| or |particle_input|. The parameter description may
-include information that does not fit in the type line.
+include information that does not fit in the type specification.
 
 For functions that accept an arbitrary number of positional and/or
 keyword arguments, include them in the "Parameters_" section with the
-preceding asterisk(s).
+preceding asterisk(s). Order ``*args`` and ``**kwargs`` as they appear
+in the signature.
 
 .. code-block:: rst
 
@@ -1062,15 +1081,9 @@ preceding asterisk(s).
    **kwargs : dict, optional
        Description of keyword arguments.
 
-When the type line exceeds ∼72 characters, use the following indentation
-pattern to split it up over multiple lines:
+.. todo::
 
-.. code-block:: rst
-
-   parameter_name : `int`, `str`, `tuple`, `list`, `collections.namedtuple`,
-           `set`, `dict`, or `numpy.ndarray`
-
-       Parameter description...
+   Add a convention for multi-line type specifications.
 
 Exceptions and warnings
 ~~~~~~~~~~~~~~~~~~~~~~~
