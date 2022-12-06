@@ -1062,9 +1062,6 @@ preceding asterisk(s).
    **kwargs : dict, optional
        Description of keyword arguments.
 
-When the type line exceeds ∼72 characters, use the following indentation
-pattern to split it up over multiple lines:
-
 Exceptions and warnings
 ~~~~~~~~~~~~~~~~~~~~~~~
 
