@@ -136,7 +136,7 @@ def spectral_density_lite(
         .. math::
             W = 0.5*(\max{λ} - \min{λ})
 
-        Here :math:`\lambda` is the ``wavelengths`` array. This array will be
+        Here :math:`λ` is the ``wavelengths`` array. This array will be
         convolved with the spectral density function before it is
         returned.
 
@@ -376,14 +376,14 @@ def spectral_density(
 
     where :math:`χ_e` is the electron population susceptibility of the
     plasma and :math:`ε = 1 + ∑_e χ_e + ∑_i χ_i` is the total plasma
-    dielectric function (with :math:`χ_i` being the ion population of the
-    susceptibility), :math:`Z_i` is the charge of each ion, :math:`k` is
-    the scattering wavenumber, :math:`ω` is the scattering frequency,
-    and :math:`f_{e0,e}` and :math:`f_{i0,i}` are the electron and ion
-    velocity distribution functions, respectively. In this function, the
-    electron and ion velocity distribution functions are assumed to be
-    Maxwellian, making this function equivalent to Eq. 3.4.6 in
-    :cite:t:`sheffield:2011`\ .
+    dielectric function (with :math:`χ_i` being the ion population of
+    the susceptibility), :math:`Z_i` is the charge of each ion,
+    :math:`k` is the scattering wavenumber, :math:`ω` is the scattering
+    frequency, and :math:`f_{e0,e}` and :math:`f_{i0,i}` are the
+    electron and ion velocity distribution functions, respectively. In
+    this function, the electron and ion velocity distribution functions
+    are assumed to be Maxwellian, making this function equivalent to Eq.
+    3.4.6 in :cite:t:`sheffield:2011`\ .
 
     The number density of the e\ :sup:`th` electron populations is
     defined as
@@ -936,7 +936,7 @@ def spectral_density_model(wavelengths, settings, params):
             "should not include any `numpy.nan` values. "
             "Instead regions with no data should be removed from "
             "both the data and wavelength arrays using "
-            " `numpy.delete`."
+            "`numpy.delete`."
         )
 
     # TODO: raise an exception if the number of any of the ion or electron
