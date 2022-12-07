@@ -4,5 +4,7 @@ analyzing charged particle radiographs and creating synthetic radiographs.
 """
 __all__ = ["detector_stacks", "synthetic_radiography"]
 
-import detector_stacks
-import synthetic_radiography
+from plasmapy.diagnostics.charged_particle_radiography import (
+    detector_stacks,
+    synthetic_radiography,
+)
