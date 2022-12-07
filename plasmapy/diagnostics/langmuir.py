@@ -224,7 +224,7 @@ def swept_probe_analysis(
 
     probe_area : `~astropy.units.Quantity`
         The area of the probe exposed to plasma in units convertible to
-        m\ :math:`2`\ .
+        m\ :sup:`2`\ .
 
     gas_argument : argument to instantiate the |Particle| class.
         `str`, `int`, or `~plasmapy.particles.particle_class.Particle`
@@ -643,7 +643,7 @@ def get_ion_density_LM(
 
     probe_area : `~astropy.units.Quantity`
         The area of the probe exposed to plasma in units convertible to
-        m\ :math:`2`\ .
+        m\ :sup:`2`\ .
 
     gas : `~astropy.units.Quantity`
         The (mean) mass of the background gas in atomic mass units.
@@ -705,7 +705,7 @@ def get_electron_density_LM(
 
     probe_area : `~astropy.units.Quantity`
         The area of the probe exposed to plasma in units convertible to
-        m\ :math:`2`\ .
+        m\ :sup:`2`\ .
 
     Returns
     -------
@@ -1166,7 +1166,7 @@ def get_ion_density_OML(
 
     probe_area : `~astropy.units.Quantity`
         The area of the probe exposed to plasma in units convertible to
-        m\ :math:`2`\ .
+        m\ :sup:`2`\ .
 
     gas : `~astropy.units.Quantity`
         The (mean) mass of the background gas in atomic mass units.
