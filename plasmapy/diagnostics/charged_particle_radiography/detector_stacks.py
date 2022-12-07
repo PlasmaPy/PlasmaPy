@@ -50,12 +50,12 @@ class Layer:
         stopping_power : `~astropy.units.Quantity`
             The stopping power in the material. Either the linear stopping
             power (units of J/m) or the mass stopping power
-            (units convertable to J m\ :sup:`^2` / kg) can be provided. If the
+            (units convertible to J m\ :sup:`^2` / kg) can be provided. If the
             mass stopping power is provided, the material_density keyword
             is required.
 
         mass_density : `~astropy.units.Quantity`, optional
-            The material mass density in units convertable to kg/m\ :sup:`3`.
+            The material mass density in units convertible to kg/m\ :sup:`3`.
             This keyword is required if the provided stopping power is the
             mass stopping power.
 
@@ -81,16 +81,16 @@ class Layer:
                 raise ValueError(
                     "mass_density keyword is required if "
                     "stopping power is not provided in units "
-                    "convertable to J/m"
+                    "convertible to J/m"
                 )
 
             # Ensure the mass density has the right units
             try:
                 mass_density = mass_density.to(u.kg / u.m**3)
-            except u.UnitConversionError:
+            except u.UnitConversionError as e:
                 raise ValueError(
-                    "mass_density keyword must have units " "convertable to kg/m^3."
-                )
+                    "mass_density keyword must have units " "convertible to kg/m^3."
+                ) from e
 
             self.linear_stopping_power = (stopping_power * mass_density).to(u.J / u.m)
 
@@ -174,7 +174,6 @@ class Stack:
 
         energies = energies.to(u.J).value
 
-        # Deposited energy in MeV
         deposited_energy = np.zeros([len(self._layers), energies.size])
 
         for i, layer in enumerate(self._layers):
