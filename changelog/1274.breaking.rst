@@ -1,0 +1,6 @@
+Moved the charged particle radiography analysis codes into a new module
+`~plasmapy.diagnostics.charged_particle_radiography` containing synthetic
+radiograpy tools in
+`~plasmapy.diagnostics.charged_particle_radiography.synthetic_radiography`
+and detector stack calculation tools in
+`~plasmapy.diagnostics.charged_particle_radiography.detector_stacks`
