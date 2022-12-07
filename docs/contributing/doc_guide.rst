@@ -1191,7 +1191,7 @@ PlasmaPy's documentation build.
 To figure out if a new release caused the error, search PyPI_ for
 recently released packages, including `packages related to Sphinx`_ and
 any that came up in the error message. You can also check if the same
-documentation build failure happened in the last `weekly test`_ on the
+documentation build failure happened in the `weekly tests`_ on the
 ``main`` branch. After identifying the package that caused the error, a
 pull request can be submitted that sets a temporary maximum allowed
 version of the package that can be revisited later.
