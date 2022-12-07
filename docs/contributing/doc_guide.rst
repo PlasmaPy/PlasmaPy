@@ -1200,7 +1200,7 @@ version of the package that can be revisited later.
 
    When dealing with this kind of error, procrastination often pays off!
    🎈 These errors usually get resolved after the upstream package makes
-   a bugfix release, so it is usually better to wait a week before
+   a bugfix release, so it is typically better to wait a week before
    spending a large amount of time trying to fix it. 🕒
 
 .. |role| replace:: :term:`role`
