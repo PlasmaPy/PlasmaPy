@@ -504,9 +504,9 @@ Creating a documentation stub file for a new module
 
 When the narrative documentation does not index a subpackage (a
 directory) or module (a :file:`.py` file) with ``automodule``,
-``automodapi``, or the like, then it is required to create a stub file
-for that particular subpackage or module in |docs/api_static|_. For
-example, the stub file for `plasmapy.particles.atomic` is placed at
+``automodapi``, or the like, then a stub file must be created for that
+particular subpackage or module in |docs/api_static|_. For example, the
+stub file for `plasmapy.particles.atomic` is placed at
 :file:`docs/api_static/plasmapy.particles.atomic.rst` and its contents
 look like:
 
@@ -520,6 +520,18 @@ look like:
      .. currentmodule:: plasmapy.particles.atomic
 
      .. automodapi::  plasmapy.particles.atomic
+
+.. note::
+
+   If a pull request adds a new subpackage *and* a new module, then a
+   stub file must be created for both of them.
+
+   For example, suppose a pull request creates the ``plasmapy.io``
+   subpackage in the :file:`plasmapy/io` directory and the
+   ``plasmapy.io.readers`` module via :file:`plasmapy/io/readers.py`. It
+   will then be necessary to create stub files at both
+   :file:`docs/api_static/plasmapy.io.rst` and
+   :file:`docs/api_static/plasmapy.io.readers.rst`.
 
 Templating
 ~~~~~~~~~~
