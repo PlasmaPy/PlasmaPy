@@ -200,7 +200,7 @@ the same length as that heading.
    ~~~~~~~~~
 
 We can link to code objects by enclosing them in single backticks.
-This linking will work for Python_ commands as well as certain packages
+This linking will work for Python_ objects as well as certain packages
 like NumPy_, SciPy_, Astropy_, and pandas_. This linking is described in
 the section on :ref:`external-references`. In-line code examples may be
 enclosed in double backticks or specified using the ``:py:`` role.
@@ -1160,6 +1160,37 @@ When a new module or subpackage is created, it is usually necessary to
 :ref:`create a stub file <api-static>` for it in for it in
 |docs/api_static|_.
 
+Errors that are unrelated to a pull request
+-------------------------------------------
+
+Occasionally, documentation builds will start failing for reasons that
+have nothing to do with the changes made in a pull request. Such errors
+generally result from a new release of a package that is required for
+PlasmaPy's documentation build.
+
+.. tip::
+
+   If you are a new contributor and have encountered a strange
+   documentation build failure, first check recent issues_ to see if one
+   has already been created about it. If an issue has not already been
+   created, please `raise an issue about the documentation build
+   failure`_.
+
+To figure out if a new release caused the error, search PyPI_ for
+recently released packages, including `packages related to Sphinx`_ and
+any that came up in the error message. You can also check if the same
+documentation build failure happened in the last `weekly test`_ on the
+``main`` branch. After identifying the package that caused the error, a
+pull request can be submitted that sets a temporary maximum allowed
+version of the package that can be revisited later.
+
+.. tip::
+
+   When dealing with this kind of error, procrastination often pays off!
+   🎈 These errors usually get resolved after the upstream package makes
+   a bugfix release, so it is usually better to wait a week before
+   spending a large amount of time trying to fix it. 🕒
+
 .. |role| replace:: :term:`role`
 .. |roles| replace:: :term:`roles <role>`
 .. |directive| replace:: :term:`directive`
@@ -1169,10 +1200,14 @@ When a new module or subpackage is created, it is usually necessary to
 .. _configuration options: https://www.sphinx-doc.org/en/master/usage/configuration.html
 .. _define substitutions: https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html#substitution-definitions
 .. _doctests: https://docs.pytest.org/en/6.2.x/doctest.html
+.. _issues: https://github.com/PlasmaPy/PlasmaPy/issues
 .. _nested inline markup: https://docutils.sphinx-users.jp/docutils/docs/dev/rst/alternatives.html#nested-inline-markup
 .. _options to sphinx-build: https://www.sphinx-doc.org/en/master/man/sphinx-build.html#options
+.. _packages related to Sphinx: https://pypi.org/search/?q=sphinx+or+nbsphinx&o=-created&c=Framework+%3A%3A+Sphinx
 .. _parameters: https://numpydoc.readthedocs.io/en/latest/format.html#parameters
 .. _raise an issue: https://github.com/PlasmaPy/PlasmaPy/issues/new?title=Improve+documentation+for...&labels=Documentation
+.. _raise an issue about the documentation build failure:
+      https://github.com/PlasmaPy/PlasmaPy/issues/new?title=Documentation+build+failure&labels=Documentation
 .. _raises: https://numpydoc.readthedocs.io/en/latest/format.html#raises
 .. _raw string: https://docs.python.org/3/reference/lexical_analysis.html#literals
 .. _Read the Docs Sphinx Theme: https://sphinx-rtd-theme.readthedocs.io
