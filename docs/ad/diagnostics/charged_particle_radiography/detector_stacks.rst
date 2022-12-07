@@ -1,8 +1,8 @@
 .. _detector_stacks:
 
-*************************************
+********************************
 Charged Particle Detector Stacks
-*************************************
+********************************
 
 .. currentmodule:: plasmapy.diagnostics.charged_particle_radiography.detector_stacks
 

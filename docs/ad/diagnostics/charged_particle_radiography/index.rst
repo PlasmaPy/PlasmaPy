@@ -2,9 +2,9 @@
 
 .. _charged_particle_radiography:
 
-======================
+===================================================
 `plasmapy.diagnostics.charged_particle_radiography`
-======================
+===================================================
 
 .. toctree::
    :maxdepth: 1
