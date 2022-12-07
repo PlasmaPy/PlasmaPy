@@ -614,7 +614,7 @@ def test_saving_output(tmp_path):
     results_1 = sim.results_dict
 
     # Save result
-    path = os.path.join(tmp_path, "temp.npz")
+    path = tmp_path / "temp.npz"
     sim.save_results(path)
 
     # Load result
@@ -762,7 +762,7 @@ def test_add_wire_mesh():
     # Test a circular mesh
     run_mesh_example(extent=1 * u.mm)
 
-    # Test providng hdir
+    # Test providing hdir
     run_mesh_example(mesh_hdir=np.array([0.5, 0, 0.5]))
 
     # Test providing hdir and vdir

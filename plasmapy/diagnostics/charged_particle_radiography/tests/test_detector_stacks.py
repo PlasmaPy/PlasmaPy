@@ -99,9 +99,11 @@ def test_film_stack_deposition_curves(hdv2_stack):
     # Test deposition curves
     deposition_curves = hdv2_stack.deposition_curves(energies, return_only_active=False)
 
-    # Test that integral over all layers for each particle species is unity
     integral = np.sum(deposition_curves, axis=0)
-    assert np.allclose(integral, 1.0)
+    assert np.allclose(integral, 1.0), (
+        "The integral over all layers for each particle species "
+        "is not unity."
+    )
 
 
 def test_film_stack_energy_bands_active(hdv2_stack):
