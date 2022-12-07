@@ -505,32 +505,30 @@ def Coulomb_logarithm(
             "more information."
         )
 
+    # applying dimensionless units
     ln_Lambda = ln_Lambda.to(u.dimensionless_unscaled).value
 
-    min_ln_Lambda = np.nanmin(ln_Lambda)
-
-    if min_ln_Lambda < 2 and method in [
-        "classical",
-        "ls",
-        "ls_min_interp",
-        "GMS-1",
-        "ls_full_interp",
-        "GMS-2",
-    ]:
-        warnings.warn(
-            f"The calculation of the Coulomb logarithm has found a value of "
-            f"min(ln Λ) = {min_ln_Lambda:.4f} which is likely to be inaccurate "
-            f"due to strong coupling effects, in particular because "
-            f"{method = } assumes weak coupling.",
-            utils.CouplingWarning,
-        )
-    elif min_ln_Lambda < 4:
-        warnings.warn(
-            f"The calculation of the Coulomb logarithm has found a value of "
-            f"min(ln Λ) = {min_ln_Lambda:.4f}. Coulomb logarithms of ≲ 4 may "
-            f"have increased uncertainty due to strong coupling effects.",
-            utils.CouplingWarning,
-        )
+    # Allow NaNs through the < checks without warning
+    with np.errstate(invalid="ignore"):
+        if np.any(ln_Lambda < 2) and method in [
+            "classical",
+            "ls",
+            "ls_min_interp",
+            "GMS-1",
+            "ls_full_interp",
+            "GMS-2",
+        ]:
+            warnings.warn(
+                f"The Coulomb logarithm is {ln_Lambda}, and the specified "
+                f'method, "{method}", depends on weak coupling.',
+                utils.CouplingWarning,
+            )
+        elif np.any(ln_Lambda < 4):
+            warnings.warn(
+                f"The Coulomb logarithm is {ln_Lambda}, so strong "
+                "coupling effects may exist for the plasma.",
+                utils.CouplingWarning,
+            )
 
     return ln_Lambda
 
