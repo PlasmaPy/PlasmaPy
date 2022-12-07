@@ -777,7 +777,7 @@ def test_add_wire_mesh():
         run_mesh_example(extent=(1 * u.mm, 2 * u.mm, 3 * u.mm))
 
     # Test wire mesh completely blocks all particles (in this case because
-    # the wire diameter is absurdely large)
+    # the wire diameter is absurdly large)
     with pytest.raises(ValueError):
         run_mesh_example(wire_diameter=5 * u.mm)
 
