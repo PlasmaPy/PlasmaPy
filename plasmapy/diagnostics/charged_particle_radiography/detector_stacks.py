@@ -59,8 +59,8 @@ class Layer:
             This keyword is required if the provided stopping power is the
             mass stopping power.
 
-        active : `bool`, optional
-            If `True`, this layer is marked as an active layer. The default is `True`.
+        active : `bool`, default: `True`
+            If `True`, this layer is marked as an active layer.
 
         name : `str`, optional
             An optional name for the layer.
@@ -107,12 +107,12 @@ class Stack:
     An ordered list of
     `~plasmapy.diagnostics.charged_particle_radiography.Layer` objects.
 
-
     Parameters
     ----------
 
     layers : list of `~plasmapy.diagnostics.charged_particle_radiography.Layer` objects
-        A list of the `~plasmapy.diagnostics.charged_particle_radiography.Layer` objects that make up the film stack.
+        A list of the `~plasmapy.diagnostics.charged_particle_radiography.Layer`
+        objects that make up the film stack.
     """
 
     def __init__(self, layers: List[Layer]):
@@ -130,7 +130,7 @@ class Stack:
     @property
     def num_active(self):
         r"""
-        The number of layers in the stack marked 'active'
+        The number of layers in the stack marked 'active'.
         """
 
         return len([layer for layer in self._layers if layer.active])
