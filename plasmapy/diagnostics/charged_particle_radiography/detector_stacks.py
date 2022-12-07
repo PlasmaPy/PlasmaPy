@@ -232,7 +232,6 @@ class Stack:
 
         Parameters
         ----------
-
         energy_range : `~astropy.units.Quantity` list, shape [2,]
             A range of energies to include in the calculation. Units convertible
             to eV.
@@ -241,19 +240,18 @@ class Stack:
             Spacing between energy bins in the calculation. Units convertible
             to J.
 
-        dx : `~astropy.units.Quantity`, optional
+        dx : `~astropy.units.Quantity`, default: 1 μm
             The spatial resolution of the numerical integration of the stopping power.
-            Passed directly to the `~deposition_curves` method. Defaults to 1 um.
+            Passed directly to the `~deposition_curves` method.
 
-        return_only_active : `bool`, optional
+        return_only_active : `bool`, default: `True`
             If `True`, only the energy bands of layers in which the active property
             is `True` will be returned. This is usually desirable, since particles
             captured in other layers will not be measured. If `False`, energy bands in
-            all layers of the stack are returned. The default is `True`.
+            all layers of the stack are returned.
 
         Returns
         -------
-
         energy_bands : `~astropy.units.Quantity`, shape [num_layers, 2]
             The full-width-half-max energy range of the Bragg peak in each
             active layer of the film stack, in J.
