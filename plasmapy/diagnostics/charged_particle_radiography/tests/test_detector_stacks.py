@@ -28,7 +28,8 @@ def hdv2_stack(tmp_path):
     aluminum_density = 2.7 * u.g / u.cm**3
     aluminum = arr[:, 1] * u.MeV * u.cm**2 / u.g * aluminum_density
 
-    # Defines the geometry of
+    # Defines the order of layers that make up a single piece of
+    # HDV2 film
     HDV2 = [
         Layer(12 * u.um, eaxis, tissue_equivalent, name="2-HDV2-active"),
         Layer(
@@ -36,7 +37,8 @@ def hdv2_stack(tmp_path):
         ),
     ]
 
-    # Define a film pack
+    # Define a film pack consisting of an aluminum filter followed by
+    # 10 layers of HDV2
     layers = [*HDV2] * 10
     layers = [
         Layer(100 * u.um, eaxis, aluminum, name="1-aluminum filter", active=False),
@@ -44,7 +46,6 @@ def hdv2_stack(tmp_path):
     ]
 
     stack = Stack(layers)
-
     return stack
 
 
@@ -81,28 +82,28 @@ def test_create_layer_with_different_stopping_powers(tmp_path):
         layer = Layer(100 * u.um, eaxis, mass_stopping_power, mass_density=None)
 
 
-def test_film_stack_properties(hdv2_stack):
-
+def test_film_stack_num_layers(hdv2_stack):
     # Test num_layers property
     assert hdv2_stack.num_layers == 21
 
+
+def test_film_stack_num_active(hdv2_stack):
     # Test num_active property
     assert hdv2_stack.num_active == 10
 
+
+def test_film_stack_thickness(hdv2_stack):
     # Test thickness property
     assert np.isclose(hdv2_stack.thickness.to(u.mm).value, 1.19)
 
 
 def test_film_stack_deposition_curves(hdv2_stack):
     energies = np.arange(1, 60, 1) * u.MeV
-
-    # Test deposition curves
     deposition_curves = hdv2_stack.deposition_curves(energies, return_only_active=False)
 
     integral = np.sum(deposition_curves, axis=0)
     assert np.allclose(integral, 1.0), (
-        "The integral over all layers for each particle species "
-        "is not unity."
+        "The integral over all layers for each particle species " "is not unity."
     )
 
 
@@ -113,7 +114,7 @@ def test_film_stack_energy_bands_active(hdv2_stack):
     # Expected energy bands, in MeV (only in active layers)
     expected = np.array([[3.5, 3.8], [4.6, 4.9], [5.6, 5.7], [6.4, 6.5], [7.1, 7.2]])
 
-    assert np.allclose(ebands.to(u.MeV).value[0:5, :], expected, atol=0.15)
+    assert np.allclose(ebands.to(u.MeV).value[:5, :], expected, atol=0.15)
 
 
 def test_film_stack_energy_bands_inum_active(hdv2_stack):

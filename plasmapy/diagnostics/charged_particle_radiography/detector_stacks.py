@@ -28,7 +28,7 @@ class Layer:
         r"""
         A layer in a detector film stack.
 
-        The layer could either be an active layer (the actual film medium) or 
+        The layer could either be an active layer (the actual film medium) or
         an inum_active layer (a filter or inum_active part of the film, such as
         a substrate.)
 
@@ -64,7 +64,6 @@ class Layer:
 
         name : `str`, optional
             An optional name for the layer.
-
         """
         self.thickness = thickness
         self.energy_axis = energy_axis
@@ -109,7 +108,6 @@ class Stack:
 
     Parameters
     ----------
-
     layers : list of `~plasmapy.diagnostics.charged_particle_radiography.Layer` objects
         A list of the `~plasmapy.diagnostics.charged_particle_radiography.Layer`
         objects that make up the film stack.
@@ -150,35 +148,34 @@ class Stack:
 
         Parameters
         ----------
-
-        energies : `~astropy.units.Quantity` array, shape [nenergies,]
-            Energies axis over which to calculate the deposition. Units convertible
-            to J.
+        energies : (`nenergies`,) `~astropy.units.Quantity` array
+            Energies axis over which to calculate the deposition. Units
+            convertible to J.
 
         dx : `~astropy.units.Quantity`, optional
-            The spatial resolution of the numerical integration of the stopping power.
-            Defaults to 1 μm.
+            The spatial resolution of the numerical integration of the
+            stopping power. Defaults to 1 μm.
 
         return_only_active : `bool`, default: `True`
-            If `True`, only the deposition in layers in which the active property
-            is `True` will be returned. This is usually desirable, since particles
-            captured in other layers will not be measured. If `False`, deposition in
-            all layers of the stack are returned.
+            If `True`, only the energy bands of layers in which the
+            active property is `True` will be returned. This is usually
+            desirable, since particles captured in other layers will not
+            be measured. If `False`, energy bands in all layers of the
+            stack are returned. The default is `True`.
 
         Returns
         -------
-        deposited : `~numpy.ndarray`, shape [num_layers, nenergies]
+        deposited : (`nlayers`, `nenergies`) `~numpy.ndarray`
             The fraction of particles at each energy that will be deposited in
             each layer of the film. The array is normalized such that the sum
             along the first dimension (all of the layers) for each population
             is unity.
-
         """
 
         energies = energies.to(u.J).value
 
         # Deposited energy in MeV
-        deposited = np.zeros([len(self._layers), energies.size])
+        deposited_energy = np.zeros([len(self._layers), energies.size])
 
         for i, layer in enumerate(self._layers):
 
@@ -209,53 +206,53 @@ class Stack:
                 dE = np.where(dE > energies, energies, dE)
 
                 energies += -dE
-                deposited[i, :] += dE
+                deposited_energy[i, :] += dE
 
         # Normalize the deposited energy array so that each number represents
         # the fraction of a population of particles of that energy stopped
         # in that layer.
-        deposited /= np.sum(deposited, axis=0)
+        deposited_energy /= np.sum(deposited_energy, axis=0)
 
         # If this flag is set, return only the layers that correspond to active
         # medium, ignoring the filter and substrate layers
         if return_only_active:
             active_ind = [i for i in range(len(self._layers)) if self._layers[i].active]
-            deposited = deposited[active_ind, :]
+            deposited_energy = deposited_energy[active_ind, :]
 
-        return deposited
+        return deposited_energy
 
     def energy_bands(
         self, energy_range: u.J, dE: u.J, dx=1e-6 * u.m, return_only_active=True
     ):
         """
-        Calculate the energy bands in each of the active layers of a film stack.
+        Calculate the energy bands in each of the active layers of a film
+        stack.
 
         Parameters
         ----------
-        energy_range : `~astropy.units.Quantity` list, shape [2,]
-            A range of energies to include in the calculation. Units convertible
-            to eV.
+        energy_range : (2,) `~astropy.units.Quantity` array
+            A range of energies to include in the calculation. Units
+            convertible to eV.
 
         dE :  `~astropy.units.Quantity`
             Spacing between energy bins in the calculation. Units convertible
             to J.
 
         dx : `~astropy.units.Quantity`, default: 1 μm
-            The spatial resolution of the numerical integration of the stopping power.
-            Passed directly to the `~deposition_curves` method.
+            The spatial resolution of the numerical integration of the stopping
+            power. Passed directly to the `~deposition_curves` method.
 
         return_only_active : `bool`, default: `True`
-            If `True`, only the energy bands of layers in which the active property
-            is `True` will be returned. This is usually desirable, since particles
-            captured in other layers will not be measured. If `False`, energy bands in
-            all layers of the stack are returned.
+            If `True`, only the energy bands of layers in which the active
+            property is `True` will be returned. This is usually desirable,
+            since particles captured in other layers will not be measured.
+            If `False`, energy bands in all layers of the stack are returned.
 
         Returns
         -------
-        energy_bands : `~astropy.units.Quantity`, shape [num_layers, 2]
+        energy_bands : (`nlayers`, 2) `~astropy.units.Quantity`
             The full-width-half-max energy range of the Bragg peak in each
             active layer of the film stack, in J.
-
         """
 
         energies = (

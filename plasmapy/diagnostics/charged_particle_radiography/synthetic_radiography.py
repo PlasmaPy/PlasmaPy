@@ -566,7 +566,6 @@ class Tracker:
 
         Parameters
         ----------
-
         nparticles : integer
             The number of particles to include in the simulation. The default
             is 1e5.
@@ -669,7 +668,6 @@ class Tracker:
 
         Parameters
         ----------
-
         x : `~astropy.units.Quantity`, shape (N,3)
             Positions for N particles
 
@@ -979,7 +977,6 @@ class Tracker:
 
         Parameters
         ----------
-
         dt : `~astropy.units.Quantity`, optional
             An explicitly set timestep in units convertible to seconds.
             Setting this optional keyword overrules the adaptive time step
@@ -1295,7 +1292,6 @@ def synthetic_radiograph(
 
     Parameters
     ----------
-
     obj: `dict` or `~plasmapy.diagnostics.charged_particle_radiography.Tracker`
         Either a `~plasmapy.diagnostics.charged_particle_radiography.Tracker`
         object that has been run, or a dictionary equivalent to
