@@ -1155,15 +1155,15 @@ either a typo or an error in the namespace. For example, the warning
 resulting from ```astropy.Quantity``` can be resolved by changing it to
 ```astropy.units.Quantity```.
 
-This warning sometimes occurs in the type line of a |parameter| in a
-docstring. Sphinx attempts to link words in type lines to code objects.
-Type lines are intended to provide concise information about allowed
-types, sizes, shapes, physical types, and default values of a parameter.
-To resolve this warning, first move information about the *meaning* of
-a parameter from the type line into the parameter description that
-begins on the following line. To expand the list of allowed words or
-patterns in type lines, add a regular expression to
-``nitpick_ignore_regex`` in |docs/conf.py|_.
+This warning sometimes occurs in the type specification of a |parameter|
+in a docstring. Sphinx attempts to link words in type specifications to
+code objects. Type lines are intended to provide concise information
+about allowed types, sizes, shapes, physical types, and default values
+of a parameter. To resolve this warning, first move information about
+the *meaning* of a parameter from the type specification into the
+parameter description that begins on the following line. To expand the
+list of allowed words or patterns in type specifications, add a regular
+expression to ``nitpick_ignore_regex`` in |docs/conf.py|_.
 
 Missing documentation pages for new modules
 -------------------------------------------
