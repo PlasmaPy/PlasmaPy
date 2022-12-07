@@ -1,4 +1,4 @@
-.. _synthetic_charged_particle_radiography:
+.. _synthetic_radiography:
 
 *************************************
 Synthetic Charged Particle Radiography
@@ -14,4 +14,3 @@ Synthetic Charged Particle Radiography
     /notebooks/diagnostics/charged_particle_radiography_particle_tracing
     /notebooks/diagnostics/charged_particle_radiography_particle_tracing_custom_source
     /notebooks/diagnostics/charged_particle_radiography_particle_tracing_wire_mesh
-    /notebooks/diagnostics/charged_particle_radiography_film_stacks
