@@ -104,15 +104,12 @@ class Layer:
 class Stack:
     r"""
     An ordered list of
-    `~plasmapy.diagnostics.charged_particle_radiography.Layer` objects.
+    `~plasmapy.diagnostics.charged_particle_radiography.detector_stacks.Layer` objects.
 
     Parameters
     ----------
-    layers : list of
-    `~plasmapy.diagnostics.charged_particle_radiography.detector_stacks.Layer`
-    objects
-        A list of the
-        `~plasmapy.diagnostics.charged_particle_radiography.detector_stacks.Layer`
+    layers : list of `~plasmapy.diagnostics.charged_particle_radiography.detector_stacks.Layer` objects
+        A list of the `~plasmapy.diagnostics.charged_particle_radiography.detector_stacks.Layer`
         objects that make up the film stack.
     """
 
