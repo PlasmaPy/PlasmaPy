@@ -1,4 +1,3 @@
-
 :orphan:
 
 `plasmapy.analysis.time_series.running_moments`

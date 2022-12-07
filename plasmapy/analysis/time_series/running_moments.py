@@ -1,4 +1,4 @@
-"""Functionality to calculate running moments of time series"""
+"""Functionality to calculate running moments of time series."""
 
 __all__ = ["running_mean", "running_moment"]
 
@@ -7,6 +7,8 @@ import numbers
 import numpy as np
 
 from collections import namedtuple
+
+_run_moment_tuple = namedtuple("Running_Moment", ["run_moment", "time"])
 
 
 def running_mean(signal, radius):
@@ -19,12 +21,14 @@ def running_mean(signal, radius):
         Signal to be averaged.
 
     radius : int
-        The window size is ``2 * radius + 1``.
+        The number of points on either side of each point for which
+        the running mean is being calculated. The window size is
+        ``2 * radius + 1``.
 
     Returns
     -------
     1D |array_like|
-        Running mean of signal with length ``len(signal) - 2 * radius``.
+        Running mean of ``signal`` with length ``len(signal) - 2 * radius``.
 
     Raises
     ------
@@ -32,7 +36,7 @@ def running_mean(signal, radius):
         If ``len(signal) <= 2 * radius``.
 
     `TypeError`
-        If ``radius`` is not of type int.
+        If ``radius`` is not of type `int`.
 
     Example
     -------
@@ -59,34 +63,37 @@ def running_moment(signal, radius, moment=1, time=None):
 
     Parameters
     ----------
-    signal: 1D |array_like|
+    signal : 1D |array_like|
        Signal to be averaged.
 
-    radius: int
-        Window size is ``2 * radius + 1`` for running mean and
-        ``4 * radius + 1`` for higher moments.
+    radius : int
+        The number of points on either side of each point for which
+        the running moment is being calculated. The window size is
+        ``2 * radius + 1`` for running mean and ``4 * radius + 1``
+        for higher moments.
 
-    moment: int
-        Choose between:\n
-        - ``1``: running mean\n
-        - ``2``: running standard deviation\n
-        - ``3``: running skewness\n
+    moment : int
+        Choose between:
+
+        - ``1``: running mean
+        - ``2``: running standard deviation
+        - ``3``: running skewness
         - ``4``: running excess kurtosis
 
-    time: 1D |array_like|, optional
+    time : 1D |array_like|, optional
         Time base of ``signal``.
 
     Returns
     -------
-    tuple
-        namedtuple with the following fields:
+    `~collections.namedtuple`
+        Contains the following attributes:
 
-        - run_moment: 1D |array_like|
-            Running moment of signal.
-            length is ``(len(signal) - 2 * radius)`` for running mean
-            length is ``(len(signal) - 4 * signal)`` for higher moments
+        - ``run_moment``: 1D |array_like|
+            Running moment of ``signal``. The length is ``(len(signal)
+            - 2 * radius)`` for the running mean or ``(len(signal) -
+            4 * signal)`` for higher moments.
 
-        - time: 1D |array_like|
+        - ``time``: 1D |array_like|
             Time base corresponding to ``run_moment`` if ``time`` is
             not `None`.
 
@@ -100,7 +107,6 @@ def running_moment(signal, radius, moment=1, time=None):
 
     `ValueError`
         If ``len(signal) <= 4 * radius`` and ``moment > 1``.
-
 
     Notes
     -----
@@ -119,30 +125,31 @@ def running_moment(signal, radius, moment=1, time=None):
         raise ValueError("signal and time must have same length")
 
     if moment == 1:
-        if time:
+        if time is not None:
             time = time[radius:-radius]
         return running_mean(signal, radius), time
 
     if len(signal) <= 4 * radius:
         raise ValueError("len(signal) must be bigger than 4*radius for chosen moment")
 
-    tmp = signal[radius:-radius] - running_mean(signal, radius)
+    difference = signal[radius:-radius] - running_mean(signal, radius)
 
     if moment == 2:
-        run_moment = np.sqrt(running_mean(tmp**2, radius))
+        run_moment = np.sqrt(running_mean(difference**2, radius))
 
-    if moment == 3:
+    elif moment == 3:
         run_moment = (
-            running_mean(tmp**3, radius) / running_mean(tmp**2, radius) ** 1.5
+            running_mean(difference**3, radius)
+            / running_mean(difference**2, radius) ** 1.5
         )
 
-    if moment == 4:
+    elif moment == 4:
         run_moment = (
-            running_mean(tmp**4, radius) / running_mean(tmp**2, radius) ** 2
+            running_mean(difference**4, radius)
+            / running_mean(difference**2, radius) ** 2
         )
 
     if time is not None:
         time = time[2 * radius : -2 * radius]
 
-    run_moment_tuple = namedtuple("Running_Moment", ["run_moment", "time"])
-    return run_moment_tuple(run_moment=run_moment, time=time)
+    return _run_moment_tuple(run_moment=run_moment, time=time)
