@@ -306,11 +306,6 @@ def spectral_density(
         Must sum to one. The default corresponds to a single electron
         population.
 
-        The ratios of the number density of each ion population
-        The fractional number densities of each electron population,
-        denoted by :math:`F_e` below. Must sum to one. The default
-        corresponds to a single electron population.
-
     ifract : (Ni,) |array_like|, |keyword-only|, optional
         The fractional number densities of each ion population, denoted
         by :math:`F_i` below. Must sum to one. The default corresponds
