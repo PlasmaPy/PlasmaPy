@@ -26,9 +26,11 @@ class Layer:
         name: str = "",
     ):
         r"""
-        A layer in a detector film stack. The layer could either be an active
-        layer (the actual film medium) or an inum_active layer (a filter or
-        inum_active part of the film, such as a substrate.)
+        A layer in a detector film stack.
+
+        The layer could either be an active layer (the actual film medium) or 
+        an inum_active layer (a filter or inum_active part of the film, such as
+        a substrate.)
 
         Tabulated stopping powers for protons and electrons can be found in the
         `NIST PSTAR database
@@ -39,7 +41,6 @@ class Layer:
 
         Parameters
         ----------
-
         thickness : `~astropy.units.Quantity`
             The thickness of the layer, in units convertible to meters.
 
@@ -54,7 +55,7 @@ class Layer:
             is required.
 
         mass_density : `~astropy.units.Quantity`, optional
-            The material mass density in units convertable to kg/m\ :sup:`^3`.
+            The material mass density in units convertable to kg/m\ :sup:`3`.
             This keyword is required if the provided stopping power is the
             mass stopping power.
 
