@@ -130,25 +130,23 @@ class AbstractParticle(ABC):
 
         .. code-block:: python
 
-            {"plasmapy_particle": {
-                # string representation of the particle class
-                "type": "Particle",
-
-                # string representation of the module contains the particle class
-                "module": "plasmapy.particles.particle_class",
-
-                # date stamp of when the object was created
-                "date_created": "2020-07-20 17:46:13 UTC",
-
-                # parameters used to initialized the particle class
-                "__init__": {
-                    # tuple of positional arguments
-                    "args": (),
-
-                    # dictionary of keyword arguments
-                    "kwargs": {},
-                },
-            }}
+            {
+                "plasmapy_particle": {
+                    # string representation of the particle class
+                    "type": "Particle",
+                    # string representation of the module contains the particle class
+                    "module": "plasmapy.particles.particle_class",
+                    # date stamp of when the object was created
+                    "date_created": "2020-07-20 17:46:13 UTC",
+                    # parameters used to initialized the particle class
+                    "__init__": {
+                        # tuple of positional arguments
+                        "args": (),
+                        # dictionary of keyword arguments
+                        "kwargs": {},
+                    },
+                }
+            }
 
         Only the ``"__init__"`` entry should be modified by the subclass.
         """
