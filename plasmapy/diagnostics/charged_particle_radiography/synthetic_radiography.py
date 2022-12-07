@@ -5,7 +5,7 @@ methods of 'inverting' experimentally created radiographs to reconstruct the
 original fields (under some set of assumptions).
 """
 
-__all__ = ["Tracker", "synthetic_radiograph", "Stack", "Layer"]
+__all__ = ["Tracker", "synthetic_radiograph"]
 
 import astropy.constants as const
 import astropy.units as u
@@ -16,10 +16,6 @@ import warnings
 from tqdm import tqdm
 
 from plasmapy import particles
-from plasmapy.diagnostics.charged_particle_radiography.detector_stacks import (
-    Layer,
-    Stack,
-)
 from plasmapy.formulary.mathematics import rot_a_to_b
 from plasmapy.particles import Particle
 from plasmapy.plasma.grids import AbstractGrid
@@ -1064,7 +1060,7 @@ class Tracker:
             disable=not self.verbose,
             desc="Particles on grid",
             unit="particles",
-            bar_format="{l_bar}{bar}{n:.1e}/{total:.1e} {unit}",
+            bar_format="{l_bar}{bar}{n:.1e}/{total:.1e} {unit}",  # noqa
             file=sys.stdout,
         )
 
@@ -1229,7 +1225,7 @@ class Tracker:
 
         Useful for saving the results from a simulation so they can be
         loaded at a later time and passed into
-        `~plasmapy.diagnostics.charged_particle_radiography.synthetic_radiograph`.
+        `~plasmapy.diagnostics.charged_particle_radiography.synthetic_radiography.synthetic_radiograph`.
 
         """
 
@@ -1292,10 +1288,10 @@ def synthetic_radiograph(
 
     Parameters
     ----------
-    obj: `dict` or `~plasmapy.diagnostics.charged_particle_radiography.Tracker`
-        Either a `~plasmapy.diagnostics.charged_particle_radiography.Tracker`
+    obj: `dict` or `~plasmapy.diagnostics.charged_particle_radiography.synthetic_radiography.Tracker`
+        Either a `~plasmapy.diagnostics.charged_particle_radiography.synthetic_radiography.Tracker`
         object that has been run, or a dictionary equivalent to
-        `~plasmapy.diagnostics.charged_particle_radiography.Tracker.results_dict`.
+        `~plasmapy.diagnostics.charged_particle_radiography.synthetic_radiography.Tracker.results_dict`.
 
     size : `~astropy.units.Quantity`, shape ``(2, 2)``, optional
         The size of the detector array, specified as the minimum

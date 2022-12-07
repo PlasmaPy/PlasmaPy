@@ -1,4 +1,4 @@
-.. _charged_particle_radiography:
+.. _synthetic_charged_particle_radiography:
 
 *************************************
 Synthetic Charged Particle Radiography

@@ -89,7 +89,7 @@ class Layer:
                 mass_density = mass_density.to(u.kg / u.m**3)
             except u.UnitConversionError as e:
                 raise ValueError(
-                    "mass_density keyword must have units " "convertible to kg/m^3."
+                    "mass_density keyword must have units convertible to kg/m^3."
                 ) from e
 
             self.linear_stopping_power = (stopping_power * mass_density).to(u.J / u.m)
@@ -108,8 +108,11 @@ class Stack:
 
     Parameters
     ----------
-    layers : list of `~plasmapy.diagnostics.charged_particle_radiography.Layer` objects
-        A list of the `~plasmapy.diagnostics.charged_particle_radiography.Layer`
+    layers : list of
+    `~plasmapy.diagnostics.charged_particle_radiography.detector_stacks.Layer`
+    objects
+        A list of the
+        `~plasmapy.diagnostics.charged_particle_radiography.detector_stacks.Layer`
         objects that make up the film stack.
     """
 
