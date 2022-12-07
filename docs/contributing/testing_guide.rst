@@ -18,7 +18,7 @@ Summary
   inside subdirectories named :file:`tests`.
 
 * Tests are either functions beginning with ``test_`` or classes
-  begining with ``Test``.
+  beginning with ``Test``.
 
 * To install the packages needed to run the tests:
 
