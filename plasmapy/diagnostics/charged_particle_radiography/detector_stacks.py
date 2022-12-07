@@ -145,7 +145,7 @@ class Stack:
 
     def deposition_curves(self, energies: u.J, dx=1 * u.um, return_only_active=True):
         """
-        Calculates the deposition of an ensemble of particles over a range of
+        Calculate the deposition of an ensemble of particles over a range of
         energies in a stack of films and filters.
 
         Parameters
@@ -157,17 +157,16 @@ class Stack:
 
         dx : `~astropy.units.Quantity`, optional
             The spatial resolution of the numerical integration of the stopping power.
-            Defaults to 1 um.
+            Defaults to 1 μm.
 
-        return_only_active : `bool`, optional
+        return_only_active : `bool`, default: `True`
             If `True`, only the deposition in layers in which the active property
             is `True` will be returned. This is usually desirable, since particles
             captured in other layers will not be measured. If `False`, deposition in
-            all layers of the stack are returned. The default is `True`.
+            all layers of the stack are returned.
 
         Returns
         -------
-
         deposited : `~numpy.ndarray`, shape [num_layers, nenergies]
             The fraction of particles at each energy that will be deposited in
             each layer of the film. The array is normalized such that the sum
