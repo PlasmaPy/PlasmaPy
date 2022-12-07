@@ -1,6 +1,5 @@
 """Tests for the consistency of requirements."""
 
-import os
 import pathlib
 import pytest
 import setuptools

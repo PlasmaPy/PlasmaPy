@@ -146,18 +146,20 @@ class ClassicalTransport:
     Notes
     -----
     Given that many of the transport variables share a lot of the same
-    computation and many are often needed to be calculated simultaneously, this
-    class can be initialized once with all of the variables necessary for
-    calculation. It then provides all of the functionality as methods (please
-    refer to their documentation).
+    computation and many are often needed to be calculated
+    simultaneously, this class can be initialized once with all of the
+    variables necessary for calculation. It then provides all of the
+    functionality as methods (please refer to their documentation).
 
     Parameters
     ----------
     T_e : `~astropy.units.Quantity`
-        Electron temperature in units of temperature or energy per particle.
+        Electron temperature in units of temperature or energy per
+        particle.
 
     n_e : `~astropy.units.Quantity`
-        The electron number density in units convertible to per cubic meter.
+        The electron number density in units convertible to per cubic
+        meter.
 
     T_i : `~astropy.units.Quantity`
         Ion temperature in units of temperature or energy per particle.
@@ -172,19 +174,21 @@ class ClassicalTransport:
         provided, then the particles are assumed to be singly charged.
 
     Z : `int` or `numpy.inf`, optional
-        The ion charge state. Overrides particle charge state if included.
-        Different theories support different values of ``Z``. For the original
-        Braginskii model, ``Z`` can be any of [1, 2, 3, 4, infinity]. The Ji-Held
-        model supports arbitrary ``Z``. Average ionization states ``Z_mean`` can be
-        input using this input and the Ji-Held model, although doing so may
-        neglect effects caused by multiple ion populations.
+        The ion charge state. Overrides particle charge state if
+        included.  Different theories support different values of
+        ``Z``. For the original Braginskii model, ``Z`` can be any of
+        [1, 2, 3, 4, infinity]. The Ji-Held model supports arbitrary
+        ``Z``. Average ionization states ``Z_mean`` can be input using
+        this input and the Ji-Held model, although doing so may neglect
+        effects caused by multiple ion populations.
 
     B : `~astropy.units.Quantity`, optional
-        The magnetic field strength in units convertible to tesla. Defaults
-        to zero.
+        The magnetic field strength in units convertible to tesla.
+        Defaults to zero.
 
     model: `str`
-        Indication of whose formulation from literature to use. Allowed values are:
+        Indication of whose formulation from literature to use. Allowed
+        values are:
 
         * ``"Braginskii"`` :cite:p:`braginskii:1965`
         * ``"Spitzer-Harm"`` :cite:p:`spitzer:1953,spitzer:1962`
@@ -192,48 +196,54 @@ class ClassicalTransport:
         * ``"Ji-Held"`` :cite:p:`ji:2013`
 
     field_orientation : `str`, defaults to ``'parallel'``
-        Either of ``'parallel'``, ``'par'``, ``'perpendicular'``, ``'perp'``, ``'cross'``, or
-        ``'all'``, indicating the cardinal orientation of the magnetic field with
-        respect to the transport direction of interest. Note that ``'perp'`` refers
-        to transport perpendicular to the field direction (in the direction of
-        the temperature gradient), while ``'cross'`` refers to the direction
+        Either of ``'parallel'``, ``'par'``, ``'perpendicular'``,
+        ``'perp'``, ``'cross'``, or ``'all'``, indicating the cardinal
+        orientation of the magnetic field with respect to the transport
+        direction of interest. Note that ``'perp'`` refers to transport
+        perpendicular to the field direction (in the direction of the
+        temperature gradient), while ``'cross'`` refers to the direction
         perpendicular to B and the gradient of temperature
-        (:math:`B × ∇T`\ ). The option ``'all'`` will return a `numpy.array`
-        of all three, ``np.array((par, perp, cross))``. Does not apply to viscosities.
+        (:math:`B × ∇T`\ ). The option ``'all'`` will return a
+        `numpy.array` of all three, ``np.array((par, perp, cross))``.
+        Does not apply to viscosities.
 
     coulomb_log_ei : `float` or dimensionless `~astropy.units.Quantity`, optional
         Force a particular value to be used for the electron-ion Coulomb
         logarithm (test electrons on field ions). If `None`,
-        `~plasmapy.formulary.collisions.Coulomb_logarithm` will be used.
-        Useful for comparing calculations.
+        `~plasmapy.formulary.collisions.coulomb.Coulomb_logarithm` will
+        be used.  Useful for comparing calculations.
 
     V_ei : `~astropy.units.Quantity`, optional
        The relative velocity between particles.  Supplied to
-       `~plasmapy.formulary.collisions.Coulomb_logarithm`
-       function, not otherwise used.  If not provided, thermal velocity is
-       assumed: :math:`μ V^2 \sim 2 k_B T` where :math:`μ` is the reduced mass.
+       `~plasmapy.formulary.collisions.coulomb.Coulomb_logarithm`
+       function, not otherwise used.  If not provided, thermal velocity
+       is assumed: :math:`μ V^2 \sim 2 k_B T` where :math:`μ` is the
+       reduced mass.
 
     coulomb_log_ii : `float` or dimensionless `~astropy.units.Quantity`, optional
-        Force a particular value to be used for the ion-ion Coulomb logarithm
-        (test ions on field ions). If `None`, the PlasmaPy function
-        `~plasmapy.formulary.collisions.Coulomb_logarithm` will be used.
-        Useful for comparing calculations.
+        Force a particular value to be used for the ion-ion Coulomb
+        logarithm (test ions on field ions). If `None`, the PlasmaPy
+        function
+        `~plasmapy.formulary.collisions.coulomb.Coulomb_logarithm` will
+        be used.  Useful for comparing calculations.
 
     V_ii : `~astropy.units.Quantity`, optional
        The relative velocity between particles.  Supplied to
-       `~plasmapy.formulary.collisions.Coulomb_logarithm` function, not
-       otherwise used. If not provided, thermal velocity is assumed:
-       :math:`μ V^2 \sim 2 k_B T` where :math`μ` is the reduced mass.
+       `~plasmapy.formulary.collisions.coulomb.Coulomb_logarithm`
+       function, not otherwise used. If not provided, thermal velocity
+       is assumed: :math:`μ V^2 \sim 2 k_B T` where :math`μ` is the
+       reduced mass.
 
     hall_e : `float` or dimensionless `~astropy.units.Quantity`, optional
-        Force a particular value to be used for the electron Hall parameter.
-        If `None`, `~plasmapy.formulary.dimensionless.Hall_parameter` will
-        be used. Useful for comparing calculations.
+        Force a particular value to be used for the electron Hall
+        parameter. If `None`,
+        `~plasmapy.formulary.dimensionless.Hall_parameter` will be
+        used. Useful for comparing calculations.
 
     hall_i : `float` or dimensionless `~astropy.units.Quantity`, optional
-        Force a particular value to be used for the ion Hall parameter. If
-        `None`, `~plasmapy.formulary.dimensionless.Hall_parameter` will be
-        used. Useful for comparing calculations.
+        Force a particular value to be used for the ion Hall parameter.
+        If `None`, `~plasmapy.formulary.dimensionless.Hall_parameter`
+        will be used. Useful for comparing calculations.
 
     mu : `float` or dimensionless `~astropy.units.Quantity`, optional
         Ji-Held model only, may be used to include ion-electron effects
@@ -242,18 +252,19 @@ class ClassicalTransport:
 
     theta : `float` or dimensionless `~astropy.units.Quantity`, optional
         Ji-Held model only, may be used to include ion-electron effects
-        on the ion transport coefficients. Defaults to :math:`T_e / T_i`\ .
-        Only has effect if ``mu`` is non-zero.
+        on the ion transport coefficients. Defaults to
+        :math:`T_e / T_i`\ .  Only has effect if ``mu`` is non-zero.
 
     coulomb_log_method : `str`, optional
         The method by which to compute the Coulomb logarithm.
-        The default method is the classical straight-line Landau-Spitzer
-        method (``"classical"`` or ``"ls"``). The other 6 supported methods
-        are ``"ls_min_interp"``, ``"ls_full_interp"``, ``"ls_clamp_mininterp"``,
-        ``"hls_min_interp"``, ``"hls_max_interp"``, and ``"hls_full_interp"``.
-        Please refer to the docstring of
-        `~plasmapy.formulary.collisions.Coulomb_logarithm` for more
-        information about these methods.
+        The default method is the classical straight-line
+        Landau-Spitzer method (``"classical"`` or ``"ls"``). The other
+        6 supported methods are ``"ls_min_interp"``,
+        ``"ls_full_interp"``, ``"ls_clamp_mininterp"``,
+        ``"hls_min_interp"``, ``"hls_max_interp"``, and
+        ``"hls_full_interp"``.  Please refer to the docstring of
+        `~plasmapy.formulary.collisions.coulomb.Coulomb_logarithm` for
+        more information about these methods.
 
     Raises
     ------
@@ -334,10 +345,10 @@ class ClassicalTransport:
         if m_i is None:
             try:
                 self.m_i = particles.particle_mass(ion)
-            except InvalidParticleError:
+            except InvalidParticleError as ex:
                 raise ValueError(
                     f"Unable to find mass of particle: {ion} in ClassicalTransport"
-                )
+                ) from ex
         else:
             self.m_i = m_i
         self.Z = _grab_charge(ion, Z) * u.dimensionless_unscaled
@@ -1688,7 +1699,7 @@ def _nondim_tc_e_ji_held(hall, Z, field_orientation):
     k_5 = [0.166, 0.255, f_k_5(Z)]
 
     kappa_par = kappa_par_e[Z_idx]
-    if field_orientation == "parallel" or field_orientation == "par":
+    if field_orientation in {"parallel", "par"}:
         return Z * kappa_par
 
     def f_kappa_perp(Z_idx):
@@ -1704,7 +1715,7 @@ def _nondim_tc_e_ji_held(hall, Z, field_orientation):
         return numerator / denominator
 
     kappa_perp = f_kappa_perp(Z_idx)
-    if field_orientation == "perpendicular" or field_orientation == "perp":
+    if field_orientation in {"perpendicular", "perp"}:
         return Z * kappa_perp
 
     def f_kappa_cross(Z_idx):
@@ -1785,7 +1796,7 @@ def _nondim_resist_ji_held(hall, Z, field_orientation):
     a_5 = [5.070, 9.671, f_a_5(Z)]
 
     alpha_par = alpha_par_e[Z_idx]
-    if field_orientation == "parallel" or field_orientation == "par":
+    if field_orientation in {"parallel", "par"}:
         return alpha_par
 
     def f_alpha_perp(Z_idx):
@@ -1799,7 +1810,7 @@ def _nondim_resist_ji_held(hall, Z, field_orientation):
         return 1 - numerator / denominator
 
     alpha_perp = f_alpha_perp(Z_idx)
-    if field_orientation == "perpendicular" or field_orientation == "perp":
+    if field_orientation in {"perpendicular", "perp"}:
         return alpha_perp
 
     def f_alpha_cross(Z_idx):
@@ -1890,7 +1901,7 @@ def _nondim_tec_ji_held(hall, Z, field_orientation):
     b_5 = [1.131, 2.202, f_b_5(Z)]
 
     beta_par = beta_par_e[Z_idx]
-    if field_orientation == "parallel" or field_orientation == "par":
+    if field_orientation in {"parallel", "par"}:
         return beta_par
 
     def f_beta_perp(Z_idx):
@@ -1906,7 +1917,7 @@ def _nondim_tec_ji_held(hall, Z, field_orientation):
         return numerator / denominator
 
     beta_perp = f_beta_perp(Z_idx)
-    if field_orientation == "perpendicular" or field_orientation == "perp":
+    if field_orientation in {"perpendicular", "perp"}:
         return beta_perp
 
     def f_beta_cross(Z_idx):

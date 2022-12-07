@@ -97,7 +97,6 @@ def check_sweep(
     elif not np.all(np.diff(voltage) >= 0):
         raise ValueError("The voltage array is not monotonically increasing.")
 
-    # strip units
     if isinstance(voltage, u.Quantity) and strip_units:
         voltage = voltage.value
 
@@ -143,7 +142,6 @@ def check_sweep(
             f" as the 'current' size {current.size}."
         )
 
-    # strip units
     if isinstance(current, u.Quantity) and strip_units:
         current = current.value
 

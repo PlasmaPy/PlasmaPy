@@ -329,15 +329,15 @@ class TestThermalSpeedLite:
 # test class for kappa_thermal_speed() function:
 class Test_kappa_thermal_speed:
     @classmethod
-    def setup_class(self):
+    def setup_class(cls):
         """initializing parameters for tests"""
-        self.T_e = 5 * u.eV
-        self.kappaInvalid = 3 / 2
-        self.kappa = 4
-        self.particle = "p"
-        self.probable1True = 24467.878463594963
-        self.rms1True = 37905.474322612165
-        self.mean1True = 34922.98563039583
+        cls.T_e = 5 * u.eV
+        cls.kappaInvalid = 3 / 2
+        cls.kappa = 4
+        cls.particle = "p"
+        cls.probable1True = 24467.878463594963
+        cls.rms1True = 37905.474322612165
+        cls.mean1True = 34922.98563039583
 
     def test_invalid_kappa(self):
         """

@@ -17,7 +17,7 @@ from abc import ABC, abstractmethod
 from collections import namedtuple
 from scipy.optimize import curve_fit, fsolve
 from scipy.stats import linregress
-from typing import Optional, Tuple, Union
+from typing import Optional, Tuple
 from warnings import warn
 
 from plasmapy.utils.decorators import modify_docstring
@@ -741,10 +741,7 @@ class Exponential(AbstractFitFunction):
 
         err = np.abs(y) * np.sqrt(err)
 
-        if rety:
-            return err, y
-
-        return err
+        return (err, y) if rety else err
 
     def root_solve(self, *args, **kwargs):
         """
@@ -908,10 +905,7 @@ class ExponentialPlusLinear(AbstractFitFunction):
             err += blend_err
         err = np.sqrt(err)
 
-        if rety:
-            return err, exp_y + lin_y
-
-        return err
+        return (err, exp_y + lin_y) if rety else err
 
 
 class ExponentialPlusOffset(AbstractFitFunction):
