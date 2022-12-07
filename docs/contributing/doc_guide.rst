@@ -1182,8 +1182,8 @@ AttributeError: module 'plasmapy.subpackage' has no attribute 'module'
 ```
 
 will occur when :file:`plasmapy/subpackage/__init__.py` is missing
-:py:`import module`. Make sure that ``__all__`` contains ``"module"``
-as well.
+:py:`from plasmapy.subpackage import module`. Make sure that ``__all__``
+contains ``"module"`` as well.
 
 Errors that are unrelated to a pull request
 -------------------------------------------
