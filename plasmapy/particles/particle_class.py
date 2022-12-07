@@ -131,25 +131,23 @@ class AbstractParticle(ABC):
 
         .. code-block:: python
 
-            {"plasmapy_particle": {
-                # string representation of the particle class
-                "type": "Particle",
-
-                # string representation of the module contains the particle class
-                "module": "plasmapy.particles.particle_class",
-
-                # date stamp of when the object was created
-                "date_created": "2020-07-20 17:46:13 UTC",
-
-                # parameters used to initialized the particle class
-                "__init__": {
-                    # tuple of positional arguments
-                    "args": (),
-
-                    # dictionary of keyword arguments
-                    "kwargs": {},
-                },
-            }}
+            {
+                "plasmapy_particle": {
+                    # string representation of the particle class
+                    "type": "Particle",
+                    # string representation of the module contains the particle class
+                    "module": "plasmapy.particles.particle_class",
+                    # date stamp of when the object was created
+                    "date_created": "2020-07-20 17:46:13 UTC",
+                    # parameters used to initialized the particle class
+                    "__init__": {
+                        # tuple of positional arguments
+                        "args": (),
+                        # dictionary of keyword arguments
+                        "kwargs": {},
+                    },
+                }
+            }
 
         Only the ``"__init__"`` entry should be modified by the subclass.
         """
@@ -827,9 +825,10 @@ class Particle(AbstractPhysicalParticle):
         if isinstance(other, str):
             try:
                 other_particle = Particle(other)
-                return self.symbol == other_particle.symbol
             except InvalidParticleError:
                 return False
+            else:
+                return self.symbol == other_particle.symbol
 
         if not isinstance(other, self.__class__):
             return NotImplemented
@@ -1313,12 +1312,13 @@ class Particle(AbstractPhysicalParticle):
         try:
             mass = self.nuclide_mass if self.isotope else self.mass
             energy = mass * const.c**2
-            return energy.to(u.J)
         except MissingParticleDataError:
             raise MissingParticleDataError(
                 f"The mass energy of {self.symbol} is not available "
                 f"because the mass is unknown."
             ) from None
+        else:
+            return energy.to(u.J)
 
     @property
     def binding_energy(self) -> u.J:
@@ -1923,8 +1923,8 @@ class DimensionlessParticle(AbstractParticle):
 
         try:
             new_obj = np.float64(obj)
-        except TypeError:
-            raise TypeError(f"Cannot convert {obj} to numpy.float64.")
+        except TypeError as ex:
+            raise TypeError(f"Cannot convert {obj} to numpy.float64.") from ex
 
         if hasattr(new_obj, "__len__"):
             raise TypeError("Expecting a real number, not a collection.")
@@ -2213,12 +2213,13 @@ class CustomParticle(AbstractPhysicalParticle):
                 )
             try:
                 self._mass = m.to(u.kg)
-                if self.mass < 0 * u.kg:
-                    raise ValueError("The mass of a particle must be nonnegative.")
             except u.UnitsError as exc:
                 raise u.UnitsError(
                     "The mass of a custom particle must have units of mass."
                 ) from exc
+            else:
+                if self.mass < 0 * u.kg:
+                    raise ValueError("The mass of a particle must be nonnegative.")
 
     @property
     def mass_energy(self) -> u.J:

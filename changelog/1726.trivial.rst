@@ -1,3 +1,0 @@
-Changed `~plasmapy.formulary.quantum.chemical_potential` to use the
-:wikipedia:`Broyden-Fletcher-Goldfarb-Shanno algorithm` to implicitly
-solve for the ideal chemical potential.
