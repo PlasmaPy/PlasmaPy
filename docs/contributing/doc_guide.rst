@@ -1169,8 +1169,21 @@ Missing documentation pages for new modules
 -------------------------------------------
 
 When a new module or subpackage is created, it is usually necessary to
-:ref:`create a stub file <api-static>` for it in for it in
-|docs/api_static|_.
+:ref:`create a stub file <api-static>` for it in |docs/api_static|_.
+
+Missing attribute errors
+------------------------
+
+An `AttributeError` may occur when an ``import`` statement is missing in
+a :file:`__init__.py` file.  For example, the error
+
+```
+AttributeError: module 'plasmapy.subpackage' has no attribute 'module'
+```
+
+will occur when :file:`plasmapy/subpackage/__init__.py` is missing
+:py:`import module`. Make sure that ``__all__`` contains ``"module"``
+as well.
 
 Errors that are unrelated to a pull request
 -------------------------------------------
