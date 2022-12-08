@@ -6,7 +6,7 @@ __all__ = [
     "upper_hybrid_frequency",
     "Buchsbaum_frequency"
 ]
-__aliases__ = ["oc_", "wc_", "wlh_", "wp_", "wuh_", "wbb_", "wii_", "wbi_"]
+__aliases__ = ["oc_", "wc_", "wlh_", "wp_", "wuh_", "wbb_", "wii_"]
 __lite_funcs__ = ["plasma_frequency_lite"]
 
 import astropy.units as u
@@ -591,7 +591,7 @@ def Buchsbaum_frequency(
     perpendicular component of the cold-plasma dielectric coefficient
     :math:`\epsilon_{\perp}` to vanish at an angular frequency referred
     to as the Buchsbaum frequency :cite:p:`buchsbaum:1960`, also called
-    the bi-ion frequency or ion-ion hybrid frequency
+    the bi-ion hybrid resonance frequency :cite:p `or ion-ion hybrid frequency
     :cite:p:`vincena:2013`.  This frequency can be defined as:
 
     .. math::
