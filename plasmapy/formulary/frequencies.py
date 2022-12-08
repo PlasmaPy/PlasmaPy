@@ -600,15 +600,15 @@ def Buchsbaum_frequency(
 
     Examples
     --------
-    >>>  from astropy import units as u
-    >>>  fbb = Buchsbaum_frequency(0.1*u.T, 1e18*u.m**-3, 1e18*u.m**-3, "proton", "He+", to_hz=True)
-    >>>  fbb
+    >>> from astropy import units as u
+    >>> fbb = Buchsbaum_frequency(0.1*u.T, 1e18*u.m**-3, 1e18*u.m**-3, "proton", "He+", to_hz=True)
+    >>> fbb
     <Quantity 764831.28372462 Hz>
-    >>>  fc_helium = gyrofrequency(0.1*u.T, "He+", to_hz=True)
-    >>>  fc_proton = gyrofrequency(0.1*u.T, "proton", to_hz=True)
-    >>>  fbb/fc_helium
+    >>> fc_helium = gyrofrequency(0.1*u.T, "He+", to_hz=True)
+    >>> fc_proton = gyrofrequency(0.1*u.T, "proton", to_hz=True)
+    >>> fbb/fc_helium
     <Quantity 1.99327444>
-    >>>  fbb/fc_proton
+    >>> fbb/fc_proton
     <Quantity 0.50168706>
 
     """
