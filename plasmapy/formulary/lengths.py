@@ -92,11 +92,6 @@ lambdaD_ = Debye_length
 
 @validate_quantities(
     Vperp={"can_be_nan": True},
-    T_i={
-        "can_be_nan": True,
-        "equivalencies": u.temperature_energy(),
-        "none_shall_pass": True,
-    },
     T={
         "can_be_nan": True,
         "equivalencies": u.temperature_energy(),
@@ -110,7 +105,6 @@ def gyroradius(
     particle: ParticleLike,
     *,
     Vperp: u.m / u.s = np.nan * u.m / u.s,
-    T_i: u.K = None,
     T: u.K = None,
     lorentzfactor=np.nan,
     relativistic: bool = True,
@@ -136,10 +130,6 @@ def gyroradius(
 
     T : `~astropy.units.Quantity`, optional, |keyword-only|
         The particle temperature in units convertible to kelvin.
-
-    T_i : `~astropy.units.Quantity`, optional, |keyword-only|
-        The particle temperature in units convertible to kelvin.
-        Note: Deprecated. Use ``T`` instead.
 
     lorentzfactor : `float` or `~numpy.ndarray`, optional, |keyword-only|
         The Lorentz factor for the particles, use for high precision.
@@ -225,20 +215,6 @@ def gyroradius(
     >>> gyroradius(400*u.G, 'e-', Vperp=1e7*u.m/u.s, relativistic=False)
     <Quantity 0.001421... m>
     """
-
-    # Backwards Compatibility and Deprecation check for keyword T_i
-    if T_i is not None:
-        warnings.warn(
-            "Keyword T_i is deprecated, use T instead.",
-            PlasmaPyFutureWarning,
-        )
-        if T is None:
-            T = T_i
-        else:
-            raise ValueError(
-                "Keywords T_i and T are both given.  T_i is deprecated, "
-                "please use T only."
-            )
 
     if not relativistic:
         if not np.isnan(lorentzfactor):
