@@ -21,3 +21,6 @@ pydocstyle
 pytest-regressions
 tomli
 tryceratops
+codespell
+pre-commit
+tox
