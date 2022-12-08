@@ -604,13 +604,13 @@ def Buchsbaum_frequency(
     >>>  from plasmapy.formulary import frequencies
     >>>  fbb = frequencies.Buchsbaum_frequency(0.1*u.T, 1e18*u.m**-3, 1e18*u.m**-3, "proton", "He+", to_hz=True)
     >>>  fbb
-    >>>  <Quantity 764831.28372462 Hz>
+    <Quantity 764831.28372462 Hz>
     >>>  fc_helium = frequencies.gyrofrequency(0.1*u.T, "He+", to_hz=True)
     >>>  fc_proton = frequencies.gyrofrequency(0.1*u.T, "proton", to_hz=True)
     >>>  fbb/fc_helium
-    >>>  <Quantity 1.99327444>
+    <Quantity 1.99327444>
     >>>  fbb/fc_proton
-    >>>  <Quantity 0.50168706>
+    <Quantity 0.50168706>
 
     """
 
