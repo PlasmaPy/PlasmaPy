@@ -31,7 +31,7 @@ Summary
 
     .. code-block:: console
 
-       python -m pip install -e.[tests]
+       python -m pip install -e ".[tests]"
 
     If you are on Windows, run:
 
@@ -45,7 +45,7 @@ Summary
 * Run ``pytest`` in the command line in order to run tests in that
   directory and its subdirectories.
 
-* Here is an example of a minimal software test that uses an
+* Here is an example of a minimal ``pytest`` test that uses an
   :py:`assert` statement:
 
   .. code-block:: python
