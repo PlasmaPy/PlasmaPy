@@ -119,6 +119,9 @@ Changelog guidelines
   changelog entry because it will be added automatically when the
   individual entries are converted into the full changelog.
 
+* When a changelog entry describes changes to functionality, it is not
+  necessary to mention the corresponding changes to the tests.
+
 * If a change is supplanted by another change during the release cycle,
   keep the files for both changelog entries. When the change is
   significant, mention in the earlier entry that the change was
