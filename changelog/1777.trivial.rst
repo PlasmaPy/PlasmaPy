@@ -1,3 +1,0 @@
-Added the flake8_ extensions ``flake8-use-pathlib``,
-``flake8-builtins``, and ``flake8-comments`` to the testing
-requirements.

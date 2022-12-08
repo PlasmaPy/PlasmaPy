@@ -1,2 +1,0 @@
-Added a test for `~plasmapy.formulary.dimensionless.Hall_parameter` in
-:file:`plasmapy/formulary/test/test_dimensionless.py`\ .

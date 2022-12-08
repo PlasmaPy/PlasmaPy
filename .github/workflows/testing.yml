@@ -162,7 +162,7 @@ jobs:
 
   build-n-publish:
     name: Packaging
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     needs:
     - initial-tests
     - comprehensive-tests
