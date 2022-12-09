@@ -12,6 +12,7 @@ __lite_funcs__ = ["plasma_frequency_lite"]
 import astropy.units as u
 import numbers
 import numpy as np
+from typing import Optional
 
 from astropy.constants.si import e, eps0
 from numba import njit
@@ -533,8 +534,8 @@ def Buchsbaum_frequency(
     n2: u.m**-3,
     ion1: ParticleLike,
     ion2: ParticleLike,
-    Z1=None,
-    Z2=None,
+    Z1:Optional[float]=None,
+    Z2:Optional[float]=None,
 ) -> u.rad / u.s:
     r"""
     Return the Buchsbaum frequency for a two-ion-species plasma.
