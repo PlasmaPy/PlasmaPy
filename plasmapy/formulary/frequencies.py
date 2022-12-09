@@ -555,10 +555,7 @@ def Buchsbaum_frequency(
         charge state information is provided, then species #1 is assumed
         to be singly charged.
     ion2 : `~plasmapy.particles.particle_class.Particle`
-        Representation of ion species #2 (e.g., 'p' for protons, 'D+'
-        for deuterium, or 'He-4 +1' for singly ionized helium-4). If no
-        charge state information is provided, then species #2 is assumed
-        to be singly charged.
+        Representation of ion species #2 (same behavior as for ion1).
     Z1 : `float` or `~astropy.units.Quantity`, optional
         The charge state for ion species #1. If not provided, it defaults to the charge number of ``particle1``.
     Z2 : `float` or `~astropy.units.Quantity`, optional
