@@ -610,12 +610,13 @@ def Buchsbaum_frequency(
 
     """
 
-    omega_c1 = gyrofrequency(B, ion1, signed=False, Z=Z1)
-    omega_c2 = gyrofrequency(B, ion2, signed=False, Z=Z2)
-    omega_p1 = plasma_frequency(n1, ion1, z_mean=Z1)
-    omega_p2 = plasma_frequency(n2, ion2, z_mean=Z2)
+    omega_c1_squared = gyrofrequency(B, ion1, signed=False, Z=Z1)**2
+    omega_c2_squared = gyrofrequency(B, ion2, signed=False, Z=Z2)**2
+    omega_p1_squared = plasma_frequency(n1, ion1, z_mean=Z1)**2
+    omega_p2_squared = plasma_frequency(n2, ion2, z_mean=Z2)**2
 
-    return np.sqrt((omega_p1**2 * omega_c2**2 + omega_p2**2 * omega_c1**2) / (omega_p1**2 + omega_p2**2))
+    return np.sqrt((omega_p1_squared * omega_c2_squared + omega_p2_squared * omega_c1_squared) /
+                   (omega_p1_squared + omega_p2_squared))
 
 
 wbb_ = Buchsbaum_frequency
