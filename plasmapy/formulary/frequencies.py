@@ -591,7 +591,7 @@ def Buchsbaum_frequency(
     perpendicular component of the cold-plasma dielectric coefficient
     :math:`\epsilon_{\perp}` to vanish at an angular frequency referred
     to as the Buchsbaum frequency :cite:p:`buchsbaum:1960`, also called
-    the bi-ion hybrid resonance frequency :cite:p: `thompson:1995` or ion-ion hybrid frequency
+    the bi-ion hybrid resonance frequency :cite:p: `thompson:1995`, or ion-ion hybrid frequency
     :cite:p:`vincena:2013`.  This frequency can be defined as:
 
     .. math::
