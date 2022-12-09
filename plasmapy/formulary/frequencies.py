@@ -537,7 +537,7 @@ def Buchsbaum_frequency(
     Z2=None,
 ) -> u.rad / u.s:
     r"""
-    Calculate the Buchsbaum frequency for a two-ion-species plasma (defaults to units of radians per second.)
+    Calculate the ion-ion hybrid frequency for a two-ion-species plasma.
 
     **Aliases:** `wbb_`, `wii_`, `wbi_`
 
