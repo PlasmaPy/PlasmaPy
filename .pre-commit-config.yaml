@@ -34,16 +34,23 @@ repos:
     - python
 
 - repo: https://github.com/psf/black
-  rev: 22.8.0
+  rev: 22.10.0
   hooks:
   - id: black
 
+- repo: https://github.com/asottile/blacken-docs
+  rev: v1.12.1
+  hooks:
+  - id: blacken-docs
+    additional_dependencies: [black==22.10.0]
+    exclude: docs/contributing/coding_guide.rst
+
 - repo: https://github.com/nbQA-dev/nbQA
-  rev: 1.4.0
+  rev: 1.5.3
   hooks:
   - id: nbqa-black
     additional_dependencies:
-    - black==22.8.0
+    - black==22.10.0
     args:
     - --nbqa-mutate
   - id: nbqa-isort
@@ -74,7 +81,7 @@ repos:
     exclude: docs/plasmapy_sphinx
 
 - repo: https://github.com/asottile/pyupgrade
-  rev: v2.37.3
+  rev: v3.2.2
   hooks:
   - id: pyupgrade
     args: [--keep-runtime-typing, --py38-plus]

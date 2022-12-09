@@ -111,6 +111,7 @@
 .. |annotation| replace:: :term:`annotation`\
 .. |argument| replace:: :term:`argument`\
 .. |arguments| replace:: :term:`arguments <argument>`\
+.. |atom-like| replace:: :term:`atom-like`\
 .. |charge number| replace:: :term:`charge number`\
 .. |decorated| replace:: :term:`decorated <decorator>`\
 .. |decorator| replace:: :term:`decorator`\
@@ -124,7 +125,6 @@
 .. Websites
 .. --------
 
-.. _API: https://en.wikipedia.org/wiki/API
 .. _Astropy docs: https://docs.astropy.org
 .. _Astropy: https://www.astropy.org
 .. _BibTeX format: https://www.bibtex.com/g/bibtex-format
@@ -132,6 +132,7 @@
 .. _black: https://black.readthedocs.io
 .. _Conda: https://docs.conda.io
 .. _Contributor Covenant: https://www.contributor-covenant.org
+.. _Citation File Format: https://citation-file-format.github.io/
 .. _create an issue: https://github.com/PlasmaPy/PlasmaPy/issues/new/choose
 .. _CSS: https://www.w3schools.com:443/css
 .. _Cython: https://cython.org/
@@ -146,7 +147,6 @@
 .. _Gitter bridge: https://gitter.im/PlasmaPy/Lobby
 .. _Graphviz: https://graphviz.org
 .. _hypothesis: https://hypothesis.readthedocs.io
-.. _ide: https://en.wikipedia.org/wiki/Integrated_development_environment
 .. _intersphinx: https://www.sphinx-doc.org/en/master/usage/extensions/intersphinx.html
 .. _isort: https://pycqa.github.io/isort
 .. _Jinja: https://jinja.palletsprojects.com
@@ -209,6 +209,9 @@
 .. _`astropy.units`: https://docs.astropy.org/en/stable/units/index.html
 .. |astropy.units| replace:: `astropy.units`
 
+.. _`CITATION.cff`: https://github.com/PlasmaPy/PlasmaPy/blob/main/CITATION.cff
+.. |CITATION.cff| replace:: :file:`CITATION.cff`
+
 .. _`docs/_static`: https://github.com/PlasmaPy/PlasmaPy/tree/main/docs/_static
 .. |docs/_static| replace:: :file:`docs/_static`
 
@@ -257,7 +260,7 @@
 .. _`pyproject.toml`: https://github.com/PlasmaPy/PlasmaPy/blob/main/pyproject.toml
 .. |pyproject.toml| replace:: :file:`pyproject.toml`
 
-.. _`requirements`: https://github.com/PlasmaPy/PlasmaPy/blob/main/requirements
+.. _`requirements`: https://github.com/PlasmaPy/PlasmaPy/tree/main/requirements
 .. |requirements| replace:: :file:`requirements`
 
 .. _`requirements/build.txt`: https://github.com/PlasmaPy/PlasmaPy/blob/main/requirements/build.txt

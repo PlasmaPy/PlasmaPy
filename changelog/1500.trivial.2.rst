@@ -1,1 +1,0 @@
-Added ``tomli`` to the ``tests`` category of requirements.

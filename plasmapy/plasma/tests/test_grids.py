@@ -121,7 +121,7 @@ create_args = [
     # Test wrong number of positional arguments: too nmany
     ([1 * u.cm] * 4, {"num": 10}, None, TypeError),
     # Test unequal lengths of arguments raises error
-    ([1 * u.cm, [2 * u.m, 3 * u.m]], {"num": 10}, None, ValueError),
+    ([1 * u.cm, [2 * u.m, 3 * u.m]], {"num": 10}, None, TypeError),
     # Test arrays of points that are different shapes
     (
         [
@@ -141,13 +141,13 @@ create_args = [
         ],
         {"num": [10, 5, 3]},
         (10, 5, 3),
-        ValueError,
+        TypeError,
     ),
-    ([-1, 1], {"num": 10}, (10, 10, 10), ValueError),
+    ([-1, 1], {"num": 10}, (10, 10, 10), TypeError),
     # Test incompatible grid units
     ([1 * u.cm, 1 * u.eV], {"num": 10}, None, ValueError),
     # Non-integer num
-    ([-1 * u.cm, 1 * u.cm], {"num": 10.1}, (10, 10, 10), ValueError),
+    ([-1 * u.cm, 1 * u.cm], {"num": 10.1}, (10, 10, 10), TypeError),
 ]
 
 
@@ -166,7 +166,9 @@ def test_AbstractGrid_creation(args, kwargs, shape, error):
     # If an exception is expected, verify that it is raised
     else:
         with pytest.raises(error):
-            grid = grids.CartesianGrid(*args, **kwargs)
+            print(f"{args = }")
+            print(f"{kwargs = }")
+            grids.CartesianGrid(*args, **kwargs)
 
 
 def test_print_summary(abstract_grid_uniform, abstract_grid_nonuniform):
