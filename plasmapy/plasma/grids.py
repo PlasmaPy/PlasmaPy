@@ -64,12 +64,7 @@ class AbstractGrid(ABC):
 
        .. code-block:: python
 
-          AbstractGrid(
-              start=[x0, y0, z0],
-              stop=[x1, y1, z1],
-              num=[Nx, Ny, Nz],
-              **kwargs
-          )
+          AbstractGrid(start=[x0, y0, z0], stop=[x1, y1, z1], num=[Nx, Ny, Nz], **kwargs)
 
        In this case, any additional keyword arguments ``**kwargs`` provided
        will be passed directly to `~numpy.linspace`.
