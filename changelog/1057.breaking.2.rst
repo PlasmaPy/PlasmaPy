@@ -1,2 +1,0 @@
-Renamed the first |parameter| of |particle_input| from
-``wrapped_function`` to ``wrapped``.

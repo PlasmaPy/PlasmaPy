@@ -5,6 +5,7 @@ include pyproject.toml
 
 include setup.cfg
 include plasmapy/tests/coveragerc
+include CITATION.cff
 
 recursive-include plasmapy *.json *.npy
 recursive-include docs *

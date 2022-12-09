@@ -64,12 +64,7 @@ class AbstractGrid(ABC):
 
        .. code-block:: python
 
-          AbstractGrid(
-              start=[x0, y0, z0],
-              stop=[x1, y1, z1],
-              num=[Nx, Ny, Nz],
-              **kwargs
-          )
+          AbstractGrid(start=[x0, y0, z0], stop=[x1, y1, z1], num=[Nx, Ny, Nz], **kwargs)
 
        In this case, any additional keyword arguments ``**kwargs`` provided
        will be passed directly to `~numpy.linspace`.
@@ -628,12 +623,12 @@ class AbstractGrid(ABC):
             if key in self.recognized_quantities:
                 try:
                     quantity.to(self.recognized_quantities[key].unit)
-                except u.UnitConversionError:
+                except u.UnitConversionError as ex:
                     raise ValueError(
                         f"Units provided for {key} ({quantity.unit}) "
                         "are not compatible with the correct units "
                         f"for that recognized key ({self.recognized_quantities[key]})."
-                    )
+                    ) from ex
 
             else:
                 warnings.warn(
@@ -724,7 +719,7 @@ class AbstractGrid(ABC):
 
                 # Make sure it's a list of quantities
                 if not all(isinstance(v, u.Quantity) for v in var[k]):
-                    raise ValueError(
+                    raise TypeError(
                         f"The argument `{k}` must be an "
                         "`astropy.units.Quantity` or a list of same, "
                         f"but a {type(var[k])} was given."
@@ -734,7 +729,7 @@ class AbstractGrid(ABC):
                 # Case of >1 but != 3 is handled later
                 var[k] = [var[k]] * 3 if var[k].size == 1 else list(var[k])
             else:
-                raise ValueError(
+                raise TypeError(
                     f"The argument `{k}` must be an "
                     "`astropy.units.Quantity` or a list of same, "
                     f"but a {type(var[k])} was given."
@@ -750,7 +745,7 @@ class AbstractGrid(ABC):
         elif isinstance(var["num"], int):
             var["num"] = [var["num"]] * 3
         else:
-            raise ValueError(
+            raise TypeError(
                 f"The argument `num` must be an int or list of "
                 f"same, but a {type(var[k])} was given."
             )
@@ -759,7 +754,7 @@ class AbstractGrid(ABC):
         # (throws exception if user supplies a list of two, say)
         for k in var:
             if len(var[k]) != 3:
-                raise ValueError(
+                raise TypeError(
                     f"{k} must be either a single value or a "
                     "list of three values, but "
                     f"({len(var[k])} values were given)."
@@ -782,8 +777,10 @@ class AbstractGrid(ABC):
             try:
                 stop[i] = stop[i].to(unit)
 
-            except u.UnitConversionError:
-                raise ValueError(f"Units of {stop[i]} and {unit} are not compatible")
+            except u.UnitConversionError as ex:
+                raise ValueError(
+                    f"Units of {stop[i]} and {unit} are not compatible"
+                ) from ex
 
             # strip units
             stop[i] = stop[i].value
@@ -1055,11 +1052,11 @@ class CartesianGrid(AbstractGrid):
         for i in range(3):
             try:
                 self.units[i].to(u.m)
-            except u.UnitConversionError:
+            except u.UnitConversionError as ex:
                 raise ValueError(
                     "Units of grid are not valid for a Cartesian "
                     f"grid: {self.units}."
-                )
+                ) from ex
 
     @property
     def grid_resolution(self):
@@ -1324,11 +1321,11 @@ class NonUniformCartesianGrid(AbstractGrid):
         for i in range(3):
             try:
                 self.units[i].to(u.m)
-            except u.UnitConversionError:
+            except u.UnitConversionError as ex:
                 raise ValueError(
                     "Units of grid are not valid for a Cartesian "
                     f"grid: {self.units}."
-                )
+                ) from ex
 
     @property
     def grid_resolution(self):
