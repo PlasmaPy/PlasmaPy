@@ -194,7 +194,7 @@ If you expect to occasionally edit the source code, instead run:
 
 .. code:: bash
 
-   pip install -e .[dev]
+   pip install -e ".[dev]"
 
 The ``-e`` flag makes the installation editable and ``[dev]``
 indicates that all of the dependencies needed for developing PlasmaPy
