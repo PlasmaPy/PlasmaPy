@@ -535,7 +535,7 @@ def Buchsbaum_frequency(
     ion1: ParticleLike,
     ion2: ParticleLike,
     Z1: Optional[float] = None,
-    Z2: Optional[float] = None,
+    Z2: Optional[float] = None
 ) -> u.rad / u.s:
     r"""
     Return the Buchsbaum frequency for a two-ion-species plasma.
