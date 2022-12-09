@@ -558,9 +558,9 @@ def Buchsbaum_frequency(
     ion2 : `~plasmapy.particles.particle_class.Particle`
         Representation of ion species #2 (same behavior as for ion1).
     Z1 : `float` or `~astropy.units.Quantity`, optional
-        The charge state for ion species #1. If not provided, it defaults to the charge number of ``particle1``.
+        The charge state for ion species #1. If not provided, it defaults to the charge number of ``ion1``.
     Z2 : `float` or `~astropy.units.Quantity`, optional
-        The charge state for ion species #2. If not provided, it defaults to the charge number of ``particle2``.
+        The charge state for ion species #2. If not provided, it defaults to the charge number of ``ion2``.
 
     Returns
     -------
