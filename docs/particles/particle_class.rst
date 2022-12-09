@@ -160,7 +160,7 @@ in one of these categories.
 
 .. code-block:: python
 
-    particles = [Particle('e-'), Particle('Fe-56'), Particle('alpha')]
+    particles = [Particle("e-"), Particle("Fe-56"), Particle("alpha")]
 
     for particle in particles:
         if particle.element:
