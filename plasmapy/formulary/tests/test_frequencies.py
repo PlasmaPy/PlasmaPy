@@ -198,14 +198,14 @@ def test_upper_hybrid_frequency():
 def test_Buchsbaum_frequency():
     r"""Test the Buchsbaum_frequency function in frequencies.py."""
 
-#    with pytest.raises(ValueError):
-#        Buchsbaum_frequency(1.0 * u.T, 5e19 * u.m**-3, 5e19 * u.m**-3,
-#        "norwegian jarlsberg","proton")
-#
-#    with pytest.raises(ValueError):
-#        Buchsbaum_frequency(1.0 * u.T, 5e19 * u.m**-3, 5e19 * u.m**-3,
-#        "proton", "venezuelan beaver cheese")
-#
+    with pytest.raises(ValueError):
+       Buchsbaum_frequency(1.0 * u.T, 5e19 * u.m**-3, 5e19 * u.m**-3,
+       "norwegian jarlsberg","proton")
+
+    with pytest.raises(ValueError):
+       Buchsbaum_frequency(1.0 * u.T, 5e19 * u.m**-3, 5e19 * u.m**-3,
+       "proton", "venezuelan beaver cheese")
+
     assert np.isclose(Buchsbaum_frequency(B=0.1*u.T, n1=1e18*u.m**-3, n2=1e18*u.m**-3,
         ion1="proton", ion2="He-4 +1").value, 4805575.93140432)
 #
