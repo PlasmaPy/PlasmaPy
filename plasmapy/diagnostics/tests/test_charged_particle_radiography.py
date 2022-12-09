@@ -4,8 +4,8 @@ Tests for proton radiography functions
 
 import astropy.constants as const
 import astropy.units as u
+import copy
 import numpy as np
-import os
 import pytest
 
 from scipy.special import erf
@@ -322,6 +322,7 @@ def test_input_validation():
         hax, vax, values = cpr.synthetic_radiograph(sim, size=size)
 
 
+@pytest.mark.slow
 def test_init():
     grid = _test_grid("electrostatic_gaussian_sphere", num=50)
 
@@ -348,6 +349,7 @@ def test_init():
     assert all(sim.det_hdir == np.array([1, 0, 0]))
 
 
+@pytest.mark.slow
 def test_create_particles():
     grid = _test_grid("electrostatic_gaussian_sphere", num=50)
 
@@ -507,7 +509,7 @@ class TestSyntheticRadiograph:
         """
         Test warning when less than half the particles reach the detector plane.
         """
-        sim_results = self.sim_results.copy()
+        sim_results = copy.deepcopy(self.sim_results)
         sim_results["nparticles"] *= 3
         with pytest.warns(RuntimeWarning):
             cpr.synthetic_radiograph(sim_results)
@@ -579,25 +581,35 @@ class TestSyntheticRadiograph:
         bins = (200, 60)
         size = np.array([[-1, 1], [-1, 1]]) * 30 * u.cm
 
-        intensity_results = cpr.synthetic_radiograph(
-            self.sim_results, size=size, bins=bins
-        )
+        sim_results = copy.deepcopy(self.sim_results)
+        intensity_results = cpr.synthetic_radiograph(sim_results, size=size, bins=bins)
+
+        sim_results = copy.deepcopy(self.sim_results)
         od_results = cpr.synthetic_radiograph(
-            self.sim_results, size=size, bins=bins, optical_density=True
+            sim_results, size=size, bins=bins, optical_density=True
         )
 
-        assert np.allclose(intensity_results[0], od_results[0])
-        assert np.allclose(intensity_results[1], od_results[1])
+        assert np.allclose(intensity_results[0], od_results[0], rtol=1e-4, atol=1e-7)
+        assert np.allclose(intensity_results[1], od_results[1], rtol=1e-4, atol=1e-7)
 
-        intensity = intensity_results[2]
-        zero_mask = intensity == 0
-        i0 = np.mean(intensity[~zero_mask])
-        od = -np.log10(intensity / i0)
+        # Manually calculate the OD and check that it agrees with the values
+        # returned from the function
 
-        assert np.allclose(od[~zero_mask], od_results[2][~zero_mask])
+        zero_mask = intensity_results[2] == 0
+        i0 = np.mean(intensity_results[2][~zero_mask])
+        with np.errstate(divide="ignore"):
+            od = -np.log10(intensity_results[2] / i0)
+
+        # Assert that the calculated od is close to that returned by the function
+        assert np.allclose(
+            od[~zero_mask], od_results[2][~zero_mask], rtol=1e-4, atol=1e-7
+        )
+
+        # Assert that all zero intensity values have gone to positive infinity
         assert np.all(np.isposinf(od_results[2][zero_mask]))
 
 
+@pytest.mark.slow
 def test_saving_output(tmp_path):
     """Test behavior of Tracker.save_results."""
 
@@ -612,7 +624,7 @@ def test_saving_output(tmp_path):
     results_1 = sim.results_dict
 
     # Save result
-    path = os.path.join(tmp_path, "temp.npz")
+    path = str(tmp_path / "temp.npz")
     sim.save_results(path)
 
     # Load result
@@ -623,6 +635,7 @@ def test_saving_output(tmp_path):
         assert np.allclose(results_1[key], results_2[key])
 
 
+@pytest.mark.slow
 @pytest.mark.parametrize(
     "case",
     ["creating particles", "loading particles", "adding a wire mesh"],

@@ -294,11 +294,11 @@ def spectral_density(
         Total combined number density of all electron populations.
         (convertible to cm\ :sup:`-3`)
 
-    T_e : `~astropy.units.Quantity`, keyword-only, shape (Ne, )
+    T_e : `~astropy.units.Quantity`, |keyword-only|, shape (Ne, )
         Temperature of each electron component. Shape (Ne, ) must be equal to the
         number of electron populations Ne. (in K or convertible to eV)
 
-    T_i : `~astropy.units.Quantity`, keyword-only, shape (Ni, )
+    T_i : `~astropy.units.Quantity`, |keyword-only|, shape (Ni, )
         Temperature of each ion component. Shape (Ni, ) must be equal to the
         number of ion populations Ni. (in K or convertible to eV)
 
@@ -461,7 +461,7 @@ def spectral_density(
             ions[ii] = Particle(ion)
         ions = ParticleList(ions)
     else:
-        raise ValueError(
+        raise TypeError(
             "The type of object provided to the ``ions`` keyword "
             f"is not supported: {type(ions)}"
         )
@@ -472,10 +472,10 @@ def spectral_density(
 
     try:
         if sum(ion.charge_number <= 0 for ion in ions):
-            raise ValueError("All ions must be positively charged.")
+            raise ValueError("All ions must be positively charged.")  # noqa: TC301
     # Catch error if charge information is missing
-    except ChargeError:
-        raise ValueError("All ions must be positively charged.")
+    except ChargeError as ex:
+        raise ValueError("All ions must be positively charged.") from ex
 
     # Condition T_i
     if T_i.size == 1:
@@ -604,17 +604,17 @@ def _params_to_array(
     """
 
     if vector:
-        npop = _count_populations_in_params(params, prefix + "_x")
+        npop = _count_populations_in_params(params, f"{prefix}_x")
         output = np.zeros([npop, 3])
         for i in range(npop):
             for j, ax in enumerate(["x", "y", "z"]):
-                output[i, j] = params[prefix + f"_{ax}_{i}"].value
+                output[i, j] = params[f"{prefix}_{ax}_{i}"].value
 
     else:
         npop = _count_populations_in_params(params, prefix)
         output = np.zeros([npop])
         for i in range(npop):
-            output[i] = params[prefix + f"_{i}"]
+            output[i] = params[f"{prefix}_{i}"]
 
     return output
 
@@ -812,7 +812,7 @@ def spectral_density_model(wavelengths, settings, params):
             ions[ii] = Particle(ion)
         ions = ParticleList(ions)
     else:
-        raise ValueError(
+        raise TypeError(
             "The type of object provided to the ``ions`` keyword "
             f"is not supported: {type(ions)}"
         )
@@ -823,10 +823,10 @@ def spectral_density_model(wavelengths, settings, params):
 
     try:
         if sum(ion.charge_number <= 0 for ion in ions):
-            raise ValueError("All ions must be positively charged.")
+            raise ValueError("All ions must be positively charged.")  # noqa: TC301
     # Catch error if charge information is missing
-    except ChargeError:
-        raise ValueError("All ions must be positively charged.")
+    except ChargeError as ex:
+        raise ValueError("All ions must be positively charged.") from ex
 
     # Create arrays of ion Z and mass from particles given
     settings["ion_z"] = ions.charge_number

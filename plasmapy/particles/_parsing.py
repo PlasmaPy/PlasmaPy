@@ -13,7 +13,7 @@ import re
 import warnings
 
 from numbers import Integral
-from typing import Dict, Union
+from typing import Dict, Optional, Union
 
 from plasmapy.particles import _elements, _isotopes, _special_particles
 from plasmapy.particles.exceptions import (
@@ -127,7 +127,11 @@ def dealias_particle_aliases(alias: Union[str, Integral]) -> str:
         return alias
 
 
-def invalid_particle_errmsg(argument, mass_numb=None, Z=None):
+def invalid_particle_errmsg(
+    argument,
+    mass_numb: Optional[Integral] = None,
+    Z: Optional[Integral] = None,
+):
     """
     Return an appropriate error message for an
     `~plasmapy.particles.exceptions.InvalidParticleError`.
@@ -221,7 +225,9 @@ def extract_charge(arg: str):
 
 
 def parse_and_check_atomic_input(
-    argument: Union[str, Integral], mass_numb: Integral = None, Z: Integral = None
+    argument: Union[str, Integral],
+    mass_numb: Optional[Integral] = None,
+    Z: Optional[Integral] = None,
 ):
     """
     Parse information about a particle into a dictionary of standard
@@ -242,7 +248,7 @@ def parse_and_check_atomic_input(
 
     Returns
     -------
-    nomenclature_dict : `dict`
+    `dict`
         A dictionary containing information about the element, isotope,
         or ion.  The key ``'symbol'`` corresponds to the particle symbol
         containing the most information, ``'element'`` corresponds to
@@ -471,7 +477,7 @@ def parse_and_check_atomic_input(
     }
 
 
-def parse_and_check_molecule_input(argument: str, Z: Integral = None):
+def parse_and_check_molecule_input(argument: str, Z: Optional[Integral] = None):
     """
     Separate the constitutive elements and charge of a molecule symbol.
 
@@ -480,12 +486,12 @@ def parse_and_check_molecule_input(argument: str, Z: Integral = None):
     argument : `str`
         The molecule symbol to be parsed.
 
-    Z : `int`, optional
+    Z : integer, optional
         The provided charge number.
 
     Returns
     -------
-    elements_dict : `dict`
+    `dict`
         A dictionary with identified element symbols as keys and the
         number of each element that make up the molecule as values. For
         example, ``argument="CO2"`` would lead to ``elements_dict``

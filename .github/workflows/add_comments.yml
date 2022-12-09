@@ -1,0 +1,44 @@
+name: Add comment
+
+on:
+- pull_request_target
+
+jobs:
+  greeting:
+    name: Welcome message
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/first-interaction@v1
+      with:
+        repo-token: ${{ secrets.GITHUB_TOKEN }}
+        pr-message: |
+          Thank you for making your first contribution to PlasmaPy! The project's future depends on contributors like you, so we deeply appreciate it! 🌱
+
+          To make sure that you get credit for this pull request (PR), please add yourself to the list of contributors in [`docs/about/credits.rst`](https://github.com/PlasmaPy/PlasmaPy/blob/main/docs/about/credits.rst).
+
+          We encourage you to check out our [**contributor guide**](https://docs.plasmapy.org/en/latest/development/index.html), which discusses topics like [adding changelog entries](https://docs.plasmapy.org/en/latest/development/changelog_guide.html). If you'd like to talk with us in real time, the easiest way is via our [chat room](https://matrix.to/#/!hkWCiyhQyxiYJlUtKF:matrix.org?via=matrix.org&via=openastronomy.org&via=gitter.im). We also invite you to stop by our weekly [community meeting](https://www.plasmapy.org/meetings/weekly) or [office hours](https://www.plasmapy.org/meetings/office_hours).
+
+          The bottom of this page includes several checks that are run for every PR. Don't worry if something broke! We break stuff all the time. Eventually we'll want to get checks on this PR to pass before merging it. Clicking on *Details* next to the check will show the results of the test, including error messages. Please feel free to ask for help if you're having trouble (we do that all the time, as well).
+
+          Our [testing guide](https://docs.plasmapy.org/en/latest/development/testing_guide.html) describes these checks in more detail, as well as how to write and run tests. We recommend trying out [test-driven development](https://en.wikipedia.org/wiki/Test-driven_development): write tests first, and then write code to make tests pass. Remember to run tests often!
+
+          As described in our [documentation guide](https://docs.plasmapy.org/en/latest/development/doc_guide.html), [PlasmaPy's documentation](https://docs.plasmapy.org/en/latest) is written in [reStructuredText](https://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html) using the [numpydoc docstring standard](https://numpydoc.readthedocs.io/en/latest/format.html#docstring-standard). To see a preview of the documentation from this PR, click on *Details* next to the `docs/readthedocs.org:plasmapy` check.
+
+          To automagically fix most linter problems, comment on this PR with `pre-commit.ci autofix`, followed by a `git pull` to bring the changes home to your own computer.
+
+          A code maintainer should come by soon to begin a code review. This step often includes suggestions for fixing bugs, adding tests, or simplifying the implementation. After that you'll have a chance to make changes. If you'd like more time before a code review happens, you can [convert this PR to a draft](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/changing-the-stage-of-a-pull-request#converting-a-pull-request-to-a-draft) now and [mark it as ready for review](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/changing-the-stage-of-a-pull-request#marking-a-pull-request-as-ready-for-review) later.
+
+          Finally, we try to be the best community we can be. We have a [Code of Conduct](https://www.plasmapy.org/conduct) to foster a community of care and appreciation.
+
+          We thank you once again! :sparkles:
+
+  comment:
+    name: Checklist
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+    - uses: harupy/comment-on-pr@master
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        filename: checklist.md

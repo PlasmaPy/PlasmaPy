@@ -13,7 +13,7 @@
 [![YouTube](https://img.shields.io/badge/YouTube%20-subscribe-red?style=flat&logo=youtube)](https://www.youtube.com/channel/UCSH6qzslhqIZKTAJmHPxIxw)
 
 [![GitHub Actions — CI](https://github.com/PlasmaPy/PlasmaPy/workflows/CI/badge.svg)](https://github.com/PlasmaPy/PlasmaPy/actions?query=workflow%3ACI+branch%3Amain)
-[![fortnightly tests](https://github.com/PlasmaPy/PlasmaPy/actions/workflows/fortnightly.yml/badge.svg?branch=main)](https://github.com/PlasmaPy/PlasmaPy/actions/workflows/fortnightly.yml)
+[![weekly tests](https://github.com/PlasmaPy/PlasmaPy/actions/workflows/weekly.yml/badge.svg?branch=main)](https://github.com/PlasmaPy/PlasmaPy/actions/workflows/weekly.yml)
 [![pre-commit.ci status](https://results.pre-commit.ci/badge/github/PlasmaPy/PlasmaPy/main.svg)](https://results.pre-commit.ci/latest/github/PlasmaPy/PlasmaPy/main)
 [![codecov](https://codecov.io/gh/PlasmaPy/PlasmaPy/branch/main/graph/badge.svg)](https://codecov.io/gh/PlasmaPy/PlasmaPy)
 [![Read the Docs Status](https://readthedocs.org/projects/plasmapy/badge/?version=latest&logo=twitter)](http://plasmapy.readthedocs.io/en/latest/?badge=latest)
@@ -26,6 +26,7 @@
 
 [Anaconda Navigator]: https://docs.anaconda.com/anaconda/navigator/index.html
 [Astropy]: https://www.astropy.org
+[3-clause BSD license]: ./LICENSE.md
 [calendar]: https://calendar.google.com/calendar/embed?src=c_sqqq390s24jjfjp3q86pv41pi8%40group.calendar.google.com&ctz=America%2FNew_York
 [citation instructions]: https://docs.plasmapy.org/en/latest/about/citation.html
 [code of conduct]: http://docs.plasmapy.org/en/latest/CODE_OF_CONDUCT.html
@@ -57,6 +58,7 @@
 [PlasmaPy Community on Zenodo]: https://zenodo.org/communities/plasmapy
 [PlasmaPy]: https://www.plasmapy.org
 [PlasmaPy's online documentation]: https://docs.plasmapy.org
+[protections against software patents]: ./PATENT.md
 [Python]: https://www.python.org
 [Smithsonian Institution]: https://www.si.edu
 [submit a bug report]: https://github.com/PlasmaPy/PlasmaPy/issues/new?assignees=&labels=&template=Bug_report.md
@@ -201,8 +203,8 @@ computational magnetohydrodynamics.
 
 ## License
 
-PlasmaPy is permissively licensed under a [3-clause BSD license with
-added protections against software patents](LICENSE.md).
+PlasmaPy is permissively licensed under a [3-clause BSD license] with
+added [protections against software patents].
 
 ## Citing PlasmaPy
 

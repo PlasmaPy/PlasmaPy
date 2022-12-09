@@ -55,6 +55,7 @@ for name in (
     "Re_",
     "Reynolds_number",
     "Rm_",
+    "Lundquist_number",
 ):  # coverage: ignore
     with contextlib.suppress(ValueError):  # ValueError if name was not in __aliases__
         __aliases__.remove(name)
