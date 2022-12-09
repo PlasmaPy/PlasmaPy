@@ -192,11 +192,11 @@ def find_floating_potential(
         min_point_factor = _settings[fit_type]["min_point_factor"]
         fit_func = _settings[fit_type]["func"]()
         rtn_extras["fitted_func"] = fit_func
-    except KeyError:
+    except KeyError as ex:
         raise ValueError(
             f"Requested fit '{fit_type}' is not a valid option.  Valid options "
             f"are {list(_settings.keys())}."
-        )
+        ) from ex
 
     # check voltage and current arrays
     voltage, current = check_sweep(voltage, current, strip_units=True)

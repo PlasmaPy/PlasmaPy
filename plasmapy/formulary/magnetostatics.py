@@ -154,7 +154,7 @@ class GeneralWire(Wire):
         if callable(parametric_eq):
             self.parametric_eq = parametric_eq
         else:
-            raise ValueError("Argument parametric_eq should be a callable")
+            raise TypeError("Argument parametric_eq should be a callable")
         if t1 >= t2:
             raise ValueError(f"t1={t1} is not smaller than t2={t2}")
         self.t1 = t1

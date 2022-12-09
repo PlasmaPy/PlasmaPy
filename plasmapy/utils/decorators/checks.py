@@ -102,17 +102,23 @@ class CheckValues(CheckBase):
 
         from plasmapy.utils.decorators.checks import CheckValues
 
-        @CheckValues(arg1={'can_be_negative': False, 'can_be_nan': False},
-                     arg2={'can_be_inf': False},
-                     checks_on_return={'none_shall_pass': True)
+
+        @CheckValues(
+            arg1={"can_be_negative": False, "can_be_nan": False},
+            arg2={"can_be_inf": False},
+            checks_on_return={"none_shall_pass": True},
+        )
         def foo(arg1, arg2):
             return None
 
+
         # on a method
         class Foo:
-            @CheckValues(arg1={'can_be_negative': False, 'can_be_nan': False},
-                         arg2={'can_be_inf': False},
-                         checks_on_return={'none_shall_pass': True)
+            @CheckValues(
+                arg1={"can_be_negative": False, "can_be_nan": False},
+                arg2={"can_be_inf": False},
+                checks_on_return={"none_shall_pass": True},
+            )
             def bar(self, arg1, arg2):
                 return None
     """
@@ -943,10 +949,10 @@ class CheckUnits(CheckBase):
             try:
                 target_unit = u.Unit(target)
                 allowed_units.append(target_unit)
-            except TypeError as err:
+            except TypeError:
                 # not a unit type
                 if not from_annotations:
-                    raise err
+                    raise
 
                 continue
 
@@ -1226,17 +1232,23 @@ def check_values(
 
         from plasmapy.utils.decorators import check_values
 
-        @check_values(arg1={'can_be_negative': False, 'can_be_nan': False},
-                      arg2={'can_be_inf': False},
-                      checks_on_return={'none_shall_pass': True)
+
+        @check_values(
+            arg1={"can_be_negative": False, "can_be_nan": False},
+            arg2={"can_be_inf": False},
+            checks_on_return={"none_shall_pass": True},
+        )
         def foo(arg1, arg2):
             return None
 
+
         # on a method
         class Foo:
-            @check_values(arg1={'can_be_negative': False, 'can_be_nan': False},
-                          arg2={'can_be_inf': False},
-                          checks_on_return={'none_shall_pass': True)
+            @check_values(
+                arg1={"can_be_negative": False, "can_be_nan": False},
+                arg2={"can_be_inf": False},
+                checks_on_return={"none_shall_pass": True},
+            )
             def bar(self, arg1, arg2):
                 return None
     """
@@ -1374,8 +1386,8 @@ def _check_relativistic(V, funcname, betafrac=0.05):
 
     try:
         V_over_c = (V / c).to_value(u.dimensionless_unscaled)
-    except u.UnitConversionError:
-        raise u.UnitConversionError(errmsg)
+    except u.UnitConversionError as ex:
+        raise u.UnitConversionError(errmsg) from ex
 
     beta = np.max(np.abs(V_over_c))
 

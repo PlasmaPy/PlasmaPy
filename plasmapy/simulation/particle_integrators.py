@@ -6,6 +6,9 @@ limit overhead and increase performance.
 They act in-place on position and velocity arrays to reduce
 memory allocation.
 """
+
+__all__ = ["boris_push"]
+
 import numpy as np
 
 
