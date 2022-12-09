@@ -1,0 +1,1 @@
+Added a function to return the Buchsbaum frequency to plasmapy.formulary.frequencies
