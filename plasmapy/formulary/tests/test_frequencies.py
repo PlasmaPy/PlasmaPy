@@ -12,6 +12,10 @@ from plasmapy.formulary.frequencies import (
     wc_,
     wlh_,
     wuh_,
+    Buchsbaum_frequency,
+    wbb_,
+    wbi_,
+    wii_
 )
 from plasmapy.particles.exceptions import InvalidParticleError
 from plasmapy.utils.pytest_helpers import assert_can_handle_nparray
@@ -32,6 +36,9 @@ B_nanarr = np.array([0.001, np.nan]) * u.T
         (wc_, gyrofrequency),
         (wlh_, lower_hybrid_frequency),
         (wuh_, upper_hybrid_frequency),
+        (wbb_, Buchsbaum_frequency),
+        (wii_, Buchsbaum_frequency),
+        (wbi_, Buchsbaum_frequency),
     ],
 )
 def test_aliases(alias, parent):
@@ -187,3 +194,8 @@ def test_upper_hybrid_frequency():
         )
 
     assert_can_handle_nparray(upper_hybrid_frequency)
+
+def test_Buchsbaum_frequency():
+    r"""Test the Buchsbaum_frequency function in frequencies.py."""
+
+    assert_can_handle_nparray(Buchsbaum_frequency)
