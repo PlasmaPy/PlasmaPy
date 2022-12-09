@@ -5,6 +5,7 @@
 -r extras.txt
 -r install.txt
 cffconvert
+codespell
 dlint
 flake8
 flake8-absolute-import
@@ -17,10 +18,9 @@ flake8-simplify
 flake8-use-fstring
 flake8-use-pathlib
 hypothesis
+pre-commit
 pydocstyle
 pytest-regressions
 tomli
-tryceratops
-codespell
-pre-commit
 tox
+tryceratops
