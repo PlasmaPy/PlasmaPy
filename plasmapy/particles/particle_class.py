@@ -1124,7 +1124,7 @@ class Particle(AbstractPhysicalParticle):
         The particle's electrical charge in coulombs.
 
         If the charge has not been specified, this attribute will
-        return |nan| C
+        return |nan| C.
 
 
         Examples
@@ -1153,7 +1153,6 @@ class Particle(AbstractPhysicalParticle):
         `~plasmapy.particles.exceptions.InvalidElementError`
             If the particle is not an element or corresponds to an
             isotope or ion.
-
 
         Examples
         --------
