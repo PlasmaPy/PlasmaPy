@@ -6,7 +6,7 @@ __all__ = [
     "upper_hybrid_frequency",
     "Buchsbaum_frequency"
 ]
-__aliases__ = ["oc_", "wc_", "wlh_", "wp_", "wuh_", "wbb_", "wii_"]
+__aliases__ = ["oc_", "wc_", "wlh_", "wp_", "wuh_", "wbb_", "wii_", "wbi_"]
 __lite_funcs__ = ["plasma_frequency_lite"]
 
 import astropy.units as u
