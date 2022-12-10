@@ -77,7 +77,7 @@ and run:
 
 .. code-block:: bash
 
-   pip install -r requirements.txt
+   pip install -e .[dev]
 
 It may also be necessary to install the following software:
 

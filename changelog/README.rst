@@ -157,7 +157,7 @@ to the top-level directory of your local clone of PlasmaPy and run:
 
 .. code-block:: shell
 
-   pip install -r requirements.txt
+   pip install -e .[dev]
 
 Configuration files for towncrier_ are in :file:`pyproject.toml`.
 

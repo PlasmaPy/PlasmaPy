@@ -200,7 +200,7 @@ To install the packages necessary to run tests on your local computer
 
 .. code-block:: shell
 
-   pip install -r requirements.txt
+   pip install -e .[tests]
 
 To run PlasmaPy's tests from the command line, go to a directory within
 PlasmaPy's repository and run:
