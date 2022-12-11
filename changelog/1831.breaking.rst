@@ -1,0 +1,2 @@
+Changed the `~plasmapy.diagnostics.thomson.spectral_density` function so that it accepts ``scattering_angle`` as an optional keyword.
+Changed the `~plasmapy.diagnostics.thomson.spectral_density_lite` function so that it requires ``scattering_angle`` as an input.

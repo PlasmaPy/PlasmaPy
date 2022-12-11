@@ -42,13 +42,8 @@ def example_invalid_instr_func_bad_type(w):
 
 def example_invalid_instr_func_bad_shape(w):
     """
-<<<<<<< Updated upstream
     Example instrument function for use in testing
 
-=======
-    Example instrument function for use in testing    
-    
->>>>>>> Stashed changes
     This instrument function is invalid because it returns an array of a
     different shape than the provided wavelength array
     """
@@ -265,10 +260,7 @@ def test_invalid_input_all_three(single_species_collective_args):
     with pytest.raises(ValueError):
         alpha, Skw = thomson.spectral_density(*args, **kwargs)
 
-<<<<<<< Updated upstream
-=======
 def test_invalid_input_scattering_angle_and_scatter_vec(single_species_collective_args):
->>>>>>> Stashed changes
     # should raise error if scattering_angle scatter_vec are given
     args, kwargs = spectral_density_args_kwargs(single_species_collective_args)
     probe_vec = kwargs["probe_vec"]
@@ -276,14 +268,9 @@ def test_invalid_input_scattering_angle_and_scatter_vec(single_species_collectiv
     kwargs["scattering_angle"] = np.arccos(np.dot(probe_vec, scatter_vec))
     del kwargs["probe_vec"]
     with pytest.raises(ValueError):
-<<<<<<< Updated upstream
-        alpha, Skw = thomson.spectral_density(*args1, **kwargs1)
-
-=======
         alpha, Skw = thomson.spectral_density(*args, **kwargs)
     
 def test_invalid_input_scattering_angle_and_probe_vec(single_species_collective_args):
->>>>>>> Stashed changes
     # should raise error is scattering_angle and probe_vec are given
     args, kwargs = spectral_density_args_kwargs(single_species_collective_args)
     probe_vec = kwargs["probe_vec"]
@@ -291,13 +278,8 @@ def test_invalid_input_scattering_angle_and_probe_vec(single_species_collective_
     kwargs["scattering_angle"] = np.arccos(np.dot(probe_vec, scatter_vec))
     del kwargs["scatter_vec"]
     with pytest.raises(ValueError):
-<<<<<<< Updated upstream
-        alpha, Skw = thomson.spectral_density(*args2, **kwargs2)
-
-=======
         alpha, Skw = thomson.spectral_density(*args, **kwargs)
     
->>>>>>> Stashed changes
 
 def test_single_species_scattering_angle_input_accuracy(single_species_collective_args):
     """
@@ -1009,15 +991,9 @@ def iaw_single_species_settings_params():
     Standard input for the spectral_density_model function
 
     Includes both settings and params: separated by the function
-<<<<<<< Updated upstream
 
     spectral_density_model_settings_params
 
-=======
-    
-    spectral_density_model_settings_params 
-    
->>>>>>> Stashed changes
     """
 
     probe_wavelength = 532 * u.nm
