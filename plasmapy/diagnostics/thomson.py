@@ -62,6 +62,7 @@ def spectral_density_lite(
     ion_vel: np.ndarray,
     probe_vec: np.ndarray,
     scatter_vec: np.ndarray,
+    scattering_angle: float,
     instr_func_arr: Optional[np.ndarray] = None,
 ) -> Tuple[Union[np.floating, np.ndarray], np.ndarray]:
     r"""
@@ -118,16 +119,10 @@ def spectral_density_lite(
         Velocity vectors for each electron population in the rest frame
         (in  m/s). If set, overrides ``ion_vdir`` and ``ion_speed``.
         Defaults to zero drift for all specified ion species.
-
-    probe_vec : float `~numpy.ndarray`, shape (3, )
-        Unit vector in the direction of the probe laser. Defaults to
-        ``[1, 0, 0]``.
-
-    scatter_vec : float `~numpy.ndarray`, shape (3, )
-        Unit vector pointing from the scattering volume to the detector.
-        Defaults to [0, 1, 0] which, along with the default ``probe_vec``,
-        corresponds to a 90 degree scattering angle geometry.
-
+    
+    scattering_angle: float
+        np.arccos(np.dot(probe_vec, scatter_vec))
+        
     instr_func_arr : `~numpy.ndarray`, shape (Nwavelengths,) optional
         The instrument function evaluated at a linearly spaced range of
         wavelengths ranging from :math:`-W` to :math:`W`, where
@@ -150,11 +145,8 @@ def spectral_density_lite(
     Skw : `~numpy.ndarray`
         Computed spectral density function over the input ``wavelengths`` array
         with units of s/rad.
-
     """
-
-    scattering_angle = np.arccos(np.dot(probe_vec, scatter_vec))
-
+    
     # Calculate plasma parameters
     # Temperatures here in K!
     coefs = thermal_speed_coefficients("most_probable", 3)
@@ -273,6 +265,7 @@ def spectral_density(
     ion_vel: u.m / u.s = None,
     probe_vec=None,
     scatter_vec=None,
+    scattering_angle=None,
     instr_func=None,
 ) -> Tuple[Union[np.floating, np.ndarray], np.ndarray]:
     r"""
@@ -340,6 +333,9 @@ def spectral_density(
         Unit vector pointing from the scattering volume to the detector.
         Defaults to [0, 1, 0] which, along with the default ``probe_vec``,
         corresponds to a 90° scattering angle geometry.
+        
+    scattering_angle : float
+        Defaults to np.arccos(np.dot(probe_vec, scatter_vec))
 
     instr_func : function
         A function representing the instrument function that takes a `~astropy.units.Quantity`
@@ -357,6 +353,11 @@ def spectral_density(
     Skw : `~astropy.units.Quantity`
         Computed spectral density function over the input ``wavelengths`` array
         with units of s/rad.
+        
+    Raises
+    ------
+    `ValueError`
+        If any argument contains invalid values
 
     Notes
     -----
@@ -430,13 +431,24 @@ def spectral_density(
         ifract = np.asarray(ifract, dtype=np.float64)
         if np.sum(ifract) != 1:
             raise ValueError(f"The provided ifract does not sum to 1: {ifract}")
-
+    
+    # if both scattering_angle and probe_vec or scatter_vec, raise error
+    if scattering_angle is not None:
+        if scatter_vec is not None or probe_vec is not None:
+            raise ValueError(
+                "Keywords scattering_angle and scatter_vec or probe_vec are both given."
+                "Give only scattering_angle or scatter_vec and probe_vec"
+            ) 
+            
     if probe_vec is None:
         probe_vec = np.array([1, 0, 0])
 
     if scatter_vec is None:
         scatter_vec = np.array([0, 1, 0])
-
+        
+    if scattering_angle is None:
+        scattering_angle = np.arccos(np.dot(probe_vec, scatter_vec))
+        
     # If electron velocity is not specified, create an array corresponding
     # to zero drift
     if electron_vel is None:
@@ -557,6 +569,7 @@ def spectral_density(
         electron_vel=electron_vel.to(u.m / u.s).value,
         probe_vec=probe_vec,
         scatter_vec=scatter_vec,
+        scattering_angle=scattering_angle,
         instr_func_arr=instr_func_arr,
     )
 
@@ -641,6 +654,9 @@ def _spectral_density_model(wavelengths, settings=None, **params):
     ion_vdir = settings["ion_vdir"]
     probe_wavelength = settings["probe_wavelength"]
     instr_func_arr = settings["instr_func_arr"]
+    
+    # compute scattering_angle because spectral_density_lite no longer does
+    scattering_angle = np.arccos(np.dot(probe_vec, scatter_vec))
 
     # LOAD FROM PARAMS
     n = params["n"]
@@ -673,6 +689,7 @@ def _spectral_density_model(wavelengths, settings=None, **params):
         ion_vel=ion_vel,
         probe_vec=probe_vec,
         scatter_vec=scatter_vec,
+        scattering_angle=scattering_angle,
         instr_func_arr=instr_func_arr,
     )
 

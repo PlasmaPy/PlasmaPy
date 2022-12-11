@@ -29,7 +29,6 @@ def example_instr_func(w):
 def example_invalid_instr_func_bad_type(w):
     """
     Example instrument function for use in testing
-
     This instrument function is invalid because it does not return a plain
     np.ndarray.
     """
@@ -43,7 +42,7 @@ def example_invalid_instr_func_bad_type(w):
 def example_invalid_instr_func_bad_shape(w):
     """
     Example instrument function for use in testing
-
+    
     This instrument function is invalid because it returns an array of a
     different shape than the provided wavelength array
     """
@@ -95,7 +94,7 @@ def args_to_lite_args(kwargs):
     """
     Converts a dict of args for the spectral density function and converts
     them to input for the lite function.
-
+    
     Used to facilitate testing the two functions against each other.
     """
     keys = list(kwargs.keys())
@@ -151,11 +150,11 @@ def args_to_lite_args(kwargs):
 def single_species_collective_args():
     """
     Standard args
-
+    
     Includes both kwargs and args: separated by the function
-
+    
     spectral_density_args_kwargs
-
+    
     """
     kwargs = {}
     kwargs["wavelengths"] = np.arange(520, 545, 0.01) * u.nm
@@ -235,6 +234,7 @@ def test_spectral_density_minimal_arguments(single_species_collective_args):
         "ion_vel",
         "probe_vec",
         "scatter_vec",
+        "scattering_angle",
         "instr_func",
     ]
     for key in optional_keys:
@@ -246,6 +246,70 @@ def test_spectral_density_minimal_arguments(single_species_collective_args):
     return (alpha, wavelengths, Skw)
 
 
+def test_invalid_input_combination(single_species_collective_args):
+    """
+    Checks that exception gets raised if scattering_angle and vec_probe or scatter_vec
+    as only scattering_angle OR (vec_probe OR scatter_vec) can be given at once
+    """
+    args_fixture_copy1 = copy.copy(single_species_collective_args)
+    args_fixture_copy2 = copy.copy(single_species_collective_args)
+    # should raise error if scattering_angle, probe_vec and scatter_vec are given
+    args, kwargs = spectral_density_args_kwargs(single_species_collective_args)
+    probe_vec = kwargs["probe_vec"]
+    scatter_vec = kwargs["scatter_vec"]
+    kwargs["scattering_angle"] = np.arccos(np.dot(probe_vec, scatter_vec))
+    with pytest.raises(ValueError):
+        alpha, Skw = thomson.spectral_density(*args, **kwargs)
+        
+    # should raise error if scattering_angle scatter_vec are given
+    args1, kwargs1 = spectral_density_args_kwargs(args_fixture_copy1)
+    probe_vec = kwargs1["probe_vec"]
+    scatter_vec = kwargs1["scatter_vec"]
+    kwargs1["scattering_angle"] = np.arccos(np.dot(probe_vec, scatter_vec))
+    del kwargs1["probe_vec"]
+    with pytest.raises(ValueError):
+        alpha, Skw = thomson.spectral_density(*args1, **kwargs1)
+    
+    # should raise error is scattering_angle and probe_vec are given
+    args2, kwargs2 = spectral_density_args_kwargs(args_fixture_copy2)
+    probe_vec = kwargs2["probe_vec"]
+    scatter_vec = kwargs2["scatter_vec"]
+    kwargs2["scattering_angle"] = np.arccos(np.dot(probe_vec, scatter_vec))
+    del kwargs2["scatter_vec"]
+    with pytest.raises(ValueError):
+        alpha, Skw = thomson.spectral_density(*args2, **kwargs2)
+    
+
+def test_single_species_scattering_angle_input_accuracy(single_species_collective_args):
+    """
+    Compares the output of two calls to spectral_density. One gives the probe_vec
+    and the scatter_vec. And the second gives the scattering angle.
+    """
+    # Make a copy of the input args
+    args_fixture_copy = copy.copy(single_species_collective_args)
+    args, kwargs = spectral_density_args_kwargs(single_species_collective_args)
+    # compute using scatter_angle and probe_vec
+    alpha1, Skw1 = thomson.spectral_density(*args, **kwargs)
+
+    #compute scattering_angle
+    probe_vec = kwargs["probe_vec"]
+    scatter_vec = kwargs["scatter_vec"]
+    kwargs["scattering_angle"] = np.arccos(np.dot(probe_vec, scatter_vec))
+    
+    args, kwargs = spectral_density_args_kwargs(args_fixture_copy)
+    probe_vec = kwargs["probe_vec"]
+    scatter_vec = kwargs["scatter_vec"]
+    kwargs["scattering_angle"] = np.arccos(np.dot(probe_vec, scatter_vec))
+    del kwargs["probe_vec"]
+    del kwargs["scatter_vec"]
+    #compute using scattering_angle
+    alpha2, Skw2 = thomson.spectral_density(*args, **kwargs)
+
+    assert np.isclose(alpha1, alpha2)
+
+    assert np.allclose(Skw1, Skw2)
+    
+
 def test_single_species_collective_lite(single_species_collective_args):
 
     # Make a copy of the input args
@@ -255,6 +319,9 @@ def test_single_species_collective_lite(single_species_collective_args):
 
     lite_kwargs = args_to_lite_args(args_fixture_copy)
     args, kwargs = spectral_density_args_kwargs(lite_kwargs)
+    probe_vec = kwargs["probe_vec"]
+    scatter_vec = kwargs["scatter_vec"]
+    kwargs["scattering_angle"] = np.arccos(np.dot(probe_vec, scatter_vec))
     alpha2, Skw2 = thomson.spectral_density.lite(*args, **kwargs)
 
     assert np.isclose(alpha1, alpha2)
@@ -273,6 +340,9 @@ def test_spectral_density_lite_minimal_arguments(single_species_collective_args)
     for key in optional_keys:
         if key in kwargs.keys():
             del kwargs[key]
+    probe_vec = kwargs["probe_vec"]
+    scatter_vec = kwargs["scatter_vec"]
+    kwargs["scattering_angle"] = np.arccos(np.dot(probe_vec, scatter_vec))
 
     alpha, Skw = thomson.spectral_density.lite(*args, **kwargs)
 
@@ -281,11 +351,11 @@ def test_spectral_density_lite_minimal_arguments(single_species_collective_args)
 def multiple_species_collective_args():
     """
     Standard args
-
+    
     Includes both kwargs and args: separated by the function
-
+    
     spectral_density_args_kwargs
-
+    
     """
     kwargs = {}
     kwargs["wavelengths"] = np.arange(520, 545, 0.01) * u.nm
@@ -371,11 +441,11 @@ def test_multiple_species_collective_spectrum(multiple_species_collective_spectr
 def single_species_non_collective_args():
     """
     Standard args
-
+    
     Includes both kwargs and args: separated by the function
-
+    
     spectral_density_args_kwargs
-
+    
     """
     kwargs = {}
     kwargs["wavelengths"] = np.arange(500, 570, 0.01) * u.nm
@@ -688,7 +758,7 @@ def run_fit(
     """
     This function takes a Parameters object, generates some synthetic data near it,
     perturbs the initial values, then tries a fit
-
+    
     """
 
     wavelengths = (wavelengths * u.m).to(u.nm)
@@ -799,9 +869,9 @@ def spectral_density_model_settings_params(kwargs):
     This helper function separates a settings dict and a parameters object
     from a provided dictionary. This is useful for testing the
     spectral_density_model function
-
+    
     The dictionary needs to hold a Parameter object for Parameters
-
+    
     """
     if "wavelengths" in kwargs.keys():
         wavelengths = kwargs["wavelengths"]
@@ -844,11 +914,11 @@ def spectral_density_model_settings_params(kwargs):
 def epw_single_species_settings_params():
     """
     Standard input for the spectral_density_model function
-
+    
     Includes both settings and params: separated by the function
-
+    
     spectral_density_model_settings_params
-
+    
     """
     probe_wavelength = 532 * u.nm
     scattering_angle = np.deg2rad(63)
@@ -878,11 +948,11 @@ def epw_single_species_settings_params():
 def epw_multi_species_settings_params():
     """
     Standard input for the spectral_density_model function
-
+    
     Includes both settings and params: separated by the function
-
+    
     spectral_density_model_settings_params
-
+    
     """
 
     probe_wavelength = 532 * u.nm
@@ -918,11 +988,11 @@ def epw_multi_species_settings_params():
 def iaw_single_species_settings_params():
     """
     Standard input for the spectral_density_model function
-
+    
     Includes both settings and params: separated by the function
-
+    
     spectral_density_model_settings_params
-
+    
     """
 
     probe_wavelength = 532 * u.nm
@@ -955,11 +1025,11 @@ def iaw_single_species_settings_params():
 def iaw_multi_species_settings_params():
     """
     Standard input for the spectral_density_model function
-
+    
     Includes both settings and params: separated by the function
-
+    
     spectral_density_model_settings_params
-
+    
     """
 
     probe_wavelength = 532 * u.nm
@@ -1002,11 +1072,11 @@ def iaw_multi_species_settings_params():
 def noncollective_single_species_settings_params():
     """
     Standard input for the spectral_density_model function
-
+    
     Includes both settings and params: separated by the function
-
+    
     spectral_density_model_settings_params
-
+    
     """
 
     probe_wavelength = 532 * u.nm
@@ -1070,7 +1140,7 @@ def test_fit_iaw_single_species(iaw_single_species_settings_params):
 def test_fit_iaw_instr_func(iaw_single_species_settings_params):
     """
     Tests fitting with an instrument function
-
+    
     """
 
     wavelengths, params, settings = spectral_density_model_settings_params(
@@ -1104,12 +1174,12 @@ def test_fit_noncollective_single_species(noncollective_single_species_settings_
 @pytest.mark.slow
 def test_fit_with_instr_func(epw_single_species_settings_params):
     """
-
+    
     This test checks that fitting works with an instrument function
-
+    
     It specifically tests the case where a notch is being used in the filter,
     because this can cause a potential error with the instrument function.
-
+    
     """
     wavelengths, params, settings = spectral_density_model_settings_params(
         epw_single_species_settings_params
@@ -1316,3 +1386,4 @@ def test_model_input_validation(control, error, msg, iaw_multi_species_settings_
             if msg is not None:
                 print(excinfo.value)
                 assert msg in str(excinfo.value)
+                
