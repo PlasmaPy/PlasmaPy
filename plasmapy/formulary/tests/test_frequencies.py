@@ -12,10 +12,7 @@ from plasmapy.formulary.frequencies import (
     wc_,
     wlh_,
     wuh_,
-    Buchsbaum_frequency,
-    wbb_,
-    wbi_,
-    wii_
+    Buchsbaum_frequency
 )
 from plasmapy.particles.exceptions import InvalidParticleError
 from plasmapy.utils.pytest_helpers import assert_can_handle_nparray
