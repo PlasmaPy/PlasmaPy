@@ -540,8 +540,6 @@ def Buchsbaum_frequency(
     r"""
     Return the Buchsbaum frequency for a two-ion-species plasma.
 
-    **Aliases:** `wbb_`, `wii_`, `wbi_`
-
     Parameters
     ----------
     B : `~astropy.units.Quantity`
