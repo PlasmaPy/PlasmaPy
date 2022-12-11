@@ -6,7 +6,7 @@ __all__ = [
     "upper_hybrid_frequency",
     "Buchsbaum_frequency"
 ]
-__aliases__ = ["oc_", "wc_", "wlh_", "wp_", "wuh_", "wbb_", "wii_", "wbi_"]
+__aliases__ = ["oc_", "wc_", "wlh_", "wp_", "wuh_"]
 __lite_funcs__ = ["plasma_frequency_lite"]
 
 import astropy.units as u
@@ -619,12 +619,3 @@ def Buchsbaum_frequency(
     return np.sqrt((omega_p1_squared * omega_c2_squared + omega_p2_squared * omega_c1_squared) /
                    (omega_p1_squared + omega_p2_squared))
 
-
-wbb_ = Buchsbaum_frequency
-"""Alias to `~plasmapy.formulary.frequencies.Buchsbaum_frequency`."""
-
-wii_ = Buchsbaum_frequency
-"""Alias to `~plasmapy.formulary.frequencies.Buchsbaum_frequency`."""
-
-wbi_ = Buchsbaum_frequency
-"""Alias to `~plasmapy.formulary.frequencies.Buchsbaum_frequency`."""
