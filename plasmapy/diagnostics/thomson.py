@@ -119,11 +119,11 @@ def spectral_density_lite(
         Velocity vectors for each electron population in the rest frame
         (in  m/s). If set, overrides ``ion_vdir`` and ``ion_speed``.
         Defaults to zero drift for all specified ion species.
-   
+
     probe_vec : float `~numpy.ndarray`, shape (3, )
         Unit vector in the direction of the probe laser. Defaults to
         ``[1, 0, 0]``.
-    
+
     scatter_vec : float `~numpy.ndarray`, shape (3, )
         Unit vector pointing from the scattering volume to the detector.
         Defaults to [0, 1, 0] which, along with the default ``probe_vec``,
@@ -442,9 +442,8 @@ def spectral_density(
             raise ValueError(f"The provided ifract does not sum to 1: {ifract}")
 
     # if both scattering_angle and probe_vec or scatter_vec, raise error
-    if scattering_angle is not None:
-        if scatter_vec is not None or probe_vec is not None:
-            raise ValueError(
+    if scattering_angle is not None and (scatter_vec is not None or probe_vec is not None):
+        raise ValueError(
                 "Keywords scattering_angle and scatter_vec or probe_vec are both given."
                 "Give only scattering_angle or scatter_vec and probe_vec"
             )
