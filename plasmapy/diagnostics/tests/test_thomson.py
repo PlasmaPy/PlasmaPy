@@ -305,9 +305,9 @@ def test_single_species_scattering_angle_input_accuracy(single_species_collectiv
     # compute using scattering_angle
     alpha2, Skw2 = thomson.spectral_density(*args, **kwargs)
 
-    assert np.isclose(alpha1, alpha2)
+    np.testing.assert_allclose(alpha1, alpha2)
 
-    assert np.allclose(Skw1, Skw2)
+    np.testing.assert_allclose(Skw1, Skw2)
 
 
 def test_single_species_collective_lite(single_species_collective_args):
