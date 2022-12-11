@@ -29,7 +29,7 @@ def example_instr_func(w):
 def example_invalid_instr_func_bad_type(w):
     """
     Example instrument function for use in testing
-    
+
     This instrument function is invalid because it does not return a plain
     np.ndarray.
     """
@@ -260,6 +260,7 @@ def test_invalid_input_all_three(single_species_collective_args):
     with pytest.raises(ValueError):
         alpha, Skw = thomson.spectral_density(*args, **kwargs)
 
+
 def test_invalid_input_scattering_angle_and_scatter_vec(single_species_collective_args):
     # should raise error if scattering_angle scatter_vec are given
     args, kwargs = spectral_density_args_kwargs(single_species_collective_args)
@@ -269,7 +270,8 @@ def test_invalid_input_scattering_angle_and_scatter_vec(single_species_collectiv
     del kwargs["probe_vec"]
     with pytest.raises(ValueError):
         alpha, Skw = thomson.spectral_density(*args, **kwargs)
-    
+
+
 def test_invalid_input_scattering_angle_and_probe_vec(single_species_collective_args):
     # should raise error is scattering_angle and probe_vec are given
     args, kwargs = spectral_density_args_kwargs(single_species_collective_args)
@@ -279,7 +281,7 @@ def test_invalid_input_scattering_angle_and_probe_vec(single_species_collective_
     del kwargs["scatter_vec"]
     with pytest.raises(ValueError):
         alpha, Skw = thomson.spectral_density(*args, **kwargs)
-    
+
 
 def test_single_species_scattering_angle_input_accuracy(single_species_collective_args):
     """
