@@ -118,6 +118,7 @@ in parentheses are `ORCID author identifiers <https://orcid.org>`__.
 * :user:`Sixue Xu <hzxusx>`
 * :user:`Steve Richardson <arichar6>` (:orcid:`0000-0002-3056-6334`)
 * :user:`Stuart Mumford <Cadair>` (:orcid:`0000-0003-4217-4642`)
+* :user:`Stuart Sobeske <Sobeskes>`
 * :user:`Suzanne Nie <suzannenie>`
 * :user:`Terrance Takho Lee <tlee0818>`
 * :user:`Thomas Fan <thomasjpfan>`
@@ -128,6 +129,7 @@ in parentheses are `ORCID author identifiers <https://orcid.org>`__.
 * :user:`Tomás Stinson <14tstinson>`
 * :user:`Trestan Simon <TrestanSimon>`
 * :user:`Tulasi Parashar <tulasinandan>` (:orcid:`0000-0003-0602-8381`)
+* :user:`Veronica Tranquilino <tranqver>`
 * :user:`Vishwas Rajashekar <DarkAEther>` (:orcid:`0000-0002-4914-6612`)
 * :user:`Wu Tingfeng <elliotwutingfeng>` (:orcid:`0000-0001-8745-204X`)
 * :user:`Yi-Min Huang <yopology>` (:orcid:`0000-0002-4237-2211`)

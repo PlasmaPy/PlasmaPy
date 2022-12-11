@@ -19,6 +19,5 @@ flake8-use-pathlib
 hypothesis
 pydocstyle
 pytest-regressions
-pytest-xdist
 tomli
 tryceratops

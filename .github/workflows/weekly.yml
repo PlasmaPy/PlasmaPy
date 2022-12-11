@@ -1,8 +1,8 @@
-name: fortnightly tests
+name: weekly tests
 
 on:
   schedule:
-  - cron: 17 7 1,15 * *
+  - cron: 37 7 * * 1
   workflow_dispatch:
 
 jobs:
@@ -15,31 +15,46 @@ jobs:
       matrix:
         include:
 
-        - name: Python 3.8 with Astropy dev
-          os: ubuntu-latest
+        - name: Python 3.8
+          os: windows-latest
           python: 3.8
-          toxenv: py38-astropydev
+          toxenv: py38
 
-        - name: Python 3.8 with matplotlib dev
-          os: ubuntu-latest
-          python: 3.8
-          toxenv: py38-matplotlibdev
+        - name: Python 3.9
+          os: macos-latest
+          python: 3.9
+          toxenv: py39
 
-        - name: Python 3.8 with NumPy dev
+        - name: Python 3.10
           os: ubuntu-latest
-          python: 3.8
-          toxenv: py38-numpydev
+          python: '3.10'
+          toxenv: py310
+
+        - name: Python 3.9 with Astropy dev
+          os: ubuntu-latest
+          python: 3.9
+          toxenv: py39-astropydev
+
+        - name: Python 3.9 with matplotlib dev
+          os: ubuntu-latest
+          python: 3.9
+          toxenv: py39-matplotlibdev
+
+        - name: Python 3.9 with NumPy dev
+          os: ubuntu-latest
+          python: 3.9
+          toxenv: py39-numpydev
 
         - name: Documentation with Sphinx dev
           os: ubuntu-latest
-          python: 3.8
+          python: '3.10'
           toxenv: build_docs-sphinxdev
           toxposargs: -q
 
-        - name: Python 3.8 with xarray dev
+        - name: Python 3.9 with xarray dev
           os: ubuntu-latest
-          python: 3.8
-          toxenv: py38-xarraydev
+          python: 3.9
+          toxenv: py39-xarraydev
 
         - name: Import PlasmaPy (Windows)
           os: windows-latest
