@@ -1516,20 +1516,24 @@ def test_molecule_other():
             "I2 1+", Z=1
         )
 
+
 def test_undefined_charge():
     """Test that a particle with an undefined charge returns |nan| C."""
     H_particle = Particle("H")
     assert u.isclose(H_particle.charge, np.nan * u.C, equal_nan=True)
+
 
 def test_undefined_standard_atomic_weight():
     """Test that a particle with an undefined standard atomic weight returns |nan| kg."""
     Pm_particle = Particle("Pm")
     assert u.isclose(Pm_particle.standard_atomic_weight, np.nan * u.kg, equal_nan=True)
 
+
 def test_undefined_mass():
     """Test that a particle with an undefined mass returns |nan| kg."""
     tau_neutrino_particle = Particle("tau neutrino")
     assert u.isclose(tau_neutrino_particle.mass, np.nan * u.kg, equal_nan=True)
+
 
 def test_undefined_mass_energy():
     """Test that a particle with an undefined mass energy returns |nan| J."""
