@@ -29,6 +29,7 @@ def example_instr_func(w):
 def example_invalid_instr_func_bad_type(w):
     """
     Example instrument function for use in testing
+    
     This instrument function is invalid because it does not return a plain
     np.ndarray.
     """
@@ -41,8 +42,13 @@ def example_invalid_instr_func_bad_type(w):
 
 def example_invalid_instr_func_bad_shape(w):
     """
+<<<<<<< Updated upstream
     Example instrument function for use in testing
 
+=======
+    Example instrument function for use in testing    
+    
+>>>>>>> Stashed changes
     This instrument function is invalid because it returns an array of a
     different shape than the provided wavelength array
     """
@@ -246,13 +252,11 @@ def test_spectral_density_minimal_arguments(single_species_collective_args):
     return (alpha, wavelengths, Skw)
 
 
-def test_invalid_input_combination(single_species_collective_args):
+def test_invalid_input_all_three(single_species_collective_args):
     """
     Checks that exception gets raised if scattering_angle and vec_probe or scatter_vec
     as only scattering_angle OR (vec_probe OR scatter_vec) can be given at once
     """
-    args_fixture_copy1 = copy.copy(single_species_collective_args)
-    args_fixture_copy2 = copy.copy(single_species_collective_args)
     # should raise error if scattering_angle, probe_vec and scatter_vec are given
     args, kwargs = spectral_density_args_kwargs(single_species_collective_args)
     probe_vec = kwargs["probe_vec"]
@@ -261,24 +265,39 @@ def test_invalid_input_combination(single_species_collective_args):
     with pytest.raises(ValueError):
         alpha, Skw = thomson.spectral_density(*args, **kwargs)
 
+<<<<<<< Updated upstream
+=======
+def test_invalid_input_scattering_angle_and_scatter_vec(single_species_collective_args):
+>>>>>>> Stashed changes
     # should raise error if scattering_angle scatter_vec are given
-    args1, kwargs1 = spectral_density_args_kwargs(args_fixture_copy1)
-    probe_vec = kwargs1["probe_vec"]
-    scatter_vec = kwargs1["scatter_vec"]
-    kwargs1["scattering_angle"] = np.arccos(np.dot(probe_vec, scatter_vec))
-    del kwargs1["probe_vec"]
+    args, kwargs = spectral_density_args_kwargs(single_species_collective_args)
+    probe_vec = kwargs["probe_vec"]
+    scatter_vec = kwargs["scatter_vec"]
+    kwargs["scattering_angle"] = np.arccos(np.dot(probe_vec, scatter_vec))
+    del kwargs["probe_vec"]
     with pytest.raises(ValueError):
+<<<<<<< Updated upstream
         alpha, Skw = thomson.spectral_density(*args1, **kwargs1)
 
+=======
+        alpha, Skw = thomson.spectral_density(*args, **kwargs)
+    
+def test_invalid_input_scattering_angle_and_probe_vec(single_species_collective_args):
+>>>>>>> Stashed changes
     # should raise error is scattering_angle and probe_vec are given
-    args2, kwargs2 = spectral_density_args_kwargs(args_fixture_copy2)
-    probe_vec = kwargs2["probe_vec"]
-    scatter_vec = kwargs2["scatter_vec"]
-    kwargs2["scattering_angle"] = np.arccos(np.dot(probe_vec, scatter_vec))
-    del kwargs2["scatter_vec"]
+    args, kwargs = spectral_density_args_kwargs(single_species_collective_args)
+    probe_vec = kwargs["probe_vec"]
+    scatter_vec = kwargs["scatter_vec"]
+    kwargs["scattering_angle"] = np.arccos(np.dot(probe_vec, scatter_vec))
+    del kwargs["scatter_vec"]
     with pytest.raises(ValueError):
+<<<<<<< Updated upstream
         alpha, Skw = thomson.spectral_density(*args2, **kwargs2)
 
+=======
+        alpha, Skw = thomson.spectral_density(*args, **kwargs)
+    
+>>>>>>> Stashed changes
 
 def test_single_species_scattering_angle_input_accuracy(single_species_collective_args):
     """
@@ -990,9 +1009,15 @@ def iaw_single_species_settings_params():
     Standard input for the spectral_density_model function
 
     Includes both settings and params: separated by the function
+<<<<<<< Updated upstream
 
     spectral_density_model_settings_params
 
+=======
+    
+    spectral_density_model_settings_params 
+    
+>>>>>>> Stashed changes
     """
 
     probe_wavelength = 532 * u.nm

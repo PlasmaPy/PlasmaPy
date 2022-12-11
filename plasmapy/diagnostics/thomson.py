@@ -119,6 +119,15 @@ def spectral_density_lite(
         Velocity vectors for each electron population in the rest frame
         (in  m/s). If set, overrides ``ion_vdir`` and ``ion_speed``.
         Defaults to zero drift for all specified ion species.
+   
+    probe_vec : float `~numpy.ndarray`, shape (3, )
+        Unit vector in the direction of the probe laser. Defaults to
+        ``[1, 0, 0]``.
+    
+    scatter_vec : float `~numpy.ndarray`, shape (3, )
+        Unit vector pointing from the scattering volume to the detector.
+        Defaults to [0, 1, 0] which, along with the default ``probe_vec``,
+        corresponds to a 90 degree scattering angle geometry.
 
     scattering_angle: float
         np.arccos(np.dot(probe_vec, scatter_vec))
