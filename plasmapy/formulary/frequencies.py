@@ -544,21 +544,29 @@ def Buchsbaum_frequency(
     ----------
     B : `~astropy.units.Quantity`
         The magnetic field magnitude in units convertible to tesla.
+
     n1 : `~astropy.units.Quantity`
         Particle number density of ion species #1 in units convertible to m\ :sup:`-3`.
+
     n2 : `~astropy.units.Quantity`
         Particle number density of ion species #2 in units convertible to m\ :sup:`-3`.
+
     ion1 : `~plasmapy.particles.particle_class.Particle`
         Representation of ion species #1 (e.g., 'p' for protons, 'D+'
         for deuterium, or 'He-4 +1' for singly ionized helium-4). If no
         charge state information is provided, then species #1 is assumed
         to be singly charged.
+
     ion2 : `~plasmapy.particles.particle_class.Particle`
         Representation of ion species #2 (same behavior as for ion1).
+
     Z1 : `float` or `~astropy.units.Quantity`, optional
-        The charge state for ion species #1. If not provided, it defaults to the charge number of ``ion1``.
+        The charge state for ion species #1. If not provided, it 
+        defaults to the charge number of ``ion1``.
+
     Z2 : `float` or `~astropy.units.Quantity`, optional
-        The charge state for ion species #2. If not provided, it defaults to the charge number of ``ion2``.
+        The charge state for ion species #2. If not provided, it
+        defaults to the charge number of ``ion2``.
 
     Returns
     -------
