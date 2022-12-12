@@ -78,9 +78,11 @@ class Tracker:
     Parameters
     ----------
     grid : `~plasmapy.plasma.grids.AbstractGrid` or subclass thereof
-        A Grid object containing the required quantities [E_x, E_y, E_z, B_x, B_y, B_z].
-        If any of these quantities are missing, a warning will be given and that
-        quantity will be assumed to be zero everywhere.
+        A Grid object containing the required quantities [E_x, E_y, E_z, B_x,
+                                                          B_y, B_z].
+        If any ofn (x,y,z) : (meters, meters, meters)
+        * cylindr these quantities are missing, a warning will be given and
+        that quantity will be assumed to be zero everywhere.
 
     source : `~astropy.units.Quantity`, shape (3)
         A vector pointing from the origin of the grid to the location
@@ -88,8 +90,7 @@ class Tracker:
         being in either cartesian, cylindrical, or spherical coordinates
         based on its units. Valid geometries are:
 
-        * Cartesian (x,y,z) : (meters, meters, meters)
-        * cylindrical (r, theta, z) : (meters, radians, meters)
+        * Cartesiaical (r, theta, z) : (meters, radians, meters)
         * spherical (r, theta, phi) : (meters, radians, radians)
 
         In spherical coordinates theta is the polar angle.
@@ -105,8 +106,9 @@ class Tracker:
         A unit vector (in Cartesian coordinates) defining the horizontal
         direction on the detector plane. By default, the horizontal axis in the
         detector plane is defined to be perpendicular to both the
-        source-to-detector vector and the z-axis (unless the source-to-detector axis
-        is parallel to the z axis, in which case the horizontal axis is the x-axis).
+        source-to-detector vector and the z-axis (unless the source-to-detector
+        axis is parallel to the z axis, in which case the horizontal axis is
+        the x-axis).
 
         The detector vertical axis is then defined
         to be orthogonal to both the source-to-detector vector and the
@@ -160,7 +162,7 @@ class Tracker:
         self.src_det = self.detector - self.source
 
         # Magnification
-        self.mag = 1 + np.linalg.norm(self.detector) / np.linalg.norm(self.source)
+        self.mag = 1 + (np.linalg.norm(self.detector) / np.linalg.norm(self.source))
         self._log(f"Magnification: {self.mag}")
 
         # Check that source-detector vector actually passes through the grid
@@ -176,9 +178,9 @@ class Tracker:
         # velocities
         self.max_theta_hit_grid = self._max_theta_hit_grid()
 
-        # ************************************************************************
+        # *********************************************************************
         # Define the detector plane
-        # ************************************************************************
+        # *********************************************************************
 
         # Load or calculate the detector hdir
         if detector_hdir is not None:
@@ -190,9 +192,9 @@ class Tracker:
         ny = np.cross(self.det_hdir, self.det_n)
         self.det_vdir = -ny / np.linalg.norm(ny)
 
-        # ************************************************************************
+        # *********************************************************************
         # Validate the E and B fields
-        # ************************************************************************
+        # *********************************************************************
 
         req_quantities = ["E_x", "E_y", "E_z", "B_x", "B_y", "B_z"]
 
@@ -230,9 +232,11 @@ class Tracker:
                 unit = grid.recognized_quantities[rq].unit
                 warnings.warn(
                     "Fields should go to zero at edges of grid to avoid "
-                    f"non-physical effects, but a value of {edge_max:.2E} {unit} was "
-                    f"found on the edge of the {rq} array. Consider applying a "
-                    "envelope function to force the fields at the edge to go to "
+                    "non-physical effects, but a value of "
+                    f"{edge_max:.2E} {unit} was "
+                    f"found on the edge of the {rq} array."
+                    "Consider applying a envelope function to force the "
+                    "fields at the edge to go to "
                     "zero.",
                     RuntimeWarning,
                 )
@@ -432,11 +436,12 @@ class Tracker:
         xloc = np.dot(x - location, mesh_hdir)
         yloc = np.dot(x - location, mesh_vdir)
 
-        # Create an array in which True indicates that a particle has hit a wire
-        # and False indicates that it has not
+        # Create an array in which True indicates that a particle has hit
+        # a wire and False indicates that it has not
         hit = np.zeros(self.nparticles, dtype=bool)
 
-        # Mark particles that overlap vertical or horizontal position with a wire
+        # Mark particles that overlap vertical or horizontal position with
+        # a wire
         h_centers = np.linspace(-width / 2, width / 2, num=nwires[0])
         for c in h_centers:
             hit |= np.isclose(xloc, c, atol=wire_radius)
@@ -467,8 +472,8 @@ class Tracker:
             loc_rad = np.sqrt(xloc**2 + yloc**2)
             hit[loc_rad > radius] = False
 
-            # In the case of a circular mesh, also create a round wire along the
-            # outside edge
+            # In the case of a circular mesh, also create a round wire along
+            # the outside edge
             hit[np.isclose(loc_rad, radius, atol=wire_radius)] = True
 
         # Identify the particles that have hit something, then remove them from
@@ -554,11 +559,11 @@ class Tracker:
         Generates the angular distributions about the Z-axis, then
         rotates those distributions to align with the source-to-detector axis.
 
-        By default, particles are generated over almost the entire pi/2. However,
-        if the detector is far from the source, many of these particles will
-        never be observed. The max_theta keyword allows these extraneous
-        particles to be neglected to focus computational resources on the
-        particles who will actually hit the detector.
+        By default, particles are generated over almost the entire pi/2.
+        However, if the detector is far from the source, many of these
+        particles will never be observed. The max_theta keyword allows these
+        extraneous particles to be neglected to focus computational resources
+        on the particles who will actually hit the detector.
 
         Parameters
         ----------
@@ -670,7 +675,7 @@ class Tracker:
         v: `~astropy.units.Quantity`, shape (N,3)
             Velocities for N particles
 
-        particle : ~plasmapy.particles.particle_class.Particle or string representation of same, optional
+        particle : |Particle| object or string representation of same, optional
             Representation of the particle species as either a |Particle| object
             or a string representation. The default particle is protons.
 
@@ -717,8 +722,8 @@ class Tracker:
         if n_wrong_way > 1:
             warnings.warn(
                 f"{100*n_wrong_way/self.nparticles:.2f}% of particles "
-                "initialized are heading away from the grid. Check the orientation "
-                " of the provided velocity vectors.",
+                "initialized are heading away from the grid. Check the "
+                " orientation of the provided velocity vectors.",
                 RuntimeWarning,
             )
 
@@ -792,7 +797,8 @@ class Tracker:
         the positions in the plane. This can be used to directly update self.x
         as follows:
 
-        self._coast_to_plane(self.detector, self.det_hdir, self.det_vdir, x = self.x)
+        self._coast_to_plane(self.detector, self.det_hdir, self.det_vdir, x
+                             = self.x)
 
         """
 
@@ -1288,10 +1294,10 @@ def synthetic_radiograph(
 
     Parameters
     ----------
-    obj: `dict` or `~plasmapy.diagnostics.charged_particle_radiography.synthetic_radiography.Tracker`
-        Either a `~plasmapy.diagnostics.charged_particle_radiography.synthetic_radiography.Tracker`
+    obj: `dict` or |Tracker|
+        Either a |Tracker|
         object that has been run, or a dictionary equivalent to
-        `~plasmapy.diagnostics.charged_particle_radiography.synthetic_radiography.Tracker.results_dict`.
+        |results_dict|.
 
     size : `~astropy.units.Quantity`, shape ``(2, 2)``, optional
         The size of the detector array, specified as the minimum
@@ -1333,6 +1339,9 @@ def synthetic_radiograph(
 
     intensity : `~numpy.ndarray`, shape ``(hbins, vbins)``
         The number of particles counted in each bin of the histogram.
+
+    .. |Tracker| replace:: `~plasmapy.diagnostics.charged_particle_radiography.synthetic_radiography.Tracker`
+    .. |results_dict| replace:: `~plasmapy.diagnostics.charged_particle_radiography.synthetic_radiography.Tracker.results_dict`
     """
 
     # condition `obj` input
