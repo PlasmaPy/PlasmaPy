@@ -616,4 +616,3 @@ def Buchsbaum_frequency(
 
     return np.sqrt((omega_p1_squared * omega_c2_squared + omega_p2_squared * omega_c1_squared) /
                    (omega_p1_squared + omega_p2_squared))
-
