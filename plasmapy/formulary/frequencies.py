@@ -616,7 +616,6 @@ def Buchsbaum_frequency(
     <Quantity 1.99327444>
     >>> fbb/fc_proton
     <Quantity 0.50168706>
-
     """
     omega_c1_squared = gyrofrequency(B, ion1, signed=False, Z=Z1)**2
     omega_c2_squared = gyrofrequency(B, ion2, signed=False, Z=Z2)**2
