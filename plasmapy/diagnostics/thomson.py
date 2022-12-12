@@ -446,11 +446,13 @@ def spectral_density(
             raise ValueError(f"The provided ifract does not sum to 1: {ifract}")
 
     # if both scattering_angle and probe_vec or scatter_vec, raise error
-    if scattering_angle is not None and (scatter_vec is not None or probe_vec is not None):
+    if scattering_angle is not None and (
+        scatter_vec is not None or probe_vec is not None
+    ):
         raise ValueError(
-                "Keywords scattering_angle and scatter_vec or probe_vec are both given."
-                "Give only scattering_angle or scatter_vec and probe_vec"
-            )
+            "Keywords scattering_angle and scatter_vec or probe_vec are both given."
+            "Give only scattering_angle or scatter_vec and probe_vec"
+        )
 
     if probe_vec is None:
         probe_vec = np.array([1, 0, 0])
