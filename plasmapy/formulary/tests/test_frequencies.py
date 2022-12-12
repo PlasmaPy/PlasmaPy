@@ -33,9 +33,6 @@ B_nanarr = np.array([0.001, np.nan]) * u.T
         (wc_, gyrofrequency),
         (wlh_, lower_hybrid_frequency),
         (wuh_, upper_hybrid_frequency),
-        (wbb_, Buchsbaum_frequency),
-        (wii_, Buchsbaum_frequency),
-        (wbi_, Buchsbaum_frequency),
     ],
 )
 def test_aliases(alias, parent):
