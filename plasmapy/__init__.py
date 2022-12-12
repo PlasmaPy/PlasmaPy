@@ -47,7 +47,7 @@ try:
         from plasmapy._dev.scm_version import version as __version__
     except ImportError:
         from plasmapy._version import version as __version__
-except Exception:
+except Exception:  # coverage: ignore
     # package is not installed
     __version = "0.0.0"
 
@@ -68,7 +68,7 @@ __citation__ = (
 )
 
 
-def online_help(query: str):
+def online_help(query: str):  # coverage: ignore
     """
     Open a webpage containing a search page in `PlasmaPy's documentation`_,
     or another page that contains relevant online help.
