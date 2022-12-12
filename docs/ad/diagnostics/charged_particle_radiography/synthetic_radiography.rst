@@ -2,8 +2,7 @@
 
 **************************************
 Synthetic Charged Particle Radiography
-*************************************
-
+**************************************
 .. currentmodule:: plasmapy.diagnostics.charged_particle_radiography.synthetic_radiography
 
 .. automodapi:: plasmapy.diagnostics.charged_particle_radiography.synthetic_radiography
