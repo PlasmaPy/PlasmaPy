@@ -1184,7 +1184,7 @@ class Tracker:
             for i in range(NUM_THREADS):
                 threads[i] = executor.submit(self._thread_run, i)
 
-            # Waits for all threads to return before continuting
+            # Waits for all threads to return before continuing
             for i in range(NUM_THREADS):
                 threads[i].result()
 
@@ -1442,7 +1442,7 @@ def synthetic_radiograph(
 
     Returns
     -------
-    hax : `~astropy.units.Quantity` array shape ``(hbins,)``
+    hex : `~astropy.units.Quantity` array shape ``(hbins,)``
         The horizontal axis of the synthetic radiograph in meters.
 
     vax : `~astropy.units.Quantity` array shape ``(vbins, )``
