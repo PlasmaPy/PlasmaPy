@@ -50,7 +50,7 @@ class Layer:
         stopping_power : `~astropy.units.Quantity`
             The stopping power in the material. Either the linear stopping
             power (units of J/m) or the mass stopping power
-            (units convertible to J m\ :sup:`^2` / kg) can be provided. If the
+            (units convertible to J m\ :sup:`2` / kg) can be provided. If the
             mass stopping power is provided, the material_density keyword
             is required.
 
