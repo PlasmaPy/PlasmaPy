@@ -130,7 +130,9 @@ def spectral_density_lite(
         corresponds to a 90 degree scattering angle geometry.
 
     scattering_angle: float
-        np.arccos(np.dot(probe_vec, scatter_vec))
+        Pre-calculated angle between the vector pointing from the scattering volume
+        defined by scatter_vec and the probe vector defined by probe_vec. If provided,
+        those two must not be provided.
 
     instr_func_arr : `~numpy.ndarray`, shape (Nwavelengths,) optional
         The instrument function evaluated at a linearly spaced range of
@@ -344,7 +346,9 @@ def spectral_density(
         corresponds to a 90° scattering angle geometry.
 
     scattering_angle : float
-        Defaults to np.arccos(np.dot(probe_vec, scatter_vec))
+        Pre-calculated angle between the vector pointing from the scattering volume
+        defined by scatter_vec and the probe vector defined by probe_vec. If provided,
+        those two must not be provided.
 
     instr_func : function
         A function representing the instrument function that takes a `~astropy.units.Quantity`
