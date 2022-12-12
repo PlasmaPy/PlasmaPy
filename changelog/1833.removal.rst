@@ -1,0 +1,6 @@
+Removed ``plasmapy.formulary.parameters``, which was deprecated in
+the `0.7.0` release.  The functionality in that module had previously
+been migrated to modules that are broken down by physical type, such as:
+`plasmapy.formulary.densities`, `plasmapy.formulary.dimensionless`,
+`plasmapy.formulary.frequencies`, `plasmapy.formulary.lengths`,
+`plasmapy.formulary.misc`, and `plasmapy.formulary.speeds`.
