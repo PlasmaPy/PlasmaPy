@@ -33,6 +33,9 @@ B_nanarr = np.array([0.001, np.nan]) * u.T
         (wc_, gyrofrequency),
         (wlh_, lower_hybrid_frequency),
         (wuh_, upper_hybrid_frequency),
+        (wbb_, Buchsbaum_frequency),
+        (wii_, Buchsbaum_frequency),
+        (wbi_, Buchsbaum_frequency),
     ],
 )
 def test_aliases(alias, parent):
@@ -200,7 +203,5 @@ def test_Buchsbaum_frequency():
        Buchsbaum_frequency(1.0 * u.T, 5e19 * u.m**-3, 5e19 * u.m**-3,
        "proton", "venezuelan beaver cheese")
 
-    assert u.isclose(Buchsbaum_frequency(B=0.1*u.T, n1=1e18*u.m**-3, n2=1e18*u.m**-3,
-        ion1="proton", ion2="He-4 +1").value, 4805575.93140432 * u.Hz)
-#
-#    assert_can_handle_nparray(Buchsbaum_frequency)
+    assert np.isclose(Buchsbaum_frequency(B=0.1*u.T, n1=1e18*u.m**-3, n2=1e18*u.m**-3,
+        ion1="proton", ion2="He-4 +1").value, 4805575.93140432)
