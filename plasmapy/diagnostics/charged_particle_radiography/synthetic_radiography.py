@@ -80,8 +80,7 @@ class Tracker:
     grid : `~plasmapy.plasma.grids.AbstractGrid` or subclass thereof
         A Grid object containing the required quantities [E_x, E_y, E_z, B_x,
                                                           B_y, B_z].
-        If any ofn (x,y,z) : (meters, meters, meters)
-        * cylindr these quantities are missing, a warning will be given and
+        If any of these quantities are missing, a warning will be given and
         that quantity will be assumed to be zero everywhere.
 
     source : `~astropy.units.Quantity`, shape (3)
@@ -90,8 +89,9 @@ class Tracker:
         being in either cartesian, cylindrical, or spherical coordinates
         based on its units. Valid geometries are:
 
+        * Cartesian (x,y,z) : (meters, meters, meters)
         * Cartesiaical (r, theta, z) : (meters, radians, meters)
-        * spherical (r, theta, phi) : (meters, radians, radians)
+        * Spherical (r, theta, phi) : (meters, radians, radians)
 
         In spherical coordinates theta is the polar angle.
 
@@ -309,8 +309,8 @@ class Tracker:
             based on its units. Valid geometries are:
 
             * Cartesian (x,y,z) : (meters, meters, meters)
-            * cylindrical (r, theta, z) : (meters, radians, meters)
-            * spherical (r, theta, phi) : (meters, radians, radians)
+            * Cylindrical (r, theta, z) : (meters, radians, meters)
+            * Spherical (r, theta, phi) : (meters, radians, radians)
 
             In spherical coordinates theta is the polar angle.
 
