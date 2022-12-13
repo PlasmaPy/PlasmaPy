@@ -1135,6 +1135,8 @@ Troubleshooting
 This section contains suggestions about how to fix common documentation
 errors and warnings.
 
+.. _missing-target:
+
 Reference target not found
 --------------------------
 
@@ -1146,6 +1148,12 @@ then Sphinx will issue this warning, which gets treated like an error.
 
 If the text is meant to be an in-line code snippet, surround it with
 double backticks instead of single backticks.
+
+When the text is meant to represent a code object like
+```astropy.units.Quantity```, then this warning usually indicates
+either a typo or an error in the namespace. For example, the warning
+resulting from ```astropy.Quantity``` can be resolved by changing it to
+```astropy.units.Quantity```.
 
 This warning may also occur when there is an extra space between a
 |role| and the argument it is intended to act on. For example, this
