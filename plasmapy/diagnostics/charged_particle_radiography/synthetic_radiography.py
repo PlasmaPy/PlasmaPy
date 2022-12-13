@@ -89,7 +89,7 @@ class Tracker:
         based on its units. Valid geometries are:
 
         * Cartesian (x,y,z) : (meters, meters, meters)
-        * Cartesiaical (r, theta, z) : (meters, radians, meters)
+        * Cylindrical (r, theta, z) : (meters, radians, meters)
         * Spherical (r, theta, phi) : (meters, radians, radians)
 
         In spherical coordinates theta is the polar angle.
