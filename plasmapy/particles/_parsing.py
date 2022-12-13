@@ -275,10 +275,10 @@ def parse_and_check_atomic_input(
 
     def atomic_number_to_symbol(atomic_numb: Integral):
         """
-        Return the atomic symbol associated with an integer
-        representing an atomic number, or raises an
-        `~plasmapy.particles.exceptions.InvalidParticleError` if the atomic number does
-        not represent a known element.
+        Return the atomic symbol associated with an integer representing
+        an atomic number, or raises an
+        `~plasmapy.particles.exceptions.InvalidParticleError` if the
+        atomic number does not represent a known element.
         """
         if atomic_numb in _elements.atomic_numbers_to_symbols:
             return _elements.atomic_numbers_to_symbols[atomic_numb]
@@ -287,12 +287,12 @@ def parse_and_check_atomic_input(
 
     def extract_mass_number(isotope_info: str):
         """
-        Receives a string representing an element or isotope.
-        Return a tuple containing a string that should represent
-        an element, and either an integer representing the mass
-        number or None if no mass number is available.  Raises an
-        `~plasmapy.particles.exceptions.InvalidParticleError` if the mass number
-        information is inputted incorrectly.
+        Receives a string representing an element or isotope. Return a
+        tuple containing a string that should represent an element, and
+        either an integer representing the mass number or None if no
+        mass number is available.  Raises an
+        `~plasmapy.particles.exceptions.InvalidParticleError` if the
+        mass number information is inputted incorrectly.
         """
 
         if isotope_info == "D":

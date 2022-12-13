@@ -53,7 +53,6 @@ for modname in (
     "magnetostatics",
     "mathematics",
     "misc",
-    "parameters",
     "quantum",
     "radiation",
     "relativity",
