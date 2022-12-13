@@ -1,0 +1,1 @@
+Modified ~plasmapy.particles.particle_class attributes to return NaN when undefined rather than raising exceptions.
