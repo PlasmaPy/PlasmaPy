@@ -118,6 +118,7 @@ in parentheses are `ORCID author identifiers <https://orcid.org>`__.
 * :user:`Sixue Xu <hzxusx>`
 * :user:`Steve Richardson <arichar6>` (:orcid:`0000-0002-3056-6334`)
 * :user:`Stuart Mumford <Cadair>` (:orcid:`0000-0003-4217-4642`)
+* :user:`Stuart Sobeske <Sobeskes>`
 * :user:`Suzanne Nie <suzannenie>`
 * :user:`Terrance Takho Lee <tlee0818>`
 * :user:`Thomas Fan <thomasjpfan>`

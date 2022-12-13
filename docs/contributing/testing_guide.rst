@@ -219,7 +219,7 @@ The following checks are performed with each pull request.
 
   * Occasionally codespell_ will report false positives. Please add
     false positives to ``ignore-words-list`` under ``codespell`` in
-    :file:`setup.cfg`.
+    :file:`pyproject.toml`.
 
 .. note::
 
@@ -244,7 +244,7 @@ To install the packages necessary to run tests on your local computer
 
 .. code-block:: shell
 
-   pip install -r requirements.txt
+   pip install -e .[tests]
 
 To run PlasmaPy's tests from the command line, go to a directory within
 PlasmaPy's repository and run:
@@ -547,7 +547,7 @@ positional arguments (``a`` and ``b``) and one optional keyword argument
 
    def add(a, b, reverse_order=False):
        if reverse_order:
-           return a + b
+           return b + a
        return a + b
 
 Argument unpacking_ lets us provide positional arguments in a `tuple` or

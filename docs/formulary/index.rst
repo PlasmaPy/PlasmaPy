@@ -50,9 +50,6 @@ physical quantities helpful for plasma physics.
    | .. toctree:: Miscellaneous Parameters <misc>           | `plasmapy.formulary.misc`               |
    |    :maxdepth: 1                                        |                                         |
    +--------------------------------------------------------+-----------------------------------------+
-   | .. toctree:: Plasma Parameters <parameters>            | `plasmapy.formulary.parameters`         |
-   |    :maxdepth: 1                                        |                                         |
-   +--------------------------------------------------------+-----------------------------------------+
    | .. toctree:: Quantum Relations <quantum>               | `plasmapy.formulary.quantum`            |
    |    :maxdepth: 1                                        |                                         |
    +--------------------------------------------------------+-----------------------------------------+
