@@ -580,6 +580,7 @@ def Buchsbaum_frequency(
     `TypeError`
         If the magnetic field is not a `~astropy.units.Quantity` or
         ``particle`` is not of an appropriate type.
+        
     `ValueError`
         If the magnetic field contains invalid values or particle cannot
         be used to identify a particle or isotope.
