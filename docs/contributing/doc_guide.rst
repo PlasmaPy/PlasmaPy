@@ -521,6 +521,9 @@ look like:
 
      .. automodapi::  plasmapy.particles.atomic
 
+A missing stub file may lead to either a ``reference target not found``
+error or the absense of the module in the documentation build.
+
 .. note::
 
    If a pull request adds a new subpackage *and* a new module, then a
@@ -1148,12 +1151,6 @@ This warning may also occur when there is an extra space between a
 |role| and the argument it is intended to act on. For example, this
 warning would be fixed by changing ``:math: `y``` to
 ``:math:`y```.
-
-When the text is meant to represent a code object like
-```astropy.units.Quantity```, then this warning usually indicates
-either a typo or an error in the namespace. For example, the warning
-resulting from ```astropy.Quantity``` can be resolved by changing it to
-```astropy.units.Quantity```.
 
 This warning sometimes occurs in the type specification of a |parameter|
 in a docstring. Sphinx attempts to link words in type specifications to
