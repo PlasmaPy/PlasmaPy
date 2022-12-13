@@ -1174,7 +1174,9 @@ Missing documentation pages for new modules
 -------------------------------------------
 
 When a new module or subpackage is created, it is usually necessary to
-:ref:`create a stub file <api-static>` for it in |docs/api_static|_.
+:ref:`create a stub file <api-static>` for it in |docs/api_static|_. A
+missing stub file can lead to either a ``reference target not found``
+error or missing documentation pages.
 
 Missing attribute errors
 ------------------------
