@@ -494,7 +494,8 @@ class ClassicalTransport:
         Calculate the thermoelectric conductivity.
 
         .. todo::
-            The thermoelectric conductivity (:math:`\hat{β}`) of a plasma is defined by...
+            The thermoelectric conductivity (:math:`\hat{β}`) of a plasma
+            is defined by...
 
         Notes
         -----
@@ -521,7 +522,8 @@ class ClassicalTransport:
         .. math::
             κ = \hat{κ} \frac{n_i k_B^2 T_i τ_i}{m_i}
 
-        where :math:`\hat{κ}` is the non-dimensional ion thermal conductivity of the plasma,
+        where :math:`\hat{κ}` is the non-dimensional ion thermal
+        conductivity of the plasma,
         :math:`n_i` is the ion number density of the plasma,
         :math:`k_B` is the Boltzmann constant,
         :math:`T_i` is the ion temperature of the plasma,
@@ -574,7 +576,8 @@ class ClassicalTransport:
         .. math::
             κ = \hat{κ} \frac{n_e k_B^2 T_e τ_e}{m_e}
 
-        where :math:`\hat{κ}` is the non-dimensional electron thermal conductivity of the plasma,
+        where :math:`\hat{κ}` is the non-dimensional electron thermal
+        conductivity of the plasma,
         :math:`n_e` is the electron number density of the plasma,
         :math:`k_B` is the Boltzmann constant,
         :math:`T_e` is the electron temperature of the plasma,
@@ -858,7 +861,9 @@ def thermoelectric_conductivity(
     Calculate the thermoelectric conductivity.
 
     .. todo::
-        The thermoelectric conductivity (:math:`\hat{β}`) of a plasma is defined by...
+
+        The thermoelectric conductivity (:math:`\hat{β}`) of a plasma is
+        defined by...
     """
     ct = ClassicalTransport(
         T_e,
@@ -903,7 +908,8 @@ def ion_thermal_conductivity(
 
         κ = \hat{κ} \frac{n_i k_B^2 T_i τ_i}{m_i}
 
-    where :math:`\hat{κ}` is the non-dimensional ion thermal conductivity of the plasma,
+    where :math:`\hat{κ}` is the non-dimensional ion thermal conductivity
+    of the plasma,
     :math:`n_i` is the ion number density of the plasma,
     :math:`k_B` is the Boltzmann constant,
     :math:`T_i` is the ion temperature of the plasma,
