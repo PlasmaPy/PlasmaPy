@@ -991,7 +991,6 @@ class Tracker:
 
             * 'nearest neighbor': Particles are assigned the fields on
                 the grid vertex closest to them.
-
             * 'volume averaged' : The fields experienced by a particle are a
                 volume-average of the eight grid points surrounding them.
 
@@ -1291,6 +1290,9 @@ def synthetic_radiograph(
     Calculate a "synthetic radiograph" (particle count histogram in the
     image plane).
 
+    .. |Tracker| replace:: `~plasmapy.diagnostics.charged_particle_radiography.synthetic_radiography.Tracker`
+    .. |results_dict| replace:: `~plasmapy.diagnostics.charged_particle_radiography.synthetic_radiography.Tracker.results_dict`
+
     Parameters
     ----------
     obj: `dict` or |Tracker|
@@ -1339,8 +1341,6 @@ def synthetic_radiograph(
     intensity : `~numpy.ndarray`, shape ``(hbins, vbins)``
         The number of particles counted in each bin of the histogram.
 
-    .. |Tracker| replace:: `~plasmapy.diagnostics.charged_particle_radiography.synthetic_radiography.Tracker`
-    .. |results_dict| replace:: `~plasmapy.diagnostics.charged_particle_radiography.synthetic_radiography.Tracker.results_dict`
     """
 
     # condition `obj` input
