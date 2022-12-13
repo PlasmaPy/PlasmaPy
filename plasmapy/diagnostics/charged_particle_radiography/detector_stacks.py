@@ -149,7 +149,7 @@ class Stack:
 
         Parameters
         ----------
-        energies : (`nenergies`,) `~astropy.units.Quantity` array
+        energies : (``nenergies``,) `~astropy.units.Quantity` array
             Energies axis over which to calculate the deposition. Units
             convertible to J.
 
@@ -166,7 +166,7 @@ class Stack:
 
         Returns
         -------
-        deposited : (`nlayers`, `nenergies`) `~numpy.ndarray`
+        deposited : (``nlayers``, ``nenergies``) `~numpy.ndarray`
             The fraction of particles at each energy that will be deposited in
             each layer of the film. The array is normalized such that the sum
             along the first dimension (all of the layers) for each population
@@ -250,7 +250,7 @@ class Stack:
 
         Returns
         -------
-        energy_bands : (`nlayers`, 2) `~astropy.units.Quantity`
+        energy_bands : (``nlayers``, 2) `~astropy.units.Quantity`
             The full-width-half-max energy range of the Bragg peak in each
             active layer of the film stack, in J.
         """
