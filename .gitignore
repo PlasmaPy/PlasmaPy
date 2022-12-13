@@ -137,6 +137,6 @@ untitled*
 auto_examples
 
 # Version file
-plasmapy/version.py
+plasmapy/_version.py
 tags
 docs/notebooks/*.md

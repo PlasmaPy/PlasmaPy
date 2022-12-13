@@ -131,25 +131,23 @@ class AbstractParticle(ABC):
 
         .. code-block:: python
 
-            {"plasmapy_particle": {
-                # string representation of the particle class
-                "type": "Particle",
-
-                # string representation of the module contains the particle class
-                "module": "plasmapy.particles.particle_class",
-
-                # date stamp of when the object was created
-                "date_created": "2020-07-20 17:46:13 UTC",
-
-                # parameters used to initialized the particle class
-                "__init__": {
-                    # tuple of positional arguments
-                    "args": (),
-
-                    # dictionary of keyword arguments
-                    "kwargs": {},
-                },
-            }}
+            {
+                "plasmapy_particle": {
+                    # string representation of the particle class
+                    "type": "Particle",
+                    # string representation of the module contains the particle class
+                    "module": "plasmapy.particles.particle_class",
+                    # date stamp of when the object was created
+                    "date_created": "2020-07-20 17:46:13 UTC",
+                    # parameters used to initialized the particle class
+                    "__init__": {
+                        # tuple of positional arguments
+                        "args": (),
+                        # dictionary of keyword arguments
+                        "kwargs": {},
+                    },
+                }
+            }
 
         Only the ``"__init__"`` entry should be modified by the subclass.
         """
@@ -827,9 +825,10 @@ class Particle(AbstractPhysicalParticle):
         if isinstance(other, str):
             try:
                 other_particle = Particle(other)
-                return self.symbol == other_particle.symbol
             except InvalidParticleError:
                 return False
+            else:
+                return self.symbol == other_particle.symbol
 
         if not isinstance(other, self.__class__):
             return NotImplemented
@@ -1124,10 +1123,9 @@ class Particle(AbstractPhysicalParticle):
         """
         The particle's electrical charge in coulombs.
 
-        Raises
-        ------
-        `~plasmapy.particles.exceptions.ChargeError`
-            If the charge has not been specified.
+        If the charge has not been specified, this attribute will
+        return |nan| C.
+
 
         Examples
         --------
@@ -1136,7 +1134,7 @@ class Particle(AbstractPhysicalParticle):
         <Quantity -1.60217662e-19 C>
         """
         if self._attributes["charge"] is None:
-            raise ChargeError(f"The charge of particle {self} has not been specified.")
+            return np.nan * u.C
         if self._attributes["charge number"] == 1:
             return const.e.si
 
@@ -1147,15 +1145,14 @@ class Particle(AbstractPhysicalParticle):
         """
         The element's standard atomic weight in kg.
 
+        If the element does not have a defined standard atomic
+        weight, this attribute will return |nan| kg.
+
         Raises
         ------
         `~plasmapy.particles.exceptions.InvalidElementError`
             If the particle is not an element or corresponds to an
             isotope or ion.
-
-        `~plasmapy.particles.exceptions.MissingParticleDataError`
-            If the element does not have a defined standard atomic
-            weight.
 
         Examples
         --------
@@ -1166,9 +1163,7 @@ class Particle(AbstractPhysicalParticle):
         if self.isotope or self.is_ion or not self.element:
             raise InvalidElementError(_category_errmsg(self, "element"))
         if self._attributes["standard atomic weight"] is None:  # coverage: ignore
-            raise MissingParticleDataError(
-                f"The standard atomic weight of {self} is unavailable."
-            )
+            return np.nan * u.kg
         return self._attributes["standard atomic weight"].to(u.kg)
 
     @property
@@ -1191,11 +1186,8 @@ class Particle(AbstractPhysicalParticle):
         For special particles, this attribute will return the standard
         value for the particle's mass.
 
-        Raises
-        ------
-        `~plasmapy.particles.exceptions.MissingParticleDataError`.
-            If the mass is unavailable (e.g., for neutrinos or elements
-            with no standard atomic weight.
+        If the mass of the particles is unavailable, this attribute
+        will return |nan| kg.
 
         Examples
         --------
@@ -1220,9 +1212,7 @@ class Particle(AbstractPhysicalParticle):
                 base_mass = self._attributes["standard atomic weight"]
 
             if base_mass is None:
-                raise MissingParticleDataError(
-                    f"The mass of ion '{self.ionic_symbol}' is not available."
-                )
+                return np.nan * u.kg
 
             mass = base_mass - self.charge_number * const.m_e
 
@@ -1238,20 +1228,21 @@ class Particle(AbstractPhysicalParticle):
             if mass is not None:
                 return mass.to(u.kg)
 
-        raise MissingParticleDataError(f"The mass of {self} is not available.")
+        return np.nan * u.kg
 
     @property
     def nuclide_mass(self) -> u.kg:
         """
         The mass of the bare nucleus of an isotope or a neutron.
 
+        If the particle's base mass is unavailable, this attribute
+        will return |nan| kg.
+
         Raises
         ------
         `~plasmapy.particles.exceptions.InvalidIsotopeError`
             If the particle is not an isotope or neutron.
 
-        `~plasmapy.particles.exceptions.MissingParticleDataError`
-            If the isotope mass is not available.
 
         Examples
         --------
@@ -1275,9 +1266,7 @@ class Particle(AbstractPhysicalParticle):
         base_mass = self._attributes["isotope mass"]
 
         if base_mass is None:  # coverage: ignore
-            raise MissingParticleDataError(
-                f"The mass of a {self.isotope} nuclide is not available."
-            )
+            return np.nan * u.kg
 
         _nuclide_mass = (
             self._attributes["isotope mass"] - self.atomic_number * const.m_e
@@ -1293,8 +1282,8 @@ class Particle(AbstractPhysicalParticle):
         If the particle is an isotope or nuclide, return the mass energy
         of the nucleus only.
 
-        If the mass of the particle is not known, then raise a
-        `~plasmapy.particles.exceptions.MissingParticleDataError`.
+        If the mass of the particle is unavailable, this attribute will
+        return |nan| kg.
 
         Examples
         --------
@@ -1313,12 +1302,10 @@ class Particle(AbstractPhysicalParticle):
         try:
             mass = self.nuclide_mass if self.isotope else self.mass
             energy = mass * const.c**2
-            return energy.to(u.J)
         except MissingParticleDataError:
-            raise MissingParticleDataError(
-                f"The mass energy of {self.symbol} is not available "
-                f"because the mass is unknown."
-            ) from None
+            return np.nan * u.J
+        else:
+            return energy.to(u.J)
 
     @property
     def binding_energy(self) -> u.J:
@@ -1923,8 +1910,8 @@ class DimensionlessParticle(AbstractParticle):
 
         try:
             new_obj = np.float64(obj)
-        except TypeError:
-            raise TypeError(f"Cannot convert {obj} to numpy.float64.")
+        except TypeError as ex:
+            raise TypeError(f"Cannot convert {obj} to numpy.float64.") from ex
 
         if hasattr(new_obj, "__len__"):
             raise TypeError("Expecting a real number, not a collection.")
@@ -2213,12 +2200,13 @@ class CustomParticle(AbstractPhysicalParticle):
                 )
             try:
                 self._mass = m.to(u.kg)
-                if self.mass < 0 * u.kg:
-                    raise ValueError("The mass of a particle must be nonnegative.")
             except u.UnitsError as exc:
                 raise u.UnitsError(
                     "The mass of a custom particle must have units of mass."
                 ) from exc
+            else:
+                if self.mass < 0 * u.kg:
+                    raise ValueError("The mass of a particle must be nonnegative.")
 
     @property
     def mass_energy(self) -> u.J:

@@ -72,10 +72,11 @@ jobs:
           python: 3.8
           toxenv: py38-all
 
-        - name: Python 3.9
+        - name: Python 3.9, develop mode
           os: ubuntu-latest
           python: 3.9
           toxenv: py39
+          toxargs: --develop
 
     steps:
     - name: Checkout code
@@ -149,7 +150,7 @@ jobs:
 
   build-n-publish:
     name: Packaging
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     needs:
     - initial-tests
     - comprehensive-tests
@@ -169,14 +170,13 @@ jobs:
       run: |
         git fetch --prune --unshallow
         git fetch --depth=1 origin +refs/tags/*:refs/tags/*
-    - name: Build a binary wheel
-      run: python setup.py bdist_wheel
     - name: Build a source tarball
-      run: python setup.py sdist
+      run: python -m build --sdist --outdir dist/
+    - name: Build a binary wheel
+      run: python -m build --wheel --outdir dist/
     - name: Twine check
       run: twine check dist/*
     - name: Install PlasmaPy in all variants
       run: |
-        pip install --progress-bar off .[all,dev]
-        pip install --progress-bar off -e .[all,dev]
-        python setup.py develop
+        pip install --progress-bar off .[dev]
+        pip install --progress-bar off -e .[dev]

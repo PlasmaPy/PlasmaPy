@@ -210,10 +210,10 @@ def hollweg(
     if not isinstance(ion, Particle):
         try:
             ion = Particle(ion)
-        except TypeError:
+        except TypeError as ex:
             raise TypeError(
                 f"For argument 'ion' expected type {Particle} but got {type(ion)}."
-            )
+            ) from ex
     if not ion.is_ion and not ion.is_category("element"):
         raise ValueError("The particle passed for 'ion' must be an ion or element.")
 

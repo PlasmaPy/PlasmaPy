@@ -22,12 +22,16 @@ A changelog tells users and contributors what notable changes have been
 made between each release. Pull requests to PlasmaPy need changelog
 entries before they can be merged, except when the changes are very
 minor. PlasmaPy uses towncrier_ to convert the changelog entries into
-the full changelog. An example changelog entry would be:
+the full changelog. Some example changelog entries are:
 
 .. code-block:: rst
 
    Added a page in the contributor guide that describes how to add
    changelog entries.
+
+   The ``oldname`` argument to `plasmapy.subpackage.module.function` has
+   been deprecated and will be removed in a future release. Use
+   ``newname`` instead.
 
 Adding a changelog entry
 ========================
@@ -119,6 +123,9 @@ Changelog guidelines
   changelog entry because it will be added automatically when the
   individual entries are converted into the full changelog.
 
+* When a changelog entry describes changes to functionality, it is not
+  necessary to mention the corresponding changes to the tests.
+
 * If a change is supplanted by another change during the release cycle,
   keep the files for both changelog entries. When the change is
   significant, mention in the earlier entry that the change was
@@ -157,7 +164,7 @@ to the top-level directory of your local clone of PlasmaPy and run:
 
 .. code-block:: shell
 
-   pip install -r requirements.txt
+   pip install -e .[dev]
 
 Configuration files for towncrier_ are in :file:`pyproject.toml`.
 

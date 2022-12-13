@@ -59,7 +59,7 @@ Coding guidelines
 
   .. code-block:: python
 
-     f(T_i = 1e6 * u.K, T_e = 2e6 * u.K)
+     f(T_i=1e6 * u.K, T_e=2e6 * u.K)
 
   Similarly, when a function has parameters named ``T_e`` and ``T_i``,
   these parameters should be made |keyword-only| to avoid ambiguity and
@@ -85,20 +85,8 @@ Coding guidelines
 
   .. code-block:: pycon
 
-     >>> [x ** 2 for x in range(17) if x % 2 == 0]
+     >>> [x**2 for x in range(17) if x % 2 == 0]
      [0, 4, 16, 36, 64, 100, 144, 196, 256]
-
-  A comprehension might be more readable when spread out over multiple
-  lines.
-
-  .. code-block:: pycon
-
-     >>> {
-     ...     x: x ** 2
-     ...     for x in range(17)
-     ...     if x % 2 == 0
-     ... }
-     {0: 0, 2: 4, 4: 16, 6: 36, 8: 64, 10: 100, 12: 144, 14: 196, 16: 256}
 
 * Avoid putting any significant implementation code in
   :file:`__init__.py` files. Implementation details should be contained
@@ -139,6 +127,7 @@ Coding guidelines
      >>> def function(l=[]):
      ...     l.append("x")
      ...     print(l)
+     ...
      >>> function()
      ['x']
      >>> function()
@@ -202,7 +191,7 @@ the code is supposed to be doing.
   ``T_i``, and ``T_p``).
 
 * Only ASCII_ characters should be used in code that is part of the
-  public API_.
+  public :wikipedia:`API`.
 
 * Python allows alphanumeric Unicode characters to be used in object
   names (e.g., ``πλάσμα`` or ``φυσική``). These characters may be used
@@ -236,9 +225,10 @@ the code is supposed to be doing.
     should be :ref:`cited <citation-instructions>` in the appropriate
     docstring so that it appears in the |bibliography|.
 
-* To mark that an object is not part of PlasmaPy's public API_, begin
-  its name with a leading underscore (e.g., ``_private_variable``).
-  Private variables should not be included in ``__all__``.
+* To mark that an object is not part of PlasmaPy's public
+  :wikipedia:`API`, begin its name with a leading underscore (e.g.,
+  ``_private_variable``). Private variables should not be included in
+  ``__all__``.
 
 * Avoid single character variable names except for standard plasma
   physics symbols (e.g., ``B``) or as indices in ``for`` loops.
@@ -251,7 +241,8 @@ the code is supposed to be doing.
 
   .. code-block:: python
 
-     if u[0] < x < u[1] and v[0] < y < v[1] and w[0] < z < w[1]: ...
+     if u[0] < x < u[1] and v[0] < y < v[1] and w[0] < z < w[1]:
+         ...
 
   Defining an intermediate variable allows us to communicate the meaning
   and intent of the expression.
@@ -268,9 +259,9 @@ the code is supposed to be doing.
 
 .. tip::
 
-   Most `integrated development environments <IDE>`_ (IDEs) have a
-   built-in tool for simultaneously renaming a variable throughout a
-   project. For example, a `rename refactoring in PyCharm
+   It is common for an :wikipedia:`integrated development environment`
+   (IDE) to have a built-in tool for simultaneously renaming a variable
+   throughout a project. For example, a `rename refactoring in PyCharm
    <https://www.jetbrains.com/help/pycharm/rename-refactorings.html>`__
    can be done with :kbd:`Shift+F6` on Windows or Linux, and :kbd:`⇧F6`
    or :kbd:`⌥⌘R` on macOS.
@@ -282,13 +273,13 @@ Imports
 
   .. code-block:: python
 
-     import numpy as np
-     import astropy.units as u
      import astropy.constants as const
+     import astropy.units as u
      import matplotlib.pyplot as plt
+     import numpy as np
      import pandas as pd
 
-* PlasmaPy uses isort_ to sort import statements via a |pre-commit|_
+* PlasmaPy uses isort_ to organize import statements via a |pre-commit|_
   hook.
 
 * For infrequently used objects, import the package, subpackage, or
@@ -314,26 +305,8 @@ Imports
 Requirements
 ============
 
-* Package requirements are specified in multiple locations that need to
-  be updated simultaneously.
-
-  - The |requirements|_ directory contains multiple text files that
-    contain build, installation, testing, documentation, and extra
-    requirements.
-
-  - The ``build-system.requires`` section of |pyproject.toml|_ includes
-    the requirements for building PlasmaPy. This section must mirror
-    |requirements/build.txt|_.
-
-  - |setup.cfg|_ includes sections for the install, docs, tests, and
-    extra requirements that must mirror the corresponding files in
-    the |requirements|_ directory.
-
-  - |requirements/environment.yml|_ contains a Conda_ environment
-    for PlasmaPy.
-
-  - |tox.ini|_ contains a testing environment for the minimal
-    dependencies.
+* Package requirements are specified in |pyproject.toml|_. |tox.ini|_
+  also contains a testing environment for the minimal dependencies.
 
 * Each release of PlasmaPy should support all minor versions of
   Python that have been released in the prior 42 months, and all minor
@@ -451,7 +424,6 @@ to edit the pull request by changing the corresponding branch on your
 PlasmaPy fork on GitHub.  After a pull request is merged into the
 code, you may delete the branch you created for that pull request.
 
-
 Comments
 ========
 
@@ -479,13 +451,13 @@ unmaintained comment may contain inaccurate or misleading information
   .. code-block:: python
 
      # collision frequency
-     nu = 1e6 * u.s ** -1
+     nu = 1e6 * u.s**-1
 
   could be achieved with no comment by doing:
 
   .. code-block:: python
 
-     collision_frequency = 1e6 * u.s ** -1
+     collision_frequency = 1e6 * u.s**-1
 
 * Use comments to communicate information that you wish you knew before
   starting to work on a particular section of code, including
@@ -528,9 +500,11 @@ unmaintained comment may contain inaccurate or misleading information
          ...
          return calibrated_data
 
+
      def normalize_data(data):
          ...
          return normalized_data
+
 
      def analyze_experiment(data):
          calibrated_data = calibrate_data(data)
@@ -630,11 +604,12 @@ adjacent fields such as astronomy and heliophysics. To get started with
 
      from plasmapy.utils.decorators.validators import validate_quantities
 
+
      @validate_quantities(
-        n={"can_be_negative": False},
-        validations_on_return={"equivalencies": u.dimensionless_angles()},
+         n={"can_be_negative": False},
+         validations_on_return={"equivalencies": u.dimensionless_angles()},
      )
-     def inertial_length(n: u.m ** -3, ...) -> u.m:
+     def inertial_length(n: u.m**-3, particle) -> u.m:
          ...
 
   .. caution::
@@ -688,11 +663,12 @@ notebook on particles`_.
 
   .. code-block:: python
 
-     from plasmapy.particles import particle_input, ParticleLike
+     from plasmapy.particles import ParticleLike, particle_input
+
 
      @particle_input
      def get_particle(particle: ParticleLike):
-          return particle
+         return particle
 
   If we use ``get_particle`` on something |particle-like|, it will
   return the corresponding particle object.
@@ -776,8 +752,10 @@ defined in :file:`plasmapy/subpackage/module.py`.
 
    __all__ += __aliases__
 
+
    def function():
        ...
+
 
    f_ = function
    """Alias to `~plasmapy.subpackage.module.function`."""
@@ -841,11 +819,13 @@ that corresponds to ``function`` as would be defined in
    __all__ = ["function"]
    __lite_funcs__ = ["function_lite"]
 
-   from numba import njit
    from numbers import Real
+
+   from numba import njit
    from plasmapy.utils.decorators import bind_lite_func, preserve_signature
 
    __all__ += __lite_funcs__
+
 
    @preserve_signature
    @njit
@@ -855,6 +835,7 @@ that corresponds to ``function`` as would be defined in
        assumed SI units.
        """
        ...
+
 
    @bind_lite_func(function_lite)
    def function(v):
