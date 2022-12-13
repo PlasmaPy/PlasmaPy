@@ -49,7 +49,7 @@ try:
         from plasmapy._version import version as __version__
 except Exception:  # coverage: ignore
     # package is not installed
-    __version = "0.0.0"
+    __version__ = "0.0.0"
 
     from warnings import warn
 
