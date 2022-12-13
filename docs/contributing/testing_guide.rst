@@ -503,7 +503,7 @@ positional arguments (``a`` and ``b``) and one optional keyword argument
 
    def add(a, b, reverse_order=False):
        if reverse_order:
-           return a + b
+           return b + a
        return a + b
 
 Argument unpacking_ lets us provide positional arguments in a `tuple` or
