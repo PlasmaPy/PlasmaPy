@@ -434,6 +434,8 @@ expected.
    * The referenced source package not properly or fully indexing their
      own code, which is common in Python_ packages.
 
+.. _substitutions:
+
 Substitutions
 ~~~~~~~~~~~~~
 
