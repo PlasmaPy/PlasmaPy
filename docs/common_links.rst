@@ -143,6 +143,7 @@
 .. _CSS: https://www.w3schools.com:443/css
 .. _Cython: https://cython.org/
 .. _DOI: https://www.doi.org
+.. _editable installation: https://pip.pypa.io/en/stable/topics/local-project-installs/#editable-installs
 .. _equivalencies: https://docs.astropy.org/en/stable/units/equivalencies.html
 .. _flake8: https://flake8.pycqa.org/en/latest
 .. _git: https://git-scm.com
