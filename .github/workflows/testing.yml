@@ -73,10 +73,11 @@ jobs:
           python: 3.8
           toxenv: py38-all
 
-        - name: Python 3.9
+        - name: Python 3.9, develop mode
           os: ubuntu-latest
           python: 3.9
           toxenv: py39
+          toxargs: --develop
 
     steps:
     - name: Checkout code
@@ -180,16 +181,14 @@ jobs:
         python-version: 3.8
     - name: Install requirements
       run: |
-        pip install --progress-bar off --upgrade pip
-        pip install --progress-bar off setuptools numpy wheel setuptools_scm twine
-    - name: Build a binary wheel
-      run: python setup.py bdist_wheel
+        pip install --progress-bar off setuptools numpy wheel setuptools_scm twine build pip
     - name: Build a source tarball
-      run: python setup.py sdist
+      run: python -m build --sdist --outdir dist/
+    - name: Build a binary wheel
+      run: python -m build --wheel --outdir dist/
     - name: Twine check
       run: twine check dist/*
     - name: Install PlasmaPy in all variants
       run: |
-        pip install --progress-bar off .[all,dev]
-        pip install --progress-bar off -e .[all,dev]
-        python setup.py develop
+        pip install --progress-bar off .[dev]
+        pip install --progress-bar off -e .[dev]
