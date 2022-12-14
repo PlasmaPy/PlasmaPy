@@ -674,7 +674,7 @@ class Tracker:
         v: `~astropy.units.Quantity`, shape (N,3)
             Velocities for N particles
 
-        particle : |Particle| object or string representation of same, optional
+        particle : |particle-like|, optional
             Representation of the particle species as either a |Particle| object
             or a string representation. The default particle is protons.
 
