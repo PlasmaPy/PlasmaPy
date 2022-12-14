@@ -342,10 +342,11 @@ def spectral_density(
         corresponds to a 90° scattering angle geometry.
 
     instr_func : function
-        A function representing the instrument function that takes a `~astropy.units.Quantity`
-        of wavelengths (centered on zero) and returns the instrument point
-        spread function. The resulting array will be convolved with the
-        spectral density function before it is returned.
+        A function representing the instrument function that takes a
+        `~astropy.units.Quantity` of wavelengths (centered on zero) and
+        returns the instrument point spread function. The resulting
+        array will be convolved with the spectral density function
+        before it is returned.
 
     Returns
     -------
