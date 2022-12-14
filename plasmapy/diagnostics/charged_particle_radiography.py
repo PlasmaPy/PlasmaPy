@@ -124,7 +124,7 @@ class Tracker:
 
     def __init__(
         self,
-        grids: [AbstractGrid, list],
+        grids: Union[AbstractGrid, Iterable[AbstractGrid]],
         source: u.m,
         detector: u.m,
         detector_hdir=None,
@@ -136,7 +136,7 @@ class Tracker:
             self.grids = [
                 grids,
             ]
-        elif isinstance(grids, list):
+        elif isinstance(grids, collections.Iterable):
             self.grids = grids
         else:
             raise TypeError("Type of argument `grids` not recognized.")
@@ -233,14 +233,14 @@ class Tracker:
                 arr = np.abs(grid[rq]).value
                 edge_max = np.max(
                     np.array(
-                        [
-                            np.max(arr[0, :, :]),
-                            np.max(arr[-1, :, :]),
-                            np.max(arr[:, 0, :]),
-                            np.max(arr[:, -1, :]),
-                            np.max(arr[:, :, 0]),
-                            np.max(arr[:, :, -1]),
-                        ]
+                        [np.max(a) for a in [
+                            arr[0, :, :],
+                            arr[-1, :, :],
+                            arr[:, 0, :],
+                            arr[:, -1, :],
+                            arr[:, :, 0],
+                            arr[:, :, -1],
+                        ]]
                     )
                 )
 
