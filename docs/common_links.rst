@@ -2,6 +2,12 @@
    (and docstrings) because they are added to ``docs/conf.py::rst_epilog``.
 
 .. ------------------
+.. plasmapy.diagnostics
+.. ------------------
+
+.. |Layer| replace:: `~plasmapy.diagnostics.charged_particle_radiography.detector_stacks.Layer`
+
+.. ------------------
 .. plasmapy.formulary
 .. ------------------
 

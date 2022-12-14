@@ -105,8 +105,6 @@ class Stack:
     r"""
     An ordered list of |Layer| objects.
 
-    .. |Layer| replace:: `~plasmapy.diagnostics.charged_particle_radiography.detector_stacks.Layer`
-
     Parameters
     ----------
     layers : list of |Layer|
@@ -129,7 +127,7 @@ class Stack:
     @property
     def num_active(self):
         r"""
-        The number of layers in the stack marked 'active'.
+        The number of layers in the stack marked ``active``.
         """
 
         return len([layer for layer in self._layers if layer.active])

@@ -1,5 +1,5 @@
 Added the `~plasmapy.diagnostics.charged_particle_radiography.detector_stacks.Stack` and
-`~plasmapy.diagnostics.charged_particle_radiography.detector_stacks.Layer` objects to the
+|Layer| objects to the
 `~plasmapy.diagnostics.charged_particle_radiography` module, which
 represent a stack of detector media layers. The
 `~plasmapy.diagnostics.charged_particle_radiography.detector_stacks.Stack.deposition_curves`
