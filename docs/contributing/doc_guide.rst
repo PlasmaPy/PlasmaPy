@@ -522,7 +522,7 @@ look like:
      .. automodapi::  plasmapy.particles.atomic
 
 A missing stub file may lead to either a ``reference target not found``
-error or the absense of the module in the documentation build.
+error or the absence of the module in the documentation build.
 
 .. note::
 
@@ -1132,8 +1132,8 @@ Narrative documentation guidelines
 Troubleshooting
 ===============
 
-This section contains suggestions about how to fix common documentation
-errors and warnings.
+This section describes how to fix common documentation errors and
+warnings.
 
 .. _missing-target:
 
@@ -1146,19 +1146,27 @@ For example, if a docstring includes ```y```, Sphinx will attempt
 to link to an object named ``y``. If there is no object named ``y``,
 then Sphinx will issue this warning, which gets treated like an error.
 
-If the text is meant to be an in-line code snippet, surround it with
+If the text is meant to be an inline code example, surround it with
 double backticks instead of single backticks.
 
-When the text is meant to represent a code object like
-```astropy.units.Quantity```, then this warning usually indicates
-either a typo or an error in the namespace. For example, the warning
-resulting from ```astropy.Quantity``` can be resolved by changing it to
-```astropy.units.Quantity```.
+When the text is meant to represent a code object, this warning
+usually indicates a typo or a namespace error. For example, the warning
+resulting from ```plasmapy.paritcles``` could be resolved by changing it
+to ```plasmapy.particles``.
 
-This warning may also occur when there is an extra space between a
-|role| and the argument it is intended to act on. For example, this
-warning would be fixed by changing ``:math: `y``` to
-``:math:`y```.
+.. important::
+
+   For PlasmaPy objects, use the full namespace of the object (i.e.,
+   use ```plasmapy.particles.particle_class.Particle``` instead of
+   ```plasmapy.particles.Particle```) or a :ref:`reST substitution
+   <substitutions>` like ``|Particle|`` as defined in
+   |docs/common_links.rst|_.
+
+
+This warning may occur when a new module or subpackage is created
+without :ref:`creating a stub file <api-static>` for it.
+
+.. _in-parameter-description:
 
 This warning sometimes occurs in the type specification of a |parameter|
 in a docstring. Sphinx attempts to link words in type specifications to
@@ -1169,6 +1177,10 @@ the *meaning* of a parameter from the type specification into the
 parameter description that begins on the following line. To expand the
 list of allowed words or patterns in type specifications, add a regular
 expression to ``nitpick_ignore_regex`` in |docs/conf.py|_.
+
+This warning may also occur when there is an extra space between a
+Sphinx |role| and the argument it is intended to act on. For example,
+this warning would be fixed by changing ``:math: `y``` to ``:math:`y```.
 
 Missing documentation pages for new modules
 -------------------------------------------
