@@ -572,6 +572,8 @@ are more generally described in :pep:`257`.
    string`_ ``r""":math:`\alpha`"""`` will render the same as the normal
    string ``""":math:`\\alpha`"""``.
 
+.. _example docstring:
+
 Example docstring
 ~~~~~~~~~~~~~~~~~
 
@@ -1198,13 +1200,43 @@ Missing attribute errors
 An `AttributeError` may occur when an ``import`` statement is missing in
 a :file:`__init__.py` file.  For example, the error
 
-```
-AttributeError: module 'plasmapy.subpackage' has no attribute 'module'
-```
+.. code-block::
+
+   AttributeError: module 'plasmapy.subpackage' has no attribute 'module'
 
 will occur when :file:`plasmapy/subpackage/__init__.py` is missing
 :py:`from plasmapy.subpackage import module`. Make sure that ``__all__``
 contains ``"module"`` as well.
+
+List ends without a blank line
+------------------------------
+
+Warnings like the following:
+
+.. code-block::
+
+   WARNING: :40: (WARNING/2) Bullet list ends without a blank line; unexpected unindent.
+   WARNING: :47: (WARNING/2) Definition list ends without a blank line; unexpected unindent.
+
+may show up when Sphinx attempts to interpret text as a list, but is
+unable to do so. This warning might not show the file that it occurs
+in.
+
+If this documentation contains a list, make sure that it is followed
+by a blank line and follows the formatting described in `Sphinx's
+documentation on lists`_.
+
+This warning may occur in other places due to an indentation or other
+formatting problem.  Try checking out the formatting in the
+:ref:`example docstring` above.
+
+This warning can occur when a changelog entry contains lines that
+start with a backtick. Try editing each changelog entry so that it is
+on a single really long line, rewording the changelog entry, or
+using :ref:`substitutions`.
+
+.. _Sphinx's documentation on lists:
+  https://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html#lists-and-quote-like-blocks
 
 Errors that are unrelated to a pull request
 -------------------------------------------
