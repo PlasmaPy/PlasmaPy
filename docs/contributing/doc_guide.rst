@@ -1076,11 +1076,13 @@ The **parameter description** should concisely describe the meaning of
 the parameter, as well as any requirements or restrictions on allowed
 values of the parameter (including those specified by
 |validate_quantities| or |particle_input|. The parameter description
-should not repeat information in the type specification, but may
+should not repeat information already in the type specification, but may
+include type information when:
 
-
-The parameter description may
-include information that does not fit in the type specification.
+- There isn't enough space in the type specification;
+- Different types have different meanings, requirements, or
+  restrictions; or
+- The docstring will be more understandable by doing so.
 
 For functions that accept an arbitrary number of positional and/or
 keyword arguments, include them in the "Parameters_" section with the
