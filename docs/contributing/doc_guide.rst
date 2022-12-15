@@ -1154,9 +1154,9 @@ If the text is meant to be an inline code example, surround it with
 double backticks instead of single backticks.
 
 When the text is meant to represent a code object, this warning
-usually indicates a typo or a namespace error. For example, the warning
-resulting from ```plasmapy.paritcles``` could be resolved by changing it
-to ```plasmapy.particles``.
+usually indicates a typo or a namespace error. For example, the
+warning resulting from ```plasmapy.paritcles``` could be resolved by
+fixing the typo and changing it to ```plasmapy.particles```.
 
 .. important::
 
