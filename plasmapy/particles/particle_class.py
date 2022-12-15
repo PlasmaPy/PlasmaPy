@@ -1123,10 +1123,9 @@ class Particle(AbstractPhysicalParticle):
         """
         The particle's electrical charge in coulombs.
 
-        Raises
-        ------
-        `~plasmapy.particles.exceptions.ChargeError`
-            If the charge has not been specified.
+        If the charge has not been specified, this attribute will
+        return |nan| C.
+
 
         Examples
         --------
@@ -1135,7 +1134,7 @@ class Particle(AbstractPhysicalParticle):
         <Quantity -1.60217662e-19 C>
         """
         if self._attributes["charge"] is None:
-            raise ChargeError(f"The charge of particle {self} has not been specified.")
+            return np.nan * u.C
         if self._attributes["charge number"] == 1:
             return const.e.si
 
@@ -1146,15 +1145,14 @@ class Particle(AbstractPhysicalParticle):
         """
         The element's standard atomic weight in kg.
 
+        If the element does not have a defined standard atomic
+        weight, this attribute will return |nan| kg.
+
         Raises
         ------
         `~plasmapy.particles.exceptions.InvalidElementError`
             If the particle is not an element or corresponds to an
             isotope or ion.
-
-        `~plasmapy.particles.exceptions.MissingParticleDataError`
-            If the element does not have a defined standard atomic
-            weight.
 
         Examples
         --------
@@ -1165,9 +1163,7 @@ class Particle(AbstractPhysicalParticle):
         if self.isotope or self.is_ion or not self.element:
             raise InvalidElementError(_category_errmsg(self, "element"))
         if self._attributes["standard atomic weight"] is None:  # coverage: ignore
-            raise MissingParticleDataError(
-                f"The standard atomic weight of {self} is unavailable."
-            )
+            return np.nan * u.kg
         return self._attributes["standard atomic weight"].to(u.kg)
 
     @property
@@ -1190,11 +1186,8 @@ class Particle(AbstractPhysicalParticle):
         For special particles, this attribute will return the standard
         value for the particle's mass.
 
-        Raises
-        ------
-        `~plasmapy.particles.exceptions.MissingParticleDataError`.
-            If the mass is unavailable (e.g., for neutrinos or elements
-            with no standard atomic weight.
+        If the mass of the particles is unavailable, this attribute
+        will return |nan| kg.
 
         Examples
         --------
@@ -1219,9 +1212,7 @@ class Particle(AbstractPhysicalParticle):
                 base_mass = self._attributes["standard atomic weight"]
 
             if base_mass is None:
-                raise MissingParticleDataError(
-                    f"The mass of ion '{self.ionic_symbol}' is not available."
-                )
+                return np.nan * u.kg
 
             mass = base_mass - self.charge_number * const.m_e
 
@@ -1237,20 +1228,21 @@ class Particle(AbstractPhysicalParticle):
             if mass is not None:
                 return mass.to(u.kg)
 
-        raise MissingParticleDataError(f"The mass of {self} is not available.")
+        return np.nan * u.kg
 
     @property
     def nuclide_mass(self) -> u.kg:
         """
         The mass of the bare nucleus of an isotope or a neutron.
 
+        If the particle's base mass is unavailable, this attribute
+        will return |nan| kg.
+
         Raises
         ------
         `~plasmapy.particles.exceptions.InvalidIsotopeError`
             If the particle is not an isotope or neutron.
 
-        `~plasmapy.particles.exceptions.MissingParticleDataError`
-            If the isotope mass is not available.
 
         Examples
         --------
@@ -1274,9 +1266,7 @@ class Particle(AbstractPhysicalParticle):
         base_mass = self._attributes["isotope mass"]
 
         if base_mass is None:  # coverage: ignore
-            raise MissingParticleDataError(
-                f"The mass of a {self.isotope} nuclide is not available."
-            )
+            return np.nan * u.kg
 
         _nuclide_mass = (
             self._attributes["isotope mass"] - self.atomic_number * const.m_e
@@ -1292,8 +1282,8 @@ class Particle(AbstractPhysicalParticle):
         If the particle is an isotope or nuclide, return the mass energy
         of the nucleus only.
 
-        If the mass of the particle is not known, then raise a
-        `~plasmapy.particles.exceptions.MissingParticleDataError`.
+        If the mass of the particle is unavailable, this attribute will
+        return |nan| kg.
 
         Examples
         --------
@@ -1313,10 +1303,7 @@ class Particle(AbstractPhysicalParticle):
             mass = self.nuclide_mass if self.isotope else self.mass
             energy = mass * const.c**2
         except MissingParticleDataError:
-            raise MissingParticleDataError(
-                f"The mass energy of {self.symbol} is not available "
-                f"because the mass is unknown."
-            ) from None
+            return np.nan * u.J
         else:
             return energy.to(u.J)
 
@@ -1874,12 +1861,12 @@ class DimensionlessParticle(AbstractParticle):
     Examples
     --------
     >>> from plasmapy.particles import DimensionlessParticle
-    >>> dimensionless_particle = DimensionlessParticle(mass=1.0, charge=-1.0, symbol="ξ")
-    >>> dimensionless_particle.mass
+    >>> particle = DimensionlessParticle(mass=1.0, charge=-1.0, symbol="ξ")
+    >>> particle.mass
     1.0
-    >>> dimensionless_particle.charge
+    >>> particle.charge
     -1.0
-    >>> dimensionless_particle.symbol
+    >>> particle.symbol
     'ξ'
     """
 
@@ -1910,7 +1897,8 @@ class DimensionlessParticle(AbstractParticle):
     def _validate_parameter(obj, can_be_negative=True) -> np.float64:
         """Verify that the argument corresponds to a valid real number."""
 
-        # TODO: Replace with validator? Use an equivalency between coulombs and reals.
+        # TODO: Replace with validator? Use an equivalency between
+        # coulombs and reals
 
         if obj is None or obj is np.nan:
             return np.nan
@@ -2062,7 +2050,11 @@ class CustomParticle(AbstractPhysicalParticle):
     --------
     >>> from astropy import units as u
     >>> from plasmapy.particles import CustomParticle
-    >>> custom_particle = CustomParticle(mass=1.2e-26 * u.kg, charge=9.2e-19 * u.C, symbol="Ξ")
+    >>> custom_particle = CustomParticle(
+    ...     mass=1.2e-26 * u.kg,
+    ...     charge=9.2e-19 * u.C,
+    ...     symbol="Ξ",
+    ... )
     >>> custom_particle.mass
     <Quantity 1.2e-26 kg>
     >>> custom_particle.charge
@@ -2070,7 +2062,12 @@ class CustomParticle(AbstractPhysicalParticle):
     >>> custom_particle.symbol
     'Ξ'
     >>> import pytest
-    >>> with pytest.warns(UserWarning): custom_particle = CustomParticle(mass=1.5e-26 * u.kg, charge=-1, symbol="Ξ")
+    >>> with pytest.warns(UserWarning):
+    ...    custom_particle = CustomParticle(
+    ...        mass=1.5e-26 * u.kg,
+    ...        charge=-1,
+    ...        symbol="Ξ",
+    ...    )
     >>> custom_particle.mass
     <Quantity 1.5e-26 kg>
     >>> custom_particle.charge
@@ -2096,13 +2093,19 @@ class CustomParticle(AbstractPhysicalParticle):
 
         Examples
         --------
-        >>> custom_particle = CustomParticle(mass=1.2e-26 * u.kg, charge=9.2e-19 * u.C)
+        >>> mass = 1.2e-26 * u.kg
+        >>> charge = 9.2e-19 * u.C
+        >>> custom_particle = CustomParticle(mass=mass, charge=charge)
         >>> repr(custom_particle)
-        'CustomParticle(mass=1.2...e-26 kg, charge=9.2...e-19 C)'
+        'CustomParticle(mass=1.2e-26 kg, charge=9.2e-19 C)'
 
         If present, the symbol is displayed as well.
 
-        >>> custom_particle = CustomParticle(mass=4.21e-25 * u.kg, charge=1.6e-19 * u.C, symbol="I2+")
+        >>> custom_particle = CustomParticle(
+        ...     mass=4.21e-25 * u.kg,
+        ...     charge=1.6e-19 * u.C,
+        ...     symbol="I2+",
+        ... )
         >>> repr(custom_particle)
         'CustomParticle(mass=4.21e-25 kg, charge=1.6e-19 C, symbol=I2+)'
         """
@@ -2122,7 +2125,11 @@ class CustomParticle(AbstractPhysicalParticle):
 
         Examples
         --------
-        >>> custom_particle = CustomParticle(mass=5.12 * u.kg, charge=6.2 * u.C, symbol="ξ")
+        >>> custom_particle = CustomParticle(
+        ...     mass=5.12 * u.kg,
+        ...     charge=6.2 * u.C,
+        ...     symbol="ξ",
+        ... )
         >>> custom_particle.json_dict
         {'plasmapy_particle': {'type': 'CustomParticle',
             'module': 'plasmapy.particles.particle_class',
@@ -2332,23 +2339,25 @@ def molecule(
     --------
     >>> from plasmapy.particles import molecule
     >>> molecule("I2")
-    CustomParticle(mass=4.214596603223354e-25 kg, charge=0.0 C, symbol=I2)
+    CustomParticle(mass=4.214...e-25 kg, charge=0.0 C, symbol=I2)
 
-    Charge information is given either within the symbol or as a second parameter.
+    Charge information is given either within the symbol or as a second
+    parameter.
 
     >>> molecule("I2+")
-    CustomParticle(mass=4.214596603223354e-25 kg, charge=1.602176634e-19 C, symbol=I2 1+)
+    CustomParticle(mass=4.214...e-25 kg, charge=1.602...e-19 C, symbol=I2 1+)
 
     >>> molecule("I2", 1)
-    CustomParticle(mass=4.214596603223354e-25 kg, charge=1.602176634e-19 C, symbol=I2 1+)
+    CustomParticle(mass=4.214...e-25 kg, charge=1.602...e-19 C, symbol=I2 1+)
 
-    Inputs that can be interpreted as |Particle| instances are returned as such.
+    Inputs that can be interpreted as |Particle| instances are returned
+    as such.
 
     >>> molecule("Xe")
     Particle("Xe")
 
-    The given symbol is preserved in the |CustomParticle| instance. This permits
-    us to differentiate between isomers:
+    The given symbol is preserved in the |CustomParticle| instance. This
+    permits us to differentiate between isomers:
 
     >>> molecule("CH4O2") == molecule("CH3OOH")
     False

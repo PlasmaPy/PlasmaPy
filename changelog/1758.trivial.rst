@@ -1,0 +1,3 @@
+Transferred most of the contents of :file:`setup.py` and :file:`setup.cfg` to
+|pyproject.toml|_ (see :pep:`518` and :pep:`621`). Simplified ``extras``
+requirements (``pip install plasmapy[all]`` and ``[extras]`` are gone).

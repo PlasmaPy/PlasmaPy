@@ -787,13 +787,15 @@ class ExponentialPlusLinear(AbstractFitFunction):
             \\right]\\\\
             & + \\left(2 \\, a \\, \\alpha \\, m \\, e^{\\alpha x}\\right)
                 (\\delta x)^2\\\\
-            & + \\left[(x \\, \\delta m)^2 + (\\delta b)^2 +(m \\, \\delta x)^2\\right]
+            & + \\left[(x \\, \\delta m)^2 + (\\delta b)^2 +(m \\, \\delta x)^2
+            \\right]
 
-    where :math:`a`, :math:`\\alpha`, :math:`m`, and :math:`b` are the real
-    constants to be fitted and :math:`x` is the independent variable.
-    :math:`\\delta a`, :math:`\\delta \\alpha`, :math:`\\delta m`, :math:`\\delta b`,
-    and :math:`\\delta x` are the respective uncertainties for :math:`a`,
-    :math:`\\alpha`, :math:`m`, and :math:`b`, and :math:`x`.
+    where :math:`a`, :math:`\\alpha`, :math:`m`, and :math:`b` are the
+    real constants to be fitted and :math:`x` is the independent
+    variable. :math:`\\delta a`, :math:`\\delta \\alpha`,
+    :math:`\\delta m`, :math:`\\delta b`, and :math:`\\delta x` are the
+    respective uncertainties for :math:`a`, :math:`\\alpha`, :math:`m`,
+    and :math:`b`, and :math:`x`.
     """
 
     _param_names = ("a", "alpha", "m", "b")
