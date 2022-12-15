@@ -67,7 +67,8 @@ def find_floating_potential(
     current equals zero :math:`I = 0`.  (For additional details see
     the **Notes** section below.)
 
-    **Aliases:** :func:`~plasmapy.analysis.swept_langmuir.floating_potential.find_vf_`
+    **Aliases:**
+    :func:`~plasmapy.analysis.swept_langmuir.floating_potential.find_vf_`
 
     Parameters
     ----------

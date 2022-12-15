@@ -516,8 +516,7 @@ class TestReducedMassInput:
             reduced_mass("N", 6e-26 * u.l)
 
     def test_missing_atomic_data(self):
-        with pytest.raises(MissingParticleDataError):
-            reduced_mass("Og", "H")
+        assert u.isclose(reduced_mass("Og", "H"), np.nan * u.kg, equal_nan=True)
 
 
 def test_ion_list_example():
