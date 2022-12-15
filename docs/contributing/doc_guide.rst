@@ -1009,33 +1009,41 @@ The type specification should not include information about the
    |Quantity| [temperature, energy], |keyword-only|, default: 0 K
 
 * Use the substitution ``|array_like|`` to indicate that an |argument|
-  must be |array_like| (i.e., convertible into an |ndarray|.
+  must be |array_like| (i.e., convertible into an |ndarray|).
 
 * Use the substitution ``|particle-like|`` to indicate that a
   |particle-like| argument should be convertible into a |Particle|,
-  |CustomParticle|, or |ParticleList|. Similarly, use
-  ``|particle-list-like|`` to indicate that an argument should be
-  convertible into a |ParticleList|.
+  |CustomParticle|, or |ParticleList|.
+
+* Use the ``|particle-list-like|`` to indicate that a
+  |particle-list-like| argument should be convertible into a
+  |ParticleList|.
 
 * Use ``|atom-like|`` to indicate that an argument must be |atom-like|
   (i.e., an element, isotope, and/or ion).
 
+* When the array must be :math:`n`\ -dimensional, precede the type by
+  :samp:`{n}D` where :samp:`{n}` is replaced by the number of
+  dimensions.
+
+  .. code-block:: rst
+
+     1D |array_like|
+     3D |array_like|
+
 * If the shapes and sizes of the parameters are interrelated, then
   include that information in parentheses immediately before the type
   information. Include a trailing comma inside the parentheses when the
-  parameter is 1D. Use ``...`` to represent an arbitrary number of
-  dimensions of arbitrary size and a ``:`` to represent a single
-  dimension of arbitrary size.
+  parameter is 1D. Use ``:`` for a single dimension of arbitrary size
+  and ``...`` for an arbitrary number of dimensions of arbitrary size.
 
   .. code-block:: rst
 
      (M,) |array_like|
      (N,) |array_like|
      (M, N) |array_like|
-     (M, N, ...) |array_like|
      (N, :) |array_like|
-     1D |array_like|
-     3D |array_like|
+     (M, N, ...) |array_like|
 
 * If the parameter can only be specific values, enclose them in curly
   brackets. The options may be listed with the default value first,
@@ -1043,7 +1051,7 @@ The type specification should not include information about the
 
   .. code-block::
 
-     {"classical postmodernist", "retrofuturistic"}
+     {"classical postmodernist", "retro-futuristic"}
      {"p+", "e-"}, default: "p+"
      {1, 2, 3, 4}, default: 3
 
@@ -1067,7 +1075,11 @@ Parameter descriptions
 The **parameter description** should concisely describe the meaning of
 the parameter, as well as any requirements or restrictions on allowed
 values of the parameter (including those specified by
-|validate_quantities| or |particle_input|. The parameter description may
+|validate_quantities| or |particle_input|. The parameter description
+should not repeat information in the type specification, but may
+
+
+The parameter description may
 include information that does not fit in the type specification.
 
 For functions that accept an arbitrary number of positional and/or
