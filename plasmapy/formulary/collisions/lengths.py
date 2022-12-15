@@ -260,7 +260,8 @@ def impact_parameter(
         # ARRAY NOTES
         # T and V should be guaranteed to be same size inputs from _process_inputs
         # therefore, lambdaBroglie and bPerp are either both scalar or both array
-        # if np.isscalar(bPerp.value) and np.isscalar(lambdaBroglie.value):  # both scalar
+        # if np.isscalar(bPerp.value) and np.isscalar(lambdaBroglie.value):
+        # both scalar
         try:  # assume both scalar
             bmin = bPerp if bPerp > lambdaBroglie else lambdaBroglie
         except ValueError:  # both lambdaBroglie and bPerp are arrays

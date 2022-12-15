@@ -506,7 +506,8 @@ def Lundquist_number(
         or convertible.
 
     `TypeError`
-        If ``ion`` is not of type or convertible to `~plasmapy.particles.particle_class.Particle`.
+        If ``ion`` is not of type or convertible to
+        `~plasmapy.particles.particle_class.Particle`.
 
     `TypeError`
         If ``z_mean`` is not of type `int` or `float`.
