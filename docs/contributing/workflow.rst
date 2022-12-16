@@ -16,7 +16,6 @@ This page describes the workflow for contributing code, documentation,
 and tests to PlasmaPy. This page assumes that you have already gone
 through the steps described in the page on :ref:`install-plasmapy-dev`.
 
-:ref:`
 
 .. getting help: Element chat, OH, community meeting
 
@@ -29,11 +28,11 @@ through the steps described in the page on :ref:`install-plasmapy-dev`.
 
    Making multiple focused pull requests usually works better than
    making a monolithic pull request.
-  
+
 .. danger::
 
   Avoid making pull requests from your ``main`` branch. (describe why)
-  
+
 Making a code contribution
 ==========================
 
@@ -47,7 +46,7 @@ Creating a new branch
 
 #. Download the current status of `PlasmaPy's GitHub repository`_ and
    your fork by running:
-   
+
    .. code-block::
 
       git fetch --all
@@ -59,7 +58,7 @@ Creating a new branch
       git checkout -b new-branch-name upstream main
 
    where ``new-branch-name`` is changed to the name of the new branch.
-      
+
    .. tip::
 
       Use descriptive branch names like ``refactor-particle-tests`` to
@@ -90,11 +89,11 @@ changes and saving them.
    ``*`` if you want to add all files in the current directory and its
    subdirectories, excluding those specified in :file:`.gitignore`).
 
-#. 
+#.
 
 .. hint::
 
-   The process of adding and commiting a change and pushing it to
+   The process of adding and committing a change and pushing it to
    GitHub can be thought of as packing and mailing a box. Using ``git
    add`` is equivalent to putting an item into a box without closing
    it. The ``git commit`` command is akin to closing the box and
@@ -187,7 +186,7 @@ changes and saving them.
    "Create pull request".  Other contributors will then have a chance to
    review the code and offer constructive suggestions.  You can continue
    to edit the pull request by changing the corresponding branch on your
-   PlasmaPy fork on GitHub.  After a pull request is merged into the 
+   PlasmaPy fork on GitHub.  After a pull request is merged into the
    code, you may delete the branch you created for that pull request.
 
 
@@ -263,7 +262,7 @@ changes and saving them.
    * `Report bugs`_.
    * Write tutorials on how to use different PlasmaPy features.
    * Create educational notebooks that introduce plasma concepts using PlasmaPy.
-   * Improve the project's documentation. 
+   * Improve the project's documentation.
    * Translate PlasmaPy's documentation into another language.
    * Organize events such as `Plasma Hack Week`_.
 
