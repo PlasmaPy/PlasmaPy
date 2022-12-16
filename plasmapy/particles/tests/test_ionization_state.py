@@ -151,23 +151,6 @@ def test_charge_numbers(test_ionization_state):
     assert np.allclose(test_ionization_state.charge_numbers, expected_charge_numbers)
 
 
-@pytest.mark.xfail
-def test_ionic_fractions(test_ionization_state):
-    """
-    Test that each `IonizationState` instance has the expected
-    ionic fractions.
-    """
-    if "ionic_fractions" not in test_cases[test_name]:
-        return
-    instance = test_ionization_state
-    inputted_fractions = test_cases[test_name]["ionic_fractions"]
-    if isinstance(inputted_fractions, u.Quantity):
-        inputted_fractions = inputted_fractions.to(u.m**-3)
-        inputted_fractions = (inputted_fractions / inputted_fractions.sum()).value
-    if not np.allclose(test_ionization_state.ionic_fractions, inputted_fractions):
-        pytest.fail(f"Mismatch in ionic fractions for test {test_name}.")
-
-
 def test_equal_to_itself(He_ionization_state):
     """
     Test that `IonizationState.__eq__` returns `True for two identical
@@ -308,27 +291,6 @@ def test_as_particle_list(test_ionization_state):
     expected_particles = [Particle(atom, Z=Z) for Z in range(nstates)]
     actual_particles = test_ionization_state.to_list()
     assert expected_particles == actual_particles
-
-
-@pytest.mark.xfail
-def test_electron_density_from_n_elem_ionic_fractions(test_ionization_state):
-    # if "n_elem" not in test_cases[test_name]:
-    #     return
-    n_elem = test_cases[test_name]["n_elem"]
-    ionic_fractions = test_cases[test_name]["ionic_fractions"]
-    assert (
-        test_ionization_state.n_elem == n_elem
-    ), f"n_elem is not being stored correctly for test {test_name}"
-    assert np.isclose(
-        test_ionization_state.n_e,
-        np.sum(
-            n_elem
-            * ionic_fractions
-            * np.arange(test_ionization_state.atomic_number + 1)
-        ),
-        rtol=1e-12,
-        atol=0 * u.m**-3,
-    )
 
 
 def test_getitem(test_ionization_state):
