@@ -77,7 +77,8 @@ required_keys = [
 ]
 
 
-def test_Particles_required_keys(particle):
+@pytest.mark.parametrize("particle", particle_zoo.everything)
+def test__Particles_required_keys(particle):
     r"""Test that required keys are present for all particles."""
 
     missing_keys = []

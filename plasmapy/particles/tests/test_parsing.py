@@ -338,7 +338,7 @@ def test_parse_InvalidElementErrors(particle):
     if particle == Particle("p+"):
         return  # TODO verify this case should still be a skip
     with pytest.raises(InvalidElementError):
-        parse_and_check_atomic_input(particle)
+        parse_and_check_atomic_input(particle.symbol)
         pytest.fail(
             "An InvalidElementError was expected to be raised by "
             f"{call_string(parse_and_check_atomic_input, particle)}, "
