@@ -12,23 +12,34 @@ Getting Ready to Contribute
 Introduction
 ============
 
-This page describes the tasks needed prior to contributing to PlasmaPy.
-After finishing these tasks, the |code contribution workflow| describes
-the steps necessary
+Thank you for your interest in contributing to PlasmaPy! This page goes
+through the steps that first-time contributors can take to prepare to
+contribute code, documentation, and tests to PlasmaPy. Afterwards, you
+can go to the next page to learn about the |code contribution workflow|.
 
 Pre-requisites
 ==============
 
-Using a terminal
-----------------
+Opening a terminal
+------------------
 
 The commands described below are intended for a terminal running the
 `Unix shell`_. Here are some essential `Unix commands`_.
 
-* For Windows users, we recommend `Windows Subsystem for Linux`_ (WSL).
-  Another alternative is Powershell_.
-* These instructions describe `opening a terminal on macOS`_.
-* On Linux, a terminal can be opened using :kbd:`Ctrl + Alt + t`.
+.. tabs::
+
+   .. group-tab:: Windows
+
+      We recommend using `Windows Subsystem for Linux`_ (WSL). Another
+      alternative is Powershell_.
+
+   .. group-tab:: macOS
+
+      These instructions describe `opening a terminal on macOS`_.
+
+   .. group-tab:: Linux
+
+      Open a terminal by using :kbd:`Ctrl + Alt + T`.
 
 Installing Python
 -----------------
