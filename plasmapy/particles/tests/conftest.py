@@ -20,3 +20,23 @@ def opposite(particle):
             f"antiparticle of {particle}."
         ) from exc
     return opposite_particle
+
+
+@pytest.fixture(
+    params=list(
+        sorted(
+            [
+                ("e-", "e+"),
+                ("mu-", "mu+"),
+                ("tau-", "tau+"),
+                ("p+", "p-"),
+                ("n", "antineutron"),
+                ("nu_e", "anti_nu_e"),
+                ("nu_mu", "anti_nu_mu"),
+                ("nu_tau", "anti_nu_tau"),
+            ]
+        )
+    )
+)
+def particle_antiparticle_pair(request):
+    return request.param
