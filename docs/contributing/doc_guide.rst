@@ -200,11 +200,11 @@ the same length as that heading.
    Heading 3
    ~~~~~~~~~
 
-We can link to code objects by enclosing them in single back ticks. This
-linking will work for Python_ commands as well as certain packages like
-NumPy_, SciPy_, Astropy_, and pandas_. This linking is described in the
-section on :ref:`external-references`. In-line code examples may be
-enclosed in double back ticks or specified using the ``:py:`` role.
+We can link to code objects by enclosing them in single backticks.
+This linking will work for Python_ objects as well as certain packages
+like NumPy_, SciPy_, Astropy_, and pandas_. This linking is described in
+the section on :ref:`external-references`. In-line code examples may be
+enclosed in double backticks or specified using the ``:py:`` role.
 
 .. code-block:: rst
 
@@ -434,6 +434,8 @@ expected.
    * The referenced source package not properly or fully indexing their
      own code, which is common in Python_ packages.
 
+.. _substitutions:
+
 Substitutions
 ~~~~~~~~~~~~~
 
@@ -497,6 +499,45 @@ example, ``:cite:p:`wilson:2014``` will show up as
 :cite:t:`wilson:2014`, and ``:cite:p:`wilson:2014, wilson:2017``` will
 show up as :cite:p:`wilson:2014, wilson:2017`.
 
+.. _api-static:
+
+Creating a documentation stub file for a new module
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+When the narrative documentation does not index a subpackage (a
+directory) or module (a :file:`.py` file) with ``automodule``,
+``automodapi``, or the like, then a stub file must be created for that
+particular subpackage or module in |docs/api_static|_. For example, the
+stub file for `plasmapy.particles.atomic` is placed at
+:file:`docs/api_static/plasmapy.particles.atomic.rst` and its contents
+look like:
+
+  .. code-block:: rst
+
+     :orphan:
+
+     `plasmapy.particles.atomic`
+     ===========================
+
+     .. currentmodule:: plasmapy.particles.atomic
+
+     .. automodapi::  plasmapy.particles.atomic
+
+A missing stub file may lead to either a ``reference target not found``
+error or the absence of the module in the documentation build.
+
+.. note::
+
+   If a pull request adds a new subpackage *and* a new module, then a
+   stub file must be created for both of them.
+
+   For example, suppose a pull request creates the ``plasmapy.io``
+   subpackage in the :file:`plasmapy/io` directory and the
+   ``plasmapy.io.readers`` module via :file:`plasmapy/io/readers.py`. It
+   will then be necessary to create stub files at both
+   :file:`docs/api_static/plasmapy.io.rst` and
+   :file:`docs/api_static/plasmapy.io.readers.rst`.
+
 Templating
 ~~~~~~~~~~
 
@@ -530,6 +571,8 @@ are more generally described in :pep:`257`.
    which denotes the docstring as a `raw string`_. For example, the `raw
    string`_ ``r""":math:`\alpha`"""`` will render the same as the normal
    string ``""":math:`\\alpha`"""``.
+
+.. _example docstring:
 
 Example docstring
 ~~~~~~~~~~~~~~~~~
@@ -1178,25 +1221,6 @@ Narrative documentation guidelines
 * Use title case for page titles (e.g., "This is Title Case") and
   sentence case for all other headings (e.g., "This is sentence case").
 
-* When the narrative documentation does not index a subpackage (a
-  directory) or module (a :file:`.py` file) with ``automodule``,
-  ``automodapi``, or the like, then it is required to create a stub file
-  for that particular subpackage or module in |docs/api_static|_ . For
-  example, the stub file for `plasmapy.particles.atomic` is placed at
-  :file:`docs/api_static/plasmapy.particles.atomic.rst` and its contents
-  look like:
-
-  .. code-block:: rst
-
-     :orphan:
-
-     `plasmapy.particles.atomic`
-     ===========================
-
-     .. currentmodule:: plasmapy.particles.atomic
-
-     .. automodapi::  plasmapy.particles.atomic
-
 .. danger::
 
    There are certain tasks that one would expect to be straightforward
@@ -1212,24 +1236,138 @@ Narrative documentation guidelines
 Troubleshooting
 ===============
 
-* Errors like ``WARNING: py:class reference target not found: ...``
-  occur when Sphinx is unable to interpret text as a Python object.
+This section describes how to fix common documentation errors and
+warnings.
 
-  - If the text is meant to be a code sample, make sure that the text is
-    in double back ticks.
+.. _missing-target:
 
-  - If the text should refer to a code object, make sure that the full
-    namespace is provided correctly.
+Reference target not found
+--------------------------
 
-  - If the text is in the type line for a parameter in a docstring, then
-    either:
+Warnings like ``py:obj reference target not found`` occur when Sphinx_
+attempts to interpret text as a Python object, but is unable to do so.
+For example, if a docstring includes ```y```, Sphinx will attempt
+to link to an object named ``y``. If there is no object named ``y``,
+then Sphinx will issue this warning, which gets treated like an error.
 
-    - Change the type line to include only Python types and words or
-      patterns defined in ``nitpick_ignore_regex`` in |docs/conf.py|_
-      (preferred), or
+If the text is meant to be an inline code example, surround it with
+double backticks instead of single backticks.
 
-    - Add the text as a regular expression to ``nitpick_ignore_regex``
-      so that Sphinx knows not to issue a warning for this text.
+When the text is meant to represent a code object, this warning
+usually indicates a typo or a namespace error. For example, the
+warning resulting from ```plasmapy.paritcles``` could be resolved by
+fixing the typo and changing it to ```plasmapy.particles```.
+
+.. important::
+
+   For PlasmaPy objects, use the full namespace of the object (i.e.,
+   use ```plasmapy.particles.particle_class.Particle``` instead of
+   ```plasmapy.particles.Particle```) or a :ref:`reST substitution
+   <substitutions>` like ``|Particle|`` as defined in
+   |docs/common_links.rst|_.
+
+
+This warning may occur when a new module or subpackage is created
+without :ref:`creating a stub file <api-static>` for it.
+
+.. _in-parameter-description:
+
+This warning sometimes occurs in the type specification of a |parameter|
+in a docstring. Sphinx attempts to link words in type specifications to
+code objects. Type lines are intended to provide concise information
+about allowed types, sizes, shapes, physical types, and default values
+of a parameter. To resolve this warning, first move information about
+the *meaning* of a parameter from the type specification into the
+parameter description that begins on the following line. To expand the
+list of allowed words or patterns in type specifications, add a regular
+expression to ``nitpick_ignore_regex`` in |docs/conf.py|_.
+
+This warning may also occur when there is an extra space between a
+Sphinx |role| and the argument it is intended to act on. For example,
+this warning would be fixed by changing ``:math: `y``` to ``:math:`y```.
+
+Missing documentation pages for new modules
+-------------------------------------------
+
+When a new module or subpackage is created, it is usually necessary to
+:ref:`create a stub file <api-static>` for it in |docs/api_static|_. A
+missing stub file can lead to either a ``reference target not found``
+error or missing documentation pages.
+
+Missing attribute errors
+------------------------
+
+An `AttributeError` may occur when an ``import`` statement is missing in
+a :file:`__init__.py` file.  For example, the error
+
+.. code-block::
+
+   AttributeError: module 'plasmapy.subpackage' has no attribute 'module'
+
+will occur when :file:`plasmapy/subpackage/__init__.py` is missing
+:py:`from plasmapy.subpackage import module`. Make sure that ``__all__``
+contains ``"module"`` as well.
+
+List ends without a blank line
+------------------------------
+
+Warnings like the following:
+
+.. code-block::
+
+   WARNING: :40: (WARNING/2) Bullet list ends without a blank line; unexpected unindent.
+   WARNING: :47: (WARNING/2) Definition list ends without a blank line; unexpected unindent.
+
+may show up when Sphinx attempts to interpret text as a list, but is
+unable to do so. This warning might not show the file that it occurs
+in.
+
+If this documentation contains a list, make sure that it is followed
+by a blank line and follows the formatting described in `Sphinx's
+documentation on lists`_.
+
+This warning may occur in other places due to an indentation or other
+formatting problem.  Try checking out the formatting in the
+:ref:`example docstring` above.
+
+This warning can occur when a changelog entry contains lines that
+start with a backtick. Try editing each changelog entry so that it is
+on a single really long line, rewording the changelog entry, or
+using :ref:`substitutions`.
+
+.. _Sphinx's documentation on lists:
+  https://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html#lists-and-quote-like-blocks
+
+Errors that are unrelated to a pull request
+-------------------------------------------
+
+Occasionally, documentation builds will start failing for reasons that
+have nothing to do with the changes made in a pull request. Such errors
+generally result from a new release of a package that is required for
+PlasmaPy's documentation build.
+
+.. tip::
+
+   If you are a new contributor and have encountered a strange
+   documentation build failure, first check recent issues_ to see if one
+   has already been created about it. If an issue has not already been
+   created, please `raise an issue about the documentation build
+   failure`_.
+
+To figure out if a new release caused the error, search PyPI_ for
+recently released packages, including `packages related to Sphinx`_ and
+any that came up in the error message. You can also check if the same
+documentation build failure happened in the `weekly tests`_ on the
+``main`` branch. After identifying the package that caused the error, a
+pull request can be submitted that sets a temporary maximum allowed
+version of the package that can be revisited later.
+
+.. tip::
+
+   When dealing with this kind of error, procrastination often pays off!
+   🎈 These errors usually get resolved after the upstream package makes
+   a bugfix release, so it is typically better to wait a week before
+   spending a large amount of time trying to fix it. 🕒
 
 .. |role| replace:: :term:`role`
 .. |roles| replace:: :term:`roles <role>`
@@ -1240,10 +1378,14 @@ Troubleshooting
 .. _configuration options: https://www.sphinx-doc.org/en/master/usage/configuration.html
 .. _define substitutions: https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html#substitution-definitions
 .. _doctests: https://docs.pytest.org/en/6.2.x/doctest.html
+.. _issues: https://github.com/PlasmaPy/PlasmaPy/issues
 .. _nested inline markup: https://docutils.sphinx-users.jp/docutils/docs/dev/rst/alternatives.html#nested-inline-markup
 .. _options to sphinx-build: https://www.sphinx-doc.org/en/master/man/sphinx-build.html#options
+.. _packages related to Sphinx: https://pypi.org/search/?q=sphinx+or+nbsphinx&o=-created&c=Framework+%3A%3A+Sphinx
 .. _parameters: https://numpydoc.readthedocs.io/en/latest/format.html#parameters
 .. _raise an issue: https://github.com/PlasmaPy/PlasmaPy/issues/new?title=Improve+documentation+for...&labels=Documentation
+.. _raise an issue about the documentation build failure:
+      https://github.com/PlasmaPy/PlasmaPy/issues/new?title=Documentation+build+failure&labels=Documentation
 .. _raises: https://numpydoc.readthedocs.io/en/latest/format.html#raises
 .. _raw string: https://docs.python.org/3/reference/lexical_analysis.html#literals
 .. _Read the Docs Sphinx Theme: https://sphinx-rtd-theme.readthedocs.io
