@@ -1,0 +1,2 @@
+Updated the discussion on type descriptions and parameter descriptions
+for docstrings in the |documentation guide|.
