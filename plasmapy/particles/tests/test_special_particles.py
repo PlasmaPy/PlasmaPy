@@ -62,7 +62,6 @@ required_keys = [
 ]
 
 
-@pytest.mark.parametrize("particle", list(sorted(particle_zoo.everything)))
 def test_Particles_required_keys(particle):
     r"""Test that required keys are present for all particles."""
 
@@ -70,12 +69,12 @@ def test_Particles_required_keys(particle):
 
     for key in required_keys:
         try:
-            data_about_special_particles[particle][key]
+            data_about_special_particles[particle.symbol][key]
         except KeyError:
             missing_keys.append(key)
 
     if missing_keys:
         raise KeyError(
-            f"_Particles[{repr(particle)}] is missing the following "
+            f"_Particles[{particle.symbol}] is missing the following "
             f"keys: {missing_keys}"
         )
