@@ -38,9 +38,9 @@ available at these locations:
   https://docs.plasmapy.org/en/stable.
 
 * The documentation corresponding to the ongoing development on the
-  ``main`` branch in `PlasmaPy's GitHub repository`_, which is often ahead
-  of the most recent release, is labeled ``latest`` and can be found at
-  https://docs.plasmapy.org/en/latest.
+  ``main`` branch in `PlasmaPy's GitHub repository`_, which is often
+  ahead of the most recent release, is labeled ``latest`` and can be
+  found at https://docs.plasmapy.org/en/latest.
 
 .. tip::
 
@@ -62,6 +62,7 @@ There are two methods for building the documentation: make_ and tox_.
 * Using make_ will build the documentation based off of what is in the
   current directory structure. make_ is quicker for local builds than
   tox_ but requires you to install and set up all dependencies.
+
 * Using tox_ does not require setting up all dependencies ahead of time,
   but is more computationally intensive since it creates a virtual
   environment and builds the package before building the documentation.
@@ -97,8 +98,8 @@ entering the :file:`docs/` directory and running:
 
 Including the :samp:`-j {n}` flag in the ``make`` command will enable a
 parallel build, where :samp:`{n}` is replaced with the number of
-processes or ``auto``. To skip building example notebooks, use
-``make html-nonb`` instead.
+processes or ``auto``. To skip building example notebooks, use ``make
+html-nonb`` instead.
 
 You can access the documentation landing page by opening
 :file:`docs/_build/html/index.html` with your browser of choice.
@@ -170,15 +171,15 @@ markup language. reST_ is human readable when viewed within a source
 code file or when printed out using `help`. reST_ also contains markup
 that allows the text to be transformed into `PlasmaPy's documentation`_.
 reST_ files use the file extension :file:`.rst`. Documentation contained
-within :file:`.py` files are in the form of
-:wikipedia:`docstrings <docstring>`, which are written in reST_.
+within :file:`.py` files are in the form of :wikipedia:`docstrings
+<docstring>`, which are written in reST_.
 
 ReStructuredText Examples
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Here we show some examples of commonly used reST_ syntax in
-PlasmaPy. Please refer to the documentation for Sphinx_ and reST_ for a
-list of available |roles| and |directives|.
+Here we show some examples of commonly used reST_ syntax in PlasmaPy.
+Please refer to the documentation for Sphinx_ and reST_ for a list of
+available |roles| and |directives|.
 
 This is an example of including headings for the document title,
 sections, subsections, and so on. The lines surrounding each heading are
@@ -199,10 +200,10 @@ the same length as that heading.
    Heading 3
    ~~~~~~~~~
 
-We can link to code objects by enclosing them in single back ticks.
-This linking will work for Python_ commands as well as certain packages
-like NumPy_, SciPy_, Astropy_, and pandas_. This linking is described in
-the section on :ref:`external-references`. In-line code examples may be
+We can link to code objects by enclosing them in single back ticks. This
+linking will work for Python_ commands as well as certain packages like
+NumPy_, SciPy_, Astropy_, and pandas_. This linking is described in the
+section on :ref:`external-references`. In-line code examples may be
 enclosed in double back ticks or specified using the ``:py:`` role.
 
 .. code-block:: rst
@@ -381,11 +382,11 @@ extensions:
 * |sphinx_changelog|_ for rendering towncrier_ changelogs.
 * |sphinx-hoverxref|_ for showing floating windows on cross references
   of the documentation.
-* |sphinx-notfound-page|_ to add a :wikipedia:`404 <HTTP_404>` page
-  for the documentation.
+* |sphinx-notfound-page|_ to add a :wikipedia:`404 <HTTP_404>` page for
+  the documentation.
 * |sphinx-issues|_ to add roles for linking to GitHub (``:commit:``,
   ``:issue:``, ``:pr:``, and ``:user:``).
-* |sphinx-reredirects|_ to enable hyperlink redirects
+* |sphinx-reredirects|_ to enable hyperlink redirects.
 * `plasmapy_sphinx` for customizations created for use in PlasmaPy and
   affiliated packages. Note that `plasmapy_sphinx` is expected to be
   broken out into its own package in the future.
@@ -413,11 +414,10 @@ will show up as `astropy.units.Quantity` with a link to the appropriate
 page in Astropy documentation. Similarly, ```~astropy.units.Quantity```
 will show up as `~astropy.units.Quantity`.
 
-To make cross-referencing to an external package available its
-mappings have to be defined in the :confval:`intersphinx_mapping`
-configuration dictionary contained in |docs/conf.py|_. PlasmaPy
-has already include several packages like Python_, NumPy_, SciPy_,
-Astropy_, Sphinx_, etc.
+To make cross-referencing to an external package available its mappings
+have to be defined in the :confval:`intersphinx_mapping` configuration
+dictionary contained in |docs/conf.py|_. PlasmaPy has already include
+several packages like Python_, NumPy_, SciPy_, Astropy_, Sphinx_, etc.
 
 New source packages may be added, but please verify that references to a
 function or class in that package show up correctly in `PlasmaPy's
@@ -470,10 +470,10 @@ Bibliography
 ~~~~~~~~~~~~
 
 PlasmaPy uses |sphinxcontrib-bibtex|_ to manage references for its
-documentation. This Sphinx_ extension allows us to store references
-in a BibTeX_ file which is then used to generate the
-:doc:`../bibliography`. References in the :doc:`../bibliography` are then
-citeable from anywhere in the documentation.
+documentation. This Sphinx_ extension allows us to store references in a
+BibTeX_ file which is then used to generate the :doc:`../bibliography`.
+References in the :doc:`../bibliography` are then citeable from anywhere
+in the documentation.
 
 To add a new reference to the :doc:`../bibliography`, open
 |docs/bibliography.bib|_ and add the reference in `BibTeX format`_. The
@@ -489,13 +489,13 @@ preserve capitalization, enclose words or phrases within curly brackets
 (e.g., ``{NumPy}``).
 
 Use ``:cite:p:`citekey``` to create a parenthetical citation and
-``:cite:t:`citekey``` to create a textual citation, where ``citekey``
-is replaced with the BibTeX_ citekey. Multiple citekeys can also be used
+``:cite:t:`citekey``` to create a textual citation, where ``citekey`` is
+replaced with the BibTeX_ citekey. Multiple citekeys can also be used
 when separated by commas, like ``:cite:p:`citekey1, citekey2```. For
-example, ``:cite:p:`wilson:2014``` will show up as :cite:p:`wilson:2014`,
-``:cite:t:`wilson:2014``` will show up as :cite:t:`wilson:2014`, and
-``:cite:p:`wilson:2014, wilson:2017``` will show up as
-:cite:p:`wilson:2014, wilson:2017`.
+example, ``:cite:p:`wilson:2014``` will show up as
+:cite:p:`wilson:2014`, ``:cite:t:`wilson:2014``` will show up as
+:cite:t:`wilson:2014`, and ``:cite:p:`wilson:2014, wilson:2017``` will
+show up as :cite:p:`wilson:2014, wilson:2017`.
 
 Templating
 ~~~~~~~~~~
@@ -548,9 +548,9 @@ Here is an example docstring in the numpydoc_ format:
        r"""
        Compute the difference between two integers.
 
-       Add ∼1–3 sentences here for an extended summary of what the
-       function does. This extended summary is a good place to briefly
-       define the quantity that is being returned.
+       Add ∼1–3 sentences here for an extended summary of what the function
+       does. This extended summary is a good place to briefly define the
+       quantity that is being returned.
 
        .. math::
 
@@ -589,18 +589,17 @@ Here is an example docstring in the numpydoc_ format:
 
        Notes
        -----
-       The "Notes" section provides extra information that cannot fit in
-       the extended summary near the beginning of the docstring. This
-       section should include a discussion of the physics behind a
-       particular concept that should be understandable to someone who is
-       taking their first plasma physics class. This section can include
-       a derivation of the quantity being calculated or a description of
-       a particular algorithm.
+       The "Notes" section provides extra information that cannot fit in the
+       extended summary near the beginning of the docstring. This section
+       should include a discussion of the physics behind a particular concept
+       that should be understandable to someone who is taking their first
+       plasma physics class. This section can include a derivation of the
+       quantity being calculated or a description of a particular algorithm.
 
        Examples
        --------
-       Include a few example usages of the function here. Start with
-       simple examples and then increase complexity when necessary.
+       Include a few example usages of the function here. Start with simple
+       examples and then increase complexity when necessary.
 
        >>> from package.subpackage.module import subtract
        >>> subtract(9, 6)
@@ -613,8 +612,8 @@ Here is an example docstring in the numpydoc_ format:
        ... )
        -3
 
-       PlasmaPy's test suite will check that these commands provide the
-       output that follows each function call.
+       PlasmaPy's test suite will check that these commands provide the output
+       that follows each function call.
        """
        if np.isinf(a) or np.isinf(b):
            raise ValueError("Cannot perform subtraction operations involving infinity.")
@@ -715,8 +714,8 @@ Definitions
 -----------
 
 Define important terms in PlasmaPy's :ref:`glossary`, which is located
-at |docs/glossary.rst|_. Here is an example of a term defined
-within the :rst:dir:`glossary` |directive|.
+at |docs/glossary.rst|_. Here is an example of a term defined within the
+:rst:dir:`glossary` |directive|.
 
 .. code-block:: rst
 
@@ -725,13 +724,13 @@ within the :rst:dir:`glossary` |directive|.
       kwargs
          An abbreviation for keyword arguments.
 
-Using the :rst:role:`term` |role| allows us to link to the
-definitions of terms. Using ``:term:`kwargs``` will link to
-:term:`kwargs` in the :ref:`glossary`. We can also refer to terms
-defined in the projects connected via intersphinx_ if they have not
-already been defined in PlasmaPy's :ref:`glossary`. Using
-``:term:`role``` will link to |role| and ``:term:`directive``` will link
-to |directive| in `Sphinx's glossary`_.
+Using the :rst:role:`term` |role| allows us to link to the definitions
+of terms. Using ``:term:`kwargs``` will link to :term:`kwargs` in the
+:ref:`glossary`. We can also refer to terms defined in the projects
+connected via intersphinx_ if they have not already been defined in
+PlasmaPy's :ref:`glossary`. Using ``:term:`role``` will link to |role|
+and ``:term:`directive``` will link to |directive| in `Sphinx's
+glossary`_.
 
 Documentation guidelines
 ========================
@@ -785,9 +784,8 @@ documentation for PlasmaPy and affiliated packages.
   ```~astropy.units.Quantity``` so either option will link to the same
   documentation.
 
-* For readability, limit documentation line lengths to ≲ 72 characters
-  (excluding leading spaces in docstrings). Longer line lengths may be
-  used when necessary (e.g., for hyperlinks).
+* For readability, limit documentation line lengths to ≲ 72 characters.
+  Longer line lengths may be used when necessary (e.g., for hyperlinks).
 
   .. note::
 
@@ -801,9 +799,8 @@ documentation for PlasmaPy and affiliated packages.
   directory contains files that are used for the online documentation
   but are not generated during the Sphinx_ build.
 
-* Avoid linking to websites that might disappear due to
-  :wikipedia:`link rot <link_rot>` such as documents hosted on personal
-  websites.
+* Avoid linking to websites that might disappear due to :wikipedia:`link
+  rot <link_rot>` such as documents hosted on personal websites.
 
   * When including references, use a link that includes a
     :wikipedia:`persistent identifier <persistent_identifier>` such as a
@@ -849,8 +846,8 @@ documentation for PlasmaPy and affiliated packages.
 * The names of chemical elements are lower case, except at the beginning
   of a sentence.
 
-* Particle and chemical symbols should be formatted as regular text.
-  Use ``:sub:`` for subscripts and ``:sup:`` for superscripts.
+* Particle and chemical symbols should be formatted as regular text. Use
+  ``:sub:`` for subscripts and ``:sup:`` for superscripts.
 
   Because interpreted text must normally be surrounded by whitespace or
   punctuation, use a backslash followed by a space for the interpreted
@@ -877,16 +874,16 @@ documentation for PlasmaPy and affiliated packages.
   high-level overview of what is contained in that module.
 
 * Place the ``__all__`` dunder immediately after the docstring that
-  begins a module and before the import statements (but after any
-  ``from __future__`` imports that must be at the beginning of a file).
-  This dunder should be a `list` that contains the names of all objects
-  in that module intended for use by users. Private objects (i.e.,
-  objects with names that begin with an underscore) should not be
-  included in ``__all__``.  ``__all__`` is a leftover from the now
-  dissuaded practice of star imports (e.g.,
-  :samp:`from {package} import *`\ ), but is still used by Sphinx_ for
-  selecting objects to document. Only objects contained within
-  ``__all__`` will show up in the online documentation.
+  begins a module and before the import statements (but after any ``from
+  __future__`` imports that must be at the beginning of a file). This
+  dunder should be a `list` that contains the names of all objects in
+  that module intended for use by users. Private objects (i.e., objects
+  with names that begin with an underscore) should not be included in
+  ``__all__``.  ``__all__`` is a leftover from the now dissuaded
+  practice of star imports (e.g., :samp:`from {package} import *`\ ),
+  but is still used by Sphinx_ for selecting objects to document. Only
+  objects contained within ``__all__`` will show up in the online
+  documentation.
 
 Docstring guidelines
 --------------------
@@ -958,8 +955,8 @@ Docstring guidelines
   docstring for a private code object may be a single line, and
   otherwise should be in numpydoc_ format.
 
-* Docstrings for private code objects do not get rendered in the
-  online documentation, and should be intended for contributors.
+* Docstrings for private code objects do not get rendered in the online
+  documentation, and should be intended for contributors.
 
 Parameters
 ~~~~~~~~~~
@@ -1055,14 +1052,14 @@ The type specification should not include information about the
      {"p+", "e-"}, default: "p+"
      {1, 2, 3, 4}, default: 3
 
-* If a default is given, it is not necessary to state that the
-  parameter is optional. When the default is `None`, use ``optional``
-  instead of ``default: `None```.
+* If a default is given, it is not necessary to state that the parameter
+  is optional. When the default is `None`, use ``optional`` instead of
+  ``default: `None```.
 
 .. tip::
 
-   If a particular type specification is not covered above,
-   look for conventions from the `numpydoc style guide
+   If a particular type specification is not covered above, look for
+   conventions from the `numpydoc style guide
    <https://numpydoc.readthedocs.io/en/latest/format.html#parameters>`__,
    the `matplotlib documentation guide
    <https://matplotlib.org/stable/devel/documenting_mpl.html#parameter-type-descriptions>`__,
@@ -1079,10 +1076,12 @@ values of the parameter (including those specified by
 should not repeat information already in the type specification, but may
 include type information when:
 
-- There isn't enough space in the type specification;
-- Different types have different meanings, requirements, or
+* There isn't enough space in the type specification;
+
+* Different types have different meanings, requirements, or
   restrictions; or
-- The docstring will be more understandable by doing so.
+
+* The docstring will be more understandable by doing so.
 
 For functions that accept an arbitrary number of positional and/or
 keyword arguments, include them in the "Parameters_" section with the
@@ -1125,8 +1124,8 @@ Exceptions and warnings
     exceptions and warnings that are raised or issued by the function
     itself. Exceptions and warnings from commonly used decorators like
     |validate_quantities| and |particle_input| should usually not be
-    included in these sections, but may be included if there is
-    strong justification to do so.
+    included in these sections, but may be included if there is strong
+    justification to do so.
 
 Attributes
 ~~~~~~~~~~
