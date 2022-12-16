@@ -142,9 +142,6 @@ def test_ionization_state(request):
     return IonizationState(**request.param)
 
 
-# TODO: Refactor these tests using fixtures
-
-
 def test_charge_numbers(test_ionization_state):
     """
     Test that an `IonizationState` instance has the correct charge
