@@ -1119,7 +1119,8 @@ values of the parameter (including those specified by
 should not repeat information already in the type specification, but may
 include type information when:
 
-* There isn't enough space in the type specification;
+* The type specification does not fit with in the docstring line
+  character limit;
 
 * Different types have different meanings, requirements, or
   restrictions; or
