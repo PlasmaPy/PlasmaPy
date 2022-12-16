@@ -9,7 +9,7 @@ from plasmapy.particles._special_particles import (
 def test_particle_antiparticle_pairs(particle_antiparticle_pair):
     """Test that particles and antiparticles have the same or exact
     opposite properties in the _Particles dictionary."""
-    particle, antiparticle = particle_antiparticle_pair
+    particle, antiparticle = (p.symbol for p in particle_antiparticle_pair)
 
     assert not data_about_special_particles[particle][
         "antimatter"

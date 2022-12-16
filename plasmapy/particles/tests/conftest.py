@@ -39,4 +39,4 @@ def opposite(particle):
     )
 )
 def particle_antiparticle_pair(request):
-    return request.param
+    return [Particle(p) for p in request.param]
