@@ -782,16 +782,20 @@ def test_particle_bool_error():
         bool(Particle("e-"))
 
 
-particle_antiparticle_pairs = [
-    ("p+", "p-"),
-    ("n", "antineutron"),
-    ("e-", "e+"),
-    ("mu-", "mu+"),
-    ("tau-", "tau+"),
-    ("nu_e", "anti_nu_e"),
-    ("nu_mu", "anti_nu_mu"),
-    ("nu_tau", "anti_nu_tau"),
-]
+particle_antiparticle_pairs = list(
+    sorted(
+        [
+            ("p+", "p-"),
+            ("n", "antineutron"),
+            ("e-", "e+"),
+            ("mu-", "mu+"),
+            ("tau-", "tau+"),
+            ("nu_e", "anti_nu_e"),
+            ("nu_mu", "anti_nu_mu"),
+            ("nu_tau", "anti_nu_tau"),
+        ]
+    )
+)
 
 
 @pytest.mark.parametrize("particle, antiparticle", particle_antiparticle_pairs)
@@ -815,23 +819,6 @@ def test_antiparticle_inversion(particle, antiparticle):
 def test_unary_operator_for_elements():
     with pytest.raises(ParticleError):
         Particle("C").antiparticle
-
-
-@pytest.fixture(params=particle_zoo.everything)
-def particle(request):
-    return Particle(request.param)
-
-
-@pytest.fixture()
-def opposite(particle):
-    try:
-        opposite_particle = ~particle
-    except Exception as exc:
-        raise InvalidParticleError(
-            f"The unary ~ (invert) operator is unable to find the "
-            f"antiparticle of {particle}."
-        ) from exc
-    return opposite_particle
 
 
 class Test_antiparticle_properties_inversion:

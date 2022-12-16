@@ -5,16 +5,20 @@ from plasmapy.particles._special_particles import (
     particle_zoo,
 )
 
-particle_antiparticle_pairs = [
-    ("e-", "e+"),
-    ("mu-", "mu+"),
-    ("tau-", "tau+"),
-    ("p+", "p-"),
-    ("n", "antineutron"),
-    ("nu_e", "anti_nu_e"),
-    ("nu_mu", "anti_nu_mu"),
-    ("nu_tau", "anti_nu_tau"),
-]
+particle_antiparticle_pairs = list(
+    sorted(
+        [
+            ("e-", "e+"),
+            ("mu-", "mu+"),
+            ("tau-", "tau+"),
+            ("p+", "p-"),
+            ("n", "antineutron"),
+            ("nu_e", "anti_nu_e"),
+            ("nu_mu", "anti_nu_mu"),
+            ("nu_tau", "anti_nu_tau"),
+        ]
+    )
+)
 
 
 @pytest.mark.parametrize("particle,antiparticle", particle_antiparticle_pairs)
@@ -73,8 +77,7 @@ required_keys = [
 ]
 
 
-@pytest.mark.parametrize("particle", particle_zoo.everything)
-def test__Particles_required_keys(particle):
+def test_Particles_required_keys(particle):
     r"""Test that required keys are present for all particles."""
 
     missing_keys = []
