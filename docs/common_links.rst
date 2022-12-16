@@ -2,6 +2,12 @@
    (and docstrings) because they are added to ``docs/conf.py::rst_epilog``.
 
 .. ------------------
+.. plasmapy.diagnostics
+.. ------------------
+
+.. |Layer| replace:: `~plasmapy.diagnostics.charged_particle_radiography.detector_stacks.Layer`
+
+.. ------------------
 .. plasmapy.formulary
 .. ------------------
 
@@ -137,6 +143,7 @@
 .. _CSS: https://www.w3schools.com:443/css
 .. _Cython: https://cython.org/
 .. _DOI: https://www.doi.org
+.. _editable installation: https://pip.pypa.io/en/stable/topics/local-project-installs/#editable-installs
 .. _equivalencies: https://docs.astropy.org/en/stable/units/equivalencies.html
 .. _flake8: https://flake8.pycqa.org/en/latest
 .. _GitHub Actions: https://docs.github.com/en/actions
@@ -188,6 +195,7 @@
 .. _towncrier: https://github.com/twisted/towncrier
 .. _tox: https://tox.wiki/en/latest
 .. _virtualenv: https://pypi.org/project/virtualenv
+.. _weekly tests: https://github.com/PlasmaPy/PlasmaPy/actions/workflows/weekly.yml
 .. _Wikipedia: https://www.wikipedia.org
 .. _Zenodo: https://zenodo.org
 
@@ -261,18 +269,6 @@
 
 .. _`pyproject.toml`: https://github.com/PlasmaPy/PlasmaPy/blob/main/pyproject.toml
 .. |pyproject.toml| replace:: :file:`pyproject.toml`
-
-.. _`requirements`: https://github.com/PlasmaPy/PlasmaPy/tree/main/requirements
-.. |requirements| replace:: :file:`requirements`
-
-.. _`requirements/build.txt`: https://github.com/PlasmaPy/PlasmaPy/blob/main/requirements/build.txt
-.. |requirements/build.txt| replace:: :file:`requirements/build.txt`
-
-.. _`requirements/environment.yml`: https://github.com/PlasmaPy/PlasmaPy/blob/main/requirements/environment.yml
-.. |requirements/environment.yml| replace:: :file:`requirements/environment.yml`
-
-.. _`setup.cfg`: https://github.com/PlasmaPy/PlasmaPy/blob/main/setup.cfg
-.. |setup.cfg| replace:: :file:`setup.cfg`
 
 .. _`sphinxcontrib-bibtex`: https://sphinxcontrib-bibtex.readthedocs.io
 .. |sphinxcontrib-bibtex| replace:: `sphinxcontrib-bibtex`

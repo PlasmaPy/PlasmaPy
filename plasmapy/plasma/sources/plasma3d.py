@@ -128,16 +128,16 @@ class Plasma3D(GenericPlasma):
     @property
     def electric_field(self):
         """
-        (`~astropy.units.Quantity`) (3, x, y, z) array of the magnetic field vector
-        at every point in the domain.
+        (`~astropy.units.Quantity`) (3, x, y, z) array of the magnetic
+        field vector at every point in the domain.
         """
         return self._electric_field
 
     @property
     def velocity(self):
         """
-        (`~astropy.units.Quantity`) (3, x, y, z) array of the fluid velocity vector at
-        every point in the domain.
+        (`~astropy.units.Quantity`) (3, x, y, z) array of the fluid
+        velocity vector at every point in the domain.
         """
         return self.momentum / self.density
 

@@ -103,7 +103,7 @@ following:
 
 .. code-block:: bash
 
-   conda env create -f requirements/environment.yml
+   conda create -n plasmapy python=3.10
 
 You may now enter the environment via
 
@@ -171,7 +171,7 @@ dependencies. One way to do this is to do
 
 Next, setup the development version of PlasmaPy which you just cloned
 by moving into the root directory of the cloned repo and running the
-setup.py script there:
+following there:
 
 .. code-block:: bash
 
@@ -204,11 +204,10 @@ Installing your own dev version
 ===============================
 
 To be able to import PlasmaPy from your source version, enter the
-repository root and use one of
+repository root and use
 
 .. code-block:: bash
 
-   python setup.py develop
    pip install -e .
 
 .. note::
