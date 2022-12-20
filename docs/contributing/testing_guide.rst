@@ -9,6 +9,50 @@ Testing Guide
    :local:
    :backlinks: none
 
+Summary
+=======
+
+* New functionality added to PlasmaPy must also have tests.
+
+* Tests are located in files that begin with :file:`test_` which are
+  inside subdirectories named :file:`tests`.
+
+* Tests are either functions beginning with ``test_`` or classes
+  beginning with ``Test``.
+
+* To install the packages needed to run the tests:
+
+  - Open a terminal.
+
+  - Navigate to the top-level directory (probably named
+    :file:`PlasmaPy`) in your local clone of PlasmaPy's repository.
+
+  - If you are on MacOS or Linux, run:
+
+    .. code-block:: console
+
+       python -m pip install -e ".[tests]"
+
+    If you are on Windows, run:
+
+    .. code-block:: console
+
+       py -m pip install -e .[tests]
+
+    These commands will perform an `editable installation`_ of your
+    local clone of PlasmaPy.
+
+* Run ``pytest`` in the command line in order to run tests in that
+  directory and its subdirectories.
+
+* Here is an example of a minimal ``pytest`` test that uses an
+  :py:`assert` statement:
+
+  .. code-block:: python
+
+      def test_multiplication():
+          assert 2 * 3 == 6
+
 Introduction
 ============
 
@@ -503,7 +547,7 @@ positional arguments (``a`` and ``b``) and one optional keyword argument
 
    def add(a, b, reverse_order=False):
        if reverse_order:
-           return a + b
+           return b + a
        return a + b
 
 Argument unpacking_ lets us provide positional arguments in a `tuple` or
