@@ -17,7 +17,7 @@ build:
     pre_create_environment:
     - python -m pip install --upgrade setuptools pip
     post_build:
-    - echo https://docs.plasmapy.org/en/latest/contributing/doc_guide.html#troubleshooting
+    - echo "Troubleshooting guide: https://docs.plasmapy.org/en/latest/contributing/doc_guide.html#troubleshooting"
 
 sphinx:
   fail_on_warning: true
