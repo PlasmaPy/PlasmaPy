@@ -30,11 +30,6 @@ jobs:
           python: 3.8
           toxenv: linters
 
-        - name: Python 3.9 with NumPy dev
-          os: ubuntu-latest
-          python: 3.9
-          toxenv: py39-numpydev
-
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
