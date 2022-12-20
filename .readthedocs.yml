@@ -11,11 +11,13 @@ build:
   tools:
     # Use most recent version supported by Numba
     python: '3.10'
-  apt-packages:
+  apt_packages:
   - graphviz
   jobs:
     pre_create_environment:
     - python -m pip install --upgrade setuptools pip
+    post_build:
+    - echo https://docs.plasmapy.org/en/latest/contributing/doc_guide.html#troubleshooting
 
 sphinx:
   fail_on_warning: true
