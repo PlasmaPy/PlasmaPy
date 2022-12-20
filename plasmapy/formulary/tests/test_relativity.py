@@ -16,48 +16,46 @@ from plasmapy.particles import CustomParticle, electron, proton
 from plasmapy.utils.exceptions import RelativityError
 
 
-def test_Lorentz_factor():
-    r"""Test Lorentz_factor in relativity.py"""
+@pytest.mark.parametrize(
+    "speed, expected",
+    [
+        (0 * u.m / u.s, 1),
+        (np.nan * u.m / u.s, np.nan),
+        (c, np.inf),
+        (-c, np.inf),
+        (123456789 * u.m / u.s, 1.0973686),
+        (-123456789 * u.m / u.s, 1.0973686),
+        (555555555 * u.km / u.hr, 1.1664056),
+        (0.99 * c, 7.088812),
+        ([np.nan, 0, c.si.value] * u.m / u.s, [-np.nan, 1, np.inf]),
+    ],
+)
+def test_Lorentz_factor(speed, expected):
+    actual = Lorentz_factor(V=speed)
+    assert u.allclose(actual, expected, equal_nan=True, rtol=1e-7)
 
-    V = 123456789 * u.m / u.s
-    assert np.isclose(Lorentz_factor(V), (1 / np.sqrt(1 - V**2 / c**2)).value)
-    assert Lorentz_factor(-V) == Lorentz_factor(V)
 
-    assert np.isclose(Lorentz_factor(0 * u.m / u.s), 1.0)
-    assert Lorentz_factor(c) == np.inf
+@pytest.mark.parametrize(
+    "speed, exception",
+    [
+        (np.inf * u.m / u.s, RelativityError),
+        (-np.inf * u.m / u.s, RelativityError),
+        (1.00000001 * c, RelativityError),
+        (-1.00000001 * c, RelativityError),
+        (299792458 * u.kg / u.s, u.UnitTypeError),
+    ],
+)
+def test_Lorentz_factor_exceptions(speed, exception):
+    with pytest.raises(exception):
+        Lorentz_factor(speed)
 
-    V_arr = np.array([987532.0, 299792458]) * u.m / u.s
-    gamma_arr = Lorentz_factor(V_arr)
-    assert np.isclose(gamma_arr[0], (1 / np.sqrt(1 - V_arr[0] ** 2 / c**2)).value)
-    assert gamma_arr[1] == np.inf
 
-    assert (
-        Lorentz_factor(3 * u.m / u.s) * u.dimensionless_unscaled
-    ).unit == u.dimensionless_unscaled
-
-    def test_lorentz_factor_nan_input():
-        assert np.isnan(Lorentz_factor(np.nan * u.m / u.s))
-
-    def test_lorentz_factor_array_of_nans():
-        assert np.all(np.isnan(Lorentz_factor(np.array([np.nan, np.nan]) * u.m / u.s)))
-
-    def test_lorentz_factor_nan_in_array():
-        numerical_result, nan_result = Lorentz_factor(np.array([1, np.nan]) * u.m / u.s)
-        assert np.isnan(nan_result)
-        assert not np.isnan(numerical_result)
-
-    def test_lorentz_factor_exceptions():
-        with pytest.raises(RelativityError):
-            Lorentz_factor(1.0000000001 * c)
-
-        with pytest.raises(ValueError), pytest.warns(u.UnitsWarning):
-            Lorentz_factor(299792459)
-
-        with pytest.warns(u.UnitsWarning):
-            Lorentz_factor(2.2)
-
-        with pytest.raises(u.UnitTypeError):
-            Lorentz_factor(4 * u.kg)
+@pytest.mark.parametrize(
+    "speed, warning", [(2.2, u.UnitsWarning), (np.nan, u.UnitsWarning)]
+)
+def test_Lorentz_factor_warnings(speed, warning):
+    with pytest.warns(warning):
+        Lorentz_factor(speed)
 
 
 def test_relativistic_energy():
