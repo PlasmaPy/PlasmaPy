@@ -810,13 +810,9 @@ class Tracker:
         the particles through zero fields) saves computation time.
         """
         # Distance from the source to the nearest point on any grid
-        dist = np.min(
-            np.array(
-                [
+        dist = min(
                     np.min(np.linalg.norm(arr - self.source, axis=3))
                     for arr in self.grids_arr
-                ]
-            )
         )
 
         # Find speed of each particle towards the grid.
