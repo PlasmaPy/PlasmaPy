@@ -88,10 +88,6 @@ docs = [
     "sphinxcontrib-bibtex",
     "towncrier >= 22.8.0",
 ]
-dev = [
-    "plasmapy[tests]",
-    "plasmapy[docs]",
-]
 
 [project.scripts]
 plasma-calculator = "plasmapy.utils.calculator:main"
