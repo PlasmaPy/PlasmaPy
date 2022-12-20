@@ -9,11 +9,13 @@ __all__ = ["Tracker", "synthetic_radiograph"]
 
 import astropy.constants as const
 import astropy.units as u
+import collections
 import numpy as np
 import sys
 import warnings
 
 from tqdm import tqdm
+from typing import Iterable, Union
 
 from plasmapy import particles
 from plasmapy.formulary.mathematics import rot_a_to_b
