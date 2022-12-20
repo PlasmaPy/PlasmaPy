@@ -73,9 +73,4 @@ Example highlights
    glossary
    Vision Statement <about/vision_statement>
    PlasmaPy.org <https://www.plasmapy.org>
-
-.. The about PlasmaPy section has some important information that would
-   be helpful to have more readily accessible from the main doc index
-   page.
-
-.. TODO: Add feedback link: .. _feedback@plasmapy.org: mailto:feedback@plasmapy.org
+   GitHub Repository <https://github.com/PlasmaPy/PlasmaPy>
