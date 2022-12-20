@@ -4,6 +4,7 @@ import numpy as np
 import pytest
 
 from plasmapy.formulary.frequencies import (
+    Buchsbaum_frequency,
     gyrofrequency,
     lower_hybrid_frequency,
     oc_,
@@ -12,7 +13,6 @@ from plasmapy.formulary.frequencies import (
     wc_,
     wlh_,
     wuh_,
-    Buchsbaum_frequency
 )
 from plasmapy.particles.exceptions import InvalidParticleError
 from plasmapy.utils.pytest_helpers import assert_can_handle_nparray
@@ -32,7 +32,7 @@ B_nanarr = np.array([0.001, np.nan]) * u.T
         (oc_, gyrofrequency),
         (wc_, gyrofrequency),
         (wlh_, lower_hybrid_frequency),
-        (wuh_, upper_hybrid_frequency)
+        (wuh_, upper_hybrid_frequency),
     ],
 )
 def test_aliases(alias, parent):
@@ -189,16 +189,35 @@ def test_upper_hybrid_frequency():
 
     assert_can_handle_nparray(upper_hybrid_frequency)
 
+
 def test_Buchsbaum_frequency():
     r"""Test the Buchsbaum_frequency function in frequencies.py."""
 
     with pytest.raises(InvalidParticleError):
-       Buchsbaum_frequency(1.0 * u.T, 5e19 * u.m**-3, 5e19 * u.m**-3,
-       "norwegian jarlsberg","proton")
+        Buchsbaum_frequency(
+            1.0 * u.T,
+            5e19 * u.m**-3,
+            5e19 * u.m**-3,
+            "norwegian jarlsberg",
+            "proton",
+        )
 
     with pytest.raises(InvalidParticleError):
-       Buchsbaum_frequency(1.0 * u.T, 5e19 * u.m**-3, 5e19 * u.m**-3,
-       "proton", "venezuelan beaver cheese")
+        Buchsbaum_frequency(
+            1.0 * u.T,
+            5e19 * u.m**-3,
+            5e19 * u.m**-3,
+            "proton",
+            "venezuelan beaver cheese",
+        )
 
-    assert np.isclose(Buchsbaum_frequency(B=0.1*u.T, n1=1e18*u.m**-3, n2=1e18*u.m**-3,
-        ion1="proton", ion2="He-4 +1").value, 4805575.93140432)
+    assert np.isclose(
+        Buchsbaum_frequency(
+            B=0.1 * u.T,
+            n1=1e18 * u.m**-3,
+            n2=1e18 * u.m**-3,
+            ion1="proton",
+            ion2="He-4 +1",
+        ).value,
+        4805575.93140432,
+    )

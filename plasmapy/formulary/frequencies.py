@@ -4,7 +4,7 @@ __all__ = [
     "lower_hybrid_frequency",
     "plasma_frequency",
     "upper_hybrid_frequency",
-    "Buchsbaum_frequency"
+    "Buchsbaum_frequency",
 ]
 __aliases__ = ["oc_", "wc_", "wlh_", "wp_", "wuh_"]
 __lite_funcs__ = ["plasma_frequency_lite"]
@@ -12,12 +12,13 @@ __lite_funcs__ = ["plasma_frequency_lite"]
 import astropy.units as u
 import numbers
 import numpy as np
-from typing import Optional
 
 from astropy.constants.si import e, eps0
 from numba import njit
+from typing import Optional
 
 import plasmapy.particles
+
 from plasmapy import particles
 from plasmapy.formulary import misc
 from plasmapy.particles import ParticleLike
@@ -535,7 +536,7 @@ def Buchsbaum_frequency(
     ion1: ParticleLike,
     ion2: ParticleLike,
     Z1: Optional[float] = None,
-    Z2: Optional[float] = None
+    Z2: Optional[float] = None,
 ) -> u.rad / u.s:
     r"""
     Return the Buchsbaum frequency for a two-ion-species plasma.
@@ -561,7 +562,7 @@ def Buchsbaum_frequency(
         Representation of ion species #2 (same behavior as for ion1).
 
     Z1 : `float` or `~astropy.units.Quantity`, optional
-        The charge state for ion species #1. If not provided, it 
+        The charge state for ion species #1. If not provided, it
         defaults to the charge number of ``ion1``.
 
     Z2 : `float` or `~astropy.units.Quantity`, optional
@@ -580,7 +581,7 @@ def Buchsbaum_frequency(
     `TypeError`
         If the magnetic field is not a `~astropy.units.Quantity` or
         ``particle`` is not of an appropriate type.
-        
+
     `ValueError`
         If the magnetic field contains invalid values or particle cannot
         be used to identify a particle or isotope.
@@ -617,10 +618,12 @@ def Buchsbaum_frequency(
     >>> fbb/fc_proton
     <Quantity 0.50168706>
     """
-    omega_c1_squared = gyrofrequency(B, ion1, signed=False, Z=Z1)**2
-    omega_c2_squared = gyrofrequency(B, ion2, signed=False, Z=Z2)**2
-    omega_p1_squared = plasma_frequency(n1, ion1, z_mean=Z1)**2
-    omega_p2_squared = plasma_frequency(n2, ion2, z_mean=Z2)**2
+    omega_c1_squared = gyrofrequency(B, ion1, signed=False, Z=Z1) ** 2
+    omega_c2_squared = gyrofrequency(B, ion2, signed=False, Z=Z2) ** 2
+    omega_p1_squared = plasma_frequency(n1, ion1, z_mean=Z1) ** 2
+    omega_p2_squared = plasma_frequency(n2, ion2, z_mean=Z2) ** 2
 
-    return np.sqrt((omega_p1_squared * omega_c2_squared + omega_p2_squared * omega_c1_squared) /
-                   (omega_p1_squared + omega_p2_squared))
+    return np.sqrt(
+        (omega_p1_squared * omega_c2_squared + omega_p2_squared * omega_c1_squared)
+        / (omega_p1_squared + omega_p2_squared)
+    )
