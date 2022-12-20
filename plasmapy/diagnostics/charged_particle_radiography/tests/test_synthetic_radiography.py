@@ -928,11 +928,3 @@ def test_multiple_grids():
     ax.set_aspect('equal')
     ax.pcolormesh(hax.to(u.cm).value, vax.to(u.cm).value, values.T)
     """
-
-
-if __name__ == "__main__":
-    # test_input_validation()
-    # test_run_options()
-    # run_mesh_example()
-    # test_add_wire_mesh()
-    test_multiple_grids()
