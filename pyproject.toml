@@ -51,7 +51,7 @@ dependencies = [
 tests = [
     "codespell @ git+https://github.com/codespell-project/codespell/",
     "pre-commit",
-    "tox",
+    "tox<4",
     "dlint",
     "flake8",
     "flake8-absolute-import",
@@ -70,7 +70,7 @@ tests = [
 docs = [
     "codespell",
     "pre-commit",
-    "tox",
+    "tox<4",
     "docutils",
     "ipykernel",
     "jinja2 != 3.1",
@@ -93,7 +93,7 @@ docs = [
 dev = [
     "codespell",
     "pre-commit",
-    "tox",
+    "tox<4",
     "docutils",
     "ipykernel",
     "jinja2 != 3.1",
@@ -114,10 +114,8 @@ dev = [
     "towncrier >= 22.8.0",
     "codespell",
     "pre-commit",
-    "tox",
     "codespell",
     "pre-commit",
-    "tox",
     "dlint",
     "flake8",
     "flake8-absolute-import",
