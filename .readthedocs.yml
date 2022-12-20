@@ -19,9 +19,6 @@ build:
     post_build:
     - echo https://docs.plasmapy.org/en/latest/contributing/doc_guide.html#troubleshooting
 
-sphinx:
-  fail_on_warning: true
-
 python:
   install:
   - method: pip
