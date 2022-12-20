@@ -1,0 +1,1 @@
+Added a summary section to the |testing guide|.

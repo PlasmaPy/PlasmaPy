@@ -68,7 +68,7 @@ class AbstractGrid(ABC):
               start=[x0, y0, z0],
               stop=[x1, y1, z1],
               num=[Nx, Ny, Nz],
-              **kwargs
+              **kwargs,
           )
 
        In this case, any additional keyword arguments ``**kwargs`` provided

@@ -622,15 +622,17 @@ def _create_widget(widget_type, **kwargs):
     Parameters
     ----------
     widget_type: `any`
-        Type of the widget to be created
+        Type of the widget to be created.
 
     **kwargs: `dict`
-        Parameters specific to the widget
+        Parameters specific to the widget.
 
     Returns
     -------
-    `~ipywidgets.widgets.Widget or [~ipywidgets.widgets.Widget, ~ipywidgets.widgets.Widget]`
+    |Widget| or [|Widget|, |Widget|]
         widget or [widget, units_dropdown]
+
+    .. |Widget| replace:: `~ipywidgets.widgets.Widget`
     """
     unit = None
     placeholder = None

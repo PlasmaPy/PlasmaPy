@@ -2,15 +2,16 @@
 Tests for proton radiography functions
 """
 
-import astropy.constants as const
 import astropy.units as u
-import copy
 import numpy as np
+import os
 import pytest
 
 from scipy.special import erf
 
-from plasmapy.diagnostics import charged_particle_radiography as cpr
+from plasmapy.diagnostics.charged_particle_radiography import (
+    synthetic_radiography as cpr,
+)
 from plasmapy.plasma.grids import CartesianGrid
 
 
@@ -399,8 +400,6 @@ def test_create_particles():
     sim.create_particles(1e3, 15 * u.MeV, max_theta=0.1 * u.rad, distribution="uniform")
 
     # Test specifying particle
-    charge = 3 * const.e.si
-    mass = const.m_e.si
     sim.create_particles(1e3, 15 * u.MeV, particle="e")
 
 
@@ -542,8 +541,8 @@ class TestSyntheticRadiograph:
         """
         Test warning when less than half the particles reach the detector plane.
         """
-        sim_results = copy.deepcopy(self.sim_results)
-        sim_results["nparticles"] *= 3
+        sim_results = self.sim_results.copy()
+        sim_results["nparticles"] = 3 * sim_results["nparticles"]
         with pytest.warns(RuntimeWarning):
             cpr.synthetic_radiograph(sim_results)
 
@@ -614,31 +613,22 @@ class TestSyntheticRadiograph:
         bins = (200, 60)
         size = np.array([[-1, 1], [-1, 1]]) * 30 * u.cm
 
-        sim_results = copy.deepcopy(self.sim_results)
-        intensity_results = cpr.synthetic_radiograph(sim_results, size=size, bins=bins)
-
-        sim_results = copy.deepcopy(self.sim_results)
+        intensity_results = cpr.synthetic_radiograph(
+            self.sim_results, size=size, bins=bins
+        )
         od_results = cpr.synthetic_radiograph(
-            sim_results, size=size, bins=bins, optical_density=True
+            self.sim_results, size=size, bins=bins, optical_density=True
         )
 
-        assert np.allclose(intensity_results[0], od_results[0], rtol=1e-4, atol=1e-7)
-        assert np.allclose(intensity_results[1], od_results[1], rtol=1e-4, atol=1e-7)
+        assert np.allclose(intensity_results[0], od_results[0])
+        assert np.allclose(intensity_results[1], od_results[1])
 
-        # Manually calculate the OD and check that it agrees with the values
-        # returned from the function
+        intensity = intensity_results[2]
+        zero_mask = intensity == 0
+        initial_intensity = np.mean(intensity[~zero_mask])
+        optical_density = -np.log10(intensity / initial_intensity)
 
-        zero_mask = intensity_results[2] == 0
-        i0 = np.mean(intensity_results[2][~zero_mask])
-        with np.errstate(divide="ignore"):
-            od = -np.log10(intensity_results[2] / i0)
-
-        # Assert that the calculated od is close to that returned by the function
-        assert np.allclose(
-            od[~zero_mask], od_results[2][~zero_mask], rtol=1e-4, atol=1e-7
-        )
-
-        # Assert that all zero intensity values have gone to positive infinity
+        assert np.allclose(optical_density[~zero_mask], od_results[2][~zero_mask])
         assert np.all(np.isposinf(od_results[2][zero_mask]))
 
 
@@ -657,7 +647,7 @@ def test_saving_output(tmp_path):
     results_1 = sim.results_dict
 
     # Save result
-    path = str(tmp_path / "temp.npz")
+    path = tmp_path / "temp.npz"
     sim.save_results(path)
 
     # Load result
@@ -906,6 +896,38 @@ def test_add_wire_mesh():
 
     # Verify that the spacing is correct by checking the FFT
     assert np.isclose(measured_spacing, true_spacing, 0.5)
+
+
+def test_multiple_grids():
+    """
+    Test that a case with two grids runs.
+    TODO: automate test by including two fields with some obvious analytical
+    solution??
+    """
+
+    grid1 = _test_grid("constant_bz", L=3 * u.cm, num=50, B0=0.7 * u.T)
+    grid2 = _test_grid("electrostatic_gaussian_sphere", L=1 * u.mm, num=50)
+    grids = [grid1, grid2]
+
+    source = (0 * u.mm, -10 * u.mm, 0 * u.mm)
+    detector = (0 * u.mm, 200 * u.mm, 0 * u.mm)
+
+    sim = cpr.Tracker(grids, source, detector, verbose=True)
+
+    sim.create_particles(1e5, 15 * u.MeV, max_theta=8 * u.deg)
+
+    sim.run(field_weighting="nearest neighbor")
+
+    size = np.array([[-1, 1], [-1, 1]]) * 5 * u.cm
+    bins = [100, 100]
+    hax, vax, values = cpr.synthetic_radiograph(sim, size=size, bins=bins)
+
+    """
+    import matplotlib.pyplot as plt
+    fig, ax = plt.subplots()
+    ax.set_aspect('equal')
+    ax.pcolormesh(hax.to(u.cm).value, vax.to(u.cm).value, values.T)
+    """
 
 
 if __name__ == "__main__":
