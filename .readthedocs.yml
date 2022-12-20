@@ -1,23 +1,27 @@
-# .readthedocs.yml
 # Read the Docs configuration file
-# See https://docs.readthedocs.io/en/stable/config-file/v2.html for details
+# See https://docs.readthedocs.io/en/stable/config-file/v2.html
 
-# Required
 version: 2
 
 formats:
 - htmlzip
 
 build:
-  os: ubuntu-20.04
+  os: ubuntu-22.04
   tools:
+    # Use most recent version supported by Numba
     python: '3.10'
+  apt_packages:
+  - graphviz
   jobs:
     pre_create_environment:
     - python -m pip install --upgrade setuptools pip
+    post_build:
+    - echo https://docs.plasmapy.org/en/latest/contributing/doc_guide.html#troubleshooting
 
+sphinx:
+  fail_on_warning: true
 
-# Optionally set the version of Python and requirements required to build your docs
 python:
   install:
   - method: pip
