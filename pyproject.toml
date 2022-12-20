@@ -18,7 +18,6 @@ classifiers = [
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.8",
-    "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: Implementation :: CPython",
@@ -51,7 +50,7 @@ dependencies = [
 tests = [
     "codespell @ git+https://github.com/codespell-project/codespell/",
     "pre-commit",
-    "tox",
+    "tox<4",
     "dlint",
     "flake8",
     "flake8-absolute-import",
@@ -68,7 +67,7 @@ tests = [
     "tryceratops",
 ]
 docs = [
-    "tox",
+    "tox<4",
     "docutils",
     "ipykernel",
     "jinja2 != 3.1",
