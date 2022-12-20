@@ -72,5 +72,5 @@ Example highlights
    bibliography
    glossary
    Vision Statement <about/vision_statement>
-   plasmaPy.org <https://www.plasmapy.org>
+   PlasmaPy.org <https://www.plasmapy.org>
    GitHub Repository <https://github.com/PlasmaPy/PlasmaPy>
