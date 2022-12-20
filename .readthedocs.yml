@@ -11,7 +11,7 @@ build:
   tools:
     # Use most recent version supported by Numba
     python: '3.10'
-  apt-packages:
+  apt_packages:
   - graphviz
   jobs:
     pre_create_environment:
