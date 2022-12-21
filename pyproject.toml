@@ -88,7 +88,7 @@ docs = [
     "sphinx-reredirects",
     "sphinx_rtd_theme >= 1.0.0",
     "sphinxcontrib-bibtex",
-    "towncrier == 22.8.0",
+    "towncrier >= 22.8.0",
 ]
 dev = [
     "codespell",
@@ -111,7 +111,7 @@ dev = [
     "sphinx-reredirects",
     "sphinx_rtd_theme >= 1.0.0",
     "sphinxcontrib-bibtex",
-    "towncrier == 22.8.0",
+    "towncrier >= 22.8.0",
     "codespell",
     "pre-commit",
     "codespell",
