@@ -330,16 +330,16 @@ def test_particle_mass_equivalent_args(arg1, kwargs1, arg2, kwargs2, expected):
     result2 = particle_mass(arg2, **kwargs2)
 
     assert u.isclose(result1, result2), (
-        f"particle_mass({repr(arg1)}, **{kwargs1}) = {repr(result1)}, whereas "
-        f"particle_mass({repr(arg2)}, **{kwargs2}) = {repr(result2)}.  "
+        f"particle_mass({arg1!r}, **{kwargs1}) = {result1!r}, whereas "
+        f"particle_mass({arg2!r}, **{kwargs2}) = {result2!r}.  "
         f"These results are not equivalent as expected."
     )
 
     if expected is not None:
         assert u.isclose(result1, result2) and u.isclose(result2, expected), (
-            f"particle_mass({repr(arg1)}, **{kwargs1}) = {repr(result1)} and "
-            f"particle_mass({repr(arg2)}, **{kwargs2}) = {repr(result2)}, but "
-            f"these results are not equal to {repr(expected)} as expected."
+            f"particle_mass({arg1!r}, **{kwargs1}) = {result1!r} and "
+            f"particle_mass({arg2!r}, **{kwargs2}) = {result2!r}, but "
+            f"these results are not equal to {expected!r} as expected."
         )
 
 

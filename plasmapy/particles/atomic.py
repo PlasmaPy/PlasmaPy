@@ -1124,7 +1124,7 @@ def _is_electron(arg: Any) -> bool:
     # TODO: Remove _is_electron from all parts of code.
 
     return (
-        arg in ["e", "e-"] or arg.lower() == "electron"
+        arg in ("e", "e-") or arg.lower() == "electron"
         if isinstance(arg, str)
         else False
     )
