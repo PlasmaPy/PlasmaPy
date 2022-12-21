@@ -64,7 +64,7 @@ class TestCheckUnits:
     check_defaults = CheckUnits._CheckUnits__check_defaults  # type: Dict[str, Any]
 
     @staticmethod
-    def foo_no_anno(x, y):
+    def foo_no_anno(x, y):  # noqa: FURB118
         return x + y
 
     @staticmethod
@@ -168,7 +168,7 @@ class TestCheckUnits:
         assert norme[0][1] == u.deg_C
         assert isinstance(norme[0][2], LambdaType)
         assert isinstance(norme[0][3], LambdaType)
-        for val in [-20.0, 50.0, 195.0]:
+        for val in (-20.0, 50.0, 195.0):
             assert norme[0][2](val) == (lambda x: x - 273.15)(val)
             assert norme[0][3](val) == (lambda x: x + 273.15)(val)
 
@@ -723,7 +723,7 @@ class TestCheckValues:
     check_defaults = CheckValues._CheckValues__check_defaults  # type: Dict[str, bool]
 
     @staticmethod
-    def foo(x, y):
+    def foo(x, y):  # noqa: FURB118
         return x + y
 
     @staticmethod
@@ -864,7 +864,7 @@ class TestCheckValues:
         """
         # setup wrapped function
         cv = CheckValues()
-        wfoo = cv(self.foo)
+        cv(self.foo)
 
         # methods must exist
         assert hasattr(cv, "_check_value")
