@@ -244,14 +244,7 @@ filterwarnings = ["ignore:.*Creating", "a"]
 looponfailroots = "plasmapy"
 
 [tool.ruff]
-ignore = ["E501", "F401"]
 target-version = "py38"
-
-[tool.ruff.flake8-import-conventions.aliases]
-"astropy.units" = "u"
-"matplotlib.pyplot" = "plt"
-numpy = "np"
-pandas = "pd"
 exclude = [
     ".direnv",
     ".eggs",
@@ -268,6 +261,16 @@ exclude = [
     "dist",
     "venv",
 ]
+ignore = ["E501"]
+
+[tool.ruff.flake8-import-conventions.aliases]
+"astropy.units" = "u"
+"matplotlib.pyplot" = "plt"
+numpy = "np"
+pandas = "pd"
+
+[tool.ruff.per-file-ignores]
+"__init__.py" = ["E402", "F401", "F402", "F403"]
 
 [tool.setuptools]
 include-package-data = true
