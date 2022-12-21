@@ -196,6 +196,7 @@
 .. _towncrier: https://github.com/twisted/towncrier
 .. _tox: https://tox.wiki/en/latest
 .. _virtualenv: https://pypi.org/project/virtualenv
+.. _weekly tests: https://github.com/PlasmaPy/PlasmaPy/actions/workflows/weekly.yml
 .. _Wikipedia: https://www.wikipedia.org
 .. _Zenodo: https://zenodo.org
 
