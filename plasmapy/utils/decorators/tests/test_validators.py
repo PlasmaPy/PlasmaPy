@@ -7,7 +7,6 @@ import pytest
 
 from astropy import units as u
 from functools import cached_property
-from typing import Any, Dict, List
 from unittest import mock
 
 from plasmapy.utils.decorators.checks import CheckUnits, CheckValues

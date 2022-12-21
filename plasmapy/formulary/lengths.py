@@ -12,7 +12,6 @@ from plasmapy.formulary import frequencies, speeds
 from plasmapy.formulary.relativity import RelativisticBody
 from plasmapy.particles import particle_input, ParticleLike
 from plasmapy.utils.decorators import validate_quantities
-from plasmapy.utils.exceptions import PlasmaPyFutureWarning
 
 __all__ += __aliases__
 
