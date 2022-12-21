@@ -202,7 +202,7 @@ class Test_classical_transport:
     def test_particle_mass(self):
         """should raise ValueError if particle mass not found"""
         with pytest.raises(ValueError):
-            ct2 = ClassicalTransport(
+            ClassicalTransport(
                 T_e=self.T_e,
                 n_e=self.n_e,
                 T_i=self.T_i,
@@ -214,7 +214,7 @@ class Test_classical_transport:
     def test_particle_charge_state(self):
         """should raise ValueError if particle charge state not found"""
         with pytest.raises(InvalidParticleError):
-            ct2 = ClassicalTransport(
+            ClassicalTransport(
                 T_e=self.T_e,
                 n_e=self.n_e,
                 T_i=self.T_i,
@@ -226,7 +226,7 @@ class Test_classical_transport:
     def test_Z_checks(self):
         """should raise ValueError if Z is negative"""
         with pytest.raises(ValueError):
-            ct2 = ClassicalTransport(
+            ClassicalTransport(
                 T_e=self.T_e,
                 n_e=self.n_e,
                 T_i=self.T_i,
@@ -238,7 +238,7 @@ class Test_classical_transport:
     def test_coulomb_log_warnings(self):
         """should warn CouplingWarning if coulomb log is near 1"""
         with pytest.warns(CouplingWarning):
-            ct2 = ClassicalTransport(
+            ClassicalTransport(
                 T_e=self.T_e,
                 n_e=self.n_e,
                 T_i=self.T_i,
@@ -248,7 +248,7 @@ class Test_classical_transport:
             )
 
         with pytest.warns(CouplingWarning):
-            ct2 = ClassicalTransport(
+            ClassicalTransport(
                 T_e=self.T_e,
                 n_e=self.n_e,
                 T_i=self.T_i,
@@ -260,7 +260,7 @@ class Test_classical_transport:
     def test_coulomb_log_errors(self):
         """should raise PhysicsError if coulomb log is < 1"""
         with pytest.raises(PhysicsError), pytest.warns(CouplingWarning):
-            ct2 = ClassicalTransport(
+            ClassicalTransport(
                 T_e=self.T_e,
                 n_e=self.n_e,
                 T_i=self.T_i,
@@ -270,7 +270,7 @@ class Test_classical_transport:
             )
 
         with pytest.raises(PhysicsError), pytest.warns(CouplingWarning):
-            ct2 = ClassicalTransport(
+            ClassicalTransport(
                 T_e=self.T_e,
                 n_e=self.n_e,
                 T_i=self.T_i,
@@ -329,7 +329,7 @@ class Test_classical_transport:
 
     def test_invalid_model(self):
         with pytest.raises(ValueError):
-            ct2 = ClassicalTransport(
+            ClassicalTransport(
                 T_e=self.T_e,
                 n_e=self.n_e,
                 T_i=self.T_i,
@@ -340,7 +340,7 @@ class Test_classical_transport:
 
     def test_invalid_field(self):
         with pytest.raises(ValueError):
-            ct2 = ClassicalTransport(
+            ClassicalTransport(
                 T_e=self.T_e,
                 n_e=self.n_e,
                 T_i=self.T_i,

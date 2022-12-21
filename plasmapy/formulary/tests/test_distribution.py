@@ -598,7 +598,7 @@ class Test_Maxwellian_speed_2D:
         Testing vdrifts with values
         """
         with pytest.raises(NotImplementedError):
-            distFunc = Maxwellian_speed_2D(
+            Maxwellian_speed_2D(
                 v=self.v,
                 T=self.T,
                 particle=self.particle,
@@ -898,7 +898,7 @@ class Test_Maxwellian_speed_3D:
         Testing vdrifts with values
         """
         with pytest.raises(NotImplementedError):
-            distFunc = Maxwellian_speed_3D(
+            Maxwellian_speed_3D(
                 v=self.v,
                 T=self.T,
                 particle=self.particle,
