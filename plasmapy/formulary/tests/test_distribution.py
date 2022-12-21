@@ -968,12 +968,8 @@ class Test_kappa_velocity_1D:
         ).argmax()
         assert np.isclose(self.v_vect[max_index].value, self.v_drift.value)
 
-    def test_maxwellian_limit(self):
-        """
-        Tests the limit of large kappa to see if kappa distribution function
-        converges to Maxwellian.
-        """
-        return
+    # Need to add a test to see if the kappa distribution goes to a
+    # Maxwellian in the limit of large κ
 
     def test_norm(self):
         """

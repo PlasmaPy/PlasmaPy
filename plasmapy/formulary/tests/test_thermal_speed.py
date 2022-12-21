@@ -346,7 +346,6 @@ class Test_kappa_thermal_speed:
         """
         with pytest.raises(ValueError):
             kappa_thermal_speed(self.T_e, self.kappaInvalid, particle=self.particle)
-        return
 
     def test_invalid_method(self):
         """
@@ -357,7 +356,6 @@ class Test_kappa_thermal_speed:
             kappa_thermal_speed(
                 self.T_e, self.kappa, particle=self.particle, method="invalid"
             )
-        return
 
     def test_probable1(self):
         """
@@ -371,7 +369,6 @@ class Test_kappa_thermal_speed:
             f"and not {known1.si.value}."
         )
         assert np.isclose(known1.value, self.probable1True, rtol=1e-8, atol=0.0), errstr
-        return
 
     def test_rms1(self):
         """
@@ -385,7 +382,6 @@ class Test_kappa_thermal_speed:
             f"and not {known1.si.value}."
         )
         assert np.isclose(known1.value, self.rms1True, rtol=1e-8, atol=0.0), errstr
-        return
 
     def test_mean1(self):
         """
@@ -399,7 +395,6 @@ class Test_kappa_thermal_speed:
             f"and not {known1.si.value}."
         )
         assert np.isclose(known1.value, self.mean1True, rtol=1e-8, atol=0.0), errstr
-        return
 
     def test_handle_nparrays(self, kwargs=None):
         """Test for ability to handle numpy array quantities"""

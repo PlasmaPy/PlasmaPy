@@ -940,7 +940,7 @@ class Test__nondim_visc_i_braginskii:
         """confirm agreement with ji-held model when K=2"""
         eta_i_hat_brag = _nondim_visc_i_braginskii(self.big_hall)
         eta_i_hat_jh = _nondim_visc_i_ji_held(self.big_hall, 1, 0, 100, K=2)
-        for idx in [0, 1, 2, 3, 4]:
+        for idx in (0, 1, 2, 3, 4):
             assert np.isclose(eta_i_hat_brag[idx], eta_i_hat_jh[idx], rtol=2e-2)
 
 
@@ -968,9 +968,9 @@ class Test__nondim_visc_e_braginskii:
         beta_hat = _nondim_visc_e_braginskii(self.big_hall, Z)
         if idx == 0:
             assert np.isclose(beta_hat[idx], expected, atol=1e-2)
-        elif idx in [1, 2]:
+        elif idx in (1, 2):
             assert np.isclose(beta_hat[idx] * self.big_hall**2, expected, atol=1e-2)
-        elif idx in [3, 4]:
+        elif idx in (3, 4):
             assert np.isclose(beta_hat[idx] * self.big_hall, expected, atol=1e-1)
 
 
@@ -986,7 +986,7 @@ def test__nondim_tc_e_spitzer(Z):
     if Z == 1:
         kappa_check = 3.203
         rtol = 1e-3
-    elif Z in [2, 4]:
+    elif Z in (2, 4):
         kappa_check = _nondim_tc_e_braginskii(0, Z, "par")
         rtol = 2e-2
     elif Z == 16:
@@ -1005,7 +1005,7 @@ def test__nondim_resist_spitzer(Z):
     if Z == 1:
         alpha_check = 0.5064
         rtol = 1e-3
-    elif Z in [2, 4, np.inf]:
+    elif Z in (2, 4, np.inf):
         alpha_check = _nondim_resist_braginskii(0, Z, "par")
         rtol = 2e-2
     elif Z == 16:
@@ -1021,7 +1021,7 @@ def test__nondim_tec_spitzer(Z):
     if Z == 1:
         beta_check = 0.699
         rtol = 1e-3
-    elif Z in [2, 4, np.inf]:
+    elif Z in (2, 4, np.inf):
         beta_check = _nondim_tec_braginskii(0, Z, "par")
         rtol = 2e-2
     elif Z == 16:
