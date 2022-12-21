@@ -58,44 +58,50 @@ def test_Lorentz_factor_warnings(speed, warning):
         Lorentz_factor(speed)
 
 
-def test_relativistic_energy():
-    r"""Test relativistic_energy in relativity.py"""
+@pytest.mark.parametrize(
+    "velocity, mass, expected",
+    [
+        (123456789 * u.m / u.s, 1 * u.kg, 9.86265694e16 * u.J),
+        (-123456789 * u.m / u.s, 1 * u.kg, 9.86265694e16 * u.J),
+        (5e6 * u.m / u.s, 0 * u.kg, 0 * u.J),
+        (0 * u.m / u.s, 1 * u.kg, 1 * u.kg * c**2),
+        (np.nan * u.m / u.s, 1 * u.kg, np.nan * u.J),
+        (100 * u.m / u.s, np.nan * u.kg, np.nan * u.J),
+        (5e6 * u.m / u.s, np.inf * u.kg, np.inf * u.J),
+        ([123456789, np.nan] * u.m / u.s, 1 * u.kg, [9.86265694e16, np.nan] * u.J),
+        (123456789 * u.m / u.s, [1, 2] * u.kg, [9.86265694e16, 1.972531388e17] * u.J),
+        ([1, 2] * u.Mm / u.s, [1e-15, 1e-16] * u.kg, [89.87601788, 8.98775179] * u.J),
+    ],
+)
+def test_relativistic_energy(velocity, mass, expected):
+    actual = relativistic_energy(m=mass, v=velocity)
+    assert u.allclose(actual, expected, rtol=1e-6, atol=1e-6 * u.J, equal_nan=True)
+    assert expected.unit == u.J
 
-    v = 123456789 * u.m / u.s
-    m = 1 * u.kg
-    assert np.isclose(
-        relativistic_energy(m, v).value,
-        ((1 / np.sqrt(1 - v**2 / c**2)) * m * c**2).value,
-    )
-    assert relativistic_energy(m, -v) == relativistic_energy(m, v)
 
-    assert np.isclose(relativistic_energy(m, 0 * u.m / u.s).value, (m * c**2).value)
-    assert relativistic_energy(m, c) == np.inf
+@pytest.mark.parametrize(
+    "velocity, mass, exception",
+    [
+        (1.00000001 * c, 1 * u.kg, RelativityError),
+        (-1.00000001 * c, 1 * u.kg, RelativityError),
+        (0 * c, -1 * u.kg, ValueError),
+    ],
+)
+def test_relativistic_energy_exceptions(velocity, mass, exception):
+    with pytest.raises(exception):
+        relativistic_energy(v=velocity, m=mass)
 
-    V_arr = np.array([987532.0, 299792458]) * u.m / u.s
-    Energy_arr = relativistic_energy(m, V_arr)
-    assert np.isclose(
-        Energy_arr[0].value,
-        ((1 / np.sqrt(1 - V_arr[0] ** 2 / c**2)) * m * c**2).value,
-    )
-    assert Energy_arr[1] == np.inf
 
-    assert relativistic_energy(2 * u.kg, 3 * u.m / u.s).unit == u.J
-
-    with pytest.raises(RelativityError):
-        relativistic_energy(m, 1.0000000001 * c)
-
-    with pytest.raises(RelativityError), pytest.warns(u.UnitsWarning):
-        relativistic_energy(1, 299792459)
-
-    with pytest.warns(u.UnitsWarning):
-        relativistic_energy(m, 2.2)
-
-    with pytest.raises(u.UnitTypeError):
-        relativistic_energy(m, 4 * u.kg)
-
-    with pytest.raises(ValueError):
-        relativistic_energy(-m, v)
+@pytest.mark.parametrize(
+    "velocity, mass, warning",
+    [
+        (2.2, 5 * u.kg, u.UnitsWarning),
+        (2.2 * u.m / u.s, 5, u.UnitsWarning),
+    ],
+)
+def test_relativistic_energy_warnings(velocity, mass, warning):
+    with pytest.warns(warning):
+        relativistic_energy(v=velocity, m=mass)
 
 
 proton_at_half_c_inputs = [
