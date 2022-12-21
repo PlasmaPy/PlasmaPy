@@ -261,7 +261,7 @@ exclude = [
     "dist",
     "venv",
 ]
-ignore = ["E501"]
+ignore = ["E501"]  # ignore line length violations
 
 [tool.ruff.flake8-import-conventions.aliases]
 "astropy.units" = "u"
@@ -270,7 +270,7 @@ numpy = "np"
 pandas = "pd"
 
 [tool.ruff.per-file-ignores]
-"__init__.py" = ["E402", "F401", "F402", "F403"]
+"__init__.py" = ["E402", "F401", "F402", "F403"]  # ignore import errors
 
 [tool.setuptools]
 include-package-data = true
