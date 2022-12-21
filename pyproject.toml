@@ -243,6 +243,32 @@ addopts = "--doctest-modules --doctest-continue-on-failure"
 filterwarnings = ["ignore:.*Creating", "a"]
 looponfailroots = "plasmapy"
 
+[tool.ruff]
+ignore = ["E501", "F401"]
+target-version = "py38"
+
+[tool.ruff.flake8-import-conventions.aliases]
+"astropy.units" = "u"
+"matplotlib.pyplot" = "plt"
+numpy = "np"
+pandas = "pd"
+exclude = [
+    ".direnv",
+    ".eggs",
+    ".git",
+    ".mypy_cache",
+    ".nox",
+    ".ruff_cache",
+    ".tox",
+    ".venv",
+    "__pycache__",
+    "__pypackages__",
+    "_build",
+    "build",
+    "dist",
+    "venv",
+]
+
 [tool.setuptools]
 include-package-data = true
 
