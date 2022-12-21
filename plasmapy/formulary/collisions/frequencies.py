@@ -922,8 +922,8 @@ def fundamental_electron_collision_freq(
         # the user defined Coulomb logarithm value
         nu_mod = nu * coulomb_log / cLog
         return coeff * nu_mod
-    else:
-        return coeff * nu
+
+    return coeff * nu
 
 
 @validate_quantities(
@@ -1088,5 +1088,5 @@ def fundamental_ion_collision_freq(
         # the user defined Coulomb logarithm value
         nu_mod = nu * coulomb_log / cLog
         return coeff * nu_mod
-    else:
-        return coeff * nu
+
+    return coeff * nu

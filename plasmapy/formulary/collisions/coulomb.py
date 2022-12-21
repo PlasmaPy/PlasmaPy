@@ -462,14 +462,14 @@ def Coulomb_logarithm(
 
     min_ln_Lambda = np.nanmin(ln_Lambda)
 
-    if min_ln_Lambda < 2 and method in [
+    if min_ln_Lambda < 2 and method in (
         "classical",
         "ls",
         "ls_min_interp",
         "GMS-1",
         "ls_full_interp",
         "GMS-2",
-    ]:
+    ):
         warnings.warn(
             f"The calculation of the Coulomb logarithm has found a value of "
             f"min(ln Λ) = {min_ln_Lambda:.4f} which is likely to be inaccurate "
