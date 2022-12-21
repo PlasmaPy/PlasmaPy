@@ -1,7 +1,7 @@
+:orphan:
+
 Unreleased changes
 ==================
-
-:orphan:
 
 .. changelog::
    :towncrier: ../../
