@@ -84,7 +84,7 @@ def _physical_particle_factory(
     # because they are not allowed as arguments to `CustomParticle`, and
     # are not needed in kwargs if they are their default values. Note
     # that this affects `not kwargs` below.
-    for parameter in ["Z", "mass_numb"]:
+    for parameter in ("Z", "mass_numb"):
         if parameter in kwargs and kwargs[parameter] is None:
             kwargs.pop(parameter)
 
