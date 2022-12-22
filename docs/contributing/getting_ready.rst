@@ -13,9 +13,8 @@ Introduction
 ============
 
 Thank you for your interest in contributing to PlasmaPy! This page goes
-through the steps that first-time contributors can take to prepare to
-contribute code, documentation, and tests to PlasmaPy. Afterwards, you
-can go to the next page to learn about the |code contribution workflow|.
+through the steps that first-time contributors can take before
+proceeding to the |code contribution workflow|.
 
 Pre-requisites
 ==============
@@ -23,19 +22,27 @@ Pre-requisites
 Opening a terminal
 ------------------
 
-The commands described below are intended for a terminal running the
-`Unix shell`_. Here are some essential `Unix commands`_.
+The ``git`` commands described later on this page are intended to be run
+in a :wikipedia:`Unix <Unix shell>` terminal. If you are new to Unix,
+check out this `Unix tutorial`_ and these `frequently used Unix
+commands`_.
+
+The following tabs describe how to use a terminal on different operating
+systems.
 
 .. tabs::
 
    .. group-tab:: Windows
 
-      We recommend using `Windows Subsystem for Linux`_ (WSL). Another
-      alternative is Powershell_.
+      Before opening a Unix terminal on Windows, it is necessary to
+      install a version of it first. We recommend `Windows Subsystem for
+      Linux`_ (WSL).  Please follow these instructions on `installing
+      WSL`_.
 
    .. group-tab:: macOS
 
-      These instructions describe `opening a terminal on macOS`_.
+      In the finder, open the /Application/Utilities folder, and then
+      double click on Terminal.
 
    .. group-tab:: Linux
 
@@ -44,11 +51,14 @@ The commands described below are intended for a terminal running the
 Installing Python
 -----------------
 
-PlasmaPy requires Python_ |minpython| or newer. These instructions
-describe how to `download Python`_ and install it.
+PlasmaPy requires Python_ |minpython| or newer. Python's website
+describes `how to download Python`_.
 
-`Real Python`_ has a helpful guide on `setting up a Python coding
-environment on Windows`_ which uses Powershell_.
+Alternatively, Python can be installed using the `Anaconda Navigator`_
+graphical user interface (GUI) or the conda_ command line interface
+(CLI).
+
+.. use group tabs here with virtual environments below?
 
 Using git and GitHub
 --------------------
@@ -76,8 +86,14 @@ contributing code to PlasmaPy, it is necessary to:
 
    .. code-block:: bash
 
-      git config --global user.name "Spacecat Q. Spacecat"
-      git config --global user.email "spacecat@spacecats.com"
+      git config --global user.name "Your Name"
+      git config --global user.email "your.email@example.com"
+
+   You may also set your default editor:
+
+   .. code-block:: bash
+
+      git config --global core.editor emacs
 
 #. `Add a new SSH key to your GitHub account`_.
 
@@ -111,36 +127,51 @@ Initial setup
 
       git remote add upstream git@github.com:PlasmaPy/PlasmaPy.git
 
-   .. tip::
-
-      The remote named ``origin`` refers to the
-
-      The ``upstream
-
-      .. code-block:: bash
-
-         git remote rename origin username
-         git remote rename upstream plasmapy
-
 .. _clone: https://github.com/git-guides/git-clone
 .. _fork: https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/about-forks
 .. _remote: https://github.com/git-guides/git-remote
 
-#. Create a virtual environment and activate it.
+#. Create a virtual environment and activate it. If you installed Python
+   by downloading the link from the website,
 
-#. Install PlasmaPy's requirements with:
+   .. tabs::
 
-   .. code-block:: bash
+      .. tab:: venv
 
-      pip install -r requirements.txt
+         Add instructions here...
+
+      .. tab:: Anaconda Navigator
+
+         Add instructions or links here...
+
+      .. tab::
+
+         Add instructions here
 
 #. Install your clone of `plasmapy` with:
 
-   .. code-block:: bash
+   .. tabs::
 
-      pip install -e .
+      .. group-tab:: Windows
 
-   The ``-e`` makes it an editable installation.
+         .. code-block:: bash
+
+            py -m pip install -e .[docs,tests]
+
+      .. group-tab:: macOS
+
+         .. code-block:: bash
+
+            python -m pip install -e .[docs,tests]
+
+      .. group-tab:: Linux
+
+         .. code-block:: bash
+
+            python -m pip install -e .[docs,tests]
+
+   The ``-e`` makes it an editable installation, the ``.`` refers to the
+   current directory, and ``[docs,tests]`` indicates that `pip`
 
 #. In the :file:`PlasmaPy/` directory, run:
 
@@ -157,5 +188,19 @@ pre-commit
 
       pre-commit install
 
-pandoc
-------
+Documentation build requirements
+--------------------------------
+
+If you plan to build the documentation locally, it may be necessary to
+`install pandoc`_ and `install Graphviz`_.
+
+.. _Add a new SSH key to your GitHub Account: https://docs.github.com/en/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account
+.. _Anaconda Navigator: https://docs.anaconda.com/navigator/
+.. _frequently used Unix commands: https://faculty.tru.ca/nmora/Frequently%20used%20UNIX%20commands.pdf
+.. _how to download Python: https://www.python.org/downloads/
+.. _install git: https://git-scm.com/book/en/v2/Getting-Started-Installing-Git
+.. _install pandoc: https://pandoc.org/installing.html
+.. _installing WSL: https://learn.microsoft.com/en-us/windows/wsl/install
+.. _sign up on GitHub: https://github.com/join
+.. _terminal user guide: https://support.apple.com/guide/terminal/welcome/mac
+.. _Windows Subsystem for Linux: https://learn.microsoft.com/en-us/windows/wsl
