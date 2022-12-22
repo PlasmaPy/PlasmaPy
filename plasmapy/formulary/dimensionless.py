@@ -23,7 +23,7 @@ import astropy.units as u
 import numbers
 import numpy as np
 
-from astropy.constants.si import k_B, mu0
+from astropy.constants.si import mu0
 from typing import Optional
 
 from plasmapy.formulary import frequencies, lengths, misc, speeds

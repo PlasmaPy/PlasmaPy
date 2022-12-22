@@ -9,7 +9,6 @@ import pytest
 from astropy import units as u
 from astropy.constants import c
 from types import LambdaType
-from typing import Any, Dict
 from unittest import mock
 
 from plasmapy.utils.decorators.checks import (
