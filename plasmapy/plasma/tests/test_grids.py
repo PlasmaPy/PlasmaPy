@@ -908,9 +908,6 @@ def test_NonUniformCartesianGrid():
 
     pts0, pts1, pts2 = grid.grids
 
-    shape = grid.shape
-    units = grid.units
-
     grid.add_quantities(x=pts0)
     print(grid)
 
