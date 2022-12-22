@@ -463,7 +463,7 @@ def test_null_point_find9():
         "func": lambda x, y, z: [x, y, z],
     }
     with pytest.raises(NonZeroDivergence):
-        npoints = uniform_null_point_find(**nullpoint9_args)
+        uniform_null_point_find(**nullpoint9_args)
 
 
 # Tests that capture the degenerate nulls/2D nulls
