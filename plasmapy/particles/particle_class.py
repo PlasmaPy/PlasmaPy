@@ -697,7 +697,7 @@ class Particle(AbstractPhysicalParticle):
         _, mass_numb, Z = self.__inputs
 
         if mass_numb is not None or Z is not None:
-            if self.symbol == "p+" and (mass_numb == 1 or Z == 1):
+            if self.symbol == "p+" and 1 in (mass_numb, Z):
                 warnings.warn(
                     "Redundant mass number or charge information.", ParticleWarning
                 )
@@ -706,7 +706,7 @@ class Particle(AbstractPhysicalParticle):
                     "The keywords 'mass_numb' and 'Z' cannot be used when "
                     "creating Particle objects for special particles. To "
                     f"create a Particle object for {attributes['name']}s, "
-                    f"use:  Particle({repr(attributes['particle'])})"
+                    f"use:  Particle({attributes['particle']!r})"
                 )
 
     def _assign_atom_attributes(self) -> NoReturn:
@@ -1095,8 +1095,8 @@ class Particle(AbstractPhysicalParticle):
             return "deuterium"
         elif self.isotope == "T":
             return "tritium"
-        else:
-            return f"{self.element_name}-{self.mass_number}"
+
+        return f"{self.element_name}-{self.mass_number}"
 
     @property
     def charge_number(self) -> Integral:

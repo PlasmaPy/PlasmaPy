@@ -88,7 +88,7 @@ docs = [
     "sphinx-reredirects",
     "sphinx_rtd_theme >= 1.0.0",
     "sphinxcontrib-bibtex",
-    "towncrier >= 22.8.0",
+    "towncrier == 22.8.0",
 ]
 dev = [
     "codespell",
@@ -111,7 +111,7 @@ dev = [
     "sphinx-reredirects",
     "sphinx_rtd_theme >= 1.0.0",
     "sphinxcontrib-bibtex",
-    "towncrier >= 22.8.0",
+    "towncrier == 22.8.0",
     "codespell",
     "pre-commit",
     "codespell",
@@ -242,6 +242,35 @@ NUMBER"""
 addopts = "--doctest-modules --doctest-continue-on-failure"
 filterwarnings = ["ignore:.*Creating", "a"]
 looponfailroots = "plasmapy"
+
+[tool.ruff]
+target-version = "py38"
+exclude = [
+    ".direnv",
+    ".eggs",
+    ".git",
+    ".mypy_cache",
+    ".nox",
+    ".ruff_cache",
+    ".tox",
+    ".venv",
+    "__pycache__",
+    "__pypackages__",
+    "_build",
+    "build",
+    "dist",
+    "venv",
+]
+ignore = ["E501"]  # ignore line length violations
+
+[tool.ruff.flake8-import-conventions.aliases]
+"astropy.units" = "u"
+"matplotlib.pyplot" = "plt"
+numpy = "np"
+pandas = "pd"
+
+[tool.ruff.per-file-ignores]
+"__init__.py" = ["E402", "F401", "F402", "F403"]  # ignore import errors
 
 [tool.setuptools]
 include-package-data = true
