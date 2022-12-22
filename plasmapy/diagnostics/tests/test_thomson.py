@@ -658,7 +658,7 @@ def test_param_to_array_fcns():
 
     prefix = "ion_vel"
     for i in range(2):
-        for j in ["x", "y", "z"]:
+        for j in ("x", "y", "z"):
             params.add(f"{prefix}_{j}_{i}", value=2)
 
     arr = thomson._params_to_array(params, "T_e", vector=False)
