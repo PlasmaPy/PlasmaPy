@@ -188,7 +188,7 @@ def find_ion_saturation_current(
     voltage, current = check_sweep(voltage, current, strip_units=True)
 
     # condition kwargs voltage_bound and current_bound
-    if voltage_bound is None and current_bound is None:
+    if voltage_bound is current_bound is None:
         current_bound = default_current_bound
     elif voltage_bound is not None and current_bound is not None:
         raise ValueError(
