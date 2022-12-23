@@ -160,7 +160,7 @@ def find_ion_saturation_current(
     """
     rtn_extras = ISatExtras(rsq=None, fitted_func=None, fitted_indices=None)._asdict()
 
-    _settings = {
+    _settings: Dict[str, Dict[str, Any]] = {
         "linear": {
             "func": ffuncs.Linear,
             "current_bound": 0.4,
@@ -173,7 +173,7 @@ def find_ion_saturation_current(
             "func": ffuncs.ExponentialPlusOffset,
             "current_bound": 1.0,
         },
-    }  # type: Dict[str, Dict[str, Any]]
+    }
     try:
         default_current_bound = _settings[fit_type]["current_bound"]
         fit_func = _settings[fit_type]["func"]()
