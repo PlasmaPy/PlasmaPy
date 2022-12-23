@@ -34,10 +34,18 @@ systems.
 
    .. group-tab:: Windows
 
-      Before opening a Unix terminal on Windows, it is necessary to
-      install a version of it first. We recommend `Windows Subsystem for
-      Linux`_ (WSL).  Please follow these instructions on `installing
-      WSL`_.
+      There are several options for terminals on Windows.
+
+      * Powershell_ comes pre-installed with Windows. These instructions
+        cover `opening Powershell`_. We recommend Powershell for a quick
+        start, if you use solely Windows, or if you have not used Unix
+        before.
+
+      * We recommend `Windows Subsystem for Linux`_ (WSL) if you are
+        familiar with Unix, you use macOS or Linux, or you expect to
+        contribute to PlasmaPy extensively. These instructions cover
+        `installing WSL`_. If you choose WSL, please follow the tabs for
+        :guilabel:`Linux` in the following sections.
 
    .. group-tab:: macOS
 
@@ -61,12 +69,11 @@ operating systems. If using WSL, follow the Linux instructions.
 Anaconda_ is widely used as a package management system and environment
 management system in the data science and scientific Python communities.
 Anaconda includes `Anaconda Navigator`_ as its graphical user interface
-(GUI) and Conda_ as its command line interface (CLI). Anaconda can be
-used to distribute packages in Python and many other languages. Anaconda
-also makes it easy to install different versions of Python into
-different environments. If you would like to use Anaconda, please follow
-these instructions on `installing Anaconda Navigator`_ or on `installing
-Conda`_.
+(GUI) and Conda_ as its command line interface (CLI). Anaconda makes it
+easy to install different versions of Python into different
+environments and can also be used to distribute packages in languages
+besides Python. To use Anaconda, please follow these instructions on
+`installing Anaconda Navigator`_ or on `installing Conda`_.
 
 .. tip::
 
@@ -120,12 +127,12 @@ Initial setup
 #. Create a fork_ of PlasmaPy by clicking on :guilabel:`Fork`, followed
    by :guilabel:`Create fork`.
 
-#. Open a terminal, and create and/or navigate to the folder (e.g.,
+#. Open a terminal, and navigate to or create the folder (e.g.,
    :file:`~/repos/`) in which you want to download PlasmaPy.
 
 #. Clone_ PlasmaPy with the following command, replacing ``username``
    with your GitHub username. This will create a subdirectory called
-   :file:`PlasmaPy/` containing the cloned repository.
+   :file:`PlasmaPy/` containing your local clone of the repository.
 
    .. code-block:: bash
 
@@ -140,8 +147,11 @@ Initial setup
 
       git remote add upstream git@github.com:PlasmaPy/PlasmaPy.git
 
-#. Create a virtual environment and activate it. If you installed Python
-   by downloading the link from the website,
+   If you run ``git remote -v``, you should see that ``origin``
+   corresponds to your fork_ and ``upstream`` corresponds to `PlasmaPy's
+   GitHub repository`_.
+
+#. Create a `virtual environment`_ and activate it.
 
    .. tabs::
 
@@ -155,9 +165,22 @@ Initial setup
 
       .. tab::
 
-         Add instructions here
+         Create a conda_ environment named ``plasmapy`` by using:
 
-#. Install your clone of `plasmapy` with:
+         .. code-block:: bash
+
+            conda create -n plasmapy python=3.10
+
+         The ``-n`` flag specifies the name of the environment. Activate
+         this conda_ environment for your current terminal session with:
+
+         .. code-block:: bash
+
+            conda activate plasmapy
+
+#. Use one of the following commands in the :file:`PlasmaPy/` directory
+   to perform an editable (``-e``) installation of PlasmaPy, along with
+   the Python packages needed to build documentation and run tests.
 
    .. tabs::
 
@@ -179,29 +202,49 @@ Initial setup
 
             python -m pip install -e .[docs,tests]
 
-   The ``-e`` makes it an editable installation, the ``.`` refers to the
-   current directory, and ``[docs,tests]`` indicates that `pip`
-
-#. In the :file:`PlasmaPy/` directory, run:
-
-   .. code-block:: bash
-
-      pytest -m 'not slow'
-
-
 Optional tasks
 ==============
 
-Installing packages needed to build documentation
+Requirements for building documentation
+---------------------------------------
 
-If you plan to build the documentation, it may be necessary to `install
-pandoc`_ and `install Graphviz`_. This step may be skipped if you do not
-plan to build the documentation locally.
+If you plan to build the documentation locally on your computer, you
+might need to:
+
+* `Install pandoc`_
+* `Install Graphviz`_
+
+These packages are not installed using the ``pip`` command above.
 
 Installing pre-commit
 ---------------------
 
-  Install pre-commit_ with:
+PlasmaPy uses pre-commit_ to perform code quality checks and make
+automated changes. Because the pre-commit checks are also performed on
+GitHub, it is optional to set up pre-commit locally.
+
+.. tip::
+
+   We recommend installing pre-commit locally on your computer after you
+   become comfortable with the |code contribution workflow|.
+
+To enable pre-commit_ on your computer, enter the :file:`PlasmaPy/`
+directory and run:
+
+.. code-block:: bash
+
+   pre-commit install
+
+
+PlasmaPy uses |pre-commit|_ to perform code quality checks and apply
+reformatting tools. The |pre-commit|_ checks are performed on every code
+contribution made to GitHub,
+
+manage and perform automated checks and
+changes for code quality. The pre-commit_ checks are run on every code
+contribution.
+
+Install pre-commit_ with:
 
    .. code-block:: bash
 
@@ -226,8 +269,8 @@ Choosing a
 .. _sign up on GitHub: https://github.com/join
 .. _terminal user guide: https://support.apple.com/guide/terminal/welcome/mac
 .. _Windows Subsystem for Linux: https://learn.microsoft.com/en-us/windows/wsl
-
-
+.. _virtual environment: https://docs.python.org/3/library/venv.html
+.. _powershell: https://learn.microsoft.com/en-us/powershell/
 
 .. _Anaconda: https://docs.anaconda.com/
 
