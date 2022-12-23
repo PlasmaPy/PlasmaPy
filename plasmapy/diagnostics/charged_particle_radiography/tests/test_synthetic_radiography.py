@@ -707,7 +707,7 @@ def test_gaussian_sphere_analytical_comparison():
     phi0 = 1.4e5
     W = 15e6
 
-    l = 10
+    l = 10  # noqa: E741
     L = 200
 
     # Define and run the problem
@@ -897,7 +897,7 @@ def test_add_wire_mesh():
     assert np.isclose(measured_spacing, true_spacing, 0.5)
 
 
-def test_multiple_grids():
+def test_multiple_grids2():
     """
     Test that a case with two grids runs.
     TODO: automate test by including two fields with some obvious analytical

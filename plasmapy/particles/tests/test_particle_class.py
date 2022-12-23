@@ -518,7 +518,7 @@ def test_Particle_class(arg, kwargs, expected_dict):
     errmsg = ""
 
     try:
-        particle = Particle(arg, **kwargs)
+        particle = Particle(arg, **kwargs)  # noqa: F841
     except Exception as exc:
         raise ParticleError(f"Problem creating {call}") from exc
 
@@ -1502,7 +1502,7 @@ test_molecule_error_table = [
 def test_molecule_error(symbol, Z):
     """Test the error raised in case of a bad molecule symbol."""
     with pytest.raises(InvalidParticleError):
-        m = molecule(symbol, Z)
+        molecule(symbol, Z)
 
 
 def test_molecule_other():
