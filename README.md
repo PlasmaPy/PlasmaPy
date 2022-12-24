@@ -61,8 +61,8 @@
 [protections against software patents]: ./PATENT.md
 [Python]: https://www.python.org
 [Smithsonian Institution]: https://www.si.edu
-[submit a bug report]: https://github.com/PlasmaPy/PlasmaPy/issues/new?assignees=&labels=&template=Bug_report.md
-[submit a feature request]: https://github.com/PlasmaPy/PlasmaPy/issues/new?assignees=&labels=&template=Feature_request.md
+[submit a bug report]: https://github.com/PlasmaPy/PlasmaPy/issues/new?assignees=&labels=Bug&template=bug_report.yml
+[submit a feature request]: https://github.com/PlasmaPy/PlasmaPy/issues/new?assignees=&labels=Feature+request&template=feature_request.yml
 [Suggestion box]: https://docs.google.com/forms/d/e/1FAIpQLSdT3O5iHZrLJRuavFyzoR23PGy0Prfzx2SQOcwJGWtvHyT2lw/viewform?usp=sf_link
 [team@plasmapy.org]: mailto:team@plasmapy.org
 [this video]: https://youtu.be/E8RwQF5wcXM
