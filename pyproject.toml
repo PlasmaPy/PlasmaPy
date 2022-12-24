@@ -247,8 +247,10 @@ looponfailroots = "plasmapy"
 target-version = "py38"
 exclude = [
     ".direnv",
+    "docs/plasmapy_sphinx",
     ".eggs",
     ".git",
+    ".jupyter",
     ".mypy_cache",
     ".nox",
     ".ruff_cache",

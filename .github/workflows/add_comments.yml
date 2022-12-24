@@ -37,7 +37,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
-    - uses: harupy/comment-on-pr@dcff01407df59b61be9db68aeb3d1c6ddb21a3c0
+    - uses: harupy/comment-on-pr@master
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
