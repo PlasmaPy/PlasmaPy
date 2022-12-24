@@ -395,7 +395,7 @@ def test_IonizationState_ionfracs_from_ion_input(ion):
         expected_ionic_fractions,
         actual_ionic_fractions,
         atol=1e-16,
-        err_msg=f"The returned ionic fraction for IonizationState({repr(ion)}) "
+        err_msg=f"The returned ionic fraction for IonizationState({ion!r}) "
         f"should have entirely been in the Z = {ion_particle.charge_number} "
         f"level.",
     )

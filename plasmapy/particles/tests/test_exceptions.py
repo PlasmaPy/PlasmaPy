@@ -24,7 +24,6 @@ from plasmapy.particles.exceptions import (
     InvalidElementError,
     InvalidIsotopeError,
     InvalidParticleError,
-    MissingParticleDataError,
     ParticleError,
     ParticleWarning,
 )

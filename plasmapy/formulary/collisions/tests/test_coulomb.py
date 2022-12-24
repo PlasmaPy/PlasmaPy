@@ -393,7 +393,7 @@ class Test_Coulomb_logarithm:
         a negative (invalid) Coulomb logarithm is returned.
         """
         with pytest.warns(exceptions.CouplingWarning, match="strong coupling effects"):
-            methodVal = Coulomb_logarithm(
+            Coulomb_logarithm(
                 self.temperature2,
                 self.density2,
                 self.particles,
@@ -409,7 +409,7 @@ class Test_Coulomb_logarithm:
         a negative (invalid) Coulomb logarithm is returned.
         """
         with pytest.warns(exceptions.CouplingWarning, match="strong coupling effects"):
-            methodVal = Coulomb_logarithm(
+            Coulomb_logarithm(
                 self.temperature2,
                 self.density2,
                 self.particles,
@@ -832,7 +832,7 @@ class Test_Coulomb_logarithm:
         provided.
         """
         with pytest.raises(ValueError):
-            methodVal = Coulomb_logarithm(
+            Coulomb_logarithm(
                 self.temperature2,
                 self.density2,
                 self.particles,
@@ -845,7 +845,7 @@ class Test_Coulomb_logarithm:
         provided.
         """
         with pytest.raises(ValueError):
-            methodVal = Coulomb_logarithm(
+            Coulomb_logarithm(
                 self.temperature2, self.density2, self.particles, method="GMS-2"
             )
 
@@ -855,7 +855,7 @@ class Test_Coulomb_logarithm:
         provided.
         """
         with pytest.raises(ValueError):
-            methodVal = Coulomb_logarithm(
+            Coulomb_logarithm(
                 self.temperature2,
                 self.density2,
                 self.particles,
@@ -868,7 +868,7 @@ class Test_Coulomb_logarithm:
         provided.
         """
         with pytest.raises(ValueError):
-            methodVal = Coulomb_logarithm(
+            Coulomb_logarithm(
                 self.temperature2, self.density2, self.particles, method="GMS-5"
             )
 
@@ -878,7 +878,7 @@ class Test_Coulomb_logarithm:
         provided.
         """
         with pytest.raises(ValueError):
-            methodVal = Coulomb_logarithm(
+            Coulomb_logarithm(
                 self.temperature2,
                 self.density2,
                 self.particles,
@@ -891,7 +891,7 @@ class Test_Coulomb_logarithm:
         provided.
         """
         with pytest.raises(ValueError):
-            methodVal = Coulomb_logarithm(
+            Coulomb_logarithm(
                 self.temperature2, self.density2, self.particles, method="GMS-6"
             )
 

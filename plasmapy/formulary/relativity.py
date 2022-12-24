@@ -102,7 +102,8 @@ def relativistic_energy(m: u.kg, v: u.m / u.s) -> u.Joule:
 
         E = γ m c^2
 
-    where :math:`γ` is the `Lorentz_factor`.
+    where :math:`γ` is the `Lorentz_factor`. This function returns the
+    sum of the mass energy and the kinetic energy.
 
     Parameters
     ----------
