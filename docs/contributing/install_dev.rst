@@ -129,12 +129,12 @@ and create the virtual environment
 
 .. code-block:: bash
 
-   virtualenv -p python3 .
+   virtualenv -p python3 venv
 
 You may need to make sure that this directory's path doesn't contain
 any spaces, otherwise virtualenv may throw an error.
 
-Your virtual environment should now be created. If you run ``ls`` you
+Your virtual environment should now be created. If you run ``ls venv`` you
 will notice that virtualenv has created a number of subdirectories:
 ``bin/``, ``lib/``, and ``include/``. This is why we're not creating the
 virtualenv within the repository itself - so as to not pollute it. To
@@ -142,7 +142,7 @@ activate the virtualenv you will run:
 
 .. code-block:: bash
 
-   source ./bin/activate
+   source venv/bin/activate
 
 You should now see that your shell session is prepended with
 (plasmapy), like so:
@@ -162,24 +162,28 @@ running
 Now that you have plasmapy on your local computer and you have a
 virtual environment, you will want to "install" this development
 version of PlasmaPy along with its dependencies. Start by activating
-your virtual environment. Next you want install the PlasmaPy
-dependencies. One way to do this is to do
+your virtual environment.
 
-.. code-block:: bash
-
-   (plasmapy) user@name:~/programming/plasmapy$ pip install -r requirements/environment.txt
-
-Next, setup the development version of PlasmaPy which you just cloned
+Then, setup the development version of PlasmaPy which you just cloned
 by moving into the root directory of the cloned repo and running the
 following there:
 
+
 .. code-block:: bash
 
-   (plasmapy) user@name:~/programming/plasmapy/PlasmaPy$ pip install -e .
-
+   (plasmapy) user@name:~/programming/plasmapy$ pip install --editable ".[tests,docs]"
 
 You should now be all set to run development versions of PlasmaPy
 modules via ``import PlasmaPy`` in your test scripts!
+
+The ``--editable`` flag will create a soft link to your cloned
+repository.  Any changes in Python code you make there will be there
+when you ``import plasmapy`` from an interactive session.
+
+   If you are not working within a virtual environment, this may end in
+   a permission error - this can be avoided via also adding the
+   ``--user`` flag. But seriously, use a virtual environment and spare
+   yourself the trouble.
 
 Running anaconda with virtualenv
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -200,26 +204,6 @@ You will have to add the python library directory to LD_LIBRARY_PATH,
 as described in a previous step, prior to activating the virtualenv
 for every new shell session.
 
-Installing your own dev version
-===============================
-
-To be able to import PlasmaPy from your source version, enter the
-repository root and use
-
-.. code-block:: bash
-
-   pip install -e .
-
-.. note::
-
-   If you are not working within a virtual environment, this may end in
-   a permission error - this can be avoided via also adding the
-   ``--user`` flag. But seriously, use a virtual environment and spare
-   yourself the trouble.
-
-Either one of these commands will create a soft link to your cloned
-repository.  Any changes in Python code you make there will be there
-when you ``import plasmapy`` from an interactive session.
 
 Installing pre-commit
 =====================
