@@ -61,8 +61,12 @@ def _fit_func_double_lin_inverse(x, x0, y0, T0, Delta_T):
     with T0 and T0 + Delta_T being the cold and hot temperatures, respectively.
     """
 
-    hot_T_func = lambda x: y0 + (x - x0) / (T0 + Delta_T)
-    cold_T_func = lambda x: y0 + (x - x0) / T0
+    def hot_T_func(x):
+        return y0 + (x - x0) / (T0 + Delta_T)
+
+    def cold_T_func(x):
+        return y0 + (x - x0) / T0
+
     return np.piecewise(x, x < x0, [hot_T_func, cold_T_func])
 
 

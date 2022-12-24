@@ -251,7 +251,7 @@ def impact_parameter(
 
     # obtaining minimum and maximum impact parameters depending on which
     # method is requested
-    if method in ["classical", "ls"]:
+    if method in ("classical", "ls"):
         bmax = lambdaDe
         # Coulomb-style collisions will not happen for impact parameters
         # shorter than either of these two impact parameters, so we choose
@@ -263,18 +263,18 @@ def impact_parameter(
         # if np.isscalar(bPerp.value) and np.isscalar(lambdaBroglie.value):
         # both scalar
         try:  # assume both scalar
-            bmin = bPerp if bPerp > lambdaBroglie else lambdaBroglie
+            bmin = max(bPerp, lambdaBroglie)
         except ValueError:  # both lambdaBroglie and bPerp are arrays
             bmin = lambdaBroglie
             bmin[bPerp > lambdaBroglie] = bPerp[bPerp > lambdaBroglie]
-    elif method in ["ls_min_interp", "GMS-1"]:
+    elif method in ("ls_min_interp", "GMS-1"):
         # 1st method listed in Table 1 of reference [1]
         # This is just another form of the classical Landau-Spitzer
         # approach, but bmin is interpolated between the de Broglie
         # wavelength and distance of the closest approach.
         bmax = lambdaDe
         bmin = (lambdaBroglie**2 + bPerp**2) ** (1 / 2)
-    elif method in ["ls_full_interp", "GMS-2"]:
+    elif method in ("ls_full_interp", "GMS-2"):
         # 2nd method listed in Table 1 of reference [1]
         # Another Landau-Spitzer like approach, but now bmax is also
         # being interpolated. The interpolation is between the Debye
@@ -286,17 +286,17 @@ def impact_parameter(
         ionRadius = Wigner_Seitz_radius(n_i)
         bmax = (lambdaDe**2 + ionRadius**2) ** (1 / 2)
         bmin = (lambdaBroglie**2 + bPerp**2) ** (1 / 2)
-    elif method in ["ls_clamp_mininterp", "GMS-3"]:
+    elif method in ("ls_clamp_mininterp", "GMS-3"):
         # 3rd method listed in Table 1 of reference [1]
         # same as GMS-1, but not Lambda has a clamp at Lambda_min = 2
         # where Lambda is the argument to the Coulomb logarithm.
         bmax = lambdaDe
         bmin = (lambdaBroglie**2 + bPerp**2) ** (1 / 2)
-    elif method in ["hls_min_interp", "GMS-4"]:
+    elif method in ("hls_min_interp", "GMS-4"):
         # 4th method listed in Table 1 of reference [1]
         bmax = lambdaDe
         bmin = (lambdaBroglie**2 + bPerp**2) ** (1 / 2)
-    elif method in ["hls_max_interp", "GMS-5"]:
+    elif method in ("hls_max_interp", "GMS-5"):
         # 5th method listed in Table 1 of reference [1]
         # Mean ion density.
         n_i = n_e / z_mean
@@ -304,7 +304,7 @@ def impact_parameter(
         ionRadius = Wigner_Seitz_radius(n_i)
         bmax = (lambdaDe**2 + ionRadius**2) ** (1 / 2)
         bmin = bPerp
-    elif method in ["hls_full_interp", "GMS-6"]:
+    elif method in ("hls_full_interp", "GMS-6"):
         # 6th method listed in Table 1 of reference [1]
         # Mean ion density.
         n_i = n_e / z_mean

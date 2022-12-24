@@ -628,7 +628,7 @@ def _bilinear_root(a1, b1, c1, d1, a2, b2, c2, d2):
     elif not (np.isclose((c2 + d2 * x2), 0, atol=_EQUALITY_ATOL)):
         y2 = (-a2 - b2 * x2) / (c2 + d2 * x2)
 
-    if y1 is None and y2 is None:
+    if y1 is y2 is None:
         return np.array([])
     elif y1 is None:
         return np.array([(x2, y2)])
@@ -1060,7 +1060,7 @@ def _trilinear_analysis(vspace, cell):
             return True
 
     # Check Grid Resolution
-    if len(BxByEndpoints) == 0 and len(BxBzEndpoints) == 0 and len(ByBzEndpoints) == 0:
+    if len(BxByEndpoints) == len(BxBzEndpoints) == len(ByBzEndpoints) == 0:
         warnings.warn(
             "Multiple null points suspected. Trilinear method may not work as intended.",
             MultipleNullPointWarning,
@@ -1090,16 +1090,16 @@ def _trilinear_analysis(vspace, cell):
             return True
         if np.sign(first_endpoint) * np.sign(second_endpoint) > 0:
             return False
-        else:
-            return True
+
+        return True
 
     opposite_sign_z = endpoint_sign_check(BxByEndpoints, "z")
     opposite_sign_y = endpoint_sign_check(BxBzEndpoints, "y")
     opposite_sign_x = endpoint_sign_check(ByBzEndpoints, "x")
     if opposite_sign_x and opposite_sign_y and opposite_sign_z:
         return True
-    else:
-        return False
+
+    return False
 
 
 def _locate_null_point(vspace, cell, n, err):
@@ -1209,7 +1209,7 @@ def _locate_null_point(vspace, cell, n, err):
         )
         return is_x_in_bound and is_y_in_bound and is_z_in_bound
 
-    starting_pos = []
+    starting_pos = []  # noqa: FURB138
     # Adding the Corners
     for point in corners:
         starting_pos.append(
