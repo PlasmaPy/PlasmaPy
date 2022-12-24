@@ -24,7 +24,7 @@ from plasmapy.formulary import (
     thermal_speed_coefficients,
     thermal_speed_lite,
 )
-from plasmapy.particles import Particle, particle_mass
+from plasmapy.particles import Particle
 from plasmapy.particles.exceptions import ChargeError
 from plasmapy.particles.particle_collections import ParticleList
 from plasmapy.utils.decorators import (

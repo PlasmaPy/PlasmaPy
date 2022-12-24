@@ -1,4 +1,5 @@
 import astropy.units as u
+import operator
 import pytest
 import warnings
 
@@ -143,15 +144,15 @@ def test_run_test(f, args, kwargs, expected, whaterror):
                 pytest.fail(
                     f"run_test did not raise an exception for "
                     f"{call_string(f, args, kwargs, color=None)} "
-                    f"with expected = {repr(expected)} and "
-                    f"whaterror = {repr(whaterror)}."
+                    f"with expected = {expected!r} and "
+                    f"whaterror = {whaterror!r}."
                 )
     except Exception as spectacular_exception:
         raise Exception(
             f"An unexpected exception was raised while running "
             f"{call_string(f, args, kwargs, color=None)} with "
-            f"expected = {repr(expected)} and "
-            f"whaterror = {repr(whaterror)}."
+            f"expected = {expected!r} and "
+            f"whaterror = {whaterror!r}."
         ) from spectacular_exception
 
 
@@ -232,10 +233,10 @@ run_test_equivalent_calls_table = [
     # cases where there are no kwargs and the args are not in tuples or lists
     ((return_arg, 1, 1, 1, 1), None),
     ((return_arg, 1, 1, 1, 8794), UnexpectedResultFail),
-    (((lambda x, y: x + y, (1, 0), {}), (lambda x, y: x * y, (1, 1), {})), None),
-    (((lambda x, y: x + y, (1, 0), {}), (lambda x, y: x * y, (1, 1), {})), None),
+    (((operator.add, (1, 0), {}), (operator.mul, (1, 1), {})), None),
+    (((operator.add, (1, 0), {}), (operator.mul, (1, 1), {})), None),
     (
-        ((lambda x, y: x + y, (1, 0), {}), (lambda x, y: x * y, (1, 59), {})),
+        ((operator.add, (1, 0), {}), (operator.mul, (1, 59), {})),
         UnexpectedResultFail,
     ),
 ]

@@ -12,7 +12,6 @@ from plasmapy.formulary import frequencies, speeds
 from plasmapy.formulary.relativity import RelativisticBody
 from plasmapy.particles import particle_input, ParticleLike
 from plasmapy.utils.decorators import validate_quantities
-from plasmapy.utils.exceptions import PlasmaPyFutureWarning
 
 __all__ += __aliases__
 
@@ -246,7 +245,7 @@ def gyroradius(
             Vperp = np.copy(Vperp)
             rbody = RelativisticBody(particle, lorentz_factor=lorentzfactor)
             Vperp[~isfinite_Vperp] = rbody.velocity
-    elif np.any(isfinite_lorentzfactor) and relativistic is True:
+    elif np.any(isfinite_lorentzfactor) and relativistic:
         warnings.warn(
             "lorentzfactor is given along with Vperp or T, will lead to inaccurate predictions unless they correspond"
         )
