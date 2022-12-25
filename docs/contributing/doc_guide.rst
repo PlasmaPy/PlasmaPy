@@ -78,7 +78,7 @@ and run:
 
 .. code-block:: bash
 
-   pip install -e .[dev]
+   pip install -e ".[tests,docs]"
 
 It may also be necessary to install the following software:
 
