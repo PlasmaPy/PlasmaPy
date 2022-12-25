@@ -164,7 +164,7 @@ virtual environment, you will want to "install" this development
 version of PlasmaPy along with its dependencies. Start by activating
 your virtual environment.
 
-Then, setup the development version of PlasmaPy which you just cloned
+Then, set up the development version of PlasmaPy which you just cloned
 by moving into the root directory of the cloned repo and running the
 following there:
 
@@ -174,14 +174,16 @@ following there:
    (plasmapy) user@name:~/programming/plasmapy$ pip install --editable ".[tests,docs]"
 
 You should now be all set to run development versions of PlasmaPy
-modules via ``import PlasmaPy`` in your test scripts!
+modules via ``import plasmapy`` in your test scripts!
 
 The ``--editable`` flag will create a soft link to your cloned
 repository.  Any changes in Python code you make there will be there
 when you ``import plasmapy`` from an interactive session.
 
+.. tip::
+
    If you are not working within a virtual environment, this may end in
-   a permission error - this can be avoided via also adding the
+   a permission error — this can be avoided via also adding the
    ``--user`` flag. But seriously, use a virtual environment and spare
    yourself the trouble.
 
