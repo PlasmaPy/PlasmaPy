@@ -104,12 +104,11 @@ Glossary
       For further details, please refer to the :ref:`contributor guide's
       section on lite-functions <lite-functions>`.
 
-   normalization
-   normalizations
-      A numerical factor that is used to transform a physical
-      quantity into a dimensionless number and vice versa. For example,
-      using the sound speed as a normalization for velocity will provide
-      us with the :wikipedia:`Mach number`.
+   normalization constant
+      A numerical factor that is used to transform a physical quantity
+      into a dimensionless number and vice versa. For example, using the
+      sound speed as a normalization for velocity will provide us
+      with the dimensionless :wikipedia:`Mach number`.
 
       Normalizations are often employed to provide a convenient
       reference value for the interpretation of data, to avoid
