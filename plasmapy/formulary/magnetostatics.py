@@ -228,7 +228,8 @@ class GeneralWire(Wire):
 
         .. math::
             \vec B \approx \frac{\mu_0 I}{4\pi}
-            \sum_{i=1}^{n}\frac{\vec{\Delta l}_i \times \vec{r}_i}{\left| \vec{r}_i \right|^3}.
+            \sum_{i=1}^{n}\frac{\vec{\Delta l}_i \times
+            \vec{r}_i}{\left| \vec{r}_i \right|^3}.
         """
 
         p1 = self.parametric_eq(self.t1)

@@ -90,7 +90,7 @@ class Test_GeneralWire:
     def test_value_error(self):
         "Test GeneralWire raise ValueError when argument t1>t2"
         with pytest.raises(ValueError):
-            gw_cw = GeneralWire(lambda t: [0, 0, t], 2, 1, 1.0 * u.A)
+            GeneralWire(lambda t: [0, 0, t], 2, 1, 1.0 * u.A)
 
 
 class Test_FiniteStraightWire:

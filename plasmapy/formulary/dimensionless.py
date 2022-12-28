@@ -23,7 +23,7 @@ import astropy.units as u
 import numbers
 import numpy as np
 
-from astropy.constants.si import k_B, mu0
+from astropy.constants.si import mu0
 from typing import Optional
 
 from plasmapy.formulary import frequencies, lengths, misc, speeds
@@ -506,7 +506,8 @@ def Lundquist_number(
         or convertible.
 
     `TypeError`
-        If ``ion`` is not of type or convertible to `~plasmapy.particles.particle_class.Particle`.
+        If ``ion`` is not of type or convertible to
+        `~plasmapy.particles.particle_class.Particle`.
 
     `TypeError`
         If ``z_mean`` is not of type `int` or `float`.

@@ -234,7 +234,7 @@ test_Particle_table = [
             "ionic_symbol": None,
             "roman_symbol": ChargeError,
             "is_ion": False,
-            "charge": ChargeError,
+            "charge": np.nan * u.C,
             "charge_number": ChargeError,
             "mass_number": InvalidIsotopeError,
             "baryon_number": ParticleError,
@@ -466,8 +466,8 @@ test_Particle_table = [
             "element": None,
             "isotope": None,
             "isotope_name": InvalidElementError,
-            "mass": MissingParticleDataError,
-            "mass_energy": MissingParticleDataError,
+            "mass": np.nan * u.kg,
+            "mass_energy": np.nan * u.J,
             "charge_number": 0,
             "mass_number": InvalidIsotopeError,
             "element_name": InvalidElementError,
@@ -518,7 +518,7 @@ def test_Particle_class(arg, kwargs, expected_dict):
     errmsg = ""
 
     try:
-        particle = Particle(arg, **kwargs)
+        particle = Particle(arg, **kwargs)  # noqa: F841
     except Exception as exc:
         raise ParticleError(f"Problem creating {call}") from exc
 
@@ -549,7 +549,7 @@ def test_Particle_class(arg, kwargs, expected_dict):
 
             try:
                 result = eval(f"particle.{key}")
-                assert result == expected or u.isclose(result, expected)
+                assert result == expected or u.isclose(result, expected, equal_nan=True)
             except AssertionError:
                 errmsg += (
                     f"\n{call}.{key} returns {result} instead "
@@ -604,11 +604,8 @@ test_Particle_error_table = [
     (["neutron"], {}, ".atomic_number", InvalidElementError),
     (["H"], {"Z": 0}, ".mass_number", InvalidIsotopeError),
     (["neutron"], {}, ".mass_number", InvalidIsotopeError),
-    (["He"], {"mass_numb": 4}, ".charge", ChargeError),
     (["He"], {"mass_numb": 4}, ".charge_number", ChargeError),
     (["Fe"], {}, ".spin", MissingParticleDataError),
-    (["nu_e"], {}, ".mass", MissingParticleDataError),
-    (["Og"], {}, ".standard_atomic_weight", MissingParticleDataError),
     ([Particle("C-14")], {"mass_numb": 13}, "", InvalidParticleError),
     ([Particle("Au 1+")], {"Z": 2}, "", InvalidParticleError),
     ([[]], {}, "", TypeError),
@@ -728,14 +725,14 @@ def test_particle_class_mass_nuclide_mass(isotope: str, ion: str):
         particle = Isotope.symbol
 
         assert Isotope.nuclide_mass == Ion.mass, (
-            f"Particle({repr(particle)}).nuclide_mass does not equal "
-            f"Particle({repr(particle)}).mass"
+            f"Particle({particle!r}).nuclide_mass does not equal "
+            f"Particle({particle!r}).mass"
         )
 
     else:
 
         inputerrmsg = (
-            f"isotope = {repr(isotope)} and ion = {repr(ion)} are "
+            f"isotope = {isotope!r} and ion = {ion!r} are "
             f"not valid inputs to this test. The inputs should be "
             f"an isotope with no charge information, and a fully "
             f"ionized ion of that isotope, in order to make sure "
@@ -751,8 +748,8 @@ def test_particle_class_mass_nuclide_mass(isotope: str, ion: str):
             f"The nuclide mass of {isotope} does not equal the mass of {ion} "
             f"which is the fully ionized ion of that isotope. The results of "
             f"the test are:\n\n"
-            f"Particle({repr(ion)}).mass = {Ion.mass}\n"
-            f"Particle({repr(isotope)}).nuclide_mass = {Isotope.nuclide_mass}"
+            f"Particle({ion!r}).mass = {Ion.mass}\n"
+            f"Particle({isotope!r}).nuclide_mass = {Isotope.nuclide_mass}"
             "\n"
         )
 
@@ -849,8 +846,7 @@ class Test_antiparticle_properties_inversion:
         the original particle.
         """
         assert particle == ~~particle, (
-            f"~~{repr(particle)} equals {repr(~~particle)} instead of "
-            f"{repr(particle)}."
+            f"~~{particle!r} equals {~~particle!r} instead of " f"{particle!r}."
         )
 
     def test_opposite_charge(self, particle, opposite):
@@ -879,8 +875,8 @@ class Test_antiparticle_properties_inversion:
         Particle instance.
         """
         assert particle.antiparticle == ~particle, (
-            f"{repr(particle)}.antiparticle returned "
-            f"{particle.antiparticle}, whereas ~{repr(particle)} "
+            f"{particle!r}.antiparticle returned "
+            f"{particle.antiparticle}, whereas ~{particle!r} "
             f"returned {~particle}."
         )
 
@@ -895,16 +891,15 @@ def test_particleing_a_particle(arg):
 
     assert particle == Particle(
         particle
-    ), f"Particle({repr(arg)}) does not equal Particle(Particle({repr(arg)})."
+    ), f"Particle({arg!r}) does not equal Particle(Particle({arg!r})."
 
     assert particle == Particle(Particle(Particle(particle))), (
-        f"Particle({repr(arg)}) does not equal "
-        f"Particle(Particle(Particle({repr(arg)}))."
+        f"Particle({arg!r}) does not equal " f"Particle(Particle(Particle({arg!r}))."
     )
 
     assert particle is not Particle(particle), (
-        f"Particle({repr(arg)}) is the same object in memory as "
-        f"Particle(Particle({repr(arg)})), when it is intended to "
+        f"Particle({arg!r}) is the same object in memory as "
+        f"Particle(Particle({arg!r})), when it is intended to "
         f"create a new object in memory (e.g., a copy)."
     )
 
@@ -1507,7 +1502,7 @@ test_molecule_error_table = [
 def test_molecule_error(symbol, Z):
     """Test the error raised in case of a bad molecule symbol."""
     with pytest.raises(InvalidParticleError):
-        m = molecule(symbol, Z)
+        molecule(symbol, Z)
 
 
 def test_molecule_other():
@@ -1518,3 +1513,27 @@ def test_molecule_other():
         assert CustomParticle(2 * 126.90447 * u.u, e.si, "I2 1+") == molecule(
             "I2 1+", Z=1
         )
+
+
+def test_undefined_charge():
+    """Test that a particle with an undefined charge returns |nan| C."""
+    H_particle = Particle("H")
+    assert u.isclose(H_particle.charge, np.nan * u.C, equal_nan=True)
+
+
+def test_undefined_standard_atomic_weight():
+    """Test that a particle with an undefined standard atomic weight returns |nan| kg."""
+    Pm_particle = Particle("Pm")
+    assert u.isclose(Pm_particle.standard_atomic_weight, np.nan * u.kg, equal_nan=True)
+
+
+def test_undefined_mass():
+    """Test that a particle with an undefined mass returns |nan| kg."""
+    tau_neutrino_particle = Particle("tau neutrino")
+    assert u.isclose(tau_neutrino_particle.mass, np.nan * u.kg, equal_nan=True)
+
+
+def test_undefined_mass_energy():
+    """Test that a particle with an undefined mass energy returns |nan| J."""
+    nu_tau_particle = Particle("nu_tau")
+    assert u.isclose(nu_tau_particle.mass_energy, np.nan * u.J, equal_nan=True)

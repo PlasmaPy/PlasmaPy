@@ -24,7 +24,7 @@ from plasmapy.formulary import (
     thermal_speed_coefficients,
     thermal_speed_lite,
 )
-from plasmapy.particles import Particle, particle_mass
+from plasmapy.particles import Particle
 from plasmapy.particles.exceptions import ChargeError
 from plasmapy.particles.particle_collections import ParticleList
 from plasmapy.utils.decorators import (
@@ -342,10 +342,11 @@ def spectral_density(
         corresponds to a 90° scattering angle geometry.
 
     instr_func : function
-        A function representing the instrument function that takes a `~astropy.units.Quantity`
-        of wavelengths (centered on zero) and returns the instrument point
-        spread function. The resulting array will be convolved with the
-        spectral density function before it is returned.
+        A function representing the instrument function that takes a
+        `~astropy.units.Quantity` of wavelengths (centered on zero) and
+        returns the instrument point spread function. The resulting
+        array will be convolved with the spectral density function
+        before it is returned.
 
     Returns
     -------
