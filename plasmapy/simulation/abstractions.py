@@ -69,24 +69,25 @@ class AbstractNormalizations(ABC):
     @property
     @abstractmethod
     def acceleration(self) -> u.m / u.s**2:
-        r"""The |normalization constant| for acceleration."""
+        r"""The |normalization constant| for acceleration, :math:`a_⋆`."""
 
     def area(self) -> u.m**2:
-        r"""The |normalization constant| for area."""
+        r"""The |normalization constant| for area, :math:`A_⋆`."""
 
     @property
     @abstractmethod
     def current_density(self) -> u.A / u.m**2:
         """
         The |normalization constant| for :wikipedia:`current
-        density`.
+        density`, :math:`J_⋆`.
         """
 
     @property
     @abstractmethod
     def diffusivity(self) -> u.m**2 / u.s:
         """
-        The |normalization constant| for :wikipedia`diffusivity`.
+        The |normalization constant| for :wikipedia`diffusivity`,
+        :math:`D_⋆`.
 
         .. note::
 
@@ -100,7 +101,7 @@ class AbstractNormalizations(ABC):
     def dynamic_viscosity(self) -> u.Pa * u.s:
         """
         The |normalization constant| for :wikipedia:`dynamic
-        viscosity`.
+        viscosity`, :math:`μ_⋆`.
 
         .. note::
 
@@ -115,24 +116,29 @@ class AbstractNormalizations(ABC):
     def electric_field(self) -> u.V / u.m:
         """
         The |normalization constant| for :wikipedia`electric
-        field`.
+        field`, :math:`E_⋆`.
         """
 
     @property
     @abstractmethod
     def energy(self) -> u.J:
-        """The |normalization constant| for energy."""
+        """The |normalization constant| for energy, :math:`e_⋆`."""
 
     @property
     @abstractmethod
     def frequency(self) -> u.s**-1:
-        """The |normalization constant| for frequency."""
+        """The |normalization constant| for frequency, :math:`f_⋆`."""
 
     @property
     @abstractmethod
     def heat_flux(self) -> u.J * u.m**-2 * u.s**-1:
         """
-        The |normalization constant| for :wikipedia:`heat flux`.
+        The |normalization constant| for :wikipedia:`heat flux`,
+        :math:`q_⋆`.
+
+        .. todo::
+
+           Check that this is the correct symbol
 
         .. note::
 
@@ -144,47 +150,69 @@ class AbstractNormalizations(ABC):
     @property
     @abstractmethod
     def length(self) -> u.m:
-        """The |normalization constant| for length."""
+        """The |normalization constant| for length, :math:`L_⋆`."""
 
     @property
     @abstractmethod
     def magnetic_field(self) -> u.T:
-        """The |normalization constant| for :wikipedia:`magnetic field`."""
+        """
+        The |normalization constant| for :wikipedia:`magnetic field`,
+        :math:`B_⋆`.
+        """
 
     @property
     @abstractmethod
     def magnetic_flux(self) -> u.T * u.m:
         """
         The |normalization constant| for :wikipedia:`magnetic
-        flux` or :wikipedia:`magnetic vector potential`.
+        flux` or :wikipedia:`magnetic vector potential`, :math:`Φ_⋆`.
+
+        .. todo::
+
+            Check this this is an appropriate symbol.  Can't use A since
+            it's overloaded already with acceleration and area.
         """
 
     @property
     @abstractmethod
     def mass(self) -> u.kg:
-        """The |normalization constant| for mass."""
+        """The |normalization constant| for mass, :math:`m_⋆`."""
 
     @property
     @abstractmethod
     def mass_density(self) -> u.kg / u.m**3:
-        """The |normalization constant| for mass density."""
+        """The |normalization constant| for mass density, :math:`ρ_⋆`."""
 
     @property
     @abstractmethod
     def number_density(self) -> u.m**-3:
-        """The |normalization constant| for :wikipedia:`number density`."""
+        """
+        The |normalization constant| for :wikipedia:`number density`,
+        :math:`n_⋆`.
+        """
 
     @property
     @abstractmethod
     def pressure(self) -> u.Pa:
-        """The |normalization constant| for :wikipedia:`pressure`."""
+        """
+        The |normalization constant| for :wikipedia:`pressure`,
+        :math:`p_⋆`.
+        """
+
+    @property
+    @abstractmethod
+    def resistivity(self) -> u.Ohm * u.m:
+        """
+        The |normalization constant| for electrical resistivity,
+        :math:`η_⋆`.
+        """
 
     @property
     @abstractmethod
     def temperature(self) -> u.K:
         """
         The |normalization constant| for :term:`temperature` in
-        units of kelvin.
+        units of kelvin, :math:`T_⋆`.
         """
 
     @property
@@ -192,25 +220,28 @@ class AbstractNormalizations(ABC):
     def thermal_conductivity(self) -> u.W / (u.K * u.m):
         """
         The |normalization constant| for :wikipedia:`thermal
-        conductivity`.
+        conductivity`, :math:`κ_⋆`.
         """
 
     @property
     @abstractmethod
     def time(self) -> u.s:
-        """The |normalization constant| for time."""
+        """The |normalization constant| for time, :math:`t_⋆`."""
 
     @property
     @abstractmethod
     def velocity(self) -> u.m / u.s:
-        """The |normalization constant| for velocity."""
+        """The |normalization constant| for velocity, :math:`v_⋆`."""
 
     @property
     @abstractmethod
     def volume(self) -> u.m**3:
-        """The |normalization constant| for volume."""
+        """The |normalization constant| for volume, :math:`V_⋆`."""
 
     @property
     @abstractmethod
     def wavenumber(self) -> u.m**-1:
-        """The |normalization constant| for :wikipedia:`wavenumber`."""
+        """
+        The |normalization constant| for :wikipedia:`wavenumber`,
+        :math:`k_⋆`.
+        """
