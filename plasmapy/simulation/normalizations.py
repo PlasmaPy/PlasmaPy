@@ -170,7 +170,7 @@ class MHDNormalizations(AbstractNormalizations):
         """
         The |normalization constant| for energy,
 
-           e_⋆ ≡ \frac{m_⋆ L_⋆^2}{t_⋆}
+           e_⋆ ≡ \frac{m_⋆ L_⋆^2}{t_⋆^2}
 
         .. danger::
 
@@ -209,7 +209,11 @@ class MHDNormalizations(AbstractNormalizations):
 
         .. math::
 
-           q_⭑ ≡
+           q_⭑ ≡ \frac{n_⋆ e_⋆ L_⋆}{t_⋆}.
+
+        .. danger::
+
+           Verify this!
 
         Returns
         -------
@@ -220,7 +224,7 @@ class MHDNormalizations(AbstractNormalizations):
     @property
     def ion(self) -> Particle:
         """
-        The particle...
+        The ion in the plasma.
 
         Returns
         -------
@@ -277,7 +281,7 @@ class MHDNormalizations(AbstractNormalizations):
         where :math:`m_i` is the ion mass, :math:`m_e` is the electron
         mass, and :math:`Z` is the charge number of the ion.
 
-        .. todo::
+        .. danger::
 
            Verify this!
 
@@ -296,9 +300,9 @@ class MHDNormalizations(AbstractNormalizations):
 
            ρ_⋆ ≡ m_⋆ n_⋆.
 
-        .. todo::
+        .. danger::
 
-           Verify this!
+           How do we get :math:`m_⋆`\ ?
 
         Returns
         -------
