@@ -975,7 +975,7 @@ customized_particle_tests = [
 
 
 @pytest.mark.parametrize("cls, kwargs, attr, expected", customized_particle_tests)
-def test_customized_particles(cls, kwargs, attr, expected):
+def test_custom_particles(cls, kwargs, attr, expected):
     """Test the attributes of dimensionless and custom particles."""
     instance = cls(**kwargs)
     value = getattr(instance, attr)
