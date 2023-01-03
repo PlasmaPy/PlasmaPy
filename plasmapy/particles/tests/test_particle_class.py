@@ -1381,12 +1381,13 @@ particle_json_repr_table = [
     ),
     (
         CustomParticle,
-        {"mass": 5.12 * u.kg, "charge": 6.2 * u.C, "symbol": "ξ"},
+        {"mass": 5.12 * u.kg, "charge": 6.2e-19 * u.C, "symbol": "ξ"},
         '{"plasmapy_particle": {"type": "CustomParticle", \
         "module": "plasmapy.particles.particle_class", \
         "date_created": "...", "__init__": {\
             "args": [], \
-            "kwargs": {"mass": "5.12 kg", "charge": "6.2 C", "symbol": "ξ"}}}}',
+            "kwargs": {"mass": "5.12 kg", "charge": "6.2e-19 C", \
+            "charge_number": "3.869735626165673", "symbol": "ξ"}}}}',
     ),
     (
         DimensionlessParticle,

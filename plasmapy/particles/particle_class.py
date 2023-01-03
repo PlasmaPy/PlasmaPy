@@ -2155,20 +2155,22 @@ class CustomParticle(AbstractPhysicalParticle):
             'module': 'plasmapy.particles.particle_class',
             'date_created': '...',
             '__init__': {'args': (), 'kwargs': {'mass': '5.12 kg', 'charge': '6.2 C',
-            'symbol': 'ξ'}}}}
+            'charge_number': '3.869735626...e+19', 'symbol': 'ξ'}}}}
         >>> import pytest
         >>> custom_particle = CustomParticle(mass=1.5e-26 * u.kg)
         >>> custom_particle.json_dict
         {'plasmapy_particle': {'type': 'CustomParticle',
             'module': 'plasmapy.particles.particle_class',
             'date_created': '...',
-            '__init__': {'args': (), 'kwargs': {'mass': '1.5e-26 kg', 'charge': 'nan C',
+            '__init__': {'args': (), 'kwargs': {'mass': '1.5e-26 kg',
+            'charge': 'nan C', 'charge_number': 'nan',
             'symbol': 'CustomParticle(mass=1.5e-26 kg, charge=nan C)'}}}}
         """
         particle_dictionary = super().json_dict
         particle_dictionary["plasmapy_particle"]["__init__"]["kwargs"] = {
             "mass": str(self.mass),
             "charge": str(self.charge),
+            "charge_number": str(self.charge_number),
             "symbol": self.symbol,
         }
         return particle_dictionary
