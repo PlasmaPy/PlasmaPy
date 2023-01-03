@@ -2194,6 +2194,12 @@ class CustomParticle(AbstractPhysicalParticle):
             warnings.warn(
                 f"CustomParticle charge set to {q} times the elementary charge."
             )
+            warnings.warn(
+                "The ability to provide a real number to the 'charge' "
+                "parameter to has been deprecated and will be removed "
+                "in a future release of PlasmaPy. Use 'Z' instead.",
+                PlasmaPyDeprecationWarning,
+            )
         elif isinstance(q, u.Quantity):
             if not isinstance(q.value, Real):
                 raise InvalidParticleError(
