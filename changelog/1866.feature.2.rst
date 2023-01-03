@@ -1,0 +1,2 @@
+Added the `~plasmapy.particles.particle_class.CustomParticle.charge_number`
+attribute to |CustomParticle|.
