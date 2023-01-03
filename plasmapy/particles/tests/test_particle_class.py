@@ -945,10 +945,6 @@ def test_that_object_can_be_dict_key(key):
     assert dictionary[key] is value
 
 
-# TODO: These tests may be refactored using forthcoming functionality in
-#       plasmapy.tests.helpers.  It may be necessary to case the expected
-#       results as certain types (e.g., numpy.float64).
-
 customized_particle_tests = [
     (DimensionlessParticle, {"mass": 1.0, "charge": -1.0}, "mass", 1.0),
     (DimensionlessParticle, {"mass": 0.0, "charge": -1.0}, "charge", -1.0),
