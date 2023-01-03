@@ -2215,6 +2215,11 @@ class CustomParticle(AbstractPhysicalParticle):
             )
 
     @property
+    def charge_number(self):
+        """The ratio of the charge to the elementary charge."""
+        return self.charge / const.e.si
+
+    @property
     def mass(self) -> u.kg:
         """The mass of the |CustomParticle|."""
         return self._mass

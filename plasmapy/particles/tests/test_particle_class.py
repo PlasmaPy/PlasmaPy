@@ -967,6 +967,10 @@ customized_particle_tests = [
     (CustomParticle, {"mass": "100.0 g"}, "mass", 100.0 * u.g),
     (CustomParticle, {"charge": -np.inf * u.kC}, "charge", -np.inf * u.C),
     (CustomParticle, {"charge": "5.0 C"}, "charge", 5.0 * u.C),
+    (CustomParticle, {"Z": 1}, "charge", const.e.si),
+    (CustomParticle, {"Z": 1.5}, "charge", 1.5 * const.e.si),
+    (CustomParticle, {"Z": 1.5}, "charge_number", 1.5),
+    (CustomParticle, {"charge": 1.3 * const.e.si}, "charge_number", 1.3),
 ]
 
 
@@ -1073,6 +1077,7 @@ custom_particle_errors = [
     (CustomParticle, {"mass": np.complex128(5 + 2j) * u.kg}, InvalidParticleError),
     (CustomParticle, {"charge": "not a charge"}, InvalidParticleError),
     (CustomParticle, {"charge": "5.0 km"}, InvalidParticleError),
+    (CustomParticle, {"charge": 1 * u.C, "charge_number": -1}, TypeError),
 ]
 
 
