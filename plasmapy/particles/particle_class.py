@@ -37,7 +37,7 @@ from plasmapy.particles.exceptions import (
     ParticleError,
     ParticleWarning,
 )
-from plasmapy.utils import roman
+from plasmapy.utils import PlasmaPyDeprecationWarning, roman
 
 _classification_categories = {
     "lepton",
@@ -2020,12 +2020,14 @@ class CustomParticle(AbstractPhysicalParticle):
         The mass of the custom particle in units of mass.  Defaults to
         |nan| kg.
 
-    charge : ~astropy.units.Quantity or ~numbers.Real, optional
+    charge : ~astropy.units.Quantity, optional
         The electric charge of the custom particle.  If provided as a
         `~astropy.units.Quantity`, then it must be in units of electric
-        charge.  If provided as a real number, then it is treated as the
-        ratio of the charge to the elementary charge. Defaults to |nan|
-        C.
+        charge. Defaults to |nan| C.
+
+    Z : ~numbers.Real, optional, |keyword-only|
+        The :term:`charge number`, which is equal to the ratio of the
+        charge to the elementary charge.
 
     symbol : str, optional
         The symbol to be assigned to the custom particle.
@@ -2053,30 +2055,48 @@ class CustomParticle(AbstractPhysicalParticle):
     >>> custom_particle = CustomParticle(
     ...     mass=1.2e-26 * u.kg,
     ...     charge=9.2e-19 * u.C,
-    ...     symbol="Ξ",
     ... )
     >>> custom_particle.mass
     <Quantity 1.2e-26 kg>
     >>> custom_particle.charge
     <Quantity 9.2e-19 C>
-    >>> custom_particle.symbol
-    'Ξ'
-    >>> import pytest
-    >>> with pytest.warns(UserWarning):
-    ...    custom_particle = CustomParticle(
-    ...        mass=1.5e-26 * u.kg,
-    ...        charge=-1,
-    ...        symbol="Ξ",
-    ...    )
-    >>> custom_particle.mass
+
+    >>> average_particle = CustomParticle(
+    ...     mass=1.5e-26 * u.kg,
+    ...     Z = -1.5,
+    ...     symbol="Ξ",
+    ... )
+    >>> average_particle.mass
     <Quantity 1.5e-26 kg>
-    >>> custom_particle.charge
-    <Quantity -1.60217...e-19 C>
-    >>> custom_particle.symbol
+    >>> average_particle.charge
+    <Quantity -2.40326...e-19 C>
+
+    >>> average_particle.symbol
     'Ξ'
     """
 
-    def __init__(self, mass: u.kg = None, charge: (u.C, Real) = None, symbol=None):
+    def __init__(
+        self,
+        mass: u.kg = None,
+        charge: u.C = None,
+        symbol=None,
+        *,
+        Z: Real = None,
+    ):
+
+        if isinstance(charge, Real):
+            warnings.warn(
+                "Providing a real number to 'charge' is deprecated. Use "
+                "'Z' as a keyword argument instead.",
+                PlasmaPyDeprecationWarning,
+            )
+
+        if Z is not None and charge is not None:
+            raise TypeError("CustomParticle can accept only one of Z and charge.")
+
+        if Z is not None:
+            charge = Z * const.e.si
+
         try:
             self.mass = mass
             self.charge = charge
