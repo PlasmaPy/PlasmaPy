@@ -23,7 +23,7 @@ jobs:
         - name: Python 3.10
           os: ubuntu-latest
           python: '3.10'
-          toxenv: py310
+          toxenv: py310-pins
 
         - name: Linters
           os: ubuntu-latest
