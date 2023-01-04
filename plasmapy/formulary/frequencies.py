@@ -32,19 +32,18 @@ e_si_unitless = e.value
 eps0_si_unitless = eps0.value
 
 
+@particle_input(any_of={"charged", "uncharged"})
 @validate_quantities(
     validations_on_return={
         "units": [u.rad / u.s, u.Hz],
         "equivalencies": [(u.cy / u.s, u.Hz)],
     }
 )
-@particle_input(any_of={"charged", "uncharged"})
 @angular_freq_to_hz
 def gyrofrequency(
     B: u.T,
     particle: ParticleLike,
     signed: bool = False,
-    *,
     Z: Optional[numbers.Integral] = None,
     mass_numb: Optional[numbers.Integral] = None,
 ) -> u.rad / u.s:
@@ -76,7 +75,7 @@ def gyrofrequency(
 
     Returns
     -------
-    omega_c : `~astropy.units.Quantity`
+    `~astropy.units.Quantity`
         The particle gyrofrequency in units of radians per second.
 
     Raises
@@ -137,7 +136,7 @@ def gyrofrequency(
     >>> print(f_ce)
     279924... Hz
     """
-    Z = particle.charge_number if signed else abs(particle.charge_number)
+    Z = particle.charge if signed else abs(particle.charge)
     return u.rad * (Z * np.abs(B) / particle.mass).to(1 / u.s)
 
 
