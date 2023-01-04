@@ -8,14 +8,43 @@ __all__ = []
 
 import astropy.units as u
 import contextlib
+import numpy as np
 
 from astropy.units.physical import electrical_charge, mass
-from numbers import Integral
-from typing import Union
+from numbers import Integral, Real
+from typing import Any, Optional, Union
 
 from plasmapy.particles.exceptions import InvalidParticleError
 from plasmapy.particles.particle_class import CustomParticle, Particle
 from plasmapy.particles.particle_collections import ParticleList
+
+
+def _is_real_but_not_integer(x: Union[Optional[Real], u.Quantity]) -> bool:
+    """
+    Return `True` if ``x`` is a real number but not an integer, and
+    `False` otherwise.
+    """
+
+    if isinstance(x, u.Quantity):
+        try:
+            x = x.to(u.dimensionless_unscaled).value
+        except u.UnitConversionError:
+            return False
+
+    try:
+        return np.float64(x).is_integer()
+    except (TypeError, ValueError):
+        return False
+
+
+def _make_custom_particle(args: tuple, kwargs: dict[str, Any]) -> CustomParticle:
+
+    with contextlib.suppress(TypeError, InvalidParticleError):
+        return CustomParticle(*args, **kwargs)
+
+    # incomplete!
+
+    raise InvalidParticleError
 
 
 def _physical_particle_factory(
@@ -84,6 +113,7 @@ def _physical_particle_factory(
     # because they are not allowed as arguments to `CustomParticle`, and
     # are not needed in kwargs if they are their default values. Note
     # that this affects `not kwargs` below.
+
     for parameter in ("Z", "mass_numb"):
         if parameter in kwargs and kwargs[parameter] is None:
             kwargs.pop(parameter)
@@ -94,6 +124,10 @@ def _physical_particle_factory(
         and isinstance(args[0], (Particle, CustomParticle, ParticleList))
     ):
         return args[0]
+
+    Z = getattr(kwargs, "Z", None)
+    if _is_real_but_not_integer(Z):
+        return _make_custom_particle(args, kwargs)
 
     if not args and not kwargs:
         raise TypeError("Particle information has not been provided.")
