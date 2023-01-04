@@ -14,10 +14,10 @@ import numpy as np
 
 from astropy.constants.si import e, eps0
 from numba import njit
+from typing import Optional
 
 from plasmapy import particles
-from plasmapy.formulary import misc
-from plasmapy.particles import ParticleLike
+from plasmapy.particles import particle_input, ParticleLike
 from plasmapy.particles.exceptions import ChargeError, InvalidParticleError
 from plasmapy.utils.decorators import (
     angular_freq_to_hz,
@@ -38,8 +38,16 @@ eps0_si_unitless = eps0.value
         "equivalencies": [(u.cy / u.s, u.Hz)],
     }
 )
+@particle_input(any_of={"charged", "uncharged"})
 @angular_freq_to_hz
-def gyrofrequency(B: u.T, particle: ParticleLike, signed=False, Z=None) -> u.rad / u.s:
+def gyrofrequency(
+    B: u.T,
+    particle: ParticleLike,
+    signed: bool = False,
+    *,
+    Z: Optional[numbers.Integral] = None,
+    mass_numb: Optional[numbers.Integral] = None,
+) -> u.rad / u.s:
     r"""
     Calculate the particle gyrofrequency in units of radians per second.
 
@@ -50,25 +58,21 @@ def gyrofrequency(B: u.T, particle: ParticleLike, signed=False, Z=None) -> u.rad
     B : `~astropy.units.Quantity`
         The magnetic field magnitude in units convertible to tesla.
 
-    particle : `~plasmapy.particles.particle_class.Particle`
-        Representation of the particle species (e.g., 'p' for protons, 'D+'
-        for deuterium, or 'He-4 +1' for singly ionized helium-4). If no
-        charge state information is provided, then the particles are assumed
-        to be singly charged.
+    particle : |particle-like|
+        Representation of the particle species (e.g., ``'p'`` for
+        protons, ``'D+'`` for deuterium, or ``'He-4 +1'`` for singly
+        ionized helium-4).
 
-    signed : `bool`, optional
-        The gyrofrequency can be defined as signed (negative for electron,
-        positive for ion). Default is `False` (unsigned, i.e. always
-        positive).
+    signed : `bool`, default: `False`
+        The gyrofrequency can be defined as signed, where its sign is
+        the sign of the |charge number|. Defaults to unsigned (i.e.,
+        always positive).
 
-    Z : `float` or `~astropy.units.Quantity`, optional
-        The average ionization (arithmetic mean) for a plasma where
-        a macroscopic description is valid. If this quantity is not
-        given then the charge number of the ion
-        is used. This is effectively an average gyrofrequency for the
-        plasma where multiple charge states are present, and should
-        not be interpreted as the gyrofrequency for any single particle.
-        If not provided, it defaults to the charge number of the ``particle``.
+    Z : real number or `~astropy.units.Quantity`, optional
+        The |charge number| of an ion or neutral atom.
+
+    mass_numb : integer, optional
+        The mass number of an isotope.
 
     Returns
     -------
@@ -96,7 +100,7 @@ def gyrofrequency(B: u.T, particle: ParticleLike, signed=False, Z=None) -> u.rad
     gyration around magnetic field lines and is given by:
 
     .. math::
-        ω_{c} = \frac{Z e B}{m}
+        ω_{c} = \frac{\|Z\| e B}{m}
 
     The particle gyrofrequency is also known as the particle cyclotron
     frequency or the particle Larmor frequency.
@@ -104,9 +108,10 @@ def gyrofrequency(B: u.T, particle: ParticleLike, signed=False, Z=None) -> u.rad
     The recommended way to convert from angular frequency to frequency
     is to use an equivalency between cycles per second and hertz, as
     Astropy's `~astropy.units.dimensionless_angles` equivalency does not
-    account for the factor of :math:`2π` needed during this conversion.  The
-    `~astropy.units.dimensionless_angles` equivalency is appropriate
-    when dividing a velocity by an angular frequency to get a length scale.
+    account for the factor of :math:`2π` needed during this conversion.
+    The `~astropy.units.dimensionless_angles` equivalency is appropriate
+    when dividing a velocity by an angular frequency to get a length
+    scale.
 
     Examples
     --------
@@ -131,14 +136,9 @@ def gyrofrequency(B: u.T, particle: ParticleLike, signed=False, Z=None) -> u.rad
     >>> f_ce = omega_ce.to(u.Hz, equivalencies=[(u.cy/u.s, u.Hz)])
     >>> print(f_ce)
     279924... Hz
-
     """
-    m = particles.particle_mass(particle)
-    Z = misc._grab_charge(particle, Z)
-    if not signed:
-        Z = abs(Z)
-
-    return u.rad * (Z * e * np.abs(B) / m).to(1 / u.s)
+    Z = particle.charge_number if signed else abs(particle.charge_number)
+    return u.rad * (Z * np.abs(B) / particle.mass).to(1 / u.s)
 
 
 oc_ = gyrofrequency
