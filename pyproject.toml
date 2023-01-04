@@ -4,7 +4,7 @@ requires = [
   "setuptools>=61.2",
   "setuptools-scm",
   "wheel>=0.29",
-]  # ought to mirror 'requirements/build.txt'
+]
 
 [project]
 name = "plasmapy"
