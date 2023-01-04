@@ -23,7 +23,7 @@ from abc import ABC, abstractmethod
 from collections import defaultdict, namedtuple
 from datetime import datetime
 from numbers import Integral, Real
-from typing import Iterable, NoReturn, Optional, Sequence, Set, Union
+from typing import Dict, Iterable, NoReturn, Optional, Sequence, Set, Union
 
 from plasmapy.particles import _elements, _isotopes, _parsing, _special_particles
 from plasmapy.particles.exceptions import (
@@ -2079,9 +2079,9 @@ class CustomParticle(AbstractPhysicalParticle):
         self,
         mass: u.kg = None,
         charge: u.C = None,
-        symbol=None,
+        symbol: Optional[str] = None,
         *,
-        Z: Real = None,
+        Z: Optional[Real] = None,
     ):
 
         if isinstance(charge, Real):
@@ -2107,7 +2107,7 @@ class CustomParticle(AbstractPhysicalParticle):
                 f"{mass} and a charge of {charge}."
             ) from exc
 
-    def __repr__(self) -> str:
+    def __repr__(self):
         """
         Return a string representation of a |CustomParticle|.
 
@@ -2136,7 +2136,7 @@ class CustomParticle(AbstractPhysicalParticle):
         )
 
     @property
-    def json_dict(self) -> dict:
+    def json_dict(self) -> Dict[str, str]:
         """
         A `json` friendly dictionary representation of the |CustomParticle|.
 
@@ -2223,7 +2223,7 @@ class CustomParticle(AbstractPhysicalParticle):
             )
 
     @property
-    def charge_number(self):
+    def charge_number(self) -> Real:
         """The ratio of the charge to the elementary charge."""
         return self.charge / const.e.si
 
