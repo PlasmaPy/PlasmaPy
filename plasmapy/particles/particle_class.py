@@ -2020,7 +2020,7 @@ class CustomParticle(AbstractPhysicalParticle):
         The mass of the custom particle in units of mass.  Defaults to
         |nan| kg.
 
-    charge : ~astropy.units.Quantity, optional
+    charge : ~astropy.units.Quantity or ~numbers.Real, optional
         The electric charge of the custom particle.  If provided as a
         `~astropy.units.Quantity`, then it must be in units of electric
         charge. Defaults to |nan| C.
@@ -2060,7 +2060,6 @@ class CustomParticle(AbstractPhysicalParticle):
     <Quantity 1.2e-26 kg>
     >>> custom_particle.charge
     <Quantity 9.2e-19 C>
-
     >>> average_particle = CustomParticle(
     ...     mass=1.5e-26 * u.kg,
     ...     Z = -1.5,
@@ -2070,7 +2069,6 @@ class CustomParticle(AbstractPhysicalParticle):
     <Quantity 1.5e-26 kg>
     >>> average_particle.charge
     <Quantity -2.40326...e-19 C>
-
     >>> average_particle.symbol
     'Ξ'
     """
