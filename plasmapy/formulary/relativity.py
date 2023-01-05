@@ -1,4 +1,5 @@
-r"""Functions for calculating relativistic quantities (:math:`v \to c`)."""
+"""Functionality for calculating relativistic quantities."""
+
 __all__ = ["Lorentz_factor", "relativistic_energy", "RelativisticBody"]
 
 import astropy.units as u
@@ -10,7 +11,7 @@ from numpy.typing import DTypeLike
 from typing import Dict, Optional, Union
 
 from plasmapy import utils
-from plasmapy.particles._factory import _physical_particle_factory
+from plasmapy.particles import particle_input
 from plasmapy.particles.particle_class import CustomParticle, Particle, ParticleLike
 from plasmapy.particles.particle_collections import ParticleList
 from plasmapy.utils.decorators import validate_quantities
@@ -93,31 +94,57 @@ def Lorentz_factor(V: u.m / u.s):
 @validate_quantities(
     m={"can_be_negative": False}, validations_on_return={"can_be_negative": False}
 )
-def relativistic_energy(m: u.kg, v: u.m / u.s) -> u.Joule:
+@particle_input
+def relativistic_energy(
+    particle: ParticleLike,
+    V: u.m / u.s,
+    *,
+    mass_numb: Optional[Integral] = None,
+    Z: Optional[Integral] = None,
+) -> u.Joule:
     """
-    Calculate the relativistic energy (in joules) of an object of mass
-    ``m`` and velocity ``v``.
+    Calculate the sum of the mass energy and kinetic energy of a
+    relativistic body.
+
+    The total energy of a relativistic body is
 
     .. math::
 
-        E = γ m c^2
+        E = γ m c^2,
 
-    where :math:`γ` is the `Lorentz_factor`. This function returns the
-    sum of the mass energy and the kinetic energy.
+    where :math:`m` is the mass of the body and :math:`γ` is its
+    `~plasmapy.formulary.relativity.Lorentz_factor`.
 
     Parameters
     ----------
-    m : `~astropy.units.Quantity`
-        The mass in units convertible to kilograms.
+    particle : |particle-like|
+        A representation of a particle or a `~astropy.units.Quantity`
+        with units of mass.
 
-    v : `~astropy.units.Quantity`
+    V : `~astropy.units.Quantity`
         The velocity in units convertible to meters per second.
+
+    mass_numb : integer, |keyword-only|, optional
+        The mass number of an isotope, if not provided to ``particle``.
+
+    Z : integer, |keyword-only|, optional
+        The |charge number| of an ion or neutral atom, if not provided
+        to ``particle``.
+
+    Other Parameters
+    ----------------
+    m : `~astropy.units.Quantity`, |keyword-only|, optional
+        The mass of relativistic body, if ``particle`` is not provided.
+        Deprecated. Provide the mass to ``particle`` instead of ``m``.
+
+    v : `~astropy.units.Quantity`, |keyword-only|, optional
+        The velocity of the relativistic body. Deprecated. Provide the
+        velocity to ``V`` instead of ``v``.
 
     Returns
     -------
     `~astropy.units.Quantity`
-        The relativistic energy (in joules) of an object of mass ``m``
-        moving at velocity ``v``.
+        The total energy of the relativistic body.
 
     Raises
     ------
@@ -141,7 +168,7 @@ def relativistic_energy(m: u.kg, v: u.m / u.s) -> u.Joule:
 
     Examples
     --------
-    >>> from astropy import units as u
+    >>> import astropy.units as u
     >>> velocity = 1.4e8 * u.m / u.s
     >>> mass = 1 * u.kg
     >>> relativistic_energy(mass, velocity)
@@ -150,13 +177,9 @@ def relativistic_energy(m: u.kg, v: u.m / u.s) -> u.Joule:
     <Quantity inf J>
     >>> relativistic_energy(1 * u.mg, 1.4e8 * u.m / u.s)
     <Quantity 1.01638929e+11 J>
-    >>> relativistic_energy(-mass, velocity)
-    Traceback (most recent call last):
-        ...
-    ValueError: The argument 'm' to function relativistic_energy() can not contain negative numbers.
     """
-    γ = Lorentz_factor(v)
-    return γ * m * c**2
+    γ = Lorentz_factor(V)
+    return γ * particle.mass * c**2
 
 
 class RelativisticBody:
@@ -166,7 +189,7 @@ class RelativisticBody:
 
     Parameters
     ----------
-    particle : |ParticleLike|, |CustomParticle|, |ParticleList|, or |Quantity|
+    particle : |particle-like|
         A representation of a particle from which to get the mass
         of the relativistic body. If it is a |Quantity|, then it must
         have units of mass and describe the body's rest mass.
@@ -279,6 +302,7 @@ class RelativisticBody:
             value = u.Quantity(value, dtype=self._dtype)
         setattr(self, name, value)
 
+    @particle_input
     @validate_quantities(
         V={"can_be_inf": False, "none_shall_pass": True},
         momentum={"can_be_inf": False, "none_shall_pass": True},
@@ -287,7 +311,7 @@ class RelativisticBody:
     )
     def __init__(
         self,
-        particle: Union[ParticleLike, u.Quantity],
+        particle: ParticleLike,
         V: u.m / u.s = None,
         momentum: u.kg * u.m / u.s = None,
         *,
@@ -300,7 +324,7 @@ class RelativisticBody:
         dtype: Optional[DTypeLike] = np.longdouble,
     ):
 
-        self._particle = _physical_particle_factory(particle, Z=Z, mass_numb=mass_numb)
+        self._particle = particle
         self._dtype = dtype
 
         velocity_like_inputs = {
