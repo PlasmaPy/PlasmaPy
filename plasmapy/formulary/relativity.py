@@ -106,7 +106,7 @@ def relativistic_energy(
     Calculate the sum of the mass energy and kinetic energy of a
     relativistic body.
 
-    The total energy of a relativistic body is
+    The total energy of a relativistic body is:
 
     .. math::
 
@@ -118,8 +118,9 @@ def relativistic_energy(
     Parameters
     ----------
     particle : |particle-like|
-        A representation of a particle or a `~astropy.units.Quantity`
-        with units of mass.
+        A representation of a particle from which to get the mass
+        of the relativistic body. If it is a |Quantity|, then it must
+        have units of mass and describe the body's rest mass.
 
     V : `~astropy.units.Quantity`
         The velocity in units convertible to meters per second.
@@ -139,7 +140,7 @@ def relativistic_energy(
     Raises
     ------
     `~astropy.units.UnitConversionError`
-        If the ``V`` is not in appropriate units.
+        If +``V`` is not in appropriate units.
 
     `~plasmapy.utils.exceptions.RelativityError`
         If ``V`` exceeds the speed of light.
