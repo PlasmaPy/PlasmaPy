@@ -101,7 +101,7 @@ def relativistic_energy(
     *,
     mass_numb: Optional[Integral] = None,
     Z: Optional[Integral] = None,
-) -> u.Joule:
+) -> u.J:
     """
     Calculate the sum of the mass energy and kinetic energy of a
     relativistic body.
@@ -131,16 +131,6 @@ def relativistic_energy(
         The |charge number| of an ion or neutral atom, if not provided
         to ``particle``.
 
-    Other Parameters
-    ----------------
-    m : `~astropy.units.Quantity`, |keyword-only|, optional
-        The mass of relativistic body, if ``particle`` is not provided.
-        Deprecated. Provide the mass to ``particle`` instead of ``m``.
-
-    v : `~astropy.units.Quantity`, |keyword-only|, optional
-        The velocity of the relativistic body. Deprecated. Provide the
-        velocity to ``V`` instead of ``v``.
-
     Returns
     -------
     `~astropy.units.Quantity`
@@ -148,18 +138,11 @@ def relativistic_energy(
 
     Raises
     ------
-    `TypeError`
-        If input arguments are not instances `~astropy.units.Quantity` or
-        convertible to a `~astropy.units.Quantity`.
-
     `~astropy.units.UnitConversionError`
-        If the ``v`` is not in appropriate units.
+        If the ``V`` is not in appropriate units.
 
-    `ValueError`
-        If the magnitude of ``m`` is negative or arguments are complex.
-
-    :exc:`~plasmapy.utils.exceptions.RelativityError`
-        If the velocity ``v`` is greater than the speed of light.
+    `~plasmapy.utils.exceptions.RelativityError`
+        If ``V`` exceeds the speed of light.
 
     Warns
     -----
