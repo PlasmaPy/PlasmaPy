@@ -74,7 +74,7 @@ def test_Lorentz_factor_warnings(speed, warning):
     ],
 )
 def test_relativistic_energy(velocity, mass, expected):
-    actual = relativistic_energy(m=mass, v=velocity)
+    actual = relativistic_energy(particle=mass, V=velocity)
     assert u.allclose(actual, expected, rtol=1e-6, atol=1e-6 * u.J, equal_nan=True)
     assert expected.unit == u.J
 
@@ -89,7 +89,7 @@ def test_relativistic_energy(velocity, mass, expected):
 )
 def test_relativistic_energy_exceptions(velocity, mass, exception):
     with pytest.raises(exception):
-        relativistic_energy(v=velocity, m=mass)
+        relativistic_energy(V=velocity, particle=mass)
 
 
 @pytest.mark.parametrize(
@@ -101,7 +101,7 @@ def test_relativistic_energy_exceptions(velocity, mass, exception):
 )
 def test_relativistic_energy_warnings(velocity, mass, warning):
     with pytest.warns(warning):
-        relativistic_energy(v=velocity, m=mass)
+        relativistic_energy(V=velocity, particle=mass)
 
 
 proton_at_half_c_inputs = [
