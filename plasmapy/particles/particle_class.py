@@ -2082,10 +2082,11 @@ class CustomParticle(AbstractPhysicalParticle):
         Z: Optional[Real] = None,
     ):
 
+        # TODO py3.10 replace ifology with structural pattern matching
         if isinstance(charge, Real):
             warnings.warn(
-                "Providing a real number to 'charge' is deprecated. Use "
-                "'Z' as a keyword argument instead.",
+                "Providing a real number to 'charge' is deprecated. To specify the charge as a multiple of the elementary charge, use "
+                "'Z' as a keyword argument instead, or pass e.g. `2 * u.e.si` into `charge`.",
                 PlasmaPyDeprecationWarning,
             )
 
@@ -2105,7 +2106,7 @@ class CustomParticle(AbstractPhysicalParticle):
                 f"{mass} and a charge of {charge}."
             ) from exc
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         """
         Return a string representation of a |CustomParticle|.
 
