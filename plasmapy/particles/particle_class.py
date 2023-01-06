@@ -2083,12 +2083,6 @@ class CustomParticle(AbstractPhysicalParticle):
     ):
 
         # TODO py3.10 replace ifology with structural pattern matching
-        if isinstance(charge, Real):
-            warnings.warn(
-                "Providing a real number to 'charge' is deprecated. To specify the charge as a multiple of the elementary charge, use "
-                "'Z' as a keyword argument instead, or pass e.g. `2 * u.e.si` into `charge`.",
-                PlasmaPyDeprecationWarning,
-            )
 
         if Z is not None and charge is not None:
             raise TypeError("CustomParticle can accept only one of Z and charge.")
@@ -2194,9 +2188,10 @@ class CustomParticle(AbstractPhysicalParticle):
                 f"CustomParticle charge set to {q} times the elementary charge."
             )
             warnings.warn(
-                "The ability to provide a real number to the 'charge' "
-                "parameter to has been deprecated and will be removed "
-                "in a future release of PlasmaPy. Use 'Z' instead.",
+                "Providing a real number to 'charge' is deprecated. To "
+                "specify the charge as a multiple of the elementary "
+                "charge, use 'Z' as a keyword argument instead, or pass, "
+                "e.g., '2 * astropy.constants.e.si' into 'charge'.",
                 PlasmaPyDeprecationWarning,
             )
         elif isinstance(q, u.Quantity):
@@ -2225,6 +2220,10 @@ class CustomParticle(AbstractPhysicalParticle):
     def charge_number(self) -> Real:
         """The ratio of the charge to the elementary charge."""
         return self.charge / const.e.si
+
+    @charge_number.setter
+    def charge_number(self, Z: int):
+        self._charge = Z * const.e.si
 
     @property
     def mass(self) -> u.kg:
