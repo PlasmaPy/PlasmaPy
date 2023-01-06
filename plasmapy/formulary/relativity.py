@@ -112,7 +112,7 @@ def relativistic_energy(
 
         E = γ m c^2,
 
-    where :math:`m` is the mass of the body and :math:`γ` is its
+    where :math:`m` is the rest mass of the body and :math:`γ` is its
     `~plasmapy.formulary.relativity.Lorentz_factor`.
 
     Parameters
