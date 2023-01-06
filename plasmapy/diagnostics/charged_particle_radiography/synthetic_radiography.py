@@ -218,31 +218,33 @@ class Tracker:
                         f"number of grids ({len(self.grids)})."
                     )
 
-                if len(elem) != 2:
-                    raise ValueError(
-                        "All tuples in the mass_stopping_power"
-                        "list must have two elements."
-                    )
-                if not elem[0].unit.is_equivalent(u.J):
-                    raise ValueError(
-                        "First element of each tuple in the "
-                        "mass_stopping_power list must be an"
-                        "axis with units of energy."
-                    )
+                if elem is not None:
 
-                if not elem[1].unit.is_equivalent(u.J * u.m**2 / u.kg):
-                    raise ValueError(
-                        "Second element of each tuple in the "
-                        "mass_stopping_power list must be an"
-                        "axis with units convertable to "
-                        "J m^2/kg."
-                    )
+                    if len(elem) != 2:
+                        raise ValueError(
+                            "All tuples in the mass_stopping_power"
+                            "list must have two elements."
+                        )
+                    if not elem[0].unit.is_equivalent(u.J):
+                        raise ValueError(
+                            "First element of each tuple in the "
+                            "mass_stopping_power list must be an"
+                            "axis with units of energy."
+                        )
 
-                if elem[0].size != elem[1].size:
-                    raise ValueError(
-                        "The energy axis and stopping power arrays "
-                        "must have equal size."
-                    )
+                    if not elem[1].unit.is_equivalent(u.J * u.m**2 / u.kg):
+                        raise ValueError(
+                            "Second element of each tuple in the "
+                            "mass_stopping_power list must be an"
+                            "axis with units convertable to "
+                            "J m^2/kg."
+                        )
+
+                    if elem[0].size != elem[1].size:
+                        raise ValueError(
+                            "The energy axis and stopping power arrays "
+                            "must have equal size."
+                        )
 
             self.mass_stopping_power = mass_stopping_power
 
@@ -1092,7 +1094,7 @@ class Tracker:
             By += _By
             Bz += _Bz
 
-            if self.mass_L_rad is not None:
+            if self.mass_L_rad is not None and self.mass_L_rad[i] is not None:
                 L_rad[:, i] = (self.mass_L_rad[i] / _rho[:, i]).to(u.m)
 
         # Create arrays of E and B as required by push algorithm
@@ -1112,19 +1114,20 @@ class Tracker:
         # (since it assumes a Maxwellian angle spread) and is a bit
         # computationally intensive
         # (when drawing the angles).
+
         if self.mass_L_rad is not None:
-            # Carry out particle scattering calculation
-            vmag = np.linalg.norm(self.v[self._track_ind, :], axis=-1)
-            L_m = vmag * dt  # Length scale for the next time step
-
-            # Since theta \propto \sqrt(rho/L_rad_mass),
-            # theta is not a linear combination of rho's and so we
-            # need to apply scattering separately for each material
             for i in range(self.num_grids):
-
-                # Scattering in particular grids can be turned off by setting those
-                # to 'None'
                 if self.mass_L_rad[i] is not None:
+                    # Carry out particle scattering calculation
+                    vmag = np.linalg.norm(self.v[self._track_ind, :], axis=-1)
+                    L_m = vmag * dt  # Length scale for the next time step
+
+                    # Since theta \propto \sqrt(rho/L_rad_mass),
+                    # theta is not a linear combination of rho's and so we
+                    # need to apply scattering separately for each material
+
+                    # Scattering in particular grids can be turned off by setting those
+                    # to 'None'
                     sigmas = (
                         2.804e-12
                         / (self.m * vmag**2)
@@ -1157,15 +1160,16 @@ class Tracker:
         # given the interpolated density
         if self.mass_stopping_power is not None:
             for i in range(self.num_grids):
-                vmag = np.linalg.norm(self.v[self._track_ind, :], axis=-1)
-                L_m = vmag * dt  # Length scale for the next time step
 
-                KE = 0.5 * self.m * vmag**2
+                if self.mass_stopping_power[i] is not None:
+                    vmag = np.linalg.norm(self.v[self._track_ind, :], axis=-1)
+                    L_m = vmag * dt  # Length scale for the next time step
 
-                eaxis = self.mass_stopping_power[i][0].to(u.J).value
-                sp = self.mass_stopping_power[i][1].to(u.J * u.m**2 / u.kg).value
+                    KE = 0.5 * self.m * vmag**2
 
-                if self.mass_stopping_power is not None:
+                    eaxis = self.mass_stopping_power[i][0].to(u.J).value
+                    sp = self.mass_stopping_power[i][1].to(u.J * u.m**2 / u.kg).value
+
                     mass_stopping_power = np.interp(KE, eaxis, sp)  # J m^2/kg
                     # J/m
                     linear_stopping_power = (

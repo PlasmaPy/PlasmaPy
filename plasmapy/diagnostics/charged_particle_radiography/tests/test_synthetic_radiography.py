@@ -1062,5 +1062,5 @@ if __name__ == "__main__":
     # run_mesh_example()
     # test_add_wire_mesh()
     # test_multiple_grids()
-    test_proton_scattering()
-    # test_particle_stopping()
+    # test_proton_scattering()
+    test_particle_stopping()
