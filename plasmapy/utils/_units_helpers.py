@@ -16,7 +16,7 @@ def _get_physical_type_dict(
     only_quantities: Optional[bool] = False,
     numbers_become_quantities: Optional[bool] = False,
     strict: Optional[bool] = False,
-    allowed_physical_types: Optional[Iterable[str, u.PhysicalType]] = None,
+    allowed_physical_types: Optional[set[str, u.PhysicalType]] = None,
 ) -> Dict[u.PhysicalType, u.Quantity]:
     """
     Return a `dict` that contains `~astropy.units.PhysicalType` objects
@@ -47,7 +47,7 @@ def _get_physical_type_dict(
         If `True`, raise a `TypeError` if ``iterable`` provides an
         object that does not have a physical type.
 
-    allowed_physical_types : collection of `str` or `~astropy.units.PhysicalType`
+    allowed_physical_types : `set` of `~astropy.units.PhysicalType`
         If provided, objects
 
     Returns
@@ -82,7 +82,7 @@ def _get_physical_type_dict(
             if strict:
                 raise TypeError(f"{obj} does not have a physical type.") from exc
         else:
-            if physical_type not in allowed_physical_types:
+            if allowed_physical_types and physical_type not in allowed_physical_types:
                 raise ValueError(
                     f"{obj} has a physical type of {physical_type}, but "
                     "only the following physical types are allowed: "

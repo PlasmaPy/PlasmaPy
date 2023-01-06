@@ -81,7 +81,7 @@ test_cases_exceptions = [
         expected=TypeError,
     ),
     test_case(
-        collection=(6 * u.m, 6),
+        collection=(6 * u.m, "not a Quantity"),
         kwargs={"strict": True, "only_quantities": False},
         expected=TypeError,
     ),
