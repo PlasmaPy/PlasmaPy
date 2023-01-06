@@ -945,10 +945,6 @@ def test_that_object_can_be_dict_key(key):
     assert dictionary[key] is value
 
 
-# TODO: These tests may be refactored using forthcoming functionality in
-#       plasmapy.tests.helpers.  It may be necessary to case the expected
-#       results as certain types (e.g., numpy.float64).
-
 customized_particle_tests = [
     (DimensionlessParticle, {"mass": 1.0, "charge": -1.0}, "mass", 1.0),
     (DimensionlessParticle, {"mass": 0.0, "charge": -1.0}, "charge", -1.0),
@@ -967,11 +963,15 @@ customized_particle_tests = [
     (CustomParticle, {"mass": "100.0 g"}, "mass", 100.0 * u.g),
     (CustomParticle, {"charge": -np.inf * u.kC}, "charge", -np.inf * u.C),
     (CustomParticle, {"charge": "5.0 C"}, "charge", 5.0 * u.C),
+    (CustomParticle, {"Z": 1}, "charge", const.e.si),
+    (CustomParticle, {"Z": 1.5}, "charge", 1.5 * const.e.si),
+    (CustomParticle, {"Z": 1.5}, "charge_number", 1.5),
+    (CustomParticle, {"charge": 1.3 * const.e.si}, "charge_number", 1.3),
 ]
 
 
 @pytest.mark.parametrize("cls, kwargs, attr, expected", customized_particle_tests)
-def test_customized_particles(cls, kwargs, attr, expected):
+def test_custom_particles(cls, kwargs, attr, expected):
     """Test the attributes of dimensionless and custom particles."""
     instance = cls(**kwargs)
     value = getattr(instance, attr)
@@ -1073,6 +1073,7 @@ custom_particle_errors = [
     (CustomParticle, {"mass": np.complex128(5 + 2j) * u.kg}, InvalidParticleError),
     (CustomParticle, {"charge": "not a charge"}, InvalidParticleError),
     (CustomParticle, {"charge": "5.0 km"}, InvalidParticleError),
+    (CustomParticle, {"charge": 1 * u.C, "Z": -1}, TypeError),
 ]
 
 
@@ -1380,12 +1381,13 @@ particle_json_repr_table = [
     ),
     (
         CustomParticle,
-        {"mass": 5.12 * u.kg, "charge": 6.2 * u.C, "symbol": "ξ"},
+        {"mass": 5.12 * u.kg, "charge": 6.2e-19 * u.C, "symbol": "ξ"},
         '{"plasmapy_particle": {"type": "CustomParticle", \
         "module": "plasmapy.particles.particle_class", \
         "date_created": "...", "__init__": {\
             "args": [], \
-            "kwargs": {"mass": "5.12 kg", "charge": "6.2 C", "symbol": "ξ"}}}}',
+            "kwargs": {"mass": "5.12 kg", "charge": "6.2e-19 C", \
+            "charge_number": "3.869735626165673", "symbol": "ξ"}}}}',
     ),
     (
         DimensionlessParticle,
@@ -1473,6 +1475,22 @@ def test_CustomParticle_cmp():
     assert particle1 != other, "CustomParticle instances should not be equal, but are."
 
     assert particle1 != 1
+
+
+@pytest.mark.parametrize(
+    "attr, input",
+    [
+        ("charge", 2 * u.C),
+        ("mass", 2 * u.kg),
+        ("charge_number", 2),
+        ("symbol", "😺"),
+    ],
+)
+def test_CustomParticle_setters(attr, input):
+    custom_particle = CustomParticle()
+    setattr(custom_particle, attr, input)
+    output = getattr(custom_particle, attr)
+    assert input == output
 
 
 test_molecule_table = [
