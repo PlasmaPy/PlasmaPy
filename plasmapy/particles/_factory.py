@@ -99,7 +99,14 @@ def _physical_particle_factory(
         raise TypeError("Particle information has not been provided.")
 
     for particle_type in (Particle, CustomParticle, ParticleList):
-        with contextlib.suppress(TypeError, InvalidParticleError):
+        with contextlib.suppress(TypeError, InvalidParticleError, ValueError):
+
+            # Do not interpret a string as the first positional argument
+            # as the symbol for a CustomParticle or something to be
+            # iterated over for a ParticleList.
+            if particle_type is not Particle and args and isinstance(args[0], str):
+                continue
+
             return particle_type(*args, **kwargs)
 
     if args and isinstance(args[0], u.Quantity):
