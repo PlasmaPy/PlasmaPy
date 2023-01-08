@@ -44,6 +44,8 @@ def various_particles():
             CustomParticle(),
             CustomParticle(mass=7 * u.kg),
             CustomParticle(charge=11 * u.C),
+            5 * u.kg,
+            5 * u.C,
         ]
     )
 

@@ -210,8 +210,9 @@ class ParticleList(collections.UserList):
 
     def append(self, particle: ParticleLike):
         """Append a particle to the end of the |ParticleList|."""
-        # TODO: use particle_input when it works with CustomParticle and ParticleLike
-        if not isinstance(particle, (Particle, CustomParticle)):
+        if isinstance(particle, u.Quantity):
+            particle = CustomParticle(particle)
+        elif not isinstance(particle, (Particle, CustomParticle)):
             particle = Particle(particle)
         self.data.append(particle)
 
@@ -270,8 +271,9 @@ class ParticleList(collections.UserList):
 
     def insert(self, index, particle: ParticleLike):
         """Insert a particle before an index."""
-        # TODO: use particle_input when it works with CustomParticle and ParticleLike
-        if not isinstance(particle, (Particle, CustomParticle)):
+        if isinstance(particle, u.Quantity):
+            particle = CustomParticle(particle)
+        elif not isinstance(particle, (Particle, CustomParticle)):
             particle = Particle(particle)
         self.data.insert(index, particle)
 
