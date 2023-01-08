@@ -2075,8 +2075,8 @@ class CustomParticle(AbstractPhysicalParticle):
     def __init__(
         self,
         *quantities,
-        mass: Optional[u.kg] = None,
         charge: Optional[u.C] = None,
+        mass: Optional[u.kg] = None,
         symbol: Optional[str] = None,
         Z: Optional[Real] = None,
     ):
