@@ -2056,20 +2056,21 @@ class CustomParticle(AbstractPhysicalParticle):
     >>> from astropy import units as u
     >>> from plasmapy.particles import CustomParticle
 
-    The mass and charge may be provided as positional arguments.
-
     >>> custom_particle = CustomParticle(9.2e-19 * u.C, 1.2e-26 * u.kg, "φ")
     >>> custom_particle.mass
     <Quantity 1.2e-26 kg>
     >>> custom_particle.charge
     <Quantity 9.2e-19 C>
+    >>> custom_particle.symbol
+    'φ'
 
     >>> average_particle = CustomParticle(
     ...     mass=1.5e-26 * u.kg,
     ...     Z = -1.5,
-    ...     symbol="",
+    ...     symbol="X",
     ... )
-
+    >>> average_particle.charge
+    <Quantity -2.40326...e-19 C>
     """
 
     def __init__(
@@ -2088,12 +2089,23 @@ class CustomParticle(AbstractPhysicalParticle):
                 symbol = quantities[-1]
                 quantities = list(quantities[:-1])
 
-            physical_type_dict = _get_physical_type_dict(
-                quantities,
-                only_quantities=True,
-                strict=True,
-                allowed_physical_types={u.physical.mass, u.physical.electrical_charge},
-            )
+            try:
+                physical_type_dict = _get_physical_type_dict(
+                    quantities,
+                    only_quantities=True,
+                    strict=True,
+                    allowed_physical_types={
+                        u.physical.mass,
+                        u.physical.electrical_charge,
+                    },
+                )
+            except (TypeError, ValueError) as exc:
+                raise InvalidParticleError(
+                    "Unable to create a CustomParticle based off of the "
+                    "following positional arguments, which should be a"
+                    f"Quantity representing electrical charge and/or a"
+                    f"Quantity representing mass: {quantities}."
+                ) from exc
 
             if u.physical.electrical_charge in physical_type_dict:
                 if charge is not None:
