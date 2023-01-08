@@ -38,6 +38,7 @@ from plasmapy.particles.exceptions import (
     ParticleWarning,
 )
 from plasmapy.utils import PlasmaPyDeprecationWarning, roman
+from plasmapy.utils._units_helpers import _get_physical_type_dict
 
 _classification_categories = {
     "lepton",
@@ -2016,21 +2017,27 @@ class CustomParticle(AbstractPhysicalParticle):
 
     Parameters
     ----------
-    mass : ~astropy.units.Quantity, optional
-        The mass of the custom particle in units of mass.  Defaults to
-        |nan| kg.
+    *quantities : tuple of ~astropy.units.Quantity or `str`
+        The mass, electrical charge, and/or symbol of the custom
+        particle, provided as positional arguments. The mass and charge
+        may be provided in either order, but the symbol may only be the
+        final positional argument.
 
-    charge : ~astropy.units.Quantity or ~numbers.Real, optional
-        The electric charge of the custom particle.  If provided as a
-        `~astropy.units.Quantity`, then it must be in units of electric
-        charge. Defaults to |nan| C.
+    charge : ~astropy.units.Quantity or ~numbers.Real, |keyword-only|, optional
+        The electrical charge of the custom particle, if not provided in
+        ``quantities`` as a positional argument.
+
+    mass : ~astropy.units.Quantity, |keyword-only|, |keyword-only|, optional
+        The mass of the custom particle, if not provided in
+        ``quantities`` as a positional argument.
+
+    symbol : str, |keyword-only|, |keyword-only|, optional
+        The symbol to be assigned to the custom particle, if not
+        provided as the final positional argument.
 
     Z : ~numbers.Real, optional, |keyword-only|
-        The :term:`charge number`, which is equal to the ratio of the
-        charge to the elementary charge.
-
-    symbol : str, optional
-        The symbol to be assigned to the custom particle.
+        The |charge number|, which is equal to the ratio of the charge
+        to the elementary charge.
 
     Raises
     ------
@@ -2042,47 +2049,66 @@ class CustomParticle(AbstractPhysicalParticle):
     --------
     ~plasmapy.particles.particle_class.Particle
     ~plasmapy.particles.particle_class.DimensionlessParticle
-
-    Notes
-    -----
-    If the charge or mass is not specified, then the corresponding value
-    will be set to |nan| in the appropriate units.
+    ~plasmapy.particles.particle_collections.ParticleList
 
     Examples
     --------
     >>> from astropy import units as u
     >>> from plasmapy.particles import CustomParticle
-    >>> custom_particle = CustomParticle(
-    ...     mass=1.2e-26 * u.kg,
-    ...     charge=9.2e-19 * u.C,
-    ... )
+
+    The mass and charge may be provided as positional arguments.
+
+    >>> custom_particle = CustomParticle(9.2e-19 * u.C, 1.2e-26 * u.kg, "φ")
     >>> custom_particle.mass
     <Quantity 1.2e-26 kg>
     >>> custom_particle.charge
     <Quantity 9.2e-19 C>
+
     >>> average_particle = CustomParticle(
     ...     mass=1.5e-26 * u.kg,
     ...     Z = -1.5,
-    ...     symbol="Ξ",
+    ...     symbol="",
     ... )
-    >>> average_particle.mass
-    <Quantity 1.5e-26 kg>
-    >>> average_particle.charge
-    <Quantity -2.40326...e-19 C>
-    >>> average_particle.symbol
-    'Ξ'
+
     """
 
     def __init__(
         self,
-        mass: u.kg = None,
-        charge: u.C = None,
+        *quantities,
+        mass: Optional[u.kg] = None,
+        charge: Optional[u.C] = None,
         symbol: Optional[str] = None,
-        *,
         Z: Optional[Real] = None,
     ):
 
         # TODO py3.10 replace ifology with structural pattern matching
+
+        if quantities:
+            if isinstance(quantities[-1], str) and symbol is None:
+                symbol = quantities[-1]
+                quantities = list(quantities[:-1])
+
+            physical_type_dict = _get_physical_type_dict(
+                quantities,
+                only_quantities=True,
+                strict=True,
+                allowed_physical_types={u.physical.mass, u.physical.electrical_charge},
+            )
+
+            if u.physical.electrical_charge in physical_type_dict:
+                if charge is not None:
+                    raise TypeError(
+                        "Cannot provide charge as both a positional and keyword "
+                        "argument."
+                    )
+                charge = physical_type_dict[u.physical.electrical_charge]
+
+            if u.physical.mass in physical_type_dict:
+                if mass is not None:
+                    raise TypeError(
+                        "Cannot provide mass as both a positional and keyword argument."
+                    )
+                mass = physical_type_dict[u.physical.mass]
 
         if Z is not None and charge is not None:
             raise TypeError("CustomParticle can accept only one of Z and charge.")
