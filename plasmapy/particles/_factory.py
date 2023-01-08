@@ -102,7 +102,7 @@ def _physical_particle_factory(
         with contextlib.suppress(TypeError, InvalidParticleError):
             return particle_type(*args, **kwargs)
 
-    if isinstance(args[0], u.Quantity):
+    if args and isinstance(args[0], u.Quantity):
         physical_type = u.get_physical_type(args[0])
         if physical_type not in (electrical_charge, mass):
             raise u.UnitConversionError(
@@ -110,7 +110,9 @@ def _physical_particle_factory(
                 f"physical type of {physical_type}."
             )
 
-    if not isinstance(args[0], (str, Integral, CustomParticle, Particle, ParticleList)):
+    if args and not isinstance(
+        args[0], (str, Integral, CustomParticle, Particle, ParticleList)
+    ):
         raise TypeError("Invalid type for particle.")
 
     raise InvalidParticleError(
