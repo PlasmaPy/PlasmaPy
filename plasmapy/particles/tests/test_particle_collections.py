@@ -492,3 +492,22 @@ def test_particle_list_with_no_arguments():
     empty_particle_list = ParticleList()
     assert isinstance(empty_particle_list, ParticleList)
     assert len(empty_particle_list) == 0
+
+
+@pytest.mark.parametrize(
+    "quantities",
+    (
+        (1, 2) * u.kg,
+        (3, 4) * u.C,
+        (5 * u.kg, 6 * u.C),
+        (7 * u.C, 8 * u.kg),
+    ),
+)
+def test_particle_list_from_quantity_array(quantities):
+    """
+    Test that ParticleList can accept a Quantity array of an appropriate
+    physical type.
+    """
+    particle_list = ParticleList(quantities)
+    assert particle_list[0] == CustomParticle(quantities[0])
+    assert particle_list[1] == CustomParticle(quantities[1])

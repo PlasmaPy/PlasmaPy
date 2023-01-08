@@ -84,6 +84,17 @@ class ParticleList(collections.UserList):
     >>> particle_list + "deuteron"
     ParticleList(['e-', 'e+', 'D 1+'])
 
+    A |ParticleList| can also be created using `~astropy.units.Quantity`
+    objects.
+
+    >>> import astropy.units as u
+    >>> quantities = [2.3e-26 * u.kg, 4.8e-19 * u.C]
+    >>> particle_list = ParticleList(quantities)
+    >>> particle_list.mass
+    <Quantity [2.3e-26,     nan] kg>
+    >>> particle_list.charge
+    <Quantity [    nan, 4.8e-19] C>
+
     Normal `list` methods may also be used on |ParticleList| objects.
     When a |particle-like| object is appended to a |ParticleList|, that
     object will be cast into a |Particle| or |CustomParticle|.
@@ -121,6 +132,14 @@ class ParticleList(collections.UserList):
                 raise TypeError(
                     "ParticleList instances cannot include dimensionless particles."
                 )
+            elif isinstance(obj, u.Quantity):
+                physical_type = u.get_physical_type(obj)
+                if physical_type not in (u.physical.mass, u.physical.electrical_charge):
+                    raise InvalidParticleError(
+                        f"{obj} does not have a physical type of mass "
+                        f"or electrical charge."
+                    )
+                new_particles.append(CustomParticle(obj))
             else:
                 try:
                     new_particles.append(Particle(obj))
