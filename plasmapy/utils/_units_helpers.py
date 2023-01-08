@@ -43,12 +43,14 @@ def _get_physical_type_dict(
         dimensionless |Quantity| instances. If `False`,
         `~numbers.Number` objects will be skipped. Defaults to `False`.
 
-    strict : `bool`, |keyword-only, default: False
+    strict : `bool`, |keyword-only|, default: False
         If `True`, raise a `TypeError` if ``iterable`` provides an
         object that does not have a physical type.
 
     allowed_physical_types : `set` of `~astropy.units.PhysicalType`
-        If provided, objects
+        If provided, then if any objects provided by ``iterable`` do not
+        have a physical type in ``allowed_physical_types``, then a
+        ValueError will be raised.
 
     Returns
     -------
