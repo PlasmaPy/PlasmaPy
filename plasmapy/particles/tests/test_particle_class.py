@@ -1092,6 +1092,17 @@ def test_customized_particles_errors(cls, kwargs, exception):
         pytest.fail(f"{cls.__name__}(**{kwargs}) did not raise: {exception.__name__}.")
 
 
+@pytest.mark.parametrize("unit, parameter", [("mass", u.kg), ("charge", u.C)])
+def test_custom_particle_args_kwargs(unit, parameter):
+    """
+    Test that a TypeError is raised when the mass or charge is provided
+    as both a positional argument and as a keyword argument.
+    """
+    kwargs = {parameter: unit}
+    with pytest.raises(TypeError):
+        CustomParticle(1 * unit, **kwargs)
+
+
 customized_particle_repr_table = [
     (
         CustomParticle,
