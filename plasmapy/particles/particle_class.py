@@ -2073,6 +2073,61 @@ class CustomParticle(AbstractPhysicalParticle):
     <Quantity -2.40326...e-19 C>
     """
 
+    @staticmethod
+    def _process_args(
+        quantities: tuple,
+        charge: Optional[u.C],
+        mass: Optional[u.kg],
+        symbol: Optional[str],
+    ):
+        """
+        Take the positional and keyword arguments provided to
+        |CustomParticle|, validate them, and consolidate them into
+        the charge, mass, and symbol. For a description of the
+        parameters, see the docstring for |CustomParticle|.
+        """
+
+        if isinstance(quantities[-1], str) and symbol is None:
+            symbol = quantities[-1]
+            quantities = list(quantities[:-1])
+
+        try:
+            physical_type_dict = _get_physical_type_dict(
+                quantities,
+                only_quantities=True,
+                strict=True,
+                allowed_physical_types={
+                    u.physical.mass,
+                    u.physical.electrical_charge,
+                },
+            )
+        except (TypeError, ValueError) as exc:
+            raise InvalidParticleError(
+                "Unable to create a CustomParticle based off of the "
+                "following positional arguments, which should be a"
+                f"Quantity representing electrical charge and/or a"
+                f"Quantity representing mass: {quantities}."
+            ) from exc
+
+        # TODO py3.10 replace ifology with structural pattern matching
+
+        if u.physical.electrical_charge in physical_type_dict:
+            if charge is not None:
+                raise TypeError(
+                    "Cannot provide charge as both a positional and keyword "
+                    "argument."
+                )
+            charge = physical_type_dict[u.physical.electrical_charge]
+
+        if u.physical.mass in physical_type_dict:
+            if mass is not None:
+                raise TypeError(
+                    "Cannot provide mass as both a positional and keyword argument."
+                )
+            mass = physical_type_dict[u.physical.mass]
+
+        return charge, mass, symbol
+
     def __init__(
         self,
         *quantities,
@@ -2082,45 +2137,8 @@ class CustomParticle(AbstractPhysicalParticle):
         Z: Optional[Real] = None,
     ):
 
-        # TODO py3.10 replace ifology with structural pattern matching
-
         if quantities:
-            if isinstance(quantities[-1], str) and symbol is None:
-                symbol = quantities[-1]
-                quantities = list(quantities[:-1])
-
-            try:
-                physical_type_dict = _get_physical_type_dict(
-                    quantities,
-                    only_quantities=True,
-                    strict=True,
-                    allowed_physical_types={
-                        u.physical.mass,
-                        u.physical.electrical_charge,
-                    },
-                )
-            except (TypeError, ValueError) as exc:
-                raise InvalidParticleError(
-                    "Unable to create a CustomParticle based off of the "
-                    "following positional arguments, which should be a"
-                    f"Quantity representing electrical charge and/or a"
-                    f"Quantity representing mass: {quantities}."
-                ) from exc
-
-            if u.physical.electrical_charge in physical_type_dict:
-                if charge is not None:
-                    raise TypeError(
-                        "Cannot provide charge as both a positional and keyword "
-                        "argument."
-                    )
-                charge = physical_type_dict[u.physical.electrical_charge]
-
-            if u.physical.mass in physical_type_dict:
-                if mass is not None:
-                    raise TypeError(
-                        "Cannot provide mass as both a positional and keyword argument."
-                    )
-                mass = physical_type_dict[u.physical.mass]
+            charge, mass, symbol = self._process_args(quantities, charge, mass, symbol)
 
         if Z is not None and charge is not None:
             raise TypeError("CustomParticle can accept only one of Z and charge.")
