@@ -165,7 +165,7 @@ def test_particle_list_insert(various_particles):
     assert _everything_is_particle_or_custom_particle(various_particles)
 
 
-invalid_particles = (0, "not a particle", DimensionlessParticle())
+invalid_particles = (0, "not a particle", DimensionlessParticle(), 5 * u.m)
 
 
 def test_particle_list_instantiate_with_invalid_particles():
