@@ -1092,8 +1092,8 @@ def test_customized_particles_errors(cls, kwargs, exception):
         pytest.fail(f"{cls.__name__}(**{kwargs}) did not raise: {exception.__name__}.")
 
 
-@pytest.mark.parametrize("unit, parameter", [("mass", u.kg), ("charge", u.C)])
-def test_custom_particle_args_kwargs(unit, parameter):
+@pytest.mark.parametrize("parameter, unit", [("mass", u.kg), ("charge", u.C)])
+def test_custom_particle_args_kwargs(parameter, unit):
     """
     Test that a TypeError is raised when the mass or charge is provided
     as both a positional argument and as a keyword argument.
