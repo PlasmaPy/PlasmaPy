@@ -117,6 +117,7 @@ in parentheses are `ORCID author identifiers <https://orcid.org>`__.
 * `Silvina Guidoni <https://www.american.edu/cas/faculty/guidoni.cfm>`_
 * :user:`Sixue Xu <hzxusx>`
 * :user:`Steve Richardson <arichar6>` (:orcid:`0000-0002-3056-6334`)
+* :user:`Steve Vincena <svincena>` (:orcid:`0000-0002-6468-5710`)
 * :user:`Stuart Mumford <Cadair>` (:orcid:`0000-0003-4217-4642`)
 * :user:`Stuart Sobeske <Sobeskes>`
 * :user:`Suzanne Nie <suzannenie>`
