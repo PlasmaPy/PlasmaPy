@@ -1,0 +1,5 @@
+Enabled |ParticleList| to accept an iterable containing |Quantity|
+objects with a physical type of mass or electrical charge. For
+example, passing a |Quantity| array containing masses or electrical
+charges will create a |ParticleList| containing |CustomParticle|
+instances corresponding to each mass or charge.

@@ -1,0 +1,1 @@
+Enabled the `~plasmapy.particles.particle_collections.ParticleList.append`, `~plasmapy.particles.particle_collections.ParticleList.extend`, and `~plasmapy.particles.particle_collections.ParticleList.insert` methods of |ParticleList| to accept |Quantity| objects with a physical type of mass or electrical charge.
