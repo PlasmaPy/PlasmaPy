@@ -42,9 +42,9 @@ authors:
   alias: rocco8773
 
 - given-names: Dominik
-  family-names: Stańczak
+  family-names: Stańczak-Marikin
   email: stanczakdominik@gmail.com
-  affiliation: IPPLM
+  affiliation: IPPLM  # double check!
   orcid: https://orcid.org/0000-0001-6291-8843
   alias: StanczakDominik
 
@@ -465,6 +465,11 @@ authors:
   family-names: Smirnov
   alias: Nismirno
 
+- given-names: Stuart
+  family-names: Sobeske
+  affiliation: University of Michigan
+  alias: Sobeskes
+
 - given-names: David
   family-names: Stansby
   affiliation: Mullard Space Science Laboratory
@@ -499,6 +504,11 @@ authors:
   family-names: Wu
   orcid: https://orcid.org/0000-0001-8745-204X
   alias: elliotwutingfeng
+
+- given-names: Veronica
+  family-names: Tranquilino
+  affiliation: University of Michigan
+  alias: tranqver
 
 - given-names: Sixue
   family-names: Xu
