@@ -133,6 +133,12 @@ authors:
   family-names: Deal
   alias: Jac0bDeal
 
+- given-names: Gregor
+  family-names: Decristoforo
+  affiliation: UiT The Arctic University of Norway
+  orcid: 0000-0002-7616-0946
+  alias: gregordecristoforo
+
 - given-names: Diego A.
   family-names: Diaz Riega
   alias: diego7319
@@ -308,6 +314,11 @@ authors:
 - given-names: Joao Victor
   family-names: Martinelli
   alias: JvPy
+
+- given-names: Muhammad
+  family-names: Masood
+  affiliation: University of Edinburgh
+  alias: MuhammadHMasood
 
 - given-names: Isaias
   family-names: McHardy
@@ -500,15 +511,21 @@ authors:
   orcid: https://orcid.org/0000-0002-8335-1441
   alias: tien-vo
 
-- given-names: Tingfeng
-  family-names: Wu
-  orcid: https://orcid.org/0000-0001-8745-204X
-  alias: elliotwutingfeng
-
 - given-names: Veronica
   family-names: Tranquilino
   affiliation: University of Michigan
   alias: tranqver
+
+- given-names: Steve
+  family-names: Vincena
+  affiliation: UCLA
+  orcid: https://orcid.org/0000-0002-6468-5710
+  alias: svincena
+
+- given-names: Tingfeng
+  family-names: Wu
+  orcid: https://orcid.org/0000-0001-8745-204X
+  alias: elliotwutingfeng
 
 - given-names: Sixue
   family-names: Xu
