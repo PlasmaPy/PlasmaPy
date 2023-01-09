@@ -99,7 +99,8 @@ def Alfven_speed(
         or convertible.
 
     `TypeError`
-        If ``ion`` is not of type or convertible to `~plasmapy.particles.particle_class.Particle`.
+        If ``ion`` is not of type or convertible to
+        `~plasmapy.particles.particle_class.Particle`.
 
     `TypeError`
         If ``z_mean`` is not of type `int` or `float`.
@@ -158,11 +159,11 @@ def Alfven_speed(
         if not isinstance(ion, Particle):
             try:
                 ion = Particle(ion)
-            except TypeError:
+            except TypeError as ex:
                 raise TypeError(
                     f"If passing a number density, you must pass a plasmapy Particle "
                     f"(not type {type(ion)}) to calculate the mass density!"
-                )
+                ) from ex
         if z_mean is None:
             try:
                 z_mean = abs(ion.charge_number)
@@ -314,11 +315,33 @@ def ion_sound_speed(
     >>> n = 5e19*u.m**-3
     >>> k_1 = 3e1*u.m**-1
     >>> k_2 = 3e7*u.m**-1
-    >>> ion_sound_speed(T_e=5e6*u.K, T_i=0*u.K, ion='p', gamma_e=1, gamma_i=3)
+    >>> ion_sound_speed(
+    ...     T_e=5e6*u.K,
+    ...     T_i=0*u.K,
+    ...     ion='p',
+    ...     gamma_e=1,
+    ...     gamma_i=3,
+    ... )
     <Quantity 203155... m / s>
-    >>> ion_sound_speed(T_e=5e6*u.K, T_i=0*u.K, n_e=n, k=k_1, ion='p', gamma_e=1, gamma_i=3)
+    >>> ion_sound_speed(
+    ...     T_e=5e6*u.K,
+    ...     T_i=0*u.K,
+    ...     n_e=n,
+    ...     k=k_1,
+    ...     ion='p',
+    ...     gamma_e=1,
+    ...     gamma_i=3,
+    ... )
     <Quantity 203155... m / s>
-    >>> ion_sound_speed(T_e=5e6*u.K, T_i=0*u.K, n_e=n, k=k_2, ion='p', gamma_e=1, gamma_i=3)
+    >>> ion_sound_speed(
+    ...     T_e=5e6*u.K,
+    ...     T_i=0*u.K,
+    ...     n_e=n,
+    ...     k=k_2,
+    ...     ion='p',
+    ...     gamma_e=1,
+    ...     gamma_i=3,
+    ... )
     <Quantity 310.31... m / s>
     >>> ion_sound_speed(T_e=5e6*u.K, T_i=0*u.K, n_e=n, k=k_1, ion='p')
     <Quantity 203155... m / s>
@@ -359,8 +382,8 @@ def ion_sound_speed(
             m_i * (1 + klD2)
         )
         V_S = np.sqrt(V_S_squared).to(u.m / u.s)
-    except ValueError:
-        raise ValueError("Unable to find ion sound speed.")
+    except ValueError as ex:
+        raise ValueError("Unable to find ion sound speed.") from ex
 
     return V_S
 
@@ -444,10 +467,10 @@ def thermal_speed_coefficients(method: str, ndim: int) -> float:
 
     try:
         coeff = _coefficients[(ndim, method)]
-    except KeyError:
+    except KeyError as ex:
         raise ValueError(
             f"Value for (ndim, method) pair not valid, got '({ndim}, {method})'."
-        )
+        ) from ex
 
     return coeff
 

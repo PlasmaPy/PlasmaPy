@@ -1,0 +1,2 @@
+Refactored tests of `~plasmapy.formulary.relativity.Lorentz_factor`
+and `~plasmapy.formulary.relativity.relativistic_energy`.

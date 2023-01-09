@@ -2,6 +2,12 @@
    (and docstrings) because they are added to ``docs/conf.py::rst_epilog``.
 
 .. ------------------
+.. plasmapy.diagnostics
+.. ------------------
+
+.. |Layer| replace:: `~plasmapy.diagnostics.charged_particle_radiography.detector_stacks.Layer`
+
+.. ------------------
 .. plasmapy.formulary
 .. ------------------
 
@@ -125,7 +131,6 @@
 .. Websites
 .. --------
 
-.. _API: https://en.wikipedia.org/wiki/API
 .. _Astropy docs: https://docs.astropy.org
 .. _Astropy: https://www.astropy.org
 .. _BibTeX format: https://www.bibtex.com/g/bibtex-format
@@ -133,10 +138,12 @@
 .. _black: https://black.readthedocs.io
 .. _Conda: https://docs.conda.io
 .. _Contributor Covenant: https://www.contributor-covenant.org
+.. _Citation File Format: https://citation-file-format.github.io/
 .. _create an issue: https://github.com/PlasmaPy/PlasmaPy/issues/new/choose
 .. _CSS: https://www.w3schools.com:443/css
 .. _Cython: https://cython.org/
 .. _DOI: https://www.doi.org
+.. _editable installation: https://pip.pypa.io/en/stable/topics/local-project-installs/#editable-installs
 .. _equivalencies: https://docs.astropy.org/en/stable/units/equivalencies.html
 .. _flake8: https://flake8.pycqa.org/en/latest
 .. _git: https://git-scm.com
@@ -147,7 +154,6 @@
 .. _Gitter bridge: https://gitter.im/PlasmaPy/Lobby
 .. _Graphviz: https://graphviz.org
 .. _hypothesis: https://hypothesis.readthedocs.io
-.. _ide: https://en.wikipedia.org/wiki/Integrated_development_environment
 .. _intersphinx: https://www.sphinx-doc.org/en/master/usage/extensions/intersphinx.html
 .. _isort: https://pycqa.github.io/isort
 .. _Jinja: https://jinja.palletsprojects.com
@@ -190,6 +196,7 @@
 .. _towncrier: https://github.com/twisted/towncrier
 .. _tox: https://tox.wiki/en/latest
 .. _virtualenv: https://pypi.org/project/virtualenv
+.. _weekly tests: https://github.com/PlasmaPy/PlasmaPy/actions/workflows/weekly.yml
 .. _Wikipedia: https://www.wikipedia.org
 .. _Zenodo: https://zenodo.org
 
@@ -209,6 +216,9 @@
 
 .. _`astropy.units`: https://docs.astropy.org/en/stable/units/index.html
 .. |astropy.units| replace:: `astropy.units`
+
+.. _`CITATION.cff`: https://github.com/PlasmaPy/PlasmaPy/blob/main/CITATION.cff
+.. |CITATION.cff| replace:: :file:`CITATION.cff`
 
 .. _`docs/_static`: https://github.com/PlasmaPy/PlasmaPy/tree/main/docs/_static
 .. |docs/_static| replace:: :file:`docs/_static`
@@ -257,18 +267,6 @@
 
 .. _`pyproject.toml`: https://github.com/PlasmaPy/PlasmaPy/blob/main/pyproject.toml
 .. |pyproject.toml| replace:: :file:`pyproject.toml`
-
-.. _`requirements`: https://github.com/PlasmaPy/PlasmaPy/blob/main/requirements
-.. |requirements| replace:: :file:`requirements`
-
-.. _`requirements/build.txt`: https://github.com/PlasmaPy/PlasmaPy/blob/main/requirements/build.txt
-.. |requirements/build.txt| replace:: :file:`requirements/build.txt`
-
-.. _`requirements/environment.yml`: https://github.com/PlasmaPy/PlasmaPy/blob/main/requirements/environment.yml
-.. |requirements/environment.yml| replace:: :file:`requirements/environment.yml`
-
-.. _`setup.cfg`: https://github.com/PlasmaPy/PlasmaPy/blob/main/setup.cfg
-.. |setup.cfg| replace:: :file:`setup.cfg`
 
 .. _`sphinxcontrib-bibtex`: https://sphinxcontrib-bibtex.readthedocs.io
 .. |sphinxcontrib-bibtex| replace:: `sphinxcontrib-bibtex`

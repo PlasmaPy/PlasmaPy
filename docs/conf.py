@@ -239,6 +239,11 @@ linkcheck_allowed_redirects = {
     r"https://www.python.org/dev/peps/pep.+": "https://peps.python.org/pep.+",
 }
 
+# Hyperlinks for `make linkcheck` to ignore, such as links that point to
+# setting options in PlasmaPy's GitHub account that require a login.
+
+linkcheck_ignore = ["https://github.com/PlasmaPy/PlasmaPy/settings/secrets/actions"]
+
 linkcheck_anchors = True
 linkcheck_anchors_ignore = [
     "/room",
@@ -309,7 +314,7 @@ hoverxref_role_types = {
 # a new role, and the corresponding tuple contains the base url and the
 # caption. For example, we can now do :orcid:`0000-0000-0000-0000` and
 # have a link create to the corresponding ORCID page. New roles should
-# be added to rst-roles in setup.cfg to avoid being caught by
+# be added to rst-roles in tox.ini to avoid being caught by
 # flake8-rst-docstrings.
 
 extlinks = {
@@ -347,12 +352,17 @@ nitpick_ignore_regex = [
     (python_role, "_pytest.*"),
     (python_role, "Failed"),
     # charged_particle_radiography
+    (python_role, "1"),
     (python_role, "2 ints"),
     (python_role, "a single int"),
+    (python_role, "same"),
     (python_role, "Tuple of 1"),
     # thomson
     (python_role, "Ne"),
     (python_role, "Ni"),
+    # utils
+    (python_role, "docstring of"),
+    (python_role, "validation specifications"),
     # for reST workarounds defined in docs/common_links.rst
     (python_role, "h5py"),
     (python_role, "IPython.sphinxext.ipython_console_highlighting"),

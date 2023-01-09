@@ -24,7 +24,7 @@ from plasmapy.formulary import (
     thermal_speed_coefficients,
     thermal_speed_lite,
 )
-from plasmapy.particles import Particle, particle_mass
+from plasmapy.particles import Particle
 from plasmapy.particles.exceptions import ChargeError
 from plasmapy.particles.particle_collections import ParticleList
 from plasmapy.utils.decorators import (
@@ -342,10 +342,11 @@ def spectral_density(
         corresponds to a 90° scattering angle geometry.
 
     instr_func : function
-        A function representing the instrument function that takes a `~astropy.units.Quantity`
-        of wavelengths (centered on zero) and returns the instrument point
-        spread function. The resulting array will be convolved with the
-        spectral density function before it is returned.
+        A function representing the instrument function that takes a
+        `~astropy.units.Quantity` of wavelengths (centered on zero) and
+        returns the instrument point spread function. The resulting
+        array will be convolved with the spectral density function
+        before it is returned.
 
     Returns
     -------
@@ -461,7 +462,7 @@ def spectral_density(
             ions[ii] = Particle(ion)
         ions = ParticleList(ions)
     else:
-        raise ValueError(
+        raise TypeError(
             "The type of object provided to the ``ions`` keyword "
             f"is not supported: {type(ions)}"
         )
@@ -472,10 +473,10 @@ def spectral_density(
 
     try:
         if sum(ion.charge_number <= 0 for ion in ions):
-            raise ValueError("All ions must be positively charged.")
+            raise ValueError("All ions must be positively charged.")  # noqa: TC301
     # Catch error if charge information is missing
-    except ChargeError:
-        raise ValueError("All ions must be positively charged.")
+    except ChargeError as ex:
+        raise ValueError("All ions must be positively charged.") from ex
 
     # Condition T_i
     if T_i.size == 1:
@@ -812,7 +813,7 @@ def spectral_density_model(wavelengths, settings, params):
             ions[ii] = Particle(ion)
         ions = ParticleList(ions)
     else:
-        raise ValueError(
+        raise TypeError(
             "The type of object provided to the ``ions`` keyword "
             f"is not supported: {type(ions)}"
         )
@@ -823,10 +824,10 @@ def spectral_density_model(wavelengths, settings, params):
 
     try:
         if sum(ion.charge_number <= 0 for ion in ions):
-            raise ValueError("All ions must be positively charged.")
+            raise ValueError("All ions must be positively charged.")  # noqa: TC301
     # Catch error if charge information is missing
-    except ChargeError:
-        raise ValueError("All ions must be positively charged.")
+    except ChargeError as ex:
+        raise ValueError("All ions must be positively charged.") from ex
 
     # Create arrays of ion Z and mass from particles given
     settings["ion_z"] = ions.charge_number
