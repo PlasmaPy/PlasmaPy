@@ -1098,9 +1098,10 @@ def test_custom_particle_args_kwargs(unit, parameter):
     Test that a TypeError is raised when the mass or charge is provided
     as both a positional argument and as a keyword argument.
     """
-    kwargs = {parameter: unit}
+    quantity = 1 * unit
+    kwargs = {parameter: quantity}
     with pytest.raises(TypeError):
-        CustomParticle(1 * unit, **kwargs)
+        CustomParticle(quantity, **kwargs)
 
 
 customized_particle_repr_table = [
