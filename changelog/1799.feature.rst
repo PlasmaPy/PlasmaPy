@@ -1,0 +1,1 @@
+`~plasmapy.diagnostics.charged_particle_radiography.synthetic_radiography.Tracker` now supports multiple field grids, provided as an iterable.

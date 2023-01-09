@@ -341,7 +341,7 @@ class CheckUnits(CheckBase):
 
     Parameters
     ----------
-    checks_on_return: list of astropy :mod:`~astropy.units` or dict of unit specifications
+    checks_on_return: list of :mod:`~astropy.units` or dict of unit specifications
         Specifications for unit checks on the return of the function being wrapped.
         (see `check units`_ for valid specifications)
 
@@ -622,10 +622,10 @@ class CheckUnits(CheckBase):
                 # unit annotations defined
                 _units_anno = param.annotation
 
-            if _units is None and _units_anno is None and param_checks is None:
+            if _units is _units_anno is param_checks is None:
                 # no checks specified and no unit annotations defined
                 continue
-            elif _units is None and _units_anno is None:
+            elif _units is _units_anno is None:
                 # checks specified, but NO unit checks
                 msg = "No astropy.units specified for "
                 if param.name == "checks_on_return":
@@ -673,10 +673,10 @@ class CheckUnits(CheckBase):
                     f"types, or make sure annotation specifications match decorator "
                     f"argument specifications."
                 )
-            if len(_units) == 0 and len(_units_anno) == 0 and param_checks is None:
+            if not _units and not _units_anno and param_checks is None:
                 # annotations did not specify units
                 continue
-            elif len(_units) == 0 and len(_units_anno) == 0:
+            elif not _units and not _units_anno:
                 # checks specified, but NO unit checks
                 msg = "No astropy.units specified for "
                 if param.name == "checks_on_return":
@@ -746,7 +746,7 @@ class CheckUnits(CheckBase):
         missing_params = [
             param for param in set(self.checks.keys()) - set(out_checks.keys())
         ]
-        if len(missing_params) > 0:
+        if missing_params:
             params_str = ", ".join(missing_params)
             warnings.warn(
                 PlasmaPyWarning(
@@ -1056,23 +1056,24 @@ def check_units(
     func:
         The function to be decorated
 
-    checks_on_return: list of astropy :mod:`~astropy.units` or dict of unit specifications
-        Specifications for unit checks on the return of the function being wrapped.
-        (see `check units`_ for valid specifications)
+    checks_on_return: list of :mod:`~astropy.units` or dict of unit specifications
+        Specifications for unit checks on the return of the function
+        being wrapped. (see "check units"_ for valid specifications)
 
-    **checks: list of astropy :mod:`~astropy.units` or dict of unit specifications
-        Specifications for unit checks on the input arguments of the function
-        being wrapped.  Each keyword argument in ``checks`` is the name of a function
-        argument to be checked and the keyword value contains the unit check
-        specifications.
+    **checks: list of :mod:`~astropy.units` or dict of unit specifications
+        Specifications for unit checks on the input arguments of the
+        function being wrapped.  Each keyword argument in ``checks`` is
+        the name of a function argument to be checked and the keyword
+        value contains the unit check specifications.
 
         .. _`check units`:
 
         Unit checks can be defined by passing one of the astropy
-        :mod:`~astropy.units`, a list of astropy units, or a dictionary containing
-        the keys defined below.  Units can also be defined with function
-        annotations, but must be consistent with decorator ``**checks`` arguments if
-        used concurrently. If a key is omitted, then the default value will be assumed.
+        :mod:`~astropy.units`, a list of astropy units, or a dictionary
+        containing the keys defined below.  Units can also be defined
+        with function annotations, but must be consistent with decorator
+        ``**checks`` arguments if used concurrently. If a key is
+        omitted, then the default value will be assumed.
 
         ====================== ======= ================================================
         Key                    Type    Description
@@ -1089,15 +1090,17 @@ def check_units(
 
     Notes
     -----
-    * Checking of function arguments ``*args`` and ``**kwargs`` is not supported.
+    * Checking of function arguments ``*args`` and ``**kwargs`` is not
+      supported.
     * Decorator does NOT perform any unit conversions, look to
       :func:`~plasmapy.utils.decorators.validators.validate_quantities`
       if that functionality is desired.
-    * If it is desired that `None` values do not raise errors or warnings, then
-      include `None` in the list of units or as a default value for the function
-      argument.
-    * If units are not specified in ``checks``, then the decorator will attempt
-      to identify desired units by examining the function annotations.
+    * If it is desired that `None` values do not raise errors or
+      warnings, then include `None` in the list of units or as a default
+      value for the function argument.
+    * If units are not specified in ``checks``, then the decorator will
+      attempt to identify desired units by examining the function
+      annotations.
     * Full functionality is defined by the class :class:`CheckUnits`.
 
     Examples
@@ -1176,17 +1179,17 @@ def check_units(
     if func is not None:
         # `check_units` called as a function
         return CheckUnits(**checks)(func)
-    else:
-        # `check_units` called as a decorator "sugar-syntax"
-        return CheckUnits(**checks)
+
+    # `check_units` called as a decorator "sugar-syntax"
+    return CheckUnits(**checks)
 
 
 def check_values(
     func=None, checks_on_return: Dict[str, bool] = None, **checks: Dict[str, bool]
 ):
     """
-    A decorator to 'check' — limit/control — the values of input and return
-    arguments to a function or method.
+    A decorator to 'check' — limit/control — the values of input and
+    return arguments to a function or method.
 
     Parameters
     ----------
@@ -1195,20 +1198,21 @@ def check_values(
         The function to be decorated
 
     checks_on_return: Dict[str, bool]
-        Specifications for value checks on the return of the function being wrapped.
-        (see `check values`_ for valid specifications)
+        Specifications for value checks on the return of the function
+        being wrapped. (see `check values`_ for valid specifications)
 
     **checks: Dict[str, Dict[str, bool]]
-        Specifications for value checks on the input arguments of the function
-        being wrapped.  Each keyword argument in ``checks`` is the name of a function
-        argument to be checked and the keyword value contains the value check
-        specifications.
+        Specifications for value checks on the input arguments of the
+        function being wrapped.  Each keyword argument in ``checks`` is
+        the name of a function argument to be checked and the keyword
+        value contains the value check specifications.
 
         .. _`check values`:
 
-        The value check specifications are defined within a dictionary containing
-        the keys defined below.  If the dictionary is empty or omitting keys,
-        then the default value will be assumed for the missing keys.
+        The value check specifications are defined within a dictionary
+        containing the keys defined below.  If the dictionary is empty
+        or omitting keys, then the default value will be assumed for the
+        missing keys.
 
         ================ ======= ================================================
         Key              Type    Description
@@ -1223,7 +1227,8 @@ def check_values(
 
     Notes
     -----
-    * Checking of function arguments ``*args`` and ``**kwargs`` is not supported.
+    * Checking of function arguments ``*args`` and ``**kwargs`` is not
+      supported.
     * Full functionality is defined by the class :class:`CheckValues`.
 
     Examples
@@ -1258,13 +1263,13 @@ def check_values(
     if func is not None:
         # `check_values` called as a function
         return CheckValues(**checks)(func)
-    else:
-        # `check_values` called as a decorator "sugar-syntax"
-        return CheckValues(**checks)
+
+    # `check_values` called as a decorator "sugar-syntax"
+    return CheckValues(**checks)
 
 
 def check_relativistic(func=None, betafrac=0.05):
-    r"""
+    """
     Warns or raises an exception when the output of the decorated
     function is greater than ``betafrac`` times the speed of light.
 
@@ -1395,13 +1400,13 @@ def _check_relativistic(V, funcname, betafrac=0.05):
         raise RelativityError(f"{funcname} is yielding an infinite velocity.")
     elif beta >= 1:
         raise RelativityError(
-            f"{funcname} is yielding a velocity that is {str(round(beta, 3))} "
+            f"{funcname} is yielding a velocity that is {round(beta, 3)} "
             f"times the speed of light."
         )
     elif beta >= betafrac:
         warnings.warn(
             f"{funcname} is yielding a velocity that is "
-            f"{str(round(beta * 100, 3))}% of the speed of "
+            f"{round(beta * 100, 3)}% of the speed of "
             f"light. Relativistic effects may be important.",
             RelativityWarning,
         )

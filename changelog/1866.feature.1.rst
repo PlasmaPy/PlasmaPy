@@ -1,0 +1,2 @@
+Added ``Z`` as a |keyword-only| |parameter| representing the
+|charge number| to |CustomParticle|.

@@ -1,0 +1,1 @@
+Apply changes from ``ruff`` and ``refurb`` to `plasmapy.analysis`, `plasmapy.diagnostics`, `plasmapy.dispersion`, and `plasmapy.plasma`.

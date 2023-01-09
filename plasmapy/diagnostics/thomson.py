@@ -275,8 +275,7 @@ def spectral_density(
     scatter_vec=None,
     instr_func: Optional[Callable] = None,
 ) -> Tuple[Union[np.floating, np.ndarray], np.ndarray]:
-    r"""
-    Calculate the spectral density function for Thomson scattering of
+    r"""Calculate the spectral density function for Thomson scattering of
     a probe laser beam by a multi-species Maxwellian plasma.
 
     Parameters
@@ -335,11 +334,12 @@ def spectral_density(
         detector. The default, along with the default for ``probe_vec``,
         corresponds to a 90° scattering angle geometry.
 
-    instr_func : callable, |keyword-only|, optional
+    instr_func : function
+
         A function representing the instrument function that takes a
         `~astropy.units.Quantity` of wavelengths (centered on zero)
-        and returns the instrument point spread function. The resulting
-        array will be convolved with the spectral density
+        and returns the instrument point spread function. The
+        resulting array will be convolved with the spectral density
         function before it is returned.
 
     Returns
@@ -410,6 +410,7 @@ def spectral_density(
 
     For a summary of the relevant physics, see Chapter 5 of the
     :cite:t:`schaeffer:2014` thesis.
+
     """
 
     # Validate efract

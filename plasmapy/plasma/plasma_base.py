@@ -18,7 +18,7 @@ class BasePlasma(ABC):
     """
 
     # GenericPlasma subclass registry
-    _registry = dict()
+    _registry = {}
 
     def __init_subclass__(cls, **kwargs):
         super().__init_subclass__(**kwargs)
