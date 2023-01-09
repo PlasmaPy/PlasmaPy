@@ -5,9 +5,9 @@ Authors and Credits
 PlasmaPy Coordinating Committee
 ===============================
 
-* Erik Everson
-* Nicholas Murphy
-* Dominik Stańczak
+* :user:`Erik Everson <rocco8773>`
+* :user:`Nicholas Murphy <namurphy>`
+* :user:`Dominik Stańczak-Marikin <StanczakDominik>`
 
 PlasmaPy Contributors
 =====================
@@ -55,7 +55,7 @@ in parentheses are `ORCID author identifiers <https://orcid.org>`__.
 * :user:`Dawa Nurbu Sherpa <nurbu5>`
 * :user:`Dhawal Modi <Dhawal-Modi>`
 * :user:`Diego A. Diaz Riega <diego7319>`
-* :user:`Dominik Stańczak <StanczakDominik>` (:orcid:`0000-0001-6291-8843`)
+* :user:`Dominik Stańczak-Marikin <StanczakDominik>` (:orcid:`0000-0001-6291-8843`)
 * :user:`Drew Leonard <SolarDrew>` (:orcid:`0000-0001-5270-7487`)
 * :user:`Elliot Johnson <ejohnson-96>`
 * :user:`Erik Everson <rocco8773>` (:orcid:`0000-0001-6079-8307`)
