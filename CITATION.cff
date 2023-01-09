@@ -136,7 +136,7 @@ authors:
 - given-names: Gregor
   family-names: Decristoforo
   affiliation: UiT The Arctic University of Norway
-  orcid: 0000-0002-7616-0946
+  orcid: https://orcid.org/0000-0002-7616-0946
   alias: gregordecristoforo
 
 - given-names: Diego A.
