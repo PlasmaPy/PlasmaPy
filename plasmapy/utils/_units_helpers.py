@@ -50,7 +50,7 @@ def _get_physical_type_dict(
     allowed_physical_types : `set` of `~astropy.units.PhysicalType`
         If provided, then if any objects provided by ``iterable`` do not
         have a physical type in ``allowed_physical_types``, then a
-        ValueError will be raised.
+        `ValueError` will be raised.
 
     Returns
     -------
