@@ -17,6 +17,8 @@ from plasmapy.particles.exceptions import InvalidParticleError
 from plasmapy.particles.particle_class import CustomParticle, Particle
 from plasmapy.particles.particle_collections import ParticleList
 
+_particle_creation_exceptions = (InvalidParticleError, TypeError, ValueError)
+
 
 def _physical_particle_factory(
     *args, **kwargs
@@ -98,15 +100,16 @@ def _physical_particle_factory(
     if not args and not kwargs:
         raise TypeError("Particle information has not been provided.")
 
-    for particle_type in (Particle, CustomParticle, ParticleList):
-        with contextlib.suppress(TypeError, InvalidParticleError, ValueError):
+    try:
+        return Particle(*args, **kwargs)
+    except _particle_creation_exceptions:
+        # If the first argument is a string but is not a valid particle,
+        # then don't try to create a CustomParticle or ParticleList.
+        if args and isinstance(args[0], str):
+            raise
 
-            # Do not interpret a string as the first positional argument
-            # as the symbol for a CustomParticle or something to be
-            # iterated over for a ParticleList.
-            if particle_type is not Particle and args and isinstance(args[0], str):
-                continue
-
+    for particle_type in (CustomParticle, ParticleList):
+        with contextlib.suppress(*_particle_creation_exceptions):
             return particle_type(*args, **kwargs)
 
     if args and isinstance(args[0], u.Quantity):
