@@ -57,7 +57,7 @@ repos:
   - id: rst-inline-touching-normal
 
 - repo: https://github.com/charliermarsh/ruff-pre-commit
-  rev: v0.0.206
+  rev: v0.0.216
   hooks:
   - id: ruff
     args: [--force-exclude, --fix]
@@ -86,7 +86,7 @@ repos:
     exclude: docs/contributing/coding_guide.rst
 
 - repo: https://github.com/nbQA-dev/nbQA
-  rev: 1.6.0
+  rev: 1.6.1
   hooks:
   - id: nbqa-black
     additional_dependencies:
@@ -95,6 +95,6 @@ repos:
     - --nbqa-mutate
   - id: nbqa-isort
     additional_dependencies:
-    - isort==5.10.1
+    - isort==5.11.4
     args:
     - --nbqa-mutate
