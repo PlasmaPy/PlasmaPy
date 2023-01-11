@@ -2132,8 +2132,8 @@ class CustomParticle(AbstractPhysicalParticle):
         physical_type_dict = _get_physical_type_dict(
             quantities,
             only_quantities=True,
-            # strict=True,
-            # allowed_physical_types={u.physical.mass, u.physical.electrical_charge},
+            strict=True,
+            allowed_physical_types={u.physical.mass, u.physical.electrical_charge},
         )
 
         quantity_kwargs = {}
