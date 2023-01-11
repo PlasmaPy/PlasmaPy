@@ -10,9 +10,9 @@ else:
     if "PLASMAPY_PLOT_TESTS" not in os.environ:
         matplotlib.use("Agg")
 
-# coverage : ignore
-def pytest_configure(config):
-    """Adds @pytest.mark.slow annotation for marking slow tests for optional skipping"""
+
+def pytest_configure(config):  # coverage: ignore
+    """Adds @pytest.mark.slow annotation for marking slow tests for optional skipping."""
     config.addinivalue_line(
         "markers",
         (

@@ -1,10 +1,11 @@
 __all__ = ["HDF5Reader"]
 
 import astropy.units as u
+import h5py
 import numpy as np
-import os
 
-from distutils.version import StrictVersion
+from packaging.version import Version
+from pathlib import Path
 
 from plasmapy.plasma.exceptions import DataStandardError
 from plasmapy.plasma.plasma_base import GenericPlasma
@@ -22,7 +23,7 @@ def _fetch_units(openPMD_dims):
 
     units = u.dimensionless_unscaled
     for factor, unit in zip(openPMD_dims, _UNITS):
-        units *= unit ** factor
+        units *= unit**factor
     units, *_ = units.compose()
     return units
 
@@ -30,16 +31,14 @@ def _fetch_units(openPMD_dims):
 def _valid_version(openPMD_version, outdated=_OUTDATED_VERSION, newer=_NEWER_VERSION):
     """Checks if the passed version is supported or not."""
 
-    parsed_version = StrictVersion(openPMD_version)
-    outdated_version = StrictVersion(outdated)
-    newer_version = StrictVersion(newer)
+    parsed_version = Version(openPMD_version)
+    outdated_version = Version(outdated)
+    newer_version = Version(newer)
     return outdated_version <= parsed_version < newer_version
 
 
 class HDF5Reader(GenericPlasma):
     """
-    .. _OpenPMD: http://openpmd.org/
-
     Core class for accessing various attributes on HDF5 files that
     are based on OpenPMD_ standards.
 
@@ -49,21 +48,15 @@ class HDF5Reader(GenericPlasma):
         Path to HDF5 file.
 
     **kwargs
-        Any keyword accepted by `GenericPlasma`.
+        Any keyword accepted by `~plasmapy.plasma.plasma_base.GenericPlasma`.
 
     """
 
     def __init__(self, hdf5, **kwargs):
         super().__init__(**kwargs)
 
-        if not os.path.isfile(hdf5):
+        if not Path(hdf5).is_file():
             raise FileNotFoundError(f"Could not find file: '{hdf5}'")
-        try:
-            import h5py
-        except (ImportError, ModuleNotFoundError) as e:
-            from plasmapy.optional_deps import h5py_import_error
-
-            raise ImportError(h5py_import_error) from e
 
         h5 = h5py.File(hdf5, "r")
         self.h5 = h5
@@ -87,7 +80,7 @@ class HDF5Reader(GenericPlasma):
             if _valid_version(openPMD_version):
                 return True
             else:
-                raise DataStandardError(
+                raise DataStandardError(  # noqa: TC301
                     f"We currently only support HDF5 versions"
                     f"starting from v{_OUTDATED_VERSION} and "
                     f"lower than v{_NEWER_VERSION}. You can "
@@ -95,10 +88,10 @@ class HDF5Reader(GenericPlasma):
                     f"version. For more information; see "
                     f"https://github.com/openPMD/openPMD-updater"
                 )
-        except KeyError:
+        except KeyError as ex:
             raise DataStandardError(
                 "Input HDF5 file does not go on with standards defined by OpenPMD"
-            )
+            ) from ex
 
     @property
     def electric_field(self):
@@ -155,17 +148,10 @@ class HDF5Reader(GenericPlasma):
         hdf5 = kwargs.get("hdf5")
         openPMD = kwargs.get("openPMD")
 
-        isfile = os.path.isfile(hdf5)
-        if not isfile:
+        if not Path(hdf5).is_file():
             raise FileNotFoundError(f"Could not find file: '{hdf5}'")
 
         if "openPMD" not in kwargs:
-            try:
-                import h5py
-            except (ImportError, ModuleNotFoundError) as e:
-                from plasmapy.optional_deps import h5py_import_error
-
-                raise ImportError(h5py_import_error) from e
 
             h5 = h5py.File(hdf5, "r")
             try:

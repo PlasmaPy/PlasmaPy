@@ -6,8 +6,6 @@
 .. currentmodule:: plasmapy.plasma.grids
 
 .. automodapi::  plasmapy.plasma.grids
-   :include-all-objects:
-   :no-heading:
 
 .. nbgallery::
     :caption: Examples

@@ -22,7 +22,7 @@ class TestFailed(Failed):
 
     Notes
     -----
-    This exception was derived from `~pytest.fail.Exception`, which in
+    This exception was derived from ``pytest.fail.Exception``, which in
     turn was derived from `BaseException` (not `Exception`).
     """
 

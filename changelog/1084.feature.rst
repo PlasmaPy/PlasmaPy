@@ -1,2 +1,0 @@
-Added `~plasmapy.formulary.mathematics.Chandrasekhar_G` function, which is
-helpful in neoclassical transport theory.

@@ -6,7 +6,7 @@ from plasmapy.formulary.ionization import ionization_balance, Saha, Z_bal_
 
 
 def test_ionization_balance():
-    n = 1e19 * u.m ** -3
+    n = 1e19 * u.m**-3
     T_e = 5000 * u.K
 
     val = ionization_balance(n, T_e)
@@ -26,7 +26,7 @@ def test_ionization_balance():
 def test_Saha():
     g_j = 2
     g_k = 1
-    n_e = 1e19 * u.m ** -3
+    n_e = 1e19 * u.m**-3
     E_jk = 10 * u.Ry
     T_e = 5000 * u.K
 

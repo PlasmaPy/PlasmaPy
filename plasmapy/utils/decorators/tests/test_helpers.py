@@ -4,7 +4,7 @@ import pytest
 
 from unittest import mock
 
-from ..helpers import modify_docstring, preserve_signature
+from plasmapy.utils.decorators.helpers import modify_docstring, preserve_signature
 
 
 # --------------------------------------------------------------------------------------
@@ -124,7 +124,7 @@ class TestModifyDocstring:
 # --------------------------------------------------------------------------------------
 def test_preserve_signature():
     # create function to mock
-    def foo(x: float, y: float) -> float:
+    def foo(x: float, y: float) -> float:  # noqa: FURB118
         return x + y
 
     mock_foo = mock.Mock(side_effect=foo, name="mock_foo", autospec=True)

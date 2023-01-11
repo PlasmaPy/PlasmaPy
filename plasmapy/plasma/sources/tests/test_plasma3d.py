@@ -2,16 +2,15 @@ import astropy.units as u
 import numpy as np
 import pytest
 
-from plasmapy.particles.exceptions import InvalidParticleError
 from plasmapy.plasma.sources import plasma3d
 
 
 @pytest.mark.parametrize(
     "grid_dimensions, expected_size",
     [
-        ((100, 1, 1), 100),  # Test 1D setup
-        ((128, 128, 1), 16384),  # 2D
-        ((64, 64, 64), 262144),  # 3D
+        pytest.param((100, 1, 1), 100, marks=pytest.mark.slow),  # Test 1D setup
+        pytest.param((128, 128, 1), 16384, marks=pytest.mark.slow),  # 2D
+        pytest.param((64, 64, 64), 262144, marks=pytest.mark.slow),  # 3D
     ],
 )
 def test_Plasma3D_setup(grid_dimensions, expected_size):
@@ -30,11 +29,6 @@ def test_Plasma3D_setup(grid_dimensions, expected_size):
 
     expected_size : int
         Product of grid dimensions.
-
-    Examples
-    --------
-    >>> test_Plasma3D_setup((10, 10, 10), 1000)
-    >>> test_Plasma3D_setup((100, 10, 1), 1000)
     """
     x, y, z = grid_dimensions
     test_plasma = plasma3d.Plasma3D(
@@ -51,10 +45,10 @@ def test_Plasma3D_setup(grid_dimensions, expected_size):
 
     # Core variable units and shapes
     assert test_plasma.density.size == expected_size
-    assert test_plasma.density.si.unit == u.kg / u.m ** 3
+    assert test_plasma.density.si.unit == u.kg / u.m**3
 
     assert test_plasma.momentum.size == 3 * expected_size
-    assert test_plasma.momentum.si.unit == u.kg / (u.m ** 2 * u.s)
+    assert test_plasma.momentum.si.unit == u.kg / (u.m**2 * u.s)
 
     assert test_plasma.pressure.size == expected_size
     assert test_plasma.pressure.si.unit == u.Pa
@@ -66,7 +60,7 @@ def test_Plasma3D_setup(grid_dimensions, expected_size):
     assert test_plasma.electric_field.si.unit == u.V / u.m
 
 
-# @pytest.mark.parametrize([()])
+@pytest.mark.slow
 def test_Plasma3D_derived_vars():
     r"""Function to test derived variables of the Plasma3D class.
 
@@ -81,8 +75,8 @@ def test_Plasma3D_derived_vars():
     )
 
     # Set an arbitrary uniform values throughout the plasma
-    test_plasma.density[...] = 2.0 * u.kg / u.m ** 3
-    test_plasma.momentum[...] = 10.0 * u.kg / (u.m ** 2 * u.s)
+    test_plasma.density[...] = 2.0 * u.kg / u.m**3
+    test_plasma.momentum[...] = 10.0 * u.kg / (u.m**2 * u.s)
     test_plasma.pressure[...] = 1 * u.Pa
     test_plasma.magnetic_field[...] = 0.01 * u.T
     test_plasma.electric_field[...] = 0.01 * u.V / u.m

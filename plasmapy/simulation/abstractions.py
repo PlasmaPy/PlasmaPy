@@ -16,10 +16,8 @@ class AbstractSimulation(ABC):
     """
     A prototype abstract interface for numerical simulations.
 
-    Notes
-    -----
-    This interface is incomplete and unstable, and is thus subject to
-    change at any time.
+    .. warning::
+        This interface is unstable and subject to change.
     """
 
     @abstractmethod
@@ -67,13 +65,13 @@ class AbstractNormalizations(ABC):
 
     @property
     @abstractmethod
-    def current_density(self) -> u.A / u.m ** 2:
+    def current_density(self) -> u.A / u.m**2:
         """The current density normalization."""
         ...
 
     @property
     @abstractmethod
-    def diffusivity(self) -> u.m ** 2 / u.s:
+    def diffusivity(self) -> u.m**2 / u.s:
         """The normalization for diffusivity."""
         ...
 
@@ -91,7 +89,7 @@ class AbstractNormalizations(ABC):
 
     @property
     @abstractmethod
-    def heat_flux(self) -> u.J * u.m ** -2 * u.s ** -1:
+    def heat_flux(self) -> u.J * u.m**-2 * u.s**-1:
         """The normalization for heat flux."""
         ...
 
@@ -121,13 +119,13 @@ class AbstractNormalizations(ABC):
 
     @property
     @abstractmethod
-    def mass_density(self) -> u.kg / u.m ** 3:
+    def mass_density(self) -> u.kg / u.m**3:
         """The normalization for mass density."""
         ...
 
     @property
     @abstractmethod
-    def number_density(self) -> u.m ** -3:
+    def number_density(self) -> u.m**-3:
         """The normalization for number density."""
         ...
 
@@ -157,7 +155,7 @@ class AbstractNormalizations(ABC):
 
     @property
     @abstractmethod
-    def wavenumber(self) -> u.m ** -1:
+    def wavenumber(self) -> u.m**-1:
         """The normalization for inverse length."""
         ...
 
@@ -169,13 +167,13 @@ class AbstractNormalizations(ABC):
 
     @property
     @abstractmethod
-    def volumetric_heating_rate(self) -> u.J * u.m ** -3 * u.s ** -1:
+    def volumetric_heating_rate(self) -> u.J * u.m**-3 * u.s**-1:
         """The normalization for the volumetric heating rate."""
         ...
 
     @property
     @abstractmethod
-    def volumetric_rate(self) -> u.m ** -3 * u.s ** -1:
+    def volumetric_rate(self) -> u.m**-3 * u.s**-1:
         """
         The normalization for a volumetric rate.
 

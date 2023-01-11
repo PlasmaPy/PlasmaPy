@@ -1,3 +1,0 @@
-Remove alias: `tfds_` to `~plasmapy.dispersion.two_fluid_dispersion_solution`,
-with the reasoning behind the removal outlined in `#1101
-<https://github.com/PlasmaPy/PlasmaPy/pull/1101#issue-608337879>`_

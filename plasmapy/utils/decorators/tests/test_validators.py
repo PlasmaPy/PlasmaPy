@@ -4,15 +4,17 @@ when possible).
 """
 import inspect
 import pytest
-import warnings
 
 from astropy import units as u
-from typing import Any, Dict, List
+from functools import cached_property
 from unittest import mock
 
-from plasmapy.formulary.parameters import Debye_number
 from plasmapy.utils.decorators.checks import CheckUnits, CheckValues
-from plasmapy.utils.decorators.validators import validate_quantities, ValidateQuantities
+from plasmapy.utils.decorators.validators import (
+    validate_class_attributes,
+    validate_quantities,
+    ValidateQuantities,
+)
 
 
 # ----------------------------------------------------------------------------------------
@@ -401,14 +403,14 @@ class TestValidateQuantities:
                 "raises": u.UnitTypeError,
             },
             {
-                "descr": "decomposed units are still covnerted",
+                "descr": "decomposed units are still converted",
                 "setup": {
                     "function": self.foo,
-                    "args": (2 * u.kg * u.m / u.s ** 2,),
+                    "args": (2 * u.kg * u.m / u.s**2,),
                     "kwargs": {},
                     "validations": {"x": u.N},
                 },
-                "output": (2 * u.kg * u.m / u.s ** 2).to(u.N),
+                "output": (2 * u.kg * u.m / u.s**2).to(u.N),
                 "extra assert": lambda x: x.unit.to_string() == u.N.to_string(),
             },
         ]
@@ -557,3 +559,76 @@ class TestValidateQuantities:
                 # reset
                 mock_vq_class.reset_mock()
                 mock_foo.reset_mock()
+
+
+class TestValidateClassAttributes:
+    class SampleCase:
+        def __init__(self, x: int = None, y: int = None, z: int = None):
+            self.x = x
+            self.y = y
+            self.z = z
+
+        @cached_property
+        @validate_class_attributes(expected_attributes=["x"])
+        def require_x(self):
+            return 0
+
+        @cached_property
+        @validate_class_attributes(expected_attributes=["x", "y"])
+        def require_x_and_y(self):
+            return 0
+
+        @cached_property
+        @validate_class_attributes(both_or_either_attributes=[("x", "y")])
+        def require_x_or_y(self):
+            return 0
+
+        @cached_property
+        @validate_class_attributes(
+            expected_attributes=["x"], both_or_either_attributes=[("y", "z")]
+        )
+        def require_x_and_either_y_or_z(self):
+            return 0
+
+        @cached_property
+        @validate_class_attributes(mutually_exclusive_attributes=[("x", "y")])
+        def require_only_either_x_or_y(self):
+            return 0
+
+    @pytest.mark.parametrize(
+        "test_case_constructor_keyword_arguments",
+        [
+            {"x": 0},
+            {"y": 0},
+            {"z": 0},
+            {"x": 0, "y": 0},
+            {"x": 0, "z": 0},
+            {"y": 0, "z": 0},
+        ],
+    )
+    def test_method_errors(self, test_case_constructor_keyword_arguments):
+        """
+        Test errors raised by the validate_class_attributes decorator.
+        """
+
+        test_case = self.SampleCase(**test_case_constructor_keyword_arguments)
+
+        has_x = "x" in test_case_constructor_keyword_arguments.keys()
+        has_y = "y" in test_case_constructor_keyword_arguments.keys()
+        has_z = "z" in test_case_constructor_keyword_arguments.keys()
+
+        method_return_dictionary = {
+            "require_x": has_x,
+            "require_x_and_y": has_x and has_y,
+            "require_x_or_y": has_x or has_y,
+            "require_x_and_either_y_or_z": has_x and (has_y or has_z),
+            "require_only_either_x_or_y": (has_x and not has_y)
+            or (has_y and not has_x),
+        }
+
+        for method, expected_to_return in method_return_dictionary.items():
+            if expected_to_return:
+                getattr(test_case, method)
+            else:
+                with pytest.raises(ValueError):
+                    getattr(test_case, method)

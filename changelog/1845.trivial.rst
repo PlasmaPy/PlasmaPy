@@ -1,0 +1,1 @@
+Applied refactorings from ``ruff`` and ``refurb`` to `plasmapy.utils`.

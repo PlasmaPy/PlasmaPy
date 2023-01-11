@@ -1,14 +1,14 @@
 """
 Various decorators to validate input/output arguments to functions.
 """
-__all__ = ["validate_quantities", "ValidateQuantities"]
+__all__ = ["validate_class_attributes", "validate_quantities", "ValidateQuantities"]
 
 import astropy.units as u
 import functools
 import inspect
 import warnings
 
-from typing import Any, Dict
+from typing import Any, Dict, Iterable, List, Optional
 
 from plasmapy.utils.decorators.checks import CheckUnits, CheckValues
 from plasmapy.utils.decorators.helpers import preserve_signature
@@ -29,7 +29,7 @@ class ValidateQuantities(CheckUnits, CheckValues):
 
     **validations: dictionary of validation specifications
         Specifications for unit and value validations on the input arguments of the
-        function being wrapped.  Each keyword argument in `validations` is the
+        function being wrapped.  Each keyword argument in ``validations`` is the
         name of a function argument to be validated and the keyword value contains
         the unit and value validation specifications.
 
@@ -38,7 +38,7 @@ class ValidateQuantities(CheckUnits, CheckValues):
         Unit and value validations can be defined by passing one of the astropy
         :mod:`~astropy.units`, a list of astropy units, or a dictionary containing
         the keys defined below.  Units can also be defined with function annotations,
-        but must be consistent with decorator `**validations` arguments if used
+        but must be consistent with decorator ``**validations`` arguments if used
         concurrently.  If a key is omitted, then the default value will be assumed.
 
         ====================== ======= ================================================
@@ -62,12 +62,12 @@ class ValidateQuantities(CheckUnits, CheckValues):
 
     Notes
     -----
-    * Validation of function arguments `*args` and `**kwargs` is not supported.
+    * Validation of function arguments ``*args`` and ``**kwargs`` is not supported.
     * `None` values will pass when `None` is included in the list of specified units,
-      is set as a default value for the function argument, or `none_shall_pass` is
-      set to `True`.  If `none_shall_pass` is doubly/triply defined through the
+      is set as a default value for the function argument, or ``none_shall_pass`` is
+      set to `True`.  If ``none_shall_pass`` is doubly/triply defined through the
       mentioned options, then they all must be consistent with each other.
-    * If units are not specified in `validations`, then the decorator will attempt
+    * If units are not specified in ``validations``, then the decorator will attempt
       to identify desired units by examining the function annotations.
 
     Examples
@@ -149,9 +149,9 @@ class ValidateQuantities(CheckUnits, CheckValues):
 
         if "checks_on_return" in validations:
             raise TypeError(
-                f"keyword argument 'checks_on_return' is not allowed, "
-                f"use 'validations_on_return' to set validations "
-                f"on the return variable"
+                "keyword argument 'checks_on_return' is not allowed, "
+                "use 'validations_on_return' to set validations "
+                "on the return variable"
             )
 
         self._validations = validations
@@ -165,6 +165,8 @@ class ValidateQuantities(CheckUnits, CheckValues):
 
     def __call__(self, f):
         """
+        Decorate a function.
+
         Parameters
         ----------
         f
@@ -173,7 +175,7 @@ class ValidateQuantities(CheckUnits, CheckValues):
         Returns
         -------
         function
-            wrapped function of `f`
+            wrapped function of ``f``
         """
         self.f = f
         wrapped_sign = inspect.signature(f)
@@ -258,13 +260,12 @@ class ValidateQuantities(CheckUnits, CheckValues):
                     _none_shall_pass is False
                     and validations[arg_name]["none_shall_pass"] is True
                 ):
-                    raise ValueError(
+                    raise ValueError(  # noqa: TC301
                         f"Validation 'none_shall_pass' for argument '{arg_name}' is "
                         f"inconsistent between function annotations "
                         f"({validations[arg_name]['none_shall_pass']}) and decorator "
                         f"argument ({_none_shall_pass})."
                     )
-
                 validations[arg_name]["none_shall_pass"] = _none_shall_pass
             except (KeyError, TypeError):
                 # 'none_shall_pass' was not in the original passed-in validations, so
@@ -316,7 +317,7 @@ class ValidateQuantities(CheckUnits, CheckValues):
 
         # initialize str for error message
         if arg_name == "checks_on_return":
-            err_msg = f"The return value  "
+            err_msg = "The return value  "
         else:
             err_msg = f"The argument '{arg_name}' "
         err_msg += f"to function {self.f.__name__}()"
@@ -330,8 +331,8 @@ class ValidateQuantities(CheckUnits, CheckValues):
             typeerror_msg += f"{unit}"
 
             if ii != len(arg_validations["units"]) - 1:
-                typeerror_msg += f", "
-        typeerror_msg += f"]"
+                typeerror_msg += ", "
+        typeerror_msg += "]"
 
         # add units to arg if possible
         # * a None value will be taken care of by `_check_unit_core`
@@ -343,8 +344,8 @@ class ValidateQuantities(CheckUnits, CheckValues):
         else:
             try:
                 arg = arg * arg_validations["units"][0]
-            except (TypeError, ValueError):
-                raise TypeError(typeerror_msg)
+            except (TypeError, ValueError) as ex:
+                raise TypeError(typeerror_msg) from ex
             else:
                 warnings.warn(
                     u.UnitsWarning(
@@ -370,7 +371,6 @@ class ValidateQuantities(CheckUnits, CheckValues):
         elif err is not None:
             raise err
 
-        # check value
         self._check_value(arg, arg_name, arg_validations)
 
         return arg
@@ -386,7 +386,7 @@ class ValidateQuantities(CheckUnits, CheckValues):
 
 def validate_quantities(func=None, validations_on_return=None, **validations):
     """
-    A decorator to 'validate' -- control and convert -- the units and values
+    A decorator to 'validate' — control and convert — the units and values
     of input and return arguments to a function or method.  Arguments are expected to
     be astropy :class:`~astropy.units.quantity.Quantity` objects.
 
@@ -402,7 +402,7 @@ def validate_quantities(func=None, validations_on_return=None, **validations):
 
     **validations: dictionary of validation specifications
         Specifications for unit and value validations on the input arguments of the
-        function being wrapped.  Each keyword argument in `validations` is the
+        function being wrapped.  Each keyword argument in ``validations`` is the
         name of a function argument to be validated and the keyword value contains
         the unit and value validation specifications.
 
@@ -411,7 +411,7 @@ def validate_quantities(func=None, validations_on_return=None, **validations):
         Unit and value validations can be defined by passing one of the astropy
         :mod:`~astropy.units`, a list of astropy units, or a dictionary containing
         the keys defined below.  Units can also be defined with function annotations,
-        but must be consistent with decorator `**validations` arguments if used
+        but must be consistent with decorator ``**validations`` arguments if used
         concurrently.  If a key is omitted, then the default value will be assumed.
 
         ====================== ======= ================================================
@@ -435,12 +435,12 @@ def validate_quantities(func=None, validations_on_return=None, **validations):
 
     Notes
     -----
-    * Validation of function arguments `*args` and `**kwargs` is not supported.
+    * Validation of function arguments ``*args`` and ``**kwargs`` is not supported.
     * `None` values will pass when `None` is included in the list of specified units,
-      is set as a default value for the function argument, or `none_shall_pass` is
-      set to `True`.  If `none_shall_pass` is doubly/triply defined through the
+      is set as a default value for the function argument, or ``none_shall_pass`` is
+      set to `True`.  If ``none_shall_pass`` is doubly/triply defined through the
       mentioned options, then they all must be consistent with each other.
-    * If units are not specified in `validations`, then the decorator will attempt
+    * If units are not specified in ``validations``, then the decorator will attempt
       to identify desired units by examining the function annotations.
     * Full functionality is defined by the class :class:`ValidateQuantities`.
 
@@ -531,6 +531,85 @@ def validate_quantities(func=None, validations_on_return=None, **validations):
     if func is not None:
         # `validate_quantities` called as a function
         return ValidateQuantities(**validations)(func)
-    else:
-        # `validate_quantities` called as a decorator "sugar-syntax"
-        return ValidateQuantities(**validations)
+
+    # `validate_quantities` called as a decorator "sugar-syntax"
+    return ValidateQuantities(**validations)
+
+
+def get_attributes_not_provided(
+    self,
+    expected_attributes: Optional[List[str]] = None,
+    both_or_either_attributes: Optional[List[Iterable[str]]] = None,
+    mutually_exclusive_attributes: Optional[List[Iterable[str]]] = None,
+):
+    """
+    Collect attributes that weren't provided during instantiation needed
+    to access a method.
+    """
+
+    attributes_not_provided = []
+
+    if expected_attributes is not None:
+        for attribute in expected_attributes:
+            if getattr(self, attribute) is None:
+                attributes_not_provided.append(attribute)
+
+    if both_or_either_attributes is not None:
+        for attribute_tuple in both_or_either_attributes:
+            number_of_attributes_provided = 0
+
+            for attribute in attribute_tuple:
+                if getattr(self, attribute) is not None:
+                    number_of_attributes_provided += 1
+
+            if number_of_attributes_provided == 0:
+                attributes_not_provided.append(
+                    f"at least one of {' or '.join(attribute_tuple)}"
+                )
+
+    if mutually_exclusive_attributes is not None:
+        for attribute_tuple in mutually_exclusive_attributes:
+            number_of_attributes_provided = 0
+
+            for attribute in attribute_tuple:
+                if getattr(self, attribute) is not None:
+                    number_of_attributes_provided += 1
+
+            if number_of_attributes_provided != 1:
+                attributes_not_provided.append(
+                    f"exactly one of {' or '.join(attribute_tuple)}"
+                )
+
+    return attributes_not_provided
+
+
+def validate_class_attributes(
+    expected_attributes: Optional[List[str]] = None,
+    both_or_either_attributes: Optional[List[Iterable[str]]] = None,
+    mutually_exclusive_attributes: Optional[List[Iterable[str]]] = None,
+):
+    """
+    A decorator responsible for raising errors if the expected arguments weren't
+    provided during class instantiation.
+    """
+
+    def decorator(attribute):
+        def wrapper(self, *args, **kwargs):
+            arguments_not_provided = get_attributes_not_provided(
+                self,
+                expected_attributes,
+                both_or_either_attributes,
+                mutually_exclusive_attributes,
+            )
+
+            if len(arguments_not_provided) > 0:
+                raise ValueError(
+                    f"{attribute.__name__} expected the following "
+                    f"additional arguments: {', '.join(arguments_not_provided)}"
+                )
+
+            return attribute(self, *args, **kwargs)
+
+        return wrapper
+
+    return decorator

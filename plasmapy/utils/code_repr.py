@@ -33,7 +33,7 @@ def _code_repr_of_ndarray(array: np.ndarray, max_items=np.inf) -> str:
 
     def replace_excess_items_with_ellipsis(s: str, max_items: Integral):
         substrings_between_commas = s.split(",")
-        to_comma_before_ellipsis = ",".join(substrings_between_commas[0:max_items])
+        to_comma_before_ellipsis = ",".join(substrings_between_commas[:max_items])
         closing_brackets = "]" * substrings_between_commas[-1].count("]")
         closing = f", ...{closing_brackets})"
         return to_comma_before_ellipsis + closing
@@ -80,9 +80,8 @@ def _code_repr_of_arg(arg, max_items=np.inf) -> str:
         u.Quantity: _code_repr_of_quantity,
         np.ndarray: _code_repr_of_ndarray,
     }
-    for arg_type in function_for_type.keys():
+    for arg_type, code_repr_func in function_for_type.items():
         if isinstance(arg, arg_type):
-            code_repr_func = function_for_type[arg_type]
             return code_repr_func(arg, max_items=max_items)
     return repr(arg)
 
@@ -94,15 +93,14 @@ def _code_repr_of_args_and_kwargs(
     Take positional and keyword arguments, and format them into a
     string as they would appear in a function call (excluding parentheses).
     """
-    args = tuple() if args is None else args
-    kwargs = dict() if kwargs is None else kwargs
+    args = () if args is None else args
+    kwargs = {} if kwargs is None else kwargs
 
     args_collection = args if isinstance(args, (tuple, list)) else (args,)
 
-    args_and_kwargs = ""
-
-    for arg in args_collection:
-        args_and_kwargs += f"{_code_repr_of_arg(arg, max_items)}, "
+    args_and_kwargs = "".join(
+        f"{_code_repr_of_arg(arg, max_items)}, " for arg in args_collection
+    )
 
     for kw_name, kw_val in kwargs.items():
         args_and_kwargs += f"{kw_name}={_code_repr_of_arg(kw_val, max_items)}, "
@@ -129,9 +127,10 @@ def _name_with_article(ex: Exception) -> str:
     use_an = all(
         [
             name[0] in "aeiouAEIOU",
-            name[0:3].lower() not in starts_with_vowel_but_uses_a,
+            name[:3].lower() not in starts_with_vowel_but_uses_a,
         ]
     )
+
     indefinite_article = "an" if use_an else "a"
     return f"{indefinite_article} {name}"
 
@@ -178,9 +177,10 @@ def _string_together_warnings_for_printing(
     followed by the corresponding message, separated by a full line.
     """
     warnings_with_messages = [
-        _object_name(warning, showmodule=False) + ": " + message
+        f"{_object_name(warning, showmodule=False)}: {message}"
         for warning, message in zip(warning_types, warning_messages)
     ]
+
     return "\n\n".join(warnings_with_messages)
 
 
@@ -239,8 +239,8 @@ def call_string(
     >>> call_string(int, args=(9.2,), kwargs={'base': 2})
     'int(9.2, base=2)'
     """
-    args = tuple() if args is None else args
-    kwargs = dict() if kwargs is None else kwargs
+    args = () if args is None else args
+    kwargs = {} if kwargs is None else kwargs
     args_and_kwargs = _code_repr_of_args_and_kwargs(args, kwargs, max_items)
     return f"{f.__name__}({args_and_kwargs})"
 
@@ -313,8 +313,8 @@ def attribute_call_string(
     >>> attribute_call_string(SampleClass, 'attribute', args_to_cls, kwargs_to_cls)
     'SampleClass(1, 2, kwarg1=2).attribute'
     """
-    args_to_cls = tuple() if args_to_cls is None else args_to_cls
-    kwargs_to_cls = dict() if kwargs_to_cls is None else kwargs_to_cls
+    args_to_cls = () if args_to_cls is None else args_to_cls
+    kwargs_to_cls = {} if kwargs_to_cls is None else kwargs_to_cls
     return f"{call_string(cls, args_to_cls, kwargs_to_cls, max_items)}.{attr}"
 
 
@@ -345,7 +345,7 @@ def method_call_string(
         other type of `object` if there is only one positional argument,
         to be used during instantiation of ``cls``.
 
-    kwargs_to_cls: `dict`, keyword-only optional
+    kwargs_to_cls: `dict`, |keyword-only| optional
         A `dict` containing the keyword arguments to be used during
         instantiation of ``cls``.
 
@@ -354,11 +354,11 @@ def method_call_string(
         used in the method call, or any other `object` if there is only
         one positional argument.
 
-    kwargs_to_method: `dict`, keyword-only, optional
+    kwargs_to_method: `dict`, |keyword-only|, optional
         A `dict` containing the keyword arguments to be used during
         the method call.
 
-    max_items : int, keyword-only, optional
+    max_items : int, |keyword-only|, optional
         The maximum number of items to include in a `~numpy.ndarray` or
         `~astropy.units.Quantity`; additional items will be truncated
         with an ellipsis.  Defaults to 12.

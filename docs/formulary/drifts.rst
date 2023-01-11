@@ -7,9 +7,12 @@ Particle drifts (`plasmapy.formulary.drifts`)
 .. currentmodule:: plasmapy.formulary.drifts
 
 .. automodapi:: plasmapy.formulary.drifts
-   :no-heading:
+
+
+Examples
+========
 
 .. nbgallery::
     :caption: Examples
 
-    /notebooks/ExB_drift
+    /notebooks/formulary/ExB_drift

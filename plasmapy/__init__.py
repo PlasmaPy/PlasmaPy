@@ -1,12 +1,14 @@
 """
-Welcome to the `plasmapy` package, an open source community-developed Python
-package for the plasma community.  Documentation is available in the docstrings
-and online at https://docs.plasmapy.org (accessible also using the
-:func:`~plasmapy.online_help` function).
+Welcome to the `plasmapy` package, an open source community-developed
+Python package for the plasma community. Documentation is available in
+the docstrings and `online <https://docs.plasmapy.org>`__ (accessible
+also using the :func:`plasmapy.online_help` function).
 """
 __all__ = [
     "online_help",
+    "analysis",
     "diagnostics",
+    "dispersion",
     "formulary",
     "particles",
     "plasma",
@@ -21,58 +23,43 @@ __all__ = [
 # This is the same check as the one at the top of setup.py
 import sys
 
-if sys.version_info < (3, 7):
-    raise Exception("PlasmaPy does not support Python < 3.7")
+if sys.version_info < (3, 8):  # coverage: ignore
+    raise ImportError("PlasmaPy does not support Python < 3.8")
 
 # Packages may add whatever they like to this file, but
 # should keep this content at the top.
 # ----------------------------------------------------------------------------
-import pkg_resources
+from importlib.metadata import PackageNotFoundError
 
-from plasmapy import diagnostics, formulary, particles, plasma, simulation, utils
+from plasmapy import (
+    analysis,
+    diagnostics,
+    dispersion,
+    formulary,
+    particles,
+    plasma,
+    simulation,
+    utils,
+)
 
 # define version
 try:
-    # this places a runtime dependency on setuptools
-    #
-    # note: if there's any distribution metadata in your source files, then this
-    #       will find a version based on those files.  Keep distribution metadata
-    #       out of your repository unless you've intentionally installed the package
-    #       as editable (e.g. `pip install -e {plasmapy_directory_root}`),
-    #       but then __version__ will not be updated with each commit, it is
-    #       frozen to the version at time of install.
-    #
-    #: PlasmaPy version string
-    __version__ = pkg_resources.get_distribution("plasmapy").version
-except pkg_resources.DistributionNotFound:
-    # package is not installed
-    fallback_version = "unknown"
     try:
-        # code most likely being used from source
-        # if setuptools_scm is installed then generate a version
-        from setuptools_scm import get_version
+        from plasmapy._dev.scm_version import version as __version__
+    except ImportError:
+        from plasmapy._version import version as __version__
+except Exception:  # coverage: ignore
+    # package is not installed
+    __version__ = "0.0.0"
 
-        __version__ = get_version(
-            root="..", relative_to=__file__, fallback_version=fallback_version
-        )
-        del get_version
-        warn_add = "setuptools_scm failed to detect the version"
-    except ModuleNotFoundError:
-        # setuptools_scm is not installed
-        __version__ = fallback_version
-        warn_add = "setuptools_scm is not installed"
+    from warnings import warn
 
-    if __version__ == fallback_version:
-        from warnings import warn
+    warn(
+        "plasmapy.__version__ not generated (set to '0.0.0'). It looks like "
+        "the installation's broken. Ask on Element!",
+    )
 
-        warn(
-            f"plasmapy.__version__ not generated (set to 'unknown'), PlasmaPy is "
-            f"not an installed package and {warn_add}.",
-            RuntimeWarning,
-        )
-
-        del warn
-    del fallback_version, warn_add
+    del warn
 
 # ----------------------------------------------------------------------------
 #: PlasmaPy citation instructions
@@ -82,12 +69,13 @@ __citation__ = (
 )
 
 
-def online_help(query):
+def online_help(query: str):  # coverage: ignore
     """
-    Search the online PlasmaPy documentation for the given query from plasmapy.org
-    Opens the results in the default web browser.
-    Requires an active Internet connection.
-    Redirects to Astropy.units in case of query 'unit' or 'units'
+    Open a webpage containing a search page in `PlasmaPy's documentation`_,
+    or another page that contains relevant online help.
+
+    This function requires an active internet connection, and will open
+    the page in the default web browser.
 
     Parameters
     ----------
@@ -100,13 +88,13 @@ def online_help(query):
 
     url = (
         "http://docs.plasmapy.org/en/stable/search.html?"
-        "{0}&check_keywords=yes&area=default"
+        "{}&check_keywords=yes&area=default"
     ).format(urlencode({"q": query}))
 
-    if query.lower() in ("unit", "units"):
+    if query.lower() in {"unit", "units", "quantity", "quantities"}:
         url = "http://docs.astropy.org/en/stable/units/"
 
     webbrowser.open(url)
 
 
-del pkg_resources, sys
+del sys
