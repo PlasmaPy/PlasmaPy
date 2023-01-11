@@ -2086,7 +2086,7 @@ class CustomParticle(AbstractPhysicalParticle):
         # TODO py3.10 replace ifology with structural pattern matching
 
         if Z is not None and charge is not None:
-            raise TypeError("CustomParticle can accept only one of Z and charge.")
+            raise TypeError("CustomParticle can accept only one of 'Z' and 'charge'.")
 
         if Z is not None:
             charge = Z * const.e.si
