@@ -10,20 +10,42 @@ __all__ = [
 
 import numpy as np
 import os
-import warnings
 
 from plasmapy.transport.classical.base import (
     AbstractInterpolatedCoefficients,
     AbstractPolynomialCoefficients,
-    validate_object,
+    validate_attributes_not_none,
 )
 
 # Get the absolute path to the data files
 data_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")
-# Load the table of coefficients
-coeff_table = np.load(
-    os.path.join(data_dir, "braginskii_polynomial_fit_coefficients.npz")
-)
+
+coef_table = {}
+coef_table["Z"] = np.array([1, 2, 3, 4, np.inf])
+
+# TABLE 2
+coef_table["alpha0"] = np.array([0.5129, 0.4408, 0.3965, 0.3752, 0.2949])
+coef_table["beta0"] = np.array([0.7110, 0.9052, 1.016, 1.090, 1.521])
+coef_table["gamma0"] = np.array([3.1616, 4.890, 6.064, 6.920, 12.471])
+
+coef_table["delta0"] = np.array([3.7703, 1.0465, 0.5814, 0.4106, 0.0961])
+coef_table["delta1"] = np.array([14.79, 10.80, 9.618, 9.055, 7, 482])
+
+coef_table["alpha1p"] = np.array([6.416, 5.523, 5.226, 5.077, 4.63])
+coef_table["alpha0p"] = np.array([1.837, 0.5956, 0.3515, 0.2566, 0.0678])
+coef_table["alpha1pp"] = np.array([1.704] * 5)
+coef_table["alpha0pp"] = np.array([0.7796, 0.3439, 0.2400, 0.1957, 0.0940])
+
+coef_table["beta1p"] = np.array([5.101, 4.450, 4.233, 4.124, 3.798])
+coef_table["beta0p"] = np.array([2.681, 0.9473, 0.5905, 0.4478, 0.1461])
+coef_table["beta1pp"] = np.array([1.5] * 5)
+coef_table["beta0pp"] = np.array([3.053, 1.784, 1.442, 1.285, 0.877])
+
+coef_table["gamma1p"] = np.array([4.664, 3.957, 3.721, 3.604, 3.25])
+coef_table["gamma0p"] = np.array([11.92, 5.118, 3.525, 2.841, 1.20])
+coef_table["gamma1pp"] = np.array([2.5] * 5)
+coef_table["gamma0pp"] = np.array([21.67, 15.37, 13.53, 12.65, 10.23])
+
 
 # TODO: Note that the Braginskii Beta coefficient is normalized differently than in EH:
 # Compare Braginskii Eq 4.30-4.33 to EH Eq. 7a-7b. Factors of ne and Te?
@@ -36,12 +58,12 @@ coeff_table = np.load(
 class BraginskiiPolynomialFit(AbstractPolynomialCoefficients):
     @property
     def _c(self):
-        return coeff_table
+        return coef_table
 
     def _Delta(self, i):
         return (
-            self.chi_e ** 4
-            + self._c["delta1"][i] * self.chi_e ** 2
+            self.chi_e**4
+            + self._c["delta1"][i] * self.chi_e**2
             + self._c["delta0"][i]
         )
 
@@ -54,7 +76,7 @@ class BraginskiiPolynomialFit(AbstractPolynomialCoefficients):
     def _norm_alpha_perp(self):
         i = self._find_nearest_Z(self.Z)
         return 1 - (
-            self._c["alpha1p"][i] * self.chi_e ** 2 + self._c["alpha0p"][i]
+            self._c["alpha1p"][i] * self.chi_e**2 + self._c["alpha0p"][i]
         ) / self._Delta(i)
 
     @property
@@ -62,12 +84,12 @@ class BraginskiiPolynomialFit(AbstractPolynomialCoefficients):
         i = self._find_nearest_Z(self.Z)
         return (
             self.chi_e
-            * (self._c["alpha1pp"][i] * self.chi_e ** 2 + self._c["alpha0pp"][i])
+            * (self._c["alpha1pp"][i] * self.chi_e**2 + self._c["alpha0pp"][i])
             / self._Delta(i)
         )
 
     @property
-    @validate_object(properties=["chi_e", "Z"])
+    @validate_attributes_not_none(attributes=["chi_e", "Z"])
     def norm_alpha(self):
         """
         Calculates the normalized alpha coefficients in terms of the
@@ -106,7 +128,7 @@ class BraginskiiPolynomialFit(AbstractPolynomialCoefficients):
     @property
     def _norm_beta_perp(self):
         i = self._find_nearest_Z(self.Z)
-        return (self._c["beta1p"] * self.chi_e ** 2 + self._c["beta0p"]) / self._Delta(
+        return (self._c["beta1p"] * self.chi_e**2 + self._c["beta0p"]) / self._Delta(
             i
         )
 
@@ -115,7 +137,7 @@ class BraginskiiPolynomialFit(AbstractPolynomialCoefficients):
         i = self._find_nearest_Z(self.Z)
         return (
             self.chi_e
-            * (self._c["beta1pp"] * self.chi_e ** 2 + self._c["beta0pp"])
+            * (self._c["beta1pp"] * self.chi_e**2 + self._c["beta0pp"])
             / self._Delta(i)
         )
 
@@ -123,7 +145,7 @@ class BraginskiiPolynomialFit(AbstractPolynomialCoefficients):
     # then just re-instantiate here with a modified docstring??
 
     @property
-    @validate_object(properties=["chi_e", "Z"])
+    @validate_attributes_not_none(attributes=["chi_e", "Z"])
     def norm_beta(self):
         """
         Calculates the normalized beta coefficients in terms of the
@@ -164,7 +186,7 @@ class BraginskiiPolynomialFit(AbstractPolynomialCoefficients):
     def _norm_kappa_e_perp(self):
         i = self._find_nearest_Z(self.Z)
         return (
-            self._c["gamma1p"][i] * self.chi_e ** 2 + self._c["gamma0p"][i]
+            self._c["gamma1p"][i] * self.chi_e**2 + self._c["gamma0p"][i]
         ) / self._Delta(i)
 
     @property
@@ -172,12 +194,12 @@ class BraginskiiPolynomialFit(AbstractPolynomialCoefficients):
         i = self._find_nearest_Z(self.Z)
         return (
             self.chi_e
-            * (self._c["gamma1pp"][i] * self.chi_e ** 2 + self._c["gamma0pp"][i])
+            * (self._c["gamma1pp"][i] * self.chi_e**2 + self._c["gamma0pp"][i])
             / self._Delta(i)
         )
 
     @property
-    @validate_object(properties=["chi_e", "Z"])
+    @validate_attributes_not_none(attributes=["chi_e", "Z"])
     def norm_kappa_e(self):
         """
         Calculates the normalized kappa_e coefficients in terms of the
@@ -216,10 +238,11 @@ if __name__ == "__main__":
 
     import matplotlib.pyplot as plt
 
+    """
     chi = np.linspace(-2, 2, num=50)
-    chi = 10 ** chi
+    chi = 10**chi
 
-    coef = BraginskiiInterpolated(chi_e=chi, Z=5)
+    coef = BraginskiiInterpolated.dimensionless(chi_e=chi, Z=5)
 
     data = coef.norm_alpha[1, :]
 
@@ -230,12 +253,13 @@ if __name__ == "__main__":
     ax.set_xscale("log")
     ax.plot(chi, data)
 
+    """
     chi = np.linspace(-2, 2, num=100)
-    chi = 10 ** chi
+    chi = 10**chi
 
     # Instantiate the object
-    coef1 = BraginskiiPolynomialFit(chi_e=chi, Z=1)
-    coef2 = BraginskiiPolynomialFit(chi_e=chi, Z=np.inf)
+    coef1 = BraginskiiPolynomialFit.dimensionless(chi_e=chi, Z=1)
+    coef2 = BraginskiiPolynomialFit.dimensionless(chi_e=chi, Z=np.inf)
 
     fig, axarr = plt.subplots(nrows=3, ncols=2, figsize=(10, 10), sharex=True)
 

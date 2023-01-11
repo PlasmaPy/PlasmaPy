@@ -5,8 +5,8 @@ from plasma science.
 # __all__ will be auto populated below
 __all__ = []
 
-from .base import *
-from .epperlein_haines import *
+from plasmapy.transport.classical.base import *
+from plasmapy.transport.classical.epperlein_haines import *
 
 # auto populate __all__
 for obj_name in list(globals()):

@@ -2,7 +2,7 @@ __all__ = [
     "AbstractClassicalTransportCoefficients",
     "AbstractPolynomialCoefficients",
     "AbstractInterpolatedCoefficients",
-    "validate_object",
+    "validate_attributes_not_none",
 ]
 
 import astropy.constants as const
@@ -13,19 +13,20 @@ import warnings
 
 from abc import ABC, abstractmethod
 from scipy.interpolate import interp2d
+from typing import Optional, Union
 
 from plasmapy import particles
 from plasmapy.formulary.collisions import (
     fundamental_electron_collision_freq,
     fundamental_ion_collision_freq,
 )
-from plasmapy.formulary.parameters import gyrofrequency
-from plasmapy.particles import Particle
+from plasmapy.formulary.frequencies import gyrofrequency
+from plasmapy.particles.particle_class import ParticleLike
 
 m_e = const.m_e.si
 
 
-def validate_object(properties=[]):
+def validate_attributes_not_none(attributes=[]):
     """
     This decorator for methods of a class validates that a list of
     attributes on that class are not None.
@@ -38,13 +39,13 @@ def validate_object(properties=[]):
         def wrapper(self, *args, **kwargs):
             missing = []
 
-            for p in properties:
-                if getattr(self, p) is None:
-                    missing.append(p)
+            for a in attributes:
+                if getattr(self, a) is None:
+                    missing.append(a)
 
             if len(missing) > 0:
                 raise ValueError(
-                    f"Keywords {properties} must be provided to calculate "
+                    f"Attributes {attributes} must be set to calculate "
                     f"{self.__class__.__name__}.{func.__name__}(), but "
                     f"the following keywords were not provided {missing}."
                 )
@@ -70,233 +71,225 @@ class AbstractClassicalTransportCoefficients(ABC):
     representing different classical transport models re-implement
     the transport cofficient methods of this abstract class.
 
-    The class can be initialized with one of two sets of keywords, allowing
-    it to calcualte the dimensionless/normalized forms of the transport
-    coefficients or the dimensional forms. If sets are provided, the dimensionless
-    set takes precidence.
-
-    Parameters (dimensionless)
-    --------------------------
-
-    chi_e : `numpy.ndarray` (N,)
-        The electron Hall parameter
-
-    chi_i : `numpy.ndarray` (N,)
-        The ion Hall parameter
-
-    Z : float
-        The plasma mean ionization
-
-    Parameters (dimensional)
-    --------------------------
-
-    particle : `~plasmapy.particles.Particle` instance or str
-        The ion species
-
-    B : `~astropy.units.Quantity`
-        Magnetic field strength in units convertable to Tesla.
-
-    ne : `~astropy.units.Quantity`
-        Electron number density, in units convertable to cm^-3.
-
-    ni : `~astropy.units.Quantity`
-        Ion number density, in units convertable to cm^-3.
-
-    Te : `~astropy.units.Quantity`
-        Electron temperature, in units convertable to eV.
-
-    Ti : `~astropy.units.Quantity`
-        Ion temperature, in units convertable to eV.
-
-    e_collision_freq : `~astropy.units.Quantity`
-        The fundamental electron collision frequency, in units convertable
-        to Hz. If not provided, this will be calculated using
-        `~plasmapy.formulary.collisions.fundamental_electron_collision_freq()`
-
-    i_collision_freq : `~astropy.units.Quantity`
-        The fundamental ion collision frequency, in units convertable
-        to Hz. If not provided, this will be calculated using
-        `~plasmapy.formulary.collisions.fundamental_ion_collision_freq()`
-
     """
 
-    @particles.particle_input(none_shall_pass=True)
     def __init__(
         self,
-        chi_e=None,
-        chi_i=None,
-        Z=None,
-        particle: Particle = None,
-        B: u.T = None,
-        ne: u.cm ** -3 = None,
-        ni: u.cm ** -3 = None,
-        Te: u.K = None,
-        Ti: u.K = None,
-        e_collision_freq: u.Hz=None,
-        i_collision_freq: u.Hz=None,
     ):
+        self._dimensional = None
+        self.chi_e = None
+        self.chi_i = None
+        self.Z = None
+        self.particle = None
+        self.B = None
+        self.n_e = None
+        self.n_i = None
+        self.T_e = None
+        self.T_i = None
+        self.e_collision_freq = None
+        self.i_collision_freq = None
 
-        self.chi_e = chi_e
-        self.chi_i = chi_i
-        self.Z = Z
-        self.particle = particle
-        self.B = B
-        self.ne = ne
-        self.ni = ni
-        self.Te = Te
-        self.Ti = Ti
-        self.e_collision_freq = e_collision_freq
-        self.i_collision_freq = i_collision_freq
+    @classmethod
+    def dimensionless(
+        cls,
+        Z: Union[int, float, np.ndarray],
+        chi_e: Optional[np.ndarray] = None,
+        chi_i: Optional[np.ndarray] = None,
+    ):
+        """
+        Construct object with dimensionless parameters.
 
-        # Ensure that only one set of keywords is being used
-        # This code block checks to ensure that one of the sets of
-        # keywords is all None, and raises an exception otherwise
-        self._dim_vars = {
-            'particle':self.particle,
-            'B':self.B,
-            'ne':self.ne,
-            'ni':self.ni,
-            'Te':self.Te,
-            'Ti':self.Ti,
-            'e_collision_freq':self.e_collision_freq,
-            'i_collision_freq':self.i_collision_freq,
-        }
-        self._nodim_vars = {'chi_e':self.chi_e, 
-                            'chi_i':self.chi_i, 
-                            'Z':self.Z}
-        dim_none = all([v is None for v in self._dim_vars.values()])
-        nodim_none = all([v is None for v in self._nodim_vars.values()])
+        Parameters (dimensionless)
+        --------------------------
 
-        # Enforce that only one set of coefficents or the other is used
-        if not dim_none and not nodim_none:
+        chi_e : `numpy.ndarray` (N,)
+            The electron Hall parameter
+
+        chi_i : `numpy.ndarray` (N,)
+            The ion Hall parameter
+
+        Z : float
+            The plasma mean ionization
+        """
+
+        obj = cls()
+        obj._dimensional = False
+
+        # TODO: Ensure support for arrays of Z
+        if not isinstance(Z, (int, float, np.ndarray)):
+            raise ValueError("Z must be a dimensionless number or " "`~numpy.ndarray`.")
+        else:
+            obj.Z = Z
+
+        # chi_e and chi_i must be a number or None, but both cannot be None
+        if not (isinstance(chi_e, np.ndarray) or chi_e is None):
             raise ValueError(
-                "The dimensionless keywords [chi_e, chi_i, Z] and "
-                "dimensional keywords (all others) are mutually "
-                "exlusive because, in the dimensional case, "
-                "chi and Z are calculated from the other parameters. "
-                "Use one or the other!"
+                "chi_e must be either a dimensionless " "`~numpy.ndarray` or None."
+            )
+        else:
+            obj.chi_e = chi_e
+
+        if not (isinstance(chi_i, np.ndarray) or chi_i is None):
+            raise ValueError(
+                "chi_i must be either a dimensionless " "`~numpy.ndarray` or None."
+            )
+        else:
+            obj.chi_i = chi_i
+
+        if (obj.chi_e is None) and (obj.chi_i is None):
+            raise ValueError(
+                "chi_e and chi_i cannot both be None when "
+                "using the dimensionless mode."
             )
 
-        # The __init__ method calls one of two constructors based on which
-        # keywords are provided.
-        # If the normalized constructor is used, only the normalized
-        # coefficients can be used.
-        # If the dimensional constructor is used, both the normalized
-        # and dimensional forms of the coefficients can be used.
-        if dim_none:
-            self._dimensional = False
-            self._constructor_dimensionless()
-            
+        return obj
 
-        else:
-            self._constructor_dimensional()
-            self._dimensional = True
-            
-    def _constructor_dimensionless(self):
-        
-        # Verify that Z is a number
-        # TODO: Ensure support for arrays of Z
-        if not isinstance(self.Z, (int,float, np.ndarray)):
-            raise ValueError("Z must be a dimensionless number or "
-                             "`~numpy.ndarray`.")
-            
-            
-        # TODO: handle chi_e and chi_i mistakenly entered as a quantity array,
-        # with or without dimensional units.
-            
-        # chi_e and chi_i must be a number or None, but both cannot be None
-        if not (isinstance(self.chi_e, np.ndarray) or self.chi_e is None):
-            raise ValueError("chi_e must be either a dimensionless "
-                             "`~numpy.ndarray` or None.")
-            
-        if not (isinstance(self.chi_i, np.ndarray) or self.chi_i is None):
-            raise ValueError("chi_i must be either a dimensionless "
-                             "`~numpy.ndarray` or None.")
-            
-        if (self.chi_e is None) and (self.chi_i is None):
-            raise ValueError("chi_e and chi_i cannot both be None when "
-                             "using the dimensionless mode.")
-            
+    @classmethod
+    @particles.particle_input()
+    def dimensional(
+        cls,
+        *,
+        particle: Optional[ParticleLike] = None,
+        B: u.T = None,
+        n_e: u.cm**-3 = None,
+        n_i: u.cm**-3 = None,
+        T_e: u.K = None,
+        T_i: u.K = None,
+        e_collision_freq: u.Hz = None,
+        i_collision_freq: u.Hz = None,
+    ):
 
+        """
+        Parameters
+        ----------
 
-    def _constructor_dimensional(self):
+        particle : `~plasmapy.particles.Particle` instance or str
+            The ion species
+
+        B : `~astropy.units.Quantity`
+            Magnetic field strength in units convertable to Tesla.
+
+        n_e : `~astropy.units.Quantity`
+            Electron number density, in units convertable to cm^-3.
+
+        n_i : `~astropy.units.Quantity`
+            Ion number density, in units convertable to cm^-3.
+
+        T_e : `~astropy.units.Quantity`
+            Electron temperature, in units convertable to eV.
+
+        T_i : `~astropy.units.Quantity`
+            Ion temperature, in units convertable to eV.
+
+        e_collision_freq : `~astropy.units.Quantity`
+            The fundamental electron collision frequency, in units convertable
+            to Hz. If not provided, this will be calculated using
+            `~plasmapy.formulary.collisions.fundamental_electron_collision_freq()`
+
+        i_collision_freq : `~astropy.units.Quantity`
+            The fundamental ion collision frequency, in units convertable
+            to Hz. If not provided, this will be calculated using
+            `~plasmapy.formulary.collisions.fundamental_ion_collision_freq()`
+        """
+
+        obj = cls()
+        obj._dimensional = True
+
         # particle and B keyword arguments are always required
-        if self.particle is None:
-            raise ValueError("The 'particle' keyword is required in dimensional "
-                             "mode")
-        
-        if self.B is None:
-            raise ValueError("The 'B' keyword is required in dimensional "
-                             "mode.")
-        
-        
-        # Validate that input arrays have the same shape
-        shape = self.B.shape
-        array_quantities = ['ne', 'ni', 'Te', 'Ti', 
-                            'e_collision_freq',
-                            'i_collision_freq',
-                            ]
-        for q in array_quantities:
-            if self._dim_vars[q] is not None and  \
-                self._dim_vars[q].shape != shape:
-                    raise ValueError("Shape of arrays must be equal, but "
-                                     f"B: {self.B.shape} and "
-                                     f"{q}:{self._dim_vars[q].shape} are not.")
-                    
-        
-     
-        self.Z = self.particle.integer_charge
-        # If all the electron quantities are provided, calculate chi_e
-        if all(v is not None for v in [self.ne, self.Te]):
+        if particle is None:
+            raise ValueError(
+                "The 'particle' keyword is required in dimensional " "mode"
+            )
+        else:
+            obj.particle = particle
+            obj.Z = obj.particle.charge_number
 
-            if self.e_collision_freq is None:
-                self.e_collision_freq = fundamental_electron_collision_freq(
-                    self.Te, self.ne, self.particle
+        if B is None:
+            raise ValueError("The 'B' keyword is required in dimensional " "mode.")
+        else:
+            obj.B = B
+
+        # Validate that input arrays have the same shape
+        shape = obj.B.shape
+        array_quantities = {
+            "n_e": n_e,
+            "n_i": n_i,
+            "T_e": T_e,
+            "T_i": T_i,
+            "e_collision_freq": e_collision_freq,
+            "i_collision_freq": i_collision_freq,
+        }
+        for key, val in array_quantities.items():
+            if val is not None and val.shape != shape:
+                raise ValueError(
+                    "Shape of arrays must be equal, but "
+                    f"B: {B.shape} and "
+                    f"{key}:{val.shape} are not."
                 )
-            wce = gyrofrequency(self.B, "e-")
-            self.chi_e = (wce / self.e_collision_freq).to(u.rad).value
+
+        obj.n_e = n_e
+        obj.n_i = n_i
+        obj.T_e = T_e
+        obj.T_i = T_i
+        obj.e_collision_freq = e_collision_freq
+        obj.i_collision_freq = i_collision_freq
+
+        # If all the electron quantities are provided, calculate chi_e
+        if all(v is not None for v in [obj.n_e, obj.T_e]):
+
+            # If collision frequency is not provided, calculate it from the
+            # provided parameters
+            if obj.e_collision_freq is None:
+                obj.e_collision_freq = fundamental_electron_collision_freq(
+                    obj.T_e, obj.n_e, obj.particle
+                )
+            wce = gyrofrequency(obj.B, "e-")
+            obj.chi_e = (wce / obj.e_collision_freq).to(u.rad).value
 
         else:
-            self.chi_e = None
+            obj.chi_e = None
 
         # If all the ion quantities are provided, calculate chi_i
-        if all(v is not None for v in [self.ni, self.Ti]):
-
-            if self.i_collision_freq is None:
-                self.i_collision_freq = fundamental_ion_collision_freq(
-                    self.Ti, self.ni, self.particle
+        if all(v is not None for v in [obj.n_i, obj.T_i]):
+            # If collision frequency is not provided, calculate it from the
+            # provided parameters
+            if obj.i_collision_freq is None:
+                obj.i_collision_freq = fundamental_ion_collision_freq(
+                    obj.T_i, obj.n_i, obj.particle
                 )
-            wci = gyrofrequency(self.B, self.particle)
+            wci = gyrofrequency(obj.B, obj.particle)
 
-            self.chi_i = (wci / self.i_collision_freq).to(u.rad).value
+            obj.chi_i = (wci / obj.i_collision_freq).to(u.rad).value
         else:
-            self.chi_i = None
-            
+            obj.chi_i = None
+
+        return obj
+
     # **********************************************************************
     # Normalization Constants
     # (defaults, overwritable by child classes)
     # Normalizations are defined such that multiplying the dimensionless
     # quantity by the normalization constant will return the dimensional
     # quantity
-    # **********************************************************************    
+    # **********************************************************************
     @property
     def alpha_normalization(self):
         """
-        The normalization constant for alpha. 
-        
+        The normalization constant for alpha.
+
         Defined such that multiplying the dimensionless quantity by the
         normalization constnat will return the dimensional quantity.
         """
         if self._dimensional:
-            return self.particle.mass * self.ne * self.e_collision_freq
+            return self.particle.mass * self.n_e * self.e_collision_freq
         else:
             return None
-    
+
     @property
     def beta_normalization(self):
         """
-        The normalization constant for beta. 
-        
+        The normalization constant for beta.
+
         Defined such that multiplying the dimensionless quantity by the
         normalization constnat will return the dimensional quantity.
         """
@@ -304,56 +297,56 @@ class AbstractClassicalTransportCoefficients(ABC):
             return 1.0
         else:
             return None
-        
+
     @property
     def kappa_e_normalization(self):
         """
-        The normalization constant for kappa_e. 
-        
+        The normalization constant for kappa_e.
+
         Defined such that multiplying the dimensionless quantity by the
         normalization constnat will return the dimensional quantity.
         """
         if self._dimensional:
-            return self.ne * self.Te / self.e_collision_freq / m_e
+            return self.n_e * self.T_e / self.e_collision_freq / m_e
         else:
             return None
-        
+
     @property
     def eta_e_normalization(self):
         """
-        The normalization constant for eta_e. 
-        
+        The normalization constant for eta_e.
+
         Defined such that multiplying the dimensionless quantity by the
         normalization constnat will return the dimensional quantity.
         """
         if self._dimensional:
-            return self.ne * self.Te / self.e_collision_freq
+            return self.n_e * self.T_e / self.e_collision_freq
         else:
             return None
-        
+
     @property
     def kappa_i_normalization(self):
         """
-        The normalization constant for kappa_i. 
-        
+        The normalization constant for kappa_i.
+
         Defined such that multiplying the dimensionless quantity by the
         normalization constnat will return the dimensional quantity.
         """
         if self._dimensional:
-            return self.ni * self.Ti / self.i_collision_freq / self.particle.mass
+            return self.n_i * self.T_i / self.i_collision_freq / self.particle.mass
         else:
             return None
-        
+
     @property
     def eta_i_normalization(self):
         """
-        The normalization constant for eta_i. 
-        
+        The normalization constant for eta_i.
+
         Defined such that multiplying the dimensionless quantity by the
         normalization constnat will return the dimensional quantity.
         """
         if self._dimensional:
-            return self.ni * self.Ti / self.i_collision_freq
+            return self.n_i * self.T_i / self.i_collision_freq
         else:
             return None
 
@@ -367,7 +360,7 @@ class AbstractClassicalTransportCoefficients(ABC):
         )
 
     @property
-    @validate_object(properties=["ne", "Te", "B", "particle"])
+    @validate_attributes_not_none(attributes=["n_e", "T_e", "B", "particle"])
     def alpha(self):
         return self.norm_alpha * self.alpha_normalization
 
@@ -381,7 +374,7 @@ class AbstractClassicalTransportCoefficients(ABC):
         )
 
     @property
-    @validate_object(properties=[])
+    @validate_attributes_not_none(attributes=[])
     def beta(self):
         return self.norm_beta * self.beta_normalization
 
@@ -395,9 +388,9 @@ class AbstractClassicalTransportCoefficients(ABC):
         )
 
     @property
-    @validate_object(properties=["ne", "Te", "B", "particle"])
+    @validate_attributes_not_none(attributes=["n_e", "T_e", "B", "particle"])
     def kappa_e(self):
-        # newaxis is necessary if ne, B etc. are not scalars
+        # newaxis is necessary if n_e, B etc. are not scalars
         return self.norm_kappa_e * self.kappa_e_normalization[..., np.newaxis]
 
     # **********************************************************************
@@ -411,7 +404,7 @@ class AbstractClassicalTransportCoefficients(ABC):
         )
 
     @property
-    @validate_object(properties=["ni", "Ti", "B", "particle"])
+    @validate_attributes_not_none(attributes=["n_i", "T_i", "B", "particle"])
     def kappa_i(self):
         return self.norm_kappa_i * self.kappa_i_normalization[..., np.newaxis]
 
@@ -426,7 +419,7 @@ class AbstractClassicalTransportCoefficients(ABC):
         )
 
     @property
-    @validate_object(properties=["ne", "Te", "B", "particle"])
+    @validate_attributes_not_none(attributes=["n_e", "T_e", "B", "particle"])
     def eta_e(self):
         return self.norm_eta_e * self.eta_e_normalization
 
@@ -441,7 +434,7 @@ class AbstractClassicalTransportCoefficients(ABC):
         )
 
     @property
-    @validate_object(properties=["ni", "Ti", "B", "particle"])
+    @validate_attributes_not_none(attributes=["n_i", "T_i", "B", "particle"])
     def eta_i(self):
         return self.norm_eta_i * self.eta_i_normalization
 
@@ -466,7 +459,7 @@ class AbstractClassicalTransportCoefficients(ABC):
         return np.array([perp, cross])
 
     @property
-    @validate_object(properties=["ne", "Te", "B", "particle"])
+    @validate_attributes_not_none(attributes=["n_e", "T_e", "B", "particle"])
     def delta(self):
         return self.norm_delta * self.alpha_normalization
 
@@ -493,7 +486,7 @@ class AbstractClassicalTransportCoefficients(ABC):
         return np.array([perp, cross])
 
     @property
-    @validate_object(properties=[])
+    @validate_attributes_not_none(attributes=[])
     def gamma(self):
         return self.norm_gamma * self.beta_normalization
 
@@ -504,6 +497,11 @@ class AbstractClassicalTransportCoefficients(ABC):
 
 
 class AbstractPolynomialCoefficients(AbstractClassicalTransportCoefficients):
+    """
+    A set of transport coefficents represented as polynomial fits as functions
+    of chi_e, chi_i, and Z.
+    """
+
     @property
     @abstractmethod
     def _c(self):
@@ -732,6 +730,6 @@ class AbstractInterpolatedCoefficients(AbstractClassicalTransportCoefficients):
 
 if __name__ == "__main__":
     chi = np.linspace(-2, 2, num=50)
-    chi = 10 ** chi
-    x = AbstractClassicalTransportCoefficients(chi_e=chi, Z=1)
+    chi = 10**chi
+    x = AbstractClassicalTransportCoefficients.dimensionless(chi_e=chi, Z=1)
     print(x.beta)

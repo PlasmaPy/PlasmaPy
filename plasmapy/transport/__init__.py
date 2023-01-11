@@ -5,9 +5,9 @@ from plasma science.
 # __all__ will be auto populated below
 __all__ = ["anomalous", "classical", "neoclassical"]
 
-from .anomalous import *
-from .classical import *
-from .neoclassical import *
+# from plasmapy.transport.anomalous import *
+# from plasmapy.transport.classical import *
+# from plasmapy.transport.neoclassical import *
 
 # auto populate __all__
 for obj_name in list(globals()):
