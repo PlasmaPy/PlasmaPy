@@ -98,9 +98,9 @@ def _physical_particle_factory(
     if not args and not kwargs:
         raise TypeError("Particle information has not been provided.")
 
-    for particle_type in (Particle, CustomParticle, ParticleList):
+    for constructor in (Particle, CustomParticle, ParticleList):
         with contextlib.suppress(TypeError, InvalidParticleError):
-            return particle_type(*args, **kwargs)
+            return constructor(*args, **kwargs)
 
     if isinstance(args[0], u.Quantity):
         physical_type = u.get_physical_type(args[0])
@@ -109,6 +109,10 @@ def _physical_particle_factory(
                 "Cannot create a particle object with a Quantity with a "
                 f"physical type of {physical_type}."
             )
+
+    if args and isinstance(args[0], u.Quantity):
+        with contextlib.suppress(TypeError, InvalidParticleError):
+            return CustomParticle._from_quantities(*args, **kwargs)
 
     if not isinstance(args[0], (str, Integral, CustomParticle, Particle, ParticleList)):
         raise TypeError("Invalid type for particle.")
