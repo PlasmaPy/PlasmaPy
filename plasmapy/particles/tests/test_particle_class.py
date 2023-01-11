@@ -1518,6 +1518,19 @@ def test_CustomParticle_from_quantities(args, kwargs, expected):
     assert actual == expected
 
 
+@pytest.mark.parametrize(
+    "args, kwargs, exception",
+    [
+        ([1 * u.C], {"Z": 2}, InvalidParticleError),
+        ([3 * u.m], {}, InvalidParticleError),
+        ([4 * u.kg, "invalid"], {}, InvalidParticleError),
+    ],
+)
+def test_CustomParticle_from_quantities_errors(args, kwargs, exception):
+    with pytest.raises(exception):
+        CustomParticle._from_quantities(*args, **kwargs)
+
+
 @pytest.mark.parametrize("m, Z, symbol, m_symbol, m_Z", test_molecule_table)
 def test_molecule(m, Z, symbol, m_symbol, m_Z):
     """Test ``molecule`` function."""
