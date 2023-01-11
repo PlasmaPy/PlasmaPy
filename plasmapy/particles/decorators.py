@@ -620,7 +620,7 @@ def particle_input(
     accepted by the callable and only one |parameter| is appropriately
     |annotated|.
 
-    If the |annotation| is created using `~typing.Optional` (e.g.,
+    If the |annotation| is created using `typing.Optional` (e.g.,
     ``Optional[ParticleLike]``), then `None` can be provided to
     ``callable_``.
 
@@ -654,8 +654,7 @@ def particle_input(
        When decorating a class method with |particle_input|,
        `classmethod` should be the outer decorator and |particle_input|
        should be the inner decorator, and the first argument
-       (representing the class) must be named ``cls``. However,
-       stacking `classmethod` and |particle_input| requires Python 3.9+.
+       (representing the class) must be named ``cls``.
 
     Parameters
     ----------
@@ -712,9 +711,9 @@ def particle_input(
 
     |ChargeError|
         If ``"charged"`` is in the ``require`` argument and the particle
-        is not explicitly charged, or if ``any_of = {"charged",
-        "uncharged"}`` and the particle does not have charge information
-        associated with it.
+        is not explicitly charged, or if
+        ``any_of = {"charged", "uncharged"}`` and the particle does not
+        have charge information associated with it.
 
     |ParticleError|
         If the returned particle(s) do not meet the categorization
@@ -728,7 +727,7 @@ def particle_input(
 
     Warns
     -----
-    |ParticleWarning|
+    : |ParticleWarning|
         If decorated argument has charge and/or mass number information,
         and ``Z`` and/or ``mass_numb`` contain redundant information.
 
@@ -763,8 +762,8 @@ def particle_input(
     >>> get_particle(1e-26 * u.kg)
     CustomParticle(mass=1e-26 kg, charge=nan C)
 
-    If the annotation is constructed using `typing.Optional`, then the
-    decorated callable will allow `None` to pass.
+    To allow `None` to pass, use ``Optional[ParticleLike]`` as the
+    annotation.
 
     >>> from typing import Optional
     >>> @particle_input
