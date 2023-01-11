@@ -1501,6 +1501,23 @@ test_molecule_table = [
 ]
 
 
+@pytest.mark.parametrize(
+    "args, kwargs, expected",
+    [
+        ([], {}, CustomParticle()),
+        ([1 * u.kg], {}, CustomParticle(mass=1 * u.kg)),
+        ([2 * u.C], {}, CustomParticle(charge=2 * u.C)),
+        ([3 * u.kg, 4 * u.C], {}, CustomParticle(mass=3 * u.kg, charge=4 * u.C)),
+        ([5 * u.C, 6 * u.kg], {}, CustomParticle(mass=6 * u.kg, charge=5 * u.C)),
+        ([7 * u.kg], {"Z": 8.9}, CustomParticle(mass=7 * u.kg, Z=8.9)),
+        ([], {"symbol": "..."}, CustomParticle(symbol="...")),
+    ],
+)
+def test_CustomParticle_from_quantities(args, kwargs, expected):
+    actual = CustomParticle._from_quantities(*args, **kwargs)
+    assert actual == expected
+
+
 @pytest.mark.parametrize("m, Z, symbol, m_symbol, m_Z", test_molecule_table)
 def test_molecule(m, Z, symbol, m_symbol, m_Z):
     """Test ``molecule`` function."""
