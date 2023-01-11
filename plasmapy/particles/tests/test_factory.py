@@ -11,6 +11,10 @@ mass = 1e-26 * u.kg
 charge = 1e-29 * u.C
 custom_particle = CustomParticle(mass=mass, charge=charge)
 
+masses = [mass, mass]
+charges = [charge, charge]
+particle_list = ParticleList([custom_particle] * 2)
+
 test_cases = [
     ([[]], {}, ParticleList()),
     ([proton], {}, proton),
@@ -29,6 +33,8 @@ test_cases = [
     ([custom_particle], {}, custom_particle),
     ([ParticleList(["p+", "e-"])], {}, ParticleList(["p+", "e-"])),
     ([mass, charge], {}, custom_particle),
+    ([charge, mass], {}, custom_particle),
+    ([charge], {}, CustomParticle(charge=charge)),
     ([mass], {}, CustomParticle(mass=mass)),
 ]
 
