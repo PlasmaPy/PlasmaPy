@@ -38,6 +38,7 @@ from plasmapy.particles.exceptions import (
     ParticleWarning,
 )
 from plasmapy.utils import PlasmaPyDeprecationWarning, roman
+from plasmapy.utils._units_helpers import _get_physical_type_dict
 
 _classification_categories = {
     "lepton",
@@ -2099,6 +2100,51 @@ class CustomParticle(AbstractPhysicalParticle):
                 f"Unable to create a custom particle with a mass of "
                 f"{mass} and a charge of {charge}."
             ) from exc
+
+    @classmethod
+    def _from_quantities(
+        cls,
+        *quantities,
+        symbol: Optional[str] = None,
+        Z: Optional[Real] = None,
+    ) -> CustomParticle:
+        """
+        An alternate constructor for |CustomParticle| objects where the
+        positional arguments correspond to the mass and/or charge in
+        any order.
+
+        Parameters
+        ----------
+        *quantities : tuple of |Quantity|
+            The mass and/or electrical charge of the |CustomParticle|,
+            in any order.
+
+        symbol : str, |keyword-only|, optional
+            The symbol of the |CustomParticle|.
+
+        Z : real number, |keyword-only|, optional
+            The |charge number|, if not provided in ``quantities``.
+        """
+
+        if not quantities:
+            return CustomParticle(symbol=symbol, Z=Z)
+
+        physical_type_dict = _get_physical_type_dict(
+            quantities,
+            only_quantities=True,
+            # strict=True,
+            # allowed_physical_types={u.physical.mass, u.physical.electrical_charge},
+        )
+
+        quantity_kwargs = {}
+
+        if u.physical.mass in physical_type_dict:
+            quantity_kwargs["mass"] = physical_type_dict[u.physical.mass]
+
+        if u.physical.electrical_charge in physical_type_dict:
+            quantity_kwargs["charge"] = physical_type_dict[u.physical.electrical_charge]
+
+        return CustomParticle(**quantity_kwargs, symbol=symbol, Z=Z)
 
     def __repr__(self) -> str:
         """
