@@ -32,7 +32,7 @@ class AbstractFitFunction(ABC):
     fitting the function to a set of data.
     """
 
-    _param_names = NotImplemented  # type: Tuple[str, ...]
+    _param_names = NotImplemented  # type: tuple[str, ...]
 
     def __init__(
         self,
@@ -42,11 +42,11 @@ class AbstractFitFunction(ABC):
         """
         Parameters
         ----------
-        params: Tuple[float, ...], optional
+        params: tuple[float, ...], optional
             Tuple of values for the function parameters. Equal in size to
             :attr:`param_names`.
 
-        param_errors: Tuple[float, ...], optional
+        param_errors: tuple[float, ...], optional
             Tuple of values for the errors associated with the function
             parameters.  Equal in size to :attr:`param_names`.
 
@@ -122,7 +122,7 @@ class AbstractFitFunction(ABC):
         x: |array_like|
             Independent variables to be passed to the fit function.
 
-        *args: Tuple[Union[float, int],...]
+        *args: tuple[Union[float, int],...]
             The parameters that will be adjusted to make the fit.
 
         Returns
