@@ -1,2 +1,0 @@
-Added `blacken-docs <https://github.com/adamchainz/blacken-docs>`__ to
-the |pre-commit| configuration.
