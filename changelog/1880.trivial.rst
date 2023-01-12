@@ -1,0 +1,2 @@
+Added the ``strict`` and ``allowed_physical_types`` parameters to
+``plasmapy.utils._units_helpers._get_physical_type_dict``.
