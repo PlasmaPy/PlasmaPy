@@ -6,25 +6,20 @@ appropriate instance of one of those three classes.
 
 __all__ = []
 
+import astropy.units as u
 import contextlib
 
+from astropy.constants import m_e
+from numbers import Integral, Real
 from typing import Any, Union
 
 from plasmapy.particles.exceptions import InvalidParticleError
 from plasmapy.particles.particle_class import CustomParticle, Particle, ParticleLike
 from plasmapy.particles.particle_collections import ParticleList
 
-_particle_constructors = (
-    Particle,
-    CustomParticle,
-    CustomParticle._from_quantities,
-    ParticleList,
-)
-
-_allowed_particle_types = (Particle, CustomParticle, ParticleList)
-
 
 def _generate_error_message(args: tuple, kwargs: dict[str, Any]) -> str:
+    """Compose an error message for invalid particles."""
 
     errmsg = "Unable to create a particle from: "
 
@@ -40,6 +35,45 @@ def _generate_error_message(args: tuple, kwargs: dict[str, Any]) -> str:
     )
 
     return errmsg
+
+
+def _make_custom_particle_with_real_charge(*args, **kwargs):
+    """Create a"""
+
+    if len(args) != 1 or "Z" not in kwargs or not isinstance(args[0], (Integral, str)):
+        raise InvalidParticleError(
+            "Cannot create CustomParticle with this function with "
+            f"{args = } and {kwargs = }."
+        )
+
+    Z: Union[Real, u.Quantity] = kwargs.pop("Z")
+
+    if not isinstance(Z, (Real, u.Quantity)):
+        raise InvalidParticleError("The charge number must be a real number.")
+
+    base_particle = Particle(*args, **kwargs, Z=0)
+
+    if not base_particle.is_category(require="element", exclude="ion"):
+        raise InvalidParticleError("Cannot create CustomParticle.")
+
+    if Z > base_particle.atomic_number:
+        raise InvalidParticleError("The charge number cannot exceed the atomic number.")
+
+    mass = base_particle.mass - m_e * Z
+    symbol = kwargs.get("symbol")
+
+    return CustomParticle(mass=mass, Z=Z, symbol=symbol)
+
+
+_particle_constructors = (
+    Particle,
+    CustomParticle,
+    CustomParticle._from_quantities,
+    ParticleList,
+    _make_custom_particle_with_real_charge,
+)
+
+_allowed_particle_types = (Particle, CustomParticle, ParticleList)
 
 
 def _physical_particle_factory(
