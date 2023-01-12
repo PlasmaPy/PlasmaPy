@@ -2132,6 +2132,9 @@ class CustomParticle(AbstractPhysicalParticle):
         if not quantities:
             return CustomParticle(symbol=symbol, Z=Z)
 
+        if isinstance(quantities[0], str):
+            raise TypeError("Unable to create CustomParticle from a string.")
+
         try:
             physical_type_dict = _get_physical_type_dict(
                 quantities,
@@ -2478,7 +2481,7 @@ def molecule(
         return CustomParticle(mass=mass, charge=charge, symbol=bare_symbol)
 
 
-ParticleLike = Union[str, Integral, Particle, CustomParticle]
+ParticleLike = Union[str, Integral, Particle, CustomParticle, u.Quantity]
 
 ParticleLike.__doc__ = r"""
 An `object` is particle-like if it can be identified as an instance of

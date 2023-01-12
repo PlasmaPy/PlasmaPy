@@ -6,16 +6,40 @@ appropriate instance of one of those three classes.
 
 __all__ = []
 
-import astropy.units as u
 import contextlib
 
-from astropy.units.physical import electrical_charge, mass
-from numbers import Integral
-from typing import Union
+from typing import Any, Union
 
 from plasmapy.particles.exceptions import InvalidParticleError
-from plasmapy.particles.particle_class import CustomParticle, Particle
+from plasmapy.particles.particle_class import CustomParticle, Particle, ParticleLike
 from plasmapy.particles.particle_collections import ParticleList
+
+_particle_constructors = (
+    Particle,
+    CustomParticle,
+    CustomParticle._from_quantities,
+    ParticleList,
+)
+
+_allowed_particle_types = (Particle, CustomParticle, ParticleList)
+
+
+def _generate_error_message(args: tuple, kwargs: dict[str, Any]) -> str:
+
+    errmsg = "Unable to create a particle from: "
+
+    if args:
+        errmsg += repr(args)
+    if args and kwargs:
+        errmsg += " and "
+    if kwargs:
+        errmsg += repr(kwargs)
+    errmsg += (
+        ". For information on creating particles, see: "
+        "https://docs.plasmapy.org/en/stable/glossary.html"
+    )
+
+    return errmsg
 
 
 def _physical_particle_factory(
@@ -84,40 +108,22 @@ def _physical_particle_factory(
     # because they are not allowed as arguments to `CustomParticle`, and
     # are not needed in kwargs if they are their default values. Note
     # that this affects `not kwargs` below.
+
     for parameter in ("Z", "mass_numb"):
         if parameter in kwargs and kwargs[parameter] is None:
             kwargs.pop(parameter)
 
-    if (
-        len(args) == 1
-        and not kwargs
-        and isinstance(args[0], (Particle, CustomParticle, ParticleList))
-    ):
+    if len(args) == 1 and not kwargs and isinstance(args[0], _allowed_particle_types):
         return args[0]
 
     if not args and not kwargs:
         raise TypeError("Particle information has not been provided.")
 
-    for constructor in (Particle, CustomParticle, ParticleList):
+    for constructor in _particle_constructors:
         with contextlib.suppress(TypeError, InvalidParticleError):
             return constructor(*args, **kwargs)
 
-    if isinstance(args[0], u.Quantity):
-        physical_type = u.get_physical_type(args[0])
-        if physical_type not in (electrical_charge, mass):
-            raise u.UnitConversionError(
-                "Cannot create a particle object with a Quantity with a "
-                f"physical type of {physical_type}."
-            )
-
-    if args and isinstance(args[0], u.Quantity):
-        with contextlib.suppress(TypeError, InvalidParticleError):
-            return CustomParticle._from_quantities(*args, **kwargs)
-
-    if not isinstance(args[0], (str, Integral, CustomParticle, Particle, ParticleList)):
+    if args and not isinstance(args[0], ParticleLike):
         raise TypeError("Invalid type for particle.")
 
-    raise InvalidParticleError(
-        f"Unable to create an appropriate particle object with "
-        f"args={args} and kwargs={kwargs}."
-    )
+    raise InvalidParticleError(_generate_error_message(args, kwargs))
