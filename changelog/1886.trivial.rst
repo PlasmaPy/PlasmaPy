@@ -1,0 +1,1 @@
+Dropped the dependency on ``cached-property`` in favor of `functools.cached_property`.
