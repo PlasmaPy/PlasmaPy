@@ -2558,7 +2558,14 @@ instances, are particle-like.
 * **Custom particles**
 
     `~plasmapy.particles.particle_class.CustomParticle` instances are
-    particle-like because particle properties are provided in physical units.
+    particle-like because particle properties are provided in physical
+    units. A `~astropy.units.Quantity` with a physical type of mass or
+    charge is |particle-like| because it can be used to generate a
+    |CustomParticle|.
+
+    >>> import astropy.units as u
+    >>> CustomParticle(mass = 1e-26 * u.kg, charge = 1e-16 * u.C)
+    CustomParticle(mass=1e-26 kg, charge=1e-16 C)
 
 .. note::
 
