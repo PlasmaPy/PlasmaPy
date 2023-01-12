@@ -17,8 +17,8 @@ import warnings
 import xarray as xr
 
 from abc import ABC, abstractmethod
-from cached_property import cached_property
 from collections import namedtuple
+from functools import cached_property
 from scipy.spatial import distance
 from typing import List, Union
 
