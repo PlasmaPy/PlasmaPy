@@ -23,7 +23,7 @@ repos:
   - id: check-yaml
 
 - repo: https://github.com/macisamuele/language-formatters-pre-commit-hooks
-  rev: v2.4.0
+  rev: v2.5.0
   hooks:
   - id: pretty-format-ini
     args: [--autofix]
@@ -60,7 +60,7 @@ repos:
   - id: rst-inline-touching-normal
 
 - repo: https://github.com/charliermarsh/ruff-pre-commit
-  rev: v0.0.216
+  rev: v0.0.219
   hooks:
   - id: ruff
     args: [--force-exclude, --fix]
