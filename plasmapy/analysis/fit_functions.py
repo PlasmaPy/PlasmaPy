@@ -17,7 +17,7 @@ from abc import ABC, abstractmethod
 from collections import namedtuple
 from scipy.optimize import curve_fit, fsolve
 from scipy.stats import linregress
-from typing import Optional, Tuple
+from typing import Optional
 from warnings import warn
 
 from plasmapy.utils.decorators import modify_docstring
@@ -36,8 +36,8 @@ class AbstractFitFunction(ABC):
 
     def __init__(
         self,
-        params: Tuple[float, ...] = None,
-        param_errors: Tuple[float, ...] = None,
+        params: tuple[float, ...] = None,
+        param_errors: tuple[float, ...] = None,
     ):
         """
         Parameters
@@ -271,7 +271,7 @@ class AbstractFitFunction(ABC):
             )
 
     @property
-    def param_names(self) -> Tuple[str, ...]:
+    def param_names(self) -> tuple[str, ...]:
         """Names of the fitted parameters."""
         return self._param_names
 
@@ -802,8 +802,8 @@ class ExponentialPlusLinear(AbstractFitFunction):
 
     def __init__(
         self,
-        params: Tuple[float, ...] = None,
-        param_errors: Tuple[float, ...] = None,
+        params: tuple[float, ...] = None,
+        param_errors: tuple[float, ...] = None,
     ):
         self._exponential = Exponential()
         self._linear = Linear()
@@ -939,8 +939,8 @@ class ExponentialPlusOffset(AbstractFitFunction):
 
     def __init__(
         self,
-        params: Tuple[float, ...] = None,
-        param_errors: Tuple[float, ...] = None,
+        params: tuple[float, ...] = None,
+        param_errors: tuple[float, ...] = None,
     ):
         self._explin = ExponentialPlusLinear()
         super().__init__(params=params, param_errors=param_errors)

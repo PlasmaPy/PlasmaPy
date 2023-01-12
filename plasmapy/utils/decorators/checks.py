@@ -21,7 +21,7 @@ from astropy.constants import c
 from astropy.units.equivalencies import Equivalency
 from functools import reduce
 from operator import add
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any, Optional, Union
 
 from plasmapy.utils.decorators.helpers import preserve_signature
 from plasmapy.utils.exceptions import (
@@ -138,7 +138,7 @@ class CheckValues(CheckBase):
     }
 
     def __init__(
-        self, checks_on_return: Dict[str, bool] = None, **checks: Dict[str, bool]
+        self, checks_on_return: dict[str, bool] = None, **checks: dict[str, bool]
     ):
 
         super().__init__(checks_on_return=checks_on_return, **checks)
@@ -196,7 +196,7 @@ class CheckValues(CheckBase):
 
     def _get_value_checks(
         self, bound_args: inspect.BoundArguments
-    ) -> Dict[str, Dict[str, bool]]:
+    ) -> dict[str, dict[str, bool]]:
         """
         Review :attr:`checks` and function bound arguments to build a complete 'checks'
         dictionary.  If a check key is omitted from the argument checks, then a default
@@ -274,7 +274,7 @@ class CheckValues(CheckBase):
 
         return out_checks
 
-    def _check_value(self, arg, arg_name: str, arg_checks: Dict[str, bool]):
+    def _check_value(self, arg, arg_name: str, arg_checks: dict[str, bool]):
         """
         Perform checks ``arg_checks`` on function argument ``arg``.
 
@@ -468,8 +468,8 @@ class CheckUnits(CheckBase):
 
     def __init__(
         self,
-        checks_on_return: Union[u.Unit, List[u.Unit], Dict[str, Any]] = None,
-        **checks: Union[u.Unit, List[u.Unit], Dict[str, Any]],
+        checks_on_return: Union[u.Unit, list[u.Unit], dict[str, Any]] = None,
+        **checks: Union[u.Unit, list[u.Unit], dict[str, Any]],
     ):
 
         super().__init__(checks_on_return=checks_on_return, **checks)
@@ -527,7 +527,7 @@ class CheckUnits(CheckBase):
 
     def _get_unit_checks(
         self, bound_args: inspect.BoundArguments
-    ) -> Dict[str, Dict[str, Any]]:
+    ) -> dict[str, dict[str, Any]]:
         """
         Review :attr:`checks` and function bound arguments to build a complete 'checks'
         dictionary.  If a check key is omitted from the argument checks, then a default
@@ -757,7 +757,7 @@ class CheckUnits(CheckBase):
 
         return out_checks
 
-    def _check_unit(self, arg, arg_name: str, arg_checks: Dict[str, Any]):
+    def _check_unit(self, arg, arg_name: str, arg_checks: dict[str, Any]):
         """
         Perform unit checks ``arg_checks`` on function argument ``arg``.
 
@@ -788,11 +788,11 @@ class CheckUnits(CheckBase):
             raise err
 
     def _check_unit_core(
-        self, arg, arg_name: str, arg_checks: Dict[str, Any]
-    ) -> Tuple[
+        self, arg, arg_name: str, arg_checks: dict[str, Any]
+    ) -> tuple[
         Optional[u.Quantity],
         Optional[u.Unit],
-        Optional[List[Any]],
+        Optional[list[Any]],
         Optional[Exception],
     ]:
         """
@@ -908,7 +908,7 @@ class CheckUnits(CheckBase):
         return arg, unit, equiv, err
 
     @staticmethod
-    def _condition_target_units(targets: List, from_annotations: bool = False):
+    def _condition_target_units(targets: list, from_annotations: bool = False):
         """
         From a list of target units (either as a string or astropy
         :class:`~astropy.units.Unit` objects), return a list of conditioned
@@ -1045,7 +1045,7 @@ class CheckUnits(CheckBase):
 
 
 def check_units(
-    func=None, checks_on_return: Dict[str, Any] = None, **checks: Dict[str, Any]
+    func=None, checks_on_return: dict[str, Any] = None, **checks: dict[str, Any]
 ):
     """
     A decorator to 'check' — limit/control — the units of input and return
@@ -1185,7 +1185,7 @@ def check_units(
 
 
 def check_values(
-    func=None, checks_on_return: Dict[str, bool] = None, **checks: Dict[str, bool]
+    func=None, checks_on_return: dict[str, bool] = None, **checks: dict[str, bool]
 ):
     """
     A decorator to 'check' — limit/control — the values of input and

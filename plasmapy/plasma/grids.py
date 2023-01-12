@@ -20,7 +20,7 @@ from abc import ABC, abstractmethod
 from cached_property import cached_property
 from collections import namedtuple
 from scipy.spatial import distance
-from typing import List, Union
+from typing import Union
 
 from plasmapy.utils.decorators.helpers import modify_docstring
 
@@ -381,7 +381,7 @@ class AbstractGrid(ABC):
     # 1D axes and step sizes (valid only for uniform grids)
     # *************************************************************************
     @property
-    def si_scale_factors(self) -> List[float]:
+    def si_scale_factors(self) -> list[float]:
         """
         3-element list containing unitless scale factors for converting
         the corresponding axis from its stored units to SI.
