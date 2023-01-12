@@ -20,7 +20,6 @@ license = {file = "LICENSE.md"}
 requires-python = ">=3.9"
 dependencies = [
   "astropy>=5.0.1",
-  "cached-property>=1.5.2",
   "h5py>=3.1",
   "ipywidgets>=7.6.5",
   "lmfit>=1",
