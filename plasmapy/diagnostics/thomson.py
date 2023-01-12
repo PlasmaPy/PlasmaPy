@@ -16,7 +16,6 @@ import numpy as np
 import warnings
 
 from lmfit import Model
-from numpy.typing import ArrayLike
 from typing import Any, Callable, Dict, Optional, Tuple, Union
 
 from plasmapy.formulary import (
@@ -95,17 +94,20 @@ def spectral_density_lite(
         number of ion populations.
 
     efract : (Ne,) `~numpy.ndarray`
-        An `~numpy.ndarray` where each element represents the fraction (or ratio)
-        of the electron population number density to the total electron number density.
-        Must sum to 1.0. Default is a single electron population.
+        An `~numpy.ndarray` where each element represents the fraction
+        (or ratio) of the electron population number density to the
+        total electron number density. Must sum to 1.0. Default is a
+        single electron population.
 
     ifract : (Ni,) `~numpy.ndarray`
-        An `~numpy.ndarray` object where each element represents the fraction (or ratio)
-        of the ion population number density to the total ion number density.
-        Must sum to 1.0. Default is a single ion species.
+        An `~numpy.ndarray` object where each element represents the
+        fraction (or ratio) of the ion population number density to the
+        total ion number density. Must sum to 1.0. Default is a single
+        ion species.
 
     ion_z : (Ni,) `~numpy.ndarray`
-        An `~numpy.ndarray` of the charge number :math:`Z` of each ion species.
+        An `~numpy.ndarray` of the charge number :math:`Z` of each ion
+        species.
 
     ion_mass : (Ni,) `~numpy.ndarray`
         An `~numpy.ndarray` of the mass of each ion species in kg.
@@ -143,14 +145,14 @@ def spectral_density_lite(
     Returns
     -------
     alpha : float
-        Mean scattering parameter, where ``alpha`` > 1 corresponds to collective
-        scattering and ``alpha`` < 1 indicates non-collective scattering. The
-        scattering parameter is calculated based on the total plasma density
-        :math:`n`.
+        Mean scattering parameter, where ``alpha`` > 1 corresponds to
+        collective scattering and ``alpha`` < 1 indicates non-collective
+        scattering. The scattering parameter is calculated based on the
+        total plasma density :math:`n`.
 
     Skw : `~numpy.ndarray`
-        Computed spectral density function over the input ``wavelengths`` array
-        with units of s/rad.
+        Computed spectral density function over the input
+        ``wavelengths`` array with units of s/rad.
     """
 
     scattering_angle = np.arccos(np.dot(probe_vec, scatter_vec))
@@ -266,8 +268,8 @@ def spectral_density(
     *,
     T_e: u.K,
     T_i: u.K,
-    efract: Optional[ArrayLike] = None,
-    ifract: Optional[ArrayLike] = None,
+    efract=None,
+    ifract=None,
     ions: ParticleLike = "p+",
     electron_vel: u.m / u.s = None,
     ion_vel: u.m / u.s = None,
