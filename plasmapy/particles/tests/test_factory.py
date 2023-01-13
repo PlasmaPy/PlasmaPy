@@ -40,6 +40,11 @@ test_cases = [
         {"Z": Z_mean},
         CustomParticle(mass=He4.mass - Z_mean * electron.mass, Z=Z_mean),
     ),
+    (
+        ["He"],
+        {"Z": Z_mean, "mass_numb": 4},
+        CustomParticle(mass=He4.mass - Z_mean * electron.mass, Z=Z_mean),
+    ),
 ]
 
 

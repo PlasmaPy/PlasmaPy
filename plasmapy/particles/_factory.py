@@ -38,7 +38,27 @@ def _generate_error_message(args: tuple, kwargs: dict[str, Any]) -> str:
 
 
 def _make_custom_particle_with_real_charge(*args, **kwargs):
-    """Create a"""
+    """
+    Create a |CustomParticle| for mean or composite ions.
+
+    Parameters
+    ----------
+    *args : (1,) tuple of str
+        A `tuple` containing a representation of an element or isotope,
+        without charge information.
+
+    *kwargs : dict of str to real numbers
+        Keyword arguments like those that can be passed to |Partile|,
+        except where the charge number ``Z`` is a real number but not
+        an integer.
+
+    Examples
+    --------
+    >>> _make_custom_particle_with_real_charge("He-4", Z=1.5)
+    CustomParticle(mass=6.64511...e-27 kg, charge=2.40326...e-19 C)
+    >>> _make_custom_particle_with_real_charge("He", Z=1.5, mass_numb=4)
+    CustomParticle(mass=6.64511...e-27 kg, charge=2.40326...e-19 C)
+    """
 
     if len(args) != 1 or "Z" not in kwargs or not isinstance(args[0], (Integral, str)):
         raise InvalidParticleError(
