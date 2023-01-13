@@ -61,7 +61,7 @@ def test_deBroglie_wavelength():
     "kwargs, exception",
     [
         ({"V": c * 1.00000001, "particle": "e-"}, RelativityError),
-        ({"V": 8 * u.m / u.s, "particle": 5 * u.m}, u.UnitConversionError),
+        ({"V": 8 * u.m / u.s, "particle": 5 * u.m}, InvalidParticleError),
         ({"V": 8 * u.m / u.s, "particle": "invalid particle"}, InvalidParticleError),
     ],
 )
