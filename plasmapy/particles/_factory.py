@@ -25,10 +25,12 @@ def _generate_error_message(args: tuple, kwargs: dict[str, Any]) -> str:
 
     if args:
         errmsg += repr(args)
-    if args and kwargs:
-        errmsg += " and "
+        if kwargs:
+            errmsg += " and "
+
     if kwargs:
         errmsg += repr(kwargs)
+
     errmsg += (
         ". For information on creating particles, see: "
         "https://docs.plasmapy.org/en/stable/glossary.html"
@@ -37,9 +39,14 @@ def _generate_error_message(args: tuple, kwargs: dict[str, Any]) -> str:
     return errmsg
 
 
-def _make_custom_particle_with_real_charge(*args, **kwargs):
+def _make_custom_particle_with_real_charge_number(*args, **kwargs):
     """
     Create a |CustomParticle| for mean or composite ions.
+
+    This function is intended to produce |CustomParticle| instances
+    provided a string representing an element or isotope without charge
+    information (e.g., ``"He"`` or ``"He-4"`` but not ``"He-4 2+"``)
+    along with a charge number that is a real number but not an integer.
 
     Parameters
     ----------
@@ -52,11 +59,16 @@ def _make_custom_particle_with_real_charge(*args, **kwargs):
         except where the charge number ``Z`` is a real number but not
         an integer.
 
+    Raises
+    ------
+    |InvalidParticleError|
+        If the |CustomParticle| cannot be created.
+
     Examples
     --------
-    >>> _make_custom_particle_with_real_charge("He-4", Z=1.5)
+    >>> _make_custom_particle_with_real_charge_number("He-4", Z=1.5)
     CustomParticle(mass=6.64511...e-27 kg, charge=2.40326...e-19 C)
-    >>> _make_custom_particle_with_real_charge("He", Z=1.5, mass_numb=4)
+    >>> _make_custom_particle_with_real_charge_number("He", Z=1.5, mass_numb=4)
     CustomParticle(mass=6.64511...e-27 kg, charge=2.40326...e-19 C)
     """
 
@@ -90,7 +102,7 @@ _particle_constructors = (
     CustomParticle,
     CustomParticle._from_quantities,
     ParticleList,
-    _make_custom_particle_with_real_charge,
+    _make_custom_particle_with_real_charge_number,
 )
 
 _allowed_particle_types = (Particle, CustomParticle, ParticleList)
