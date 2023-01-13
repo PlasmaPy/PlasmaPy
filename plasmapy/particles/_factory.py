@@ -14,7 +14,7 @@ from numbers import Integral, Real
 from typing import Any, Dict, Union
 
 from plasmapy.particles.exceptions import InvalidParticleError
-from plasmapy.particles.particle_class import CustomParticle, Particle, ParticleLike
+from plasmapy.particles.particle_class import CustomParticle, Particle
 from plasmapy.particles.particle_collections import ParticleList
 
 
@@ -189,7 +189,7 @@ def _physical_particle_factory(
         with contextlib.suppress(TypeError, InvalidParticleError):
             return constructor(*args, **kwargs)
 
-    if args and not isinstance(args[0], ParticleLike):
+    if args and not isinstance(args[0], (str, Integral, u.Quantity)):
         raise TypeError("Invalid type for particle.")
 
     raise InvalidParticleError(_generate_error_message(args, kwargs))
