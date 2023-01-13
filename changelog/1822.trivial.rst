@@ -1,2 +1,0 @@
-Removed ``pytest-xdist`` from the testing requirements (see also
-:issue:`750`).

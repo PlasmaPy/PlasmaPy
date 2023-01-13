@@ -1,2 +1,0 @@
-Deprecated providing a real number to the ``charge`` parameter of
-|CustomParticle| to represent the |charge number|. Use ``Z`` instead.
