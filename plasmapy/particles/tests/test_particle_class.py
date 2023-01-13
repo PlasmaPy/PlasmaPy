@@ -1073,7 +1073,7 @@ custom_particle_errors = [
     (CustomParticle, {"mass": np.complex128(5 + 2j) * u.kg}, InvalidParticleError),
     (CustomParticle, {"charge": "not a charge"}, InvalidParticleError),
     (CustomParticle, {"charge": "5.0 km"}, InvalidParticleError),
-    (CustomParticle, {"charge": 1 * u.C, "Z": -1}, TypeError),
+    (CustomParticle, {"charge": 1 * u.C, "Z": -1}, InvalidParticleError),
 ]
 
 
@@ -1516,6 +1516,19 @@ test_molecule_table = [
 def test_CustomParticle_from_quantities(args, kwargs, expected):
     actual = CustomParticle._from_quantities(*args, **kwargs)
     assert actual == expected
+
+
+@pytest.mark.parametrize(
+    "args, kwargs, exception",
+    [
+        ([1 * u.C], {"Z": 2}, InvalidParticleError),
+        ([3 * u.m], {}, InvalidParticleError),
+        ([4 * u.kg, "invalid"], {}, InvalidParticleError),
+    ],
+)
+def test_CustomParticle_from_quantities_errors(args, kwargs, exception):
+    with pytest.raises(exception):
+        CustomParticle._from_quantities(*args, **kwargs)
 
 
 @pytest.mark.parametrize("m, Z, symbol, m_symbol, m_Z", test_molecule_table)

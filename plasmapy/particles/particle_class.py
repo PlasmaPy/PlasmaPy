@@ -2087,7 +2087,9 @@ class CustomParticle(AbstractPhysicalParticle):
         # TODO py3.10 replace ifology with structural pattern matching
 
         if Z is not None and charge is not None:
-            raise TypeError("CustomParticle can accept only one of Z and charge.")
+            raise InvalidParticleError(
+                "CustomParticle can accept only one of 'Z' and 'charge'."
+            )
 
         if Z is not None:
             charge = Z * const.e.si
@@ -2097,9 +2099,10 @@ class CustomParticle(AbstractPhysicalParticle):
             self.charge = charge
             self.symbol = symbol
         except (ValueError, TypeError, u.UnitsError) as exc:
+            charge_info = f"{charge = !r}" if Z is None else f"{Z = !r}"
             raise InvalidParticleError(
-                f"Unable to create a custom particle with a mass of "
-                f"{mass} and a charge of {charge}."
+                f"Unable to create a custom particle with {mass = !r}, "
+                f"{charge_info}, and {symbol = !r}."
             ) from exc
 
     @classmethod
@@ -2130,22 +2133,28 @@ class CustomParticle(AbstractPhysicalParticle):
         if not quantities:
             return CustomParticle(symbol=symbol, Z=Z)
 
-        physical_type_dict = _get_physical_type_dict(
-            quantities,
-            only_quantities=True,
-            # strict=True,
-            # allowed_physical_types={u.physical.mass, u.physical.electrical_charge},
-        )
+        try:
+            physical_type_dict = _get_physical_type_dict(
+                quantities,
+                only_quantities=True,
+                strict=True,
+                allowed_physical_types={u.physical.mass, u.physical.electrical_charge},
+            )
+        except (TypeError, ValueError) as exc:
+            raise InvalidParticleError(
+                f"Unable to create CustomParticle from {quantities}, "
+                f"{Z = !r}, and {symbol = !r}."
+            ) from exc
 
-        quantity_kwargs = {}
+        new_kwargs = {"symbol": symbol, "Z": Z}
 
         if u.physical.mass in physical_type_dict:
-            quantity_kwargs["mass"] = physical_type_dict[u.physical.mass]
+            new_kwargs["mass"] = physical_type_dict[u.physical.mass]
 
         if u.physical.electrical_charge in physical_type_dict:
-            quantity_kwargs["charge"] = physical_type_dict[u.physical.electrical_charge]
+            new_kwargs["charge"] = physical_type_dict[u.physical.electrical_charge]
 
-        return CustomParticle(**quantity_kwargs, symbol=symbol, Z=Z)
+        return CustomParticle(**new_kwargs)
 
     def __repr__(self) -> str:
         """

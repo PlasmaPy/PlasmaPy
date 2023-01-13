@@ -490,3 +490,9 @@ def test_particle_list_with_no_arguments():
     empty_particle_list = ParticleList()
     assert isinstance(empty_particle_list, ParticleList)
     assert len(empty_particle_list) == 0
+
+
+@pytest.mark.parametrize("arg", ["", "H", "He"])
+def test_particle_list_string_exception(arg):
+    with pytest.raises(TypeError):
+        ParticleList(arg)
