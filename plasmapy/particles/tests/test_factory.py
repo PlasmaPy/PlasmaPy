@@ -15,6 +15,10 @@ masses = [mass, mass]
 charges = [charge, charge]
 particle_list = ParticleList([custom_particle] * 2)
 
+He4 = Particle("He-4", Z=0)
+Z_mean = 1.5
+helium_4_mean_mass = He4.mass - Z_mean * electron.mass
+
 test_cases = [
     ([[]], {}, ParticleList()),
     ([proton], {}, proton),
@@ -36,6 +40,11 @@ test_cases = [
     ([charge, mass], {}, custom_particle),
     ([charge], {}, CustomParticle(charge=charge)),
     ([mass], {}, CustomParticle(mass=mass)),
+    (
+        ["He-4"],
+        {"Z": Z_mean},
+        CustomParticle(mass=He4.mass - Z_mean * electron.mass, Z=Z_mean),
+    ),
 ]
 
 
