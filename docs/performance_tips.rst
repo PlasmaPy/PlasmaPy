@@ -43,9 +43,9 @@ called, performance can be improved by creating the particle object
 ahead of time.
 
 For example, suppose we are calculating the
-`~plasmapy.formulary.lengths.gyrofrequency` of a proton. If we represent
-the particle as a string, then the function will need to create a
-|Particle| each time the function is called.
+`~plasmapy.formulary.frequencies.gyrofrequency` of a proton. If we
+represent the particle as a string, then the function will need to
+create a |Particle| each time the function is called.
 
 .. code-block:: python
 
@@ -71,7 +71,7 @@ to be create only once instead of repeatedly.
 Lite-functions
 ==============
 
-PlasmaPy includes |lite-functions| for some `plasmapy.formulary`
+PlasmaPy includes :term:`lite-functions` for some `plasmapy.formulary`
 functions for situations when performance matters. For example,
 `~plasmapy.formulary.frequencies.plasma_frequency_lite` is the
 lite-function for `~plasmapy.formulary.frequencies.plasma_frequency`.
