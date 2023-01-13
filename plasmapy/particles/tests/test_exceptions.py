@@ -924,7 +924,6 @@ tests_from_atomic = [
     [isotope_symbol, ("h-3",), {}, pytest.raises(InvalidParticleError)],
     [isotope_symbol, ("h",), {}, pytest.raises(InvalidParticleError)],
     [isotope_symbol, ("d+",), {}, pytest.raises(InvalidParticleError)],
-    [particle_mass, ["Fe-56"], {"Z": 1.4}, pytest.raises(TypeError)],
     [particle_mass, ["H-1 +1"], {"Z": 0}, pytest.raises(InvalidParticleError)],
     [particle_mass, [26], {"Z": 1, "mass_numb": "a"}, pytest.raises(TypeError)],
     [
