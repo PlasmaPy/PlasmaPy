@@ -115,7 +115,7 @@ class ParticleList(collections.UserList):
             raise TypeError(
                 "ParticleList does not accept strings, but does accept "
                 "lists and tuples containing strings. Did you mean to "
-                f"do `ParticleList({particles!r})` instead?"
+                f"do `ParticleList([{particles!r}])` instead?"
             )
 
         new_particles = []
