@@ -78,7 +78,7 @@ def _make_custom_particle_with_real_charge_number(*args, **kwargs):
             f"{args = } and {kwargs = }."
         )
 
-    Z: Union[Real, u.Quantity] = kwargs.pop("Z")
+    Z = kwargs.pop("Z")
 
     if not isinstance(Z, (Real, u.Quantity)):
         raise InvalidParticleError("The charge number must be a real number.")
@@ -105,7 +105,7 @@ _particle_constructors = (
     _make_custom_particle_with_real_charge_number,
 )
 
-_allowed_particle_types = (Particle, CustomParticle, ParticleList)
+_particle_types = (Particle, CustomParticle, ParticleList)
 
 
 def _physical_particle_factory(
@@ -179,7 +179,7 @@ def _physical_particle_factory(
         if parameter in kwargs and kwargs[parameter] is None:
             kwargs.pop(parameter)
 
-    if len(args) == 1 and not kwargs and isinstance(args[0], _allowed_particle_types):
+    if len(args) == 1 and not kwargs and isinstance(args[0], _particle_types):
         return args[0]
 
     if not args and not kwargs:
