@@ -60,6 +60,8 @@ test_cases_for_exceptions = [
     ("not a valid Particle", {}, InvalidParticleError),
     (["not valid for a ParticleList"], {}, InvalidParticleError),
     (["He-4"], {"Z": 2.001}, InvalidParticleError),
+    (["He-4"], {"Z": 1 + 1j}, TypeError),
+    (["tau neutrino"], {"Z: 1.3"}, InvalidParticleError),
 ]
 
 
