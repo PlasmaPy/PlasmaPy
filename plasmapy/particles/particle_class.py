@@ -2564,8 +2564,8 @@ instances, are particle-like.
     |CustomParticle|.
 
     >>> import astropy.units as u
-    >>> CustomParticle(mass = 1e-26 * u.kg, charge = 1e-16 * u.C)
-    CustomParticle(mass=1e-26 kg, charge=1e-16 C)
+    >>> CustomParticle(mass = 1e-26 * u.kg, charge = 1e-18 * u.C)
+    CustomParticle(mass=1e-26 kg, charge=1e-18 C)
 
 .. note::
 
