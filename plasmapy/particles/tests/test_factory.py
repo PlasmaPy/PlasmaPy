@@ -11,10 +11,6 @@ mass = 1e-26 * u.kg
 charge = 1e-29 * u.C
 custom_particle = CustomParticle(mass=mass, charge=charge)
 
-masses = [mass, mass]
-charges = [charge, charge]
-particle_list = ParticleList([custom_particle] * 2)
-
 He4 = Particle("He-4", Z=0)
 Z_mean = 1.5
 
