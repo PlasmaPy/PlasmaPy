@@ -17,7 +17,6 @@ particle_list = ParticleList([custom_particle] * 2)
 
 He4 = Particle("He-4", Z=0)
 Z_mean = 1.5
-helium_4_mean_mass = He4.mass - Z_mean * electron.mass
 
 test_cases = [
     ([[]], {}, ParticleList()),
@@ -59,6 +58,7 @@ test_cases_for_exceptions = [
     ([], {}, TypeError),
     ("not a valid Particle", {}, InvalidParticleError),
     (["not valid for a ParticleList"], {}, InvalidParticleError),
+    (["He-4"], {"Z": 2.001}, InvalidParticleError),
 ]
 
 
