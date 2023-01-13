@@ -106,11 +106,18 @@ class ParticleList(collections.UserList):
     @staticmethod
     def _list_of_particles_and_custom_particles(
         particles: Optional[Iterable[ParticleLike]],
-    ) -> List[Union[Particle, CustomParticle]]:  # TODO #687
+    ) -> List[Union[Particle, CustomParticle]]:
         """
         Convert an iterable that provides |particle-like| objects into a
         `list` containing |Particle| and |CustomParticle| instances.
         """
+        if isinstance(particles, str):
+            raise TypeError(
+                "ParticleList does not accept strings, but does accept "
+                "lists and tuples containing strings. Did you mean to "
+                f"do `ParticleList({particles!r})` instead?"
+            )
+
         new_particles = []
         if particles is None:
             return new_particles
