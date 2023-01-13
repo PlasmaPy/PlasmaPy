@@ -85,5 +85,5 @@ should only be used for performance-critical applications.
 If you need a lite-function version of a `plasmapy.formulary` function
 that has not already been implemented, please `raise an issue`_.
 
-.. _performance tips: https://docs.astropy.org/en/stable/units/index.html#astropy-units-performance
+.. _performance tips for Quantity operations: https://docs.astropy.org/en/stable/units/index.html#astropy-units-performance
 .. _raise an issue: https://github.com/PlasmaPy/PlasmaPy/issues/new
