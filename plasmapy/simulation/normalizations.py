@@ -22,11 +22,13 @@ class MHDNormalizations(AbstractNormalizations):
     A class containing the |normalization constants| for the equations
     of magnetohydrodynamics.
 
-    This class assumes an electron-ion plasma.
+    This class assumes a two-component electron-ion plasma, where the
+    |charge number| of the ion is :math:`Z`.
 
     Parameters
     ----------
     *quantities : `tuple` of |Quantity|
+        Three normalization constants
 
     ion : |atom-like|
         The ion of the electron-ion plasma.
