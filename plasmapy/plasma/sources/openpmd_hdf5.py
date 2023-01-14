@@ -80,7 +80,7 @@ class HDF5Reader(GenericPlasma):
             if _valid_version(openPMD_version):
                 return True
             else:
-                raise DataStandardError(
+                raise DataStandardError(  # noqa: TC301
                     f"We currently only support HDF5 versions"
                     f"starting from v{_OUTDATED_VERSION} and "
                     f"lower than v{_NEWER_VERSION}. You can "
@@ -88,10 +88,10 @@ class HDF5Reader(GenericPlasma):
                     f"version. For more information; see "
                     f"https://github.com/openPMD/openPMD-updater"
                 )
-        except KeyError:
+        except KeyError as ex:
             raise DataStandardError(
                 "Input HDF5 file does not go on with standards defined by OpenPMD"
-            )
+            ) from ex
 
     @property
     def electric_field(self):

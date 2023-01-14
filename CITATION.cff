@@ -1,10 +1,10 @@
 title: PlasmaPy
 type: software
-version: 0.8.1
+version: 2023.1.0
 identifiers:
 - type: doi
-  value: 10.5281/zenodo.6774350
-date-released: '2022-07-05'
+  value: 10.5281/zenodo.7529964
+date-released: '2023-01-13'
 message: >-
   Please cite the specific version of PlasmaPy used
   during a research project.
@@ -15,8 +15,8 @@ abstract: >-
   PlasmaPy is an open source Python package for plasma research and
   education.
 contact:
-  - email: team@plasmapy.org
-    name: The PlasmaPy Team
+- email: team@plasmapy.org
+  name: The PlasmaPy Team
 keywords:
 - plasma
 - physics
@@ -42,9 +42,8 @@ authors:
   alias: rocco8773
 
 - given-names: Dominik
-  family-names: Stańczak
+  family-names: Stańczak-Marikin
   email: stanczakdominik@gmail.com
-  affiliation: IPPLM
   orcid: https://orcid.org/0000-0001-6291-8843
   alias: StanczakDominik
 
@@ -113,7 +112,9 @@ authors:
   family-names: Carroll
   alias: seanwilliamcarroll
 
-- alias: cclauss
+- given-names: Christian
+  family-names: Clauss
+  alias: cclauss
 
 - given-names: Sean
   family-names: Chambers
@@ -130,6 +131,12 @@ authors:
 - given-names: Jacob
   family-names: Deal
   alias: Jac0bDeal
+
+- given-names: Gregor
+  family-names: Decristoforo
+  affiliation: UiT The Arctic University of Norway
+  orcid: https://orcid.org/0000-0002-7616-0946
+  alias: gregordecristoforo
 
 - given-names: Diego A.
   family-names: Diaz Riega
@@ -244,6 +251,10 @@ authors:
   affiliation: University of Delaware
   alias: etjohnson
 
+- given-names: Marcin
+  family-names: Kastek
+  alias: MKastek
+
 - given-names: James
   family-names: Kent
   alias: jdkent
@@ -302,6 +313,11 @@ authors:
 - given-names: Joao Victor
   family-names: Martinelli
   alias: JvPy
+
+- given-names: Muhammad
+  family-names: Masood
+  affiliation: University of Edinburgh
+  alias: MuhammadHMasood
 
 - given-names: Isaias
   family-names: McHardy
@@ -384,9 +400,11 @@ authors:
   family-names: Rao
   alias: thecasuist
 
-- alias: seanjunheng2
+- given-names: Jayden
+  family-names: Roberts
+  alias: JaydenR2305
 
-- alias: siddharthk07
+- alias: seanjunheng2
 
 - given-names: Steve
   family-names: Richardson
@@ -430,6 +448,10 @@ authors:
   orcid: https://orcid.org/0000-0003-3530-7910
   alias: lucianogsilvestri
 
+- given-names: Trestan
+  family-names: Simon
+  alias: TrestanSimon
+
 - given-names: Angad
   family-names: Singh
   alias: singha95
@@ -452,6 +474,11 @@ authors:
 - given-names: Nikita
   family-names: Smirnov
   alias: Nismirno
+
+- given-names: Stuart
+  family-names: Sobeske
+  affiliation: University of Michigan
+  alias: Sobeskes
 
 - given-names: David
   family-names: Stansby
@@ -482,6 +509,22 @@ authors:
   affiliation: Laboratory for Atmospheric and Space Physics
   orcid: https://orcid.org/0000-0002-8335-1441
   alias: tien-vo
+
+- given-names: Veronica
+  family-names: Tranquilino
+  affiliation: University of Michigan
+  alias: tranqver
+
+- given-names: Steve
+  family-names: Vincena
+  affiliation: UCLA
+  orcid: https://orcid.org/0000-0002-6468-5710
+  alias: svincena
+
+- given-names: Tingfeng
+  family-names: Wu
+  orcid: https://orcid.org/0000-0001-8745-204X
+  alias: elliotwutingfeng
 
 - given-names: Sixue
   family-names: Xu

@@ -20,11 +20,9 @@ import numpy as np
 from astropy.constants.si import c, e, eps0, h, hbar, k_B, m_e
 from lmfit import minimize, Parameters
 
-from plasmapy import particles
 from plasmapy.formulary import mathematics
 from plasmapy.formulary.relativity import Lorentz_factor
 from plasmapy.particles import particle_input, ParticleLike
-from plasmapy.particles.exceptions import InvalidParticleError
 from plasmapy.utils import RelativityError
 from plasmapy.utils.decorators import validate_quantities
 
@@ -58,7 +56,7 @@ def deBroglie_wavelength(V: u.m / u.s, particle: ParticleLike) -> u.m:
     V : `~astropy.units.Quantity`
         Particle velocity in units convertible to meters per second.
 
-    particle : `str`, `~plasmapy.particles.particle_class.Particle`, or `~astropy.units.Quantity`
+    particle : `str`, `~plasmapy.particles.particle_class.Particle`, or |Quantity|
         An instance of `~plasmapy.particles.particle_class.Particle`, or
         an equivalent representation (e.g., ``'e'``, ``'p'``, ``'D+'``, or
         ``'He-4 1+'``), for the particle of interest, or the particle
@@ -425,25 +423,29 @@ def chemical_potential(n_e: u.m**-3, T: u.K) -> u.dimensionless_unscaled:
 
     Notes
     -----
-    The ideal chemical potential is implicitly given by Eq. 1.2 in :cite:p:`bonitz:1998`\:
+    The ideal chemical potential is implicitly given by Eq. 1.2 in
+    :cite:p:`bonitz:1998`\ :
 
     .. math::
         χ = nΛ^{3} = I_{1/2}(β μ^{ideal})
 
-    where :math:`χ` is the degeneracy parameter, :math:`n` is the species
-    number density, :math:`Λ` is the thermal de Broglie wavelength, :math:`I_{1/2}`
-    is the Fermi integral with order 1/2, :math:`β` is the inverse thermal
-    energy :math:`β = 1/(k_B T)`, and :math:`μ^{ideal}` is the ideal chemical potential.
+    where :math:`χ` is the degeneracy parameter, :math:`n` is the
+    species number density, :math:`Λ` is the thermal de Broglie
+    wavelength, :math:`I_{1/2}` is the Fermi integral with order 1/2,
+    :math:`β` is the inverse thermal energy :math:`β = 1/(k_B T)`, and
+    :math:`μ^{ideal}` is the ideal chemical potential.
 
-    The definition for the ideal chemical potential is implicit, so it must
-    be obtained numerically by solving for the Fermi integral for values
-    of chemical potential approaching the degeneracy parameter. Since values
-    returned from the `~plasmapy.formulary.mathematics.Fermi_integral`
-    are complex, the Broyden–Fletcher–Goldfarb–Shanno algorithm is
-    used to iteratively approach a value of :math:`μ^{ideal}` which minimizes
+    The definition for the ideal chemical potential is implicit, so it
+    must be obtained numerically by solving for the Fermi integral for
+    values of chemical potential approaching the degeneracy parameter.
+    Since values returned from the
+    `~plasmapy.formulary.mathematics.Fermi_integral` are complex, the
+    Broyden–Fletcher–Goldfarb–Shanno algorithm is used to iteratively
+    approach a value of :math:`μ^{ideal}` which minimizes
     :math:`\lvert I_{1/2}(β μ^{ideal}) - χ \rvert`.
 
-    This function returns the dimensionless ideal chemical potential :math:`β μ^{ideal}`.
+    This function returns the dimensionless ideal chemical potential
+    :math:`β μ^{ideal}`.
 
     Examples
     --------

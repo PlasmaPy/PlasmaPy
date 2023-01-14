@@ -3,7 +3,7 @@ import inspect
 import pytest
 import sys
 
-from typing import List, Optional, Tuple, Union
+from typing import Optional
 
 from plasmapy.particles import ParticleList
 from plasmapy.particles.decorators import particle_input

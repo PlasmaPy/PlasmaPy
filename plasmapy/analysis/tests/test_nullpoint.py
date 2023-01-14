@@ -14,11 +14,8 @@ from plasmapy.analysis.nullpoint import (
     _trilinear_jacobian,
     _vector_space,
     _vspace_iterator,
-    MultipleNullPointWarning,
     NonZeroDivergence,
     null_point_find,
-    NullPointError,
-    NullPointWarning,
     trilinear_approx,
     uniform_null_point_find,
 )
@@ -58,25 +55,17 @@ def vspace_func_7(x, y, z):
 
 def test_trilinear_coeff_cal():
     r"""Test `~plasmapy.analysis.nullpoint.trilinear_coeff_cal`."""
-    vspace1_args = {
-        "x_range": [0, 10],
-        "y_range": [0, 10],
-        "z_range": [0, 10],
-        "precision": [10 / 46, 10 / 46, 10 / 46],
-        "func": vspace_func_1,
-    }
-    vspace1 = _vector_space(**vspace1_args)
-    vspace2_args = {
+    vspace_args = {
         "x_range": [0, 10],
         "y_range": [0, 10],
         "z_range": [0, 10],
         "precision": [10 / 46, 10 / 46, 10 / 46],
         "func": vspace_func_2,
     }
-    vspace2 = _vector_space(**vspace2_args)
+    vspace = _vector_space(**vspace_args)
     test_trilinear_coeff_cal_values = [
         (
-            {"vspace": vspace2, "cell": [25, 25, 25]},
+            {"vspace": vspace, "cell": [25, 25, 25]},
             [
                 [-5.5, 0, 2, -1, 0, 0, 0, 0],
                 [-22, 3, 0, 1, 0, 0, 0, 0],
@@ -244,6 +233,7 @@ class Test_locate_null_point:
         ).all()
 
 
+@pytest.mark.slow
 def test_null_point_find1():
     r"""Test `~plasmapy.analysis.nullpoint.null_point_find`."""
     # Uniform grid
@@ -260,6 +250,7 @@ def test_null_point_find1():
     assert np.isclose(loc, [5.5, 5.5, 5.5], atol=_EQUALITY_ATOL).all()
 
 
+@pytest.mark.slow
 def test_null_point_find2():
     r"""Test `~plasmapy.analysis.nullpoint.null_point_find`."""
     # Non-uniform grid
@@ -293,6 +284,7 @@ def test_null_point_find3():
     assert np.isclose(loc3, [5.5, 5.5, 5.5], atol=_EQUALITY_ATOL).all()
 
 
+@pytest.mark.slow
 def test_null_point_find4():
     r"""Test `~plasmapy.analysis.nullpoint.null_point_find`."""
     # Two null points
@@ -311,6 +303,7 @@ def test_null_point_find4():
     assert np.isclose(second_loc4, [5.5, 5.5, 5.5], atol=_EQUALITY_ATOL).all()
 
 
+@pytest.mark.slow
 def test_null_point_find5():
     r"""Test `~plasmapy.analysis.nullpoint.null_point_find`."""
     # Many null points because a y vector dimension is zero
@@ -340,6 +333,7 @@ def test_null_point_find5():
             )
 
 
+@pytest.mark.slow
 def test_null_point_find6():
     r"""Test `~plasmapy.analysis.nullpoint.null_point_find`."""
     # Many null points; All vector dimensions zero
@@ -354,6 +348,7 @@ def test_null_point_find6():
     assert len(npoints6) == 0
 
 
+@pytest.mark.slow
 def test_null_point_find7():
     r"""Test `~plasmapy.analysis.nullpoint.null_point_find`."""
     # No null points, discriminant less than zero
@@ -368,6 +363,7 @@ def test_null_point_find7():
     assert len(npoints7) == 0
 
 
+@pytest.mark.slow
 def test_null_point_find8():
     r"""Test `~plasmapy.analysis.nullpoint.null_point_find`."""
     # Non-linear field
@@ -386,6 +382,7 @@ def test_null_point_find8():
     assert np.allclose(loc2, [5.5, 5.5, 5.5], atol=_TESTING_ATOL)
 
 
+@pytest.mark.slow
 class Test_classify_null_point:
     r"""Test `~plasmapy.analysis.nullpoint._classify_null_point`."""
 
@@ -466,10 +463,11 @@ def test_null_point_find9():
         "func": lambda x, y, z: [x, y, z],
     }
     with pytest.raises(NonZeroDivergence):
-        npoints = uniform_null_point_find(**nullpoint9_args)
+        uniform_null_point_find(**nullpoint9_args)
 
 
 # Tests that capture the degenerate nulls/2D nulls
+@pytest.mark.slow
 def test_null_point_find10():
     nullpoint10_args = {
         "x_range": [-0.1, 0.1],
@@ -491,6 +489,7 @@ def test_null_point_find10():
             assert p.classification == "Continuous concentric ellipses"
 
 
+@pytest.mark.slow
 def test_null_point_find11():
     nullpoint10_args = {
         "x_range": [-0.1, 0.1],

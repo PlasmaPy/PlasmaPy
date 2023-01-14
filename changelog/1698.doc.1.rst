@@ -1,2 +1,0 @@
-Enabled ``:py:`` as a reST_ role for inline code formatting in the
-documentation.

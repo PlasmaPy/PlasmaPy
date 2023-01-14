@@ -1,2 +1,0 @@
-Added ``inplace`` as an optional argument to
-`~plasmapy.simulation.particle_integrators.boris_push`.

@@ -569,13 +569,13 @@ def known_isotopes(argument: Union[str, Integral] = None) -> List[str]:
         try:
             element = atomic_symbol(argument)
             isotopes_list = known_isotopes_for_element(element)
-        except InvalidElementError:
+        except InvalidElementError as ex:
             raise InvalidElementError(
                 "known_isotopes is unable to get "
                 f"isotopes from an input of: {argument}"
-            )
-        except InvalidParticleError:
-            raise InvalidParticleError("Invalid particle in known_isotopes.")
+            ) from ex
+        except InvalidParticleError as ex:
+            raise InvalidParticleError("Invalid particle in known_isotopes.") from ex
     elif argument is None:
         isotopes_list = []
         for atomic_numb in range(1, len(_elements.data_about_elements) + 1):
@@ -689,13 +689,13 @@ def common_isotopes(
         try:
             element = atomic_symbol(argument)
             isotopes_list = common_isotopes_for_element(element, most_common_only)
-        except InvalidParticleError:
-            raise InvalidParticleError("Invalid particle")
-        except InvalidElementError:
+        except InvalidParticleError as ex:
+            raise InvalidParticleError("Invalid particle") from ex
+        except InvalidElementError as ex:
             raise InvalidElementError(
                 "common_isotopes is unable to get isotopes "
                 f"from an input of: {argument}"
-            )
+            ) from ex
 
     elif argument is None:
         isotopes_list = []
@@ -789,13 +789,13 @@ def stable_isotopes(
         try:
             element = atomic_symbol(argument)
             isotopes_list = stable_isotopes_for_element(element, not unstable)
-        except InvalidParticleError:
-            raise InvalidParticleError("Invalid particle in stable_isotopes")
-        except InvalidElementError:
+        except InvalidParticleError as ex:
+            raise InvalidParticleError("Invalid particle in stable_isotopes") from ex
+        except InvalidElementError as ex:
             raise InvalidElementError(
                 "stable_isotopes is unable to get isotopes "
                 f"from an input of: {argument}"
-            )
+            ) from ex
     elif argument is None:
         isotopes_list = []
         for atomic_numb in range(1, 119):
@@ -858,7 +858,7 @@ def reduced_mass(test_particle, target_particle) -> u.Quantity:
                 return particle.to(u.kg)
             if not isinstance(particle, Particle):
                 particle = Particle(particle)
-            return particle.mass.to(u.kg)
+
         except u.UnitConversionError as exc1:
             raise u.UnitConversionError("Incorrect units in reduced_mass.") from exc1
         except MissingParticleDataError:
@@ -866,6 +866,8 @@ def reduced_mass(test_particle, target_particle) -> u.Quantity:
                 f"Unable to find the reduced mass because the mass of "
                 f"{particle} is not available."
             ) from None
+        else:
+            return particle.mass.to(u.kg)
 
     test_mass = get_particle_mass(test_particle)
     target_mass = get_particle_mass(target_particle)
@@ -1122,7 +1124,7 @@ def _is_electron(arg: Any) -> bool:
     # TODO: Remove _is_electron from all parts of code.
 
     return (
-        arg in ["e", "e-"] or arg.lower() == "electron"
+        arg in ("e", "e-") or arg.lower() == "electron"
         if isinstance(arg, str)
         else False
     )

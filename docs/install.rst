@@ -194,11 +194,11 @@ If you expect to occasionally edit the source code, instead run:
 
 .. code:: bash
 
-   pip install -e .[developer]
+   pip install -e ".[tests,docs]"
 
-The ``-e`` flag makes the installation editable and ``[developer]``
-indicates that all of the dependencies needed for developing PlasmaPy
-will be installed.
+The ``-e`` flag makes the installation editable and ``[tests,docs]``
+specifies that all of the additional dependencies used while testing
+the package should also be installed.
 
 .. note::
 

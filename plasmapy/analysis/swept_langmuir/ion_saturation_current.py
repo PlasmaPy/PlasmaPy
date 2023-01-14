@@ -160,7 +160,7 @@ def find_ion_saturation_current(
     """
     rtn_extras = ISatExtras(rsq=None, fitted_func=None, fitted_indices=None)._asdict()
 
-    _settings = {
+    _settings: Dict[str, Dict[str, Any]] = {
         "linear": {
             "func": ffuncs.Linear,
             "current_bound": 0.4,
@@ -173,22 +173,22 @@ def find_ion_saturation_current(
             "func": ffuncs.ExponentialPlusOffset,
             "current_bound": 1.0,
         },
-    }  # type: Dict[str, Dict[str, Any]]
+    }
     try:
         default_current_bound = _settings[fit_type]["current_bound"]
         fit_func = _settings[fit_type]["func"]()
         rtn_extras["fitted_func"] = fit_func
-    except KeyError:
+    except KeyError as ex:
         raise ValueError(
             f"Requested fit '{fit_type}' is not a valid option.  Valid options "
             f"are {list(_settings.keys())}."
-        )
+        ) from ex
 
     # check voltage and current arrays
     voltage, current = check_sweep(voltage, current, strip_units=True)
 
     # condition kwargs voltage_bound and current_bound
-    if voltage_bound is None and current_bound is None:
+    if voltage_bound is current_bound is None:
         current_bound = default_current_bound
     elif voltage_bound is not None and current_bound is not None:
         raise ValueError(

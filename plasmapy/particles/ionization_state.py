@@ -98,7 +98,7 @@ class IonicLevel:
 
     def __repr__(self):
         return (
-            f"IonicLevel({repr(self.ionic_symbol)}, "
+            f"IonicLevel({self.ionic_symbol!r}, "
             f"ionic_fraction={self.ionic_fraction})"
         )
 
@@ -134,8 +134,8 @@ class IonicLevel:
         else:
             try:
                 out_of_range = ionfrac < 0 or ionfrac > 1
-            except TypeError:
-                raise TypeError(f"Invalid ionic fraction: {ionfrac}")
+            except TypeError as ex:
+                raise TypeError(f"Invalid ionic fraction: {ionfrac}") from ex
             else:
                 if out_of_range:
                     raise ValueError("The ionic fraction must be between 0 and 1.")
@@ -179,7 +179,7 @@ class IonizationState:
         representing an element, isotope, or ion; or an integer representing
         the atomic number of an element.
 
-    ionic_fractions : `~numpy.ndarray`, `list`, `tuple`, or `~astropy.units.Quantity`; optional
+    ionic_fractions : `~numpy.ndarray`, `list`, `tuple`, or |Quantity|; optional
         The ionization fractions of an element, where the indices
         correspond to the charge number.  This argument should contain the
         atomic number plus one items, and must sum to one within an
@@ -282,7 +282,14 @@ class IonizationState:
             self.T_e = T_e
             self.T_i = T_i
             self.kappa = kappa
+            self.n_elem = n_elem
+            self.ionic_fractions = ionic_fractions
 
+        except TypeError as exc:
+            raise ParticleError(
+                f"Unable to create IonizationState object for {particle.symbol}."
+            ) from exc
+        else:
             if (
                 not np.isnan(n_elem)
                 and isinstance(ionic_fractions, u.Quantity)
@@ -293,20 +300,12 @@ class IonizationState:
                     "through both n_elem and ionic_fractions."
                 )
 
-            self.n_elem = n_elem
-            self.ionic_fractions = ionic_fractions
-
             if ionic_fractions is None and not np.isnan(self.T_e):
                 warnings.warn(
                     "Collisional ionization equilibration has not yet "
                     "been implemented in IonizationState; cannot set "
                     "ionic fractions."
                 )
-
-        except TypeError as exc:
-            raise ParticleError(
-                f"Unable to create IonizationState object for {particle.symbol}."
-            ) from exc
 
     def __str__(self) -> str:
         return f"<IonizationState instance for {self.base_particle}>"
@@ -390,9 +389,9 @@ class IonizationState:
 
         Examples
         --------
-        >>> IonizationState('H', [1, 0], tol=1e-6) == IonizationState('H', [1, 1e-6], tol=1e-6)
+        >>> IonizationState('H', [1, 0], tol=1e-6) == IonizationState('H', [1, 1e-6], tol=1e-6)  # noqa: W505
         True
-        >>> IonizationState('H', [1, 0], tol=1e-8) == IonizationState('H', [1, 1e-6], tol=1e-5)
+        >>> IonizationState('H', [1, 0], tol=1e-8) == IonizationState('H', [1, 1e-6], tol=1e-5)  # noqa: W505
         False
 
         """
@@ -468,10 +467,12 @@ class IonizationState:
 
         try:
             if np.min(fractions) < 0:
-                raise ParticleError("Cannot have negative ionic fractions.")
+                raise ParticleError(  # noqa: TC301
+                    "Cannot have negative ionic fractions."
+                )
 
             if len(fractions) != self.atomic_number + 1:
-                raise ParticleError(
+                raise ParticleError(  # noqa: TC301
                     "The length of ionic_fractions must be "
                     f"{self.atomic_number + 1}."
                 )
