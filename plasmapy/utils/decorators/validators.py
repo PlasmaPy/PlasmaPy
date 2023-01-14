@@ -531,9 +531,9 @@ def validate_quantities(func=None, validations_on_return=None, **validations):
     if func is not None:
         # `validate_quantities` called as a function
         return ValidateQuantities(**validations)(func)
-    else:
-        # `validate_quantities` called as a decorator "sugar-syntax"
-        return ValidateQuantities(**validations)
+
+    # `validate_quantities` called as a decorator "sugar-syntax"
+    return ValidateQuantities(**validations)
 
 
 def get_attributes_not_provided(

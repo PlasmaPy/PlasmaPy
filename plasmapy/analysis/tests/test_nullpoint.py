@@ -14,11 +14,8 @@ from plasmapy.analysis.nullpoint import (
     _trilinear_jacobian,
     _vector_space,
     _vspace_iterator,
-    MultipleNullPointWarning,
     NonZeroDivergence,
     null_point_find,
-    NullPointError,
-    NullPointWarning,
     trilinear_approx,
     uniform_null_point_find,
 )
@@ -58,25 +55,17 @@ def vspace_func_7(x, y, z):
 
 def test_trilinear_coeff_cal():
     r"""Test `~plasmapy.analysis.nullpoint.trilinear_coeff_cal`."""
-    vspace1_args = {
-        "x_range": [0, 10],
-        "y_range": [0, 10],
-        "z_range": [0, 10],
-        "precision": [10 / 46, 10 / 46, 10 / 46],
-        "func": vspace_func_1,
-    }
-    vspace1 = _vector_space(**vspace1_args)
-    vspace2_args = {
+    vspace_args = {
         "x_range": [0, 10],
         "y_range": [0, 10],
         "z_range": [0, 10],
         "precision": [10 / 46, 10 / 46, 10 / 46],
         "func": vspace_func_2,
     }
-    vspace2 = _vector_space(**vspace2_args)
+    vspace = _vector_space(**vspace_args)
     test_trilinear_coeff_cal_values = [
         (
-            {"vspace": vspace2, "cell": [25, 25, 25]},
+            {"vspace": vspace, "cell": [25, 25, 25]},
             [
                 [-5.5, 0, 2, -1, 0, 0, 0, 0],
                 [-22, 3, 0, 1, 0, 0, 0, 0],
@@ -474,7 +463,7 @@ def test_null_point_find9():
         "func": lambda x, y, z: [x, y, z],
     }
     with pytest.raises(NonZeroDivergence):
-        npoints = uniform_null_point_find(**nullpoint9_args)
+        uniform_null_point_find(**nullpoint9_args)
 
 
 # Tests that capture the degenerate nulls/2D nulls
