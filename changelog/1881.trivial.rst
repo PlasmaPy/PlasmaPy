@@ -1,3 +1,0 @@
-Added a private constructor method to |CustomParticle| with an API
-that is better suited for use in |ParticleList| and the particle
-factory function used by |particle_input|.

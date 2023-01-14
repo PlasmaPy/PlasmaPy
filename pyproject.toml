@@ -76,7 +76,6 @@ docs = [
   "tox<4",
 ]
 tests = [
-  "codespell@ git+https://github.com/codespell-project/codespell/",
   "dlint",
   "flake8",
   "flake8-absolute-import",

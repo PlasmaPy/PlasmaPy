@@ -1,1 +1,0 @@
-Updated troubleshooting sections of the |documentation guide|.
