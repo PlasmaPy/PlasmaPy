@@ -1,1 +1,0 @@
-Added `ruff <https://github.com/charliermarsh/ruff>`__ and `refurb <https://github.com/dosisod/refurb>`__ to the ``pre-commit`` configuration.
