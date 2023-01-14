@@ -27,7 +27,7 @@ jobs:
 
         - name: Python 3.10
           os: ubuntu-latest
-          python: 3.10
+          python: '3.10'
           toxenv: py310
 
         - name: Python 3.9 with Astropy dev
@@ -47,7 +47,7 @@ jobs:
 
         - name: Documentation with Sphinx dev
           os: ubuntu-latest
-          python: 3.10
+          python: '3.10'
           toxenv: build_docs-sphinxdev
           toxposargs: -q
 
@@ -81,7 +81,7 @@ jobs:
       with:
         python-version: ${{ matrix.python }}
     - name: Install Python dependencies
-      run: python -m pip install --upgrade tox codecov
+      run: python -m pip install --upgrade "tox<4" codecov
     - name: Install language-pack-fr and tzdata
       if: startsWith(matrix.name, 'Documentation')
       run: sudo apt-get install graphviz pandoc

@@ -72,8 +72,7 @@ class IonizationStateCollection:
     Raises
     ------
     `~plasmapy.particles.exceptions.ParticleError`
-        If `~plasmapy.particles.ionization_state_collection.IonizationStateCollection`
-        cannot be instantiated.
+        If this class cannot be instantiated.
 
     See Also
     --------
@@ -239,7 +238,7 @@ class IonizationStateCollection:
 
         errmsg = (
             f"Cannot set item for this IonizationStateCollection instance for "
-            f"key = {repr(key)} and value = {repr(value)}"
+            f"key = {key!r} and value = {value!r}"
         )
 
         try:
@@ -247,11 +246,11 @@ class IonizationStateCollection:
             self.ionic_fractions[key]
         except (ParticleError, TypeError):
             raise KeyError(
-                f"{errmsg} because {repr(key)} is an invalid particle."
+                f"{errmsg} because {key!r} is an invalid particle."
             ) from None
         except KeyError:
             raise KeyError(
-                f"{errmsg} because {repr(key)} is not one of the base "
+                f"{errmsg} because {key!r} is not one of the base "
                 f"particles whose ionization state is being kept track "
                 f"of."
             ) from None
@@ -340,7 +339,7 @@ class IonizationStateCollection:
                 f"{errmsg} because the ionic fractions are not normalized to one."
             )
 
-        self._ionic_fractions[particle][:] = new_fractions[:]
+        self._ionic_fractions[particle][:] = new_fractions.copy()
 
     def __iter__(self):
         yield from [self[key] for key in self.ionic_fractions.keys()]
@@ -358,7 +357,7 @@ class IonizationStateCollection:
         # Check any of a whole bunch of equality measures, recalling
         # that np.nan == np.nan is False.
 
-        for attribute in ["T_e", "n_e", "kappa"]:
+        for attribute in ("T_e", "n_e", "kappa"):
             this = getattr(self, attribute)
             that = getattr(other, attribute)
 
@@ -375,7 +374,7 @@ class IonizationStateCollection:
             if not this_equals_that:
                 return False
 
-        for attribute in ["ionic_fractions", "number_densities"]:
+        for attribute in ("ionic_fractions", "number_densities"):
 
             this_dict = getattr(self, attribute)
             that_dict = getattr(other, attribute)
@@ -714,7 +713,7 @@ class IonizationStateCollection:
                     new_keys_dict[particle_symbol(old_key)] = old_key
             except ParticleError as ex:
                 raise ParticleError(
-                    f"The key {repr(old_key)} in the abundances "
+                    f"The key {old_key!r} in the abundances "
                     f"dictionary is not a valid element or isotope."
                 ) from ex
 
@@ -894,7 +893,11 @@ class IonizationStateCollection:
         ... )
         >>> states.average_ion()
         CustomParticle(mass=2.12498...e-27 kg, charge=1.5876...e-19 C)
-        >>> states.average_ion(include_neutrals=False, use_rms_charge=True, use_rms_mass=True)
+        >>> states.average_ion(
+        ...     include_neutrals=False,
+        ...     use_rms_charge=True,
+        ...     use_rms_mass=True,
+        ... )
         CustomParticle(mass=2.633...e-27 kg, charge=1.805...e-19 C)
         """
         min_charge = 0 if include_neutrals else 1

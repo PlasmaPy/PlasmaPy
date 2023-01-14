@@ -61,8 +61,12 @@ def _fit_func_double_lin_inverse(x, x0, y0, T0, Delta_T):
     with T0 and T0 + Delta_T being the cold and hot temperatures, respectively.
     """
 
-    hot_T_func = lambda x: y0 + (x - x0) / (T0 + Delta_T)
-    cold_T_func = lambda x: y0 + (x - x0) / T0
+    def hot_T_func(x):
+        return y0 + (x - x0) / (T0 + Delta_T)
+
+    def cold_T_func(x):
+        return y0 + (x - x0) / T0
+
     return np.piecewise(x, x < x0, [hot_T_func, cold_T_func])
 
 
@@ -223,7 +227,8 @@ def swept_probe_analysis(
         The swept probe characteristic that is to be analyzed.
 
     probe_area : `~astropy.units.Quantity`
-        The area of the probe exposed to plasma in units convertible to m^2.
+        The area of the probe exposed to plasma in units convertible to
+        m\ :sup:`2`\ .
 
     gas_argument : argument to instantiate the |Particle| class.
         `str`, `int`, or `~plasmapy.particles.particle_class.Particle`
@@ -252,16 +257,16 @@ def swept_probe_analysis(
         two values if bimaxwellian is True.
 
     "n_e" : `astropy.units.Quantity`
-        Estimate of the electron density in units of m\ :sup:`-3`\ . See the Notes on
-        plasma densities.
+        Estimate of the electron density in units of m\ :sup:`-3`\ . See
+        the Notes on plasma densities.
 
     "n_i" : `astropy.units.Quantity`
-        Estimate of the ion density in units of m\ :sup:`-3`\ . See the Notes on
-        plasma densities.
+        Estimate of the ion density in units of m\ :sup:`-3`\ . See the
+        Notes on plasma densities.
 
     "n_i_OML" : `astropy.units.Quantity`
-        OML-theory estimate of the ion density in units of m\ :sup:`-3`\ . See the Notes
-        on plasma densities.
+        OML-theory estimate of the ion density in units of
+        m\ :sup:`-3`\ . See the Notes on plasma densities.
 
     "V_F" : `astropy.units.Quantity`
         Estimate of the floating potential in units of V.
@@ -270,10 +275,12 @@ def swept_probe_analysis(
         Estimate of the plasma potential in units of V.
 
     "I_es" : `astropy.units.Quantity`
-        Estimate of the electron saturation current in units of Am^-2.
+        Estimate of the electron saturation current in units of A
+        m\ :sup:`-2`\ .
 
     "I_is" : `astropy.units.Quantity`
-        Estimate of the ion saturation current in units of Am^-2.
+        Estimate of the ion saturation current in units of A
+        m\ :sup:`-2`\ .
 
     "hot_fraction" : float
         Estimate of the total hot (energetic) electron fraction.
@@ -626,7 +633,8 @@ def get_ion_saturation_current(probe_characteristic):
 def get_ion_density_LM(
     ion_saturation_current: u.A, T_e: u.eV, probe_area: u.m**2, gas
 ) -> u.m**-3:
-    r"""Implement the Langmuir-Mottley (LM) method of obtaining the ion
+    r"""
+    Implement the Langmuir-Mottley (LM) method of obtaining the ion
     density.
 
     Parameters
@@ -638,7 +646,8 @@ def get_ion_density_LM(
         The electron temperature in units convertible to eV.
 
     probe_area : `~astropy.units.Quantity`
-        The area of the probe exposed to plasma in units convertible to m^2.
+        The area of the probe exposed to plasma in units convertible to
+        m\ :sup:`2`\ .
 
     gas : `~astropy.units.Quantity`
         The (mean) mass of the background gas in atomic mass units.
@@ -659,7 +668,6 @@ def get_ion_density_LM(
 
     .. math::
         I_{is} = 0.6 e A_p n_i \sqrt{\frac{T_e}{m_i}}.
-
     """
 
     _langmuir_futurewarning()
@@ -700,12 +708,14 @@ def get_electron_density_LM(
         The electron temperature in units convertible to eV.
 
     probe_area : `~astropy.units.Quantity`
-        The area of the probe exposed to plasma in units convertible to m^2.
+        The area of the probe exposed to plasma in units convertible to
+        m\ :sup:`2`\ .
 
     Returns
     -------
     n_e : `~astropy.units.Quantity`
-        Estimate of the electron density in units convertible to m\ :sup:`-3`\ .
+        Estimate of the electron density in units convertible to
+        m\ :sup:`-3`\ .
 
     Notes
     -----
@@ -1159,7 +1169,8 @@ def get_ion_density_OML(
         The swept probe characteristic that is to be analyzed.
 
     probe_area : `~astropy.units.Quantity`
-        The area of the probe exposed to plasma in units convertible to m^2.
+        The area of the probe exposed to plasma in units convertible to
+        m\ :sup:`2`\ .
 
     gas : `~astropy.units.Quantity`
         The (mean) mass of the background gas in atomic mass units.
@@ -1168,8 +1179,8 @@ def get_ion_density_OML(
         If `True` a plot of the OML fit is shown. Default is `False`.
 
     return_fit: `bool`, optional
-        If `True` the parameters of the fit will be returned in addition to the
-        ion density. Default is `False`.
+        If `True` the parameters of the fit will be returned in addition
+        to the ion density. Default is `False`.
 
     Returns
     -------

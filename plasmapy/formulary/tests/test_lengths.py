@@ -18,7 +18,6 @@ from plasmapy.formulary.lengths import (
 )
 from plasmapy.formulary.speeds import thermal_speed
 from plasmapy.particles.exceptions import InvalidParticleError
-from plasmapy.utils.exceptions import PlasmaPyFutureWarning
 from plasmapy.utils.pytest_helpers import assert_can_handle_nparray
 
 Z = 1
@@ -111,7 +110,6 @@ class TestGyroradius:
             ((B_arr, "e-"), {"Vperp": V_arr, "T": T_i}, ValueError),
             ((B_arr, "e-"), {"Vperp": V, "T": T_nanarr}, ValueError),
             ((B_arr, "e-"), {"Vperp": V_nanarr, "T": T_i}, ValueError),
-            ((0.4 * u.T, "e-"), {"T": 5 * u.eV, "T_i": 7 * u.eV}, ValueError),
             ((B_arr, "e-"), {"lorentzfactor": [3.0, 2.0]}, ValueError),
             (
                 (B_arr, "e-"),
@@ -309,14 +307,6 @@ class TestGyroradius:
             ((1.1, "e-"), {"T": 1.2}, 3.11737236e-08 * u.m, u.UnitsWarning),
             ((1.1 * u.T, "e-"), {"T": 1.2}, 3.11737236e-08 * u.m, u.UnitsWarning),
             ((1.1, "e-"), {"T": 1.2 * u.K}, 3.11737236e-08 * u.m, u.UnitsWarning),
-            #
-            # Future warning for using T_i instead of T
-            (
-                (1.1 * u.T, "e-"),
-                {"T_i": 1.2 * u.K},
-                3.11737236e-08 * u.m,
-                PlasmaPyFutureWarning,
-            ),
         ],
     )
     def test_warns(self, args, kwargs, expected, _warns):

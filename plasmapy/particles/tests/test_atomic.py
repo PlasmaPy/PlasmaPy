@@ -330,16 +330,16 @@ def test_particle_mass_equivalent_args(arg1, kwargs1, arg2, kwargs2, expected):
     result2 = particle_mass(arg2, **kwargs2)
 
     assert u.isclose(result1, result2), (
-        f"particle_mass({repr(arg1)}, **{kwargs1}) = {repr(result1)}, whereas "
-        f"particle_mass({repr(arg2)}, **{kwargs2}) = {repr(result2)}.  "
+        f"particle_mass({arg1!r}, **{kwargs1}) = {result1!r}, whereas "
+        f"particle_mass({arg2!r}, **{kwargs2}) = {result2!r}.  "
         f"These results are not equivalent as expected."
     )
 
     if expected is not None:
         assert u.isclose(result1, result2) and u.isclose(result2, expected), (
-            f"particle_mass({repr(arg1)}, **{kwargs1}) = {repr(result1)} and "
-            f"particle_mass({repr(arg2)}, **{kwargs2}) = {repr(result2)}, but "
-            f"these results are not equal to {repr(expected)} as expected."
+            f"particle_mass({arg1!r}, **{kwargs1}) = {result1!r} and "
+            f"particle_mass({arg2!r}, **{kwargs2}) = {result2!r}, but "
+            f"these results are not equal to {expected!r} as expected."
         )
 
 
@@ -516,8 +516,7 @@ class TestReducedMassInput:
             reduced_mass("N", 6e-26 * u.l)
 
     def test_missing_atomic_data(self):
-        with pytest.raises(MissingParticleDataError):
-            reduced_mass("Og", "H")
+        assert u.isclose(reduced_mass("Og", "H"), np.nan * u.kg, equal_nan=True)
 
 
 def test_ion_list_example():
@@ -592,7 +591,7 @@ def test_ionic_levels_example():
         ("C", 3, 5, [3, 4, 5]),
     ],
 )
-def test_ion_list(particle, min_charge, max_charge, expected_charge_numbers):
+def test_ion_list2(particle, min_charge, max_charge, expected_charge_numbers):
     """Test that inputs to ionic_levels are interpreted correctly."""
     particle = Particle(particle)
     ions = ionic_levels(particle, min_charge, max_charge)
@@ -605,6 +604,6 @@ def test_ion_list(particle, min_charge, max_charge, expected_charge_numbers):
 @pytest.mark.parametrize(
     "element, min_charge, max_charge", [("Li", 0, 4), ("Li", 3, 2)]
 )
-def test_invalid_inputs_to_ion_list(element, min_charge, max_charge):
+def test_invalid_inputs_to_ion_list2(element, min_charge, max_charge):
     with pytest.raises(ChargeError):
         ionic_levels(element, min_charge, max_charge)

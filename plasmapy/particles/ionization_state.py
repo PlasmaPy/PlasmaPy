@@ -98,7 +98,7 @@ class IonicLevel:
 
     def __repr__(self):
         return (
-            f"IonicLevel({repr(self.ionic_symbol)}, "
+            f"IonicLevel({self.ionic_symbol!r}, "
             f"ionic_fraction={self.ionic_fraction})"
         )
 
@@ -179,7 +179,7 @@ class IonizationState:
         representing an element, isotope, or ion; or an integer representing
         the atomic number of an element.
 
-    ionic_fractions : `~numpy.ndarray`, `list`, `tuple`, or `~astropy.units.Quantity`; optional
+    ionic_fractions : `~numpy.ndarray`, `list`, `tuple`, or |Quantity|; optional
         The ionization fractions of an element, where the indices
         correspond to the charge number.  This argument should contain the
         atomic number plus one items, and must sum to one within an
@@ -389,9 +389,9 @@ class IonizationState:
 
         Examples
         --------
-        >>> IonizationState('H', [1, 0], tol=1e-6) == IonizationState('H', [1, 1e-6], tol=1e-6)
+        >>> IonizationState('H', [1, 0], tol=1e-6) == IonizationState('H', [1, 1e-6], tol=1e-6)  # noqa: W505
         True
-        >>> IonizationState('H', [1, 0], tol=1e-8) == IonizationState('H', [1, 1e-6], tol=1e-5)
+        >>> IonizationState('H', [1, 0], tol=1e-8) == IonizationState('H', [1, 1e-6], tol=1e-5)  # noqa: W505
         False
 
         """
