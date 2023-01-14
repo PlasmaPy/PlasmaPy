@@ -17,7 +17,7 @@ import numpy as np
 import pytest
 import warnings
 
-from typing import Any, Callable, Dict
+from typing import Any, Callable
 
 from plasmapy.tests.helpers.exceptions import (
     InvalidTestError,
@@ -68,7 +68,7 @@ def _process_input(wrapped_function: Callable):  # coverage: ignore
 def run_test(
     func,
     args: Any = (),
-    kwargs: Dict = None,
+    kwargs: dict = None,
     expected_outcome: Any = None,
     rtol: float = 0.0,
     atol: float = 0.0,

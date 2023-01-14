@@ -7,7 +7,7 @@ import numpy as np
 
 from astropy import units as u
 from numbers import Integral
-from typing import Any, Callable, Dict, List, Optional, Tuple, Union
+from typing import Any, Callable, Optional, Union
 
 
 def _code_repr_of_ndarray(array: np.ndarray, max_items=np.inf) -> str:
@@ -87,7 +87,7 @@ def _code_repr_of_arg(arg, max_items=np.inf) -> str:
 
 
 def _code_repr_of_args_and_kwargs(
-    args: Any = None, kwargs: Dict = None, max_items=np.inf
+    args: Any = None, kwargs: dict = None, max_items=np.inf
 ) -> str:
     """
     Take positional and keyword arguments, and format them into a
@@ -169,7 +169,7 @@ def _object_name(obj: Any, showmodule=False) -> str:
 
 
 def _string_together_warnings_for_printing(
-    warning_types: List[Warning], warning_messages: List[str]
+    warning_types: list[Warning], warning_messages: list[str]
 ):
     """
     Take a list of warning types with a list of corresponding warning
@@ -187,7 +187,7 @@ def _string_together_warnings_for_printing(
 def call_string(
     f: Callable,
     args: Any = None,
-    kwargs: Dict[str, Any] = None,
+    kwargs: dict[str, Any] = None,
     max_items: Integral = 12,
 ) -> str:
     """
@@ -248,8 +248,8 @@ def call_string(
 def attribute_call_string(
     cls,
     attr: str,
-    args_to_cls: Optional[Union[Tuple, Any]] = None,
-    kwargs_to_cls: Optional[Dict[str, Any]] = None,
+    args_to_cls: Optional[Union[tuple, Any]] = None,
+    kwargs_to_cls: Optional[dict[str, Any]] = None,
     max_items: Integral = 12,
 ) -> str:
     """
@@ -323,9 +323,9 @@ def method_call_string(
     method: str,
     *,
     args_to_cls: Optional[Any] = None,
-    kwargs_to_cls: Optional[Dict[str, Any]] = None,
+    kwargs_to_cls: Optional[dict[str, Any]] = None,
     args_to_method: Optional[Any] = None,
-    kwargs_to_method: Optional[Dict[str, Any]] = None,
+    kwargs_to_method: Optional[dict[str, Any]] = None,
     max_items: Integral = 12,
 ) -> str:
     """
