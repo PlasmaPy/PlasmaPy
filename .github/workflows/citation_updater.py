@@ -43,7 +43,7 @@ def update_citation_files(args):
     citation_rst_file = pathlib.Path(args.citation_rst_file)
     citation_rst_text = citation_rst_file.read_text()
 
-    for source_regex, target_value in [
+    for source_regex, target_value in (
         (
             r"\|version_to_cite\| replace:: (.*)",
             f"|version_to_cite| replace:: {args.version}",
@@ -54,9 +54,9 @@ def update_citation_files(args):
         ),
         (
             r"\|citation_year\| replace:: (.*)",
-            f"|citation_year| replace:: {str(args.date_released.year)}",
+            f"|citation_year| replace:: {args.date_released.year}",
         ),
-    ]:
+    ):
         citation_rst_text = re.compile(source_regex).sub(
             target_value, citation_rst_text
         )

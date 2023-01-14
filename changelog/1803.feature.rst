@@ -1,3 +1,0 @@
-Added the `plasmapy.analysis.time_series.running_moments` module
-including two functions for calculating running moments of time
-series.

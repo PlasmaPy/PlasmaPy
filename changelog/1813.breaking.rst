@@ -1,1 +1,0 @@
-Changed the `~plasmapy.formulary.lengths.gyroradius` function so that it takes relativistic effects into account by default.

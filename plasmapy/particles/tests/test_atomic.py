@@ -591,7 +591,7 @@ def test_ionic_levels_example():
         ("C", 3, 5, [3, 4, 5]),
     ],
 )
-def test_ion_list(particle, min_charge, max_charge, expected_charge_numbers):
+def test_ion_list2(particle, min_charge, max_charge, expected_charge_numbers):
     """Test that inputs to ionic_levels are interpreted correctly."""
     particle = Particle(particle)
     ions = ionic_levels(particle, min_charge, max_charge)
@@ -604,6 +604,6 @@ def test_ion_list(particle, min_charge, max_charge, expected_charge_numbers):
 @pytest.mark.parametrize(
     "element, min_charge, max_charge", [("Li", 0, 4), ("Li", 3, 2)]
 )
-def test_invalid_inputs_to_ion_list(element, min_charge, max_charge):
+def test_invalid_inputs_to_ion_list2(element, min_charge, max_charge):
     with pytest.raises(ChargeError):
         ionic_levels(element, min_charge, max_charge)
