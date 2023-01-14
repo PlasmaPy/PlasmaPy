@@ -1,1 +1,0 @@
-Changed the minimum required version of Python from 3.8 to 3.9.
