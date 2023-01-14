@@ -908,9 +908,6 @@ def test_NonUniformCartesianGrid():
 
     pts0, pts1, pts2 = grid.grids
 
-    shape = grid.shape
-    units = grid.units
-
     grid.add_quantities(x=pts0)
     print(grid)
 
@@ -942,7 +939,7 @@ def test_NonUniformCartesianGrid():
     L0 = [-1 * u.mm, 0 * u.rad, -1 * u.mm]
     L1 = [1 * u.mm, 2 * np.pi * u.rad, 1 * u.mm]
     with pytest.raises(ValueError):
-        grid = grids.NonUniformCartesianGrid(L0, L1, num=10)
+        grids.NonUniformCartesianGrid(L0, L1, num=10)
 
 
 def debug_volume_avg_interpolator():

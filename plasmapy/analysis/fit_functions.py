@@ -231,8 +231,8 @@ class AbstractFitFunction(ABC):
         """The fitted parameters for the fit function."""
         if self._params is None:
             return self._params
-        else:
-            return self.FitParamTuple(*self._params)
+
+        return self.FitParamTuple(*self._params)
 
     @params.setter
     def params(self, val) -> None:
@@ -253,8 +253,8 @@ class AbstractFitFunction(ABC):
         """The associated errors of the fitted :attr:`params`."""
         if self._param_errors is None:
             return self._param_errors
-        else:
-            return self.FitParamTuple(*self._param_errors)
+
+        return self.FitParamTuple(*self._param_errors)
 
     @param_errors.setter
     def param_errors(self, val) -> None:

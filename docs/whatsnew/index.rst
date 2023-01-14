@@ -12,6 +12,8 @@ including bug fixes and changes to the application programming interface
    :maxdepth: 1
 
    dev
+   2023.1.0
+   0.9.1
    0.9.0
    0.8.1
    0.7.0

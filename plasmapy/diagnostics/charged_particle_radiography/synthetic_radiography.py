@@ -235,14 +235,14 @@ class Tracker:
                     np.array(
                         [
                             np.max(a)
-                            for a in [
+                            for a in (
                                 arr[0, :, :],
                                 arr[-1, :, :],
                                 arr[:, 0, :],
                                 arr[:, -1, :],
                                 arr[:, :, 0],
                                 arr[:, :, -1],
-                            ]
+                            )
                         ]
                     )
                 )
@@ -286,9 +286,9 @@ class Tracker:
 
         for i, grid in enumerate(self.grids):
             ind = 0
-            for x in [0, -1]:
-                for y in [0, -1]:
-                    for z in [0, -1]:
+            for x in (0, -1):
+                for y in (0, -1):
+                    for z in (0, -1):
                         # Source to grid corner vector
                         vec = self.grids_arr[i][x, y, z, :] - self.source
 
