@@ -598,7 +598,7 @@ class Test_Maxwellian_speed_2D:
         Testing vdrifts with values
         """
         with pytest.raises(NotImplementedError):
-            distFunc = Maxwellian_speed_2D(
+            Maxwellian_speed_2D(
                 v=self.v,
                 T=self.T,
                 particle=self.particle,
@@ -898,7 +898,7 @@ class Test_Maxwellian_speed_3D:
         Testing vdrifts with values
         """
         with pytest.raises(NotImplementedError):
-            distFunc = Maxwellian_speed_3D(
+            Maxwellian_speed_3D(
                 v=self.v,
                 T=self.T,
                 particle=self.particle,
@@ -968,12 +968,8 @@ class Test_kappa_velocity_1D:
         ).argmax()
         assert np.isclose(self.v_vect[max_index].value, self.v_drift.value)
 
-    def test_maxwellian_limit(self):
-        """
-        Tests the limit of large kappa to see if kappa distribution function
-        converges to Maxwellian.
-        """
-        return
+    # TODO Need to add a test to see if the kappa distribution goes to a
+    # Maxwellian in the limit of large κ
 
     def test_norm(self):
         """

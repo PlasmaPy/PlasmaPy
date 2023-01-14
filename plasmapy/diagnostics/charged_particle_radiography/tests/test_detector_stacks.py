@@ -62,14 +62,14 @@ def test_create_layer_with_different_stopping_powers(tmp_path):
     mass_density = 2.7 * u.g / u.cm**3
 
     # No error should be raised initializing one of these ways
-    layer = Layer(100 * u.um, eaxis, mass_stopping_power * mass_density)
-    layer = Layer(100 * u.um, eaxis, mass_stopping_power, mass_density=mass_density)
+    Layer(100 * u.um, eaxis, mass_stopping_power * mass_density)
+    Layer(100 * u.um, eaxis, mass_stopping_power, mass_density=mass_density)
 
     # Error should be raised if the wrong units are provided
     with pytest.raises(ValueError):
-        layer = Layer(100 * u.um, eaxis, mass_stopping_power.value * u.kg)
+        Layer(100 * u.um, eaxis, mass_stopping_power.value * u.kg)
     with pytest.raises(ValueError):
-        layer = Layer(
+        Layer(
             100 * u.um,
             eaxis,
             mass_stopping_power,
@@ -79,7 +79,7 @@ def test_create_layer_with_different_stopping_powers(tmp_path):
     # Error should be raised if mass_density keyword is not provided when
     # the mass stopping power is given
     with pytest.raises(ValueError):
-        layer = Layer(100 * u.um, eaxis, mass_stopping_power, mass_density=None)
+        Layer(100 * u.um, eaxis, mass_stopping_power, mass_density=None)
 
 
 def test_film_stack_num_layers(hdv2_stack):

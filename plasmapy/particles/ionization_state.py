@@ -98,7 +98,7 @@ class IonicLevel:
 
     def __repr__(self):
         return (
-            f"IonicLevel({repr(self.ionic_symbol)}, "
+            f"IonicLevel({self.ionic_symbol!r}, "
             f"ionic_fraction={self.ionic_fraction})"
         )
 

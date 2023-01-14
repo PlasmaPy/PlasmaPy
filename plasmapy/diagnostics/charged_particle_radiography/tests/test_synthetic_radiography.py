@@ -4,7 +4,6 @@ Tests for proton radiography functions
 
 import astropy.units as u
 import numpy as np
-import os
 import pytest
 
 from scipy.special import erf
@@ -129,6 +128,39 @@ def _test_grid(
             grid.add_quantities(**arg)
 
     return grid
+
+
+def test_multiple_grids():
+    """
+    Test that a case with two grids runs.
+
+    TODO: automate test by including two fields with some obvious analytical
+    solution??
+    """
+
+    grid1 = _test_grid("constant_bz", L=3 * u.cm, num=50, B0=0.7 * u.T)
+    grid2 = _test_grid("electrostatic_gaussian_sphere", L=1 * u.mm, num=50)
+    grids = [grid1, grid2]
+
+    source = (0 * u.mm, -10 * u.mm, 0 * u.mm)
+    detector = (0 * u.mm, 200 * u.mm, 0 * u.mm)
+
+    sim = cpr.Tracker(grids, source, detector, verbose=True)
+
+    sim.create_particles(1e5, 15 * u.MeV, max_theta=8 * u.deg)
+
+    sim.run(field_weighting="nearest neighbor")
+
+    size = np.array([[-1, 1], [-1, 1]]) * 5 * u.cm
+    bins = [100, 100]
+    hax, vax, values = cpr.synthetic_radiograph(sim, size=size, bins=bins)
+
+    """
+    import matplotlib.pyplot as plt
+    fig, ax = plt.subplots()
+    ax.set_aspect('equal')
+    ax.pcolormesh(hax.to(u.cm).value, vax.to(u.cm).value, values.T)
+    """
 
 
 def run_1D_example(name):
@@ -675,7 +707,7 @@ def test_gaussian_sphere_analytical_comparison():
     phi0 = 1.4e5
     W = 15e6
 
-    l = 10
+    l = 10  # noqa: E741
     L = 200
 
     # Define and run the problem
@@ -863,3 +895,35 @@ def test_add_wire_mesh():
 
     # Verify that the spacing is correct by checking the FFT
     assert np.isclose(measured_spacing, true_spacing, 0.5)
+
+
+def test_multiple_grids2():
+    """
+    Test that a case with two grids runs.
+    TODO: automate test by including two fields with some obvious analytical
+    solution??
+    """
+
+    grid1 = _test_grid("constant_bz", L=3 * u.cm, num=50, B0=0.7 * u.T)
+    grid2 = _test_grid("electrostatic_gaussian_sphere", L=1 * u.mm, num=50)
+    grids = [grid1, grid2]
+
+    source = (0 * u.mm, -10 * u.mm, 0 * u.mm)
+    detector = (0 * u.mm, 200 * u.mm, 0 * u.mm)
+
+    sim = cpr.Tracker(grids, source, detector, verbose=True)
+
+    sim.create_particles(1e5, 15 * u.MeV, max_theta=8 * u.deg)
+
+    sim.run(field_weighting="nearest neighbor")
+
+    size = np.array([[-1, 1], [-1, 1]]) * 5 * u.cm
+    bins = [100, 100]
+    hax, vax, values = cpr.synthetic_radiograph(sim, size=size, bins=bins)
+
+    """
+    import matplotlib.pyplot as plt
+    fig, ax = plt.subplots()
+    ax.set_aspect('equal')
+    ax.pcolormesh(hax.to(u.cm).value, vax.to(u.cm).value, values.T)
+    """
