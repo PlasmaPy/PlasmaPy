@@ -426,7 +426,6 @@ particle_multiplicities = [
     {CustomParticle(mass=1 * u.kg, charge=1 * u.C): 1},
     {"p+": 5, CustomParticle(mass=1 * u.kg, charge=1 * u.C): 1},
     {CustomParticle(): 1},
-    {"p+": 2, "p+": 1},
 ]
 
 
@@ -493,3 +492,9 @@ def test_particle_list_with_no_arguments():
     empty_particle_list = ParticleList()
     assert isinstance(empty_particle_list, ParticleList)
     assert len(empty_particle_list) == 0
+
+
+@pytest.mark.parametrize("arg", ["", "H", "He"])
+def test_particle_list_string_exception(arg):
+    with pytest.raises(TypeError):
+        ParticleList(arg)

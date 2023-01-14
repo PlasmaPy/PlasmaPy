@@ -1,5 +1,4 @@
 import numpy as np
-import os
 import pytest
 
 from plasmapy.utils.data import downloader
@@ -26,20 +25,20 @@ def test_get_file(filename, expected, tmp_path):
 
     """
     # Delete file if it already exists, so the test always downloads it
-    dl_path = os.path.join(tmp_path, filename)
-    if os.path.exists(dl_path):
-        os.remove(dl_path)
+    dl_path = tmp_path / filename
+    if dl_path.exists():
+        dl_path.unlink()
 
     if expected is not None:
         with pytest.raises(expected):
-            path = downloader.get_file(filename, directory=tmp_path)
+            downloader.get_file(filename, directory=tmp_path)
 
     else:
         # Download data (or check that it already exists)
-        path = downloader.get_file(filename, directory=tmp_path)
+        downloader.get_file(filename, directory=tmp_path)
 
         # Get the file again, already existing so it doesn't download it again
-        path = downloader.get_file(filename, directory=tmp_path)
+        downloader.get_file(filename, directory=tmp_path)
 
 
 def test_get_file_NIST_PSTAR_datafile(tmp_path):
@@ -50,9 +49,9 @@ def test_get_file_NIST_PSTAR_datafile(tmp_path):
     filename = "NIST_PSTAR_aluminum.txt"
 
     # Delete file if it already exists, so the test always downloads it
-    dl_path = os.path.join(tmp_path, filename)
-    if os.path.exists(dl_path):
-        os.remove(dl_path)
+    dl_path = tmp_path / filename
+    if dl_path.exists():
+        dl_path.unlink()
 
     # Download data (or check that it already exists)
     path = downloader.get_file(filename, directory=tmp_path)

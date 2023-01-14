@@ -24,7 +24,6 @@ from plasmapy.particles.exceptions import (
     InvalidElementError,
     InvalidIsotopeError,
     InvalidParticleError,
-    MissingParticleDataError,
     ParticleError,
     ParticleWarning,
 )
@@ -944,7 +943,6 @@ tests_from_atomic = [
     [particle_mass, ["fe-56 1+"], {}, pytest.raises(InvalidParticleError)],
     [is_stable, ["hydrogen-444444"], {}, pytest.raises(InvalidParticleError)],
     [is_stable, ["hydrogen", 0], {}, pytest.raises(InvalidParticleError)],
-    [is_stable, [""], {}, pytest.raises(ParticleError)],
     [is_stable, ["pb-209"], {}, pytest.raises(InvalidParticleError)],
     [is_stable, ["h"], {}, pytest.raises(InvalidParticleError)],
     [is_stable, ["He"], {}, pytest.raises(InvalidIsotopeError)],
