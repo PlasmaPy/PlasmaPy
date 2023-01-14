@@ -37,6 +37,61 @@ class MHDNormalizations(AbstractNormalizations):
     mass_numb : integer, optional
         The mass number of the isotope of the ion.
 
+    Notes
+    -----
+    A |normalization constant| is a multiplicative factor that is used
+    to transform a physical quantity into a dimensionless number and
+    vice versa. For example, if we use the sound speed :math:`V_s` as
+    the normalization for velocity, then the result will be the
+    dimensionless :wikipedia:`Mach number`. Normalizations are often
+    employed to provide a convenient reference value for the
+    interpretation of data, to avoid calculations between very large and
+    very small numbers in numerical simulations, and/or to simplify
+    systems of equations for analytical theory or numerical solutions.
+
+    This class represents the normalization coefficients of the
+    equations of magnetohydrodynamics in SI units. We define :math:`n`
+    as the number density, :math:`ρ` as mass density, :math:`\\mathbf{B}`
+    as the magnetic field, :math:`\\mathbf{E}` as the electric field,
+    :math:`\\mathbf{V}` as the bulk plasma velocity, and
+    :math:`\\mathbf{J}` as the current density.
+
+    The :wikipedia:`continuity equation` is:
+
+    .. math::
+
+        \frac{∂n}{∂t} + ∇ · \\left( n \\mathbf{V} \right) = 0.
+
+    :wikipedia:`Ampere's law` without :wikipedia:`displacement current`
+    is:
+
+    .. math::
+
+        μ_0 \\mathbf{J} = ∇ × \\mathbf{B}.
+
+    :wikipedia:`Faraday's law` is:
+
+    .. math::
+
+        \frac{∂ \\mathbf{B}}{∂t} = - ∇ × \\mathbf{B}
+
+    The generalized Ohm's law is:
+
+    .. math::
+
+        \\mathbf{E} + \\mathbf{V} × \\mathbf{B}
+        = η \\mathbf{J} + \frac{\\mathbf{J} × \\mathbf{B}{n_e e}
+        ,
+
+    where :math:`e` is the :wikipedia:`elementary charge`.
+
+    The momentum equation is:
+
+    .. math::
+
+        ρ \\left( \frac{∂}{∂t} + \\mathbf{V} · ∇ \right) \\mathbf{V}
+        = \\mathbf{J} × \\mathbf{B} - ∇ p
+
     Examples
     --------
     >>> import astropy.units as u
