@@ -1,2 +1,0 @@
-Modified |Particle| attributes to return |nan| in the appropriate units
-when undefined rather than raising exceptions.
