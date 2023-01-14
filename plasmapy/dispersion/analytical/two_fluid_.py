@@ -231,10 +231,10 @@ def two_fluid(
     if not isinstance(ion, Particle):
         try:
             ion = Particle(ion)
-        except TypeError:
+        except TypeError as ex:
             raise TypeError(
                 f"For argument 'ion' expected type {Particle} but got {type(ion)}."
-            )
+            ) from ex
     if not ion.is_ion and not ion.is_category("element"):
         raise ValueError("The particle passed for 'ion' must be an ion or element.")
 
@@ -271,7 +271,7 @@ def two_fluid(
 
     # validate argument k
     k = k.squeeze()
-    if k.ndim not in [0, 1]:
+    if k.ndim not in (0, 1):
         raise ValueError(
             f"Argument 'k' needs to be a single valued or 1D array astropy Quantity,"
             f" got array of shape {k.shape}."
@@ -281,7 +281,7 @@ def two_fluid(
 
     # validate argument theta
     theta = theta.squeeze()
-    if theta.ndim not in [0, 1]:
+    if theta.ndim not in (0, 1):
         raise ValueError(
             f"Argument 'theta' needs to be a single valued or 1D array astropy "
             f"Quantity, got array of shape {k.shape}."

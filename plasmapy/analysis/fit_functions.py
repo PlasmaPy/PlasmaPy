@@ -17,7 +17,7 @@ from abc import ABC, abstractmethod
 from collections import namedtuple
 from scipy.optimize import curve_fit, fsolve
 from scipy.stats import linregress
-from typing import Optional, Tuple, Union
+from typing import Optional, Tuple
 from warnings import warn
 
 from plasmapy.utils.decorators import modify_docstring
@@ -231,8 +231,8 @@ class AbstractFitFunction(ABC):
         """The fitted parameters for the fit function."""
         if self._params is None:
             return self._params
-        else:
-            return self.FitParamTuple(*self._params)
+
+        return self.FitParamTuple(*self._params)
 
     @params.setter
     def params(self, val) -> None:
@@ -253,8 +253,8 @@ class AbstractFitFunction(ABC):
         """The associated errors of the fitted :attr:`params`."""
         if self._param_errors is None:
             return self._param_errors
-        else:
-            return self.FitParamTuple(*self._param_errors)
+
+        return self.FitParamTuple(*self._param_errors)
 
     @param_errors.setter
     def param_errors(self, val) -> None:
@@ -741,10 +741,7 @@ class Exponential(AbstractFitFunction):
 
         err = np.abs(y) * np.sqrt(err)
 
-        if rety:
-            return err, y
-
-        return err
+        return (err, y) if rety else err
 
     def root_solve(self, *args, **kwargs):
         """
@@ -790,13 +787,15 @@ class ExponentialPlusLinear(AbstractFitFunction):
             \\right]\\\\
             & + \\left(2 \\, a \\, \\alpha \\, m \\, e^{\\alpha x}\\right)
                 (\\delta x)^2\\\\
-            & + \\left[(x \\, \\delta m)^2 + (\\delta b)^2 +(m \\, \\delta x)^2\\right]
+            & + \\left[(x \\, \\delta m)^2 + (\\delta b)^2 +(m \\, \\delta x)^2
+            \\right]
 
-    where :math:`a`, :math:`\\alpha`, :math:`m`, and :math:`b` are the real
-    constants to be fitted and :math:`x` is the independent variable.
-    :math:`\\delta a`, :math:`\\delta \\alpha`, :math:`\\delta m`, :math:`\\delta b`,
-    and :math:`\\delta x` are the respective uncertainties for :math:`a`,
-    :math:`\\alpha`, :math:`m`, and :math:`b`, and :math:`x`.
+    where :math:`a`, :math:`\\alpha`, :math:`m`, and :math:`b` are the
+    real constants to be fitted and :math:`x` is the independent
+    variable. :math:`\\delta a`, :math:`\\delta \\alpha`,
+    :math:`\\delta m`, :math:`\\delta b`, and :math:`\\delta x` are the
+    respective uncertainties for :math:`a`, :math:`\\alpha`, :math:`m`,
+    and :math:`b`, and :math:`x`.
     """
 
     _param_names = ("a", "alpha", "m", "b")
@@ -908,10 +907,7 @@ class ExponentialPlusLinear(AbstractFitFunction):
             err += blend_err
         err = np.sqrt(err)
 
-        if rety:
-            return err, exp_y + lin_y
-
-        return err
+        return (err, exp_y + lin_y) if rety else err
 
 
 class ExponentialPlusOffset(AbstractFitFunction):

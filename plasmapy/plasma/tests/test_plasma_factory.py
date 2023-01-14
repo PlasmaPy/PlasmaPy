@@ -1,6 +1,5 @@
 import astropy.units as u
 import numpy as np
-import os
 import pytest
 
 import plasmapy.plasma
@@ -10,7 +9,7 @@ from plasmapy.particles.data.test import data_dir
 
 @pytest.fixture(scope="module")
 def h5(request):
-    h5 = plasmapy.plasma.Plasma(hdf5=os.path.join(data_dir, "data00000255.h5"))
+    h5 = plasmapy.plasma.Plasma(hdf5=data_dir / "data00000255.h5")
     yield h5
     h5.close()
 

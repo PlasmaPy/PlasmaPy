@@ -24,12 +24,12 @@ from plasmapy.particles.exceptions import (
     InvalidElementError,
     InvalidIsotopeError,
     InvalidParticleError,
-    MissingParticleDataError,
     ParticleError,
     ParticleWarning,
 )
 from plasmapy.particles.nuclear import nuclear_binding_energy, nuclear_reaction_energy
 from plasmapy.particles.symbols import atomic_symbol, element_name, isotope_symbol
+from plasmapy.utils.code_repr import call_string
 
 tests_for_exceptions = {
     "too few nstates": (
@@ -210,7 +210,12 @@ def test_named_tests_for_exceptions(tested_object, args, kwargs, expected_except
     with pytest.raises(expected_exception) as exc_info:
         tested_object(*args, **kwargs)
 
-    assert expected_exception == exc_info.type
+    assert expected_exception == exc_info.type, (
+        f"When running the command "
+        f"{call_string(tested_object, args, kwargs)},"
+        f"an {expected_exception} was expected. Instead, a "
+        f"{exc_info.type} was raised."
+    )
 
 
 tests_from_nuclear = [
@@ -919,7 +924,6 @@ tests_from_atomic = [
     [isotope_symbol, ("h-3",), {}, pytest.raises(InvalidParticleError)],
     [isotope_symbol, ("h",), {}, pytest.raises(InvalidParticleError)],
     [isotope_symbol, ("d+",), {}, pytest.raises(InvalidParticleError)],
-    [particle_mass, ["Og 1+"], {}, pytest.raises(MissingParticleDataError)],
     [particle_mass, ["Fe-56"], {"Z": 1.4}, pytest.raises(TypeError)],
     [particle_mass, ["H-1 +1"], {"Z": 0}, pytest.raises(InvalidParticleError)],
     [particle_mass, [26], {"Z": 1, "mass_numb": "a"}, pytest.raises(TypeError)],
@@ -929,7 +933,6 @@ tests_from_atomic = [
         {"Z": 27, "mass_numb": 56},
         pytest.raises(InvalidParticleError),
     ],
-    [particle_mass, ["Og"], {"Z": 1}, pytest.raises(MissingParticleDataError)],
     [
         particle_mass,
         ["Og"],
@@ -940,7 +943,6 @@ tests_from_atomic = [
     [particle_mass, ["fe-56 1+"], {}, pytest.raises(InvalidParticleError)],
     [is_stable, ["hydrogen-444444"], {}, pytest.raises(InvalidParticleError)],
     [is_stable, ["hydrogen", 0], {}, pytest.raises(InvalidParticleError)],
-    [is_stable, [""], {}, pytest.raises(InvalidParticleError)],
     [is_stable, ["pb-209"], {}, pytest.raises(InvalidParticleError)],
     [is_stable, ["h"], {}, pytest.raises(InvalidParticleError)],
     [is_stable, ["He"], {}, pytest.raises(InvalidIsotopeError)],
@@ -1023,22 +1025,21 @@ type_error_tests = [
 
 
 @pytest.mark.parametrize(
-    ["tested_object", "args", "kwargs", "expectation"],
+    ["tested_object", "args", "kwargs", "expected"],
     tests_from_nuclear + tests_from_atomic + particle_error_tests + type_error_tests,
 )
-def test_unnamed_tests_exceptions(tested_object, args, kwargs, expectation):
+def test_unnamed_tests_exceptions(tested_object, args, kwargs, expected):
     """
     Test that appropriate exceptions are raised for inappropriate inputs
-    to `IonizationState`.
+    to different functions.
     """
-    with expectation as exc_info:
+    with expected as exc_info:
         tested_object(*args, **kwargs)
 
-    if hasattr(expectation, "expected_exception"):
-        assert type(expectation.expected_exception()) == exc_info.type
+    if hasattr(expected, "expected_exception"):
+        assert type(expected.expected_exception()) == exc_info.type
 
-    # TODO tbh given how ugly this is I don't think we should even be doing this check
-    if hasattr(expectation, "expected_warning"):
+    if hasattr(expected, "expected_warning"):
         for expected_warning, recorded_warning in zip(
             exc_info.expected_warning, exc_info.list
         ):

@@ -41,20 +41,20 @@ Backwards Incompatible Changes
   with the reasoning behind the removal outlined in the pull request. (`#1101 <https://github.com/plasmapy/plasmapy/pull/1101>`__)
 - Removed the ``Tracker.synthetic_radiograph()`` method and created the
   standalone function
-  :func:`~plasmapy.diagnostics.charged_particle_radiography.synthetic_radiograph`
+  :func:``~plasmapy.diagnostics.charged_particle_radiography.synthetic_radiograph``
   in its place.  This new function takes either a
-  `~plasmapy.diagnostics.charged_particle_radiography.Tracker` object or
+  ``~plasmapy.diagnostics.charged_particle_radiography.Tracker`` object or
   a dictionary equivalent to
-  `~plasmapy.diagnostics.charged_particle_radiography.Tracker.results_dict`. (`#1134 <https://github.com/plasmapy/plasmapy/pull/1134>`__)
+  ``~plasmapy.diagnostics.charged_particle_radiography.Tracker.results_dict``. (`#1134 <https://github.com/plasmapy/plasmapy/pull/1134>`__)
 - Renamed subpackage ``plasmapy.diagnostics.proton_radiography`` to
-  `plasmapy.diagnostics.charged_particle_radiography`, and renamed the
+  ``plasmapy.diagnostics.charged_particle_radiography``, and renamed the
   ``SyntheticProtonRadiograph`` class within that module to
-  `~plasmapy.diagnostics.charged_particle_radiography.Tracker`. (`#1134 <https://github.com/plasmapy/plasmapy/pull/1134>`__)
-- `~plasmapy.diagnostics.charged_particle_radiography.Tracker` no longer
+  ``~plasmapy.diagnostics.charged_particle_radiography.Tracker``. (`#1134 <https://github.com/plasmapy/plasmapy/pull/1134>`__)
+- ``~plasmapy.diagnostics.charged_particle_radiography.Tracker`` no longer
   supports making changes to an instantiated object and
   re-running the simulation.  Subsequent simulations should be performed
   by instantiating a new
-  `~plasmapy.diagnostics.charged_particle_radiography.Tracker` object and
+  ``~plasmapy.diagnostics.charged_particle_radiography.Tracker`` object and
   running its simulation. (`#1134 <https://github.com/plasmapy/plasmapy/pull/1134>`__)
 - For `~plasmapy.plasma.grids.CartesianGrid` the
   `~plasmapy.plasma.grids.CartesianGrid.volume_averaged_interpolator`
@@ -114,8 +114,8 @@ Features
 - |IonicLevel| and |IonizationState| now accept an additional, optional ion
   temperature argument for each of the ionic levels. (`#1130 <https://github.com/plasmapy/plasmapy/pull/1130>`__)
 - Added the
-  :meth:`~plasmapy.diagnostics.charged_particle_radiography.Tracker.save_results`
-  method to `~plasmapy.diagnostics.charged_particle_radiography.Tracker`
+  :meth:``~plasmapy.diagnostics.charged_particle_radiography.Tracker.save_results``
+  method to ``~plasmapy.diagnostics.charged_particle_radiography.Tracker``
   for saving results to the :file:`.npz` file format (see `numpy.lib.format` for
   details on the file format). (`#1134 <https://github.com/plasmapy/plasmapy/pull/1134>`__)
 - Added the `plasmapy.utils.decorators.deprecation` module. The module includes
@@ -139,7 +139,7 @@ Features
   related to analytical dispersion solutions. (`#1208 <https://github.com/plasmapy/plasmapy/pull/1208>`__)
 - Implemented ``__eq__``, ``__ne__`` and ``__hash__`` to allow
   |CustomParticle| instances to be used as `dict` keys. (`#1216 <https://github.com/plasmapy/plasmapy/pull/1216>`__)
-- Added the `~plasmapy.particles.particle_collections.ionic_levels` function to create a
+- Added the ``plasmapy.particles.particle_collections.ionic_levels`` function to create a
   |ParticleList| initialized with different ionic levels of an element or isotope. (`#1223 <https://github.com/plasmapy/plasmapy/pull/1223>`__)
 
 
@@ -150,7 +150,7 @@ Bug Fixes
 - Fixed the behavior of ``plasmapy.formulary.mathematics.Chandrasekhar_G``
   at very small and very large argument values. This change was reverted
   in `#1233 <https://github.com/plasmapy/plasmapy/pull/1233>`__. (`#1125 <https://github.com/plasmapy/plasmapy/pull/1125>`__)
-- Running `~plasmapy.diagnostics.charged_particle_radiography.synthetic_radiograph`
+- Running ``~plasmapy.diagnostics.charged_particle_radiography.synthetic_radiograph``
   with the keyword ``optical_density=True`` will now return `numpy.inf`
   where the source profile intensity is zero. Previously, an incorrect value
   was returned since zero entries were replaced with values of ``1`` before
@@ -286,7 +286,7 @@ Trivial/Internal Changes
   ``D409``, ``D412``, ``E712``, ``E713``, ``F403``, ``F541``, ``RST213``,
   ``RST306``, and ``RST902``. Addressed any failed linter checks from this
   modification. (`#1127 <https://github.com/plasmapy/plasmapy/pull/1127>`__)
-- `~plasmapy.diagnostics.charged_particle_radiography.synthetic_radiograph`
+- ``~plasmapy.diagnostics.charged_particle_radiography.synthetic_radiograph``
   now determines the default detector size to be the smallest detector
   plane centered on the origin that includes all particles. (`#1134 <https://github.com/plasmapy/plasmapy/pull/1134>`__)
 - Added ion velocity input to the :file:`thomson.ipynb` diagnostics notebook. (`#1171 <https://github.com/plasmapy/plasmapy/pull/1171>`__)

@@ -17,8 +17,8 @@ import warnings
 import xarray as xr
 
 from abc import ABC, abstractmethod
-from cached_property import cached_property
 from collections import namedtuple
+from functools import cached_property
 from scipy.spatial import distance
 from typing import List, Union
 
@@ -68,7 +68,7 @@ class AbstractGrid(ABC):
               start=[x0, y0, z0],
               stop=[x1, y1, z1],
               num=[Nx, Ny, Nz],
-              **kwargs
+              **kwargs,
           )
 
        In this case, any additional keyword arguments ``**kwargs`` provided
@@ -211,7 +211,7 @@ class AbstractGrid(ABC):
         ax_units = self.units
         ax_dtypes = [self.ds[i].dtype for i in coords]
 
-        coord_lbls = [f"{str(i)}: {str(j)}" for i, j in zip(coords, shape)]
+        coord_lbls = [f"{i}: {j}" for i, j in zip(coords, shape)]
 
         s = f"*** Grid Summary ***\n{type(self)}\n"
 
@@ -285,8 +285,8 @@ class AbstractGrid(ABC):
         r"""Shape of the grid"""
         if self.is_uniform:
             return (self.ax0.size, self.ax1.size, self.ax2.size)
-        else:
-            return self.ds.coords["ax0"].shape
+
+        return self.ds.coords["ax0"].shape
 
     @property
     def grids(self):
@@ -370,7 +370,7 @@ class AbstractGrid(ABC):
         `ValueError`
             If all grid dimensions do not have identical units.
         """
-        if self.units[0] == self.units[1] and self.units[0] == self.units[2]:
+        if self.units[0] == self.units[1] == self.units[2]:
             return self.units[0]
         else:
             raise ValueError(
@@ -628,12 +628,12 @@ class AbstractGrid(ABC):
             if key in self.recognized_quantities:
                 try:
                     quantity.to(self.recognized_quantities[key].unit)
-                except u.UnitConversionError:
+                except u.UnitConversionError as ex:
                     raise ValueError(
                         f"Units provided for {key} ({quantity.unit}) "
                         "are not compatible with the correct units "
                         f"for that recognized key ({self.recognized_quantities[key]})."
-                    )
+                    ) from ex
 
             else:
                 warnings.warn(
@@ -713,7 +713,7 @@ class AbstractGrid(ABC):
         # Ensure that start and stop end up as a list of three u.Quantity objs
         # and num a list of three integers
         # TODO python3.10: simplify using structural pattern matching
-        for k in ["start", "stop"]:
+        for k in ("start", "stop"):
             # Convert tuple to list
             if isinstance(var[k], tuple):
                 var[k] = list(var[k])
@@ -724,7 +724,7 @@ class AbstractGrid(ABC):
 
                 # Make sure it's a list of quantities
                 if not all(isinstance(v, u.Quantity) for v in var[k]):
-                    raise ValueError(
+                    raise TypeError(
                         f"The argument `{k}` must be an "
                         "`astropy.units.Quantity` or a list of same, "
                         f"but a {type(var[k])} was given."
@@ -734,7 +734,7 @@ class AbstractGrid(ABC):
                 # Case of >1 but != 3 is handled later
                 var[k] = [var[k]] * 3 if var[k].size == 1 else list(var[k])
             else:
-                raise ValueError(
+                raise TypeError(
                     f"The argument `{k}` must be an "
                     "`astropy.units.Quantity` or a list of same, "
                     f"but a {type(var[k])} was given."
@@ -750,7 +750,7 @@ class AbstractGrid(ABC):
         elif isinstance(var["num"], int):
             var["num"] = [var["num"]] * 3
         else:
-            raise ValueError(
+            raise TypeError(
                 f"The argument `num` must be an int or list of "
                 f"same, but a {type(var[k])} was given."
             )
@@ -759,7 +759,7 @@ class AbstractGrid(ABC):
         # (throws exception if user supplies a list of two, say)
         for k in var:
             if len(var[k]) != 3:
-                raise ValueError(
+                raise TypeError(
                     f"{k} must be either a single value or a "
                     "list of three values, but "
                     f"({len(var[k])} values were given)."
@@ -782,8 +782,10 @@ class AbstractGrid(ABC):
             try:
                 stop[i] = stop[i].to(unit)
 
-            except u.UnitConversionError:
-                raise ValueError(f"Units of {stop[i]} and {unit} are not compatible")
+            except u.UnitConversionError as ex:
+                raise ValueError(
+                    f"Units of {stop[i]} and {unit} are not compatible"
+                ) from ex
 
             # strip units
             stop[i] = stop[i].value
@@ -1055,11 +1057,11 @@ class CartesianGrid(AbstractGrid):
         for i in range(3):
             try:
                 self.units[i].to(u.m)
-            except u.UnitConversionError:
+            except u.UnitConversionError as ex:
                 raise ValueError(
                     "Units of grid are not valid for a Cartesian "
                     f"grid: {self.units}."
-                )
+                ) from ex
 
     @property
     def grid_resolution(self):
@@ -1303,14 +1305,14 @@ class CartesianGrid(AbstractGrid):
 
         # Split output array into arrays with units
         # Apply units to output arrays
-        output = []
-        for arg in range(nargs):
-            output.append(weighted_ave[..., arg] * self._interp_units[arg])
+        output = [
+            weighted_ave[..., arg] * self._interp_units[arg] for arg in range(nargs)
+        ]
 
         if len(output) == 1:
             return output[0]
-        else:
-            return tuple(output)
+
+        return tuple(output)
 
 
 class NonUniformCartesianGrid(AbstractGrid):
@@ -1324,11 +1326,11 @@ class NonUniformCartesianGrid(AbstractGrid):
         for i in range(3):
             try:
                 self.units[i].to(u.m)
-            except u.UnitConversionError:
+            except u.UnitConversionError as ex:
                 raise ValueError(
                     "Units of grid are not valid for a Cartesian "
                     f"grid: {self.units}."
-                )
+                ) from ex
 
     @property
     def grid_resolution(self):
@@ -1438,11 +1440,6 @@ class NonUniformCartesianGrid(AbstractGrid):
 
         vals[mask_particle_off] = np.nan
 
-        output = []
-        for arg in range(len(args)):
-            output.append(vals[:, arg] * self._interp_units[arg])
+        output = [vals[:, arg] * self._interp_units[arg] for arg in range(len(args))]
 
-        if len(output) == 1:
-            return output[0]
-        else:
-            return tuple(output)
+        return output[0] if len(output) == 1 else tuple(output)

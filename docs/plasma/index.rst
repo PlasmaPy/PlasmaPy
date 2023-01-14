@@ -121,13 +121,14 @@ demonstrated by the following example.
 
 .. code-block:: python
 
-    import plasmapy.plasma
     import astropy.units as u
+    import plasmapy.plasma
+
 
     class FuturePlasma(plasmapy.plasma.GenericPlasma):
         def __init__(self, **kwargs):
 
-            super(FuturePlasma, self).__init__(**kwargs)
+            super().__init__(**kwargs)
 
         # Specify a classmethod that determines if the input data matches
         # this new subclass

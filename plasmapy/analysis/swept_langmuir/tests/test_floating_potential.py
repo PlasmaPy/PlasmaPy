@@ -215,11 +215,7 @@ class TestFindFloatingPotential:
             assert isinstance(extras, VFExtras)
 
         for key, val in expected.items():
-            if key == "vf":
-                rtn_val = vf
-            else:
-                rtn_val = getattr(extras, key)
-
+            rtn_val = vf if key == "vf" else getattr(extras, key)
             if val is None:
                 assert rtn_val is None
             elif key == "fitted_func":
@@ -354,11 +350,7 @@ class TestFindFloatingPotential:
         assert isinstance(extras, VFExtras)
 
         for key, val in expected.items():
-            if key == "vf":
-                rtn_val = vf
-            else:
-                rtn_val = getattr(extras, key)
-
+            rtn_val = vf if key == "vf" else getattr(extras, key)
             if val is None:
                 assert rtn_val is None
             elif key == "fitted_func":

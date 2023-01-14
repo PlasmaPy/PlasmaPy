@@ -10,6 +10,7 @@ __all__ = [
     "bind_lite_func",
     "modify_docstring",
     "preserve_signature",
+    "validate_class_attributes",
     "validate_quantities",
     "CheckBase",
     "CheckUnits",
@@ -29,4 +30,8 @@ from plasmapy.utils.decorators.converter import angular_freq_to_hz
 from plasmapy.utils.decorators.deprecation import deprecated
 from plasmapy.utils.decorators.helpers import modify_docstring, preserve_signature
 from plasmapy.utils.decorators.lite_func import bind_lite_func
-from plasmapy.utils.decorators.validators import validate_quantities, ValidateQuantities
+from plasmapy.utils.decorators.validators import (
+    validate_class_attributes,
+    validate_quantities,
+    ValidateQuantities,
+)

@@ -5,9 +5,9 @@ Authors and Credits
 PlasmaPy Coordinating Committee
 ===============================
 
-* Erik Everson
-* Nicholas Murphy
-* Dominik Stańczak
+* :user:`Erik Everson <rocco8773>`
+* :user:`Nicholas Murphy <namurphy>`
+* :user:`Dominik Stańczak-Marikin <StanczakDominik>`
 
 PlasmaPy Contributors
 =====================
@@ -55,9 +55,9 @@ in parentheses are `ORCID author identifiers <https://orcid.org>`__.
 * :user:`Dawa Nurbu Sherpa <nurbu5>`
 * :user:`Dhawal Modi <Dhawal-Modi>`
 * :user:`Diego A. Diaz Riega <diego7319>`
-* :user:`Dominik Stańczak <StanczakDominik>` (:orcid:`0000-0001-6291-8843`)
+* :user:`Dominik Stańczak-Marikin <StanczakDominik>` (:orcid:`0000-0001-6291-8843`)
 * :user:`Drew Leonard <SolarDrew>` (:orcid:`0000-0001-5270-7487`)
-* :user:`Elliot Johnson <etjohnson>`
+* :user:`Elliot Johnson <ejohnson-96>`
 * :user:`Erik Everson <rocco8773>` (:orcid:`0000-0001-6079-8307`)
 * :user:`Fionnlagh Mackenzie Dover <FinMacDov>` (:orcid:`0000-0002-1984-7303`)
 * :user:`flaixman`
@@ -84,6 +84,7 @@ in parentheses are `ORCID author identifiers <https://orcid.org>`__.
 * :user:`Ludovico Bessi <ludoro>`
 * :user:`Mahima Pannala <mahimapannala>`
 * :user:`Manas Bedmutha <manasbedmutha98>`
+* :user:`Marcin Kastek <MKastek>`
 * :user:`Marco Gorelli <MarcoGorelli>`
 * :user:`Maria Isupova <misupova>`
 * Michael Fischer
@@ -113,11 +114,12 @@ in parentheses are `ORCID author identifiers <https://orcid.org>`__.
 * :user:`seanjunheng2`
 * :user:`Shane Brown <Sjbrownian>`
 * :user:`Siddharth Kulshrestha <siddharthk07>`
-* :user:`siddharthk07`
 * `Silvina Guidoni <https://www.american.edu/cas/faculty/guidoni.cfm>`_
 * :user:`Sixue Xu <hzxusx>`
 * :user:`Steve Richardson <arichar6>` (:orcid:`0000-0002-3056-6334`)
+* :user:`Steve Vincena <svincena>` (:orcid:`0000-0002-6468-5710`)
 * :user:`Stuart Mumford <Cadair>` (:orcid:`0000-0003-4217-4642`)
+* :user:`Stuart Sobeske <Sobeskes>`
 * :user:`Suzanne Nie <suzannenie>`
 * :user:`Terrance Takho Lee <tlee0818>`
 * :user:`Thomas Fan <thomasjpfan>`
@@ -126,9 +128,13 @@ in parentheses are `ORCID author identifiers <https://orcid.org>`__.
 * :user:`Tien Vo <tien-vo>` (:orcid:`0000-0002-8335-1441`)
 * :user:`Tiger Du <Tiger-Du>` (:orcid:`0000-0002-8676-1710`)
 * :user:`Tomás Stinson <14tstinson>`
+* :user:`Trestan Simon <TrestanSimon>`
 * :user:`Tulasi Parashar <tulasinandan>` (:orcid:`0000-0003-0602-8381`)
+* :user:`Veronica Tranquilino <tranqver>`
 * :user:`Vishwas Rajashekar <DarkAEther>` (:orcid:`0000-0002-4914-6612`)
+* :user:`Wu Tingfeng <elliotwutingfeng>` (:orcid:`0000-0001-8745-204X`)
 * :user:`Yi-Min Huang <yopology>` (:orcid:`0000-0002-4237-2211`)
+
 
 This list contains contributors to PlasmaPy's core package and vision
 statement, including a few people who do not show up as `PlasmaPy

@@ -12,6 +12,7 @@ from plasmapy.particles.atomic import (
     common_isotopes,
     electric_charge,
     half_life,
+    ionic_levels,
     is_stable,
     isotopic_abundance,
     known_isotopes,
@@ -26,12 +27,14 @@ from plasmapy.particles.atomic import (
     standard_atomic_weight,
 )
 from plasmapy.particles.exceptions import (
+    ChargeError,
     InvalidElementError,
     InvalidIsotopeError,
     InvalidParticleError,
     MissingParticleDataError,
     ParticleWarning,
 )
+from plasmapy.particles.particle_class import Particle
 from plasmapy.particles.symbols import atomic_symbol, element_name, isotope_symbol
 from plasmapy.utils.pytest_helpers import run_test
 
@@ -327,16 +330,16 @@ def test_particle_mass_equivalent_args(arg1, kwargs1, arg2, kwargs2, expected):
     result2 = particle_mass(arg2, **kwargs2)
 
     assert u.isclose(result1, result2), (
-        f"particle_mass({repr(arg1)}, **{kwargs1}) = {repr(result1)}, whereas "
-        f"particle_mass({repr(arg2)}, **{kwargs2}) = {repr(result2)}.  "
+        f"particle_mass({arg1!r}, **{kwargs1}) = {result1!r}, whereas "
+        f"particle_mass({arg2!r}, **{kwargs2}) = {result2!r}.  "
         f"These results are not equivalent as expected."
     )
 
     if expected is not None:
         assert u.isclose(result1, result2) and u.isclose(result2, expected), (
-            f"particle_mass({repr(arg1)}, **{kwargs1}) = {repr(result1)} and "
-            f"particle_mass({repr(arg2)}, **{kwargs2}) = {repr(result2)}, but "
-            f"these results are not equal to {repr(expected)} as expected."
+            f"particle_mass({arg1!r}, **{kwargs1}) = {result1!r} and "
+            f"particle_mass({arg2!r}, **{kwargs2}) = {result2!r}, but "
+            f"these results are not equal to {expected!r} as expected."
         )
 
 
@@ -513,8 +516,40 @@ class TestReducedMassInput:
             reduced_mass("N", 6e-26 * u.l)
 
     def test_missing_atomic_data(self):
-        with pytest.raises(MissingParticleDataError):
-            reduced_mass("Og", "H")
+        assert u.isclose(reduced_mass("Og", "H"), np.nan * u.kg, equal_nan=True)
+
+
+def test_ion_list_example():
+    ions = ionic_levels("He-4")
+    np.testing.assert_equal(ions.charge_number, [0, 1, 2])
+    assert ions.symbols == ["He-4 0+", "He-4 1+", "He-4 2+"]
+
+
+@pytest.mark.parametrize(
+    "particle, min_charge, max_charge, expected_charge_numbers",
+    [
+        ("H-1", 0, 1, [0, 1]),
+        ("p+", 1, 1, [1]),
+        (Particle("p+"), 0, 0, [0]),
+        ("C", 3, 5, [3, 4, 5]),
+    ],
+)
+def test_ion_list(particle, min_charge, max_charge, expected_charge_numbers):
+    """Test that inputs to ionic_levels are interpreted correctly."""
+    particle = Particle(particle)
+    ions = ionic_levels(particle, min_charge, max_charge)
+    np.testing.assert_equal(ions.charge_number, expected_charge_numbers)
+    assert ions[0].element == particle.element
+    if particle.is_category("isotope"):
+        assert ions[0].isotope == particle.isotope
+
+
+@pytest.mark.parametrize(
+    "element, min_charge, max_charge", [("Li", 0, 4), ("Li", 3, 2)]
+)
+def test_invalid_inputs_to_ion_list(element, min_charge, max_charge):
+    with pytest.raises(ChargeError):
+        ionic_levels(element, min_charge, max_charge)
 
 
 str_electron_table = [
@@ -535,3 +570,40 @@ str_electron_table = [
 @pytest.mark.parametrize("particle, electron", str_electron_table)
 def test_is_electron(particle, electron):
     assert _is_electron(particle) == electron
+
+
+def test_ionic_levels_example():
+    """
+    Test that `ionic_levels` can be used to create a |ParticleList|
+    containing all the ions for a particular element.
+    """
+    ions = ionic_levels("He-4")
+    np.testing.assert_equal(ions.charge_number, [0, 1, 2])
+    assert ions.symbols == ["He-4 0+", "He-4 1+", "He-4 2+"]
+
+
+@pytest.mark.parametrize(
+    "particle, min_charge, max_charge, expected_charge_numbers",
+    [
+        ("H-1", 0, 1, [0, 1]),
+        ("p+", 1, 1, [1]),
+        (Particle("p+"), 0, 0, [0]),
+        ("C", 3, 5, [3, 4, 5]),
+    ],
+)
+def test_ion_list2(particle, min_charge, max_charge, expected_charge_numbers):
+    """Test that inputs to ionic_levels are interpreted correctly."""
+    particle = Particle(particle)
+    ions = ionic_levels(particle, min_charge, max_charge)
+    np.testing.assert_equal(ions.charge_number, expected_charge_numbers)
+    assert ions[0].element == particle.element
+    if particle.is_category("isotope"):
+        assert ions[0].isotope == particle.isotope
+
+
+@pytest.mark.parametrize(
+    "element, min_charge, max_charge", [("Li", 0, 4), ("Li", 3, 2)]
+)
+def test_invalid_inputs_to_ion_list2(element, min_charge, max_charge):
+    with pytest.raises(ChargeError):
+        ionic_levels(element, min_charge, max_charge)

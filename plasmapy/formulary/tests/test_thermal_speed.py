@@ -329,15 +329,15 @@ class TestThermalSpeedLite:
 # test class for kappa_thermal_speed() function:
 class Test_kappa_thermal_speed:
     @classmethod
-    def setup_class(self):
+    def setup_class(cls):
         """initializing parameters for tests"""
-        self.T_e = 5 * u.eV
-        self.kappaInvalid = 3 / 2
-        self.kappa = 4
-        self.particle = "p"
-        self.probable1True = 24467.878463594963
-        self.rms1True = 37905.474322612165
-        self.mean1True = 34922.98563039583
+        cls.T_e = 5 * u.eV
+        cls.kappaInvalid = 3 / 2
+        cls.kappa = 4
+        cls.particle = "p"
+        cls.probable1True = 24467.878463594963
+        cls.rms1True = 37905.474322612165
+        cls.mean1True = 34922.98563039583
 
     def test_invalid_kappa(self):
         """
@@ -346,7 +346,6 @@ class Test_kappa_thermal_speed:
         """
         with pytest.raises(ValueError):
             kappa_thermal_speed(self.T_e, self.kappaInvalid, particle=self.particle)
-        return
 
     def test_invalid_method(self):
         """
@@ -357,7 +356,6 @@ class Test_kappa_thermal_speed:
             kappa_thermal_speed(
                 self.T_e, self.kappa, particle=self.particle, method="invalid"
             )
-        return
 
     def test_probable1(self):
         """
@@ -371,7 +369,6 @@ class Test_kappa_thermal_speed:
             f"and not {known1.si.value}."
         )
         assert np.isclose(known1.value, self.probable1True, rtol=1e-8, atol=0.0), errstr
-        return
 
     def test_rms1(self):
         """
@@ -385,7 +382,6 @@ class Test_kappa_thermal_speed:
             f"and not {known1.si.value}."
         )
         assert np.isclose(known1.value, self.rms1True, rtol=1e-8, atol=0.0), errstr
-        return
 
     def test_mean1(self):
         """
@@ -399,7 +395,6 @@ class Test_kappa_thermal_speed:
             f"and not {known1.si.value}."
         )
         assert np.isclose(known1.value, self.mean1True, rtol=1e-8, atol=0.0), errstr
-        return
 
     def test_handle_nparrays(self, kwargs=None):
         """Test for ability to handle numpy array quantities"""

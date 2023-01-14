@@ -9,6 +9,50 @@ Testing Guide
    :local:
    :backlinks: none
 
+Summary
+=======
+
+* New functionality added to PlasmaPy must also have tests.
+
+* Tests are located in files that begin with :file:`test_` which are
+  inside subdirectories named :file:`tests`.
+
+* Tests are either functions beginning with ``test_`` or classes
+  beginning with ``Test``.
+
+* To install the packages needed to run the tests:
+
+  - Open a terminal.
+
+  - Navigate to the top-level directory (probably named
+    :file:`PlasmaPy`) in your local clone of PlasmaPy's repository.
+
+  - If you are on MacOS or Linux, run:
+
+    .. code-block:: console
+
+       python -m pip install -e ".[tests]"
+
+    If you are on Windows, run:
+
+    .. code-block:: console
+
+       py -m pip install -e .[tests]
+
+    These commands will perform an `editable installation`_ of your
+    local clone of PlasmaPy.
+
+* Run ``pytest`` in the command line in order to run tests in that
+  directory and its subdirectories.
+
+* Here is an example of a minimal ``pytest`` test that uses an
+  :py:`assert` statement:
+
+  .. code-block:: python
+
+      def test_multiplication():
+          assert 2 * 3 == 6
+
 Introduction
 ============
 
@@ -175,7 +219,7 @@ The following checks are performed with each pull request.
 
   * Occasionally codespell_ will report false positives. Please add
     false positives to ``ignore-words-list`` under ``codespell`` in
-    :file:`setup.cfg`.
+    :file:`pyproject.toml`.
 
 .. note::
 
@@ -200,7 +244,7 @@ To install the packages necessary to run tests on your local computer
 
 .. code-block:: shell
 
-   pip install -r requirements.txt
+   pip install -e .[tests]
 
 To run PlasmaPy's tests from the command line, go to a directory within
 PlasmaPy's repository and run:
@@ -284,17 +328,16 @@ Using an integrated development environment
 -------------------------------------------
 
 Most IDEs have built-in tools that simplify software testing. IDEs like
-PyCharm_, `Visual Studio`_, and Atom_ allow test configurations to be
-run with a click of the mouse or a few keystrokes. While IDEs require
-time to learn, they are among the most efficient methods to
-interactively perform tests. Here are instructions for running tests in
-several popular IDEs:
+PyCharm_ and `Visual Studio`_ allow test configurations to be run with a
+click of the mouse or a few keystrokes. While IDEs require time to
+learn, they are among the most efficient methods to interactively
+perform tests. Here are instructions for running tests in several
+popular IDEs:
 
 * `Python testing in PyCharm
   <https://www.jetbrains.com/help/pycharm/testing-your-first-python-application.html>`__
 * `Python testing in Visual Studio Code
   <https://code.visualstudio.com/docs/python/testing>`__
-* `Python testing in Atom <https://atom.io/packages/atom-python-test>`__
 
 Writing Tests
 =============
@@ -396,10 +439,14 @@ To test that a function issues an appropriate warning, use
 
 .. code-block:: python
 
-   import pytest, warnings
+   import warnings
+
+   import pytest
+
 
    def issue_warning():
        warnings.warn("warning message", UserWarning)
+
 
    def test_that_a_warning_is_issued():
        with pytest.warns(UserWarning):
@@ -410,10 +457,12 @@ To test that a function raises an appropriate exception, use
 
 .. code-block:: python
 
-  import pytest
+   import pytest
+
 
    def raise_exception():
        raise Exception
+
 
    def test_that_an_exception_is_raised():
        with pytest.raises(Exception):
@@ -441,8 +490,8 @@ function.
 .. code-block:: python
 
    def test_proof_by_riemann_hypothesis():
-        assert proof_by_riemann(False)
-        assert proof_by_riemann(True)  # will only be run if the previous test passes
+       assert proof_by_riemann(False)
+       assert proof_by_riemann(True)  # will only be run if the previous test passes
 
 If the first test were to fail, then the second test would never be run.
 We would therefore not know the potentially useful results of the second
@@ -452,24 +501,25 @@ both will be run.
 .. code-block:: python
 
    def test_proof_if_riemann_false():
-        assert proof_by_riemann(False)
+       assert proof_by_riemann(False)
+
 
    def test_proof_if_riemann_true():
-        assert proof_by_riemann(True)
+       assert proof_by_riemann(True)
 
 However, this approach can lead to cumbersome, repeated code if you are
 calling the same function over and over. If you wish to run multiple
 tests for the same function, the preferred method is to decorate it with
-``@pytest.mark.parametrize``.
+:py:`@pytest.mark.parametrize`.
 
 .. code-block:: python
 
    @pytest.mark.parametrize("truth_value", [True, False])
    def test_proof_if_riemann(truth_value):
-        assert proof_by_riemann(truth_value)
+       assert proof_by_riemann(truth_value)
 
-This code snippet will run ``proof_by_riemann(truth_value)`` for each
-``truth_value`` in ``[True, False]``. Both of the above
+This code snippet will run :py:`proof_by_riemann(truth_value)` for each
+``truth_value`` in :py:`[True, False]`. Both of the above
 tests will be run regardless of failures. This approach is much cleaner
 for long lists of arguments, and has the advantage that you would only
 need to change the function call in one place if the function changes.
@@ -495,9 +545,9 @@ positional arguments (``a`` and ``b``) and one optional keyword argument
 
 .. code-block:: python
 
-   def add(a, b, reverse_order = False):
+   def add(a, b, reverse_order=False):
        if reverse_order:
-           return a + b
+           return b + a
        return a + b
 
 Argument unpacking_ lets us provide positional arguments in a `tuple` or
@@ -532,7 +582,7 @@ and unpacking_ them inside of the test function.
            (["1", "2"], {"reverse_order": True}, "21"),
            # test that add("1", "2") == "12"
            (["1", "2"], {}, "12"),  # if no keyword arguments, use an empty dict
-       ]
+       ],
    )
    def test_add(args, kwargs, expected):
        assert add(*args, **kwargs) == expected
@@ -549,7 +599,7 @@ Property-based testing
 ----------------------
 
 Suppose a function :math:`f(x)` has a property that :math:`f(x) > 0` for
-all :math:`x`. A property-based test would verify that ``f(x)`` — the
+all :math:`x`. A property-based test would verify that :py:`f(x)` — the
 code implementation of :math:`f(x)` — returns positive output for
 multiple values of :math:`x`. The hypothesis_ package simplifies
 `property-based testing`_ for Python.
@@ -660,7 +710,7 @@ should be balanced with each other rather than absolute principles.
   increases the probability that we will lose track of what we are
   doing and slows down progress.
 
-  Decorate unavoidably slow tests with ``@pytest.mark.slow``:
+  Decorate unavoidably slow tests with :py:`@pytest.mark.slow`:
 
   .. code-block:: python
 

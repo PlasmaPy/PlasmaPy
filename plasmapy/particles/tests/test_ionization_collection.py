@@ -169,7 +169,7 @@ class TestIonizationStateCollection:
     def test_that_abundances_kwarg_sets_abundances(self, test_name):
         try:
             actual_abundances = self.instances[test_name].abundances
-        except Exception as exc:
+        except Exception:
             pytest.fail("Unable to access abundances.")
 
         elements = set(self.instances[test_name].base_particles)
@@ -258,15 +258,15 @@ class TestIonizationStateCollection:
 
             try:
                 expected = instance.ionic_fractions[key]
-            except Exception as exc:
+            except Exception:
                 pytest.fail(
                     f"Unable to get ionic_fractions for '{key}' in test='{test_name}'."
                 )
 
             try:
                 actual = instance[key].ionic_fractions
-            except Exception as exc:
-                pytest(f"Unable to get item {key} in test={test_name}.")
+            except Exception:
+                pytest.fail(f"Unable to get item {key} in test={test_name}.")
 
             try:
                 if all(np.isnan(expected)):
@@ -849,8 +849,8 @@ def test_iteration_with_nested_iterator():
 
 
 @pytest.mark.xfail()
-def test_hydrogen_deuterium():
-    instance = IonizationStateCollection(["H", "D"])
+def test_two_isotopes_of_same_element():
+    IonizationStateCollection(["H-1", "D"])
 
 
 example_ionic_fractions = [
@@ -954,3 +954,14 @@ def test_average_particle_exception():
 
     with pytest.raises(ParticleError):
         ionization_states.average_ion()
+
+
+def test_inequality_with_different_type():
+    ionization_states = IonizationStateCollection({"H": [1, 0], "He": [1, 0, 0]})
+    assert ionization_states != "different type"
+
+
+def test_inequality_with_different_base_particles():
+    instance1 = IonizationStateCollection({"H": [1, 0], "He": [1, 0, 0]})
+    instance2 = IonizationStateCollection({"H": [1, 0], "Li": [1, 0, 0, 0]})
+    assert instance1 != instance2
