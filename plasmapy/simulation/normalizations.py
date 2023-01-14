@@ -18,7 +18,7 @@ _velocity = u.get_physical_type(u.m / u.s)
 
 
 class MHDNormalizations(AbstractNormalizations):
-    """
+    r"""
     A class containing the |normalization constants| for the equations
     of magnetohydrodynamics.
 
@@ -51,36 +51,41 @@ class MHDNormalizations(AbstractNormalizations):
 
     This class represents the normalization coefficients of the
     equations of magnetohydrodynamics in SI units. We define :math:`n`
-    as the number density, :math:`ρ` as mass density, :math:`\\mathbf{B}`
-    as the magnetic field, :math:`\\mathbf{E}` as the electric field,
-    :math:`\\mathbf{V}` as the bulk plasma velocity, and
-    :math:`\\mathbf{J}` as the current density.
+    as the number density, :math:`ρ` as mass density, :math:`\mathbf{B}`
+    as the magnetic field, :math:`\mathbf{E}` as the electric field,
+    :math:`\mathbf{V}` as the bulk plasma velocity, and
+    :math:`\mathbf{J}` as the current density.
+
+
 
     The :wikipedia:`continuity equation` is:
 
     .. math::
 
-        \frac{∂n}{∂t} + ∇ · \\left( n \\mathbf{V} \right) = 0.
+        \frac{∂n}{∂t} + ∇ · \left( n \mathbf{V} \right) = 0.
+
+
 
     :wikipedia:`Ampere's law` without :wikipedia:`displacement current`
     is:
 
     .. math::
 
-        μ_0 \\mathbf{J} = ∇ × \\mathbf{B}.
+        μ_0 \mathbf{J} = ∇ × \mathbf{B}.
 
-    :wikipedia:`Faraday's law` is:
+    :wikipedia:`Faraday's law` is: (trying out the mathematical bold
+    unicode B on the left
 
     .. math::
 
-        \frac{∂ \\mathbf{B}}{∂t} = - ∇ × \\mathbf{B}
+        \frac{∂𝐁 \mathbf{B}}{∂t} = - ∇ × \mathbf{B}
 
     The generalized Ohm's law is:
 
     .. math::
 
-        \\mathbf{E} + \\mathbf{V} × \\mathbf{B}
-        = η \\mathbf{J} + \frac{\\mathbf{J} × \\mathbf{B}{n_e e}
+        \mathbf{E} + \mathbf{V} × \mathbf{B}
+        = η \mathbf{J} + \frac{\mathbf{J} × \mathbf{B}{n_e e}
         ,
 
     where :math:`e` is the :wikipedia:`elementary charge`.
@@ -89,8 +94,8 @@ class MHDNormalizations(AbstractNormalizations):
 
     .. math::
 
-        ρ \\left( \frac{∂}{∂t} + \\mathbf{V} · ∇ \right) \\mathbf{V}
-        = \\mathbf{J} × \\mathbf{B} - ∇ p
+        ρ \left( \frac{∂}{∂t} + \mathbf{V} · ∇ \right) \mathbf{V}
+        = \mathbf{J} × \mathbf{B} - ∇ p
 
     Examples
     --------
