@@ -12,6 +12,6 @@ updates:
 - package-ecosystem: pip
   directory: /
   schedule:
-    interval: daily
+    interval: daily  # TODO s/daily/weekly once dependabot has settled
   assignees:
   - StanczakDominik
