@@ -3,9 +3,9 @@
 Acknowledging and Citing
 ========================
 
-.. |version_to_cite| replace:: 0.8.1
-.. |doi_hyperlink| replace:: https://doi.org/10.5281/zenodo.6774350
-.. |citation_year| replace:: 2022
+.. |version_to_cite| replace:: 2023.1.0
+.. |doi_hyperlink| replace:: https://doi.org/10.5281/zenodo.7529964
+.. |citation_year| replace:: 2023
 
 If you use PlasmaPy for a project that results in a publication, we ask
 that you cite the Zenodo_ record for the specific version of PlasmaPy
@@ -38,6 +38,11 @@ on, including but not limited to
 `Astropy <https://www.astropy.org/acknowledging.html>`__,
 `NumPy <https://numpy.org/citing-numpy>`__, and
 `SciPy <https://scipy.org/citing-scipy>`__.
+
+.. note::
+
+   Citation information and project metadata are stored in
+   |CITATION.cff|_, which uses the `Citation File Format`_.
 
 .. important::
 

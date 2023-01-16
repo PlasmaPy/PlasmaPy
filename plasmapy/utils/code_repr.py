@@ -93,8 +93,8 @@ def _code_repr_of_args_and_kwargs(
     Take positional and keyword arguments, and format them into a
     string as they would appear in a function call (excluding parentheses).
     """
-    args = tuple() if args is None else args
-    kwargs = dict() if kwargs is None else kwargs
+    args = () if args is None else args
+    kwargs = {} if kwargs is None else kwargs
 
     args_collection = args if isinstance(args, (tuple, list)) else (args,)
 
@@ -239,8 +239,8 @@ def call_string(
     >>> call_string(int, args=(9.2,), kwargs={'base': 2})
     'int(9.2, base=2)'
     """
-    args = tuple() if args is None else args
-    kwargs = dict() if kwargs is None else kwargs
+    args = () if args is None else args
+    kwargs = {} if kwargs is None else kwargs
     args_and_kwargs = _code_repr_of_args_and_kwargs(args, kwargs, max_items)
     return f"{f.__name__}({args_and_kwargs})"
 
@@ -313,8 +313,8 @@ def attribute_call_string(
     >>> attribute_call_string(SampleClass, 'attribute', args_to_cls, kwargs_to_cls)
     'SampleClass(1, 2, kwarg1=2).attribute'
     """
-    args_to_cls = tuple() if args_to_cls is None else args_to_cls
-    kwargs_to_cls = dict() if kwargs_to_cls is None else kwargs_to_cls
+    args_to_cls = () if args_to_cls is None else args_to_cls
+    kwargs_to_cls = {} if kwargs_to_cls is None else kwargs_to_cls
     return f"{call_string(cls, args_to_cls, kwargs_to_cls, max_items)}.{attr}"
 
 
@@ -345,7 +345,7 @@ def method_call_string(
         other type of `object` if there is only one positional argument,
         to be used during instantiation of ``cls``.
 
-    kwargs_to_cls: `dict`, keyword-only optional
+    kwargs_to_cls: `dict`, |keyword-only| optional
         A `dict` containing the keyword arguments to be used during
         instantiation of ``cls``.
 
@@ -354,11 +354,11 @@ def method_call_string(
         used in the method call, or any other `object` if there is only
         one positional argument.
 
-    kwargs_to_method: `dict`, keyword-only, optional
+    kwargs_to_method: `dict`, |keyword-only|, optional
         A `dict` containing the keyword arguments to be used during
         the method call.
 
-    max_items : int, keyword-only, optional
+    max_items : int, |keyword-only|, optional
         The maximum number of items to include in a `~numpy.ndarray` or
         `~astropy.units.Quantity`; additional items will be truncated
         with an ellipsis.  Defaults to 12.

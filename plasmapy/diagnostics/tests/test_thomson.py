@@ -189,6 +189,7 @@ def single_species_collective_spectrum(single_species_collective_args):
     return (alpha, wavelengths, Skw)
 
 
+@pytest.mark.slow
 def test_single_species_collective_spectrum(single_species_collective_spectrum):
     """
     Compares the generated spectrum to previously determined values
@@ -217,6 +218,7 @@ def test_single_species_collective_spectrum(single_species_collective_spectrum):
     )
 
 
+@pytest.mark.slow
 def test_spectral_density_minimal_arguments(single_species_collective_args):
     """
     Check that spectral density runs with minimal arguments
@@ -408,6 +410,7 @@ def single_species_non_collective_spectrum(single_species_non_collective_args):
     return (alpha, wavelengths, Skw)
 
 
+@pytest.mark.slow
 def test_single_species_non_collective_spectrum(single_species_non_collective_spectrum):
     """
     Compares the generated spectrum to previously determined values
@@ -542,6 +545,7 @@ def test_spectral_density_input_errors(
                 assert msg in str(excinfo.value)
 
 
+@pytest.mark.slow
 def test_split_populations():
     """
     This test makes sure that splitting a single population of ions or electrons
@@ -650,12 +654,12 @@ def test_param_to_array_fcns():
     # Create two groups of test variables, one of scalars and one of vectors
     prefix = "T_e"
     for i in range(3):
-        params.add(prefix + f"_{i}", value=2)
+        params.add(f"{prefix}_{i}", value=2)
 
     prefix = "ion_vel"
     for i in range(2):
-        for j in ["x", "y", "z"]:
-            params.add(prefix + f"_{j}_{i}", value=2)
+        for j in ("x", "y", "z"):
+            params.add(f"{prefix}_{j}_{i}", value=2)
 
     arr = thomson._params_to_array(params, "T_e", vector=False)
     assert arr.shape == (3,)
@@ -689,7 +693,7 @@ def run_fit(
 
     wavelengths = (wavelengths * u.m).to(u.nm)
 
-    true_params = copy.deepcopy(params)
+    true_params = copy.deepcopy(params)  # noqa: F841
 
     skeys = list(settings.keys())
     pkeys = list(params.keys())
@@ -774,7 +778,11 @@ def run_fit(
             )
 
     # Make the model, then perform the fit
-    model = thomson.spectral_density_model(wavelengths.to(u.m).value, settings, params)
+    model = thomson.spectral_density_model(
+        wavelengths.to(u.m).value,
+        settings,
+        params,
+    )
 
     if run_fit:
         result = model.fit(
@@ -1034,6 +1042,7 @@ def noncollective_single_species_settings_params():
     return kwargs
 
 
+@pytest.mark.slow
 def test_fit_epw_single_species(epw_single_species_settings_params):
     wavelengths, params, settings = spectral_density_model_settings_params(
         epw_single_species_settings_params
@@ -1042,6 +1051,7 @@ def test_fit_epw_single_species(epw_single_species_settings_params):
     run_fit(wavelengths, params, settings, notch=(531, 533))
 
 
+@pytest.mark.slow
 def test_fit_epw_multi_species(epw_multi_species_settings_params):
     wavelengths, params, settings = spectral_density_model_settings_params(
         epw_multi_species_settings_params
@@ -1050,6 +1060,7 @@ def test_fit_epw_multi_species(epw_multi_species_settings_params):
     run_fit(wavelengths, params, settings, notch=(531, 533))
 
 
+@pytest.mark.slow
 def test_fit_iaw_single_species(iaw_single_species_settings_params):
 
     wavelengths, params, settings = spectral_density_model_settings_params(
@@ -1059,6 +1070,7 @@ def test_fit_iaw_single_species(iaw_single_species_settings_params):
     run_fit(wavelengths, params, settings)
 
 
+@pytest.mark.slow
 def test_fit_iaw_instr_func(iaw_single_species_settings_params):
     """
     Tests fitting with an instrument function
@@ -1074,6 +1086,7 @@ def test_fit_iaw_instr_func(iaw_single_species_settings_params):
     run_fit(wavelengths, params, settings)
 
 
+@pytest.mark.slow
 def test_fit_iaw_multi_species(iaw_multi_species_settings_params):
     wavelengths, params, settings = spectral_density_model_settings_params(
         iaw_multi_species_settings_params
@@ -1082,6 +1095,7 @@ def test_fit_iaw_multi_species(iaw_multi_species_settings_params):
     run_fit(wavelengths, params, settings)
 
 
+@pytest.mark.slow
 def test_fit_noncollective_single_species(noncollective_single_species_settings_params):
 
     wavelengths, params, settings = spectral_density_model_settings_params(
@@ -1091,6 +1105,7 @@ def test_fit_noncollective_single_species(noncollective_single_species_settings_
     run_fit(wavelengths, params, settings)
 
 
+@pytest.mark.slow
 def test_fit_with_instr_func(epw_single_species_settings_params):
     """
 
@@ -1139,6 +1154,7 @@ def test_fit_with_invalid_instr_func(instr_func, iaw_single_species_settings_par
         run_fit(wavelengths, params, settings)
 
 
+@pytest.mark.slow
 def test_fit_with_minimal_parameters():
     # Create example data for fitting
     probe_wavelength = 532 * u.nm
@@ -1172,11 +1188,7 @@ def test_fit_with_minimal_parameters():
     # intentionally leave out a few required values to check to make sure an
     # exception is raised
 
-    settings = {}
-    settings["probe_vec"] = probe_vec
-    settings["scatter_vec"] = scatter_vec
-    settings["ions"] = ions
-
+    settings = {"probe_vec": probe_vec, "scatter_vec": scatter_vec, "ions": ions}
     params = Parameters()
 
     params.add("T_e_0", value=T_e.value, vary=False, min=5, max=20)
@@ -1199,7 +1211,7 @@ def test_fit_with_minimal_parameters():
     # Make the model, then perform the fit
     model = thomson.spectral_density_model(wavelengths.to(u.m).value, settings, params)
 
-    result = model.fit(
+    result = model.fit(  # noqa: F841
         data,
         params,
         wavelengths=wavelengths.to(u.m).value,

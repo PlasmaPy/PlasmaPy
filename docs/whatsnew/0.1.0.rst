@@ -22,7 +22,7 @@ New Features
   protections against software patents.
 
 * Set up continuous integration testing with `Travis CI
-  <https://travis-ci.org/>`_, `CircleCI <https://circleci.com/>`_, and
+  <https://www.travis-ci.com/>`_, `CircleCI <https://circleci.com/>`_, and
   `AppVeyor <https://www.appveyor.com/>`_, along with test coverage
   checks with `Coveralls <https://coveralls.io/>`_.
 

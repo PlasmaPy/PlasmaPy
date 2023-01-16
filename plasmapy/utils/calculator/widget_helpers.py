@@ -264,7 +264,7 @@ class _FloatBox(_GenericWidget):
         Maximum value the widget can take
     """
 
-    def __init__(self, property_name, min=-1e50, max=1e50):
+    def __init__(self, property_name, min=-1e50, max=1e50):  # noqa
         super().__init__(property_name)
         self.min = min
         self.max = max
@@ -536,7 +536,7 @@ class _FunctionInfo:
         with self.output_widget:
             try:
                 self.output_widget.layout.border = "0px"
-                print(f" : {str(self.fattr(**args_dict))}")
+                print(f" : {self.fattr(**args_dict)}")
 
             except Exception as e:
                 self.output_widget.layout.border = ERROR_STYLE
@@ -622,28 +622,30 @@ def _create_widget(widget_type, **kwargs):
     Parameters
     ----------
     widget_type: `any`
-        Type of the widget to be created
+        Type of the widget to be created.
 
     **kwargs: `dict`
-        Parameters specific to the widget
+        Parameters specific to the widget.
 
     Returns
     -------
-    `~ipywidgets.widgets.Widget or [~ipywidgets.widgets.Widget, ~ipywidgets.widgets.Widget]`
+    |Widget| or [|Widget|, |Widget|]
         widget or [widget, units_dropdown]
+
+    .. |Widget| replace:: `~ipywidgets.widgets.Widget`
     """
     unit = None
     placeholder = None
     opts = None
     if "unit" in kwargs:
         unit = kwargs["unit"]
-        del kwargs["unit"]
+        kwargs.pop("unit")
     if "placeholder" in kwargs:
         placeholder = kwargs["placeholder"]
-        del kwargs["placeholder"]
+        kwargs.pop("placeholder")
     if "opts" in kwargs:
         opts = kwargs["opts"]
-        del kwargs["opts"]
+        kwargs.pop("opts")
     widget_element = widget_type(**kwargs)
     widget_element.create_widget()
     if unit:
@@ -654,5 +656,5 @@ def _create_widget(widget_type, **kwargs):
     if opts:
         widget_element.attach_units_dropdown(opts)
         return [widget_element.get_widget(), widget_element.get_dropdown_widget()]
-    else:
-        return widget_element.get_widget()
+
+    return widget_element.get_widget()

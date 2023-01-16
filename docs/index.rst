@@ -57,7 +57,7 @@ Example highlights
    :caption: Contributor Guide
 
    Overview <contributing/index>
-   contributing/code_guide
+   contributing/coding_guide
    contributing/changelog_guide
    contributing/doc_guide
    contributing/testing_guide
@@ -71,11 +71,8 @@ Example highlights
    about/credits
    bibliography
    glossary
+   performance_tips
    Vision Statement <about/vision_statement>
+   PlasmaPy Enhancement Proposals <https://github.com/PlasmaPy/PlasmaPy-PLEPs>
    PlasmaPy.org <https://www.plasmapy.org>
-
-.. The about PlasmaPy section has some important information that would
-   be helpful to have more readily accessible from the main doc index
-   page.
-
-.. TODO: Add feedback link: .. _feedback@plasmapy.org: mailto:feedback@plasmapy.org
+   GitHub Repository <https://github.com/PlasmaPy/PlasmaPy>
