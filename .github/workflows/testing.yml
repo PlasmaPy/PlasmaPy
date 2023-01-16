@@ -20,7 +20,7 @@ jobs:
       matrix:
         include:
 
-        - name: Python 3.10
+        - name: Python 3.10, pinned dependencies
           os: ubuntu-latest
           python: '3.10'
           toxenv: py310-pins
@@ -102,7 +102,7 @@ jobs:
         file: ./coverage.xml
 
   documentation:
-    name: Documentation
+    name: Documentation, pinned dependencies
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -120,7 +120,7 @@ jobs:
     - name: Install language-pack-fr and tzdata
       run: sudo apt-get install graphviz pandoc
     - name: Run tests
-      run: tox -e build_docs -- -q
+      run: tox -e build_docs_pins -- -q
 
   codespell:
     name: codespell
