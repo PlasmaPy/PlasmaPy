@@ -1,7 +1,5 @@
 __all__ = [
     "AbstractClassicalTransportCoefficients",
-    "AbstractPolynomialCoefficients",
-    "AbstractInterpolatedCoefficients",
     "validate_attributes_not_none",
 ]
 
@@ -9,10 +7,8 @@ import astropy.constants as const
 import astropy.units as u
 import functools
 import numpy as np
-import warnings
 
-from abc import ABC, abstractmethod
-from scipy.interpolate import interp2d
+from abc import ABC
 from typing import Optional, Union
 
 from plasmapy import particles
@@ -354,10 +350,51 @@ class AbstractClassicalTransportCoefficients(ABC):
     # Resistivity (alpha)
     # **********************************************************************
     @property
-    def norm_alpha(self):
+    def norm_alpha_para(self):
         raise NotImplementedError(
-            not_implemented.format("alpha", self.__class__.__name__)
+            "This coefficent is not implemented by the " "current class"
         )
+
+    @property
+    def norm_alpha_perp(self):
+        raise NotImplementedError(
+            "This coefficent is not implemented by the " "current class"
+        )
+
+    @property
+    def norm_alpha_cross(self):
+        raise NotImplementedError(
+            "This coefficent is not implemented by the " "current class"
+        )
+
+    @property
+    @validate_attributes_not_none(attributes=["chi_e", "Z"])
+    def norm_alpha(self):
+        """
+        Calculates the normalized alpha coefficients in terms of the
+        dimensionless Hall parameter and the ionization fraction.
+
+        Returns
+        -------
+        norm_alpha, `~numpy.ndarray` of `~u.Quantity` instances (3, N)
+            The resistivity coefficients:
+                [alpha_para, alpha_perp, alpha_cross]
+        """
+        return np.array(
+            [self.norm_alpha_para, self.norm_alpha_perp, self.norm_alpha_cross]
+        )
+
+    @property
+    def alpha_para(self):
+        return self.norm_alpha * self.norm_alpha_para
+
+    @property
+    def alpha_perp(self):
+        return self.norm_alpha * self.norm_alpha_perp
+
+    @property
+    def alpha_cross(self):
+        return self.norm_alpha * self.norm_alpha_cross
 
     @property
     @validate_attributes_not_none(attributes=["n_e", "T_e", "B", "particle"])
@@ -368,10 +405,53 @@ class AbstractClassicalTransportCoefficients(ABC):
     # Thermoelectric Coefficient (beta)
     # **********************************************************************
     @property
-    def norm_beta(self):
+    def norm_beta_para(self):
         raise NotImplementedError(
-            not_implemented.format("beta", self.__class__.__name__)
+            "This coefficent is not implemented by the " "current class"
         )
+
+    @property
+    def norm_beta_perp(self):
+        raise NotImplementedError(
+            "This coefficent is not implemented by the " "current class"
+        )
+
+    @property
+    def norm_beta_cross(self):
+        raise NotImplementedError(
+            "This coefficent is not implemented by the " "current class"
+        )
+
+    @property
+    @validate_attributes_not_none(attributes=["chi_e", "Z"])
+    def norm_beta(self):
+        """
+        Calculates the normalized beta coefficients in terms of the
+        dimensionless Hall parameter and the ionization fraction.
+
+
+        Returns
+        -------
+        norm_beta, `~numpy.ndarray` of `~u.Quantity` instances (3, N)
+            The thermoelectric coefficients:
+                [beta_para, beta_perp, beta_cross]
+
+        """
+        return np.array(
+            [self.norm_beta_para, self.norm_beta_perp, self.norm_beta_cross]
+        )
+
+    @property
+    def beta_para(self):
+        return self.norm_beta * self.norm_beta_para
+
+    @property
+    def beta_perp(self):
+        return self.norm_beta * self.norm_beta_perp
+
+    @property
+    def beta_cross(self):
+        return self.norm_beta * self.norm_beta_cross
 
     @property
     @validate_attributes_not_none(attributes=[])
@@ -382,10 +462,52 @@ class AbstractClassicalTransportCoefficients(ABC):
     # Electron Thermal Conductivity (kappa_e)
     # **********************************************************************
     @property
-    def norm_kappa_e(self):
+    def norm_kappa_e_para(self):
         raise NotImplementedError(
-            not_implemented.format("kappa_e", self.__class__.__name__)
+            "This coefficent is not implemented by the " "current class"
         )
+
+    @property
+    def norm_kappa_e_perp(self):
+        raise NotImplementedError(
+            "This coefficent is not implemented by the " "current class"
+        )
+
+    @property
+    def norm_kappa_e_cross(self):
+        raise NotImplementedError(
+            "This coefficent is not implemented by the " "current class"
+        )
+
+    @property
+    @validate_attributes_not_none(attributes=["chi_e", "Z"])
+    def norm_kappa_e(self):
+        """
+        Calculates the normalized kappa_e coefficients in terms of the
+        dimensionless Hall parameter and the ionization fraction.
+
+        Returns
+        -------
+        norm_kapp_e, `~numpy.ndarray` of `~u.Quantity` instances (3, N)
+            The electron thermal conductivity coefficients:
+                [kappa_e_para, kappa_e_perp, kappa_e_cross]
+
+        """
+        return np.array(
+            [self.norm_kappa_e_para, self.norm_kappa_e_perp, self.norm_kappa_e_cross]
+        )
+
+    @property
+    def kappa_e_para(self):
+        return self.norm_kappa_e * self.norm_kappa_e_para
+
+    @property
+    def kappa_e_perp(self):
+        return self.norm_kappa_e * self.norm_kappa_e_perp
+
+    @property
+    def kappa_e_cross(self):
+        return self.norm_kappa_e * self.norm_kappa_e_cross
 
     @property
     @validate_attributes_not_none(attributes=["n_e", "T_e", "B", "particle"])
@@ -469,6 +591,14 @@ class AbstractClassicalTransportCoefficients(ABC):
     # **********************************************************************
 
     @property
+    def norm_gamma_perp(self):
+        return self.norm_beta_cross / self.chi_e
+
+    @property
+    def norm_gamma_cross(self):
+        return (self.norm_beta_para - self.norm_beta_perp) / self.chi_e
+
+    @property
     def norm_gamma(self):
         """
         The normalized symmetric transport coefficient gamma
@@ -479,253 +609,12 @@ class AbstractClassicalTransportCoefficients(ABC):
             An array of
             [norm_gamma_perp, norm_gamma_cross]
         """
-
-        perp = self.norm_beta_cross / self.chi_e
-        cross = (self.norm_beta_para - self.norm_beta_perp) / self.chi_e
-
-        return np.array([perp, cross])
+        return np.array([self.norm_gamma_perp, self.norm_gamma_cross])
 
     @property
     @validate_attributes_not_none(attributes=[])
     def gamma(self):
         return self.norm_gamma * self.beta_normalization
-
-
-# TODO: Should allow for each coefficient to have it's own Z and chi list, so they are
-# independent (maybe a default if one isn't specifically listed)
-# Braginskii only includes formulas for Z=1 for a few of the coefficients
-
-
-class AbstractPolynomialCoefficients(AbstractClassicalTransportCoefficients):
-    """
-    A set of transport coefficents represented as polynomial fits as functions
-    of chi_e, chi_i, and Z.
-    """
-
-    @property
-    @abstractmethod
-    def _c(self):
-        """
-        Dictionary of polynomial coefficients
-
-        """
-        ...
-
-    def _find_nearest_Z(self, Z):
-        """
-        Finds the nearest Z-value to the given Z value in the coefficient tables.
-        Prints a warning if the Z found is not equal to the Z requested.
-
-        Parameters
-        ----------
-        Z : float
-            An integer charge
-
-        Returns
-        -------
-        i : int
-            The index of the closest Z in the tables
-
-        """
-        if Z == np.inf:
-            return -1
-
-        i = np.argmin(np.abs(self._c["Z"] - Z))
-        if self._c["Z"][i] != Z:
-            warnings.warn(
-                f"Value Z = {Z} is not in the coefficient table. "
-                f"Using the nearest value, Z = {self._c['Z'][i]}. "
-                f"The values in the table are {self._c['Z']}.",
-                RuntimeWarning,
-            )
-        return i
-
-
-class AbstractInterpolatedCoefficients(AbstractClassicalTransportCoefficients):
-    """
-    Interpolates transport coefficients from arrays of calculated values
-    """
-
-    @property
-    @abstractmethod
-    def _data_file(self):
-        return None
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-        file = np.load(self._data_file)
-
-        # Coefficients whose fits depend on chi_e
-        e_coefficients = [
-            "alpha_para",
-            "alpha_perp",
-            "alpha_cross",
-            "beta_para",
-            "beta_perp",
-            "beta_cross",
-            "kappa_e_para",
-            "kappa_e_perp",
-            "kappa_e_cross",
-            "eta0_e",
-            "eta1_e",
-            "eta2_e",
-            "eta3_e",
-            "eta4_e",
-        ]
-
-        # Coefficients whose fits depend on chi_i
-        i_coefficients = [
-            "kappa_i_para",
-            "kappa_i_perp",
-            "kappa_i_cross",
-            "eta0_i",
-            "eta1_i",
-            "eta2_i",
-            "eta3_i",
-            "eta4_i",
-        ]
-
-        # Create an interpolator for each of the data tables
-        # using either the chi_e or chi_i tables as appropriate for that coefficient
-        # (All of the interpolators use the same Z)
-        self.interpolators = {}
-        for parameter, coefficients in zip(
-            ["chi_e", "chi_i"], [e_coefficients, i_coefficients]
-        ):
-            for coef in coefficients:
-
-                # If a coeffiecient table exists, create an interpolator
-                # if it doesn't, set that interpolator in the dict to None
-                if coef in list(file.keys()):
-                    self.interpolators[coef] = interp2d(
-                        file["Z"],
-                        file[parameter],
-                        file[coef],
-                        kind="cubic",
-                        bounds_error=False,
-                        fill_value=None,
-                    )
-
-    @property
-    def norm_alpha(self):
-        coef = []
-        names = ["alpha_para", "alpha_perp", "alpha_cross"]
-
-        # Raise an exception of all of the required coefficients are not
-        # existant in this class
-        if not set(names).issubset(set(self.interpolators.keys())):
-            raise ValueError(
-                "alpha coefficient is not defined for class "
-                f"{self.__class__.__name__}."
-            )
-
-        for c in names:
-            coef.append(self.interpolators[c](self.Z, self.chi_e))
-        return np.array(coef)
-
-    @property
-    def norm_beta(self):
-        coef = []
-        names = ["beta_para", "beta_perp", "beta_cross"]
-
-        # Raise an exception of all of the required coefficients are not
-        # existant in this class
-        if not set(names).issubset(set(self.interpolators.keys())):
-            raise ValueError(
-                "beta coefficient is not defined for class "
-                f"{self.__class__.__name__}."
-            )
-
-        for c in names:
-            coef.append(self.interpolators[c](self.Z, self.chi_e))
-        return np.array(coef)
-
-    @property
-    def norm_kappa_e(self):
-        coef = []
-        names = ["kappa_e_para", "kappa_e_perp", "kappa_e_cross"]
-
-        # Raise an exception of all of the required coefficients are not
-        # existant in this class
-        if not set(names).issubset(set(self.interpolators.keys())):
-            raise ValueError(
-                "kappa_e coefficient is not defined for class "
-                f"{self.__class__.__name__}."
-            )
-
-        for c in names:
-            coef.append(self.interpolators[c](self.Z, self.chi_e))
-        return np.array(coef)
-
-    @property
-    def norm_kappa_i(self):
-        coef = []
-        names = ["kappa_i_para", "kappa_i_perp", "kappa_i_cross"]
-
-        # Raise an exception of all of the required coefficients are not
-        # existant in this class
-        if not set(names).issubset(set(self.interpolators.keys())):
-            raise ValueError(
-                "kappa_i coefficient is not defined for class "
-                f"{self.__class__.__name__}."
-            )
-
-        for c in names:
-            coef.append(self.interpolators[c](self.Z, self.chi_i))
-        return np.array(coef)
-
-    @property
-    def norm_eta_e(self):
-        """
-
-        Returns
-        -------
-        coef : `numpy.ndarray` (5,)
-            The five electron viscosity coefficients:
-                 eta0, eta1, eta2, eta3, eta4.
-        """
-
-        coef = []
-        names = ["eta0_e", "eta1_e", "eta2_e", "eta3_e", "eta4_e"]
-
-        # Raise an exception of all of the required coefficients are not
-        # existant in this class
-        if not set(names).issubset(set(self.interpolators.keys())):
-            raise ValueError(
-                "eta_e coefficient is not defined for class "
-                f"{self.__class__.__name__}."
-            )
-
-        for c in names:
-            coef.append(self.interpolators[c](self.Z, self.chi_e))
-        return coef
-
-    @property
-    def norm_eta_i(self):
-        """
-
-        Returns
-        -------
-        coef : `numpy.ndarray` (5,)
-            The five ion viscosity coefficients:
-                 eta0, eta1, eta2, eta3, eta4.
-        """
-
-        coef = []
-        names = ["eta0_i", "eta1_i", "eta2_i", "eta3_i", "eta4_i"]
-
-        # Raise an exception of all of the required coefficients are not
-        # existant in this class
-        if not set(names).issubset(set(self.interpolators.keys())):
-            raise ValueError(
-                "eta_i coefficient is not defined for class "
-                f"{self.__class__.__name__}."
-            )
-
-        for c in names:
-            coef.append(self.interpolators[c](self.Z, self.chi_i))
-        return coef
 
 
 if __name__ == "__main__":

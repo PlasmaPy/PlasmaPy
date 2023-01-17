@@ -6,7 +6,9 @@ from plasma science.
 __all__ = []
 
 from plasmapy.transport.classical.base import *
+from plasmapy.transport.classical.braginskii import *
 from plasmapy.transport.classical.epperlein_haines import *
+from plasmapy.transport.classical.sadler_davies import *
 
 # auto populate __all__
 for obj_name in list(globals()):

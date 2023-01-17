@@ -5,18 +5,13 @@ the Fokker–Planck equation" (Phys. Fluids), doi: 10.1063/1.865901
 """
 
 __all__ = [
-    "EpperleinHainesPolynomialFit",
-    "EpperleinHainesInterpolated",
+    "EpperleinHaines",
 ]
 
 import numpy as np
-import os
+import warnings
 
-from plasmapy.transport.classical.base import (
-    AbstractInterpolatedCoefficients,
-    AbstractPolynomialCoefficients,
-    validate_attributes_not_none,
-)
+from plasmapy.transport.classical.base import AbstractClassicalTransportCoefficients
 
 coef_table = {}
 coef_table["Z"] = np.array([1, 2, 3, 4, 5, 6, 7, 8, 10, 12, 14, 20, 30, 60, np.inf])
@@ -590,25 +585,54 @@ coef_table["c2pp"] = np.array(
 )
 
 
-class EpperleinHainesPolynomialFit(AbstractPolynomialCoefficients):
+class EpperleinHaines(AbstractClassicalTransportCoefficients):
     @property
     def _c(self):
         return coef_table
 
+    def _find_nearest_Z(self, Z):
+        """
+        Finds the nearest Z-value to the given Z value in the coefficient tables.
+        Prints a warning if the Z found is not equal to the Z requested.
+
+        Parameters
+        ----------
+        Z : float
+            An integer charge
+
+        Returns
+        -------
+        i : int
+            The index of the closest Z in the tables
+
+        """
+        if Z == np.inf:
+            return -1
+
+        i = np.argmin(np.abs(self._c["Z"] - Z))
+        if self._c["Z"][i] != Z:
+            warnings.warn(
+                f"Value Z = {Z} is not in the coefficient table. "
+                f"Using the nearest value, Z = {self._c['Z'][i]}. "
+                f"The values in the table are {self._c['Z']}.",
+                RuntimeWarning,
+            )
+        return i
+
     @property
-    def _norm_alpha_para(self):
+    def norm_alpha_para(self):
         i = self._find_nearest_Z(self.Z)
         return self._c["alpha0"][i] * np.ones(self.chi_e.shape)
 
     @property
-    def _norm_alpha_perp(self):
+    def norm_alpha_perp(self):
         i = self._find_nearest_Z(self.Z)
         return 1 - (self._c["alpha1p"][i] * self.chi_e + self._c["alpha0p"][i]) / (
             self.chi_e**2 + self._c["a1p"][i] * self.chi_e + self._c["a0p"][i]
         )
 
     @property
-    def _norm_alpha_cross(self):
+    def norm_alpha_cross(self):
         i = self._find_nearest_Z(self.Z)
         return (
             self.chi_e
@@ -623,49 +647,12 @@ class EpperleinHainesPolynomialFit(AbstractPolynomialCoefficients):
         )
 
     @property
-    @validate_attributes_not_none(attributes=["chi_e", "Z"])
-    def norm_alpha(self):
-        """
-        Calculates the normalized alpha coefficients in terms of the
-        dimensionless Hall parameter and the ionization fraction.
-
-        Parameters
-        ----------
-        chi : float (N,)
-            The dimensionless hall parameter (ratio of the electron gyrofrequency
-            and the electron-ion collision frequency).
-
-        Z : float
-            Ionization fraction. The value will be coerced to the nearest value
-            from the Epperlein-Haines tables:
-            Z = [1, 2, 3, 4, 5, 6, 7, 8, 10, 12, 14, 20, 30, 60, ∞]
-
-        Returns
-        -------
-        norm_alpha, `~numpy.ndarray` of `~u.Quantity` instances (3, N)
-            The resistivity coefficients:
-                [alpha_para, alpha_perp, alpha_cross]
-
-        Notes
-        -----
-        For details, see "Plasma transport coefficients in a magnetic field by
-        direct numerical solution of the Fokker–Planck equation" by
-        E. M. Epperlein and M. G. Haines, DOI: `10.1063/1.865901`
-
-        .. _`10.1063/1.865901`: https://aip.scitation.org/doi/10.1063/1.865901
-
-        """
-        return np.array(
-            [self._norm_alpha_para, self._norm_alpha_perp, self._norm_alpha_cross]
-        )
-
-    @property
-    def _norm_beta_para(self):
+    def norm_beta_para(self):
         i = self._find_nearest_Z(self.Z)
         return self._c["beta0"][i] * np.ones(self.chi_e.shape)
 
     @property
-    def _norm_beta_perp(self):
+    def norm_beta_perp(self):
         i = self._find_nearest_Z(self.Z)
         return (self._c["beta1p"][i] * self.chi_e + self._c["beta0p"][i]) / (
             self.chi_e**3
@@ -678,7 +665,7 @@ class EpperleinHainesPolynomialFit(AbstractPolynomialCoefficients):
     # chi -> inf side. The coefficients and polynomial are right...
     # this might be a mistake in the EH tables?
     @property
-    def _norm_beta_cross(self):
+    def norm_beta_cross(self):
         i = self._find_nearest_Z(self.Z)
         return (
             self.chi_e
@@ -691,49 +678,12 @@ class EpperleinHainesPolynomialFit(AbstractPolynomialCoefficients):
         )
 
     @property
-    @validate_attributes_not_none(attributes=["chi_e", "Z"])
-    def norm_beta(self):
-        """
-        Calculates the normalized beta coefficients in terms of the
-        dimensionless Hall parameter and the ionization fraction.
-
-        Parameters
-        ----------
-        chi : float (N,)
-            The dimensionless hall parameter (ratio of the electron gyrofrequency
-            and the electron-ion collision frequency).
-
-        Z : float
-            Ionization fraction. The value will be coerced to the nearest value
-            from the Epperlein-Haines tables:
-            Z = [1, 2, 3, 4, 5, 6, 7, 8, 10, 12, 14, 20, 30, 60, ∞]
-
-        Returns
-        -------
-        norm_beta, `~numpy.ndarray` of `~u.Quantity` instances (3, N)
-            The thermoelectric coefficients:
-                [beta_para, beta_perp, beta_cross]
-
-        Notes
-        -----
-        For details, see "Plasma transport coefficients in a magnetic field by
-        direct numerical solution of the Fokker–Planck equation" by
-        E. M. Epperlein and M. G. Haines, DOI: `10.1063/1.865901`
-
-        .. _`10.1063/1.865901`: https://aip.scitation.org/doi/10.1063/1.865901
-
-        """
-        return np.array(
-            [self._norm_beta_para, self._norm_beta_perp, self._norm_beta_cross]
-        )
-
-    @property
-    def _norm_kappa_e_para(self):
+    def norm_kappa_e_para(self):
         i = self._find_nearest_Z(self.Z)
         return self._c["gamma0"][i] * np.ones(self.chi_e.shape)
 
     @property
-    def _norm_kappa_e_perp(self):
+    def norm_kappa_e_perp(self):
         i = self._find_nearest_Z(self.Z)
         return (self._c["gamma1p"][i] * self.chi_e + self._c["gamma0p"][i]) / (
             self.chi_e**3
@@ -743,7 +693,7 @@ class EpperleinHainesPolynomialFit(AbstractPolynomialCoefficients):
         )
 
     @property
-    def _norm_kappa_e_cross(self):
+    def norm_kappa_e_cross(self):
         i = self._find_nearest_Z(self.Z)
         return (
             self.chi_e
@@ -756,83 +706,23 @@ class EpperleinHainesPolynomialFit(AbstractPolynomialCoefficients):
             )
         )
 
-    @property
-    @validate_attributes_not_none(attributes=["chi_e", "Z"])
-    def norm_kappa_e(self):
-        """
-        Calculates the normalized kappa_e coefficients in terms of the
-        dimensionless Hall parameter and the ionization fraction.
-
-        Parameters
-        ----------
-        chi : float (N,)
-            The dimensionless hall parameter (ratio of the electron gyrofrequency
-            and the electron-ion collision frequency).
-
-        Z : float
-            Ionization fraction. The value will be coerced to the nearest value
-            from the Epperlein-Haines tables:
-            Z = [1, 2, 3, 4, 5, 6, 7, 8, 10, 12, 14, 20, 30, 60, ∞]
-
-        Returns
-        -------
-        norm_kapp_e, `~numpy.ndarray` of `~u.Quantity` instances (3, N)
-            The electron thermal conductivity coefficients:
-                [kappa_e_para, kappa_e_perp, kappa_e_cross]
-
-        Notes
-        -----
-        For details, see "Plasma transport coefficients in a magnetic field by
-        direct numerical solution of the Fokker–Planck equation" by
-        E. M. Epperlein and M. G. Haines, DOI: `10.1063/1.865901`
-
-        .. _`10.1063/1.865901`: https://aip.scitation.org/doi/10.1063/1.865901
-
-        """
-        return np.array(
-            [self._norm_kappa_e_para, self._norm_kappa_e_perp, self._norm_kappa_e_cross]
-        )
-
-
-data_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")
-
-
-class EpperleinHainesInterpolated(AbstractInterpolatedCoefficients):
-    @property
-    def _data_file(self):
-        return os.path.join(data_dir, "epperlein_haines_data.npz")
-
 
 if __name__ == "__main__":
 
     import astropy.units as u
 
-    coef = EpperleinHainesPolynomialFit.dimensional(
+    coef = EpperleinHaines.dimensional(
         particle="H+", B=10 * u.T, n_e=1e19 * u.cm**-3, T_e=100 * u.eV
     )
 
     import matplotlib.pyplot as plt
 
-    chi = np.linspace(-2, 2, num=50)
-    chi = 10**chi
-
-    coef = EpperleinHainesInterpolated.dimensionless(chi_e=chi, Z=5)
-
-    data = coef.norm_alpha[1, :]
-
-    # print(data)
-
-    fig, ax = plt.subplots()
-    ax.set_yscale("log")
-    ax.set_xscale("log")
-    ax.plot(chi, data)
-
     chi = np.linspace(-2, 2, num=100)
     chi = 10**chi
 
     # Instantiate the object
-    coef1 = EpperleinHainesPolynomialFit.dimensionless(chi_e=chi, Z=1)
-    coef2 = EpperleinHainesPolynomialFit.dimensionless(chi_e=chi, Z=np.inf)
+    coef1 = EpperleinHaines.dimensionless(chi_e=chi, Z=1)
+    coef2 = EpperleinHaines.dimensionless(chi_e=chi, Z=np.inf)
 
     fig, axarr = plt.subplots(nrows=3, ncols=2, figsize=(10, 10), sharex=True)
 
@@ -887,7 +777,7 @@ if __name__ == "__main__":
 
     chi = np.linspace(-2, 2, num=5)
     chi = 10**chi
-    coef = EpperleinHainesPolynomialFit.dimensionless(chi_e=chi, Z=1)
+    coef = EpperleinHaines.dimensionless(chi_e=chi, Z=1)
 
     print(coef.norm_alpha.shape)
 
@@ -896,7 +786,7 @@ if __name__ == "__main__":
     chi = np.linspace(-1, 1, num=50)
     chi = 10**chi
     # Instantiate the object
-    coef = EpperleinHainesPolynomialFit.dimensionless(chi_e=chi, Z=1)
+    coef = EpperleinHaines.dimensionless(chi_e=chi, Z=1)
     para, perp, wedge = coef.norm_kappa_e
 
     mag_heatflux = np.sqrt(para**2 + perp**2 + wedge**2)

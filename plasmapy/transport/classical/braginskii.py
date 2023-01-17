@@ -4,18 +4,14 @@ Braginskii in his 1965 review article "Transport Processes in a Plasma"
 """
 
 __all__ = [
-    "BraginskiiPolynomialFit",
-    "BraginskiiInterpolated",
+    "Braginskii",
 ]
 
 import numpy as np
 import os
+import warnings
 
-from plasmapy.transport.classical.base import (
-    AbstractInterpolatedCoefficients,
-    AbstractPolynomialCoefficients,
-    validate_attributes_not_none,
-)
+from plasmapy.transport.classical.base import AbstractClassicalTransportCoefficients
 
 # Get the absolute path to the data files
 data_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")
@@ -55,10 +51,39 @@ coef_table["gamma0pp"] = np.array([21.67, 15.37, 13.53, 12.65, 10.23])
 # The Braginskii normalization is just implicit in the equtions
 
 
-class BraginskiiPolynomialFit(AbstractPolynomialCoefficients):
+class Braginskii(AbstractClassicalTransportCoefficients):
     @property
     def _c(self):
         return coef_table
+
+    def _find_nearest_Z(self, Z):
+        """
+        Finds the nearest Z-value to the given Z value in the coefficient tables.
+        Prints a warning if the Z found is not equal to the Z requested.
+
+        Parameters
+        ----------
+        Z : float
+            An integer charge
+
+        Returns
+        -------
+        i : int
+            The index of the closest Z in the tables
+
+        """
+        if Z == np.inf:
+            return -1
+
+        i = np.argmin(np.abs(self._c["Z"] - Z))
+        if self._c["Z"][i] != Z:
+            warnings.warn(
+                f"Value Z = {Z} is not in the coefficient table. "
+                f"Using the nearest value, Z = {self._c['Z'][i]}. "
+                f"The values in the table are {self._c['Z']}.",
+                RuntimeWarning,
+            )
+        return i
 
     def _Delta(self, i):
         return (
@@ -68,19 +93,19 @@ class BraginskiiPolynomialFit(AbstractPolynomialCoefficients):
         )
 
     @property
-    def _norm_alpha_para(self):
+    def norm_alpha_para(self):
         i = self._find_nearest_Z(self.Z)
         return self._c["alpha0"][i] * np.ones(self.chi_e.size)
 
     @property
-    def _norm_alpha_perp(self):
+    def norm_alpha_perp(self):
         i = self._find_nearest_Z(self.Z)
         return 1 - (
             self._c["alpha1p"][i] * self.chi_e**2 + self._c["alpha0p"][i]
         ) / self._Delta(i)
 
     @property
-    def _norm_alpha_cross(self):
+    def norm_alpha_cross(self):
         i = self._find_nearest_Z(self.Z)
         return (
             self.chi_e
@@ -89,149 +114,46 @@ class BraginskiiPolynomialFit(AbstractPolynomialCoefficients):
         )
 
     @property
-    @validate_attributes_not_none(attributes=["chi_e", "Z"])
-    def norm_alpha(self):
-        """
-        Calculates the normalized alpha coefficients in terms of the
-        dimensionless Hall parameter and the ionization fraction.
-
-        Parameters
-        ----------
-        chi : float (N,)
-            The dimensionless hall parameter (ratio of the electron gyrofrequency
-            and the electron-ion collision frequency).
-
-        Z : float
-            Ionization fraction. The value will be coerced to the nearest value
-            from the Braginskii tables:
-            Z = [1, 2, 3, 4, ∞]
-
-        Returns
-        -------
-        norm_alpha, `~numpy.ndarray` of `~u.Quantity` instances (3, N)
-            The resistivity coefficients:
-                [alpha_para, alpha_perp, alpha_cross]
-
-        Notes
-        -----
-        Add Braginskii note
-        """
-        return np.array(
-            [self._norm_alpha_para, self._norm_alpha_perp, self._norm_alpha_cross]
-        )
-
-    @property
-    def _norm_beta_para(self):
+    def norm_beta_para(self):
         i = self._find_nearest_Z(self.Z)
         return self._c["beta0"][i] * np.ones(self.chi_e.size)
 
     @property
-    def _norm_beta_perp(self):
+    def norm_beta_perp(self):
         i = self._find_nearest_Z(self.Z)
-        return (self._c["beta1p"] * self.chi_e**2 + self._c["beta0p"]) / self._Delta(
-            i
-        )
+        return (
+            self._c["beta1p"][i] * self.chi_e**2 + self._c["beta0p"][i]
+        ) / self._Delta(i)
 
     @property
-    def _norm_beta_cross(self):
+    def norm_beta_cross(self):
         i = self._find_nearest_Z(self.Z)
         return (
             self.chi_e
-            * (self._c["beta1pp"] * self.chi_e**2 + self._c["beta0pp"])
+            * (self._c["beta1pp"][i] * self.chi_e**2 + self._c["beta0pp"][i])
             / self._Delta(i)
         )
 
-    # TODO: Maybe move these collected norm functions also to the base class?
-    # then just re-instantiate here with a modified docstring??
-
     @property
-    @validate_attributes_not_none(attributes=["chi_e", "Z"])
-    def norm_beta(self):
-        """
-        Calculates the normalized beta coefficients in terms of the
-        dimensionless Hall parameter and the ionization fraction.
-
-        Parameters
-        ----------
-        chi : float (N,)
-            The dimensionless hall parameter (ratio of the electron gyrofrequency
-            and the electron-ion collision frequency).
-
-        Z : float
-            Ionization fraction. The value will be coerced to the nearest value
-            from the Braginskii tables:
-            Z = [1, 2, 3, 4, ∞]
-
-        Returns
-        -------
-        norm_beta, `~numpy.ndarray` of `~u.Quantity` instances (3, N)
-            The thermoelectric coefficients:
-                [beta_para, beta_perp, beta_cross]
-
-        Notes
-        -----
-        Braginskii Note
-
-        """
-        return np.array(
-            [self._norm_beta_para, self._norm_beta_perp, self._norm_beta_cross]
-        )
-
-    @property
-    def _norm_kappa_e_para(self):
+    def norm_kappa_e_para(self):
         i = self._find_nearest_Z(self.Z)
         return self._c["gamma0"][i] * np.ones(self.chi_e.size)
 
     @property
-    def _norm_kappa_e_perp(self):
+    def norm_kappa_e_perp(self):
         i = self._find_nearest_Z(self.Z)
         return (
             self._c["gamma1p"][i] * self.chi_e**2 + self._c["gamma0p"][i]
         ) / self._Delta(i)
 
     @property
-    def _norm_kappa_e_cross(self):
+    def norm_kappa_e_cross(self):
         i = self._find_nearest_Z(self.Z)
         return (
             self.chi_e
             * (self._c["gamma1pp"][i] * self.chi_e**2 + self._c["gamma0pp"][i])
             / self._Delta(i)
         )
-
-    @property
-    @validate_attributes_not_none(attributes=["chi_e", "Z"])
-    def norm_kappa_e(self):
-        """
-        Calculates the normalized kappa_e coefficients in terms of the
-        dimensionless Hall parameter and the ionization fraction.
-
-        Parameters
-        ----------
-        chi : float (N,)
-            The dimensionless hall parameter (ratio of the electron gyrofrequency
-            and the electron-ion collision frequency).
-
-        Z : float
-            Ionization fraction. The value will be coerced to the nearest value
-            from the Braginskii tables:
-            Z = [1, 2, 3, 4, ∞]
-
-        Returns
-        -------
-        norm_kapp_e, `~numpy.ndarray` of `~u.Quantity` instances (3, N)
-            The electron thermal conductivity coefficients:
-                [kappa_e_para, kappa_e_perp, kappa_e_cross]
-
-        """
-        return np.array(
-            [self._norm_kappa_e_para, self._norm_kappa_e_perp, self._norm_kappa_e_cross]
-        )
-
-
-class BraginskiiInterpolated(AbstractInterpolatedCoefficients):
-    @property
-    def _data_file(self):
-        return os.path.join(data_dir, "braginskii_data.npz")
 
 
 if __name__ == "__main__":
@@ -258,8 +180,8 @@ if __name__ == "__main__":
     chi = 10**chi
 
     # Instantiate the object
-    coef1 = BraginskiiPolynomialFit.dimensionless(chi_e=chi, Z=1)
-    coef2 = BraginskiiPolynomialFit.dimensionless(chi_e=chi, Z=np.inf)
+    coef1 = Braginskii.dimensionless(chi_e=chi, Z=1)
+    coef2 = Braginskii.dimensionless(chi_e=chi, Z=np.inf)
 
     fig, axarr = plt.subplots(nrows=3, ncols=2, figsize=(10, 10), sharex=True)
 
