@@ -1,9 +1,4 @@
-import pytest
-
-from plasmapy.particles._special_particles import (
-    data_about_special_particles,
-    particle_zoo,
-)
+from plasmapy.particles._special_particles import data_about_special_particles
 
 
 def test_particle_antiparticle_pairs(particle_antiparticle_pair):

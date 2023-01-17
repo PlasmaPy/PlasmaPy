@@ -7,7 +7,6 @@ from plasmapy.particles._parsing import (
     dealias_particle_aliases,
     parse_and_check_atomic_input,
 )
-from plasmapy.particles._special_particles import particle_zoo
 from plasmapy.particles.exceptions import (
     InvalidElementError,
     InvalidParticleError,
