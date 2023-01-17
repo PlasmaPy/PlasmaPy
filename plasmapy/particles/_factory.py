@@ -11,14 +11,14 @@ import contextlib
 
 from astropy.constants import m_e
 from numbers import Integral, Real
-from typing import Any, Dict, Union
+from typing import Any, Union
 
 from plasmapy.particles.exceptions import InvalidParticleError
 from plasmapy.particles.particle_class import CustomParticle, Particle
 from plasmapy.particles.particle_collections import ParticleList
 
 
-def _generate_error_message(args: tuple, kwargs: Dict[str, Any]) -> str:
+def _generate_error_message(args: tuple, kwargs: dict[str, Any]) -> str:
     """Compose an error message for invalid particles."""
 
     errmsg = "Unable to create a particle from: "
