@@ -7,7 +7,6 @@ from plasmapy.particles._parsing import (
     dealias_particle_aliases,
     parse_and_check_atomic_input,
 )
-from plasmapy.particles._special_particles import particle_zoo
 from plasmapy.particles.exceptions import (
     InvalidElementError,
     InvalidParticleError,
@@ -331,16 +330,17 @@ def test_parse_InvalidParticleErrors(arg, kwargs):
         )
 
 
-@pytest.mark.parametrize("arg", particle_zoo.everything - {"p+"})
-def test_parse_InvalidElementErrors(arg):
+def test_parse_InvalidElementErrors(particle):
     r"""Tests that _parse_and_check_atomic_input raises an
     InvalidElementError when the input corresponds to a valid
     particle but not a valid element, isotope, or ion."""
+    if particle == Particle("p+"):
+        return
     with pytest.raises(InvalidElementError):
-        parse_and_check_atomic_input(arg)
+        parse_and_check_atomic_input(particle.symbol)
         pytest.fail(
             "An InvalidElementError was expected to be raised by "
-            f"{call_string(parse_and_check_atomic_input, arg)}, "
+            f"{call_string(parse_and_check_atomic_input, particle)}, "
             f"but no exception was raised."
         )
 
