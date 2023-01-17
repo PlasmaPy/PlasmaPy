@@ -6,19 +6,9 @@ import functools
 import inspect
 import wrapt
 
+from collections.abc import Iterable
 from numbers import Integral, Real
-from typing import (
-    Any,
-    Callable,
-    Dict,
-    Iterable,
-    List,
-    NoReturn,
-    Optional,
-    Set,
-    Tuple,
-    Union,
-)
+from typing import Any, Callable, NoReturn, Optional, Union
 
 from plasmapy.particles._factory import _physical_particle_factory
 from plasmapy.particles.exceptions import (
@@ -62,7 +52,7 @@ def _get_annotations(callable_: Callable):
     return getattr(callable_, "__annotations__", None)
 
 
-def _make_into_set_or_none(obj) -> Optional[Set]:
+def _make_into_set_or_none(obj) -> Optional[set]:
     """
     Return `None` if ``obj`` is `None`, and otherwise convert ``obj``
     into a `set`.
@@ -77,10 +67,10 @@ def _make_into_set_or_none(obj) -> Optional[Set]:
 
 def _bind_arguments(
     callable_: Callable,
-    args: Optional[Tuple] = None,
-    kwargs: Optional[Dict[str, Any]] = None,
+    args: Optional[tuple] = None,
+    kwargs: Optional[dict[str, Any]] = None,
     instance=None,
-) -> Dict:
+) -> dict:
     """
     Bind the arguments provided by ``args`` and ``kwargs`` to
     the corresponding parameters in the signature of the callable_
@@ -162,9 +152,9 @@ class _ParticleInput:
         self,
         callable_: Callable,
         *,
-        require: Optional[Union[str, Set, List, Tuple]] = None,
-        any_of: Optional[Union[str, Set, List, Tuple]] = None,
-        exclude: Optional[Union[str, Set, List, Tuple]] = None,
+        require: Optional[Union[str, set, list, tuple]] = None,
+        any_of: Optional[Union[str, set, list, tuple]] = None,
+        exclude: Optional[Union[str, set, list, tuple]] = None,
         allow_custom_particles: bool = True,
         allow_particle_lists: bool = True,
     ):
@@ -193,7 +183,7 @@ class _ParticleInput:
         self._data["annotations"] = _get_annotations(callable_)
         self._data["parameters_to_process"] = self.find_parameters_to_process()
 
-    def find_parameters_to_process(self) -> List[str]:
+    def find_parameters_to_process(self) -> list[str]:
         """
         Identify the parameters that have annotations to indicate that
         they should be processed.
@@ -209,7 +199,7 @@ class _ParticleInput:
         ]
 
     @property
-    def annotations(self) -> Dict[str, Any]:
+    def annotations(self) -> dict[str, Any]:
         """
         The annotations of the decorated callable_.
 
@@ -220,7 +210,7 @@ class _ParticleInput:
         return self._data.get("annotations", None)
 
     @property
-    def require(self) -> Optional[Set]:
+    def require(self) -> Optional[set]:
         """
         Categories that the particle must belong to.
 
@@ -231,11 +221,11 @@ class _ParticleInput:
         return self._data["require"]
 
     @require.setter
-    def require(self, require_: Optional[Union[str, Set, List, Tuple]]):
+    def require(self, require_: Optional[Union[str, set, list, tuple]]):
         self._data["require"] = _make_into_set_or_none(require_)
 
     @property
-    def any_of(self) -> Optional[Set]:
+    def any_of(self) -> Optional[set]:
         """
         Categories of which the particle must belong to at least one.
 
@@ -246,11 +236,11 @@ class _ParticleInput:
         return self._data["any_of"]
 
     @any_of.setter
-    def any_of(self, any_of_: Optional[Union[str, Set, List, Tuple]]):
+    def any_of(self, any_of_: Optional[Union[str, set, list, tuple]]):
         self._data["any_of"] = _make_into_set_or_none(any_of_)
 
     @property
-    def exclude(self) -> Optional[Set]:
+    def exclude(self) -> Optional[set]:
         """
         Categories that the particle cannot belong to.
 
@@ -297,7 +287,7 @@ class _ParticleInput:
         self._data["allow_particle_lists"] = allow_particle_lists_
 
     @property
-    def parameters_to_process(self) -> List[str]:
+    def parameters_to_process(self) -> list[str]:
         """
         The parameters of
         `~plasmapy.particles.decorators._ParticleInput.callable_` that have
@@ -565,8 +555,8 @@ class _ParticleInput:
             )
 
     def process_arguments(
-        self, args: tuple, kwargs: Dict[str, Any], instance=None
-    ) -> Dict[str, Any]:
+        self, args: tuple, kwargs: dict[str, Any], instance=None
+    ) -> dict[str, Any]:
         """
         Process the arguments passed to the callable_ callable.
 
@@ -600,9 +590,9 @@ class _ParticleInput:
 def particle_input(
     callable_: Optional[Callable] = None,
     *,
-    require: Union[str, Set, List, Tuple] = None,
-    any_of: Union[str, Set, List, Tuple] = None,
-    exclude: Union[str, Set, List, Tuple] = None,
+    require: Union[str, set, list, tuple] = None,
+    any_of: Union[str, set, list, tuple] = None,
+    exclude: Union[str, set, list, tuple] = None,
     allow_custom_particles: bool = True,
     allow_particle_lists: bool = True,
 ) -> Callable:
@@ -865,7 +855,7 @@ def particle_input(
 
     @wrapt.decorator
     def wrapper(
-        callable__: Callable, instance: Any, args: Tuple, kwargs: Dict[str, Any]
+        callable__: Callable, instance: Any, args: tuple, kwargs: dict[str, Any]
     ):
         new_kwargs = particle_validator.process_arguments(args, kwargs, instance)
         return callable__(**new_kwargs)

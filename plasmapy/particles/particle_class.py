@@ -21,9 +21,10 @@ import warnings
 
 from abc import ABC, abstractmethod
 from collections import defaultdict, namedtuple
+from collections.abc import Iterable, Sequence
 from datetime import datetime
 from numbers import Integral, Real
-from typing import Dict, Iterable, NoReturn, Optional, Sequence, Set, Union
+from typing import NoReturn, Optional, Union
 
 from plasmapy.particles import _elements, _isotopes, _parsing, _special_particles
 from plasmapy.particles.exceptions import (
@@ -213,7 +214,7 @@ class AbstractPhysicalParticle(AbstractParticle):
 
     @property
     @abstractmethod
-    def categories(self) -> Set[str]:
+    def categories(self) -> set[str]:
         """Provide the particle's categories."""
         ...
 
@@ -317,7 +318,7 @@ class AbstractPhysicalParticle(AbstractParticle):
         False
         """
 
-        def become_set(arg: Union[str, Set, Sequence]) -> Set[str]:
+        def become_set(arg: Union[str, set, Sequence]) -> set[str]:
             """Change the argument into a `set`."""
             if arg is None:
                 return set()
@@ -1628,7 +1629,7 @@ class Particle(AbstractPhysicalParticle):
             raise InvalidElementError(_category_errmsg(self.symbol, "element"))
 
     @property
-    def categories(self) -> Set[str]:
+    def categories(self) -> set[str]:
         """
         The particle's categories.
 
@@ -2187,7 +2188,7 @@ class CustomParticle(AbstractPhysicalParticle):
         )
 
     @property
-    def json_dict(self) -> Dict[str, str]:
+    def json_dict(self) -> dict[str, str]:
         """
         A `json` friendly dictionary representation of the |CustomParticle|.
 
@@ -2350,7 +2351,7 @@ class CustomParticle(AbstractPhysicalParticle):
             raise TypeError("symbol needs to be a string.")
 
     @property
-    def categories(self) -> Set[str]:
+    def categories(self) -> set[str]:
         """Categories for the |CustomParticle|."""
         categories_ = {"custom"}
 
