@@ -183,7 +183,7 @@ jupyter-server==1.23.5
     #   voila
 jupyterlab-pygments==0.2.2
     # via nbconvert
-jupyterlab-server==2.18.0
+jupyterlab-server==2.19.0
     # via voila
 jupyterlab-widgets==3.0.5
     # via ipywidgets
