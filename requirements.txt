@@ -317,7 +317,7 @@ pydocstyle==6.2.3
     # via plasmapy (setup.py)
 pyerfa==2.0.0.1
     # via astropy
-pyflakes==2.5.0
+pyflakes==3.0.1
     # via flake8
 pygments==2.14.0
     # via
