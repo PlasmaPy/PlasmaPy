@@ -135,7 +135,7 @@ incremental==22.10.0
     # via towncrier
 iniconfig==2.0.0
     # via pytest
-ipykernel==6.20.1
+ipykernel==6.20.2
     # via
     #   ipywidgets
     #   plasmapy (setup.py)
