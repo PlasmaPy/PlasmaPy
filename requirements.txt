@@ -94,7 +94,7 @@ filelock==3.9.0
     # via
     #   tox
     #   virtualenv
-flake8==5.0.4
+flake8==6.0.0
     # via
     #   dlint
     #   flake8-absolute-import
