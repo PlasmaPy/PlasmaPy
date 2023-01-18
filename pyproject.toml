@@ -75,7 +75,6 @@ docs = [
   "tox<4",
 ]
 tests = [
-  "dlint",
   "flake8",
   "flake8-absolute-import",
   "flake8-implicit-str-concat",
