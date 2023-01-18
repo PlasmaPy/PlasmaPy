@@ -1,0 +1,2 @@
+Dropped ``dlint`` from the the tests requirements, as it is no longer
+being maintained.
