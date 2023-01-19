@@ -206,7 +206,7 @@ mccabe==0.7.0
     # via flake8
 mistune==2.0.4
     # via nbconvert
-more-itertools==8.14.0
+more-itertools==9.0.0
     # via flake8-implicit-str-concat
 mpmath==1.2.1
     # via plasmapy (setup.py)
