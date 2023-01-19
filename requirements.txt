@@ -192,7 +192,7 @@ llvmlite==0.39.1
     # via numba
 lmfit==1.1.0
     # via plasmapy (setup.py)
-markupsafe==2.1.1
+markupsafe==2.1.2
     # via
     #   jinja2
     #   nbconvert
