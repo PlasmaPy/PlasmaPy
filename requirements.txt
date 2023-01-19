@@ -67,7 +67,7 @@ defusedxml==0.7.1
     # via nbconvert
 distlib==0.3.6
     # via virtualenv
-docutils==0.17.1
+docutils==0.19
     # via
     #   nbsphinx
     #   plasmapy (setup.py)
