@@ -160,7 +160,7 @@ jsonschema==4.17.3
     # via
     #   jupyterlab-server
     #   nbformat
-jupyter-client==7.4.1
+jupyter-client==7.4.9
     # via
     #   ipykernel
     #   jupyter-server
