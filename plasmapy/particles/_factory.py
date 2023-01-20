@@ -32,8 +32,8 @@ def _generate_error_message(args: tuple, kwargs: dict[str, Any]) -> str:
         errmsg += repr(kwargs)
 
     errmsg += (
-        ". For information on creating particles, see: "
-        "https://docs.plasmapy.org/en/stable/glossary.html"
+        ". For information on creating particles, see:"
+        "https://docs.plasmapy.org/en/stable/api/plasmapy.particles.ParticleLike.html"
     )
 
     return errmsg
