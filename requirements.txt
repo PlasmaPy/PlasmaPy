@@ -225,7 +225,7 @@ nbformat==5.7.3
     #   nbclient
     #   nbconvert
     #   nbsphinx
-nbsphinx==0.8.11
+nbsphinx==0.8.12
     # via plasmapy (setup.py)
 nest-asyncio==1.5.6
     # via
