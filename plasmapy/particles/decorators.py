@@ -618,9 +618,9 @@ def particle_input(
     |charge number| of an ion and mass number of an isotope,
     respectively, as long as ``Z`` and/or ``mass_numb`` are |parameters|
     accepted by the callable and only one |parameter| is appropriately
-    |annotated|.
+    annotated.
 
-    If the |annotation| is created using `typing.Optional` (e.g.,
+    If the annotation is created using `typing.Optional` (e.g.,
     ``Optional[ParticleLike]``), then `None` can be provided to
     ``callable_``.
 
@@ -628,16 +628,17 @@ def particle_input(
     criteria that have been provided, then |particle_input| will raise
     an exception.
 
-    If the |annotated| |parameter| is named ``element``, ``isotope``,
+    If the annotated parameter is named ``element``, ``isotope``,
     ``ion``, or ``ionic_level``, then |particle_input| will raise an
-    exception if the |argument| provided to the callable is not
-    consistent with the |parameter|.
+    exception if the argument provided to the callable is not
+    consistent with the parameter.
 
     .. note::
 
-       An |annotated| |parameter| named ``ion`` and ``ionic_level``
-       accept neutral atoms as long as the charge number is explicitly
-       defined.
+       An annotated parameter named ``ion`` and ``ionic_level`` accept
+       neutral atoms as long as the charge number is explicitly defined.
+       To enforce that the particle be charged, provide
+       ``require={"charged"}`` to |particle_input|.
 
     .. note::
 
@@ -669,10 +670,10 @@ def particle_input(
     exclude : `str`, `set`, `list`, or `tuple`, |keyword-only|, optional
         Categories that each particle cannot be in.
 
-    allow_custom_particles : bool, |keyword-only|, optional, default: `True`
+    allow_custom_particles : bool, |keyword-only|, default: `True`
         If `True`, allow |CustomParticle| instances to be passed through.
 
-    allow_particle_lists : bool, |keyword-only|, optional, default: `True`
+    allow_particle_lists : bool, |keyword-only|, default: `True`
         If `True`, allow |ParticleList| instances to be passed through.
 
     Returns
@@ -717,16 +718,16 @@ def particle_input(
     |ParticleError|
         If the returned particle(s) do not meet the categorization
         criteria specified through ``require``, ``any_of``, or
-        ``exclude``; or if none of the |parameters| of ``callable_``
-        have been appropriately annotated.
+        ``exclude``; or if none of the parameters of ``callable_`` have
+        been appropriately annotated.
 
-    |UnitConversionError|
+    `~astropy.units.UnitConversionError`
         If the annotated argument is a |Quantity|, but does not have a
         physical type of mass or charge.
 
     Warns
     -----
-    : |ParticleWarning|
+    : `~plasmapy.particles.exceptions.ParticleWarning`
         If decorated argument has charge and/or mass number information,
         and ``Z`` and/or ``mass_numb`` contain redundant information.
 
