@@ -7,7 +7,12 @@ updates:
   directory: /
   schedule:
     interval: weekly
-
+  assignees:
+  - StanczakDominik
+  reviewers:
+  - StanczakDominik
+  labels:
+  - No changelog entry needed
   # Maintain dependencies for python
 - package-ecosystem: pip
   directory: /
@@ -15,3 +20,7 @@ updates:
     interval: daily  # TODO s/daily/weekly once dependabot has settled
   assignees:
   - StanczakDominik
+  reviewers:
+  - StanczakDominik
+  labels:
+  - No changelog entry needed
