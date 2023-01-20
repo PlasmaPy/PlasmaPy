@@ -635,10 +635,9 @@ def particle_input(
 
     .. note::
 
-       |Annotated| |parameters| named ``ion`` and ``ionic_level`` accept
-       neutral atoms as long as the charge number is explicitly defined.
-       In the future, this functionality may change so that |parameters|
-       named ``ion`` require a nonzero |charge number|.
+       An |annotated| |parameter| named ``ion`` and ``ionic_level``
+       accept neutral atoms as long as the charge number is explicitly
+       defined.
 
     .. note::
 
