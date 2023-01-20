@@ -106,6 +106,11 @@ particle_input_error_table = [
         {"a": 1, "particle": "He-4", "Z": 2.00001},
         InvalidParticleError,
     ),
+    (
+        function_decorated_with_particle_input,
+        {"a": 1, "particle": "He-4", "Z": 1 + 1j},
+        TypeError,
+    ),
 ]
 
 
