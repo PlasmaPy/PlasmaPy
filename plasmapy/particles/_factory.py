@@ -86,7 +86,8 @@ def _make_custom_particle_with_real_charge_number(*args, **kwargs):
     base_particle = Particle(*args, **kwargs, Z=0)
 
     if not base_particle.is_category(require="element", exclude="ion"):
-        raise InvalidParticleError("Cannot create CustomParticle.")
+        # Add a test if this function becomes part of public API
+        raise InvalidParticleError("Cannot create CustomParticle.")  # coverage: ignore
 
     if Z > base_particle.atomic_number:
         raise InvalidParticleError("The charge number cannot exceed the atomic number.")
