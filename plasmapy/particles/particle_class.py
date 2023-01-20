@@ -2482,6 +2482,9 @@ def molecule(
         return CustomParticle(mass=mass, charge=charge, symbol=bare_symbol)
 
 
+# If ParticleLike is renamed or moves out of particle_class.py, check
+# for a link to its doc page in error messages in _factory.py.
+
 ParticleLike = Union[str, Integral, Particle, CustomParticle, u.Quantity]
 
 ParticleLike.__doc__ = r"""
