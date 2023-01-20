@@ -610,14 +610,14 @@ def particle_input(
     Convert |particle-like| |arguments| into particle objects.
 
     When a callable is |decorated| with |particle_input|,
-    |particle-like| |arguments| that are appropriately |annotated|
-    (i.e., with |ParticleLike| or |ParticleListLike|) will be converted
-    into a |Particle|, |CustomParticle|, or |ParticleList|.
+    |particle-like| arguments that are appropriately |annotated| (i.e.,
+    with |ParticleLike| or |ParticleListLike|) will be converted into a
+    |Particle|, |CustomParticle|, or |ParticleList|.
 
     The parameters ``Z`` and ``mass_numb`` may be used to specify the
     |charge number| of an ion and mass number of an isotope,
     respectively, as long as ``Z`` and/or ``mass_numb`` are |parameters|
-    accepted by the callable and only one |parameter| is appropriately
+    accepted by the callable and only one parameter is appropriately
     annotated.
 
     If the annotation is created using `typing.Optional` (e.g.,
@@ -636,8 +636,8 @@ def particle_input(
     .. note::
 
        An annotated parameter named ``ion`` and ``ionic_level`` accept
-       neutral atoms as long as the charge number is explicitly defined.
-       To enforce that the particle be charged, provide
+       neutral atoms as long as the |charge number| is explicitly
+       defined. To enforce that the particle be charged, provide
        ``require={"charged"}`` to |particle_input|.
 
     .. note::
@@ -827,9 +827,9 @@ def particle_input(
     >>> return_ionic_level("Fe-56 0+")
     Particle("Fe-56 0+")
 
-    When the |parameter| is named ``element``, ``isotope``, ``ion``, or
-    ``ionic_level``, then the corresponding |argument| must be
-    consistent with the name. When the |parameter| is named ``ion`` or
+    When the parameter is named ``element``, ``isotope``, ``ion``, or
+    ``ionic_level``, then the corresponding argument must be consistent
+    with the name. When the parameter is named ``ion`` or
     ``ionic_charge``, then the particle(s) may also be neutral atoms as
     long as the |charge number| is explicitly defined.
 
