@@ -806,7 +806,7 @@ def stable_isotopes(
 @particle_input
 @validate_quantities
 def reduced_mass(test_particle: ParticleLike, target_particle: ParticleLike) -> u.kg:
-    """
+    r"""
     Find the :wikipedia:`reduced mass` between two particles.
 
     The reduced mass is given by:
@@ -847,7 +847,7 @@ def reduced_mass(test_particle: ParticleLike, target_particle: ParticleLike) -> 
     Notes
     -----
     The reduced mass is always less than or equal to the mass of each
-    body (i.e., :math:`μ ≤ m_1` and :math:`μ ≤ m_2`\\ ).
+    body (i.e., :math:`μ ≤ m_1` and :math:`μ ≤ m_2`).
 
     When :math:`m_1 = m_2 ≡ m`, the reduced mass becomes :math:`μ =
     \frac{m}{2}`.
