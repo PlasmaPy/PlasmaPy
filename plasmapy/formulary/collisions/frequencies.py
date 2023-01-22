@@ -124,7 +124,7 @@ class SingleParticleCollisionFrequencies:
     For values of :math:`x ≪ 1` (the 'slow' or 'thermal' limit) or
     :math:`x ≫ 1` (the 'fast' or 'beam' limit), :math:`ψ` asymptotes to
     zero or one respectively. For simplified expressions in these
-    limits, please refer to p. 31 of :cite:t:`nrlformulary:2019`.
+    limits, please refer to page 31 of :cite:t:`nrlformulary:2019`.
 
     Examples
     --------
@@ -164,7 +164,7 @@ class SingleParticleCollisionFrequencies:
         Coulomb_log: u.dimensionless_unscaled,
     ):
 
-        # Note: This function uses CGS units internally to coincide
+        # Note: This class uses CGS units internally to coincide
         #       with our references.  Input is taken in MKS units and
         #       then converted as necessary. Output is in MKS units.
 
