@@ -2,6 +2,7 @@
 
 # any file, anywhere
 *                                                        @PlasmaPy/plasmapy-reviewers
+requirements.txt                                         @StanczakDominik
 
 plasmapy/particles/                                      @namurphy
 

@@ -7,7 +7,8 @@ import collections
 import contextlib
 import numpy as np
 
-from typing import Callable, Iterable, List, Optional, Sequence, Union
+from collections.abc import Iterable, Sequence
+from typing import Callable, Optional, Union
 
 from plasmapy.particles.exceptions import InvalidParticleError
 from plasmapy.particles.particle_class import (
@@ -106,11 +107,18 @@ class ParticleList(collections.UserList):
     @staticmethod
     def _list_of_particles_and_custom_particles(
         particles: Optional[Iterable[ParticleLike]],
-    ) -> List[Union[Particle, CustomParticle]]:  # TODO #687
+    ) -> list[Union[Particle, CustomParticle]]:
         """
         Convert an iterable that provides |particle-like| objects into a
         `list` containing |Particle| and |CustomParticle| instances.
         """
+        if isinstance(particles, str):
+            raise TypeError(
+                "ParticleList does not accept strings, but does accept "
+                "lists and tuples containing strings. Did you mean to "
+                f"do `ParticleList([{particles!r}])` instead?"
+            )
+
         new_particles = []
         if particles is None:
             return new_particles
@@ -155,7 +163,7 @@ class ParticleList(collections.UserList):
             other_as_particle_list = self._cast_other_as_particle_list(other)
         except (TypeError, InvalidParticleError) as exc:
             raise InvalidParticleError(
-                f"Cannot add {repr(other)} to a ParticleList."
+                f"Cannot add {other!r} to a ParticleList."
             ) from exc
         return ParticleList(self.data + other_as_particle_list.data)
 
@@ -164,7 +172,7 @@ class ParticleList(collections.UserList):
         return other_as_particle_list.__add__(self)
 
     def __repr__(self):
-        return f"ParticleList({repr(self.symbols)})"
+        return f"ParticleList({self.symbols!r})"
 
     def __gt__(self, other):
         from plasmapy.particles.nuclear import nuclear_reaction_energy
@@ -208,7 +216,7 @@ class ParticleList(collections.UserList):
         return self._get_particle_attribute("charge", unit=u.C, default=np.nan * u.C)
 
     @property
-    def data(self) -> List[Union[Particle, CustomParticle]]:
+    def data(self) -> list[Union[Particle, CustomParticle]]:
         """
         A `list` containing the particles contained in the
         |ParticleList| instance.
@@ -262,7 +270,7 @@ class ParticleList(collections.UserList):
         require: Union[str, Iterable[str]] = None,
         any_of: Union[str, Iterable[str]] = None,
         exclude: Union[str, Iterable[str]] = None,
-    ) -> List[bool]:
+    ) -> list[bool]:
         """
         Determine element-wise if the particles in the |ParticleList|
         meet categorization criteria.
@@ -392,7 +400,7 @@ class ParticleList(collections.UserList):
         super().sort(key=key, reverse=reverse)
 
     @property
-    def symbols(self) -> List[str]:
+    def symbols(self) -> list[str]:
         """
         A `list` of the symbols of the particles.
 
@@ -462,8 +470,8 @@ class ParticleList(collections.UserList):
         def _average(array, weights, use_rms):
             if use_rms:
                 return np.sqrt(np.average(array**2, weights=weights))
-            else:
-                return np.average(array, weights=weights)
+
+            return np.average(array, weights=weights)
 
         new_mass = _average(self.mass, weights=abundances, use_rms=use_rms_mass)
         new_charge = _average(self.charge, weights=abundances, use_rms=use_rms_charge)

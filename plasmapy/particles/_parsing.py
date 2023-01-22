@@ -13,7 +13,7 @@ import re
 import warnings
 
 from numbers import Integral
-from typing import Dict, Optional, Union
+from typing import Optional, Union
 
 from plasmapy.particles import _elements, _isotopes, _special_particles
 from plasmapy.particles.exceptions import (
@@ -24,7 +24,7 @@ from plasmapy.particles.exceptions import (
 from plasmapy.utils import roman
 
 
-def create_alias_dicts(particles: dict) -> (Dict[str, str], Dict[str, str]):
+def create_alias_dicts(particles: dict) -> (dict[str, str], dict[str, str]):
     """
     Create dictionaries for case sensitive aliases and case
     insensitive aliases of special particles and antiparticles.
@@ -123,8 +123,8 @@ def dealias_particle_aliases(alias: Union[str, Integral]) -> str:
         return case_sensitive_aliases[alias]
     elif isinstance(alias, str) and alias.lower() in case_insensitive_aliases:
         return case_insensitive_aliases[alias.lower()]
-    else:
-        return alias
+
+    return alias
 
 
 def invalid_particle_errmsg(
@@ -136,15 +136,15 @@ def invalid_particle_errmsg(
     Return an appropriate error message for an
     `~plasmapy.particles.exceptions.InvalidParticleError`.
     """
-    errmsg = f"The argument {repr(argument)} "
+    errmsg = f"The argument {argument!r} "
     if mass_numb is not None or Z is not None:
         errmsg += "with "
     if mass_numb is not None:
-        errmsg += f"mass_numb = {repr(mass_numb)} "
+        errmsg += f"{mass_numb = } "
     if mass_numb is not None and Z is not None:
         errmsg += "and "
     if Z is not None:
-        errmsg += f"charge number Z = {repr(Z)} "
+        errmsg += f"charge number {Z = } "
     errmsg += "does not correspond to a valid particle."
     return errmsg
 

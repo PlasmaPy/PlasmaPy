@@ -12,7 +12,6 @@ import astropy.units as u
 import numpy as np
 
 from scipy.interpolate import interp1d
-from typing import List
 
 
 class Layer:
@@ -112,7 +111,7 @@ class Stack:
 
     """
 
-    def __init__(self, layers: List[Layer]):
+    def __init__(self, layers: list[Layer]):
         self._layers = layers
         self._energy_bands = None
 

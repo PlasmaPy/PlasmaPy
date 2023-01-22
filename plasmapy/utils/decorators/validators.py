@@ -8,7 +8,8 @@ import functools
 import inspect
 import warnings
 
-from typing import Any, Dict, Iterable, List, Optional
+from collections.abc import Iterable
+from typing import Any, Optional
 
 from plasmapy.utils.decorators.checks import CheckUnits, CheckValues
 from plasmapy.utils.decorators.helpers import preserve_signature
@@ -145,7 +146,7 @@ class ValidateQuantities(CheckUnits, CheckValues):
         https://docs.astropy.org/en/stable/units/equivalencies.html
     """
 
-    def __init__(self, validations_on_return=None, **validations: Dict[str, Any]):
+    def __init__(self, validations_on_return=None, **validations: dict[str, Any]):
 
         if "checks_on_return" in validations:
             raise TypeError(
@@ -219,7 +220,7 @@ class ValidateQuantities(CheckUnits, CheckValues):
 
     def _get_validations(
         self, bound_args: inspect.BoundArguments
-    ) -> Dict[str, Dict[str, Any]]:
+    ) -> dict[str, dict[str, Any]]:
         """
         Review :attr:`validations` and function bound arguments to build a complete
         'validations' dictionary.  If a validation key is omitted from the argument
@@ -287,7 +288,7 @@ class ValidateQuantities(CheckUnits, CheckValues):
 
         return validations
 
-    def _validate_quantity(self, arg, arg_name: str, arg_validations: Dict[str, Any]):
+    def _validate_quantity(self, arg, arg_name: str, arg_validations: dict[str, Any]):
         """
         Perform validations `arg_validations` on function argument `arg`
         named `arg_name`.
@@ -531,16 +532,16 @@ def validate_quantities(func=None, validations_on_return=None, **validations):
     if func is not None:
         # `validate_quantities` called as a function
         return ValidateQuantities(**validations)(func)
-    else:
-        # `validate_quantities` called as a decorator "sugar-syntax"
-        return ValidateQuantities(**validations)
+
+    # `validate_quantities` called as a decorator "sugar-syntax"
+    return ValidateQuantities(**validations)
 
 
 def get_attributes_not_provided(
     self,
-    expected_attributes: Optional[List[str]] = None,
-    both_or_either_attributes: Optional[List[Iterable[str]]] = None,
-    mutually_exclusive_attributes: Optional[List[Iterable[str]]] = None,
+    expected_attributes: Optional[list[str]] = None,
+    both_or_either_attributes: Optional[list[Iterable[str]]] = None,
+    mutually_exclusive_attributes: Optional[list[Iterable[str]]] = None,
 ):
     """
     Collect attributes that weren't provided during instantiation needed
@@ -584,9 +585,9 @@ def get_attributes_not_provided(
 
 
 def validate_class_attributes(
-    expected_attributes: Optional[List[str]] = None,
-    both_or_either_attributes: Optional[List[Iterable[str]]] = None,
-    mutually_exclusive_attributes: Optional[List[Iterable[str]]] = None,
+    expected_attributes: Optional[list[str]] = None,
+    both_or_either_attributes: Optional[list[Iterable[str]]] = None,
+    mutually_exclusive_attributes: Optional[list[Iterable[str]]] = None,
 ):
     """
     A decorator responsible for raising errors if the expected arguments weren't

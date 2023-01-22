@@ -17,7 +17,7 @@ from abc import ABC, abstractmethod
 from collections import namedtuple
 from scipy.optimize import curve_fit, fsolve
 from scipy.stats import linregress
-from typing import Optional, Tuple
+from typing import Optional
 from warnings import warn
 
 from plasmapy.utils.decorators import modify_docstring
@@ -32,21 +32,21 @@ class AbstractFitFunction(ABC):
     fitting the function to a set of data.
     """
 
-    _param_names = NotImplemented  # type: Tuple[str, ...]
+    _param_names = NotImplemented  # type: tuple[str, ...]
 
     def __init__(
         self,
-        params: Tuple[float, ...] = None,
-        param_errors: Tuple[float, ...] = None,
+        params: tuple[float, ...] = None,
+        param_errors: tuple[float, ...] = None,
     ):
         """
         Parameters
         ----------
-        params: Tuple[float, ...], optional
+        params: tuple[float, ...], optional
             Tuple of values for the function parameters. Equal in size to
             :attr:`param_names`.
 
-        param_errors: Tuple[float, ...], optional
+        param_errors: tuple[float, ...], optional
             Tuple of values for the errors associated with the function
             parameters.  Equal in size to :attr:`param_names`.
 
@@ -122,7 +122,7 @@ class AbstractFitFunction(ABC):
         x: |array_like|
             Independent variables to be passed to the fit function.
 
-        *args: Tuple[Union[float, int],...]
+        *args: tuple[Union[float, int],...]
             The parameters that will be adjusted to make the fit.
 
         Returns
@@ -231,8 +231,8 @@ class AbstractFitFunction(ABC):
         """The fitted parameters for the fit function."""
         if self._params is None:
             return self._params
-        else:
-            return self.FitParamTuple(*self._params)
+
+        return self.FitParamTuple(*self._params)
 
     @params.setter
     def params(self, val) -> None:
@@ -253,8 +253,8 @@ class AbstractFitFunction(ABC):
         """The associated errors of the fitted :attr:`params`."""
         if self._param_errors is None:
             return self._param_errors
-        else:
-            return self.FitParamTuple(*self._param_errors)
+
+        return self.FitParamTuple(*self._param_errors)
 
     @param_errors.setter
     def param_errors(self, val) -> None:
@@ -271,7 +271,7 @@ class AbstractFitFunction(ABC):
             )
 
     @property
-    def param_names(self) -> Tuple[str, ...]:
+    def param_names(self) -> tuple[str, ...]:
         """Names of the fitted parameters."""
         return self._param_names
 
@@ -802,8 +802,8 @@ class ExponentialPlusLinear(AbstractFitFunction):
 
     def __init__(
         self,
-        params: Tuple[float, ...] = None,
-        param_errors: Tuple[float, ...] = None,
+        params: tuple[float, ...] = None,
+        param_errors: tuple[float, ...] = None,
     ):
         self._exponential = Exponential()
         self._linear = Linear()
@@ -939,8 +939,8 @@ class ExponentialPlusOffset(AbstractFitFunction):
 
     def __init__(
         self,
-        params: Tuple[float, ...] = None,
-        param_errors: Tuple[float, ...] = None,
+        params: tuple[float, ...] = None,
+        param_errors: tuple[float, ...] = None,
     ):
         self._explin = ExponentialPlusLinear()
         super().__init__(params=params, param_errors=param_errors)

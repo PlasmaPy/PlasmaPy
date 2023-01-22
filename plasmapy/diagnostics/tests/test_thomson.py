@@ -658,7 +658,7 @@ def test_param_to_array_fcns():
 
     prefix = "ion_vel"
     for i in range(2):
-        for j in ["x", "y", "z"]:
+        for j in ("x", "y", "z"):
             params.add(f"{prefix}_{j}_{i}", value=2)
 
     arr = thomson._params_to_array(params, "T_e", vector=False)
@@ -693,7 +693,7 @@ def run_fit(
 
     wavelengths = (wavelengths * u.m).to(u.nm)
 
-    true_params = copy.deepcopy(params)
+    true_params = copy.deepcopy(params)  # noqa: F841
 
     skeys = list(settings.keys())
     pkeys = list(params.keys())
@@ -778,7 +778,11 @@ def run_fit(
             )
 
     # Make the model, then perform the fit
-    model = thomson.spectral_density_model(wavelengths.to(u.m).value, settings, params)
+    model = thomson.spectral_density_model(
+        wavelengths.to(u.m).value,
+        settings,
+        params,
+    )
 
     if run_fit:
         result = model.fit(
@@ -1207,7 +1211,7 @@ def test_fit_with_minimal_parameters():
     # Make the model, then perform the fit
     model = thomson.spectral_density_model(wavelengths.to(u.m).value, settings, params)
 
-    result = model.fit(
+    result = model.fit(  # noqa: F841
         data,
         params,
         wavelengths=wavelengths.to(u.m).value,
