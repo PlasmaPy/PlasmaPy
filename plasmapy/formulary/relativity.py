@@ -7,7 +7,7 @@ import numpy as np
 from astropy.constants import c
 from numbers import Integral, Real
 from numpy.typing import DTypeLike
-from typing import Dict, Optional, Union
+from typing import Optional, Union
 
 from plasmapy import utils
 from plasmapy.particles._factory import _physical_particle_factory
@@ -248,7 +248,7 @@ class RelativisticBody:
 
     @staticmethod
     def _get_speed_like_input(
-        velocity_like_arguments: Dict[str, Union[u.Quantity, Real]]
+        velocity_like_arguments: dict[str, Union[u.Quantity, Real]]
     ):
 
         not_none_arguments = {
@@ -267,7 +267,7 @@ class RelativisticBody:
         return not_none_arguments or {"velocity": np.nan * u.m / u.s}
 
     def _store_velocity_like_argument(
-        self, speed_like_input: Dict[str, Union[u.Quantity, Real]]
+        self, speed_like_input: dict[str, Union[u.Quantity, Real]]
     ):
         """
         Take the velocity-like argument and store it via the setter for

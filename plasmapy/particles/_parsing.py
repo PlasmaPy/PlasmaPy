@@ -13,7 +13,7 @@ import re
 import warnings
 
 from numbers import Integral
-from typing import Dict, Optional, Union
+from typing import Optional, Union
 
 from plasmapy.particles import _elements, _isotopes, _special_particles
 from plasmapy.particles.exceptions import (
@@ -24,7 +24,7 @@ from plasmapy.particles.exceptions import (
 from plasmapy.utils import roman
 
 
-def create_alias_dicts(particles: dict) -> (Dict[str, str], Dict[str, str]):
+def create_alias_dicts(particles: dict) -> (dict[str, str], dict[str, str]):
     """
     Create dictionaries for case sensitive aliases and case
     insensitive aliases of special particles and antiparticles.

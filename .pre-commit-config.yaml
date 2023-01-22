@@ -50,7 +50,7 @@ repos:
   rev: v3.3.1
   hooks:
   - id: pyupgrade
-    args: [--keep-runtime-typing, --py38-plus]
+    args: [--keep-runtime-typing, --py39-plus]
     files: ^plasmapy/
 
 - repo: https://github.com/pre-commit/pygrep-hooks

@@ -16,7 +16,7 @@ import numpy as np
 import warnings
 
 from lmfit import Model
-from typing import Any, Callable, Dict, Optional, Tuple, Union
+from typing import Any, Callable, Optional, Union
 
 from plasmapy.formulary import (
     permittivity_1D_Maxwellian_lite,
@@ -63,7 +63,7 @@ def spectral_density_lite(
     probe_vec: np.ndarray,
     scatter_vec: np.ndarray,
     instr_func_arr: Optional[np.ndarray] = None,
-) -> Tuple[Union[np.floating, np.ndarray], np.ndarray]:
+) -> tuple[Union[np.floating, np.ndarray], np.ndarray]:
     r"""
     The :term:`lite-function` version of
     `~plasmapy.diagnostics.thomson.spectral_density`.  Performs the same
@@ -276,7 +276,7 @@ def spectral_density(
     probe_vec=None,
     scatter_vec=None,
     instr_func: Optional[Callable] = None,
-) -> Tuple[Union[np.floating, np.ndarray], np.ndarray]:
+) -> tuple[Union[np.floating, np.ndarray], np.ndarray]:
     r"""Calculate the spectral density function for Thomson scattering of
     a probe laser beam by a multi-species Maxwellian plasma.
 
@@ -569,7 +569,7 @@ def spectral_density(
 # ***************************************************************************
 
 
-def _count_populations_in_params(params: Dict[str, Any], prefix: str) -> int:
+def _count_populations_in_params(params: dict[str, Any], prefix: str) -> int:
     """
     Counts the number of electron or ion populations in a ``params``
     `dict`.
@@ -582,7 +582,7 @@ def _count_populations_in_params(params: Dict[str, Any], prefix: str) -> int:
 
 
 def _params_to_array(
-    params: Dict[str, Any], prefix: str, vector: bool = False
+    params: dict[str, Any], prefix: str, vector: bool = False
 ) -> np.ndarray:
     """
     Constructs an array from the values contained in the dictionary
