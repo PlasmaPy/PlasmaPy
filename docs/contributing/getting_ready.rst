@@ -38,14 +38,14 @@ systems.
 
       * Powershell_ comes pre-installed with Windows. These instructions
         cover `opening Powershell`_. We recommend Powershell for a quick
-        start, if you use solely Windows, or if you have not used Unix
-        before.
+        start, if Windows is the only operating system you use, or if
+        you have not used Unix before.
 
       * We recommend `Windows Subsystem for Linux`_ (WSL) if you are
-        familiar with Unix, you use macOS or Linux, or you expect to
+        familiar with Unix, you use macOS or Linux too, or you expect to
         contribute to PlasmaPy extensively. These instructions cover
         `installing WSL`_. If you choose WSL, please follow the tabs for
-        :guilabel:`Linux` in the following sections.
+        :guilabel:`Linux/WSL` in the following sections.
 
    .. group-tab:: macOS
 
@@ -53,35 +53,34 @@ systems.
       the :guilabel:`Utilities` folder and double click on
       :guilablel:`Terminal`.
 
-   .. group-tab:: Linux
+   .. group-tab:: Linux/WSL
 
       Open a terminal by using :kbd:`Ctrl + Alt + T`.
 
 Installing Python
 -----------------
 
-PlasmaPy requires Python_ |minpython| or newer. Python's website
-contains instructions on how to `download Python`_.
+There multiple ways to install Python. PlasmaPy requires a version of
+Python between |minpython| and |maxpython|. We recommend using Python
+|maxpython|.
 
-`Real Python`_ has instructions on `installing Python`_ for several
-operating systems. If using WSL, follow the Linux instructions.
+We recommend using Anaconda_, which is widely used as a package
+management system and environment management system in the data science
+and scientific Python communities. Anaconda includes `Anaconda
+Navigator`_ as its graphical user interface (GUI) and Conda_ as its
+command line interface (CLI). Anaconda allows us to install different
+versions of Python into different Python, environments and can also be
+used to distribute packages in languages besides Python.
 
-Anaconda_ is widely used as a package management system and environment
-management system in the data science and scientific Python communities.
-Anaconda includes `Anaconda Navigator`_ as its graphical user interface
-(GUI) and Conda_ as its command line interface (CLI). Anaconda makes it
-easy to install different versions of Python into different
-environments and can also be used to distribute packages in languages
-besides Python. To use Anaconda, please follow these instructions on
-`installing Anaconda Navigator`_ or on `installing Conda`_.
+* If you prefer a graphical user interface, please following these
+  instructions on `installing Anaconda Navigator`_.
+* If you prefer using the command line, please follow these instructions
+  on `installing Conda`_.
 
-.. tip::
-
-   New versions of Python_ are released annually in October, and usually
-   include improved error messages and performance improvements. Because
-   it can take a few months for the scientific Python ecosystem to catch
-   up, we recommend installing the most recent version of Python that is
-   at least four months old.
+Anaconda is not the only good way to install Python. Python's website
+describes how to `download Python`_, and `Real Python`_ has instructions
+on `installing Python`_ for several different operating systems (if
+using WSL_, follow the Linux instructions).
 
 Using git and GitHub
 --------------------
@@ -109,11 +108,16 @@ contributing code to PlasmaPy:
       git config --global user.name "Your Name"
       git config --global user.email "your.email@example.com"
 
-   You may also set your default editor:
+   You may also set your default editor with a command like one of the
+   following:
 
    .. code-block:: bash
 
       git config --global core.editor emacs
+      git config --global core.editor notepad
+
+   For more editor options, see this page on `git commands for setup and
+   config`_.
 
 #. `Add a new SSH key to your GitHub account`_.
 
@@ -151,21 +155,21 @@ Initial setup
    corresponds to your fork_ and ``upstream`` corresponds to `PlasmaPy's
    GitHub repository`_.
 
-#. Create a `virtual environment`_ and activate it.
+Setting up a virtual environment
+================================
+
+If you plan to make multiple contributions to PlasmaPy, we recommend
+setting up a Conda environment or a `virtual environment`_.
+
+#. [Optional, but recommended] Create a `virtual environment`_ and
+   activate it.
 
    .. tabs::
 
-      .. tab:: venv
+      .. tab:: Conda
 
-         Add instructions here...
-
-      .. tab:: Anaconda Navigator
-
-         Add instructions or links here...
-
-      .. tab::
-
-         Create a conda_ environment named ``plasmapy`` by using:
+         Create a conda_ environment named ``plasmapy`` by opening a
+         terminal and running:
 
          .. code-block:: bash
 
@@ -177,6 +181,23 @@ Initial setup
          .. code-block:: bash
 
             conda activate plasmapy
+
+         This command will need to be run every time you open a
+         terminal.
+
+      .. tab:: Anaconda Navigator
+
+         Please follow the instructions in Anaconda Navigator's
+         documentation on `creating an environment`_ and then `using an
+         environment`_.
+
+      .. tab:: venv
+
+         Python's documentation describes how to `create virtual
+         environments`_.
+
+Installing your clone of PlasmaPy
+=================================
 
 #. Use one of the following commands in the :file:`PlasmaPy/` directory
    to perform an editable (``-e``) installation of PlasmaPy, along with
@@ -196,7 +217,7 @@ Initial setup
 
             python -m pip install -e .[docs,tests]
 
-      .. group-tab:: Linux
+      .. group-tab:: Linux/WSL
 
          .. code-block:: bash
 
@@ -219,8 +240,8 @@ These packages are not installed using the ``pip`` command above.
 Installing pre-commit
 ---------------------
 
-PlasmaPy uses pre-commit_ to perform code quality checks and make
-automated changes. Because the pre-commit checks are also performed on
+PlasmaPy uses pre-commit_ to automate code quality checks and
+. Because the pre-commit checks are also performed on
 GitHub, it is optional to set up pre-commit locally.
 
 .. tip::
@@ -234,7 +255,6 @@ directory and run:
 .. code-block:: bash
 
    pre-commit install
-
 
 PlasmaPy uses |pre-commit|_ to perform code quality checks and apply
 reformatting tools. The |pre-commit|_ checks are performed on every code
@@ -255,24 +275,26 @@ Choosing a
 
 .. _Add a new SSH key to your GitHub Account: https://docs.github.com/en/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account
 .. _Anaconda Navigator: https://docs.anaconda.com/navigator/
+.. _Anaconda: https://docs.anaconda.com/
 .. _clone: https://github.com/git-guides/git-clone
+.. _creating an environment: https://docs.anaconda.com/navigator/tutorials/manage-environments/#creating-a-new-environment
+.. _download Python: https://www.python.org/downloads/
 .. _fork: https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/about-forks
 .. _frequently used Unix commands: https://faculty.tru.ca/nmora/Frequently%20used%20UNIX%20commands.pdf
-.. _download Python: https://www.python.org/downloads/
+.. _git commands for setup and config: https://git-scm.com/book/en/v2/Appendix-C%3A-Git-Commands-Setup-and-Config
 .. _install git: https://git-scm.com/book/en/v2/Getting-Started-Installing-Git
 .. _install Graphviz: https://graphviz.org/download/
 .. _install pandoc: https://pandoc.org/installing.html
-.. _installing WSL: https://learn.microsoft.com/en-us/windows/wsl/install
 .. _installing Anaconda Navigator: https://docs.anaconda.com/navigator/install
 .. _installing Conda: https://conda.io/projects/conda/en/latest/user-guide/install/index.html
+.. _installing Python: https://realpython.com/installing-python/
+.. _installing WSL: https://learn.microsoft.com/en-us/windows/wsl/install
+.. _powershell: https://learn.microsoft.com/en-us/powershell/
+.. _Real Python: https://realpython.com/
 .. _remote: https://github.com/git-guides/git-remote
 .. _sign up on GitHub: https://github.com/join
 .. _terminal user guide: https://support.apple.com/guide/terminal/welcome/mac
-.. _Windows Subsystem for Linux: https://learn.microsoft.com/en-us/windows/wsl
+.. _using an environment: https://docs.anaconda.com/navigator/tutorials/manage-environments/#using-an-environment
 .. _virtual environment: https://docs.python.org/3/library/venv.html
-.. _powershell: https://learn.microsoft.com/en-us/powershell/
-
-.. _Anaconda: https://docs.anaconda.com/
-
-.. _installing Python: https://realpython.com/installing-python/
-.. _Real Python: https://realpython.com/
+.. _Windows Subsystem for Linux: https://learn.microsoft.com/en-us/windows/wsl
+.. _WSL: https://learn.microsoft.com/en-us/windows/wsl
