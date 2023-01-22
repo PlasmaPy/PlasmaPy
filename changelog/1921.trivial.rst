@@ -1,0 +1,1 @@
+Decorated `~plasmapy.particles.atomic.reduced_mass` with |particle_input|.
