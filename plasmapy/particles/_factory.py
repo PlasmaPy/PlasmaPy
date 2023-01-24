@@ -18,7 +18,9 @@ from plasmapy.particles.particle_class import CustomParticle, Particle, Particle
 from plasmapy.particles.particle_collections import ParticleList
 
 
-def _generate_error_message(args: tuple, kwargs: dict[str, Any]) -> str:
+def _generate_particle_factory_error_message(
+    args: tuple, kwargs: dict[str, Any]
+) -> str:
     """Compose an error message for invalid particles."""
 
     errmsg = "Unable to create a particle from: "
@@ -192,4 +194,4 @@ def _physical_particle_factory(
     if args and not isinstance(args[0], (str, Integral, u.Quantity)):
         raise TypeError("Invalid type for particle.")
 
-    raise InvalidParticleError(_generate_error_message(args, kwargs))
+    raise InvalidParticleError(_generate_particle_factory_error_message(args, kwargs))
