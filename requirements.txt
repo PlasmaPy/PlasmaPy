@@ -426,7 +426,7 @@ sphinx-reredirects==0.1.1
     # via plasmapy (setup.py)
 sphinx-rtd-theme==1.1.1
     # via plasmapy (setup.py)
-sphinxcontrib-applehelp==1.0.3
+sphinxcontrib-applehelp==1.0.4
     # via sphinx
 sphinxcontrib-bibtex==2.5.0
     # via plasmapy (setup.py)
