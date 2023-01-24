@@ -93,8 +93,6 @@ def _make_custom_particle_with_real_charge_number(
     if Z > base_particle.atomic_number:
         raise ChargeError("The charge number cannot exceed the atomic number.")
 
-    # Generate a symbol like "Fe-16 2.325+" if this becomes part of public API
-
     mass = base_particle.mass - m_e * Z
     return CustomParticle(mass=mass, Z=Z, symbol=symbol)
 
