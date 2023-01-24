@@ -13,7 +13,7 @@ from astropy.constants import m_e
 from numbers import Integral, Real
 from typing import Any, Union
 
-from plasmapy.particles.exceptions import InvalidParticleError
+from plasmapy.particles.exceptions import ChargeError, InvalidParticleError
 from plasmapy.particles.particle_class import CustomParticle, Particle
 from plasmapy.particles.particle_collections import ParticleList
 
@@ -39,7 +39,13 @@ def _generate_error_message(args: tuple, kwargs: dict[str, Any]) -> str:
     return errmsg
 
 
-def _make_custom_particle_with_real_charge_number(*args, **kwargs):
+def _make_custom_particle_with_real_charge_number(
+    arg,
+    *,
+    mass_numb=None,
+    symbol=None,
+    Z=None,
+):
     """
     Create a |CustomParticle| for mean or composite ions.
 
@@ -50,14 +56,18 @@ def _make_custom_particle_with_real_charge_number(*args, **kwargs):
 
     Parameters
     ----------
-    *args : (1,) tuple of str
+    arg : (1,) tuple of str
         A `tuple` containing a representation of an element or isotope,
         without charge information.
 
-    *kwargs : dict of str to real numbers
-        Keyword arguments like those that can be passed to |Partile|,
-        except where the charge number ``Z`` is a real number but not
-        an integer.
+    mass_numb : real number, optional
+        The mass number of an isotope.
+
+    symbol : str, optional
+        The symbol of the particle.
+
+    Z : real number, optional
+        The charge number.
 
     Raises
     ------
@@ -72,29 +82,21 @@ def _make_custom_particle_with_real_charge_number(*args, **kwargs):
     CustomParticle(mass=6.64511...e-27 kg, charge=2.40326...e-19 C)
     """
 
-    if len(args) != 1 or "Z" not in kwargs or not isinstance(args[0], (Integral, str)):
-        raise InvalidParticleError(
-            "Cannot create CustomParticle with this function with "
-            f"{args = } and {kwargs = }."
-        )
+    if not isinstance(Z, (Real, u.Quantity)) and Z is not None:
+        raise ChargeError("The charge number must be a real number.")
 
-    Z = kwargs.pop("Z")
-
-    if not isinstance(Z, (Real, u.Quantity)):
-        raise InvalidParticleError("The charge number must be a real number.")
-
-    base_particle = Particle(*args, **kwargs, Z=0)
+    base_particle = Particle(arg, mass_numb=mass_numb, Z=0)
 
     if not base_particle.is_category(require="element", exclude="ion"):
-        # Add a test if this function becomes part of public API
+        # Add tests if this function becomes part of public API
         raise InvalidParticleError("Cannot create CustomParticle.")  # coverage: ignore
 
     if Z > base_particle.atomic_number:
-        raise InvalidParticleError("The charge number cannot exceed the atomic number.")
+        raise ChargeError("The charge number cannot exceed the atomic number.")
+
+    # Generate a symbol like "Fe-16 2.325+" if this becomes part of public API
 
     mass = base_particle.mass - m_e * Z
-    symbol = kwargs.get("symbol")
-
     return CustomParticle(mass=mass, Z=Z, symbol=symbol)
 
 
@@ -187,7 +189,7 @@ def _physical_particle_factory(
         raise TypeError("Particle information has not been provided.")
 
     for constructor in _particle_constructors:
-        with contextlib.suppress(TypeError, InvalidParticleError):
+        with contextlib.suppress(ChargeError, InvalidParticleError, TypeError):
             return constructor(*args, **kwargs)
 
     if args and not isinstance(args[0], (str, Integral, u.Quantity)):
