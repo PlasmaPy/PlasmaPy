@@ -11,10 +11,10 @@ import contextlib
 
 from astropy.constants import m_e
 from numbers import Integral, Real
-from typing import Any, Union
+from typing import Any, Optional, Union
 
 from plasmapy.particles.exceptions import ChargeError, InvalidParticleError
-from plasmapy.particles.particle_class import CustomParticle, Particle
+from plasmapy.particles.particle_class import CustomParticle, Particle, ParticleLike
 from plasmapy.particles.particle_collections import ParticleList
 
 
@@ -40,11 +40,11 @@ def _generate_error_message(args: tuple, kwargs: dict[str, Any]) -> str:
 
 
 def _make_custom_particle_with_real_charge_number(
-    arg,
+    arg: ParticleLike,
     *,
-    mass_numb=None,
-    symbol=None,
-    Z=None,
+    mass_numb: Optional[Integral] = None,
+    symbol: Optional[str] = None,
+    Z: Optional[Real] = None,
 ):
     """
     Create a |CustomParticle| for mean or composite ions.
@@ -56,9 +56,8 @@ def _make_custom_particle_with_real_charge_number(
 
     Parameters
     ----------
-    arg : (1,) tuple of str
-        A `tuple` containing a representation of an element or isotope,
-        without charge information.
+    arg : |particle-like|
+        An appropriate first argument to |Particle|.
 
     mass_numb : real number, optional
         The mass number of an isotope.
