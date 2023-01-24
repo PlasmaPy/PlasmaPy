@@ -59,7 +59,7 @@ contourpy==1.0.7
     # via matplotlib
 cycler==0.11.0
     # via matplotlib
-debugpy==1.6.5
+debugpy==1.6.6
     # via ipykernel
 decorator==5.1.1
     # via ipython
