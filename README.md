@@ -9,6 +9,7 @@
 [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg)](https://docs.plasmapy.org/en/latest/CODE_OF_CONDUCT.html)
 
 [![Matrix](https://img.shields.io/badge/Matrix-join%20chat-blueviolet?style=flat&logo=matrix)](https://app.element.io/#/room/#plasmapy:openastronomy.org)
+<a rel="me" href="https://fosstodon.org/@plasmapy">![Mastodon](https://img.shields.io/badge/Mastodon-plasmapy%40fosstodon.org-blue?logo=mastodon&style=fla)</a>
 [![Twitter](https://img.shields.io/badge/Twitter%20-follow-red?style=flat&logo=twitter)](https://twitter.com/plasmapy)
 [![YouTube](https://img.shields.io/badge/YouTube%20-subscribe-red?style=flat&logo=youtube)](https://www.youtube.com/channel/UCSH6qzslhqIZKTAJmHPxIxw)
 
