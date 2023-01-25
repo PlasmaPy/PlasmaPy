@@ -512,7 +512,7 @@ def test_isotopic_abundances_sum(element, isotopes):
 
 class TestReducedMassInput:
     def test_incorrect_units(self):
-        with pytest.raises(u.UnitConversionError):
+        with pytest.raises(InvalidParticleError):
             reduced_mass("N", 6e-26 * u.l)
 
     def test_missing_atomic_data(self):
