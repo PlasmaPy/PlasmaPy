@@ -214,7 +214,7 @@ nbclient==0.7.2
     # via
     #   nbconvert
     #   voila
-nbconvert==7.2.8
+nbconvert==7.2.9
     # via
     #   jupyter-server
     #   nbsphinx
