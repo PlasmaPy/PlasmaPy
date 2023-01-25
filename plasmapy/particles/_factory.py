@@ -9,13 +9,105 @@ __all__ = []
 import astropy.units as u
 import contextlib
 
-from astropy.units.physical import electrical_charge, mass
-from numbers import Integral
-from typing import Union
+from astropy.constants import m_e
+from numbers import Integral, Real
+from typing import Any, Optional, Union
 
-from plasmapy.particles.exceptions import InvalidParticleError
-from plasmapy.particles.particle_class import CustomParticle, Particle
+from plasmapy.particles.exceptions import ChargeError, InvalidParticleError
+from plasmapy.particles.particle_class import CustomParticle, Particle, ParticleLike
 from plasmapy.particles.particle_collections import ParticleList
+
+
+def _generate_particle_factory_error_message(
+    args: tuple, kwargs: dict[str, Any]
+) -> str:
+    """Compose an error message for invalid particles."""
+
+    errmsg = "Unable to create a particle from: "
+
+    if args:
+        errmsg += repr(args)
+        if kwargs:
+            errmsg += " and "
+
+    if kwargs:
+        errmsg += repr(kwargs)
+
+    errmsg += (
+        ". For information on creating particles, see:"
+        "https://docs.plasmapy.org/en/stable/api/plasmapy.particles.ParticleLike.html"
+    )
+
+    return errmsg
+
+
+def _make_custom_particle_with_real_charge_number(
+    arg: ParticleLike,
+    *,
+    mass_numb: Optional[Integral] = None,
+    symbol: Optional[str] = None,
+    Z: Optional[Real] = None,
+):
+    """
+    Create a |CustomParticle| for mean or composite ions.
+
+    This function is intended to produce |CustomParticle| instances
+    provided a string representing an element or isotope without charge
+    information (e.g., ``"He"`` or ``"He-4"`` but not ``"He-4 2+"``)
+    along with a charge number that is a real number but not an integer.
+
+    Parameters
+    ----------
+    arg : |particle-like|
+        An appropriate first argument to |Particle|.
+
+    mass_numb : real number, optional
+        The mass number of an isotope.
+
+    symbol : str, optional
+        The symbol of the particle.
+
+    Z : real number, optional
+        The charge number.
+
+    Raises
+    ------
+    |InvalidParticleError|
+        If the |CustomParticle| cannot be created.
+
+    Examples
+    --------
+    >>> _make_custom_particle_with_real_charge_number("He-4", Z=1.5)
+    CustomParticle(mass=6.64511...e-27 kg, charge=2.40326...e-19 C)
+    >>> _make_custom_particle_with_real_charge_number("He", Z=1.5, mass_numb=4)
+    CustomParticle(mass=6.64511...e-27 kg, charge=2.40326...e-19 C)
+    """
+
+    if not isinstance(Z, (Real, u.Quantity)) and Z is not None:
+        raise ChargeError("The charge number must be a real number.")
+
+    base_particle = Particle(arg, mass_numb=mass_numb, Z=0)
+
+    if not base_particle.is_category(require="element", exclude="ion"):
+        # Add tests if this function becomes part of public API
+        raise InvalidParticleError("Cannot create CustomParticle.")  # coverage: ignore
+
+    if Z > base_particle.atomic_number:
+        raise ChargeError("The charge number cannot exceed the atomic number.")
+
+    mass = base_particle.mass - m_e * Z
+    return CustomParticle(mass=mass, Z=Z, symbol=symbol)
+
+
+_particle_constructors = (
+    Particle,
+    CustomParticle,
+    CustomParticle._from_quantities,
+    ParticleList,
+    _make_custom_particle_with_real_charge_number,
+)
+
+_particle_types = (Particle, CustomParticle, ParticleList)
 
 
 def _physical_particle_factory(
@@ -84,36 +176,22 @@ def _physical_particle_factory(
     # because they are not allowed as arguments to `CustomParticle`, and
     # are not needed in kwargs if they are their default values. Note
     # that this affects `not kwargs` below.
+
     for parameter in ("Z", "mass_numb"):
         if parameter in kwargs and kwargs[parameter] is None:
             kwargs.pop(parameter)
 
-    if (
-        len(args) == 1
-        and not kwargs
-        and isinstance(args[0], (Particle, CustomParticle, ParticleList))
-    ):
+    if len(args) == 1 and not kwargs and isinstance(args[0], _particle_types):
         return args[0]
 
     if not args and not kwargs:
         raise TypeError("Particle information has not been provided.")
 
-    for particle_type in (Particle, CustomParticle, ParticleList):
-        with contextlib.suppress(TypeError, InvalidParticleError):
-            return particle_type(*args, **kwargs)
+    for constructor in _particle_constructors:
+        with contextlib.suppress(ChargeError, InvalidParticleError, TypeError):
+            return constructor(*args, **kwargs)
 
-    if isinstance(args[0], u.Quantity):
-        physical_type = u.get_physical_type(args[0])
-        if physical_type not in (electrical_charge, mass):
-            raise u.UnitConversionError(
-                "Cannot create a particle object with a Quantity with a "
-                f"physical type of {physical_type}."
-            )
-
-    if not isinstance(args[0], (str, Integral, CustomParticle, Particle, ParticleList)):
+    if args and not isinstance(args[0], (str, Integral, u.Quantity)):
         raise TypeError("Invalid type for particle.")
 
-    raise InvalidParticleError(
-        f"Unable to create an appropriate particle object with "
-        f"args={args} and kwargs={kwargs}."
-    )
+    raise InvalidParticleError(_generate_particle_factory_error_message(args, kwargs))

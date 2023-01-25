@@ -7,7 +7,7 @@ import inspect
 import wrapt
 
 from collections.abc import Iterable
-from numbers import Integral
+from numbers import Integral, Real
 from typing import Any, Callable, NoReturn, Optional, Union
 
 from plasmapy.particles._factory import _physical_particle_factory
@@ -541,8 +541,8 @@ class _ParticleInput:
         Z_or_mass_numb = Z is not None or mass_numb is not None
         multiple_annotated_parameters = len(self.parameters_to_process) > 1
 
-        if Z is not None and not isinstance(Z, Integral):
-            raise TypeError("Z must be an integer.")
+        if Z is not None and not isinstance(Z, Real):
+            raise TypeError("Z must be a real number.")
 
         if mass_numb is not None and not isinstance(mass_numb, Integral):
             raise TypeError("mass_numb must be an integer.")
