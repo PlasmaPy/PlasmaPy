@@ -15,18 +15,13 @@ jobs:
       matrix:
         include:
 
-        - name: Python 3.8
+        - name: Python 3.9 (Windows)
           os: windows-latest
-          python: 3.8
-          toxenv: py38
-
-        - name: Python 3.9
-          os: macos-latest
           python: 3.9
           toxenv: py39
 
-        - name: Python 3.10
-          os: ubuntu-latest
+        - name: Python 3.10 (macOS)
+          os: macos-latest
           python: '3.10'
           toxenv: py310
 
@@ -58,18 +53,18 @@ jobs:
 
         - name: Import PlasmaPy (Windows)
           os: windows-latest
-          python: 3.8
-          toxenv: py38-minimal-pypi-import
+          python: 3.9
+          toxenv: py39-minimal-pypi-import
 
         - name: Import PlasmaPy (macOS X)
           os: macos-latest
-          python: 3.8
-          toxenv: py38-minimal-pypi-import
+          python: 3.9
+          toxenv: py39-minimal-pypi-import
 
         - name: Import PlasmaPy (Ubuntu)
           os: ubuntu-latest
-          python: 3.8
-          toxenv: py38-minimal-pypi-import
+          python: 3.9
+          toxenv: py39-minimal-pypi-import
 
     steps:
     - name: Checkout code

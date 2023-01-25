@@ -3,8 +3,6 @@ import astropy.units as u
 import numpy as np
 import pytest
 
-from typing import Dict
-
 from plasmapy.particles import alpha, electron, neutron, proton
 from plasmapy.particles.atomic import atomic_number
 from plasmapy.particles.exceptions import InvalidParticleError
@@ -432,7 +430,7 @@ particle_multiplicities = [
 @pytest.mark.parametrize("particle_multiplicities", particle_multiplicities)
 @pytest.mark.parametrize("use_rms_charge, use_rms_mass", boolean_pairs)
 def test_weighted_averages_of_particles(
-    particle_multiplicities: Dict[ParticleLike, int],
+    particle_multiplicities: dict[ParticleLike, int],
     use_rms_charge,
     use_rms_mass,
 ):

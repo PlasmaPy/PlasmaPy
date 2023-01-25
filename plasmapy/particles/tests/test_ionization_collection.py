@@ -5,7 +5,6 @@ import pytest
 
 from astropy.tests.helper import assert_quantity_allclose
 from numbers import Real
-from typing import Dict
 
 from plasmapy.particles import (
     atomic_number,
@@ -21,7 +20,7 @@ from plasmapy.particles.exceptions import InvalidIsotopeError, ParticleError
 
 
 def check_abundances_consistency(
-    abundances: Dict[str, Real], log_abundances: Dict[str, Real]
+    abundances: dict[str, Real], log_abundances: dict[str, Real]
 ):
     """
     Test that a set of abundances is consistent with a set of the base
