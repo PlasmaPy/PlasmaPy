@@ -289,7 +289,7 @@ pluggy==1.0.0
     #   tox
 pre-commit==2.21.0
     # via plasmapy (setup.py)
-prometheus-client==0.15.0
+prometheus-client==0.16.0
     # via jupyter-server
 prompt-toolkit==3.0.36
     # via ipython
