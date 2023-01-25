@@ -166,7 +166,7 @@ jupyter-client==7.4.1
     #   jupyter-server
     #   nbclient
     #   voila
-jupyter-core==5.1.4
+jupyter-core==5.1.5
     # via
     #   jupyter-client
     #   jupyter-server
