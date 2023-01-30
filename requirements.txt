@@ -136,7 +136,7 @@ ipykernel==6.20.2
     # via
     #   ipywidgets
     #   plasmapy (setup.py)
-ipython==8.8.0
+ipython==8.9.0
     # via
     #   ipykernel
     #   ipywidgets
