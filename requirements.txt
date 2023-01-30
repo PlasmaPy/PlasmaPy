@@ -370,7 +370,7 @@ requests==2.28.2
     #   sphinx
 restructuredtext-lint==1.4.0
     # via flake8-rst-docstrings
-rich==13.2.0
+rich==13.3.1
     # via tryceratops
 scipy==1.10.0
     # via
