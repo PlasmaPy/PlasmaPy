@@ -118,7 +118,7 @@ future==0.18.3
     # via uncertainties
 h5py==3.7.0
     # via plasmapy (setup.py)
-hypothesis==6.65.1
+hypothesis==6.65.2
     # via plasmapy (setup.py)
 identify==2.5.15
     # via pre-commit
