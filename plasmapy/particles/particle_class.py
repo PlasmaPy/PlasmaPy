@@ -2133,6 +2133,9 @@ class CustomParticle(AbstractPhysicalParticle):
         if not quantities:
             return CustomParticle(symbol=symbol, Z=Z)
 
+        if isinstance(quantities[0], str):
+            raise TypeError("Unable to create CustomParticle from a string.")
+
         try:
             physical_type_dict = _get_physical_type_dict(
                 quantities,
@@ -2479,7 +2482,10 @@ def molecule(
         return CustomParticle(mass=mass, charge=charge, symbol=bare_symbol)
 
 
-ParticleLike = Union[str, Integral, Particle, CustomParticle]
+# If ParticleLike is renamed or moves out of particle_class.py, check
+# for a link to its doc page in error messages in _factory.py.
+
+ParticleLike = Union[str, Integral, Particle, CustomParticle, u.Quantity]
 
 ParticleLike.__doc__ = r"""
 An `object` is particle-like if it can be identified as an instance of
@@ -2556,7 +2562,14 @@ instances, are particle-like.
 * **Custom particles**
 
     `~plasmapy.particles.particle_class.CustomParticle` instances are
-    particle-like because particle properties are provided in physical units.
+    particle-like because particle properties are provided in physical
+    units. A `~astropy.units.Quantity` with a physical type of mass or
+    charge is |particle-like| because it can be used to generate a
+    |CustomParticle|.
+
+    >>> import astropy.units as u
+    >>> CustomParticle(mass = 1e-26 * u.kg, charge = 1e-18 * u.C)
+    CustomParticle(mass=1e-26 kg, charge=1e-18 C)
 
 .. note::
 
