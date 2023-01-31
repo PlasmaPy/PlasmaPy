@@ -470,7 +470,7 @@ tox==3.28.0
     # via plasmapy (setup.py)
 tqdm==4.64.1
     # via plasmapy (setup.py)
-traitlets==5.8.1
+traitlets==5.9.0
     # via
     #   comm
     #   ipykernel
