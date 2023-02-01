@@ -17,41 +17,40 @@ keywords = [
   "science",
 ]
 license = {file = "LICENSE.md"}
-requires-python = ">=3.8"
-dependencies = [
-  "astropy>=5.0.1",
-  "h5py>=3",
-  "ipywidgets>=7.6.5",
-  "lmfit>=1",
-  "matplotlib>=3.3",
-  "mpmath>=1.2.1",
-  "numba",
-  "numpy>=1.20",
-  "packaging",
-  "pandas>=1",
-  "pytest>=6",
-  "requests>=2.27.1",
-  "scipy>=1.5",
-  "tqdm>=4.41",
-  "voila>=0.2.15",
-  "wrapt",
-  "xarray>=0.15",
-]
-dynamic = [
-  "version",
-]
+requires-python = ">=3.9"
 classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Science/Research",
     "License :: OSI Approved :: BSD License",
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: Implementation :: CPython",
     "Topic :: Scientific/Engineering :: Physics",
     "Topic :: Scientific/Engineering :: Astronomy",
+]
+dynamic = [
+  "version",
+]
+dependencies = [
+  "astropy>=5.0.1",
+  "h5py>=3.1",
+  "ipywidgets>=7.6.5",
+  "lmfit>=1",
+  "matplotlib>=3.3",
+  "mpmath>=1.2.1",
+  "numba",
+  "numpy>=1.21",
+  "packaging",
+  "pandas>=1.2",
+  "pytest>=6",
+  "requests>=2.27.1",
+  "scipy>=1.6",
+  "tqdm>=4.41",
+  "voila>=0.3",
+  "wrapt>=1.12",
+  "xarray>=0.17",
 ]
 [project.optional-dependencies]
 docs = [
@@ -76,7 +75,6 @@ docs = [
   "tox<4",
 ]
 tests = [
-  "dlint",
   "flake8",
   "flake8-absolute-import",
   "flake8-implicit-str-concat",

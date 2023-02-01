@@ -29,6 +29,7 @@ jobs:
         - name: Linters
           os: ubuntu-latest
           python: '3.10'
+
           noxenv: linters
 
         - name: Import package
@@ -103,7 +104,6 @@ jobs:
       run: nox -s ${{ matrix.noxenv }} -- ${{ matrix.noxposargs }}
 
   documentation:
-
     name: ${{ matrix.name }}
     runs-on: ubuntu-latest
 
@@ -155,10 +155,10 @@ jobs:
       run: |
         git fetch --prune --unshallow
         git fetch --depth=1 origin +refs/tags/*:refs/tags/*
-    - name: Set up Python 3.8
+    - name: Set up Python 3.9
       uses: actions/setup-python@v4
       with:
-        python-version: 3.8
+        python-version: 3.9
     - name: Install requirements
       run: |
         pip install --progress-bar off setuptools numpy wheel setuptools_scm twine build pip

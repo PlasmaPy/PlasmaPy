@@ -21,9 +21,10 @@ import warnings
 
 from abc import ABC, abstractmethod
 from collections import defaultdict, namedtuple
+from collections.abc import Iterable, Sequence
 from datetime import datetime
 from numbers import Integral, Real
-from typing import Dict, Iterable, NoReturn, Optional, Sequence, Set, Union
+from typing import NoReturn, Optional, Union
 
 from plasmapy.particles import _elements, _isotopes, _parsing, _special_particles
 from plasmapy.particles.exceptions import (
@@ -213,7 +214,7 @@ class AbstractPhysicalParticle(AbstractParticle):
 
     @property
     @abstractmethod
-    def categories(self) -> Set[str]:
+    def categories(self) -> set[str]:
         """Provide the particle's categories."""
         ...
 
@@ -317,7 +318,7 @@ class AbstractPhysicalParticle(AbstractParticle):
         False
         """
 
-        def become_set(arg: Union[str, Set, Sequence]) -> Set[str]:
+        def become_set(arg: Union[str, set, Sequence]) -> set[str]:
             """Change the argument into a `set`."""
             if arg is None:
                 return set()
@@ -1628,7 +1629,7 @@ class Particle(AbstractPhysicalParticle):
             raise InvalidElementError(_category_errmsg(self.symbol, "element"))
 
     @property
-    def categories(self) -> Set[str]:
+    def categories(self) -> set[str]:
         """
         The particle's categories.
 
@@ -2132,6 +2133,9 @@ class CustomParticle(AbstractPhysicalParticle):
         if not quantities:
             return CustomParticle(symbol=symbol, Z=Z)
 
+        if isinstance(quantities[0], str):
+            raise TypeError("Unable to create CustomParticle from a string.")
+
         try:
             physical_type_dict = _get_physical_type_dict(
                 quantities,
@@ -2184,7 +2188,7 @@ class CustomParticle(AbstractPhysicalParticle):
         )
 
     @property
-    def json_dict(self) -> Dict[str, str]:
+    def json_dict(self) -> dict[str, str]:
         """
         A `json` friendly dictionary representation of the |CustomParticle|.
 
@@ -2347,7 +2351,7 @@ class CustomParticle(AbstractPhysicalParticle):
             raise TypeError("symbol needs to be a string.")
 
     @property
-    def categories(self) -> Set[str]:
+    def categories(self) -> set[str]:
         """Categories for the |CustomParticle|."""
         categories_ = {"custom"}
 
@@ -2478,7 +2482,10 @@ def molecule(
         return CustomParticle(mass=mass, charge=charge, symbol=bare_symbol)
 
 
-ParticleLike = Union[str, Integral, Particle, CustomParticle]
+# If ParticleLike is renamed or moves out of particle_class.py, check
+# for a link to its doc page in error messages in _factory.py.
+
+ParticleLike = Union[str, Integral, Particle, CustomParticle, u.Quantity]
 
 ParticleLike.__doc__ = r"""
 An `object` is particle-like if it can be identified as an instance of
@@ -2555,7 +2562,14 @@ instances, are particle-like.
 * **Custom particles**
 
     `~plasmapy.particles.particle_class.CustomParticle` instances are
-    particle-like because particle properties are provided in physical units.
+    particle-like because particle properties are provided in physical
+    units. A `~astropy.units.Quantity` with a physical type of mass or
+    charge is |particle-like| because it can be used to generate a
+    |CustomParticle|.
+
+    >>> import astropy.units as u
+    >>> CustomParticle(mass = 1e-26 * u.kg, charge = 1e-18 * u.C)
+    CustomParticle(mass=1e-26 kg, charge=1e-18 C)
 
 .. note::
 
