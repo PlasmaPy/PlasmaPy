@@ -120,7 +120,7 @@ h5py==3.7.0
     # via plasmapy (setup.py)
 hypothesis==6.65.2
     # via plasmapy (setup.py)
-identify==2.5.16
+identify==2.5.17
     # via pre-commit
 idna==3.4
     # via
