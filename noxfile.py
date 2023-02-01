@@ -2,7 +2,7 @@ import nox
 
 nox.options.sessions = ["tests", "linters", "codespell"]
 
-python_versions = ("3.8", "3.9", "3.10")
+python_versions = ("3.9", "3.10")
 newest_python_version = python_versions[-1]
 
 pytest_options = ["--showlocals"]
