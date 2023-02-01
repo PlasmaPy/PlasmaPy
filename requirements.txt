@@ -432,7 +432,7 @@ sphinxcontrib-bibtex==2.5.0
     # via plasmapy (setup.py)
 sphinxcontrib-devhelp==1.0.2
     # via sphinx
-sphinxcontrib-htmlhelp==2.0.0
+sphinxcontrib-htmlhelp==2.0.1
     # via sphinx
 sphinxcontrib-jquery==3.0.0
     # via sphinx-hoverxref
