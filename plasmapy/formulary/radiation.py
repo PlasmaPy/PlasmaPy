@@ -121,7 +121,6 @@ def thermal_bremsstrahlung(
         np.max(ω) * const.hbar.si / (2 * np.pi * u.rad * const.k_B.si * T_e)
     ).to(u.dimensionless_unscaled)
     if rj_const.value > 0.1:
-
         raise PhysicsError(
             "Rayleigh-Jeans limit not satisfied: "
             f"ℏω/kT_e = {rj_const.value:.2e} > 0.1. "

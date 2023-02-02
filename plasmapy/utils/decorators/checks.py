@@ -140,7 +140,6 @@ class CheckValues(CheckBase):
     def __init__(
         self, checks_on_return: dict[str, bool] = None, **checks: dict[str, bool]
     ):
-
         super().__init__(checks_on_return=checks_on_return, **checks)
 
     def __call__(self, f):
@@ -471,7 +470,6 @@ class CheckUnits(CheckBase):
         checks_on_return: Union[u.Unit, list[u.Unit], dict[str, Any]] = None,
         **checks: Union[u.Unit, list[u.Unit], dict[str, Any]],
     ):
-
         super().__init__(checks_on_return=checks_on_return, **checks)
 
     def __call__(self, f):
@@ -709,7 +707,6 @@ class CheckUnits(CheckBase):
             elif isinstance(_equivs, Equivalency):
                 pass
             elif isinstance(_equivs, (list, tuple)):
-
                 # flatten list to non-list elements
                 if isinstance(_equivs, tuple):
                     _equivs = [_equivs]

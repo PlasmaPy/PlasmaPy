@@ -152,7 +152,6 @@ class HDF5Reader(GenericPlasma):
             raise FileNotFoundError(f"Could not find file: '{hdf5}'")
 
         if "openPMD" not in kwargs:
-
             h5 = h5py.File(hdf5, "r")
             try:
                 openPMD = h5.attrs["openPMD"]

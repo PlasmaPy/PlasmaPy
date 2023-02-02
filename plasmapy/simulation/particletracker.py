@@ -92,7 +92,6 @@ class ParticleTracker:
         nt=np.inf,
         integrator="explicit_boris",
     ):
-
         if np.isinf(dt) and np.isinf(nt):  # coverage: ignore
             raise ValueError("Both dt and nt are infinite.")
 
