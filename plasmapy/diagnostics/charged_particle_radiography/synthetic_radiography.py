@@ -14,8 +14,9 @@ import numpy as np
 import sys
 import warnings
 
+from collections.abc import Iterable
 from tqdm import tqdm
-from typing import Iterable, Union
+from typing import Union
 
 from plasmapy import particles
 from plasmapy.formulary.mathematics import rot_a_to_b

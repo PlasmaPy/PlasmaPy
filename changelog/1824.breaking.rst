@@ -1,1 +1,0 @@
-Changed the `~plasmapy.formulary.lengths.gyroradius` function so it no longer accepts deprecated ``T_i``.

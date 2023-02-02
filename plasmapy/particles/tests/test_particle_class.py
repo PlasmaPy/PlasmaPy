@@ -11,7 +11,6 @@ from astropy.constants import c, e, m_e, m_n, m_p
 
 from plasmapy.particles import json_load_particle, json_loads_particle, molecule
 from plasmapy.particles._isotopes import data_about_isotopes
-from plasmapy.particles._special_particles import particle_zoo
 from plasmapy.particles.atomic import known_isotopes
 from plasmapy.particles.exceptions import (
     ChargeError,
@@ -782,31 +781,19 @@ def test_particle_bool_error():
         bool(Particle("e-"))
 
 
-particle_antiparticle_pairs = [
-    ("p+", "p-"),
-    ("n", "antineutron"),
-    ("e-", "e+"),
-    ("mu-", "mu+"),
-    ("tau-", "tau+"),
-    ("nu_e", "anti_nu_e"),
-    ("nu_mu", "anti_nu_mu"),
-    ("nu_tau", "anti_nu_tau"),
-]
-
-
-@pytest.mark.parametrize("particle, antiparticle", particle_antiparticle_pairs)
-def test_particle_inversion(particle, antiparticle):
+def test_particle_inversion(particle_antiparticle_pair):
     """Test that particles have the correct antiparticles."""
-    assert Particle(particle).antiparticle == Particle(antiparticle), (
+    particle, antiparticle = particle_antiparticle_pair
+    assert particle.antiparticle == antiparticle, (
         f"The antiparticle of {particle} is found to be "
         f"{~Particle(particle)} instead of {antiparticle}."
     )
 
 
-@pytest.mark.parametrize("particle, antiparticle", particle_antiparticle_pairs)
-def test_antiparticle_inversion(particle, antiparticle):
+def test_antiparticle_inversion(particle_antiparticle_pair):
     """Test that antiparticles have the correct antiparticles."""
-    assert Particle(antiparticle).antiparticle == Particle(particle), (
+    particle, antiparticle = particle_antiparticle_pair
+    assert antiparticle.antiparticle == particle, (
         f"The antiparticle of {antiparticle} is found to be "
         f"{~Particle(antiparticle)} instead of {particle}."
     )
@@ -815,23 +802,6 @@ def test_antiparticle_inversion(particle, antiparticle):
 def test_unary_operator_for_elements():
     with pytest.raises(ParticleError):
         Particle("C").antiparticle
-
-
-@pytest.fixture(params=particle_zoo.everything)
-def particle(request):
-    return Particle(request.param)
-
-
-@pytest.fixture()
-def opposite(particle):
-    try:
-        opposite_particle = ~particle
-    except Exception as exc:
-        raise InvalidParticleError(
-            f"The unary ~ (invert) operator is unable to find the "
-            f"antiparticle of {particle}."
-        ) from exc
-    return opposite_particle
 
 
 class Test_antiparticle_properties_inversion:
@@ -1073,7 +1043,7 @@ custom_particle_errors = [
     (CustomParticle, {"mass": np.complex128(5 + 2j) * u.kg}, InvalidParticleError),
     (CustomParticle, {"charge": "not a charge"}, InvalidParticleError),
     (CustomParticle, {"charge": "5.0 km"}, InvalidParticleError),
-    (CustomParticle, {"charge": 1 * u.C, "Z": -1}, TypeError),
+    (CustomParticle, {"charge": 1 * u.C, "Z": -1}, InvalidParticleError),
 ]
 
 
@@ -1499,6 +1469,36 @@ test_molecule_table = [
     (2 * 126.90447 * u.u, e.si, "I2 1+", "I2", 1),
     (2 * 126.90447 * u.u, e.si, "II 1+", "II", 1),
 ]
+
+
+@pytest.mark.parametrize(
+    "args, kwargs, expected",
+    [
+        ([], {}, CustomParticle()),
+        ([1 * u.kg], {}, CustomParticle(mass=1 * u.kg)),
+        ([2 * u.C], {}, CustomParticle(charge=2 * u.C)),
+        ([3 * u.kg, 4 * u.C], {}, CustomParticle(mass=3 * u.kg, charge=4 * u.C)),
+        ([5 * u.C, 6 * u.kg], {}, CustomParticle(mass=6 * u.kg, charge=5 * u.C)),
+        ([7 * u.kg], {"Z": 8.9}, CustomParticle(mass=7 * u.kg, Z=8.9)),
+        ([], {"symbol": "..."}, CustomParticle(symbol="...")),
+    ],
+)
+def test_CustomParticle_from_quantities(args, kwargs, expected):
+    actual = CustomParticle._from_quantities(*args, **kwargs)
+    assert actual == expected
+
+
+@pytest.mark.parametrize(
+    "args, kwargs, exception",
+    [
+        ([1 * u.C], {"Z": 2}, InvalidParticleError),
+        ([3 * u.m], {}, InvalidParticleError),
+        ([4 * u.kg, "invalid"], {}, InvalidParticleError),
+    ],
+)
+def test_CustomParticle_from_quantities_errors(args, kwargs, exception):
+    with pytest.raises(exception):
+        CustomParticle._from_quantities(*args, **kwargs)
 
 
 @pytest.mark.parametrize("m, Z, symbol, m_symbol, m_Z", test_molecule_table)

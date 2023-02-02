@@ -8,7 +8,7 @@ import astropy.units as u
 import numpy as np
 
 from numbers import Integral, Real
-from typing import Dict, List, NoReturn, Optional, Tuple, Union
+from typing import NoReturn, Optional, Union
 
 from plasmapy.particles.atomic import atomic_number
 from plasmapy.particles.exceptions import (
@@ -135,11 +135,11 @@ class IonizationStateCollection:
     @validate_quantities(T_e={"equivalencies": u.temperature_energy()})
     def __init__(
         self,
-        inputs: Union[Dict[str, np.ndarray], List, Tuple],
+        inputs: Union[dict[str, np.ndarray], list, tuple],
         *,
         T_e: u.K = np.nan * u.K,
-        abundances: Optional[Dict[str, Real]] = None,
-        log_abundances: Optional[Dict[str, Real]] = None,
+        abundances: Optional[dict[str, Real]] = None,
+        log_abundances: Optional[dict[str, Real]] = None,
         n0: u.m**-3 = np.nan * u.m**-3,
         tol: Real = 1e-15,
         kappa: Real = np.inf,
@@ -397,7 +397,7 @@ class IonizationStateCollection:
         return True
 
     @property
-    def ionic_fractions(self) -> Dict[str, np.array]:
+    def ionic_fractions(self) -> dict[str, np.array]:
         """
         A `dict` containing the ionic fractions for each element and
         isotope.
@@ -410,7 +410,7 @@ class IonizationStateCollection:
         return self._ionic_fractions
 
     @ionic_fractions.setter
-    def ionic_fractions(self, inputs: Union[Dict, List, Tuple]):
+    def ionic_fractions(self, inputs: Union[dict, list, tuple]):
         """
         Set the ionic fractions.
 
@@ -674,7 +674,7 @@ class IonizationStateCollection:
         self._pars["n"] = n.to(u.m**-3)
 
     @property
-    def number_densities(self) -> Dict[str, u.Quantity]:
+    def number_densities(self) -> dict[str, u.Quantity]:
         """
         A `dict` containing the number densities for the elements and/or
         isotopes composing the collection.
@@ -685,12 +685,12 @@ class IonizationStateCollection:
         }
 
     @property
-    def abundances(self) -> Optional[Dict[ParticleLike, Real]]:
+    def abundances(self) -> Optional[dict[ParticleLike, Real]]:
         """The elemental abundances."""
         return self._pars["abundances"]
 
     @abundances.setter
-    def abundances(self, abundances_dict: Optional[Dict[ParticleLike, Real]]):
+    def abundances(self, abundances_dict: Optional[dict[ParticleLike, Real]]):
         """
         Set the elemental (or isotopic) abundances.  The elements and
         isotopes must be the same as or a superset of the elements whose
@@ -747,7 +747,7 @@ class IonizationStateCollection:
             self._pars["abundances"] = new_abundances_dict
 
     @property
-    def log_abundances(self) -> Dict[str, Real]:
+    def log_abundances(self) -> dict[str, Real]:
         """
         A `dict` with atomic or isotope symbols as keys and the base 10
         logarithms of the relative abundances as the corresponding values.
@@ -757,7 +757,7 @@ class IonizationStateCollection:
         }
 
     @log_abundances.setter
-    def log_abundances(self, value: Optional[Dict[str, Real]]):
+    def log_abundances(self, value: Optional[dict[str, Real]]):
         """Set the base 10 logarithm of the relative abundances."""
         if value is not None:
             try:
@@ -818,7 +818,7 @@ class IonizationStateCollection:
         self._pars["kappa"] = np.real(value)
 
     @property
-    def base_particles(self) -> List[str]:
+    def base_particles(self) -> list[str]:
         """
         A `list` of the elements and isotopes whose ionization states
         are being kept track of.

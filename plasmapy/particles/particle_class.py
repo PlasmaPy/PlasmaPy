@@ -21,9 +21,10 @@ import warnings
 
 from abc import ABC, abstractmethod
 from collections import defaultdict, namedtuple
+from collections.abc import Iterable, Sequence
 from datetime import datetime
 from numbers import Integral, Real
-from typing import Dict, Iterable, NoReturn, Optional, Sequence, Set, Union
+from typing import NoReturn, Optional, Union
 
 from plasmapy.particles import _elements, _isotopes, _parsing, _special_particles
 from plasmapy.particles.exceptions import (
@@ -38,6 +39,7 @@ from plasmapy.particles.exceptions import (
     ParticleWarning,
 )
 from plasmapy.utils import PlasmaPyDeprecationWarning, roman
+from plasmapy.utils._units_helpers import _get_physical_type_dict
 
 _classification_categories = {
     "lepton",
@@ -212,7 +214,7 @@ class AbstractPhysicalParticle(AbstractParticle):
 
     @property
     @abstractmethod
-    def categories(self) -> Set[str]:
+    def categories(self) -> set[str]:
         """Provide the particle's categories."""
         ...
 
@@ -316,7 +318,7 @@ class AbstractPhysicalParticle(AbstractParticle):
         False
         """
 
-        def become_set(arg: Union[str, Set, Sequence]) -> Set[str]:
+        def become_set(arg: Union[str, set, Sequence]) -> set[str]:
             """Change the argument into a `set`."""
             if arg is None:
                 return set()
@@ -1627,7 +1629,7 @@ class Particle(AbstractPhysicalParticle):
             raise InvalidElementError(_category_errmsg(self.symbol, "element"))
 
     @property
-    def categories(self) -> Set[str]:
+    def categories(self) -> set[str]:
         """
         The particle's categories.
 
@@ -2085,7 +2087,9 @@ class CustomParticle(AbstractPhysicalParticle):
         # TODO py3.10 replace ifology with structural pattern matching
 
         if Z is not None and charge is not None:
-            raise TypeError("CustomParticle can accept only one of Z and charge.")
+            raise InvalidParticleError(
+                "CustomParticle can accept only one of 'Z' and 'charge'."
+            )
 
         if Z is not None:
             charge = Z * const.e.si
@@ -2095,10 +2099,65 @@ class CustomParticle(AbstractPhysicalParticle):
             self.charge = charge
             self.symbol = symbol
         except (ValueError, TypeError, u.UnitsError) as exc:
+            charge_info = f"{charge = !r}" if Z is None else f"{Z = !r}"
             raise InvalidParticleError(
-                f"Unable to create a custom particle with a mass of "
-                f"{mass} and a charge of {charge}."
+                f"Unable to create a custom particle with {mass = !r}, "
+                f"{charge_info}, and {symbol = !r}."
             ) from exc
+
+    @classmethod
+    def _from_quantities(
+        cls,
+        *quantities,
+        symbol: Optional[str] = None,
+        Z: Optional[Real] = None,
+    ) -> CustomParticle:
+        """
+        An alternate constructor for |CustomParticle| objects where the
+        positional arguments correspond to the mass and/or charge in
+        any order.
+
+        Parameters
+        ----------
+        *quantities : tuple of |Quantity|
+            The mass and/or electrical charge of the |CustomParticle|,
+            in any order.
+
+        symbol : str, |keyword-only|, optional
+            The symbol of the |CustomParticle|.
+
+        Z : real number, |keyword-only|, optional
+            The |charge number|, if not provided in ``quantities``.
+        """
+
+        if not quantities:
+            return CustomParticle(symbol=symbol, Z=Z)
+
+        if isinstance(quantities[0], str):
+            raise TypeError("Unable to create CustomParticle from a string.")
+
+        try:
+            physical_type_dict = _get_physical_type_dict(
+                quantities,
+                only_quantities=True,
+                strict=True,
+                allowed_physical_types={u.physical.mass, u.physical.electrical_charge},
+            )
+        except (TypeError, ValueError) as exc:
+            raise InvalidParticleError(
+                f"Unable to create CustomParticle from {quantities}, "
+                f"{Z = !r}, and {symbol = !r}."
+            ) from exc
+
+        new_kwargs = {"symbol": symbol, "Z": Z}
+
+        if u.physical.mass in physical_type_dict:
+            new_kwargs["mass"] = physical_type_dict[u.physical.mass]
+
+        if u.physical.electrical_charge in physical_type_dict:
+            new_kwargs["charge"] = physical_type_dict[u.physical.electrical_charge]
+
+        return CustomParticle(**new_kwargs)
 
     def __repr__(self) -> str:
         """
@@ -2129,7 +2188,7 @@ class CustomParticle(AbstractPhysicalParticle):
         )
 
     @property
-    def json_dict(self) -> Dict[str, str]:
+    def json_dict(self) -> dict[str, str]:
         """
         A `json` friendly dictionary representation of the |CustomParticle|.
 
@@ -2292,7 +2351,7 @@ class CustomParticle(AbstractPhysicalParticle):
             raise TypeError("symbol needs to be a string.")
 
     @property
-    def categories(self) -> Set[str]:
+    def categories(self) -> set[str]:
         """Categories for the |CustomParticle|."""
         categories_ = {"custom"}
 
@@ -2423,7 +2482,10 @@ def molecule(
         return CustomParticle(mass=mass, charge=charge, symbol=bare_symbol)
 
 
-ParticleLike = Union[str, Integral, Particle, CustomParticle]
+# If ParticleLike is renamed or moves out of particle_class.py, check
+# for a link to its doc page in error messages in _factory.py.
+
+ParticleLike = Union[str, Integral, Particle, CustomParticle, u.Quantity]
 
 ParticleLike.__doc__ = r"""
 An `object` is particle-like if it can be identified as an instance of
@@ -2500,7 +2562,14 @@ instances, are particle-like.
 * **Custom particles**
 
     `~plasmapy.particles.particle_class.CustomParticle` instances are
-    particle-like because particle properties are provided in physical units.
+    particle-like because particle properties are provided in physical
+    units. A `~astropy.units.Quantity` with a physical type of mass or
+    charge is |particle-like| because it can be used to generate a
+    |CustomParticle|.
+
+    >>> import astropy.units as u
+    >>> CustomParticle(mass = 1e-26 * u.kg, charge = 1e-18 * u.C)
+    CustomParticle(mass=1e-26 kg, charge=1e-18 C)
 
 .. note::
 

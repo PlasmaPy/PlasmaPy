@@ -7,7 +7,7 @@ __aliases__ = ["find_isat_"]
 import numbers
 import numpy as np
 
-from typing import Any, Dict, NamedTuple, Optional, Tuple
+from typing import Any, NamedTuple, Optional
 
 from plasmapy.analysis import fit_functions as ffuncs
 from plasmapy.analysis.swept_langmuir.helpers import check_sweep
@@ -47,7 +47,7 @@ def find_ion_saturation_current(
     fit_type: str = "exp_plus_linear",
     current_bound: numbers.Real = None,
     voltage_bound: numbers.Real = None,
-) -> Tuple[ffuncs.Linear, ISatExtras]:
+) -> tuple[ffuncs.Linear, ISatExtras]:
     """
     Determines the ion-saturation current (:math:`I_{sat}`) for a given
     current-voltage (IV) curve obtained from a swept Langmuir probe.
@@ -160,7 +160,7 @@ def find_ion_saturation_current(
     """
     rtn_extras = ISatExtras(rsq=None, fitted_func=None, fitted_indices=None)._asdict()
 
-    _settings: Dict[str, Dict[str, Any]] = {
+    _settings: dict[str, dict[str, Any]] = {
         "linear": {
             "func": ffuncs.Linear,
             "current_bound": 0.4,
