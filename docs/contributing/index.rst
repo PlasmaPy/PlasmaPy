@@ -8,7 +8,6 @@ Contributor Guide
    :maxdepth: 2
 
    getting_ready
-   install_dev
    workflow
    coding_guide
    changelog_guide
