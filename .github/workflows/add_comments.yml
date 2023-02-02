@@ -1,9 +1,6 @@
 name: Add comment
 
 on:
-  issues:
-    types:
-    - opened
   pull_request_target:
     types:
     - opened
