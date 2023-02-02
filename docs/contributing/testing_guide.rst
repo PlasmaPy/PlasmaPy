@@ -204,7 +204,7 @@ The following checks are performed with each pull request.
   .. note::
 
      When using pre-commit, a hook for codespell_ will check for and fix
-     common misspellings. If you encounter and words caught by
+     common misspellings. If you encounter any words caught by
      codespell_ that should *not* be fixed, please add these false
      positives to ``ignore-words-list`` under ``codespell`` in
      :file:`pyproject.toml`.
