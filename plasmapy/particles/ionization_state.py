@@ -61,7 +61,6 @@ class IonicLevel:
     """
 
     def __eq__(self, other):
-
         if not isinstance(other, IonicLevel):
             return False
 

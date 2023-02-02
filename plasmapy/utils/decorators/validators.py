@@ -147,7 +147,6 @@ class ValidateQuantities(CheckUnits, CheckValues):
     """
 
     def __init__(self, validations_on_return=None, **validations: dict[str, Any]):
-
         if "checks_on_return" in validations:
             raise TypeError(
                 "keyword argument 'checks_on_return' is not allowed, "
@@ -367,7 +366,6 @@ class ValidateQuantities(CheckUnits, CheckValues):
             and unit is not None
             and not arg_validations["pass_equivalent_units"]
         ):
-
             arg = arg.to(unit, equivalencies=equiv)
         elif err is not None:
             raise err

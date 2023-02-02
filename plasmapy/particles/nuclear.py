@@ -204,7 +204,6 @@ def nuclear_reaction_energy(*args, **kwargs) -> u.J:
         particles = []
 
         for original_item in unformatted_particles_list:
-
             try:
                 item = original_item.strip()
 
@@ -216,7 +215,7 @@ def nuclear_reaction_energy(*args, **kwargs) -> u.J:
 
                 try:
                     particle = Particle(item)
-                except (InvalidParticleError) as exc:
+                except InvalidParticleError as exc:
                     raise ParticleError(errmsg) from exc
 
                 if particle.element and not particle.isotope:
@@ -279,7 +278,6 @@ def nuclear_reaction_energy(*args, **kwargs) -> u.J:
         raise ParticleError(input_err_msg)
 
     if reaction_string_is_input:
-
         reaction = args[0]
 
         if not isinstance(reaction, str):
@@ -300,7 +298,6 @@ def nuclear_reaction_energy(*args, **kwargs) -> u.J:
             raise ParticleError(f"{reaction} is not a valid nuclear reaction.") from ex
 
     elif reactants_products_are_inputs:
-
         try:
             reactants = process_particles_list(kwargs["reactants"])
             products = process_particles_list(kwargs["products"])
