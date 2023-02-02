@@ -174,7 +174,7 @@ jupyter-core==5.2.0
     #   nbconvert
     #   nbformat
     #   voila
-jupyter-server==1.23.5
+jupyter-server==2.2.0
     # via
     #   jupyterlab-server
     #   voila
