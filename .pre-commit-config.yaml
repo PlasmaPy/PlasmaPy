@@ -59,6 +59,14 @@ repos:
   - id: rst-directive-colons
   - id: rst-inline-touching-normal
 
+- repo: https://github.com/codespell-project/codespell
+  rev: v2.2.2
+  hooks:
+  - id: codespell
+    args: [--write-changes]
+    additional_dependencies:
+    - tomli
+
 - repo: https://github.com/charliermarsh/ruff-pre-commit
   rev: v0.0.237
   hooks:
@@ -77,7 +85,7 @@ repos:
     - python
 
 - repo: https://github.com/psf/black
-  rev: 22.12.0
+  rev: 23.1.0
   hooks:
   - id: black
 
@@ -85,7 +93,7 @@ repos:
   rev: 1.13.0
   hooks:
   - id: blacken-docs
-    additional_dependencies: [black==22.10.0]
+    additional_dependencies: [black==23.1.0]
     exclude: docs/contributing/coding_guide.rst
 
 - repo: https://github.com/nbQA-dev/nbQA
@@ -93,7 +101,7 @@ repos:
   hooks:
   - id: nbqa-black
     additional_dependencies:
-    - black==22.10.0
+    - black==23.1.0
     args:
     - --nbqa-mutate
   - id: nbqa-isort

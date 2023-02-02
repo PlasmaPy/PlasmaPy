@@ -525,7 +525,6 @@ def test_Particle_class(arg, kwargs, expected_dict):
         expected = expected_dict[key]
 
         if inspect.isclass(expected) and issubclass(expected, Exception):
-
             # Exceptions are expected to be raised when accessing certain
             # attributes for some particles.  For example, accessing a
             # neutrino's mass should raise a MissingParticleDataError since
@@ -545,7 +544,6 @@ def test_Particle_class(arg, kwargs, expected_dict):
                 )
 
         else:
-
             try:
                 result = eval(f"particle.{key}")
                 assert result == expected or u.isclose(result, expected, equal_nan=True)
@@ -720,7 +718,6 @@ def test_particle_class_mass_nuclide_mass(isotope: str, ion: str):
         "ion",
         "baryon",
     }:
-
         particle = Isotope.symbol
 
         assert Isotope.nuclide_mass == Ion.mass, (
@@ -729,7 +726,6 @@ def test_particle_class_mass_nuclide_mass(isotope: str, ion: str):
         )
 
     else:
-
         inputerrmsg = (
             f"isotope = {isotope!r} and ion = {ion!r} are "
             f"not valid inputs to this test. The inputs should be "

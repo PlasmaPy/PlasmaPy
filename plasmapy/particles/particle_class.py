@@ -578,7 +578,6 @@ class Particle(AbstractPhysicalParticle):
         mass_numb: Optional[Integral] = None,
         Z: Optional[Integral] = None,
     ):
-
         # TODO: Remove the following block during or after the 0.9.0 release
 
         if _:
@@ -741,7 +740,6 @@ class Particle(AbstractPhysicalParticle):
         attributes["lepton number"] = 0
 
         if isotope:
-
             this_isotope = _isotopes.data_about_isotopes[isotope]
 
             attributes["baryon number"] = this_isotope["mass number"]
@@ -1207,7 +1205,6 @@ class Particle(AbstractPhysicalParticle):
             return self._attributes["mass"].to(u.kg)
 
         if self.is_ion:
-
             if self.isotope:
                 base_mass = self._attributes["isotope mass"]
             else:
@@ -1221,7 +1218,6 @@ class Particle(AbstractPhysicalParticle):
             return mass.to(u.kg)
 
         if self.element:
-
             if self.isotope:
                 mass = self._attributes["isotope mass"]
             else:
@@ -2083,7 +2079,6 @@ class CustomParticle(AbstractPhysicalParticle):
         *,
         Z: Optional[Real] = None,
     ):
-
         # TODO py3.10 replace ifology with structural pattern matching
 
         if Z is not None and charge is not None:

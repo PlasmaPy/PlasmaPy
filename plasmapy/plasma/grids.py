@@ -77,7 +77,6 @@ class AbstractGrid(ABC):
     """
 
     def __init__(self, *seeds, num=100, **kwargs):
-
         # Initialize some variables
         self._interpolator = None
         self._is_uniform = None
@@ -172,10 +171,8 @@ class AbstractGrid(ABC):
             so an array of zeros cannot be constructed.
         """
         for rq in req_quantities:
-
             # Error check that grid contains E and B variables required
             if rq not in self.quantities:
-
                 # If missing, warn user and then replace with an array of zeros
                 if not replace_with_zeros:
                     raise KeyError(
@@ -204,7 +201,6 @@ class AbstractGrid(ABC):
     # *************************************************************************
 
     def __repr__(self):
-
         line_sep = "-----------------------------\n"
         shape = list(self.shape)
         coords = list(self.ds.coords.keys())

@@ -32,7 +32,7 @@ babel==2.11.0
     #   sphinx
 backcall==0.2.0
     # via ipython
-beautifulsoup4==4.11.1
+beautifulsoup4==4.11.2
     # via nbconvert
 bleach==6.0.0
     # via nbconvert
@@ -120,7 +120,7 @@ h5py==3.7.0
     # via plasmapy (setup.py)
 hypothesis==6.65.2
     # via plasmapy (setup.py)
-identify==2.5.16
+identify==2.5.17
     # via pre-commit
 idna==3.4
     # via
@@ -132,7 +132,7 @@ incremental==22.10.0
     # via towncrier
 iniconfig==2.0.0
     # via pytest
-ipykernel==6.20.2
+ipykernel==6.21.0
     # via
     #   ipywidgets
     #   plasmapy (setup.py)
@@ -166,7 +166,7 @@ jupyter-client==7.4.1
     #   jupyter-server
     #   nbclient
     #   voila
-jupyter-core==5.1.5
+jupyter-core==5.2.0
     # via
     #   jupyter-client
     #   jupyter-server
@@ -287,7 +287,7 @@ pluggy==1.0.0
     # via
     #   pytest
     #   tox
-pre-commit==3.0.1
+pre-commit==3.0.3
     # via plasmapy (setup.py)
 prometheus-client==0.16.0
     # via jupyter-server
@@ -432,7 +432,7 @@ sphinxcontrib-bibtex==2.5.0
     # via plasmapy (setup.py)
 sphinxcontrib-devhelp==1.0.2
     # via sphinx
-sphinxcontrib-htmlhelp==2.0.0
+sphinxcontrib-htmlhelp==2.0.1
     # via sphinx
 sphinxcontrib-jquery==3.0.0
     # via sphinx-hoverxref
@@ -470,7 +470,7 @@ tox==3.28.0
     # via plasmapy (setup.py)
 tqdm==4.64.1
     # via plasmapy (setup.py)
-traitlets==5.8.1
+traitlets==5.9.0
     # via
     #   comm
     #   ipykernel

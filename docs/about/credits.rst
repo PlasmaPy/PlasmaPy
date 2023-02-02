@@ -88,6 +88,7 @@ in parentheses are `ORCID author identifiers <https://orcid.org>`__.
 * :user:`Marco Gorelli <MarcoGorelli>`
 * :user:`Maria Isupova <misupova>`
 * Michael Fischer
+* :user:`Mohammed Haque <mohawk811>`
 * :user:`Nabil Humphrey <NabilHumphrey>`
 * :user:`Neil Patel <ministrike3>`
 * :user:`Nick Murphy <namurphy>` (:orcid:`0000-0001-6628-8033`)
