@@ -12,26 +12,15 @@ Code Contribution Workflow
 Introduction
 ============
 
-This page describes the workflow for contributing code, documentation,
-and tests to PlasmaPy. This page assumes that you have already gone
-through the steps described in the page on :ref:`install-plasmapy-dev`.
+This page describes the workflow for making a contribution to PlasmaPy.
+This page assumes that you have finished the steps for
+:ref:`getting ready to contribute <install-plasmapy-dev>`.
 
+Getting help
+============
 
-.. getting help: Element chat, OH, community meeting
-
-.. tip::
-
-   Use the :guilabel:`good first contribution` label to find good
-   issues to contribute to.
-
-.. hint::
-
-   Making multiple focused pull requests usually works better than
-   making a monolithic pull request.
-
-.. danger::
-
-  Avoid making pull requests from your ``main`` branch. (describe why)
+If you run into any problems, please feel free to reach out to us in
+our `Matrix chat room`_ or during our weekly `office hours`_.
 
 Making a code contribution
 ==========================
@@ -39,7 +28,7 @@ Making a code contribution
 Creating a new branch
 ---------------------
 
-#. Open a terminal.
+#. :ref:`Open a terminal <opening-a-terminal>`.
 
 #. Navigate to the :file:`PlasmaPy` directory that contains the clone
    of your repository.
@@ -100,6 +89,27 @@ changes and saving them.
    putting it in the outgoing mail. The ``git push`` command is like
    mailing the packa
 
+
+
+Organize this
+=============
+
+
+.. tip::
+
+   Issues labeled as a `good first contribution`_ are a great place to
+   get started contributing.
+
+
+
+.. hint::
+
+   Making multiple focused pull requests usually works better than
+   making a monolithic pull request.
+
+.. danger::
+
+  Avoid making pull requests from your ``main`` branch. (describe why)
 
 
 .. Branches, commits, and pull requests
@@ -266,16 +276,16 @@ changes and saving them.
    * Translate PlasmaPy's documentation into another language.
    * Organize events such as `Plasma Hack Week`_.
 
-
 .. Resources
    ========
 
-.. * `GitHub Documentation`_
-     - `Collaborating with pull requests`_
-   * `How to Contribute to Open Source`_
+.. ... * `GitHub Documentation`_
+   ...  - `Collaborating with pull requests`_
+   ... * `How to Contribute to Open Source`_
 
 .. _`Collaborating with pull requests`: https://docs.github.com/en/github/collaborating-with-pull-requests
 .. _`GitHub Documentation`: https://docs.github.com/
+.. _good first contribution: https://github.com/PlasmaPy/PlasmaPy/issues?q=is%3Aissue+is%3Aopen+label%3A%22Good+first+contribution%22
 .. _`How to Contribute to Open Source`: https://opensource.guide/how-to-contribute/
 .. _`Plasma Hack Week`: https://hack.plasmapy.org
 .. _`Request new features`: https://github.com/PlasmaPy/PlasmaPy/issues/new?assignees=&labels=&template=Feature_request.md

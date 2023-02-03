@@ -168,6 +168,7 @@
 .. _nbqa: https://nbqa.readthedocs.io
 .. _numpydoc: https://numpydoc.readthedocs.io/en/latest/format.html#docstring-standard
 .. _NumPy: https://numpy.org
+.. _office hours: https://www.plasmapy.org/meetings/office_hours/
 .. _OpenPMD: https://www.openpmd.org/
 .. _pandas: https://pandas.pydata.org
 .. _pip: https://pip.pypa.io
