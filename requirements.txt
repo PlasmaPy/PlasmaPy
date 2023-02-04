@@ -233,6 +233,7 @@ nest-asyncio==1.5.6
     #   jupyter-client
 nodeenv==1.7.0
     # via pre-commit
+nox
 numba==0.56.4
     # via plasmapy (setup.py)
 numpy==1.23.5
