@@ -22,12 +22,6 @@ def linters(session):
 
 
 @nox.session
-def codespell(session):
-    session.install("codespell")
-    session.run("codespell", ".")
-
-
-@nox.session
 def import_package(session):
     session.install(".")
     session.run("python", "-c", "import plasmapy")
