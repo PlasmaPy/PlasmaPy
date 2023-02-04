@@ -29,7 +29,6 @@ jobs:
         - name: Linters
           os: ubuntu-latest
           python: '3.10'
-
           noxenv: linters
 
         - name: Import package
@@ -69,11 +68,6 @@ jobs:
           os: macos-latest
           noxenv: tests-3.10
           python: '3.10'
-
-        - name: Python 3.8 (Windows)
-          os: windows-latest
-          python: 3.8
-          noxenv: tests-3.8
 
         - name: Python 3.9 (Ubuntu)
           os: ubuntu-latest
