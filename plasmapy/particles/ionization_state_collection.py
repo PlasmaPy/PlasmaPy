@@ -144,7 +144,6 @@ class IonizationStateCollection:
         tol: Real = 1e-15,
         kappa: Real = np.inf,
     ):
-
         set_abundances = True
         if isinstance(inputs, dict):
             all_quantities = np.all(
@@ -194,7 +193,6 @@ class IonizationStateCollection:
         return self.__str__()
 
     def __getitem__(self, *values) -> Union[IonizationState, IonicLevel]:
-
         errmsg = f"Invalid indexing for IonizationStateCollection instance: {values[0]}"
 
         one_input = not isinstance(values[0], tuple)
@@ -234,7 +232,6 @@ class IonizationStateCollection:
             )
 
     def __setitem__(self, key, value):
-
         errmsg = (
             f"Cannot set item for this IonizationStateCollection instance for "
             f"key = {key!r} and value = {value!r}"
@@ -344,7 +341,6 @@ class IonizationStateCollection:
         yield from [self[key] for key in self.ionic_fractions.keys()]
 
     def __eq__(self, other):
-
         if not isinstance(other, IonizationStateCollection):
             return False
 
@@ -374,12 +370,10 @@ class IonizationStateCollection:
                 return False
 
         for attribute in ("ionic_fractions", "number_densities"):
-
             this_dict = getattr(self, attribute)
             that_dict = getattr(other, attribute)
 
             for particle in self.base_particles:
-
                 this = this_dict[particle]
                 that = that_dict[particle]
 
@@ -595,7 +589,6 @@ class IonizationStateCollection:
                 self._pars["abundances"] = new_abundances
 
         elif isinstance(inputs, (list, tuple)):
-
             try:
                 _particle_instances = [Particle(particle) for particle in inputs]
             except (InvalidParticleError, TypeError) as exc:
@@ -905,7 +898,6 @@ class IonizationStateCollection:
         all_abundances = []
 
         for base_particle in self.base_particles:
-
             ionization_state = self[base_particle]
             ionic_levels = ionization_state.to_list()[min_charge:]
             all_particles.extend(ionic_levels)

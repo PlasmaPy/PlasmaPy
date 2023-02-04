@@ -43,7 +43,6 @@ class ParticleZoo:
     """
 
     def __init__(self):
-
         leptons = {"e-", "mu-", "tau-", "nu_e", "nu_mu", "nu_tau"}
         antileptons = {"e+", "mu+", "tau+", "anti_nu_e", "anti_nu_mu", "anti_nu_tau"}
         baryons = {"p+", "n"}

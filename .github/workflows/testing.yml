@@ -147,7 +147,6 @@ jobs:
     - initial-tests
     - comprehensive-tests
     - documentation
-    - codespell
     - import-plasmapy
     steps:
     - uses: actions/checkout@v3

@@ -118,7 +118,7 @@ future==0.18.3
     # via uncertainties
 h5py==3.7.0
     # via plasmapy (setup.py)
-hypothesis==6.65.2
+hypothesis==6.66.0
     # via plasmapy (setup.py)
 identify==2.5.17
     # via pre-commit
@@ -132,7 +132,7 @@ incremental==22.10.0
     # via towncrier
 iniconfig==2.0.0
     # via pytest
-ipykernel==6.21.0
+ipykernel==6.21.1
     # via
     #   ipywidgets
     #   plasmapy (setup.py)
@@ -287,7 +287,7 @@ pluggy==1.0.0
     # via
     #   pytest
     #   tox
-pre-commit==3.0.2
+pre-commit==3.0.3
     # via plasmapy (setup.py)
 prometheus-client==0.16.0
     # via jupyter-server

@@ -517,7 +517,6 @@ def spectral_density(
 
     # Apply the instrument function
     if instr_func is not None and callable(instr_func):
-
         # Create an array of wavelengths of the same size as wavelengths
         # but centered on zero
         wspan = (np.max(wavelengths) - np.min(wavelengths)) / 2
