@@ -13,8 +13,8 @@ from typing import Union
 
 from plasmapy.formulary import frequencies as pfp
 from plasmapy.formulary import speeds as speed
-from plasmapy.particles import Particle
-from plasmapy.particles.exceptions import InvalidParticleError
+from plasmapy.particles import Particle, ParticleLike, ParticleList
+from plasmapy.particles.exceptions import ChargeError, InvalidParticleError
 from plasmapy.utils.decorators import validate_quantities
 from plasmapy.utils.exceptions import PhysicsWarning
 
@@ -30,7 +30,7 @@ c_si_unitless = c.value
 def kinetic_alfven(
     *,
     B: u.T,
-    ion: Union[str, Particle],
+    ion: ParticleLike,
     k: u.rad / u.m,
     n_i: u.m**-3,
     T_e: u.K,
@@ -88,7 +88,7 @@ def kinetic_alfven(
         A dictionary of computed wave frequencies in units
         :math:`rad/s`.  The dictionary contains a key for each:
         theta value provided. The value for each key will be
-        a :math:`N x M` array.
+        a :math:`N × M` array.
 
     Raises
     ------
