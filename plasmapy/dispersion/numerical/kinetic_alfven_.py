@@ -95,7 +95,7 @@ def kinetic_alfven(
     omega : Dict[str, `~astropy.units.Quantity`]
         A dictionary of computed wave frequencies in units
         :math:`rad/s`.  The dictionary contains a key for each:
-        theta value provided. The value for each key will be
+        ``theta`` value provided. The value for each key will be
         a :math:`N × M` array.
 
     Raises
