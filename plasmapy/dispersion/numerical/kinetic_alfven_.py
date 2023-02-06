@@ -30,7 +30,7 @@ c_si_unitless = c.value
 def kinetic_alfven(
     *,
     B: u.T,
-    ion: Union[str, Particle],
+    ion: ParticleLike,
     k: u.rad / u.m,
     n_i: u.m**-3,
     T_e: u.K,
