@@ -42,7 +42,7 @@ def kinetic_alfven(
 ):
     r"""
     Using the equation provided in :cite:t:`bellan:2012`, this function
-    calculates the numerical solution to the kinetic Alfven dispersion
+    calculates the numerical solution to the kinetic Alfvén dispersion
     relation presented by :cite:t:`hirose:2004`.
 
     Parameters
