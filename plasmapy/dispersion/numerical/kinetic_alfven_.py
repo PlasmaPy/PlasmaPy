@@ -1,6 +1,6 @@
 """
 This module contains functionality for calculating various numerical
-solutions to the kinetic alfven dispersion relation
+solutions to the kinetic Alfvén dispersion relation.
 """
 __all__ = ["kinetic_alfven"]
 
@@ -175,10 +175,10 @@ def kinetic_alfven(
     if not isinstance(ion, Particle):
         try:
             ion = Particle(ion)
-        except InvalidParticleError:
+        except InvalidParticleError as exc:
             raise InvalidParticleError(
                 f"Argument 'ion' is not a valid particle, instead got {ion}."
-            )
+            ) from exc
 
     if not (ion.is_ion or ion.is_category("element")):
         raise ValueError(

@@ -1,1 +1,1 @@
-Added Kinetic Alfven numerical solver to the dispersion package.
+Added a Kinetic Alfvén numerical solver to `plasmapy.dispersion`.
