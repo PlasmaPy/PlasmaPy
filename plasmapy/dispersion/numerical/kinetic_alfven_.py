@@ -216,7 +216,7 @@ def kinetic_alfven(
         locals()[arg_name] = val
 
     for arg_name in (gamma_e, gamma_i):
-        if not isinstance(arg_name, (int, np.integer, float, np.floating)):
+        if not isinstance(arg_name, numbers.Real):
             raise TypeError(
                 f"Expected int or float for argument '{arg_name}', "
                 f"instead got type {type(arg_name)}."
