@@ -156,7 +156,7 @@ def kinetic_alfven(
     :math:`\omega \ll \omega_{\rm ci}` and
     :math:`\nu_{\rm Te} \gg \frac{\omega}{k_{z}} \gg \nu_{\rm Ti}, with
     :math:`\nu_{\rm Ti}` standing for the thermal speed of the
-    respective ion. There is no restriction on propagation angle..
+    respective ion. There is no restriction on propagation angle.
 
     Examples
     --------
