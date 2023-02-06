@@ -13,8 +13,8 @@ from typing import Union
 
 from plasmapy.formulary import frequencies as pfp
 from plasmapy.formulary import speeds as speed
-from plasmapy.particles import Particle, ParticleList
-from plasmapy.particles.exceptions import ChargeError, InvalidParticleError
+from plasmapy.particles import Particle
+from plasmapy.particles.exceptions import InvalidParticleError
 from plasmapy.utils.decorators import validate_quantities
 from plasmapy.utils.exceptions import PhysicsWarning
 

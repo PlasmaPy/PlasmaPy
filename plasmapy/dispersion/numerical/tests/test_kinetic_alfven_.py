@@ -7,7 +7,7 @@ from astropy.constants.si import c
 
 from plasmapy.dispersion.numerical.kinetic_alfven_ import kinetic_alfven
 from plasmapy.particles import Particle
-from plasmapy.particles.exceptions import ChargeError, InvalidParticleError
+from plasmapy.particles.exceptions import InvalidParticleError
 from plasmapy.utils.exceptions import PhysicsWarning
 
 c_si_unitless = c.value
