@@ -13,8 +13,8 @@ from typing import Union
 
 from plasmapy.formulary import frequencies as pfp
 from plasmapy.formulary import speeds as speed
-from plasmapy.particles import Particle, ParticleLike, ParticleList
-from plasmapy.particles.exceptions import ChargeError, InvalidParticleError
+from plasmapy.particles import Particle, ParticleLike
+from plasmapy.particles.exceptions import InvalidParticleError
 from plasmapy.utils.decorators import validate_quantities
 from plasmapy.utils.exceptions import PhysicsWarning
 
@@ -49,34 +49,42 @@ def kinetic_alfven(
     ----------
     B : `~astropy.units.Quantity`
         The magnetic field magnitude in units convertible to :math:`T`.
+
     ion : `str` or `~plasmapy.particles.particle_class.Particle`
         Representation of the ion species (e.g., ``'p'`` for protons,
         ``'D+'`` for Deuterium, ``'He-4 +1'`` for singly ionized
-        Helium-4, etc.). If no charge state information is provided,
-        then the ions are assumed to be singly ionized.
+        Helium-4, etc.).
+
     k : `~astropy.units.Quantity`, single valued or 1-D array
         Wavenumber in units convertible to :math:`rad / m`.  Either
         single valued or 1-D array of length :math:`N`.
+
     n_i : `~astropy.units.Quantity`
         Ion number density in units convertible to :math:`m^{-3}`.
+
     T_e : `~astropy.units.Quantity`
         The electron temperature in units of :math:`K` or :math:`eV`.
+
     T_i : `~astropy.units.Quantity`
         The ion temperature in units of :math:`K` or :math:`eV`.
+
     theta : `~astropy.units.Quantity`, single valued or 1-D array
         The angle of propagation of the wave with respect to the
         magnetic field, :math:`\cos^{-1}(k_z / k)`, in units must be
         convertible to :math:`rad`. Either single valued or 1-D array
         of size :math:`M`.
+
     gamma_e : `float` or `int`, optional
         The adiabatic index for electrons, which defaults to 1.  This
         value assumes that the electrons are able to equalize their
         temperature rapidly enough that the electrons are effectively
         isothermal.
+
     gamma_i : `float` or `int`, optional
         The adiabatic index for ions, which defaults to 3. This value
         assumes that ion motion has only one degree of freedom, namely
         along magnetic field lines.
+
     z_mean : `float` or int, optional
         The average ionization state (arithmetic mean) of the ``ion``
         composing the plasma.  Will override any charge state defined
