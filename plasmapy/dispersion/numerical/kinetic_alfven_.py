@@ -305,7 +305,7 @@ def kinetic_alfven(
         if w_max / omega_ci > 0.1:
             warnings.warn(
                 "The calculation produced a high-frequency wave, "
-                "which violates the low frequency assumption (w << w_ci)",
+                "which violates the low frequency assumption (ω << ω_ci)",
                 PhysicsWarning,
             )
 
