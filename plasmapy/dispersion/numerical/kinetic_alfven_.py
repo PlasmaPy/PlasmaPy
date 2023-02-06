@@ -126,12 +126,12 @@ def kinetic_alfven(
 
     Notes
     -----
-    Using the 2 x 2 matrix approach method from :cite:t:`bellan:2012`,
-    this function computes the coresonding wave frequencies in units
+    Using the 2 × 2 matrix approach method from :cite:t:`bellan:2012`,
+    this function computes the corresponding wave frequencies in units
     :math:`rad/s`. This approach comes from :cite:t:`hasegawa:1982`,
-    :cite:t:`morales:1997` and :cite:t:`william:1996`; who argueed that
-    a 3 x 3 matrix that describes warm plasma waves, is able to be
-    re-presented as a 2 x 2 matrix because the compressional
+    :cite:t:`morales:1997` and :cite:t:`william:1996`; who argued that
+    a 3 × 3 matrix that describes warm plasma waves, is able to be
+    represented as a 2 × 2 matrix because the compressional
     (i.e., fast) mode can be factored out. This results in the
     determinant, when in the limit of
     :math:`\omega \gg k_{z}^{2} c^{2}_{\rm s}`, reduces to the kinetic
