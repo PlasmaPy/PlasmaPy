@@ -76,8 +76,9 @@ class TestKinetic_Alfven:
                 },
                 {**_kwargs_single_valued, "ion": Particle("He +2"), "theta": 0 * u.deg},
             ),
-            #
-            # z_mean defaults to 1
+            # The following test may need to be updated when applying
+            # @particle_input to kinetic_alfven, since this refers to how
+            # z_mean had been assumed to default to 1
             (
                 {**_kwargs_single_valued, "ion": Particle("He"), "theta": 0 * u.deg},
                 {**_kwargs_single_valued, "ion": Particle("He+"), "theta": 0 * u.deg},
