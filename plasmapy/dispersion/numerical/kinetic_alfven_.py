@@ -5,8 +5,8 @@ solutions to the kinetic Alfvén dispersion relation.
 __all__ = ["kinetic_alfven"]
 
 import astropy.units as u
-import numpy as np
 import numbers
+import numpy as np
 import warnings
 
 from astropy.constants.si import c
@@ -233,7 +233,7 @@ def kinetic_alfven(
     elif np.isscalar(k):
         k = np.array([k])
     if np.any(k <= 0):
-        raise ValueError("Argument 'k' can not be a or have negative values.")
+        raise ValueError("Argument 'k' can not be negative a or have negative values.")
 
     # validate argument theta
     theta = theta.value.squeeze()
