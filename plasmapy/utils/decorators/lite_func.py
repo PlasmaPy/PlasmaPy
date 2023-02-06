@@ -8,7 +8,7 @@ import functools
 import inspect
 
 from numba.extending import is_jitted
-from typing import Callable, Dict
+from typing import Callable
 
 
 class _LiteFuncDict(dict):
@@ -23,7 +23,7 @@ class _LiteFuncDict(dict):
     # This is only to give __bound_lite_func__ a docstring.
 
 
-def bind_lite_func(lite_func, attrs: Dict[str, Callable] = None):
+def bind_lite_func(lite_func, attrs: dict[str, Callable] = None):
     """
     Decorator to bind a lightweight "lite" version of a formulary
     function to the full formulary function, as well as any supporting
@@ -44,17 +44,26 @@ def bind_lite_func(lite_func, attrs: Dict[str, Callable] = None):
 
     .. code-block:: python
 
-        def foo_lite(x)
+        def foo_lite(x):
             return x
+
 
         def bar():
             print("Supporting function.")
 
-        @bind_lite_func(foo_lite, attrs=[("bar", bar),])
+
+        @bind_lite_func(
+            foo_lite,
+            attrs=[
+                ("bar", bar),
+            ],
+        )
         def foo(x):
             if not isinstance(x, float):
                 raise TypeError("Argument x can only be a float.")
             return x
+
+    .. code-block:: pycon
 
         >>> foo(5)  # doctest: +SKIP
         5
@@ -65,7 +74,6 @@ def bind_lite_func(lite_func, attrs: Dict[str, Callable] = None):
 
     Notes
     -----
-
     In addition to binding the functionality defined by the inputs, a
     ``__bound_lite_func__`` dunder is bound.  This dunder is a
     dictionary where a key is a string representing the bound name of

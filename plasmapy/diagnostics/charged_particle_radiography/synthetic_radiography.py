@@ -5,18 +5,18 @@ methods of 'inverting' experimentally created radiographs to reconstruct the
 original fields (under some set of assumptions).
 """
 
-__all__ = [
-    "Tracker",
-    "synthetic_radiograph",
-]
+__all__ = ["Tracker", "synthetic_radiograph"]
 
 import astropy.constants as const
 import astropy.units as u
+import collections
 import numpy as np
 import sys
 import warnings
 
+from collections.abc import Iterable
 from tqdm import tqdm
+from typing import Union
 
 from plasmapy import particles
 from plasmapy.formulary.mathematics import rot_a_to_b
@@ -80,8 +80,10 @@ class Tracker:
 
     Parameters
     ----------
-    grid : `~plasmapy.plasma.grids.AbstractGrid` or subclass thereof
-        A Grid object containing the required quantities [E_x, E_y, E_z, B_x, B_y, B_z].
+    grids : `~plasmapy.plasma.grids.AbstractGrid` or subclass thereof, or list
+        of same.
+        A Grid object or list of grid objects containing the required
+        quantities [E_x, E_y, E_z, B_x, B_y, B_z].
         If any of these quantities are missing, a warning will be given and that
         quantity will be assumed to be zero everywhere.
 
@@ -92,8 +94,8 @@ class Tracker:
         based on its units. Valid geometries are:
 
         * Cartesian (x,y,z) : (meters, meters, meters)
-        * cylindrical (r, theta, z) : (meters, radians, meters)
-        * spherical (r, theta, phi) : (meters, radians, radians)
+        * Cylindrical (r, theta, z) : (meters, radians, meters)
+        * Spherical (r, theta, phi) : (meters, radians, radians)
 
         In spherical coordinates theta is the polar angle.
 
@@ -108,8 +110,9 @@ class Tracker:
         A unit vector (in Cartesian coordinates) defining the horizontal
         direction on the detector plane. By default, the horizontal axis in the
         detector plane is defined to be perpendicular to both the
-        source-to-detector vector and the z-axis (unless the source-to-detector axis
-        is parallel to the z axis, in which case the horizontal axis is the x-axis).
+        source-to-detector vector and the z-axis (unless the source-to-detector
+        axis is parallel to the z axis, in which case the horizontal axis is
+        the x-axis).
 
         The detector vertical axis is then defined
         to be orthogonal to both the source-to-detector vector and the
@@ -122,18 +125,25 @@ class Tracker:
 
     def __init__(
         self,
-        grid: AbstractGrid,
+        grids: Union[AbstractGrid, Iterable[AbstractGrid]],
         source: u.m,
         detector: u.m,
         detector_hdir=None,
         verbose=True,
     ):
-
         # self.grid is the grid object
-        self.grid = grid
+        if isinstance(grids, AbstractGrid):
+            self.grids = [
+                grids,
+            ]
+        elif isinstance(grids, collections.abc.Iterable):
+            self.grids = grids
+        else:
+            raise TypeError("Type of argument `grids` not recognized.")
+
         # self.grid_arr is the grid positions in si units. This is created here
         # so that it isn't continuously called later
-        self.grid_arr = grid.grid.to(u.m).value
+        self.grids_arr = [grid.grid.to(u.m).value for grid in self.grids]
 
         self.verbose = verbose
 
@@ -163,11 +173,15 @@ class Tracker:
         self.src_det = self.detector - self.source
 
         # Magnification
-        self.mag = 1 + np.linalg.norm(self.detector) / np.linalg.norm(self.source)
+        self.mag = 1 + (np.linalg.norm(self.detector) / np.linalg.norm(self.source))
         self._log(f"Magnification: {self.mag}")
 
         # Check that source-detector vector actually passes through the grid
-        if not self.grid.vector_intersects(self.source * u.m, self.detector * u.m):
+        test = [
+            grid.vector_intersects(self.source * u.m, self.detector * u.m)
+            for grid in self.grids
+        ]
+        if not any(test):
             raise ValueError(
                 "The vector between the source and the detector "
                 "does not intersect the grid provided!"
@@ -179,9 +193,9 @@ class Tracker:
         # velocities
         self.max_theta_hit_grid = self._max_theta_hit_grid()
 
-        # ************************************************************************
+        # *********************************************************************
         # Define the detector plane
-        # ************************************************************************
+        # *********************************************************************
 
         # Load or calculate the detector hdir
         if detector_hdir is not None:
@@ -193,52 +207,59 @@ class Tracker:
         ny = np.cross(self.det_hdir, self.det_n)
         self.det_vdir = -ny / np.linalg.norm(ny)
 
-        # ************************************************************************
+        # *********************************************************************
         # Validate the E and B fields
-        # ************************************************************************
+        # *********************************************************************
 
         req_quantities = ["E_x", "E_y", "E_z", "B_x", "B_y", "B_z"]
 
-        self.grid.require_quantities(req_quantities, replace_with_zeros=True)
+        for grid in self.grids:
+            grid.require_quantities(req_quantities, replace_with_zeros=True)
 
-        for rq in req_quantities:
+            for rq in req_quantities:
+                # Check that there are no infinite values
+                if not np.isfinite(grid[rq].value).all():
+                    raise ValueError(
+                        f"Input arrays must be finite: {rq} contains "
+                        "either NaN or infinite values."
+                    )
 
-            # Check that there are no infinite values
-            if not np.isfinite(self.grid[rq].value).all():
-                raise ValueError(
-                    f"Input arrays must be finite: {rq} contains "
-                    "either NaN or infinite values."
+                # Check that the max values on the edges of the arrays are
+                # small relative to the maximum values on that grid
+                #
+                # Array must be dimensionless to re-assemble it into an array
+                # of max values like this
+                arr = np.abs(grid[rq]).value
+                edge_max = np.max(
+                    np.array(
+                        [
+                            np.max(a)
+                            for a in (
+                                arr[0, :, :],
+                                arr[-1, :, :],
+                                arr[:, 0, :],
+                                arr[:, -1, :],
+                                arr[:, :, 0],
+                                arr[:, :, -1],
+                            )
+                        ]
+                    )
                 )
 
-            # Check that the max values on the edges of the arrays are
-            # small relative to the maximum values on that grid
-            #
-            # Array must be dimensionless to re-assemble it into an array
-            # of max values like this
-            arr = np.abs(self.grid[rq]).value
-            edge_max = np.max(
-                np.array(
-                    [
-                        np.max(arr[0, :, :]),
-                        np.max(arr[-1, :, :]),
-                        np.max(arr[:, 0, :]),
-                        np.max(arr[:, -1, :]),
-                        np.max(arr[:, :, 0]),
-                        np.max(arr[:, :, -1]),
-                    ]
-                )
-            )
+                if edge_max > 1e-3 * np.max(arr):
+                    unit = grid.recognized_quantities[rq].unit
+                    warnings.warn(
+                        "Fields should go to zero at edges of grid to avoid "
+                        f"non-physical effects, but a value of {edge_max:.2E} {unit} was "
+                        f"found on the edge of the {rq} array. Consider applying a "
+                        "envelope function to force the fields at the edge to go to "
+                        "zero.",
+                        RuntimeWarning,
+                    )
 
-            if edge_max > 1e-3 * np.max(arr):
-                unit = grid.recognized_quantities[rq].unit
-                warnings.warn(
-                    "Fields should go to zero at edges of grid to avoid "
-                    f"non-physical effects, but a value of {edge_max:.2E} {unit} was "
-                    f"found on the edge of the {rq} array. Consider applying a "
-                    "envelope function to force the fields at the edge to go to "
-                    "zero.",
-                    RuntimeWarning,
-                )
+    @property
+    def num_grids(self):
+        return len(self.grids)
 
     def _default_detector_hdir(self):
         """
@@ -260,22 +281,25 @@ class Tracker:
         theta that will impact the grid. This value can be used to determine
         which particles are worth tracking.
         """
-        ind = 0
-        theta = np.zeros([8])
-        for x in [0, -1]:
-            for y in [0, -1]:
-                for z in [0, -1]:
-                    # Source to grid corner vector
-                    vec = self.grid_arr[x, y, z, :] - self.source
+        theta = np.zeros([8, self.num_grids])
 
-                    # Calculate angle between vec and the source-to-detector
-                    # axis, which is the central axis of the particle beam
-                    theta[ind] = np.arccos(
-                        np.dot(vec, self.src_det)
-                        / np.linalg.norm(vec)
-                        / np.linalg.norm(self.src_det)
-                    )
-                    ind += 1
+        for i, grid in enumerate(self.grids):
+            ind = 0
+            for x in (0, -1):
+                for y in (0, -1):
+                    for z in (0, -1):
+                        # Source to grid corner vector
+                        vec = self.grids_arr[i][x, y, z, :] - self.source
+
+                        # Calculate angle between vec and the source-to-detector
+                        # axis, which is the central axis of the particle beam
+                        theta[ind, i] = np.arccos(
+                            np.dot(vec, self.src_det)
+                            / np.linalg.norm(vec)
+                            / np.linalg.norm(self.src_det)
+                        )
+                        ind += 1
+
         return np.max(theta)
 
     def _log(self, msg):
@@ -308,8 +332,8 @@ class Tracker:
             based on its units. Valid geometries are:
 
             * Cartesian (x,y,z) : (meters, meters, meters)
-            * cylindrical (r, theta, z) : (meters, radians, meters)
-            * spherical (r, theta, phi) : (meters, radians, radians)
+            * Cylindrical (r, theta, z) : (meters, radians, meters)
+            * Spherical (r, theta, phi) : (meters, radians, radians)
 
             In spherical coordinates theta is the polar angle.
 
@@ -435,11 +459,12 @@ class Tracker:
         xloc = np.dot(x - location, mesh_hdir)
         yloc = np.dot(x - location, mesh_vdir)
 
-        # Create an array in which True indicates that a particle has hit a wire
-        # and False indicates that it has not
+        # Create an array in which True indicates that a particle has hit
+        # a wire and False indicates that it has not
         hit = np.zeros(self.nparticles, dtype=bool)
 
-        # Mark particles that overlap vertical or horizontal position with a wire
+        # Mark particles that overlap vertical or horizontal position with
+        # a wire
         h_centers = np.linspace(-width / 2, width / 2, num=nwires[0])
         for c in h_centers:
             hit |= np.isclose(xloc, c, atol=wire_radius)
@@ -470,8 +495,8 @@ class Tracker:
             loc_rad = np.sqrt(xloc**2 + yloc**2)
             hit[loc_rad > radius] = False
 
-            # In the case of a circular mesh, also create a round wire along the
-            # outside edge
+            # In the case of a circular mesh, also create a round wire along
+            # the outside edge
             hit[np.isclose(loc_rad, radius, atol=wire_radius)] = True
 
         # Identify the particles that have hit something, then remove them from
@@ -557,15 +582,14 @@ class Tracker:
         Generates the angular distributions about the Z-axis, then
         rotates those distributions to align with the source-to-detector axis.
 
-        By default, particles are generated over almost the entire pi/2. However,
-        if the detector is far from the source, many of these particles will
-        never be observed. The max_theta keyword allows these extraneous
-        particles to be neglected to focus computational resources on the
-        particles who will actually hit the detector.
+        By default, particles are generated over almost the entire pi/2.
+        However, if the detector is far from the source, many of these
+        particles will never be observed. The max_theta keyword allows these
+        extraneous particles to be neglected to focus computational resources
+        on the particles who will actually hit the detector.
 
         Parameters
         ----------
-
         nparticles : integer
             The number of particles to include in the simulation. The default
             is 1e5.
@@ -668,14 +692,13 @@ class Tracker:
 
         Parameters
         ----------
-
         x : `~astropy.units.Quantity`, shape (N,3)
             Positions for N particles
 
         v: `~astropy.units.Quantity`, shape (N,3)
             Velocities for N particles
 
-        particle : ~plasmapy.particles.particle_class.Particle or string representation of same, optional
+        particle : |particle-like|, optional
             Representation of the particle species as either a |Particle| object
             or a string representation. The default particle is protons.
 
@@ -722,8 +745,8 @@ class Tracker:
         if n_wrong_way > 1:
             warnings.warn(
                 f"{100*n_wrong_way/self.nparticles:.2f}% of particles "
-                "initialized are heading away from the grid. Check the orientation "
-                " of the provided velocity vectors.",
+                "initialized are heading away from the grid. Check the "
+                " orientation of the provided velocity vectors.",
                 RuntimeWarning,
             )
 
@@ -733,7 +756,8 @@ class Tracker:
 
     def _adaptive_dt(self, Ex, Ey, Ez, Bx, By, Bz):
         r"""
-        Calculate the appropriate dt based on a number of considerations
+        Calculate the appropriate dt for each grid based on a number of
+        considerations
         including the local grid resolution (ds) and the gyroperiod of the
         particles in the current fields.
         """
@@ -741,30 +765,44 @@ class Tracker:
         if self.dt.size == 1:
             return self.dt
 
+        # candidate timesteps includes one per grid (based on the grid resolution)
+        # plus additional candidates based on the field at each particle
+        candidates = np.ones([self.nparticles_grid, self.num_grids + 1]) * np.inf
+
         # Compute the timestep indicated by the grid resolution
-        ds = self.grid.grid_resolution.to(u.m).value
-        gridstep = 0.5 * (np.min(ds) / self.vmax)
+        ds = np.array([grid.grid_resolution.to(u.m).value for grid in self.grids])
+        gridstep = 0.5 * (ds / self.vmax)
+
+        # Wherever a particle is on a grid, include that grid's gridstep
+        # in the list of candidate timesteps
+        for i, grid in enumerate(self.grids):
+            candidates[:, i] = np.where(self.on_grid[:, i] > 0, gridstep[i], np.inf)
 
         # If not, compute a number of possible timesteps
         # Compute the cyclotron gyroperiod
         Bmag = np.max(np.sqrt(Bx**2 + By**2 + Bz**2)).to(u.T).value
-
         # Compute the gyroperiod
         if Bmag == 0:
             gyroperiod = np.inf
         else:
             gyroperiod = 2 * np.pi * self.m / (self.q * np.max(Bmag))
 
-        # TODO: introduce a minimum timestep based on electric fields too!
+        candidates[:, self.num_grids] = gyroperiod / 12
 
-        # Create an array of all the possible time steps we computed
-        candidates = np.array([gyroperiod / 12, gridstep])
+        # TODO: introduce a minimum timestep based on electric fields too!
 
         # Enforce limits on dt
         candidates = np.clip(candidates, self.dt[0], self.dt[1])
 
-        # dt is the min of the remaining candidates
-        return np.min(candidates)
+        # dt is the min of all the candidates for each particle
+        # a separate dt is returned for each particle
+        dt = np.min(candidates, axis=-1)
+
+        # dt should never actually be infinite, so replace any infinities
+        # with the largest gridstep
+        dt = np.where(dt == np.inf, np.max(gridstep), dt)
+
+        return dt
 
     def _coast_to_grid(self):
         r"""
@@ -772,17 +810,19 @@ class Tracker:
         be entering the grid. Doing in this in one step (rather than pushing
         the particles through zero fields) saves computation time.
         """
-        # Distance from the source to the nearest grid point
-        dist = np.min(np.linalg.norm(self.grid_arr - self.source, axis=3))
+        # Distance from the source to the nearest point on any grid
+        dist = min(
+            np.min(np.linalg.norm(arr - self.source, axis=3)) for arr in self.grids_arr
+        )
 
-        # Find the particle with the highest speed towards the grid
-        vmax = np.max(np.dot(self.v, self.src_n))
+        # Find speed of each particle towards the grid.
+        vmax = np.dot(self.v, self.src_n)
 
-        # Time for fastest possible particle to reach the grid.
+        # Time for each particle to reach the grid
         t = dist / vmax
 
         # Coast the particles to the advanced position
-        self.x = self.x + self.v * t
+        self.x = self.x + self.v * t[:, np.newaxis]
 
     def _coast_to_plane(self, center, hdir, vdir, x=None):
         """
@@ -797,7 +837,8 @@ class Tracker:
         the positions in the plane. This can be used to directly update self.x
         as follows:
 
-        self._coast_to_plane(self.detector, self.det_hdir, self.det_vdir, x = self.x)
+        self._coast_to_plane(self.detector, self.det_hdir, self.det_vdir, x
+                             = self.x)
 
         """
 
@@ -866,44 +907,62 @@ class Tracker:
         pos = self.x[self.grid_ind, :] * u.m
 
         # Update the list of particles on and off the grid
-        self.on_grid = self.grid.on_grid(pos)
+        # shape [nparticles, ngrids]
+        self.on_grid = np.array([grid.on_grid(pos) for grid in self.grids]).T
+
         # entered_grid is zero at the end if a particle has never
-        # entered the grid
-        self.entered_grid += self.on_grid
+        # entered any grid
+        self.entered_grid += np.sum(self.on_grid, axis=-1)
 
-        # Estimate the E and B fields for each particle
-        # Note that this interpolation step is BY FAR the slowest part of the push
-        # loop. Any speed improvements will have to come from here.
-        if self.field_weighting == "volume averaged":
-            Ex, Ey, Ez, Bx, By, Bz = self.grid.volume_averaged_interpolator(
-                pos,
-                "E_x",
-                "E_y",
-                "E_z",
-                "B_x",
-                "B_y",
-                "B_z",
-                persistent=True,
-            )
-        elif self.field_weighting == "nearest neighbor":
-            Ex, Ey, Ez, Bx, By, Bz = self.grid.nearest_neighbor_interpolator(
-                pos,
-                "E_x",
-                "E_y",
-                "E_z",
-                "B_x",
-                "B_y",
-                "B_z",
-                persistent=True,
-            )
+        Ex = np.zeros(self.nparticles_grid) * u.V / u.m
+        Ey = np.zeros(self.nparticles_grid) * u.V / u.m
+        Ez = np.zeros(self.nparticles_grid) * u.V / u.m
+        Bx = np.zeros(self.nparticles_grid) * u.T
+        By = np.zeros(self.nparticles_grid) * u.T
+        Bz = np.zeros(self.nparticles_grid) * u.T
+        for grid in self.grids:
+            # Estimate the E and B fields for each particle
+            # Note that this interpolation step is BY FAR the slowest part of the push
+            # loop. Any speed improvements will have to come from here.
+            if self.field_weighting == "volume averaged":
+                _Ex, _Ey, _Ez, _Bx, _By, _Bz = grid.volume_averaged_interpolator(
+                    pos,
+                    "E_x",
+                    "E_y",
+                    "E_z",
+                    "B_x",
+                    "B_y",
+                    "B_z",
+                    persistent=True,
+                )
+            elif self.field_weighting == "nearest neighbor":
+                _Ex, _Ey, _Ez, _Bx, _By, _Bz = grid.nearest_neighbor_interpolator(
+                    pos,
+                    "E_x",
+                    "E_y",
+                    "E_z",
+                    "B_x",
+                    "B_y",
+                    "B_z",
+                    persistent=True,
+                )
 
-        # Interpret any NaN values (points off the grid) as zero
-        Ex = np.nan_to_num(Ex, nan=0.0 * u.V / u.m)
-        Ey = np.nan_to_num(Ey, nan=0.0 * u.V / u.m)
-        Ez = np.nan_to_num(Ez, nan=0.0 * u.V / u.m)
-        Bx = np.nan_to_num(Bx, nan=0.0 * u.T)
-        By = np.nan_to_num(By, nan=0.0 * u.T)
-        Bz = np.nan_to_num(Bz, nan=0.0 * u.T)
+            # Interpret any NaN values (points off the grid) as zero
+            # Do this before adding to the totals, because 0 + nan = nan
+            _Ex = np.nan_to_num(_Ex, nan=0.0 * u.V / u.m)
+            _Ey = np.nan_to_num(_Ey, nan=0.0 * u.V / u.m)
+            _Ez = np.nan_to_num(_Ez, nan=0.0 * u.V / u.m)
+            _Bx = np.nan_to_num(_Bx, nan=0.0 * u.T)
+            _By = np.nan_to_num(_By, nan=0.0 * u.T)
+            _Bz = np.nan_to_num(_Bz, nan=0.0 * u.T)
+
+            # Add the values interpolated for this grid to the totals
+            Ex += _Ex
+            Ey += _Ey
+            Ez += _Ez
+            Bx += _Bx
+            By += _By
+            Bz += _Bz
 
         # Create arrays of E and B as required by push algorithm
         E = np.array(
@@ -921,11 +980,24 @@ class Tracker:
         # TODO: Test v/c and implement relativistic Boris push when required
         # vc = np.max(v)/_c
 
+        # If dt is not a scalar, make sure it can be multiplied by an
+        # [nparticles, 3] shape field array
+        if dt.size > 1:
+            dt = dt[:, np.newaxis]
+
         x = self.x[self.grid_ind, :]
         v = self.v[self.grid_ind, :]
         boris_push(x, v, B, E, self.q, self.m, dt)
         self.x[self.grid_ind, :] = x
         self.v[self.grid_ind, :] = v
+
+    @property
+    def on_any_grid(self):
+        """
+        Binary array for each particle indicating whether it is currently
+        on ANY grid.
+        """
+        return np.sum(self.on_grid, axis=-1) > 0
 
     def _stop_condition(self):
         r"""
@@ -943,7 +1015,8 @@ class Tracker:
         # on the grid?
         # if/else avoids dividing by zero
         if np.sum(self.num_entered) > 0:
-            still_on = np.sum(self.on_grid) / np.sum(self.num_entered)
+            # Normalize to the number that have entered a grid
+            still_on = np.sum(self.on_any_grid) / np.sum(self.num_entered)
         else:
             still_on = 0.0
 
@@ -978,7 +1051,6 @@ class Tracker:
 
         Parameters
         ----------
-
         dt : `~astropy.units.Quantity`, optional
             An explicitly set timestep in units convertible to seconds.
             Setting this optional keyword overrules the adaptive time step
@@ -992,7 +1064,6 @@ class Tracker:
 
             * 'nearest neighbor': Particles are assigned the fields on
                 the grid vertex closest to them.
-
             * 'volume averaged' : The fields experienced by a particle are a
                 volume-average of the eight grid points surrounding them.
 
@@ -1047,8 +1118,9 @@ class Tracker:
 
         # Create flags for tracking when particles during the simulation
         # on_grid -> zero if the particle is off grid, 1
-        self.on_grid = np.zeros([self.nparticles_grid])
-        # Entered grid -> non-zero if particle EVER entered the grid
+        # shape [nparticles, ngrids]
+        self.on_grid = np.zeros([self.nparticles_grid, self.num_grids])
+        # Entered grid -> non-zero if particle EVER entered a grid
         self.entered_grid = np.zeros([self.nparticles_grid])
 
         # Generate a null distribution of points (the result in the absence of
@@ -1066,14 +1138,14 @@ class Tracker:
             disable=not self.verbose,
             desc="Particles on grid",
             unit="particles",
-            bar_format="{l_bar}{bar}{n:.1e}/{total:.1e} {unit}",
+            bar_format="{l_bar}{bar}{n:.1e}/{total:.1e} {unit}",  # noqa: FS003
             file=sys.stdout,
         )
 
         # Push the particles until the stop condition is satisfied
         # (no more particles on the simulation grid)
         while not self._stop_condition():
-            n_on_grid = np.sum(self.on_grid)
+            n_on_grid = np.sum(self.on_any_grid)
             pbar.n = n_on_grid
             pbar.last_print_n = n_on_grid
             pbar.update()
@@ -1231,7 +1303,7 @@ class Tracker:
 
         Useful for saving the results from a simulation so they can be
         loaded at a later time and passed into
-        `~plasmapy.diagnostics.charged_particle_radiography.synthetic_radiograph`.
+        `~plasmapy.diagnostics.charged_particle_radiography.synthetic_radiography.synthetic_radiograph`.
 
         """
 
@@ -1292,13 +1364,15 @@ def synthetic_radiograph(
     Calculate a "synthetic radiograph" (particle count histogram in the
     image plane).
 
+    .. |Tracker| replace:: `~plasmapy.diagnostics.charged_particle_radiography.synthetic_radiography.Tracker`
+    .. |results_dict| replace:: `~plasmapy.diagnostics.charged_particle_radiography.synthetic_radiography.Tracker.results_dict`
+
     Parameters
     ----------
-
-    obj: `dict` or `~plasmapy.diagnostics.charged_particle_radiography.Tracker`
-        Either a `~plasmapy.diagnostics.charged_particle_radiography.Tracker`
+    obj: `dict` or |Tracker|
+        Either a |Tracker|
         object that has been run, or a dictionary equivalent to
-        `~plasmapy.diagnostics.charged_particle_radiography.Tracker.results_dict`.
+        |results_dict|.
 
     size : `~astropy.units.Quantity`, shape ``(2, 2)``, optional
         The size of the detector array, specified as the minimum
@@ -1340,6 +1414,7 @@ def synthetic_radiograph(
 
     intensity : `~numpy.ndarray`, shape ``(hbins, vbins)``
         The number of particles counted in each bin of the histogram.
+
     """
 
     # condition `obj` input

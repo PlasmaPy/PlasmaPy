@@ -1,0 +1,26 @@
+version: 2
+
+updates:
+
+  # Maintain dependencies for GitHub Actions
+- package-ecosystem: github-actions
+  directory: /
+  schedule:
+    interval: weekly
+  assignees:
+  - StanczakDominik
+  reviewers:
+  - StanczakDominik
+  labels:
+  - No changelog entry needed
+  # Maintain dependencies for python
+- package-ecosystem: pip
+  directory: /
+  schedule:
+    interval: daily  # TODO s/daily/weekly once dependabot has settled
+  assignees:
+  - StanczakDominik
+  reviewers:
+  - StanczakDominik
+  labels:
+  - No changelog entry needed

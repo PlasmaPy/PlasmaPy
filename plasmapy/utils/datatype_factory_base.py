@@ -82,8 +82,7 @@ class BasicRegistrationFactory:
         additional_validation_functions=None,
         registry=None,
     ):
-
-        self.registry = dict() if registry is None else registry
+        self.registry = {} if registry is None else registry
         if additional_validation_functions is None:
             additional_validation_functions = []
 
@@ -106,7 +105,6 @@ class BasicRegistrationFactory:
         return self._check_registered_widget(*args, **kwargs)
 
     def _check_registered_widget(self, *args, **kwargs):
-
         candidate_widget_types = [
             key for key in self.registry if self.registry[key](*args, **kwargs)
         ]

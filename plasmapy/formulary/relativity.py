@@ -7,7 +7,7 @@ import numpy as np
 from astropy.constants import c
 from numbers import Integral, Real
 from numpy.typing import DTypeLike
-from typing import Dict, Optional, Union
+from typing import Optional, Union
 
 from plasmapy import utils
 from plasmapy.particles._factory import _physical_particle_factory
@@ -76,7 +76,6 @@ def Lorentz_factor(V: u.m / u.s):
         )
 
     if V.size > 1:
-
         γ = np.zeros_like(V.value)
 
         equals_c = np.abs(V) == c
@@ -102,7 +101,8 @@ def relativistic_energy(m: u.kg, v: u.m / u.s) -> u.Joule:
 
         E = γ m c^2
 
-    where :math:`γ` is the `Lorentz_factor`.
+    where :math:`γ` is the `Lorentz_factor`. This function returns the
+    sum of the mass energy and the kinetic energy.
 
     Parameters
     ----------
@@ -247,9 +247,8 @@ class RelativisticBody:
 
     @staticmethod
     def _get_speed_like_input(
-        velocity_like_arguments: Dict[str, Union[u.Quantity, Real]]
+        velocity_like_arguments: dict[str, Union[u.Quantity, Real]]
     ):
-
         not_none_arguments = {
             key: value
             for key, value in velocity_like_arguments.items()
@@ -266,7 +265,7 @@ class RelativisticBody:
         return not_none_arguments or {"velocity": np.nan * u.m / u.s}
 
     def _store_velocity_like_argument(
-        self, speed_like_input: Dict[str, Union[u.Quantity, Real]]
+        self, speed_like_input: dict[str, Union[u.Quantity, Real]]
     ):
         """
         Take the velocity-like argument and store it via the setter for
@@ -298,7 +297,6 @@ class RelativisticBody:
         mass_numb: Optional[Integral] = None,
         dtype: Optional[DTypeLike] = np.longdouble,
     ):
-
         self._particle = _physical_particle_factory(particle, Z=Z, mass_numb=mass_numb)
         self._dtype = dtype
 
@@ -486,7 +484,6 @@ class RelativisticBody:
         self._momentum = p.to(u.kg * u.m / u.s)
 
     def __eq__(self, other) -> bool:
-
         _attributes_to_compare = (
             "particle",
             "kinetic_energy",

@@ -9,6 +9,50 @@ Testing Guide
    :local:
    :backlinks: none
 
+Summary
+=======
+
+* New functionality added to PlasmaPy must also have tests.
+
+* Tests are located in files that begin with :file:`test_` which are
+  inside subdirectories named :file:`tests`.
+
+* Tests are either functions beginning with ``test_`` or classes
+  beginning with ``Test``.
+
+* To install the packages needed to run the tests:
+
+  - Open a terminal.
+
+  - Navigate to the top-level directory (probably named
+    :file:`PlasmaPy`) in your local clone of PlasmaPy's repository.
+
+  - If you are on MacOS or Linux, run:
+
+    .. code-block:: console
+
+       python -m pip install -e ".[tests]"
+
+    If you are on Windows, run:
+
+    .. code-block:: console
+
+       py -m pip install -e .[tests]
+
+    These commands will perform an `editable installation`_ of your
+    local clone of PlasmaPy.
+
+* Run ``pytest`` in the command line in order to run tests in that
+  directory and its subdirectories.
+
+* Here is an example of a minimal ``pytest`` test that uses an
+  :py:`assert` statement:
+
+  .. code-block:: python
+
+      def test_multiplication():
+          assert 2 * 3 == 6
+
 Introduction
 ============
 
@@ -85,7 +129,7 @@ The recommended way for new contributors to run PlasmaPy's full test
 suite is to `create a pull request`_ from your development branch to
 `PlasmaPy's GitHub repository`_. The test suite will be run
 automatically when the pull request is created and every time changes
-are pushed to the development branch on GitHub_. Most of these checks\
+are pushed to the development branch on GitHub_. Most of these checks
 have been automated using `GitHub Actions`_.
 
 The following image shows how the results of the checks will appear in
@@ -157,25 +201,20 @@ The following checks are performed with each pull request.
      syntax errors. This approach is much more efficient than making the
      style fixes manually. Remember to ``git pull`` afterwards!
 
+  .. note::
+
+     When using pre-commit, a hook for codespell_ will check for and fix
+     common misspellings. If you encounter any words caught by
+     codespell_ that should *not* be fixed, please add these false
+     positives to ``ignore-words-list`` under ``codespell`` in
+     :file:`pyproject.toml`.
+
 * The **CI / Packaging (pull request)** check verifies that no errors
   arise that would prevent an official release of PlasmaPy from being
   made.
 
 * The **Pull Request Labeler / triage (pull_request_target)** check
   applies appropriate GitHub_ labels to pull requests.
-
-* The **CI / codespell (pull request)** check runs codespell_ to catch
-  by looking for common misspellings.
-
-  * If codespell_ has been installed (e.g., by ``pip install codespell``),
-    then it may be run by going into the appropriate directory and
-    running ``codespell -i 2 -w``. This command will identify common
-    misspellings, interactively suggest replacements, and then write the
-    replacements into the file.
-
-  * Occasionally codespell_ will report false positives. Please add
-    false positives to ``ignore-words-list`` under ``codespell`` in
-    :file:`setup.cfg`.
 
 .. note::
 
@@ -200,7 +239,7 @@ To install the packages necessary to run tests on your local computer
 
 .. code-block:: shell
 
-   pip install -r requirements.txt
+   pip install -e .[tests]
 
 To run PlasmaPy's tests from the command line, go to a directory within
 PlasmaPy's repository and run:
@@ -395,10 +434,14 @@ To test that a function issues an appropriate warning, use
 
 .. code-block:: python
 
-   import pytest, warnings
+   import warnings
+
+   import pytest
+
 
    def issue_warning():
        warnings.warn("warning message", UserWarning)
+
 
    def test_that_a_warning_is_issued():
        with pytest.warns(UserWarning):
@@ -409,10 +452,12 @@ To test that a function raises an appropriate exception, use
 
 .. code-block:: python
 
-  import pytest
+   import pytest
+
 
    def raise_exception():
        raise Exception
+
 
    def test_that_an_exception_is_raised():
        with pytest.raises(Exception):
@@ -440,8 +485,8 @@ function.
 .. code-block:: python
 
    def test_proof_by_riemann_hypothesis():
-        assert proof_by_riemann(False)
-        assert proof_by_riemann(True)  # will only be run if the previous test passes
+       assert proof_by_riemann(False)
+       assert proof_by_riemann(True)  # will only be run if the previous test passes
 
 If the first test were to fail, then the second test would never be run.
 We would therefore not know the potentially useful results of the second
@@ -451,10 +496,11 @@ both will be run.
 .. code-block:: python
 
    def test_proof_if_riemann_false():
-        assert proof_by_riemann(False)
+       assert proof_by_riemann(False)
+
 
    def test_proof_if_riemann_true():
-        assert proof_by_riemann(True)
+       assert proof_by_riemann(True)
 
 However, this approach can lead to cumbersome, repeated code if you are
 calling the same function over and over. If you wish to run multiple
@@ -465,7 +511,7 @@ tests for the same function, the preferred method is to decorate it with
 
    @pytest.mark.parametrize("truth_value", [True, False])
    def test_proof_if_riemann(truth_value):
-        assert proof_by_riemann(truth_value)
+       assert proof_by_riemann(truth_value)
 
 This code snippet will run :py:`proof_by_riemann(truth_value)` for each
 ``truth_value`` in :py:`[True, False]`. Both of the above
@@ -494,9 +540,9 @@ positional arguments (``a`` and ``b``) and one optional keyword argument
 
 .. code-block:: python
 
-   def add(a, b, reverse_order = False):
+   def add(a, b, reverse_order=False):
        if reverse_order:
-           return a + b
+           return b + a
        return a + b
 
 Argument unpacking_ lets us provide positional arguments in a `tuple` or
@@ -531,7 +577,7 @@ and unpacking_ them inside of the test function.
            (["1", "2"], {"reverse_order": True}, "21"),
            # test that add("1", "2") == "12"
            (["1", "2"], {}, "12"),  # if no keyword arguments, use an empty dict
-       ]
+       ],
    )
    def test_add(args, kwargs, expected):
        assert add(*args, **kwargs) == expected

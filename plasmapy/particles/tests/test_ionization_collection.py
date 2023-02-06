@@ -5,7 +5,6 @@ import pytest
 
 from astropy.tests.helper import assert_quantity_allclose
 from numbers import Real
-from typing import Dict
 
 from plasmapy.particles import (
     atomic_number,
@@ -21,7 +20,7 @@ from plasmapy.particles.exceptions import InvalidIsotopeError, ParticleError
 
 
 def check_abundances_consistency(
-    abundances: Dict[str, Real], log_abundances: Dict[str, Real]
+    abundances: dict[str, Real], log_abundances: dict[str, Real]
 ):
     """
     Test that a set of abundances is consistent with a set of the base
@@ -169,7 +168,7 @@ class TestIonizationStateCollection:
     def test_that_abundances_kwarg_sets_abundances(self, test_name):
         try:
             actual_abundances = self.instances[test_name].abundances
-        except Exception as exc:
+        except Exception:
             pytest.fail("Unable to access abundances.")
 
         elements = set(self.instances[test_name].base_particles)
@@ -205,7 +204,6 @@ class TestIonizationStateCollection:
 
     @pytest.mark.parametrize("test_name", test_names)
     def test_that_ionic_fractions_are_set_correctly(self, test_name):
-
         errmsg = ""
 
         elements_actual = self.instances[test_name].base_particles
@@ -255,18 +253,17 @@ class TestIonizationStateCollection:
         instance = self.instances[test_name]
 
         for key in instance.base_particles:
-
             try:
                 expected = instance.ionic_fractions[key]
-            except Exception as exc:
+            except Exception:
                 pytest.fail(
                     f"Unable to get ionic_fractions for '{key}' in test='{test_name}'."
                 )
 
             try:
                 actual = instance[key].ionic_fractions
-            except Exception as exc:
-                pytest(f"Unable to get item {key} in test={test_name}.")
+            except Exception:
+                pytest.fail(f"Unable to get item {key} in test={test_name}.")
 
             try:
                 if all(np.isnan(expected)):
@@ -409,7 +406,6 @@ class TestIonizationStateCollectionItemAssignment:
 class TestIonizationStateCollectionDensities:
     @classmethod
     def setup_class(cls):
-
         cls.initial_ionfracs = {
             "H": np.array([0.87, 0.13]),
             "He": np.array([0.24, 0.37, 0.39]),
@@ -522,7 +518,6 @@ class TestIonizationStateCollectionAttributes:
         ],
     )
     def test_attribute_exceptions(self, attribute, invalid_value, expected_exception):
-
         command = f"self.instance.{attribute} = {invalid_value}"
         errmsg = f"No {expected_exception} was raised for command\n\n: {command}"
 
@@ -745,7 +740,6 @@ class TestIonizationStateCollectionDensityEqualities:
 
     @classmethod
     def setup_class(cls):
-
         # Create arguments to IonizationStateCollection that are all consistent
         # with each other.
 
@@ -850,7 +844,7 @@ def test_iteration_with_nested_iterator():
 
 @pytest.mark.xfail()
 def test_two_isotopes_of_same_element():
-    instance = IonizationStateCollection(["H-1", "D"])
+    IonizationStateCollection(["H-1", "D"])
 
 
 example_ionic_fractions = [

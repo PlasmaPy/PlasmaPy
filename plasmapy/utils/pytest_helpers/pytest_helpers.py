@@ -10,13 +10,14 @@ import astropy.constants as const
 import astropy.tests.helper as astrohelper
 import astropy.units as u
 import collections
+import contextlib
 import functools
 import inspect
 import numpy as np
 import pytest
 import warnings
 
-from typing import Any, Callable, Dict
+from typing import Any, Callable
 
 from plasmapy.tests.helpers.exceptions import (
     InvalidTestError,
@@ -45,11 +46,7 @@ def _process_input(wrapped_function: Callable):  # coverage: ignore
         @functools.wraps(wrapped_function)
         def wrapper(*args, **kwargs):
             arguments = wrapped_signature.bind(*args, **kwargs).arguments
-            if (
-                len(args) == 1
-                and len(kwargs) == 0
-                and isinstance(args[0], (list, tuple))
-            ):
+            if len(args) == 1 and not kwargs and isinstance(args[0], (list, tuple)):
                 inputs = args[0]
                 if len(inputs) not in (3, 4):
                     raise RuntimeError(f"{args} is an invalid input to run_test.")
@@ -71,7 +68,7 @@ def _process_input(wrapped_function: Callable):  # coverage: ignore
 def run_test(
     func,
     args: Any = (),
-    kwargs: Dict = None,
+    kwargs: dict = None,
     expected_outcome: Any = None,
     rtol: float = 0.0,
     atol: float = 0.0,
@@ -175,6 +172,7 @@ def run_test(
             warn("", UserWarning)
             return x
 
+
         run_test(return_arg_and_warn, 1, {}, (1, UserWarning))
 
     This function is also flexible enough that it can accept a `tuple`
@@ -196,6 +194,7 @@ def run_test(
 
         import pytest
 
+
         def func(x, raise_exception=False, issue_warning=False):
             if raise_exception:
                 raise ValueError("I'm sorry, Dave. I'm afraid I can't do that.")
@@ -203,15 +202,17 @@ def run_test(
                 warn("Open the pod bay doors, HAL.", UserWarning)
             return x
 
+
         inputs_table = [
             (func, 1, 1),
             (func, (2,), {}, 2),
-            (func, 3, {'raise_exception': True}, ValueError),
-            (func, 4, {'issue_warning': True}, UserWarning),
-            (func, 5, {'issue_warning': True}, (5, UserWarning)),
+            (func, 3, {"raise_exception": True}, ValueError),
+            (func, 4, {"issue_warning": True}, UserWarning),
+            (func, 5, {"issue_warning": True}, (5, UserWarning)),
         ]
 
-        @pytest.mark.parametrize('inputs', inputs_table)
+
+        @pytest.mark.parametrize("inputs", inputs_table)
         def test_func(inputs):
             run_test(inputs)
 
@@ -220,7 +221,7 @@ def run_test(
     if kwargs is None:
         kwargs = {}
 
-    if not type(args) in [tuple, list]:
+    if type(args) not in (tuple, list):
         args = (args,)
 
     if not callable(func):
@@ -261,7 +262,7 @@ def run_test(
         expected["result"] = expected_outcome[0]
         expected["warning"] = expected_outcome[1]
 
-    if expected["exception"] is None and expected["warning"] is None:
+    if expected["exception"] is expected["warning"] is None:
         expected["result"] = expected_outcome
 
     # First we go through all of the possibilities for when an exception
@@ -273,7 +274,6 @@ def run_test(
     # should be.
 
     if expected["exception"]:
-
         expected_exception = expected["exception"]
 
         try:
@@ -321,7 +321,6 @@ def run_test(
         ) from exception_no_warning
 
     if isinstance(expected["result"], u.UnitBase):
-
         if isinstance(result, u.UnitBase):
             if result != expected["result"]:
                 raise u.UnitsError(
@@ -364,7 +363,7 @@ def run_test(
     if expected["result"] is None:
         return None
 
-    if type(result) != type(expected["result"]):
+    if type(result) != type(expected["result"]):  # noqa: E721
         raise TypeMismatchFail(
             f"The command {call_str} returned "
             f"{_object_name(result)} which has type "
@@ -389,12 +388,10 @@ def run_test(
     except Exception:
         different_length = False
 
-    try:
+    with contextlib.suppress(Exception):
         all_close = np.allclose(expected["result"], result, rtol=rtol, atol=atol)
         if all_close and not different_length:
             return None
-    except Exception:
-        pass
 
     errmsg = (
         f"The command {call_str} returned "
@@ -615,7 +612,6 @@ def run_test_equivalent_calls(*test_inputs, require_same_type: bool = True):
         errmsg = "The following tests did not all produce results of the same type:"
 
     if not_all_equal or (not_all_same_type and require_same_type):
-
         for test_case in test_cases:
             errmsg += (
                 f"\n  {test_case['call string']} yielded {test_case['result']} "
@@ -692,26 +688,26 @@ def assert_can_handle_nparray(
             return (kwargs[param_name],) * 4
 
         # else, if it's a recognized variable name, give it a reasonable unit and magnitude
-        elif param_name in ["particle", "ion_particle", "ion"]:
-            if not (param_default is inspect._empty or param_default is None):
+        elif param_name in ("particle", "ion_particle", "ion"):
+            if param_default not in (inspect._empty, None):
                 return (param_default,) * 4
             else:
                 return ("p",) * 4
-        elif param_name == "particles" or param_name == "species":
-            if not (param_default is inspect._empty):
+        elif param_name in ("particles", "species"):
+            if param_default is not inspect._empty:
                 return (param_default,) * 4
             else:
                 return (("e", "p"),) * 4
-        elif param_name in ["T", "T_i", "T_e", "temperature"]:
+        elif param_name in ("T", "T_i", "T_e", "temperature"):
             unit = u.eV
             magnitude = 1.0
-        elif param_name in ["n", "n_i", "n_e", "density"]:
+        elif param_name in ("n", "n_i", "n_e", "density"):
             unit = u.m**-3
             magnitude = 1e20
         elif param_name == "B":
             unit = u.G
             magnitude = 1e3
-        elif param_name in ["V", "Vperp"]:
+        elif param_name in ("V", "Vperp"):
             unit = u.m / u.s
             magnitude = 1e5
         elif param_name == "coulomb_log":
@@ -725,7 +721,7 @@ def assert_can_handle_nparray(
             magnitude = 1.0
 
         # else, last resort, if it has a default argument, go with that:
-        elif not (param_default is inspect._empty):
+        elif param_default is not inspect._empty:
             return (param_default,) * 4
 
         else:
@@ -757,10 +753,10 @@ def assert_can_handle_nparray(
     # call _prepare_input to prepare 0d, 1d, and 2d sets of arguments for the function:
     function_sig = inspect.signature(function_to_test)
     function_params = function_sig.parameters
-    args_0d = dict()
-    args_1d = dict()
-    args_2d = dict()
-    args_3d = dict()
+    args_0d = {}
+    args_1d = {}
+    args_2d = {}
+    args_3d = {}
     param_names = [elm for elm in function_params.keys()]
     for idx, key in enumerate(function_params):
         args_0d[key], args_1d[key], args_2d[key], args_3d[key] = _prepare_input(
