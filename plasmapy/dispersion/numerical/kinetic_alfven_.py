@@ -37,9 +37,9 @@ def kinetic_alfven(
     T_e: u.K,
     T_i: u.K,
     theta: u.deg,
-    gamma_e: Union[float, int] = 1,
-    gamma_i: Union[float, int] = 3,
-    z_mean: Union[float, int] = None,
+    gamma_e: numbers.Real = 1,
+    gamma_i: numbers.Real = 3,
+    z_mean: Optional[numbers.Real] = None,
 ):
     r"""
     Using the equation provided in :cite:t:`bellan:2012`, this function
