@@ -54,7 +54,7 @@ def kinetic_alfven(
     ion : `str` or `~plasmapy.particles.particle_class.Particle`
         Representation of the ion species (e.g., ``'p'`` for protons,
         ``'D+'`` for deuterium, ``'He-4 +1'`` for singly ionized
-        Helium-4, etc.).
+        helium-4, etc.).
 
     k : `~astropy.units.Quantity`, single valued or 1-D array
         Wavenumber in units convertible to :math:`rad / m`.  Either
