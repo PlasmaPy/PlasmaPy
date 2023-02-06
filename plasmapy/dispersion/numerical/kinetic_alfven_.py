@@ -143,7 +143,7 @@ def kinetic_alfven(
     (i.e., fast) mode can be factored out. This results in the
     determinant, when in the limit of
     :math:`\omega \gg k_{z}^{2} c^{2}_{\rm s}`, reduces to the kinetic
-    Alfv\'{e}n disersion relation.
+    Alfv\'{e}n dispersion relation.
 
     .. math::
         \omega^2 = k_{\rm z}^2 v_{\rm A}^2 \left(1 + \frac{k_{\rm x}^2 &
