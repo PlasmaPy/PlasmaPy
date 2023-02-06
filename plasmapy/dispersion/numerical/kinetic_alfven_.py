@@ -199,7 +199,7 @@ def kinetic_alfven(
     if z_mean is None:
         z_mean = abs(ion.charge_number)
     else:
-        if not isinstance(z_mean, (int, np.integer, float, np.floating)):
+        if not isinstance(z_mean, numbers.Real):
             raise TypeError(
                 "Expected int or float for argument 'z_mean', "
                 f"instead got {type(z_mean)}."
