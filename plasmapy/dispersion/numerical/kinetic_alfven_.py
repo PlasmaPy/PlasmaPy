@@ -295,9 +295,9 @@ def kinetic_alfven(
         # Minimum value for w/kz test
         if omega_kz_min / v_Te > 0.1 or v_Ti / omega_kz_min > 0.1:
             warnings.warn(
-                "This calculation produced one or more invalid w/kz "
+                "This calculation produced one or more invalid ω/kz "
                 "value(s) which violates the regime in which the "
-                "dispersion relation is valid (v_Te >> w/kz >> v_Ti)",
+                "dispersion relation is valid (v_Te >> ω/kz >> v_Ti)",
                 PhysicsWarning,
             )
 
