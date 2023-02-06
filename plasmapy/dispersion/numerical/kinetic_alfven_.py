@@ -6,6 +6,7 @@ __all__ = ["kinetic_alfven"]
 
 import astropy.units as u
 import numpy as np
+import numbers
 import warnings
 
 from astropy.constants.si import c
