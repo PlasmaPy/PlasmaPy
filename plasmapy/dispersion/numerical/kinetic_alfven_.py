@@ -88,7 +88,7 @@ def kinetic_alfven(
         A dictionary of computed wave frequencies in units
         :math:`rad/s`.  The dictionary contains a key for each:
         theta value provided. The value for each key will be
-        a :math:`N x M` array.
+        a :math:`N × M` array.
 
     Raises
     ------
