@@ -7,7 +7,6 @@ import pytest
 
 from astropy import units as u
 from functools import cached_property
-from typing import Any, Dict, List
 from unittest import mock
 
 from plasmapy.utils.decorators.checks import CheckUnits, CheckValues
@@ -218,7 +217,6 @@ class TestValidateQuantities:
             assert mock_cv_get.called
 
     def test_vq_method__validate_quantity(self):
-
         # method must exist
         assert hasattr(ValidateQuantities, "_validate_quantity")
 
@@ -333,7 +331,6 @@ class TestValidateQuantities:
         ) as mock_cu_checks, mock.patch.object(
             CheckValues, "_check_value", return_value=None
         ) as mock_cv_checks:
-
             args = case["input"][0:2]
             validations = case["input"][2]
 
@@ -452,7 +449,6 @@ class TestValidateQuantities:
         ) as mock_vq_get, mock.patch.object(
             ValidateQuantities, "_validate_quantity", return_value=5 * u.cm
         ) as mock_vq_validate:
-
             wfoo = ValidateQuantities(**validations)(self.foo)
             assert wfoo(5 * u.cm) == 5 * u.cm
             assert mock_vq_get.call_count == 1

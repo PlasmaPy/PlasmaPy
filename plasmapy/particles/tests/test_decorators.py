@@ -3,7 +3,7 @@ import inspect
 import pytest
 import sys
 
-from typing import List, Optional, Tuple, Union
+from typing import Optional
 
 from plasmapy.particles import ParticleList
 from plasmapy.particles.decorators import particle_input
@@ -99,7 +99,17 @@ particle_input_error_table = [
     (
         function_decorated_with_particle_input,
         {"a": 1, "particle": 5 * u.m},
-        u.UnitConversionError,
+        InvalidParticleError,
+    ),
+    (
+        function_decorated_with_particle_input,
+        {"a": 1, "particle": "He-4", "Z": 2.00001},
+        InvalidParticleError,
+    ),
+    (
+        function_decorated_with_particle_input,
+        {"a": 1, "particle": "He-4", "Z": 1 + 1j},
+        TypeError,
     ),
 ]
 

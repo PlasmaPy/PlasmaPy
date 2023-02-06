@@ -70,6 +70,21 @@ test_cases_exceptions = [
         kwargs={},
         expected=ValueError,
     ),
+    test_case(
+        collection=(5 * u.kg, 6 * u.T, 7 * u.m / u.s),
+        kwargs={"allowed_physical_types": {mass, velocity}},
+        expected=ValueError,
+    ),
+    test_case(
+        collection=(6 * u.m, u.kg),
+        kwargs={"strict": True, "only_quantities": True},
+        expected=TypeError,
+    ),
+    test_case(
+        collection=(6 * u.m, "not a Quantity"),
+        kwargs={"strict": True, "only_quantities": False},
+        expected=TypeError,
+    ),
 ]
 
 

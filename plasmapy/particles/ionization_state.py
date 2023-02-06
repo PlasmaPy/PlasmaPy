@@ -10,7 +10,7 @@ import warnings
 
 from astropy import units as u
 from numbers import Integral, Real
-from typing import List, NoReturn, Optional, Union
+from typing import NoReturn, Optional, Union
 
 from plasmapy.particles.atomic import ionic_levels
 from plasmapy.particles.decorators import particle_input
@@ -61,7 +61,6 @@ class IonicLevel:
     """
 
     def __eq__(self, other):
-
         if not isinstance(other, IonicLevel):
             return False
 
@@ -98,7 +97,7 @@ class IonicLevel:
 
     def __repr__(self):
         return (
-            f"IonicLevel({repr(self.ionic_symbol)}, "
+            f"IonicLevel({self.ionic_symbol!r}, "
             f"ionic_fraction={self.ionic_fraction})"
         )
 
@@ -179,7 +178,7 @@ class IonizationState:
         representing an element, isotope, or ion; or an integer representing
         the atomic number of an element.
 
-    ionic_fractions : `~numpy.ndarray`, `list`, `tuple`, or `~astropy.units.Quantity`; optional
+    ionic_fractions : `~numpy.ndarray`, `list`, `tuple`, or |Quantity|; optional
         The ionization fractions of an element, where the indices
         correspond to the charge number.  This argument should contain the
         atomic number plus one items, and must sum to one within an
@@ -313,7 +312,7 @@ class IonizationState:
     def __repr__(self) -> str:
         return self.__str__()
 
-    def __getitem__(self, value) -> List[IonicLevel]:
+    def __getitem__(self, value) -> list[IonicLevel]:
         """Return information for a single ionization level."""
         if isinstance(value, slice):
             return [
@@ -389,9 +388,9 @@ class IonizationState:
 
         Examples
         --------
-        >>> IonizationState('H', [1, 0], tol=1e-6) == IonizationState('H', [1, 1e-6], tol=1e-6)
+        >>> IonizationState('H', [1, 0], tol=1e-6) == IonizationState('H', [1, 1e-6], tol=1e-6)  # noqa: W505
         True
-        >>> IonizationState('H', [1, 0], tol=1e-8) == IonizationState('H', [1, 1e-6], tol=1e-5)
+        >>> IonizationState('H', [1, 0], tol=1e-8) == IonizationState('H', [1, 1e-6], tol=1e-5)  # noqa: W505
         False
 
         """
@@ -693,7 +692,7 @@ class IonizationState:
         return self._number_of_particles
 
     @property
-    def ionic_symbols(self) -> List[str]:
+    def ionic_symbols(self) -> list[str]:
         """The ionic symbols for all charge states."""
         return self.to_list().symbols
 
@@ -718,7 +717,7 @@ class IonizationState:
         return np.sqrt(np.sum(self.ionic_fractions * self.charge_numbers**2))
 
     @property
-    def Z_most_abundant(self) -> List[Integral]:
+    def Z_most_abundant(self) -> list[Integral]:
         """
         A `list` of the charge numbers with the highest ionic fractions.
 
@@ -763,7 +762,7 @@ class IonizationState:
         else:
             raise ValueError("Need 0 <= tol < 1.")
 
-    def _get_states_info(self, minimum_ionic_fraction=0.01) -> List[str]:
+    def _get_states_info(self, minimum_ionic_fraction=0.01) -> list[str]:
         """
         Return a `list` containing the ion symbol, ionic fraction, and
         (if available) the number density and temperature for that ion.
