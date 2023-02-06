@@ -10,7 +10,7 @@ import numpy as np
 import warnings
 
 from astropy.constants.si import c
-from typing import Optional, Union
+from typing import Optional
 
 from plasmapy.formulary import frequencies as pfp
 from plasmapy.formulary import speeds as speed
