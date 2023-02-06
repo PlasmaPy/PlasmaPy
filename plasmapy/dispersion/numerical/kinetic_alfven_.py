@@ -136,7 +136,7 @@ def kinetic_alfven(
     -----
     Using the 2 × 2 matrix approach method from :cite:t:`bellan:2012`,
     this function computes the corresponding wave frequencies in units
-    :math:`rad/s`. This approach comes from :cite:t:`hasegawa:1982`,
+    of :math:`rad/s`. This approach comes from :cite:t:`hasegawa:1982`,
     :cite:t:`morales:1997` and :cite:t:`william:1996`; who argued that
     a 3 × 3 matrix that describes warm plasma waves, is able to be
     represented as a 2 × 2 matrix because the compressional
