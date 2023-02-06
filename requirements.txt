@@ -503,7 +503,7 @@ webencodings==0.5.1
     # via
     #   bleach
     #   tinycss2
-websocket-client==1.5.0
+websocket-client==1.5.1
     # via jupyter-server
 websockets==10.4
     # via voila
