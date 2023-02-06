@@ -63,10 +63,10 @@ def kinetic_alfven(
     n_i : `~astropy.units.Quantity`
         Ion number density in units convertible to :math:`m^{-3}`.
 
-    T_e : `~astropy.units.Quantity`
+    T_e : `~astropy.units.Quantity`, |keyword-only|
         The electron temperature in units of :math:`K` or :math:`eV`.
 
-    T_i : `~astropy.units.Quantity`
+    T_i : `~astropy.units.Quantity`, |keyword-only|
         The ion temperature in units of :math:`K` or :math:`eV`.
 
     theta : `~astropy.units.Quantity`, single valued or 1-D array
