@@ -141,7 +141,7 @@ def kinetic_alfven(
     :cite:t:`morales:1997` and :cite:t:`william:1996`; who argued that
     a 3 × 3 matrix that describes warm plasma waves, is able to be
     represented as a 2 × 2 matrix because the compressional
-    (i.e., fast) mode can be factored out. This results in the
+    (i.e., fast) mode can be factored out. The result is that the
     determinant, when in the limit of
     :math:`\omega \gg k_{z}^{2} c^{2}_{\rm s}`, reduces to the kinetic
     Alfv\'{e}n dispersion relation.
