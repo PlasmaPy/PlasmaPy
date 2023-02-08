@@ -102,7 +102,7 @@ flake8==6.0.0
     #   plasmapy (setup.py)
 flake8-absolute-import==1.0.0.1
     # via plasmapy (setup.py)
-flake8-implicit-str-concat==0.3.0
+flake8-implicit-str-concat==0.4.0
     # via plasmapy (setup.py)
 flake8-mutable==1.2.0
     # via plasmapy (setup.py)
