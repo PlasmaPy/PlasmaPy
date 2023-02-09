@@ -260,7 +260,7 @@ def kinetic_alfven(
 
     # parameters kz
     omega = {}
-    for Theta in theta:          # TODO: should be pretty simple to vectorize this, no?
+    for Theta in theta:  # TODO: should be pretty simple to vectorize this, no?
         kz = np.cos(Theta) * k
         kx = np.sqrt(k**2 - kz**2)
 
