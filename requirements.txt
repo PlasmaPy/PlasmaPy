@@ -341,7 +341,7 @@ pytest-datadir==1.4.1
     # via pytest-regressions
 pytest-regressions==2.4.2
     # via plasmapy (setup.py)
-pytest-xdist==3.1.0
+pytest-xdist==3.2.0
     # via plasmapy (setup.py)
 python-dateutil==2.8.2
     # via
