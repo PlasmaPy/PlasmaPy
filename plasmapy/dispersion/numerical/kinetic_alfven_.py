@@ -260,25 +260,25 @@ def kinetic_alfven(
 
     # parameters kz
     omega = {}
-    for i in range(len(theta)):
-        kz = np.cos(theta[i]) * k
+    for Theta in theta:          # TODO: should be pretty simple to vectorize this, no?
+        kz = np.cos(Theta) * k
         kx = np.sqrt(k**2 - kz**2)
 
         # parameters sigma, D, and F to simplify equation 3
         A = (kz * v_A) ** 2
         F = ((kx * c_s) / omega_ci) ** 2
 
-        omega[theta[i]] = (np.sqrt(A.value * (1 + F.value))) * u.rad / u.s
+        omega[Theta] = (np.sqrt(A.value * (1 + F.value))) * u.rad / u.s
 
         # thermal speeds for electrons and ions in plasma
         v_Te = speed.thermal_speed(T=T_e, particle="e-").value
         v_Ti = speed.thermal_speed(T=T_i, particle=ion).value
 
         # maximum value of omega
-        w_max = np.max(omega[theta[i]])
+        w_max = np.max(omega[Theta])
 
         # Maximum and minimum values for w/kz
-        omega_kz = omega[theta[i]] / kz
+        omega_kz = omega[Theta] / kz
 
         omega_kz_max = np.max(omega_kz).value
         omega_kz_min = np.min(omega_kz).value
