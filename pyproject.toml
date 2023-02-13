@@ -72,7 +72,7 @@ docs = [
   "sphinx_rtd_theme>=1",
   "sphinxcontrib-bibtex",
   "towncrier==22.8",
-  "tox<4",
+  "tox<5",
 ]
 tests = [
   "flake8",
@@ -88,7 +88,7 @@ tests = [
   "pytest-regressions",
   "pytest-xdist",
   "tomli",
-  "tox<4",
+  "tox<5",
   "tryceratops",
 ]
 
