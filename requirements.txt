@@ -102,7 +102,7 @@ flake8==6.0.0
     #   plasmapy (setup.py)
 flake8-absolute-import==1.0.0.1
     # via plasmapy (setup.py)
-flake8-implicit-str-concat==0.3.0
+flake8-implicit-str-concat==0.4.0
     # via plasmapy (setup.py)
 flake8-mutable==1.2.0
     # via plasmapy (setup.py)
@@ -118,7 +118,7 @@ future==0.18.3
     # via uncertainties
 h5py==3.7.0
     # via plasmapy (setup.py)
-hypothesis==6.65.2
+hypothesis==6.68.0
     # via plasmapy (setup.py)
 identify==2.5.17
     # via pre-commit
@@ -132,11 +132,11 @@ incremental==22.10.0
     # via towncrier
 iniconfig==2.0.0
     # via pytest
-ipykernel==6.21.0
+ipykernel==6.21.1
     # via
     #   ipywidgets
     #   plasmapy (setup.py)
-ipython==8.9.0
+ipython==8.10.0
     # via
     #   ipykernel
     #   ipywidgets
@@ -204,7 +204,7 @@ matplotlib-inline==0.1.6
     #   ipython
 mccabe==0.7.0
     # via flake8
-mistune==2.0.4
+mistune==2.0.5
     # via nbconvert
 more-itertools==8.14.0
     # via flake8-implicit-str-concat
@@ -287,7 +287,7 @@ pluggy==1.0.0
     # via
     #   pytest
     #   tox
-pre-commit==3.0.3
+pre-commit==3.0.4
     # via plasmapy (setup.py)
 prometheus-client==0.16.0
     # via jupyter-server
@@ -341,7 +341,7 @@ pytest-datadir==1.4.1
     # via pytest-regressions
 pytest-regressions==2.4.2
     # via plasmapy (setup.py)
-pytest-xdist==3.1.0
+pytest-xdist==3.2.0
     # via plasmapy (setup.py)
 python-dateutil==2.8.2
     # via
@@ -491,7 +491,7 @@ uncertainties==3.1.7
     # via lmfit
 urllib3==1.26.14
     # via requests
-virtualenv==20.17.1
+virtualenv==20.19.0
     # via
     #   pre-commit
     #   tox
@@ -503,7 +503,7 @@ webencodings==0.5.1
     # via
     #   bleach
     #   tinycss2
-websocket-client==1.5.0
+websocket-client==1.5.1
     # via jupyter-server
 websockets==10.4
     # via voila
