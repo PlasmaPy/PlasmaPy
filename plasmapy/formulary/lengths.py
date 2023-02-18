@@ -22,7 +22,7 @@ __all__ += __aliases__
 )
 def Debye_length(T_e: u.K, n_e: u.m**-3) -> u.m:
     r"""Calculate the characteristic decay length for electric fields,
-     due to charge screening.
+    due to charge screening.
 
     **Aliases:** `lambdaD_`
 
