@@ -1427,7 +1427,7 @@ class Tracker:
             initial=0,
             total=self._num_tracked + 1,
             disable=not self.verbose,
-            desc="Particles on grid",
+            desc="Iter. 0: Particles on grid",
             unit="particles",
             bar_format="{l_bar}{bar}{n:.1e}/{total:.1e} {unit}",
             file=sys.stdout,
@@ -1435,13 +1435,16 @@ class Tracker:
 
         # Push the particles until the stop condition is satisfied
         # (no more particles on the simulation grid)
+        it = 1 # Counter for number of iteratiosn (to print on progress bar)
         while not self._stop_condition():
+            pbar.set_description(f"Iter. {it}: Particles on grid", refresh=False)
             n_on_grid = np.sum(self.on_any_grid)
             pbar.n = n_on_grid
             pbar.last_print_n = n_on_grid
             pbar.update()
 
             self._push()
+            it+=1
         pbar.close()
 
         # Remove particles that will never reach the detector
