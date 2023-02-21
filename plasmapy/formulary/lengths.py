@@ -61,7 +61,7 @@ def Debye_length(T_e: u.K, n_e: u.m**-3) -> u.m:
     screening and is given by
 
     .. math::
-        λ_D = \sqrt{\frac{ε_0 k_b T_e}{n_e e^2}}
+        λ_D = \sqrt{\frac{ε_0 k_B T_e}{n_e e^2}}
 
     for an electron plasma with nearly stationary ions.
 
