@@ -1,4 +1,5 @@
 """Functions to calculate fundamental plasma length parameters."""
+
 __all__ = ["Debye_length", "gyroradius", "inertial_length"]
 __aliases__ = ["cwp_", "lambdaD_", "rc_", "rhoc_"]
 
@@ -65,11 +66,11 @@ def Debye_length(T_e: u.K, n_e: u.m**-3) -> u.m:
 
     for an electron plasma with nearly stationary ions.
 
-    The electrical potential will drop by a factor of :math:`1/e` every Debye
-    length.
+    The electrical potential will drop by a factor of :math:`1/e`
+    every Debye length.
 
-    Plasmas will generally be quasineutral on length scales significantly
-    larger than the Debye length.
+    Plasmas will generally be quasineutral on length scales
+    significantly larger than the Debye length.
 
     See Also
     --------
@@ -118,14 +119,14 @@ def gyroradius(
         The magnetic field magnitude in units convertible to tesla.
 
     particle : `~plasmapy.particles.particle_class.Particle`
-        Representation of the particle species (e.g., ``'p'`` for protons, ``'D+'``
-        for deuterium, or ``'He-4 +1'`` for singly ionized helium-4).  If no
-        charge state information is provided, then the particles are assumed
-        to be singly charged.
+        Representation of the particle species (e.g., ``'p'`` for
+        protons, ``'D+'`` for deuterium, or ``'He-4 +1'`` for singly
+        ionized helium-4).  If no charge state information is
+        provided, then the particles are assumed to be singly charged.
 
     Vperp : `~astropy.units.Quantity`, optional, |keyword-only|
-        The component of particle velocity that is perpendicular to the
-        magnetic field in units convertible to meters per second.
+        The component of particle velocity that is perpendicular to
+        the magnetic field in units convertible to meters per second.
 
     T : `~astropy.units.Quantity`, optional, |keyword-only|
         The particle temperature in units convertible to kelvin.
@@ -137,7 +138,6 @@ def gyroradius(
         Whether or not you want to use a relativistic approximation.
         `True` by default.
 
-
     Returns
     -------
     r_Li : `~astropy.units.Quantity`
@@ -145,7 +145,8 @@ def gyroradius(
         `~astropy.units.Quantity` will be based on either the
         perpendicular component of particle velocity as inputted, or
         the most probable speed for a particle within a Maxwellian
-        distribution for the particle temperature. It is relativistically accurate.
+        distribution for the particle temperature. It is
+        relativistically accurate.
 
     Raises
     ------
@@ -167,8 +168,8 @@ def gyroradius(
     -----
     One but not both of ``Vperp`` and ``T`` must be inputted.
 
-    ``lorentzfactor`` can be inferred from ``Vperp`` or ``T`` but
-    near the speed of light, this can lead to rounding errors.
+    ``lorentzfactor`` can be inferred from ``Vperp`` or ``T`` but near
+    the speed of light, this can lead to rounding errors.
 
     If any of ``B``, ``Vperp``, or ``T`` is a number rather than a
     `~astropy.units.Quantity`, then SI units will be assumed and a
@@ -182,11 +183,11 @@ def gyroradius(
 
     where :math:`V_⟂` is the component of particle velocity that is
     perpendicular to the magnetic field, :math:`ω_{ci}` is the
-    particle gyrofrequency, and :math:`γ` is the Lorentz factor.
-    If a temperature is provided, then
-    :math:`V_⟂` will be the most probable thermal velocity of a
-    particle at that temperature. The ``relativistic`` keyword can be
-    set to `False` to avoid the relativistic correction.
+    particle gyrofrequency, and :math:`γ` is the Lorentz factor.  If a
+    temperature is provided, then :math:`V_⟂` will be the most
+    probable thermal velocity of a particle at that temperature. The
+    ``relativistic`` keyword can be set to `False` to avoid the
+    relativistic correction.
 
     Examples
     --------
@@ -213,6 +214,7 @@ def gyroradius(
     <Quantity 0.001421... m>
     >>> gyroradius(400*u.G, 'e-', Vperp=1e7*u.m/u.s, relativistic=False)
     <Quantity 0.001421... m>
+
     """
 
     if not relativistic:
