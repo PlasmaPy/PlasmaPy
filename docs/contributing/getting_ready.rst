@@ -12,9 +12,9 @@ Getting Ready to Contribute
 Introduction
 ============
 
-Thank you for your interest in contributing to PlasmaPy! This page goes
-through the steps that first-time contributors can take before
-proceeding to the |code contribution workflow|.
+This page goes through the steps that first-time contributors can take
+to get set up to contribute to PlasmaPy. After taking these steps,
+you'll be ready to go through the |code contribution workflow|.
 
 Pre-requisites
 ==============
@@ -29,7 +29,7 @@ in a :wikipedia:`Unix <Unix shell>` terminal. If you are new to Unix,
 check out this `Unix tutorial`_ and these `frequently used Unix
 commands`_.
 
-The following tabs describe how to use a terminal on different operating
+These tabs describe how to use a terminal on different operating
 systems.
 
 .. tabs::
@@ -78,19 +78,20 @@ as its command line interface (CLI).
 
 * If you prefer a GUI, please following these instructions on
   `installing Anaconda Navigator`_.
-* If you prefer using the command line, please follow these instructions
-  on `installing Conda`_.
+
+* If you prefer a CLI, please follow these instructions on
+  `installing Conda`_.
 
 There are many other good ways to install Python. Python's website
-describes how to `download Python`_, and `Real Python`_ has instructions
+describes how to `download Python`_.  `Real Python`_ has instructions
 on `installing Python`_ for several different operating systems (if
 using WSL_, follow the Linux instructions).
 
 Using git and GitHub
 --------------------
 
-Plasma code development is done using |git|_ and GitHub_. Before
-contributing code to PlasmaPy:
+Code contributions to PlasmaPy are made using |git|_ and |GitHub|.
+Before contributing code to PlasmaPy, please take the following steps:
 
 #. `Sign up on GitHub`_ for a free account.
 
@@ -116,17 +117,18 @@ contributing code to PlasmaPy:
       git config --global user.email "your.email@example.com"
 
    You may also set your default editor with a command like the
-   following, where ``notepad`` can be replaced with your preferred
-   editor:
+   following, where ``notepad`` can be replaced with the name or path of
+   your preferred editor:
 
    .. code-block:: bash
 
       git config --global core.editor notepad
 
-   For different editor options, check out `git commands for setup and
-   config`_.
+   For different editor and configuration options, check out `git
+   commands for setup and config`_.
 
-#. `Add a new SSH key to your GitHub account`_.
+#. `Add a new SSH key to your GitHub account`_. This step is needed for
+   authentication purposes.
 
 .. _initial-setup:
 
@@ -172,7 +174,7 @@ Initial setup
 
       git remote add upstream git@github.com:PlasmaPy/PlasmaPy.git
 
-   If you run ``git remote -v``, you should see that ``origin``
+   If you then run ``git remote -v``, you should see that ``origin``
    corresponds to your fork_ and ``upstream`` corresponds to `PlasmaPy's
    GitHub repository`_.
 
@@ -187,15 +189,17 @@ section on `getting Python <installing-python>`_.
 
 1. `Open a terminal <opening-a-terminal>`_.
 
-2. Create a Conda_ environment named ``plasmapy-dev`` by running
+2. Create a Conda_ environment named ``plasmapy-dev`` by running:
 
    .. code-block:: bash
 
       conda create -n plasmapy-dev python=3.10
 
-   The ``-n`` flag is used to specify the name of the environment.
+   The ``-n`` flag is used to specify the name of the environment. The
+   ``3.10`` can be replaced with any version of Python between
+   |minpython| and |maxpython|.
 
-3. Activate the environment with
+3. Activate the environment with:
 
    .. code-block:: bash
 
@@ -208,7 +212,7 @@ section on `getting Python <installing-python>`_.
 Installing your clone of PlasmaPy
 =================================
 
-.. fd#. Use one of the following commands in the :file:`PlasmaPy/` directory
+.. Use one of the following commands in the :file:`PlasmaPy/` directory
    to perform an editable (``-e``) installation of PlasmaPy, along with
    the Python packages needed to build documentation and run tests.
 
@@ -251,14 +255,20 @@ Installing your clone of PlasmaPy
 
    The ``-e`` specifies that this will be an `editable installation`_.
 
-Optional tasks
+   .. tip::
+
+      If the above command does not work, an alternative is to run
+      ``pip install -r requirements.txt`` instead, which will install
+      the packages that PlasmaPy depends on but not PlasmaPy itself.
+
+Optional steps
 ==============
 
-Requirements for building documentation
----------------------------------------
+Preparing to build documentation
+--------------------------------
 
 If you plan to build the documentation locally on your computer, you
-might need to:
+may need to:
 
 * `Install pandoc`_
 * `Install Graphviz`_
@@ -268,13 +278,13 @@ These packages are not installed using the ``pip`` commands above.
 Installing pre-commit
 ---------------------
 
-PlasmaPy uses pre-commit_ to automate code quality checks and make
-automatic fixes. Because pre-commit checks are performed on GitHub, it
+PlasmaPy uses pre-commit_ to automate code quality checks and perform
+automated fixes. Because pre-commit checks are performed on GitHub, it
 is optional to set up pre-commit locally.
 
 .. tip::
 
-   We recommend installing pre-commit locally on your computer after you
+   We recommend enabling pre-commit locally on your computer after you
    become comfortable with the |code contribution workflow|.
 
 To enable pre-commit on your computer:
