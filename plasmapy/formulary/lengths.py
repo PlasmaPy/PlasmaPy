@@ -22,8 +22,9 @@ __all__ += __aliases__
     n_e={"can_be_negative": False},
 )
 def Debye_length(T_e: u.K, n_e: u.m**-3) -> u.m:
-    r"""Calculate the characteristic decay length for electric fields
-    due to charge screening.
+    r"""
+    Calculate the characteristic decay length for electric fields due to
+    charge screening.
 
     **Aliases:** `lambdaD_`
 
@@ -81,7 +82,6 @@ def Debye_length(T_e: u.K, n_e: u.m**-3) -> u.m:
     >>> from astropy import units as u
     >>> Debye_length(5e6*u.K, 5e15*u.m**-3)
     <Quantity 0.002182... m>
-
     """
     return np.sqrt(eps0 * k_B * T_e / (n_e * e**2))
 
@@ -109,7 +109,8 @@ def gyroradius(
     lorentzfactor=np.nan,
     relativistic: bool = True,
 ) -> u.m:
-    r"""Return the particle gyroradius.
+    r"""
+    Return the particle gyroradius.
 
     **Aliases:** `rc_`, `rhoc_`
 
@@ -121,7 +122,7 @@ def gyroradius(
     particle : `~plasmapy.particles.particle_class.Particle`
         Representation of the particle species (e.g., ``'p'`` for
         protons, ``'D+'`` for deuterium, or ``'He-4 +1'`` for singly
-        ionized helium-4).  If no charge state information is
+        ionized helium-4). If no charge state information is
         provided, then the particles are assumed to be singly charged.
 
     Vperp : `~astropy.units.Quantity`, optional, |keyword-only|
@@ -141,7 +142,7 @@ def gyroradius(
     Returns
     -------
     r_Li : `~astropy.units.Quantity`
-        The particle gyroradius in units of meters.  This
+        The particle gyroradius in units of meters. This
         `~astropy.units.Quantity` will be based on either the
         perpendicular component of particle velocity as inputted, or
         the most probable speed for a particle within a Maxwellian
@@ -214,7 +215,6 @@ def gyroradius(
     <Quantity 0.001421... m>
     >>> gyroradius(400*u.G, 'e-', Vperp=1e7*u.m/u.s, relativistic=False)
     <Quantity 0.001421... m>
-
     """
 
     if not relativistic:
@@ -249,7 +249,8 @@ def gyroradius(
             Vperp[~isfinite_Vperp] = rbody.velocity
     elif np.any(isfinite_lorentzfactor) and relativistic:
         warnings.warn(
-            "lorentzfactor is given along with Vperp or T, will lead to inaccurate predictions unless they correspond"
+            "lorentzfactor is given along with Vperp or T, will lead "
+            "to inaccurate predictions unless they correspond"
         )
 
     # check 2: get Vperp as the thermal speed if is not already a valid input
@@ -266,7 +267,6 @@ def gyroradius(
         # or else we couldn't have gotten through check 1
         if isfinite_Vperp:
             # Vperp is valid, T is a vector that is all nan
-            # uh...
             Vperp = np.repeat(Vperp, len(T))
         else:
             # normal case where Vperp is scalar nan and T is valid array
@@ -276,7 +276,6 @@ def gyroradius(
         # or else we couldn't have gotten through check 1
         if isfinite_T:
             # T is valid, V_perp is an array of all nan
-            # uh...
             Vperp = speeds.thermal_speed(np.repeat(T, len(Vperp)), particle=particle)
         # else: normal case where T is scalar nan and Vperp is already a valid
         # array so, do nothing
@@ -363,7 +362,7 @@ def inertial_length(n: u.m**-3, particle: ParticleLike) -> u.m:
         d = \frac{c}{ω_{ps}}
 
     The inertial length is the characteristic length scale for a
-    particle to be accelerated in a plasma.  The Hall effect becomes
+    particle to be accelerated in a plasma. The Hall effect becomes
     important on length scales shorter than the ion inertial length.
 
     The inertial length is also known as the skin depth.
