@@ -12,7 +12,7 @@ def excess_stat(signal, thresholds, time_step, pdf=False, bins=32):
         bins: The number of bins in the estimation of the PDF above threshold.
     Output:
         Theta_array: The total time above threshold for each value in thresholds, 1d np.
-        X_array: The total number of upwards crossings over the threshold for each value in thresholds, 1d np.
+        number_of_crossings: The total number of upwards crossings over the threshold for each value in thresholds, 1d np.
         avT_array: The average time above threshold for each value in thresholds, 1d np.
         rmsT_array: The rms-value of time above threshold for each value in thresholds, 1d np.
         If pdf is set to True, we additionaly output
@@ -20,20 +20,20 @@ def excess_stat(signal, thresholds, time_step, pdf=False, bins=32):
         t: Time values for Tpdf, same shape.
     """
     Theta_array = np.array([])
-    X_array = np.array([])
+    number_of_crossings = np.array([])
     avT_array = np.array([])
     rmsT_array = np.array([])
     if pdf:
         time_step_dict = {}
-    for a in thresholds:
+    for threshold in thresholds:
         # This is the basis: the parts of the signal that are above the
         # threshold.
-        places = np.where(signal > a)[0]
+        places = np.where(signal > threshold)[0]
         if len(places) > 0:
             # print('binsum, places to check:{}'.format(len(places)))
             Theta = time_step * len(places)
 
-            # Find X, avT an distribution of time_step
+            # Find X, avT an distribution of dT
             # Each blob is connected, so discrete blobs have more than one time
             # length between them
             dplaces = places[1:] - places[:-1]
@@ -46,31 +46,31 @@ def excess_stat(signal, thresholds, time_step, pdf=False, bins=32):
             if places[0] == 0:
                 # Don't count the first blob if there is no crossing.
                 X += -1
-            time_step = np.array(
+            dT = np.array(
                 [time_step * len(lT[i]) for i in range(0, len(lT))]
             )  # thresholdsrray of excess times
-            avT = np.mean(time_step)
-            rmsT = np.std(time_step)
+            avT = np.mean(dT)
+            rmsT = np.std(dT)
         elif len(places) == 0:
             Theta = 0
             X = 0
             avT = 0
             rmsT = 0
-            time_step = np.array([])
+            dT = np.array([])
         Theta_array = np.append(Theta_array, Theta)
-        X_array = np.append(X_array, X)
+        number_of_crossings = np.append(number_of_crossings, X)
         avT_array = np.append(avT_array, avT)
         rmsT_array = np.append(rmsT_array, rmsT)
         if pdf:
-            time_step_dict.update({a: time_step})
+            time_step_dict.update({threshold: dT})
 
     if pdf:
 
         time_steppdf, t = Th_time_step(time_step_dict, thresholds, bins)
 
-        return Theta_array, X_array, avT_array, rmsT_array, time_steppdf, t
+        return Theta_array, number_of_crossings, avT_array, rmsT_array, time_steppdf, t
     else:
-        return Theta_array, X_array, avT_array, rmsT_array
+        return Theta_array, number_of_crossings, avT_array, rmsT_array
 
 
 def Th_time_step(time_step, thresholds, bins):
@@ -85,6 +85,7 @@ def Th_time_step(time_step, thresholds, bins):
 
     for i in range(0, len(thresholds)):
         a = thresholds[i]
+        print(len(time_step[a]))
         if len(time_step[a]) >= 1:
             time_steppdf[i, :], bin_edges = np.histogram(
                 time_step[a], bins=bins, density=True
@@ -92,4 +93,6 @@ def Th_time_step(time_step, thresholds, bins):
             t[i, :] = (bin_edges[1:] + bin_edges[:-1]) / 2  # Record bin centers
         else:
             continue  # binseed not do anything, everything is zeroes.
+    print(time_steppdf)
+    print(t)
     return time_steppdf, t
