@@ -1,5 +1,19 @@
 import numpy as np
 
+from collections import namedtuple
+
+_excess_stat_tuple = namedtuple(
+    "Excess_Statistics",
+    [
+        "total_time_above_threshold",
+        "number_of_crossings",
+        "average_times",
+        "rms_times",
+        "hist",
+        "bin_centers",
+    ],
+)
+
 
 def excess_stat(signal, thresholds, time_step, pdf=False, bins=32):
     """
@@ -19,80 +33,81 @@ def excess_stat(signal, thresholds, time_step, pdf=False, bins=32):
         Tpdf: thresholds 2d numpy array, shape (thresholds.size,bins=32). For each value in thresholds, this is the estimated PDF of time above threshold.
         t: Time values for Tpdf, same shape.
     """
-    Theta_array = np.array([])
-    number_of_crossings = np.array([])
-    avT_array = np.array([])
-    rmsT_array = np.array([])
+    total_time_above_threshold = []
+    number_of_crossings = []
+    average_times = []
+    rms_times = []
+    hist = None
+    bin_centers = None
+
     if pdf:
-        time_step_dict = {}
+        events_per_threshold = {}
+
     for threshold in thresholds:
-        # This is the basis: the parts of the signal that are above the
-        # threshold.
-        places = np.where(signal > threshold)[0]
-        if len(places) > 0:
-            # print('binsum, places to check:{}'.format(len(places)))
-            Theta = time_step * len(places)
+        indices_above_threshold = np.where(np.array(signal) > threshold)[0]
 
-            # Find X, avT an distribution of dT
-            # Each blob is connected, so discrete blobs have more than one time
-            # length between them
-            dplaces = places[1:] - places[:-1]
-            split = np.where(dplaces != 1)[0]  # split the array
-            # at places where distance between points is greater than one
-            lT = np.split(dplaces, split)
-            lT[0] = np.append(lT[0], 1)  # To get correct length of the first
-            # binsumber of upwards crossings is equal to number of discrete blobs
-            X = len(lT)
-            if places[0] == 0:
-                # Don't count the first blob if there is no crossing.
-                X += -1
-            dT = np.array(
-                [time_step * len(lT[i]) for i in range(0, len(lT))]
-            )  # thresholdsrray of excess times
-            avT = np.mean(dT)
-            rmsT = np.std(dT)
-        elif len(places) == 0:
-            Theta = 0
-            X = 0
-            avT = 0
-            rmsT = 0
-            dT = np.array([])
-        Theta_array = np.append(Theta_array, Theta)
-        number_of_crossings = np.append(number_of_crossings, X)
-        avT_array = np.append(avT_array, avT)
-        rmsT_array = np.append(rmsT_array, rmsT)
+        if len(indices_above_threshold) == 0:
+            times_above_threshold = []
+            total_time_above_threshold.append(0)
+            number_of_crossings.append(0)
+            average_times.append(0)
+            rms_times.append(0)
+
+        else:
+            total_time_above_threshold.append(time_step * len(indices_above_threshold))
+
+            distances_to_next_index = (
+                indices_above_threshold[1:] - indices_above_threshold[:-1]
+            )
+            split_indices = np.where(distances_to_next_index != 1)[0]
+            event_lengths = np.split(distances_to_next_index, split_indices)
+
+            # set correct length for first event
+            event_lengths[0] = np.append(event_lengths[0], 1)
+
+            times_above_threshold = [
+                time_step * len(event_lengths[i]) for i in range(0, len(event_lengths))
+            ]
+
+            number_of_crossings.append(len(event_lengths))
+            if indices_above_threshold[0] == 0:
+                # Don't count the first event if there is no crossing.
+                number_of_crossings[-1] -= 1
+
+            average_times.append(np.mean(times_above_threshold))
+            rms_times.append(np.std(times_above_threshold))
+
         if pdf:
-            time_step_dict.update({threshold: dT})
+            events_per_threshold.update({threshold: times_above_threshold})
 
     if pdf:
 
-        time_steppdf, t = Th_time_step(time_step_dict, thresholds, bins)
+        hist, bin_centers = calculate_pdfs(events_per_threshold, bins)
 
-        return Theta_array, number_of_crossings, avT_array, rmsT_array, time_steppdf, t
-    else:
-        return Theta_array, number_of_crossings, avT_array, rmsT_array
+    return _excess_stat_tuple(
+        total_time_above_threshold=total_time_above_threshold,
+        number_of_crossings=number_of_crossings,
+        average_times=average_times,
+        rms_times=rms_times,
+        hist=hist,
+        bin_centers=bin_centers,
+    )
 
 
-def Th_time_step(time_step, thresholds, bins):
+def calculate_pdfs(events_per_threshold, bins):
     """
     Calculate the pdf P(time_step|thresholds) and avT from this pdf.
     time_step: dictionary. From above
     Returns the 2d time array t, and the 2d-array time_steppdf, containing the pdfs.
     t and time_steppdf are both 2d-arrays storing the values for each a along the axis. The pdf for thresholds[i] is time_steppdf[i,:], t[i,:].
     """
-    time_steppdf = np.zeros((len(thresholds), bins))
-    t = np.zeros((len(thresholds), bins))
+    hist = np.zeros((len(events_per_threshold), bins))
+    bin_centers = np.zeros((len(events_per_threshold), bins))
 
-    for i in range(0, len(thresholds)):
-        a = thresholds[i]
-        print(len(time_step[a]))
-        if len(time_step[a]) >= 1:
-            time_steppdf[i, :], bin_edges = np.histogram(
-                time_step[a], bins=bins, density=True
+    for i, threshold in enumerate(events_per_threshold.keys()):
+        if len(events_per_threshold[threshold]) >= 1:
+            hist[i, :], bin_edges = np.histogram(
+                events_per_threshold[threshold], bins=bins, density=True
             )
-            t[i, :] = (bin_edges[1:] + bin_edges[:-1]) / 2  # Record bin centers
-        else:
-            continue  # binseed not do anything, everything is zeroes.
-    print(time_steppdf)
-    print(t)
-    return time_steppdf, t
+            bin_centers[i, :] = (bin_edges[1:] + bin_edges[:-1]) / 2
+    return hist, bin_centers
