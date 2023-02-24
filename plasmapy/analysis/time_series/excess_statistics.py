@@ -1,3 +1,7 @@
+__all__ = ["excess_stat"]
+
+
+import numbers
 import numpy as np
 
 from collections import namedtuple
@@ -33,6 +37,12 @@ def excess_stat(signal, thresholds, time_step, pdf=False, bins=32):
         Tpdf: thresholds 2d numpy array, shape (thresholds.size,bins=32). For each value in thresholds, this is the estimated PDF of time above threshold.
         t: Time values for Tpdf, same shape.
     """
+    if not isinstance(bins, numbers.Integral):
+        raise TypeError("bins must be of type integer")
+
+    if time_step <= 0:
+        raise ValueError("time_step must be positive")
+
     total_time_above_threshold = []
     number_of_crossings = []
     average_times = []
@@ -81,7 +91,6 @@ def excess_stat(signal, thresholds, time_step, pdf=False, bins=32):
             events_per_threshold.update({threshold: times_above_threshold})
 
     if pdf:
-
         hist, bin_centers = calculate_pdfs(events_per_threshold, bins)
 
     return _excess_stat_tuple(
