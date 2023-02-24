@@ -62,8 +62,8 @@ def excess_stat(signal, thresholds, time_step, pdf=False, bins=32):
             Root-mean-square values of time above each value in ``thresholds``.
 
         - ``hist``: 2D `~numpy.ndarray`, shape (``thresholds.size``,``bins``)
-            For each value in ``thresholds``, returns the estimated PDF of time above threshold.
-            Only returned if ``pdf`` set to True.
+            For each value in ``thresholds``, returns the estimated PDF of time
+            above threshold. Only returned if ``pdf`` set to True.
 
         - ``bin_centers``: 2D `~numpy.ndarray`, shape (``thresholds.size``,``bins``)
             Bin centers for ``hist``. Only returned if ``pdf`` set to True.
@@ -80,7 +80,12 @@ def excess_stat(signal, thresholds, time_step, pdf=False, bins=32):
     -------
     >>> from plasmapy.analysis.time_series.excess_statistics import excess_stat
     >>> excess_stat([0, 0, 2, 2, 0, 4], [1, 3, 5], 1)
-    Excess_Statistics(total_time_above_threshold=[3, 1, 0], number_of_crossings=[2, 1, 0], average_times=[1.5, 1.0, 0], rms_times=[0.5, 0.0, 0], hist=None, bin_centers=None)
+    Excess_Statistics(total_time_above_threshold=[3, 1, 0],
+                      number_of_crossings=[2, 1, 0],
+                      average_times=[1.5, 1.0, 0],
+                      rms_times=[0.5, 0.0, 0],
+                      hist=None,
+                      bin_centers=None)
     """
     if not isinstance(bins, numbers.Integral):
         raise TypeError("bins must be of type integer")
@@ -150,10 +155,8 @@ def excess_stat(signal, thresholds, time_step, pdf=False, bins=32):
 
 def _calculate_pdfs(events_per_threshold, bins):
     """
-    Calculate the pdf P(time_step|thresholds) and avT from this pdf.
-    time_step: dictionary. From above
-    Returns the 2d time array t, and the 2d-array time_steppdf, containing the pdfs.
-    t and time_steppdf are both 2d-arrays storing the values for each a along the axis. The pdf for thresholds[i] is time_steppdf[i,:], t[i,:].
+    Helper function for ``excess_stat``.
+    Calculates the pdf P(time_step| thresholds).
     """
     hist = np.zeros((len(events_per_threshold), bins))
     bin_centers = np.zeros((len(events_per_threshold), bins))
