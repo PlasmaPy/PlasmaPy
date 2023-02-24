@@ -201,8 +201,6 @@ rst_prolog = """
    :language: python
 .. role:: bash(code)
    :language: bash
-.. role:: rst(code)
-   :language: rst
 """
 
 # List of patterns, relative to source directory, that match files and

@@ -1,5 +1,8 @@
 .. _documentation guide:
 
+.. role:: rest(code)
+   :language: rst
+
 *******************
 Documentation Guide
 *******************
@@ -208,8 +211,8 @@ This linking will work for Python_ objects as well as certain packages
 like NumPy_, SciPy_, Astropy_, and pandas_. This linking is described in
 the section on :ref:`external-references`. In-line code samples are
 typically enclosed in double backticks. To get inline code highlighting,
-use the :rest:`:py:` role for Python code, :rest:`:bash:` for code run
-in a terminal, and the :rest:`:rest:` role for reST_.
+use the :rest:`:py:` role for Python code or :rest:`:bash:` for code run
+in a terminal.
 
 .. code-block:: rst
 
@@ -728,7 +731,7 @@ faithfully represent the behavior of the code.
        """
        return 2 * x
 
-An ellipsis (``...``) denotes that the actual and expected outputs
+An ellipsis (:py:`...`) denotes that the actual and expected outputs
 should only be compared to the available precision. This capability is
 needed for functions in `plasmapy.formulary` that depend on fundamental
 constants that are occasionally revised.
@@ -745,8 +748,8 @@ constants that are occasionally revised.
        """
 
 To skip the execution of a line of code in a docstring during tests, end
-the line with ``# doctest: +SKIP``. This is appropriate for lines where
-the output varies or an exception is raised.
+the line with :py:`# doctest: +SKIP`. This is appropriate for lines
+where the output varies or an exception is raised.
 
 .. code-block:: python
 
@@ -895,7 +898,7 @@ documentation for PlasmaPy and affiliated packages.
   of a sentence.
 
 * Particle and chemical symbols should be formatted as regular text. Use
-  ``:sub:`` for subscripts and ``:sup:`` for superscripts.
+  :rest:`:sub:` for subscripts and :rest:`:sup:` for superscripts.
 
   Because interpreted text must normally be surrounded by whitespace or
   punctuation, use a backslash followed by a space for the interpreted
@@ -922,16 +925,16 @@ documentation for PlasmaPy and affiliated packages.
   high-level overview of what is contained in that module.
 
 * Place the ``__all__`` dunder immediately after the docstring that
-  begins a module and before the import statements (but after any ``from
-  __future__`` imports that must be at the beginning of a file). This
-  dunder should be a `list` that contains the names of all objects in
-  that module intended for use by users. Private objects (i.e., objects
-  with names that begin with an underscore) should not be included in
-  ``__all__``.  ``__all__`` is a leftover from the now dissuaded
-  practice of star imports (e.g., :samp:`from {package} import *`\ ),
-  but is still used by Sphinx_ for selecting objects to document. Only
-  objects contained within ``__all__`` will show up in the online
-  documentation.
+  begins a module and before the import statements (but after any
+  :py:`from __future__` imports that must be at the beginning of a
+  file). This dunder should be a `list` that contains the names of all
+  objects in that module intended for use by users. Private objects
+  (i.e., objects with names that begin with an underscore) should not be
+  included in ``__all__``.  ``__all__`` is a leftover from the now
+  dissuaded practice of star imports (e.g.,
+  :samp:`from {package} import *`\ ), but is still used by Sphinx_ for
+  selecting objects to document. Only objects contained within
+  ``__all__`` will show up in the online documentation.
 
 Docstring guidelines
 --------------------
