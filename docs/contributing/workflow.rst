@@ -16,17 +16,14 @@ This page describes the workflow for making a contribution to PlasmaPy.
 This page assumes that you have finished the steps for
 :ref:`getting ready to contribute <install-plasmapy-dev>`.
 
-Getting help
-============
-
 If you run into any problems, please feel free to reach out to us in
 our `Matrix chat room`_ or during our weekly `office hours`_.
 
 Making a code contribution
 ==========================
 
-Creating a new branch
----------------------
+Create a new branch
+-------------------
 
 #. :ref:`Open a terminal <opening-a-terminal>`.
 
@@ -47,11 +44,13 @@ Creating a new branch
       git checkout -b new-branch-name upstream main
 
    where ``new-branch-name`` is changed to the name of the new branch.
+   Here ``upstream`` is the name of the remote_ and ``main`` is the name
+   of the original branch.
 
    .. tip::
 
-      Use descriptive branch names like ``refactor-particle-tests`` to
-      make it easier to remember the purpose of each branch.
+      Use descriptive branch names like ``update-contribution-workflow``
+      to make it easier to remember the purpose of each branch.
 
 #. Connect your local branch to your fork_ of PlasmaPy on GitHub_ by
    running:
@@ -63,8 +62,8 @@ Creating a new branch
 Add and commit changes
 ----------------------
 
-After creating a branch, we may now go through the cycle of making
-changes and saving them.
+Next we can go through the cycle of making changes, which can be
+repeated multiple times.
 
 #. Edit a file and save the changes.
 
@@ -74,20 +73,56 @@ changes and saving them.
 
       git add filename
 
-   where :samp:`{filename}` is replaced with the name of the file (or
-   ``*`` if you want to add all files in the current directory and its
-   subdirectories, excluding those specified in :file:`.gitignore`).
+   where :samp:`{filename}` is replaced with the name of the edited
+   file(s). Use ``git add *`` to add all files in the directory (except
+   for files specified in :file:`.gitignore`. This step lets us line up
+   the changes that we want to record as a snapshot in history.
 
-#.
+#. To commit the changes, run:
 
-.. hint::
+   .. code-block:: bash
 
-   The process of adding and committing a change and pushing it to
-   GitHub can be thought of as packing and mailing a box. Using ``git
-   add`` is equivalent to putting an item into a box without closing
-   it. The ``git commit`` command is akin to closing the box and
-   putting it in the outgoing mail. The ``git push`` command is like
-   mailing the packa
+      git commit -m "<commit message>"
+
+   where :samp:`{<commit message>}` is replaced with a descriptive
+   commit message such as ``"Add gyroradius function"``.
+   Committing a change is like preserving a snapshot of what each file
+   looks like at this point in history.
+
+   If it has been installed, pre-commit will perform automated checks
+   and possibly make some automated changes. If pre-commit fails, then
+   it'll be necessary to do the ``git add`` and ``git commit`` steps
+   once more.
+
+#. To push the changes to GitHub, run:
+
+   .. code-block:: bash
+
+      git push
+
+.. tip::
+
+   Try using the ``git status`` command after every step to get a better
+   idea of what is happening.
+
+.. note::
+
+   The ``git`` workflow can be thought of as the process of mailing a
+   package.
+
+   * ``git add`` is like packing the contents of a package into a box.
+     This step allows you to choose which changes to include in the next
+     commit.
+
+   * ``git commit`` is like sealing and labeling the package, and
+     putting it in the outgoing mail.
+
+   * ``git push`` is like sending the package off to its destination
+     (i.e., GitHub).
+
+Creating a pull request
+=======================
+
 
 
 
@@ -299,3 +334,4 @@ Organize this
 .. _Unix commands: https://www.unixtutorial.org/basic-unix-commands
 .. _Unix shell: https://en.wikipedia.org/wiki/Unix_shell
 .. _Windows Subsystem for Linux: https://docs.microsoft.com/en-us/windows/wsl/install
+.. _remote: https://github.com/git-guides/git-remote
