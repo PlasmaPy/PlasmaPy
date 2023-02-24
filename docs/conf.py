@@ -199,6 +199,8 @@ with open("common_links.rst") as cl:
 rst_prolog = """
 .. role:: py(code)
    :language: python
+.. role:: bash(code)
+   :language: bash
 """
 
 # List of patterns, relative to source directory, that match files and
