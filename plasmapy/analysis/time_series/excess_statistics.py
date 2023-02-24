@@ -32,12 +32,12 @@ def excess_stat(signal, thresholds, time_step, pdf=False, bins=32):
         Signal to be analyzed.
 
     thresholds : 1D |array_like|
-        Threshold values
+        Threshold values.
 
     time_step : int
-        Time step of ``signal``
+        Time step of ``signal``.
 
-    pdf : boolean, optional
+    pdf : bool, optional
         If set to True, the function estimates the PDF of the time above
         ``thresholds`` as well.
 
@@ -61,11 +61,11 @@ def excess_stat(signal, thresholds, time_step, pdf=False, bins=32):
         - ``rms_times``: 1D |array_like|
             Root-mean-square values of time above each value in ``thresholds``.
 
-        - ``hist``: 2D `~numpy.ndarray`, shape (``thresholds.size``,``bins``)
+        - ``hist``: 2D `~numpy.ndarray`, shape (``thresholds.size``, ``bins`` )
             For each value in ``thresholds``, returns the estimated PDF of time
             above threshold. Only returned if ``pdf`` set to True.
 
-        - ``bin_centers``: 2D `~numpy.ndarray`, shape (``thresholds.size``,``bins``)
+        - ``bin_centers``: 2D `~numpy.ndarray`, shape (``thresholds.size``, ``bins`` )
             Bin centers for ``hist``. Only returned if ``pdf`` set to True.
 
     Raises
