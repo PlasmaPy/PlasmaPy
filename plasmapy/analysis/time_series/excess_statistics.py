@@ -1,3 +1,5 @@
+"""Functionality to calculate excess statistics of time series."""
+
 __all__ = ["excess_stat"]
 
 
@@ -21,21 +23,64 @@ _excess_stat_tuple = namedtuple(
 
 def excess_stat(signal, thresholds, time_step, pdf=False, bins=32):
     """
-    For a given signal signal and a given threshold values a in thresholds, this function finds the excess statitics of signal.
-    Input:
-        signal: the signal, a 1d numpy array (1d np)
-        thresholds: the threshold values, 1d np
-        time_step: the time resolution, float
-        pdf: if set to True, the function estimates the PDF of the time above threshold as well.
-        bins: The number of bins in the estimation of the PDF above threshold.
-    Output:
-        Theta_array: The total time above threshold for each value in thresholds, 1d np.
-        number_of_crossings: The total number of upwards crossings over the threshold for each value in thresholds, 1d np.
-        avT_array: The average time above threshold for each value in thresholds, 1d np.
-        rmsT_array: The rms-value of time above threshold for each value in thresholds, 1d np.
-        If pdf is set to True, we additionaly output
-        Tpdf: thresholds 2d numpy array, shape (thresholds.size,bins=32). For each value in thresholds, this is the estimated PDF of time above threshold.
-        t: Time values for Tpdf, same shape.
+    Calculate total time, number of upwards crossings, average time and rms time
+    above given thresholds of a sequence.
+
+    Parameters
+    ----------
+    signal : 1D |array_like|
+        Signal to be analyzed.
+
+    thresholds : 1D |array_like|
+        Threshold values
+
+    time_step : int
+        Time step of ``signal``
+
+    pdf : boolean, optional
+        If set to True, the function estimates the PDF of the time above
+        ``thresholds`` as well.
+
+    bins : int, optional
+        The number of bins in the estimation of the PDF above ``thresholds``.
+
+    Returns
+    -------
+    `~collections.namedtuple`
+        Contains the following attributes:
+
+        - ``total_time_above_threshold``: 1D |array_like|
+            Total time above threshold for each value in ``thresholds``.
+
+        - ``number_of_crossings``: 1D |array_like|
+            Total number of upwards crossings for each value in ``thresholds``.
+
+        - ``average_times``: 1D |array_like|
+            Average time above each value in ``thresholds``.
+
+        - ``rms_times``: 1D |array_like|
+            Root-mean-square values of time above each value in ``thresholds``.
+
+        - ``hist``: 2D `~numpy.ndarray`, shape (``thresholds.size``,``bins``)
+            For each value in ``thresholds``, returns the estimated PDF of time above threshold.
+            Only returned if ``pdf`` set to True.
+
+        - ``bin_centers``: 2D `~numpy.ndarray`, shape (``thresholds.size``,``bins``)
+            Bin centers for ``hist``. Only returned if ``pdf`` set to True.
+
+    Raises
+    ------
+    `TypeError`
+        If ``bins`` is not of type `int`.
+
+    `ValueError`
+        If ``time_step`` <= 0.
+
+    Example
+    -------
+    >>> from plasmapy.analysis.time_series.excess_statistics import excess_stat
+    >>> excess_stat([0, 0, 2, 2, 0, 4], [1, 3, 5], 1)
+    Excess_Statistics(total_time_above_threshold=[3, 1, 0], number_of_crossings=[2, 1, 0], average_times=[1.5, 1.0, 0], rms_times=[0.5, 0.0, 0], hist=None, bin_centers=None)
     """
     if not isinstance(bins, numbers.Integral):
         raise TypeError("bins must be of type integer")
@@ -91,7 +136,7 @@ def excess_stat(signal, thresholds, time_step, pdf=False, bins=32):
             events_per_threshold.update({threshold: times_above_threshold})
 
     if pdf:
-        hist, bin_centers = calculate_pdfs(events_per_threshold, bins)
+        hist, bin_centers = _calculate_pdfs(events_per_threshold, bins)
 
     return _excess_stat_tuple(
         total_time_above_threshold=total_time_above_threshold,
@@ -103,7 +148,7 @@ def excess_stat(signal, thresholds, time_step, pdf=False, bins=32):
     )
 
 
-def calculate_pdfs(events_per_threshold, bins):
+def _calculate_pdfs(events_per_threshold, bins):
     """
     Calculate the pdf P(time_step|thresholds) and avT from this pdf.
     time_step: dictionary. From above

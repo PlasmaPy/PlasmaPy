@@ -4,7 +4,7 @@ import astropy.units as u
 import numpy as np
 import pytest
 
-from plasmapy.analysis.time_series.excess_statistics import calculate_pdfs, excess_stat
+from plasmapy.analysis.time_series.excess_statistics import _calculate_pdfs, excess_stat
 
 
 @pytest.mark.parametrize(
@@ -86,6 +86,7 @@ def test_excess_stat_exception(signal, thresholds, time_step, pdf, bins):
     ],
 )
 def test_calculate_pdfs(events_per_threshold, bins, expected):
-    results = calculate_pdfs(events_per_threshold, bins)
+    """test _calculate_pdfs function"""
+    results = _calculate_pdfs(events_per_threshold, bins)
     assert np.allclose(results[0], expected[0])
     assert np.allclose(results[1], expected[1])
