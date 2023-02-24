@@ -384,9 +384,9 @@ To enable pre-commit on your computer:
    adapt
 
 .. Now suppose we added some trailing whitespace to :file:`some_file.py`
-and attempted to commit it. If |pre-commit|_ has been installed, then
-the ``trailing-whitespace`` hook will cause |pre-commit|_ to fail while
-modifying :file:`some_file.py` to remove the trailing whitespace.
+   and attempted to commit it. If |pre-commit|_ has been installed, then
+   the ``trailing-whitespace`` hook will cause |pre-commit|_ to fail while
+   modifying :file:`some_file.py` to remove the trailing whitespace.
 
 .. .. code-block:: console
 
@@ -398,13 +398,13 @@ modifying :file:`some_file.py` to remove the trailing whitespace.
    - files were modified by this hook
 
 .. At this point it will be necessary to run these two commands again to
-commit the changes. The changes made by |pre-commit|_ will be unstaged and
-thus could be seen by running ``git diff``. Sometimes |pre-commit|_ will
-not be able to automatically fix the files, such as when there are
-syntax errors in Python code. In these cases, the files will need to be
-changed manually before running the ``git add`` and ``git commit``
-commands again. Alternatively, the |pre-commit|_ hooks can be skipped
-using ``git commit -n`` instead.
+   commit the changes. The changes made by |pre-commit|_ will be unstaged and
+   thus could be seen by running ``git diff``. Sometimes |pre-commit|_ will
+   not be able to automatically fix the files, such as when there are
+   syntax errors in Python code. In these cases, the files will need to be
+   changed manually before running the ``git add`` and ``git commit``
+   commands again. Alternatively, the |pre-commit|_ hooks can be skipped
+   using ``git commit -n`` instead.
 
 .. _Add a new SSH key to your GitHub account: https://docs.github.com/en/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account
 .. _Anaconda Navigator: https://docs.anaconda.com/navigator/
