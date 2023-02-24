@@ -207,9 +207,9 @@ the package should also be installed.
 
 .. tip::
 
-   The :ref:`contributing-to-plasmapy` guide has instructions on how to
-   fork a repository and create branches so that you may make
-   contributions via pull requests.
+   The |contributor guide| has instructions on how to fork a repository
+   and create branches so that you may make contributions via pull
+   requests.
 
 .. _Anaconda Navigator: https://docs.anaconda.com/navigator/install
 .. _clone a repository using SSH: https://docs.github.com/en/get-started/getting-started-with-git/about-remote-repositories#cloning-with-ssh-urls

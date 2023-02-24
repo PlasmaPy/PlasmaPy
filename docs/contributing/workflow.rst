@@ -14,7 +14,7 @@ Introduction
 
 This page describes the workflow for making a contribution to PlasmaPy.
 This page assumes that you have finished the steps for
-:ref:`getting ready to contribute <install-plasmapy-dev>`.
+:ref:`getting ready to contribute`.
 
 If you run into any problems, please feel free to reach out to us in
 our `Matrix chat room`_ or during our weekly `office hours`_.
