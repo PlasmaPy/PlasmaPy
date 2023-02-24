@@ -136,7 +136,7 @@ Coding guidelines
 * Use `pathlib` when working with paths to data files.
 
 Names
-=====
+-----
 
 Names are our most fundamental means of communicating the intent and
 purpose of code. Wisely chosen names can greatly improve the
@@ -266,184 +266,8 @@ the code is supposed to be doing.
    can be done with :kbd:`Shift+F6` on Windows or Linux, and :kbd:`⇧F6`
    or :kbd:`⌥⌘R` on macOS.
 
-Imports
-=======
-
-* Use standard abbreviations for imported packages:
-
-  .. code-block:: python
-
-     import astropy.constants as const
-     import astropy.units as u
-     import matplotlib.pyplot as plt
-     import numpy as np
-     import pandas as pd
-
-* PlasmaPy uses isort_ to organize import statements via a |pre-commit|_
-  hook.
-
-* For infrequently used objects, import the package, subpackage, or
-  module rather than the individual code object. Including more of the
-  namespace provides contextual information that can make code easier to
-  read. For example, ``json.loads`` is more readable than using only
-  ``loads``.
-
-* For frequently used objects (e.g., |Particle|) and type hint
-  annotations (e.g., `~typing.Optional` and `~numbers.Real`), import the
-  object directly instead of importing the package, subpackage, or
-  module. Including more of the namespace would increase clutter and
-  decrease readability without providing commensurately more
-  information.
-
-* Use absolute imports (e.g., :py:`from plasmapy.particles import
-  Particle`) rather than relative imports (e.g., :py:`from ..particles
-  import Particle`).
-
-* Do not use star imports (e.g., :py:`from package.subpackage import *`),
-  except in very limited situations.
-
-Requirements
-============
-
-* Package requirements are specified in multiple locations that need to
-  be updated simultaneously.
-
-  - The |requirements|_ directory contains multiple text files that
-    contain build, installation, testing, documentation, and extra
-    requirements.
-
-  - The ``build-system.requires`` section of |pyproject.toml|_ includes
-    the requirements for building PlasmaPy. This section must mirror
-    |requirements/build.txt|_.
-
-  - |setup.cfg|_ includes sections for the install, docs, tests, and
-    extra requirements that must mirror the corresponding files in
-    the |requirements|_ directory.
-
-  - |requirements/environment.yml|_ contains a Conda_ environment
-    for PlasmaPy.
-
-  - |tox.ini|_ contains a testing environment for the minimal
-    dependencies.
-
-* Each release of PlasmaPy should support all minor versions of
-  Python that have been released in the prior 42 months, and all minor
-  versions of NumPy_ that have been released in the last 24 months.
-  This schedule was proposed in `NumPy Enhancement Proposal 29`_ for
-  the scientific Python ecosystem, and has been adopted by upstream
-  packages such as NumPy_, matplotlib_, and Astropy_.
-
-  .. tip::
-
-     Tools like pyupgrade_ help automatically upgrade the code base to
-     the minimum supported version of Python for the next release.
-
-* In general, it is preferable to support minor releases of dependencies
-  from the last ≲ 24 months, unless there is a new feature in a
-  dependency that would be greatly beneficial for `plasmapy` development.
-
-* Do not set maximum requirements (e.g., ``numpy <= 1.22.3``) unless
-  absolutely necessary. Maximum requirements can lead to version
-  conflicts when installed alongside other packages. Instead, update
-  PlasmaPy to become compatible with the latest versions of its
-  dependencies. Similarly, do not require exact versions of packages
-  (e.g., ``scipy == 1.5.3``).
-
-* Minor versions of Python are generally released in October of each
-  year. However, it may take a few months before packages like NumPy_
-  and Numba_ become compatible with the newest minor version of Python_.
-
-.. _code-contribution:
-
-Branches, commits, and pull requests
-====================================
-
-Before making any changes, it is prudent to update your local
-repository with the most recent changes from the development
-repository:
-
-.. code-block:: bash
-
-  git fetch upstream
-
-Changes to PlasmaPy should be made using branches.  It is usually best
-to avoid making changes on your main branch so that it can be kept
-consistent with the upstream repository.  Instead we can create a new
-branch for the specific feature that you would like to work on:
-
-.. code-block:: bash
-
-  git branch *your-new-feature*
-
-Descriptive branch names such as ``grad-shafranov`` or
-``adding-eigenfunction-poetry`` are helpful, while vague names like
-``edits`` are considered harmful.  After creating your branch locally,
-let your fork of PlasmaPy know about it by running:
-
-.. code-block:: bash
-
-  git push --set-upstream origin *your-new-feature*
-
-It is also useful to configure git so that only the branch you are
-working on gets pushed to GitHub:
-
-.. code-block:: bash
-
-  git config --global push.default simple
-
-Once you have set up your fork and created a branch, you are ready to
-make edits to PlasmaPy.  Switch to your new branch by running:
-
-.. code-block:: bash
-
-  git checkout *your-new-feature*
-
-Go ahead and modify files with your favorite text editor.  Be sure to
-include tests and documentation with any new functionality.  We
-recommend reading about `best practices for scientific computing
-<https://doi.org/10.1371/journal.pbio.1001745>`_.  PlasmaPy uses the
-`PEP 8 style guide for Python code
-<https://www.python.org/dev/peps/pep-0008/>`_ and the `numpydoc format
-for docstrings
-<https://github.com/numpy/numpy/blob/main/doc/HOWTO_DOCUMENT.rst.txt>`_
-to maintain consistency and readability.  New contributors should not
-worry too much about precisely matching these styles when first
-submitting a pull request, GitHub Actions will check pull requests
-for :pep:`8` compatibility, and further changes to the style can be
-suggested during code review.
-
-You may periodically commit changes to your branch by running
-
-.. code-block:: bash
-
-  git add filename.py
-  git commit -m "*brief description of changes*"
-
-Committed changes may be pushed to the corresponding branch on your
-GitHub fork of PlasmaPy using
-
-.. code-block:: bash
-
-  git push origin *your-new-feature*
-
-or, more simply,
-
-.. code-block:: bash
-
-  git push
-
-Once you have completed your changes and pushed them to the branch on
-GitHub, you are ready to make a pull request.  Go to your fork of
-PlasmaPy in GitHub.  Select "Compare and pull request".  Add a
-descriptive title and some details about your changes.  Then select
-"Create pull request".  Other contributors will then have a chance to
-review the code and offer constructive suggestions.  You can continue
-to edit the pull request by changing the corresponding branch on your
-PlasmaPy fork on GitHub.  After a pull request is merged into the
-code, you may delete the branch you created for that pull request.
-
 Comments
-========
+--------
 
 A well-placed and well-written comment can prevent future frustrations.
 However, comments are not inherently good. As code evolves, an
@@ -549,7 +373,7 @@ unmaintained comment may contain inaccurate or misleading information
      instead.
 
 Error messages
-==============
+--------------
 
 Error messages are a vital but underappreciated form of documentation.
 A good error message can help someone pinpoint the source of a problem
@@ -584,172 +408,85 @@ of frustration.
 * Write error messages that are friendly, supportive, and helpful. Error
   message should never be condescending or blame the user.
 
-Units
-=====
+Project infrastructure
+======================
 
-PlasmaPy uses |astropy.units|_ to assign physical units to values in the
-form of a |Quantity|.
+Imports
+-------
 
-.. code-block:: pycon
-
-   >>> import astropy.units as u
-   >>> 5 * u.m / u.s
-   <Quantity 5. m / s>
-
-Using |astropy.units|_ improves compatibility with Python packages in
-adjacent fields such as astronomy and heliophysics. To get started with
-|astropy.units|_, check out this `example notebook on units`_.
-
-  .. caution::
-
-     Some `scipy` functions silently drop units when used on |Quantity|
-     instances.
-
-* Only SI units should be used within PlasmaPy, unless there is a strong
-  justification to do otherwise. Example notebooks may occasionally use
-  other unit systems to show the flexibility of |astropy.units|_.
-
-* Use operations between |Quantity| instances except when needed for
-  performance. To improve performance in |Quantity| operations, check
-  out `performance tips
-  <https://docs.astropy.org/en/stable/units/index.html#performance-tips>`__
-  for |astropy.units|_.
-
-* Use unit annotations with the |validate_quantities| decorator to
-  validate |Quantity| arguments and return values.
+* Use standard abbreviations for imported packages:
 
   .. code-block:: python
 
-     from plasmapy.utils.decorators.validators import validate_quantities
+     import astropy.constants as const
+     import astropy.units as u
+     import matplotlib.pyplot as plt
+     import numpy as np
+     import pandas as pd
 
+* PlasmaPy uses isort_ to organize import statements via a |pre-commit|_
+  hook.
 
-     @validate_quantities(
-         n={"can_be_negative": False},
-         validations_on_return={"equivalencies": u.dimensionless_angles()},
-     )
-     def inertial_length(n: u.m**-3, particle) -> u.m:
-         ...
+* For infrequently used objects, import the package, subpackage, or
+  module rather than the individual code object. Including more of the
+  namespace provides contextual information that can make code easier to
+  read. For example, ``json.loads`` is more readable than using only
+  ``loads``.
 
-  .. caution::
+* For frequently used objects (e.g., |Particle|) and type hint
+  annotations (e.g., `~typing.Optional` and `~numbers.Real`), import the
+  object directly instead of importing the package, subpackage, or
+  module. Including more of the namespace would increase clutter and
+  decrease readability without providing commensurately more
+  information.
 
-     Recent versions of Astropy_ allow unit-aware |Quantity|
-     annotations such as :py:`u.Quantity[u.m]`. However, these
-     annotations are not yet compatible with |validate_quantities|.
+* Use absolute imports (e.g., :py:`from plasmapy.particles import
+  Particle`) rather than relative imports (e.g., :py:`from ..particles
+  import Particle`).
 
-* Avoid using electron-volts as a unit of temperature within PlasmaPy
-  because it is defined as a unit of energy. However, functions in
-  `plasmapy.formulary` and elsewhere should accept temperatures in units
-  of electron-volts, which can be done using |validate_quantities|.
+* Do not use star imports (e.g., :py:`from package.subpackage import *`),
+  except in very limited situations.
 
-* Non-standard unit conversions can be made using equivalencies_ such
-  as `~astropy.units.temperature_energy`.
+Requirements
+------------
 
-  .. code-block:: pycon
+* Package requirements are specified in |pyproject.toml|_. |tox.ini|_
+  also contains a testing environment for the minimal dependencies.
 
-     >>> (1 * u.eV).to(u.K, equivalencies=u.temperature_energy())
-     11604.518...
+* Each release of PlasmaPy should support all minor versions of
+  Python that have been released in the prior 42 months, and all minor
+  versions of NumPy_ that have been released in the last 24 months.
+  This schedule was proposed in `NumPy Enhancement Proposal 29`_ for
+  the scientific Python ecosystem, and has been adopted by upstream
+  packages such as NumPy_, matplotlib_, and Astropy_.
 
-* The names of SI units should not be capitalized except at the
-  beginning of a sentence, including when they are named after a person.
-  The sole exception is "degree Celsius".
+  .. tip::
 
-Particles
-=========
+     Tools like pyupgrade_ help automatically upgrade the code base to
+     the minimum supported version of Python for the next release.
 
-The |Particle| class provides an object-oriented interface for accessing
-basic particle data. |Particle| accepts :term:`particle-like` inputs.
+* In general, it is preferable to support minor releases of dependencies
+  from the last ≲ 24 months, unless there is a new feature in a
+  dependency that would be greatly beneficial for `plasmapy` development.
 
-.. code-block:: pycon
+* Do not set maximum requirements (e.g., ``numpy <= 1.22.3``) unless
+  absolutely necessary. Maximum requirements can lead to version
+  conflicts when installed alongside other packages. Instead, update
+  PlasmaPy to become compatible with the latest versions of its
+  dependencies. Similarly, do not require exact versions of packages
+  (e.g., ``scipy == 1.5.3``).
 
-   >>> from plasmapy.particles import Particle
-   >>> alpha = Particle("He-4 2+")
-   >>> alpha.mass
-   <Quantity 6.6446...e-27 kg>
-   >>> alpha.charge
-   <Quantity 3.20435...e-19 C>
+* Minor versions of Python are generally released in October of each
+  year. However, it may take a few months before packages like NumPy_
+  and Numba_ become compatible with the newest minor version of Python_.
 
-To get started with `plasmapy.particles`, check out this `example
-notebook on particles`_.
-
-* Avoid using implicit default particle assumptions for function
-  arguments (see issue :issue:`453`).
-
-* The |particle_input| decorator can automatically transform a
-  |particle-like| |argument| into a |Particle|, |CustomParticle|, or
-  |ParticleList| instance when the corresponding |parameter| is
-  decorated with |ParticleLike|.
-
-  .. code-block:: python
-
-     from plasmapy.particles import ParticleLike, particle_input
-
-
-     @particle_input
-     def get_particle(particle: ParticleLike):
-         return particle
-
-  If we use ``get_particle`` on something |particle-like|, it will
-  return the corresponding particle object.
-
-  .. code-block:: pycon
-
-     >>> return_particle("p+")
-     Particle("p+")
-
-  The documentation for |particle_input| describes ways to ensure that
-  the particle meets certain categorization criteria.
-
-Equations and Physical Formulae
-===============================
-
-* Physical formulae should be inputted without first evaluating all of
-  the physical constants. For example, the following line of code
-  obscures information about the physics being represented:
-
-  .. code-block:: pycon
-
-     >>> omega_ce = 1.76e7*(B/u.G)*u.rad/u.s  # doctest: +SKIP
-
-  In contrast, the following line of code shows the exact formula
-  which makes the code much more readable.
-
-  .. code-block:: pycon
-
-     >>> omega_ce = (e * B) / (m_e * c)  # doctest: +SKIP
-
-  The origins of numerical coefficients in formulae should be
-  documented.
-
-* Docstrings should describe the physics associated with these
-  quantities in ways that are understandable to students who are
-  taking their first course in plasma physics while still being useful
-  to experienced plasma physicists.
-
-Angular Frequencies
-===================
-
-Unit conversions involving angles must be treated with care.  Angles
-are dimensionless but do have units.  Angular velocity is often given
-in units of radians per second, though dimensionally this is
-equivalent to inverse seconds.  Astropy will treat radians
-dimensionlessly when using the ``dimensionless_angles`` equivalency,
-but ``dimensionless_angles`` does not account for the multiplicative
-factor of ``2*pi`` that is used when converting between frequency (1 /
-s) and angular frequency (rad / s).  An explicit way to do this
-conversion is to set up an equivalency between cycles/s and Hz:
-
->>> from astropy import units as u
->>> f_ce = omega_ce.to(u.Hz, equivalencies=[(u.cy/u.s, u.Hz)])  # doctest: +SKIP
-
-However, ``dimensionless_angles`` does work when dividing a velocity
-by an angular frequency to get a length scale:
-
->>> d_i = (c/omega_pi).to(u.m, equivalencies=u.dimensionless_angles())  # doctest: +SKIP
+Special function categories
+===========================
 
 .. _aliases:
 
 Aliases
-=======
+-------
 
 An :term:`alias` is an abbreviated version of a commonly used function.
 For example, `~plasmapy.formulary.speeds.va_` is an alias to
@@ -805,7 +542,7 @@ defined in :file:`plasmapy/subpackage/module.py`.
 .. _lite-functions:
 
 Lite Functions
-==============
+--------------
 
 Most functions in `plasmapy.formulary` accept |Quantity| instances as
 arguments and use |validate_quantities| to verify that |Quantity|
@@ -900,10 +637,175 @@ that corresponds to ``function`` as would be defined in
   appended to ``__all__``. This is done so both the :term:`lite-function`
   and the original function get properly documented.
 
+Physics
+=======
+
+Units
+-----
+
+PlasmaPy uses |astropy.units|_ to assign physical units to values in the
+form of a |Quantity|.
+
+.. code-block:: pycon
+
+   >>> import astropy.units as u
+   >>> 5 * u.m / u.s
+   <Quantity 5. m / s>
+
+Using |astropy.units|_ improves compatibility with Python packages in
+adjacent fields such as astronomy and heliophysics. To get started with
+|astropy.units|_, check out this `example notebook on units`_.
+
+  .. caution::
+
+     Some `scipy` functions silently drop units when used on |Quantity|
+     instances.
+
+* Only SI units should be used within PlasmaPy, unless there is a strong
+  justification to do otherwise. Example notebooks may occasionally use
+  other unit systems to show the flexibility of |astropy.units|_.
+
+* Use operations between |Quantity| instances except when needed for
+  performance. To improve performance in |Quantity| operations, check
+  out `performance tips
+  <https://docs.astropy.org/en/stable/units/index.html#performance-tips>`__
+  for |astropy.units|_.
+
+* Use unit annotations with the |validate_quantities| decorator to
+  validate |Quantity| arguments and return values.
+
+  .. code-block:: python
+
+     from plasmapy.utils.decorators.validators import validate_quantities
+
+
+     @validate_quantities(
+         n={"can_be_negative": False},
+         validations_on_return={"equivalencies": u.dimensionless_angles()},
+     )
+     def inertial_length(n: u.m**-3, particle) -> u.m:
+         ...
+
+  .. caution::
+
+     Recent versions of Astropy_ allow unit-aware |Quantity|
+     annotations such as :py:`u.Quantity[u.m]`. However, these
+     annotations are not yet compatible with |validate_quantities|.
+
+* Avoid using electron-volts as a unit of temperature within PlasmaPy
+  because it is defined as a unit of energy. However, functions in
+  `plasmapy.formulary` and elsewhere should accept temperatures in units
+  of electron-volts, which can be done using |validate_quantities|.
+
+* Non-standard unit conversions can be made using equivalencies_ such
+  as `~astropy.units.temperature_energy`.
+
+  .. code-block:: pycon
+
+     >>> (1 * u.eV).to(u.K, equivalencies=u.temperature_energy())
+     11604.518...
+
+* The names of SI units should not be capitalized except at the
+  beginning of a sentence, including when they are named after a person.
+  The sole exception is "degree Celsius".
+
+Particles
+---------
+
+The |Particle| class provides an object-oriented interface for accessing
+basic particle data. |Particle| accepts :term:`particle-like` inputs.
+
+.. code-block:: pycon
+
+   >>> from plasmapy.particles import Particle
+   >>> alpha = Particle("He-4 2+")
+   >>> alpha.mass
+   <Quantity 6.6446...e-27 kg>
+   >>> alpha.charge
+   <Quantity 3.20435...e-19 C>
+
+To get started with `plasmapy.particles`, check out this `example
+notebook on particles`_.
+
+* Avoid using implicit default particle assumptions for function
+  arguments (see issue :issue:`453`).
+
+* The |particle_input| decorator can automatically transform a
+  |particle-like| |argument| into a |Particle|, |CustomParticle|, or
+  |ParticleList| instance when the corresponding |parameter| is
+  decorated with |ParticleLike|.
+
+  .. code-block:: python
+
+     from plasmapy.particles import ParticleLike, particle_input
+
+
+     @particle_input
+     def get_particle(particle: ParticleLike):
+         return particle
+
+  If we use ``get_particle`` on something |particle-like|, it will
+  return the corresponding particle object.
+
+  .. code-block:: pycon
+
+     >>> return_particle("p+")
+     Particle("p+")
+
+  The documentation for |particle_input| describes ways to ensure that
+  the particle meets certain categorization criteria.
+
+Equations and Physical Formulae
+-------------------------------
+
+* Physical formulae should be inputted without first evaluating all of
+  the physical constants. For example, the following line of code
+  obscures information about the physics being represented:
+
+  .. code-block:: pycon
+
+     >>> omega_ce = 1.76e7*(B/u.G)*u.rad/u.s  # doctest: +SKIP
+
+  In contrast, the following line of code shows the exact formula
+  which makes the code much more readable.
+
+  .. code-block:: pycon
+
+     >>> omega_ce = (e * B) / (m_e * c)  # doctest: +SKIP
+
+  The origins of numerical coefficients in formulae should be
+  documented.
+
+* Docstrings should describe the physics associated with these
+  quantities in ways that are understandable to students who are
+  taking their first course in plasma physics while still being useful
+  to experienced plasma physicists.
+
+Angular Frequencies
+-------------------
+
+Unit conversions involving angles must be treated with care.  Angles
+are dimensionless but do have units.  Angular velocity is often given
+in units of radians per second, though dimensionally this is
+equivalent to inverse seconds.  Astropy will treat radians
+dimensionlessly when using the ``dimensionless_angles`` equivalency,
+but ``dimensionless_angles`` does not account for the multiplicative
+factor of ``2*pi`` that is used when converting between frequency (1 /
+s) and angular frequency (rad / s).  An explicit way to do this
+conversion is to set up an equivalency between cycles/s and Hz:
+
+>>> from astropy import units as u
+>>> f_ce = omega_ce.to(u.Hz, equivalencies=[(u.cy/u.s, u.Hz)])  # doctest: +SKIP
+
+However, ``dimensionless_angles`` does work when dividing a velocity
+by an angular frequency to get a length scale:
+
+>>> d_i = (c/omega_pi).to(u.m, equivalencies=u.dimensionless_angles())  # doctest: +SKIP
+
 .. _example_notebooks:
 
-Examples
-========
+Example notebooks
+=================
 
 .. _docs/notebooks: https://github.com/PlasmaPy/PlasmaPy/tree/main/docs/notebooks
 
@@ -929,22 +831,6 @@ documentation building environment (e.g., ``bokeh``) or runs some heavy
 computation that should not be executed on every commit, *keep the outputs in
 the notebook* but store it in the repository with a ``preexecuted_`` prefix, e.g.,
 :file:`preexecuted_full_3d_mhd_chaotic_turbulence_simulation.ipynb`.
-
-Benchmarks
-==========
-
-.. _benchmarks: https://www.plasmapy.org/plasmapy-benchmarks
-.. _benchmarks-repo: https://github.com/PlasmaPy/plasmapy-benchmarks
-.. _asv: https://github.com/airspeed-velocity/asv
-.. _asv-docs: https://asv.readthedocs.io/en/stable/
-
-PlasmaPy has a set of `asv`_ benchmarks that monitor performance of its
-functionalities.  This is meant to protect the package from performance
-regressions. The benchmarks can be viewed at `benchmarks`_. They're
-generated from results located in `benchmarks-repo`_. Detailed
-instructions on writing such benchmarks can be found at `asv-docs`_.
-Up-to-date instructions on running the benchmark suite will be located in
-the README file of `benchmarks-repo`_.
 
 Compatibility with Prior Versions of Python, NumPy, and Astropy
 ===============================================================
@@ -974,6 +860,113 @@ patch releases.
 Exceptions to these guidelines should only be made when there are major
 improvements or fixes to upstream functionality or when other required
 packages have stricter requirements.
+
+.. The following section will be moved off of this page in #1656
+
+.. _code-contribution:
+
+Branches, commits, and pull requests
+====================================
+
+Before making any changes, it is prudent to update your local
+repository with the most recent changes from the development
+repository:
+
+.. code-block:: bash
+
+  git fetch upstream
+
+Changes to PlasmaPy should be made using branches.  It is usually best
+to avoid making changes on your main branch so that it can be kept
+consistent with the upstream repository.  Instead we can create a new
+branch for the specific feature that you would like to work on:
+
+.. code-block:: bash
+
+  git branch *your-new-feature*
+
+Descriptive branch names such as ``grad-shafranov`` or
+``adding-eigenfunction-poetry`` are helpful, while vague names like
+``edits`` are considered harmful.  After creating your branch locally,
+let your fork of PlasmaPy know about it by running:
+
+.. code-block:: bash
+
+  git push --set-upstream origin *your-new-feature*
+
+It is also useful to configure git so that only the branch you are
+working on gets pushed to GitHub:
+
+.. code-block:: bash
+
+  git config --global push.default simple
+
+Once you have set up your fork and created a branch, you are ready to
+make edits to PlasmaPy.  Switch to your new branch by running:
+
+.. code-block:: bash
+
+  git checkout *your-new-feature*
+
+Go ahead and modify files with your favorite text editor.  Be sure to
+include tests and documentation with any new functionality.  We
+recommend reading about `best practices for scientific computing
+<https://doi.org/10.1371/journal.pbio.1001745>`_.  PlasmaPy uses the
+`PEP 8 style guide for Python code
+<https://www.python.org/dev/peps/pep-0008/>`_ and the `numpydoc format
+for docstrings
+<https://github.com/numpy/numpy/blob/main/doc/HOWTO_DOCUMENT.rst.txt>`_
+to maintain consistency and readability.  New contributors should not
+worry too much about precisely matching these styles when first
+submitting a pull request, GitHub Actions will check pull requests
+for :pep:`8` compatibility, and further changes to the style can be
+suggested during code review.
+
+You may periodically commit changes to your branch by running
+
+.. code-block:: bash
+
+  git add filename.py
+  git commit -m "*brief description of changes*"
+
+Committed changes may be pushed to the corresponding branch on your
+GitHub fork of PlasmaPy using
+
+.. code-block:: bash
+
+  git push origin *your-new-feature*
+
+or, more simply,
+
+.. code-block:: bash
+
+  git push
+
+Once you have completed your changes and pushed them to the branch on
+GitHub, you are ready to make a pull request.  Go to your fork of
+PlasmaPy in GitHub.  Select "Compare and pull request".  Add a
+descriptive title and some details about your changes.  Then select
+"Create pull request".  Other contributors will then have a chance to
+review the code and offer constructive suggestions.  You can continue
+to edit the pull request by changing the corresponding branch on your
+PlasmaPy fork on GitHub.  After a pull request is merged into the
+code, you may delete the branch you created for that pull request.
+
+Benchmarks
+==========
+
+.. _benchmarks: https://www.plasmapy.org/plasmapy-benchmarks
+.. _benchmarks-repo: https://github.com/PlasmaPy/plasmapy-benchmarks
+.. _asv: https://github.com/airspeed-velocity/asv
+.. _asv-docs: https://asv.readthedocs.io/en/stable/
+
+PlasmaPy has a set of `asv`_ benchmarks that monitor performance of its
+functionalities.  This is meant to protect the package from performance
+regressions. The benchmarks can be viewed at `benchmarks`_. They're
+generated from results located in `benchmarks-repo`_. Detailed
+instructions on writing such benchmarks can be found at `asv-docs`_.
+Up-to-date instructions on running the benchmark suite will be located in
+the README file of `benchmarks-repo`_.
 
 .. _ASCII: https://en.wikipedia.org/wiki/ASCII
 .. _cognitive complexity: https://www.sonarsource.com/docs/CognitiveComplexity.pdf

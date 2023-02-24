@@ -17,10 +17,10 @@ import warnings
 import xarray as xr
 
 from abc import ABC, abstractmethod
-from cached_property import cached_property
 from collections import namedtuple
+from functools import cached_property
 from scipy.spatial import distance
-from typing import List, Union
+from typing import Union
 
 from plasmapy.utils.decorators.helpers import modify_docstring
 
@@ -64,7 +64,12 @@ class AbstractGrid(ABC):
 
        .. code-block:: python
 
-          AbstractGrid(start=[x0, y0, z0], stop=[x1, y1, z1], num=[Nx, Ny, Nz], **kwargs)
+          AbstractGrid(
+              start=[x0, y0, z0],
+              stop=[x1, y1, z1],
+              num=[Nx, Ny, Nz],
+              **kwargs,
+          )
 
        In this case, any additional keyword arguments ``**kwargs`` provided
        will be passed directly to `~numpy.linspace`.
@@ -72,7 +77,6 @@ class AbstractGrid(ABC):
     """
 
     def __init__(self, *seeds, num=100, **kwargs):
-
         # Initialize some variables
         self._interpolator = None
         self._is_uniform = None
@@ -167,10 +171,8 @@ class AbstractGrid(ABC):
             so an array of zeros cannot be constructed.
         """
         for rq in req_quantities:
-
             # Error check that grid contains E and B variables required
             if rq not in self.quantities:
-
                 # If missing, warn user and then replace with an array of zeros
                 if not replace_with_zeros:
                     raise KeyError(
@@ -199,14 +201,13 @@ class AbstractGrid(ABC):
     # *************************************************************************
 
     def __repr__(self):
-
         line_sep = "-----------------------------\n"
         shape = list(self.shape)
         coords = list(self.ds.coords.keys())
         ax_units = self.units
         ax_dtypes = [self.ds[i].dtype for i in coords]
 
-        coord_lbls = [f"{str(i)}: {str(j)}" for i, j in zip(coords, shape)]
+        coord_lbls = [f"{i}: {j}" for i, j in zip(coords, shape)]
 
         s = f"*** Grid Summary ***\n{type(self)}\n"
 
@@ -280,8 +281,8 @@ class AbstractGrid(ABC):
         r"""Shape of the grid"""
         if self.is_uniform:
             return (self.ax0.size, self.ax1.size, self.ax2.size)
-        else:
-            return self.ds.coords["ax0"].shape
+
+        return self.ds.coords["ax0"].shape
 
     @property
     def grids(self):
@@ -365,7 +366,7 @@ class AbstractGrid(ABC):
         `ValueError`
             If all grid dimensions do not have identical units.
         """
-        if self.units[0] == self.units[1] and self.units[0] == self.units[2]:
+        if self.units[0] == self.units[1] == self.units[2]:
             return self.units[0]
         else:
             raise ValueError(
@@ -376,7 +377,7 @@ class AbstractGrid(ABC):
     # 1D axes and step sizes (valid only for uniform grids)
     # *************************************************************************
     @property
-    def si_scale_factors(self) -> List[float]:
+    def si_scale_factors(self) -> list[float]:
         """
         3-element list containing unitless scale factors for converting
         the corresponding axis from its stored units to SI.
@@ -708,7 +709,7 @@ class AbstractGrid(ABC):
         # Ensure that start and stop end up as a list of three u.Quantity objs
         # and num a list of three integers
         # TODO python3.10: simplify using structural pattern matching
-        for k in ["start", "stop"]:
+        for k in ("start", "stop"):
             # Convert tuple to list
             if isinstance(var[k], tuple):
                 var[k] = list(var[k])
@@ -1300,14 +1301,14 @@ class CartesianGrid(AbstractGrid):
 
         # Split output array into arrays with units
         # Apply units to output arrays
-        output = []
-        for arg in range(nargs):
-            output.append(weighted_ave[..., arg] * self._interp_units[arg])
+        output = [
+            weighted_ave[..., arg] * self._interp_units[arg] for arg in range(nargs)
+        ]
 
         if len(output) == 1:
             return output[0]
-        else:
-            return tuple(output)
+
+        return tuple(output)
 
 
 class NonUniformCartesianGrid(AbstractGrid):
@@ -1435,11 +1436,6 @@ class NonUniformCartesianGrid(AbstractGrid):
 
         vals[mask_particle_off] = np.nan
 
-        output = []
-        for arg in range(len(args)):
-            output.append(vals[:, arg] * self._interp_units[arg])
+        output = [vals[:, arg] * self._interp_units[arg] for arg in range(len(args))]
 
-        if len(output) == 1:
-            return output[0]
-        else:
-            return tuple(output)
+        return output[0] if len(output) == 1 else tuple(output)
