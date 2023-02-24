@@ -142,10 +142,11 @@ following example:
 
    tox -e build_docs -- -j=auto -q
 
-The ``-j=auto`` option tells `sphinx-build`_ to build the documentation
-in parallel, with the number of processes being automatically
-determined. The ``-q`` flag makes `sphinx-build`_ print out only
-warnings and errors, which makes them easier to find and debug.
+The :bash:`-j=auto` option tells `sphinx-build`_ to build the
+documentation in parallel, with the number of processes being
+automatically determined. The :bash:`-q` flag makes `sphinx-build`_
+print out only warnings and errors, which makes them easier to find and
+debug.
 
 You can alternatively shorten the documentation build by running:
 
@@ -205,8 +206,10 @@ the same length as that heading.
 We can link to code objects by enclosing them in single backticks.
 This linking will work for Python_ objects as well as certain packages
 like NumPy_, SciPy_, Astropy_, and pandas_. This linking is described in
-the section on :ref:`external-references`. In-line code examples may be
-enclosed in double backticks or specified using the ``:py:`` role.
+the section on :ref:`external-references`. In-line code samples are
+typically enclosed in double backticks. To get inline code highlighting,
+use the :rest:`:py:` role for Python code, :rest:`:bash:` for code run
+in a terminal, and the :rest:`:rest:` role for reST_.
 
 .. code-block:: rst
 
