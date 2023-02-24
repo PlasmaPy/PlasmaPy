@@ -18,6 +18,9 @@ contributors can take to get set up to contribute to PlasmaPy. After
 taking these steps, you'll be ready to go through the :ref:`code
 contribution workflow <workflow>`.
 
+If you run into any problems, please feel free to reach out to us in
+our `Matrix chat room`_ or during our weekly `office hours`_.
+
 Pre-requisites
 ==============
 
@@ -146,7 +149,7 @@ Initial setup
 #. :ref:`Open a terminal <opening-a-terminal>`. Then create and/or
    navigate to the folder in which you want to download PlasmaPy. For
    example, to put PlasmaPy into a new directory called :file:`repos/`
-   in your home directory (denoted by ``~``), run:
+   in your home directory (denoted by :bash:`~`), run:
 
    .. code-block::
 
@@ -180,9 +183,9 @@ Initial setup
 
       git remote add upstream git@github.com:PlasmaPy/PlasmaPy.git
 
-   If you run ``git remote -v``, you should see that ``origin``
-   corresponds to your fork_ and ``upstream`` corresponds to `PlasmaPy's
-   GitHub repository`_.
+   If you run :bash:`git remote -v`, you should see that :bash:`origin`
+   corresponds to your fork_ and :bash:`upstream` corresponds to
+   `PlasmaPy's GitHub repository`_.
 
 Setting up a Python environment (optional)
 ==========================================
@@ -200,25 +203,25 @@ environment`_ instead.
    Using Conda/virtual environments helps avoid situations as in `this
    xkcd comic`_.
 
-1. `Open a terminal <opening-a-terminal>`_.
+#. `Open a terminal <opening-a-terminal>`_.
 
-2. Create a Conda environment named ``plasmapy-dev`` by running:
+#. Create a Conda environment named ``plasmapy-dev`` by running:
 
    .. code-block:: bash
 
       conda create -n plasmapy-dev python=3.10
 
-   The ``-n`` flag is used to specify the name of the environment. The
-   ``3.10`` can be replaced with any version of Python from |minpython|
-   to |maxpython|.
+   The :bash:`-n` flag is used to specify the name of the environment.
+   The ``3.10`` can be replaced with any version of Python from
+   |minpython| to |maxpython|.
 
-3. Activate the environment with:
+#. Activate the environment with:
 
    .. code-block:: bash
 
       conda activate plasmapy-dev
 
-   The ``conda activate`` command will need to be run every time you
+   The :bash:`conda activate` command will need to be run every time you
    open a terminal, or can be added to the appropriate configuration
    file (i.e., :file:`.bashrc` for bash or :file:`.zshrc` for zsh).
 
@@ -230,23 +233,10 @@ clone of PlasmaPy. Making the PlasmaPy installation *editable* means
 that if you modify the source code, then those changes will be included
 when you :py:`import plasmapy`.
 
-
-that the source code can be modified and those changes will be included in when
-you import
-
-Having the installation be editable means that if you
-re-open Python
-
-the development version of PlasmaPy.
-
-.. Use one of the following commands in the :file:`PlasmaPy/` directory
-   to perform an editable (``-e``) installation of PlasmaPy, along with
-   the Python packages needed to build documentation and run tests.
-
 1. `Open a terminal <opening-a-terminal>`_.
 
 2. Navigate to the directory for your clone of PlasmaPy, which should be
-   named :file:`PlasmaPy`. For example, if you ran the ``git clone``
+   named :file:`PlasmaPy`. For example, if you ran the :bash:`git clone`
    command in the :file:`~/repos/` directory, then run:
 
    .. code-block:: bash
@@ -282,25 +272,32 @@ the development version of PlasmaPy.
 
             python -m pip install -e .[docs,tests]
 
-   The ``-e`` specifies that this will be an `editable installation`_.
+   The :bash:`-e` specifies that this will be an `editable
+   installation`_.
 
    .. tip::
 
-      If the above command does not work, an alternative is to run
-      ``pip install -r requirements.txt`` instead, which will install
-      the packages that PlasmaPy depends on but not PlasmaPy itself.
+      If the above command does not work, try running
+
+      .. code-block:: bash
+
+         pip install -r requirements.txt
+
+      This command will install that packages that PlasmaPy depends on,
+      but not PlasmaPy itself.
 
 .. hint::
 
-   When working with an editable installation of a Python package, you
-   can reflect any changes made to the package's source code without
-   having to reinstall it by using `importlib.reload`.
+   If you import a package after doing an editable installation, then
+   changes made after the :py:`import` step will not be immediately
+   available during a Python session. To re-import the package, use
+   `importlib.reload`:
 
    .. code-block:: pycon
 
       >>> from importlib import reload
       >>> import plasmapy
-      >>> # change the source code
+      >>> # now change the source code
       >>> reload(plasmapy)
 
 Installing pre-commit
@@ -318,9 +315,9 @@ is optional to set up pre-commit locally.
 
 To enable pre-commit on your computer:
 
-1. `Open a terminal <opening-a-terminal>`_.
+#. `Open a terminal <opening-a-terminal>`_.
 
-2. Navigate to the :file:`PlasmaPy/` directory that contains your clone
+#. Navigate to the :file:`PlasmaPy/` directory that contains your clone
    of PlasmaPy's repository. For example, if you cloned PlasmaPy into
    the :file:`~/repos/` directory, then run:
 
@@ -328,19 +325,20 @@ To enable pre-commit on your computer:
 
       cd ~/repos/PlasmaPy
 
-4. If you created a Conda_ environment for PlasmaPy, activate it with:
+#. If you created a Conda_ environment for PlasmaPy, activate it with:
 
    .. code-block:: bash
 
       conda activate plasmapy-dev
 
-5. Make sure that pre-commit is installed by running:
+#. Make sure that pre-commit is installed by running:
 
    .. tabs::
 
       .. group-tab:: Windows
 
          .. code-block:: bash
+
             py -m pip install pre-commit
 
       .. group-tab:: macOS
@@ -355,7 +353,7 @@ To enable pre-commit on your computer:
 
             python -m pip install pre-commit
 
-6. Install pre-commit with:
+#. Install pre-commit with:
 
    .. code-block:: bash
 
@@ -366,16 +364,17 @@ To enable pre-commit on your computer:
    Once pre-commit has been installed for a repository, pre-commit will
    run every time you try to commit a change. If any pre-commit checks
    fail, or if pre-commit changes any files, it will be necessary to
-   redo ``git add`` on the changed files and ``git commit`` once again.
+   redo :bash:`git add` on the changed files and :bash:`git commit` once
+   again.
 
 .. tip::
 
-   To commit a change without running pre-commit, use the ``-n`` or
-   ``--no-verify`` flag with ``git``.
+   To commit a change without running pre-commit, use the :bash:`-n` or
+   :bash:`--no-verify` flag with :bash:`git`.
 
 .. tip::
 
-   To run pre-commit on all files, use
+   To run ``pre-commit`` on all files, use
 
    .. code-block:: bash
 
