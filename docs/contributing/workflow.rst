@@ -123,6 +123,8 @@ repeated multiple times.
 Creating a pull request
 =======================
 
+#. Go to `PlasmaPy's GitHub repository`_.
+
 
 
 
@@ -335,3 +337,5 @@ Organize this
 .. _Unix shell: https://en.wikipedia.org/wiki/Unix_shell
 .. _Windows Subsystem for Linux: https://docs.microsoft.com/en-us/windows/wsl/install
 .. _remote: https://github.com/git-guides/git-remote
+.. _branch: https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/about-branches
+.. _fork: https://docs.github.com/en/get-started/quickstart/fork-a-repo

@@ -6,9 +6,8 @@ Installing PlasmaPy
 
 .. note::
 
-   If you would like to contribute to PlasmaPy, please refer to the
-   instructions on :ref:`installing PlasmaPy for development
-   <install-plasmapy-dev>`.
+   If you would like to contribute to PlasmaPy, please check out the
+   |contributor guide|.
 
 .. contents:: Contents
    :local:
@@ -16,16 +15,16 @@ Installing PlasmaPy
 Installing Python
 =================
 
-PlasmaPy requires Python_ |minpython| or newer. If you do not have Python_
-installed already, here are the instructions to `download Python`_ and
-install it.
+PlasmaPy requires a version of Python_ between |minpython| and
+|maxpython|. If you do not have Python_ installed already, here are the
+instructions to `download Python`_ and install it.
 
 .. tip::
 
    New versions of Python_ are released annually in October, and it can
    take a few months for the scientific Python ecosystem to catch up. If
    you have trouble installing `plasmapy` on the most recent Python_
-   version between October and ∼December, then try installing it on the
+   version between October and March, then try installing it on the
    second most recent version.
 
 .. _install-pip:

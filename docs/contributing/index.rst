@@ -66,4 +66,6 @@ for MetPy_ and yt_, before being adapted for PlasmaPy.*
 .. _imposter syndrome disclaimer: https://github.com/adriennefriend/imposter-syndrome-disclaimer
 .. _MetPy: https://unidata.github.io/MetPy/latest/index.html
 .. _PyCon talk: https://www.youtube.com/watch?v=6Uj746j9Heo
+.. _request new features: https://github.com/PlasmaPy/PlasmaPy/issues/new?assignees=&labels=Feature+request&template=feature_request.yml
+.. _report bugs: https://github.com/PlasmaPy/PlasmaPy/issues/new?assignees=&labels=Bug&template=bug_report.yml
 .. _yt: https://yt-project.org/
