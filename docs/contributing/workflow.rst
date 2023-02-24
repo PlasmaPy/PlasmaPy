@@ -1,4 +1,4 @@
-.. _how-to-contribute:
+.. _workflow:
 
 ==========================
 Code Contribution Workflow

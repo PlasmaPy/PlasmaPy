@@ -69,6 +69,8 @@ There are two methods for building the documentation: make_ and tox_.
   Consequently, PlasmaPy uses tox_ for building the documentation on
   continuous integration testing platforms.
 
+.. _doc-build-prereqs:
+
 Prerequisites
 -------------
 

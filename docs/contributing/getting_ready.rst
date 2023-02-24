@@ -12,9 +12,11 @@ Getting Ready to Contribute
 Introduction
 ============
 
-This page goes through the steps that first-time contributors can take
-to get set up to contribute to PlasmaPy. After taking these steps,
-you'll be ready to go through the |code contribution workflow|.
+Thank you for considering contributing to PlasmaPy — we really
+appreciate it!  This page goes through the steps that first-time
+contributors can take to get set up to contribute to PlasmaPy. After
+taking these steps, you'll be ready to go through the :ref:`code
+contribution workflow <workflow>`.
 
 Pre-requisites
 ==============
@@ -24,13 +26,12 @@ Pre-requisites
 Opening a terminal
 ------------------
 
-The commands described in the following sections are intended to be run
-in a :wikipedia:`Unix <Unix shell>` terminal. If you are new to Unix,
-check out this `Unix tutorial`_ and these `frequently used Unix
-commands`_.
+The commands in this page are intended to be run in a :wikipedia:`Unix
+<Unix shell>` terminal. If you are new to Unix, check out this `Unix
+tutorial`_ and these `frequently used Unix commands`_.
 
-These tabs describe how to use a terminal on different operating
-systems.
+These tabs describe how to open and use a terminal on different
+operating systems.
 
 .. tabs::
 
@@ -46,19 +47,18 @@ systems.
       * We recommend `Windows Subsystem for Linux`_ (WSL) if you are
         familiar with Unix, you use macOS or Linux too, or you expect to
         contribute to PlasmaPy extensively. These instructions cover
-        `installing WSL`_. If you choose WSL, please follow the tabs for
-        :guilabel:`Linux/WSL` in the following sections.
+        `installing WSL`_. If you choose WSL, follow the tabs for
+        :guilabel:`Linux/WSL` below.
 
    .. group-tab:: macOS
 
       In the :guilabel:`Finder`, go to :guilabel:`Applications`. Enter
       the :guilabel:`Utilities` folder and double click on
-      :guilablel:`Terminal`.
+      :guilabel:`Terminal`.
 
    .. group-tab:: Linux/WSL
 
       Open a terminal by using :kbd:`Ctrl + Alt + T`.
-
 
 .. _installing-python:
 
@@ -70,39 +70,40 @@ Installing Python
    PlasmaPy requires a version of Python between |minpython| and
    |maxpython|. We recommend using Python |maxpython|.
 
-We recommend using Anaconda_ to install Python_. Anaconda_ is a
-versatile package and environment management system which is widely used
-in the data science and scientific Python communities. Anaconda includes
+We suggest using Anaconda_ to install Python_. Anaconda_ is a versatile
+package and environment management system which is widely used in the
+data science and scientific Python communities. Anaconda includes
 `Anaconda Navigator`_ as its graphical user interface (GUI) and Conda_
 as its command line interface (CLI).
 
-* If you prefer a GUI, please following these instructions on
-  `installing Anaconda Navigator`_.
+* If you prefer a GUI, follow these instructions on `installing Anaconda
+  Navigator`_.
 
-* If you prefer a CLI, please follow these instructions on
-  `installing Conda`_.
+* If you prefer a CLI, follow these instructions on `installing Conda`_.
 
-There are many other good ways to install Python. Python's website
-describes how to `download Python`_.  `Real Python`_ has instructions
-on `installing Python`_ for several different operating systems (if
-using WSL_, follow the Linux instructions).
+.. note::
+
+   There are many other equally good ways to install Python. Python's
+   website describes how to `download Python`_. `Real Python`_ has
+   instructions on `installing Python`_ for several different operating
+   systems (if working within WSL_, follow the Linux instructions).
 
 Using git and GitHub
 --------------------
 
-Code contributions to PlasmaPy are made using |git|_ and |GitHub|.
+Code contributions to PlasmaPy are made using |git|_ and GitHub_.
 Before contributing code to PlasmaPy, please take the following steps:
 
 #. `Sign up on GitHub`_ for a free account.
 
-#. Verify that |git|_ is installed. Open a terminal and run:
+#. Verify that |git|_ is installed by
+   :ref:`opening a terminal <opening-a-terminal>` and running:
 
    .. code-block:: bash
 
       git --version
 
-   If there is an error, then please follow these instructions to
-   `install git`_.
+   If there is an error, follow these instructions to `install git`_.
 
 #. Optionally, configure |git|_ with your name with a command like:
 
@@ -152,7 +153,7 @@ Initial setup
       mkdir ~/repos
       cd ~/repos
 
-#. Clone_ PlasmaPy with the following command, replacing
+#. Clone_ the PlasmaPy repository with the following command, replacing
    ``YOUR-USERNAME`` with your GitHub username. This will create a
    subdirectory called :file:`PlasmaPy/` containing your local clone of
    the repository.
@@ -160,6 +161,11 @@ Initial setup
    .. code-block:: bash
 
       git clone git@github.com:YOUR-USERNAME/PlasmaPy.git
+
+   .. tip::
+
+      If you have trouble connecting to GitHub, you may need to `add a
+      new SSH key to your GitHub account`_.
 
 #. Enter the newly created directory with:
 
@@ -174,7 +180,7 @@ Initial setup
 
       git remote add upstream git@github.com:PlasmaPy/PlasmaPy.git
 
-   If you then run ``git remote -v``, you should see that ``origin``
+   If you run ``git remote -v``, you should see that ``origin``
    corresponds to your fork_ and ``upstream`` corresponds to `PlasmaPy's
    GitHub repository`_.
 
@@ -184,20 +190,27 @@ Setting up a Python environment (optional)
 If you plan to make multiple contributions, we recommend setting up a
 Python environment specifically for PlasmaPy. This section describes how
 to set up a Conda_ environment from the command line, which can be done
-after installing Conda_ or `Anaconda Navigator`_ as described in the
-section on `getting Python <installing-python>`_.
+after installing Conda or `Anaconda Navigator`_ as described in the
+section on `getting Python <installing-python>`_. If you did not use
+Conda or Anaconda to install Python, we suggest using a `virtual
+environment`_ instead.
+
+.. tip::
+
+   Using Conda/virtual environments helps avoid situations as in `this
+   xkcd comic`_.
 
 1. `Open a terminal <opening-a-terminal>`_.
 
-2. Create a Conda_ environment named ``plasmapy-dev`` by running:
+2. Create a Conda environment named ``plasmapy-dev`` by running:
 
    .. code-block:: bash
 
       conda create -n plasmapy-dev python=3.10
 
    The ``-n`` flag is used to specify the name of the environment. The
-   ``3.10`` can be replaced with any version of Python between
-   |minpython| and |maxpython|.
+   ``3.10`` can be replaced with any version of Python from |minpython|
+   to |maxpython|.
 
 3. Activate the environment with:
 
@@ -205,12 +218,26 @@ section on `getting Python <installing-python>`_.
 
       conda activate plasmapy-dev
 
-   This command will need to be run every time you open a terminal, or
-   can be added to the appropriate configuration file (i.e.,
-   :file:`.bashrc` for bash or :file:`.zshrc` for zsh).
+   The ``conda activate`` command will need to be run every time you
+   open a terminal, or can be added to the appropriate configuration
+   file (i.e., :file:`.bashrc` for bash or :file:`.zshrc` for zsh).
 
 Installing your clone of PlasmaPy
 =================================
+
+This section covers how to make an `editable installation`_ of your
+clone of PlasmaPy. Making the PlasmaPy installation *editable* means
+that if you modify the source code, then those changes will be included
+when you :py:`import plasmapy`.
+
+
+that the source code can be modified and those changes will be included in when
+you import
+
+Having the installation be editable means that if you
+re-open Python
+
+the development version of PlasmaPy.
 
 .. Use one of the following commands in the :file:`PlasmaPy/` directory
    to perform an editable (``-e``) installation of PlasmaPy, along with
@@ -226,7 +253,8 @@ Installing your clone of PlasmaPy
 
       cd ~/repos/PlasmaPy
 
-3. If you created a Conda_ environment for PlasmaPy, activate it with:
+3. If you created a Conda_ environment for contributing to PlasmaPy,
+   activate it with:
 
    .. code-block:: bash
 
@@ -239,6 +267,7 @@ Installing your clone of PlasmaPy
       .. group-tab:: Windows
 
          .. code-block:: bash
+
             py -m pip install -e .[docs,tests]
 
       .. group-tab:: macOS
@@ -261,22 +290,21 @@ Installing your clone of PlasmaPy
       ``pip install -r requirements.txt`` instead, which will install
       the packages that PlasmaPy depends on but not PlasmaPy itself.
 
-Optional steps
-==============
+.. hint::
 
-Preparing to build documentation
---------------------------------
+   When working with an editable installation of a Python package, you
+   can reflect any changes made to the package's source code without
+   having to reinstall it by using `importlib.reload`.
 
-If you plan to build the documentation locally on your computer, you
-may need to:
+   .. code-block:: pycon
 
-* `Install pandoc`_
-* `Install Graphviz`_
-
-These packages are not installed using the ``pip`` commands above.
+      >>> from importlib import reload
+      >>> import plasmapy
+      >>> # change the source code
+      >>> reload(plasmapy)
 
 Installing pre-commit
----------------------
+=====================
 
 PlasmaPy uses pre-commit_ to automate code quality checks and perform
 automated fixes. Because pre-commit checks are performed on GitHub, it
@@ -285,7 +313,8 @@ is optional to set up pre-commit locally.
 .. tip::
 
    We recommend enabling pre-commit locally on your computer after you
-   become comfortable with the |code contribution workflow|.
+   become comfortable with the :ref:`code contribution workflow
+   <workflow>`.
 
 To enable pre-commit on your computer:
 
@@ -332,26 +361,44 @@ To enable pre-commit on your computer:
 
       pre-commit install
 
-Using pre-commit
-~~~~~~~~~~~~~~~~
+.. note::
 
-.. Probably need to simplify this!
+   Once pre-commit has been installed for a repository, pre-commit will
+   run every time you try to commit a change. If any pre-commit checks
+   fail, or if pre-commit changes any files, it will be necessary to
+   redo ``git add`` on the changed files and ``git commit`` once again.
 
-Now suppose we added some trailing whitespace to :file:`some_file.py`
+.. tip::
+
+   To commit a change without running pre-commit, use the ``-n`` or
+   ``--no-verify`` flag with ``git``.
+
+.. tip::
+
+   To run pre-commit on all files, use
+
+   .. code-block:: bash
+
+      pre-commit run --all-files
+
+.. The following is old pre-commit language that we might still want to
+   adapt
+
+.. Now suppose we added some trailing whitespace to :file:`some_file.py`
 and attempted to commit it. If |pre-commit|_ has been installed, then
 the ``trailing-whitespace`` hook will cause |pre-commit|_ to fail while
 modifying :file:`some_file.py` to remove the trailing whitespace.
 
-.. code-block:: console
+.. .. code-block:: console
 
-   $ git add some_file.py
+.. .. $ git add some_file.py
    $ git commit -m "Add trailing whitespace"
    Trim Trailing Whitespace.................................................Failed
    - hook id: trailing-whitespace
    - exit code: 1
    - files were modified by this hook
 
-At this point it will be necessary to run these two commands again to
+.. At this point it will be necessary to run these two commands again to
 commit the changes. The changes made by |pre-commit|_ will be unstaged and
 thus could be seen by running ``git diff``. Sometimes |pre-commit|_ will
 not be able to automatically fix the files, such as when there are
@@ -360,23 +407,12 @@ changed manually before running the ``git add`` and ``git commit``
 commands again. Alternatively, the |pre-commit|_ hooks can be skipped
 using ``git commit -n`` instead.
 
-
-After adding or updating |pre-commit|_ hooks, run the following command to
-apply the changes to all files.
-
-.. code-block:: bash
-
-   pre-commit run --all-files
-
-
-
-.. _add-ssh: https://docs.github.com/en/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account
+.. _Add a new SSH key to your GitHub account: https://docs.github.com/en/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account
 .. _Anaconda Navigator: https://docs.anaconda.com/navigator/
 .. _Anaconda: https://docs.anaconda.com/
 .. _clone: https://github.com/git-guides/git-clone
 .. _creating an environment: https://docs.anaconda.com/navigator/tutorials/manage-environments/#creating-a-new-environment
 .. _download Python: https://www.python.org/downloads/
-.. _editable installation: https://pip.pypa.io/en/latest/topics/local-project-installs/#editable-installs
 .. _fork: https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/about-forks
 .. _frequently used Unix commands: https://faculty.tru.ca/nmora/Frequently%20used%20UNIX%20commands.pdf
 .. _git commands for setup and config: https://git-scm.com/book/en/v2/Appendix-C%3A-Git-Commands-Setup-and-Config
@@ -388,12 +424,16 @@ apply the changes to all files.
 .. _installing Python: https://realpython.com/installing-python/
 .. _installing WSL: https://learn.microsoft.com/en-us/windows/wsl/install
 .. _miniconda: https://docs.conda.io/en/latest/miniconda.html
+.. _opening Powershell: https://learn.microsoft.com/en-us/powershell/scripting/windows-powershell/starting-windows-powershell?view=powershell-7.3
 .. _powershell: https://learn.microsoft.com/en-us/powershell/
 .. _Real Python: https://realpython.com/
 .. _remote: https://github.com/git-guides/git-remote
 .. _sign up on GitHub: https://github.com/join
 .. _terminal user guide: https://support.apple.com/guide/terminal/welcome/mac
+.. _this xkcd comic: https://xkcd.com/1987/
+.. _unix tutorial: https://www.hpc.iastate.edu/guides/unix-introduction/unix-tutorial-1
 .. _using an environment: https://docs.anaconda.com/navigator/tutorials/manage-environments/#using-an-environment
 .. _venv: https://docs.python.org/3/library/venv.html
+.. _virtual environment: https://realpython.com/python-virtual-environments-a-primer/
 .. _Windows Subsystem for Linux: https://learn.microsoft.com/en-us/windows/wsl
 .. _WSL: https://learn.microsoft.com/en-us/windows/wsl
