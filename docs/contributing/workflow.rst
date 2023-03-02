@@ -121,110 +121,79 @@ repeated multiple times.
      (i.e., GitHub).
 
 Creating a pull request
-=======================
+-----------------------
+
+#. Run ``git push`` to make sure that branch on GitHub is up-to-date.
 
 #. Go to `PlasmaPy's GitHub repository`_.
 
+#. If you recently pushed new changes, a pale yellow box will appear
+   near the top of the screen. In that box, click
+   :guilabel:`Compare & pull request`.
 
+   .. note::
 
+      If you did not recently push any new changes, click on
+      :guilabel:`New pull request` and then the link saying "compare
+      across forks." Select ``PlasmaPy/PlasmaPy`` for "base repository"
+      and ``main`` for "base". Choose your fork of PlasmaPy for "head
+      repository" and the name of the branch for "compare".  Then click
+      on :guilabel:`Create pull request`.
 
-Organize this
-=============
+#. Add a descriptive title, such as
+   ``Add a function to calculate particle gyroradii``.
 
+#. Write a description for the pull request. Describe the changes, and
+   why they are being made. Include information that you think would be
+   helpful for reviewers and for future reviewers and contributors.
 
-.. tip::
+   .. tip::
 
-   Issues labeled as a `good first contribution`_ are a great place to
-   get started contributing.
+      If your pull request will close an issue, include
+      :samp:`Fixes #{ISSUE-NUMBER}` in the pull request description,
+      where :samp:`{ISSUE-NUMBER}` is replaced with the number of the
+      issue.
 
+#. Click on :guilabel:`Create pull request` or
+   :guilabel:`Create draft pull request`.  ← update this!
 
+#. Add a changelog entry...
 
-.. hint::
+#. Be sure to add/update tests and docs...
 
-   Making multiple focused pull requests usually works better than
-   making a monolithic pull request.
+After the pull request had been created, running ``git push`` will
+update the pull request.
+
+At this stage, reviewers will perform a code review...
+
+Note that there is a code review bottleneck...and ask people to consider
+becoming code reviewers?
+
+Code contribution tips
+======================
 
 .. danger::
 
-  Avoid making pull requests from your ``main`` branch. (describe why)
+   These tips are still being written!
 
+* Choose a minor change for your very first pull request.
 
-.. Branches, commits, and pull requests
-   ====================================
+* Issues labeled as a `good first contribution`_ are a great place to
+  get started contributing.
 
-.. Before making any changes, it is prudent to update your local
-   repository with the most recent changes from the development
-   repository:
+* In each pull request, include a set of closely related changes.
 
-.. ucode-block bash
+* Aim for pull requests that are ≲ 400 lines long. While longer pull
+  requests are sometimes necessary, try to break up large pull requests
+  into multiple pull requests, each with a set of closely related changes.
 
-..  git fetch upstream
+* If there is a part of code that you think could be improved, ask
+  questions of reviewers.
 
-.. Changes to PlasmaPy should be made using branches.  It is usually best
-.. to avoid making changes on your main branch so that it can be kept
-.. consistent with the upstream repository. Instead we can create a new
-.. branch for the specific feature that you would like to work on:
+* Avoid making pull requests from your ``main`` branch. (describe why)
 
-.. .. code-block:: bash
+.. Add something about the code review bottleneck?
 
-..  git branch *your-new-feature*
-
-.. Descriptive branch names such as ``grad-shafranov`` or
-.. .. ``adding-eigenfunction-poetry`` are helpful, while vague names like
-.. .. ``edits`` are considered harmful.  After creating your branch locally,
-.. let your fork of PlasmaPy know about it by running:
-
-.. .. code-block:: bash
-
-..  git push --set-upstream origin *your-new-feature*
-
-.. It is also useful to configure git so that only the branch you are
-.. working on gets pushed to GitHub:
-
-.. .. code-block:: bash
-
-..  git config --global push.default simple
-
-.. Once you have set up your fork and created a branch, you are ready to
-   make edits to PlasmaPy.  Switch to your new branch by running:
-
-.. .. code-block:: bash
-
-..   git checkout *your-new-feature*
-
-.. Go ahead and modify files with your favorite text editor.  Be sure to
-   include tests and documentation with any new functionality.  We
-   recommend reading about `best practices for scientific computing
-   <https://doi.org/10.1371/journal.pbio.1001745>`_.  PlasmaPy uses the
-   `PEP 8 style guide for Python code
-   <https://www.python.org/dev/peps/pep-0008/>`_ and the `numpydoc format
-   for docstrings
-   <https://github.com/numpy/numpy/blob/main/doc/HOWTO_DOCUMENT.rst.txt>`_
-   to maintain consistency and readability.  New contributors should not
-   worry too much about precisely matching these styles when first
-.. submitting a pull request, GitHub Actions will check pull requests
-   for :pep:`8` compatibility, and further changes to the style can be
-   suggested during code review.
-
-.. You may periodically commit changes to your branch by running
-
-.. .. code-block:: bash
-
-..  git add filename.py
-..  git commit -m "*brief description of changes*"
-
-.. Committed changes may be pushed to the corresponding branch on your
-.. GitHub fork of PlasmaPy using
-
-.. .. code-block:: bash
-
-..  git push origin *your-new-feature*
-
-.. or, more simply,
-
-.. .. code-block:: bash
-
-..   git push
 
 .. Once you have completed your changes and pushed them to the branch on
    GitHub, you are ready to make a pull request.  Go to your fork of
@@ -236,85 +205,6 @@ Organize this
    PlasmaPy fork on GitHub.  After a pull request is merged into the
    code, you may delete the branch you created for that pull request.
 
-
-.. Beforehand
-   ==========
-
-.. 1. `Sign up for a free GitHub account <https://github.com/signup>`_
-   2.
-
-
-.. Create a GitHub account
-   -----------------------
-
-.. Install git
-   -----------
-
-.. Learning Python
- ---------------
-
-.. Getting started
-.. .. ===============
-
-.. Fork the repository
-   -------------------
-
-.. Clone the repository
-   --------------------
-
-.. Set up remotes
-   --------------
-
-.. Workflow
-   ========
-
-.. Fetch recent changes
-   --------------------
-
-.. Create a new branch
-   -------------------
-
-.. Connect the branch to GitHub
-   ----------------------------
-
-.. Make changes
-   ------------
-
-.. Commit the changes
-   ------------------
-
-.. Push the changes to GitHub
-   --------------------------
-
-.. Create a pull request
-   ---------------------
-
-.. Add a changelog entry
-   ---------------------
-
-.. Code review
-   -----------
-
-.. Getting help
-   ============
-
-.. Many ways to contribute
-   =======================
-
-.. There are many ways to contribute to an open source project such as
-   PlasmaPy beyond contributing code. You can create educational notebooks
-   that introduce plasma concepts using PlasmaPy. You can
-
-.. * `Request new features`_.
-   * `Report bugs`_.
-   * Write tutorials on how to use different PlasmaPy features.
-   * Create educational notebooks that introduce plasma concepts using PlasmaPy.
-   * Improve the project's documentation.
-   * Translate PlasmaPy's documentation into another language.
-   * Organize events such as `Plasma Hack Week`_.
-
-.. Resources
-   ========
 
 .. ... * `GitHub Documentation`_
    ...  - `Collaborating with pull requests`_
