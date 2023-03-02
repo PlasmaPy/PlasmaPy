@@ -199,6 +199,7 @@ with open("common_links.rst") as cl:
 rst_prolog = """
 .. role:: py(code)
    :language: python
+
 .. role:: bash(code)
    :language: bash
 """
@@ -367,6 +368,7 @@ nitpick_ignore_regex = [
     (python_role, "docstring of"),
     (python_role, "validation specifications"),
     # for reST workarounds defined in docs/common_links.rst
+    (python_role, "git"),
     (python_role, "h5py"),
     (python_role, "IPython.sphinxext.ipython_console_highlighting"),
     (python_role, "lmfit"),
