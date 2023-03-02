@@ -75,6 +75,7 @@ docutils==0.17.1
     #   restructuredtext-lint
     #   sphinx
     #   sphinx-rtd-theme
+    #   sphinx-tabs
     #   sphinxcontrib-bibtex
 entrypoints==0.4
     # via jupyter-client
@@ -153,6 +154,7 @@ jinja2==3.1.2
     #   numpydoc
     #   plasmapy (setup.py)
     #   sphinx
+    #   sphinx-tabs
     #   towncrier
 json5==0.9.11
     # via jupyterlab-server
@@ -327,6 +329,7 @@ pygments==2.14.0
     #   plasmapy (setup.py)
     #   rich
     #   sphinx
+    #   sphinx-tabs
 pyparsing==3.0.9
     # via matplotlib
 pyrsistent==0.19.3
@@ -409,6 +412,7 @@ sphinx==5.3.0
     #   sphinx-notfound-page
     #   sphinx-reredirects
     #   sphinx-rtd-theme
+    #   sphinx-tabs
     #   sphinxcontrib-bibtex
 sphinx-changelog==1.2.0
     # via plasmapy (setup.py)
@@ -425,6 +429,8 @@ sphinx-notfound-page==0.8.3
 sphinx-reredirects==0.1.1
     # via plasmapy (setup.py)
 sphinx-rtd-theme==1.1.1
+    # via plasmapy (setup.py)
+sphinx-tabs==3.4.0
     # via plasmapy (setup.py)
 sphinxcontrib-applehelp==1.0.4
     # via sphinx
