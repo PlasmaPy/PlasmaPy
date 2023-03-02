@@ -12,12 +12,18 @@ Code Contribution Workflow
 Introduction
 ============
 
-This page describes the workflow for making a contribution to PlasmaPy.
-This page assumes that you have finished the steps for
-:ref:`getting ready to contribute`.
+This page describes the workflow for making a contribution to PlasmaPy
+via a `pull request`_. This page assumes that you have finished the
+steps for :ref:`getting ready to contribute`.
 
 If you run into any problems, please feel free to reach out to us in
-our `Matrix chat room`_ or during our weekly `office hours`_.
+our `Matrix chat room`_ or during our weekly `office hours`_. Thank you
+for contributing!
+
+.. tip::
+
+   Issues labeled as a `good first contribution`_ are a great place to
+   get started with contributing.
 
 Making a code contribution
 ==========================
@@ -49,8 +55,7 @@ Create a new branch
 
    .. tip::
 
-      Use descriptive branch names like ``update-contribution-workflow``
-      to make it easier to remember the purpose of each branch.
+      Use descriptive branch names like ``update-contribution-workflow``.
 
 #. Connect your local branch to your fork_ of PlasmaPy on GitHub_ by
    running:
@@ -102,7 +107,7 @@ repeated multiple times.
 
 .. tip::
 
-   Try using the ``git status`` command after every step to get a better
+   Try using the ``git status`` command after each step to get a better
    idea of what is happening.
 
 .. note::
@@ -145,87 +150,38 @@ Creating a pull request
 
 #. Write a description for the pull request. Describe the changes, and
    why they are being made. Include information that you think would be
-   helpful for reviewers and for future reviewers and contributors.
+   helpful for reviewers, future users, and future contributors..
 
    .. tip::
 
-      If your pull request will close an issue, include
-      :samp:`Fixes #{ISSUE-NUMBER}` in the pull request description,
+      If your pull request will resolve an issue, include
+      :samp:`Closes #{ISSUE-NUMBER}` in the pull request description,
       where :samp:`{ISSUE-NUMBER}` is replaced with the number of the
       issue.
 
-#. Click on :guilabel:`Create pull request` or
-   :guilabel:`Create draft pull request`.  ← update this!
+#. Select :guilabel:`Create pull request`.
 
-#. Add a changelog entry...
+   .. tip::
 
-#. Be sure to add/update tests and docs...
+      If the pull request isn't ready for review, select the
+      :guilabel:`▼` next to :guilabel:`Create pull request` to enable
+      you to create a draft pull request instead.
 
-After the pull request had been created, running ``git push`` will
-update the pull request.
+#. :ref:`Add a changelog entry <add-changelog>`, except for minor
+   changes like typo fixes.
 
-At this stage, reviewers will perform a code review...
+   .. note::
 
-Note that there is a code review bottleneck...and ask people to consider
-becoming code reviewers?
+      After the pull request has been created, it can be updated by
+      using ``git push`` to update the corresponding branch on GitHub.
 
-Code contribution tips
-======================
+At this stage, a reviewer will perform a code review, unless it has been
+marked as a draft pull request. Thank you for contributing!
 
-.. danger::
-
-   These tips are still being written!
-
-* Choose a minor change for your very first pull request.
-
-* Issues labeled as a `good first contribution`_ are a great place to
-  get started contributing.
-
-* In each pull request, include a set of closely related changes.
-
-* Aim for pull requests that are ≲ 400 lines long. While longer pull
-  requests are sometimes necessary, try to break up large pull requests
-  into multiple pull requests, each with a set of closely related changes.
-
-* If there is a part of code that you think could be improved, ask
-  questions of reviewers.
-
-* Avoid making pull requests from your ``main`` branch. (describe why)
-
-.. Add something about the code review bottleneck?
-
-
-.. Once you have completed your changes and pushed them to the branch on
-   GitHub, you are ready to make a pull request.  Go to your fork of
-   PlasmaPy in GitHub.  Select "Compare and pull request".  Add a
-   descriptive title and some details about your changes.  Then select
-   "Create pull request".  Other contributors will then have a chance to
-   review the code and offer constructive suggestions.  You can continue
-   to edit the pull request by changing the corresponding branch on your
-   PlasmaPy fork on GitHub.  After a pull request is merged into the
-   code, you may delete the branch you created for that pull request.
-
-
-.. ... * `GitHub Documentation`_
-   ...  - `Collaborating with pull requests`_
-   ... * `How to Contribute to Open Source`_
-
-.. _`Collaborating with pull requests`: https://docs.github.com/en/github/collaborating-with-pull-requests
-.. _`GitHub Documentation`: https://docs.github.com/
-.. _good first contribution: https://github.com/PlasmaPy/PlasmaPy/issues?q=is%3Aissue+is%3Aopen+label%3A%22Good+first+contribution%22
-.. _`How to Contribute to Open Source`: https://opensource.guide/how-to-contribute/
-.. _`Plasma Hack Week`: https://hack.plasmapy.org
-.. _`Request new features`: https://github.com/PlasmaPy/PlasmaPy/issues/new?assignees=&labels=&template=Feature_request.md
-.. _`Report bugs`: https://github.com/PlasmaPy/PlasmaPy/issues/new?assignees=&labels=&template=Bug_report.md
-.. _real python: https://realpython.com/python-coding-setup-windows/
 .. _Add a new SSH key to your GitHub account: https://docs.github.com/en/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account
-.. _install git: https://github.com/git-guides/install-git
-.. _sign up on GitHub: https://github.com/join
-.. _opening a terminal on macOS: https://support.apple.com/guide/terminal/open-or-quit-terminal-apd5265185d-f365-44cb-8b09-71a064a42125/mac
-.. _Powershell: https://learn.microsoft.com/en-us/powershell/
-.. _Unix commands: https://www.unixtutorial.org/basic-unix-commands
-.. _Unix shell: https://en.wikipedia.org/wiki/Unix_shell
-.. _Windows Subsystem for Linux: https://docs.microsoft.com/en-us/windows/wsl/install
-.. _remote: https://github.com/git-guides/git-remote
 .. _branch: https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/about-branches
 .. _fork: https://docs.github.com/en/get-started/quickstart/fork-a-repo
+.. _GitHub Documentation: https://docs.github.com/
+.. _good first contribution: https://github.com/PlasmaPy/PlasmaPy/issues?q=is%3Aissue+is%3Aopen+label%3A%22Good+first+contribution%22
+.. _pull request: https://docs.github.com/en/github/collaborating-with-pull-requests
+.. _remote: https://github.com/git-guides/git-remote
