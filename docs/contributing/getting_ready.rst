@@ -99,7 +99,7 @@ Before contributing code to PlasmaPy, please take the following steps:
 
 #. `Sign up on GitHub`_ for a free account.
 
-#. Verify that |git|_ is installed by
+#. Verify that ``git`` is installed by
    :ref:`opening a terminal <opening-a-terminal>` and running:
 
    .. code-block:: bash
