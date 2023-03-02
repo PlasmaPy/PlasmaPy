@@ -99,7 +99,7 @@ Before contributing code to PlasmaPy, please take the following steps:
 
 #. `Sign up on GitHub`_ for a free account.
 
-#. Verify that ``git`` is installed by
+#. Verify that |git|_ is installed by
    :ref:`opening a terminal <opening-a-terminal>` and running:
 
    .. code-block:: bash
@@ -370,7 +370,7 @@ To enable pre-commit on your computer:
 .. tip::
 
    To commit a change without running pre-commit, use the :bash:`-n` or
-   :bash:`--no-verify` flag with :bash:`git`.
+   :bash:`--no-verify` flag with |git|_.
 
 .. tip::
 
@@ -379,32 +379,6 @@ To enable pre-commit on your computer:
    .. code-block:: bash
 
       pre-commit run --all-files
-
-.. The following is old pre-commit language that we might still want to
-   adapt
-
-.. Now suppose we added some trailing whitespace to :file:`some_file.py`
-   and attempted to commit it. If |pre-commit|_ has been installed, then
-   the ``trailing-whitespace`` hook will cause |pre-commit|_ to fail while
-   modifying :file:`some_file.py` to remove the trailing whitespace.
-
-.. .. code-block:: console
-
-.. .. $ git add some_file.py
-   $ git commit -m "Add trailing whitespace"
-   Trim Trailing Whitespace.................................................Failed
-   - hook id: trailing-whitespace
-   - exit code: 1
-   - files were modified by this hook
-
-.. At this point it will be necessary to run these two commands again to
-   commit the changes. The changes made by |pre-commit|_ will be unstaged and
-   thus could be seen by running ``git diff``. Sometimes |pre-commit|_ will
-   not be able to automatically fix the files, such as when there are
-   syntax errors in Python code. In these cases, the files will need to be
-   changed manually before running the ``git add`` and ``git commit``
-   commands again. Alternatively, the |pre-commit|_ hooks can be skipped
-   using ``git commit -n`` instead.
 
 .. _Add a new SSH key to your GitHub account: https://docs.github.com/en/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account
 .. _Anaconda Navigator: https://docs.anaconda.com/navigator/
