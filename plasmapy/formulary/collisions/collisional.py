@@ -9,7 +9,11 @@ import astropy.units as u
 import math
 import numpy as np
 
+from plasmapy.utils.decorators import validate_quantities
 
+@validate_quantities(
+    T={"can_be_negative": False, "equivalencies": u.temperature_energy()}
+)
 def coal(
     r_0: u.m,
     r_n: u.m,
