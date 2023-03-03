@@ -4,7 +4,7 @@
 Contributor Guide
 *****************
 
-.. toctree:: Table of Contents
+.. toctree::
    :maxdepth: 1
 
    getting_ready
