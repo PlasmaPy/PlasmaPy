@@ -363,7 +363,7 @@ The |docs/conf.py|_ file contains the configuration information needed
 to customize Sphinx_ behavior. The documentation for Sphinx_ lists the
 `configuration options`_ that can be set.
 
-The |docs/_static/css|_ directory contains CSS_ files with `style
+The |docs/_static/css/|_ directory contains CSS_ files with `style
 overrides`_ for the `Read the Docs Sphinx Theme`_ to customize the look
 and feel of the online documentation.
 
@@ -515,7 +515,7 @@ Creating a documentation stub file for a new module
 When the narrative documentation does not index a subpackage (a
 directory) or module (a :file:`.py` file) with ``automodule``,
 ``automodapi``, or the like, then a stub file must be created for that
-particular subpackage or module in |docs/api_static|_. For example, the
+particular subpackage or module in |docs/api_static/|_. For example, the
 stub file for `plasmapy.particles.atomic` is placed at
 :file:`docs/api_static/plasmapy.particles.atomic.rst` and its contents
 look like:
@@ -540,7 +540,7 @@ error or the absence of the module in the documentation build.
    stub file must be created for both of them.
 
    For example, suppose a pull request creates the ``plasmapy.io``
-   subpackage in the :file:`plasmapy/io` directory and the
+   subpackage in the :file:`plasmapy/io/` directory and the
    ``plasmapy.io.readers`` module via :file:`plasmapy/io/readers.py`. It
    will then be necessary to create stub files at both
    :file:`docs/api_static/plasmapy.io.rst` and
@@ -845,8 +845,8 @@ documentation for PlasmaPy and affiliated packages.
 
 * Use indentations of 3 spaces for reST_ blocks.
 
-* Store images within the |docs/_static|_ directory, except for images
-  that are generated during the Sphinx_ build. The |docs/_static|_
+* Store images within the |docs/_static/|_ directory, except for images
+  that are generated during the Sphinx_ build. The |docs/_static/|_
   directory contains files that are used for the online documentation
   but are not generated during the Sphinx_ build.
 
@@ -1299,7 +1299,7 @@ Missing documentation pages for new modules
 -------------------------------------------
 
 When a new module or subpackage is created, it is usually necessary to
-:ref:`create a stub file <api-static>` for it in |docs/api_static|_. A
+:ref:`create a stub file <api-static>` for it in |docs/api_static/|_. A
 missing stub file can lead to either a ``reference target not found``
 error or missing documentation pages.
 

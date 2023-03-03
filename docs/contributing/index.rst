@@ -4,7 +4,7 @@
 Contributor Guide
 *****************
 
-.. toctree::
+.. toctree:: Table of Contents
    :maxdepth: 1
 
    getting_ready
@@ -25,7 +25,7 @@ contribute. Some of the many possibilities are to:
 
 * Contribute new code, documentation, and tests.
 * Refactor existing code and tests.
-* Improve the description of plasma physics in PlasmaPy's documentation.
+* Improve the description of plasma physics in `PlasmaPy's documentation`_.
 * Write educational Jupyter_ notebook that introduce plasma concepts
   using PlasmaPy.
 * Create videos that show how to use PlasmaPy.
@@ -33,7 +33,7 @@ contribute. Some of the many possibilities are to:
 * Help with project management.
 * `Request new features`_.
 * `Report bugs`_.
-* Improve `PlasmaPy's website`_.
+* Improve `PlasmaPy's website <PlasmaPy>`_.
 * Help organize events such as `Plasma Hack Week`_.
 * Provide feedback on how existing functionality could be improved.
 * Help update PlasmaPy's development roadmap.

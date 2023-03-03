@@ -33,7 +33,7 @@ Create a new branch
 
 #. :ref:`Open a terminal <opening-a-terminal>`.
 
-#. Navigate to the :file:`PlasmaPy` directory that contains the clone
+#. Navigate to the :file:`PlasmaPy/` directory that contains the clone
    of your repository.
 
 #. Download the current status of `PlasmaPy's GitHub repository`_ and
