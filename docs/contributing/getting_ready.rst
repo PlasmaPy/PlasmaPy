@@ -187,8 +187,8 @@ Initial setup
    corresponds to your fork_ and :bash:`upstream` corresponds to
    `PlasmaPy's GitHub repository`_.
 
-Setting up a Python environment (optional)
-==========================================
+Setting up a Python environment
+===============================
 
 If you plan to make multiple contributions, we recommend setting up a
 Python environment specifically for PlasmaPy. This section describes how
