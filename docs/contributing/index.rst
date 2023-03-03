@@ -5,7 +5,9 @@ Contributor Guide
 *****************
 
 .. toctree::
+   :caption: Table of Contents
    :maxdepth: 1
+   :glob:
 
    getting_ready
    workflow
@@ -28,15 +30,15 @@ contribute. Some of the many possibilities are to:
 * Improve the description of plasma physics in `PlasmaPy's documentation`_.
 * Write educational Jupyter_ notebook that introduce plasma concepts
   using PlasmaPy.
-* Create videos that show how to use PlasmaPy.
+* Create videos that show how to use PlasmaPy. 🎥
 * Participate in code reviews.
 * Help with project management.
 * `Request new features`_.
-* `Report bugs`_.
+* `Report bugs`_. 🐞
 * Improve `PlasmaPy's website <PlasmaPy>`_.
-* Help organize events such as `Plasma Hack Week`_.
+* Help organize events such as `Plasma Hack Week`_. 📆
 * Provide feedback on how existing functionality could be improved.
-* Help update PlasmaPy's development roadmap.
+* Help update PlasmaPy's development roadmap. 🛣️
 * Be part of the PlasmaPy community!
 
 Please feel free to reach out to us in PlasmaPy's `Matrix chat room`_ or
