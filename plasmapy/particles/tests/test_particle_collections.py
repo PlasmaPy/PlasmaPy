@@ -42,6 +42,8 @@ def various_particles():
             CustomParticle(),
             CustomParticle(mass=7 * u.kg),
             CustomParticle(charge=11 * u.C),
+            5 * u.kg,
+            5 * u.C,
         ]
     )
 
@@ -161,7 +163,7 @@ def test_particle_list_insert(various_particles):
     assert _everything_is_particle_or_custom_particle(various_particles)
 
 
-invalid_particles = (0, "not a particle", DimensionlessParticle())
+invalid_particles = (0, "not a particle", DimensionlessParticle(), 5 * u.m)
 
 
 def test_particle_list_instantiate_with_invalid_particles():
@@ -492,7 +494,20 @@ def test_particle_list_with_no_arguments():
     assert len(empty_particle_list) == 0
 
 
-@pytest.mark.parametrize("arg", ["", "H", "He"])
-def test_particle_list_string_exception(arg):
-    with pytest.raises(TypeError):
-        ParticleList(arg)
+@pytest.mark.parametrize(
+    "quantities",
+    (
+        (1, 2) * u.kg,
+        (3, 4) * u.C,
+        (5 * u.kg, 6 * u.C),
+        (7 * u.C, 8 * u.kg),
+    ),
+)
+def test_particle_list_from_quantity_array(quantities):
+    """
+    Test that ParticleList can accept a Quantity array of an appropriate
+    physical type.
+    """
+    particle_list = ParticleList(quantities)
+    assert particle_list[0] == CustomParticle(quantities[0])
+    assert particle_list[1] == CustomParticle(quantities[1])
