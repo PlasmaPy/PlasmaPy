@@ -76,7 +76,6 @@ def Lorentz_factor(V: u.m / u.s):
         )
 
     if V.size > 1:
-
         γ = np.zeros_like(V.value)
 
         equals_c = np.abs(V) == c
@@ -250,7 +249,6 @@ class RelativisticBody:
     def _get_speed_like_input(
         velocity_like_arguments: dict[str, Union[u.Quantity, Real]]
     ):
-
         not_none_arguments = {
             key: value
             for key, value in velocity_like_arguments.items()
@@ -299,7 +297,6 @@ class RelativisticBody:
         mass_numb: Optional[Integral] = None,
         dtype: Optional[DTypeLike] = np.longdouble,
     ):
-
         self._particle = _physical_particle_factory(particle, Z=Z, mass_numb=mass_numb)
         self._dtype = dtype
 
@@ -487,7 +484,6 @@ class RelativisticBody:
         self._momentum = p.to(u.kg * u.m / u.s)
 
     def __eq__(self, other) -> bool:
-
         _attributes_to_compare = (
             "particle",
             "kinetic_energy",

@@ -28,7 +28,6 @@ ionic_fraction_table = [
 
 @pytest.mark.parametrize("ion, ionic_fraction, number_density", ionic_fraction_table)
 def test_ionic_level_attributes(ion, ionic_fraction, number_density):
-
     instance = IonicLevel(
         ion=ion, ionic_fraction=ionic_fraction, number_density=number_density
     )
@@ -323,7 +322,6 @@ def test_getitem(test_ionization_state):
     # (see Astropy issue #7901 on GitHub).
 
     for keys in zip(charge_numbers, symbols, particles):
-
         set_of_str_values = {str(test_ionization_state[key]) for key in keys}
         if len(set_of_str_values) != 1:
             errors.append(
@@ -383,7 +381,6 @@ ions = ["Fe 6+", "p", "He-4 0+", "triton", "alpha", "Ne +0"]
 
 @pytest.mark.parametrize("ion", ions)
 def test_IonizationState_ionfracs_from_ion_input(ion):
-
     ionization_state = IonizationState(ion)
     ion_particle = Particle(ion)
     actual_ionic_fractions = ionization_state.ionic_fractions

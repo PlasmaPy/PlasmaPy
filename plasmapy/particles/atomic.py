@@ -658,7 +658,6 @@ def common_isotopes(
     def common_isotopes_for_element(
         argument: Union[str, int], most_common_only: Optional[bool]
     ) -> list[str]:
-
         isotopes = known_isotopes(argument)
 
         CommonIsotopes = [
@@ -685,7 +684,6 @@ def common_isotopes(
         return sorted_isotopes
 
     if argument is not None:
-
         try:
             element = atomic_symbol(argument)
             isotopes_list = common_isotopes_for_element(element, most_common_only)

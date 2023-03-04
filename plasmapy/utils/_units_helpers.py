@@ -70,7 +70,6 @@ def _get_physical_type_dict(
     physical_types = {}
 
     for obj in iterable:
-
         if isinstance(obj, Number) and numbers_become_quantities:
             obj = u.Quantity(obj, u.dimensionless_unscaled)
 
