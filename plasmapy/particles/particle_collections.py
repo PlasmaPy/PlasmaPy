@@ -135,12 +135,16 @@ class ParticleList(collections.UserList):
                 )
             elif isinstance(obj, u.Quantity):
                 physical_type = u.get_physical_type(obj)
-                if physical_type not in (u.physical.mass, u.physical.electrical_charge):
+                if physical_type == u.physical.mass:
+                    new_particles.append(CustomParticle(mass=obj))
+                elif physical_type == u.physical.electrical_charge:
+                    new_particles.append(CustomParticle(charge=obj))
+                else:
                     raise InvalidParticleError(
-                        f"{obj} does not have a physical type of mass "
-                        f"or electrical charge."
+                        f"Cannot convert {obj} into a CustomParticle for "
+                        f"inclusion in a ParticleList because it does not have"
+                        f"a physical type of mass or electrical charge."
                     )
-                new_particles.append(CustomParticle(obj))
             else:
                 try:
                     new_particles.append(Particle(obj))
