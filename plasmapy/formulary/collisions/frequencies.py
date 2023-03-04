@@ -115,7 +115,7 @@ class SingleParticleCollisionFrequencies:
 
         :math:`ψ' \left( x \right) = \frac{dψ}{dx}`,
 
-    and :math:`\lambda_{α β}` is the Coulomb logarithm for the
+    and :math:`λ_{α β}` is the Coulomb logarithm for the
     collisions, :math:`n_β` is the number density of the field
     particles, :math:`v_α` is the speed of the test particles relative
     to the field particles, :math:`k_B` is Boltzmann's constant, and
