@@ -163,7 +163,6 @@ class SingleParticleCollisionFrequencies:
         n_b: u.m**-3,
         Coulomb_log: u.dimensionless_unscaled,
     ):
-
         # Note: This class uses CGS units internally to coincide
         #       with our references.  Input is taken in MKS units and
         #       then converted as necessary. Output is in MKS units.
@@ -324,11 +323,12 @@ class MaxwellianCollisionFrequencies:
 
     .. math::
 
-        v_{drift} << \sqrt{ v_{T_a}^2 + v_{T_b}^2 }
+        v_{drift} ≪ \sqrt{ v_{T_a}^2 + v_{T_b}^2 }
 
     where :math:`v_{drift}` is the relative drift between the two
-    species, :math:`v_{T_a}` is the thermal velocity of species "a", and
-    :math:`v_{T_b}` is the thermal velocity of species "b".
+    species, :math:`v_{T_a}` is the thermal velocity of species
+    :math:`a`, and :math:`v_{T_b}` is the thermal velocity of species
+    :math:`b`.
 
     Parameters
     ----------
@@ -352,7 +352,7 @@ class MaxwellianCollisionFrequencies:
 
     T_b : `~astropy.units.Quantity`
         The temperature of the background field particles in units
-        convertible kelvin or eV per particle.
+        convertible to kelvin or eV per particle.
 
     n_b : `~astropy.units.Quantity`
         The number density of the background field particles in units
@@ -398,7 +398,6 @@ class MaxwellianCollisionFrequencies:
         n_b: u.m**-3,
         Coulomb_log: u.dimensionless_unscaled,
     ):
-
         if (
             isinstance(v_drift, np.ndarray)
             and isinstance(T_a, np.ndarray)
