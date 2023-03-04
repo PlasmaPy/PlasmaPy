@@ -495,19 +495,28 @@ def test_particle_list_with_no_arguments():
 
 
 @pytest.mark.parametrize(
-    "quantities",
+    "quantities, expected",
     (
-        (1, 2) * u.kg,
-        (3, 4) * u.C,
-        (5 * u.kg, 6 * u.C),
-        (7 * u.C, 8 * u.kg),
+        ((1, 2) * u.kg, (CustomParticle(mass=1 * u.kg), CustomParticle(mass=2 * u.kg))),
+        (
+            (3, 4) * u.C,
+            (CustomParticle(charge=3 * u.C), CustomParticle(charge=4 * u.C)),
+        ),
+        (
+            (5 * u.kg, 6 * u.C),
+            (CustomParticle(mass=5 * u.kg), CustomParticle(charge=6 * u.C)),
+        ),
+        (
+            (7 * u.C, 8 * u.kg),
+            (CustomParticle(charge=7 * u.C), CustomParticle(mass=8 * u.kg)),
+        ),
     ),
 )
-def test_particle_list_from_quantity_array(quantities):
+def test_particle_list_from_quantity_array(quantities, expected):
     """
     Test that ParticleList can accept a Quantity array of an appropriate
     physical type.
     """
     particle_list = ParticleList(quantities)
-    assert particle_list[0] == CustomParticle(quantities[0])
-    assert particle_list[1] == CustomParticle(quantities[1])
+    assert particle_list[0] == expected[0]
+    assert particle_list[1] == expected[1]
