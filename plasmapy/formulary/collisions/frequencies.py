@@ -356,7 +356,7 @@ class MaxwellianCollisionFrequencies:
 
     n_b : `~astropy.units.Quantity`
         The number density of the background field particles in units
-        convertible to :math:`\frac{1}{m^3}`.
+        convertible to m\ :sup:`-3`\ .
 
     Coulomb_log : `~astropy.units.Quantity`
         The value of the Coulomb logarithm for the interaction.
