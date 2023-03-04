@@ -481,11 +481,11 @@ class ParticleList(collections.UserList):
             parameter. If not provided, the particles contained in the
             |ParticleList| are assumed to be equally abundant.
 
-        use_rms_charge : `bool`, optional, |keyword-only|, default: `False`
+        use_rms_charge : `bool`, |keyword-only|, default: `False`
             If `True`, use the root-mean-square charge instead of the
             mean charge.
 
-        use_rms_mass : `bool`, optional, |keyword-only|, default: `False`
+        use_rms_mass : `bool`, |keyword-only|, default: `False`
             If `True`, use the root-mean-square mass instead of the mean
             mass.
 
