@@ -216,7 +216,17 @@ class ParticleList(collections.UserList):
     def append(self, particle: ParticleLike):
         """Append a particle to the end of the |ParticleList|."""
         if isinstance(particle, u.Quantity):
-            particle = CustomParticle(particle)
+            physical_type = u.get_physical_type(particle)
+            if physical_type == u.physical.mass:
+                particle = CustomParticle(mass=particle)
+            elif physical_type == u.physical.electrical_charge:
+                particle = CustomParticle(charge=particle)
+            else:
+                raise InvalidParticleError(
+                    f"Cannot convert {particle} into a CustomParticle for "
+                    f"inclusion in a ParticleList because it does not have"
+                    f"a physical type of mass or electrical charge."
+                )
         elif not isinstance(particle, (Particle, CustomParticle)):
             particle = Particle(particle)
         self.data.append(particle)
