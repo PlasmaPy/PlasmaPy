@@ -1018,7 +1018,7 @@ def fundamental_ion_collision_freq(
 
     .. math::
 
-        ν_i = \frac{8}{3 * 4 * \sqrt{π}} ν(v_{Ti})
+        ν_i = \frac{8}{3 × 4 × \sqrt{π}} ν(v_{Ti})
 
     Where :math:`ν` is the general collision frequency and
     :math:`v_{Ti}` is the ion thermal velocity (the average, for a
