@@ -19,6 +19,19 @@ from plasmapy.particles.particle_class import (
 )
 
 
+def _turn_quantity_into_custom_particle(quantity):
+    physical_type = u.get_physical_type(quantity)
+    if physical_type == u.physical.mass:
+        return CustomParticle(mass=quantity)
+    if physical_type == u.physical.electrical_charge:
+        return CustomParticle(charge=quantity)
+    raise InvalidParticleError(
+        f"Cannot convert {quantity} into a CustomParticle for "
+        f"inclusion in a ParticleList because it does not have"
+        f"a physical type of mass or electrical charge."
+    )
+
+
 class ParticleList(collections.UserList):
     """
     A `list` like collection of |Particle| and |CustomParticle| objects.
@@ -134,17 +147,8 @@ class ParticleList(collections.UserList):
                     "ParticleList instances cannot include dimensionless particles."
                 )
             elif isinstance(obj, u.Quantity):
-                physical_type = u.get_physical_type(obj)
-                if physical_type == u.physical.mass:
-                    new_particles.append(CustomParticle(mass=obj))
-                elif physical_type == u.physical.electrical_charge:
-                    new_particles.append(CustomParticle(charge=obj))
-                else:
-                    raise InvalidParticleError(
-                        f"Cannot convert {obj} into a CustomParticle for "
-                        f"inclusion in a ParticleList because it does not have"
-                        f"a physical type of mass or electrical charge."
-                    )
+                new_particle = _turn_quantity_into_custom_particle(obj)
+                new_particles.append(new_particle)
             else:
                 try:
                     new_particles.append(Particle(obj))
@@ -216,17 +220,7 @@ class ParticleList(collections.UserList):
     def append(self, particle: ParticleLike):
         """Append a particle to the end of the |ParticleList|."""
         if isinstance(particle, u.Quantity):
-            physical_type = u.get_physical_type(particle)
-            if physical_type == u.physical.mass:
-                particle = CustomParticle(mass=particle)
-            elif physical_type == u.physical.electrical_charge:
-                particle = CustomParticle(charge=particle)
-            else:
-                raise InvalidParticleError(
-                    f"Cannot convert {particle} into a CustomParticle for "
-                    f"inclusion in a ParticleList because it does not have"
-                    f"a physical type of mass or electrical charge."
-                )
+            particle = _turn_quantity_into_custom_particle(particle)
         elif not isinstance(particle, (Particle, CustomParticle)):
             particle = Particle(particle)
         self.data.append(particle)
@@ -287,7 +281,7 @@ class ParticleList(collections.UserList):
     def insert(self, index, particle: ParticleLike):
         """Insert a particle before an index."""
         if isinstance(particle, u.Quantity):
-            particle = CustomParticle(particle)
+            particle = _turn_quantity_into_custom_particle(particle)
         elif not isinstance(particle, (Particle, CustomParticle)):
             particle = Particle(particle)
         self.data.insert(index, particle)
