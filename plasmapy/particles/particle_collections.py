@@ -85,6 +85,17 @@ class ParticleList(collections.UserList):
     >>> particle_list + "deuteron"
     ParticleList(['e-', 'e+', 'D 1+'])
 
+    A |ParticleList| can also be created using `~astropy.units.Quantity`
+    objects.
+
+    >>> import astropy.units as u
+    >>> quantities = [2.3e-26 * u.kg, 4.8e-19 * u.C]
+    >>> particle_list = ParticleList(quantities)
+    >>> particle_list.mass
+    <Quantity [2.3e-26,     nan] kg>
+    >>> particle_list.charge
+    <Quantity [    nan, 4.8e-19] C>
+
     Normal `list` methods may also be used on |ParticleList| objects.
     When a |particle-like| object is appended to a |ParticleList|, that
     object will be cast into a |Particle| or |CustomParticle|.
@@ -107,18 +118,11 @@ class ParticleList(collections.UserList):
     @staticmethod
     def _list_of_particles_and_custom_particles(
         particles: Optional[Iterable[ParticleLike]],
-    ) -> list[Union[Particle, CustomParticle]]:
+    ) -> list[Union[Particle, CustomParticle]]:  # TODO #687
         """
         Convert an iterable that provides |particle-like| objects into a
         `list` containing |Particle| and |CustomParticle| instances.
         """
-        if isinstance(particles, str):
-            raise TypeError(
-                "ParticleList does not accept strings, but does accept "
-                "lists and tuples containing strings. Did you mean to "
-                f"do `ParticleList([{particles!r}])` instead?"
-            )
-
         new_particles = []
         if particles is None:
             return new_particles
@@ -129,6 +133,14 @@ class ParticleList(collections.UserList):
                 raise TypeError(
                     "ParticleList instances cannot include dimensionless particles."
                 )
+            elif isinstance(obj, u.Quantity):
+                physical_type = u.get_physical_type(obj)
+                if physical_type not in (u.physical.mass, u.physical.electrical_charge):
+                    raise InvalidParticleError(
+                        f"{obj} does not have a physical type of mass "
+                        f"or electrical charge."
+                    )
+                new_particles.append(CustomParticle(obj))
             else:
                 try:
                     new_particles.append(Particle(obj))
@@ -199,8 +211,9 @@ class ParticleList(collections.UserList):
 
     def append(self, particle: ParticleLike):
         """Append a particle to the end of the |ParticleList|."""
-        # TODO: use particle_input when it works with CustomParticle and ParticleLike
-        if not isinstance(particle, (Particle, CustomParticle)):
+        if isinstance(particle, u.Quantity):
+            particle = CustomParticle(particle)
+        elif not isinstance(particle, (Particle, CustomParticle)):
             particle = Particle(particle)
         self.data.append(particle)
 
@@ -259,8 +272,9 @@ class ParticleList(collections.UserList):
 
     def insert(self, index, particle: ParticleLike):
         """Insert a particle before an index."""
-        # TODO: use particle_input when it works with CustomParticle and ParticleLike
-        if not isinstance(particle, (Particle, CustomParticle)):
+        if isinstance(particle, u.Quantity):
+            particle = CustomParticle(particle)
+        elif not isinstance(particle, (Particle, CustomParticle)):
             particle = Particle(particle)
         self.data.insert(index, particle)
 
