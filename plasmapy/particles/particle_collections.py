@@ -19,7 +19,28 @@ from plasmapy.particles.particle_class import (
 )
 
 
-def _turn_quantity_into_custom_particle(quantity):
+def _turn_quantity_into_custom_particle(
+    quantity: u.Quantity[u.physical.electrical_charge, u.physical.mass]
+) -> CustomParticle:
+    """
+    Convert a |Quantity| of physical type mass or electrical charge
+    into the corresponding |CustomParticle|.
+
+    Parameters
+    ----------
+    quantity : |Quantity|
+        A |Quantity| of physical type mass or electrical charge.
+
+    Returns
+    -------
+    |CustomParticle|
+
+    Raises
+    ------
+    |InvalidParticleError|
+        If ``quantity`` does not have a physical type of mass or
+        electrical charge.
+    """
     physical_type = u.get_physical_type(quantity)
     if physical_type == u.physical.mass:
         return CustomParticle(mass=quantity)
