@@ -262,7 +262,8 @@ redirects = {
     "development/changelog_guide": "../contributing/changelog_guide.html",
     "development/code_guide": "../contributing/code_guide.html",
     "development/doc_guide": "../contributing/doc_guide.html",
-    "development/install_dev": "../contributing/install_dev.html",
+    "development/install_dev": "../contributing/getting_ready.html",
+    "contributing/install_dev": "../contributing/getting_ready.html",
     "development/release_guide": "../contributing/release_guide.html",
     "development/testing_guide": "../contributing/testing_guide.html",
 }
