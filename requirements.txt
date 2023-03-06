@@ -279,7 +279,7 @@ pillow==9.4.0
     # via
     #   matplotlib
     #   plasmapy (setup.py)
-platformdirs==2.6.2
+platformdirs==3.1.0
     # via
     #   jupyter-core
     #   virtualenv
