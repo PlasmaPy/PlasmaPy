@@ -23,7 +23,7 @@ repos:
   - id: check-yaml
 
 - repo: https://github.com/macisamuele/language-formatters-pre-commit-hooks
-  rev: v2.6.0
+  rev: v2.7.0
   hooks:
   - id: pretty-format-ini
     args: [--autofix]
@@ -31,7 +31,7 @@ repos:
     args: [--autofix]
 
 - repo: https://github.com/tox-dev/pyproject-fmt
-  rev: 0.6.0
+  rev: 0.9.2
   hooks:
   - id: pyproject-fmt
 
@@ -68,7 +68,7 @@ repos:
     - tomli
 
 - repo: https://github.com/charliermarsh/ruff-pre-commit
-  rev: v0.0.241
+  rev: v0.0.254
   hooks:
   - id: ruff
     args: [--fix]
@@ -97,7 +97,7 @@ repos:
     exclude: docs/contributing/coding_guide.rst
 
 - repo: https://github.com/nbQA-dev/nbQA
-  rev: 1.6.1
+  rev: 1.6.3
   hooks:
   - id: nbqa-black
     additional_dependencies:
