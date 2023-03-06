@@ -140,7 +140,6 @@ ELLIPSIS
 NUMBER"""
 addopts = "--doctest-modules --doctest-continue-on-failure"
 filterwarnings = ["ignore:.*Creating", "a"]
-looponfailroots = "plasmapy"
 
 [tool.coverage.report]
 exclude_lines = [
