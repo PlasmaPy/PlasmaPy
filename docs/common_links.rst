@@ -104,12 +104,14 @@
 .. |coding guide| replace:: :ref:`coding guide`\
 .. |contributor guide| replace:: :ref:`contributor guide`\
 .. |documentation guide| replace:: :ref:`documentation guide`\
+.. |getting ready to contribute| replace:: :ref:`getting ready to contribute`\
 .. |glossary| replace:: :ref:`glossary`\
 .. |minpython| replace:: 3.9
 .. |maxpython| replace:: 3.10
 .. |plasma-calculator| replace:: :ref:`plasmapy-calculator`\
 .. |release guide| replace:: :ref:`release guide`\
 .. |testing guide| replace:: :ref:`testing guide`\
+.. |code contribution workflow| replace:: :ref:`code contribution workflow <workflow>`\
 
 .. --------------
 .. Glossary terms
