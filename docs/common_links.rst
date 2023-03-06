@@ -223,13 +223,13 @@
 .. |CITATION.cff| replace:: :file:`CITATION.cff`
 
 .. _`docs/_static/`: https://github.com/PlasmaPy/PlasmaPy/tree/main/docs/_static
-.. |docs/_static| replace:: :file:`docs/_static`
+.. |docs/_static| replace:: :file:`docs/_static/`
 
 .. _`docs/_static/css/`: https://github.com/PlasmaPy/PlasmaPy/tree/main/docs/_static/css
-.. |docs/_static/css/| replace:: :file:`docs/_static/css`
+.. |docs/_static/css/| replace:: :file:`docs/_static/css/`
 
 .. _`docs/api_static/`: https://github.com/PlasmaPy/PlasmaPy/tree/main/docs/api_static
-.. |docs/api_static| replace:: :file:`docs/api_static`
+.. |docs/api_static| replace:: :file:`docs/api_static/`
 
 .. _`docs/conf.py`: https://github.com/PlasmaPy/PlasmaPy/blob/main/docs/conf.py
 .. |docs/conf.py| replace:: :file:`docs/conf.py`
