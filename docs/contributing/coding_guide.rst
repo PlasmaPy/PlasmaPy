@@ -1,4 +1,4 @@
-.. _workflow:
+.. _coding guide:
 
 ************
 Coding Guide
