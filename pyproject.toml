@@ -91,7 +91,6 @@ tests = [
   "tox<4",
   "tryceratops",
 ]
-
 [project.urls]
 Changelog = "https://docs.plasmapy.org/en/stable/whatsnew/index.html"
 Chat = "https://plasmapy.org/chat"
@@ -100,10 +99,71 @@ Issues = "https://github.com/plasmapy/plasmapy/issues/"
 Source = "https://github.com/plasmapy/plasmapy"
 Twitter = "https://twitter.com/PlasmaPy"
 website = "https://www.plasmapy.org"
-
 [project.scripts]
 plasma-calculator = "plasmapy.utils.calculator:main"
 
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.package-data]
+"plasmapy.particles.data" = ["*"]
+"plasmapy.tests" = ["coveragerc"]
+"plasmapy.utils.calculator" = ["*"]
+
+[tool.setuptools.packages.find]
+exclude = ["docs/automodapi", "plasmapy/_dev"]
+namespaces = false
+
+[tool.setuptools_scm]
+write_to = "plasmapy/_version.py"
+
+[tool.isort]
+line_length = 88
+wrap_length = 80
+sections = ["FUTURE", "STDLIB", "FIRSTPARTY", "LOCALFOLDER"]
+known_first_party = ["plasmapy", ]
+default_section = "STDLIB"
+multi_line_output = 3
+use_parentheses = true
+include_trailing_comma = true
+force_alphabetical_sort_within_sections = true
+honor_noqa = true
+lines_between_types = 1
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+testpaths = ['plasmapy']
+norecursedirs = ['build', 'docs', 'plasmapy[\/]_dev']
+doctest_optionflags = """
+NORMALIZE_WHITESPACE
+ELLIPSIS
+NUMBER"""
+addopts = "--doctest-modules --doctest-continue-on-failure"
+filterwarnings = ["ignore:.*Creating", "a"]
+looponfailroots = "plasmapy"
+
+[tool.coverage.report]
+exclude_lines = [
+    "coverage: ignore",
+    "ImportError",
+    "ModuleNotFoundError",
+    "@vectorize",
+    "@numba.vectorize",
+    "@numba.jit",
+    "@jit",
+    "@numba.njit",
+    "@njit",
+    "@abstractmethod",
+]
+
+[tool.coverage.run]
+omit = [
+    "ci-helpers/*",
+    "*/tests/*",
+    "plasmapy/utils/calculator/*",
+    "plasmapy/version.py",
+    "plasmapy/_dev/*",
+]
 
 [tool.build_docs]
 source-dir = "docs"
@@ -140,29 +200,6 @@ ue,
 ue,
 windo"""
 
-[tool.coverage.report]
-exclude_lines = [
-    "coverage: ignore",
-    "ImportError",
-    "ModuleNotFoundError",
-    "@vectorize",
-    "@numba.vectorize",
-    "@numba.jit",
-    "@jit",
-    "@numba.njit",
-    "@njit",
-    "@abstractmethod",
-]
-
-[tool.coverage.run]
-omit = [
-    "ci-helpers/*",
-    "*/tests/*",
-    "plasmapy/utils/calculator/*",
-    "plasmapy/version.py",
-    "plasmapy/_dev/*",
-]
-
 [tool.gilesbot]
 
 [tool.gilesbot.pull_requests]
@@ -179,31 +216,6 @@ number_incorrect = "Incorrect changelog entry number (match PR!)"
 number_incorrect_long = "The changelog entry's number does not match this pull request's number."
 type_incorrect = "Incorrect changelog entry type (see list in changelog README)"
 type_incorrect_long = "The changelog entry for this PR must have one of the types (as in NUMBER.TYPE.rst) as described in the changelog README)."
-
-[tool.isort]
-line_length = 88
-wrap_length = 80
-sections = ["FUTURE", "STDLIB", "FIRSTPARTY", "LOCALFOLDER"]
-known_first_party = ["plasmapy", ]
-default_section = "STDLIB"
-multi_line_output = 3
-use_parentheses = true
-include_trailing_comma = true
-force_alphabetical_sort_within_sections = true
-honor_noqa = true
-lines_between_types = 1
-
-[tool.pytest.ini_options]
-minversion = "6.0"
-testpaths = ['plasmapy']
-norecursedirs = ['build', 'docs', 'plasmapy[\/]_dev']
-doctest_optionflags = """
-NORMALIZE_WHITESPACE
-ELLIPSIS
-NUMBER"""
-addopts = "--doctest-modules --doctest-continue-on-failure"
-filterwarnings = ["ignore:.*Creating", "a"]
-looponfailroots = "plasmapy"
 
 [tool.ruff]
 target-version = "py38"
@@ -235,21 +247,6 @@ pandas = "pd"
 
 [tool.ruff.per-file-ignores]
 "__init__.py" = ["E402", "F401", "F402", "F403"]  # ignore import errors
-
-[tool.setuptools]
-include-package-data = true
-
-[tool.setuptools.package-data]
-"plasmapy.particles.data" = ["*"]
-"plasmapy.tests" = ["coveragerc"]
-"plasmapy.utils.calculator" = ["*"]
-
-[tool.setuptools.packages.find]
-exclude = ["docs/automodapi", "plasmapy/_dev"]
-namespaces = false
-
-[tool.setuptools_scm]
-write_to = "plasmapy/_version.py"
 
 [tool.towncrier]
 package = "plasmapy"
