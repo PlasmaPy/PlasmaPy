@@ -388,6 +388,7 @@ extensions:
 * |sphinx_gallery.load_style|_ for using sphinx-gallery styles.
 * |IPython.sphinxext.ipython_console_highlighting|_.
 * |sphinx_changelog|_ for rendering towncrier_ changelogs.
+* |sphinx_tabs|_ for creating tabbed content.
 * |sphinx-hoverxref|_ for showing floating windows on cross references
   of the documentation.
 * |sphinx-notfound-page|_ to add a :wikipedia:`404 <HTTP_404>` page for

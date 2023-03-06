@@ -297,6 +297,9 @@
 .. _`sphinx-notfound-page`: https://sphinx-notfound-page.readthedocs.io
 .. |sphinx-notfound-page| replace:: `sphinx-notfound-page`
 
+.. _`sphinx-tabs`: https://sphinx-tabs.readthedocs.io/
+.. |sphinx-tabs| replace:: `sphinx-tabs`
+
 .. _`tox.ini`: https://github.com/PlasmaPy/PlasmaPy/blob/main/tox.ini
 .. |tox.ini| replace:: :file:`tox.ini`
 
