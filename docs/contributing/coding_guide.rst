@@ -25,8 +25,8 @@ important as consistency, readability, and maintainability.
 This guide can (and should!) be regularly refined by the PlasmaPy
 community as we collectively learn new practices and our shared coding
 style changes. Please feel free to propose revisions to this guide by
-:ref:`submitting a pull request <code-contribution>` or by bringing up
-an idea at a community meeting.
+:ref:`submitting a pull request <workflow>` or by bringing up an idea at
+a community meeting.
 
 PlasmaPy generally follows the :pep:`8` style guide for Python code,
 using auto-formatters such as black_ and isort_ that are executed using
