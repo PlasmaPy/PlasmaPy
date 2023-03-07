@@ -1031,12 +1031,6 @@ def test_unnamed_tests_exceptions(tested_object, args, kwargs, expected):
     Test that appropriate exceptions are raised for inappropriate inputs
     to different functions.
     """
-
-    print(f"{tested_object=}")
-    print(f"{args=}")
-    print(f"{kwargs=}")
-    print(f"{expected=}")
-
     with expected as exc_info:
         tested_object(*args, **kwargs)
 
