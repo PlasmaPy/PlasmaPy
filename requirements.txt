@@ -22,7 +22,6 @@ asttokens==2.2.1
     # via stack-data
 attrs==22.2.0
     # via
-    #   flake8-implicit-str-concat
     #   hypothesis
     #   jsonschema
     #   pytest
@@ -53,8 +52,6 @@ click-default-group==1.2.2
     # via towncrier
 comm==0.1.2
     # via ipykernel
-commonmark==0.9.1
-    # via rich
 contourpy==1.0.7
     # via matplotlib
 cycler==0.11.0
@@ -168,6 +165,7 @@ jupyter-client==7.4.1
     #   voila
 jupyter-core==5.2.0
     # via
+    #   ipykernel
     #   jupyter-client
     #   jupyter-server
     #   nbclient
@@ -192,6 +190,8 @@ llvmlite==0.39.1
     # via numba
 lmfit==1.1.0
     # via plasmapy (setup.py)
+markdown-it-py==2.2.0
+    # via rich
 markupsafe==2.1.2
     # via
     #   jinja2
@@ -204,10 +204,10 @@ matplotlib-inline==0.1.6
     #   ipython
 mccabe==0.7.0
     # via flake8
+mdurl==0.1.2
+    # via markdown-it-py
 mistune==2.0.5
     # via nbconvert
-more-itertools==8.14.0
-    # via flake8-implicit-str-concat
 mpmath==1.2.1
     # via plasmapy (setup.py)
 nbclient==0.7.2
