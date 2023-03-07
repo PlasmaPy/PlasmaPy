@@ -263,7 +263,7 @@ packaging==23.0
     #   sphinx
     #   tox
     #   xarray
-pandas==1.5.2
+pandas==1.5.3
     # via
     #   plasmapy (setup.py)
     #   xarray
