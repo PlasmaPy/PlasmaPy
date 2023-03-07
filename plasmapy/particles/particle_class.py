@@ -695,20 +695,24 @@ class Particle(AbstractPhysicalParticle):
         if self.symbol == "p+":
             categories.update({"element", "isotope", "ion"})
 
-        _, mass_numb, Z = self.__inputs
+        argument, mass_numb, Z = self.__inputs
 
-        if mass_numb is not None or Z is not None:
-            if self.symbol == "p+" and 1 in (mass_numb, Z):
-                warnings.warn(
-                    "Redundant mass number or charge information.", ParticleWarning
-                )
-            else:
-                raise InvalidParticleError(
-                    "The keywords 'mass_numb' and 'Z' cannot be used when "
-                    "creating Particle objects for special particles. To "
-                    f"create a Particle object for {attributes['name']}s, "
-                    f"use:  Particle({attributes['particle']!r})"
-                )
+        if mass_numb is None and Z is None:
+            return
+
+        if self.symbol != "p+":
+            raise InvalidParticleError(
+                "The keywords 'mass_numb' and 'Z' cannot be used when "
+                "creating Particle objects for special particles. To "
+                f"create a Particle object for {attributes['name']}s, "
+                f"use: Particle({attributes['particle']!r})"
+            )
+
+        if mass_numb not in (1, None) or Z not in (1, None):
+            raise InvalidParticleError(
+                "Cannot create a Particle representing a proton for a "
+                "mass number or charge number not equal to 1."
+            )
 
     def _assign_atom_attributes(self) -> NoReturn:
         """Assign attributes and categories to elements, isotopes, and ions."""
