@@ -2,54 +2,78 @@
 Module containing the Collisional Analysis formulation.
 """
 __all__ = [
-    "coal"
+    "collisional_thermalization"
 ]
 
 import astropy.units as u
-import math
 import numpy as np
 
+from plasmapy.particles import Particle, ParticleLike
 from plasmapy.utils.decorators import validate_quantities
 
 @validate_quantities(
-    T={"can_be_negative": False, "equivalencies": u.temperature_energy()}
+    T_a={"can_be_negative": False, "equivalencies": u.temperature_energy()},
+    T_b={"can_be_negative": False, "equivalencies": u.temperature_energy()}
 )
-def coal(
+def collisional_thermalization(
     r_0: u.m,
     r_n: u.m,
-    n_p: 1/u.cm**-3,
-    eta: float,
-    v_p: u.m/u.s,
-    T_p: u.K,
-    theta: float,
+    n_a: u.cm**-3,
+    n_b: u.cm**-3,
+    v_a: u.m / u.s,
+    T_a: u.K,
+    T_b: u.K,
+    ions: ParticleLike = [Particle("p+"), Particle("He-4++")],
     n_step: int = 1000
 ):
     r"""
-    Compute the
+    Coulomb collisions, soft, small angle deflections mediated by the
+    electrostatic force, occur between constituent particles of a
+    plasma. This can cause the plasma to thermalize over time, i.e.
+    the temperature of the plasma approaches thermal equilibrium.
+    This function allows the thermalization of the plasma to be
+    modeled and predicts the temperature ratio, for ions within
+    the plasma, at a different point in space.
+
+
+    - particle thermalization
+    - what is actual calculated
+    - what each variable is and why its used, context
+
+
 
     Parameters
     ----------
     r_0 : `~astropy.units.Quantity`
-        Starting position in units of meters or astronomical units.
+        Starting position of the plasma in units of meters or
+        astronomical units.
 
-    r_1 : `~astropy.units.Quantity`
-        Final position in units of meters or astronomical units.
+    r_n : `~astropy.units.Quantity`
+        Final position of the plasma in units of meters or
+        astronomical units.
 
-    n_p : `~astropy.units.Quantity`
-        The proton number density in units convertible to m\ :sup:`-3`.
+    n_a : `~astropy.units.Quantity`
+        The primary ion number density in units convertible to m\ :sup:`-3`.
 
-    eta :
-        The alpha number density divided by the proton number density,
-        densities should be in units convertible to m\ :sup:`-3`.
+    v_a : `~astropy.units.Quantity`
+        The primary ion speed in units convertible to ms\ :sup:`-1`.
 
-    v_p : `~astropy.units.Quantity`, optional
-        The velocity of the protons in units convertible to ms\ :sup:`-1`.
+    T_a : `~astropy.units.Quantity`
+        Temperature of the primary ion in units convertible to
+        temperature K.
 
-    T_p : `~astropy.units.Quantity`
-        The proton temperature in units of :math:`K` or :math:`eV`.
+    T_b : `~astropy.units.Quantity`
+        Temperature of the secondary ion in units convertible to
+        temperature K.
 
-    n_step : `int`, optional
-        The step number for the operation
+    ions : `Particle`
+        Temperature
+
+    n_step : `int`
+        Temperature
+
+
+
 
     Returns
     -------
@@ -62,7 +86,18 @@ def coal(
 
     Notes
     -----
-    Using th
+
+     - how eta and theta are computed
+    - applicable to what plasma, all mainly solar wind
+
+
+    Big equation here
+
+    assumptions
+    - no relative drift
+    - large angle deflection
+    scalings,
+
 
     Examples
     --------
@@ -70,78 +105,68 @@ def coal(
 
     """
 
-    r_0: u.m,
-    r_n: u.m,
-    n_p: 1 / u.cm ** -3,
-    eta: float,
-    v_p: u.m / u.s,
-    T_p: u.K,
-    theta: float,
-    n_step: int = 1000
+    # Validate n_step argument
+    if not isinstance(n_step, int):
+        raise TypeError(
+            "Argument 'n_step' is of incorrect type, type of "
+            f"{type(n_step)} received. While 'n_step' must be "
+            "of type int."
+        )
 
 
 
-    # Initialize the alpha-proton charge and mass ratios.
-    z_a = 2.
-    mu_a = 4.
+    def sub_function(
+        density_scale: float = -1.8,
+        velocity_scale: float = -0.2,
+        temperature_scale: float = -0.77
 
-    # Initialise.
-    d_r = (r_0 - r_n) / (1. * n_step)
+    ):
+        # Initialize the alpha-proton charge and mass ratios.
+        z_a = ions[0].charge_number
+        mu_a = ions[0].mass_number
 
-    # Loop.
-    for i in range(n_step):
+        z_b = ions[1].charge_number
+        mu_b = ions[1].mass_number
 
-        r = r_n + ((i + 1) * d_r)
+        # Initialise.
+        d_r = (r_0 - r_n) / (1. * n_step)
 
-        n_p = n_p * (r / r_n) ** -1.8
-        v_p = v_p * (r / r_n) ** -0.2
-        T_p = T_p * (r / r_n) ** -0.77
+        # Loop.
+        for i in range(n_step):
 
-        alpha = (theta + mu_a)
+            r = r_n + ((i + 1) * d_r)
 
-        if alpha == 0:
-            alpha = float('Nan')
-        if theta == 0:
-            theta = float('Nan')
+            eta = n_a/n_b
+            theta = T_a/T_b
 
-        charlie = 1 + (z_a ** 2 * eta / theta)
-        if charlie < 0:
-            charlie = 0
-
-        arg_ = ((n_p ** 0.5 / T_p ** 1.5) * (z_a * (mu_a + 1) / alpha) *
-                (charlie) ** 0.5)
-
-        if arg_ == 0:
-            arg_ = math.exp(9)
-        elif arg_ < 0:
-            arg_ = math.exp(9)
-        else:
-            pass
-
-        lambda_ap = 9 - np.log(arg_)
-
-        x = (v_p * T_p ** 1.5)
-        y = (eta + 1) ** 2.5
-
-        if theta == float('Nan'):
-            z = float('Nan')
-        else:
-            z = (theta + mu_a) ** 1.5
-
-        if x == 0:
-            x = float('Nan')
-        if y == 0:
-            y = float('Nan')
-        if z == 0:
-            z = float('Nan')
-        elif z < 0:
-            z = float('Nan')
-
-        d_theta = ((-2.60e7) * ((n_p / x)) * (mu_a ** 0.5 * z_a ** 2 / y) * (
-                    (theta - 1.) * (eta * theta + 1.) ** 2.5 / z) * (lambda_ap) * (d_r))
-
-        theta = theta + d_theta
-
-    return theta
+            n_a = n_a * (r / r_n) ** density_scale
+            v_a = v_a * (r / r_n) ** velocity_scale
+            T_a = T_a * (r / r_n) ** temperature_scale
 
 
+            d_theta = ((T_b*dT_dt(mu_a, mu_b, z_a, z_b, n_a, n_b, T_a, T_b) - T_a*dT_dt(mu_b, mu_a, z_b, z_a, n_b, n_a, T_b, T_a))/(v_a*T_b**2))*d_r
+
+            theta = theta + d_theta
+        return theta
+
+
+    def c_log(mu_a, mu_b, Z_a, Z_b, n_a, n_b, T_a, T_b):
+        alpha = Z_a*Z_b*(mu_a + mu_b)
+        beta = mu_a*T_b + mu_b*T_a
+        def v_therm(n, Z, T):
+            return (n*Z**2)/T
+
+        return 9 + np.log((alpha/beta)*np.sqrt(v_therm(n_a, Z_a, T_a) + v_therm(n_b, Z_b, T_b)))
+
+    def dT_dt(mu_a, mu_b, Z_a, Z_b, n_a, n_b, T_a, T_b):
+        alpha = (np.sqrt(mu_a*mu_b)*((Z_a*Z_b)**2)*n_b)
+        beta = (mu_a*T_b + mu_b*T_a)**(1.5)
+        charlie = (T_b - T_a)
+        delta = c_log(mu_a, mu_b, Z_a, Z_b, n_a, n_b, T_a, T_b)
+
+        return (0.174)*(alpha/beta)*charlie*delta
+
+    return 
+
+
+print("Hello")
