@@ -118,7 +118,7 @@ future==0.18.3
     # via uncertainties
 h5py==3.7.0
     # via plasmapy (setup.py)
-hypothesis==6.67.1
+hypothesis==6.68.0
     # via plasmapy (setup.py)
 identify==2.5.17
     # via pre-commit
@@ -136,7 +136,7 @@ ipykernel==6.21.1
     # via
     #   ipywidgets
     #   plasmapy (setup.py)
-ipython==8.9.0
+ipython==8.10.0
     # via
     #   ipykernel
     #   ipywidgets
@@ -263,7 +263,7 @@ packaging==23.0
     #   sphinx
     #   tox
     #   xarray
-pandas==1.5.2
+pandas==1.5.3
     # via
     #   plasmapy (setup.py)
     #   xarray
@@ -279,7 +279,7 @@ pillow==9.4.0
     # via
     #   matplotlib
     #   plasmapy (setup.py)
-platformdirs==2.6.2
+platformdirs==3.1.0
     # via
     #   jupyter-core
     #   virtualenv
