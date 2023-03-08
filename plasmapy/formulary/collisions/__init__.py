@@ -6,8 +6,8 @@ __all__ = []
 
 import inspect
 
-from plasmapy.formulary.collisions.coulomb import *
 from plasmapy.formulary.collisions.collisional import *
+from plasmapy.formulary.collisions.coulomb import *
 from plasmapy.formulary.collisions.dimensionless import *
 from plasmapy.formulary.collisions.frequencies import *
 from plasmapy.formulary.collisions.lengths import *
