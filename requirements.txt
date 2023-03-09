@@ -491,7 +491,7 @@ uncertainties==3.1.7
     # via lmfit
 urllib3==1.26.14
     # via requests
-virtualenv==20.19.0
+virtualenv==20.20.0
     # via
     #   pre-commit
     #   tox
