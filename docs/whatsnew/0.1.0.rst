@@ -15,7 +15,7 @@ New Features
 
 * Adopted the :ref:`plasmapy-code-of-conduct`.
 
-* Created a guide on :ref:`contributing-to-plasmapy`.
+* Created a guide on :ref:`contributing to PlasmaPy <contributor guide>`.
 
 * Adopted a permissive BSD 3-clause `license
   <https://github.com/PlasmaPy/PlasmaPy/blob/main/LICENSE.md>`_ with
