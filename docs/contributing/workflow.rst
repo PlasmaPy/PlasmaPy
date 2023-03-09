@@ -22,8 +22,8 @@ for contributing!
 
 .. tip::
 
-   Issues labeled as a `good first contribution`_ are a great place to
-   get started with contributing.
+   Issues labeled as a `good first issue`_ are a great place to get
+   started with contributing.
 
 Making a code contribution
 ==========================
@@ -182,6 +182,6 @@ marked as a draft pull request. Thank you for contributing!
 .. _branch: https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/about-branches
 .. _fork: https://docs.github.com/en/get-started/quickstart/fork-a-repo
 .. _GitHub Documentation: https://docs.github.com/
-.. _good first contribution: https://github.com/PlasmaPy/PlasmaPy/issues?q=is%3Aissue+is%3Aopen+label%3A%22Good+first+contribution%22
+.. _good first issue: https://github.com/PlasmaPy/PlasmaPy/issues?q=is%3Aissue+is%3Aopen+label%3A%22Good+first+issue%22
 .. _pull request: https://docs.github.com/en/github/collaborating-with-pull-requests
 .. _remote: https://github.com/git-guides/git-remote
