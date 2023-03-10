@@ -110,7 +110,7 @@ flake8-simplify==0.19.3
     # via plasmapy (setup.py)
 flake8-use-fstring==1.4
     # via plasmapy (setup.py)
-fonttools==4.38.0
+fonttools==4.39.0
     # via matplotlib
 future==0.18.3
     # via uncertainties
