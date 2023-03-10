@@ -407,11 +407,11 @@ def Coulomb_logarithm(
     Examples
     --------
     >>> import astropy.units as u
-    >>> n = 1e19 * u.m**-3
+    >>> n_e = 1e19 * u.m**-3
     >>> T = 1e6 * u.K
-    >>> Coulomb_logarithm(T, n, ('e-', 'p+'))
+    >>> Coulomb_logarithm(T, n_e, ('e-', 'p+'))
     14.545527...
-    >>> Coulomb_logarithm(T, n, ('e-', 'p+'), V = 1e6 * u.m / u.s)
+    >>> Coulomb_logarithm(T, n_e, ('e-', 'p+'), V = 1e6 * u.m / u.s)
     11.363478...
 
     See Also
