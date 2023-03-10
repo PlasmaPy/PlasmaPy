@@ -135,7 +135,7 @@ in parentheses are `ORCID author identifiers <https://orcid.org>`__.
 * :user:`Vishwas Rajashekar <DarkAEther>` (:orcid:`0000-0002-4914-6612`)
 * :user:`Wu Tingfeng <elliotwutingfeng>` (:orcid:`0000-0001-8745-204X`)
 * :user:`Yi-Min Huang <yopology>` (:orcid:`0000-0002-4237-2211`)
-* :user: `Michaela Švancarová <mysakli>`
+* :user:`Michaela Švancarová <mysakli>`
 
 
 This list contains contributors to PlasmaPy's core package and vision
