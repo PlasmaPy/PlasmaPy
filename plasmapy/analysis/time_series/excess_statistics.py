@@ -46,6 +46,13 @@ class ExcessStatistics:
         if time_step <= 0:
             raise ValueError("time_step must be positive")
 
+        # This might not be the most elegant way to make sure thresholds is iterable.
+        # I would be happy to hear suggestions how to improve this.
+        try:
+            iter(thresholds)
+        except TypeError:
+            thresholds = [thresholds]
+
         self._total_time_above_threshold = []
         self._number_of_crossings = []
         self._average_times = []

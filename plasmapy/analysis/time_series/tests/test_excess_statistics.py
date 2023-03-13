@@ -11,6 +11,14 @@ from plasmapy.analysis.time_series.excess_statistics import ExcessStatistics
     "signal, thresholds, time_step, pdf, bins, expected",
     [
         (
+            [0, 2, 0],
+            1,
+            1,
+            False,
+            32,
+            ([1], [1], [1], [0]),
+        ),
+        (
             [0, 2, 2, 0, 4, 0],
             [1, 3, 5],
             1,
@@ -65,11 +73,11 @@ def test_ExcessStatistics(signal, thresholds, time_step, pdf, bins, expected):
 
 
 @pytest.mark.parametrize(
-    "signal, thresholds, time_step, pdf, bins",
-    [([1, 2], 1, -1, False, 32), ([1, 2], 1, 1, True, 1.5)],
+    "signal, thresholds, time_step, bins",
+    [([1, 2], 1, -1, 32), ([1, 2], 1, 1, 1.5)],
 )
-def test_ExcessStatistics_exception(signal, thresholds, time_step, pdf, bins):
+def test_ExcessStatistics_exception(signal, thresholds, time_step, bins):
     """test whether exception is risen"""
-    with pytest.raises((ValueError, TypeError)):
+    with pytest.raises((TypeError, ValueError)):
         tmp = ExcessStatistics(signal, thresholds, time_step)
         tmp.hist(bins)
