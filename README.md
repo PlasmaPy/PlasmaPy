@@ -40,7 +40,7 @@
 [example gallery]: https://docs.plasmapy.org/en/stable/examples.html
 [GitHub discussions]: https://github.com/PlasmaPy/PlasmaPy/discussions
 [Gitter]: https://gitter.im/PlasmaPy/Lobby
-[good first issues]: https://github.com/PlasmaPy/PlasmaPy/issues?q=is%3Aissue+is%3Aopen+label%3A%22Good+first+contribution%22
+[good first issues]: https://github.com/PlasmaPy/PlasmaPy/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22
 [Google Summer of Code]: https://summerofcode.withgoogle.com
 [hack week]: https://doi.org/10.1073/pnas.1717196115
 [how to install plasmapy]: https://docs.plasmapy.org/en/stable/install.html

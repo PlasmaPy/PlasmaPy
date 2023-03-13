@@ -1,5 +1,8 @@
 .. _documentation guide:
 
+.. role:: rest(code)
+   :language: rst
+
 *******************
 Documentation Guide
 *******************
@@ -68,6 +71,8 @@ There are two methods for building the documentation: make_ and tox_.
   environment and builds the package before building the documentation.
   Consequently, PlasmaPy uses tox_ for building the documentation on
   continuous integration testing platforms.
+
+.. _doc-build-prereqs:
 
 Prerequisites
 -------------
@@ -140,10 +145,11 @@ following example:
 
    tox -e build_docs -- -j=auto -q
 
-The ``-j=auto`` option tells `sphinx-build`_ to build the documentation
-in parallel, with the number of processes being automatically
-determined. The ``-q`` flag makes `sphinx-build`_ print out only
-warnings and errors, which makes them easier to find and debug.
+The :bash:`-j=auto` option tells `sphinx-build`_ to build the
+documentation in parallel, with the number of processes being
+automatically determined. The :bash:`-q` flag makes `sphinx-build`_
+print out only warnings and errors, which makes them easier to find and
+debug.
 
 You can alternatively shorten the documentation build by running:
 
@@ -203,8 +209,10 @@ the same length as that heading.
 We can link to code objects by enclosing them in single backticks.
 This linking will work for Python_ objects as well as certain packages
 like NumPy_, SciPy_, Astropy_, and pandas_. This linking is described in
-the section on :ref:`external-references`. In-line code examples may be
-enclosed in double backticks or specified using the ``:py:`` role.
+the section on :ref:`external-references`. In-line code samples are
+typically enclosed in double backticks. To get inline code highlighting,
+use the :rest:`:py:` role for Python code or :rest:`:bash:` for code run
+in a terminal.
 
 .. code-block:: rst
 
@@ -355,7 +363,7 @@ The |docs/conf.py|_ file contains the configuration information needed
 to customize Sphinx_ behavior. The documentation for Sphinx_ lists the
 `configuration options`_ that can be set.
 
-The |docs/_static/css|_ directory contains CSS_ files with `style
+The |docs/_static/css/|_ directory contains CSS_ files with `style
 overrides`_ for the `Read the Docs Sphinx Theme`_ to customize the look
 and feel of the online documentation.
 
@@ -380,6 +388,7 @@ extensions:
 * |sphinx_gallery.load_style|_ for using sphinx-gallery styles.
 * |IPython.sphinxext.ipython_console_highlighting|_.
 * |sphinx_changelog|_ for rendering towncrier_ changelogs.
+* |sphinx-tabs|_ for creating tabbed content.
 * |sphinx-hoverxref|_ for showing floating windows on cross references
   of the documentation.
 * |sphinx-notfound-page|_ to add a :wikipedia:`404 <HTTP_404>` page for
@@ -507,7 +516,7 @@ Creating a documentation stub file for a new module
 When the narrative documentation does not index a subpackage (a
 directory) or module (a :file:`.py` file) with ``automodule``,
 ``automodapi``, or the like, then a stub file must be created for that
-particular subpackage or module in |docs/api_static|_. For example, the
+particular subpackage or module in |docs/api_static/|_. For example, the
 stub file for `plasmapy.particles.atomic` is placed at
 :file:`docs/api_static/plasmapy.particles.atomic.rst` and its contents
 look like:
@@ -532,7 +541,7 @@ error or the absence of the module in the documentation build.
    stub file must be created for both of them.
 
    For example, suppose a pull request creates the ``plasmapy.io``
-   subpackage in the :file:`plasmapy/io` directory and the
+   subpackage in the :file:`plasmapy/io/` directory and the
    ``plasmapy.io.readers`` module via :file:`plasmapy/io/readers.py`. It
    will then be necessary to create stub files at both
    :file:`docs/api_static/plasmapy.io.rst` and
@@ -723,7 +732,7 @@ faithfully represent the behavior of the code.
        """
        return 2 * x
 
-An ellipsis (``...``) denotes that the actual and expected outputs
+An ellipsis (:py:`...`) denotes that the actual and expected outputs
 should only be compared to the available precision. This capability is
 needed for functions in `plasmapy.formulary` that depend on fundamental
 constants that are occasionally revised.
@@ -740,8 +749,8 @@ constants that are occasionally revised.
        """
 
 To skip the execution of a line of code in a docstring during tests, end
-the line with ``# doctest: +SKIP``. This is appropriate for lines where
-the output varies or an exception is raised.
+the line with :py:`# doctest: +SKIP`. This is appropriate for lines
+where the output varies or an exception is raised.
 
 .. code-block:: python
 
@@ -837,8 +846,8 @@ documentation for PlasmaPy and affiliated packages.
 
 * Use indentations of 3 spaces for reST_ blocks.
 
-* Store images within the |docs/_static|_ directory, except for images
-  that are generated during the Sphinx_ build. The |docs/_static|_
+* Store images within the |docs/_static/|_ directory, except for images
+  that are generated during the Sphinx_ build. The |docs/_static/|_
   directory contains files that are used for the online documentation
   but are not generated during the Sphinx_ build.
 
@@ -890,7 +899,7 @@ documentation for PlasmaPy and affiliated packages.
   of a sentence.
 
 * Particle and chemical symbols should be formatted as regular text. Use
-  ``:sub:`` for subscripts and ``:sup:`` for superscripts.
+  :rest:`:sub:` for subscripts and :rest:`:sup:` for superscripts.
 
   Because interpreted text must normally be surrounded by whitespace or
   punctuation, use a backslash followed by a space for the interpreted
@@ -917,16 +926,16 @@ documentation for PlasmaPy and affiliated packages.
   high-level overview of what is contained in that module.
 
 * Place the ``__all__`` dunder immediately after the docstring that
-  begins a module and before the import statements (but after any ``from
-  __future__`` imports that must be at the beginning of a file). This
-  dunder should be a `list` that contains the names of all objects in
-  that module intended for use by users. Private objects (i.e., objects
-  with names that begin with an underscore) should not be included in
-  ``__all__``.  ``__all__`` is a leftover from the now dissuaded
-  practice of star imports (e.g., :samp:`from {package} import *`\ ),
-  but is still used by Sphinx_ for selecting objects to document. Only
-  objects contained within ``__all__`` will show up in the online
-  documentation.
+  begins a module and before the import statements (but after any
+  :py:`from __future__` imports that must be at the beginning of a
+  file). This dunder should be a `list` that contains the names of all
+  objects in that module intended for use by users. Private objects
+  (i.e., objects with names that begin with an underscore) should not be
+  included in ``__all__``.  ``__all__`` is a leftover from the now
+  dissuaded practice of star imports (e.g.,
+  :samp:`from {package} import *`\ ), but is still used by Sphinx_ for
+  selecting objects to document. Only objects contained within
+  ``__all__`` will show up in the online documentation.
 
 Docstring guidelines
 --------------------
@@ -1291,7 +1300,7 @@ Missing documentation pages for new modules
 -------------------------------------------
 
 When a new module or subpackage is created, it is usually necessary to
-:ref:`create a stub file <api-static>` for it in |docs/api_static|_. A
+:ref:`create a stub file <api-static>` for it in |docs/api_static/|_. A
 missing stub file can lead to either a ``reference target not found``
 error or missing documentation pages.
 

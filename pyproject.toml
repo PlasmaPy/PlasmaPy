@@ -70,6 +70,7 @@ docs = [
   "sphinx-notfound-page>=0.8",
   "sphinx-reredirects",
   "sphinx_rtd_theme>=1",
+  "sphinx_tabs",
   "sphinxcontrib-bibtex",
   "towncrier==22.8",
   "tox<4",
@@ -140,7 +141,6 @@ ELLIPSIS
 NUMBER"""
 addopts = "--doctest-modules --doctest-continue-on-failure"
 filterwarnings = ["ignore:.*Creating", "a"]
-looponfailroots = "plasmapy"
 
 [tool.coverage.report]
 exclude_lines = [
