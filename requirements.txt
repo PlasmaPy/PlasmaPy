@@ -474,7 +474,7 @@ towncrier==22.8.0
     #   sphinx-changelog
 tox==3.28.0
     # via plasmapy (setup.py)
-tqdm==4.64.1
+tqdm==4.65.0
     # via plasmapy (setup.py)
 traitlets==5.9.0
     # via
