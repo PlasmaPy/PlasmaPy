@@ -334,6 +334,8 @@ popular IDEs:
 * `Python testing in Visual Studio Code
   <https://code.visualstudio.com/docs/python/testing>`__
 
+.. _writing tests:
+
 Writing Tests
 =============
 
@@ -676,6 +678,8 @@ Coverage configurations
 Configurations for coverage tests are given in the ``[coverage:run]``
 and ``[coverage:report]`` sections of :file:`setup.cfg`. Codecov_
 configurations are given in :file:`.codecov.yaml`.
+
+.. _testing best practices:
 
 Best practices
 ==============
