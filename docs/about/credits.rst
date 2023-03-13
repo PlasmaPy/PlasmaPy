@@ -110,6 +110,7 @@ in parentheses are `ORCID author identifiers <https://orcid.org>`__.
 * :user:`Roberto Díaz Pérez <RoberTnf>`
 * :user:`Samaiyah I. Farid <samaiyahfarid>` (:orcid:`0000-0003-0223-7004`)
 * :user:`Samuel Langendorf <samurai688>` (:orcid:`0000-0002-7757-5879`)
+* :user:`Sarthak Choudhary <martha889>`
 * :user:`Sean Carroll <seanwilliamcarroll>`
 * :user:`Sean Chambers <schambers>`
 * :user:`seanjunheng2`
