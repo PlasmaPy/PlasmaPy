@@ -152,12 +152,13 @@ class ExcessStatistics:
     @property
     def total_time_above_threshold(self):
         """
-         Total time above threshold(s).
+        Total time above threshold(s).
 
-         Returns
-         -------
-        `total_time_above_threshold`: 1D |array_like|
-         Total time above threshold for each value in ``thresholds``.
+        Returns
+        -------
+
+        total_time_above_threshold: 1D |array_like|
+         total time above threshold for each value in ``thresholds``.
         """
 
         return self._total_time_above_threshold
@@ -165,12 +166,13 @@ class ExcessStatistics:
     @property
     def number_of_crossings(self):
         """
-         Total number of upwards crossings for threshold(s).
+        Total number of upwards crossings for threshold(s).
 
-         Returns
-         -------
-        `number_of_crossings`: 1D |array_like|
-         Total number of upwards crossings for each value in ``thresholds``.
+        Returns
+        -------
+
+        number_of_crossings: 1D |array_like|
+         total number of upwards crossings for each value in ``thresholds``.
         """
 
         return self._number_of_crossings
@@ -178,12 +180,13 @@ class ExcessStatistics:
     @property
     def average_times(self):
         """
-         Average time above threshold(s).
+        Average time above threshold(s).
 
-         Returns
-         -------
-        `average_times`: 1D |array_like|
-         Average time above each value in ``thresholds``.
+        Returns
+        -------
+
+        average_times: 1D |array_like|
+         average time above each value in ``thresholds``.
         """
 
         return self._average_times
@@ -191,12 +194,13 @@ class ExcessStatistics:
     @property
     def rms_times(self):
         """
-         Root-mean-square values of time above threshold(s).
+        Root-mean-square values of time above threshold(s).
 
-         Returns
-         -------
-        `rms_times`: 1D |array_like|
-         Root-mean-square values of time above each value in ``thresholds``.
+        Returns
+        -------
+
+        rms_times: 1D |array_like|
+         root-mean-square values of time above each value in ``thresholds``.
         """
 
         return self._rms_times
