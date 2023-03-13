@@ -46,8 +46,7 @@ class ExcessStatistics:
         if time_step <= 0:
             raise ValueError("time_step must be positive")
 
-        # This might not be the most elegant way to make sure thresholds is iterable.
-        # I would be happy to hear suggestions how to improve this.
+        # make sure thresholds is an iterable
         try:
             iter(thresholds)
         except TypeError:
@@ -153,18 +152,47 @@ class ExcessStatistics:
     @property
     def total_time_above_threshold(self):
         """
-        Average time above each value in ``thresholds``.
+         Total time above threshold(s).
+
+         Returns
+         -------
+        `total_time_above_threshold`: 1D |array_like|
+         Total time above threshold for each value in ``thresholds``.
         """
         return self._total_time_above_threshold
 
     @property
     def number_of_crossings(self):
+        """
+         Total number of upwards crossings for threshold(s).
+
+         Returns
+         -------
+        `number_of_crossings`: 1D |array_like|
+         Total number of upwards crossings for each value in ``thresholds``.
+        """
         return self._number_of_crossings
 
     @property
     def average_times(self):
+        """
+         Average time above threshold(s).
+
+         Returns
+         -------
+        `average_times`: 1D |array_like|
+         Average time above each value in ``thresholds``.
+        """
         return self._average_times
 
     @property
     def rms_times(self):
+        """
+         Root-mean-square values of time above threshold(s).
+
+         Returns
+         -------
+        `rms_times`: 1D |array_like|
+         Root-mean-square values of time above each value in ``thresholds``.
+        """
         return self._rms_times
