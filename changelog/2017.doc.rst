@@ -1,2 +1,2 @@
-Removed the vision statement from the online documentation.  The
-`vision statement <>`__ is now available on Zenodo.
+Moved PlasmaPy's `vision statement <https://doi.org/10.5281/zenodo.7734998>`__
+from the online documentation to a Zenodo record.
