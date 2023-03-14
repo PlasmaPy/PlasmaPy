@@ -12,7 +12,7 @@ argon2-cffi==21.3.0
     # via jupyter-server
 argon2-cffi-bindings==21.2.0
     # via argon2-cffi
-asteval==0.9.28
+asteval==0.9.29
     # via lmfit
 astor==0.8.1
     # via flake8-simplify
@@ -25,7 +25,7 @@ attrs==22.2.0
     #   hypothesis
     #   jsonschema
     #   pytest
-babel==2.11.0
+babel==2.12.1
     # via
     #   jupyterlab-server
     #   sphinx
@@ -41,7 +41,7 @@ cffi==1.15.1
     # via argon2-cffi-bindings
 cfgv==3.3.1
     # via pre-commit
-charset-normalizer==3.0.1
+charset-normalizer==3.1.0
     # via requests
 click==8.1.3
     # via
@@ -64,7 +64,7 @@ defusedxml==0.7.1
     # via nbconvert
 distlib==0.3.6
     # via virtualenv
-docutils==0.17.1
+docutils==0.18.1
     # via
     #   nbsphinx
     #   plasmapy (setup.py)
@@ -76,7 +76,7 @@ docutils==0.17.1
     #   sphinxcontrib-bibtex
 entrypoints==0.4
     # via jupyter-client
-exceptiongroup==1.1.0
+exceptiongroup==1.1.1
     # via
     #   hypothesis
     #   pytest
@@ -84,7 +84,7 @@ execnet==1.9.0
     # via pytest-xdist
 executing==1.2.0
     # via stack-data
-fastjsonschema==2.16.2
+fastjsonschema==2.16.3
     # via nbformat
 filelock==3.9.0
     # via
@@ -114,11 +114,11 @@ fonttools==4.39.0
     # via matplotlib
 future==0.18.3
     # via uncertainties
-h5py==3.7.0
+h5py==3.8.0
     # via plasmapy (setup.py)
-hypothesis==6.68.0
+hypothesis==6.68.2
     # via plasmapy (setup.py)
-identify==2.5.17
+identify==2.5.20
     # via pre-commit
 idna==3.4
     # via
@@ -134,7 +134,7 @@ ipykernel==6.21.3
     # via
     #   ipywidgets
     #   plasmapy (setup.py)
-ipython==8.10.0
+ipython==8.11.0
     # via
     #   ipykernel
     #   ipywidgets
@@ -142,7 +142,7 @@ ipywidgets==8.0.4
     # via plasmapy (setup.py)
 jedi==0.18.2
     # via ipython
-jinja2==3.0.3
+jinja2==3.1.2
     # via
     #   jupyter-server
     #   jupyterlab-server
@@ -151,7 +151,6 @@ jinja2==3.0.3
     #   numpydoc
     #   plasmapy (setup.py)
     #   sphinx
-    #   sphinx-tabs
     #   towncrier
 json5==0.9.11
     # via jupyterlab-server
@@ -174,7 +173,7 @@ jupyter-core==5.2.0
     #   nbconvert
     #   nbformat
     #   voila
-jupyter-server==1.23.5
+jupyter-server==1.23.6
     # via
     #   jupyterlab-server
     #   voila
@@ -198,7 +197,7 @@ markupsafe==2.1.2
     # via
     #   jinja2
     #   nbconvert
-matplotlib==3.6.3
+matplotlib==3.7.1
     # via plasmapy (setup.py)
 matplotlib-inline==0.1.6
     # via
@@ -210,7 +209,7 @@ mdurl==0.1.2
     # via markdown-it-py
 mistune==2.0.5
     # via nbconvert
-mpmath==1.2.1
+mpmath==1.3.0
     # via plasmapy (setup.py)
 nbclient==0.7.2
     # via
@@ -227,7 +226,7 @@ nbformat==5.7.3
     #   nbclient
     #   nbconvert
     #   nbsphinx
-nbsphinx==0.8.12
+nbsphinx==0.9.0
     # via plasmapy (setup.py)
 nest-asyncio==1.5.6
     # via
@@ -281,7 +280,7 @@ pillow==9.4.0
     # via
     #   matplotlib
     #   plasmapy (setup.py)
-platformdirs==3.1.0
+platformdirs==3.1.1
     # via
     #   jupyter-core
     #   virtualenv
@@ -289,11 +288,11 @@ pluggy==1.0.0
     # via
     #   pytest
     #   tox
-pre-commit==3.0.4
+pre-commit==3.1.1
     # via plasmapy (setup.py)
 prometheus-client==0.16.0
     # via jupyter-server
-prompt-toolkit==3.0.36
+prompt-toolkit==3.0.38
     # via ipython
 psutil==5.9.4
     # via ipykernel
@@ -334,7 +333,7 @@ pyparsing==3.0.9
     # via matplotlib
 pyrsistent==0.19.3
     # via jsonschema
-pytest==7.2.1
+pytest==7.2.2
     # via
     #   plasmapy (setup.py)
     #   pytest-datadir
@@ -352,16 +351,14 @@ python-dateutil==2.8.2
     #   matplotlib
     #   pandas
 pytz==2022.7.1
-    # via
-    #   babel
-    #   pandas
+    # via pandas
 pyyaml==6.0
     # via
     #   astropy
     #   pre-commit
     #   pybtex
     #   pytest-regressions
-pyzmq==25.0.0
+pyzmq==25.0.1
     # via
     #   ipykernel
     #   jupyter-client
@@ -375,7 +372,7 @@ restructuredtext-lint==1.4.0
     # via flake8-rst-docstrings
 rich==13.3.2
     # via tryceratops
-scipy==1.10.0
+scipy==1.10.1
     # via
     #   lmfit
     #   plasmapy (setup.py)
@@ -397,9 +394,9 @@ snowballstemmer==2.2.0
     #   sphinx
 sortedcontainers==2.4.0
     # via hypothesis
-soupsieve==2.3.2.post1
+soupsieve==2.4
     # via beautifulsoup4
-sphinx==5.3.0
+sphinx==6.1.3
     # via
     #   nbsphinx
     #   numpydoc
@@ -428,9 +425,9 @@ sphinx-notfound-page==0.8.3
     # via plasmapy (setup.py)
 sphinx-reredirects==0.1.1
     # via plasmapy (setup.py)
-sphinx-rtd-theme==1.1.1
+sphinx-rtd-theme==1.2.0
     # via plasmapy (setup.py)
-sphinx-tabs==3.4.0
+sphinx-tabs==3.4.1
     # via plasmapy (setup.py)
 sphinxcontrib-applehelp==1.0.4
     # via sphinx
@@ -440,8 +437,10 @@ sphinxcontrib-devhelp==1.0.2
     # via sphinx
 sphinxcontrib-htmlhelp==2.0.1
     # via sphinx
-sphinxcontrib-jquery==3.0.0
-    # via sphinx-hoverxref
+sphinxcontrib-jquery==2.0.0
+    # via
+    #   sphinx-hoverxref
+    #   sphinx-rtd-theme
 sphinxcontrib-jsmath==1.0.1
     # via sphinx
 sphinxcontrib-qthelp==1.0.3
@@ -474,7 +473,7 @@ towncrier==22.8.0
     #   sphinx-changelog
 tox==3.28.0
     # via plasmapy (setup.py)
-tqdm==4.64.1
+tqdm==4.65.0
     # via plasmapy (setup.py)
 traitlets==5.9.0
     # via
@@ -495,9 +494,9 @@ tryceratops==1.1.0
     # via plasmapy (setup.py)
 uncertainties==3.1.7
     # via lmfit
-urllib3==1.26.14
+urllib3==1.26.15
     # via requests
-virtualenv==20.20.0
+virtualenv==20.21.0
     # via
     #   pre-commit
     #   tox
@@ -515,9 +514,9 @@ websockets==10.4
     # via voila
 widgetsnbextension==4.0.5
     # via ipywidgets
-wrapt==1.14.1
+wrapt==1.15.0
     # via plasmapy (setup.py)
-xarray==2022.12.0
+xarray==2023.2.0
     # via plasmapy (setup.py)
 
 # The following packages are considered to be unsafe in a requirements file:
