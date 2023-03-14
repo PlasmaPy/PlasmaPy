@@ -16,34 +16,30 @@ from plasmapy.utils.decorators import validate_quantities
     T_2={"can_be_negative": False, "equivalencies": u.temperature_energy()},
 )
 def collisional_thermalization(
-        r_0: u.au,
-        r_n: u.au,
-        n_1: u.cm ** -3,
-        n_2: u.cm ** -3,
-        v_1: u.m / u.s,
-        T_1: u.K,
-        T_2: u.K,
-        ions: ParticleLike = [Particle("p+"), Particle("He-4++")],
-        n_step: int = 1000,
-        density_scale: float = -1.8,
-        velocity_scale: float = -0.2,
-        temperature_scale: float = -0.77,
+    r_0: u.au,
+    r_n: u.au,
+    n_1: u.cm**-3,
+    n_2: u.cm**-3,
+    v_1: u.m / u.s,
+    T_1: u.K,
+    T_2: u.K,
+    ions: ParticleLike = [Particle("p+"), Particle("He-4++")],
+    n_step: int = 1000,
+    density_scale: float = -1.8,
+    velocity_scale: float = -0.2,
+    temperature_scale: float = -0.77,
 ):
     r"""
-    Coulomb collisions, soft, small angle deflections mediated by the
-    electrostatic force, occur between constituent particles of a
-    plasma. This can cause the plasma to thermalize over time, i.e.
-    the temperature of the plasma approaches thermal equilibrium.
-    This function allows the thermalization of the plasma to be
-    modeled and predicts the temperature ratio, for ions within
-    the plasma, at a different point in space.
-
-
-    - particle thermalization
-    - what is actual calculated
-    - what each variable is and why its used, context
-
-
+    Contains the functionality to calculate collisional
+    thermalization a plasma will undergo in transit, taken from
+    :cite:t:`maruca:2013`. Coulomb collisions, soft, small angle
+    deflections mediated by the electrostatic force, occur between
+    constituent particles of a plasma :cite:t:`baumjohann:1997`. This
+    causes the plasma to thermalize over time, i.e. the temperature
+    of the plasma approaches thermal equilibrium. This function
+    allows the thermalization of a plasma to be modeled and predicts
+    the temperature ratio, for ions within the plasma, at a different
+    point in space.
 
     Parameters
     ----------
@@ -80,20 +76,26 @@ def collisional_thermalization(
         The number of intervals used in solving a differential
         equation via the Euler method. Must be an int.
 
-    !!!change to single vars
-    scaling : `list`
-        A list of values used for scaling parameters; density,
-        velocity and temperature for the primary ion species.
-        Defaults are taken from !!!Ref, and are -1.8, -0.2, -0.77
-        respectively. The order for entry is density, velocity and
-        temperature, DVT.
+    density_scale : `float`
+        The value used for scaling parameter of the primary ion
+        density, default value is -1.8 and is taken from
+        :cite:t:`hellinger:2011`.
 
+    velocity_scale : `float`
+        The value used for scaling parameter of the primary ion
+        velocity, default value is -0.2 and is taken from
+        :cite:t:`hellinger:2011`.
+
+    temperature_scale : `float`
+        The value used for scaling parameter of the primary ion
+        temperature, default value is -0.77 and is taken from
+        :cite:t:`hellinger:2011`.
 
     Returns
     -------
     theta : `float`
         The dimensionless alpha-proton temperature ratio prediction
-        for distance provided
+        for the distance provided.
 
     Raises
     ------
@@ -107,25 +109,17 @@ def collisional_thermalization(
 
     Notes
     -----
+    Equation for collisional thermalization from :cite:t:`maruca:2013`,
+    is given below:
 
-    - how eta and theta are computed
-    - applicable to what plasma, all mainly solar wind
-
-
-    Big equation here
-
-    assumptions
-    - no relative drift
-    - large angle deflection
-    - mixed ion collisions assumption
-    scalings,
-
-    .. math::
+     .. math::
 
         \frac{d \theta_{ba}}{dr} = k \frac{\left( \mu_{a} \mu_{b} Z_{a}
         Z_{b} \right )^{1/2} \left( 1 - \theta_{ba} \right ) \left(1 +
         \eta_{ba}\theta_{ba} \right )}{\left( \frac{\mu_{a}}{\mu_{b}} +
         \theta_{ba} \right )} \lambda_{ba}
+
+    with
 
     .. math::
 
@@ -133,6 +127,25 @@ def collisional_thermalization(
          \frac{\mu_{b}}{\mu_a}}{Z_{a}Z_{b}(\mu_{a} + \mu_{b})} \right )
          \left( \frac{n_{b}Z_{b}^{2}}{n_{a}Z_{a}^{2}} + \theta_{ba}
          \right)^{1/2}\right |
+
+    With :math:`\eta = \frac{n_{2}}{n_{1}}` and :math:`\theta = \frac{T_{2}}{T_{1}}`
+
+    Applicable is primarily for the solar wind.
+
+
+    It is assumed that there is no relative drift between the ion
+    species and that it is a mixed ion collision. Thermalization is
+    from Coulomb collisions, which assumes “soft”, small-angle
+    deflections mediated by the electrostatic force.
+
+    The density, velocity and temperature of the primary ion can be
+    radially scaled, as seen below. The values for the scaling can be
+    altered, though the default values are taken from :cite:t:`hellinger:2011`.
+
+    .. math::
+
+        n(r) \propto r^{-1.8}\ , \hspace{1cm} v_{r}(r) \propto r^{-0.2}\ , \hspace{0.5cm} {\rm and} \hspace{0.5cm} T(r) \propto r^{-0.74}
+
 
     Examples
     --------
@@ -157,27 +170,27 @@ def collisional_thermalization(
 
     # Validate scaling arguments
     for arg in (density_scale, velocity_scale, temperature_scale):
-        if not isinstance(arg, numbers.Integral):
+        if not isinstance(arg, (int, float, numbers.Integral)):
             raise TypeError(
                 "Scaling argument is of incorrect type, type of "
                 f"{type(arg)} received instead. Scaling argument "
                 "should be of type float or int."
             )
 
-    # Define differntial equation function
+    # Define differential equation function
     def df_eq(
-            r_0,
-            r_n,
-            n_1,
-            n_2,
-            v_1,
-            T_1,
-            T_2,
-            ions,
-            n_step,
-            density,
-            velocity,
-            temperature,
+        r_0,
+        r_n,
+        n_1,
+        n_2,
+        v_1,
+        T_1,
+        T_2,
+        ions,
+        n_step,
+        density,
+        velocity,
+        temperature,
     ):
         # Initialize the alpha-proton charge and mass ratios.
         z_1 = ions[0].charge_number
@@ -195,17 +208,19 @@ def collisional_thermalization(
 
         # Define Coulomb log for mixed ion collisions
         def lambda_ba(
-                theta,
-                n_1,
-                n_2,
-                z_1,
-                z_2,
-                mu_1,
-                mu_2,
+            theta,
+            n_1,
+            n_2,
+            z_1,
+            z_2,
+            mu_1,
+            mu_2,
         ):
-            return 9 + np.log(np.sqrt(n_2 * z_2 ** 2 / theta * n_1 * z_1 ** 2 + 1) * (
-                        (z_1 * z_2 * (mu_1 + mu_2)) / (theta + (mu_2 / mu_1))) * (
-                                          (theta + mu_2 / mu_1) / (z_1 * z_2 * (mu_1 + mu_2))))
+            return 9 + np.log(
+                np.sqrt(n_2 * z_2**2 / theta * n_1 * z_1**2 + 1)
+                * ((z_1 * z_2 * (mu_1 + mu_2)) / (theta + (mu_2 / mu_1)))
+                * ((theta + mu_2 / mu_1) / (z_1 * z_2 * (mu_1 + mu_2)))
+            )
 
         # Loop.
         for i in range(n_step):
@@ -221,11 +236,11 @@ def collisional_thermalization(
             T_1 = T_1 * (r / r_n) ** temperature
 
             d_theta = (
-                    d_r
-                    * l_ba
-                    * k
-                    * (np.sqrt(mu_1 * mu_2 * z_1 * z_2) * (1 - theta) * (1 + eta * theta))
-                    / (np.sqrt(mu_1 / mu_2 + theta) ** 3)
+                d_r
+                * l_ba
+                * k
+                * (np.sqrt(mu_1 * mu_2 * z_1 * z_2) * (1 - theta) * (1 + eta * theta))
+                / (np.sqrt(mu_1 / mu_2 + theta) ** 3)
             )
 
             print(theta, d_theta)
@@ -245,9 +260,22 @@ def collisional_thermalization(
     var = all(i for i in d_type)
 
     if not var:
-        return df_eq(r_0, r_n, n_1, n_2, v_1, T_1, T_2, ions, n_step, density_scale, velocity_scale, temperature_scale)
+        return df_eq(
+            r_0,
+            r_n,
+            n_1,
+            n_2,
+            v_1,
+            T_1,
+            T_2,
+            ions,
+            n_step,
+            density_scale,
+            velocity_scale,
+            temperature_scale,
+        )
     else:
-        if all(len(vars[0]) == len(l) for l in vars[1:]):
+        if all(len(vars[0]) == len(z) for z in vars[1:]):
             res = []
             L = 1
             for i in range(L):
@@ -289,8 +317,8 @@ vars = {}
 for key in key_list:
     vars[key] = list(obj[key].keys())
 
-n_a = obj["proton"]["np1"] * u.cm ** -3
-n_b = obj["alpha"]["na"] * u.cm ** -3
+n_a = obj["proton"]["np1"] * u.cm**-3
+n_b = obj["alpha"]["na"] * u.cm**-3
 v_a = obj["proton"]["v_mag"] * u.m / u.s
 T_a = obj["proton"]["Tperp1"] * u.K
 T_b = obj["alpha"]["Trat"] * u.K
