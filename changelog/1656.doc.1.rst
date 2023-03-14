@@ -1,0 +1,1 @@
+Converted :file:`docs/CONTRIBUTING.rst` to :file:`.github/contributing.md`.
