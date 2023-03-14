@@ -236,7 +236,7 @@ nodeenv==1.7.0
     # via pre-commit
 numba==0.56.4
     # via plasmapy (setup.py)
-numpy==1.23.5
+numpy==1.24.2
     # via
     #   astropy
     #   contourpy
