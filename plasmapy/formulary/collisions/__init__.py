@@ -6,12 +6,12 @@ __all__ = []
 
 import inspect
 
-from plasmapy.formulary.collisions.tools.collisional_analysis import *
 from plasmapy.formulary.collisions.coulomb import *
 from plasmapy.formulary.collisions.dimensionless import *
 from plasmapy.formulary.collisions.frequencies import *
 from plasmapy.formulary.collisions.lengths import *
 from plasmapy.formulary.collisions.misc import *
+from plasmapy.formulary.collisions.tools.collisional_analysis import *
 
 # auto populate __all__
 for obj_name in list(globals()):

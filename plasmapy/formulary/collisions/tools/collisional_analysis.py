@@ -4,6 +4,7 @@ Module containing the Collisional Analysis formulation.
 __all__ = ["collisional_thermalization"]
 
 import astropy.units as u
+import numbers
 import numpy as np
 
 from plasmapy.particles import Particle, ParticleLike
@@ -15,18 +16,18 @@ from plasmapy.utils.decorators import validate_quantities
     T_2={"can_be_negative": False, "equivalencies": u.temperature_energy()},
 )
 def collisional_thermalization(
-    r_0: u.au,
-    r_n: u.au,
-    n_1: u.cm**-3,
-    n_2: u.cm**-3,
-    v_1: u.m / u.s,
-    T_1: u.K,
-    T_2: u.K,
-    ions: ParticleLike = [Particle("p+"), Particle("He-4++")],
-    n_step: int = 1000,
-    desnity_scale: float = -1.8,
-    velocity_scale: float = -0.2,
-    temperature_scale: float = -0.77,
+        r_0: u.au,
+        r_n: u.au,
+        n_1: u.cm ** -3,
+        n_2: u.cm ** -3,
+        v_1: u.m / u.s,
+        T_1: u.K,
+        T_2: u.K,
+        ions: ParticleLike = [Particle("p+"), Particle("He-4++")],
+        n_step: int = 1000,
+        density_scale: float = -1.8,
+        velocity_scale: float = -0.2,
+        temperature_scale: float = -0.77,
 ):
     r"""
     Coulomb collisions, soft, small angle deflections mediated by the
@@ -139,6 +140,13 @@ def collisional_thermalization(
 
     """
 
+    # Validate number of ions
+    if len(ions) != 2:
+        raise ValueError(
+            "Argument 'ions' can only take two input values. Instead "
+            f"received {len(ions)} input values."
+        )
+
     # Validate n_step argument
     if not isinstance(n_step, int):
         raise TypeError(
@@ -148,98 +156,115 @@ def collisional_thermalization(
         )
 
     # Validate scaling arguments
-    for arg in (desnity_scale, velocity_scale, temperature_scale):
-        if not isinstance(arg, (float, int)):
+    for arg in (density_scale, velocity_scale, temperature_scale):
+        if not isinstance(arg, numbers.Integral):
             raise TypeError(
-                "Argument 'scaling' is of incorrect type, type of "
-                f"{type(list)} received instead. While 'scaling' must be "
-                "of type list. For additional information, please see "
-                "the documentation."
+                "Scaling argument is of incorrect type, type of "
+                f"{type(arg)} received instead. Scaling argument "
+                "should be of type float or int."
             )
 
-
+    # Define differntial equation function
     def df_eq(
-        r_0,
-        r_n,
-        n_a,
-        n_b,
-        v_a,
-        T_a,
-        T_b,
-        ions,
-        n_step,
-        scaling_values = scaling,
+            r_0,
+            r_n,
+            n_1,
+            n_2,
+            v_1,
+            T_1,
+            T_2,
+            ions,
+            n_step,
+            density,
+            velocity,
+            temperature,
     ):
-
         # Initialize the alpha-proton charge and mass ratios.
-        z_a = ions[0].charge_number
-        mu_a = ions[0].mass_number
+        z_1 = ions[0].charge_number
+        mu_1 = ions[0].mass_number
 
-        z_b = ions[1].charge_number
-        mu_b = ions[1].mass_number
-
+        z_2 = ions[1].charge_number
+        mu_2 = ions[1].mass_number
 
         # Initialise.
         d_r = (r_0 - r_n) / (1.0 * n_step)
         d_r = d_r.value
 
-
         # Define constant
         k = 0.174
+
+        # Define Coulomb log for mixed ion collisions
         def lambda_ba(
                 theta,
-                n_a,
-                n_b,
-                z_a,
-                z_b,
-                mu_a,
-                mu_b,
-
+                n_1,
+                n_2,
+                z_1,
+                z_2,
+                mu_1,
+                mu_2,
         ):
-
-            return 9 #+ np.log(np.sqrt(n_b*z_b**2/theta*n_a*z_a**2 + 1)*((z_a*z_b*(mu_a+mu_b))/(theta + (mu_b/mu_a)))*((theta + mu_b/mu_a)/(z_a*z_b*(mu_a+mu_b))))
-
+            return 9 + np.log(np.sqrt(n_2 * z_2 ** 2 / theta * n_1 * z_1 ** 2 + 1) * (
+                        (z_1 * z_2 * (mu_1 + mu_2)) / (theta + (mu_2 / mu_1))) * (
+                                          (theta + mu_2 / mu_1) / (z_1 * z_2 * (mu_1 + mu_2))))
 
         # Loop.
         for i in range(n_step):
             r = r_n.value + ((i + 1) * d_r)
 
-            eta = n_a/n_b
-            theta = T_a / T_b
+            eta = n_2 / n_1
+            theta = T_2 / T_1
 
-            l_ba = lambda_ba(theta, n_a, n_b, z_a, z_b, mu_a, mu_b)
+            l_ba = lambda_ba(theta, n_1, n_2, z_1, z_2, mu_1, mu_2)
 
-            n_a = n_a * (r / r_n) ** scaling_values[0]
-            v_a = v_a * (r / r_n) ** scaling_values[1]
-            T_a = T_a * (r / r_n) ** scaling_values[2]
+            n_1 = n_1 * (r / r_n) ** density
+            v_1 = v_1 * (r / r_n) ** velocity
+            T_1 = T_1 * (r / r_n) ** temperature
 
-            d_theta = d_r*l_ba*k*(np.sqrt(mu_a*mu_b*z_a*z_b)*(1 - theta)*(1 + eta*theta))/(np.sqrt(mu_a / mu_b + theta) ** 3)
+            d_theta = (
+                    d_r
+                    * l_ba
+                    * k
+                    * (np.sqrt(mu_1 * mu_2 * z_1 * z_2) * (1 - theta) * (1 + eta * theta))
+                    / (np.sqrt(mu_1 / mu_2 + theta) ** 3)
+            )
 
             print(theta, d_theta)
             theta = theta + d_theta
 
         return theta
 
+    vars = [r_0, r_n, n_1, n_2, v_1, T_1, T_2]
 
-    vars = [n_a, n_b, v_a, T_a, T_b]
+    d_type = []
+    for var in vars:
+        if hasattr(var, "__len__"):
+            d_type.append(True)
+        else:
+            d_type.append(False)
 
-    var = np.ndarray
+    var = all(i for i in d_type)
 
-    # isinstance(val, numbers.Integral)
-    # numbers.Real
-    # hasattr(“__len__”)
-
-
-    if var == int:
-        return df_eq(r_0, r_n, n_a, n_b, v_a, T_a, T_b, ions, n_step)
-    elif var == np.ndarray:
+    if not var:
+        return df_eq(r_0, r_n, n_1, n_2, v_1, T_1, T_2, ions, n_step, density_scale, velocity_scale, temperature_scale)
+    else:
         if all(len(vars[0]) == len(l) for l in vars[1:]):
             res = []
             L = 1
             for i in range(L):
                 res.append(
                     df_eq(
-                        r_0[i], r_n[i], n_a[i], n_b[i], v_a[i], T_a[i], T_b[i], ions, n_step
+                        r_0[i],
+                        r_n[i],
+                        n_1[i],
+                        n_2[i],
+                        v_1[i],
+                        T_1[i],
+                        T_2[i],
+                        ions,
+                        n_step,
+                        density_scale,
+                        velocity_scale,
+                        temperature_scale,
                     )
                 )
             return res
@@ -247,10 +272,9 @@ def collisional_thermalization(
         else:
             raise ValueError(
                 "Argument(s) are of unequal lengths, the following "
-                "arguments should be of equal length: 'n_a', 'n_b', "
-                "'v_a', 'T_a', 'T_b'."
+                "arguments should be of equal length: 'r_0', 'r_n', "
+                "'n_1', 'n_2', 'v_1', 'T_1' and 'T_2'."
             )
-
 
 
 import pandas as pd
@@ -265,9 +289,8 @@ vars = {}
 for key in key_list:
     vars[key] = list(obj[key].keys())
 
-
-n_a = obj["proton"]["np1"] * u.cm**-3
-n_b = obj["alpha"]["na"] * u.cm**-3
+n_a = obj["proton"]["np1"] * u.cm ** -3
+n_b = obj["alpha"]["na"] * u.cm ** -3
 v_a = obj["proton"]["v_mag"] * u.m / u.s
 T_a = obj["proton"]["Tperp1"] * u.K
 T_b = obj["alpha"]["Trat"] * u.K
@@ -278,9 +301,7 @@ r_0 = [0.1] * l * u.au
 r_n = [1.0] * l * u.au
 n_step = 1
 
-
 x = collisional_thermalization(r_0, r_n, n_a, n_b, v_a, T_a, T_b, ions, n_step)
-
 
 import matplotlib.pyplot as plt
 
