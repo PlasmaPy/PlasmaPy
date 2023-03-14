@@ -11,20 +11,22 @@ from plasmapy.utils.decorators import validate_quantities
 
 
 @validate_quantities(
-    T_a={"can_be_negative": False, "equivalencies": u.temperature_energy()},
-    T_b={"can_be_negative": False, "equivalencies": u.temperature_energy()},
+    T_1={"can_be_negative": False, "equivalencies": u.temperature_energy()},
+    T_2={"can_be_negative": False, "equivalencies": u.temperature_energy()},
 )
 def collisional_thermalization(
     r_0: u.au,
     r_n: u.au,
-    n_a: u.cm**-3,
-    n_b: u.cm**-3,
-    v_a: u.m / u.s,
-    T_a: u.K,
-    T_b: u.K,
+    n_1: u.cm**-3,
+    n_2: u.cm**-3,
+    v_1: u.m / u.s,
+    T_1: u.K,
+    T_2: u.K,
     ions: ParticleLike = [Particle("p+"), Particle("He-4++")],
     n_step: int = 1000,
-    scaling = [-1.8, -0.2, -0.77],
+    desnity_scale: float = -1.8,
+    velocity_scale: float = -0.2,
+    temperature_scale: float = -0.77,
 ):
     r"""
     Coulomb collisions, soft, small angle deflections mediated by the
@@ -52,17 +54,20 @@ def collisional_thermalization(
         Final position of the plasma in units of meters or
         astronomical units.
 
-    n_a : `~astropy.units.Quantity`
+    n_1 : `~astropy.units.Quantity`
         The primary ion number density in units convertible to m\ :sup:`-3`.
 
-    v_a : `~astropy.units.Quantity`
+    n_2 : `~astropy.units.Quantity`
+        The secondary ion number density in units convertible to m\ :sup:`-3`.
+
+    v_1 : `~astropy.units.Quantity`
         The primary ion speed in units convertible to ms\ :sup:`-1`.
 
-    T_a : `~astropy.units.Quantity`
+    T_1 : `~astropy.units.Quantity`
         Temperature of the primary ion in units convertible to
         temperature K.
 
-    T_b : `~astropy.units.Quantity`
+    T_2 : `~astropy.units.Quantity`
         Temperature of the secondary ion in units convertible to
         temperature K.
 
@@ -74,6 +79,7 @@ def collisional_thermalization(
         The number of intervals used in solving a differential
         equation via the Euler method. Must be an int.
 
+    !!!change to single vars
     scaling : `list`
         A list of values used for scaling parameters; density,
         velocity and temperature for the primary ion species.
@@ -132,7 +138,7 @@ def collisional_thermalization(
 
 
     """
-    print(scaling)
+
     # Validate n_step argument
     if not isinstance(n_step, int):
         raise TypeError(
@@ -141,31 +147,16 @@ def collisional_thermalization(
             "of type int."
         )
 
-    # Validate scaling argument
-    if not isinstance(scaling, list):
-        raise TypeError(
-            "Argument 'scaling' is of incorrect type, type of "
-            f"{type(list)} received instead. While 'scaling' must be "
-            "of type list. For additional information, please see "
-            "the documentation."
-        )
-    elif len(scaling) != 3:
-        raise ValueError(
-            "Argument 'scaling' is of incorrect length, length of "
-            f"{len(scaling)} received instead. While 'scaling' must "
-            "be of length 3, corresponding to the desired scaling "
-            "value for the following parameters, in the respective "
-            "order: density, velocity and temperature. For more "
-            "information, please see the documentation."
-        )
-    else:
-        for scale in scaling:
-            if not isinstance(scale, (float, int)):
-                raise TypeError(
-                    f"Argument '{scale}' is of incorrect type, type "
-                    f"of {type(scale)} received instead. Acceptable "
-                    "types include: float and int."
-                )
+    # Validate scaling arguments
+    for arg in (desnity_scale, velocity_scale, temperature_scale):
+        if not isinstance(arg, (float, int)):
+            raise TypeError(
+                "Argument 'scaling' is of incorrect type, type of "
+                f"{type(list)} received instead. While 'scaling' must be "
+                "of type list. For additional information, please see "
+                "the documentation."
+            )
+
 
     def df_eq(
         r_0,
@@ -179,15 +170,6 @@ def collisional_thermalization(
         n_step,
         scaling_values = scaling,
     ):
-        print(scaling_values, "second")
-        # Strip units
-        r_0 = r_0.value
-        r_n = r_n.value
-        n_a = n_a.value
-        n_b = n_b.value
-        v_a = v_a.value
-        T_a = T_a.value
-        T_b = T_b.value
 
         # Initialize the alpha-proton charge and mass ratios.
         z_a = ions[0].charge_number
@@ -196,17 +178,14 @@ def collisional_thermalization(
         z_b = ions[1].charge_number
         mu_b = ions[1].mass_number
 
+
         # Initialise.
         d_r = (r_0 - r_n) / (1.0 * n_step)
+        d_r = d_r.value
 
-        # Initiate scaling values
-        density_scale = scaling_values[0]
-        velocity_scale = scaling_values[1]
-        temperature_scale = scaling_values[2]
 
         # Define constant
         k = 0.174
-
         def lambda_ba(
                 theta,
                 n_a,
@@ -217,21 +196,22 @@ def collisional_thermalization(
                 mu_b,
 
         ):
-            return 9 + np.log(np.sqrt(n_b*z_b**2/theta*n_a*z_a**2 + 1)*((z_a*z_b*(mu_a+mu_b))/(theta + (mu_b/mu_a)))*((theta + mu_b/mu_a)/(z_a*z_b*(mu_a+mu_b))))
+
+            return 9 #+ np.log(np.sqrt(n_b*z_b**2/theta*n_a*z_a**2 + 1)*((z_a*z_b*(mu_a+mu_b))/(theta + (mu_b/mu_a)))*((theta + mu_b/mu_a)/(z_a*z_b*(mu_a+mu_b))))
 
 
         # Loop.
         for i in range(n_step):
-            r = r_n + ((i + 1) * d_r)
+            r = r_n.value + ((i + 1) * d_r)
 
             eta = n_a/n_b
             theta = T_a / T_b
 
             l_ba = lambda_ba(theta, n_a, n_b, z_a, z_b, mu_a, mu_b)
 
-            n_a = n_a * (r / r_n) ** density_scale
-            v_a = v_a * (r / r_n) ** velocity_scale
-            T_a = T_a * (r / r_n) ** temperature_scale
+            n_a = n_a * (r / r_n) ** scaling_values[0]
+            v_a = v_a * (r / r_n) ** scaling_values[1]
+            T_a = T_a * (r / r_n) ** scaling_values[2]
 
             d_theta = d_r*l_ba*k*(np.sqrt(mu_a*mu_b*z_a*z_b)*(1 - theta)*(1 + eta*theta))/(np.sqrt(mu_a / mu_b + theta) ** 3)
 
@@ -240,20 +220,15 @@ def collisional_thermalization(
 
         return theta
 
-    def c_log(mu_a, mu_b, Z_a, Z_b, n_a, n_b, T_a, T_b):
-        alpha = Z_a * Z_b * (mu_a + mu_b)
-        beta = mu_a * T_b + mu_b * T_a
-
-        def v_therm(n, Z, T):
-            return (n * Z**2) / T
-
-        return 9 + np.log(
-            (alpha / beta) * np.sqrt(v_therm(n_a, Z_a, T_a) + v_therm(n_b, Z_b, T_b))
-        )
 
     vars = [n_a, n_b, v_a, T_a, T_b]
 
     var = np.ndarray
+
+    # isinstance(val, numbers.Integral)
+    # numbers.Real
+    # hasattr(“__len__”)
+
 
     if var == int:
         return df_eq(r_0, r_n, n_a, n_b, v_a, T_a, T_b, ions, n_step)
@@ -276,7 +251,6 @@ def collisional_thermalization(
                 "'v_a', 'T_a', 'T_b'."
             )
 
-    return
 
 
 import pandas as pd
@@ -290,7 +264,6 @@ vars = {}
 
 for key in key_list:
     vars[key] = list(obj[key].keys())
-
 
 
 n_a = obj["proton"]["np1"] * u.cm**-3
