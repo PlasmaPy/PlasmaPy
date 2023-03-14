@@ -15,7 +15,7 @@ Summary
 * New functionality added to PlasmaPy must also have tests.
 
 * Tests are located in files that begin with :file:`test_` which are
-  inside subdirectories named :file:`tests`.
+  inside subdirectories named :file:`tests/`.
 
 * Tests are either functions beginning with ``test_`` or classes
   beginning with ``Test``.
@@ -25,7 +25,7 @@ Summary
   - Open a terminal.
 
   - Navigate to the top-level directory (probably named
-    :file:`PlasmaPy`) in your local clone of PlasmaPy's repository.
+    :file:`PlasmaPy/`) in your local clone of PlasmaPy's repository.
 
   - If you are on MacOS or Linux, run:
 
@@ -88,8 +88,8 @@ does it in isolation from other tests :cite:p:`khorikov:2020`. A typical
 multiple software components work together as intended.
 
 PlasmaPy's tests are set up using the pytest_ framework. The tests for
-a subpackage are located in its :file:`tests` subdirectory in files with
-names of the form :file:`test_*.py`. For example, tests for
+a subpackage are located in its :file:`tests/` subdirectory in files
+with names of the form :file:`test_*.py`. For example, tests for
 `plasmapy.formulary.speeds` are located at
 :file:`plasmapy/formulary/tests/test_speeds.py` relative to the top
 of the package. Example code contained within docstrings is tested to
@@ -253,7 +253,7 @@ directory and all of its subdirectories. Because it takes time to run
 PlasmaPy's tests, it is usually most convenient to specify that only a
 subset of the tests be run. To run the tests contained within a
 particular file or directory, include its name after ``pytest``. If you
-are in the directory :file:`plasmapy/particles/tests`, then the tests in
+are in the directory :file:`plasmapy/particles/tests/`, then the tests in
 in :file:`test_atomic.py` can be run with:
 
 .. code-block:: shell
@@ -344,9 +344,9 @@ write a test.
 Locating tests
 --------------
 
-The tests for each subpackage are contained in its :file:`tests`
+The tests for each subpackage are contained in its :file:`tests/`
 subdirectory. For example, the tests for `plasmapy.particles` are
-located in :file:`plasmapy/particles/tests`. Test files begin with
+located in :file:`plasmapy/particles/tests/`. Test files begin with
 :file:`test_` and generally contain either the name of the module or a
 description of the behavior that is being tested. For example, tests for
 |Particle| are located at

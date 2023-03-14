@@ -101,6 +101,7 @@ extensions = [
     "sphinx_gallery.load_style",
     "IPython.sphinxext.ipython_console_highlighting",
     "sphinx_changelog",
+    "sphinx_tabs.tabs",
     "hoverxref.extension",
     "notfound.extension",
     "sphinx_issues",
@@ -198,6 +199,9 @@ with open("common_links.rst") as cl:
 rst_prolog = """
 .. role:: py(code)
    :language: python
+
+.. role:: bash(code)
+   :language: bash
 """
 
 # List of patterns, relative to source directory, that match files and
@@ -258,7 +262,8 @@ redirects = {
     "development/changelog_guide": "../contributing/changelog_guide.html",
     "development/code_guide": "../contributing/code_guide.html",
     "development/doc_guide": "../contributing/doc_guide.html",
-    "development/install_dev": "../contributing/install_dev.html",
+    "development/install_dev": "../contributing/getting_ready.html",
+    "contributing/install_dev": "../contributing/getting_ready.html",
     "development/release_guide": "../contributing/release_guide.html",
     "development/testing_guide": "../contributing/testing_guide.html",
 }
@@ -364,6 +369,7 @@ nitpick_ignore_regex = [
     (python_role, "docstring of"),
     (python_role, "validation specifications"),
     # for reST workarounds defined in docs/common_links.rst
+    (python_role, "git"),
     (python_role, "h5py"),
     (python_role, "IPython.sphinxext.ipython_console_highlighting"),
     (python_role, "lmfit"),

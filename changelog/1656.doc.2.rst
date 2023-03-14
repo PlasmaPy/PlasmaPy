@@ -1,0 +1,1 @@
+Added a page to the |contributor guide| on |getting ready to contribute|.

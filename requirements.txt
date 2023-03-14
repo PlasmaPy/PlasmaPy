@@ -22,7 +22,6 @@ asttokens==2.2.1
     # via stack-data
 attrs==22.2.0
     # via
-    #   flake8-implicit-str-concat
     #   hypothesis
     #   jsonschema
     #   pytest
@@ -53,8 +52,6 @@ click-default-group==1.2.2
     # via towncrier
 comm==0.1.2
     # via ipykernel
-commonmark==0.9.1
-    # via rich
 contourpy==1.0.7
     # via matplotlib
 cycler==0.11.0
@@ -75,6 +72,7 @@ docutils==0.17.1
     #   restructuredtext-lint
     #   sphinx
     #   sphinx-rtd-theme
+    #   sphinx-tabs
     #   sphinxcontrib-bibtex
 entrypoints==0.4
     # via jupyter-client
@@ -102,7 +100,7 @@ flake8==6.0.0
     #   plasmapy (setup.py)
 flake8-absolute-import==1.0.0.1
     # via plasmapy (setup.py)
-flake8-implicit-str-concat==0.3.0
+flake8-implicit-str-concat==0.4.0
     # via plasmapy (setup.py)
 flake8-mutable==1.2.0
     # via plasmapy (setup.py)
@@ -112,13 +110,13 @@ flake8-simplify==0.19.3
     # via plasmapy (setup.py)
 flake8-use-fstring==1.4
     # via plasmapy (setup.py)
-fonttools==4.38.0
+fonttools==4.39.0
     # via matplotlib
 future==0.18.3
     # via uncertainties
 h5py==3.7.0
     # via plasmapy (setup.py)
-hypothesis==6.67.1
+hypothesis==6.68.0
     # via plasmapy (setup.py)
 identify==2.5.17
     # via pre-commit
@@ -132,11 +130,11 @@ incremental==22.10.0
     # via towncrier
 iniconfig==2.0.0
     # via pytest
-ipykernel==6.21.1
+ipykernel==6.21.3
     # via
     #   ipywidgets
     #   plasmapy (setup.py)
-ipython==8.9.0
+ipython==8.10.0
     # via
     #   ipykernel
     #   ipywidgets
@@ -144,7 +142,7 @@ ipywidgets==8.0.4
     # via plasmapy (setup.py)
 jedi==0.18.2
     # via ipython
-jinja2==3.1.2
+jinja2==3.0.3
     # via
     #   jupyter-server
     #   jupyterlab-server
@@ -153,6 +151,7 @@ jinja2==3.1.2
     #   numpydoc
     #   plasmapy (setup.py)
     #   sphinx
+    #   sphinx-tabs
     #   towncrier
 json5==0.9.11
     # via jupyterlab-server
@@ -168,6 +167,7 @@ jupyter-client==7.4.1
     #   voila
 jupyter-core==5.2.0
     # via
+    #   ipykernel
     #   jupyter-client
     #   jupyter-server
     #   nbclient
@@ -180,7 +180,7 @@ jupyter-server==1.23.5
     #   voila
 jupyterlab-pygments==0.2.2
     # via nbconvert
-jupyterlab-server==2.19.0
+jupyterlab-server==2.20.0
     # via voila
 jupyterlab-widgets==3.0.5
     # via ipywidgets
@@ -192,6 +192,8 @@ llvmlite==0.39.1
     # via numba
 lmfit==1.1.0
     # via plasmapy (setup.py)
+markdown-it-py==2.2.0
+    # via rich
 markupsafe==2.1.2
     # via
     #   jinja2
@@ -204,10 +206,10 @@ matplotlib-inline==0.1.6
     #   ipython
 mccabe==0.7.0
     # via flake8
-mistune==2.0.4
+mdurl==0.1.2
+    # via markdown-it-py
+mistune==2.0.5
     # via nbconvert
-more-itertools==8.14.0
-    # via flake8-implicit-str-concat
 mpmath==1.2.1
     # via plasmapy (setup.py)
 nbclient==0.7.2
@@ -263,7 +265,7 @@ packaging==23.0
     #   sphinx
     #   tox
     #   xarray
-pandas==1.5.2
+pandas==1.5.3
     # via
     #   plasmapy (setup.py)
     #   xarray
@@ -279,7 +281,7 @@ pillow==9.4.0
     # via
     #   matplotlib
     #   plasmapy (setup.py)
-platformdirs==2.6.2
+platformdirs==3.1.0
     # via
     #   jupyter-core
     #   virtualenv
@@ -327,6 +329,7 @@ pygments==2.14.0
     #   plasmapy (setup.py)
     #   rich
     #   sphinx
+    #   sphinx-tabs
 pyparsing==3.0.9
     # via matplotlib
 pyrsistent==0.19.3
@@ -341,7 +344,7 @@ pytest-datadir==1.4.1
     # via pytest-regressions
 pytest-regressions==2.4.2
     # via plasmapy (setup.py)
-pytest-xdist==3.1.0
+pytest-xdist==3.2.1
     # via plasmapy (setup.py)
 python-dateutil==2.8.2
     # via
@@ -370,7 +373,7 @@ requests==2.28.2
     #   sphinx
 restructuredtext-lint==1.4.0
     # via flake8-rst-docstrings
-rich==13.3.1
+rich==13.3.2
     # via tryceratops
 scipy==1.10.0
     # via
@@ -409,6 +412,7 @@ sphinx==5.3.0
     #   sphinx-notfound-page
     #   sphinx-reredirects
     #   sphinx-rtd-theme
+    #   sphinx-tabs
     #   sphinxcontrib-bibtex
 sphinx-changelog==1.2.0
     # via plasmapy (setup.py)
@@ -425,6 +429,8 @@ sphinx-notfound-page==0.8.3
 sphinx-reredirects==0.1.1
     # via plasmapy (setup.py)
 sphinx-rtd-theme==1.1.1
+    # via plasmapy (setup.py)
+sphinx-tabs==3.4.0
     # via plasmapy (setup.py)
 sphinxcontrib-applehelp==1.0.4
     # via sphinx
@@ -491,7 +497,7 @@ uncertainties==3.1.7
     # via lmfit
 urllib3==1.26.14
     # via requests
-virtualenv==20.17.1
+virtualenv==20.20.0
     # via
     #   pre-commit
     #   tox

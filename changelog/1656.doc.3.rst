@@ -1,0 +1,1 @@
+Removed :file:`docs/contributing/install_dev.rst`.
