@@ -144,17 +144,17 @@ def kinetic_alfven(
     (i.e., fast) mode can be factored out. The result is that the
     determinant, when in the limit of
     :math:`\omega \gg k_{z}^{2} c^{2}_{\rm s}`, reduces to the kinetic
-    Alfv\'{e}n dispersion relation.
+    Alfvén dispersion relation.
 
     .. math::
-        \omega^2 = k_{\rm z}^2 v_{\rm A}^2 \left(1 + \frac{k_{\rm x}^2 &
+        \omega^2 = k_{\rm z}^2 v_{\rm A}^2 \left(1 + \frac{k_{\rm x}^2
         c_{\rm s}^2}{\omega_{\rm ci}^2} \right)
 
     With :math:`c_{\rm s}` being the wave speed and
     :math:`\omega_{\rm ci}` as the gyrofrequency of the respective ion.
     The regions in which this is valid are
     :math:`\omega \ll \omega_{\rm ci}` and
-    :math:`\nu_{\rm Te} \gg \frac{\omega}{k_{z}} \gg \nu_{\rm Ti}, with
+    :math:`\nu_{\rm Te} \gg \frac{\omega}{k_{z}} \gg \nu_{\rm Ti}`, with
     :math:`\nu_{\rm Ti}` standing for the thermal speed of the
     respective ion. There is no restriction on propagation angle.
 
