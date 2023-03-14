@@ -1,0 +1,2 @@
+Removed the vision statement from the online documentation.  The
+`vision statement <>`__ is now available on Zenodo.
