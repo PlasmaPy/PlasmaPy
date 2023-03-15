@@ -1,4 +1,4 @@
-name: Update requirements.txt
+name: Update pinned requirements
 
 on:
   schedule:
