@@ -35,12 +35,16 @@ beautifulsoup4==4.11.2
     # via nbconvert
 bleach==6.0.0
     # via nbconvert
+cachetools==5.3.0
+    # via tox
 certifi==2022.12.7
     # via requests
 cffi==1.15.1
     # via argon2-cffi-bindings
 cfgv==3.3.1
     # via pre-commit
+chardet==5.1.0
+    # via tox
 charset-normalizer==3.1.0
     # via requests
 click==8.1.3
@@ -50,6 +54,8 @@ click==8.1.3
     #   tryceratops
 click-default-group==1.2.2
     # via towncrier
+colorama==0.4.6
+    # via tox
 comm==0.1.2
     # via ipykernel
 contourpy==1.0.7
@@ -86,7 +92,7 @@ executing==1.2.0
     # via stack-data
 fastjsonschema==2.16.3
     # via nbformat
-filelock==3.9.1
+filelock==3.10.0
     # via
     #   tox
     #   virtualenv
@@ -116,7 +122,7 @@ future==0.18.3
     # via uncertainties
 h5py==3.8.0
     # via plasmapy (setup.py)
-hypothesis==6.68.2
+hypothesis==6.69.0
     # via plasmapy (setup.py)
 identify==2.5.20
     # via pre-commit
@@ -260,6 +266,7 @@ packaging==23.0
     #   matplotlib
     #   nbconvert
     #   plasmapy (setup.py)
+    #   pyproject-api
     #   pytest
     #   sphinx
     #   tox
@@ -283,6 +290,7 @@ pillow==9.4.0
 platformdirs==3.1.1
     # via
     #   jupyter-core
+    #   tox
     #   virtualenv
 pluggy==1.0.0
     # via
@@ -302,8 +310,6 @@ ptyprocess==0.7.0
     #   terminado
 pure-eval==0.2.2
     # via stack-data
-py==1.11.0
-    # via tox
 pybtex==0.24.0
     # via
     #   pybtex-docutils
@@ -331,6 +337,8 @@ pygments==2.14.0
     #   sphinx-tabs
 pyparsing==3.0.9
     # via matplotlib
+pyproject-api==1.5.1
+    # via tox
 pyrsistent==0.19.3
     # via jsonschema
 pytest==7.2.2
@@ -385,7 +393,6 @@ six==1.16.0
     #   latexcodec
     #   pybtex
     #   python-dateutil
-    #   tox
 sniffio==1.3.0
     # via anyio
 snowballstemmer==2.2.0
@@ -459,6 +466,7 @@ toml==0.10.2
 tomli==2.0.1
     # via
     #   plasmapy (setup.py)
+    #   pyproject-api
     #   pytest
     #   towncrier
     #   tox
