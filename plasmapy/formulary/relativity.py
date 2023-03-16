@@ -90,9 +90,7 @@ def Lorentz_factor(V: u.m / u.s):
     return γ
 
 
-@validate_quantities(
-    m={"can_be_negative": False}, validations_on_return={"can_be_negative": False}
-)
+@validate_quantities(validations_on_return={"can_be_negative": False})
 @particle_input
 def relativistic_energy(
     particle: ParticleLike,
@@ -138,6 +136,10 @@ def relativistic_energy(
 
     Raises
     ------
+    |InvalidParticleError|
+        If ``particle`` does not represent a valid |Particle|,
+        |CustomParticle|, or |ParticleList|.
+
     `~astropy.units.UnitConversionError`
         If ``V`` is not in appropriate units.
 
