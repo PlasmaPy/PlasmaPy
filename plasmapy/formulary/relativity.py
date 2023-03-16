@@ -139,7 +139,7 @@ def relativistic_energy(
     Raises
     ------
     `~astropy.units.UnitConversionError`
-        If +``V`` is not in appropriate units.
+        If ``V`` is not in appropriate units.
 
     `~plasmapy.utils.exceptions.RelativityError`
         If ``V`` exceeds the speed of light.
