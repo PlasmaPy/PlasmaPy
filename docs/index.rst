@@ -35,7 +35,6 @@ Example highlights
    getting_started
    examples
    COMMUNICATION
-   CONTRIBUTING
    Code of Conduct <CODE_OF_CONDUCT.rst>
    about/citation
 
@@ -57,6 +56,8 @@ Example highlights
    :caption: Contributor Guide
 
    Overview <contributing/index>
+   contributing/getting_ready
+   contributing/workflow
    contributing/coding_guide
    contributing/changelog_guide
    contributing/doc_guide
@@ -72,7 +73,6 @@ Example highlights
    bibliography
    glossary
    performance_tips
-   Vision Statement <about/vision_statement>
    PlasmaPy Enhancement Proposals <https://github.com/PlasmaPy/PlasmaPy-PLEPs>
    PlasmaPy.org <https://www.plasmapy.org>
    GitHub Repository <https://github.com/PlasmaPy/PlasmaPy>

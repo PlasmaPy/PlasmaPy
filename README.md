@@ -9,6 +9,7 @@
 [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg)](https://docs.plasmapy.org/en/latest/CODE_OF_CONDUCT.html)
 
 [![Matrix](https://img.shields.io/badge/Matrix-join%20chat-blueviolet?style=flat&logo=matrix)](https://app.element.io/#/room/#plasmapy:openastronomy.org)
+<a rel="me" href="https://fosstodon.org/@plasmapy">![Mastodon](https://img.shields.io/badge/Mastodon-plasmapy%40fosstodon.org-blue?logo=mastodon&style=fla)</a>
 [![Twitter](https://img.shields.io/badge/Twitter%20-follow-red?style=flat&logo=twitter)](https://twitter.com/plasmapy)
 [![YouTube](https://img.shields.io/badge/YouTube%20-subscribe-red?style=flat&logo=youtube)](https://www.youtube.com/channel/UCSH6qzslhqIZKTAJmHPxIxw)
 
@@ -39,7 +40,7 @@
 [example gallery]: https://docs.plasmapy.org/en/stable/examples.html
 [GitHub discussions]: https://github.com/PlasmaPy/PlasmaPy/discussions
 [Gitter]: https://gitter.im/PlasmaPy/Lobby
-[good first issues]: https://github.com/PlasmaPy/PlasmaPy/issues?q=is%3Aissue+is%3Aopen+label%3A%22Good+first+contribution%22
+[good first issues]: https://github.com/PlasmaPy/PlasmaPy/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22
 [Google Summer of Code]: https://summerofcode.withgoogle.com
 [hack week]: https://doi.org/10.1073/pnas.1717196115
 [how to install plasmapy]: https://docs.plasmapy.org/en/stable/install.html
