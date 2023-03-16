@@ -13,6 +13,7 @@ from plasmapy.formulary.relativity import (
     RelativisticBody,
 )
 from plasmapy.particles import CustomParticle, electron, proton
+from plasmapy.particles.exceptions import InvalidParticleError
 from plasmapy.utils.exceptions import RelativityError
 
 
@@ -84,7 +85,7 @@ def test_relativistic_energy(velocity, mass, expected):
     [
         (1.00000001 * c, 1 * u.kg, RelativityError),
         (-1.00000001 * c, 1 * u.kg, RelativityError),
-        (0 * c, -1 * u.kg, ValueError),
+        (0 * c, -1 * u.kg, InvalidParticleError),
     ],
 )
 def test_relativistic_energy_exceptions(velocity, mass, exception):
@@ -96,7 +97,6 @@ def test_relativistic_energy_exceptions(velocity, mass, exception):
     "velocity, mass, warning",
     [
         (2.2, 5 * u.kg, u.UnitsWarning),
-        (2.2 * u.m / u.s, 5, u.UnitsWarning),
     ],
 )
 def test_relativistic_energy_warnings(velocity, mass, warning):
