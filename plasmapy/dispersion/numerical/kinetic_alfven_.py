@@ -72,7 +72,7 @@ def kinetic_alfven(
     theta : `~astropy.units.Quantity`, single valued or 1-D array
         The angle of propagation of the wave with respect to the
         magnetic field, :math:`\cos^{-1}(k_z / k)`, in units must be
-        convertible to :math:`rad`. Either single valued or 1-D array
+        convertible to rad. Either single valued or 1-D array
         of size :math:`M`.
 
     gamma_e : `float` or `int`, optional
@@ -110,7 +110,7 @@ def kinetic_alfven(
         `~plasmapy.particles.particle_class.Particle`.
 
     TypeError
-        If ``gamma_e``, ``gamma_i``, or``z_mean`` are not of type
+        If ``gamma_e``, ``gamma_i``, or ``z_mean`` are not of type
         `int` or `float`.
 
     ~astropy.units.UnitTypeError
