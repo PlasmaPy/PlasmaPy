@@ -785,7 +785,6 @@ def extract_exponential_section(probe_characteristic, T_e=None, ion_current=None
     V_P = get_plasma_potential(probe_characteristic)
 
     if T_e is not None:
-
         # If a bi-Maxwellian electron temperature is supplied grab the first
         # (cold) temperature
         if np.array(T_e).size > 1:

@@ -180,7 +180,6 @@ def extract_charge(arg: str):
         # charge info is defined on both the charge_info and isotope_into strings
         raise InvalidParticleError(invalid_charge_errmsg) from None
     elif charge_info is not None:  # Cases like 'H 1-' and 'Fe-56 1+'
-
         sign_indicator_only_on_one_end = charge_info.endswith(
             ("-", "+")
         ) ^ charge_info.startswith(("-", "+"))
