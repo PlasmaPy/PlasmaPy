@@ -131,7 +131,6 @@ class Tracker:
         detector_hdir=None,
         verbose=True,
     ):
-
         # self.grid is the grid object
         if isinstance(grids, AbstractGrid):
             self.grids = [
@@ -218,7 +217,6 @@ class Tracker:
             grid.require_quantities(req_quantities, replace_with_zeros=True)
 
             for rq in req_quantities:
-
                 # Check that there are no infinite values
                 if not np.isfinite(grid[rq].value).all():
                     raise ValueError(

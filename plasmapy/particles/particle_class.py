@@ -578,7 +578,6 @@ class Particle(AbstractPhysicalParticle):
         mass_numb: Optional[Integral] = None,
         Z: Optional[Integral] = None,
     ):
-
         # TODO: Remove the following block during or after the 0.9.0 release
 
         if _:
@@ -696,20 +695,24 @@ class Particle(AbstractPhysicalParticle):
         if self.symbol == "p+":
             categories.update({"element", "isotope", "ion"})
 
-        _, mass_numb, Z = self.__inputs
+        argument, mass_numb, Z = self.__inputs
 
-        if mass_numb is not None or Z is not None:
-            if self.symbol == "p+" and 1 in (mass_numb, Z):
-                warnings.warn(
-                    "Redundant mass number or charge information.", ParticleWarning
-                )
-            else:
-                raise InvalidParticleError(
-                    "The keywords 'mass_numb' and 'Z' cannot be used when "
-                    "creating Particle objects for special particles. To "
-                    f"create a Particle object for {attributes['name']}s, "
-                    f"use:  Particle({attributes['particle']!r})"
-                )
+        if mass_numb is None and Z is None:
+            return
+
+        if self.symbol != "p+":
+            raise InvalidParticleError(
+                "The keywords 'mass_numb' and 'Z' cannot be used when "
+                "creating Particle objects for special particles. To "
+                f"create a Particle object for {attributes['name']}s, "
+                f"use: Particle({attributes['particle']!r})"
+            )
+
+        if mass_numb not in (1, None) or Z not in (1, None):
+            raise InvalidParticleError(
+                "Cannot create a Particle representing a proton for a "
+                "mass number or charge number not equal to 1."
+            )
 
     def _assign_atom_attributes(self) -> NoReturn:
         """Assign attributes and categories to elements, isotopes, and ions."""
@@ -741,7 +744,6 @@ class Particle(AbstractPhysicalParticle):
         attributes["lepton number"] = 0
 
         if isotope:
-
             this_isotope = _isotopes.data_about_isotopes[isotope]
 
             attributes["baryon number"] = this_isotope["mass number"]
@@ -1207,7 +1209,6 @@ class Particle(AbstractPhysicalParticle):
             return self._attributes["mass"].to(u.kg)
 
         if self.is_ion:
-
             if self.isotope:
                 base_mass = self._attributes["isotope mass"]
             else:
@@ -1221,7 +1222,6 @@ class Particle(AbstractPhysicalParticle):
             return mass.to(u.kg)
 
         if self.element:
-
             if self.isotope:
                 mass = self._attributes["isotope mass"]
             else:
@@ -2083,7 +2083,6 @@ class CustomParticle(AbstractPhysicalParticle):
         *,
         Z: Optional[Real] = None,
     ):
-
         # TODO py3.10 replace ifology with structural pattern matching
 
         if Z is not None and charge is not None:

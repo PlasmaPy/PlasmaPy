@@ -953,7 +953,6 @@ tests_from_atomic = [
     [isotope_symbol, ("Li-6",), {"mass_numb": 6}, pytest.warns(ParticleWarning)],
     [isotope_symbol, ("lithium-6",), {"mass_numb": 6}, pytest.warns(ParticleWarning)],
     [isotope_symbol, ("alpha",), {"mass_numb": 4}, pytest.warns(ParticleWarning)],
-    [isotope_symbol, ("p",), {"mass_numb": 1}, pytest.warns(ParticleWarning)],
 ]
 
 

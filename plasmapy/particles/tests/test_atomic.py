@@ -385,7 +385,6 @@ def test_half_life_unstable_isotopes():
             and not data_about_isotopes[isotope]
         ):
             with pytest.raises(MissingParticleDataError):
-
                 half_life(isotope)
 
 

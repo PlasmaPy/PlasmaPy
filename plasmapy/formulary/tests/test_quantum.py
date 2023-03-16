@@ -22,7 +22,6 @@ from plasmapy.utils.exceptions import RelativityError
 
 
 def test_deBroglie_wavelength():
-
     dbwavelength1 = deBroglie_wavelength(2e7 * u.cm / u.s, "e")
     assert np.isclose(dbwavelength1.value, 3.628845222852886e-11)
     assert dbwavelength1.unit == u.m
@@ -158,7 +157,6 @@ def test_Wigner_Seitz_radius():
 
 @pytest.mark.slow
 class TestChemicalPotential:
-
     value_test_parameters = (
         "n_e, T, expected_value",
         [

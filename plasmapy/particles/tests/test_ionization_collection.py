@@ -204,7 +204,6 @@ class TestIonizationStateCollection:
 
     @pytest.mark.parametrize("test_name", test_names)
     def test_that_ionic_fractions_are_set_correctly(self, test_name):
-
         errmsg = ""
 
         elements_actual = self.instances[test_name].base_particles
@@ -254,7 +253,6 @@ class TestIonizationStateCollection:
         instance = self.instances[test_name]
 
         for key in instance.base_particles:
-
             try:
                 expected = instance.ionic_fractions[key]
             except Exception:
@@ -408,7 +406,6 @@ class TestIonizationStateCollectionItemAssignment:
 class TestIonizationStateCollectionDensities:
     @classmethod
     def setup_class(cls):
-
         cls.initial_ionfracs = {
             "H": np.array([0.87, 0.13]),
             "He": np.array([0.24, 0.37, 0.39]),
@@ -521,7 +518,6 @@ class TestIonizationStateCollectionAttributes:
         ],
     )
     def test_attribute_exceptions(self, attribute, invalid_value, expected_exception):
-
         command = f"self.instance.{attribute} = {invalid_value}"
         errmsg = f"No {expected_exception} was raised for command\n\n: {command}"
 
@@ -744,7 +740,6 @@ class TestIonizationStateCollectionDensityEqualities:
 
     @classmethod
     def setup_class(cls):
-
         # Create arguments to IonizationStateCollection that are all consistent
         # with each other.
 
