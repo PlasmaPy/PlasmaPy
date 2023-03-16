@@ -49,7 +49,7 @@ def kinetic_alfven(
     Parameters
     ----------
     B : `~astropy.units.Quantity`
-        The magnetic field magnitude in units convertible to :math:`T`.
+        The magnetic field magnitude in units convertible to T.
 
     ion : `str` or `~plasmapy.particles.particle_class.Particle`
         Representation of the ion species (e.g., ``'p'`` for protons,
@@ -57,17 +57,17 @@ def kinetic_alfven(
         helium-4, etc.).
 
     k : `~astropy.units.Quantity`, single valued or 1-D array
-        Wavenumber in units convertible to :math:`rad / m`.  Either
+        Wavenumber in units convertible to rad / m.  Either
         single valued or 1-D array of length :math:`N`.
 
     n_i : `~astropy.units.Quantity`
-        Ion number density in units convertible to :math:`m^{-3}`.
+        Ion number density in units convertible to m\ :sup:`-3`.
 
     T_e : `~astropy.units.Quantity`, |keyword-only|
-        The electron temperature in units of :math:`K` or :math:`eV`.
+        The electron temperature in units of K or eV.
 
     T_i : `~astropy.units.Quantity`, |keyword-only|
-        The ion temperature in units of :math:`K` or :math:`eV`.
+        The ion temperature in units of K or eV.
 
     theta : `~astropy.units.Quantity`, single valued or 1-D array
         The angle of propagation of the wave with respect to the
@@ -95,7 +95,7 @@ def kinetic_alfven(
     -------
     omega : Dict[str, `~astropy.units.Quantity`]
         A dictionary of computed wave frequencies in units
-        :math:`rad/s`.  The dictionary contains a key for each:
+        rad / s.  The dictionary contains a key for each:
         ``theta`` value provided. The value for each key will be
         a :math:`N × M` array.
 
@@ -137,7 +137,7 @@ def kinetic_alfven(
     -----
     Using the 2 × 2 matrix approach method from :cite:t:`bellan:2012`,
     this function computes the corresponding wave frequencies in units
-    of :math:`rad/s`. This approach comes from :cite:t:`hasegawa:1982`,
+    of rad / s. This approach comes from :cite:t:`hasegawa:1982`,
     :cite:t:`morales:1997` and :cite:t:`william:1996`; who argued that
     a 3 × 3 matrix that describes warm plasma waves, is able to be
     represented as a 2 × 2 matrix because the compressional
@@ -223,7 +223,7 @@ def kinetic_alfven(
                 f"instead got type {type(arg_name)}."
             )
 
-    # validate argument k
+    # Validate argument k
     k = k.value.squeeze()
     if k.ndim not in (0, 1):
         raise ValueError(
@@ -235,7 +235,7 @@ def kinetic_alfven(
     if np.any(k <= 0):
         raise ValueError("Argument 'k' can not be negative a or have negative values.")
 
-    # validate argument theta
+    # Validate argument theta
     theta = theta.value.squeeze()
     if theta.ndim not in (0, 1):
         raise ValueError(
@@ -274,7 +274,7 @@ def kinetic_alfven(
         v_Te = speed.thermal_speed(T=T_e, particle="e-").value
         v_Ti = speed.thermal_speed(T=T_i, particle=ion).value
 
-        # maximum value of omega
+        # Maximum value of omega
         w_max = np.max(omega[Theta])
 
         # Maximum and minimum values for w/kz
