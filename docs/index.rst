@@ -73,7 +73,6 @@ Example highlights
    bibliography
    glossary
    performance_tips
-   Vision Statement <about/vision_statement>
    PlasmaPy Enhancement Proposals <https://github.com/PlasmaPy/PlasmaPy-PLEPs>
    PlasmaPy.org <https://www.plasmapy.org>
    GitHub Repository <https://github.com/PlasmaPy/PlasmaPy>
