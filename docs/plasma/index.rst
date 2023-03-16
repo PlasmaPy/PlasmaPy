@@ -127,7 +127,6 @@ demonstrated by the following example.
 
     class FuturePlasma(plasmapy.plasma.GenericPlasma):
         def __init__(self, **kwargs):
-
             super().__init__(**kwargs)
 
         # Specify a classmethod that determines if the input data matches

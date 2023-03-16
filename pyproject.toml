@@ -17,66 +17,65 @@ keywords = [
   "science",
 ]
 license = {file = "LICENSE.md"}
-requires-python = ">=3.8"
-dependencies = [
-  "astropy>=5.0.1",
-  "h5py>=3",
-  "ipywidgets>=7.6.5",
-  "lmfit>=1",
-  "matplotlib>=3.3",
-  "mpmath>=1.2.1",
-  "numba",
-  "numpy>=1.20",
-  "packaging",
-  "pandas>=1",
-  "pytest>=6",
-  "requests>=2.27.1",
-  "scipy>=1.5",
-  "tqdm>=4.41",
-  "voila>=0.2.15",
-  "wrapt",
-  "xarray>=0.15",
-]
-dynamic = [
-  "version",
-]
+requires-python = ">=3.9"
 classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Science/Research",
     "License :: OSI Approved :: BSD License",
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: Implementation :: CPython",
     "Topic :: Scientific/Engineering :: Physics",
     "Topic :: Scientific/Engineering :: Astronomy",
 ]
+dynamic = [
+  "version",
+]
+dependencies = [
+  "astropy>=5.0.1",
+  "h5py>=3.1",
+  "ipywidgets>=7.6.5",
+  "lmfit>=1",
+  "matplotlib>=3.3",
+  "mpmath>=1.2.1",
+  "numba",
+  "numpy>=1.21",
+  "packaging",
+  "pandas>=1.2",
+  "pytest>=6",
+  "requests>=2.27.1",
+  "scipy>=1.6",
+  "tqdm>=4.41",
+  "voila>=0.3",
+  "wrapt>=1.12",
+  "xarray>=0.17",
+]
 [project.optional-dependencies]
 docs = [
-  "docutils",
+  "docutils>=0.18.1",
   "ipykernel",
   "jinja2!=3.1",
-  "nbsphinx",
+  "nbsphinx>=0.9.1",
   "numpydoc",
   "pillow",
   "pygments>=2.11",
   "sphinx!=5.1,>=4.4",
-  "sphinx-changelog>=1.2",
-  "sphinx-copybutton",
-  "sphinx-gallery<0.11.0",
+  "sphinx-changelog>=1.3",
+  "sphinx-copybutton>=0.5.1",
+  "sphinx-gallery>=0.12.2",
   "sphinx-hoverxref>=1.1.1",
   "sphinx-issues>=3.0.1",
   "sphinx-notfound-page>=0.8",
-  "sphinx-reredirects",
-  "sphinx_rtd_theme>=1",
-  "sphinxcontrib-bibtex",
-  "towncrier==22.8",
-  "tox<4",
+  "sphinx-reredirects>=0.1.1",
+  "sphinx_rtd_theme>=1.2",
+  "sphinx_tabs>=3.4.1",
+  "sphinxcontrib-bibtex>=2.5",
+  "towncrier==22.12",
+  "tox>4.3",
 ]
 tests = [
-  "dlint",
   "flake8",
   "flake8-absolute-import",
   "flake8-implicit-str-concat",
@@ -90,10 +89,9 @@ tests = [
   "pytest-regressions",
   "pytest-xdist",
   "tomli",
-  "tox<4",
+  "tox>4.3",
   "tryceratops",
 ]
-
 [project.urls]
 Changelog = "https://docs.plasmapy.org/en/stable/whatsnew/index.html"
 Chat = "https://plasmapy.org/chat"
@@ -102,10 +100,70 @@ Issues = "https://github.com/plasmapy/plasmapy/issues/"
 Source = "https://github.com/plasmapy/plasmapy"
 Twitter = "https://twitter.com/PlasmaPy"
 website = "https://www.plasmapy.org"
-
 [project.scripts]
 plasma-calculator = "plasmapy.utils.calculator:main"
 
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.package-data]
+"plasmapy.particles.data" = ["*"]
+"plasmapy.tests" = ["coveragerc"]
+"plasmapy.utils.calculator" = ["*"]
+
+[tool.setuptools.packages.find]
+exclude = ["docs/automodapi", "plasmapy/_dev"]
+namespaces = false
+
+[tool.setuptools_scm]
+write_to = "plasmapy/_version.py"
+
+[tool.isort]
+line_length = 88
+wrap_length = 80
+sections = ["FUTURE", "STDLIB", "FIRSTPARTY", "LOCALFOLDER"]
+known_first_party = ["plasmapy", ]
+default_section = "STDLIB"
+multi_line_output = 3
+use_parentheses = true
+include_trailing_comma = true
+force_alphabetical_sort_within_sections = true
+honor_noqa = true
+lines_between_types = 1
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+testpaths = ['plasmapy']
+norecursedirs = ['build', 'docs', 'plasmapy[\/]_dev']
+doctest_optionflags = """
+NORMALIZE_WHITESPACE
+ELLIPSIS
+NUMBER"""
+addopts = "--doctest-modules --doctest-continue-on-failure"
+filterwarnings = ["ignore:.*Creating", "a"]
+
+[tool.coverage.report]
+exclude_lines = [
+    "coverage: ignore",
+    "ImportError",
+    "ModuleNotFoundError",
+    "@vectorize",
+    "@numba.vectorize",
+    "@numba.jit",
+    "@jit",
+    "@numba.njit",
+    "@njit",
+    "@abstractmethod",
+]
+
+[tool.coverage.run]
+omit = [
+    "ci-helpers/*",
+    "*/tests/*",
+    "plasmapy/utils/calculator/*",
+    "plasmapy/version.py",
+    "plasmapy/_dev/*",
+]
 
 [tool.build_docs]
 source-dir = "docs"
@@ -142,29 +200,6 @@ ue,
 ue,
 windo"""
 
-[tool.coverage.report]
-exclude_lines = [
-    "coverage: ignore",
-    "ImportError",
-    "ModuleNotFoundError",
-    "@vectorize",
-    "@numba.vectorize",
-    "@numba.jit",
-    "@jit",
-    "@numba.njit",
-    "@njit",
-    "@abstractmethod",
-]
-
-[tool.coverage.run]
-omit = [
-    "ci-helpers/*",
-    "*/tests/*",
-    "plasmapy/utils/calculator/*",
-    "plasmapy/version.py",
-    "plasmapy/_dev/*",
-]
-
 [tool.gilesbot]
 
 [tool.gilesbot.pull_requests]
@@ -181,31 +216,6 @@ number_incorrect = "Incorrect changelog entry number (match PR!)"
 number_incorrect_long = "The changelog entry's number does not match this pull request's number."
 type_incorrect = "Incorrect changelog entry type (see list in changelog README)"
 type_incorrect_long = "The changelog entry for this PR must have one of the types (as in NUMBER.TYPE.rst) as described in the changelog README)."
-
-[tool.isort]
-line_length = 88
-wrap_length = 80
-sections = ["FUTURE", "STDLIB", "FIRSTPARTY", "LOCALFOLDER"]
-known_first_party = ["plasmapy", ]
-default_section = "STDLIB"
-multi_line_output = 3
-use_parentheses = true
-include_trailing_comma = true
-force_alphabetical_sort_within_sections = true
-honor_noqa = true
-lines_between_types = 1
-
-[tool.pytest.ini_options]
-minversion = "6.0"
-testpaths = ['plasmapy']
-norecursedirs = ['build', 'docs', 'plasmapy[\/]_dev']
-doctest_optionflags = """
-NORMALIZE_WHITESPACE
-ELLIPSIS
-NUMBER"""
-addopts = "--doctest-modules --doctest-continue-on-failure"
-filterwarnings = ["ignore:.*Creating", "a"]
-looponfailroots = "plasmapy"
 
 [tool.ruff]
 target-version = "py38"
@@ -237,21 +247,6 @@ pandas = "pd"
 
 [tool.ruff.per-file-ignores]
 "__init__.py" = ["E402", "F401", "F402", "F403"]  # ignore import errors
-
-[tool.setuptools]
-include-package-data = true
-
-[tool.setuptools.package-data]
-"plasmapy.particles.data" = ["*"]
-"plasmapy.tests" = ["coveragerc"]
-"plasmapy.utils.calculator" = ["*"]
-
-[tool.setuptools.packages.find]
-exclude = ["docs/automodapi", "plasmapy/_dev"]
-namespaces = false
-
-[tool.setuptools_scm]
-write_to = "plasmapy/_version.py"
 
 [tool.towncrier]
 package = "plasmapy"

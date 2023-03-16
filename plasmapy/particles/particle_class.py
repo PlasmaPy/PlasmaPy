@@ -21,9 +21,10 @@ import warnings
 
 from abc import ABC, abstractmethod
 from collections import defaultdict, namedtuple
+from collections.abc import Iterable, Sequence
 from datetime import datetime
 from numbers import Integral, Real
-from typing import Dict, Iterable, NoReturn, Optional, Sequence, Set, Union
+from typing import NoReturn, Optional, Union
 
 from plasmapy.particles import _elements, _isotopes, _parsing, _special_particles
 from plasmapy.particles.exceptions import (
@@ -213,7 +214,7 @@ class AbstractPhysicalParticle(AbstractParticle):
 
     @property
     @abstractmethod
-    def categories(self) -> Set[str]:
+    def categories(self) -> set[str]:
         """Provide the particle's categories."""
         ...
 
@@ -317,7 +318,7 @@ class AbstractPhysicalParticle(AbstractParticle):
         False
         """
 
-        def become_set(arg: Union[str, Set, Sequence]) -> Set[str]:
+        def become_set(arg: Union[str, set, Sequence]) -> set[str]:
             """Change the argument into a `set`."""
             if arg is None:
                 return set()
@@ -577,7 +578,6 @@ class Particle(AbstractPhysicalParticle):
         mass_numb: Optional[Integral] = None,
         Z: Optional[Integral] = None,
     ):
-
         # TODO: Remove the following block during or after the 0.9.0 release
 
         if _:
@@ -695,20 +695,24 @@ class Particle(AbstractPhysicalParticle):
         if self.symbol == "p+":
             categories.update({"element", "isotope", "ion"})
 
-        _, mass_numb, Z = self.__inputs
+        argument, mass_numb, Z = self.__inputs
 
-        if mass_numb is not None or Z is not None:
-            if self.symbol == "p+" and 1 in (mass_numb, Z):
-                warnings.warn(
-                    "Redundant mass number or charge information.", ParticleWarning
-                )
-            else:
-                raise InvalidParticleError(
-                    "The keywords 'mass_numb' and 'Z' cannot be used when "
-                    "creating Particle objects for special particles. To "
-                    f"create a Particle object for {attributes['name']}s, "
-                    f"use:  Particle({attributes['particle']!r})"
-                )
+        if mass_numb is None and Z is None:
+            return
+
+        if self.symbol != "p+":
+            raise InvalidParticleError(
+                "The keywords 'mass_numb' and 'Z' cannot be used when "
+                "creating Particle objects for special particles. To "
+                f"create a Particle object for {attributes['name']}s, "
+                f"use: Particle({attributes['particle']!r})"
+            )
+
+        if mass_numb not in (1, None) or Z not in (1, None):
+            raise InvalidParticleError(
+                "Cannot create a Particle representing a proton for a "
+                "mass number or charge number not equal to 1."
+            )
 
     def _assign_atom_attributes(self) -> NoReturn:
         """Assign attributes and categories to elements, isotopes, and ions."""
@@ -740,7 +744,6 @@ class Particle(AbstractPhysicalParticle):
         attributes["lepton number"] = 0
 
         if isotope:
-
             this_isotope = _isotopes.data_about_isotopes[isotope]
 
             attributes["baryon number"] = this_isotope["mass number"]
@@ -1206,7 +1209,6 @@ class Particle(AbstractPhysicalParticle):
             return self._attributes["mass"].to(u.kg)
 
         if self.is_ion:
-
             if self.isotope:
                 base_mass = self._attributes["isotope mass"]
             else:
@@ -1220,7 +1222,6 @@ class Particle(AbstractPhysicalParticle):
             return mass.to(u.kg)
 
         if self.element:
-
             if self.isotope:
                 mass = self._attributes["isotope mass"]
             else:
@@ -1628,7 +1629,7 @@ class Particle(AbstractPhysicalParticle):
             raise InvalidElementError(_category_errmsg(self.symbol, "element"))
 
     @property
-    def categories(self) -> Set[str]:
+    def categories(self) -> set[str]:
         """
         The particle's categories.
 
@@ -2082,7 +2083,6 @@ class CustomParticle(AbstractPhysicalParticle):
         *,
         Z: Optional[Real] = None,
     ):
-
         # TODO py3.10 replace ifology with structural pattern matching
 
         if Z is not None and charge is not None:
@@ -2131,6 +2131,9 @@ class CustomParticle(AbstractPhysicalParticle):
 
         if not quantities:
             return CustomParticle(symbol=symbol, Z=Z)
+
+        if isinstance(quantities[0], str):
+            raise TypeError("Unable to create CustomParticle from a string.")
 
         try:
             physical_type_dict = _get_physical_type_dict(
@@ -2184,7 +2187,7 @@ class CustomParticle(AbstractPhysicalParticle):
         )
 
     @property
-    def json_dict(self) -> Dict[str, str]:
+    def json_dict(self) -> dict[str, str]:
         """
         A `json` friendly dictionary representation of the |CustomParticle|.
 
@@ -2347,7 +2350,7 @@ class CustomParticle(AbstractPhysicalParticle):
             raise TypeError("symbol needs to be a string.")
 
     @property
-    def categories(self) -> Set[str]:
+    def categories(self) -> set[str]:
         """Categories for the |CustomParticle|."""
         categories_ = {"custom"}
 
@@ -2478,7 +2481,10 @@ def molecule(
         return CustomParticle(mass=mass, charge=charge, symbol=bare_symbol)
 
 
-ParticleLike = Union[str, Integral, Particle, CustomParticle]
+# If ParticleLike is renamed or moves out of particle_class.py, check
+# for a link to its doc page in error messages in _factory.py.
+
+ParticleLike = Union[str, Integral, Particle, CustomParticle, u.Quantity]
 
 ParticleLike.__doc__ = r"""
 An `object` is particle-like if it can be identified as an instance of
@@ -2555,7 +2561,14 @@ instances, are particle-like.
 * **Custom particles**
 
     `~plasmapy.particles.particle_class.CustomParticle` instances are
-    particle-like because particle properties are provided in physical units.
+    particle-like because particle properties are provided in physical
+    units. A `~astropy.units.Quantity` with a physical type of mass or
+    charge is |particle-like| because it can be used to generate a
+    |CustomParticle|.
+
+    >>> import astropy.units as u
+    >>> CustomParticle(mass = 1e-26 * u.kg, charge = 1e-18 * u.C)
+    CustomParticle(mass=1e-26 kg, charge=1e-18 C)
 
 .. note::
 

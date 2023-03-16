@@ -33,6 +33,8 @@ the full changelog. Some example changelog entries are:
    been deprecated and will be removed in a future release. Use
    ``newname`` instead.
 
+.. _add-changelog:
+
 Adding a changelog entry
 ========================
 

@@ -15,7 +15,7 @@ Summary
 * New functionality added to PlasmaPy must also have tests.
 
 * Tests are located in files that begin with :file:`test_` which are
-  inside subdirectories named :file:`tests`.
+  inside subdirectories named :file:`tests/`.
 
 * Tests are either functions beginning with ``test_`` or classes
   beginning with ``Test``.
@@ -25,7 +25,7 @@ Summary
   - Open a terminal.
 
   - Navigate to the top-level directory (probably named
-    :file:`PlasmaPy`) in your local clone of PlasmaPy's repository.
+    :file:`PlasmaPy/`) in your local clone of PlasmaPy's repository.
 
   - If you are on MacOS or Linux, run:
 
@@ -88,8 +88,8 @@ does it in isolation from other tests :cite:p:`khorikov:2020`. A typical
 multiple software components work together as intended.
 
 PlasmaPy's tests are set up using the pytest_ framework. The tests for
-a subpackage are located in its :file:`tests` subdirectory in files with
-names of the form :file:`test_*.py`. For example, tests for
+a subpackage are located in its :file:`tests/` subdirectory in files
+with names of the form :file:`test_*.py`. For example, tests for
 `plasmapy.formulary.speeds` are located at
 :file:`plasmapy/formulary/tests/test_speeds.py` relative to the top
 of the package. Example code contained within docstrings is tested to
@@ -129,7 +129,7 @@ The recommended way for new contributors to run PlasmaPy's full test
 suite is to `create a pull request`_ from your development branch to
 `PlasmaPy's GitHub repository`_. The test suite will be run
 automatically when the pull request is created and every time changes
-are pushed to the development branch on GitHub_. Most of these checks\
+are pushed to the development branch on GitHub_. Most of these checks
 have been automated using `GitHub Actions`_.
 
 The following image shows how the results of the checks will appear in
@@ -201,25 +201,20 @@ The following checks are performed with each pull request.
      syntax errors. This approach is much more efficient than making the
      style fixes manually. Remember to ``git pull`` afterwards!
 
+  .. note::
+
+     When using pre-commit, a hook for codespell_ will check for and fix
+     common misspellings. If you encounter any words caught by
+     codespell_ that should *not* be fixed, please add these false
+     positives to ``ignore-words-list`` under ``codespell`` in
+     :file:`pyproject.toml`.
+
 * The **CI / Packaging (pull request)** check verifies that no errors
   arise that would prevent an official release of PlasmaPy from being
   made.
 
 * The **Pull Request Labeler / triage (pull_request_target)** check
   applies appropriate GitHub_ labels to pull requests.
-
-* The **CI / codespell (pull request)** check runs codespell_ to catch
-  by looking for common misspellings.
-
-  * If codespell_ has been installed (e.g., by ``pip install codespell``),
-    then it may be run by going into the appropriate directory and
-    running ``codespell -i 2 -w``. This command will identify common
-    misspellings, interactively suggest replacements, and then write the
-    replacements into the file.
-
-  * Occasionally codespell_ will report false positives. Please add
-    false positives to ``ignore-words-list`` under ``codespell`` in
-    :file:`pyproject.toml`.
 
 .. note::
 
@@ -258,7 +253,7 @@ directory and all of its subdirectories. Because it takes time to run
 PlasmaPy's tests, it is usually most convenient to specify that only a
 subset of the tests be run. To run the tests contained within a
 particular file or directory, include its name after ``pytest``. If you
-are in the directory :file:`plasmapy/particles/tests`, then the tests in
+are in the directory :file:`plasmapy/particles/tests/`, then the tests in
 in :file:`test_atomic.py` can be run with:
 
 .. code-block:: shell
@@ -349,9 +344,9 @@ write a test.
 Locating tests
 --------------
 
-The tests for each subpackage are contained in its :file:`tests`
+The tests for each subpackage are contained in its :file:`tests/`
 subdirectory. For example, the tests for `plasmapy.particles` are
-located in :file:`plasmapy/particles/tests`. Test files begin with
+located in :file:`plasmapy/particles/tests/`. Test files begin with
 :file:`test_` and generally contain either the name of the module or a
 description of the behavior that is being tested. For example, tests for
 |Particle| are located at

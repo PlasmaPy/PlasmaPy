@@ -25,7 +25,7 @@ import astropy.constants as const
 import astropy.units as u
 
 from numbers import Integral, Real
-from typing import Any, List, Optional, Union
+from typing import Any, Optional, Union
 
 from plasmapy.particles import _elements, _isotopes
 from plasmapy.particles.decorators import particle_input
@@ -494,7 +494,7 @@ def half_life(particle: Particle, mass_numb: Optional[Integral] = None) -> u.Qua
     return particle.half_life
 
 
-def known_isotopes(argument: Union[str, Integral] = None) -> List[str]:
+def known_isotopes(argument: Union[str, Integral] = None) -> list[str]:
     """
     Return a list of all known isotopes of an element, or a list of all
     known isotopes of every element if no input is provided.
@@ -586,7 +586,7 @@ def known_isotopes(argument: Union[str, Integral] = None) -> List[str]:
 
 def common_isotopes(
     argument: Union[str, Integral] = None, most_common_only: bool = False
-) -> List[str]:
+) -> list[str]:
     """
     Return a list of isotopes of an element with an isotopic abundances
     greater than zero, or if no input is provided, a list of all such
@@ -657,8 +657,7 @@ def common_isotopes(
 
     def common_isotopes_for_element(
         argument: Union[str, int], most_common_only: Optional[bool]
-    ) -> List[str]:
-
+    ) -> list[str]:
         isotopes = known_isotopes(argument)
 
         CommonIsotopes = [
@@ -685,7 +684,6 @@ def common_isotopes(
         return sorted_isotopes
 
     if argument is not None:
-
         try:
             element = atomic_symbol(argument)
             isotopes_list = common_isotopes_for_element(element, most_common_only)
@@ -707,7 +705,7 @@ def common_isotopes(
 
 def stable_isotopes(
     argument: Optional[ParticleLike] = None, unstable: bool = False
-) -> List[str]:
+) -> list[str]:
     """
     Return a list of all stable isotopes of an element, or if no input is
     provided, a list of all such isotopes for every element.
@@ -777,7 +775,7 @@ def stable_isotopes(
 
     def stable_isotopes_for_element(
         argument: Union[str, int], stable_only: Optional[bool]
-    ) -> List[str]:
+    ) -> list[str]:
         KnownIsotopes = known_isotopes(argument)
         return [
             isotope
