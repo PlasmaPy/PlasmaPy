@@ -136,8 +136,8 @@ def gyrofrequency(
     >>> print(f_ce)
     279924... Hz
     """
-    Z = particle.charge if signed else abs(particle.charge)
-    return u.rad * (Z * np.abs(B) / particle.mass).to(1 / u.s)
+    q = particle.charge if signed else abs(particle.charge)
+    return u.rad * (q * np.abs(B) / particle.mass).to(1 / u.s)
 
 
 oc_ = gyrofrequency
