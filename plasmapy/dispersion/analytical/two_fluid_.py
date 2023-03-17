@@ -250,7 +250,7 @@ def two_fluid(
 
     # validate arguments
     for arg_name in ("gamma_e", "gamma_i"):
-        if not isinstance(locals()[arg_name], (int, np.integer, float, np.floating)):
+        if not isinstance(locals()[arg_name], Real):
             raise TypeError(
                 f"Expected int or float for argument '{arg_name}', but got "
                 f"{type(locals()[arg_name])}."
@@ -315,18 +315,18 @@ def two_fluid(
     omega = {}
     for ind, key in enumerate(("fast_mode", "alfven_mode", "acoustic_mode")):
         # The solution corresponding to equation 38
-        w = omega_ci * np.emath.sqrt(
+        ω = omega_ci * np.emath.sqrt(
             R * np.cos(1 / 3 * np.emath.arccos(S) - 2 * np.pi / 3 * ind) + T
         )
-        omega[key] = w.squeeze()
+        omega[key] = ω.squeeze()
 
         # check for violation of dispersion relation assumptions
-        # (i.e. low-frequency, w/kc << 0.1)
-        wkc_max = np.max(w.value / (kv * c.value))
+        # (i.e. low-frequency, ω/kc << 0.1)
+        wkc_max = np.max(ω.value / (kv * c.value))
         if wkc_max > 0.1:
             warnings.warn(
-                f"The {key} calculation produced a high-frequency wave (w/kc == "
-                f"{wkc_max:.3f}), which violates the low-frequency (w/kc << 1) "
+                f"The {key} calculation produced a high-frequency wave (ω/kc == "
+                f"{wkc_max:.3f}), which violates the low-frequency (ω/kc << 1) "
                 f"assumption of the dispersion relation.",
                 PhysicsWarning,
             )
