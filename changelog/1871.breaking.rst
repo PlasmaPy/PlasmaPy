@@ -1,4 +1,4 @@
-The parameters provided to `~plasmapy.formulary.relativistic_energy`
+The parameters provided to `~plasmapy.formulary.relativity.relativistic_energy`
 are now ``particle`` and ``V`` instead of ``m`` and ``v``. A
 |Quantity| representing the mass of one or more particles can be
 passed as arguments to ``particle``.
