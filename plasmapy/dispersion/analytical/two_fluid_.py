@@ -238,8 +238,6 @@ def two_fluid(
                [0.01534..., 0.01558...]] rad / s>
     """
 
-    Z = abs(ion.charge_number)
-
     # validate arguments
     for arg_name in ("B", "n_i", "T_e", "T_i"):
         val = locals()[arg_name].squeeze()
@@ -277,7 +275,7 @@ def two_fluid(
         )
 
     # Calc needed plasma parameters
-    n_e = Z * n_i
+    n_e = n_i * ion.charge_number
     with warnings.catch_warnings():
         warnings.simplefilter("ignore", category=PhysicsWarning)
         c_s = ion_sound_speed(
@@ -287,10 +285,9 @@ def two_fluid(
             n_e=n_e,
             gamma_e=gamma_e,
             gamma_i=gamma_i,
-            z_mean=Z,
         )
-    v_A = Alfven_speed(B, n_i, ion=ion, z_mean=Z)
-    omega_ci = gyrofrequency(B=B, particle=ion, signed=False, Z=Z)
+    v_A = Alfven_speed(B, n_i, ion=ion)
+    omega_ci = gyrofrequency(B=B, particle=ion, signed=False)
     omega_pe = plasma_frequency(n=n_e, particle="e-")
 
     # Bellan2012JGR params equation 32
