@@ -100,7 +100,7 @@ def gyrofrequency(
     gyration around magnetic field lines and is given by:
 
     .. math::
-        ω_{c} = \frac{\|Z\| e B}{m}
+        ω_{c} = \frac{|Z| e B}{m}
 
     If ``signed`` is `True`, then :math:`\|Z\|` will be replaced with
     :math:`Z`. A particle's gyrofrequency is also known as its
