@@ -217,12 +217,9 @@ def gyroradius(
     <Quantity 0.001421... m>
     """
 
-    if not relativistic:
-        if not np.isnan(lorentzfactor):
-            raise ValueError(
-                "Lorentz factor is provided but relativistic is set to false"
-            )
-        lorentzfactor = 1.0
+    if not relativistic and not np.isnan(lorentzfactor):
+        raise ValueError("Lorentz factor is provided but relativistic is set to false")
+    lorentzfactor = 1.0 if not relativistic else lorentzfactor
 
     if T is None:
         T = np.nan * u.K
@@ -252,6 +249,7 @@ def gyroradius(
             "lorentzfactor is given along with Vperp or T, will lead "
             "to inaccurate predictions unless they correspond"
         )
+
 
     # check 2: get Vperp as the thermal speed if is not already a valid input
     if np.isscalar(Vperp.value) and np.isscalar(
