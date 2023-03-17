@@ -67,7 +67,7 @@ def gyrofrequency(
         the sign of the |charge number|. Defaults to unsigned (i.e.,
         always positive).
 
-    Z : real number or `~astropy.units.Quantity`, optional
+    Z : real number, optional
         The |charge number| of an ion or neutral atom, if not provided
         in ``particle``.
 
