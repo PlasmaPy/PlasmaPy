@@ -102,7 +102,7 @@ def gyrofrequency(
     .. math::
         ω_{c} = \frac{|Z| e B}{m}
 
-    If ``signed`` is `True`, then :math:`\|Z\|` will be replaced with
+    If ``signed`` is `True`, then :math:`|Z|` is replaced with
     :math:`Z`. A particle's gyrofrequency is also known as its
     *cyclotron frequency* or *Larmor frequency*.
 
