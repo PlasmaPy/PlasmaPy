@@ -9,6 +9,7 @@ from plasmapy.dispersion.analytical.two_fluid_ import two_fluid
 from plasmapy.formulary.frequencies import wc_
 from plasmapy.formulary.speeds import cs_, va_
 from plasmapy.particles import Particle
+from plasmapy.particles.exceptions import InvalidIonError
 from plasmapy.utils.exceptions import PhysicsWarning
 
 
@@ -39,8 +40,8 @@ class TestTwoFluid:
             ({**_kwargs_single_valued, "B": -1 * u.T}, ValueError),
             ({**_kwargs_single_valued, "B": 5 * u.m}, u.UnitTypeError),
             ({**_kwargs_single_valued, "ion": {"not": "a particle"}}, TypeError),
-            ({**_kwargs_single_valued, "ion": "e-"}, ValueError),
-            ({**_kwargs_single_valued, "ion": "He", "z_mean": "wrong type"}, TypeError),
+            ({**_kwargs_single_valued, "ion": "e-"}, InvalidIonError),
+            ({**_kwargs_single_valued, "ion": "He", "Z": "wrong type"}, TypeError),
             ({**_kwargs_single_valued, "k": np.ones((3, 2)) * u.rad / u.m}, ValueError),
             ({**_kwargs_single_valued, "k": 0 * u.rad / u.m}, ValueError),
             ({**_kwargs_single_valued, "k": -1.0 * u.rad / u.m}, ValueError),
@@ -138,34 +139,6 @@ class TestTwoFluid:
         for mode, val in ws.items():
             norm = (np.absolute(val) / (kwargs["k"] * va)).value ** 2
             assert np.isclose(norm, expected[mode])
-
-    @pytest.mark.parametrize(
-        "kwargs, expected",
-        [
-            (
-                {
-                    **_kwargs_bellan2012,
-                    "ion": Particle("He"),
-                    "z_mean": 2.0,
-                    "theta": 0 * u.deg,
-                },
-                {**_kwargs_bellan2012, "ion": Particle("He +2"), "theta": 0 * u.deg},
-            ),
-            #
-            # z_mean defaults to 1
-            (
-                {**_kwargs_bellan2012, "ion": Particle("He"), "theta": 0 * u.deg},
-                {**_kwargs_bellan2012, "ion": Particle("He+"), "theta": 0 * u.deg},
-            ),
-        ],
-    )
-    def test_z_mean_override(self, kwargs, expected):
-        """Test overriding behavior of kw 'z_mean'."""
-        ws = two_fluid(**kwargs)
-        ws_expected = two_fluid(**expected)
-
-        for mode in ws:
-            assert np.isclose(ws[mode], ws_expected[mode], atol=0, rtol=1.7e-4)
 
     @pytest.mark.parametrize(
         "kwargs, expected",

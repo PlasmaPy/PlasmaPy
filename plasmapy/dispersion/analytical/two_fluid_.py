@@ -9,16 +9,17 @@ import numpy as np
 import warnings
 
 from astropy.constants.si import c
-from typing import Union
+from numbers import Integral, Real
+from typing import Optional
 
 from plasmapy.formulary.frequencies import gyrofrequency, plasma_frequency
 from plasmapy.formulary.speeds import Alfven_speed, ion_sound_speed
-from plasmapy.particles import Particle
-from plasmapy.particles.exceptions import ChargeError
+from plasmapy.particles import particle_input, ParticleLike
 from plasmapy.utils.decorators import validate_quantities
 from plasmapy.utils.exceptions import PhysicsWarning
 
 
+@particle_input
 @validate_quantities(
     B={"can_be_negative": False},
     n_i={"can_be_negative": False},
@@ -28,15 +29,16 @@ from plasmapy.utils.exceptions import PhysicsWarning
 def two_fluid(
     *,
     B: u.T,
-    ion: Union[str, Particle],
+    ion: ParticleLike,
     k: u.rad / u.m,
     n_i: u.m**-3,
     T_e: u.K,
     T_i: u.K,
     theta: u.rad,
-    gamma_e: Union[float, int] = 1,
-    gamma_i: Union[float, int] = 3,
-    z_mean: Union[float, int] = None,
+    gamma_e: Real = 1,
+    gamma_i: Real = 3,
+    mass_numb: Optional[Integral] = None,
+    Z: Optional[Real] = None,
 ):
     r"""
     Using the solution provided by :cite:t:`bellan:2012`, calculate the
@@ -51,38 +53,47 @@ def two_fluid(
     ----------
     B : `~astropy.units.Quantity`
         The magnetic field magnitude in units convertible to T.
-    ion : `str` or `~plasmapy.particles.particle_class.Particle`
+
+    ion : |particle-like|
         Representation of the ion species (e.g., ``'p'`` for protons,
-        ``'D+'`` for deuterium, ``'He-4 +1'`` for singly ionized
-        helium-4, etc.). If no charge state information is provided,
-        then the ions are assumed to be singly ionized.
+        ``'D+'`` for deuterium, ``'He-4 1+'`` for singly ionized
+        helium-4, etc.).
+
     k : `~astropy.units.Quantity`, single valued or 1-D array
         Wavenumber in units convertible to rad/m`.  Either single
         valued or 1-D array of length :math:`N`.
+
     n_i : `~astropy.units.Quantity`
         Ion number density in units convertible to m\ :sup:`-3`.
+
     T_e : `~astropy.units.Quantity`
         The electron temperature in units of K or eV.
+
     T_i : `~astropy.units.Quantity`
         The ion temperature in units of K or eV.
+
     theta : `~astropy.units.Quantity`, single valued or 1-D array
         The angle of propagation of the wave with respect to the
         magnetic field, :math:`\cos^{-1}(k_z / k)`, in units must be
         convertible to radians. Either single valued or 1-D array of
         size :math:`M`.
+
     gamma_e : `float` or `int`, optional
         The adiabatic index for electrons, which defaults to 1.  This
         value assumes that the electrons are able to equalize their
         temperature rapidly enough that the electrons are effectively
         isothermal.
+
     gamma_i : `float` or `int`, optional
         The adiabatic index for ions, which defaults to 3. This value
         assumes that ion motion has only one degree of freedom, namely
         along magnetic field lines.
-    z_mean : `float` or int, optional
-        The average ionization state (arithmetic mean) of the ``ion``
-        composing the plasma.  Will override any charge state defined
-        by argument ``ion``.
+
+    mass_numb : `int`, optional
+        The mass number of an isotope corresponding to ``ion``.
+
+    Z : real number, optional
+        The |charge number| corresponding to ``ion``.
 
     Returns
     -------
@@ -99,7 +110,7 @@ def two_fluid(
         If applicable arguments are not instances of
         `~astropy.units.Quantity` or cannot be converted into one.
 
-    TypeError
+    |ParticleError|
         If ``ion`` is not of type or convertible to
         `~plasmapy.particles.particle_class.Particle`.
 
@@ -227,29 +238,7 @@ def two_fluid(
                [0.01534..., 0.01558...]] rad / s>
     """
 
-    # validate argument ion
-    if not isinstance(ion, Particle):
-        try:
-            ion = Particle(ion)
-        except TypeError as ex:
-            raise TypeError(
-                f"For argument 'ion' expected type {Particle} but got {type(ion)}."
-            ) from ex
-    if not ion.is_ion and not ion.is_category("element"):
-        raise ValueError("The particle passed for 'ion' must be an ion or element.")
-
-    # validate z_mean
-    if z_mean is None:
-        try:
-            z_mean = abs(ion.charge_number)
-        except ChargeError:
-            z_mean = 1
-    elif isinstance(z_mean, (int, np.integer, float, np.floating)):
-        z_mean = abs(z_mean)
-    else:
-        raise TypeError(
-            f"Expected int or float for argument 'z_mean', but got {type(z_mean)}."
-        )
+    Z = abs(ion.charge_number)
 
     # validate arguments
     for arg_name in ("B", "n_i", "T_e", "T_i"):
@@ -288,7 +277,7 @@ def two_fluid(
         )
 
     # Calc needed plasma parameters
-    n_e = z_mean * n_i
+    n_e = Z * n_i
     with warnings.catch_warnings():
         warnings.simplefilter("ignore", category=PhysicsWarning)
         c_s = ion_sound_speed(
@@ -298,10 +287,10 @@ def two_fluid(
             n_e=n_e,
             gamma_e=gamma_e,
             gamma_i=gamma_i,
-            z_mean=z_mean,
+            z_mean=Z,
         )
-    v_A = Alfven_speed(B, n_i, ion=ion, z_mean=z_mean)
-    omega_ci = gyrofrequency(B=B, particle=ion, signed=False, Z=z_mean)
+    v_A = Alfven_speed(B, n_i, ion=ion, z_mean=Z)
+    omega_ci = gyrofrequency(B=B, particle=ion, signed=False, Z=Z)
     omega_pe = plasma_frequency(n=n_e, particle="e-")
 
     # Bellan2012JGR params equation 32
