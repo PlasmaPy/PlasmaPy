@@ -1,0 +1,4 @@
+In `~plasmapy.dispersion.analytical.two_fluid_.two_fluid`, the
+``z_mean`` parameter has been renamed to ``Z``. Providing the charge
+number as ``Z`` will not override the charge number in ``ion``, and
+the charge number will no longer default to 1.
