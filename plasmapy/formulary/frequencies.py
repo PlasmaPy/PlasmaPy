@@ -44,7 +44,7 @@ def gyrofrequency(
     B: u.T,
     particle: ParticleLike,
     signed: bool = False,
-    Z: Optional[numbers.Integral] = None,
+    Z: Optional[numbers.Real] = None,
     mass_numb: Optional[numbers.Integral] = None,
 ) -> u.rad / u.s:
     r"""
