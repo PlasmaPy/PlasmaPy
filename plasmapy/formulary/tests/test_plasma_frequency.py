@@ -104,7 +104,7 @@ class TestPlasmaFrequency:
         [
             ((1 * u.cm**-3, "e-"), {}, 5.64e4, 1e-2),
             ((1 * u.cm**-3, "N"), {}, 3.53e2, 1e-1),
-            ((1e17 * u.cm**-3, "p"), {"z_mean": 0.8}, 333063562455.4028, 1e-6),
+            ((1e17 * u.cm**-3, "p"), {"Z": 0.8}, 333063562455.4028, 1e-6),
             (
                 (5e19 * u.m**-3, "p"),
                 {},
@@ -154,7 +154,7 @@ class TestPlasmaFrequencyLite:
         [
             {"n": 1e12 * u.cm**-3, "particle": "e-"},
             {"n": 1e12 * u.cm**-3, "particle": "e-", "to_hz": True},
-            {"n": 1e11 * u.cm**-3, "particle": "He", "z_mean": 0.8},
+            {"n": 1e11 * u.cm**-3, "particle": "He", "Z": 0.8},
         ],
     )
     def test_normal_vs_lite_values(self, inputs):
@@ -167,13 +167,13 @@ class TestPlasmaFrequencyLite:
             "n": inputs["n"].to(u.m**-3).value,
             "mass": particle.mass.value,
         }
-        if "z_mean" in inputs:
-            inputs_unitless["z_mean"] = inputs["z_mean"]
+        if "Z" in inputs:
+            inputs_unitless["Z"] = inputs["Z"]
         else:
             try:
-                inputs_unitless["z_mean"] = np.abs(particle.charge_number)
+                inputs_unitless["Z"] = np.abs(particle.charge_number)
             except Exception:
-                inputs_unitless["z_mean"] = 1
+                inputs_unitless["Z"] = 1
         if "to_hz" in inputs:
             inputs_unitless["to_hz"] = inputs["to_hz"]
 

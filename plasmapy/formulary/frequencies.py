@@ -149,10 +149,16 @@ wc_ = gyrofrequency
 """Alias to `~plasmapy.formulary.frequencies.gyrofrequency`."""
 
 
+# NEED TO HANDLE DEPRECATION OF Z_MEAN IN ω_p LITE FUNCTION!
+
+
 @preserve_signature
 @njit
 def plasma_frequency_lite(
-    n: numbers.Real, mass: numbers.Real, z_mean: numbers.Real, to_hz: bool = False
+    n: numbers.Real,
+    mass: numbers.Real,
+    Z: numbers.Real,
+    to_hz: bool = False,
 ) -> numbers.Real:
     r"""
     The :term:`lite-function` for
@@ -170,14 +176,14 @@ def plasma_frequency_lite(
     mass : `~numbers.Real`
         Mass of the particle, in units of kg.
 
-    z_mean : `~numbers.Real`
+    Z : `~numbers.Real`
         The average ionization (arithmetic mean) for the particle
         species in the plasma.  For example, a proton would have a value
-        of ``z_mean=1``.
+        of ``Z=1``.
 
-    to_hz : `bool`
-        (Default `False`) Set `True` to apply the factor of
-        :math:`1/2π` and return a value in units of Hz.
+    to_hz : `bool`, default: `False`.
+        Set `True` to apply the factor of :math:`1/2π` and return a
+        value in units of Hz.
 
     Returns
     -------
@@ -188,35 +194,34 @@ def plasma_frequency_lite(
 
     Notes
     -----
-
     The particle plasma frequency is
 
     .. math::
-        ω_{p} = Z |e| \sqrt{\frac{n}{\epsilon_0 m}}
+        ω_p = \sqrt{\frac{n |q|}{ε_0 m}}
 
-    where :math:`m` is the mass of the particle, :math:`e` is the
-    fundamental unit of charge, :math:`Z` is the average charge state
-    ``z_mean`` of the particle species, :math:`n` is the particle number
-    density.  This form of the plasma frequency has units of
-    radians / s, but when using the ``to_hz`` keyword a factor of
-    :math:`1/2π` will be applied to give a value in Hz.
+    where :math:`n` is the number density, :math:`q` is the particle
+    charge, and :math:`m` is the particle mass.
+
+    This form of the plasma frequency has units of rad/s, but when using
+    the ``to_hz`` keyword a factor of :math:`1/2π` will be applied to
+    give a value in Hz.
 
     Examples
     --------
-
     >>> from plasmapy.particles import Particle
     >>> mass = Particle("p").mass.value
-    >>> plasma_frequency_lite(n=1e19, mass=mass, z_mean=1)
+    >>> plasma_frequency_lite(n=1e19, mass=mass, Z=1)
     416329...
-    >>> plasma_frequency_lite(n=1e19, mass=mass, z_mean=1, to_hz=True)
+    >>> plasma_frequency_lite(n=1e19, mass=mass, Z=1, to_hz=True)
     662608...
     """
-    omega_p = z_mean * e_si_unitless * np.sqrt(n / (eps0_si_unitless * mass))
+    omega_p = Z * e_si_unitless * np.sqrt(n / (eps0_si_unitless * mass))
 
     return omega_p / (2.0 * np.pi) if to_hz else omega_p
 
 
 @bind_lite_func(plasma_frequency_lite)
+@particle_input(any_of={"charged", "uncharged"})
 @validate_quantities(
     n={"can_be_negative": False},
     validations_on_return={
@@ -224,7 +229,6 @@ def plasma_frequency_lite(
         "equivalencies": [(u.cy / u.s, u.Hz)],
     },
 )
-@particle_input
 @angular_freq_to_hz
 def plasma_frequency(
     n: u.m**-3,
@@ -316,16 +320,16 @@ def plasma_frequency(
 
     >>> from plasmapy.particles import Particle
     >>> mass = Particle("p+").mass.value
-    >>> plasma_frequency.lite(n=1e19, mass=mass, z_mean=1)
+    >>> plasma_frequency.lite(n=1e19, mass=mass, Z=1)
     416329...
-    >>> plasma_frequency.lite(n=1e19, mass=mass, z_mean=1, to_hz=True)
+    >>> plasma_frequency.lite(n=1e19, mass=mass, Z=1, to_hz=True)
     662608...
     """
     return (
         plasma_frequency_lite(
             n=n.value,
             mass=particle.mass.value,
-            z_mean=np.abs(particle.charge_number),
+            Z=np.abs(particle.charge_number),
         )
         * u.rad
         / u.s
