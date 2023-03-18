@@ -22,6 +22,7 @@ from plasmapy.particles.exceptions import (
 )
 from plasmapy.particles.particle_class import CustomParticle, Particle, ParticleLike
 from plasmapy.particles.particle_collections import ParticleList, ParticleListLike
+from plasmapy.utils import PlasmaPyDeprecationWarning
 
 _basic_particle_input_annotations = (
     Particle,  # deprecated
@@ -595,7 +596,8 @@ class _ParticleInput:
                 Z = z_mean
                 warnings.warn(
                     "The z_mean parameter has been deprecated. "
-                    "Define the charge number with Z instead."
+                    "Define the charge number with Z instead.",
+                    category=PlasmaPyDeprecationWarning,
                 )
 
         self.perform_pre_validations(Z, mass_numb)
