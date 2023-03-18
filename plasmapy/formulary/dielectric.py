@@ -258,10 +258,10 @@ def permittivity_1D_Maxwellian_lite(omega, kWave, vth, wp):
     >>> T = 30 * u.eV
     >>> n = 1e18 * u.cm**-3
     >>> particle = "Ne"
-    >>> z_mean = 8
+    >>> Z = 8
     >>> omega = 3.541e15  # in rad/s
     >>> vth = thermal_speed(T=T, particle=particle).value
-    >>> wp = plasma_frequency(n=n, particle=particle, z_mean=z_mean).value
+    >>> wp = plasma_frequency(n=n, particle=particle, Z=Z).value
     >>> k_wave = omega / vth
     >>> permittivity_1D_Maxwellian_lite(omega, k_wave, vth=vth, wp=wp)
     (-6.72647...e-08+5.75899...e-07j)
@@ -368,14 +368,14 @@ def permittivity_1D_Maxwellian(
     is bound to this function and can be used as follows:
 
     >>> from plasmapy.formulary import plasma_frequency
-    >>> wp = plasma_frequency(n, particle, z_mean=z_mean)
+    >>> wp = plasma_frequency(n, particle, Z=z_mean)
     >>> permittivity_1D_Maxwellian.lite(
     ...     omega.value, k_wave.value, vth=vth.value, wp=wp.value
     ... )
     (-6.72809...e-08+5.76037...e-07j)
     """
     vth = thermal_speed(T=T, particle=particle, method="most_probable").value
-    wp = plasma_frequency(n=n, particle=particle, z_mean=z_mean).value
+    wp = plasma_frequency(n=n, particle=particle, Z=z_mean).value
 
     chi = permittivity_1D_Maxwellian_lite(
         omega.value,
