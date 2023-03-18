@@ -4,6 +4,7 @@ __all__ = ["particle_input"]
 
 import functools
 import inspect
+import warnings
 import wrapt
 
 from collections.abc import Iterable
@@ -578,6 +579,24 @@ class _ParticleInput:
 
         Z = arguments.pop("Z", None)
         mass_numb = arguments.pop("mass_numb", None)
+
+        # The code that does special handling of z_mean arguments should
+        # only be removed ≥ 3 releases after the last time
+        # particle_input is used to decorate a function that accepts
+        # z_mean.
+        z_mean = arguments.pop("z_mean", None)
+        if z_mean is not None:
+            if Z is not None:
+                raise TypeError(
+                    "The charge number has been provided using both Z and "
+                    "z_mean. Use only Z instead."
+                )
+            else:
+                Z = z_mean
+                warnings.warn(
+                    "The z_mean parameter has been deprecated. "
+                    "Define the charge number with Z instead."
+                )
 
         self.perform_pre_validations(Z, mass_numb)
 
