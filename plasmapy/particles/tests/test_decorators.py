@@ -1,3 +1,4 @@
+import astropy.constants as const
 import astropy.units as u
 import inspect
 import pytest
@@ -592,12 +593,34 @@ class TestParticleInputParameterNames:
         case.function(case.particles_in_category)
 
 
-def test_z_mean_warning_for_particle():
-    @particle_input
-    def func(particle: ParticleLike, Z=None, mass_numb=None):
-        return particle
+@particle_input
+def return_particle(particle: ParticleLike, Z=None, mass_numb=None):
+    """A simple function that is decorated by particle_input."""
+    return particle
+
+
+def test_particle_input_warning_for_integer_z_mean():
+    """
+    Test that if a function decorated by `particle_input` is passed
+    an integer called `z_mean`, then `z_mean` becomes `Z` and a warning
+    is issued.
+    """
+    with pytest.warns(PlasmaPyDeprecationWarning):
+        result = return_particle("H", z_mean=1, mass_numb=1)
+    assert result == "p+"
+
+
+def test_particle_input_warning_for_float_z_mean():
+    """
+    Test that if a function decorated by `particle_input` is passed
+    a float called `z_mean`, then `z_mean` becomes `Z` and a warning
+    is issued.
+    """
+    z_mean = 0.432
 
     with pytest.warns(PlasmaPyDeprecationWarning):
-        result = func("H", z_mean=1, mass_numb=1)
+        result = return_particle("H", z_mean=z_mean, mass_numb=1)
 
-    assert result == "p+"
+    Z = result.charge / const.e.si
+
+    assert u.isclose(Z, z_mean)
