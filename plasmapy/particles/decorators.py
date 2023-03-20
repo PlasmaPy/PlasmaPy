@@ -102,12 +102,11 @@ def _bind_arguments(
     """
     wrapped_signature = inspect.signature(callable_)
 
-    # The warning about "z_mean" should be kept in for a ∼2 releases
-    # after the last pull request that removes a "z_mean" parameter
-    # from a callable decorated with particle_input. After that, the
-    # warning should be changed to an exception when "z_mean" is used as
-    # a parameter to give a descriptive error message for another ∼2
-    # releases.
+    # We should keep the warning about "z_mean" for perhaps ∼2
+    # releases following the last pull request that removes a "z_mean"
+    # parameter from a callable decorated with @particle_input. After
+    # that, we should change this warning to an exception for ∼2 more
+    # releases before deleting it.
 
     if "z_mean" in kwargs and "Z" not in kwargs and "Z" in wrapped_signature.parameters:
         function_name = getattr(callable_, "__name__", None)
