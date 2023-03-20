@@ -589,3 +589,14 @@ class TestParticleInputParameterNames:
         with multiple particles at once which are all in the category.
         """
         case.function(case.particles_in_category)
+
+
+def test_z_mean_warning():
+    @particle_input
+    def func(particle: ParticleLike, Z=None, mass_numb=None):
+        return particle
+
+    # with pytest.warns(PlasmaPyDeprecationWarning):
+    result = func("H", z_mean=1, mass_numb=1)
+
+    assert result == "p+"
