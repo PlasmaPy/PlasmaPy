@@ -16,6 +16,7 @@ from plasmapy.particles.exceptions import (
     ParticleError,
 )
 from plasmapy.particles.particle_class import CustomParticle, Particle, ParticleLike
+from plasmapy.utils import PlasmaPyDeprecationWarning
 from plasmapy.utils.code_repr import call_string
 from plasmapy.utils.decorators.validators import validate_quantities
 
@@ -591,12 +592,12 @@ class TestParticleInputParameterNames:
         case.function(case.particles_in_category)
 
 
-def test_z_mean_warning():
+def test_z_mean_warning_for_particle():
     @particle_input
     def func(particle: ParticleLike, Z=None, mass_numb=None):
         return particle
 
-    # with pytest.warns(PlasmaPyDeprecationWarning):
-    result = func("H", z_mean=1, mass_numb=1)
+    with pytest.warns(PlasmaPyDeprecationWarning):
+        result = func("H", z_mean=1, mass_numb=1)
 
     assert result == "p+"
