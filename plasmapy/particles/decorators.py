@@ -4,6 +4,7 @@ __all__ = ["particle_input"]
 
 import functools
 import inspect
+import warnings
 import wrapt
 
 from collections.abc import Iterable
@@ -21,6 +22,7 @@ from plasmapy.particles.exceptions import (
 )
 from plasmapy.particles.particle_class import CustomParticle, Particle, ParticleLike
 from plasmapy.particles.particle_collections import ParticleList, ParticleListLike
+from plasmapy.utils import PlasmaPyDeprecationWarning
 
 _basic_particle_input_annotations = (
     Particle,  # deprecated
@@ -99,6 +101,25 @@ def _bind_arguments(
         ``cls``.
     """
     wrapped_signature = inspect.signature(callable_)
+
+    # We should keep the warning about "z_mean" for perhaps ∼2
+    # releases following the last pull request that removes a "z_mean"
+    # parameter from a callable decorated with @particle_input. After
+    # that, we should change this warning to an exception for ∼2 more
+    # releases before deleting it.
+
+    if "z_mean" in kwargs and "Z" not in kwargs and "Z" in wrapped_signature.parameters:
+        function_name = getattr(callable_, "__name__", None)
+        name_clause = f"to '{function_name}' " if function_name else ""
+
+        warnings.warn(
+            f"The 'z_mean' parameter {name_clause}has been deprecated "
+            "and will be removed in a subsequent release. Define the "
+            "(mean) charge number with 'Z' instead.",
+            category=PlasmaPyDeprecationWarning,
+        )
+
+        kwargs["Z"] = kwargs.pop("z_mean")
 
     # When decorating a callable_ or staticmethod, instance will
     # be None. When decorating a class instance method, instance
