@@ -102,6 +102,26 @@ def _bind_arguments(
     """
     wrapped_signature = inspect.signature(callable_)
 
+    # The warning about "z_mean" should be kept in for a ∼2 releases
+    # after the last pull request that removes a "z_mean" parameter
+    # from a callable decorated with particle_input. After that, the
+    # warning should be changed to an exception when "z_mean" is used as
+    # a parameter to give a descriptive error message for another ∼2
+    # releases.
+
+    if "z_mean" in kwargs and "Z" not in kwargs:
+        function_name = getattr(callable_, "__name__", None)
+        name_clause = f"to '{function_name}' " if function_name else ""
+
+        warnings.warn(
+            f"The 'z_mean' parameter {name_clause}has been deprecated "
+            "and will be removed in a subsequent release. Define the "
+            "(mean) charge number with 'Z' instead.",
+            category=PlasmaPyDeprecationWarning,
+        )
+
+        kwargs["Z"] = kwargs.pop("z_mean")
+
     # When decorating a callable_ or staticmethod, instance will
     # be None. When decorating a class instance method, instance
     # will be the class instance, and will need to be bound to
@@ -580,25 +600,6 @@ class _ParticleInput:
 
         Z = arguments.pop("Z", None)
         mass_numb = arguments.pop("mass_numb", None)
-
-        # The code that does special handling of z_mean arguments should
-        # only be removed ≥ 3 releases after the last time
-        # particle_input is used to decorate a function that accepts
-        # z_mean.
-        z_mean = arguments.pop("z_mean", None)
-        if z_mean is not None:
-            if Z is not None:
-                raise TypeError(
-                    "The charge number has been provided using both Z and "
-                    "z_mean. Use only Z instead."
-                )
-            else:
-                Z = z_mean
-                warnings.warn(
-                    "The z_mean parameter has been deprecated. "
-                    "Define the charge number with Z instead.",
-                    category=PlasmaPyDeprecationWarning,
-                )
 
         self.perform_pre_validations(Z, mass_numb)
 
