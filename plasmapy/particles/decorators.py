@@ -109,7 +109,7 @@ def _bind_arguments(
     # a parameter to give a descriptive error message for another ∼2
     # releases.
 
-    if "z_mean" in kwargs and "Z" not in kwargs:
+    if "z_mean" in kwargs and "Z" not in kwargs and "Z" in wrapped_signature.parameters:
         function_name = getattr(callable_, "__name__", None)
         name_clause = f"to '{function_name}' " if function_name else ""
 
