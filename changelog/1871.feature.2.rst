@@ -1,3 +1,2 @@
-After having been decorated with |particle_input|, the
-|RelativisticBody| class now accepts a broader variety of
-|particle-like| objects.
+After having been decorated with |particle_input|, |RelativisticBody|
+now accepts a broader variety of |particle-like| objects.
