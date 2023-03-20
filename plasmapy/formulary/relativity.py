@@ -98,6 +98,8 @@ def relativistic_energy(
     *,
     mass_numb: Optional[Integral] = None,
     Z: Optional[Integral] = None,
+    m=None,
+    v=None,
 ) -> u.J:
     """
     Calculate the sum of the mass energy and kinetic energy of a
@@ -134,6 +136,16 @@ def relativistic_energy(
     `~astropy.units.Quantity`
         The total energy of the relativistic body.
 
+    Other Parameters
+    ----------------
+    m : `object`
+        Formerly the mass of the body. Will raise a `TypeError` if
+        provided. Use ``particle`` instead.
+
+    v : `object`
+        Formerly the velocity of the body. Will raise a `TypeError` if
+        provided. Use ``V`` instead.
+
     Raises
     ------
     |InvalidParticleError|
@@ -163,6 +175,16 @@ def relativistic_energy(
     >>> relativistic_energy(1 * u.mg, 1.4e8 * u.m / u.s)
     <Quantity 1.01638929e+11 J>
     """
+    # TODO: Remove references to the parameters ``m`` and ``v`` in the
+    # docstring and below no sooner than 2024.
+
+    if m is not None or v is not None:  # coverage: ignore
+        raise TypeError(
+            "The parameters 'm' and 'v' to relativistic_energy have "
+            " been removed. Use 'particle' instead of 'm' and 'V' "
+            "instead of 'v'."
+        )
+
     γ = Lorentz_factor(V)
     return γ * particle.mass * c**2
 
