@@ -44,8 +44,8 @@ def collisional_thermalization(
     Parameters
     ----------
     r_0 : `~astropy.units.Quantity`
-        Starting position of the plasma in units of meters or
-        astronomical units.
+        Starting position of the plasma in units convertible
+        to meters or astronomical units.
 
     r_n : `~astropy.units.Quantity`
         Final position of the plasma in units of meters or
