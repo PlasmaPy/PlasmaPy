@@ -140,7 +140,8 @@ def collisional_thermalization(
 
     The density, velocity and temperature of the primary ion can be
     radially scaled, as seen below. The values for the scaling can be
-    altered, though the default values are taken from :cite:t:`hellinger:2011`.
+    altered, though the default values are taken from
+    :cite:t:`hellinger:2011`.
 
     .. math::
 
