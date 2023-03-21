@@ -171,7 +171,7 @@ def collisional_thermalization(
 
     # Validate scaling arguments
     for arg in (density_scale, velocity_scale, temperature_scale):
-        if not isinstance(arg, (int, float, numbers.Integral)):
+        if not isinstance(arg, numbers.Real):
             raise TypeError(
                 "Scaling argument is of incorrect type, type of "
                 f"{type(arg)} received instead. Scaling argument "
