@@ -35,7 +35,7 @@ def collisional_thermalization(
     :cite:t:`maruca:2013`. Coulomb collisions, soft, small angle
     deflections mediated by the electrostatic force, occur between
     constituent particles of a plasma :cite:t:`baumjohann:1997`. This
-    causes the plasma to thermalize over time, i.e. the temperature
+    causes the plasma to thermalize over distance, i.e. the temperature
     of the plasma approaches thermal equilibrium. This function
     allows the thermalization of a plasma to be modeled and predicts
     the temperature ratio, for ions within the plasma, at a different
