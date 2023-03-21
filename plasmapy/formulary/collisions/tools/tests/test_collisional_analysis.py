@@ -1,4 +1,4 @@
-"""Test functionality of Stix in `plasmapy.formulary.collisions.collisional_analysis`."""
+"""Test functionality of `plasmapy.formulary.collisions.collisional_analysis`."""
 import pytest
 
 from astropy import units as u
