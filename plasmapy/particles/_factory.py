@@ -34,7 +34,7 @@ def _generate_particle_factory_error_message(
         errmsg += repr(kwargs)
 
     errmsg += (
-        ". For information on creating particles, see:"
+        ". For information on creating particles, see: "
         "https://docs.plasmapy.org/en/stable/api/plasmapy.particles.ParticleLike.html"
     )
 

@@ -64,6 +64,14 @@ class TestKinetic_Alfven:
         with pytest.raises(_error):
             kinetic_alfven(**kwargs)
 
+    @pytest.mark.xfail(
+        reason=(
+            "This functionality is breaking because of updates to "
+            "gyrofrequency where z_mean override behavior is being "
+            "dropped. We will address z_mean override behavior when "
+            "kinetic_alfven is decorated with particle_input."
+        )
+    )
     @pytest.mark.parametrize(
         "kwargs, expected",
         [

@@ -11,7 +11,7 @@ Significant changes to the API are expected to occur between versions
 New Features
 ------------
 
-* Composed :ref:`plasmapy-vision-statement`.
+* Composed PlasmaPy's vision statement.
 
 * Adopted the :ref:`plasmapy-code-of-conduct`.
 
