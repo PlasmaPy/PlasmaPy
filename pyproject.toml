@@ -36,6 +36,7 @@ dynamic = [
 dependencies = [
   "astropy>=5.0.1",
   "h5py>=3.1",
+  "ipykernel",
   "ipywidgets>=7.6.5",
   "lmfit>=1",
   "matplotlib>=3.3",
@@ -55,7 +56,6 @@ dependencies = [
 [project.optional-dependencies]
 docs = [
   "docutils>=0.18.1",
-  "ipykernel",
   "jinja2!=3.1",
   "nbsphinx>=0.9.1",
   "numpydoc",
