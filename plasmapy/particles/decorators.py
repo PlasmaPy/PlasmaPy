@@ -416,15 +416,8 @@ class _ParticleInput:
         name_categorization_exception = [
             ("element", {"require": "element"}, InvalidElementError),
             ("isotope", {"require": "isotope"}, InvalidIsotopeError),
-            # TODO: In the future, "ion" should be changed to allow only
-            # ions and not neutral atoms with an explicit charge.
             (
                 "ion",
-                {"require": "element", "any_of": {"charged", "uncharged"}},
-                InvalidIonError,
-            ),
-            (
-                "ionic_level",
                 {"require": "element", "any_of": {"charged", "uncharged"}},
                 InvalidIonError,
             ),
