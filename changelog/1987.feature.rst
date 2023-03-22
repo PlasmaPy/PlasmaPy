@@ -1,0 +1,2 @@
+Enabled |ParticleList| to accept |Quantity| objects of physical type
+mass or electrical charge.
