@@ -45,8 +45,8 @@ def two_fluid(
     analytical solution to the two fluid, low-frequency
     (:math:`ω/kc ≪ 1`) dispersion relation presented by
     :cite:t:`stringer:1963`.  This dispersion relation also assumes a
-    uniform magnetic field :math:`\mathbf{B_0}`, no D.C. electric field
-    :math:`\mathbf{E_0}=0`, and quasi-neutrality.  For more information
+    uniform magnetic field :math:`\mathbf{B}_0`, no D.C. electric field
+    :math:`\mathbf{E}_0=0`, and quasi-neutrality.  For more information
     see the **Notes** section below.
 
     Parameters
@@ -59,40 +59,39 @@ def two_fluid(
         ``'D+'`` for deuterium, ``'He-4 1+'`` for singly ionized
         helium-4, etc.).
 
-    k : `~astropy.units.Quantity`, single valued or 1-D array
-        Wavenumber in units convertible to rad/m`.  Either single
-        valued or 1-D array of length :math:`N`.
+    k : `~astropy.units.Quantity`
+        Wavenumber in units convertible to rad/m. May be either single
+        valued or a 1D array of length :math:`N`.
 
     n_i : `~astropy.units.Quantity`
         Ion number density in units convertible to m\ :sup:`-3`.
 
-    T_e : `~astropy.units.Quantity`
-        The electron temperature in units of K or eV.
-
-    T_i : `~astropy.units.Quantity`
-        The ion temperature in units of K or eV.
-
-    theta : `~astropy.units.Quantity`, single valued or 1-D array
+    theta : `~astropy.units.Quantity`
         The angle of propagation of the wave with respect to the
         magnetic field, :math:`\cos^{-1}(k_z / k)`, in units must be
-        convertible to radians. Either single valued or 1-D array of
-        size :math:`M`.
+        convertible to radians. May be either single valued or a 1D
+        array of size :math:`M`.
 
-    gamma_e : `float` or `int`, optional
-        The adiabatic index for electrons, which defaults to 1.  This
-        value assumes that the electrons are able to equalize their
-        temperature rapidly enough that the electrons are effectively
-        isothermal.
+    T_e : `~astropy.units.Quantity`, |keyword-only|
+        The electron temperature in units of K or eV.
 
-    gamma_i : `float` or `int`, optional
-        The adiabatic index for ions, which defaults to 3. This value
-        assumes that ion motion has only one degree of freedom, namely
-        along magnetic field lines.
+    T_i : `~astropy.units.Quantity`, |keyword-only|
+        The ion temperature in units of K or eV.
 
-    mass_numb : `int`, optional
+    gamma_e : `float` or `int`, |keyword-only|, default: 1
+        The adiabatic index for electrons.  The default value assumes
+        that the electrons are able to equalize their temperature
+        rapidly enough that the electrons are effectively isothermal.
+
+    gamma_i : `float` or `int`, |keyword-only|, default: 3
+        The adiabatic index for ions. The default value assumes that ion
+        motion has only one degree of freedom, namely along magnetic
+        field lines.
+
+    mass_numb : `int`, |keyword-only|, optional
         The mass number of an isotope corresponding to ``ion``.
 
-    Z : real number, optional
+    Z : real number, |keyword-only|, optional
         The |charge number| corresponding to ``ion``.
 
     Returns
@@ -111,8 +110,7 @@ def two_fluid(
         `~astropy.units.Quantity` or cannot be converted into one.
 
     |ParticleError|
-        If ``ion`` is not of type or convertible to
-        `~plasmapy.particles.particle_class.Particle`.
+        If ``ion`` is not |particle-like|.
 
     TypeError
         If ``gamma_e``, ``gamma_i``, or ``Z`` are not a real number.
@@ -122,7 +120,8 @@ def two_fluid(
         expected units.
 
     ValueError
-        If any of ``B``, ``k``, ``n_i``, ``T_e``, or ``T_i`` is negative.
+        If any of ``B``, ``k``, ``n_i``, ``T_e``, or ``T_i`` is
+        negative.
 
     ValueError
         If ``k`` is negative or zero.
@@ -135,7 +134,7 @@ def two_fluid(
         `astropy.units.Quantity` (i.e. an array).
 
     ValueError
-        If ``k`` or ``theta`` are not single valued or a 1-D array.
+        If ``k`` or ``theta`` are not single valued or a 1D array.
 
     Warns
     -----
@@ -164,17 +163,17 @@ def two_fluid(
     .. math::
         Q &= 1 + k^2 c^2/{ω_{pe}}^2 \\
         \cos θ &= \frac{k_z}{k} \\
-        \mathbf{B_o} &= B_{o} \mathbf{\hat{z}}
+        \mathbf{B}_0 &= B_0 \mathbf{\hat{z}}
 
     :math:`ω` is the wave frequency, :math:`k` is the wavenumber,
     :math:`v_A` is the Alfvén velocity, :math:`c_s` is the sound speed,
     :math:`ω_{ci}` is the ion gyrofrequency, and
     :math:`ω_{pe}` is the electron plasma frequency. This relation
     does additionally assume low-frequency waves
-    :math:`ω/kc \ll 1`, no D.C. electric field
-    :math:`\mathbf{E_o}=0` and quasi-neutrality.
+    :math:`ω/kc ≪ 1`, no D.C. electric field
+    :math:`\mathbf{E}_0=0` and quasi-neutrality.
 
-    Following section 5 of :cite:t:`bellan:2012` the exact roots of the
+    Following section 5 of :cite:t:`bellan:2012`, the exact roots of the
     above dispersion equation can be derived and expressed as one
     analytical solution (equation 38 of :cite:t:`bellan:2012`):
 
@@ -311,19 +310,19 @@ def two_fluid(
     S = 3 * q / (2 * p) * np.emath.sqrt(-3 / p)
     T = Lambda * A / 3
     omega = {}
-    for ind, key in enumerate(("fast_mode", "alfven_mode", "acoustic_mode")):
+    for ind, wave_mode in enumerate(("fast_mode", "alfven_mode", "acoustic_mode")):
         # The solution corresponding to equation 38
         ω = omega_ci * np.emath.sqrt(
             R * np.cos(1 / 3 * np.emath.arccos(S) - 2 * np.pi / 3 * ind) + T
         )
-        omega[key] = ω.squeeze()
+        omega[wave_mode] = ω.squeeze()
 
         # check for violation of dispersion relation assumptions
         # (i.e. low-frequency, ω/kc << 0.1)
         wkc_max = np.max(ω.value / (kv * c.value))
         if wkc_max > 0.1:
             warnings.warn(
-                f"The {key} calculation produced a high-frequency wave (ω/kc == "
+                f"The {wave_mode} calculation produced a high-frequency wave (ω/kc == "
                 f"{wkc_max:.3f}), which violates the low-frequency (ω/kc << 1) "
                 f"assumption of the dispersion relation.",
                 PhysicsWarning,
