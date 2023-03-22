@@ -1,4 +1,5 @@
-r"""Functions for calculating relativistic quantities (:math:`v \to c`)."""
+"""Functionality for calculating relativistic quantities."""
+
 __all__ = ["Lorentz_factor", "relativistic_energy", "RelativisticBody"]
 
 import astropy.units as u
@@ -7,10 +8,10 @@ import numpy as np
 from astropy.constants import c
 from numbers import Integral, Real
 from numpy.typing import DTypeLike
-from typing import Dict, Optional, Union
+from typing import Optional, Union
 
 from plasmapy import utils
-from plasmapy.particles._factory import _physical_particle_factory
+from plasmapy.particles import particle_input
 from plasmapy.particles.particle_class import CustomParticle, Particle, ParticleLike
 from plasmapy.particles.particle_collections import ParticleList
 from plasmapy.utils.decorators import validate_quantities
@@ -76,7 +77,6 @@ def Lorentz_factor(V: u.m / u.s):
         )
 
     if V.size > 1:
-
         γ = np.zeros_like(V.value)
 
         equals_c = np.abs(V) == c
@@ -90,49 +90,73 @@ def Lorentz_factor(V: u.m / u.s):
     return γ
 
 
-@validate_quantities(
-    m={"can_be_negative": False}, validations_on_return={"can_be_negative": False}
-)
-def relativistic_energy(m: u.kg, v: u.m / u.s) -> u.Joule:
+@validate_quantities(validations_on_return={"can_be_negative": False})
+@particle_input
+def relativistic_energy(
+    particle: ParticleLike,
+    V: u.m / u.s,
+    *,
+    mass_numb: Optional[Integral] = None,
+    Z: Optional[Integral] = None,
+    m=None,
+    v=None,
+) -> u.J:
     """
-    Calculate the relativistic energy (in joules) of an object of mass
-    ``m`` and velocity ``v``.
+    Calculate the sum of the mass energy and kinetic energy of a
+    relativistic body.
+
+    The total energy of a relativistic body is:
 
     .. math::
 
-        E = γ m c^2
+        E = γ m c^2,
 
-    where :math:`γ` is the `Lorentz_factor`. This function returns the
-    sum of the mass energy and the kinetic energy.
+    where :math:`m` is the rest mass of the body and :math:`γ` is its
+    `~plasmapy.formulary.relativity.Lorentz_factor`.
 
     Parameters
     ----------
-    m : `~astropy.units.Quantity`
-        The mass in units convertible to kilograms.
+    particle : |particle-like|
+        A representation of a particle from which to get the mass
+        of the relativistic body. If it is a |Quantity|, then it must
+        have units of mass and describe the body's rest mass.
 
-    v : `~astropy.units.Quantity`
+    V : `~astropy.units.Quantity`
         The velocity in units convertible to meters per second.
+
+    mass_numb : integer, |keyword-only|, optional
+        The mass number of an isotope, if not provided to ``particle``.
+
+    Z : integer, |keyword-only|, optional
+        The |charge number| of an ion or neutral atom, if not provided
+        to ``particle``.
 
     Returns
     -------
     `~astropy.units.Quantity`
-        The relativistic energy (in joules) of an object of mass ``m``
-        moving at velocity ``v``.
+        The total energy of the relativistic body.
+
+    Other Parameters
+    ----------------
+    m : `object`
+        Formerly the mass of the body. Will raise a `TypeError` if
+        provided. Use ``particle`` instead.
+
+    v : `object`
+        Formerly the velocity of the body. Will raise a `TypeError` if
+        provided. Use ``V`` instead.
 
     Raises
     ------
-    `TypeError`
-        If input arguments are not instances `~astropy.units.Quantity` or
-        convertible to a `~astropy.units.Quantity`.
+    |InvalidParticleError|
+        If ``particle`` does not represent a valid |Particle|,
+        |CustomParticle|, or |ParticleList|.
 
     `~astropy.units.UnitConversionError`
-        If the ``v`` is not in appropriate units.
+        If ``V`` is not in appropriate units.
 
-    `ValueError`
-        If the magnitude of ``m`` is negative or arguments are complex.
-
-    :exc:`~plasmapy.utils.exceptions.RelativityError`
-        If the velocity ``v`` is greater than the speed of light.
+    `~plasmapy.utils.exceptions.RelativityError`
+        If ``V`` exceeds the speed of light.
 
     Warns
     -----
@@ -141,7 +165,7 @@ def relativistic_energy(m: u.kg, v: u.m / u.s) -> u.Joule:
 
     Examples
     --------
-    >>> from astropy import units as u
+    >>> import astropy.units as u
     >>> velocity = 1.4e8 * u.m / u.s
     >>> mass = 1 * u.kg
     >>> relativistic_energy(mass, velocity)
@@ -150,13 +174,19 @@ def relativistic_energy(m: u.kg, v: u.m / u.s) -> u.Joule:
     <Quantity inf J>
     >>> relativistic_energy(1 * u.mg, 1.4e8 * u.m / u.s)
     <Quantity 1.01638929e+11 J>
-    >>> relativistic_energy(-mass, velocity)
-    Traceback (most recent call last):
-        ...
-    ValueError: The argument 'm' to function relativistic_energy() can not contain negative numbers.
     """
-    γ = Lorentz_factor(v)
-    return γ * m * c**2
+    # TODO: Remove references to the parameters ``m`` and ``v`` in the
+    # docstring and below no sooner than 2024.
+
+    if m is not None or v is not None:  # coverage: ignore
+        raise TypeError(
+            "The parameters 'm' and 'v' to relativistic_energy have "
+            " been removed. Use 'particle' instead of 'm' and 'V' "
+            "instead of 'v'."
+        )
+
+    γ = Lorentz_factor(V)
+    return γ * particle.mass * c**2
 
 
 class RelativisticBody:
@@ -166,7 +196,7 @@ class RelativisticBody:
 
     Parameters
     ----------
-    particle : |ParticleLike|, |CustomParticle|, |ParticleList|, or |Quantity|
+    particle : |particle-like|
         A representation of a particle from which to get the mass
         of the relativistic body. If it is a |Quantity|, then it must
         have units of mass and describe the body's rest mass.
@@ -248,9 +278,8 @@ class RelativisticBody:
 
     @staticmethod
     def _get_speed_like_input(
-        velocity_like_arguments: Dict[str, Union[u.Quantity, Real]]
+        velocity_like_arguments: dict[str, Union[u.Quantity, Real]]
     ):
-
         not_none_arguments = {
             key: value
             for key, value in velocity_like_arguments.items()
@@ -267,7 +296,7 @@ class RelativisticBody:
         return not_none_arguments or {"velocity": np.nan * u.m / u.s}
 
     def _store_velocity_like_argument(
-        self, speed_like_input: Dict[str, Union[u.Quantity, Real]]
+        self, speed_like_input: dict[str, Union[u.Quantity, Real]]
     ):
         """
         Take the velocity-like argument and store it via the setter for
@@ -279,6 +308,7 @@ class RelativisticBody:
             value = u.Quantity(value, dtype=self._dtype)
         setattr(self, name, value)
 
+    @particle_input
     @validate_quantities(
         V={"can_be_inf": False, "none_shall_pass": True},
         momentum={"can_be_inf": False, "none_shall_pass": True},
@@ -287,7 +317,7 @@ class RelativisticBody:
     )
     def __init__(
         self,
-        particle: Union[ParticleLike, u.Quantity],
+        particle: ParticleLike,
         V: u.m / u.s = None,
         momentum: u.kg * u.m / u.s = None,
         *,
@@ -299,8 +329,8 @@ class RelativisticBody:
         mass_numb: Optional[Integral] = None,
         dtype: Optional[DTypeLike] = np.longdouble,
     ):
+        self._particle = particle
 
-        self._particle = _physical_particle_factory(particle, Z=Z, mass_numb=mass_numb)
         self._dtype = dtype
 
         velocity_like_inputs = {
@@ -487,7 +517,6 @@ class RelativisticBody:
         self._momentum = p.to(u.kg * u.m / u.s)
 
     def __eq__(self, other) -> bool:
-
         _attributes_to_compare = (
             "particle",
             "kinetic_energy",

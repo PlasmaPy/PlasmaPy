@@ -503,7 +503,6 @@ class AutomodsummOptions:
 
         # filter out skipped objects
         for group in list(mod_objs.keys()):
-
             names = mod_objs[group]["names"]
             qualnames = mod_objs[group]["qualnames"]
             objs = mod_objs[group]["objs"]

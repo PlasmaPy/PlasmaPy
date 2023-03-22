@@ -12,7 +12,6 @@ import astropy.units as u
 import numpy as np
 
 from scipy.interpolate import interp1d
-from typing import List
 
 
 class Layer:
@@ -76,7 +75,6 @@ class Layer:
             self.linear_stopping_power = stopping_power.to(u.J / u.m)
 
         elif stopping_power.unit.is_equivalent(u.J * u.m**2 / u.kg):
-
             if mass_density is None:
                 raise ValueError(
                     "mass_density keyword is required if "
@@ -112,7 +110,7 @@ class Stack:
 
     """
 
-    def __init__(self, layers: List[Layer]):
+    def __init__(self, layers: list[Layer]):
         self._layers = layers
         self._energy_bands = None
 
@@ -176,7 +174,6 @@ class Stack:
         deposited_energy = np.zeros([len(self._layers), energies.size])
 
         for i, layer in enumerate(self._layers):
-
             # Interpolate stopping power for each energy
             # stopping power here is in MeV/cm
             sp_fcn = interp1d(

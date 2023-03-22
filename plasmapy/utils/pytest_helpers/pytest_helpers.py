@@ -17,7 +17,7 @@ import numpy as np
 import pytest
 import warnings
 
-from typing import Any, Callable, Dict
+from typing import Any, Callable
 
 from plasmapy.tests.helpers.exceptions import (
     InvalidTestError,
@@ -68,7 +68,7 @@ def _process_input(wrapped_function: Callable):  # coverage: ignore
 def run_test(
     func,
     args: Any = (),
-    kwargs: Dict = None,
+    kwargs: dict = None,
     expected_outcome: Any = None,
     rtol: float = 0.0,
     atol: float = 0.0,
@@ -274,7 +274,6 @@ def run_test(
     # should be.
 
     if expected["exception"]:
-
         expected_exception = expected["exception"]
 
         try:
@@ -322,7 +321,6 @@ def run_test(
         ) from exception_no_warning
 
     if isinstance(expected["result"], u.UnitBase):
-
         if isinstance(result, u.UnitBase):
             if result != expected["result"]:
                 raise u.UnitsError(
@@ -614,7 +612,6 @@ def run_test_equivalent_calls(*test_inputs, require_same_type: bool = True):
         errmsg = "The following tests did not all produce results of the same type:"
 
     if not_all_equal or (not_all_same_type and require_same_type):
-
         for test_case in test_cases:
             errmsg += (
                 f"\n  {test_case['call string']} yielded {test_case['result']} "

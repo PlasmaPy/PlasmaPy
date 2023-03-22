@@ -1,3 +1,4 @@
+import astropy.constants as const
 import astropy.units as u
 import inspect
 import pytest
@@ -16,6 +17,7 @@ from plasmapy.particles.exceptions import (
     ParticleError,
 )
 from plasmapy.particles.particle_class import CustomParticle, Particle, ParticleLike
+from plasmapy.utils import PlasmaPyDeprecationWarning
 from plasmapy.utils.code_repr import call_string
 from plasmapy.utils.decorators.validators import validate_quantities
 
@@ -99,7 +101,17 @@ particle_input_error_table = [
     (
         function_decorated_with_particle_input,
         {"a": 1, "particle": 5 * u.m},
-        u.UnitConversionError,
+        InvalidParticleError,
+    ),
+    (
+        function_decorated_with_particle_input,
+        {"a": 1, "particle": "He-4", "Z": 2.00001},
+        InvalidParticleError,
+    ),
+    (
+        function_decorated_with_particle_input,
+        {"a": 1, "particle": "He-4", "Z": 1 + 1j},
+        TypeError,
     ),
 ]
 
@@ -579,3 +591,36 @@ class TestParticleInputParameterNames:
         with multiple particles at once which are all in the category.
         """
         case.function(case.particles_in_category)
+
+
+@particle_input
+def return_particle(particle: ParticleLike, Z=None, mass_numb=None):
+    """A simple function that is decorated by particle_input."""
+    return particle
+
+
+def test_particle_input_warning_for_integer_z_mean():
+    """
+    Test that if a function decorated by `particle_input` is passed
+    an integer called `z_mean`, then `z_mean` becomes `Z` and a warning
+    is issued.
+    """
+    with pytest.warns(PlasmaPyDeprecationWarning):
+        result = return_particle("H", z_mean=1, mass_numb=1)
+    assert result == "p+"
+
+
+def test_particle_input_warning_for_float_z_mean():
+    """
+    Test that if a function decorated by `particle_input` is passed
+    a float called `z_mean`, then `z_mean` becomes `Z` and a warning
+    is issued.
+    """
+    z_mean = 0.432
+
+    with pytest.warns(PlasmaPyDeprecationWarning):
+        result = return_particle("H", z_mean=z_mean, mass_numb=1)
+
+    Z = result.charge / const.e.si
+
+    assert u.isclose(Z, z_mean)

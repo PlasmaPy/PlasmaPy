@@ -20,7 +20,7 @@ from abc import ABC, abstractmethod
 from collections import namedtuple
 from functools import cached_property
 from scipy.spatial import distance
-from typing import List, Union
+from typing import Union
 
 from plasmapy.utils.decorators.helpers import modify_docstring
 
@@ -77,7 +77,6 @@ class AbstractGrid(ABC):
     """
 
     def __init__(self, *seeds, num=100, **kwargs):
-
         # Initialize some variables
         self._interpolator = None
         self._is_uniform = None
@@ -172,10 +171,8 @@ class AbstractGrid(ABC):
             so an array of zeros cannot be constructed.
         """
         for rq in req_quantities:
-
             # Error check that grid contains E and B variables required
             if rq not in self.quantities:
-
                 # If missing, warn user and then replace with an array of zeros
                 if not replace_with_zeros:
                     raise KeyError(
@@ -204,7 +201,6 @@ class AbstractGrid(ABC):
     # *************************************************************************
 
     def __repr__(self):
-
         line_sep = "-----------------------------\n"
         shape = list(self.shape)
         coords = list(self.ds.coords.keys())
@@ -381,7 +377,7 @@ class AbstractGrid(ABC):
     # 1D axes and step sizes (valid only for uniform grids)
     # *************************************************************************
     @property
-    def si_scale_factors(self) -> List[float]:
+    def si_scale_factors(self) -> list[float]:
         """
         3-element list containing unitless scale factors for converting
         the corresponding axis from its stored units to SI.

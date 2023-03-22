@@ -7,7 +7,8 @@ import collections
 import contextlib
 import numpy as np
 
-from typing import Callable, Iterable, List, Optional, Sequence, Union
+from collections.abc import Iterable, Sequence
+from typing import Callable, Optional, Union
 
 from plasmapy.particles.exceptions import InvalidParticleError
 from plasmapy.particles.particle_class import (
@@ -16,6 +17,40 @@ from plasmapy.particles.particle_class import (
     Particle,
     ParticleLike,
 )
+
+
+def _turn_quantity_into_custom_particle(
+    quantity: u.Quantity[u.physical.electrical_charge, u.physical.mass]
+) -> CustomParticle:
+    """
+    Convert a |Quantity| of physical type mass or electrical charge
+    into the corresponding |CustomParticle|.
+
+    Parameters
+    ----------
+    quantity : |Quantity|
+        A |Quantity| of physical type mass or electrical charge.
+
+    Returns
+    -------
+    |CustomParticle|
+
+    Raises
+    ------
+    |InvalidParticleError|
+        If ``quantity`` does not have a physical type of mass or
+        electrical charge.
+    """
+    physical_type = u.get_physical_type(quantity)
+    if physical_type == u.physical.mass:
+        return CustomParticle(mass=quantity)
+    if physical_type == u.physical.electrical_charge:
+        return CustomParticle(charge=quantity)
+    raise InvalidParticleError(
+        f"Cannot convert {quantity} into a CustomParticle for "
+        f"inclusion in a ParticleList because it does not have"
+        f"a physical type of mass or electrical charge."
+    )
 
 
 class ParticleList(collections.UserList):
@@ -84,6 +119,17 @@ class ParticleList(collections.UserList):
     >>> particle_list + "deuteron"
     ParticleList(['e-', 'e+', 'D 1+'])
 
+    A |ParticleList| can also be created using `~astropy.units.Quantity`
+    objects.
+
+    >>> import astropy.units as u
+    >>> quantities = [2.3e-26 * u.kg, 4.8e-19 * u.C]
+    >>> particle_list = ParticleList(quantities)
+    >>> particle_list.mass
+    <Quantity [2.3e-26,     nan] kg>
+    >>> particle_list.charge
+    <Quantity [    nan, 4.8e-19] C>
+
     Normal `list` methods may also be used on |ParticleList| objects.
     When a |particle-like| object is appended to a |ParticleList|, that
     object will be cast into a |Particle| or |CustomParticle|.
@@ -106,7 +152,7 @@ class ParticleList(collections.UserList):
     @staticmethod
     def _list_of_particles_and_custom_particles(
         particles: Optional[Iterable[ParticleLike]],
-    ) -> List[Union[Particle, CustomParticle]]:
+    ) -> list[Union[Particle, CustomParticle]]:
         """
         Convert an iterable that provides |particle-like| objects into a
         `list` containing |Particle| and |CustomParticle| instances.
@@ -128,6 +174,9 @@ class ParticleList(collections.UserList):
                 raise TypeError(
                     "ParticleList instances cannot include dimensionless particles."
                 )
+            elif isinstance(obj, u.Quantity):
+                new_particle = _turn_quantity_into_custom_particle(obj)
+                new_particles.append(new_particle)
             else:
                 try:
                     new_particles.append(Particle(obj))
@@ -198,8 +247,9 @@ class ParticleList(collections.UserList):
 
     def append(self, particle: ParticleLike):
         """Append a particle to the end of the |ParticleList|."""
-        # TODO: use particle_input when it works with CustomParticle and ParticleLike
-        if not isinstance(particle, (Particle, CustomParticle)):
+        if isinstance(particle, u.Quantity):
+            particle = _turn_quantity_into_custom_particle(particle)
+        elif not isinstance(particle, (Particle, CustomParticle)):
             particle = Particle(particle)
         self.data.append(particle)
 
@@ -215,7 +265,7 @@ class ParticleList(collections.UserList):
         return self._get_particle_attribute("charge", unit=u.C, default=np.nan * u.C)
 
     @property
-    def data(self) -> List[Union[Particle, CustomParticle]]:
+    def data(self) -> list[Union[Particle, CustomParticle]]:
         """
         A `list` containing the particles contained in the
         |ParticleList| instance.
@@ -258,8 +308,9 @@ class ParticleList(collections.UserList):
 
     def insert(self, index, particle: ParticleLike):
         """Insert a particle before an index."""
-        # TODO: use particle_input when it works with CustomParticle and ParticleLike
-        if not isinstance(particle, (Particle, CustomParticle)):
+        if isinstance(particle, u.Quantity):
+            particle = _turn_quantity_into_custom_particle(particle)
+        elif not isinstance(particle, (Particle, CustomParticle)):
             particle = Particle(particle)
         self.data.insert(index, particle)
 
@@ -269,7 +320,7 @@ class ParticleList(collections.UserList):
         require: Union[str, Iterable[str]] = None,
         any_of: Union[str, Iterable[str]] = None,
         exclude: Union[str, Iterable[str]] = None,
-    ) -> List[bool]:
+    ) -> list[bool]:
         """
         Determine element-wise if the particles in the |ParticleList|
         meet categorization criteria.
@@ -399,7 +450,7 @@ class ParticleList(collections.UserList):
         super().sort(key=key, reverse=reverse)
 
     @property
-    def symbols(self) -> List[str]:
+    def symbols(self) -> list[str]:
         """
         A `list` of the symbols of the particles.
 
@@ -437,11 +488,11 @@ class ParticleList(collections.UserList):
             parameter. If not provided, the particles contained in the
             |ParticleList| are assumed to be equally abundant.
 
-        use_rms_charge : `bool`, optional, |keyword-only|, default: `False`
+        use_rms_charge : `bool`, |keyword-only|, default: `False`
             If `True`, use the root-mean-square charge instead of the
             mean charge.
 
-        use_rms_mass : `bool`, optional, |keyword-only|, default: `False`
+        use_rms_mass : `bool`, |keyword-only|, default: `False`
             If `True`, use the root-mean-square mass instead of the mean
             mass.
 
