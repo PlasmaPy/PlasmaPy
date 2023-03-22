@@ -1,3 +1,4 @@
-In `~plasmapy.dispersion.analytical.two_fluid_.two_fluid`, providing the
-|charge number| as a keyword argument (formerly ``z_mean``) will no
-longer override the charge number provided in ``ion``.
+In `~plasmapy.dispersion.analytical.two_fluid_.two_fluid` in
+`plasmapy.dispersion`, providing the |charge number| as a keyword
+argument (formerly ``z_mean``) will no longer override the charge number
+provided in ``ion``.
