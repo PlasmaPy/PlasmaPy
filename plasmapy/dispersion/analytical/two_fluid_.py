@@ -43,10 +43,10 @@ def two_fluid(
     r"""
     Using the solution provided by :cite:t:`bellan:2012`, calculate the
     analytical solution to the two fluid, low-frequency
-    (:math:`\omega/kc \ll 1`) dispersion relation presented by
+    (:math:`ω/kc ≪ 1`) dispersion relation presented by
     :cite:t:`stringer:1963`.  This dispersion relation also assumes a
-    uniform magnetic field :math:`\mathbf{B_o}`, no D.C. electric field
-    :math:`\mathbf{E_o}=0`, and quasi-neutrality.  For more information
+    uniform magnetic field :math:`\mathbf{B_0}`, no D.C. electric field
+    :math:`\mathbf{E_0}=0`, and quasi-neutrality.  For more information
     see the **Notes** section below.
 
     Parameters
@@ -115,8 +115,7 @@ def two_fluid(
         `~plasmapy.particles.particle_class.Particle`.
 
     TypeError
-        If ``gamma_e``, ``gamma_i``, or ``z_mean`` are not of type `int`
-        or `float`.
+        If ``gamma_e``, ``gamma_i``, or ``Z`` are not a real number.
 
     ~astropy.units.UnitTypeError
         If applicable arguments do not have units convertible to the
@@ -142,38 +141,37 @@ def two_fluid(
     -----
     : `~plasmapy.utils.exceptions.PhysicsWarning`
         When the computed wave frequencies violate the low-frequency
-        (:math:`\omega/kc \ll 1`) assumption of the dispersion relation.
+        (:math:`ω/kc ≪ 1`) assumption of the dispersion relation.
 
     Notes
     -----
-
     The complete dispersion equation presented by :cite:t:`stringer:1963`
     (equation 1 of :cite:t:`bellan:2012`) is:
 
     .. math::
-        \left( \cos^2 \theta - Q \frac{\omega^2}{k^2 {v_A}^2} \right) &
+        \left( \cos^2 θ - Q \frac{ω^2}{k^2 {v_A}^2} \right) &
         \left[
-            \left( \cos^2 \theta - \frac{\omega^2}{k^2 {c_s}^2} \right)
-            - Q \frac{\omega^2}{k^2 {v_A}^2} \left(
-                1 - \frac{\omega^2}{k^2 {c_s}^2}
+            \left( \cos^2 θ - \frac{ω^2}{k^2 {c_s}^2} \right)
+            - Q \frac{ω^2}{k^2 {v_A}^2} \left(
+                1 - \frac{ω^2}{k^2 {c_s}^2}
             \right)
         \right] \\
-            &= \left(1 - \frac{\omega^2}{k^2 {c_s}^2} \right)
-              \frac{\omega^2}{{\omega_{ci}}^2} \cos^2 \theta
+            &= \left(1 - \frac{ω^2}{k^2 {c_s}^2} \right)
+              \frac{ω^2}{{ω_{ci}}^2} \cos^2 θ
 
     where
 
     .. math::
-        Q &= 1 + k^2 c^2/{\omega_{pe}}^2 \\
-        \cos \theta &= \frac{k_z}{k} \\
+        Q &= 1 + k^2 c^2/{ω_{pe}}^2 \\
+        \cos θ &= \frac{k_z}{k} \\
         \mathbf{B_o} &= B_{o} \mathbf{\hat{z}}
 
-    :math:`\omega` is the wave frequency, :math:`k` is the wavenumber,
+    :math:`ω` is the wave frequency, :math:`k` is the wavenumber,
     :math:`v_A` is the Alfvén velocity, :math:`c_s` is the sound speed,
-    :math:`\omega_{ci}` is the ion gyrofrequency, and
-    :math:`\omega_{pe}` is the electron plasma frequency. This relation
+    :math:`ω_{ci}` is the ion gyrofrequency, and
+    :math:`ω_{pe}` is the electron plasma frequency. This relation
     does additionally assume low-frequency waves
-    :math:`\omega/kc \ll 1`, no D.C. electric field
+    :math:`ω/kc \ll 1`, no D.C. electric field
     :math:`\mathbf{E_o}=0` and quasi-neutrality.
 
     Following section 5 of :cite:t:`bellan:2012` the exact roots of the
@@ -181,14 +179,14 @@ def two_fluid(
     analytical solution (equation 38 of :cite:t:`bellan:2012`):
 
     .. math::
-        \frac{\omega}{\omega_{ci}} = \sqrt{
-            2 \Lambda \sqrt{-\frac{P}{3}} \cos\left(
+        \frac{ω}{ω_{ci}} = \sqrt{
+            2 Λ \sqrt{-\frac{P}{3}} \cos\left(
                 \frac{1}{3} \cos^{-1}\left(
                     \frac{3q}{2p} \sqrt{-\frac{3}{p}}
                 \right)
                 - \frac{2 \pi}{3}j
             \right)
-            + \frac{\Lambda A}{3}
+            + \frac{Λ A}{3}
         }
 
     where :math:`j = 0` represents the fast mode, :math:`j = 1`
@@ -197,12 +195,12 @@ def two_fluid(
 
     .. math::
         p &= \frac{3B-A^2}{3} \; , \; q = \frac{9AB-2A^3-27C}{27} \\
-        A &= \frac{Q + Q^2 \beta + Q \alpha + \alpha \Lambda}{Q^2} \;
-            , \; B = \alpha \frac{1 + 2 Q \beta + \Lambda \beta}{Q^2} \;
-            , \; C = \frac{\alpha^2 \beta}{Q^2} \\
-        \alpha &= \cos^2 \theta \;
-            , \; \beta = \left( \frac{c_s}{v_A}\right)^2 \;
-            , \; \Lambda = \left( \frac{k v_{A}}{\omega_{ci}}\right)^2
+        A &= \frac{Q + Q^2 β + Q α + α Λ}{Q^2} \;
+            , \; B = α \frac{1 + 2 Q β + Λ β}{Q^2} \;
+            , \; C = \frac{α^2 β}{Q^2} \\
+        α &= \cos^2 θ \;
+            , \; β = \left( \frac{c_s}{v_A}\right)^2 \;
+            , \; Λ = \left( \frac{k v_{A}}{ω_{ci}}\right)^2
 
     Examples
     --------
