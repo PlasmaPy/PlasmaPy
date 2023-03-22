@@ -36,7 +36,7 @@ dynamic = [
 dependencies = [
   "astropy>=5.0.1",
   "h5py>=3.1",
-  "ipykernel",
+  "ipykernel>=6.6.1",
   "ipywidgets>=7.6.5",
   "lmfit>=1",
   "matplotlib>=3.3",
