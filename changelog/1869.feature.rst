@@ -1,0 +1,3 @@
+Decorated `~plasmapy.formulary.frequencies.gyrofrequency` with
+|particle_input| so that it can accept a broader variety of
+|particle-like| arguments.

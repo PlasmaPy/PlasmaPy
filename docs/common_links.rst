@@ -230,6 +230,9 @@
 .. _`docs/_static/css/`: https://github.com/PlasmaPy/PlasmaPy/tree/main/docs/_static/css
 .. |docs/_static/css/| replace:: :file:`docs/_static/css/`
 
+.. _`docs/about/credits.rst`: https://github.com/PlasmaPy/PlasmaPy/tree/main/docs/about/credits.rst
+.. |docs/about/credits.rst| replace:: :file:`docs/about/credits.rst`
+
 .. _`docs/api_static/`: https://github.com/PlasmaPy/PlasmaPy/tree/main/docs/api_static
 .. |docs/api_static/| replace:: :file:`docs/api_static/`
 
