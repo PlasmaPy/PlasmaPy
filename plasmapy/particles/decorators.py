@@ -413,6 +413,14 @@ class _ParticleInput:
         categorization criteria.
         """
 
+        if (
+            parameter == "ion"
+            and isinstance(particle, CustomParticle)
+            and particle.charge.value > 0
+            and particle.mass.value > 0
+        ):
+            return
+
         name_categorization_exception = [
             ("element", {"require": "element"}, InvalidElementError),
             ("isotope", {"require": "isotope"}, InvalidIsotopeError),
