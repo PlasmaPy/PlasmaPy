@@ -72,7 +72,7 @@ class TestTwoFluid:
     @pytest.mark.parametrize(
         "kwargs, _warning",
         [
-            # violates the low-frequency assumption (w/kc << 1)
+            # violates the low-frequency assumption (ω/kc << 1)
             (
                 {
                     "B": 8.3e-7 * u.T,
