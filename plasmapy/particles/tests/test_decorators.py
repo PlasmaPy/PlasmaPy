@@ -432,7 +432,7 @@ def test_annotated_init():
             particle_input(),
             marks=pytest.mark.xfail(
                 reason="For instance methods, particle_input must currently "
-                "be the outer decorator."
+                "be the outer decorator. See #2035."
             ),
         ),
     ],
