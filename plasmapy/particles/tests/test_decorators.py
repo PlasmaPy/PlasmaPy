@@ -624,3 +624,18 @@ def test_particle_input_warning_for_float_z_mean():
     Z = result.charge / const.e.si
 
     assert u.isclose(Z, z_mean)
+
+
+def test_custom_particle_for_parameter_named_ion():
+    """
+    Test that a positively charged CustomParticle is treated as a valid
+    ion when the parameter is named ``ion``.
+    """
+
+    @particle_input
+    def return_ion(ion: ParticleLike):
+        return ion
+
+    custom_ion = CustomParticle(mass=2e-27 * u.kg, charge=3e-19 * u.C)
+    result = return_ion(custom_ion)
+    assert result == custom_ion
