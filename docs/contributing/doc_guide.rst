@@ -1125,6 +1125,13 @@ more details, please refer to `Sphinx's templating page`_.
 Building documentation
 ======================
 
+.. tip::
+
+   Because a documentation preview is generated automatically by
+   `Read the Docs`_ for every pull request, it is not necessary to build
+   the documentation locally on your own computer. New contributors can
+   safely skip this section.
+
 There are two methods for building the documentation: make_ and tox_.
 
 * Using make_ will build the documentation based off of what is in the
@@ -1374,7 +1381,7 @@ version of the package that can be revisited later.
    workaround that can take hours to figure out. This has given rise to
    the saying:
 
-      *Sphinx rabbit holes often have dragons in them.*
+      *Sphinx rabbit holes often have dragons in them.* 🐇 🕳️ 🐉
 
    Remember: your happiness and well-being are more important than
    `nested inline markup`_!
