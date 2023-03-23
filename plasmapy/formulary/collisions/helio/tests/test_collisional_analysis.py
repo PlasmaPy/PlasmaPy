@@ -1,10 +1,10 @@
-"""Test functionality of `plasmapy.formulary.collisions.tools.collisional_analysis`."""
+"""Test functionality of `plasmapy.formulary.collisions.helio.collisional_analysis`."""
 import pytest
 
 from astropy import units as u
 from astropy.constants.si import c
 
-from plasmapy.formulary.collisions.tools.collisional_analysis import (
+from plasmapy.formulary.collisions.helio.collisional_analysis import (
     collisional_thermalization,
 )
 from plasmapy.particles import Particle

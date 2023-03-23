@@ -1,7 +1,7 @@
 """
 Module containing the Collisional Analysis formulation.
 """
-__all__ = ["collisional_thermalization"]
+__all__ = ["thermalization_ratio"]
 
 import astropy.units as u
 import numbers
@@ -15,7 +15,7 @@ from plasmapy.utils.decorators import validate_quantities
     T_1={"can_be_negative": False, "equivalencies": u.temperature_energy()},
     T_2={"can_be_negative": False, "equivalencies": u.temperature_energy()},
 )
-def collisional_thermalization(
+def thermalization_ratio(
     r_0: u.au,
     r_n: u.au,
     n_1: u.cm**-3,
@@ -155,9 +155,9 @@ def collisional_thermalization(
          \left( \frac{n_{2}Z_{2}^{2}}{n_{1}Z_{1}^{2}} + \theta_{21}
          \right)^{1/2}\right |
 
-    With :math:`\eta = \frac{n_{2}}{n_{1}}`,
-    :math:`\theta = \frac{T_{2}}{T_{1}}`, :math:`A = 2.60 \times 10^{7} \, {\rm cm}^{3} \, {\rm km} \, {\rm K}^{3/2} \, {\rm s}^{-1} \, {\rm au}^{-1}`,
-    and :math:`B = 1 \, {\rm cm}^{-3/2}{\rm K}^{-3/2}`.
+    With :math:`\eta = \frac{n_{2}}{n_{1}}`, :math:`\theta = \frac{T_{2}}{T_{1}}`, :math:`A = 2.60 \times 10^{7} \,
+    {\rm cm}^{3} \, {\rm km} \, {\rm K}^{3/2} \, {\rm s}^{-1} \, {\rm au}^{-1}`, and :math:`B = 1 \, {\rm cm}^{-3/2}{
+    \rm K}^{-3/2}`.
 
     The thermalization is from Coulomb collisions, which assumes
     “soft”, small-angle deflections mediated by the electrostatic
@@ -284,10 +284,10 @@ def collisional_thermalization(
 
         return theta.value
 
-    vars = [r_0, r_n, n_1, n_2, v_1, T_1, T_2]
+    variables = [r_0, r_n, n_1, n_2, v_1, T_1, T_2]
 
     d_type = []
-    for var in vars:
+    for var in variables:
         if hasattr(var, "__len__"):
             d_type.append(True)
         else:
@@ -311,9 +311,9 @@ def collisional_thermalization(
             temperature_scale,
         )
     else:
-        if all(len(vars[0]) == len(z) for z in vars[1:]):
+        if all(len(variables[0]) == len(z) for z in variables[1:]):
             res = []
-            for i in range(len(vars[0])):
+            for i in range(len(variables[0])):
                 res.append(
                     df_eq(
                         r_0[i],
