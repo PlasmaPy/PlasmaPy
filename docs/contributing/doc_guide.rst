@@ -1122,6 +1122,18 @@ Sphinx_ uses the Jinja_ templating engine to generate HTML code. Jinja_
 may be used within the documentation when templating is necessary. For
 more details, please refer to `Sphinx's templating page`_.
 
+.. danger::
+
+   There are certain tasks that one would expect to be straightforward
+   with reST_ and Sphinx_ but are only possible by doing a horrible
+   workaround that can take hours to figure out. This has given rise to
+   the saying:
+
+      *Sphinx rabbit holes often have dragons in them.* 🐇 🕳️ 🐉
+
+   Remember: your happiness and well-being are more important than
+   `nested inline markup`_!
+
 Building documentation
 ======================
 
@@ -1242,7 +1254,7 @@ Troubleshooting
 ===============
 
 This section describes how to fix common documentation errors and
-warnings.
+warnings. 🛠️
 
 .. _missing-target:
 
@@ -1270,7 +1282,6 @@ fixing the typo and changing it to ```plasmapy.particles```.
    ```plasmapy.particles.Particle```) or a :ref:`reST substitution
    <substitutions>` like ``|Particle|`` as defined in
    |docs/common_links.rst|_.
-
 
 This warning may occur when a new module or subpackage is created
 without :ref:`creating a stub file <api-static>` for it.
@@ -1373,18 +1384,6 @@ version of the package that can be revisited later.
    🎈 These errors usually get resolved after the upstream package makes
    a bugfix release, so it is typically better to wait a week before
    spending a large amount of time trying to fix it. 🕒
-
-.. danger::
-
-   There are certain tasks that one would expect to be straightforward
-   with reST_ and Sphinx_ but are only possible by doing a horrible
-   workaround that can take hours to figure out. This has given rise to
-   the saying:
-
-      *Sphinx rabbit holes often have dragons in them.* 🐇 🕳️ 🐉
-
-   Remember: your happiness and well-being are more important than
-   `nested inline markup`_!
 
 .. |role| replace:: :term:`role`
 .. |roles| replace:: :term:`roles <role>`
