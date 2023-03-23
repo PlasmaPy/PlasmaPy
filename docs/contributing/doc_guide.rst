@@ -916,7 +916,7 @@ Narrative documentation guidelines
   sentence case for all other headings (e.g., "This is sentence case").
 
 Sphinx
-------
+======
 
 Sphinx_ is the software used to generate `PlasmaPy's documentation`_
 from reST_ files and Python_ docstrings. It was originally created to
@@ -925,7 +925,7 @@ documenting Python_ packages. Almost all Python_ open-source packages
 utilize Sphinx_ to generate their documentation.
 
 Configuration
-~~~~~~~~~~~~~
+-------------
 
 The |docs/conf.py|_ file contains the configuration information needed
 to customize Sphinx_ behavior. The documentation for Sphinx_ lists the
@@ -936,7 +936,7 @@ overrides`_ for the `Read the Docs Sphinx Theme`_ to customize the look
 and feel of the online documentation.
 
 Sphinx extensions
-~~~~~~~~~~~~~~~~~
+-----------------
 
 `PlasmaPy's documentation`_ is built with the following Sphinx_
 extensions:
@@ -979,7 +979,7 @@ continuous integration tests in pull requests.
 .. _external-references:
 
 Cross-referencing external packages
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-----------------------------------
 
 Intersphinx_ allows the automatic generation of links to the
 documentation of objects in other projects. This cross-package linking
@@ -1014,7 +1014,7 @@ expected.
 .. _substitutions:
 
 Substitutions
-~~~~~~~~~~~~~
+-------------
 
 Some functions and classes are referred to repeatedly throughout the
 documentation. reST_ allows us to `define substitutions`_
@@ -1046,7 +1046,7 @@ users have quick access to the full path of the `object` (such as in the
 .. _citation-instructions:
 
 Bibliography
-~~~~~~~~~~~~
+------------
 
 PlasmaPy uses |sphinxcontrib-bibtex|_ to manage references for its
 documentation. This Sphinx_ extension allows us to store references in a
@@ -1079,7 +1079,7 @@ show up as :cite:p:`wilson:2014, wilson:2017`.
 .. _api-static:
 
 Creating a documentation stub file for a new module
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+---------------------------------------------------
 
 When the narrative documentation does not index a subpackage (a
 directory) or module (a :file:`.py` file) with ``automodule``,
@@ -1116,7 +1116,7 @@ error or the absence of the module in the documentation build.
    :file:`docs/api_static/plasmapy.io.readers.rst`.
 
 Templating
-~~~~~~~~~~
+----------
 
 Sphinx_ uses the Jinja_ templating engine to generate HTML code. Jinja_
 may be used within the documentation when templating is necessary. For
