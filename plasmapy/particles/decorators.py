@@ -4,6 +4,7 @@ __all__ = ["particle_input"]
 
 import functools
 import inspect
+import numpy as np
 import warnings
 import wrapt
 
@@ -416,7 +417,7 @@ class _ParticleInput:
         if (
             parameter == "ion"
             and isinstance(particle, CustomParticle)
-            and particle.charge.value > 0
+            and not np.isnan(particle.charge)
             and particle.mass.value > 0
         ):
             return
