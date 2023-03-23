@@ -1,5 +1,5 @@
 Modified |particle_input| to allow positively charged |CustomParticle|\
 -like objects to be passed through to decorated functions when an
-appropriately annotated parameter is named ``ion``. Previously, only
-|Particle| objects representing ions or neutral atoms were allowed to
-pass through.
+appropriately annotated |parameter| to that function is named ``ion``.
+Previously, only |Particle| objects representing ions or neutral atoms
+were allowed to pass through when the parameter was named ``ion``.
