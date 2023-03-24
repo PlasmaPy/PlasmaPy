@@ -1,0 +1,3 @@
+|particle_input| no longer enforces that |parameters| named
+``ionic_level`` are ions or neutral atoms. For equivalent behavior,
+name the parameter ``ion`` instead.
