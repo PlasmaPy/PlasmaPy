@@ -554,7 +554,7 @@ Sphinx_ uses the Jinja_ templating engine to generate HTML code. Jinja_
 may be used within the documentation when templating is necessary. For
 more details, please refer to `Sphinx's templating page`_.
 
-.. _writing documentation:
+.. _writing-documentation:
 
 Writing documentation
 =====================

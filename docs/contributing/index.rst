@@ -22,15 +22,16 @@ the project depends on people like you, so we deeply appreciate it! 🌱
 
 This guide describes the fundamentals of contributing to PlasmaPy. If
 you are a first-time contributor, please follow the steps for
-:ref:`getting ready to contribute` before proceeding to the :ref:`code
-contribution workflow <workflow>`.  The contributions are made to
-`PlasmaPy's GitHub repository`_.
+:ref:`getting ready to contribute <Getting Ready to Contribute>` before
+proceeding to the :ref:`code contribution workflow <workflow>`. The
+contributions are made to `PlasmaPy's GitHub repository`_.
 
 New functions and classes added to PlasmaPy must have documentation and
 tests. The |documentation guide| contains sections on `reStructuredText
-(reST)`_ and :ref:`writing documentation`.  The |testing guide| has
-sections on :ref:`writing tests` and :ref:`testing best practices`.
-It is usually also necessary to :ref:`add a changelog entry
+(reST)`_ and :ref:`writing documentation <writing-documentation>`. The
+|testing guide| has sections on :ref:`writing tests <writing-tests>`
+and :ref:`testing best practices <testing-best-practices>`. Unless it is
+minor, it will also be necessary to :ref:`add a changelog entry
 <add-changelog>`.
 
 The PlasmaPy community abides by the :ref:`Contributor Covenant Code of
