@@ -169,8 +169,6 @@ This command will build the documentation without executing the
 Documentation tools
 ===================
 
-.. _restructuredtext:
-
 ReStructuredText
 ----------------
 
