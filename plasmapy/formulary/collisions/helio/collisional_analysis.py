@@ -180,8 +180,19 @@ def thermalization_ratio(
 
     Examples
     --------
-
-
+    >>> import astropy.units as u
+    >>> from plasmapy.formulary.collisions.helio.collisional_analysis import thermalization_ratio
+    >>> r_0 = [0.1, 0.15, 0.2] * u.au
+    >>> r_n = [1.0, 1.0, 1.0] * u.au
+    >>> n_1 = [15, 12, 16] * u.cm**-3
+    >>> n_2 = [2, 1, 4] * u.cm**-3
+    >>> v_1 = [450, 350, 300] * u.m / u.s #km/s instead of m/s
+    >>> T_1 = [5500, 5000, 52500] * u.K
+    >>> T_2 = [80000, 65000, 72500] * u.K
+    >>> ions = [Particle("p+"), Particle("He-4++")]
+    >>> n_step = 1000
+    >>> theta = thermalization_ratio(r_0, r_n, n_1, n_2, v_1, T_1, T_2, ions, n_step)
+    [1231, 12312312, 413412]
     """
 
     # Validate number of ions
