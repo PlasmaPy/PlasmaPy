@@ -334,6 +334,8 @@ popular IDEs:
 * `Python testing in Visual Studio Code
   <https://code.visualstudio.com/docs/python/testing>`__
 
+.. _writing-tests:
+
 Writing Tests
 =============
 
