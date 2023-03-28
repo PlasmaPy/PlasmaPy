@@ -1,0 +1,39 @@
+name: 💡 Feature Request
+description: Suggest an idea for a new capability
+labels: [enhancement]
+body:
+- type: textarea
+  id: description
+  attributes:
+    label: What new feature would you like added?
+    description: |
+      Please describe what new capability you would like PlasmaPy to have.
+  validations:
+    required: true
+
+- type: textarea
+  id: solution
+  attributes:
+    label: How might this new feature be implemented?
+    description: |
+      Provide suggestions how or where to implement this capability. Optional.
+  validations:
+    required: false
+
+- type: textarea
+  id: alternatives
+  attributes:
+    label: Are there alternative possibilities that you've considered?
+    description: |
+      Optionally, describe any alternative changes that you've considered
+  validations:
+    required: false
+
+- type: textarea
+  id: additional-context
+  attributes:
+    label: Additional context (optional)
+    description: |
+      Add any other contextual information here, such as
+  validations:
+    required: false

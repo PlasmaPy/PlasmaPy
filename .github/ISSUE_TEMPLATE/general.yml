@@ -1,0 +1,21 @@
+name: 📝 Issue
+description: General issue
+body:
+- type: markdown
+  attributes:
+    value: |
+      Please describe your issue here.
+
+- type: textarea
+  id: issue-description
+  attributes:
+    label: What is your issue?
+    description: |
+      Thank you for filing an issue! Please give us further information on how we can help you.
+  validations:
+    required: true
+
+- type: textarea
+  id: context
+  attributes:
+    label: Additional context (optional)
