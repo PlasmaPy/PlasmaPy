@@ -1,0 +1,1 @@
+Restructured the |documentation guide|.
