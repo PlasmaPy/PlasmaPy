@@ -53,8 +53,6 @@ Summary
 * Run ``pytest`` in the command line in order to run tests in that
   directory and its subdirectories.
 
-
-
 Introduction
 ============
 
@@ -363,84 +361,6 @@ code implementation of :math:`f(x)` — returns positive output for
 multiple values of :math:`x`. The hypothesis_ package simplifies
 `property-based testing`_ for Python.
 
-.. _code-coverage:
-
-Code coverage
-=============
-
-:wikipedia:`Code coverage <Code_coverage>` refers to a metric "used to
-describe the degree to which the source code of a program is executed
-when a particular test suite runs." The most common code coverage metric
-is line coverage:
-
-.. math::
-
-   \mbox{line coverage} ≡
-   \frac{
-      \mbox{number of lines accessed by tests}
-   }{
-      \mbox{total number of lines}
-   }
-
-Line coverage reports show which lines of code have been used in a test
-and which have not. These reports show which lines of code remain to be
-tested, and sometimes indicate sections of code that are unreachable.
-
-.. tip::
-
-   Use test coverage reports to write tests that target untested
-   sections of code and to find unreachable sections of code.
-
-.. caution::
-
-   While a low value of line coverage indicates that the code is not
-   adequately tested, a high value does not necessarily indicate that
-   the testing is sufficient. A test that makes no assertions has little
-   value, but could still have high test coverage.
-
-PlasmaPy uses `coverage.py`_ and the `pytest-cov`_ plugin for pytest_ to
-measure code coverage and Codecov_ to provide reports on GitHub.
-
-Generating coverage reports with pytest
----------------------------------------
-
-Code coverage reports may be generated on your local computer to show
-which lines of code are covered by tests and which are not. To generate
-an HTML report, use the ``--cov`` flag for ``pytest``:
-
-.. code-block:: shell
-
-   pytest --cov
-   coverage html
-
-Open :file:`htmlcov/index.html` in your web browser to view the coverage
-reports.
-
-Excluding lines in coverage reports
------------------------------------
-
-Occasionally there will be certain lines that should not be tested. For
-example, it would be impractical to create a new testing environment to
-check that an `ImportError` is raised when attempting to import a
-missing package. There are also situations that coverage tools are not
-yet able to handle correctly.
-
-To exclude a line from a coverage report, end it with
-``# coverage: ignore``. Alternatively, we may add a line to
-``exclude_lines`` in the ``[coverage:report]`` section of
-:file:`setup.cfg` that consists of a
-a pattern that indicates that a line be excluded from coverage reports.
-In general, untested lines of code should remain marked as untested to
-give future developers a better idea of where tests should be added in
-the future and where potential bugs may exist.
-
-Coverage configurations
------------------------
-
-Configurations for coverage tests are given in the ``[coverage:run]``
-and ``[coverage:report]`` sections of :file:`setup.cfg`. Codecov_
-configurations are given in :file:`.codecov.yaml`.
-
 Best practices
 ==============
 
@@ -540,7 +460,6 @@ should be balanced with each other rather than absolute principles.
 * If the *act* phase of a |unit test| is more than a single line of
   code, consider revising the functionality being tested so that it can
   be called in a single line of code :cite:p:`khorikov:2020`.
-
 
 Running tests
 =============
@@ -764,6 +683,85 @@ environments are available, run:
 
 These commands can be run in any directory within PlasmaPy's repository
 with the same effect.
+
+
+.. _code-coverage:
+
+Code coverage
+-------------
+
+:wikipedia:`Code coverage <Code_coverage>` refers to a metric "used to
+describe the degree to which the source code of a program is executed
+when a particular test suite runs." The most common code coverage metric
+is line coverage:
+
+.. math::
+
+   \mbox{line coverage} ≡
+   \frac{
+      \mbox{number of lines accessed by tests}
+   }{
+      \mbox{total number of lines}
+   }
+
+Line coverage reports show which lines of code have been used in a test
+and which have not. These reports show which lines of code remain to be
+tested, and sometimes indicate sections of code that are unreachable.
+
+.. tip::
+
+   Use test coverage reports to write tests that target untested
+   sections of code and to find unreachable sections of code.
+
+.. caution::
+
+   While a low value of line coverage indicates that the code is not
+   adequately tested, a high value does not necessarily indicate that
+   the testing is sufficient. A test that makes no assertions has little
+   value, but could still have high test coverage.
+
+PlasmaPy uses `coverage.py`_ and the `pytest-cov`_ plugin for pytest_ to
+measure code coverage and Codecov_ to provide reports on GitHub.
+
+Generating coverage reports with pytest
+---------------------------------------
+
+Code coverage reports may be generated on your local computer to show
+which lines of code are covered by tests and which are not. To generate
+an HTML report, use the ``--cov`` flag for ``pytest``:
+
+.. code-block:: shell
+
+   pytest --cov
+   coverage html
+
+Open :file:`htmlcov/index.html` in your web browser to view the coverage
+reports.
+
+Excluding lines in coverage reports
+-----------------------------------
+
+Occasionally there will be certain lines that should not be tested. For
+example, it would be impractical to create a new testing environment to
+check that an `ImportError` is raised when attempting to import a
+missing package. There are also situations that coverage tools are not
+yet able to handle correctly.
+
+To exclude a line from a coverage report, end it with
+``# coverage: ignore``. Alternatively, we may add a line to
+``exclude_lines`` in the ``[coverage:report]`` section of
+:file:`setup.cfg` that consists of a
+a pattern that indicates that a line be excluded from coverage reports.
+In general, untested lines of code should remain marked as untested to
+give future developers a better idea of where tests should be added in
+the future and where potential bugs may exist.
+
+Coverage configurations
+-----------------------
+
+Configurations for coverage tests are given in the ``[coverage:run]``
+and ``[coverage:report]`` sections of :file:`setup.cfg`. Codecov_
+configurations are given in :file:`.codecov.yaml`.
 
 Using an integrated development environment
 -------------------------------------------
