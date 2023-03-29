@@ -1,32 +1,45 @@
-Analysis: plasmapy/analysis/**/*
+Breaking:
+- changelog/*.breaking*rst
 
-Continuous integration: .github/**/*
+Contributor Guide:
+- docs/contributing/**/*
 
-Contributor Guide: docs/contributing/*
+dependencies:
+- requirements.txt
 
-Diagnostics: plasmapy/diagnostics/**/*
-
-Dispersion: plasmapy/dispersion/**/*
-
-Formulary: plasmapy/formulary/**/*
-
-Mathematics: plasmapy/formulary/mathematics.py
-
-parameters.quantum: plasmapy/formulary/quantum.py
-
-Particles: plasmapy/particles/**/*
-
-# Add Documentation label to any change in docs but notebooks
 Documentation:
 - any: [docs/**/*]
   all: ['!docs/notebooks/**/*', '!docs/contributing/*']
 
-Notebooks: docs/notebooks/**/*
+GitHub Actions:
+- .github/**/*
 
-Plasma class: plasmapy/plasma/**/*
+Notebooks:
+- docs/notebooks/**/*
 
-simulations: plasmapy/simulation/**/*
+plasmapy.analysis:
+- plasmapy/analysis/**/*
 
-Utilities: plasmapy/utils/**/*
+plasmapy.diagnostics:
+- plasmapy/diagnostics/**/*
 
-Breaking: changelog/*.breaking*rst
+plasmapy.dispersion:
+- plasmapy/dispersion/**/*
+
+plasmapy.formulary:
+- plasmapy/formulary/**/*
+
+plasmapy.formulary.quantum:
+- any: [plasmapy/formulary/quantum.py, plasmapy/formulary/tests/test_quantum.py]
+
+plasmapy.particles:
+- plasmapy/particles/**/*
+
+plasmapy.plasma:
+- plasmapy/plasma/**/*
+
+plasmapy.simulation:
+- plasmapy/simulation/**/*
+
+plasmapy.utils:
+- plasmapy/utils/**/*
