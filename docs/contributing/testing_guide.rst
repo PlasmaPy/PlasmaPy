@@ -363,6 +363,8 @@ code implementation of :math:`f(x)` — returns positive output for
 multiple values of :math:`x`. The hypothesis_ package simplifies
 `property-based testing`_ for Python.
 
+.. _testing-best-practices:
+
 Best practices
 ==============
 
