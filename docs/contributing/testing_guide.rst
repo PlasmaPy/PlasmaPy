@@ -96,6 +96,8 @@ of the package. Example code contained within docstrings is tested to
 make sure that the actual printed output matches what is in the
 docstring.
 
+.. _writing-tests:
+
 Writing Tests
 =============
 
@@ -777,8 +779,6 @@ popular IDEs:
   <https://www.jetbrains.com/help/pycharm/testing-your-first-python-application.html>`__
 * `Python testing in Visual Studio Code
   <https://code.visualstudio.com/docs/python/testing>`__
-
-.. _writing-tests:
 
 .. |integration test| replace:: :term:`integration test`
 .. |unit test| replace:: :term:`unit test`
