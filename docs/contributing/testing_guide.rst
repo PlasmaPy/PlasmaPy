@@ -526,11 +526,6 @@ The following checks are performed with each pull request.
      include (or will include) significant improvements to common error
      messages.
 
-* Checks with labels like **CI / Python 3.x with NumPy dev (pull
-  request)** verify that PlasmaPy works the version of NumPy that is
-  currently being developed on GitHub_. Occasionally these tests will
-  fail due to upstream changes or conflicts.
-
 * The **CI / Documentation (pull request)** check verifies that
   `PlasmaPy's documentation`_ is able to build correctly from the pull
   request. Warnings are treated as errors.
