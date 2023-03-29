@@ -519,8 +519,10 @@ The following checks are performed with each pull request.
 
   .. tip::
 
-     `Python 3.10 <https://docs.python.org/3.10/whatsnew/3.10.html>`__ and
-     `Python 3.11 <https://docs.python.org/3.11/whatsnew/3.11.html>`__
+     `Python 3.10 <https://docs.python.org/3.10/whatsnew/3.10.html>`__,
+     `Python 3.11 <https://docs.python.org/3.11/whatsnew/3.11.html>`__,
+     and
+     `Python 3.12 <https://docs.python.org/3.12/whatsnew/3.12.html>`__,
      include (or will include) significant improvements to common error
      messages.
 
