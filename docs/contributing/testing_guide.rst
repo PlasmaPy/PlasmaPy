@@ -528,7 +528,7 @@ The following checks are performed with each pull request.
      include (or will include) significant improvements to common error
      messages.
 
-* The **CI / Documentation (pull request)** check verifies that
+* The **CI / Documentation (pull_request)** check verifies that
   `PlasmaPy's documentation`_ is able to build correctly from the pull
   request. Warnings are treated as errors.
 
@@ -551,8 +551,11 @@ The following checks are performed with each pull request.
   as passing when the test coverage is satisfactorily high. For more
   information, see the section on :ref:`code-coverage`.
 
+* The **CI / Importing PlasmaPy (pull_request)** checks that it is
+  possible to run :py:`import plasmapy`.
+
 * PlasmaPy uses black_ to format code and isort_ to sort ``import``
-  statements. The **CI / Linters (pull request)** and
+  statements. The **CI / Linters (pull_request)** and
   **pre-commit.ci - pr** checks verify that the pull request meets these
   style requirements. These checks will fail when inconsistencies with
   the output from black_ or isort_ are found or when there are syntax
