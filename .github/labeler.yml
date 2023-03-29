@@ -1,14 +1,17 @@
 Breaking:
 - changelog/*.breaking*rst
 
+Continuous Integration:
+- any: [.codecov.yaml, .pre-commit-config.yaml, CODEOWNERS, noxfile.py, tox.ini]
+
 Contributor Guide:
-- docs/contributing/**/*
+- any: [changelog/README.rst, docs/contributing/**/*]
 
 dependencies:
 - requirements.txt
 
 Documentation:
-- any: [docs/**/*]
+- any: [docs/**/*, changelog/*doc*.rst, README.md, .readthedocs.yml]
   all: ['!docs/notebooks/**/*', '!docs/contributing/*']
 
 GitHub Actions:
@@ -16,6 +19,9 @@ GitHub Actions:
 
 Notebooks:
 - docs/notebooks/**/*
+
+Packaging:
+- any: [MANIFEST.in, pyproject.toml, setup.cfg, setup.py]
 
 plasmapy.analysis:
 - plasmapy/analysis/**/*
