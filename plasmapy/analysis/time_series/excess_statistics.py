@@ -195,9 +195,8 @@ class ExcessStatistics:
 
         Returns
         -------
-
         rms_times: 1D |array_like|
-         root-mean-square values of time above each value in ``thresholds``.
+            Root-mean-square values of time above each value in ``thresholds``.
         """
 
         return self._rms_times
