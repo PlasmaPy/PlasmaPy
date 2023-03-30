@@ -169,9 +169,8 @@ class ExcessStatistics:
 
         Returns
         -------
-
         number_of_crossings: 1D |array_like|
-         total number of upwards crossings for each value in ``thresholds``.
+            Total number of upwards crossings for each value in ``thresholds``.
         """
 
         return self._number_of_crossings
