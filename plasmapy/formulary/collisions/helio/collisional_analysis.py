@@ -121,7 +121,7 @@ def thermalization_ratio(
         \theta_{21} = \frac{T_{2}}{T_{1}} \, ,
 
     where :math:`T_{1}` and :math:`T_{2}` are the scalar temperatures
-    for the primary ion of interest and the secondary ion respectively.
+    for the primary ion of interest and the secondary ion, respectively.
     The scalar temperature defined as:
 
     .. math::
