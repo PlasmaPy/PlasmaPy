@@ -78,9 +78,9 @@ def thermalization_ratio(
         The number of intervals used in solving a differential
         equation via the Euler method. Must be an int.
 
-    density_scale : `float`
+    density_scale : real number, default: -1.8
         The value used as the scaling parameter for the primary ion
-        density, the default value is -1.8 and is taken from
+        density. The default value is taken from 
         :cite:t:`hellinger:2011`.
 
     velocity_scale : `float`
