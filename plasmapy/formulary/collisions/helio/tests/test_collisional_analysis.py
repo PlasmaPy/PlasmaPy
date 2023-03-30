@@ -4,9 +4,7 @@ import pytest
 from astropy import units as u
 from astropy.constants.si import c
 
-from plasmapy.formulary.collisions.helio.collisional_analysis import (
-    collisional_thermalization,
-)
+from plasmapy.formulary.collisions.helio.collisional_analysis import thermalization_ratio
 from plasmapy.particles import Particle
 
 c_si_unitless = c.value
@@ -52,4 +50,4 @@ class Testcollisional_thermalizastion:
     )
     def test_raises(self, kwargs, _error):
         with pytest.raises(_error):
-            collisional_thermalization(**kwargs)
+            thermalization_ratio(**kwargs)
