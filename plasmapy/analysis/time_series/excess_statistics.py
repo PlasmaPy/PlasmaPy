@@ -182,9 +182,8 @@ class ExcessStatistics:
 
         Returns
         -------
-
         average_times: 1D |array_like|
-         average time above each value in ``thresholds``.
+            Average time above each value in ``thresholds``.
         """
 
         return self._average_times
