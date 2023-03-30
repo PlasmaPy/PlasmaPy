@@ -20,14 +20,14 @@ def thermalization_ratio(
     r_n: u.au,
     n_1: u.cm**-3,
     n_2: u.cm**-3,
-    v_1: u.m / u.s,
+    v_1: u.km / u.s,
     T_1: u.K,
     T_2: u.K,
     ions: ParticleLike = [Particle("p+"), Particle("He-4++")],
-    n_step: int = 1000,
+    n_step: int = 100,
     density_scale: float = -1.8,
     velocity_scale: float = -0.2,
-    temperature_scale: float = -0.77,
+    temperature_scale: float = -0.74,
 ):
     r"""
     Contains the functionality to calculate the collisional
@@ -60,7 +60,7 @@ def thermalization_ratio(
         to m\ :sup:`-3`.
 
     v_1 : `~astropy.units.Quantity`
-        The primary ion speed in units convertible to ms\ :sup:`-1`.
+        The primary ion speed in units convertible to kms\ :sup:`-1`.
 
     T_1 : `~astropy.units.Quantity`
         Temperature of the primary ion in units convertible to
@@ -90,7 +90,7 @@ def thermalization_ratio(
 
     temperature_scale : `float`
         The value used as the scaling parameter for the primary ion
-        temperature, the default value is -0.77 and is taken from
+        temperature, the default value is -0.74 and is taken from
         :cite:t:`hellinger:2011`.
 
     Returns
@@ -182,17 +182,16 @@ def thermalization_ratio(
     --------
     >>> import astropy.units as u
     >>> from plasmapy.formulary.collisions.helio.collisional_analysis import thermalization_ratio
-    >>> r_0 = [0.1, 0.15, 0.2] * u.au
+    >>> r_0 = [0.1, 0.1, 0.1] * u.au
     >>> r_n = [1.0, 1.0, 1.0] * u.au
-    >>> n_1 = [15, 12, 16] * u.cm**-3
-    >>> n_2 = [2, 1, 4] * u.cm**-3
-    >>> v_1 = [450, 350, 300] * u.m / u.s #km/s instead of m/s
-    >>> T_1 = [5500, 5000, 52500] * u.K
-    >>> T_2 = [80000, 65000, 72500] * u.K
+    >>> n_1 = [1200, 1500, 1400] * u.cm**-3
+    >>> n_2 = [12, 18, 8] * u.cm**-3
+    >>> v_1 = [450, 350, 400] * u.km / u.s
+    >>> T_1 = [1.5 * 10**5, 2.1 * 10**5, 1.7 * 10**5] * u.K
+    >>> T_2 = [2.5 * 10**6, 1.8 * 10**6, 2.8 * 10**6] * u.K
     >>> ions = [Particle("p+"), Particle("He-4++")]
-    >>> n_step = 1000
-    >>> theta = thermalization_ratio(r_0, r_n, n_1, n_2, v_1, T_1, T_2, ions, n_step)
-    [1231, 12312312, 413412]
+    >>> theta = thermalization_ratio(r_0, r_n, n_1, n_2, v_1, T_1, T_2, ions)
+    [3.380592535792352, 1.690932692788673, 3.3731383760854725]
     """
 
     # Validate number of ions
@@ -223,10 +222,10 @@ def thermalization_ratio(
     def df_eq(
         r_0,
         r_n,
-        n_1,
+        n_1_0,
         n_2,
-        v_1,
-        T_1,
+        v_1_0,
+        T_1_0,
         T_2,
         ions,
         n_step,
@@ -243,10 +242,9 @@ def thermalization_ratio(
 
         # Initialise.
         d_r = (r_0 - r_n) / (1.0 * n_step)
-        d_r = d_r.value
 
         # Define constants
-        A = 2.6 * 10**7 * (u.cm**3 * u.km * u.K**1.5) / (u.s * u.au)
+        A = 2.6 * 10**7 * (u.cm**3 * u.km * (u.K**1.5)) / (u.s * u.au)
         B = 1 / (u.cm * u.K) ** 1.5
 
         # Define Coulomb log for mixed ion collisions
@@ -264,35 +262,36 @@ def thermalization_ratio(
             b = (theta + mu_2 / mu_1) / (z_1 * z_2 * (mu_1 + mu_2))
             c = np.sqrt(n_2 * z_2**2 / n_1 * z_1**2 + theta)
             return 9 + np.log(B * a * b * c)
-
+        #print(T_2/T_1_0)
         # Loop.
         for i in range(n_step):
-            r = r_n.value + ((i + 1) * d_r)
+            r = r_n + ((i + 1) * d_r)
+
+            n_1 = n_1_0 * (r / r_n) ** density
+            v_1 = v_1_0 * (r / r_n) ** velocity
+            T_1 = T_1_0 * (r / r_n) ** temperature
+
+
 
             eta = n_2 / n_1
             theta = T_2 / T_1
-
-            l_ba = lambda_ba(theta, T_1, n_1, n_2, z_1, z_2, mu_1, mu_2)
-
-            n_1 = n_1 * (r / r_n.value) ** density
-            v_1 = v_1 * (r / r_n.value) ** velocity
-            T_1 = T_1 * (r / r_n.value) ** temperature
 
             alpha = n_1 / (v_1 * (T_1**1.5))
             beta = (
                 (np.sqrt(mu_1 * mu_2) * z_1 * z_2 * (1 - theta) * (1 + eta * theta))
                 / (np.sqrt((mu_2 / mu_1) + theta) ** 3)
-                * u.au
-                / u.km
             )
+            l_ba = lambda_ba(theta, T_1, n_1, n_2, z_1, z_2, mu_1, mu_2)
 
-            d_theta = d_r * u.m * alpha * l_ba * A * beta
+            d_theta = (d_r * alpha * l_ba * A * beta)
+            #print(theta, d_theta)
+            #print("A, lamda", A, l_ba)
 
-            # print("dr, A, l_ba", d_r, A, l_ba, alpha, beta)
+            #print("alpha, beta", alpha, beta)
 
-            print(theta, d_theta)
+
             theta = theta + d_theta
-
+        #print(theta, d_theta)
         return theta.value
 
     variables = [r_0, r_n, n_1, n_2, v_1, T_1, T_2]
@@ -321,8 +320,8 @@ def thermalization_ratio(
             velocity_scale,
             temperature_scale,
         )
-    else:
-        if all(len(variables[0]) == len(z) for z in variables[1:]):
+    elif all(len(variables[0]) == len(z) for z in variables[1:]):
+            print(r_0)
             res = []
             for i in range(len(variables[0])):
                 res.append(
@@ -341,11 +340,16 @@ def thermalization_ratio(
                         temperature_scale,
                     )
                 )
+                print('\r', f"{(i / len(variables[0])) * 100:.2f} %", end="")
+
             return res
 
-        else:
-            raise ValueError(
-                "Argument(s) are of unequal lengths, the following "
-                "arguments should be of equal length: 'r_0', 'r_n', "
-                "'n_1', 'n_2', 'v_1', 'T_1' and 'T_2'."
-            )
+    else:
+        print(r_0, r_n, n_1, n_2, v_1, T_1, T_2)
+        raise ValueError(
+            "Argument(s) are of unequal lengths, the following "
+            "arguments should be of equal length: 'r_0', 'r_n', "
+            "'n_1', 'n_2', 'v_1', 'T_1' and 'T_2'."
+        )
+
+
