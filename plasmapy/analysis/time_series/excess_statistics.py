@@ -6,6 +6,8 @@ __all__ = ["ExcessStatistics"]
 import numbers
 import numpy as np
 
+from collections.abc import Iterable
+
 
 class ExcessStatistics:
     """
@@ -47,9 +49,7 @@ class ExcessStatistics:
             raise ValueError("time_step must be positive")
 
         # make sure thresholds is an iterable
-        try:
-            iter(thresholds)
-        except TypeError:
+        if not isinstance(thresholds, Iterable):
             thresholds = [thresholds]
 
         self._total_time_above_threshold = []
