@@ -74,9 +74,9 @@ def thermalization_ratio(
         Particle list containing two (2) particles, primary ion of
         interest is entered first, followed by the secondary ion.
 
-    n_step : `int`
+    n_step : positive integer
         The number of intervals used in solving a differential
-        equation via the Euler method. Must be an int.
+        equation via the Euler method.
 
     density_scale : real number, default: -1.8
         The value used as the scaling parameter for the primary ion
