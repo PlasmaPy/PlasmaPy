@@ -8,6 +8,7 @@ from plasmapy.formulary.collisions.helio.collisional_analysis import (
     thermalization_ratio,
 )
 from plasmapy.particles import Particle
+from plasmapy.particles.exceptions import InvalidParticleError
 
 c_si_unitless = c.value
 
@@ -41,7 +42,11 @@ class Testcollisional_thermalizastion:
             ({**_kwargs_single_valued, "T_1": 2 * u.s}, u.UnitTypeError),
             ({**_kwargs_single_valued, "T_2": "wrong type"}, TypeError),
             ({**_kwargs_single_valued, "T_2": 2 * u.s}, u.UnitTypeError),
-            ({**_kwargs_single_valued, "ions": [Particle("p+"), "He"]}, TypeError),
+            ({**_kwargs_single_valued, "ions": [Particle("p+"), "He"]}, ValueError),
+            (
+                {**_kwargs_single_valued, "ions": [Particle("p+"), "not a particle"]},
+                InvalidParticleError,
+            ),
             ({**_kwargs_single_valued, "ions": [Particle("p+")]}, ValueError),
             ({**_kwargs_single_valued, "n_step": "wrong type"}, TypeError),
             ({**_kwargs_single_valued, "n_step": 4.5}, TypeError),

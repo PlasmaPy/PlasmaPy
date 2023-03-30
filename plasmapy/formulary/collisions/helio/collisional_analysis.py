@@ -7,7 +7,7 @@ import astropy.units as u
 import numbers
 import numpy as np
 
-from plasmapy.particles import Particle, ParticleLike
+from plasmapy.particles import Particle, ParticleLike, ParticleList
 from plasmapy.utils.decorators import validate_quantities
 
 
@@ -142,23 +142,26 @@ def thermalization_ratio(
 
      .. math::
 
-        \frac{d \theta_{21}}{dr} = A \left ( \frac{n_1}{v_1 T_1^{3/2}} \right ) \frac{\left( \mu_{1} \mu_{2}
-        \right )^{1/2} Z_{1} Z_{2} \left( 1 - \theta_{21} \right ) \left(1 +
-        \eta_{21}\theta_{21} \right )}{\left( \frac{\mu_{2}}{\mu_{1}} +
-        \theta_{21} \right )^{3/2}} \lambda_{21}
+        \frac{d \theta_{21}}{dr} = A \left (
+        \frac{n_1}{v_1 T_1^{3/2}} \right ) \frac{\left( \mu_{1} \mu_{2}
+        \right )^{1/2} Z_{1} Z_{2} \left( 1 - \theta_{21} \right )
+        \left(1 + \eta_{21}\theta_{21} \right )}{\left(
+        \frac{\mu_{2}}{\mu_{1}} + \theta_{21} \right )^{3/2}} \lambda_{21}
 
     and
 
     .. math::
 
-         \lambda_{21} = 9 + \ln \left| B \left ( \frac{T^{3}_{1}}{n_{1}} \right )^{1/2} \left( \frac{\theta_{21} +
+         \lambda_{21} = 9 + \ln \left| B \left ( \frac{T^{3}_{1}}{n_{1}}
+         \right )^{1/2} \left( \frac{\theta_{21} +
          \frac{\mu_{2}}{\mu_1}}{Z_{1}Z_{2}(\mu_{1} + \mu_{2})} \right )
          \left( \frac{n_{2}Z_{2}^{2}}{n_{1}Z_{1}^{2}} + \theta_{21}
          \right)^{1/2}\right |
 
-    With :math:`\eta = \frac{n_{2}}{n_{1}}`, :math:`\theta = \frac{T_{2}}{T_{1}}`, :math:`A = 2.60 \times 10^{7} \,
-    {\rm cm}^{3} \, {\rm km} \, {\rm K}^{3/2} \, {\rm s}^{-1} \, {\rm au}^{-1}`, and :math:`B = 1 \, {\rm cm}^{-3/2}{
-    \rm K}^{-3/2}`.
+    With :math:`\eta = \frac{n_{2}}{n_{1}}`, :math:`\theta =
+    \frac{T_{2}}{T_{1}}`, :math:`A = 2.60 \times 10^{7} \, {\rm cm}^{3}
+    \, {\rm km} \, {\rm K}^{3/2} \, {\rm s}^{-1} \, {\rm au}^{-1}`,
+    and :math:`B = 1 \, {\rm cm}^{-3/2}{\rm K}^{-3/2}`.
 
     The thermalization is from Coulomb collisions, which assumes
     “soft”, small-angle deflections mediated by the electrostatic
@@ -191,15 +194,26 @@ def thermalization_ratio(
     >>> T_1 = [1.5 * 10**5, 2.1 * 10**5, 1.7 * 10**5] * u.K
     >>> T_2 = [2.5 * 10**6, 1.8 * 10**6, 2.8 * 10**6] * u.K
     >>> ions = [Particle("p+"), Particle("He-4++")]
-    >>> theta = thermalization_ratio(r_0, r_n, n_1, n_2, v_1, T_1, T_2, ions)
+    >>> theta = thermalization_ratio(r_0=r_0, r_n=r_n, n_1=n_1, n_2=n_2, v_1=v_1, T_1=T_1, T_2=T_2, ions=ions)
     [3.380592535792352, 1.690932692788673, 3.3731383760854725]
     """
+
+    # Validate ions argument
+    if not isinstance(ions, (list, tuple, ParticleList)):
+        ions = [ions]
+    ions = ParticleList(ions)
 
     # Validate number of ions
     if len(ions) != 2:
         raise ValueError(
-            "Argument 'ions' can only take two input values. Instead "
-            f"received {len(ions)} input values."
+            "Argument 'ions' can only take two (2) input values. "
+            f"Instead received {len(ions)} input values."
+        )
+
+    if not all(ions.is_category("ion")):
+        raise ValueError(
+            f"Particle(s) in 'ions' must be ions, received {ions=} "
+            "instead. Please renter the 'ions' input parameter."
         )
 
     # Validate n_step argument
@@ -248,7 +262,7 @@ def thermalization_ratio(
         A = 2.6 * 10**7 * (u.cm**3 * u.km * (u.K**1.5)) / (u.s * u.au)
         B = 1 / (u.cm * u.K) ** 1.5
 
-        # Define Coulomb log for mixed ion collisions
+        # Define Coulomb log for mixed ion collisions, see notes
         def lambda_ba(
             theta,
             T_1,
@@ -337,7 +351,6 @@ def thermalization_ratio(
         return res
 
     else:
-        print(r_0, r_n, n_1, n_2, v_1, T_1, T_2)
         raise ValueError(
             "Argument(s) are of unequal lengths, the following "
             "arguments should be of equal length: 'r_0', 'r_n', "
