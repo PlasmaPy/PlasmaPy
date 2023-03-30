@@ -156,9 +156,8 @@ class ExcessStatistics:
 
         Returns
         -------
-
         total_time_above_threshold: 1D |array_like|
-         total time above threshold for each value in ``thresholds``.
+            Total time above threshold for each value in ``thresholds``.
         """
 
         return self._total_time_above_threshold
