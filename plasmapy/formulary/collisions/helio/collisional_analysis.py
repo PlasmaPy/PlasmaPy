@@ -43,7 +43,7 @@ def thermalization_ratio(
 
     Parameters
     ----------
-    r_0 : `~astropy.units.Quantity`
+    r_0 : `~astropy.units.Quantity`, |keyword-only|
         Starting position of the plasma in units convertible
         to astronomical units.
 
