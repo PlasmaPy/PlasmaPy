@@ -126,8 +126,8 @@ class ExcessStatistics:
         Example
         -------
         >>> from plasmapy.analysis.time_series.excess_statistics import ExcessStatistics
-        >>> tmp = ExcessStatistics([0, 0, 2, 0, 4], [1, 3, 5], 1)
-        >>> tmp.hist(2)
+        >>> excess_statistics = ExcessStatistics([0, 0, 2, 0, 4], [1, 3, 5], 1)
+        >>> excess_statistics.hist(2)
         (array([[0., 2.],
            [0., 2.],
            [0., 0.]]), array([[0.75, 1.25],
