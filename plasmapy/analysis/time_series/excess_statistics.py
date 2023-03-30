@@ -26,7 +26,7 @@ class ExcessStatistics:
     Raises
     ------
     `ValueError`
-        If ``time_step`` <= 0.
+        If ``time_step`` ≤ 0.
 
     Example
     -------
