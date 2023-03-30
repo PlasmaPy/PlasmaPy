@@ -113,10 +113,10 @@ class ExcessStatistics:
         -------
         hist: 2D `~numpy.ndarray`, shape (``thresholds.size``, ``bins`` )
             For each value in ``thresholds``, returns the estimated PDF of time
-            above threshold. Only returned if ``pdf`` set to True.
+            above threshold. Only returned if ``pdf`` set to `True`.
 
         bin_centers: 2D `~numpy.ndarray`, shape (``thresholds.size``, ``bins`` )
-            Bin centers for ``hist``. Only returned if ``pdf`` set to True.
+            Bin centers for ``hist``. Only returned if ``pdf`` set to `True`.
 
         Raises
         ------
