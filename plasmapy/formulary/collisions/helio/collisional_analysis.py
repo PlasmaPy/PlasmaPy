@@ -70,7 +70,7 @@ def thermalization_ratio(
         Temperature of the secondary ion in units convertible to
         temperature K.
 
-    ions : `Particle`
+    ions : `Particle`, default: ["p+, "He-4 2+"]
         Particle list containing two (2) particles, primary ion of
         interest is entered first, followed by the secondary ion.
 
