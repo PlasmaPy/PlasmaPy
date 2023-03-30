@@ -123,8 +123,8 @@ class ExcessStatistics:
         `TypeError`
             If ``bins`` is not of type `int`.
 
-        Example
-        -------
+        Examples
+        --------
         >>> from plasmapy.analysis.time_series.excess_statistics import ExcessStatistics
         >>> excess_statistics = ExcessStatistics([0, 0, 2, 0, 4], [1, 3, 5], 1)
         >>> excess_statistics.hist(2)
