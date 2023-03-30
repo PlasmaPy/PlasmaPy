@@ -262,7 +262,7 @@ def thermalization_ratio(
             b = (theta + mu_2 / mu_1) / (z_1 * z_2 * (mu_1 + mu_2))
             c = np.sqrt(n_2 * z_2**2 / n_1 * z_1**2 + theta)
             return 9 + np.log(B * a * b * c)
-        #print(T_2/T_1_0)
+
         # Loop.
         for i in range(n_step):
             r = r_n + ((i + 1) * d_r)
@@ -271,27 +271,19 @@ def thermalization_ratio(
             v_1 = v_1_0 * (r / r_n) ** velocity
             T_1 = T_1_0 * (r / r_n) ** temperature
 
-
-
             eta = n_2 / n_1
             theta = T_2 / T_1
 
             alpha = n_1 / (v_1 * (T_1**1.5))
             beta = (
-                (np.sqrt(mu_1 * mu_2) * z_1 * z_2 * (1 - theta) * (1 + eta * theta))
-                / (np.sqrt((mu_2 / mu_1) + theta) ** 3)
-            )
+                np.sqrt(mu_1 * mu_2) * z_1 * z_2 * (1 - theta) * (1 + eta * theta)
+            ) / (np.sqrt((mu_2 / mu_1) + theta) ** 3)
             l_ba = lambda_ba(theta, T_1, n_1, n_2, z_1, z_2, mu_1, mu_2)
 
-            d_theta = (d_r * alpha * l_ba * A * beta)
-            #print(theta, d_theta)
-            #print("A, lamda", A, l_ba)
-
-            #print("alpha, beta", alpha, beta)
-
+            d_theta = d_r * alpha * l_ba * A * beta
 
             theta = theta + d_theta
-        #print(theta, d_theta)
+
         return theta.value
 
     variables = [r_0, r_n, n_1, n_2, v_1, T_1, T_2]
@@ -321,28 +313,27 @@ def thermalization_ratio(
             temperature_scale,
         )
     elif all(len(variables[0]) == len(z) for z in variables[1:]):
-            print(r_0)
-            res = []
-            for i in range(len(variables[0])):
-                res.append(
-                    df_eq(
-                        r_0[i],
-                        r_n[i],
-                        n_1[i],
-                        n_2[i],
-                        v_1[i],
-                        T_1[i],
-                        T_2[i],
-                        ions,
-                        n_step,
-                        density_scale,
-                        velocity_scale,
-                        temperature_scale,
-                    )
+        res = []
+        for i in range(len(variables[0])):
+            res.append(
+                df_eq(
+                    r_0[i],
+                    r_n[i],
+                    n_1[i],
+                    n_2[i],
+                    v_1[i],
+                    T_1[i],
+                    T_2[i],
+                    ions,
+                    n_step,
+                    density_scale,
+                    velocity_scale,
+                    temperature_scale,
                 )
-                print('\r', f"{(i / len(variables[0])) * 100:.2f} %", end="")
+            )
+            print("\r", f"{(i / len(variables[0])) * 100:.2f} %", end="")
 
-            return res
+        return res
 
     else:
         print(r_0, r_n, n_1, n_2, v_1, T_1, T_2)
@@ -351,5 +342,3 @@ def thermalization_ratio(
             "arguments should be of equal length: 'r_0', 'r_n', "
             "'n_1', 'n_2', 'v_1', 'T_1' and 'T_2'."
         )
-
-
