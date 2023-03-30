@@ -81,7 +81,7 @@ def thermalization_ratio(
 
     density_scale : real number, default: -1.8
         The value used as the scaling parameter for the primary ion
-        density. The default value is taken from 
+        density. The default value is taken from
         :cite:t:`hellinger:2011`.
 
     velocity_scale : `float`
