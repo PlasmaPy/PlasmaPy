@@ -1,6 +1,7 @@
 """
 The `~plasmapy.formulary.collisions.helio` subpackage contains
-commonly used heliosphere plasma science, primarily the solar wind.
+functionality for heliospheric plasma science, including the
+solar wind.
 """
 __all__ = ["thermalization_ratio"]
 
