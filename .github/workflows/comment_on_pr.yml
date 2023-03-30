@@ -1,0 +1,37 @@
+name: add comment
+
+on:
+  issues:
+    types: [opened]
+
+jobs:
+  comment:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/github-script@v6
+      with:
+        script: |
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: `Thank you for contributing! ✨ PlasmaPy's future depends on contributors like you, so we deeply appreciate it! 🌱 Please check out the [**contributor guide**](https://docs.plasmapy.org/en/latest/contributing/index.html) for more information on how to contribute.
+
+            The following checklist will help you and the reviewer through the code review process.
+             - Overall
+               - [ ] Does the PR do what it intends to do?
+               - [ ] Except for very minor changes, is a changelog entry included and consistent with the [changelog guide](https://docs.plasmapy.org/en/latest/contributing/changelog_guide.html)?
+               - [ ] Are the continuous integration checks passing? (Most linter problems can be automagically fixed by commenting on this PR with \`pre-commit.ci autofix\`.)
+             - Code
+               - [ ] Is new/updated code readable and consistent with the [coding guide](https://docs.plasmapy.org/en/latest/contributing/coding_guide.html)?
+               - [ ] Can any large functions be split up into shorter functions that each do one thing?
+               - [ ] Are SI units used?
+             - Tests
+               - [ ] Are tests added/updated as required, and consistent with the [testing guide](https://docs.plasmapy.org/en/latest/contributing/testing_guide.html)?
+               - [ ] Are the tests understandable?
+               - [ ] Do the tests cover all important cases?
+             - Docs
+               - [ ] Are docs added/updated as required, and consistent with the [doc guide](https://docs.plasmapy.org/en/latest/contributing/doc_guide.html)?
+               - [ ] Are the docs understandable?
+               - [ ] Do the docs show up correctly in the preview, including Jupyter notebooks?`
+          })
