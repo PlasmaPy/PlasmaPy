@@ -241,7 +241,7 @@ def thermalization_ratio(
         mu_2 = ions[1].mass_number
 
         # Initialise.
-        d_r = (r_0 - r_n) / (1.0 * n_step)
+        d_r = (r_0 - r_n) / n_step
 
         # Define constants
         A = 2.6 * 10**7 * (u.cm**3 * u.km * (u.K**1.5)) / (u.s * u.au)
