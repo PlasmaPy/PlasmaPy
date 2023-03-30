@@ -4,7 +4,9 @@ import pytest
 from astropy import units as u
 from astropy.constants.si import c
 
-from plasmapy.formulary.collisions.helio.collisional_analysis import thermalization_ratio
+from plasmapy.formulary.collisions.helio.collisional_analysis import (
+    thermalization_ratio,
+)
 from plasmapy.particles import Particle
 
 c_si_unitless = c.value
