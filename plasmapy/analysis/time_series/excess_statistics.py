@@ -33,14 +33,14 @@ class ExcessStatistics:
     Example
     -------
     >>> from plasmapy.analysis.time_series.excess_statistics import ExcessStatistics
-    >>> tmp = ExcessStatistics([0, 0, 2, 2, 0, 4], [1, 3, 5], 1)
-    >>> tmp.total_time_above_threshold
+    >>> excess_statistics = ExcessStatistics([0, 0, 2, 2, 0, 4], [1, 3, 5], 1)
+    >>> excess_statistics.total_time_above_threshold
     [3, 1, 0]
-    >>> tmp.number_of_crossings
+    >>> excess_statistics.number_of_crossings
     [2, 1, 0]
-    >>> tmp.average_times
+    >>> excess_statistics.average_times
     [1.5, 1.0, 0]
-    >>> tmp.rms_times
+    >>> excess_statistics.rms_times
     [0.5, 0.0, 0]
     """
 
