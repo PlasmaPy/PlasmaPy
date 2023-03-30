@@ -102,7 +102,8 @@ class ExcessStatistics:
 
     def hist(self, bins=32):
         """
-        Calculates the pdf P(time_step| thresholds).
+        Computes the probability density function of the time above each value
+        in ``thresholds``.
 
         Parameters
         ----------
