@@ -16,6 +16,7 @@ from plasmapy.utils.decorators import validate_quantities
     T_2={"can_be_negative": False, "equivalencies": u.temperature_energy()},
 )
 def thermalization_ratio(
+    *,
     r_0: u.au,
     r_n: u.au,
     n_1: u.cm**-3,
@@ -60,7 +61,7 @@ def thermalization_ratio(
         to m\ :sup:`-3`.
 
     v_1 : `~astropy.units.Quantity`
-        The primary ion speed in units convertible to kms\ :sup:`-1`.
+        The primary ion speed in units convertible to km s\ :sup:`-1`.
 
     T_1 : `~astropy.units.Quantity`
         Temperature of the primary ion in units convertible to
