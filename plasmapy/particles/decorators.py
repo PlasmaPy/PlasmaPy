@@ -228,7 +228,7 @@ class _ParticleInput:
         -------
         `dict` of `str` to `object`
         """
-        return self._data.get("annotations", None)
+        return self._data.get("annotations")
 
     @property
     def require(self) -> Optional[set]:
@@ -517,7 +517,7 @@ class _ParticleInput:
             other annotations, this method will return ``argument``
             without alteration.
         """
-        annotation = self.annotations.get(parameter, None)
+        annotation = self.annotations.get(parameter)
 
         if annotation not in _particle_input_annotations:
             return argument
