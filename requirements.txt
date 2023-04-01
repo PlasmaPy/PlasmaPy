@@ -92,7 +92,7 @@ executing==1.2.0
     # via stack-data
 fastjsonschema==2.16.3
     # via nbformat
-filelock==3.10.0
+filelock==3.10.7
     # via
     #   tox
     #   virtualenv
