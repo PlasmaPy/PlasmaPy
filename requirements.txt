@@ -478,7 +478,7 @@ towncrier==22.12.0
     # via
     #   plasmapy (setup.py)
     #   sphinx-changelog
-tox==4.4.7
+tox==4.4.8
     # via plasmapy (setup.py)
 tqdm==4.65.0
     # via plasmapy (setup.py)
