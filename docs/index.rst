@@ -14,6 +14,22 @@ PlasmaPy Documentation
 PlasmaPy_ is an open source community-developed Python_ |minpython|\ +
 package for plasma research and education.
 
+New users should check out our `getting started notebooks
+<getting-started-notebooks>`_, followed by PlasmaPy's
+:ref:`example gallery <examples>`. Please feel free to ask questions in
+our `Matrix chat room`_, during our weekly virtual `office hours`_, or
+in a `new discussion on GitHub`_.
+
+PlasmaPy is developed openly `on GitHub <PlasmaPy's GitHubrepository>`_.
+Please check out our |contributor guide| if you would like to
+contribute.
+
+.. important::
+
+   If you use PlasmaPy for work presented in a publication or talk,
+   please help the project by following these instructions to
+   :ref:`cite or acknowledge <citation>` PlasmaPy.
+
 .. toctree::
    :caption: First Steps
    :maxdepth: 1
@@ -24,27 +40,6 @@ package for plasma research and education.
    COMMUNICATION
    Code of Conduct <CODE_OF_CONDUCT.rst>
    about/citation
-
-.. New users should check out our `getting started notebooks
-   <getting-started-notebooks>`_, followed by PlasmaPy's
-   :ref:`example gallery <examples>`.
-
-.. note::
-
-   PlasmaPy is developed openly `on GitHub <PlasmaPy's GitHubrepository>`_.
-   Please check out our |contributor guide| if you would like to
-   contribute.
-
-.. tip::
-
-   Please feel free to ask questions in our `Matrix chat room`_, during
-   our weekly virtual `office hours`_, or in a `new discussion on GitHub`_.
-
-.. important::
-
-   If you use PlasmaPy for work presented in a publication or talk,
-   please help the project by following these instructions to
-   :ref:`cite or acknowledge <citation>` PlasmaPy.
 
 Example highlights
 ------------------
