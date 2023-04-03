@@ -12,17 +12,17 @@ PlasmaPy Documentation
 ######################
 
 PlasmaPy_ is an open source community-developed Python_ |minpython|\ +
-package for plasma research and education.
+package for plasma research and education. PlasmaPy is a platform by
+which the plasma community can share code and collaboratively develop
+new software tools for plasma research.
 
-New users should check out our `getting started notebooks
-<getting-started-notebooks>`_, followed by PlasmaPy's
-:ref:`example gallery <examples>`. Please feel free to ask questions in
-our `Matrix chat room`_, during our weekly virtual `office hours`_, or
-in a `new discussion on GitHub`_.
+If you are new to PlasmaPy, please check out our `getting started
+notebooks <getting-started-notebooks>`_ and our :ref:`example gallery
+<examples>`. We invite you to share ideas and ask questions in our
+`Matrix chat room`_ or during our weekly virtual `office hours`_.
 
-PlasmaPy is developed openly `on GitHub <PlasmaPy's GitHubrepository>`_.
-Please check out our |contributor guide| if you would like to
-contribute.
+PlasmaPy is developed openly `on GitHub <PlasmaPy's GitHub repository>`_,
+where you can `request a new feature`_ or `report a bug`_.
 
 .. important::
 
@@ -94,3 +94,5 @@ Example highlights
    GitHub Repository <https://github.com/PlasmaPy/PlasmaPy>
 
 .. _new discussion on GitHub: https://github.com/PlasmaPy/PlasmaPy/discussions/new/choose
+.. _report a bug: https://github.com/PlasmaPy/PlasmaPy/issues/new?assignees=&labels=Bug&template=bug_report.yml
+.. _request a new feature: https://github.com/PlasmaPy/PlasmaPy/issues/new?assignees=&labels=Feature+request&template=feature_request.yml
