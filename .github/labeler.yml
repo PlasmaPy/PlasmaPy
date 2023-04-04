@@ -15,6 +15,7 @@ Bug:
 'Continuous Integration':
 - .codecov.yaml
 - .github/workflows/*test*.yml
+- .pre-commit-config.yaml
 - CODEOWNERS
 - noxfile.py
 - tox.ini
