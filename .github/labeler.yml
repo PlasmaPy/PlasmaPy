@@ -1,6 +1,10 @@
-# This file lists the
-
-#  https://github.com/actions/labeler
+# This file defines which GitHub labels get applied when files
+# matching certain minimatch globs are changed.
+#
+# Documentation: https://github.com/actions/labeler#pull-request-labeler
+#
+# If a label includes spaces or special characters, enclose it in
+# quotes.
 
 Breaking:
 - changelog/*.breaking*.rst
