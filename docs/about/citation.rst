@@ -9,7 +9,7 @@ Acknowledging and Citing
 
 If you use PlasmaPy for a project that results in a publication, we ask
 that you cite the Zenodo_ record for the specific version of PlasmaPy
-used in your project.  Citing a software package promotes scientific
+used in your project.Citing a software package promotes scientific
 reproducibility, gives credit to its developers, and highlights the
 importance of software as a vital research product.
 
@@ -20,7 +20,7 @@ reference:
    |version_to_cite|, Zenodo, |doi_hyperlink|
 
 This reference may be made, for example, by adding the following line to
-the methods  or acknowledgments section of a paper.
+the methods or acknowledgments section of a paper.
 
    This research made use of PlasmaPy version |version_to_cite|, a
    community-developed open source Python package for plasma research
