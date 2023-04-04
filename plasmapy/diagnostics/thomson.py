@@ -63,7 +63,7 @@ def spectral_density_lite(
     probe_vec: np.ndarray,
     scatter_vec: np.ndarray,
     instr_func_arr: Optional[np.ndarray] = None,
-    notches: Optional[np.ndarray] = None
+    notches: Optional[np.ndarray] = None,
 ) -> tuple[Union[np.floating, np.ndarray], np.ndarray]:
     r"""
     The :term:`lite-function` version of
@@ -252,17 +252,16 @@ def spectral_density_lite(
     if instr_func_arr is not None:
         Skw = np.convolve(Skw, instr_func_arr, mode="same")
 
-    #add notch(es) to the spectrum if any are provided
+    # add notch(es) to the spectrum if any are provided
     if notches is not None:
         if np.shape(notches) == (2,):
             notches = np.array([notches])
-            
+
         for notch in notches:
-            
             x0 = np.argmin(np.abs(wavelengths - notch[0]))
             x1 = np.argmin(np.abs(wavelengths - notch[1]))
             Skw[x0:x1] = 0
-    
+
     return np.mean(alpha), Skw
 
 
@@ -528,7 +527,7 @@ def spectral_density(
 
     probe_vec = probe_vec / np.linalg.norm(probe_vec)
     scatter_vec = scatter_vec / np.linalg.norm(scatter_vec)
-    
+
     # Apply the instrument function
     if instr_func is not None and callable(instr_func):
         # Create an array of wavelengths of the same size as wavelengths
@@ -555,23 +554,25 @@ def spectral_density(
         instr_func_arr /= np.sum(instr_func_arr)
     else:
         instr_func_arr = None
-    
+
     # Valildate notch input
-    
+
     if notches is not None:
         notches_unitless = notches.to(u.m).value
-        
+
         if len(np.shape(notches_unitless)) == 1:
             notches_unitless = np.array([notches_unitless])
-        
+
         for notch in notches_unitless:
             if np.shape(notch) != (2,):
                 raise ValueError("Notches must be pairs of values")
             if notch[0] > notch[1]:
-                raise ValueError("First element of notch cannot be greater than second element.")
+                raise ValueError(
+                    "First element of notch cannot be greater than second element."
+                )
     else:
         notches_unitless = None
-    
+
     alpha, Skw = spectral_density_lite(
         wavelengths.to(u.m).value,
         probe_wavelength.to(u.m).value,
@@ -587,7 +588,7 @@ def spectral_density(
         probe_vec=probe_vec,
         scatter_vec=scatter_vec,
         instr_func_arr=instr_func_arr,
-        notches = notches_unitless,
+        notches=notches_unitless,
     )
 
     return alpha, Skw * u.s / u.rad
@@ -704,7 +705,7 @@ def _spectral_density_model(wavelengths, settings=None, **params):
         probe_vec=probe_vec,
         scatter_vec=scatter_vec,
         instr_func_arr=instr_func_arr,
-        notches = notches,
+        notches=notches,
     )
 
     model_Skw *= 1 / np.max(model_Skw)
