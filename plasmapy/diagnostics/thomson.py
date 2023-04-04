@@ -970,6 +970,9 @@ def spectral_density_model(wavelengths, settings, params):
             "`numpy.delete`."
         )
 
+    if "notches" not in settings:
+        settings["notches"] = None
+
     # TODO: raise an exception if the number of any of the ion or electron
     #       quantities isn't consistent with the number of that species defined
     #       by ifract or efract.
