@@ -1,0 +1,1 @@
+Added a 'notches' keyword option to thomson.spectral_density, which allows users to notch out the output spectrum over a wavelength range. Also made some changes to the thomson fitting models to include the notch as an option.
