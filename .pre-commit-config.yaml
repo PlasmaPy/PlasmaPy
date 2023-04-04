@@ -26,6 +26,7 @@ repos:
     args: [--autofix]
   - id: pretty-format-yaml
     args: [--autofix]
+    exclude: .github/labeler.yml
 
 - repo: https://github.com/tox-dev/pyproject-fmt
   rev: 0.9.2
