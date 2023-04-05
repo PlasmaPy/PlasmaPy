@@ -146,9 +146,6 @@ jobs:
     runs-on: ubuntu-20.04
     needs:
     - initial-tests
-    - comprehensive-tests
-    - documentation
-    - import-plasmapy
     steps:
     - uses: actions/checkout@v3
     - name: Get history and tags for SCM versioning to work
