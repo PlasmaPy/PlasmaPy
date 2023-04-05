@@ -143,6 +143,13 @@ def spectral_density_lite(
         convolved with the spectral density function before it is
         returned.
 
+    notches : (2,) or (N, 2) `~numpy.ndarray`, |keyword-only|
+        A pair of wavelengths in meters which are the endpoints of a notch over
+        which the output Skw is set to 0. Can also be input as a 2D array
+        which contains many such pairs if multiple notches are needed.
+        Defaults to no notch.
+
+
     Returns
     -------
     alpha : float
@@ -253,14 +260,10 @@ def spectral_density_lite(
         Skw = np.convolve(Skw, instr_func_arr, mode="same")
 
     # add notch(es) to the spectrum if any are provided
-    if notches is not None:
-        if np.shape(notches) == (2,):
-            notches = np.array([notches])
-
-        for notch in notches:
-            x0 = np.argmin(np.abs(wavelengths - notch[0]))
-            x1 = np.argmin(np.abs(wavelengths - notch[1]))
-            Skw[x0:x1] = 0
+    for notch in notches:
+        x0 = np.argmin(np.abs(wavelengths - notch[0]))
+        x1 = np.argmin(np.abs(wavelengths - notch[1]))
+        Skw[x0:x1] = 0
 
     return np.mean(alpha), Skw
 
@@ -288,7 +291,7 @@ def spectral_density(
     probe_vec=None,
     scatter_vec=None,
     instr_func: Optional[Callable] = None,
-    notches=None,
+    notches: u.m = None,
 ) -> tuple[Union[np.floating, np.ndarray], np.ndarray]:
     r"""Calculate the spectral density function for Thomson scattering of
     a probe laser beam by a multi-species Maxwellian plasma.
@@ -356,6 +359,13 @@ def spectral_density(
         and returns the instrument point spread function. The
         resulting array will be convolved with the spectral density
         function before it is returned.
+
+    notches : (2,) or (N, 2) `~astropy.units.Quantity`, |keyword-only|
+        A pair of wavelengths which are the endpoints of a notch over
+        which the output Skw is set to 0. Can also be input as a 2D array
+        which contains many such pairs if multiple notches are needed.
+        Should be in units convertible to u.m. Defaults to no notch.
+
 
     Returns
     -------
@@ -560,7 +570,7 @@ def spectral_density(
     if notches is not None:
         notches_unitless = notches.to(u.m).value
 
-        if len(np.shape(notches_unitless)) == 1:
+        if np.ndim(notches_unitless) == 1:
             notches_unitless = np.array([notches_unitless])
 
         for notch in notches_unitless:
@@ -571,7 +581,7 @@ def spectral_density(
                     "First element of notch cannot be greater than second element."
                 )
     else:
-        notches_unitless = None
+        notches_unitless = np.array([[0, 0]])
 
     alpha, Skw = spectral_density_lite(
         wavelengths.to(u.m).value,
