@@ -1,16 +1,20 @@
 # This file defines which GitHub labels get applied when files
-# matching certain minimatch globs are changed.
+# matching certain minimatch glob patterns are changed.
 #
 # Documentation: https://github.com/actions/labeler#pull-request-labeler
 #
-# If a label includes spaces or special characters, enclose it in
-# quotes.
+# If a label includes a space or a pattern begins with an asterisk or
+# special character, enclose it in quotes.
 
 Breaking:
 - changelog/*.breaking*.rst
 
+Bug:
+- changelog/*.bugfix*.rst
+
 'Continuous Integration':
 - .codecov.yaml
+- .github/workflows/*test*.yml
 - .pre-commit-config.yaml
 - CODEOWNERS
 - noxfile.py
@@ -36,6 +40,8 @@ Notebooks:
 - docs/notebooks/**/*
 
 Packaging:
+- .github/workflows/*publish*
+- .github/workflows/*release*
 - MANIFEST.in
 - pyproject.toml
 - setup.*
@@ -66,3 +72,11 @@ plasmapy.simulation:
 
 plasmapy.utils:
 - plasmapy/utils/**/*
+
+Testing:
+- '**/test*.py'
+- '**/conftest.py'
+- .github/workflows/weekly.yml
+- .codecov.yaml
+- noxfile.py
+- tox.ini
