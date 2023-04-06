@@ -85,7 +85,6 @@ tests = [
   "flake8-use-fstring",
   "hypothesis",
   "pre-commit",
-  "pydocstyle",
   "pytest-regressions",
   "pytest-xdist",
   "tomli",
