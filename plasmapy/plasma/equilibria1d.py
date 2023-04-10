@@ -1,3 +1,5 @@
+__all__ = ["HarrisSheet"]
+
 import astropy.constants as const
 import astropy.units as u
 import math
