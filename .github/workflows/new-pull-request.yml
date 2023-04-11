@@ -15,23 +15,29 @@ jobs:
             issue_number: context.issue.number,
             owner: context.repo.owner,
             repo: context.repo.repo,
-            body: `Thank you for contributing! ✨ PlasmaPy's future depends on contributors like you, so we deeply appreciate it! 🌱 Please check out the [**contributor guide**](https://docs.plasmapy.org/en/latest/contributing/index.html) for more information on how to contribute.
+            body: `Thank you for contributing! ✨ PlasmaPy's future depends on contributors like you, so we deeply appreciate it! 🌱
 
-            The following checklist will help you and the reviewer through the code review process.
-             - Overall
-               - [ ] Does the PR do what it intends to do?
-               - [ ] Except for very minor changes, is a changelog entry included and consistent with the [changelog guide](https://docs.plasmapy.org/en/latest/contributing/changelog_guide.html)?
-               - [ ] Are the continuous integration checks passing? (Most linter problems can be automagically fixed by commenting on this PR with \`pre-commit.ci autofix\`.)
-             - Code
-               - [ ] Is new/updated code readable and consistent with the [coding guide](https://docs.plasmapy.org/en/latest/contributing/coding_guide.html)?
-               - [ ] Can any large functions be split up into shorter functions that each do one thing?
-               - [ ] Are SI units used?
-             - Tests
-               - [ ] Are tests added/updated as required, and consistent with the [testing guide](https://docs.plasmapy.org/en/latest/contributing/testing_guide.html)?
-               - [ ] Are the tests understandable?
-               - [ ] Do the tests cover all important cases?
-             - Docs
-               - [ ] Are docs added/updated as required, and consistent with the [doc guide](https://docs.plasmapy.org/en/latest/contributing/doc_guide.html)?
-               - [ ] Are the docs understandable?
-               - [ ] Do the docs show up correctly in the preview, including Jupyter notebooks?`
+            Please check out our [**contributor guide**](https://docs.plasmapy.org/en/latest/contributing/index.html) to learn more about:
+
+             - [Getting ready to contribute](https://docs.plasmapy.org/en/latest/contributing/getting_ready.html#getting-ready-to-contribute)
+             - The [code contribution workflow](https://docs.plasmapy.org/en/latest/contributing/workflow.html#code-contribution-workflow)
+             - [Coding guidelines, conventions, and best practices](https://docs.plasmapy.org/en/latest/contributing/coding_guide.html#coding-guide)
+             - [Writing documentation](https://docs.plasmapy.org/en/latest/contributing/doc_guide.html#writing-documentation) and [documentation troubleshooting](https://docs.plasmapy.org/en/latest/contributing/doc_guide.html#troubleshooting)
+               - PlasmaPy's docs are written in the [reStructuredText]() markup language
+             - [Docstrings](https://docs.plasmapy.org/en/latest/contributing/doc_guide.html#docstrings) follow the [numpydoc standard]() (example)
+            - [Writing tests](https://docs.plasmapy.org/en/latest/contributing/testing_guide.html#testing-guide)
+            - [Adding a changelog entry](https://docs.plasmapy.org/en/latest/contributing/changelog_guide.html#adding-a-changelog-entry)
+
+            Here are some suggestions
+
+             - Here are tips on [writing clean scientific software]().
+             - Write short functions that do exactly one thing with no side effects.
+             - PlasmaPy's documentation is written in [reStructuredText]() and follows the [numpydoc standard]().
+             - Please use SI units within the code, unless there is a strong justification otherwise.
+             - When adding a
+             - Check the
+
+            When the pre-commit check fails, try commenting on this pull request with \`pre-commit.ci autofix\`. This will automagically fix
+
+            If this is your first contribution to PlasmaPy, please add your name to the author list in [\`docs/about/credits.rst\`]().
           })
