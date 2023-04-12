@@ -69,13 +69,13 @@ from plasmapy.analysis.time_series.excess_statistics import ExcessStatistics
 )
 def test_ExcessStatistics(signal, thresholds, time_step, pdf, bins, expected):
     """test excess_stat function"""
-    tmp = ExcessStatistics(signal, thresholds, time_step)
-    assert tmp.total_time_above_threshold == expected[0]
-    assert tmp.number_of_crossings == expected[1]
-    assert tmp.average_times == expected[2]
-    assert tmp.rms_times == expected[3]
+    excess_stats = ExcessStatistics(signal, thresholds, time_step)
+    assert excess_stats.total_time_above_threshold == expected[0]
+    assert excess_stats.number_of_crossings == expected[1]
+    assert excess_stats.average_times == expected[2]
+    assert excess_stats.rms_times == expected[3]
     if pdf:
-        hist, bin_centers = tmp.hist(bins)
+        hist, bin_centers = excess_stats.hist(bins)
         assert np.allclose(hist, expected[4])
         assert np.allclose(bin_centers, expected[5])
 
