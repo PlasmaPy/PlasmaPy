@@ -137,7 +137,7 @@ class ExcessStatistics:
         """
 
         if not isinstance(bins, numbers.Integral):
-            raise TypeError("bins must be of type integer")
+            raise TypeError("bins must be an integer")
 
         hist = np.zeros((len(self.events_per_threshold), bins))
         bin_centers = np.zeros((len(self.events_per_threshold), bins))
