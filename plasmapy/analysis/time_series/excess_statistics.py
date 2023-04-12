@@ -33,7 +33,10 @@ class ExcessStatistics:
     Example
     -------
     >>> from plasmapy.analysis.time_series.excess_statistics import ExcessStatistics
-    >>> excess_statistics = ExcessStatistics([0, 0, 2, 2, 0, 4], [1, 3, 5], 1)
+    >>> signal = [0, 0, 2, 2, 0, 4]
+    >>> thresholds = [1, 3, 5]
+    >>> time_step = 1
+    >>> excess_statistics = ExcessStatistics(signal, thresholds, time_step)
     >>> excess_statistics.total_time_above_threshold
     [3, 1, 0]
     >>> excess_statistics.number_of_crossings
