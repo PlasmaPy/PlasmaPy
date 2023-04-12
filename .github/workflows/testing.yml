@@ -40,7 +40,7 @@ jobs:
       with:
         python-version: ${{ matrix.python }}
     - name: Install Python dependencies
-      run: python -m pip install --progress-bar off --upgrade "tox" codecov
+      run: python -m pip install --progress-bar off --upgrade "tox"
     - name: Run tests
       run: tox ${{ matrix.toxargs }} -e ${{ matrix.toxenv }} -- ${{ matrix.toxposargs }}
   comprehensive-tests:
@@ -89,7 +89,7 @@ jobs:
       with:
         python-version: ${{ matrix.python }}
     - name: Install Python dependencies
-      run: python -m pip install --progress-bar off --upgrade tox codecov
+      run: python -m pip install --progress-bar off --upgrade tox
     - name: Install language-pack-fr and tzdata
       if: startsWith(matrix.name, 'Documentation')
       run: sudo apt-get install graphviz pandoc
