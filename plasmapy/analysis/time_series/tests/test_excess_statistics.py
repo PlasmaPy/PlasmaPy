@@ -89,11 +89,11 @@ def test_ExcessStatistics(signal, thresholds, time_step, pdf, bins, expected):
 
 
 @pytest.mark.parametrize(
-    "signal, thresholds, time_step, bins",
-    [([1, 2], 1, -1, 32), ([1, 2], 1, 1, 1.5)],
+    "signal, thresholds, time_step, bins, exception",
+    [([1, 2], 1, -1, 32, ValueError), ([1, 2], 1, 1, 1.5, TypeError)],
 )
-def test_ExcessStatistics_exception(signal, thresholds, time_step, bins):
+def test_ExcessStatistics_exception(signal, thresholds, time_step, bins, exception):
     """test whether exception is risen"""
-    with pytest.raises((TypeError, ValueError)):
+    with pytest.raises(exception):
         tmp = ExcessStatistics(signal, thresholds, time_step)
         tmp.hist(bins)
