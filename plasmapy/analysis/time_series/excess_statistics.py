@@ -125,7 +125,7 @@ class ExcessStatistics:
         Raises
         ------
         `TypeError`
-            If ``bins`` is not of type `int`.
+            If ``bins`` is not a positive integer.
 
         Examples
         --------
