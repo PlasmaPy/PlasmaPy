@@ -31,16 +31,11 @@ def thermalization_ratio(
     temperature_scale: float = -0.74,
 ):
     r"""
-    Contains the functionality to calculate the collisional
-    thermalization a plasma will undergo in transit, taken from
-    :cite:t:`maruca:2013`. Coulomb collisions are soft, small angle
-    deflections mediated by the electrostatic force and occur between
-    constituent particles of a plasma :cite:t:`baumjohann:1997`.
-    These collisions cause the plasma to thermalize over distance,
-    i.e. the temperature of the plasma will approach thermal
-    equilibrium. This function allows this thermalization to be
-    modeled and predicts the temperature ratio, for different ion
-    species within the plasma, at a different point in space.
+    Calculate the thermalization ratio for a plasma in transit, taken
+    from :cite:t:`maruca:2013`. This function allows the
+    thermalization of a plasma to be modeled, it predicts the
+    temperature ratio for different ion species within a plasma at a
+    different point in space.
 
     Parameters
     ----------
@@ -219,7 +214,7 @@ def thermalization_ratio(
         )
 
     # Validate n_step argument
-    if not isinstance(n_step, Integral):
+    if not isinstance(n_step, numbers.Integral):
         raise TypeError(
             "Argument 'n_step' is of incorrect type, type of "
             f"{type(n_step)} received instead. While 'n_step' must be "
