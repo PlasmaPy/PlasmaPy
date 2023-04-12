@@ -219,7 +219,7 @@ def thermalization_ratio(
         )
 
     # Validate n_step argument
-    if not isinstance(n_step, int):
+    if not isinstance(n_step, Integral):
         raise TypeError(
             "Argument 'n_step' is of incorrect type, type of "
             f"{type(n_step)} received instead. While 'n_step' must be "
