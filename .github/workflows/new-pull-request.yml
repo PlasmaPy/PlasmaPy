@@ -17,25 +17,45 @@ jobs:
             repo: context.repo.repo,
             body: `Thank you for contributing! ✨ PlasmaPy's future depends on contributors like you, so we deeply appreciate it! 🌱
 
-            Please check out our [**contributor guide**](https://docs.plasmapy.org/en/latest/contributing/index.html) to learn more about:
+            [**contributor guide**]: https://docs.plasmapy.org/en/latest/contributing/index.html
+            [Getting ready to contribute]: https://docs.plasmapy.org/en/latest/contributing/getting_ready.html#getting-ready-to-contribute
+            [code contribution workflow]: https://docs.plasmapy.org/en/latest/contributing/workflow.html#code-contribution-workflow
+            [coding tips and guidelines]: https://docs.plasmapy.org/en/latest/contributing/coding_guide.html#coding-guide
+            [Writing documentation]: https://docs.plasmapy.org/en/latest/contributing/doc_guide.html#writing-documentation
+            [documentation troubleshooting]: https://docs.plasmapy.org/en/latest/contributing/doc_guide.html#troubleshooting
+            [Writing tests]: https://docs.plasmapy.org/en/latest/contributing/testing_guide.html#testing-guide
+            [add a changelog entry]: https://docs.plasmapy.org/en/latest/contributing/changelog_guide.html#adding-a-changelog-entry
+            [online documentation]: https://docs.plasmapy/org/en/latest
+            [\`@particle_input\`]:
+            [\`astropy.units\`]:
+            [\`plasmapy.particles\`]:
+            [reStructuredText]:
+            [Docstrings]:
+            [numpydoc standard]:
+            [example docstring]:
 
-             - [Getting ready to contribute](https://docs.plasmapy.org/en/latest/contributing/getting_ready.html#getting-ready-to-contribute)
-             - The [code contribution workflow](https://docs.plasmapy.org/en/latest/contributing/workflow.html#code-contribution-workflow)
-             - [Coding guidelines, conventions, and best practices](https://docs.plasmapy.org/en/latest/contributing/coding_guide.html#coding-guide)
-             - [Writing documentation](https://docs.plasmapy.org/en/latest/contributing/doc_guide.html#writing-documentation) and [documentation troubleshooting](https://docs.plasmapy.org/en/latest/contributing/doc_guide.html#troubleshooting)
-               - PlasmaPy's docs are written in the [reStructuredText]() markup language
-             - [Docstrings](https://docs.plasmapy.org/en/latest/contributing/doc_guide.html#docstrings) follow the [numpydoc standard]() (example)
-            - [Writing tests](https://docs.plasmapy.org/en/latest/contributing/testing_guide.html#testing-guide)
-            - [Adding a changelog entry](https://docs.plasmapy.org/en/latest/contributing/changelog_guide.html#adding-a-changelog-entry)
+            Please check out our [**contributor guide**] and [documentation] to learn more about:
 
-            Here are some suggestions
+             - [Getting ready to contribute]
+             - The [code contribution workflow]
+             - [Coding tips and guidelines]
+             - [Writing documentation] & [documentation troubleshooting]
+             - [Writing tests]
+             - Using [\`astropy.units\`] and [\`plasmapy.particles\`]
 
-             - Here are tips on [writing clean scientific software]().
-             - Write short functions that do exactly one thing with no side effects.
-             - PlasmaPy's documentation is written in [reStructuredText]() and follows the [numpydoc standard]().
+            Please [add a changelog entry], unless this pull request is very minor.
+
+             - Use [\`@particle_input\`] for functions that accept particles as arguments.
+             - Use [\`@validate_quantities\`] for functions that accept [\`Quantity\`] objects as
+
+             - PlasmaPy's documentation is written in [reStructuredText].  [Docstrings] follow the [numpydoc standard] ([example docstring]).
+
              - Please use SI units within the code, unless there is a strong justification otherwise.
              - When adding a
              - Check the
+
+             - Here are tips on [writing clean scientific software]().
+
 
             When the pre-commit check fails, try commenting on this pull request with \`pre-commit.ci autofix\`. This will automagically fix
 
