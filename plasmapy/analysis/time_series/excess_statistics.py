@@ -107,7 +107,7 @@ class ExcessStatistics:
 
         Parameters
         ----------
-        bins : int, optional
+        bins : int, default: 32
             The number of bins in the estimation of the PDF above ``thresholds``.
 
         Returns
