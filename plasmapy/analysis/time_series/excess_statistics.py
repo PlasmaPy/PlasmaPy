@@ -11,8 +11,8 @@ from collections.abc import Iterable
 
 class ExcessStatistics:
     """
-    Calculate total time, number of upwards crossings, average time and rms time
-    above given thresholds of a sequence.
+    Calculate total time, number of upwards crossings, average time and 
+    root-mean-square time above given thresholds of a sequence.
 
     Parameters
     ----------
