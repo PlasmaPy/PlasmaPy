@@ -280,7 +280,6 @@ def thermalization_ratio(
             c = np.sqrt(n_2 * z_2**2 / n_1 * z_1**2 + theta)
             return 9 + np.log(B * a * b * c)
 
-        # Loop.
         for i in range(n_step):
             r = r_n + ((i + 1) * d_r)
 
