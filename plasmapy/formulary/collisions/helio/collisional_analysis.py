@@ -264,7 +264,7 @@ def thermalization_ratio(
         A = 2.6 * 10**7 * (u.cm**3 * u.km * (u.K**1.5)) / (u.s * u.au)
         B = 1 / (u.cm * u.K) ** 1.5
 
-        # Define Coulomb log for mixed ion collisions, see notes
+        # Define Coulomb log for mixed ion collisions, see docstring
         def lambda_ba(
             theta,
             T_1,
