@@ -20,6 +20,14 @@ from plasmapy.analysis.time_series.excess_statistics import ExcessStatistics
         ),
         (
             [0, 2, 0],
+            1,
+            0.5,
+            False,
+            32,
+            ([0.5], [1], [0.5], [0]),
+        ),
+        (
+            [0, 2, 0],
             1.5,
             1,
             False,
