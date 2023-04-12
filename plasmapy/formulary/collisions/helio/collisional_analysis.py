@@ -193,7 +193,7 @@ def thermalization_ratio(
     >>> v_1 = [450, 350, 400] * u.km / u.s
     >>> T_1 = [1.5 * 10**5, 2.1 * 10**5, 1.7 * 10**5] * u.K
     >>> T_2 = [2.5 * 10**6, 1.8 * 10**6, 2.8 * 10**6] * u.K
-    >>> ions = [Particle("p+"), Particle("He-4++")]
+    >>> ions = ["p+", "He-4++"]
     >>> theta = helio.thermalization_ratio(
     ...     r_0=r_0, r_n=r_n, n_1=n_1, n_2=n_2, v_1=v_1, T_1=T_1, T_2=T_2, ions=ions
     ...     )
