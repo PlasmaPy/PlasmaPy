@@ -6,16 +6,19 @@ __all__ = []
 
 import astropy.units as u
 
+from collections.abc import Iterable
 from numbers import Number
-from typing import Dict, Iterable
+from typing import Optional, Union
 
 
 def _get_physical_type_dict(
     iterable: Iterable,
     *,
-    only_quantities=False,
-    numbers_become_quantities=False,
-) -> Dict[u.PhysicalType, u.Quantity]:
+    only_quantities: Optional[bool] = False,
+    numbers_become_quantities: Optional[bool] = False,
+    strict: Optional[bool] = False,
+    allowed_physical_types: Optional[set[Union[str, u.PhysicalType]]] = None,
+) -> dict[u.PhysicalType, u.Quantity]:
     """
     Return a `dict` that contains `~astropy.units.PhysicalType` objects
     as keys and the corresponding objects in ``iterable`` as values.
@@ -36,10 +39,19 @@ def _get_physical_type_dict(
         converted to a |Quantity| or that has a physical type will be
         included in the `dict`. Defaults to `False`.
 
-    numbers_become_quantities : `bool`, |keyword-only|, optional
+    numbers_become_quantities : `bool`, |keyword-only|, default: `False`
         If `True`, `~numbers.Number` objects will be converted into
         dimensionless |Quantity| instances. If `False`,
         `~numbers.Number` objects will be skipped. Defaults to `False`.
+
+    strict : `bool`, |keyword-only|, default: False
+        If `True`, raise a `TypeError` if ``iterable`` provides an
+        object that does not have a physical type.
+
+    allowed_physical_types : `set` of `~astropy.units.PhysicalType`
+        If provided, then if any objects provided by ``iterable`` do not
+        have a physical type in ``allowed_physical_types``, then a
+        `ValueError` will be raised.
 
     Returns
     -------
@@ -58,18 +70,26 @@ def _get_physical_type_dict(
     physical_types = {}
 
     for obj in iterable:
-
         if isinstance(obj, Number) and numbers_become_quantities:
             obj = u.Quantity(obj, u.dimensionless_unscaled)
 
         if only_quantities and not isinstance(obj, u.Quantity):
+            if strict:
+                raise TypeError(f"{obj} is not a Quantity, but should be.")
             continue
 
         try:
             physical_type = u.get_physical_type(obj)
-        except (TypeError, ValueError):
-            pass
+        except (TypeError, ValueError) as exc:
+            if strict:
+                raise TypeError(f"{obj} does not have a physical type.") from exc
         else:
+            if allowed_physical_types and physical_type not in allowed_physical_types:
+                raise ValueError(
+                    f"{obj} has a physical type of {physical_type}, but "
+                    "only the following physical types are allowed: "
+                    f"{allowed_physical_types}."
+                )
             if physical_type in physical_types:
                 raise ValueError(f"Duplicate physical type: {physical_type}")
             physical_types[physical_type] = obj

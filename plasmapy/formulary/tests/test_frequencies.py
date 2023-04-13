@@ -110,10 +110,10 @@ def test_gyrofrequency():
 
     gyrofrequency(1 * u.T, particle="p")
     # testing for user input Z
-    testMeth1 = gyrofrequency(1 * u.T, particle="p", Z=0.8).si.value
-    testTrue1 = 76630665.79318453
+    testMeth1 = gyrofrequency(1 * u.T, particle="H-1", Z=0.8).si.value
+    testTrue1 = 76622320.37
     errStr = f"gyrofrequency() gave {testMeth1}, should be {testTrue1}."
-    assert np.isclose(testMeth1, testTrue1, atol=0.0, rtol=1e-5), errStr
+    assert np.isclose(testMeth1, testTrue1, atol=0.0, rtol=1e-7), errStr
 
     assert_can_handle_nparray(gyrofrequency, kwargs={"signed": True})
 

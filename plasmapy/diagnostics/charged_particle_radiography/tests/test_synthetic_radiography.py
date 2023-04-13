@@ -404,7 +404,6 @@ def test_create_particles():
 
 @pytest.mark.slow
 def test_load_particles():
-
     grid = _test_grid("electrostatic_gaussian_sphere", num=50)
 
     # Cartesian
@@ -786,7 +785,6 @@ def test_gaussian_sphere_analytical_comparison():
 
 @pytest.mark.slow
 def test_add_wire_mesh():
-
     # ************************************************************
     # Test various input configurations
     # ************************************************************

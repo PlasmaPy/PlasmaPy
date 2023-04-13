@@ -1,0 +1,1 @@
+Updated the docstring of `~plasmapy.dispersion.numerical.kinetic_alfven_.kinetic_alfven`.

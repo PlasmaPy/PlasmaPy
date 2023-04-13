@@ -20,14 +20,14 @@ jobs:
       matrix:
         include:
 
-        - name: Python 3.10
+        - name: Python 3.10, pinned dependencies
           os: ubuntu-latest
           python: '3.10'
-          toxenv: py310
+          toxenv: py310-pins
 
         - name: Linters
           os: ubuntu-latest
-          python: 3.8
+          python: '3.10'
           toxenv: linters
 
     steps:
@@ -40,7 +40,7 @@ jobs:
       with:
         python-version: ${{ matrix.python }}
     - name: Install Python dependencies
-      run: python -m pip install --progress-bar off --upgrade "tox<4" codecov
+      run: python -m pip install --progress-bar off --upgrade "tox"
     - name: Run tests
       run: tox ${{ matrix.toxargs }} -e ${{ matrix.toxenv }} -- ${{ matrix.toxposargs }}
   comprehensive-tests:
@@ -52,31 +52,31 @@ jobs:
       matrix:
         include:
 
-        - name: Python 3.8 with minimal dependencies
-          os: ubuntu-latest
-          python: 3.8
-          toxenv: py38-all-minimal
-
-        - name: Python 3.8, all tests, code coverage
-          os: ubuntu-latest
-          python: 3.8
-          toxenv: py38-all-cov
-
-        - name: Python 3.8 (Windows)
-          os: windows-latest
-          python: 3.8
-          toxenv: py38-all
-          toxposargs: --durations=50
-
-        - name: Python 3.8 (MacOS X)
-          os: macos-latest
-          python: 3.8
-          toxenv: py38-all
-
-        - name: Python 3.9, develop mode
+        - name: Python 3.9 with minimal dependencies
           os: ubuntu-latest
           python: 3.9
-          toxenv: py39
+          toxenv: py39-all-minimal
+
+        - name: Python 3.9, all tests, code coverage
+          os: ubuntu-latest
+          python: 3.9
+          toxenv: py39-all-cov
+
+        - name: Python 3.9 (Windows)
+          os: windows-latest
+          python: 3.9
+          toxenv: py39-all
+          toxposargs: --durations=50
+
+        - name: Python 3.9 (MacOS X)
+          os: macos-latest
+          python: 3.9
+          toxenv: py39-all
+
+        - name: Python 3.10, develop mode
+          os: ubuntu-latest
+          python: '3.10'
+          toxenv: py310
           toxargs: --develop
 
     steps:
@@ -89,7 +89,7 @@ jobs:
       with:
         python-version: ${{ matrix.python }}
     - name: Install Python dependencies
-      run: python -m pip install --progress-bar off --upgrade "tox<4" codecov
+      run: python -m pip install --progress-bar off --upgrade tox
     - name: Install language-pack-fr and tzdata
       if: startsWith(matrix.name, 'Documentation')
       run: sudo apt-get install graphviz pandoc
@@ -102,7 +102,7 @@ jobs:
         file: ./coverage.xml
 
   documentation:
-    name: Documentation
+    name: Documentation, pinned dependencies
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -114,32 +114,13 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
-        python-version: 3.8
+        python-version: '3.10'
     - name: Install Python dependencies
-      run: python -m pip install --progress-bar off --upgrade "tox<4"
+      run: python -m pip install --progress-bar off --upgrade tox
     - name: Install language-pack-fr and tzdata
       run: sudo apt-get install graphviz pandoc
     - name: Run tests
-      run: tox -e build_docs -- -q
-
-  codespell:
-    name: codespell
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
-      with:
-        fetch-depth: 0
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: 3.9
-    - name: Install Python dependencies
-      run: python -m pip install --progress-bar off --upgrade "tox<4"
-    - name: Run tests
-      run: tox -e codespell -q
+      run: tox -e build_docs_pins -- -q
 
   import-plasmapy:
     name: Importing PlasmaPy
@@ -154,31 +135,27 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
-        python-version: 3.8
+        python-version: 3.9
     - name: Install Python dependencies
-      run: python -m pip install --progress-bar off --upgrade "tox<4"
+      run: python -m pip install --progress-bar off --upgrade tox
     - name: Import PlasmaPy
-      run: tox -e py38-minimal-pypi-import
+      run: tox -e py39-minimal-pypi-import
 
   build-n-publish:
     name: Packaging
     runs-on: ubuntu-20.04
     needs:
     - initial-tests
-    - comprehensive-tests
-    - documentation
-    - codespell
-    - import-plasmapy
     steps:
     - uses: actions/checkout@v3
     - name: Get history and tags for SCM versioning to work
       run: |
         git fetch --prune --unshallow
         git fetch --depth=1 origin +refs/tags/*:refs/tags/*
-    - name: Set up Python 3.8
+    - name: Set up Python 3.9
       uses: actions/setup-python@v4
       with:
-        python-version: 3.8
+        python-version: 3.9
     - name: Install requirements
       run: |
         pip install --progress-bar off setuptools numpy wheel setuptools_scm twine build pip

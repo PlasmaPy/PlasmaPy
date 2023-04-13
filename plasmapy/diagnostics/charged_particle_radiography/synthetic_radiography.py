@@ -14,8 +14,9 @@ import numpy as np
 import sys
 import warnings
 
+from collections.abc import Iterable
 from tqdm import tqdm
-from typing import Iterable, Union
+from typing import Union
 
 from plasmapy import particles
 from plasmapy.formulary.mathematics import rot_a_to_b
@@ -130,7 +131,6 @@ class Tracker:
         detector_hdir=None,
         verbose=True,
     ):
-
         # self.grid is the grid object
         if isinstance(grids, AbstractGrid):
             self.grids = [
@@ -217,7 +217,6 @@ class Tracker:
             grid.require_quantities(req_quantities, replace_with_zeros=True)
 
             for rq in req_quantities:
-
                 # Check that there are no infinite values
                 if not np.isfinite(grid[rq].value).all():
                     raise ValueError(

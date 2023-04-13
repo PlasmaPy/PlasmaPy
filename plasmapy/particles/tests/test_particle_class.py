@@ -11,7 +11,6 @@ from astropy.constants import c, e, m_e, m_n, m_p
 
 from plasmapy.particles import json_load_particle, json_loads_particle, molecule
 from plasmapy.particles._isotopes import data_about_isotopes
-from plasmapy.particles._special_particles import particle_zoo
 from plasmapy.particles.atomic import known_isotopes
 from plasmapy.particles.exceptions import (
     ChargeError,
@@ -526,7 +525,6 @@ def test_Particle_class(arg, kwargs, expected_dict):
         expected = expected_dict[key]
 
         if inspect.isclass(expected) and issubclass(expected, Exception):
-
             # Exceptions are expected to be raised when accessing certain
             # attributes for some particles.  For example, accessing a
             # neutrino's mass should raise a MissingParticleDataError since
@@ -546,7 +544,6 @@ def test_Particle_class(arg, kwargs, expected_dict):
                 )
 
         else:
-
             try:
                 result = eval(f"particle.{key}")
                 assert result == expected or u.isclose(result, expected, equal_nan=True)
@@ -721,7 +718,6 @@ def test_particle_class_mass_nuclide_mass(isotope: str, ion: str):
         "ion",
         "baryon",
     }:
-
         particle = Isotope.symbol
 
         assert Isotope.nuclide_mass == Ion.mass, (
@@ -730,7 +726,6 @@ def test_particle_class_mass_nuclide_mass(isotope: str, ion: str):
         )
 
     else:
-
         inputerrmsg = (
             f"isotope = {isotope!r} and ion = {ion!r} are "
             f"not valid inputs to this test. The inputs should be "
@@ -782,31 +777,19 @@ def test_particle_bool_error():
         bool(Particle("e-"))
 
 
-particle_antiparticle_pairs = [
-    ("p+", "p-"),
-    ("n", "antineutron"),
-    ("e-", "e+"),
-    ("mu-", "mu+"),
-    ("tau-", "tau+"),
-    ("nu_e", "anti_nu_e"),
-    ("nu_mu", "anti_nu_mu"),
-    ("nu_tau", "anti_nu_tau"),
-]
-
-
-@pytest.mark.parametrize("particle, antiparticle", particle_antiparticle_pairs)
-def test_particle_inversion(particle, antiparticle):
+def test_particle_inversion(particle_antiparticle_pair):
     """Test that particles have the correct antiparticles."""
-    assert Particle(particle).antiparticle == Particle(antiparticle), (
+    particle, antiparticle = particle_antiparticle_pair
+    assert particle.antiparticle == antiparticle, (
         f"The antiparticle of {particle} is found to be "
         f"{~Particle(particle)} instead of {antiparticle}."
     )
 
 
-@pytest.mark.parametrize("particle, antiparticle", particle_antiparticle_pairs)
-def test_antiparticle_inversion(particle, antiparticle):
+def test_antiparticle_inversion(particle_antiparticle_pair):
     """Test that antiparticles have the correct antiparticles."""
-    assert Particle(antiparticle).antiparticle == Particle(particle), (
+    particle, antiparticle = particle_antiparticle_pair
+    assert antiparticle.antiparticle == particle, (
         f"The antiparticle of {antiparticle} is found to be "
         f"{~Particle(antiparticle)} instead of {particle}."
     )
@@ -815,23 +798,6 @@ def test_antiparticle_inversion(particle, antiparticle):
 def test_unary_operator_for_elements():
     with pytest.raises(ParticleError):
         Particle("C").antiparticle
-
-
-@pytest.fixture(params=particle_zoo.everything)
-def particle(request):
-    return Particle(request.param)
-
-
-@pytest.fixture()
-def opposite(particle):
-    try:
-        opposite_particle = ~particle
-    except Exception as exc:
-        raise InvalidParticleError(
-            f"The unary ~ (invert) operator is unable to find the "
-            f"antiparticle of {particle}."
-        ) from exc
-    return opposite_particle
 
 
 class Test_antiparticle_properties_inversion:
@@ -945,10 +911,6 @@ def test_that_object_can_be_dict_key(key):
     assert dictionary[key] is value
 
 
-# TODO: These tests may be refactored using forthcoming functionality in
-#       plasmapy.tests.helpers.  It may be necessary to case the expected
-#       results as certain types (e.g., numpy.float64).
-
 customized_particle_tests = [
     (DimensionlessParticle, {"mass": 1.0, "charge": -1.0}, "mass", 1.0),
     (DimensionlessParticle, {"mass": 0.0, "charge": -1.0}, "charge", -1.0),
@@ -967,11 +929,15 @@ customized_particle_tests = [
     (CustomParticle, {"mass": "100.0 g"}, "mass", 100.0 * u.g),
     (CustomParticle, {"charge": -np.inf * u.kC}, "charge", -np.inf * u.C),
     (CustomParticle, {"charge": "5.0 C"}, "charge", 5.0 * u.C),
+    (CustomParticle, {"Z": 1}, "charge", const.e.si),
+    (CustomParticle, {"Z": 1.5}, "charge", 1.5 * const.e.si),
+    (CustomParticle, {"Z": 1.5}, "charge_number", 1.5),
+    (CustomParticle, {"charge": 1.3 * const.e.si}, "charge_number", 1.3),
 ]
 
 
 @pytest.mark.parametrize("cls, kwargs, attr, expected", customized_particle_tests)
-def test_customized_particles(cls, kwargs, attr, expected):
+def test_custom_particles(cls, kwargs, attr, expected):
     """Test the attributes of dimensionless and custom particles."""
     instance = cls(**kwargs)
     value = getattr(instance, attr)
@@ -1073,6 +1039,7 @@ custom_particle_errors = [
     (CustomParticle, {"mass": np.complex128(5 + 2j) * u.kg}, InvalidParticleError),
     (CustomParticle, {"charge": "not a charge"}, InvalidParticleError),
     (CustomParticle, {"charge": "5.0 km"}, InvalidParticleError),
+    (CustomParticle, {"charge": 1 * u.C, "Z": -1}, InvalidParticleError),
 ]
 
 
@@ -1380,12 +1347,13 @@ particle_json_repr_table = [
     ),
     (
         CustomParticle,
-        {"mass": 5.12 * u.kg, "charge": 6.2 * u.C, "symbol": "ξ"},
+        {"mass": 5.12 * u.kg, "charge": 6.2e-19 * u.C, "symbol": "ξ"},
         '{"plasmapy_particle": {"type": "CustomParticle", \
         "module": "plasmapy.particles.particle_class", \
         "date_created": "...", "__init__": {\
             "args": [], \
-            "kwargs": {"mass": "5.12 kg", "charge": "6.2 C", "symbol": "ξ"}}}}',
+            "kwargs": {"mass": "5.12 kg", "charge": "6.2e-19 C", \
+            "charge_number": "3.869735626165673", "symbol": "ξ"}}}}',
     ),
     (
         DimensionlessParticle,
@@ -1475,12 +1443,58 @@ def test_CustomParticle_cmp():
     assert particle1 != 1
 
 
+@pytest.mark.parametrize(
+    "attr, input",
+    [
+        ("charge", 2 * u.C),
+        ("mass", 2 * u.kg),
+        ("charge_number", 2),
+        ("symbol", "😺"),
+    ],
+)
+def test_CustomParticle_setters(attr, input):
+    custom_particle = CustomParticle()
+    setattr(custom_particle, attr, input)
+    output = getattr(custom_particle, attr)
+    assert input == output
+
+
 test_molecule_table = [
     (2 * 126.90447 * u.u, 0 * u.C, "I2", "I2", None),
     (2 * 126.90447 * u.u, e.si, "I2 1+", "I2 1+", None),
     (2 * 126.90447 * u.u, e.si, "I2 1+", "I2", 1),
     (2 * 126.90447 * u.u, e.si, "II 1+", "II", 1),
 ]
+
+
+@pytest.mark.parametrize(
+    "args, kwargs, expected",
+    [
+        ([], {}, CustomParticle()),
+        ([1 * u.kg], {}, CustomParticle(mass=1 * u.kg)),
+        ([2 * u.C], {}, CustomParticle(charge=2 * u.C)),
+        ([3 * u.kg, 4 * u.C], {}, CustomParticle(mass=3 * u.kg, charge=4 * u.C)),
+        ([5 * u.C, 6 * u.kg], {}, CustomParticle(mass=6 * u.kg, charge=5 * u.C)),
+        ([7 * u.kg], {"Z": 8.9}, CustomParticle(mass=7 * u.kg, Z=8.9)),
+        ([], {"symbol": "..."}, CustomParticle(symbol="...")),
+    ],
+)
+def test_CustomParticle_from_quantities(args, kwargs, expected):
+    actual = CustomParticle._from_quantities(*args, **kwargs)
+    assert actual == expected
+
+
+@pytest.mark.parametrize(
+    "args, kwargs, exception",
+    [
+        ([1 * u.C], {"Z": 2}, InvalidParticleError),
+        ([3 * u.m], {}, InvalidParticleError),
+        ([4 * u.kg, "invalid"], {}, InvalidParticleError),
+    ],
+)
+def test_CustomParticle_from_quantities_errors(args, kwargs, exception):
+    with pytest.raises(exception):
+        CustomParticle._from_quantities(*args, **kwargs)
 
 
 @pytest.mark.parametrize("m, Z, symbol, m_symbol, m_Z", test_molecule_table)

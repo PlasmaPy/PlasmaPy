@@ -17,11 +17,8 @@ from astropy.constants.si import e, eps0
 from numba import njit
 from typing import Optional
 
-import plasmapy.particles
-
 from plasmapy import particles
-from plasmapy.formulary import misc
-from plasmapy.particles import ParticleLike
+from plasmapy.particles import particle_input, ParticleLike
 from plasmapy.particles.exceptions import ChargeError, InvalidParticleError
 from plasmapy.utils.decorators import (
     angular_freq_to_hz,
@@ -36,6 +33,7 @@ e_si_unitless = e.value
 eps0_si_unitless = eps0.value
 
 
+@particle_input(any_of={"charged", "uncharged"})
 @validate_quantities(
     validations_on_return={
         "units": [u.rad / u.s, u.Hz],
@@ -43,7 +41,13 @@ eps0_si_unitless = eps0.value
     }
 )
 @angular_freq_to_hz
-def gyrofrequency(B: u.T, particle: ParticleLike, signed=False, Z=None) -> u.rad / u.s:
+def gyrofrequency(
+    B: u.T,
+    particle: ParticleLike,
+    signed: bool = False,
+    Z: Optional[numbers.Real] = None,
+    mass_numb: Optional[numbers.Integral] = None,
+) -> u.rad / u.s:
     r"""
     Calculate the particle gyrofrequency in units of radians per second.
 
@@ -54,29 +58,26 @@ def gyrofrequency(B: u.T, particle: ParticleLike, signed=False, Z=None) -> u.rad
     B : `~astropy.units.Quantity`
         The magnetic field magnitude in units convertible to tesla.
 
-    particle : `~plasmapy.particles.particle_class.Particle`
-        Representation of the particle species (e.g., 'p' for protons, 'D+'
-        for deuterium, or 'He-4 +1' for singly ionized helium-4). If no
-        charge state information is provided, then the particles are assumed
-        to be singly charged.
+    particle : |particle-like|
+        Representation of the particle species (e.g., ``'p'`` for
+        protons, ``'D+'`` for deuterium, or ``'He-4 1+'`` for singly
+        ionized helium-4).
 
-    signed : `bool`, optional
-        The gyrofrequency can be defined as signed (negative for electron,
-        positive for ion). Default is `False` (unsigned, i.e. always
-        positive).
+    signed : `bool`, default: `False`
+        The gyrofrequency can be defined as signed, where its sign is
+        the sign of the |charge number|. Defaults to unsigned (i.e.,
+        always positive).
 
-    Z : `float` or `~astropy.units.Quantity`, optional
-        The average ionization (arithmetic mean) for a plasma where
-        a macroscopic description is valid. If this quantity is not
-        given then the charge number of the ion
-        is used. This is effectively an average gyrofrequency for the
-        plasma where multiple charge states are present, and should
-        not be interpreted as the gyrofrequency for any single particle.
-        If not provided, it defaults to the charge number of the ``particle``.
+    Z : real number, optional
+        The |charge number| of an ion or neutral atom, if not provided
+        in ``particle``.
+
+    mass_numb : integer, optional
+        The mass number of an isotope, if not provided in ``particle``.
 
     Returns
     -------
-    omega_c : `~astropy.units.Quantity`
+    `~astropy.units.Quantity`
         The particle gyrofrequency in units of radians per second.
 
     Raises
@@ -92,7 +93,7 @@ def gyrofrequency(B: u.T, particle: ParticleLike, signed=False, Z=None) -> u.rad
     Warns
     -----
     : `~astropy.units.UnitsWarning`
-        If units are not provided, SI units are assumed.
+        If units are not provided, and SI units are assumed.
 
     Notes
     -----
@@ -100,49 +101,48 @@ def gyrofrequency(B: u.T, particle: ParticleLike, signed=False, Z=None) -> u.rad
     gyration around magnetic field lines and is given by:
 
     .. math::
-        ω_{c} = \frac{Z e B}{m}
+        ω_{c} = \frac{|Z| e B}{m}
 
-    The particle gyrofrequency is also known as the particle cyclotron
-    frequency or the particle Larmor frequency.
+    If ``signed`` is `True`, then :math:`|Z|` is replaced with
+    :math:`Z`. A particle's gyrofrequency is also known as its
+    *cyclotron frequency* or *Larmor frequency*.
 
     The recommended way to convert from angular frequency to frequency
     is to use an equivalency between cycles per second and hertz, as
     Astropy's `~astropy.units.dimensionless_angles` equivalency does not
-    account for the factor of :math:`2π` needed during this conversion.  The
-    `~astropy.units.dimensionless_angles` equivalency is appropriate
-    when dividing a velocity by an angular frequency to get a length scale.
+    account for the factor of :math:`2π` needed during this conversion.
+    The `~astropy.units.dimensionless_angles` equivalency is appropriate
+    when dividing a velocity by an angular frequency to get a length
+    scale.
 
     Examples
     --------
     >>> from astropy import units as u
-    >>> gyrofrequency(0.1*u.T, 'e-')
+    >>> gyrofrequency(0.1 * u.T, 'e-')
     <Quantity 1.7588...e+10 rad / s>
-    >>> gyrofrequency(0.1*u.T, 'e-', to_hz=True)
+    >>> gyrofrequency(0.1 * u.T, 'e-', to_hz=True)
     <Quantity 2.79924...e+09 Hz>
-    >>> gyrofrequency(0.1*u.T, 'e-', signed=True)
+    >>> gyrofrequency(0.1 * u.T, 'e-', signed=True)
     <Quantity -1.75882...e+10 rad / s>
-    >>> gyrofrequency(0.01*u.T, 'p')
+    >>> gyrofrequency(0.01 * u.T, 'p+')
     <Quantity 957883.32... rad / s>
-    >>> gyrofrequency(0.01*u.T, 'p', signed=True)
+    >>> gyrofrequency(0.01 * u.T, 'p+', signed=True)
     <Quantity 957883.32... rad / s>
-    >>> gyrofrequency(0.01*u.T, particle='T+')
+    >>> gyrofrequency(0.01 * u.T, particle='T+')
     <Quantity 319964.5... rad / s>
-    >>> gyrofrequency(0.01*u.T, particle='T+', to_hz=True)
+    >>> gyrofrequency(0.01 * u.T, particle='T+', to_hz=True)
     <Quantity 50923.9... Hz>
-    >>> omega_ce = gyrofrequency(0.1*u.T, 'e-')
+    >>> gyrofrequency(250 * u.G, particle="Fe", mass_numb=56, Z=13)
+    <Quantity 560682.34875287 rad / s>
+    >>> omega_ce = gyrofrequency(0.1 * u.T, 'e-')
     >>> print(omega_ce)
     1758820... rad / s
     >>> f_ce = omega_ce.to(u.Hz, equivalencies=[(u.cy/u.s, u.Hz)])
     >>> print(f_ce)
     279924... Hz
-
     """
-    m = particles.particle_mass(particle)
-    Z = misc._grab_charge(particle, Z)
-    if not signed:
-        Z = abs(Z)
-
-    return u.rad * (Z * e * np.abs(B) / m).to(1 / u.s)
+    q = particle.charge if signed else abs(particle.charge)
+    return u.rad * (q * np.abs(B) / particle.mass).to(1 / u.s)
 
 
 oc_ = gyrofrequency
@@ -294,15 +294,15 @@ def plasma_frequency(n: u.m**-3, particle: ParticleLike, z_mean=None) -> u.rad /
     Examples
     --------
     >>> from astropy import units as u
-    >>> plasma_frequency(1e19*u.m**-3, particle='p')
+    >>> plasma_frequency(1e19 * u.m**-3, particle='p')
     <Quantity 4.16329...e+09 rad / s>
-    >>> plasma_frequency(1e19*u.m**-3, particle='p', to_hz=True)
+    >>> plasma_frequency(1e19 * u.m**-3, particle='p', to_hz=True)
     <Quantity 6.62608...e+08 Hz>
-    >>> plasma_frequency(1e19*u.m**-3, particle='D+')
+    >>> plasma_frequency(1e19 * u.m**-3, particle='D+')
     <Quantity 2.94462...e+09 rad / s>
-    >>> plasma_frequency(1e19*u.m**-3, 'e-')
+    >>> plasma_frequency(1e19 * u.m**-3, 'e-')
     <Quantity 1.78398...e+11 rad / s>
-    >>> plasma_frequency(1e19*u.m**-3, 'e-', to_hz=True)
+    >>> plasma_frequency(1e19 * u.m**-3, 'e-', to_hz=True)
     <Quantity 2.83930...e+10 Hz>
 
     For user convenience
@@ -417,9 +417,9 @@ def lower_hybrid_frequency(B: u.T, n_i: u.m**-3, ion: ParticleLike) -> u.rad / u
     Examples
     --------
     >>> from astropy import units as u
-    >>> lower_hybrid_frequency(0.2*u.T, n_i=5e19*u.m**-3, ion='D+')
+    >>> lower_hybrid_frequency(0.2 * u.T, n_i = 5e19 * u.m**-3, ion='D+')
     <Quantity 5.78372...e+08 rad / s>
-    >>> lower_hybrid_frequency(0.2*u.T, n_i=5e19*u.m**-3, ion='D+', to_hz = True)
+    >>> lower_hybrid_frequency(0.2 * u.T, n_i = 5e19 * u.m**-3, ion='D+', to_hz = True)
     <Quantity 92050879.3... Hz>
 
     """
@@ -507,9 +507,9 @@ def upper_hybrid_frequency(B: u.T, n_e: u.m**-3) -> u.rad / u.s:
     Examples
     --------
     >>> from astropy import units as u
-    >>> upper_hybrid_frequency(0.2*u.T, n_e=5e19*u.m**-3)
+    >>> upper_hybrid_frequency(0.2 * u.T, n_e=5e19 * u.m**-3)
     <Quantity 4.00459...e+11 rad / s>
-    >>> upper_hybrid_frequency(0.2*u.T, n_e=5e19*u.m**-3, to_hz = True)
+    >>> upper_hybrid_frequency(0.2 * u.T, n_e=5e19 * u.m**-3, to_hz = True)
     <Quantity 6.37350...e+10 Hz>
 
     """
