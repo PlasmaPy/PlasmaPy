@@ -13,6 +13,7 @@
 
 .. |ClassicalTransport| replace:: :class:`~plasmapy.formulary.braginskii.ClassicalTransport`
 .. |RelativisticBody| replace:: :class:`~plasmapy.formulary.relativity.RelativisticBody`
+.. |SingleParticleCollisionFrequencies| replace:: :class:`~plasmapy.formulary.collisions.frequencies.SingleParticleCollisionFrequencies`
 
 .. ------------------
 .. plasmapy.particles
@@ -103,11 +104,14 @@
 .. |coding guide| replace:: :ref:`coding guide`\
 .. |contributor guide| replace:: :ref:`contributor guide`\
 .. |documentation guide| replace:: :ref:`documentation guide`\
+.. |getting ready to contribute| replace:: :ref:`getting ready to contribute`\
 .. |glossary| replace:: :ref:`glossary`\
 .. |minpython| replace:: 3.9
+.. |maxpython| replace:: 3.10
 .. |plasma-calculator| replace:: :ref:`plasmapy-calculator`\
 .. |release guide| replace:: :ref:`release guide`\
 .. |testing guide| replace:: :ref:`testing guide`\
+.. |code contribution workflow| replace:: :ref:`code contribution workflow <workflow>`\
 
 .. --------------
 .. Glossary terms
@@ -146,7 +150,6 @@
 .. _editable installation: https://pip.pypa.io/en/stable/topics/local-project-installs/#editable-installs
 .. _equivalencies: https://docs.astropy.org/en/stable/units/equivalencies.html
 .. _flake8: https://flake8.pycqa.org/en/latest
-.. _git: https://git-scm.com
 .. _GitHub Actions: https://docs.github.com/en/actions
 .. _GitHub Discussions page: https://github.com/PlasmaPy/PlasmaPy/discussions
 .. _GitHub Flavored Markdown: https://github.github.com/gfm
@@ -168,6 +171,7 @@
 .. _nbqa: https://nbqa.readthedocs.io
 .. _numpydoc: https://numpydoc.readthedocs.io/en/latest/format.html#docstring-standard
 .. _NumPy: https://numpy.org
+.. _office hours: https://www.plasmapy.org/meetings/office_hours/
 .. _OpenPMD: https://www.openpmd.org/
 .. _pandas: https://pandas.pydata.org
 .. _pip: https://pip.pypa.io
@@ -220,14 +224,17 @@
 .. _`CITATION.cff`: https://github.com/PlasmaPy/PlasmaPy/blob/main/CITATION.cff
 .. |CITATION.cff| replace:: :file:`CITATION.cff`
 
-.. _`docs/_static`: https://github.com/PlasmaPy/PlasmaPy/tree/main/docs/_static
-.. |docs/_static| replace:: :file:`docs/_static`
+.. _`docs/_static/`: https://github.com/PlasmaPy/PlasmaPy/tree/main/docs/_static
+.. |docs/_static/| replace:: :file:`docs/_static/`
 
-.. _`docs/_static/css`: https://github.com/PlasmaPy/PlasmaPy/tree/main/docs/_static/css
-.. |docs/_static/css| replace:: :file:`docs/_static/css`
+.. _`docs/_static/css/`: https://github.com/PlasmaPy/PlasmaPy/tree/main/docs/_static/css
+.. |docs/_static/css/| replace:: :file:`docs/_static/css/`
 
-.. _`docs/api_static`: https://github.com/PlasmaPy/PlasmaPy/tree/main/docs/api_static
-.. |docs/api_static| replace:: :file:`docs/api_static`
+.. _`docs/about/credits.rst`: https://github.com/PlasmaPy/PlasmaPy/tree/main/docs/about/credits.rst
+.. |docs/about/credits.rst| replace:: :file:`docs/about/credits.rst`
+
+.. _`docs/api_static/`: https://github.com/PlasmaPy/PlasmaPy/tree/main/docs/api_static
+.. |docs/api_static/| replace:: :file:`docs/api_static/`
 
 .. _`docs/conf.py`: https://github.com/PlasmaPy/PlasmaPy/blob/main/docs/conf.py
 .. |docs/conf.py| replace:: :file:`docs/conf.py`
@@ -240,6 +247,9 @@
 
 .. _`docs/bibliography.bib`: https://github.com/PlasmaPy/PlasmaPy/blob/main/docs/bibliography.bib
 .. |docs/bibliography.bib| replace:: :file:`docs/bibliography.bib`
+
+.. _git: https://git-scm.com
+.. |git| replace:: `git`
 
 .. _h5py: https://www.h5py.org/
 .. |h5py| replace:: `h5py`
@@ -291,6 +301,9 @@
 
 .. _`sphinx-notfound-page`: https://sphinx-notfound-page.readthedocs.io
 .. |sphinx-notfound-page| replace:: `sphinx-notfound-page`
+
+.. _`sphinx-tabs`: https://sphinx-tabs.readthedocs.io/
+.. |sphinx-tabs| replace:: `sphinx-tabs`
 
 .. _`tox.ini`: https://github.com/PlasmaPy/PlasmaPy/blob/main/tox.ini
 .. |tox.ini| replace:: :file:`tox.ini`

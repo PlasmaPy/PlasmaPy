@@ -110,6 +110,7 @@ in parentheses are `ORCID author identifiers <https://orcid.org>`__.
 * :user:`Roberto Díaz Pérez <RoberTnf>`
 * :user:`Samaiyah I. Farid <samaiyahfarid>` (:orcid:`0000-0003-0223-7004`)
 * :user:`Samuel Langendorf <samurai688>` (:orcid:`0000-0002-7757-5879`)
+* :user:`Sarthak Choudhary <martha889>`
 * :user:`Sean Carroll <seanwilliamcarroll>`
 * :user:`Sean Chambers <schambers>`
 * :user:`seanjunheng2`
@@ -133,8 +134,10 @@ in parentheses are `ORCID author identifiers <https://orcid.org>`__.
 * :user:`Tulasi Parashar <tulasinandan>` (:orcid:`0000-0003-0602-8381`)
 * :user:`Veronica Tranquilino <tranqver>`
 * :user:`Vishwas Rajashekar <DarkAEther>` (:orcid:`0000-0002-4914-6612`)
+* :user:`WineDarkMoon`
 * :user:`Wu Tingfeng <elliotwutingfeng>` (:orcid:`0000-0001-8745-204X`)
 * :user:`Yi-Min Huang <yopology>` (:orcid:`0000-0002-4237-2211`)
+* :user:`Michaela Švancarová <mysakli>`
 
 
 This list contains contributors to PlasmaPy's core package and vision
