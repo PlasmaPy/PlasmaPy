@@ -4,6 +4,7 @@ Module containing the Collisional Analysis formulation.
 __all__ = ["thermalization_ratio"]
 
 import astropy.units as u
+import logging
 import numbers
 import numpy as np
 
@@ -29,6 +30,7 @@ def thermalization_ratio(
     density_scale: float = -1.8,
     velocity_scale: float = -0.2,
     temperature_scale: float = -0.74,
+    verbose=False,
 ):
     r"""
     Calculate the thermalization ratio for a plasma in transit, taken
@@ -342,7 +344,8 @@ def thermalization_ratio(
                     temperature_scale,
                 )
             )
-            print("\r", f"{(i / len(variables[0])) * 100:.2f} %", end="")
+            if verbose:
+                logging.info("\r", f"{(i / len(variables[0])) * 100:.2f} %", end="")
 
         return res
 
@@ -352,4 +355,3 @@ def thermalization_ratio(
             "arguments should be of equal length: 'r_0', 'r_n', "
             "'n_1', 'n_2', 'v_1', 'T_1' and 'T_2'."
         )
-

@@ -9,6 +9,7 @@ import inspect
 from plasmapy.formulary.collisions.coulomb import *
 from plasmapy.formulary.collisions.dimensionless import *
 from plasmapy.formulary.collisions.frequencies import *
+from plasmapy.formulary.collisions.helio import *
 from plasmapy.formulary.collisions.lengths import *
 from plasmapy.formulary.collisions.misc import *
 
