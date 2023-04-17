@@ -98,8 +98,8 @@ tests = [
 Changelog = "https://docs.plasmapy.org/en/stable/whatsnew/index.html"
 Chat = "https://plasmapy.org/chat"
 Documentation = "https://docs.plasmapy.org/"
-Issues = "https://github.com/plasmapy/plasmapy/issues/"
-Source = "https://github.com/plasmapy/plasmapy"
+Issues = "https://github.com/PlasmaPy/plasmapy/issues/"
+Source = "https://github.com/PlasmaPy/plasmapy"
 Twitter = "https://twitter.com/PlasmaPy"
 website = "https://www.plasmapy.org"
 [project.scripts]
