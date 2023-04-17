@@ -11,10 +11,14 @@ name = "plasmapy"
 description = "Python package for plasma physics"
 readme = "README.md"
 keywords = [
-  "atomic",
+  "astronomy",
+  "fusion",
+  "heliophysics",
   "plasma",
   "plasma physics",
   "science",
+  "solar physics",
+  "space plasmas",
 ]
 license = {file = "LICENSE.md"}
 requires-python = ">=3.9"
