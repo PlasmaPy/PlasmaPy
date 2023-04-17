@@ -32,11 +32,6 @@ repos:
     # run this hook on `labeler.yml`.
     exclude: .github/labeler.yml
 
-- repo: https://github.com/tox-dev/pyproject-fmt
-  rev: 0.9.2
-  hooks:
-  - id: pyproject-fmt
-
 - repo: https://github.com/pre-commit/mirrors-csslint
   rev: v1.0.5
   hooks:
