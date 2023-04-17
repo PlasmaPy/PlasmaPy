@@ -59,7 +59,7 @@ dependencies = [
 [project.optional-dependencies]
 docs = [
   "docutils>=0.18.1",
-  "jinja2!=3.1,>=3.0.3",
+  "jinja2>=3.1.2",
   "nbsphinx>=0.9.1",
   "numpydoc>=1.5",
   "pillow>=9.5",
