@@ -465,7 +465,7 @@ tomli==2.0.1
     #   pytest
     #   towncrier
     #   tox
-tornado==6.2
+tornado==6.3
     # via
     #   ipykernel
     #   jupyter-client
@@ -516,13 +516,13 @@ webencodings==0.5.1
     #   tinycss2
 websocket-client==1.5.1
     # via jupyter-server
-websockets==11.0.1
+websockets==11.0.2
     # via voila
 widgetsnbextension==4.0.7
     # via ipywidgets
 wrapt==1.15.0
     # via plasmapy (setup.py)
-xarray==2023.4.0
+xarray==2023.4.1
     # via plasmapy (setup.py)
 
 # The following packages are considered to be unsafe in a requirements file:
