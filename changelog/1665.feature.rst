@@ -1,1 +1,2 @@
-Added a Kinetic Alfvén numerical solver to `plasmapy.dispersion`.
+Added `~plasmapy.dispersion.numerical.kinetic_alfven_.kinetic_alfven`,
+which numerically solves dispersion relations for kinetic Alfvén waves.
