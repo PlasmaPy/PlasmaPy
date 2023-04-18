@@ -477,9 +477,9 @@ Requirements
   .. tip::
 
      Maximum requirements can lead to version conflicts when installed
-     alongside other packages, it is better to update PlasmaPy to become
-     compatible with the latest versions of its dependencies than to
-     set a maximum requirement.
+     alongside other packages. It is preferable to update PlasmaPy to 
+     become compatible with the latest versions of its dependencies than
+     to set a maximum requirement.
 
 * Minor versions of Python are generally released in October of each
   year. However, it may take a few months before packages like NumPy_
