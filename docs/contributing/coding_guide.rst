@@ -477,7 +477,7 @@ Requirements
   .. tip::
 
      Maximum requirements can lead to version conflicts when installed
-     alongside other packages. It is preferable to update PlasmaPy to 
+     alongside other packages. It is preferable to update PlasmaPy to
      become compatible with the latest versions of its dependencies than
      to set a maximum requirement.
 
