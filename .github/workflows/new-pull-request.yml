@@ -26,13 +26,15 @@ jobs:
             [Writing tests]: https://docs.plasmapy.org/en/latest/contributing/testing_guide.html#testing-guide
             [add a changelog entry]: https://docs.plasmapy.org/en/latest/contributing/changelog_guide.html#adding-a-changelog-entry
             [online documentation]: https://docs.plasmapy/org/en/latest
-            [\`@particle_input\`]:
-            [\`astropy.units\`]:
-            [\`plasmapy.particles\`]:
-            [reStructuredText]:
+            [\`@particle_input\`]: https://docs.plasmapy.org/en/latest/api/plasmapy.particles.decorators.particle_input.html#particle-input
+            [\`astropy.units\`]: https://docs.plasmapy.org/en/latest/notebooks/getting_started/units.html#Using-Astropy-Units
+            [\`plasmapy.particles\`]: https://docs.plasmapy.org/en/latest/notebooks/getting_started/particles.html#Using-PlasmaPy-Particles
+            [reStructuredText]: https://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html#restructuredtext-primer
             [Docstrings]:
             [numpydoc standard]:
             [example docstring]:
+
+            Don't worry if something broke! We break stuff all the time.   
 
             Please check out our [**contributor guide**] and [documentation] to learn more about:
 
