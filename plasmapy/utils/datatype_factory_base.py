@@ -89,8 +89,9 @@ class BasicRegistrationFactory:
         self.default_widget_type = default_widget_type
 
         self.validation_functions = [
-            "_factory_validation_function"
-        ] + additional_validation_functions
+            "_factory_validation_function",
+            *additional_validation_functions,
+        ]
 
     def __call__(self, *args, **kwargs):
         """

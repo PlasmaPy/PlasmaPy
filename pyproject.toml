@@ -224,9 +224,14 @@ target-version = "py39"
 select = [
   "E", # pycodestyle errors
   "F", # pyflakes
+  "RUF", # ruff specific rules
 ]
 ignore = [
   "E501", # ignore line length violations
+  "RUF001", # ambiguous-unicode-character-string
+  "RUF002", # ambiguous-unicode-character-docstring
+  "RUF003", # ambiguous-unicode-character-comment
+  "RUF100", # unused-noqa (remove if we drop flake8 completely)
 ]
 exclude = [
     ".direnv",

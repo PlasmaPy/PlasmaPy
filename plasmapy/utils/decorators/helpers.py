@@ -79,7 +79,7 @@ def modify_docstring(func=None, prepend: str = None, append: str = None):
         # append docstring lines
         if isinstance(append, str):
             appendlines = inspect.cleandoc(append).splitlines()
-            appendlines = [""] + appendlines
+            appendlines = ["", *appendlines]
         elif append is None:
             appendlines = []
         else:
