@@ -811,9 +811,9 @@ class Test_antiparticle_properties_inversion:
         Test that the antiparticle of the antiparticle of a particle is
         the original particle.
         """
-        assert particle == ~~particle, (
-            f"~~{particle!r} equals {~~particle!r} instead of " f"{particle!r}."
-        )
+        assert (
+            particle == ~~particle
+        ), f"~~{particle!r} equals {~~particle!r} instead of {particle!r}."
 
     def test_opposite_charge(self, particle, opposite):
         """
@@ -859,9 +859,9 @@ def test_particleing_a_particle(arg):
         particle
     ), f"Particle({arg!r}) does not equal Particle(Particle({arg!r})."
 
-    assert particle == Particle(Particle(Particle(particle))), (
-        f"Particle({arg!r}) does not equal " f"Particle(Particle(Particle({arg!r}))."
-    )
+    assert particle == Particle(
+        Particle(Particle(particle))
+    ), f"Particle({arg!r}) does not equal Particle(Particle(Particle({arg!r}))."
 
     assert particle is not Particle(particle), (
         f"Particle({arg!r}) is the same object in memory as "

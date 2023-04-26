@@ -478,9 +478,9 @@ class TestIonizationStateCollectionAttributes:
             assert (
                 len(default_value[element]) == atomic_number(element) + 1
             ), f"Incorrect number of ionization levels for {element}."
-            assert np.all(np.isnan(default_value[element])), (
-                f"The values do not default to an array of nans for " f"{element}."
-            )
+            assert np.all(
+                np.isnan(default_value[element])
+            ), f"The values do not default to an array of nans for {element}."
 
     @pytest.mark.parametrize(
         "uninitialized_attribute", ["abundances", "log_abundances"]
@@ -814,9 +814,7 @@ class TestIonizationStateCollectionDensityEqualities:
             print(f"{that} kwargs:\n {self.dict_of_kwargs[that]}\n")
             self.instances[that].summarize()
             descriptor = "equal" if expect_equality else "unequal"
-            pytest.fail(
-                f"Cases {this} and {that} should be {descriptor} but " f"are not."
-            )
+            pytest.fail(f"Cases {this} and {that} should be {descriptor} but are not.")
 
 
 def test_number_density_assignment():

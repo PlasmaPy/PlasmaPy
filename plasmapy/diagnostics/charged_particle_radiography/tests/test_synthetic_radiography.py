@@ -115,7 +115,7 @@ def _test_grid(
 
     else:
         raise ValueError(
-            "No example corresponding to the provided name " f"({name}) exists."
+            f"No example corresponding to the provided name ({name}) exists."
         )
 
     # If any of the following quantities are missing, add them as empty arrays
@@ -461,7 +461,7 @@ def test_run_options():
     # Test way too big of a max_theta
     sim = cpr.Tracker(grid, source, detector, verbose=True)
     sim.create_particles(1e4, 3 * u.MeV, max_theta=89 * u.deg)
-    with pytest.warns(RuntimeWarning, match="of " "particles entered the field grid"):
+    with pytest.warns(RuntimeWarning, match="of particles entered the field grid"):
         sim.run(field_weighting="nearest neighbor", dt=1e-12 * u.s)
 
     # Test extreme deflections -> warns user
@@ -479,7 +479,7 @@ def test_run_options():
     sim.create_particles(1e4, 3 * u.MeV, max_theta=0.1 * u.deg)
     with pytest.warns(
         RuntimeWarning,
-        match="particles have been " "deflected away from the detector plane",
+        match="particles have been deflected away from the detector plane",
     ):
         sim.run(field_weighting="nearest neighbor", dt=1e-12 * u.s)
     # Calc max deflection: should be between 0 and pi/2

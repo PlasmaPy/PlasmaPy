@@ -224,6 +224,7 @@ select = [
   "C4", # flake8-comprehensions
   "E", # pycodestyle errors
   "F", # pyflakes
+  "ISC", # flake8-implicit-str-concat
   "RUF", # ruff specific rules
   "TRY", # tryceratops
   "UP", # pyupgrade
