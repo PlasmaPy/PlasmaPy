@@ -6,7 +6,7 @@ import astropy.units as u
 import numpy as np
 import pytest
 
-from plasmapy.plasma import grids as grids
+from plasmapy.plasma import grids
 
 rs = np.random.RandomState(120921)
 

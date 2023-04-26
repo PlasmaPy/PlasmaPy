@@ -226,6 +226,7 @@ extend-select = [
   "INP", # flake8-no-pep420
   "ISC", # flake8-implicit-str-concat
   "PIE", # flake8-pie
+  "PLC", # pylint convention
   "PTH", # flake8-use-pathlib
   "RUF", # ruff specific rules
   "S", # flake8-bandit

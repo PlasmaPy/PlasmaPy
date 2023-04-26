@@ -336,7 +336,7 @@ class _ParticleBox(_GenericWidget):
         `bool`
             `True` if the value is empty, `False` otherwise
         """
-        return value is None or value == ""
+        return value is None or value == ""  # noqa: PLC1901
 
     def edge_case(self, value):
         """

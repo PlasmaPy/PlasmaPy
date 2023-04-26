@@ -168,8 +168,8 @@ class TestCheckUnits:
         assert isinstance(norme[0][2], LambdaType)
         assert isinstance(norme[0][3], LambdaType)
         for val in (-20.0, 50.0, 195.0):
-            assert norme[0][2](val) == (lambda x: x - 273.15)(val)
-            assert norme[0][3](val) == (lambda x: x + 273.15)(val)
+            assert norme[0][2](val) == (lambda x: x - 273.15)(val)  # noqa: PLC3002
+            assert norme[0][3](val) == (lambda x: x + 273.15)(val)  # noqa: PLC3002
 
         # not a 2, 3, or 4-tuple
         with pytest.raises(ValueError):
