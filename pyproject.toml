@@ -231,12 +231,18 @@ select = [
   "W", # pycodestyle warnings
 ]
 ignore = [
+  "D100",
+  "D101",
+  "D102",
+  "D103",
+  "D104",
   "D105",
   "D107",
   "D202",
   "D205",
 #  "D302",
   "D400",
+  "D401",
   "D403",
   "E501", # line-too-long
   "RUF001", # ambiguous-unicode-character-string
