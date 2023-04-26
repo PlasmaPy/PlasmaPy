@@ -239,23 +239,11 @@ ignore = [
   "TRY301",
   "UP025", # unicode-kind-prefix
 ]
-exclude = [
-    ".direnv",
+extend-exclude = [
     "docs/plasmapy_sphinx",
-    ".eggs",
-    ".git",
     ".jupyter",
-    ".mypy_cache",
-    ".nox",
-    ".ruff_cache",
-    ".tox",
-    ".venv",
     "__pycache__",
-    "__pypackages__",
     "_build",
-    "build",
-    "dist",
-    "venv",
 ]
 
 [tool.ruff.flake8-import-conventions.aliases]
