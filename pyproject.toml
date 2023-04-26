@@ -227,6 +227,7 @@ select = [
   "ISC", # flake8-implicit-str-concat
   "PIE", # flake8-pie
   "RUF", # ruff specific rules
+  "S", # flake8-bandit
   "TRY", # tryceratops
   "UP", # pyupgrade
   "W", # pycodestyle warnings
@@ -237,6 +238,7 @@ ignore = [
   "RUF002", # ambiguous-unicode-character-docstring
   "RUF003", # ambiguous-unicode-character-comment
   "RUF100", # unused-noqa (remove if we drop flake8 completely)
+  "S101", # asserts
   "TRY003",
   "TRY301",
   "UP025", # unicode-kind-prefix

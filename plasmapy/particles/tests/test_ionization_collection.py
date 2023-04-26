@@ -522,7 +522,7 @@ class TestIonizationStateCollectionAttributes:
         errmsg = f"No {expected_exception} was raised for command\n\n: {command}"
 
         with pytest.raises(expected_exception):
-            exec(command)
+            exec(command)  # noqa: S102
             pytest.fail(errmsg)
 
     def test_setting_ionic_fractions_for_single_element(self):

@@ -39,6 +39,6 @@ class TestPickling:
             pickle.dump(instance, pickle_file)
 
         with open(filename, "rb") as pickle_file:
-            loaded_particle = pickle.load(pickle_file)
+            loaded_particle = pickle.load(pickle_file)  # noqa: S301
 
         assert str(instance) == str(loaded_particle)
