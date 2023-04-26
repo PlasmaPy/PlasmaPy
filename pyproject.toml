@@ -222,6 +222,7 @@ type_incorrect_long = "The filename of the changelog entry must be of the form `
 target-version = "py39"
 select = [
   "C4", # flake8-comprehensions
+  "D",
   "E", # pycodestyle errors
   "F", # pyflakes
   "RUF", # ruff specific rules
@@ -230,6 +231,13 @@ select = [
   "W", # pycodestyle warnings
 ]
 ignore = [
+  "D105",
+  "D107",
+  "D202",
+  "D205",
+#  "D302",
+  "D400",
+  "D403",
   "E501", # line-too-long
   "RUF001", # ambiguous-unicode-character-string
   "RUF002", # ambiguous-unicode-character-docstring
@@ -255,9 +263,13 @@ pandas = "pd"
 [tool.ruff.per-file-ignores]
 "__init__.py" = ["E402", "F401", "F402", "F403"]  # ignore import errors
 "particle_class.py" = ["TRY004"]
+"tests" = ["D100", "D102", "D103"]
 "test_particle_class.py" = ["TRY002"]
 "test_pytest_helpers.py" = ["TRY002"]
 "test_lite_func.py" = ["TRY004"]
+
+[tool.ruff.pydocstyle]
+convention = "numpy"
 
 [tool.ruff.pyupgrade]
 keep-runtime-typing = true  # remove when we drop support for Python 3.9
