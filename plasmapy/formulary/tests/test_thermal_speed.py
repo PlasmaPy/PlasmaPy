@@ -300,12 +300,20 @@ class TestThermalSpeedLite:
     @pytest.mark.parametrize(
         "inputs",
         [
-            dict(T=5 * u.eV, particle=Particle("p"), method="most_probable", ndim=3),
-            dict(T=3000 * u.K, particle=Particle("e"), method="nrl", ndim=2),
-            dict(
-                T=5000 * u.K, particle=Particle("He+"), method="mean_magnitude", ndim=1
-            ),
-            dict(T=1 * u.eV, particle=Particle("Ar+"), method="rms", ndim=3),
+            {
+                "T": 5 * u.eV,
+                "particle": Particle("p"),
+                "method": "most_probable",
+                "ndim": 3,
+            },
+            {"T": 3000 * u.K, "particle": Particle("e"), "method": "nrl", "ndim": 2},
+            {
+                "T": 5000 * u.K,
+                "particle": Particle("He+"),
+                "method": "mean_magnitude",
+                "ndim": 1,
+            },
+            {"T": 1 * u.eV, "particle": Particle("Ar+"), "method": "rms", "ndim": 3},
         ],
     )
     def test_normal_vs_lite_values(self, inputs):

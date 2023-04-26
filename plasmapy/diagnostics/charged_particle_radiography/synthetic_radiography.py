@@ -1270,19 +1270,19 @@ class Tracker:
         v0[:, 1] = np.dot(self.v_init, self.det_hdir)
         v0[:, 2] = np.dot(self.v_init, self.det_vdir)
 
-        return dict(
-            source=self.source,
-            detector=self.detector,
-            mag=self.mag,
-            nparticles=self.nparticles,
-            max_deflection=self.max_deflection.to(u.rad).value,
-            x=xloc,
-            y=yloc,
-            v=v,
-            x0=x0loc,
-            y0=y0loc,
-            v0=v0,
-        )
+        return {
+            "source": self.source,
+            "detector": self.detector,
+            "mag": self.mag,
+            "nparticles": self.nparticles,
+            "max_deflection": self.max_deflection.to(u.rad).value,
+            "x": xloc,
+            "y": yloc,
+            "v": v,
+            "x0": x0loc,
+            "y0": y0loc,
+            "v0": v0,
+        }
 
     def save_results(self, path):
         """

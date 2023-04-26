@@ -222,6 +222,7 @@ type_incorrect_long = "The filename of the changelog entry must be of the form `
 [tool.ruff]
 target-version = "py39"
 select = [
+  "C4", # flake8-comprehensions
   "E", # pycodestyle errors
   "F", # pyflakes
   "RUF", # ruff specific rules

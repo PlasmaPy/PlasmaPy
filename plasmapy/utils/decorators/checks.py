@@ -740,9 +740,7 @@ class CheckUnits(CheckBase):
             out_checks[param.name]["pass_equivalent_units"] = peu
 
         # Does `self.checks` indicate arguments not used by f?
-        missing_params = [
-            param for param in set(self.checks.keys()) - set(out_checks.keys())
-        ]
+        missing_params = list(set(self.checks.keys()) - set(out_checks.keys()))
         if missing_params:
             params_str = ", ".join(missing_params)
             warnings.warn(

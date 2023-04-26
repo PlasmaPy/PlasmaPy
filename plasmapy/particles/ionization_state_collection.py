@@ -767,9 +767,7 @@ class IonizationStateCollection:
         return self._pars["T_e"]
 
     @T_e.setter
-    @validate_quantities(
-        electron_temperature=dict(equivalencies=u.temperature_energy())
-    )
+    @validate_quantities(electron_temperature={"equivalencies": u.temperature_energy()})
     def T_e(self, electron_temperature: u.K):
         """Set the electron temperature."""
         try:
