@@ -415,7 +415,7 @@ class AbstractGrid(ABC):
                 "The axis properties are only valid on uniformly spaced grids."
             )
 
-        vals = self.ds.coords[ax_name].values
+        vals = self.ds.coords[ax_name].to_numpy()
         return vals * self.si_scale_factors[axis] if si else vals * self.units[axis]
 
     def _get_dax(self, *, axis: int, si: bool = False):
@@ -891,7 +891,7 @@ class AbstractGrid(ABC):
             _interp_quantities = np.zeros([npoints, nargs])
 
         for j, arg in enumerate(self._interp_args):
-            _interp_quantities[..., j] = self.ds[arg].values
+            _interp_quantities[..., j] = self.ds[arg].to_numpy()
 
         return _interp_quantities
 

@@ -225,6 +225,7 @@ extend-select = [
   "ICN", # flake8-import-conventions
   "INP", # flake8-no-pep420
   "ISC", # flake8-implicit-str-concat
+  "PD", # pandas-vet
   "PIE", # flake8-pie
   "PLC", # pylint convention
   "PLE", # pylint errors
