@@ -227,6 +227,7 @@ select = [
   "F", # pyflakes
   "RUF", # ruff specific rules
   "UP", # pyupgrade
+  "W", # pycodestyle warnings
 ]
 ignore = [
   "E501", # line-too-long
