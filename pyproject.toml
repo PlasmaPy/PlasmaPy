@@ -224,6 +224,7 @@ extend-select = [
   "C4", # flake8-comprehensions
   "ISC", # flake8-implicit-str-concat
   "PIE", # flake8-pie
+  "PTH", # flake8-use-pathlib
   "RUF", # ruff specific rules
   "S", # flake8-bandit
   "TRY", # tryceratops
@@ -246,6 +247,7 @@ extend-exclude = [
     ".jupyter",
     "__pycache__",
     "_build",
+    "_dev",
 ]
 
 [tool.ruff.flake8-import-conventions.aliases]

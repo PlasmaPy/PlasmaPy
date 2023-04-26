@@ -23,8 +23,8 @@ from datetime import datetime
 from pkg_resources import parse_version
 from sphinx.application import Sphinx
 
-sys.path.insert(0, os.path.abspath(".."))
-sys.path.insert(0, os.path.abspath("."))
+sys.path.insert(0, os.path.abspath(".."))  # noqa: PTH100
+sys.path.insert(0, os.path.abspath("."))  # noqa: PTH100
 
 from plasmapy import __version__ as release  # noqa
 
@@ -193,7 +193,7 @@ revision = pv.local[1:] if pv.local is not None else ""
 # This is added to the end of RST files — a good place to put substitutions to
 # be used globally.
 rst_epilog = ""
-with open("common_links.rst") as cl:
+with open("common_links.rst") as cl:  # noqa: PTH123
     rst_epilog += cl.read()
 
 rst_prolog = """
