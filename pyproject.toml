@@ -225,6 +225,7 @@ select = [
   "E", # pycodestyle errors
   "F", # pyflakes
   "RUF", # ruff specific rules
+  "UP", # pyupgrade
 ]
 ignore = [
   "E501", # line-too-long
@@ -232,6 +233,7 @@ ignore = [
   "RUF002", # ambiguous-unicode-character-docstring
   "RUF003", # ambiguous-unicode-character-comment
   "RUF100", # unused-noqa (remove if we drop flake8 completely)
+  "UP025", # unicode-kind-prefix
 ]
 exclude = [
     ".direnv",
@@ -260,6 +262,9 @@ pandas = "pd"
 
 [tool.ruff.per-file-ignores]
 "__init__.py" = ["E402", "F401", "F402", "F403"]  # ignore import errors
+
+[tool.ruff.pyupgrade]
+keep-runtime-typing = true  # remove when we drop support for Python 3.9
 
 [tool.towncrier]
 package = "plasmapy"
