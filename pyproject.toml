@@ -221,6 +221,13 @@ type_incorrect_long = "The filename of the changelog entry must be of the form `
 
 [tool.ruff]
 target-version = "py39"
+select = [
+  "E", # pycodestyle errors
+  "F", # pyflakes
+]
+ignore = [
+  "E501", # ignore line length violations
+]
 exclude = [
     ".direnv",
     "docs/plasmapy_sphinx",
@@ -239,7 +246,7 @@ exclude = [
     "dist",
     "venv",
 ]
-ignore = ["E501"]  # ignore line length violations
+
 
 [tool.ruff.flake8-import-conventions.aliases]
 "astropy.units" = "u"
