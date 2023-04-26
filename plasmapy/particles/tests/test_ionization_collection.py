@@ -454,7 +454,7 @@ class TestIonizationStateCollectionAttributes:
     @pytest.mark.parametrize("uninitialized_attribute", ["T_e", "n0", "n_e"])
     def test_attribute_defaults_to_nan(self, uninitialized_attribute):
         command = f"self.instance.{uninitialized_attribute}"
-        default_value = eval(command)
+        default_value = eval(command)  # noqa: PGH001
         assert np.isnan(default_value), (
             f"{uninitialized_attribute} does not default to nan but "
             f"instead defaults to {default_value}."
@@ -470,7 +470,7 @@ class TestIonizationStateCollectionAttributes:
     )
     def test_attribute_defaults_to_dict_of_nans(self, uninitialized_attribute):
         command = f"self.instance.{uninitialized_attribute}"
-        default_value = eval(command)
+        default_value = eval(command)  # noqa: PGH001
         assert (
             list(default_value.keys()) == self.elements
         ), "Incorrect base particle keys."
@@ -487,7 +487,7 @@ class TestIonizationStateCollectionAttributes:
     )
     def test_abundances_default_to_nans(self, uninitialized_attribute):
         command = f"self.instance.{uninitialized_attribute}"
-        default_value = eval(command)
+        default_value = eval(command)  # noqa: PGH001
         for element in self.elements:
             assert isinstance(default_value[element], Real)
             assert np.isnan(default_value[element])
