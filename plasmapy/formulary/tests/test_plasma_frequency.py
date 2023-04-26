@@ -172,7 +172,7 @@ class TestPlasmaFrequencyLite:
         else:
             try:
                 inputs_unitless["z_mean"] = np.abs(particle.charge_number)
-            except Exception:
+            except Exception:  # noqa: BLE001
                 inputs_unitless["z_mean"] = 1
         if "to_hz" in inputs:
             inputs_unitless["to_hz"] = inputs["to_hz"]

@@ -221,6 +221,7 @@ type_incorrect_long = "The filename of the changelog entry must be of the form `
 target-version = "py39"
 extend-select = [
   "A", # flake8-builtins
+  "BLE", # flake8-blind-except
   "C4", # flake8-comprehensions
   "ICN", # flake8-import-conventions
   "INP", # flake8-no-pep420
@@ -272,7 +273,11 @@ pandas = "pd"
 "test_particle_class.py" = ["TRY002"]
 "test_pytest_helpers.py" = ["TRY002"]
 "test_lite_func.py" = ["TRY004"]
-"plasmapy/particles/tests/test_ionization_state.py" = ["PIE804"]
+"plasmapy/particles/tests/test_ionization_state.py" = ["BLE001", "PIE804"]
+"plasmapy/utils/pytest_helpers/pytest_helpers.py" = ["BLE001"]
+"plasmapy/utils/pytest_helpers/tests/test_pytest_helpers.py" = ["BLE001"]
+"plasmapy/particles/tests/test_ionization_collection.py" = ["BLE001"]
+"plasmapy/particles/tests/test_particle_class.py" = ["BLE001"]
 
 [tool.ruff.pydocstyle]
 convention = "numpy"

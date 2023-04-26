@@ -536,7 +536,7 @@ class _FunctionInfo:
                 self.output_widget.layout.border = "0px"
                 print(f" : {self.fattr(**args_dict)}")
 
-            except Exception as e:
+            except Exception as e:  # noqa: BLE001
                 self.output_widget.layout.border = ERROR_STYLE
                 print(e)
                 print(
