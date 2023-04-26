@@ -81,7 +81,6 @@ docs = [
 tests = [
   "flake8 >= 6.0.0",
   "flake8-absolute-import >= 1.0.0.1",
-  "flake8-implicit-str-concat >= 0.4.0",
   "flake8-mutable >= 1.2.0",
   "flake8-rst-docstrings >= 0.3.0",
   "flake8-simplify >= 0.20.0",
