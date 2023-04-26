@@ -125,7 +125,7 @@ class _GenericWidget(abc.ABC):
         self.set_place_holder("")
         self.widget.observe(self.handle_change, names="value")
 
-    def edge_case(self, value):
+    def edge_case(self, value):  # noqa: B027
         """
         Edge case handling for the widget. This is called within handle_change.
 
