@@ -225,6 +225,7 @@ select = [
   "E", # pycodestyle errors
   "F", # pyflakes
   "ISC", # flake8-implicit-str-concat
+  "PIE", # flake8-pie
   "RUF", # ruff specific rules
   "TRY", # tryceratops
   "UP", # pyupgrade
@@ -260,6 +261,7 @@ pandas = "pd"
 "test_particle_class.py" = ["TRY002"]
 "test_pytest_helpers.py" = ["TRY002"]
 "test_lite_func.py" = ["TRY004"]
+"plasmapy/particles/tests/test_ionization_state.py" = ["PIE804"]
 
 [tool.ruff.pydocstyle]
 convention = "numpy"

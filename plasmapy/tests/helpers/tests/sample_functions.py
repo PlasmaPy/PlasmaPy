@@ -13,29 +13,21 @@ from typing import NoReturn
 class SampleException(Exception):
     """A sample exception to be used for testing purposes."""
 
-    pass
-
 
 class SampleExceptionSubclass(SampleException):
     """
     The subclass of `SampleException` to used for testing purposes.
     """
 
-    pass
-
 
 class SampleWarning(Warning):
     """A sample warning to be used for testing purposes."""
-
-    pass
 
 
 class SampleWarningSubclass(SampleWarning):
     """
     The subclass of `SampleWarning` to be used for testing purposes.
     """
-
-    pass
 
 
 def return_42() -> int:

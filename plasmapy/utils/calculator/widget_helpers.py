@@ -116,7 +116,6 @@ class _GenericWidget(abc.ABC):
         """
         Virtual method to create widget
         """
-        pass
 
     def post_creation(self):
         """
@@ -135,7 +134,6 @@ class _GenericWidget(abc.ABC):
         value: `any`
             Value of the widget
         """
-        pass
 
     def edge_case_condition(self, value):
         """

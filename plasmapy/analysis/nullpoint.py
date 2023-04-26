@@ -42,8 +42,6 @@ class NullPointError(Exception):
        change in future releases.
     """
 
-    pass
-
 
 class NullPointWarning(UserWarning):
     """
@@ -55,8 +53,6 @@ class NullPointWarning(UserWarning):
        This functionality is still under development and the API may
        change in future releases.
     """
-
-    pass
 
 
 class NonZeroDivergence(NullPointError):
@@ -87,8 +83,6 @@ class MultipleNullPointWarning(NullPointWarning):
        This functionality is still under development and the API may
        change in future releases.
     """
-
-    pass
 
 
 class Point:
