@@ -222,7 +222,6 @@ type_incorrect_long = "The filename of the changelog entry must be of the form `
 target-version = "py39"
 select = [
   "C4", # flake8-comprehensions
-  "D",
   "E", # pycodestyle errors
   "F", # pyflakes
   "RUF", # ruff specific rules
@@ -231,19 +230,6 @@ select = [
   "W", # pycodestyle warnings
 ]
 ignore = [
-  "D100",
-  "D101",
-  "D102",
-  "D103",
-  "D104",
-  "D105",
-  "D107",
-  "D202",
-  "D205",
-#  "D302",
-  "D400",
-  "D401",
-  "D403",
   "E501", # line-too-long
   "RUF001", # ambiguous-unicode-character-string
   "RUF002", # ambiguous-unicode-character-docstring
