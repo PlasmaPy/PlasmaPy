@@ -1444,7 +1444,7 @@ def test_CustomParticle_cmp():
 
 
 @pytest.mark.parametrize(
-    "attr, input",
+    "attr, arg",
     [
         ("charge", 2 * u.C),
         ("mass", 2 * u.kg),
@@ -1452,11 +1452,11 @@ def test_CustomParticle_cmp():
         ("symbol", "😺"),
     ],
 )
-def test_CustomParticle_setters(attr, input):
+def test_CustomParticle_setters(attr, arg):
     custom_particle = CustomParticle()
-    setattr(custom_particle, attr, input)
+    setattr(custom_particle, attr, arg)
     output = getattr(custom_particle, attr)
-    assert input == output
+    assert arg == output
 
 
 test_molecule_table = [

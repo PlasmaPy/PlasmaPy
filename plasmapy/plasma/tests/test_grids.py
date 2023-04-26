@@ -225,10 +225,10 @@ abstract_attrs = [
 ]
 
 
-@pytest.mark.parametrize("attr,type,type_in_iter,value", abstract_attrs)
+@pytest.mark.parametrize("attr,type_,type_in_iter,value", abstract_attrs)
 def test_AbstractGrid_uniform_attributes(
     attr,
-    type,
+    type_,
     type_in_iter,
     value,
     abstract_grid_uniform,
@@ -238,7 +238,7 @@ def test_AbstractGrid_uniform_attributes(
     values for the fixture abstract_grid_uniform.
     """
     attr = getattr(abstract_grid_uniform, attr)
-    assert isinstance(attr, type)
+    assert isinstance(attr, type_)
 
     # If the attribute is an iterable, check the type inside too
     if type_in_iter is not None:
@@ -261,10 +261,10 @@ abstract_attrs = [
 ]
 
 
-@pytest.mark.parametrize("attr,type,type_in_iter,value", abstract_attrs)
+@pytest.mark.parametrize("attr,type_,type_in_iter,value", abstract_attrs)
 def test_AbstractGrid_nonuniform_attributes(
     attr,
-    type,
+    type_,
     type_in_iter,
     value,
     abstract_grid_nonuniform,
@@ -275,7 +275,7 @@ def test_AbstractGrid_nonuniform_attributes(
     """
 
     attr = getattr(abstract_grid_nonuniform, attr)
-    assert isinstance(attr, type)
+    assert isinstance(attr, type_)
 
     # If the attribute is an iterable, check the type inside too
     if type_in_iter is not None:
