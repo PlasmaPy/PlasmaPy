@@ -226,6 +226,7 @@ select = [
   "E", # pycodestyle errors
   "F", # pyflakes
   "RUF", # ruff specific rules
+  "TRY", # tryceratops
   "UP", # pyupgrade
   "W", # pycodestyle warnings
 ]
@@ -235,6 +236,8 @@ ignore = [
   "RUF002", # ambiguous-unicode-character-docstring
   "RUF003", # ambiguous-unicode-character-comment
   "RUF100", # unused-noqa (remove if we drop flake8 completely)
+  "TRY003",
+  "TRY301",
   "UP025", # unicode-kind-prefix
 ]
 exclude = [
@@ -264,6 +267,10 @@ pandas = "pd"
 
 [tool.ruff.per-file-ignores]
 "__init__.py" = ["E402", "F401", "F402", "F403"]  # ignore import errors
+"particle_class.py" = ["TRY004"]
+"test_particle_class.py" = ["TRY002"]
+"test_pytest_helpers.py" = ["TRY002"]
+"test_lite_func.py" = ["TRY004"]
 
 [tool.ruff.pyupgrade]
 keep-runtime-typing = true  # remove when we drop support for Python 3.9
