@@ -676,7 +676,7 @@ def run_fit(
     notch=None,
     notch_as_nan=False,
     fit_method="differential_evolution",
-    fit_kws={},
+    fit_kws={},  # noqa: B006
     max_iter=None,
     check_errors=True,
     require_redchi=1,

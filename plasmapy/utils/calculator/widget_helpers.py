@@ -267,7 +267,7 @@ class _FloatBox(_GenericWidget):
         self.min = min
         self.max = max
 
-    def create_widget(self, style={"description_width": "initial"}):
+    def create_widget(self, style={"description_width": "initial"}):  # noqa: B006
         """
         Implements create_widget. description_width is set to initial
         to make the widget as wide as possible.
@@ -368,7 +368,7 @@ class _ParticleBox(_GenericWidget):
         self.widget.layout.border = ""
         self.widget.description = ""
 
-    def create_widget(self, style={"description_width": "initial"}):
+    def create_widget(self, style={"description_width": "initial"}):  # noqa: B006
         """
         Implements create_widget. description_width is set to initial
         to make the widget as wide as possible.

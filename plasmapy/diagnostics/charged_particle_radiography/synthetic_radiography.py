@@ -283,7 +283,7 @@ class Tracker:
         """
         theta = np.zeros([8, self.num_grids])
 
-        for i, grid in enumerate(self.grids):
+        for i, _grid in enumerate(self.grids):
             ind = 0
             for x in (0, -1):
                 for y in (0, -1):
@@ -575,7 +575,7 @@ class Tracker:
         nparticles,
         particle_energy,
         max_theta=None,
-        particle: Particle = Particle("p+"),
+        particle: Particle = Particle("p+"),  # noqa: B008
         distribution="monte-carlo",
     ):
         r"""
@@ -685,7 +685,7 @@ class Tracker:
         self,
         x,
         v,
-        particle: Particle = Particle("p+"),
+        particle: Particle = Particle("p+"),  # noqa: B008
     ):
         r"""
         Load arrays of particle positions and velocities
@@ -775,7 +775,7 @@ class Tracker:
 
         # Wherever a particle is on a grid, include that grid's gridstep
         # in the list of candidate timesteps
-        for i, grid in enumerate(self.grids):
+        for i, _grid in enumerate(self.grids):
             candidates[:, i] = np.where(self.on_grid[:, i] > 0, gridstep[i], np.inf)
 
         # If not, compute a number of possible timesteps

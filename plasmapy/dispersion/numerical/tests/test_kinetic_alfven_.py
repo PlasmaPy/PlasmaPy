@@ -133,7 +133,7 @@ class TestKinetic_Alfven:
 
         assert isinstance(ws, dict)
 
-        for mode, val in ws.items():
+        for _mode, val in ws.items():
             assert isinstance(val, u.Quantity)
             assert val.unit == u.rad / u.s
             assert val.shape == expected["shape"]

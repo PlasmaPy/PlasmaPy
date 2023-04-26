@@ -221,6 +221,16 @@ type_incorrect_long = "The filename of the changelog entry must be of the form `
 target-version = "py39"
 extend-select = [
   "A", # flake8-builtins
+  "B002",
+  "B003",
+  "B004",
+  "B005",
+  "B006",
+  "B007",
+  "B008",
+  "B009",
+  "B010",
+  "B011",
   "BLE", # flake8-blind-except
   "C4", # flake8-comprehensions
   "ICN", # flake8-import-conventions

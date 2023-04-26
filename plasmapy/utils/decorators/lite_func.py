@@ -127,7 +127,7 @@ def bind_lite_func(lite_func, attrs: dict[str, Callable] = None):
             # bind
             setattr(wrapper, bound_name, attr)
 
-        setattr(wrapper, "__bound_lite_func__", __bound_lite_func__)
+        wrapper.__bound_lite_func__ = __bound_lite_func__
 
         return wrapper
 

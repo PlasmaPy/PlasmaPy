@@ -194,7 +194,7 @@ def run_1D_example(name):
 
 
 def run_mesh_example(
-    location=np.array([0, -2, 0]) * u.mm,
+    location=(0, -2, 0) * u.mm,
     extent=(2 * u.mm, 1.5 * u.mm),
     nwires=9,
     wire_diameter=20 * u.um,
