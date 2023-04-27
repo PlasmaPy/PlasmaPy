@@ -236,6 +236,7 @@ extend-select = [
   "PTH", # flake8-use-pathlib
   "RUF", # ruff specific rules
   "S", # flake8-bandit
+  "SIM", # flake8-simplify
   "TID", # flake8-tidy-imports
   "TRY", # tryceratops
   "UP", # pyupgrade
@@ -268,6 +269,34 @@ ignore = [
   "RUF003", # ambiguous-unicode-character-comment
   "RUF100", # unused-noqa (remove if we drop flake8 completely)
   "S101", # asserts
+  "SIM101",
+  "SIM102",
+  "SIM103",
+  "SIM105",
+  "SIM107",
+  "SIM108",
+  "SIM109",
+  "SIM110",
+  "SIM111",
+  "SIM112",
+  "SIM114",
+  "SIM115",
+  "SIM116",
+  "SIM117",
+  "SIM118",
+  "SIM201",
+  "SIM202",
+  "SIM208",
+  "SIM210",
+  "SIM211",
+  "SIM212",
+  "SIM220",
+  "SIM221",
+  "SIM222",
+  "SIM223",
+  "SIM300",
+  "SIM401",
+  "SIM910",
   "TRY003", # raise-vanilla-args
   "TRY301", # raise-within-try
   "UP025", # unicode-kind-prefix
