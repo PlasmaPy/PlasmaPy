@@ -276,9 +276,7 @@ ignore = [
   "N814",
   "N815",
   "N816",
-  "N817",
   "N818",
-  "N999",
   "PLE0605", # invalid-all-format
   "RUF001", # ambiguous-unicode-character-string
   "RUF002", # ambiguous-unicode-character-docstring
