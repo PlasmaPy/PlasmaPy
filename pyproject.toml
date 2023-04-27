@@ -298,7 +298,6 @@ ignore-variadic-names = true
 "plasmapy/particles/tests/test_decorators.py" = ["ARG001", "ARG002"]
 "plasmapy/particles/tests/test_ionization_collection.py" = ["BLE001"]
 "plasmapy/particles/tests/test_ionization_state.py" = ["BLE001", "PIE804"]
-"plasmapy/particles/tests/test_particle_class.py" = ["BLE001"]
 "plasmapy/utils/calculator/widget_helpers.py" = ["ARG002"]
 "plasmapy/utils/pytest_helpers/pytest_helpers.py" = ["BLE001"]
 "plasmapy/utils/pytest_helpers/tests/test_pytest_helpers.py" = ["BLE001"]
