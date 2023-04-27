@@ -258,11 +258,7 @@ ignore = [
   "D401", # non-imperative-mood (should be enabled)
   "D404", # docstring-starts-with-this (should be enabled)
   "D410", # no-blank-line-after-section
-#  "D412", # blank
-  "D413",
-  "D414",
-  "D415",
-  "D418",
+  "D415", # ends-in-punctuation
   "E501", # line-too-long
   "PLE0605",
   "RUF001", # ambiguous-unicode-character-string
