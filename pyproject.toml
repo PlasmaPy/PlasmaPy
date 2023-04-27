@@ -296,7 +296,6 @@ ignore-variadic-names = true
 "docs/conf.py" = ["INP001"]
 "plasmapy/formulary/tests/test_distribution.py" = ["ARG005"]
 "plasmapy/particles/tests/test_decorators.py" = ["ARG001", "ARG002"]
-"plasmapy/utils/calculator/widget_helpers.py" = ["ARG002"]
 "plasmapy/utils/pytest_helpers/pytest_helpers.py" = ["BLE001"]
 "plasmapy/utils/pytest_helpers/tests/test_pytest_helpers.py" = ["BLE001", "TRY002"]
 

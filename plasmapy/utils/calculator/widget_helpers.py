@@ -135,7 +135,7 @@ class _GenericWidget(abc.ABC):
             Value of the widget
         """
 
-    def edge_case_condition(self, value):
+    def edge_case_condition(self, value):  # noqa: ARG002
         """
         Edge case condition for the widget.
 
@@ -162,7 +162,7 @@ class _GenericWidget(abc.ABC):
         """
         self.values_cont[self.property_name] = value
 
-    def display_error(self, value):
+    def display_error(self, value):  # noqa: ARG002
         """
         Handle invalid input provide realtime validation.
 
@@ -207,7 +207,7 @@ class _GenericWidget(abc.ABC):
         )
         self.units_dropdown.observe(self.handle_dropdown_change, names="value")
 
-    def handle_dropdown_change(self, change):
+    def handle_dropdown_change(self, change):  # noqa: ARG002
         """
         Handle change event of the dropdown widget.
 
@@ -338,7 +338,7 @@ class _ParticleBox(_GenericWidget):
         """
         return value is None or value == ""  # noqa: PLC1901
 
-    def edge_case(self, value):
+    def edge_case(self, value):  # noqa: ARG002
         """
         Edge case to handle empty value of particle box
         resets the container value to `None`, and resets the error status.
