@@ -226,6 +226,7 @@ extend-select = [
   "FBT003", # flake8-boolean-trap
   "ICN", # flake8-import-conventions
   "INP", # flake8-no-pep420
+  "INT", # flake8-gettext
   "ISC", # flake8-implicit-str-concat
   "N", # pep8-naming
   "PD", # pandas-vet
