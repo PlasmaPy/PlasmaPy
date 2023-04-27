@@ -90,7 +90,7 @@ class Characteristic:
 
         self.bias = bias
         self.current = current
-        self.get_unique_bias(inplace=True)
+        self = self.get_unique_bias()
         self._check_validity()
 
     def __getitem__(self, key):
