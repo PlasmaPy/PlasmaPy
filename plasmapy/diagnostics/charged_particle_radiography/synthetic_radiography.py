@@ -1291,7 +1291,6 @@ class Tracker:
 
         Parameters
         ----------
-
         path : `str` or `os.path`
             Either the filename (string) or an open file (file-like object)
             where the data will be saved. If file is a string or a Path,
@@ -1300,7 +1299,6 @@ class Tracker:
 
         Notes
         -----
-
         Useful for saving the results from a simulation so they can be
         loaded at a later time and passed into
         `~plasmapy.diagnostics.charged_particle_radiography.synthetic_radiography.synthetic_radiograph`.

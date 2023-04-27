@@ -50,7 +50,6 @@ class BasicRegistrationFactory:
 
     Attributes
     ----------
-
     registry : `dict`
         Dictionary mapping classes (key) to function (value) which validates
         input.
@@ -63,7 +62,6 @@ class BasicRegistrationFactory:
 
     Parameters
     ----------
-
     default_widget_type : `type`, optional
 
     additional_validation_functions : `list` of `str`, optional

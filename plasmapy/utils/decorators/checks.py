@@ -1187,7 +1187,6 @@ def check_values(
 
     Parameters
     ----------
-
     func:
         The function to be decorated
 

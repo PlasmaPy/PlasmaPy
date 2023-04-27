@@ -610,7 +610,6 @@ def thermal_speed(
 
     Notes
     -----
-
     There are multiple methods (or definitions) for calculating the thermal
     speed, all of which give the expression
 

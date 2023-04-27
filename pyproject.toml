@@ -254,13 +254,11 @@ ignore = [
   "D209", # new-line-after-last-paragraph
   "D212", # multi-line-summary-first-line
   "D301", # escape-sequence-in-docstring (should be enabled)
-  "D400", #
-  "D401",
-  "D402",
-  "D404",
-  "D406",
-  "D410",
-  "D412",
+  "D400", # ends-in-period
+  "D401", # non-imperative-mood (should be enabled)
+  "D404", # docstring-starts-with-this (should be enabled)
+  "D410", # no-blank-line-after-section
+#  "D412", # blank
   "D413",
   "D414",
   "D415",

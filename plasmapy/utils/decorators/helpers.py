@@ -31,7 +31,6 @@ def modify_docstring(func=None, prepend: str = None, append: str = None):
 
     Examples
     --------
-
         >>> @modify_docstring(prepend='''Hello''', append='''World''')
         ... def foo():
         ...     '''Beautiful'''

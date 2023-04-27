@@ -249,7 +249,6 @@ def swept_probe_analysis(
 
     Returns
     -------
-
     Results are returned as Dictionary
 
     "T_e" : `astropy.units.Quantity`

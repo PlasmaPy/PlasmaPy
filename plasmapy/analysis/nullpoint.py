@@ -261,7 +261,6 @@ def _trilinear_coeff_cal(vspace, cell):
 
     Parameters
     ----------
-
     vspace: |array_like|
         The vector space as constructed by the vector_space function
         which is a 1 by 3 array with the first element containing the
@@ -375,7 +374,6 @@ def trilinear_approx(vspace, cell):
 
     Parameters
     ----------
-
     vspace: |array_like|
         The vector space as constructed by the vector_space function
         which is a 1 by 3 array with the first element containing the
@@ -444,7 +442,6 @@ def _trilinear_jacobian(vspace, cell):
 
     Parameters
     ----------
-
     vspace: |array_like|
         The vector space as constructed by the vector_space function
         which is a 1 by 3 array with the first element containing the

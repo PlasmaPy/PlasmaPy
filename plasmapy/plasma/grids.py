@@ -957,7 +957,6 @@ class AbstractGrid(ABC):
 
         Returns
         -------
-
         pos: `~numpy.ndarray`
             Position array with dimensions fixed, units converted to
             standard and stripped.
@@ -975,7 +974,6 @@ class AbstractGrid(ABC):
 
         Raises
         ------
-
         KeyError
             A KeyError is raised if one of the args does not correspond
             to a DataArray in the DataSet.

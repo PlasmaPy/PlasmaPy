@@ -41,7 +41,6 @@ def bind_lite_func(lite_func, attrs: dict[str, Callable] = None):
 
     Examples
     --------
-
     .. code-block:: python
 
         def foo_lite(x):
