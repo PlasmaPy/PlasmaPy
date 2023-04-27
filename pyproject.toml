@@ -229,6 +229,7 @@ extend-select = [
   "INT", # flake8-gettext
   "ISC", # flake8-implicit-str-concat
   "N", # pep8-naming
+  "NPY001", # numpy-deprecated-type-alias
   "PD", # pandas-vet
   "PGH", # pygrep-hooks
   "PIE", # flake8-pie
