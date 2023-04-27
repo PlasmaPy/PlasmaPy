@@ -237,7 +237,7 @@ def test_spectral_density_minimal_arguments(single_species_collective_args):
         "instr_func",
     ]
     for key in optional_keys:
-        if key in kwargs.keys():
+        if key in kwargs:
             del kwargs[key]
 
     alpha, Skw = thomson.spectral_density(*args, **kwargs)
@@ -269,7 +269,7 @@ def test_spectral_density_lite_minimal_arguments(single_species_collective_args)
         "instr_func_arr",
     ]
     for key in optional_keys:
-        if key in kwargs.keys():
+        if key in kwargs:
             del kwargs[key]
 
     alpha, Skw = thomson.spectral_density.lite(*args, **kwargs)
@@ -805,7 +805,7 @@ def spectral_density_model_settings_params(kwargs):
     The dictionary needs to hold a Parameter object for Parameters
 
     """
-    if "wavelengths" in kwargs.keys():
+    if "wavelengths" in kwargs:
         wavelengths = kwargs["wavelengths"]
     else:
         raise ValueError("Kwargs must include 'wavelengths'")

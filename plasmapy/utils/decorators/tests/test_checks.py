@@ -421,10 +421,10 @@ class TestCheckUnits:
             assert sorted(checks.keys()) == sorted(case["output"].keys())
 
             # if check key-value not specified then default is assumed
-            for arg_name in case["output"].keys():
+            for arg_name in case["output"]:
                 arg_checks = checks[arg_name]
 
-                for key in default_checks.keys():
+                for key in default_checks:
                     if key in case["output"][arg_name]:
                         val = case["output"][arg_name][key]
                     else:
@@ -844,10 +844,10 @@ class TestCheckValues:
             assert sorted(checks.keys()) == sorted(case["output"].keys())
 
             # if check key-value not specified then default is assumed
-            for arg_name in case["output"].keys():
+            for arg_name in case["output"]:
                 arg_checks = checks[arg_name]
 
-                for key in default_checks.keys():
+                for key in default_checks:
                     if key in case["output"][arg_name]:
                         val = case["output"][arg_name][key]
                     else:

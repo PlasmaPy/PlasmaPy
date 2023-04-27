@@ -684,7 +684,7 @@ def assert_can_handle_nparray(
         Parse parameter names and set up values to input for 0d, 1d, and 2d array tests.
         """
         # first things first: let any passed in kwarg right through (VIP access)
-        if param_name in kwargs.keys():
+        if param_name in kwargs:
             return (kwargs[param_name],) * 4
 
         # else, if it's a recognized variable name, give it a reasonable unit and magnitude

@@ -338,7 +338,7 @@ class IonizationStateCollection:
         self._ionic_fractions[particle][:] = new_fractions.copy()
 
     def __iter__(self):
-        yield from [self[key] for key in self.ionic_fractions.keys()]
+        yield from [self[key] for key in self.ionic_fractions]
 
     def __eq__(self, other):
         if not isinstance(other, IonizationStateCollection):
@@ -443,7 +443,7 @@ class IonizationStateCollection:
                     "ionic_fractions has been set already."
                 )
             old_particles = set(self.base_particles)
-            new_particles = {particle_symbol(key) for key in inputs.keys()}
+            new_particles = {particle_symbol(key) for key in inputs}
             missing_particles = old_particles - new_particles
             if missing_particles:
                 raise ParticleError(
