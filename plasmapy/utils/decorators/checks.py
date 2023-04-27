@@ -1017,7 +1017,6 @@ class CheckUnits(CheckBase):
         """
         Given a list of equivalencies, flatten out any sub-element lists
 
-
         Parameters
         ----------
         elist: list
