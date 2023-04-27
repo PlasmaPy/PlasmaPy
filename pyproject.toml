@@ -260,14 +260,14 @@ ignore = [
   "D410", # no-blank-line-after-section
   "D415", # ends-in-punctuation
   "E501", # line-too-long
-  "PLE0605",
+  "PLE0605", # invalid-all-format
   "RUF001", # ambiguous-unicode-character-string
   "RUF002", # ambiguous-unicode-character-docstring
   "RUF003", # ambiguous-unicode-character-comment
   "RUF100", # unused-noqa (remove if we drop flake8 completely)
   "S101", # asserts
-  "TRY003",
-  "TRY301",
+  "TRY003", # raise-vanilla-args
+  "TRY301", # raise-within-try
   "UP025", # unicode-kind-prefix
 ]
 extend-exclude = [
