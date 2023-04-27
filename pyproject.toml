@@ -269,8 +269,8 @@ ignore = [
   "RUF003", # ambiguous-unicode-character-comment
   "RUF100", # unused-noqa (remove if we drop flake8 completely)
   "S101", # asserts
-  "SIM117",
-  "SIM300",
+  "SIM117", # multiple-with-statements (remove for Python 3.10+)
+  "SIM300", # yoda-conditions
   "TRY003", # raise-vanilla-args
   "TRY301", # raise-within-try
   "UP025", # unicode-kind-prefix
