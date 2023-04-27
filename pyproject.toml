@@ -270,7 +270,6 @@ ignore = [
   "RUF100", # unused-noqa (remove if we drop flake8 completely)
   "S101", # asserts
   "SIM102",
-  "SIM109",
   "SIM110",
   "SIM112",
   "SIM114",
