@@ -269,7 +269,6 @@ ignore = [
   "RUF003", # ambiguous-unicode-character-comment
   "RUF100", # unused-noqa (remove if we drop flake8 completely)
   "S101", # asserts
-  "SIM102",
   "SIM117",
   "SIM300",
   "TRY003", # raise-vanilla-args

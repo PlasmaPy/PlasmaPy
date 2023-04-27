@@ -1375,7 +1375,7 @@ def _vspace_iterator(vspace, maxiter=500, err=1e-10):
     for i in range(len(vspace[0][0]) - 1):
         for j in range(len(vspace[0][0][0]) - 1):
             for k in range(len(vspace[0][0][0][0]) - 1):
-                if _reduction(vspace, [i, j, k]):
+                if _reduction(vspace, [i, j, k]):  # noqa: SIM102
                     if _trilinear_analysis(vspace, [i, j, k]):
                         loc = _locate_null_point(vspace, [i, j, k], maxiter, err)
                         if loc is not None:

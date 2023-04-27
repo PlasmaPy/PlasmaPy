@@ -611,14 +611,15 @@ class IonizationStateCollection:
             raise TypeError("Incorrect inputs to set ionic_fractions.")
 
         for i in range(1, len(_particle_instances)):
-            if _particle_instances[i - 1].element == _particle_instances[i].element:
-                if (
-                    not _particle_instances[i - 1].isotope
-                    and _particle_instances[i].isotope
-                ):
-                    raise ParticleError(
-                        "Cannot have an element and isotopes of that element."
-                    )
+            if (
+                _particle_instances[i - 1].element == _particle_instances[i].element
+            ) and (
+                not _particle_instances[i - 1].isotope
+                and _particle_instances[i].isotope
+            ):
+                raise ParticleError(
+                    "Cannot have an element and isotopes of that element."
+                )
 
         self._particle_instances = _particle_instances
         self._base_particles = _elements_and_isotopes
