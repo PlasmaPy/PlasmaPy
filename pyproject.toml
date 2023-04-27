@@ -224,6 +224,7 @@ extend-select = [
   "BLE", # flake8-blind-except
   "C4", # flake8-comprehensions
   "D",  # pydocstyle
+  "FBT003", # flake8-boolean-trap
   "ICN", # flake8-import-conventions
   "INP", # flake8-no-pep420
   "ISC", # flake8-implicit-str-concat

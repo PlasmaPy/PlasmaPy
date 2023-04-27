@@ -857,7 +857,7 @@ class AbstractGrid(ABC):
             + np.less(ax2_max, pos[:, 2]).astype(np.int8)
         )
 
-        return np.where(on_grid == 0, True, False)
+        return np.where(on_grid == 0, x=True, y=False)
 
     @abstractmethod
     def vector_intersects(self, p1, p2):
