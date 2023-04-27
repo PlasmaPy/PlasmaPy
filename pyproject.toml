@@ -277,7 +277,6 @@ ignore = [
   "SIM116",
   "SIM117",
   "SIM300",
-  "SIM910",
   "TRY003", # raise-vanilla-args
   "TRY301", # raise-within-try
   "UP025", # unicode-kind-prefix
