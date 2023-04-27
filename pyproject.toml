@@ -302,7 +302,7 @@ ignore-variadic-names = true
 "plasmapy/utils/calculator/widget_helpers.py" = ["ARG002"]
 "plasmapy/utils/pytest_helpers/pytest_helpers.py" = ["BLE001"]
 "plasmapy/utils/pytest_helpers/tests/test_pytest_helpers.py" = ["BLE001"]
-"test_lite_func.py" = ["TRY004"]
+#"test_lite_func.py" = ["TRY004"]
 "test_particle_class.py" = ["TRY002"]
 "test_pytest_helpers.py" = ["TRY002"]
 
