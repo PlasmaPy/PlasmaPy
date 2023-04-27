@@ -338,7 +338,7 @@ class TestThermalSpeedLite:
 class Test_kappa_thermal_speed:
     @classmethod
     def setup_class(cls):
-        """initializing parameters for tests"""
+        """Initializing parameters for tests"""
         cls.T_e = 5 * u.eV
         cls.kappaInvalid = 3 / 2
         cls.kappa = 4

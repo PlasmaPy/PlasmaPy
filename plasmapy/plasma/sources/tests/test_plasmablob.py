@@ -292,7 +292,7 @@ class Test_PlasmaBlobRegimes:
 class Test_PlasmaBlob:
     @classmethod
     def setup_class(self):
-        """initializing parameters for tests"""
+        """Initializing parameters for tests"""
         self.T_e = 5 * 11e3 * u.K
         self.n_e = 1e23 * u.cm**-3
         self.Z = 2.5 * u.dimensionless_unscaled

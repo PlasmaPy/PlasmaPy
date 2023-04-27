@@ -234,6 +234,7 @@ extend-select = [
   "D211",
   "D214",
   "D300",
+  "D403",
   "ICN", # flake8-import-conventions
   "INP", # flake8-no-pep420
   "ISC", # flake8-implicit-str-concat
