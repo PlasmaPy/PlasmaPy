@@ -33,6 +33,7 @@ def _test_grid(
         with a radial gaussian profile in the xy plane.
     * electrostatic_gaussian_sphere : An electric field created by a sphere
         of potential of radius L/2 with a radial Gaussian distribution.
+
     Parameters
     ----------
     name : str
