@@ -227,7 +227,7 @@ extend-select = [
   "ICN", # flake8-import-conventions
   "INP", # flake8-no-pep420
   "ISC", # flake8-implicit-str-concat
-  "N",
+  "N", # pep8-naming
   "PD", # pandas-vet
   "PGH", # pygrep-hooks
   "PIE", # flake8-pie
@@ -263,11 +263,11 @@ ignore = [
   "D410", # no-blank-line-after-section
   "D415", # ends-in-punctuation
   "E501", # line-too-long
-  "N801",
-  "N802",
-  "N803",
-  "N806",
-  "N816",
+  "N801", # invalid-class-name
+  "N802", # invalid-function-name
+  "N803", # invalid-argument-name
+  "N806", # non-lowercase-variable-in-function
+  "N816", # mixed-case-variable-in-global-scope
   "PLE0605", # invalid-all-format
   "RUF001", # ambiguous-unicode-character-string
   "RUF002", # ambiguous-unicode-character-docstring
