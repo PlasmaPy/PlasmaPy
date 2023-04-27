@@ -16,7 +16,7 @@ bias_arr = np.random.rand(N) * u.V
 
 
 class Test__fitting_functions:
-    r"Tests the different available fit functions"
+    r"""Tests the different available fit functions"""
 
     x = 20
     x0 = 10

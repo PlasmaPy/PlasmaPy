@@ -146,7 +146,7 @@ class TestPlasmaFrequencyLite:
     """Test class for `plasma_frequency_lite`."""
 
     def test_is_jitted(self):
-        "Ensure `plasmapy_frequency_lite` was jitted by `numba`."
+        """Ensure `plasmapy_frequency_lite` was jitted by `numba`."""
         assert is_jitted(plasma_frequency_lite)
 
     @pytest.mark.parametrize(
