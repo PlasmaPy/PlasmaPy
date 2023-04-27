@@ -10,7 +10,7 @@ import warnings
 from typing import NoReturn
 
 
-class SampleException(Exception):
+class SampleException(Exception):  # noqa: N818
     """A sample exception to be used for testing purposes."""
 
 

@@ -55,7 +55,7 @@ class NullPointWarning(UserWarning):
     """
 
 
-class NonZeroDivergence(NullPointError):
+class NonZeroDivergence(NullPointError):  # noqa: N818
     """
     A class for handling the exception raised by passing in a magnetic
     field that violates the zero divergence constraint.
