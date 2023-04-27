@@ -228,10 +228,10 @@ extend-select = [
   "D201",
   "D204",
   "D206",
-#  "D207",
-#  "D208",
+  "D207",
+  "D208",
 #  "D209",
-#  "D210",
+  "D210",
 #  "D211",
   "ICN", # flake8-import-conventions
   "INP", # flake8-no-pep420
