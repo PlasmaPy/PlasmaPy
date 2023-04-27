@@ -95,7 +95,7 @@ class SampleClass1:
         pass
 
     @classmethod
-    def arg_plus_kwarg(self, arg, *, kwarg):
+    def arg_plus_kwarg(cls, arg, *, kwarg):
         """
         A sample method that returns the sum of a positional argument
         and a keyword argument.
