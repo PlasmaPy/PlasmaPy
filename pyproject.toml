@@ -220,6 +220,7 @@ type_incorrect_long = "The filename of the changelog entry must be of the form `
 target-version = "py39"
 extend-select = [
   "A", # flake8-builtins
+  "ARG", # flake8-unused-arguments
   "B",  # flake8-bugbear
   "BLE", # flake8-blind-except
   "C4", # flake8-comprehensions
@@ -278,12 +279,16 @@ extend-exclude = [
     "_build",
     "_dev",
 ]
+dummy-variable-rgx = ".*"
 
 [tool.ruff.flake8-import-conventions.aliases]
 "astropy.units" = "u"
 "matplotlib.pyplot" = "plt"
 numpy = "np"
 pandas = "pd"
+
+[tool.ruff.flake8-unused-arguments]
+ignore-variadic-names = true
 
 [tool.ruff.per-file-ignores]
 ".github/workflows/citation_updater.py" = ["INP001"]
