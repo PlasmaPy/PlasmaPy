@@ -240,17 +240,15 @@ extend-select = [
   "W", # pycodestyle warnings
 ]
 ignore = [
-  "B027",
-  "B028",
-  "D100",
-  "D101",
-  "D102",
-  "D103",
-  "D104",
-  "D105",
-  "D106",
-  "D200",
-  "D201",
+  "B028", # no-explicit-stacklevel
+  "D100", # undocumented-public-module
+  "D101", # undocumented-public-class
+  "D102", # undocumented-public-method
+  "D103", # undocumented-public-function
+  "D104", # undocumented-public-package
+  "D105", # undocumented-public-method
+  "D106", # undocumented-public-nested-class
+  "D200", # fits-on-one-line
   "D202",
   "D203",
   "D205",
