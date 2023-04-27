@@ -1,5 +1,5 @@
 """
-Defines the AbstractGrid class and child classes
+Defines the AbstractGrid class and child classes.
 """
 
 __all__ = [
@@ -253,7 +253,7 @@ class AbstractGrid(ABC):
 
     def __getitem__(self, key):
         """
-        Given a key, return the corresponding array as a `~astropy.units.Quantity`
+        Given a key, return the corresponding array as a `~astropy.units.Quantity`.
 
         Returning with ``copy=False`` means that the array returned is a direct
         reference to the underlying DataArray, so changes made will be reflected
@@ -278,7 +278,7 @@ class AbstractGrid(ABC):
 
     @property
     def shape(self):
-        r"""Shape of the grid"""
+        r"""Shape of the grid."""
         if self.is_uniform:
             return (self.ax0.size, self.ax1.size, self.ax2.size)
 
@@ -1023,7 +1023,7 @@ class AbstractGrid(ABC):
 def _fast_nearest_neighbor_interpolate(pos, ax):
     """
     This function finds the indices in the axis 'ax' that are closest to the
-    values in the array 'pos'
+    values in the array 'pos'.
 
     Assumes the axis 'ax' is sorted in ascending order.
 
@@ -1102,7 +1102,7 @@ class CartesianGrid(AbstractGrid):
     def nearest_neighbor_interpolator(
         self, pos: Union[np.ndarray, u.Quantity], *args, persistent=False
     ):
-        r""" """
+        r""" """  # noqa: D419
 
         # Shared setup
         pos, args, persistent = self._persistent_interpolator_setup(
@@ -1404,7 +1404,7 @@ class NonUniformCartesianGrid(AbstractGrid):
     def nearest_neighbor_interpolator(
         self, pos: Union[np.ndarray, u.Quantity], *args, persistent=False
     ):
-        r""" """
+        r""" """  # noqa: D419
         # Shared setup
         pos, args, persistent = self._persistent_interpolator_setup(
             pos, args, persistent

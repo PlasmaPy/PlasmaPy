@@ -224,22 +224,7 @@ extend-select = [
   "B",  # flake8-bugbear
   "BLE", # flake8-blind-except
   "C4", # flake8-comprehensions
-  "D107",
-  "D201",
-  "D204",
-  "D206",
-  "D207",
-  "D208",
-  "D210",
-  "D211",
-  "D214",
-  "D300",
-  "D403",
-  "D405",
-  "D407",
-  "D408",
-  "D409",
-  "D411",
+  "D",  # pydocstyle
   "ICN", # flake8-import-conventions
   "INP", # flake8-no-pep420
   "ISC", # flake8-implicit-str-concat
@@ -260,6 +245,32 @@ ignore = [
   "B018",
   "B027",
   "B028",
+  "D100",
+  "D101",
+  "D102",
+  "D103",
+  "D104",
+  "D105",
+  "D106",
+  "D200",
+  "D201",
+  "D202",
+  "D203",
+  "D205",
+  "D209",
+  "D212",
+  "D213",
+  "D301",
+  "D401",
+  "D402",
+  "D404",
+  "D406",
+  "D410",
+  "D412",
+  "D413",
+  "D414",
+  "D415",
+  "D418",
   "E501", # line-too-long
   "PLE0605",
   "RUF001", # ambiguous-unicode-character-string
