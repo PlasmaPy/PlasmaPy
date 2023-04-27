@@ -9,7 +9,7 @@ from astropy import units as u
 from hypothesis import given
 from hypothesis.strategies import complex_numbers
 from numpy import pi as π
-from scipy.special import gamma as Γ
+from scipy.special import gamma as Γ  # noqa: N812
 
 from plasmapy.dispersion.dispersionfunction import (
     plasma_dispersion_func,
