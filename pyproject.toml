@@ -279,7 +279,7 @@ extend-exclude = [
     "_build",
     "_dev",
 ]
-dummy-variable-rgx = ".*"
+dummy-variable-rgx = "Z|mass_numb"
 
 [tool.ruff.flake8-import-conventions.aliases]
 "astropy.units" = "u"
