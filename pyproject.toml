@@ -267,7 +267,6 @@ ignore = [
   "N802",
   "N803",
   "N806",
-  "N814",
   "N816",
   "N818",
   "PLE0605", # invalid-all-format
