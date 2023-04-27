@@ -559,7 +559,7 @@ class TestValidateQuantities:
 
 
 class TestValidateClassAttributes:
-    class SampleCase:
+    class SampleCase:  # noqa: D106
         def __init__(self, x: int = None, y: int = None, z: int = None):
             self.x = x
             self.y = y

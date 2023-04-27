@@ -247,16 +247,14 @@ ignore = [
   "D103", # undocumented-public-function
   "D104", # undocumented-public-package
   "D105", # undocumented-public-method
-  "D106", # undocumented-public-nested-class
   "D200", # fits-on-one-line
-  "D202",
-  "D203",
-  "D205",
-  "D209",
-  "D212",
-  "D213",
-  "D301",
-  "D400",
+  "D202", # no-blank-line-after-function
+  "D203", # one-blank-line-before-class
+  "D205", # blank-line-after-summary
+  "D209", # new-line-after-last-paragraph
+  "D212", # multi-line-summary-first-line
+  "D301", # escape-sequence-in-docstring (should be enabled)
+  "D400", #
   "D401",
   "D402",
   "D404",
