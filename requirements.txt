@@ -14,8 +14,6 @@ argon2-cffi-bindings==21.2.0
     # via argon2-cffi
 asteval==0.9.29
     # via lmfit
-astor==0.8.1
-    # via flake8-simplify
 astropy==5.2.2
     # via plasmapy (setup.py)
 asttokens==2.2.1
@@ -96,19 +94,10 @@ filelock==3.12.0
     #   virtualenv
 flake8==6.0.0
     # via
-    #   flake8-absolute-import
-    #   flake8-mutable
     #   flake8-rst-docstrings
-    #   flake8-simplify
     #   flake8-use-fstring
     #   plasmapy (setup.py)
-flake8-absolute-import==1.0.0.1
-    # via plasmapy (setup.py)
-flake8-mutable==1.2.0
-    # via plasmapy (setup.py)
 flake8-rst-docstrings==0.3.0
-    # via plasmapy (setup.py)
-flake8-simplify==0.20.0
     # via plasmapy (setup.py)
 flake8-use-fstring==1.4
     # via plasmapy (setup.py)
@@ -371,7 +360,7 @@ scipy==1.10.1
     # via
     #   lmfit
     #   plasmapy (setup.py)
-send2trash==1.8.0
+send2trash==1.8.2
     # via jupyter-server
 six==1.16.0
     # via

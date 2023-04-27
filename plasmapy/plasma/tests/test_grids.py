@@ -421,10 +421,7 @@ def test_AbstractGrid_on_grid(
     abstract_grid_uniform, abstract_grid_nonuniform, fixture, pos, result
 ):
     # Select one of the grid fixtures
-    if fixture == "uniform":
-        grid = abstract_grid_uniform
-    else:
-        grid = abstract_grid_nonuniform
+    grid = abstract_grid_uniform if fixture == "uniform" else abstract_grid_nonuniform
 
     out = grid.on_grid(pos)
     assert np.all(out == result)
@@ -447,10 +444,7 @@ def test_AbstractGrid_vector_intersects(
     abstract_grid_uniform, abstract_grid_nonuniform, fixture, p1, p2, result
 ):
     # Select one of the grid fixtures
-    if fixture == "uniform":
-        grid = abstract_grid_uniform
-    else:
-        grid = abstract_grid_nonuniform
+    grid = abstract_grid_uniform if fixture == "uniform" else abstract_grid_nonuniform
 
     assert grid.vector_intersects(p1, p2) == result
     # Test going backwards yields the same result

@@ -653,7 +653,7 @@ def test_saving_output(tmp_path):
     results_2 = dict(np.load(path, "r", allow_pickle=True))
 
     assert set(results_1.keys()) == set(results_2.keys())
-    for key in results_1.keys():
+    for key in results_1:
         assert np.allclose(results_1[key], results_2[key])
 
 

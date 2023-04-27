@@ -80,9 +80,7 @@ docs = [
 ]
 tests = [
   "flake8 >= 6.0.0",
-  "flake8-absolute-import >= 1.0.0.1",
   "flake8-rst-docstrings >= 0.3.0",
-  "flake8-simplify >= 0.20.0",
   "flake8-use-fstring >= 1.4",
   "hypothesis >= 6.35.1",
   "pre-commit >= 3.0.0",
@@ -224,19 +222,26 @@ extend-select = [
   "B",  # flake8-bugbear
   "BLE", # flake8-blind-except
   "C4", # flake8-comprehensions
+  "COM818", # trailing-comma-on-bare-tuple
   "D",  # pydocstyle
   "FBT003", # flake8-boolean-trap
   "ICN", # flake8-import-conventions
   "INP", # flake8-no-pep420
+  "INT", # flake8-gettext
   "ISC", # flake8-implicit-str-concat
+  "N", # pep8-naming
+  "NPY001", # numpy-deprecated-type-alias
   "PD", # pandas-vet
   "PGH", # pygrep-hooks
   "PIE", # flake8-pie
   "PLC", # pylint convention
   "PLE", # pylint errors
   "PTH", # flake8-use-pathlib
+  "PYI", # flake8-pyi
   "RUF", # ruff specific rules
   "S", # flake8-bandit
+  "SIM", # flake8-simplify
+  "TID", # flake8-tidy-imports
   "TRY", # tryceratops
   "UP", # pyupgrade
   "W", # pycodestyle warnings
@@ -262,12 +267,19 @@ ignore = [
   "D410", # no-blank-line-after-section
   "D415", # ends-in-punctuation
   "E501", # line-too-long
+  "N801", # invalid-class-name
+  "N802", # invalid-function-name
+  "N803", # invalid-argument-name
+  "N806", # non-lowercase-variable-in-function
+  "N816", # mixed-case-variable-in-global-scope
   "PLE0605", # invalid-all-format
   "RUF001", # ambiguous-unicode-character-string
   "RUF002", # ambiguous-unicode-character-docstring
   "RUF003", # ambiguous-unicode-character-comment
   "RUF100", # unused-noqa (remove if we drop flake8 completely)
   "S101", # asserts
+  "SIM117", # multiple-with-statements (remove for Python 3.10+)
+  "SIM300", # yoda-conditions
   "TRY003", # raise-vanilla-args
   "TRY301", # raise-within-try
   "UP025", # unicode-kind-prefix

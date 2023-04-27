@@ -190,10 +190,10 @@ class TestValidateQuantities:
             assert sorted(validations.keys()) == sorted(case["output"].keys())
 
             # if validation key-value not specified then default is assumed
-            for arg_name in case["output"].keys():
+            for arg_name in case["output"]:
                 arg_validations = validations[arg_name]
 
-                for key in default_validations.keys():
+                for key in default_validations:
                     if key in case["output"][arg_name]:
                         val = case["output"][arg_name][key]
                     else:
@@ -610,9 +610,9 @@ class TestValidateClassAttributes:
 
         test_case = self.SampleCase(**test_case_constructor_keyword_arguments)
 
-        has_x = "x" in test_case_constructor_keyword_arguments.keys()
-        has_y = "y" in test_case_constructor_keyword_arguments.keys()
-        has_z = "z" in test_case_constructor_keyword_arguments.keys()
+        has_x = "x" in test_case_constructor_keyword_arguments
+        has_y = "y" in test_case_constructor_keyword_arguments
+        has_z = "z" in test_case_constructor_keyword_arguments
 
         method_return_dictionary = {
             "require_x": has_x,

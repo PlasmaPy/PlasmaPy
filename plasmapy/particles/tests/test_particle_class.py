@@ -521,7 +521,7 @@ def test_Particle_class(arg, kwargs, expected_dict):
     except Exception as exc:  # noqa: BLE001
         raise ParticleError(f"Problem creating {call}") from exc
 
-    for key in expected_dict.keys():
+    for key in expected_dict:
         expected = expected_dict[key]
 
         if inspect.isclass(expected) and issubclass(expected, Exception):
