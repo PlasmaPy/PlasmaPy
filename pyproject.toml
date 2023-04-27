@@ -240,8 +240,6 @@ extend-select = [
   "W", # pycodestyle warnings
 ]
 ignore = [
-  "B015",
-#  "B018",
   "B027",
   "B028",
   "D100",
