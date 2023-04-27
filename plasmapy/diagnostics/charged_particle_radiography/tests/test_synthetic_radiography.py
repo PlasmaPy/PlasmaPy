@@ -457,7 +457,7 @@ def test_run_options():
     sim.run(field_weighting="nearest neighbor", dt=1e-12 * u.s)
 
     # Test max_deflections
-    sim.max_deflection
+    sim.max_deflection  # noqa: B018
 
     # Test way too big of a max_theta
     sim = cpr.Tracker(grid, source, detector, verbose=True)

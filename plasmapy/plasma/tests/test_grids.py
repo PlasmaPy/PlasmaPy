@@ -316,7 +316,7 @@ def test_unit_attribute_error_case():
     )
 
     with pytest.raises(ValueError):
-        grid.unit
+        grid.unit  # noqa: B018
 
 
 @pytest.mark.parametrize("key,value,error,warning,match", quantities)
@@ -923,17 +923,17 @@ def test_NonUniformCartesianGrid():
 
     # Test that many properties are unavailable
     with pytest.raises(ValueError):
-        grid.ax0
+        grid.ax0  # noqa: B018
     with pytest.raises(ValueError):
-        grid.ax1
+        grid.ax1  # noqa: B018
     with pytest.raises(ValueError):
-        grid.ax2
+        grid.ax2  # noqa: B018
     with pytest.raises(ValueError):
-        grid.dax0
+        grid.dax0  # noqa: B018
     with pytest.raises(ValueError):
-        grid.dax1
+        grid.dax1  # noqa: B018
     with pytest.raises(ValueError):
-        grid.dax2
+        grid.dax2  # noqa: B018
 
     # Test that input with the wrong units will raise an exception
     L0 = [-1 * u.mm, 0 * u.rad, -1 * u.mm]

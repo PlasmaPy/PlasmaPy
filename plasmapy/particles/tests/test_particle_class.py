@@ -797,7 +797,7 @@ def test_antiparticle_inversion(particle_antiparticle_pair):
 
 def test_unary_operator_for_elements():
     with pytest.raises(ParticleError):
-        Particle("C").antiparticle
+        Particle("C").antiparticle  # noqa: B018
 
 
 class Test_antiparticle_properties_inversion:
