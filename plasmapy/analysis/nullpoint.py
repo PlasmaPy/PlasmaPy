@@ -1222,7 +1222,7 @@ def _locate_null_point(vspace, cell, n, err):
     for x0 in starting_pos:
         x0 = np.array(x0)
         x0 = x0.reshape(3, 1)
-        for _i in range(n):
+        for _i in range(n):  # noqa: B007
             locx = tlApprox(x0[0], x0[1], x0[2])[0]
             locy = tlApprox(x0[0], x0[1], x0[2])[1]
             locz = tlApprox(x0[0], x0[1], x0[2])[2]

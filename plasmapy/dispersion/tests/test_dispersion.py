@@ -218,7 +218,7 @@ class TestPlasmaDispersionFunctionLite:
     """Test class for `plasma_dispersion_func_lite`."""
 
     @pytest.mark.parametrize("w, expected", plasma_dispersion_func_table)
-    def test_normal_vs_lite(self, w, expected):
+    def test_normal_vs_lite(self, w, expected):  # noqa: ARG002
         r"""Test that plasma_dispersion_func and plasma_dispersion_func_lite
         calculate the same values."""
 
@@ -333,7 +333,7 @@ class TestPlasmaDispersionFunctionDerivLite:
     """Test class for `plasma_dispersion_func_deriv_lite`."""
 
     @pytest.mark.parametrize("w, expected", plasma_disp_deriv_table)
-    def test_normal_vs_lite(self, w, expected):
+    def test_normal_vs_lite(self, w, expected):  # noqa: ARG002
         r"""Test that plasma_dispersion_func_deriv and
         plasma_dispersion_func_deriv_lite
         calculate the same values."""

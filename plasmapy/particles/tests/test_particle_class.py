@@ -834,7 +834,7 @@ class Test_antiparticle_properties_inversion:
             f"as expected of a particle/antiparticle pair."
         )
 
-    def test_antiparticle_attribute_and_operator(self, particle, opposite):
+    def test_antiparticle_attribute_and_operator(self, particle):
         """
         Test that the Particle.antiparticle attribute returns the same
         value as the unary ~ (invert) operator acting on the same

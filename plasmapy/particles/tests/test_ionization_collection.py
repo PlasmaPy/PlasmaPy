@@ -902,7 +902,9 @@ def test_average_ion_consistency(
 @pytest.mark.parametrize("use_rms", [True, False])
 @pytest.mark.parametrize("include_neutrals", [True, False])
 def test_comparison_to_equivalent_particle_list(
-    physical_property, use_rms, include_neutrals
+    physical_property,
+    use_rms,  # noqa: ARG001
+    include_neutrals,
 ):
     """
     Test that `IonizationState.average_ion` gives consistent results with

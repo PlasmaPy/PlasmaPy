@@ -283,7 +283,7 @@ class Tracker:
         """
         theta = np.zeros([8, self.num_grids])
 
-        for i, _grid in enumerate(self.grids):
+        for i, _grid in enumerate(self.grids):  # noqa: B007
             ind = 0
             for x in (0, -1):
                 for y in (0, -1):
@@ -754,7 +754,7 @@ class Tracker:
     # Run/push loop methods
     # *************************************************************************
 
-    def _adaptive_dt(self, Ex, Ey, Ez, Bx, By, Bz):
+    def _adaptive_dt(self, Ex, Ey, Ez, Bx, By, Bz):  # noqa: ARG002
         r"""
         Calculate the appropriate dt for each grid based on a number of
         considerations
@@ -775,7 +775,7 @@ class Tracker:
 
         # Wherever a particle is on a grid, include that grid's gridstep
         # in the list of candidate timesteps
-        for i, _grid in enumerate(self.grids):
+        for i, _grid in enumerate(self.grids):  # noqa: B007
             candidates[:, i] = np.where(self.on_grid[:, i] > 0, gridstep[i], np.inf)
 
         # If not, compute a number of possible timesteps

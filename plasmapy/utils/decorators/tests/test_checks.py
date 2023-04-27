@@ -401,7 +401,7 @@ class TestCheckUnits:
         ]
 
         # perform tests
-        for _ii, case in enumerate(_cases):
+        for _ii, case in enumerate(_cases):  # noqa: B007
             sig = inspect.signature(case["setup"]["function"])
             bound_args = sig.bind(*case["setup"]["args"], **case["setup"]["kwargs"])
 
@@ -539,7 +539,7 @@ class TestCheckUnits:
         cu.f = self.foo_no_anno
 
         # perform tests
-        for _ii, case in enumerate(_cases):
+        for _ii, case in enumerate(_cases):  # noqa: B007
             arg, arg_name, arg_checks = case["input"]
             _results = cu._check_unit_core(arg, arg_name, arg_checks)
             assert _results[0:3] == case["output"][0:3]

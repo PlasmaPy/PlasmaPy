@@ -678,7 +678,7 @@ def run_fit(
     fit_method="differential_evolution",
     fit_kws={},  # noqa: B006
     max_iter=None,
-    check_errors=True,
+    check_errors=True,  # noqa: ARG001
     require_redchi=1,
     # If false, don't perform the actual fit but instead just create the Model
     run_fit=True,

@@ -279,7 +279,7 @@ extend-exclude = [
     "_build",
     "_dev",
 ]
-dummy-variable-rgx = "Z|mass_numb"
+dummy-variable-rgx = "Z|mass_numb|request|event"
 
 [tool.ruff.flake8-import-conventions.aliases]
 "astropy.units" = "u"
@@ -299,9 +299,12 @@ ignore-variadic-names = true
 "test_particle_class.py" = ["TRY002"]
 "test_pytest_helpers.py" = ["TRY002"]
 "test_lite_func.py" = ["TRY004"]
+"plasmapy/formulary/tests/test_distribution.py" = ["ARG005"]
 "plasmapy/particles/tests/test_ionization_state.py" = ["BLE001", "PIE804"]
+"plasmapy/utils/calculator/widget_helpers.py" = ["ARG002"]
 "plasmapy/utils/pytest_helpers/pytest_helpers.py" = ["BLE001"]
 "plasmapy/utils/pytest_helpers/tests/test_pytest_helpers.py" = ["BLE001"]
+"plasmapy/particles/tests/test_decorators.py" = ["ARG001", "ARG002"]
 "plasmapy/particles/tests/test_ionization_collection.py" = ["BLE001"]
 "plasmapy/particles/tests/test_particle_class.py" = ["BLE001"]
 

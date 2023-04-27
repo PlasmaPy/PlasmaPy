@@ -717,8 +717,7 @@ def test_exclude_neutrals_from_average_ion():
 
 
 @pytest.mark.parametrize("physical_property", physical_properties)
-@pytest.mark.parametrize("use_rms", [True, False])
-def test_comparison_to_equivalent_particle_list(physical_property, use_rms):
+def test_comparison_to_equivalent_particle_list(physical_property):
     """
     Test that `IonizationState.average_ion` gives consistent results with
     `ParticleList.average_particle` when the ratios of different particles
