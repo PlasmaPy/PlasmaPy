@@ -224,6 +224,15 @@ extend-select = [
   "B",  # flake8-bugbear
   "BLE", # flake8-blind-except
   "C4", # flake8-comprehensions
+  "D107",
+  "D201",
+  "D204",
+  "D206",
+#  "D207",
+#  "D208",
+#  "D209",
+#  "D210",
+#  "D211",
   "ICN", # flake8-import-conventions
   "INP", # flake8-no-pep420
   "ISC", # flake8-implicit-str-concat
