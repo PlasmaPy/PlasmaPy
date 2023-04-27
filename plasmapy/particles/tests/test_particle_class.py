@@ -556,7 +556,7 @@ def test_Particle_class(arg, kwargs, expected_dict):
                 errmsg += f"\n{call}.{key} raises an unexpected exception."
 
     if errmsg:
-        raise Exception(f"Problems with {call}:{errmsg}")
+        raise Exception(f"Problems with {call}:{errmsg}")  # noqa: BLE001, TRY002
 
 
 equivalent_particles_table = [

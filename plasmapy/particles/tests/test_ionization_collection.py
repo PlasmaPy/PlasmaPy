@@ -117,7 +117,7 @@ class TestIonizationStateCollection:
     def test_instantiation(self, test_name):
         try:
             self.instances[test_name] = IonizationStateCollection(**tests[test_name])
-        except Exception:
+        except Exception:  # noqa: BLE001
             pytest.fail(
                 f"Cannot create IonizationStateCollection instance for test='{test_name}'"
             )
@@ -168,7 +168,7 @@ class TestIonizationStateCollection:
     def test_that_abundances_kwarg_sets_abundances(self, test_name):
         try:
             actual_abundances = self.instances[test_name].abundances
-        except Exception:
+        except Exception:  # noqa: BLE001
             pytest.fail("Unable to access abundances.")
 
         elements = set(self.instances[test_name].base_particles)
@@ -255,14 +255,14 @@ class TestIonizationStateCollection:
         for key in instance.base_particles:
             try:
                 expected = instance.ionic_fractions[key]
-            except Exception:
+            except Exception:  # noqa: BLE001
                 pytest.fail(
                     f"Unable to get ionic_fractions for '{key}' in test='{test_name}'."
                 )
 
             try:
                 actual = instance[key].ionic_fractions
-            except Exception:
+            except Exception:  # noqa: BLE001
                 pytest.fail(f"Unable to get item {key} in test={test_name}.")
 
             try:
@@ -270,7 +270,7 @@ class TestIonizationStateCollection:
                     test_passed = True
                 else:
                     test_passed = np.allclose(expected, actual)
-            except Exception:
+            except Exception:  # noqa: BLE001
                 raise TypeError(
                     f"For test='{test_name}' and key='{key}', cannot "
                     f"compare expected ionic fractions of {expected} "
@@ -374,7 +374,7 @@ class TestIonizationStateCollectionItemAssignment:
         """Test item assignment in an IonizationStateCollection instance."""
         try:
             self.states[element] = new_states
-        except Exception:
+        except Exception:  # noqa: BLE001
             pytest.fail(
                 "Unable to change ionic fractions for an IonizationStateCollection instance."
             )
@@ -582,7 +582,7 @@ class TestIonizationStateCollectionAttributes:
 
         try:
             self.instance.abundances = new_abundances
-        except Exception:
+        except Exception:  # noqa: BLE001
             pytest(f"Could not set abundances to {new_abundances}.")
         else:
             check_abundances_consistency(
@@ -591,7 +591,7 @@ class TestIonizationStateCollectionAttributes:
 
         try:
             self.instance.log_abundances = log_new_abundances
-        except Exception:
+        except Exception:  # noqa: BLE001
             pytest.fail(f"Could not set log_abundances to {log_new_abundances}.")
         else:
             check_abundances_consistency(
@@ -657,7 +657,7 @@ class TestIonizationStateCollectionAttributes:
     def test_setting_n(self):
         try:
             self.instance.n0 = self.new_n
-        except Exception:
+        except Exception:  # noqa: BLE001
             pytest.fail("Unable to set number density scaling factor attribute")
         if not u.quantity.allclose(self.instance.n0, self.new_n):
             pytest.fail("Number density scaling factor was not set correctly.")
@@ -677,7 +677,7 @@ class TestIonizationStateCollectionAttributes:
 
         try:
             self.instance[element] = valid_number_densities
-        except Exception:
+        except Exception:  # noqa: BLE001
             pytest.fail("Unable to set valid number densities using item assignment.")
 
         assert u.quantity.allclose(
