@@ -269,12 +269,7 @@ ignore = [
   "RUF003", # ambiguous-unicode-character-comment
   "RUF100", # unused-noqa (remove if we drop flake8 completely)
   "S101", # asserts
-  "SIM101",
   "SIM102",
-  "SIM103",
-  "SIM105",
-  "SIM107",
-  "SIM108",
   "SIM109",
   "SIM110",
   "SIM111",
