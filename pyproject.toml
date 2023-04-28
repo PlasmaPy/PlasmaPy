@@ -292,6 +292,7 @@ extend-exclude = [
     "_dev",
 ]
 dummy-variable-rgx = "Z|mass_numb|request|event"
+namespace-packages = [".github/workflows", "docs"]
 
 [tool.ruff.flake8-import-conventions.aliases]
 "astropy.units" = "u"
@@ -303,9 +304,7 @@ pandas = "pd"
 ignore-variadic-names = true
 
 [tool.ruff.per-file-ignores]
-".github/workflows/citation_updater.py" = ["INP001"]
 "__init__.py" = ["E402", "F401", "F402", "F403"]  # ignore import errors
-"docs/conf.py" = ["INP001"]
 "plasmapy/formulary/tests/test_distribution.py" = ["ARG005"]
 "plasmapy/particles/tests/test_decorators.py" = ["ARG001", "ARG002"]
 "plasmapy/utils/pytest_helpers/pytest_helpers.py" = ["BLE001"]
