@@ -465,16 +465,21 @@ Requirements
      Tools like pyupgrade_ help automatically upgrade the code base to
      the minimum supported version of Python for the next release.
 
-* In general, it is preferable to support minor releases of dependencies
-  from the last ≲ 24 months, unless there is a new feature in a
-  dependency that would be greatly beneficial for `plasmapy` development.
+* PlasmaPy should generally allow all feature releases of required
+  dependencies made in the last ≲ 24 months, unless a more recent
+  release includes a needed feature or bugfix.
 
-* Do not set maximum requirements (e.g., ``numpy <= 1.22.3``) unless
-  absolutely necessary. Maximum requirements can lead to version
-  conflicts when installed alongside other packages. Instead, update
-  PlasmaPy to become compatible with the latest versions of its
-  dependencies. Similarly, do not require exact versions of packages
-  (e.g., ``scipy == 1.5.3``).
+* Only set maximum or exact requirements (e.g., ``numpy <= 1.22.3`` or
+  ``scipy == 1.7.2``) when absolutely necessary. After setting a maximum
+  or exact requirement, create a GitHub issue to remove that
+  requirement.
+
+  .. tip::
+
+     Maximum requirements can lead to version conflicts when installed
+     alongside other packages. It is preferable to update PlasmaPy to
+     become compatible with the latest versions of its dependencies than
+     to set a maximum requirement.
 
 * Minor versions of Python are generally released in October of each
   year. However, it may take a few months before packages like NumPy_
