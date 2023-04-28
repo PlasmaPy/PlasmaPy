@@ -639,7 +639,7 @@ def test_saving_output(tmp_path):
 
     # Test that output cannot be saved prior to running
     with pytest.raises(RuntimeError):
-        _ = sim.results_dict
+        sim.results_dict  # noqa: B018
 
     sim.run(field_weighting="nearest neighbor")
 
