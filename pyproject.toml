@@ -294,6 +294,7 @@ extend-exclude = [
 dummy-variable-rgx = "Z|mass_numb|request|event"
 namespace-packages = [".github/workflows", "docs"]
 show-fixes = true
+show-source = true
 
 [tool.ruff.flake8-import-conventions.aliases]
 "astropy.units" = "u"
