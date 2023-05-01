@@ -31,24 +31,33 @@ jobs:
             [\`plasmapy.particles\`]: https://docs.plasmapy.org/en/latest/notebooks/getting_started/particles.html#Using-PlasmaPy-Particles
             [reStructuredText]: https://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html#restructuredtext-primer
             [Docstrings]:
-            [numpydoc standard]:
+            [numpydoc format]: https://numpydoc.readthedocs.io/en/latest/format.html#docstring-standard
             [example docstring]:
 
-            Don't worry if something broke! We break stuff all the time.   
-
-            Please check out our [**contributor guide**] and [documentation] to learn more about:
+            Please check out our [**contributor guide**] to learn more about:
 
              - [Getting ready to contribute]
              - The [code contribution workflow]
-             - [Coding tips and guidelines]
-             - [Writing documentation] & [documentation troubleshooting]
-             - [Writing tests]
              - Using [\`astropy.units\`] and [\`plasmapy.particles\`]
+             - [Coding tips and guidelines]
+             - [Writing documentation]
+             - [Writing tests]
 
-            Please [add a changelog entry], unless this pull request is very minor.
+            The bottom of this page includes several checks. Don't worry if something broke! We break stuff all the time. Clicking on *Details* next to each check will show the results, and why any checks failed. Please feel free to ask for help if you're having trouble (we do that all the time, as well). Some tips:
 
-             - Use [\`@particle_input\`] for functions that accept particles as arguments.
-             - Use [\`@validate_quantities\`] for functions that accept [\`Quantity\`] objects as
+             - Try fixing Python 3.11 failures first.
+            - Most *pre-commit.ci* failures can be automagically fixed by commenting \`pre-commit.ci autofix\` on this pull request, followed by a \`git pull\`
+             - If the *CI/Documentation* check failed, our [documentation troubleshooting] has tips on deciphering [Sphinx] error messages.
+
+             - The *CodeCov*
+
+            Unless the pull request is very minor, please [add a changelog entry].
+
+
+
+            First-time contributors: please add your name to the author list in \`docs/about/credits.rst\`.
+
+             - Use [\`@particle_input\`] for functions that accept particles as arguments and [\`@validate_quantities\`] for functions that accept [\`Quantity\`] objects
 
              - PlasmaPy's documentation is written in [reStructuredText].  [Docstrings] follow the [numpydoc standard] ([example docstring]).
 
@@ -61,5 +70,4 @@ jobs:
 
             When the pre-commit check fails, try commenting on this pull request with \`pre-commit.ci autofix\`. This will automagically fix
 
-            If this is your first contribution to PlasmaPy, please add your name to the author list in [\`docs/about/credits.rst\`]().
           })
