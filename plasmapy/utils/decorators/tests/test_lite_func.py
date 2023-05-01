@@ -11,7 +11,7 @@ from plasmapy.utils.decorators.lite_func import bind_lite_func
 def foo(x):
     """Test function used for decoration."""
     if not isinstance(x, float):
-        raise ValueError
+        raise ValueError  # noqa: TRY004
     return x
 
 
