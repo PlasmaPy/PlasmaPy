@@ -238,6 +238,8 @@ formatting.
    z = 3
    ```
 
+.. _writing-documentation:
+
 Writing Documentation
 =====================
 
