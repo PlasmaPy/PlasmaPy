@@ -26,8 +26,6 @@ class TestFailed(Failed):
     turn was derived from `BaseException` (not `Exception`).
     """
 
-    pass
-
 
 class TypeMismatchFail(TestFailed):
     """
@@ -35,23 +33,17 @@ class TypeMismatchFail(TestFailed):
     type of the expected result.
     """
 
-    pass
-
 
 class MissingExceptionFail(TestFailed):
     """
     Exception for when the expected exception is not raised.
     """
 
-    pass
-
 
 class UnexpectedExceptionFail(TestFailed):
     """
     Exception for when an exception is raised unexpectedly.
     """
-
-    pass
 
 
 class ExceptionMismatchFail(UnexpectedExceptionFail, MissingExceptionFail):
@@ -60,23 +52,17 @@ class ExceptionMismatchFail(UnexpectedExceptionFail, MissingExceptionFail):
     exception is raised.
     """
 
-    pass
-
 
 class UnexpectedWarningFail(TestFailed):
     """
     Exception for when a warning is issued unexpectedly.
     """
 
-    pass
-
 
 class MissingWarningFail(TestFailed):
     """
     Exception for when an expected warning is not issued.
     """
-
-    pass
 
 
 class WarningMismatchFail(UnexpectedWarningFail, MissingWarningFail):
@@ -85,8 +71,6 @@ class WarningMismatchFail(UnexpectedWarningFail, MissingWarningFail):
     different warnings were issued instead.
     """
 
-    pass
-
 
 class UnexpectedResultFail(TestFailed):
     """
@@ -94,12 +78,8 @@ class UnexpectedResultFail(TestFailed):
     was expected.
     """
 
-    pass
-
 
 class InvalidTestError(Exception):
     """
     Exception for when the inputs to a test are not valid.
     """
-
-    pass
