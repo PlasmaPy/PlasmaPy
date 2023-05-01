@@ -494,7 +494,7 @@ traitlets==5.9.0
     #   nbformat
     #   nbsphinx
     #   voila
-tryceratops==1.1.0
+tryceratops==2.0.0
     # via plasmapy (setup.py)
 tzdata==2023.3
     # via pandas
