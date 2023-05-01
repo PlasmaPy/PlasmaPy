@@ -500,7 +500,7 @@ tzdata==2023.3
     # via pandas
 uncertainties==3.1.7
     # via lmfit
-urllib3==1.26.15
+urllib3==2.0.1
     # via requests
 virtualenv==20.21.0
     # via
