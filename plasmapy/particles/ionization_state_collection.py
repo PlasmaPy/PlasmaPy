@@ -338,7 +338,7 @@ class IonizationStateCollection:
         self._ionic_fractions[particle][:] = new_fractions.copy()
 
     def __iter__(self):
-        yield from [self[key] for key in self.ionic_fractions.keys()]
+        yield from [self[key] for key in self.ionic_fractions]
 
     def __eq__(self, other):
         if not isinstance(other, IonizationStateCollection):
@@ -443,7 +443,7 @@ class IonizationStateCollection:
                     "ionic_fractions has been set already."
                 )
             old_particles = set(self.base_particles)
-            new_particles = {particle_symbol(key) for key in inputs.keys()}
+            new_particles = {particle_symbol(key) for key in inputs}
             missing_particles = old_particles - new_particles
             if missing_particles:
                 raise ParticleError(
@@ -611,14 +611,15 @@ class IonizationStateCollection:
             raise TypeError("Incorrect inputs to set ionic_fractions.")
 
         for i in range(1, len(_particle_instances)):
-            if _particle_instances[i - 1].element == _particle_instances[i].element:
-                if (
-                    not _particle_instances[i - 1].isotope
-                    and _particle_instances[i].isotope
-                ):
-                    raise ParticleError(
-                        "Cannot have an element and isotopes of that element."
-                    )
+            if (
+                _particle_instances[i - 1].element == _particle_instances[i].element
+            ) and (
+                not _particle_instances[i - 1].isotope
+                and _particle_instances[i].isotope
+            ):
+                raise ParticleError(
+                    "Cannot have an element and isotopes of that element."
+                )
 
         self._particle_instances = _particle_instances
         self._base_particles = _elements_and_isotopes
@@ -767,9 +768,7 @@ class IonizationStateCollection:
         return self._pars["T_e"]
 
     @T_e.setter
-    @validate_quantities(
-        electron_temperature=dict(equivalencies=u.temperature_energy())
-    )
+    @validate_quantities(electron_temperature={"equivalencies": u.temperature_energy()})
     def T_e(self, electron_temperature: u.K):
         """Set the electron temperature."""
         try:
