@@ -165,10 +165,10 @@ def test_equal_to_within_tolerance(tolerance, output):
     `IonizationState` instances that differ within the inputted
     tolerance.
     """
-    H = IonizationState(
+    H = IonizationState(  # noqa: PIE804
         **{"particle": "H", "ionic_fractions": [0.6, 0.4], "tol": tolerance}
     )
-    H_acceptable_error = IonizationState(
+    H_acceptable_error = IonizationState(  # noqa: PIE804
         **{
             "particle": "H",
             "ionic_fractions": [0.6, 0.400_000_001],
@@ -338,7 +338,7 @@ def test_getitem(test_ionization_state):
 
 @pytest.fixture
 def He_ionization_state():
-    return IonizationState(
+    return IonizationState(  # noqa: PIE804
         **{
             "particle": "He",
             "ionic_fractions": [0.5, 0.3, 0.2],
@@ -576,7 +576,7 @@ class Test_IonizationStateNumberDensitiesSetter:
         )
         try:
             self.instance = IonizationState(self.element)
-        except Exception:
+        except Exception:  # noqa: BLE001
             pytest.fail(
                 "Unable to instantiate IonizationState with no ionic fractions."
             )
@@ -584,7 +584,7 @@ class Test_IonizationStateNumberDensitiesSetter:
     def test_setting_number_densities(self):
         try:
             self.instance.number_densities = self.valid_number_densities
-        except Exception:
+        except Exception:  # noqa: BLE001
             pytest.fail(
                 f"Unable to set number densities of {self.element} to "
                 f"{self.valid_number_densities}."
@@ -717,8 +717,7 @@ def test_exclude_neutrals_from_average_ion():
 
 
 @pytest.mark.parametrize("physical_property", physical_properties)
-@pytest.mark.parametrize("use_rms", [True, False])
-def test_comparison_to_equivalent_particle_list(physical_property, use_rms):
+def test_comparison_to_equivalent_particle_list(physical_property):
     """
     Test that `IonizationState.average_ion` gives consistent results with
     `ParticleList.average_particle` when the ratios of different particles
