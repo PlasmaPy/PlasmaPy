@@ -22,6 +22,9 @@ __all__ = [
 # This is the same check as the one at the top of setup.py
 import sys
 
+if sys.version_info < (3, 8):  # coverage: ignore # noqa
+    raise ImportError("PlasmaPy does not support Python < 3.8")
+
 # Packages may add whatever they like to this file, but
 # should keep this content at the top.
 # ----------------------------------------------------------------------------
