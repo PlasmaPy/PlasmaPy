@@ -14,8 +14,6 @@ class PlasmaFactory(BasicRegistrationFactory):
     factory.
     """
 
-    pass
-
 
 Plasma = PlasmaFactory(
     default_widget_type=GenericPlasma,

@@ -10,10 +10,8 @@ import warnings
 from typing import NoReturn
 
 
-class SampleException(Exception):
+class SampleException(Exception):  # noqa: N818
     """A sample exception to be used for testing purposes."""
-
-    pass
 
 
 class SampleExceptionSubclass(SampleException):
@@ -21,21 +19,15 @@ class SampleExceptionSubclass(SampleException):
     The subclass of `SampleException` to used for testing purposes.
     """
 
-    pass
-
 
 class SampleWarning(Warning):
     """A sample warning to be used for testing purposes."""
-
-    pass
 
 
 class SampleWarningSubclass(SampleWarning):
     """
     The subclass of `SampleWarning` to be used for testing purposes.
     """
-
-    pass
 
 
 def return_42() -> int:
@@ -103,7 +95,7 @@ class SampleClass1:
         pass
 
     @classmethod
-    def arg_plus_kwarg(self, arg, *, kwarg):
+    def arg_plus_kwarg(cls, arg, *, kwarg):
         """
         A sample method that returns the sum of a positional argument
         and a keyword argument.
