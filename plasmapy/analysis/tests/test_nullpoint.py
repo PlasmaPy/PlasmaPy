@@ -417,7 +417,7 @@ class Test_classify_null_point:
             },
             "Proper radial null",
         ),
-        (
+        pytest.param(
             {
                 "x_range": [5, 6],
                 "y_range": [-6, 6],
@@ -426,6 +426,9 @@ class Test_classify_null_point:
                 "func": lambda x, y, z: [(y - 5.5) * (y + 5.5), (z - 5.5), (x - 5.5)],
             },
             "Spiral null",
+            marks=pytest.mark.xfail(
+                np.__version__ >= "1.24.0", reason="See issue #2101"
+            ),
         ),
         (
             {
