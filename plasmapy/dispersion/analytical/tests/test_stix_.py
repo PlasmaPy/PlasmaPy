@@ -27,7 +27,7 @@ class TestStix:
         w = w.to(u.rad / u.s).value
         n_i = n_i.to(u.m**-3).value
 
-        species = ions + [Particle("e-")]
+        species = [*ions, Particle("e-")]
         densities = np.zeros(n_i.size + 1)
         densities[:-1] = n_i
         densities[-1] = np.sum(n_i * ions.charge_number)

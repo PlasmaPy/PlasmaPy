@@ -138,6 +138,7 @@ def test_trilinear_approx():
 
 class Test_reduction:
     r"""Test `~plasmapy.analysis.nullpoint.reduction`."""
+
     vspace_args = {
         "x_range": [0, 10],
         "y_range": [0, 10],
@@ -165,6 +166,7 @@ class Test_reduction:
 
 class Test_trilinear_analysis:
     r"""Test `~plasmapy.analysis.nullpoint.trilinear_analysis`."""
+
     vspace_args = {
         "x_range": [0, 10],
         "y_range": [0, 10],
@@ -189,6 +191,7 @@ class Test_trilinear_analysis:
 
 class Test_bilinear_root:
     r"""Test `~plasmapy.analysis.nullpoint.bilinear_root`."""
+
     test_bilinear_root_values = [
         (
             {"a1": 1, "b1": 3, "c1": 5, "d1": 1, "a2": 2, "b2": 4, "c2": 6, "d2": 8},
@@ -209,6 +212,7 @@ class Test_bilinear_root:
 
 class Test_locate_null_point:
     r"""Test `~plasmapy.analysis.nullpoint.locate_null_point`."""
+
     vspace_args = {
         "x_range": [5, 6],
         "y_range": [5, 6],
