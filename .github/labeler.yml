@@ -1,32 +1,82 @@
-Analysis: plasmapy/analysis/**/*
+# This file defines which GitHub labels get applied when files
+# matching certain minimatch glob patterns are changed.
+#
+# Documentation: https://github.com/actions/labeler#pull-request-labeler
+#
+# If a label includes a space or a pattern begins with an asterisk or
+# special character, enclose it in quotes.
 
-Continuous integration: .github/**/*
+Breaking:
+- changelog/*.breaking*.rst
 
-Contributor Guide: docs/contributing/*
+Bug:
+- changelog/*.bugfix*.rst
 
-Diagnostics: plasmapy/diagnostics/**/*
+'Continuous Integration':
+- .codecov.yaml
+- .github/workflows/*test*.yml
+- .pre-commit-config.yaml
+- CODEOWNERS
+- noxfile.py
+- tox.ini
 
-Dispersion: plasmapy/dispersion/**/*
+'Contributor Guide':
+- changelog/README.rst
+- docs/contributing/**/*
 
-Formulary: plasmapy/formulary/**/*
+dependencies:
+- requirements.txt
 
-Mathematics: plasmapy/formulary/mathematics.py
-
-parameters.quantum: plasmapy/formulary/quantum.py
-
-Particles: plasmapy/particles/**/*
-
-# Add Documentation label to any change in docs but notebooks
 Documentation:
-- any: [docs/**/*]
-  all: ['!docs/notebooks/**/*', '!docs/contributing/*']
+- docs/**/*
+- changelog/*doc*.rst
+- README.md
+- .readthedocs.yml
 
-Notebooks: docs/notebooks/**/*
+'GitHub Actions':
+- .github/**/*
 
-Plasma class: plasmapy/plasma/**/*
+Notebooks:
+- docs/notebooks/**/*
 
-simulations: plasmapy/simulation/**/*
+Packaging:
+- .github/workflows/*publish*
+- .github/workflows/*release*
+- MANIFEST.in
+- pyproject.toml
+- setup.*
 
-Utilities: plasmapy/utils/**/*
+plasmapy.analysis:
+- plasmapy/analysis/**/*
 
-Breaking: changelog/*.breaking*rst
+plasmapy.diagnostics:
+- plasmapy/diagnostics/**/*
+
+plasmapy.dispersion:
+- plasmapy/dispersion/**/*
+
+plasmapy.formulary:
+- plasmapy/formulary/**/*
+
+plasmapy.formulary.quantum:
+- plasmapy/**/quantum*
+
+plasmapy.particles:
+- plasmapy/particles/**/*
+
+plasmapy.plasma:
+- plasmapy/plasma/**/*
+
+plasmapy.simulation:
+- plasmapy/simulation/**/*
+
+plasmapy.utils:
+- plasmapy/utils/**/*
+
+Testing:
+- '**/test*.py'
+- '**/conftest.py'
+- .github/workflows/weekly.yml
+- .codecov.yaml
+- noxfile.py
+- tox.ini

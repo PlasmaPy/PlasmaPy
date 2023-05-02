@@ -1,0 +1,3 @@
+Added the `plasmapy.analysis.time_series.excess_statistics` module
+including the `~plasmapy.analysis.time_series.excess_statistics.ExcessStatistics`
+class for calculating excess statistics of time series.

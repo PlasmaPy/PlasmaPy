@@ -146,7 +146,7 @@ class TestPlasmaFrequencyLite:
     """Test class for `plasma_frequency_lite`."""
 
     def test_is_jitted(self):
-        "Ensure `plasmapy_frequency_lite` was jitted by `numba`."
+        """Ensure `plasmapy_frequency_lite` was jitted by `numba`."""
         assert is_jitted(plasma_frequency_lite)
 
     @pytest.mark.parametrize(
@@ -172,7 +172,7 @@ class TestPlasmaFrequencyLite:
         else:
             try:
                 inputs_unitless["Z"] = np.abs(particle.charge_number)
-            except Exception:
+            except Exception:  # noqa: BLE001
                 inputs_unitless["Z"] = 1
         if "to_hz" in inputs:
             inputs_unitless["to_hz"] = inputs["to_hz"]

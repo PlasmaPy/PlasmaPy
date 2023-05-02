@@ -304,7 +304,7 @@ class CheckValues(CheckBase):
         # * 'none_shall_pass' always needs to be checked first
         ckeys = list(self.__check_defaults.keys())
         ckeys.remove("none_shall_pass")
-        ckeys = ("none_shall_pass",) + tuple(ckeys)
+        ckeys = ("none_shall_pass", *tuple(ckeys))
         for ckey in ckeys:
             if ckey == "can_be_complex":
                 if not arg_checks[ckey] and np.any(np.iscomplexobj(arg)):
@@ -740,9 +740,7 @@ class CheckUnits(CheckBase):
             out_checks[param.name]["pass_equivalent_units"] = peu
 
         # Does `self.checks` indicate arguments not used by f?
-        missing_params = [
-            param for param in set(self.checks.keys()) - set(out_checks.keys())
-        ]
+        missing_params = list(set(self.checks.keys()) - set(out_checks.keys()))
         if missing_params:
             params_str = ", ".join(missing_params)
             warnings.warn(
@@ -1019,7 +1017,6 @@ class CheckUnits(CheckBase):
         """
         Given a list of equivalencies, flatten out any sub-element lists
 
-
         Parameters
         ----------
         elist: list
@@ -1190,7 +1187,6 @@ def check_values(
 
     Parameters
     ----------
-
     func:
         The function to be decorated
 
