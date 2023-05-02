@@ -289,7 +289,7 @@ def test_null_point_find3():
 
 
 @pytest.mark.slow
-@pytest.mark.xfail(np.__version__ >= "1.24.0", reason="See issue #2101")
+@pytest.mark.xfail(np.__version__ >= "1.24.0", reason="See issue #2101.")
 def test_null_point_find4():
     r"""Test `~plasmapy.analysis.nullpoint.null_point_find`."""
     # Two null points
@@ -369,7 +369,7 @@ def test_null_point_find7():
 
 
 @pytest.mark.slow
-@pytest.mark.xfail(np.__version__ >= "1.24.0", reason="See issue #2101")
+@pytest.mark.xfail(np.__version__ >= "1.24.0", reason="See issue #2101.")
 def test_null_point_find8():
     r"""Test `~plasmapy.analysis.nullpoint.null_point_find`."""
     # Non-linear field
@@ -427,7 +427,7 @@ class Test_classify_null_point:
             },
             "Spiral null",
             marks=pytest.mark.xfail(
-                np.__version__ >= "1.24.0", reason="See issue #2101"
+                np.__version__ >= "1.24.0", reason="See issue #2101."
             ),
         ),
         (
