@@ -350,7 +350,7 @@ class Test_Ion_Sound_Speed:
         with pytest.warns(_warning):
             val = ion_sound_speed(**kwargs1)
             if kwargs2 != {}:
-                val == ion_sound_speed(**kwargs2)
+                val == ion_sound_speed(**kwargs2)  # noqa: B015
 
     @pytest.mark.parametrize(
         "args, kwargs, _error",

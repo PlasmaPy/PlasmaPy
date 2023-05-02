@@ -11,7 +11,7 @@ from plasmapy.utils.pytest_helpers import assert_can_handle_nparray
 class Test_Spitzer_resistivity:
     @classmethod
     def setup_class(cls):
-        """initializing parameters for tests"""
+        """Initializing parameters for tests"""
         cls.T = 11604 * u.K
         cls.n = 1e12 * u.cm**-3
         cls.particles = ("e", "p")
@@ -89,7 +89,7 @@ class Test_Spitzer_resistivity:
 class Test_mobility:
     @classmethod
     def setup_class(cls):
-        """initializing parameters for tests"""
+        """Initializing parameters for tests"""
         cls.T = 11604 * u.K
         cls.n_e = 1e17 * u.cm**-3
         cls.particles = ("e", "p")

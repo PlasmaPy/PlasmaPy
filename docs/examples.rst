@@ -1,3 +1,5 @@
+.. _examples:
+
 Examples
 ========
 
@@ -6,6 +8,8 @@ the various functionality contained in `plasmapy`.
 
 .. contents::
    :local:
+
+.. _getting-started-notebooks:
 
 Getting started
 ---------------

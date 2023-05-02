@@ -747,16 +747,16 @@ class Particle(AbstractPhysicalParticle):
             this_isotope = _isotopes.data_about_isotopes[isotope]
 
             attributes["baryon number"] = this_isotope["mass number"]
-            attributes["isotope mass"] = this_isotope.get("mass", None)
+            attributes["isotope mass"] = this_isotope.get("mass")
             attributes["isotopic abundance"] = this_isotope.get("abundance", 0.0)
 
             if this_isotope["stable"]:
                 attributes["half-life"] = np.inf * u.s
             else:
-                attributes["half-life"] = this_isotope.get("half-life", None)
+                attributes["half-life"] = this_isotope.get("half-life")
 
         if element and not isotope:
-            attributes["standard atomic weight"] = this_element.get("atomic mass", None)
+            attributes["standard atomic weight"] = this_element.get("atomic mass")
 
         if ion in _special_particles.special_ion_masses:
             attributes["mass"] = _special_particles.special_ion_masses[ion]
