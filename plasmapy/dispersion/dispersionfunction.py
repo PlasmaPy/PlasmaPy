@@ -10,7 +10,7 @@ import astropy.units as u
 import numbers
 import numpy as np
 
-from scipy.special import wofz as Faddeeva_function
+from scipy.special import wofz as Faddeeva_function  # noqa: N812
 from typing import Union
 
 from plasmapy.utils.decorators import bind_lite_func, preserve_signature

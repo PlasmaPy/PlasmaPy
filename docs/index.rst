@@ -11,8 +11,35 @@
 PlasmaPy Documentation
 ######################
 
-PlasmaPy_ is an open source community-developed core Python_
-|minpython|\ + package for plasma physics currently under development.
+PlasmaPy_ is an open source community-developed Python_ |minpython|\ +
+package for plasma research and education. PlasmaPy is a platform by
+which the plasma community can share code and collaboratively develop
+new software tools for plasma research.
+
+If you are new to PlasmaPy, please check out our `getting started
+notebooks <getting-started-notebooks>`_ and our :ref:`example gallery
+<examples>`. We invite you to share ideas and ask questions in our
+`Matrix chat room`_ or during our weekly virtual `office hours`_.
+
+PlasmaPy is developed openly `on GitHub <PlasmaPy's GitHub repository>`_,
+where you can `request a new feature`_ or `report a bug`_.
+
+.. important::
+
+   If you use PlasmaPy for work presented in a publication or talk,
+   please help the project by following these instructions to
+   :ref:`cite or acknowledge <citation>` PlasmaPy.
+
+.. toctree::
+   :caption: First Steps
+   :maxdepth: 1
+
+   Installing <install>
+   getting_started
+   examples
+   COMMUNICATION
+   Code of Conduct <CODE_OF_CONDUCT.rst>
+   about/citation
 
 Example highlights
 ------------------
@@ -26,18 +53,6 @@ Example highlights
    notebooks/diagnostics/thomson
    notebooks/analysis/swept_langmuir/find_floating_potential
    notebooks/formulary/thermal_bremsstrahlung
-
-.. toctree::
-   :caption: First Steps
-   :maxdepth: 1
-
-   Installing <install>
-   getting_started
-   examples
-   COMMUNICATION
-   CONTRIBUTING
-   Code of Conduct <CODE_OF_CONDUCT.rst>
-   about/citation
 
 .. toctree::
    :maxdepth: 1
@@ -57,6 +72,8 @@ Example highlights
    :caption: Contributor Guide
 
    Overview <contributing/index>
+   contributing/getting_ready
+   contributing/workflow
    contributing/coding_guide
    contributing/changelog_guide
    contributing/doc_guide
@@ -72,7 +89,10 @@ Example highlights
    bibliography
    glossary
    performance_tips
-   Vision Statement <about/vision_statement>
    PlasmaPy Enhancement Proposals <https://github.com/PlasmaPy/PlasmaPy-PLEPs>
    PlasmaPy.org <https://www.plasmapy.org>
    GitHub Repository <https://github.com/PlasmaPy/PlasmaPy>
+
+.. _new discussion on GitHub: https://github.com/PlasmaPy/PlasmaPy/discussions/new/choose
+.. _report a bug: https://github.com/PlasmaPy/PlasmaPy/issues/new?assignees=&labels=Bug&template=bug_report.yml
+.. _request a new feature: https://github.com/PlasmaPy/PlasmaPy/issues/new?assignees=&labels=Feature+request&template=feature_request.yml

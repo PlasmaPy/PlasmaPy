@@ -14,8 +14,9 @@ import numpy as np
 import sys
 import warnings
 
+from collections.abc import Iterable
 from tqdm import tqdm
-from typing import Iterable, Union
+from typing import Union
 
 from plasmapy import particles
 from plasmapy.formulary.mathematics import rot_a_to_b
@@ -130,7 +131,6 @@ class Tracker:
         detector_hdir=None,
         verbose=True,
     ):
-
         # self.grid is the grid object
         if isinstance(grids, AbstractGrid):
             self.grids = [
@@ -217,7 +217,6 @@ class Tracker:
             grid.require_quantities(req_quantities, replace_with_zeros=True)
 
             for rq in req_quantities:
-
                 # Check that there are no infinite values
                 if not np.isfinite(grid[rq].value).all():
                     raise ValueError(
@@ -284,7 +283,7 @@ class Tracker:
         """
         theta = np.zeros([8, self.num_grids])
 
-        for i, grid in enumerate(self.grids):
+        for i, _grid in enumerate(self.grids):  # noqa: B007
             ind = 0
             for x in (0, -1):
                 for y in (0, -1):
@@ -576,7 +575,7 @@ class Tracker:
         nparticles,
         particle_energy,
         max_theta=None,
-        particle: Particle = Particle("p+"),
+        particle: Particle = Particle("p+"),  # noqa: B008
         distribution="monte-carlo",
     ):
         r"""
@@ -686,7 +685,7 @@ class Tracker:
         self,
         x,
         v,
-        particle: Particle = Particle("p+"),
+        particle: Particle = Particle("p+"),  # noqa: B008
     ):
         r"""
         Load arrays of particle positions and velocities
@@ -755,7 +754,7 @@ class Tracker:
     # Run/push loop methods
     # *************************************************************************
 
-    def _adaptive_dt(self, Ex, Ey, Ez, Bx, By, Bz):
+    def _adaptive_dt(self, Ex, Ey, Ez, Bx, By, Bz):  # noqa: ARG002
         r"""
         Calculate the appropriate dt for each grid based on a number of
         considerations
@@ -776,7 +775,7 @@ class Tracker:
 
         # Wherever a particle is on a grid, include that grid's gridstep
         # in the list of candidate timesteps
-        for i, grid in enumerate(self.grids):
+        for i, _grid in enumerate(self.grids):  # noqa: B007
             candidates[:, i] = np.where(self.on_grid[:, i] > 0, gridstep[i], np.inf)
 
         # If not, compute a number of possible timesteps
@@ -1271,19 +1270,19 @@ class Tracker:
         v0[:, 1] = np.dot(self.v_init, self.det_hdir)
         v0[:, 2] = np.dot(self.v_init, self.det_vdir)
 
-        return dict(
-            source=self.source,
-            detector=self.detector,
-            mag=self.mag,
-            nparticles=self.nparticles,
-            max_deflection=self.max_deflection.to(u.rad).value,
-            x=xloc,
-            y=yloc,
-            v=v,
-            x0=x0loc,
-            y0=y0loc,
-            v0=v0,
-        )
+        return {
+            "source": self.source,
+            "detector": self.detector,
+            "mag": self.mag,
+            "nparticles": self.nparticles,
+            "max_deflection": self.max_deflection.to(u.rad).value,
+            "x": xloc,
+            "y": yloc,
+            "v": v,
+            "x0": x0loc,
+            "y0": y0loc,
+            "v0": v0,
+        }
 
     def save_results(self, path):
         """
@@ -1292,7 +1291,6 @@ class Tracker:
 
         Parameters
         ----------
-
         path : `str` or `os.path`
             Either the filename (string) or an open file (file-like object)
             where the data will be saved. If file is a string or a Path,
@@ -1301,7 +1299,6 @@ class Tracker:
 
         Notes
         -----
-
         Useful for saving the results from a simulation so they can be
         loaded at a later time and passed into
         `~plasmapy.diagnostics.charged_particle_radiography.synthetic_radiography.synthetic_radiograph`.

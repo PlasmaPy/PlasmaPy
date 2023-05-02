@@ -6,8 +6,9 @@ __all__ = []
 
 import astropy.units as u
 
+from collections.abc import Iterable
 from numbers import Number
-from typing import Dict, Iterable, Optional, Union
+from typing import Optional, Union
 
 
 def _get_physical_type_dict(
@@ -17,7 +18,7 @@ def _get_physical_type_dict(
     numbers_become_quantities: Optional[bool] = False,
     strict: Optional[bool] = False,
     allowed_physical_types: Optional[set[Union[str, u.PhysicalType]]] = None,
-) -> Dict[u.PhysicalType, u.Quantity]:
+) -> dict[u.PhysicalType, u.Quantity]:
     """
     Return a `dict` that contains `~astropy.units.PhysicalType` objects
     as keys and the corresponding objects in ``iterable`` as values.
@@ -69,7 +70,6 @@ def _get_physical_type_dict(
     physical_types = {}
 
     for obj in iterable:
-
         if isinstance(obj, Number) and numbers_become_quantities:
             obj = u.Quantity(obj, u.dimensionless_unscaled)
 

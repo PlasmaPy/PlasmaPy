@@ -11,7 +11,6 @@ from astropy.constants import c, e, m_e, m_n, m_p
 
 from plasmapy.particles import json_load_particle, json_loads_particle, molecule
 from plasmapy.particles._isotopes import data_about_isotopes
-from plasmapy.particles._special_particles import particle_zoo
 from plasmapy.particles.atomic import known_isotopes
 from plasmapy.particles.exceptions import (
     ChargeError,
@@ -526,7 +525,6 @@ def test_Particle_class(arg, kwargs, expected_dict):
         expected = expected_dict[key]
 
         if inspect.isclass(expected) and issubclass(expected, Exception):
-
             # Exceptions are expected to be raised when accessing certain
             # attributes for some particles.  For example, accessing a
             # neutrino's mass should raise a MissingParticleDataError since
@@ -546,7 +544,6 @@ def test_Particle_class(arg, kwargs, expected_dict):
                 )
 
         else:
-
             try:
                 result = eval(f"particle.{key}")
                 assert result == expected or u.isclose(result, expected, equal_nan=True)
@@ -721,7 +718,6 @@ def test_particle_class_mass_nuclide_mass(isotope: str, ion: str):
         "ion",
         "baryon",
     }:
-
         particle = Isotope.symbol
 
         assert Isotope.nuclide_mass == Ion.mass, (
@@ -730,7 +726,6 @@ def test_particle_class_mass_nuclide_mass(isotope: str, ion: str):
         )
 
     else:
-
         inputerrmsg = (
             f"isotope = {isotope!r} and ion = {ion!r} are "
             f"not valid inputs to this test. The inputs should be "
@@ -782,31 +777,19 @@ def test_particle_bool_error():
         bool(Particle("e-"))
 
 
-particle_antiparticle_pairs = [
-    ("p+", "p-"),
-    ("n", "antineutron"),
-    ("e-", "e+"),
-    ("mu-", "mu+"),
-    ("tau-", "tau+"),
-    ("nu_e", "anti_nu_e"),
-    ("nu_mu", "anti_nu_mu"),
-    ("nu_tau", "anti_nu_tau"),
-]
-
-
-@pytest.mark.parametrize("particle, antiparticle", particle_antiparticle_pairs)
-def test_particle_inversion(particle, antiparticle):
+def test_particle_inversion(particle_antiparticle_pair):
     """Test that particles have the correct antiparticles."""
-    assert Particle(particle).antiparticle == Particle(antiparticle), (
+    particle, antiparticle = particle_antiparticle_pair
+    assert particle.antiparticle == antiparticle, (
         f"The antiparticle of {particle} is found to be "
         f"{~Particle(particle)} instead of {antiparticle}."
     )
 
 
-@pytest.mark.parametrize("particle, antiparticle", particle_antiparticle_pairs)
-def test_antiparticle_inversion(particle, antiparticle):
+def test_antiparticle_inversion(particle_antiparticle_pair):
     """Test that antiparticles have the correct antiparticles."""
-    assert Particle(antiparticle).antiparticle == Particle(particle), (
+    particle, antiparticle = particle_antiparticle_pair
+    assert antiparticle.antiparticle == particle, (
         f"The antiparticle of {antiparticle} is found to be "
         f"{~Particle(antiparticle)} instead of {particle}."
     )
@@ -815,23 +798,6 @@ def test_antiparticle_inversion(particle, antiparticle):
 def test_unary_operator_for_elements():
     with pytest.raises(ParticleError):
         Particle("C").antiparticle
-
-
-@pytest.fixture(params=particle_zoo.everything)
-def particle(request):
-    return Particle(request.param)
-
-
-@pytest.fixture()
-def opposite(particle):
-    try:
-        opposite_particle = ~particle
-    except Exception as exc:
-        raise InvalidParticleError(
-            f"The unary ~ (invert) operator is unable to find the "
-            f"antiparticle of {particle}."
-        ) from exc
-    return opposite_particle
 
 
 class Test_antiparticle_properties_inversion:

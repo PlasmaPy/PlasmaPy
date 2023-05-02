@@ -1,0 +1,2 @@
+Restructured the |testing guide| by putting information on writing
+tests prior to instructions for running tests.
