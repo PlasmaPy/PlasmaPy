@@ -16,7 +16,7 @@ bias_arr = np.random.rand(N) * u.V
 
 
 class Test__fitting_functions:
-    r"Tests the different available fit functions"
+    r"""Tests the different available fit functions"""
 
     x = 20
     x0 = 10
@@ -183,7 +183,8 @@ def shuffle_characteristic(characteristic):
     r"""Shuffle a given characteristic"""
 
     _shuffle = sorted(
-        np.arange(len(characteristic.bias)), key=lambda k: np.random.random()
+        np.arange(len(characteristic.bias)),
+        key=lambda k: np.random.random(),  # noqa: ARG005
     )
     U_shuffled = characteristic.bias[_shuffle]
     I_shuffled = characteristic.current[_shuffle]
