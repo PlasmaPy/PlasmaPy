@@ -64,6 +64,14 @@ class TestKinetic_Alfven:
         with pytest.raises(_error):
             kinetic_alfven(**kwargs)
 
+    @pytest.mark.xfail(
+        reason=(
+            "This functionality is breaking because of updates to "
+            "gyrofrequency where z_mean override behavior is being "
+            "dropped. We will address z_mean override behavior when "
+            "kinetic_alfven is decorated with particle_input."
+        )
+    )
     @pytest.mark.parametrize(
         "kwargs, expected",
         [
@@ -125,7 +133,7 @@ class TestKinetic_Alfven:
 
         assert isinstance(ws, dict)
 
-        for mode, val in ws.items():
+        for _mode, val in ws.items():  # noqa: B007
             assert isinstance(val, u.Quantity)
             assert val.unit == u.rad / u.s
             assert val.shape == expected["shape"]

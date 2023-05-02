@@ -82,7 +82,7 @@ def test_particle_list_membership(args):
 
 
 @pytest.mark.parametrize("attribute", attributes)
-def test_particle_list_attributes(attribute, various_particles):
+def test_particle_list_attributes(attribute):
     """
     Test that the attributes of ParticleList correspond to the
     attributes of the listed particles.

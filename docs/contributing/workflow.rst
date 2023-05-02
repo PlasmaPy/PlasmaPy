@@ -175,6 +175,9 @@ Creating a pull request
       After the pull request has been created, it can be updated by
       using ``git push`` to update the corresponding branch on GitHub.
 
+#. If this is your first contribution, add yourself to the list in
+   |docs/about/credits.rst|_.
+
 At this stage, a reviewer will perform a code review, unless it has been
 marked as a draft pull request. Thank you for contributing!
 

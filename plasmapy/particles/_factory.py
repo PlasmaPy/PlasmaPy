@@ -34,7 +34,7 @@ def _generate_particle_factory_error_message(
         errmsg += repr(kwargs)
 
     errmsg += (
-        ". For information on creating particles, see:"
+        ". For information on creating particles, see: "
         "https://docs.plasmapy.org/en/stable/api/plasmapy.particles.ParticleLike.html"
     )
 
@@ -155,7 +155,7 @@ def _physical_particle_factory(
     ~plasmapy.particles.particle_class.ParticleList
 
     Notes
-    -=---
+    -----
     If ``Z`` or ``mass_numb`` is provided as keyword arguments but are
     equal to `None`, then they will not be provided to any of the calls.
     This is to allow |CustomParticle| instances to be created.

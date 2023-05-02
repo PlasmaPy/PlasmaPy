@@ -243,6 +243,10 @@ when you :py:`import plasmapy`.
 
       cd ~/repos/PlasmaPy
 
+   .. note::
+
+      In Windows, the directory path will be :file:`C:\Users\<username>\repos\PlasmaPy`.
+
 3. If you created a Conda_ environment for contributing to PlasmaPy,
    activate it with:
 
@@ -271,6 +275,10 @@ when you :py:`import plasmapy`.
          .. code-block:: bash
 
             python -m pip install -e .[docs,tests]
+
+   .. note::
+
+      Replace ``py`` with ``python`` if you are not using conda.
 
    The :bash:`-e` specifies that this will be an `editable
    installation`_.

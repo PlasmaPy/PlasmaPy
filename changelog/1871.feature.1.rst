@@ -1,0 +1,4 @@
+After having been decorated with |particle_input|, the
+`~plasmapy.formulary.relativity.relativistic_energy` function now
+accepts a broader variety of |particle-like| objects rather than only
+|Quantity| objects representing mass.

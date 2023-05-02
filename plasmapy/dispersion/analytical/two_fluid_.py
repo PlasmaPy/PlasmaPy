@@ -135,7 +135,6 @@ def two_fluid(
 
     Notes
     -----
-
     The complete dispersion equation presented by :cite:t:`stringer:1963`
     (equation 1 of :cite:t:`bellan:2012`) is:
 
