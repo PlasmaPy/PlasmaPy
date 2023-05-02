@@ -168,8 +168,8 @@ class TestCheckUnits:
         assert isinstance(norme[0][2], LambdaType)
         assert isinstance(norme[0][3], LambdaType)
         for val in (-20.0, 50.0, 195.0):
-            assert norme[0][2](val) == (lambda x: x - 273.15)(val)
-            assert norme[0][3](val) == (lambda x: x + 273.15)(val)
+            assert norme[0][2](val) == (lambda x: x - 273.15)(val)  # noqa: PLC3002
+            assert norme[0][3](val) == (lambda x: x + 273.15)(val)  # noqa: PLC3002
 
         # not a 2, 3, or 4-tuple
         with pytest.raises(ValueError):
@@ -401,7 +401,7 @@ class TestCheckUnits:
         ]
 
         # perform tests
-        for ii, case in enumerate(_cases):
+        for _ii, case in enumerate(_cases):  # noqa: B007
             sig = inspect.signature(case["setup"]["function"])
             bound_args = sig.bind(*case["setup"]["args"], **case["setup"]["kwargs"])
 
@@ -421,10 +421,10 @@ class TestCheckUnits:
             assert sorted(checks.keys()) == sorted(case["output"].keys())
 
             # if check key-value not specified then default is assumed
-            for arg_name in case["output"].keys():
+            for arg_name in case["output"]:
                 arg_checks = checks[arg_name]
 
-                for key in default_checks.keys():
+                for key in default_checks:
                     if key in case["output"][arg_name]:
                         val = case["output"][arg_name][key]
                     else:
@@ -539,7 +539,7 @@ class TestCheckUnits:
         cu.f = self.foo_no_anno
 
         # perform tests
-        for ii, case in enumerate(_cases):
+        for _ii, case in enumerate(_cases):  # noqa: B007
             arg, arg_name, arg_checks = case["input"]
             _results = cu._check_unit_core(arg, arg_name, arg_checks)
             assert _results[0:3] == case["output"][0:3]
@@ -844,10 +844,10 @@ class TestCheckValues:
             assert sorted(checks.keys()) == sorted(case["output"].keys())
 
             # if check key-value not specified then default is assumed
-            for arg_name in case["output"].keys():
+            for arg_name in case["output"]:
                 arg_checks = checks[arg_name]
 
-                for key in default_checks.keys():
+                for key in default_checks:
                     if key in case["output"][arg_name]:
                         val = case["output"][arg_name][key]
                     else:

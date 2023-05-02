@@ -656,7 +656,7 @@ class TestMaxwellianCollisionFrequencies:
 class Test_collision_frequency:
     @classmethod
     def setup_class(cls):
-        """initializing parameters for tests"""
+        """Initializing parameters for tests"""
         cls.T = 11604 * u.K
         cls.n = 1e17 * u.cm**-3
         cls.particles = ("e", "p")
@@ -795,7 +795,7 @@ class Test_collision_frequency:
 class Test_fundamental_electron_collision_freq:
     @classmethod
     def setup_class(cls):
-        """initializing parameters for tests"""
+        """Initializing parameters for tests"""
         cls.T_arr = np.array([1, 2]) * u.eV
         cls.n_arr = np.array([1e20, 2e20]) * u.cm**-3
         cls.ion = "p"
@@ -814,7 +814,7 @@ class Test_fundamental_electron_collision_freq:
 class Test_fundamental_ion_collision_freq:
     @classmethod
     def setup_class(cls):
-        """initializing parameters for tests"""
+        """Initializing parameters for tests"""
         cls.T_arr = np.array([1, 2]) * u.eV
         cls.n_arr = np.array([1e20, 2e20]) * u.cm**-3
         cls.ion = "p"

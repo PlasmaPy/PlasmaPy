@@ -4,7 +4,7 @@
 import numpy as np
 import pytest
 
-from plasmapy.formulary import mathematics as mathematics
+from plasmapy.formulary import mathematics
 
 # TODO: Move the Fermi integral tests over to this file?
 

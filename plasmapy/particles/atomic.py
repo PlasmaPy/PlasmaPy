@@ -21,7 +21,6 @@ __all__ = [
     "standard_atomic_weight",
 ]
 
-import astropy.constants as const
 import astropy.units as u
 
 from numbers import Integral, Real
@@ -34,11 +33,11 @@ from plasmapy.particles.exceptions import (
     InvalidElementError,
     InvalidIsotopeError,
     InvalidParticleError,
-    MissingParticleDataError,
 )
 from plasmapy.particles.particle_class import Particle, ParticleLike
 from plasmapy.particles.particle_collections import ParticleList
 from plasmapy.particles.symbols import atomic_symbol
+from plasmapy.utils.decorators import validate_quantities
 
 __all__.sort()
 
@@ -802,13 +801,25 @@ def stable_isotopes(
     return isotopes_list
 
 
-def reduced_mass(test_particle, target_particle) -> u.Quantity:
-    """
-    Find the reduced mass between two particles.
+@particle_input
+@validate_quantities
+def reduced_mass(test_particle: ParticleLike, target_particle: ParticleLike) -> u.kg:
+    r"""
+    Find the :wikipedia:`reduced mass` between two particles.
+
+    The reduced mass is given by:
+
+    .. math::
+
+        μ ≡ \frac{m_1 m_2}{m_1 + m_2}
+
+    for two objects of mass :math:`m_1` and :math:`m_2`. The reduced
+    mass is used to describe the effective mass in the
+    :wikipedia:`two-body problem`.
 
     Parameters
     ----------
-    test_particle, target_particle : |particle-like| or |Quantity|
+    test_particle, target_particle : |particle-like|
         The test particle as represented by a string, an integer
         representing atomic number, a `~plasmapy.particles.particle_class.Particle`
         object, or a `~astropy.units.Quantity` or
@@ -831,46 +842,27 @@ def reduced_mass(test_particle, target_particle) -> u.Quantity:
     `~plasmapy.particles.exceptions.MissingParticleDataError`
         If the mass of either particle is not known.
 
+    Notes
+    -----
+    The reduced mass is always less than or equal to the mass of each
+    body (i.e., :math:`μ ≤ m_1` and :math:`μ ≤ m_2`).
+
+    When :math:`m_1 = m_2 ≡ m`, the reduced mass becomes :math:`μ =
+    \frac{m}{2}`.
+
+    When :math:`m_1 ≫ m_2`, the reduced mass becomes :math:`μ ≈ m_2`.
+
     Examples
     --------
     >>> from astropy import units as u
     >>> reduced_mass('p+', 'e-')
-    <Quantity 9.104425e-31 kg>
+    <Quantity 9.10442...e-31 kg>
     >>> reduced_mass(5.4e-27 * u.kg, 8.6e-27 * u.kg)
-    <Quantity 3.31714286e-27 kg>
+    <Quantity 3.31714...e-27 kg>
     """
-
-    # TODO: Add discussion on reduced mass and its importance to docstring
-    # TODO: Add equation for reduced mass to docstring
-
-    def get_particle_mass(particle) -> u.Quantity:
-        """Return the mass of a particle.
-
-        Take a representation of a particle and returns the mass in
-        kg.  If the input is a `~astropy.units.Quantity` or
-        `~astropy.constants.Constant` with units of mass already, then
-        this returns that mass converted to kg.
-        """
-        try:
-            if isinstance(particle, (u.Quantity, const.Constant)):
-                return particle.to(u.kg)
-            if not isinstance(particle, Particle):
-                particle = Particle(particle)
-
-        except u.UnitConversionError as exc1:
-            raise u.UnitConversionError("Incorrect units in reduced_mass.") from exc1
-        except MissingParticleDataError:
-            raise MissingParticleDataError(
-                f"Unable to find the reduced mass because the mass of "
-                f"{particle} is not available."
-            ) from None
-        else:
-            return particle.mass.to(u.kg)
-
-    test_mass = get_particle_mass(test_particle)
-    target_mass = get_particle_mass(target_particle)
-
-    return (test_mass * target_mass) / (test_mass + target_mass)
+    return (test_particle.mass * target_particle.mass) / (
+        test_particle.mass + target_particle.mass
+    )
 
 
 def periodic_table_period(argument: Union[str, Integral]) -> Integral:

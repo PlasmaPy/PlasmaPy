@@ -296,6 +296,14 @@ class TestHollweg:
 
         assert np.allclose(big_omega, expected, atol=1e-2)
 
+    @pytest.mark.xfail(
+        reason=(
+            "This functionality is breaking because of updates to "
+            "gyrofrequency where z_mean override behavior is being "
+            "dropped. We will address z_mean override behavior when "
+            "hollweg is decorated with particle_input."
+        )
+    )
     @pytest.mark.parametrize(
         "kwargs, expected",
         [
@@ -358,7 +366,7 @@ class TestHollweg:
         assert isinstance(ws, dict)
         assert len({"acoustic_mode", "alfven_mode", "fast_mode"} - set(ws.keys())) == 0
 
-        for mode, val in ws.items():
+        for _mode, val in ws.items():  # noqa: B007
             assert isinstance(val, u.Quantity)
             assert val.unit == u.rad / u.s
             assert val.shape == expected["shape"]

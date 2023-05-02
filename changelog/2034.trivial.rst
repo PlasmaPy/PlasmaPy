@@ -1,0 +1,6 @@
+Modified |particle_input| to allow |CustomParticle|\ -like objects with
+a defined charge to be passed through to decorated functions when a
+|parameter| to that function annotated with |ParticleLike| is named
+``ion``. Previously, only |Particle| objects representing ions or
+neutral atoms were allowed to pass through when the parameter was named
+``ion``.
