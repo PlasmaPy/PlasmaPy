@@ -106,7 +106,6 @@ def deBroglie_wavelength(V: u.m / u.s, particle: ParticleLike) -> u.m:
         )
 
     if V.size > 1:
-
         lambda_dBr = np.ones(V.shape) * np.inf * u.m
         indices = V.value != 0
         lambda_dBr[indices] = h / (

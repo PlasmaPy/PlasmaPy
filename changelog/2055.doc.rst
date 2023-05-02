@@ -1,0 +1,2 @@
+Updated the introduction on the documentation landing page and the
+citation instructions.

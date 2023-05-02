@@ -1,0 +1,6 @@
+The signature of `~plasmapy.formulary.relativity.relativistic_energy`
+has changed. The parameter ``m`` has been replaced with ``particle``,
+which now accepts a broader variety of |particle-like| arguments,
+including but not limited to a |Quantity| representing mass. The
+parameter ``v`` has been replaced with ``V`` for consistency with other
+functionality.

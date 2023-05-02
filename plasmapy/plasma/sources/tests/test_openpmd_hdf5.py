@@ -1,7 +1,7 @@
 import pytest
 
 from astropy import units as u
-from typing import List, Tuple, Union
+from typing import Union
 
 import plasmapy.plasma
 
@@ -54,11 +54,11 @@ class TestOpenPMD2D:
 
     def test_has_magnetic_field(self, h5_2d):
         with pytest.raises(AttributeError):
-            h5_2d.magnetic_field
+            h5_2d.magnetic_field  # noqa: B018
 
     def test_has_electric_current(self, h5_2d):
         with pytest.raises(AttributeError):
-            h5_2d.electric_current
+            h5_2d.electric_current  # noqa: B018
 
 
 class TestOpenPMD3D:
@@ -82,11 +82,11 @@ class TestOpenPMD3D:
 
     def test_has_magnetic_field(self, h5_3d):
         with pytest.raises(AttributeError):
-            h5_3d.magnetic_field
+            h5_3d.magnetic_field  # noqa: B018
 
     def test_has_electric_current(self, h5_3d):
         with pytest.raises(AttributeError):
-            h5_3d.electric_current
+            h5_3d.electric_current  # noqa: B018
 
 
 @pytest.mark.slow
@@ -134,7 +134,7 @@ units_test_table = [
 
 @pytest.mark.parametrize("openPMD_dims, expected", units_test_table)
 @pytest.mark.slow
-def test_fetch_units(openPMD_dims, expected: Union[Tuple, List]):
+def test_fetch_units(openPMD_dims, expected: Union[tuple, list]):
     units = openpmd_hdf5._fetch_units(openPMD_dims)
     assert units == expected
 

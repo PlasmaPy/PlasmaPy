@@ -190,10 +190,10 @@ class TestValidateQuantities:
             assert sorted(validations.keys()) == sorted(case["output"].keys())
 
             # if validation key-value not specified then default is assumed
-            for arg_name in case["output"].keys():
+            for arg_name in case["output"]:
                 arg_validations = validations[arg_name]
 
-                for key in default_validations.keys():
+                for key in default_validations:
                     if key in case["output"][arg_name]:
                         val = case["output"][arg_name][key]
                     else:
@@ -217,7 +217,6 @@ class TestValidateQuantities:
             assert mock_cv_get.called
 
     def test_vq_method__validate_quantity(self):
-
         # method must exist
         assert hasattr(ValidateQuantities, "_validate_quantity")
 
@@ -306,7 +305,7 @@ class TestValidateQuantities:
         vq.f = self.foo
 
         # perform tests
-        for ii, case in enumerate(_cases):
+        for _ii, case in enumerate(_cases):  # noqa: B007
             arg, arg_name = case["input"]["args"]
             validations = case["input"]["validations"]
 
@@ -332,7 +331,6 @@ class TestValidateQuantities:
         ) as mock_cu_checks, mock.patch.object(
             CheckValues, "_check_value", return_value=None
         ) as mock_cv_checks:
-
             args = case["input"][0:2]
             validations = case["input"][2]
 
@@ -451,7 +449,6 @@ class TestValidateQuantities:
         ) as mock_vq_get, mock.patch.object(
             ValidateQuantities, "_validate_quantity", return_value=5 * u.cm
         ) as mock_vq_validate:
-
             wfoo = ValidateQuantities(**validations)(self.foo)
             assert wfoo(5 * u.cm) == 5 * u.cm
             assert mock_vq_get.call_count == 1
@@ -562,7 +559,7 @@ class TestValidateQuantities:
 
 
 class TestValidateClassAttributes:
-    class SampleCase:
+    class SampleCase:  # noqa: D106
         def __init__(self, x: int = None, y: int = None, z: int = None):
             self.x = x
             self.y = y
@@ -613,9 +610,9 @@ class TestValidateClassAttributes:
 
         test_case = self.SampleCase(**test_case_constructor_keyword_arguments)
 
-        has_x = "x" in test_case_constructor_keyword_arguments.keys()
-        has_y = "y" in test_case_constructor_keyword_arguments.keys()
-        has_z = "z" in test_case_constructor_keyword_arguments.keys()
+        has_x = "x" in test_case_constructor_keyword_arguments
+        has_y = "y" in test_case_constructor_keyword_arguments
+        has_z = "z" in test_case_constructor_keyword_arguments
 
         method_return_dictionary = {
             "require_x": has_x,

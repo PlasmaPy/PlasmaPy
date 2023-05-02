@@ -5,7 +5,7 @@ import astropy.units as u
 import re
 
 from numbers import Integral
-from typing import List, Optional, Union
+from typing import Optional, Union
 
 from plasmapy.particles.decorators import particle_input
 from plasmapy.particles.exceptions import InvalidParticleError, ParticleError
@@ -182,8 +182,8 @@ def nuclear_reaction_energy(*args, **kwargs) -> u.J:
     errmsg = "Invalid nuclear reaction."
 
     def process_particles_list(
-        unformatted_particles_list: List[Union[str, Particle]]
-    ) -> List[Particle]:
+        unformatted_particles_list: list[Union[str, Particle]]
+    ) -> list[Particle]:
         """
         Take an unformatted list of particles and puts each
         particle into standard form, while allowing an integer and
@@ -204,7 +204,6 @@ def nuclear_reaction_energy(*args, **kwargs) -> u.J:
         particles = []
 
         for original_item in unformatted_particles_list:
-
             try:
                 item = original_item.strip()
 
@@ -216,7 +215,7 @@ def nuclear_reaction_energy(*args, **kwargs) -> u.J:
 
                 try:
                     particle = Particle(item)
-                except (InvalidParticleError) as exc:
+                except InvalidParticleError as exc:
                     raise ParticleError(errmsg) from exc
 
                 if particle.element and not particle.isotope:
@@ -232,14 +231,14 @@ def nuclear_reaction_energy(*args, **kwargs) -> u.J:
 
         return particles
 
-    def total_baryon_number(particles: List[Particle]) -> int:
+    def total_baryon_number(particles: list[Particle]) -> int:
         """
         Find the total number of baryons minus the number of
         antibaryons in a list of particles.
         """
         return sum(particle.baryon_number for particle in particles)
 
-    def total_charge(particles: List[Particle]) -> int:
+    def total_charge(particles: list[Particle]) -> int:
         """
         Find the total charge number in a list of nuclides
         (excluding bound electrons) and other particles.
@@ -252,7 +251,7 @@ def nuclear_reaction_energy(*args, **kwargs) -> u.J:
                 total_charge += particle.charge_number
         return total_charge
 
-    def add_mass_energy(particles: List[Particle]) -> u.Quantity:
+    def add_mass_energy(particles: list[Particle]) -> u.Quantity:
         """
         Find the total mass energy from a list of particles, while
         taking the masses of the fully ionized isotopes.
@@ -279,7 +278,6 @@ def nuclear_reaction_energy(*args, **kwargs) -> u.J:
         raise ParticleError(input_err_msg)
 
     if reaction_string_is_input:
-
         reaction = args[0]
 
         if not isinstance(reaction, str):
@@ -300,7 +298,6 @@ def nuclear_reaction_energy(*args, **kwargs) -> u.J:
             raise ParticleError(f"{reaction} is not a valid nuclear reaction.") from ex
 
     elif reactants_products_are_inputs:
-
         try:
             reactants = process_particles_list(kwargs["reactants"])
             products = process_particles_list(kwargs["products"])

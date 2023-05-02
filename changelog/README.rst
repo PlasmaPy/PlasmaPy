@@ -8,7 +8,7 @@ Changelog Guide
 
 .. The rendered version of this document is in PlasmaPy's online
    documentation at:
-   https://docs.plasmapy.org/en/latest/development/changelog_guide.html
+   https://docs.plasmapy.org/en/latest/contributing/changelog_guide.html
 
 .. contents:: Table of Contents
    :depth: 2
@@ -32,6 +32,8 @@ the full changelog. Some example changelog entries are:
    The ``oldname`` argument to `plasmapy.subpackage.module.function` has
    been deprecated and will be removed in a future release. Use
    ``newname`` instead.
+
+.. _add-changelog:
 
 Adding a changelog entry
 ========================
@@ -57,6 +59,11 @@ pull request to PlasmaPy's ``main`` branch.
    includes an update to the documentation, so the file should be named
    :file:`1198.doc.rst`. If you are unsure of which changelog type to
    use, please feel free to ask in your pull request.
+
+   .. note::
+
+      A ``doc`` changelog entry is not necessary if there is a
+      corresponding ``feature`` changelog entry.
 
    .. tip::
 

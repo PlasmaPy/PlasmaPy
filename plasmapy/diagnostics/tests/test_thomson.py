@@ -62,7 +62,6 @@ invalid_instr_func_list = [
 
 
 def width_at_value(x, y, val):
-
     """
     Calculates the width of a curve at a given value.
     """
@@ -238,7 +237,7 @@ def test_spectral_density_minimal_arguments(single_species_collective_args):
         "instr_func",
     ]
     for key in optional_keys:
-        if key in kwargs.keys():
+        if key in kwargs:
             del kwargs[key]
 
     alpha, Skw = thomson.spectral_density(*args, **kwargs)
@@ -247,7 +246,6 @@ def test_spectral_density_minimal_arguments(single_species_collective_args):
 
 
 def test_single_species_collective_lite(single_species_collective_args):
-
     # Make a copy of the input args
     args_fixture_copy = copy.copy(single_species_collective_args)
     args, kwargs = spectral_density_args_kwargs(single_species_collective_args)
@@ -271,7 +269,7 @@ def test_spectral_density_lite_minimal_arguments(single_species_collective_args)
         "instr_func_arr",
     ]
     for key in optional_keys:
-        if key in kwargs.keys():
+        if key in kwargs:
             del kwargs[key]
 
     alpha, Skw = thomson.spectral_density.lite(*args, **kwargs)
@@ -678,9 +676,9 @@ def run_fit(
     notch=None,
     notch_as_nan=False,
     fit_method="differential_evolution",
-    fit_kws={},
+    fit_kws={},  # noqa: B006
     max_iter=None,
-    check_errors=True,
+    check_errors=True,  # noqa: ARG001
     require_redchi=1,
     # If false, don't perform the actual fit but instead just create the Model
     run_fit=True,
@@ -807,7 +805,7 @@ def spectral_density_model_settings_params(kwargs):
     The dictionary needs to hold a Parameter object for Parameters
 
     """
-    if "wavelengths" in kwargs.keys():
+    if "wavelengths" in kwargs:
         wavelengths = kwargs["wavelengths"]
     else:
         raise ValueError("Kwargs must include 'wavelengths'")
@@ -826,7 +824,6 @@ def spectral_density_model_settings_params(kwargs):
     params = Parameters()
 
     for k, v in kwargs.items():
-
         # If key is a setting, add the value to the settings
         if k == "wavelengths":
             pass
@@ -1062,7 +1059,6 @@ def test_fit_epw_multi_species(epw_multi_species_settings_params):
 
 @pytest.mark.slow
 def test_fit_iaw_single_species(iaw_single_species_settings_params):
-
     wavelengths, params, settings = spectral_density_model_settings_params(
         iaw_single_species_settings_params
     )
@@ -1097,7 +1093,6 @@ def test_fit_iaw_multi_species(iaw_multi_species_settings_params):
 
 @pytest.mark.slow
 def test_fit_noncollective_single_species(noncollective_single_species_settings_params):
-
     wavelengths, params, settings = spectral_density_model_settings_params(
         noncollective_single_species_settings_params
     )
@@ -1291,7 +1286,6 @@ def test_fit_with_minimal_parameters():
     ],
 )
 def test_model_input_validation(control, error, msg, iaw_multi_species_settings_params):
-
     kwargs = iaw_multi_species_settings_params
     print(list(control.keys()))
 

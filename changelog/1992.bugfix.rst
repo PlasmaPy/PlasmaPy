@@ -1,0 +1,3 @@
+When attempting to create a |Particle| object representing a proton,
+calls like :py:`Particle("H", Z=1, mass_numb=1)` no longer incorrectly
+issue a |ParticleWarning| for redundant particle information.

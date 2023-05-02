@@ -90,7 +90,7 @@ class Characteristic:
 
         self.bias = bias
         self.current = current
-        self.get_unique_bias(True)
+        self.get_unique_bias(True)  # noqa: FBT003
         self._check_validity()
 
     def __getitem__(self, key):
@@ -249,7 +249,6 @@ def swept_probe_analysis(
 
     Returns
     -------
-
     Results are returned as Dictionary
 
     "T_e" : `astropy.units.Quantity`
@@ -785,7 +784,6 @@ def extract_exponential_section(probe_characteristic, T_e=None, ion_current=None
     V_P = get_plasma_potential(probe_characteristic)
 
     if T_e is not None:
-
         # If a bi-Maxwellian electron temperature is supplied grab the first
         # (cold) temperature
         if np.array(T_e).size > 1:
@@ -1064,10 +1062,7 @@ def extrapolate_electron_current(
             f"and got {type(probe_characteristic)}"
         )
 
-    if bimaxwellian:
-        fit_func = _fit_func_double_lin_inverse
-    else:
-        fit_func = _fit_func_lin_inverse
+    fit_func = _fit_func_double_lin_inverse if bimaxwellian else _fit_func_lin_inverse
 
     electron_current = (
         np.exp(fit_func(probe_characteristic.bias.to(u.V).value, *fit)) * u.A

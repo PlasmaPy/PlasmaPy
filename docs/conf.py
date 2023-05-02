@@ -80,7 +80,7 @@ automodapi_group_order = (
 
 # If your documentation needs a minimal Sphinx version, state it here.
 
-needs_sphinx = "5.0.0"
+needs_sphinx = "6.1.3"
 
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
@@ -101,6 +101,7 @@ extensions = [
     "sphinx_gallery.load_style",
     "IPython.sphinxext.ipython_console_highlighting",
     "sphinx_changelog",
+    "sphinx_tabs.tabs",
     "hoverxref.extension",
     "notfound.extension",
     "sphinx_issues",
@@ -198,6 +199,9 @@ with open("common_links.rst") as cl:
 rst_prolog = """
 .. role:: py(code)
    :language: python
+
+.. role:: bash(code)
+   :language: bash
 """
 
 # List of patterns, relative to source directory, that match files and
@@ -258,7 +262,8 @@ redirects = {
     "development/changelog_guide": "../contributing/changelog_guide.html",
     "development/code_guide": "../contributing/code_guide.html",
     "development/doc_guide": "../contributing/doc_guide.html",
-    "development/install_dev": "../contributing/install_dev.html",
+    "development/install_dev": "../contributing/getting_ready.html",
+    "contributing/install_dev": "../contributing/getting_ready.html",
     "development/release_guide": "../contributing/release_guide.html",
     "development/testing_guide": "../contributing/testing_guide.html",
 }
@@ -329,10 +334,19 @@ extlinks = {
 python_role = "py:.*"
 
 nitpick_ignore_regex = [
+    # Before adding patterns for type specifications in docstrings, note
+    # that information on the *meaning* of a parameter should be
+    # included in the parameter description instead.
     (python_role, "and"),
     (python_role, "array .*"),
     (python_role, "array_like"),
     (python_role, "callable"),
+    # for defaults that are words, numbers, particle symbols like "p+"
+    (python_role, r"default: [-\+]?\w+[-\+]?\.?\d*"),
+    # for defaults that are lists, tuples, sets, dictionaries, and strings
+    (python_role, r"default: ((\[.*\])|(\(.*\))|(\{.*\})|(\".*\")|(\'.*\'))"),
+    # for defaults that are calls like Particle("p+") or items from a dictionary
+    (python_role, r"default: \w+[\.\w]*[\(\[].*[\)\]]"),
     (python_role, "dictionary.*"),
     (python_role, "function"),
     (python_role, ".*integer.*"),
@@ -364,6 +378,7 @@ nitpick_ignore_regex = [
     (python_role, "docstring of"),
     (python_role, "validation specifications"),
     # for reST workarounds defined in docs/common_links.rst
+    (python_role, "git"),
     (python_role, "h5py"),
     (python_role, "IPython.sphinxext.ipython_console_highlighting"),
     (python_role, "lmfit"),

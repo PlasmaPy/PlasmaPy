@@ -610,7 +610,6 @@ def thermal_speed(
 
     Notes
     -----
-
     There are multiple methods (or definitions) for calculating the thermal
     speed, all of which give the expression
 
@@ -834,7 +833,7 @@ def kappa_thermal_speed(
     # different methods, as per https://en.wikipedia.org/wiki/Thermal_velocity
     vth = thermal_speed(T=T, particle=particle, method=method)
 
-    if method == "most_probable":
+    if method == "most_probable":  # noqa: SIM108
         # thermal velocity of Kappa distribution function is just Maxwellian
         # thermal speed modulated by the following factor.
         # This is only true for "most probable" case. RMS and mean
