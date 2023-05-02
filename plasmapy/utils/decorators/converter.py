@@ -36,7 +36,6 @@ def angular_freq_to_hz(fn):
 
     Notes
     -----
-
     * If `~plasmapy.utils.decorators.converter.angular_freq_to_hz` is
       used with decorator
       :func:`~plasmapy.utils.decorators.validators.validate_quantities`,
@@ -59,7 +58,6 @@ def angular_freq_to_hz(fn):
 
     Examples
     --------
-
         >>> import astropy.units as u
         >>> from plasmapy.utils.decorators.converter import angular_freq_to_hz
         >>>

@@ -1,9 +1,6 @@
 ci:
   autofix_prs: false
-  autoupdate_schedule: monthly
-
-default_language_version:
-  node: 16.15.0
+  autoupdate_schedule: weekly
 
 repos:
 
@@ -23,17 +20,17 @@ repos:
   - id: check-yaml
 
 - repo: https://github.com/macisamuele/language-formatters-pre-commit-hooks
-  rev: v2.7.0
+  rev: v2.8.0
   hooks:
   - id: pretty-format-ini
     args: [--autofix]
   - id: pretty-format-yaml
     args: [--autofix]
-
-- repo: https://github.com/tox-dev/pyproject-fmt
-  rev: 0.9.2
-  hooks:
-  - id: pyproject-fmt
+    # For the labeler GitHub Action, labels with spaces in them must
+    # be put in quotes. However, the pretty-format-yaml hook will
+    # remove the quotes which will break that action, so we should not
+    # run this hook on `labeler.yml`.
+    exclude: .github/labeler.yml
 
 - repo: https://github.com/pre-commit/mirrors-csslint
   rev: v1.0.5
@@ -47,7 +44,7 @@ repos:
     exclude: docs/plasmapy_sphinx
 
 - repo: https://github.com/asottile/pyupgrade
-  rev: v3.3.1
+  rev: v3.3.2
   hooks:
   - id: pyupgrade
     args: [--keep-runtime-typing, --py39-plus]
@@ -60,7 +57,7 @@ repos:
   - id: rst-inline-touching-normal
 
 - repo: https://github.com/codespell-project/codespell
-  rev: v2.2.2
+  rev: v2.2.4
   hooks:
   - id: codespell
     args: [--write-changes]
@@ -68,7 +65,7 @@ repos:
     - tomli
 
 - repo: https://github.com/charliermarsh/ruff-pre-commit
-  rev: v0.0.254
+  rev: v0.0.263
   hooks:
   - id: ruff
     args: [--fix]
@@ -85,7 +82,7 @@ repos:
     - python
 
 - repo: https://github.com/psf/black
-  rev: 23.1.0
+  rev: 23.3.0
   hooks:
   - id: black
 
@@ -93,11 +90,11 @@ repos:
   rev: 1.13.0
   hooks:
   - id: blacken-docs
-    additional_dependencies: [black==23.1.0]
+    additional_dependencies: [black==23.3.0]
     exclude: docs/contributing/coding_guide.rst
 
 - repo: https://github.com/nbQA-dev/nbQA
-  rev: 1.6.3
+  rev: 1.7.0
   hooks:
   - id: nbqa-black
     additional_dependencies:

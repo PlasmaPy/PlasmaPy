@@ -105,7 +105,7 @@ def boris_push(x, v, B, E, q, m, dt, inplace: bool = True):
     array([[0.0003, 0.0003, 0.1003]])
 
     Notes
-    ----------
+    -----
     The Boris algorithm :cite:p:`boris:1970` is the standard energy
     conserving algorithm for particle movement in plasma physics. See
     :cite:t:`birdsall:2004` for more details, and this `page on the

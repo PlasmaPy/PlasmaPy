@@ -14,7 +14,7 @@ from plasmapy.utils.pytest_helpers import assert_can_handle_nparray
 class Test_coupling_parameter:
     @classmethod
     def setup_class(cls):
-        """initializing parameters for tests"""
+        """Initializing parameters for tests"""
         cls.T = 11604 * u.K
         cls.n_e = 1e21 * u.cm**-3
         cls.particles = ("e", "p")
@@ -120,7 +120,7 @@ class Test_coupling_parameter:
 class Test_Knudsen_number:
     @classmethod
     def setup_class(cls):
-        """initializing parameters for tests"""
+        """Initializing parameters for tests"""
         cls.length = 1 * u.nm
         cls.T = 11604 * u.K
         cls.n_e = 1e17 * u.cm**-3

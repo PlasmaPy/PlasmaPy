@@ -217,7 +217,11 @@ class Stack:
         return deposited_energy
 
     def energy_bands(
-        self, energy_range: u.J, dE: u.J, dx=1e-6 * u.m, return_only_active=True
+        self,
+        energy_range: u.J,
+        dE: u.J,
+        dx=1e-6 * u.m,  # noqa: ARG002
+        return_only_active=True,
     ):
         """
         Calculate the energy bands in each of the active layers of a film
