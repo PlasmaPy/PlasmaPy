@@ -369,6 +369,7 @@ def test_null_point_find7():
 
 
 @pytest.mark.slow
+@pytest.mark.xfail(np.__version__ >= "1.24.0", reason="See issue #2101")
 def test_null_point_find8():
     r"""Test `~plasmapy.analysis.nullpoint.null_point_find`."""
     # Non-linear field
