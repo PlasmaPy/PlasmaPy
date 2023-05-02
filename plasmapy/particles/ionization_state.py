@@ -593,9 +593,7 @@ class IonizationState:
 
     @property
     @validate_quantities(
-        validations_on_return={
-            "equivalencies": u.temperature_energy(),
-        }
+        validations_on_return={"equivalencies": u.temperature_energy()}
     )
     def T_i(self) -> u.K:
         """
