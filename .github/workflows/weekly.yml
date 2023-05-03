@@ -18,17 +18,17 @@ jobs:
         - name: Python 3.9 (Windows)
           os: windows-latest
           python: 3.9
-          toxenv: py39
+          toxenv: py39-all
 
         - name: Python 3.10 (macOS)
           os: macos-latest
           python: '3.10'
-          toxenv: py310
+          toxenv: py310-all
 
         - name: Python 3.11 (ubuntu-latest)
           os: ubuntu-latest
           python: '3.11'
-          toxenv: py311
+          toxenv: py311-all
 
         - name: Python 3.9 with Astropy dev
           os: ubuntu-latest

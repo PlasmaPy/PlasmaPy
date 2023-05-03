@@ -28,10 +28,15 @@ jobs:
           python: '3.11'
           toxenv: linters
 
-        - name: Python 3.11, pinned deps, coverage
+        - name: Python 3.9, all tests, code coverage
+          os: ubuntu-latest
+          python: 3.9
+          toxenv: py39-cov-all
+
+        - name: Python 3.11, pinned dependencies
           os: ubuntu-latest
           python: '3.11'
-          toxenv: py311-pins-cov
+          toxenv: py311-pins
 
     steps:
 
@@ -65,17 +70,17 @@ jobs:
         - name: Python 3.9 (Windows), minimal dependencies
           os: windows-latest
           python: 3.9
-          toxenv: py39-minimal
+          toxenv: py39-all-minimal
 
         - name: Python 3.10 (Ubuntu)
           os: ubuntu-latest
           python: '3.10'
-          toxenv: py310
+          toxenv: py310-all
 
         - name: Python 3.11 (MacOS), develop mode
           os: macos-latest
           python: '3.11'
-          toxenv: py311
+          toxenv: py311-all
           toxargs: --develop
 
     steps:
