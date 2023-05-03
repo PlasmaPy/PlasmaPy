@@ -3,7 +3,7 @@
 # any file, anywhere
 *                                                        @PlasmaPy/plasmapy-reviewers
 .pre-commit-config.yaml                                  @namurphy
-requirements.txt                                         @StanczakDominik
+requirements.txt                                         @namurphy
 
 plasmapy/particles/                                      @namurphy
 
