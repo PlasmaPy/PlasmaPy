@@ -10,10 +10,12 @@ build:
   os: ubuntu-22.04
   tools:
     # Use most recent version supported by Numba
-    python: '3.10'
+    python: '3.9'
   apt_packages:
   - graphviz
   jobs:
+    pre_create_environment:
+    - python -m pip install --upgrade setuptools pip
     post_build:
     - echo https://docs.plasmapy.org/en/latest/contributing/doc_guide.html#troubleshooting
 
