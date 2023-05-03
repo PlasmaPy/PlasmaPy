@@ -8,13 +8,15 @@
 
 # subpackages
 
-plasmapy/analysis/ @rocco8773
-plasmapy/diagnostics/ @rocco8773
+# plasmapy/analysis/ @rocco8773
+# plasmapy/diagnostics/ @rocco8773
 plasmapy/diagnostics/charged_particle_radiography/ @pheuer
 plasmapy/dispersion/ @ejohnson-96
 plasmapy/particles/ @namurphy
 # plasmapy/simulation/ @StanczakDominik
 plasmapy/tests/ @namurphy
+# plasmapy/utils/decorators/ @rocco8773
+plasmapy/utils/pytest_helpers/ @namurphy
 
 # specific subpackage files (with wildcards to include tests)
 
@@ -31,6 +33,7 @@ docs/plasmapy_sphinx/ @rocco8773
 
 # project files
 
+plasmapy/__init__.py @namurphy
 pyproject.toml @namurphy
 requirements.txt @namurphy
 
