@@ -9,7 +9,6 @@ formats:
 build:
   os: ubuntu-22.04
   tools:
-    # Use most recent version supported by Numba
     python: '3.11'
   apt_packages:
   - graphviz
