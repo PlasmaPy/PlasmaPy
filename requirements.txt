@@ -193,8 +193,8 @@ kiwisolver==1.4.4
 latexcodec==2.0.1
     # via pybtex
 llvmlite==0.39.1
-# via numba
-lmfit==1.2.1
+    # via numba
+lmfit==1.2.0
     # via plasmapy (setup.py)
 markdown-it-py==2.2.0
     # via rich
