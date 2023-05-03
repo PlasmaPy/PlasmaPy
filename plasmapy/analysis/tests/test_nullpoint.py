@@ -289,6 +289,7 @@ def test_null_point_find3():
 
 
 @pytest.mark.slow
+@pytest.mark.xfail(np.__version__ >= "1.24.0", reason="See issue #2101.")
 def test_null_point_find4():
     r"""Test `~plasmapy.analysis.nullpoint.null_point_find`."""
     # Two null points
@@ -368,6 +369,7 @@ def test_null_point_find7():
 
 
 @pytest.mark.slow
+@pytest.mark.xfail(np.__version__ >= "1.24.0", reason="See issue #2101.")
 def test_null_point_find8():
     r"""Test `~plasmapy.analysis.nullpoint.null_point_find`."""
     # Non-linear field
@@ -415,7 +417,7 @@ class Test_classify_null_point:
             },
             "Proper radial null",
         ),
-        (
+        pytest.param(
             {
                 "x_range": [5, 6],
                 "y_range": [-6, 6],
@@ -424,6 +426,9 @@ class Test_classify_null_point:
                 "func": lambda x, y, z: [(y - 5.5) * (y + 5.5), (z - 5.5), (x - 5.5)],
             },
             "Spiral null",
+            marks=pytest.mark.xfail(
+                np.__version__ >= "1.24.0", reason="See issue #2101."
+            ),
         ),
         (
             {
