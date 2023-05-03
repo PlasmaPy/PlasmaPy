@@ -1,5 +1,5 @@
 # Define individuals or teams who are responsible for code in a
-# repository (i.e. who gets requested for a review).
+# repository (i.e. who gets requested for a review by default).
 
 # Order is important; the last matching pattern takes the most
 # precedence.
@@ -16,11 +16,11 @@ plasmapy/particles/ @namurphy
 plasmapy/simulation/ @StanczakDominik
 plasmapy/tests/ @namurphy
 
-# specific subpackage files
+# specific subpackage files (use wildcards to include test files also)
 
-plasmapy/analysis/nullpoint.py @namurphy
-plasmapy/diagnostics/thomson.py @pheuer
-plasmapy/formulary/relativity.py @namurphy
+plasmapy/analysis/**/*nullpoint.py @namurphy
+plasmapy/diagnostics/**/*thomson.py @pheuer
+plasmapy/formulary/**/*relativity.py @namurphy
 
 # documentation
 
