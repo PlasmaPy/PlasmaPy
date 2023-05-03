@@ -16,7 +16,7 @@ plasmapy/particles/ @namurphy
 plasmapy/simulation/ @StanczakDominik
 plasmapy/tests/ @namurphy
 
-# specific subpackage files (use wildcards to include test files also)
+# specific subpackage files (with wildcards to include tests)
 
 plasmapy/analysis/**/*nullpoint.py @namurphy
 plasmapy/diagnostics/**/*thomson.py @pheuer
