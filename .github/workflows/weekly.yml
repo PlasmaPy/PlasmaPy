@@ -25,7 +25,7 @@ jobs:
           python: '3.10'
           toxenv: py310
 
-        - name: Python 3.10 (ubuntu-latest)
+        - name: Python 3.11 (ubuntu-latest)
           os: ubuntu-latest
           python: '3.11'
           toxenv: py311
