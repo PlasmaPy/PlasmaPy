@@ -28,7 +28,7 @@ jobs:
           python: '3.11'
           toxenv: linters
 
-        - name: Python 3.11, pinned, deps
+        - name: Python 3.11, pinned deps, coverage
           os: ubuntu-latest
           python: '3.11'
           toxenv: py311-pins-cov
