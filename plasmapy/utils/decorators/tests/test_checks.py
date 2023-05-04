@@ -441,7 +441,11 @@ class TestCheckUnits:
 
         # setup default checks
         check = {**self.check_defaults, "units": [u.cm]}
+        # check = self.check_defaults.copy()
+        # check['units'] = [u.cm]
+        # check['equivalencies'] = [None]
 
+        # make a class w/ improper units
         class MyQuantity:
             unit = None
 
@@ -451,31 +455,41 @@ class TestCheckUnits:
         #
         # add cases for 'units' checks
         _cases = [
-            {
-                "input": (5.0, "arg", check),
-                "output": (None, None, None, TypeError),
-            },
+            # argument does not have units
+            {"input": (5.0, "arg", check), "output": (None, None, None, TypeError)},
+            # argument does match desired units
+            # * set arg_name = 'checks_on_return' to cover if-else statement
+            #   in initializing error string
             {
                 "input": (5.0 * u.kg, "checks_on_return", check),
                 "output": (None, None, None, u.UnitTypeError),
             },
+            # argument has equivalent but not matching unit
             {
                 "input": (5.0 * u.km, "arg", check),
                 "output": (5.0 * u.km, u.cm, None, u.UnitTypeError),
             },
+            # argument is equivalent to many specified units but exactly matches one
             {
                 "input": (5.0 * u.km, "arg", {**check, "units": [u.cm, u.km]}),
                 "output": (5.0 * u.km, u.km, None, None),
             },
+            # argument is equivalent to many specified units and
+            # does NOT exactly match one
             {
                 "input": (5.0 * u.m, "arg", {**check, "units": [u.cm, u.km]}),
                 "output": (None, None, None, u.UnitTypeError),
             },
+            # argument has attr unit but unit does not have is_equivalent
             {
                 "input": (MyQuantity, "arg", check),
                 "output": (None, None, None, TypeError),
             },
-            *[
+        ]
+
+        # add cases for 'none_shall_pass' checks
+        _cases.extend(
+            [
                 # argument is None and none_shall_pass = False
                 {
                     "input": (None, "arg", {**check, "none_shall_pass": False}),
@@ -486,8 +500,12 @@ class TestCheckUnits:
                     "input": (None, "arg", {**check, "none_shall_pass": True}),
                     "output": (None, None, None, None),
                 },
-            ],
-            *[
+            ]
+        )
+
+        # add cases for 'pass_equivalent_units' checks
+        _cases.extend(
+            [
                 # argument is equivalent to 1 to unit,
                 # does NOT exactly match the unit,
                 # and 'pass_equivalent_units' = True and argument
@@ -514,8 +532,8 @@ class TestCheckUnits:
                     ),
                     "output": (5.0 * u.km, None, None, None),
                 },
-            ],
-        ]
+            ]
+        )
 
         # setup wrapped function
         cu = CheckUnits()
