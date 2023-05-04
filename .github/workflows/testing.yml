@@ -33,7 +33,7 @@ jobs:
           python: '3.10'
           toxenv: py310-cov-all
 
-        - name: Python 3.11, pinned dependencies
+        - name: Python 3.11 (Linux), pinned dependencies
           os: ubuntu-latest
           python: '3.11'
           toxenv: py311-pins
