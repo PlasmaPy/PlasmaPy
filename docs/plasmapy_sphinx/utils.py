@@ -135,12 +135,7 @@ def find_mod_objs(modname: str, app: Sphinx = None) -> Dict[str, Dict[str, Any]]
 
     """
     if app is not None:
-        if isinstance(app, Sphinx):
-            cgroups_def = get_custom_grouping_info(app)
-        else:
-            # assuming dict for testing
-            cgroups_def = app
-
+        cgroups_def = get_custom_grouping_info(app) if isinstance(app, Sphinx) else app
         cgroups = set(cgroups_def)
     else:
         cgroups_def = {}
@@ -208,7 +203,7 @@ def find_mod_objs(modname: str, app: Sphinx = None) -> Dict[str, Dict[str, Any]]
             names_of_modules.add(name)
 
     mod_objs = {"modules": {"names": []}}
-    if len(names_of_modules) > 0:
+    if names_of_modules:
         names_of_modules = names_of_modules
         mod_objs["modules"]["names"] = list(names_of_modules)
         names_to_search = names_to_search - names_of_modules
@@ -222,19 +217,17 @@ def find_mod_objs(modname: str, app: Sphinx = None) -> Dict[str, Dict[str, Any]]
             continue
 
         if len(custom_names) > 0:
-            mod_objs.update({name: {"names": list(custom_names)}})
+            mod_objs[name] = {"names": list(custom_names)}
             names_to_search = names_to_search - custom_names
 
     # gather all remaining groups
-    mod_objs.update(
-        {
-            "classes": {"names": []},
-            "exceptions": {"names": []},
-            "warnings": {"names": []},
-            "functions": {"names": []},
-            "variables": {"names": []},
-        }
-    )  # type: Dict[str, Dict[str, Any]]
+    mod_objs |= {
+        "classes": {"names": []},
+        "exceptions": {"names": []},
+        "warnings": {"names": []},
+        "functions": {"names": []},
+        "variables": {"names": []},
+    }
     for name in names_to_search:
         obj = getattr(mod, name)
 
@@ -296,7 +289,7 @@ def find_mod_objs(modname: str, app: Sphinx = None) -> Dict[str, Dict[str, Any]]
 
             if ismod and obj_renamed:
                 qualname = f"{obj.__package__}.{name}"
-            elif ismod and not obj_renamed:
+            elif ismod:
                 qualname = obj.__name__
             elif obj_renamed or not hasattr(obj, "__module__"):
                 # can not tell if the object was renamed in modname or in

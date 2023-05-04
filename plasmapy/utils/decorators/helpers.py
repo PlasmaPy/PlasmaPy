@@ -91,12 +91,7 @@ def modify_docstring(func=None, prepend: str = None, append: str = None):
 
         return wrapper
 
-    if func is not None:
-        # `modify_docstring` called as a function
-        return decorator(func)
-
-    # `modify_docstring` called as a decorator "sugar-syntax"
-    return decorator
+    return decorator(func) if func is not None else decorator
 
 
 def preserve_signature(f):

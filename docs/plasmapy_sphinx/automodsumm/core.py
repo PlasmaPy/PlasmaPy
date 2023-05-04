@@ -198,6 +198,7 @@ below relate to the behavior of the :rst:dir:`automodsumm` directive.
     <https://www.sphinx-doc.org/en/master/usage/extensions/autosummary.html?
     highlight=autosummary_generate#confval-autosummary_generate>`_.
 """
+
 __all__ = [
     "Automodsumm",
     "AutomodsummOptions",
@@ -214,15 +215,6 @@ from typing import Any, Callable, Dict, List, Tuple, Union
 
 from ..automodsumm.generate import GenDocsFromAutomodsumm
 from ..utils import default_grouping_info, find_mod_objs, get_custom_grouping_info
-
-if False:
-    # noqa
-    # for annotation, does not need real import
-    from docutils.nodes import Node
-    from docutils.statemachine import StringList
-    from sphinx.application import Sphinx
-    from sphinx.config import Config
-    from sphinx.environment import BuildEnvironment
 
 logger = logging.getLogger(__name__)
 
@@ -343,10 +335,7 @@ class AutomodsummOptions:
         Return ``"pkg"`` for a package and ``"module"`` for a `.py` file.
         """
         mod = import_module(self.modname)
-        if mod.__package__ == mod.__name__:
-            return "pkg"
-        else:
-            return "module"
+        return "pkg" if mod.__package__ == mod.__name__ else "module"
 
     def condition_options(self):
         """
@@ -417,9 +406,7 @@ class AutomodsummOptions:
             )
             opt_args = opt_args - unknown_args
         elif "all" in opt_args:
-            self.warn(
-                f"Arguments of 'groups' and 'exclude-groups' results in no content."
-            )
+            self.warn("Arguments of 'groups' and 'exclude-groups' results in no content.")
             self.options["groups"] = []
             return
 
@@ -488,7 +475,7 @@ class AutomodsummOptions:
 
         do_groups = set(self.options["groups"])
 
-        if len(do_groups) == 0:
+        if not do_groups:
             return {}
 
         # remove excluded groups
@@ -496,11 +483,7 @@ class AutomodsummOptions:
             if group not in do_groups:
                 del mod_objs[group]
 
-        # objects to skip
-        skip_names = set()
-        if "skip" in self.options:
-            skip_names = set(self.options["skip"])
-
+        skip_names = set(self.options["skip"]) if "skip" in self.options else set()
         # filter out skipped objects
         for group in list(mod_objs.keys()):
             names = mod_objs[group]["names"]
@@ -512,12 +495,12 @@ class AutomodsummOptions:
             objs_filtered = []
 
             for name, qualname, obj in zip(names, qualnames, objs):
-                if not (name in skip_names or qualname in skip_names):
+                if name not in skip_names and qualname not in skip_names:
                     names_filtered.append(name)
                     qualnames_filtered.append(qualname)
                     objs_filtered.append(obj)
 
-            if len(names_filtered) == 0:
+            if not names_filtered:
                 del mod_objs[group]
                 continue
 
@@ -556,14 +539,12 @@ class AutomodsummOptions:
             names.extend(mod_objs[group]["names"])
             qualnames.extend(mod_objs[group]["qualnames"])
 
-        content = [
+        return [
             qualname
             for name, qualname in sorted(
                 zip(names, qualnames), key=lambda x: str.casefold(x[0])
             )
         ]
-
-        return content
 
 
 class Automodsumm(Autosummary):
@@ -599,7 +580,7 @@ class Automodsumm(Autosummary):
         content = self.option_processor().generate_obj_list()
         for ii, modname in enumerate(content):
             if not modname.startswith("~"):
-                content[ii] = "~" + modname
+                content[ii] = f"~{modname}"
         self.content = content
 
         nodelist.extend(Autosummary.run(self))
@@ -610,14 +591,13 @@ class Automodsumm(Autosummary):
         Instance of `~plasmapy_sphinx.automodsumm.core.Automodsumm` so further processing
         (beyond :attr:`option_spec`) of directive options can be performed.
         """
-        processor = AutomodsummOptions(
+        return AutomodsummOptions(
             app=self.env.app,
             modname=self.arguments[0],
             options=self.options,
             docname=self.env.docname,
             _warn=self.warn,
         )
-        return processor
 
     def get_items(self, names):
         try:
@@ -699,7 +679,7 @@ def setup(app: "Sphinx"):
         gendocs_from_automodsumm.event_handler__autodoc_skip_member,
     )
 
-    app.add_config_value("automodapi_custom_groups", dict(), True)
+    app.add_config_value("automodapi_custom_groups", {}, True)
     app.add_config_value("automodapi_generate_module_stub_files", False, True)
 
     return {"parallel_read_safe": True, "parallel_write_safe": True}

@@ -2,6 +2,7 @@
 This module contains functionality for auto-generating the stub files related to
 the :rst:dir:`automodapi` and :rst:dir:`automodsumm` directives.
 """
+
 __all__ = ["AutomodsummEntry", "AutomodsummRenderer", "GenDocsFromAutomodsumm"]
 
 import os
@@ -21,13 +22,6 @@ from sphinx.util.osutil import ensuredir
 from typing import Any, Dict, List, Union
 
 from ..utils import templates_dir
-
-if False:
-    # noqa
-    # for annotation, does not need real import
-    from sphinx.application import Sphinx
-    from sphinx.builders import Builder
-
 
 logger = logging.getLogger(__name__)
 
@@ -164,12 +158,10 @@ class GenDocsFromAutomodsumm:
                 for x in env.found_docs
                 if os.path.isfile(env.doc2path(x))
             ]
-        elif genfiles is False:
-            pass
-        else:
+        elif genfiles is not False:
             ext = list(app.config.source_suffix)
             genfiles = [
-                genfile + (ext[0] if not genfile.endswith(tuple(ext)) else "")
+                genfile + ("" if genfile.endswith(tuple(ext)) else ext[0])
                 for genfile in genfiles
             ]
 
@@ -275,11 +267,7 @@ class GenDocsFromAutomodsumm:
         # keep track of new files
         new_files = []
 
-        if app:
-            filename_map = app.config.autosummary_filename_map
-        else:
-            filename_map = {}
-
+        filename_map = app.config.autosummary_filename_map if app else {}
         # write
         for entry in sorted(set(items), key=str):
             if entry.path is None:
@@ -292,19 +280,19 @@ class GenDocsFromAutomodsumm:
 
             try:
                 name, obj, parent, modname = import_by_name(entry.name)
-                qualname = name.replace(modname + ".", "")
+                qualname = name.replace(f"{modname}.", "")
             except ImportError as e:
                 try:
                     # try to import as an instance attribute
                     name, obj, parent, modname = import_ivar_by_name(entry.name)
-                    qualname = name.replace(modname + ".", "")
+                    qualname = name.replace(f"{modname}.", "")
                 except ImportError:
                     _warn(__(f"[automodsumm] failed to import {entry.name}: {e}"))
                     continue
 
             context = {}
             if app:
-                context.update(app.config.autosummary_context)
+                context |= app.config.autosummary_context
 
             content = generate_autosummary_content(
                 name,
@@ -437,8 +425,8 @@ class GenDocsFromAutomodsumm:
                     in_automodapi_directive = False
                     gather_objs = True
 
-                if in_automodapi_directive:
-                    continue
+            if in_automodapi_directive:
+                continue
 
             # looking for `.. automodsumm:: <modname>`
             match = self._re["automodsumm"].search(line)
@@ -454,13 +442,12 @@ class GenDocsFromAutomodsumm:
                 _option_cls = AutomodsummOptions
                 self.logger.info(f"[automodsumm] {modname}")
 
-                if last_line:
-                    # end of lines reached
-                    in_automodapi_directive = False
-                    gather_objs = True
-                else:
+                if not last_line:
                     continue
 
+                # end of lines reached
+                in_automodapi_directive = False
+                gather_objs = True
             # looking for `.. automodapi:: <modname>`
             match = self._re["automodapi"].search(line)
             if match is not None:
@@ -474,13 +461,12 @@ class GenDocsFromAutomodsumm:
                     modname = f"{current_module}.{modname}"
                 _option_cls = AutomodapiOptions
 
-                if last_line:
-                    # end of lines reached
-                    in_automodapi_directive = False
-                    gather_objs = True
-                else:
+                if not last_line:
                     continue
 
+                # end of lines reached
+                in_automodapi_directive = False
+                gather_objs = True
             # looking for `.. py:currentmodule:: <current_module>`
             match = self._re["currentmodule"].search(line)
             if match is not None:
@@ -509,16 +495,15 @@ class GenDocsFromAutomodsumm:
                     exclude_modules=exclude_modules
                 )
 
-                for name in obj_list:
-                    documented.append(
-                        AutomodsummEntry(
-                            name=name,
-                            path=options["toctree"],
-                            template=options["template"],
-                            recursive=options["recursive"],
-                        )
+                documented.extend(
+                    AutomodsummEntry(
+                        name=name,
+                        path=options["toctree"],
+                        template=options["template"],
+                        recursive=options["recursive"],
                     )
-
+                    for name in obj_list
+                )
                 self.logger.info(
                     f"[automodsumm stub file gen] collected {len(obj_list):4d} "
                     f"object(s) in '{modname}'"

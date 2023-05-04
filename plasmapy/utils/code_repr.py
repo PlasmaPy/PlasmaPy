@@ -80,10 +80,14 @@ def _code_repr_of_arg(arg, max_items=np.inf) -> str:
         u.Quantity: _code_repr_of_quantity,
         np.ndarray: _code_repr_of_ndarray,
     }
-    for arg_type, code_repr_func in function_for_type.items():
-        if isinstance(arg, arg_type):
-            return code_repr_func(arg, max_items=max_items)
-    return repr(arg)
+    return next(
+        (
+            code_repr_func(arg, max_items=max_items)
+            for arg_type, code_repr_func in function_for_type.items()
+            if isinstance(arg, arg_type)
+        ),
+        repr(arg),
+    )
 
 
 def _code_repr_of_args_and_kwargs(

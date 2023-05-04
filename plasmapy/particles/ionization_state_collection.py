@@ -146,10 +146,9 @@ class IonizationStateCollection:
     ):
         set_abundances = True
         if isinstance(inputs, dict):
-            all_quantities = np.all(
+            if all_quantities := np.all(
                 [isinstance(fracs, u.Quantity) for fracs in inputs.values()]
-            )
-            if all_quantities:
+            ):
                 right_units = np.all(
                     [fracs[0].si.unit == u.m**-3 for fracs in inputs.values()]
                 )

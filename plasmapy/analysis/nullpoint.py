@@ -555,9 +555,7 @@ def _reduction(vspace, cell):
         ):
             passZ = True
 
-    doesPassReduction = passX and passY and passZ
-
-    return doesPassReduction
+    return passX and passY and passZ
 
 
 def _bilinear_root(a1, b1, c1, d1, a2, b2, c2, d2):
@@ -597,16 +595,14 @@ def _bilinear_root(a1, b1, c1, d1, a2, b2, c2, d2):
     if np.isclose(a, 0, atol=_EQUALITY_ATOL):
         if np.isclose(b, 0, atol=_EQUALITY_ATOL):
             return np.array([])
-        else:
-            x1 = (-1.0 * c) / b
-            x2 = (-1.0 * c) / b
+        x1 = (-1.0 * c) / b
+        x2 = (-1.0 * c) / b
 
     else:
         if (b**2 - 4.0 * a * c) < 0:
             return np.array([])
-        else:
-            x1 = (-1.0 * b + (b**2 - 4.0 * a * c) ** 0.5) / (2.0 * a)
-            x2 = (-1.0 * b - (b**2 - 4.0 * a * c) ** 0.5) / (2.0 * a)
+        x1 = (-1.0 * b + (b**2 - 4.0 * a * c) ** 0.5) / (2.0 * a)
+        x2 = (-1.0 * b - (b**2 - 4.0 * a * c) ** 0.5) / (2.0 * a)
 
     y1 = None
     y2 = None

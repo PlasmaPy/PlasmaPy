@@ -77,5 +77,4 @@ def setup(app: Sphinx):
     # autodoc.automodapi
 
     directives.setup(app)
-    rtn = autodoc.setup(app)
-    return rtn
+    return autodoc.setup(app)
