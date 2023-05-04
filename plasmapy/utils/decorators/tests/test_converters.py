@@ -20,4 +20,4 @@ def test_conversion():
     ), f"Unit expected is {u.Hz} instead of {test_function(to_hz=True).unit}"
     assert (
         test_function(to_hz=True).value == 1
-    ), f"Value expected is {1} instead of {test_function(to_hz=True).value}"
+    ), f"Value expected is 1 instead of {test_function(to_hz=True).value}"
