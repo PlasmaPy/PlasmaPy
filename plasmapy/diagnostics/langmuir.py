@@ -531,7 +531,9 @@ def get_floating_potential(probe_characteristic, return_arg=False):
 
     if not isinstance(probe_characteristic, Characteristic):
         raise TypeError(
-            f"For 'probe_characteristic' expected type {Characteristic.__module__}.{Characteristic.__qualname__} and got {type(probe_characteristic)}"
+            "For 'probe_characteristic' expected type "
+            f"{Characteristic.__module__}.{Characteristic.__qualname__} "
+            f"and got {type(probe_characteristic)}"
         )
 
     arg_V_F = np.argmin(np.abs(probe_characteristic.current))
