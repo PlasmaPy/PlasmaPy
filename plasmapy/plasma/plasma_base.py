@@ -15,6 +15,8 @@ class BasePlasma(ABC):
     This class checks for the existence of a method named ``is_datasource_for``
     when a subclass of `~plasmapy.plasma.plasma_base.GenericPlasma` is
     defined. If it exists it will add that class to the registry.
+
+    |expect-api-changes|
     """
 
     # GenericPlasma subclass registry

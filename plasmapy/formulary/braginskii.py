@@ -5,6 +5,11 @@ Functions to calculate classical transport coefficients.
 
     /notebooks/formulary/braginskii
 
+.. caution::
+
+   This functionality is under development and backwards incompatible
+   changes may occur in the future.
+
 Introduction
 ============
 

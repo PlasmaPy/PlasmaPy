@@ -7,6 +7,8 @@ Simulation (`plasmapy.simulation`)
 .. py:module:: plasmapy.simulation
 .. currentmodule:: plasmapy.simulation
 
+|expect-api-changes|
+
 Introduction
 ============
 

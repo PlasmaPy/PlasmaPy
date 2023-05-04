@@ -6,6 +6,8 @@
 Particle Tracker (`plasmapy.simulation.particletracker`)
 ********************************************************
 
+|expect-api-changes|
+
 Introduction
 ============
 

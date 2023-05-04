@@ -12,6 +12,8 @@ class PlasmaFactory(BasicRegistrationFactory):
     Plasma factory class. Used to create a variety of Plasma objects.
     Valid plasma structures are specified by registering them with the
     factory.
+
+    |expect-api-changes|
     """
 
 

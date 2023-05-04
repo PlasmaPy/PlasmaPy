@@ -104,6 +104,7 @@
 .. |coding guide| replace:: :ref:`coding guide`\
 .. |contributor guide| replace:: :ref:`contributor guide`\
 .. |documentation guide| replace:: :ref:`documentation guide`\
+.. |expect-api-changes| replace:: .. attention:: This functionality is under development. Backwards incompatible changes may occur in future releases.
 .. |getting ready to contribute| replace:: :ref:`getting ready to contribute`\
 .. |glossary| replace:: :ref:`glossary`\
 .. |minpython| replace:: 3.9

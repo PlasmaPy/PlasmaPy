@@ -19,6 +19,8 @@ class ParticleTracker:
     Object representing a species of particles: ions, electrons, or simply
     a group of particles with a particular initial velocity distribution.
 
+    |expect-api-changes|
+
     Parameters
     ----------
     plasma : Plasma object

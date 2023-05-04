@@ -7,6 +7,8 @@ PlasmaPy Plasma
 .. module:: plasmapy.plasma
 .. currentmodule:: plasmapy.plasma
 
+|expect-api-changes|
+
 Overview
 --------
 
@@ -64,11 +66,6 @@ keyword arguments data to the standard
 provide a method, which describes to the
 `Plasma <plasmapy.plasma.plasma_factory.PlasmaFactory>` factory
 which the data match its plasma data structure.
-
-.. automodapi:: plasmapy.plasma
-   :noindex:
-   :no-main-docstring:
-   :exclude-groups: modules, variables
 
 .. _plasma-sources:
 
@@ -165,6 +162,3 @@ API
 ---
 
 .. automodapi:: plasmapy.plasma
-   :noindex:
-   :no-main-docstring:
-   :heading-chars: "^~"
