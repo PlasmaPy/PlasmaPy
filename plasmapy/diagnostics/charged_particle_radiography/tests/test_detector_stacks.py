@@ -45,8 +45,7 @@ def hdv2_stack(tmp_path):
         *layers,
     ]
 
-    stack = Stack(layers)
-    return stack
+    return Stack(layers)
 
 
 def test_create_layer_with_different_stopping_powers(tmp_path):

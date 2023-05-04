@@ -1,0 +1,34 @@
+ignore:
+- .git
+- venv
+- .venv
+- env
+- .env
+- .tox
+- node_modules
+- vendor
+- docs/plasmapy_sphinx
+- plasmapy/formulary/braginskii.py
+- plasmapy/utils/decorators/tests/test_checks.py
+- plasmapy/diagnostics/tests/test_thomson.py
+
+github:
+  labels: [No changelog entry needed]
+  ignore_labels:
+  - sourcery-ignore
+  request_review: none
+
+rule_settings:
+  enable: [default]
+  disable: []
+  rule_types:
+  - refactoring
+  - suggestion
+  - comment
+  python_version: '3.9'
+
+rules:
+- id: plasmapy-capitalization
+  description: Fix the capitalization of PlasmaPy
+  pattern: Plasmapy
+  replacement: PlasmaPy
