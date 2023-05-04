@@ -302,7 +302,9 @@ def swept_probe_analysis(
 
     if not isinstance(probe_characteristic, Characteristic):
         raise TypeError(
-            f"For 'probe_characteristic' expected type {Characteristic.__module__}.{Characteristic.__qualname__} and got {type(probe_characteristic)}"
+            "For 'probe_characteristic' expected type "
+            f"{Characteristic.__module__}.{Characteristic.__qualname__} "
+            f"and got {type(probe_characteristic)}."
         )
 
     # Obtain the plasma and floating potentials
@@ -477,7 +479,9 @@ def get_plasma_potential(probe_characteristic, return_arg=False):
 
     if not isinstance(probe_characteristic, Characteristic):
         raise TypeError(
-            f"For 'probe_characteristic' expected type {Characteristic.__module__}.{Characteristic.__qualname__} and got {type(probe_characteristic)}"
+            "For 'probe_characteristic' expected type "
+            f"{Characteristic.__module__}.{Characteristic.__qualname__} "
+            f"and got {type(probe_characteristic)}."
         )
 
     # Sort the characteristic prior to differentiation
@@ -527,7 +531,9 @@ def get_floating_potential(probe_characteristic, return_arg=False):
 
     if not isinstance(probe_characteristic, Characteristic):
         raise TypeError(
-            f"For 'probe_characteristic' expected type {Characteristic.__module__}.{Characteristic.__qualname__} and got {type(probe_characteristic)}"
+            "For 'probe_characteristic' expected type "
+            f"{Characteristic.__module__}.{Characteristic.__qualname__} "
+            f"and got {type(probe_characteristic)}"
         )
 
     arg_V_F = np.argmin(np.abs(probe_characteristic.current))
@@ -563,7 +569,9 @@ def get_electron_saturation_current(probe_characteristic):
 
     if not isinstance(probe_characteristic, Characteristic):
         raise TypeError(
-            f"For 'probe_characteristic' expected type {Characteristic.__module__}.{Characteristic.__qualname__} and got {type(probe_characteristic)}"
+            "For 'probe_characteristic' expected type "
+            f"{Characteristic.__module__}.{Characteristic.__qualname__} "
+            f"and got {type(probe_characteristic)}."
         )
 
     _, arg_V_P = get_plasma_potential(probe_characteristic, return_arg=True)
@@ -598,7 +606,9 @@ def get_ion_saturation_current(probe_characteristic):
 
     if not isinstance(probe_characteristic, Characteristic):
         raise TypeError(
-            f"For 'probe_characteristic' expected type {Characteristic.__module__}.{Characteristic.__qualname__} and got {type(probe_characteristic)}"
+            "For 'probe_characteristic' expected type "
+            f"{Characteristic.__module__}.{Characteristic.__qualname__} "
+            f"and got {type(probe_characteristic)}."
         )
 
     return np.min(probe_characteristic.current)
@@ -764,7 +774,9 @@ def extract_exponential_section(probe_characteristic, T_e=None, ion_current=None
 
     if not isinstance(probe_characteristic, Characteristic):
         raise TypeError(
-            f"For 'probe_characteristic' expected type {Characteristic.__module__}.{Characteristic.__qualname__} and got {type(probe_characteristic)}"
+            "For 'probe_characteristic' expected type "
+            f"{Characteristic.__module__}.{Characteristic.__qualname__} "
+            f"and got {type(probe_characteristic)}."
         )
 
     V_F = get_floating_potential(probe_characteristic)
@@ -817,7 +829,9 @@ def extract_ion_section(probe_characteristic):
 
     if not isinstance(probe_characteristic, Characteristic):
         raise TypeError(
-            f"For 'probe_characteristic' expected type {Characteristic.__module__}.{Characteristic.__qualname__} and got {type(probe_characteristic)}"
+            "For 'probe_characteristic' expected type "
+            f"{Characteristic.__module__}.{Characteristic.__qualname__} "
+            f"and got {type(probe_characteristic)}."
         )
 
     V_F = get_floating_potential(probe_characteristic)
@@ -884,7 +898,9 @@ def get_electron_temperature(
 
     if not isinstance(exponential_section, Characteristic):
         raise TypeError(
-            f"For 'probe_characteristic' expected type {Characteristic.__module__}.{Characteristic.__qualname__} and got {type(exponential_section)}"
+            "For 'probe_characteristic' expected type "
+            f"{Characteristic.__module__}.{Characteristic.__qualname__} "
+            f"and got {type(exponential_section)}."
         )
 
     # Remove values in the section with a current equal to or smaller than
@@ -1041,7 +1057,9 @@ def extrapolate_electron_current(
 
     if not isinstance(probe_characteristic, Characteristic):
         raise TypeError(
-            f"For 'probe_characteristic' expected type {Characteristic.__module__}.{Characteristic.__qualname__} and got {type(probe_characteristic)}"
+            "For 'probe_characteristic' expected type "
+            f"{Characteristic.__module__}.{Characteristic.__qualname__} "
+            f"and got {type(probe_characteristic)}."
         )
 
     fit_func = _fit_func_double_lin_inverse if bimaxwellian else _fit_func_lin_inverse
@@ -1186,7 +1204,9 @@ def get_ion_density_OML(
 
     if not isinstance(probe_characteristic, Characteristic):
         raise TypeError(
-            f"For 'probe_characteristic' expected type {Characteristic.__module__}.{Characteristic.__qualname__} and got {type(probe_characteristic)}"
+            "For 'probe_characteristic' expected type "
+            f"{Characteristic.__module__}.{Characteristic.__qualname__} "
+            f"and got {type(probe_characteristic)}."
         )
 
     ion_section = extract_ion_section(probe_characteristic)
@@ -1263,7 +1283,9 @@ def extrapolate_ion_current_OML(probe_characteristic, fit, visualize=False):
 
     if not isinstance(probe_characteristic, Characteristic):
         raise TypeError(
-            f"For 'probe_characteristic' expected type {Characteristic.__module__}.{Characteristic.__qualname__} and got {type(probe_characteristic)}"
+            "For 'probe_characteristic' expected type "
+            f"{Characteristic.__module__}.{Characteristic.__qualname__} "
+            f"and got {type(probe_characteristic)}."
         )
 
     slope = fit[0] * u.mA**2 / u.V
@@ -1339,7 +1361,9 @@ def get_EEDF(probe_characteristic, visualize=False):
 
     if not isinstance(probe_characteristic, Characteristic):
         raise TypeError(
-            f"For 'probe_characteristic' expected type {Characteristic.__module__}.{Characteristic.__qualname__} and got {type(probe_characteristic)}"
+            "For 'probe_characteristic' expected type "
+            f"{Characteristic.__module__}.{Characteristic.__qualname__} "
+            f"and got {type(probe_characteristic)}."
         )
 
     probe_characteristic.sort()
