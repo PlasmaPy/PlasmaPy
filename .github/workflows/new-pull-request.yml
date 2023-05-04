@@ -21,7 +21,7 @@ jobs:
           pr-message: >
             Thank you for submitting your first pull request (PR) to PlasmaPy!  We invite you to check out our [**Code of Conduct**](https://docs.plasmapy.org/en/stable/CODE_OF_CONDUCT.html) and [**contributor guide**](https://docs.plasmapy.org/en/latest/contributing/index.html). 🥳
 
-            Please **add yourself to the list of contributors** in [docs/about/credits.rst](https://github.com/PlasmaPy/PlasmaPy/blob/main/docs/about/credits.rst) to make sure that you get credit for your contribution. 🔖
+            Please **add yourself to the list of contributors** by modifying [docs/about/credits.rst](https://github.com/PlasmaPy/PlasmaPy/blob/main/docs/about/credits.rst) in your PR to make sure that you get credit for your contribution. 🔖
 
             The bottom of this page includes several checks that are run for every PR. Don't worry if something broke! We break stuff all the time. 😺 Click on "Details" next to each check to learn why a check didn't pass. Because error messages are sometimes cryptic 🤔, please feel free to ask for help. We do that all the time as well. 🌸 We can usually be reached in our [**chat room**](https://docs.plasmapy.org/en/latest/contributing/coding_guide.html) or weekly [**community meeting**](https://www.plasmapy.org/meetings/weekly) & [**office hours**]((https://www.plasmapy.org/meetings/office_hours).
 
