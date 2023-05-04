@@ -424,9 +424,12 @@ class TestCheckUnits:
             for arg_name in case["output"]:
                 arg_checks = checks[arg_name]
 
-                for key, val in default_checks.items():
+                for key in default_checks:
                     if key in case["output"][arg_name]:
                         val = case["output"][arg_name][key]
+                    else:
+                        val = default_checks[key]
+
                     assert arg_checks[key] == val
 
     def test_cu_method__check_unit(self):
@@ -441,7 +444,11 @@ class TestCheckUnits:
 
         # setup default checks
         check = {**self.check_defaults, "units": [u.cm]}
+        # check = self.check_defaults.copy()
+        # check['units'] = [u.cm]
+        # check['equivalencies'] = [None]
 
+        # make a class w/ improper units
         class MyQuantity:
             unit = None
 
@@ -451,31 +458,41 @@ class TestCheckUnits:
         #
         # add cases for 'units' checks
         _cases = [
-            {
-                "input": (5.0, "arg", check),
-                "output": (None, None, None, TypeError),
-            },
+            # argument does not have units
+            {"input": (5.0, "arg", check), "output": (None, None, None, TypeError)},
+            # argument does match desired units
+            # * set arg_name = 'checks_on_return' to cover if-else statement
+            #   in initializing error string
             {
                 "input": (5.0 * u.kg, "checks_on_return", check),
                 "output": (None, None, None, u.UnitTypeError),
             },
+            # argument has equivalent but not matching unit
             {
                 "input": (5.0 * u.km, "arg", check),
                 "output": (5.0 * u.km, u.cm, None, u.UnitTypeError),
             },
+            # argument is equivalent to many specified units but exactly matches one
             {
                 "input": (5.0 * u.km, "arg", {**check, "units": [u.cm, u.km]}),
                 "output": (5.0 * u.km, u.km, None, None),
             },
+            # argument is equivalent to many specified units and
+            # does NOT exactly match one
             {
                 "input": (5.0 * u.m, "arg", {**check, "units": [u.cm, u.km]}),
                 "output": (None, None, None, u.UnitTypeError),
             },
+            # argument has attr unit but unit does not have is_equivalent
             {
                 "input": (MyQuantity, "arg", check),
                 "output": (None, None, None, TypeError),
             },
-            *[
+        ]
+
+        # add cases for 'none_shall_pass' checks
+        _cases.extend(
+            [
                 # argument is None and none_shall_pass = False
                 {
                     "input": (None, "arg", {**check, "none_shall_pass": False}),
@@ -486,8 +503,12 @@ class TestCheckUnits:
                     "input": (None, "arg", {**check, "none_shall_pass": True}),
                     "output": (None, None, None, None),
                 },
-            ],
-            *[
+            ]
+        )
+
+        # add cases for 'pass_equivalent_units' checks
+        _cases.extend(
+            [
                 # argument is equivalent to 1 to unit,
                 # does NOT exactly match the unit,
                 # and 'pass_equivalent_units' = True and argument
@@ -506,26 +527,22 @@ class TestCheckUnits:
                     "input": (
                         5.0 * u.km,
                         "arg",
-                        {
-                            **check,
-                            "units": [u.cm, u.m],
-                            "pass_equivalent_units": True,
-                        },
+                        {**check, "units": [u.cm, u.m], "pass_equivalent_units": True},
                     ),
                     "output": (5.0 * u.km, None, None, None),
                 },
-            ],
-        ]
+            ]
+        )
 
         # setup wrapped function
         cu = CheckUnits()
         cu.f = self.foo_no_anno
 
         # perform tests
-        for case in _cases:
+        for _ii, case in enumerate(_cases):  # noqa: B007
             arg, arg_name, arg_checks = case["input"]
             _results = cu._check_unit_core(arg, arg_name, arg_checks)
-            assert _results[:3] == case["output"][:3]
+            assert _results[0:3] == case["output"][0:3]
 
             if _results[3] is None:
                 assert _results[3] is case["output"][3]
@@ -613,7 +630,7 @@ class TestCheckUnits:
         assert wfoo.__signature__ == inspect.signature(self.foo_no_anno)
 
     @mock.patch(
-        f"{CheckUnits.__module__}.{CheckUnits.__qualname__}",
+        CheckUnits.__module__ + "." + CheckUnits.__qualname__,
         side_effect=CheckUnits,
         autospec=True,
     )
@@ -1113,7 +1130,7 @@ class TestCheckValues:
         assert wfoo.__signature__ == inspect.signature(self.foo)
 
     @mock.patch(
-        f"{CheckValues.__module__}.{CheckValues.__qualname__}",
+        CheckValues.__module__ + "." + CheckValues.__qualname__,
         side_effect=CheckValues,
         autospec=True,
     )

@@ -9,6 +9,7 @@ ignore:
 - vendor
 - docs/plasmapy_sphinx
 - plasmapy/formulary/braginskii.py
+- plasmapy/utils/decorators/tests/test_checks.py
 
 github:
   labels: []
