@@ -355,3 +355,4 @@ def thermalization_ratio(
             "arguments should be of equal length: 'r_0', 'r_n', "
             "'n_1', 'n_2', 'v_1', 'T_1' and 'T_2'."
         )
+
