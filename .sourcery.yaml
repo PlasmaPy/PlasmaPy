@@ -8,10 +8,8 @@ ignore:
 - node_modules
 - vendor
 - docs/plasmapy_sphinx
-- test_thomson.py
 - braginskii.py
 - helpers.py
-- test_checks.py
 
 github:
   labels: [No changelog entry needed]
