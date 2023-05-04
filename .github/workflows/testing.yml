@@ -23,62 +23,29 @@ jobs:
       matrix:
         include:
 
-        - name: Linters
-          os: ubuntu-latest
-          python: '3.11'
-          toxenv: linters
-
-        - name: Python 3.10 (Windows), code coverage
-          os: windows-latest
-          python: '3.10'
-          toxenv: py310-cov-all
-
         - name: Python 3.11 (Linux), pinned dependencies
           os: ubuntu-latest
           python: '3.11'
           toxenv: py311-pins
+          toxargs: --develop
 
-    steps:
-
-    - name: Checkout code
-      uses: actions/checkout@v3
-      with:
-        fetch-depth: 0
-
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: ${{ matrix.python }}
-
-    - name: Install Python dependencies
-      run: python -m pip install --progress-bar off --upgrade "tox"
-
-    - name: Run tests
-      run: tox ${{ matrix.toxargs }} -e ${{ matrix.toxenv }} -- ${{ matrix.toxposargs }}
-
-  comprehensive-tests:
-    name: ${{ matrix.name }}
-    runs-on: ${{ matrix.os }}
-    needs: initial-tests
-
-    strategy:
-      fail-fast: false
-
-      matrix:
-        include:
+        - name: Python 3.10 (MacOS), code coverage
+          os: windows-latest
+          python: '3.10'
+          toxenv: py310-cov-all
 
         - name: Python 3.9 (Windows), minimal dependencies
           os: windows-latest
           python: 3.9
           toxenv: py39-all-minimal
 
-        - name: Python 3.11 (MacOS), develop mode
-          os: macos-latest
+        - name: Linters
+          os: ubuntu-latest
           python: '3.11'
-          toxenv: py311-all
-          toxargs: --develop
+          toxenv: linters
 
     steps:
+
     - name: Checkout code
       uses: actions/checkout@v3
       with:
@@ -91,10 +58,6 @@ jobs:
 
     - name: Install Python dependencies
       run: python -m pip install --progress-bar off --upgrade tox
-
-    - name: Install language-pack-fr and tzdata
-      if: startsWith(matrix.name, 'Documentation')
-      run: sudo apt-get install graphviz pandoc
 
     - name: Run tests
       run: tox ${{ matrix.toxargs }} -e ${{ matrix.toxenv }} -- ${{ matrix.toxposargs }}
