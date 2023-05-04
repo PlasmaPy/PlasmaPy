@@ -27,7 +27,7 @@ jobs:
 
             If this PR is marked as ready for review, someone should stop by soon to provide a code review and offer suggestions. ✅ If you'd like more time beforehand 🕰️, please [convert this PR into a draft](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/changing-the-stage-of-a-pull-request#converting-a-pull-request-to-a-draft) and later on [mark it as ready for review](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/changing-the-stage-of-a-pull-request#marking-a-pull-request-as-ready-for-review). If you don't get a review within ∼2–3 weekdays, please feel free to give us a reminder.
 
-            We thank you once again! 🪩
+            We thank you once again! 🎆
 
   checklist:
     runs-on: ubuntu-latest
