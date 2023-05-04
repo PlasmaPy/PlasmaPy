@@ -69,7 +69,7 @@ alias_dictionaries = [case_sensitive_aliases, case_insensitive_aliases]
 def test_alias_dict_properties(alias_dict):
     """Test properties of the alias dictionaries."""
 
-    for key in alias_dict.keys():
+    for key in alias_dict:
         assert isinstance(key, str), (
             f"The following key should be a string, but isn't: {key}\n\n"
             f"The entire dictionary is:\n\n{alias_dict}"
