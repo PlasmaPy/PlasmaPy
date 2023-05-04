@@ -156,12 +156,13 @@ def single_species_collective_args():
     spectral_density_args_kwargs
 
     """
-    kwargs = {}
-    kwargs["wavelengths"] = np.arange(520, 545, 0.01) * u.nm
-    kwargs["probe_wavelength"] = 532 * u.nm
-    kwargs["n"] = 5e17 * u.cm**-3
-    kwargs["T_e"] = 10 * u.eV
-    kwargs["T_i"] = 10 * u.eV
+    kwargs = {
+        "wavelengths": np.arange(520, 545, 0.01) * u.nm,
+        "probe_wavelength": 532 * u.nm,
+        "n": 5e17 * u.cm**-3,
+        "T_e": 10 * u.eV,
+        "T_i": 10 * u.eV,
+    }
     kwargs["efract"] = np.array([1.0])
     kwargs["ifract"] = np.array([1.0])
     kwargs["ions"] = "C-12 5+"
@@ -285,11 +286,12 @@ def multiple_species_collective_args():
     spectral_density_args_kwargs
 
     """
-    kwargs = {}
-    kwargs["wavelengths"] = np.arange(520, 545, 0.01) * u.nm
-    kwargs["probe_wavelength"] = 532 * u.nm
-    kwargs["n"] = 5e17 * u.cm**-3
-    kwargs["T_e"] = 10 * u.eV
+    kwargs = {
+        "wavelengths": np.arange(520, 545, 0.01) * u.nm,
+        "probe_wavelength": 532 * u.nm,
+        "n": 5e17 * u.cm**-3,
+        "T_e": 10 * u.eV,
+    }
     kwargs["T_i"] = np.array([5, 5]) * u.eV
     kwargs["ions"] = [Particle("p+"), Particle("C-12 5+")]
     kwargs["probe_vec"] = np.array([1, 0, 0])
@@ -375,11 +377,12 @@ def single_species_non_collective_args():
     spectral_density_args_kwargs
 
     """
-    kwargs = {}
-    kwargs["wavelengths"] = np.arange(500, 570, 0.01) * u.nm
-    kwargs["probe_wavelength"] = 532 * u.nm
-    kwargs["n"] = 5e15 * u.cm**-3
-    kwargs["T_e"] = 100 * u.eV
+    kwargs = {
+        "wavelengths": np.arange(500, 570, 0.01) * u.nm,
+        "probe_wavelength": 532 * u.nm,
+        "n": 5e15 * u.cm**-3,
+        "T_e": 100 * u.eV,
+    }
     kwargs["T_i"] = np.array([10]) * u.eV
     kwargs["efract"] = np.array([1.0])
     kwargs["ifract"] = np.array([1.0])
@@ -775,14 +778,14 @@ def run_fit(
                 low=params[p].min, high=params[p].max, size=1
             )
 
-    # Make the model, then perform the fit
-    model = thomson.spectral_density_model(
-        wavelengths.to(u.m).value,
-        settings,
-        params,
-    )
-
     if run_fit:
+        # Make the model, then perform the fit
+        model = thomson.spectral_density_model(
+            wavelengths.to(u.m).value,
+            settings,
+            params,
+        )
+
         result = model.fit(
             data,
             params,
@@ -855,8 +858,7 @@ def epw_single_species_settings_params():
     scattering_angle = np.deg2rad(63)
     scatter_vec = np.array([np.cos(scattering_angle), np.sin(scattering_angle), 0])
 
-    kwargs = {}
-    kwargs["probe_wavelength"] = probe_wavelength.to(u.m).value
+    kwargs = {"probe_wavelength": probe_wavelength.to(u.m).value}
     kwargs["probe_vec"] = np.array([1, 0, 0])
     kwargs["scatter_vec"] = scatter_vec
     kwargs["ions"] = ["H+"]
@@ -891,9 +893,8 @@ def epw_multi_species_settings_params():
     scattering_angle = np.deg2rad(63)
     scatter_vec = np.array([np.cos(scattering_angle), np.sin(scattering_angle), 0])
 
-    kwargs = {}
+    kwargs = {"probe_wavelength": probe_wavelength.to(u.m).value}
 
-    kwargs["probe_wavelength"] = probe_wavelength.to(u.m).value
     kwargs["probe_vec"] = probe_vec
     kwargs["scatter_vec"] = scatter_vec
     kwargs["ions"] = ["H+"]
@@ -931,8 +932,7 @@ def iaw_single_species_settings_params():
     scattering_angle = np.deg2rad(90)
     scatter_vec = np.array([np.cos(scattering_angle), np.sin(scattering_angle), 0])
 
-    kwargs = {}
-    kwargs["probe_wavelength"] = probe_wavelength.to(u.m).value
+    kwargs = {"probe_wavelength": probe_wavelength.to(u.m).value}
     kwargs["probe_vec"] = probe_vec
     kwargs["scatter_vec"] = scatter_vec
     kwargs["ions"] = ["H+"]
@@ -968,8 +968,7 @@ def iaw_multi_species_settings_params():
     scattering_angle = np.deg2rad(63)
     scatter_vec = np.array([np.cos(scattering_angle), np.sin(scattering_angle), 0])
 
-    kwargs = {}
-    kwargs["probe_wavelength"] = probe_wavelength.to(u.m).value
+    kwargs = {"probe_wavelength": probe_wavelength.to(u.m).value}
     kwargs["probe_vec"] = probe_vec
     kwargs["scatter_vec"] = scatter_vec
     kwargs["ions"] = ["H+", "H+", "C-12 +4"]
@@ -1015,8 +1014,7 @@ def noncollective_single_species_settings_params():
     scattering_angle = np.deg2rad(30)
     scatter_vec = np.array([np.cos(scattering_angle), np.sin(scattering_angle), 0])
 
-    kwargs = {}
-    kwargs["probe_wavelength"] = probe_wavelength.to(u.m).value
+    kwargs = {"probe_wavelength": probe_wavelength.to(u.m).value}
     kwargs["probe_vec"] = probe_vec
     kwargs["scatter_vec"] = scatter_vec
     kwargs["ions"] = ["H+"]
