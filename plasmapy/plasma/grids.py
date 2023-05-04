@@ -1,5 +1,5 @@
 """
-Defines the AbstractGrid class and child classes
+Defines the AbstractGrid class and child classes.
 """
 
 __all__ = [
@@ -20,7 +20,7 @@ from abc import ABC, abstractmethod
 from collections import namedtuple
 from functools import cached_property
 from scipy.spatial import distance
-from typing import List, Union
+from typing import Union
 
 from plasmapy.utils.decorators.helpers import modify_docstring
 
@@ -77,7 +77,6 @@ class AbstractGrid(ABC):
     """
 
     def __init__(self, *seeds, num=100, **kwargs):
-
         # Initialize some variables
         self._interpolator = None
         self._is_uniform = None
@@ -172,10 +171,8 @@ class AbstractGrid(ABC):
             so an array of zeros cannot be constructed.
         """
         for rq in req_quantities:
-
             # Error check that grid contains E and B variables required
             if rq not in self.quantities:
-
                 # If missing, warn user and then replace with an array of zeros
                 if not replace_with_zeros:
                     raise KeyError(
@@ -204,7 +201,6 @@ class AbstractGrid(ABC):
     # *************************************************************************
 
     def __repr__(self):
-
         line_sep = "-----------------------------\n"
         shape = list(self.shape)
         coords = list(self.ds.coords.keys())
@@ -257,7 +253,7 @@ class AbstractGrid(ABC):
 
     def __getitem__(self, key):
         """
-        Given a key, return the corresponding array as a `~astropy.units.Quantity`
+        Given a key, return the corresponding array as a `~astropy.units.Quantity`.
 
         Returning with ``copy=False`` means that the array returned is a direct
         reference to the underlying DataArray, so changes made will be reflected
@@ -282,7 +278,7 @@ class AbstractGrid(ABC):
 
     @property
     def shape(self):
-        r"""Shape of the grid"""
+        r"""Shape of the grid."""
         if self.is_uniform:
             return (self.ax0.size, self.ax1.size, self.ax2.size)
 
@@ -381,7 +377,7 @@ class AbstractGrid(ABC):
     # 1D axes and step sizes (valid only for uniform grids)
     # *************************************************************************
     @property
-    def si_scale_factors(self) -> List[float]:
+    def si_scale_factors(self) -> list[float]:
         """
         3-element list containing unitless scale factors for converting
         the corresponding axis from its stored units to SI.
@@ -419,7 +415,7 @@ class AbstractGrid(ABC):
                 "The axis properties are only valid on uniformly spaced grids."
             )
 
-        vals = self.ds.coords[ax_name].values
+        vals = self.ds.coords[ax_name].to_numpy()
         return vals * self.si_scale_factors[axis] if si else vals * self.units[axis]
 
     def _get_dax(self, *, axis: int, si: bool = False):
@@ -861,7 +857,7 @@ class AbstractGrid(ABC):
             + np.less(ax2_max, pos[:, 2]).astype(np.int8)
         )
 
-        return np.where(on_grid == 0, True, False)
+        return np.where(on_grid == 0, True, False)  # noqa: FBT003
 
     @abstractmethod
     def vector_intersects(self, p1, p2):
@@ -895,7 +891,7 @@ class AbstractGrid(ABC):
             _interp_quantities = np.zeros([npoints, nargs])
 
         for j, arg in enumerate(self._interp_args):
-            _interp_quantities[..., j] = self.ds[arg].values
+            _interp_quantities[..., j] = self.ds[arg].to_numpy()
 
         return _interp_quantities
 
@@ -961,7 +957,6 @@ class AbstractGrid(ABC):
 
         Returns
         -------
-
         pos: `~numpy.ndarray`
             Position array with dimensions fixed, units converted to
             standard and stripped.
@@ -979,7 +974,6 @@ class AbstractGrid(ABC):
 
         Raises
         ------
-
         KeyError
             A KeyError is raised if one of the args does not correspond
             to a DataArray in the DataSet.
@@ -1027,7 +1021,7 @@ class AbstractGrid(ABC):
 def _fast_nearest_neighbor_interpolate(pos, ax):
     """
     This function finds the indices in the axis 'ax' that are closest to the
-    values in the array 'pos'
+    values in the array 'pos'.
 
     Assumes the axis 'ax' is sorted in ascending order.
 
@@ -1106,7 +1100,7 @@ class CartesianGrid(AbstractGrid):
     def nearest_neighbor_interpolator(
         self, pos: Union[np.ndarray, u.Quantity], *args, persistent=False
     ):
-        r""" """
+        r""" """  # noqa: D419
 
         # Shared setup
         pos, args, persistent = self._persistent_interpolator_setup(
@@ -1408,7 +1402,7 @@ class NonUniformCartesianGrid(AbstractGrid):
     def nearest_neighbor_interpolator(
         self, pos: Union[np.ndarray, u.Quantity], *args, persistent=False
     ):
-        r""" """
+        r""" """  # noqa: D419
         # Shared setup
         pos, args, persistent = self._persistent_interpolator_setup(
             pos, args, persistent

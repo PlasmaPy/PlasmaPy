@@ -33,6 +33,7 @@ def _test_grid(
         with a radial gaussian profile in the xy plane.
     * electrostatic_gaussian_sphere : An electric field created by a sphere
         of potential of radius L/2 with a radial Gaussian distribution.
+
     Parameters
     ----------
     name : str
@@ -115,7 +116,7 @@ def _test_grid(
 
     else:
         raise ValueError(
-            "No example corresponding to the provided name " f"({name}) exists."
+            f"No example corresponding to the provided name ({name}) exists."
         )
 
     # If any of the following quantities are missing, add them as empty arrays
@@ -194,7 +195,7 @@ def run_1D_example(name):
 
 
 def run_mesh_example(
-    location=np.array([0, -2, 0]) * u.mm,
+    location=(0, -2, 0) * u.mm,
     extent=(2 * u.mm, 1.5 * u.mm),
     nwires=9,
     wire_diameter=20 * u.um,
@@ -404,7 +405,6 @@ def test_create_particles():
 
 @pytest.mark.slow
 def test_load_particles():
-
     grid = _test_grid("electrostatic_gaussian_sphere", num=50)
 
     # Cartesian
@@ -457,12 +457,12 @@ def test_run_options():
     sim.run(field_weighting="nearest neighbor", dt=1e-12 * u.s)
 
     # Test max_deflections
-    sim.max_deflection
+    sim.max_deflection  # noqa: B018
 
     # Test way too big of a max_theta
     sim = cpr.Tracker(grid, source, detector, verbose=True)
     sim.create_particles(1e4, 3 * u.MeV, max_theta=89 * u.deg)
-    with pytest.warns(RuntimeWarning, match="of " "particles entered the field grid"):
+    with pytest.warns(RuntimeWarning, match="of particles entered the field grid"):
         sim.run(field_weighting="nearest neighbor", dt=1e-12 * u.s)
 
     # Test extreme deflections -> warns user
@@ -480,7 +480,7 @@ def test_run_options():
     sim.create_particles(1e4, 3 * u.MeV, max_theta=0.1 * u.deg)
     with pytest.warns(
         RuntimeWarning,
-        match="particles have been " "deflected away from the detector plane",
+        match="particles have been deflected away from the detector plane",
     ):
         sim.run(field_weighting="nearest neighbor", dt=1e-12 * u.s)
     # Calc max deflection: should be between 0 and pi/2
@@ -639,7 +639,7 @@ def test_saving_output(tmp_path):
 
     # Test that output cannot be saved prior to running
     with pytest.raises(RuntimeError):
-        _ = sim.results_dict
+        sim.results_dict  # noqa: B018
 
     sim.run(field_weighting="nearest neighbor")
 
@@ -653,7 +653,7 @@ def test_saving_output(tmp_path):
     results_2 = dict(np.load(path, "r", allow_pickle=True))
 
     assert set(results_1.keys()) == set(results_2.keys())
-    for key in results_1.keys():
+    for key in results_1:
         assert np.allclose(results_1[key], results_2[key])
 
 
@@ -786,7 +786,6 @@ def test_gaussian_sphere_analytical_comparison():
 
 @pytest.mark.slow
 def test_add_wire_mesh():
-
     # ************************************************************
     # Test various input configurations
     # ************************************************************

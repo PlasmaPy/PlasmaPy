@@ -142,7 +142,6 @@ def hollweg(
 
     Notes
     -----
-
     The dispersion relation presented in :cite:t:`hollweg:1999`
     (equation 3 in :cite:t:`bellan:2012`) is:
 

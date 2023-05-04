@@ -10,7 +10,7 @@ import warnings
 
 from astropy import units as u
 from numbers import Integral, Real
-from typing import List, NoReturn, Optional, Union
+from typing import NoReturn, Optional, Union
 
 from plasmapy.particles.atomic import ionic_levels
 from plasmapy.particles.decorators import particle_input
@@ -61,7 +61,6 @@ class IonicLevel:
     """
 
     def __eq__(self, other):
-
         if not isinstance(other, IonicLevel):
             return False
 
@@ -313,7 +312,7 @@ class IonizationState:
     def __repr__(self) -> str:
         return self.__str__()
 
-    def __getitem__(self, value) -> List[IonicLevel]:
+    def __getitem__(self, value) -> list[IonicLevel]:
         """Return information for a single ionization level."""
         if isinstance(value, slice):
             return [
@@ -580,7 +579,7 @@ class IonizationState:
         return self._T_e.to(u.K, equivalencies=u.temperature_energy())
 
     @T_e.setter
-    @validate_quantities(value=dict(equivalencies=u.temperature_energy()))
+    @validate_quantities(value={"equivalencies": u.temperature_energy()})
     def T_e(self, value: u.K):
         """Set the electron temperature."""
         try:
@@ -594,9 +593,9 @@ class IonizationState:
 
     @property
     @validate_quantities(
-        validations_on_return=dict(
-            equivalencies=u.temperature_energy(),
-        )
+        validations_on_return={
+            "equivalencies": u.temperature_energy(),
+        }
     )
     def T_i(self) -> u.K:
         """
@@ -607,11 +606,11 @@ class IonizationState:
 
     @T_i.setter
     @validate_quantities(
-        value=dict(
-            equivalencies=u.temperature_energy(),
-            none_shall_pass=True,
-            can_be_negative=False,
-        )
+        value={
+            "equivalencies": u.temperature_energy(),
+            "none_shall_pass": True,
+            "can_be_negative": False,
+        }
     )
     def T_i(self, value: u.K):
         """Set the ion temperature."""
@@ -693,7 +692,7 @@ class IonizationState:
         return self._number_of_particles
 
     @property
-    def ionic_symbols(self) -> List[str]:
+    def ionic_symbols(self) -> list[str]:
         """The ionic symbols for all charge states."""
         return self.to_list().symbols
 
@@ -718,7 +717,7 @@ class IonizationState:
         return np.sqrt(np.sum(self.ionic_fractions * self.charge_numbers**2))
 
     @property
-    def Z_most_abundant(self) -> List[Integral]:
+    def Z_most_abundant(self) -> list[Integral]:
         """
         A `list` of the charge numbers with the highest ionic fractions.
 
@@ -763,7 +762,7 @@ class IonizationState:
         else:
             raise ValueError("Need 0 <= tol < 1.")
 
-    def _get_states_info(self, minimum_ionic_fraction=0.01) -> List[str]:
+    def _get_states_info(self, minimum_ionic_fraction=0.01) -> list[str]:
         """
         Return a `list` containing the ion symbol, ionic fraction, and
         (if available) the number density and temperature for that ion.

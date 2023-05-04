@@ -7,7 +7,6 @@ from plasmapy.particles._parsing import (
     dealias_particle_aliases,
     parse_and_check_atomic_input,
 )
-from plasmapy.particles._special_particles import particle_zoo
 from plasmapy.particles.exceptions import (
     InvalidElementError,
     InvalidParticleError,
@@ -70,7 +69,7 @@ alias_dictionaries = [case_sensitive_aliases, case_insensitive_aliases]
 def test_alias_dict_properties(alias_dict):
     """Test properties of the alias dictionaries."""
 
-    for key in alias_dict.keys():
+    for key in alias_dict:
         assert isinstance(key, str), (
             f"The following key should be a string, but isn't: {key}\n\n"
             f"The entire dictionary is:\n\n{alias_dict}"
@@ -331,16 +330,17 @@ def test_parse_InvalidParticleErrors(arg, kwargs):
         )
 
 
-@pytest.mark.parametrize("arg", particle_zoo.everything - {"p+"})
-def test_parse_InvalidElementErrors(arg):
+def test_parse_InvalidElementErrors(particle):
     r"""Tests that _parse_and_check_atomic_input raises an
     InvalidElementError when the input corresponds to a valid
     particle but not a valid element, isotope, or ion."""
+    if particle == Particle("p+"):
+        return
     with pytest.raises(InvalidElementError):
-        parse_and_check_atomic_input(arg)
+        parse_and_check_atomic_input(particle.symbol)
         pytest.fail(
             "An InvalidElementError was expected to be raised by "
-            f"{call_string(parse_and_check_atomic_input, arg)}, "
+            f"{call_string(parse_and_check_atomic_input, particle)}, "
             f"but no exception was raised."
         )
 

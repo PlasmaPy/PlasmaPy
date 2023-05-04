@@ -71,7 +71,7 @@ class HDF5Reader(GenericPlasma):
     def close(self):
         self.h5.close()
 
-    def __exit__(self):
+    def __exit__(self):  # noqa: PLE0302
         self.h5.close()
 
     def _check_valid_openpmd_version(self):
@@ -152,7 +152,6 @@ class HDF5Reader(GenericPlasma):
             raise FileNotFoundError(f"Could not find file: '{hdf5}'")
 
         if "openPMD" not in kwargs:
-
             h5 = h5py.File(hdf5, "r")
             try:
                 openPMD = h5.attrs["openPMD"]

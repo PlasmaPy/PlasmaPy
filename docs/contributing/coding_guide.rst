@@ -25,8 +25,8 @@ important as consistency, readability, and maintainability.
 This guide can (and should!) be regularly refined by the PlasmaPy
 community as we collectively learn new practices and our shared coding
 style changes. Please feel free to propose revisions to this guide by
-:ref:`submitting a pull request <code-contribution>` or by bringing up
-an idea at a community meeting.
+:ref:`submitting a pull request <workflow>` or by bringing up an idea at
+a community meeting.
 
 PlasmaPy generally follows the :pep:`8` style guide for Python code,
 using auto-formatters such as black_ and isort_ that are executed using
@@ -465,16 +465,21 @@ Requirements
      Tools like pyupgrade_ help automatically upgrade the code base to
      the minimum supported version of Python for the next release.
 
-* In general, it is preferable to support minor releases of dependencies
-  from the last ≲ 24 months, unless there is a new feature in a
-  dependency that would be greatly beneficial for `plasmapy` development.
+* PlasmaPy should generally allow all feature releases of required
+  dependencies made in the last ≲ 24 months, unless a more recent
+  release includes a needed feature or bugfix.
 
-* Do not set maximum requirements (e.g., ``numpy <= 1.22.3``) unless
-  absolutely necessary. Maximum requirements can lead to version
-  conflicts when installed alongside other packages. Instead, update
-  PlasmaPy to become compatible with the latest versions of its
-  dependencies. Similarly, do not require exact versions of packages
-  (e.g., ``scipy == 1.5.3``).
+* Only set maximum or exact requirements (e.g., ``numpy <= 1.22.3`` or
+  ``scipy == 1.7.2``) when absolutely necessary. After setting a maximum
+  or exact requirement, create a GitHub issue to remove that
+  requirement.
+
+  .. tip::
+
+     Maximum requirements can lead to version conflicts when installed
+     alongside other packages. It is preferable to update PlasmaPy to
+     become compatible with the latest versions of its dependencies than
+     to set a maximum requirement.
 
 * Minor versions of Python are generally released in October of each
   year. However, it may take a few months before packages like NumPy_
@@ -860,97 +865,6 @@ patch releases.
 Exceptions to these guidelines should only be made when there are major
 improvements or fixes to upstream functionality or when other required
 packages have stricter requirements.
-
-.. The following section will be moved off of this page in #1656
-
-.. _code-contribution:
-
-Branches, commits, and pull requests
-====================================
-
-Before making any changes, it is prudent to update your local
-repository with the most recent changes from the development
-repository:
-
-.. code-block:: bash
-
-  git fetch upstream
-
-Changes to PlasmaPy should be made using branches.  It is usually best
-to avoid making changes on your main branch so that it can be kept
-consistent with the upstream repository.  Instead we can create a new
-branch for the specific feature that you would like to work on:
-
-.. code-block:: bash
-
-  git branch *your-new-feature*
-
-Descriptive branch names such as ``grad-shafranov`` or
-``adding-eigenfunction-poetry`` are helpful, while vague names like
-``edits`` are considered harmful.  After creating your branch locally,
-let your fork of PlasmaPy know about it by running:
-
-.. code-block:: bash
-
-  git push --set-upstream origin *your-new-feature*
-
-It is also useful to configure git so that only the branch you are
-working on gets pushed to GitHub:
-
-.. code-block:: bash
-
-  git config --global push.default simple
-
-Once you have set up your fork and created a branch, you are ready to
-make edits to PlasmaPy.  Switch to your new branch by running:
-
-.. code-block:: bash
-
-  git checkout *your-new-feature*
-
-Go ahead and modify files with your favorite text editor.  Be sure to
-include tests and documentation with any new functionality.  We
-recommend reading about `best practices for scientific computing
-<https://doi.org/10.1371/journal.pbio.1001745>`_.  PlasmaPy uses the
-`PEP 8 style guide for Python code
-<https://www.python.org/dev/peps/pep-0008/>`_ and the `numpydoc format
-for docstrings
-<https://github.com/numpy/numpy/blob/main/doc/HOWTO_DOCUMENT.rst.txt>`_
-to maintain consistency and readability.  New contributors should not
-worry too much about precisely matching these styles when first
-submitting a pull request, GitHub Actions will check pull requests
-for :pep:`8` compatibility, and further changes to the style can be
-suggested during code review.
-
-You may periodically commit changes to your branch by running
-
-.. code-block:: bash
-
-  git add filename.py
-  git commit -m "*brief description of changes*"
-
-Committed changes may be pushed to the corresponding branch on your
-GitHub fork of PlasmaPy using
-
-.. code-block:: bash
-
-  git push origin *your-new-feature*
-
-or, more simply,
-
-.. code-block:: bash
-
-  git push
-
-Once you have completed your changes and pushed them to the branch on
-GitHub, you are ready to make a pull request.  Go to your fork of
-PlasmaPy in GitHub.  Select "Compare and pull request".  Add a
-descriptive title and some details about your changes.  Then select
-"Create pull request".  Other contributors will then have a chance to
-review the code and offer constructive suggestions.  You can continue
-to edit the pull request by changing the corresponding branch on your
-PlasmaPy fork on GitHub.  After a pull request is merged into the
-code, you may delete the branch you created for that pull request.
 
 Benchmarks
 ==========
