@@ -299,7 +299,6 @@ below relate to the behavior of the :rst:dir:`automodapi` directive.
     the configuration value :confval:`automodapi_groups_with_inheritance_diagrams`.
 
 """
-
 __all__ = ["AutomodapiOptions", "ModAPIDocumenter", "setup"]
 
 import inspect
@@ -328,7 +327,11 @@ from typing import Any, Callable, Dict, List, Optional, Union
 from ..automodsumm.core import AutomodsummOptions, option_str_list
 from ..utils import default_grouping_info
 
-text_type = str if sys.version_info >= (3, 0) else unicode
+if sys.version_info >= (3, 0):
+    text_type = str
+else:
+    text_type = unicode  # noqa
+
 logger = logging.getLogger(__name__)
 
 
@@ -525,7 +528,8 @@ class ModAPIDocumenter(ModuleDocumenter):
         custom_group_info = self.env.app.config.automodapi_custom_groups
 
         group_names = set(default_grouping_info) | set(custom_group_info)
-        if remainder := list(group_names - set(group_order)):
+        remainder = list(group_names - set(group_order))
+        if len(remainder) > 0:
             group_order += tuple(sorted(remainder))
 
         _grouping_info = OrderedDict()
@@ -667,7 +671,11 @@ class ModAPIDocumenter(ModuleDocumenter):
 
         modname = re.escape(modname)
 
-        pkg_or_mod = "Package" if option_processor.pkg_or_module == "pkg" else "Module"
+        if option_processor.pkg_or_module == "pkg":
+            pkg_or_mod = "Package"
+        else:
+            pkg_or_mod = "Module"
+
         heading_char = option_processor.options["heading-chars"][0]
         underline = heading_char * (len(modname) + 1 + len(pkg_or_mod))
 
@@ -686,7 +694,8 @@ class ModAPIDocumenter(ModuleDocumenter):
         """Add content from docstrings, attribute documentation and user."""
         if no_docstring:
             warnings.warn(
-                f"The 'no_docstring' argument to {self.__class__.__name__}.add_content() is deprecated.",
+                "The 'no_docstring' argument to %s.add_content() is deprecated."
+                % self.__class__.__name__,
                 RemovedInSphinx50Warning,
                 stacklevel=2,
             )
@@ -711,7 +720,10 @@ class ModAPIDocumenter(ModuleDocumenter):
         # add content from docstrings
         if not no_docstring:
             docstrings = self.get_doc()
-            if docstrings is not None:
+            if docstrings is None:
+                # Do not call autodoc-process-docstring on get_doc() returns None.
+                pass
+            else:
                 if not docstrings:
                     # append at least a dummy docstring, so that the event
                     # autodoc-process-docstring is fired and can add some
