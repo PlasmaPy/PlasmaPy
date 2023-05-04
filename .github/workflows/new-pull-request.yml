@@ -5,6 +5,30 @@ on:
     types: [opened]
 
 jobs:
+  name: Greetings
+  on: [pull_request_target]
+
+  jobs:
+    greeting:
+      runs-on: ubuntu-latest
+      permissions:
+        issues: write
+        pull-requests: write
+      steps:
+      - uses: actions/first-interaction@v1
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          pr-message: >
+            Thank you for submitting your first pull request (PR) to PlasmaPy!  We invite you to check out our [**Code of Conduct**](https://docs.plasmapy.org/en/stable/CODE_OF_CONDUCT.html) and [**contributor guide**](https://docs.plasmapy.org/en/latest/contributing/index.html). 🥳
+
+            Please **add yourself to the list of contributors** in [docs/about/credits.rst](https://github.com/PlasmaPy/PlasmaPy/blob/main/docs/about/credits.rst) to make sure that you get credit for your contribution. 🔖
+
+            The bottom of this page includes several checks that are run for every PR. Don't worry if something broke! We break stuff all the time. 😺 Click on "Details" next to each check to learn why a check didn't pass. Because error messages are sometimes cryptic 🤔, please feel free to ask for help. We do that all the time as well. 🌸 We can usually be reached in our [**chat room**](https://docs.plasmapy.org/en/latest/contributing/coding_guide.html) or weekly [**community meeting**](https://www.plasmapy.org/meetings/weekly) & [**office hours**]((https://www.plasmapy.org/meetings/office_hours).
+
+            If this PR is marked as ready for review, someone should stop by soon to provide a code review and offer suggestions. ✅ If you'd like more time beforehand 🕰️, please [convert this PR into a draft](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/changing-the-stage-of-a-pull-request#converting-a-pull-request-to-a-draft) and later on [mark it as ready for review](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/changing-the-stage-of-a-pull-request#marking-a-pull-request-as-ready-for-review). If you don't get a review within ∼2–3 weekdays, please feel free to give us a reminder.
+
+            We thank you once again! 🪩
+
   checklist:
     runs-on: ubuntu-latest
     steps:
@@ -35,29 +59,3 @@ jobs:
                - [ ] Are the docs understandable?
                - [ ] Do the docs show up correctly in the preview, including Jupyter notebooks?`
           })
-  first-interaction:
-    runs-on: ubuntu-latest
-    uses: actions/first-interaction@v1
-    with:
-      repo-token: ${{ secrets.GITHUB_TOKEN }}
-      pr-message: >
-        Thank you for making your first contribution to PlasmaPy! 🌱
-
-        To make sure that you get credit for this pull request (PR), please **add yourself to the list of contributors** in [docs/about/credits.rst](https://github.com/PlasmaPy/PlasmaPy/blob/main/docs/about/credits.rst).
-
-        Please check out our [**Code of Conduct**](https://docs.plasmapy.org/en/stable/CODE_OF_CONDUCT.html) and our [**contributor guide**](https://docs.plasmapy.org/en/latest/contributing/index.html), which discusses:
-
-         - [Getting ready to contribute](https://docs.plasmapy.org/en/latest/contributing/getting_ready.html)
-         - The [code contribution workflow](https://docs.plasmapy.org/en/latest/contributing/workflow.html)
-         - [Writing code](https://docs.plasmapy.org/en/latest/contributing/coding_guide.html)
-         - [Writing documentation](https://docs.plasmapy.org/en/latest/contributing/doc_guide.html) (in [reStructuredText](https://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html) and following the [numpydoc standard](https://numpydoc.readthedocs.io/en/latest/format.html#docstring-standard)
-         - [Writing tests](https://docs.plasmapy.org/en/latest/contributing/testing_guide.html)
-         - [Adding a changelog entry](https://docs.plasmapy.org/en/latest/contributing/changelog_guide.html)
-
-        To chat with us, please stop by our [chat room](https://docs.plasmapy.org/en/latest/contributing/coding_guide.html) or come to our weekly [community meeting](https://www.plasmapy.org/meetings/weekly) or [office hours]((https://www.plasmapy.org/meetings/office_hours) on Zoom.
-
-        The bottom of this page includes several checks that are run for every PR. Don't worry if something broke! We break stuff all the time. 😺 Click on "Details" next to each check to learn why a check didn't pass.
-
-        Someone should come by soon to begin a code review. This step includes suggestions for writing clean code, addressing bugs, and improving tests. If you'd like more time before a code review, you can [convert this PR into a draft](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/changing-the-stage-of-a-pull-request#converting-a-pull-request-to-a-draft) and [mark it as ready for review](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/changing-the-stage-of-a-pull-request#marking-a-pull-request-as-ready-for-review) later.
-
-        We thank you once again!
