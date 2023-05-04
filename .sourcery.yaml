@@ -8,6 +8,7 @@ ignore:
 - node_modules
 - vendor
 - docs/plasmapy_sphinx
+- plasmapy/formulary/braginskii.py
 
 github:
   labels: []
