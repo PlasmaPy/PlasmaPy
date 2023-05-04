@@ -1,0 +1,15 @@
+ignore:
+- .git
+- venv
+- .venv
+- env
+- .env
+- .tox
+- node_modules
+- vendor
+
+github:
+  labels: []
+  ignore_labels:
+  - sourcery-ignore
+  request_review: author
