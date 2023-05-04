@@ -246,7 +246,7 @@ def run_test(
         subclass_of_Warning = issubclass(expected_outcome, Warning)
         if subclass_of_Warning:
             expected["warning"] = expected_outcome
-        elif subclass_of_Exception and not subclass_of_Warning:
+        elif subclass_of_Exception:
             expected["exception"] = expected_outcome
 
     # If a warning is issued, then there may also be an expected result.
@@ -349,7 +349,7 @@ def run_test(
         return None
 
     if isinstance(expected["result"], (u.Quantity, const.Constant, const.EMConstant)):
-        if not result.unit == expected["result"].unit:
+        if result.unit != expected["result"].unit:
             raise u.UnitsError(
                 f"The command {call_str} returned "
                 f"{_object_name(result)} which has different units "
@@ -401,12 +401,12 @@ def run_test(
 
     if atol or rtol:
         errmsg += " with "
-        if atol:
-            errmsg += f"atol = {atol}"
-        if atol and rtol:
-            errmsg += " and "
+    if atol:
+        errmsg += f"atol = {atol}"
         if rtol:
-            errmsg += f"rtol = {rtol}"
+            errmsg += " and "
+    if rtol:
+        errmsg += f"rtol = {rtol}"
     errmsg += "."
 
     raise UnexpectedResultFail(errmsg)

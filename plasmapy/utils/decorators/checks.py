@@ -662,7 +662,7 @@ class CheckUnits(CheckBase):
             _units_anno = self._condition_target_units(
                 _units_anno, from_annotations=True
             )
-            if not all(_u in _units for _u in _units_anno):
+            if any(_u not in _units for _u in _units_anno):
                 raise ValueError(
                     f"For argument '{param.name}', "
                     f"annotation units ({_units_anno}) are not included in the units "
@@ -740,8 +740,7 @@ class CheckUnits(CheckBase):
             out_checks[param.name]["pass_equivalent_units"] = peu
 
         # Does `self.checks` indicate arguments not used by f?
-        missing_params = list(set(self.checks.keys()) - set(out_checks.keys()))
-        if missing_params:
+        if missing_params := list(set(self.checks.keys()) - set(out_checks.keys())):
             params_str = ", ".join(missing_params)
             warnings.warn(
                 PlasmaPyWarning(
@@ -893,10 +892,7 @@ class CheckUnits(CheckBase):
                 equiv = arg_checks["equivalencies"]
                 if not arg_checks["pass_equivalent_units"]:
                     err = u.UnitTypeError(typeerror_msg)
-            elif arg_checks["pass_equivalent_units"]:
-                # there is a match to more than one equivalent units
-                pass
-            else:
+            elif not arg_checks["pass_equivalent_units"]:
                 # there is a match to more than 1 equivalent units
                 arg = None
                 err = u.UnitTypeError(typeerror_msg)
@@ -1170,12 +1166,7 @@ def check_units(
     if checks_on_return is not None:
         checks["checks_on_return"] = checks_on_return
 
-    if func is not None:
-        # `check_units` called as a function
-        return CheckUnits(**checks)(func)
-
-    # `check_units` called as a decorator "sugar-syntax"
-    return CheckUnits(**checks)
+    return CheckUnits(**checks)(func) if func is not None else CheckUnits(**checks)
 
 
 def check_values(
@@ -1253,12 +1244,7 @@ def check_values(
     if checks_on_return is not None:
         checks["checks_on_return"] = checks_on_return
 
-    if func is not None:
-        # `check_values` called as a function
-        return CheckValues(**checks)(func)
-
-    # `check_values` called as a decorator "sugar-syntax"
-    return CheckValues(**checks)
+    return CheckValues(**checks) if func is None else CheckValues(**checks)(func)
 
 
 def check_relativistic(func=None, betafrac=0.05):
@@ -1325,9 +1311,7 @@ def check_relativistic(func=None, betafrac=0.05):
 
         return wrapper
 
-    if func:
-        return decorator(func)
-    return decorator
+    return decorator(func) if func else decorator
 
 
 def _check_relativistic(V, funcname, betafrac=0.05):
