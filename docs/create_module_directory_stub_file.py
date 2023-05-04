@@ -4,17 +4,29 @@ import os
 from pathlib import Path
 
 
-def main():
-    directories = [str(d[0]).removeprefix("../") for d in os.walk("../plasmapy")]
+def get_subpackages(path: str) -> list[str]:
+    directories = [str(d[0]).removeprefix("../") for d in os.walk(path)]
 
-    directories = [
-        d.replace("/", ".")
+    return [
+        d.replace("/", ".").strip()
         for d in directories
         if not d.endswith(("tests")) and "." not in d and "/_" not in d
     ]
 
-    files = glob.glob("plasmapy/**/[a-zA-Z]*.py", root_dir="..")
 
+def get_modules(path: str) -> list[str]:
+    modules = list(glob.glob(f"{path}/**/[a-zA-Z]*.py"))
+
+    return [
+        m.removeprefix("../").removesuffix(".py").replace("/", ".")
+        for m in modules
+        if "tests/test_" not in m and "/_" not in m
+    ]
+
+
+def main():
+    directories = [*get_subpackages("../plasmapy"), *get_subpackages("plasmapy_sphinx")]
+    files = [*get_modules("../plasmapy"), *get_modules("plasmapy_sphinx")]
     modules = sorted([*files, *directories])
 
     filepath = Path("./modules.rst")
@@ -29,6 +41,8 @@ def main():
                 continue
             module = file.strip().removesuffix(".py").replace("/", ".")
             f.write(f"* `{module}`" + "\n")
+
+        f.writelines("\n")
 
 
 if __name__ == "__main__":
