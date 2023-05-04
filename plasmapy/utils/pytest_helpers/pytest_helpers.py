@@ -1,4 +1,8 @@
-"""Utilities to help with testing."""
+"""
+Utilities to help with testing.
+
+|expect-api-changes|
+"""
 
 __all__ = [
     "assert_can_handle_nparray",

@@ -5,10 +5,7 @@ Functions to calculate classical transport coefficients.
 
     /notebooks/formulary/braginskii
 
-.. caution::
-
-   This functionality is under development and backwards incompatible
-   changes may occur in the future.
+|expect-api-changes|
 
 Introduction
 ============
@@ -44,6 +41,7 @@ bound on the losses / transport encountered in a plasma.
 
 Transport Variables
 ===================
+
 For documentation on the individual transport variables, please take
 the following links to documentation of methods of |ClassicalTransport|.
 
@@ -56,6 +54,7 @@ the following links to documentation of methods of |ClassicalTransport|.
 
 Using the module
 ================
+
 Given that many of the transport variables share a lot of the same computation
 and many are often needed to be calculated simultaneously, this module provides
 a |ClassicalTransport| class that can be initialized once with all of the
@@ -73,6 +72,7 @@ in the Functions section).
 
 Classical transport models
 ==========================
+
 In this section, we present a broad overview of classical transport models
 implemented within this module.
 
@@ -114,6 +114,7 @@ notably the asymptotic behavior of alpha-cross and beta_perp as Hall →
 terms, which all other treatments have not. To neglect electron-electron
 collisions, leave :math:`μ = 0`\ . To consider them, specify mu and theta.
 """
+
 __all__ = [
     "ClassicalTransport",
     "resistivity",
@@ -147,6 +148,8 @@ from plasmapy.utils.decorators import validate_quantities
 class ClassicalTransport:
     r"""
     Classical transport coefficients (e.g. Braginskii, 1965).
+
+    |expect-api-changes|
 
     Notes
     -----

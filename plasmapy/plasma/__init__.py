@@ -1,9 +1,7 @@
 """
 Base classes for representing plasmas.
 
-.. caution::
-
-   Functionality in this package is incomplete.
+|expect-api-changes|
 """
 
 from plasmapy.plasma import exceptions, grids, sources

@@ -1,4 +1,8 @@
-"""Exceptions that describe different types of test failures."""
+"""
+Exceptions that describe different types of test failures.
+
+|expect-api-changes|
+"""
 
 __all__ = [
     "ExceptionMismatchFail",

@@ -1,10 +1,13 @@
-"""Particle movement integrators, for particle simulations.
+"""
+Particle movement integrators, for particle simulations.
 
 These do not have `astropy.units` support, choosing instead to
 limit overhead and increase performance.
 
 They act in-place on position and velocity arrays to reduce
 memory allocation.
+
+|expect-api-changes|
 """
 
 __all__ = ["boris_push"]

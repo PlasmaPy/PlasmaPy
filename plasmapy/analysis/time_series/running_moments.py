@@ -1,4 +1,8 @@
-"""Functionality to calculate running moments of time series."""
+"""
+Functionality to calculate running moments of time series.
+
+|expect-api-changes|
+"""
 
 __all__ = ["running_mean", "running_moment"]
 

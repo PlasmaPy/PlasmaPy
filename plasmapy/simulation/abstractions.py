@@ -1,4 +1,8 @@
-"""Abstract classes for numerical simulations."""
+"""
+Abstract classes for numerical simulations.
+
+|expect-api-changes|
+"""
 
 __all__ = [
     "AbstractNormalizations",
