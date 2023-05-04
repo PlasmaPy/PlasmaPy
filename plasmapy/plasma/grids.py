@@ -615,9 +615,7 @@ class AbstractGrid(ABC):
             quantity.
         """
 
-        for key in kwargs:
-            quantity = kwargs[key]
-
+        for key, quantity in kwargs.items():
             # Check key against a list of "known" keys with pre-defined
             # meanings (eg. E_x, n_e) and raise a warning if a "non-standard"
             # key is being used so the user is aware.
@@ -1303,10 +1301,7 @@ class CartesianGrid(AbstractGrid):
             weighted_ave[..., arg] * self._interp_units[arg] for arg in range(nargs)
         ]
 
-        if len(output) == 1:
-            return output[0]
-
-        return tuple(output)
+        return output[0] if len(output) == 1 else tuple(output)
 
 
 class NonUniformCartesianGrid(AbstractGrid):
@@ -1395,8 +1390,7 @@ class NonUniformCartesianGrid(AbstractGrid):
 
         indgrid = np.arange(self.grid.shape[0])
 
-        interpolator = interp.NearestNDInterpolator(self.grid.to(u.m).value, indgrid)
-        return interpolator
+        return interp.NearestNDInterpolator(self.grid.to(u.m).value, indgrid)
 
     @modify_docstring(prepend=AbstractGrid.nearest_neighbor_interpolator.__doc__)
     def nearest_neighbor_interpolator(
