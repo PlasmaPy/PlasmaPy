@@ -8,9 +8,10 @@ ignore:
 - node_modules
 - vendor
 - docs/plasmapy_sphinx
-- plasmapy/formulary/braginskii.py
-- plasmapy/utils/decorators/tests/test_checks.py
 - plasmapy/diagnostics/tests/test_thomson.py
+- braginskii.py
+- plasmapy/utils/decorators/helpers.py
+- plasmapy/utils/decorators/tests/test_checks.py
 
 github:
   labels: [No changelog entry needed]
