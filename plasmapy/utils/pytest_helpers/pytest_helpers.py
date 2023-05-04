@@ -56,7 +56,7 @@ def _process_input(wrapped_function: Callable):  # coverage: ignore
                     inputs[3] if len(inputs) == 4 else inputs[2]
                 )
             else:
-                new_kwargs = {argname: argval for argname, argval in arguments.items()}
+                new_kwargs = dict(arguments.items())
             return wrapped_function(**new_kwargs)
 
         return wrapper
@@ -684,7 +684,7 @@ def assert_can_handle_nparray(
         Parse parameter names and set up values to input for 0d, 1d, and 2d array tests.
         """
         # first things first: let any passed in kwarg right through (VIP access)
-        if param_name in kwargs.keys():
+        if param_name in kwargs:
             return (kwargs[param_name],) * 4
 
         # else, if it's a recognized variable name, give it a reasonable unit and magnitude
@@ -757,7 +757,7 @@ def assert_can_handle_nparray(
     args_1d = {}
     args_2d = {}
     args_3d = {}
-    param_names = [elm for elm in function_params.keys()]
+    param_names = list(function_params.keys())
     for idx, key in enumerate(function_params):
         args_0d[key], args_1d[key], args_2d[key], args_3d[key] = _prepare_input(
             param_names[idx],

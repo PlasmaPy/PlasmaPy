@@ -69,7 +69,7 @@ class ParticleTracker:
         Total mass of macroparticle.
 
     Examples
-    ----------
+    --------
     See `Particle Stepper Notebook`_.
 
     .. _`Particle Stepper Notebook`: ../notebooks/simulation/particle_stepper.ipynb
@@ -148,7 +148,7 @@ class ParticleTracker:
         Calculate the kinetic energy history for each particle.
 
         Returns
-        --------
+        -------
         `~astropy.units.Quantity`
             Array of kinetic energies, shape (nt, n).
         """
@@ -166,7 +166,7 @@ class ParticleTracker:
             to ``-dt/2``.
 
         Notes
-        ----------
+        -----
         The Boris algorithm :cite:p:`boris:1970` is the standard energy
         particle movement in plasma physics. See pages 58–63 of
         :cite:t:`birdsall:2004` for more details.

@@ -90,7 +90,7 @@ class Characteristic:
 
         self.bias = bias
         self.current = current
-        self.get_unique_bias(True)
+        self.get_unique_bias(True)  # noqa: FBT003
         self._check_validity()
 
     def __getitem__(self, key):
@@ -249,7 +249,6 @@ def swept_probe_analysis(
 
     Returns
     -------
-
     Results are returned as Dictionary
 
     "T_e" : `astropy.units.Quantity`
@@ -1063,10 +1062,7 @@ def extrapolate_electron_current(
             f"and got {type(probe_characteristic)}"
         )
 
-    if bimaxwellian:
-        fit_func = _fit_func_double_lin_inverse
-    else:
-        fit_func = _fit_func_lin_inverse
+    fit_func = _fit_func_double_lin_inverse if bimaxwellian else _fit_func_lin_inverse
 
     electron_current = (
         np.exp(fit_func(probe_characteristic.bias.to(u.V).value, *fit)) * u.A

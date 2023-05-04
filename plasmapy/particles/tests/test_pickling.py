@@ -35,10 +35,10 @@ class TestPickling:
         can be pickled and unpickled.
         """
         filename = tmp_path / "pickled_particles.p"
-        with open(filename, "wb") as pickle_file:
+        with open(filename, "wb") as pickle_file:  # noqa: PTH123
             pickle.dump(instance, pickle_file)
 
-        with open(filename, "rb") as pickle_file:
-            loaded_particle = pickle.load(pickle_file)
+        with open(filename, "rb") as pickle_file:  # noqa: PTH123
+            loaded_particle = pickle.load(pickle_file)  # noqa: S301
 
         assert str(instance) == str(loaded_particle)

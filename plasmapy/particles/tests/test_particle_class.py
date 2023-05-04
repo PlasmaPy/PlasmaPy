@@ -518,10 +518,10 @@ def test_Particle_class(arg, kwargs, expected_dict):
 
     try:
         particle = Particle(arg, **kwargs)  # noqa: F841
-    except Exception as exc:
+    except Exception as exc:  # noqa: BLE001
         raise ParticleError(f"Problem creating {call}") from exc
 
-    for key in expected_dict.keys():
+    for key in expected_dict:
         expected = expected_dict[key]
 
         if inspect.isclass(expected) and issubclass(expected, Exception):
@@ -534,10 +534,10 @@ def test_Particle_class(arg, kwargs, expected_dict):
 
             try:
                 with pytest.raises(expected):
-                    exec(f"particle.{key}")
+                    exec(f"particle.{key}")  # noqa: S102
             except pytest.fail.Exception:
                 errmsg += f"\n{call}[{key}] does not raise {expected}."
-            except Exception:
+            except Exception:  # noqa: BLE001
                 errmsg += (
                     f"\n{call}[{key}] does not raise {expected} but "
                     f"raises a different exception."
@@ -545,18 +545,18 @@ def test_Particle_class(arg, kwargs, expected_dict):
 
         else:
             try:
-                result = eval(f"particle.{key}")
+                result = eval(f"particle.{key}")  # noqa: PGH001
                 assert result == expected or u.isclose(result, expected, equal_nan=True)
             except AssertionError:
                 errmsg += (
                     f"\n{call}.{key} returns {result} instead "
                     f"of the expected value of {expected}."
                 )
-            except Exception:
+            except Exception:  # noqa: BLE001
                 errmsg += f"\n{call}.{key} raises an unexpected exception."
 
     if errmsg:
-        raise Exception(f"Problems with {call}:{errmsg}")
+        raise Exception(f"Problems with {call}:{errmsg}")  # noqa: BLE001, TRY002
 
 
 equivalent_particles_table = [
@@ -630,7 +630,7 @@ def test_Particle_errors(args, kwargs, attribute, exception):
     and use of a `~plasmapy.particles.Particle` object.
     """
     with pytest.raises(exception):
-        exec(f"Particle(*args, **kwargs){attribute}")
+        exec(f"Particle(*args, **kwargs){attribute}")  # noqa: S102
         pytest.fail(
             f"The following command: "
             f"\n\n  {call_string(Particle, args, kwargs)}{attribute}\n\n"
@@ -653,7 +653,7 @@ def test_Particle_warnings(arg, kwargs, attribute, warning):
     and use of a `~plasmapy.particles.Particle` object.
     """
     with pytest.warns(warning) as record:
-        exec(f"Particle(arg, **kwargs){attribute}")
+        exec(f"Particle(arg, **kwargs){attribute}")  # noqa: S102
         if not record:
             pytest.fail(
                 f"The following command: "
@@ -797,7 +797,7 @@ def test_antiparticle_inversion(particle_antiparticle_pair):
 
 def test_unary_operator_for_elements():
     with pytest.raises(ParticleError):
-        Particle("C").antiparticle
+        Particle("C").antiparticle  # noqa: B018
 
 
 class Test_antiparticle_properties_inversion:
@@ -811,9 +811,9 @@ class Test_antiparticle_properties_inversion:
         Test that the antiparticle of the antiparticle of a particle is
         the original particle.
         """
-        assert particle == ~~particle, (
-            f"~~{particle!r} equals {~~particle!r} instead of " f"{particle!r}."
-        )
+        assert (
+            particle == ~~particle
+        ), f"~~{particle!r} equals {~~particle!r} instead of {particle!r}."
 
     def test_opposite_charge(self, particle, opposite):
         """
@@ -834,7 +834,7 @@ class Test_antiparticle_properties_inversion:
             f"as expected of a particle/antiparticle pair."
         )
 
-    def test_antiparticle_attribute_and_operator(self, particle, opposite):
+    def test_antiparticle_attribute_and_operator(self, particle):
         """
         Test that the Particle.antiparticle attribute returns the same
         value as the unary ~ (invert) operator acting on the same
@@ -859,9 +859,9 @@ def test_particleing_a_particle(arg):
         particle
     ), f"Particle({arg!r}) does not equal Particle(Particle({arg!r})."
 
-    assert particle == Particle(Particle(Particle(particle))), (
-        f"Particle({arg!r}) does not equal " f"Particle(Particle(Particle({arg!r}))."
-    )
+    assert particle == Particle(
+        Particle(Particle(particle))
+    ), f"Particle({arg!r}) does not equal Particle(Particle(Particle({arg!r}))."
 
     assert particle is not Particle(particle), (
         f"Particle({arg!r}) is the same object in memory as "
@@ -895,13 +895,13 @@ def test_that_object_can_be_dict_key(key):
 
     try:
         dictionary = {key: value}
-    except Exception as exc:
+    except Exception as exc:  # noqa: BLE001
         error_message = f"{key} is not a valid key for a dict. "
         if not isinstance(key, collections.abc.Hashable):
             error_message += f"{key} is not hashable. "
         try:
             key_equals_itself = key == key
-        except Exception:
+        except Exception:  # noqa: BLE001
             error_message += f"{key} == {key} cannot be evaluated. "
         else:
             if not key_equals_itself:
@@ -1444,7 +1444,7 @@ def test_CustomParticle_cmp():
 
 
 @pytest.mark.parametrize(
-    "attr, input",
+    "attr, arg",
     [
         ("charge", 2 * u.C),
         ("mass", 2 * u.kg),
@@ -1452,11 +1452,11 @@ def test_CustomParticle_cmp():
         ("symbol", "😺"),
     ],
 )
-def test_CustomParticle_setters(attr, input):
+def test_CustomParticle_setters(attr, arg):
     custom_particle = CustomParticle()
-    setattr(custom_particle, attr, input)
+    setattr(custom_particle, attr, arg)
     output = getattr(custom_particle, attr)
-    assert input == output
+    assert arg == output
 
 
 test_molecule_table = [

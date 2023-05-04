@@ -17,14 +17,14 @@ from plasmapy.analysis.time_series.running_moments import running_mean, running_
     ],
 )
 def test_running_mean(signal, radius, expected):
-    """test running_mean function"""
+    """Test running_mean function"""
     result = running_mean(signal=signal, radius=radius)
     assert np.allclose(result, expected)
 
 
 @pytest.mark.parametrize("signal, radius", [([1, 2], 1), ([1, 2, 3, 4], 1.2)])
 def test_running_mean_exception(signal, radius):
-    """test whether exception is risen"""
+    """Test whether exception is risen"""
     with pytest.raises((ValueError, TypeError)):
         running_mean(signal, radius)
 
@@ -47,7 +47,7 @@ def test_running_mean_exception(signal, radius):
     ],
 )
 def test_running_moment(signal, radius, moment, time, expected):
-    """test running_moment_function"""
+    """Test running_moment_function"""
     result = running_moment(signal, radius, moment, time)
     assert np.allclose(result, expected)
 
@@ -62,6 +62,6 @@ def test_running_moment(signal, radius, moment, time, expected):
     ],
 )
 def test_running_moment_exception(signal, radius, moment, time):
-    """test whether exception is risen"""
+    """Test whether exception is risen"""
     with pytest.raises(ValueError):
         running_moment(signal, radius, moment, time)
