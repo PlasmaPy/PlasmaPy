@@ -155,9 +155,7 @@ class IonizationStateCollection:
                 raise ParticleError(
                     "Units must be inverse volume for number densities."
                 )
-            abundances_provided = (
-                abundances is not None or log_abundances is not None
-            )
+            abundances_provided = abundances is not None or log_abundances is not None
 
             if abundances_provided:
                 raise ParticleError(
