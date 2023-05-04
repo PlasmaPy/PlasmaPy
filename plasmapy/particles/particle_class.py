@@ -1734,11 +1734,11 @@ class Particle(AbstractPhysicalParticle):
                 f"Cannot ionize {self.symbol} because it is not a "
                 f"neutral atom or ion."
             )
-        if not self.is_category(any_of={"charged", "uncharged"}):
-            assumed_charge_number = 0
-        else:
-            assumed_charge_number = self.charge_number
-
+        assumed_charge_number = (
+            self.charge_number
+            if self.is_category(any_of={"charged", "uncharged"})
+            else 0
+        )
         if assumed_charge_number == self.atomic_number:
             raise InvalidIonError(
                 f"The particle {self.symbol} is already fully "

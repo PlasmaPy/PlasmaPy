@@ -206,14 +206,14 @@ def find_ion_saturation_current(
         current_min = current.min()
         current_bound = (1.0 - current_bound) * current_min
         mask = np.where(current <= current_bound)[0]
-    else:  # voltage_bound is not None
-        if not isinstance(voltage_bound, numbers.Real):
-            raise TypeError(
-                f"Keyword 'voltage_bound' is of type {type(voltage_bound)}, "
-                f"expected an int or float."
-            )
-
+    elif isinstance(voltage_bound, numbers.Real):
         mask = np.where(voltage <= voltage_bound)[0]
+
+    else:
+        raise TypeError(
+            f"Keyword 'voltage_bound' is of type {type(voltage_bound)}, "
+            f"expected an int or float."
+        )
 
     if mask.size == 0:
         raise ValueError(

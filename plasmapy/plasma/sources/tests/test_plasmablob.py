@@ -291,17 +291,17 @@ class Test_PlasmaBlobRegimes:
 
 class Test_PlasmaBlob:
     @classmethod
-    def setup_class(self):  # noqa: N804
+    def setup_class(cls):  # noqa: N804
         """Initializing parameters for tests"""
-        self.T_e = 5 * 11e3 * u.K
-        self.n_e = 1e23 * u.cm**-3
-        self.Z = 2.5 * u.dimensionless_unscaled
-        self.particle = "p"
-        self.blob = plasmablob.PlasmaBlob(
-            T_e=self.T_e, n_e=self.n_e, Z=self.Z, particle=self.particle
+        cls.T_e = 5 * 11e3 * u.K
+        cls.n_e = 1e23 * u.cm**-3
+        cls.Z = 2.5 * u.dimensionless_unscaled
+        cls.particle = "p"
+        cls.blob = plasmablob.PlasmaBlob(
+            T_e=cls.T_e, n_e=cls.n_e, Z=cls.Z, particle=cls.particle
         )
-        self.couplingVal = 10.468374460435724
-        self.thetaVal = 0.6032979246923964
+        cls.couplingVal = 10.468374460435724
+        cls.thetaVal = 0.6032979246923964
 
     def test_invalid_particle(self):
         """
