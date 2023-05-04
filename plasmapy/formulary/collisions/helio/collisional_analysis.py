@@ -308,7 +308,7 @@ def thermalization_ratio(
         else:
             d_type.append(False)
 
-    var = all(i for i in d_type)
+    var = all(d_type)
 
     if not var:
         return df_eq(
