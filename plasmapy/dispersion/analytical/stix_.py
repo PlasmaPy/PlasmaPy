@@ -206,7 +206,7 @@ def stix(
     elif n_i.size == 1:
         n_i = np.repeat(n_i, len(ions))
 
-    species = ions + [Particle("e-")]
+    species = [*ions, Particle("e-")]
     densities = np.zeros(n_i.size + 1)
     densities[:-1] = n_i
     densities[-1] = np.sum(n_i * ions.charge_number)
@@ -267,7 +267,7 @@ def stix(
     c = P * R * L
 
     # Solve for k values
-    k = np.empty(w.shape + (4,), dtype=np.complex128)
+    k = np.empty((*w.shape, 4), dtype=np.complex128)
     k[..., 0] = (
         np.emath.sqrt((-b + np.emath.sqrt(b**2 - 4 * a * c)) / (2 * a))
         * w

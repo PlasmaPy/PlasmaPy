@@ -54,11 +54,11 @@ class TestOpenPMD2D:
 
     def test_has_magnetic_field(self, h5_2d):
         with pytest.raises(AttributeError):
-            h5_2d.magnetic_field
+            h5_2d.magnetic_field  # noqa: B018
 
     def test_has_electric_current(self, h5_2d):
         with pytest.raises(AttributeError):
-            h5_2d.electric_current
+            h5_2d.electric_current  # noqa: B018
 
 
 class TestOpenPMD3D:
@@ -82,11 +82,11 @@ class TestOpenPMD3D:
 
     def test_has_magnetic_field(self, h5_3d):
         with pytest.raises(AttributeError):
-            h5_3d.magnetic_field
+            h5_3d.magnetic_field  # noqa: B018
 
     def test_has_electric_current(self, h5_3d):
         with pytest.raises(AttributeError):
-            h5_3d.electric_current
+            h5_3d.electric_current  # noqa: B018
 
 
 @pytest.mark.slow

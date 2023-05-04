@@ -190,8 +190,8 @@ class Plasma3D(GenericPlasma):
             # loop over 3D-index (ix,iy,iz)
             for point_index in prod:
                 # get coordinate
-                p = self.grid[(slice(None),) + point_index]  # function as [:, *index]
+                p = self.grid[(slice(None), *point_index)]  # function as [:, *index]
                 # calculate magnetic field at this point and add back
                 self.magnetic_field[
-                    (slice(None),) + point_index
+                    (slice(None), *point_index)
                 ] += mstat.magnetic_field(p)
