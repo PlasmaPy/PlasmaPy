@@ -107,7 +107,7 @@
 .. |getting ready to contribute| replace:: :ref:`getting ready to contribute`\
 .. |glossary| replace:: :ref:`glossary`\
 .. |minpython| replace:: 3.9
-.. |maxpython| replace:: 3.10
+.. |maxpython| replace:: 3.11
 .. |plasma-calculator| replace:: :ref:`plasmapy-calculator`\
 .. |release guide| replace:: :ref:`release guide`\
 .. |testing guide| replace:: :ref:`testing guide`\
