@@ -291,7 +291,7 @@ class Test_PlasmaBlobRegimes:
 
 class Test_PlasmaBlob:
     @classmethod
-    def setup_class(cls):    # noqa: N804
+    def setup_class(cls):  # noqa: N804
         """Initializing parameters for tests"""
         cls.T_e = 5 * 11e3 * u.K
         cls.n_e = 1e23 * u.cm**-3

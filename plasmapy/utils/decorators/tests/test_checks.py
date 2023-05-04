@@ -441,6 +441,7 @@ class TestCheckUnits:
 
         # setup default checks
         check = {**self.check_defaults, "units": [u.cm]}
+
         class MyQuantity:
             unit = None
 
@@ -611,7 +612,11 @@ class TestCheckUnits:
         assert hasattr(wfoo, "__signature__")
         assert wfoo.__signature__ == inspect.signature(self.foo_no_anno)
 
-    @mock.patch(f"{CheckUnits.__module__}.{CheckUnits.__qualname__}", side_effect=CheckUnits, autospec=True)
+    @mock.patch(
+        f"{CheckUnits.__module__}.{CheckUnits.__qualname__}",
+        side_effect=CheckUnits,
+        autospec=True,
+    )
     def test_decorator_func_def(self, mock_cu_class):
         """
         Test that :func:`~plasmapy.utils.decorators.checks.check_units` is
@@ -1107,7 +1112,11 @@ class TestCheckValues:
         assert hasattr(wfoo, "__signature__")
         assert wfoo.__signature__ == inspect.signature(self.foo)
 
-    @mock.patch(f"{CheckValues.__module__}.{CheckValues.__qualname__}", side_effect=CheckValues, autospec=True)
+    @mock.patch(
+        f"{CheckValues.__module__}.{CheckValues.__qualname__}",
+        side_effect=CheckValues,
+        autospec=True,
+    )
     def test_decorator_func_def(self, mock_cv_class):
         """
         Test that :func:`~plasmapy.utils.decorators.checks.check_values` is

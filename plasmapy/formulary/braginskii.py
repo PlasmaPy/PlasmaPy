@@ -1311,11 +1311,7 @@ def _nondim_tc_e_spitzer(Z):
     This result is for parallel field or unmagnetized plasma only.
     """
     (gamma_E, gamma_T, delta_E, delta_T) = _get_spitzer_harm_coeffs(Z)
-    return (
-        (64 / np.pi)
-        * delta_T
-        * (5 / 3 - (gamma_T * delta_E) / (delta_T * gamma_E))
-    )
+    return (64 / np.pi) * delta_T * (5 / 3 - (gamma_T * delta_E) / (delta_T * gamma_E))
 
 
 def _nondim_resist_spitzer(Z, field_orientation):
@@ -1380,8 +1376,7 @@ def _nondim_tc_e_braginskii(hall, Z, field_orientation):
         return (gamma_1_prime[Z_idx] * hall**2 + gamma_0_prime[Z_idx]) / Delta
     if field_orientation == "cross":
         return (
-            gamma_1_doubleprime[Z_idx] * hall**3
-            + gamma_0_doubleprime[Z_idx] * hall
+            gamma_1_doubleprime[Z_idx] * hall**3 + gamma_0_doubleprime[Z_idx] * hall
         ) / Delta
     if field_orientation == "all":
         kappa_par = gamma_0
@@ -1418,9 +1413,7 @@ def _nondim_tc_i_braginskii(hall, field_orientation):
     if field_orientation == "cross":
         kappa_cross_coeff_3 = 2.5
         kappa_cross_coeff_1 = 4.65
-        return (
-            kappa_cross_coeff_3 * hall**3 + kappa_cross_coeff_1 * hall
-        ) / Delta
+        return (kappa_cross_coeff_3 * hall**3 + kappa_cross_coeff_1 * hall) / Delta
     if field_orientation == "all":
         kappa_par_coeff_0 = 3.906
         kappa_par = kappa_par_coeff_0
@@ -1538,14 +1531,10 @@ def _nondim_resist_braginskii(hall, Z, field_orientation):
     if field_orientation in ("parallel", "par"):
         return alpha_0
     if field_orientation in ("perpendicular", "perp"):
-        return (
-            1
-            - (alpha_1_prime[Z_idx] * hall**2 + alpha_0_prime[Z_idx]) / Delta
-        )
+        return 1 - (alpha_1_prime[Z_idx] * hall**2 + alpha_0_prime[Z_idx]) / Delta
     if field_orientation == "cross":
         return (
-            alpha_1_doubleprime[Z_idx] * hall**3
-            + alpha_0_doubleprime[Z_idx] * hall
+            alpha_1_doubleprime[Z_idx] * hall**3 + alpha_0_doubleprime[Z_idx] * hall
         ) / Delta
     if field_orientation == "all":
         alpha_par = alpha_0
@@ -1590,8 +1579,7 @@ def _nondim_tec_braginskii(hall, Z, field_orientation):
         return (beta_1_prime[Z_idx] * hall**2 + beta_0_prime[Z_idx]) / Delta
     if field_orientation == "cross":
         return (
-            beta_1_doubleprime[Z_idx] * hall**3
-            + beta_0_doubleprime[Z_idx] * hall
+            beta_1_doubleprime[Z_idx] * hall**3 + beta_0_doubleprime[Z_idx] * hall
         ) / Delta
     if field_orientation == "all":
         beta_par = beta_0

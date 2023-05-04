@@ -72,7 +72,7 @@ def run_test(
     expected_outcome: Any = None,
     rtol: float = 0.0,
     atol: float = 0.0,
-):    # coverage: ignore
+):  # coverage: ignore
     """
     Test that a function or class returns the expected result, raises
     the expected exception, or issues an expected warning for the

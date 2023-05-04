@@ -739,9 +739,7 @@ class CheckUnits(CheckBase):
 
             out_checks[param.name]["pass_equivalent_units"] = peu
 
-        if missing_params := list(
-            set(self.checks.keys()) - set(out_checks.keys())
-        ):
+        if missing_params := list(set(self.checks.keys()) - set(out_checks.keys())):
             params_str = ", ".join(missing_params)
             warnings.warn(
                 PlasmaPyWarning(
