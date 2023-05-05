@@ -1243,7 +1243,7 @@ class Tracker:
         else:
             still_on = 0.0
 
-        if self.fract_entered <= 0.01 or still_on >= 0.01:
+        if self.fract_entered <= 0.001 or still_on >= 0.01:
             return False
 
         # Warn user if < 10% of the particles ended up on the grid
