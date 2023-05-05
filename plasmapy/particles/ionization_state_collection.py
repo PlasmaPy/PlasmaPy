@@ -145,25 +145,24 @@ class IonizationStateCollection:
         kappa: Real = np.inf,
     ):
         set_abundances = True
-        if isinstance(inputs, dict):
-            if np.all([isinstance(fracs, u.Quantity) for fracs in inputs.values()]):
-                right_units = np.all(
-                    [fracs[0].si.unit == u.m**-3 for fracs in inputs.values()]
+        if isinstance(inputs, dict) and np.all(
+            [isinstance(fracs, u.Quantity) for fracs in inputs.values()]
+        ):
+            right_units = np.all(
+                [fracs[0].si.unit == u.m**-3 for fracs in inputs.values()]
+            )
+            if not right_units:
+                raise ParticleError(
+                    "Units must be inverse volume for number densities."
                 )
-                if not right_units:
-                    raise ParticleError(
-                        "Units must be inverse volume for number densities."
-                    )
-                abundances_provided = (
-                    abundances is not None or log_abundances is not None
-                )
+            abundances_provided = abundances is not None or log_abundances is not None
 
-                if abundances_provided:
-                    raise ParticleError(
-                        "Abundances cannot be provided if inputs "
-                        "provides number density information."
-                    )
-                set_abundances = False
+            if abundances_provided:
+                raise ParticleError(
+                    "Abundances cannot be provided if inputs "
+                    "provides number density information."
+                )
+            set_abundances = False
 
         try:
             self._pars = {}

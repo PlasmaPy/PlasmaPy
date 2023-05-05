@@ -424,12 +424,9 @@ class TestCheckUnits:
             for arg_name in case["output"]:
                 arg_checks = checks[arg_name]
 
-                for key in default_checks:
+                for key, val in default_checks.items():
                     if key in case["output"][arg_name]:
                         val = case["output"][arg_name][key]
-                    else:
-                        val = default_checks[key]
-
                     assert arg_checks[key] == val
 
     def test_cu_method__check_unit(self):
@@ -527,7 +524,11 @@ class TestCheckUnits:
                     "input": (
                         5.0 * u.km,
                         "arg",
-                        {**check, "units": [u.cm, u.m], "pass_equivalent_units": True},
+                        {
+                            **check,
+                            "units": [u.cm, u.m],
+                            "pass_equivalent_units": True,
+                        },
                     ),
                     "output": (5.0 * u.km, None, None, None),
                 },
@@ -539,10 +540,10 @@ class TestCheckUnits:
         cu.f = self.foo_no_anno
 
         # perform tests
-        for _ii, case in enumerate(_cases):  # noqa: B007
+        for case in _cases:
             arg, arg_name, arg_checks = case["input"]
             _results = cu._check_unit_core(arg, arg_name, arg_checks)
-            assert _results[0:3] == case["output"][0:3]
+            assert _results[:3] == case["output"][:3]
 
             if _results[3] is None:
                 assert _results[3] is case["output"][3]
@@ -630,7 +631,7 @@ class TestCheckUnits:
         assert wfoo.__signature__ == inspect.signature(self.foo_no_anno)
 
     @mock.patch(
-        CheckUnits.__module__ + "." + CheckUnits.__qualname__,
+        f"{CheckUnits.__module__}.{CheckUnits.__qualname__}",
         side_effect=CheckUnits,
         autospec=True,
     )
@@ -1130,7 +1131,7 @@ class TestCheckValues:
         assert wfoo.__signature__ == inspect.signature(self.foo)
 
     @mock.patch(
-        CheckValues.__module__ + "." + CheckValues.__qualname__,
+        f"{CheckValues.__module__}.{CheckValues.__qualname__}",
         side_effect=CheckValues,
         autospec=True,
     )
