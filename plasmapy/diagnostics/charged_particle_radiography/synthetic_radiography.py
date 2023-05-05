@@ -288,6 +288,7 @@ class Tracker:
         self.mag = 1 + (np.linalg.norm(self.detector) / np.linalg.norm(self.source))
         self._log(f"Magnification: {self.mag}")
 
+        
         # Check that source-detector vector actually passes through the grid
         test = [
             grid.vector_intersects(self.source * u.m, self.detector * u.m)
@@ -1242,7 +1243,7 @@ class Tracker:
         else:
             still_on = 0.0
 
-        if self.fract_entered <= 0.01 or still_on >= 0.001:
+        if self.fract_entered <= 0.01 or still_on >= 0.01:
             return False
 
         # Warn user if < 10% of the particles ended up on the grid
