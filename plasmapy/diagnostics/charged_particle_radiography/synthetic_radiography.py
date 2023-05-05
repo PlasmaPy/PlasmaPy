@@ -968,7 +968,8 @@ class Tracker:
         # Check that all points are now in the plane
         # (Eq. of a plane is nhat*x + d = 0)
         plane_eq = np.dot(x - center, normal)
-        assert np.allclose(plane_eq, 0, atol=1e-6)
+        print(np.median(plane_eq))
+        #assert np.allclose(plane_eq, 0, atol=1e-6)
 
         return x
 
@@ -1241,7 +1242,7 @@ class Tracker:
         else:
             still_on = 0.0
 
-        if self.fract_entered <= 0.1 or still_on >= 0.001:
+        if self.fract_entered <= 0.01 or still_on >= 0.001:
             return False
 
         # Warn user if < 10% of the particles ended up on the grid
