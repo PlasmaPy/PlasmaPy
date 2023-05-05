@@ -6,7 +6,7 @@ import warnings
 from typing import Any
 
 from plasmapy.particles import Particle
-from plasmapy.tests.helpers import (
+from plasmapy.tests._helpers import (
     MissingExceptionFail,
     MissingWarningFail,
     TypeMismatchFail,
