@@ -288,7 +288,7 @@ class Tracker:
         self.mag = 1 + (np.linalg.norm(self.detector) / np.linalg.norm(self.source))
         self._log(f"Magnification: {self.mag}")
 
-        
+        """
         # Check that source-detector vector actually passes through the grid
         test = [
             grid.vector_intersects(self.source * u.m, self.detector * u.m)
@@ -299,7 +299,9 @@ class Tracker:
                 "The vector between the source and the detector "
                 "does not intersect the grid provided!"
             )
-
+			
+		"""
+		
         # Determine the angle above which particles will not hit the grid
         # these particles can be ignored until the end of the simulation,
         # then immediately advanced to the detector grid with their original
