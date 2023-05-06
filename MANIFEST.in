@@ -1,6 +1,7 @@
 include README.md
 include LICENSE.md
 include pyproject.toml
+include Cargo.toml
 
 include plasmapy/tests/coveragerc
 include CITATION.cff
@@ -8,6 +9,7 @@ include CITATION.cff
 recursive-include plasmapy *.json *.npy
 recursive-include docs *
 recursive-include licenses *
+recursive-include src *
 
 # Only for editable installs
 prune plasmapy/_dev
