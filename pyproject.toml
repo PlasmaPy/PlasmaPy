@@ -1,25 +1,119 @@
 [build-system]
-requires = ["setuptools >= 41.2",
-            "setuptools_scm",
-            "wheel >= 0.29.0"]  # ought to mirror 'requirements/build.txt'
 build-backend = "setuptools.build_meta"
+requires = [
+  "setuptools >= 61.2.0",
+  "setuptools-scm >= 6.3.2",
+  "wheel >= 0.37.0",
+]
 
-[tool.gilesbot]
+[project]
+name = "plasmapy"
+description = "Python package for plasma science"
+readme = "README.md"
+keywords = [
+  "astronomy",
+  "fusion",
+  "heliophysics",
+  "plasma",
+  "plasma physics",
+  "science",
+  "solar physics",
+  "space plasmas",
+]
+license = {file = "LICENSE.md"}
+requires-python = ">=3.9"
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Education",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: BSD License",
+    "Natural Language :: English",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Topic :: Scientific/Engineering :: Physics",
+    "Topic :: Scientific/Engineering :: Astronomy",
+]
+dynamic = [
+  "version",
+]
+dependencies = [
+  "astropy >= 5.0.1",
+  "h5py >= 3.3.0",
+  "ipykernel >= 6.6.1",
+  "ipywidgets >= 7.6.5",
+  "lmfit >= 1.0.3",
+  "matplotlib >= 3.5.1",
+  "mpmath >= 1.2.1",
+  "numba >= 0.56.0",
+  "numpy >= 1.21.0",
+  "packaging >= 22.0",
+  "pandas >= 1.3.0",
+  "pytest >= 7.0.1",
+  "requests >= 2.27.1",
+  "scipy >= 1.7.0",
+  "tqdm >= 4.60.0",
+  "voila >= 0.3.3",
+  "wrapt >= 1.12.1",
+  "xarray >= 2022.3.0",
+]
+[project.optional-dependencies]
+docs = [
+  "docutils >= 0.18.1",
+  "jinja2 >= 3.1.2",
+  "nbsphinx >= 0.9.1",
+  "numpydoc >= 1.5.0",
+  "pillow >= 9.5.0",
+  "pygments >= 2.15.0",
+  "sphinx >= 6.1.3",
+  "sphinx-changelog >= 1.3.0",
+  "sphinx-copybutton >= 0.5.1",
+  "sphinx-gallery >= 0.12.2",
+  "sphinx-hoverxref >= 1.1.1",
+  "sphinx-issues >= 3.0.1",
+  "sphinx-notfound-page >= 0.8.3",
+  "sphinx-reredirects >= 0.1.1",
+  "sphinx_rtd_theme >= 1.2.0",
+  "sphinx_tabs >= 3.4.1",
+  "sphinxcontrib-bibtex >= 2.5.0",
+  "towncrier >= 22.12",
+  "tox >= 4.4.0",
+]
+tests = [
+  "flake8 >= 6.0.0",
+  "flake8-rst-docstrings >= 0.3.0",
+  "flake8-use-fstring >= 1.4",
+  "hypothesis >= 6.35.1",
+  "pre-commit >= 3.0.0",
+  "pytest-regressions >= 2.3.1",
+  "pytest-xdist >= 3.0.2",
+  "tomli >= 2.0.1",
+  "tox >= 4.3.1",
+]
+[project.urls]
+Changelog = "https://docs.plasmapy.org/en/stable/whatsnew/index.html"
+Chat = "https://plasmapy.org/chat"
+Documentation = "https://docs.plasmapy.org/"
+Issues = "https://github.com/PlasmaPy/plasmapy/issues/"
+Source = "https://github.com/PlasmaPy/plasmapy"
+Twitter = "https://twitter.com/PlasmaPy"
+website = "https://www.plasmapy.org"
+[project.scripts]
+plasma-calculator = "plasmapy.utils.calculator:main"
 
-[tool.gilesbot.pull_requests]
-enabled = true
+[tool.setuptools]
+include-package-data = true
 
-[tool.gilesbot.towncrier_changelog]
-enabled = true
-changelog_skip_label = "No changelog entry needed"
-help_url = "https://github.com/PlasmaPy/PlasmaPy/blob/main/changelog/README.rst"
-changelog_missing = "Missing changelog entry"
-changelog_missing_long = "This pull request needs a changelog entry file in `changelog/NUMBER.TYPE.rst`. For more information, consult https://github.com/PlasmaPy/PlasmaPy/blob/main/changelog/README.rst "
-verify_pr_number = true
-number_incorrect = "Incorrect changelog entry number (match PR!)"
-number_incorrect_long = "The changelog entry's number does not match this pull request's number."
-type_incorrect = "Incorrect changelog entry type (see list in changelog README)"
-type_incorrect_long = "The changelog entry for this PR must have one of the types (as in NUMBER.TYPE.rst) as described in the changelog README)."
+[tool.setuptools.package-data]
+"plasmapy.particles.data" = ["*"]
+"plasmapy.tests" = ["coveragerc"]
+"plasmapy.utils.calculator" = ["*"]
+
+[tool.setuptools.packages.find]
+exclude = ["docs/automodapi", "plasmapy/_dev"]
+namespaces = false
+
+[tool.setuptools_scm]
+write_to = "plasmapy/_version.py"
 
 [tool.isort]
 line_length = 88
@@ -34,13 +128,207 @@ force_alphabetical_sort_within_sections = true
 honor_noqa = true
 lines_between_types = 1
 
+[tool.pytest.ini_options]
+minversion = "7.0.1"
+testpaths = ['plasmapy']
+norecursedirs = ['build', 'docs', 'plasmapy[\/]_dev']
+doctest_optionflags = """
+NORMALIZE_WHITESPACE
+ELLIPSIS
+NUMBER"""
+addopts = "--doctest-modules --doctest-continue-on-failure"
+filterwarnings = ["ignore:.*Creating", "a"]
+
+[tool.coverage.report]
+exclude_lines = [
+    "coverage: ignore",
+    "ImportError",
+    "ModuleNotFoundError",
+    "@vectorize",
+    "@numba.vectorize",
+    "@numba.jit",
+    "@jit",
+    "@numba.njit",
+    "@njit",
+    "@abstractmethod",
+]
+
+[tool.coverage.run]
+omit = [
+    "ci-helpers/*",
+    "*/tests/*",
+    "plasmapy/utils/calculator/*",
+    "plasmapy/version.py",
+    "plasmapy/_dev/*",
+]
+
+[tool.build_docs]
+source-dir = "docs"
+build-dir = "docs/_build"
+all_files = "1"
+
+[tool.codespell]
+skip = "*.png,*cache*,*egg*,.git,.hypothesis,.idea,.tox,_build,*charged_particle*.ipynb,venv"
+ignore-words-list = """
+aci,
+afe,
+ans,
+ba,
+bu,
+circularly,
+ded,
+dne,
+ect,
+explin,
+fo,
+fof,
+gud,
+hax,
+hist,
+hve,
+nd,
+noo,
+nwo,
+ot,
+recuse,
+ro,
+te,
+ue,
+ue,
+windo"""
+
+[tool.gilesbot]
+
+[tool.gilesbot.pull_requests]
+enabled = true
+
+[tool.gilesbot.towncrier_changelog]
+enabled = true
+changelog_skip_label = "No changelog entry needed"
+help_url = "https://docs.plasmapy.org/en/latest/contributing/changelog_guide.html#adding-a-changelog-entry"
+changelog_missing = "Missing changelog entry (see `changelog/README.rst`)"
+changelog_missing_long = "This pull request needs a changelog entry at `changelog/NUMBER.TYPE.rst`, where `NUMBER` is the pull request number and `TYPE` is one of `feature`, `trivial`, `doc`, `bugfix`, `breaking`, or `removal`.\n\nFor details, see: https://docs.plasmapy.org/en/latest/contributing/changelog_guide.html#adding-a-changelog-entry"
+verify_pr_number = true
+number_incorrect = "Changelog entry number ≠ PR number (see `changelog/README.rst`)"
+number_incorrect_long = "The changelog entry number does not match this pull request's number.\n\nWhen purposefully editing the changelog entry for a different pull request, set the 'No changelog entry needed' label to ignore this check."
+type_incorrect = "Incorrect changelog type (see `changelog/README.rst`)"
+type_incorrect_long = "The filename of the changelog entry must be of the form `changelog/NUMBER.TYPE.rst` where `TYPE` is one of `feature`, `trivial`, `doc`, `bugfix`, `breaking`, or `removal`.\n\nFor details, see: https://docs.plasmapy.org/en/latest/contributing/changelog_guide.html#adding-a-changelog-entry"
+
+[tool.ruff]
+target-version = "py39"
+extend-select = [
+  "A", # flake8-builtins
+  "ARG", # flake8-unused-arguments
+  "B",  # flake8-bugbear
+  "BLE", # flake8-blind-except
+  "C4", # flake8-comprehensions
+  "COM818", # trailing-comma-on-bare-tuple
+  "D",  # pydocstyle
+  "FBT003", # flake8-boolean-trap
+  "ICN", # flake8-import-conventions
+  "INP", # flake8-no-pep420
+  "INT", # flake8-gettext
+  "ISC", # flake8-implicit-str-concat
+  "N", # pep8-naming
+  "NPY001", # numpy-deprecated-type-alias
+  "PD", # pandas-vet
+  "PGH", # pygrep-hooks
+  "PIE", # flake8-pie
+  "PLC", # pylint convention
+  "PLE", # pylint errors
+  "PTH", # flake8-use-pathlib
+  "PYI", # flake8-pyi
+  "RUF", # ruff specific rules
+  "S", # flake8-bandit
+  "SIM", # flake8-simplify
+  "TID", # flake8-tidy-imports
+  "TRY", # tryceratops
+  "UP", # pyupgrade
+  "W", # pycodestyle warnings
+]
+ignore = [
+  "B028", # no-explicit-stacklevel
+  "D100", # undocumented-public-module
+  "D101", # undocumented-public-class
+  "D102", # undocumented-public-method
+  "D103", # undocumented-public-function
+  "D104", # undocumented-public-package
+  "D105", # undocumented-public-method
+  "D200", # fits-on-one-line
+  "D202", # no-blank-line-after-function
+  "D203", # one-blank-line-before-class
+  "D205", # blank-line-after-summary
+  "D209", # new-line-after-last-paragraph
+  "D212", # multi-line-summary-first-line
+  "D301", # escape-sequence-in-docstring (should be enabled)
+  "D400", # ends-in-period
+  "D401", # non-imperative-mood (should be enabled)
+  "D404", # docstring-starts-with-this (should be enabled)
+  "D410", # no-blank-line-after-section
+  "D415", # ends-in-punctuation
+  "E501", # line-too-long
+  "N801", # invalid-class-name
+  "N802", # invalid-function-name
+  "N803", # invalid-argument-name
+  "N806", # non-lowercase-variable-in-function
+  "N816", # mixed-case-variable-in-global-scope
+  "PLE0605", # invalid-all-format
+  "RUF001", # ambiguous-unicode-character-string
+  "RUF002", # ambiguous-unicode-character-docstring
+  "RUF003", # ambiguous-unicode-character-comment
+  "RUF100", # unused-noqa (remove if we drop flake8 completely)
+  "S101", # asserts
+  "SIM117", # multiple-with-statements (remove for Python 3.10+)
+  "SIM300", # yoda-conditions
+  "TRY003", # raise-vanilla-args
+  "TRY301", # raise-within-try
+  "UP025", # unicode-kind-prefix
+]
+extend-exclude = [
+    "docs/plasmapy_sphinx",
+    ".jupyter",
+    "__pycache__",
+    "_build",
+    "_dev",
+]
+dummy-variable-rgx = "Z|mass_numb|request|event"
+namespace-packages = [".github/workflows", "docs"]
+show-fixes = true
+show-source = true
+
+[tool.ruff.flake8-import-conventions.aliases]
+"astropy.units" = "u"
+"matplotlib.pyplot" = "plt"
+numpy = "np"
+pandas = "pd"
+
+[tool.ruff.flake8-unused-arguments]
+ignore-variadic-names = true
+
+[tool.ruff.mccabe]
+max-complexity = 20
+
+[tool.ruff.per-file-ignores]
+"__init__.py" = ["E402", "F401", "F402", "F403"]  # ignore import errors
+"plasmapy/formulary/braginskii.py" = ["C901"]
+"plasmapy/formulary/tests/test_distribution.py" = ["ARG005"]
+"plasmapy/particles/tests/test_decorators.py" = ["ARG001", "ARG002"]
+"plasmapy/utils/pytest_helpers/pytest_helpers.py" = ["BLE001"]
+"plasmapy/utils/pytest_helpers/tests/test_pytest_helpers.py" = ["BLE001", "TRY002"]
+
+[tool.ruff.pydocstyle]
+convention = "numpy"
+
+[tool.ruff.pyupgrade]
+keep-runtime-typing = true  # remove when we drop support for Python 3.9
+
 [tool.towncrier]
 package = "plasmapy"
 name = "PlasmaPy"
 filename = "CHANGELOG.rst"
 directory = "changelog/"
 title_format = "{name} v{version} ({project_date})"
-issue_format = ":issue:`{issue}`"
+issue_format = ":pr:`{issue}`"  # Despite the name mismatch, we use this for linking to PRs
 wrap = true
 
 [[tool.towncrier.type]]

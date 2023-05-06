@@ -33,20 +33,20 @@ _recursion_level = 0
 
 class NullPointError(Exception):
     """
-    A class for handling the exceptions of the null point finder functionality.
+    A class for handling the exceptions of the null point finder
+    functionality.
 
     .. note::
 
        This functionality is still under development and the API may
        change in future releases.
     """
-
-    pass
 
 
 class NullPointWarning(UserWarning):
     """
-    A class for handling the warnings of the null point finder functionality.
+    A class for handling the warnings of the null point finder
+    functionality.
 
     .. note::
 
@@ -54,13 +54,11 @@ class NullPointWarning(UserWarning):
        change in future releases.
     """
 
-    pass
 
-
-class NonZeroDivergence(NullPointError):
+class NonZeroDivergence(NullPointError):  # noqa: N818
     """
-    A class for handling the exception raised by passing in a magnetic field
-    that violates the zero divergence constraint.
+    A class for handling the exception raised by passing in a magnetic
+    field that violates the zero divergence constraint.
 
     .. note::
 
@@ -76,8 +74,8 @@ class NonZeroDivergence(NullPointError):
 
 class MultipleNullPointWarning(NullPointWarning):
     """
-    A class for handling the warning raised by passing in a magnetic field
-    grid that may contain multiple null points in close proximity due to low
+    A class for handling the warning raised by passing in a magnetic
+    field grid that may contain multiple null points in close proximity due to low
     resolution.
 
     .. note::
@@ -85,8 +83,6 @@ class MultipleNullPointWarning(NullPointWarning):
        This functionality is still under development and the API may
        change in future releases.
     """
-
-    pass
 
 
 class Point:
@@ -133,8 +129,8 @@ class NullPoint(Point):
 
     def __eq__(self, point):
         r"""
-        Returns True if two null point objects have the same coordinates.
-        False otherwise.
+        Returns `True` if two null point objects have the same
+        coordinates. `False` otherwise.
         """
         d = np.sqrt(
             (self.loc[0] - point.loc[0]) ** 2
@@ -150,80 +146,78 @@ def _vector_space(
     x_arr=None,
     y_arr=None,
     z_arr=None,
-    x_range=[0, 1],
-    y_range=[0, 1],
-    z_range=[0, 1],
+    x_range=(0, 1),
+    y_range=(0, 1),
+    z_range=(0, 1),
     u_arr=None,
     v_arr=None,
     w_arr=None,
     func=(lambda x, y, z: [x, y, z]),
-    precision=[0.05, 0.05, 0.05],
+    precision=(0.05, 0.05, 0.05),
 ):
     r"""
     Returns a vector space in the form of a multi-dimensional array.
 
     Parameters
     ----------
-
     x_arr : |array_like|
-        The array representing the coordinates in the x-dimension.
-        If not given, then range values are used to construct a
-        uniform array on that interval.
+        The array representing the coordinates in the x-dimension. If
+        not given, then range values are used to construct a uniform
+        array on that interval.
 
     y_arr : |array_like|
-        The array representing the coordinates in the y-dimension.
-        If not given, then range values are used to construct a
-        uniform array on that interval.
+        The array representing the coordinates in the y-dimension. If
+        not given, then range values are used to construct a uniform
+        array on that interval.
 
     z_arr : |array_like|
-        The array representing the coordinates in the z-dimension.
-        If not given, then range values are used to construct a
-        uniform array on that interval.
+        The array representing the coordinates in the z-dimension. If
+        not given, then range values are used to construct a uniform
+        array on that interval.
 
-    x_range : |array_like|
-        A 1 by 2 array containing the range of x-values for the vector spaces.
-        If not given, the default interval [0,1] is assumed.
+    x_range : |array_like|, default: ``[0, 1]``
+        A 1 by 2 array containing the range of x-values for the vector
+        spaces.
 
-    y_range : |array_like|
-        A 1 by 2 array containing the range of y-values for the vector spaces.
-        If not given, the default interval [0,1] is assumed.
+    y_range : |array_like|, default: ``[0, 1]``
+        A 1 by 2 array containing the range of y-values for the vector
+        spaces.
 
-    z_range : |array_like|
-        A 1 by 2 array containing the range of z-values for the vector spaces.
-        If not given, the default interval [0,1] is assumed.
+    z_range : |array_like|, default: ``[0, 1]``
+        A 1 by 2 array containing the range of z-values for the vector
+        spaces.
 
     u_arr : |array_like|
-        A 3D array containing the x-component of the vector values for the vector
-        space. If not given, the vector values are generated over the vector space
-        using the function func.
+        A 3D array containing the x-component of the vector values for
+        the vector space. If not given, the vector values are generated
+        over the vector space using the function func.
 
     v_arr : |array_like|
-        A 3D array containing the y-component of the vector values for the vector
-        space. If not given, the vector values are generated over the vector space
-        using the function func.
+        A 3D array containing the y-component of the vector values for
+        the vector space. If not given, the vector values are generated
+        over the vector space using the function func.
 
     w_arr : |array_like|
-        A 3D array containing the z-component of the vector values for the vector
-        space. If not given, the vector values are generated over the vector space
-        using the function func.
+        A 3D array containing the z-component of the vector values for
+        the vector space. If not given, the vector values are generated
+        over the vector space using the function func.
 
     func : function
-        A function that takes in 3 arguments, respectively representing a x, y, and z
-        coordinate of a point and returns the vector value for that point in the form
-        of a 1 by 3 array.
+        A function that takes in 3 arguments, respectively representing
+        an :math:`(x, y, z)` coordinate of a point and returns the
+        vector value for that point in the form of a 1 by 3 array.
 
-    precision : |array_like|
-        A 1 by 3 array containing the approximate precision values for each dimension,
-        in the case where uniform arrays are being used.
-        The default value is [0.05, 0.05, 0.05].
+    precision : |array_like|, default: ``[0.05, 0.05, 0.05]``
+        A 1 by 3 array containing the approximate precision values for
+        each dimension, in the case where uniform arrays are being used.
 
     Returns
     -------
     ndarray
-        A 1 by 3 array with
-        the first element containing the coordinates.
-        the second element containing the vector values.
-        and the third element containing the delta values for each dimension.
+        A 1 by 3 array with the first element containing the
+        coordinates, the second element containing the vector values,
+        and the third element containing the delta values for each
+        dimension.
     """
     # Constructing the Meshgrid
 
@@ -262,33 +256,32 @@ def _vector_space(
 
 def _trilinear_coeff_cal(vspace, cell):
     r"""
-    Return the coefficients for the trilinear approximation function
-    on a given grid cell in a given vector space.
+    Return the coefficients for the trilinear approximation function on
+    a given grid cell in a given vector space.
 
     Parameters
     ----------
-
     vspace: |array_like|
-        The vector space as constructed by the vector_space function which is
-        A 1 by 3 array with the first element containing the coordinates,
-        the second element containing the vector values,
-        and the third element containing the delta values for each dimension.
+        The vector space as constructed by the vector_space function
+        which is a 1 by 3 array with the first element containing the
+        coordinates, the second element containing the vector values,
+        and the third element containing the delta values for each
+        dimension.
 
     cell: |array_like| of integers
-        A grid cell, represented by a 1 by 3 array
-        of integers, which correspond to a grid cell
-        in the vector space.
+        A grid cell, represented by a 1 by 3 array of integers, which
+        correspond to a grid cell in the vector space.
 
     Returns
     -------
     ndarray
-        Returns a 1 by 3 array with
-        the first element containing the coefficients for the trilinear approximation function
-        for the x-component of the vector space,
-        the second element containing the coefficients for the trilinear approximation function
-        for the y-component of the vector space, and
-        the third element containing the coefficients for the trilinear approximation function
-        for the z-component of the vector space.
+        Returns a 1 by 3 array with the first element containing the
+        coefficients for the trilinear approximation function for the
+        x-component of the vector space, the second element containing
+        the coefficients for the trilinear approximation function for
+        the y-component of the vector space, and the third element
+        containing the coefficients for the trilinear approximation
+        function for the z-component of the vector space.
     """
     u, v, w = vspace[1]
     deltax, deltay, deltaz = vspace[2]
@@ -370,9 +363,9 @@ def _trilinear_coeff_cal(vspace, cell):
 
 def trilinear_approx(vspace, cell):
     r"""
-    Return a function whose input is a coordinate within a given grid cell
-    and returns the trilinearly approximated vector value at that particular
-    coordinate in that grid cell.
+    Return a function whose input is a coordinate within a given grid
+    cell and returns the trilinearly approximated vector value at that
+    particular coordinate in that grid cell.
 
     .. note::
 
@@ -381,24 +374,23 @@ def trilinear_approx(vspace, cell):
 
     Parameters
     ----------
-
     vspace: |array_like|
-        The vector space as constructed by the vector_space function which is
-        A 1 by 3 array with the first element containing the coordinates,
-        the second element containing the vector values,
-        and the third element containing the delta values for each dimension.
+        The vector space as constructed by the vector_space function
+        which is a 1 by 3 array with the first element containing the
+        coordinates, the second element containing the vector values,
+        and the third element containing the delta values for each
+        dimension.
 
     cell: |array_like| of integers
-        A grid cell, represented by a 1 by 3 array
-        of integers, which correspond to a grid cell
-        in the vector space.
+        A grid cell, represented by a 1 by 3 array of integers, which
+        correspond to a grid cell in the vector space.
 
     Returns
     -------
     function
         A function whose input is a coordinate within a given grid cell
-        and returns the trilinearly approximated vector value at that particular
-        coordinate in that grid cell.
+        and returns the trilinearly approximated vector value at that
+        particular coordinate in that grid cell.
 
     """
     # Calculating coefficients
@@ -444,29 +436,28 @@ def trilinear_approx(vspace, cell):
 
 def _trilinear_jacobian(vspace, cell):
     r"""
-    Returns a function whose input is a coordinate within a given grid cell
-    and returns the trilinearly approximated jacobian matrix for that particular
-    coordinate in that grid cell.
+    Returns a function whose input is a coordinate within a given grid
+    cell and returns the trilinearly approximated jacobian matrix for
+    that particular coordinate in that grid cell.
 
     Parameters
     ----------
-
     vspace: |array_like|
-        The vector space as constructed by the vector_space function which is
-        A 1 by 3 array with the first element containing the coordinates,
-        the second element containing the vector values,
-        and the third element containing the delta values for each dimension.
+        The vector space as constructed by the vector_space function
+        which is a 1 by 3 array with the first element containing the
+        coordinates, the second element containing the vector values,
+        and the third element containing the delta values for each
+        dimension.
 
     cell: |array_like| of integers
-        A grid cell, represented by a 1 by 3 array
-        of integers, which correspond to a grid cell
-        in the vector space.
+        A grid cell, represented by a 1 by 3 array of integers, which
+        correspond to a grid cell in the vector space.
 
     Returns
     -------
-    A function whose input is a coordinate within a given grid cell
-    and returns the trilinearly approximated jacobian matrix for that particular
-    coordinate in that grid cell.
+    A function whose input is a coordinate within a given grid cell and
+    returns the trilinearly approximated jacobian matrix for that
+    particular coordinate in that grid cell.
     """
     # Calculating coefficients
     ax, bx, cx, dx, ex, fx, gx, hx = _trilinear_coeff_cal(vspace, cell)[0]
@@ -503,34 +494,32 @@ def _trilinear_jacobian(vspace, cell):
 
 def _reduction(vspace, cell):
     r"""
-    Return a true or false based on weather
-    a grid cell passes the reduction phase,
-    meaning that they potentially contain a null point.
+    Return a true or false based on whether a grid cell passes the
+    reduction phase, meaning that they potentially contain a null point.
 
     Parameters
     ----------
-
     vspace: |array_like|
-        The vector space as constructed by the vector_space function which is
-        A 1 by 3 array with the first element containing the coordinates,
-        the second element containing the vector values,
-        and the third element containing the delta values for each dimension.
+        The vector space as constructed by the vector_space function
+        which is a 1 by 3 array with the first element containing the
+        coordinates, the second element containing the vector values,
+        and the third element containing the delta values for each
+        dimension.
 
     cell: |array_like| of integers
-        A grid cell, represented by a 1 by 3 array
-        of integers, which correspond to a grid cell
-        in the vector space.
+        A grid cell, represented by a 1 by 3 array of integers, which
+        correspond to a grid cell in the vector space.
 
     Returns
     -------
     bool
-        True if a grid cell passes the reduction phase.
-        False, otherwise.
+        `True` if a grid cell passes the reduction phase. `False`,
+        otherwise.
 
     Notes
     -----
-    Depending on the grid resolution, a cell containing more than
-    one null point may not pass reduction, so it would not be detected.
+    Depending on the grid resolution, a cell containing more than one
+    null point may not pass reduction, so it would not be detected.
     """
     u, v, w = vspace[1]
     f000 = cell
@@ -566,14 +555,13 @@ def _reduction(vspace, cell):
         ):
             passZ = True
 
-    doesPassReduction = passX and passY and passZ
-
-    return doesPassReduction
+    return passX and passY and passZ
 
 
 def _bilinear_root(a1, b1, c1, d1, a2, b2, c2, d2):
     r"""
-    Return the roots of a pair of bilinear equations of the following format.
+    Return the roots of a pair of bilinear equations of the following
+    format.
 
     .. math::
         a_1 + b_1 x + c_1 y + d_1 x y = 0 \\
@@ -593,7 +581,7 @@ def _bilinear_root(a1, b1, c1, d1, a2, b2, c2, d2):
     Returns
     -------
     roots : |array_like| of floats
-        A 1 by 2 array containing the two roots
+        A 1 by 2 array containing the two roots.
     """
     m1 = np.array([[a1, a2], [c1, c2]])
     m2 = np.array([[a1, a2], [d1, d2]])
@@ -607,16 +595,14 @@ def _bilinear_root(a1, b1, c1, d1, a2, b2, c2, d2):
     if np.isclose(a, 0, atol=_EQUALITY_ATOL):
         if np.isclose(b, 0, atol=_EQUALITY_ATOL):
             return np.array([])
-        else:
-            x1 = (-1.0 * c) / b
-            x2 = (-1.0 * c) / b
+        x1 = (-1.0 * c) / b
+        x2 = (-1.0 * c) / b
 
     else:
         if (b**2 - 4.0 * a * c) < 0:
             return np.array([])
-        else:
-            x1 = (-1.0 * b + (b**2 - 4.0 * a * c) ** 0.5) / (2.0 * a)
-            x2 = (-1.0 * b - (b**2 - 4.0 * a * c) ** 0.5) / (2.0 * a)
+        x1 = (-1.0 * b + (b**2 - 4.0 * a * c) ** 0.5) / (2.0 * a)
+        x2 = (-1.0 * b - (b**2 - 4.0 * a * c) ** 0.5) / (2.0 * a)
 
     y1 = None
     y2 = None
@@ -629,7 +615,7 @@ def _bilinear_root(a1, b1, c1, d1, a2, b2, c2, d2):
     elif not (np.isclose((c2 + d2 * x2), 0, atol=_EQUALITY_ATOL)):
         y2 = (-a2 - b2 * x2) / (c2 + d2 * x2)
 
-    if y1 is None and y2 is None:
+    if y1 is y2 is None:
         return np.array([])
     elif y1 is None:
         return np.array([(x2, y2)])
@@ -645,29 +631,28 @@ def _bilinear_root(a1, b1, c1, d1, a2, b2, c2, d2):
 
 def _trilinear_analysis(vspace, cell):
     r"""
-    Return a true or false value based on whether
-    a grid cell which has passed the reduction step,
-    contains a null point, using trilinear analysis.
+    Return a true or false value based on whether a grid cell which has
+    passed the reduction step, contains a null point, using trilinear
+    analysis.
 
     Parameters
     ----------
-
     vspace: |array_like|
-        The vector space as constructed by the vector_space function which is
-        A 1 by 3 array with the first element containing the coordinates,
-        the second element containing the vector values,
-        and the third element containing the delta values for each dimension.
+        The vector space as constructed by the vector_space function
+        which is a 1 by 3 array with the first element containing the
+        coordinates, the second element containing the vector values,
+        and the third element containing the delta values for each
+        dimension.
 
     cell: |array_like| of integers
-        A grid cell, represented by a 1 by 3 array
-        of integers, which correspond to a grid cell
-        in the vector space.
+        A grid cell, represented by a 1 by 3 array of integers, which
+        correspond to a grid cell in the vector space.
 
     Returns
     -------
     bool
-        True if a grid cell contains a null point using trilinear analysis.
-        False, otherwise.
+        `True` if a grid cell contains a null point using trilinear
+        analysis. `False`, otherwise.
 
     Raises
     ------
@@ -1062,7 +1047,7 @@ def _trilinear_analysis(vspace, cell):
             return True
 
     # Check Grid Resolution
-    if len(BxByEndpoints) == 0 and len(BxBzEndpoints) == 0 and len(ByBzEndpoints) == 0:
+    if len(BxByEndpoints) == len(BxBzEndpoints) == len(ByBzEndpoints) == 0:
         warnings.warn(
             "Multiple null points suspected. Trilinear method may not work as intended.",
             MultipleNullPointWarning,
@@ -1092,69 +1077,66 @@ def _trilinear_analysis(vspace, cell):
             return True
         if np.sign(first_endpoint) * np.sign(second_endpoint) > 0:
             return False
-        else:
-            return True
+
+        return True
 
     opposite_sign_z = endpoint_sign_check(BxByEndpoints, "z")
     opposite_sign_y = endpoint_sign_check(BxBzEndpoints, "y")
     opposite_sign_x = endpoint_sign_check(ByBzEndpoints, "x")
     if opposite_sign_x and opposite_sign_y and opposite_sign_z:
         return True
-    else:
-        return False
+
+    return False
 
 
 def _locate_null_point(vspace, cell, n, err):
     r"""
-    Return the coordinates of a null point within
-    a given grid cell in a vector space using the
-    Newton-Rapshon method.
-    Multiple initial positions are tried until either
-    one converges inside a the grid cell, or the maximum
-    iteration is reached.
-    If neither occurs, more starting positions are tried,
-    by breaking up the cell into 8 smaller sub-grid cells,
-    until one starting position does converge or stop inside
-    the grid cell.
-    This process is repeated a finite amount of times, after which
-    the function returns None.
+    Return the coordinates of a null point within a given grid cell in
+    a vector space using the Newton-Rapshon method.
+
+    Multiple initial positions are tried until either one converges
+    inside a the grid cell, or the maximum iteration is reached. If
+    neither occurs, more starting positions are tried, by breaking up
+    the cell into 8 smaller sub-grid cells, until one starting position
+    does converge or stop inside the grid cell. This process is repeated
+    a finite amount of times, after which the function returns `None`.
 
     Parameters
     ----------
+    vspace : |array_like|
+        The vector space as constructed by the vector_space function
+        which is a 1 by 3 array with the first element containing the
+        coordinates, the second element containing the vector values,
+        and the third element containing the delta values for each
+        dimension.
 
-    vspace: |array_like|
-        The vector space as constructed by the vector_space function which is
-        A 1 by 3 array with the first element containing the coordinates,
-        the second element containing the vector values,
-        and the third element containing the delta values for each dimension.
+    cell : |array_like| of integers
+        A grid cell, represented by a 1 by 3 array of integers, which
+        correspond to a grid cell in the vector space.
 
-    cell: |array_like| of integers
-        A grid cell, represented by a 1 by 3 array
-        of integers, which correspond to a grid cell
-        in the vector space.
+    n : int
+        The maximum number of times the iterative step of the
+        Newton-Raphson method is repeated.
 
-    n: int
-        The maximum number of times the iterative step
-        of the Newton-Raphson method is repeated.
-
-    err: float
+    err : float
         The threshold/error that determines if convergence has occurred
         using the Newton-Raphson method.
 
     Returns
     -------
     |array_like| of floats
-        A 1 by 3 array containing the converged coordinates of the
-        null point.
+        A 1 by 3 array containing the converged coordinates of the null
+        point.
+
     NoneType
-        None if the coordinates of the null point could not be converged
-        at a point inside the grid cell.
+        `None` if the coordinates of the null point could not be
+        converged at a point inside the grid cell.
 
     Warns
     -----
     :`UserWarning`
-        If the maximum number of iteration has been
-        reached, but convergence has not occurred.
+        If the maximum number of iteration has been reached, but
+        convergence has not occurred.
     """
     global _recursion_level
     # Calculating the Jacobian and trilinear approximation functions for the cell
@@ -1214,7 +1196,7 @@ def _locate_null_point(vspace, cell, n, err):
         )
         return is_x_in_bound and is_y_in_bound and is_z_in_bound
 
-    starting_pos = []
+    starting_pos = []  # noqa: FURB138
     # Adding the Corners
     for point in corners:
         starting_pos.append(
@@ -1236,7 +1218,7 @@ def _locate_null_point(vspace, cell, n, err):
     for x0 in starting_pos:
         x0 = np.array(x0)
         x0 = x0.reshape(3, 1)
-        for i in range(n):
+        for _i in range(n):  # noqa: B007
             locx = tlApprox(x0[0], x0[1], x0[2])[0]
             locy = tlApprox(x0[0], x0[1], x0[2])[1]
             locz = tlApprox(x0[0], x0[1], x0[2])[2]
@@ -1281,32 +1263,28 @@ def _locate_null_point(vspace, cell, n, err):
 
 def _classify_null_point(vspace, cell, loc):
     r"""
-    Return the coordinates of a null point within
-    a given grid cell in a vector space using the
-    Newton-Rapshon method.
+    Return the coordinates of a null point within a given grid cell in a
+    vector space using the Newton-Rapshon method.
 
-    Multiple initial positions are tried until either
-    one converges inside a the grid cell, or the maximum
-    iteration is reached.
-    If neither occurs, more starting positions are tried,
-    by breaking up the cell into 8 smaller sub-grid cells,
-    until one starting position does converge or stop inside
-    the grid cell.
-    This process is repeated a finite amount of times, after which
-    the function returns None.
+    Multiple initial positions are tried until either one converges
+    inside a the grid cell, or the maximum iteration is reached. If
+    neither occurs, more starting positions are tried, by breaking up
+    the cell into 8 smaller sub-grid cells, until one starting position
+    does converge or stop inside the grid cell. This process is repeated
+    a finite amount of times, after which the function returns `None`.
 
     Parameters
     ----------
     vspace: |array_like|
-        The vector space as constructed by the vector_space function which is
-        A 1 by 3 array with the first element containing the coordinates,
-        the second element containing the vector values,
-        and the third element containing the delta values for each dimension.
+        The vector space as constructed by the vector_space function
+        which is a 1 by 3 array with the first element containing the
+        coordinates, the second element containing the vector values,
+        and the third element containing the delta values for each
+        dimension.
 
     cell: |array_like| of integers
-        A grid cell, represented by a 1 by 3 array
-        of integers, which correspond to a grid cell
-        in the vector space.
+        A grid cell, represented by a 1 by 3 array of integers, which
+        correspond to a grid cell in the vector space.
 
     Returns
     -------
@@ -1316,13 +1294,12 @@ def _classify_null_point(vspace, cell, loc):
     Raises
     ------
     NonZeroDivergence
-        If the divergence of the given vector space is not sufficiently close
-        to zero at the null point.
+        If the divergence of the given vector space is not sufficiently
+        close to zero at the null point.
 
     Notes
     -----
     This method is described by :cite:t:`parnell:1996`.
-
     """
     jcb = _trilinear_jacobian(vspace, cell)
     M = jcb(loc[0], loc[1], loc[2])
@@ -1364,38 +1341,37 @@ def _classify_null_point(vspace, cell, loc):
 
 def _vspace_iterator(vspace, maxiter=500, err=1e-10):
     r"""
-    Returns an array of null point objects, representing
-    the null points of the given vector space.
+    Returns an array of null point objects, representing the null points
+    of the given vector space.
 
     Parameters
     ----------
-    vspace: |array_like|
-        The vector space as constructed by the ``_vector_space`` function which is
-        A 1 by 3 array with the first element containing the coordinates,
-        the second element containing the vector values,
-        and the third element containing the delta values for each dimension.
+    vspace : |array_like|
+        The vector space as constructed by the ``_vector_space``
+        function which is a 1 by 3 array with the first element
+        containing the coordinates, the second element containing the
+        vector values, and the third element containing the delta values
+        for each dimension.
 
-    maxiter: int
-        The maximum iterations of the Newton-Raphson method.
-        The default value is 500.
+    maxiter : int
+        The maximum iterations of the Newton-Raphson method. Defaults to
+        500.
 
-    err: float
+    err : float, default: ``1e-10``
         The threshold/error that determines if convergence has occurred
         using the Newton-Raphson method.
-        The default value is ``1e-10``.
 
     Returns
     -------
     |array_like| of `~plasmapy.analysis.nullpoint.NullPoint`
         An array of `~plasmapy.analysis.nullpoint.NullPoint` objects
         representing the null points of the given vector space.
-
     """
     nullpoints = []
     for i in range(len(vspace[0][0]) - 1):
         for j in range(len(vspace[0][0][0]) - 1):
             for k in range(len(vspace[0][0][0][0]) - 1):
-                if _reduction(vspace, [i, j, k]):
+                if _reduction(vspace, [i, j, k]):  # noqa: SIM102
                     if _trilinear_analysis(vspace, [i, j, k]):
                         loc = _locate_null_point(vspace, [i, j, k], maxiter, err)
                         if loc is not None:
@@ -1417,8 +1393,8 @@ def null_point_find(
     err=1e-10,
 ):
     r"""
-    Returns an array of `~plasmapy.analysis.nullpoint.NullPoint` object, representing
-    the null points of the given vector space.
+    Returns an array of `~plasmapy.analysis.nullpoint.NullPoint` object,
+    representing the null points of the given vector space.
 
     .. note::
 
@@ -1433,39 +1409,37 @@ def null_point_find(
         uniform array on that interval.
 
     y_arr: |array_like|
-        The array representing the coordinates in the y-dimension.
-        If not given, then range values are used to construct a
-        uniform array on that interval.
+        The array representing the coordinates in the y-dimension. If
+        not given, then range values are used to construct a uniform
+        array on that interval.
 
     z_arr: |array_like|
-        The array representing the coordinates in the z-dimension.
-        If not given, then range values are used to construct a
-        uniform array on that interval.
+        The array representing the coordinates in the z-dimension. If
+        not given, then range values are used to construct a uniform
+        array on that interval.
 
     u_arr: |array_like|
-        A 3D array containing the x-component of the vector values for the vector
-        space. If not given, the vector values are generated over the vector space
-        using the function func.
+        A 3D array containing the x-component of the vector values for
+        the vector space. If not given, the vector values are generated
+        over the vector space using the function func.
 
     v_arr: |array_like|
-        A 3D array containing the y-component of the vector values for the vector
-        space. If not given, the vector values are generated over the vector space
-        using the function func.
+        A 3D array containing the y-component of the vector values for
+        the vector space. If not given, the vector values are generated
+        over the vector space using the function func.
 
     w_arr: |array_like|
-        A 3D array containing the z-component of the vector values for the vector
-        space. If not given, the vector values are generated over the vector space
-        using the function func.
+        A 3D array containing the z-component of the vector values for
+        the vector space. If not given, the vector values are generated
+        over the vector space using the function func.
 
     maxiter: int
-        The maximum iterations of the Newton-Raphson method.
-        The default value is 500.
+        The maximum iterations of the Newton-Raphson method. Defaults to
+        500.
 
-    err: float
+    err: float, default: ``1e-10``
         The threshold/error that determines if convergence has occurred
         using the Newton-Raphson method.
-        The default value is ``1e-10``.
-
 
     Returns
     -------
@@ -1476,7 +1450,6 @@ def null_point_find(
     Notes
     -----
     This method is described by :cite:t:`haynes:2007`.
-
     """
     # Constructing the vspace
     vspace = _vector_space(
@@ -1500,7 +1473,7 @@ def uniform_null_point_find(
     y_range,
     z_range,
     func: Callable,
-    precision=[0.05, 0.05, 0.05],
+    precision=(0.05, 0.05, 0.05),
     maxiter=500,
     err=1e-10,
 ):
@@ -1515,38 +1488,36 @@ def uniform_null_point_find(
 
     Parameters
     ----------
-    x_range: |array_like|
-        A 1 by 2 array containing the range of x-values for the vector spaces.
-        If not given, the default interval [0,1] is assumed.
+    x_range: |array_like|, default: ``[0, 1]``
+        A 1 by 2 array containing the range of x-values for the vector
+        spaces.
 
-    y_range: |array_like|
-        A 1 by 2 array containing the range of y-values for the vector spaces.
-        If not given, the default interval [0,1] is assumed.
+    y_range: |array_like|, default: ``[0, 1]``
+        A 1 by 2 array containing the range of y-values for the vector
+        spaces.
 
-    z_range: |array_like|
-        A 1 by 2 array containing the range of z-values for the vector spaces.
-        If not given, the default interval [0,1] is assumed.
+    z_range: |array_like|, default: ``[0, 1]``
+        A 1 by 2 array containing the range of z-values for the vector
+        spaces.
 
     func: function
-        A function that takes in 3 arguments, respectively representing a x, y, and z
-        coordinate of a point and returns the vector value for that point in the form
-        of a 1 by 3 array.
+        A function that takes in 3 arguments, respectively representing
+        an :math:`(x, y, z)` coordinate of a point and returns the
+        vector value for that point in the form of a 1 by 3 array.
 
-    precision: |array_like|
-        A 1 by 3 array containing the approximate precision values for each dimension,
-        in the case where uniform arrays are being used.
-        The default value is [0.05, 0.05, 0.05].
+    precision: |array_like|, default: ``[0.05, 0.05, 0.05]``
+        A 1 by 3 array containing the approximate precision values for
+        each dimension, in the case where uniform arrays are being used.
 
     Returns
     -------
     |array_like| of `~plasmapy.analysis.nullpoint.NullPoint`
-        An array of `~plasmapy.analysis.nullpoint.NullPoint` objects representing
-        the null points of the given vector space.
+        An array of `~plasmapy.analysis.nullpoint.NullPoint` objects
+        representing the null points of the given vector space.
 
     Notes
     -----
     This method is described by :cite:t:`haynes:2007`.
-
     """
     vspace = _vector_space(
         None,

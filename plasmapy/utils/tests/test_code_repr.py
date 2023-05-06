@@ -132,8 +132,8 @@ def test_call_string(func, args, kwargs, expected):
         f"  args:     {args}\n"
         f"  kwargs:   {kwargs}\n"
         "the actual result does not match the expected result:\n"
-        f"  expected: {repr(expected)}\n"
-        f"  actual:   {repr(actual)}"
+        f"  expected: {expected!r}\n"
+        f"  actual:   {actual!r}"
     )
 
 
@@ -212,8 +212,8 @@ def test_method_call_string(
         f"  m_args:   {args_to_method}\n"
         f"  m_kwargs: {kwargs_to_method}\n"
         "the actual outcome does not match the expected result:\n"
-        f"  expected: {repr(expected)}\n"
-        f"  actual:   {repr(actual)}"
+        f"  expected: {expected!r}\n"
+        f"  actual:   {actual!r}"
     )
 
 
@@ -254,8 +254,8 @@ def test_attribute_call_string(args_to_cls, kwargs_to_cls, expected):
         f"  c_args:   {args_to_cls}\n"
         f"  c_kwargs: {kwargs_to_cls}\n"
         "the actual outcome does not match the expected result:\n"
-        f"  expected: {repr(expected)}\n"
-        f"  actual:   {repr(actual)}"
+        f"  expected: {expected!r}\n"
+        f"  actual:   {actual!r}"
     )
 
 
@@ -319,12 +319,12 @@ def test__code_repr_of_ndarray(array_inputs, max_items, expected):
     assert actual == expected, (
         f"The representation of an ndarray for array_inputs = {array_inputs} "
         f"and max_items = {max_items} is not the expected result:\n"
-        f"  expected: {repr(expected)}\n"
-        f"  actual:   {repr(actual)}\n"
+        f"  expected: {expected!r}\n"
+        f"  actual:   {actual!r}\n"
     )
 
     if max_items >= array.size:
-        recreated_array = eval(actual)
+        recreated_array = eval(actual)  # noqa: PGH001
         assert np.allclose(array, recreated_array, atol=1e-15, equal_nan=True), (
             f"Evaluating the representation of an ndarray for array_inputs = "
             f"{array_inputs} and max_items = {max_items} does not recreate "
@@ -361,8 +361,8 @@ def test__code_repr_of_quantity(quantity, expected):
     assert actual == expected, (
         f"_code_repr_of_quantity for {quantity} is not producing the "
         f"expected result:\n"
-        f"expected: {repr(expected)}\n"
-        f"actual:   {repr(actual)}"
+        f"expected: {expected!r}\n"
+        f"actual:   {actual!r}"
     )
 
 
@@ -375,8 +375,8 @@ def test__string_together_warnings_for_printing():
     assert actual == expected, (
         f"_string_together_warnings_for_printing is not producing the "
         f"expected result:\n"
-        f"  expected: {repr(expected)}\n"
-        f"  actual: {repr(actual)}"
+        f"  expected: {expected!r}\n"
+        f"  actual: {actual!r}"
     )
 
 
@@ -429,7 +429,7 @@ def test__code_repr_of_args_and_kwargs(args, kwargs, expected):
         f"  args:   {args}\n"
         f"  kwargs: {kwargs}\n"
         f"is not returning the expected string:\n"
-        f"  expected: {repr(expected)}\n"
+        f"  expected: {expected!r}\n"
     )
 
 
@@ -454,7 +454,7 @@ def test__name_with_article(obj, expected):
     name_with_article = _name_with_article(obj)
     assert name_with_article == expected, (
         f"When calling _name_with_article for {obj}, expecting "
-        f"{repr(expected)} but got {repr(name_with_article)}."
+        f"{expected!r} but got {name_with_article!r}."
     )
 
 
@@ -475,7 +475,7 @@ def test__object_name(obj, showmodule, expected_name):
     """Test that `_object_name` produces the expected output."""
     actual_name = _object_name(obj, showmodule=showmodule)
     assert actual_name == expected_name, (
-        f"For obj = {repr(obj)}, the expected output of _obj_name with "
+        f"For obj = {obj!r}, the expected output of _obj_name with "
         f"showmodule = {showmodule} does not match the actual output:\n"
         f"  expected: {expected_name}\n"
         f"  actual:   {actual_name}"

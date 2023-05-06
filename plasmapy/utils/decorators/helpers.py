@@ -31,7 +31,6 @@ def modify_docstring(func=None, prepend: str = None, append: str = None):
 
     Examples
     --------
-
         >>> @modify_docstring(prepend='''Hello''', append='''World''')
         ... def foo():
         ...     '''Beautiful'''
@@ -55,7 +54,7 @@ def modify_docstring(func=None, prepend: str = None, append: str = None):
 
             return f(*bound_args.args, **bound_args.kwargs)
 
-        if prepend is None and append is None:
+        if prepend is append is None:
             raise TypeError(
                 "Decorator @modify_docstring() missing argument 'prepend' and/or"
                 " 'append', at least one argument is required."
@@ -79,7 +78,7 @@ def modify_docstring(func=None, prepend: str = None, append: str = None):
         # append docstring lines
         if isinstance(append, str):
             appendlines = inspect.cleandoc(append).splitlines()
-            appendlines = [""] + appendlines
+            appendlines = ["", *appendlines]
         elif append is None:
             appendlines = []
         else:
@@ -95,9 +94,9 @@ def modify_docstring(func=None, prepend: str = None, append: str = None):
     if func is not None:
         # `modify_docstring` called as a function
         return decorator(func)
-    else:
-        # `modify_docstring` called as a decorator "sugar-syntax"
-        return decorator
+
+    # `modify_docstring` called as a decorator "sugar-syntax"
+    return decorator
 
 
 def preserve_signature(f):

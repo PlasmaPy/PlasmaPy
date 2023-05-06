@@ -1,0 +1,7 @@
+When a function decorated with |particle_input| is provided with
+``z_mean`` as a keyword |argument|, it will change ``z_mean`` to ``Z``
+and issue a `~plasmapy.utils.exceptions.PlasmaPyDeprecationWarning` if
+the decorated function accepts ``Z`` as a parameter. This capability
+is intended to temporarily preserve the current behavior of several
+functions in `plasmapy.dispersion` and `plasmapy.formulary` as they get
+decorated with |particle_input|.

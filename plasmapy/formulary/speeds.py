@@ -20,7 +20,7 @@ from numba import njit
 from typing import Optional
 
 from plasmapy.formulary import lengths, misc
-from plasmapy.particles import Particle, particle_input, particle_mass
+from plasmapy.particles import Particle, particle_input, particle_mass, ParticleLike
 from plasmapy.particles.exceptions import ChargeError
 from plasmapy.utils.decorators import (
     bind_lite_func,
@@ -40,7 +40,7 @@ k_B_si_unitless = k_B.value
 def Alfven_speed(
     B: u.T,
     density: (u.m**-3, u.kg / u.m**3),
-    ion: Optional[Particle] = None,
+    ion: Optional[ParticleLike] = None,
     z_mean: Optional[numbers.Real] = None,
 ) -> u.m / u.s:
     r"""
@@ -99,7 +99,8 @@ def Alfven_speed(
         or convertible.
 
     `TypeError`
-        If ``ion`` is not of type or convertible to `~plasmapy.particles.particle_class.Particle`.
+        If ``ion`` is not of type or convertible to
+        `~plasmapy.particles.particle_class.Particle`.
 
     `TypeError`
         If ``z_mean`` is not of type `int` or `float`.
@@ -158,11 +159,11 @@ def Alfven_speed(
         if not isinstance(ion, Particle):
             try:
                 ion = Particle(ion)
-            except TypeError:
+            except TypeError as ex:
                 raise TypeError(
                     f"If passing a number density, you must pass a plasmapy Particle "
                     f"(not type {type(ion)}) to calculate the mass density!"
-                )
+                ) from ex
         if z_mean is None:
             try:
                 z_mean = abs(ion.charge_number)
@@ -191,7 +192,7 @@ va_ = Alfven_speed
 def ion_sound_speed(
     T_e: u.K,
     T_i: u.K,
-    ion: Particle,
+    ion: ParticleLike,
     n_e: u.m**-3 = None,
     k: u.m**-1 = None,
     gamma_e=1,
@@ -314,11 +315,33 @@ def ion_sound_speed(
     >>> n = 5e19*u.m**-3
     >>> k_1 = 3e1*u.m**-1
     >>> k_2 = 3e7*u.m**-1
-    >>> ion_sound_speed(T_e=5e6*u.K, T_i=0*u.K, ion='p', gamma_e=1, gamma_i=3)
+    >>> ion_sound_speed(
+    ...     T_e=5e6*u.K,
+    ...     T_i=0*u.K,
+    ...     ion='p',
+    ...     gamma_e=1,
+    ...     gamma_i=3,
+    ... )
     <Quantity 203155... m / s>
-    >>> ion_sound_speed(T_e=5e6*u.K, T_i=0*u.K, n_e=n, k=k_1, ion='p', gamma_e=1, gamma_i=3)
+    >>> ion_sound_speed(
+    ...     T_e=5e6*u.K,
+    ...     T_i=0*u.K,
+    ...     n_e=n,
+    ...     k=k_1,
+    ...     ion='p',
+    ...     gamma_e=1,
+    ...     gamma_i=3,
+    ... )
     <Quantity 203155... m / s>
-    >>> ion_sound_speed(T_e=5e6*u.K, T_i=0*u.K, n_e=n, k=k_2, ion='p', gamma_e=1, gamma_i=3)
+    >>> ion_sound_speed(
+    ...     T_e=5e6*u.K,
+    ...     T_i=0*u.K,
+    ...     n_e=n,
+    ...     k=k_2,
+    ...     ion='p',
+    ...     gamma_e=1,
+    ...     gamma_i=3,
+    ... )
     <Quantity 310.31... m / s>
     >>> ion_sound_speed(T_e=5e6*u.K, T_i=0*u.K, n_e=n, k=k_1, ion='p')
     <Quantity 203155... m / s>
@@ -359,8 +382,8 @@ def ion_sound_speed(
             m_i * (1 + klD2)
         )
         V_S = np.sqrt(V_S_squared).to(u.m / u.s)
-    except ValueError:
-        raise ValueError("Unable to find ion sound speed.")
+    except ValueError as ex:
+        raise ValueError("Unable to find ion sound speed.") from ex
 
     return V_S
 
@@ -444,10 +467,10 @@ def thermal_speed_coefficients(method: str, ndim: int) -> float:
 
     try:
         coeff = _coefficients[(ndim, method)]
-    except KeyError:
+    except KeyError as ex:
         raise ValueError(
             f"Value for (ndim, method) pair not valid, got '({ndim}, {method})'."
-        )
+        ) from ex
 
     return coeff
 
@@ -458,7 +481,7 @@ def thermal_speed_lite(
     T: numbers.Real, mass: numbers.Real, coeff: numbers.Real
 ) -> numbers.Real:
     r"""
-    The ":term:`lite-function`" version of
+    The :term:`lite-function` for
     `~plasmapy.formulary.speeds.thermal_speed`.  Performs the same
     thermal speed calculations as
     `~plasmapy.formulary.speeds.thermal_speed`, but is intended for
@@ -517,7 +540,7 @@ def thermal_speed_lite(
 @particle_input
 def thermal_speed(
     T: u.K,
-    particle: Particle,
+    particle: ParticleLike,
     method="most_probable",
     mass: u.kg = None,
     ndim=3,
@@ -587,7 +610,6 @@ def thermal_speed(
 
     Notes
     -----
-
     There are multiple methods (or definitions) for calculating the thermal
     speed, all of which give the expression
 
@@ -722,7 +744,7 @@ vth_ = thermal_speed
     T={"can_be_negative": False, "equivalencies": u.temperature_energy()}
 )
 def kappa_thermal_speed(
-    T: u.K, kappa, particle: Particle, method="most_probable"
+    T: u.K, kappa, particle: ParticleLike, method="most_probable"
 ) -> u.m / u.s:
     r"""Return the most probable speed for a particle within a Kappa
     distribution.
@@ -811,14 +833,7 @@ def kappa_thermal_speed(
     # different methods, as per https://en.wikipedia.org/wiki/Thermal_velocity
     vth = thermal_speed(T=T, particle=particle, method=method)
 
-    if method == "most_probable":
-        # thermal velocity of Kappa distribution function is just Maxwellian
-        # thermal speed modulated by the following factor.
-        # This is only true for "most probable" case. RMS and mean
-        # magnitude velocities are same as Maxwellian.
-        coeff = np.sqrt((kappa - 3 / 2) / kappa)
-    else:
-        coeff = 1
+    coeff = np.sqrt((kappa - 3 / 2) / kappa) if method == "most_probable" else 1
     return vth * coeff
 
 

@@ -1,8 +1,7 @@
-import os
 import pytest
 
 from astropy import units as u
-from typing import List, Tuple, Union
+from typing import Union
 
 import plasmapy.plasma
 
@@ -13,21 +12,21 @@ from plasmapy.plasma.sources import openpmd_hdf5
 
 @pytest.fixture(scope="module")
 def h5_2d(request):
-    h5 = openpmd_hdf5.HDF5Reader(hdf5=os.path.join(data_dir, "data00000255.h5"))
+    h5 = openpmd_hdf5.HDF5Reader(hdf5=data_dir / "data00000255.h5")
     yield h5
     h5.close()
 
 
 @pytest.fixture(scope="module")
 def h5_3d(request):
-    h5 = openpmd_hdf5.HDF5Reader(hdf5=os.path.join(data_dir, "data00000100.h5"))
+    h5 = openpmd_hdf5.HDF5Reader(hdf5=data_dir / "data00000100.h5")
     yield h5
     h5.close()
 
 
 @pytest.fixture(scope="module")
 def h5_theta(request):
-    h5 = openpmd_hdf5.HDF5Reader(hdf5=os.path.join(data_dir, "data00000200.h5"))
+    h5 = openpmd_hdf5.HDF5Reader(hdf5=data_dir / "data00000200.h5")
     yield h5
     h5.close()
 
@@ -55,11 +54,11 @@ class TestOpenPMD2D:
 
     def test_has_magnetic_field(self, h5_2d):
         with pytest.raises(AttributeError):
-            h5_2d.magnetic_field
+            h5_2d.magnetic_field  # noqa: B018
 
     def test_has_electric_current(self, h5_2d):
         with pytest.raises(AttributeError):
-            h5_2d.electric_current
+            h5_2d.electric_current  # noqa: B018
 
 
 class TestOpenPMD3D:
@@ -83,11 +82,11 @@ class TestOpenPMD3D:
 
     def test_has_magnetic_field(self, h5_3d):
         with pytest.raises(AttributeError):
-            h5_3d.magnetic_field
+            h5_3d.magnetic_field  # noqa: B018
 
     def test_has_electric_current(self, h5_3d):
         with pytest.raises(AttributeError):
-            h5_3d.electric_current
+            h5_3d.electric_current  # noqa: B018
 
 
 @pytest.mark.slow
@@ -135,7 +134,7 @@ units_test_table = [
 
 @pytest.mark.parametrize("openPMD_dims, expected", units_test_table)
 @pytest.mark.slow
-def test_fetch_units(openPMD_dims, expected: Union[Tuple, List]):
+def test_fetch_units(openPMD_dims, expected: Union[tuple, list]):
     units = openpmd_hdf5._fetch_units(openPMD_dims)
     assert units == expected
 
@@ -147,7 +146,7 @@ def test_unavailable_hdf5():
 
 def test_non_openpmd_hdf5():
     with pytest.raises(DataStandardError):
-        openpmd_hdf5.HDF5Reader(hdf5=os.path.join(data_dir, "blank.h5"))
+        openpmd_hdf5.HDF5Reader(hdf5=data_dir.joinpath("blank.h5"))
 
 
 def test_HDF5Reader(h5_2d):

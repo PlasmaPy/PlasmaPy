@@ -62,7 +62,6 @@ invalid_instr_func_list = [
 
 
 def width_at_value(x, y, val):
-
     """
     Calculates the width of a curve at a given value.
     """
@@ -157,21 +156,20 @@ def single_species_collective_args():
     spectral_density_args_kwargs
 
     """
-    kwargs = {}
-    kwargs["wavelengths"] = np.arange(520, 545, 0.01) * u.nm
-    kwargs["probe_wavelength"] = 532 * u.nm
-    kwargs["n"] = 5e17 * u.cm**-3
-    kwargs["T_e"] = 10 * u.eV
-    kwargs["T_i"] = 10 * u.eV
-    kwargs["efract"] = np.array([1.0])
-    kwargs["ifract"] = np.array([1.0])
-    kwargs["ions"] = "C-12 5+"
-    kwargs["electron_vel"] = np.array([[0, 0, 0]]) * u.km / u.s
-    kwargs["ion_vel"] = np.array([[0, 0, 0]]) * u.km / u.s
-    kwargs["probe_vec"] = np.array([1, 0, 0])
-    kwargs["scatter_vec"] = np.array([0, 1, 0])
-
-    return kwargs
+    return {
+        "wavelengths": np.arange(520, 545, 0.01) * u.nm,
+        "probe_wavelength": 532 * u.nm,
+        "n": 5e17 * u.cm**-3,
+        "T_e": 10 * u.eV,
+        "T_i": 10 * u.eV,
+        "efract": np.array([1.0]),
+        "ifract": np.array([1.0]),
+        "ions": "C-12 5+",
+        "electron_vel": np.array([[0, 0, 0]]) * u.km / u.s,
+        "ion_vel": np.array([[0, 0, 0]]) * u.km / u.s,
+        "probe_vec": np.array([1, 0, 0]),
+        "scatter_vec": np.array([0, 1, 0]),
+    }
 
 
 @pytest.fixture()
@@ -189,6 +187,7 @@ def single_species_collective_spectrum(single_species_collective_args):
     return (alpha, wavelengths, Skw)
 
 
+@pytest.mark.slow
 def test_single_species_collective_spectrum(single_species_collective_spectrum):
     """
     Compares the generated spectrum to previously determined values
@@ -217,6 +216,7 @@ def test_single_species_collective_spectrum(single_species_collective_spectrum):
     )
 
 
+@pytest.mark.slow
 def test_spectral_density_minimal_arguments(single_species_collective_args):
     """
     Check that spectral density runs with minimal arguments
@@ -236,7 +236,7 @@ def test_spectral_density_minimal_arguments(single_species_collective_args):
         "instr_func",
     ]
     for key in optional_keys:
-        if key in kwargs.keys():
+        if key in kwargs:
             del kwargs[key]
 
     alpha, Skw = thomson.spectral_density(*args, **kwargs)
@@ -245,7 +245,6 @@ def test_spectral_density_minimal_arguments(single_species_collective_args):
 
 
 def test_single_species_collective_lite(single_species_collective_args):
-
     # Make a copy of the input args
     args_fixture_copy = copy.copy(single_species_collective_args)
     args, kwargs = spectral_density_args_kwargs(single_species_collective_args)
@@ -269,7 +268,7 @@ def test_spectral_density_lite_minimal_arguments(single_species_collective_args)
         "instr_func_arr",
     ]
     for key in optional_keys:
-        if key in kwargs.keys():
+        if key in kwargs:
             del kwargs[key]
 
     alpha, Skw = thomson.spectral_density.lite(*args, **kwargs)
@@ -285,11 +284,12 @@ def multiple_species_collective_args():
     spectral_density_args_kwargs
 
     """
-    kwargs = {}
-    kwargs["wavelengths"] = np.arange(520, 545, 0.01) * u.nm
-    kwargs["probe_wavelength"] = 532 * u.nm
-    kwargs["n"] = 5e17 * u.cm**-3
-    kwargs["T_e"] = 10 * u.eV
+    kwargs = {
+        "wavelengths": np.arange(520, 545, 0.01) * u.nm,
+        "probe_wavelength": 532 * u.nm,
+        "n": 5e17 * u.cm**-3,
+        "T_e": 10 * u.eV,
+    }
     kwargs["T_i"] = np.array([5, 5]) * u.eV
     kwargs["ions"] = [Particle("p+"), Particle("C-12 5+")]
     kwargs["probe_vec"] = np.array([1, 0, 0])
@@ -375,11 +375,12 @@ def single_species_non_collective_args():
     spectral_density_args_kwargs
 
     """
-    kwargs = {}
-    kwargs["wavelengths"] = np.arange(500, 570, 0.01) * u.nm
-    kwargs["probe_wavelength"] = 532 * u.nm
-    kwargs["n"] = 5e15 * u.cm**-3
-    kwargs["T_e"] = 100 * u.eV
+    kwargs = {
+        "wavelengths": np.arange(500, 570, 0.01) * u.nm,
+        "probe_wavelength": 532 * u.nm,
+        "n": 5e15 * u.cm**-3,
+        "T_e": 100 * u.eV,
+    }
     kwargs["T_i"] = np.array([10]) * u.eV
     kwargs["efract"] = np.array([1.0])
     kwargs["ifract"] = np.array([1.0])
@@ -408,6 +409,7 @@ def single_species_non_collective_spectrum(single_species_non_collective_args):
     return (alpha, wavelengths, Skw)
 
 
+@pytest.mark.slow
 def test_single_species_non_collective_spectrum(single_species_non_collective_spectrum):
     """
     Compares the generated spectrum to previously determined values
@@ -542,6 +544,7 @@ def test_spectral_density_input_errors(
                 assert msg in str(excinfo.value)
 
 
+@pytest.mark.slow
 def test_split_populations():
     """
     This test makes sure that splitting a single population of ions or electrons
@@ -650,12 +653,12 @@ def test_param_to_array_fcns():
     # Create two groups of test variables, one of scalars and one of vectors
     prefix = "T_e"
     for i in range(3):
-        params.add(prefix + f"_{i}", value=2)
+        params.add(f"{prefix}_{i}", value=2)
 
     prefix = "ion_vel"
     for i in range(2):
-        for j in ["x", "y", "z"]:
-            params.add(prefix + f"_{j}_{i}", value=2)
+        for j in ("x", "y", "z"):
+            params.add(f"{prefix}_{j}_{i}", value=2)
 
     arr = thomson._params_to_array(params, "T_e", vector=False)
     assert arr.shape == (3,)
@@ -674,9 +677,9 @@ def run_fit(
     notch=None,
     notch_as_nan=False,
     fit_method="differential_evolution",
-    fit_kws={},
+    fit_kws={},  # noqa: B006
     max_iter=None,
-    check_errors=True,
+    check_errors=True,  # noqa: ARG001
     require_redchi=1,
     # If false, don't perform the actual fit but instead just create the Model
     run_fit=True,
@@ -689,7 +692,7 @@ def run_fit(
 
     wavelengths = (wavelengths * u.m).to(u.nm)
 
-    true_params = copy.deepcopy(params)
+    true_params = copy.deepcopy(params)  # noqa: F841
 
     skeys = list(settings.keys())
     pkeys = list(params.keys())
@@ -774,7 +777,11 @@ def run_fit(
             )
 
     # Make the model, then perform the fit
-    model = thomson.spectral_density_model(wavelengths.to(u.m).value, settings, params)
+    model = thomson.spectral_density_model(
+        wavelengths.to(u.m).value,
+        settings,
+        params,
+    )
 
     if run_fit:
         result = model.fit(
@@ -799,7 +806,7 @@ def spectral_density_model_settings_params(kwargs):
     The dictionary needs to hold a Parameter object for Parameters
 
     """
-    if "wavelengths" in kwargs.keys():
+    if "wavelengths" in kwargs:
         wavelengths = kwargs["wavelengths"]
     else:
         raise ValueError("Kwargs must include 'wavelengths'")
@@ -818,7 +825,6 @@ def spectral_density_model_settings_params(kwargs):
     params = Parameters()
 
     for k, v in kwargs.items():
-
         # If key is a setting, add the value to the settings
         if k == "wavelengths":
             pass
@@ -850,8 +856,7 @@ def epw_single_species_settings_params():
     scattering_angle = np.deg2rad(63)
     scatter_vec = np.array([np.cos(scattering_angle), np.sin(scattering_angle), 0])
 
-    kwargs = {}
-    kwargs["probe_wavelength"] = probe_wavelength.to(u.m).value
+    kwargs = {"probe_wavelength": probe_wavelength.to(u.m).value}
     kwargs["probe_vec"] = np.array([1, 0, 0])
     kwargs["scatter_vec"] = scatter_vec
     kwargs["ions"] = ["H+"]
@@ -886,9 +891,8 @@ def epw_multi_species_settings_params():
     scattering_angle = np.deg2rad(63)
     scatter_vec = np.array([np.cos(scattering_angle), np.sin(scattering_angle), 0])
 
-    kwargs = {}
+    kwargs = {"probe_wavelength": probe_wavelength.to(u.m).value}
 
-    kwargs["probe_wavelength"] = probe_wavelength.to(u.m).value
     kwargs["probe_vec"] = probe_vec
     kwargs["scatter_vec"] = scatter_vec
     kwargs["ions"] = ["H+"]
@@ -926,20 +930,20 @@ def iaw_single_species_settings_params():
     scattering_angle = np.deg2rad(90)
     scatter_vec = np.array([np.cos(scattering_angle), np.sin(scattering_angle), 0])
 
-    kwargs = {}
-    kwargs["probe_wavelength"] = probe_wavelength.to(u.m).value
-    kwargs["probe_vec"] = probe_vec
-    kwargs["scatter_vec"] = scatter_vec
-    kwargs["ions"] = ["H+"]
-    kwargs["ion_vdir"] = np.array([[1, 0, 0]])
-    kwargs["electron_vdir"] = np.array([[1, 0, 0]])
-
-    kwargs["n"] = Parameter("n", value=2e17 * 1e6, vary=False)
-    kwargs["T_e_0"] = Parameter("T_e_0", value=10, vary=False, min=5, max=20)
-    kwargs["T_i_0"] = Parameter("T_i_0", value=20, vary=True, min=5, max=70)
-    kwargs["ifract_0"] = Parameter("ifract_0", value=1.0, vary=False)
-    kwargs["ion_speed_0"] = Parameter("ion_speed_0", value=0, vary=False)
-    kwargs["electron_speed_0"] = Parameter("electron_speed_0", value=0, vary=False)
+    kwargs = {
+        "probe_wavelength": probe_wavelength.to(u.m).value,
+        "probe_vec": probe_vec,
+        "scatter_vec": scatter_vec,
+        "ions": ["H+"],
+        "ion_vdir": np.array([[1, 0, 0]]),
+        "electron_vdir": np.array([[1, 0, 0]]),
+        "n": Parameter("n", value=2e17 * 1e6, vary=False),
+        "T_e_0": Parameter("T_e_0", value=10, vary=False, min=5, max=20),
+        "T_i_0": Parameter("T_i_0", value=20, vary=True, min=5, max=70),
+        "ifract_0": Parameter("ifract_0", value=1.0, vary=False),
+        "ion_speed_0": Parameter("ion_speed_0", value=0, vary=False),
+        "electron_speed_0": Parameter("electron_speed_0", value=0, vary=False),
+    }
 
     w0 = probe_wavelength.value
     kwargs["wavelengths"] = (np.linspace(w0 - 5, w0 + 5, num=512) * u.nm).to(u.m).value
@@ -963,30 +967,26 @@ def iaw_multi_species_settings_params():
     scattering_angle = np.deg2rad(63)
     scatter_vec = np.array([np.cos(scattering_angle), np.sin(scattering_angle), 0])
 
-    kwargs = {}
-    kwargs["probe_wavelength"] = probe_wavelength.to(u.m).value
-    kwargs["probe_vec"] = probe_vec
-    kwargs["scatter_vec"] = scatter_vec
-    kwargs["ions"] = ["H+", "H+", "C-12 +4"]
-    kwargs["ion_vdir"] = np.array([[0.5, 0.5, 0]])
-    kwargs["electron_vdir"] = np.array([[0, 0.2, 0.7]])
-
-    kwargs["n"] = Parameter("n", value=1e19 * 1e6, vary=False)
-    kwargs["T_e_0"] = Parameter("T_e_0", value=500, vary=False, min=5, max=1000)
-    kwargs["T_i_0"] = Parameter("T_i_0", value=200, vary=True, min=5, max=1000)
-    kwargs["T_i_1"] = Parameter("T_i_1", value=500, vary=True, min=5, max=1000)
-    kwargs["T_i_2"] = Parameter("T_i_2", value=400, vary=False, min=5, max=1000)
-    kwargs["ifract_0"] = Parameter("ifract_0", value=0.4, vary=False, min=0.2, max=0.8)
-    kwargs["ifract_1"] = Parameter("ifract_1", value=0.3, vary=False, min=0.2, max=0.8)
-    kwargs["ifract_2"] = Parameter("ifract_2", value=0.3, vary=False, min=0.2, max=0.8)
-    kwargs["ion_speed_0"] = Parameter("ion_speed_0", value=0, vary=False)
-    kwargs["ion_speed_1"] = Parameter(
-        "ion_speed_1", value=1e5, vary=True, min=0, max=5e5
-    )
-    kwargs["ion_speed_2"] = Parameter(
-        "ion_speed_2", value=2e5, vary=False, min=0, max=5e5
-    )
-    kwargs["electron_speed_0"] = Parameter("electron_speed_0", value=0, vary=False)
+    kwargs = {
+        "probe_wavelength": probe_wavelength.to(u.m).value,
+        "probe_vec": probe_vec,
+        "scatter_vec": scatter_vec,
+        "ions": ["H+", "H+", "C-12 +4"],
+        "ion_vdir": np.array([[0.5, 0.5, 0]]),
+        "electron_vdir": np.array([[0, 0.2, 0.7]]),
+        "n": Parameter("n", value=1e19 * 1e6, vary=False),
+        "T_e_0": Parameter("T_e_0", value=500, vary=False, min=5, max=1000),
+        "T_i_0": Parameter("T_i_0", value=200, vary=True, min=5, max=1000),
+        "T_i_1": Parameter("T_i_1", value=500, vary=True, min=5, max=1000),
+        "T_i_2": Parameter("T_i_2", value=400, vary=False, min=5, max=1000),
+        "ifract_0": Parameter("ifract_0", value=0.4, vary=False, min=0.2, max=0.8),
+        "ifract_1": Parameter("ifract_1", value=0.3, vary=False, min=0.2, max=0.8),
+        "ifract_2": Parameter("ifract_2", value=0.3, vary=False, min=0.2, max=0.8),
+        "ion_speed_0": Parameter("ion_speed_0", value=0, vary=False),
+        "ion_speed_1": Parameter("ion_speed_1", value=1e5, vary=True, min=0, max=5e5),
+        "ion_speed_2": Parameter("ion_speed_2", value=2e5, vary=False, min=0, max=5e5),
+        "electron_speed_0": Parameter("electron_speed_0", value=0, vary=False),
+    }
 
     w0 = probe_wavelength.value
     kwargs["wavelengths"] = (np.linspace(w0 - 5, w0 + 5, num=512) * u.nm).to(u.m).value
@@ -1010,21 +1010,21 @@ def noncollective_single_species_settings_params():
     scattering_angle = np.deg2rad(30)
     scatter_vec = np.array([np.cos(scattering_angle), np.sin(scattering_angle), 0])
 
-    kwargs = {}
-    kwargs["probe_wavelength"] = probe_wavelength.to(u.m).value
-    kwargs["probe_vec"] = probe_vec
-    kwargs["scatter_vec"] = scatter_vec
-    kwargs["ions"] = ["H+"]
-    kwargs["ion_vdir"] = np.array([[1, 0, 0]])
-    kwargs["electron_vdir"] = np.array([[1, 0, 0]])
-
-    kwargs["n"] = Parameter(
-        "n", value=2e17 * 1e6, vary=True, min=8e16 * 1e6, max=6e17 * 1e6
-    )
-    kwargs["T_e_0"] = Parameter("T_e_0", value=10, vary=True, min=5, max=20)
-    kwargs["T_i_0"] = Parameter("T_i_0", value=120, vary=False, min=5, max=70)
-    kwargs["efract_0"] = Parameter("efract_0", value=1.0, vary=False)
-    kwargs["electron_speed_0"] = Parameter("electron_speed_0", value=0, vary=False)
+    kwargs = {
+        "probe_wavelength": probe_wavelength.to(u.m).value,
+        "probe_vec": probe_vec,
+        "scatter_vec": scatter_vec,
+        "ions": ["H+"],
+        "ion_vdir": np.array([[1, 0, 0]]),
+        "electron_vdir": np.array([[1, 0, 0]]),
+        "n": Parameter(
+            "n", value=2e17 * 1e6, vary=True, min=8e16 * 1e6, max=6e17 * 1e6
+        ),
+        "T_e_0": Parameter("T_e_0", value=10, vary=True, min=5, max=20),
+        "T_i_0": Parameter("T_i_0", value=120, vary=False, min=5, max=70),
+        "efract_0": Parameter("efract_0", value=1.0, vary=False),
+        "electron_speed_0": Parameter("electron_speed_0", value=0, vary=False),
+    }
 
     w0 = probe_wavelength.value
     kwargs["wavelengths"] = (
@@ -1034,6 +1034,7 @@ def noncollective_single_species_settings_params():
     return kwargs
 
 
+@pytest.mark.slow
 def test_fit_epw_single_species(epw_single_species_settings_params):
     wavelengths, params, settings = spectral_density_model_settings_params(
         epw_single_species_settings_params
@@ -1042,6 +1043,7 @@ def test_fit_epw_single_species(epw_single_species_settings_params):
     run_fit(wavelengths, params, settings, notch=(531, 533))
 
 
+@pytest.mark.slow
 def test_fit_epw_multi_species(epw_multi_species_settings_params):
     wavelengths, params, settings = spectral_density_model_settings_params(
         epw_multi_species_settings_params
@@ -1050,8 +1052,8 @@ def test_fit_epw_multi_species(epw_multi_species_settings_params):
     run_fit(wavelengths, params, settings, notch=(531, 533))
 
 
+@pytest.mark.slow
 def test_fit_iaw_single_species(iaw_single_species_settings_params):
-
     wavelengths, params, settings = spectral_density_model_settings_params(
         iaw_single_species_settings_params
     )
@@ -1059,10 +1061,10 @@ def test_fit_iaw_single_species(iaw_single_species_settings_params):
     run_fit(wavelengths, params, settings)
 
 
+@pytest.mark.slow
 def test_fit_iaw_instr_func(iaw_single_species_settings_params):
     """
     Tests fitting with an instrument function
-
     """
 
     wavelengths, params, settings = spectral_density_model_settings_params(
@@ -1074,6 +1076,7 @@ def test_fit_iaw_instr_func(iaw_single_species_settings_params):
     run_fit(wavelengths, params, settings)
 
 
+@pytest.mark.slow
 def test_fit_iaw_multi_species(iaw_multi_species_settings_params):
     wavelengths, params, settings = spectral_density_model_settings_params(
         iaw_multi_species_settings_params
@@ -1082,8 +1085,8 @@ def test_fit_iaw_multi_species(iaw_multi_species_settings_params):
     run_fit(wavelengths, params, settings)
 
 
+@pytest.mark.slow
 def test_fit_noncollective_single_species(noncollective_single_species_settings_params):
-
     wavelengths, params, settings = spectral_density_model_settings_params(
         noncollective_single_species_settings_params
     )
@@ -1091,6 +1094,7 @@ def test_fit_noncollective_single_species(noncollective_single_species_settings_
     run_fit(wavelengths, params, settings)
 
 
+@pytest.mark.slow
 def test_fit_with_instr_func(epw_single_species_settings_params):
     """
 
@@ -1139,6 +1143,7 @@ def test_fit_with_invalid_instr_func(instr_func, iaw_single_species_settings_par
         run_fit(wavelengths, params, settings)
 
 
+@pytest.mark.slow
 def test_fit_with_minimal_parameters():
     # Create example data for fitting
     probe_wavelength = 532 * u.nm
@@ -1172,11 +1177,7 @@ def test_fit_with_minimal_parameters():
     # intentionally leave out a few required values to check to make sure an
     # exception is raised
 
-    settings = {}
-    settings["probe_vec"] = probe_vec
-    settings["scatter_vec"] = scatter_vec
-    settings["ions"] = ions
-
+    settings = {"probe_vec": probe_vec, "scatter_vec": scatter_vec, "ions": ions}
     params = Parameters()
 
     params.add("T_e_0", value=T_e.value, vary=False, min=5, max=20)
@@ -1199,7 +1200,7 @@ def test_fit_with_minimal_parameters():
     # Make the model, then perform the fit
     model = thomson.spectral_density_model(wavelengths.to(u.m).value, settings, params)
 
-    result = model.fit(
+    result = model.fit(  # noqa: F841
         data,
         params,
         wavelengths=wavelengths.to(u.m).value,
@@ -1279,7 +1280,6 @@ def test_fit_with_minimal_parameters():
     ],
 )
 def test_model_input_validation(control, error, msg, iaw_multi_species_settings_params):
-
     kwargs = iaw_multi_species_settings_params
     print(list(control.keys()))
 

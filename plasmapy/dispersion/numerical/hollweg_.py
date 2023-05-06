@@ -142,7 +142,6 @@ def hollweg(
 
     Notes
     -----
-
     The dispersion relation presented in :cite:t:`hollweg:1999`
     (equation 3 in :cite:t:`bellan:2012`) is:
 
@@ -210,10 +209,10 @@ def hollweg(
     if not isinstance(ion, Particle):
         try:
             ion = Particle(ion)
-        except TypeError:
+        except TypeError as ex:
             raise TypeError(
                 f"For argument 'ion' expected type {Particle} but got {type(ion)}."
-            )
+            ) from ex
     if not ion.is_ion and not ion.is_category("element"):
         raise ValueError("The particle passed for 'ion' must be an ion or element.")
 
@@ -250,7 +249,7 @@ def hollweg(
 
     # validate argument k
     k = k.squeeze()
-    if k.ndim not in [0, 1]:
+    if k.ndim not in (0, 1):
         raise ValueError(
             f"Argument 'k' needs to be single valued or a 1D array astropy Quantity,"
             f" got array of shape {k.shape}."
