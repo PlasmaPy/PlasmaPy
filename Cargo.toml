@@ -9,4 +9,6 @@ name = "rust"
 crate-type = ["cdylib"]
 
 [dependencies]
+physical_constants = "0.5.0"
 pyo3 = "0.18.1"
+numpy = "0.18.0"

@@ -13,8 +13,9 @@ import numbers
 import numpy as np
 
 from astropy.constants.si import e, eps0
-from numba import njit
 from typing import Optional
+
+import plasmapy.rust
 
 from plasmapy import particles
 from plasmapy.particles import particle_input, ParticleLike
@@ -22,7 +23,6 @@ from plasmapy.particles.exceptions import ChargeError, InvalidParticleError
 from plasmapy.utils.decorators import (
     angular_freq_to_hz,
     bind_lite_func,
-    preserve_signature,
     validate_quantities,
 )
 
@@ -151,8 +151,8 @@ wc_ = gyrofrequency
 """Alias to `~plasmapy.formulary.frequencies.gyrofrequency`."""
 
 
-@preserve_signature
-@njit
+# @preserve_signature
+# @njit
 def plasma_frequency_lite(
     n: numbers.Real, mass: numbers.Real, z_mean: numbers.Real, to_hz: bool = False
 ) -> numbers.Real:
@@ -211,9 +211,7 @@ def plasma_frequency_lite(
     >>> plasma_frequency_lite(n=1e19, mass=mass, z_mean=1, to_hz=True)
     662608...
     """
-    omega_p = z_mean * e_si_unitless * np.sqrt(n / (eps0_si_unitless * mass))
-
-    return omega_p / (2.0 * np.pi) if to_hz else omega_p
+    return plasmapy.rust.formulary.plasma_frequency_lite(n, mass, z_mean, to_hz)
 
 
 @bind_lite_func(plasma_frequency_lite)
