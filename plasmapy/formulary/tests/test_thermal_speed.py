@@ -27,7 +27,7 @@ from plasmapy.formulary.speeds import (
 from plasmapy.particles import Particle
 from plasmapy.particles.exceptions import InvalidParticleError
 from plasmapy.utils.exceptions import RelativityError, RelativityWarning
-from plasmapy.utils.pytest_helpers import assert_can_handle_nparray
+from plasmapy.utils._pytest_helpers import assert_can_handle_nparray
 
 
 @pytest.mark.parametrize(

@@ -15,7 +15,7 @@ from plasmapy.tests._helpers import (
 )
 from plasmapy.utils.code_repr import call_string
 from plasmapy.utils.exceptions import PlasmaPyError, PlasmaPyWarning
-from plasmapy.utils.pytest_helpers import run_test, run_test_equivalent_calls
+from plasmapy.utils._pytest_helpers import run_test, run_test_equivalent_calls
 
 
 def generic_function(*args, **kwargs):

@@ -14,7 +14,7 @@ from plasmapy.formulary.collisions.frequencies import (
 from plasmapy.particles import Particle
 from plasmapy.utils import exceptions
 from plasmapy.utils.exceptions import CouplingWarning, PhysicsError
-from plasmapy.utils.pytest_helpers import assert_can_handle_nparray
+from plasmapy.utils._pytest_helpers import assert_can_handle_nparray
 
 
 class TestSingleParticleCollisionFrequencies:

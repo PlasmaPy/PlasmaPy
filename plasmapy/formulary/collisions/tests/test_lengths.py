@@ -6,7 +6,7 @@ from astropy import units as u
 from plasmapy.formulary.collisions import coulomb, lengths
 from plasmapy.utils import exceptions
 from plasmapy.utils.exceptions import CouplingWarning
-from plasmapy.utils.pytest_helpers import assert_can_handle_nparray
+from plasmapy.utils._pytest_helpers import assert_can_handle_nparray
 
 
 class Test_impact_parameter_perp:
