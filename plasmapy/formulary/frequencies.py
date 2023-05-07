@@ -23,6 +23,7 @@ from plasmapy.particles.exceptions import ChargeError, InvalidParticleError
 from plasmapy.utils.decorators import (
     angular_freq_to_hz,
     bind_lite_func,
+    rust_sanitize,
     validate_quantities,
 )
 
@@ -151,8 +152,14 @@ wc_ = gyrofrequency
 """Alias to `~plasmapy.formulary.frequencies.gyrofrequency`."""
 
 
-# @preserve_signature
-# @njit
+@rust_sanitize(
+    {
+        "n": np.dtype(np.float64),
+        "mass": np.dtype(np.float64),
+        "z_mean": np.dtype(np.float64),
+        "to_hz": np.dtype(bool),
+    }
+)
 def plasma_frequency_lite(
     n: numbers.Real, mass: numbers.Real, z_mean: numbers.Real, to_hz: bool = False
 ) -> numbers.Real:
@@ -211,7 +218,7 @@ def plasma_frequency_lite(
     >>> plasma_frequency_lite(n=1e19, mass=mass, z_mean=1, to_hz=True)
     662608...
     """
-    return plasmapy.rust.formulary.plasma_frequency_lite(n, mass, z_mean, to_hz)
+    return plasmapy.rust.formulary.plasma_frequency_lite_wrapper(n, mass, z_mean, to_hz)
 
 
 @bind_lite_func(plasma_frequency_lite)

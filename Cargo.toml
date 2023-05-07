@@ -1,14 +1,15 @@
 [package]
-name = "rust"
+name = "plasma_py"
 version = "0.1.0"
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 [lib]
-name = "rust"
+name = "plasma_py"
 crate-type = ["cdylib"]
 
 [dependencies]
 physical_constants = "0.5.0"
 pyo3 = "0.18.1"
+ndarray = { version = "0.15.6", features = ["rayon"] }
 numpy = "0.18.0"

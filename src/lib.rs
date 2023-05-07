@@ -11,7 +11,7 @@ fn rust(_py: Python, module: &PyModule) -> PyResult<()> {
 fn register_child_module(py: Python<'_>, parent_module: &PyModule) -> PyResult<()> {
     let formulary_module = PyModule::new(py, "formulary")?;
     formulary_module.add_function(wrap_pyfunction!(
-        formulary::plasma_frequency_lite,
+        formulary::plasma_frequency_lite_wrapper,
         formulary_module
     )?)?;
 

@@ -2,10 +2,12 @@
 Module for defining functionality that marks and handle Lite-Function
 creation.
 """
-__all__ = ["bind_lite_func"]
+__all__ = ["bind_lite_func", "rust_sanitize"]
 
+import astropy.units as u
 import functools
 import inspect
+import numpy as np
 
 from numba.extending import is_jitted
 from typing import Callable
@@ -127,6 +129,50 @@ def bind_lite_func(lite_func, attrs: dict[str, Callable] = None):
             setattr(wrapper, bound_name, attr)
 
         wrapper.__bound_lite_func__ = __bound_lite_func__
+
+        return wrapper
+
+    return decorator
+
+
+def rust_sanitize(ndarray_type_dictionary: dict[str, object]):
+    def decorator(target_function):
+        signature = inspect.signature(target_function)
+
+        for parameter in ndarray_type_dictionary:
+            if parameter not in signature.parameters:
+                raise TypeError(
+                    f"Sanitize decorator got unexpected keyword argument '{parameter}'"
+                )
+
+        @functools.wraps(target_function)
+        def wrapper(*args, **kwargs):
+            bound_args = signature.bind(*args, **kwargs)
+            bound_args.apply_defaults()
+
+            sanitized_arguments = {}
+
+            for arg_name, arg_value in bound_args.arguments.items():
+                new_value = arg_value
+                if isinstance(arg_value, u.Quantity):
+                    new_value = arg_value.value
+
+                if arg_name in ndarray_type_dictionary:
+                    array_type = ndarray_type_dictionary[arg_name]
+
+                    if (
+                        isinstance(arg_value, np.ndarray)
+                        and arg_value.dtype is not array_type
+                    ):
+                        new_value = arg_value.astype(array_type)
+                    elif not isinstance(arg_value, np.ndarray):
+                        new_value = np.asarray(arg_value, dtype=array_type)
+
+                sanitized_arguments[arg_name] = np.atleast_1d(new_value)
+
+            result = target_function(**sanitized_arguments)
+
+            return result if result.shape else result[()]
 
         return wrapper
 
