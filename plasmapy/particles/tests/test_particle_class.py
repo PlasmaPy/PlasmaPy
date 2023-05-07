@@ -30,8 +30,8 @@ from plasmapy.particles.particle_class import (
     valid_categories,
 )
 from plasmapy.utils import roman
-from plasmapy.utils.code_repr import call_string
 from plasmapy.utils._pytest_helpers import run_test_equivalent_calls
+from plasmapy.utils.code_repr import call_string
 
 # (arg, kwargs, results_dict)
 test_Particle_table = [

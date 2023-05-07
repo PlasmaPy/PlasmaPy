@@ -7,13 +7,13 @@ import pytest
 from plasmapy.formulary.speeds import Alfven_speed, cs_, ion_sound_speed, va_
 from plasmapy.particles import Particle
 from plasmapy.particles.exceptions import InvalidParticleError
+from plasmapy.utils._pytest_helpers import assert_can_handle_nparray
 from plasmapy.utils.exceptions import (
     PhysicsError,
     PhysicsWarning,
     RelativityError,
     RelativityWarning,
 )
-from plasmapy.utils._pytest_helpers import assert_can_handle_nparray
 
 Z = 1
 

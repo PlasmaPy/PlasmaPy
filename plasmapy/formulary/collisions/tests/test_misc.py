@@ -4,8 +4,8 @@ import pytest
 
 from plasmapy.formulary.collisions.misc import mobility, Spitzer_resistivity
 from plasmapy.utils import exceptions
-from plasmapy.utils.exceptions import CouplingWarning
 from plasmapy.utils._pytest_helpers import assert_can_handle_nparray
+from plasmapy.utils.exceptions import CouplingWarning
 
 
 class Test_Spitzer_resistivity:

@@ -7,8 +7,8 @@ from plasmapy.formulary.collisions.dimensionless import (
     Knudsen_number,
 )
 from plasmapy.utils import exceptions
-from plasmapy.utils.exceptions import CouplingWarning
 from plasmapy.utils._pytest_helpers import assert_can_handle_nparray
+from plasmapy.utils.exceptions import CouplingWarning
 
 
 class Test_coupling_parameter:
