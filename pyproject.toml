@@ -275,7 +275,6 @@ ignore = [
   "N816", # mixed-case-variable-in-global-scope
   "PLE0605", # invalid-all-format
   "PLR0913", # too-many-arguments
-#  "PLR0915",
   "PLR2004", # magic-value-comparison
   "RUF001", # ambiguous-unicode-character-string
   "RUF002", # ambiguous-unicode-character-docstring
