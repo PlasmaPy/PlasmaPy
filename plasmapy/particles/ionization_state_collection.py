@@ -227,7 +227,7 @@ class IonizationStateCollection:
                 number_density=self.number_densities[particle][int_charge],
             )
 
-    def __setitem__(self, key, value):
+    def __setitem__(self, key, value):  # noqa: PLR0912
         errmsg = (
             f"Cannot set item for this IonizationStateCollection instance for "
             f"key = {key!r} and value = {value!r}"
@@ -400,7 +400,10 @@ class IonizationStateCollection:
         return self._ionic_fractions
 
     @ionic_fractions.setter
-    def ionic_fractions(self, inputs: Union[dict, list, tuple]):
+    def ionic_fractions(  # noqa: PLR0912, PLR0915
+        self,
+        inputs: Union[dict, list, tuple],
+    ):
         """
         Set the ionic fractions.
 
