@@ -8,11 +8,11 @@ from astropy import units as u
 
 from plasmapy.diagnostics import langmuir
 
-np.random.seed(42)
+np.random.seed(42)  # noqa: NPY002
 N = 30  # array length of dummy probe characteristic
 
-current_arr = np.random.rand(N) * u.A
-bias_arr = np.random.rand(N) * u.V
+current_arr = np.random.rand(N) * u.A  # noqa: NPY002
+bias_arr = np.random.rand(N) * u.V  # noqa: NPY002
 
 
 class Test__fitting_functions:
@@ -71,16 +71,18 @@ class Test__fitting_functions:
 class Test__characteristic_errors:
     r"""Test the Characteristic class constructor in langmuir.py"""
 
-    bias_2darr = np.array((np.random.rand(N), np.random.rand(N))) * u.V
-    current_2darr = np.array((np.random.rand(N), np.random.rand(N))) * u.A
+    bias_2darr = np.array((np.random.rand(N), np.random.rand(N))) * u.V  # noqa: NPY002
+    current_2darr = (
+        np.array((np.random.rand(N), np.random.rand(N))) * u.A  # noqa: NPY002
+    )
 
-    bias_infarr = np.append(np.random.rand(N - 1), np.inf) * u.V
-    current_infarr = np.append(np.random.rand(N - 1), np.inf) * u.A
+    bias_infarr = np.append(np.random.rand(N - 1), np.inf) * u.V  # noqa: NPY002
+    current_infarr = np.append(np.random.rand(N - 1), np.inf) * u.A  # noqa: NPY002
 
-    bias_longarr = np.random.rand(N + 1) * u.V
-    current_longarr = np.random.rand(N + 1) * u.A
+    bias_longarr = np.random.rand(N + 1) * u.V  # noqa: NPY002
+    current_longarr = np.random.rand(N + 1) * u.A  # noqa: NPY002
 
-    current_arr2 = np.random.rand(N) * u.A
+    current_arr2 = np.random.rand(N) * u.A  # noqa: NPY002
 
     def test_invalid_dimensions(self):
         r"""Test 2D arrays work with Characteristic class"""
@@ -207,13 +209,15 @@ class DryCharacteristic(langmuir.Characteristic):
 class Test__Characteristic_inherited_methods:
     r"""Test methods on DryCharacteristic class."""
 
-    bias_2darr = np.array((np.random.rand(N), np.random.rand(N))) * u.V
-    current_2darr = np.array((np.random.rand(N), np.random.rand(N))) * u.A
+    bias_2darr = np.array((np.random.rand(N), np.random.rand(N))) * u.V  # noqa: NPY002
+    current_2darr = (
+        np.array((np.random.rand(N), np.random.rand(N))) * u.A  # noqa: NPY002
+    )
 
-    bias_4length_arr = np.array(np.random.rand(N - 1)) * u.V
-    current_5length_arr = np.array(np.random.rand(N)) * u.A
+    bias_4length_arr = np.array(np.random.rand(N - 1)) * u.V  # noqa: NPY002
+    current_5length_arr = np.array(np.random.rand(N)) * u.A  # noqa: NPY002
 
-    bias_duplicates_arr = np.array((1, 2) * int(N / 2)) * u.V
+    bias_duplicates_arr = np.array((1, 2) * int(N / 2)) * u.V  # noqa: NPY002
 
     def test_invalid_bias_dimensions(self):
         r"""Test error on non-1D bias array"""

@@ -120,7 +120,7 @@ def test_particle_exb_drift(uniform_magnetic_field):
     )
 
     s = ParticleTracker(test_plasma, "p", 5, dt=1e-10 * u.s, nt=int(5e3))
-    s.v[:, 2] += np.random.normal(size=s.N) * u.m / u.s
+    s.v[:, 2] += np.random.normal(size=s.N) * u.m / u.s  # noqa: NPY002
 
     s.run()
 

@@ -765,14 +765,16 @@ def run_fit(
             data = np.delete(data, np.arange(x0, x1))
             wavelengths = np.delete(wavelengths, np.arange(x0, x1))
 
-    data *= 1 + np.random.normal(loc=0, scale=noise_amp, size=wavelengths.size)
+    data *= 1 + np.random.normal(  # noqa: NPY002
+        loc=0, scale=noise_amp, size=wavelengths.size
+    )
     data *= 1 / np.nanmax(data)
 
     # Randomly choose the starting values of the parameters within the
     # search space (to make the algorithm do some work!)
     for p in list(params.keys()):
         if params[p].vary:
-            params[p].value = np.random.uniform(
+            params[p].value = np.random.uniform(  # noqa: NPY002
                 low=params[p].min, high=params[p].max, size=1
             )
 
@@ -1170,7 +1172,9 @@ def test_fit_with_minimal_parameters():
     )
     data = Skw.value
 
-    data *= 1 + np.random.normal(loc=0, scale=0.1, size=wavelengths.size)
+    data *= 1 + np.random.normal(  # noqa: NPY002
+        loc=0, scale=0.1, size=wavelengths.size
+    )
     data *= 1 / np.nanmax(data)
 
     # Create settings and params using only the minimal parameters

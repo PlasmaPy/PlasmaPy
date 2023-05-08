@@ -1369,11 +1369,17 @@ class NonUniformCartesianGrid(AbstractGrid):
         function so it can be re-implemented to make non-uniform grids.
         """
         # Construct the axis arrays
-        ax0 = np.sort(np.random.uniform(low=start[0], high=stop[0], size=num[0]))
+        ax0 = np.sort(
+            np.random.uniform(low=start[0], high=stop[0], size=num[0])  # noqa: NPY002
+        )
 
-        ax1 = np.sort(np.random.uniform(low=start[1], high=stop[1], size=num[1]))
+        ax1 = np.sort(
+            np.random.uniform(low=start[1], high=stop[1], size=num[1])  # noqa: NPY002
+        )
 
-        ax2 = np.sort(np.random.uniform(low=start[2], high=stop[2], size=num[2]))
+        ax2 = np.sort(
+            np.random.uniform(low=start[2], high=stop[2], size=num[2])  # noqa: NPY002
+        )
 
         # Construct the coordinate arrays
         arr0, arr1, arr2 = np.meshgrid(ax0, ax1, ax2, indexing="ij")
