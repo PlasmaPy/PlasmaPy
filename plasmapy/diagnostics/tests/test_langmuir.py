@@ -140,7 +140,7 @@ class Test__characteristic_errors:
         assert (a.current - b.current == ab_sub.current).all(), errStr
 
 
-@pytest.fixture
+@pytest.fixture()
 def characteristic():
     r"""Create a dummy characteristic with random values"""
 
@@ -148,7 +148,7 @@ def characteristic():
         return langmuir.Characteristic(bias_arr, current_arr)
 
 
-@pytest.fixture
+@pytest.fixture()
 def characteristic_simulated():
     r"""Create a simulated probe characteristic (provisional)"""
 
@@ -263,7 +263,7 @@ class Test__Characteristic_inherited_methods:
         assert np.allclose(log_limits.to(u.A).value, np.array((0.014003, 1.42577333)))
 
 
-@pytest.mark.slow
+@pytest.mark.slow()
 class Test__swept_probe_analysis:
     r"""Test the swept_probe_analysis function in langmuir.py"""
 
