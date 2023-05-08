@@ -236,6 +236,7 @@ extend-select = [
   "PIE", # flake8-pie
   "PLC", # pylint convention
   "PLE", # pylint errors
+  "PT", # flake8-pytest-style
   "PTH", # flake8-use-pathlib
   "PYI", # flake8-pyi
   "RUF", # ruff specific rules
@@ -273,6 +274,31 @@ ignore = [
   "N806", # non-lowercase-variable-in-function
   "N816", # mixed-case-variable-in-global-scope
   "PLE0605", # invalid-all-format
+  "PT001",
+  "PT002",
+  "PT003",
+  "PT004",
+  "PT005",
+  "PT006",
+  "PT007",
+  "PT008",
+  "PT009",
+  "PT010",
+  "PT011",
+  "PT012",
+  "PT013",
+  "PT015",
+  "PT016",
+  "PT017",
+  "PT018",
+  "PT019",
+  "PT020",
+  "PT021",
+  "PT022",
+  "PT023",
+  "PT024",
+  "PT025",
+  "PT026",
   "RUF001", # ambiguous-unicode-character-string
   "RUF002", # ambiguous-unicode-character-docstring
   "RUF003", # ambiguous-unicode-character-comment
