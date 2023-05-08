@@ -275,7 +275,6 @@ ignore = [
   "N816", # mixed-case-variable-in-global-scope
   "PLE0605", # invalid-all-format
   "PT007", # pytest-parametrize-values-wrong-type
-  "PT010",
   "PT011",
   "PT012",
   "PT013",
