@@ -558,7 +558,7 @@ def _reduction(vspace, cell):
     return passX and passY and passZ
 
 
-def _bilinear_root(a1, b1, c1, d1, a2, b2, c2, d2):  # noqa: PLR0911
+def _bilinear_root(a1, b1, c1, d1, a2, b2, c2, d2):  # noqa: PLR0911, PLR0912
     r"""
     Return the roots of a pair of bilinear equations of the following
     format.
@@ -629,7 +629,7 @@ def _bilinear_root(a1, b1, c1, d1, a2, b2, c2, d2):  # noqa: PLR0911
             return np.array([(x1, y1), (x2, y2)])
 
 
-def _trilinear_analysis(vspace, cell):  # noqa: PLR0911
+def _trilinear_analysis(vspace, cell):  # noqa: PLR0911, PLR0912
     r"""
     Return a true or false value based on whether a grid cell which has
     passed the reduction step, contains a null point, using trilinear
@@ -1261,7 +1261,7 @@ def _locate_null_point(vspace, cell, n, err):
     return None
 
 
-def _classify_null_point(vspace, cell, loc):
+def _classify_null_point(vspace, cell, loc):  # noqa: PLR0912
     r"""
     Return the coordinates of a null point within a given grid cell in a
     vector space using the Newton-Rapshon method.

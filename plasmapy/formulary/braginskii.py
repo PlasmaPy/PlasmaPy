@@ -300,7 +300,7 @@ class ClassicalTransport:
         T_i={"can_be_negative": False, "equivalencies": u.temperature_energy()},
         m_i={"can_be_negative": False},
     )
-    def __init__(
+    def __init__(  # noqa: PLR0912
         self,
         T_e: u.K,
         n_e: u.m**-3,

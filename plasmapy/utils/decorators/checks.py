@@ -273,7 +273,12 @@ class CheckValues(CheckBase):
 
         return out_checks
 
-    def _check_value(self, arg, arg_name: str, arg_checks: dict[str, bool]):
+    def _check_value(  # noqa: PLR0912
+        self,
+        arg,
+        arg_name: str,
+        arg_checks: dict[str, bool],
+    ):
         """
         Perform checks ``arg_checks`` on function argument ``arg``.
 
@@ -523,7 +528,7 @@ class CheckUnits(CheckBase):
 
         return wrapper
 
-    def _get_unit_checks(
+    def _get_unit_checks(  # noqa: PLR0912
         self, bound_args: inspect.BoundArguments
     ) -> dict[str, dict[str, Any]]:
         """
@@ -781,7 +786,7 @@ class CheckUnits(CheckBase):
         if err is not None:
             raise err
 
-    def _check_unit_core(
+    def _check_unit_core(  # noqa: PLR0912
         self, arg, arg_name: str, arg_checks: dict[str, Any]
     ) -> tuple[
         Optional[u.Quantity],
