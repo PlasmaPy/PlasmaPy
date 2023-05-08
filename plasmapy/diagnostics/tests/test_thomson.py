@@ -136,7 +136,7 @@ def args_to_lite_args(kwargs):
     ion_mass = np.zeros(len(kwargs["ions"]))
     for i, particle in enumerate(kwargs["ions"]):
         if not isinstance(particle, Particle):
-            particle = Particle(particle)
+            particle = Particle(particle)  # noqa: PLW2901
         ion_z[i] = particle.charge_number
         ion_mass[i] = particle_mass(particle).to(u.kg).value
     kwargs["ion_z"] = ion_z

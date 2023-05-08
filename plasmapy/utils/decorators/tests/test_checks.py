@@ -426,7 +426,7 @@ class TestCheckUnits:
 
                 for key, val in default_checks.items():
                     if key in case["output"][arg_name]:
-                        val = case["output"][arg_name][key]
+                        val = case["output"][arg_name][key]  # noqa: PLW2901
                     assert arg_checks[key] == val
 
     def test_cu_method__check_unit(self):
