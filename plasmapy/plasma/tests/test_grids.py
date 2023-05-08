@@ -690,7 +690,7 @@ def test_nonuniform_cartesian_NN_interp(
     assert np.allclose(pout, expected, atol=dx_max, equal_nan=True)
 
 
-@pytest.mark.slow
+@pytest.mark.slow()
 def test_nonuniform_cartesian_nearest_neighbor_interpolator():
     """
     Note that this test is running on a very small grid, because otherwise it is

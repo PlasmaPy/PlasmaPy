@@ -345,7 +345,7 @@ def test_particle_mass_equivalent_args(arg1, kwargs1, arg2, kwargs2, expected):
         )
 
 
-@pytest.mark.slow
+@pytest.mark.slow()
 def test_known_common_stable_isotopes():
     """Test that `known_isotopes`, `common_isotopes`, and
     `stable_isotopes` return the correct values for hydrogen."""
@@ -423,7 +423,7 @@ def test_known_common_stable_isotopes_cases():
     assert "He-4" in common_isotopes("He", most_common_only=True)
 
 
-@pytest.mark.slow
+@pytest.mark.slow()
 def test_known_common_stable_isotopes_len():
     """Test that `known_isotopes`, `common_isotopes`, and
     `stable_isotopes` each return a `list` of the expected length.

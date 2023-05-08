@@ -63,7 +63,7 @@ def test_Plasma3D_setup(grid_dimensions, expected_size):
     assert test_plasma.electric_field.si.unit == u.V / u.m
 
 
-@pytest.mark.slow
+@pytest.mark.slow()
 def test_Plasma3D_derived_vars():
     r"""Function to test derived variables of the Plasma3D class.
 
@@ -106,7 +106,7 @@ def test_Plasma3D_derived_vars():
     assert np.allclose(test_plasma.alfven_speed.value, 10.92548431)
 
 
-@pytest.mark.slow
+@pytest.mark.slow()
 def test_Plasma3D_add_magnetostatics():
     r"""Function to test add_magnetostatic function"""
     dipole = magnetostatics.MagneticDipole(

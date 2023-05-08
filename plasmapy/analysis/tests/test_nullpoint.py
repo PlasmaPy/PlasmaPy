@@ -237,7 +237,7 @@ class Test_locate_null_point:
         ).all()
 
 
-@pytest.mark.slow
+@pytest.mark.slow()
 def test_null_point_find1():
     r"""Test `~plasmapy.analysis.nullpoint.null_point_find`."""
     # Uniform grid
@@ -254,7 +254,7 @@ def test_null_point_find1():
     assert np.isclose(loc, [5.5, 5.5, 5.5], atol=_EQUALITY_ATOL).all()
 
 
-@pytest.mark.slow
+@pytest.mark.slow()
 def test_null_point_find2():
     r"""Test `~plasmapy.analysis.nullpoint.null_point_find`."""
     # Non-uniform grid
@@ -288,7 +288,7 @@ def test_null_point_find3():
     assert np.isclose(loc3, [5.5, 5.5, 5.5], atol=_EQUALITY_ATOL).all()
 
 
-@pytest.mark.slow
+@pytest.mark.slow()
 @pytest.mark.xfail(np.__version__ >= "1.24.0", reason="See issue #2101.")
 def test_null_point_find4():
     r"""Test `~plasmapy.analysis.nullpoint.null_point_find`."""
@@ -308,7 +308,7 @@ def test_null_point_find4():
     assert np.isclose(second_loc4, [5.5, 5.5, 5.5], atol=_EQUALITY_ATOL).all()
 
 
-@pytest.mark.slow
+@pytest.mark.slow()
 def test_null_point_find5():
     r"""Test `~plasmapy.analysis.nullpoint.null_point_find`."""
     # Many null points because a y vector dimension is zero
@@ -338,7 +338,7 @@ def test_null_point_find5():
             )
 
 
-@pytest.mark.slow
+@pytest.mark.slow()
 def test_null_point_find6():
     r"""Test `~plasmapy.analysis.nullpoint.null_point_find`."""
     # Many null points; All vector dimensions zero
@@ -353,7 +353,7 @@ def test_null_point_find6():
     assert len(npoints6) == 0
 
 
-@pytest.mark.slow
+@pytest.mark.slow()
 def test_null_point_find7():
     r"""Test `~plasmapy.analysis.nullpoint.null_point_find`."""
     # No null points, discriminant less than zero
@@ -368,7 +368,7 @@ def test_null_point_find7():
     assert len(npoints7) == 0
 
 
-@pytest.mark.slow
+@pytest.mark.slow()
 @pytest.mark.xfail(np.__version__ >= "1.24.0", reason="See issue #2101.")
 def test_null_point_find8():
     r"""Test `~plasmapy.analysis.nullpoint.null_point_find`."""
@@ -388,7 +388,7 @@ def test_null_point_find8():
     assert np.allclose(loc2, [5.5, 5.5, 5.5], atol=_TESTING_ATOL)
 
 
-@pytest.mark.slow
+@pytest.mark.slow()
 class Test_classify_null_point:
     r"""Test `~plasmapy.analysis.nullpoint._classify_null_point`."""
 
@@ -476,7 +476,7 @@ def test_null_point_find9():
 
 
 # Tests that capture the degenerate nulls/2D nulls
-@pytest.mark.slow
+@pytest.mark.slow()
 def test_null_point_find10():
     nullpoint10_args = {
         "x_range": [-0.1, 0.1],
@@ -498,7 +498,7 @@ def test_null_point_find10():
             assert p.classification == "Continuous concentric ellipses"
 
 
-@pytest.mark.slow
+@pytest.mark.slow()
 def test_null_point_find11():
     nullpoint10_args = {
         "x_range": [-0.1, 0.1],

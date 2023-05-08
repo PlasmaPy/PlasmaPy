@@ -107,7 +107,7 @@ tests = {
 test_names = tests.keys()
 
 
-@pytest.mark.slow
+@pytest.mark.slow()
 class TestIonizationStateCollection:
     @classmethod
     def setup_class(cls):

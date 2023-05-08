@@ -232,7 +232,7 @@ def run_mesh_example(
     return sim
 
 
-@pytest.mark.slow
+@pytest.mark.slow()
 def test_1D_deflections():
     # Check B-deflection
     hax, lineout = run_1D_example("constant_bz")
@@ -245,7 +245,7 @@ def test_1D_deflections():
     assert np.isclose(loc.si.value, 0.0335, 0.005)
 
 
-@pytest.mark.slow
+@pytest.mark.slow()
 def test_coordinate_systems():
     """
     Check that specifying the same point in different coordinate systems
@@ -275,7 +275,7 @@ def test_coordinate_systems():
     assert np.allclose(sim2.detector, sim3.detector, atol=1e-2)
 
 
-@pytest.mark.slow
+@pytest.mark.slow()
 def test_input_validation():
     """
     Intentionally raise a number of errors.
@@ -356,7 +356,7 @@ def test_input_validation():
         hax, vax, values = cpr.synthetic_radiograph(sim, size=size)
 
 
-@pytest.mark.slow
+@pytest.mark.slow()
 def test_init():
     grid = _test_grid("electrostatic_gaussian_sphere", num=50)
 
@@ -383,7 +383,7 @@ def test_init():
     assert all(sim.det_hdir == np.array([1, 0, 0]))
 
 
-@pytest.mark.slow
+@pytest.mark.slow()
 def test_create_particles():
     grid = _test_grid("electrostatic_gaussian_sphere", num=50)
 
@@ -403,7 +403,7 @@ def test_create_particles():
     sim.create_particles(1e3, 15 * u.MeV, particle="e")
 
 
-@pytest.mark.slow
+@pytest.mark.slow()
 def test_load_particles():
     grid = _test_grid("electrostatic_gaussian_sphere", num=50)
 
@@ -435,7 +435,7 @@ def test_load_particles():
     sim.run(field_weighting="nearest neighbor")
 
 
-@pytest.mark.slow
+@pytest.mark.slow()
 def test_run_options():
     grid = _test_grid("electrostatic_gaussian_sphere", num=50)
 
@@ -504,7 +504,7 @@ def create_tracker_obj():
 tracker_obj_simulated = create_tracker_obj().run(field_weighting="nearest neighbor")
 
 
-@pytest.mark.slow
+@pytest.mark.slow()
 class TestSyntheticRadiograph:
     """
     Tests for
@@ -631,7 +631,7 @@ class TestSyntheticRadiograph:
         assert np.all(np.isposinf(od_results[2][zero_mask]))
 
 
-@pytest.mark.slow
+@pytest.mark.slow()
 def test_saving_output(tmp_path):
     """Test behavior of Tracker.save_results."""
 
@@ -657,7 +657,7 @@ def test_saving_output(tmp_path):
         assert np.allclose(results_1[key], results_2[key])
 
 
-@pytest.mark.slow
+@pytest.mark.slow()
 @pytest.mark.parametrize(
     "case",
     ["creating particles", "loading particles", "adding a wire mesh"],
@@ -688,7 +688,7 @@ def test_cannot_modify_simulation_after_running(case):
             pytest.fail(f"Unrecognized test case '{case}'.")
 
 
-@pytest.mark.slow
+@pytest.mark.slow()
 def test_gaussian_sphere_analytical_comparison():
     """
     This test runs a known example problem and compares to a theoretical
@@ -784,7 +784,7 @@ def test_gaussian_sphere_analytical_comparison():
     assert np.isclose(max_deflection, sim.max_deflection.to(u.rad).value, atol=1e-3)
 
 
-@pytest.mark.slow
+@pytest.mark.slow()
 def test_add_wire_mesh():
     # ************************************************************
     # Test various input configurations
