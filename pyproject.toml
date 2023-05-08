@@ -237,6 +237,7 @@ extend-select = [
   "PLC", # pylint convention
   "PLE", # pylint errors
   "PT", # flake8-pytest-style
+  "PLW", # pylint warnings
   "PTH", # flake8-use-pathlib
   "PYI", # flake8-pyi
   "RUF", # ruff specific rules
