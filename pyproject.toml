@@ -278,7 +278,6 @@ ignore = [
   "PT011", # pytest-raises-too-broad
   "PT012", # pytest-raises-multiple-statements
   "PT019", # pytest-fixture-param-without-value
-  "PT021",
   "PT022",
   "PT023",
   "PT024",
