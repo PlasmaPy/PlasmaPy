@@ -245,8 +245,8 @@ extend-select = [
 #  "PLR0915",
   "PLR1701",
   "PLR1711",
-#  "PLR1722",
-#  "PLR2004",
+  "PLR1722",
+##  "PLR2004",
 #  "PLR5501",
   "PTH", # flake8-use-pathlib
   "PYI", # flake8-pyi
