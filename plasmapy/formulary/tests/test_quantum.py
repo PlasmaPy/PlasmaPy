@@ -57,7 +57,7 @@ def test_deBroglie_wavelength():
 
 
 @pytest.mark.parametrize(
-    "kwargs, exception",
+    ("kwargs", "exception"),
     [
         ({"V": c * 1.00000001, "particle": "e-"}, RelativityError),
         ({"V": 8 * u.m / u.s, "particle": 5 * u.m}, InvalidParticleError),
@@ -249,7 +249,7 @@ class TestQuantumTheta:
         assert theta.unit.is_equivalent(u.dimensionless_unscaled)
 
     @pytest.mark.parametrize(
-        "T, n_e, expected_theta",
+        ("T", "n_e", "expected_theta"),
         [
             (1 * u.eV, 1e26 * u.m**-3, 12.72906),  # Both regimes are present
             (2 / 3 * u.eV, 1e40 * u.m**-3, 3.93887e-9),  # Fermi regime

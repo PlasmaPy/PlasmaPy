@@ -74,7 +74,7 @@ def test_trilinear_coeff_cal():
         )
     ]
 
-    @pytest.mark.parametrize("kwargs, expected", test_trilinear_coeff_cal_values)
+    @pytest.mark.parametrize(("kwargs", "expected"), test_trilinear_coeff_cal_values)
     def test_trilinear_coeff_cal_vals(kwargs, expected):
         r"""Test expected values."""
         assert _trilinear_coeff_cal(**kwargs) == expected
@@ -158,7 +158,7 @@ class Test_reduction:
         ({"vspace": vspace, "cell": [24, 25, 26]}, True),
     ]
 
-    @pytest.mark.parametrize("kwargs, expected", test_reduction_values)
+    @pytest.mark.parametrize(("kwargs", "expected"), test_reduction_values)
     def test_reduction_vals(self, kwargs, expected):
         r"""Test expected values."""
         assert _reduction(**kwargs) == expected
@@ -183,7 +183,7 @@ class Test_trilinear_analysis:
         ({"vspace": vspace, "cell": [24, 25, 26]}, False),
     ]
 
-    @pytest.mark.parametrize("kwargs, expected", test_trilinear_analysis_values)
+    @pytest.mark.parametrize(("kwargs", "expected"), test_trilinear_analysis_values)
     def test_trilinear_analysis_vals(self, kwargs, expected):
         r"""Test expected values."""
         assert _trilinear_analysis(**kwargs) == expected
@@ -199,7 +199,7 @@ class Test_bilinear_root:
         )
     ]
 
-    @pytest.mark.parametrize("kwargs, expected", test_bilinear_root_values)
+    @pytest.mark.parametrize(("kwargs", "expected"), test_bilinear_root_values)
     def test_bilinear_root_vals(self, kwargs, expected):
         r"""Test expected values."""
         x1, y1 = _bilinear_root(**kwargs)[0]
@@ -229,7 +229,7 @@ class Test_locate_null_point:
         )
     ]
 
-    @pytest.mark.parametrize("kwargs, expected", test_locate_null_point_values)
+    @pytest.mark.parametrize(("kwargs", "expected"), test_locate_null_point_values)
     def test_locate_null_point_vals(self, kwargs, expected):
         r"""Test expected values."""
         assert np.isclose(
@@ -456,7 +456,7 @@ class Test_classify_null_point:
         ),
     ]
 
-    @pytest.mark.parametrize("kwargs, expected", test_classify_null_point_values)
+    @pytest.mark.parametrize(("kwargs", "expected"), test_classify_null_point_values)
     def test_classify_null_point_vals(self, kwargs, expected):
         r"""Test expected values."""
         assert uniform_null_point_find(**kwargs)[0].classification == expected

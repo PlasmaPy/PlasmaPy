@@ -517,7 +517,7 @@ class TestSyntheticRadiograph:
     sim_results = tracker_obj_simulated.results_dict.copy()
 
     @pytest.mark.parametrize(
-        "args, kwargs, _raises",
+        ("args", "kwargs", "_raises"),
         [
             # obj wrong type
             ((5,), {}, TypeError),
@@ -546,7 +546,7 @@ class TestSyntheticRadiograph:
             cpr.synthetic_radiograph(sim_results)
 
     @pytest.mark.parametrize(
-        "args, kwargs, expected",
+        ("args", "kwargs", "expected"),
         [
             (
                 # From a Tracker object

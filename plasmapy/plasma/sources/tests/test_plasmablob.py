@@ -9,7 +9,7 @@ from plasmapy.utils.exceptions import CouplingWarning
 
 
 @pytest.mark.parametrize(
-    "grid_dimensions, expected_size",
+    ("grid_dimensions", "expected_size"),
     [
         pytest.param((100, 1, 1), 100, marks=pytest.mark.slow),  # Test 1D setup
         pytest.param((128, 128, 1), 16384, marks=pytest.mark.slow),  # 2D

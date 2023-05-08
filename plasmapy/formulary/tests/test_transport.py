@@ -370,7 +370,7 @@ class Test_classical_transport:
         assert testTrue, errStr
 
     @pytest.mark.parametrize(
-        "model, attr_name, field_orientation, expected",
+        ("model", "attr_name", "field_orientation", "expected"),
         [
             ("ji-held", "resistivity", "all", 3),
             ("ji-held", "thermoelectric_conductivity", "all", 3),
@@ -400,7 +400,7 @@ class Test_classical_transport:
         assert testTrue, errStr
 
     @pytest.mark.parametrize(
-        "model, expected",
+        ("model", "expected"),
         [
             ("ji-held", 2.77028546e-8 * u.Ohm * u.m),
             ("spitzer", 2.78349687e-8 * u.Ohm * u.m),
@@ -425,7 +425,7 @@ class Test_classical_transport:
         assert testTrue, errStr
 
     @pytest.mark.parametrize(
-        "model, expected",
+        ("model", "expected"),
         [
             ("ji-held", 0.702 * u.s / u.s),
             ("spitzer", 0.69944979 * u.s / u.s),
@@ -453,7 +453,7 @@ class Test_classical_transport:
         assert testTrue, errStr
 
     @pytest.mark.parametrize(
-        "model, expected",
+        ("model", "expected"),
         [
             (
                 "ji-held",
@@ -485,7 +485,7 @@ class Test_classical_transport:
         assert testTrue, errStr
 
     @pytest.mark.parametrize(
-        "model, expected",
+        ("model", "expected"),
         [
             (
                 "ji-held",
@@ -515,7 +515,7 @@ class Test_classical_transport:
         assert testTrue, errStr
 
     @pytest.mark.parametrize(
-        "model, expected",
+        ("model", "expected"),
         [
             ("ji-held", 5084253.556001088 * u.W / (u.K * u.m)),
             ("spitzer", 5082147.824377487 * u.W / (u.K * u.m)),
@@ -545,7 +545,7 @@ class Test_classical_transport:
         assert testTrue, errStr
 
     @pytest.mark.parametrize(
-        "model, expected",
+        ("model", "expected"),
         [
             ("ji-held", 134547.55528106514 * u.W / (u.K * u.m)),
             ("braginskii", 133052.21732349042 * u.W / (u.K * u.m)),
@@ -572,7 +572,7 @@ class Test_classical_transport:
         assert testTrue, errStr
 
     @pytest.mark.parametrize(
-        "key, expected",
+        ("key", "expected"),
         {
             "resistivity": [2.84304305e-08, 5.54447070e-08, 1.67853407e-12],
             "thermoelectric conductivity": [
@@ -722,7 +722,7 @@ class Test_classical_transport:
             )
 
 
-@pytest.mark.parametrize(["particle"], ["e", "p"])
+@pytest.mark.parametrize("particle", ["e", "p"])
 def test_nondim_thermal_conductivity_unrecognized_model(particle):
     with pytest.raises(ValueError):
         _nondim_thermal_conductivity(
@@ -740,7 +740,7 @@ def test_nondim_te_conductivity_unrecognized_model():
         _nondim_te_conductivity(1, 1, "e", "this is not a model", "parallel")
 
 
-@pytest.mark.parametrize(["particle"], ["e", "p"])
+@pytest.mark.parametrize("particle", ["e", "p"])
 def test_nondim_viscosity_unrecognized_model(particle):
     with pytest.raises(ValueError):
         _nondim_viscosity(1, 1, particle, "not a model", "parallel")
@@ -756,7 +756,7 @@ class Test__nondim_tc_e_braginskii:
 
     # values from Braginskii '65
     @pytest.mark.parametrize(
-        "Z, field_orientation, expected",
+        ("Z", "field_orientation", "expected"),
         [
             (1, "par", 3.16),  # eq (2.12), table 1
             (2, "par", 4.9),  # eq (2.12), table 1
@@ -772,7 +772,7 @@ class Test__nondim_tc_e_braginskii:
 
     # values from Braginskii '65
     @pytest.mark.parametrize(
-        "Z, field_orientation, expected",
+        ("Z", "field_orientation", "expected"),
         [
             (1, "perp", 4.66),  # eq (2.13), table 1
             (2, "perp", 4.0),  # eq (2.13), table 1
@@ -849,7 +849,7 @@ class Test__nondim_tec_braginskii:
 
     # values from Braginskii '65
     @pytest.mark.parametrize(
-        "Z, field_orientation, expected",
+        ("Z", "field_orientation", "expected"),
         [
             (1, "par", 0.71),  # eq (2.9), table 1
             (2, "par", 0.9),  # eq (2.9), table 1
@@ -888,7 +888,7 @@ class Test__nondim_resist_braginskii:
 
     # values from Braginskii '65
     @pytest.mark.parametrize(
-        "Z, field_orientation, expected",
+        ("Z", "field_orientation", "expected"),
         [
             (1, "par", 0.51),  # eq (2.8), table 1
             (2, "par", 0.44),  # table 1
@@ -927,7 +927,7 @@ class Test__nondim_visc_i_braginskii:
 
     # values from Braginskii '65, eqs. 2.22 to 2.24
     @pytest.mark.parametrize(
-        "expected, power",
+        ("expected", "power"),
         [(np.array((0.96, 0.3, 1.2, 0.5, 1.0)), np.array((0, 2, 2, 1, 1)))],
     )
     def test_known_values(self, expected, power):
@@ -954,7 +954,7 @@ class Test__nondim_visc_e_braginskii:
 
     # values from Braginskii '65
     @pytest.mark.parametrize(
-        "Z, expected, idx",
+        ("Z", "expected", "idx"),
         [
             (1, 0.73, 0),  # eq (2.25)
             (1, 0.51, 1),  # eq (2.26)
@@ -1032,7 +1032,7 @@ def test__nondim_tec_spitzer(Z):
 
 # approximated from Ji-Held '13 figures 1 and 2 (black circles)
 @pytest.mark.parametrize(
-    "hall, Z, field_orientation, expected",
+    ("hall", "Z", "field_orientation", "expected"),
     [
         (0.0501, 1, "perp", 3.187),
         (0.2522, 1, "perp", 2.597),
@@ -1083,7 +1083,7 @@ def test__nondim_tc_e_ji_held(hall, Z, field_orientation, expected):
 
 # approximated from Ji-Held '13 figures 1 and 2 (black circles)
 @pytest.mark.parametrize(
-    "hall, Z, field_orientation, expected",
+    ("hall", "Z", "field_orientation", "expected"),
     [
         (0.03939, 1, "perp", 0.6959),
         (0.2498, 1, "perp", 0.6216),
@@ -1137,7 +1137,7 @@ def test__nondim_tec_ji_held(hall, Z, field_orientation, expected):
 
 # approximated from Ji-Held '13 figures 1 and 2 (black circles)
 @pytest.mark.parametrize(
-    "hall, Z, field_orientation, expected",
+    ("hall", "Z", "field_orientation", "expected"),
     [
         (0.06317, 1, "perp", 0.5064),
         (0.3966, 1, "perp", 0.5316),
@@ -1188,7 +1188,7 @@ def test__nondim_resist_ji_held(hall, Z, field_orientation, expected):
 
 # approximated from Ji-Held '13 figure 3 (K = 80)
 @pytest.mark.parametrize(
-    "hall, Z, index, expected",
+    ("hall", "Z", "index", "expected"),
     [
         (0.01968, 1, 2, 0.7368),
         (0.1338, 1, 2, 0.7171),
@@ -1221,7 +1221,7 @@ def test__nondim_visc_e_ji_held(hall, Z, index, expected):
 # note r = sqrt(2) * x
 # note kappa from figure = kappa_hat / sqrt(2)
 @pytest.mark.parametrize(
-    "hall, Z, mu, theta, field_orientation, expected",
+    ("hall", "Z", "mu", "theta", "field_orientation", "expected"),
     [
         (0.01529, 1, 0, 100, "perp", 3.99586042),
         (0.0589, 1, 0, 100, "perp", 3.96828326),
@@ -1253,7 +1253,7 @@ def test__nondim_tc_i_ji_held(hall, Z, mu, theta, field_orientation, expected):
 # note r = sqrt(2) * x
 # note eta from figure = eta_hat / sqrt(2)
 @pytest.mark.parametrize(
-    "hall, Z, mu, theta, index, expected",
+    ("hall", "Z", "mu", "theta", "index", "expected"),
     [
         (0.01981, 1, 0, 100, 2, 0.96166522),
         (0.17423, 1, 0, 100, 2, 0.92206724),

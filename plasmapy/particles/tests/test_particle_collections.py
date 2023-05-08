@@ -328,7 +328,7 @@ def test_particle_multiplication(method, particle):
 
 
 @pytest.mark.parametrize(
-    "particles, args, kwargs, expected",
+    ("particles", "args", "kwargs", "expected"),
     [
         [
             ["electron", "proton", "neutron"],
@@ -396,7 +396,7 @@ def test_weighted_mean_particle():
 boolean_pairs = [(False, False), (True, False), (False, True), (True, True)]
 
 
-@pytest.mark.parametrize("use_rms_charge, use_rms_mass", boolean_pairs)
+@pytest.mark.parametrize(("use_rms_charge", "use_rms_mass"), boolean_pairs)
 def test_root_mean_square_particle(use_rms_charge, use_rms_mass):
     """
     Test that ``ParticleList.average_particle`` returns the mean or root
@@ -430,7 +430,7 @@ particle_multiplicities = [
 
 
 @pytest.mark.parametrize("particle_multiplicities", particle_multiplicities)
-@pytest.mark.parametrize("use_rms_charge, use_rms_mass", boolean_pairs)
+@pytest.mark.parametrize(("use_rms_charge", "use_rms_mass"), boolean_pairs)
 def test_weighted_averages_of_particles(
     particle_multiplicities: dict[ParticleLike, int],
     use_rms_charge,
@@ -495,7 +495,7 @@ def test_particle_list_with_no_arguments():
 
 
 @pytest.mark.parametrize(
-    "quantities, expected",
+    ("quantities", "expected"),
     (
         ((1, 2) * u.kg, (CustomParticle(mass=1 * u.kg), CustomParticle(mass=2 * u.kg))),
         (

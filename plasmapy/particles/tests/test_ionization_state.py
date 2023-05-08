@@ -26,7 +26,9 @@ ionic_fraction_table = [
 ]
 
 
-@pytest.mark.parametrize("ion, ionic_fraction, number_density", ionic_fraction_table)
+@pytest.mark.parametrize(
+    ("ion", "ionic_fraction", "number_density"), ionic_fraction_table
+)
 def test_ionic_level_attributes(ion, ionic_fraction, number_density):
     instance = IonicLevel(
         ion=ion, ionic_fraction=ionic_fraction, number_density=number_density
@@ -46,7 +48,7 @@ def test_ionic_level_attributes(ion, ionic_fraction, number_density):
 
 
 @pytest.mark.parametrize(
-    "invalid_fraction, expected_exception",
+    ("invalid_fraction", "expected_exception"),
     [(-1e-9, ParticleError), (1.00000000001, ParticleError), ("...", ParticleError)],
 )
 def test_ionic_level_invalid_inputs(invalid_fraction, expected_exception):
@@ -68,7 +70,7 @@ def test_ionic_level_invalid_particles(invalid_particle):
         IonicLevel(invalid_particle, ionic_fraction=0)
 
 
-@pytest.mark.parametrize("ion1, ion2", [("Fe-56 6+", "Fe-56 5+"), ("H 1+", "D 1+")])
+@pytest.mark.parametrize(("ion1", "ion2"), [("Fe-56 6+", "Fe-56 5+"), ("H 1+", "D 1+")])
 def test_ionic_level_comparison_with_different_ions(ion1, ion2):
     """
     Test that a `TypeError` is raised when an `IonicLevel` object
@@ -158,7 +160,7 @@ def test_equal_to_itself(He_ionization_state):
     assert He_ionization_state == He_ionization_state
 
 
-@pytest.mark.parametrize("tolerance, output", [(1e-8, True), (1e-9001, False)])
+@pytest.mark.parametrize(("tolerance", "output"), [(1e-8, True), (1e-9001, False)])
 def test_equal_to_within_tolerance(tolerance, output):
     """
     Test that `IonizationState.__eq__` returns `True` for two
@@ -507,7 +509,7 @@ def test_default_T_i_is_T_e(instance):
 
 
 @pytest.mark.parametrize(
-    ["T_i", "expectation"],
+    ("T_i", "expectation"),
     [
         (10 * u.m, pytest.raises(u.UnitTypeError)),
         (
@@ -664,7 +666,7 @@ particles_and_ionfracs = [
 
 
 @pytest.mark.parametrize("physical_property", physical_properties)
-@pytest.mark.parametrize("base_particle, ionic_fractions", particles_and_ionfracs)
+@pytest.mark.parametrize(("base_particle", "ionic_fractions"), particles_and_ionfracs)
 def test_weighted_mean_ion(base_particle, ionic_fractions, physical_property):
     """
     Test that `IonizationState.average_ion` gives a |CustomParticle|
@@ -681,7 +683,7 @@ def test_weighted_mean_ion(base_particle, ionic_fractions, physical_property):
 
 
 @pytest.mark.parametrize("physical_property", physical_properties)
-@pytest.mark.parametrize("base_particle, ionic_fractions", particles_and_ionfracs)
+@pytest.mark.parametrize(("base_particle", "ionic_fractions"), particles_and_ionfracs)
 def test_weighted_rms_ion(base_particle, ionic_fractions, physical_property):
     """
     Test that `IonizationState.average_ion` gives a |CustomParticle|

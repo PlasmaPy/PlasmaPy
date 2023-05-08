@@ -362,7 +362,7 @@ class TestIonizationStateCollectionItemAssignment:
         )
 
     @pytest.mark.parametrize(
-        "element, new_states",
+        ("element", "new_states"),
         [
             ("H", [np.nan, np.nan]),
             ("He", [np.nan, np.nan, np.nan]),
@@ -388,7 +388,7 @@ class TestIonizationStateCollectionItemAssignment:
         )
 
     @pytest.mark.parametrize(
-        "base_particle, new_states, expected_exception",
+        ("base_particle", "new_states", "expected_exception"),
         [
             ("H", (0, 0.9), ValueError),
             ("H", (-0.1, 1.1), ValueError),
@@ -493,7 +493,7 @@ class TestIonizationStateCollectionAttributes:
             assert np.isnan(default_value[element])
 
     @pytest.mark.parametrize(
-        "attribute, invalid_value, expected_exception",
+        ("attribute", "invalid_value", "expected_exception"),
         [
             ("T_e", "5 * u.m", u.UnitsError),
             ("T_e", "-1 * u.K", ParticleError),
@@ -547,7 +547,7 @@ class TestIonizationStateCollectionAttributes:
         )
 
     @pytest.mark.parametrize(
-        "key, invalid_fracs, expected_exception",
+        ("key", "invalid_fracs", "expected_exception"),
         [
             ("H", [-0.01, 1.01], ValueError),
             ("H", [0.4, 0.5], ValueError),
@@ -791,7 +791,7 @@ class TestIonizationStateCollectionDensityEqualities:
             )
 
     @pytest.mark.parametrize(
-        "this, that",
+        ("this", "that"),
         itertools.product(
             ["ndens1", "ndens2", "no_ndens3", "no_ndens4", "no_ndens5"], repeat=2
         ),
@@ -858,7 +858,7 @@ physical_properties = ["charge", "mass"]
 @pytest.mark.parametrize("include_neutrals", [True, False])
 @pytest.mark.parametrize("use_rms_mass", [False, True])
 @pytest.mark.parametrize("use_rms_charge", [False, True])
-@pytest.mark.parametrize("base_particle, ionic_fractions", example_ionic_fractions)
+@pytest.mark.parametrize(("base_particle", "ionic_fractions"), example_ionic_fractions)
 @pytest.mark.parametrize("physical_type", physical_properties)
 def test_average_ion_consistency(
     base_particle,

@@ -432,7 +432,7 @@ def test_single_species_non_collective_spectrum(single_species_non_collective_sp
 
 
 @pytest.mark.parametrize(
-    "kwargs,error,msg",
+    ("kwargs", "error", "msg"),
     [
         # Ion species provided but empty
         (
@@ -1210,7 +1210,7 @@ def test_fit_with_minimal_parameters():
 
 
 @pytest.mark.parametrize(
-    "control,error,msg",
+    ("control", "error", "msg"),
     [
         # Required settings
         (

@@ -132,7 +132,7 @@ units_test_table = [
 ]
 
 
-@pytest.mark.parametrize("openPMD_dims, expected", units_test_table)
+@pytest.mark.parametrize(("openPMD_dims", "expected"), units_test_table)
 @pytest.mark.slow
 def test_fetch_units(openPMD_dims, expected: Union[tuple, list]):
     units = openpmd_hdf5._fetch_units(openPMD_dims)

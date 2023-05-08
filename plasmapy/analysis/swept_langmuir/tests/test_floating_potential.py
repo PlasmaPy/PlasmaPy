@@ -85,7 +85,7 @@ class TestFindFloatingPotential:
             assert mock_cs.call_args[1] == {"strip_units": True}
 
     @pytest.mark.parametrize(
-        "kwargs, _error",
+        ("kwargs", "_error"),
         [
             # errors on kwarg fit_type
             (
@@ -169,7 +169,7 @@ class TestFindFloatingPotential:
             find_floating_potential(**kwargs)
 
     @pytest.mark.parametrize(
-        "kwargs, expected, _warning",
+        ("kwargs", "expected", "_warning"),
         [
             # too many crossing islands
             (
@@ -229,7 +229,7 @@ class TestFindFloatingPotential:
                 assert rtn_val == val
 
     @pytest.mark.parametrize(
-        "min_points, fit_type, islands, indices",
+        ("min_points", "fit_type", "islands", "indices"),
         [
             (np.inf, "linear", [slice(29, 31)], slice(0, 70)),
             (1, "linear", [slice(29, 31)], slice(29, 31)),
@@ -263,7 +263,7 @@ class TestFindFloatingPotential:
         assert extras.fitted_indices == indices
 
     @pytest.mark.parametrize(
-        "kwargs, expected",
+        ("kwargs", "expected"),
         [
             # simple linear
             (
@@ -363,7 +363,7 @@ class TestFindFloatingPotential:
             else:
                 assert rtn_val == val
 
-    @pytest.mark.parametrize("m, b", [(2.0, 0.0), (1.33, -0.1), (0.5, -0.1)])
+    @pytest.mark.parametrize(("m", "b"), [(2.0, 0.0), (1.33, -0.1), (0.5, -0.1)])
     def test_perfect_linear(self, m, b):
         """Test calculated fit parameters on a few perfectly linear cases."""
         voltage = self._voltage
@@ -385,7 +385,7 @@ class TestFindFloatingPotential:
         assert np.allclose(extras.fitted_func.param_errors, (0.0, 0.0), atol=2e-8)
 
     @pytest.mark.parametrize(
-        "a, alpha, b",
+        ("a", "alpha", "b"),
         [(1.0, 0.2, -0.2), (2.7, 0.2, -10.0), (6.0, 0.6, -10.0)],
     )
     def test_perfect_exponential(self, a, alpha, b):

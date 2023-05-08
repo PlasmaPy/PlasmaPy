@@ -151,7 +151,7 @@ create_args = [
 ]
 
 
-@pytest.mark.parametrize("args,kwargs,shape,error", create_args)
+@pytest.mark.parametrize(("args", "kwargs", "shape", "error"), create_args)
 def test_AbstractGrid_creation(args, kwargs, shape, error):
     """
     Test the creation of AbstractGrids
@@ -225,7 +225,7 @@ abstract_attrs = [
 ]
 
 
-@pytest.mark.parametrize("attr,type_,type_in_iter,value", abstract_attrs)
+@pytest.mark.parametrize(("attr", "type_", "type_in_iter", "value"), abstract_attrs)
 def test_AbstractGrid_uniform_attributes(
     attr,
     type_,
@@ -261,7 +261,7 @@ abstract_attrs = [
 ]
 
 
-@pytest.mark.parametrize("attr,type_,type_in_iter,value", abstract_attrs)
+@pytest.mark.parametrize(("attr", "type_", "type_in_iter", "value"), abstract_attrs)
 def test_AbstractGrid_nonuniform_attributes(
     attr,
     type_,
@@ -319,7 +319,7 @@ def test_unit_attribute_error_case():
         grid.unit  # noqa: B018
 
 
-@pytest.mark.parametrize("key,value,error,warning,match", quantities)
+@pytest.mark.parametrize(("key", "value", "error", "warning", "match"), quantities)
 def test_AbstractGrid_add_quantities(
     abstract_grid_uniform, key, value, error, warning, match
 ):
@@ -364,7 +364,9 @@ req_q = [
 ]
 
 
-@pytest.mark.parametrize("required,replace_with_zeros,error,warning,match", req_q)
+@pytest.mark.parametrize(
+    ("required", "replace_with_zeros", "error", "warning", "match"), req_q
+)
 def test_AbstractGrid_require_quantities(
     abstract_grid_uniform, required, replace_with_zeros, error, warning, match
 ):
@@ -416,7 +418,7 @@ on_grid = [
 ]
 
 
-@pytest.mark.parametrize("fixture,pos,result", on_grid)
+@pytest.mark.parametrize(("fixture", "pos", "result"), on_grid)
 def test_AbstractGrid_on_grid(
     abstract_grid_uniform, abstract_grid_nonuniform, fixture, pos, result
 ):
@@ -439,7 +441,7 @@ vector_intersect = [
 ]
 
 
-@pytest.mark.parametrize("fixture,p1,p2,result", vector_intersect)
+@pytest.mark.parametrize(("fixture", "p1", "p2", "result"), vector_intersect)
 def test_AbstractGrid_vector_intersects(
     abstract_grid_uniform, abstract_grid_nonuniform, fixture, p1, p2, result
 ):
@@ -495,7 +497,9 @@ create_args_uniform_cartesian = [
 ]
 
 
-@pytest.mark.parametrize("args,kwargs,shape,error", create_args_uniform_cartesian)
+@pytest.mark.parametrize(
+    ("args", "kwargs", "shape", "error"), create_args_uniform_cartesian
+)
 def test_CartesianGrid_creation(args, kwargs, shape, error):
     # If no exception is expected, create the grid and check its shape
     if error is None:
@@ -508,7 +512,7 @@ def test_CartesianGrid_creation(args, kwargs, shape, error):
 
 
 @pytest.mark.parametrize(
-    "pos,quantities,expected",
+    ("pos", "quantities", "expected"),
     [  # Test one point
         (np.array([0.1, -0.3, 0]) * u.cm, ["x"], np.array([0.1]) * u.cm),
         # Test two points and two quantities
@@ -536,7 +540,7 @@ def test_uniform_cartesian_NN_interp(pos, quantities, expected, uniform_cartesia
 
 
 @pytest.mark.parametrize(
-    "pos,quantities,error",
+    ("pos", "quantities", "error"),
     [  # Quantity not in
         (np.array([0.1, -0.3, 0]) * u.cm, ["not_a_quantity"], KeyError),
     ],
@@ -641,7 +645,9 @@ create_args_nonuniform_cartesian = [
 ]
 
 
-@pytest.mark.parametrize("args,kwargs,shape,error", create_args_nonuniform_cartesian)
+@pytest.mark.parametrize(
+    ("args", "kwargs", "shape", "error"), create_args_nonuniform_cartesian
+)
 def test_NonUniformCartesianGrid_creation(args, kwargs, shape, error):
     # If no exception is expected, create the grid and check its shape
     if error is None:
@@ -654,7 +660,7 @@ def test_NonUniformCartesianGrid_creation(args, kwargs, shape, error):
 
 
 @pytest.mark.parametrize(
-    "pos,quantities,expected",
+    ("pos", "quantities", "expected"),
     [  # Test one point
         (np.array([0.1, -0.3, 0]) * u.cm, ["x"], np.array([0.1]) * u.cm),
         # Test two points and two quantities
@@ -714,7 +720,7 @@ def test_nonuniform_cartesian_nearest_neighbor_interpolator():
 
 
 @pytest.mark.parametrize(
-    "pos, what, expected",
+    ("pos", "what", "expected"),
     [
         (np.array([0.1, -0.3, 0.2]) * u.cm, ("x",), np.array([0.1]) * u.cm),
         (np.array([0.1, 0.25, 0.2]) * u.cm, ("x",), np.array([0.1]) * u.cm),
@@ -770,7 +776,7 @@ def test_volume_averaged_interpolator_missing_key(uniform_cartesian_grid):
 
 
 @pytest.mark.parametrize(
-    "pos, nan_mask",
+    ("pos", "nan_mask"),
     [
         (np.array([-5.0, 0.0, 0.0]) * u.cm, None),
         (np.array([5.0, 0.0, 0.0]) * u.cm, None),

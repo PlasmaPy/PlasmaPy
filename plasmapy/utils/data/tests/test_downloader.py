@@ -18,7 +18,7 @@ test_files = [
 ]
 
 
-@pytest.mark.parametrize("filename,expected", test_files)
+@pytest.mark.parametrize(("filename", "expected"), test_files)
 def test_get_file(filename, expected, tmp_path):
     """
     Test the get_file function

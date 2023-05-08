@@ -504,7 +504,7 @@ test_Particle_table = [
 ]
 
 
-@pytest.mark.parametrize("arg, kwargs, expected_dict", test_Particle_table)
+@pytest.mark.parametrize(("arg", "kwargs", "expected_dict"), test_Particle_table)
 def test_Particle_class(arg, kwargs, expected_dict):
     """
     Test that `~plasmapy.particles.Particle` objects for different
@@ -622,7 +622,7 @@ test_Particle_error_table = [
 
 
 @pytest.mark.parametrize(
-    "args, kwargs, attribute, exception", test_Particle_error_table
+    ("args", "kwargs", "attribute", "exception"), test_Particle_error_table
 )
 def test_Particle_errors(args, kwargs, attribute, exception):
     """
@@ -646,7 +646,9 @@ test_Particle_warning_table = [
 ]
 
 
-@pytest.mark.parametrize("arg, kwargs, attribute, warning", test_Particle_warning_table)
+@pytest.mark.parametrize(
+    ("arg", "kwargs", "attribute", "warning"), test_Particle_warning_table
+)
 def test_Particle_warnings(arg, kwargs, attribute, warning):
     """
     Test that the appropriate warnings are issued during the creation
@@ -700,7 +702,7 @@ nuclide_mass_and_mass_equiv_table = [
 ]
 
 
-@pytest.mark.parametrize("isotope, ion", nuclide_mass_and_mass_equiv_table)
+@pytest.mark.parametrize(("isotope", "ion"), nuclide_mass_and_mass_equiv_table)
 def test_particle_class_mass_nuclide_mass(isotope: str, ion: str):
     """
     Test that the ``mass`` and ``nuclide_mass`` attributes return
@@ -767,7 +769,9 @@ def test_particle_half_life_string():
         assert isinstance(Particle(isotope).half_life, str)
 
 
-@pytest.mark.parametrize("p, is_one", [(Particle("e-"), True), (Particle("p+"), False)])
+@pytest.mark.parametrize(
+    ("p", "is_one"), [(Particle("e-"), True), (Particle("p+"), False)]
+)
 def test_particle_is_electron(p, is_one):
     assert p.is_electron == is_one
 
@@ -936,7 +940,9 @@ customized_particle_tests = [
 ]
 
 
-@pytest.mark.parametrize("cls, kwargs, attr, expected", customized_particle_tests)
+@pytest.mark.parametrize(
+    ("cls", "kwargs", "attr", "expected"), customized_particle_tests
+)
 def test_custom_particles(cls, kwargs, attr, expected):
     """Test the attributes of dimensionless and custom particles."""
     instance = cls(**kwargs)
@@ -949,7 +955,7 @@ def test_custom_particles(cls, kwargs, attr, expected):
 
 
 @pytest.mark.parametrize(
-    "cls, symbol, expected",
+    ("cls", "symbol", "expected"),
     [
         (CustomParticle, None, "CustomParticle(mass=nan kg, charge=nan C)"),
         (CustomParticle, "η", "η"),
@@ -969,7 +975,7 @@ custom_particle_categories_table = [
 ]
 
 
-@pytest.mark.parametrize("kwargs, expected", custom_particle_categories_table)
+@pytest.mark.parametrize(("kwargs", "expected"), custom_particle_categories_table)
 def test_custom_particle_categories(kwargs, expected):
     """Test that CustomParticle.categories behaves as expected."""
     custom_particle = CustomParticle(**kwargs)
@@ -990,7 +996,7 @@ custom_particle_is_category_table = [
 
 
 @pytest.mark.parametrize(
-    "kwargs_to_custom_particle, kwargs_to_is_category, expected",
+    ("kwargs_to_custom_particle", "kwargs_to_is_category", "expected"),
     custom_particle_is_category_table,
 )
 def test_custom_particle_is_category(
@@ -1043,7 +1049,7 @@ custom_particle_errors = [
 ]
 
 
-@pytest.mark.parametrize("cls, kwargs, exception", custom_particle_errors)
+@pytest.mark.parametrize(("cls", "kwargs", "exception"), custom_particle_errors)
 def test_customized_particles_errors(cls, kwargs, exception):
     """
     Test that attempting to create invalid dimensionless or custom particles
@@ -1072,7 +1078,9 @@ customized_particle_repr_table = [
 ]
 
 
-@pytest.mark.parametrize("cls, kwargs, expected_repr", customized_particle_repr_table)
+@pytest.mark.parametrize(
+    ("cls", "kwargs", "expected_repr"), customized_particle_repr_table
+)
 def test_customized_particle_repr(cls, kwargs, expected_repr):
     """Test the string representations of dimensionless and custom particles."""
     instance = cls(**kwargs)
@@ -1183,7 +1191,8 @@ custom_particles_from_json_tests = [
 
 
 @pytest.mark.parametrize(
-    "cls, kwargs, json_string, expected_exception", custom_particles_from_json_tests
+    ("cls", "kwargs", "json_string", "expected_exception"),
+    custom_particles_from_json_tests,
 )
 def test_custom_particles_from_json_string(
     cls, kwargs, json_string, expected_exception
@@ -1215,7 +1224,8 @@ def test_custom_particles_from_json_string(
 
 
 @pytest.mark.parametrize(
-    "cls, kwargs, json_string, expected_exception", custom_particles_from_json_tests
+    ("cls", "kwargs", "json_string", "expected_exception"),
+    custom_particles_from_json_tests,
 )
 def test_custom_particles_from_json_file(cls, kwargs, json_string, expected_exception):
     """Test the attributes of dimensionless and custom particles generated from
@@ -1283,7 +1293,7 @@ particles_from_json_tests = [
 
 
 @pytest.mark.parametrize(
-    "cls, kwargs, json_string, expected_exception", particles_from_json_tests
+    ("cls", "kwargs", "json_string", "expected_exception"), particles_from_json_tests
 )
 def test_particles_from_json_string(cls, kwargs, json_string, expected_exception):
     """Test the attributes of Particle objects created from JSON representation."""
@@ -1305,7 +1315,7 @@ def test_particles_from_json_string(cls, kwargs, json_string, expected_exception
 
 
 @pytest.mark.parametrize(
-    "cls, kwargs, json_string, expected_exception", particles_from_json_tests
+    ("cls", "kwargs", "json_string", "expected_exception"), particles_from_json_tests
 )
 def test_particles_from_json_file(cls, kwargs, json_string, expected_exception):
     """Test the attributes of Particle objects created from JSON representation."""
@@ -1367,7 +1377,7 @@ particle_json_repr_table = [
 ]
 
 
-@pytest.mark.parametrize("cls, kwargs, expected_repr", particle_json_repr_table)
+@pytest.mark.parametrize(("cls", "kwargs", "expected_repr"), particle_json_repr_table)
 def test_particle_to_json_string(cls, kwargs, expected_repr):
     """Test the JSON representations of normal, dimensionless and custom particles."""
     instance = cls(**kwargs)
@@ -1388,7 +1398,7 @@ def test_particle_to_json_string(cls, kwargs, expected_repr):
     )
 
 
-@pytest.mark.parametrize("cls, kwargs, expected_repr", particle_json_repr_table)
+@pytest.mark.parametrize(("cls", "kwargs", "expected_repr"), particle_json_repr_table)
 def test_particle_to_json_file(cls, kwargs, expected_repr):
     """Test the JSON representations of normal, dimensionless and custom particles."""
     instance = cls(**kwargs)
@@ -1444,7 +1454,7 @@ def test_CustomParticle_cmp():
 
 
 @pytest.mark.parametrize(
-    "attr, arg",
+    ("attr", "arg"),
     [
         ("charge", 2 * u.C),
         ("mass", 2 * u.kg),
@@ -1468,7 +1478,7 @@ test_molecule_table = [
 
 
 @pytest.mark.parametrize(
-    "args, kwargs, expected",
+    ("args", "kwargs", "expected"),
     [
         ([], {}, CustomParticle()),
         ([1 * u.kg], {}, CustomParticle(mass=1 * u.kg)),
@@ -1485,7 +1495,7 @@ def test_CustomParticle_from_quantities(args, kwargs, expected):
 
 
 @pytest.mark.parametrize(
-    "args, kwargs, exception",
+    ("args", "kwargs", "exception"),
     [
         ([1 * u.C], {"Z": 2}, InvalidParticleError),
         ([3 * u.m], {}, InvalidParticleError),
@@ -1497,7 +1507,7 @@ def test_CustomParticle_from_quantities_errors(args, kwargs, exception):
         CustomParticle._from_quantities(*args, **kwargs)
 
 
-@pytest.mark.parametrize("m, Z, symbol, m_symbol, m_Z", test_molecule_table)
+@pytest.mark.parametrize(("m", "Z", "symbol", "m_symbol", "m_Z"), test_molecule_table)
 def test_molecule(m, Z, symbol, m_symbol, m_Z):
     """Test ``molecule`` function."""
     assert CustomParticle(m, Z, symbol) == molecule(m_symbol, m_Z)
@@ -1512,7 +1522,7 @@ test_molecule_error_table = [
 ]
 
 
-@pytest.mark.parametrize("symbol, Z", test_molecule_error_table)
+@pytest.mark.parametrize(("symbol", "Z"), test_molecule_error_table)
 def test_molecule_error(symbol, Z):
     """Test the error raised in case of a bad molecule symbol."""
     with pytest.raises(InvalidParticleError):
