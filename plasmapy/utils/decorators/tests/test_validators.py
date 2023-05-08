@@ -195,7 +195,7 @@ class TestValidateQuantities:
 
                 for key, val in default_validations.items():
                     if key in case["output"][arg_name]:
-                        val = case["output"][arg_name][key]
+                        val = case["output"][arg_name][key]  # noqa: PLW2901
                     assert arg_validations[key] == val
 
         # method calls `_get_unit_checks` and `_get_value_checks`
