@@ -1138,7 +1138,7 @@ def _locate_null_point(vspace, cell, n, err):
         If the maximum number of iteration has been reached, but
         convergence has not occurred.
     """
-    global _recursion_level
+    global _recursion_level  # noqa: PLW0602
     # Calculating the Jacobian and trilinear approximation functions for the cell
     tlApprox = trilinear_approx(vspace, cell)
     jcb = _trilinear_jacobian(vspace, cell)
@@ -1216,8 +1216,8 @@ def _locate_null_point(vspace, cell, n, err):
     )
     # Newton Iteration
     for x0 in starting_pos:
-        x0 = np.array(x0)
-        x0 = x0.reshape(3, 1)
+        x0 = np.array(x0)  # noqa: PLW2901
+        x0 = x0.reshape(3, 1)  # noqa: PLW2901
         for _i in range(n):  # noqa: B007
             locx = tlApprox(x0[0], x0[1], x0[2])[0]
             locy = tlApprox(x0[0], x0[1], x0[2])[1]
@@ -1242,7 +1242,7 @@ def _locate_null_point(vspace, cell, n, err):
                 else:
                     break
             # Adjust position
-            x0 = np.subtract(
+            x0 = np.subtract(  # noqa: PLW2901
                 x0, np.matmul(np.linalg.inv(jcb(x0[0], x0[1], x0[2])), Bx0)
             )
             norm = np.linalg.norm(x0)

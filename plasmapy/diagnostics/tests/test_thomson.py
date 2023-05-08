@@ -136,7 +136,7 @@ def args_to_lite_args(kwargs):  # noqa: C901
     ion_mass = np.zeros(len(kwargs["ions"]))
     for i, particle in enumerate(kwargs["ions"]):
         if not isinstance(particle, Particle):
-            particle = Particle(particle)
+            particle = Particle(particle)  # noqa: PLW2901
         ion_z[i] = particle.charge_number
         ion_mass[i] = particle_mass(particle).to(u.kg).value
     kwargs["ion_z"] = ion_z
@@ -187,7 +187,7 @@ def single_species_collective_spectrum(single_species_collective_args):
     return (alpha, wavelengths, Skw)
 
 
-@pytest.mark.slow
+@pytest.mark.slow()
 def test_single_species_collective_spectrum(single_species_collective_spectrum):
     """
     Compares the generated spectrum to previously determined values
@@ -216,7 +216,7 @@ def test_single_species_collective_spectrum(single_species_collective_spectrum):
     )
 
 
-@pytest.mark.slow
+@pytest.mark.slow()
 def test_spectral_density_minimal_arguments(single_species_collective_args):
     """
     Check that spectral density runs with minimal arguments
@@ -409,7 +409,7 @@ def single_species_non_collective_spectrum(single_species_non_collective_args):
     return (alpha, wavelengths, Skw)
 
 
-@pytest.mark.slow
+@pytest.mark.slow()
 def test_single_species_non_collective_spectrum(single_species_non_collective_spectrum):
     """
     Compares the generated spectrum to previously determined values
@@ -432,7 +432,7 @@ def test_single_species_non_collective_spectrum(single_species_non_collective_sp
 
 
 @pytest.mark.parametrize(
-    "kwargs,error,msg",
+    ("kwargs", "error", "msg"),
     [
         # Ion species provided but empty
         (
@@ -544,7 +544,7 @@ def test_spectral_density_input_errors(
                 assert msg in str(excinfo.value)
 
 
-@pytest.mark.slow
+@pytest.mark.slow()
 def test_split_populations():
     """
     This test makes sure that splitting a single population of ions or electrons
@@ -1034,7 +1034,7 @@ def noncollective_single_species_settings_params():
     return kwargs
 
 
-@pytest.mark.slow
+@pytest.mark.slow()
 def test_fit_epw_single_species(epw_single_species_settings_params):
     wavelengths, params, settings = spectral_density_model_settings_params(
         epw_single_species_settings_params
@@ -1043,7 +1043,7 @@ def test_fit_epw_single_species(epw_single_species_settings_params):
     run_fit(wavelengths, params, settings, notch=(531, 533))
 
 
-@pytest.mark.slow
+@pytest.mark.slow()
 def test_fit_epw_multi_species(epw_multi_species_settings_params):
     wavelengths, params, settings = spectral_density_model_settings_params(
         epw_multi_species_settings_params
@@ -1052,7 +1052,7 @@ def test_fit_epw_multi_species(epw_multi_species_settings_params):
     run_fit(wavelengths, params, settings, notch=(531, 533))
 
 
-@pytest.mark.slow
+@pytest.mark.slow()
 def test_fit_iaw_single_species(iaw_single_species_settings_params):
     wavelengths, params, settings = spectral_density_model_settings_params(
         iaw_single_species_settings_params
@@ -1061,7 +1061,7 @@ def test_fit_iaw_single_species(iaw_single_species_settings_params):
     run_fit(wavelengths, params, settings)
 
 
-@pytest.mark.slow
+@pytest.mark.slow()
 def test_fit_iaw_instr_func(iaw_single_species_settings_params):
     """
     Tests fitting with an instrument function
@@ -1076,7 +1076,7 @@ def test_fit_iaw_instr_func(iaw_single_species_settings_params):
     run_fit(wavelengths, params, settings)
 
 
-@pytest.mark.slow
+@pytest.mark.slow()
 def test_fit_iaw_multi_species(iaw_multi_species_settings_params):
     wavelengths, params, settings = spectral_density_model_settings_params(
         iaw_multi_species_settings_params
@@ -1085,7 +1085,7 @@ def test_fit_iaw_multi_species(iaw_multi_species_settings_params):
     run_fit(wavelengths, params, settings)
 
 
-@pytest.mark.slow
+@pytest.mark.slow()
 def test_fit_noncollective_single_species(noncollective_single_species_settings_params):
     wavelengths, params, settings = spectral_density_model_settings_params(
         noncollective_single_species_settings_params
@@ -1094,7 +1094,7 @@ def test_fit_noncollective_single_species(noncollective_single_species_settings_
     run_fit(wavelengths, params, settings)
 
 
-@pytest.mark.slow
+@pytest.mark.slow()
 def test_fit_with_instr_func(epw_single_species_settings_params):
     """
 
@@ -1143,7 +1143,7 @@ def test_fit_with_invalid_instr_func(instr_func, iaw_single_species_settings_par
         run_fit(wavelengths, params, settings)
 
 
-@pytest.mark.slow
+@pytest.mark.slow()
 def test_fit_with_minimal_parameters():
     # Create example data for fitting
     probe_wavelength = 532 * u.nm
@@ -1210,7 +1210,7 @@ def test_fit_with_minimal_parameters():
 
 
 @pytest.mark.parametrize(
-    "control,error,msg",
+    ("control", "error", "msg"),
     [
         # Required settings
         (

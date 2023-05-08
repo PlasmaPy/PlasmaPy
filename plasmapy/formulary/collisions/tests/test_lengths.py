@@ -160,7 +160,7 @@ class Test_impact_parameter:
         )
 
     @pytest.mark.parametrize(
-        "n_e_shape,T_shape",
+        ("n_e_shape", "T_shape"),
         # Scalar T
         [
             ((2, 3, 5), (1,)),
