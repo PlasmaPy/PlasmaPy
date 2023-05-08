@@ -1316,7 +1316,7 @@ def _classify_null_point(vspace, cell, loc):
         if np.allclose(M, M.T, atol=_EQUALITY_ATOL):  # Checking if M is symmetric
             null_point_type = "Proper radial null"
         else:
-            if np.isclose(determinant, 0, atol=_EQUALITY_ATOL):
+            if np.isclose(determinant, 0, atol=_EQUALITY_ATOL):  # noqa: PLR5501
                 null_point_type = "Anti-parallel lines with null plane OR Planes of parabolae with null line"
             else:
                 null_point_type = "Critical spiral null"
@@ -1327,12 +1327,12 @@ def _classify_null_point(vspace, cell, loc):
             else:
                 null_point_type = "Improper radial null"
         else:
-            if np.isclose(determinant, 0, atol=_EQUALITY_ATOL):
+            if np.isclose(determinant, 0, atol=_EQUALITY_ATOL):  # noqa: PLR5501
                 null_point_type = "Continuous X-points"
             else:
                 null_point_type = "Skewed improper null"
     else:
-        if np.isclose(determinant, 0, atol=_EQUALITY_ATOL):
+        if np.isclose(determinant, 0, atol=_EQUALITY_ATOL):  # noqa: PLR5501
             null_point_type = "Continuous concentric ellipses"
         else:
             null_point_type = "Spiral null"
