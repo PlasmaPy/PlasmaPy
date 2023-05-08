@@ -29,7 +29,7 @@ def bar():
 
 
 @pytest.mark.parametrize(
-    "lite_func, attrs, _error",
+    ("lite_func", "attrs", "_error"),
     [
         # conditions on attrs kwarg
         (foo_lite, "not a dictionary", TypeError),
@@ -48,7 +48,7 @@ def test_raises(lite_func, attrs, _error):
 
 
 @pytest.mark.parametrize(
-    "lite_func, attrs",
+    ("lite_func", "attrs"),
     [
         (foo_lite, None),
         (jit(foo_lite), None),
@@ -79,7 +79,7 @@ def test_binding(lite_func, attrs):
 
 
 @pytest.mark.parametrize(
-    "lite_func, attrs",
+    ("lite_func", "attrs"),
     [
         (foo_lite, None),
         (foo_lite, {"bar": bar}),
