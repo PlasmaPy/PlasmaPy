@@ -528,7 +528,7 @@ class CheckUnits(CheckBase):
 
         return wrapper
 
-    def _get_unit_checks(  # noqa: PLR0912
+    def _get_unit_checks(  # noqa: PLR0912, PLR0915
         self, bound_args: inspect.BoundArguments
     ) -> dict[str, dict[str, Any]]:
         """
@@ -786,7 +786,7 @@ class CheckUnits(CheckBase):
         if err is not None:
             raise err
 
-    def _check_unit_core(  # noqa: PLR0912
+    def _check_unit_core(  # noqa: PLR0912, PLR0915
         self, arg, arg_name: str, arg_checks: dict[str, Any]
     ) -> tuple[
         Optional[u.Quantity],
