@@ -307,7 +307,7 @@ pandas = "pd"
 ignore-variadic-names = true
 
 [tool.ruff.mccabe]
-max-complexity = 15
+max-complexity = 10
 
 [tool.ruff.per-file-ignores]
 "__init__.py" = ["E402", "F401", "F402", "F403"]  # ignore import errors
