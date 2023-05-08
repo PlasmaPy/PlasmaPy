@@ -53,7 +53,7 @@ class VFExtras(NamedTuple):
     """
 
 
-def find_floating_potential(
+def find_floating_potential(  # noqa: C901
     voltage: np.ndarray,
     current: np.ndarray,
     threshold: int = 1,

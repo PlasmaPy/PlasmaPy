@@ -400,7 +400,7 @@ class IonizationStateCollection:
         return self._ionic_fractions
 
     @ionic_fractions.setter
-    def ionic_fractions(self, inputs: Union[dict, list, tuple]):
+    def ionic_fractions(self, inputs: Union[dict, list, tuple]):  # noqa: C901
         """
         Set the ionic fractions.
 

@@ -65,7 +65,7 @@ def _process_input(wrapped_function: Callable):  # coverage: ignore
 
 
 @_process_input
-def run_test(
+def run_test(  # noqa: C901
     func,
     args: Any = (),
     kwargs: dict = None,
@@ -412,7 +412,10 @@ def run_test(
     raise UnexpectedResultFail(errmsg)
 
 
-def run_test_equivalent_calls(*test_inputs, require_same_type: bool = True):
+def run_test_equivalent_calls(  # noqa: C901
+    *test_inputs,
+    require_same_type: bool = True,
+):
     """
     Test that different functions/inputs return equivalent results.
 
@@ -621,7 +624,7 @@ def run_test_equivalent_calls(*test_inputs, require_same_type: bool = True):
         raise UnexpectedResultFail(errmsg)
 
 
-def assert_can_handle_nparray(
+def assert_can_handle_nparray(  # noqa: C901
     function_to_test,
     insert_some_nans=None,
     insert_all_nans=None,
@@ -677,7 +680,7 @@ def assert_can_handle_nparray(
     if kwargs is None:
         kwargs = {}
 
-    def _prepare_input(
+    def _prepare_input(  # noqa: C901
         param_name, param_default, insert_some_nans, insert_all_nans, kwargs
     ):
         """

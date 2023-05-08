@@ -223,7 +223,7 @@ def extract_charge(arg: str):
     return isotope_info, Z_from_arg
 
 
-def parse_and_check_atomic_input(
+def parse_and_check_atomic_input(  # noqa: C901
     argument: Union[str, Integral],
     mass_numb: Optional[Integral] = None,
     Z: Optional[Integral] = None,

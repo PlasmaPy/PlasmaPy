@@ -28,7 +28,7 @@ c_si_unitless = c.value
     T_e={"can_be_negative": False, "equivalencies": u.temperature_energy()},
     T_i={"can_be_negative": False, "equivalencies": u.temperature_energy()},
 )
-def kinetic_alfven(
+def kinetic_alfven(  # noqa: C901
     *,
     B: u.T,
     ion: ParticleLike,

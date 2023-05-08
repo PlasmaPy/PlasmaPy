@@ -629,7 +629,7 @@ def _bilinear_root(a1, b1, c1, d1, a2, b2, c2, d2):
             return np.array([(x1, y1), (x2, y2)])
 
 
-def _trilinear_analysis(vspace, cell):
+def _trilinear_analysis(vspace, cell):  # noqa: C901
     r"""
     Return a true or false value based on whether a grid cell which has
     passed the reduction step, contains a null point, using trilinear
