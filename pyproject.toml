@@ -277,8 +277,6 @@ ignore = [
   "PT007", # pytest-parametrize-values-wrong-type
   "PT011", # pytest-raises-too-broad
   "PT012", # pytest-raises-multiple-statements
-  "PT015",
-  "PT016",
   "PT017",
   "PT018",
   "PT019",
