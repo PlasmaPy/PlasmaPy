@@ -553,7 +553,7 @@ class IonizationState:
         """The number densities for each state."""
         try:
             return (self.n_elem * self.ionic_fractions).to(u.m**-3)
-        except Exception:
+        except Exception:  # noqa: BLE001
             return np.full(self.atomic_number + 1, np.nan) * u.m**-3
 
     @number_densities.setter
@@ -579,7 +579,7 @@ class IonizationState:
         return self._T_e.to(u.K, equivalencies=u.temperature_energy())
 
     @T_e.setter
-    @validate_quantities(value=dict(equivalencies=u.temperature_energy()))
+    @validate_quantities(value={"equivalencies": u.temperature_energy()})
     def T_e(self, value: u.K):
         """Set the electron temperature."""
         try:
@@ -593,9 +593,7 @@ class IonizationState:
 
     @property
     @validate_quantities(
-        validations_on_return=dict(
-            equivalencies=u.temperature_energy(),
-        )
+        validations_on_return={"equivalencies": u.temperature_energy()}
     )
     def T_i(self) -> u.K:
         """
@@ -606,11 +604,11 @@ class IonizationState:
 
     @T_i.setter
     @validate_quantities(
-        value=dict(
-            equivalencies=u.temperature_energy(),
-            none_shall_pass=True,
-            can_be_negative=False,
-        )
+        value={
+            "equivalencies": u.temperature_energy(),
+            "none_shall_pass": True,
+            "can_be_negative": False,
+        }
     )
     def T_i(self, value: u.K):
         """Set the ion temperature."""

@@ -178,7 +178,6 @@ def ambiguous_keywords(p1: ParticleLike, p2: ParticleLike, Z=None, mass_numb=Non
     A trivial function with two annotated arguments plus the keyword
     arguments ``Z`` and ``mass_numb``.
     """
-    pass
 
 
 ambiguous_arguments = [

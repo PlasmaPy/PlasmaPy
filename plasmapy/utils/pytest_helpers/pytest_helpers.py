@@ -56,7 +56,7 @@ def _process_input(wrapped_function: Callable):  # coverage: ignore
                     inputs[3] if len(inputs) == 4 else inputs[2]
                 )
             else:
-                new_kwargs = {argname: argval for argname, argval in arguments.items()}
+                new_kwargs = dict(arguments.items())
             return wrapped_function(**new_kwargs)
 
         return wrapper
@@ -246,7 +246,7 @@ def run_test(
         subclass_of_Warning = issubclass(expected_outcome, Warning)
         if subclass_of_Warning:
             expected["warning"] = expected_outcome
-        elif subclass_of_Exception and not subclass_of_Warning:
+        elif subclass_of_Exception:
             expected["exception"] = expected_outcome
 
     # If a warning is issued, then there may also be an expected result.
@@ -349,7 +349,7 @@ def run_test(
         return None
 
     if isinstance(expected["result"], (u.Quantity, const.Constant, const.EMConstant)):
-        if not result.unit == expected["result"].unit:
+        if result.unit != expected["result"].unit:
             raise u.UnitsError(
                 f"The command {call_str} returned "
                 f"{_object_name(result)} which has different units "
@@ -401,12 +401,12 @@ def run_test(
 
     if atol or rtol:
         errmsg += " with "
-        if atol:
-            errmsg += f"atol = {atol}"
-        if atol and rtol:
-            errmsg += " and "
+    if atol:
+        errmsg += f"atol = {atol}"
         if rtol:
-            errmsg += f"rtol = {rtol}"
+            errmsg += " and "
+    if rtol:
+        errmsg += f"rtol = {rtol}"
     errmsg += "."
 
     raise UnexpectedResultFail(errmsg)
@@ -684,7 +684,7 @@ def assert_can_handle_nparray(
         Parse parameter names and set up values to input for 0d, 1d, and 2d array tests.
         """
         # first things first: let any passed in kwarg right through (VIP access)
-        if param_name in kwargs.keys():
+        if param_name in kwargs:
             return (kwargs[param_name],) * 4
 
         # else, if it's a recognized variable name, give it a reasonable unit and magnitude
@@ -757,7 +757,7 @@ def assert_can_handle_nparray(
     args_1d = {}
     args_2d = {}
     args_3d = {}
-    param_names = [elm for elm in function_params.keys()]
+    param_names = list(function_params.keys())
     for idx, key in enumerate(function_params):
         args_0d[key], args_1d[key], args_2d[key], args_3d[key] = _prepare_input(
             param_names[idx],

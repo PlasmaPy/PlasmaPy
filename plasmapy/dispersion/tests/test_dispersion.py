@@ -9,7 +9,7 @@ from astropy import units as u
 from hypothesis import given
 from hypothesis.strategies import complex_numbers
 from numpy import pi as π
-from scipy.special import gamma as Γ
+from scipy.special import gamma as Γ  # noqa: N812
 
 from plasmapy.dispersion.dispersionfunction import (
     plasma_dispersion_func,
@@ -146,7 +146,7 @@ class TestPlasmaDispersionFunction:
 
         try:
             Z_of_w_array = plasma_dispersion_func(w_array)
-        except Exception as exc:
+        except Exception as exc:  # noqa: BLE001
             raise ValueError(
                 "plasma_dispersion_func is unable to accept an "
                 f"ndarray argument with values:\n{w_array}"
@@ -197,9 +197,9 @@ class TestPlasmaDispersionFunction:
         for root in roots:
             Z_at_root = plasma_dispersion_func(root)
             assert np.isclose(Z_at_root, 0 + 0j, atol=1e-15 * (1 + 1j)), (
-                "A root of the plasma dispersion function is expected at w = "
-                f"{root}, but plasma_dispersion_func({root}) is equal to "
-                f"{Z_at_root} instead of {0j}."
+                "A root of the plasma dispersion function is expected "
+                f"at w = {root}, but plasma_dispersion_func({root}) is "
+                f"equal to {Z_at_root} instead of 0j."
             )
 
     @pytest.mark.parametrize("w, expected_error", plasma_disp_func_errors_table)
@@ -218,7 +218,7 @@ class TestPlasmaDispersionFunctionLite:
     """Test class for `plasma_dispersion_func_lite`."""
 
     @pytest.mark.parametrize("w, expected", plasma_dispersion_func_table)
-    def test_normal_vs_lite(self, w, expected):
+    def test_normal_vs_lite(self, w, expected):  # noqa: ARG002
         r"""Test that plasma_dispersion_func and plasma_dispersion_func_lite
         calculate the same values."""
 
@@ -333,7 +333,7 @@ class TestPlasmaDispersionFunctionDerivLite:
     """Test class for `plasma_dispersion_func_deriv_lite`."""
 
     @pytest.mark.parametrize("w, expected", plasma_disp_deriv_table)
-    def test_normal_vs_lite(self, w, expected):
+    def test_normal_vs_lite(self, w, expected):  # noqa: ARG002
         r"""Test that plasma_dispersion_func_deriv and
         plasma_dispersion_func_deriv_lite
         calculate the same values."""

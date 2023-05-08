@@ -472,7 +472,7 @@ class RelativisticBody:
         -------
         ~astropy.units.Quantity
         """
-        return getattr(self, "_momentum")
+        return self._momentum
 
     @kinetic_energy.setter
     @validate_quantities(E_K={"can_be_negative": False})

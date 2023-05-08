@@ -42,8 +42,6 @@ class NullPointError(Exception):
        change in future releases.
     """
 
-    pass
-
 
 class NullPointWarning(UserWarning):
     """
@@ -56,10 +54,8 @@ class NullPointWarning(UserWarning):
        change in future releases.
     """
 
-    pass
 
-
-class NonZeroDivergence(NullPointError):
+class NonZeroDivergence(NullPointError):  # noqa: N818
     """
     A class for handling the exception raised by passing in a magnetic
     field that violates the zero divergence constraint.
@@ -87,8 +83,6 @@ class MultipleNullPointWarning(NullPointWarning):
        This functionality is still under development and the API may
        change in future releases.
     """
-
-    pass
 
 
 class Point:
@@ -152,14 +146,14 @@ def _vector_space(
     x_arr=None,
     y_arr=None,
     z_arr=None,
-    x_range=[0, 1],
-    y_range=[0, 1],
-    z_range=[0, 1],
+    x_range=(0, 1),
+    y_range=(0, 1),
+    z_range=(0, 1),
     u_arr=None,
     v_arr=None,
     w_arr=None,
     func=(lambda x, y, z: [x, y, z]),
-    precision=[0.05, 0.05, 0.05],
+    precision=(0.05, 0.05, 0.05),
 ):
     r"""
     Returns a vector space in the form of a multi-dimensional array.
@@ -267,7 +261,6 @@ def _trilinear_coeff_cal(vspace, cell):
 
     Parameters
     ----------
-
     vspace: |array_like|
         The vector space as constructed by the vector_space function
         which is a 1 by 3 array with the first element containing the
@@ -381,7 +374,6 @@ def trilinear_approx(vspace, cell):
 
     Parameters
     ----------
-
     vspace: |array_like|
         The vector space as constructed by the vector_space function
         which is a 1 by 3 array with the first element containing the
@@ -450,7 +442,6 @@ def _trilinear_jacobian(vspace, cell):
 
     Parameters
     ----------
-
     vspace: |array_like|
         The vector space as constructed by the vector_space function
         which is a 1 by 3 array with the first element containing the
@@ -564,9 +555,7 @@ def _reduction(vspace, cell):
         ):
             passZ = True
 
-    doesPassReduction = passX and passY and passZ
-
-    return doesPassReduction
+    return passX and passY and passZ
 
 
 def _bilinear_root(a1, b1, c1, d1, a2, b2, c2, d2):
@@ -606,16 +595,14 @@ def _bilinear_root(a1, b1, c1, d1, a2, b2, c2, d2):
     if np.isclose(a, 0, atol=_EQUALITY_ATOL):
         if np.isclose(b, 0, atol=_EQUALITY_ATOL):
             return np.array([])
-        else:
-            x1 = (-1.0 * c) / b
-            x2 = (-1.0 * c) / b
+        x1 = (-1.0 * c) / b
+        x2 = (-1.0 * c) / b
 
     else:
         if (b**2 - 4.0 * a * c) < 0:
             return np.array([])
-        else:
-            x1 = (-1.0 * b + (b**2 - 4.0 * a * c) ** 0.5) / (2.0 * a)
-            x2 = (-1.0 * b - (b**2 - 4.0 * a * c) ** 0.5) / (2.0 * a)
+        x1 = (-1.0 * b + (b**2 - 4.0 * a * c) ** 0.5) / (2.0 * a)
+        x2 = (-1.0 * b - (b**2 - 4.0 * a * c) ** 0.5) / (2.0 * a)
 
     y1 = None
     y2 = None
@@ -1231,7 +1218,7 @@ def _locate_null_point(vspace, cell, n, err):
     for x0 in starting_pos:
         x0 = np.array(x0)
         x0 = x0.reshape(3, 1)
-        for i in range(n):
+        for _i in range(n):  # noqa: B007
             locx = tlApprox(x0[0], x0[1], x0[2])[0]
             locy = tlApprox(x0[0], x0[1], x0[2])[1]
             locz = tlApprox(x0[0], x0[1], x0[2])[2]
@@ -1384,7 +1371,7 @@ def _vspace_iterator(vspace, maxiter=500, err=1e-10):
     for i in range(len(vspace[0][0]) - 1):
         for j in range(len(vspace[0][0][0]) - 1):
             for k in range(len(vspace[0][0][0][0]) - 1):
-                if _reduction(vspace, [i, j, k]):
+                if _reduction(vspace, [i, j, k]):  # noqa: SIM102
                     if _trilinear_analysis(vspace, [i, j, k]):
                         loc = _locate_null_point(vspace, [i, j, k], maxiter, err)
                         if loc is not None:
@@ -1486,7 +1473,7 @@ def uniform_null_point_find(
     y_range,
     z_range,
     func: Callable,
-    precision=[0.05, 0.05, 0.05],
+    precision=(0.05, 0.05, 0.05),
     maxiter=500,
     err=1e-10,
 ):

@@ -201,7 +201,7 @@ class TestChemicalPotential:
 class Test__chemical_potential_interp:
     @classmethod
     def setup_class(cls):
-        """initializing parameters for tests"""
+        """Initializing parameters for tests"""
         cls.n_e = 1e23 * u.cm**-3
         cls.T = 11604 * u.K
         cls.True1 = 7.741254037813922

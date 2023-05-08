@@ -72,7 +72,6 @@ def find_floating_potential(
 
     Parameters
     ----------
-
     voltage: `numpy.ndarray`
         1-D numpy array of monotonically ascending probe biases
         (should be in volts)

@@ -43,13 +43,6 @@ repos:
   - id: absolufy-imports
     exclude: docs/plasmapy_sphinx
 
-- repo: https://github.com/asottile/pyupgrade
-  rev: v3.3.1
-  hooks:
-  - id: pyupgrade
-    args: [--keep-runtime-typing, --py39-plus]
-    files: ^plasmapy/
-
 - repo: https://github.com/pre-commit/pygrep-hooks
   rev: v1.10.0
   hooks:
@@ -65,7 +58,7 @@ repos:
     - tomli
 
 - repo: https://github.com/charliermarsh/ruff-pre-commit
-  rev: v0.0.262
+  rev: v0.0.263
   hooks:
   - id: ruff
     args: [--fix]

@@ -69,8 +69,8 @@ for modname in (
     with contextlib.suppress(AttributeError):
         __lite_funcs__.extend(obj.__lite_funcs__)
 
-__aliases__ = list(sorted(set(__aliases__)))
-__lite_funcs__ = list(sorted(set(__lite_funcs__)))
+__aliases__ = sorted(set(__aliases__))
+__lite_funcs__ = sorted(set(__lite_funcs__))
 
 # cleanup namespace
 del contextlib, inspect, modname, obj, obj_name
