@@ -26,7 +26,7 @@ B_nanarr = np.array([0.001, np.nan]) * u.T
 
 
 @pytest.mark.parametrize(
-    "alias, parent",
+    ("alias", "parent"),
     [
         (oc_, gyrofrequency),
         (wc_, gyrofrequency),

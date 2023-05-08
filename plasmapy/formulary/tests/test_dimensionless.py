@@ -32,7 +32,7 @@ T_e = 1e6 * u.K
 
 
 @pytest.mark.parametrize(
-    "alias, parent",
+    ("alias", "parent"),
     [
         (nD_, Debye_number),
         (betaH_, Hall_parameter),

@@ -481,7 +481,7 @@ class Test_Maxwellian_velocity_2D:
         assert np.isclose(distFunc.value, testVal, rtol=1e-5, atol=0.0), errStr
 
 
-@pytest.mark.slow
+@pytest.mark.slow()
 class Test_Maxwellian_speed_2D:
     @classmethod
     def setup_class(cls):
@@ -607,7 +607,7 @@ class Test_Maxwellian_speed_2D:
             )
 
 
-@pytest.mark.slow
+@pytest.mark.slow()
 class Test_Maxwellian_velocity_3D:
     @classmethod
     def setup_class(cls):
@@ -1127,7 +1127,7 @@ class Test_kappa_velocity_1D:
         assert np.isclose(distFunc.value, testVal, rtol=1e-5, atol=0.0), errStr
 
 
-@pytest.mark.slow
+@pytest.mark.slow()
 class Test_kappa_velocity_3D:
     @classmethod
     def setup_class(cls):

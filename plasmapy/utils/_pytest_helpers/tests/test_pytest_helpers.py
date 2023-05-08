@@ -96,7 +96,7 @@ f_args_kwargs_expected_whaterror = [
 
 
 @pytest.mark.parametrize(
-    "f, args, kwargs, expected, whaterror", f_args_kwargs_expected_whaterror
+    ("f", "args", "kwargs", "expected", "whaterror"), f_args_kwargs_expected_whaterror
 )
 def test_run_test(f, args, kwargs, expected, whaterror):
     """
@@ -242,7 +242,7 @@ run_test_equivalent_calls_table = [
 ]
 
 
-@pytest.mark.parametrize("inputs, error", run_test_equivalent_calls_table)
+@pytest.mark.parametrize(("inputs", "error"), run_test_equivalent_calls_table)
 def test_run_test_equivalent_calls(inputs, error):
     if error is None:
         try:
