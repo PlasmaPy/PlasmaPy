@@ -42,7 +42,7 @@ Features
   functions are designed to wrap together an analytical function, a curve fitter,
   uncertainty propagation, and a root solver to make curve fitting a little less
   painful. (`#908 <https://github.com/plasmapy/plasmapy/pull/908>`__)
-- Created a new subpackage, `plasmapy.tests.helpers`, to contain test helper functionality. (`#919 <https://github.com/plasmapy/plasmapy/pull/919>`__)
+- Created a new subpackage, ``plasmapy.tests.helpers``, to contain test helper functionality. (`#919 <https://github.com/plasmapy/plasmapy/pull/919>`__)
 - Create decorator `~plasmapy.utils.decorators.helpers.modify_docstring`, which allows
   for programmatically prepending and/or appending a docstring. (`#943 <https://github.com/plasmapy/plasmapy/pull/943>`__)
 
