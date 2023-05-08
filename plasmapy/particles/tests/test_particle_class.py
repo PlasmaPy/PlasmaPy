@@ -737,7 +737,7 @@ def test_particle_class_mass_nuclide_mass(isotope: str, ion: str):
             f"of the ion."
         )
 
-        assert Isotope.isotope and not Isotope.ion, inputerrmsg
+        assert Isotope.isotope and not Isotope.ion, inputerrmsg  # noqa: PT018
         assert Isotope.isotope == Ion.isotope, inputerrmsg
         assert Ion.charge_number == Ion.atomic_number, inputerrmsg
 

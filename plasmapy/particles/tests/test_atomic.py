@@ -336,7 +336,9 @@ def test_particle_mass_equivalent_args(arg1, kwargs1, arg2, kwargs2, expected):
     )
 
     if expected is not None:
-        assert u.isclose(result1, result2) and u.isclose(result2, expected), (
+        assert u.isclose(result1, result2) and u.isclose(  # noqa: PT018
+            result2, expected
+        ), (
             f"particle_mass({arg1!r}, **{kwargs1}) = {result1!r} and "
             f"particle_mass({arg2!r}, **{kwargs2}) = {result2!r}, but "
             f"these results are not equal to {expected!r} as expected."
