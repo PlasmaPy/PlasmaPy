@@ -240,7 +240,7 @@ extend-select = [
   "PLR0206",
   "PLR0402",
   "PLR0911",
-##  "PLR0912",
+#  "PLR0912",
 #  "PLR0913",
 #  "PLR0915",
   "PLR1701",
@@ -325,7 +325,7 @@ max-complexity = 20
 "plasmapy/formulary/braginskii.py" = ["C901"]
 "plasmapy/formulary/tests/test_distribution.py" = ["ARG005"]
 "plasmapy/particles/tests/test_decorators.py" = ["ARG001", "ARG002"]
-"plasmapy/utils/pytest_helpers/pytest_helpers.py" = ["BLE001", "PLR0911"]
+"plasmapy/utils/pytest_helpers/pytest_helpers.py" = ["BLE001", "PLR0911", "PLR0912"]
 "plasmapy/utils/pytest_helpers/tests/test_pytest_helpers.py" = ["BLE001", "TRY002"]
 
 [tool.ruff.pydocstyle]
