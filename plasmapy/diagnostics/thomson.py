@@ -261,7 +261,7 @@ def spectral_density_lite(
     T_i={"can_be_negative": False, "equivalencies": u.temperature_energy()},
 )
 @bind_lite_func(spectral_density_lite)
-def spectral_density(  # noqa: C901
+def spectral_density(  # noqa: C901, PLR0912, PLR0915
     wavelengths: u.nm,
     probe_wavelength: u.nm,
     n: u.m**-3,
@@ -679,7 +679,9 @@ def _spectral_density_model(wavelengths, settings=None, **params):
     return model_Skw
 
 
-def spectral_density_model(wavelengths, settings, params):  # noqa: C901
+def spectral_density_model(  # noqa: C901, PLR0912, PLR0915
+    wavelengths, settings, params
+):
     r"""
     Returns a `lmfit.model.Model` function for Thomson spectral density
     function.
