@@ -11,7 +11,7 @@ from plasmapy.plasma import grids
 rs = np.random.RandomState(120921)
 
 
-@pytest.fixture
+@pytest.fixture()
 def abstract_grid_uniform():
     """
     A `pytest` fixture that generates an abstract grid that spans
@@ -37,7 +37,7 @@ def abstract_grid_uniform():
     return grid
 
 
-@pytest.fixture
+@pytest.fixture()
 def abstract_grid_nonuniform():
     """
     A `pytest` fixture that generates an abstract grid that spans
@@ -456,7 +456,7 @@ def test_AbstractGrid_vector_intersects(
 # **********************************************************************
 
 
-@pytest.fixture
+@pytest.fixture()
 def uniform_cartesian_grid():
     """
     A `pytest` fixture that generates a CartesianGrid that spans
@@ -587,7 +587,7 @@ def test_uniform_cartesian_NN_interp_persistence(uniform_cartesian_grid):
 # **********************************************************************
 
 
-@pytest.fixture
+@pytest.fixture()
 def nonuniform_cartesian_grid():
     """
     A `pytest` fixture that generates a NonUniformCartesianGrid that spans

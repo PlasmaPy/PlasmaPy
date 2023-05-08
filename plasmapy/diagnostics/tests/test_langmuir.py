@@ -140,7 +140,7 @@ class Test__characteristic_errors:
         assert (a.current - b.current == ab_sub.current).all(), errStr
 
 
-@pytest.fixture
+@pytest.fixture()
 def characteristic():
     r"""Create a dummy characteristic with random values"""
 
@@ -148,7 +148,7 @@ def characteristic():
         return langmuir.Characteristic(bias_arr, current_arr)
 
 
-@pytest.fixture
+@pytest.fixture()
 def characteristic_simulated():
     r"""Create a simulated probe characteristic (provisional)"""
 
