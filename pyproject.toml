@@ -274,8 +274,6 @@ ignore = [
   "N806", # non-lowercase-variable-in-function
   "N816", # mixed-case-variable-in-global-scope
   "PLE0605", # invalid-all-format
-  "PT004",
-  "PT005",
   "PT006",
   "PT007",
   "PT008",
