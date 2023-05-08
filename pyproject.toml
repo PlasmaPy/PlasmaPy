@@ -236,6 +236,7 @@ extend-select = [
   "PIE", # flake8-pie
   "PLC", # pylint convention
   "PLE", # pylint errors
+  "PLW", # pylint warnings
   "PTH", # flake8-use-pathlib
   "PYI", # flake8-pyi
   "RUF", # ruff specific rules
