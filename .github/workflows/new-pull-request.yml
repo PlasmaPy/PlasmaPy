@@ -23,10 +23,6 @@ jobs:
 
             Please **add yourself to the list of contributors** by modifying [docs/about/credits.rst](https://github.com/PlasmaPy/PlasmaPy/blob/main/docs/about/credits.rst) in your PR to make sure that you get credit for your contribution. 🔖
 
-            The bottom of this page includes several checks that are run for every PR. Don't worry if something broke! We break stuff all the time. 😺 Click on "Details" next to each check to learn why a check didn't pass. Because error messages are sometimes cryptic 🤔, please feel free to ask for help. We do that all the time as well. 🌸 We can usually be reached in our [**chat room**](https://docs.plasmapy.org/en/latest/contributing/coding_guide.html) or weekly [**community meeting**](https://www.plasmapy.org/meetings/weekly) & [**office hours**]((https://www.plasmapy.org/meetings/office_hours).
-
-            If this PR is marked as ready for review, someone should stop by soon to provide a code review and offer suggestions. ✅ If you'd like more time beforehand 🕰️, please [convert this PR into a draft](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/changing-the-stage-of-a-pull-request#converting-a-pull-request-to-a-draft) and later on [mark it as ready for review](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/changing-the-stage-of-a-pull-request#marking-a-pull-request-as-ready-for-review). If you don't get a review within ∼2–3 weekdays, please feel free to give us a reminder.
-
             We thank you once again! 🎆
 
   checklist:
@@ -41,57 +37,36 @@ jobs:
             repo: context.repo.repo,
             body: `Thank you for contributing! ✨ PlasmaPy's future depends on contributors like you, so we deeply appreciate it! 🌱
 
-            [**contributor guide**]: https://docs.plasmapy.org/en/latest/contributing/index.html
-            [Getting ready to contribute]: https://docs.plasmapy.org/en/latest/contributing/getting_ready.html#getting-ready-to-contribute
-            [code contribution workflow]: https://docs.plasmapy.org/en/latest/contributing/workflow.html#code-contribution-workflow
-            [coding tips and guidelines]: https://docs.plasmapy.org/en/latest/contributing/coding_guide.html#coding-guide
-            [Writing documentation]: https://docs.plasmapy.org/en/latest/contributing/doc_guide.html#writing-documentation
-            [documentation troubleshooting]: https://docs.plasmapy.org/en/latest/contributing/doc_guide.html#troubleshooting
-            [Writing tests]: https://docs.plasmapy.org/en/latest/contributing/testing_guide.html#testing-guide
-            [add a changelog entry]: https://docs.plasmapy.org/en/latest/contributing/changelog_guide.html#adding-a-changelog-entry
+            [**contributor guide**]:
+            [Getting ready to contribute]:
+            [code contribution workflow]:
+            [coding tips and guidelines]:
+            [Writing documentation]:
+            [documentation troubleshooting]:
+            [Writing tests]:
+            [add a changelog entry]:
             [online documentation]: https://docs.plasmapy/org/en/latest
-            [\`@particle_input\`]: https://docs.plasmapy.org/en/latest/api/plasmapy.particles.decorators.particle_input.html#particle-input
-            [\`astropy.units\`]: https://docs.plasmapy.org/en/latest/notebooks/getting_started/units.html#Using-Astropy-Units
-            [\`plasmapy.particles\`]: https://docs.plasmapy.org/en/latest/notebooks/getting_started/particles.html#Using-PlasmaPy-Particles
-            [reStructuredText]: https://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html#restructuredtext-primer
-            [Docstrings]:
-            [numpydoc format]: https://numpydoc.readthedocs.io/en/latest/format.html#docstring-standard
-            [example docstring]:
 
-            Please check out our [**contributor guide**] to learn more about:
+            The bottom of this page includes several checks that are run for every PR. Don't worry if something broke! We break stuff all the time. 😺 Click on "Details" to learn why a check didn't pass. Because error messages are sometimes cryptic 🤔, please feel free to ask for help. We do that all the time as well. 🌸 We can usually be reached in our [**chat room**](https://docs.plasmapy.org/en/latest/contributing/coding_guide.html) or weekly [**community meeting**](https://www.plasmapy.org/meetings/weekly) & [**office hours**]((https://www.plasmapy.org/meetings/office_hours).
 
-             - [Getting ready to contribute]
-             - The [code contribution workflow]
-             - Using [\`astropy.units\`] and [\`plasmapy.particles\`]
-             - [Coding tips and guidelines]
-             - [Writing documentation]
-             - [Writing tests]
+            Please check out our [**contributor guide**](https://docs.plasmapy.org/en/latest/contributing/index.html) to learn more about:
 
-            The bottom of this page includes several checks. Don't worry if something broke! We break stuff all the time. Clicking on *Details* next to each check will show the results, and why any checks failed. Please feel free to ask for help if you're having trouble (we do that all the time, as well). Some tips:
+             - [Getting ready to contribute](https://docs.plasmapy.org/en/latest/contributing/getting_ready.html#getting-ready-to-contribute)
+             - The [code contribution workflow](https://docs.plasmapy.org/en/latest/contributing/workflow.html#code-contribution-workflow)
+             - Using [\`astropy.units\`](https://docs.plasmapy.org/en/latest/notebooks/getting_started/units.html#Using-Astropy-Units) and [\`plasmapy.particles\`](https://docs.plasmapy.org/en/latest/notebooks/getting_started/particles.html#Using-PlasmaPy-Particles)
+             - [Coding tips and guidelines](https://docs.plasmapy.org/en/latest/contributing/coding_guide.html#coding-guide)
+             - [Writing documentation](https://docs.plasmapy.org/en/latest/contributing/doc_guide.html#writing-documentation) (in [reStructuredText](https://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html#restructuredtext-primer) using the [numpydoc style](https://numpydoc.readthedocs.io/en/latest/format.html#docstring-standard)).
+             - [Writing tests](https://docs.plasmapy.org/en/latest/contributing/testing_guide.html#testing-guide)
+             - [Adding a changelog entry](https://docs.plasmapy.org/en/latest/contributing/changelog_guide.html#adding-a-changelog-entry) (needed except for minor changes)
 
-             - Try fixing Python 3.11 failures first.
-            - Most *pre-commit.ci* failures can be automagically fixed by commenting \`pre-commit.ci autofix\` on this pull request, followed by a \`git pull\`
-             - If the *CI/Documentation* check failed, our [documentation troubleshooting] has tips on deciphering [Sphinx] error messages.
+            Some suggestions:
 
-             - The *CodeCov*
+             - Try fixing *CI / Python 3.11* test failures first.
+             - Most *pre-commit.ci* failures can be automagically fixed by commenting \`pre-commit.ci autofix\` below, followed by a \`git pull\`.
+             - For cryptic *CI / Documentation* failures, see our [documentation troubleshooting guide](https://docs.plasmapy.org/en/latest/contributing/doc_guide.html#troubleshooting).
+             - Use [\`@particle_input\`](https://docs.plasmapy.org/en/latest/api/plasmapy.particles.decorators.particle_input.html#particle-input) for functions that accept particles as arguments and [\`@validate_quantities\`] for functions that accept [\`Quantity\`] objects.
+             - Please use SI units within PlasmaPy, except when there is strong justification otherwise.
 
-            Unless the pull request is very minor, please [add a changelog entry].
-
-
-
-            First-time contributors: please add your name to the author list in \`docs/about/credits.rst\`.
-
-             - Use [\`@particle_input\`] for functions that accept particles as arguments and [\`@validate_quantities\`] for functions that accept [\`Quantity\`] objects
-
-             - PlasmaPy's documentation is written in [reStructuredText].  [Docstrings] follow the [numpydoc standard] ([example docstring]).
-
-             - Please use SI units within the code, unless there is a strong justification otherwise.
-             - When adding a
-             - Check the
-
-             - Here are tips on [writing clean scientific software]().
-
-
-            When the pre-commit check fails, try commenting on this pull request with \`pre-commit.ci autofix\`. This will automagically fix
+            We thank you once again!
 
           })
