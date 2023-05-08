@@ -236,6 +236,7 @@ extend-select = [
   "PIE", # flake8-pie
   "PLC", # pylint convention
   "PLE", # pylint errors
+  "PT", # flake8-pytest-style
   "PLW", # pylint warnings
   "PTH", # flake8-use-pathlib
   "PYI", # flake8-pyi
@@ -274,6 +275,10 @@ ignore = [
   "N806", # non-lowercase-variable-in-function
   "N816", # mixed-case-variable-in-global-scope
   "PLE0605", # invalid-all-format
+  "PT007", # pytest-parametrize-values-wrong-type
+  "PT011", # pytest-raises-too-broad
+  "PT012", # pytest-raises-multiple-statements
+  "PT019", # pytest-fixture-param-without-value (enable later?)
   "RUF001", # ambiguous-unicode-character-string
   "RUF002", # ambiguous-unicode-character-docstring
   "RUF003", # ambiguous-unicode-character-comment
