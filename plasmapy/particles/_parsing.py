@@ -149,7 +149,7 @@ def invalid_particle_errmsg(
     return errmsg
 
 
-def extract_charge(arg: str):
+def extract_charge(arg: str):  # noqa: C901
     """
     Receive a `str` representing an element, isotope, or ion.
     Return a `tuple` containing a `str` that should represent an

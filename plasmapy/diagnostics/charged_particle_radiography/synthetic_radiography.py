@@ -1355,7 +1355,7 @@ class Tracker:
 # *************************************************************************
 
 
-def synthetic_radiograph(
+def synthetic_radiograph(  # noqa: C901
     obj, size=None, bins=None, ignore_grid=False, optical_density=False
 ):
     r"""

@@ -558,7 +558,7 @@ def _reduction(vspace, cell):
     return passX and passY and passZ
 
 
-def _bilinear_root(a1, b1, c1, d1, a2, b2, c2, d2):
+def _bilinear_root(a1, b1, c1, d1, a2, b2, c2, d2):  # noqa: C901
     r"""
     Return the roots of a pair of bilinear equations of the following
     format.

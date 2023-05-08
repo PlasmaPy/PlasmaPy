@@ -666,7 +666,7 @@ class AbstractGrid(ABC):
         """
         return list(self.ds.data_vars)
 
-    def _make_grid(
+    def _make_grid(  # noqa: C901
         self,
         start: Union[int, float, u.Quantity],
         stop: Union[int, float, u.Quantity],

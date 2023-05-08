@@ -90,7 +90,7 @@ def spectral_density_args_kwargs(kwargs):
     return args, kwargs
 
 
-def args_to_lite_args(kwargs):
+def args_to_lite_args(kwargs):  # noqa: C901
     """
     Converts a dict of args for the spectral density function and converts
     them to input for the lite function.
@@ -669,7 +669,7 @@ def test_param_to_array_fcns():
     assert np.mean(arr) == 2
 
 
-def run_fit(
+def run_fit(  # noqa: C901
     wavelengths,
     params,
     settings,

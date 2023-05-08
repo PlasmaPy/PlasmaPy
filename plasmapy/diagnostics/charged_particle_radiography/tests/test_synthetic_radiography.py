@@ -14,7 +14,7 @@ from plasmapy.diagnostics.charged_particle_radiography import (
 from plasmapy.plasma.grids import CartesianGrid
 
 
-def _test_grid(
+def _test_grid(  # noqa: C901
     name,
     L=1 * u.mm,
     num=100,
