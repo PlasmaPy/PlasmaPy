@@ -558,7 +558,7 @@ def _reduction(vspace, cell):
     return passX and passY and passZ
 
 
-def _bilinear_root(a1, b1, c1, d1, a2, b2, c2, d2):
+def _bilinear_root(a1, b1, c1, d1, a2, b2, c2, d2):  # noqa: PLR0911, PLR0912
     r"""
     Return the roots of a pair of bilinear equations of the following
     format.
@@ -629,7 +629,7 @@ def _bilinear_root(a1, b1, c1, d1, a2, b2, c2, d2):
             return np.array([(x1, y1), (x2, y2)])
 
 
-def _trilinear_analysis(vspace, cell):
+def _trilinear_analysis(vspace, cell):  # noqa: PLR0911, PLR0912, PLR0915
     r"""
     Return a true or false value based on whether a grid cell which has
     passed the reduction step, contains a null point, using trilinear
@@ -1261,7 +1261,7 @@ def _locate_null_point(vspace, cell, n, err):
     return None
 
 
-def _classify_null_point(vspace, cell, loc):
+def _classify_null_point(vspace, cell, loc):  # noqa: PLR0912
     r"""
     Return the coordinates of a null point within a given grid cell in a
     vector space using the Newton-Rapshon method.
@@ -1316,7 +1316,7 @@ def _classify_null_point(vspace, cell, loc):
         if np.allclose(M, M.T, atol=_EQUALITY_ATOL):  # Checking if M is symmetric
             null_point_type = "Proper radial null"
         else:
-            if np.isclose(determinant, 0, atol=_EQUALITY_ATOL):
+            if np.isclose(determinant, 0, atol=_EQUALITY_ATOL):  # noqa: PLR5501
                 null_point_type = "Anti-parallel lines with null plane OR Planes of parabolae with null line"
             else:
                 null_point_type = "Critical spiral null"
@@ -1327,12 +1327,12 @@ def _classify_null_point(vspace, cell, loc):
             else:
                 null_point_type = "Improper radial null"
         else:
-            if np.isclose(determinant, 0, atol=_EQUALITY_ATOL):
+            if np.isclose(determinant, 0, atol=_EQUALITY_ATOL):  # noqa: PLR5501
                 null_point_type = "Continuous X-points"
             else:
                 null_point_type = "Skewed improper null"
     else:
-        if np.isclose(determinant, 0, atol=_EQUALITY_ATOL):
+        if np.isclose(determinant, 0, atol=_EQUALITY_ATOL):  # noqa: PLR5501
             null_point_type = "Continuous concentric ellipses"
         else:
             null_point_type = "Spiral null"
