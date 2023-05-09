@@ -49,7 +49,7 @@ class TestModifyDocstring:
         assert wfoo.__original_doc__ == original_doc
 
     @pytest.mark.parametrize(
-        "prepend, append, expected",
+        ("prepend", "append", "expected"),
         [(5, None, TypeError), (None, 5, TypeError)],
     )
     def test_raises(self, prepend, append, expected):
@@ -64,7 +64,7 @@ class TestModifyDocstring:
         assert wfoo.__signature__ == inspect.signature(self.func_simple_docstring)
 
     @pytest.mark.parametrize(
-        "prepend, append, func_name, additions",
+        ("prepend", "append", "func_name", "additions"),
         [
             (
                 "Hello",

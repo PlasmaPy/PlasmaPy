@@ -236,6 +236,9 @@ extend-select = [
   "PIE", # flake8-pie
   "PLC", # pylint convention
   "PLE", # pylint errors
+  "PLR", # pylint refactorings
+  "PT", # flake8-pytest-style
+  "PLW", # pylint warnings
   "PTH", # flake8-use-pathlib
   "PYI", # flake8-pyi
   "RUF", # ruff specific rules
@@ -273,6 +276,12 @@ ignore = [
   "N806", # non-lowercase-variable-in-function
   "N816", # mixed-case-variable-in-global-scope
   "PLE0605", # invalid-all-format
+  "PLR0913", # too-many-arguments
+  "PLR2004", # magic-value-comparison
+  "PT007", # pytest-parametrize-values-wrong-type
+  "PT011", # pytest-raises-too-broad
+  "PT012", # pytest-raises-multiple-statements
+  "PT019", # pytest-fixture-param-without-value (enable later?)
   "RUF001", # ambiguous-unicode-character-string
   "RUF002", # ambiguous-unicode-character-docstring
   "RUF003", # ambiguous-unicode-character-comment
@@ -313,7 +322,7 @@ max-complexity = 20
 "plasmapy/formulary/braginskii.py" = ["C901"]
 "plasmapy/formulary/tests/test_distribution.py" = ["ARG005"]
 "plasmapy/particles/tests/test_decorators.py" = ["ARG001", "ARG002"]
-"plasmapy/utils/pytest_helpers/pytest_helpers.py" = ["BLE001"]
+"plasmapy/utils/pytest_helpers/pytest_helpers.py" = ["BLE001", "PLR"]
 "plasmapy/utils/pytest_helpers/tests/test_pytest_helpers.py" = ["BLE001", "TRY002"]
 
 [tool.ruff.pydocstyle]

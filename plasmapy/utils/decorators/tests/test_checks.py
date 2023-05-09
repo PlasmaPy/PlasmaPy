@@ -426,7 +426,7 @@ class TestCheckUnits:
 
                 for key, val in default_checks.items():
                     if key in case["output"][arg_name]:
-                        val = case["output"][arg_name][key]
+                        val = case["output"][arg_name][key]  # noqa: PLW2901
                     assert arg_checks[key] == val
 
     def test_cu_method__check_unit(self):
@@ -1249,25 +1249,25 @@ relativistic_warning_examples = [
 
 
 # Tests for _check_relativistic
-@pytest.mark.parametrize("speed, betafrac", non_relativistic_speed_examples)
+@pytest.mark.parametrize(("speed", "betafrac"), non_relativistic_speed_examples)
 def test__check_relativisitc_valid(speed, betafrac):
     _check_relativistic(speed, "f", betafrac=betafrac)
 
 
-@pytest.mark.parametrize("speed, betafrac, error", relativistic_error_examples)
+@pytest.mark.parametrize(("speed", "betafrac", "error"), relativistic_error_examples)
 def test__check_relativistic_errors(speed, betafrac, error):
     with pytest.raises(error):
         _check_relativistic(speed, "f", betafrac=betafrac)
 
 
-@pytest.mark.parametrize("speed, betafrac", relativistic_warning_examples)
+@pytest.mark.parametrize(("speed", "betafrac"), relativistic_warning_examples)
 def test__check_relativistic_warnings(speed, betafrac):
     with pytest.warns(RelativityWarning):
         _check_relativistic(speed, "f", betafrac=betafrac)
 
 
 # Tests for check_relativistic decorator
-@pytest.mark.parametrize("speed, betafrac", non_relativistic_speed_examples)
+@pytest.mark.parametrize(("speed", "betafrac"), non_relativistic_speed_examples)
 def test_check_relativistic_decorator(speed, betafrac):
     @check_relativistic(betafrac=betafrac)
     def speed_func():
@@ -1294,7 +1294,7 @@ def test_check_relativistic_decorator_no_args_parentheses(speed):
     speed_func()
 
 
-@pytest.mark.parametrize("speed, betafrac, error", relativistic_error_examples)
+@pytest.mark.parametrize(("speed", "betafrac", "error"), relativistic_error_examples)
 def test_check_relativistic_decorator_errors(speed, betafrac, error):
     @check_relativistic(betafrac=betafrac)
     def speed_func():
