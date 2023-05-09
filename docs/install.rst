@@ -41,16 +41,16 @@ terminal and run:
    python -m pip install plasmapy
 
 On some systems, it might be necessary to specify the Python_ version
-number by using ``python3``, ``python3.8``, ``python3.9``, or
-``python3.10`` instead of ``python``.
+number by using ``python3``, ``python3.8``, ``python3.9``,
+``python3.10``, or ``python3.11`` instead of ``python``.
 
 To install PlasmaPy on Windows, run:
 
 .. code-block:: bash
 
-   py -3.10 -m pip install plasmapy
+   py -3.11 -m pip install plasmapy
 
-The version of Python_ may be changed from ``3.10`` to another supported
+The version of Python_ may be changed from ``3.11`` to another supported
 Python |minpython|\ + release that has been installed on your computer.
 
 For more detailed information, please refer to this tutorial on

@@ -643,7 +643,7 @@ class AbstractGrid(ABC):
                 }
             # If grid is non-uniform, flatten quantity
             else:
-                quantity = quantity.flatten()
+                quantity = quantity.flatten()  # noqa: PLW2901
                 dims = ["ax"]
                 coords = {"ax": self.ds.coords["ax"]}
 
@@ -666,7 +666,7 @@ class AbstractGrid(ABC):
         """
         return list(self.ds.data_vars)
 
-    def _make_grid(
+    def _make_grid(  # noqa: PLR0912
         self,
         start: Union[int, float, u.Quantity],
         stop: Union[int, float, u.Quantity],

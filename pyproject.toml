@@ -80,11 +80,7 @@ docs = [
 ]
 tests = [
   "flake8 >= 6.0.0",
-  "flake8-absolute-import >= 1.0.0.1",
-  "flake8-implicit-str-concat >= 0.4.0",
-  "flake8-mutable >= 1.2.0",
   "flake8-rst-docstrings >= 0.3.0",
-  "flake8-simplify >= 0.20.0",
   "flake8-use-fstring >= 1.4",
   "hypothesis >= 6.35.1",
   "pre-commit >= 3.0.0",
@@ -92,7 +88,6 @@ tests = [
   "pytest-xdist >= 3.0.2",
   "tomli >= 2.0.1",
   "tox >= 4.3.1",
-  "tryceratops >= 1.1.0",
 ]
 [project.urls]
 Changelog = "https://docs.plasmapy.org/en/stable/whatsnew/index.html"
@@ -222,25 +217,94 @@ type_incorrect_long = "The filename of the changelog entry must be of the form `
 
 [tool.ruff]
 target-version = "py39"
-exclude = [
-    ".direnv",
-    "docs/plasmapy_sphinx",
-    ".eggs",
-    ".git",
-    ".jupyter",
-    ".mypy_cache",
-    ".nox",
-    ".ruff_cache",
-    ".tox",
-    ".venv",
-    "__pycache__",
-    "__pypackages__",
-    "_build",
-    "build",
-    "dist",
-    "venv",
+extend-select = [
+  "A", # flake8-builtins
+  "ARG", # flake8-unused-arguments
+  "B",  # flake8-bugbear
+  "BLE", # flake8-blind-except
+  "C4", # flake8-comprehensions
+  "COM818", # trailing-comma-on-bare-tuple
+  "D",  # pydocstyle
+  "FBT003", # flake8-boolean-trap
+  "ICN", # flake8-import-conventions
+  "INP", # flake8-no-pep420
+  "INT", # flake8-gettext
+  "ISC", # flake8-implicit-str-concat
+  "N", # pep8-naming
+  "NPY001", # numpy-deprecated-type-alias
+  "PD", # pandas-vet
+  "PGH", # pygrep-hooks
+  "PIE", # flake8-pie
+  "PLC", # pylint convention
+  "PLE", # pylint errors
+  "PLR", # pylint refactorings
+  "PT", # flake8-pytest-style
+  "PLW", # pylint warnings
+  "PTH", # flake8-use-pathlib
+  "PYI", # flake8-pyi
+  "RUF", # ruff specific rules
+  "S", # flake8-bandit
+  "SIM", # flake8-simplify
+  "TID", # flake8-tidy-imports
+  "TRY", # tryceratops
+  "UP", # pyupgrade
+  "W", # pycodestyle warnings
 ]
-ignore = ["E501"]  # ignore line length violations
+ignore = [
+  "B028", # no-explicit-stacklevel
+  "D100", # undocumented-public-module
+  "D101", # undocumented-public-class
+  "D102", # undocumented-public-method
+  "D103", # undocumented-public-function
+  "D104", # undocumented-public-package
+  "D105", # undocumented-public-method
+  "D200", # fits-on-one-line
+  "D202", # no-blank-line-after-function
+  "D203", # one-blank-line-before-class
+  "D205", # blank-line-after-summary
+  "D209", # new-line-after-last-paragraph
+  "D212", # multi-line-summary-first-line
+  "D301", # escape-sequence-in-docstring (should be enabled)
+  "D400", # ends-in-period
+  "D401", # non-imperative-mood (should be enabled)
+  "D404", # docstring-starts-with-this (should be enabled)
+  "D410", # no-blank-line-after-section
+  "D415", # ends-in-punctuation
+  "E501", # line-too-long
+  "N801", # invalid-class-name
+  "N802", # invalid-function-name
+  "N803", # invalid-argument-name
+  "N806", # non-lowercase-variable-in-function
+  "N816", # mixed-case-variable-in-global-scope
+  "PLE0605", # invalid-all-format
+  "PLR0913", # too-many-arguments
+  "PLR2004", # magic-value-comparison
+  "PT007", # pytest-parametrize-values-wrong-type
+  "PT011", # pytest-raises-too-broad
+  "PT012", # pytest-raises-multiple-statements
+  "PT019", # pytest-fixture-param-without-value (enable later?)
+  "RUF001", # ambiguous-unicode-character-string
+  "RUF002", # ambiguous-unicode-character-docstring
+  "RUF003", # ambiguous-unicode-character-comment
+  "RUF100", # unused-noqa (remove if we drop flake8 completely)
+  "S101", # asserts
+  "SIM117", # multiple-with-statements (remove for Python 3.10+)
+  "SIM300", # yoda-conditions
+  "TRY003", # raise-vanilla-args
+  "TRY301", # raise-within-try
+  "UP025", # unicode-kind-prefix
+]
+extend-exclude = [
+    "docs/plasmapy_sphinx",
+    ".jupyter",
+    "__pycache__",
+    "_build",
+    "_dev",
+]
+dummy-variable-rgx = "Z|mass_numb|request|event"
+namespace-packages = [".github/workflows", "docs"]
+show-fixes = true
+show-source = true
 
 [tool.ruff.flake8-import-conventions.aliases]
 "astropy.units" = "u"
@@ -248,8 +312,25 @@ ignore = ["E501"]  # ignore line length violations
 numpy = "np"
 pandas = "pd"
 
+[tool.ruff.flake8-unused-arguments]
+ignore-variadic-names = true
+
+[tool.ruff.mccabe]
+max-complexity = 20
+
 [tool.ruff.per-file-ignores]
 "__init__.py" = ["E402", "F401", "F402", "F403"]  # ignore import errors
+"plasmapy/formulary/braginskii.py" = ["C901"]
+"plasmapy/formulary/tests/test_distribution.py" = ["ARG005"]
+"plasmapy/particles/tests/test_decorators.py" = ["ARG001", "ARG002"]
+"plasmapy/utils/pytest_helpers/pytest_helpers.py" = ["BLE001", "PLR"]
+"plasmapy/utils/pytest_helpers/tests/test_pytest_helpers.py" = ["BLE001", "TRY002"]
+
+[tool.ruff.pydocstyle]
+convention = "numpy"
+
+[tool.ruff.pyupgrade]
+keep-runtime-typing = true  # remove when we drop support for Python 3.9
 
 [tool.towncrier]
 package = "plasmapy"

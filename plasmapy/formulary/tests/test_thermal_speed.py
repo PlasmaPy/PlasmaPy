@@ -31,7 +31,7 @@ from plasmapy.utils.pytest_helpers import assert_can_handle_nparray
 
 
 @pytest.mark.parametrize(
-    "alias, parent",
+    ("alias", "parent"),
     [(vth_, thermal_speed), (vth_kappa_, kappa_thermal_speed)],
 )
 def test_aliases(alias, parent):
@@ -45,7 +45,7 @@ class TestThermalSpeedCoefficients:
     """
 
     @pytest.mark.parametrize(
-        "ndim, method, _error",
+        ("ndim", "method", "_error"),
         [
             (0, "most_probable", ValueError),
             (4, "most_probable", ValueError),
@@ -60,7 +60,7 @@ class TestThermalSpeedCoefficients:
             thermal_speed_coefficients(ndim=ndim, method=method)
 
     @pytest.mark.parametrize(
-        "ndim, method, expected",
+        ("ndim", "method", "expected"),
         [
             (1, "most_probable", 0),
             (2, "most_probable", 1),
@@ -97,7 +97,7 @@ class TestThermalSpeed:
     """
 
     @pytest.mark.parametrize(
-        "bound_name, bound_attr",
+        ("bound_name", "bound_attr"),
         [
             ("lite", thermal_speed_lite),
             ("coefficients", thermal_speed_coefficients),
@@ -123,7 +123,7 @@ class TestThermalSpeed:
             assert origin == bound_origin
 
     @pytest.mark.parametrize(
-        "args, kwargs, expected",
+        ("args", "kwargs", "expected"),
         [
             # Parameters that should return the value of the thermal
             # speed coefficient.
@@ -239,7 +239,7 @@ class TestThermalSpeed:
         assert vth.unit == u.m / u.s
 
     @pytest.mark.parametrize(
-        "args, kwargs, _error",
+        ("args", "kwargs", "_error"),
         [
             ((5 * u.m, "e-"), {}, u.UnitTypeError),
             ((5 * u.m, "He+"), {}, u.UnitTypeError),
@@ -257,7 +257,7 @@ class TestThermalSpeed:
             thermal_speed(*args, **kwargs)
 
     @pytest.mark.parametrize(
-        "args, kwargs, _warning, expected",
+        ("args", "kwargs", "_warning", "expected"),
         [
             ((), {"T": 1e9 * u.K, "particle": "e-"}, RelativityWarning, None),
             (

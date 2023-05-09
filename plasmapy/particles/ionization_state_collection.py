@@ -145,25 +145,24 @@ class IonizationStateCollection:
         kappa: Real = np.inf,
     ):
         set_abundances = True
-        if isinstance(inputs, dict):
-            if np.all([isinstance(fracs, u.Quantity) for fracs in inputs.values()]):
-                right_units = np.all(
-                    [fracs[0].si.unit == u.m**-3 for fracs in inputs.values()]
+        if isinstance(inputs, dict) and np.all(
+            [isinstance(fracs, u.Quantity) for fracs in inputs.values()]
+        ):
+            right_units = np.all(
+                [fracs[0].si.unit == u.m**-3 for fracs in inputs.values()]
+            )
+            if not right_units:
+                raise ParticleError(
+                    "Units must be inverse volume for number densities."
                 )
-                if not right_units:
-                    raise ParticleError(
-                        "Units must be inverse volume for number densities."
-                    )
-                abundances_provided = (
-                    abundances is not None or log_abundances is not None
-                )
+            abundances_provided = abundances is not None or log_abundances is not None
 
-                if abundances_provided:
-                    raise ParticleError(
-                        "Abundances cannot be provided if inputs "
-                        "provides number density information."
-                    )
-                set_abundances = False
+            if abundances_provided:
+                raise ParticleError(
+                    "Abundances cannot be provided if inputs "
+                    "provides number density information."
+                )
+            set_abundances = False
 
         try:
             self._pars = {}
@@ -228,7 +227,7 @@ class IonizationStateCollection:
                 number_density=self.number_densities[particle][int_charge],
             )
 
-    def __setitem__(self, key, value):
+    def __setitem__(self, key, value):  # noqa: PLR0912
         errmsg = (
             f"Cannot set item for this IonizationStateCollection instance for "
             f"key = {key!r} and value = {value!r}"
@@ -401,7 +400,10 @@ class IonizationStateCollection:
         return self._ionic_fractions
 
     @ionic_fractions.setter
-    def ionic_fractions(self, inputs: Union[dict, list, tuple]):
+    def ionic_fractions(  # noqa: PLR0912, PLR0915
+        self,
+        inputs: Union[dict, list, tuple],
+    ):
         """
         Set the ionic fractions.
 
