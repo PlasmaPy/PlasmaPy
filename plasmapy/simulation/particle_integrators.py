@@ -137,4 +137,4 @@ def boris_push(x, v, B, E, q, m, dt, inplace: bool = True):
         x += v * dt
     else:
         v = vplus + hqmdt * E
-        return x + v * dt, v
+        return np.array([x + v * dt, v])

@@ -1132,7 +1132,7 @@ class CartesianGrid(AbstractGrid):
         output = [
             vals[..., index] * self._interp_units[index] for index, _ in enumerate(args)
         ]
-        return output[0] if len(output) == 1 else tuple(output)
+        return output[0] if len(output) == 1 else np.asarray(output)
 
     def volume_averaged_interpolator(
         self, pos: Union[np.ndarray, u.Quantity], *args, persistent=False
@@ -1301,7 +1301,7 @@ class CartesianGrid(AbstractGrid):
             weighted_ave[..., arg] * self._interp_units[arg] for arg in range(nargs)
         ]
 
-        return output[0] if len(output) == 1 else tuple(output)
+        return output[0] if len(output) == 1 else np.asarray(output)
 
 
 class NonUniformCartesianGrid(AbstractGrid):

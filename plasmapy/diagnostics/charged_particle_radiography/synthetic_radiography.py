@@ -10,11 +10,13 @@ __all__ = ["Tracker", "synthetic_radiograph"]
 import astropy.constants as const
 import astropy.units as u
 import collections
+import dask.array
 import numpy as np
 import sys
 import warnings
 
 from collections.abc import Iterable
+from dask import array
 from tqdm import tqdm
 from typing import Union
 
@@ -23,6 +25,7 @@ from plasmapy.formulary.mathematics import rot_a_to_b
 from plasmapy.particles import Particle
 from plasmapy.plasma.grids import AbstractGrid
 from plasmapy.simulation.particle_integrators import boris_push
+from plasmapy.utils.distributed import DaskClient
 
 
 def _coerce_to_cartesian_si(pos):
@@ -154,6 +157,9 @@ class Tracker:
 
         # This flag records whether the simulation has been run
         self._has_run = False
+
+        # Initialize the dask cluster for distributed computing
+        self.dask_client = DaskClient()
 
         # ************************************************************************
         # Setup the source and detector geometries
@@ -925,8 +931,10 @@ class Tracker:
             # Note that this interpolation step is BY FAR the slowest part of the push
             # loop. Any speed improvements will have to come from here.
             if self.field_weighting == "volume averaged":
-                _Ex, _Ey, _Ez, _Bx, _By, _Bz = grid.volume_averaged_interpolator(
-                    pos,
+                pos_dask = dask.array.from_array(pos)
+
+                _Ex, _Ey, _Ez, _Bx, _By, _Bz = pos_dask.map_blocks(
+                    grid.volume_averaged_interpolator,
                     "E_x",
                     "E_y",
                     "E_z",
@@ -934,7 +942,22 @@ class Tracker:
                     "B_y",
                     "B_z",
                     persistent=True,
-                )
+                    dtype=np.ndarray,
+                ).compute()
+
+                # _Ex, _Ey, _Ez, _Bx, _By, _Bz = grid.volume_averaged_interpolator(
+                #     pos,
+                #     "E_x",
+                #     "E_y",
+                #     "E_z",
+                #     "B_x",
+                #     "B_y",
+                #     "B_z",
+                #     persistent=True,
+                # )
+
+                print(_Ex)
+
             elif self.field_weighting == "nearest neighbor":
                 _Ex, _Ey, _Ez, _Bx, _By, _Bz = grid.nearest_neighbor_interpolator(
                     pos,
@@ -949,12 +972,12 @@ class Tracker:
 
             # Interpret any NaN values (points off the grid) as zero
             # Do this before adding to the totals, because 0 + nan = nan
-            _Ex = np.nan_to_num(_Ex, nan=0.0 * u.V / u.m)
-            _Ey = np.nan_to_num(_Ey, nan=0.0 * u.V / u.m)
-            _Ez = np.nan_to_num(_Ez, nan=0.0 * u.V / u.m)
-            _Bx = np.nan_to_num(_Bx, nan=0.0 * u.T)
-            _By = np.nan_to_num(_By, nan=0.0 * u.T)
-            _Bz = np.nan_to_num(_Bz, nan=0.0 * u.T)
+            _Ex = np.nan_to_num(_Ex * u.V / u.mm, nan=0.0 * u.V / u.m)
+            _Ey = np.nan_to_num(_Ey * u.V / u.mm, nan=0.0 * u.V / u.m)
+            _Ez = np.nan_to_num(_Ez * u.V / u.mm, nan=0.0 * u.V / u.m)
+            _Bx = np.nan_to_num(_Bx * u.T, nan=0.0 * u.T)
+            _By = np.nan_to_num(_By * u.T, nan=0.0 * u.T)
+            _Bz = np.nan_to_num(_Bz * u.T, nan=0.0 * u.T)
 
             # Add the values interpolated for this grid to the totals
             Ex += _Ex
@@ -987,7 +1010,37 @@ class Tracker:
 
         x = self.x[self.grid_ind, :]
         v = self.v[self.grid_ind, :]
-        boris_push(x, v, B, E, self.q, self.m, dt)
+
+        # print(x.shape)
+
+        # # Prepare particle info for chunking
+        # particle_info = np.dstack((x, v, B, E))
+
+        # Chunk particles
+        x_dask = array.from_array(x)
+        v_dask = array.from_array(v)
+        B_dask = array.from_array(B)
+        E_dask = array.from_array(E)
+
+        # print(x_dask)
+
+        result = array.map_blocks(
+            boris_push,
+            x_dask,
+            v_dask,
+            B_dask,
+            E_dask,
+            self.q,
+            self.m,
+            dt,
+            inplace=False,
+            dtype=np.ndarray,
+        ).compute()
+
+        x += result[1] * dt
+        v[...] = result[1]
+
+        # boris_push(x, v, B, E, self.q, self.m, dt)
         self.x[self.grid_ind, :] = x
         self.v[self.grid_ind, :] = v
 
@@ -1158,6 +1211,9 @@ class Tracker:
 
         # Advance the particles to the image plane
         self._coast_to_plane(self.detector, self.det_hdir, self.det_vdir, x=self.x)
+
+        # Clean up the dask cluster
+        self.dask_client.cleanup()
 
         # Log a summary of the run
 
@@ -1492,3 +1548,90 @@ def synthetic_radiograph(
             intensity = -np.log10(intensity / I0)
 
     return h * u.m, v * u.m, intensity
+
+
+if __name__ == "__main__":
+    import matplotlib.pyplot as plt
+
+    from plasmapy.plasma.grids import CartesianGrid
+
+    # Create a Cartesian grid
+    L = 1 * u.mm
+    grid = CartesianGrid(-L, L, num=100)
+
+    # Create a spherical potential with a Gaussian radial distribution
+    radius = np.linalg.norm(grid.grid, axis=3)
+    arg = (radius / (L / 3)).to(u.dimensionless_unscaled)
+    potential = 2e5 * np.exp(-(arg**2)) * u.V
+
+    # Calculate E from the potential
+    Ex, Ey, Ez = np.gradient(potential, grid.dax0, grid.dax1, grid.dax2)
+    Ex = -np.where(radius < L / 2, Ex, 0)
+    Ey = -np.where(radius < L / 2, Ey, 0)
+    Ez = -np.where(radius < L / 2, Ez, 0)
+
+    # Add those quantities to the grid
+    grid.add_quantities(E_x=Ex, E_y=Ey, E_z=Ez, phi=potential)
+
+    source = (0 * u.mm, -10 * u.mm, 0 * u.mm)
+    detector = (0 * u.mm, 100 * u.mm, 0 * u.mm)
+
+    sim = Tracker(grid, source, detector, verbose=True)
+    sim.create_particles(1e5, 3 * u.MeV, max_theta=np.pi / 15 * u.rad, particle="p")
+    sim.run()
+
+    fig = plt.figure(figsize=(8, 8))
+    ax = fig.add_subplot(111, projection="3d")
+    ax.view_init(30, 150)
+    ax.set_xlabel("X (cm)")
+    ax.set_ylabel("Y (cm)")
+    ax.set_zlabel("Z (cm)")
+
+    # Plot the source-to-detector axis
+    ax.quiver(
+        sim.source[0] * 100,
+        sim.source[1] * 100,
+        sim.source[2] * 100,
+        sim.detector[0] * 100,
+        sim.detector[1] * 100,
+        sim.detector[2] * 100,
+        color="black",
+    )
+
+    # Plot the simulation field grid volume
+    ax.scatter(
+        0, 0, 0, color="green", marker="s", linewidth=5, label="Simulated Fields"
+    )
+
+    # Plot the the proton source and detector plane locations
+    ax.scatter(
+        sim.source[0] * 100,
+        sim.source[1] * 100,
+        sim.source[2] * 100,
+        color="red",
+        marker="*",
+        linewidth=5,
+        label="Source",
+    )
+
+    ax.scatter(
+        sim.detector[0] * 100,
+        sim.detector[1] * 100,
+        sim.detector[2] * 100,
+        color="blue",
+        marker="*",
+        linewidth=10,
+        label="Detector",
+    )
+
+    # Plot the final proton positions of some (not all) of the protons
+    ind = slice(None, None, 200)
+    ax.scatter(
+        sim.x[ind, 0] * 100,
+        sim.x[ind, 1] * 100,
+        sim.x[ind, 2] * 100,
+        label="Protons",
+    )
+
+    ax.legend()
+    plt.show()
