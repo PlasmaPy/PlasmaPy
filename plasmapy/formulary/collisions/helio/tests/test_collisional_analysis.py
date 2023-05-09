@@ -27,6 +27,7 @@ class Testcollisional_thermalizastion:
         "density_scale": -1.8,
         "velocity_scale": -0.2,
         "temperature_scale": -0.77,
+        "verbose": False,
     }
 
     _kwargs_scalar_value = {
@@ -42,6 +43,7 @@ class Testcollisional_thermalizastion:
         "density_scale": -1.8,
         "velocity_scale": -0.2,
         "temperature_scale": -0.77,
+        "verbose": True,
     }
 
     @pytest.mark.parametrize(

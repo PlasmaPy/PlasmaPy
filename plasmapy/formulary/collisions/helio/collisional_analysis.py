@@ -1,7 +1,7 @@
 """
 Module containing the Collisional Analysis formulation.
 """
-__all__ = ["thermalization_ratio"]
+__all__ = ["temp_ratio"]
 
 import astropy.units as u
 import logging
@@ -16,7 +16,7 @@ from plasmapy.utils.decorators import validate_quantities
     T_1={"can_be_negative": False, "equivalencies": u.temperature_energy()},
     T_2={"can_be_negative": False, "equivalencies": u.temperature_energy()},
 )
-def thermalization_ratio(
+def temp_ratio(
     *,
     r_0: u.au,
     r_n: u.au,
@@ -347,7 +347,7 @@ def thermalization_ratio(
                     )
                 )
                 if verbose:
-                    logging.info("\r", f"{(i / len(variables[0])) * 100:.2f} %", end="")
+                    logging.info("\r", f"{(i / len(variables[0])) * 100:.2f} %")
 
             return res
 
