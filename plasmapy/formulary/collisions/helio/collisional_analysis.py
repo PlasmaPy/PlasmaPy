@@ -8,7 +8,7 @@ import logging
 import numbers
 import numpy as np
 
-from plasmapy.particles import Particle, ParticleLike, ParticleList
+from plasmapy.particles import ParticleLike, ParticleList
 from plasmapy.utils.decorators import validate_quantities
 
 
@@ -25,7 +25,7 @@ def thermalization_ratio(
     v_1: u.km / u.s,
     T_1: u.K,
     T_2: u.K,
-    ions: ParticleLike = [Particle("p+"), Particle("He-4++")],
+    ions: ParticleLike = ["p+", "He-4++"],
     n_step: int = 100,
     density_scale: float = -1.8,
     velocity_scale: float = -0.2,
@@ -325,33 +325,35 @@ def thermalization_ratio(
             velocity_scale,
             temperature_scale,
         )
-    elif all(len(variables[0]) == len(z) for z in variables[1:]):
-        res = []
-        for i in range(len(variables[0])):
-            res.append(
-                df_eq(
-                    r_0[i],
-                    r_n[i],
-                    n_1[i],
-                    n_2[i],
-                    v_1[i],
-                    T_1[i],
-                    T_2[i],
-                    ions,
-                    n_step,
-                    density_scale,
-                    velocity_scale,
-                    temperature_scale,
-                )
-            )
-            if verbose:
-                logging.info("\r", f"{(i / len(variables[0])) * 100:.2f} %", end="")
-
-        return res
-
     else:
-        raise ValueError(
-            "Argument(s) are of unequal lengths, the following "
-            "arguments should be of equal length: 'r_0', 'r_n', "
-            "'n_1', 'n_2', 'v_1', 'T_1' and 'T_2'."
-        )
+        try:
+            all(len(variables[0]) == len(z) for z in variables[1:])
+            res = []
+            for i in range(len(variables[0])):
+                res.append(
+                    df_eq(
+                        r_0[i],
+                        r_n[i],
+                        n_1[i],
+                        n_2[i],
+                        v_1[i],
+                        T_1[i],
+                        T_2[i],
+                        ions,
+                        n_step,
+                        density_scale,
+                        velocity_scale,
+                        temperature_scale,
+                    )
+                )
+                if verbose:
+                    logging.info("\r", f"{(i / len(variables[0])) * 100:.2f} %", end="")
+
+            return res
+
+        except Exception as e:
+            raise ValueError(
+                "Argument(s) are of unequal lengths, the following "
+                "arguments should be of equal length: 'r_0', 'r_n', "
+                "'n_1', 'n_2', 'v_1', 'T_1' and 'T_2'."
+            ) from e

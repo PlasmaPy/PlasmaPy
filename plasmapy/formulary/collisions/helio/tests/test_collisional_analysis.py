@@ -29,8 +29,23 @@ class Testcollisional_thermalizastion:
         "temperature_scale": -0.77,
     }
 
+    _kwargs_scalar_value = {
+        "r_0": 0.1 * u.au,
+        "r_n": 0.1 * u.au,
+        "n_1": 1 * u.cm**-3,
+        "n_2": 0.5 * u.cm**-3,
+        "v_1": 500 * u.m / u.s,
+        "T_1": 50 * 10**3 * u.K,
+        "T_2": 800 * 10**3 * u.K,
+        "ions": [Particle("p+"), Particle("He-4++")],
+        "n_step": 1000,
+        "density_scale": -1.8,
+        "velocity_scale": -0.2,
+        "temperature_scale": -0.77,
+    }
+
     @pytest.mark.parametrize(
-        "kwargs, _error",
+        ("kwargs", "_error"),
         [
             ({**_kwargs_single_valued, "n_1": "wrong type"}, TypeError),
             ({**_kwargs_single_valued, "n_1": 2 * u.s}, u.UnitTypeError),
@@ -42,6 +57,14 @@ class Testcollisional_thermalizastion:
             ({**_kwargs_single_valued, "T_1": 2 * u.s}, u.UnitTypeError),
             ({**_kwargs_single_valued, "T_2": "wrong type"}, TypeError),
             ({**_kwargs_single_valued, "T_2": 2 * u.s}, u.UnitTypeError),
+            (
+                {
+                    **_kwargs_single_valued,
+                    "T_1": [2, 3] * u.K,
+                    "v_1": [1, 2, 3] * u.m / u.s,
+                },
+                ValueError,
+            ),
             ({**_kwargs_single_valued, "ions": [Particle("p+"), "He"]}, ValueError),
             (
                 {**_kwargs_single_valued, "ions": [Particle("p+"), "not a particle"]},
@@ -53,6 +76,35 @@ class Testcollisional_thermalizastion:
             ({**_kwargs_single_valued, "density_scale": "wrong type"}, TypeError),
             ({**_kwargs_single_valued, "velocity_scale": "wrong type"}, TypeError),
             ({**_kwargs_single_valued, "temperature_scale": "wrong type"}, TypeError),
+            ({**_kwargs_scalar_value, "n_1": "wrong type"}, TypeError),
+            ({**_kwargs_scalar_value, "n_1": 2 * u.s}, u.UnitTypeError),
+            ({**_kwargs_scalar_value, "n_2": "wrong type"}, TypeError),
+            ({**_kwargs_scalar_value, "n_2": 2 * u.s}, u.UnitTypeError),
+            ({**_kwargs_scalar_value, "v_1": "wrong type"}, TypeError),
+            ({**_kwargs_scalar_value, "v_1": 2 * u.s}, u.UnitTypeError),
+            ({**_kwargs_scalar_value, "T_1": "wrong type"}, TypeError),
+            ({**_kwargs_scalar_value, "T_1": 2 * u.s}, u.UnitTypeError),
+            ({**_kwargs_scalar_value, "T_2": "wrong type"}, TypeError),
+            ({**_kwargs_scalar_value, "T_2": 2 * u.s}, u.UnitTypeError),
+            (
+                {
+                    **_kwargs_scalar_value,
+                    "T_1": [2, 3] * u.K,
+                    "v_1": [1, 2, 3] * u.m / u.s,
+                },
+                ValueError,
+            ),
+            ({**_kwargs_scalar_value, "ions": [Particle("p+"), "He"]}, ValueError),
+            (
+                {**_kwargs_scalar_value, "ions": [Particle("p+"), "not a particle"]},
+                InvalidParticleError,
+            ),
+            ({**_kwargs_scalar_value, "ions": [Particle("p+")]}, ValueError),
+            ({**_kwargs_scalar_value, "n_step": "wrong type"}, TypeError),
+            ({**_kwargs_scalar_value, "n_step": 4.5}, TypeError),
+            ({**_kwargs_scalar_value, "density_scale": "wrong type"}, TypeError),
+            ({**_kwargs_scalar_value, "velocity_scale": "wrong type"}, TypeError),
+            ({**_kwargs_scalar_value, "temperature_scale": "wrong type"}, TypeError),
         ],
     )
     def test_raises(self, kwargs, _error):
