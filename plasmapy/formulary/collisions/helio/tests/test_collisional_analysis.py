@@ -4,9 +4,7 @@ import pytest
 from astropy import units as u
 from astropy.constants.si import c
 
-from plasmapy.formulary.collisions.helio.collisional_analysis import (
-    thermalization_ratio,
-)
+from plasmapy.formulary.collisions.helio import temp_ratio
 from plasmapy.particles import Particle
 from plasmapy.particles.exceptions import InvalidParticleError
 
@@ -111,4 +109,4 @@ class Testcollisional_thermalizastion:
     )
     def test_raises(self, kwargs, _error):
         with pytest.raises(_error):
-            thermalization_ratio(**kwargs)
+            temp_ratio(**kwargs)
