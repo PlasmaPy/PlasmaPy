@@ -42,11 +42,11 @@ class AbstractFitFunction(ABC):
         """
         Parameters
         ----------
-        params: tuple[float, ...], optional
+        params : tuple[float, ...], optional
             Tuple of values for the function parameters. Equal in size to
             :attr:`param_names`.
 
-        param_errors: tuple[float, ...], optional
+        param_errors : tuple[float, ...], optional
             Tuple of values for the errors associated with the function
             parameters.  Equal in size to :attr:`param_names`.
 
@@ -363,19 +363,19 @@ class AbstractFitFunction(ABC):
         -----
         If the full output of `scipy.optimize.fsolve` is desired then one can do:
 
-            >>> func = Linear()
-            >>> func.params = (1.0, 5.0)
-            >>> func.param_errors = (0.0, 0.0)
-            >>> roots = fsolve(func, -4.0, full_output=True)
-            >>> roots
-            (array([-5.]),
-             {'nfev': 4,
-              'fjac': array([[-1.]]),
-              'r': array([-1.]),
-              'qtf': array([2.18...e-12]),
-              'fvec': 0.0},
-             1,
-             'The solution converged.')
+        >>> func = Linear()
+        >>> func.params = (1.0, 5.0)
+        >>> func.param_errors = (0.0, 0.0)
+        >>> roots = fsolve(func, -4.0, full_output=True)
+        >>> roots
+        (array([-5.]),
+         {'nfev': 4,
+          'fjac': array([[-1.]]),
+          'r': array([-1.]),
+          'qtf': array([2.18...e-12]),
+          'fvec': 0.0},
+         1,
+         'The solution converged.')
 
         """
         results = fsolve(self.func, x0, args=self.params)
