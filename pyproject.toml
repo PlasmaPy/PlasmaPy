@@ -251,28 +251,28 @@ extend-select = [
 ]
 ignore = [
   "B028", # no-explicit-stacklevel
-  "D105", # undocumented-magic-method
-  "D200", # fits-on-one-line
+  "D105", # undocumented-magic-method (enable later?)
+  "D200", # fits-on-one-line (incompatible with multiline short summaries)
   "D202", # no-blank-line-after-function
-  "D205", # blank-line-after-summary
-  "D401", # non-imperative-mood
+  "D205", # blank-line-after-summary (incompatible with multiline short summaries)
+  "D401", # non-imperative-mood (enable later?)
   "E501", # line-too-long
   "N801", # invalid-class-name
   "N802", # invalid-function-name
   "N803", # invalid-argument-name
   "N806", # non-lowercase-variable-in-function
   "N816", # mixed-case-variable-in-global-scope
-  "PLE0605", # invalid-all-format
+  "PLE0605", # invalid-all-format (flags `__all__ += __lite_funcs`, etc.)
   "PLR0913", # too-many-arguments
   "PLR2004", # magic-value-comparison
   "PT007", # pytest-parametrize-values-wrong-type
   "PT011", # pytest-raises-too-broad
-  "PT012", # pytest-raises-multiple-statements
+  "PT012", # pytest-raises-multiple-statements (enable later?)
   "PT019", # pytest-fixture-param-without-value (enable later?)
-  "RUF001", # ambiguous-unicode-character-string
+  "RUF001", # ambiguous-unicode-character-string (flags
   "RUF002", # ambiguous-unicode-character-docstring
   "RUF003", # ambiguous-unicode-character-comment
-  "RUF100", # unused-noqa (remove if we drop flake8 completely)
+  "RUF100", # unused-noqa (enable after dropping flake8 completely)
   "S101", # asserts
   "SIM117", # multiple-with-statements (remove for Python 3.10+)
   "SIM300", # yoda-conditions
