@@ -1,3 +1,5 @@
+"""Functionality for reading in HDF5 files following the OpenPMD standard."""
+
 __all__ = ["HDF5Reader"]
 
 import astropy.units as u
