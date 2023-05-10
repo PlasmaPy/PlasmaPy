@@ -94,6 +94,7 @@ class Testcollisional_thermalizastion:
                 },
                 ValueError,
             ),
+            ({**_kwargs_scalar_value, "T_1": [1, 3] * u.K}, ValueError),
             ({**_kwargs_scalar_value, "ions": [Particle("p+"), "He"]}, ValueError),
             (
                 {**_kwargs_scalar_value, "ions": [Particle("p+"), "not a particle"]},
