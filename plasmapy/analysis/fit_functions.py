@@ -184,7 +184,7 @@ class AbstractFitFunction(ABC):
             size one or equal to the size of ``x``.
 
         rety : bool
-            Set `True` to also return the associated dependent variables
+            Set to `True` to also return the associated dependent variables
             :math:`y = f(x)`.
 
         Returns
@@ -507,15 +507,15 @@ class Linear(AbstractFitFunction):
             Independent variable.
 
         m : float
-            value for slope :math:`m`
+            Value for slope :math:`m`
 
         b : float
-            value for intercept :math:`b`
+            Value for intercept :math:`b`
 
         Returns
         -------
         y : |array_like|
-            dependent variables corresponding to :math:`x`
+            Dependent variables corresponding to :math:`x`
 
         """
         x = self._check_x(x)
@@ -696,10 +696,10 @@ class Exponential(AbstractFitFunction):
             Independent variable.
 
         a : float
-            value for the exponential "normalization" constant, :math:`a`
+            Value for the exponential "normalization" constant, :math:`a`
 
         alpha : float
-            value for the growth constant, :math:`\\alpha`
+            Value for the growth constant, :math:`\\alpha`
 
         Returns
         -------
@@ -854,16 +854,16 @@ class ExponentialPlusLinear(AbstractFitFunction):
             Independent variable.
 
         a : float
-            value for constant :math:`a`
+            Value for constant :math:`a`
 
         alpha : float
-            value for constant :math:`\\alpha`
+            Value for constant :math:`\\alpha`
 
         m : float
-            value for slope :math:`m`
+            Value for slope :math:`m`
 
         b : float
-            value for intercept :math:`b`
+            Value for intercept :math:`b`
 
         Returns
         -------
@@ -992,18 +992,18 @@ class ExponentialPlusOffset(AbstractFitFunction):
             Independent variable.
 
         a : float
-            value for constant :math:`a`
+            Value for constant :math:`a`
 
         alpha : float
-            value for constant :math:`\\alpha`
+            Value for constant :math:`\\alpha`
 
         b : float
-            value for DC offset :math:`b`
+            Value for DC offset :math:`b`
 
         Returns
         -------
         y : |array_like|
-            dependent variables corresponding to ``x``
+            Dependent variables corresponding to ``x``
 
         """
         return self._explin.func(x, a, alpha, 0.0, b)
