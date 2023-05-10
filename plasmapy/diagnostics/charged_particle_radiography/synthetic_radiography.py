@@ -535,10 +535,12 @@ class Tracker:
         prob *= 1 / np.sum(prob)
 
         # Randomly choose theta's weighted with the sine probabilities
-        theta = np.random.choice(arg, size=self.nparticles, replace=True, p=prob)
+        theta = np.random.choice(  # noqa: NPY002
+            arg, size=self.nparticles, replace=True, p=prob
+        )
 
         # Also generate a uniform phi distribution
-        phi = np.random.uniform(high=2 * np.pi, size=self.nparticles)
+        phi = np.random.uniform(high=2 * np.pi, size=self.nparticles)  # noqa: NPY002
 
         return theta, phi
 
