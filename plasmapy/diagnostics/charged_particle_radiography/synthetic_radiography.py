@@ -10,7 +10,6 @@ __all__ = ["Tracker", "synthetic_radiograph"]
 import astropy.constants as const
 import astropy.units as u
 import collections
-import dask.array
 import numpy as np
 import sys
 import warnings
@@ -25,7 +24,6 @@ from plasmapy.formulary.mathematics import rot_a_to_b
 from plasmapy.particles import Particle
 from plasmapy.plasma.grids import AbstractGrid
 from plasmapy.simulation.particle_integrators import boris_push
-from plasmapy.utils.distributed import DaskClient
 
 
 def _coerce_to_cartesian_si(pos):
@@ -157,9 +155,6 @@ class Tracker:
 
         # This flag records whether the simulation has been run
         self._has_run = False
-
-        # Initialize the dask cluster for distributed computing
-        self.dask_client = DaskClient()
 
         # ************************************************************************
         # Setup the source and detector geometries
@@ -931,10 +926,8 @@ class Tracker:
             # Note that this interpolation step is BY FAR the slowest part of the push
             # loop. Any speed improvements will have to come from here.
             if self.field_weighting == "volume averaged":
-                pos_dask = dask.array.from_array(pos)
-
-                _Ex, _Ey, _Ez, _Bx, _By, _Bz = pos_dask.map_blocks(
-                    grid.volume_averaged_interpolator,
+                _Ex, _Ey, _Ez, _Bx, _By, _Bz = grid.volume_averaged_interpolator(
+                    pos,
                     "E_x",
                     "E_y",
                     "E_z",
@@ -942,21 +935,7 @@ class Tracker:
                     "B_y",
                     "B_z",
                     persistent=True,
-                    dtype=np.ndarray,
-                ).compute()
-
-                # _Ex, _Ey, _Ez, _Bx, _By, _Bz = grid.volume_averaged_interpolator(
-                #     pos,
-                #     "E_x",
-                #     "E_y",
-                #     "E_z",
-                #     "B_x",
-                #     "B_y",
-                #     "B_z",
-                #     persistent=True,
-                # )
-
-                print(_Ex)
+                )
 
             elif self.field_weighting == "nearest neighbor":
                 _Ex, _Ey, _Ez, _Bx, _By, _Bz = grid.nearest_neighbor_interpolator(
@@ -972,9 +951,9 @@ class Tracker:
 
             # Interpret any NaN values (points off the grid) as zero
             # Do this before adding to the totals, because 0 + nan = nan
-            _Ex = np.nan_to_num(_Ex * u.V / u.mm, nan=0.0 * u.V / u.m)
-            _Ey = np.nan_to_num(_Ey * u.V / u.mm, nan=0.0 * u.V / u.m)
-            _Ez = np.nan_to_num(_Ez * u.V / u.mm, nan=0.0 * u.V / u.m)
+            _Ex = np.nan_to_num(_Ex * u.V / u.m, nan=0.0 * u.V / u.m)
+            _Ey = np.nan_to_num(_Ey * u.V / u.m, nan=0.0 * u.V / u.m)
+            _Ez = np.nan_to_num(_Ez * u.V / u.m, nan=0.0 * u.V / u.m)
             _Bx = np.nan_to_num(_Bx * u.T, nan=0.0 * u.T)
             _By = np.nan_to_num(_By * u.T, nan=0.0 * u.T)
             _Bz = np.nan_to_num(_Bz * u.T, nan=0.0 * u.T)
@@ -1011,8 +990,6 @@ class Tracker:
         x = self.x[self.grid_ind, :]
         v = self.v[self.grid_ind, :]
 
-        # print(x.shape)
-
         # # Prepare particle info for chunking
         # particle_info = np.dstack((x, v, B, E))
 
@@ -1021,8 +998,6 @@ class Tracker:
         v_dask = array.from_array(v)
         B_dask = array.from_array(B)
         E_dask = array.from_array(E)
-
-        # print(x_dask)
 
         result = array.map_blocks(
             boris_push,

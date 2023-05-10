@@ -10,6 +10,7 @@ __all__ = [
 
 import astropy.units as u
 import contextlib
+import dask.array
 import numpy as np
 import pandas as pd
 import scipy.interpolate as interp
@@ -23,6 +24,7 @@ from scipy.spatial import distance
 from typing import Union
 
 from plasmapy.utils.decorators.helpers import modify_docstring
+from plasmapy.utils.distributed import DaskClient
 
 
 def _detect_is_uniform_grid(pts0, pts1, pts2, tol=1e-6):
@@ -80,6 +82,9 @@ class AbstractGrid(ABC):
         # Initialize some variables
         self._interpolator = None
         self._is_uniform = None
+
+        # Initialize the dask cluster for distributed computing
+        self.dask_client = DaskClient()
 
         # If three inputs are given, assume it's a user-provided grid
         if len(seeds) == 3:
@@ -1134,7 +1139,7 @@ class CartesianGrid(AbstractGrid):
         ]
         return output[0] if len(output) == 1 else np.asarray(output)
 
-    def volume_averaged_interpolator(
+    def _volume_averaged_interpolator(
         self, pos: Union[np.ndarray, u.Quantity], *args, persistent=False
     ):
         r"""
@@ -1302,6 +1307,20 @@ class CartesianGrid(AbstractGrid):
         ]
 
         return output[0] if len(output) == 1 else np.asarray(output)
+
+    def volume_averaged_interpolator(
+        self, pos: Union[np.ndarray, u.Quantity], *args, persistent=False
+    ):
+        pos_dask = dask.array.from_array(pos.value)
+
+        result = pos_dask.map_blocks(
+            self._volume_averaged_interpolator,
+            *args,
+            persistent=persistent,
+            dtype=np.ndarray,
+        )
+
+        return result.compute()
 
 
 class NonUniformCartesianGrid(AbstractGrid):
