@@ -24,7 +24,7 @@ from plasmapy.utils.decorators import validate_quantities
 
 
 class MagnetoStatics(abc.ABC):
-    """Abstract class for all kinds of magnetic static fields."""
+    """Abstract class for magnetostatic fields."""
 
     @abc.abstractmethod
     def magnetic_field(self, p: u.m) -> u.T:
@@ -49,10 +49,10 @@ class MagneticDipole(MagnetoStatics):
 
     Parameters
     ----------
-    moment: `~astropy.units.Quantity`
+    moment : `~astropy.units.Quantity`
         Magnetic moment vector, in units of A m\ :sup:`2`\ .
 
-    p0: `~astropy.units.Quantity`
+    p0 : `~astropy.units.Quantity`
         Position of the dipole.
     """
 
@@ -135,14 +135,14 @@ class GeneralWire(Wire):
 
     Parameters
     ----------
-    parametric_eq: Callable
+    parametric_eq : Callable
         A vector-valued (with units of position) function of a single real
         parameter.
 
-    t1: `float`
+    t1 : `float`
         Lower bound of the parameter, smaller than ``t2``.
 
-    t2: `float`
+    t2 : `float`
         Upper bound of the parameter, larger than ``t1``.
 
     current: `~astropy.units.Quantity`
@@ -477,7 +477,7 @@ class InfiniteStraightWire(Wire):
 
 class CircularWire(Wire):
     """
-    Circular wire(coil) class.
+    Circular wire (coil) class.
 
     Parameters
     ----------
