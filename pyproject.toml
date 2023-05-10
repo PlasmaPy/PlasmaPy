@@ -251,8 +251,6 @@ extend-select = [
 ]
 ignore = [
   "B028", # no-explicit-stacklevel
-#  "D100", # undocumented-public-module
-  "D101", # undocumented-public-class
   "D102", # undocumented-public-method
   "D103", # undocumented-public-function
   "D104", # undocumented-public-package
@@ -326,7 +324,7 @@ max-complexity = 20
 "plasmapy/utils/pytest_helpers/pytest_helpers.py" = ["BLE001", "PLR"]
 "plasmapy/utils/pytest_helpers/tests/test_pytest_helpers.py" = ["BLE001", "TRY002"]
 "setup.py" = ["D100"]
-"test_*" = ["D100"]
+"test_*" = ["D100", "D101"]
 
 [tool.ruff.pydocstyle]
 convention = "numpy"
