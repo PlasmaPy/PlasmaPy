@@ -254,7 +254,6 @@ ignore = [
   "D105", # undocumented-magic-method
   "D200", # fits-on-one-line
   "D202", # no-blank-line-after-function
-  "D203", # one-blank-line-before-class
   "D205", # blank-line-after-summary
   "D401", # non-imperative-mood
   "E501", # line-too-long
