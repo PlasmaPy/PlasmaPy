@@ -251,7 +251,7 @@ extend-select = [
 ]
 ignore = [
   "B028", # no-explicit-stacklevel
-  "D105", # undocumented-public-method
+  "D105", # undocumented-magic-method
   "D200", # fits-on-one-line
   "D202", # no-blank-line-after-function
   "D203", # one-blank-line-before-class
