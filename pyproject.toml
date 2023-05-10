@@ -257,8 +257,7 @@ ignore = [
   "D203", # one-blank-line-before-class
   "D205", # blank-line-after-summary
   "D209", # new-line-after-last-paragraph
-  "D212", # multi-line-summary-first-line
-  "D301", # escape-sequence-in-docstring (should be enabled)
+#  "D301", # escape-sequence-in-docstring (should be enabled)
   "D400", # ends-in-period
   "D401", # non-imperative-mood (should be enabled)
   "D404", # docstring-starts-with-this (should be enabled)
@@ -316,6 +315,7 @@ max-complexity = 20
 "__init__.py" = ["D104", "E402", "F401", "F402", "F403"]  # ignore import errors
 ".github/workflows/citation_updater.py" = ["D103"]
 "docs/conf.py" = ["D100", "D103"]
+"plasmapy/analysis/fit_functions.py" = ["D301"]
 "plasmapy/formulary/braginskii.py" = ["C901"]
 "plasmapy/formulary/tests/test_distribution.py" = ["ARG005"]
 "plasmapy/particles/tests/test_decorators.py" = ["ARG001", "ARG002"]
