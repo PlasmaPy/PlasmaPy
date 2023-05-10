@@ -258,7 +258,7 @@ class Tracker:
                     )
 
     @property
-    def num_grids(self):
+    def num_grids(self):  # noqa: D102
         return len(self.grids)
 
     def _default_detector_hdir(self):

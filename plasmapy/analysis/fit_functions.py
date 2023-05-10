@@ -486,6 +486,7 @@ class Linear(AbstractFitFunction):
 
     @property
     def latex_str(self) -> str:
+        """LaTeX friendly representation of the fit function."""
         return r"m x + b"
 
     def func(self, x, m, b):
@@ -675,6 +676,7 @@ class Exponential(AbstractFitFunction):
 
     @property
     def latex_str(self) -> str:
+        """LaTeX friendly representation of the fit function."""
         return r"a \, \exp(\alpha x)"
 
     def func(self, x, a, alpha):
@@ -816,18 +818,19 @@ class ExponentialPlusLinear(AbstractFitFunction):
 
     @property
     def latex_str(self) -> str:
+        """LaTeX friendly representation of the fit function."""
         exp_str = self._exponential.latex_str
         lin_str = self._linear.latex_str
         return rf"{exp_str} + {lin_str}"
 
     @AbstractFitFunction.params.setter
-    def params(self, val) -> None:
+    def params(self, val) -> None:  # noqa: D102
         AbstractFitFunction.params.fset(self, val)
         self._exponential.params = (self.params.a, self.params.alpha)
         self._linear.params = (self.params.m, self.params.b)
 
     @AbstractFitFunction.param_errors.setter
-    def param_errors(self, val) -> None:
+    def param_errors(self, val) -> None:  # noqa: D102
         AbstractFitFunction.param_errors.fset(self, val)
         self._exponential.param_errors = (
             self.param_errors.a,
@@ -950,10 +953,11 @@ class ExponentialPlusOffset(AbstractFitFunction):
 
     @property
     def latex_str(self) -> str:
+        """LaTeX friendly representation of the fit function."""
         return r"a \, \exp(\alpha x) + b"
 
     @AbstractFitFunction.params.setter
-    def params(self, val) -> None:
+    def params(self, val) -> None:  # noqa: D102
         AbstractFitFunction.params.fset(self, val)
         self._explin.params = (
             self.params.a,
@@ -963,7 +967,7 @@ class ExponentialPlusOffset(AbstractFitFunction):
         )
 
     @AbstractFitFunction.param_errors.setter
-    def param_errors(self, val) -> None:
+    def param_errors(self, val) -> None:  # noqa: D102
         AbstractFitFunction.param_errors.fset(self, val)
         self._explin.param_errors = (
             self.param_errors.a,

@@ -251,9 +251,6 @@ extend-select = [
 ]
 ignore = [
   "B028", # no-explicit-stacklevel
-  "D102", # undocumented-public-method
-  "D103", # undocumented-public-function
-  "D104", # undocumented-public-package
   "D105", # undocumented-public-method
   "D200", # fits-on-one-line
   "D202", # no-blank-line-after-function
@@ -316,15 +313,18 @@ ignore-variadic-names = true
 max-complexity = 20
 
 [tool.ruff.per-file-ignores]
-"__init__.py" = ["E402", "F401", "F402", "F403"]  # ignore import errors
-"docs/conf.py" = ["D100"]
+"__init__.py" = ["D104", "E402", "F401", "F402", "F403"]  # ignore import errors
+".github/workflows/citation_updater.py" = ["D103"]
+"docs/conf.py" = ["D100", "D103"]
 "plasmapy/formulary/braginskii.py" = ["C901"]
 "plasmapy/formulary/tests/test_distribution.py" = ["ARG005"]
 "plasmapy/particles/tests/test_decorators.py" = ["ARG001", "ARG002"]
+"plasmapy/plasma/sources/*.py" = ["D102"]
 "plasmapy/utils/pytest_helpers/pytest_helpers.py" = ["BLE001", "PLR"]
 "plasmapy/utils/pytest_helpers/tests/test_pytest_helpers.py" = ["BLE001", "TRY002"]
 "setup.py" = ["D100"]
-"test_*" = ["D100", "D101"]
+"test_*" = ["D100", "D101", "D102", "D103", "D104"]
+"*/*/tests/__init__.py" = ["D104"]
 
 [tool.ruff.pydocstyle]
 convention = "numpy"
