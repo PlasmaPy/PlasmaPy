@@ -257,12 +257,8 @@ ignore = [
   "D203", # one-blank-line-before-class
   "D205", # blank-line-after-summary
   "D209", # new-line-after-last-paragraph
-#  "D301", # escape-sequence-in-docstring (should be enabled)
   "D400", # ends-in-period
-  "D401", # non-imperative-mood (should be enabled)
-  "D404", # docstring-starts-with-this (should be enabled)
-  "D410", # no-blank-line-after-section
-  "D415", # ends-in-punctuation
+  "D401", # non-imperative-mood
   "E501", # line-too-long
   "N801", # invalid-class-name
   "N802", # invalid-function-name
@@ -323,7 +319,7 @@ max-complexity = 20
 "plasmapy/utils/pytest_helpers/pytest_helpers.py" = ["BLE001", "PLR"]
 "plasmapy/utils/pytest_helpers/tests/test_pytest_helpers.py" = ["BLE001", "TRY002"]
 "setup.py" = ["D100"]
-"test_*" = ["D100", "D101", "D102", "D103", "D104"]
+"test_*" = ["D100", "D101", "D102", "D103", "D104", "D401"]
 "*/*/tests/__init__.py" = ["D104"]
 
 [tool.ruff.pydocstyle]
