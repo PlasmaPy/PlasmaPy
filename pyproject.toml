@@ -319,7 +319,6 @@ max-complexity = 20
 
 [tool.ruff.per-file-ignores]
 "__init__.py" = ["E402", "F401", "F402", "F403"]  # ignore import errors
-"conftest.py" = ["D100"]
 "docs/conf.py" = ["D100"]
 "plasmapy/formulary/braginskii.py" = ["C901"]
 "plasmapy/formulary/tests/test_distribution.py" = ["ARG005"]

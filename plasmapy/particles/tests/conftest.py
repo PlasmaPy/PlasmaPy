@@ -1,3 +1,5 @@
+"""Define fixtures for tests of `plasmapy.particles`."""
+
 import pytest
 
 from plasmapy.particles import Particle
