@@ -325,6 +325,7 @@ max-complexity = 20
 "plasmapy/particles/tests/test_decorators.py" = ["ARG001", "ARG002"]
 "plasmapy/utils/pytest_helpers/pytest_helpers.py" = ["BLE001", "PLR"]
 "plasmapy/utils/pytest_helpers/tests/test_pytest_helpers.py" = ["BLE001", "TRY002"]
+"plasmapy/formulary/collisions/helio/collisional_analysis.py" = ["",]
 
 [tool.ruff.pydocstyle]
 convention = "numpy"
