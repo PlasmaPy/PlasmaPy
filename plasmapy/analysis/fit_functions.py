@@ -748,7 +748,7 @@ class Exponential(AbstractFitFunction):
     def root_solve(self, *args, **kwargs):
         """
         The root :math:`f(x_r) = 0` for the fit function. **An exponential has no
-        real roots.**
+        real roots**.
 
         Parameters
         ----------

@@ -99,7 +99,7 @@ class HDF5Reader(GenericPlasma):
     def electric_field(self):
         """
         An (x, y, z) array containing electric field data.  (Returned as an astropy
-        `~astropy.units.Quantity`.)
+        `~astropy.units.Quantity`.).
         """
         path = f"data/{self.subname}/fields/E"
         if path in self.h5:
@@ -113,7 +113,7 @@ class HDF5Reader(GenericPlasma):
     def charge_density(self):
         """
         An array containing charge density data.  (Returned as an astropy
-        `~astropy.units.Quantity`.)
+        `~astropy.units.Quantity`.).
         """
         path = f"data/{self.subname}/fields/rho"
         if path in self.h5:

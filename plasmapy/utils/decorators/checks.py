@@ -534,7 +534,7 @@ class CheckUnits(CheckBase):
         """
         Review :attr:`checks` and function bound arguments to build a complete 'checks'
         dictionary.  If a check key is omitted from the argument checks, then a default
-        value is assumed (see `check units`_)
+        value is assumed (see `check units`_).
 
         Parameters
         ----------
@@ -955,11 +955,10 @@ class CheckUnits(CheckBase):
         return allowed_units
 
     @staticmethod
-    def _normalize_equivalencies(equivalencies):
+    def _normalize_equivalencies(equivalencies):  # noqa: D400
         """
-        Normalizes equivalencies to ensure each is in a 4-tuple form::
-
-            (from_unit, to_unit, forward_func, backward_func)
+        Normalize equivalencies to ensure each is in a 4-tuple of the
+        form `(from_unit, to_unit, forward_func, backward_func)`.
 
         `forward_func` maps `from_unit` into `to_unit` and `backward_func` does
         the reverse.
@@ -1016,7 +1015,7 @@ class CheckUnits(CheckBase):
 
     def _flatten_equivalencies_list(self, elist):
         """
-        Given a list of equivalencies, flatten out any sub-element lists
+        Given a list of equivalencies, flatten out any sub-element lists.
 
         Parameters
         ----------

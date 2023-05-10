@@ -1,5 +1,5 @@
 """
-Decorator to convert units of functions in /physics methods
+Decorator to convert units of functions in /physics methods.
 """
 __all__ = ["angular_freq_to_hz"]
 

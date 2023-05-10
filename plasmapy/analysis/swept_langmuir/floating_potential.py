@@ -65,7 +65,7 @@ def find_floating_potential(  # noqa: PLR0912, PLR0915
     current-voltage (IV) curve obtained from a swept Langmuir probe.
     The floating potential is the probe bias where the collected
     current equals zero :math:`I = 0`.  (For additional details see
-    the **Notes** section below.)
+    the **Notes** section below.).
 
     **Aliases:**
     :func:`~plasmapy.analysis.swept_langmuir.floating_potential.find_vf_`
