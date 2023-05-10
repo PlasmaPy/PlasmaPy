@@ -73,24 +73,24 @@ class AbstractFitFunction(ABC):
 
         Parameters
         ----------
-        x: |array_like|
+        x : |array_like|
             Dependent variables.
 
-        x_err: |array_like|, optional
+        x_err : |array_like|, optional
             Errors associated with the independent variables ``x``.  Must be of
             size one or equal to the size of ``x``.
 
-        reterr: bool, optional
+        reterr : bool, optional
             (Default: `False`) If `True`, return an array of uncertainties
             associated with the calculated independent variables
 
         Returns
         -------
-        y: `numpy.ndarray`
+        y : `numpy.ndarray`
             Corresponding dependent variables :math:`y=f(x)` of the independent
             variables ``x``.
 
-        y_err: `numpy.ndarray`
+        y_err : `numpy.ndarray`
             Uncertainties associated with the calculated dependent variables
             :math:`\\delta y`
         """
@@ -119,10 +119,10 @@ class AbstractFitFunction(ABC):
 
         Parameters
         ----------
-        x: |array_like|
+        x : |array_like|
             Independent variables to be passed to the fit function.
 
-        *args: tuple[Union[float, int],...]
+        *args : tuple[Union[float, int],...]
             The parameters that will be adjusted to make the fit.
 
         Returns
@@ -176,24 +176,24 @@ class AbstractFitFunction(ABC):
         """
         Parameters
         ----------
-        x: |array_like|
+        x : |array_like|
             Independent variables to be passed to the fit function.
 
-        x_err: |array_like|, optional
+        x_err : |array_like|, optional
             Errors associated with the independent variables ``x``.  Must be of
             size one or equal to the size of ``x``.
 
-        rety: bool
+        rety : bool
             Set `True` to also return the associated dependent variables
             :math:`y = f(x)`.
 
         Returns
         -------
-        err: `numpy.ndarray`
+        err : `numpy.ndarray`
             The calculated uncertainties :math:`\\delta y` of the dependent
             variables (:math:`y = f(x)`) of the independent variables ``x``.
 
-        y: `numpy.ndarray`, optional
+        y : `numpy.ndarray`, optional
             (if ``rety == True``) The associated dependent variables
             :math:`y = f(x)`.
 
@@ -344,7 +344,7 @@ class AbstractFitFunction(ABC):
 
         Parameters
         ----------
-        x0: `~numpy.ndarray`
+        x0 : `~numpy.ndarray`
             The starting estimate for the roots of :math:`f(x_r) = 0`.
 
         Returns
@@ -353,7 +353,7 @@ class AbstractFitFunction(ABC):
             The solution (or the result of the last iteration for an
             unsuccessful call).
 
-        x_err: `~numpy.ndarray`
+        x_err : `~numpy.ndarray`
             The uncertainty associated with the root calculation.  **Currently
             this returns an array of** `numpy.nan` **values equal in shape to**
             ``x`` **, since there is no determined way to calculate the
@@ -427,11 +427,11 @@ class AbstractFitFunction(ABC):
 
         Parameters
         ----------
-        xdata: |array_like|
+        xdata : |array_like|
             The independent variable where data is measured.  Should be 1D of
             length M.
 
-        ydata: |array_like|
+        ydata : |array_like|
             The dependent data associated with ``xdata``.
 
         **kwargs
@@ -440,14 +440,14 @@ class AbstractFitFunction(ABC):
         Raises
         ------
         ValueError
-            if either ``ydata`` or ``xdata`` contain `numpy.nan`'s, or if
+            If either ``ydata`` or ``xdata`` contain `numpy.nan`'s, or if
             incompatible options are used.
 
         RuntimeError
-            if the least-squares minimization fails.
+            If the least-squares minimization fails.
 
         ~scipy.optimize.OptimizeWarning
-            if covariance of the parameters can not be estimated.
+            If covariance of the parameters can not be estimated.
 
         """
         popt, pcov = curve_fit(self.func, xdata, ydata, **kwargs)
@@ -503,18 +503,18 @@ class Linear(AbstractFitFunction):
 
         Parameters
         ----------
-        x: |array_like|
+        x : |array_like|
             Independent variable.
 
-        m: float
+        m : float
             value for slope :math:`m`
 
-        b: float
+        b : float
             value for intercept :math:`b`
 
         Returns
         -------
-        y: |array_like|
+        y : |array_like|
             dependent variables corresponding to :math:`x`
 
         """
@@ -587,10 +587,10 @@ class Linear(AbstractFitFunction):
 
         Returns
         -------
-        root: float
+        root : float
             The root value for the given fit :attr:`params`.
 
-        err: float
+        err : float
             The uncertainty in the calculated root for the given fit
             :attr:`params` and :attr:`param_errors`.
         """
@@ -623,11 +623,11 @@ class Linear(AbstractFitFunction):
 
         Parameters
         ----------
-        xdata: |array_like|
+        xdata : |array_like|
             The independent variable where data is measured.  Should be 1D of
             length M.
 
-        ydata: |array_like|
+        ydata : |array_like|
             The dependent data associated with ``xdata``.
 
         **kwargs
@@ -692,20 +692,19 @@ class Exponential(AbstractFitFunction):
 
         Parameters
         ----------
-        x: |array_like|
+        x : |array_like|
             Independent variable.
 
-        a: float
+        a : float
             value for the exponential "normalization" constant, :math:`a`
 
-        alpha: float
+        alpha : float
             value for the growth constant, :math:`\\alpha`
 
         Returns
         -------
-        y: |array_like|
+        y : |array_like|
             dependent variables corresponding to ``x``
-
         """
         x = self._check_x(x)
         self._check_params(a, alpha)
@@ -762,10 +761,10 @@ class Exponential(AbstractFitFunction):
 
         Returns
         -------
-        root: float
+        root : float
             The root value for the given fit :attr:`params`.
 
-        err: float
+        err : float
             The uncertainty in the calculated root for the given fit
             :attr:`params` and :attr:`param_errors`.
         """
@@ -851,24 +850,24 @@ class ExponentialPlusLinear(AbstractFitFunction):
 
         Parameters
         ----------
-        x: |array_like|
+        x : |array_like|
             Independent variable.
 
-        a: float
+        a : float
             value for constant :math:`a`
 
-        alpha: float
+        alpha : float
             value for constant :math:`\\alpha`
 
-        m: float
+        m : float
             value for slope :math:`m`
 
-        b: float
+        b : float
             value for intercept :math:`b`
 
         Returns
         -------
-        y: |array_like|
+        y : |array_like|
             dependent variables corresponding to ``x``
 
         """
@@ -989,21 +988,21 @@ class ExponentialPlusOffset(AbstractFitFunction):
 
         Parameters
         ----------
-        x: |array_like|
+        x : |array_like|
             Independent variable.
 
-        a: float
+        a : float
             value for constant :math:`a`
 
-        alpha: float
+        alpha : float
             value for constant :math:`\\alpha`
 
-        b: float
+        b : float
             value for DC offset :math:`b`
 
         Returns
         -------
-        y: |array_like|
+        y : |array_like|
             dependent variables corresponding to ``x``
 
         """
@@ -1054,10 +1053,10 @@ class ExponentialPlusOffset(AbstractFitFunction):
 
         Returns
         -------
-        root: float
+        root : float
             The root value for the given fit :attr:`params`.
 
-        err: float
+        err : float
             The uncertainty in the calculated root for the given fit
             :attr:`params` and :attr:`param_errors`.
         """
