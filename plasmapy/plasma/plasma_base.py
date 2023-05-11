@@ -37,27 +37,27 @@ class BasePlasma(ABC):
 
     @property
     @abstractmethod
-    def electron_temperature(self):
+    def electron_temperature(self):  # noqa: D102
         raise NotImplementedError
 
     @property
     @abstractmethod
-    def ion_temperature(self):
+    def ion_temperature(self):  # noqa: D102
         raise NotImplementedError
 
     @property
     @abstractmethod
-    def electron_density(self):
+    def electron_density(self):  # noqa: D102
         raise NotImplementedError
 
     @property
     @abstractmethod
-    def ion_density(self):
+    def ion_density(self):  # noqa: D102
         raise NotImplementedError
 
     @property
     @abstractmethod
-    def average_ionization(self):
+    def average_ionization(self):  # noqa: D102
         raise NotImplementedError
 
 
@@ -73,17 +73,17 @@ class GenericPlasma(BasePlasma):
     # The definitions for the abstract methods declared in `BasePlasma`
     # goes here.
 
-    def electron_temperature(self):
+    def electron_temperature(self):  # noqa: D102
         raise NotImplementedError
 
-    def ion_temperature(self):
+    def ion_temperature(self):  # noqa: D102
         raise NotImplementedError
 
-    def electron_density(self):
+    def electron_density(self):  # noqa: D102
         raise NotImplementedError
 
-    def ion_density(self):
+    def ion_density(self):  # noqa: D102
         raise NotImplementedError
 
-    def average_ionization(self):
+    def average_ionization(self):  # noqa: D102
         raise NotImplementedError
