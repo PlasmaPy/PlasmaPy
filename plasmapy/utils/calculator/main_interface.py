@@ -144,7 +144,8 @@ def _create_interactive_layout():
 
 def _create_output_layout():
     """
-    Tab layout for output parameters, populated from properties_metadata.json.
+    Tab layout for output parameters, populated from
+    ``properties_metadata.json``.
     """
     app = widgets.Tab()
     children = []
