@@ -451,7 +451,7 @@ class Tracker:
         mesh_vdir=None,
     ):
         """
-        Apply wire meshes that were added to self.mesh_list.
+        Apply wire meshes that were added to ``self.mesh_list``.
         """
         x = self._coast_to_plane(location, mesh_hdir, mesh_vdir)
 
