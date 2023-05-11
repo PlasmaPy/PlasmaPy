@@ -108,7 +108,7 @@ class TestSingleParticleCollisionFrequencies:
         assert MKS_result == CGS_result
 
     @staticmethod
-    def get_limit_value(interaction_type, limit_type, cases):
+    def get_limit_value(interaction_type, limit_type, cases):  # noqa: C901
         """
         Get the limiting values for frequencies given the two particles
         interacting, and their frequencies class.

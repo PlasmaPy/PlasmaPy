@@ -223,6 +223,7 @@ extend-select = [
   "B",  # flake8-bugbear
   "BLE", # flake8-blind-except
   "C4", # flake8-comprehensions
+  "C90", # mccabe
   "COM818", # trailing-comma-on-bare-tuple
   "D",  # pydocstyle
   "FBT003", # flake8-boolean-trap
@@ -303,7 +304,7 @@ pandas = "pd"
 ignore-variadic-names = true
 
 [tool.ruff.mccabe]
-max-complexity = 20
+max-complexity = 10
 
 [tool.ruff.per-file-ignores]
 "__init__.py" = ["D104", "E402", "F401", "F402", "F403"]  # ignore import errors
