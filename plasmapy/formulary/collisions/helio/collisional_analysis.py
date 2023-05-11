@@ -301,7 +301,7 @@ def temp_ratio(  # noqa: PLR0912, PLR0915
 
     variables = [r_0, r_n, n_1, n_2, v_1, T_1, T_2]
 
-    d_type = [True for var in variables if hasattr(var, "__len__") else False]
+    d_type = [bool(hasattr(var, "__len__")) for var in variables]
 
     var = all(i for i in d_type)
 
