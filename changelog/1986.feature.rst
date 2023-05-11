@@ -1,1 +1,1 @@
-Addition of the Collisional Analysis module.
+Added `plasmapy.formulary.collisions.helio.collisional_analysis`.

@@ -68,7 +68,7 @@ def temp_ratio(  # noqa: PLR0912, PLR0915
         Temperature of the secondary ion in units convertible to
         temperature K.
 
-    ions : |particle-list-like|, default: ["p+, "He-4 2+"]
+    ions : |particle-list-like|, default: ``("p+, "He-4 2+")``
         Particle list containing two (2) particles, primary ion of
         interest is entered first, followed by the secondary ion.
 
@@ -81,14 +81,14 @@ def temp_ratio(  # noqa: PLR0912, PLR0915
         density. The default value is taken from
         :cite:t:`hellinger:2011`.
 
-    velocity_scale : `float`
+    velocity_scale : `float`, default: -0.2
         The value used as the scaling parameter for the primary ion
-        velocity, the default value is -0.2 and is taken from
+        velocity. The default value is taken from
         :cite:t:`hellinger:2011`.
 
-    temperature_scale : `float`
+    temperature_scale : `float`, default: -0.74
         The value used as the scaling parameter for the primary ion
-        temperature, the default value is -0.74 and is taken from
+        temperature. The default value is taken from
         :cite:t:`hellinger:2011`.
 
     Returns
@@ -111,7 +111,7 @@ def temp_ratio(  # noqa: PLR0912, PLR0915
     -----
     The processes by which Coulomb collisions bring ion temperatures
     into local thermal equilibrium (LTE) has received considerable
-    attention, :cite:t:`verscharen:2019`. The relative temperature
+    attention :cite:p:`verscharen:2019`. The relative temperature
     between constituent plasma ion species is given as:
 
     .. math::
@@ -131,9 +131,9 @@ def temp_ratio(  # noqa: PLR0912, PLR0915
     axes perpendicular and parallel to the ambient magnetic field.
 
     In order to determine how extensively an individual parcel of
-    plasma has been processed by Coulomb collisions, :cite:t:`maruca:2013`
-    introduced an approached called collisional analysis. Which seeks
-    to quantify how collisions affect the plasma’s departures from
+    plasma has been processed by Coulomb collisions :cite:p:`maruca:2013`
+    introduced an approached called collisional analysis. This paper seeks
+    to quantify how collisions affect the plasma's departures from
     LTE, the equation for collisional thermalization
     from :cite:t:`maruca:2013` is given below:
 
@@ -161,7 +161,7 @@ def temp_ratio(  # noqa: PLR0912, PLR0915
     and :math:`B = 1 \, {\rm cm}^{-3/2}{\rm K}^{-3/2}`.
 
     The thermalization is from Coulomb collisions, which assumes
-    “soft”, small-angle deflections mediated by the electrostatic
+    "soft", small-angle deflections mediated by the electrostatic
     force :cite:t:`baumjohann:1997`. It is assumed that there is no
     relative drift between the ion species and that it is a mixed ion
     collision, the Coulomb logarithm for a mixed ion collision is
@@ -301,12 +301,7 @@ def temp_ratio(  # noqa: PLR0912, PLR0915
 
     variables = [r_0, r_n, n_1, n_2, v_1, T_1, T_2]
 
-    d_type = []
-    for var in variables:
-        if hasattr(var, "__len__"):
-            d_type.append(True)  # noqa: FBT003
-        else:
-            d_type.append(False)  # noqa: FBT003
+    d_type = [True for var in variables if hasattr(var, "__len__") else False]
 
     var = all(i for i in d_type)
 
