@@ -12,7 +12,7 @@ from plasmapy.utils.decorators.helpers import preserve_signature
 def angular_freq_to_hz(fn):
     """
     A decorator that enables a function to convert its return
-    value angular frequency (rad/s) to frequency (Hz).
+    value from angular frequency (rad/s) to frequency (Hz).
 
     A kwarg ``to_hz`` is added to the function's signature, with a
     default value of `False`.  The keyword is also added to the
