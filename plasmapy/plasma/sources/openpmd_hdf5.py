@@ -98,8 +98,11 @@ class HDF5Reader(GenericPlasma):
     @property
     def electric_field(self):
         """
-        An (x, y, z) array containing electric field data.  (Returned as an astropy
-        `~astropy.units.Quantity`.).
+        An :math:`(x, y, z)` array containing electric field data.
+
+        Returns
+        -------
+        `~astropy.units.Quantity`
         """
         path = f"data/{self.subname}/fields/E"
         if path in self.h5:
@@ -112,8 +115,11 @@ class HDF5Reader(GenericPlasma):
     @property
     def charge_density(self):
         """
-        An array containing charge density data.  (Returned as an astropy
-        `~astropy.units.Quantity`.).
+        An array containing charge density data.
+
+        Returns
+        -------
+        `~astropy.units.Quantity`
         """
         path = f"data/{self.subname}/fields/rho"
         if path in self.h5:
@@ -124,6 +130,13 @@ class HDF5Reader(GenericPlasma):
 
     @property
     def magnetic_field(self):
+        """
+        An array containing magnetic field data.
+
+        Returns
+        -------
+        `~astropy.units.Quantity`
+        """
         path = f"data/{self.subname}/fields/B"
         if path in self.h5:
             units = _fetch_units(self.h5[path].attrs["unitDimension"])
@@ -134,6 +147,13 @@ class HDF5Reader(GenericPlasma):
 
     @property
     def electric_current(self):
+        """
+        An array containing electric current data.
+
+        Returns
+        -------
+        `~astropy.units.Quantity`
+        """
         path = f"data/{self.subname}/fields/J"
         if path in self.h5:
             units = _fetch_units(self.h5[path].attrs["unitDimension"])
