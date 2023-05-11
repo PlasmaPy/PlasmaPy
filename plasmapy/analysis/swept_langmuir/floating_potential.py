@@ -61,8 +61,9 @@ def find_floating_potential(  # noqa: PLR0912, PLR0915
     fit_type: str = "exponential",
 ) -> tuple[np.floating, VFExtras]:
     """
-    Determines the floating potential (:math:`V_f`) for a given
+    Determine the floating potential (:math:`V_f`) for a given
     current-voltage (IV) curve obtained from a swept Langmuir probe.
+
     The floating potential is the probe bias where the collected
     current equals zero :math:`I = 0`.  (For additional details see
     the **Notes** section below.)

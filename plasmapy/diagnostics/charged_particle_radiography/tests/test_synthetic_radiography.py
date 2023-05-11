@@ -691,7 +691,7 @@ def test_cannot_modify_simulation_after_running(case):
 @pytest.mark.slow()
 def test_gaussian_sphere_analytical_comparison():
     """
-    This test runs a known example problem and compares to a theoretical
+    Run a known example problem and compare it to a theoretical
     model for small deflections.
 
     Still under construction (comparing the actual form of the radiograph

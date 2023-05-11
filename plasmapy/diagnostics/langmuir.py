@@ -102,14 +102,14 @@ class Characteristic:
         return Characteristic(self.bias[key], self.current[key])
 
     def __sub__(self, other):
-        r"""Support current subtraction"""
+        r"""Support current subtraction."""
 
         b = copy.deepcopy(self)
         b.current -= other.current
         return b
 
     def __add__(self, other):
-        r"""Support current addition"""
+        r"""Support current addition."""
 
         b = copy.deepcopy(self)
         b.current += other.current

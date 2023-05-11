@@ -1,6 +1,6 @@
 """
-This module contains functionality for calculating the numerical
-solutions to the Stix cold plasma function.
+Functionality for calculating the numerical solutions to the Stix cold
+plasma function.
 """
 __all__ = ["stix"]
 
