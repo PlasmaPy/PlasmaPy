@@ -404,7 +404,7 @@ class RelativisticBody:
     @validate_quantities
     def kinetic_energy(self) -> u.J:
         """
-        The kinetic energy of the body,.
+        The kinetic energy of the body.
 
         .. math::
 
@@ -446,7 +446,7 @@ class RelativisticBody:
     @validate_quantities
     def lorentz_factor(self) -> Real:
         r"""
-        The Lorentz factor of the body,.
+        The Lorentz factor of the body.
 
         .. math::
 
@@ -462,7 +462,7 @@ class RelativisticBody:
     @validate_quantities
     def momentum(self) -> u.kg * u.m / u.s:
         r"""
-        The magnitude of the momentum of the body,.
+        The magnitude of the momentum of the body.
 
         .. math::
 
