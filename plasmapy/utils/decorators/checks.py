@@ -197,9 +197,11 @@ class CheckValues(CheckBase):
         self, bound_args: inspect.BoundArguments
     ) -> dict[str, dict[str, bool]]:
         """
-        Review :attr:`checks` and function bound arguments to build a complete 'checks'
-        dictionary.  If a check key is omitted from the argument checks, then a default
-        value is assumed (see `check values`_).
+        Review :attr:`checks` and function bound arguments to build a
+        complete 'checks' dictionary.
+
+        If a check key is omitted from the argument checks, then a
+        default value is assumed (see `check values`_).
 
         Parameters
         ----------
@@ -215,6 +217,7 @@ class CheckValues(CheckBase):
         Dict[str, Dict[str, bool]]
             A complete 'checks' dictionary for checking function input arguments
             and return.
+
         """
         # initialize validation dictionary
         out_checks = {}
