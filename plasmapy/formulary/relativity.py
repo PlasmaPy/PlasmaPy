@@ -388,7 +388,7 @@ class RelativisticBody:
     def total_energy(self) -> u.J:
         r"""
         The sum of the rest mass energy and the kinetic energy of the
-        body,.
+        body.
 
         .. math::
 
