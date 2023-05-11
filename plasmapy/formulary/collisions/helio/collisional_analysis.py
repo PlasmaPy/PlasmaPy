@@ -16,7 +16,7 @@ from plasmapy.utils.decorators import validate_quantities
     T_1={"can_be_negative": False, "equivalencies": u.temperature_energy()},
     T_2={"can_be_negative": False, "equivalencies": u.temperature_energy()},
 )
-def temp_ratio(
+def temp_ratio(  # noqa: PLR0912, PLR0915
     *,
     r_0: u.au,
     r_n: u.au,
@@ -25,7 +25,7 @@ def temp_ratio(
     v_1: u.km / u.s,
     T_1: u.K,
     T_2: u.K,
-    ions: ParticleLike = ["p+", "He-4++"],
+    ions: ParticleLike = ("p+", "He-4++"),
     n_step: int = 100,
     density_scale: float = -1.8,
     velocity_scale: float = -0.2,
@@ -304,9 +304,9 @@ def temp_ratio(
     d_type = []
     for var in variables:
         if hasattr(var, "__len__"):
-            d_type.append(True)
+            d_type.append(True)  # noqa: FBT003
         else:
-            d_type.append(False)
+            d_type.append(False)  # noqa: FBT003
 
     var = all(i for i in d_type)
 
@@ -347,11 +347,11 @@ def temp_ratio(
                     )
                 )
                 if verbose:
-                    logging.info("\r", f"{(i / len(variables[0])) * 100:.2f} %")
+                    logging.info(f"\r {(i / len(variables[0])) * 100:.2f} %")
 
-            return res
+            return res  # noqa: TRY300
 
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             raise ValueError(
                 "Argument(s) are of unequal lengths, the following "
                 "arguments should be of equal length: 'r_0', 'r_n', "
