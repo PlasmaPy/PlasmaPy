@@ -269,7 +269,7 @@ ignore = [
   "PT011", # pytest-raises-too-broad
   "PT012", # pytest-raises-multiple-statements (enable later?)
   "PT019", # pytest-fixture-param-without-value (enable later?)
-  "RUF001", # ambiguous-unicode-character-string (flags
+  "RUF001", # ambiguous-unicode-character-string (flags Greek letters)
   "RUF002", # ambiguous-unicode-character-docstring
   "RUF003", # ambiguous-unicode-character-comment
   "RUF100", # unused-noqa (enable after dropping flake8 completely)
