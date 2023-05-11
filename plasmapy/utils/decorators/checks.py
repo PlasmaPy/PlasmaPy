@@ -217,7 +217,6 @@ class CheckValues(CheckBase):
         Dict[str, Dict[str, bool]]
             A complete 'checks' dictionary for checking function input arguments
             and return.
-
         """
         # initialize validation dictionary
         out_checks = {}
