@@ -1,3 +1,5 @@
+"""Functionality to update citation information prior to making a release."""
+
 import argparse
 import datetime
 import pathlib

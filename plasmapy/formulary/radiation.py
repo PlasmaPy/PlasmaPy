@@ -36,7 +36,7 @@ def thermal_bremsstrahlung(
 ) -> np.ndarray:
     r"""
     Calculate the bremsstrahlung emission spectrum for a Maxwellian plasma
-    in the Rayleigh-Jeans limit :math:`ℏ ω ≪ k_B T_e`
+    in the Rayleigh-Jeans limit :math:`ℏ ω ≪ k_B T_e`.
 
     .. math::
        \frac{dP}{dω} = \frac{8 \sqrt{2}}{3\sqrt{π}}

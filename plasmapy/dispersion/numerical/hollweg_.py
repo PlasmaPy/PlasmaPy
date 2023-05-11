@@ -1,6 +1,6 @@
 """
-This module contains functionality for calculating various numerical
-solutions to Hollweg's two fluid dispersion relation
+Functionality for calculating various numerical solutions to Hollweg's
+two fluid dispersion relation.
 """
 __all__ = ["hollweg"]
 
