@@ -40,7 +40,7 @@ jobs:
              - [Writing tests](https://docs.plasmapy.org/en/latest/contributing/testing_guide.html#testing-guide) using [pytest](https://docs.pytest.org)
              - [Adding a changelog entry](https://docs.plasmapy.org/en/latest/contributing/changelog_guide.html#adding-a-changelog-entry) (needed except for minor changes)
 
-            The bottom of this page shows several checks that are run for every PR. Don't worry if something broke! We break stuff all the time. 😺 Click on "Details" to learn why a check didn't pass. Please also feel free to ask for help. We do that all the time as well. 🌸 You can find us in our [**chat room**](https://docs.plasmapy.org/en/latest/contributing/coding_guide.html) or weekly [**community meeting**](https://www.plasmapy.org/meetings/weekly) & [**office hours**]((https://www.plasmapy.org/meetings/office_hours).
+            The bottom of this page shows several checks that are run for every PR. Don't worry if something broke! We break stuff all the time. 😺 Click on "Details" to learn why a check didn't pass. Please also feel free to ask for help. We do that all the time as well. 🌸 You can find us in our [**chat room**](https://docs.plasmapy.org/en/latest/contributing/coding_guide.html) or weekly [**community meeting**](https://www.plasmapy.org/meetings/weekly) & [**office hours**](https://www.plasmapy.org/meetings/office_hours).
 
              - Try fixing *CI/Python 3.11* test failures first.
              - Most *pre-commit.ci* failures can be automagically fixed by commenting "pre-commit.ci autofix" below, followed by a \`git pull\`.

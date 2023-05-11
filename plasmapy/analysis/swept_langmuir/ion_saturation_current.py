@@ -54,7 +54,7 @@ def find_ion_saturation_current(
     The current collected by a Langmuir probe reaches ion-saturation
     when the probe is sufficiently biased so the influx of electrons is
     completely repelled, which leads to only the collection of ions.
-    (For additional details see the **Notes** section below.)
+    (For additional details see the **Notes** section below.).
 
     **Aliases:** :func:`~plasmapy.analysis.swept_langmuir.ion_saturation_current.find_isat_`
 

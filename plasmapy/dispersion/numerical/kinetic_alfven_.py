@@ -1,6 +1,6 @@
 """
-This module contains functionality for calculating various numerical
-solutions to the kinetic Alfvén dispersion relation.
+Functionality for calculating various numerical solutions to the kinetic
+Alfvén dispersion relation.
 """
 __all__ = ["kinetic_alfven"]
 
