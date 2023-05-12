@@ -174,6 +174,7 @@ aci,
 afe,
 ans,
 ba,
+bale,
 bu,
 circularly,
 ded,
@@ -222,6 +223,7 @@ extend-select = [
   "B",  # flake8-bugbear
   "BLE", # flake8-blind-except
   "C4", # flake8-comprehensions
+  "C90", # mccabe
   "COM818", # trailing-comma-on-bare-tuple
   "D",  # pydocstyle
   "FBT003", # flake8-boolean-trap
@@ -230,7 +232,7 @@ extend-select = [
   "INT", # flake8-gettext
   "ISC", # flake8-implicit-str-concat
   "N", # pep8-naming
-  "NPY001", # numpy-deprecated-type-alias
+  "NPY", # numpy-deprecated-type-alias
   "PD", # pandas-vet
   "PGH", # pygrep-hooks
   "PIE", # flake8-pie
@@ -251,41 +253,28 @@ extend-select = [
 ]
 ignore = [
   "B028", # no-explicit-stacklevel
-  "D100", # undocumented-public-module
-  "D101", # undocumented-public-class
-  "D102", # undocumented-public-method
-  "D103", # undocumented-public-function
-  "D104", # undocumented-public-package
-  "D105", # undocumented-public-method
-  "D200", # fits-on-one-line
+  "D105", # undocumented-magic-method (enable later?)
+  "D200", # fits-on-one-line (incompatible with multiline short summaries)
   "D202", # no-blank-line-after-function
-  "D203", # one-blank-line-before-class
-  "D205", # blank-line-after-summary
-  "D209", # new-line-after-last-paragraph
-  "D212", # multi-line-summary-first-line
-  "D301", # escape-sequence-in-docstring (should be enabled)
-  "D400", # ends-in-period
-  "D401", # non-imperative-mood (should be enabled)
-  "D404", # docstring-starts-with-this (should be enabled)
-  "D410", # no-blank-line-after-section
-  "D415", # ends-in-punctuation
+  "D205", # blank-line-after-summary (incompatible with multiline short summaries)
+  "D401", # non-imperative-mood (enable later?)
   "E501", # line-too-long
   "N801", # invalid-class-name
   "N802", # invalid-function-name
   "N803", # invalid-argument-name
   "N806", # non-lowercase-variable-in-function
   "N816", # mixed-case-variable-in-global-scope
-  "PLE0605", # invalid-all-format
+  "PLE0605", # invalid-all-format (flags `__all__ += __lite_funcs`, etc.)
   "PLR0913", # too-many-arguments
   "PLR2004", # magic-value-comparison
   "PT007", # pytest-parametrize-values-wrong-type
   "PT011", # pytest-raises-too-broad
-  "PT012", # pytest-raises-multiple-statements
+  "PT012", # pytest-raises-multiple-statements (enable later?)
   "PT019", # pytest-fixture-param-without-value (enable later?)
-  "RUF001", # ambiguous-unicode-character-string
+  "RUF001", # ambiguous-unicode-character-string (flags Greek letters)
   "RUF002", # ambiguous-unicode-character-docstring
   "RUF003", # ambiguous-unicode-character-comment
-  "RUF100", # unused-noqa (remove if we drop flake8 completely)
+  "RUF100", # unused-noqa (enable after dropping flake8 completely)
   "S101", # asserts
   "SIM117", # multiple-with-statements (remove for Python 3.10+)
   "SIM300", # yoda-conditions
@@ -315,15 +304,22 @@ pandas = "pd"
 ignore-variadic-names = true
 
 [tool.ruff.mccabe]
-max-complexity = 20
+max-complexity = 10
 
 [tool.ruff.per-file-ignores]
-"__init__.py" = ["E402", "F401", "F402", "F403"]  # ignore import errors
+"__init__.py" = ["D104", "E402", "F401", "F402", "F403"]  # ignore import errors
+".github/workflows/citation_updater.py" = ["D103"]
+"docs/conf.py" = ["D100", "D103"]
+"plasmapy/analysis/fit_functions.py" = ["D301"]
 "plasmapy/formulary/braginskii.py" = ["C901"]
 "plasmapy/formulary/tests/test_distribution.py" = ["ARG005"]
 "plasmapy/particles/tests/test_decorators.py" = ["ARG001", "ARG002"]
+"plasmapy/plasma/sources/*.py" = ["D102"]
 "plasmapy/utils/pytest_helpers/pytest_helpers.py" = ["BLE001", "PLR"]
 "plasmapy/utils/pytest_helpers/tests/test_pytest_helpers.py" = ["BLE001", "TRY002"]
+"setup.py" = ["D100"]
+"test_*" = ["D100", "D101", "D102", "D103", "D104", "D209", "D400", "D401"]
+"*/*/tests/__init__.py" = ["D104"]
 
 [tool.ruff.pydocstyle]
 convention = "numpy"
