@@ -9,7 +9,7 @@ from plasmapy.particles.nuclear import (
     nuclear_binding_energy,
     nuclear_reaction_energy,
 )
-from plasmapy.utils.pytest_helpers import run_test, run_test_equivalent_calls
+from plasmapy.utils._pytest_helpers import run_test, run_test_equivalent_calls
 
 test_nuclear_equivalent_calls_table = [
     [nuclear_binding_energy, ["He-4", {}], ["alpha", {}], ["He", {"mass_numb": 4}]]

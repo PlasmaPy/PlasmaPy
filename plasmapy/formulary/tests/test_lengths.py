@@ -18,7 +18,7 @@ from plasmapy.formulary.lengths import (
 )
 from plasmapy.formulary.speeds import thermal_speed
 from plasmapy.particles.exceptions import InvalidParticleError
-from plasmapy.utils.pytest_helpers import assert_can_handle_nparray
+from plasmapy.utils._pytest_helpers import assert_can_handle_nparray
 
 Z = 1
 n_i = 5e19 * u.m**-3

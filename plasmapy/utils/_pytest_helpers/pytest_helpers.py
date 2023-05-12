@@ -23,7 +23,7 @@ import warnings
 
 from typing import Any, Callable
 
-from plasmapy.tests.helpers.exceptions import (
+from plasmapy.tests._helpers.exceptions import (
     InvalidTestError,
     MissingExceptionFail,
     MissingWarningFail,
@@ -117,22 +117,22 @@ def run_test(  # noqa: C901
 
     Raises
     ------
-    ~plasmapy.tests.helpers.exceptions.UnexpectedResultFail
+    ~plasmapy.tests._helpers.exceptions.UnexpectedResultFail
         If the test returns a result that is different from the expected
         result.
 
-    ~plasmapy.tests.helpers.exceptions.TypeMismatchFail
+    ~plasmapy.tests._helpers.exceptions.TypeMismatchFail
         If the actual result is of a different type than the expected
         result.
 
-    ~plasmapy.tests.helpers.exceptions.UnexpectedExceptionFail
+    ~plasmapy.tests._helpers.exceptions.UnexpectedExceptionFail
         If an exception occurs when no exception or a different
         exception is expected.
 
-    ~plasmapy.tests.helpers.exceptions.MissingExceptionFail
+    ~plasmapy.tests._helpers.exceptions.MissingExceptionFail
         If no exception is raised when an exception is expected.
 
-    ~plasmapy.tests.helpers.exceptions.MissingWarningFail
+    ~plasmapy.tests._helpers.exceptions.MissingWarningFail
         An expected warning is not issued.
 
     ~astropy.units.UnitsError
@@ -437,16 +437,16 @@ def run_test_equivalent_calls(  # noqa: C901
 
     Raises
     ------
-    ~plasmapy.tests.helpers.exceptions.UnexpectedResultFail
+    ~plasmapy.tests._helpers.exceptions.UnexpectedResultFail
         If not all of the results are equivalent, or not all of the
         results are of the same type and ``require_same_type`` evaluates
         to `True`.
 
-    ~plasmapy.tests.helpers.exceptions.UnexpectedExceptionFail
+    ~plasmapy.tests._helpers.exceptions.UnexpectedExceptionFail
         If an exception is raised whilst attempting to run one of the
         test cases.
 
-    ~plasmapy.tests.helpers.exceptions.InvalidTestError
+    ~plasmapy.tests._helpers.exceptions.InvalidTestError
         If there is an error associated with the inputs or the test is
         set up incorrectly.
 
