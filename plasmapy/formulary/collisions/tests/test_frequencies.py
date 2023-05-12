@@ -67,7 +67,7 @@ class TestSingleParticleCollisionFrequencies:
     ones_array2d = np.ones([5, 5])
 
     @pytest.mark.parametrize(
-        "attribute_to_test, expected_attribute_units",
+        ("attribute_to_test", "expected_attribute_units"),
         [
             ("momentum_loss", u.Hz),
             ("transverse_diffusion", u.Hz),
@@ -108,7 +108,7 @@ class TestSingleParticleCollisionFrequencies:
         assert MKS_result == CGS_result
 
     @staticmethod
-    def get_limit_value(interaction_type, limit_type, cases):
+    def get_limit_value(interaction_type, limit_type, cases):  # noqa: C901
         """
         Get the limiting values for frequencies given the two particles
         interacting, and their frequencies class.
@@ -211,8 +211,12 @@ class TestSingleParticleCollisionFrequencies:
         return limit_values
 
     @pytest.mark.parametrize(
-        "interaction_type, limit_type, constructor_arguments, "
-        "constructor_keyword_arguments",
+        (
+            "interaction_type",
+            "limit_type",
+            "constructor_arguments",
+            "constructor_keyword_arguments",
+        ),
         [
             # Slow limit (x << 1)
             (
@@ -422,7 +426,7 @@ class TestSingleParticleCollisionFrequencies:
             )
 
     @pytest.mark.parametrize(
-        "expected_error, constructor_arguments, constructor_keyword_arguments",
+        ("expected_error", "constructor_arguments", "constructor_keyword_arguments"),
         [
             # Arrays of unequal shape error
             (
@@ -480,7 +484,7 @@ class TestMaxwellianCollisionFrequencies:
     @staticmethod
     def get_fundamental_frequency(species, n, T_a, Coulomb_log):
         """
-        This special case for computing the fundamental frequencies
+        Test a special case for computing the fundamental frequencies
         comes from page 33 of the NRL Formulary.  The formulary
         provides limiting cases for the
         `Maxwellian_avg_##_collision_freq` family of attributes in the
@@ -499,7 +503,7 @@ class TestMaxwellianCollisionFrequencies:
             return (4.8e-8 * n * Coulomb_log * T_a**-1.5 * mu**-0.5) * u.Hz
 
     @pytest.mark.parametrize(
-        "expected_error, constructor_arguments, constructor_keyword_arguments",
+        ("expected_error", "constructor_arguments", "constructor_keyword_arguments"),
         [
             # Arrays of unequal shape error
             (
@@ -527,8 +531,12 @@ class TestMaxwellianCollisionFrequencies:
             )
 
     @pytest.mark.parametrize(
-        "expected_error, constructor_arguments, "
-        "constructor_keyword_arguments, attribute_name",
+        (
+            "expected_error",
+            "constructor_arguments",
+            "constructor_keyword_arguments",
+            "attribute_name",
+        ),
         [
             # Specified interaction isn't electron-ion
             (
@@ -605,7 +613,7 @@ class TestMaxwellianCollisionFrequencies:
             getattr(test_case, attribute_name)
 
     @pytest.mark.parametrize(
-        "frequency_to_test, constructor_keyword_arguments",
+        ("frequency_to_test", "constructor_keyword_arguments"),
         [
             (
                 "Maxwellian_avg_ei_collision_freq",

@@ -1,4 +1,4 @@
-"""Functions to calculate plasma dielectric parameters"""
+"""Functions to calculate plasma dielectric parameters."""
 __all__ = [
     "cold_plasma_permittivity_SDP",
     "cold_plasma_permittivity_LRP",

@@ -553,7 +553,7 @@ class IonizationState:
         """The number densities for each state."""
         try:
             return (self.n_elem * self.ionic_fractions).to(u.m**-3)
-        except Exception:
+        except Exception:  # noqa: BLE001
             return np.full(self.atomic_number + 1, np.nan) * u.m**-3
 
     @number_densities.setter
@@ -593,9 +593,7 @@ class IonizationState:
 
     @property
     @validate_quantities(
-        validations_on_return={
-            "equivalencies": u.temperature_energy(),
-        }
+        validations_on_return={"equivalencies": u.temperature_energy()}
     )
     def T_i(self) -> u.K:
         """

@@ -13,7 +13,7 @@ from plasmapy.diagnostics.charged_particle_radiography.detector_stacks import (
 from plasmapy.utils.data.downloader import get_file
 
 
-@pytest.fixture
+@pytest.fixture()
 def hdv2_stack(tmp_path):
     # Fetch stopping power data files from data module
     tissue_path = get_file("NIST_PSTAR_tissue_equivalent.txt", directory=tmp_path)
@@ -45,8 +45,7 @@ def hdv2_stack(tmp_path):
         *layers,
     ]
 
-    stack = Stack(layers)
-    return stack
+    return Stack(layers)
 
 
 def test_create_layer_with_different_stopping_powers(tmp_path):
