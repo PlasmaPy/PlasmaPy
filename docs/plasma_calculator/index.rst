@@ -6,7 +6,9 @@ Plasma Calculator
 
 .. currentmodule:: plasmapy.utils.calculator
 
-|expect-api-changes|
+.. attention::
+
+   |expect-api-changes|
 
 Overview
 --------

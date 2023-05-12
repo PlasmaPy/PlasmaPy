@@ -1,7 +1,7 @@
 """
 Subpackage containing routines for analyzing time series.
 
-.. note::
+.. attention::
 
    |expect-api-changes|
 """

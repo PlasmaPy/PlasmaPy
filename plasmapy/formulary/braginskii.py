@@ -151,7 +151,9 @@ class ClassicalTransport:
     r"""
     Classical transport coefficients (e.g. Braginskii, 1965).
 
-    |expect-api-changes|
+    .. attention::
+
+       |expect-api-changes|
 
     Notes
     -----
