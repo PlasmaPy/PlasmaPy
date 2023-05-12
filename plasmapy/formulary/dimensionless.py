@@ -366,7 +366,7 @@ Re_ = Reynolds_number
 @validate_quantities(U={"can_be_negative": True})
 def Mag_Reynolds(U: u.m / u.s, L: u.m, sigma: u.S / u.m) -> u.dimensionless_unscaled:
     r"""
-    Compute the magnetic Reynolds number
+    Compute the magnetic Reynolds number.
 
     The magnetic Reynolds number is a dimensionless quantity that
     estimates the relative contributions of advection and induction
@@ -443,7 +443,7 @@ def Lundquist_number(
     z_mean: Optional[numbers.Real] = None,
 ) -> u.dimensionless_unscaled:
     r"""
-    Compute the Lundquist number
+    Compute the Lundquist number.
 
     The Lundquist number :math:`S` is a dimensionless quantity that compares the
     Alfvén wave crossing timescale to the magnetic diffusion timescale in a

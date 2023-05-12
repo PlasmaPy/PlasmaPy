@@ -39,7 +39,7 @@ Stores the functions to be processed. This data is gathered from
 
 class _GenericWidget(abc.ABC):
     """
-    Generic widget class
+    Generic widget class.
 
     Parameters
     ----------
@@ -80,7 +80,7 @@ class _GenericWidget(abc.ABC):
 
     def get_widget(self):
         """
-        Get current widget object reference
+        Get current widget object reference.
 
         Returns
         -------
@@ -102,7 +102,7 @@ class _GenericWidget(abc.ABC):
 
     def set_place_holder(self, text):
         """
-        Set place holder text of the widget, defaults to empty string
+        Set place holder text of the widget, defaults to empty string.
 
         Parameters
         ----------
@@ -114,7 +114,7 @@ class _GenericWidget(abc.ABC):
     @abc.abstractmethod
     def create_widget(self):
         """
-        Virtual method to create widget
+        Virtual method to create widget.
         """
 
     def post_creation(self):

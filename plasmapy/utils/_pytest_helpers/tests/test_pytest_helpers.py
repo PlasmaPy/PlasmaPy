@@ -6,16 +6,16 @@ import warnings
 from typing import Any
 
 from plasmapy.particles import Particle
-from plasmapy.tests.helpers import (
+from plasmapy.tests._helpers import (
     MissingExceptionFail,
     MissingWarningFail,
     TypeMismatchFail,
     UnexpectedExceptionFail,
     UnexpectedResultFail,
 )
+from plasmapy.utils._pytest_helpers import run_test, run_test_equivalent_calls
 from plasmapy.utils.code_repr import call_string
 from plasmapy.utils.exceptions import PlasmaPyError, PlasmaPyWarning
-from plasmapy.utils.pytest_helpers import run_test, run_test_equivalent_calls
 
 
 def generic_function(*args, **kwargs):
@@ -96,7 +96,7 @@ f_args_kwargs_expected_whaterror = [
 
 
 @pytest.mark.parametrize(
-    "f, args, kwargs, expected, whaterror", f_args_kwargs_expected_whaterror
+    ("f", "args", "kwargs", "expected", "whaterror"), f_args_kwargs_expected_whaterror
 )
 def test_run_test(f, args, kwargs, expected, whaterror):
     """
@@ -242,7 +242,7 @@ run_test_equivalent_calls_table = [
 ]
 
 
-@pytest.mark.parametrize("inputs, error", run_test_equivalent_calls_table)
+@pytest.mark.parametrize(("inputs", "error"), run_test_equivalent_calls_table)
 def test_run_test_equivalent_calls(inputs, error):
     if error is None:
         try:

@@ -58,7 +58,7 @@ test_cases = [
 ]
 
 
-@pytest.mark.parametrize("collection, kwargs, expected", test_cases)
+@pytest.mark.parametrize(("collection", "kwargs", "expected"), test_cases)
 def test_get_physical_type_dict(collection, kwargs, expected):
     physical_type_dict = _get_physical_type_dict(collection, **kwargs)
     assert physical_type_dict == expected
@@ -88,7 +88,7 @@ test_cases_exceptions = [
 ]
 
 
-@pytest.mark.parametrize("collection, kwargs, expected", test_cases_exceptions)
+@pytest.mark.parametrize(("collection", "kwargs", "expected"), test_cases_exceptions)
 def test_get_physical_type_dict_exceptions(collection, kwargs, expected):
     with pytest.raises(expected):
         _get_physical_type_dict(collection, **kwargs)

@@ -31,7 +31,7 @@ def h5_theta(request):
     h5.close()
 
 
-@pytest.mark.slow
+@pytest.mark.slow()
 class TestOpenPMD2D:
     """Test 2D HDF5 dataset based on OpenPMD."""
 
@@ -89,7 +89,7 @@ class TestOpenPMD3D:
             h5_3d.electric_current  # noqa: B018
 
 
-@pytest.mark.slow
+@pytest.mark.slow()
 class TestOpenPMDThetaMode:
     """Test thetaMode HDF5 dataset based on OpenPMD."""
 
@@ -132,8 +132,8 @@ units_test_table = [
 ]
 
 
-@pytest.mark.parametrize("openPMD_dims, expected", units_test_table)
-@pytest.mark.slow
+@pytest.mark.parametrize(("openPMD_dims", "expected"), units_test_table)
+@pytest.mark.slow()
 def test_fetch_units(openPMD_dims, expected: Union[tuple, list]):
     units = openpmd_hdf5._fetch_units(openPMD_dims)
     assert units == expected

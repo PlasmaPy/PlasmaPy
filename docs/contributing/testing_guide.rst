@@ -670,12 +670,13 @@ where ``⟨envname⟩`` is replaced with the name of the tox_ environment,
 as described below.
 
 Some testing environments for tox_ are pre-defined.  For example, you
-can replace ``⟨envname⟩`` with ``py38`` if you are running Python 3.8.x,
-``py39`` if you are running Python 3.9.x, or ``py310`` if you are running
-Python 3.10.x. Running tox_ with any of these environments requires that
-the appropriate version of Python has been installed and can be found by
-tox_.  To find the version of Python that you are using, go to the
-command line and run ``python --version``.
+can replace ``⟨envname⟩`` with ``py39`` if you are running Python
+``3.9.x``, ``py310`` if you are running Python ``3.10.x``, or
+``py311`` if you are running Python ``3.11.x``. Running tox_ with any
+of these environments requires that the appropriate version of Python
+has been installed and can be found by tox_.  To find the version of
+Python that you are using, go to the command line and run ``python
+--version``.
 
 Additional `tox environments`_ are defined in :file:`tox.ini` in the
 top-level directory of PlasmaPy's repository. To find which testing

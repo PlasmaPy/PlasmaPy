@@ -8,7 +8,7 @@ from plasmapy.analysis.time_series.running_moments import running_mean, running_
 
 
 @pytest.mark.parametrize(
-    "signal, radius, expected",
+    ("signal", "radius", "expected"),
     [
         ([1, 2, 3], 1, [2]),
         ([1, 2, 3, 4], 1, [2, 3]),
@@ -22,7 +22,7 @@ def test_running_mean(signal, radius, expected):
     assert np.allclose(result, expected)
 
 
-@pytest.mark.parametrize("signal, radius", [([1, 2], 1), ([1, 2, 3, 4], 1.2)])
+@pytest.mark.parametrize(("signal", "radius"), [([1, 2], 1), ([1, 2, 3, 4], 1.2)])
 def test_running_mean_exception(signal, radius):
     """Test whether exception is risen"""
     with pytest.raises((ValueError, TypeError)):
@@ -30,7 +30,7 @@ def test_running_mean_exception(signal, radius):
 
 
 @pytest.mark.parametrize(
-    "signal, radius, moment, time, expected",
+    ("signal", "radius", "moment", "time", "expected"),
     [
         ([1, 2, 3], 1, 1, [1, 2, 3], ([2], [2])),
         ([1, 2, 3] * u.eV, 1, 1, [1, 2, 3], ([2] * u.eV, [2])),
@@ -53,7 +53,7 @@ def test_running_moment(signal, radius, moment, time, expected):
 
 
 @pytest.mark.parametrize(
-    "signal, radius, moment, time",
+    ("signal", "radius", "moment", "time"),
     [
         ([1, 2, 3, 4, 5], 1, 0, None),
         ([1, 2, 3, 4, 5], 1, 6, None),

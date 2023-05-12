@@ -9,15 +9,12 @@ formats:
 build:
   os: ubuntu-22.04
   tools:
-    # Use most recent version supported by Numba
-    python: '3.10'
+    python: '3.11'
   apt_packages:
   - graphviz
   jobs:
-    pre_create_environment:
-    - python -m pip install --upgrade setuptools pip
     post_build:
-    - echo https://docs.plasmapy.org/en/latest/contributing/doc_guide.html#troubleshooting
+    - echo $'\n'For help deciphering documentation build error messages, see:$'\n\n'\ \ https://docs.plasmapy.org/en/latest/contributing/doc_guide.html#troubleshooting
 
 python:
   install:
@@ -25,4 +22,3 @@ python:
     path: .
     extra_requirements:
     - docs
-  system_packages: true

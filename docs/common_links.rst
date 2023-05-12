@@ -107,7 +107,7 @@
 .. |getting ready to contribute| replace:: :ref:`getting ready to contribute`\
 .. |glossary| replace:: :ref:`glossary`\
 .. |minpython| replace:: 3.9
-.. |maxpython| replace:: 3.10
+.. |maxpython| replace:: 3.11
 .. |normalization constant| replace:: :term:`normalization constant`\
 .. |normalization constants| replace:: :term:`normalization constants <normalization constant>`\
 .. |plasma-calculator| replace:: :ref:`plasmapy-calculator`\
