@@ -251,7 +251,7 @@ def _vector_space(
         w = w_arr
     else:
         u, v, w = func(x, y, z)
-    return np.array([x, y, z]), np.array([u, v, w]), np.array([dx, dy, dz])
+    return np.array([x, y, z]), np.array([u, v, w]), [dx, dy, dz]
 
 
 def _trilinear_coeff_cal(vspace, cell):
