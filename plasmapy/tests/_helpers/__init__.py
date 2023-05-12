@@ -18,11 +18,11 @@ __all__ = [
 # requests that were each originally part of #728.  The blank lines
 # between the import statements will hopefully simplify automatic merging.
 
-# from plasmapy.tests.helpers.actual import ActualTestOutcome
+# from plasmapy.tests._helpers.actual import ActualTestOutcome
 
-# from plasmapy.tests.helpers.cases import AttrTestCase, FunctionTestCase, MethodTestCase
+# from plasmapy.tests._helpers.cases import AttrTestCase, FunctionTestCase, MethodTestCase
 
-from plasmapy.tests.helpers.exceptions import (
+from plasmapy.tests._helpers.exceptions import (
     ExceptionMismatchFail,
     InvalidTestError,
     MissingExceptionFail,
@@ -35,9 +35,9 @@ from plasmapy.tests.helpers.exceptions import (
     WarningMismatchFail,
 )
 
-# from plasmapy.tests.helpers.expected import ExpectedTestOutcome
+# from plasmapy.tests._helpers.expected import ExpectedTestOutcome
 
-#  from plasmapy.tests.helpers.inputs import (
+#  from plasmapy.tests._helpers.inputs import (
 #      AbstractTestInputs,
 #      ClassAttributeTestInputs,
 #     ClassMethodTestInputs,
@@ -45,4 +45,4 @@ from plasmapy.tests.helpers.exceptions import (
 #     GenericClassTestInputs,
 # )
 
-# from plasmapy.tests.helpers.runner import test_runner
+# from plasmapy.tests._helpers.runner import test_runner
