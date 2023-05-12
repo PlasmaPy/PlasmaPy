@@ -287,7 +287,12 @@ class ValidateQuantities(CheckUnits, CheckValues):
 
         return validations
 
-    def _validate_quantity(self, arg, arg_name: str, arg_validations: dict[str, Any]):
+    def _validate_quantity(  # noqa: C901, PLR0912
+        self,
+        arg,
+        arg_name: str,
+        arg_validations: dict[str, Any],
+    ):
         """
         Perform validations `arg_validations` on function argument `arg`
         named `arg_name`.

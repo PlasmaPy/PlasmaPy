@@ -548,7 +548,7 @@ def thermal_speed(
     r"""
     Calculate the speed of thermal motion for particles with a Maxwellian
     distribution.  (See the :ref:`Notes <thermal-speed-notes>` section for
-    details.)
+    details.).
 
     **Aliases:** `~plasmapy.formulary.speeds.vth_`
 

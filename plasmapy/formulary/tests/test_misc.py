@@ -19,7 +19,7 @@ from plasmapy.formulary.misc import (
     ub_,
 )
 from plasmapy.particles import Particle
-from plasmapy.utils.pytest_helpers import assert_can_handle_nparray
+from plasmapy.utils._pytest_helpers import assert_can_handle_nparray
 
 B = 1.0 * u.T
 B_arr = np.array([0.001, 0.002]) * u.T
@@ -31,7 +31,7 @@ T_e = 1e6 * u.K
 
 
 @pytest.mark.parametrize(
-    "alias, parent",
+    ("alias", "parent"),
     [
         (DB_, Bohm_diffusion),
         (ub_, magnetic_energy_density),
@@ -49,7 +49,7 @@ class Test_mass_density:
     r"""Test the mass_density function in misc.py."""
 
     @pytest.mark.parametrize(
-        "args, kwargs, conditional",
+        ("args", "kwargs", "conditional"),
         [
             ((-1 * u.kg * u.m**-3, "He"), {}, pytest.raises(ValueError)),
             ((-1 * u.m**-3, "He"), {}, pytest.raises(ValueError)),
@@ -69,7 +69,7 @@ class Test_mass_density:
             mass_density(*args, **kwargs)
 
     @pytest.mark.parametrize(
-        "args, kwargs, expected",
+        ("args", "kwargs", "expected"),
         [
             ((1.0 * u.g * u.m**-3, ""), {}, 1.0e-3 * u.kg * u.m**-3),
             ((5.0e12 * u.cm**-3, "He"), {}, 3.32323849e-8 * u.kg * u.m**-3),

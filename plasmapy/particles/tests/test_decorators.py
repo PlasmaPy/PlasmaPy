@@ -78,7 +78,7 @@ particle_input_simple_table = [
         function_decorated_with_particle_input,
     ],
 )
-@pytest.mark.parametrize("args, kwargs, symbol", particle_input_simple_table)
+@pytest.mark.parametrize(("args", "kwargs", "symbol"), particle_input_simple_table)
 def test_particle_input_simple(func, args, kwargs, symbol):
     """
     Test that simple functions decorated by particle_input correctly
@@ -117,7 +117,9 @@ particle_input_error_table = [
 ]
 
 
-@pytest.mark.parametrize("func, kwargs, expected_error", particle_input_error_table)
+@pytest.mark.parametrize(
+    ("func", "kwargs", "expected_error"), particle_input_error_table
+)
 def test_particle_input_errors(func, kwargs, expected_error):
     """
     Test that functions decorated with `@particle_input` raise the
@@ -187,7 +189,7 @@ ambiguous_arguments = [
 ]
 
 
-@pytest.mark.parametrize("args, kwargs", ambiguous_arguments)
+@pytest.mark.parametrize(("args", "kwargs"), ambiguous_arguments)
 def test_function_with_ambiguity(args, kwargs):
     """
     Test that a function decorated with particle_input that has two
@@ -251,7 +253,7 @@ categorization_particle_exception = [
 
 
 @pytest.mark.parametrize(
-    "categorization, particle, exception", categorization_particle_exception
+    ("categorization", "particle", "exception"), categorization_particle_exception
 )
 def test_decorator_categories(categorization, particle, exception):
     """
@@ -306,7 +308,7 @@ decorator_pairs = [
 ]
 
 
-@pytest.mark.parametrize("decorator1, decorator2", decorator_pairs)
+@pytest.mark.parametrize(("decorator1", "decorator2"), decorator_pairs)
 def test_stacking_decorators(decorator1, decorator2):
     """
     Test that particle_input and validate_quantities can be stacked in
@@ -326,7 +328,7 @@ def test_stacking_decorators(decorator1, decorator2):
     assert distance_1_2 == distance_2_1 == 3 * u.cm
 
 
-@pytest.mark.parametrize("decorator1, decorator2", decorator_pairs)
+@pytest.mark.parametrize(("decorator1", "decorator2"), decorator_pairs)
 def test_preserving_signature_with_stacked_decorators(decorator1, decorator2):
     """
     Test that |particle_input| & |validate_quantities| preserve the
@@ -414,7 +416,7 @@ def test_annotated_init():
 
 
 @pytest.mark.parametrize(
-    "outer_decorator, inner_decorator",
+    ("outer_decorator", "inner_decorator"),
     [
         (particle_input, validate_quantities_),
         (particle_input(), validate_quantities_),
@@ -468,7 +470,9 @@ kwargs_to_decorator_and_args = [
 ]
 
 
-@pytest.mark.parametrize("kwargs_to_particle_input, arg", kwargs_to_decorator_and_args)
+@pytest.mark.parametrize(
+    ("kwargs_to_particle_input", "arg"), kwargs_to_decorator_and_args
+)
 def test_particle_input_verification(kwargs_to_particle_input, arg):
     """Test the allow_custom_particles keyword argument to particle_input."""
 

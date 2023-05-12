@@ -36,7 +36,7 @@ from plasmapy.particles.exceptions import (
 )
 from plasmapy.particles.particle_class import Particle
 from plasmapy.particles.symbols import atomic_symbol, element_name, isotope_symbol
-from plasmapy.utils.pytest_helpers import run_test
+from plasmapy.utils._pytest_helpers import run_test
 
 # function to be tested, argument(s), expected result/outcome
 
@@ -238,7 +238,7 @@ table_functions_args_kwargs_output = [
 
 
 @pytest.mark.parametrize(
-    "tested_function, args, kwargs, expected_output",
+    ("tested_function", "args", "kwargs", "expected_output"),
     table_functions_args_kwargs_output,
 )
 def test_functions_and_values(tested_function, args, kwargs, expected_output):
@@ -320,7 +320,7 @@ equivalent_particle_mass_args = [
 
 
 @pytest.mark.parametrize(
-    "arg1, kwargs1, arg2, kwargs2, expected", equivalent_particle_mass_args
+    ("arg1", "kwargs1", "arg2", "kwargs2", "expected"), equivalent_particle_mass_args
 )
 def test_particle_mass_equivalent_args(arg1, kwargs1, arg2, kwargs2, expected):
     """Test that `particle_mass` returns equivalent results for
@@ -336,14 +336,16 @@ def test_particle_mass_equivalent_args(arg1, kwargs1, arg2, kwargs2, expected):
     )
 
     if expected is not None:
-        assert u.isclose(result1, result2) and u.isclose(result2, expected), (
+        assert u.isclose(result1, result2) and u.isclose(  # noqa: PT018
+            result2, expected
+        ), (
             f"particle_mass({arg1!r}, **{kwargs1}) = {result1!r} and "
             f"particle_mass({arg2!r}, **{kwargs2}) = {result2!r}, but "
             f"these results are not equal to {expected!r} as expected."
         )
 
 
-@pytest.mark.slow
+@pytest.mark.slow()
 def test_known_common_stable_isotopes():
     """Test that `known_isotopes`, `common_isotopes`, and
     `stable_isotopes` return the correct values for hydrogen."""
@@ -421,7 +423,7 @@ def test_known_common_stable_isotopes_cases():
     assert "He-4" in common_isotopes("He", most_common_only=True)
 
 
-@pytest.mark.slow
+@pytest.mark.slow()
 def test_known_common_stable_isotopes_len():
     """Test that `known_isotopes`, `common_isotopes`, and
     `stable_isotopes` each return a `list` of the expected length.
@@ -499,7 +501,7 @@ isotopic_abundance_sum_table = (
 )
 
 
-@pytest.mark.parametrize("element, isotopes", isotopic_abundance_sum_table)
+@pytest.mark.parametrize(("element", "isotopes"), isotopic_abundance_sum_table)
 def test_isotopic_abundances_sum(element, isotopes):
     """Test that the sum of isotopic abundances for each element with
     isotopic abundances is one."""
@@ -525,7 +527,7 @@ def test_ion_list_example():
 
 
 @pytest.mark.parametrize(
-    "particle, min_charge, max_charge, expected_charge_numbers",
+    ("particle", "min_charge", "max_charge", "expected_charge_numbers"),
     [
         ("H-1", 0, 1, [0, 1]),
         ("p+", 1, 1, [1]),
@@ -544,7 +546,7 @@ def test_ion_list(particle, min_charge, max_charge, expected_charge_numbers):
 
 
 @pytest.mark.parametrize(
-    "element, min_charge, max_charge", [("Li", 0, 4), ("Li", 3, 2)]
+    ("element", "min_charge", "max_charge"), [("Li", 0, 4), ("Li", 3, 2)]
 )
 def test_invalid_inputs_to_ion_list(element, min_charge, max_charge):
     with pytest.raises(ChargeError):
@@ -566,7 +568,7 @@ str_electron_table = [
 ]
 
 
-@pytest.mark.parametrize("particle, electron", str_electron_table)
+@pytest.mark.parametrize(("particle", "electron"), str_electron_table)
 def test_is_electron(particle, electron):
     assert _is_electron(particle) == electron
 
@@ -582,7 +584,7 @@ def test_ionic_levels_example():
 
 
 @pytest.mark.parametrize(
-    "particle, min_charge, max_charge, expected_charge_numbers",
+    ("particle", "min_charge", "max_charge", "expected_charge_numbers"),
     [
         ("H-1", 0, 1, [0, 1]),
         ("p+", 1, 1, [1]),
@@ -601,7 +603,7 @@ def test_ion_list2(particle, min_charge, max_charge, expected_charge_numbers):
 
 
 @pytest.mark.parametrize(
-    "element, min_charge, max_charge", [("Li", 0, 4), ("Li", 3, 2)]
+    ("element", "min_charge", "max_charge"), [("Li", 0, 4), ("Li", 3, 2)]
 )
 def test_invalid_inputs_to_ion_list2(element, min_charge, max_charge):
     with pytest.raises(ChargeError):

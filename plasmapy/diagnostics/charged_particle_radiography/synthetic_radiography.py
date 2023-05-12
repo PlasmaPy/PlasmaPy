@@ -258,13 +258,13 @@ class Tracker:
                     )
 
     @property
-    def num_grids(self):
+    def num_grids(self):  # noqa: D102
         return len(self.grids)
 
     def _default_detector_hdir(self):
         """
         Calculates the default horizontal unit vector for the detector plane
-        (see __init__ description for details)
+        (see __init__ description for details).
         """
         # Create unit vectors that define the detector plane
         # Define plane  horizontal axis
@@ -451,7 +451,7 @@ class Tracker:
         mesh_vdir=None,
     ):
         """
-        Apply wire meshes that were added to self.mesh_list
+        Apply wire meshes that were added to ``self.mesh_list``.
         """
         x = self._coast_to_plane(location, mesh_hdir, mesh_vdir)
 
@@ -535,10 +535,12 @@ class Tracker:
         prob *= 1 / np.sum(prob)
 
         # Randomly choose theta's weighted with the sine probabilities
-        theta = np.random.choice(arg, size=self.nparticles, replace=True, p=prob)
+        theta = np.random.choice(  # noqa: NPY002
+            arg, size=self.nparticles, replace=True, p=prob
+        )
 
         # Also generate a uniform phi distribution
-        phi = np.random.uniform(high=2 * np.pi, size=self.nparticles)
+        phi = np.random.uniform(high=2 * np.pi, size=self.nparticles)  # noqa: NPY002
 
         return theta, phi
 
@@ -688,7 +690,7 @@ class Tracker:
         particle: Particle = Particle("p+"),  # noqa: B008
     ):
         r"""
-        Load arrays of particle positions and velocities
+        Load arrays of particle positions and velocities.
 
         Parameters
         ----------
@@ -865,7 +867,7 @@ class Tracker:
     def _remove_deflected_particles(self):
         r"""
         Removes any particles that have been deflected away from the detector
-        plane (eg. those that will never hit the grid)
+        plane (eg. those that will never hit the grid).
         """
         dist_remaining = np.dot(self.x, self.det_n) + np.linalg.norm(self.detector)
 
@@ -901,7 +903,7 @@ class Tracker:
     def _push(self):
         r"""
         Advance particles using an implementation of the time-centered
-        Boris algorithm
+        Boris algorithm.
         """
         # Get a list of positions (input for interpolator)
         pos = self.x[self.grid_ind, :] * u.m
@@ -1355,7 +1357,7 @@ class Tracker:
 # *************************************************************************
 
 
-def synthetic_radiograph(
+def synthetic_radiograph(  # noqa: C901
     obj, size=None, bins=None, ignore_grid=False, optical_density=False
 ):
     r"""

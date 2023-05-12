@@ -1,6 +1,6 @@
 """
-This module contains functionality for calculating various numerical
-solutions to the kinetic Alfvén dispersion relation.
+Functionality for calculating various numerical solutions to the kinetic
+Alfvén dispersion relation.
 """
 __all__ = ["kinetic_alfven"]
 
@@ -28,7 +28,7 @@ c_si_unitless = c.value
     T_e={"can_be_negative": False, "equivalencies": u.temperature_energy()},
     T_i={"can_be_negative": False, "equivalencies": u.temperature_energy()},
 )
-def kinetic_alfven(
+def kinetic_alfven(  # noqa: C901, PLR0912, PLR0915
     *,
     B: u.T,
     ion: ParticleLike,
