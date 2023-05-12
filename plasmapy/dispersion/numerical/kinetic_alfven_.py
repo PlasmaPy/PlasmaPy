@@ -1,6 +1,6 @@
 """
-This module contains functionality for calculating various numerical
-solutions to the kinetic Alfvén dispersion relation.
+Functionality for calculating various numerical solutions to the kinetic
+Alfvén dispersion relation.
 """
 __all__ = ["kinetic_alfven"]
 
@@ -28,7 +28,7 @@ c_si_unitless = c.value
     T_e={"can_be_negative": False, "equivalencies": u.temperature_energy()},
     T_i={"can_be_negative": False, "equivalencies": u.temperature_energy()},
 )
-def kinetic_alfven(
+def kinetic_alfven(  # noqa: C901, PLR0912, PLR0915
     *,
     B: u.T,
     ion: ParticleLike,
@@ -189,7 +189,7 @@ def kinetic_alfven(
                 f"Argument 'ion' is not a valid particle, instead got {ion}."
             ) from exc
 
-    if not (ion.is_ion or ion.is_category("element")):
+    if not ion.is_ion and not ion.is_category("element"):
         raise ValueError(
             "The particle passed for 'ion' must be an ion"
             f"or an element, instead got {ion}."
@@ -198,14 +198,14 @@ def kinetic_alfven(
     # Validate z_mean
     if z_mean is None:
         z_mean = abs(ion.charge_number)
-    else:
-        if not isinstance(z_mean, numbers.Real):
-            raise TypeError(
-                "Expected int or float for argument 'z_mean', "
-                f"instead got {type(z_mean)}."
-            )
+    elif isinstance(z_mean, numbers.Real):
         z_mean = abs(z_mean)
 
+    else:
+        raise TypeError(
+            "Expected int or float for argument 'z_mean', "
+            f"instead got {type(z_mean)}."
+        )
     # Validate arguments
     for arg_name in ("B", "n_i", "T_e", "T_i"):
         val = locals()[arg_name].squeeze()

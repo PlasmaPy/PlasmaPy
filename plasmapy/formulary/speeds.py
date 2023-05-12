@@ -548,7 +548,7 @@ def thermal_speed(
     r"""
     Calculate the speed of thermal motion for particles with a Maxwellian
     distribution.  (See the :ref:`Notes <thermal-speed-notes>` section for
-    details.)
+    details.).
 
     **Aliases:** `~plasmapy.formulary.speeds.vth_`
 
@@ -833,14 +833,7 @@ def kappa_thermal_speed(
     # different methods, as per https://en.wikipedia.org/wiki/Thermal_velocity
     vth = thermal_speed(T=T, particle=particle, method=method)
 
-    if method == "most_probable":  # noqa: SIM108
-        # thermal velocity of Kappa distribution function is just Maxwellian
-        # thermal speed modulated by the following factor.
-        # This is only true for "most probable" case. RMS and mean
-        # magnitude velocities are same as Maxwellian.
-        coeff = np.sqrt((kappa - 3 / 2) / kappa)
-    else:
-        coeff = 1
+    coeff = np.sqrt((kappa - 3 / 2) / kappa) if method == "most_probable" else 1
     return vth * coeff
 
 
