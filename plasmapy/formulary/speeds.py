@@ -778,6 +778,12 @@ def kappa_thermal_speed(
         Method to be used for calculating the thermal speed. Options are
         ``'most_probable'`` (default), ``'rms'``, and ``'mean_magnitude'``.
 
+    mass_numb : integer, optional
+        The mass number corresponding to ``particle``.
+
+    Z : real number, optional
+        The charge number corresponding to ``particle``.
+
     Returns
     -------
     V : `~astropy.units.Quantity`
