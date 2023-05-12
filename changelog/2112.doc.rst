@@ -1,0 +1,3 @@
+Added admonitions in the documentation for functionality that is under
+development and for which backwards incompatible changes are likely in
+the future.

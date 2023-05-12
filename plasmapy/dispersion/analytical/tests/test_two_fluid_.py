@@ -33,7 +33,7 @@ class TestTwoFluid:
     }
 
     @pytest.mark.parametrize(
-        "kwargs, _error",
+        ("kwargs", "_error"),
         [
             ({**_kwargs_single_valued, "B": "wrong type"}, TypeError),
             ({**_kwargs_single_valued, "B": [8e-9, 8.5e-9] * u.T}, ValueError),
@@ -70,7 +70,7 @@ class TestTwoFluid:
             two_fluid(**kwargs)
 
     @pytest.mark.parametrize(
-        "kwargs, _warning",
+        ("kwargs", "_warning"),
         [
             # violates the low-frequency assumption (ω/kc << 1)
             (
@@ -93,7 +93,7 @@ class TestTwoFluid:
             two_fluid(**kwargs)
 
     @pytest.mark.parametrize(
-        "kwargs, expected",
+        ("kwargs", "expected"),
         [
             (
                 {**_kwargs_bellan2012, "theta": 0 * u.deg},
@@ -141,7 +141,35 @@ class TestTwoFluid:
             assert np.isclose(norm, expected[mode])
 
     @pytest.mark.parametrize(
-        "kwargs, expected",
+        ("kwargs", "expected"),
+        [
+            (
+                {
+                    **_kwargs_bellan2012,
+                    "ion": Particle("He"),
+                    "z_mean": 2.0,
+                    "theta": 0 * u.deg,
+                },
+                {**_kwargs_bellan2012, "ion": Particle("He +2"), "theta": 0 * u.deg},
+            ),
+            #
+            # z_mean defaults to 1
+            (
+                {**_kwargs_bellan2012, "ion": Particle("He"), "theta": 0 * u.deg},
+                {**_kwargs_bellan2012, "ion": Particle("He+"), "theta": 0 * u.deg},
+            ),
+        ],
+    )
+    def test_z_mean_override(self, kwargs, expected):
+        """Test overriding behavior of kw 'z_mean'."""
+        ws = two_fluid(**kwargs)
+        ws_expected = two_fluid(**expected)
+
+        for mode in ws:
+            assert np.isclose(ws[mode], ws_expected[mode], atol=0, rtol=1.7e-4)
+
+    @pytest.mark.parametrize(
+        ("kwargs", "expected"),
         [
             ({**_kwargs_bellan2012, "theta": 0 * u.deg}, {"shape": ()}),
             (

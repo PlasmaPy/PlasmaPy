@@ -19,7 +19,7 @@ import warnings
 
 from typing import Any, Callable
 
-from plasmapy.tests.helpers.exceptions import (
+from plasmapy.tests._helpers.exceptions import (
     InvalidTestError,
     MissingExceptionFail,
     MissingWarningFail,
@@ -65,7 +65,7 @@ def _process_input(wrapped_function: Callable):  # coverage: ignore
 
 
 @_process_input
-def run_test(
+def run_test(  # noqa: C901
     func,
     args: Any = (),
     kwargs: dict = None,
@@ -113,22 +113,22 @@ def run_test(
 
     Raises
     ------
-    ~plasmapy.tests.helpers.exceptions.UnexpectedResultFail
+    ~plasmapy.tests._helpers.exceptions.UnexpectedResultFail
         If the test returns a result that is different from the expected
         result.
 
-    ~plasmapy.tests.helpers.exceptions.TypeMismatchFail
+    ~plasmapy.tests._helpers.exceptions.TypeMismatchFail
         If the actual result is of a different type than the expected
         result.
 
-    ~plasmapy.tests.helpers.exceptions.UnexpectedExceptionFail
+    ~plasmapy.tests._helpers.exceptions.UnexpectedExceptionFail
         If an exception occurs when no exception or a different
         exception is expected.
 
-    ~plasmapy.tests.helpers.exceptions.MissingExceptionFail
+    ~plasmapy.tests._helpers.exceptions.MissingExceptionFail
         If no exception is raised when an exception is expected.
 
-    ~plasmapy.tests.helpers.exceptions.MissingWarningFail
+    ~plasmapy.tests._helpers.exceptions.MissingWarningFail
         An expected warning is not issued.
 
     ~astropy.units.UnitsError
@@ -246,7 +246,7 @@ def run_test(
         subclass_of_Warning = issubclass(expected_outcome, Warning)
         if subclass_of_Warning:
             expected["warning"] = expected_outcome
-        elif subclass_of_Exception and not subclass_of_Warning:
+        elif subclass_of_Exception:
             expected["exception"] = expected_outcome
 
     # If a warning is issued, then there may also be an expected result.
@@ -349,7 +349,7 @@ def run_test(
         return None
 
     if isinstance(expected["result"], (u.Quantity, const.Constant, const.EMConstant)):
-        if not result.unit == expected["result"].unit:
+        if result.unit != expected["result"].unit:
             raise u.UnitsError(
                 f"The command {call_str} returned "
                 f"{_object_name(result)} which has different units "
@@ -401,18 +401,21 @@ def run_test(
 
     if atol or rtol:
         errmsg += " with "
-        if atol:
-            errmsg += f"atol = {atol}"
-        if atol and rtol:
-            errmsg += " and "
+    if atol:
+        errmsg += f"atol = {atol}"
         if rtol:
-            errmsg += f"rtol = {rtol}"
+            errmsg += " and "
+    if rtol:
+        errmsg += f"rtol = {rtol}"
     errmsg += "."
 
     raise UnexpectedResultFail(errmsg)
 
 
-def run_test_equivalent_calls(*test_inputs, require_same_type: bool = True):
+def run_test_equivalent_calls(  # noqa: C901
+    *test_inputs,
+    require_same_type: bool = True,
+):
     """
     Test that different functions/inputs return equivalent results.
 
@@ -430,16 +433,16 @@ def run_test_equivalent_calls(*test_inputs, require_same_type: bool = True):
 
     Raises
     ------
-    ~plasmapy.tests.helpers.exceptions.UnexpectedResultFail
+    ~plasmapy.tests._helpers.exceptions.UnexpectedResultFail
         If not all of the results are equivalent, or not all of the
         results are of the same type and ``require_same_type`` evaluates
         to `True`.
 
-    ~plasmapy.tests.helpers.exceptions.UnexpectedExceptionFail
+    ~plasmapy.tests._helpers.exceptions.UnexpectedExceptionFail
         If an exception is raised whilst attempting to run one of the
         test cases.
 
-    ~plasmapy.tests.helpers.exceptions.InvalidTestError
+    ~plasmapy.tests._helpers.exceptions.InvalidTestError
         If there is an error associated with the inputs or the test is
         set up incorrectly.
 
@@ -621,7 +624,7 @@ def run_test_equivalent_calls(*test_inputs, require_same_type: bool = True):
         raise UnexpectedResultFail(errmsg)
 
 
-def assert_can_handle_nparray(
+def assert_can_handle_nparray(  # noqa: C901
     function_to_test,
     insert_some_nans=None,
     insert_all_nans=None,
@@ -677,7 +680,7 @@ def assert_can_handle_nparray(
     if kwargs is None:
         kwargs = {}
 
-    def _prepare_input(
+    def _prepare_input(  # noqa: C901
         param_name, param_default, insert_some_nans, insert_all_nans, kwargs
     ):
         """

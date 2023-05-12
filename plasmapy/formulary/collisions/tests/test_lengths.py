@@ -5,8 +5,8 @@ from astropy import units as u
 
 from plasmapy.formulary.collisions import coulomb, lengths
 from plasmapy.utils import exceptions
+from plasmapy.utils._pytest_helpers import assert_can_handle_nparray
 from plasmapy.utils.exceptions import CouplingWarning
-from plasmapy.utils.pytest_helpers import assert_can_handle_nparray
 
 
 class Test_impact_parameter_perp:
@@ -160,7 +160,7 @@ class Test_impact_parameter:
         )
 
     @pytest.mark.parametrize(
-        "n_e_shape,T_shape",
+        ("n_e_shape", "T_shape"),
         # Scalar T
         [
             ((2, 3, 5), (1,)),

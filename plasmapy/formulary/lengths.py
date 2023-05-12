@@ -100,7 +100,7 @@ lambdaD_ = Debye_length
     validations_on_return={"equivalencies": u.dimensionless_angles()},
 )
 @particle_input(any_of={"charged", "uncharged"})
-def gyroradius(
+def gyroradius(  # noqa: C901
     B: u.T,
     particle: ParticleLike,
     *,
@@ -313,7 +313,7 @@ def gyroradius(
     # Initial setup and input validation
     if not relativistic and not np.isnan(lorentzfactor):
         raise ValueError("Lorentz factor is provided but relativistic is set to false")
-    lorentzfactor = 1.0 if not relativistic else lorentzfactor
+    lorentzfactor = lorentzfactor if relativistic else 1.0
 
     if T is None:
         T = np.nan * u.K

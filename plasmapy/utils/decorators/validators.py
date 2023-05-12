@@ -287,7 +287,12 @@ class ValidateQuantities(CheckUnits, CheckValues):
 
         return validations
 
-    def _validate_quantity(self, arg, arg_name: str, arg_validations: dict[str, Any]):
+    def _validate_quantity(  # noqa: C901, PLR0912
+        self,
+        arg,
+        arg_name: str,
+        arg_validations: dict[str, Any],
+    ):
         """
         Perform validations `arg_validations` on function argument `arg`
         named `arg_name`.
@@ -549,18 +554,18 @@ def get_attributes_not_provided(
     attributes_not_provided = []
 
     if expected_attributes is not None:
-        for attribute in expected_attributes:
-            if getattr(self, attribute) is None:
-                attributes_not_provided.append(attribute)
-
+        attributes_not_provided.extend(
+            attribute
+            for attribute in expected_attributes
+            if getattr(self, attribute) is None
+        )
     if both_or_either_attributes is not None:
         for attribute_tuple in both_or_either_attributes:
-            number_of_attributes_provided = 0
-
-            for attribute in attribute_tuple:
-                if getattr(self, attribute) is not None:
-                    number_of_attributes_provided += 1
-
+            number_of_attributes_provided = sum(
+                1
+                for attribute in attribute_tuple
+                if getattr(self, attribute) is not None
+            )
             if number_of_attributes_provided == 0:
                 attributes_not_provided.append(
                     f"at least one of {' or '.join(attribute_tuple)}"
@@ -568,12 +573,11 @@ def get_attributes_not_provided(
 
     if mutually_exclusive_attributes is not None:
         for attribute_tuple in mutually_exclusive_attributes:
-            number_of_attributes_provided = 0
-
-            for attribute in attribute_tuple:
-                if getattr(self, attribute) is not None:
-                    number_of_attributes_provided += 1
-
+            number_of_attributes_provided = sum(
+                1
+                for attribute in attribute_tuple
+                if getattr(self, attribute) is not None
+            )
             if number_of_attributes_provided != 1:
                 attributes_not_provided.append(
                     f"exactly one of {' or '.join(attribute_tuple)}"
