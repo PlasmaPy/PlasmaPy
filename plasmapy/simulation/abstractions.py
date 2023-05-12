@@ -22,7 +22,9 @@ class AbstractSimulation(ABC):
     """
     A prototype abstract interface for numerical simulations.
 
-    |expect-api-changes|
+    .. attention::
+
+       |expect-api-changes|
     """
 
     @abstractmethod

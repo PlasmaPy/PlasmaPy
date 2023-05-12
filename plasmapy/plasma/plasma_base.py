@@ -20,7 +20,9 @@ class BasePlasma(ABC):
     when a subclass of `~plasmapy.plasma.plasma_base.GenericPlasma` is
     defined. If it exists it will add that class to the registry.
 
-    |expect-api-changes|
+    .. attention::
+
+       |expect-api-changes|
     """
 
     # GenericPlasma subclass registry

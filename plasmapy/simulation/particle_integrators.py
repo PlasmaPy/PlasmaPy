@@ -21,7 +21,9 @@ def boris_push(x, v, B, E, q, m, dt, inplace: bool = True):
     r"""
     The explicit Boris pusher.
 
-    |expect-api-changes|
+    .. attention::
+
+       |expect-api-changes|
 
     Parameters
     ----------

@@ -17,7 +17,9 @@ class PlasmaFactory(BasicRegistrationFactory):
     Valid plasma structures are specified by registering them with the
     factory.
 
-    |expect-api-changes|
+    .. attention::
+
+       |expect-api-changes|
     """
 
 

@@ -1,8 +1,4 @@
-"""
-Test helper functionality for PlasmaPy and affiliated packages.
-
-|expect-api-changes|
-"""
+"""Test helper functionality for PlasmaPy and affiliated packages."""
 
 __all__ = [
     "ExceptionMismatchFail",
