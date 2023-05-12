@@ -11,12 +11,12 @@ __aliases__ = ["cs_", "va_", "vth_", "vth_kappa_"]
 __lite_funcs__ = ["thermal_speed_lite"]
 
 import astropy.units as u
-import numbers
 import numpy as np
 import warnings
 
 from astropy.constants.si import k_B, mu0
 from numba import njit
+from numbers import Real
 from typing import Optional
 
 from plasmapy.formulary import lengths, misc
@@ -41,7 +41,7 @@ def Alfven_speed(
     B: u.T,
     density: (u.m**-3, u.kg / u.m**3),
     ion: Optional[ParticleLike] = None,
-    z_mean: Optional[numbers.Real] = None,
+    z_mean: Optional[Real] = None,
 ) -> u.m / u.s:
     r"""
     Calculate the Alfvén speed.
@@ -354,7 +354,7 @@ def ion_sound_speed(
     Z = misc._grab_charge(ion, z_mean)
 
     for gamma, species in zip([gamma_e, gamma_i], ["electrons", "ions"]):
-        if not isinstance(gamma, (numbers.Real, numbers.Integral)):
+        if not isinstance(gamma, Real):
             raise TypeError(
                 f"The adiabatic index gamma for {species} must be a float or int"
             )
@@ -477,9 +477,7 @@ def thermal_speed_coefficients(method: str, ndim: int) -> float:
 
 @preserve_signature
 @njit
-def thermal_speed_lite(
-    T: numbers.Real, mass: numbers.Real, coeff: numbers.Real
-) -> numbers.Real:
+def thermal_speed_lite(T: Real, mass: Real, coeff: Real) -> Real:
     r"""
     The :term:`lite-function` for
     `~plasmapy.formulary.speeds.thermal_speed`.  Performs the same
@@ -743,10 +741,18 @@ vth_ = thermal_speed
 @validate_quantities(
     T={"can_be_negative": False, "equivalencies": u.temperature_energy()}
 )
+@particle_input
 def kappa_thermal_speed(
-    T: u.K, kappa, particle: ParticleLike, method="most_probable"
+    T: u.K,
+    kappa,
+    particle: ParticleLike,
+    method="most_probable",
+    *,
+    mass_numb: Optional[Real] = None,
+    Z: Optional[Real] = None,
 ) -> u.m / u.s:
-    r"""Return the most probable speed for a particle within a Kappa
+    r"""
+    Return the most probable speed for a particle within a kappa
     distribution.
 
     **Aliases:** `vth_kappa_`
@@ -759,10 +765,10 @@ def kappa_thermal_speed(
     kappa: `float`
         The ``kappa`` parameter is a dimensionless number which sets the slope
         of the energy spectrum of suprathermal particles forming the tail
-        of the Kappa velocity distribution function. ``kappa`` must be greater
+        of the kappa velocity distribution function. ``kappa`` must be greater
         than 3/2.
 
-    particle : `~plasmapy.particles.particle_class.Particle`
+    particle : |particle-like|
         Representation of the particle species (e.g., 'p' for protons, 'D+'
         for deuterium, or 'He-4 +1' for singly ionized helium-4). If no
         charge state information is provided, then the particles are
