@@ -50,7 +50,9 @@ class BasicRegistrationFactory:
     specified by the registered factory, which validates the input and returns
     a instance of the class that best matches the inputs.
 
-    |expect-api-changes|
+    .. attention::
+
+       |expect-api-changes|
 
     Attributes
     ----------
