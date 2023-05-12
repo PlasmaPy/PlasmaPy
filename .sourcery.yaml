@@ -9,7 +9,7 @@ ignore:
 - vendor
 - docs/plasmapy_sphinx
 - braginskii.py
-- helpers.py
+- _helpers.py
 
 github:
   labels: [No changelog entry needed]

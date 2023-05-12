@@ -71,7 +71,7 @@ def width_at_value(x, y, val):
 
 def spectral_density_args_kwargs(kwargs):
     """
-    This helper function separates positional arguments and keyword arguments
+    Separate positional arguments and keyword arguments
     for the spectral_density function from a dictionary of both that is
     easy to use in parametrized tests.
     """
@@ -90,7 +90,7 @@ def spectral_density_args_kwargs(kwargs):
     return args, kwargs
 
 
-def args_to_lite_args(kwargs):
+def args_to_lite_args(kwargs):  # noqa: C901
     """
     Converts a dict of args for the spectral density function and converts
     them to input for the lite function.
@@ -518,7 +518,7 @@ def test_spectral_density_input_errors(
     kwargs, error, msg, single_species_collective_args
 ):
     """
-    This test validates errors with invalid argument and keyword arguments in
+    Validate errors with invalid argument and keyword arguments in
     spectral_density
     """
 
@@ -547,7 +547,7 @@ def test_spectral_density_input_errors(
 @pytest.mark.slow()
 def test_split_populations():
     """
-    This test makes sure that splitting a single population of ions or electrons
+    Make sure that splitting a single population of ions or electrons
     into two identical halves returns the same result.
     """
 
@@ -669,7 +669,7 @@ def test_param_to_array_fcns():
     assert np.mean(arr) == 2
 
 
-def run_fit(
+def run_fit(  # noqa: C901
     wavelengths,
     params,
     settings,
@@ -685,9 +685,8 @@ def run_fit(
     run_fit=True,
 ):
     """
-    This function takes a Parameters object, generates some synthetic data near it,
-    perturbs the initial values, then tries a fit
-
+    Take a Parameters object, generate some synthetic data near it,
+    perturb the initial values, then try a fit.
     """
 
     wavelengths = (wavelengths * u.m).to(u.nm)
@@ -765,14 +764,16 @@ def run_fit(
             data = np.delete(data, np.arange(x0, x1))
             wavelengths = np.delete(wavelengths, np.arange(x0, x1))
 
-    data *= 1 + np.random.normal(loc=0, scale=noise_amp, size=wavelengths.size)
+    data *= 1 + np.random.normal(  # noqa: NPY002
+        loc=0, scale=noise_amp, size=wavelengths.size
+    )
     data *= 1 / np.nanmax(data)
 
     # Randomly choose the starting values of the parameters within the
     # search space (to make the algorithm do some work!)
     for p in list(params.keys()):
         if params[p].vary:
-            params[p].value = np.random.uniform(
+            params[p].value = np.random.uniform(  # noqa: NPY002
                 low=params[p].min, high=params[p].max, size=1
             )
 
@@ -799,11 +800,12 @@ def run_fit(
 
 def spectral_density_model_settings_params(kwargs):
     """
-    This helper function separates a settings dict and a parameters object
-    from a provided dictionary. This is useful for testing the
-    spectral_density_model function
+    Separate a settings dict and a parameters object from a provided
+    dictionary.
 
-    The dictionary needs to hold a Parameter object for Parameters
+    This is useful for testing the spectral_density_model function.
+
+    The dictionary needs to hold a Parameter object for Parameters.
 
     """
     if "wavelengths" in kwargs:
@@ -1098,7 +1100,7 @@ def test_fit_noncollective_single_species(noncollective_single_species_settings_
 def test_fit_with_instr_func(epw_single_species_settings_params):
     """
 
-    This test checks that fitting works with an instrument function
+    Check that fitting works with an instrument function.
 
     It specifically tests the case where a notch is being used in the filter,
     because this can cause a potential error with the instrument function.
@@ -1170,7 +1172,9 @@ def test_fit_with_minimal_parameters():
     )
     data = Skw.value
 
-    data *= 1 + np.random.normal(loc=0, scale=0.1, size=wavelengths.size)
+    data *= 1 + np.random.normal(  # noqa: NPY002
+        loc=0, scale=0.1, size=wavelengths.size
+    )
     data *= 1 / np.nanmax(data)
 
     # Create settings and params using only the minimal parameters

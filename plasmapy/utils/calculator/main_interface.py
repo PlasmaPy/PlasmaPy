@@ -1,5 +1,5 @@
 """
-Collection of private functions to load properties and construct widgets
+Collection of private functions to load properties and construct widgets.
 """
 __all__ = []
 
@@ -128,7 +128,7 @@ grid_data: Contains widgets layout for input parameters
 
 def _create_interactive_layout():
     """
-    Interactive grid layout for input parameters populated in grid_data
+    Interactive grid layout for input parameters populated in grid_data.
     """
     grid = widgets.GridspecLayout(18, 3)
     grid.layout.margin = "10px"
@@ -144,7 +144,8 @@ def _create_interactive_layout():
 
 def _create_output_layout():
     """
-    Tab layout for output parameters, populated from properties_metadata.json
+    Tab layout for output parameters, populated from
+    ``properties_metadata.json``.
     """
     app = widgets.Tab()
     children = []

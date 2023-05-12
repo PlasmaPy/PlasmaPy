@@ -1,8 +1,8 @@
 """
-This module contains functionality for calculating Coulomb
-parameters for different configurations. Including a number of
-functions for handling Coulomb collisions spanning weakly coupled
-(low density) to strongly coupled (high density) regimes.
+Functionality for calculating Coulomb parameters for different
+configurations. Including a number of functions for handling Coulomb
+collisions spanning weakly coupled (low density) to strongly coupled
+(high density) regimes.
 
 Coulomb collisions are collisions where the interaction force is
 conveyed via the electric field, instead of any kind of contact
