@@ -7,7 +7,9 @@ limit overhead and increase performance.
 They act in-place on position and velocity arrays to reduce
 memory allocation.
 
-|expect-api-changes|
+.. attention::
+
+   |expect-api-changes|
 """
 
 __all__ = ["boris_push"]

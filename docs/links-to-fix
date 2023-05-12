@@ -1,0 +1,45 @@
+(notebooks/dispersion/two_fluid_dispersion: line   11) broken    https://agupubs.onlinelibrary.wiley.com/doi/10.1029/2012JA017856 - 403 Client Error: Forbidden for url: https://agupubs.onlinelibrary.wiley.com/doi/10.1029/2012JA017856
+
+(contributing/getting_ready: line   76) /home/namurphy/Projects/PlasmaPy/docs/contributing/getting_ready.rst:76: WARNING: redirect  https://docs.anaconda.com/navigator/ - with Found to https://docs.anaconda.com/free/navigator/
+
+(         install: line  116) broken    https://docs.anaconda.com/navigator/tutorials/manage-packages/#installing-a-package - 404 Client Error: Not Found for url: https://docs.anaconda.com/navigator/tutorials/manage-packages/
+
+
+(contributing/getting_ready: line   82) broken    https://docs.anaconda.com/navigator/install - 404 Client Error: Not Found for url: https://docs.anaconda.com/navigator/install
+
+
+
+(notebooks/formulary/cold_plasma_tensor_elements: line  109) broken    https://docs.plasmapy.org/en/stable/development/coding_guide.html#angular-frequencies - 404 Client Error: Not Found for url: https://docs.plasmapy.org/en/stable/development/coding_guide.html
+
+
+
+(whatsnew/2023.1.0: line    7) broken    https://github.com/PlasmaPy/PlasmaPy/pull/1274 - 500 Server Error: Internal Server Error for url: https://github.com/PlasmaPy/PlasmaPy/pull/1274
+
+
+
+(contributing/workflow: line  178) /home/namurphy/Projects/PlasmaPy/docs/contributing/workflow.rst:178: WARNING: redirect  https://github.com/PlasmaPy/PlasmaPy/tree/main/docs/about/credits.rst - permanently to https://github.com/PlasmaPy/PlasmaPy/blob/main/docs/about/credits.rst
+
+
+(  whatsnew/0.8.1: line   57) broken    https://github.com/plasmapy/plasmapy/pull/1295 - 500 Server Error: Internal Server Error for url: https://github.com/plasmapy/plasmapy/pull/1295
+
+
+(  whatsnew/0.8.1: line  584) broken    https://github.com/plasmapy/plasmapy/pull/1467 - 500 Server Error: Internal Server Error for url: https://github.com/plasmapy/plasmapy/pull/1467
+
+
+(  whatsnew/0.8.1: line  662) broken    https://github.com/plasmapy/plasmapy/pull/1563 - 500 Server Error: Internal Server Error for url: https://github.com/plasmapy/plasmapy/pull/1563
+
+
+(  whatsnew/0.8.1: line  456) broken    https://github.com/plasmapy/plasmapy/pull/1552 - 502 Server Error: Bad Gateway for url: https://github.com/plasmapy/plasmapy/pull/1552
+
+
+(contributing/getting_ready: line  193) broken    installing-python -
+
+(contributing/getting_ready: line  206) broken    opening-a-terminal -
+
+
+(contributing/doc_guide: line 1123) broken    https://www.sphinx-doc.org/en/master/templating.html - 404 Client Error: Not Found for url: https://www.sphinx-doc.org/en/master/templating.html
+
+(contributing/testing_guide: line  681) broken    https://tox.wiki/en/latest/config.html#tox-environments - Anchor 'tox-environments' not found
+
+
+(   COMMUNICATION: line    9) /home/namurphy/Projects/PlasmaPy/docs/COMMUNICATION.rst:9: WARNING: redirect  https://gitter.im/PlasmaPy/Lobby - permanently to https://app.gitter.im/#/room/#PlasmaPy_Lobby:gitter.im

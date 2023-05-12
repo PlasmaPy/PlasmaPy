@@ -1,7 +1,9 @@
 """
 Subpackage containing routines for analyzing time series.
 
-|expect-api-changes|
+.. note::
+
+   |expect-api-changes|
 """
 
 from plasmapy.analysis.time_series.excess_statistics import ExcessStatistics

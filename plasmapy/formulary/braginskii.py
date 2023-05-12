@@ -5,7 +5,9 @@ Functions to calculate classical transport coefficients.
 
     /notebooks/formulary/braginskii
 
-|expect-api-changes|
+.. attention::
+
+   |expect-api-changes|
 
 Introduction
 ============

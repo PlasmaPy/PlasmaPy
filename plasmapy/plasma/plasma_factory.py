@@ -1,7 +1,9 @@
 """
 Module for defining the framework around the plasma factory.
 
-|expect-api-changes|
+.. attention::
+
+   |expect-api-changes|
 """
 __all__ = ["PlasmaFactory", "Plasma"]
 

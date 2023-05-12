@@ -1,7 +1,9 @@
 """
 Class representing a group of particles.
 
-|expect-api-changes|
+.. attention::
+
+   |expect-api-changes|
 """
 __all__ = ["ParticleTracker"]
 

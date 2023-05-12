@@ -1,7 +1,9 @@
 """
 Base classes for representing plasmas.
 
-|expect-api-changes|
+.. attention::
+
+   |expect-api-changes|
 """
 
 from plasmapy.plasma import exceptions, grids, sources

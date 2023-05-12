@@ -3,7 +3,9 @@
 `plasmapy.simulation.abstractions`
 ==================================
 
-|expect-api-changes|
+.. attention::
+
+   |expect-api-changes|
 
 .. currentmodule:: plasmapy.simulation.abstractions
 

@@ -1,7 +1,9 @@
 """
 Abstract classes for numerical simulations.
 
-|expect-api-changes|
+.. attention::
+
+   |expect-api-changes|
 """
 
 __all__ = [

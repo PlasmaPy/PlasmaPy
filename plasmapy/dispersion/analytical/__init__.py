@@ -2,7 +2,9 @@
 The `~plasmapy.dispersion.analytical` subpackage contains functionality
 associated with analytical dispersion solutions.
 
-|expect-api-changes|
+.. attention::
+
+   |expect-api-changes|
 """
 __all__ = ["two_fluid", "stix"]
 

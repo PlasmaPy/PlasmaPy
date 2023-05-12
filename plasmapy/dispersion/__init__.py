@@ -3,7 +3,9 @@ The `~plasmapy.dispersion` subpackage contains functionality associated
 with plasma dispersion relations, including numerical solvers and
 `~plasmapy.dispersion.analytical` solutions.
 
-|expect-api-changes|
+.. attention::
+
+   |expect-api-changes|
 """
 __all__ = [
     "plasma_dispersion_func",

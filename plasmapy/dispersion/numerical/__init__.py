@@ -2,7 +2,9 @@
 The `~plasmapy.dispersion.numerical` subpackage contains functionality
 associated with numerical dispersion solvers.
 
-|expect-api-changes|
+.. attention::
+
+   |expect-api-changes|
 """
 __all__ = ["hollweg"]
 
