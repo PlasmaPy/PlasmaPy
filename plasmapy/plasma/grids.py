@@ -666,7 +666,7 @@ class AbstractGrid(ABC):
         """
         return list(self.ds.data_vars)
 
-    def _make_grid(  # noqa: PLR0912
+    def _make_grid(  # noqa: C901, PLR0912
         self,
         start: Union[int, float, u.Quantity],
         stop: Union[int, float, u.Quantity],
@@ -1018,11 +1018,10 @@ class AbstractGrid(ABC):
 
 def _fast_nearest_neighbor_interpolate(pos, ax):
     """
-    This function finds the indices in the axis 'ax' that are closest to the
-    values in the array 'pos'.
+    Find the indices in the axis `ax` that are closest to the
+    values in the array `pos`.
 
-    Assumes the axis 'ax' is sorted in ascending order.
-
+    Assumes the axis `ax` is sorted in ascending order.
     """
     # Find the index where each position would be inserted into the axis.
     # This is equivalent to a nearest neighbor interpolation but always

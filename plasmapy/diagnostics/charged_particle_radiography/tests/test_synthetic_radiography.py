@@ -14,7 +14,7 @@ from plasmapy.diagnostics.charged_particle_radiography import (
 from plasmapy.plasma.grids import CartesianGrid
 
 
-def _test_grid(  # noqa: PLR0912
+def _test_grid(  # noqa: C901, PLR0912
     name,
     L=1 * u.mm,
     num=100,
@@ -691,7 +691,7 @@ def test_cannot_modify_simulation_after_running(case):
 @pytest.mark.slow()
 def test_gaussian_sphere_analytical_comparison():
     """
-    This test runs a known example problem and compares to a theoretical
+    Run a known example problem and compare it to a theoretical
     model for small deflections.
 
     Still under construction (comparing the actual form of the radiograph

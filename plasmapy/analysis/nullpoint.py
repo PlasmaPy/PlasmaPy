@@ -558,7 +558,7 @@ def _reduction(vspace, cell):
     return passX and passY and passZ
 
 
-def _bilinear_root(a1, b1, c1, d1, a2, b2, c2, d2):  # noqa: PLR0911, PLR0912
+def _bilinear_root(a1, b1, c1, d1, a2, b2, c2, d2):  # noqa: C901, PLR0911, PLR0912
     r"""
     Return the roots of a pair of bilinear equations of the following
     format.
@@ -629,7 +629,7 @@ def _bilinear_root(a1, b1, c1, d1, a2, b2, c2, d2):  # noqa: PLR0911, PLR0912
             return np.array([(x1, y1), (x2, y2)])
 
 
-def _trilinear_analysis(vspace, cell):  # noqa: PLR0911, PLR0912, PLR0915
+def _trilinear_analysis(vspace, cell):  # noqa: C901, PLR0911, PLR0912, PLR0915
     r"""
     Return a true or false value based on whether a grid cell which has
     passed the reduction step, contains a null point, using trilinear

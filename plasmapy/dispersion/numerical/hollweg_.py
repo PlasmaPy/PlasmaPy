@@ -1,6 +1,6 @@
 """
-This module contains functionality for calculating various numerical
-solutions to Hollweg's two fluid dispersion relation
+Functionality for calculating various numerical solutions to Hollweg's
+two fluid dispersion relation.
 """
 __all__ = ["hollweg"]
 
@@ -27,7 +27,7 @@ c_si_unitless = c.value
     T_e={"can_be_negative": False, "equivalencies": u.temperature_energy()},
     T_i={"can_be_negative": False, "equivalencies": u.temperature_energy()},
 )
-def hollweg(  # noqa: PLR0912, PLR0915
+def hollweg(  # noqa: C901, PLR0912, PLR0915
     *,
     B: u.T,
     ion: Union[str, Particle],

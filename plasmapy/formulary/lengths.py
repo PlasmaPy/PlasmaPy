@@ -100,7 +100,7 @@ lambdaD_ = Debye_length
     validations_on_return={"equivalencies": u.dimensionless_angles()},
 )
 @particle_input(any_of={"charged", "uncharged"})
-def gyroradius(
+def gyroradius(  # noqa: C901
     B: u.T,
     particle: ParticleLike,
     *,
