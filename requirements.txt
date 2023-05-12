@@ -47,9 +47,15 @@ charset-normalizer==3.1.0
 click==8.1.3
     # via
     #   click-default-group
+    #   dask
+    #   distributed
     #   towncrier
 click-default-group==1.2.2
     # via towncrier
+cloudpickle==2.2.1
+    # via
+    #   dask
+    #   distributed
 colorama==0.4.6
     # via tox
 comm==0.1.3
@@ -58,6 +64,10 @@ contourpy==1.0.7
     # via matplotlib
 cycler==0.11.0
     # via matplotlib
+dask[distributed]==2023.5.0
+    # via
+    #   distributed
+    #   plasmapy (setup.py)
 debugpy==1.6.7
     # via ipykernel
 decorator==5.1.1
@@ -66,6 +76,8 @@ defusedxml==0.7.1
     # via nbconvert
 distlib==0.3.6
     # via virtualenv
+distributed==2023.5.0
+    # via dask
 docutils==0.18.1
     # via
     #   nbsphinx
@@ -99,6 +111,8 @@ flake8-use-fstring==1.4
     # via plasmapy (setup.py)
 fonttools==4.39.3
     # via matplotlib
+fsspec==2023.5.0
+    # via dask
 future==0.18.3
     # via uncertainties
 h5py==3.8.0
@@ -113,6 +127,8 @@ idna==3.4
     #   requests
 imagesize==1.4.1
     # via sphinx
+importlib-metadata==6.6.0
+    # via dask
 incremental==22.10.0
     # via towncrier
 iniconfig==2.0.0
@@ -131,6 +147,7 @@ jedi==0.18.2
     # via ipython
 jinja2==3.1.2
     # via
+    #   distributed
     #   jupyter-server
     #   jupyterlab-server
     #   nbconvert
@@ -178,6 +195,10 @@ llvmlite==0.40.0
     # via numba
 lmfit==1.2.1
     # via plasmapy (setup.py)
+locket==1.0.0
+    # via
+    #   distributed
+    #   partd
 markupsafe==2.1.2
     # via
     #   jinja2
@@ -194,6 +215,8 @@ mistune==2.0.5
     # via nbconvert
 mpmath==1.3.0
     # via plasmapy (setup.py)
+msgpack==1.0.5
+    # via distributed
 nbclient==0.7.4
     # via
     #   nbconvert
@@ -237,6 +260,8 @@ numpydoc==1.5.0
 packaging==23.1
     # via
     #   astropy
+    #   dask
+    #   distributed
     #   ipykernel
     #   jupyter-server
     #   jupyterlab-server
@@ -256,6 +281,8 @@ pandocfilters==1.5.0
     # via nbconvert
 parso==0.8.3
     # via jedi
+partd==1.4.0
+    # via dask
 pexpect==4.8.0
     # via ipython
 pickleshare==0.7.5
@@ -280,7 +307,9 @@ prometheus-client==0.16.0
 prompt-toolkit==3.0.38
     # via ipython
 psutil==5.9.5
-    # via ipykernel
+    # via
+    #   distributed
+    #   ipykernel
 ptyprocess==0.7.0
     # via
     #   pexpect
@@ -337,6 +366,8 @@ pytz==2023.3
 pyyaml==6.0
     # via
     #   astropy
+    #   dask
+    #   distributed
     #   pre-commit
     #   pybtex
     #   pytest-regressions
@@ -370,7 +401,9 @@ sniffio==1.3.0
 snowballstemmer==2.2.0
     # via sphinx
 sortedcontainers==2.4.0
-    # via hypothesis
+    # via
+    #   distributed
+    #   hypothesis
 soupsieve==2.4.1
     # via beautifulsoup4
 sphinx==6.2.1
@@ -427,14 +460,22 @@ sphinxcontrib-serializinghtml==1.1.5
     # via sphinx
 stack-data==0.6.2
     # via ipython
+tblib==1.7.0
+    # via distributed
 terminado==0.17.1
     # via jupyter-server
 tinycss2==1.2.1
     # via nbconvert
 tomli==2.0.1
     # via plasmapy (setup.py)
+toolz==0.12.0
+    # via
+    #   dask
+    #   distributed
+    #   partd
 tornado==6.3.1
     # via
+    #   distributed
     #   ipykernel
     #   jupyter-client
     #   jupyter-server
@@ -467,7 +508,9 @@ tzdata==2023.3
 uncertainties==3.1.7
     # via lmfit
 urllib3==2.0.2
-    # via requests
+    # via
+    #   distributed
+    #   requests
 virtualenv==20.23.0
     # via
     #   pre-commit
@@ -490,6 +533,10 @@ wrapt==1.15.0
     # via plasmapy (setup.py)
 xarray==2023.4.2
     # via plasmapy (setup.py)
+zict==3.0.0
+    # via distributed
+zipp==3.15.0
+    # via importlib-metadata
 
 # The following packages are considered to be unsafe in a requirements file:
 # setuptools

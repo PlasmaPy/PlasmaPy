@@ -38,6 +38,7 @@ dynamic = [
 ]
 dependencies = [
   "astropy >= 5.0.1",
+  "dask[distributed] >= 2023.5.0",
   "h5py >= 3.3.0",
   "ipykernel >= 6.6.1",
   "ipywidgets >= 7.6.5",
