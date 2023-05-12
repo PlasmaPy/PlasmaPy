@@ -1,0 +1,1 @@
+Enabled and applied changes for additional rule sets for ``ruff``, and removed corresponding ``flake8`` extensions.

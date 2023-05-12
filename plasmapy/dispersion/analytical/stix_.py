@@ -1,6 +1,6 @@
 """
-This module contains functionality for calculating the numerical
-solutions to the Stix cold plasma function.
+Functionality for calculating the numerical solutions to the Stix cold
+plasma function.
 """
 __all__ = ["stix"]
 
@@ -21,7 +21,7 @@ c_si_unitless = c.value
     n_i={"can_be_negative": False},
     w={"can_be_negative": False, "can_be_zero": False},
 )
-def stix(
+def stix(  # noqa: C901, PLR0912, PLR0915
     B: u.T,
     w: u.rad / u.s,
     ions: Particle,
@@ -206,7 +206,7 @@ def stix(
     elif n_i.size == 1:
         n_i = np.repeat(n_i, len(ions))
 
-    species = ions + [Particle("e-")]
+    species = [*ions, Particle("e-")]
     densities = np.zeros(n_i.size + 1)
     densities[:-1] = n_i
     densities[-1] = np.sum(n_i * ions.charge_number)
@@ -267,7 +267,7 @@ def stix(
     c = P * R * L
 
     # Solve for k values
-    k = np.empty(w.shape + (4,), dtype=np.complex128)
+    k = np.empty((*w.shape, 4), dtype=np.complex128)
     k[..., 0] = (
         np.emath.sqrt((-b + np.emath.sqrt(b**2 - 4 * a * c)) / (2 * a))
         * w

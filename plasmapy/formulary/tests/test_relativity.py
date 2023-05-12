@@ -18,7 +18,7 @@ from plasmapy.utils.exceptions import RelativityError
 
 
 @pytest.mark.parametrize(
-    "speed, expected",
+    ("speed", "expected"),
     [
         (0 * u.m / u.s, 1),
         (np.nan * u.m / u.s, np.nan),
@@ -37,7 +37,7 @@ def test_Lorentz_factor(speed, expected):
 
 
 @pytest.mark.parametrize(
-    "speed, exception",
+    ("speed", "exception"),
     [
         (np.inf * u.m / u.s, RelativityError),
         (-np.inf * u.m / u.s, RelativityError),
@@ -52,7 +52,7 @@ def test_Lorentz_factor_exceptions(speed, exception):
 
 
 @pytest.mark.parametrize(
-    "speed, warning", [(2.2, u.UnitsWarning), (np.nan, u.UnitsWarning)]
+    ("speed", "warning"), [(2.2, u.UnitsWarning), (np.nan, u.UnitsWarning)]
 )
 def test_Lorentz_factor_warnings(speed, warning):
     with pytest.warns(warning):
@@ -60,7 +60,7 @@ def test_Lorentz_factor_warnings(speed, warning):
 
 
 @pytest.mark.parametrize(
-    "velocity, mass, expected",
+    ("velocity", "mass", "expected"),
     [
         (123456789 * u.m / u.s, 1 * u.kg, 9.86265694e16 * u.J),
         (-123456789 * u.m / u.s, 1 * u.kg, 9.86265694e16 * u.J),
@@ -81,7 +81,7 @@ def test_relativistic_energy(velocity, mass, expected):
 
 
 @pytest.mark.parametrize(
-    "velocity, mass, exception",
+    ("velocity", "mass", "exception"),
     [
         (1.00000001 * c, 1 * u.kg, RelativityError),
         (-1.00000001 * c, 1 * u.kg, RelativityError),
@@ -94,7 +94,7 @@ def test_relativistic_energy_exceptions(velocity, mass, exception):
 
 
 @pytest.mark.parametrize(
-    "velocity, mass, warning",
+    ("velocity", "mass", "warning"),
     [
         (2.2, 5 * u.kg, u.UnitsWarning),
     ],
@@ -114,8 +114,8 @@ proton_at_half_c_inputs = [
 ]
 
 
-@pytest.mark.parametrize("attribute, expected", proton_at_half_c_inputs)
-@pytest.mark.parametrize("parameter, argument", proton_at_half_c_inputs)
+@pytest.mark.parametrize(("attribute", "expected"), proton_at_half_c_inputs)
+@pytest.mark.parametrize(("parameter", "argument"), proton_at_half_c_inputs)
 def test_relativistic_body(parameter, argument, attribute, expected):
     """
     Test that when we create `RelativisticBody` instances for each of
@@ -134,8 +134,8 @@ def test_relativistic_body(parameter, argument, attribute, expected):
     assert_quantity_allclose(actual, expected, rtol=1e-9)
 
 
-@pytest.mark.parametrize("attr_to_set, set_value", proton_at_half_c_inputs)
-@pytest.mark.parametrize("attr_to_test, expected", proton_at_half_c_inputs)
+@pytest.mark.parametrize(("attr_to_set", "set_value"), proton_at_half_c_inputs)
+@pytest.mark.parametrize(("attr_to_test", "expected"), proton_at_half_c_inputs)
 def test_relativistic_body_setters(attr_to_set, set_value, attr_to_test, expected):
     """Test setting RelativisticBody attributes."""
     relativistic_body = RelativisticBody(proton, v_over_c=0.1)
@@ -162,7 +162,7 @@ def test_relativistic_body_mass_energy(particle):
 
 
 @pytest.mark.parametrize(
-    "kwargs, exception",
+    ("kwargs", "exception"),
     [
         ({"V": 299792459 * (u.m / u.s)}, RelativityError),
         ({"v_over_c": 1.00001}, RelativityError),
@@ -195,7 +195,7 @@ def test_relativistic_body_equality():
 
 
 @pytest.mark.parametrize(
-    "this, that",
+    ("this", "that"),
     [
         (RelativisticBody("p+", v_over_c=0.2), RelativisticBody("p+", v_over_c=0.5)),
         (RelativisticBody("p+", v_over_c=0.2), RelativisticBody("e-", v_over_c=0.2)),

@@ -1,6 +1,5 @@
-"""
-Decorator to convert units of functions in /physics methods
-"""
+"""Decorators to convert units."""
+
 __all__ = ["angular_freq_to_hz"]
 
 import astropy.units as u
@@ -11,9 +10,9 @@ from plasmapy.utils.decorators.helpers import preserve_signature
 
 
 def angular_freq_to_hz(fn):
-    """A decorator that adds to a function the ability to convert the
-    function's return from angular frequency (rad/s) to frequency
-    (Hz).
+    """
+    A decorator that enables a function to convert its return
+    value from angular frequency (rad/s) to frequency (Hz).
 
     A kwarg ``to_hz`` is added to the function's signature, with a
     default value of `False`.  The keyword is also added to the
@@ -22,21 +21,20 @@ def angular_freq_to_hz(fn):
     Parameters
     ----------
     fn : function
-        The function to be decorated
+        The function to be decorated.
 
     Raises
     ------
     ValueError
-        If ``fn`` has already defined a kwarg ``to_hz``
+        If ``fn`` has already defined a kwarg ``to_hz``.
 
     Returns
     -------
     callable
-        The decorated function
+        The decorated function.
 
     Notes
     -----
-
     * If `~plasmapy.utils.decorators.converter.angular_freq_to_hz` is
       used with decorator
       :func:`~plasmapy.utils.decorators.validators.validate_quantities`,
@@ -59,7 +57,6 @@ def angular_freq_to_hz(fn):
 
     Examples
     --------
-
         >>> import astropy.units as u
         >>> from plasmapy.utils.decorators.converter import angular_freq_to_hz
         >>>

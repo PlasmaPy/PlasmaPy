@@ -191,7 +191,6 @@ def plasma_frequency_lite(
 
     Notes
     -----
-
     The particle plasma frequency is
 
     .. math::
@@ -206,7 +205,6 @@ def plasma_frequency_lite(
 
     Examples
     --------
-
     >>> from plasmapy.particles import Particle
     >>> mass = Particle("p").mass.value
     >>> plasma_frequency_lite(n=1e19, mass=mass, z_mean=1)

@@ -9,7 +9,7 @@ from plasmapy.utils.exceptions import CouplingWarning
 
 
 @pytest.mark.parametrize(
-    "grid_dimensions, expected_size",
+    ("grid_dimensions", "expected_size"),
     [
         pytest.param((100, 1, 1), 100, marks=pytest.mark.slow),  # Test 1D setup
         pytest.param((128, 128, 1), 16384, marks=pytest.mark.slow),  # 2D
@@ -63,7 +63,7 @@ def test_Plasma3D_setup(grid_dimensions, expected_size):
     assert test_plasma.electric_field.si.unit == u.V / u.m
 
 
-@pytest.mark.slow
+@pytest.mark.slow()
 def test_Plasma3D_derived_vars():
     r"""Function to test derived variables of the Plasma3D class.
 
@@ -106,7 +106,7 @@ def test_Plasma3D_derived_vars():
     assert np.allclose(test_plasma.alfven_speed.value, 10.92548431)
 
 
-@pytest.mark.slow
+@pytest.mark.slow()
 def test_Plasma3D_add_magnetostatics():
     r"""Function to test add_magnetostatic function"""
     dipole = magnetostatics.MagneticDipole(
@@ -291,17 +291,17 @@ class Test_PlasmaBlobRegimes:
 
 class Test_PlasmaBlob:
     @classmethod
-    def setup_class(self):
-        """initializing parameters for tests"""
-        self.T_e = 5 * 11e3 * u.K
-        self.n_e = 1e23 * u.cm**-3
-        self.Z = 2.5 * u.dimensionless_unscaled
-        self.particle = "p"
-        self.blob = plasmablob.PlasmaBlob(
-            T_e=self.T_e, n_e=self.n_e, Z=self.Z, particle=self.particle
+    def setup_class(cls):  # noqa: N804
+        """Initializing parameters for tests"""
+        cls.T_e = 5 * 11e3 * u.K
+        cls.n_e = 1e23 * u.cm**-3
+        cls.Z = 2.5 * u.dimensionless_unscaled
+        cls.particle = "p"
+        cls.blob = plasmablob.PlasmaBlob(
+            T_e=cls.T_e, n_e=cls.n_e, Z=cls.Z, particle=cls.particle
         )
-        self.couplingVal = 10.468374460435724
-        self.thetaVal = 0.6032979246923964
+        cls.couplingVal = 10.468374460435724
+        cls.thetaVal = 0.6032979246923964
 
     def test_invalid_particle(self):
         """

@@ -15,6 +15,47 @@ from scipy.interpolate import interp1d
 
 
 class Layer:
+    r"""
+    A layer in a detector film stack.
+
+    The layer could either be an active layer (the actual film medium) or
+    an inum_active layer (a filter or inum_active part of the film, such as
+    a substrate.)
+
+    Tabulated stopping powers for protons and electrons can be found in the
+    `NIST PSTAR database
+    <https://physics.nist.gov/PhysRefData/Star/Text/PSTAR.html>`_
+    and the
+    `NIST ESTAR database
+    <https://physics.nist.gov/PhysRefData/Star/Text/ESTAR.html>`_.
+
+    Parameters
+    ----------
+    thickness : `~astropy.units.Quantity`
+        The thickness of the layer, in units convertible to meters.
+
+    energy_axis : `~astropy.units.Quantity`
+        The energies corresponding to the stopping power array.
+
+    stopping_power : `~astropy.units.Quantity`
+        The stopping power in the material. Either the linear stopping
+        power (units of J/m) or the mass stopping power
+        (units convertible to J m\ :sup:`2` / kg) can be provided. If the
+        mass stopping power is provided, the material_density keyword
+        is required.
+
+    mass_density : `~astropy.units.Quantity`, optional
+        The material mass density in units convertible to kg/m\ :sup:`3`.
+        This keyword is required if the provided stopping power is the
+        mass stopping power.
+
+    active : `bool`, default: `True`
+        If `True`, this layer is marked as an active layer.
+
+    name : `str`, optional
+        An optional name for the layer.
+    """
+
     def __init__(
         self,
         thickness: u.m,
@@ -24,46 +65,6 @@ class Layer:
         active: bool = True,
         name: str = "",
     ):
-        r"""
-        A layer in a detector film stack.
-
-        The layer could either be an active layer (the actual film medium) or
-        an inum_active layer (a filter or inum_active part of the film, such as
-        a substrate.)
-
-        Tabulated stopping powers for protons and electrons can be found in the
-        `NIST PSTAR database
-        <https://physics.nist.gov/PhysRefData/Star/Text/PSTAR.html>`_
-        and the
-        `NIST ESTAR database
-        <https://physics.nist.gov/PhysRefData/Star/Text/ESTAR.html>`_.
-
-        Parameters
-        ----------
-        thickness : `~astropy.units.Quantity`
-            The thickness of the layer, in units convertible to meters.
-
-        energy_axis : `~astropy.units.Quantity`
-            The energies corresponding to the stopping power array.
-
-        stopping_power : `~astropy.units.Quantity`
-            The stopping power in the material. Either the linear stopping
-            power (units of J/m) or the mass stopping power
-            (units convertible to J m\ :sup:`2` / kg) can be provided. If the
-            mass stopping power is provided, the material_density keyword
-            is required.
-
-        mass_density : `~astropy.units.Quantity`, optional
-            The material mass density in units convertible to kg/m\ :sup:`3`.
-            This keyword is required if the provided stopping power is the
-            mass stopping power.
-
-        active : `bool`, default: `True`
-            If `True`, this layer is marked as an active layer.
-
-        name : `str`, optional
-            An optional name for the layer.
-        """
         self.thickness = thickness
         self.energy_axis = energy_axis
         self.active = active
@@ -217,7 +218,11 @@ class Stack:
         return deposited_energy
 
     def energy_bands(
-        self, energy_range: u.J, dE: u.J, dx=1e-6 * u.m, return_only_active=True
+        self,
+        energy_range: u.J,
+        dE: u.J,
+        dx=1e-6 * u.m,  # noqa: ARG002
+        return_only_active=True,
     ):
         """
         Calculate the energy bands in each of the active layers of a film

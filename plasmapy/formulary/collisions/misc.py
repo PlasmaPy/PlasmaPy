@@ -45,7 +45,7 @@ def _process_inputs(T: u.K, species: (particles.Particle, particles.Particle), V
 
 # TODO: Remove redundant mass parameter
 def _replace_nan_velocity_with_thermal_velocity(
-    V, T, m, species=particles.Particle("e-")
+    V, T, m, species=particles.Particle("e-")  # noqa: B008
 ):
     """
     Get thermal velocity of system if no velocity is given, for a given

@@ -39,7 +39,7 @@ Stores the functions to be processed. This data is gathered from
 
 class _GenericWidget(abc.ABC):
     """
-    Generic widget class
+    Generic widget class.
 
     Parameters
     ----------
@@ -80,7 +80,7 @@ class _GenericWidget(abc.ABC):
 
     def get_widget(self):
         """
-        Get current widget object reference
+        Get current widget object reference.
 
         Returns
         -------
@@ -102,7 +102,7 @@ class _GenericWidget(abc.ABC):
 
     def set_place_holder(self, text):
         """
-        Set place holder text of the widget, defaults to empty string
+        Set place holder text of the widget, defaults to empty string.
 
         Parameters
         ----------
@@ -114,9 +114,8 @@ class _GenericWidget(abc.ABC):
     @abc.abstractmethod
     def create_widget(self):
         """
-        Virtual method to create widget
+        Virtual method to create widget.
         """
-        pass
 
     def post_creation(self):
         """
@@ -126,7 +125,7 @@ class _GenericWidget(abc.ABC):
         self.set_place_holder("")
         self.widget.observe(self.handle_change, names="value")
 
-    def edge_case(self, value):
+    def edge_case(self, value):  # noqa: B027
         """
         Edge case handling for the widget. This is called within handle_change.
 
@@ -135,9 +134,8 @@ class _GenericWidget(abc.ABC):
         value: `any`
             Value of the widget
         """
-        pass
 
-    def edge_case_condition(self, value):
+    def edge_case_condition(self, value):  # noqa: ARG002
         """
         Edge case condition for the widget.
 
@@ -164,7 +162,7 @@ class _GenericWidget(abc.ABC):
         """
         self.values_cont[self.property_name] = value
 
-    def display_error(self, value):
+    def display_error(self, value):  # noqa: ARG002
         """
         Handle invalid input provide realtime validation.
 
@@ -209,7 +207,7 @@ class _GenericWidget(abc.ABC):
         )
         self.units_dropdown.observe(self.handle_dropdown_change, names="value")
 
-    def handle_dropdown_change(self, change):
+    def handle_dropdown_change(self, change):  # noqa: ARG002
         """
         Handle change event of the dropdown widget.
 
@@ -264,12 +262,12 @@ class _FloatBox(_GenericWidget):
         Maximum value the widget can take
     """
 
-    def __init__(self, property_name, min=-1e50, max=1e50):  # noqa
+    def __init__(self, property_name, min=-1e50, max=1e50):  # noqa: A002
         super().__init__(property_name)
         self.min = min
         self.max = max
 
-    def create_widget(self, style={"description_width": "initial"}):
+    def create_widget(self, style={"description_width": "initial"}):  # noqa: B006
         """
         Implements create_widget. description_width is set to initial
         to make the widget as wide as possible.
@@ -338,9 +336,9 @@ class _ParticleBox(_GenericWidget):
         `bool`
             `True` if the value is empty, `False` otherwise
         """
-        return value is None or value == ""
+        return value is None or value == ""  # noqa: PLC1901
 
-    def edge_case(self, value):
+    def edge_case(self, value):  # noqa: ARG002
         """
         Edge case to handle empty value of particle box
         resets the container value to `None`, and resets the error status.
@@ -370,7 +368,7 @@ class _ParticleBox(_GenericWidget):
         self.widget.layout.border = ""
         self.widget.description = ""
 
-    def create_widget(self, style={"description_width": "initial"}):
+    def create_widget(self, style={"description_width": "initial"}):  # noqa: B006
         """
         Implements create_widget. description_width is set to initial
         to make the widget as wide as possible.
@@ -538,7 +536,7 @@ class _FunctionInfo:
                 self.output_widget.layout.border = "0px"
                 print(f" : {self.fattr(**args_dict)}")
 
-            except Exception as e:
+            except Exception as e:  # noqa: BLE001
                 self.output_widget.layout.border = ERROR_STYLE
                 print(e)
                 print(

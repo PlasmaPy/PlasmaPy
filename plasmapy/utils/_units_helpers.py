@@ -71,7 +71,7 @@ def _get_physical_type_dict(
 
     for obj in iterable:
         if isinstance(obj, Number) and numbers_become_quantities:
-            obj = u.Quantity(obj, u.dimensionless_unscaled)
+            obj = u.Quantity(obj, u.dimensionless_unscaled)  # noqa: PLW2901
 
         if only_quantities and not isinstance(obj, u.Quantity):
             if strict:

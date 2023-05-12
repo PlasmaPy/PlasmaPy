@@ -15,7 +15,7 @@ from plasmapy.formulary.frequencies import (
     wuh_,
 )
 from plasmapy.particles.exceptions import InvalidParticleError
-from plasmapy.utils.pytest_helpers import assert_can_handle_nparray
+from plasmapy.utils._pytest_helpers import assert_can_handle_nparray
 
 Z = 1
 ion = "p"
@@ -27,7 +27,7 @@ B_nanarr = np.array([0.001, np.nan]) * u.T
 
 
 @pytest.mark.parametrize(
-    "alias, parent",
+    ("alias", "parent"),
     [
         (oc_, gyrofrequency),
         (wc_, gyrofrequency),
