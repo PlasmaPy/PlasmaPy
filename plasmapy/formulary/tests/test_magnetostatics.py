@@ -39,7 +39,7 @@ class Test_MagneticDipole:
     def test_repr(self):
         """Test __repr__ function"""
         B1 = MagneticDipole(self.moment, self.p0)
-        assert repr(B1) == r"MagneticDipole(moment=[0. 0. 1.]A m2, p0=[0. 0. 0.]m)"
+        assert repr(B1) == r"MagneticDipole(moment=[0. 0. 1.]m2 A, p0=[0. 0. 0.]m)"
 
 
 class Test_GeneralWire:
