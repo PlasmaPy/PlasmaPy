@@ -1,3 +1,4 @@
+import astropy
 import numpy as np
 import pytest
 
@@ -36,6 +37,9 @@ class Test_MagneticDipole:
         assert np.all(np.isclose(B2.value, B2_expected.value))
         assert B2.unit == u.T
 
+    @pytest.mark.skipif(
+        astropy.__version__ < "5.3.0", reason="change in unit representation"
+    )
     def test_repr(self):
         """Test __repr__ function"""
         B1 = MagneticDipole(self.moment, self.p0)
