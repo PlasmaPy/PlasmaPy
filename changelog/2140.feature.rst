@@ -1,0 +1,3 @@
+Added ``mass_numb`` and ``Z`` as parameters to functions decorated
+with |particle_input| in `plasmapy.formulary.lengths`
+and `plasmapy.formulary.distribution`.
