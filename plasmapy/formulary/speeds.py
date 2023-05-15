@@ -189,6 +189,7 @@ va_ = Alfven_speed
     n_e={"can_be_negative": False, "none_shall_pass": True},
     k={"can_be_negative": False, "none_shall_pass": True},
 )
+@particle_input
 def ion_sound_speed(
     T_e: u.K,
     T_i: u.K,
@@ -197,7 +198,7 @@ def ion_sound_speed(
     k: u.m**-1 = None,
     gamma_e=1,
     gamma_i=3,
-    z_mean=None,
+    Z=None,
 ) -> u.m / u.s:
     r"""
     Return the ion sound speed for an electron-ion plasma.
@@ -216,7 +217,7 @@ def ion_sound_speed(
         particle.  If this is not given, then the ion temperature is
         assumed to be zero.
 
-    ion : `~plasmapy.particles.particle_class.Particle`
+    ion : |particle-like|
         Representation of the ion species (e.g., ``'p'`` for protons,
         ``'D+'`` for deuterium, or ``'He-4 +1'`` for singly ionized
         helium-4). If no charge state information is provided, then the
@@ -245,12 +246,15 @@ def ion_sound_speed(
         assumes that ion motion has only one degree of freedom, namely
         along magnetic field lines.
 
-    z_mean : `~astropy.units.Quantity`, optional
+    Z : `~astropy.units.Quantity`, optional
         The average ionization (arithmetic mean) for a plasma where
         a macroscopic description is valid. If this quantity is not
         given then the charge number of the ion
         is used. This is effectively an average ion sound speed for the
         plasma where multiple charge states are present.
+
+    mass_numb : positive integer, optional
+        The mass number of an isotope corresponding to ``ion``.
 
     Returns
     -------
@@ -349,19 +353,16 @@ def ion_sound_speed(
     <Quantity 229585... m / s>
 
     """
-
-    m_i = particle_mass(ion)
-    Z = misc._grab_charge(ion, z_mean)
-
     for gamma, species in zip([gamma_e, gamma_i], ["electrons", "ions"]):
         if not isinstance(gamma, Real):
             raise TypeError(
-                f"The adiabatic index gamma for {species} must be a float or int"
+                f"The adiabatic index gamma for {species} must be a positive "
+                f"number greater than one."
             )
         if gamma < 1:
             raise PhysicsError(
-                f"The adiabatic index for {species} must be between "
-                f"one and infinity"
+                f"The adiabatic index for {species} must be a positive "
+                f"number greater than one."
             )
 
     # Assume non-dispersive limit if values for n_e (or k) are not specified
@@ -369,7 +370,7 @@ def ion_sound_speed(
     if (n_e is None) ^ (k is None):
         warnings.warn(
             "The non-dispersive limit has been assumed for "
-            "this calculation. To prevent this, values must "
+            "ion_sound_speed. To prevent this, values must "
             "be specified for both n_e and k.",
             PhysicsWarning,
         )
@@ -378,9 +379,9 @@ def ion_sound_speed(
         klD2 = (k * lambda_D) ** 2
 
     try:
-        V_S_squared = (gamma_e * Z * k_B * T_e + gamma_i * k_B * T_i) / (
-            m_i * (1 + klD2)
-        )
+        V_S_squared = (
+            gamma_e * ion.charge_number * k_B * T_e + gamma_i * k_B * T_i
+        ) / (ion.mass * (1 + klD2))
         V_S = np.sqrt(V_S_squared).to(u.m / u.s)
     except ValueError as ex:
         raise ValueError("Unable to find ion sound speed.") from ex
