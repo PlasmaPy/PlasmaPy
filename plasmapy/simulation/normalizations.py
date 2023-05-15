@@ -144,9 +144,7 @@ class MHDNormalizations(AbstractNormalizations):
 
         self.ion = ion
 
-
-
-        include_spatiotemporal =             [
+        include_spatiotemporal = [
                 _length in self._ptypes_to_quantities,
                 _time in self._ptypes_to_quantities,
                 _velocity in self._ptypes_to_quantities,
@@ -154,10 +152,9 @@ class MHDNormalizations(AbstractNormalizations):
 
         if not include_spatiotemporal or all(include_spatiotemporal):
             raise NormalizationError(
-                "Must provide "
+                "Must provide at least one but no more than two Quantity "
+                "objects with a physical type of length, time, or velocity."
             )
-
-        self._ion = ion
 
     @property
     def acceleration(self) -> u.Quantity[u.m * u.s**-2]:
