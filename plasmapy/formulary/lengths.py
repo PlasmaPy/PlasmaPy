@@ -108,6 +108,8 @@ def gyroradius(  # noqa: C901
     T: u.K = None,
     lorentzfactor=np.nan,
     relativistic: bool = True,
+    mass_numb=None,
+    Z=None,
 ) -> u.m:
     r"""
     Return the particle gyroradius.
@@ -138,6 +140,12 @@ def gyroradius(  # noqa: C901
     relativistic : `bool`, optional, |keyword-only|
         Whether or not you want to use a relativistic approximation.
         `True` by default.
+
+    mass_numb : integer, |keyword-only|, optional
+        The mass number associated with ``particle``.
+
+    Z : real number, |keyword-only|, optional
+        The charge number associated with ``particle``.
 
     Returns
     -------
@@ -355,7 +363,9 @@ rhoc_ = gyroradius
     validations_on_return={"equivalencies": u.dimensionless_angles()},
 )
 @particle_input(require="charged")
-def inertial_length(n: u.m**-3, particle: ParticleLike) -> u.m:
+def inertial_length(
+    n: u.m**-3, particle: ParticleLike, *, mass_numb=None, Z=None
+) -> u.m:
     r"""
     Calculate a charged particle's inertial length.
 
@@ -369,6 +379,12 @@ def inertial_length(n: u.m**-3, particle: ParticleLike) -> u.m:
     particle : `~plasmapy.particles.particle_class.Particle`
         Representation of the particle species (e.g., 'p+' for protons,
         'D+' for deuterium, or 'He-4 +1' for singly ionized helium-4).
+
+    mass_numb : integer, |keyword-only|, optional
+        The mass number associated with ``particle``.
+
+    Z : real number, |keyword-only|, optional
+        The charge number associated with ``particle``.
 
     Returns
     -------
@@ -397,6 +413,7 @@ def inertial_length(n: u.m**-3, particle: ParticleLike) -> u.m:
     The inertial length of a particle of species :math:`s` is given by
 
     .. math::
+
         d = \frac{c}{ω_{ps}}
 
     The inertial length is the characteristic length scale for a
