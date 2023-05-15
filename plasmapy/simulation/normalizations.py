@@ -41,7 +41,7 @@ class MHDNormalizations(AbstractNormalizations):
 
     Notes
     -----
-    A |normalization constant| is a multiplicative factor that is used
+    A |normalization constant| is a multiplicative factor which is used
     to transform a physical quantity into a dimensionless number and
     vice versa. For example, if we use the sound speed :math:`V_s` as
     the normalization for velocity, then the result will be the
@@ -57,8 +57,6 @@ class MHDNormalizations(AbstractNormalizations):
     as the magnetic field, :math:`\mathbf{E}` as the electric field,
     :math:`\mathbf{V}` as the bulk plasma velocity, and
     :math:`\mathbf{J}` as the current density.
-
-
 
     The :wikipedia:`continuity equation` is:
 
