@@ -791,7 +791,7 @@ def spectral_density_model(  # noqa: C901, PLR0912, PLR0915
     # **********************
     for p, nums in zip(["T_e", "T_i"], [num_e, num_i]):
         for num in range(nums):
-            key = f"{p}_{str(num)}"
+            key = f"{p}_{num!s}"
             if key not in params:
                 raise ValueError(
                     f"{p} was not provided in kwarg 'parameters', but is required."
