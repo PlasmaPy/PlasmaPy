@@ -91,7 +91,7 @@ repos:
   hooks:
   - id: nbqa-black
     additional_dependencies:
-    - black==23.1.0
+    - black==23.3.0
     args:
     - --nbqa-mutate
   - id: nbqa-isort
