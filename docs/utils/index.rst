@@ -37,9 +37,6 @@ API
 .. automodapi:: plasmapy.utils.code_repr
    :include-heading:
 
-.. automodapi:: plasmapy.utils.pytest_helpers
-   :include-heading:
-
 .. automodapi:: plasmapy.utils.calculator
    :include-heading:
 

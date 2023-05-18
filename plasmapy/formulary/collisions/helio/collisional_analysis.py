@@ -16,7 +16,7 @@ from plasmapy.utils.decorators import validate_quantities
     T_1={"can_be_negative": False, "equivalencies": u.temperature_energy()},
     T_2={"can_be_negative": False, "equivalencies": u.temperature_energy()},
 )
-def temp_ratio(
+def temp_ratio(  # noqa: C901, PLR0912, PLR0915
     *,
     r_0: u.au,
     r_n: u.au,
@@ -25,7 +25,7 @@ def temp_ratio(
     v_1: u.km / u.s,
     T_1: u.K,
     T_2: u.K,
-    ions: ParticleLike = ["p+", "He-4++"],
+    ions: ParticleLike = ("p+", "He-4++"),
     n_step: int = 100,
     density_scale: float = -1.8,
     velocity_scale: float = -0.2,
@@ -68,7 +68,7 @@ def temp_ratio(
         Temperature of the secondary ion in units convertible to
         temperature K.
 
-    ions : |particle-list-like|, default: ["p+, "He-4 2+"]
+    ions : |particle-list-like|, default: ``("p+, "He-4 2+")``
         Particle list containing two (2) particles, primary ion of
         interest is entered first, followed by the secondary ion.
 
@@ -81,14 +81,14 @@ def temp_ratio(
         density. The default value is taken from
         :cite:t:`hellinger:2011`.
 
-    velocity_scale : `float`
+    velocity_scale : `float`, default: -0.2
         The value used as the scaling parameter for the primary ion
-        velocity, the default value is -0.2 and is taken from
+        velocity. The default value is taken from
         :cite:t:`hellinger:2011`.
 
-    temperature_scale : `float`
+    temperature_scale : `float`, default: -0.74
         The value used as the scaling parameter for the primary ion
-        temperature, the default value is -0.74 and is taken from
+        temperature. The default value is taken from
         :cite:t:`hellinger:2011`.
 
     Returns
@@ -111,7 +111,7 @@ def temp_ratio(
     -----
     The processes by which Coulomb collisions bring ion temperatures
     into local thermal equilibrium (LTE) has received considerable
-    attention, :cite:t:`verscharen:2019`. The relative temperature
+    attention :cite:p:`verscharen:2019`. The relative temperature
     between constituent plasma ion species is given as:
 
     .. math::
@@ -131,9 +131,9 @@ def temp_ratio(
     axes perpendicular and parallel to the ambient magnetic field.
 
     In order to determine how extensively an individual parcel of
-    plasma has been processed by Coulomb collisions, :cite:t:`maruca:2013`
-    introduced an approached called collisional analysis. Which seeks
-    to quantify how collisions affect the plasma’s departures from
+    plasma has been processed by Coulomb collisions :cite:p:`maruca:2013`
+    introduced an approached called collisional analysis. This paper seeks
+    to quantify how collisions affect the plasma's departures from
     LTE, the equation for collisional thermalization
     from :cite:t:`maruca:2013` is given below:
 
@@ -161,7 +161,7 @@ def temp_ratio(
     and :math:`B = 1 \, {\rm cm}^{-3/2}{\rm K}^{-3/2}`.
 
     The thermalization is from Coulomb collisions, which assumes
-    “soft”, small-angle deflections mediated by the electrostatic
+    "soft", small-angle deflections mediated by the electrostatic
     force :cite:t:`baumjohann:1997`. It is assumed that there is no
     relative drift between the ion species and that it is a mixed ion
     collision, the Coulomb logarithm for a mixed ion collision is
@@ -301,12 +301,7 @@ def temp_ratio(
 
     variables = [r_0, r_n, n_1, n_2, v_1, T_1, T_2]
 
-    d_type = []
-    for var in variables:
-        if hasattr(var, "__len__"):
-            d_type.append(True)
-        else:
-            d_type.append(False)
+    d_type = [bool(hasattr(var, "__len__")) for var in variables]
 
     var = all(i for i in d_type)
 
@@ -347,11 +342,11 @@ def temp_ratio(
                     )
                 )
                 if verbose:
-                    logging.info("\r", f"{(i / len(variables[0])) * 100:.2f} %")
+                    logging.info(f"\r {(i / len(variables[0])) * 100:.2f} %")
 
-            return res
+            return res  # noqa: TRY300
 
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             raise ValueError(
                 "Argument(s) are of unequal lengths, the following "
                 "arguments should be of equal length: 'r_0', 'r_n', "

@@ -20,7 +20,7 @@ repos:
   - id: check-yaml
 
 - repo: https://github.com/macisamuele/language-formatters-pre-commit-hooks
-  rev: v2.8.0
+  rev: v2.9.0
   hooks:
   - id: pretty-format-ini
     args: [--autofix]
@@ -58,7 +58,7 @@ repos:
     - tomli
 
 - repo: https://github.com/charliermarsh/ruff-pre-commit
-  rev: v0.0.265
+  rev: v0.0.267
   hooks:
   - id: ruff
     args: [--fix]

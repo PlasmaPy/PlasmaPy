@@ -6,16 +6,16 @@ import warnings
 from typing import Any
 
 from plasmapy.particles import Particle
-from plasmapy.tests.helpers import (
+from plasmapy.tests._helpers import (
     MissingExceptionFail,
     MissingWarningFail,
     TypeMismatchFail,
     UnexpectedExceptionFail,
     UnexpectedResultFail,
 )
+from plasmapy.utils._pytest_helpers import run_test, run_test_equivalent_calls
 from plasmapy.utils.code_repr import call_string
 from plasmapy.utils.exceptions import PlasmaPyError, PlasmaPyWarning
-from plasmapy.utils.pytest_helpers import run_test, run_test_equivalent_calls
 
 
 def generic_function(*args, **kwargs):
