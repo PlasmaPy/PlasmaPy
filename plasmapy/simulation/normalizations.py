@@ -336,7 +336,7 @@ class MHDNormalizations(AbstractNormalizations):
 
         if ion_ is None and _mass_density not in self._ptypes_to_quantities:
             raise NormalizationError(
-                "If no ion is provided, then a mass density must be " "provided."
+                "If no ion is provided, then a mass density must be provided."
             )
 
         self._ion = ion_
