@@ -1,3 +1,7 @@
+"""Classes to represent normalizations of plasma equations."""
+
+__all__ = ["NormalizationError", "MHDNormalizations"]
+
 import astropy.units as u
 
 from astropy.constants import k_B
