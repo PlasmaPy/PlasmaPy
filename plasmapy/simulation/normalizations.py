@@ -263,7 +263,7 @@ class MHDNormalizations(AbstractNormalizations):
 
     @property
     def energy(self) -> u.Quantity[u.J]:
-        """
+        r"""
         The |normalization constant| for energy,.
 
            e_⋆ ≡ \frac{m_⋆ L_⋆^2}{t_⋆^2}
