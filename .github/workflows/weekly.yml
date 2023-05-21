@@ -28,7 +28,7 @@ jobs:
         python-version: 3.9
 
     - name: Install PlasmaPy with conda
-      run: conda install -c --yes ${{ matrix.channel }} plasmapy
+      run: conda install -c ${{ matrix.channel }} --yes plasmapy
 
 
   tests:
