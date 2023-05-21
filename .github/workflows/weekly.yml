@@ -6,6 +6,31 @@ on:
   workflow_dispatch:
 
 jobs:
+  conda_installs:
+    name: ${{ matrix.name }}
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        include:
+
+        - name: Conda (default)
+          channel: default
+
+        - name: Conda-forge
+          channel: conda-forge
+
+    steps:
+    - name: Set up conda
+      uses: conda-incubator/setup-miniconda@v2
+      with:
+        auto-update-conda: true
+        python-version: 3.9
+
+    - name: Install PlasmaPy with conda
+      run: conda install -c --yes ${{ matrix.channel }} plasmapy
+
+
   tests:
     name: ${{ matrix.name }}
     runs-on: ${{ matrix.os }}
