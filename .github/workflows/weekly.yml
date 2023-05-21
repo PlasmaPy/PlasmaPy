@@ -14,9 +14,6 @@ jobs:
       matrix:
         include:
 
-        - name: Conda (default)
-          channel: default
-
         - name: Conda-forge
           channel: conda-forge
 
@@ -27,7 +24,7 @@ jobs:
         auto-update-conda: true
         python-version: 3.9
 
-    - name: Install PlasmaPy with conda
+    - name: Install PlasmaPy from ${{ matrix.channel }} channel
       run: conda install -c ${{ matrix.channel }} --yes plasmapy
 
 
