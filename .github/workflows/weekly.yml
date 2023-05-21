@@ -7,15 +7,14 @@ on:
 
 jobs:
   conda_installs:
-    name: ${{ matrix.name }}
+    name: Install PlasmaPy from ${{ matrix.channel }} channel
     runs-on: ubuntu-latest
 
     strategy:
       matrix:
         include:
 
-        - name: Conda-forge
-          channel: conda-forge
+        - channel: conda-forge
 
     steps:
     - name: Set up conda
