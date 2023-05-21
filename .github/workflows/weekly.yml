@@ -7,7 +7,7 @@ on:
 
 jobs:
   conda_installs:
-    name: Install PlasmaPy from ${{ matrix.channel }} channel
+    name: Install from ${{ matrix.channel }} channel
     runs-on: ubuntu-latest
 
     strategy:
