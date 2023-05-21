@@ -23,7 +23,7 @@ jobs:
         auto-update-conda: true
         python-version: 3.9
 
-    - name: Install PlasmaPy from ${{ matrix.channel }} channel
+    - name: Install PlasmaPy
       run: conda install -c ${{ matrix.channel }} --yes plasmapy
 
 
