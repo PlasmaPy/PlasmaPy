@@ -275,6 +275,8 @@ ignore = [
   "RUF002", # ambiguous-unicode-character-docstring
   "RUF003", # ambiguous-unicode-character-comment
   "RUF100", # unused-noqa (enable after dropping flake8 completely)
+  "UP006", # non-pep585-annotation
+  "UP007", # non-pep604-annotation
   "S101", # asserts
   "SIM117", # multiple-with-statements (remove for Python 3.10+)
   "SIM300", # yoda-conditions
@@ -323,9 +325,6 @@ max-complexity = 10
 
 [tool.ruff.pydocstyle]
 convention = "numpy"
-
-[tool.ruff.pyupgrade]
-keep-runtime-typing = true  # remove when we drop support for Python 3.9
 
 [tool.towncrier]
 package = "plasmapy"
