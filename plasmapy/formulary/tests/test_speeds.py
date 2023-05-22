@@ -313,12 +313,12 @@ class Test_Ion_Sound_Speed:
                     "T_i": 0 * u.K,
                     "n_e": n_e,
                     "k": 0 * u.m**-1,
-                    "z_mean": 0.8,
-                    "ion": "p",
+                    "Z": 0.8,
+                    "ion": "H-1",
                 },
-                89018.09 * (u.m / u.s),
+                89013.262 * (u.m / u.s),
                 {"atol": 0.0, "rtol": 1e-6},
-            ),  # testing for user input z_mean
+            ),  # testing for user input Z
         ],
     )
     def test_values(self, args, kwargs, expected, isclose_kw):
