@@ -11,6 +11,7 @@ import numpy as np
 from plasmapy.particles import ParticleLike, ParticleList
 from plasmapy.utils.decorators import validate_quantities
 
+default_values = {"density": -1.8, "velocity": -0.2, "temperature": -0.74}
 
 @validate_quantities(
     T_1={"can_be_negative": False, "equivalencies": u.temperature_energy()},
@@ -27,9 +28,9 @@ def temp_ratio(  # noqa: C901, PLR0912, PLR0915
     T_2: u.K,
     ions: ParticleLike = ("p+", "He-4++"),
     n_step: int = 100,
-    density_scale: float = -1.8,
-    velocity_scale: float = -0.2,
-    temperature_scale: float = -0.74,
+    density_scale: float = default_values["density"],
+    velocity_scale: float = default_values["velocity"],
+    temperature_scale: float = default_values["temperature"],
     verbose=False,
 ):
     r"""
@@ -352,3 +353,158 @@ def temp_ratio(  # noqa: C901, PLR0912, PLR0915
                 "arguments should be of equal length: 'r_0', 'r_n', "
                 "'n_1', 'n_2', 'v_1', 'T_1' and 'T_2'."
             ) from e
+
+
+def diff_flow(
+    *,
+    r_0: u.au,
+    r_n: u.au,
+    n_1: u.cm**-3, #proton
+    n_2: u.cm**-3, #alpha
+    v_1: u.km/u.s,
+    v_2: u.km/u.s,
+    T_1: u.K,
+    T_2: u.K,
+    ions: ParticleLike = ("p+", "He-4++"),
+    B: u.T,
+    n_step: int = 100,
+    density_scale: float = default_values["density"],
+    velocity_scale: float = default_values["velocity"],
+    temperature_scale: float = default_values["temperature"],
+    verbose=False,
+):
+    r"""
+    Calculate the thermalization
+
+    Parameters
+    ----------
+    r_0 : `~astropy.units.Quantity`, |keyword-only|
+        Starting position of the plasma in units convertible
+        to astronomical units.
+
+    r_n : `~astropy.units.Quantity`
+        Final position of the plasma in units convertible
+        to astronomical units.
+
+    n_1 : `~astropy.units.Quantity`
+        The primary ion number density in units convertible
+        to m\ :sup:`-3`.
+
+    n_2 : `~astropy.units.Quantity`
+        The secondary ion number density in units convertible
+        to m\ :sup:`-3`.
+
+    v_1 : `~astropy.units.Quantity`
+        The primary ion speed in units convertible to km s\ :sup:`-1`.
+
+    v_2 : `~astropy.units.Quantity`
+        The secondary ion speed in units convertible to km s\ :sup:`-1`.
+
+    T_1 : `~astropy.units.Quantity`
+        Temperature of the primary ion in units convertible to
+        temperature K.
+
+    T_2 : `~astropy.units.Quantity`
+        Temperature of the secondary ion in units convertible to
+        temperature K.
+
+    ions : |particle-list-like|, default: ``("p+, "He-4 2+")``
+        Particle list containing two (2) particles, primary ion of
+        interest is entered first, followed by the secondary ion.
+
+    B : `~astropy.units.Quantity`
+        Magnetic field strength in units convertible to tesla T.
+
+    n_step : positive integer
+        The number of intervals used in solving a differential
+        equation via the Euler method.
+
+    density_scale : real number, default: -1.8
+        The value used as the scaling parameter for the primary ion
+        density. The default value is taken from
+        :cite:t:`hellinger:2011`.
+
+    velocity_scale : `float`, default: -0.2
+        The value used as the scaling parameter for the primary ion
+        velocity. The default value is taken from
+        :cite:t:`hellinger:2011`.
+
+    temperature_scale : `float`, default: -0.74
+        The value used as the scaling parameter for the primary ion
+        temperature. The default value is taken from
+        :cite:t:`hellinger:2011`.
+
+    Returns
+    -------
+    delta : `float`
+        The dimensionless differential velocity prediction
+        for the distance provided.
+
+    Raises
+    ------
+    `TypeError`
+        If applicable arguments are not instances of
+        `~astropy.units.Quantity` or cannot be converted into one.
+
+    ~astropy.units.UnitTypeError
+        If applicable arguments do not have units convertible to the
+        expected units.
+
+    Notes
+    -----
+    The processes
+
+
+    Examples
+    --------
+    >>> import astropy.units as u
+    >>> from plasmapy.formulary.collisions import helio
+
+
+    """
+
+    # Validate ions argument
+    if not isinstance(ions, (list, tuple, ParticleList)):
+        ions = [ions]
+    ions = ParticleList(ions)
+
+    # Validate number of ions
+    if len(ions) != 2:
+        raise ValueError(
+            "Argument 'ions' can only take two (2) input values. "
+            f"Instead received {len(ions)} input values."
+        )
+
+    if not all(ions.is_category("ion")):
+        raise ValueError(
+            f"Particle(s) in 'ions' must be ions, received {ions=} "
+            "instead. Please renter the 'ions' input parameter."
+        )
+
+    # Validate n_step argument
+    if not isinstance(n_step, numbers.Integral):
+        raise TypeError(
+            "Argument 'n_step' is of incorrect type, type of "
+            f"{type(n_step)} received instead. While 'n_step' must be "
+            "of type int."
+        )
+
+    # Validate scaling arguments
+    for arg in (density_scale, velocity_scale, temperature_scale):
+        if not isinstance(arg, numbers.Real):
+            raise TypeError(
+                "Scaling argument is of incorrect type, type of "
+                f"{type(arg)} received instead. Scaling argument "
+                "should be of type float or int."
+            )
+
+    # Define the differential equation
+    def df_eq(
+
+    ):
+
+        return
+
+
+
+    return
