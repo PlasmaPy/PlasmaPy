@@ -227,6 +227,7 @@ extend-select = [
   "COM818", # trailing-comma-on-bare-tuple
   "D",  # pydocstyle
   "FBT003", # flake8-boolean-trap
+  "FLY", # flynt
   "ICN", # flake8-import-conventions
   "INP", # flake8-no-pep420
   "INT", # flake8-gettext
