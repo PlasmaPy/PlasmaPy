@@ -245,7 +245,6 @@ extend-select = [
   "PT", # flake8-pytest-style
   "PTH", # flake8-use-pathlib
   "PYI", # flake8-pyi
-  "RET503", #
   "RUF005", # collection-literal-concatenation
   "RUF006", # asyncio-dangling-task
   "RUF007", # pairwise-over-zipped
@@ -317,7 +316,7 @@ max-complexity = 10
 ".github/workflows/citation_updater.py" = ["D103"]
 "docs/conf.py" = ["D100", "D103"]
 "plasmapy/analysis/fit_functions.py" = ["D301"]
-"plasmapy/formulary/braginskii.py" = ["C901", "RET503"]
+"plasmapy/formulary/braginskii.py" = ["C901"]
 "plasmapy/formulary/tests/test_distribution.py" = ["ARG005"]
 "plasmapy/particles/tests/test_decorators.py" = ["ARG001", "ARG002"]
 "plasmapy/plasma/sources/*.py" = ["D102"]
