@@ -82,7 +82,7 @@ execnet==1.9.0
     # via pytest-xdist
 executing==1.2.0
     # via stack-data
-fastjsonschema==2.16.3
+fastjsonschema==2.17.1
     # via nbformat
 filelock==3.12.0
     # via
@@ -97,13 +97,13 @@ flake8-rst-docstrings==0.3.0
     # via plasmapy (setup.py)
 flake8-use-fstring==1.4
     # via plasmapy (setup.py)
-fonttools==4.39.3
+fonttools==4.39.4
     # via matplotlib
 future==0.18.3
     # via uncertainties
 h5py==3.8.0
     # via plasmapy (setup.py)
-hypothesis==6.75.2
+hypothesis==6.75.3
     # via plasmapy (setup.py)
 identify==2.5.24
     # via pre-commit
@@ -117,7 +117,7 @@ incremental==22.10.0
     # via towncrier
 iniconfig==2.0.0
     # via pytest
-ipykernel==6.22.0
+ipykernel==6.23.1
     # via
     #   ipywidgets
     #   plasmapy (setup.py)
@@ -139,7 +139,7 @@ jinja2==3.1.2
     #   plasmapy (setup.py)
     #   sphinx
     #   towncrier
-json5==0.9.11
+json5==0.9.14
     # via jupyterlab-server
 jsonschema==4.17.3
     # via
@@ -198,7 +198,7 @@ nbclient==0.7.4
     # via
     #   nbconvert
     #   voila
-nbconvert==7.3.1
+nbconvert==7.4.0
     # via
     #   jupyter-server
     #   nbsphinx
@@ -215,7 +215,7 @@ nest-asyncio==1.5.6
     # via
     #   ipykernel
     #   jupyter-client
-nodeenv==1.7.0
+nodeenv==1.8.0
     # via pre-commit
 numba==0.57.0
     # via plasmapy (setup.py)
@@ -264,7 +264,7 @@ pillow==9.5.0
     # via
     #   matplotlib
     #   plasmapy (setup.py)
-platformdirs==3.5.0
+platformdirs==3.5.1
     # via
     #   jupyter-core
     #   tox
@@ -273,7 +273,7 @@ pluggy==1.0.0
     # via
     #   pytest
     #   tox
-pre-commit==3.3.1
+pre-commit==3.3.2
     # via plasmapy (setup.py)
 prometheus-client==0.16.0
     # via jupyter-server
@@ -325,7 +325,7 @@ pytest-datadir==1.4.1
     # via pytest-regressions
 pytest-regressions==2.4.2
     # via plasmapy (setup.py)
-pytest-xdist==3.2.1
+pytest-xdist==3.3.1
     # via plasmapy (setup.py)
 python-dateutil==2.8.2
     # via
@@ -345,7 +345,7 @@ pyzmq==25.0.2
     #   ipykernel
     #   jupyter-client
     #   jupyter-server
-requests==2.30.0
+requests==2.31.0
     # via
     #   jupyterlab-server
     #   plasmapy (setup.py)
@@ -401,7 +401,7 @@ sphinx-issues==3.0.1
     # via plasmapy (setup.py)
 sphinx-notfound-page==0.8.3
     # via plasmapy (setup.py)
-sphinx-reredirects==0.1.1
+sphinx-reredirects==0.1.2
     # via plasmapy (setup.py)
 sphinx-rtd-theme==1.2.0
     # via plasmapy (setup.py)
@@ -433,7 +433,7 @@ tinycss2==1.2.1
     # via nbconvert
 tomli==2.0.1
     # via plasmapy (setup.py)
-tornado==6.3.1
+tornado==6.3.2
     # via
     #   ipykernel
     #   jupyter-client
@@ -480,7 +480,7 @@ webencodings==0.5.1
     # via
     #   bleach
     #   tinycss2
-websocket-client==1.5.1
+websocket-client==1.5.2
     # via jupyter-server
 websockets==11.0.3
     # via voila
@@ -488,7 +488,7 @@ widgetsnbextension==4.0.7
     # via ipywidgets
 wrapt==1.15.0
     # via plasmapy (setup.py)
-xarray==2023.4.2
+xarray==2023.5.0
     # via plasmapy (setup.py)
 
 # The following packages are considered to be unsafe in a requirements file:
