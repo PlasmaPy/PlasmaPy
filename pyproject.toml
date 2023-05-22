@@ -239,11 +239,16 @@ extend-select = [
   "PLC", # pylint convention
   "PLE", # pylint errors
   "PLR", # pylint refactorings
-  "PT", # flake8-pytest-style
   "PLW", # pylint warnings
+  "PT", # flake8-pytest-style
   "PTH", # flake8-use-pathlib
   "PYI", # flake8-pyi
-  "RUF", # ruff specific rules
+  "RUF005", # collection-literal-concatenation
+  "RUF006", # asyncio-dangling-task
+  "RUF007", # pairwise-over-zipped
+  "RUF008", # mutable-dataclass-default
+  "RUF009", # function-call-in-dataclass-default-argument
+  "RUF010", # explicit-f-string-type-conversion
   "S", # flake8-bandit
   "SIM", # flake8-simplify
   "TID", # flake8-tidy-imports
@@ -271,17 +276,13 @@ ignore = [
   "PT011", # pytest-raises-too-broad
   "PT012", # pytest-raises-multiple-statements (enable later?)
   "PT019", # pytest-fixture-param-without-value (enable later?)
-  "RUF001", # ambiguous-unicode-character-string (flags Greek letters)
-  "RUF002", # ambiguous-unicode-character-docstring
-  "RUF003", # ambiguous-unicode-character-comment
-  "RUF100", # unused-noqa (enable after dropping flake8 completely)
-  "UP006", # non-pep585-annotation
-  "UP007", # non-pep604-annotation
   "S101", # asserts
   "SIM117", # multiple-with-statements (remove for Python 3.10+)
   "SIM300", # yoda-conditions
   "TRY003", # raise-vanilla-args
   "TRY301", # raise-within-try
+  "UP006", # non-pep585-annotation
+  "UP007", # non-pep604-annotation
   "UP025", # unicode-kind-prefix
 ]
 extend-exclude = [
