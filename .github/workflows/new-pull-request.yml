@@ -1,4 +1,4 @@
-name: Comment on PR
+name: Open PR
 
 on:
   pull_request_target:
