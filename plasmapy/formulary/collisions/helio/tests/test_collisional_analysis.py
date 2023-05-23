@@ -108,6 +108,7 @@ class Testcollisional_thermalizastion:
             ({**_kwargs_scalar_value, "temperature_scale": "wrong type"}, TypeError),
         ],
     )
+    @pytest.mark.slow()
     def test_raises(self, kwargs, _error):
         with pytest.raises(_error):
             temp_ratio(**kwargs)

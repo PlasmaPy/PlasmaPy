@@ -7,8 +7,8 @@ from plasmapy.formulary.collisions.dimensionless import (
     Knudsen_number,
 )
 from plasmapy.utils import exceptions
+from plasmapy.utils._pytest_helpers import assert_can_handle_nparray
 from plasmapy.utils.exceptions import CouplingWarning
-from plasmapy.utils.pytest_helpers import assert_can_handle_nparray
 
 
 class Test_coupling_parameter:
@@ -83,6 +83,7 @@ class Test_coupling_parameter:
         assert testTrue, errStr
 
     # TODO vector z_mean
+    @pytest.mark.slow()
     @pytest.mark.parametrize("insert_some_nans", [[], ["V"]])
     @pytest.mark.parametrize("insert_all_nans", [[], ["V"]])
     @pytest.mark.parametrize(

@@ -14,7 +14,7 @@ from plasmapy.diagnostics.charged_particle_radiography import (
 from plasmapy.plasma.grids import CartesianGrid
 
 
-def _test_grid(  # noqa: PLR0912
+def _test_grid(  # noqa: C901, PLR0912
     name,
     L=1 * u.mm,
     num=100,
@@ -131,6 +131,7 @@ def _test_grid(  # noqa: PLR0912
     return grid
 
 
+@pytest.mark.slow()
 def test_multiple_grids():
     """
     Test that a case with two grids runs.
@@ -896,6 +897,7 @@ def test_add_wire_mesh():
     assert np.isclose(measured_spacing, true_spacing, 0.5)
 
 
+@pytest.mark.slow()
 def test_multiple_grids2():
     """
     Test that a case with two grids runs.
