@@ -23,15 +23,15 @@ keywords = [
 license = {file = "LICENSE.md"}
 requires-python = ">=3.9"
 classifiers = [
-    "Development Status :: 4 - Beta",
-    "Intended Audience :: Education",
-    "Intended Audience :: Science/Research",
-    "License :: OSI Approved :: BSD License",
-    "Natural Language :: English",
-    "Operating System :: OS Independent",
-    "Programming Language :: Python :: 3",
-    "Topic :: Scientific/Engineering :: Physics",
-    "Topic :: Scientific/Engineering :: Astronomy",
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Education",
+  "Intended Audience :: Science/Research",
+  "License :: OSI Approved :: BSD License",
+  "Natural Language :: English",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Topic :: Scientific/Engineering :: Physics",
+  "Topic :: Scientific/Engineering :: Astronomy",
 ]
 dynamic = [
   "version",
@@ -141,25 +141,25 @@ filterwarnings = ["ignore:.*Creating", "a"]
 
 [tool.coverage.report]
 exclude_lines = [
-    "coverage: ignore",
-    "ImportError",
-    "ModuleNotFoundError",
-    "@vectorize",
-    "@numba.vectorize",
-    "@numba.jit",
-    "@jit",
-    "@numba.njit",
-    "@njit",
-    "@abstractmethod",
+  "coverage: ignore",
+  "ImportError",
+  "ModuleNotFoundError",
+  "@vectorize",
+  "@numba.vectorize",
+  "@numba.jit",
+  "@jit",
+  "@numba.njit",
+  "@njit",
+  "@abstractmethod",
 ]
 
 [tool.coverage.run]
 omit = [
-    "ci-helpers/*",
-    "*/tests/*",
-    "plasmapy/utils/calculator/*",
-    "plasmapy/version.py",
-    "plasmapy/_dev/*",
+  "ci-helpers/*",
+  "*/tests/*",
+  "plasmapy/utils/calculator/*",
+  "plasmapy/version.py",
+  "plasmapy/_dev/*",
 ]
 
 [tool.build_docs]
@@ -220,12 +220,12 @@ target-version = "py39"
 extend-select = [
   "A", # flake8-builtins
   "ARG", # flake8-unused-arguments
-  "B",  # flake8-bugbear
+  "B", # flake8-bugbear
   "BLE", # flake8-blind-except
   "C4", # flake8-comprehensions
   "C90", # mccabe
   "COM818", # trailing-comma-on-bare-tuple
-  "D",  # pydocstyle
+  "D", # pydocstyle
   "FA", # flake8-future-annotations
   "FBT003", # flake8-boolean-trap
   "FLY", # flynt
@@ -288,11 +288,11 @@ ignore = [
   "UP025", # unicode-kind-prefix
 ]
 extend-exclude = [
-    "docs/plasmapy_sphinx",
-    ".jupyter",
-    "__pycache__",
-    "_build",
-    "_dev",
+  "docs/plasmapy_sphinx",
+  ".jupyter",
+  "__pycache__",
+  "_build",
+  "_dev",
 ]
 dummy-variable-rgx = "Z|mass_numb|request|event"
 namespace-packages = [".github/workflows", "docs"]
@@ -312,7 +312,7 @@ ignore-variadic-names = true
 max-complexity = 10
 
 [tool.ruff.per-file-ignores]
-"__init__.py" = ["D104", "E402", "F401", "F402", "F403"]  # ignore import errors
+"__init__.py" = ["D104", "E402", "F401", "F402", "F403"] # ignore import errors
 ".github/workflows/citation_updater.py" = ["D103"]
 "docs/conf.py" = ["D100", "D103"]
 "plasmapy/analysis/fit_functions.py" = ["D301"]
@@ -335,7 +335,7 @@ name = "PlasmaPy"
 filename = "CHANGELOG.rst"
 directory = "changelog/"
 title_format = "{name} v{version} ({project_date})"
-issue_format = ":pr:`{issue}`"  # Despite the name mismatch, we use this for linking to PRs
+issue_format = ":pr:`{issue}`" # Despite the name mismatch, we use this for linking to PRs
 wrap = true
 
 [[tool.towncrier.type]]
