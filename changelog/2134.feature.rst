@@ -1,0 +1,3 @@
+Decorated `~plasmapy.formulary.speeds.ion_sound_speed` with
+|particle_input| so that it can accept a broader variety of
+|particle-like| arguments.

@@ -27,7 +27,7 @@ c_si_unitless = c.value
     T_e={"can_be_negative": False, "equivalencies": u.temperature_energy()},
     T_i={"can_be_negative": False, "equivalencies": u.temperature_energy()},
 )
-def hollweg(  # noqa: PLR0912, PLR0915
+def hollweg(  # noqa: C901, PLR0912, PLR0915
     *,
     B: u.T,
     ion: Union[str, Particle],
@@ -280,7 +280,7 @@ def hollweg(  # noqa: PLR0912, PLR0915
             n_e=n_e,
             gamma_e=gamma_e,
             gamma_i=gamma_i,
-            z_mean=z_mean,
+            Z=z_mean,
         ).value
         v_A = Alfven_speed(B, n_i, ion=ion, z_mean=z_mean).value
         omega_ci = gyrofrequency(B=B, particle=ion, signed=False, Z=z_mean).value

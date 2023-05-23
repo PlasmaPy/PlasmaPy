@@ -19,7 +19,7 @@ from plasmapy.formulary.misc import (
     ub_,
 )
 from plasmapy.particles import Particle
-from plasmapy.utils.pytest_helpers import assert_can_handle_nparray
+from plasmapy.utils._pytest_helpers import assert_can_handle_nparray
 
 B = 1.0 * u.T
 B_arr = np.array([0.001, 0.002]) * u.T
