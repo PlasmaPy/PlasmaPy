@@ -360,7 +360,7 @@ def spectral_density(
         resulting array will be convolved with the spectral density
         function before it is returned.
 
-    notches : (2,) or (N, 2) `~astropy.units.Quantity`, |keyword-only|
+    notches : (2,) or (N, 2) `~astropy.units.Quantity`, |keyword-only|, optional
         A pair of wavelengths which are the endpoints of a notch over
         which the output Skw is set to 0. Can also be input as a 2D array
         which contains many such pairs if multiple notches are needed.
