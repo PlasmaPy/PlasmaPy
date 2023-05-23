@@ -364,7 +364,7 @@ def spectral_density(
         A pair of wavelengths which are the endpoints of a notch over
         which the output Skw is set to 0. Can also be input as a 2D array
         which contains many such pairs if multiple notches are needed.
-        Should be in units convertible to u.m. Defaults to no notch.
+        Should be in units convertible to meters. Defaults to no notch.
 
 
     Returns
