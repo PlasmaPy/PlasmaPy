@@ -21,9 +21,6 @@ jobs:
 
           const labelsToRemove = [
             'help wanted',
-            'needed for release',
-            'needs changelog entry',
-            'No changelog entry needed',
             'status: assigned',
             'status: in progress',
             'status: nearing completion',
