@@ -110,7 +110,3 @@ def main(cff_file="../CITATION.cff", rst_file="about/_authors.rst"):
     authors_reST = generate_reST(cff_data["authors"])
     with pathlib.Path(rst_file).open("w") as file:
         file.write(authors_reST)
-
-
-if __name__ == "__main__":
-    main()
