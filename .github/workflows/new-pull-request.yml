@@ -5,6 +5,20 @@ on:
     types: [opened]
 
 jobs:
+  welcome:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      pull-requests: write
+    steps:
+    - uses: actions/first-interaction@v1
+      with:
+        repo-token: ${{ secrets.GITHUB_TOKEN }}
+        pr-message: >
+          Thank you for submitting your first pull request (PR) to PlasmaPy!  We invite you to check out our [**contributor guide**](https://docs.plasmapy.org/en/latest/contributing/index.html) and [**Code of Conduct**](https://docs.plasmapy.org/en/stable/CODE_OF_CONDUCT.html). 🥳
+
+          Please **add yourself to the list of contributors** by modifying [docs/about/credits.rst](https://github.com/PlasmaPy/PlasmaPy/blob/main/docs/about/credits.rst) in your PR to make sure that you get credit for your contribution. 🔖
+
   comment:
     runs-on: ubuntu-latest
     steps:
