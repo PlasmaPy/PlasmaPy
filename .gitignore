@@ -138,8 +138,9 @@ untitled*
 
 # Documentation files
 auto_examples
+docs/about/_authors.rst
+docs/notebooks/*.md
 
 # Version file
 plasmapy/_version.py
 tags
-docs/notebooks/*.md
