@@ -1,4 +1,4 @@
-name: Check CFF file
+name: Check author list
 
 on:
   pull_request_target:
@@ -19,7 +19,7 @@ jobs:
     - name: Install dependencies
       run: pip install requests
 
-    - name: Check that username(s) are in CITATION.cff
+    - name: Check that author usernames are in CITATION.cff
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         PR_NUMBER: ${{ github.event.pull_request.number }}
