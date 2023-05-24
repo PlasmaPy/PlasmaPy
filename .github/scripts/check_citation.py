@@ -46,7 +46,7 @@ def main():
 
         error_message = f"""
 To ensure that you get credit for your contribution to PlasmaPy, please
-add {missing_github_username} as an author to CITATION.cff.
+add {missing_github_username!r} as an author to CITATION.cff.
 
 The entry should be of the form:
 
@@ -60,11 +60,11 @@ This file can be edited directly on GitHub at:
 
 https://github.com/{REPO}/edit/{branch_name}/CITATION.cff
 
-All fields are optional except "alias" (GitHub username).
+All fields are optional except "alias", which is the GitHub username.
 
-We encourage you to sign up for an ORCID iD: a unique, persistent
-identifier used by researchers, authors, and open source
-contributors. You can sign up at: https://orcid.org/register
+We encourage all contributors to sign up for an ORCID iD: a unique,
+persistent identifier used by researchers, authors, and open source
+contributors. Sign up at: https://orcid.org/register
 
 Thank you for contributing!
 """
