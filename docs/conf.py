@@ -13,7 +13,7 @@ from datetime import datetime
 from pkg_resources import parse_version
 from sphinx.application import Sphinx
 
-from docs import cff_to_rst
+from . import cff_to_rst  # noqa
 
 # Generate author list from CITATION.cff
 cff_to_rst.main()
