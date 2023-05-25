@@ -72,8 +72,8 @@ Enforcement
 
 Instances of abusive, harassing, or otherwise unacceptable behavior may
 be reported to the community leaders responsible for enforcement at
-conduct@plasmapy.org. All complaints will be reviewed and
-investigated promptly and fairly.
+conduct@plasmapy.org. All complaints will be reviewed and investigated
+promptly and fairly.
 
 All community leaders are obligated to respect the privacy and security
 of the reporter of any incident.
@@ -136,9 +136,7 @@ within the community.
 Attribution
 -----------
 
-This Code of Conduct is adapted from the `Contributor Covenant`_,
-version 2.1, available at
-https://www.contributor-covenant.org/version/2/1/code_of_conduct\ .
+This Code of Conduct is adapted from the `Contributor Covenant`_, version 2.1, available at https://www.contributor-covenant.org/version/2/1/code_of_conduct\ .
 
 Community Impact Guidelines were inspired by `Mozilla’s code of conduct
 enforcement ladder <https://github.com/mozilla/inclusion>`__.

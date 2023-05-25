@@ -96,7 +96,7 @@ attr:`~plasmapy.plasma.sources.plasma3d.Plasma3D.magnetic_field`.
 
 The :class:`~plasmapy.plasma.sources.plasmablob.PlasmaBlob` class is a
 basic structure to contain just plasma parameter information about a
-plasma with no associated spatial or temporal scales.  To initialize a
+plasma with no associated spatial or temporal scales. To initialize a
 :class:`~plasmapy.plasma.sources.plasmablob.PlasmaBlob` system, call
 it with arguments: electron temperature (``T_e``) and electron density
 (``n_e``). You may also optionally define the ionization (``Z``), and
