@@ -69,6 +69,16 @@ provide a method, which describes to the
 `Plasma <plasmapy.plasma.plasma_factory.PlasmaFactory>` factory
 which the data match its plasma data structure.
 
+.. automodapi:: plasmapy.plasma
+   :noindex:
+   :no-main-docstring:
+   :exclude-groups: modules, variables
+
+.. automodapi:: plasmapy.plasma
+   :noindex:
+   :no-main-docstring:
+   :exclude-groups: modules, variables
+
 .. _plasma-sources:
 
 Plasma Subclasses
