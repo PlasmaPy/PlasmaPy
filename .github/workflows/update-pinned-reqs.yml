@@ -33,7 +33,7 @@ jobs:
     - name: Create Pull Request
       uses: peter-evans/create-pull-request@v5
       with:
-        commit-message: Run pip-compile
+        commit-message: Regenerate requirements.txt
         title: Update pinned requirements
         body: This PR updates the pinned requirements based on the current state of the main branch.
         labels: No changelog entry needed, dependencies
