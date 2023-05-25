@@ -1,7 +1,7 @@
 name: Close PR
 
 on:
-  pull_request:
+  pull_request_target:
     types: [closed]
 
 jobs:
@@ -9,14 +9,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Remove specific labels
-      uses: actions/github-script@v4
+      uses: actions/github-script@v6
       with:
         github-token: ${{secrets.GITHUB_TOKEN}}
         script: |
           const { owner, repo, number } = context.issue;
           const pull = await github.rest.pulls.get({ owner, repo, pull_number: number });
 
-          // If the pull request is not merged, do nothing
+          // Exit if the pull request is not merged
           if (!pull.data.merged) return;
 
           const labelsToRemove = [
@@ -31,6 +31,8 @@ jobs:
           ];
 
           const { data: currentLabels } = await github.rest.issues.listLabelsOnIssue({ owner, repo, issue_number: number });
+
+          // Iterate and remove labels that are in the labelsToRemove list
           for (let label of currentLabels) {
             if (labelsToRemove.includes(label.name)) {
               await github.rest.issues.removeLabel({ owner, repo, issue_number: number, name: label.name });

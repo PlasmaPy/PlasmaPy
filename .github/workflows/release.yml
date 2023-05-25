@@ -45,7 +45,7 @@ jobs:
 
     - name: Update CITATION.cff, docs/about/citation.rst with the DOI for the new version.
       run: |
-        python .github/workflows/citation_updater.py CITATION.cff docs/about/citation.rst docs/whatsnew/index.rst --version=${{ github.event.inputs.tag}} --doi=${{ github.event.inputs.doi}}
+        python .github/scripts/citation_updater.py CITATION.cff docs/about/citation.rst docs/whatsnew/index.rst --version=${{ github.event.inputs.tag}} --doi=${{ github.event.inputs.doi}}
         git add .
         git commit -m "Update citation and whatsnew index entry"
 
