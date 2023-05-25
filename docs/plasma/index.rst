@@ -169,3 +169,6 @@ API
 ---
 
 .. automodapi:: plasmapy.plasma
+   :noindex:
+   :no-main-docstring:
+   :heading-chars: "^~"
