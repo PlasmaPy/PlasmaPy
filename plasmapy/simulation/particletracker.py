@@ -1,5 +1,9 @@
 """
 Class representing a group of particles.
+
+.. attention::
+
+   |expect-api-changes|
 """
 __all__ = ["ParticleTracker"]
 
@@ -18,6 +22,10 @@ class ParticleTracker:
     """
     Object representing a species of particles: ions, electrons, or simply
     a group of particles with a particular initial velocity distribution.
+
+    .. attention::
+
+       |expect-api-changes|
 
     Parameters
     ----------
