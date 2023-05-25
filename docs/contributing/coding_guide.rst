@@ -767,12 +767,20 @@ Equations and Physical Formulae
   the physical constants. For example, the following line of code
   obscures information about the physics being represented:
 
+  .. autolink-preface::
+
+     import astropy.units as u
+
   .. code-block:: pycon
 
      >>> omega_ce = 1.76e7*(B/u.G)*u.rad/u.s  # doctest: +SKIP
 
   In contrast, the following line of code shows the exact formula
   which makes the code much more readable.
+
+  .. autolink-preface::
+
+     import astropy.units as u
 
   .. code-block:: pycon
 
@@ -798,6 +806,8 @@ but ``dimensionless_angles`` does not account for the multiplicative
 factor of ``2*pi`` that is used when converting between frequency (1 /
 s) and angular frequency (rad / s).  An explicit way to do this
 conversion is to set up an equivalency between cycles/s and Hz:
+
+.. autolink-skip:: section
 
 >>> from astropy import units as u
 >>> f_ce = omega_ce.to(u.Hz, equivalencies=[(u.cy/u.s, u.Hz)])  # doctest: +SKIP
