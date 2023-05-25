@@ -1356,6 +1356,17 @@ using :ref:`substitutions`.
 .. _Sphinx's documentation on lists:
   https://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html#lists-and-quote-like-blocks
 
+Could not match a code example to HTML
+--------------------------------------
+
+This warning occurs when `sphinx-codeautolink`_ cannot match a
+code object to its corresponding documentation. Double check that the
+code is correct, and consider adding any missing :py:`import`
+statements. The documentation for this extension contains `examples
+<https://sphinx-codeautolink.readthedocs.io/en/latest/examples.html>`__
+on how to skip blocks with :rst:`.. autolink-skip::` and how to do
+invisible imports with :rst:`.. autolink-preface::`\ .
+
 Errors that are unrelated to a pull request
 -------------------------------------------
 
@@ -1407,6 +1418,7 @@ version of the package that can be revisited later.
 .. _raises: https://numpydoc.readthedocs.io/en/latest/format.html#raises
 .. _raw string: https://docs.python.org/3/reference/lexical_analysis.html#literals
 .. _Read the Docs Sphinx Theme: https://sphinx-rtd-theme.readthedocs.io
+.. _sphinx-codeautolink: https://sphinx-codeautolink.readthedocs.io
 .. _Sphinx's glossary: https://www.sphinx-doc.org/en/master/glossary.html
 .. _Sphinx's templating page: https://www.sphinx-doc.org/en/master/templating.html
 .. _style overrides: https://docs.readthedocs.io/en/stable/guides/adding-custom-css.html
