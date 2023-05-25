@@ -1,0 +1,3 @@
+Updated the code contribution workflow instructions in the |contributor guide|
+to reflect that first-time contributors should add themselves to the author
+list in |CITATION.cff|_ instead of in |docs/about/credits.rst|_.
