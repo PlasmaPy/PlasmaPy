@@ -11,10 +11,17 @@ jobs:
     if: github.repository == 'PlasmaPy/PlasmaPy'
 
     steps:
+
     - name: Checkout repository
       uses: actions/checkout@v3
       with:
         fetch-depth: 0
+
+    - uses: tibdex/github-app-token@v1
+      id: generate_token
+      with:
+        app_id: ${{ secrets.APP_ID }}
+        private_key: ${{ secrets.APP_PRIVATE_KEY }}
 
     - name: Set up Python 3.11
       uses: actions/setup-python@v4
@@ -30,18 +37,12 @@ jobs:
     - name: Generate requirements.txt
       run: pip-compile --all-extras --output-file=requirements.txt --resolver=backtracking -r -U
 
-    - uses: tibdex/github-app-token@v1
-      id: generate-token
-      with:
-        app_id: ${{ secrets.APP_ID }}
-        private_key: ${{ secrets.APP_PRIVATE_KEY }}
-
     - name: Create Pull Request
       uses: peter-evans/create-pull-request@v5
       with:
-        token: ${{ steps.generate-token.outputs.token }}
+        token: ${{ steps.generate_token.outputs.token }}
         commit-message: Regenerate requirements.txt
-        title: Update pinned requirements
+        title: Automagically update pinned requirements
         body: |
           This PR [regenerates](https://www.youtube.com/watch?v=qWM7l9SAipg&themeRefresh=1) the pinned requirements contained in [requirements.txt](https://github.com/PlasmaPy/PlasmaPy/blob/main/requirements.txt).
 
