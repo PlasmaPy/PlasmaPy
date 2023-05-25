@@ -121,9 +121,9 @@ Installing PlasmaPy with Anaconda Navigator
 `Anaconda Navigator`_ is a graphical user interface (GUI) for Conda_
 that can be used to install Python packages. It is installed
 automatically with newer versions of Conda_. If you are using Miniconda_
-or a different Conda_ environment, you can install it with
-``conda install anaconda-navigator``. After that it can be opened by
-entering ``anaconda-navigator`` in the terminal.
+or a different Conda_ environment, you can install it with ``conda
+install anaconda-navigator``. After that it can be opened by entering
+``anaconda-navigator`` in the terminal.
 
 First, go to the :guilabel:`Environments` tab and select
 :guilabel:`Channels`. If ``conda-forge`` is not listed, then go to
@@ -172,9 +172,10 @@ development version by running:
 The repository will be cloned inside a new subdirectory called
 :file:`PlasmaPy`.
 
-If you do not have git_ installed on your computer, then you may download
-the most recent source code from `PlasmaPy's GitHub repository`_ by
-going to :guilabel:`Code` and selecting :guilabel:`Download ZIP`.
+If you do not have git_ installed on your computer, then you may
+download the most recent source code from `PlasmaPy's GitHub
+repository`_ by going to :guilabel:`Code` and selecting
+:guilabel:`Download ZIP`.
 `Unzipping <https://www.wikihow.com/Unzip-a-File>`__ the file will
 create a subdirectory called :file:`PlasmaPy` that contains the source
 code.
@@ -196,8 +197,8 @@ If you expect to occasionally edit the source code, instead run:
    pip install -e ".[tests,docs]"
 
 The ``-e`` flag makes the installation editable and ``[tests,docs]``
-specifies that all of the additional dependencies used while testing
-the package should also be installed.
+specifies that all of the additional dependencies used while testing the
+package should also be installed.
 
 .. note::
 

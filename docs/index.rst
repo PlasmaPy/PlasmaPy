@@ -21,8 +21,9 @@ notebooks <getting-started-notebooks>`_ and our :ref:`example gallery
 <examples>`. We invite you to share ideas and ask questions in our
 `Matrix chat room`_ or during our weekly virtual `office hours`_.
 
-PlasmaPy is developed openly `on GitHub <PlasmaPy's GitHub repository>`_,
-where you can `request a new feature`_ or `report a bug`_.
+PlasmaPy is developed openly `on GitHub <PlasmaPy's GitHub
+repository>`_, where you can `request a new feature`_ or `report a
+bug`_.
 
 .. important::
 
