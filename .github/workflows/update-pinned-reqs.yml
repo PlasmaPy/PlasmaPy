@@ -1,0 +1,41 @@
+name: Update pinned requirements
+
+on:
+  schedule:
+  - cron: 27 6 * * 0
+  workflow_dispatch:
+
+jobs:
+  update-requirements:
+    runs-on: ubuntu-latest
+    if: github.repository == 'PlasmaPy/PlasmaPy'
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+
+    - name: Set up Python 3.11
+      uses: actions/setup-python@v4
+      with:
+        python-version: 3.11
+
+    - name: Upgrade pip
+      run: python -m pip install --upgrade pip
+
+    - name: Install pip-tools
+      run: python -m pip install pip-tools
+
+    - name: Generate requirements.txt
+      run: pip-compile --all-extras --output-file=requirements.txt --resolver=backtracking -r -U
+
+    - name: Create Pull Request
+      uses: peter-evans/create-pull-request@v5
+      with:
+        commit-message: Regenerate requirements.txt
+        title: Update pinned requirements
+        body: This PR updates the pinned requirements based on the current state of the main branch.
+        labels: No changelog entry needed, dependencies
+        delete-branch: true
+        base: main
