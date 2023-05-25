@@ -74,11 +74,6 @@ which the data match its plasma data structure.
    :no-main-docstring:
    :exclude-groups: modules, variables
 
-.. automodapi:: plasmapy.plasma
-   :noindex:
-   :no-main-docstring:
-   :exclude-groups: modules, variables
-
 .. _plasma-sources:
 
 Plasma Subclasses
