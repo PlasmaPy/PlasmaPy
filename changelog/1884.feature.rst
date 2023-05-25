@@ -1,0 +1,4 @@
+Enabled |particle_input| to accept values of the |charge number| that
+are real numbers but not integers. This capability can now be used by
+many of the functions in `plasmapy.formulary` and elsewhere that are
+decorated with |particle_input|.

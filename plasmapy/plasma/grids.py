@@ -1,5 +1,5 @@
 """
-Defines the AbstractGrid class and child classes
+Defines the AbstractGrid class and child classes.
 """
 
 __all__ = [
@@ -9,6 +9,7 @@ __all__ = [
 ]
 
 import astropy.units as u
+import contextlib
 import numpy as np
 import pandas as pd
 import scipy.interpolate as interp
@@ -16,10 +17,10 @@ import warnings
 import xarray as xr
 
 from abc import ABC, abstractmethod
-from cached_property import cached_property
 from collections import namedtuple
+from functools import cached_property
 from scipy.spatial import distance
-from typing import List, Union
+from typing import Union
 
 from plasmapy.utils.decorators.helpers import modify_docstring
 
@@ -46,7 +47,6 @@ class AbstractGrid(ABC):
     as an `~numpy.ndarray`, while the units associated with each
     dimension are stored separately.
 
-
     There are two preferred methods to creating a grid object:
 
     1. Initializing the grid by providing three 3D
@@ -68,7 +68,7 @@ class AbstractGrid(ABC):
               start=[x0, y0, z0],
               stop=[x1, y1, z1],
               num=[Nx, Ny, Nz],
-              **kwargs
+              **kwargs,
           )
 
        In this case, any additional keyword arguments ``**kwargs`` provided
@@ -77,7 +77,6 @@ class AbstractGrid(ABC):
     """
 
     def __init__(self, *seeds, num=100, **kwargs):
-
         # Initialize some variables
         self._interpolator = None
         self._is_uniform = None
@@ -117,7 +116,7 @@ class AbstractGrid(ABC):
         RecognizedQuantity("x", "x spatial position", u.m),
         RecognizedQuantity("y", "y spatial position", u.m),
         RecognizedQuantity("z", "z spatial position", u.m),
-        RecognizedQuantity("rho", "Mass density", u.kg / u.m ** 3),
+        RecognizedQuantity("rho", "Mass density", u.kg / u.m**3),
         RecognizedQuantity("E_x", "Electric field (x component)", u.V / u.m),
         RecognizedQuantity("E_y", "Electric field (y component)", u.V / u.m),
         RecognizedQuantity("E_z", "Electric field (z component)", u.V / u.m),
@@ -172,49 +171,43 @@ class AbstractGrid(ABC):
             so an array of zeros cannot be constructed.
         """
         for rq in req_quantities:
-
             # Error check that grid contains E and B variables required
             if rq not in self.quantities:
-
                 # If missing, warn user and then replace with an array of zeros
-                if replace_with_zeros:
-                    warnings.warn(
-                        f"{rq} is not specified for the provided grid."
-                        "This quantity will be assumed to be zero.",
-                        RuntimeWarning,
-                    )
-
-                    if rq in self.recognized_quantities.keys():
-                        unit = self.recognized_quantities[rq].unit
-                    else:
-                        raise KeyError(
-                            f"{rq} is not a recognized key, and "
-                            "so cannot be automatically assumed "
-                            "to be zero."
-                        )
-
-                    arg = {rq: np.zeros(self.shape) * unit}
-                    self.add_quantities(**arg)
-
-                else:
+                if not replace_with_zeros:
                     raise KeyError(
                         f"{rq} is not specified for the provided "
                         "grid but is required."
                     )
+                elif rq not in self.recognized_quantities:
+                    raise KeyError(
+                        f"{rq} is not a recognized key, and "
+                        "so cannot be automatically assumed "
+                        "to be zero."
+                    )
+
+                warnings.warn(
+                    f"{rq} is not specified for the provided grid."
+                    "This quantity will be assumed to be zero.",
+                    RuntimeWarning,
+                )
+
+                unit = self.recognized_quantities[rq].unit
+                arg = {rq: np.zeros(self.shape) * unit}
+                self.add_quantities(**arg)
 
     # *************************************************************************
     # Fundamental properties of the grid
     # *************************************************************************
 
     def __repr__(self):
-
         line_sep = "-----------------------------\n"
         shape = list(self.shape)
         coords = list(self.ds.coords.keys())
         ax_units = self.units
         ax_dtypes = [self.ds[i].dtype for i in coords]
 
-        coord_lbls = [str(i) + ": " + str(j) for i, j in zip(coords, shape)]
+        coord_lbls = [f"{i}: {j}" for i, j in zip(coords, shape)]
 
         s = f"*** Grid Summary ***\n{type(self)}\n"
 
@@ -237,7 +230,7 @@ class AbstractGrid(ABC):
         nrkeys = [k for k in keys if k not in list(self.recognized_quantities.keys())]
 
         s += line_sep + "Recognized Quantities:\n"
-        if len(rkeys) == 0:
+        if not rkeys:
             s += "-None-\n"
         else:
             for key in rkeys:
@@ -247,7 +240,7 @@ class AbstractGrid(ABC):
                 s += f"\t-> {key} ({unit}) {dtype} {shape} \n"
 
         s += line_sep + "Unrecognized Quantities:\n"
-        if len(nrkeys) == 0:
+        if not nrkeys:
             s += "-None-\n"
         else:
             for key in nrkeys:
@@ -260,7 +253,7 @@ class AbstractGrid(ABC):
 
     def __getitem__(self, key):
         """
-        Given a key, return the corresponding array as a `~astropy.units.Quantity`
+        Given a key, return the corresponding array as a `~astropy.units.Quantity`.
 
         Returning with ``copy=False`` means that the array returned is a direct
         reference to the underlying DataArray, so changes made will be reflected
@@ -285,11 +278,11 @@ class AbstractGrid(ABC):
 
     @property
     def shape(self):
-        r"""Shape of the grid"""
+        r"""Shape of the grid."""
         if self.is_uniform:
             return (self.ax0.size, self.ax1.size, self.ax2.size)
-        else:
-            return self.ds.coords["ax0"].shape
+
+        return self.ds.coords["ax0"].shape
 
     @property
     def grids(self):
@@ -297,17 +290,15 @@ class AbstractGrid(ABC):
         Three grids of vertex positions (in each coordinate), each having
         shape (N0, N1, N2).
         """
-        if self.is_uniform:
-            pts0, pts1, pts2 = np.meshgrid(self.ax0, self.ax1, self.ax2, indexing="ij")
-            _grids = (pts0, pts1, pts2)
-        else:
-            _grids = (
+        if not self.is_uniform:
+            return (
                 self.ds["ax0"].data * self.unit0,
                 self.ds["ax1"].data * self.unit1,
                 self.ds["ax2"].data * self.unit2,
             )
 
-        return _grids
+        pts0, pts1, pts2 = np.meshgrid(self.ax0, self.ax1, self.ax2, indexing="ij")
+        return pts0, pts1, pts2
 
     @property
     def grid(self):
@@ -327,9 +318,7 @@ class AbstractGrid(ABC):
         grid[..., 0] = pts0
         grid[..., 1] = pts1
         grid[..., 2] = pts2
-        _grid = grid
-
-        return _grid
+        return grid
 
     @property
     def pts0(self):
@@ -377,18 +366,18 @@ class AbstractGrid(ABC):
         `ValueError`
             If all grid dimensions do not have identical units.
         """
-        if self.units[0] == self.units[1] and self.units[0] == self.units[2]:
+        if self.units[0] == self.units[1] == self.units[2]:
             return self.units[0]
         else:
             raise ValueError(
-                "Array dimensions do not all have the same " f"units: {self.units}"
+                f"Array dimensions do not all have the same units: {self.units}"
             )
 
     # *************************************************************************
     # 1D axes and step sizes (valid only for uniform grids)
     # *************************************************************************
     @property
-    def si_scale_factors(self) -> List[float]:
+    def si_scale_factors(self) -> list[float]:
         """
         3-element list containing unitless scale factors for converting
         the corresponding axis from its stored units to SI.
@@ -426,11 +415,8 @@ class AbstractGrid(ABC):
                 "The axis properties are only valid on uniformly spaced grids."
             )
 
-        vals = self.ds.coords[ax_name].values
-        if si:
-            return vals * self.si_scale_factors[axis]
-        else:
-            return vals * self.units[axis]
+        vals = self.ds.coords[ax_name].to_numpy()
+        return vals * self.si_scale_factors[axis] if si else vals * self.units[axis]
 
     def _get_dax(self, *, axis: int, si: bool = False):
         """
@@ -575,12 +561,12 @@ class AbstractGrid(ABC):
         grid{0,1,2} : `~astropy.units.Quantity` array, shape (n0, n1, n2)
             Grids of coordinate positions.
 
-        **kwargs: `~astropy.units.Quantity` array, shape (n0, n1, n2)
+        **kwargs : `~astropy.units.Quantity` array, shape (n0, n1, n2)
             Quantities defined on the grid.
         """
 
         # Validate input
-        if not (pts0.shape == pts1.shape and pts0.shape == pts2.shape):
+        if pts0.shape != pts1.shape or pts0.shape != pts2.shape:
             raise ValueError(
                 "Provided arrays of grid points are of unequal "
                 f"shape: pts0 = {pts0.shape}, "
@@ -624,26 +610,24 @@ class AbstractGrid(ABC):
 
         Parameters
         ----------
-        key, array pairs as keyword arguments
+        **kwargs : key, array pairs
             The key will be used as the dataset key, while the array holds the
             quantity.
         """
 
-        for key in kwargs.keys():
-            quantity = kwargs[key]
-
+        for key, quantity in kwargs.items():
             # Check key against a list of "known" keys with pre-defined
             # meanings (eg. E_x, n_e) and raise a warning if a "non-standard"
             # key is being used so the user is aware.
-            if key in self.recognized_quantities.keys():
+            if key in self.recognized_quantities:
                 try:
                     quantity.to(self.recognized_quantities[key].unit)
-                except u.UnitConversionError:
+                except u.UnitConversionError as ex:
                     raise ValueError(
                         f"Units provided for {key} ({quantity.unit}) "
                         "are not compatible with the correct units "
                         f"for that recognized key ({self.recognized_quantities[key]})."
-                    )
+                    ) from ex
 
             else:
                 warnings.warn(
@@ -659,7 +643,7 @@ class AbstractGrid(ABC):
                 }
             # If grid is non-uniform, flatten quantity
             else:
-                quantity = quantity.flatten()
+                quantity = quantity.flatten()  # noqa: PLW2901
                 dims = ["ax"]
                 coords = {"ax": self.ds.coords["ax"]}
 
@@ -682,7 +666,7 @@ class AbstractGrid(ABC):
         """
         return list(self.ds.data_vars)
 
-    def _make_grid(
+    def _make_grid(  # noqa: C901, PLR0912
         self,
         start: Union[int, float, u.Quantity],
         stop: Union[int, float, u.Quantity],
@@ -712,7 +696,7 @@ class AbstractGrid(ABC):
             given, the same number of points will be used in each dimension.
             The default is 100.
 
-        **kwargs: Additional arguments
+        **kwargs : Additional arguments
             Any additional arguments will be passed directly to
             `numpy.linspace`.
         """
@@ -723,7 +707,7 @@ class AbstractGrid(ABC):
         # Ensure that start and stop end up as a list of three u.Quantity objs
         # and num a list of three integers
         # TODO python3.10: simplify using structural pattern matching
-        for k in ["start", "stop"]:
+        for k in ("start", "stop"):
             # Convert tuple to list
             if isinstance(var[k], tuple):
                 var[k] = list(var[k])
@@ -734,7 +718,7 @@ class AbstractGrid(ABC):
 
                 # Make sure it's a list of quantities
                 if not all(isinstance(v, u.Quantity) for v in var[k]):
-                    raise ValueError(
+                    raise TypeError(
                         f"The argument `{k}` must be an "
                         "`astropy.units.Quantity` or a list of same, "
                         f"but a {type(var[k])} was given."
@@ -742,13 +726,9 @@ class AbstractGrid(ABC):
             elif isinstance(var[k], u.Quantity):
                 # Extend to 3 elements if only one is given
                 # Case of >1 but != 3 is handled later
-                if var[k].size == 1:
-                    var[k] = [var[k]] * 3
-                else:
-                    var[k] = list(var[k])
-
+                var[k] = [var[k]] * 3 if var[k].size == 1 else list(var[k])
             else:
-                raise ValueError(
+                raise TypeError(
                     f"The argument `{k}` must be an "
                     "`astropy.units.Quantity` or a list of same, "
                     f"but a {type(var[k])} was given."
@@ -764,16 +744,16 @@ class AbstractGrid(ABC):
         elif isinstance(var["num"], int):
             var["num"] = [var["num"]] * 3
         else:
-            raise ValueError(
+            raise TypeError(
                 f"The argument `num` must be an int or list of "
                 f"same, but a {type(var[k])} was given."
             )
 
         # Check to make sure all lists now contain three values
         # (throws exception if user supplies a list of two, say)
-        for k in var.keys():
+        for k in var:
             if len(var[k]) != 3:
-                raise ValueError(
+                raise TypeError(
                     f"{k} must be either a single value or a "
                     "list of three values, but "
                     f"({len(var[k])} values were given)."
@@ -796,10 +776,10 @@ class AbstractGrid(ABC):
             try:
                 stop[i] = stop[i].to(unit)
 
-            except u.UnitConversionError:
+            except u.UnitConversionError as ex:
                 raise ValueError(
-                    f"Units of {stop[i]} and " f" {unit} are not compatible"
-                )
+                    f"Units of {stop[i]} and {unit} are not compatible"
+                ) from ex
 
             # strip units
             stop[i] = stop[i].value
@@ -875,7 +855,7 @@ class AbstractGrid(ABC):
             + np.less(ax2_max, pos[:, 2]).astype(np.int8)
         )
 
-        return np.where(on_grid == 0, True, False)
+        return np.where(on_grid == 0, True, False)  # noqa: FBT003
 
     @abstractmethod
     def vector_intersects(self, p1, p2):
@@ -909,7 +889,7 @@ class AbstractGrid(ABC):
             _interp_quantities = np.zeros([npoints, nargs])
 
         for j, arg in enumerate(self._interp_args):
-            _interp_quantities[..., j] = self.ds[arg].values
+            _interp_quantities[..., j] = self.ds[arg].to_numpy()
 
         return _interp_quantities
 
@@ -919,11 +899,7 @@ class AbstractGrid(ABC):
         Create a list of the units corresponding to the last dimension
         in the `_interp_quantities` array.
         """
-        _interp_units = []
-        for arg in self._interp_args:
-            _interp_units.append(self.ds[arg].attrs["unit"])
-
-        return _interp_units
+        return [self.ds[arg].attrs["unit"] for arg in self._interp_args]
 
     @abstractmethod
     def nearest_neighbor_interpolator(
@@ -979,7 +955,6 @@ class AbstractGrid(ABC):
 
         Returns
         -------
-
         pos: `~numpy.ndarray`
             Position array with dimensions fixed, units converted to
             standard and stripped.
@@ -997,9 +972,8 @@ class AbstractGrid(ABC):
 
         Raises
         ------
-
         KeyError
-            A KeyError is raised if one of the args does not corrrespond
+            A KeyError is raised if one of the args does not correspond
             to a DataArray in the DataSet.
         """
 
@@ -1034,25 +1008,20 @@ class AbstractGrid(ABC):
         # If not persistent, clear the cached properties so they are re-created
         # when called below
         if not persistent:
-            try:
+            with contextlib.suppress(AttributeError):
                 del self._interp_quantities
-            except AttributeError:
-                pass
-            try:
+            with contextlib.suppress(AttributeError):
                 del self._interp_units
-            except AttributeError:
-                pass
 
         return pos, args, persistent
 
 
 def _fast_nearest_neighbor_interpolate(pos, ax):
     """
-    This function finds the indices in the axis 'ax' that are closest to the
-    values in the array 'pos'
+    Find the indices in the axis `ax` that are closest to the
+    values in the array `pos`.
 
-    Assumes the axis 'ax' is sorted in ascending order.
-
+    Assumes the axis `ax` is sorted in ascending order.
     """
     # Find the index where each position would be inserted into the axis.
     # This is equivalent to a nearest neighbor interpolation but always
@@ -1079,11 +1048,11 @@ class CartesianGrid(AbstractGrid):
         for i in range(3):
             try:
                 self.units[i].to(u.m)
-            except u.UnitConversionError:
+            except u.UnitConversionError as ex:
                 raise ValueError(
                     "Units of grid are not valid for a Cartesian "
                     f"grid: {self.units}."
-                )
+                ) from ex
 
     @property
     def grid_resolution(self):
@@ -1102,7 +1071,7 @@ class CartesianGrid(AbstractGrid):
         This is a standard ray-box intersection algorithm.
         """
         p1, p2 = p1.si.value, p2.si.value
-        # Caclulate the minimum and maximum of each
+        # Calculate the minimum and maximum of each
         Ax, Bx = np.min(self.pts0.si.value), np.max(self.pts0.si.value)
         Ay, By = np.min(self.pts1.si.value), np.max(self.pts1.si.value)
         Az, Bz = np.min(self.pts2.si.value), np.max(self.pts2.si.value)
@@ -1128,7 +1097,7 @@ class CartesianGrid(AbstractGrid):
     def nearest_neighbor_interpolator(
         self, pos: Union[np.ndarray, u.Quantity], *args, persistent=False
     ):
-        r""" """
+        r""" """  # noqa: D419
 
         # Shared setup
         pos, args, persistent = self._persistent_interpolator_setup(
@@ -1159,14 +1128,10 @@ class CartesianGrid(AbstractGrid):
 
         # Split output array into arrays with units
         # Apply units to output arrays
-        output = []
-        for arg in range(len(args)):
-            output.append(vals[..., arg] * self._interp_units[arg])
-
-        if len(output) == 1:
-            return output[0]
-        else:
-            return tuple(output)
+        output = [
+            vals[..., index] * self._interp_units[index] for index, _ in enumerate(args)
+        ]
+        return output[0] if len(output) == 1 else tuple(output)
 
     def volume_averaged_interpolator(
         self, pos: Union[np.ndarray, u.Quantity], *args, persistent=False
@@ -1331,14 +1296,11 @@ class CartesianGrid(AbstractGrid):
 
         # Split output array into arrays with units
         # Apply units to output arrays
-        output = []
-        for arg in range(nargs):
-            output.append(weighted_ave[..., arg] * self._interp_units[arg])
+        output = [
+            weighted_ave[..., arg] * self._interp_units[arg] for arg in range(nargs)
+        ]
 
-        if len(output) == 1:
-            return output[0]
-        else:
-            return tuple(output)
+        return output[0] if len(output) == 1 else tuple(output)
 
 
 class NonUniformCartesianGrid(AbstractGrid):
@@ -1352,11 +1314,11 @@ class NonUniformCartesianGrid(AbstractGrid):
         for i in range(3):
             try:
                 self.units[i].to(u.m)
-            except u.UnitConversionError:
+            except u.UnitConversionError as ex:
                 raise ValueError(
                     "Units of grid are not valid for a Cartesian "
                     f"grid: {self.units}."
-                )
+                ) from ex
 
     @property
     def grid_resolution(self):
@@ -1378,7 +1340,7 @@ class NonUniformCartesianGrid(AbstractGrid):
         This is a standard ray-box intersection algorithm.
         """
         p1, p2 = p1.si.value, p2.si.value
-        # Caclulate the minimum and maximum of each
+        # Calculate the minimum and maximum of each
         Ax, Bx = np.min(self.pts0.si.value), np.max(self.pts0.si.value)
         Ay, By = np.min(self.pts1.si.value), np.max(self.pts1.si.value)
         Az, Bz = np.min(self.pts2.si.value), np.max(self.pts2.si.value)
@@ -1406,11 +1368,17 @@ class NonUniformCartesianGrid(AbstractGrid):
         function so it can be re-implemented to make non-uniform grids.
         """
         # Construct the axis arrays
-        ax0 = np.sort(np.random.uniform(low=start[0], high=stop[0], size=num[0]))
+        ax0 = np.sort(
+            np.random.uniform(low=start[0], high=stop[0], size=num[0])  # noqa: NPY002
+        )
 
-        ax1 = np.sort(np.random.uniform(low=start[1], high=stop[1], size=num[1]))
+        ax1 = np.sort(
+            np.random.uniform(low=start[1], high=stop[1], size=num[1])  # noqa: NPY002
+        )
 
-        ax2 = np.sort(np.random.uniform(low=start[2], high=stop[2], size=num[2]))
+        ax2 = np.sort(
+            np.random.uniform(low=start[2], high=stop[2], size=num[2])  # noqa: NPY002
+        )
 
         # Construct the coordinate arrays
         arr0, arr1, arr2 = np.meshgrid(ax0, ax1, ax2, indexing="ij")
@@ -1427,14 +1395,13 @@ class NonUniformCartesianGrid(AbstractGrid):
 
         indgrid = np.arange(self.grid.shape[0])
 
-        interpolator = interp.NearestNDInterpolator(self.grid.to(u.m).value, indgrid)
-        return interpolator
+        return interp.NearestNDInterpolator(self.grid.to(u.m).value, indgrid)
 
     @modify_docstring(prepend=AbstractGrid.nearest_neighbor_interpolator.__doc__)
     def nearest_neighbor_interpolator(
         self, pos: Union[np.ndarray, u.Quantity], *args, persistent=False
     ):
-        r""" """
+        r""" """  # noqa: D419
         # Shared setup
         pos, args, persistent = self._persistent_interpolator_setup(
             pos, args, persistent
@@ -1444,10 +1411,8 @@ class NonUniformCartesianGrid(AbstractGrid):
         # _persistant_interpolator_setup function because it is unique
         # to this non_uniform grid.
         if not persistent:
-            try:
+            with contextlib.suppress(AttributeError):
                 del self._nearest_neighbor_interpolator
-            except AttributeError:
-                pass
 
         pts0 = self.pts0.to(u.m).value
         pts1 = self.pts1.to(u.m).value
@@ -1468,11 +1433,6 @@ class NonUniformCartesianGrid(AbstractGrid):
 
         vals[mask_particle_off] = np.nan
 
-        output = []
-        for arg in range(len(args)):
-            output.append(vals[:, arg] * self._interp_units[arg])
+        output = [vals[:, arg] * self._interp_units[arg] for arg in range(len(args))]
 
-        if len(output) == 1:
-            return output[0]
-        else:
-            return tuple(output)
+        return output[0] if len(output) == 1 else tuple(output)

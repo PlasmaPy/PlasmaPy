@@ -61,8 +61,12 @@ def _fit_func_double_lin_inverse(x, x0, y0, T0, Delta_T):
     with T0 and T0 + Delta_T being the cold and hot temperatures, respectively.
     """
 
-    hot_T_func = lambda x: y0 + (x - x0) / (T0 + Delta_T)
-    cold_T_func = lambda x: y0 + (x - x0) / T0
+    def hot_T_func(x):
+        return y0 + (x - x0) / (T0 + Delta_T)
+
+    def cold_T_func(x):
+        return y0 + (x - x0) / T0
+
     return np.piecewise(x, x < x0, [hot_T_func, cold_T_func])
 
 
@@ -86,7 +90,7 @@ class Characteristic:
 
         self.bias = bias
         self.current = current
-        self.get_unique_bias(True)
+        self.get_unique_bias(True)  # noqa: FBT003
         self._check_validity()
 
     def __getitem__(self, key):
@@ -95,18 +99,17 @@ class Characteristic:
 
         """
 
-        b = Characteristic(self.bias[key], self.current[key])
-        return b
+        return Characteristic(self.bias[key], self.current[key])
 
     def __sub__(self, other):
-        r"""Support current subtraction"""
+        r"""Support current subtraction."""
 
         b = copy.deepcopy(self)
         b.current -= other.current
         return b
 
     def __add__(self, other):
-        r"""Support current addition"""
+        r"""Support current addition."""
 
         b = copy.deepcopy(self)
         b.current += other.current
@@ -137,11 +140,11 @@ class Characteristic:
             )
         current_unique *= u.A
 
-        if inplace:
-            self.bias = bias_unique
-            self.current = current_unique
-        else:
+        if not inplace:
             return Characteristic(bias_unique, current_unique)
+
+        self.bias = bias_unique
+        self.current = current_unique
 
     def _check_validity(self):
         r"""Check the unit and value validity of the characteristic."""
@@ -205,9 +208,9 @@ class Characteristic:
 @validate_quantities(
     probe_area={"can_be_negative": False, "can_be_inf": False, "can_be_nan": False}
 )
-def swept_probe_analysis(
+def swept_probe_analysis(  # noqa: PLR0915
     probe_characteristic,
-    probe_area: u.m ** 2,
+    probe_area: u.m**2,
     gas_argument,
     bimaxwellian=False,
     visualize=False,
@@ -224,7 +227,8 @@ def swept_probe_analysis(
         The swept probe characteristic that is to be analyzed.
 
     probe_area : `~astropy.units.Quantity`
-        The area of the probe exposed to plasma in units convertible to m^2.
+        The area of the probe exposed to plasma in units convertible to
+        m\ :sup:`2`\ .
 
     gas_argument : argument to instantiate the |Particle| class.
         `str`, `int`, or `~plasmapy.particles.particle_class.Particle`
@@ -245,7 +249,6 @@ def swept_probe_analysis(
 
     Returns
     -------
-
     Results are returned as Dictionary
 
     "T_e" : `astropy.units.Quantity`
@@ -253,16 +256,16 @@ def swept_probe_analysis(
         two values if bimaxwellian is True.
 
     "n_e" : `astropy.units.Quantity`
-        Estimate of the electron density in units of m\ :sup:`-3`\ . See the Notes on
-        plasma densities.
+        Estimate of the electron density in units of m\ :sup:`-3`\ . See
+        the Notes on plasma densities.
 
     "n_i" : `astropy.units.Quantity`
-        Estimate of the ion density in units of m\ :sup:`-3`\ . See the Notes on
-        plasma densities.
+        Estimate of the ion density in units of m\ :sup:`-3`\ . See the
+        Notes on plasma densities.
 
     "n_i_OML" : `astropy.units.Quantity`
-        OML-theory estimate of the ion density in units of m\ :sup:`-3`\ . See the Notes
-        on plasma densities.
+        OML-theory estimate of the ion density in units of
+        m\ :sup:`-3`\ . See the Notes on plasma densities.
 
     "V_F" : `astropy.units.Quantity`
         Estimate of the floating potential in units of V.
@@ -271,10 +274,12 @@ def swept_probe_analysis(
         Estimate of the plasma potential in units of V.
 
     "I_es" : `astropy.units.Quantity`
-        Estimate of the electron saturation current in units of Am^-2.
+        Estimate of the electron saturation current in units of A
+        m\ :sup:`-2`\ .
 
     "I_is" : `astropy.units.Quantity`
-        Estimate of the ion saturation current in units of Am^-2.
+        Estimate of the ion saturation current in units of A
+        m\ :sup:`-2`\ .
 
     "hot_fraction" : float
         Estimate of the total hot (energetic) electron fraction.
@@ -297,9 +302,9 @@ def swept_probe_analysis(
 
     if not isinstance(probe_characteristic, Characteristic):
         raise TypeError(
-            f"For 'probe_characteristic' expected type "
-            f"{Characteristic.__module__ + '.' + Characteristic.__qualname__} "
-            f"and got {type(probe_characteristic)}"
+            "For 'probe_characteristic' expected type "
+            f"{Characteristic.__module__}.{Characteristic.__qualname__} "
+            f"and got {type(probe_characteristic)}."
         )
 
     # Obtain the plasma and floating potentials
@@ -474,9 +479,9 @@ def get_plasma_potential(probe_characteristic, return_arg=False):
 
     if not isinstance(probe_characteristic, Characteristic):
         raise TypeError(
-            f"For 'probe_characteristic' expected type "
-            f"{Characteristic.__module__ + '.' + Characteristic.__qualname__} "
-            f"and got {type(probe_characteristic)}"
+            "For 'probe_characteristic' expected type "
+            f"{Characteristic.__module__}.{Characteristic.__qualname__} "
+            f"and got {type(probe_characteristic)}."
         )
 
     # Sort the characteristic prior to differentiation
@@ -526,8 +531,8 @@ def get_floating_potential(probe_characteristic, return_arg=False):
 
     if not isinstance(probe_characteristic, Characteristic):
         raise TypeError(
-            f"For 'probe_characteristic' expected type "
-            f"{Characteristic.__module__ + '.' + Characteristic.__qualname__} "
+            "For 'probe_characteristic' expected type "
+            f"{Characteristic.__module__}.{Characteristic.__qualname__} "
             f"and got {type(probe_characteristic)}"
         )
 
@@ -564,9 +569,9 @@ def get_electron_saturation_current(probe_characteristic):
 
     if not isinstance(probe_characteristic, Characteristic):
         raise TypeError(
-            f"For 'probe_characteristic' expected type "
-            f"{Characteristic.__module__ + '.' + Characteristic.__qualname__} "
-            f"and got {type(probe_characteristic)}"
+            "For 'probe_characteristic' expected type "
+            f"{Characteristic.__module__}.{Characteristic.__qualname__} "
+            f"and got {type(probe_characteristic)}."
         )
 
     _, arg_V_P = get_plasma_potential(probe_characteristic, return_arg=True)
@@ -601,9 +606,9 @@ def get_ion_saturation_current(probe_characteristic):
 
     if not isinstance(probe_characteristic, Characteristic):
         raise TypeError(
-            f"For 'probe_characteristic' expected type "
-            f"{Characteristic.__module__ + '.' + Characteristic.__qualname__} "
-            f"and got {type(probe_characteristic)}"
+            "For 'probe_characteristic' expected type "
+            f"{Characteristic.__module__}.{Characteristic.__qualname__} "
+            f"and got {type(probe_characteristic)}."
         )
 
     return np.min(probe_characteristic.current)
@@ -625,9 +630,10 @@ def get_ion_saturation_current(probe_characteristic):
     validations_on_return={"can_be_negative": False},
 )
 def get_ion_density_LM(
-    ion_saturation_current: u.A, T_e: u.eV, probe_area: u.m ** 2, gas
-) -> u.m ** -3:
-    r"""Implement the Langmuir-Mottley (LM) method of obtaining the ion
+    ion_saturation_current: u.A, T_e: u.eV, probe_area: u.m**2, gas
+) -> u.m**-3:
+    r"""
+    Implement the Langmuir-Mottley (LM) method of obtaining the ion
     density.
 
     Parameters
@@ -639,7 +645,8 @@ def get_ion_density_LM(
         The electron temperature in units convertible to eV.
 
     probe_area : `~astropy.units.Quantity`
-        The area of the probe exposed to plasma in units convertible to m^2.
+        The area of the probe exposed to plasma in units convertible to
+        m\ :sup:`2`\ .
 
     gas : `~astropy.units.Quantity`
         The (mean) mass of the background gas in atomic mass units.
@@ -660,7 +667,6 @@ def get_ion_density_LM(
 
     .. math::
         I_{is} = 0.6 e A_p n_i \sqrt{\frac{T_e}{m_i}}.
-
     """
 
     _langmuir_futurewarning()
@@ -668,9 +674,7 @@ def get_ion_density_LM(
     # Calculate the acoustic (Bohm) velocity
     c_s = np.sqrt(T_e / gas)
 
-    n_i = np.abs(ion_saturation_current) / (0.6 * const.e * probe_area * c_s)
-
-    return n_i
+    return np.abs(ion_saturation_current) / (0.6 * const.e * probe_area * c_s)
 
 
 @validate_quantities(
@@ -689,8 +693,8 @@ def get_ion_density_LM(
     validations_on_return={"can_be_negative": False},
 )
 def get_electron_density_LM(
-    electron_saturation_current: u.A, T_e: u.eV, probe_area: u.m ** 2
-) -> u.m ** -3:
+    electron_saturation_current: u.A, T_e: u.eV, probe_area: u.m**2
+) -> u.m**-3:
     r"""Implement the Langmuir-Mottley (LM) method of obtaining the electron
     density.
 
@@ -703,12 +707,14 @@ def get_electron_density_LM(
         The electron temperature in units convertible to eV.
 
     probe_area : `~astropy.units.Quantity`
-        The area of the probe exposed to plasma in units convertible to m^2.
+        The area of the probe exposed to plasma in units convertible to
+        m\ :sup:`2`\ .
 
     Returns
     -------
     n_e : `~astropy.units.Quantity`
-        Estimate of the electron density in units convertible to m\ :sup:`-3`\ .
+        Estimate of the electron density in units convertible to
+        m\ :sup:`-3`\ .
 
     Notes
     -----
@@ -730,9 +736,7 @@ def get_electron_density_LM(
     # Calculate the thermal electron velocity
     v_th = np.sqrt(8 * T_e / (np.pi * const.m_e))
 
-    n_e = 4 * electron_saturation_current / (probe_area * const.e * v_th)
-
-    return n_e
+    return 4 * electron_saturation_current / (probe_area * const.e * v_th)
 
 
 def extract_exponential_section(probe_characteristic, T_e=None, ion_current=None):
@@ -770,9 +774,9 @@ def extract_exponential_section(probe_characteristic, T_e=None, ion_current=None
 
     if not isinstance(probe_characteristic, Characteristic):
         raise TypeError(
-            f"For 'probe_characteristic' expected type "
-            f"{Characteristic.__module__ + '.' + Characteristic.__qualname__} "
-            f"and got {type(probe_characteristic)}"
+            "For 'probe_characteristic' expected type "
+            f"{Characteristic.__module__}.{Characteristic.__qualname__} "
+            f"and got {type(probe_characteristic)}."
         )
 
     V_F = get_floating_potential(probe_characteristic)
@@ -780,7 +784,6 @@ def extract_exponential_section(probe_characteristic, T_e=None, ion_current=None
     V_P = get_plasma_potential(probe_characteristic)
 
     if T_e is not None:
-
         # If a bi-Maxwellian electron temperature is supplied grab the first
         # (cold) temperature
         if np.array(T_e).size > 1:
@@ -826,16 +829,14 @@ def extract_ion_section(probe_characteristic):
 
     if not isinstance(probe_characteristic, Characteristic):
         raise TypeError(
-            f"For 'probe_characteristic' expected type "
-            f"{Characteristic.__module__ + '.' + Characteristic.__qualname__} "
-            f"and got {type(probe_characteristic)}"
+            "For 'probe_characteristic' expected type "
+            f"{Characteristic.__module__}.{Characteristic.__qualname__} "
+            f"and got {type(probe_characteristic)}."
         )
 
     V_F = get_floating_potential(probe_characteristic)
 
-    ion_section = probe_characteristic[probe_characteristic.bias < V_F]
-
-    return ion_section
+    return probe_characteristic[probe_characteristic.bias < V_F]
 
 
 def get_electron_temperature(
@@ -897,9 +898,9 @@ def get_electron_temperature(
 
     if not isinstance(exponential_section, Characteristic):
         raise TypeError(
-            f"For 'probe_characteristic' expected type "
-            f"{Characteristic.__module__ + '.' + Characteristic.__qualname__} "
-            f"and got {type(exponential_section)}"
+            "For 'probe_characteristic' expected type "
+            f"{Characteristic.__module__}.{Characteristic.__qualname__} "
+            f"and got {type(exponential_section)}."
         )
 
     # Remove values in the section with a current equal to or smaller than
@@ -916,7 +917,7 @@ def get_electron_temperature(
     if bimaxwellian:
         max_exp_bias = np.max(exponential_section.bias)
         min_exp_bias = np.min(exponential_section.bias)
-        x0 = min_exp_bias + 2 / 3 * (max_exp_bias - max_exp_bias)
+        x0 = min_exp_bias + 2 / 3 * (max_exp_bias - min_exp_bias)
 
         initial_guess = [x0.to(u.V).value, 0.6, 2, 1]
 
@@ -939,9 +940,9 @@ def get_electron_temperature(
 
     # Obtain the plasma parameters from the fit
     if not bimaxwellian:
-        slope = fit[2]
+        T0 = fit[2]
 
-        T_e = slope ** -1 * u.eV
+        T_e = T0 * u.eV
     else:
         x0, y0 = fit[0], fit[1]
         T0, Delta_T = [fit[2], fit[3]]
@@ -1056,15 +1057,12 @@ def extrapolate_electron_current(
 
     if not isinstance(probe_characteristic, Characteristic):
         raise TypeError(
-            f"For 'probe_characteristic' expected type "
-            f"{Characteristic.__module__ + '.' + Characteristic.__qualname__} "
-            f"and got {type(probe_characteristic)}"
+            "For 'probe_characteristic' expected type "
+            f"{Characteristic.__module__}.{Characteristic.__qualname__} "
+            f"and got {type(probe_characteristic)}."
         )
 
-    if bimaxwellian:
-        fit_func = _fit_func_double_lin_inverse
-    else:
-        fit_func = _fit_func_lin_inverse
+    fit_func = _fit_func_double_lin_inverse if bimaxwellian else _fit_func_lin_inverse
 
     electron_current = (
         np.exp(fit_func(probe_characteristic.bias.to(u.V).value, *fit)) * u.A
@@ -1141,7 +1139,7 @@ def reduce_bimaxwellian_temperature(T_e: u.eV, hot_fraction: float) -> u.eV:
 
     # Return the electron temperature itself if it is not bi-Maxwellian
     # in the first place.
-    if hot_fraction is None or not np.array(T_e).size > 1:
+    if hot_fraction is None or np.array(T_e).size <= 1:
         return T_e
 
     return T_e[0] * (1 - hot_fraction) + T_e[1] * hot_fraction
@@ -1152,7 +1150,7 @@ def reduce_bimaxwellian_temperature(T_e: u.eV, hot_fraction: float) -> u.eV:
 )
 def get_ion_density_OML(
     probe_characteristic: Characteristic,
-    probe_area: u.m ** 2,
+    probe_area: u.m**2,
     gas,
     visualize=False,
     return_fit=False,
@@ -1166,7 +1164,8 @@ def get_ion_density_OML(
         The swept probe characteristic that is to be analyzed.
 
     probe_area : `~astropy.units.Quantity`
-        The area of the probe exposed to plasma in units convertible to m^2.
+        The area of the probe exposed to plasma in units convertible to
+        m\ :sup:`2`\ .
 
     gas : `~astropy.units.Quantity`
         The (mean) mass of the background gas in atomic mass units.
@@ -1175,8 +1174,8 @@ def get_ion_density_OML(
         If `True` a plot of the OML fit is shown. Default is `False`.
 
     return_fit: `bool`, optional
-        If `True` the parameters of the fit will be returned in addition to the
-        ion density. Default is `False`.
+        If `True` the parameters of the fit will be returned in addition
+        to the ion density. Default is `False`.
 
     Returns
     -------
@@ -1205,9 +1204,9 @@ def get_ion_density_OML(
 
     if not isinstance(probe_characteristic, Characteristic):
         raise TypeError(
-            f"For 'probe_characteristic' expected type "
-            f"{Characteristic.__module__ + '.' + Characteristic.__qualname__} "
-            f"and got {type(probe_characteristic)}"
+            "For 'probe_characteristic' expected type "
+            f"{Characteristic.__module__}.{Characteristic.__qualname__} "
+            f"and got {type(probe_characteristic)}."
         )
 
     ion_section = extract_ion_section(probe_characteristic)
@@ -1224,11 +1223,11 @@ def get_ion_density_OML(
 
     n_i_OML = np.sqrt(
         -slope
-        * u.mA ** 2
+        * u.mA**2
         / u.V
-        * np.pi ** 2
+        * np.pi**2
         * ion.mass
-        / (probe_area ** 2 * const.e ** 3 * 2)
+        / (probe_area**2 * const.e**3 * 2)
     )
 
     if visualize:  # coverage: ignore
@@ -1248,10 +1247,7 @@ def get_ion_density_OML(
             plt.title("OML fit")
             plt.tight_layout()
 
-    if return_fit:
-        return n_i_OML.to(u.m ** -3), fit
-
-    return n_i_OML.to(u.m ** -3)
+    return (n_i_OML.to(u.m**-3), fit) if return_fit else n_i_OML.to(u.m**-3)
 
 
 def extrapolate_ion_current_OML(probe_characteristic, fit, visualize=False):
@@ -1287,13 +1283,13 @@ def extrapolate_ion_current_OML(probe_characteristic, fit, visualize=False):
 
     if not isinstance(probe_characteristic, Characteristic):
         raise TypeError(
-            f"For 'probe_characteristic' expected type "
-            f"{Characteristic.__module__ + '.' + Characteristic.__qualname__} "
-            f"and got {type(probe_characteristic)}"
+            "For 'probe_characteristic' expected type "
+            f"{Characteristic.__module__}.{Characteristic.__qualname__} "
+            f"and got {type(probe_characteristic)}."
         )
 
-    slope = fit[0] * u.mA ** 2 / u.V
-    offset = fit[1] * u.mA ** 2
+    slope = fit[0] * u.mA**2 / u.V
+    offset = fit[1] * u.mA**2
 
     ion_current = -np.sqrt(
         np.clip(slope * probe_characteristic.bias + offset, 0.0, None)
@@ -1365,9 +1361,9 @@ def get_EEDF(probe_characteristic, visualize=False):
 
     if not isinstance(probe_characteristic, Characteristic):
         raise TypeError(
-            f"For 'probe_characteristic' expected type "
-            f"{Characteristic.__module__ + '.' + Characteristic.__qualname__} "
-            f"and got {type(probe_characteristic)}"
+            "For 'probe_characteristic' expected type "
+            f"{Characteristic.__module__}.{Characteristic.__qualname__} "
+            f"and got {type(probe_characteristic)}."
         )
 
     probe_characteristic.sort()

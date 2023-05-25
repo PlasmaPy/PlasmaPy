@@ -7,7 +7,7 @@ import scipy.integrate as spint
 from astropy import units as u
 from astropy.constants import k_B, m_e
 
-from ..distribution import (
+from plasmapy.formulary.distribution import (
     kappa_velocity_1D,
     kappa_velocity_3D,
     Maxwellian_1D,
@@ -17,27 +17,25 @@ from ..distribution import (
     Maxwellian_velocity_2D,
     Maxwellian_velocity_3D,
 )
-from ..parameters import kappa_thermal_speed, thermal_speed
+from plasmapy.formulary.speeds import kappa_thermal_speed, thermal_speed
 
 
-class Test_Maxwellian_1D(object):
+class Test_Maxwellian_1D:
     @classmethod
-    def setup_class(self):
-        """initializing parameters for tests"""
-        self.T_e = 30000 * u.K
-        self.v = 1e5 * u.m / u.s
-        self.v_drift = 1000000 * u.m / u.s
-        self.v_drift2 = 0 * u.m / u.s
-        self.v_drift3 = 1e5 * u.m / u.s
-        self.start = -5000
-        self.stop = -self.start
-        self.dv = 10000 * u.m / u.s
-        self.v_vect = np.arange(self.start, self.stop, dtype="float64") * self.dv
-        self.particle = "e"
-        self.vTh = thermal_speed(
-            self.T_e, particle=self.particle, method="most_probable"
-        )
-        self.distFuncTrue = 5.851627151617136e-07
+    def setup_class(cls):
+        """Initializing parameters for tests"""
+        cls.T_e = 30000 * u.K
+        cls.v = 1e5 * u.m / u.s
+        cls.v_drift = 1000000 * u.m / u.s
+        cls.v_drift2 = 0 * u.m / u.s
+        cls.v_drift3 = 1e5 * u.m / u.s
+        cls.start = -5000
+        cls.stop = -cls.start
+        cls.dv = 10000 * u.m / u.s
+        cls.v_vect = np.arange(cls.start, cls.stop, dtype="float64") * cls.dv
+        cls.particle = "e"
+        cls.vTh = thermal_speed(cls.T_e, particle=cls.particle, method="most_probable")
+        cls.distFuncTrue = 5.851627151617136e-07
 
     def test_max_noDrift(self):
         """
@@ -88,11 +86,11 @@ class Test_Maxwellian_1D(object):
         """
         std = (
             Maxwellian_1D(self.v_vect, T=self.T_e, particle=self.particle)
-            * self.v_vect ** 2
+            * self.v_vect**2
             * self.dv
         ).sum()
         std = np.sqrt(std)
-        T_distri = (std ** 2 / k_B * m_e).to(u.K)
+        T_distri = (std**2 / k_B * m_e).to(u.K)
         assert np.isclose(T_distri.value, self.T_e.value)
 
     def test_units_no_vTh(self):
@@ -185,7 +183,7 @@ class Test_Maxwellian_1D(object):
         """
         Testing vdrifts with values
         """
-        testVal = ((self.vTh ** 2 * np.pi) ** (-1 / 2)).si.value
+        testVal = ((self.vTh**2 * np.pi) ** (-1 / 2)).si.value
         distFunc = Maxwellian_1D(
             v=self.v,
             T=self.T_e,
@@ -197,19 +195,19 @@ class Test_Maxwellian_1D(object):
         assert np.isclose(distFunc.value, testVal, rtol=1e-5, atol=0.0), errStr
 
 
-class Test_Maxwellian_speed_1D(object):
+class Test_Maxwellian_speed_1D:
     @classmethod
-    def setup_class(self):
-        """initializing parameters for tests"""
-        self.T = 1.0 * u.eV
-        self.particle = "H+"
+    def setup_class(cls):
+        """Initializing parameters for tests"""
+        cls.T = 1.0 * u.eV
+        cls.particle = "H+"
         # get thermal velocity and thermal velocity squared
-        self.vTh = thermal_speed(self.T, particle=self.particle, method="most_probable")
-        self.v = 1e5 * u.m / u.s
-        self.v_drift = 0 * u.m / u.s
-        self.v_drift2 = 1e5 * u.m / u.s
-        self.distFuncTrue = 1.72940389716217e-27
-        self.distFuncDrift = 2 * (self.vTh ** 2 * np.pi) ** (-1 / 2)
+        cls.vTh = thermal_speed(cls.T, particle=cls.particle, method="most_probable")
+        cls.v = 1e5 * u.m / u.s
+        cls.v_drift = 0 * u.m / u.s
+        cls.v_drift2 = 1e5 * u.m / u.s
+        cls.distFuncTrue = 1.72940389716217e-27
+        cls.distFuncDrift = 2 * (cls.vTh**2 * np.pi) ** (-1 / 2)
 
     def test_norm(self):
         """
@@ -326,21 +324,21 @@ class Test_Maxwellian_speed_1D(object):
         ), errStr
 
 
-class Test_Maxwellian_velocity_2D(object):
+class Test_Maxwellian_velocity_2D:
     @classmethod
-    def setup_class(self):
-        """initializing parameters for tests"""
-        self.T = 1.0 * u.eV
-        self.particle = "H+"
+    def setup_class(cls):
+        """Initializing parameters for tests"""
+        cls.T = 1.0 * u.eV
+        cls.particle = "H+"
         # get thermal velocity and thermal velocity squared
-        self.vTh = thermal_speed(self.T, particle=self.particle, method="most_probable")
-        self.vx = 1e5 * u.m / u.s
-        self.vy = 1e5 * u.m / u.s
-        self.vx_drift = 0 * u.m / u.s
-        self.vy_drift = 0 * u.m / u.s
-        self.vx_drift2 = 1e5 * u.m / u.s
-        self.vy_drift2 = 1e5 * u.m / u.s
-        self.distFuncTrue = 7.477094598799251e-55
+        cls.vTh = thermal_speed(cls.T, particle=cls.particle, method="most_probable")
+        cls.vx = 1e5 * u.m / u.s
+        cls.vy = 1e5 * u.m / u.s
+        cls.vx_drift = 0 * u.m / u.s
+        cls.vy_drift = 0 * u.m / u.s
+        cls.vx_drift2 = 1e5 * u.m / u.s
+        cls.vy_drift2 = 1e5 * u.m / u.s
+        cls.distFuncTrue = 7.477094598799251e-55
 
     def test_norm(self):
         """
@@ -469,7 +467,7 @@ class Test_Maxwellian_velocity_2D(object):
         """
         Testing vdrifts with values
         """
-        testVal = ((self.vTh ** 2 * np.pi) ** (-1)).si.value
+        testVal = ((self.vTh**2 * np.pi) ** (-1)).si.value
         distFunc = Maxwellian_velocity_2D(
             vx=self.vx,
             vy=self.vy,
@@ -483,19 +481,19 @@ class Test_Maxwellian_velocity_2D(object):
         assert np.isclose(distFunc.value, testVal, rtol=1e-5, atol=0.0), errStr
 
 
-@pytest.mark.slow
-class Test_Maxwellian_speed_2D(object):
+@pytest.mark.slow()
+class Test_Maxwellian_speed_2D:
     @classmethod
-    def setup_class(self):
-        """initializing parameters for tests"""
-        self.T = 1.0 * u.eV
-        self.particle = "H+"
+    def setup_class(cls):
+        """Initializing parameters for tests"""
+        cls.T = 1.0 * u.eV
+        cls.particle = "H+"
         # get thermal velocity and thermal velocity squared
-        self.vTh = thermal_speed(self.T, particle=self.particle, method="most_probable")
-        self.v = 1e5 * u.m / u.s
-        self.v_drift = 0 * u.m / u.s
-        self.v_drift2 = 1e5 * u.m / u.s
-        self.distFuncTrue = 2.2148166449365907e-26
+        cls.vTh = thermal_speed(cls.T, particle=cls.particle, method="most_probable")
+        cls.v = 1e5 * u.m / u.s
+        cls.v_drift = 0 * u.m / u.s
+        cls.v_drift2 = 1e5 * u.m / u.s
+        cls.distFuncTrue = 2.2148166449365907e-26
 
     def test_norm(self):
         """
@@ -600,7 +598,7 @@ class Test_Maxwellian_speed_2D(object):
         Testing vdrifts with values
         """
         with pytest.raises(NotImplementedError):
-            distFunc = Maxwellian_speed_2D(
+            Maxwellian_speed_2D(
                 v=self.v,
                 T=self.T,
                 particle=self.particle,
@@ -609,25 +607,25 @@ class Test_Maxwellian_speed_2D(object):
             )
 
 
-@pytest.mark.slow
-class Test_Maxwellian_velocity_3D(object):
+@pytest.mark.slow()
+class Test_Maxwellian_velocity_3D:
     @classmethod
-    def setup_class(self):
-        """initializing parameters for tests"""
-        self.T = 1.0 * u.eV
-        self.particle = "H+"
+    def setup_class(cls):
+        """Initializing parameters for tests"""
+        cls.T = 1.0 * u.eV
+        cls.particle = "H+"
         # get thermal velocity and thermal velocity squared
-        self.vTh = thermal_speed(self.T, particle=self.particle, method="most_probable")
-        self.vx = 1e5 * u.m / u.s
-        self.vy = 1e5 * u.m / u.s
-        self.vz = 1e5 * u.m / u.s
-        self.vx_drift = 0 * u.m / u.s
-        self.vy_drift = 0 * u.m / u.s
-        self.vz_drift = 0 * u.m / u.s
-        self.vx_drift2 = 1e5 * u.m / u.s
-        self.vy_drift2 = 1e5 * u.m / u.s
-        self.vz_drift2 = 1e5 * u.m / u.s
-        self.distFuncTrue = 6.465458269306909e-82
+        cls.vTh = thermal_speed(cls.T, particle=cls.particle, method="most_probable")
+        cls.vx = 1e5 * u.m / u.s
+        cls.vy = 1e5 * u.m / u.s
+        cls.vz = 1e5 * u.m / u.s
+        cls.vx_drift = 0 * u.m / u.s
+        cls.vy_drift = 0 * u.m / u.s
+        cls.vz_drift = 0 * u.m / u.s
+        cls.vx_drift2 = 1e5 * u.m / u.s
+        cls.vy_drift2 = 1e5 * u.m / u.s
+        cls.vz_drift2 = 1e5 * u.m / u.s
+        cls.distFuncTrue = 6.465458269306909e-82
 
     def test_norm(self):
         """
@@ -768,7 +766,7 @@ class Test_Maxwellian_velocity_3D(object):
         """
         Testing vdrifts with values
         """
-        testVal = ((self.vTh ** 2 * np.pi) ** (-3 / 2)).si.value
+        testVal = ((self.vTh**2 * np.pi) ** (-3 / 2)).si.value
         distFunc = Maxwellian_velocity_3D(
             vx=self.vx,
             vy=self.vy,
@@ -784,18 +782,18 @@ class Test_Maxwellian_velocity_3D(object):
         assert np.isclose(distFunc.value, testVal, rtol=1e-5, atol=0.0), errStr
 
 
-class Test_Maxwellian_speed_3D(object):
+class Test_Maxwellian_speed_3D:
     @classmethod
-    def setup_class(self):
-        """initializing parameters for tests"""
-        self.T = 1.0 * u.eV
-        self.particle = "H+"
+    def setup_class(cls):
+        """Initializing parameters for tests"""
+        cls.T = 1.0 * u.eV
+        cls.particle = "H+"
         # get thermal velocity and thermal velocity squared
-        self.vTh = thermal_speed(self.T, particle=self.particle, method="most_probable")
-        self.v = 1e5 * u.m / u.s
-        self.v_drift = 0 * u.m / u.s
-        self.v_drift2 = 1e5 * u.m / u.s
-        self.distFuncTrue = 1.8057567503860518e-25
+        cls.vTh = thermal_speed(cls.T, particle=cls.particle, method="most_probable")
+        cls.v = 1e5 * u.m / u.s
+        cls.v_drift = 0 * u.m / u.s
+        cls.v_drift2 = 1e5 * u.m / u.s
+        cls.distFuncTrue = 1.8057567503860518e-25
 
     def test_norm(self):
         """
@@ -900,7 +898,7 @@ class Test_Maxwellian_speed_3D(object):
         Testing vdrifts with values
         """
         with pytest.raises(NotImplementedError):
-            distFunc = Maxwellian_speed_3D(
+            Maxwellian_speed_3D(
                 v=self.v,
                 T=self.T,
                 particle=self.particle,
@@ -909,26 +907,24 @@ class Test_Maxwellian_speed_3D(object):
             )
 
 
-class Test_kappa_velocity_1D(object):
+class Test_kappa_velocity_1D:
     @classmethod
-    def setup_class(self):
-        """initializing parameters for tests"""
-        self.T_e = 30000 * u.K
-        self.kappa = 4
-        self.kappaInvalid = 3 / 2
-        self.v = 1e5 * u.m / u.s
-        self.v_drift = 1000000 * u.m / u.s
-        self.v_drift2 = 0 * u.m / u.s
-        self.v_drift3 = 1e5 * u.m / u.s
-        self.start = -5000
-        self.stop = -self.start
-        self.dv = 10000 * u.m / u.s
-        self.v_vect = np.arange(self.start, self.stop, dtype="float64") * self.dv
-        self.particle = "e"
-        self.vTh = kappa_thermal_speed(
-            self.T_e, kappa=self.kappa, particle=self.particle
-        )
-        self.distFuncTrue = 6.637935187755855e-07
+    def setup_class(cls):
+        """Initializing parameters for tests"""
+        cls.T_e = 30000 * u.K
+        cls.kappa = 4
+        cls.kappaInvalid = 3 / 2
+        cls.v = 1e5 * u.m / u.s
+        cls.v_drift = 1000000 * u.m / u.s
+        cls.v_drift2 = 0 * u.m / u.s
+        cls.v_drift3 = 1e5 * u.m / u.s
+        cls.start = -5000
+        cls.stop = -cls.start
+        cls.dv = 10000 * u.m / u.s
+        cls.v_vect = np.arange(cls.start, cls.stop, dtype="float64") * cls.dv
+        cls.particle = "e"
+        cls.vTh = kappa_thermal_speed(cls.T_e, kappa=cls.kappa, particle=cls.particle)
+        cls.distFuncTrue = 6.637935187755855e-07
 
     def test_invalid_kappa(self):
         """
@@ -972,12 +968,8 @@ class Test_kappa_velocity_1D(object):
         ).argmax()
         assert np.isclose(self.v_vect[max_index].value, self.v_drift.value)
 
-    def test_maxwellian_limit(self):
-        """
-        Tests the limit of large kappa to see if kappa distribution function
-        converges to Maxwellian.
-        """
-        return
+    # TODO Need to add a test to see if the kappa distribution goes to a
+    # Maxwellian in the limit of large κ
 
     def test_norm(self):
         """
@@ -1010,11 +1002,11 @@ class Test_kappa_velocity_1D(object):
             kappa_velocity_1D(
                 self.v_vect, T=self.T_e, kappa=self.kappa, particle=self.particle
             )
-            * self.v_vect ** 2
+            * self.v_vect**2
             * self.dv
         ).sum()
         std = np.sqrt(std)
-        T_distri = (std ** 2 / k_B * m_e).to(u.K)
+        T_distri = (std**2 / k_B * m_e).to(u.K)
         assert np.isclose(T_distri.value, self.T_e.value)
 
     def test_units_no_vTh(self):
@@ -1135,27 +1127,27 @@ class Test_kappa_velocity_1D(object):
         assert np.isclose(distFunc.value, testVal, rtol=1e-5, atol=0.0), errStr
 
 
-@pytest.mark.slow
-class Test_kappa_velocity_3D(object):
+@pytest.mark.slow()
+class Test_kappa_velocity_3D:
     @classmethod
-    def setup_class(self):
-        """initializing parameters for tests"""
-        self.T = 1.0 * u.eV
-        self.kappa = 4
-        self.kappaInvalid = 3 / 2
-        self.particle = "H+"
+    def setup_class(cls):
+        """Initializing parameters for tests"""
+        cls.T = 1.0 * u.eV
+        cls.kappa = 4
+        cls.kappaInvalid = 3 / 2
+        cls.particle = "H+"
         # get thermal velocity and thermal velocity squared
-        self.vTh = kappa_thermal_speed(self.T, kappa=self.kappa, particle=self.particle)
-        self.vx = 1e5 * u.m / u.s
-        self.vy = 1e5 * u.m / u.s
-        self.vz = 1e5 * u.m / u.s
-        self.vx_drift = 0 * u.m / u.s
-        self.vy_drift = 0 * u.m / u.s
-        self.vz_drift = 0 * u.m / u.s
-        self.vx_drift2 = 1e5 * u.m / u.s
-        self.vy_drift2 = 1e5 * u.m / u.s
-        self.vz_drift2 = 1e5 * u.m / u.s
-        self.distFuncTrue = 1.1847914288918793e-22
+        cls.vTh = kappa_thermal_speed(cls.T, kappa=cls.kappa, particle=cls.particle)
+        cls.vx = 1e5 * u.m / u.s
+        cls.vy = 1e5 * u.m / u.s
+        cls.vz = 1e5 * u.m / u.s
+        cls.vx_drift = 0 * u.m / u.s
+        cls.vy_drift = 0 * u.m / u.s
+        cls.vz_drift = 0 * u.m / u.s
+        cls.vx_drift2 = 1e5 * u.m / u.s
+        cls.vy_drift2 = 1e5 * u.m / u.s
+        cls.vz_drift2 = 1e5 * u.m / u.s
+        cls.distFuncTrue = 1.1847914288918793e-22
 
     def test_invalid_kappa(self):
         """

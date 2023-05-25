@@ -1,2 +1,0 @@
-Put references from `plasmapy.formulary` into :file:`docs/bibliography.bib`
-in BibTeX_ format.

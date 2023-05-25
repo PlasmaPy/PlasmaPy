@@ -2,9 +2,9 @@
 
 .. currentmodule:: plasmapy.simulation.particletracker
 
-************************************************
-Particle Tracker (`plasmapy.simulation.tracker`)
-************************************************
+********************************************************
+Particle Tracker (`plasmapy.simulation.particletracker`)
+********************************************************
 
 Introduction
 ============

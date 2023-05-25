@@ -1,2 +1,0 @@
-Added bullet points on module level docstrings and ``__all__`` to the
-documentation guide.

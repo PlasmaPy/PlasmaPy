@@ -5,6 +5,7 @@ __all__ = ["Fermi_integral", "rot_a_to_b"]
 import numbers
 import numpy as np
 
+from mpmath import polylog
 from typing import Union
 
 
@@ -59,7 +60,7 @@ def Fermi_integral(
     Warnings
     --------
     At present this function is limited to relatively small arguments
-    due to limitations in `mpmath` implementation of `~mpmath.polylog`.
+    due to limitations in ``mpmath.polylog``.
 
     Examples
     --------
@@ -70,17 +71,9 @@ def Fermi_integral(
     >>> Fermi_integral(1, 1)
     (1.8062860704447743-0j)
     """
-    try:
-        from mpmath import polylog
-    except ImportError as e:
-        from plasmapy.optional_deps import mpmath_import_error
-
-        raise mpmath_import_error from e
-
     if isinstance(x, (numbers.Integral, numbers.Real, numbers.Complex)):
         arg = -np.exp(x)
-        integral = -1 * complex(polylog(j + 1, arg))
-        return integral
+        return -1 * complex(polylog(j + 1, arg))
     elif isinstance(x, np.ndarray):
         integral_arr = np.zeros_like(x, dtype="complex")
         for idx, val in enumerate(x):
@@ -92,14 +85,16 @@ def Fermi_integral(
 
 def rot_a_to_b(a: np.ndarray, b: np.ndarray) -> np.ndarray:
     r"""
-    Calculates the 3D rotation matrix that will rotate vector ``a`` to be aligned
-    with vector ``b``. The rotation matrix is calculated as follows. Let
+    Calculates the 3D rotation matrix that will rotate vector ``a`` to
+    be aligned with vector ``b``.
+
+    The rotation matrix is calculated as follows. Let
 
     .. math::
         \vec v = \vec a \times \vec b
 
-    and let :math:`\theta` be the angle between :math:`\vec a`
-    and :math:`\vec b` such that the projection of :math:`\vec a` along
+    and let :math:`\theta` be the angle between :math:`\vec a` and
+    :math:`\vec b` such that the projection of :math:`\vec a` along
     :math:`\vec b` is
 
     .. math::
@@ -121,31 +116,31 @@ def rot_a_to_b(a: np.ndarray, b: np.ndarray) -> np.ndarray:
                 -v_2 & v_1 & 0
             \end{bmatrix}
 
-    Note that this algorithm fails when :math:`1+c=0`, which occurs when :math:`a` and
-    :math:`b` are anti-parallel. However, since the correct rotation matrix
-    in this case is simply :math:`R=-I`, this function just handles this
-    special case explicitly.
+    Note that this algorithm fails when :math:`1+c=0`, which occurs when
+    :math:`a` and :math:`b` are anti-parallel. However, since the
+    correct rotation matrix in this case is simply :math:`R=-I`, this
+    function just handles this special case explicitly.
 
-    This algorithm is based on
-    `this discussion
+    This algorithm is based on `this discussion
     <https://math.stackexchange.com/questions/180418/calculate-rotation-matrix-to-align-vector-a-to-vector-b-in-3d/476311#476311>`_
     on StackExchange.
 
     Parameters
     ----------
     a : `~numpy.ndarray`, shape (3,)
-        Vector to be rotated.  Should be a 1D, 3-element unit vector.  If ``a``
-        is not normalize, then it will be normalized.
+        Vector to be rotated.  Should be a 1D, 3-element unit vector. If
+        ``a`` is not normalized, then it will be normalized.
 
     b : `~numpy.ndarray`, shape (3,)
-        Vector representing the desired orientation after rotation.  Should be
-        a 1D, 3-element unit vector.  If ``b`` is not normalized, then it will
-        be.
+        Vector representing the desired orientation after rotation.
+        Should be a 1D, 3-element unit vector.  If ``b`` is not
+        normalized, then it will be.
 
     Returns
     -------
     R : `~numpy.ndarray`, shape (3,3)
-        The rotation matrix that will rotate vector ``a`` onto vector ``b``.
+        The rotation matrix that will rotate vector ``a`` onto vector
+        ``b``.
     """
 
     # Normalize and validate both vectors

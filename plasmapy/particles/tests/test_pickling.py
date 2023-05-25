@@ -24,7 +24,7 @@ class TestPickling:
             CustomParticle(mass=1 * u.kg, charge=1 * u.C),
             DimensionlessParticle(mass=5, charge=5),
             Particle("p+"),
-            IonicLevel("p+", 0.1, 1e9 * u.m ** -3),
+            IonicLevel("p+", 0.1, 1e9 * u.m**-3),
             IonizationState("H", [0.5, 0.5]),
             IonizationStateCollection({"H": [0.5, 0.5]}),
         ],
@@ -35,10 +35,10 @@ class TestPickling:
         can be pickled and unpickled.
         """
         filename = tmp_path / "pickled_particles.p"
-        with open(filename, "wb") as pickle_file:
+        with open(filename, "wb") as pickle_file:  # noqa: PTH123
             pickle.dump(instance, pickle_file)
 
-        with open(filename, "rb") as pickle_file:
-            loaded_particle = pickle.load(pickle_file)
+        with open(filename, "rb") as pickle_file:  # noqa: PTH123
+            loaded_particle = pickle.load(pickle_file)  # noqa: S301
 
         assert str(instance) == str(loaded_particle)

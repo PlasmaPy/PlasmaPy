@@ -1,4 +1,6 @@
-# SunPy is released under a BSD-style open source licence:
+"""Functionality implementing the plasma class factory."""
+
+# SunPy is released under a BSD-style open source license:
 
 # Copyright (c) 2013-2018 The SunPy developers
 # All rights reserved.
@@ -50,7 +52,6 @@ class BasicRegistrationFactory:
 
     Attributes
     ----------
-
     registry : `dict`
         Dictionary mapping classes (key) to function (value) which validates
         input.
@@ -63,7 +64,6 @@ class BasicRegistrationFactory:
 
     Parameters
     ----------
-
     default_widget_type : `type`, optional
 
     additional_validation_functions : `list` of `str`, optional
@@ -82,20 +82,16 @@ class BasicRegistrationFactory:
         additional_validation_functions=None,
         registry=None,
     ):
-
-        if registry is None:
-            self.registry = dict()
-        else:
-            self.registry = registry
-
+        self.registry = {} if registry is None else registry
         if additional_validation_functions is None:
             additional_validation_functions = []
 
         self.default_widget_type = default_widget_type
 
         self.validation_functions = [
-            "_factory_validation_function"
-        ] + additional_validation_functions
+            "_factory_validation_function",
+            *additional_validation_functions,
+        ]
 
     def __call__(self, *args, **kwargs):
         """
@@ -110,14 +106,9 @@ class BasicRegistrationFactory:
         return self._check_registered_widget(*args, **kwargs)
 
     def _check_registered_widget(self, *args, **kwargs):
-
-        candidate_widget_types = list()
-
-        for key in self.registry:
-
-            # Call the registered validation function for each registered class
-            if self.registry[key](*args, **kwargs):
-                candidate_widget_types.append(key)
+        candidate_widget_types = [
+            key for key in self.registry if self.registry[key](*args, **kwargs)
+        ]
 
         n_matches = len(candidate_widget_types)
 
@@ -144,9 +135,9 @@ class BasicRegistrationFactory:
     def register(self, WidgetType, validation_function=None, is_default=False):
         """Register a widget with the factory.
 
-        If `validation_function` is not specified, tests `WidgetType` for
-        existence of any function in in the list `self.validation_functions`,
-        which is a list of strings which must be callable class attribute
+        If ``validation_function`` is not specified, tests ``WidgetType`` for
+        existence of any function in the ``validation_functions`` attribute,
+        which is a list of strings which must be callable class attributes.
 
         Parameters
         ----------
@@ -155,10 +146,11 @@ class BasicRegistrationFactory:
 
         validation_function : function, optional
             Function to validate against.  Defaults to `None`, which indicates
-            that a `classmethod` in `validation_functions` is used.
+            that a `classmethod` in the ``validation_functions``
+            attribute is used.
 
         is_default : `bool`, optional
-            Sets WidgetType to be the default widget.
+            Sets ``WidgetType`` to be the default widget.
 
         """
         if is_default:
@@ -177,21 +169,17 @@ class BasicRegistrationFactory:
             for vfunc_str in self.validation_functions:
                 if hasattr(WidgetType, vfunc_str):
                     vfunc = getattr(WidgetType, vfunc_str)
-
-                    # check if classmethod: stackoverflow #19227724
-                    _classmethod = (
+                    is_not_classmethod = not (
                         inspect.ismethod(vfunc) and vfunc.__self__ is WidgetType
                     )
-
-                    if _classmethod:
-                        self.registry[WidgetType] = vfunc
-                        found = True
-                        break
-                    else:
+                    if is_not_classmethod:
                         raise ValidationFunctionError(
                             f"{WidgetType.__name__}.{vfunc_str} must be a classmethod."
                         )
 
+                    self.registry[WidgetType] = vfunc
+                    found = True
+                    break
             if not found:
                 raise ValidationFunctionError(
                     "No proper validation function for class "

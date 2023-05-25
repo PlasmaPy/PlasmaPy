@@ -1,5 +1,5 @@
-Version 0.1.0
-=============
+PlasmaPy v0.1.0 (2018-04-29)
+============================
 
 Version 0.1.0 is the initial development release of PlasmaPy.  This
 version is a prototype and a preview, and is not feature complete.
@@ -9,26 +9,25 @@ Significant changes to the API are expected to occur between versions
 .. _change-log-0.1.0-new:
 
 New Features
-============
+------------
 
-* Composed :ref:`plasmapy-vision-statement`.
+* Composed PlasmaPy's vision statement.
 
 * Adopted the :ref:`plasmapy-code-of-conduct`.
 
-* Created a guide on :ref:`contributing-to-plasmapy`.
+* Created a guide on :ref:`contributing to PlasmaPy <contributor guide>`.
 
 * Adopted a permissive BSD 3-clause `license
   <https://github.com/PlasmaPy/PlasmaPy/blob/main/LICENSE.md>`_ with
   protections against software patents.
 
 * Set up continuous integration testing with `Travis CI
-  <https://travis-ci.org/>`_, `CircleCI <https://circleci.com/>`_, and
+  <https://www.travis-ci.com/>`_, `CircleCI <https://circleci.com/>`_, and
   `AppVeyor <https://www.appveyor.com/>`_, along with test coverage
   checks with `Coveralls <https://coveralls.io/>`_.
 
 * Decided upon code and docstring style conventions and set up
-  automated code style checks with `pep8speaks
-  <https://pep8speaks.com/>`_.
+  automated code style checks with ``pep8speaks``.
 
 * Developed `online documentation for PlasmaPy
   <https://docs.plasmapy.org>`_ that is hosted by `Read the Docs`_.

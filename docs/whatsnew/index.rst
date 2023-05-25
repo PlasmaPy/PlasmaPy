@@ -8,11 +8,14 @@ This document lists the changes made during each release of PlasmaPy,
 including bug fixes and changes to the application programming interface
 (API).
 
-
 .. toctree::
    :maxdepth: 1
 
-   0.8.0
+   dev
+   2023.1.0
+   0.9.1
+   0.9.0
+   0.8.1
    0.7.0
    0.6.0
    0.5.0

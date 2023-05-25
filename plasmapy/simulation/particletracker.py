@@ -21,12 +21,12 @@ class ParticleTracker:
 
     Parameters
     ----------
-    plasma : `Plasma`
+    plasma : Plasma object
         Plasma from which fields can be pulled.
 
     type : `str`
-        Particle type. See `plasmapy.particles.ParticleLike` for suitable
-        arguments. The default is a proton.
+        Particle type. See `plasmapy.particles.particle_class.ParticleLike`
+        for suitable arguments. The default is a proton.
 
     n_particles : `int`
         Number of macroparticles. The default is a single particle.
@@ -69,7 +69,7 @@ class ParticleTracker:
         Total mass of macroparticle.
 
     Examples
-    ----------
+    --------
     See `Particle Stepper Notebook`_.
 
     .. _`Particle Stepper Notebook`: ../notebooks/simulation/particle_stepper.ipynb
@@ -92,7 +92,6 @@ class ParticleTracker:
         nt=np.inf,
         integrator="explicit_boris",
     ):
-
         if np.isinf(dt) and np.isinf(nt):  # coverage: ignore
             raise ValueError("Both dt and nt are infinite.")
 
@@ -149,11 +148,11 @@ class ParticleTracker:
         Calculate the kinetic energy history for each particle.
 
         Returns
-        --------
+        -------
         `~astropy.units.Quantity`
             Array of kinetic energies, shape (nt, n).
         """
-        return (self.velocity_history ** 2).sum(axis=-1) * self.eff_m / 2
+        return (self.velocity_history**2).sum(axis=-1) * self.eff_m / 2
 
     def boris_push(self, init=False):
         r"""
@@ -167,7 +166,7 @@ class ParticleTracker:
             to ``-dt/2``.
 
         Notes
-        ----------
+        -----
         The Boris algorithm :cite:p:`boris:1970` is the standard energy
         particle movement in plasma physics. See pages 58–63 of
         :cite:t:`birdsall:2004` for more details.
@@ -258,7 +257,7 @@ class ParticleTracker:
         ----------
         plot : `str`, optional
             Enable plotting of position component x, y, z for each of these
-            letters included in `plot`.
+            letters included in ``plot``.
         """
         import matplotlib.pyplot as plt
 

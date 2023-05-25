@@ -171,15 +171,15 @@ below relate to the behavior of the :rst:dir:`automodsumm` directive.
     object names just like ``__all__``.  The :rst:dir:`automodapi` and
     :rst:dir:`automodsumm` directives will used this defined dunder to identify
     the objects associated with the custom group.  Using
-    `plasmapy.formulary.parameters` as an example, the **aliases** group can
+    `plasmapy.formulary.speeds` as an example, the **aliases** group can
     now be collected and displayed like
 
     .. code-block:: rst
 
-        .. automodsumm:: plasmapy.formulary.parameters
+        .. automodsumm:: plasmapy.formulary.speeds
            :groups: aliases
 
-    .. automodsumm:: plasmapy.formulary.parameters
+    .. automodsumm:: plasmapy.formulary.speeds
            :groups: aliases
 
 .. confval:: automodapi_generate_module_stub_files
@@ -503,7 +503,6 @@ class AutomodsummOptions:
 
         # filter out skipped objects
         for group in list(mod_objs.keys()):
-
             names = mod_objs[group]["names"]
             qualnames = mod_objs[group]["qualnames"]
             objs = mod_objs[group]["objs"]

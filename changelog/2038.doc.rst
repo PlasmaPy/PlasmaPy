@@ -1,0 +1,2 @@
+Restructured the |documentation guide| by putting information on writing
+documentation prior to instructions for building documentation.

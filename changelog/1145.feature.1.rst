@@ -1,3 +1,0 @@
-Created decorator `~plasmapy.utils.decorators.lite_func.bind_lite_func`
-for handling the binding of lite-functions and any supporting functions
-to a parent function.

@@ -6,7 +6,7 @@ import pytest
 from astropy import units as u
 
 from plasmapy.dispersion.numerical.hollweg_ import hollweg
-from plasmapy.formulary import parameters as pfp
+from plasmapy.formulary import speeds
 from plasmapy.particles import Particle
 from plasmapy.utils.exceptions import PhysicsWarning
 
@@ -15,7 +15,7 @@ class TestHollweg:
     _kwargs_single_valued = {
         "k": 0.01 * u.rad / u.m,
         "theta": 88 * u.deg,
-        "n_i": 5 * u.cm ** -3,
+        "n_i": 5 * u.cm**-3,
         "B": 2.2e-8 * u.T,
         "T_e": 1.6e6 * u.K,
         "T_i": 4.0e5 * u.K,
@@ -24,14 +24,14 @@ class TestHollweg:
 
     _kwargs_hollweg1999 = {
         "theta": 90 * u.deg,
-        "n_i": 5 * u.cm ** -3,
+        "n_i": 5 * u.cm**-3,
         "T_e": 1.6e6 * u.K,
         "T_i": 4.0e5 * u.K,
         "ion": Particle("p+"),
     }
 
     @pytest.mark.parametrize(
-        "kwargs, _error",
+        ("kwargs", "_error"),
         [
             ({**_kwargs_single_valued, "B": "wrong type"}, TypeError),
             ({**_kwargs_single_valued, "B": [8e-9, 8.5e-9] * u.T}, ValueError),
@@ -45,8 +45,8 @@ class TestHollweg:
             ({**_kwargs_single_valued, "k": -1.0 * u.rad / u.m}, ValueError),
             ({**_kwargs_single_valued, "k": 5 * u.s}, u.UnitTypeError),
             ({**_kwargs_single_valued, "n_i": "wrong type"}, TypeError),
-            ({**_kwargs_single_valued, "n_i": [5e6, 6e6] * u.m ** -3}, ValueError),
-            ({**_kwargs_single_valued, "n_i": -5e6 * u.m ** -3}, ValueError),
+            ({**_kwargs_single_valued, "n_i": [5e6, 6e6] * u.m**-3}, ValueError),
+            ({**_kwargs_single_valued, "n_i": -5e6 * u.m**-3}, ValueError),
             ({**_kwargs_single_valued, "n_i": 2 * u.s}, u.UnitTypeError),
             ({**_kwargs_single_valued, "T_e": "wrong type"}, TypeError),
             ({**_kwargs_single_valued, "T_e": [1.4e6, 1.7e6] * u.K}, ValueError),
@@ -68,14 +68,14 @@ class TestHollweg:
             hollweg(**kwargs)
 
     @pytest.mark.parametrize(
-        "kwargs, _warning",
+        ("kwargs", "_warning"),
         [
             # w/w_ci << 1 PhysicsWarning
             (
                 {
                     "k": 0.01 * u.rad / u.m,
                     "theta": 88 * u.deg,
-                    "n_i": 0.05 * u.cm ** -3,
+                    "n_i": 0.05 * u.cm**-3,
                     "B": 2.2e-8 * u.T,
                     "T_e": 1.6e6 * u.K,
                     "T_i": 4.0e5 * u.K,
@@ -88,7 +88,7 @@ class TestHollweg:
                 {
                     "k": 10e-8 * u.rad / u.m,
                     "theta": 88 * u.deg,
-                    "n_i": 5 * u.cm ** -3,
+                    "n_i": 5 * u.cm**-3,
                     "B": 6.98e-8 * u.T,
                     "T_e": 1.6e6 * u.K,
                     "T_i": 4.0e5 * u.K,
@@ -101,7 +101,7 @@ class TestHollweg:
                 {
                     "k": 10e-8 * u.rad / u.m,
                     "theta": 84 * u.deg,
-                    "n_i": 1 * u.cm ** -3,
+                    "n_i": 1 * u.cm**-3,
                     "B": 6.98e-8 * u.T,
                     "T_e": 1.6e6 * u.K,
                     "T_i": 4.0e5 * u.K,
@@ -117,7 +117,85 @@ class TestHollweg:
             hollweg(**kwargs)
 
     @pytest.mark.parametrize(
-        "kwargs, expected, desired_beta",
+        ("kwargs", "expected"),
+        [
+            # k is an array, theta is single valued
+            (
+                {
+                    **_kwargs_single_valued,
+                    "k": np.logspace(-7, -2, 2) * u.rad / u.m,
+                },
+                {
+                    "fast_mode": [2.62911663e-02 + 0.0j, 2.27876968e03 + 0.0j],
+                    "alfven_mode": [7.48765909e-04 + 0.0j, 2.13800404e03 + 0.0j],
+                    "acoustic_mode": [0.00043295 + 0.0j, 0.07358991 + 0.0j],
+                },
+            ),
+            # theta is an array, k is single valued
+            (
+                {**_kwargs_single_valued, "theta": [87, 88] * u.deg},
+                {
+                    "fast_mode": [3406.43522969 + 0.0j, 2278.76967883 + 0.0j],
+                    "alfven_mode": [2144.81200575 + 0.0j, 2138.00403666 + 0.0j],
+                    "acoustic_mode": [0.11044097 + 0.0j, 0.07358991 + 0.0j],
+                },
+            ),
+            # k and theta are an array
+            (
+                {
+                    **_kwargs_single_valued,
+                    "k": np.logspace(-7, -2, 2),
+                    "theta": [86, 87, 88] * u.deg,
+                },
+                {
+                    "fast_mode": [
+                        [
+                            2.62804756e-02 + 0.0j,
+                            2.62867114e-02 + 0.0j,
+                            2.62911663e-02 + 0.0j,
+                        ],
+                        [
+                            4.53954617e03 + 0.0j,
+                            3.40643523e03 + 0.0j,
+                            2.27876968e03 + 0.0j,
+                        ],
+                    ],
+                    "alfven_mode": [
+                        [
+                            1.49661942e-03 + 0.0j,
+                            1.12286371e-03 + 0.0j,
+                            7.48765909e-04 + 0.0j,
+                        ],
+                        [
+                            2.14516382e03 + 0.0j,
+                            2.14481201e03 + 0.0j,
+                            2.13800404e03 + 0.0j,
+                        ],
+                    ],
+                    "acoustic_mode": [
+                        [
+                            0.00086572 + 0.0j,
+                            0.00064937 + 0.0j,
+                            0.00043295 + 0.0j,
+                        ],
+                        [
+                            0.14735951 + 0.0j,
+                            0.11044097 + 0.0j,
+                            0.07358991 + 0.0j,
+                        ],
+                    ],
+                },
+            ),
+        ],
+    )
+    def test_handle_k_theta_arrays(self, kwargs, expected):
+        """Test scenarios involving k and theta arrays."""
+        ws = hollweg(**kwargs)
+        for mode, val in ws.items():
+            assert np.allclose(val.value, expected[mode])
+
+    @pytest.mark.parametrize(
+        ("kwargs", "expected", "desired_beta"),
         [
             (  # beta = 1/20 for kx*L = 0
                 {**_kwargs_hollweg1999, "k": 1e-14 * u.rad / u.m, "B": 6.971e-8 * u.T},
@@ -201,8 +279,8 @@ class TestHollweg:
         """
         # k values need to be single valued for this test to function correctly
 
-        cs = pfp.cs_(kwargs["T_e"], kwargs["T_i"], kwargs["ion"]).value
-        va = pfp.va_(kwargs["B"], kwargs["n_i"], ion=kwargs["ion"]).value
+        cs = speeds.cs_(kwargs["T_e"], kwargs["T_i"], kwargs["ion"]).value
+        va = speeds.va_(kwargs["B"], kwargs["n_i"], ion=kwargs["ion"]).value
 
         beta = (cs / va) ** 2
         if not np.isclose(beta, desired_beta, atol=2e-4):
@@ -218,8 +296,16 @@ class TestHollweg:
 
         assert np.allclose(big_omega, expected, atol=1e-2)
 
+    @pytest.mark.xfail(
+        reason=(
+            "This functionality is breaking because of updates to "
+            "gyrofrequency where z_mean override behavior is being "
+            "dropped. We will address z_mean override behavior when "
+            "hollweg is decorated with particle_input."
+        )
+    )
     @pytest.mark.parametrize(
-        "kwargs, expected",
+        ("kwargs", "expected"),
         [
             (
                 {
@@ -246,7 +332,7 @@ class TestHollweg:
             assert np.isclose(ws[mode], ws_expected[mode], atol=1e-5, rtol=1.7e-4)
 
     @pytest.mark.parametrize(
-        "kwargs, expected",
+        ("kwargs", "expected"),
         [
             ({**_kwargs_single_valued}, {"shape": ()}),
             (
@@ -255,6 +341,21 @@ class TestHollweg:
                     "k": [1, 2, 3] * u.rad / u.m,
                 },
                 {"shape": (3,)},
+            ),
+            (
+                {
+                    **_kwargs_single_valued,
+                    "k": [1, 2, 3] * u.rad / u.m,
+                    "theta": [50, 77] * u.deg,
+                },
+                {"shape": (3, 2)},
+            ),
+            (
+                {
+                    **_kwargs_single_valued,
+                    "theta": [50, 77] * u.deg,
+                },
+                {"shape": (2,)},
             ),
         ],
     )
@@ -265,7 +366,7 @@ class TestHollweg:
         assert isinstance(ws, dict)
         assert len({"acoustic_mode", "alfven_mode", "fast_mode"} - set(ws.keys())) == 0
 
-        for mode, val in ws.items():
+        for _mode, val in ws.items():  # noqa: B007
             assert isinstance(val, u.Quantity)
             assert val.unit == u.rad / u.s
             assert val.shape == expected["shape"]

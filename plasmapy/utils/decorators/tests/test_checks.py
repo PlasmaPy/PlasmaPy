@@ -9,7 +9,6 @@ import pytest
 from astropy import units as u
 from astropy.constants import c
 from types import LambdaType
-from typing import Any, Dict
 from unittest import mock
 
 from plasmapy.utils.decorators.checks import (
@@ -64,7 +63,7 @@ class TestCheckUnits:
     check_defaults = CheckUnits._CheckUnits__check_defaults  # type: Dict[str, Any]
 
     @staticmethod
-    def foo_no_anno(x, y):
+    def foo_no_anno(x, y):  # noqa: FURB118
         return x + y
 
     @staticmethod
@@ -168,9 +167,9 @@ class TestCheckUnits:
         assert norme[0][1] == u.deg_C
         assert isinstance(norme[0][2], LambdaType)
         assert isinstance(norme[0][3], LambdaType)
-        for val in [-20.0, 50.0, 195.0]:
-            assert norme[0][2](val) == (lambda x: x - 273.15)(val)
-            assert norme[0][3](val) == (lambda x: x + 273.15)(val)
+        for val in (-20.0, 50.0, 195.0):
+            assert norme[0][2](val) == (lambda x: x - 273.15)(val)  # noqa: PLC3002
+            assert norme[0][3](val) == (lambda x: x + 273.15)(val)  # noqa: PLC3002
 
         # not a 2, 3, or 4-tuple
         with pytest.raises(ValueError):
@@ -402,7 +401,7 @@ class TestCheckUnits:
         ]
 
         # perform tests
-        for ii, case in enumerate(_cases):
+        for _ii, case in enumerate(_cases):  # noqa: B007
             sig = inspect.signature(case["setup"]["function"])
             bound_args = sig.bind(*case["setup"]["args"], **case["setup"]["kwargs"])
 
@@ -422,15 +421,12 @@ class TestCheckUnits:
             assert sorted(checks.keys()) == sorted(case["output"].keys())
 
             # if check key-value not specified then default is assumed
-            for arg_name in case["output"].keys():
+            for arg_name in case["output"]:
                 arg_checks = checks[arg_name]
 
-                for key in default_checks.keys():
+                for key, val in default_checks.items():
                     if key in case["output"][arg_name]:
-                        val = case["output"][arg_name][key]
-                    else:
-                        val = default_checks[key]
-
+                        val = case["output"][arg_name][key]  # noqa: PLW2901
                     assert arg_checks[key] == val
 
     def test_cu_method__check_unit(self):
@@ -528,7 +524,11 @@ class TestCheckUnits:
                     "input": (
                         5.0 * u.km,
                         "arg",
-                        {**check, "units": [u.cm, u.m], "pass_equivalent_units": True},
+                        {
+                            **check,
+                            "units": [u.cm, u.m],
+                            "pass_equivalent_units": True,
+                        },
                     ),
                     "output": (5.0 * u.km, None, None, None),
                 },
@@ -540,10 +540,10 @@ class TestCheckUnits:
         cu.f = self.foo_no_anno
 
         # perform tests
-        for ii, case in enumerate(_cases):
+        for case in _cases:
             arg, arg_name, arg_checks = case["input"]
             _results = cu._check_unit_core(arg, arg_name, arg_checks)
-            assert _results[0:3] == case["output"][0:3]
+            assert _results[:3] == case["output"][:3]
 
             if _results[3] is None:
                 assert _results[3] is case["output"][3]
@@ -631,7 +631,7 @@ class TestCheckUnits:
         assert wfoo.__signature__ == inspect.signature(self.foo_no_anno)
 
     @mock.patch(
-        CheckUnits.__module__ + "." + CheckUnits.__qualname__,
+        f"{CheckUnits.__module__}.{CheckUnits.__qualname__}",
         side_effect=CheckUnits,
         autospec=True,
     )
@@ -723,7 +723,7 @@ class TestCheckValues:
     check_defaults = CheckValues._CheckValues__check_defaults  # type: Dict[str, bool]
 
     @staticmethod
-    def foo(x, y):
+    def foo(x, y):  # noqa: FURB118
         return x + y
 
     @staticmethod
@@ -845,10 +845,10 @@ class TestCheckValues:
             assert sorted(checks.keys()) == sorted(case["output"].keys())
 
             # if check key-value not specified then default is assumed
-            for arg_name in case["output"].keys():
+            for arg_name in case["output"]:
                 arg_checks = checks[arg_name]
 
-                for key in default_checks.keys():
+                for key in default_checks:
                     if key in case["output"][arg_name]:
                         val = case["output"][arg_name][key]
                     else:
@@ -864,7 +864,7 @@ class TestCheckValues:
         """
         # setup wrapped function
         cv = CheckValues()
-        wfoo = cv(self.foo)
+        cv(self.foo)
 
         # methods must exist
         assert hasattr(cv, "_check_value")
@@ -914,7 +914,7 @@ class TestCheckValues:
                     "args": [
                         complex(5),
                         complex(2, 3),
-                        np.complex(3.0),
+                        np.complex128(3.0),
                         complex(4.0, 2.0) * u.cm,
                         np.array([complex(4, 5), complex(1)]) * u.kg,
                     ],
@@ -928,7 +928,7 @@ class TestCheckValues:
                     "args": [
                         complex(5),
                         complex(2, 3),
-                        np.complex(3.0),
+                        np.complex128(3.0),
                         complex(4.0, 2.0) * u.cm,
                         np.array([complex(4, 5), complex(1)]) * u.kg,
                     ],
@@ -1131,7 +1131,7 @@ class TestCheckValues:
         assert wfoo.__signature__ == inspect.signature(self.foo)
 
     @mock.patch(
-        CheckValues.__module__ + "." + CheckValues.__qualname__,
+        f"{CheckValues.__module__}.{CheckValues.__qualname__}",
         side_effect=CheckValues,
         autospec=True,
     )
@@ -1249,25 +1249,25 @@ relativistic_warning_examples = [
 
 
 # Tests for _check_relativistic
-@pytest.mark.parametrize("speed, betafrac", non_relativistic_speed_examples)
+@pytest.mark.parametrize(("speed", "betafrac"), non_relativistic_speed_examples)
 def test__check_relativisitc_valid(speed, betafrac):
     _check_relativistic(speed, "f", betafrac=betafrac)
 
 
-@pytest.mark.parametrize("speed, betafrac, error", relativistic_error_examples)
+@pytest.mark.parametrize(("speed", "betafrac", "error"), relativistic_error_examples)
 def test__check_relativistic_errors(speed, betafrac, error):
     with pytest.raises(error):
         _check_relativistic(speed, "f", betafrac=betafrac)
 
 
-@pytest.mark.parametrize("speed, betafrac", relativistic_warning_examples)
+@pytest.mark.parametrize(("speed", "betafrac"), relativistic_warning_examples)
 def test__check_relativistic_warnings(speed, betafrac):
     with pytest.warns(RelativityWarning):
         _check_relativistic(speed, "f", betafrac=betafrac)
 
 
 # Tests for check_relativistic decorator
-@pytest.mark.parametrize("speed, betafrac", non_relativistic_speed_examples)
+@pytest.mark.parametrize(("speed", "betafrac"), non_relativistic_speed_examples)
 def test_check_relativistic_decorator(speed, betafrac):
     @check_relativistic(betafrac=betafrac)
     def speed_func():
@@ -1294,7 +1294,7 @@ def test_check_relativistic_decorator_no_args_parentheses(speed):
     speed_func()
 
 
-@pytest.mark.parametrize("speed, betafrac, error", relativistic_error_examples)
+@pytest.mark.parametrize(("speed", "betafrac", "error"), relativistic_error_examples)
 def test_check_relativistic_decorator_errors(speed, betafrac, error):
     @check_relativistic(betafrac=betafrac)
     def speed_func():

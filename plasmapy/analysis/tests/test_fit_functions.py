@@ -29,7 +29,7 @@ class TestAbstractFitFunction:
         assert issubclass(self.ff_class, ABC)
 
     @pytest.mark.parametrize(
-        "name, isproperty",
+        ("name", "isproperty"),
         [
             ("__call__", False),
             ("curve_fit", False),
@@ -105,7 +105,7 @@ class BaseFFTests(ABC):
         assert ff_obj.__repr__() == f"{ff_obj.__str__()} {ff_obj.__class__}"
 
     @pytest.mark.parametrize(
-        "name, isproperty",
+        ("name", "isproperty"),
         [
             ("__call__", False),
             ("_param_names", False),
@@ -128,16 +128,15 @@ class BaseFFTests(ABC):
         if isproperty:
             assert isinstance(getattr(self.ff_class, name), property)
 
-        if name == "_param_names":
-            if self.ff_class._param_names == NotImplemented:
-                pytest.fail(
-                    f"{self.ff_class} class attribute '_param_names' needs to "
-                    f" be defined as a tuple of strings representing the names of "
-                    f"the fit parameters."
-                )
+        if name == "_param_names" and self.ff_class._param_names == NotImplemented:
+            pytest.fail(
+                f"{self.ff_class} class attribute '_param_names' needs to "
+                f" be defined as a tuple of strings representing the names of "
+                f"the fit parameters."
+            )
 
     @pytest.mark.parametrize(
-        "name, value_ref_name",
+        ("name", "value_ref_name"),
         [
             ("param_names", "_test_param_names"),
             ("latex_str", "_test_latex_str"),
@@ -162,7 +161,7 @@ class BaseFFTests(ABC):
         assert value == exp_value
 
     @pytest.mark.parametrize(
-        "params, param_errors, with_condition",
+        ("params", "param_errors", "with_condition"),
         [
             (None, None, does_not_raise()),
             ("default", "default", does_not_raise()),
@@ -225,7 +224,7 @@ class BaseFFTests(ABC):
         assert all(isinstance(val, str) for val in ff_obj.param_names)
 
     @pytest.mark.parametrize(
-        "params, extra, with_condition",
+        ("params", "extra", "with_condition"),
         [
             ([2], None, does_not_raise()),
             (5, None, pytest.raises(ValueError)),
@@ -247,7 +246,7 @@ class BaseFFTests(ABC):
             assert ff_obj.params == ff_obj.FitParamTuple(*params)
 
     @pytest.mark.parametrize(
-        "param_errors, extra, with_condition",
+        ("param_errors", "extra", "with_condition"),
         [
             ([2], None, does_not_raise()),
             (5, None, pytest.raises(ValueError)),
@@ -269,7 +268,7 @@ class BaseFFTests(ABC):
             assert ff_obj.param_errors == ff_obj.FitParamTuple(*param_errors)
 
     @pytest.mark.parametrize(
-        "x, replace_a_param, with_condition",
+        ("x", "replace_a_param", "with_condition"),
         [
             (0, None, does_not_raise()),
             (1.0, None, does_not_raise()),
@@ -298,7 +297,7 @@ class BaseFFTests(ABC):
             assert np.allclose(y, y_expected)
 
     @pytest.mark.parametrize(
-        "x, kwargs, with_condition",
+        ("x", "kwargs", "with_condition"),
         [
             (0, {}, does_not_raise()),
             (1.0, {}, does_not_raise()),
@@ -323,9 +322,7 @@ class BaseFFTests(ABC):
                 y_err = results
                 y = None
 
-            x_err = None
-            if "x_err" in kwargs:
-                x_err = kwargs["x_err"]
+            x_err = kwargs["x_err"] if "x_err" in kwargs else None
             if isinstance(x, list):
                 x = np.array(x)
             y_err_expected = self.func_err(x, params, param_errors, x_err=x_err)
@@ -336,7 +333,7 @@ class BaseFFTests(ABC):
                 assert np.allclose(y, self.func(x, *params))
 
     @pytest.mark.parametrize(
-        "x, kwargs, with_condition",
+        ("x", "kwargs", "with_condition"),
         [
             (0, {}, does_not_raise()),
             (0, {"reterr": True}, does_not_raise()),
@@ -356,13 +353,8 @@ class BaseFFTests(ABC):
         param_errors = self._test_param_errors
         ff_obj = self.ff_class(params=params, param_errors=param_errors)
 
-        reterr = False
-        if "reterr" in kwargs:
-            reterr = kwargs["reterr"]
-        x_err = None
-        if "x_err" in kwargs:
-            x_err = kwargs["x_err"]
-
+        reterr = kwargs["reterr"] if "reterr" in kwargs else False
+        x_err = kwargs["x_err"] if "x_err" in kwargs else None
         with with_condition:
             results = ff_obj(x, **kwargs)
             if reterr:
@@ -476,14 +468,14 @@ class TestFFExponentialPlusLinear(BaseFFTests):
         a_term = (exp_y * a_err / a) ** 2
         alpha_term = (exp_y * x * alpha_err) ** 2
         m_term = (m_err * x) ** 2
-        b_term = b_err ** 2
+        b_term = b_err**2
 
         err = a_term + alpha_term + m_term + b_term
 
         if x_err is not None:
             x_term = (exp_y * alpha * x_err) ** 2
             x_term += (m * x_err) ** 2
-            x_term += 2 * a * alpha * m * np.exp(alpha * x) * (x_err ** 2)
+            x_term += 2 * a * alpha * m * np.exp(alpha * x) * (x_err**2)
 
             err += x_term
 
@@ -523,7 +515,7 @@ class TestFFExponentialPlusOffset(BaseFFTests):
 
         a_term = (exp_y * a_err / a) ** 2
         alpha_term = (exp_y * x * alpha_err) ** 2
-        b_term = b_err ** 2
+        b_term = b_err**2
 
         err = a_term + alpha_term + b_term
 
@@ -569,7 +561,7 @@ class TestFFLinear(BaseFFTests):
         m_err, b_err = param_errors
 
         m_term = (m_err * x) ** 2
-        b_term = b_err ** 2
+        b_term = b_err**2
         err = m_term + b_term
 
         if x_err is not None:
@@ -580,7 +572,7 @@ class TestFFLinear(BaseFFTests):
         return err
 
     @pytest.mark.parametrize(
-        "params, param_errors, root, root_err, conditional",
+        ("params", "param_errors", "root", "root_err", "conditional"),
         [
             ((1, 1), (0, 0), -1, 0, does_not_raise()),
             (

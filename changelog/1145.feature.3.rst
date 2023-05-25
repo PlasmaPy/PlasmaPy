@@ -1,6 +1,0 @@
-Created function `~plasmapy.formulary.parameters.thermal_speed_coefficients`
-to support `~plasmapy.formulary.parameters.thermal_speed_lite` usage by
-calculating the various thermal speed coefficients.
-`~plasmapy.formulary.parameters.thermal_speed_coefficients` is also bound
-to `~plasmapy.formulary.parameters.thermal_speed` as the ``coefficients``
-attribute.

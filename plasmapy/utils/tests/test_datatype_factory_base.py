@@ -7,7 +7,7 @@ from plasmapy.utils.datatype_factory_base import (
     ValidationFunctionError,
 )
 
-# SunPy is released under a BSD-style open source licence:
+# SunPy is released under a BSD-style open source license:
 
 # Copyright (c) 2013-2018 The SunPy developers
 # All rights reserved.
@@ -40,7 +40,7 @@ from plasmapy.utils.datatype_factory_base import (
 # Commit hash : f6330eea602ea796b5b004dee283b8877b24da23
 
 
-class BaseWidget(object):
+class BaseWidget:
     def __init__(self, *args, **kwargs):
         pass
 
@@ -80,7 +80,7 @@ class UnvalidatedWidget(BaseWidget):
 
 
 class MissingClassMethodWidget(BaseWidget):
-    def _factory_validation_function(cls, *args, **kwargs):
+    def _factory_validation_function(self, *args, **kwargs):
         return kwargs.get("style") == "missing"
 
 
@@ -91,13 +91,12 @@ class DifferentValidationWidget(BaseWidget):
 
 
 class MissingClassMethodDifferentValidationWidget(BaseWidget):
-    def different_validation_function(cls, *args, **kwargs):
+    def different_validation_function(self, *args, **kwargs):
         return kwargs.get("style") == "missing-different"
 
 
-class TestBasicRegistrationFactory(object):
+class TestBasicRegistrationFactory:
     def test_default_factory(self):
-
         DefaultFactory = BasicRegistrationFactory()
 
         DefaultFactory.register(DefaultWidget, is_default=True)
@@ -131,7 +130,6 @@ class TestBasicRegistrationFactory(object):
             TestFactory.register(StandardWidget, validation_function="not_callable")
 
     def test_no_default_factory(self):
-
         NoDefaultFactory = BasicRegistrationFactory()
 
         NoDefaultFactory.register(StandardWidget)
@@ -155,7 +153,7 @@ class TestBasicRegistrationFactory(object):
             registry=external_registry
         )
 
-        assert len(external_registry) == 0
+        assert not external_registry
 
         FactoryWithExternalRegistry.register(StandardWidget)
         assert type(FactoryWithExternalRegistry(style="standard")) is StandardWidget
@@ -164,7 +162,6 @@ class TestBasicRegistrationFactory(object):
         assert len(external_registry) == 1
 
     def test_multiple_match_factory(self):
-
         MultipleMatchFactory = BasicRegistrationFactory()
 
         MultipleMatchFactory.register(StandardWidget)

@@ -1,4 +1,0 @@
-Added the `~plasmapy.particles.particle_collections.ParticleList.is_category`
-method for |ParticleList| objects.  This method is analogous to the
-`~plasmapy.particles.particle_class.Particle.is_category` method for
-|Particle| objects.

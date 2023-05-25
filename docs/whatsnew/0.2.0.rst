@@ -1,5 +1,5 @@
-Version 0.2.0
-=============
+PlasmaPy v0.2.0 (2019-05-31)
+============================
 
 Version 0.2.0 is the second development release of PlasmaPy. Alongside a few
 new features, it brings plentiful refactoring, documentation and back stage

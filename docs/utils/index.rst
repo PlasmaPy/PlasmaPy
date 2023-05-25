@@ -23,6 +23,7 @@ Functionality contained in `~plasmapy.utils` includes:
    `~plasmapy.utils.decorators.validators.validate_quantities`
    and `~plasmapy.utils.decorators.checks.check_relativistic`.
  * Helper utilities for importing and testing packages.
+ * Functionality for downloading files from `PlasmaPy's data repository`_.
 
 API
 ===
@@ -36,8 +37,8 @@ API
 .. automodapi:: plasmapy.utils.code_repr
    :include-heading:
 
-.. automodapi:: plasmapy.utils.pytest_helpers
+.. automodapi:: plasmapy.utils.calculator
    :include-heading:
 
-.. automodapi:: plasmapy.utils.calculator
+.. automodapi:: plasmapy.utils.data
    :include-heading:

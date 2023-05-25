@@ -11,8 +11,35 @@
 PlasmaPy Documentation
 ######################
 
-PlasmaPy_ is an open source community-developed core Python_ 3.7+
-package for plasma physics currently under development.
+PlasmaPy_ is an open source community-developed Python_ |minpython|\ +
+package for plasma research and education. PlasmaPy is a platform by
+which the plasma community can share code and collaboratively develop
+new software tools for plasma research.
+
+If you are new to PlasmaPy, please check out our `getting started
+notebooks <getting-started-notebooks>`_ and our :ref:`example gallery
+<examples>`. We invite you to share ideas and ask questions in our
+`Matrix chat room`_ or during our weekly virtual `office hours`_.
+
+PlasmaPy is developed openly `on GitHub <PlasmaPy's GitHub repository>`_,
+where you can `request a new feature`_ or `report a bug`_.
+
+.. important::
+
+   If you use PlasmaPy for work presented in a publication or talk,
+   please help the project by following these instructions to
+   :ref:`cite or acknowledge <citation>` PlasmaPy.
+
+.. toctree::
+   :caption: First Steps
+   :maxdepth: 1
+
+   Installing <install>
+   getting_started
+   examples
+   COMMUNICATION
+   Code of Conduct <CODE_OF_CONDUCT.rst>
+   about/citation
 
 Example highlights
 ------------------
@@ -20,25 +47,12 @@ Example highlights
 .. nbgallery::
    :hidden:
 
+   notebooks/getting_started/particles
    notebooks/diagnostics/charged_particle_radiography_particle_tracing
    notebooks/dispersion/two_fluid_dispersion
    notebooks/diagnostics/thomson
    notebooks/analysis/swept_langmuir/find_floating_potential
    notebooks/formulary/thermal_bremsstrahlung
-   notebooks/plasma/grids_nonuniform
-
-
-.. toctree::
-   :caption: First Steps
-   :maxdepth: 1
-
-   Vision Statement <about/vision_statement>
-   Installing <install>
-   examples
-   COMMUNICATION
-   CONTRIBUTING
-   CODE_OF_CONDUCT
-   about/citation
 
 .. toctree::
    :maxdepth: 1
@@ -55,27 +69,30 @@ Example highlights
 
 .. toctree::
    :maxdepth: 1
-   :caption: Guide for Contributors
+   :caption: Contributor Guide
 
-   Overview <development/index>
-   development/code_guide
-   development/changelog_guide
-   development/doc_guide
-   development/testing_guide
+   Overview <contributing/index>
+   contributing/getting_ready
+   contributing/workflow
+   contributing/coding_guide
+   contributing/changelog_guide
+   contributing/doc_guide
+   contributing/testing_guide
+   contributing/release_guide
 
 .. toctree::
    :maxdepth: 1
    :caption: All the Rest
 
+   whatsnew/index
    about/credits
    bibliography
    glossary
-   whatsnew/index
-   about/stability
+   performance_tips
+   PlasmaPy Enhancement Proposals <https://github.com/PlasmaPy/PlasmaPy-PLEPs>
    PlasmaPy.org <https://www.plasmapy.org>
+   GitHub Repository <https://github.com/PlasmaPy/PlasmaPy>
 
-.. The about PlasmaPy section has some important information that would
-   be helpful to have more readily accessible from the main doc index
-   page.
-
-.. TODO: Add feedback link: .. _feedback@plasmapy.org: mailto:feedback@plasmapy.org
+.. _new discussion on GitHub: https://github.com/PlasmaPy/PlasmaPy/discussions/new/choose
+.. _report a bug: https://github.com/PlasmaPy/PlasmaPy/issues/new?assignees=&labels=Bug&template=bug_report.yml
+.. _request a new feature: https://github.com/PlasmaPy/PlasmaPy/issues/new?assignees=&labels=Feature+request&template=feature_request.yml

@@ -1,2 +1,0 @@
-Used the extract method refactoring pattern on the initialization of
-|Particle| objects.

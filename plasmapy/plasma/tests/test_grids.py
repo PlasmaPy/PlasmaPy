@@ -6,12 +6,12 @@ import astropy.units as u
 import numpy as np
 import pytest
 
-from plasmapy.plasma import grids as grids
+from plasmapy.plasma import grids
 
 rs = np.random.RandomState(120921)
 
 
-@pytest.fixture
+@pytest.fixture()
 def abstract_grid_uniform():
     """
     A `pytest` fixture that generates an abstract grid that spans
@@ -30,14 +30,14 @@ def abstract_grid_uniform():
     grid.add_quantities(y=grid.grids[1])
     grid.add_quantities(z=grid.grids[2])
 
-    radius = np.sqrt(grid.pts0 ** 2 + grid.pts1 ** 2 + grid.pts2 ** 2)
-    rho = radius.to(u.mm).value ** 4 * u.kg * u.m ** -3
+    radius = np.sqrt(grid.pts0**2 + grid.pts1**2 + grid.pts2**2)
+    rho = radius.to(u.mm).value ** 4 * u.kg * u.m**-3
     grid.add_quantities(rho=rho)
 
     return grid
 
 
-@pytest.fixture
+@pytest.fixture()
 def abstract_grid_nonuniform():
     """
     A `pytest` fixture that generates an abstract grid that spans
@@ -61,8 +61,8 @@ def abstract_grid_nonuniform():
     grid.add_quantities(y=grid.grids[1])
     grid.add_quantities(z=grid.grids[2])
 
-    radius = np.sqrt(grid.pts0 ** 2 + grid.pts1 ** 2 + grid.pts2 ** 2)
-    rho = radius.to(u.mm).value ** 4 * u.kg * u.m ** -3
+    radius = np.sqrt(grid.pts0**2 + grid.pts1**2 + grid.pts2**2)
+    rho = radius.to(u.mm).value ** 4 * u.kg * u.m**-3
     grid.add_quantities(rho=rho)
 
     return grid
@@ -121,7 +121,7 @@ create_args = [
     # Test wrong number of positional arguments: too nmany
     ([1 * u.cm] * 4, {"num": 10}, None, TypeError),
     # Test unequal lengths of arguments raises error
-    ([1 * u.cm, [2 * u.m, 3 * u.m]], {"num": 10}, None, ValueError),
+    ([1 * u.cm, [2 * u.m, 3 * u.m]], {"num": 10}, None, TypeError),
     # Test arrays of points that are different shapes
     (
         [
@@ -141,17 +141,17 @@ create_args = [
         ],
         {"num": [10, 5, 3]},
         (10, 5, 3),
-        ValueError,
+        TypeError,
     ),
-    ([-1, 1], {"num": 10}, (10, 10, 10), ValueError),
+    ([-1, 1], {"num": 10}, (10, 10, 10), TypeError),
     # Test incompatible grid units
     ([1 * u.cm, 1 * u.eV], {"num": 10}, None, ValueError),
     # Non-integer num
-    ([-1 * u.cm, 1 * u.cm], {"num": 10.1}, (10, 10, 10), ValueError),
+    ([-1 * u.cm, 1 * u.cm], {"num": 10.1}, (10, 10, 10), TypeError),
 ]
 
 
-@pytest.mark.parametrize("args,kwargs,shape,error", create_args)
+@pytest.mark.parametrize(("args", "kwargs", "shape", "error"), create_args)
 def test_AbstractGrid_creation(args, kwargs, shape, error):
     """
     Test the creation of AbstractGrids
@@ -166,7 +166,9 @@ def test_AbstractGrid_creation(args, kwargs, shape, error):
     # If an exception is expected, verify that it is raised
     else:
         with pytest.raises(error):
-            grid = grids.CartesianGrid(*args, **kwargs)
+            print(f"{args = }")
+            print(f"{kwargs = }")
+            grids.CartesianGrid(*args, **kwargs)
 
 
 def test_print_summary(abstract_grid_uniform, abstract_grid_nonuniform):
@@ -223,10 +225,10 @@ abstract_attrs = [
 ]
 
 
-@pytest.mark.parametrize("attr,type,type_in_iter,value", abstract_attrs)
+@pytest.mark.parametrize(("attr", "type_", "type_in_iter", "value"), abstract_attrs)
 def test_AbstractGrid_uniform_attributes(
     attr,
-    type,
+    type_,
     type_in_iter,
     value,
     abstract_grid_uniform,
@@ -236,7 +238,7 @@ def test_AbstractGrid_uniform_attributes(
     values for the fixture abstract_grid_uniform.
     """
     attr = getattr(abstract_grid_uniform, attr)
-    assert isinstance(attr, type)
+    assert isinstance(attr, type_)
 
     # If the attribute is an iterable, check the type inside too
     if type_in_iter is not None:
@@ -259,10 +261,10 @@ abstract_attrs = [
 ]
 
 
-@pytest.mark.parametrize("attr,type,type_in_iter,value", abstract_attrs)
+@pytest.mark.parametrize(("attr", "type_", "type_in_iter", "value"), abstract_attrs)
 def test_AbstractGrid_nonuniform_attributes(
     attr,
-    type,
+    type_,
     type_in_iter,
     value,
     abstract_grid_nonuniform,
@@ -273,7 +275,7 @@ def test_AbstractGrid_nonuniform_attributes(
     """
 
     attr = getattr(abstract_grid_nonuniform, attr)
-    assert isinstance(attr, type)
+    assert isinstance(attr, type_)
 
     # If the attribute is an iterable, check the type inside too
     if type_in_iter is not None:
@@ -314,10 +316,10 @@ def test_unit_attribute_error_case():
     )
 
     with pytest.raises(ValueError):
-        grid.unit
+        grid.unit  # noqa: B018
 
 
-@pytest.mark.parametrize("key,value,error,warning,match", quantities)
+@pytest.mark.parametrize(("key", "value", "error", "warning", "match"), quantities)
 def test_AbstractGrid_add_quantities(
     abstract_grid_uniform, key, value, error, warning, match
 ):
@@ -362,7 +364,9 @@ req_q = [
 ]
 
 
-@pytest.mark.parametrize("required,replace_with_zeros,error,warning,match", req_q)
+@pytest.mark.parametrize(
+    ("required", "replace_with_zeros", "error", "warning", "match"), req_q
+)
 def test_AbstractGrid_require_quantities(
     abstract_grid_uniform, required, replace_with_zeros, error, warning, match
 ):
@@ -414,15 +418,12 @@ on_grid = [
 ]
 
 
-@pytest.mark.parametrize("fixture,pos,result", on_grid)
+@pytest.mark.parametrize(("fixture", "pos", "result"), on_grid)
 def test_AbstractGrid_on_grid(
     abstract_grid_uniform, abstract_grid_nonuniform, fixture, pos, result
 ):
     # Select one of the grid fixtures
-    if fixture == "uniform":
-        grid = abstract_grid_uniform
-    else:
-        grid = abstract_grid_nonuniform
+    grid = abstract_grid_uniform if fixture == "uniform" else abstract_grid_nonuniform
 
     out = grid.on_grid(pos)
     assert np.all(out == result)
@@ -440,15 +441,12 @@ vector_intersect = [
 ]
 
 
-@pytest.mark.parametrize("fixture,p1,p2,result", vector_intersect)
+@pytest.mark.parametrize(("fixture", "p1", "p2", "result"), vector_intersect)
 def test_AbstractGrid_vector_intersects(
     abstract_grid_uniform, abstract_grid_nonuniform, fixture, p1, p2, result
 ):
     # Select one of the grid fixtures
-    if fixture == "uniform":
-        grid = abstract_grid_uniform
-    else:
-        grid = abstract_grid_nonuniform
+    grid = abstract_grid_uniform if fixture == "uniform" else abstract_grid_nonuniform
 
     assert grid.vector_intersects(p1, p2) == result
     # Test going backwards yields the same result
@@ -460,7 +458,7 @@ def test_AbstractGrid_vector_intersects(
 # **********************************************************************
 
 
-@pytest.fixture
+@pytest.fixture()
 def uniform_cartesian_grid():
     """
     A `pytest` fixture that generates a CartesianGrid that spans
@@ -479,8 +477,8 @@ def uniform_cartesian_grid():
     grid.add_quantities(y=grid.grids[1])
     grid.add_quantities(z=grid.grids[2])
 
-    radius = np.sqrt(grid.pts0 ** 2 + grid.pts1 ** 2 + grid.pts2 ** 2)
-    rho = radius.to(u.mm).value ** 4 * u.kg * u.m ** -3
+    radius = np.sqrt(grid.pts0**2 + grid.pts1**2 + grid.pts2**2)
+    rho = radius.to(u.mm).value ** 4 * u.kg * u.m**-3
     grid.add_quantities(rho=rho)
 
     return grid
@@ -499,7 +497,9 @@ create_args_uniform_cartesian = [
 ]
 
 
-@pytest.mark.parametrize("args,kwargs,shape,error", create_args_uniform_cartesian)
+@pytest.mark.parametrize(
+    ("args", "kwargs", "shape", "error"), create_args_uniform_cartesian
+)
 def test_CartesianGrid_creation(args, kwargs, shape, error):
     # If no exception is expected, create the grid and check its shape
     if error is None:
@@ -512,7 +512,7 @@ def test_CartesianGrid_creation(args, kwargs, shape, error):
 
 
 @pytest.mark.parametrize(
-    "pos,quantities,expected",
+    ("pos", "quantities", "expected"),
     [  # Test one point
         (np.array([0.1, -0.3, 0]) * u.cm, ["x"], np.array([0.1]) * u.cm),
         # Test two points and two quantities
@@ -540,7 +540,7 @@ def test_uniform_cartesian_NN_interp(pos, quantities, expected, uniform_cartesia
 
 
 @pytest.mark.parametrize(
-    "pos,quantities,error",
+    ("pos", "quantities", "error"),
     [  # Quantity not in
         (np.array([0.1, -0.3, 0]) * u.cm, ["not_a_quantity"], KeyError),
     ],
@@ -591,7 +591,7 @@ def test_uniform_cartesian_NN_interp_persistence(uniform_cartesian_grid):
 # **********************************************************************
 
 
-@pytest.fixture
+@pytest.fixture()
 def nonuniform_cartesian_grid():
     """
     A `pytest` fixture that generates a NonUniformCartesianGrid that spans
@@ -625,8 +625,8 @@ def nonuniform_cartesian_grid():
     grid.add_quantities(y=y)
     grid.add_quantities(z=z)
 
-    radius = np.sqrt(grid.pts0 ** 2 + grid.pts1 ** 2 + grid.pts2 ** 2)
-    rho = radius.to(u.mm).value ** 4 * u.kg * u.m ** -3
+    radius = np.sqrt(grid.pts0**2 + grid.pts1**2 + grid.pts2**2)
+    rho = radius.to(u.mm).value ** 4 * u.kg * u.m**-3
     grid.add_quantities(rho=rho)
 
     return grid
@@ -645,7 +645,9 @@ create_args_nonuniform_cartesian = [
 ]
 
 
-@pytest.mark.parametrize("args,kwargs,shape,error", create_args_nonuniform_cartesian)
+@pytest.mark.parametrize(
+    ("args", "kwargs", "shape", "error"), create_args_nonuniform_cartesian
+)
 def test_NonUniformCartesianGrid_creation(args, kwargs, shape, error):
     # If no exception is expected, create the grid and check its shape
     if error is None:
@@ -658,7 +660,7 @@ def test_NonUniformCartesianGrid_creation(args, kwargs, shape, error):
 
 
 @pytest.mark.parametrize(
-    "pos,quantities,expected",
+    ("pos", "quantities", "expected"),
     [  # Test one point
         (np.array([0.1, -0.3, 0]) * u.cm, ["x"], np.array([0.1]) * u.cm),
         # Test two points and two quantities
@@ -688,7 +690,7 @@ def test_nonuniform_cartesian_NN_interp(
     assert np.allclose(pout, expected, atol=dx_max, equal_nan=True)
 
 
-@pytest.mark.slow
+@pytest.mark.slow()
 def test_nonuniform_cartesian_nearest_neighbor_interpolator():
     """
     Note that this test is running on a very small grid, because otherwise it is
@@ -718,7 +720,7 @@ def test_nonuniform_cartesian_nearest_neighbor_interpolator():
 
 
 @pytest.mark.parametrize(
-    "pos, what, expected",
+    ("pos", "what", "expected"),
     [
         (np.array([0.1, -0.3, 0.2]) * u.cm, ("x",), np.array([0.1]) * u.cm),
         (np.array([0.1, 0.25, 0.2]) * u.cm, ("x",), np.array([0.1]) * u.cm),
@@ -774,7 +776,7 @@ def test_volume_averaged_interpolator_missing_key(uniform_cartesian_grid):
 
 
 @pytest.mark.parametrize(
-    "pos, nan_mask",
+    ("pos", "nan_mask"),
     [
         (np.array([-5.0, 0.0, 0.0]) * u.cm, None),
         (np.array([5.0, 0.0, 0.0]) * u.cm, None),
@@ -860,7 +862,7 @@ def test_volume_averaged_interpolator_compare_NN_1D(uniform_cartesian_grid):
     nn_rho = uniform_cartesian_grid.nearest_neighbor_interpolator(interp_pts, "rho")
 
     a, b = np.argmin(np.abs(interp_hax + 9)), np.argmin(np.abs(interp_hax - 9))
-    analytic = interp_hax ** 4
+    analytic = interp_hax**4
     va_error = np.sum(np.abs(analytic[a:b] - va_rho.value[a:b]))
     nn_error = np.sum(np.abs(analytic[a:b] - nn_rho.value[a:b]))
 
@@ -888,7 +890,7 @@ def test_volume_averaged_interpolator_compare_NN_3D(uniform_cartesian_grid):
     xax = interp_pts[:, 0].to(u.mm).value
     yax = interp_pts[:, 1].to(u.mm).value
     zax = interp_pts[:, 2].to(u.mm).value
-    analytic = np.sqrt(xax ** 2 + yax ** 2 + zax ** 2)
+    analytic = np.sqrt(xax**2 + yax**2 + zax**2)
 
     va_rho = uniform_cartesian_grid.volume_averaged_interpolator(interp_pts, "rho")
     nn_rho = uniform_cartesian_grid.nearest_neighbor_interpolator(interp_pts, "rho")
@@ -906,9 +908,6 @@ def test_NonUniformCartesianGrid():
 
     pts0, pts1, pts2 = grid.grids
 
-    shape = grid.shape
-    units = grid.units
-
     grid.add_quantities(x=pts0)
     print(grid)
 
@@ -916,7 +915,7 @@ def test_NonUniformCartesianGrid():
     assert not grid.is_uniform
 
     # Test assigning a quantity
-    q1 = rs.randn(10, 10, 10) * u.kg / u.cm ** 3
+    q1 = rs.randn(10, 10, 10) * u.kg / u.cm**3
     grid.add_quantities(rho=q1)
 
     # Test grid resolution for non-uniform grids
@@ -924,23 +923,23 @@ def test_NonUniformCartesianGrid():
 
     # Test that many properties are unavailable
     with pytest.raises(ValueError):
-        grid.ax0
+        grid.ax0  # noqa: B018
     with pytest.raises(ValueError):
-        grid.ax1
+        grid.ax1  # noqa: B018
     with pytest.raises(ValueError):
-        grid.ax2
+        grid.ax2  # noqa: B018
     with pytest.raises(ValueError):
-        grid.dax0
+        grid.dax0  # noqa: B018
     with pytest.raises(ValueError):
-        grid.dax1
+        grid.dax1  # noqa: B018
     with pytest.raises(ValueError):
-        grid.dax2
+        grid.dax2  # noqa: B018
 
     # Test that input with the wrong units will raise an exception
     L0 = [-1 * u.mm, 0 * u.rad, -1 * u.mm]
     L1 = [1 * u.mm, 2 * np.pi * u.rad, 1 * u.mm]
     with pytest.raises(ValueError):
-        grid = grids.NonUniformCartesianGrid(L0, L1, num=10)
+        grids.NonUniformCartesianGrid(L0, L1, num=10)
 
 
 def debug_volume_avg_interpolator():
@@ -957,8 +956,8 @@ def debug_volume_avg_interpolator():
     grid.add_quantities(y=grid.grids[1])
 
     # add a mass density to grid
-    radius = np.sqrt(grid.pts0 ** 2 + grid.pts1 ** 2 + grid.pts2 ** 2)
-    rho = radius.to(u.mm).value ** 4 * u.kg * u.m ** -3
+    radius = np.sqrt(grid.pts0**2 + grid.pts1**2 + grid.pts2**2)
+    rho = radius.to(u.mm).value ** 4 * u.kg * u.m**-3
     grid.add_quantities(rho=rho)
 
     # Create a low resolution test grid
@@ -974,10 +973,10 @@ def debug_volume_avg_interpolator():
     va_rho = grid.volume_averaged_interpolator(interp_pts, "rho")
     nn_rho = grid.nearest_neighbor_interpolator(interp_pts, "rho")
 
-    analytic = interp_hax ** 4
+    analytic = interp_hax**4
 
     raw_hax = grid.ax0.to(u.mm).value
-    half = int(25 / 2)
+    half = 12
     raw_rho = grid["rho"][:, half, half]
     plt.plot(raw_hax, raw_rho, marker="*", label="Interpolated points")
     plt.plot(interp_hax, nn_rho, label="Nearest neighbor")

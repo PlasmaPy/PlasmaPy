@@ -1,2 +1,0 @@
-Applied reST_ substitutions for `plasmapy.particles` and
-|ParticleTracker| in the narrative documentation.

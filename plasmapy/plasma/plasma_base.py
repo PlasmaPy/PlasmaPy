@@ -8,16 +8,17 @@ from abc import ABC, abstractmethod
 
 class BasePlasma(ABC):
     """
-    Registration class for `~plasmapy.plasma.GenericPlasma` and declares
-    some abstract methods for data common in different kinds of plasmas.
+    Registration class for `~plasmapy.plasma.plasma_base.GenericPlasma`
+    and declares some abstract methods for data common in different
+    kinds of plasmas.
 
     This class checks for the existence of a method named ``is_datasource_for``
-    when a subclass of `GenericPlasma` is defined. If it exists it will add that
-    class to the registry.
+    when a subclass of `~plasmapy.plasma.plasma_base.GenericPlasma` is
+    defined. If it exists it will add that class to the registry.
     """
 
     # GenericPlasma subclass registry
-    _registry = dict()
+    _registry = {}
 
     def __init_subclass__(cls, **kwargs):
         super().__init_subclass__(**kwargs)
@@ -27,8 +28,8 @@ class BasePlasma(ABC):
     # This class is supposed to declare abstract methods (@abstractmethod or
     # @abstractproperty as appropriate) that are common in most plasmas
     # (like `electronTemperature`, `ionTemperature`,
-    # `electronDensitry`, `ionDensity`, `averageIonization`, etc.)
-    # where as `GenericPlasma` class will hold the definitions for these
+    # `electronDensity`, `ionDensity`, `averageIonization`, etc.)
+    # whereas `GenericPlasma` class will hold the definitions for these
     # abstract methods.
 
     # For reference, see
@@ -36,34 +37,34 @@ class BasePlasma(ABC):
 
     @property
     @abstractmethod
-    def electron_temperature(self):
+    def electron_temperature(self):  # noqa: D102
         raise NotImplementedError
 
     @property
     @abstractmethod
-    def ion_temperature(self):
+    def ion_temperature(self):  # noqa: D102
         raise NotImplementedError
 
     @property
     @abstractmethod
-    def electron_density(self):
+    def electron_density(self):  # noqa: D102
         raise NotImplementedError
 
     @property
     @abstractmethod
-    def ion_density(self):
+    def ion_density(self):  # noqa: D102
         raise NotImplementedError
 
     @property
     @abstractmethod
-    def average_ionization(self):
+    def average_ionization(self):  # noqa: D102
         raise NotImplementedError
 
 
 class GenericPlasma(BasePlasma):
     """
     A Generic Plasma class. This class contains definitions for abstract
-    methods declared in the `BasePlasma`.
+    methods declared in the `~plasmapy.plasma.plasma_base.BasePlasma`.
     """
 
     def __init__(self, **kwargs):
@@ -72,17 +73,17 @@ class GenericPlasma(BasePlasma):
     # The definitions for the abstract methods declared in `BasePlasma`
     # goes here.
 
-    def electron_temperature(self):
+    def electron_temperature(self):  # noqa: D102
         raise NotImplementedError
 
-    def ion_temperature(self):
+    def ion_temperature(self):  # noqa: D102
         raise NotImplementedError
 
-    def electron_density(self):
+    def electron_density(self):  # noqa: D102
         raise NotImplementedError
 
-    def ion_density(self):
+    def ion_density(self):  # noqa: D102
         raise NotImplementedError
 
-    def average_ionization(self):
+    def average_ionization(self):  # noqa: D102
         raise NotImplementedError

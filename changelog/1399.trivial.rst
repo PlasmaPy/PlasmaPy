@@ -1,3 +1,0 @@
-|CustomParticle| and |DimensionlessParticle| no longer emit a warning
-when the charge and/or mass is not provided and got assigned a value of
-|nan| in the appropriate units.

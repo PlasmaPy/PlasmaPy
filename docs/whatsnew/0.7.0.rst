@@ -1,4 +1,4 @@
-Plasmapy v0.7.0 (2021-11-18)
+PlasmaPy v0.7.0 (2021-11-18)
 ============================
 
 This release of PlasmaPy contains 127 commits in 73 merged pull requests closing 37 issues from 19 people, 14 of which are first-time contributors to PlasmaPy.
@@ -41,20 +41,20 @@ Backwards Incompatible Changes
   with the reasoning behind the removal outlined in the pull request. (`#1101 <https://github.com/plasmapy/plasmapy/pull/1101>`__)
 - Removed the ``Tracker.synthetic_radiograph()`` method and created the
   standalone function
-  :func:`~plasmapy.diagnostics.charged_particle_radiography.synthetic_radiograph`
+  :func:``~plasmapy.diagnostics.charged_particle_radiography.synthetic_radiograph``
   in its place.  This new function takes either a
-  `~plasmapy.diagnostics.charged_particle_radiography.Tracker` object or
+  ``~plasmapy.diagnostics.charged_particle_radiography.Tracker`` object or
   a dictionary equivalent to
-  `~plasmapy.diagnostics.charged_particle_radiography.Tracker.results_dict`. (`#1134 <https://github.com/plasmapy/plasmapy/pull/1134>`__)
+  ``~plasmapy.diagnostics.charged_particle_radiography.Tracker.results_dict``. (`#1134 <https://github.com/plasmapy/plasmapy/pull/1134>`__)
 - Renamed subpackage ``plasmapy.diagnostics.proton_radiography`` to
-  `plasmapy.diagnostics.charged_particle_radiography`, and renamed the
+  ``plasmapy.diagnostics.charged_particle_radiography``, and renamed the
   ``SyntheticProtonRadiograph`` class within that module to
-  `~plasmapy.diagnostics.charged_particle_radiography.Tracker`. (`#1134 <https://github.com/plasmapy/plasmapy/pull/1134>`__)
-- `~plasmapy.diagnostics.charged_particle_radiography.Tracker` no longer
+  ``~plasmapy.diagnostics.charged_particle_radiography.Tracker``. (`#1134 <https://github.com/plasmapy/plasmapy/pull/1134>`__)
+- ``~plasmapy.diagnostics.charged_particle_radiography.Tracker`` no longer
   supports making changes to an instantiated object and
   re-running the simulation.  Subsequent simulations should be performed
   by instantiating a new
-  `~plasmapy.diagnostics.charged_particle_radiography.Tracker` object and
+  ``~plasmapy.diagnostics.charged_particle_radiography.Tracker`` object and
   running its simulation. (`#1134 <https://github.com/plasmapy/plasmapy/pull/1134>`__)
 - For `~plasmapy.plasma.grids.CartesianGrid` the
   `~plasmapy.plasma.grids.CartesianGrid.volume_averaged_interpolator`
@@ -91,14 +91,14 @@ Deprecations and Removals
   `~plasmapy.particles.ionization_state.IonizationState.charge_numbers`. (`#1136 <https://github.com/plasmapy/plasmapy/pull/1136>`__)
 - The ``particle`` attribute of |Particle|
   has been removed after having been deprecated in 0.6.0. (`#1146 <https://github.com/plasmapy/plasmapy/pull/1146>`__)
-- Use more generalized keyword argument ``T`` instead of ``T_i`` in `plasmapy.formulary.parameters.gyroradius`.
+- Use more generalized keyword argument ``T`` instead of ``T_i`` in ``plasmapy.formulary.parameters.gyroradius``.
   The ``T_i`` argument has been deprecated and will be removed in a subsequent release. (`#1210 <https://github.com/plasmapy/plasmapy/pull/1210>`__)
 
 
 Features
 --------
 
-- Add the `~plasmapy.particles.ionization_state.IonizationState.average_ion`
+- Added the `~plasmapy.particles.ionization_state.IonizationState.average_ion`
   method to |IonizationState|. (`#1028 <https://github.com/plasmapy/plasmapy/pull/1028>`__)
 - Added the
   `~plasmapy.particles.ionization_state_collection.IonizationStateCollection.average_ion`
@@ -114,8 +114,8 @@ Features
 - |IonicLevel| and |IonizationState| now accept an additional, optional ion
   temperature argument for each of the ionic levels. (`#1130 <https://github.com/plasmapy/plasmapy/pull/1130>`__)
 - Added the
-  :meth:`~plasmapy.diagnostics.charged_particle_radiography.Tracker.save_results`
-  method to `~plasmapy.diagnostics.charged_particle_radiography.Tracker`
+  :meth:``~plasmapy.diagnostics.charged_particle_radiography.Tracker.save_results``
+  method to ``~plasmapy.diagnostics.charged_particle_radiography.Tracker``
   for saving results to the :file:`.npz` file format (see `numpy.lib.format` for
   details on the file format). (`#1134 <https://github.com/plasmapy/plasmapy/pull/1134>`__)
 - Added the `plasmapy.utils.decorators.deprecation` module. The module includes
@@ -124,7 +124,7 @@ Features
 - Created the `~plasmapy.particles.ionization_state.IonizationState.to_list`
   method of |IonizationState| to provide a |ParticleList| instance that
   contains the different ionic levels. (`#1154 <https://github.com/plasmapy/plasmapy/pull/1154>`__)
-- The behaviour of the function `~plasmapy.formulary.parameters.gyroradius` has
+- The behavior of the function ``plasmapy.formulary.parameters.gyroradius`` has
   been changed. If `numpy.nan` values are provided for ``T_i`` or ``Vperp``,
   then instead of raising a slightly misleading error, `numpy.nan` in the
   appropriate units is returned. (`#1187 <https://github.com/plasmapy/plasmapy/pull/1187>`__)
@@ -139,7 +139,7 @@ Features
   related to analytical dispersion solutions. (`#1208 <https://github.com/plasmapy/plasmapy/pull/1208>`__)
 - Implemented ``__eq__``, ``__ne__`` and ``__hash__`` to allow
   |CustomParticle| instances to be used as `dict` keys. (`#1216 <https://github.com/plasmapy/plasmapy/pull/1216>`__)
-- Added the `~plasmapy.particles.particle_collections.ionic_levels` function to create a
+- Added the ``plasmapy.particles.particle_collections.ionic_levels`` function to create a
   |ParticleList| initialized with different ionic levels of an element or isotope. (`#1223 <https://github.com/plasmapy/plasmapy/pull/1223>`__)
 
 
@@ -150,7 +150,7 @@ Bug Fixes
 - Fixed the behavior of ``plasmapy.formulary.mathematics.Chandrasekhar_G``
   at very small and very large argument values. This change was reverted
   in `#1233 <https://github.com/plasmapy/plasmapy/pull/1233>`__. (`#1125 <https://github.com/plasmapy/plasmapy/pull/1125>`__)
-- Running `~plasmapy.diagnostics.charged_particle_radiography.synthetic_radiograph`
+- Running ``~plasmapy.diagnostics.charged_particle_radiography.synthetic_radiograph``
   with the keyword ``optical_density=True`` will now return `numpy.inf`
   where the source profile intensity is zero. Previously, an incorrect value
   was returned since zero entries were replaced with values of ``1`` before
@@ -181,7 +181,7 @@ Improved Documentation
 
 - Improved consistency of documentation style and made
   reST_ fixes in several subpackages. (`#1073 <https://github.com/plasmapy/plasmapy/pull/1073>`__)
-- Added a pre-release section to the release guide.
+- Added a pre-release section to the |release guide|.
   This section now includes steps for having a feature freeze about a week before the release,
   followed by a code freeze about two days before the release. (`#1081 <https://github.com/plasmapy/plasmapy/pull/1081>`__)
 - Created the Sphinx_ extension package `plasmapy_sphinx` and used it to replace
@@ -202,41 +202,41 @@ Improved Documentation
   for example, in the development guide in the documentation). (`#1150 <https://github.com/plasmapy/plasmapy/pull/1150>`__)
 - Updated information on how to write and build documentation in the
   development guide. (`#1156 <https://github.com/plasmapy/plasmapy/pull/1156>`__)
-- Updated information on how to write and run tests in the contributor
-  guide. (`#1163 <https://github.com/plasmapy/plasmapy/pull/1163>`__)
+- Updated information on how to write and run tests in the |contributor guide|.
+  (`#1163 <https://github.com/plasmapy/plasmapy/pull/1163>`__)
 - Created an outline of a page in the development guide to describe the workflow
   required to contribute to PlasmaPy. (`#1178 <https://github.com/plasmapy/plasmapy/pull/1178>`__)
 - Added brief description about the physics of the upper-hybrid resonance
-  to the docstring of the function `~plasmapy.formulary.parameters.upper_hybrid_frequency`. (`#1180 <https://github.com/plasmapy/plasmapy/pull/1180>`__)
+  to the docstring of the function ``plasmapy.formulary.parameters.upper_hybrid_frequency``. (`#1180 <https://github.com/plasmapy/plasmapy/pull/1180>`__)
 - Added a brief description about the physics of the lower-hybrid resonance
-  to the docstring of the function `~plasmapy.formulary.parameters.lower_hybrid_frequency`. (`#1181 <https://github.com/plasmapy/plasmapy/pull/1181>`__)
-- Made the function `~plasmapy.formulary.parameters.gyrofrequency` more general
+  to the docstring of the function ``plasmapy.formulary.parameters.lower_hybrid_frequency``. (`#1181 <https://github.com/plasmapy/plasmapy/pull/1181>`__)
+- Made the function ``plasmapy.formulary.parameters.gyrofrequency`` more general
   by removing the indications that it might only work for ions. (`#1183 <https://github.com/plasmapy/plasmapy/pull/1183>`__)
 - Make `plasmapy.analysis.fit_functions.AbstractFitFunction.FitParamTuple` a
   property to fix the documentation build warning caused by the release
   of Sphinx_ ``v4.1.0``. (`#1199 <https://github.com/plasmapy/plasmapy/pull/1199>`__)
-- Included a step in the release guide to update Binder requirements
+- Included a step in the |release guide| to update Binder requirements
   so that the release of PlasmaPy on PyPI_ gets installed when opening
   example notebooks from the stable and release branches of the online
   documentation. (`#1205 <https://github.com/plasmapy/plasmapy/pull/1205>`__)
-- Updated the documentation guide to include updates to tox_ environments
+- Updated the |documentation guide| to include updates to tox_ environments
   for building the documentation. (`#1206 <https://github.com/plasmapy/plasmapy/pull/1206>`__)
 - Fixed numerous broken reST_ links in prior changelogs. (`#1207 <https://github.com/plasmapy/plasmapy/pull/1207>`__)
 - Improve the docstring for `plasmapy.online_help`. (`#1213 <https://github.com/plasmapy/plasmapy/pull/1213>`__)
 - Renamed "Development Guide" to "Contributor Guide", and temporarily removed
   the incomplete :file:`docs/development/workflow.rst` from the ``toctree`` of the
   Contributor Guide. (`#1217 <https://github.com/plasmapy/plasmapy/pull/1217>`__)
-- Fixed a typo in the docstring of `~plasmapy.formulary.parameters.Alfven_speed`. (`#1218 <https://github.com/plasmapy/plasmapy/pull/1218>`__)
+- Fixed a typo in the docstring of ``plasmapy.formulary.parameters.Alfven_speed``. (`#1218 <https://github.com/plasmapy/plasmapy/pull/1218>`__)
 - Fixed broken reST_ links in docstrings for aliases in `plasmapy.formulary`. (`#1238 <https://github.com/plasmapy/plasmapy/pull/1238>`__)
 - Fixed multiple broken and redirected links. (`#1257 <https://github.com/plasmapy/plasmapy/pull/1257>`__)
-- Updated the documentation guide to include a description on how to
+- Updated the |documentation guide| to include a description on how to
   add and cite references to PlasmaPy's global bibliography BibTeX_ file,
   :file:`docs/bibliography.bib`. (`#1263 <https://github.com/plasmapy/plasmapy/pull/1263>`__)
 - Added sphinxcontrib-bibtex_ as a Sphinx_ extension to enable references
   to be stored in a BibTeX_ file. (`#1263 <https://github.com/plasmapy/plasmapy/pull/1263>`__)
-- Began a documentation-wide bibliography page. (`#1263 <https://github.com/plasmapy/plasmapy/pull/1263>`__)
-- Updated documentation guide to describe where formulae should go in
-  docstrings and how to use glossary entries. (`#1264 <https://github.com/plasmapy/plasmapy/pull/1264>`__)
+- Began a documentation-wide |bibliography| page. (`#1263 <https://github.com/plasmapy/plasmapy/pull/1263>`__)
+- Updated the |documentation guide| to describe where formulae should go in
+  docstrings and how to use |glossary| entries. (`#1264 <https://github.com/plasmapy/plasmapy/pull/1264>`__)
 - Updated and fixed hyperlinks in the documentation. (`#1267 <https://github.com/plasmapy/plasmapy/pull/1267>`__)
 - Adopted the ``"xcode"`` code highlighting style for
   pygments_ to increase color contrast and improve web accessibility. (`#1268 <https://github.com/plasmapy/plasmapy/pull/1268>`__)
@@ -250,7 +250,7 @@ Improved Documentation
   documentation for a pull request. (`#1298 <https://github.com/plasmapy/plasmapy/pull/1298>`__)
 - Incorporated citations in the
   `~plasmapy.dispersion.analytical.two_fluid_.two_fluid` docstring into
-  the PlasmaPy bibliography framework. (`#1301 <https://github.com/plasmapy/plasmapy/pull/1301>`__)
+  the PlasmaPy |bibliography| framework. (`#1301 <https://github.com/plasmapy/plasmapy/pull/1301>`__)
 
 
 Trivial/Internal Changes
@@ -286,7 +286,7 @@ Trivial/Internal Changes
   ``D409``, ``D412``, ``E712``, ``E713``, ``F403``, ``F541``, ``RST213``,
   ``RST306``, and ``RST902``. Addressed any failed linter checks from this
   modification. (`#1127 <https://github.com/plasmapy/plasmapy/pull/1127>`__)
-- `~plasmapy.diagnostics.charged_particle_radiography.synthetic_radiograph`
+- ``~plasmapy.diagnostics.charged_particle_radiography.synthetic_radiograph``
   now determines the default detector size to be the smallest detector
   plane centered on the origin that includes all particles. (`#1134 <https://github.com/plasmapy/plasmapy/pull/1134>`__)
 - Added ion velocity input to the :file:`thomson.ipynb` diagnostics notebook. (`#1171 <https://github.com/plasmapy/plasmapy/pull/1171>`__)
@@ -324,7 +324,7 @@ Trivial/Internal Changes
   radians. (`#1301 <https://github.com/plasmapy/plasmapy/pull/1301>`__)
 - Replaced usage of ``distutils.version.StrictVersion`` with
   ``packaging.version.Version`` because ``distutils`` has been deprecated.
-  As part of this change, `packaging <https://packaging.pypa.io>`__ has been
+  As part of this change, `packaging <https://packaging.pypa.io/en/latest>`__ has been
   added as a dependency. (`#1306 <https://github.com/plasmapy/plasmapy/pull/1306>`__)
 - Increased the minimum version of matplotlib to 3.3.0 and updated
   `plasmapy.diagnostics.langmuir.swept_probe_analysis` to be compatible
