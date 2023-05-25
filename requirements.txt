@@ -14,7 +14,7 @@ argon2-cffi-bindings==21.2.0
     # via argon2-cffi
 asteval==0.9.29
     # via lmfit
-astropy==5.2.2
+astropy==5.3
     # via plasmapy (setup.py)
 asttokens==2.2.1
     # via stack-data
@@ -209,7 +209,7 @@ nbformat==5.8.0
     #   nbclient
     #   nbconvert
     #   nbsphinx
-nbsphinx==0.9.1
+nbsphinx==0.9.2
     # via plasmapy (setup.py)
 nest-asyncio==1.5.6
     # via
@@ -275,7 +275,7 @@ pluggy==1.0.0
     #   tox
 pre-commit==3.3.2
     # via plasmapy (setup.py)
-prometheus-client==0.16.0
+prometheus-client==0.17.0
     # via jupyter-server
 prompt-toolkit==3.0.38
     # via ipython
@@ -403,7 +403,7 @@ sphinx-notfound-page==0.8.3
     # via plasmapy (setup.py)
 sphinx-reredirects==0.1.2
     # via plasmapy (setup.py)
-sphinx-rtd-theme==1.2.0
+sphinx-rtd-theme==1.2.1
     # via plasmapy (setup.py)
 sphinx-tabs==3.4.1
     # via plasmapy (setup.py)
