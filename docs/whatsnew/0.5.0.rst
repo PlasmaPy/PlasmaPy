@@ -1,7 +1,9 @@
 PlasmaPy v0.5.0 (2020-12-09)
 ============================
 
-This release of PlasmaPy contains 58 commits in 31 merged pull requests closing 16 issues from 8 people, 4 of which are first-time contributors to PlasmaPy.
+This release of PlasmaPy contains 58 commits in 31 merged pull requests
+closing 16 issues from 8 people, 4 of which are first-time contributors
+to PlasmaPy.
 
 The people who have contributed to the code for this release are:
 
