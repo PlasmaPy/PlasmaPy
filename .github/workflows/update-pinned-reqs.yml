@@ -30,35 +30,24 @@ jobs:
     - name: Generate requirements.txt
       run: pip-compile --all-extras --output-file=requirements.txt --resolver=backtracking -r -U
 
+    - uses: tibdex/github-app-token@v1
+      id: generate-token
+      with:
+        app_id: ${{ secrets.APP_ID }}
+        private_key: ${{ secrets.APP_PRIVATE_KEY }}
+
     - name: Create Pull Request
       uses: peter-evans/create-pull-request@v5
-      env:
-        GITHUB_TOKEN: ${{ secrets.REPO_SCOPED_TOKEN }}
       with:
+        token: ${{ steps.generate-token.outputs.token }}
         commit-message: Regenerate requirements.txt
         title: Update pinned requirements
-        body: >
-          This PR
-          [regenerates](https://www.youtube.com/watch?v=qWM7l9SAipg&themeRefresh=1)
-          the pinned requirements contained in
-          [\`requirements.txt\`](https://github.com/PlasmaPy/PlasmaPy/blob/main/requirements.txt).
-          This file defines the Python environment used by certain
-          GitHub Actions checks, as well as by IDEs like PyCharm and VS
-          Code.
+        body: |
+          This PR [regenerates](https://www.youtube.com/watch?v=qWM7l9SAipg&themeRefresh=1) the pinned requirements contained in [requirements.txt](https://github.com/PlasmaPy/PlasmaPy/blob/main/requirements.txt).
 
-          If all tests pass, please merge this PR. If any checks fail
-          due to changes in the packages that we depend on, this PR may
-          be used to perform the fixes that are necessary to get the
-          checks to pass again.
+          This file defines a Python environment used by certain CI checks, as well as by IDEs like PyCharm and VS Code.
 
-          The pinned requirements are created by the command
-
-          \`\`\`console
-          pip-compile --all-extras --output-file=requirements.txt --resolver=backtracking -r -U
-          \`\`\`
-
-          which uses \`pip-compile\` from
-          [\`pip-tools\`](https://pip-tools.readthedocs.io/).
+          If all tests pass, please merge this PR. If any checks fail due to changes in the packages that we depend on, this PR may be used to perform the fixes that are necessary to get the           checks to pass again.
         labels: No changelog entry needed, dependencies
         delete-branch: true
         base: main
