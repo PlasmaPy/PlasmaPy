@@ -97,10 +97,10 @@ the same length as that heading.
    Heading 3
    ~~~~~~~~~
 
-We can link to code objects by enclosing them in single backticks.
-This linking will work for Python_ objects as well as certain packages
-like NumPy_, SciPy_, Astropy_, and pandas_. This linking is described in
-the section on :ref:`external-references`. In-line code samples are
+We can link to code objects by enclosing them in single backticks. This
+linking will work for Python_ objects as well as certain packages like
+NumPy_, SciPy_, Astropy_, and pandas_. This linking is described in the
+section on :ref:`external-references`. In-line code samples are
 typically enclosed in double backticks. To get inline code highlighting,
 use the :rest:`:py:` role for Python code or :rest:`:bash:` for code run
 in a terminal.
@@ -135,8 +135,8 @@ This reST_ block renders as:
    The ``:py:`` role can be used for inline code highlighting:
    :py:`import astropy.units as u`.
 
-Sphinx_ can format code blocks for Python_ and the Python_ console
-using the :rst:dir:`code-block` :term:`directive`.
+Sphinx_ can format code blocks for Python_ and the Python_ console using
+the :rst:dir:`code-block` :term:`directive`.
 
    .. code-block:: rst
 
@@ -1265,17 +1265,17 @@ Reference target not found
 
 Warnings like ``py:obj reference target not found`` occur when Sphinx_
 attempts to interpret text as a Python object, but is unable to do so.
-For example, if a docstring includes ```y```, Sphinx will attempt
-to link to an object named ``y``. If there is no object named ``y``,
-then Sphinx will issue this warning, which gets treated like an error.
+For example, if a docstring includes ```y```, Sphinx will attempt to
+link to an object named ``y``. If there is no object named ``y``, then
+Sphinx will issue this warning, which gets treated like an error.
 
 If the text is meant to be an inline code example, surround it with
 double backticks instead of single backticks.
 
-When the text is meant to represent a code object, this warning
-usually indicates a typo or a namespace error. For example, the
-warning resulting from ```plasmapy.paritcles``` could be resolved by
-fixing the typo and changing it to ```plasmapy.particles```.
+When the text is meant to represent a code object, this warning usually
+indicates a typo or a namespace error. For example, the warning
+resulting from ```plasmapy.paritcles``` could be resolved by fixing the
+typo and changing it to ```plasmapy.particles```.
 
 .. important::
 
@@ -1316,7 +1316,7 @@ Missing attribute errors
 ------------------------
 
 An `AttributeError` may occur when an ``import`` statement is missing in
-a :file:`__init__.py` file.  For example, the error
+a :file:`__init__.py` file. For example, the error
 
 .. code-block::
 
@@ -1337,21 +1337,20 @@ Warnings like the following:
    WARNING: :47: (WARNING/2) Definition list ends without a blank line; unexpected unindent.
 
 may show up when Sphinx attempts to interpret text as a list, but is
-unable to do so. This warning might not show the file that it occurs
-in.
+unable to do so. This warning might not show the file that it occurs in.
 
-If this documentation contains a list, make sure that it is followed
-by a blank line and follows the formatting described in `Sphinx's
+If this documentation contains a list, make sure that it is followed by
+a blank line and follows the formatting described in `Sphinx's
 documentation on lists`_.
 
 This warning may occur in other places due to an indentation or other
-formatting problem.  Try checking out the formatting in the
+formatting problem. Try checking out the formatting in the
 :ref:`example docstring` above.
 
-This warning can occur when a changelog entry contains lines that
-start with a backtick. Try editing each changelog entry so that it is
-on a single really long line, rewording the changelog entry, or
-using :ref:`substitutions`.
+This warning can occur when a changelog entry contains lines that start
+with a backtick. Try editing each changelog entry so that it is on a
+single really long line, rewording the changelog entry, or using
+:ref:`substitutions`.
 
 .. _Sphinx's documentation on lists:
   https://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html#lists-and-quote-like-blocks

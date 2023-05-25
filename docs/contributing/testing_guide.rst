@@ -87,9 +87,9 @@ does it in isolation from other tests :cite:p:`khorikov:2020`. A typical
 *assert* :cite:p:`osherove:2013`. An |integration test| verifies that
 multiple software components work together as intended.
 
-PlasmaPy's tests are set up using the pytest_ framework. The tests for
-a subpackage are located in its :file:`tests/` subdirectory in files
-with names of the form :file:`test_*.py`. For example, tests for
+PlasmaPy's tests are set up using the pytest_ framework. The tests for a
+subpackage are located in its :file:`tests/` subdirectory in files with
+names of the form :file:`test_*.py`. For example, tests for
 `plasmapy.formulary.speeds` are located at
 :file:`plasmapy/formulary/tests/test_speeds.py` relative to the top
 of the package. Example code contained within docstrings is tested to
@@ -133,8 +133,8 @@ Assertions
 ----------
 
 A software test runs a section of code and checks that a particular
-condition is met. If the condition is not met, then the test fails.
-Here is a minimal software test:
+condition is met. If the condition is not met, then the test fails. Here
+is a minimal software test:
 
 .. code-block:: python
 
@@ -148,11 +148,11 @@ The most common way to check that a condition is met is through an
 follows ``assert`` evaluates to `True`, then this statement will do
 nothing and the test will pass.
 
-When ``assert`` statements raise an `AssertionError`, pytest_ will display
-the values of the expressions evaluated in the ``assert`` statement. The
-automatic output from pytest_ is sufficient for simple tests like
-above. For more complex tests, we can add a descriptive error message
-to help us find the cause of a particular test failure.
+When ``assert`` statements raise an `AssertionError`, pytest_ will
+display the values of the expressions evaluated in the ``assert``
+statement. The automatic output from pytest_ is sufficient for simple
+tests like above. For more complex tests, we can add a descriptive error
+message to help us find the cause of a particular test failure.
 
 .. code-block:: python
 
@@ -174,16 +174,17 @@ Floating point comparisons
    tests because of slight differences due to limited precision,
    rounding errors, and revisions to fundamental constants.
 
-In order to avoid these difficulties, use `numpy.testing.assert_allclose`
-when comparing floating point numbers and arrays, and
-``astropy.tests.helper.assert_quantity_allclose`` when comparing |Quantity|
-instances. The ``rtol`` keyword for each of these functions sets the
-acceptable relative tolerance. The value of ``rtol`` should be set ∼1–2
-orders of magnitude greater than the expected relative uncertainty. For
-mathematical functions, a value of ``rtol=1e-14`` is often appropriate.
-For quantities that depend on physical constants, a value between
-``rtol=1e-8`` and ``rtol=1e-5`` may be required, depending on how much
-the accepted values for fundamental constants are likely to change.
+In order to avoid these difficulties, use
+`numpy.testing.assert_allclose` when comparing floating point numbers
+and arrays, and ``astropy.tests.helper.assert_quantity_allclose`` when
+comparing |Quantity| instances. The ``rtol`` keyword for each of these
+functions sets the acceptable relative tolerance. The value of ``rtol``
+should be set ∼1–2 orders of magnitude greater than the expected
+relative uncertainty. For mathematical functions, a value of
+``rtol=1e-14`` is often appropriate. For quantities that depend on
+physical constants, a value between ``rtol=1e-8`` and ``rtol=1e-5`` may
+be required, depending on how much the accepted values for fundamental
+constants are likely to change.
 
 Testing warnings and exceptions
 -------------------------------
@@ -230,9 +231,9 @@ To test that a function raises an appropriate exception, use
 Test independence and parametrization
 -------------------------------------
 
-In this section, we'll discuss the issue of parametrization based on
-an example of a :wikipedia:`proof <Riemann_hypothesis#Excluded_middle>`
-of Gauss's class number conjecture.
+In this section, we'll discuss the issue of parametrization based on an
+example of a :wikipedia:`proof <Riemann_hypothesis#Excluded_middle>` of
+Gauss's class number conjecture.
 
 The proof goes along these lines:
 
@@ -278,10 +279,10 @@ tests for the same function, the preferred method is to decorate it with
        assert proof_by_riemann(truth_value)
 
 This code snippet will run :py:`proof_by_riemann(truth_value)` for each
-``truth_value`` in :py:`[True, False]`. Both of the above
-tests will be run regardless of failures. This approach is much cleaner
-for long lists of arguments, and has the advantage that you would only
-need to change the function call in one place if the function changes.
+``truth_value`` in :py:`[True, False]`. Both of the above tests will be
+run regardless of failures. This approach is much cleaner for long lists
+of arguments, and has the advantage that you would only need to change
+the function call in one place if the function changes.
 
 With qualitatively different tests you would use either separate
 functions or pass in tuples containing inputs and expected values.
@@ -368,10 +369,10 @@ multiple values of :math:`x`. The hypothesis_ package simplifies
 Best practices
 ==============
 
-The following list contains suggested practices for testing
-scientific software and making tests easier to run and maintain. These
-guidelines are not rigid, and should be treated as general principles
-should be balanced with each other rather than absolute principles.
+The following list contains suggested practices for testing scientific
+software and making tests easier to run and maintain. These guidelines
+are not rigid, and should be treated as general principles should be
+balanced with each other rather than absolute principles.
 
 * **Run tests frequently for continual feedback.** If we edit a single
   section of code and discover a new test failure, then we know that the
@@ -486,10 +487,10 @@ GitHub_ is often slow and that navigating the test results is sometimes
 difficult.
 
 We recommend that experienced contributors run tests either by using
-pytest_ from the command line or by using your preferred IDE.
-Using tox_ is an alternative to pytest_, but running tests with tox_
-adds the overhead of creating an isolated environment for your test and
-can thus be slower.
+pytest_ from the command line or by using your preferred IDE. Using tox_
+is an alternative to pytest_, but running tests with tox_ adds the
+overhead of creating an isolated environment for your test and can thus
+be slower.
 
 Using GitHub
 ------------
@@ -622,16 +623,16 @@ directory and all of its subdirectories. Because it takes time to run
 PlasmaPy's tests, it is usually most convenient to specify that only a
 subset of the tests be run. To run the tests contained within a
 particular file or directory, include its name after ``pytest``. If you
-are in the directory :file:`plasmapy/particles/tests/`, then the tests in
-in :file:`test_atomic.py` can be run with:
+are in the directory :file:`plasmapy/particles/tests/`, then the tests
+in in :file:`test_atomic.py` can be run with:
 
 .. code-block:: shell
 
    pytest test_atomic.py
 
 The documentation for pytest_ describes `how to invoke pytest`_ and
-specify which tests will or will not be run. A few useful
-examples of flags you can use with it:
+specify which tests will or will not be run. A few useful examples of
+flags you can use with it:
 
 * Use the ``--tb=short`` to shorten traceback reports, which is useful
   when there are multiple related errors. Use ``--tb=long`` for
@@ -669,13 +670,13 @@ To run PlasmaPy's tests for a particular environment, run:
 where ``⟨envname⟩`` is replaced with the name of the tox_ environment,
 as described below.
 
-Some testing environments for tox_ are pre-defined.  For example, you
+Some testing environments for tox_ are pre-defined. For example, you
 can replace ``⟨envname⟩`` with ``py39`` if you are running Python
-``3.9.x``, ``py310`` if you are running Python ``3.10.x``, or
-``py311`` if you are running Python ``3.11.x``. Running tox_ with any
-of these environments requires that the appropriate version of Python
-has been installed and can be found by tox_.  To find the version of
-Python that you are using, go to the command line and run ``python
+``3.9.x``, ``py310`` if you are running Python ``3.10.x``, or ``py311``
+if you are running Python ``3.11.x``. Running tox_ with any of these
+environments requires that the appropriate version of Python has been
+installed and can be found by tox_. To find the version of Python that
+you are using, go to the command line and run ``python
 --version``.
 
 Additional `tox environments`_ are defined in :file:`tox.ini` in the
@@ -752,9 +753,9 @@ check that an `ImportError` is raised when attempting to import a
 missing package. There are also situations that coverage tools are not
 yet able to handle correctly.
 
-To exclude a line from a coverage report, end it with
-``# coverage: ignore``. Alternatively, we may add a line to
-``exclude_lines`` in the ``[coverage:report]`` section of
+To exclude a line from a coverage report, end it with ``# coverage:
+ignore``. Alternatively, we may add a line to ``exclude_lines`` in the
+``[coverage:report]`` section of
 :file:`setup.cfg` that consists of a
 a pattern that indicates that a line be excluded from coverage reports.
 In general, untested lines of code should remain marked as untested to
