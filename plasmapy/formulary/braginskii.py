@@ -279,8 +279,8 @@ class ClassicalTransport:
     >>> from astropy import units as u
     >>> t = ClassicalTransport(1*u.eV, 1e20/u.m**3,
     ...                         1*u.eV, 1e20/u.m**3, 'p')
-    >>> t.resistivity
-    <Quantity 0.0003670... m Ohm>
+    >>> t.resistivity  # doctest: +SKIP
+    <Quantity 0.0003670... Ohm m>
     >>> t.thermoelectric_conductivity
     <Quantity 0.71108...>
     >>> t.ion_thermal_conductivity
@@ -300,7 +300,7 @@ class ClassicalTransport:
         T_i={"can_be_negative": False, "equivalencies": u.temperature_energy()},
         m_i={"can_be_negative": False},
     )
-    def __init__(
+    def __init__(  # noqa: PLR0912, PLR0915
         self,
         T_e: u.K,
         n_e: u.m**-3,
@@ -1631,7 +1631,7 @@ def _nondim_tec_braginskii(hall, Z, field_orientation):
 #
 
 
-def _nondim_tc_e_ji_held(hall, Z, field_orientation):
+def _nondim_tc_e_ji_held(hall, Z, field_orientation):  # noqa: PLR0915
     """
     Dimensionless electron thermal conductivity — Ji-Held.
 

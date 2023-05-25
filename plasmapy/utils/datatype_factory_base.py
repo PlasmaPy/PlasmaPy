@@ -1,3 +1,5 @@
+"""Functionality implementing the plasma class factory."""
+
 # SunPy is released under a BSD-style open source license:
 
 # Copyright (c) 2013-2018 The SunPy developers

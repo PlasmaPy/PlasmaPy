@@ -20,7 +20,7 @@ repos:
   - id: check-yaml
 
 - repo: https://github.com/macisamuele/language-formatters-pre-commit-hooks
-  rev: v2.8.0
+  rev: v2.9.0
   hooks:
   - id: pretty-format-ini
     args: [--autofix]
@@ -43,13 +43,6 @@ repos:
   - id: absolufy-imports
     exclude: docs/plasmapy_sphinx
 
-- repo: https://github.com/asottile/pyupgrade
-  rev: v3.3.2
-  hooks:
-  - id: pyupgrade
-    args: [--keep-runtime-typing, --py39-plus]
-    files: ^plasmapy/
-
 - repo: https://github.com/pre-commit/pygrep-hooks
   rev: v1.10.0
   hooks:
@@ -65,7 +58,7 @@ repos:
     - tomli
 
 - repo: https://github.com/charliermarsh/ruff-pre-commit
-  rev: v0.0.263
+  rev: v0.0.269
   hooks:
   - id: ruff
     args: [--fix]
@@ -98,7 +91,7 @@ repos:
   hooks:
   - id: nbqa-black
     additional_dependencies:
-    - black==23.1.0
+    - black==23.3.0
     args:
     - --nbqa-mutate
   - id: nbqa-isort

@@ -24,7 +24,7 @@ Backwards Incompatible Changes
   and migrated the dispersion functionality (:file:`dispersionfunction.py`) from
   `plasmapy.formulary` to `plasmapy.dispersion`. (`#910 <https://github.com/plasmapy/plasmapy/pull/910>`__)
 - Removed default values for the ``ion`` and ``particle`` arguments of functions contained in ``plasmapy.formulary.parameters``, in accordance with issue [#453](https://github.com/PlasmaPy/PlasmaPy/issues/453), and updated all relevant calls to modified functionality. (`#911 <https://github.com/plasmapy/plasmapy/pull/911>`__)
-- Moved test helper exceptions from `plasmapy.utils.pytest_helpers` to `plasmapy.tests.helpers`. (`#919 <https://github.com/plasmapy/plasmapy/pull/919>`__)
+- Moved test helper exceptions from ``plasmapy.utils.pytest_helpers`` to ``plasmapy.tests.helpers``. (`#919 <https://github.com/plasmapy/plasmapy/pull/919>`__)
 - Updated ``plasmapy.formulary.parameters.mass_density`` so it calculates the mass
   density for a specific particle from a given number density.  Original function
   calculated the total mass density (ion + electron). (`#957 <https://github.com/plasmapy/plasmapy/pull/957>`__)
@@ -42,7 +42,7 @@ Features
   functions are designed to wrap together an analytical function, a curve fitter,
   uncertainty propagation, and a root solver to make curve fitting a little less
   painful. (`#908 <https://github.com/plasmapy/plasmapy/pull/908>`__)
-- Created a new subpackage, `plasmapy.tests.helpers`, to contain test helper functionality. (`#919 <https://github.com/plasmapy/plasmapy/pull/919>`__)
+- Created a new subpackage, ``plasmapy.tests.helpers``, to contain test helper functionality. (`#919 <https://github.com/plasmapy/plasmapy/pull/919>`__)
 - Create decorator `~plasmapy.utils.decorators.helpers.modify_docstring`, which allows
   for programmatically prepending and/or appending a docstring. (`#943 <https://github.com/plasmapy/plasmapy/pull/943>`__)
 

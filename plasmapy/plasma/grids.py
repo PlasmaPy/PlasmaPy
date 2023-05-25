@@ -615,9 +615,7 @@ class AbstractGrid(ABC):
             quantity.
         """
 
-        for key in kwargs:
-            quantity = kwargs[key]
-
+        for key, quantity in kwargs.items():
             # Check key against a list of "known" keys with pre-defined
             # meanings (eg. E_x, n_e) and raise a warning if a "non-standard"
             # key is being used so the user is aware.
@@ -645,7 +643,7 @@ class AbstractGrid(ABC):
                 }
             # If grid is non-uniform, flatten quantity
             else:
-                quantity = quantity.flatten()
+                quantity = quantity.flatten()  # noqa: PLW2901
                 dims = ["ax"]
                 coords = {"ax": self.ds.coords["ax"]}
 
@@ -668,7 +666,7 @@ class AbstractGrid(ABC):
         """
         return list(self.ds.data_vars)
 
-    def _make_grid(
+    def _make_grid(  # noqa: C901, PLR0912
         self,
         start: Union[int, float, u.Quantity],
         stop: Union[int, float, u.Quantity],
@@ -1020,11 +1018,10 @@ class AbstractGrid(ABC):
 
 def _fast_nearest_neighbor_interpolate(pos, ax):
     """
-    This function finds the indices in the axis 'ax' that are closest to the
-    values in the array 'pos'.
+    Find the indices in the axis `ax` that are closest to the
+    values in the array `pos`.
 
-    Assumes the axis 'ax' is sorted in ascending order.
-
+    Assumes the axis `ax` is sorted in ascending order.
     """
     # Find the index where each position would be inserted into the axis.
     # This is equivalent to a nearest neighbor interpolation but always
@@ -1303,10 +1300,7 @@ class CartesianGrid(AbstractGrid):
             weighted_ave[..., arg] * self._interp_units[arg] for arg in range(nargs)
         ]
 
-        if len(output) == 1:
-            return output[0]
-
-        return tuple(output)
+        return output[0] if len(output) == 1 else tuple(output)
 
 
 class NonUniformCartesianGrid(AbstractGrid):
@@ -1374,11 +1368,17 @@ class NonUniformCartesianGrid(AbstractGrid):
         function so it can be re-implemented to make non-uniform grids.
         """
         # Construct the axis arrays
-        ax0 = np.sort(np.random.uniform(low=start[0], high=stop[0], size=num[0]))
+        ax0 = np.sort(
+            np.random.uniform(low=start[0], high=stop[0], size=num[0])  # noqa: NPY002
+        )
 
-        ax1 = np.sort(np.random.uniform(low=start[1], high=stop[1], size=num[1]))
+        ax1 = np.sort(
+            np.random.uniform(low=start[1], high=stop[1], size=num[1])  # noqa: NPY002
+        )
 
-        ax2 = np.sort(np.random.uniform(low=start[2], high=stop[2], size=num[2]))
+        ax2 = np.sort(
+            np.random.uniform(low=start[2], high=stop[2], size=num[2])  # noqa: NPY002
+        )
 
         # Construct the coordinate arrays
         arr0, arr1, arr2 = np.meshgrid(ax0, ax1, ax2, indexing="ij")
@@ -1395,8 +1395,7 @@ class NonUniformCartesianGrid(AbstractGrid):
 
         indgrid = np.arange(self.grid.shape[0])
 
-        interpolator = interp.NearestNDInterpolator(self.grid.to(u.m).value, indgrid)
-        return interpolator
+        return interp.NearestNDInterpolator(self.grid.to(u.m).value, indgrid)
 
     @modify_docstring(prepend=AbstractGrid.nearest_neighbor_interpolator.__doc__)
     def nearest_neighbor_interpolator(

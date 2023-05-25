@@ -209,10 +209,10 @@ environment`_ instead.
 
    .. code-block:: bash
 
-      conda create -n plasmapy-dev python=3.10
+      conda create -n plasmapy-dev python=3.11
 
    The :bash:`-n` flag is used to specify the name of the environment.
-   The ``3.10`` can be replaced with any version of Python from
+   The ``3.11`` can be replaced with any version of Python from
    |minpython| to |maxpython|.
 
 #. Activate the environment with:

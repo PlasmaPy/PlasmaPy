@@ -261,7 +261,7 @@ def spectral_density_lite(
     T_i={"can_be_negative": False, "equivalencies": u.temperature_energy()},
 )
 @bind_lite_func(spectral_density_lite)
-def spectral_density(
+def spectral_density(  # noqa: C901, PLR0912, PLR0915
     wavelengths: u.nm,
     probe_wavelength: u.nm,
     n: u.m**-3,
@@ -625,7 +625,7 @@ def _params_to_array(
 
 def _spectral_density_model(wavelengths, settings=None, **params):
     """
-    lmfit Model function for fitting Thomson spectra
+    lmfit Model function for fitting Thomson spectra.
 
     For descriptions of arguments, see the `thomson_model` function.
     """
@@ -679,7 +679,9 @@ def _spectral_density_model(wavelengths, settings=None, **params):
     return model_Skw
 
 
-def spectral_density_model(wavelengths, settings, params):
+def spectral_density_model(  # noqa: C901, PLR0912, PLR0915
+    wavelengths, settings, params
+):
     r"""
     Returns a `lmfit.model.Model` function for Thomson spectral density
     function.
@@ -789,7 +791,7 @@ def spectral_density_model(wavelengths, settings, params):
     # **********************
     for p, nums in zip(["T_e", "T_i"], [num_e, num_i]):
         for num in range(nums):
-            key = f"{p}_{str(num)}"
+            key = f"{p}_{num!s}"
             if key not in params:
                 raise ValueError(
                     f"{p} was not provided in kwarg 'parameters', but is required."

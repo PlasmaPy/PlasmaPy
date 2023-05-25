@@ -251,7 +251,7 @@ def _vector_space(
         w = w_arr
     else:
         u, v, w = func(x, y, z)
-    return np.array([x, y, z]), np.array([u, v, w]), np.array([dx, dy, dz])
+    return np.array([x, y, z]), np.array([u, v, w]), [dx, dy, dz]
 
 
 def _trilinear_coeff_cal(vspace, cell):
@@ -555,12 +555,10 @@ def _reduction(vspace, cell):
         ):
             passZ = True
 
-    doesPassReduction = passX and passY and passZ
-
-    return doesPassReduction
+    return passX and passY and passZ
 
 
-def _bilinear_root(a1, b1, c1, d1, a2, b2, c2, d2):
+def _bilinear_root(a1, b1, c1, d1, a2, b2, c2, d2):  # noqa: C901, PLR0911, PLR0912
     r"""
     Return the roots of a pair of bilinear equations of the following
     format.
@@ -597,16 +595,14 @@ def _bilinear_root(a1, b1, c1, d1, a2, b2, c2, d2):
     if np.isclose(a, 0, atol=_EQUALITY_ATOL):
         if np.isclose(b, 0, atol=_EQUALITY_ATOL):
             return np.array([])
-        else:
-            x1 = (-1.0 * c) / b
-            x2 = (-1.0 * c) / b
+        x1 = (-1.0 * c) / b
+        x2 = (-1.0 * c) / b
 
     else:
         if (b**2 - 4.0 * a * c) < 0:
             return np.array([])
-        else:
-            x1 = (-1.0 * b + (b**2 - 4.0 * a * c) ** 0.5) / (2.0 * a)
-            x2 = (-1.0 * b - (b**2 - 4.0 * a * c) ** 0.5) / (2.0 * a)
+        x1 = (-1.0 * b + (b**2 - 4.0 * a * c) ** 0.5) / (2.0 * a)
+        x2 = (-1.0 * b - (b**2 - 4.0 * a * c) ** 0.5) / (2.0 * a)
 
     y1 = None
     y2 = None
@@ -633,7 +629,7 @@ def _bilinear_root(a1, b1, c1, d1, a2, b2, c2, d2):
             return np.array([(x1, y1), (x2, y2)])
 
 
-def _trilinear_analysis(vspace, cell):
+def _trilinear_analysis(vspace, cell):  # noqa: C901, PLR0911, PLR0912, PLR0915
     r"""
     Return a true or false value based on whether a grid cell which has
     passed the reduction step, contains a null point, using trilinear
@@ -1142,7 +1138,7 @@ def _locate_null_point(vspace, cell, n, err):
         If the maximum number of iteration has been reached, but
         convergence has not occurred.
     """
-    global _recursion_level
+    global _recursion_level  # noqa: PLW0602
     # Calculating the Jacobian and trilinear approximation functions for the cell
     tlApprox = trilinear_approx(vspace, cell)
     jcb = _trilinear_jacobian(vspace, cell)
@@ -1220,8 +1216,8 @@ def _locate_null_point(vspace, cell, n, err):
     )
     # Newton Iteration
     for x0 in starting_pos:
-        x0 = np.array(x0)
-        x0 = x0.reshape(3, 1)
+        x0 = np.array(x0)  # noqa: PLW2901
+        x0 = x0.reshape(3, 1)  # noqa: PLW2901
         for _i in range(n):  # noqa: B007
             locx = tlApprox(x0[0], x0[1], x0[2])[0]
             locy = tlApprox(x0[0], x0[1], x0[2])[1]
@@ -1246,7 +1242,7 @@ def _locate_null_point(vspace, cell, n, err):
                 else:
                     break
             # Adjust position
-            x0 = np.subtract(
+            x0 = np.subtract(  # noqa: PLW2901
                 x0, np.matmul(np.linalg.inv(jcb(x0[0], x0[1], x0[2])), Bx0)
             )
             norm = np.linalg.norm(x0)
@@ -1265,7 +1261,7 @@ def _locate_null_point(vspace, cell, n, err):
     return None
 
 
-def _classify_null_point(vspace, cell, loc):
+def _classify_null_point(vspace, cell, loc):  # noqa: PLR0912
     r"""
     Return the coordinates of a null point within a given grid cell in a
     vector space using the Newton-Rapshon method.
@@ -1320,7 +1316,7 @@ def _classify_null_point(vspace, cell, loc):
         if np.allclose(M, M.T, atol=_EQUALITY_ATOL):  # Checking if M is symmetric
             null_point_type = "Proper radial null"
         else:
-            if np.isclose(determinant, 0, atol=_EQUALITY_ATOL):
+            if np.isclose(determinant, 0, atol=_EQUALITY_ATOL):  # noqa: PLR5501
                 null_point_type = "Anti-parallel lines with null plane OR Planes of parabolae with null line"
             else:
                 null_point_type = "Critical spiral null"
@@ -1331,12 +1327,12 @@ def _classify_null_point(vspace, cell, loc):
             else:
                 null_point_type = "Improper radial null"
         else:
-            if np.isclose(determinant, 0, atol=_EQUALITY_ATOL):
+            if np.isclose(determinant, 0, atol=_EQUALITY_ATOL):  # noqa: PLR5501
                 null_point_type = "Continuous X-points"
             else:
                 null_point_type = "Skewed improper null"
     else:
-        if np.isclose(determinant, 0, atol=_EQUALITY_ATOL):
+        if np.isclose(determinant, 0, atol=_EQUALITY_ATOL):  # noqa: PLR5501
             null_point_type = "Continuous concentric ellipses"
         else:
             null_point_type = "Spiral null"
