@@ -112,6 +112,12 @@ authors:
   family-names: Carroll
   alias: seanwilliamcarroll
 
+- given-names: Carlos
+  family-names: Cartagena-Sanchez
+  affiliation: Beloit College
+  orcid: https://orcid.org/0000-0002-0486-1292
+  alias: cacsphysics
+
 - given-names: Sarthak
   family-names: Choudhary
   alias: martha889
