@@ -1,5 +1,6 @@
 """
-Subpackage containing routines for analyzing swept Langmuir probe traces.
+Subpackage containing routines for analyzing swept Langmuir probe
+traces.
 """
 __all__ = [
     "check_sweep",

@@ -81,24 +81,14 @@ class TestModifyDocstring:
             ("Hello", None, "func_simple_docstring", (["Hello", ""], [])),
             (None, "Goodbye", "func_simple_docstring", ([], ["", "Goodbye"])),
             (
-                "\n".join(
-                    ["    Hello", "    ", "        * item 1", "            * item 2"]
-                ),
+                "    Hello\n    \n        * item 1\n            * item 2",
                 None,
                 "func_simple_docstring",
                 (["Hello", "", "* item 1", "    * item 2", ""], []),
             ),
             (
                 None,
-                "\n".join(
-                    [
-                        "    Notes",
-                        "    -----",
-                        "    ",
-                        "        * item 1",
-                        "            * item 2",
-                    ]
-                ),
+                "    Notes\n    -----\n    \n        * item 1\n            * item 2",
                 "func_complex_docstring",
                 ([], ["", "Notes", "-----", "", "    * item 1", "        * item 2"]),
             ),
