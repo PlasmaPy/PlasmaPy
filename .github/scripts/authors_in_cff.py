@@ -32,7 +32,7 @@ def check_citation_file(authors: set[str]) -> tuple[bool, Optional[str]]:
     with pathlib.Path("CITATION.cff").open() as file:
         contents = file.read()
         for author in authors:
-            if f"alias: {author}" not in contents:
+            if f"  alias: {author}" not in contents:
                 return False, author
     return True, None
 
