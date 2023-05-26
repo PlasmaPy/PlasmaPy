@@ -252,15 +252,29 @@ linkcheck_anchors_ignore = [
 ]
 
 redirects = {
+    "contributing/install_dev": "../contributing/getting_ready.html",
     "development": "../contributing/",
-    "development/index": "../contributing/index.html",
     "development/changelog_guide": "../contributing/changelog_guide.html",
     "development/code_guide": "../contributing/code_guide.html",
     "development/doc_guide": "../contributing/doc_guide.html",
+    "development/index": "../contributing/index.html",
     "development/install_dev": "../contributing/getting_ready.html",
-    "contributing/install_dev": "../contributing/getting_ready.html",
     "development/release_guide": "../contributing/release_guide.html",
     "development/testing_guide": "../contributing/testing_guide.html",
+    "whatsnew": "../changelog/",
+    "whatsnew/0.1.0": "../changelog/0.1.0.html",
+    "whatsnew/0.1.1": "../changelog/0.1.0.html",
+    "whatsnew/0.2.0": "../changelog/0.1.0.html",
+    "whatsnew/0.3.1": "../changelog/0.1.0.html",
+    "whatsnew/0.4.0": "../changelog/0.1.0.html",
+    "whatsnew/0.5.0": "../changelog/0.1.0.html",
+    "whatsnew/0.6.0": "../changelog/0.1.0.html",
+    "whatsnew/0.7.0": "../changelog/0.1.0.html",
+    "whatsnew/0.8.1": "../changelog/0.1.0.html",
+    "whatsnew/0.9.0": "../changelog/0.1.0.html",
+    "whatsnew/0.9.1": "../changelog/0.1.0.html",
+    "whatsnew/2023.1.0": "../changelog/2023.1.0.html",
+    "whatsnew/index": "../changelog/index.html",
 }
 
 # Use a code highlighting style that meets the WCAG AA contrast standard
