@@ -42,6 +42,7 @@ in parentheses are `ORCID author identifiers <https://orcid.org>`__.
 * :user:`Brian Goodall <goodab>`
 * :user:`Brigitta Sipőcz <bsipocz>` (:orcid:`0000-0002-3713-6337`)
 * :user:`Bryan Foo <bryancfoo>`
+* :user:`Carlos Cartagena-Sanchez` (:orcid:`0000-0002-0486-1292`)
 * :user:`Carol Zhang <carolyz>`
 * :user:`cclauss`
 * :user:`Chengcai Shen <ionizationcalc>` (:orcid:`0000-0002-9258-4490`)
