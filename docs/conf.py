@@ -6,14 +6,13 @@
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 
+import cff_to_rst
 import os
 import sys
 
 from datetime import datetime
 from pkg_resources import parse_version
 from sphinx.application import Sphinx
-
-from . import cff_to_rst
 
 # Generate author list from CITATION.cff
 cff_to_rst.main()
