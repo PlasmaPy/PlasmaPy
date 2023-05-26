@@ -753,9 +753,9 @@ check that an `ImportError` is raised when attempting to import a
 missing package. There are also situations that coverage tools are not
 yet able to handle correctly.
 
-To exclude a line from a coverage report, end it with ``# coverage:
-ignore``. Alternatively, we may add a line to ``exclude_lines`` in the
-``[coverage:report]`` section of
+To exclude a line from a coverage report, end it with
+``# coverage: ignore``. Alternatively, we may add a line to
+``exclude_lines`` in the ``[coverage:report]`` section of
 :file:`setup.cfg` that consists of a
 a pattern that indicates that a line be excluded from coverage reports.
 In general, untested lines of code should remain marked as untested to

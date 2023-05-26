@@ -137,7 +137,9 @@ the corresponding element's abundance, and the ionic fraction.
 >>> states.number_densities["H"]
 <Quantity [5.00e+17, 4.95e+19] 1 / m3>
 
-The `~plasmapy.particles.ionization_state_collection.IonizationStateCollection.summarize` method may also be used to summarize the ionization states.
+The
+`~plasmapy.particles.ionization_state_collection.IonizationStateCollection.summarize`
+method may also be used to summarize the ionization states.
 
 >>> states.summarize()
 ----------------------------------------------------------------

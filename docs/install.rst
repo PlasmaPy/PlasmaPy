@@ -121,9 +121,9 @@ Installing PlasmaPy with Anaconda Navigator
 `Anaconda Navigator`_ is a graphical user interface (GUI) for Conda_
 that can be used to install Python packages. It is installed
 automatically with newer versions of Conda_. If you are using Miniconda_
-or a different Conda_ environment, you can install it with ``conda
-install anaconda-navigator``. After that it can be opened by entering
-``anaconda-navigator`` in the terminal.
+or a different Conda_ environment, you can install it with
+``conda install anaconda-navigator``. After that it can be opened by
+entering ``anaconda-navigator`` in the terminal.
 
 First, go to the :guilabel:`Environments` tab and select
 :guilabel:`Channels`. If ``conda-forge`` is not listed, then go to

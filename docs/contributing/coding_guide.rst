@@ -821,7 +821,9 @@ including them in the documentation.
 
 Please note that it is necessary to store notebooks with their outputs
 stripped
-(use the "Edit -> Clear all" option in JupyterLab and the "Cell -> All Output -> Clear" option in the "classic" Jupyter Notebook). This accomplishes two goals:
+(use the "Edit -> Clear all" option in JupyterLab and the "Cell -> All
+Output -> Clear" option in the "classic" Jupyter Notebook). This
+accomplishes two goals:
 
 1. helps with versioning the notebooks, as binary image data is not stored in
    the notebook
@@ -876,7 +878,13 @@ Benchmarks
 .. _asv: https://github.com/airspeed-velocity/asv
 .. _asv-docs: https://asv.readthedocs.io/en/stable/
 
-PlasmaPy has a set of `asv`_ benchmarks that monitor performance of its functionalities.  This is meant to protect the package from performance regressions. The benchmarks can be viewed at `benchmarks`_. They're generated from results located in `benchmarks-repo`_. Detailed instructions on writing such benchmarks can be found at `asv-docs`_. Up-to-date instructions on running the benchmark suite will be located in the README file of `benchmarks-repo`_.
+PlasmaPy has a set of asv_ benchmarks that monitor performance of its
+functionalities.  This is meant to protect the package from performance
+regressions. The benchmarks can be viewed at benchmarks_. They are
+generated from results located in `benchmarks-repo`_. Detailed
+instructions on writing such benchmarks can be found at `asv-docs`_.
+Up-to-date instructions on running the benchmark suite will be located
+in the README file of `benchmarks-repo`_.
 
 .. _ASCII: https://en.wikipedia.org/wiki/ASCII
 .. _cognitive complexity: https://www.sonarsource.com/docs/CognitiveComplexity.pdf
