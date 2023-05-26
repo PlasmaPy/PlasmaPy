@@ -140,8 +140,8 @@ Names
 
 Names are our most fundamental means of communicating the intent and
 purpose of code. Wisely chosen names can greatly improve the
-understandability of code, while inadequate names can obfuscate what
-the code is supposed to be doing.
+understandability of code, while inadequate names can obfuscate what the
+code is supposed to be doing.
 
 * PlasmaPy generally uses the :pep:`8` conventions for variable names.
 
@@ -375,10 +375,10 @@ unmaintained comment may contain inaccurate or misleading information
 Error messages
 --------------
 
-Error messages are a vital but underappreciated form of documentation.
-A good error message can help someone pinpoint the source of a problem
-in seconds, while a cryptic or missing error message can lead to hours
-of frustration.
+Error messages are a vital but underappreciated form of documentation. A
+good error message can help someone pinpoint the source of a problem in
+seconds, while a cryptic or missing error message can lead to hours of
+frustration.
 
 * Use error messages to indicate the source of the problem while
   providing enough information for the user to troubleshoot it. When
@@ -789,21 +789,21 @@ Equations and Physical Formulae
 Angular Frequencies
 -------------------
 
-Unit conversions involving angles must be treated with care.  Angles
-are dimensionless but do have units.  Angular velocity is often given
-in units of radians per second, though dimensionally this is
-equivalent to inverse seconds.  Astropy will treat radians
-dimensionlessly when using the ``dimensionless_angles`` equivalency,
-but ``dimensionless_angles`` does not account for the multiplicative
-factor of ``2*pi`` that is used when converting between frequency (1 /
-s) and angular frequency (rad / s).  An explicit way to do this
-conversion is to set up an equivalency between cycles/s and Hz:
+Unit conversions involving angles must be treated with care. Angles are
+dimensionless but do have units. Angular velocity is often given in
+units of radians per second, though dimensionally this is equivalent to
+inverse seconds. Astropy will treat radians dimensionlessly when using
+the ``dimensionless_angles`` equivalency, but ``dimensionless_angles``
+does not account for the multiplicative factor of ``2*pi`` that is used
+when converting between frequency (1 / s) and angular frequency (rad /
+s). An explicit way to do this conversion is to set up an equivalency
+between cycles/s and Hz:
 
 >>> from astropy import units as u
 >>> f_ce = omega_ce.to(u.Hz, equivalencies=[(u.cy/u.s, u.Hz)])  # doctest: +SKIP
 
-However, ``dimensionless_angles`` does work when dividing a velocity
-by an angular frequency to get a length scale:
+However, ``dimensionless_angles`` does work when dividing a velocity by
+an angular frequency to get a length scale:
 
 >>> d_i = (c/omega_pi).to(u.m, equivalencies=u.dimensionless_angles())  # doctest: +SKIP
 
@@ -815,12 +815,15 @@ Example notebooks
 .. _docs/notebooks: https://github.com/PlasmaPy/PlasmaPy/tree/main/docs/notebooks
 
 Examples in PlasmaPy are written as Jupyter notebooks, taking advantage
-of their mature ecosystems. They are located in `docs/notebooks`_. |nbsphinx|_
-takes care of executing them at documentation build time and including them
-in the documentation.
+of their mature ecosystems. They are located in `docs/notebooks`_.
+|nbsphinx|_ takes care of executing them at documentation build time and
+including them in the documentation.
 
-Please note that it is necessary to store notebooks with their outputs stripped
-(use the "Edit -> Clear all" option in JupyterLab and the "Cell -> All Output -> Clear" option in the "classic" Jupyter Notebook). This accomplishes two goals:
+Please note that it is necessary to store notebooks with their outputs
+stripped
+(use the "Edit -> Clear all" option in JupyterLab and the "Cell -> All
+Output -> Clear" option in the "classic" Jupyter Notebook). This
+accomplishes two goals:
 
 1. helps with versioning the notebooks, as binary image data is not stored in
    the notebook
@@ -831,18 +834,19 @@ Please note that it is necessary to store notebooks with their outputs stripped
   In the future, verifying and running this step may be automated via a GitHub bot.
   Currently, reviewers should ensure that submitted notebooks have outputs stripped.
 
-If you have an example notebook that includes packages unavailable in the
-documentation building environment (e.g., ``bokeh``) or runs some heavy
-computation that should not be executed on every commit, *keep the outputs in
-the notebook* but store it in the repository with a ``preexecuted_`` prefix, e.g.,
+If you have an example notebook that includes packages unavailable in
+the documentation building environment (e.g., ``bokeh``) or runs some
+heavy computation that should not be executed on every commit, *keep the
+outputs in the notebook* but store it in the repository with a
+``preexecuted_`` prefix, e.g.,
 :file:`preexecuted_full_3d_mhd_chaotic_turbulence_simulation.ipynb`.
 
 Compatibility with Prior Versions of Python, NumPy, and Astropy
 ===============================================================
 
-PlasmaPy releases will generally abide by the following standards,
-which are adapted from `NEP 29`_ for the support of old versions of
-Python_, NumPy_, and Astropy_.
+PlasmaPy releases will generally abide by the following standards, which
+are adapted from `NEP 29`_ for the support of old versions of Python_,
+NumPy_, and Astropy_.
 
 * PlasmaPy should support at least the minor versions of Python
   initially released 42 months prior to a planned project release date.
@@ -874,13 +878,13 @@ Benchmarks
 .. _asv: https://github.com/airspeed-velocity/asv
 .. _asv-docs: https://asv.readthedocs.io/en/stable/
 
-PlasmaPy has a set of `asv`_ benchmarks that monitor performance of its
+PlasmaPy has a set of asv_ benchmarks that monitor performance of its
 functionalities.  This is meant to protect the package from performance
-regressions. The benchmarks can be viewed at `benchmarks`_. They're
+regressions. The benchmarks can be viewed at benchmarks_. They are
 generated from results located in `benchmarks-repo`_. Detailed
 instructions on writing such benchmarks can be found at `asv-docs`_.
-Up-to-date instructions on running the benchmark suite will be located in
-the README file of `benchmarks-repo`_.
+Up-to-date instructions on running the benchmark suite will be located
+in the README file of `benchmarks-repo`_.
 
 .. _ASCII: https://en.wikipedia.org/wiki/ASCII
 .. _cognitive complexity: https://www.sonarsource.com/docs/CognitiveComplexity.pdf
