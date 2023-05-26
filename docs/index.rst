@@ -85,7 +85,7 @@ Example highlights
    :maxdepth: 1
    :caption: All the Rest
 
-   whatsnew/index
+   changelog/index
    about/credits
    bibliography
    glossary
