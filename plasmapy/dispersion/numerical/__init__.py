@@ -6,6 +6,10 @@ associated with numerical dispersion solvers.
 
    |expect-api-changes|
 """
-__all__ = ["hollweg"]
+__all__ = [
+    "hirose",
+    "hollweg",
+]
 
+from plasmapy.dispersion.numerical.hirose_ import hirose
 from plasmapy.dispersion.numerical.hollweg_ import hollweg
