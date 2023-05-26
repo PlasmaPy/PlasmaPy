@@ -12,6 +12,18 @@ jobs:
 
     - uses: actions-ecosystem/action-size@v2
       id: size
+      with:
+        size_xs_label: 'size: very small'
+        size_s_label: 'size: small'
+        size_m_label: 'size: medium'
+        size_l_label: 'size: large'
+        size_xl_label: 'size: very large'
+        size_xxl_label: 'size: huge'
+        size_s_threshold: 10
+        size_m_threshold: 30
+        size_l_threshold: 100
+        size_xl_threshold: 500
+        size_xxl_threshold: 1000
 
     - uses: actions-ecosystem/action-remove-labels@v1
       with:
