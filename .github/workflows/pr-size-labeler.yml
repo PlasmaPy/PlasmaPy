@@ -10,7 +10,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
-    - uses: actions-ecosystem/action-size@v2
+    - uses: PlasmaPy/action-size@v2023.5.0
       id: size
       with:
         size_xs_label: 'size: very small'
