@@ -18,8 +18,8 @@ contributors can take to get set up to contribute to PlasmaPy. After
 taking these steps, you'll be ready to go through the :ref:`code
 contribution workflow <workflow>`.
 
-If you run into any problems, please feel free to reach out to us in
-our `Matrix chat room`_ or during our weekly `office hours`_.
+If you run into any problems, please feel free to reach out to us in our
+`Matrix chat room`_ or during our weekly `office hours`_.
 
 Pre-requisites
 ==============
@@ -94,8 +94,8 @@ as its command line interface (CLI).
 Using git and GitHub
 --------------------
 
-Code contributions to PlasmaPy are made using |git|_ and GitHub_.
-Before contributing code to PlasmaPy, please take the following steps:
+Code contributions to PlasmaPy are made using |git|_ and GitHub_. Before
+contributing code to PlasmaPy, please take the following steps:
 
 #. `Sign up on GitHub`_ for a free account.
 
@@ -209,10 +209,10 @@ environment`_ instead.
 
    .. code-block:: bash
 
-      conda create -n plasmapy-dev python=3.10
+      conda create -n plasmapy-dev python=3.11
 
    The :bash:`-n` flag is used to specify the name of the environment.
-   The ``3.10`` can be replaced with any version of Python from
+   The ``3.11`` can be replaced with any version of Python from
    |minpython| to |maxpython|.
 
 #. Activate the environment with:

@@ -1,6 +1,6 @@
 """
-This module contains functionality for calculating various analytical
-solutions to the two fluid dispersion relation.
+Functionality for calculating various analytical solutions to the two
+fluid dispersion relation.
 """
 __all__ = ["two_fluid"]
 
@@ -25,7 +25,7 @@ from plasmapy.utils.exceptions import PhysicsWarning
     T_e={"can_be_negative": False, "equivalencies": u.temperature_energy()},
     T_i={"can_be_negative": False, "equivalencies": u.temperature_energy()},
 )
-def two_fluid(
+def two_fluid(  # noqa: C901, PLR0912, PLR0915
     *,
     B: u.T,
     ion: Union[str, Particle],
@@ -297,7 +297,7 @@ def two_fluid(
             n_e=n_e,
             gamma_e=gamma_e,
             gamma_i=gamma_i,
-            z_mean=z_mean,
+            Z=z_mean,
         )
     v_A = Alfven_speed(B, n_i, ion=ion, z_mean=z_mean)
     omega_ci = gyrofrequency(B=B, particle=ion, signed=False, Z=z_mean)

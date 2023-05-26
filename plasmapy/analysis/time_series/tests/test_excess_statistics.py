@@ -8,7 +8,7 @@ from plasmapy.analysis.time_series.excess_statistics import ExcessStatistics
 
 
 @pytest.mark.parametrize(
-    "signal, thresholds, time_step, pdf, bins, expected",
+    ("signal", "thresholds", "time_step", "pdf", "bins", "expected"),
     [
         (
             [0, 2, 0],
@@ -89,7 +89,7 @@ def test_ExcessStatistics(signal, thresholds, time_step, pdf, bins, expected):
 
 
 @pytest.mark.parametrize(
-    "signal, thresholds, time_step, bins, exception",
+    ("signal", "thresholds", "time_step", "bins", "exception"),
     [([1, 2], 1, -1, 32, ValueError), ([1, 2], 1, 1, 1.5, TypeError)],
 )
 def test_ExcessStatistics_exception(signal, thresholds, time_step, bins, exception):

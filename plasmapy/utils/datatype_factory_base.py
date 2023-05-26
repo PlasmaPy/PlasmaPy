@@ -1,3 +1,5 @@
+"""Functionality implementing the plasma class factory."""
+
 # SunPy is released under a BSD-style open source license:
 
 # Copyright (c) 2013-2018 The SunPy developers
@@ -47,6 +49,10 @@ class BasicRegistrationFactory:
     Arguments to the factory's ``__call__`` method are then passed to a function
     specified by the registered factory, which validates the input and returns
     a instance of the class that best matches the inputs.
+
+    .. attention::
+
+       |expect-api-changes|
 
     Attributes
     ----------
