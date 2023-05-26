@@ -1,0 +1,2 @@
+Dropped flake8_ and its extensions. Instead, ruff_ is now used as the
+primary linter.
