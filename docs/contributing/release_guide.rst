@@ -12,12 +12,13 @@ Release Guide
 Introduction
 ============
 
-This document describes the procedure for making a release of PlasmaPy.
-Developers should revise and expand these instructions while performing
-each release, and may refer to `Astropy's release procedures`_ for
-guidance.
+This document describes the procedure for making a release of
+PlasmaPy.  Developers should revise and expand these instructions
+while performing each release, and may refer to `Astropy's release
+procedures`_ for guidance.
 
-Throughout this guide, ``0.9.0`` denotes the version you're releasing.
+Throughout this guide, ``2023.9.0`` denotes the version you're
+releasing.
 
 .. tip::
 
@@ -36,8 +37,8 @@ Announce the release timeline
 * About three weeks before a minor or major release, announce that a
   feature freeze will occur one week before the anticipated release
   date. Only pull requests with a limited scope that do not
-  significantly change functionality should be merged during the feature
-  freeze.
+  significantly change functionality should be merged during the
+  feature freeze.
 
 * Begin a code freeze about three weekdays before a release. Only
   bugfixes and pull requests that are directly related to the release
@@ -50,9 +51,9 @@ Update metadata
   ``team@plasmapy.org`` login, and reserve a DOI_.
 
 * Open a pull request to update and alphabetize the author list in
-  :file:`docs/about/credits.rst`, :file:`.mailmap`, and |CITATION.cff|_, the
-  latter using the `Citation File Format`_. Missing ORCID_ identifiers may be
-  added.
+  :file:`docs/about/credits.rst`, :file:`.mailmap`, and
+  |CITATION.cff|_, the latter using the `Citation File
+  Format`_. Missing ORCID_ identifiers may be added.
 
 .. Add a Python script here to update :file:`.mailmap`.
 
@@ -78,10 +79,11 @@ Perform code quality checks
 * Open a pull request to re-execute pre-executed notebooks, such as
   those for charged particle radiography.
 
-* Run ``make linkcheck`` in :file:`docs/`, and if necessary, open a pull
-  request to update redirects and fix broken links. The reserved DOI
-  link in :file:`docs/about/citation.rst` will not work yet since the
-  Zenodo_ record will not be published until after the official release.
+* Run ``make linkcheck`` in :file:`docs/`, and if necessary, open a
+  pull request to update redirects and fix broken links. The reserved
+  DOI link in :file:`docs/about/citation.rst` will not work yet since
+  the Zenodo_ record will not be published until after the official
+  release.
 
   .. tip::
 
@@ -101,16 +103,18 @@ Perform code quality checks
 Create the release branch
 =========================
 
-* Go to `the Release action <https://github.com/PlasmaPy/PlasmaPy/actions/workflows/release.yml>`_,
+* Go to `the Release action
+  <https://github.com/PlasmaPy/PlasmaPy/actions/workflows/release.yml>`_,
   hit the :guilabel:`Run workflow` button, fill in the required values
   and hit :guilabel:`Run Workflow`. Refresh the page and make sure the
   new job goes through. Fix whatever made it fail.
 
 * For major and minor releases, activate the new branch's version on
-  `on Read the Docs <https://readthedocs.org/projects/plasmapy/versions>`_.
+  `on Read the Docs
+  <https://readthedocs.org/projects/plasmapy/versions>`_.
 
 .. Use one of the following two methods to add the note on new
-  contributors to :file:`docs/whatsnew/0.9.0.rst`.
+   contributors to :file:`docs/whatsnew/2023.9.0.rst`.
 
 ..  If not done previously, add a `GitHub personal access token`_ and
     install Xonsh_. Download the `SunPy Xonsh script`_, and run:
@@ -142,16 +146,17 @@ Publish the release
 * Go to the GitHub page to `draft a new release`_. We will perform a
   pre-release first.
 
-  - Set the :guilabel:`Target` to ``v0.9.x``.
-  - For :guilabel:`Choose a tag`, put ``0.9.0rc1``.
-  - Under title, put ``v0.9.0rc1``.
+  - Set the :guilabel:`Target` to ``v2023.9.x``.
+  - For :guilabel:`Choose a tag`, put ``2023.9.0rc1``.
+  - Under title, put ``v2023.9.0rc1``.
   - Mark this as a pre-release.
   - Click on :guilabel:`Publish release`.
 
   The release is handled via |.github/workflows/python-publish.yml|_.
 
-  In a few minutes, check `PlasmaPy releases on PyPI`_ to make sure that
-  version ``0.9.0rc1`` has been released and is marked as pre-release.
+  In a few minutes, check `PlasmaPy releases on PyPI`_ to make sure
+  that version ``2023.9.0rc1`` has been released and is marked as
+  pre-release.
 
   .. tip::
 
@@ -163,7 +168,7 @@ Publish the release
 
   .. code-block:: bash
 
-     pip install plasmapy==0.9.0rc1
+     pip install plasmapy==2023.9.0rc1
 
   to make sure that the new version installs correctly.
 
@@ -175,33 +180,35 @@ Publish the release
   :guilabel:`weekly tests` checks.
 
 * Go to the GitHub page to `draft a new release`_. We will now perform
-  the ``0.9.0`` release.
+  the ``2023.9.0`` release.
 
-  - Set the :guilabel:`Target` to ``v0.9.x``.
-  - For :guilabel:`Choose a tag`, put ``0.9.0``.
-  - Under title, put ``v0.9.0``.
+  - Set the :guilabel:`Target` to ``v2023.9.x``.
+  - For :guilabel:`Choose a tag`, put ``2023.9.0``.
+  - Under title, put ``v2023.9.0``.
   - Copy the release notes from the changelog, using the beginning of
-    :file:`docs/whatsnew/0.9.0.rst`
+    :file:`docs/whatsnew/2023.9.0.rst`
   - Click on :guilabel:`Publish release`.
 
-  In a few minutes, check `PlasmaPy releases on PyPI`_ to make sure that
-  the ``0.9.0`` release is present. If it is, congratulations!
+  In a few minutes, check `PlasmaPy releases on PyPI`_ to make sure
+  that the ``2023.9.0`` release is present. If it is, congratulations!
 
   .. tip::
 
      To get the number of PRs merged and issues closed since the last
      release for the release notes, perform GitHub searches like
-     ``is:pr merged:>=2021-11-19`` and ``is:issue closed:>=2021-11-19``,
-     using the date one day after the last release.
+     ``is:pr merged:>=2021-11-19`` and ``is:issue
+     closed:>=2021-11-19``, using the date one day after the last
+     release.
 
-* Merge the pull request from the ``v0.9.x`` branch to ``main``.
+* Merge the pull request from the ``v2023.9.x`` branch to ``main``.
 
-* In the ``v0.9.x`` branch, change the line in
-  :file:`binder/requirements.txt` that has ``.`` to ``plasmapy == 0.9``.
+* In the ``v2023.9.x`` branch, change the line in
+  :file:`binder/requirements.txt` that has ``.`` to ``plasmapy ==
+  2023.9``.
 
-  * Open one of the binder examples in the docs for ``v0.9.x``, and run
-    the following commands to verify that the released version of
-    PlasmaPy begins with ``0.9``.
+  * Open one of the binder examples in the docs for ``v2023.9.x``, and
+    run the following commands to verify that the released version of
+    PlasmaPy begins with ``2023.9``.
 
     .. code-block:: python
 
@@ -209,14 +216,14 @@ Publish the release
 
        print(plasmapy.__version__)
 
-* Merge the ``v0.9.x`` branch into the ``stable`` branch on GitHub:
+* Merge the ``v2023.9.x`` branch into the ``stable`` branch on GitHub:
 
   .. code-block:: bash
 
-     git checkout v0.9.x
+     git checkout v2023.9.x
      git pull
      git checkout stable
-     git merge v0.9.x
+     git merge v2023.9.x
      git push
 
 Post-release
@@ -227,11 +234,12 @@ Post-release
   <https://github.com/conda-forge/plasmapy-feedstock/pulls>`_. If
   nothing breaks, it'll even get auto-merged.
 
-    * If tests fail, look at the :file:`recipe.yaml` file — usually it's
-      either changed dependencies or the simple import tests there.
+    * If tests fail, look at the :file:`recipe.yaml` file — usually
+      it's either changed dependencies or the simple import tests
+      there.
 
-* Upload the release to the Zenodo_ record corresponding to the reserved
-  DOI, making the metadata consistent with |CITATION.cff|_.
+* Upload the release to the Zenodo_ record corresponding to the
+  reserved DOI, making the metadata consistent with |CITATION.cff|_.
 
 Advertise the release
 =====================
