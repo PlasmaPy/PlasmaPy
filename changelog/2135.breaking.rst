@@ -1,0 +1,1 @@
+The ``ion_species`` |parameter| to `~plasmapy.formulary.radiation.thermal_bremsstrahlung` has been renamed to ``ion`` in order to provide a more consistent API to functions that accept ions as arguments.

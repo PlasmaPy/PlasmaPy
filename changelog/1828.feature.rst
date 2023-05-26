@@ -1,0 +1,1 @@
+Added the `~plasmapy.formulary.frequencies.Buchsbaum_frequency` function.

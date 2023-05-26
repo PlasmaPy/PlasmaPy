@@ -1,0 +1,1 @@
+Updated the function and docstring of `~plasmapy.formulary.collisions.helio.collisional_analysis`.

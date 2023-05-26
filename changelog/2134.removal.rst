@@ -1,0 +1,2 @@
+The ``z_mean`` parameter to `~plasmapy.formulary.speeds.ion_sound_speed`
+has been deprecated and may be removed in a future release.

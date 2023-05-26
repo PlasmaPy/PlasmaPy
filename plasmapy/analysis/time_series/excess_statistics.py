@@ -1,4 +1,10 @@
-"""Functionality to calculate excess statistics of time series."""
+"""
+Functionality to calculate excess statistics of time series.
+
+.. attention::
+
+   |expect-api-changes|
+"""
 
 __all__ = ["ExcessStatistics"]
 
