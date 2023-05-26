@@ -767,7 +767,7 @@ Equations and Physical Formulae
   the physical constants. For example, the following line of code
   obscures information about the physics being represented:
 
-  .. autolink-ignore:: section
+  .. autolink-skip:: section
 
   .. code-block:: python
 
