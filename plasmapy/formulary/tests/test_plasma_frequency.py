@@ -15,11 +15,11 @@ from numba.extending import is_jitted
 
 from plasmapy.formulary.frequencies import plasma_frequency, plasma_frequency_lite, wp_
 from plasmapy.particles import Particle
-from plasmapy.utils.pytest_helpers import assert_can_handle_nparray
+from plasmapy.utils._pytest_helpers import assert_can_handle_nparray
 
 
 @pytest.mark.parametrize(
-    "alias, parent",
+    ("alias", "parent"),
     [(wp_, plasma_frequency)],
 )
 def test_aliases(alias, parent):
@@ -35,7 +35,7 @@ class TestPlasmaFrequency:
     """
 
     @pytest.mark.parametrize(
-        "bound_name, bound_attr",
+        ("bound_name", "bound_attr"),
         [("lite", plasma_frequency_lite)],
     )
     def test_lite_function_binding(self, bound_name, bound_attr):
@@ -58,7 +58,7 @@ class TestPlasmaFrequency:
             assert origin == bound_origin
 
     @pytest.mark.parametrize(
-        "args, kwargs, _error",
+        ("args", "kwargs", "_error"),
         [
             ((u.m**-3, "e-"), {}, TypeError),
             (("not a density", "e-"), {}, TypeError),
@@ -76,7 +76,7 @@ class TestPlasmaFrequency:
             plasma_frequency(*args, **kwargs)
 
     @pytest.mark.parametrize(
-        "args, kwargs, _warning, expected",
+        ("args", "kwargs", "_warning", "expected"),
         [
             (
                 (1e19, "e-"),
@@ -100,7 +100,7 @@ class TestPlasmaFrequency:
             assert np.allclose(wp, expected)
 
     @pytest.mark.parametrize(
-        "args, kwargs, expected, rtol",
+        ("args", "kwargs", "expected", "rtol"),
         [
             ((1 * u.cm**-3, "e-"), {}, 5.64e4, 1e-2),
             ((1 * u.cm**-3, "N"), {}, 3.53e2, 1e-1),
@@ -123,7 +123,7 @@ class TestPlasmaFrequency:
         assert np.allclose(wp.value, expected, rtol=rtol)
 
     @pytest.mark.parametrize(
-        "args, kwargs",
+        ("args", "kwargs"),
         [((1 * u.cm**-3, "N"), {}), ((1e12 * u.cm**-3,), {"particle": "p"})],
     )
     def test_to_hz(self, args, kwargs):
@@ -146,7 +146,7 @@ class TestPlasmaFrequencyLite:
     """Test class for `plasma_frequency_lite`."""
 
     def test_is_jitted(self):
-        "Ensure `plasmapy_frequency_lite` was jitted by `numba`."
+        """Ensure `plasmapy_frequency_lite` was jitted by `numba`."""
         assert is_jitted(plasma_frequency_lite)
 
     @pytest.mark.parametrize(
@@ -172,7 +172,7 @@ class TestPlasmaFrequencyLite:
         else:
             try:
                 inputs_unitless["z_mean"] = np.abs(particle.charge_number)
-            except Exception:
+            except Exception:  # noqa: BLE001
                 inputs_unitless["z_mean"] = 1
         if "to_hz" in inputs:
             inputs_unitless["to_hz"] = inputs["to_hz"]

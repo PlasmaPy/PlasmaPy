@@ -28,21 +28,15 @@ class PlasmaPyError(Exception):
     class and be defined in this module.
     """
 
-    pass
-
 
 class PhysicsError(PlasmaPyError, ValueError):
     """
     The base exception for physics-related errors.
     """
 
-    pass
-
 
 class RomanError(PlasmaPyError):
     """A base exception for errors from `plasmapy.utils.roman`."""
-
-    pass
 
 
 # ^^^^^^^^^^^^ Base Exceptions should be defined above this comment ^^^^^^^^^^^^
@@ -53,8 +47,6 @@ class RelativityError(PhysicsError):
     An exception for speeds greater than the speed of light.
     """
 
-    pass
-
 
 class OutOfRangeError(RomanError):
     """
@@ -62,16 +54,12 @@ class OutOfRangeError(RomanError):
     that can be converted to Roman numerals.
     """
 
-    pass
-
 
 class InvalidRomanNumeralError(RomanError):
     """
     An exception to be raised when the input is not a valid Roman
     numeral.
     """
-
-    pass
 
 
 # ------------------------------------------------------------------------------
@@ -90,13 +78,9 @@ class PlasmaPyWarning(Warning):
     execution if unhandled.
     """
 
-    pass
-
 
 class PhysicsWarning(PlasmaPyWarning):
     """The base warning for warnings related to non-physical situations."""
-
-    pass
 
 
 # ^^^^^^^^^^^^^ Base Warnings should be defined above this comment ^^^^^^^^^^^^^
@@ -108,16 +92,12 @@ class RelativityWarning(PhysicsWarning):
     returned by non-relativistic functionality.
     """
 
-    pass
-
 
 class CouplingWarning(PhysicsWarning):
     """
     A warning for functions that rely on a particular coupling regime to
     be valid.
     """
-
-    pass
 
 
 class PlasmaPyDeprecationWarning(PlasmaPyWarning, DeprecationWarning):
@@ -126,13 +106,9 @@ class PlasmaPyDeprecationWarning(PlasmaPyWarning, DeprecationWarning):
     other Python developers.
     """
 
-    pass
-
 
 class PlasmaPyFutureWarning(PlasmaPyWarning, FutureWarning):
     """
     A warning for deprecated features when the warning is intended for
     end users of PlasmaPy.
     """
-
-    pass

@@ -1,42 +1,57 @@
 # This file defines which GitHub labels get applied when files
-# matching certain minimatch globs are changed.
+# matching certain minimatch glob patterns are changed.
 #
 # Documentation: https://github.com/actions/labeler#pull-request-labeler
 #
-# If a label includes spaces or special characters, enclose it in
-# quotes.
+# If a label includes a space or a pattern begins with an asterisk or
+# special character, enclose it in quotes.
 
-Breaking:
+'changes existing API':
 - changelog/*.breaking*.rst
 
-'Continuous Integration':
+bug:
+- changelog/*.bugfix*.rst
+
+'CI':
 - .codecov.yaml
+- .github/workflows/*test*.yml
 - .pre-commit-config.yaml
+- .readthedocs.yml
 - CODEOWNERS
 - noxfile.py
 - tox.ini
 
-'Contributor Guide':
+'contributor guide':
 - changelog/README.rst
 - docs/contributing/**/*
 
 dependencies:
 - requirements.txt
 
-Documentation:
-- docs/**/*
-- changelog/*doc*.rst
-- README.md
+docs:
 - .readthedocs.yml
+- changelog/*doc*.rst
+- docs/**/*
+- README.md
 
 'GitHub Actions':
 - .github/**/*
 
-Notebooks:
+linters:
+- .sourcery.yaml
+- .pre-commit-config.yaml
+
+notebooks:
 - docs/notebooks/**/*
 
-Packaging:
+packaging:
+- .github/workflows/*publish*
+- .github/workflows/*release*
+- .zenodo*
+- CITATION.cff
+- LICENSE.md
 - MANIFEST.in
+- PATENT.md
 - pyproject.toml
 - setup.*
 
@@ -66,3 +81,11 @@ plasmapy.simulation:
 
 plasmapy.utils:
 - plasmapy/utils/**/*
+
+testing:
+- '**/test*.py'
+- '**/conftest.py'
+- .github/workflows/weekly.yml
+- .codecov.yaml
+- noxfile.py
+- tox.ini

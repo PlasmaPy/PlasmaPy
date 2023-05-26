@@ -57,7 +57,7 @@ def test_deBroglie_wavelength():
 
 
 @pytest.mark.parametrize(
-    "kwargs, exception",
+    ("kwargs", "exception"),
     [
         ({"V": c * 1.00000001, "particle": "e-"}, RelativityError),
         ({"V": 8 * u.m / u.s, "particle": 5 * u.m}, InvalidParticleError),
@@ -155,7 +155,7 @@ def test_Wigner_Seitz_radius():
     assert testTrue, errStr
 
 
-@pytest.mark.slow
+@pytest.mark.slow()
 class TestChemicalPotential:
     value_test_parameters = (
         "n_e, T, expected_value",
@@ -201,7 +201,7 @@ class TestChemicalPotential:
 class Test__chemical_potential_interp:
     @classmethod
     def setup_class(cls):
-        """initializing parameters for tests"""
+        """Initializing parameters for tests"""
         cls.n_e = 1e23 * u.cm**-3
         cls.T = 11604 * u.K
         cls.True1 = 7.741254037813922
@@ -249,7 +249,7 @@ class TestQuantumTheta:
         assert theta.unit.is_equivalent(u.dimensionless_unscaled)
 
     @pytest.mark.parametrize(
-        "T, n_e, expected_theta",
+        ("T", "n_e", "expected_theta"),
         [
             (1 * u.eV, 1e26 * u.m**-3, 12.72906),  # Both regimes are present
             (2 / 3 * u.eV, 1e40 * u.m**-3, 3.93887e-9),  # Fermi regime

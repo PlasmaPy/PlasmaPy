@@ -136,7 +136,7 @@ An instance of `~plasmapy.particles._special_particles.ParticleZoo`.
 """
 
 
-def create_particles_dict() -> dict[str, dict]:
+def create_particles_dict() -> dict[str, dict]:  # noqa: C901, PLR0912
     """
     Create a dictionary of dictionaries that contains physical
     information for particles and antiparticles that are not elements or

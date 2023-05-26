@@ -7,14 +7,14 @@ from plasmapy.formulary.collisions.dimensionless import (
     Knudsen_number,
 )
 from plasmapy.utils import exceptions
+from plasmapy.utils._pytest_helpers import assert_can_handle_nparray
 from plasmapy.utils.exceptions import CouplingWarning
-from plasmapy.utils.pytest_helpers import assert_can_handle_nparray
 
 
 class Test_coupling_parameter:
     @classmethod
     def setup_class(cls):
-        """initializing parameters for tests"""
+        """Initializing parameters for tests"""
         cls.T = 11604 * u.K
         cls.n_e = 1e21 * u.cm**-3
         cls.particles = ("e", "p")
@@ -83,6 +83,7 @@ class Test_coupling_parameter:
         assert testTrue, errStr
 
     # TODO vector z_mean
+    @pytest.mark.slow()
     @pytest.mark.parametrize("insert_some_nans", [[], ["V"]])
     @pytest.mark.parametrize("insert_all_nans", [[], ["V"]])
     @pytest.mark.parametrize(
@@ -120,7 +121,7 @@ class Test_coupling_parameter:
 class Test_Knudsen_number:
     @classmethod
     def setup_class(cls):
-        """initializing parameters for tests"""
+        """Initializing parameters for tests"""
         cls.length = 1 * u.nm
         cls.T = 11604 * u.K
         cls.n_e = 1e17 * u.cm**-3

@@ -18,7 +18,7 @@ from plasmapy.formulary.lengths import (
 )
 from plasmapy.formulary.speeds import thermal_speed
 from plasmapy.particles.exceptions import InvalidParticleError
-from plasmapy.utils.pytest_helpers import assert_can_handle_nparray
+from plasmapy.utils._pytest_helpers import assert_can_handle_nparray
 
 Z = 1
 n_i = 5e19 * u.m**-3
@@ -76,7 +76,7 @@ class TestGyroradius:
     """Tests for `plasmapy.formulary.lengths.gyroradius`."""
 
     @pytest.mark.parametrize(
-        "args, kwargs, _error",
+        ("args", "kwargs", "_error"),
         [
             ((u.T, "e-"), {}, TypeError),
             ((5 * u.A, "e-"), {"Vperp": 8 * u.m / u.s}, u.UnitTypeError),
@@ -133,7 +133,7 @@ class TestGyroradius:
             gyroradius(*args, **kwargs)
 
     @pytest.mark.parametrize(
-        "args, kwargs, nan_mask",
+        ("args", "kwargs", "nan_mask"),
         [
             ((np.nan * u.T,), {"particle": "e-", "T": 1 * u.K}, None),
             ((np.nan * u.T,), {"particle": "e-", "Vperp": 1 * u.m / u.s}, None),
@@ -165,7 +165,7 @@ class TestGyroradius:
             assert np.all(np.logical_not(rc_isnans[np.logical_not(nan_mask)]))
 
     @pytest.mark.parametrize(
-        "args, kwargs, expected, atol",
+        ("args", "kwargs", "expected", "atol"),
         [
             (
                 (1 * u.T,),
@@ -294,7 +294,7 @@ class TestGyroradius:
         assert rc.unit == u.m
 
     @pytest.mark.parametrize(
-        "args, kwargs, expected, _warns",
+        ("args", "kwargs", "expected", "_warns"),
         [
             ((1.0, "e-"), {"Vperp": 1.0}, 5.6856301e-12 * u.m, u.UnitsWarning),
             ((1.0 * u.T, "e-"), {"Vperp": 1.0}, 5.6856301e-12 * u.m, u.UnitsWarning),
@@ -396,7 +396,7 @@ def test_inertial_length():
 
 
 @pytest.mark.parametrize(
-    "alias, parent",
+    ("alias", "parent"),
     [
         (cwp_, inertial_length),
         (lambdaD_, Debye_length),

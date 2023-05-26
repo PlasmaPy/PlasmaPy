@@ -1,5 +1,5 @@
 """
-Defines the AbstractGrid class and child classes
+Defines the AbstractGrid class and child classes.
 """
 
 __all__ = [
@@ -253,7 +253,7 @@ class AbstractGrid(ABC):
 
     def __getitem__(self, key):
         """
-        Given a key, return the corresponding array as a `~astropy.units.Quantity`
+        Given a key, return the corresponding array as a `~astropy.units.Quantity`.
 
         Returning with ``copy=False`` means that the array returned is a direct
         reference to the underlying DataArray, so changes made will be reflected
@@ -278,7 +278,7 @@ class AbstractGrid(ABC):
 
     @property
     def shape(self):
-        r"""Shape of the grid"""
+        r"""Shape of the grid."""
         if self.is_uniform:
             return (self.ax0.size, self.ax1.size, self.ax2.size)
 
@@ -415,7 +415,7 @@ class AbstractGrid(ABC):
                 "The axis properties are only valid on uniformly spaced grids."
             )
 
-        vals = self.ds.coords[ax_name].values
+        vals = self.ds.coords[ax_name].to_numpy()
         return vals * self.si_scale_factors[axis] if si else vals * self.units[axis]
 
     def _get_dax(self, *, axis: int, si: bool = False):
@@ -615,9 +615,7 @@ class AbstractGrid(ABC):
             quantity.
         """
 
-        for key in kwargs:
-            quantity = kwargs[key]
-
+        for key, quantity in kwargs.items():
             # Check key against a list of "known" keys with pre-defined
             # meanings (eg. E_x, n_e) and raise a warning if a "non-standard"
             # key is being used so the user is aware.
@@ -645,7 +643,7 @@ class AbstractGrid(ABC):
                 }
             # If grid is non-uniform, flatten quantity
             else:
-                quantity = quantity.flatten()
+                quantity = quantity.flatten()  # noqa: PLW2901
                 dims = ["ax"]
                 coords = {"ax": self.ds.coords["ax"]}
 
@@ -668,7 +666,7 @@ class AbstractGrid(ABC):
         """
         return list(self.ds.data_vars)
 
-    def _make_grid(
+    def _make_grid(  # noqa: C901, PLR0912
         self,
         start: Union[int, float, u.Quantity],
         stop: Union[int, float, u.Quantity],
@@ -857,7 +855,7 @@ class AbstractGrid(ABC):
             + np.less(ax2_max, pos[:, 2]).astype(np.int8)
         )
 
-        return np.where(on_grid == 0, True, False)
+        return np.where(on_grid == 0, True, False)  # noqa: FBT003
 
     @abstractmethod
     def vector_intersects(self, p1, p2):
@@ -891,7 +889,7 @@ class AbstractGrid(ABC):
             _interp_quantities = np.zeros([npoints, nargs])
 
         for j, arg in enumerate(self._interp_args):
-            _interp_quantities[..., j] = self.ds[arg].values
+            _interp_quantities[..., j] = self.ds[arg].to_numpy()
 
         return _interp_quantities
 
@@ -957,7 +955,6 @@ class AbstractGrid(ABC):
 
         Returns
         -------
-
         pos: `~numpy.ndarray`
             Position array with dimensions fixed, units converted to
             standard and stripped.
@@ -975,7 +972,6 @@ class AbstractGrid(ABC):
 
         Raises
         ------
-
         KeyError
             A KeyError is raised if one of the args does not correspond
             to a DataArray in the DataSet.
@@ -1022,11 +1018,10 @@ class AbstractGrid(ABC):
 
 def _fast_nearest_neighbor_interpolate(pos, ax):
     """
-    This function finds the indices in the axis 'ax' that are closest to the
-    values in the array 'pos'
+    Find the indices in the axis `ax` that are closest to the
+    values in the array `pos`.
 
-    Assumes the axis 'ax' is sorted in ascending order.
-
+    Assumes the axis `ax` is sorted in ascending order.
     """
     # Find the index where each position would be inserted into the axis.
     # This is equivalent to a nearest neighbor interpolation but always
@@ -1102,7 +1097,7 @@ class CartesianGrid(AbstractGrid):
     def nearest_neighbor_interpolator(
         self, pos: Union[np.ndarray, u.Quantity], *args, persistent=False
     ):
-        r""" """
+        r""" """  # noqa: D419
 
         # Shared setup
         pos, args, persistent = self._persistent_interpolator_setup(
@@ -1305,10 +1300,7 @@ class CartesianGrid(AbstractGrid):
             weighted_ave[..., arg] * self._interp_units[arg] for arg in range(nargs)
         ]
 
-        if len(output) == 1:
-            return output[0]
-
-        return tuple(output)
+        return output[0] if len(output) == 1 else tuple(output)
 
 
 class NonUniformCartesianGrid(AbstractGrid):
@@ -1376,11 +1368,17 @@ class NonUniformCartesianGrid(AbstractGrid):
         function so it can be re-implemented to make non-uniform grids.
         """
         # Construct the axis arrays
-        ax0 = np.sort(np.random.uniform(low=start[0], high=stop[0], size=num[0]))
+        ax0 = np.sort(
+            np.random.uniform(low=start[0], high=stop[0], size=num[0])  # noqa: NPY002
+        )
 
-        ax1 = np.sort(np.random.uniform(low=start[1], high=stop[1], size=num[1]))
+        ax1 = np.sort(
+            np.random.uniform(low=start[1], high=stop[1], size=num[1])  # noqa: NPY002
+        )
 
-        ax2 = np.sort(np.random.uniform(low=start[2], high=stop[2], size=num[2]))
+        ax2 = np.sort(
+            np.random.uniform(low=start[2], high=stop[2], size=num[2])  # noqa: NPY002
+        )
 
         # Construct the coordinate arrays
         arr0, arr1, arr2 = np.meshgrid(ax0, ax1, ax2, indexing="ij")
@@ -1397,14 +1395,13 @@ class NonUniformCartesianGrid(AbstractGrid):
 
         indgrid = np.arange(self.grid.shape[0])
 
-        interpolator = interp.NearestNDInterpolator(self.grid.to(u.m).value, indgrid)
-        return interpolator
+        return interp.NearestNDInterpolator(self.grid.to(u.m).value, indgrid)
 
     @modify_docstring(prepend=AbstractGrid.nearest_neighbor_interpolator.__doc__)
     def nearest_neighbor_interpolator(
         self, pos: Union[np.ndarray, u.Quantity], *args, persistent=False
     ):
-        r""" """
+        r""" """  # noqa: D419
         # Shared setup
         pos, args, persistent = self._persistent_interpolator_setup(
             pos, args, persistent

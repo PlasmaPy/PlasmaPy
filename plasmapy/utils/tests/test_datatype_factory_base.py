@@ -80,7 +80,7 @@ class UnvalidatedWidget(BaseWidget):
 
 
 class MissingClassMethodWidget(BaseWidget):
-    def _factory_validation_function(cls, *args, **kwargs):
+    def _factory_validation_function(self, *args, **kwargs):
         return kwargs.get("style") == "missing"
 
 
@@ -91,7 +91,7 @@ class DifferentValidationWidget(BaseWidget):
 
 
 class MissingClassMethodDifferentValidationWidget(BaseWidget):
-    def different_validation_function(cls, *args, **kwargs):
+    def different_validation_function(self, *args, **kwargs):
         return kwargs.get("style") == "missing-different"
 
 
@@ -153,7 +153,7 @@ class TestBasicRegistrationFactory:
             registry=external_registry
         )
 
-        assert len(external_registry) == 0
+        assert not external_registry
 
         FactoryWithExternalRegistry.register(StandardWidget)
         assert type(FactoryWithExternalRegistry(style="standard")) is StandardWidget

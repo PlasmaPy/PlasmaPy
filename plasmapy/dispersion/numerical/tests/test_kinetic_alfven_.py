@@ -28,7 +28,7 @@ class TestKinetic_Alfven:
     }
 
     @pytest.mark.parametrize(
-        "kwargs, _error",
+        ("kwargs", "_error"),
         [
             ({**_kwargs_single_valued, "B": "wrong type"}, TypeError),
             ({**_kwargs_single_valued, "B": [1e-9, 2e-9, 3e-9] * u.T}, ValueError),
@@ -73,7 +73,7 @@ class TestKinetic_Alfven:
         )
     )
     @pytest.mark.parametrize(
-        "kwargs, expected",
+        ("kwargs", "expected"),
         [
             (
                 {
@@ -102,7 +102,7 @@ class TestKinetic_Alfven:
             assert np.allclose(ws[theta], ws_expected[theta], atol=0, rtol=1e-2)
 
     @pytest.mark.parametrize(
-        "kwargs, expected",
+        ("kwargs", "expected"),
         [
             ({**_kwargs_single_valued, "theta": 0 * u.deg}, {"shape": (2,)}),
             (
@@ -133,13 +133,13 @@ class TestKinetic_Alfven:
 
         assert isinstance(ws, dict)
 
-        for mode, val in ws.items():
+        for _mode, val in ws.items():  # noqa: B007
             assert isinstance(val, u.Quantity)
             assert val.unit == u.rad / u.s
             assert val.shape == expected["shape"]
 
     @pytest.mark.parametrize(
-        "kwargs, _warning",
+        ("kwargs", "_warning"),
         [
             # w/vT min PhysicsWarning
             (

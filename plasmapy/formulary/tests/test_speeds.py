@@ -7,13 +7,13 @@ import pytest
 from plasmapy.formulary.speeds import Alfven_speed, cs_, ion_sound_speed, va_
 from plasmapy.particles import Particle
 from plasmapy.particles.exceptions import InvalidParticleError
+from plasmapy.utils._pytest_helpers import assert_can_handle_nparray
 from plasmapy.utils.exceptions import (
     PhysicsError,
     PhysicsWarning,
     RelativityError,
     RelativityWarning,
 )
-from plasmapy.utils.pytest_helpers import assert_can_handle_nparray
 
 Z = 1
 
@@ -29,7 +29,7 @@ T_negarr = np.array([1e6, -5151.0]) * u.K
 
 
 @pytest.mark.parametrize(
-    "alias, parent",
+    ("alias", "parent"),
     [
         (va_, Alfven_speed),
         (cs_, ion_sound_speed),
@@ -44,7 +44,7 @@ class TestAlfvenSpeed:
     """Test `~plasmapy.formulary.speeds.Alfven_speed`."""
 
     @pytest.mark.parametrize(
-        "args, kwargs, _error",
+        ("args", "kwargs", "_error"),
         [
             # scenarios that raise RelativityError
             ((10 * u.T, 1.0e-10 * u.kg * u.m**-3), {}, RelativityError),
@@ -87,7 +87,7 @@ class TestAlfvenSpeed:
             Alfven_speed(*args, **kwargs)
 
     @pytest.mark.parametrize(
-        "args, kwargs, expected, isclose_kw, _warning",
+        ("args", "kwargs", "expected", "isclose_kw", "_warning"),
         [
             # scenarios that issue RelativityWarning
             (
@@ -125,7 +125,7 @@ class TestAlfvenSpeed:
             assert np.isclose(val.value, expected, **isclose_kw)
 
     @pytest.mark.parametrize(
-        "args, kwargs, expected, isclose_kw",
+        ("args", "kwargs", "expected", "isclose_kw"),
         [
             (
                 (1 * u.T, 1e-8 * u.kg * u.m**-3),
@@ -200,7 +200,7 @@ class TestAlfvenSpeed:
         assert np.allclose(Alfven_speed(*args, **kwargs), expected, **isclose_kw)
 
     @pytest.mark.parametrize(
-        "args, kwargs, nan_mask",
+        ("args", "kwargs", "nan_mask"),
         [
             ((np.nan * u.T, 1 * u.kg * u.m**-3), {}, []),
             ((0.001 * u.T, np.nan * u.kg * u.m**-3), {}, []),
@@ -237,7 +237,7 @@ class Test_Ion_Sound_Speed:
     r"""Test the ion_sound_speed function in speeds.py."""
 
     @pytest.mark.parametrize(
-        "args, kwargs, expected, isclose_kw",
+        ("args", "kwargs", "expected", "isclose_kw"),
         [
             (
                 (),
@@ -313,12 +313,12 @@ class Test_Ion_Sound_Speed:
                     "T_i": 0 * u.K,
                     "n_e": n_e,
                     "k": 0 * u.m**-1,
-                    "z_mean": 0.8,
-                    "ion": "p",
+                    "Z": 0.8,
+                    "ion": "H-1",
                 },
-                89018.09 * (u.m / u.s),
+                89013.262 * (u.m / u.s),
                 {"atol": 0.0, "rtol": 1e-6},
-            ),  # testing for user input z_mean
+            ),  # testing for user input Z
         ],
     )
     def test_values(self, args, kwargs, expected, isclose_kw):
@@ -329,7 +329,7 @@ class Test_Ion_Sound_Speed:
     # ion='H-1')
 
     @pytest.mark.parametrize(
-        "kwargs1, kwargs2, _warning",
+        ("kwargs1", "kwargs2", "_warning"),
         [
             ({"T_i": T_i, "T_e": T_e, "n_e": n_e, "ion": "p"}, {}, PhysicsWarning),
             ({"T_i": T_i, "T_e": T_e, "k": k_1, "ion": "p"}, {}, PhysicsWarning),
@@ -350,10 +350,10 @@ class Test_Ion_Sound_Speed:
         with pytest.warns(_warning):
             val = ion_sound_speed(**kwargs1)
             if kwargs2 != {}:
-                val == ion_sound_speed(**kwargs2)
+                val == ion_sound_speed(**kwargs2)  # noqa: B015
 
     @pytest.mark.parametrize(
-        "args, kwargs, _error",
+        ("args", "kwargs", "_error"),
         [
             (
                 (),

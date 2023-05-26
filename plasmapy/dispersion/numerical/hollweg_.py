@@ -1,6 +1,6 @@
 """
-This module contains functionality for calculating various numerical
-solutions to Hollweg's two fluid dispersion relation
+Functionality for calculating various numerical solutions to Hollweg's
+two fluid dispersion relation.
 """
 __all__ = ["hollweg"]
 
@@ -27,7 +27,7 @@ c_si_unitless = c.value
     T_e={"can_be_negative": False, "equivalencies": u.temperature_energy()},
     T_i={"can_be_negative": False, "equivalencies": u.temperature_energy()},
 )
-def hollweg(
+def hollweg(  # noqa: C901, PLR0912, PLR0915
     *,
     B: u.T,
     ion: Union[str, Particle],
@@ -142,7 +142,6 @@ def hollweg(
 
     Notes
     -----
-
     The dispersion relation presented in :cite:t:`hollweg:1999`
     (equation 3 in :cite:t:`bellan:2012`) is:
 
@@ -281,7 +280,7 @@ def hollweg(
             n_e=n_e,
             gamma_e=gamma_e,
             gamma_i=gamma_i,
-            z_mean=z_mean,
+            Z=z_mean,
         ).value
         v_A = Alfven_speed(B, n_i, ion=ion, z_mean=z_mean).value
         omega_ci = gyrofrequency(B=B, particle=ion, signed=False, Z=z_mean).value

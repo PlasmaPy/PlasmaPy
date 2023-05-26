@@ -108,7 +108,7 @@ def impact_parameter_perp(
     n_e={"can_be_negative": False},
     V={"none_shall_pass": True},
 )
-def impact_parameter(
+def impact_parameter(  # noqa: C901
     T: u.K,
     n_e: u.m**-3,
     species,
@@ -286,7 +286,7 @@ def impact_parameter(
         ionRadius = Wigner_Seitz_radius(n_i)
         bmax = (lambdaDe**2 + ionRadius**2) ** (1 / 2)
         bmin = (lambdaBroglie**2 + bPerp**2) ** (1 / 2)
-    elif method in ("ls_clamp_mininterp", "GMS-3"):
+    elif method in ("ls_clamp_mininterp", "GMS-3"):  # noqa: SIM114
         # 3rd method listed in Table 1 of reference [1]
         # same as GMS-1, but not Lambda has a clamp at Lambda_min = 2
         # where Lambda is the argument to the Coulomb logarithm.
