@@ -29,7 +29,9 @@ babel==2.12.1
 backcall==0.2.0
     # via ipython
 beautifulsoup4==4.12.2
-    # via nbconvert
+    # via
+    #   nbconvert
+    #   sphinx-codeautolink
 bleach==6.0.0
     # via nbconvert
 cachetools==5.3.0
@@ -103,7 +105,7 @@ future==0.18.3
     # via uncertainties
 h5py==3.8.0
     # via plasmapy (setup.py)
-hypothesis==6.75.3
+hypothesis==6.75.5
     # via plasmapy (setup.py)
 identify==2.5.24
     # via pre-commit
@@ -340,7 +342,7 @@ pyyaml==6.0
     #   pre-commit
     #   pybtex
     #   pytest-regressions
-pyzmq==25.0.2
+pyzmq==25.1.0
     # via
     #   ipykernel
     #   jupyter-client
@@ -379,6 +381,7 @@ sphinx==6.2.1
     #   numpydoc
     #   plasmapy (setup.py)
     #   sphinx-changelog
+    #   sphinx-codeautolink
     #   sphinx-copybutton
     #   sphinx-gallery
     #   sphinx-hoverxref
@@ -390,6 +393,8 @@ sphinx==6.2.1
     #   sphinxcontrib-bibtex
     #   sphinxcontrib-jquery
 sphinx-changelog==1.3.0
+    # via plasmapy (setup.py)
+sphinx-codeautolink==0.15.0
     # via plasmapy (setup.py)
 sphinx-copybutton==0.5.2
     # via plasmapy (setup.py)
