@@ -767,9 +767,7 @@ Equations and Physical Formulae
   the physical constants. For example, the following line of code
   obscures information about the physics being represented:
 
-  .. autolink-preface::
-
-     import astropy.units as u
+  .. autolink-ignore:: section
 
   .. code-block:: python
 
@@ -777,10 +775,6 @@ Equations and Physical Formulae
 
   In contrast, the following line of code shows the exact formula
   which makes the code much more readable.
-
-  .. autolink-preface::
-
-     import astropy.units as u
 
   .. code-block:: python
 
