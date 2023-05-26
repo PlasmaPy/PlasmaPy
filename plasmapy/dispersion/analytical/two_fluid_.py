@@ -297,7 +297,7 @@ def two_fluid(  # noqa: C901, PLR0912, PLR0915
             n_e=n_e,
             gamma_e=gamma_e,
             gamma_i=gamma_i,
-            z_mean=z_mean,
+            Z=z_mean,
         )
     v_A = Alfven_speed(B, n_i, ion=ion, z_mean=z_mean)
     omega_ci = gyrofrequency(B=B, particle=ion, signed=False, Z=z_mean)

@@ -16,5 +16,8 @@ max_line_length = 72
 [*.md]
 max_line_length = 72
 
-[*.{yml,yaml,toml,cff}]
+[*.{yml,yaml,toml,cff,bib}]
 indent_size = 2
+
+[*.{ini,html}]
+indent_size = 4
