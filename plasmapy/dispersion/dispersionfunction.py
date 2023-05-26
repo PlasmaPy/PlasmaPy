@@ -10,7 +10,7 @@ import astropy.units as u
 import numbers
 import numpy as np
 
-from scipy.special import wofz as Faddeeva_function
+from scipy.special import wofz as Faddeeva_function  # noqa: N812
 from typing import Union
 
 from plasmapy.utils.decorators import bind_lite_func, preserve_signature
@@ -34,13 +34,13 @@ def plasma_dispersion_func_lite(zeta):
 
     Parameters
     ----------
-    zeta : :term:`numpy:array_like` of real or complex values
+    zeta : |array_like| of real or complex values
         Argument of the plasma dispersion function. ``zeta`` is
         dimensionless.
 
     Returns
     -------
-    Z : :term:`numpy:array_like` of complex values
+    Z : |array_like| of complex values
         Value of plasma dispersion function.
 
     See Also
@@ -157,13 +157,13 @@ def plasma_dispersion_func_deriv_lite(zeta):
 
     Parameters
     ----------
-    zeta : :term:`numpy:array_like` of real or complex values
+    zeta : |array_like| of real or complex values
         Argument of the plasma dispersion function. ``zeta`` is
         dimensionless.
 
     Returns
     -------
-    Zprime : :term:`numpy:array_like` of complex values
+    Zprime : |array_like| of complex values
         First derivative of plasma dispersion function.
 
     See Also

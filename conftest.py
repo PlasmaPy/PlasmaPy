@@ -1,3 +1,5 @@
+"""Configure settings for running tests."""
+
 import os
 
 from hypothesis import settings, Verbosity

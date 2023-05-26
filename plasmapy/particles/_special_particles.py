@@ -15,8 +15,6 @@ import astropy.constants as const
 import astropy.units as u
 import numpy as np
 
-from typing import Dict, Set
-
 from plasmapy.particles import _elements
 
 
@@ -45,7 +43,6 @@ class ParticleZoo:
     """
 
     def __init__(self):
-
         leptons = {"e-", "mu-", "tau-", "nu_e", "nu_mu", "nu_tau"}
         antileptons = {"e+", "mu+", "tau+", "anti_nu_e", "anti_nu_mu", "anti_nu_tau"}
         baryons = {"p+", "n"}
@@ -75,57 +72,57 @@ class ParticleZoo:
         }
 
     @property
-    def leptons(self) -> Set[str]:
+    def leptons(self) -> set[str]:
         """Return all leptons, excluding antileptons."""
         return self._taxonomy_dict["lepton"]
 
     @property
-    def antileptons(self) -> Set[str]:
+    def antileptons(self) -> set[str]:
         """Return all antileptons."""
         return self._taxonomy_dict["antilepton"]
 
     @property
-    def baryons(self) -> Set[str]:
+    def baryons(self) -> set[str]:
         """Return all baryons, excluding antibaryons."""
         return self._taxonomy_dict["baryon"]
 
     @property
-    def antibaryons(self) -> Set[str]:
+    def antibaryons(self) -> set[str]:
         """Return all antibaryons."""
         return self._taxonomy_dict["antibaryon"]
 
     @property
-    def fermions(self) -> Set[str]:
+    def fermions(self) -> set[str]:
         """Return all fermions."""
         return self._taxonomy_dict["fermion"]
 
     @property
-    def bosons(self) -> Set[str]:
+    def bosons(self) -> set[str]:
         """Return all bosons."""
         return self._taxonomy_dict["boson"]
 
     @property
-    def neutrinos(self) -> Set[str]:
+    def neutrinos(self) -> set[str]:
         """Return all neutrinos."""
         return self._taxonomy_dict["neutrino"]
 
     @property
-    def antineutrinos(self) -> Set[str]:
+    def antineutrinos(self) -> set[str]:
         """Return all antineutrinos."""
         return self._taxonomy_dict["antineutrinos"]
 
     @property
-    def particles(self) -> Set[str]:
+    def particles(self) -> set[str]:
         """Return all particles, excluding antiparticles."""
         return self._taxonomy_dict["matter"]
 
     @property
-    def antiparticles(self) -> Set[str]:
+    def antiparticles(self) -> set[str]:
         """Return all antiparticles."""
         return self._taxonomy_dict["antimatter"]
 
     @property
-    def everything(self) -> Set[str]:
+    def everything(self) -> set[str]:
         """Return all particles and antiparticles."""
         return self._taxonomy_dict["matter"] | self._taxonomy_dict["antimatter"]
 
@@ -139,7 +136,7 @@ An instance of `~plasmapy.particles._special_particles.ParticleZoo`.
 """
 
 
-def create_particles_dict() -> Dict[str, dict]:
+def create_particles_dict() -> dict[str, dict]:  # noqa: C901, PLR0912
     """
     Create a dictionary of dictionaries that contains physical
     information for particles and antiparticles that are not elements or

@@ -137,7 +137,7 @@ class Test_permittivity_1D_Maxwellian:
     ]
 
     @pytest.mark.parametrize(
-        "bound_name, bound_attr",
+        ("bound_name", "bound_attr"),
         [("lite", permittivity_1D_Maxwellian_lite)],
     )
     def test_lite_function_binding(self, bound_name, bound_attr):
@@ -162,7 +162,7 @@ class Test_permittivity_1D_Maxwellian:
             origin = f"{attr.__module__}.{attr.__name__}"
             assert origin == bound_origin
 
-    @pytest.mark.parametrize("kwargs, expected", cases)
+    @pytest.mark.parametrize(("kwargs", "expected"), cases)
     def test_known(self, kwargs, expected):
         """
         Tests permittivity_1D_Maxwellian for expected value.
@@ -172,12 +172,11 @@ class Test_permittivity_1D_Maxwellian:
         kwargs["kWave"] = kwargs["omega"] / vth
 
         val = permittivity_1D_Maxwellian(**kwargs)
-        assert (
-            np.isclose(val, expected, rtol=1e-6, atol=0.0),
+        assert np.isclose(val, expected, rtol=1e-6, atol=0.0), (
             f"Permittivity value should be {expected} and not {val}.",
         )
 
-    @pytest.mark.parametrize("kwargs, expected", cases)
+    @pytest.mark.parametrize(("kwargs", "expected"), cases)
     def test_fail(self, kwargs, expected):
         """
         Tests if `test_known` would fail if we slightly adjusted the
@@ -189,8 +188,7 @@ class Test_permittivity_1D_Maxwellian:
         val = permittivity_1D_Maxwellian(**kwargs)
 
         expected += 1e-15
-        assert (
-            not np.isclose(val, expected, rtol=1e-16, atol=0.0),
+        assert not np.isclose(val, expected, rtol=1e-16, atol=0.0), (
             f"Permittivity value test gives {val} and should not be "
             f"equal to {expected}.",
         )
@@ -199,8 +197,10 @@ class Test_permittivity_1D_Maxwellian:
 class Test_permittivity_1D_Maxwellian_lite:
     """Test class for `permittivity_1D_Maxwellian_lite`."""
 
-    @pytest.mark.parametrize("kwargs, expected", Test_permittivity_1D_Maxwellian.cases)
-    def test_normal_vs_lite_values(self, kwargs, expected):
+    @pytest.mark.parametrize(
+        ("kwargs", "expected"), Test_permittivity_1D_Maxwellian.cases
+    )
+    def test_normal_vs_lite_values(self, kwargs, expected):  # noqa: ARG002
         """
         Test that `permittivity_1D_Maxwellian_lite` and
         `permittivity_1D_Maxwellian` calculate the same values.
@@ -218,8 +218,7 @@ class Test_permittivity_1D_Maxwellian_lite:
             wp.value,
         )
 
-        assert (
-            np.isclose(val, val_lite, rtol=1e-6, atol=0.0),
+        assert np.isclose(val, val_lite, rtol=1e-6, atol=0.0), (
             "'permittivity_1D_Maxwellian' and 'permittivity_1D_Maxwellian_lite' "
             "do not agree.",
         )

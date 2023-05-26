@@ -1,0 +1,121 @@
+name: weekly tests
+
+on:
+  schedule:
+  - cron: 37 7 * * 1
+  workflow_dispatch:
+
+jobs:
+  conda_installs:
+    name: Install from ${{ matrix.channel }} channel
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        include:
+
+        - channel: conda-forge
+
+    steps:
+    - name: Set up conda
+      uses: conda-incubator/setup-miniconda@v2
+      with:
+        auto-update-conda: true
+        python-version: 3.9
+
+    - name: Install PlasmaPy
+      run: conda install -c ${{ matrix.channel }} --yes plasmapy
+
+
+  tests:
+    name: ${{ matrix.name }}
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+
+        - name: Python 3.9 (Windows)
+          os: windows-latest
+          python: 3.9
+          toxenv: py39-all
+
+        - name: Python 3.10 (macOS)
+          os: macos-latest
+          python: '3.10'
+          toxenv: py310-all
+
+        - name: Python 3.11 (ubuntu-latest)
+          os: ubuntu-latest
+          python: '3.11'
+          toxenv: py311-all
+
+        - name: Python 3.9 with Astropy dev
+          os: ubuntu-latest
+          python: 3.9
+          toxenv: py39-astropydev
+
+        - name: Python 3.9 with matplotlib dev
+          os: ubuntu-latest
+          python: 3.9
+          toxenv: py39-matplotlibdev
+
+        - name: Python 3.9 with NumPy dev
+          os: ubuntu-latest
+          python: 3.9
+          toxenv: py39-numpydev
+
+        - name: Documentation with Sphinx dev
+          os: ubuntu-latest
+          python: '3.11'
+          toxenv: build_docs-sphinxdev
+          toxposargs: -q
+
+        - name: Python 3.9 with xarray dev
+          os: ubuntu-latest
+          python: 3.9
+          toxenv: py39-xarraydev
+
+        - name: Import PlasmaPy (Windows)
+          os: windows-latest
+          python: 3.9
+          toxenv: py39-minimal-pypi-import
+
+        - name: Import PlasmaPy (macOS X)
+          os: macos-latest
+          python: 3.9
+          toxenv: py39-minimal-pypi-import
+
+        - name: Import PlasmaPy (Ubuntu)
+          os: ubuntu-latest
+          python: 3.9
+          toxenv: py39-minimal-pypi-import
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python }}
+        cache: pip
+
+    - name: Install Python dependencies
+      run: python -m pip install --upgrade tox
+
+    - name: Install language-pack-fr and tzdata
+      if: startsWith(matrix.name, 'Documentation')
+      run: sudo apt-get install graphviz pandoc
+
+    - name: Run tests
+      run: tox ${{ matrix.toxargs }} -e ${{ matrix.toxenv }} -- ${{ matrix.toxposargs }}
+
+    - name: Upload coverage to codecov
+      if: ${{ contains(matrix.toxenv,'-cov') }}
+      uses: codecov/codecov-action@v3
+      with:
+        file: ./coverage.xml

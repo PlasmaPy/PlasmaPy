@@ -1,11 +1,15 @@
+.. _examples:
+
 Examples
 ========
 
-Here we catalog all the example Jupyter notebooks that have been created for
-the various functionality contained in `plasmapy`.
+Here we catalog all the example Jupyter notebooks that have been created
+for the various functionality contained in `plasmapy`.
 
 .. contents::
    :local:
+
+.. _getting-started-notebooks:
 
 Getting started
 ---------------

@@ -4,6 +4,7 @@ import numpy as np
 import pytest
 
 from plasmapy.formulary.frequencies import (
+    Buchsbaum_frequency,
     gyrofrequency,
     lower_hybrid_frequency,
     oc_,
@@ -14,7 +15,7 @@ from plasmapy.formulary.frequencies import (
     wuh_,
 )
 from plasmapy.particles.exceptions import InvalidParticleError
-from plasmapy.utils.pytest_helpers import assert_can_handle_nparray
+from plasmapy.utils._pytest_helpers import assert_can_handle_nparray
 
 Z = 1
 ion = "p"
@@ -26,7 +27,7 @@ B_nanarr = np.array([0.001, np.nan]) * u.T
 
 
 @pytest.mark.parametrize(
-    "alias, parent",
+    ("alias", "parent"),
     [
         (oc_, gyrofrequency),
         (wc_, gyrofrequency),
@@ -109,10 +110,10 @@ def test_gyrofrequency():
 
     gyrofrequency(1 * u.T, particle="p")
     # testing for user input Z
-    testMeth1 = gyrofrequency(1 * u.T, particle="p", Z=0.8).si.value
-    testTrue1 = 76630665.79318453
+    testMeth1 = gyrofrequency(1 * u.T, particle="H-1", Z=0.8).si.value
+    testTrue1 = 76622320.37
     errStr = f"gyrofrequency() gave {testMeth1}, should be {testTrue1}."
-    assert np.isclose(testMeth1, testTrue1, atol=0.0, rtol=1e-5), errStr
+    assert np.isclose(testMeth1, testTrue1, atol=0.0, rtol=1e-7), errStr
 
     assert_can_handle_nparray(gyrofrequency, kwargs={"signed": True})
 
@@ -187,3 +188,36 @@ def test_upper_hybrid_frequency():
         )
 
     assert_can_handle_nparray(upper_hybrid_frequency)
+
+
+def test_Buchsbaum_frequency():
+    r"""Test the Buchsbaum_frequency function in frequencies.py."""
+
+    with pytest.raises(InvalidParticleError):
+        Buchsbaum_frequency(
+            1.0 * u.T,
+            5e19 * u.m**-3,
+            5e19 * u.m**-3,
+            "norwegian jarlsberg",
+            "proton",
+        )
+
+    with pytest.raises(InvalidParticleError):
+        Buchsbaum_frequency(
+            1.0 * u.T,
+            5e19 * u.m**-3,
+            5e19 * u.m**-3,
+            "proton",
+            "venezuelan beaver cheese",
+        )
+
+    assert np.isclose(
+        Buchsbaum_frequency(
+            B=0.1 * u.T,
+            n1=1e18 * u.m**-3,
+            n2=1e18 * u.m**-3,
+            ion1="proton",
+            ion2="He-4 +1",
+        ).value,
+        4805575.93140432,
+    )

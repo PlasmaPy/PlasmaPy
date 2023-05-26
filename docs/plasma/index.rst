@@ -7,6 +7,10 @@ PlasmaPy Plasma
 .. module:: plasmapy.plasma
 .. currentmodule:: plasmapy.plasma
 
+.. attention::
+
+   |expect-api-changes|
+
 Overview
 --------
 
@@ -33,12 +37,13 @@ Plasma objects are constructed using the special factory class
     ...                            Z=Z,
     ...                            particle=particle)  # doctest: +SKIP
 
-The result of a call to `~plasmapy.plasma.plasma_factory.Plasma` will be either
-a `~plasmapy.plasma.plasma_base.GenericPlasma` object, or a subclass of
-`~plasmapy.plasma.plasma_base.GenericPlasma` which deals with a specific type of
-data, e.g. `~plasmapy.plasma.sources.plasmablob.PlasmaBlob` or
-`~plasmapy.plasma.sources.plasma3d.Plasma3D` (see :ref:`plasma-sources` to see
-a list of all of them).
+The result of a call to `~plasmapy.plasma.plasma_factory.Plasma` will be
+either a `~plasmapy.plasma.plasma_base.GenericPlasma` object, or a
+subclass of
+`~plasmapy.plasma.plasma_base.GenericPlasma` which deals with a specific
+type of data, e.g. `~plasmapy.plasma.sources.plasmablob.PlasmaBlob` or
+`~plasmapy.plasma.sources.plasma3d.Plasma3D` (see :ref:`plasma-sources`
+to see a list of all of them).
 
 .. autoclass:: plasmapy.plasma.plasma_factory.PlasmaFactory
    :noindex:
@@ -47,10 +52,11 @@ Using Plasma Objects
 --------------------
 
 Once a Plasma object has been created using
-`~plasmapy.plasma.plasma_factory.Plasma` it will be a instance or a subclass of
-the `~plasmapy.plasma.plasma_base.GenericPlasma` class. The documentation of
-`~plasmapy.plasma.plasma_base.GenericPlasma` lists the attributes and methods
-that are available on all Plasma objects.
+`~plasmapy.plasma.plasma_factory.Plasma` it will be a instance or a
+subclass of the `~plasmapy.plasma.plasma_base.GenericPlasma` class. The
+documentation of
+`~plasmapy.plasma.plasma_base.GenericPlasma` lists the attributes and
+methods that are available on all Plasma objects.
 
 .. _plasma-plasma:
 
@@ -76,10 +82,10 @@ Plasma Subclasses
 -----------------
 
 The :class:`~plasmapy.plasma.sources.plasma3d.Plasma3D` class is a basic
-structure to contain spatial information about a plasma.  To initialize
+structure to contain spatial information about a plasma. To initialize
 a Plasma3D system, first create an instance of the
-:class:`~plasmapy.plasma.sources.plasma3d.Plasma3D` class and then set the
-:attr:`~plasmapy.plasma.sources.plasma3d.Plasma3D.density`,
+:class:`~plasmapy.plasma.sources.plasma3d.Plasma3D` class and then set
+the :attr:`~plasmapy.plasma.sources.plasma3d.Plasma3D.density`,
 :attr:`~plasmapy.plasma.sources.plasma3d.Plasma3D.momentum`,
 :attr:`~plasmapy.plasma.sources.plasma3d.Plasma3D.pressure` and
 attr:`~plasmapy.plasma.sources.plasma3d.Plasma3D.magnetic_field`.
@@ -90,7 +96,7 @@ attr:`~plasmapy.plasma.sources.plasma3d.Plasma3D.magnetic_field`.
 
 The :class:`~plasmapy.plasma.sources.plasmablob.PlasmaBlob` class is a
 basic structure to contain just plasma parameter information about a
-plasma with no associated spatial or temporal scales.  To initialize a
+plasma with no associated spatial or temporal scales. To initialize a
 :class:`~plasmapy.plasma.sources.plasmablob.PlasmaBlob` system, call
 it with arguments: electron temperature (``T_e``) and electron density
 (``n_e``). You may also optionally define the ionization (``Z``), and
@@ -108,26 +114,28 @@ relevant plasma particle (``particle``).
 Writing a new Plasma subclass
 -----------------------------
 
-Any subclass of `~plasmapy.plasma.plasma_base.GenericPlasma` which defines a
-method named ``is_datasource_for`` will automatically be registered with the
+Any subclass of `~plasmapy.plasma.plasma_base.GenericPlasma` which
+defines a method named ``is_datasource_for`` will automatically be
+registered with the
 `Plasma <plasmapy.plasma.plasma_factory.PlasmaFactory>` factory. The
 ``is_datasource_for`` method describes the form of the data for which
-the `~plasmapy.plasma.plasma_base.GenericPlasma` subclass is valid. For example,
-it might check the number and types of keyword arguments. This makes it
-straightforward to define your own `~plasmapy.plasma.plasma_base.GenericPlasma`
-subclass for a new data structure or a custom data source like simulated
-data. These classes only have to be imported for this to work, as
-demonstrated by the following example.
+the `~plasmapy.plasma.plasma_base.GenericPlasma` subclass is valid. For
+example, it might check the number and types of keyword arguments. This
+makes it straightforward to define your own
+`~plasmapy.plasma.plasma_base.GenericPlasma` subclass for a new data
+structure or a custom data source like simulated data. These classes
+only have to be imported for this to work, as demonstrated by the
+following example.
 
 .. code-block:: python
 
-    import plasmapy.plasma
     import astropy.units as u
+    import plasmapy.plasma
+
 
     class FuturePlasma(plasmapy.plasma.GenericPlasma):
         def __init__(self, **kwargs):
-
-            super(FuturePlasma, self).__init__(**kwargs)
+            super().__init__(**kwargs)
 
         # Specify a classmethod that determines if the input data matches
         # this new subclass

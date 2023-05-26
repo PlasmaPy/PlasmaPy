@@ -1,6 +1,6 @@
 """
-This module contains functionality for calculating various analytical
-solutions to the two fluid dispersion relation.
+Functionality for calculating various analytical solutions to the two
+fluid dispersion relation.
 """
 __all__ = ["two_fluid"]
 
@@ -25,7 +25,7 @@ from plasmapy.utils.exceptions import PhysicsWarning
     T_e={"can_be_negative": False, "equivalencies": u.temperature_energy()},
     T_i={"can_be_negative": False, "equivalencies": u.temperature_energy()},
 )
-def two_fluid(
+def two_fluid(  # noqa: C901, PLR0912, PLR0915
     *,
     B: u.T,
     ion: Union[str, Particle],
@@ -135,7 +135,6 @@ def two_fluid(
 
     Notes
     -----
-
     The complete dispersion equation presented by :cite:t:`stringer:1963`
     (equation 1 of :cite:t:`bellan:2012`) is:
 
@@ -231,10 +230,10 @@ def two_fluid(
     if not isinstance(ion, Particle):
         try:
             ion = Particle(ion)
-        except TypeError:
+        except TypeError as ex:
             raise TypeError(
                 f"For argument 'ion' expected type {Particle} but got {type(ion)}."
-            )
+            ) from ex
     if not ion.is_ion and not ion.is_category("element"):
         raise ValueError("The particle passed for 'ion' must be an ion or element.")
 
@@ -271,7 +270,7 @@ def two_fluid(
 
     # validate argument k
     k = k.squeeze()
-    if k.ndim not in [0, 1]:
+    if k.ndim not in (0, 1):
         raise ValueError(
             f"Argument 'k' needs to be a single valued or 1D array astropy Quantity,"
             f" got array of shape {k.shape}."
@@ -281,7 +280,7 @@ def two_fluid(
 
     # validate argument theta
     theta = theta.squeeze()
-    if theta.ndim not in [0, 1]:
+    if theta.ndim not in (0, 1):
         raise ValueError(
             f"Argument 'theta' needs to be a single valued or 1D array astropy "
             f"Quantity, got array of shape {k.shape}."
@@ -298,7 +297,7 @@ def two_fluid(
             n_e=n_e,
             gamma_e=gamma_e,
             gamma_i=gamma_i,
-            z_mean=z_mean,
+            Z=z_mean,
         )
     v_A = Alfven_speed(B, n_i, ion=ion, z_mean=z_mean)
     omega_ci = gyrofrequency(B=B, particle=ion, signed=False, Z=z_mean)

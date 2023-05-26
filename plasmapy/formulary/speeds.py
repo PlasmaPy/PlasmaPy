@@ -11,16 +11,16 @@ __aliases__ = ["cs_", "va_", "vth_", "vth_kappa_"]
 __lite_funcs__ = ["thermal_speed_lite"]
 
 import astropy.units as u
-import numbers
 import numpy as np
 import warnings
 
 from astropy.constants.si import k_B, mu0
 from numba import njit
+from numbers import Real
 from typing import Optional
 
 from plasmapy.formulary import lengths, misc
-from plasmapy.particles import Particle, particle_input, particle_mass
+from plasmapy.particles import Particle, particle_input, particle_mass, ParticleLike
 from plasmapy.particles.exceptions import ChargeError
 from plasmapy.utils.decorators import (
     bind_lite_func,
@@ -40,8 +40,8 @@ k_B_si_unitless = k_B.value
 def Alfven_speed(
     B: u.T,
     density: (u.m**-3, u.kg / u.m**3),
-    ion: Optional[Particle] = None,
-    z_mean: Optional[numbers.Real] = None,
+    ion: Optional[ParticleLike] = None,
+    z_mean: Optional[Real] = None,
 ) -> u.m / u.s:
     r"""
     Calculate the Alfvén speed.
@@ -99,7 +99,8 @@ def Alfven_speed(
         or convertible.
 
     `TypeError`
-        If ``ion`` is not of type or convertible to `~plasmapy.particles.particle_class.Particle`.
+        If ``ion`` is not of type or convertible to
+        `~plasmapy.particles.particle_class.Particle`.
 
     `TypeError`
         If ``z_mean`` is not of type `int` or `float`.
@@ -158,11 +159,11 @@ def Alfven_speed(
         if not isinstance(ion, Particle):
             try:
                 ion = Particle(ion)
-            except TypeError:
+            except TypeError as ex:
                 raise TypeError(
                     f"If passing a number density, you must pass a plasmapy Particle "
                     f"(not type {type(ion)}) to calculate the mass density!"
-                )
+                ) from ex
         if z_mean is None:
             try:
                 z_mean = abs(ion.charge_number)
@@ -188,15 +189,16 @@ va_ = Alfven_speed
     n_e={"can_be_negative": False, "none_shall_pass": True},
     k={"can_be_negative": False, "none_shall_pass": True},
 )
+@particle_input
 def ion_sound_speed(
     T_e: u.K,
     T_i: u.K,
-    ion: Particle,
+    ion: ParticleLike,
     n_e: u.m**-3 = None,
     k: u.m**-1 = None,
     gamma_e=1,
     gamma_i=3,
-    z_mean=None,
+    Z=None,
 ) -> u.m / u.s:
     r"""
     Return the ion sound speed for an electron-ion plasma.
@@ -215,7 +217,7 @@ def ion_sound_speed(
         particle.  If this is not given, then the ion temperature is
         assumed to be zero.
 
-    ion : `~plasmapy.particles.particle_class.Particle`
+    ion : |particle-like|
         Representation of the ion species (e.g., ``'p'`` for protons,
         ``'D+'`` for deuterium, or ``'He-4 +1'`` for singly ionized
         helium-4). If no charge state information is provided, then the
@@ -244,12 +246,15 @@ def ion_sound_speed(
         assumes that ion motion has only one degree of freedom, namely
         along magnetic field lines.
 
-    z_mean : `~astropy.units.Quantity`, optional
+    Z : `~astropy.units.Quantity`, optional
         The average ionization (arithmetic mean) for a plasma where
         a macroscopic description is valid. If this quantity is not
         given then the charge number of the ion
         is used. This is effectively an average ion sound speed for the
         plasma where multiple charge states are present.
+
+    mass_numb : positive integer, optional
+        The mass number of an isotope corresponding to ``ion``.
 
     Returns
     -------
@@ -314,11 +319,33 @@ def ion_sound_speed(
     >>> n = 5e19*u.m**-3
     >>> k_1 = 3e1*u.m**-1
     >>> k_2 = 3e7*u.m**-1
-    >>> ion_sound_speed(T_e=5e6*u.K, T_i=0*u.K, ion='p', gamma_e=1, gamma_i=3)
+    >>> ion_sound_speed(
+    ...     T_e=5e6*u.K,
+    ...     T_i=0*u.K,
+    ...     ion='p',
+    ...     gamma_e=1,
+    ...     gamma_i=3,
+    ... )
     <Quantity 203155... m / s>
-    >>> ion_sound_speed(T_e=5e6*u.K, T_i=0*u.K, n_e=n, k=k_1, ion='p', gamma_e=1, gamma_i=3)
+    >>> ion_sound_speed(
+    ...     T_e=5e6*u.K,
+    ...     T_i=0*u.K,
+    ...     n_e=n,
+    ...     k=k_1,
+    ...     ion='p',
+    ...     gamma_e=1,
+    ...     gamma_i=3,
+    ... )
     <Quantity 203155... m / s>
-    >>> ion_sound_speed(T_e=5e6*u.K, T_i=0*u.K, n_e=n, k=k_2, ion='p', gamma_e=1, gamma_i=3)
+    >>> ion_sound_speed(
+    ...     T_e=5e6*u.K,
+    ...     T_i=0*u.K,
+    ...     n_e=n,
+    ...     k=k_2,
+    ...     ion='p',
+    ...     gamma_e=1,
+    ...     gamma_i=3,
+    ... )
     <Quantity 310.31... m / s>
     >>> ion_sound_speed(T_e=5e6*u.K, T_i=0*u.K, n_e=n, k=k_1, ion='p')
     <Quantity 203155... m / s>
@@ -326,19 +353,16 @@ def ion_sound_speed(
     <Quantity 229585... m / s>
 
     """
-
-    m_i = particle_mass(ion)
-    Z = misc._grab_charge(ion, z_mean)
-
     for gamma, species in zip([gamma_e, gamma_i], ["electrons", "ions"]):
-        if not isinstance(gamma, (numbers.Real, numbers.Integral)):
+        if not isinstance(gamma, Real):
             raise TypeError(
-                f"The adiabatic index gamma for {species} must be a float or int"
+                f"The adiabatic index gamma for {species} must be a positive "
+                f"number greater than one."
             )
         if gamma < 1:
             raise PhysicsError(
-                f"The adiabatic index for {species} must be between "
-                f"one and infinity"
+                f"The adiabatic index for {species} must be a positive "
+                f"number greater than one."
             )
 
     # Assume non-dispersive limit if values for n_e (or k) are not specified
@@ -346,7 +370,7 @@ def ion_sound_speed(
     if (n_e is None) ^ (k is None):
         warnings.warn(
             "The non-dispersive limit has been assumed for "
-            "this calculation. To prevent this, values must "
+            "ion_sound_speed. To prevent this, values must "
             "be specified for both n_e and k.",
             PhysicsWarning,
         )
@@ -355,12 +379,12 @@ def ion_sound_speed(
         klD2 = (k * lambda_D) ** 2
 
     try:
-        V_S_squared = (gamma_e * Z * k_B * T_e + gamma_i * k_B * T_i) / (
-            m_i * (1 + klD2)
-        )
+        V_S_squared = (
+            gamma_e * ion.charge_number * k_B * T_e + gamma_i * k_B * T_i
+        ) / (ion.mass * (1 + klD2))
         V_S = np.sqrt(V_S_squared).to(u.m / u.s)
-    except ValueError:
-        raise ValueError("Unable to find ion sound speed.")
+    except ValueError as ex:
+        raise ValueError("Unable to find ion sound speed.") from ex
 
     return V_S
 
@@ -444,21 +468,19 @@ def thermal_speed_coefficients(method: str, ndim: int) -> float:
 
     try:
         coeff = _coefficients[(ndim, method)]
-    except KeyError:
+    except KeyError as ex:
         raise ValueError(
             f"Value for (ndim, method) pair not valid, got '({ndim}, {method})'."
-        )
+        ) from ex
 
     return coeff
 
 
 @preserve_signature
 @njit
-def thermal_speed_lite(
-    T: numbers.Real, mass: numbers.Real, coeff: numbers.Real
-) -> numbers.Real:
+def thermal_speed_lite(T: Real, mass: Real, coeff: Real) -> Real:
     r"""
-    The ":term:`lite-function`" version of
+    The :term:`lite-function` for
     `~plasmapy.formulary.speeds.thermal_speed`.  Performs the same
     thermal speed calculations as
     `~plasmapy.formulary.speeds.thermal_speed`, but is intended for
@@ -517,7 +539,7 @@ def thermal_speed_lite(
 @particle_input
 def thermal_speed(
     T: u.K,
-    particle: Particle,
+    particle: ParticleLike,
     method="most_probable",
     mass: u.kg = None,
     ndim=3,
@@ -525,7 +547,7 @@ def thermal_speed(
     r"""
     Calculate the speed of thermal motion for particles with a Maxwellian
     distribution.  (See the :ref:`Notes <thermal-speed-notes>` section for
-    details.)
+    details.).
 
     **Aliases:** `~plasmapy.formulary.speeds.vth_`
 
@@ -587,7 +609,6 @@ def thermal_speed(
 
     Notes
     -----
-
     There are multiple methods (or definitions) for calculating the thermal
     speed, all of which give the expression
 
@@ -721,10 +742,18 @@ vth_ = thermal_speed
 @validate_quantities(
     T={"can_be_negative": False, "equivalencies": u.temperature_energy()}
 )
+@particle_input
 def kappa_thermal_speed(
-    T: u.K, kappa, particle: Particle, method="most_probable"
+    T: u.K,
+    kappa,
+    particle: ParticleLike,
+    method="most_probable",
+    *,
+    mass_numb: Optional[Real] = None,
+    Z: Optional[Real] = None,
 ) -> u.m / u.s:
-    r"""Return the most probable speed for a particle within a Kappa
+    r"""
+    Return the most probable speed for a particle within a kappa
     distribution.
 
     **Aliases:** `vth_kappa_`
@@ -737,10 +766,10 @@ def kappa_thermal_speed(
     kappa: `float`
         The ``kappa`` parameter is a dimensionless number which sets the slope
         of the energy spectrum of suprathermal particles forming the tail
-        of the Kappa velocity distribution function. ``kappa`` must be greater
+        of the kappa velocity distribution function. ``kappa`` must be greater
         than 3/2.
 
-    particle : `~plasmapy.particles.particle_class.Particle`
+    particle : |particle-like|
         Representation of the particle species (e.g., 'p' for protons, 'D+'
         for deuterium, or 'He-4 +1' for singly ionized helium-4). If no
         charge state information is provided, then the particles are
@@ -749,6 +778,12 @@ def kappa_thermal_speed(
     method : `str`, optional
         Method to be used for calculating the thermal speed. Options are
         ``'most_probable'`` (default), ``'rms'``, and ``'mean_magnitude'``.
+
+    mass_numb : integer, optional
+        The mass number corresponding to ``particle``.
+
+    Z : real number, optional
+        The charge number corresponding to ``particle``.
 
     Returns
     -------
@@ -811,14 +846,7 @@ def kappa_thermal_speed(
     # different methods, as per https://en.wikipedia.org/wiki/Thermal_velocity
     vth = thermal_speed(T=T, particle=particle, method=method)
 
-    if method == "most_probable":
-        # thermal velocity of Kappa distribution function is just Maxwellian
-        # thermal speed modulated by the following factor.
-        # This is only true for "most probable" case. RMS and mean
-        # magnitude velocities are same as Maxwellian.
-        coeff = np.sqrt((kappa - 3 / 2) / kappa)
-    else:
-        coeff = 1
+    coeff = np.sqrt((kappa - 3 / 2) / kappa) if method == "most_probable" else 1
     return vth * coeff
 
 

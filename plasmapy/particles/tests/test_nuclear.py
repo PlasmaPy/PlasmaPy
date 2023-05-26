@@ -9,7 +9,7 @@ from plasmapy.particles.nuclear import (
     nuclear_binding_energy,
     nuclear_reaction_energy,
 )
-from plasmapy.utils.pytest_helpers import run_test, run_test_equivalent_calls
+from plasmapy.utils._pytest_helpers import run_test, run_test_equivalent_calls
 
 test_nuclear_equivalent_calls_table = [
     [nuclear_binding_energy, ["He-4", {}], ["alpha", {}], ["He", {"mass_numb": 4}]]
@@ -88,7 +88,8 @@ nuclear_reaction_energy_kwargs_table = [
 
 
 @pytest.mark.parametrize(
-    "reactants, products, expectedMeV, tol", nuclear_reaction_energy_kwargs_table
+    ("reactants", "products", "expectedMeV", "tol"),
+    nuclear_reaction_energy_kwargs_table,
 )
 def test_nuclear_reaction_energy_kwargs(reactants, products, expectedMeV, tol):
     energy = nuclear_reaction_energy(reactants=reactants, products=products).si
@@ -96,7 +97,7 @@ def test_nuclear_reaction_energy_kwargs(reactants, products, expectedMeV, tol):
     assert np.isclose(expected.value, energy.value, atol=tol)
 
 
-def test_nuclear_reaction_energy():
+def test_nuclear_reaction_energy2():
     reactants = ["D", "T"]
     products = ["alpha", "n"]
     expected = 17.6 * u.MeV
@@ -117,7 +118,7 @@ table_of_nuclear_tests = [
 
 
 @pytest.mark.parametrize(
-    ["tested_object", "args", "kwargs", "expected_value"], table_of_nuclear_tests
+    ("tested_object", "args", "kwargs", "expected_value"), table_of_nuclear_tests
 )
 def test_nuclear_table(tested_object, args, kwargs, expected_value):
     run_test(tested_object, args, kwargs, expected_value, rtol=1e-3)

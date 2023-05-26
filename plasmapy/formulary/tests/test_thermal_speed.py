@@ -26,12 +26,12 @@ from plasmapy.formulary.speeds import (
 )
 from plasmapy.particles import Particle
 from plasmapy.particles.exceptions import InvalidParticleError
+from plasmapy.utils._pytest_helpers import assert_can_handle_nparray
 from plasmapy.utils.exceptions import RelativityError, RelativityWarning
-from plasmapy.utils.pytest_helpers import assert_can_handle_nparray
 
 
 @pytest.mark.parametrize(
-    "alias, parent",
+    ("alias", "parent"),
     [(vth_, thermal_speed), (vth_kappa_, kappa_thermal_speed)],
 )
 def test_aliases(alias, parent):
@@ -45,7 +45,7 @@ class TestThermalSpeedCoefficients:
     """
 
     @pytest.mark.parametrize(
-        "ndim, method, _error",
+        ("ndim", "method", "_error"),
         [
             (0, "most_probable", ValueError),
             (4, "most_probable", ValueError),
@@ -60,7 +60,7 @@ class TestThermalSpeedCoefficients:
             thermal_speed_coefficients(ndim=ndim, method=method)
 
     @pytest.mark.parametrize(
-        "ndim, method, expected",
+        ("ndim", "method", "expected"),
         [
             (1, "most_probable", 0),
             (2, "most_probable", 1),
@@ -97,7 +97,7 @@ class TestThermalSpeed:
     """
 
     @pytest.mark.parametrize(
-        "bound_name, bound_attr",
+        ("bound_name", "bound_attr"),
         [
             ("lite", thermal_speed_lite),
             ("coefficients", thermal_speed_coefficients),
@@ -123,7 +123,7 @@ class TestThermalSpeed:
             assert origin == bound_origin
 
     @pytest.mark.parametrize(
-        "args, kwargs, expected",
+        ("args", "kwargs", "expected"),
         [
             # Parameters that should return the value of the thermal
             # speed coefficient.
@@ -239,7 +239,7 @@ class TestThermalSpeed:
         assert vth.unit == u.m / u.s
 
     @pytest.mark.parametrize(
-        "args, kwargs, _error",
+        ("args", "kwargs", "_error"),
         [
             ((5 * u.m, "e-"), {}, u.UnitTypeError),
             ((5 * u.m, "He+"), {}, u.UnitTypeError),
@@ -257,7 +257,7 @@ class TestThermalSpeed:
             thermal_speed(*args, **kwargs)
 
     @pytest.mark.parametrize(
-        "args, kwargs, _warning, expected",
+        ("args", "kwargs", "_warning", "expected"),
         [
             ((), {"T": 1e9 * u.K, "particle": "e-"}, RelativityWarning, None),
             (
@@ -300,12 +300,20 @@ class TestThermalSpeedLite:
     @pytest.mark.parametrize(
         "inputs",
         [
-            dict(T=5 * u.eV, particle=Particle("p"), method="most_probable", ndim=3),
-            dict(T=3000 * u.K, particle=Particle("e"), method="nrl", ndim=2),
-            dict(
-                T=5000 * u.K, particle=Particle("He+"), method="mean_magnitude", ndim=1
-            ),
-            dict(T=1 * u.eV, particle=Particle("Ar+"), method="rms", ndim=3),
+            {
+                "T": 5 * u.eV,
+                "particle": Particle("p"),
+                "method": "most_probable",
+                "ndim": 3,
+            },
+            {"T": 3000 * u.K, "particle": Particle("e"), "method": "nrl", "ndim": 2},
+            {
+                "T": 5000 * u.K,
+                "particle": Particle("He+"),
+                "method": "mean_magnitude",
+                "ndim": 1,
+            },
+            {"T": 1 * u.eV, "particle": Particle("Ar+"), "method": "rms", "ndim": 3},
         ],
     )
     def test_normal_vs_lite_values(self, inputs):
@@ -329,15 +337,15 @@ class TestThermalSpeedLite:
 # test class for kappa_thermal_speed() function:
 class Test_kappa_thermal_speed:
     @classmethod
-    def setup_class(self):
-        """initializing parameters for tests"""
-        self.T_e = 5 * u.eV
-        self.kappaInvalid = 3 / 2
-        self.kappa = 4
-        self.particle = "p"
-        self.probable1True = 24467.878463594963
-        self.rms1True = 37905.474322612165
-        self.mean1True = 34922.98563039583
+    def setup_class(cls):
+        """Initializing parameters for tests"""
+        cls.T_e = 5 * u.eV
+        cls.kappaInvalid = 3 / 2
+        cls.kappa = 4
+        cls.particle = "p"
+        cls.probable1True = 24467.878463594963
+        cls.rms1True = 37905.474322612165
+        cls.mean1True = 34922.98563039583
 
     def test_invalid_kappa(self):
         """
@@ -346,7 +354,6 @@ class Test_kappa_thermal_speed:
         """
         with pytest.raises(ValueError):
             kappa_thermal_speed(self.T_e, self.kappaInvalid, particle=self.particle)
-        return
 
     def test_invalid_method(self):
         """
@@ -357,7 +364,6 @@ class Test_kappa_thermal_speed:
             kappa_thermal_speed(
                 self.T_e, self.kappa, particle=self.particle, method="invalid"
             )
-        return
 
     def test_probable1(self):
         """
@@ -371,7 +377,6 @@ class Test_kappa_thermal_speed:
             f"and not {known1.si.value}."
         )
         assert np.isclose(known1.value, self.probable1True, rtol=1e-8, atol=0.0), errstr
-        return
 
     def test_rms1(self):
         """
@@ -385,7 +390,6 @@ class Test_kappa_thermal_speed:
             f"and not {known1.si.value}."
         )
         assert np.isclose(known1.value, self.rms1True, rtol=1e-8, atol=0.0), errstr
-        return
 
     def test_mean1(self):
         """
@@ -399,7 +403,6 @@ class Test_kappa_thermal_speed:
             f"and not {known1.si.value}."
         )
         assert np.isclose(known1.value, self.mean1True, rtol=1e-8, atol=0.0), errstr
-        return
 
     def test_handle_nparrays(self, kwargs=None):
         """Test for ability to handle numpy array quantities"""

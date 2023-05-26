@@ -49,7 +49,7 @@ class TestModifyDocstring:
         assert wfoo.__original_doc__ == original_doc
 
     @pytest.mark.parametrize(
-        "prepend, append, expected",
+        ("prepend", "append", "expected"),
         [(5, None, TypeError), (None, 5, TypeError)],
     )
     def test_raises(self, prepend, append, expected):
@@ -64,7 +64,7 @@ class TestModifyDocstring:
         assert wfoo.__signature__ == inspect.signature(self.func_simple_docstring)
 
     @pytest.mark.parametrize(
-        "prepend, append, func_name, additions",
+        ("prepend", "append", "func_name", "additions"),
         [
             (
                 "Hello",
@@ -81,24 +81,14 @@ class TestModifyDocstring:
             ("Hello", None, "func_simple_docstring", (["Hello", ""], [])),
             (None, "Goodbye", "func_simple_docstring", ([], ["", "Goodbye"])),
             (
-                "\n".join(
-                    ["    Hello", "    ", "        * item 1", "            * item 2"]
-                ),
+                "    Hello\n    \n        * item 1\n            * item 2",
                 None,
                 "func_simple_docstring",
                 (["Hello", "", "* item 1", "    * item 2", ""], []),
             ),
             (
                 None,
-                "\n".join(
-                    [
-                        "    Notes",
-                        "    -----",
-                        "    ",
-                        "        * item 1",
-                        "            * item 2",
-                    ]
-                ),
+                "    Notes\n    -----\n    \n        * item 1\n            * item 2",
                 "func_complex_docstring",
                 ([], ["", "Notes", "-----", "", "    * item 1", "        * item 2"]),
             ),
@@ -124,7 +114,7 @@ class TestModifyDocstring:
 # --------------------------------------------------------------------------------------
 def test_preserve_signature():
     # create function to mock
-    def foo(x: float, y: float) -> float:
+    def foo(x: float, y: float) -> float:  # noqa: FURB118
         return x + y
 
     mock_foo = mock.Mock(side_effect=foo, name="mock_foo", autospec=True)

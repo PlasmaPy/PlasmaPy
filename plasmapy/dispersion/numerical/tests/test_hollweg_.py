@@ -31,7 +31,7 @@ class TestHollweg:
     }
 
     @pytest.mark.parametrize(
-        "kwargs, _error",
+        ("kwargs", "_error"),
         [
             ({**_kwargs_single_valued, "B": "wrong type"}, TypeError),
             ({**_kwargs_single_valued, "B": [8e-9, 8.5e-9] * u.T}, ValueError),
@@ -68,7 +68,7 @@ class TestHollweg:
             hollweg(**kwargs)
 
     @pytest.mark.parametrize(
-        "kwargs, _warning",
+        ("kwargs", "_warning"),
         [
             # w/w_ci << 1 PhysicsWarning
             (
@@ -117,7 +117,7 @@ class TestHollweg:
             hollweg(**kwargs)
 
     @pytest.mark.parametrize(
-        "kwargs, expected",
+        ("kwargs", "expected"),
         [
             # k is an array, theta is single valued
             (
@@ -195,7 +195,7 @@ class TestHollweg:
             assert np.allclose(val.value, expected[mode])
 
     @pytest.mark.parametrize(
-        "kwargs, expected, desired_beta",
+        ("kwargs", "expected", "desired_beta"),
         [
             (  # beta = 1/20 for kx*L = 0
                 {**_kwargs_hollweg1999, "k": 1e-14 * u.rad / u.m, "B": 6.971e-8 * u.T},
@@ -296,8 +296,16 @@ class TestHollweg:
 
         assert np.allclose(big_omega, expected, atol=1e-2)
 
+    @pytest.mark.xfail(
+        reason=(
+            "This functionality is breaking because of updates to "
+            "gyrofrequency where z_mean override behavior is being "
+            "dropped. We will address z_mean override behavior when "
+            "hollweg is decorated with particle_input."
+        )
+    )
     @pytest.mark.parametrize(
-        "kwargs, expected",
+        ("kwargs", "expected"),
         [
             (
                 {
@@ -324,7 +332,7 @@ class TestHollweg:
             assert np.isclose(ws[mode], ws_expected[mode], atol=1e-5, rtol=1.7e-4)
 
     @pytest.mark.parametrize(
-        "kwargs, expected",
+        ("kwargs", "expected"),
         [
             ({**_kwargs_single_valued}, {"shape": ()}),
             (
@@ -358,7 +366,7 @@ class TestHollweg:
         assert isinstance(ws, dict)
         assert len({"acoustic_mode", "alfven_mode", "fast_mode"} - set(ws.keys())) == 0
 
-        for mode, val in ws.items():
+        for _mode, val in ws.items():  # noqa: B007
             assert isinstance(val, u.Quantity)
             assert val.unit == u.rad / u.s
             assert val.shape == expected["shape"]

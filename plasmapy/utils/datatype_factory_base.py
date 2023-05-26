@@ -1,3 +1,5 @@
+"""Functionality implementing the plasma class factory."""
+
 # SunPy is released under a BSD-style open source license:
 
 # Copyright (c) 2013-2018 The SunPy developers
@@ -48,9 +50,12 @@ class BasicRegistrationFactory:
     specified by the registered factory, which validates the input and returns
     a instance of the class that best matches the inputs.
 
+    .. attention::
+
+       |expect-api-changes|
+
     Attributes
     ----------
-
     registry : `dict`
         Dictionary mapping classes (key) to function (value) which validates
         input.
@@ -63,7 +68,6 @@ class BasicRegistrationFactory:
 
     Parameters
     ----------
-
     default_widget_type : `type`, optional
 
     additional_validation_functions : `list` of `str`, optional
@@ -82,16 +86,16 @@ class BasicRegistrationFactory:
         additional_validation_functions=None,
         registry=None,
     ):
-
-        self.registry = dict() if registry is None else registry
+        self.registry = {} if registry is None else registry
         if additional_validation_functions is None:
             additional_validation_functions = []
 
         self.default_widget_type = default_widget_type
 
         self.validation_functions = [
-            "_factory_validation_function"
-        ] + additional_validation_functions
+            "_factory_validation_function",
+            *additional_validation_functions,
+        ]
 
     def __call__(self, *args, **kwargs):
         """
@@ -106,7 +110,6 @@ class BasicRegistrationFactory:
         return self._check_registered_widget(*args, **kwargs)
 
     def _check_registered_widget(self, *args, **kwargs):
-
         candidate_widget_types = [
             key for key in self.registry if self.registry[key](*args, **kwargs)
         ]

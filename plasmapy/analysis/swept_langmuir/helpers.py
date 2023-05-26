@@ -5,11 +5,11 @@ import astropy.units as u
 import numpy as np
 
 
-def check_sweep(
+def check_sweep(  # noqa: C901, PLR0912
     voltage: np.ndarray,
     current: np.ndarray,
     strip_units: bool = True,
-) -> (np.ndarray, np.ndarray):
+) -> tuple[np.ndarray, np.ndarray]:
     """
     Function for checking that the voltage and current arrays are properly
     formatted for analysis by `plasmapy.analysis.swept_langmuir`.
@@ -85,7 +85,7 @@ def check_sweep(
     ):
         raise ValueError(
             f"Expected 1D numpy array of floats or integers for voltage, but"
-            f" got an array with dytpe '{voltage.dtype}'."
+            f" got an array with dtype '{voltage.dtype}'."
         )
     elif voltage.ndim != 1:
         raise ValueError(
@@ -95,7 +95,6 @@ def check_sweep(
     elif not np.all(np.diff(voltage) >= 0):
         raise ValueError("The voltage array is not monotonically increasing.")
 
-    # strip units
     if isinstance(voltage, u.Quantity) and strip_units:
         voltage = voltage.value
 
@@ -117,7 +116,7 @@ def check_sweep(
     ):
         raise ValueError(
             f"Expected 1D numpy array of floats or integers for current, but"
-            f" got an array with dytpe '{current.dtype}'."
+            f" got an array with dtype '{current.dtype}'."
         )
     elif current.ndim != 1:
         raise ValueError(
@@ -141,7 +140,6 @@ def check_sweep(
             f" as the 'current' size {current.size}."
         )
 
-    # strip units
     if isinstance(current, u.Quantity) and strip_units:
         current = current.value
 

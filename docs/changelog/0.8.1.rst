@@ -1,8 +1,8 @@
 PlasmaPy v0.8.1 (2022-07-05)
 ============================
 
-This release of PlasmaPy includes 158 pull requests closing 60 issues
-by 37 people, of which 31 are new contributors.
+This release of PlasmaPy includes 158 pull requests closing 60 issues by
+37 people, of which 31 are new contributors.
 
 The people who have contributed to the code for this release are:
 
@@ -52,7 +52,7 @@ Backwards Incompatible Changes
 
 - In `~plasmapy.diagnostics.thomson.spectral_density`, the arguments
   ``Te`` and ``Ti`` have been renamed ``T_e`` and ``T_i`` and are now
-  required :term:`keyword-only` arguments. (`#974
+  required |keyword-only| arguments. (`#974
   <https://github.com/plasmapy/plasmapy/pull/974>`__)
 - Moved the ``grid_resolution`` attribute from
   `~plasmapy.plasma.grids.AbstractGrid` to
@@ -81,14 +81,14 @@ Backwards Incompatible Changes
   and removed from the public API. (`#1440
   <https://github.com/plasmapy/plasmapy/pull/1440>`__)
 - The parameters ``Z`` and ``mass_numb`` to |Particle| are now
-  :term:`keyword-only`. (`#1456
+  |keyword-only|. (`#1456
   <https://github.com/plasmapy/plasmapy/pull/1456>`__)
 
 
 Deprecations and Removals
 -------------------------
 
-- Officially deprecated `plasmapy.formulary.parameters` and scheduled
+- Officially deprecated ``plasmapy.formulary.parameters`` and scheduled
   its permanent removal for the ``v0.9.0`` release. (`#1453
   <https://github.com/plasmapy/plasmapy/pull/1453>`__)
 - Dropped support for Python 3.7 in accordance with the deprecation
@@ -185,7 +185,7 @@ Features
   `~plasmapy.formulary.lengths.Debye_length`,
   `~plasmapy.formulary.lengths.gyroradius`, and
   `~plasmapy.formulary.lengths.inertial_length` from
-  `plasmapy.formulary.parameters` to the new module.  Related aliases
+  ``plasmapy.formulary.parameters`` to the new module.  Related aliases
   were also migrated. (`#1434
   <https://github.com/plasmapy/plasmapy/pull/1434>`__)
 - Created `plasmapy.formulary.frequencies` to contain frequency
@@ -195,12 +195,12 @@ Features
   `~plasmapy.formulary.frequencies.plasma_frequency_lite`,
   `~plasmapy.formulary.frequencies.lower_hybrid_frequency`, and
   `~plasmapy.formulary.frequencies.upper_hybrid_frequency` from
-  `plasmapy.formulary.parameters` to the new module.  Related aliases
+  ``plasmapy.formulary.parameters`` to the new module.  Related aliases
   were also migrated. (`#1439
   <https://github.com/plasmapy/plasmapy/pull/1439>`__)
 - Migrated `~plasmapy.formulary.dimensionless.Debye_number`, and
   `~plasmapy.formulary.dimensionless.Hall_parameter` from
-  `plasmapy.formulary.parameters` to
+  ``plasmapy.formulary.parameters`` to
   `plasmapy.formulary.dimensionless`.  Related aliases were also
   migrated. (`#1444
   <https://github.com/plasmapy/plasmapy/pull/1444>`__)
@@ -212,7 +212,7 @@ Features
   `~plasmapy.formulary.speeds.thermal_speed`,
   `~plasmapy.formulary.speeds.thermal_speed_coefficients`, and
   `~plasmapy.formulary.speeds.thermal_speed_lite` from
-  `plasmapy.formulary.parameters` to the new module.  Related aliases
+  ``plasmapy.formulary.parameters`` to the new module.  Related aliases
   were also migrated. (`#1448
   <https://github.com/plasmapy/plasmapy/pull/1448>`__)
 - Created `plasmapy.formulary.misc` to contain functionality for
@@ -223,7 +223,7 @@ Features
   `~plasmapy.formulary.misc.magnetic_pressure`,
   `~plasmapy.formulary.misc.mass_density`, and
   `~plasmapy.formulary.misc.thermal_pressure` from
-  `plasmapy.formulary.parameters` to the new module.  Related aliases
+  ``plasmapy.formulary.parameters`` to the new module.  Related aliases
   were also migrated. (`#1453
   <https://github.com/plasmapy/plasmapy/pull/1453>`__)
 - Created :term:`lite-functions`
@@ -256,7 +256,7 @@ Features
   a given 3D magnetic null point. (`#1554
   <https://github.com/plasmapy/plasmapy/pull/1554>`__)
 - Added support for arbitrarily shaped input arrays to the function
-  `plasmapy.formulary.collisions.impact_parameter`. (`#1604
+  `plasmapy.formulary.collisions.lengths.impact_parameter`. (`#1604
   <https://github.com/plasmapy/plasmapy/pull/1604>`__)
 
 
@@ -311,9 +311,9 @@ Bug Fixes
   allow for arguments ``theta`` and ``k`` to simultaneously be
   arrays. (`#1529 <https://github.com/plasmapy/plasmapy/pull/1529>`__)
 - Fixed the ``Z`` dependence in
-  `~plasmapy.formulary.collisions.fundamental_electron_collision_freq`,
+  `~plasmapy.formulary.collisions.frequencies.fundamental_electron_collision_freq`,
   by replacing ``n_e`` with ``n_i`` while calling
-  `~plasmapy.formulary.collisions.collision_frequency`. (`#1546
+  `~plasmapy.formulary.collisions.frequencies.collision_frequency`. (`#1546
   <https://github.com/plasmapy/plasmapy/pull/1546>`__)
 - Updated the regular expression matching used by
   `~plasmapy.particles.particle_class.Particle` to parse and identify
@@ -389,7 +389,7 @@ Improved Documentation
   |bibliography|. (`#1374
   <https://github.com/plasmapy/plasmapy/pull/1374>`__)
 - Fixed the docstring of
-  `~plasmapy.formulary.collisions.coupling_parameter`. (`#1379
+  `~plasmapy.formulary.collisions.dimensionless.coupling_parameter`. (`#1379
   <https://github.com/plasmapy/plasmapy/pull/1379>`__)
 - Added an example notebook that introduces how to use
   `astropy.units`. (`#1380
@@ -666,7 +666,7 @@ Trivial/Internal Changes
   <https://sourcery.ai/>`__ to `plasmapy.analysis`. (`#1564
   <https://github.com/plasmapy/plasmapy/pull/1564>`__)
 - Removed an extraneous `print` statement from
-  `~plasmapy.formulary.collisions.collision_frequency` that activated
+  `~plasmapy.formulary.collisions.frequencies.collision_frequency` that activated
   when the colliding particles were both electrons. (`#1570
   <https://github.com/plasmapy/plasmapy/pull/1570>`__)
 - Changed the type hints for ``z_mean`` in

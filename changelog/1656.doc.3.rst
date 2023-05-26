@@ -1,0 +1,2 @@
+Removed outdated instructions on installing the development version
+of PlasmaPy contained in :file:`docs/contributing/install_dev.rst`.

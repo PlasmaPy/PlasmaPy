@@ -32,7 +32,7 @@ function_case = namedtuple("function_case", ("func", "args", "kwargs", "expected
 
 
 @pytest.mark.parametrize(
-    "func, args, kwargs, expected",
+    ("func", "args", "kwargs", "expected"),
     [
         function_case(
             func=generic_function, args=(), kwargs={}, expected="generic_function()"
@@ -132,8 +132,8 @@ def test_call_string(func, args, kwargs, expected):
         f"  args:     {args}\n"
         f"  kwargs:   {kwargs}\n"
         "the actual result does not match the expected result:\n"
-        f"  expected: {repr(expected)}\n"
-        f"  actual:   {repr(actual)}"
+        f"  expected: {expected!r}\n"
+        f"  actual:   {actual!r}"
     )
 
 
@@ -159,7 +159,7 @@ method_case = namedtuple(
 
 
 @pytest.mark.parametrize(
-    "args_to_cls, kwargs_to_cls, args_to_method, kwargs_to_method, expected",
+    ("args_to_cls", "kwargs_to_cls", "args_to_method", "kwargs_to_method", "expected"),
     [
         method_case(
             args_to_cls=(),
@@ -212,8 +212,8 @@ def test_method_call_string(
         f"  m_args:   {args_to_method}\n"
         f"  m_kwargs: {kwargs_to_method}\n"
         "the actual outcome does not match the expected result:\n"
-        f"  expected: {repr(expected)}\n"
-        f"  actual:   {repr(actual)}"
+        f"  expected: {expected!r}\n"
+        f"  actual:   {actual!r}"
     )
 
 
@@ -228,7 +228,7 @@ attribute_case = namedtuple(
 
 
 @pytest.mark.parametrize(
-    "args_to_cls, kwargs_to_cls, expected",
+    ("args_to_cls", "kwargs_to_cls", "expected"),
     [
         attribute_case(args_to_cls=(), kwargs_to_cls={}, expected="SampleClass().attr"),
         attribute_case(
@@ -254,8 +254,8 @@ def test_attribute_call_string(args_to_cls, kwargs_to_cls, expected):
         f"  c_args:   {args_to_cls}\n"
         f"  c_kwargs: {kwargs_to_cls}\n"
         "the actual outcome does not match the expected result:\n"
-        f"  expected: {repr(expected)}\n"
-        f"  actual:   {repr(actual)}"
+        f"  expected: {expected!r}\n"
+        f"  actual:   {actual!r}"
     )
 
 
@@ -263,7 +263,7 @@ ndarray_case = namedtuple("ndarray_case", ("array_inputs", "max_items", "expecte
 
 
 @pytest.mark.parametrize(
-    "array_inputs, max_items, expected",
+    ("array_inputs", "max_items", "expected"),
     [
         ndarray_case(array_inputs=[0], max_items=np.inf, expected="np.array([0])"),
         ndarray_case(
@@ -319,12 +319,12 @@ def test__code_repr_of_ndarray(array_inputs, max_items, expected):
     assert actual == expected, (
         f"The representation of an ndarray for array_inputs = {array_inputs} "
         f"and max_items = {max_items} is not the expected result:\n"
-        f"  expected: {repr(expected)}\n"
-        f"  actual:   {repr(actual)}\n"
+        f"  expected: {expected!r}\n"
+        f"  actual:   {actual!r}\n"
     )
 
     if max_items >= array.size:
-        recreated_array = eval(actual)
+        recreated_array = eval(actual)  # noqa: PGH001
         assert np.allclose(array, recreated_array, atol=1e-15, equal_nan=True), (
             f"Evaluating the representation of an ndarray for array_inputs = "
             f"{array_inputs} and max_items = {max_items} does not recreate "
@@ -338,7 +338,7 @@ quantity_case = namedtuple("QuantityTestCases", ("quantity", "expected"))
 
 
 @pytest.mark.parametrize(
-    "quantity, expected",
+    ("quantity", "expected"),
     [
         quantity_case(quantity=5.3 * u.m, expected="5.3*u.m"),
         quantity_case(quantity=5.4 / u.m, expected="5.4/u.m"),
@@ -361,8 +361,8 @@ def test__code_repr_of_quantity(quantity, expected):
     assert actual == expected, (
         f"_code_repr_of_quantity for {quantity} is not producing the "
         f"expected result:\n"
-        f"expected: {repr(expected)}\n"
-        f"actual:   {repr(actual)}"
+        f"expected: {expected!r}\n"
+        f"actual:   {actual!r}"
     )
 
 
@@ -375,13 +375,13 @@ def test__string_together_warnings_for_printing():
     assert actual == expected, (
         f"_string_together_warnings_for_printing is not producing the "
         f"expected result:\n"
-        f"  expected: {repr(expected)}\n"
-        f"  actual: {repr(actual)}"
+        f"  expected: {expected!r}\n"
+        f"  actual: {actual!r}"
     )
 
 
 @pytest.mark.parametrize(
-    "arg, expected",
+    ("arg", "expected"),
     [
         (1, "1"),
         ("asdf", "'asdf'"),
@@ -408,7 +408,7 @@ def test__code_repr_of_arg(arg, expected):
 
 
 @pytest.mark.parametrize(
-    "args, kwargs, expected",
+    ("args", "kwargs", "expected"),
     [
         ((), {}, ""),
         (1, {"a": "b"}, "1, a='b'"),
@@ -429,12 +429,12 @@ def test__code_repr_of_args_and_kwargs(args, kwargs, expected):
         f"  args:   {args}\n"
         f"  kwargs: {kwargs}\n"
         f"is not returning the expected string:\n"
-        f"  expected: {repr(expected)}\n"
+        f"  expected: {expected!r}\n"
     )
 
 
 @pytest.mark.parametrize(
-    "obj, expected",
+    ("obj", "expected"),
     [
         (ArithmeticError, "an ArithmeticError"),
         (EOFError, "an EOFError"),
@@ -454,12 +454,12 @@ def test__name_with_article(obj, expected):
     name_with_article = _name_with_article(obj)
     assert name_with_article == expected, (
         f"When calling _name_with_article for {obj}, expecting "
-        f"{repr(expected)} but got {repr(name_with_article)}."
+        f"{expected!r} but got {name_with_article!r}."
     )
 
 
 @pytest.mark.parametrize(
-    "obj, showmodule, expected_name",
+    ("obj", "showmodule", "expected_name"),
     [
         (ValueError, False, "ValueError"),
         (TypeError, True, "TypeError"),
@@ -475,7 +475,7 @@ def test__object_name(obj, showmodule, expected_name):
     """Test that `_object_name` produces the expected output."""
     actual_name = _object_name(obj, showmodule=showmodule)
     assert actual_name == expected_name, (
-        f"For obj = {repr(obj)}, the expected output of _obj_name with "
+        f"For obj = {obj!r}, the expected output of _obj_name with "
         f"showmodule = {showmodule} does not match the actual output:\n"
         f"  expected: {expected_name}\n"
         f"  actual:   {actual_name}"
