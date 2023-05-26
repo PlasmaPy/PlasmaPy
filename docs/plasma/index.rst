@@ -7,6 +7,10 @@ PlasmaPy Plasma
 .. module:: plasmapy.plasma
 .. currentmodule:: plasmapy.plasma
 
+.. attention::
+
+   |expect-api-changes|
+
 Overview
 --------
 

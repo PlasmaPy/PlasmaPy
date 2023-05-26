@@ -112,6 +112,10 @@ authors:
   family-names: Carroll
   alias: seanwilliamcarroll
 
+- given-names: Sarthak
+  family-names: Choudhary
+  alias: martha889
+
 - given-names: Christian
   family-names: Clauss
   alias: cclauss
@@ -209,6 +213,11 @@ authors:
 - given-names: Raymon Skjørten
   family-names: Hansen
   alias: raymonshansen
+
+- given-names: Mohammed
+  family-names: Haque
+  affiliation: Hunter College
+  alias: mohawk811
 
 - given-names: Julien
   family-names: Hillairet
@@ -490,6 +499,10 @@ authors:
   family-names: Stinson
   alias: 14tstinson
 
+- given-names: Michaela
+  family-names: Švancarová
+  alias: mysakli
+
 - given-names: Antoine
   family-names: Tavant
   affiliation: Centre Spatial de l'École Polytechnique
@@ -520,6 +533,8 @@ authors:
   affiliation: UCLA
   orcid: https://orcid.org/0000-0002-6468-5710
   alias: svincena
+
+- alias: WineDarkMoon
 
 - given-names: Tingfeng
   family-names: Wu

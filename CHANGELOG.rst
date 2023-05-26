@@ -1356,7 +1356,7 @@ Backwards Incompatible Changes
   and migrated the dispersion functionality (`dispersionfunction.py`) from
   `plasmapy.formulary` to `plasmapy.dispersion`. (`#910 <https://github.com/plasmapy/plasmapy/pull/910>`__)
 - Removed default values for the `ion` and `particle` arguments of functions contained in ``plasmapy.formulary.parameters``, in accordance with issue [#453](https://github.com/PlasmaPy/PlasmaPy/issues/453), and updated all relevant calls to modified functionality. (`#911 <https://github.com/plasmapy/plasmapy/pull/911>`__)
-- Moved test helper exceptions from `plasmapy.utils.pytest_helpers` to `plasmapy.tests.helpers`. (`#919 <https://github.com/plasmapy/plasmapy/pull/919>`__)
+- Moved test helper exceptions from ``plasmapy.utils.pytest_helpers`` to ``plasmapy.tests.helpers``. (`#919 <https://github.com/plasmapy/plasmapy/pull/919>`__)
 - Update ``plasmapy.formulary.parameters.mass_density`` so it calculates the mass
   density for a specific particle from a given number density.  Original function
   calculated the total mass density (ion + electron). (`#957 <https://github.com/plasmapy/plasmapy/pull/957>`__)
@@ -1556,7 +1556,7 @@ Backwards Incompatible Changes
 - Create simulation subpackage; move Species particle tracker there; rename to particletracker (`#665 <https://github.com/plasmapy/plasmapy/pull/665>`__)
 - Changed `plasmapy.classes.Species` to `plasmapy.simulation.ParticleTracker` (`#668 <https://github.com/plasmapy/plasmapy/pull/668>`__)
 - Move pytest helper functionality from `plasmapy.utils` to
-  `~plasmapy.utils.pytest_helpers` (`#674 <https://github.com/plasmapy/plasmapy/pull/674>`__)
+  ``plasmapy.utils.pytest_helpers`` (`#674 <https://github.com/plasmapy/plasmapy/pull/674>`__)
 - Move `plasmapy.physics`, `plasmapy.mathematics` and `plasmapy.transport` into the common `plasmapy.formulary` subpackage (`#692 <https://github.com/plasmapy/plasmapy/pull/692>`__)
 - Change `ClassicalTransport` methods into attributes (`#705 <https://github.com/plasmapy/plasmapy/pull/705>`__)
 

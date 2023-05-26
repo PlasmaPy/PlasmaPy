@@ -7,13 +7,13 @@ import pytest
 from plasmapy.formulary.speeds import Alfven_speed, cs_, ion_sound_speed, va_
 from plasmapy.particles import Particle
 from plasmapy.particles.exceptions import InvalidParticleError
+from plasmapy.utils._pytest_helpers import assert_can_handle_nparray
 from plasmapy.utils.exceptions import (
     PhysicsError,
     PhysicsWarning,
     RelativityError,
     RelativityWarning,
 )
-from plasmapy.utils.pytest_helpers import assert_can_handle_nparray
 
 Z = 1
 
@@ -313,12 +313,12 @@ class Test_Ion_Sound_Speed:
                     "T_i": 0 * u.K,
                     "n_e": n_e,
                     "k": 0 * u.m**-1,
-                    "z_mean": 0.8,
-                    "ion": "p",
+                    "Z": 0.8,
+                    "ion": "H-1",
                 },
-                89018.09 * (u.m / u.s),
+                89013.262 * (u.m / u.s),
                 {"atol": 0.0, "rtol": 1e-6},
-            ),  # testing for user input z_mean
+            ),  # testing for user input Z
         ],
     )
     def test_values(self, args, kwargs, expected, isclose_kw):
