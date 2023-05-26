@@ -1363,8 +1363,8 @@ code object to its corresponding documentation. Double check that the
 code is correct, and consider adding any missing :py:`import`
 statements. The documentation for this extension contains `examples
 <https://sphinx-codeautolink.readthedocs.io/en/latest/examples.html>`__
-on how to skip blocks with :rst:dir:`autolink-skip` and how to do
-invisible imports with :rst:dir:`autolink-preface`.
+on how to skip blocks with ``.. autolink-skip::`` and how to do
+invisible imports with ``.. autolink-preface::``.
 
 Errors that are unrelated to a pull request
 -------------------------------------------
