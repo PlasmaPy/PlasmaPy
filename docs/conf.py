@@ -227,8 +227,7 @@ linkcheck_allowed_redirects = {
     r"https://.+\.readthedocs\.io": r"https://.+\.readthedocs\.io/en/.+",
     r"https://www\.sphinx-doc\.org": r"https://www\.sphinx-doc\.org/en/.+",
     r"https://.+/github\.io": r"https://.+/github\.io/en/.+",
-    # some links require logins
-    r"https://.+": r".+(google|github).+[lL]ogin.+",
+    r"https://.+": r".+(google|github).+[lL]ogin.+",  # some links require logins
     r"https://jinja\.palletsprojects\.com": r"https://jinja\.palletsprojects\.com/.+",
     r"https://pip\.pypa\.io": r"https://pip\.pypa\.io/en/.+",
     r"https://www.python.org/dev/peps/pep.+": "https://peps.python.org/pep.+",
@@ -386,8 +385,7 @@ nitpick_ignore_regex = [
     (python_role, ".*member.*"),
     (python_role, "OptionSpec"),
     (python_role, "py"),
-    # also for reST workarounds in docs/common_links.rst
-    (python_role, "[Ss]phinx.*"),
+    (python_role, "[Ss]phinx.*"),  # also for reST workarounds in docs/common_links.rst
     # The following patterns still need to be fixed.
     (python_role, "json.decoder.JSONDecoder"),
     (python_role, "plasmapy.analysis.swept_langmuir.find_floating_potential"),
