@@ -771,9 +771,9 @@ Equations and Physical Formulae
 
      import astropy.units as u
 
-  .. code-block:: pycon
+  .. code-block:: python
 
-     >>> omega_ce = 1.76e7*(B/u.G)*u.rad/u.s  # doctest: +SKIP
+     omega_ce = 1.76e7*(B/u.G)*u.rad/u.s  # doctest: +SKIP
 
   In contrast, the following line of code shows the exact formula
   which makes the code much more readable.
@@ -782,9 +782,9 @@ Equations and Physical Formulae
 
      import astropy.units as u
 
-  .. code-block:: pycon
+  .. code-block:: python
 
-     >>> omega_ce = (e * B) / (m_e * c)  # doctest: +SKIP
+     omega_ce = (e * B) / (m_e * c)  # doctest: +SKIP
 
   The origins of numerical coefficients in formulae should be
   documented.
