@@ -83,6 +83,11 @@ needs_sphinx = "6.1.3"
 # in docs/doc_guide.rst on Sphinx extensions.
 
 extensions = [
+    "hoverxref.extension",
+    "IPython.sphinxext.ipython_console_highlighting",
+    "nbsphinx",
+    "notfound.extension",
+    "plasmapy_sphinx",
     "sphinx.ext.autodoc",
     "sphinx.ext.extlinks",
     "sphinx.ext.graphviz",
@@ -90,18 +95,14 @@ extensions = [
     "sphinx.ext.mathjax",
     "sphinx.ext.napoleon",
     "sphinx.ext.todo",
-    "nbsphinx",
-    "sphinxcontrib.bibtex",
+    "sphinx_changelog",
+    "sphinx_codeautolink",
     "sphinx_copybutton",
     "sphinx_gallery.load_style",
-    "IPython.sphinxext.ipython_console_highlighting",
-    "sphinx_changelog",
-    "sphinx_tabs.tabs",
-    "hoverxref.extension",
-    "notfound.extension",
     "sphinx_issues",
     "sphinx_reredirects",
-    "plasmapy_sphinx",
+    "sphinx_tabs.tabs",
+    "sphinxcontrib.bibtex",
 ]
 
 # Configure sphinxcontrib-bibtex
@@ -116,34 +117,35 @@ bibtex_cite_id = "{key}"
 # the section in docs/doc_guide.rst on references to other packages.
 
 intersphinx_mapping = {
-    "readthedocs": ("https://docs.readthedocs.io/en/stable/", None),
-    "python": ("https://docs.python.org/3/", None),
-    "numpy": ("https://numpy.org/doc/stable/", None),
-    "scipy": ("https://docs.scipy.org/doc/scipy/", None),
-    "pandas": ("https://pandas.pydata.org/pandas-docs/stable/", None),
     "astropy": ("https://docs.astropy.org/en/stable/", None),
+    "lmfit": ("https://lmfit.github.io/lmfit-py/", None),
+    "matplotlib": ("https://matplotlib.org/stable/", None),
+    "numba": ("https://numba.readthedocs.io/en/stable/", None),
+    "numpy": ("https://numpy.org/doc/stable/", None),
+    "pandas": ("https://pandas.pydata.org/pandas-docs/stable/", None),
     "pytest": ("https://docs.pytest.org/en/stable/", None),
+    "python": ("https://docs.python.org/3/", None),
+    "readthedocs": ("https://docs.readthedocs.io/en/stable/", None),
+    "scipy": ("https://docs.scipy.org/doc/scipy/", None),
+    "sphinx": ("https://www.sphinx-doc.org/en/master/", None),
     "sphinx_automodapi": (
         "https://sphinx-automodapi.readthedocs.io/en/latest/",
         None,
     ),
-    "sphinx": ("https://www.sphinx-doc.org/en/master/", None),
-    "numba": ("https://numba.readthedocs.io/en/stable/", None),
-    "lmfit": ("https://lmfit.github.io/lmfit-py/", None),
 }
 
 hoverxref_intersphinx = [
-    "readthedocs",
-    "python",
-    "numpy",
-    "scipy",
-    "pandas",
     "astropy",
-    "pytest",
-    "sphinx_automodapi",
-    "sphinx",
-    "numba",
     "lmfit",
+    "numba",
+    "numpy",
+    "pandas",
+    "pytest",
+    "python",
+    "readthedocs",
+    "scipy",
+    "sphinx",
+    "sphinx_automodapi",
 ]
 
 autoclass_content = "both"

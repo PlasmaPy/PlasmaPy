@@ -767,16 +767,18 @@ Equations and Physical Formulae
   the physical constants. For example, the following line of code
   obscures information about the physics being represented:
 
-  .. code-block:: pycon
+  .. autolink-skip:: section
 
-     >>> omega_ce = 1.76e7*(B/u.G)*u.rad/u.s  # doctest: +SKIP
+  .. code-block:: python
+
+     omega_ce = 1.76e7*(B/u.G)*u.rad/u.s  # doctest: +SKIP
 
   In contrast, the following line of code shows the exact formula
   which makes the code much more readable.
 
-  .. code-block:: pycon
+  .. code-block:: python
 
-     >>> omega_ce = (e * B) / (m_e * c)  # doctest: +SKIP
+     omega_ce = (e * B) / (m_e * c)  # doctest: +SKIP
 
   The origins of numerical coefficients in formulae should be
   documented.
@@ -799,13 +801,17 @@ when converting between frequency (1 / s) and angular frequency (rad /
 s). An explicit way to do this conversion is to set up an equivalency
 between cycles/s and Hz:
 
->>> from astropy import units as u
->>> f_ce = omega_ce.to(u.Hz, equivalencies=[(u.cy/u.s, u.Hz)])  # doctest: +SKIP
+.. code-block:: python
+
+   from astropy import units as u
+   f_ce = omega_ce.to(u.Hz, equivalencies=[(u.cy/u.s, u.Hz)])  # doctest: +SKIP
 
 However, ``dimensionless_angles`` does work when dividing a velocity by
 an angular frequency to get a length scale:
 
->>> d_i = (c/omega_pi).to(u.m, equivalencies=u.dimensionless_angles())  # doctest: +SKIP
+.. code-block:: python
+
+   d_i = (c/omega_pi).to(u.m, equivalencies=u.dimensionless_angles())  # doctest: +SKIP
 
 .. _example_notebooks:
 
