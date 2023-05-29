@@ -85,7 +85,7 @@ def angular_freq_to_hz(fn):
         <Quantity 0.07957747 Hz>
 
     """
-    # raise exception if fn uses the 'to_hz' kwarg
+
     sig = inspect.signature(fn)
     if "to_hz" in sig.parameters:
         raise ValueError(
@@ -94,18 +94,30 @@ def angular_freq_to_hz(fn):
         )
 
     # make new signature for fn
-    new_params = sig.parameters.copy()
-    new_params["to_hz"] = inspect.Parameter(
-        "to_hz", inspect.Parameter.POSITIONAL_OR_KEYWORD, default=False
+    new_params = []
+    var_keyword_param = None
+    for param in sig.parameters.values():
+        if param.kind == param.VAR_KEYWORD:
+            var_keyword_param = param
+        else:
+            new_params.append(param)
+
+    new_params.append(
+        inspect.Parameter("to_hz", inspect.Parameter.KEYWORD_ONLY, default=False)
     )
+
+    if var_keyword_param:
+        new_params.append(var_keyword_param)
+
     new_sig = inspect.Signature(
-        parameters=new_params.values(), return_annotation=sig.return_annotation
+        parameters=new_params, return_annotation=sig.return_annotation
     )
     fn.__signature__ = new_sig
 
     @preserve_signature
     @functools.wraps(fn)
-    def wrapper(*args, to_hz=False, **kwargs):
+    def wrapper(*args, **kwargs):
+        to_hz = kwargs.pop("to_hz", False)
         _result = fn(*args, **kwargs)
         if to_hz:
             return _result.to(u.Hz, equivalencies=[(u.cy / u.s, u.Hz)])
