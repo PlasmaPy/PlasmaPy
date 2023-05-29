@@ -24,6 +24,11 @@ def test_to_hz():
 
 
 def test_to_hz_complicated_signature():
+    """
+    Test that `angular_freq_to_hz` can decorate a function with
+    positional-only, postional, var-positional,
+    """
+
     @angular_freq_to_hz
     def func2(a, /, b, *args, c, d=2, **kwargs):  # noqa: ARG001
         return 2 * np.pi * u.rad / u.s
