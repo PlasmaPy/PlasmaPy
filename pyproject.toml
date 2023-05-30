@@ -80,9 +80,6 @@ docs = [
   "tox >= 4.4.0",
 ]
 tests = [
-  "flake8 >= 6.0.0",
-  "flake8-rst-docstrings >= 0.3.0",
-  "flake8-use-fstring >= 1.4",
   "hypothesis >= 6.35.1",
   "pre-commit >= 3.0.0",
   "pytest-regressions >= 2.3.1",

@@ -96,6 +96,6 @@ repos:
     - --nbqa-mutate
   - id: nbqa-isort
     additional_dependencies:
-    - isort==5.11.4
+    - isort==5.12.0
     args:
     - --nbqa-mutate
