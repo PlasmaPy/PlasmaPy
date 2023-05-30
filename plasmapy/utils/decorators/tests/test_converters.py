@@ -1,4 +1,5 @@
 import astropy.units as u
+import inspect
 import numpy as np
 
 from typing import Optional
@@ -35,7 +36,7 @@ def test_to_hz_complicated_signature():
     """
 
     @angular_freq_to_hz
-    def func2(a, /, b, *args, c, d=2, **kwargs):  # noqa: ARG001
+    def func2(a, /, b, *args, c, d=2, **kwargs):
         return 2 * np.pi * u.rad / u.s
 
     result_rad_per_s = func2(1, 2, 3, 4, c=5, d=6, e=7)
@@ -60,8 +61,28 @@ def test_to_hz_stacked_decorators():
     @particle_input
     @validate_quantities
     @angular_freq_to_hz
-    def func(particle: Optional[ParticleLike] = None):  # noqa: ARG001
+    def func(particle: Optional[ParticleLike] = None):
         return 2 * np.pi * u.rad / u.s
 
     assert u.isclose(func(), 2 * np.pi * u.rad / u.s)
     assert u.isclose(func(to_hz=True), 1 * u.Hz)
+
+
+def test_angular_freq_to_hz_preserves_signature():
+    """
+    Tests if the angular_freq_to_hz decorator preserves the signature of
+    the wrapped function.
+    """
+
+    @angular_freq_to_hz
+    def test_func(pos_only, /, arg, *args, required_kwarg, optional_kwarg=2, **kwargs):
+        return 2 * u.rad / u.s
+
+    original_signature = inspect.signature(test_func)
+    expected_signature = inspect.signature(
+        lambda pos_only, /, arg, *args, required_kwarg, optional_kwarg=2, to_hz=False, **kwargs: None
+    )
+
+    assert (
+        original_signature == expected_signature
+    ), f"Expected signature: {expected_signature}, but got: {original_signature}"
