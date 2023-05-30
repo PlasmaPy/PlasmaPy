@@ -16,12 +16,11 @@ import warnings
 
 from astropy.constants.si import k_B, mu0
 from numba import njit
-from numbers import Real
+from numbers import Integral, Real
 from typing import Optional
 
-from plasmapy.formulary import lengths, misc
-from plasmapy.particles import Particle, particle_input, particle_mass, ParticleLike
-from plasmapy.particles.exceptions import ChargeError
+from plasmapy.formulary import lengths
+from plasmapy.particles import electron, particle_input, particle_mass, ParticleLike
 from plasmapy.utils.decorators import (
     bind_lite_func,
     check_relativistic,
@@ -35,13 +34,16 @@ __all__ += __aliases__ + __lite_funcs__
 k_B_si_unitless = k_B.value
 
 
+@particle_input
 @check_relativistic
 @validate_quantities(density={"can_be_negative": False})
 def Alfven_speed(
     B: u.T,
     density: (u.m**-3, u.kg / u.m**3),
     ion: Optional[ParticleLike] = None,
-    z_mean: Optional[Real] = None,
+    *,
+    mass_numb: Integral = None,
+    Z: Optional[Real] = None,
 ) -> u.m / u.s:
     r"""
     Calculate the Alfvén speed.
@@ -77,7 +79,7 @@ def Alfven_speed(
         ionized. If the density is an ion number density, then this parameter
         is required in order to convert to mass density.
 
-    z_mean : `~numbers.Real`, optional
+    Z : `~numbers.Real`, optional
         The average ionization state (arithmetic mean) of the ``ion`` composing
         the plasma.  This is used in calculating the mass density
         :math:`ρ = n_i (m_i + Z_{mean} m_e)`.  ``z_mean`` is ignored if
@@ -149,31 +151,21 @@ def Alfven_speed(
     <Quantity 21664.18... m / s>
     >>> Alfven_speed(B, n, ion="He++")
     <Quantity 21664.18... m / s>
-    >>> Alfven_speed(B, n, ion="He", z_mean=1.8)
-    <Quantity 21661.51... m / s>
+    >>> Alfven_speed(B, n, ion="He", Z=1.8)
+    <Quantity 21664.18... m / s>
     """
 
-    if density.unit.is_equivalent(u.kg / u.m**3):
+    if density.unit.physical_type == u.physical.mass_density and ion is not None:
+        raise ValueError(
+            "When calculating the Alfvén speed, an ion cannot be specified "
+            "when the 'density' parameter is provided an argument with a "
+            "physical type of mass density."
+        )
+
+    if density.unit.physical_type == u.physical.mass_density:
         rho = density
     else:
-        if not isinstance(ion, Particle):
-            try:
-                ion = Particle(ion)
-            except TypeError as ex:
-                raise TypeError(
-                    f"If passing a number density, you must pass a plasmapy Particle "
-                    f"(not type {type(ion)}) to calculate the mass density!"
-                ) from ex
-        if z_mean is None:
-            try:
-                z_mean = abs(ion.charge_number)
-            except ChargeError:
-                z_mean = 1
-
-        z_mean = abs(z_mean)
-        rho = misc.mass_density(density, ion) + misc.mass_density(
-            density, "e", z_ratio=z_mean
-        )
+        rho = (ion.mass + ion.charge_number * electron.mass) * density
 
     return np.abs(B) / np.sqrt(mu0 * rho)
 
