@@ -173,9 +173,8 @@ class TestPlasmaFrequencyLite:
         inputs_unitless = {
             "n": inputs["n"].to(u.m**-3).value,
             "mass": particle.mass.value,
+            "Z": np.abs(particle.charge_number),
         }
-
-        inputs_unitless["Z"] = np.abs(particle.charge_number)
 
         if "to_hz" in inputs:
             inputs_unitless["to_hz"] = inputs["to_hz"]
