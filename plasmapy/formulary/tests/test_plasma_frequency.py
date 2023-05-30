@@ -14,7 +14,8 @@ from astropy.constants.si import m_p
 from numba.extending import is_jitted
 
 from plasmapy.formulary.frequencies import plasma_frequency, plasma_frequency_lite, wp_
-from plasmapy.particles import Particle
+from plasmapy.particles._factory import _physical_particle_factory
+from plasmapy.particles.exceptions import InvalidParticleError
 from plasmapy.utils._pytest_helpers import assert_can_handle_nparray
 
 
@@ -64,7 +65,11 @@ class TestPlasmaFrequency:
             (("not a density", "e-"), {}, TypeError),
             ((5 * u.s, "e-"), {}, u.UnitTypeError),
             ((5 * u.m**-2, "e-"), {}, u.UnitTypeError),
-            ((), {"n": 5 * u.m**-3, "particle": "not a particle"}, ValueError),
+            (
+                (),
+                {"n": 5 * u.m**-3, "particle": "not a particle"},
+                InvalidParticleError,
+            ),
         ],
     )
     def test_raises(self, args, kwargs, _error):
@@ -103,8 +108,8 @@ class TestPlasmaFrequency:
         ("args", "kwargs", "expected", "rtol"),
         [
             ((1 * u.cm**-3, "e-"), {}, 5.64e4, 1e-2),
-            ((1 * u.cm**-3, "N"), {}, 3.53e2, 1e-1),
-            ((1e17 * u.cm**-3, "p"), {"z_mean": 0.8}, 333063562455.4028, 1e-6),
+            ((1 * u.cm**-3, "N+"), {}, 3.53e2, 1e-1),
+            ((1e17 * u.cm**-3, "H-1"), {"Z": 0.8}, 333045427357.53955, 1e-6),
             (
                 (5e19 * u.m**-3, "p"),
                 {},
@@ -124,7 +129,7 @@ class TestPlasmaFrequency:
 
     @pytest.mark.parametrize(
         ("args", "kwargs"),
-        [((1 * u.cm**-3, "N"), {}), ((1e12 * u.cm**-3,), {"particle": "p"})],
+        [((1 * u.cm**-3, "N+"), {}), ((1e12 * u.cm**-3,), {"particle": "p"})],
     )
     def test_to_hz(self, args, kwargs):
         """Test behavior of the ``to_hz`` keyword."""
@@ -154,7 +159,7 @@ class TestPlasmaFrequencyLite:
         [
             {"n": 1e12 * u.cm**-3, "particle": "e-"},
             {"n": 1e12 * u.cm**-3, "particle": "e-", "to_hz": True},
-            {"n": 1e11 * u.cm**-3, "particle": "He", "z_mean": 0.8},
+            {"n": 1e11 * u.cm**-3, "particle": "He", "Z": 0.8},
         ],
     )
     def test_normal_vs_lite_values(self, inputs):
@@ -162,18 +167,15 @@ class TestPlasmaFrequencyLite:
         Test that plasma_frequency and plasma_frequency_lite calculate
         the same values.
         """
-        particle = Particle(inputs["particle"])
+        Z = inputs.get("Z", None)
+        particle = _physical_particle_factory(inputs["particle"], Z=Z)
+
         inputs_unitless = {
             "n": inputs["n"].to(u.m**-3).value,
             "mass": particle.mass.value,
+            "Z": np.abs(particle.charge_number),
         }
-        if "z_mean" in inputs:
-            inputs_unitless["z_mean"] = inputs["z_mean"]
-        else:
-            try:
-                inputs_unitless["z_mean"] = np.abs(particle.charge_number)
-            except Exception:  # noqa: BLE001
-                inputs_unitless["z_mean"] = 1
+
         if "to_hz" in inputs:
             inputs_unitless["to_hz"] = inputs["to_hz"]
 

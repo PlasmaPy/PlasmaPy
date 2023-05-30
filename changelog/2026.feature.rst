@@ -1,0 +1,3 @@
+Decorated `~plasmapy.formulary.frequencies.plasma_frequency` with
+|particle_input| so that it can now accept a broader variety of
+|particle-like| arguments.
