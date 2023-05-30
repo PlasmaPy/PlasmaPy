@@ -11,7 +11,7 @@ GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
 PR_NUMBER = os.getenv("PR_NUMBER")
 REPO = os.getenv("GITHUB_REPOSITORY")
 
-EXCLUDED_USERS = ["dependabot", "pre-commit-ci", "sourcery-ai"]
+EXCLUDED_USERS = ["dependabot", "pre-commit-ci[bot]", "sourcery-ai"]
 
 
 def get_pr_authors() -> set[str]:
