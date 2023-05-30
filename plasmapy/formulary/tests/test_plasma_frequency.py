@@ -14,7 +14,7 @@ from astropy.constants.si import m_p
 from numba.extending import is_jitted
 
 from plasmapy.formulary.frequencies import plasma_frequency, plasma_frequency_lite, wp_
-from plasmapy.particles import Particle
+from plasmapy.particles._factory import _physical_particle_factory
 from plasmapy.particles.exceptions import InvalidParticleError
 from plasmapy.utils._pytest_helpers import assert_can_handle_nparray
 
@@ -129,7 +129,7 @@ class TestPlasmaFrequency:
 
     @pytest.mark.parametrize(
         ("args", "kwargs"),
-        [((1 * u.cm**-3, "N"), {}), ((1e12 * u.cm**-3,), {"particle": "p"})],
+        [((1 * u.cm**-3, "N+"), {}), ((1e12 * u.cm**-3,), {"particle": "p"})],
     )
     def test_to_hz(self, args, kwargs):
         """Test behavior of the ``to_hz`` keyword."""
@@ -167,18 +167,16 @@ class TestPlasmaFrequencyLite:
         Test that plasma_frequency and plasma_frequency_lite calculate
         the same values.
         """
-        particle = Particle(inputs["particle"])
+        Z = inputs.get("Z", None)
+        particle = _physical_particle_factory(inputs["particle"], Z=Z)
+
         inputs_unitless = {
             "n": inputs["n"].to(u.m**-3).value,
             "mass": particle.mass.value,
         }
-        if "Z" in inputs:
-            inputs_unitless["Z"] = inputs["Z"]
-        else:
-            try:
-                inputs_unitless["Z"] = np.abs(particle.charge_number)
-            except Exception:  # noqa: BLE001
-                inputs_unitless["Z"] = 1
+
+        inputs_unitless["Z"] = np.abs(particle.charge_number)
+
         if "to_hz" in inputs:
             inputs_unitless["to_hz"] = inputs["to_hz"]
 

@@ -131,7 +131,7 @@ class Test_permittivity_1D_Maxwellian:
                 "z_mean": 8,
                 "omega": 5.635e14 * 2 * np.pi * u.rad / u.s,
             },
-            (-6.728092569241431e-08 + 5.760379561405176e-07j)
+            (-6.729556105413448e-08 + 5.761632594678113e-07j)
             * u.dimensionless_unscaled,
         ),
     ]
@@ -206,7 +206,7 @@ class Test_permittivity_1D_Maxwellian_lite:
         `permittivity_1D_Maxwellian` calculate the same values.
         """
 
-        wp = plasma_frequency(kwargs["n"], kwargs["particle"], kwargs["Z"])
+        wp = plasma_frequency(kwargs["n"], kwargs["particle"], Z=kwargs["z_mean"])
         vth = thermal_speed(kwargs["T"], kwargs["particle"], method="most_probable")
         kwargs["kWave"] = kwargs["omega"] / vth
 
