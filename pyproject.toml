@@ -323,6 +323,7 @@ max-complexity = 10
 "plasmapy/plasma/sources/*.py" = ["D102"]
 "plasmapy/utils/_pytest_helpers/pytest_helpers.py" = ["BLE001", "PLR"]
 "plasmapy/utils/_pytest_helpers/tests/test_pytest_helpers.py" = ["BLE001", "TRY002"]
+"plasmapy/utils/decorators/tests/test_converters.py" = ["ARG001", "ARG005"]
 "setup.py" = ["D100"]
 "test_*" = ["D100", "D101", "D102", "D103", "D104", "D209", "D400", "D401"]
 "*/*/tests/__init__.py" = ["D104"]

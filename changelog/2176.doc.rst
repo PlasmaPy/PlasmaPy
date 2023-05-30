@@ -1,0 +1,1 @@
+Changed the order of sections in newly built changelogs.
