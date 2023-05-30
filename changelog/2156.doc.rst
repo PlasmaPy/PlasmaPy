@@ -1,0 +1,3 @@
+Added functionality to automatically generate the author list included
+in |docs/about/credits.rst|_ directly from |CITATION.cff|_. The script
+is located at :file:`docs/cff_to_rst.py`.
