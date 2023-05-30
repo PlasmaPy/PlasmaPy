@@ -9,12 +9,20 @@
 import os
 import sys
 
+# isort: off
+sys.path.insert(0, os.path.abspath(".."))  # noqa: PTH100
+sys.path.insert(0, os.path.abspath("."))  # noqa: PTH100
+# isort: on
+
+import cff_to_rst
+
 from datetime import datetime
 from pkg_resources import parse_version
 from sphinx.application import Sphinx
 
-sys.path.insert(0, os.path.abspath(".."))  # noqa: PTH100
-sys.path.insert(0, os.path.abspath("."))  # noqa: PTH100
+# Generate author list from CITATION.cff
+
+cff_to_rst.main()
 
 from plasmapy import __version__ as release  # noqa: E402
 

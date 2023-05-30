@@ -80,9 +80,6 @@ docs = [
   "tox >= 4.4.0",
 ]
 tests = [
-  "flake8 >= 6.0.0",
-  "flake8-rst-docstrings >= 0.3.0",
-  "flake8-use-fstring >= 1.4",
   "hypothesis >= 6.35.1",
   "pre-commit >= 3.0.0",
   "pytest-regressions >= 2.3.1",
@@ -315,7 +312,7 @@ max-complexity = 10
 [tool.ruff.per-file-ignores]
 "__init__.py" = ["D104", "E402", "F401", "F402", "F403"] # ignore import errors
 ".github/scripts/*.py" = ["D103", "INP001"]
-"docs/conf.py" = ["D100", "D103"]
+"docs/conf.py" = ["D100", "D103", "E402"]
 "plasmapy/analysis/fit_functions.py" = ["D301"]
 "plasmapy/formulary/braginskii.py" = ["C901"]
 "plasmapy/formulary/tests/test_distribution.py" = ["ARG005"]
@@ -323,6 +320,7 @@ max-complexity = 10
 "plasmapy/plasma/sources/*.py" = ["D102"]
 "plasmapy/utils/_pytest_helpers/pytest_helpers.py" = ["BLE001", "PLR"]
 "plasmapy/utils/_pytest_helpers/tests/test_pytest_helpers.py" = ["BLE001", "TRY002"]
+"plasmapy/utils/decorators/tests/test_converters.py" = ["ARG001", "ARG005"]
 "setup.py" = ["D100"]
 "test_*" = ["D100", "D101", "D102", "D103", "D104", "D209", "D400", "D401"]
 "*/*/tests/__init__.py" = ["D104"]
