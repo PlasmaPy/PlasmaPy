@@ -45,8 +45,13 @@ Formulary
 
    notebooks/formulary/*
 
-.. Particles
-   ---------
+Particles
+---------
+
+.. nbgallery::
+   :glob:
+
+   notebooks/particles/*
 
 Plasma Objects
 --------------
