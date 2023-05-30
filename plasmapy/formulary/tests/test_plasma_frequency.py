@@ -15,6 +15,7 @@ from numba.extending import is_jitted
 
 from plasmapy.formulary.frequencies import plasma_frequency, plasma_frequency_lite, wp_
 from plasmapy.particles import Particle
+from plasmapy.particles.exceptions import InvalidParticleError
 from plasmapy.utils._pytest_helpers import assert_can_handle_nparray
 
 
@@ -64,7 +65,11 @@ class TestPlasmaFrequency:
             (("not a density", "e-"), {}, TypeError),
             ((5 * u.s, "e-"), {}, u.UnitTypeError),
             ((5 * u.m**-2, "e-"), {}, u.UnitTypeError),
-            ((), {"n": 5 * u.m**-3, "particle": "not a particle"}, ValueError),
+            (
+                (),
+                {"n": 5 * u.m**-3, "particle": "not a particle"},
+                InvalidParticleError,
+            ),
         ],
     )
     def test_raises(self, args, kwargs, _error):
@@ -103,8 +108,8 @@ class TestPlasmaFrequency:
         ("args", "kwargs", "expected", "rtol"),
         [
             ((1 * u.cm**-3, "e-"), {}, 5.64e4, 1e-2),
-            ((1 * u.cm**-3, "N"), {}, 3.53e2, 1e-1),
-            ((1e17 * u.cm**-3, "p"), {"Z": 0.8}, 333063562455.4028, 1e-6),
+            ((1 * u.cm**-3, "N+"), {}, 3.53e2, 1e-1),
+            ((1e17 * u.cm**-3, "H-1"), {"Z": 0.8}, 333045427357.53955, 1e-6),
             (
                 (5e19 * u.m**-3, "p"),
                 {},
