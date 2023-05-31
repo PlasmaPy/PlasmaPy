@@ -103,7 +103,7 @@ def hollweg(  # noqa: C901, PLR0912, PLR0915
         The dictionary contains three keys: ``'fast_mode'`` for
         the fast mode, ``'alfven_mode'`` for the Alfvén mode, and
         ``'acoustic_mode'`` for the ion-acoustic mode.  The value
-        for each key will be a :math:`N x M` array.
+        for each key will be an :math:`N x M` array.
 
     Raises
     ------
@@ -185,7 +185,7 @@ def hollweg(  # noqa: C901, PLR0912, PLR0915
     :math:`ω_{\rm pe}` is the electron plasma frequency. In the
     derivation of this relation Hollweg assumed low-frequency waves
     :math:`ω / ω_{\rm ci} ≪ 1`, no D.C. electric field
-    :math:`\mathbf{E_0}=0`, and quasineutrality.
+    :math:`\mathbf{E}_0=0`, and quasineutrality.
 
     :cite:t:`hollweg:1999` asserts this expression is valid for
     arbitrary :math:`c_{\rm s} / v_{\rm A}` (β) and
