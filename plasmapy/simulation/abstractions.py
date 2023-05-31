@@ -1,4 +1,10 @@
-"""Abstract classes for numerical simulations."""
+"""
+Abstract classes for numerical simulations.
+
+.. attention::
+
+   |expect-api-changes|
+"""
 
 __all__ = [
     "AbstractNormalizations",
@@ -16,8 +22,9 @@ class AbstractSimulation(ABC):
     """
     A prototype abstract interface for numerical simulations.
 
-    .. warning::
-        This interface is unstable and subject to change.
+    .. attention::
+
+       |expect-api-changes|
     """
 
     @abstractmethod

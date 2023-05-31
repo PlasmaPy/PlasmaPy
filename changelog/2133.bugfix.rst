@@ -1,0 +1,2 @@
+The ``plasmapy.analysis.nullpoint._vector_space`` function now returns a
+list for its delta values instead of an array.

@@ -1,8 +1,8 @@
 PlasmaPy v0.8.1 (2022-07-05)
 ============================
 
-This release of PlasmaPy includes 158 pull requests closing 60 issues
-by 37 people, of which 31 are new contributors.
+This release of PlasmaPy includes 158 pull requests closing 60 issues by
+37 people, of which 31 are new contributors.
 
 The people who have contributed to the code for this release are:
 
