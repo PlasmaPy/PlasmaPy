@@ -71,7 +71,7 @@ def kinetic_alfven(  # noqa: C901, PLR0912, PLR0915
 
     theta : `~astropy.units.Quantity`
         The angle of propagation of the wave with respect to the
-        magnetic field, :math:`\cos^{-1}(k_z / k)`, in units must be
+        magnetic field, :math:`\cos^{-1}(k_z / k)`, in units
         convertible to rad. Either single valued or 1-D array of size
         :math:`M`.
 
