@@ -1,0 +1,3 @@
+The function `~plasmapy.dispersion.numerical.hollweg_.hollweg`
+has been decorated with |particle_input| and now may accept an
+argument for the mass number corresponding to the ion.
