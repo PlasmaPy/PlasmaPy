@@ -42,8 +42,7 @@ def kinetic_alfven(  # noqa: C901, PLR0912, PLR0915
     mass_numb: Optional[Integral] = None,
     Z: Optional[Real] = None,
 ):
-    r"""
-    Using the equation provided in :cite:t:`bellan:2012`, this function
+    r"""Using the equation provided in :cite:t:`bellan:2012`, this function
     calculates the numerical solution to the kinetic Alfvén dispersion
     relation presented by :cite:t:`hirose:2004`.
 
@@ -58,8 +57,8 @@ def kinetic_alfven(  # noqa: C901, PLR0912, PLR0915
         helium-4, etc.).
 
     k : `~astropy.units.Quantity`
-        Wavenumber in units convertible to rad / m.  Either
-        single valued or 1-D array of length :math:`N`.
+        Wavenumber in units convertible to rad / m. Either single
+        valued or 1-D array of length :math:`N`.
 
     n_i : `~astropy.units.Quantity`
         Ion number density in units convertible to m\ :sup:`-3`.
@@ -73,19 +72,18 @@ def kinetic_alfven(  # noqa: C901, PLR0912, PLR0915
     theta : `~astropy.units.Quantity`
         The angle of propagation of the wave with respect to the
         magnetic field, :math:`\cos^{-1}(k_z / k)`, in units must be
-        convertible to rad. Either single valued or 1-D array
-        of size :math:`M`.
+        convertible to rad. Either single valued or 1-D array of size
+        :math:`M`.
 
     gamma_e : real number, |keyword-only|, default: 1
-        The adiabatic index for electrons. The default
-        value assumes that the electrons are able to equalize their
-        temperature rapidly enough that the electrons are effectively
-        isothermal.
+        The adiabatic index for electrons. The default value assumes
+        that the electrons are able to equalize their temperature
+        rapidly enough that the electrons are effectively isothermal.
 
     gamma_i : real number, |keyword-only|, default: 3
-        The adiabatic index for ions. The default value
-        assumes that ion motion has only one degree of freedom, namely
-        along magnetic field lines.
+        The adiabatic index for ions. The default value assumes that
+        ion motion has only one degree of freedom, namely along
+        magnetic field lines.
 
     mass_numb : integer, |keyword-only|, optional
         The mass number corresponding to ``ion``.
@@ -96,10 +94,10 @@ def kinetic_alfven(  # noqa: C901, PLR0912, PLR0915
     Returns
     -------
     omega : Dict[str, `~astropy.units.Quantity`]
-        A dictionary of computed wave frequencies in units
-        rad / s.  The dictionary contains a key for each:
-        ``theta`` value provided. The value for each key will be
-        an :math:`N × M` array.
+        A dictionary of computed wave frequencies in units rad /
+        s. The dictionary contains a key for each: ``theta`` value
+        provided. The value for each key will be an :math:`N × M`
+        array.
 
     Raises
     ------
@@ -140,23 +138,21 @@ def kinetic_alfven(  # noqa: C901, PLR0912, PLR0915
     of rad / s. This approach comes from :cite:t:`hasegawa:1982`,
     :cite:t:`morales:1997` and :cite:t:`william:1996`; who argued that
     a 3 × 3 matrix that describes warm plasma waves is able to be
-    represented as a 2 × 2 matrix because the compressional
-    (i.e., fast) mode can be factored out. The result is that the
-    determinant, when in the limit of
-    :math:`ω ≫ k_{z}^{2} c^{2}_{\rm s}`, reduces to the kinetic
-    Alfvén dispersion relation.
+    represented as a 2 × 2 matrix because the compressional (i.e.,
+    fast) mode can be factored out. The result is that the
+    determinant, when in the limit of :math:`ω ≫ k_{z}^{2} c^{2}_{\rm
+    s}`, reduces to the kinetic Alfvén dispersion relation.
 
     .. math::
         ω^2 = k_{\rm z}^2 v_{\rm A}^2 \left(1 + \frac{k_{\rm x}^2
         c_{\rm s}^2}{ω_{\rm ci}^2} \right)
 
-    With :math:`c_{\rm s}` being the wave speed and
-    :math:`ω_{\rm ci}` as the gyrofrequency of the respective ion.
-    The regions in which this is valid are
-    :math:`ω ≪ ω_{\rm ci}` and
-    :math:`\nu_{\rm Te} ≫ \frac{ω}{k_{z}} ≫ \nu_{\rm Ti}`, with
-    :math:`\nu_{\rm Ti}` standing for the thermal speed of the
-    respective ion. There is no restriction on propagation angle.
+    With :math:`c_{\rm s}` being the wave speed and :math:`ω_{\rm ci}`
+    as the gyrofrequency of the respective ion.  The regions in which
+    this is valid are :math:`ω ≪ ω_{\rm ci}` and :math:`\nu_{\rm Te} ≫
+    \frac{ω}{k_{z}} ≫ \nu_{\rm Ti}`, with :math:`\nu_{\rm Ti}`
+    standing for the thermal speed of the respective ion. There is no
+    restriction on propagation angle.
 
     Examples
     --------
