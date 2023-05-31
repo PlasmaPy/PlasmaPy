@@ -46,7 +46,7 @@ def hollweg(  # noqa: C901, PLR0912, PLR0915
     Calculate the two-fluid dispersion relation presented by
     :cite:t:`hollweg:1999`, and discussed by :cite:t:`bellan:2012`.
 
-    This is a numberical solver of equation 3 in :cite:t:`bellan:2012`.
+    This is a numerical solver of equation 3 in :cite:t:`bellan:2012`.
     See the **Notes** section below for additional details.
 
     Parameters
@@ -116,8 +116,8 @@ def hollweg(  # noqa: C901, PLR0912, PLR0915
         `~plasmapy.particles.particle_class.Particle`.
 
     TypeError
-        If ``gamma_e``, ``gamma_i``, or ``z_mean`` are not of type `int`
-        or `float`.
+        If ``gamma_e``, ``gamma_i``, or ``z_mean`` are not real
+        numbers.
 
     ~astropy.units.UnitTypeError
         If applicable arguments do not have units convertible to the
@@ -143,7 +143,7 @@ def hollweg(  # noqa: C901, PLR0912, PLR0915
     Warns
     -----
     : `~plasmapy.utils.exceptions.PhysicsWarning`
-        When :math:`\omega / \omega_{\rm ci} > 0.1`, violation of the
+        When :math:`ω / ω_{\rm ci} > 0.1`, violation of the
         low-frequency assumption.
 
     : `~plasmapy.utils.exceptions.PhysicsWarning`
@@ -159,40 +159,40 @@ def hollweg(  # noqa: C901, PLR0912, PLR0915
     (equation 3 in :cite:t:`bellan:2012`) is:
 
     .. math::
-        \left( \frac{\omega^2}{k_{\rm z}^2 v_{\rm A}^2} - 1 \right) &
+        \left( \frac{ω^2}{k_{\rm z}^2 v_{\rm A}^2} - 1 \right) &
         \left[
-            \omega^2 \left( \omega^2 - k^2 v_{\rm A}^2 \right)
-            - \beta k^2 v_{\rm A}^2 \left(
-                \omega^2 - k_{\rm z}^2 v_{\rm A}^2
+            ω^2 \left( ω^2 - k^2 v_{\rm A}^2 \right)
+            - β k^2 v_{\rm A}^2 \left(
+                ω^2 - k_{\rm z}^2 v_{\rm A}^2
             \right)
         \right] \\
-        &= \omega^2 \left(\omega^2 - k^2 v_{\rm A}^2 \right) k_{\rm x}^2
+        &= ω^2 \left(ω^2 - k^2 v_{\rm A}^2 \right) k_{\rm x}^2
         \left(
-            \frac{c_{\rm s}^2}{\omega_{\rm ci}^2}
-            - \frac{c^2}{\omega_{\rm pe}^2} \frac{\omega^2}{k_{\rm z}^2v_{\rm A}^2}
+            \frac{c_{\rm s}^2}{ω_{\rm ci}^2}
+            - \frac{c^2}{ω_{\rm pe}^2} \frac{ω^2}{k_{\rm z}^2v_{\rm A}^2}
         \right)
 
     where
 
     .. math::
-        \mathbf{B_o} &= B_{o} \mathbf{\hat{z}} \\
-        \cos \theta &= \frac{k_z}{k} \\
+        \mathbf{B}_0 &= B_0 \mathbf{\hat{z}} \\
+        \cos θ &= \frac{k_z}{k} \\
         \mathbf{k} &= k_{\rm x} \hat{x} + k_{\rm z} \hat{z}
 
-    :math:`\omega` is the wave frequency, :math:`k` is the wavenumber,
+    :math:`ω` is the wave frequency, :math:`k` is the wavenumber,
     :math:`v_{\rm A}` is the Alfvén velocity, :math:`c_{\rm s}` is the
-    sound speed, :math:`\omega_{\rm ci}` is the ion gyrofrequency, and
-    :math:`\omega_{\rm pe}` is the electron plasma frequency. In the
+    sound speed, :math:`ω_{\rm ci}` is the ion gyrofrequency, and
+    :math:`ω_{\rm pe}` is the electron plasma frequency. In the
     derivation of this relation Hollweg assumed low-frequency waves
-    :math:`\omega / \omega_{\rm ci} \ll 1`, no D.C. electric field
-    :math:`\mathbf{E_o}=0`, and quasi-neutrality.
+    :math:`ω / ω_{\rm ci} ≪ 1`, no D.C. electric field
+    :math:`\mathbf{E_0}=0`, and quasineutrality.
 
     :cite:t:`hollweg:1999` asserts this expression is valid for
     arbitrary :math:`c_{\rm s} / v_{\rm A}` (β) and
-    :math:`k_{\rm z} / k` (θ). Contrarily, :cite:t:`bellan:2012`
+    :math:`k_{\rm z} / k` (:math:`θ`). Contrarily, :cite:t:`bellan:2012`
     states in §1.7 that due to the inconsistent retention of the
-    :math:`\omega / \omega_{\rm ci} \ll 1` terms the expression can
-    only be valid if both :math:`c_{\rm s} \ll v_{\rm A}` (low-β) and
+    :math:`ω / ω_{\rm ci} ≪ 1` terms the expression can
+    only be valid if both :math:`c_{\rm s} ≪ v_{\rm A}` (low-β) and
     the wave propgation is nearly perpendicular to the magnetic field.
 
     This routine solves for :math:`ω` for given :math:`k` values
@@ -223,28 +223,28 @@ def hollweg(  # noqa: C901, PLR0912, PLR0915
         val = locals()[arg_name].squeeze()
         if val.shape != ():
             raise ValueError(
-                f"Argument '{arg_name}' must be single valued and not an array of "
-                f"shape {val.shape}."
+                f"Argument '{arg_name}' must be single valued and not "
+                f"an array of shape {val.shape}."
             )
         locals()[arg_name] = val
 
     # validate arguments
     for arg_name in ("gamma_e", "gamma_i"):
-        if not isinstance(locals()[arg_name], (int, np.integer, float, np.floating)):
+        if not isinstance(locals()[arg_name], Real):
             raise TypeError(
-                f"Expected int or float for argument '{arg_name}', but got "
-                f"{type(locals()[arg_name])}."
+                f"Expected int or float for argument '{arg_name}', but "
+                f"got {type(locals()[arg_name])}."
             )
 
     # validate argument k
     k = k.squeeze()
     if k.ndim not in (0, 1):
         raise ValueError(
-            f"Argument 'k' needs to be single valued or a 1D array astropy Quantity,"
-            f" got array of shape {k.shape}."
+            f"Argument 'k' needs to be single valued or a 1D array "
+            f"astropy Quantity, got array of shape {k.shape}."
         )
     if np.any(k <= 0):
-        raise ValueError("Argument 'k' can not be a or have negative values.")
+        raise ValueError("Argument 'k' cannot be negative or have negative values.")
 
     # validate argument theta
     theta = theta.squeeze()
@@ -284,7 +284,7 @@ def hollweg(  # noqa: C901, PLR0912, PLR0915
     # Define helpful parameters
     beta = (c_s / v_A) ** 2
     alpha_A = (kv * v_A) ** 2
-    alpha_s = (kv * c_s) ** 2  # == alpha_A * beta
+    alpha_s = (kv * c_s) ** 2
     sigma = (kz * v_A) ** 2
     D = (c_s / omega_ci) ** 2
     F = (c_si_unitless / omega_pe) ** 2
@@ -308,11 +308,11 @@ def hollweg(  # noqa: C901, PLR0912, PLR0915
     roots = np.sqrt(roots)
     roots = np.sort(roots, axis=0)
 
-    # Warn about NOT low-beta
+    # Warn about NOT low-β
     if c_s / v_A > 0.1:
         warnings.warn(
             f"This solver is valid in the low-beta regime, "
-            f"c_s/v_A << 1 according to Bellan, 2012, Sec. 1.7 "
+            f"c_s/v_A ≪ 1 according to Bellan, 2012, Sec. 1.7 "
             f"(see documentation for DOI). A c_s/v_A value of {cs_vA:.2f} "
             f"was calculated which may affect the validity of the solution.",
             PhysicsWarning,
@@ -330,13 +330,13 @@ def hollweg(  # noqa: C901, PLR0912, PLR0915
             PhysicsWarning,
         )
 
-    # dispersion relation is only valid in the regime w << w_ci
+    # dispersion relation is only valid in the regime ω ≪ ω_ci
     w_max = np.max(roots)
     w_wci_max = w_max / omega_ci
     if w_wci_max > 0.1:
         warnings.warn(
-            f"This solver is valid in the regime w/w_ci << 1. A w "
-            f"value of {w_max:.2f} and a w/w_ci value of "
+            f"This solver is valid in the regime ω/ω_ci ≪ 1. A ω "
+            f"value of {w_max:.2f} and a ω/ω_ci value of "
             f"{w_wci_max:.2f} were calculated which may affect the "
             f"validity of the solution.",
             PhysicsWarning,
