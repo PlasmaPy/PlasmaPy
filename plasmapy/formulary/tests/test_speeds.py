@@ -46,28 +46,20 @@ class TestAlfvenSpeed:
     @pytest.mark.parametrize(
         ("args", "kwargs", "_error"),
         [
-            # scenarios that raise RelativityError
             ((10 * u.T, 1.0e-10 * u.kg * u.m**-3), {}, RelativityError),
             ((np.inf * u.T, 1 * u.m**-3), {"ion": "p"}, RelativityError),
             ((-np.inf * u.T, 1 * u.m**-3), {"ion": "p"}, RelativityError),
-            #
-            # scenarios that raise InvalidParticleError
             ((1 * u.T, 5e19 * u.m**-3), {"ion": "spacecats"}, InvalidParticleError),
-            #
-            # scenarios that raise TypeError
+            ((1 * u.T, 1.0e18 * u.m**-3), {"ion": ["He"]}, InvalidIonError),
+            ((1 * u.T, 1.0e-9 * u.kg * u.m**-3), {"ion": ["He+"]}, ValueError),
             (("not a Bfield", 1.0e-10 * u.kg * u.m**-3), {}, TypeError),
             ((10 * u.T, "not a density"), {}, TypeError),
             ((10 * u.T, 5), {"ion": "p"}, TypeError),
-            ((1 * u.T, 1.0e18 * u.m**-3), {"ion": ["He"]}, InvalidIonError),
             ((1 * u.T, 1.0e18 * u.m**-3), {"ion": "He", "Z": "nope"}, TypeError),
-            #
-            # scenarios that raise UnitTypeError
             ((1 * u.T, 1.0e18 * u.cm), {"ion": "He 1+"}, u.UnitTypeError),
             ((1 * u.T, 5 * u.m**-2), {"ion": "p"}, u.UnitTypeError),
             ((1 * u.cm, 1.0e18 * u.m**-3), {"ion": "He 1+"}, u.UnitTypeError),
             ((5 * u.A, 5e19 * u.m**-3), {"ion": "p"}, u.UnitTypeError),
-            #
-            # scenarios that raise ValueError
             ((1 * u.T, -1.0e18 * u.m**-3), {"ion": "He+"}, ValueError),
             (
                 (np.array([5, 6, 7]) * u.T, np.array([5, 6]) * u.m**-3),
@@ -89,7 +81,6 @@ class TestAlfvenSpeed:
     @pytest.mark.parametrize(
         ("args", "kwargs", "expected", "isclose_kw", "_warning"),
         [
-            # scenarios that issue RelativityWarning
             (
                 (5 * u.T, 5e19 * u.m**-3),
                 {"ion": "H", "Z": 1},
@@ -111,8 +102,6 @@ class TestAlfvenSpeed:
                 {"rtol": 4.0e-4},
                 RelativityWarning,
             ),
-            #
-            # scenarios that issue UnitsWarning
             ((0.5, 1.0e18 * u.m**-3), {"ion": "He+"}, 5471032.81, {}, u.UnitsWarning),
         ],
     )
