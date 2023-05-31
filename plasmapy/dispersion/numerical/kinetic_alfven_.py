@@ -125,7 +125,7 @@ def kinetic_alfven(  # noqa: C901, PLR0912, PLR0915
         If ``ion`` is not of category ion or element.
 
     ValueError
-        If ``B``, ``n_i``, ``T_e``, or ``T_I`` are not single valued
+        If ``B``, ``n_i``, ``T_e``, or ``T_i`` are not single valued
         `astropy.units.Quantity` (i.e. an array).
 
     ValueError
@@ -137,11 +137,11 @@ def kinetic_alfven(  # noqa: C901, PLR0912, PLR0915
     this function computes the corresponding wave frequencies in units
     of rad / s. This approach comes from :cite:t:`hasegawa:1982`,
     :cite:t:`morales:1997` and :cite:t:`william:1996`; who argued that
-    a 3 × 3 matrix that describes warm plasma waves is able to be
-    represented as a 2 × 2 matrix because the compressional (i.e.,
-    fast) mode can be factored out. The result is that the
-    determinant, when in the limit of :math:`ω ≫ k_{z}^{2} c^{2}_{\rm
-    s}`, reduces to the kinetic Alfvén dispersion relation.
+    a 3 × 3 matrix that describes warm plasma waves can be represented
+    as a 2 × 2 matrix because the compressional (i.e., fast) mode can
+    be factored out. The result is that the determinant, when in the
+    limit of :math:`ω ≫ k_{z}^{2} c^{2}_{\rm s}`, reduces to the
+    kinetic Alfvén dispersion relation.
 
     .. math::
         ω^2 = k_{\rm z}^2 v_{\rm A}^2 \left(1 + \frac{k_{\rm x}^2
@@ -231,25 +231,25 @@ def kinetic_alfven(  # noqa: C901, PLR0912, PLR0915
 
     # parameters kz
     omega = {}
-    for Theta in theta:  # TODO: should be pretty simple to vectorize this, no?
-        kz = np.cos(Theta) * k
+    for θ in theta:  # vectorize this?
+        kz = np.cos(θ) * k
         kx = np.sqrt(k**2 - kz**2)
 
         # parameters sigma, D, and F to simplify equation 3
         A = (kz * v_A) ** 2
         F = ((kx * c_s) / omega_ci) ** 2
 
-        omega[Theta] = (np.sqrt(A.value * (1 + F.value))) * u.rad / u.s
+        omega[θ] = (np.sqrt(A.value * (1 + F.value))) * u.rad / u.s
 
         # thermal speeds for electrons and ions in plasma
         v_Te = speed.thermal_speed(T=T_e, particle="e-").value
         v_Ti = speed.thermal_speed(T=T_i, particle=ion).value
 
         # Maximum value of omega
-        w_max = np.max(omega[Theta])
+        w_max = np.max(omega[θ])
 
-        # Maximum and minimum values for w/kz
-        omega_kz = omega[Theta] / kz
+        # Maximum and minimum values for ω/kz
+        omega_kz = omega[θ] / kz
 
         omega_kz_max = np.max(omega_kz).value
         omega_kz_min = np.min(omega_kz).value
@@ -259,7 +259,7 @@ def kinetic_alfven(  # noqa: C901, PLR0912, PLR0915
             warnings.warn(
                 "This calculation produced one or more invalid ω/kz "
                 "value(s), which violates the regime in which the "
-                "dispersion relation is valid (v_Te >> ω/kz >> v_Ti)",
+                "dispersion relation is valid (v_Te ≫ ω/kz ≫ v_Ti)",
                 PhysicsWarning,
             )
 
@@ -268,7 +268,7 @@ def kinetic_alfven(  # noqa: C901, PLR0912, PLR0915
             warnings.warn(
                 "This calculation produced one or more invalid ω/kz "
                 "value(s) which violates the regime in which the "
-                "dispersion relation is valid (v_Te >> ω/kz >> v_Ti)",
+                "dispersion relation is valid (v_Te ≫ ω/kz ≫ v_Ti)",
                 PhysicsWarning,
             )
 
@@ -276,7 +276,7 @@ def kinetic_alfven(  # noqa: C901, PLR0912, PLR0915
         if w_max / omega_ci > 0.1:
             warnings.warn(
                 "The calculation produced a high-frequency wave, "
-                "which violates the low frequency assumption (ω << ω_ci)",
+                "which violates the low frequency assumption (ω ≪ ω_ci)",
                 PhysicsWarning,
             )
 
