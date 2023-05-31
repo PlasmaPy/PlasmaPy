@@ -1,10 +1,12 @@
-Fixed an slight error in `~plasmapy.formulary.frequencies.plasma_frequency`
-when the charge number was provided via ``z_mean`` (or now ``Z``) and
-inconsistent with the charge number provided to ``particle`` (or zero,
-if ``particle`` represented an element or isotope with no charge
+Fixed a slight error in `~plasmapy.formulary.frequencies.plasma_frequency`
+and `~plasmapy.formulary.speeds.Alfven_speed` when the charge number was
+provided via ``z_mean`` (or now ``Z``) and inconsistent with the
+charge number provided to ``particle`` (or zero, if ``particle``
+represented an element or isotope with no charge
 information. Previously, if we represented a proton with
-:py:`particle="H-1"` and :py:`z_mean=1`, then the mass used to calculate
-the plasma frequency would have been the mass of a neutral hydrogen atom
-rather than the mass of a proton. However, using :py:`particle="p+"`
-would have produced the correct mass. This behavior has been corrected
-by decorating this function with |particle_input|.
+:py:`particle="H-1"` and :py:`z_mean=1`, then the mass used to
+calculate the plasma frequency would have been the mass of a neutral
+hydrogen atom rather than the mass of a proton. However, using
+:py:`particle="p+"` would have produced the correct mass. This
+behavior has been corrected by decorating this function with
+|particle_input|. See also :issue:`2178` and :pr:`2179`.
