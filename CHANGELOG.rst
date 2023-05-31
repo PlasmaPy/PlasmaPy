@@ -1,3 +1,4 @@
+
 PlasmaPy v2023.5.0 (2023-05-31)
 ===============================
 
@@ -210,11 +211,7 @@ Trivial/Internal Changes
 - Set minimum versions for all explicitly listed dependencies. (:pr:`2075`)
 - Enabled and applied changes for additional rule sets for ``ruff``, and
   removed corresponding ``flake8`` extensions. (:pr:`2080`)
-<<<<<<< HEAD
 - Changed from ``indexserver`` to ``PIP_INDEX_URL`` to index nightly `numpy`
-=======
-- Changed from ``indexserver`` to ``PIP_INDEX_URL`` to index nightly numpy
->>>>>>> 85496daa (Add changelog entries for v2023.5.0)
   builds (:pr:`2138`)
 - Updated the function and docstring of
   `~plasmapy.formulary.collisions.helio.collisional_analysis`. (:pr:`2151`)
