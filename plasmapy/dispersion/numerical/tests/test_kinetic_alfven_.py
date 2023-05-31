@@ -24,7 +24,7 @@ class TestKinetic_Alfven:
         "theta": 30 * u.deg,
         "gamma_e": 3,
         "gamma_i": 3,
-        "z_mean": 1,
+        "Z": 1,
     }
 
     @pytest.mark.parametrize(
@@ -56,50 +56,13 @@ class TestKinetic_Alfven:
             ({**_kwargs_single_valued, "theta": 5 * u.eV}, u.UnitTypeError),
             ({**_kwargs_single_valued, "gamma_e": "wrong type"}, TypeError),
             ({**_kwargs_single_valued, "gamma_i": "wrong type"}, TypeError),
-            ({**_kwargs_single_valued, "z_mean": "wrong type"}, TypeError),
+            ({**_kwargs_single_valued, "Z": "wrong type"}, TypeError),
         ],
     )
     def test_raises(self, kwargs, _error):
         """Test scenarios that raise an `Exception`."""
         with pytest.raises(_error):
             kinetic_alfven(**kwargs)
-
-    @pytest.mark.xfail(
-        reason=(
-            "This functionality is breaking because of updates to "
-            "gyrofrequency where z_mean override behavior is being "
-            "dropped. We will address z_mean override behavior when "
-            "kinetic_alfven is decorated with particle_input."
-        )
-    )
-    @pytest.mark.parametrize(
-        ("kwargs", "expected"),
-        [
-            (
-                {
-                    **_kwargs_single_valued,
-                    "ion": Particle("He"),
-                    "z_mean": 2.0,
-                    "theta": 0 * u.deg,
-                },
-                {**_kwargs_single_valued, "ion": Particle("He +2"), "theta": 0 * u.deg},
-            ),
-            # The following test may need to be updated when applying
-            # @particle_input to kinetic_alfven, since this refers to how
-            # z_mean had been assumed to default to 1
-            (
-                {**_kwargs_single_valued, "ion": Particle("He"), "theta": 0 * u.deg},
-                {**_kwargs_single_valued, "ion": Particle("He+"), "theta": 0 * u.deg},
-            ),
-        ],
-    )
-    def test_z_mean_override(self, kwargs, expected):
-        """Test overriding behavior of kw 'z_mean'."""
-        ws = kinetic_alfven(**kwargs)
-        ws_expected = kinetic_alfven(**expected)
-
-        for theta in ws:
-            assert np.allclose(ws[theta], ws_expected[theta], atol=0, rtol=1e-2)
 
     @pytest.mark.parametrize(
         ("kwargs", "expected"),

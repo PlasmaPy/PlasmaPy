@@ -5,17 +5,16 @@ Alfvén dispersion relation.
 __all__ = ["kinetic_alfven"]
 
 import astropy.units as u
-import numbers
 import numpy as np
 import warnings
 
 from astropy.constants.si import c
+from numbers import Integral, Real
 from typing import Optional
 
 from plasmapy.formulary import frequencies as pfp
 from plasmapy.formulary import speeds as speed
-from plasmapy.particles import Particle, ParticleLike
-from plasmapy.particles.exceptions import InvalidParticleError
+from plasmapy.particles import particle_input, ParticleLike
 from plasmapy.utils.decorators import validate_quantities
 from plasmapy.utils.exceptions import PhysicsWarning
 
@@ -28,18 +27,20 @@ c_si_unitless = c.value
     T_e={"can_be_negative": False, "equivalencies": u.temperature_energy()},
     T_i={"can_be_negative": False, "equivalencies": u.temperature_energy()},
 )
+@particle_input
 def kinetic_alfven(  # noqa: C901, PLR0912, PLR0915
-    *,
     B: u.T,
     ion: ParticleLike,
     k: u.rad / u.m,
     n_i: u.m**-3,
+    theta: u.deg,
+    *,
     T_e: u.K,
     T_i: u.K,
-    theta: u.deg,
-    gamma_e: numbers.Real = 1,
-    gamma_i: numbers.Real = 3,
-    z_mean: Optional[numbers.Real] = None,
+    gamma_e: Real = 1,
+    gamma_i: Real = 3,
+    mass_numb: Optional[Integral] = None,
+    Z: Optional[Real] = None,
 ):
     r"""
     Using the equation provided in :cite:t:`bellan:2012`, this function
@@ -51,12 +52,12 @@ def kinetic_alfven(  # noqa: C901, PLR0912, PLR0915
     B : `~astropy.units.Quantity`
         The magnetic field magnitude in units convertible to T.
 
-    ion : `str` or `~plasmapy.particles.particle_class.Particle`
+    ion : |particle-like|
         Representation of the ion species (e.g., ``'p'`` for protons,
         ``'D+'`` for deuterium, ``'He-4 +1'`` for singly ionized
         helium-4, etc.).
 
-    k : `~astropy.units.Quantity`, single valued or 1-D array
+    k : `~astropy.units.Quantity`
         Wavenumber in units convertible to rad / m.  Either
         single valued or 1-D array of length :math:`N`.
 
@@ -69,27 +70,28 @@ def kinetic_alfven(  # noqa: C901, PLR0912, PLR0915
     T_i : `~astropy.units.Quantity`, |keyword-only|
         The ion temperature in units of K or eV.
 
-    theta : `~astropy.units.Quantity`, single valued or 1-D array
+    theta : `~astropy.units.Quantity`
         The angle of propagation of the wave with respect to the
         magnetic field, :math:`\cos^{-1}(k_z / k)`, in units must be
         convertible to rad. Either single valued or 1-D array
         of size :math:`M`.
 
-    gamma_e : `float` or `int`, optional
-        The adiabatic index for electrons, which defaults to 1.  This
+    gamma_e : real number, |keyword-only|, default: 1
+        The adiabatic index for electrons. The default
         value assumes that the electrons are able to equalize their
         temperature rapidly enough that the electrons are effectively
         isothermal.
 
-    gamma_i : `float` or `int`, optional
-        The adiabatic index for ions, which defaults to 3. This value
+    gamma_i : real number, |keyword-only|, default: 3
+        The adiabatic index for ions. The default value
         assumes that ion motion has only one degree of freedom, namely
         along magnetic field lines.
 
-    z_mean : `float` or int, optional
-        The average ionization state (arithmetic mean) of the ``ion``
-        composing the plasma.  Will override any charge state defined
-        by argument ``ion``.
+    mass_numb : integer, |keyword-only|, optional
+        The mass number corresponding to ``ion``.
+
+    Z : real number, |keyword-only|, optional
+        The charge number corresponding to ``ion``.
 
     Returns
     -------
@@ -97,7 +99,7 @@ def kinetic_alfven(  # noqa: C901, PLR0912, PLR0915
         A dictionary of computed wave frequencies in units
         rad / s.  The dictionary contains a key for each:
         ``theta`` value provided. The value for each key will be
-        a :math:`N × M` array.
+        an :math:`N × M` array.
 
     Raises
     ------
@@ -106,12 +108,10 @@ def kinetic_alfven(  # noqa: C901, PLR0912, PLR0915
         `~astropy.units.Quantity` or cannot be converted into one.
 
     TypeError
-        If ``ion`` is not of type or convertible to
-        `~plasmapy.particles.particle_class.Particle`.
+        If ``ion`` is not |particle-like|.
 
     TypeError
-        If ``gamma_e``, ``gamma_i``, or ``z_mean`` are not of type
-        `int` or `float`.
+        If ``gamma_e``, ``gamma_i``, or ``Z`` are not real numbers.
 
     ~astropy.units.UnitTypeError
         If applicable arguments do not have units convertible to the
@@ -139,22 +139,22 @@ def kinetic_alfven(  # noqa: C901, PLR0912, PLR0915
     this function computes the corresponding wave frequencies in units
     of rad / s. This approach comes from :cite:t:`hasegawa:1982`,
     :cite:t:`morales:1997` and :cite:t:`william:1996`; who argued that
-    a 3 × 3 matrix that describes warm plasma waves, is able to be
+    a 3 × 3 matrix that describes warm plasma waves is able to be
     represented as a 2 × 2 matrix because the compressional
     (i.e., fast) mode can be factored out. The result is that the
     determinant, when in the limit of
-    :math:`\omega \gg k_{z}^{2} c^{2}_{\rm s}`, reduces to the kinetic
+    :math:`ω ≫ k_{z}^{2} c^{2}_{\rm s}`, reduces to the kinetic
     Alfvén dispersion relation.
 
     .. math::
-        \omega^2 = k_{\rm z}^2 v_{\rm A}^2 \left(1 + \frac{k_{\rm x}^2
-        c_{\rm s}^2}{\omega_{\rm ci}^2} \right)
+        ω^2 = k_{\rm z}^2 v_{\rm A}^2 \left(1 + \frac{k_{\rm x}^2
+        c_{\rm s}^2}{ω_{\rm ci}^2} \right)
 
     With :math:`c_{\rm s}` being the wave speed and
-    :math:`\omega_{\rm ci}` as the gyrofrequency of the respective ion.
+    :math:`ω_{\rm ci}` as the gyrofrequency of the respective ion.
     The regions in which this is valid are
-    :math:`\omega \ll \omega_{\rm ci}` and
-    :math:`\nu_{\rm Te} \gg \frac{\omega}{k_{z}} \gg \nu_{\rm Ti}`, with
+    :math:`ω ≪ ω_{\rm ci}` and
+    :math:`\nu_{\rm Te} ≫ \frac{ω}{k_{z}} ≫ \nu_{\rm Ti}`, with
     :math:`\nu_{\rm Ti}` standing for the thermal speed of the
     respective ion. There is no restriction on propagation angle.
 
@@ -174,38 +174,12 @@ def kinetic_alfven(  # noqa: C901, PLR0912, PLR0915
     ...     "theta": 30 * u.deg,
     ...     "gamma_e": 3,
     ...     "gamma_i": 3,
-    ...     "z_mean": 1,
+    ...     "Z": 1,
     ... }
     >>> kinetic_alfven(**inputs)
     {30.0: <Quantity [1.24901116e+00, 3.45301796e+08] rad / s>}
     """
 
-    # Validate argument ion
-    if not isinstance(ion, Particle):
-        try:
-            ion = Particle(ion)
-        except InvalidParticleError as exc:
-            raise InvalidParticleError(
-                f"Argument 'ion' is not a valid particle, instead got {ion}."
-            ) from exc
-
-    if not ion.is_ion and not ion.is_category("element"):
-        raise ValueError(
-            "The particle passed for 'ion' must be an ion"
-            f"or an element, instead got {ion}."
-        )
-
-    # Validate z_mean
-    if z_mean is None:
-        z_mean = abs(ion.charge_number)
-    elif isinstance(z_mean, numbers.Real):
-        z_mean = abs(z_mean)
-
-    else:
-        raise TypeError(
-            "Expected int or float for argument 'z_mean', "
-            f"instead got {type(z_mean)}."
-        )
     # Validate arguments
     for arg_name in ("B", "n_i", "T_e", "T_i"):
         val = locals()[arg_name].squeeze()
@@ -217,7 +191,7 @@ def kinetic_alfven(  # noqa: C901, PLR0912, PLR0915
         locals()[arg_name] = val
 
     for arg_name in (gamma_e, gamma_i):
-        if not isinstance(arg_name, numbers.Real):
+        if not isinstance(arg_name, Real):
             raise TypeError(
                 f"Expected int or float for argument '{arg_name}', "
                 f"instead got type {type(arg_name)}."
@@ -245,7 +219,7 @@ def kinetic_alfven(  # noqa: C901, PLR0912, PLR0915
     elif np.isscalar(theta):
         theta = np.array([theta])
 
-    n_e = z_mean * n_i
+    n_e = Z * n_i
     c_s = speed.ion_sound_speed(
         T_e=T_e,
         T_i=T_i,
@@ -253,10 +227,10 @@ def kinetic_alfven(  # noqa: C901, PLR0912, PLR0915
         n_e=n_e,
         gamma_e=gamma_e,
         gamma_i=gamma_i,
-        Z=z_mean,
+        Z=Z,
     )
-    v_A = speed.Alfven_speed(B, n_i, ion=ion, z_mean=z_mean)
-    omega_ci = pfp.gyrofrequency(B=B, particle=ion, signed=False, Z=z_mean)
+    v_A = speed.Alfven_speed(B=B, density=n_i, ion=ion, Z=Z)
+    omega_ci = pfp.gyrofrequency(B=B, particle=ion, signed=False, Z=Z)
 
     # parameters kz
     omega = {}
@@ -283,7 +257,7 @@ def kinetic_alfven(  # noqa: C901, PLR0912, PLR0915
         omega_kz_max = np.max(omega_kz).value
         omega_kz_min = np.min(omega_kz).value
 
-        # Maximum value for w/kz test
+        # Maximum value for ω/kz test
         if omega_kz_max / v_Te > 0.1 or v_Ti / omega_kz_max > 0.1:
             warnings.warn(
                 "This calculation produced one or more invalid ω/kz "
@@ -292,7 +266,7 @@ def kinetic_alfven(  # noqa: C901, PLR0912, PLR0915
                 PhysicsWarning,
             )
 
-        # Minimum value for w/kz test
+        # Minimum value for ω/kz test
         if omega_kz_min / v_Te > 0.1 or v_Ti / omega_kz_min > 0.1:
             warnings.warn(
                 "This calculation produced one or more invalid ω/kz "
@@ -301,7 +275,7 @@ def kinetic_alfven(  # noqa: C901, PLR0912, PLR0915
                 PhysicsWarning,
             )
 
-        # Dispersion relation is only valid in the regime w << w_ci
+        # Dispersion relation is only valid in the regime ω << ω_ci
         if w_max / omega_ci > 0.1:
             warnings.warn(
                 "The calculation produced a high-frequency wave, "
