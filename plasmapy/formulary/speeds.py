@@ -42,23 +42,23 @@ def Alfven_speed(
     density: (u.m**-3, u.kg / u.m**3),
     ion: Optional[ParticleLike] = None,
     *,
-    mass_numb: Integral = None,
+    mass_numb: Optional[Integral] = None,
     Z: Optional[Real] = None,
 ) -> u.m / u.s:
-    r"""
-    Calculate the Alfvén speed.
+    r"""Calculate the Alfvén speed.
 
-    The Alfvén speed :math:`V_A` is the typical propagation speed of magnetic
-    disturbances in a plasma, and is given by:
+    The Alfvén speed :math:`V_A` is the typical propagation speed of
+    magnetic disturbances in a quasineutral plasma, and is given by:
 
     .. math::
 
         V_A = \frac{B}{\sqrt{μ_0 ρ}}
 
-    where :math:`B` is the magnetic field and :math:`ρ = n_i m_i + n_e m_e`
-    is the total mass density (:math:`n_i` is the ion number density,
-    :math:`n_e` is the electron number density, :math:`m_i` is the ion mass,
-    and :math:`m_e` is the electron mass) :cite:p:`alfven:1942`.
+    where :math:`B` is the magnetic field and :math:`ρ = n_i m_i + n_e
+    m_e` is the total mass density (:math:`n_i` is the ion number
+    density, :math:`n_e ≡ Z n_i` is the electron number density
+    assuming quasineutrality, :math:`m_i` is the ion mass, and
+    :math:`m_e` is the electron mass) :cite:p:`alfven:1942`.
 
     **Aliases:** `va_`
 
@@ -68,41 +68,41 @@ def Alfven_speed(
         The magnetic field magnitude in units convertible to tesla.
 
     density : `~astropy.units.Quantity`
-        Either the ion number density :math:`n_i` in units convertible to
-        m\ :sup:`-3` or the total mass density :math:`ρ` in units
+        Either the ion number density :math:`n_i` in units convertible
+        to m\ :sup:`-3` or the total mass density :math:`ρ` in units
         convertible to kg m\ :sup:`-3`\ .
 
     ion : `~plasmapy.particles.particle_class.Particle`, optional
-        Representation of the ion species (e.g., ``'p'`` for protons, ``'D+'`` for
-        deuterium, ``'He-4 +1'`` for singly ionized helium-4, etc.). If no charge
-        state information is provided, then the ions are assumed to be singly
-        ionized. If the density is an ion number density, then this parameter
-        is required in order to convert to mass density.
+        Representation of the ion species (e.g., ``'p+'`` for protons,
+        ``'D+'`` for deuterium, ``'He-4 1+'`` for singly ionized
+        helium-4, etc.). If the density is an ion number density, then
+        this parameter is required in order to convert to mass
+        density.
 
-    Z : `~numbers.Real`, optional
-        The average ionization state (arithmetic mean) of the ``ion`` composing
-        the plasma.  This is used in calculating the mass density
-        :math:`ρ = n_i (m_i + Z_{mean} m_e)`.  ``z_mean`` is ignored if
-        ``density`` is passed as a mass density and overrides any charge state
-        info provided by ``ion``.
+    mass_numb : integer, |keyword-only|, optional
+        The mass number corresponding to ``ion``.
+
+    Z : `~numbers.Real`, |keyword-only|, optional
+        The charge number corresponding to ``ion``. Note that the
+        value of ``Z`` does not impact the Alfvén speed.
 
     Returns
     -------
     V_A : `~astropy.units.Quantity`
-        The Alfvén speed in units of m s\ :sup:`-1`.
+        The Alfvén speed in units of m/s.
 
     Raises
     ------
     `~plasmapy.utils.exceptions.RelativityError`
-        If the Alfvén velocity is greater than or equal to the speed of light.
+        If the Alfvén velocity is greater than or equal to the speed
+        of light.
 
     `TypeError`
-        If ``B`` and/or ``density`` are not of type `~astropy.units.Quantity`,
-        or convertible.
+        If ``B`` and/or ``density`` are not of type
+        `~astropy.units.Quantity`, or convertible.
 
     `TypeError`
-        If ``ion`` is not of type or convertible to
-        `~plasmapy.particles.particle_class.Particle`.
+        If ``ion`` is not |particle-like|.
 
     `TypeError`
         If ``z_mean`` is not of type `int` or `float`.
@@ -112,8 +112,8 @@ def Alfven_speed(
         tesla.
 
     `~astropy.units.UnitTypeError`
-        If the ``density`` does not have units equivalent to a number density
-        or mass density.
+        If the ``density`` does not have units equivalent to a number
+        density or mass density.
 
     `ValueError`
         If ``density`` is negative.
@@ -124,8 +124,8 @@ def Alfven_speed(
         If the Alfvén velocity exceeds 5% of the speed of light.
 
     : `~astropy.units.UnitsWarning`
-        If units are not provided for the magnetic field ``B``, units of
-        tesla are assumed.
+        If units are not provided for the magnetic field ``B``, units
+        of tesla are assumed.
 
     Notes
     -----
@@ -137,21 +137,19 @@ def Alfven_speed(
     --------
     >>> from astropy import units as u
     >>> from astropy.constants.si import m_p, m_e
-    >>> B = 0.014*u.T
+    >>> B = 0.014 * u.T
     >>> n = 5e19*u.m**-3
-    >>> rho = n*(m_p+m_e)
-    >>> ion = 'p'
-    >>> Alfven_speed(B, n, ion=ion)
+    >>> ion = 'p+'
+    >>> rho = n * (m_p+m_e)
+    >>> Alfven_speed(B=B, density=n, ion=ion)
     <Quantity 43173.870... m / s>
-    >>> Alfven_speed(B, rho)
+    >>> Alfven_speed(B=B, density=rho)
     <Quantity 43173.870... m / s>
-    >>> Alfven_speed(B, rho).to(u.cm/u.us)
+    >>> Alfven_speed(B=B, density=rho).to(u.cm/u.us)
     <Quantity 4.317387 cm / us>
-    >>> Alfven_speed(B, n, ion="He +2")
+    >>> Alfven_speed(B=B, density=n, ion="He-4 2+")
     <Quantity 21664.18... m / s>
-    >>> Alfven_speed(B, n, ion="He++")
-    <Quantity 21664.18... m / s>
-    >>> Alfven_speed(B, n, ion="He", Z=1.8)
+    >>> Alfven_speed(B=B, density=n, ion="He", Z=1.8)
     <Quantity 21664.18... m / s>
     """
 
