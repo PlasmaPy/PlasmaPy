@@ -6,7 +6,7 @@ on:
       tag:
         description: Release tag 🏷️
         required: true
-        default: 0.9.0rc1
+        default: 2023.5.0rc1
       DOI:
         description: Reserved DOI from Zenodo
         required: true
@@ -26,7 +26,7 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
-        python-version: '3.10'
+        python-version: '3.11'
 
     - name: Install dependencies
       run: |
@@ -56,13 +56,6 @@ jobs:
         git add .
         towncrier build --yes --version ${{ github.event.inputs.tag }}
         git commit --allow-empty -nm "Add changelog entries for v${{ github.event.inputs.tag }}"
-
-    - name: Update and run pre-commit
-      run: |
-        pre-commit autoupdate
-        pre-commit run --all-files
-        git add .
-        git commit --allow-empty -nm "Apply pre-commit autoupdates and fixes"
 
     - name: Tag the release
       run: |
