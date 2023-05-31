@@ -219,6 +219,7 @@ def kinetic_alfven(  # noqa: C901, PLR0912, PLR0915
     elif np.isscalar(theta):
         theta = np.array([theta])
 
+    Z = ion.charge_number
     n_e = Z * n_i
     c_s = speed.ion_sound_speed(
         T_e=T_e,
