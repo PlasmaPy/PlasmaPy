@@ -1,3 +1,0 @@
-Implemented the new private |CustomParticle| constructor from
-:pr:`1881` into the private particle creation factory used by
-|particle_input|.

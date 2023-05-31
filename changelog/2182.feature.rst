@@ -1,3 +1,0 @@
-The function `~plasmapy.dispersion.numerical.kinetic_alfven_.kinetic_alfven`
-has been decorated with |particle_input| to broaden the range of
-|particle-like| arguments that can be provided to this function.

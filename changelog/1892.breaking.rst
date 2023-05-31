@@ -1,5 +1,0 @@
-Made |ParticleList| raise a `TypeError` when provided with a string.
-This change was made to avoid potentially ambiguous situations like
-:py:`ParticleList("He")` which was previously equivalent to
-:py:`ParticleList(["H", "e"])` instead of the possibly expected value of
-:py:`ParticleList(["He"])`.

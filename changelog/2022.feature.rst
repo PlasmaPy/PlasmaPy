@@ -1,3 +1,0 @@
-The function `~plasmapy.dispersion.analytical.two_fluid_.two_fluid`
-has been decorated with |particle_input| and now may accept an
-argument for the mass number corresponding to the ion.

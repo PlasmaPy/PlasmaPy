@@ -1,3 +1,0 @@
-Decorated `~plasmapy.formulary.speeds.Alfven_speed` with
-|particle_input| so that it can now accept a broader variety of
-|particle-like| arguments.

@@ -1,2 +1,0 @@
-Added admonitions for functionality that is under development and for
-which backwards incompatible changes might occur in the future.
