@@ -21,13 +21,13 @@ from plasmapy.utils.exceptions import PhysicsWarning
 c_si_unitless = c.value
 
 
+@particle_input
 @validate_quantities(
     B={"can_be_negative": False},
     n_i={"can_be_negative": False},
     T_e={"can_be_negative": False, "equivalencies": u.temperature_energy()},
     T_i={"can_be_negative": False, "equivalencies": u.temperature_energy()},
 )
-@particle_input
 def kinetic_alfven(  # noqa: C901, PLR0912, PLR0915
     B: u.T,
     ion: ParticleLike,
@@ -230,8 +230,8 @@ def kinetic_alfven(  # noqa: C901, PLR0912, PLR0915
         gamma_i=gamma_i,
         Z=Z,
     )
-    v_A = speed.Alfven_speed(B=B, density=n_i, ion=ion, Z=Z)
-    omega_ci = pfp.gyrofrequency(B=B, particle=ion, signed=False, Z=Z)
+    v_A = speed.Alfven_speed(B=B, density=n_i, ion=ion)
+    omega_ci = pfp.gyrofrequency(B=B, particle=ion, signed=False)
 
     # parameters kz
     omega = {}
