@@ -1,3 +1,0 @@
-Expanded the variety of arguments that could be provided to a function
-decorated by `~plasmapy.utils.decorators.converter.angular_freq_to_hz`,
-and refactored this decorator to use ``wrapt``.

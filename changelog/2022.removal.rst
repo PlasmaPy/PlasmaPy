@@ -1,3 +1,0 @@
-In `plasmapy.dispersion`, the ``z_mean`` parameter
-to `~plasmapy.dispersion.analytical.two_fluid_.two_fluid` has been
-deprecated. Provide the |charge number| to ``Z`` instead.

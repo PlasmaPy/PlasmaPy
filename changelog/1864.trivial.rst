@@ -1,1 +1,0 @@
-Turned the root-level :file:`requirements.txt` into a lockfile for continuous integration purposes.
