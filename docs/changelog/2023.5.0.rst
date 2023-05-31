@@ -20,6 +20,7 @@ Backwards Incompatible Changes
   :py:`ParticleList("He")` which was previously equivalent to
   :py:`ParticleList(["H", "e"])` instead of the possibly expected value of
   :py:`ParticleList(["He"])`. (:pr:`1892`)
+<<<<<<< HEAD
 - In `~plasmapy.dispersion.analytical.two_fluid_.two_fluid`,
   `~plasmapy.dispersion.numerical.hollweg_.hollweg`, and
   `~plasmapy.dispersion.numerical.kinetic_alfven_.kinetic_alfven`
@@ -33,6 +34,20 @@ Backwards Incompatible Changes
   still available as ``plasmapy.utils._pytest_helpers``, but might be removed
   in the future. (:pr:`2114`)
 - Removed ``plasmapy.tests.helpers`` from PlasmaPy's public API. It is
+=======
+- In `~plasmapy.dispersion.analytical.two_fluid_.two_fluid` in
+  `plasmapy.dispersion`, providing the |charge number| as a keyword
+  argument (formerly ``z_mean``) will no longer override the charge number
+  provided in ``ion``. (:pr:`2022`)
+- |particle_input| no longer enforces that |parameters| named
+  ``ionic_level`` are ions or neutral atoms. For equivalent behavior,
+  name the parameter ``ion`` instead. (:pr:`2034`)
+- Removed ``plasmapy.utils.pytest_helpers`` from PlasmaPy's public API.  It is
+  still available as ``plasmapy.utils._pytest_helpers``, but might be removed
+  in
+  the future. (:pr:`2114`)
+- Removed ``plasmapy.tests.helpers`` from PlasmaPy's public API.  It is
+>>>>>>> 85496daa (Add changelog entries for v2023.5.0)
   still available as ``plasmapy.tests._helpers``, but might be removed in
   the future. (:pr:`2114`)
 - The ``ion_species`` |parameter| to
@@ -45,21 +60,32 @@ Deprecations and Removals
 -------------------------
 
 - In `plasmapy.dispersion`, the ``z_mean`` parameter
+<<<<<<< HEAD
   to `~plasmapy.dispersion.analytical.two_fluid_.two_fluid`,
   `~plasmapy.dispersion.numerical.hollweg_.hollweg`, and
   `~plasmapy.dispersion.numerical.kinetic_alfven_.kinetic_alfven` has
   been deprecated. Provide the |charge number| to ``Z`` instead.
   (:pr:`2022`, :pr:`2181`, :pr:`2182`)
+=======
+  to `~plasmapy.dispersion.analytical.two_fluid_.two_fluid` has been
+  deprecated. Provide the |charge number| to ``Z`` instead. (:pr:`2022`)
+>>>>>>> 85496daa (Add changelog entries for v2023.5.0)
 - When a function decorated with |particle_input| is provided with
   ``z_mean`` as a keyword |argument|, it will change ``z_mean`` to ``Z``
   and issue a `~plasmapy.utils.exceptions.PlasmaPyDeprecationWarning` if
   the decorated function accepts ``Z`` as a parameter. This capability
   is intended to temporarily preserve the current behavior of several
   functions in `plasmapy.dispersion` and `plasmapy.formulary` as they get
+<<<<<<< HEAD
   decorated with |particle_input| over the next few releases. (:pr:`2027`)
 - The ``z_mean`` parameter to `~plasmapy.formulary.speeds.ion_sound_speed`
   and `~plasmapy.formulary.speeds.Alfven_speed` has been deprecated and
   may be removed in a future release. Use ``Z`` instead. (:pr:`2134`, :pr:`2179`)
+=======
+  decorated with |particle_input|. (:pr:`2027`)
+- The ``z_mean`` parameter to `~plasmapy.formulary.speeds.ion_sound_speed`
+  has been deprecated and may be removed in a future release. (:pr:`2134`)
+>>>>>>> 85496daa (Add changelog entries for v2023.5.0)
 
 
 Features
@@ -96,6 +122,7 @@ Features
   (:pr:`1986`)
 - Enabled |ParticleList| to accept |Quantity| objects of physical type
   mass or electrical charge. (:pr:`1987`)
+<<<<<<< HEAD
 - The following functions have been decorated with |particle_input| and
   now accept a broader variety of |particle-like| arguments (see also
   :issue:`341`):
@@ -113,6 +140,34 @@ Features
 - Added ``mass_numb`` and ``Z`` as parameters to functions decorated
   with |particle_input| in `plasmapy.formulary.lengths`
   and `plasmapy.formulary.distribution`. (:pr:`2140`)
+=======
+- The function `~plasmapy.dispersion.analytical.two_fluid_.two_fluid`
+  has been decorated with |particle_input| and now may accept an
+  argument for the mass number corresponding to the ion. (:pr:`2022`)
+- Decorated `~plasmapy.formulary.frequencies.plasma_frequency` with
+  |particle_input| so that it can now accept a broader variety of
+  |particle-like| arguments. (:pr:`2026`)
+- Refactored `~plasmapy.formulary.lengths.gyroradius` to reduce cognitive
+  complexity and increase readability. (:pr:`2031`)
+- Decorated `~plasmapy.formulary.speeds.ion_sound_speed` with
+  |particle_input| so that it can accept a broader variety of
+  |particle-like| arguments. (:pr:`2134`)
+- Decorated `~plasmapy.formulary.speeds.kappa_thermal_speed` with
+  |particle_input| so that it can accept a broader variety of
+  |particle-like| arguments. (:pr:`2136`)
+- Added ``mass_numb`` and ``Z`` as parameters to functions decorated
+  with |particle_input| in `plasmapy.formulary.lengths`
+  and `plasmapy.formulary.distribution`. (:pr:`2140`)
+- Decorated `~plasmapy.formulary.speeds.Alfven_speed` with
+  |particle_input| so that it can now accept a broader variety of
+  |particle-like| arguments. (:pr:`2179`)
+- The function `~plasmapy.dispersion.numerical.hollweg_.hollweg`
+  has been decorated with |particle_input| to broaden the range of
+  |particle-like| arguments that can be provided to this function. (:pr:`2181`)
+- The function `~plasmapy.dispersion.numerical.kinetic_alfven_.kinetic_alfven`
+  has been decorated with |particle_input| to broaden the range of
+  |particle-like| arguments that can be provided to this function. (:pr:`2182`)
+>>>>>>> 85496daa (Add changelog entries for v2023.5.0)
 
 
 Bug Fixes
@@ -210,7 +265,11 @@ Trivial/Internal Changes
 - Set minimum versions for all explicitly listed dependencies. (:pr:`2075`)
 - Enabled and applied changes for additional rule sets for ``ruff``, and
   removed corresponding ``flake8`` extensions. (:pr:`2080`)
+<<<<<<< HEAD
 - Changed from ``indexserver`` to ``PIP_INDEX_URL`` to index nightly `numpy`
+=======
+- Changed from ``indexserver`` to ``PIP_INDEX_URL`` to index nightly numpy
+>>>>>>> 85496daa (Add changelog entries for v2023.5.0)
   builds (:pr:`2138`)
 - Updated the function and docstring of
   `~plasmapy.formulary.collisions.helio.collisional_analysis`. (:pr:`2151`)
