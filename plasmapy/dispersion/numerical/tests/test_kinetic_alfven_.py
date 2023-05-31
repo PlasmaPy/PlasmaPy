@@ -7,7 +7,7 @@ from astropy.constants.si import c
 
 from plasmapy.dispersion.numerical.kinetic_alfven_ import kinetic_alfven
 from plasmapy.particles import Particle
-from plasmapy.particles.exceptions import InvalidParticleError
+from plasmapy.particles.exceptions import InvalidIonError, InvalidParticleError
 from plasmapy.utils.exceptions import PhysicsWarning
 
 c_si_unitless = c.value
@@ -35,7 +35,7 @@ class TestKinetic_Alfven:
             ({**_kwargs_single_valued, "B": -1 * u.T}, ValueError),
             ({**_kwargs_single_valued, "B": 5 * u.m}, u.UnitTypeError),
             ({**_kwargs_single_valued, "ion": "not a particle"}, InvalidParticleError),
-            ({**_kwargs_single_valued, "ion": "e-"}, ValueError),
+            ({**_kwargs_single_valued, "ion": "e-"}, InvalidIonError),
             ({**_kwargs_single_valued, "k": np.ones((3, 2)) * u.rad / u.m}, ValueError),
             ({**_kwargs_single_valued, "k": 0 * u.rad / u.m}, ValueError),
             ({**_kwargs_single_valued, "k": -1.0 * u.rad / u.m}, ValueError),
