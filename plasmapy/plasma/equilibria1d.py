@@ -13,17 +13,14 @@ class HarrisSheet:
 
     Parameters
     ----------
-    B0: `float`
+    B0 : `~astropy.units.Quantity` 
          magnetic field.
-
-    Y : `float`
-        The axis of reference.
 
     delta : 'float'
         Delta is the thickness of the sheet.
 
     P0 : 'float'
-        Plasma Preassure
+        Plasma Pressure.
 
     Notes
     -----
