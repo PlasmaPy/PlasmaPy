@@ -17,8 +17,8 @@ PlasmaPy.  Developers should revise and expand these instructions
 while performing each release, and may refer to `Astropy's release
 procedures`_ for guidance.
 
-Throughout this guide, ``2023.9.0`` denotes the version you're
-releasing.
+Throughout this guide, ``2023.9.0`` denotes the version that is being
+released.
 
 .. tip::
 
@@ -31,53 +31,27 @@ releasing.
 Announce the release timeline
 =============================
 
-* Create an issue on GitHub for the release with a checklist of tasks
-  to be performed roughly one month before.
+* Create an issue on GitHub for the release about one month ahead of
+  time.
 
-* About three weeks before a minor or major release, announce that a
-  feature freeze will occur one week before the anticipated release
-  date. Only pull requests with a limited scope that do not
-  significantly change functionality should be merged during the
-  feature freeze.
+.. Automate the above step?
 
-* Begin a code freeze about three weekdays before a release. Only
-  bugfixes and pull requests that are directly related to the release
-  should be merged during the code freeze.
-
-Update metadata
-===============
-
-* Begin an upload to Zenodo_ for the new release using the
-  ``team@plasmapy.org`` login, and reserve a DOI_.
-
-* Open a pull request to update and alphabetize the author list in
-  :file:`docs/about/credits.rst`, :file:`.mailmap`, and
-  |CITATION.cff|_, the latter using the `Citation File
-  Format`_. Missing ORCID_ identifiers may be added.
-
-.. Add a Python script here to update :file:`.mailmap`.
-
-.. Use ``git shortlog -nse | cut -f 2 | vim -c "sort" -c "vsplit .mailmap" -c
-   "windo diffthis"`` to compare the old and new :file:`.mailmap` version. Make sure
-   the old addresses are preserved in the new version, then overwrite the
-   existing :file:`.mailmap` file.
-   This part may not be all that relevant anymore, except if we're using ``git
-   shortlog``. ← put this in pre-release?
+* Begin a code freeze ∼3 weekdays prior to a release. Only bugfixes
+  and pull requests with a limited scope that do not significantly
+  impact functionality should be merged during the code freeze.
 
 Perform code quality checks
 ===========================
 
 * Create a pull request to revise changelog entries to make sure that
-  they are understandable, necessary, and in the correct category.
+  they are all understandable to users, necessary, and correctly
+  categorized.
 
   .. tip::
 
      Apply the :guilabel:`No changelog entry needed` label to pull
      requests that change multiple changelog entries in order to skip
      the changelog entry check.
-
-* Open a pull request to re-execute pre-executed notebooks, such as
-  those for charged particle radiography.
 
 * Run ``make linkcheck`` in :file:`docs/`, and if necessary, open a
   pull request to update redirects and fix broken links. The reserved
@@ -91,7 +65,7 @@ Perform code quality checks
      specify allowed redirects. For example, DOI_ links are always
      redirects, but are significantly more persistent than hyperlinks.
 
-* Make sure that all tests are passing.
+* Make sure that all tests are passing just prior to the release.
 
   - Go to the Actions_ page.
   - Click on the :guilabel:`CI` tab → :guilabel:`Run workflow`.
@@ -100,62 +74,46 @@ Perform code quality checks
   - Enjoy life for 15 minutes.
   - Fix any failures, and then repeat these steps.
 
-Create the release branch
-=========================
+Update metadata
+===============
 
-* Go to `the Release action
-  <https://github.com/PlasmaPy/PlasmaPy/actions/workflows/release.yml>`_,
-  hit the :guilabel:`Run workflow` button, fill in the required values
-  and hit :guilabel:`Run Workflow`. Refresh the page and make sure the
-  new job goes through. Fix whatever made it fail.
+* Look through |CITATION.cff|_ and make any necessary updates to the
+  author list and other metadata. It's not necessary to update the
+  DOI and version number yet.
 
-* For major and minor releases, activate the new branch's version on
-  `on Read the Docs
-  <https://readthedocs.org/projects/plasmapy/versions>`_.
-
-.. Use one of the following two methods to add the note on new
-   contributors to :file:`docs/whatsnew/2023.9.0.rst`.
-
-..  If not done previously, add a `GitHub personal access token`_ and
-    install Xonsh_. Download the `SunPy Xonsh script`_, and run:
-    .. code-block::
-       generate_releaserst.xsh \
-           0.8.0 \
-           --auth \
-           --project-name=plasmapy \
-           --pretty-project-name=PlasmaPy \
-           --author-sort=alphabet
-    Note that the argument is for the previous release. Double check
-    that the above command works!!!!!!
+* Reserve a DOI_ for Zenodo_
+  - Log on to Zenodo under the ``team@plasmapy.org`` login (available
+    among core contributors).
+  - Navigate to the Zenodo record for the previous release.
+  - Click on :guilabel:`New version`.
+  - Under :guilabel:`Basic information`, click on :guilabel:`Reserve DOI`.
+  - Copy the DOI (which will be needed below).
 
 Publish the release
 ===================
 
-.. There used to be a step here to use the hub tool with `hub ci-status
-   main -v [COMMIT]``. I kept getting a "Not Found" error when using the
-   hub tool, and I'm not sure why.
+* Go to the `Mint release 🍬
+  <https://github.com/PlasmaPy/PlasmaPy/actions/workflows/release.yml>`_
+  GitHub Action. Hit the :guilabel:`Run workflow` button, fill in the
+  version number and DOI from Zenodo_, and hit :guilabel:`Run Workflow`.
+  Refresh the page and make sure the new job goes through. This step
+  will update the DOI and version number, build the changelog, tag the
+  release, and create the ``v2023.9.x`` branch.
 
-.. Install `hub <https://hub.github.com/>`__ (if needed), and use it to
-   check that the continuous integration is passing.
-   ... code-block:: Shell
-      hub ci-status main -v [COMMIT]
-   Here, ``[COMMIT]`` is replaced by the hash from the latest commit on
-   the `main <https://github.com/PlasmaPy/PlasmaPy/commits/main>`__
-   branch of `PlasmaPy's GitHub repository`_.
-
-* Go to the GitHub page to `draft a new release`_. We will perform a
-  pre-release first.
+* Go to the GitHub page to `draft a new release`_.
 
   - Set the :guilabel:`Target` to ``v2023.9.x``.
-  - For :guilabel:`Choose a tag`, put ``2023.9.0rc1``.
-  - Under title, put ``v2023.9.0rc1``.
-  - Mark this as a pre-release.
+  - For :guilabel:`Choose a tag`, put ``2023.9.0``.
+  - Under title, put ``v2023.9.0``.
   - Click on :guilabel:`Publish release`.
 
   The release is handled via |.github/workflows/python-publish.yml|_.
 
-  In a few minutes, check `PlasmaPy releases on PyPI`_ to make sure
-  that version ``2023.9.0rc1`` has been released and is marked as
+Check the release
+=================
+
+* In a few minutes, check `PlasmaPy releases on PyPI`_ to make sure
+  that version ``2023.9.0`` has been released and is marked as
   pre-release.
 
   .. tip::
@@ -168,7 +126,7 @@ Publish the release
 
   .. code-block:: bash
 
-     pip install plasmapy==2023.9.0rc1
+     pip install plasmapy==2023.9.0
 
   to make sure that the new version installs correctly.
 
@@ -178,19 +136,6 @@ Publish the release
 
   Fix any errors that arise, and re-run the :guilabel:`CI` and
   :guilabel:`weekly tests` checks.
-
-* Go to the GitHub page to `draft a new release`_. We will now perform
-  the ``2023.9.0`` release.
-
-  - Set the :guilabel:`Target` to ``v2023.9.x``.
-  - For :guilabel:`Choose a tag`, put ``2023.9.0``.
-  - Under title, put ``v2023.9.0``.
-  - Copy the release notes from the changelog, using the beginning of
-    :file:`docs/whatsnew/2023.9.0.rst`
-  - Click on :guilabel:`Publish release`.
-
-  In a few minutes, check `PlasmaPy releases on PyPI`_ to make sure
-  that the ``2023.9.0`` release is present. If it is, congratulations!
 
   .. tip::
 
@@ -216,18 +161,13 @@ Publish the release
 
        print(plasmapy.__version__)
 
-* Merge the ``v2023.9.x`` branch into the ``stable`` branch on GitHub:
-
-  .. code-block:: bash
-
-     git checkout v2023.9.x
-     git pull
-     git checkout stable
-     git merge v2023.9.x
-     git push
-
 Post-release
 ============
+
+* For major and minor releases, activate the new branch's version on
+  `on Read the Docs
+  <https://readthedocs.org/projects/plasmapy/versions>`_.
+
 
 * Make the release on conda-forge. The helpful conda-forge bots should
   automatically open up a PR on `conda-forge/plasmapy-feedstock
@@ -243,8 +183,6 @@ Post-release
 
 Advertise the release
 =====================
-
-* Write a post on the release on `PlasmaPy's website`_.
 
 * Notify plasma physics communities about the release on:
 
