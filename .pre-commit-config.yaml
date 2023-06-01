@@ -32,6 +32,13 @@ repos:
     # run this hook on `labeler.yml`.
     exclude: .github/labeler.yml
 
+- repo: https://github.com/FlamingTempura/bibtex-tidy
+  rev: v1.11.0
+  hooks:
+  - id: bibtex-tidy
+    files: examples/references.bib
+    args: [--sort=key, --quiet]
+
 - repo: https://github.com/pre-commit/mirrors-csslint
   rev: v1.0.5
   hooks:
