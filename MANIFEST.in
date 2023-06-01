@@ -10,7 +10,6 @@ include *.yaml
 include *.yml
 include changelog/README.rst
 include CITATION.cff
-include CODEOWNERS
 include pyproject.toml
 include tox.ini
 
