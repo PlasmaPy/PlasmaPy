@@ -71,7 +71,7 @@ class TestFindIonSaturationCurrent:
         assert find_isat_ is find_ion_saturation_current
 
     @pytest.mark.parametrize(
-        "kwargs, _error",
+        ("kwargs", "_error"),
         [
             # errors on kwarg fit_type
             (
@@ -129,7 +129,7 @@ class TestFindIonSaturationCurrent:
             find_ion_saturation_current(**kwargs)
 
     @pytest.mark.parametrize(
-        "kwargs, expected",
+        ("kwargs", "expected"),
         [
             # linear fit to linear analytical data
             (

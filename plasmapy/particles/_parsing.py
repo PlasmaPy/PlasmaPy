@@ -149,7 +149,7 @@ def invalid_particle_errmsg(
     return errmsg
 
 
-def extract_charge(arg: str):
+def extract_charge(arg: str):  # noqa: C901, PLR0912
     """
     Receive a `str` representing an element, isotope, or ion.
     Return a `tuple` containing a `str` that should represent an
@@ -223,7 +223,7 @@ def extract_charge(arg: str):
     return isotope_info, Z_from_arg
 
 
-def parse_and_check_atomic_input(
+def parse_and_check_atomic_input(  # noqa: C901, PLR0912, PLR0915
     argument: Union[str, Integral],
     mass_numb: Optional[Integral] = None,
     Z: Optional[Integral] = None,

@@ -8,7 +8,7 @@ import inspect
 
 
 def modify_docstring(func=None, prepend: str = None, append: str = None):
-    """
+    r"""
     A decorator which programmatically prepends and/or appends the docstring
     of the decorated method/function.  The unmodified/original docstring is
     saved as the ``__original_doc__`` attribute.
@@ -38,7 +38,7 @@ def modify_docstring(func=None, prepend: str = None, append: str = None):
         >>> foo.__original_doc__
         'Beautiful'
         >>> foo.__doc__
-        'Hello\\n\\nBeautiful\\n\\nWorld'
+        'Hello\n\nBeautiful\n\nWorld'
 
     """
 

@@ -6,43 +6,56 @@
 # If a label includes a space or a pattern begins with an asterisk or
 # special character, enclose it in quotes.
 
-Breaking:
+'changes existing API':
 - changelog/*.breaking*.rst
 
-Bug:
+bug:
 - changelog/*.bugfix*.rst
 
-'Continuous Integration':
+'CI':
 - .codecov.yaml
 - .github/workflows/*test*.yml
 - .pre-commit-config.yaml
+- .readthedocs.yml
 - CODEOWNERS
 - noxfile.py
 - tox.ini
 
-'Contributor Guide':
+'contributor guide':
 - changelog/README.rst
 - docs/contributing/**/*
 
 dependencies:
 - requirements.txt
 
-Documentation:
-- docs/**/*
-- changelog/*doc*.rst
-- README.md
+docs:
 - .readthedocs.yml
+- changelog/*doc*.rst
+- docs/**/*
+- README.md
 
 'GitHub Actions':
 - .github/**/*
 
-Notebooks:
+linters:
+- .sourcery.yaml
+- .pre-commit-config.yaml
+
+'No changelog entry needed':
+- any: ['.pre-commit-config.yaml', '.github/**/*.*', '.codecov.yml', '.editorconfig', '.gitignore', 'CODEOWNERS', 'requirements.txt']
+  all: ['!plasmapy/**/*.py', '!docs/**/*.*', '!pyproject.toml']
+
+notebooks:
 - docs/notebooks/**/*
 
-Packaging:
+packaging:
 - .github/workflows/*publish*
 - .github/workflows/*release*
+- .zenodo*
+- CITATION.cff
+- LICENSE.md
 - MANIFEST.in
+- PATENT.md
 - pyproject.toml
 - setup.*
 
@@ -73,7 +86,7 @@ plasmapy.simulation:
 plasmapy.utils:
 - plasmapy/utils/**/*
 
-Testing:
+testing:
 - '**/test*.py'
 - '**/conftest.py'
 - .github/workflows/weekly.yml

@@ -1,4 +1,0 @@
-Changed the minimum required version of Python from 3.8 to 3.9.
-Accordingly, increased the minimum versions of ``numpy`` to ``1.21.0``, ``pandas`` to
-``1.2.0``, ``h5py`` to ``3.1.0``, ``scipy`` to ``1.6.0``, ``voila`` to
-``0.3.0``, and ``xarray`` to ``0.17.0``.

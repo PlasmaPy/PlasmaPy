@@ -102,14 +102,14 @@ class Characteristic:
         return Characteristic(self.bias[key], self.current[key])
 
     def __sub__(self, other):
-        r"""Support current subtraction"""
+        r"""Support current subtraction."""
 
         b = copy.deepcopy(self)
         b.current -= other.current
         return b
 
     def __add__(self, other):
-        r"""Support current addition"""
+        r"""Support current addition."""
 
         b = copy.deepcopy(self)
         b.current += other.current
@@ -208,7 +208,7 @@ class Characteristic:
 @validate_quantities(
     probe_area={"can_be_negative": False, "can_be_inf": False, "can_be_nan": False}
 )
-def swept_probe_analysis(
+def swept_probe_analysis(  # noqa: PLR0915
     probe_characteristic,
     probe_area: u.m**2,
     gas_argument,

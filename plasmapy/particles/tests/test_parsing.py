@@ -48,7 +48,7 @@ aliases_and_symbols = [
 ]
 
 
-@pytest.mark.parametrize("alias, symbol", aliases_and_symbols)
+@pytest.mark.parametrize(("alias", "symbol"), aliases_and_symbols)
 def test_dealias_particle_aliases(alias, symbol):
     """Test that _dealias_particle_aliases correctly takes in aliases and
     returns the corresponding symbols, and returns the original argument
@@ -267,7 +267,7 @@ parse_check_table = [
 ]
 
 
-@pytest.mark.parametrize("arg, kwargs, expected", parse_check_table)
+@pytest.mark.parametrize(("arg", "kwargs", "expected"), parse_check_table)
 def test_parse_and_check_atomic_input(arg, kwargs, expected):
     result = parse_and_check_atomic_input(arg, **kwargs)
     assert result == expected, (
@@ -316,7 +316,7 @@ invalid_particles_table = [
 ]
 
 
-@pytest.mark.parametrize("arg, kwargs", invalid_particles_table)
+@pytest.mark.parametrize(("arg", "kwargs"), invalid_particles_table)
 def test_parse_InvalidParticleErrors(arg, kwargs):
     r"""Tests that _parse_and_check_atomic_input raises an
     InvalidParticleError when the input does not correspond
@@ -355,7 +355,7 @@ atomic_warnings_table = [
 ]
 
 
-@pytest.mark.parametrize("arg, kwargs, num_warnings", atomic_warnings_table)
+@pytest.mark.parametrize(("arg", "kwargs", "num_warnings"), atomic_warnings_table)
 def test_parse_AtomicWarnings(arg, kwargs, num_warnings):
     r"""Tests that _parse_and_check_atomic_input issues an AtomicWarning
     under the required conditions."""

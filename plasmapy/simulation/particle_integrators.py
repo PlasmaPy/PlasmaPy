@@ -1,10 +1,15 @@
-"""Particle movement integrators, for particle simulations.
+"""
+Particle movement integrators, for particle simulations.
 
 These do not have `astropy.units` support, choosing instead to
 limit overhead and increase performance.
 
 They act in-place on position and velocity arrays to reduce
 memory allocation.
+
+.. attention::
+
+   |expect-api-changes|
 """
 
 __all__ = ["boris_push"]
@@ -15,6 +20,10 @@ import numpy as np
 def boris_push(x, v, B, E, q, m, dt, inplace: bool = True):
     r"""
     The explicit Boris pusher.
+
+    .. attention::
+
+       |expect-api-changes|
 
     Parameters
     ----------

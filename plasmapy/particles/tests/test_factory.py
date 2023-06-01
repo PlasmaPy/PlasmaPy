@@ -48,7 +48,7 @@ test_cases = [
 ]
 
 
-@pytest.mark.parametrize("args, kwargs, expected", test_cases)
+@pytest.mark.parametrize(("args", "kwargs", "expected"), test_cases)
 def test_physical_particle_factory(args, kwargs, expected):
     result = _physical_particle_factory(*args, **kwargs)
     assert result == expected
@@ -65,7 +65,7 @@ test_cases_for_exceptions = [
 ]
 
 
-@pytest.mark.parametrize("args, kwargs, expected", test_cases_for_exceptions)
+@pytest.mark.parametrize(("args", "kwargs", "expected"), test_cases_for_exceptions)
 def test_particle_factory_exceptions(args, kwargs, expected):
     with pytest.raises(expected):
         _physical_particle_factory(*args, **kwargs)

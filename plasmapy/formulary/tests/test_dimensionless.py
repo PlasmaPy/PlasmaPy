@@ -18,7 +18,7 @@ from plasmapy.formulary.dimensionless import (
 )
 from plasmapy.particles import Particle
 from plasmapy.utils import RelativityWarning
-from plasmapy.utils.pytest_helpers import assert_can_handle_nparray
+from plasmapy.utils._pytest_helpers import assert_can_handle_nparray
 
 Z = 1
 
@@ -32,7 +32,7 @@ T_e = 1e6 * u.K
 
 
 @pytest.mark.parametrize(
-    "alias, parent",
+    ("alias", "parent"),
     [
         (nD_, Debye_number),
         (betaH_, Hall_parameter),

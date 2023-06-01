@@ -5,7 +5,7 @@ import astropy.units as u
 import numpy as np
 
 
-def check_sweep(
+def check_sweep(  # noqa: C901, PLR0912
     voltage: np.ndarray,
     current: np.ndarray,
     strip_units: bool = True,
