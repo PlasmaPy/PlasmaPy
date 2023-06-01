@@ -36,8 +36,8 @@ repos:
   rev: v1.11.0
   hooks:
   - id: bibtex-tidy
-    files: examples/references.bib
-    args: [--sort=key, --quiet]
+    files: docs/bibliography.bib
+    args: [--sort=key, --wrap=88, --enclosing-braces=title, journal, --strip-comments, --sort-fields, --no-escape, --drop-all-caps, --sort, --no-align, --omit=month, --modify]
 
 - repo: https://github.com/pre-commit/mirrors-csslint
   rev: v1.0.5
