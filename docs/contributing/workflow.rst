@@ -67,8 +67,9 @@ Create a new branch
 Add and commit changes
 ----------------------
 
-Next we can go through the cycle of making changes, which can be
-repeated multiple times.
+Next we can go through the cycle of making changes, which is usually
+repeated multiple times. To get a better idea of what is being done in
+each step, try running ``git status``.
 
 #. Edit a file and save the changes.
 
@@ -94,10 +95,15 @@ repeated multiple times.
    Committing a change is like preserving a snapshot of what each file
    looks like at this point in history.
 
-   If it has been installed, pre-commit will perform automated checks
-   and possibly make some automated changes. If pre-commit fails, then
-   it'll be necessary to do the ``git add`` and ``git commit`` steps
-   once more.
+   .. hint::
+
+      If it has been installed, pre-commit_ will perform automated
+      checks and possibly auto-fixes. If pre-commit fails, then
+      it'll be necessary to fix any remaining problems and do the
+      ``git add`` and ``git commit`` steps once more. Try using
+      ``git diff`` and ``git diff --cached`` to view the changes, and
+      :guilabel:`↑` and :guilabel:`↓` to scroll through previous
+      commands in a terminal.
 
 #. To push the changes to GitHub, run:
 
@@ -124,6 +130,25 @@ repeated multiple times.
 
    * ``git push`` is like sending the package off to its destination
      (i.e., GitHub).
+
+Pulling changes from GitHub
+---------------------------
+
+If your branch changes on GitHub, run
+
+.. code-block:: bash
+
+   git pull
+
+to pull the changes from GitHub to your computer. If you'd like to pull
+the changes from the ``main`` branch, instead run
+
+.. code-block:: bash
+
+   git pull upstream main
+
+If any of the changes conflict with each other, it will be necessary to
+`resolve the merge conflict`_.
 
 Creating a pull request
 -----------------------
@@ -203,4 +228,5 @@ marked as a draft pull request. Thank you for contributing!
 .. _good first issue: https://github.com/PlasmaPy/PlasmaPy/issues?q=is%3Aissue+is%3Aopen+label%3A%22Good+first+issue%22
 .. _pull request: https://docs.github.com/en/github/collaborating-with-pull-requests
 .. _remote: https://github.com/git-guides/git-remote
+.. _resolve the merge conflict: https://www.atlassian.com/git/tutorials/using-branches/merge-conflicts
 .. _sign up for an ORCID iD: https://orcid.org/register
