@@ -3,6 +3,7 @@ __all__ = ["HarrisSheet"]
 import astropy.constants as const
 import astropy.units as u
 import math
+import numpy as np
 
 
 class HarrisSheet:
@@ -77,7 +78,7 @@ class HarrisSheet:
           The axis of reference.
 
         """
-        return self.B0 / (self.delta * const.mu0) * (math.sech(y / self.delta) ** 2)
+        return self.B0 / (self.delta * const.mu0) * (np.cosh((y / self.delta) ** -2))
 
     def plasma_pressure(self, y):
         r"""
@@ -95,5 +96,5 @@ class HarrisSheet:
 
         """
         return (
-            self.B0**2 / (2 * const.mu0) * (math.sech(y / self.delta) ** 2) + self.P0
+            self.B0**2 / (2 * const.mu0) * (np.cosh(y / self.delta) ** -2) + self.P0
         )
