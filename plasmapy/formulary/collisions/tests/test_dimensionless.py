@@ -83,6 +83,7 @@ class Test_coupling_parameter:
         assert testTrue, errStr
 
     # TODO vector z_mean
+    @pytest.mark.slow()
     @pytest.mark.parametrize("insert_some_nans", [[], ["V"]])
     @pytest.mark.parametrize("insert_all_nans", [[], ["V"]])
     @pytest.mark.parametrize(

@@ -58,7 +58,7 @@ repos:
     - tomli
 
 - repo: https://github.com/charliermarsh/ruff-pre-commit
-  rev: v0.0.267
+  rev: v0.0.270
   hooks:
   - id: ruff
     args: [--fix]
@@ -91,11 +91,11 @@ repos:
   hooks:
   - id: nbqa-black
     additional_dependencies:
-    - black==23.1.0
+    - black==23.3.0
     args:
     - --nbqa-mutate
   - id: nbqa-isort
     additional_dependencies:
-    - isort==5.11.4
+    - isort==5.12.0
     args:
     - --nbqa-mutate

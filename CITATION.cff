@@ -1,10 +1,10 @@
 title: PlasmaPy
 type: software
-version: 2023.1.0
+version: 2023.5.0
 identifiers:
 - type: doi
-  value: 10.5281/zenodo.7529964
-date-released: '2023-01-13'
+  value: 10.5281/zenodo.799188
+date-released: '2023-05-31'
 message: >-
   Please cite the specific version of PlasmaPy used
   during a research project.
@@ -111,6 +111,12 @@ authors:
 - given-names: Sean
   family-names: Carroll
   alias: seanwilliamcarroll
+
+- given-names: Carlos
+  family-names: Cartagena-Sanchez
+  affiliation: Beloit College
+  orcid: https://orcid.org/0000-0002-0486-1292
+  alias: cacsphysics
 
 - given-names: Sarthak
   family-names: Choudhary

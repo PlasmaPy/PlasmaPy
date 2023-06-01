@@ -552,23 +552,21 @@ def Lundquist_number(
     >>> rho = n*(m_p + m_e)
     >>> sigma = 10**-7 * u.S / u.m
     >>> Lundquist_number(L, B, rho, sigma)
-    <Quantity 0.86653839>
+    <Quantity 0.866538...>
     >>> Lundquist_number(L, B, n, sigma, ion="p")
-    <Quantity 0.86653839>
+    <Quantity 0.866538...>
     >>> Lundquist_number(L, B, n, sigma, ion="He +2")
-    <Quantity 0.43481967>
+    <Quantity 0.434819...>
     >>> Lundquist_number(L, B, n, sigma, ion="He", z_mean=1.8)
-    <Quantity 0.43476604>
+    <Quantity 0.434819...>
     >>> sigma = 10**-2 * u.S / u.m
     >>> Lundquist_number(L, B, n, sigma, ion="He", z_mean=1.8)
-    <Quantity 43476.60420832>
+    <Quantity 43481.96672...>
 
     Returns
     -------
     S : `~astropy.units.Quantity`
         The Lundquist number.
-
     """
-
-    alfven = speeds.Alfven_speed(B, density, ion=ion, z_mean=z_mean)
+    alfven = speeds.Alfven_speed(B, density, ion=ion, Z=z_mean)
     return Mag_Reynolds(alfven, L, sigma)

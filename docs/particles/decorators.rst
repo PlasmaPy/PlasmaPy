@@ -13,12 +13,12 @@ properties of the particles that make up that plasma. The
 |particle_input| decorator allows functions and methods to easily
 access properties of different particles.
 
-The |particle_input| decorator takes valid representations of
-particles given in arguments to functions and passes through the
-corresponding |Particle| object.  The arguments must be annotated with
+The |particle_input| decorator takes valid representations of particles
+given in arguments to functions and passes through the corresponding
+|Particle| object. The arguments must be annotated with
 |Particle| so that the decorator knows to create the |Particle|
-object.  The decorated function can then access particle properties by
-using |Particle| attributes.  This decorator will raise an
+object. The decorated function can then access particle properties by
+using |Particle| attributes. This decorator will raise an
 |InvalidParticleError| if the input does not correspond to a valid
 particle.
 
@@ -53,9 +53,9 @@ the decorated function is called.
   def charge_number(particle: Particle, Z: int = None, mass_numb: int = None) -> int:
       return particle.charge_number
 
-The above example includes optional type hint annotations for ``Z``
-and ``mass_numb`` and the returned value.  The |particle_input|
-decorator may be used in methods in classes as well:
+The above example includes optional type hint annotations for ``Z`` and
+``mass_numb`` and the returned value. The |particle_input| decorator
+may be used in methods in classes as well:
 
 .. code-block:: python
 
@@ -65,8 +65,8 @@ decorator may be used in methods in classes as well:
           return particle.symbol
 
 On occasion it is necessary for a function to accept only certain
-categories of particles.  The |particle_input| decorator enables
-several ways to allow this.
+categories of particles. The |particle_input| decorator enables several
+ways to allow this.
 
 If an annotated keyword is named ``element``, ``isotope``, or ``ion``;
 then |particle_input| will raise an |InvalidElementError|,
@@ -91,7 +91,7 @@ associated with an element, isotope, or ion; respectively.
 
 The keywords ``require``, ``any_of``, and ``exclude`` to the decorator
 allow further customization of the particle categories allowed as
-inputs.  These keywords are used as in
+inputs. These keywords are used as in
 `~plasmapy.particles.particle_class.Particle.is_category`.
 
 .. code-block:: python
