@@ -13,11 +13,11 @@ Introduction
 ============
 
 This page describes the workflow for making a contribution to PlasmaPy
-via a `pull request`_. This page assumes that you have finished the
-steps for :ref:`getting ready to contribute`.
+via a `pull request`_ after having finished the steps for
+|getting ready to contribute|.
 
-If you run into any problems, please feel free to reach out to us in our
-`Matrix chat room`_ or during our weekly `office hours`_. Thank you for
+If you run into any problems, please reach out to us in our `Matrix
+chat room`_ or during our weekly `office hours`_. Thank you for
 contributing!
 
 .. tip::
@@ -39,19 +39,19 @@ Create a new branch
 #. Download the current status of `PlasmaPy's GitHub repository`_ and
    your fork by running:
 
-   .. code-block::
+   .. code-block:: bash
 
       git fetch --all
 
 #. Create and switch to a new branch_ by running:
 
-   .. code-block::
+   .. code-block:: bash
 
       git checkout -b new-branch-name upstream main
 
    where ``new-branch-name`` is changed to the name of the new branch.
    Here ``upstream`` is the name of the remote_ and ``main`` is the name
-   of the original branch.
+   of the original branch which the new branch will be based off of.
 
    .. tip::
 
@@ -67,22 +67,30 @@ Create a new branch
 Add and commit changes
 ----------------------
 
+Next we will go through the cycle of making changes and uploading them
+
 Next we can go through the cycle of making changes, which is usually
 repeated multiple times. To get a better idea of what is being done in
 each step, try running ``git status``.
 
 #. Edit a file and save the changes.
 
-#. In a terminal, run:
+#. In a terminal, navigate to the directory with the changed file and
+   run:
 
    .. code-block:: bash
 
       git add filename
 
    where :samp:`{filename}` is replaced with the name of the edited
-   file(s). Use ``git add *`` to add all files in the directory (except
-   for files specified in :file:`.gitignore`. This step lets us line up
-   the changes that we want to record as a snapshot in history.
+   file(s).
+   This step lets us line up the changes that we want to record as a
+   snapshot in history.
+
+   .. hint::
+
+      Use ``git add .`` to add all files in the directory and
+      subdirectories (except for files specified in :file:`.gitignore`).
 
 #. To commit the changes, run:
 
@@ -94,6 +102,10 @@ each step, try running ``git status``.
    commit message such as ``"Add gyroradius function"``.
    Committing a change is like preserving a snapshot of what each file
    looks like at this point in history.
+
+   .. hint::
+
+   
 
    .. hint::
 
@@ -130,25 +142,6 @@ each step, try running ``git status``.
 
    * ``git push`` is like sending the package off to its destination
      (i.e., GitHub).
-
-Pulling changes from GitHub
----------------------------
-
-If your branch changes on GitHub, run
-
-.. code-block:: bash
-
-   git pull
-
-to pull the changes from GitHub to your computer. If you'd like to pull
-the changes from the ``main`` branch, instead run
-
-.. code-block:: bash
-
-   git pull upstream main
-
-If any of the changes conflict with each other, it will be necessary to
-`resolve the merge conflict`_.
 
 Creating a pull request
 -----------------------
@@ -195,12 +188,36 @@ Creating a pull request
 #. :ref:`Add a changelog entry <add-changelog>`, except for minor
    changes like typo fixes.
 
-   .. note::
+At this stage, a reviewer will perform a code review, unless it has been
+marked as a draft pull request. Thank you for contributing!
 
-      After the pull request has been created, it can be updated by
-      using ``git push`` to update the corresponding branch on GitHub.
+Pulling changes from GitHub
+---------------------------
 
-#. If this is your first contribution, please add yourself to the author
+If your branch changes on GitHub, run
+
+.. code-block:: bash
+
+   git pull
+
+to pull the changes from GitHub to your computer. If you'd like to pull
+the changes from the ``main`` branch, instead run
+
+.. code-block:: bash
+
+   git pull upstream main
+
+If any of the changes conflict with each other, it will be necessary to
+`resolve the merge conflict`_.
+
+.. note::
+
+   After the pull request has been created, it can be updated by
+   using ``git push`` to update the corresponding branch on GitHub.
+
+.. note::
+
+   If this is your first contribution, please add yourself to the author
    list in |CITATION.cff|_ (which uses `Citation File Format`_) to make
    sure that you get credit for your contribution. The entry should be
    of the form:
@@ -211,15 +228,12 @@ Creating a pull request
         family-names: <family names>
         affiliation: <affiliation>
         orcid: https://orcid.org/<ORCiD-iD>
-        alias: {missing_github_username}
+        alias: <GitHub username>
 
    All fields are optional except ``alias``, which is your GitHub
    username. We encourage contributors to `sign up for an ORCID iD`_: a
    unique, persistent identifier used by researchers, authors, and open
    source contributors.
-
-At this stage, a reviewer will perform a code review, unless it has been
-marked as a draft pull request. Thank you for contributing!
 
 .. _Add a new SSH key to your GitHub account: https://docs.github.com/en/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account
 .. _branch: https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/about-branches
