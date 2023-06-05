@@ -92,8 +92,6 @@ repos:
   - id: nbqa-black
     additional_dependencies:
     - black==23.3.0
-    args:
-    - --nbqa-mutate
   - id: nbqa-isort
     additional_dependencies:
     - isort==5.12.0
