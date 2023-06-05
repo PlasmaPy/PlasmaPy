@@ -151,8 +151,8 @@ def temp_ratio(  # noqa: C901, PLR0912, PLR0915
     .. math::
 
          \lambda_{21} = 9 + \ln \left| B \left ( \frac{T^{3}_{1}}{n_{1}}
-         \right )^{1/2} \left( \frac{\theta_{21} +
-         \frac{\mu_{2}}{\mu_1}}{Z_{1}Z_{2}(\mu_{1} + \mu_{2})} \right )
+         \right )^{1/2} \left( \frac{Z_{1}Z_{2}(\mu_{1} + \mu_{2}) }{\theta_{21} +
+         \frac{\mu_{2}}{\mu_1}} \right )
          \left( \frac{n_{2}Z_{2}^{2}}{n_{1}Z_{1}^{2}} + \theta_{21}
          \right)^{1/2}\right |
 
@@ -195,7 +195,7 @@ def temp_ratio(  # noqa: C901, PLR0912, PLR0915
     >>> helio.temp_ratio(
     ...     r_0=r_0, r_n=r_n, n_1=n_1, n_2=n_2, v_1=v_1, T_1=T_1, T_2=T_2, ions=ions
     ...     )
-    [3.38059253..., 1.69093269..., 3.373138376...]
+    [3.7487..., 1.8350..., 3.7713...]
     """
 
     # Validate ions argument
@@ -274,8 +274,8 @@ def temp_ratio(  # noqa: C901, PLR0912, PLR0915
             mu_2,
         ):
             a = np.sqrt(T_1**3 / n_1)
-            b = (theta + mu_2 / mu_1) / (z_1 * z_2 * (mu_1 + mu_2))
-            c = np.sqrt(n_2 * z_2**2 / n_1 * z_1**2 + theta)
+            b = (z_1 * z_2 * (mu_1 + mu_2)) / (theta + mu_2 / mu_1)
+            c = np.sqrt((n_2 * z_2**2 / n_1 * z_1**2) + theta)
             return 9 + np.log(B * a * b * c)
 
         for i in range(n_step):
@@ -290,7 +290,10 @@ def temp_ratio(  # noqa: C901, PLR0912, PLR0915
 
             alpha = n_1 / (v_1 * (T_1**1.5))
             beta = (
-                np.sqrt(mu_1 * mu_2) * z_1 * z_2 * (1 - theta) * (1 + eta * theta)
+                np.sqrt(mu_1 * mu_2)
+                * (z_1**2 * z_2**2)
+                * (1 - theta)
+                * (1 + eta * theta)
             ) / (np.sqrt((mu_2 / mu_1) + theta) ** 3)
             l_ba = lambda_ba(theta, T_1, n_1, n_2, z_1, z_2, mu_1, mu_2)
 

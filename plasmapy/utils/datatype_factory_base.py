@@ -50,6 +50,10 @@ class BasicRegistrationFactory:
     specified by the registered factory, which validates the input and returns
     a instance of the class that best matches the inputs.
 
+    .. attention::
+
+       |expect-api-changes|
+
     Attributes
     ----------
     registry : `dict`

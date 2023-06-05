@@ -12,8 +12,8 @@ Introduction
 ============
 
 The `~plasmapy.utils` subpackage contains functionality that is needed
-across multiple subpackages or does not fit nicely in any other subpackage.
-Functionality contained in `~plasmapy.utils` includes:
+across multiple subpackages or does not fit nicely in any other
+subpackage. Functionality contained in `~plasmapy.utils` includes:
 
  * Warnings and exceptions used in PlasmaPy, such as
    `~plasmapy.utils.exceptions.RelativityWarning` or

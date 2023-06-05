@@ -1,2 +1,0 @@
-Added the :file:`stix_dispersion.ipynb` notebook
-which contains Stix cold-plasma dispersion examples.
