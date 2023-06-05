@@ -13,6 +13,7 @@ from plasmapy.utils.decorators import validate_quantities
 
 default_values = {"density": -1.8, "velocity": -0.2, "temperature": -0.74}
 
+
 @validate_quantities(
     T_1={"can_be_negative": False, "equivalencies": u.temperature_energy()},
     T_2={"can_be_negative": False, "equivalencies": u.temperature_energy()},
@@ -35,10 +36,10 @@ def temp_ratio(  # noqa: C901, PLR0912, PLR0915
 ):
     r"""
     Calculate the thermalization ratio for a plasma in transit, taken
-    from :cite:t:`maruca:2013`. This function allows the
-    thermalization of a plasma to be modeled, it predicts the
-    temperature ratio for different ion species within a plasma at a
-    different point in space.
+    from :cite:t:`maruca:2013` and applied in :cite:t:`johnson:2023a`.
+    This function allows the thermalization of a plasma to be
+    modeled, it predicts the temperature ratio for different ion
+    species within a plasma at a different point in space.
 
     Parameters
     ----------
@@ -362,10 +363,10 @@ def diff_flow(
     *,
     r_0: u.au,
     r_n: u.au,
-    n_1: u.cm**-3, #proton
-    n_2: u.cm**-3, #alpha
-    v_1: u.km/u.s,
-    v_2: u.km/u.s,
+    n_1: u.cm**-3,  # proton
+    n_2: u.cm**-3,  # alpha
+    v_1: u.km / u.s,
+    v_2: u.km / u.s,
     T_1: u.K,
     T_2: u.K,
     ions: ParticleLike = ("p+", "He-4++"),
@@ -377,7 +378,11 @@ def diff_flow(
     verbose=False,
 ):
     r"""
-    Calculate the thermalization
+    Calculate the thermalization on the differential flow for a
+    plasma in transit, taken from :cite:t:`johnson:2023b`. This
+    function allows the thermalization of a plasma to be modeled, it
+    can predict the differential flow between two ion species within
+    a plasma at a different point in space.
 
     Parameters
     ----------
@@ -455,7 +460,68 @@ def diff_flow(
 
     Notes
     -----
-    The processes
+    Coulomb collisions act to bring a system into local thermal
+    equilibirum (LTE) :cite:p:`verscharen:2019`, this affects how
+    parameters, i.e. temperature, density and speed, evolve in
+    transit. The collisional slowing time between two constituent
+    plasma ion species is given as:
+
+    .. math::
+
+        \Delta \vec{v}_{ab} = v_{a} - v{b} ,
+
+    where :math:`v_{a}` and :math:`v_{b}` are the bulk velocities for
+    the primary ion of interest and the secondary ion respectively.
+    The rate of change in the differential flow due to collisions is
+    taken from :cite:t:`verscharen:2019`:
+
+    .. math::\label{eq:dVdt}
+
+        \left( \frac{d \Delta \vec{v}_{ab}}{dt} \right)_{c} = -\nu_{s}^{(ab)} \, \Delta \vec{v}_{ab}
+
+    where $\nu_{s}^{(ab)}$ is the collision frequency for the slowing
+    of the secondary (b) particles by primary (a) particles. The
+    collision rate for the slowing down time is taken from
+    :cite:t:`larroche:2021` and is shown belong.
+
+    .. math::
+
+        \tau_{SD} = \frac{3m_{a}^{2}m_{b}^{2} \left( \frac{k_{B}T_{a}}{m_{a}} + \frac{k_{B}T_{b}}{m_{b}} \right)^{3/2}}{4 \sqrt{2\pi} e^{4} Z^{2}_{a}Z^{2}_{b}(m_{a} + m_{b})(n_{a}m_{a} + n_{b}m_{b}) \lambda_{ab} }
+
+    with ...
+
+
+    .. math::
+
+        \lambda_{ab} = 1
+
+
+    The collisional timescale has a corresponding collisional
+    frequency which can be used in the Equation~\ref{eq:dVdt}.
+
+    .. math::
+
+        \tau_{SD} = \frac{1}{\nu_{s}^{(ab)}}
+
+    Following the example in :cite:t:`maruca:2013`, the chain rule
+    was applied to Equation~\ref{eq:dVdt} and the total derivative
+    was converted into the convective derivative to get an equation
+    in terms of $r$,
+
+    .. math::
+
+        \frac{d \Delta \vec{v_{ab}}}{dr} = -\nu_{s}^{(ab)} \cdot \frac{\Delta \vec{v_{ab}}}{|\vec{v_{b}}|}
+
+    the velocity is the streaming velocity of the background particle
+    field.
+
+
+
+
+
+
+
+
 
 
     Examples
@@ -502,12 +568,5 @@ def diff_flow(
             )
 
     # Define the differential equation
-    def df_eq(
-
-    ):
-
+    def df_eq():
         return
-
-
-
-    return
