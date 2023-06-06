@@ -83,14 +83,8 @@ each step, try running ``git status``.
       git add filename
 
    where :samp:`{filename}` is replaced with the name of the edited
-   file(s).
-   This step lets us line up the changes that we want to record as a
-   snapshot in history.
-
-   .. hint::
-
-      Use ``git add .`` to add all files in the directory and
-      subdirectories (except for files specified in :file:`.gitignore`).
+   file(s). This step lets us line up the changes that we want to record
+   as a snapshot in history.
 
 #. To commit the changes, run:
 
@@ -105,7 +99,7 @@ each step, try running ``git status``.
 
    .. hint::
 
-   
+      G
 
    .. hint::
 
