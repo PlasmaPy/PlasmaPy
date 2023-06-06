@@ -8,13 +8,17 @@ import logging
 import numbers
 import numpy as np
 
+from astropy import constants as const
+from plasmapy.formulary.speeds import Alfven_speed
 from plasmapy.particles import ParticleLike, ParticleList
 from plasmapy.utils.decorators import validate_quantities
 
 default_values = {"density": -1.8, "velocity": -0.2, "temperature": -0.74, "magnetic": -1.6}
-
+m_u = const.u
+e0 = const.esp0
+k_B = const.k_B
+q_e = const.e.si
 # Define Coulomb log for mixed ion collisions, see docstring
-B = 1 / (u.cm * u.K) ** 1.5
 def lambda_ba(
     theta,
     T_1,
@@ -25,6 +29,7 @@ def lambda_ba(
     mu_1,
     mu_2,
 ):
+    B = 1 / (u.cm * u.K) ** 1.5
     a = np.sqrt(T_1**3 / n_1)
     b = (z_1 * z_2 * (mu_1 + mu_2)) / (theta + mu_2 / mu_1)
     c = np.sqrt((n_2 * z_2**2 / n_1 * z_1**2) + theta)
@@ -371,11 +376,13 @@ def diff_flow(
     T_2: u.K,
     ions: ParticleLike = ("p+", "He-4++"),
     B: u.T,
-    n_step: int = 100,
     density_scale: float = default_values["density"],
     velocity_scale: float = default_values["velocity"],
     temperature_scale: float = default_values["temperature"],
+    magnetic_scale: float = default_values["magnetic"],
+    alfven=False,
     verbose=False,
+    n_step: int = 100,
 ):
     r"""
     Calculate the thermalization on the differential flow for a
@@ -423,10 +430,6 @@ def diff_flow(
     B : `~astropy.units.Quantity`
         Magnetic field strength in units convertible to tesla T.
 
-    n_step : positive integer
-        The number of intervals used in solving a differential
-        equation via the Euler method.
-
     density_scale : real number, default: -1.8
         The value used as the scaling parameter for the primary ion
         density. The default value is taken from
@@ -441,6 +444,20 @@ def diff_flow(
         The value used as the scaling parameter for the primary ion
         temperature. The default value is taken from
         :cite:t:`hellinger:2011`.
+
+    magnetic_scale : `float`, default: -1.6
+        The value used as the scaling parameter for the magnetic
+        field. The default value is taken from
+        :cite:t:`hellinger:2011`
+
+    alfven : `bool`, default: False
+        The analysis for differential flow can be performed on data
+        and also be scaled by the Alfven speed. Setting this to true
+        will scale the output, by default it is turned off.
+
+    n_step : positive integer
+        The number of intervals used in solving a differential
+        equation via the Euler method.
 
     Returns
     -------
@@ -559,7 +576,7 @@ def diff_flow(
         )
 
     # Validate scaling arguments
-    for arg in (density_scale, velocity_scale, temperature_scale):
+    for arg in (density_scale, velocity_scale, temperature_scale, magnetic_scale):
         if not isinstance(arg, numbers.Real):
             raise TypeError(
                 "Scaling argument is of incorrect type, type of "
@@ -567,9 +584,32 @@ def diff_flow(
                 "should be of type float or int."
             )
 
+    # Validate booleans
+    for arg in (alfven, verbose):
+        if not isinstance(arg, bool):
+            raise TypeError(
+                f"Boolean input is of incorrect type {arg} is of "
+                f"{type(arg)}, bool type is required."
+            )
+
     # Define the differential equation
     def df_eq(
-
+            r_0,
+            r_n,
+            n_1_0,
+            n_2_0,
+            T_1_0,
+            T_2_0,
+            v_1_0,
+            v_2_0,
+            ions,
+            B_0,
+            density_scale,
+            velocity_scale,
+            temperature_scale,
+            magnetic_scale,
+            alfven,
+            n_step
     ):
         # Initialize the alpha-proton charge and mass ratios.
         z_1 = ions[0].charge_number
@@ -585,17 +625,17 @@ def diff_flow(
 
             r = r_0 + ((i + 1) * d_r)
 
-            n_1 = n_1_0 * (r / r_n) ** -1.8
-            v_1 = v_1_0 * (r / r_n) ** -0.2
-            T_1 = T_1_0 * (r / r_n) ** -0.77
+            n_1 = n_1_0 * (r / r_n) ** density_scale
+            v_1 = v_1_0 * (r / r_n) ** velocity_scale
+            T_1 = T_1_0 * (r / r_n) ** temperature_scale
 
-            B = B_0 * (r / r_n) ** -1.6
+            B = B_0 * (r / r_n) ** magnetic_scale
 
-            n_2 = n_2_0 * (r / r_n) ** -2.1
-            v_2 = v_2_0 * (r / r_n) ** -0.1
-            T_2 = T_2_0 * (r / r_n) ** -0.5
+            n_2 = n_2_0 * (r / r_n) ** density_scale
+            v_2 = v_2_0 * (r / r_n) ** velocity_scale
+            T_2 = T_2_0 * (r / r_n) ** temperature_scale
 
-            v_a = v_alfven(B, n_1, mu_1, n_2, mu_2)
+            v_a = Alfven_speed(B, n_1, mu_1, n_2, mu_2)
 
             dv = v_2 - v_1
 
@@ -616,6 +656,34 @@ def diff_flow(
             else:
                 return dv
 
+    variables = [r_0, r_n, n_1, n_2, v_1, T_1, T_2, B]
+
+    d_type = [bool(hasattr(var, "__len__")) for var in variables]
+
+    var = all(i for i in d_type)
+
+    if not var:
+        return df_eq(
+            r_0,
+            r_n,
+            n_1,
+            n_2,
+            T_1,
+            T_2,
+            v_1,
+            v_2,
+            ions,
+            B,
+            density_scale,
+            velocity_scale,
+            temperature_scale,
+            magnetic_scale,
+            alfven,
+            n_step,
+        )
+    else:
+        print("dsfsd")
 
 
-        return
+
+
