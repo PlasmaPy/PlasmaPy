@@ -1,1 +1,1 @@
-This update fixes the citation file and also fixes a typo in the stix notebook.
+Fixed a typo in the Stix notebook.
