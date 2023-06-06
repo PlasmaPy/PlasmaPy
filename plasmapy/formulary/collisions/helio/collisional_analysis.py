@@ -11,7 +11,24 @@ import numpy as np
 from plasmapy.particles import ParticleLike, ParticleList
 from plasmapy.utils.decorators import validate_quantities
 
-default_values = {"density": -1.8, "velocity": -0.2, "temperature": -0.74}
+default_values = {"density": -1.8, "velocity": -0.2, "temperature": -0.74, "magnetic": -1.6}
+
+# Define Coulomb log for mixed ion collisions, see docstring
+B = 1 / (u.cm * u.K) ** 1.5
+def lambda_ba(
+    theta,
+    T_1,
+    n_1,
+    n_2,
+    z_1,
+    z_2,
+    mu_1,
+    mu_2,
+):
+    a = np.sqrt(T_1**3 / n_1)
+    b = (z_1 * z_2 * (mu_1 + mu_2)) / (theta + mu_2 / mu_1)
+    c = np.sqrt((n_2 * z_2**2 / n_1 * z_1**2) + theta)
+    return 9 + np.log(B * a * b * c)
 
 
 @validate_quantities(
@@ -261,23 +278,6 @@ def temp_ratio(  # noqa: C901, PLR0912, PLR0915
 
         # Define constants
         A = 2.6 * 10**7 * (u.cm**3 * u.km * (u.K**1.5)) / (u.s * u.au)
-        B = 1 / (u.cm * u.K) ** 1.5
-
-        # Define Coulomb log for mixed ion collisions, see docstring
-        def lambda_ba(
-            theta,
-            T_1,
-            n_1,
-            n_2,
-            z_1,
-            z_2,
-            mu_1,
-            mu_2,
-        ):
-            a = np.sqrt(T_1**3 / n_1)
-            b = (z_1 * z_2 * (mu_1 + mu_2)) / (theta + mu_2 / mu_1)
-            c = np.sqrt((n_2 * z_2**2 / n_1 * z_1**2) + theta)
-            return 9 + np.log(B * a * b * c)
 
         for i in range(n_step):
             r = r_n + ((i + 1) * d_r)
@@ -568,5 +568,54 @@ def diff_flow(
             )
 
     # Define the differential equation
-    def df_eq():
+    def df_eq(
+
+    ):
+        # Initialize the alpha-proton charge and mass ratios.
+        z_1 = ions[0].charge_number
+        mu_1 = ions[0].mass_number
+
+        z_2 = ions[1].charge_number
+        mu_2 = ions[1].mass_number
+
+        # Initialise.
+        d_r = (r_0 - r_n) / (1. * n_step)
+
+        for i in range(n_step):
+
+            r = r_0 + ((i + 1) * d_r)
+
+            n_1 = n_1_0 * (r / r_n) ** -1.8
+            v_1 = v_1_0 * (r / r_n) ** -0.2
+            T_1 = T_1_0 * (r / r_n) ** -0.77
+
+            B = B_0 * (r / r_n) ** -1.6
+
+            n_2 = n_2_0 * (r / r_n) ** -2.1
+            v_2 = v_2_0 * (r / r_n) ** -0.1
+            T_2 = T_2_0 * (r / r_n) ** -0.5
+
+            v_a = v_alfven(B, n_1, mu_1, n_2, mu_2)
+
+            dv = v_2 - v_1
+
+            a = (3 * (mu_1 * mu_2) ** 2 * (m_u ** 4) * (e0) ** 2) / (
+                        4 * np.sqrt(2 * np.pi) * (q_e ** 4) * ((z_1 * z_2) ** 2))
+            b = (((k_B * T_1) / (mu_1 * m_u)) + ((k_B * T_2) / (mu_2 * m_u))) ** 1.5
+            c = (m_u ** 2) * (mu_1 + mu_2) * (n_1 * mu_1 + n_2 * mu_2)
+            d = lambda_ba(T_2 / T_1, T_1, n_1, n_2, z_1, z_2, mu_1, mu_2)
+
+            vs = (c * d) / (a * b)
+
+            d_dv = -(vs * (dv) / v_1) * d_r
+
+            dv = dv + d_dv
+
+            if alfven:
+                return dv / v_a
+            else:
+                return dv
+
+
+
         return
