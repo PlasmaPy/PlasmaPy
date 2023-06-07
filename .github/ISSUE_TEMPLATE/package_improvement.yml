@@ -8,7 +8,7 @@ body:
   attributes:
     label: Description of improvements
     description: >
-      What change(s) or improvements should be made to PlasmaPy?      
+      What change(s) or improvements should be made to PlasmaPy?
   validations:
     required: true
 
