@@ -1,2 +1,0 @@
-Loosened the requirement on ``ipykernel`` for compatibility with
-Google Colab.
