@@ -1,19 +1,24 @@
-# .readthedocs.yml
 # Read the Docs configuration file
-# See https://docs.readthedocs.io/en/stable/config-file/v2.html for details
+# See https://docs.readthedocs.io/en/stable/config-file/v2.html
 
-# Required
 version: 2
 
 formats:
 - htmlzip
 
-# Optionally set the version of Python and requirements required to build your docs
+build:
+  os: ubuntu-22.04
+  tools:
+    python: '3.11'
+  apt_packages:
+  - graphviz
+  jobs:
+    post_build:
+    - echo $'\n'For help deciphering documentation build error messages, see:$'\n\n'\ \ https://docs.plasmapy.org/en/latest/contributing/doc_guide.html#troubleshooting
+
 python:
-  version: '3.8'
   install:
-  - requirements: requirements/install.txt
-  - requirements: requirements/docs.txt
-  - method: setuptools
+  - method: pip
     path: .
-  system_packages: true
+    extra_requirements:
+    - docs

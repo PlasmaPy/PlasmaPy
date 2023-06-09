@@ -1,26 +1,95 @@
-Continuous integration: .github/**/*
+# This file defines which GitHub labels get applied when files
+# matching certain minimatch glob patterns are changed.
+#
+# Documentation: https://github.com/actions/labeler#pull-request-labeler
+#
+# If a label includes a space or a pattern begins with an asterisk or
+# special character, enclose it in quotes.
 
-Diagnostics: plasmapy/diagnostics/**/*
+'changes existing API':
+- changelog/*.breaking*.rst
 
-Formulary: plasmapy/formulary/**/*
+bug:
+- changelog/*.bugfix*.rst
 
-Mathematics: plasmapy/formulary/mathematics.py
+'CI':
+- .codecov.yaml
+- .github/workflows/*test*.yml
+- .pre-commit-config.yaml
+- .readthedocs.yml
+- CODEOWNERS
+- noxfile.py
+- tox.ini
 
-parameters.quantum: plasmapy/formulary/quantum.py
+'contributor guide':
+- changelog/README.rst
+- docs/contributing/**/*
 
-Particles: plasmapy/particles/**/*
+dependencies:
+- requirements.txt
 
-# Add Documentation label to any change in docs but notebooks
-Documentation:
-- any: [docs/**/*]
-  all: ['!docs/notebooks/**/*']
+docs:
+- .readthedocs.yml
+- changelog/*doc*.rst
+- docs/**/*
+- README.md
 
-Notebooks: docs/notebooks/**/*
+'GitHub Actions':
+- .github/**/*
 
-Plasma class: plasmapy/plasma/**/*
+linters:
+- .sourcery.yaml
+- .pre-commit-config.yaml
 
-simulations: plasmapy/simulations/**/*
+'No changelog entry needed':
+- any: ['.pre-commit-config.yaml', '.github/**/*.*', '.codecov.yml', '.editorconfig', '.gitignore', 'CODEOWNERS', 'requirements.txt']
+  all: ['!plasmapy/**/*.py', '!docs/**/*.*', '!pyproject.toml']
 
-Utilities: plasmapy/utils/**/*
+notebooks:
+- docs/notebooks/**/*
 
-Breaking: changelog/*.breaking*rst
+packaging:
+- .github/workflows/*publish*
+- .github/workflows/*release*
+- .zenodo*
+- CITATION.cff
+- LICENSE.md
+- MANIFEST.in
+- PATENT.md
+- pyproject.toml
+- setup.*
+
+plasmapy.analysis:
+- plasmapy/analysis/**/*
+
+plasmapy.diagnostics:
+- plasmapy/diagnostics/**/*
+
+plasmapy.dispersion:
+- plasmapy/dispersion/**/*
+
+plasmapy.formulary:
+- plasmapy/formulary/**/*
+
+plasmapy.formulary.quantum:
+- plasmapy/**/quantum*
+
+plasmapy.particles:
+- plasmapy/particles/**/*
+
+plasmapy.plasma:
+- plasmapy/plasma/**/*
+
+plasmapy.simulation:
+- plasmapy/simulation/**/*
+
+plasmapy.utils:
+- plasmapy/utils/**/*
+
+testing:
+- '**/test*.py'
+- '**/conftest.py'
+- .github/workflows/weekly.yml
+- .codecov.yaml
+- noxfile.py
+- tox.ini

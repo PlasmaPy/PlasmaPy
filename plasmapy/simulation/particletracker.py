@@ -1,5 +1,9 @@
 """
 Class representing a group of particles.
+
+.. attention::
+
+   |expect-api-changes|
 """
 __all__ = ["ParticleTracker"]
 
@@ -18,6 +22,10 @@ class ParticleTracker:
     """
     Object representing a species of particles: ions, electrons, or simply
     a group of particles with a particular initial velocity distribution.
+
+    .. attention::
+
+       |expect-api-changes|
 
     Parameters
     ----------
@@ -69,7 +77,7 @@ class ParticleTracker:
         Total mass of macroparticle.
 
     Examples
-    ----------
+    --------
     See `Particle Stepper Notebook`_.
 
     .. _`Particle Stepper Notebook`: ../notebooks/simulation/particle_stepper.ipynb
@@ -92,7 +100,6 @@ class ParticleTracker:
         nt=np.inf,
         integrator="explicit_boris",
     ):
-
         if np.isinf(dt) and np.isinf(nt):  # coverage: ignore
             raise ValueError("Both dt and nt are infinite.")
 
@@ -149,7 +156,7 @@ class ParticleTracker:
         Calculate the kinetic energy history for each particle.
 
         Returns
-        --------
+        -------
         `~astropy.units.Quantity`
             Array of kinetic energies, shape (nt, n).
         """
@@ -167,7 +174,7 @@ class ParticleTracker:
             to ``-dt/2``.
 
         Notes
-        ----------
+        -----
         The Boris algorithm :cite:p:`boris:1970` is the standard energy
         particle movement in plasma physics. See pages 58–63 of
         :cite:t:`birdsall:2004` for more details.

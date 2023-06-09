@@ -128,26 +128,26 @@ class Plasma3D(GenericPlasma):
     @property
     def electric_field(self):
         """
-        (`~astropy.units.Quantity`) (3, x, y, z) array of the magnetic field vector
-        at every point in the domain.
+        (`~astropy.units.Quantity`) (3, x, y, z) array of the magnetic
+        field vector at every point in the domain.
         """
         return self._electric_field
 
     @property
     def velocity(self):
         """
-        (`~astropy.units.Quantity`) (3, x, y, z) array of the fluid velocity vector at
-        every point in the domain.
+        (`~astropy.units.Quantity`) (3, x, y, z) array of the fluid
+        velocity vector at every point in the domain.
         """
         return self.momentum / self.density
 
     @property
     def magnetic_field_strength(self):
-        """
+        r"""
         Total field strength.
 
         .. math::
-            \\sqrt{ \\sum{ B^2 }}
+            \sqrt{ \sum{ B^2 }}
 
         """
         B = self.magnetic_field
@@ -155,12 +155,11 @@ class Plasma3D(GenericPlasma):
 
     @property
     def electric_field_strength(self):
-        """
+        r"""
         Total field strength.
 
         .. math::
-            \\sqrt{ \\sum{ E^2 }}
-
+            \sqrt{ \sum{ E^2 }}
         """
         E = self.electric_field
         return np.sqrt(np.sum(E * E, axis=0))
@@ -190,8 +189,8 @@ class Plasma3D(GenericPlasma):
             # loop over 3D-index (ix,iy,iz)
             for point_index in prod:
                 # get coordinate
-                p = self.grid[(slice(None),) + point_index]  # function as [:, *index]
+                p = self.grid[(slice(None), *point_index)]  # function as [:, *index]
                 # calculate magnetic field at this point and add back
                 self.magnetic_field[
-                    (slice(None),) + point_index
+                    (slice(None), *point_index)
                 ] += mstat.magnetic_field(p)

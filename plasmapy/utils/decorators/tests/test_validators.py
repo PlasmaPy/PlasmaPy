@@ -6,11 +6,15 @@ import inspect
 import pytest
 
 from astropy import units as u
-from typing import Any, Dict, List
+from functools import cached_property
 from unittest import mock
 
 from plasmapy.utils.decorators.checks import CheckUnits, CheckValues
-from plasmapy.utils.decorators.validators import validate_quantities, ValidateQuantities
+from plasmapy.utils.decorators.validators import (
+    validate_class_attributes,
+    validate_quantities,
+    ValidateQuantities,
+)
 
 
 # ----------------------------------------------------------------------------------------
@@ -186,15 +190,12 @@ class TestValidateQuantities:
             assert sorted(validations.keys()) == sorted(case["output"].keys())
 
             # if validation key-value not specified then default is assumed
-            for arg_name in case["output"].keys():
+            for arg_name in case["output"]:
                 arg_validations = validations[arg_name]
 
-                for key in default_validations.keys():
+                for key, val in default_validations.items():
                     if key in case["output"][arg_name]:
-                        val = case["output"][arg_name][key]
-                    else:
-                        val = default_validations[key]
-
+                        val = case["output"][arg_name][key]  # noqa: PLW2901
                     assert arg_validations[key] == val
 
         # method calls `_get_unit_checks` and `_get_value_checks`
@@ -213,7 +214,6 @@ class TestValidateQuantities:
             assert mock_cv_get.called
 
     def test_vq_method__validate_quantity(self):
-
         # method must exist
         assert hasattr(ValidateQuantities, "_validate_quantity")
 
@@ -302,7 +302,7 @@ class TestValidateQuantities:
         vq.f = self.foo
 
         # perform tests
-        for ii, case in enumerate(_cases):
+        for _ii, case in enumerate(_cases):  # noqa: B007
             arg, arg_name = case["input"]["args"]
             validations = case["input"]["validations"]
 
@@ -323,13 +323,17 @@ class TestValidateQuantities:
             "input": (5.0 * u.cm, u.cm, {**default_validations, "units": [u.cm]}),
             "output": 5.0 * u.cm,
         }
-        with mock.patch.object(
-            CheckUnits, "_check_unit_core", return_value=(5 * u.cm, u.cm, None, None)
-        ) as mock_cu_checks, mock.patch.object(
-            CheckValues, "_check_value", return_value=None
-        ) as mock_cv_checks:
-
-            args = case["input"][0:2]
+        with (
+            mock.patch.object(
+                CheckUnits,
+                "_check_unit_core",
+                return_value=(5 * u.cm, u.cm, None, None),
+            ) as mock_cu_checks,
+            mock.patch.object(
+                CheckValues, "_check_value", return_value=None
+            ) as mock_cv_checks,
+        ):
+            args = case["input"][:2]
             validations = case["input"][2]
 
             vq = ValidateQuantities(**validations)
@@ -447,7 +451,6 @@ class TestValidateQuantities:
         ) as mock_vq_get, mock.patch.object(
             ValidateQuantities, "_validate_quantity", return_value=5 * u.cm
         ) as mock_vq_validate:
-
             wfoo = ValidateQuantities(**validations)(self.foo)
             assert wfoo(5 * u.cm) == 5 * u.cm
             assert mock_vq_get.call_count == 1
@@ -473,7 +476,7 @@ class TestValidateQuantities:
             foo.bar(5 * u.cm)
 
     @mock.patch(
-        ValidateQuantities.__module__ + "." + ValidateQuantities.__qualname__,
+        f"{ValidateQuantities.__module__}.{ValidateQuantities.__qualname__}",
         side_effect=ValidateQuantities,
         autospec=True,
     )
@@ -555,3 +558,76 @@ class TestValidateQuantities:
                 # reset
                 mock_vq_class.reset_mock()
                 mock_foo.reset_mock()
+
+
+class TestValidateClassAttributes:
+    class SampleCase:  # noqa: D106
+        def __init__(self, x: int = None, y: int = None, z: int = None):
+            self.x = x
+            self.y = y
+            self.z = z
+
+        @cached_property
+        @validate_class_attributes(expected_attributes=["x"])
+        def require_x(self):
+            return 0
+
+        @cached_property
+        @validate_class_attributes(expected_attributes=["x", "y"])
+        def require_x_and_y(self):
+            return 0
+
+        @cached_property
+        @validate_class_attributes(both_or_either_attributes=[("x", "y")])
+        def require_x_or_y(self):
+            return 0
+
+        @cached_property
+        @validate_class_attributes(
+            expected_attributes=["x"], both_or_either_attributes=[("y", "z")]
+        )
+        def require_x_and_either_y_or_z(self):
+            return 0
+
+        @cached_property
+        @validate_class_attributes(mutually_exclusive_attributes=[("x", "y")])
+        def require_only_either_x_or_y(self):
+            return 0
+
+    @pytest.mark.parametrize(
+        "test_case_constructor_keyword_arguments",
+        [
+            {"x": 0},
+            {"y": 0},
+            {"z": 0},
+            {"x": 0, "y": 0},
+            {"x": 0, "z": 0},
+            {"y": 0, "z": 0},
+        ],
+    )
+    def test_method_errors(self, test_case_constructor_keyword_arguments):
+        """
+        Test errors raised by the validate_class_attributes decorator.
+        """
+
+        test_case = self.SampleCase(**test_case_constructor_keyword_arguments)
+
+        has_x = "x" in test_case_constructor_keyword_arguments
+        has_y = "y" in test_case_constructor_keyword_arguments
+        has_z = "z" in test_case_constructor_keyword_arguments
+
+        method_return_dictionary = {
+            "require_x": has_x,
+            "require_x_and_y": has_x and has_y,
+            "require_x_or_y": has_x or has_y,
+            "require_x_and_either_y_or_z": has_x and (has_y or has_z),
+            "require_only_either_x_or_y": (has_x and not has_y)
+            or (has_y and not has_x),
+        }
+
+        for method, expected_to_return in method_return_dictionary.items():
+            if expected_to_return:
+                getattr(test_case, method)
+            else:
+                with pytest.raises(ValueError):
+                    getattr(test_case, method)

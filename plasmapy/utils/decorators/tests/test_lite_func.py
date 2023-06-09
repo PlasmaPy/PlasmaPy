@@ -6,13 +6,12 @@ import pytest
 from numba import jit, njit
 
 from plasmapy.utils.decorators.lite_func import bind_lite_func
-from plasmapy.utils.exceptions import PlasmaPyWarning
 
 
 def foo(x):
     """Test function used for decoration."""
     if not isinstance(x, float):
-        raise ValueError
+        raise ValueError  # noqa: TRY004
     return x
 
 
@@ -30,7 +29,7 @@ def bar():
 
 
 @pytest.mark.parametrize(
-    "lite_func, attrs, _error",
+    ("lite_func", "attrs", "_error"),
     [
         # conditions on attrs kwarg
         (foo_lite, "not a dictionary", TypeError),
@@ -49,7 +48,7 @@ def test_raises(lite_func, attrs, _error):
 
 
 @pytest.mark.parametrize(
-    "lite_func, attrs",
+    ("lite_func", "attrs"),
     [
         (foo_lite, None),
         (jit(foo_lite), None),
@@ -80,7 +79,7 @@ def test_binding(lite_func, attrs):
 
 
 @pytest.mark.parametrize(
-    "lite_func, attrs",
+    ("lite_func", "attrs"),
     [
         (foo_lite, None),
         (foo_lite, {"bar": bar}),

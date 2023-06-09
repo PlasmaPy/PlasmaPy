@@ -15,16 +15,20 @@ __all__ = [
     "Mag_Reynolds",
     "quantum_theta",
     "Reynolds_number",
+    "Lundquist_number",
 ]
 __aliases__ = ["betaH_", "nD_", "Re_", "Rm_"]
 
 import astropy.units as u
+import numbers
 import numpy as np
 
-from astropy.constants.si import k_B, mu0
+from astropy.constants.si import mu0
+from typing import Optional
 
-from plasmapy.formulary import frequencies, lengths, misc, quantum
-from plasmapy.particles import Particle
+from plasmapy.formulary import frequencies, lengths, misc, speeds
+from plasmapy.formulary.quantum import quantum_theta
+from plasmapy.particles import Particle, particle_input, ParticleLike
 from plasmapy.utils.decorators import validate_quantities
 
 __all__ += __aliases__
@@ -89,6 +93,7 @@ def Debye_number(T_e: u.K, n_e: u.m**-3) -> u.dimensionless_unscaled:
     Examples
     --------
     >>> from astropy import units as u
+    >>> from astropy.constants.si import m_p, m_e
     >>> Debye_number(5e6*u.K, 5e9*u.cm**-3)
     <Quantity 2.17658...e+08>
 
@@ -106,12 +111,13 @@ nD_ = Debye_number
     n={"can_be_negative": False},
     T={"can_be_negative": False, "equivalencies": u.temperature_energy()},
 )
+@particle_input
 def Hall_parameter(
     n: u.m**-3,
     T: u.K,
     B: u.T,
-    ion: Particle,
-    particle: Particle,
+    ion: ParticleLike,
+    particle: ParticleLike,
     coulomb_log=None,
     V=None,
     coulomb_log_method="classical",
@@ -119,16 +125,17 @@ def Hall_parameter(
     r"""
     Calculate the ``particle`` Hall parameter for a plasma.
 
-    The Hall parameter for plasma species :math:`s` (``particle``) is given by:
+    The Hall parameter for plasma species :math:`s` (``particle``) is
+    given by:
 
     .. math::
 
         β_{s} = \frac{Ω_{c s}}{ν_{s s^{\prime}}}
 
-    where :math:`Ω_{c s}` is the gyrofrequncy for plasma species :math:`s`
-    (``particle``) and :math:`ν_{s s^{\prime}}` is the collision frequency
-    between plasma species :math:`s` (``particle``) and species
-    :math:`s^{\prime}` (``ion``).
+    where :math:`Ω_{c s}` is the gyrofrequncy for plasma species
+    :math:`s` (``particle``) and :math:`ν_{s s^{\prime}}` is the
+    collision frequency between plasma species :math:`s` (``particle``)
+    and species :math:`s^{\prime}` (``ion``).
 
     **Aliases:** `betaH_`
 
@@ -147,36 +154,38 @@ def Hall_parameter(
         The type of ion ``particle`` is colliding with.
 
     particle : `~plasmapy.particles.particle_class.Particle`
-        The particle species for which the Hall parameter is calculated for.
-        Representation of the particle species (e.g., ``'p'`` for protons,
-        ``'D+'`` for deuterium, or ``'He-4 +1'`` for singly ionized helium-4).
-        If no charge state information is provided, then the particles are
-        assumed to be singly charged.
+        The particle species for which the Hall parameter is calculated
+        for.  Representation of the particle species (e.g., ``'p'`` for
+        protons, ``'D+'`` for deuterium, or ``'He-4 +1'`` for singly
+        ionized helium-4).  If no charge state information is provided,
+        then the particles are assumed to be singly charged.
 
     coulomb_log : `float`, optional
-        Preset value for the Coulomb logarithm. Used mostly for testing purposes.
+        Preset value for the Coulomb logarithm. Used mostly for testing
+        purposes.
 
     V : `~astropy.units.quantity.Quantity`
-        The relative velocity between ``particle`` and ``ion``.  If not provided,
-        then the ``particle`` thermal velocity is assumed
+        The relative velocity between ``particle`` and ``ion``.  If not
+        provided, then the ``particle`` thermal velocity is assumed
         (`~plasmapy.formulary.speeds.thermal_speed`).
 
     coulomb_log_method : `str`, optional
         The method by which to compute the Coulomb logarithm.
-        The default method is the classical straight-line Landau-Spitzer
-        method (``"classical"`` or ``"ls"``). The other 6 supported methods
-        are ``"ls_min_interp"``, ``"ls_full_interp"``, ``"ls_clamp_mininterp"``,
-        ``"hls_min_interp"``, ``"hls_max_interp"``, and ``"hls_full_interp"``.
-        Please refer to the docstring of
-        `~plasmapy.formulary.collisions.Coulomb_logarithm` for more
-        information about these methods.
+        The default method is the classical straight-line
+        Landau-Spitzer method (``"classical"`` or ``"ls"``). The other
+        6 supported methods are ``"ls_min_interp"``,
+        ``"ls_full_interp"``, ``"ls_clamp_mininterp"``,
+        ``"hls_min_interp"``, ``"hls_max_interp"``, and
+        ``"hls_full_interp"``.  Please refer to the docstring of
+        `~plasmapy.formulary.collisions.coulomb.Coulomb_logarithm` for
+        more information about these methods.
 
     See Also
     --------
     ~plasmapy.formulary.frequencies.gyrofrequency
-    ~plasmapy.formulary.collisions.fundamental_electron_collision_freq
-    ~plasmapy.formulary.collisions.fundamental_ion_collision_freq
-    ~plasmapy.formulary.collisions.Coulomb_logarithm
+    ~plasmapy.formulary.collisions.frequencies.fundamental_electron_collision_freq
+    ~plasmapy.formulary.collisions.frequencies.fundamental_ion_collision_freq
+    ~plasmapy.formulary.collisions.coulomb.Coulomb_logarithm
 
     Returns
     -------
@@ -186,10 +195,10 @@ def Hall_parameter(
     Notes
     -----
     * For calculating the collision frequency
-      `~plasmapy.formulary.collisions.fundamental_electron_collision_freq` is used
-      when ``particle`` is an electron and
-      `~plasmapy.formulary.collisions.fundamental_ion_collision_freq` when
-      ``particle`` is an ion.
+      `~plasmapy.formulary.collisions.frequencies.fundamental_electron_collision_freq`
+      is used when ``particle`` is an electron and
+      `~plasmapy.formulary.collisions.frequencies.fundamental_ion_collision_freq`
+      when ``particle`` is an ion.
     * The collision frequencies are calculated assuming a slowly moving
       Maxwellian distribution.
 
@@ -223,66 +232,6 @@ def Hall_parameter(
 
 betaH_ = Hall_parameter
 """Alias to `~plasmapy.formulary.dimensionless.Hall_parameter`."""
-
-
-@validate_quantities(
-    T={"can_be_negative": False, "equivalencies": u.temperature_energy()},
-    n_e={"can_be_negative": False},
-)
-def quantum_theta(T: u.K, n_e: u.m**-3) -> u.dimensionless_unscaled:
-    r"""
-    Compare Fermi energy to thermal kinetic energy to check if quantum
-    effects are important.
-
-    The quantum theta (:math:`θ`) of a plasma is defined by
-
-    .. math::
-        θ = \frac{E_T}{E_F}
-
-    where :math:`E_T` is the thermal energy of the plasma
-    and :math:`E_F` is the Fermi energy of the plasma.
-
-    Parameters
-    ----------
-    T : `~astropy.units.Quantity`
-        The temperature of the plasma.
-
-    n_e : `~astropy.units.Quantity`
-          The electron number density of the plasma.
-
-    Examples
-    --------
-    >>> import astropy.units as u
-    >>> quantum_theta(1*u.eV, 1e20*u.m**-3)
-    <Quantity 127290.619...>
-    >>> quantum_theta(1*u.eV, 1e16*u.m**-3)
-    <Quantity 59083071...>
-    >>> quantum_theta(1*u.eV, 1e26*u.m**-3)
-    <Quantity 12.72906...>
-    >>> quantum_theta(1*u.K, 1e26*u.m**-3)
-    <Quantity 0.00109...>
-
-    Returns
-    -------
-    theta : `~astropy.units.Quantity`
-
-    Notes
-    -----
-    The thermal energy of the plasma (:math:`E_T`) is defined by
-
-    .. math::
-        E_T = k_B T
-
-    where :math:`k_B` is the Boltzmann constant
-    and :math:`T` is the temperature of the plasma.
-
-    See Also
-    --------
-    ~plasmapy.formulary.quantum.Fermi_energy
-    """
-    fermi_energy = quantum.Fermi_energy(n_e)
-    thermal_energy = k_B * T
-    return thermal_energy / fermi_energy
 
 
 @validate_quantities(
@@ -417,7 +366,7 @@ Re_ = Reynolds_number
 @validate_quantities(U={"can_be_negative": True})
 def Mag_Reynolds(U: u.m / u.s, L: u.m, sigma: u.S / u.m) -> u.dimensionless_unscaled:
     r"""
-    Compute the magnetic Reynolds number
+    Compute the magnetic Reynolds number.
 
     The magnetic Reynolds number is a dimensionless quantity that
     estimates the relative contributions of advection and induction
@@ -483,3 +432,141 @@ def Mag_Reynolds(U: u.m / u.s, L: u.m, sigma: u.S / u.m) -> u.dimensionless_unsc
 
 Rm_ = Mag_Reynolds
 """Alias to `~plasmapy.formulary.dimensionless.Mag_Reynolds`."""
+
+
+def Lundquist_number(
+    L: u.m,
+    B: u.T,
+    density: (u.m**-3, u.kg / u.m**3),
+    sigma: u.S / u.m,
+    ion: Optional[ParticleLike] = None,
+    z_mean: Optional[numbers.Real] = None,
+) -> u.dimensionless_unscaled:
+    r"""
+    Compute the Lundquist number.
+
+    The Lundquist number :math:`S` is a dimensionless quantity that compares the
+    Alfvén wave crossing timescale to the magnetic diffusion timescale in a
+    conducting medium. It is given by
+
+    .. math::
+
+        S = \frac{L V_A}{η}
+
+    where L is the length scale, :math:`V_A = B / \sqrt{\mu_0 \rho}` is the Alfvén
+    speed, :math:`B` is the magnetic field, :math:`\rho` is the mass density,
+    :math:`μ_0` is the permeability of free space, :math:`η = 1 / (μ_0 \sigma)` is
+    the magnetic diffusivity, and :math:`\sigma` is the electrical conductivity.
+
+    Parameters
+    ----------
+    L : `~astropy.units.Quantity`
+        The length scale of the plasma.
+
+    B : `~astropy.units.Quantity`
+        The magnetic field magnitude in units convertible to tesla.
+
+    density : `~astropy.units.Quantity`
+        Either the ion number density :math:`n_i` in units convertible to
+        m\ :sup:`-3` or the total mass density :math:`ρ` in units
+        convertible to kg m\ :sup:`-3`\ .
+
+    sigma : `~astropy.units.Quantity`
+        The conductivity of the plasma.
+
+    ion : `~plasmapy.particles.particle_class.Particle`, optional
+        Representation of the ion species (e.g., ``'p'`` for protons, ``'D+'`` for
+        deuterium, ``'He-4 +1'`` for singly ionized helium-4, etc.). If no charge
+        state information is provided, then the ions are assumed to be singly
+        ionized. If the density is an ion number density, then this parameter
+        is required in order to convert to mass density.
+
+    z_mean : `~numbers.Real`, optional
+        The average ionization state (arithmetic mean) of the ``ion`` composing
+        the plasma.  This is used in calculating the mass density
+        :math:`ρ = n_i (m_i + Z_{mean} m_e)`.  ``z_mean`` is ignored if
+        ``density`` is passed as a mass density and overrides any charge state
+        info provided by ``ion``.
+
+    Warns
+    -----
+    : `~plasmapy.utils.exceptions.RelativityWarning`
+        If the Alfvén velocity exceeds 5% of the speed of light.
+
+    : `~astropy.units.UnitsWarning`
+        If units are not provided, SI units are assumed.
+
+    Raises
+    ------
+    `~plasmapy.utils.exceptions.RelativityError`
+        If the Alfvén velocity is greater than or equal to the speed of light.
+
+    `TypeError`
+        If ``B`` and/or ``density`` are not of type `~astropy.units.Quantity`,
+        or convertible.
+
+    `TypeError`
+        If ``ion`` is not of type or convertible to
+        `~plasmapy.particles.particle_class.Particle`.
+
+    `TypeError`
+        If ``z_mean`` is not of type `int` or `float`.
+
+    `~astropy.units.UnitTypeError`
+        If the magnetic field ``B`` does not have units equivalent to
+        tesla.
+
+    `~astropy.units.UnitTypeError`
+        If the ``density`` does not have units equivalent to a number density
+        or mass density.
+
+    `ValueError`
+        If ``density`` is negative.
+
+    Notes
+    -----
+    For calculating the Alfvén speed `~plasmapy.formulary.speeds.Alfven_speed`
+    is used and for calculating the Lundquist number
+    `~plasmapy.formulary.dimensionless.Mag_Reynolds` is used.
+
+    The Lundquist number is an important quantity in the study of
+    magnetic reconnection. For example, reconnection rates in both the
+    Sweet-Parker and Petschek models of magnetic reconnection can be expressed
+    in terms of the Lundquist number. In the Sweet-Parker model, a current
+    sheet with half-width :math:`L`, conductivity :math:`\sigma`, magnetic
+    diffusivity :math:`\eta = 1 / (\mu_0 \sigma)`, and Alfvén speed :math:`V_A`
+    at the inflow has a Lundquist number of
+    :math:`S = LV_A / \eta`. The dimensionless reconnection rate :math:`R`,
+    i.e., the ratio of the inflow to outflow speeds, can then be expressed as
+    :math:`R \sim 1 / \sqrt{S}`. Similarly, the maximum reconnection rate
+    in the Petschek model can be expressed as approximately
+    :math:`\pi / (8 \ln S)` :cite:p:`priest:2000`.
+
+    Examples
+    --------
+    >>> import astropy.units as u
+    >>> from astropy.constants.si import m_p, m_e
+    >>> L = 10**8 * u.m
+    >>> B = 10**2 * u.G
+    >>> n = 10**19 * u.m**-3
+    >>> rho = n*(m_p + m_e)
+    >>> sigma = 10**-7 * u.S / u.m
+    >>> Lundquist_number(L, B, rho, sigma)
+    <Quantity 0.866538...>
+    >>> Lundquist_number(L, B, n, sigma, ion="p")
+    <Quantity 0.866538...>
+    >>> Lundquist_number(L, B, n, sigma, ion="He +2")
+    <Quantity 0.434819...>
+    >>> Lundquist_number(L, B, n, sigma, ion="He", z_mean=1.8)
+    <Quantity 0.434819...>
+    >>> sigma = 10**-2 * u.S / u.m
+    >>> Lundquist_number(L, B, n, sigma, ion="He", z_mean=1.8)
+    <Quantity 43481.96672...>
+
+    Returns
+    -------
+    S : `~astropy.units.Quantity`
+        The Lundquist number.
+    """
+    alfven = speeds.Alfven_speed(B, density, ion=ion, Z=z_mean)
+    return Mag_Reynolds(alfven, L, sigma)

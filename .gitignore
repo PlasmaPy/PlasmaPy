@@ -30,6 +30,9 @@ wheels/
 .installed.cfg
 *.egg
 
+# Downloaded files
+plasmapy/utils/data/downloads/
+
 # PyInstaller
 #  Usually these files are written by a python script from a template
 #  before PyInstaller builds the exe, so as to inject date/other infos into it.
@@ -135,8 +138,9 @@ untitled*
 
 # Documentation files
 auto_examples
+docs/about/_authors.rst
+docs/notebooks/*.md
 
 # Version file
-plasmapy/version.py
+plasmapy/_version.py
 tags
-docs/notebooks/*.md

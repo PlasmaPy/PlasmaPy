@@ -8,15 +8,15 @@ from astropy import units as u
 
 from plasmapy.diagnostics import langmuir
 
-np.random.seed(42)
+np.random.seed(42)  # noqa: NPY002
 N = 30  # array length of dummy probe characteristic
 
-current_arr = np.random.rand(N) * u.A
-bias_arr = np.random.rand(N) * u.V
+current_arr = np.random.rand(N) * u.A  # noqa: NPY002
+bias_arr = np.random.rand(N) * u.V  # noqa: NPY002
 
 
 class Test__fitting_functions:
-    r"Tests the different available fit functions"
+    r"""Tests the different available fit functions"""
 
     x = 20
     x0 = 10
@@ -71,16 +71,18 @@ class Test__fitting_functions:
 class Test__characteristic_errors:
     r"""Test the Characteristic class constructor in langmuir.py"""
 
-    bias_2darr = np.array((np.random.rand(N), np.random.rand(N))) * u.V
-    current_2darr = np.array((np.random.rand(N), np.random.rand(N))) * u.A
+    bias_2darr = np.array((np.random.rand(N), np.random.rand(N))) * u.V  # noqa: NPY002
+    current_2darr = (
+        np.array((np.random.rand(N), np.random.rand(N))) * u.A  # noqa: NPY002
+    )
 
-    bias_infarr = np.append(np.random.rand(N - 1), np.inf) * u.V
-    current_infarr = np.append(np.random.rand(N - 1), np.inf) * u.A
+    bias_infarr = np.append(np.random.rand(N - 1), np.inf) * u.V  # noqa: NPY002
+    current_infarr = np.append(np.random.rand(N - 1), np.inf) * u.A  # noqa: NPY002
 
-    bias_longarr = np.random.rand(N + 1) * u.V
-    current_longarr = np.random.rand(N + 1) * u.A
+    bias_longarr = np.random.rand(N + 1) * u.V  # noqa: NPY002
+    current_longarr = np.random.rand(N + 1) * u.A  # noqa: NPY002
 
-    current_arr2 = np.random.rand(N) * u.A
+    current_arr2 = np.random.rand(N) * u.A  # noqa: NPY002
 
     def test_invalid_dimensions(self):
         r"""Test 2D arrays work with Characteristic class"""
@@ -140,7 +142,7 @@ class Test__characteristic_errors:
         assert (a.current - b.current == ab_sub.current).all(), errStr
 
 
-@pytest.fixture
+@pytest.fixture()
 def characteristic():
     r"""Create a dummy characteristic with random values"""
 
@@ -148,7 +150,7 @@ def characteristic():
         return langmuir.Characteristic(bias_arr, current_arr)
 
 
-@pytest.fixture
+@pytest.fixture()
 def characteristic_simulated():
     r"""Create a simulated probe characteristic (provisional)"""
 
@@ -183,7 +185,8 @@ def shuffle_characteristic(characteristic):
     r"""Shuffle a given characteristic"""
 
     _shuffle = sorted(
-        np.arange(len(characteristic.bias)), key=lambda k: np.random.random()
+        np.arange(len(characteristic.bias)),
+        key=lambda k: np.random.random(),  # noqa: ARG005
     )
     U_shuffled = characteristic.bias[_shuffle]
     I_shuffled = characteristic.current[_shuffle]
@@ -206,13 +209,15 @@ class DryCharacteristic(langmuir.Characteristic):
 class Test__Characteristic_inherited_methods:
     r"""Test methods on DryCharacteristic class."""
 
-    bias_2darr = np.array((np.random.rand(N), np.random.rand(N))) * u.V
-    current_2darr = np.array((np.random.rand(N), np.random.rand(N))) * u.A
+    bias_2darr = np.array((np.random.rand(N), np.random.rand(N))) * u.V  # noqa: NPY002
+    current_2darr = (
+        np.array((np.random.rand(N), np.random.rand(N))) * u.A  # noqa: NPY002
+    )
 
-    bias_4length_arr = np.array(np.random.rand(N - 1)) * u.V
-    current_5length_arr = np.array(np.random.rand(N)) * u.A
+    bias_4length_arr = np.array(np.random.rand(N - 1)) * u.V  # noqa: NPY002
+    current_5length_arr = np.array(np.random.rand(N)) * u.A  # noqa: NPY002
 
-    bias_duplicates_arr = np.array((1, 2) * int(N / 2)) * u.V
+    bias_duplicates_arr = np.array((1, 2) * int(N / 2)) * u.V  # noqa: NPY002
 
     def test_invalid_bias_dimensions(self):
         r"""Test error on non-1D bias array"""
@@ -262,7 +267,7 @@ class Test__Characteristic_inherited_methods:
         assert np.allclose(log_limits.to(u.A).value, np.array((0.014003, 1.42577333)))
 
 
-@pytest.mark.slow
+@pytest.mark.slow()
 class Test__swept_probe_analysis:
     r"""Test the swept_probe_analysis function in langmuir.py"""
 

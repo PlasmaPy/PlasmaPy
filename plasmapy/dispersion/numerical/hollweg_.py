@@ -1,19 +1,20 @@
 """
-This module contains functionality for calculating various numerical
-solutions to Hollweg's two fluid dispersion relation
+Functionality for calculating various numerical solutions to Hollweg's
+two-fluid dispersion relation.
 """
+__all__ = ["hollweg"]
 
 import astropy.units as u
 import numpy as np
 import warnings
 
 from astropy.constants.si import c
-from typing import Union
+from numbers import Integral, Real
+from typing import Optional
 
 from plasmapy.formulary.frequencies import gyrofrequency, plasma_frequency
 from plasmapy.formulary.speeds import Alfven_speed, ion_sound_speed
-from plasmapy.particles import Particle
-from plasmapy.particles.exceptions import ChargeError
+from plasmapy.particles import particle_input, ParticleLike
 from plasmapy.utils.decorators import validate_quantities
 from plasmapy.utils.exceptions import PhysicsWarning
 
@@ -26,70 +27,83 @@ c_si_unitless = c.value
     T_e={"can_be_negative": False, "equivalencies": u.temperature_energy()},
     T_i={"can_be_negative": False, "equivalencies": u.temperature_energy()},
 )
-def hollweg(
-    *,
+@particle_input
+def hollweg(  # noqa: C901, PLR0912, PLR0915
     B: u.T,
-    ion: Union[str, Particle],
+    ion: ParticleLike,
     k: u.rad / u.m,
     n_i: u.m**-3,
+    theta: u.rad,
+    *,
     T_e: u.K,
     T_i: u.K,
-    theta: u.rad,
-    gamma_e: Union[float, int] = 1,
-    gamma_i: Union[float, int] = 3,
-    z_mean: Union[float, int] = None,
+    gamma_e: Real = 1,
+    gamma_i: Real = 3,
+    mass_numb: Optional[Integral] = None,
+    Z: Optional[Real] = None,
 ):
     r"""
-    Calculate the two fluid dispersion relation presented by
+    Calculate the two-fluid dispersion relation presented by
     :cite:t:`hollweg:1999`, and discussed by :cite:t:`bellan:2012`.
-    This is a numberical solver of equation 3 in :cite:t:`bellan:2012`.
+
+    This is a numerical solver of equation 3 in :cite:t:`bellan:2012`.
     See the **Notes** section below for additional details.
 
     Parameters
     ----------
     B : `~astropy.units.Quantity`
-        The magnetic field magnitude in units convertible to T.
-    ion : `str` or `~plasmapy.particles.particle_class.Particle`
-        Representation of the ion species (e.g., ``'p'`` for protons,
+        The magnetic field magnitude in units convertible to tesla.
+
+    ion : |particle-like|
+        Representation of the ion species (e.g., ``'p+'`` for protons,
         ``'D+'`` for deuterium, ``'He-4 +1'`` for singly ionized
         helium-4, etc.). If no charge state information is provided,
         then the ions are assumed to be singly ionized.
-    k : `~astropy.units.Quantity`, single valued or 1-D array
+
+    k : `~astropy.units.Quantity`
         Wavenumber in units convertible to rad/m.  Either single
         valued or 1-D array of length :math:`N`.
+
     n_i : `~astropy.units.Quantity`
         Ion number density in units convertible to m\ :sup:`-3`.
-    T_e : `~astropy.units.Quantity`
-        The electron temperature in units of K or eV.
-    T_i : `~astropy.units.Quantity`
-        The ion temperature in units of K or eV.
-    theta : `~astropy.units.Quantity`, single valued or 1-D array
+
+    theta : `~astropy.units.Quantity`
         The angle of propagation of the wave with respect to the
         magnetic field, :math:`\cos^{-1}(k_z / k)`, in units convertible
-        to radians.  Either single valued or 1-D array of size
+        to radians. Either single valued or 1-D array of size
         :math:`M`.
-    gamma_e : `float` or `int`, optional
-        The adiabatic index for electrons, which defaults to 1.  This
-        value assumes that the electrons are able to equalize their
-        temperature rapidly enough that the electrons are effectively
-        isothermal.
-    gamma_i : `float` or `int`, optional
-        The adiabatic index for ions, which defaults to 3. This value
-        assumes that ion motion has only one degree of freedom, namely
+
+    T_e : `~astropy.units.Quantity`, |keyword-only|
+        The electron temperature in units of K or eV.
+
+    T_i : `~astropy.units.Quantity`, |keyword-only|
+        The ion temperature in units of K or eV.
+
+    gamma_e : real number, |keyword-only|, default: 1
+        The adiabatic index for electrons. The default value
+        assumes that the electrons are able to equalize their
+        temperature rapidly enough that the electrons are
+        effectively isothermal.
+
+    gamma_i : real number, |keyword-only|, default: 3
+        The adiabatic index for ions. The default value assumes
+        that ion motion has only one degree of freedom, namely
         along magnetic field lines.
-    z_mean : `float` or int, optional
-        The average ionization state (arithmetic mean) of the ``ion``
-        composing the plasma.  Will override any charge state defined
-        by argument ``ion``.
+
+    mass_numb : integer, |keyword-only|, optional
+        The mass number corresponding to ``ion``.
+
+    Z : real number, |keyword-only|, optional
+        The charge number corresponding to ``ion``.
 
     Returns
     -------
     omega : Dict[str, `~astropy.units.Quantity`]
-        A dictionary of computed wave frequencies in units rad/s.  The
-        dictionary contains three keys: ``'fast_mode'`` for the fast
-        mode, ``'alfven_mode'`` for the Alfvén mode, and
-        ``'acoustic_mode'`` for the ion-acoustic mode.  The value for
-        each key will be a :math:`N x M` array.
+        A dictionary of computed wave frequencies in units rad/s.
+        The dictionary contains three keys: ``'fast_mode'`` for
+        the fast mode, ``'alfven_mode'`` for the Alfvén mode, and
+        ``'acoustic_mode'`` for the ion-acoustic mode.  The value
+        for each key will be an :math:`N x M` array.
 
     Raises
     ------
@@ -102,8 +116,8 @@ def hollweg(
         `~plasmapy.particles.particle_class.Particle`.
 
     TypeError
-        If ``gamma_e``, ``gamma_i``, or ``z_mean`` are not of type `int`
-        or `float`.
+        If ``gamma_e``, ``gamma_i``, or ``z_mean`` are not real
+        numbers.
 
     ~astropy.units.UnitTypeError
         If applicable arguments do not have units convertible to the
@@ -129,7 +143,7 @@ def hollweg(
     Warns
     -----
     : `~plasmapy.utils.exceptions.PhysicsWarning`
-        When :math:`\omega / \omega_{\rm ci} > 0.1`, violation of the
+        When :math:`ω / ω_{\rm ci} > 0.1`, violation of the
         low-frequency assumption.
 
     : `~plasmapy.utils.exceptions.PhysicsWarning`
@@ -141,49 +155,48 @@ def hollweg(
 
     Notes
     -----
-
     The dispersion relation presented in :cite:t:`hollweg:1999`
     (equation 3 in :cite:t:`bellan:2012`) is:
 
     .. math::
-        \left( \frac{\omega^2}{k_{\rm z}^2 v_{\rm A}^2} - 1 \right) &
+        \left( \frac{ω^2}{k_{\rm z}^2 v_{\rm A}^2} - 1 \right) &
         \left[
-            \omega^2 \left( \omega^2 - k^2 v_{\rm A}^2 \right)
-            - \beta k^2 v_{\rm A}^2 \left(
-                \omega^2 - k_{\rm z}^2 v_{\rm A}^2
+            ω^2 \left( ω^2 - k^2 v_{\rm A}^2 \right)
+            - β k^2 v_{\rm A}^2 \left(
+                ω^2 - k_{\rm z}^2 v_{\rm A}^2
             \right)
         \right] \\
-        &= \omega^2 \left(\omega^2 - k^2 v_{\rm A}^2 \right) k_{\rm x}^2
+        &= ω^2 \left(ω^2 - k^2 v_{\rm A}^2 \right) k_{\rm x}^2
         \left(
-            \frac{c_{\rm s}^2}{\omega_{\rm ci}^2}
-            - \frac{c^2}{\omega_{\rm pe}^2} \frac{\omega^2}{k_{\rm z}^2v_{\rm A}^2}
+            \frac{c_{\rm s}^2}{ω_{\rm ci}^2}
+            - \frac{c^2}{ω_{\rm pe}^2} \frac{ω^2}{k_{\rm z}^2v_{\rm A}^2}
         \right)
 
     where
 
     .. math::
-        \mathbf{B_o} &= B_{o} \mathbf{\hat{z}} \\
-        \cos \theta &= \frac{k_z}{k} \\
+        \mathbf{B}_0 &= B_0 \mathbf{\hat{z}} \\
+        \cos θ &= \frac{k_z}{k} \\
         \mathbf{k} &= k_{\rm x} \hat{x} + k_{\rm z} \hat{z}
 
-    :math:`\omega` is the wave frequency, :math:`k` is the wavenumber,
+    :math:`ω` is the wave frequency, :math:`k` is the wavenumber,
     :math:`v_{\rm A}` is the Alfvén velocity, :math:`c_{\rm s}` is the
-    sound speed, :math:`\omega_{\rm ci}` is the ion gyrofrequency, and
-    :math:`\omega_{\rm pe}` is the electron plasma frequency. In the
+    sound speed, :math:`ω_{\rm ci}` is the ion gyrofrequency, and
+    :math:`ω_{\rm pe}` is the electron plasma frequency. In the
     derivation of this relation Hollweg assumed low-frequency waves
-    :math:`\omega / \omega_{\rm ci} \ll 1`, no D.C. electric field
-    :math:`\mathbf{E_o}=0`, and quasi-neutrality.
+    :math:`ω / ω_{\rm ci} ≪ 1`, no D.C. electric field
+    :math:`\mathbf{E}_0=0`, and quasineutrality.
 
     :cite:t:`hollweg:1999` asserts this expression is valid for
     arbitrary :math:`c_{\rm s} / v_{\rm A}` (β) and
-    :math:`k_{\rm z} / k` (θ).  Contrarily, :cite:t:`bellan:2012`
+    :math:`k_{\rm z} / k` (:math:`θ`). Contrarily, :cite:t:`bellan:2012`
     states in §1.7 that due to the inconsistent retention of the
-    :math:`\omega / \omega_{\rm ci} \ll 1` terms the expression can
-    only be valid if both :math:`c_{\rm s} \ll v_{\rm A}` (low-β) and
+    :math:`ω / ω_{\rm ci} ≪ 1` terms the expression can
+    only be valid if both :math:`c_{\rm s} ≪ v_{\rm A}` (low-β) and
     the wave propgation is nearly perpendicular to the magnetic field.
 
-    This routine solves for ω for given :math:`k` values by numerically
-    solving for the roots of the above expression.
+    This routine solves for :math:`ω` for given :math:`k` values
+    by numerically solving for the roots of the above expression.
 
     Examples
     --------
@@ -196,7 +209,7 @@ def hollweg(
     ...    "B": 2.2e-8 * u.T,
     ...    "T_e": 1.6e6 * u.K,
     ...    "T_i": 4.0e5 * u.K,
-    ...    "ion": Particle("p+"),
+    ...    "ion": "p+",
     ... }
     >>> omegas = hollweg(**inputs)
     >>> omegas
@@ -205,57 +218,33 @@ def hollweg(
      'acoustic_mode': <Quantity [0.00043295+0.j, 0.07358991+0.j] rad / s>}
     """
 
-    # validate argument ion
-    if not isinstance(ion, Particle):
-        try:
-            ion = Particle(ion)
-        except TypeError:
-            raise TypeError(
-                f"For argument 'ion' expected type {Particle} but got {type(ion)}."
-            )
-    if not ion.is_ion and not ion.is_category("element"):
-        raise ValueError("The particle passed for 'ion' must be an ion or element.")
-
-    # validate z_mean
-    if z_mean is None:
-        try:
-            z_mean = abs(ion.charge_number)
-        except ChargeError:
-            z_mean = 1
-    elif isinstance(z_mean, (int, np.integer, float, np.floating)):
-        z_mean = abs(z_mean)
-    else:
-        raise TypeError(
-            f"Expected int or float for argument 'z_mean', but got {type(z_mean)}."
-        )
-
     # validate arguments
     for arg_name in ("B", "n_i", "T_e", "T_i"):
         val = locals()[arg_name].squeeze()
         if val.shape != ():
             raise ValueError(
-                f"Argument '{arg_name}' must be single valued and not an array of "
-                f"shape {val.shape}."
+                f"Argument '{arg_name}' must be single valued and not "
+                f"an array of shape {val.shape}."
             )
         locals()[arg_name] = val
 
     # validate arguments
     for arg_name in ("gamma_e", "gamma_i"):
-        if not isinstance(locals()[arg_name], (int, np.integer, float, np.floating)):
+        if not isinstance(locals()[arg_name], Real):
             raise TypeError(
-                f"Expected int or float for argument '{arg_name}', but got "
-                f"{type(locals()[arg_name])}."
+                f"Expected int or float for argument '{arg_name}', but "
+                f"got {type(locals()[arg_name])}."
             )
 
     # validate argument k
     k = k.squeeze()
-    if k.ndim not in [0, 1]:
+    if k.ndim not in (0, 1):
         raise ValueError(
-            f"Argument 'k' needs to be single valued or a 1D array astropy Quantity,"
-            f" got array of shape {k.shape}."
+            f"Argument 'k' needs to be single valued or a 1D array "
+            f"astropy Quantity, got array of shape {k.shape}."
         )
     if np.any(k <= 0):
-        raise ValueError("Argument 'k' can not be a or have negative values.")
+        raise ValueError("Argument 'k' cannot be negative or have negative values.")
 
     # validate argument theta
     theta = theta.squeeze()
@@ -272,7 +261,7 @@ def hollweg(
     # Calc needed plasma parameters
     with warnings.catch_warnings():
         warnings.simplefilter("ignore", category=PhysicsWarning)
-        n_e = z_mean * n_i
+        n_e = ion.charge_number * n_i
         c_s = ion_sound_speed(
             T_e=T_e,
             T_i=T_i,
@@ -280,10 +269,9 @@ def hollweg(
             n_e=n_e,
             gamma_e=gamma_e,
             gamma_i=gamma_i,
-            z_mean=z_mean,
         ).value
-        v_A = Alfven_speed(B, n_i, ion=ion, z_mean=z_mean).value
-        omega_ci = gyrofrequency(B=B, particle=ion, signed=False, Z=z_mean).value
+        v_A = Alfven_speed(B, n_i, ion=ion).value
+        omega_ci = gyrofrequency(B=B, particle=ion, signed=False).value
         omega_pe = plasma_frequency(n=n_e, particle="e-").value
 
     cs_vA = c_s / v_A
@@ -296,7 +284,7 @@ def hollweg(
     # Define helpful parameters
     beta = (c_s / v_A) ** 2
     alpha_A = (kv * v_A) ** 2
-    alpha_s = (kv * c_s) ** 2  # == alpha_A * beta
+    alpha_s = (kv * c_s) ** 2
     sigma = (kz * v_A) ** 2
     D = (c_s / omega_ci) ** 2
     F = (c_si_unitless / omega_pe) ** 2
@@ -320,11 +308,11 @@ def hollweg(
     roots = np.sqrt(roots)
     roots = np.sort(roots, axis=0)
 
-    # Warn about NOT low-beta
+    # Warn about NOT low-β
     if c_s / v_A > 0.1:
         warnings.warn(
             f"This solver is valid in the low-beta regime, "
-            f"c_s/v_A << 1 according to Bellan, 2012, Sec. 1.7 "
+            f"c_s/v_A ≪ 1 according to Bellan, 2012, Sec. 1.7 "
             f"(see documentation for DOI). A c_s/v_A value of {cs_vA:.2f} "
             f"was calculated which may affect the validity of the solution.",
             PhysicsWarning,
@@ -342,13 +330,13 @@ def hollweg(
             PhysicsWarning,
         )
 
-    # dispersion relation is only valid in the regime w << w_ci
+    # dispersion relation is only valid in the regime ω ≪ ω_ci
     w_max = np.max(roots)
     w_wci_max = w_max / omega_ci
     if w_wci_max > 0.1:
         warnings.warn(
-            f"This solver is valid in the regime w/w_ci << 1.  A w "
-            f"value of {w_max:.2f} and a w/w_ci value of "
+            f"This solver is valid in the regime ω/ω_ci ≪ 1. A ω "
+            f"value of {w_max:.2f} and a ω/ω_ci value of "
             f"{w_wci_max:.2f} were calculated which may affect the "
             f"validity of the solution.",
             PhysicsWarning,

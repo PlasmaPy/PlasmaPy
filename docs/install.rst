@@ -6,9 +6,8 @@ Installing PlasmaPy
 
 .. note::
 
-   If you would like to contribute to PlasmaPy, please refer to the
-   instructions on :ref:`installing PlasmaPy for development
-   <install-plasmapy-dev>`.
+   If you would like to contribute to PlasmaPy, please check out the
+   |contributor guide|.
 
 .. contents:: Contents
    :local:
@@ -16,16 +15,16 @@ Installing PlasmaPy
 Installing Python
 =================
 
-PlasmaPy requires Python_ |minpython| or newer. If you do not have Python_
-installed already, here are the instructions to `download Python`_ and
-install it.
+PlasmaPy requires a version of Python_ between |minpython| and
+|maxpython|. If you do not have Python_ installed already, here are the
+instructions to `download Python`_ and install it.
 
 .. tip::
 
    New versions of Python_ are released annually in October, and it can
    take a few months for the scientific Python ecosystem to catch up. If
    you have trouble installing `plasmapy` on the most recent Python_
-   version between October and ∼December, then try installing it on the
+   version between October and March, then try installing it on the
    second most recent version.
 
 .. _install-pip:
@@ -42,16 +41,16 @@ terminal and run:
    python -m pip install plasmapy
 
 On some systems, it might be necessary to specify the Python_ version
-number by using ``python3``, ``python3.8``, ``python3.9``, or
-``python3.10`` instead of ``python``.
+number by using ``python3``, ``python3.8``, ``python3.9``,
+``python3.10``, or ``python3.11`` instead of ``python``.
 
 To install PlasmaPy on Windows, run:
 
 .. code-block:: bash
 
-   py -3.10 -m pip install plasmapy
+   py -3.11 -m pip install plasmapy
 
-The version of Python_ may be changed from ``3.10`` to another supported
+The version of Python_ may be changed from ``3.11`` to another supported
 Python |minpython|\ + release that has been installed on your computer.
 
 For more detailed information, please refer to this tutorial on
@@ -173,9 +172,10 @@ development version by running:
 The repository will be cloned inside a new subdirectory called
 :file:`PlasmaPy`.
 
-If you do not have git_ installed on your computer, then you may download
-the most recent source code from `PlasmaPy's GitHub repository`_ by
-going to :guilabel:`Code` and selecting :guilabel:`Download ZIP`.
+If you do not have git_ installed on your computer, then you may
+download the most recent source code from `PlasmaPy's GitHub
+repository`_ by going to :guilabel:`Code` and selecting
+:guilabel:`Download ZIP`.
 `Unzipping <https://www.wikihow.com/Unzip-a-File>`__ the file will
 create a subdirectory called :file:`PlasmaPy` that contains the source
 code.
@@ -194,11 +194,11 @@ If you expect to occasionally edit the source code, instead run:
 
 .. code:: bash
 
-   pip install -e .[developer]
+   pip install -e ".[tests,docs]"
 
-The ``-e`` flag makes the installation editable and ``[developer]``
-indicates that all of the dependencies needed for developing PlasmaPy
-will be installed.
+The ``-e`` flag makes the installation editable and ``[tests,docs]``
+specifies that all of the additional dependencies used while testing the
+package should also be installed.
 
 .. note::
 
@@ -208,21 +208,21 @@ will be installed.
 
 .. tip::
 
-   The :ref:`contributing-to-plasmapy` guide has instructions on how to
-   fork a repository and create branches so that you may make
-   contributions via pull requests.
+   The |contributor guide| has instructions on how to fork a repository
+   and create branches so that you may make contributions via pull
+   requests.
 
-.. _Anaconda Navigator: https://www.anaconda.com/products/distribution
+.. _Anaconda Navigator: https://docs.anaconda.com/navigator/install
 .. _clone a repository using SSH: https://docs.github.com/en/get-started/getting-started-with-git/about-remote-repositories#cloning-with-ssh-urls
 .. _conda-forge: https://conda-forge.org
-.. _download Python: https://www.python.org/downloads/
+.. _download Python: https://www.python.org/downloads
 .. _from PyPI: https://pypi.org/project/plasmapy
 .. _from Zenodo: https://doi.org/10.5281/zenodo.1436011
 .. _improving Conda performance: https://docs.conda.io/projects/conda/en/latest/user-guide/concepts/conda-performance.html#improving-conda-performance
-.. _installing Anaconda Navigator: https://docs.anaconda.com/anaconda/navigator/install/
+.. _installing Anaconda Navigator: https://docs.anaconda.com/navigator/install
 .. _installing Conda: https://docs.conda.io/projects/conda/en/latest/user-guide/install/index.html
 .. _installing packages: https://packaging.python.org/en/latest/tutorials/installing-packages/#installing-from-vcs
-.. _managing packages: https://docs.anaconda.com/anaconda/navigator/tutorials/manage-packages/#installing-a-package
+.. _managing packages: https://docs.anaconda.com/navigator/tutorials/manage-packages/#installing-a-package
 .. _miniconda: https://docs.conda.io/en/latest/miniconda.html
 .. _releases: https://github.com/PlasmaPy/PlasmaPy/releases
 .. _ZIP: https://en.wikipedia.org/wiki/ZIP_(file_format)

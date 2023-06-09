@@ -14,7 +14,7 @@ import numpy as np
 from scipy.special import exp1
 
 from plasmapy.formulary.frequencies import plasma_frequency
-from plasmapy.particles import Particle, particle_input
+from plasmapy.particles import particle_input, ParticleLike
 from plasmapy.utils.decorators import validate_quantities
 from plasmapy.utils.exceptions import PhysicsError
 
@@ -31,12 +31,12 @@ def thermal_bremsstrahlung(
     n_e: u.m**-3,
     T_e: u.K,
     n_i: u.m**-3 = None,
-    ion_species: Particle = "H+",
+    ion: ParticleLike = "p+",
     kmax: u.m = None,
 ) -> np.ndarray:
     r"""
     Calculate the bremsstrahlung emission spectrum for a Maxwellian plasma
-    in the Rayleigh-Jeans limit :math:`ℏ ω ≪ k_B T_e`
+    in the Rayleigh-Jeans limit :math:`ℏ ω ≪ k_B T_e`.
 
     .. math::
        \frac{dP}{dω} = \frac{8 \sqrt{2}}{3\sqrt{π}}
@@ -76,9 +76,9 @@ def thermal_bremsstrahlung(
         Ion number density in the plasma (convertible to m\ :sup:`-3`\ ). Defaults
         to the quasi-neutral condition :math:`n_i = n_e / Z`\ .
 
-    ion_species : `str` or `~plasmapy.particles.particle_class.Particle`, optional
-        An instance of `~plasmapy.particles.particle_class.Particle`, or a string
-        convertible to `~plasmapy.particles.particle_class.Particle`.
+    ion : |particle-like|, default: ``"p+"``
+        An instance of `~plasmapy.particles.particle_class.Particle`, or
+        a string convertible to |Particle|.
 
     kmax :  `~astropy.units.Quantity`
         Cutoff wavenumber (convertible to radians per meter). Defaults
@@ -96,7 +96,7 @@ def thermal_bremsstrahlung(
 
     # Default n_i is n_e/Z:
     if n_i is None:
-        n_i = n_e / ion_species.charge_number
+        n_i = n_e / ion.charge_number
 
     # Default value of kmax is the electrom thermal de Broglie wavelength
     if kmax is None:
@@ -121,7 +121,6 @@ def thermal_bremsstrahlung(
         np.max(ω) * const.hbar.si / (2 * np.pi * u.rad * const.k_B.si * T_e)
     ).to(u.dimensionless_unscaled)
     if rj_const.value > 0.1:
-
         raise PhysicsError(
             "Rayleigh-Jeans limit not satisfied: "
             f"ℏω/kT_e = {rj_const.value:.2e} > 0.1. "
@@ -137,7 +136,7 @@ def thermal_bremsstrahlung(
         / (const.m_e.si * const.c.si**2) ** 1.5
     )
 
-    Zi = ion_species.charge_number
+    Zi = ion.charge_number
     c2 = (
         np.sqrt(1 - ω_pe**2 / ω**2)
         * Zi**2

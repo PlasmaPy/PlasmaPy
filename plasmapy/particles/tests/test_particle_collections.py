@@ -3,11 +3,9 @@ import astropy.units as u
 import numpy as np
 import pytest
 
-from typing import Dict
-
 from plasmapy.particles import alpha, electron, neutron, proton
 from plasmapy.particles.atomic import atomic_number
-from plasmapy.particles.exceptions import ChargeError, InvalidParticleError
+from plasmapy.particles.exceptions import InvalidParticleError
 from plasmapy.particles.nuclear import nuclear_reaction_energy
 from plasmapy.particles.particle_class import (
     CustomParticle,
@@ -15,7 +13,7 @@ from plasmapy.particles.particle_class import (
     Particle,
     ParticleLike,
 )
-from plasmapy.particles.particle_collections import ionic_levels, ParticleList
+from plasmapy.particles.particle_collections import ParticleList
 
 custom_particle = CustomParticle(mass=1e-25 * u.kg, charge=1e-18 * u.C)
 dimensionless_particle = DimensionlessParticle(mass=1.25, charge=1.58)
@@ -30,7 +28,7 @@ attributes = [
 ]
 
 
-@pytest.fixture
+@pytest.fixture()
 def various_particles():
     """A sample `ParticleList` with several different valid particles."""
     return ParticleList(
@@ -44,6 +42,8 @@ def various_particles():
             CustomParticle(),
             CustomParticle(mass=7 * u.kg),
             CustomParticle(charge=11 * u.C),
+            5 * u.kg,
+            5 * u.C,
         ]
     )
 
@@ -82,7 +82,7 @@ def test_particle_list_membership(args):
 
 
 @pytest.mark.parametrize("attribute", attributes)
-def test_particle_list_attributes(attribute, various_particles):
+def test_particle_list_attributes(attribute):
     """
     Test that the attributes of ParticleList correspond to the
     attributes of the listed particles.
@@ -163,7 +163,7 @@ def test_particle_list_insert(various_particles):
     assert _everything_is_particle_or_custom_particle(various_particles)
 
 
-invalid_particles = (0, "not a particle", DimensionlessParticle())
+invalid_particles = (0, "not a particle", DimensionlessParticle(), 5 * u.m)
 
 
 def test_particle_list_instantiate_with_invalid_particles():
@@ -328,7 +328,7 @@ def test_particle_multiplication(method, particle):
 
 
 @pytest.mark.parametrize(
-    "particles, args, kwargs, expected",
+    ("particles", "args", "kwargs", "expected"),
     [
         [
             ["electron", "proton", "neutron"],
@@ -396,7 +396,7 @@ def test_weighted_mean_particle():
 boolean_pairs = [(False, False), (True, False), (False, True), (True, True)]
 
 
-@pytest.mark.parametrize("use_rms_charge, use_rms_mass", boolean_pairs)
+@pytest.mark.parametrize(("use_rms_charge", "use_rms_mass"), boolean_pairs)
 def test_root_mean_square_particle(use_rms_charge, use_rms_mass):
     """
     Test that ``ParticleList.average_particle`` returns the mean or root
@@ -426,14 +426,13 @@ particle_multiplicities = [
     {CustomParticle(mass=1 * u.kg, charge=1 * u.C): 1},
     {"p+": 5, CustomParticle(mass=1 * u.kg, charge=1 * u.C): 1},
     {CustomParticle(): 1},
-    {"p+": 2, "p+": 1},
 ]
 
 
 @pytest.mark.parametrize("particle_multiplicities", particle_multiplicities)
-@pytest.mark.parametrize("use_rms_charge, use_rms_mass", boolean_pairs)
+@pytest.mark.parametrize(("use_rms_charge", "use_rms_mass"), boolean_pairs)
 def test_weighted_averages_of_particles(
-    particle_multiplicities: Dict[ParticleLike, int],
+    particle_multiplicities: dict[ParticleLike, int],
     use_rms_charge,
     use_rms_mass,
 ):
@@ -495,34 +494,29 @@ def test_particle_list_with_no_arguments():
     assert len(empty_particle_list) == 0
 
 
-def test_ion_list_example():
-    ions = ionic_levels("He-4")
-    np.testing.assert_equal(ions.charge_number, [0, 1, 2])
-    assert ions.symbols == ["He-4 0+", "He-4 1+", "He-4 2+"]
-
-
 @pytest.mark.parametrize(
-    "particle, min_charge, max_charge, expected_charge_numbers",
-    [
-        ("H-1", 0, 1, [0, 1]),
-        ("p+", 1, 1, [1]),
-        (Particle("p+"), 0, 0, [0]),
-        ("C", 3, 5, [3, 4, 5]),
-    ],
+    ("quantities", "expected"),
+    (
+        ((1, 2) * u.kg, (CustomParticle(mass=1 * u.kg), CustomParticle(mass=2 * u.kg))),
+        (
+            (3, 4) * u.C,
+            (CustomParticle(charge=3 * u.C), CustomParticle(charge=4 * u.C)),
+        ),
+        (
+            (5 * u.kg, 6 * u.C),
+            (CustomParticle(mass=5 * u.kg), CustomParticle(charge=6 * u.C)),
+        ),
+        (
+            (7 * u.C, 8 * u.kg),
+            (CustomParticle(charge=7 * u.C), CustomParticle(mass=8 * u.kg)),
+        ),
+    ),
 )
-def test_ion_list(particle, min_charge, max_charge, expected_charge_numbers):
-    """Test that inputs to ionic_levels are interpreted correctly."""
-    particle = Particle(particle)
-    ions = ionic_levels(particle, min_charge, max_charge)
-    np.testing.assert_equal(ions.charge_number, expected_charge_numbers)
-    assert ions[0].element == particle.element
-    if particle.is_category("isotope"):
-        assert ions[0].isotope == particle.isotope
-
-
-@pytest.mark.parametrize(
-    "element, min_charge, max_charge", [("Li", 0, 4), ("Li", 3, 2)]
-)
-def test_invalid_inputs_to_ion_list(element, min_charge, max_charge):
-    with pytest.raises(ChargeError):
-        ionic_levels(element, min_charge, max_charge)
+def test_particle_list_from_quantity_array(quantities, expected):
+    """
+    Test that ParticleList can accept a Quantity array of an appropriate
+    physical type.
+    """
+    particle_list = ParticleList(quantities)
+    assert particle_list[0] == expected[0]
+    assert particle_list[1] == expected[1]
