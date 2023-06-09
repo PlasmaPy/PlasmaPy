@@ -58,7 +58,7 @@ class HarrisSheet:
           The axis of reference.
 
         """
-        return self.B0 * math.tanh(y / self.delta)
+        return self.B0 * np.tanh(y / self.delta)
 
     def current_density(self, y):
         r"""
