@@ -9,14 +9,14 @@ import plasmapy.particles.exceptions
 
 from plasmapy.formulary.collisions.coulomb import Coulomb_logarithm
 from plasmapy.utils import exceptions
+from plasmapy.utils._pytest_helpers import assert_can_handle_nparray
 from plasmapy.utils.exceptions import CouplingWarning
-from plasmapy.utils.pytest_helpers import assert_can_handle_nparray
 
 
 class Test_Coulomb_logarithm:
     @classmethod
     def setup_class(cls):
-        """initializing parameters for tests"""
+        """Initializing parameters for tests"""
         cls.temperature1 = 10 * 11604 * u.K
         cls.T_arr = np.array([1, 2]) * u.eV
         cls.density1 = 1e20 * u.cm**-3

@@ -74,7 +74,7 @@ def test_trilinear_coeff_cal():
         )
     ]
 
-    @pytest.mark.parametrize("kwargs, expected", test_trilinear_coeff_cal_values)
+    @pytest.mark.parametrize(("kwargs", "expected"), test_trilinear_coeff_cal_values)
     def test_trilinear_coeff_cal_vals(kwargs, expected):
         r"""Test expected values."""
         assert _trilinear_coeff_cal(**kwargs) == expected
@@ -138,6 +138,7 @@ def test_trilinear_approx():
 
 class Test_reduction:
     r"""Test `~plasmapy.analysis.nullpoint.reduction`."""
+
     vspace_args = {
         "x_range": [0, 10],
         "y_range": [0, 10],
@@ -157,7 +158,7 @@ class Test_reduction:
         ({"vspace": vspace, "cell": [24, 25, 26]}, True),
     ]
 
-    @pytest.mark.parametrize("kwargs, expected", test_reduction_values)
+    @pytest.mark.parametrize(("kwargs", "expected"), test_reduction_values)
     def test_reduction_vals(self, kwargs, expected):
         r"""Test expected values."""
         assert _reduction(**kwargs) == expected
@@ -165,6 +166,7 @@ class Test_reduction:
 
 class Test_trilinear_analysis:
     r"""Test `~plasmapy.analysis.nullpoint.trilinear_analysis`."""
+
     vspace_args = {
         "x_range": [0, 10],
         "y_range": [0, 10],
@@ -181,7 +183,7 @@ class Test_trilinear_analysis:
         ({"vspace": vspace, "cell": [24, 25, 26]}, False),
     ]
 
-    @pytest.mark.parametrize("kwargs, expected", test_trilinear_analysis_values)
+    @pytest.mark.parametrize(("kwargs", "expected"), test_trilinear_analysis_values)
     def test_trilinear_analysis_vals(self, kwargs, expected):
         r"""Test expected values."""
         assert _trilinear_analysis(**kwargs) == expected
@@ -189,6 +191,7 @@ class Test_trilinear_analysis:
 
 class Test_bilinear_root:
     r"""Test `~plasmapy.analysis.nullpoint.bilinear_root`."""
+
     test_bilinear_root_values = [
         (
             {"a1": 1, "b1": 3, "c1": 5, "d1": 1, "a2": 2, "b2": 4, "c2": 6, "d2": 8},
@@ -196,7 +199,7 @@ class Test_bilinear_root:
         )
     ]
 
-    @pytest.mark.parametrize("kwargs, expected", test_bilinear_root_values)
+    @pytest.mark.parametrize(("kwargs", "expected"), test_bilinear_root_values)
     def test_bilinear_root_vals(self, kwargs, expected):
         r"""Test expected values."""
         x1, y1 = _bilinear_root(**kwargs)[0]
@@ -209,6 +212,7 @@ class Test_bilinear_root:
 
 class Test_locate_null_point:
     r"""Test `~plasmapy.analysis.nullpoint.locate_null_point`."""
+
     vspace_args = {
         "x_range": [5, 6],
         "y_range": [5, 6],
@@ -225,7 +229,7 @@ class Test_locate_null_point:
         )
     ]
 
-    @pytest.mark.parametrize("kwargs, expected", test_locate_null_point_values)
+    @pytest.mark.parametrize(("kwargs", "expected"), test_locate_null_point_values)
     def test_locate_null_point_vals(self, kwargs, expected):
         r"""Test expected values."""
         assert np.isclose(
@@ -233,7 +237,7 @@ class Test_locate_null_point:
         ).all()
 
 
-@pytest.mark.slow
+@pytest.mark.slow()
 def test_null_point_find1():
     r"""Test `~plasmapy.analysis.nullpoint.null_point_find`."""
     # Uniform grid
@@ -250,7 +254,7 @@ def test_null_point_find1():
     assert np.isclose(loc, [5.5, 5.5, 5.5], atol=_EQUALITY_ATOL).all()
 
 
-@pytest.mark.slow
+@pytest.mark.slow()
 def test_null_point_find2():
     r"""Test `~plasmapy.analysis.nullpoint.null_point_find`."""
     # Non-uniform grid
@@ -284,7 +288,7 @@ def test_null_point_find3():
     assert np.isclose(loc3, [5.5, 5.5, 5.5], atol=_EQUALITY_ATOL).all()
 
 
-@pytest.mark.slow
+@pytest.mark.slow()
 def test_null_point_find4():
     r"""Test `~plasmapy.analysis.nullpoint.null_point_find`."""
     # Two null points
@@ -303,7 +307,7 @@ def test_null_point_find4():
     assert np.isclose(second_loc4, [5.5, 5.5, 5.5], atol=_EQUALITY_ATOL).all()
 
 
-@pytest.mark.slow
+@pytest.mark.slow()
 def test_null_point_find5():
     r"""Test `~plasmapy.analysis.nullpoint.null_point_find`."""
     # Many null points because a y vector dimension is zero
@@ -333,7 +337,7 @@ def test_null_point_find5():
             )
 
 
-@pytest.mark.slow
+@pytest.mark.slow()
 def test_null_point_find6():
     r"""Test `~plasmapy.analysis.nullpoint.null_point_find`."""
     # Many null points; All vector dimensions zero
@@ -348,7 +352,7 @@ def test_null_point_find6():
     assert len(npoints6) == 0
 
 
-@pytest.mark.slow
+@pytest.mark.slow()
 def test_null_point_find7():
     r"""Test `~plasmapy.analysis.nullpoint.null_point_find`."""
     # No null points, discriminant less than zero
@@ -363,7 +367,7 @@ def test_null_point_find7():
     assert len(npoints7) == 0
 
 
-@pytest.mark.slow
+@pytest.mark.slow()
 def test_null_point_find8():
     r"""Test `~plasmapy.analysis.nullpoint.null_point_find`."""
     # Non-linear field
@@ -382,7 +386,7 @@ def test_null_point_find8():
     assert np.allclose(loc2, [5.5, 5.5, 5.5], atol=_TESTING_ATOL)
 
 
-@pytest.mark.slow
+@pytest.mark.slow()
 class Test_classify_null_point:
     r"""Test `~plasmapy.analysis.nullpoint._classify_null_point`."""
 
@@ -411,7 +415,7 @@ class Test_classify_null_point:
             },
             "Proper radial null",
         ),
-        (
+        pytest.param(
             {
                 "x_range": [5, 6],
                 "y_range": [-6, 6],
@@ -447,7 +451,7 @@ class Test_classify_null_point:
         ),
     ]
 
-    @pytest.mark.parametrize("kwargs, expected", test_classify_null_point_values)
+    @pytest.mark.parametrize(("kwargs", "expected"), test_classify_null_point_values)
     def test_classify_null_point_vals(self, kwargs, expected):
         r"""Test expected values."""
         assert uniform_null_point_find(**kwargs)[0].classification == expected
@@ -467,7 +471,7 @@ def test_null_point_find9():
 
 
 # Tests that capture the degenerate nulls/2D nulls
-@pytest.mark.slow
+@pytest.mark.slow()
 def test_null_point_find10():
     nullpoint10_args = {
         "x_range": [-0.1, 0.1],
@@ -489,7 +493,7 @@ def test_null_point_find10():
             assert p.classification == "Continuous concentric ellipses"
 
 
-@pytest.mark.slow
+@pytest.mark.slow()
 def test_null_point_find11():
     nullpoint10_args = {
         "x_range": [-0.1, 0.1],

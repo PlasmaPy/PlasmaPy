@@ -10,7 +10,7 @@ from plasmapy.analysis.swept_langmuir.helpers import check_sweep
 
 
 @pytest.mark.parametrize(
-    "voltage, current, kwargs, with_context, expected",
+    ("voltage", "current", "kwargs", "with_context", "expected"),
     [
         # the one that works
         (

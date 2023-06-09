@@ -23,7 +23,7 @@ from plasmapy.formulary.speeds import kappa_thermal_speed, thermal_speed
 class Test_Maxwellian_1D:
     @classmethod
     def setup_class(cls):
-        """initializing parameters for tests"""
+        """Initializing parameters for tests"""
         cls.T_e = 30000 * u.K
         cls.v = 1e5 * u.m / u.s
         cls.v_drift = 1000000 * u.m / u.s
@@ -198,7 +198,7 @@ class Test_Maxwellian_1D:
 class Test_Maxwellian_speed_1D:
     @classmethod
     def setup_class(cls):
-        """initializing parameters for tests"""
+        """Initializing parameters for tests"""
         cls.T = 1.0 * u.eV
         cls.particle = "H+"
         # get thermal velocity and thermal velocity squared
@@ -327,7 +327,7 @@ class Test_Maxwellian_speed_1D:
 class Test_Maxwellian_velocity_2D:
     @classmethod
     def setup_class(cls):
-        """initializing parameters for tests"""
+        """Initializing parameters for tests"""
         cls.T = 1.0 * u.eV
         cls.particle = "H+"
         # get thermal velocity and thermal velocity squared
@@ -481,11 +481,11 @@ class Test_Maxwellian_velocity_2D:
         assert np.isclose(distFunc.value, testVal, rtol=1e-5, atol=0.0), errStr
 
 
-@pytest.mark.slow
+@pytest.mark.slow()
 class Test_Maxwellian_speed_2D:
     @classmethod
     def setup_class(cls):
-        """initializing parameters for tests"""
+        """Initializing parameters for tests"""
         cls.T = 1.0 * u.eV
         cls.particle = "H+"
         # get thermal velocity and thermal velocity squared
@@ -607,11 +607,11 @@ class Test_Maxwellian_speed_2D:
             )
 
 
-@pytest.mark.slow
+@pytest.mark.slow()
 class Test_Maxwellian_velocity_3D:
     @classmethod
     def setup_class(cls):
-        """initializing parameters for tests"""
+        """Initializing parameters for tests"""
         cls.T = 1.0 * u.eV
         cls.particle = "H+"
         # get thermal velocity and thermal velocity squared
@@ -785,7 +785,7 @@ class Test_Maxwellian_velocity_3D:
 class Test_Maxwellian_speed_3D:
     @classmethod
     def setup_class(cls):
-        """initializing parameters for tests"""
+        """Initializing parameters for tests"""
         cls.T = 1.0 * u.eV
         cls.particle = "H+"
         # get thermal velocity and thermal velocity squared
@@ -910,7 +910,7 @@ class Test_Maxwellian_speed_3D:
 class Test_kappa_velocity_1D:
     @classmethod
     def setup_class(cls):
-        """initializing parameters for tests"""
+        """Initializing parameters for tests"""
         cls.T_e = 30000 * u.K
         cls.kappa = 4
         cls.kappaInvalid = 3 / 2
@@ -1127,11 +1127,11 @@ class Test_kappa_velocity_1D:
         assert np.isclose(distFunc.value, testVal, rtol=1e-5, atol=0.0), errStr
 
 
-@pytest.mark.slow
+@pytest.mark.slow()
 class Test_kappa_velocity_3D:
     @classmethod
     def setup_class(cls):
-        """initializing parameters for tests"""
+        """Initializing parameters for tests"""
         cls.T = 1.0 * u.eV
         cls.kappa = 4
         cls.kappaInvalid = 3 / 2

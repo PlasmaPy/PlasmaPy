@@ -5,14 +5,14 @@ from astropy import units as u
 
 from plasmapy.formulary.collisions import coulomb, lengths
 from plasmapy.utils import exceptions
+from plasmapy.utils._pytest_helpers import assert_can_handle_nparray
 from plasmapy.utils.exceptions import CouplingWarning
-from plasmapy.utils.pytest_helpers import assert_can_handle_nparray
 
 
 class Test_impact_parameter_perp:
     @classmethod
     def setup_class(cls):
-        """initializing parameters for tests"""
+        """Initializing parameters for tests"""
         cls.T = 11604 * u.K
         cls.particles = ("e", "p")
         cls.V = 1e4 * u.km / u.s
@@ -71,7 +71,7 @@ class Test_impact_parameter_perp:
 class Test_impact_parameter:
     @classmethod
     def setup_class(cls):
-        """initializing parameters for tests"""
+        """Initializing parameters for tests"""
         cls.T = 11604 * u.K
         cls.T_arr = np.array([1, 2]) * u.eV
         cls.n_e = 1e17 * u.cm**-3
@@ -160,7 +160,7 @@ class Test_impact_parameter:
         )
 
     @pytest.mark.parametrize(
-        "n_e_shape,T_shape",
+        ("n_e_shape", "T_shape"),
         # Scalar T
         [
             ((2, 3, 5), (1,)),
@@ -197,7 +197,7 @@ class Test_impact_parameter:
 class Test_mean_free_path:
     @classmethod
     def setup_class(cls):
-        """initializing parameters for tests"""
+        """Initializing parameters for tests"""
         cls.T = 11604 * u.K
         cls.n_e = 1e17 * u.cm**-3
         cls.particles = ("e", "p")

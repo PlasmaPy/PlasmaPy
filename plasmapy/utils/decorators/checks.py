@@ -197,9 +197,11 @@ class CheckValues(CheckBase):
         self, bound_args: inspect.BoundArguments
     ) -> dict[str, dict[str, bool]]:
         """
-        Review :attr:`checks` and function bound arguments to build a complete 'checks'
-        dictionary.  If a check key is omitted from the argument checks, then a default
-        value is assumed (see `check values`_).
+        Review :attr:`checks` and function bound arguments to build a
+        complete 'checks' dictionary.
+
+        If a check key is omitted from the argument checks, then a
+        default value is assumed (see `check values`_).
 
         Parameters
         ----------
@@ -273,7 +275,12 @@ class CheckValues(CheckBase):
 
         return out_checks
 
-    def _check_value(self, arg, arg_name: str, arg_checks: dict[str, bool]):
+    def _check_value(  # noqa: C901, PLR0912
+        self,
+        arg,
+        arg_name: str,
+        arg_checks: dict[str, bool],
+    ):
         """
         Perform checks ``arg_checks`` on function argument ``arg``.
 
@@ -304,7 +311,7 @@ class CheckValues(CheckBase):
         # * 'none_shall_pass' always needs to be checked first
         ckeys = list(self.__check_defaults.keys())
         ckeys.remove("none_shall_pass")
-        ckeys = ("none_shall_pass",) + tuple(ckeys)
+        ckeys = ("none_shall_pass", *tuple(ckeys))
         for ckey in ckeys:
             if ckey == "can_be_complex":
                 if not arg_checks[ckey] and np.any(np.iscomplexobj(arg)):
@@ -523,13 +530,13 @@ class CheckUnits(CheckBase):
 
         return wrapper
 
-    def _get_unit_checks(
+    def _get_unit_checks(  # noqa: C901, PLR0912, PLR0915
         self, bound_args: inspect.BoundArguments
     ) -> dict[str, dict[str, Any]]:
         """
         Review :attr:`checks` and function bound arguments to build a complete 'checks'
         dictionary.  If a check key is omitted from the argument checks, then a default
-        value is assumed (see `check units`_)
+        value is assumed (see `check units`_).
 
         Parameters
         ----------
@@ -662,7 +669,7 @@ class CheckUnits(CheckBase):
             _units_anno = self._condition_target_units(
                 _units_anno, from_annotations=True
             )
-            if not all(_u in _units for _u in _units_anno):
+            if any(_u not in _units for _u in _units_anno):
                 raise ValueError(
                     f"For argument '{param.name}', "
                     f"annotation units ({_units_anno}) are not included in the units "
@@ -740,10 +747,7 @@ class CheckUnits(CheckBase):
             out_checks[param.name]["pass_equivalent_units"] = peu
 
         # Does `self.checks` indicate arguments not used by f?
-        missing_params = [
-            param for param in set(self.checks.keys()) - set(out_checks.keys())
-        ]
-        if missing_params:
+        if missing_params := list(set(self.checks.keys()) - set(out_checks.keys())):
             params_str = ", ".join(missing_params)
             warnings.warn(
                 PlasmaPyWarning(
@@ -784,7 +788,7 @@ class CheckUnits(CheckBase):
         if err is not None:
             raise err
 
-    def _check_unit_core(
+    def _check_unit_core(  # noqa: C901, PLR0912, PLR0915
         self, arg, arg_name: str, arg_checks: dict[str, Any]
     ) -> tuple[
         Optional[u.Quantity],
@@ -895,10 +899,7 @@ class CheckUnits(CheckBase):
                 equiv = arg_checks["equivalencies"]
                 if not arg_checks["pass_equivalent_units"]:
                     err = u.UnitTypeError(typeerror_msg)
-            elif arg_checks["pass_equivalent_units"]:
-                # there is a match to more than one equivalent units
-                pass
-            else:
+            elif not arg_checks["pass_equivalent_units"]:
                 # there is a match to more than 1 equivalent units
                 arg = None
                 err = u.UnitTypeError(typeerror_msg)
@@ -956,11 +957,10 @@ class CheckUnits(CheckBase):
         return allowed_units
 
     @staticmethod
-    def _normalize_equivalencies(equivalencies):
+    def _normalize_equivalencies(equivalencies):  # noqa: D400
         """
-        Normalizes equivalencies to ensure each is in a 4-tuple form::
-
-            (from_unit, to_unit, forward_func, backward_func)
+        Normalize equivalencies to ensure each is in a 4-tuple of the
+        form `(from_unit, to_unit, forward_func, backward_func)`.
 
         `forward_func` maps `from_unit` into `to_unit` and `backward_func` does
         the reverse.
@@ -1017,8 +1017,7 @@ class CheckUnits(CheckBase):
 
     def _flatten_equivalencies_list(self, elist):
         """
-        Given a list of equivalencies, flatten out any sub-element lists
-
+        Given a list of equivalencies, flatten out any sub-element lists.
 
         Parameters
         ----------
@@ -1173,12 +1172,7 @@ def check_units(
     if checks_on_return is not None:
         checks["checks_on_return"] = checks_on_return
 
-    if func is not None:
-        # `check_units` called as a function
-        return CheckUnits(**checks)(func)
-
-    # `check_units` called as a decorator "sugar-syntax"
-    return CheckUnits(**checks)
+    return CheckUnits(**checks)(func) if func is not None else CheckUnits(**checks)
 
 
 def check_values(
@@ -1190,7 +1184,6 @@ def check_values(
 
     Parameters
     ----------
-
     func:
         The function to be decorated
 
@@ -1257,12 +1250,7 @@ def check_values(
     if checks_on_return is not None:
         checks["checks_on_return"] = checks_on_return
 
-    if func is not None:
-        # `check_values` called as a function
-        return CheckValues(**checks)(func)
-
-    # `check_values` called as a decorator "sugar-syntax"
-    return CheckValues(**checks)
+    return CheckValues(**checks) if func is None else CheckValues(**checks)(func)
 
 
 def check_relativistic(func=None, betafrac=0.05):
@@ -1329,9 +1317,7 @@ def check_relativistic(func=None, betafrac=0.05):
 
         return wrapper
 
-    if func:
-        return decorator(func)
-    return decorator
+    return decorator(func) if func else decorator
 
 
 def _check_relativistic(V, funcname, betafrac=0.05):

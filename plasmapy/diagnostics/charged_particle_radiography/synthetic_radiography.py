@@ -258,13 +258,13 @@ class Tracker:
                     )
 
     @property
-    def num_grids(self):
+    def num_grids(self):  # noqa: D102
         return len(self.grids)
 
     def _default_detector_hdir(self):
         """
         Calculates the default horizontal unit vector for the detector plane
-        (see __init__ description for details)
+        (see __init__ description for details).
         """
         # Create unit vectors that define the detector plane
         # Define plane  horizontal axis
@@ -283,7 +283,7 @@ class Tracker:
         """
         theta = np.zeros([8, self.num_grids])
 
-        for i, grid in enumerate(self.grids):
+        for i, _grid in enumerate(self.grids):  # noqa: B007
             ind = 0
             for x in (0, -1):
                 for y in (0, -1):
@@ -451,7 +451,7 @@ class Tracker:
         mesh_vdir=None,
     ):
         """
-        Apply wire meshes that were added to self.mesh_list
+        Apply wire meshes that were added to ``self.mesh_list``.
         """
         x = self._coast_to_plane(location, mesh_hdir, mesh_vdir)
 
@@ -535,10 +535,12 @@ class Tracker:
         prob *= 1 / np.sum(prob)
 
         # Randomly choose theta's weighted with the sine probabilities
-        theta = np.random.choice(arg, size=self.nparticles, replace=True, p=prob)
+        theta = np.random.choice(  # noqa: NPY002
+            arg, size=self.nparticles, replace=True, p=prob
+        )
 
         # Also generate a uniform phi distribution
-        phi = np.random.uniform(high=2 * np.pi, size=self.nparticles)
+        phi = np.random.uniform(high=2 * np.pi, size=self.nparticles)  # noqa: NPY002
 
         return theta, phi
 
@@ -575,7 +577,7 @@ class Tracker:
         nparticles,
         particle_energy,
         max_theta=None,
-        particle: Particle = Particle("p+"),
+        particle: Particle = Particle("p+"),  # noqa: B008
         distribution="monte-carlo",
     ):
         r"""
@@ -685,10 +687,10 @@ class Tracker:
         self,
         x,
         v,
-        particle: Particle = Particle("p+"),
+        particle: Particle = Particle("p+"),  # noqa: B008
     ):
         r"""
-        Load arrays of particle positions and velocities
+        Load arrays of particle positions and velocities.
 
         Parameters
         ----------
@@ -754,7 +756,7 @@ class Tracker:
     # Run/push loop methods
     # *************************************************************************
 
-    def _adaptive_dt(self, Ex, Ey, Ez, Bx, By, Bz):
+    def _adaptive_dt(self, Ex, Ey, Ez, Bx, By, Bz):  # noqa: ARG002
         r"""
         Calculate the appropriate dt for each grid based on a number of
         considerations
@@ -775,7 +777,7 @@ class Tracker:
 
         # Wherever a particle is on a grid, include that grid's gridstep
         # in the list of candidate timesteps
-        for i, grid in enumerate(self.grids):
+        for i, _grid in enumerate(self.grids):  # noqa: B007
             candidates[:, i] = np.where(self.on_grid[:, i] > 0, gridstep[i], np.inf)
 
         # If not, compute a number of possible timesteps
@@ -865,7 +867,7 @@ class Tracker:
     def _remove_deflected_particles(self):
         r"""
         Removes any particles that have been deflected away from the detector
-        plane (eg. those that will never hit the grid)
+        plane (eg. those that will never hit the grid).
         """
         dist_remaining = np.dot(self.x, self.det_n) + np.linalg.norm(self.detector)
 
@@ -901,7 +903,7 @@ class Tracker:
     def _push(self):
         r"""
         Advance particles using an implementation of the time-centered
-        Boris algorithm
+        Boris algorithm.
         """
         # Get a list of positions (input for interpolator)
         pos = self.x[self.grid_ind, :] * u.m
@@ -1270,19 +1272,19 @@ class Tracker:
         v0[:, 1] = np.dot(self.v_init, self.det_hdir)
         v0[:, 2] = np.dot(self.v_init, self.det_vdir)
 
-        return dict(
-            source=self.source,
-            detector=self.detector,
-            mag=self.mag,
-            nparticles=self.nparticles,
-            max_deflection=self.max_deflection.to(u.rad).value,
-            x=xloc,
-            y=yloc,
-            v=v,
-            x0=x0loc,
-            y0=y0loc,
-            v0=v0,
-        )
+        return {
+            "source": self.source,
+            "detector": self.detector,
+            "mag": self.mag,
+            "nparticles": self.nparticles,
+            "max_deflection": self.max_deflection.to(u.rad).value,
+            "x": xloc,
+            "y": yloc,
+            "v": v,
+            "x0": x0loc,
+            "y0": y0loc,
+            "v0": v0,
+        }
 
     def save_results(self, path):
         """
@@ -1291,7 +1293,6 @@ class Tracker:
 
         Parameters
         ----------
-
         path : `str` or `os.path`
             Either the filename (string) or an open file (file-like object)
             where the data will be saved. If file is a string or a Path,
@@ -1300,7 +1301,6 @@ class Tracker:
 
         Notes
         -----
-
         Useful for saving the results from a simulation so they can be
         loaded at a later time and passed into
         `~plasmapy.diagnostics.charged_particle_radiography.synthetic_radiography.synthetic_radiograph`.
@@ -1357,7 +1357,7 @@ class Tracker:
 # *************************************************************************
 
 
-def synthetic_radiograph(
+def synthetic_radiograph(  # noqa: C901
     obj, size=None, bins=None, ignore_grid=False, optical_density=False
 ):
     r"""

@@ -22,8 +22,11 @@ __all__ = [
 # This is the same check as the one at the top of setup.py
 import sys
 
-if sys.version_info < (3, 8):  # coverage: ignore
-    raise ImportError("PlasmaPy does not support Python < 3.8")
+if sys.version_info < (3, 9):  # coverage: ignore # noqa: UP036
+    raise ImportError(
+        f"This version of PlasmaPy does not support Python {sys.version.split()[0]}."
+        "Please upgrade to a newer version."
+    )
 
 # Packages may add whatever they like to this file, but
 # should keep this content at the top.
@@ -47,7 +50,7 @@ try:
         from plasmapy._dev.scm_version import version as __version__
     except ImportError:
         from plasmapy._version import version as __version__
-except Exception:  # coverage: ignore
+except Exception:  # coverage: ignore  # noqa: BLE001
     # package is not installed
     __version__ = "0.0.0"
 

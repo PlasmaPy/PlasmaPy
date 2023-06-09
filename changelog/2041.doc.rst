@@ -1,1 +1,0 @@
-Restructured the |testing guide|.

@@ -32,9 +32,9 @@ reposted as GitHub issues, as appropriate, for further discussion.
 Meetings and events
 -------------------
 
-Please check `PlasmaPy meetings`_ for regularly scheduled meetings
-and special events. The regularly scheduled meetings include a
-community meeting to discuss code development, a project meeting to
-discuss broader aspects of the PlasmaPy project like education and
-outreach to the broader plasma community, and meetings of PlasmaPy
-working groups. The special events include `Plasma Hack Week`_.
+Please check `PlasmaPy meetings`_ for regularly scheduled meetings and
+special events. The regularly scheduled meetings include a community
+meeting to discuss code development, a project meeting to discuss
+broader aspects of the PlasmaPy project like education and outreach to
+the broader plasma community, and meetings of PlasmaPy working groups.
+The special events include `Plasma Hack Week`_.

@@ -1,4 +1,4 @@
-"""Functions to calculate plasma dielectric parameters"""
+"""Functions to calculate plasma dielectric parameters."""
 __all__ = [
     "cold_plasma_permittivity_SDP",
     "cold_plasma_permittivity_LRP",
@@ -258,13 +258,13 @@ def permittivity_1D_Maxwellian_lite(omega, kWave, vth, wp):
     >>> T = 30 * u.eV
     >>> n = 1e18 * u.cm**-3
     >>> particle = "Ne"
-    >>> z_mean = 8
+    >>> Z = 8
     >>> omega = 3.541e15  # in rad/s
     >>> vth = thermal_speed(T=T, particle=particle).value
-    >>> wp = plasma_frequency(n=n, particle=particle, z_mean=z_mean).value
+    >>> wp = plasma_frequency(n=n, particle=particle, Z=Z).value
     >>> k_wave = omega / vth
     >>> permittivity_1D_Maxwellian_lite(omega, k_wave, vth=vth, wp=wp)
-    (-6.72647...e-08+5.75899...e-07j)
+    (-6.72794...e-08+5.76024...e-07j)
     """
 
     # scattering parameter alpha.
@@ -285,7 +285,7 @@ def permittivity_1D_Maxwellian(
     T: u.K,
     n: u.m**-3,
     particle,
-    z_mean: u.dimensionless_unscaled = None,
+    z_mean=None,
 ) -> u.dimensionless_unscaled:
     r"""
     Compute the classical dielectric permittivity for a 1D Maxwellian
@@ -356,26 +356,26 @@ def permittivity_1D_Maxwellian(
     >>> T = 30 * 11600 * u.K
     >>> n = 1e18 * u.cm**-3
     >>> particle = 'Ne'
-    >>> z_mean = 8 * u.dimensionless_unscaled
+    >>> Z = 8
     >>> vth = thermal_speed(T, particle, method="most_probable")
     >>> omega = 5.635e14 * 2 * pi * u.rad / u.s
     >>> k_wave = omega / vth
-    >>> permittivity_1D_Maxwellian(omega, k_wave, T, n, particle, z_mean)
-    <Quantity -6.72809...e-08+5.76037...e-07j>
+    >>> permittivity_1D_Maxwellian(omega, k_wave, T, n, particle, Z)
+    <Quantity -6.72955...e-08+5.76163...e-07j>
 
     For user convenience
     `~plasmapy.formulary.dielectric.permittivity_1D_Maxwellian_lite`
     is bound to this function and can be used as follows:
 
     >>> from plasmapy.formulary import plasma_frequency
-    >>> wp = plasma_frequency(n, particle, z_mean=z_mean)
+    >>> wp = plasma_frequency(n, particle, Z=Z)
     >>> permittivity_1D_Maxwellian.lite(
     ...     omega.value, k_wave.value, vth=vth.value, wp=wp.value
     ... )
-    (-6.72809...e-08+5.76037...e-07j)
+    (-6.72955...e-08+5.76163...e-07j)
     """
     vth = thermal_speed(T=T, particle=particle, method="most_probable").value
-    wp = plasma_frequency(n=n, particle=particle, z_mean=z_mean).value
+    wp = plasma_frequency(n=n, particle=particle, Z=z_mean).value
 
     chi = permittivity_1D_Maxwellian_lite(
         omega.value,

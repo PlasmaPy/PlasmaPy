@@ -62,7 +62,7 @@ def get_file(basename, base_url=_BASE_URL, directory=None):
     if not path.is_file():
         url = urljoin(base_url, basename)
 
-        reply = requests.get(url)
+        reply = requests.get(url)  # noqa: S113
 
         if reply.status_code == 404:
             raise OSError(

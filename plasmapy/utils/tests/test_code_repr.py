@@ -32,7 +32,7 @@ function_case = namedtuple("function_case", ("func", "args", "kwargs", "expected
 
 
 @pytest.mark.parametrize(
-    "func, args, kwargs, expected",
+    ("func", "args", "kwargs", "expected"),
     [
         function_case(
             func=generic_function, args=(), kwargs={}, expected="generic_function()"
@@ -159,7 +159,7 @@ method_case = namedtuple(
 
 
 @pytest.mark.parametrize(
-    "args_to_cls, kwargs_to_cls, args_to_method, kwargs_to_method, expected",
+    ("args_to_cls", "kwargs_to_cls", "args_to_method", "kwargs_to_method", "expected"),
     [
         method_case(
             args_to_cls=(),
@@ -228,7 +228,7 @@ attribute_case = namedtuple(
 
 
 @pytest.mark.parametrize(
-    "args_to_cls, kwargs_to_cls, expected",
+    ("args_to_cls", "kwargs_to_cls", "expected"),
     [
         attribute_case(args_to_cls=(), kwargs_to_cls={}, expected="SampleClass().attr"),
         attribute_case(
@@ -263,7 +263,7 @@ ndarray_case = namedtuple("ndarray_case", ("array_inputs", "max_items", "expecte
 
 
 @pytest.mark.parametrize(
-    "array_inputs, max_items, expected",
+    ("array_inputs", "max_items", "expected"),
     [
         ndarray_case(array_inputs=[0], max_items=np.inf, expected="np.array([0])"),
         ndarray_case(
@@ -324,7 +324,7 @@ def test__code_repr_of_ndarray(array_inputs, max_items, expected):
     )
 
     if max_items >= array.size:
-        recreated_array = eval(actual)
+        recreated_array = eval(actual)  # noqa: PGH001
         assert np.allclose(array, recreated_array, atol=1e-15, equal_nan=True), (
             f"Evaluating the representation of an ndarray for array_inputs = "
             f"{array_inputs} and max_items = {max_items} does not recreate "
@@ -338,7 +338,7 @@ quantity_case = namedtuple("QuantityTestCases", ("quantity", "expected"))
 
 
 @pytest.mark.parametrize(
-    "quantity, expected",
+    ("quantity", "expected"),
     [
         quantity_case(quantity=5.3 * u.m, expected="5.3*u.m"),
         quantity_case(quantity=5.4 / u.m, expected="5.4/u.m"),
@@ -381,7 +381,7 @@ def test__string_together_warnings_for_printing():
 
 
 @pytest.mark.parametrize(
-    "arg, expected",
+    ("arg", "expected"),
     [
         (1, "1"),
         ("asdf", "'asdf'"),
@@ -408,7 +408,7 @@ def test__code_repr_of_arg(arg, expected):
 
 
 @pytest.mark.parametrize(
-    "args, kwargs, expected",
+    ("args", "kwargs", "expected"),
     [
         ((), {}, ""),
         (1, {"a": "b"}, "1, a='b'"),
@@ -434,7 +434,7 @@ def test__code_repr_of_args_and_kwargs(args, kwargs, expected):
 
 
 @pytest.mark.parametrize(
-    "obj, expected",
+    ("obj", "expected"),
     [
         (ArithmeticError, "an ArithmeticError"),
         (EOFError, "an EOFError"),
@@ -459,7 +459,7 @@ def test__name_with_article(obj, expected):
 
 
 @pytest.mark.parametrize(
-    "obj, showmodule, expected_name",
+    ("obj", "showmodule", "expected_name"),
     [
         (ValueError, False, "ValueError"),
         (TypeError, True, "TypeError"),

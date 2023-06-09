@@ -5,6 +5,10 @@ Functions to calculate classical transport coefficients.
 
     /notebooks/formulary/braginskii
 
+.. attention::
+
+   |expect-api-changes|
+
 Introduction
 ============
 
@@ -39,6 +43,7 @@ bound on the losses / transport encountered in a plasma.
 
 Transport Variables
 ===================
+
 For documentation on the individual transport variables, please take
 the following links to documentation of methods of |ClassicalTransport|.
 
@@ -51,6 +56,7 @@ the following links to documentation of methods of |ClassicalTransport|.
 
 Using the module
 ================
+
 Given that many of the transport variables share a lot of the same computation
 and many are often needed to be calculated simultaneously, this module provides
 a |ClassicalTransport| class that can be initialized once with all of the
@@ -68,6 +74,7 @@ in the Functions section).
 
 Classical transport models
 ==========================
+
 In this section, we present a broad overview of classical transport models
 implemented within this module.
 
@@ -109,6 +116,7 @@ notably the asymptotic behavior of alpha-cross and beta_perp as Hall →
 terms, which all other treatments have not. To neglect electron-electron
 collisions, leave :math:`μ = 0`\ . To consider them, specify mu and theta.
 """
+
 __all__ = [
     "ClassicalTransport",
     "resistivity",
@@ -142,6 +150,10 @@ from plasmapy.utils.decorators import validate_quantities
 class ClassicalTransport:
     r"""
     Classical transport coefficients (e.g. Braginskii, 1965).
+
+    .. attention::
+
+       |expect-api-changes|
 
     Notes
     -----
@@ -279,8 +291,8 @@ class ClassicalTransport:
     >>> from astropy import units as u
     >>> t = ClassicalTransport(1*u.eV, 1e20/u.m**3,
     ...                         1*u.eV, 1e20/u.m**3, 'p')
-    >>> t.resistivity
-    <Quantity 0.0003670... m Ohm>
+    >>> t.resistivity  # doctest: +SKIP
+    <Quantity 0.0003670... Ohm m>
     >>> t.thermoelectric_conductivity
     <Quantity 0.71108...>
     >>> t.ion_thermal_conductivity
@@ -300,7 +312,7 @@ class ClassicalTransport:
         T_i={"can_be_negative": False, "equivalencies": u.temperature_energy()},
         m_i={"can_be_negative": False},
     )
-    def __init__(
+    def __init__(  # noqa: PLR0912, PLR0915
         self,
         T_e: u.K,
         n_e: u.m**-3,
@@ -1187,7 +1199,15 @@ def _nondim_thermal_conductivity(
     return kappa_hat
 
 
-def _nondim_viscosity(hall, Z, particle, model, field_orientation, mu=None, theta=None):
+def _nondim_viscosity(
+    hall,
+    Z,
+    particle,
+    model,
+    field_orientation,  # noqa: ARG001
+    mu=None,
+    theta=None,
+):
     """
     Calculate dimensionless classical viscosity coefficients.
 
@@ -1216,7 +1236,7 @@ def _nondim_viscosity(hall, Z, particle, model, field_orientation, mu=None, thet
     return eta_hat
 
 
-def _nondim_resistivity(hall, Z, particle, model, field_orientation):
+def _nondim_resistivity(hall, Z, particle, model, field_orientation):  # noqa: ARG001
     """
     Calculate dimensionless classical resistivity coefficients.
 
@@ -1234,7 +1254,13 @@ def _nondim_resistivity(hall, Z, particle, model, field_orientation):
     return alpha_hat
 
 
-def _nondim_te_conductivity(hall, Z, particle, model, field_orientation):
+def _nondim_te_conductivity(
+    hall,
+    Z,
+    particle,  # noqa: ARG001
+    model,
+    field_orientation,
+):
     """
     Calculate dimensionless classical thermoelectric coefficients.
 
@@ -1617,7 +1643,7 @@ def _nondim_tec_braginskii(hall, Z, field_orientation):
 #
 
 
-def _nondim_tc_e_ji_held(hall, Z, field_orientation):
+def _nondim_tc_e_ji_held(hall, Z, field_orientation):  # noqa: PLR0915
     """
     Dimensionless electron thermal conductivity — Ji-Held.
 

@@ -1,3 +1,5 @@
+"""Functionality implementing the plasma class factory."""
+
 # SunPy is released under a BSD-style open source license:
 
 # Copyright (c) 2013-2018 The SunPy developers
@@ -48,9 +50,12 @@ class BasicRegistrationFactory:
     specified by the registered factory, which validates the input and returns
     a instance of the class that best matches the inputs.
 
+    .. attention::
+
+       |expect-api-changes|
+
     Attributes
     ----------
-
     registry : `dict`
         Dictionary mapping classes (key) to function (value) which validates
         input.
@@ -63,7 +68,6 @@ class BasicRegistrationFactory:
 
     Parameters
     ----------
-
     default_widget_type : `type`, optional
 
     additional_validation_functions : `list` of `str`, optional
@@ -89,8 +93,9 @@ class BasicRegistrationFactory:
         self.default_widget_type = default_widget_type
 
         self.validation_functions = [
-            "_factory_validation_function"
-        ] + additional_validation_functions
+            "_factory_validation_function",
+            *additional_validation_functions,
+        ]
 
     def __call__(self, *args, **kwargs):
         """

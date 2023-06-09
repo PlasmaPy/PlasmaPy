@@ -465,12 +465,15 @@ class _ParticleInput:
                 "or particle-list-like inputs."
             )
 
-        if not self.allow_custom_particles and isinstance(particle, ParticleList):
-            if any(particle.is_category("custom")):
-                raise InvalidParticleError(
-                    f"{self.callable_.__name__} does not accept CustomParticle "
-                    f"or CustomParticle-like inputs."
-                )
+        if (
+            not self.allow_custom_particles
+            and isinstance(particle, ParticleList)
+            and any(particle.is_category("custom"))
+        ):
+            raise InvalidParticleError(
+                f"{self.callable_.__name__} does not accept CustomParticle "
+                f"or CustomParticle-like inputs."
+            )
 
     def process_argument(
         self,
@@ -818,7 +821,6 @@ def particle_input(
     ``self`` following standard convention.
 
     >>> class SampleClass:
-    ...
     ...     @particle_input
     ...     def __init__(self, particle: ParticleLike):
     ...         self.particle = particle
