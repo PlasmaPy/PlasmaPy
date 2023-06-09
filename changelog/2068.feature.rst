@@ -1,0 +1,1 @@
+Added a class to calculate magnetic field, current density, and plasma pressure for 1D Harris Sheets.
