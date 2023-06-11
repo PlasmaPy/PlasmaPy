@@ -16,9 +16,9 @@ This page describes the workflow for making a contribution to PlasmaPy
 via a `pull request`_. This page assumes that you have finished the
 steps for :ref:`getting ready to contribute`.
 
-If you run into any problems, please feel free to reach out to us in
-our `Matrix chat room`_ or during our weekly `office hours`_. Thank you
-for contributing!
+If you run into any problems, please feel free to reach out to us in our
+`Matrix chat room`_ or during our weekly `office hours`_. Thank you for
+contributing!
 
 .. tip::
 
@@ -175,8 +175,23 @@ Creating a pull request
       After the pull request has been created, it can be updated by
       using ``git push`` to update the corresponding branch on GitHub.
 
-#. If this is your first contribution, add yourself to the list in
-   |docs/about/credits.rst|_.
+#. If this is your first contribution, please add yourself to the author
+   list in |CITATION.cff|_ (which uses `Citation File Format`_) to make
+   sure that you get credit for your contribution. The entry should be
+   of the form:
+
+   .. code-block:: yaml
+
+      - given-names: <given names>
+        family-names: <family names>
+        affiliation: <affiliation>
+        orcid: https://orcid.org/<ORCiD-iD>
+        alias: {missing_github_username}
+
+   All fields are optional except ``alias``, which is your GitHub
+   username. We encourage contributors to `sign up for an ORCID iD`_: a
+   unique, persistent identifier used by researchers, authors, and open
+   source contributors.
 
 At this stage, a reviewer will perform a code review, unless it has been
 marked as a draft pull request. Thank you for contributing!
@@ -188,3 +203,4 @@ marked as a draft pull request. Thank you for contributing!
 .. _good first issue: https://github.com/PlasmaPy/PlasmaPy/issues?q=is%3Aissue+is%3Aopen+label%3A%22Good+first+issue%22
 .. _pull request: https://docs.github.com/en/github/collaborating-with-pull-requests
 .. _remote: https://github.com/git-guides/git-remote
+.. _sign up for an ORCID iD: https://orcid.org/register

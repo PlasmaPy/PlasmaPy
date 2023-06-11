@@ -821,7 +821,6 @@ def particle_input(
     ``self`` following standard convention.
 
     >>> class SampleClass:
-    ...
     ...     @particle_input
     ...     def __init__(self, particle: ParticleLike):
     ...         self.particle = particle

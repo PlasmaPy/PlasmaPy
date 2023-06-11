@@ -1,1 +1,0 @@
-Changed from ``indexserver`` to ``PIP_INDEX_URL`` to index nightly numpy builds

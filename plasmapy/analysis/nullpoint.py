@@ -1,10 +1,9 @@
 """
 Functionality to find and analyze 3D magnetic null points.
 
-.. note::
+.. attention::
 
-   This module is still under development and the API may change in
-   future releases.
+   |expect-api-changes|
 """
 
 __all__ = [

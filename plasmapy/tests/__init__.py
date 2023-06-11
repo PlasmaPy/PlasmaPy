@@ -1,3 +1,3 @@
-"""PlasmaPy tests and test _helpers."""
+"""PlasmaPy tests and test helpers."""
 
 from plasmapy.tests import _helpers

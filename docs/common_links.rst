@@ -104,6 +104,7 @@
 .. |coding guide| replace:: :ref:`coding guide`\
 .. |contributor guide| replace:: :ref:`contributor guide`\
 .. |documentation guide| replace:: :ref:`documentation guide`\
+.. |expect-api-changes| replace:: This functionality is under development. Backward incompatible changes might occur in future releases.
 .. |getting ready to contribute| replace:: :ref:`getting ready to contribute`\
 .. |glossary| replace:: :ref:`glossary`\
 .. |minpython| replace:: 3.9
@@ -194,6 +195,7 @@
 .. _Read the Docs: https://readthedocs.org
 .. _reST: https://docutils.sourceforge.io/rst.html
 .. _reStructuredText (reST): https://docutils.sourceforge.io/rst.html
+.. _ruff: https://beta.ruff.rs/docs
 .. _SciPy: https://scipy.org
 .. _sphinx_automodapi: https://sphinx-automodapi.readthedocs.io
 .. _sphinx-build: https://www.sphinx-doc.org/en/master/man/sphinx-build.html
