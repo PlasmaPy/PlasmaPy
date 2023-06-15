@@ -93,5 +93,5 @@ class HarrisSheet:
 
         """
         return (
-            self.B0**2 / (2 * const.mu0) * (np.cosh(y / self.delta) ** -2) + self.P0
+            self.B0**2 / (2 * const.mu0) * (np.cosh(u.rad * y / self.delta) ** -2) + self.P0
         )
