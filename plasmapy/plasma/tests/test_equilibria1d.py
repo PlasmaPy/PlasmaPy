@@ -65,6 +65,3 @@ def test_limits():
     assert u.allclose(P, [P0, P0], atol=1e-9 * u.Pa)
     assert u.allclose(J, [0, 0] * u.amp / u.m**2, atol=1e-9 * u.amp / u.m**2)
 
-
-def test_fails():
-    assert False
