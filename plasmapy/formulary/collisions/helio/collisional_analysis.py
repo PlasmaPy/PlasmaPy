@@ -15,7 +15,7 @@ from plasmapy.utils.decorators import validate_quantities
 
 default_values = {"density": -1.8, "velocity": -0.2, "temperature": -0.74, "magnetic": -1.6}
 m_u = const.u
-e0 = const.esp0
+e0 = const.eps0
 k_B = const.k_B
 q_e = const.e.si
 # Define Coulomb log for mixed ion collisions, see docstring
@@ -381,8 +381,9 @@ def diff_flow(
     temperature_scale: float = default_values["temperature"],
     magnetic_scale: float = default_values["magnetic"],
     alfven=False,
-    verbose=False,
+    second_scale=False,
     n_step: int = 100,
+    verbose=False,
 ):
     r"""
     Calculate the thermalization on the differential flow for a
@@ -454,6 +455,11 @@ def diff_flow(
         The analysis for differential flow can be performed on data
         and also be scaled by the Alfven speed. Setting this to true
         will scale the output, by default it is turned off.
+
+    second_scale : `bool`, default: False
+        Allows the secondary ion parameters to also scale with the
+        given or custom values. By default, the output is off, so only
+        the primary ions of interest shall be scaled.
 
     n_step : positive integer
         The number of intervals used in solving a differential
@@ -631,15 +637,20 @@ def diff_flow(
 
             B = B_0 * (r / r_n) ** magnetic_scale
 
-            n_2 = n_2_0 * (r / r_n) ** density_scale
-            v_2 = v_2_0 * (r / r_n) ** velocity_scale
-            T_2 = T_2_0 * (r / r_n) ** temperature_scale
+            if second_scale:
+                n_2 = n_2_0 * (r / r_n) ** density_scale
+                v_2 = v_2_0 * (r / r_n) ** velocity_scale
+                T_2 = T_2_0 * (r / r_n) ** temperature_scale
+            else:
+                n_2 = n_2_0
+                v_2 = v_2_0
+                T_2 = T_2_0
 
             v_a = Alfven_speed(B, n_1, mu_1, n_2, mu_2)
 
-            dv = v_2 - v_1
+            dv = abs(v_2 - v_1)
 
-            a = (3 * (mu_1 * mu_2) ** 2 * (m_u ** 4) * (e0) ** 2) / (
+            a = (3 * (mu_1 * mu_2) ** 2 * (m_u ** 4) * (4*np.pi*e0) ** 2) / (
                         4 * np.sqrt(2 * np.pi) * (q_e ** 4) * ((z_1 * z_2) ** 2))
             b = (((k_B * T_1) / (mu_1 * m_u)) + ((k_B * T_2) / (mu_2 * m_u))) ** 1.5
             c = (m_u ** 2) * (mu_1 + mu_2) * (n_1 * mu_1 + n_2 * mu_2)
