@@ -23,13 +23,11 @@ def _code_repr_of_ndarray(array: np.ndarray, max_items=np.inf) -> str:
     def remove_excess_spaces(s: str) -> str:
         s = " ".join(s.split())
         s = s.replace(" ,", ",")
-        s = s.replace("[ ", "[")
-        return s
+        return s.replace("[ ", "[")
 
     def put_np_before_infs_and_nans(s: str) -> str:
         s = s.replace("inf", "np.inf")
-        s = s.replace("nan", "np.nan")
-        return s
+        return s.replace("nan", "np.nan")
 
     def replace_excess_items_with_ellipsis(s: str, max_items: Integral):
         substrings_between_commas = s.split(",")

@@ -23,8 +23,7 @@ def parse_arguments():
         help="Date in iso format (e.g., 2025-12-26)",
     )
 
-    args = parser.parse_args()
-    return args
+    return parser.parse_args()
 
 
 yaml = YAML()

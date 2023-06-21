@@ -99,9 +99,7 @@ class AbstractFitFunction(ABC):
 
             return y, y_err
 
-        y = self.func(x, *self.params)
-
-        return y
+        return self.func(x, *self.params)
 
     def __repr__(self) -> str:
         return f"{self.__str__()} {self.__class__}"
