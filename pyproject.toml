@@ -288,10 +288,10 @@ ignore = [
   "PT011", # pytest-raises-too-broad
   "PT012", # pytest-raises-multiple-statements (enable later?)
   "PT019", # pytest-fixture-param-without-value (enable later?)
-  "RET501",
-  "RET502",
-  "RET505",
-  "RET506",
+  "RET501", # unnecessary-return-none
+  "RET502", # implicit-return-value
+  "RET505", # superfluous-else-return (enable later?)
+  "RET506", # superfluous-else-raise (enable later?)
   "S101", # asserts
   "SIM117", # multiple-with-statements (remove for Python 3.10+)
   "SIM300", # yoda-conditions
