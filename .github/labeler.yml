@@ -43,7 +43,6 @@ linters:
 
 'No changelog entry needed':
 - any: ['.pre-commit-config.yaml', '.github/**/*.*', '.codecov.yml', '.editorconfig', '.gitignore', 'CODEOWNERS', 'requirements.txt']
-  all: ['!plasmapy/**/*.py', '!docs/**/*.*', '!pyproject.toml']
 
 notebooks:
 - docs/notebooks/**/*
