@@ -894,7 +894,7 @@ class IonizationState:
             output += separator_line
             output += self._get_states_info(minimum_ionic_fraction)
             output += separator_line
-            # TODO add T_i somewhere around here, probably
+            # TODO: add T_i somewhere around here, probably
 
         if not np.isnan(self.n_elem):
             attributes.extend(

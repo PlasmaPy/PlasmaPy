@@ -706,7 +706,7 @@ class AbstractGrid(ABC):
 
         # Ensure that start and stop end up as a list of three u.Quantity objs
         # and num a list of three integers
-        # TODO python3.10: simplify using structural pattern matching
+        # TODO: python3.10: simplify using structural pattern matching
         for k in ("start", "stop"):
             # Convert tuple to list
             if isinstance(var[k], tuple):

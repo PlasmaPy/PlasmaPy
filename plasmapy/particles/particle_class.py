@@ -2087,7 +2087,7 @@ class CustomParticle(AbstractPhysicalParticle):
         *,
         Z: Optional[Real] = None,
     ):
-        # TODO py3.10 replace ifology with structural pattern matching
+        # TODO: py3.10 replace ifology with structural pattern matching
 
         if Z is not None and charge is not None:
             raise InvalidParticleError(

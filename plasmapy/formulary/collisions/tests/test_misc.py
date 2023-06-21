@@ -76,7 +76,7 @@ class Test_Spitzer_resistivity:
         errStr = f"Spitzer resistivity should be {self.True_zmean} and not {methodVal}."
         assert testTrue, errStr
 
-    # TODO vector z_mean
+    # TODO: vector z_mean
     @pytest.mark.parametrize("insert_some_nans", [[], ["V"]])
     @pytest.mark.parametrize("insert_all_nans", [[], ["V"]])
     def test_handle_nparrays(self, insert_some_nans, insert_all_nans):
@@ -158,7 +158,7 @@ class Test_mobility:
         errStr = f"Mobility should be {self.True_zmean} and not {methodVal}."
         assert testTrue, errStr
 
-    # TODO vector z_mean
+    # TODO: vector z_mean
     @pytest.mark.parametrize("insert_some_nans", [[], ["V"]])
     @pytest.mark.parametrize("insert_all_nans", [[], ["V"]])
     def test_handle_nparrays(self, insert_some_nans, insert_all_nans):
