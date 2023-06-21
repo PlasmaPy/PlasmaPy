@@ -58,7 +58,7 @@ repos:
     - tomli
 
 - repo: https://github.com/charliermarsh/ruff-pre-commit
-  rev: v0.0.272
+  rev: v0.0.274
   hooks:
   - id: ruff
     args: [--fix]
