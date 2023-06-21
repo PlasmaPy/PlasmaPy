@@ -239,6 +239,7 @@ extend-select = [
   "N", # pep8-naming
   "NPY", # numpy-deprecated-type-alias
   "PD", # pandas-vet
+  "PERF", # perflint
   "PGH", # pygrep-hooks
   "PIE", # flake8-pie
   "PLC", # pylint convention
