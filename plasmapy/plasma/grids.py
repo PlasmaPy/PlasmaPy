@@ -1034,10 +1034,9 @@ def _fast_nearest_neighbor_interpolate(pos, ax):
 
     # For any points that are closer to the point below than the point above,
     # correct the index
-    indices = np.where(
+    return np.where(
         np.abs(ax[indices] - pos) > np.abs(ax[indices - 1] - pos), indices - 1, indices
     )
-    return indices
 
 
 class CartesianGrid(AbstractGrid):
