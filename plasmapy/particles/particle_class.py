@@ -1756,6 +1756,7 @@ class Particle(AbstractPhysicalParticle):
 
         if inplace:
             self.__init__(base_particle, Z=new_charge_number)
+            return None
         else:
             return Particle(base_particle, Z=new_charge_number)
 
@@ -1829,6 +1830,7 @@ class Particle(AbstractPhysicalParticle):
 
         if inplace:
             self.__init__(base_particle, Z=new_charge_number)
+            return None
         else:
             return Particle(base_particle, Z=new_charge_number)
 
