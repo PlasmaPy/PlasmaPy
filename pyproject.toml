@@ -218,6 +218,7 @@ type_incorrect_long = "The filename of the changelog entry must be of the form `
 target-version = "py39"
 extend-select = [
   "A", # flake8-builtins
+  "ANN204", # missing-return-type-special-method
   "ARG", # flake8-unused-arguments
   "B", # flake8-bugbear
   "BLE", # flake8-blind-except
@@ -298,6 +299,13 @@ dummy-variable-rgx = "Z|mass_numb|request|event"
 namespace-packages = [".github/workflows", "docs"]
 show-fixes = true
 show-source = true
+
+[tool.ruff.flake8-annotations]
+allow-star-arg-any = true
+ignore-fully-untyped = true
+mypy-init-return = true
+suppress-dummy-args = true
+suppress-none-returning = true
 
 [tool.ruff.flake8-import-conventions.aliases]
 "astropy.units" = "u"
