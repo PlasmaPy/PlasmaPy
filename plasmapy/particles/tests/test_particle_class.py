@@ -904,7 +904,7 @@ def test_that_object_can_be_dict_key(key):
         if not isinstance(key, collections.abc.Hashable):
             error_message += f"{key} is not hashable. "
         try:
-            key_equals_itself = key == key
+            key_equals_itself = key == key  # noqa: PLR0124
         except Exception:  # noqa: BLE001
             error_message += f"{key} == {key} cannot be evaluated. "
         else:
