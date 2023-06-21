@@ -256,6 +256,7 @@ extend-select = [
   "RUF011", # static-key-dict-comprehension
   "RUF012", # mutable-class-default
   "RUF013", # implicit-optional
+  "RUF200", # invalid-pyproject-toml
   "S", # flake8-bandit
   "SIM", # flake8-simplify
   "TID", # flake8-tidy-imports
