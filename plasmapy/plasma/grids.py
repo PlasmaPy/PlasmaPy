@@ -200,7 +200,7 @@ class AbstractGrid(ABC):
     # Fundamental properties of the grid
     # *************************************************************************
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         line_sep = "-----------------------------\n"
         shape = list(self.shape)
         coords = list(self.ds.coords.keys())

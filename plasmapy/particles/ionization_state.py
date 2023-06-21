@@ -95,7 +95,7 @@ class IonicLevel:
         except (ValueError, TypeError) as exc:
             raise ParticleError("Unable to create IonicLevel object") from exc
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return (
             f"IonicLevel({self.ionic_symbol!r}, "
             f"ionic_fraction={self.ionic_fraction})"
@@ -686,7 +686,7 @@ class IonizationState:
         """The atomic number of the element."""
         return self._particle.atomic_number
 
-    def __len__(self):
+    def __len__(self) -> int:
         return self._number_of_particles
 
     @property

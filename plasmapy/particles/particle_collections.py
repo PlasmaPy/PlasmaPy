@@ -219,7 +219,7 @@ class ParticleList(collections.UserList):
         other_as_particle_list = self._cast_other_as_particle_list(other)
         return other_as_particle_list.__add__(self)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"ParticleList({self.symbols!r})"
 
     def __gt__(self, other):
@@ -230,7 +230,7 @@ class ParticleList(collections.UserList):
             reactants=self.symbols, products=other_as_particle_list.symbols
         )
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.__repr__()
 
     def _get_particle_attribute(self, attr, unit=None, default=None):
