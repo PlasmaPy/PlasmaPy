@@ -19,7 +19,7 @@ def parse_arguments():
     parser.add_argument(
         "--date_released",
         type=datetime.date.fromisoformat,
-        default=datetime.date.today(),
+        default=datetime.date.today(),  # noqa: DTZ011
         help="Date in iso format (e.g., 2025-12-26)",
     )
 

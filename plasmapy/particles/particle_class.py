@@ -157,7 +157,9 @@ class AbstractParticle(ABC):
             "plasmapy_particle": {
                 "type": type(self).__name__,
                 "module": self.__module__,
-                "date_created": datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S UTC"),
+                "date_created": datetime.utcnow().strftime(  # noqa: DTZ003
+                    "%Y-%m-%d %H:%M:%S UTC"
+                ),
                 "__init__": {"args": (), "kwargs": {}},
             }
         }
