@@ -256,6 +256,7 @@ extend-select = [
   "TRY", # tryceratops
   "UP", # pyupgrade
   "W", # pycodestyle warnings
+  "YTT", # flake8-2020
 ]
 ignore = [
   "B028", # no-explicit-stacklevel
