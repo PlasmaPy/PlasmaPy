@@ -253,6 +253,9 @@ extend-select = [
   "RUF008", # mutable-dataclass-default
   "RUF009", # function-call-in-dataclass-default-argument
   "RUF010", # explicit-f-string-type-conversion
+  "RUF011", # static-key-dict-comprehension
+  "RUF012", # mutable-class-default
+  "RUF013", # implicit-optional
   "S", # flake8-bandit
   "SIM", # flake8-simplify
   "TID", # flake8-tidy-imports
