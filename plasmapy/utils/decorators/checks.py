@@ -630,7 +630,7 @@ class CheckUnits(CheckBase):
             if _units is _units_anno is param_checks is None:
                 # no checks specified and no unit annotations defined
                 continue
-            elif _units is _units_anno is None:
+            elif _units is _units_anno is None:  # noqa: RET507
                 # checks specified, but NO unit checks
                 msg = "No astropy.units specified for "
                 if param.name == "checks_on_return":
@@ -639,7 +639,7 @@ class CheckUnits(CheckBase):
                     msg += f"argument {param.name} "
                 msg += f"of function {self.f.__name__}()."
                 raise ValueError(msg)
-            elif _units is None:
+            elif _units is None:  # noqa: RET507
                 _units = _units_anno
                 _units_are_from_anno = True
                 _units_anno = None
@@ -681,7 +681,7 @@ class CheckUnits(CheckBase):
             if not _units and not _units_anno and param_checks is None:
                 # annotations did not specify units
                 continue
-            elif not _units and not _units_anno:
+            elif not _units and not _units_anno:  # noqa: RET507
                 # checks specified, but NO unit checks
                 msg = "No astropy.units specified for "
                 if param.name == "checks_on_return":
