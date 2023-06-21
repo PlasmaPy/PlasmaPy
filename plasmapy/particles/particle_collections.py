@@ -317,9 +317,9 @@ class ParticleList(collections.UserList):
     def is_category(
         self,
         *category_tuple,
-        require: Union[str, Iterable[str]] = None,
-        any_of: Union[str, Iterable[str]] = None,
-        exclude: Union[str, Iterable[str]] = None,
+        require: Optional[Union[str, Iterable[str]]] = None,
+        any_of: Optional[Union[str, Iterable[str]]] = None,
+        exclude: Optional[Union[str, Iterable[str]]] = None,
     ) -> list[bool]:
         """
         Determine element-wise if the particles in the |ParticleList|
@@ -399,7 +399,7 @@ class ParticleList(collections.UserList):
             default=np.nan * u.J,
         )
 
-    def sort(self, key: Callable = None, reverse: bool = False):
+    def sort(self, key: Optional[Callable] = None, reverse: bool = False):
         """
         Sort the |ParticleList| in-place.
 
