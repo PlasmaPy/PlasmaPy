@@ -293,7 +293,6 @@ ignore = [
   "RET503",
   "RET505",
   "RET506",
-  "RET508",
   "S101", # asserts
   "SIM117", # multiple-with-statements (remove for Python 3.10+)
   "SIM300", # yoda-conditions

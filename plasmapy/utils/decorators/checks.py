@@ -336,7 +336,7 @@ class CheckValues(CheckBase):
             elif ckey == "none_shall_pass":
                 if arg is None and arg_checks[ckey]:
                     break
-                elif arg is None:
+                elif arg is None:  # noqa: RET508
                     raise ValueError(f"{valueerror_msg} Nones.")
 
 
