@@ -249,7 +249,7 @@ extend-select = [
   "PT", # flake8-pytest-style
   "PTH", # flake8-use-pathlib
   "PYI", # flake8-pyi
-  "RET504", # unnecessary-assign
+  "RET", # flake8-return
   "RUF005", # collection-literal-concatenation
   "RUF006", # asyncio-dangling-task
   "RUF007", # pairwise-over-zipped
@@ -288,6 +288,13 @@ ignore = [
   "PT011", # pytest-raises-too-broad
   "PT012", # pytest-raises-multiple-statements (enable later?)
   "PT019", # pytest-fixture-param-without-value (enable later?)
+  "RET501",
+  "RET502",
+  "RET503",
+  "RET505",
+  "RET506",
+  "RET507",
+  "RET508",
   "S101", # asserts
   "SIM117", # multiple-with-statements (remove for Python 3.10+)
   "SIM300", # yoda-conditions
