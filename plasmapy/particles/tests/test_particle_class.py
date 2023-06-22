@@ -912,7 +912,7 @@ def test_that_object_can_be_dict_key(key):
                 error_message += f"{key} does not equal itself."
         raise TypeError(error_message) from exc
 
-    assert dictionary[key] is value
+    assert dictionary[key] == value
 
 
 customized_particle_tests = [
