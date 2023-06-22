@@ -306,7 +306,7 @@ def temp_ratio(  # noqa: C901, PLR0912, PLR0915
 
     d_type = [bool(hasattr(var, "__len__")) for var in variables]
 
-    var = all(i for i in d_type)
+    var = all(d_type)
 
     if not var:
         return df_eq(
@@ -323,35 +323,34 @@ def temp_ratio(  # noqa: C901, PLR0912, PLR0915
             velocity_scale,
             temperature_scale,
         )
-    else:
-        try:
-            all(len(variables[0]) == len(z) for z in variables[1:])
-            res = []
-            for i in range(len(variables[0])):
-                res.append(
-                    df_eq(
-                        r_0[i],
-                        r_n[i],
-                        n_1[i],
-                        n_2[i],
-                        v_1[i],
-                        T_1[i],
-                        T_2[i],
-                        ions,
-                        n_step,
-                        density_scale,
-                        velocity_scale,
-                        temperature_scale,
-                    )
+    try:
+        all(len(variables[0]) == len(z) for z in variables[1:])
+        res = []
+        for i in range(len(variables[0])):
+            res.append(
+                df_eq(
+                    r_0[i],
+                    r_n[i],
+                    n_1[i],
+                    n_2[i],
+                    v_1[i],
+                    T_1[i],
+                    T_2[i],
+                    ions,
+                    n_step,
+                    density_scale,
+                    velocity_scale,
+                    temperature_scale,
                 )
-                if verbose:
-                    logging.info(f"\r {(i / len(variables[0])) * 100:.2f} %")
+            )
+            if verbose:
+                logging.info(f"\r {(i / len(variables[0])) * 100:.2f} %")
 
-            return res  # noqa: TRY300
+        return res  # noqa: TRY300
 
-        except Exception as e:  # noqa: BLE001
-            raise ValueError(
-                "Argument(s) are of unequal lengths, the following "
-                "arguments should be of equal length: 'r_0', 'r_n', "
-                "'n_1', 'n_2', 'v_1', 'T_1' and 'T_2'."
-            ) from e
+    except Exception as e:  # noqa: BLE001
+        raise ValueError(
+            "Argument(s) are of unequal lengths, the following "
+            "arguments should be of equal length: 'r_0', 'r_n', "
+            "'n_1', 'n_2', 'v_1', 'T_1' and 'T_2'."
+        ) from e
