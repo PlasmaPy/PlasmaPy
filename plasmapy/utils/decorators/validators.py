@@ -562,9 +562,8 @@ def get_attributes_not_provided(
     if both_or_either_attributes is not None:
         for attribute_tuple in both_or_either_attributes:
             number_of_attributes_provided = sum(
-                1
+                bool(getattr(self, attribute) is not None)
                 for attribute in attribute_tuple
-                if getattr(self, attribute) is not None
             )
             if number_of_attributes_provided == 0:
                 attributes_not_provided.append(
@@ -574,9 +573,8 @@ def get_attributes_not_provided(
     if mutually_exclusive_attributes is not None:
         for attribute_tuple in mutually_exclusive_attributes:
             number_of_attributes_provided = sum(
-                1
+                bool(getattr(self, attribute) is not None)
                 for attribute in attribute_tuple
-                if getattr(self, attribute) is not None
             )
             if number_of_attributes_provided != 1:
                 attributes_not_provided.append(
