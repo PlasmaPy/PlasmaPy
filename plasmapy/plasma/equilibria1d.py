@@ -4,7 +4,7 @@ import astropy.constants as const
 import astropy.units as u
 import math
 import numpy as np
-
+from plasmapy.utils.decorators.validators import validate_quantities
 
 class HarrisSheet:
 
