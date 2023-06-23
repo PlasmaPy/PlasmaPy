@@ -24,7 +24,7 @@ def test_pressure_balance():
     hs = HarrisSheet(B0, delta, P0)
     y = [-7, -3, 0, 2, 47] * u.m
     B = hs.magnetic_field(y)
-    P = hs.pressure(y)
+    P = hs.plasma_pressure(y)
     p_b = magnetic_pressure(B)
     total_pressure = P + p_b
     assert u.allclose(total_pressure, total_pressure[0], atol=1e-9 * u.Pa)
