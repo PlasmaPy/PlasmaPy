@@ -493,7 +493,7 @@ def half_life(particle: Particle, mass_numb: Optional[Integral] = None) -> u.Qua
     return particle.half_life
 
 
-def known_isotopes(argument: Union[str, Integral] = None) -> list[str]:
+def known_isotopes(argument: Optional[Union[str, Integral]] = None) -> list[str]:
     """
     Return a list of all known isotopes of an element, or a list of all
     known isotopes of every element if no input is provided.
@@ -584,7 +584,7 @@ def known_isotopes(argument: Union[str, Integral] = None) -> list[str]:
 
 
 def common_isotopes(
-    argument: Union[str, Integral] = None, most_common_only: bool = False
+    argument: Optional[Union[str, Integral]] = None, most_common_only: bool = False
 ) -> list[str]:
     """
     Return a list of isotopes of an element with an isotopic abundances
