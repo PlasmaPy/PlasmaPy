@@ -79,7 +79,7 @@ class HarrisSheet:
 
     def plasma_pressure(self, y):
         r"""
-        Compute plasma preassure.
+        Compute plasma pressure.
 
         .. math::
 
