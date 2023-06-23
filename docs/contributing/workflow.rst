@@ -47,7 +47,7 @@ Create a new branch
 
    .. code-block::
 
-      git checkout -b new-branch-name upstream main
+      git checkout -b new-branch-name upstream/main
 
    where ``new-branch-name`` is changed to the name of the new branch.
    Here ``upstream`` is the name of the remote_ and ``main`` is the name
