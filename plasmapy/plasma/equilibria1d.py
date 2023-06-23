@@ -61,7 +61,8 @@ class HarrisSheet:
         """
         return self.B0 * np.tanh(u.rad * y / self.delta)
 
-    def current_density(self, y):
+    @validate_quantities
+    def current_density(self, y: u.m) -> u.A / u.m ** 2:
         r"""
         Compute the current density.
 
