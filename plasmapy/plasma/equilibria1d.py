@@ -39,7 +39,8 @@ class HarrisSheet:
         self.delta = delta
         self.P0 = P0
 
-    def magnetic_field(self, y):
+    @validate_quantities
+    def magnetic_field(self, y: u.m) -> u.T:
         r"""
         Compute the magnetic field along y = 0.
 
