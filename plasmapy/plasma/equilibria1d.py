@@ -79,7 +79,8 @@ class HarrisSheet:
         """
         return self.B0 / (self.delta * const.mu0) * np.cosh(u.rad * y / self.delta) ** -2
 
-    def plasma_pressure(self, y):
+    @validate_quantities
+    def plasma_pressure(self, y: u.m) -> u.Pa:
         r"""
         Compute plasma pressure.
 
