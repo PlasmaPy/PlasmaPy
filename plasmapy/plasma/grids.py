@@ -1250,7 +1250,7 @@ class CartesianGrid(AbstractGrid):
         weighted_ave = np.sum(bounding_cell_weights[..., None] * vals, axis=1)
         weighted_ave[mask_particle_off, :] = np.nan
 
-        output = weighted_ave.T
+        output = weighted_ave
 
         return output[0] if len(output) == 1 else output
 
@@ -1305,7 +1305,7 @@ class CartesianGrid(AbstractGrid):
 
         # Split position array into chunks
         # TODO: Fine tune chunk size for optimization
-        chunked_positions = da.from_array(pos, chunks={0: "auto", 1: 3})
+        chunked_positions = da.from_array(pos, chunks={0: 1e4, 1: 3})
 
         result = da.map_blocks(
             self._volume_averaged_interpolator,
@@ -1316,6 +1316,8 @@ class CartesianGrid(AbstractGrid):
             interpolation_quantities=self._interp_quantities,
             dtype=list,
         ).compute()
+
+        result = result.T
 
         return [result[i] * self._interp_units[i] for i in range(nargs)]
 
