@@ -95,7 +95,7 @@ future==0.18.3
     # via uncertainties
 h5py==3.9.0
     # via plasmapy (setup.py)
-hypothesis==6.79.2
+hypothesis==6.79.3
     # via plasmapy (setup.py)
 identify==2.5.24
     # via pre-commit
@@ -109,7 +109,7 @@ incremental==22.10.0
     # via towncrier
 iniconfig==2.0.0
     # via pytest
-ipykernel==6.23.2
+ipykernel==6.23.3
     # via
     #   ipywidgets
     #   plasmapy (setup.py)
@@ -254,7 +254,7 @@ pillow==9.5.0
     # via
     #   matplotlib
     #   plasmapy (setup.py)
-platformdirs==3.7.0
+platformdirs==3.8.0
     # via
     #   jupyter-core
     #   tox
@@ -300,7 +300,7 @@ pyproject-api==1.5.2
     # via tox
 pyrsistent==0.19.3
     # via jsonschema
-pytest==7.3.2
+pytest==7.4.0
     # via
     #   plasmapy (setup.py)
     #   pytest-datadir
@@ -335,7 +335,7 @@ requests==2.31.0
     #   jupyterlab-server
     #   plasmapy (setup.py)
     #   sphinx
-scipy==1.10.1
+scipy==1.11.0
     # via
     #   lmfit
     #   plasmapy (setup.py)
@@ -466,7 +466,7 @@ webencodings==0.5.1
     # via
     #   bleach
     #   tinycss2
-websocket-client==1.6.0
+websocket-client==1.6.1
     # via jupyter-server
 websockets==11.0.3
     # via voila
@@ -474,7 +474,7 @@ widgetsnbextension==4.0.7
     # via ipywidgets
 wrapt==1.15.0
     # via plasmapy (setup.py)
-xarray==2023.5.0
+xarray==2023.6.0
     # via plasmapy (setup.py)
 
 # The following packages are considered to be unsafe in a requirements file:
