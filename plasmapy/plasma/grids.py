@@ -10,6 +10,7 @@ __all__ = [
 
 import astropy.units as u
 import contextlib
+import dask.array as da
 import numpy as np
 import pandas as pd
 import scipy.interpolate as interp
@@ -1132,60 +1133,16 @@ class CartesianGrid(AbstractGrid):
         ]
         return output[0] if len(output) == 1 else tuple(output)
 
-    def volume_averaged_interpolator(
-        self, pos: Union[np.ndarray, u.Quantity], *args, persistent=False
+    @staticmethod
+    def _volume_averaged_interpolator(
+        pos, axes, volume_differentials, shape, interpolation_quantities
     ):
-        r"""
-        Interpolate values on the grid using a volume-averaged scheme with
-        no higher-order weighting.
-
-        Parameters
-        ----------
-        pos : `~numpy.ndarray` or `~astropy.units.Quantity` array, shape (n,3)
-            An array of positions in space, where the second dimension
-            corresponds to the three dimensions of the grid. If a
-            `~numpy.ndarray` is provided, units will be assumed to match
-            those of the grid.
-
-        *args : `str`
-            Strings that correspond to DataArrays in the dataset
-
-        persistent : `bool`
-            If `True`, the interpolator will assume the grid and its
-            contents have not changed since the last interpolation. This
-            substantially speeds up the interpolation when many
-            interpolations are performed on the same grid in a loop.
-            ``persistent`` overrides to `False` if the arguments list
-            has changed since the last call.
-
-        Notes
-        -----
-        This interpolator approximates the value of a quantity at a given
-        interpolation point using a weighted sum of the values at the eight grid
-        vertices that surround the point. The weighting factors are calculated by
-        defining a volume :math:`dx \\times dy \\times dz`
-        (where :math:`dx`, :math:`dy`, and :math:`dz` are the grid
-        spacings in each direction) around each grid vertex and around the
-        interpolation point. The contribution of each grid vertex is then
-        weighted by the fraction of the volume surrounding the interpolation
-        point that overlaps the volume surrounding that vertex. This effectively
-        introduces a linear interpolation between grid vertices.
-
-        This implementation of this algorithm assumes that the grid is uniformly
-        spaced and Cartesian.
-        """
-        # Shared setup
-        pos, args, persistent = self._persistent_interpolator_setup(
-            pos, args, persistent
-        )
-
         nparticles = pos.shape[0]
-        nargs = len(args)
 
         # Load grid attributes (so this isn't repeated)
-        ax0, ax1, ax2 = self._ax0_si, self._ax1_si, self._ax2_si
-        dx, dy, dz = self._dax0_si, self._dax1_si, self._dax2_si
-        n0, n1, n2 = self.shape
+        ax0, ax1, ax2 = axes
+        dx, dy, dz = volume_differentials
+        n0, n1, n2 = shape
 
         # find cell nearest to each position
         nearest_neighbor_index = np.zeros((nparticles, 3), dtype=np.int32)
@@ -1283,7 +1240,7 @@ class CartesianGrid(AbstractGrid):
 
         # Get the values of each of the interpolated quantities at each
         # of the bounding vertices
-        vals = self._interp_quantities[
+        vals = interpolation_quantities[
             bounding_cell_indices[..., 0],
             bounding_cell_indices[..., 1],
             bounding_cell_indices[..., 2],
@@ -1293,13 +1250,74 @@ class CartesianGrid(AbstractGrid):
         weighted_ave = np.sum(bounding_cell_weights[..., None] * vals, axis=1)
         weighted_ave[mask_particle_off, :] = np.nan
 
-        # Split output array into arrays with units
-        # Apply units to output arrays
-        output = [
-            weighted_ave[..., arg] * self._interp_units[arg] for arg in range(nargs)
-        ]
+        output = weighted_ave.T
 
-        return output[0] if len(output) == 1 else tuple(output)
+        return output[0] if len(output) == 1 else output
+
+    def volume_averaged_interpolator(
+        self, pos: Union[np.ndarray, u.Quantity], *args, persistent=False
+    ):
+        r"""
+        Interpolate values on the grid using a volume-averaged scheme with
+        no higher-order weighting.
+
+        Parameters
+        ----------
+        pos : `~numpy.ndarray` or `~astropy.units.Quantity` array, shape (n,3)
+            An array of positions in space, where the second dimension
+            corresponds to the three dimensions of the grid. If a
+            `~numpy.ndarray` is provided, units will be assumed to match
+            those of the grid.
+
+        *args : `str`
+            Strings that correspond to DataArrays in the dataset
+
+        persistent : `bool`
+            If `True`, the interpolator will assume the grid and its
+            contents have not changed since the last interpolation. This
+            substantially speeds up the interpolation when many
+            interpolations are performed on the same grid in a loop.
+            ``persistent`` overrides to `False` if the arguments list
+            has changed since the last call.
+
+        Notes
+        -----
+        This interpolator approximates the value of a quantity at a given
+        interpolation point using a weighted sum of the values at the eight grid
+        vertices that surround the point. The weighting factors are calculated by
+        defining a volume :math:`dx \\times dy \\times dz`
+        (where :math:`dx`, :math:`dy`, and :math:`dz` are the grid
+        spacings in each direction) around each grid vertex and around the
+        interpolation point. The contribution of each grid vertex is then
+        weighted by the fraction of the volume surrounding the interpolation
+        point that overlaps the volume surrounding that vertex. This effectively
+        introduces a linear interpolation between grid vertices.
+
+        This implementation of this algorithm assumes that the grid is uniformly
+        spaced and Cartesian.
+        """
+        nargs = len(args)
+
+        # Shared setup
+        pos, args, persistent = self._persistent_interpolator_setup(
+            pos, args, persistent
+        )
+
+        # Split position array into chunks
+        # TODO: Fine tune chunk size for optimization
+        chunked_positions = da.from_array(pos, chunks={0: "auto", 1: 3})
+
+        result = da.map_blocks(
+            self._volume_averaged_interpolator,
+            chunked_positions,
+            axes=(self._ax0_si, self._ax1_si, self._ax2_si),
+            volume_differentials=(self._dax0_si, self._dax1_si, self._dax2_si),
+            shape=self.shape,
+            interpolation_quantities=self._interp_quantities,
+            dtype=list,
+        ).compute()
+
+        return [result[i] * self._interp_units[i] for i in range(nargs)]
 
 
 class NonUniformCartesianGrid(AbstractGrid):
