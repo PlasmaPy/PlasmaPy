@@ -38,29 +38,6 @@ class AbstractMHDWave(ABC):
         mass_numb: Optional[Integral] = None,
         Z: Optional[Real] = None,
     ):
-        # validate argument ion
-        if not isinstance(ion, Particle):
-            try:
-                ion = Particle(ion)
-            except TypeError:
-                raise TypeError(
-                    f"For argument 'ion' expected type {Particle} but got {type(ion)}."
-                )
-        if not ion.is_ion and not ion.is_category("element"):
-            raise ValueError("The particle passed for 'ion' must be an ion or element.")
-
-        # validate z_mean
-        if z_mean is None:
-            try:
-                z_mean = abs(ion.charge_number)
-            except ChargeError:
-                z_mean = 1
-        elif isinstance(z_mean, (int, np.integer, float, np.floating)):
-            z_mean = abs(z_mean)
-        else:
-            raise TypeError(
-                f"Expected int or float for argument 'z_mean', but got {type(z_mean)}."
-            )
 
         # validate arguments
         for arg_name in ("B", "n_i", "T_e", "T_i"):
