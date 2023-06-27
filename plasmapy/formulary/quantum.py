@@ -464,7 +464,7 @@ def chemical_potential(n_e: u.m**-3, T: u.K) -> u.dimensionless_unscaled:
         # note that alpha = mu / (k_B * T)
         model = mathematics.Fermi_integral(alpha, 0.5)
         complexResidue = abs(data - model)
-        return complexResidue
+        return complexResidue  # noqa: RET504
 
     # setting parameters for fitting along with bounds
     alphaGuess = 1 * u.dimensionless_unscaled
@@ -475,7 +475,7 @@ def chemical_potential(n_e: u.m**-3, T: u.K) -> u.dimensionless_unscaled:
     minFit = minimize(residual, params, args=(data,), method="bfgsb")
     beta_mu = minFit.params["alpha"].value * u.dimensionless_unscaled
 
-    return beta_mu
+    return beta_mu  # noqa: RET504
 
 
 def _chemical_potential_interp(n_e, T):

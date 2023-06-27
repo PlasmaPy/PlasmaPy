@@ -473,7 +473,7 @@ def _trilinear_jacobian(vspace, cell):
         dBzdx = bz + ez * yInput + fz * zInput + hz * yInput * zInput
         dBzdy = cz + ez * xInput + gz * zInput + hz * xInput * yInput
         dBzdz = dz + fz * xInput + gz * yInput + hz * xInput * yInput
-        jmatrix = np.array(
+        return np.array(
             [
                 float(dBxdx),
                 float(dBxdy),
@@ -486,7 +486,6 @@ def _trilinear_jacobian(vspace, cell):
                 float(dBzdz),
             ]
         ).reshape(3, 3)
-        return jmatrix
 
     return jacobian_func
 
@@ -1074,18 +1073,12 @@ def _trilinear_analysis(vspace, cell):  # noqa: C901, PLR0911, PLR0912, PLR0915
             second_endpoint, 0, atol=_EQUALITY_ATOL
         ):
             return True
-        if np.sign(first_endpoint) * np.sign(second_endpoint) > 0:
-            return False
-
-        return True
+        return np.sign(first_endpoint) * np.sign(second_endpoint) <= 0
 
     opposite_sign_z = endpoint_sign_check(BxByEndpoints, "z")
     opposite_sign_y = endpoint_sign_check(BxBzEndpoints, "y")
     opposite_sign_x = endpoint_sign_check(ByBzEndpoints, "x")
-    if opposite_sign_x and opposite_sign_y and opposite_sign_z:
-        return True
-
-    return False
+    return bool(opposite_sign_x and opposite_sign_y and opposite_sign_z)
 
 
 def _locate_null_point(vspace, cell, n, err):
@@ -1315,26 +1308,26 @@ def _classify_null_point(vspace, cell, loc):  # noqa: PLR0912
         if np.allclose(M, M.T, atol=_EQUALITY_ATOL):  # Checking if M is symmetric
             null_point_type = "Proper radial null"
         else:
-            if np.isclose(determinant, 0, atol=_EQUALITY_ATOL):  # noqa: PLR5501
-                null_point_type = "Anti-parallel lines with null plane OR Planes of parabolae with null line"
-            else:
-                null_point_type = "Critical spiral null"
+            null_point_type = (
+                "Anti-parallel lines with null plane OR Planes of parabolae with null line"
+                if np.isclose(determinant, 0, atol=_EQUALITY_ATOL)
+                else "Critical spiral null"
+            )
     elif discriminant < 0:
         if np.allclose(M, M.T, atol=_EQUALITY_ATOL):
-            if np.isclose(determinant, 0, atol=_EQUALITY_ATOL):
-                null_point_type = "Continuous potential X-points"
-            else:
-                null_point_type = "Improper radial null"
+            null_point_type = (
+                "Continuous potential X-points"
+                if np.isclose(determinant, 0, atol=_EQUALITY_ATOL)
+                else "Improper radial null"
+            )
+        elif np.isclose(determinant, 0, atol=_EQUALITY_ATOL):  # noqa: PLR5501
+            null_point_type = "Continuous X-points"
         else:
-            if np.isclose(determinant, 0, atol=_EQUALITY_ATOL):  # noqa: PLR5501
-                null_point_type = "Continuous X-points"
-            else:
-                null_point_type = "Skewed improper null"
+            null_point_type = "Skewed improper null"
+    elif np.isclose(determinant, 0, atol=_EQUALITY_ATOL):  # noqa: PLR5501
+        null_point_type = "Continuous concentric ellipses"
     else:
-        if np.isclose(determinant, 0, atol=_EQUALITY_ATOL):  # noqa: PLR5501
-            null_point_type = "Continuous concentric ellipses"
-        else:
-            null_point_type = "Spiral null"
+        null_point_type = "Spiral null"
     return null_point_type
 
 
@@ -1370,14 +1363,15 @@ def _vspace_iterator(vspace, maxiter=500, err=1e-10):
     for i in range(len(vspace[0][0]) - 1):
         for j in range(len(vspace[0][0][0]) - 1):
             for k in range(len(vspace[0][0][0][0]) - 1):
-                if _reduction(vspace, [i, j, k]):  # noqa: SIM102
-                    if _trilinear_analysis(vspace, [i, j, k]):
-                        loc = _locate_null_point(vspace, [i, j, k], maxiter, err)
-                        if loc is not None:
-                            null_type = _classify_null_point(vspace, [i, j, k], loc)
-                            p = NullPoint(loc, null_type)
-                            if p not in nullpoints:
-                                nullpoints.append(p)
+                if _reduction(vspace, [i, j, k]) and _trilinear_analysis(
+                    vspace, [i, j, k]
+                ):
+                    loc = _locate_null_point(vspace, [i, j, k], maxiter, err)
+                    if loc is not None:
+                        null_type = _classify_null_point(vspace, [i, j, k], loc)
+                        p = NullPoint(loc, null_type)
+                        if p not in nullpoints:
+                            nullpoints.append(p)
     return nullpoints
 
 

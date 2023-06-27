@@ -2,7 +2,6 @@ import astropy.constants as const
 import astropy.units as u
 import inspect
 import pytest
-import sys
 
 from numbers import Real
 from typing import Optional
@@ -344,10 +343,6 @@ def test_preserving_signature_with_stacked_decorators(decorator1, decorator2):
     assert undecorated_signature == decorated_signature_1_2 == decorated_signature_2_1
 
 
-@pytest.mark.xfail(
-    condition=sys.version_info < (3, 9),
-    reason="This test fails for Python 3.8 but it is not clear why.",
-)
 def test_annotated_classmethod():
     """
     Test that `particle_input` behaves as expected for a method that is
@@ -357,7 +352,7 @@ def test_annotated_classmethod():
     class HasAnnotatedClassMethod:
         @classmethod
         @particle_input
-        def f(cls, particle: ParticleLike):
+        def f(cls, particle: ParticleLike) -> Particle:
             return particle
 
     has_annotated_classmethod = HasAnnotatedClassMethod()

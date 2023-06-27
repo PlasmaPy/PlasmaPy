@@ -105,7 +105,7 @@ def test_gyrofrequency():
         gyrofrequency(8 * u.T, particle="asdfasd")
 
     with pytest.warns(u.UnitsWarning):
-        # TODO this should be WARNS, not RAISES. and it's probably still raised
+        # TODO: this should be WARNS, not RAISES. and it's probably still raised
         assert gyrofrequency(5.0, "p") == gyrofrequency(5.0 * u.T, "p")
 
     gyrofrequency(1 * u.T, particle="p")
