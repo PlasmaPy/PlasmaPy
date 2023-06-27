@@ -334,12 +334,6 @@ python-dateutil==2.8.2
     #   pandas
 pytz==2023.3
     # via pandas
-pywin32==306
-    # via jupyter-core
-pywinpty==2.0.10
-    # via
-    #   jupyter-server
-    #   terminado
 pyyaml==6.0
     # via
     #   astropy
