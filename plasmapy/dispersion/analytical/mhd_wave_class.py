@@ -34,7 +34,8 @@ class AbstractMHDWave(ABC):
         T_i: u.K = 0 * u.K,
         gamma_e: Union[float, int] = 1,
         gamma_i: Union[float, int] = 3,
-        z_mean: Union[float, int] = None,
+        mass_numb: Optional[Integral] = None,
+        Z: Optional[Real] = None,
     ):
         # validate argument ion
         if not isinstance(ion, Particle):
