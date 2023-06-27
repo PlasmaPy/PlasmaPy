@@ -70,7 +70,7 @@ class AbstractMHDWave(ABC):
 
         # validate arguments
         for arg_name in ("gamma_e", "gamma_i"):
-            if not isinstance(locals()[arg_name], (int, np.integer, float, np.floating)):
+            if not isinstance(locals()[arg_name], numbers.Real):
                 raise TypeError(
                     f"Expected int or float for argument '{arg_name}', but got "
                     f"{type(locals()[arg_name])}."
