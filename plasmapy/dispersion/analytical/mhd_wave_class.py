@@ -30,6 +30,7 @@ class AbstractMHDWave(ABC):
         B: u.T,
         ion: ParticleLike,
         n_i: u.m**-3,
+        *,
         T_e: u.K = 0 * u.K,
         T_i: u.K = 0 * u.K,
         gamma_e: Union[float, int] = 1,
