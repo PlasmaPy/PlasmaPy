@@ -1317,8 +1317,9 @@ class CartesianGrid(AbstractGrid):
         ).compute()
 
         result = result.T
+        result = tuple([result[i] * self._interp_units[i] for i in range(nargs)])
 
-        return [result[i] * self._interp_units[i] for i in range(nargs)]
+        return result[0] if len(result) == 1 else result
 
 
 class NonUniformCartesianGrid(AbstractGrid):
