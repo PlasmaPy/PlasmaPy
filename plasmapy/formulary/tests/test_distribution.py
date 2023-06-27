@@ -194,6 +194,19 @@ class Test_Maxwellian_1D:
         errStr = f"Distribution function should be {testVal} and not {distFunc}."
         assert np.isclose(distFunc.value, testVal, rtol=1e-5, atol=0.0), errStr
 
+    def test_no_units(self):
+        """
+        Test resulting error from using incorrect units parameter
+        """
+        with pytest.raises(ValueError):
+            Maxwellian_1D(
+                v=self.v.value,
+                T=self.T_e.value,
+                particle=self.particle,
+                v_drift=self.v_drift3.value,
+                units="Lorem ipsum",
+            )
+
 
 class Test_Maxwellian_speed_1D:
     @classmethod
@@ -322,6 +335,19 @@ class Test_Maxwellian_speed_1D:
         assert np.isclose(
             distFunc.value, self.distFuncDrift.value, rtol=1e-5, atol=0.0
         ), errStr
+
+    def test_no_units(self):
+        """
+        Test resulting error from using incorrect units parameter
+        """
+        with pytest.raises(ValueError):
+            Maxwellian_speed_1D(
+                v=self.v,
+                T=self.T,
+                particle=self.particle,
+                v_drift=self.v_drift2,
+                units="Lorem ipsum",
+            )
 
 
 class Test_Maxwellian_velocity_2D:
@@ -480,6 +506,21 @@ class Test_Maxwellian_velocity_2D:
         errStr = f"Distribution function should be {testVal} and not {distFunc}."
         assert np.isclose(distFunc.value, testVal, rtol=1e-5, atol=0.0), errStr
 
+    def test_no_units(self):
+        """
+        Test resulting error from using incorrect units parameter
+        """
+        with pytest.raises(ValueError):
+            Maxwellian_velocity_2D(
+                vx=self.vx,
+                vy=self.vy,
+                T=self.T,
+                particle=self.particle,
+                vx_drift=self.vx_drift,
+                vy_drift=self.vy_drift,
+                units="Lorem ipsum",
+            )
+
 
 @pytest.mark.slow()
 class Test_Maxwellian_speed_2D:
@@ -604,6 +645,19 @@ class Test_Maxwellian_speed_2D:
                 particle=self.particle,
                 v_drift=self.v_drift2,
                 units="units",
+            )
+
+    def test_no_units(self):
+        """
+        Test resulting error from using incorrect units parameter
+        """
+        with pytest.raises(ValueError):
+            Maxwellian_speed_2D(
+                v=self.v,
+                T=self.T,
+                particle=self.particle,
+                v_drift=self.v_drift,
+                units="Lorem ipsum",
             )
 
 
@@ -781,6 +835,23 @@ class Test_Maxwellian_velocity_3D:
         errStr = f"Distribution function should be {testVal} and not {distFunc}."
         assert np.isclose(distFunc.value, testVal, rtol=1e-5, atol=0.0), errStr
 
+    def test_no_units(self):
+        """
+        Test resulting error from using incorrect units parameter
+        """
+        with pytest.raises(ValueError):
+            Maxwellian_velocity_3D(
+                vx=self.vx,
+                vy=self.vy,
+                vz=self.vz,
+                T=self.T,
+                particle=self.particle,
+                vx_drift=self.vx_drift2,
+                vy_drift=self.vy_drift2,
+                vz_drift=self.vz_drift2,
+                units="Lorem ipsum",
+            )
+
 
 class Test_Maxwellian_speed_3D:
     @classmethod
@@ -904,6 +975,19 @@ class Test_Maxwellian_speed_3D:
                 particle=self.particle,
                 v_drift=self.v_drift2,
                 units="units",
+            )
+
+    def test_no_units(self):
+        """
+        Test resulting error from using incorrect units parameter
+        """
+        with pytest.raises(ValueError):
+            Maxwellian_speed_3D(
+                v=self.v,
+                T=self.T,
+                particle=self.particle,
+                v_drift=self.v_drift,
+                units="Lorem ipsum",
             )
 
 
@@ -1125,6 +1209,20 @@ class Test_kappa_velocity_1D:
         )
         errStr = f"Distribution function should be {testVal} and not {distFunc}."
         assert np.isclose(distFunc.value, testVal, rtol=1e-5, atol=0.0), errStr
+
+    def test_no_units(self):
+        """
+        Test resulting error from using incorrect units parameter
+        """
+        with pytest.raises(ValueError):
+            kappa_velocity_1D(
+                v=self.v,
+                T=self.T_e,
+                kappa=self.kappa,
+                particle=self.particle,
+                v_drift=self.v_drift3,
+                units="Lorem ipsum",
+            )
 
 
 @pytest.mark.slow()
@@ -1359,3 +1457,21 @@ class Test_kappa_velocity_3D:
         )
         errStr = f"Distribution function should be {testVal} and not {distFunc}."
         assert np.isclose(distFunc.value, testVal, rtol=1e-5, atol=0.0), errStr
+
+    def test_no_units(self):
+        """
+        Test resulting error from using incorrect units parameter
+        """
+        with pytest.raises(ValueError):
+            kappa_velocity_3D(
+                vx=self.vx,
+                vy=self.vy,
+                vz=self.vz,
+                T=self.T,
+                kappa=self.kappa,
+                particle=self.particle,
+                vx_drift=self.vx_drift2,
+                vy_drift=self.vy_drift2,
+                vz_drift=self.vz_drift2,
+                units="Lorem ipsum",
+            )
