@@ -1093,18 +1093,9 @@ class CartesianGrid(AbstractGrid):
 
         return Tmin < Tmax
 
-    @modify_docstring(prepend=AbstractGrid.nearest_neighbor_interpolator.__doc__)
-    def nearest_neighbor_interpolator(
-        self, pos: Union[np.ndarray, u.Quantity], *args, persistent=False
-    ):
-        r""" """  # noqa: D419
-
-        # Shared setup
-        pos, args, persistent = self._persistent_interpolator_setup(
-            pos, args, persistent
-        )
-
-        ax0, ax1, ax2 = self._ax0_si, self._ax1_si, self._ax2_si
+    @staticmethod
+    def _nearest_neighbor_interpolator(pos, axes, interpolation_quantities):
+        ax0, ax1, ax2 = axes
 
         # Find particles that are off the grid
         mask_particle_off = (
@@ -1121,17 +1112,42 @@ class CartesianGrid(AbstractGrid):
         i1 = _fast_nearest_neighbor_interpolate(pos[:, 1], ax1)
         i2 = _fast_nearest_neighbor_interpolate(pos[:, 2], ax2)
 
-        vals = self._interp_quantities[i0, i1, i2, :]
+        vals = interpolation_quantities[i0, i1, i2, :]
 
         # Replace values of off-grid particles with NaN
         vals[mask_particle_off, :] = np.nan
 
-        # Split output array into arrays with units
-        # Apply units to output arrays
-        output = [
-            vals[..., index] * self._interp_units[index] for index, _ in enumerate(args)
-        ]
-        return output[0] if len(output) == 1 else tuple(output)
+        output = vals
+
+        return output[0] if len(output) == 1 else output
+
+    @modify_docstring(prepend=AbstractGrid.nearest_neighbor_interpolator.__doc__)
+    def nearest_neighbor_interpolator(
+        self, pos: Union[np.ndarray, u.Quantity], *args, persistent=False
+    ):
+        r""" """  # noqa: D419
+        nargs = len(args)
+
+        # Shared setup
+        pos, args, persistent = self._persistent_interpolator_setup(
+            pos, args, persistent
+        )
+
+        # Split position array into chunks
+        chunked_positions = da.from_array(pos, chunks=("auto", -1))
+
+        result = da.map_blocks(
+            self._nearest_neighbor_interpolator,
+            chunked_positions,
+            axes=(self._ax0_si, self._ax1_si, self._ax2_si),
+            interpolation_quantities=self._interp_quantities,
+            dtype=list,
+        ).compute()
+
+        result = result.T
+        result = tuple([result[i] * self._interp_units[i] for i in range(nargs)])
+
+        return result[0] if len(result) == 1 else result
 
     @staticmethod
     def _volume_averaged_interpolator(
