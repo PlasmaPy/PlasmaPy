@@ -12,20 +12,19 @@ from numbers import Integral, Real
 from typing import Optional, Union
 
 from plasmapy.formulary.speeds import Alfven_speed, ion_sound_speed
-from plasmapy.particles import Particle, ParticleLike, particle_input
-from plasmapy.particles.exceptions import ChargeError
+from plasmapy.particles import ParticleLike, particle_input
 from plasmapy.utils.decorators import validate_quantities
 from plasmapy.utils.exceptions import PhysicsWarning
 
-class AbstractMHDWave(ABC):
 
+class AbstractMHDWave(ABC):
+    @particle_input
     @validate_quantities(
         B={"can_be_negative": False},
         n_i={"can_be_negative": False},
         T_e={"can_be_negative": False, "equivalencies": u.temperature_energy()},
         T_i={"can_be_negative": False, "equivalencies": u.temperature_energy()},
     )
-    @particle_input
     def __init__(self,
         B: u.T,
         ion: ParticleLike,
@@ -51,7 +50,7 @@ class AbstractMHDWave(ABC):
 
         # validate arguments
         for arg_name in ("gamma_e", "gamma_i"):
-            if not isinstance(locals()[arg_name], numbers.Real):
+            if not isinstance(locals()[arg_name], Real):
                 raise TypeError(
                     f"Expected int or float for argument '{arg_name}', but got "
                     f"{type(locals()[arg_name])}."
@@ -63,16 +62,16 @@ class AbstractMHDWave(ABC):
         self._T_i = T_i
         self._gamma_e = gamma_e
         self._gamma_i = gamma_i
-        self._z_mean = z_mean
+        self._Z = ion.charge_number
 
         self._v_A = Alfven_speed(
             self._B,
             self._n_i,
             ion=self._ion,
-            z_mean=self._z_mean
+            Z=self._Z
         )
 
-        self._n_e = self._z_mean * self._n_i
+        self._n_e = self._Z * self._n_i
         with warnings.catch_warnings():
             warnings.simplefilter("ignore", category=PhysicsWarning)
             self._c_s = ion_sound_speed(
@@ -82,7 +81,7 @@ class AbstractMHDWave(ABC):
                 n_e=self._n_e,
                 gamma_e=self._gamma_e,
                 gamma_i=self._gamma_i,
-                z_mean=self._z_mean,
+                Z=self._Z,
             )
 
         # magnetosonic speed squared
@@ -146,7 +145,7 @@ class AlfvenWave(AbstractMHDWave):
         The adiabatic index for ions, which defaults to 3. This value
         assumes that ion motion has only one degree of freedom, namely
         along magnetic field lines.
-    z_mean : `float` or int, optional
+    Z : `float` or int, optional
         The average ionization state (arithmetic mean) of the ``ion``
         composing the plasma.  Will override any charge state defined
         by argument ``ion``.
@@ -162,7 +161,7 @@ class AlfvenWave(AbstractMHDWave):
         `~plasmapy.particles.particle_class.Particle`.
 
     TypeError
-        If ``gamma_e``, ``gamma_i``, or ``z_mean`` are not of type `int`
+        If ``gamma_e``, ``gamma_i``, or ``Z`` are not of type `int`
         or `float`.
 
     ~astropy.units.UnitTypeError
