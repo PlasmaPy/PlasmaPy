@@ -1,5 +1,5 @@
 """
-Script and utilities to launch the plasma calculator
+Script and utilities to launch the plasma calculator.
 """
 __all__ = ["main"]
 
@@ -52,6 +52,6 @@ def main():
         command.append(no_browser)
 
     try:
-        subprocess.call(command)
+        subprocess.call(command)  # noqa: S603
     except KeyboardInterrupt:
         print("Stopping calculator! Bye")

@@ -1,17 +1,25 @@
-include README.md
-include LICENSE.md
-include setup.py
+graft docs
+graft licenses
+graft plasmapy
+
+include *.md
+include *.py
+include *.rst
+include *.txt
+include *.yaml
+include *.yml
+include changelog/README.rst
+include CITATION.cff
 include pyproject.toml
+include tox.ini
 
-include setup.cfg
-include plasmapy/tests/coveragerc
+exclude plasmapy/_version.py
 
-recursive-include plasmapy *.json *.npy
-recursive-include docs *
-recursive-include licenses *
+global-exclude *.o
+global-exclude *.py[cod]
+global-exclude _build build
 
-prune build
-prune docs/_build
 prune docs/api
 
-global-exclude *.pyc *.o
+# Only for editable installs
+prune plasmapy/_dev

@@ -128,16 +128,16 @@ class Test_permittivity_1D_Maxwellian:
                 "T": 30 * 11600 * u.K,
                 "n": 1e18 * u.cm**-3,
                 "particle": "Ne",
-                "z_mean": 8 * u.dimensionless_unscaled,
+                "z_mean": 8,
                 "omega": 5.635e14 * 2 * np.pi * u.rad / u.s,
             },
-            (-6.728092569241431e-08 + 5.760379561405176e-07j)
+            (-6.729556105413448e-08 + 5.761632594678113e-07j)
             * u.dimensionless_unscaled,
         ),
     ]
 
     @pytest.mark.parametrize(
-        "bound_name, bound_attr",
+        ("bound_name", "bound_attr"),
         [("lite", permittivity_1D_Maxwellian_lite)],
     )
     def test_lite_function_binding(self, bound_name, bound_attr):
@@ -162,7 +162,7 @@ class Test_permittivity_1D_Maxwellian:
             origin = f"{attr.__module__}.{attr.__name__}"
             assert origin == bound_origin
 
-    @pytest.mark.parametrize("kwargs, expected", cases)
+    @pytest.mark.parametrize(("kwargs", "expected"), cases)
     def test_known(self, kwargs, expected):
         """
         Tests permittivity_1D_Maxwellian for expected value.
@@ -176,7 +176,7 @@ class Test_permittivity_1D_Maxwellian:
             f"Permittivity value should be {expected} and not {val}.",
         )
 
-    @pytest.mark.parametrize("kwargs, expected", cases)
+    @pytest.mark.parametrize(("kwargs", "expected"), cases)
     def test_fail(self, kwargs, expected):
         """
         Tests if `test_known` would fail if we slightly adjusted the
@@ -197,14 +197,16 @@ class Test_permittivity_1D_Maxwellian:
 class Test_permittivity_1D_Maxwellian_lite:
     """Test class for `permittivity_1D_Maxwellian_lite`."""
 
-    @pytest.mark.parametrize("kwargs, expected", Test_permittivity_1D_Maxwellian.cases)
-    def test_normal_vs_lite_values(self, kwargs, expected):
+    @pytest.mark.parametrize(
+        ("kwargs", "expected"), Test_permittivity_1D_Maxwellian.cases
+    )
+    def test_normal_vs_lite_values(self, kwargs, expected):  # noqa: ARG002
         """
         Test that `permittivity_1D_Maxwellian_lite` and
         `permittivity_1D_Maxwellian` calculate the same values.
         """
 
-        wp = plasma_frequency(kwargs["n"], kwargs["particle"], kwargs["z_mean"])
+        wp = plasma_frequency(kwargs["n"], kwargs["particle"], Z=kwargs["z_mean"])
         vth = thermal_speed(kwargs["T"], kwargs["particle"], method="most_probable")
         kwargs["kWave"] = kwargs["omega"] / vth
 

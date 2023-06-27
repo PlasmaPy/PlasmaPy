@@ -1,12 +1,13 @@
 """
-Collection of private functions to load properties and construct widgets
+Collection of private functions to load properties and construct widgets.
 """
 __all__ = []
 
-import astropy.units as units
+import astropy.units as u
 import json
 
 from ipywidgets import widgets
+from pathlib import Path
 
 from plasmapy.utils.calculator.widget_helpers import (
     _calculate_button,
@@ -41,8 +42,8 @@ grid_data = [
         *_create_widget(
             _FloatBox,
             property_name="B",
-            unit=units.T,
-            opts=[units.T, units.G, units.uG],
+            unit=u.T,
+            opts=[u.T, u.G, u.uG],
         ),
     ],
     [
@@ -77,8 +78,8 @@ grid_data = [
         *_create_widget(
             _FloatBox,
             property_name="n",
-            unit=units.m**-3,
-            opts=[units.m**-3, units.cm**-3, units.mm**-3],
+            unit=u.m**-3,
+            opts=[u.m**-3, u.cm**-3, u.mm**-3],
         ),
     ],
     [
@@ -86,8 +87,8 @@ grid_data = [
         *_create_widget(
             _FloatBox,
             property_name="n_e",
-            unit=units.m**-3,
-            opts=[units.m**-3, units.cm**-3, units.mm**-3],
+            unit=u.m**-3,
+            opts=[u.m**-3, u.cm**-3, u.mm**-3],
         ),
     ],
     [
@@ -95,8 +96,8 @@ grid_data = [
         *_create_widget(
             _FloatBox,
             property_name="n_i",
-            unit=units.m**-3,
-            opts=[units.m**-3, units.cm**-3, units.mm**-3],
+            unit=u.m**-3,
+            opts=[u.m**-3, u.cm**-3, u.mm**-3],
         ),
     ],
     [
@@ -106,17 +107,17 @@ grid_data = [
     ],
     [
         _create_label("T - Standard Temperature:"),
-        _create_widget(_FloatBox, property_name="T", min=0, unit=units.K),
+        _create_widget(_FloatBox, property_name="T", min=0, unit=u.K),
         _create_label("K", color=LIGHT_GRAY),
     ],
     [
         _create_label("T<sub>e</sub> - Electron Temperature:"),
-        _create_widget(_FloatBox, property_name="T_e", min=0, unit=units.K),
+        _create_widget(_FloatBox, property_name="T_e", min=0, unit=u.K),
         _create_label("K", color=LIGHT_GRAY),
     ],
     [
         _create_label("T<sub>i</sub> - Ion Temperature:"),
-        _create_widget(_FloatBox, property_name="T_i", min=0, unit=units.K),
+        _create_widget(_FloatBox, property_name="T_i", min=0, unit=u.K),
         _create_label("K", color=LIGHT_GRAY),
     ],
 ]
@@ -127,7 +128,7 @@ grid_data: Contains widgets layout for input parameters
 
 def _create_interactive_layout():
     """
-    Interactive grid layout for input parameters populated in grid_data
+    Interactive grid layout for input parameters populated in grid_data.
     """
     grid = widgets.GridspecLayout(18, 3)
     grid.layout.margin = "10px"
@@ -143,12 +144,15 @@ def _create_interactive_layout():
 
 def _create_output_layout():
     """
-    Tab layout for output parameters, populated from properties_metadata.json
+    Tab layout for output parameters, populated from
+    ``properties_metadata.json``.
     """
     app = widgets.Tab()
     children = []
 
-    with open("properties_metadata.json") as f:
+    properties_metadata = Path("properties_metadata.json")
+
+    with properties_metadata.open() as f:
         data = json.load(f)
 
     for i, title in enumerate(data):

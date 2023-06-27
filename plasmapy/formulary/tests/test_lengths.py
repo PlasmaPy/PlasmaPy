@@ -18,8 +18,7 @@ from plasmapy.formulary.lengths import (
 )
 from plasmapy.formulary.speeds import thermal_speed
 from plasmapy.particles.exceptions import InvalidParticleError
-from plasmapy.utils.exceptions import PlasmaPyFutureWarning
-from plasmapy.utils.pytest_helpers import assert_can_handle_nparray
+from plasmapy.utils._pytest_helpers import assert_can_handle_nparray
 
 Z = 1
 n_i = 5e19 * u.m**-3
@@ -77,7 +76,7 @@ class TestGyroradius:
     """Tests for `plasmapy.formulary.lengths.gyroradius`."""
 
     @pytest.mark.parametrize(
-        "args, kwargs, _error",
+        ("args", "kwargs", "_error"),
         [
             ((u.T, "e-"), {}, TypeError),
             ((5 * u.A, "e-"), {"Vperp": 8 * u.m / u.s}, u.UnitTypeError),
@@ -111,7 +110,17 @@ class TestGyroradius:
             ((B_arr, "e-"), {"Vperp": V_arr, "T": T_i}, ValueError),
             ((B_arr, "e-"), {"Vperp": V, "T": T_nanarr}, ValueError),
             ((B_arr, "e-"), {"Vperp": V_nanarr, "T": T_i}, ValueError),
-            ((0.4 * u.T, "e-"), {"T": 5 * u.eV, "T_i": 7 * u.eV}, ValueError),
+            ((B_arr, "e-"), {"lorentzfactor": [3.0, 2.0]}, ValueError),
+            (
+                (B_arr, "e-"),
+                {"Vperp": [25, np.nan] * u.m / u.s, "lorentzfactor": [3.0, 2.0]},
+                ValueError,
+            ),
+            (
+                (1 * u.T,),
+                {"particle": "e-", "lorentzfactor": 2.0, "relativistic": False},
+                ValueError,
+            ),
         ],
     )
     def test_raises(self, args, kwargs, _error):
@@ -124,7 +133,7 @@ class TestGyroradius:
             gyroradius(*args, **kwargs)
 
     @pytest.mark.parametrize(
-        "args, kwargs, nan_mask",
+        ("args", "kwargs", "nan_mask"),
         [
             ((np.nan * u.T,), {"particle": "e-", "T": 1 * u.K}, None),
             ((np.nan * u.T,), {"particle": "e-", "Vperp": 1 * u.m / u.s}, None),
@@ -156,7 +165,7 @@ class TestGyroradius:
             assert np.all(np.logical_not(rc_isnans[np.logical_not(nan_mask)]))
 
     @pytest.mark.parametrize(
-        "args, kwargs, expected, atol",
+        ("args", "kwargs", "expected", "atol"),
         [
             (
                 (1 * u.T,),
@@ -198,6 +207,18 @@ class TestGyroradius:
                 (B_arr,),
                 {"particle": "e-", "T": T_arr},
                 [0.03130334, 0.02213481] * u.m,
+                1e-5,
+            ),
+            (
+                (B_arr,),
+                {"particle": "e-", "T": T_arr, "lorentzfactor": 1.0},
+                [0.03130334, 0.02213481] * u.m,
+                None,
+            ),
+            (
+                (B_arr,),
+                {"particle": "e-", "T": T_arr, "lorentzfactor": [1.0, 1.0]},
+                [0.03130334, 0.02213481] * u.m,
                 None,
             ),
             (
@@ -220,7 +241,7 @@ class TestGyroradius:
                 ([0.001, 0.002] * u.T, "e-"),
                 {"Vperp": [25, np.nan] * u.m / u.s, "T": [np.nan, 2e6] * u.K},
                 [1.42140753e-07, 2.21348073e-02] * u.m,
-                None,
+                1e-5,
             ),
             #
             # If either Vperp or T is a valid scalar and the other is a Qarray of
@@ -235,6 +256,30 @@ class TestGyroradius:
                 ([0.001, 0.002] * u.T, "e-"),
                 {"Vperp": [np.nan, np.nan] * u.m / u.s, "T": 1e6 * u.K},
                 [0.03130334, 0.01565167] * u.m,
+                1e-5,
+            ),
+            (
+                (1 * u.T,),
+                {"particle": "e-", "lorentzfactor": 2.0},
+                0.0029522962 * u.m,
+                None,
+            ),
+            (
+                ([0.001, 0.002] * u.T, "e-"),
+                {"Vperp": [20.5, 10.5] * u.m / u.s, "lorentzfactor": [2.0, 1.0]},
+                [2.33110834e-07, 2.98495580e-08] * u.m,
+                None,
+            ),
+            (
+                ([0.001, 0.002] * u.T, "e-"),
+                {"Vperp": [20.5, 10.5] * u.m / u.s, "lorentzfactor": [1.0, np.nan]},
+                [1.16555417e-07, 2.98495580e-08] * u.m,
+                None,
+            ),
+            (
+                (0.2 * u.T, "e-"),
+                {"T": 100000 * u.K, "relativistic": False},
+                4.94949337e-05 * u.m,
                 None,
             ),
         ],
@@ -249,7 +294,7 @@ class TestGyroradius:
         assert rc.unit == u.m
 
     @pytest.mark.parametrize(
-        "args, kwargs, expected, _warns",
+        ("args", "kwargs", "expected", "_warns"),
         [
             ((1.0, "e-"), {"Vperp": 1.0}, 5.6856301e-12 * u.m, u.UnitsWarning),
             ((1.0 * u.T, "e-"), {"Vperp": 1.0}, 5.6856301e-12 * u.m, u.UnitsWarning),
@@ -262,14 +307,6 @@ class TestGyroradius:
             ((1.1, "e-"), {"T": 1.2}, 3.11737236e-08 * u.m, u.UnitsWarning),
             ((1.1 * u.T, "e-"), {"T": 1.2}, 3.11737236e-08 * u.m, u.UnitsWarning),
             ((1.1, "e-"), {"T": 1.2 * u.K}, 3.11737236e-08 * u.m, u.UnitsWarning),
-            #
-            # Future warning for using T_i instead of T
-            (
-                (1.1 * u.T, "e-"),
-                {"T_i": 1.2 * u.K},
-                3.11737236e-08 * u.m,
-                PlasmaPyFutureWarning,
-            ),
         ],
     )
     def test_warns(self, args, kwargs, expected, _warns):
@@ -359,7 +396,7 @@ def test_inertial_length():
 
 
 @pytest.mark.parametrize(
-    "alias, parent",
+    ("alias", "parent"),
     [
         (cwp_, inertial_length),
         (lambdaD_, Debye_length),

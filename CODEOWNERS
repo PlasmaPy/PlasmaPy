@@ -1,9 +1,46 @@
-# in decreasing order of priority
+# Define individuals or teams who are responsible for code in a
+# repository (i.e. who gets requested for a review by default).
 
-# any file, anywhere
-*                                                        @PlasmaPy/plasmapy-reviewers
+# Order is important; the last matching pattern takes the most
+# precedence.
 
-# any conftest.py, anywhere
-conftest.py                                              @StanczakDominik
+* @PlasmaPy/plasmapy-reviewers
 
-plasmapy/diagnostics/proton_radiography.py               @pheuer
+# subpackages
+
+plasmapy/analysis/ @rocco8773
+plasmapy/diagnostics/ @rocco8773
+plasmapy/diagnostics/charged_particle_radiography/ @pheuer
+plasmapy/dispersion/ @ejohnson-96
+plasmapy/particles/ @namurphy
+# plasmapy/simulation/ @StanczakDominik
+plasmapy/tests/ @namurphy
+# plasmapy/utils/decorators/ @rocco8773
+plasmapy/utils/pytest_helpers/ @namurphy
+
+# subpackage files (with wildcards to include tests)
+
+plasmapy/analysis/**/*nullpoint.py @namurphy
+plasmapy/diagnostics/**/*thomson.py @pheuer
+plasmapy/formulary/**/*relativity.py @namurphy
+
+# documentation
+
+.readthedocs.yml @namurphy
+docs/conf.py @namurphy
+docs/contributing/ @namurphy
+docs/plasmapy_sphinx/ @rocco8773
+
+# project files
+
+plasmapy/__init__.py @namurphy
+pyproject.toml @namurphy
+requirements.txt @namurphy
+setup.py @namurphy
+
+# tests, linters, CI
+
+.github @namurphy
+.pre-commit-config.yaml @namurphy
+# **/conftest.py @StanczakDominik
+tox.ini @namurphy

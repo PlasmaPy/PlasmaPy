@@ -27,7 +27,7 @@ class TestStix:
         w = w.to(u.rad / u.s).value
         n_i = n_i.to(u.m**-3).value
 
-        species = ions + [Particle("e-")]
+        species = [*ions, Particle("e-")]
         densities = np.zeros(n_i.size + 1)
         densities[:-1] = n_i
         densities[-1] = np.sum(n_i * ions.charge_number)
@@ -51,7 +51,7 @@ class TestStix:
         return S, P, D
 
     @pytest.mark.parametrize(
-        "kwargs, _error",
+        ("kwargs", "_error"),
         [
             ({**_kwargs_single_valued, "B": "wrong type"}, TypeError),
             ({**_kwargs_single_valued, "B": [8e-9, 8.5e-9] * u.T}, ValueError),
@@ -85,7 +85,7 @@ class TestStix:
             stix(**kwargs)
 
     @pytest.mark.parametrize(
-        "kwargs, expected",
+        ("kwargs", "expected"),
         [
             ({**_kwargs_single_valued, "w": 2 * u.rad / u.s}, {"shape": (4,)}),
             (
@@ -141,7 +141,7 @@ class TestStix:
         assert k.unit == u.rad / u.m
 
     @pytest.mark.parametrize(
-        "kwargs, expected",
+        ("kwargs", "expected"),
         [
             # case taken from Stix figure 1-1
             # Note: ns = [n = k * c / w, ]
