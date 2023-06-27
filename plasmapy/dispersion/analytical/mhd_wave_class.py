@@ -11,7 +11,7 @@ from abc import ABC, abstractmethod
 from typing import Union
 
 from plasmapy.formulary.speeds import Alfven_speed, ion_sound_speed
-from plasmapy.particles import Particle
+from plasmapy.particles import Particle, ParticleLike, particle_input
 from plasmapy.particles.exceptions import ChargeError
 from plasmapy.utils.decorators import validate_quantities
 from plasmapy.utils.exceptions import PhysicsWarning
