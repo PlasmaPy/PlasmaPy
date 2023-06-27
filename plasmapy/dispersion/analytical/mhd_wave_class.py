@@ -28,7 +28,7 @@ class AbstractMHDWave(ABC):
     @particle_input
     def __init__(self,
         B: u.T,
-        ion: Union[str, Particle],
+        ion: ParticleLike,
         n_i: u.m**-3,
         T_e: u.K = 0 * u.K,
         T_i: u.K = 0 * u.K,
