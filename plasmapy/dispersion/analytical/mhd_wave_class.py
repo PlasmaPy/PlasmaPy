@@ -8,7 +8,8 @@ import numpy as np
 import warnings
 
 from abc import ABC, abstractmethod
-from typing import Union
+from numbers import Integral, Real
+from typing import Optional, Union
 
 from plasmapy.formulary.speeds import Alfven_speed, ion_sound_speed
 from plasmapy.particles import Particle, ParticleLike, particle_input
