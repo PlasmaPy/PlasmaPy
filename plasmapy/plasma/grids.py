@@ -1304,8 +1304,7 @@ class CartesianGrid(AbstractGrid):
         )
 
         # Split position array into chunks
-        # TODO: Fine tune chunk size for optimization
-        chunked_positions = da.from_array(pos, chunks={0: 1e4, 1: 3})
+        chunked_positions = da.from_array(pos, chunks=("auto", -1))
 
         result = da.map_blocks(
             self._volume_averaged_interpolator,
