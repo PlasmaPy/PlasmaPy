@@ -224,13 +224,13 @@ class ParticleTracker:
             self.position_history[i] = self.x
             self.velocity_history[i] = self.v
 
-    def __repr__(self, *args, **kwargs):
+    def __repr__(self, *args, **kwargs) -> str:
         return (
             f"Species(q={self.q:.4e},m={self.m:.4e},N={self.N},"
             f'name="{self.name}",NT={self.NT})'
         )
 
-    def __str__(self):  # coverage: ignore
+    def __str__(self) -> str:  # coverage: ignore
         return (
             f"{self.N} {self.scaling:.2e}-{self.name} with "
             f"q = {self.q:.2e}, m = {self.m:.2e}, "

@@ -616,9 +616,9 @@ class _ParticleInput:
 def particle_input(
     callable_: Optional[Callable] = None,
     *,
-    require: Union[str, set, list, tuple] = None,
-    any_of: Union[str, set, list, tuple] = None,
-    exclude: Union[str, set, list, tuple] = None,
+    require: Optional[Union[str, set, list, tuple]] = None,
+    any_of: Optional[Union[str, set, list, tuple]] = None,
+    exclude: Optional[Union[str, set, list, tuple]] = None,
     allow_custom_particles: bool = True,
     allow_particle_lists: bool = True,
 ) -> Callable:

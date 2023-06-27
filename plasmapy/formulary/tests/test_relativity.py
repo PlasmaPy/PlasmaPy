@@ -191,7 +191,7 @@ def test_relativistic_body_init_exceptions(kwargs, exception):
 def test_relativistic_body_equality():
     """Test that a `RelativisticBody` instance equals itself."""
     relativistic_body = RelativisticBody(particle=proton, v_over_c=0.34)
-    assert relativistic_body == relativistic_body
+    assert relativistic_body == relativistic_body  # noqa: PLR0124
 
 
 @pytest.mark.parametrize(

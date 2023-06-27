@@ -345,7 +345,7 @@ class RelativisticBody:
         speed_like_input = self._get_speed_like_input(velocity_like_inputs)
         self._store_velocity_like_argument(speed_like_input)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"RelativisticBody({self.particle}, {self.velocity})"
 
     @property

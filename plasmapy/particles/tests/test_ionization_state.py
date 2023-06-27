@@ -157,7 +157,7 @@ def test_equal_to_itself(He_ionization_state):
     Test that `IonizationState.__eq__` returns `True for two identical
     `IonizationState` instances.
     """
-    assert He_ionization_state == He_ionization_state
+    assert He_ionization_state == He_ionization_state  # noqa: PLR0124
 
 
 @pytest.mark.parametrize(("tolerance", "output"), [(1e-8, True), (1e-9001, False)])

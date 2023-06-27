@@ -157,7 +157,9 @@ class AbstractParticle(ABC):
             "plasmapy_particle": {
                 "type": type(self).__name__,
                 "module": self.__module__,
-                "date_created": datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S UTC"),
+                "date_created": datetime.utcnow().strftime(  # noqa: DTZ003
+                    "%Y-%m-%d %H:%M:%S UTC"
+                ),
                 "__init__": {"args": (), "kwargs": {}},
             }
         }
@@ -1754,6 +1756,7 @@ class Particle(AbstractPhysicalParticle):
 
         if inplace:
             self.__init__(base_particle, Z=new_charge_number)
+            return None
         else:
             return Particle(base_particle, Z=new_charge_number)
 
@@ -1827,6 +1830,7 @@ class Particle(AbstractPhysicalParticle):
 
         if inplace:
             self.__init__(base_particle, Z=new_charge_number)
+            return None
         else:
             return Particle(base_particle, Z=new_charge_number)
 
@@ -2085,7 +2089,7 @@ class CustomParticle(AbstractPhysicalParticle):
         *,
         Z: Optional[Real] = None,
     ):
-        # TODO py3.10 replace ifology with structural pattern matching
+        # TODO: py3.10 replace ifology with structural pattern matching
 
         if Z is not None and charge is not None:
             raise InvalidParticleError(
