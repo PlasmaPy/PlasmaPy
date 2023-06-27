@@ -361,7 +361,7 @@ def parse_and_check_atomic_input(  # noqa: C901, PLR0912, PLR0915
         return isotope
 
     def reconstruct_ion_symbol(
-        element: str, isotope: Integral = None, Z: Integral = None
+        element: str, isotope: Optional[Integral] = None, Z: Optional[Integral] = None
     ):
         """
         Receive a `str` representing an atomic symbol and/or a

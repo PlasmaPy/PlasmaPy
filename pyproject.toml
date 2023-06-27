@@ -37,9 +37,9 @@ dynamic = [
   "version",
 ]
 dependencies = [
-  "astropy >= 5.0.1",
+  "astropy >= 5.0.2",
   "h5py >= 3.3.0",
-  "ipykernel >= 6.6.1",
+  "ipykernel >= 5.5.6",
   "ipywidgets >= 7.6.5",
   "lmfit >= 1.0.3",
   "matplotlib >= 3.5.1",
@@ -168,6 +168,7 @@ all_files = "1"
 [tool.codespell]
 skip = "*.png,*cache*,*egg*,.git,.hypothesis,.idea,.tox,_build,*charged_particle*.ipynb,venv"
 ignore-words-list = """
+aas,
 aci,
 afe,
 ans,
@@ -217,6 +218,8 @@ type_incorrect_long = "The filename of the changelog entry must be of the form `
 target-version = "py39"
 extend-select = [
   "A", # flake8-builtins
+  "ANN204", # missing-return-type-special-method
+  "ANN206", # missing-return-type-class-method
   "ARG", # flake8-unused-arguments
   "B", # flake8-bugbear
   "BLE", # flake8-blind-except
@@ -224,8 +227,10 @@ extend-select = [
   "C90", # mccabe
   "COM818", # trailing-comma-on-bare-tuple
   "D", # pydocstyle
+  "DTZ", # flake8-datetimez
   "FA", # flake8-future-annotations
   "FBT003", # flake8-boolean-trap
+  "FIX", # flake8-fixme
   "FLY", # flynt
   "ICN", # flake8-import-conventions
   "INP", # flake8-no-pep420
@@ -234,6 +239,7 @@ extend-select = [
   "N", # pep8-naming
   "NPY", # numpy-deprecated-type-alias
   "PD", # pandas-vet
+  "PERF", # perflint
   "PGH", # pygrep-hooks
   "PIE", # flake8-pie
   "PLC", # pylint convention
@@ -243,18 +249,23 @@ extend-select = [
   "PT", # flake8-pytest-style
   "PTH", # flake8-use-pathlib
   "PYI", # flake8-pyi
+  "RET", # flake8-return
   "RUF005", # collection-literal-concatenation
   "RUF006", # asyncio-dangling-task
   "RUF007", # pairwise-over-zipped
   "RUF008", # mutable-dataclass-default
   "RUF009", # function-call-in-dataclass-default-argument
   "RUF010", # explicit-f-string-type-conversion
+  "RUF011", # static-key-dict-comprehension
+  "RUF200", # invalid-pyproject-toml
   "S", # flake8-bandit
   "SIM", # flake8-simplify
+  "TD", # flake8-todos
   "TID", # flake8-tidy-imports
   "TRY", # tryceratops
   "UP", # pyupgrade
   "W", # pycodestyle warnings
+  "YTT", # flake8-2020
 ]
 ignore = [
   "B028", # no-explicit-stacklevel
@@ -264,6 +275,7 @@ ignore = [
   "D205", # blank-line-after-summary (incompatible with multiline short summaries)
   "D401", # non-imperative-mood (enable later?)
   "E501", # line-too-long
+  "FIX002", # line-contains-todo
   "N801", # invalid-class-name
   "N802", # invalid-function-name
   "N803", # invalid-argument-name
@@ -276,9 +288,15 @@ ignore = [
   "PT011", # pytest-raises-too-broad
   "PT012", # pytest-raises-multiple-statements (enable later?)
   "PT019", # pytest-fixture-param-without-value (enable later?)
+  "RET501", # unnecessary-return-none
+  "RET502", # implicit-return-value
+  "RET505", # superfluous-else-return (enable later?)
+  "RET506", # superfluous-else-raise (enable later?)
   "S101", # asserts
   "SIM117", # multiple-with-statements (remove for Python 3.10+)
   "SIM300", # yoda-conditions
+  "TD002", # missing-todo-author
+  "TD003", # missing-todo-link
   "TRY003", # raise-vanilla-args
   "TRY301", # raise-within-try
   "UP006", # non-pep585-annotation
@@ -297,6 +315,13 @@ namespace-packages = [".github/workflows", "docs"]
 show-fixes = true
 show-source = true
 
+[tool.ruff.flake8-annotations]
+allow-star-arg-any = true
+ignore-fully-untyped = true
+mypy-init-return = true
+suppress-dummy-args = true
+suppress-none-returning = true
+
 [tool.ruff.flake8-import-conventions.aliases]
 "astropy.units" = "u"
 "matplotlib.pyplot" = "plt"
@@ -314,7 +339,7 @@ max-complexity = 10
 ".github/scripts/*.py" = ["D103", "INP001"]
 "docs/conf.py" = ["D100", "D103", "E402"]
 "plasmapy/analysis/fit_functions.py" = ["D301"]
-"plasmapy/formulary/braginskii.py" = ["C901"]
+"plasmapy/formulary/braginskii.py" = ["C901", "RET503", "RET504"]
 "plasmapy/formulary/tests/test_distribution.py" = ["ARG005"]
 "plasmapy/particles/tests/test_decorators.py" = ["ARG001", "ARG002"]
 "plasmapy/plasma/sources/*.py" = ["D102"]

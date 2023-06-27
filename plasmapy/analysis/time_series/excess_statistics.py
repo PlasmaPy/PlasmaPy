@@ -95,8 +95,7 @@ class ExcessStatistics:
                 event_lengths[0] = np.append(event_lengths[0], 1)
 
                 self._times_above_threshold = [
-                    time_step * len(event_lengths[i])
-                    for i in range(0, len(event_lengths))
+                    time_step * len(event_lengths[i]) for i in range(len(event_lengths))
                 ]
 
                 self._number_of_crossings.append(len(event_lengths))

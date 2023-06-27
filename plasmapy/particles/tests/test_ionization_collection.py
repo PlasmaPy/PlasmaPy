@@ -139,7 +139,9 @@ class TestIonizationStateCollection:
         """Test that __eq__ is not extremely broken."""
         a = IonizationStateCollection(**tests[test_name])
         b = IonizationStateCollection(**tests[test_name])
-        assert a == a, "IonizationStateCollection instance does not equal itself."
+        assert (
+            a == a  # noqa: PLR0124
+        ), "IonizationStateCollection doesn't equal itself."
         assert (
             a == b
         ), "IonizationStateCollection instance does not equal identical instance."
