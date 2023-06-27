@@ -24,6 +24,7 @@ class AbstractMHDWave(ABC):
         T_e={"can_be_negative": False, "equivalencies": u.temperature_energy()},
         T_i={"can_be_negative": False, "equivalencies": u.temperature_energy()},
     )
+    @particle_input
     def __init__(self,
         B: u.T,
         ion: Union[str, Particle],
