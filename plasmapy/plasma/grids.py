@@ -1095,6 +1095,22 @@ class CartesianGrid(AbstractGrid):
 
     @staticmethod
     def _nearest_neighbor_interpolator(pos, axes, interpolation_quantities):
+        """
+        Static method used in the parallelization of `~plasmapy.plasma.grids.CartesianGrid.nearest_neighbor_interpolator`.
+
+        Parameters
+        ----------
+        pos : `~numpy.ndarray` or `~astropy.units.Quantity` array, shape (n,3)
+            An array of positions in space, where the second dimension
+            corresponds to the three dimensions of the grid. If a
+            `~numpy.ndarray` is provided, units will be assumed to match
+            those of the grid.
+        axes : `tuple`
+            A tuple containing field locations along its respective axis.
+        interpolation_quantities : `~astropy.units.Quantity` array
+            An array representing quantities on the grid. Must have the dimensions
+            given for ``shape``.
+        """
         ax0, ax1, ax2 = axes
 
         # Find particles that are off the grid
@@ -1151,8 +1167,32 @@ class CartesianGrid(AbstractGrid):
 
     @staticmethod
     def _volume_averaged_interpolator(
-        pos, axes, volume_differentials, shape, interpolation_quantities
+        pos: Union[np.ndarray, u.Quantity],
+        axes: tuple,
+        volume_differentials: tuple,
+        shape: tuple,
+        interpolation_quantities: u.Quantity,
     ):
+        """
+        Static method used in the parallelization of `~plasmapy.plasma.grids.CartesianGrid.volume_averaged_interpolator`.
+
+        Parameters
+        ----------
+        pos : `~numpy.ndarray` or `~astropy.units.Quantity` array, shape (n,3)
+            An array of positions in space, where the second dimension
+            corresponds to the three dimensions of the grid. If a
+            `~numpy.ndarray` is provided, units will be assumed to match
+            those of the grid.
+        axes : `tuple`
+            A tuple containing field locations along its respective axis.
+        volume_differentials : `tuple`
+            A tuple corresponding to the step size along its respective axis.
+        shape : `tuple`
+            A tuple representing the shape of the grid
+        interpolation_quantities : `~astropy.units.Quantity` array
+            An array representing quantities on the grid. Must have the dimensions
+            given for ``shape``.
+        """
         nparticles = pos.shape[0]
 
         # Load grid attributes (so this isn't repeated)
