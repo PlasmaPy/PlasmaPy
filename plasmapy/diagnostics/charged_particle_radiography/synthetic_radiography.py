@@ -446,18 +446,18 @@ class ParticleTracker:
                 f"{field_weightings}",
             )
 
-        self._pre_run()
-
-        # By default, set dt as an infinite range (auto dt with no restrictions)
-        self.dt = np.array([0.0, np.inf]) * u.s if dt is None else dt
-        self.dt = (self.dt).to(u.s).value
-
         # Check to make sure particles have already been generated
         if not hasattr(self, "x"):
             raise ValueError(
                 "Either the create_particles or load_particles method must be "
                 "called before running the particle tracing algorithm."
             )
+
+        self._pre_run()
+
+        # By default, set dt as an infinite range (auto dt with no restrictions)
+        self.dt = np.array([0.0, np.inf]) * u.s if dt is None else dt
+        self.dt = (self.dt).to(u.s).value
 
         # Store a copy of the initial velocity distribution in memory
         # This will be used later to calculate the maximum deflection
