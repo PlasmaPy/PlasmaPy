@@ -1152,6 +1152,7 @@ class CartesianGrid(AbstractGrid):
         # Split position array into chunks
         chunked_positions = da.from_array(pos, chunks=("auto", -1))
 
+        # Compute the interpolation in parallel
         result = da.map_blocks(
             self._nearest_neighbor_interpolator,
             chunked_positions,
@@ -1160,6 +1161,7 @@ class CartesianGrid(AbstractGrid):
             dtype=list,
         ).compute()
 
+        # Transpose the result to get a (6, N) array, then add units
         result = result.T
         result = tuple([result[i] * self._interp_units[i] for i in range(nargs)])
 
@@ -1224,7 +1226,7 @@ class CartesianGrid(AbstractGrid):
         )
 
         # Get the physical positions for the nearest neighbor cell
-        # for the each particle
+        # for each particle
         xpos = ax0[nearest_neighbor_index[:, 0]]
         ypos = ax1[nearest_neighbor_index[:, 1]]
         zpos = ax2[nearest_neighbor_index[:, 2]]
@@ -1362,6 +1364,7 @@ class CartesianGrid(AbstractGrid):
         # Split position array into chunks
         chunked_positions = da.from_array(pos, chunks=("auto", -1))
 
+        # Compute the interpolation in parallel
         result = da.map_blocks(
             self._volume_averaged_interpolator,
             chunked_positions,
@@ -1372,6 +1375,7 @@ class CartesianGrid(AbstractGrid):
             dtype=list,
         ).compute()
 
+        # Transpose the result to get a (6, N) array, then add units
         result = result.T
         result = tuple([result[i] * self._interp_units[i] for i in range(nargs)])
 
