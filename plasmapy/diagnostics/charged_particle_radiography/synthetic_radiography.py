@@ -1216,8 +1216,6 @@ class ChargedParticleRadiographyTracker(ParticleTracker):
         return max_deflection * u.rad
 
     def _pre_run(self):
-        super()._pre_run()
-
         # If meshes have been added, apply them now
         for mesh in self.mesh_list:
             self._apply_wire_mesh(**mesh)
