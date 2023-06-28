@@ -280,7 +280,7 @@ Features
   calculate the particle energies deposited in each detector layer.
   (:pr:`1274`)
 -
-  `~plasmapy.diagnostics.charged_particle_radiography.synthetic_radiography.Tracker`
+  ``~plasmapy.diagnostics.charged_particle_radiography.synthetic_radiography.Tracker``
   now supports multiple field grids, provided as an iterable. (:pr:`1799`)
 - Added the `plasmapy.analysis.time_series.running_moments` module
   including two functions for calculating running moments of time
