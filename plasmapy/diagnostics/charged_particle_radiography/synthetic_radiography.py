@@ -373,7 +373,7 @@ class ParticleTracker:
 
         x = self.x[self.grid_ind, :]
         v = self.v[self.grid_ind, :]
-        boris_push(x, v, B, E, self.q, self.m, dt)
+        x, v = boris_push(x, v, B, E, self.q, self.m, dt, inplace=False)
         self.x[self.grid_ind, :] = x
         self.v[self.grid_ind, :] = v
 
