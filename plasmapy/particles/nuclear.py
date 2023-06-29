@@ -316,6 +316,4 @@ def nuclear_reaction_energy(*args, **kwargs) -> u.J:  # noqa: C901, PLR0915
             f"Total charge is not conserved for {reactants = } and {products = }."
         )
 
-    released_energy = add_mass_energy(reactants) - add_mass_energy(products)
-
-    return released_energy
+    return add_mass_energy(reactants) - add_mass_energy(products)

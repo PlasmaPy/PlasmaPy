@@ -6,8 +6,12 @@ __all__ = ["modify_docstring", "preserve_signature"]
 import functools
 import inspect
 
+from typing import Optional
 
-def modify_docstring(func=None, prepend: str = None, append: str = None):
+
+def modify_docstring(
+    func=None, prepend: Optional[str] = None, append: Optional[str] = None
+):
     r"""
     A decorator which programmatically prepends and/or appends the docstring
     of the decorated method/function.  The unmodified/original docstring is
@@ -91,12 +95,10 @@ def modify_docstring(func=None, prepend: str = None, append: str = None):
 
         return wrapper
 
-    if func is not None:
-        # `modify_docstring` called as a function
-        return decorator(func)
+    # func is None: usage like @modify_docstring
+    # func is not None: usage like @modify_docstring()
 
-    # `modify_docstring` called as a decorator "sugar-syntax"
-    return decorator
+    return decorator(func) if func is not None else decorator
 
 
 def preserve_signature(f):
