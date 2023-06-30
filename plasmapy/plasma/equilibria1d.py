@@ -10,6 +10,8 @@ class HarrisSheet:
 
     """
     Define a Harris Sheet Equilibrium.
+    Magnetic field will be in the plus/minus x direction and the current density will be in the plus/minus z direction.
+
 
     Parameters
     ----------
