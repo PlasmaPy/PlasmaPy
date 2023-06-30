@@ -480,14 +480,14 @@ class ParticleTracker:
         """
         Generates angles for each particle such that their velocities are
         uniformly distributed on a grid in theta and phi. This method
-        requires that `nparticles` be a perfect square. If it is not,
-        `nparticles` will be set as the largest perfect square smaller
-        than the provided `nparticles`.
+        requires that `nparticles_total` be a perfect square. If it is not,
+        `nparticles_total` will be set as the largest perfect square smaller
+        than the provided `nparticles_total`.
         """
         # Calculate the approximate square root
         n_per = np.floor(np.sqrt(self.nparticles)).astype(np.int32)
 
-        # Set new nparticles to be a perfect square
+        # Set new nparticles_total to be a perfect square
         self.nparticles = n_per**2
 
         # Create an imaginary grid positioned 1 unit from the source
@@ -554,9 +554,9 @@ class ParticleTracker:
                 - 'uniform': velocities will be distributed such that,
                    left unperturbed,they will form a uniform pattern
                    on the detection plane. This method
-                   requires that ``nparticles`` be a perfect square. If it is not,
-                   ``nparticles`` will be set as the largest perfect square smaller
-                   than the provided ``nparticles``.
+                   requires that ``nparticles_total`` be a perfect square. If it is not,
+                   ``nparticles_total`` will be set as the largest perfect square smaller
+                   than the provided ``nparticles_total``.
 
             Simulations run in the ``'uniform'`` mode will imprint a grid pattern
             on the image, but will well-sample the field grid with a
@@ -713,7 +713,7 @@ class ParticleTracker:
         particle impact a plane, described by the plane's center and
         horizontal and vertical unit vectors.
 
-        Returns an [nparticles, 3] array of the particle positions in the plane
+        Returns an [nparticles_total, 3] array of the particle positions in the plane
 
         By default this function does not alter self.x. The optional keyword
         x can be used to pass in an output array that will used to hold
@@ -772,8 +772,8 @@ class ParticleTracker:
 
         # Store the number of particles deflected
         self.fract_deflected = (
-            self.Tracker.nparticles - ind.size
-        ) / self.Tracker.nparticles
+            self.Tracker.nparticles_total - ind.size
+        ) / self.Tracker.nparticles_total
 
         # Warn the user if a large number of particles are being deflected
         if self.fract_deflected > 0.05:
@@ -810,9 +810,9 @@ class ParticleTracker:
             return False
 
         # Warn user if < 10% of the particles ended up on the grid
-        if self.num_entered < 0.1 * self.Tracker.nparticles:
+        if self.num_entered < 0.1 * self.Tracker.nparticles_total:
             warnings.warn(
-                f"Only {100*self.num_entered/self.Tracker.nparticles:.2f}% of "
+                f"Only {100*self.num_entered/self.Tracker.nparticles_total:.2f}% of "
                 "particles entered the field grid: consider "
                 "decreasing the max_theta to increase this "
                 "number.",
@@ -832,7 +832,7 @@ class ParticleTracker:
 
         Returns
         -------
-        max_deflection : float
+        max_deflection : |Quantity|
             The maximum deflection in radians
 
         """
@@ -943,7 +943,7 @@ class ParticleTracker:
            * - ``"mag"``
              - `float`
              - The system magnification.
-           * - ``"nparticles"``
+           * - ``"nparticles_total"``
              - `int`
              - Number of particles in the simulation.
            * - ``"max_deflection"``
@@ -951,32 +951,32 @@ class ParticleTracker:
              - The maximum deflection experienced by a particle in the
                simulation, in radians.
            * - ``"x"``
-             - `~numpy.ndarray`, [``nparticles``,]
+             - `~numpy.ndarray`, [``nparticles_total``,]
              - The x-coordinate location where each particle hit the
                detector plane, in meters.
            * - ``"y"``
-             - `~numpy.ndarray`, [``nparticles``,]
+             - `~numpy.ndarray`, [``nparticles_total``,]
              - The y-coordinate location where each particle hit the
                detector plane, in meters.
            * - ``"v"``
-             - `~numpy.ndarray`, [``nparticles``, 3]
+             - `~numpy.ndarray`, [``nparticles_total``, 3]
              - The velocity of each particle when it hits the detector
                plane, in meters per second. The velocity is in a
                coordinate system relative to the detector plane. The
                components are [normal, horizontal, vertical] relative
                to the detector plane coordinates.
            * - ``"x0"``
-             - `~numpy.ndarray`, [``nparticles``,]
+             - `~numpy.ndarray`, [``nparticles_total``,]
              - The x-coordinate location where each particle would have
                hit the detector plane if the grid fields were zero, in
                meters. Useful for calculating the source profile.
            * - ``"y0"``
-             - `~numpy.ndarray`, [``nparticles``,]
+             - `~numpy.ndarray`, [``nparticles_total``,]
              - The y-coordinate location where each particle would have
                hit the detector plane if the grid fields were zero, in
                meters. Useful for calculating the source profile.
            * - ``"v0"``
-             - `~numpy.ndarray`, [``nparticles``, 3]
+             - `~numpy.ndarray`, [``nparticles_total``, 3]
              - The velocity of each particle when it hit the detector
                plan if the grid fields were zero, in meters per second.
                The velocity is in a coordinate system relative to the
@@ -985,7 +985,7 @@ class ParticleTracker:
 
         """
 
-        if not self._has_run:
+        if not self.Tracker._has_run:
             raise RuntimeError(
                 "The simulation must be run before a results "
                 "dictionary can be created."
@@ -993,8 +993,8 @@ class ParticleTracker:
 
         # Determine locations of points in the detector plane using unit
         # vectors
-        xloc = np.dot(self.x - self.detector, self.det_hdir)
-        yloc = np.dot(self.x - self.detector, self.det_vdir)
+        xloc = np.dot(self.x_all - self.detector, self.det_hdir)
+        yloc = np.dot(self.x_all - self.detector, self.det_vdir)
 
         x0loc = np.dot(self.x0 - self.detector, self.det_hdir)
         y0loc = np.dot(self.x0 - self.detector, self.det_vdir)
@@ -1002,21 +1002,21 @@ class ParticleTracker:
         # Determine the velocity components of each particle in the
         # coordinate frame of the detector, eg. the components of v are
         # now [normal, det_hdir, det_vdir]
-        v = np.zeros(self.v.shape)
-        v[:, 0] = np.dot(self.v, self.det_n)
-        v[:, 1] = np.dot(self.v, self.det_hdir)
-        v[:, 2] = np.dot(self.v, self.det_vdir)
+        v = np.zeros(self.v_all.shape)
+        v[:, 0] = np.dot(self.v_all, self.det_n)
+        v[:, 1] = np.dot(self.v_all, self.det_hdir)
+        v[:, 2] = np.dot(self.v_all, self.det_vdir)
 
-        v0 = np.zeros(self.v.shape)
-        v0[:, 0] = np.dot(self.v_init, self.det_n)
-        v0[:, 1] = np.dot(self.v_init, self.det_hdir)
-        v0[:, 2] = np.dot(self.v_init, self.det_vdir)
+        v0 = np.zeros(self.v_all_initial.shape)
+        v0[:, 0] = np.dot(self.v_all_initial, self.det_n)
+        v0[:, 1] = np.dot(self.v_all_initial, self.det_hdir)
+        v0[:, 2] = np.dot(self.v_all_initial, self.det_vdir)
 
         return {
             "source": self.source,
             "detector": self.detector,
             "mag": self.mag,
-            "nparticles": self.nparticles,
+            "nparticles_total": self.nparticles,
             "max_deflection": self.max_deflection.to(u.rad).value,
             "x": xloc,
             "y": yloc,
@@ -1169,7 +1169,7 @@ def synthetic_radiograph(  # noqa: C901
 
     # Throw a warning if < 50% of the particles are included on the
     # histogram
-    percentage = np.sum(intensity) / d["nparticles"]
+    percentage = np.sum(intensity) / d["nparticles_total"]
     if percentage < 0.5:
         warnings.warn(
             f"Only {percentage:.2%} of the particles are shown "

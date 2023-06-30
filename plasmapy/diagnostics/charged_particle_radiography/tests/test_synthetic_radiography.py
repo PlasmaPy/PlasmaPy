@@ -558,7 +558,7 @@ class TestSyntheticRadiograph:
         Test warning when less than half the particles reach the detector plane.
         """
         sim_results = self.sim_results.copy()
-        sim_results["nparticles"] = 3 * sim_results["nparticles"]
+        sim_results["nparticles_total"] = 3 * sim_results["nparticles_total"]
         with pytest.warns(RuntimeWarning):
             cpr.synthetic_radiograph(sim_results)
 

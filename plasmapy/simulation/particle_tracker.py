@@ -158,7 +158,7 @@ class ParticleTracker:
                 f"({x.shape[0]} and {v.shape[0]} respectively)."
             )
         else:
-            self.nparticles = x.shape[0]
+            self.nparticles_total = x.shape[0]
 
         self.x = x.to(u.m).value
         self.v = v.to(u.m / u.s).value
@@ -224,7 +224,7 @@ class ParticleTracker:
         pos = self.x * u.m
 
         # Update the list of particles on and off the grid
-        # shape [nparticles, ngrids]
+        # shape [nparticles_total, ngrids]
         self.on_grid = np.array([grid.on_grid(pos) for grid in self.grids]).T
 
         Ex = np.zeros(self.nparticles_tracked) * u.V / u.m
@@ -294,7 +294,7 @@ class ParticleTracker:
         # vc = np.max(v)/_c
 
         # If dt is not a scalar, make sure it can be multiplied by an
-        # [nparticles, 3] shape field array
+        # [nparticles_total, 3] shape field array
         if dt.size > 1:
             dt = dt[:, np.newaxis]
 
@@ -390,7 +390,7 @@ class ParticleTracker:
 
         # Create flags for tracking when particles during the simulation
         # on_grid -> zero if the particle is off grid, 1
-        # shape [nparticles, ngrids]
+        # shape [nparticles_total, ngrids]
         self.on_grid = np.zeros([self.nparticles_tracked, self.num_grids])
 
         # Initialize a "progress bar" (really more of a meter)
