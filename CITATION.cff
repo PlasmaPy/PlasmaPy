@@ -559,3 +559,7 @@ authors:
 - given-names: Carol
   family-names: Zhang
   alias: carolyz
+
+- given-names: Cora
+  family-names: Schneck
+  alias: cyschneck
