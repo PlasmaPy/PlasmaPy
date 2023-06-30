@@ -146,6 +146,7 @@ class Characteristic:
 
         self.bias = bias_unique
         self.current = current_unique
+        return None
 
     def _check_validity(self):
         r"""Check the unit and value validity of the characteristic."""
