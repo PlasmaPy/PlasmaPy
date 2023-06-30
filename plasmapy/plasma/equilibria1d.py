@@ -14,12 +14,13 @@ class HarrisSheet:
     Parameters
     ----------
     B0 : `~astropy.units.Quantity` 
-         magnetic field.
+         Magnitude of magnetic field in the limit of :math:`y → ∞`.
 
-    delta : 'float'
+
+    delta : `~astropy.units.Quantity`
         Delta is the thickness of the sheet.
 
-    P0 : 'float'
+    P0 : `~astropy.units.Quantity`
         Plasma Pressure.
 
     Notes
@@ -42,7 +43,7 @@ class HarrisSheet:
     @validate_quantities
     def magnetic_field(self, y: u.m) -> u.T:
         r"""
-        Compute the magnetic field along y = 0.
+        Compute the magnetic field along :math:`y = 0`.
 
         This equation uses the asymptotic magnetic field strength along with y=0.
 
