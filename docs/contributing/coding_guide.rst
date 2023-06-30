@@ -494,7 +494,7 @@ Particle inputs
 ---------------
 
 * Use |particle_input| to coerce objects to relevant |Particle| type
-  (see :ref:`_particles`)
+  (see :ref:`particles`)
 
 .. _validating_quantities:
 
@@ -716,7 +716,7 @@ adjacent fields such as astronomy and heliophysics. To get started with
 
 * Use unit annotations with the |validate_quantities| decorator to
   validate |Quantity| arguments and return values
-  (see :ref:`_validating_quantities`).
+  (see :ref:`validating_quantities`).
 
   .. caution::
 
