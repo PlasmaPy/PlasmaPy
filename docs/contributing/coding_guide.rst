@@ -488,6 +488,14 @@ Requirements
 Decorators
 ==========
 
+.. _particle_inputs:
+
+Particle inputs
+---------------
+
+* Use |particle_input| to coerce objects to relevant |Particle| type
+  (see :ref:`_particles`)
+
 .. _validating_quantities:
 
 Validating quantities
@@ -514,14 +522,6 @@ Validating quantities
    @validate_quantities
    def magnetic_pressure(B: u.T) -> u.Pa:
        return B**2 / (2 * const.mu0)
-
-.. _particle_inputs:
-
-Particle inputs
----------------
-
-* Use |particle_input| to coerce objects to relevant |Particle| type
-  (see :ref:`_particles`)
 
 Special function categories
 ===========================
