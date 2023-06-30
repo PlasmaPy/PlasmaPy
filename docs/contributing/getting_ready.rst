@@ -245,7 +245,7 @@ when you :py:`import plasmapy`.
 
    .. note::
 
-      In Windows, the directory path will be :file:`C:\Users\<username>\repos\PlasmaPy`.
+      In Windows, the directory path will be :file:`C:\\Users\\<username>\\repos\\PlasmaPy`.
 
 3. If you created a Conda_ environment for contributing to PlasmaPy,
    activate it with:
