@@ -1,0 +1,1 @@
+Fixed the file path display issue on the 'Getting Ready to Contribute' page in the docs.
