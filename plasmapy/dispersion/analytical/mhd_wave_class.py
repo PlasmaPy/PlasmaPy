@@ -12,7 +12,7 @@ from numbers import Integral, Real
 from typing import Optional, Union
 
 from plasmapy.formulary.speeds import Alfven_speed, ion_sound_speed
-from plasmapy.particles import ParticleLike, particle_input
+from plasmapy.particles import particle_input, ParticleLike
 from plasmapy.utils.decorators import validate_quantities
 from plasmapy.utils.exceptions import PhysicsWarning
 
@@ -25,7 +25,8 @@ class AbstractMHDWave(ABC):
         T_e={"can_be_negative": False, "equivalencies": u.temperature_energy()},
         T_i={"can_be_negative": False, "equivalencies": u.temperature_energy()},
     )
-    def __init__(self,
+    def __init__(
+        self,
         B: u.T,
         ion: ParticleLike,
         n_i: u.m**-3,
@@ -37,7 +38,6 @@ class AbstractMHDWave(ABC):
         mass_numb: Optional[Integral] = None,
         Z: Optional[Real] = None,
     ):
-
         # validate arguments
         for arg_name in ("B", "n_i", "T_e", "T_i"):
             val = locals()[arg_name].squeeze()
@@ -64,12 +64,7 @@ class AbstractMHDWave(ABC):
         self._gamma_i = gamma_i
         self._Z = ion.charge_number
 
-        self._v_A = Alfven_speed(
-            self._B,
-            self._n_i,
-            ion=self._ion,
-            Z=self._Z
-        )
+        self._v_A = Alfven_speed(self._B, self._n_i, ion=self._ion, Z=self._Z)
 
         self._n_e = self._Z * self._n_i
         with warnings.catch_warnings():
@@ -132,7 +127,7 @@ class AlfvenWave(AbstractMHDWave):
         helium-4, etc.). If no charge state information is provided,
         then the ions are assumed to be singly ionized.
     n_i : `~astropy.units.Quantity`
-        Ion number density in units convertible to m\ :sup:`-3`.
+        Ion number density in units convertible to m\\ :sup:`-3`.
     T_e : `~astropy.units.Quantity`, optional
         The electron temperature in units of K or eV, which defaults
         to zero.
@@ -188,7 +183,7 @@ class AlfvenWave(AbstractMHDWave):
     def angular_frequency(self, k: u.rad / u.m, theta: u.rad):
         """
         Calculate the analytical solution to a magnetohydrodynamic,
-        low-frequency (:math:`\omega/kc \ll 1`) dispersion relation.
+        low-frequency (:math:`\\omega/kc \\ll 1`) dispersion relation.
 
         Parameters
         ----------
@@ -197,7 +192,7 @@ class AlfvenWave(AbstractMHDWave):
             valued or 1-D array of length :math:`N`.
         theta : `~astropy.units.Quantity`, single valued or 1-D array
             The angle of propagation of the wave with respect to the
-            magnetic field, :math:`\cos^{-1}(k_z / k)`, in units must be
+            magnetic field, :math:`\\cos^{-1}(k_z / k)`, in units must be
             convertible to radians. Either single valued or 1-D array of
             size :math:`M`.
 
@@ -226,26 +221,42 @@ class AlfvenWave(AbstractMHDWave):
 class FastMagnetosonicWave(AbstractMHDWave):
     def angular_frequency(self, k: u.rad / u.m, theta: u.rad):
         theta, k = super().validate_k_theta(k, theta)
-        return np.squeeze(k * np.sqrt(
-            (self._c_ms2 + np.sqrt(
-                self._c_ms2**2 - (2 * self._v_A * self._c_s * np.cos(theta))**2
-            )) / 2
-        ))
+        return np.squeeze(
+            k
+            * np.sqrt(
+                (
+                    self._c_ms2
+                    + np.sqrt(
+                        self._c_ms2**2
+                        - (2 * self._v_A * self._c_s * np.cos(theta)) ** 2
+                    )
+                )
+                / 2
+            )
+        )
 
 
 class SlowMagnetosonicWave(AbstractMHDWave):
     def angular_frequency(self, k: u.rad / u.m, theta: u.rad):
         theta, k = super().validate_k_theta(k, theta)
-        return np.squeeze(k * np.sqrt(
-            (self._c_ms2 - np.sqrt(
-                self._c_ms2**2 - (2 * self._v_A * self._c_s * np.cos(theta))**2
-            )) / 2
-        ))
+        return np.squeeze(
+            k
+            * np.sqrt(
+                (
+                    self._c_ms2
+                    - np.sqrt(
+                        self._c_ms2**2
+                        - (2 * self._v_A * self._c_s * np.cos(theta)) ** 2
+                    )
+                )
+                / 2
+            )
+        )
 
 
 def mhd_waves(*args, **kwargs):
     return {
         "alfven": AlfvenWave(*args, **kwargs),
         "fast": FastMagnetosonicWave(*args, **kwargs),
-        "slow": SlowMagnetosonicWave(*args, **kwargs)
+        "slow": SlowMagnetosonicWave(*args, **kwargs),
     }
