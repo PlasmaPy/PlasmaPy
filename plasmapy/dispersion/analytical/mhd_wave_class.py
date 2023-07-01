@@ -107,6 +107,9 @@ class AbstractMHDWave(ABC):
                 f"Quantity, got array of shape {k.shape}."
             )
 
+        # return theta and k as coordinate arrays
+        return np.meshgrid(theta, k)
+
     @abstractmethod
     def angular_frequency(self, k: u.rad / u.m, theta: u.rad):
         pass
@@ -216,28 +219,28 @@ class AlfvenWave(AbstractMHDWave):
         ValueError
             If ``k`` or ``theta`` are not single valued or a 1-D array.
         """
-        super().validate_k_theta(k, theta)
-        return k * self._v_A * np.cos(theta)
+        theta, k = super().validate_k_theta(k, theta)
+        return np.squeeze(k * self._v_A * np.cos(theta))
 
 
 class FastMagnetosonicWave(AbstractMHDWave):
     def angular_frequency(self, k: u.rad / u.m, theta: u.rad):
-        super().validate_k_theta(k, theta)
-        return k * np.sqrt(
+        theta, k = super().validate_k_theta(k, theta)
+        return np.squeeze(k * np.sqrt(
             (self._c_ms2 + np.sqrt(
                 self._c_ms2**2 - (2 * self._v_A * self._c_s * np.cos(theta))**2
             )) / 2
-        )
+        ))
 
 
 class SlowMagnetosonicWave(AbstractMHDWave):
     def angular_frequency(self, k: u.rad / u.m, theta: u.rad):
-        super().validate_k_theta(k, theta)
-        return k * np.sqrt(
+        theta, k = super().validate_k_theta(k, theta)
+        return np.squeeze(k * np.sqrt(
             (self._c_ms2 - np.sqrt(
                 self._c_ms2**2 - (2 * self._v_A * self._c_s * np.cos(theta))**2
             )) / 2
-        )
+        ))
 
 
 def mhd_waves(*args, **kwargs):
