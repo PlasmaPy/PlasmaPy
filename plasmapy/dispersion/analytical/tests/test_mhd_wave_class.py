@@ -66,3 +66,24 @@ class TestMHDWave:
         for mode in waves:
             omega = waves[mode].angular_frequency(**kwargs_wave_limits)
             assert np.all(np.isclose(omega/kwargs_wave_limits["k"], expected[mode]))
+
+    @pytest.mark.parametrize(
+        ("kwargs", "expected"),
+        [
+            ({"k": 0.01 * u.rad / u.m, "theta": 0 * u.deg}, ()),
+            ({"k": [0.01, 0.02, 0.03, 0.04] * u.rad / u.m, "theta": 0 * u.deg}, (4,)),
+            ({"k": 0.01 * u.rad / u.m, "theta": [0, 45, 90] * u.deg}, (3,)),
+            ({"k": [0.01, 0.02, 0.03, 0.04] * u.rad / u.m, "theta": [0, 45, 90] * u.deg}, (4, 3)),
+        ]
+    )
+    def test_angular_frequency_return_structure(self, kwargs, expected):
+        waves = mhd_waves(8.3e-9 * u.T, "p+", 5e6 * u.m ** -3)
+
+        assert isinstance(waves, dict)
+        assert len({"alfven", "fast", "slow"} - set(waves.keys())) == 0
+
+        for mode in waves:
+            omega = waves[mode].angular_frequency(**kwargs)
+            assert isinstance(omega, u.Quantity)
+            assert omega.unit == u.rad / u.s
+            assert omega.shape == expected
