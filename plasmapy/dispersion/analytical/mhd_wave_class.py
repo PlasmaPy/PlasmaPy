@@ -114,7 +114,7 @@ class AbstractMHDWave(ABC):
 
 
 class AlfvenWave(AbstractMHDWave):
-    """
+    r"""
     Core class for MHD waves.
 
     Parameters
