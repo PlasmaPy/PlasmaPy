@@ -2,12 +2,12 @@ __all__ = ["HarrisSheet"]
 
 import astropy.constants as const
 import astropy.units as u
-import math
 import numpy as np
+
 from plasmapy.utils.decorators.validators import validate_quantities
 
-class HarrisSheet:
 
+class HarrisSheet:
     """
     Define a Harris Sheet Equilibrium.
     Magnetic field will be in the plus/minus x direction and the current density will be in the plus/minus z direction.
@@ -15,7 +15,7 @@ class HarrisSheet:
 
     Parameters
     ----------
-    B0 : `~astropy.units.Quantity` 
+    B0 : `~astropy.units.Quantity`
          Magnitude of magnetic field in the limit of :math:`y → ∞`.
 
 
@@ -57,7 +57,6 @@ class HarrisSheet:
 
         Parameters
         ----------
-
         y : `float`
           The axis of reference.
 
@@ -65,7 +64,7 @@ class HarrisSheet:
         return self.B0 * np.tanh(u.rad * y / self.delta)
 
     @validate_quantities
-    def current_density(self, y: u.m) -> u.A / u.m ** 2:
+    def current_density(self, y: u.m) -> u.A / u.m**2:
         r"""
         Compute the current density.
 
@@ -75,12 +74,13 @@ class HarrisSheet:
 
         Parameters
         ----------
-
         y : `float`
           The axis of reference.
 
         """
-        return -self.B0 / (self.delta * const.mu0) * np.cosh(u.rad * y / self.delta) ** -2
+        return (
+            -self.B0 / (self.delta * const.mu0) * np.cosh(u.rad * y / self.delta) ** -2
+        )
 
     @validate_quantities
     def plasma_pressure(self, y: u.m) -> u.Pa:
@@ -93,11 +93,11 @@ class HarrisSheet:
 
         Parameters
         ----------
-
         y : `float`
             The axis of reference.
 
         """
         return (
-            self.B0**2 / (2 * const.mu0) * (np.cosh(u.rad * y / self.delta) ** -2) + self.P0
+            self.B0**2 / (2 * const.mu0) * (np.cosh(u.rad * y / self.delta) ** -2)
+            + self.P0
         )
