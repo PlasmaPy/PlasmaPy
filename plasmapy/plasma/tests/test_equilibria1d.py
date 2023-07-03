@@ -48,7 +48,7 @@ def test_magneticField():
     hs = HarrisSheet(B0, delta, P0)
     y = [-2, 0, 2] * u.m
     B = hs.magnetic_field(y)
-    correct_B = [0.929, 0, 0.929] * u.T
+    correct_B = [-0.96402758007, 0, 0.96402758007] * u.T
     assert u.allclose(B, correct_B, atol=1e-9 * u.T)
 
 
