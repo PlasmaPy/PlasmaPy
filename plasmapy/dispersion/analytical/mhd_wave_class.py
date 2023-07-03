@@ -181,7 +181,7 @@ class AlfvenWave(AbstractMHDWave):
     """
 
     def angular_frequency(self, k: u.rad / u.m, theta: u.rad):
-        """
+        r"""
         Calculate the analytical solution to a magnetohydrodynamic,
         low-frequency (:math:`ω/kc ≪ 1`) dispersion relation.
 
