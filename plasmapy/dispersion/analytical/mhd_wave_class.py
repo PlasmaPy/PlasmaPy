@@ -192,7 +192,7 @@ class AlfvenWave(AbstractMHDWave):
             valued or 1-D array of length :math:`N`.
         theta : `~astropy.units.Quantity`, single valued or 1-D array
             The angle of propagation of the wave with respect to the
-            magnetic field, :math:`\\cos^{-1}(k_z / k)`, in units must be
+            magnetic field, :math:`\cos^{-1}(k_z / k)`, in units must be
             convertible to radians. Either single valued or 1-D array of
             size :math:`M`.
 
