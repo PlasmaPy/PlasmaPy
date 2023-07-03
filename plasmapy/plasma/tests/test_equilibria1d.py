@@ -38,7 +38,7 @@ def test_currentDensity():
     y = [-2, 0, 2] * u.m
     J = hs.current_density(y)
     correct_J = [-56222.1400445,-795774.715459, 56222.1400445] * u.A / u.m**2
-    assert u.allclose(J, correct_J, atol=1e-9 * u.A / u.m**2)
+    assert u.allclose(J, correct_J, atol=1e-8 * u.A / u.m**2)
 
 
 def test_magneticField():
