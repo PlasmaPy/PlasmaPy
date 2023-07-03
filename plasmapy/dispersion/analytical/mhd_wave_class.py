@@ -127,7 +127,7 @@ class AlfvenWave(AbstractMHDWave):
         helium-4, etc.). If no charge state information is provided,
         then the ions are assumed to be singly ionized.
     n_i : `~astropy.units.Quantity`
-        Ion number density in units convertible to m\\ :sup:`-3`.
+        Ion number density in units convertible to m\ :sup:`-3`.
     T_e : `~astropy.units.Quantity`, optional
         The electron temperature in units of K or eV, which defaults
         to zero.
