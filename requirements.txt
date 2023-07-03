@@ -95,7 +95,7 @@ future==0.18.3
     # via uncertainties
 h5py==3.9.0
     # via plasmapy (setup.py)
-hypothesis==6.79.3
+hypothesis==6.80.0
     # via plasmapy (setup.py)
 identify==2.5.24
     # via pre-commit
@@ -209,7 +209,7 @@ nodeenv==1.8.0
     # via pre-commit
 numba==0.57.1
     # via plasmapy (setup.py)
-numpy==1.24.3
+numpy==1.24.4
     # via
     #   astropy
     #   contourpy
@@ -238,7 +238,7 @@ packaging==23.1
     #   sphinx
     #   tox
     #   xarray
-pandas==2.0.2
+pandas==2.0.3
     # via
     #   plasmapy (setup.py)
     #   xarray
@@ -250,7 +250,7 @@ pexpect==4.8.0
     # via ipython
 pickleshare==0.7.5
     # via ipython
-pillow==9.5.0
+pillow==10.0.0
     # via
     #   matplotlib
     #   plasmapy (setup.py)
@@ -335,7 +335,7 @@ requests==2.31.0
     #   jupyterlab-server
     #   plasmapy (setup.py)
     #   sphinx
-scipy==1.11.0
+scipy==1.11.1
     # via
     #   lmfit
     #   plasmapy (setup.py)
@@ -458,7 +458,7 @@ virtualenv==20.23.1
     # via
     #   pre-commit
     #   tox
-voila==0.4.0
+voila==0.4.1
     # via plasmapy (setup.py)
 wcwidth==0.2.6
     # via prompt-toolkit
