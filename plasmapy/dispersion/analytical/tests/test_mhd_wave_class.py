@@ -92,7 +92,7 @@ class TestMHDWave:
         waves = mhd_waves(8.3e-9 * u.T, "p+", 5e6 * u.m**-3)
 
         assert isinstance(waves, dict)
-        assert len({"alfven", "fast", "slow"} - set(waves.keys())) == 0
+        assert {"alfven", "fast", "slow"} == set(waves.keys())
 
         for mode in waves:
             omega = waves[mode].angular_frequency(**kwargs)
