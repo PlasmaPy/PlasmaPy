@@ -342,10 +342,10 @@ class Test_Maxwellian_speed_1D:
         """
         with pytest.raises(ValueError):
             Maxwellian_speed_1D(
-                v=self.v,
-                T=self.T,
+                v=self.v.value,
+                T=self.T.value,
                 particle=self.particle,
-                v_drift=self.v_drift2,
+                v_drift=self.v_drift2.value,
                 units="Lorem ipsum",
             )
 
@@ -512,12 +512,12 @@ class Test_Maxwellian_velocity_2D:
         """
         with pytest.raises(ValueError):
             Maxwellian_velocity_2D(
-                vx=self.vx,
-                vy=self.vy,
-                T=self.T,
+                vx=self.vx.value,
+                vy=self.vy.value,
+                T=self.T.value,
                 particle=self.particle,
-                vx_drift=self.vx_drift,
-                vy_drift=self.vy_drift,
+                vx_drift=self.vx_drift.value,
+                vy_drift=self.vy_drift.value,
                 units="Lorem ipsum",
             )
 
@@ -653,10 +653,10 @@ class Test_Maxwellian_speed_2D:
         """
         with pytest.raises(ValueError):
             Maxwellian_speed_2D(
-                v=self.v,
-                T=self.T,
+                v=self.v.value,
+                T=self.T.value,
                 particle=self.particle,
-                v_drift=self.v_drift,
+                v_drift=self.v_drift.value,
                 units="Lorem ipsum",
             )
 
@@ -841,14 +841,14 @@ class Test_Maxwellian_velocity_3D:
         """
         with pytest.raises(ValueError):
             Maxwellian_velocity_3D(
-                vx=self.vx,
-                vy=self.vy,
-                vz=self.vz,
-                T=self.T,
+                vx=self.vx.value,
+                vy=self.vy.value,
+                vz=self.vz.value,
+                T=self.T.value,
                 particle=self.particle,
-                vx_drift=self.vx_drift2,
-                vy_drift=self.vy_drift2,
-                vz_drift=self.vz_drift2,
+                vx_drift=self.vx_drift2.value,
+                vy_drift=self.vy_drift2.value,
+                vz_drift=self.vz_drift2.value,
                 units="Lorem ipsum",
             )
 
@@ -983,10 +983,10 @@ class Test_Maxwellian_speed_3D:
         """
         with pytest.raises(ValueError):
             Maxwellian_speed_3D(
-                v=self.v,
-                T=self.T,
+                v=self.v.value,
+                T=self.T.value,
                 particle=self.particle,
-                v_drift=self.v_drift,
+                v_drift=self.v_drift.value,
                 units="Lorem ipsum",
             )
 
@@ -1216,11 +1216,11 @@ class Test_kappa_velocity_1D:
         """
         with pytest.raises(ValueError):
             kappa_velocity_1D(
-                v=self.v,
-                T=self.T_e,
+                v=self.v.value,
+                T=self.T_e.value,
                 kappa=self.kappa,
                 particle=self.particle,
-                v_drift=self.v_drift3,
+                v_drift=self.v_drift3.value,
                 units="Lorem ipsum",
             )
 
@@ -1464,14 +1464,14 @@ class Test_kappa_velocity_3D:
         """
         with pytest.raises(ValueError):
             kappa_velocity_3D(
-                vx=self.vx,
-                vy=self.vy,
-                vz=self.vz,
-                T=self.T,
+                vx=self.vx.value,
+                vy=self.vy.value,
+                vz=self.vz.value,
+                T=self.T.value,
                 kappa=self.kappa,
                 particle=self.particle,
-                vx_drift=self.vx_drift2,
-                vy_drift=self.vy_drift2,
-                vz_drift=self.vz_drift2,
+                vx_drift=self.vx_drift2.value,
+                vy_drift=self.vy_drift2.value,
+                vz_drift=self.vz_drift2.value,
                 units="Lorem ipsum",
             )
