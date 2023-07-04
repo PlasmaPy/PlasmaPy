@@ -712,9 +712,14 @@ def _trilinear_analysis(vspace, cell):  # noqa: C901, PLR0911, PLR0912, PLR0915
         dy + gy * yConst1,
         fy + hy * yConst1,
     )
-    for root in root_list:
-        if not is_root_in_list((root[0], yConst1, root[1]), BxByEndpoints):
-            BxByEndpoints.append((root[0], yConst1, root[1]))
+
+    BxByEndpoints.extend(
+        [
+            (root[0], yConst1, root[1])
+            for root in root_list
+            if not is_root_in_list((root[0], yConst1, root[1]), BxByEndpoints)
+        ]
+    )
 
     # Bx=Bz=0 Curve Endpoint
     root_list = _bilinear_root(
@@ -728,9 +733,13 @@ def _trilinear_analysis(vspace, cell):  # noqa: C901, PLR0911, PLR0912, PLR0915
         fz + hz * yConst1,
     )
 
-    for root in root_list:
-        if not is_root_in_list((root[0], yConst1, root[1]), BxBzEndpoints):
-            BxBzEndpoints.append((root[0], yConst1, root[1]))
+    BxBzEndpoints.extend(
+        [
+            (root[0], yConst1, root[1])
+            for root in root_list
+            if not is_root_in_list((root[0], yConst1, root[1]), BxBzEndpoints)
+        ]
+    )
 
     # By=Bz=0 Curve Endpoint
     root_list = _bilinear_root(
@@ -744,9 +753,13 @@ def _trilinear_analysis(vspace, cell):  # noqa: C901, PLR0911, PLR0912, PLR0915
         fz + hz * yConst1,
     )
 
-    for root in root_list:
-        if not is_root_in_list((root[0], yConst1, root[1]), ByBzEndpoints):
-            ByBzEndpoints.append((root[0], yConst1, root[1]))
+    ByBzEndpoints.extend(
+        [
+            (root[0], yConst1, root[1])
+            for root in root_list
+            if not is_root_in_list((root[0], yConst1, root[1]), ByBzEndpoints)
+        ]
+    )
 
     # Back Surface
     yConst2 = vspace[0][1][f111[0]][f111[1]][
@@ -764,9 +777,13 @@ def _trilinear_analysis(vspace, cell):  # noqa: C901, PLR0911, PLR0912, PLR0915
         fy + hy * yConst2,
     )
 
-    for root in root_list:
-        if not is_root_in_list((root[0], yConst2, root[1]), BxByEndpoints):
-            BxByEndpoints.append((root[0], yConst2, root[1]))
+    BxByEndpoints.extend(
+        [
+            (root[0], yConst2, root[1])
+            for root in root_list
+            if not is_root_in_list((root[0], yConst2, root[1]), BxByEndpoints)
+        ]
+    )
 
     # Bx=Bz=0 Curve Endpoint
     root_list = _bilinear_root(
@@ -780,9 +797,13 @@ def _trilinear_analysis(vspace, cell):  # noqa: C901, PLR0911, PLR0912, PLR0915
         fz + hz * yConst2,
     )
 
-    for root in root_list:
-        if not is_root_in_list((root[0], yConst2, root[1]), BxBzEndpoints):
-            BxBzEndpoints.append((root[0], yConst2, root[1]))
+    BxBzEndpoints.extend(
+        [
+            (root[0], yConst2, root[1])
+            for root in root_list
+            if not is_root_in_list((root[0], yConst2, root[1]), BxBzEndpoints)
+        ]
+    )
 
     # By=Bz=0 Curve Endpoint
     root_list = _bilinear_root(
@@ -796,9 +817,13 @@ def _trilinear_analysis(vspace, cell):  # noqa: C901, PLR0911, PLR0912, PLR0915
         fz + hz * yConst2,
     )
 
-    for root in root_list:
-        if not is_root_in_list((root[0], yConst2, root[1]), ByBzEndpoints):
-            ByBzEndpoints.append((root[0], yConst2, root[1]))
+    ByBzEndpoints.extend(
+        [
+            (root[0], yConst2, root[1])
+            for root in root_list
+            if not is_root_in_list((root[0], yConst2, root[1]), ByBzEndpoints)
+        ]
+    )
 
     # Right Surface
     xConst1 = vspace[0][0][f111[0]][f111[1]][f111[2]]
@@ -814,9 +839,13 @@ def _trilinear_analysis(vspace, cell):  # noqa: C901, PLR0911, PLR0912, PLR0915
         gy + hy * xConst1,
     )
 
-    for root in root_list:
-        if not is_root_in_list((xConst1, root[0], root[1]), BxByEndpoints):
-            BxByEndpoints.append((xConst1, root[0], root[1]))
+    BxByEndpoints.extend(
+        [
+            (xConst1, root[0], root[1])
+            for root in root_list
+            if not is_root_in_list((xConst1, root[0], root[1]), BxByEndpoints)
+        ]
+    )
 
     # Bx=BZ=0 Curve Endpoint
     root_list = _bilinear_root(
@@ -830,9 +859,13 @@ def _trilinear_analysis(vspace, cell):  # noqa: C901, PLR0911, PLR0912, PLR0915
         gz + hz * xConst1,
     )
 
-    for root in root_list:
-        if not is_root_in_list((xConst1, root[0], root[1]), BxBzEndpoints):
-            BxBzEndpoints.append((xConst1, root[0], root[1]))
+    BxBzEndpoints.extend(
+        [
+            (xConst1, root[0], root[1])
+            for root in root_list
+            if not is_root_in_list((xConst1, root[0], root[1]), BxBzEndpoints)
+        ]
+    )
 
     # By=Bz=0 Curve Endpoint
     root_list = _bilinear_root(
@@ -846,9 +879,13 @@ def _trilinear_analysis(vspace, cell):  # noqa: C901, PLR0911, PLR0912, PLR0915
         gz + hz * xConst1,
     )
 
-    for root in root_list:
-        if not is_root_in_list((xConst1, root[0], root[1]), ByBzEndpoints):
-            ByBzEndpoints.append((xConst1, root[0], root[1]))
+    ByBzEndpoints.extend(
+        [
+            (xConst1, root[0], root[1])
+            for root in root_list
+            if not is_root_in_list((xConst1, root[0], root[1]), ByBzEndpoints)
+        ]
+    )
 
     # Left Surface
     xConst2 = vspace[0][0][f000[0]][f000[1]][f000[2]]
@@ -864,9 +901,13 @@ def _trilinear_analysis(vspace, cell):  # noqa: C901, PLR0911, PLR0912, PLR0915
         gy + hy * xConst2,
     )
 
-    for root in root_list:
-        if not is_root_in_list((xConst2, root[0], root[1]), BxByEndpoints):
-            BxByEndpoints.append((xConst2, root[0], root[1]))
+    BxByEndpoints.extend(
+        [
+            (xConst2, root[0], root[1])
+            for root in root_list
+            if not is_root_in_list((xConst2, root[0], root[1]), BxByEndpoints)
+        ]
+    )
 
     # Bx=BZ=0 Curve Endpoint
     root_list = _bilinear_root(
@@ -880,9 +921,13 @@ def _trilinear_analysis(vspace, cell):  # noqa: C901, PLR0911, PLR0912, PLR0915
         gz + hz * xConst2,
     )
 
-    for root in root_list:
-        if not is_root_in_list((xConst2, root[0], root[1]), BxBzEndpoints):
-            BxBzEndpoints.append((xConst2, root[0], root[1]))
+    BxBzEndpoints.extend(
+        [
+            (xConst2, root[0], root[1])
+            for root in root_list
+            if not is_root_in_list((xConst2, root[0], root[1]), BxBzEndpoints)
+        ]
+    )
 
     # By=Bz=0 Curve Endpoint
     root_list = _bilinear_root(
@@ -896,9 +941,13 @@ def _trilinear_analysis(vspace, cell):  # noqa: C901, PLR0911, PLR0912, PLR0915
         gz + hz * xConst2,
     )
 
-    for root in root_list:
-        if not is_root_in_list((xConst2, root[0], root[1]), ByBzEndpoints):
-            ByBzEndpoints.append((xConst2, root[0], root[1]))
+    ByBzEndpoints.extend(
+        [
+            (xConst2, root[0], root[1])
+            for root in root_list
+            if not is_root_in_list((xConst2, root[0], root[1]), ByBzEndpoints)
+        ]
+    )
 
     # Up Surface
     zConst1 = vspace[0][2][f111[0]][f111[1]][f111[2]]
@@ -914,9 +963,13 @@ def _trilinear_analysis(vspace, cell):  # noqa: C901, PLR0911, PLR0912, PLR0915
         ey + hy * zConst1,
     )
 
-    for root in root_list:
-        if not is_root_in_list((root[0], root[1], zConst1), BxByEndpoints):
-            BxByEndpoints.append((root[0], root[1], zConst1))
+    BxByEndpoints.extend(
+        [
+            (root[0], root[1], zConst1)
+            for root in root_list
+            if not is_root_in_list((root[0], root[1], zConst1), BxByEndpoints)
+        ]
+    )
 
     # Bx=Bz=0 Curve Endpoint
     root_list = _bilinear_root(
@@ -930,9 +983,13 @@ def _trilinear_analysis(vspace, cell):  # noqa: C901, PLR0911, PLR0912, PLR0915
         ez + hz * zConst1,
     )
 
-    for root in root_list:
-        if not is_root_in_list((root[0], root[1], zConst1), BxBzEndpoints):
-            BxBzEndpoints.append((root[0], root[1], zConst1))
+    BxBzEndpoints.extend(
+        [
+            (root[0], root[1], zConst1)
+            for root in root_list
+            if not is_root_in_list((root[0], root[1], zConst1), BxBzEndpoints)
+        ]
+    )
 
     # By=Bz=0 Curve Endpoint
     root_list = _bilinear_root(
@@ -946,9 +1003,13 @@ def _trilinear_analysis(vspace, cell):  # noqa: C901, PLR0911, PLR0912, PLR0915
         ez + hz * zConst1,
     )
 
-    for root in root_list:
-        if not is_root_in_list((root[0], root[1], zConst1), ByBzEndpoints):
-            ByBzEndpoints.append((root[0], root[1], zConst1))
+    ByBzEndpoints.extend(
+        [
+            (root[0], root[1], zConst1)
+            for root in root_list
+            if not is_root_in_list((root[0], root[1], zConst1), ByBzEndpoints)
+        ]
+    )
 
     # Down Surface
     zConst2 = vspace[0][2][f000[0]][f000[1]][f000[2]]
@@ -964,9 +1025,13 @@ def _trilinear_analysis(vspace, cell):  # noqa: C901, PLR0911, PLR0912, PLR0915
         ey + hy * zConst2,
     )
 
-    for root in root_list:
-        if not is_root_in_list((root[0], root[1], zConst2), BxByEndpoints):
-            BxByEndpoints.append((root[0], root[1], zConst2))
+    BxByEndpoints.extend(
+        [
+            (root[0], root[1], zConst2)
+            for root in root_list
+            if not is_root_in_list((root[0], root[1], zConst2), BxByEndpoints)
+        ]
+    )
 
     # Bx=Bz=0 Curve Endpoint
     root_list = _bilinear_root(
@@ -980,9 +1045,13 @@ def _trilinear_analysis(vspace, cell):  # noqa: C901, PLR0911, PLR0912, PLR0915
         ez + hz * zConst2,
     )
 
-    for root in root_list:
-        if not is_root_in_list((root[0], root[1], zConst2), BxBzEndpoints):
-            BxBzEndpoints.append((root[0], root[1], zConst2))
+    BxBzEndpoints.extend(
+        [
+            (root[0], root[1], zConst2)
+            for root in root_list
+            if not is_root_in_list((root[0], root[1], zConst2), BxBzEndpoints)
+        ]
+    )
 
     # By=Bz=0 Curve Endpoint
     root_list = _bilinear_root(
@@ -996,9 +1065,13 @@ def _trilinear_analysis(vspace, cell):  # noqa: C901, PLR0911, PLR0912, PLR0915
         ez + hz * zConst2,
     )
 
-    for root in root_list:
-        if not is_root_in_list((root[0], root[1], zConst2), ByBzEndpoints):
-            ByBzEndpoints.append((root[0], root[1], zConst2))
+    ByBzEndpoints.extend(
+        [
+            (root[0], root[1], zConst2)
+            for root in root_list
+            if not is_root_in_list((root[0], root[1], zConst2), ByBzEndpoints)
+        ]
+    )
 
     xbound = vspace[0][0][f111[0]][f111[1]][f111[2]]
     ybound = vspace[0][1][f111[0]][f111[1]][f111[2]]
