@@ -1263,14 +1263,14 @@ def _locate_null_point(vspace, cell, n, err):
 
     starting_pos = []  # noqa: FURB138
     # Adding the Corners
-    for point in corners:
-        starting_pos.append(
-            [
-                vspace[0][0][point[0]][point[1]][point[2]],
-                vspace[0][1][point[0]][point[1]][point[2]],
-                vspace[0][2][point[0]][point[1]][point[2]],
-            ]
-        )
+    starting_pos = [
+        [
+            vspace[0][0][point[0]][point[1]][point[2]],
+            vspace[0][1][point[0]][point[1]][point[2]],
+            vspace[0][2][point[0]][point[1]][point[2]],
+        ]
+        for point in corners
+    ]
     # Adding the Mid Point
     starting_pos.append(
         [
