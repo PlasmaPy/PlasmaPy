@@ -293,7 +293,7 @@ class ParticleList(collections.UserList):
             self.data.extend(iterable)
         else:
             for obj in iterable:
-                self.append(obj)
+                self.append(obj)  # noqa: PERF402
 
     @property
     def half_life(self) -> u.s:

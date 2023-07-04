@@ -281,6 +281,7 @@ ignore = [
   "N803", # invalid-argument-name
   "N806", # non-lowercase-variable-in-function
   "N816", # mixed-case-variable-in-global-scope
+  "PERF203", # try-except-in-loop (remove when we require Python ≥ 3.11)
   "PLE0605", # invalid-all-format (flags `__all__ += __lite_funcs`, etc.)
   "PLR0913", # too-many-arguments
   "PLR2004", # magic-value-comparison
@@ -339,6 +340,7 @@ max-complexity = 10
 ".github/scripts/*.py" = ["D103", "INP001"]
 "docs/conf.py" = ["D100", "D103", "E402"]
 "plasmapy/analysis/fit_functions.py" = ["D301"]
+"plasmapy/analysis/nullpoint.py" = ["PERF401"] # re-enable when ∃ autofixes
 "plasmapy/formulary/braginskii.py" = ["C901", "RET503", "RET504"]
 "plasmapy/formulary/tests/test_distribution.py" = ["ARG005"]
 "plasmapy/particles/tests/test_decorators.py" = ["ARG001", "ARG002"]
