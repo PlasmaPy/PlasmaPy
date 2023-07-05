@@ -386,14 +386,13 @@ class ParticleTracker:
         self.dt = np.array([0.0, np.inf]) * u.s if dt is None else dt
         self.dt = (self.dt).to(u.s).value
 
-        # Store a copy of the initial velocity distribution in memory
-        # This will be used later to calculate the maximum deflection
-        self.v_init = np.copy(self.v)
-
         # Create flags for tracking when particles during the simulation
         # on_grid -> zero if the particle is off grid, 1
         # shape [nparticles, ngrids]
         self.on_grid = np.zeros([self.nparticles_tracked, self.num_grids])
+
+        # Entered grid -> non-zero if particle EVER entered a grid
+        self.entered_grid = np.zeros([self.nparticles_tracked])
 
         # Initialize a "progress bar" (really more of a meter)
         # Setting sys.stdout lets this play nicely with regular print()

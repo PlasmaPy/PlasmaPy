@@ -859,9 +859,6 @@ class ParticleTracker(GeneralParticleTracker):
         self.nparticles_tracked = grid_mask.sum()
         self.fract_tracked = self.nparticles_tracked / self.nparticles
 
-        # Entered grid -> non-zero if particle EVER entered a grid
-        self.entered_grid = np.zeros([self.nparticles_tracked])
-
         # Generate a null distribution of points (the result in the absence of
         # any fields) for statistical comparison
         # TODO: Concatenate x and x_untracked to ensure consistent indices
