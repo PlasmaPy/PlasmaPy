@@ -63,8 +63,28 @@ class AbstractMHDWave(ABC):
         # sound speed
         self._c_s = np.sqrt(self._gamma * k_B * self._T / self._ion.mass)
 
-        # magnetosonic speed squared
-        self._c_ms2 = self._v_A**2 + self._c_s**2
+        # magnetosonic speed
+        self._c_ms = np.sqrt(self._v_A**2 + self._c_s**2)
+
+    @property
+    def alfven_speed(self):
+        """The Alfvén speed of the plasma."""
+        return self._v_A
+
+    @property
+    def sound_speed(self):
+        """The sound speed of the plasma."""
+        return self._c_s
+
+    @property
+    def magnetosonic_speed(self):
+        r"""
+        The magnetosonic speed of the plasma.
+
+        Defined as :math:`c_{ms} = \sqrt{v_A^2 + c_s^2}` where
+        :math:`v_A` is the Alfvén speed and :math:`c_s` is the sound speed
+        """
+        return self._c_ms
 
     @staticmethod
     def validate_k_theta(k: u.rad / u.m, theta: u.rad):
@@ -209,9 +229,9 @@ class FastMagnetosonicWave(AbstractMHDWave):
             k
             * np.sqrt(
                 (
-                    self._c_ms2
+                    self._c_ms**2
                     + np.sqrt(
-                        self._c_ms2**2
+                        self._c_ms**4
                         - (2 * self._v_A * self._c_s * np.cos(theta)) ** 2
                     )
                 )
@@ -227,9 +247,9 @@ class SlowMagnetosonicWave(AbstractMHDWave):
             k
             * np.sqrt(
                 (
-                    self._c_ms2
+                    self._c_ms**2
                     - np.sqrt(
-                        self._c_ms2**2
+                        self._c_ms**4
                         - (2 * self._v_A * self._c_s * np.cos(theta)) ** 2
                     )
                 )
