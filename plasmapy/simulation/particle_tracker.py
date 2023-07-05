@@ -158,7 +158,7 @@ class ParticleTracker:
                 f"({x.shape[0]} and {v.shape[0]} respectively)."
             )
         else:
-            self.nparticles_total = x.shape[0]
+            self.nparticles = x.shape[0]
 
         self.x = x.to(u.m).value
         self.v = v.to(u.m / u.s).value
@@ -224,8 +224,12 @@ class ParticleTracker:
         pos = self.x * u.m
 
         # Update the list of particles on and off the grid
-        # shape [nparticles_total, ngrids]
+        # shape [nparticles, ngrids]
         self.on_grid = np.array([grid.on_grid(pos) for grid in self.grids]).T
+
+        # entered_grid is zero at the end if a particle has never
+        # entered any grid
+        self.entered_grid += np.sum(self.on_grid, axis=-1)
 
         Ex = np.zeros(self.nparticles_tracked) * u.V / u.m
         Ey = np.zeros(self.nparticles_tracked) * u.V / u.m
@@ -294,13 +298,13 @@ class ParticleTracker:
         # vc = np.max(v)/_c
 
         # If dt is not a scalar, make sure it can be multiplied by an
-        # [nparticles_total, 3] shape field array
+        # [nparticles, 3] shape field array
         if dt.size > 1:
             dt = dt[:, np.newaxis]
 
-        x, v = boris_push(self.x, self.v, B, E, self.q, self.m, dt, inplace=False)
-        self.x = x
-        self.v = v
+        self.x, self.v = boris_push(
+            self.x, self.v, B, E, self.q, self.m, dt, inplace=False
+        )
 
     @property
     def on_any_grid(self):
@@ -322,12 +326,26 @@ class ParticleTracker:
         """
         return np.max(np.linalg.norm(self.v, axis=-1))
 
-    def run(
-        self,
-        dt=None,
-        field_weighting="volume averaged",
-        # stop_condition=_stop_condition,
-    ):
+    def _validate_field_weighting(self, field_weighting: str):
+        # Load and validate inputs
+        field_weightings = ["volume averaged", "nearest neighbor"]
+        if field_weighting in field_weightings:
+            self.field_weighting = field_weighting
+        else:
+            raise ValueError(
+                f"{field_weighting} is not a valid option for ",
+                "field_weighting. Valid choices are",
+                f"{field_weightings}",
+            )
+
+        # Check to make sure particles have already been generated
+        if not hasattr(self, "x"):
+            raise ValueError(
+                "Either the create_particles or load_particles method must be "
+                "called before running the particle tracing algorithm."
+            )
+
+    def run(self, dt=None, field_weighting="volume averaged"):
         r"""
         Runs a particle-tracing simulation.
         Timesteps are adaptively calculated based on the
@@ -360,23 +378,7 @@ class ParticleTracker:
 
         """
 
-        # Load and validate inputs
-        field_weightings = ["volume averaged", "nearest neighbor"]
-        if field_weighting in field_weightings:
-            self.field_weighting = field_weighting
-        else:
-            raise ValueError(
-                f"{field_weighting} is not a valid option for ",
-                "field_weighting. Valid choices are",
-                f"{field_weightings}",
-            )
-
-        # Check to make sure particles have already been generated
-        if not hasattr(self, "x"):
-            raise ValueError(
-                "Either the create_particles or load_particles method must be "
-                "called before running the particle tracing algorithm."
-            )
+        self._validate_field_weighting(field_weighting)
 
         self.nparticles_tracked = self.x.shape[0]
 
@@ -390,7 +392,7 @@ class ParticleTracker:
 
         # Create flags for tracking when particles during the simulation
         # on_grid -> zero if the particle is off grid, 1
-        # shape [nparticles_total, ngrids]
+        # shape [nparticles, ngrids]
         self.on_grid = np.zeros([self.nparticles_tracked, self.num_grids])
 
         # Initialize a "progress bar" (really more of a meter)
@@ -407,7 +409,7 @@ class ParticleTracker:
 
         # Push the particles until the stop condition is satisfied
         # (no more particles on the simulation grid)
-        while True:  # not stop_condition():
+        while not self._stop_condition():
             n_on_grid = np.sum(self.on_any_grid)
             pbar.n = n_on_grid
             pbar.last_print_n = n_on_grid

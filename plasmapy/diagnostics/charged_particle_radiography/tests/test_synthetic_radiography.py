@@ -147,7 +147,7 @@ def test_multiple_grids():
     source = (0 * u.mm, -10 * u.mm, 0 * u.mm)
     detector = (0 * u.mm, 200 * u.mm, 0 * u.mm)
 
-    sim = cpr.ChargedParticleRadiographyTracker(grids, source, detector, verbose=True)
+    sim = cpr.ParticleTracker(grids, source, detector, verbose=True)
 
     sim.create_particles(1e5, 15 * u.MeV, max_theta=8 * u.deg)
 
@@ -182,9 +182,7 @@ def run_1D_example(name):
     with pytest.warns(
         RuntimeWarning, match="Fields should go to zero at edges of grid to avoid "
     ):
-        sim = cpr.ChargedParticleRadiographyTracker(
-            grid, source, detector, verbose=False
-        )
+        sim = cpr.ParticleTracker(grid, source, detector, verbose=False)
     sim.create_particles(1e4, 3 * u.MeV, max_theta=0.1 * u.deg)
     sim.run()
 
@@ -218,7 +216,7 @@ def run_mesh_example(
     source = (0 * u.mm, -10 * u.mm, 0 * u.mm)
     detector = (0 * u.mm, 200 * u.mm, 0 * u.mm)
 
-    sim = cpr.ChargedParticleRadiographyTracker(grid, source, detector, verbose=False)
+    sim = cpr.ParticleTracker(grid, source, detector, verbose=False)
 
     sim.add_wire_mesh(
         location,
@@ -260,17 +258,17 @@ def test_coordinate_systems():
     # Cartesian
     source = (-7.07 * u.mm, -7.07 * u.mm, 0 * u.mm)
     detector = (70.07 * u.mm, 70.07 * u.mm, 0 * u.mm)
-    sim1 = cpr.ChargedParticleRadiographyTracker(grid, source, detector, verbose=True)
+    sim1 = cpr.ParticleTracker(grid, source, detector, verbose=True)
 
     # Cylindrical
     source = (-1 * u.cm, 45 * u.deg, 0 * u.mm)
     detector = (10 * u.cm, 45 * u.deg, 0 * u.mm)
-    sim2 = cpr.ChargedParticleRadiographyTracker(grid, source, detector, verbose=False)
+    sim2 = cpr.ParticleTracker(grid, source, detector, verbose=False)
 
     # In spherical
     source = (-0.01 * u.m, 90 * u.deg, 45 * u.deg)
     detector = (0.1 * u.m, 90 * u.deg, 45 * u.deg)
-    sim3 = cpr.ChargedParticleRadiographyTracker(grid, source, detector, verbose=False)
+    sim3 = cpr.ParticleTracker(grid, source, detector, verbose=False)
 
     assert np.allclose(sim1.source, sim2.source, atol=1e-2)
     assert np.allclose(sim2.source, sim3.source, atol=1e-2)
@@ -298,17 +296,13 @@ def test_input_validation():
     Ex[0, 0, 0] = np.nan * u.V / u.m
     grid.add_quantities(E_x=Ex)
     with pytest.raises(ValueError):
-        sim = cpr.ChargedParticleRadiographyTracker(
-            grid, source, detector, verbose=False
-        )
+        sim = cpr.ParticleTracker(grid, source, detector, verbose=False)
     Ex[0, 0, 0] = 0 * u.V / u.m
 
     Ex[0, 0, 0] = np.inf * u.V / u.m  # Reset element for the rest of the tests
     grid.add_quantities(E_x=Ex)
     with pytest.raises(ValueError):
-        sim = cpr.ChargedParticleRadiographyTracker(
-            grid, source, detector, verbose=False
-        )
+        sim = cpr.ParticleTracker(grid, source, detector, verbose=False)
     Ex[0, 0, 0] = 0 * u.V / u.m
 
     # Check what happens if a value is large relative to the rest of the array
@@ -316,9 +310,7 @@ def test_input_validation():
     grid.add_quantities(E_x=Ex)
     # with pytest.raises(ValueError):
     with pytest.warns(RuntimeWarning):
-        sim = cpr.ChargedParticleRadiographyTracker(
-            grid, source, detector, verbose=False
-        )
+        sim = cpr.ParticleTracker(grid, source, detector, verbose=False)
     Ex[0, 0, 0] = 0 * u.V / u.m
 
     # Raise error when source-to-detector vector doesn't pass through the
@@ -326,28 +318,24 @@ def test_input_validation():
     source_bad = (10 * u.mm, -10 * u.mm, 0 * u.mm)
     detector_bad = (10 * u.mm, 100 * u.mm, 0 * u.mm)
     with pytest.raises(ValueError):
-        sim = cpr.ChargedParticleRadiographyTracker(
-            grid, source_bad, detector_bad, verbose=False
-        )
+        sim = cpr.ParticleTracker(grid, source_bad, detector_bad, verbose=False)
 
     # Test raises warning when one (or more) of the required fields is missing
     grid_bad = CartesianGrid(-1 * u.mm, 1 * u.mm, num=50)
     with pytest.warns(RuntimeWarning, match="is not specified for the provided grid."):
-        sim = cpr.ChargedParticleRadiographyTracker(
-            grid_bad, source, detector, verbose=True
-        )
+        sim = cpr.ParticleTracker(grid_bad, source, detector, verbose=True)
 
     # ************************************************************************
     # During create_particles
     # ************************************************************************
-    sim = cpr.ChargedParticleRadiographyTracker(grid, source, detector, verbose=False)
+    sim = cpr.ParticleTracker(grid, source, detector, verbose=False)
     sim.create_particles(1e3, 15 * u.MeV, max_theta=0.99 * np.pi / 2 * u.rad)
 
     # ************************************************************************
     # During runtime
     # ************************************************************************
 
-    sim = cpr.ChargedParticleRadiographyTracker(grid, source, detector, verbose=False)
+    sim = cpr.ParticleTracker(grid, source, detector, verbose=False)
     sim.create_particles(1e3, 15 * u.MeV)
 
     # Test an invalid field weighting keyword
@@ -377,24 +365,22 @@ def test_init():
     source = (0 * u.mm, -10 * u.mm, 0 * u.mm)
     detector = (0 * u.mm, 200 * u.mm, 0 * u.mm)
 
-    sim = cpr.ChargedParticleRadiographyTracker(grid, source, detector, verbose=False)
+    sim = cpr.ParticleTracker(grid, source, detector, verbose=False)
 
     # Test manually setting hdir and vdir
     hdir = np.array([1, 0, 1])
-    sim = cpr.ChargedParticleRadiographyTracker(
-        grid, source, detector, verbose=False, detector_hdir=hdir
-    )
+    sim = cpr.ParticleTracker(grid, source, detector, verbose=False, detector_hdir=hdir)
 
     # Test special case hdir == [0,0,1]
     source = (0 * u.mm, 0 * u.mm, -10 * u.mm)
     detector = (0 * u.mm, 0 * u.mm, 200 * u.mm)
-    sim = cpr.ChargedParticleRadiographyTracker(grid, source, detector, verbose=False)
+    sim = cpr.ParticleTracker(grid, source, detector, verbose=False)
     assert all(sim.det_hdir == np.array([1, 0, 0]))
 
     # Test that hdir is calculated correctly if src-det axis is anti-parallel to z
     source = (0 * u.mm, 0 * u.mm, 10 * u.mm)
     detector = (0 * u.mm, 0 * u.mm, -200 * u.mm)
-    sim = cpr.ChargedParticleRadiographyTracker(grid, source, detector, verbose=False)
+    sim = cpr.ParticleTracker(grid, source, detector, verbose=False)
     assert all(sim.det_hdir == np.array([1, 0, 0]))
 
 
@@ -406,7 +392,7 @@ def test_create_particles():
     source = (0 * u.mm, -10 * u.mm, 0 * u.mm)
     detector = (0 * u.mm, 200 * u.mm, 0 * u.mm)
 
-    sim = cpr.ChargedParticleRadiographyTracker(grid, source, detector, verbose=False)
+    sim = cpr.ParticleTracker(grid, source, detector, verbose=False)
 
     sim.create_particles(
         1e3, 15 * u.MeV, max_theta=0.1 * u.rad, distribution="monte-carlo"
@@ -426,7 +412,7 @@ def test_load_particles():
     source = (0 * u.mm, -10 * u.mm, 0 * u.mm)
     detector = (0 * u.mm, 200 * u.mm, 0 * u.mm)
 
-    sim = cpr.ChargedParticleRadiographyTracker(grid, source, detector, verbose=False)
+    sim = cpr.ParticleTracker(grid, source, detector, verbose=False)
     sim.create_particles(1e3, 15 * u.MeV, max_theta=0.1 * u.rad, distribution="uniform")
 
     # Test adding unequal numbers of particles
@@ -457,14 +443,14 @@ def test_run_options():
     # Cartesian
     source = (0 * u.mm, -10 * u.mm, 0 * u.mm)
     detector = (0 * u.mm, 200 * u.mm, 0 * u.mm)
-    sim = cpr.ChargedParticleRadiographyTracker(grid, source, detector, verbose=True)
+    sim = cpr.ParticleTracker(grid, source, detector, verbose=True)
 
     # Test that trying to call run() without creating particles
     # raises an exception
     with pytest.raises(ValueError):
         sim.run()
 
-    sim = cpr.ChargedParticleRadiographyTracker(grid, source, detector, verbose=True)
+    sim = cpr.ParticleTracker(grid, source, detector, verbose=True)
     sim.create_particles(1e4, 3 * u.MeV, max_theta=10 * u.deg)
 
     # Try running with nearest neighbor interpolator
@@ -475,7 +461,7 @@ def test_run_options():
     sim.max_deflection  # noqa: B018
 
     # Test way too big of a max_theta
-    sim = cpr.ChargedParticleRadiographyTracker(grid, source, detector, verbose=True)
+    sim = cpr.ParticleTracker(grid, source, detector, verbose=True)
     sim.create_particles(1e4, 3 * u.MeV, max_theta=89 * u.deg)
     with pytest.warns(RuntimeWarning, match="of particles entered the field grid"):
         sim.run(field_weighting="nearest neighbor", dt=1e-12 * u.s)
@@ -491,9 +477,7 @@ def test_run_options():
     with pytest.warns(
         RuntimeWarning, match="Fields should go to zero at edges of grid to avoid "
     ):
-        sim = cpr.ChargedParticleRadiographyTracker(
-            grid, source, detector, verbose=False
-        )
+        sim = cpr.ParticleTracker(grid, source, detector, verbose=False)
     sim.create_particles(1e4, 3 * u.MeV, max_theta=0.1 * u.deg)
     with pytest.warns(
         RuntimeWarning,
@@ -513,7 +497,7 @@ def create_tracker_obj():
     source = (0 * u.mm, -10 * u.mm, 0 * u.mm)
     detector = (0 * u.mm, 200 * u.mm, 0 * u.mm)
 
-    sim = cpr.ChargedParticleRadiographyTracker(grid, source, detector, verbose=False)
+    sim = cpr.ParticleTracker(grid, source, detector, verbose=False)
     sim.create_particles(int(1e4), 3 * u.MeV, max_theta=10 * u.deg)
     return sim
 
@@ -744,9 +728,7 @@ def test_gaussian_sphere_analytical_comparison():
     with pytest.warns(
         RuntimeWarning, match="Fields should go to zero at edges of grid to avoid "
     ):
-        sim = cpr.ChargedParticleRadiographyTracker(
-            grid, source, detector, verbose=False
-        )
+        sim = cpr.ParticleTracker(grid, source, detector, verbose=False)
 
     sim.create_particles(1e3, W * u.eV, max_theta=12 * u.deg)
     sim.run()
@@ -930,7 +912,7 @@ def test_multiple_grids2():
     source = (0 * u.mm, -10 * u.mm, 0 * u.mm)
     detector = (0 * u.mm, 200 * u.mm, 0 * u.mm)
 
-    sim = cpr.ChargedParticleRadiographyTracker(grids, source, detector, verbose=True)
+    sim = cpr.ParticleTracker(grids, source, detector, verbose=True)
 
     sim.create_particles(1e5, 15 * u.MeV, max_theta=8 * u.deg)
 
