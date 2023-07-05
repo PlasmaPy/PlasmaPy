@@ -845,7 +845,7 @@ class ParticleTracker(GeneralParticleTracker):
         diagnostic image.
         """
 
-        self._validate_field_weighting(field_weighting)
+        self._validate_inputs(field_weighting)
 
         # If meshes have been added, apply them now
         for mesh in self.mesh_list:

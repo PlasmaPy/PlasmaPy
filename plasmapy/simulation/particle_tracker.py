@@ -326,7 +326,7 @@ class ParticleTracker:
         """
         return np.max(np.linalg.norm(self.v, axis=-1))
 
-    def _validate_field_weighting(self, field_weighting: str):
+    def _validate_inputs(self, field_weighting: str):
         # Load and validate inputs
         field_weightings = ["volume averaged", "nearest neighbor"]
         if field_weighting in field_weightings:
@@ -378,7 +378,7 @@ class ParticleTracker:
 
         """
 
-        self._validate_field_weighting(field_weighting)
+        self._validate_inputs(field_weighting)
 
         self.nparticles_tracked = self.x.shape[0]
 
