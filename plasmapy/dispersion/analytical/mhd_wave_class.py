@@ -5,16 +5,15 @@ __all__ = ["AlfvenWave", "FastMagnetosonicWave", "SlowMagnetosonicWave", "mhd_wa
 
 import astropy.units as u
 import numpy as np
-import warnings
 
 from abc import ABC, abstractmethod
+from astropy.constants.si import k_B
 from numbers import Integral, Real
 from typing import Optional, Union
 
-from plasmapy.formulary.speeds import Alfven_speed, ion_sound_speed
+from plasmapy.formulary.speeds import Alfven_speed
 from plasmapy.particles import particle_input, ParticleLike
 from plasmapy.utils.decorators import validate_quantities
-from plasmapy.utils.exceptions import PhysicsWarning
 
 
 class AbstractMHDWave(ABC):
@@ -22,8 +21,7 @@ class AbstractMHDWave(ABC):
     @validate_quantities(
         B={"can_be_negative": False},
         n_i={"can_be_negative": False},
-        T_e={"can_be_negative": False, "equivalencies": u.temperature_energy()},
-        T_i={"can_be_negative": False, "equivalencies": u.temperature_energy()},
+        T={"can_be_negative": False, "equivalencies": u.temperature_energy()},
     )
     def __init__(
         self,
@@ -31,15 +29,13 @@ class AbstractMHDWave(ABC):
         ion: ParticleLike,
         n_i: u.m**-3,
         *,
-        T_e: u.K = 0 * u.K,
-        T_i: u.K = 0 * u.K,
-        gamma_e: Union[float, int] = 1,
-        gamma_i: Union[float, int] = 3,
+        T: u.K = 0 * u.K,
+        gamma: Union[float, int] = 5 / 3,
         mass_numb: Optional[Integral] = None,
         Z: Optional[Real] = None,
     ):
         # validate arguments
-        for arg_name in ("B", "n_i", "T_e", "T_i"):
+        for arg_name in ("B", "n_i", "T"):
             val = locals()[arg_name].squeeze()
             if val.shape != ():
                 raise ValueError(
@@ -48,36 +44,24 @@ class AbstractMHDWave(ABC):
                 )
             locals()[arg_name] = val
 
-        # validate arguments
-        for arg_name in ("gamma_e", "gamma_i"):
-            if not isinstance(locals()[arg_name], Real):
-                raise TypeError(
-                    f"Expected int or float for argument '{arg_name}', but got "
-                    f"{type(locals()[arg_name])}."
-                )
+        # validate gamma
+        if not isinstance(gamma, Real):
+            raise TypeError(
+                f"Expected int or float for argument 'gamma', but got "
+                f"{type(gamma)}."
+            )
+
         self._B = B
         self._ion = ion
         self._n_i = n_i
-        self._T_e = T_e
-        self._T_i = T_i
-        self._gamma_e = gamma_e
-        self._gamma_i = gamma_i
+        self._T = T
+        self._gamma = gamma
         self._Z = ion.charge_number
 
         self._v_A = Alfven_speed(self._B, self._n_i, ion=self._ion, Z=self._Z)
 
-        self._n_e = self._Z * self._n_i
-        with warnings.catch_warnings():
-            warnings.simplefilter("ignore", category=PhysicsWarning)
-            self._c_s = ion_sound_speed(
-                T_e=self._T_e,
-                T_i=self._T_i,
-                ion=self._ion,
-                n_e=self._n_e,
-                gamma_e=self._gamma_e,
-                gamma_i=self._gamma_i,
-                Z=self._Z,
-            )
+        # sound speed
+        self._c_s = np.sqrt(self._gamma * k_B * self._T / self._ion.mass)
 
         # magnetosonic speed squared
         self._c_ms2 = self._v_A**2 + self._c_s**2
