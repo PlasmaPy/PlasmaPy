@@ -1,7 +1,13 @@
 """
 Objects for storing magnetohydrodynamic wave parameters.
 """
-__all__ = ["AlfvenWave", "FastMagnetosonicWave", "SlowMagnetosonicWave", "mhd_waves"]
+__all__ = [
+    "AbstractMHDWave",
+    "AlfvenWave",
+    "FastMagnetosonicWave",
+    "SlowMagnetosonicWave",
+    "mhd_waves",
+]
 
 import astropy.units as u
 import numpy as np
