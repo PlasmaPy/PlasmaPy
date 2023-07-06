@@ -13,6 +13,7 @@ __all__ = [
     "AlfvenWave",
     "FastMagnetosonicWave",
     "SlowMagnetosonicWave",
+    "mhd_waves",
     "mhd_wave_class",
 ]
 
