@@ -61,16 +61,16 @@ class AbstractMHDWave(ABC):
             self._rho = (ion.mass + ion.charge_number * electron.mass) * density
 
         # Alfvén speed
-        self._v_A = Alfven_speed(B, self._rho)
+        self._v_a = Alfven_speed(B, self._rho)
         # sound speed
         self._c_s = np.sqrt(gamma * k_B * T / ion.mass)
         # magnetosonic speed
-        self._c_ms = np.sqrt(self._v_A**2 + self._c_s**2)
+        self._c_ms = np.sqrt(self._v_a**2 + self._c_s**2)
 
     @property
     def alfven_speed(self):
         """The Alfvén speed of the plasma."""
-        return self._v_A
+        return self._v_a
 
     @property
     def sound_speed(self):
@@ -82,8 +82,8 @@ class AbstractMHDWave(ABC):
         r"""
         The magnetosonic speed of the plasma.
 
-        Defined as :math:`c_{ms} = \sqrt{v_A^2 + c_s^2}` where
-        :math:`v_A` is the Alfvén speed and :math:`c_s` is the sound speed
+        Defined as :math:`c_{ms} = \sqrt{v_a^2 + c_s^2}` where
+        :math:`v_a` is the Alfvén speed and :math:`c_s` is the sound speed
         """
         return self._c_ms
 
@@ -211,7 +211,7 @@ class AlfvenWave(AbstractMHDWave):
             If ``k`` or ``theta`` are not single valued or a 1-D array.
         """
         theta, k = super()._validate_k_theta(k, theta)
-        return np.squeeze(k * self._v_A * np.cos(theta))
+        return np.squeeze(k * self._v_a * np.cos(theta))
 
 
 class FastMagnetosonicWave(AbstractMHDWave):
@@ -312,7 +312,7 @@ class FastMagnetosonicWave(AbstractMHDWave):
                     self._c_ms**2
                     + np.sqrt(
                         self._c_ms**4
-                        - (2 * self._v_A * self._c_s * np.cos(theta)) ** 2
+                        - (2 * self._v_a * self._c_s * np.cos(theta)) ** 2
                     )
                 )
                 / 2
@@ -418,7 +418,7 @@ class SlowMagnetosonicWave(AbstractMHDWave):
                     self._c_ms**2
                     - np.sqrt(
                         self._c_ms**4
-                        - (2 * self._v_A * self._c_s * np.cos(theta)) ** 2
+                        - (2 * self._v_a * self._c_s * np.cos(theta)) ** 2
                     )
                 )
                 / 2

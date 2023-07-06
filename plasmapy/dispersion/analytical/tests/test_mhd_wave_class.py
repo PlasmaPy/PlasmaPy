@@ -26,7 +26,7 @@ class TestMHDWave:
 
     # get speeds calculated by an instance
     _test_wave = AlfvenWave(**_kwargs_plasma_cold, T=_T)
-    _v_A = _test_wave.alfven_speed
+    _v_a = _test_wave.alfven_speed
     _c_s = _test_wave.sound_speed
     _c_ms = _test_wave.magnetosonic_speed
 
@@ -36,8 +36,8 @@ class TestMHDWave:
             (  # Cold plasma limit
                 {**_kwargs_plasma_cold},
                 {
-                    "alfven": [_v_A, 0 * u.m / u.s],
-                    "fast": [_v_A, _v_A],
+                    "alfven": [_v_a, 0 * u.m / u.s],
+                    "fast": [_v_a, _v_a],
                     "slow": [0, 0] * u.m / u.s,
                 },
             ),
@@ -52,9 +52,9 @@ class TestMHDWave:
             (  # Finite B and temperature with plasma beta > 1
                 {**_kwargs_plasma_cold, "T": _T},
                 {
-                    "alfven": [_v_A, 0 * u.m / u.s],
+                    "alfven": [_v_a, 0 * u.m / u.s],
                     "fast": [_c_s, _c_ms],
-                    "slow": [_v_A, 0 * u.m / u.s],
+                    "slow": [_v_a, 0 * u.m / u.s],
                 },
             ),
         ],
