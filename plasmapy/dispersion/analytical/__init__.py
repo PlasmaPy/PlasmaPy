@@ -16,12 +16,12 @@ __all__ = [
     "mhd_wave_class",
 ]
 
-from plasmapy.dispersion.analytical.stix_ import stix
-from plasmapy.dispersion.analytical.two_fluid_ import two_fluid
 from plasmapy.dispersion.analytical.mhd_wave_class import (
     AbstractMHDWave,
     AlfvenWave,
     FastMagnetosonicWave,
-    SlowMagnetosonicWave,
     mhd_waves,
+    SlowMagnetosonicWave,
 )
+from plasmapy.dispersion.analytical.stix_ import stix
+from plasmapy.dispersion.analytical.two_fluid_ import two_fluid

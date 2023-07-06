@@ -119,9 +119,72 @@ class AbstractMHDWave(ABC):
 
     @abstractmethod
     def angular_frequency(self, k: u.rad / u.m, theta: u.rad):
-        pass
+        r"""
+        Calculate the angular frequency of magnetohydrodynamic waves.
+
+        Parameters
+        ----------
+        k : `~astropy.units.Quantity`, single valued or 1-D array
+            Wavenumber in units convertible to rad/m`.  Either single
+            valued or 1-D array of length :math:`N`.
+        theta : `~astropy.units.Quantity`, single valued or 1-D array
+            The angle of propagation of the wave with respect to the
+            magnetic field, :math:`\cos^{-1}(k_z / k)`, in units must be
+            convertible to radians. Either single valued or 1-D array of
+            size :math:`M`.
+
+        Returns
+        -------
+        omega : `~astropy.units.Quantity`
+            An :math:`N × M` array of computed wave frequencies in units
+            rad/s.
+
+        Raises
+        ------
+        ~astropy.units.UnitTypeError
+            If applicable arguments do not have units convertible to the
+            expected units.
+
+        ValueError
+            If ``k`` is negative or zero.
+
+        ValueError
+            If ``k`` or ``theta`` are not single valued or a 1-D array.
+        """
 
     def phase_velocity(self, k: u.rad / u.m, theta: u.rad):
+        r"""
+        Calculate the phase velocities of magnetohydrodynamic waves.
+
+        Parameters
+        ----------
+        k : `~astropy.units.Quantity`, single valued or 1-D array
+            Wavenumber in units convertible to rad/m`.  Either single
+            valued or 1-D array of length :math:`N`.
+        theta : `~astropy.units.Quantity`, single valued or 1-D array
+            The angle of propagation of the wave with respect to the
+            magnetic field, :math:`\cos^{-1}(k_z / k)`, in units must be
+            convertible to radians. Either single valued or 1-D array of
+            size :math:`M`.
+
+        Returns
+        -------
+        phase_velocity : `~astropy.units.Quantity`
+            An :math:`N × M` array of computed phase velocities in units
+            m/s.
+
+        Raises
+        ------
+        ~astropy.units.UnitTypeError
+            If applicable arguments do not have units convertible to the
+            expected units.
+
+        ValueError
+            If ``k`` is negative or zero.
+
+        ValueError
+            If ``k`` or ``theta`` are not single valued or a 1-D array.
+        """
         return self.angular_frequency(k, theta) / k
 
 
