@@ -655,7 +655,7 @@ def test_saving_output(tmp_path):
 
     assert set(results_1.keys()) == set(results_2.keys())
     for key in results_1:
-        assert np.allclose(results_1[key], results_2[key])
+        assert np.allclose(results_1[key], results_2[key], equal_nan=True)
 
 
 @pytest.mark.slow()

@@ -163,6 +163,25 @@ class ParticleTracker:
         self.x = x.to(u.m).value
         self.v = v.to(u.m / u.s).value
 
+    def _stop_particles(self, particles_to_stop_mask):
+        if not len(particles_to_stop_mask) == self.x.shape[0]:
+            raise ValueError(
+                f"Expected mask of size {self.x.shape[0]}, got {len(particles_to_stop_mask)}"
+            )
+
+        self.v[particles_to_stop_mask] = np.NaN
+        self._update_nparticles_tracked()
+
+    def _remove_particles(self, particles_to_remove_mask):
+        if not len(particles_to_remove_mask) == self.x.shape[0]:
+            raise ValueError(
+                f"Expected mask of size {self.x.shape[0]}, got {len(particles_to_remove_mask)}"
+            )
+
+        self.x[particles_to_remove_mask] = np.NaN
+        self.v[particles_to_remove_mask] = np.NaN
+        self._update_nparticles_tracked()
+
     # *************************************************************************
     # Run/push loop methods
     # *************************************************************************
@@ -180,7 +199,7 @@ class ParticleTracker:
 
         # candidate timesteps includes one per grid (based on the grid resolution)
         # plus additional candidates based on the field at each particle
-        candidates = np.ones([self.nparticles_tracked, self.num_grids + 1]) * np.inf
+        candidates = np.ones([self.nparticles, self.num_grids + 1]) * np.inf
 
         # Compute the timestep indicated by the grid resolution
         ds = np.array([grid.grid_resolution.to(u.m).value for grid in self.grids])
@@ -221,11 +240,19 @@ class ParticleTracker:
         Boris algorithm.
         """
         # Get a list of positions (input for interpolator)
-        pos = self.x * u.m
+        tracked_mask = self._tracked_particle_mask()
+
+        # nparticles_tracked may fluctuate with stopping
+        # all particles are therefore used regardless of whether or not they reach the grid
+        pos_all = self.x
+        pos_tracked = pos_all[tracked_mask]
+
+        vel_all = self.v
+        vel_tracked = vel_all[tracked_mask]
 
         # Update the list of particles on and off the grid
         # shape [nparticles, ngrids]
-        self.on_grid = np.array([grid.on_grid(pos) for grid in self.grids]).T
+        self.on_grid = np.array([grid.on_grid(pos_all * u.m) for grid in self.grids]).T
 
         # entered_grid is zero at the end if a particle has never
         # entered any grid
@@ -243,7 +270,7 @@ class ParticleTracker:
             # loop. Any speed improvements will have to come from here.
             if self.field_weighting == "volume averaged":
                 _Ex, _Ey, _Ez, _Bx, _By, _Bz = grid.volume_averaged_interpolator(
-                    pos,
+                    pos_tracked * u.m,
                     "E_x",
                     "E_y",
                     "E_z",
@@ -254,7 +281,7 @@ class ParticleTracker:
                 )
             elif self.field_weighting == "nearest neighbor":
                 _Ex, _Ey, _Ez, _Bx, _By, _Bz = grid.nearest_neighbor_interpolator(
-                    pos,
+                    pos_tracked * u.m,
                     "E_x",
                     "E_y",
                     "E_z",
@@ -300,10 +327,10 @@ class ParticleTracker:
         # If dt is not a scalar, make sure it can be multiplied by an
         # [nparticles, 3] shape field array
         if dt.size > 1:
-            dt = dt[:, np.newaxis]
+            dt = dt[tracked_mask, np.newaxis]
 
-        self.x, self.v = boris_push(
-            self.x, self.v, B, E, self.q, self.m, dt, inplace=False
+        self.x[tracked_mask], self.v[tracked_mask] = boris_push(
+            pos_tracked, vel_tracked, B, E, self.q, self.m, dt, inplace=False
         )
 
     @property
@@ -324,7 +351,9 @@ class ParticleTracker:
         Calculate the maximum velocity.
         Used for determining the grid crossing maximum timestep.
         """
-        return np.max(np.linalg.norm(self.v, axis=-1))
+        tracked_mask = self._tracked_particle_mask()
+
+        return np.max(np.linalg.norm(self.v[tracked_mask], axis=-1))
 
     def _validate_inputs(self, field_weighting: str):
         # Load and validate inputs
@@ -344,6 +373,15 @@ class ParticleTracker:
                 "Either the create_particles or load_particles method must be "
                 "called before running the particle tracing algorithm."
             )
+
+    def _tracked_particle_mask(self):
+        """
+        Calculates a boolean mask corresponding to particles that have not been stopped or removed.
+        """
+        return ~np.logical_or(np.isnan(self.x[:, 0]), np.isnan(self.v[:, 0]))
+
+    def _update_nparticles_tracked(self):
+        self.nparticles_tracked = self._tracked_particle_mask().sum()
 
     def run(self, dt=None, field_weighting="volume averaged"):
         r"""
@@ -380,19 +418,21 @@ class ParticleTracker:
 
         self._validate_inputs(field_weighting)
 
-        self.nparticles_tracked = self.x.shape[0]
+        self._update_nparticles_tracked()
 
         # By default, set dt as an infinite range (auto dt with no restrictions)
         self.dt = np.array([0.0, np.inf]) * u.s if dt is None else dt
         self.dt = (self.dt).to(u.s).value
 
+        self.time = np.zeros(self.nparticles)
+
         # Create flags for tracking when particles during the simulation
         # on_grid -> zero if the particle is off grid, 1
         # shape [nparticles, ngrids]
-        self.on_grid = np.zeros([self.nparticles_tracked, self.num_grids])
+        self.on_grid = np.zeros([self.nparticles, self.num_grids])
 
         # Entered grid -> non-zero if particle EVER entered a grid
-        self.entered_grid = np.zeros([self.nparticles_tracked])
+        self.entered_grid = np.zeros([self.nparticles])
 
         # Initialize a "progress bar" (really more of a meter)
         # Setting sys.stdout lets this play nicely with regular print()

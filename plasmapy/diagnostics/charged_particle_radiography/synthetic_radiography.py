@@ -382,7 +382,7 @@ class ParticleTracker(GeneralParticleTracker):
         """
         Apply wire meshes that were added to ``self.mesh_list``.
         """
-        x = self._coast_to_plane(location, mesh_hdir, mesh_vdir)
+        x = self._coast_to_plane(location, mesh_hdir, mesh_vdir, self.x, self.v)
 
         # Particle positions in 2D on the mesh plane
         xloc = np.dot(x - location, mesh_hdir)
@@ -655,7 +655,7 @@ class ParticleTracker(GeneralParticleTracker):
 
 
         """
-        self.load_particles(x, v, particle=particle)
+        super().load_particles(x, v, particle=particle)
 
         self.theta = np.arccos(
             np.inner(self.v, self.src_n) / np.linalg.norm(self.v, axis=-1)
@@ -674,7 +674,7 @@ class ParticleTracker(GeneralParticleTracker):
     # Run/push loop methods
     # *************************************************************************
 
-    def _coast_to_grid(self):
+    def _coast_to_grid(self, x, v):
         r"""
         Coasts all particles to the timestep when the first particle should
         be entering the grid. Doing in this in one step (rather than pushing
@@ -686,15 +686,15 @@ class ParticleTracker(GeneralParticleTracker):
         )
 
         # Find speed of each particle towards the grid.
-        vmax = np.dot(self.v, self.src_n)
+        vmax = np.dot(v, self.src_n)
 
         # Time for each particle to reach the grid
         t = dist / vmax
 
-        # Coast the particles to the advanced position
-        self.x = self.x + self.v * t[:, np.newaxis]
+        # Return the advanced positions
+        return x + v * t[:, np.newaxis]
 
-    def _coast_to_plane(self, center, hdir, vdir, x=None):
+    def _coast_to_plane(self, center, hdir, vdir, x, v):
         """
         Calculates the positions where the current trajectories of each
         particle impact a plane, described by the plane's center and
@@ -716,23 +716,19 @@ class ParticleTracker(GeneralParticleTracker):
 
         # Calculate the time required to evolve each particle into the
         # plane
-        t = np.inner(center[np.newaxis, :] - self.x, normal) / np.inner(self.v, normal)
+        t = np.inner(center[np.newaxis, :] - x, normal) / np.inner(v, normal)
 
         # Calculate particle positions in the plane
-        if x is None:
-            # If no output array is provided, preallocate
-            x = np.empty_like(self.x)
-
-        x[...] = self.x + self.v * t[:, np.newaxis]
+        x_out = x + v * t[:, np.newaxis]
 
         # Check that all points are now in the plane
         # (Eq. of a plane is nhat*x + d = 0)
-        plane_eq = np.dot(x - center, normal)
-        # Ignore deflected particles (NaN position)
-        plane_mask = ~np.isnan(plane_eq)
-        assert np.allclose(plane_eq[plane_mask], 0, atol=1e-6)
+        plane_eq = np.dot(x_out - center, normal)
+        nan_mask = np.isnan(plane_eq)
 
-        return x
+        assert np.allclose(plane_eq[~nan_mask], 0, atol=1e-6)
+
+        return x_out
 
     def _remove_deflected_particles(self):
         r"""
@@ -751,12 +747,10 @@ class ParticleTracker(GeneralParticleTracker):
         # i.e. those still moving towards the detector.
         keep_mask = np.logical_not((v_towards_det < 0) & (dist_remaining > 0))
 
-        # Set untracked particle positions and velocities to NaN
-        self.x[~keep_mask] = np.NaN
-        self.v[~keep_mask] = np.NaN
-        self.nparticles_tracked = ~np.logical_or(
-            np.isnan(self.x[:, 0]), np.isnan(self.v[:, 0])
-        ).sum()
+        # Remove untracked particles
+        self._remove_particles(~keep_mask)
+
+        self.nparticles_tracked = self._update_nparticles_tracked()
 
         # Store the number of particles deflected
         self.fract_deflected = (self.nparticles - keep_mask.sum()) / self.nparticles
@@ -830,7 +824,9 @@ class ParticleTracker(GeneralParticleTracker):
         # In case of numerical errors, make sure the output is within the domain of
         # arccos
         proj = np.where(proj > 1, 1, proj)
-        max_deflection = np.max(np.arccos(proj))
+        nan_mask = np.isnan(proj)
+
+        max_deflection = np.max(np.arccos(proj[~nan_mask]))
 
         return max_deflection * u.rad
 
@@ -855,39 +851,50 @@ class ParticleTracker(GeneralParticleTracker):
         # This array holds the indices of all particles that WILL hit the grid
         # Only these particles will actually be pushed through the fields
         grid_mask = self.theta < self.max_theta_hit_grid
-        self.grid_ind = np.where(grid_mask)[0]
         self.nparticles_tracked = grid_mask.sum()
         self.fract_tracked = self.nparticles_tracked / self.nparticles
 
         # Generate a null distribution of points (the result in the absence of
         # any fields) for statistical comparison
-        # TODO: Concatenate x and x_untracked to ensure consistent indices
-        self.x0 = self._coast_to_plane(self.detector, self.det_hdir, self.det_vdir)
+        self.x0 = self._coast_to_plane(
+            self.detector, self.det_hdir, self.det_vdir, self.x, self.v
+        )
 
-        # Reorder v0 to ensure consistent indices
-        self.v0 = np.concatenate((self.v0[grid_mask], self.v0[~grid_mask]))
+        # Store a copy of the initial velocity distribution in memory
+        # This will be used later to calculate the maximum deflection
+        self.v0 = np.copy(self.v)
 
-        # Separate tracked and untracked particles
-        self.x_untracked = self.x[~grid_mask]
-        self.x = self.x[grid_mask]
+        # Coast untracked particles to the detector
+        self.x[~grid_mask] = self._coast_to_plane(
+            self.detector,
+            self.det_hdir,
+            self.det_vdir,
+            self.x[~grid_mask],
+            self.v[~grid_mask],
+        )
 
-        self.v_untracked = self.v[~grid_mask]
-        self.v = self.v[grid_mask]
+        # Don't track particles that will not reach the grid
+        self._stop_particles(~grid_mask)
 
-        # Advance the (tracked) particles to the near the start of the grid
-        self._coast_to_grid()
+        # Advance the tracked particles to near the start of the grid
+        self.x[grid_mask] = self._coast_to_grid(self.x[grid_mask], self.v[grid_mask])
 
         super().run(dt=dt, field_weighting=field_weighting)
 
-        # Concatenate tracked and untracked particle arrays
-        self.x = np.concatenate((self.x, self.x_untracked))
-        self.v = np.concatenate((self.v, self.v_untracked))
-
-        # Remove (set positions to NaN) particles that will never reach the detector
+        # Remove particles that will never reach the detector
         self._remove_deflected_particles()
 
-        # Advance the particles to the image plane
-        self._coast_to_plane(self.detector, self.det_hdir, self.det_vdir, x=self.x)
+        tracked_mask = self._tracked_particle_mask()
+
+        # Advance the tracked particles to the image plane
+        # (untracked particles have already been advanced)
+        self.x[tracked_mask] = self._coast_to_plane(
+            self.detector,
+            self.det_hdir,
+            self.det_vdir,
+            self.x[tracked_mask],
+            self.v[tracked_mask],
+        )
 
         self._log(f"Fraction of particles tracked: {self.fract_tracked:.1%}")
 
@@ -988,7 +995,7 @@ class ParticleTracker(GeneralParticleTracker):
         v[:, 1] = np.dot(self.v, self.det_hdir)
         v[:, 2] = np.dot(self.v, self.det_vdir)
 
-        v0 = np.zeros(self.v0.shape)
+        v0 = np.zeros(self.v.shape)
         v0[:, 0] = np.dot(self.v0, self.det_n)
         v0[:, 1] = np.dot(self.v0, self.det_hdir)
         v0[:, 2] = np.dot(self.v0, self.det_vdir)
