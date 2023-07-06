@@ -456,7 +456,7 @@ def mhd_waves(*args, **kwargs):
 
     Returns
     -------
-    mhd_waves : Dict[str, `~plasmapy.dispersion.analytical.mhd_wave_class.AlfvenWave` or `~plasmapy.dispersion.analytical.mhd_wave_class.FastMagnetosonicWave` or `~plasmapy.dispersion.analytical.mhd_wave_class.SlowMagnetosonicWave`]
+    mhd_waves : Dict[str, `~plasmapy.dispersion.analytical.AlfvenWave` or `~plasmapy.dispersion.analytical.FastMagnetosonicWave` or `~plasmapy.dispersion.analytical.SlowMagnetosonicWave`]
         A dictionary of magnetohydrodynamic-wave objects. The
         dictionary contains three keys: ``'alfven'`` for the Alfvén
         mode, ``'fast'`` for the fast magnetosonic mode, and
