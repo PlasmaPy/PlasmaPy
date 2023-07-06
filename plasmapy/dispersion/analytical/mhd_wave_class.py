@@ -12,7 +12,7 @@ from numbers import Integral, Real
 from typing import Optional, Union
 
 from plasmapy.formulary.speeds import Alfven_speed
-from plasmapy.particles import particle_input, ParticleLike
+from plasmapy.particles import electron, particle_input, ParticleLike
 from plasmapy.utils.decorators import validate_quantities
 
 
@@ -20,14 +20,14 @@ class AbstractMHDWave(ABC):
     @particle_input
     @validate_quantities(
         B={"can_be_negative": False},
-        n_i={"can_be_negative": False},
+        density={"can_be_negative": False},
         T={"can_be_negative": False, "equivalencies": u.temperature_energy()},
     )
     def __init__(
         self,
         B: u.T,
+        density: (u.m**-3, u.kg / u.m**3),
         ion: ParticleLike,
-        n_i: u.m**-3,
         *,
         T: u.K = 0 * u.K,
         gamma: Union[float, int] = 5 / 3,
@@ -35,7 +35,7 @@ class AbstractMHDWave(ABC):
         Z: Optional[Real] = None,
     ):
         # validate arguments
-        for arg_name in ("B", "n_i", "T"):
+        for arg_name in ("B", "density", "T"):
             val = locals()[arg_name].squeeze()
             if val.shape != ():
                 raise ValueError(
@@ -51,18 +51,15 @@ class AbstractMHDWave(ABC):
                 f"{type(gamma)}."
             )
 
-        self._B = B
-        self._ion = ion
-        self._n_i = n_i
-        self._T = T
-        self._gamma = gamma
-        self._Z = ion.charge_number
+        if density.unit.physical_type == u.physical.mass_density:
+            self._rho = density
+        else:
+            self._rho = (ion.mass + ion.charge_number * electron.mass) * density
 
-        self._v_A = Alfven_speed(self._B, self._n_i, ion=self._ion, Z=self._Z)
-
+        # Alfvén speed
+        self._v_A = Alfven_speed(B, self._rho)
         # sound speed
-        self._c_s = np.sqrt(self._gamma * k_B * self._T / self._ion.mass)
-
+        self._c_s = np.sqrt(gamma * k_B * T / ion.mass)
         # magnetosonic speed
         self._c_ms = np.sqrt(self._v_A**2 + self._c_s**2)
 
