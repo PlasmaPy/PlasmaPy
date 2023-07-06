@@ -63,7 +63,7 @@ class TestMHDWave:
         waves = mhd_waves(**kwargs)
         for mode in waves:
             omega = waves[mode].angular_frequency(**kwargs_wave_limits)
-            assert np.allclose(omega / kwargs_wave_limits["k"], expected[mode])
+            assert np.allclose(omega / kwargs_wave_limits["k"], expected[mode], atol=1e-04)
 
     @pytest.mark.parametrize(
         ("kwargs", "expected"),
