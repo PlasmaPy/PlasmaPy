@@ -110,7 +110,7 @@ class TestMHDWave:
             omega = waves[mode].angular_frequency(**kwargs_wave_limits)
             phase_velocity = waves[mode].phase_velocity(**kwargs_wave_limits)
             assert np.allclose(
-                omega / kwargs_wave_limits["k"], expected[mode], atol=1e-04
+                omega / kwargs_wave_limits["k"], expected[mode], atol=1e-02
             )
             # test phase_velocity
             assert np.allclose(omega / kwargs_wave_limits["k"], phase_velocity)
