@@ -62,12 +62,12 @@ class AbstractMHDWave(ABC):
             )
 
         if density.unit.physical_type == u.physical.mass_density:
-            self._rho = density
+            _rho = density
         else:
-            self._rho = (ion.mass + ion.charge_number * electron.mass) * density
+            _rho = (ion.mass + ion.charge_number * electron.mass) * density
 
         # Alfvén speed
-        self._v_a = Alfven_speed(B, self._rho)
+        self._v_a = Alfven_speed(B, _rho)
         # sound speed
         self._c_s = np.sqrt(gamma * k_B * T / ion.mass)
         # magnetosonic speed
