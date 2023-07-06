@@ -94,6 +94,7 @@ class AbstractMHDWave(ABC):
         return self._c_ms
 
     @staticmethod
+    @validate_quantities
     def _validate_k_theta(k: u.rad / u.m, theta: u.rad):
         """Validate and return arguments."""
         # validate argument k
