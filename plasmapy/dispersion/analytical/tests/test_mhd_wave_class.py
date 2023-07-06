@@ -3,8 +3,7 @@ import pytest
 
 from astropy import units as u
 
-from plasmapy.dispersion.analytical.mhd_wave_class import mhd_waves
-from plasmapy.formulary.speeds import Alfven_speed, ion_sound_speed
+from plasmapy.dispersion.analytical.mhd_wave_class import AlfvenWave, mhd_waves
 
 kwargs_wave_limits = {
     "k": 0.01 * u.rad / u.m,
@@ -15,28 +14,21 @@ kwargs_wave_limits = {
 class TestMHDWave:
     _kwargs_plasma_cold = {
         "B": 8.3e-9 * u.T,
+        "density": 5e6 * u.m**-3,
         "ion": "p+",
-        "n_i": 5e6 * u.m**-3,
     }
     _kwargs_plasma_hydro = {
         "B": 0 * u.T,
+        "density": 5e6 * u.m**-3,
         "ion": "p+",
-        "n_i": 5e6 * u.m**-3,
     }
-    _kwargs_plasma_temp = {
-        "T_e": 1.6e6 * u.K,
-        "T_i": 4.0e5 * u.K,
-    }
+    _T = 1.6e6 * u.K
 
-    _v_A = Alfven_speed(
-        B=_kwargs_plasma_cold["B"],
-        ion=_kwargs_plasma_cold["ion"],
-        density=_kwargs_plasma_cold["n_i"],
-    )
-    _c_s = ion_sound_speed(
-        **_kwargs_plasma_temp, ion=_kwargs_plasma_cold["ion"], gamma_e=1, gamma_i=3
-    )
-    _c_m = np.sqrt(_v_A**2 + _c_s**2)
+    # get speeds calculated by an instance
+    _test_wave = AlfvenWave(**_kwargs_plasma_cold, T=_T)
+    _v_A = _test_wave.alfven_speed
+    _c_s = _test_wave.sound_speed
+    _c_ms = _test_wave.magnetosonic_speed
 
     @pytest.mark.parametrize(
         ("kwargs", "expected"),
@@ -50,7 +42,7 @@ class TestMHDWave:
                 },
             ),
             (  # No magnetic field
-                {**_kwargs_plasma_hydro, **_kwargs_plasma_temp},
+                {**_kwargs_plasma_hydro, "T": _T},
                 {
                     "alfven": [0, 0] * u.m / u.s,
                     "fast": [_c_s, _c_s],
@@ -58,10 +50,10 @@ class TestMHDWave:
                 },
             ),
             (  # Finite B and temperature with plasma beta > 1
-                {**_kwargs_plasma_cold, **_kwargs_plasma_temp},
+                {**_kwargs_plasma_cold, "T": _T},
                 {
                     "alfven": [_v_A, 0 * u.m / u.s],
-                    "fast": [_c_s, _c_m],
+                    "fast": [_c_s, _c_ms],
                     "slow": [_v_A, 0 * u.m / u.s],
                 },
             ),
@@ -89,7 +81,7 @@ class TestMHDWave:
         ],
     )
     def test_angular_frequency_return_structure(self, kwargs, expected):
-        waves = mhd_waves(8.3e-9 * u.T, "p+", 5e6 * u.m**-3)
+        waves = mhd_waves(8.3e-9 * u.T, 5e6 * u.m**-3, "p+")
 
         assert isinstance(waves, dict)
         assert {"alfven", "fast", "slow"} == set(waves.keys())
