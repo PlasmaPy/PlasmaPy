@@ -1,3 +1,3 @@
-Added module :file:`plasmapy.dispersion.analytical.mhd_wave_class`
+Added module in :file:`plasmapy.dispersion.analytical.mhd_wave_class.py`
 with classes for storing and calculating parameters of
 magnetohydrodynamic waves.
