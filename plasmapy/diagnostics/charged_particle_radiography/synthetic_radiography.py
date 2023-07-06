@@ -750,7 +750,7 @@ class ParticleTracker(GeneralParticleTracker):
         # Remove untracked particles
         self._remove_particles(~keep_mask)
 
-        self.nparticles_tracked = self._update_nparticles_tracked()
+        self._update_nparticles_tracked()
 
         # Store the number of particles deflected
         self.fract_deflected = (self.nparticles - keep_mask.sum()) / self.nparticles
@@ -765,41 +765,42 @@ class ParticleTracker(GeneralParticleTracker):
                 RuntimeWarning,
             )
 
-    def _stop_condition(self):
+    @staticmethod
+    def _stop_condition(particle_tracker: GeneralParticleTracker):
         r"""
         The stop condition is that most of the particles have entered the grid
         and almost all have now left it.
         """
         # Count the number of particles who have entered, which is the
         # number of non-zero entries in entered_grid
-        self.num_entered = np.nonzero(self.entered_grid)[0].size
-
-        # How many of the particles have entered the grid
-        self.fract_entered = np.sum(self.num_entered) / self.nparticles_tracked
+        num_entered = (particle_tracker.entered_grid != 0).sum()
 
         # Of the particles that have entered the grid, how many are currently
         # on the grid?
         # if/else avoids dividing by zero
-        if np.sum(self.num_entered) > 0:
+        if num_entered > 0:
             # Normalize to the number that have entered a grid
-            still_on = np.sum(self.on_any_grid) / np.sum(self.num_entered)
+            still_on = np.sum(particle_tracker.on_any_grid) / num_entered
         else:
             still_on = 0.0
 
-        if self.fract_entered <= 0.1 or still_on >= 0.001:
-            return False
+        # How many of the particles have entered the grid
+        fract_entered = num_entered / particle_tracker.nparticles_tracked
+
+        if fract_entered <= 0.1 or still_on >= 0.001:
+            return False, np.sum(particle_tracker.on_any_grid)
 
         # Warn user if < 10% of the particles ended up on the grid
-        if self.num_entered < 0.1 * self.nparticles:
+        if num_entered < 0.1 * particle_tracker.nparticles:
             warnings.warn(
-                f"Only {100*self.num_entered/self.nparticles:.2f}% of "
+                f"Only {100*num_entered/particle_tracker.nparticles:.2f}% of "
                 "particles entered the field grid: consider "
                 "decreasing the max_theta to increase this "
                 "number.",
                 RuntimeWarning,
             )
 
-        return True
+        return True, fract_entered
 
     @property
     def max_deflection(self):
@@ -830,7 +831,9 @@ class ParticleTracker(GeneralParticleTracker):
 
         return max_deflection * u.rad
 
-    def run(self, dt=None, field_weighting="volume averaged"):
+    def run(
+        self, dt=None, field_weighting="volume averaged", stop_condition=_stop_condition
+    ):
         r"""
         Runs a particle-tracing simulation.
         Timesteps are adaptively calculated based on the
@@ -841,7 +844,7 @@ class ParticleTracker(GeneralParticleTracker):
         diagnostic image.
         """
 
-        self._validate_inputs(field_weighting)
+        self._validate_run_inputs(field_weighting)
 
         # If meshes have been added, apply them now
         for mesh in self.mesh_list:
@@ -879,7 +882,9 @@ class ParticleTracker(GeneralParticleTracker):
         # Advance the tracked particles to near the start of the grid
         self.x[grid_mask] = self._coast_to_grid(self.x[grid_mask], self.v[grid_mask])
 
-        super().run(dt=dt, field_weighting=field_weighting)
+        super().run(
+            dt=dt, field_weighting=field_weighting, stop_condition=stop_condition
+        )
 
         # Remove particles that will never reach the detector
         self._remove_deflected_particles()
@@ -896,11 +901,18 @@ class ParticleTracker(GeneralParticleTracker):
             self.v[tracked_mask],
         )
 
+        # Count the number of particles who have entered, which is the
+        # number of non-zero entries in entered_grid
+        num_entered = (self.entered_grid != 0).sum()
+
+        # How many of the particles have entered the grid
+        fract_entered = num_entered / self.nparticles_tracked
+
         self._log(f"Fraction of particles tracked: {self.fract_tracked:.1%}")
 
         self._log(
             "Fraction of tracked particles that entered the grid: "
-            f"{self.fract_entered * 100:.1f}%"
+            f"{fract_entered * 100:.1f}%"
         )
 
         self._log(

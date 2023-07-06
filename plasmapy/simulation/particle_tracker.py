@@ -342,8 +342,8 @@ class ParticleTracker:
         return np.sum(self.on_grid, axis=-1) > 0
 
     @staticmethod
-    def _stop_condition():
-        return False
+    def _stop_condition(_):  # noqa: ARG004
+        return False, 1
 
     @property
     def vmax(self):
@@ -355,7 +355,7 @@ class ParticleTracker:
 
         return np.max(np.linalg.norm(self.v[tracked_mask], axis=-1))
 
-    def _validate_inputs(self, field_weighting: str):
+    def _validate_run_inputs(self, field_weighting: str):
         # Load and validate inputs
         field_weightings = ["volume averaged", "nearest neighbor"]
         if field_weighting in field_weightings:
@@ -383,7 +383,9 @@ class ParticleTracker:
     def _update_nparticles_tracked(self):
         self.nparticles_tracked = self._tracked_particle_mask().sum()
 
-    def run(self, dt=None, field_weighting="volume averaged"):
+    def run(
+        self, dt=None, field_weighting="volume averaged", stop_condition=_stop_condition
+    ):
         r"""
         Runs a particle-tracing simulation.
         Timesteps are adaptively calculated based on the
@@ -416,7 +418,7 @@ class ParticleTracker:
 
         """
 
-        self._validate_inputs(field_weighting)
+        self._validate_run_inputs(field_weighting)
 
         self._update_nparticles_tracked()
 
@@ -448,10 +450,11 @@ class ParticleTracker:
 
         # Push the particles until the stop condition is satisfied
         # (no more particles on the simulation grid)
-        while not self._stop_condition():
-            n_on_grid = np.sum(self.on_any_grid)
-            pbar.n = n_on_grid
-            pbar.last_print_n = n_on_grid
+        is_finished = False
+        while not is_finished:
+            is_finished, progress = stop_condition(self)
+            pbar.n = progress
+            pbar.last_print_n = progress
             pbar.update()
 
             self._push()
