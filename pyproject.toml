@@ -257,6 +257,7 @@ extend-select = [
   "RUF009", # function-call-in-dataclass-default-argument
   "RUF010", # explicit-f-string-type-conversion
   "RUF011", # static-key-dict-comprehension
+  "RUF012", # mutable-class-default
   "RUF013", # implicit-optional
   "RUF200", # invalid-pyproject-toml
   "S", # flake8-bandit
