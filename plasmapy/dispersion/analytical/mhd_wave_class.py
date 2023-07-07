@@ -19,7 +19,7 @@ from numbers import Integral, Real
 from typing import Optional, Union
 
 from plasmapy.formulary.dimensionless import beta
-from plasmapy.formulary.frequencies import gyrofrequency
+from plasmapy.formulary.frequencies import gyrofrequency, plasma_frequency
 from plasmapy.formulary.speeds import Alfven_speed
 from plasmapy.particles import electron, particle_input, ParticleLike
 from plasmapy.utils.decorators import validate_quantities
@@ -66,12 +66,10 @@ class AbstractMHDWave(ABC):
             )
 
         if density.unit.physical_type == u.physical.mass_density:
-            self._beta = beta(
-                T, density / (ion.mass + ion.charge_number * electron.mass), B
-            )
+            _n = density / (ion.mass + ion.charge_number * electron.mass)
             _rho = density
         else:
-            self._beta = beta(T, density, B)
+            _n = density
             _rho = (ion.mass + ion.charge_number * electron.mass) * density
 
         # Alfvén speed
@@ -80,8 +78,12 @@ class AbstractMHDWave(ABC):
         self._c_s = np.sqrt(gamma * k_B * T / ion.mass).to(u.m / u.s)
         # magnetosonic speed
         self._c_ms = np.sqrt(self._v_a**2 + self._c_s**2)
+        # plasma beta
+        self._beta = beta(T, _n, B)
         # gyrofrequency
         self._oc = gyrofrequency(B, ion)
+        # ion plasma frequency
+        self._op = plasma_frequency(_n, ion)
 
     @property
     def alfven_speed(self):
@@ -137,11 +139,12 @@ class AbstractMHDWave(ABC):
     def _validate_angular_frequency(self, omega: u.rad / u.s):
         """Validate and return angular frequency."""
         omega_oc_max = np.max(omega / self._oc)
-        if omega_oc_max > 0.1:
+        omega_op_max = np.max(omega / self._op)
+        if omega_oc_max > 0.1 or omega_op_max > 0.1:
             warnings.warn(
-                f"The calculation produced a high-frequency wave (ω/ω_c == "
-                f"{omega_oc_max:.3f}), which violates the low-frequency (ω/ω_c << 1) "
-                f"assumption of the dispersion relation.",
+                f"The calculation produced a high-frequency wave (ω/ω_c == {omega_oc_max:.3f} "
+                f"and ω/ω_c == {omega_op_max:.3f}), which violates the low-frequency "
+                f"assumption of the dispersion relation (ω/ω_c ≪ 1 and ω/ω_p ≪ 1).",
                 PhysicsWarning,
             )
         return np.squeeze(omega)
@@ -184,7 +187,7 @@ class AbstractMHDWave(ABC):
         -----
         : `~plasmapy.utils.exceptions.PhysicsWarning`
             When the computed wave frequencies violate the low-frequency
-            (:math:`ω/ω_c ≪ 1`) assumption of the dispersion relation.
+            (:math:`ω ≪ ω_c,ω_p`) assumption of the dispersion relation.
         """
 
     def phase_velocity(self, k: u.rad / u.m, theta: u.rad):
@@ -224,7 +227,7 @@ class AbstractMHDWave(ABC):
         -----
         : `~plasmapy.utils.exceptions.PhysicsWarning`
             When the computed wave frequencies violate the low-frequency
-            (:math:`ω/ω_c ≪ 1`) assumption of the dispersion relation.
+            (:math:`ω ≪ ω_c,ω_p`) assumption of the dispersion relation.
         """
         return self.angular_frequency(k, theta) / k
 
@@ -341,7 +344,7 @@ class AlfvenWave(AbstractMHDWave):
         -----
         : `~plasmapy.utils.exceptions.PhysicsWarning`
             When the computed wave frequencies violate the low-frequency
-            (:math:`ω/ω_c ≪ 1`) assumption of the dispersion relation.
+            (:math:`ω ≪ ω_c,ω_p`) assumption of the dispersion relation.
 
         Notes
         -----
@@ -487,7 +490,7 @@ class FastMagnetosonicWave(AbstractMHDWave):
         -----
         : `~plasmapy.utils.exceptions.PhysicsWarning`
             When the computed wave frequencies violate the low-frequency
-            (:math:`ω/ω_c ≪ 1`) assumption of the dispersion relation.
+            (:math:`ω ≪ ω_c,ω_p`) assumption of the dispersion relation.
 
         Notes
         -----
@@ -644,7 +647,7 @@ class SlowMagnetosonicWave(AbstractMHDWave):
         -----
         : `~plasmapy.utils.exceptions.PhysicsWarning`
             When the computed wave frequencies violate the low-frequency
-            (:math:`ω/ω_c ≪ 1`) assumption of the dispersion relation.
+            (:math:`ω ≪ ω_c,ω_p`) assumption of the dispersion relation.
 
         Notes
         -----
