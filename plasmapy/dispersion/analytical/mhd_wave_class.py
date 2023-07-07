@@ -52,7 +52,7 @@ class AbstractMHDWave(ABC):
             val = locals()[arg_name].squeeze()
             if val.shape != ():
                 raise ValueError(
-                    f"Argument '{arg_name}' must a single value and not an array of "
+                    f"Argument '{arg_name}' must be a single value and not an array of "
                     f"shape {val.shape}."
                 )
             locals()[arg_name] = val
@@ -106,7 +106,7 @@ class AbstractMHDWave(ABC):
         k = k.squeeze()
         if k.ndim not in [0, 1]:
             raise ValueError(
-                f"Argument 'k' needs to be a single valued or 1D array astropy Quantity,"
+                f"Argument 'k' needs to be a single-valued or 1D array astropy Quantity,"
                 f" got array of shape {k.shape}."
             )
         if np.any(k <= 0):
@@ -116,7 +116,7 @@ class AbstractMHDWave(ABC):
         theta = theta.squeeze()
         if theta.ndim not in [0, 1]:
             raise ValueError(
-                f"Argument 'theta' needs to be a single valued or 1D array astropy "
+                f"Argument 'theta' needs to be a single-valued or 1D array astropy "
                 f"Quantity, got array of shape {k.shape}."
             )
 
@@ -353,11 +353,11 @@ class AlfvenWave(AbstractMHDWave):
         >>> alfven = AlfvenWave(1e-3 * u.T, 1e16 * u.m ** -3, "p+")
         >>> alfven.angular_frequency(1e-5 * u.rad / u.m, 0 * u.deg)
         <Quantity 2.18060973 rad / s>
-        >>> alfven.angular_frequency([1e-5, 2e-4] * u.rad / u.m, 0 * u.deg)
+        >>> alfven.angular_frequency([1e-5, 2e-4] * (u.rad / u.m), 0 * u.deg)
         <Quantity [ 2.18060973, 43.61219459] rad / s>
         >>> alfven.angular_frequency(1e-5 * u.rad / u.m, [0, 45, 90] * u.deg)
         <Quantity [2.18060973e+00, 1.54192393e+00, 1.33523836e-16] rad / s>
-        >>> alfven.angular_frequency([1e-5, 2e-4] * u.rad / u.m, [0, 45, 90] * u.deg)
+        >>> alfven.angular_frequency([1e-5, 2e-4] * (u.rad / u.m), [0, 45, 90] * u.deg)
         <Quantity [[2.18060973e+00, 1.54192393e+00, 1.33523836e-16],
                    [4.36121946e+01, 3.08384785e+01, 2.67047673e-15]] rad / s>
         """
@@ -419,7 +419,7 @@ class FastMagnetosonicWave(AbstractMHDWave):
         If ``ion`` is not of category ion or element.
 
     ValueError
-        If ``B``, ``density``, or ``T`` are not single valued
+        If ``B``, ``density``, or ``T`` are not single-valued
         `astropy.units.Quantity` (i.e. an array).
 
     See Also
@@ -501,11 +501,11 @@ class FastMagnetosonicWave(AbstractMHDWave):
         >>> fast = FastMagnetosonicWave(1e-3 * u.T, 1e16 * u.m ** -3, "p+", T=2.5e6 * u.K)
         >>> fast.angular_frequency(1e-5 * u.rad / u.m, 0 * u.deg)
         <Quantity 2.18060973 rad / s>
-        >>> fast.angular_frequency([1e-5, 2e-4] * u.rad / u.m, 0 * u.deg)
+        >>> fast.angular_frequency([1e-5, 2e-4] * (u.rad / u.m), 0 * u.deg)
         <Quantity [ 2.18060973, 43.61219459] rad / s>
         >>> fast.angular_frequency(1e-5 * u.rad / u.m, [0, 45, 90] * u.deg)
         <Quantity [2.18060973, 2.65168984, 2.86258485] rad / s>
-        >>> fast.angular_frequency([1e-5, 2e-4] * u.rad / u.m, [0, 45, 90] * u.deg)
+        >>> fast.angular_frequency([1e-5, 2e-4] * (u.rad / u.m), [0, 45, 90] * u.deg)
         <Quantity [[ 2.18060973,  2.65168984,  2.86258485],
                    [43.61219459, 53.03379678, 57.251697  ]] rad / s>
         """
@@ -576,7 +576,7 @@ class SlowMagnetosonicWave(AbstractMHDWave):
         If ``ion`` is not of category ion or element.
 
     ValueError
-        If ``B``, ``density``, or ``T`` are not single valued
+        If ``B``, ``density``, or ``T`` are not single-valued
         `astropy.units.Quantity` (i.e. an array).
 
     See Also
@@ -658,11 +658,11 @@ class SlowMagnetosonicWave(AbstractMHDWave):
         >>> slow = SlowMagnetosonicWave(1e-3 * u.T, 1e16 * u.m ** -3, "p+", T=2.5e6 * u.K)
         >>> slow.angular_frequency(1e-5 * u.rad / u.m, 0 * u.deg)
         <Quantity 1.85454394 rad / s>
-        >>> slow.angular_frequency([1e-5, 2e-4] * u.rad / u.m, 0 * u.deg)
+        >>> slow.angular_frequency([1e-5, 2e-4] * (u.rad / u.m), 0 * u.deg)
         <Quantity [ 1.85454394, 37.09087884] rad / s>
         >>> slow.angular_frequency(1e-5 * u.rad / u.m, [0, 45, 90] * u.deg)
         <Quantity [1.85454394, 1.07839372, 0.        ] rad / s>
-        >>> slow.angular_frequency([1e-5, 2e-4] * u.rad / u.m, [0, 45, 90] * u.deg)
+        >>> slow.angular_frequency([1e-5, 2e-4] * (u.rad / u.m), [0, 45, 90] * u.deg)
         <Quantity [[ 1.85454394,  1.07839372,  0.        ],
                    [37.09087884, 21.56787445,  0.        ]] rad / s>
         """
@@ -743,7 +743,7 @@ def mhd_waves(*args, **kwargs):
         If ``ion`` is not of category ion or element.
 
     ValueError
-        If ``B``, ``density``, or ``T`` are not single valued
+        If ``B``, ``density``, or ``T`` are not single-valued
         `astropy.units.Quantity` (i.e. an array).
     """
     return {
