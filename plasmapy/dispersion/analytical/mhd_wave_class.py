@@ -422,7 +422,8 @@ class FastMagnetosonicWave(AbstractMHDWave):
             (
                 self._c_ms**2
                 + np.sqrt(
-                    self._c_ms**4 - (2 * self._v_a * self._c_s * np.cos(theta)) ** 2
+                    (self._c_ms**2 + 2 * self._v_a * self._c_s * np.cos(theta))
+                    * (self._c_ms**2 - 2 * self._v_a * self._c_s * np.cos(theta))
                 )
             )
             / 2
@@ -531,7 +532,8 @@ class SlowMagnetosonicWave(AbstractMHDWave):
             (
                 self._c_ms**2
                 - np.sqrt(
-                    self._c_ms**4 - (2 * self._v_a * self._c_s * np.cos(theta)) ** 2
+                    (self._c_ms**2 + 2 * self._v_a * self._c_s * np.cos(theta))
+                    * (self._c_ms**2 - 2 * self._v_a * self._c_s * np.cos(theta))
                 )
             )
             / 2
