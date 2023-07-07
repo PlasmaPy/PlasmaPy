@@ -1062,8 +1062,8 @@ def synthetic_radiograph(  # noqa: C901
     Calculate a "synthetic radiograph" (particle count histogram in the
     image plane).
 
-    .. |Tracker| replace:: `~plasmapy.diagnostics.charged_particle_radiography.synthetic_radiography.ChargedParticleRadiographyTracker`
-    .. |results_dict| replace:: `~plasmapy.diagnostics.charged_particle_radiography.synthetic_radiography.Tracker.results_dict`
+    .. |Tracker| replace:: `~plasmapy.diagnostics.charged_particle_radiography.synthetic_radiography.ParticleTracker`
+    .. |results_dict| replace:: `~plasmapy.diagnostics.charged_particle_radiography.synthetic_radiography.ParticleTracker.results_dict`
 
     Parameters
     ----------

@@ -1,1 +1,1 @@
-Reorganized ``~plasmapy.diagnostics.charged_particle_radiography.synthetic_radiography.Tracker`` into `~~plasmapy.diagnostics.charged_particle_radiography.synthetic_radiography.ParticleTracker` and `~plasmapy.diagnostics.charged_particle_radiography.synthetic_radiography.ChargedParticleRadiographyTracker`
+Reorganized ``~plasmapy.simulation.particle_tracker.Tracker`` into `~~plasmapy.diagnostics.charged_particle_radiography.synthetic_radiography.ParticleTracker` and `~plasmapy.diagnostics.charged_particle_radiography.synthetic_radiography.Particle Tracker`
