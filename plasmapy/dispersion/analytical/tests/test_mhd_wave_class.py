@@ -4,60 +4,49 @@ import pytest
 
 from astropy import units as u
 
-from plasmapy.dispersion.analytical.mhd_wave_class import AlfvenWave, mhd_waves
+from plasmapy.dispersion.analytical.mhd_wave_class import mhd_waves
 from plasmapy.particles.exceptions import InvalidIonError
 from plasmapy.utils.exceptions import PhysicsWarning
 
+kwargs_plasma_cold = {
+    "B": 1e-3 * u.T,
+    "density": 1e16 * u.m**-3,
+    "ion": "p+",
+}
 kwargs_wave_limits = {
     "k": 1e-5 * u.rad / u.m,
     "theta": [0, 90] * u.deg,
 }
 
+sample_waves = mhd_waves(**kwargs_plasma_cold, T=1e6 * u.K)
+
 
 class TestMHDWave:
-    _kwargs_plasma_cold = {
-        "B": 1e-3 * u.T,
-        "density": 1e16 * u.m**-3,
-        "ion": "p+",
-    }
-    _kwargs_plasma_hydro = {
-        "B": 0 * u.T,
-        "density": 1e16 * u.m**-3,
-        "ion": "p+",
-    }
-    _T = 2.5e6 * u.K
-
-    # get speeds calculated by an instance
-    _test_wave = AlfvenWave(**_kwargs_plasma_cold, T=_T)
-    _v_a = _test_wave.alfven_speed
-    _c_s = _test_wave.sound_speed
-    _c_ms = _test_wave.magnetosonic_speed
-
     @pytest.mark.parametrize(
         ("kwargs", "error"),
         [
-            ({**_kwargs_plasma_cold, "B": "wrong type"}, TypeError),
-            ({**_kwargs_plasma_cold, "B": [8e-9, 8.5e-9] * u.T}, ValueError),
-            ({**_kwargs_plasma_cold, "B": -1 * u.T}, ValueError),
-            ({**_kwargs_plasma_cold, "B": 5 * u.m}, u.UnitTypeError),
-            ({**_kwargs_plasma_cold, "ion": {"not": "a particle"}}, TypeError),
-            ({**_kwargs_plasma_cold, "ion": "e-"}, InvalidIonError),
-            ({**_kwargs_plasma_cold, "ion": "He", "Z": "wrong type"}, TypeError),
-            ({**_kwargs_plasma_cold, "density": "wrong type"}, TypeError),
-            ({**_kwargs_plasma_cold, "density": [5e6, 6e6] * u.m**-3}, ValueError),
-            ({**_kwargs_plasma_cold, "density": -5e6 * u.m**-3}, ValueError),
-            ({**_kwargs_plasma_cold, "density": 2 * u.s}, u.UnitTypeError),
-            ({**_kwargs_plasma_cold, "T": "wrong type"}, TypeError),
-            ({**_kwargs_plasma_cold, "T": [1.4e6, 1.7e6] * u.K}, ValueError),
-            ({**_kwargs_plasma_cold, "T": -10 * u.eV}, ValueError),
-            ({**_kwargs_plasma_cold, "T": 2 * u.s}, u.UnitTypeError),
-            ({**_kwargs_plasma_cold, "gamma": "wrong type"}, TypeError),
+            ({**kwargs_plasma_cold, "B": "wrong type"}, TypeError),
+            ({**kwargs_plasma_cold, "B": [8e-9, 8.5e-9] * u.T}, ValueError),
+            ({**kwargs_plasma_cold, "B": -1 * u.T}, ValueError),
+            ({**kwargs_plasma_cold, "B": 5 * u.m}, u.UnitTypeError),
+            ({**kwargs_plasma_cold, "ion": {"not": "a particle"}}, TypeError),
+            ({**kwargs_plasma_cold, "ion": "e-"}, InvalidIonError),
+            ({**kwargs_plasma_cold, "ion": "He", "Z": "wrong type"}, TypeError),
+            ({**kwargs_plasma_cold, "density": "wrong type"}, TypeError),
+            ({**kwargs_plasma_cold, "density": [5e6, 6e6] * u.m**-3}, ValueError),
+            ({**kwargs_plasma_cold, "density": -5e6 * u.m**-3}, ValueError),
+            ({**kwargs_plasma_cold, "density": 2 * u.s}, u.UnitTypeError),
+            ({**kwargs_plasma_cold, "T": "wrong type"}, TypeError),
+            ({**kwargs_plasma_cold, "T": [1.4e6, 1.7e6] * u.K}, ValueError),
+            ({**kwargs_plasma_cold, "T": -10 * u.eV}, ValueError),
+            ({**kwargs_plasma_cold, "T": 2 * u.s}, u.UnitTypeError),
+            ({**kwargs_plasma_cold, "gamma": "wrong type"}, TypeError),
         ],
     )
     def test_raises_init(self, kwargs, error):
         """Test scenarios that raise an `Exception`."""
         with pytest.raises(error):
-            AlfvenWave(**kwargs)
+            mhd_waves(**kwargs)
 
     @pytest.mark.parametrize(
         ("kwargs", "error"),
@@ -75,69 +64,48 @@ class TestMHDWave:
     )
     def test_raises_angular_frequency(self, kwargs, error):
         """Test scenarios that raise an `Exception`."""
-        _test_wave = AlfvenWave(1e-3 * u.T, 1e16 * u.m**-3, "p+")
-        with pytest.raises(error):
-            _test_wave.angular_frequency(**kwargs)
+        for mode in sample_waves:
+            with pytest.raises(error):
+                sample_waves[mode].angular_frequency(**kwargs)
 
     @pytest.mark.parametrize(
-        ("kwargs_plasma", "kwargs_wave", "error"),
+        ("kwargs_wave", "error"),
         [
             (
-                {**_kwargs_plasma_cold},
                 {"k": 1 * u.rad / u.m, "theta": 0 * u.deg},
                 PhysicsWarning,
             ),
             (
-                {**_kwargs_plasma_cold},
                 {"k": [1e-5, 1] * (u.rad / u.m), "theta": 0 * u.deg},
                 PhysicsWarning,
             ),
         ],
     )
-    def test_warns(self, kwargs_plasma, kwargs_wave, error):
+    def test_warns(self, kwargs_wave, error):
         """Test scenarios the issue a `Warning`."""
-        with pytest.warns(error):
-            AlfvenWave(**kwargs_plasma).angular_frequency(**kwargs_wave)
+        for mode in sample_waves:
+            with pytest.warns(error):
+                sample_waves[mode].angular_frequency(**kwargs_wave)
 
-    @pytest.mark.parametrize(
-        ("kwargs", "expected"),
-        [
-            (  # Cold plasma limit
-                {**_kwargs_plasma_cold},
-                {
-                    "alfven": [_v_a, 0 * u.m / u.s],
-                    "fast": [_v_a, _v_a],
-                    "slow": [0, 0] * (u.m / u.s),
-                },
-            ),
-            (  # No magnetic field
-                {**_kwargs_plasma_hydro, "T": _T},
-                {
-                    "alfven": [0, 0] * (u.m / u.s),
-                    "fast": [_c_s, _c_s],
-                    "slow": [0, 0] * (u.m / u.s),
-                },
-            ),
-            (  # Finite B and temperature with plasma beta < 1
-                {**_kwargs_plasma_cold, "T": _T},
-                {
-                    "alfven": [_v_a, 0 * u.m / u.s],
-                    "fast": [_v_a, _c_ms],
-                    "slow": [_c_s, 0 * u.m / u.s],
-                },
-            ),
-        ],
-    )
-    def test_angular_frequency_limiting_vals(self, kwargs, expected):
-        waves = mhd_waves(**kwargs)
+    @pytest.mark.parametrize("B", [1e-3, 1e-2])
+    @pytest.mark.parametrize("T", [0, 1e5, 1e6])
+    def test_angular_frequency_limiting_vals(self, B, T):
+        """Test limiting values of the angular frequencies and phase velocities"""
+        waves = mhd_waves(B * u.T, 1e16 * u.m**-3, "p+", T=T * u.K)
+        v_a = waves["alfven"].alfven_speed
+        c_s = waves["alfven"].sound_speed
+        c_ms = waves["alfven"].magnetosonic_speed
+        expected = {
+            "alfven": [v_a, 0 * u.m / u.s],
+            "fast": [max(v_a, c_s), c_ms],
+            "slow": [min(v_a, c_s), 0 * u.m / u.s],
+        }
+
         for mode in waves:
             omega = waves[mode].angular_frequency(**kwargs_wave_limits)
-            phase_velocity = waves[mode].phase_velocity(**kwargs_wave_limits)
-            assert np.allclose(
-                omega / kwargs_wave_limits["k"], expected[mode], atol=1e-02
-            )
-            # test phase_velocity
-            assert np.allclose(omega / kwargs_wave_limits["k"], phase_velocity)
+            v_ph = waves[mode].phase_velocity(**kwargs_wave_limits)
+            assert np.allclose(omega / kwargs_wave_limits["k"], expected[mode])
+            assert np.allclose(omega / kwargs_wave_limits["k"], v_ph)
 
     @pytest.mark.parametrize(
         ("kwargs", "expected"),
@@ -155,13 +123,11 @@ class TestMHDWave:
         ],
     )
     def test_angular_frequency_return_structure(self, kwargs, expected):
-        waves = mhd_waves(1e-3 * u.T, 1e16 * u.m**-3, "p+")
+        assert isinstance(sample_waves, dict)
+        assert {"alfven", "fast", "slow"} == set(sample_waves.keys())
 
-        assert isinstance(waves, dict)
-        assert {"alfven", "fast", "slow"} == set(waves.keys())
-
-        for mode in waves:
-            omega = waves[mode].angular_frequency(**kwargs)
+        for mode in sample_waves:
+            omega = sample_waves[mode].angular_frequency(**kwargs)
             assert isinstance(omega, u.Quantity)
             assert omega.unit == u.rad / u.s
             assert omega.shape == expected
