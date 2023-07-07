@@ -329,6 +329,8 @@ class ParticleTracker:
         if dt.size > 1:
             dt = dt[tracked_mask, np.newaxis]
 
+        self.time[tracked_mask] += dt
+
         self.x[tracked_mask], self.v[tracked_mask] = boris_push(
             pos_tracked, vel_tracked, B, E, self.q, self.m, dt, inplace=False
         )
@@ -412,6 +414,13 @@ class ParticleTracker:
 
             The default is 'volume averaged'.
 
+        stop_condition : callable
+            A function responsible for determining when the simulation has reached
+            a suitable termination condition. The function is passed an instance
+            of `~plasmapy.simulation.particle_tracker.ParticleTracker`. The function
+            must return a tuple of a boolean, corresponding to the completion status of
+            the simulation, and a number, representing the progress of the simulation.
+
         Returns
         -------
         None
@@ -426,7 +435,7 @@ class ParticleTracker:
         self.dt = np.array([0.0, np.inf]) * u.s if dt is None else dt
         self.dt = (self.dt).to(u.s).value
 
-        self.time = np.zeros(self.nparticles)
+        self.time = np.zeros((self.nparticles, 1))
 
         # Create flags for tracking when particles during the simulation
         # on_grid -> zero if the particle is off grid, 1
