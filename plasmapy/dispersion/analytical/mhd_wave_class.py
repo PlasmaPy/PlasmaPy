@@ -72,7 +72,7 @@ class AbstractMHDWave(ABC):
         # Alfvén speed
         self._v_a = Alfven_speed(B, _rho)
         # sound speed
-        self._c_s = np.sqrt(gamma * k_B * T / ion.mass)
+        self._c_s = np.sqrt(gamma * k_B * T / ion.mass).to(u.m / u.s)
         # magnetosonic speed
         self._c_ms = np.sqrt(self._v_a**2 + self._c_s**2)
         # gyrofrequency
@@ -345,8 +345,8 @@ class AlfvenWave(AbstractMHDWave):
         >>> alfven.angular_frequency(1e-5 * u.rad / u.m, [0, 45, 90] * u.deg)
         <Quantity [2.18060973e+00, 1.54192393e+00, 1.33523836e-16] rad / s>
         >>> alfven.angular_frequency([1e-5, 2e-4] * u.rad / u.m, [0, 45, 90] * u.deg)
-        [[2.18060973e+00, 1.54192393e+00, 1.33523836e-16],
-           [4.36121946e+01, 3.08384785e+01, 2.67047673e-15]] rad / s>
+        <Quantity [[2.18060973e+00, 1.54192393e+00, 1.33523836e-16],
+                   [4.36121946e+01, 3.08384785e+01, 2.67047673e-15]] rad / s>
         """
         theta, k = super()._validate_k_theta(k, theta)
         omega = k * self._v_a * np.cos(theta)
@@ -478,8 +478,8 @@ class FastMagnetosonicWave(AbstractMHDWave):
         >>> fast.angular_frequency(1e-5 * u.rad / u.m, [0, 45, 90] * u.deg)
         <Quantity [2.18060973, 2.65168984, 2.86258485] rad / s>
         >>> fast.angular_frequency([1e-5, 2e-4] * u.rad / u.m, [0, 45, 90] * u.deg)
-        [[ 2.18060973,  2.65168984,  2.86258485],
-           [43.61219459, 53.03379678, 57.251697  ]] rad / s>
+        <Quantity [[ 2.18060973,  2.65168984,  2.86258485],
+                   [43.61219459, 53.03379678, 57.251697  ]] rad / s>
         """
         theta, k = super()._validate_k_theta(k, theta)
         omega = k * np.sqrt(
@@ -620,8 +620,8 @@ class SlowMagnetosonicWave(AbstractMHDWave):
         >>> slow.angular_frequency(1e-5 * u.rad / u.m, [0, 45, 90] * u.deg)
         <Quantity [1.85454394, 1.07839372, 0.        ] rad / s>
         >>> slow.angular_frequency([1e-5, 2e-4] * u.rad / u.m, [0, 45, 90] * u.deg)
-        [[ 1.85454394,  1.07839372,  0.        ],
-           [37.09087884, 21.56787445,  0.        ]] rad / s>
+        <Quantity [[ 1.85454394,  1.07839372,  0.        ],
+                   [37.09087884, 21.56787445,  0.        ]] rad / s>
         """
         theta, k = super()._validate_k_theta(k, theta)
         omega = k * np.sqrt(
