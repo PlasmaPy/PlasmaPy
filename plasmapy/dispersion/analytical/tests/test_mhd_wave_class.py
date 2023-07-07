@@ -6,6 +6,7 @@ from astropy import units as u
 
 from plasmapy.dispersion.analytical.mhd_wave_class import AlfvenWave, mhd_waves
 from plasmapy.particles.exceptions import InvalidIonError
+from plasmapy.utils.exceptions import PhysicsWarning
 
 kwargs_wave_limits = {
     "k": 0.01 * u.rad / u.m,
@@ -14,7 +15,7 @@ kwargs_wave_limits = {
 
 
 class TestMHDWave:
-    kwargs_wave_limits = {
+    kwargs_plasma_cold = {
         "B": 8.3e-9 * u.T,
         "density": 5e6 * u.m**-3,
         "ion": "p+",
@@ -27,7 +28,7 @@ class TestMHDWave:
     _T = 1.6e6 * u.K
 
     # get speeds calculated by an instance
-    _test_wave = AlfvenWave(**kwargs_wave_limits, T=_T)
+    _test_wave = AlfvenWave(**kwargs_plasma_cold, T=_T)
     _v_a = _test_wave.alfven_speed
     _c_s = _test_wave.sound_speed
     _c_ms = _test_wave.magnetosonic_speed
@@ -35,22 +36,22 @@ class TestMHDWave:
     @pytest.mark.parametrize(
         ("kwargs", "error"),
         [
-            ({**kwargs_wave_limits, "B": "wrong type"}, TypeError),
-            ({**kwargs_wave_limits, "B": [8e-9, 8.5e-9] * u.T}, ValueError),
-            ({**kwargs_wave_limits, "B": -1 * u.T}, ValueError),
-            ({**kwargs_wave_limits, "B": 5 * u.m}, u.UnitTypeError),
-            ({**kwargs_wave_limits, "ion": {"not": "a particle"}}, TypeError),
-            ({**kwargs_wave_limits, "ion": "e-"}, InvalidIonError),
-            ({**kwargs_wave_limits, "ion": "He", "Z": "wrong type"}, TypeError),
-            ({**kwargs_wave_limits, "density": "wrong type"}, TypeError),
-            ({**kwargs_wave_limits, "density": [5e6, 6e6] * u.m**-3}, ValueError),
-            ({**kwargs_wave_limits, "density": -5e6 * u.m**-3}, ValueError),
-            ({**kwargs_wave_limits, "density": 2 * u.s}, u.UnitTypeError),
-            ({**kwargs_wave_limits, "T": "wrong type"}, TypeError),
-            ({**kwargs_wave_limits, "T": [1.4e6, 1.7e6] * u.K}, ValueError),
-            ({**kwargs_wave_limits, "T": -10 * u.eV}, ValueError),
-            ({**kwargs_wave_limits, "T": 2 * u.s}, u.UnitTypeError),
-            ({**kwargs_wave_limits, "gamma": "wrong type"}, TypeError),
+            ({**kwargs_plasma_cold, "B": "wrong type"}, TypeError),
+            ({**kwargs_plasma_cold, "B": [8e-9, 8.5e-9] * u.T}, ValueError),
+            ({**kwargs_plasma_cold, "B": -1 * u.T}, ValueError),
+            ({**kwargs_plasma_cold, "B": 5 * u.m}, u.UnitTypeError),
+            ({**kwargs_plasma_cold, "ion": {"not": "a particle"}}, TypeError),
+            ({**kwargs_plasma_cold, "ion": "e-"}, InvalidIonError),
+            ({**kwargs_plasma_cold, "ion": "He", "Z": "wrong type"}, TypeError),
+            ({**kwargs_plasma_cold, "density": "wrong type"}, TypeError),
+            ({**kwargs_plasma_cold, "density": [5e6, 6e6] * u.m**-3}, ValueError),
+            ({**kwargs_plasma_cold, "density": -5e6 * u.m**-3}, ValueError),
+            ({**kwargs_plasma_cold, "density": 2 * u.s}, u.UnitTypeError),
+            ({**kwargs_plasma_cold, "T": "wrong type"}, TypeError),
+            ({**kwargs_plasma_cold, "T": [1.4e6, 1.7e6] * u.K}, ValueError),
+            ({**kwargs_plasma_cold, "T": -10 * u.eV}, ValueError),
+            ({**kwargs_plasma_cold, "T": 2 * u.s}, u.UnitTypeError),
+            ({**kwargs_plasma_cold, "gamma": "wrong type"}, TypeError),
         ],
     )
     def test_raises_init(self, kwargs, error):
@@ -76,10 +77,30 @@ class TestMHDWave:
             _test_wave.angular_frequency(**kwargs)
 
     @pytest.mark.parametrize(
+        ("kwargs_plasma", "kwargs_wave", "error"),
+        [
+            (
+                {**kwargs_plasma_cold},
+                {"k": 1 * u.rad / u.m, "theta": 0 * u.deg},
+                PhysicsWarning,
+            ),
+            (
+                {**kwargs_plasma_cold},
+                {"k": [1e-5, 1] * u.rad / u.m, "theta": 0 * u.deg},
+                PhysicsWarning,
+            ),
+        ],
+    )
+    def test_warns(self, kwargs_plasma, kwargs_wave, error):
+        """Test scenarios the issue a `Warning`."""
+        with pytest.warns(error):
+            AlfvenWave(**kwargs_plasma).angular_frequency(**kwargs_wave)
+
+    @pytest.mark.parametrize(
         ("kwargs", "expected"),
         [
             (  # Cold plasma limit
-                {**kwargs_wave_limits},
+                {**kwargs_plasma_cold},
                 {
                     "alfven": [_v_a, 0 * u.m / u.s],
                     "fast": [_v_a, _v_a],
@@ -95,7 +116,7 @@ class TestMHDWave:
                 },
             ),
             (  # Finite B and temperature with plasma beta > 1
-                {**kwargs_wave_limits, "T": _T},
+                {**kwargs_plasma_cold, "T": _T},
                 {
                     "alfven": [_v_a, 0 * u.m / u.s],
                     "fast": [_c_s, _c_ms],

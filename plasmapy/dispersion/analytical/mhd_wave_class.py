@@ -11,15 +11,18 @@ __all__ = [
 
 import astropy.units as u
 import numpy as np
+import warnings
 
 from abc import ABC, abstractmethod
 from astropy.constants.si import k_B
 from numbers import Integral, Real
 from typing import Optional, Union
 
+from plasmapy.formulary.frequencies import gyrofrequency
 from plasmapy.formulary.speeds import Alfven_speed
 from plasmapy.particles import electron, particle_input, ParticleLike
 from plasmapy.utils.decorators import validate_quantities
+from plasmapy.utils.exceptions import PhysicsWarning
 
 
 class AbstractMHDWave(ABC):
@@ -72,6 +75,8 @@ class AbstractMHDWave(ABC):
         self._c_s = np.sqrt(gamma * k_B * T / ion.mass)
         # magnetosonic speed
         self._c_ms = np.sqrt(self._v_a**2 + self._c_s**2)
+        # gyrofrequency
+        self._oc = gyrofrequency(B, ion)
 
     @property
     def alfven_speed(self):
@@ -79,12 +84,12 @@ class AbstractMHDWave(ABC):
         return self._v_a
 
     @property
-    def sound_speed(self):
+    def sound_speed(self) -> u.m / u.s:
         """The sound speed of the plasma."""
         return self._c_s
 
     @property
-    def magnetosonic_speed(self):
+    def magnetosonic_speed(self) -> u.m / u.s:
         r"""
         The magnetosonic speed of the plasma.
 
@@ -96,7 +101,7 @@ class AbstractMHDWave(ABC):
     @staticmethod
     @validate_quantities
     def _validate_k_theta(k: u.rad / u.m, theta: u.rad):
-        """Validate and return arguments."""
+        """Validate and return wavenumber and angle."""
         # validate argument k
         k = k.squeeze()
         if k.ndim not in [0, 1]:
@@ -117,6 +122,19 @@ class AbstractMHDWave(ABC):
 
         # return theta and k as coordinate arrays
         return np.meshgrid(theta, k)
+
+    @validate_quantities
+    def _validate_angular_frequency(self, omega: u.rad / u.s):
+        """Validate and return angular frequency."""
+        omega_oc_max = np.max(omega / self._oc)
+        if omega_oc_max > 0.1:
+            warnings.warn(
+                f"The calculation produced a high-frequency wave (ω/ω_c == "
+                f"{omega_oc_max:.3f}), which violates the low-frequency (ω/ω_c << 1) "
+                f"assumption of the dispersion relation.",
+                PhysicsWarning,
+            )
+        return np.squeeze(omega)
 
     @abstractmethod
     def angular_frequency(self, k: u.rad / u.m, theta: u.rad):
@@ -151,6 +169,12 @@ class AbstractMHDWave(ABC):
 
         ValueError
             If ``k`` or ``theta`` are not single valued or a 1-D array.
+
+        Warns
+        -----
+        : `~plasmapy.utils.exceptions.PhysicsWarning`
+            When the computed wave frequencies violate the low-frequency
+            (:math:`ω/ω_c ≪ 1`) assumption of the dispersion relation.
         """
 
     def phase_velocity(self, k: u.rad / u.m, theta: u.rad):
@@ -185,6 +209,12 @@ class AbstractMHDWave(ABC):
 
         ValueError
             If ``k`` or ``theta`` are not single valued or a 1-D array.
+
+        Warns
+        -----
+        : `~plasmapy.utils.exceptions.PhysicsWarning`
+            When the computed wave frequencies violate the low-frequency
+            (:math:`ω/ω_c ≪ 1`) assumption of the dispersion relation.
         """
         return self.angular_frequency(k, theta) / k
 
@@ -213,7 +243,7 @@ class AlfvenWave(AbstractMHDWave):
         The adiabatic index for the plasma, which defaults to 3/5.
     mass_numb : integer, |keyword-only|, optional
         The mass number corresponding to ``ion``.
-    Z : `float` or int, optional, |keyword-only|
+    Z : `float` or int, |keyword-only|, optional
         The charge number corresponding to ``ion``.
 
     Raises
@@ -279,9 +309,16 @@ class AlfvenWave(AbstractMHDWave):
 
         ValueError
             If ``k`` or ``theta`` are not single valued or a 1-D array.
+
+        Warns
+        -----
+        : `~plasmapy.utils.exceptions.PhysicsWarning`
+            When the computed wave frequencies violate the low-frequency
+            (:math:`ω/ω_c ≪ 1`) assumption of the dispersion relation.
         """
         theta, k = super()._validate_k_theta(k, theta)
-        return np.squeeze(k * self._v_a * np.cos(theta))
+        omega = k * self._v_a * np.cos(theta)
+        return super()._validate_angular_frequency(omega)
 
 
 class FastMagnetosonicWave(AbstractMHDWave):
@@ -308,7 +345,7 @@ class FastMagnetosonicWave(AbstractMHDWave):
         The adiabatic index for the plasma, which defaults to 3/5.
     mass_numb : integer, |keyword-only|, optional
         The mass number corresponding to ``ion``.
-    Z : `float` or int, optional, |keyword-only|
+    Z : `float` or int, |keyword-only|, optional
         The charge number corresponding to ``ion``.
 
     Raises
@@ -373,21 +410,24 @@ class FastMagnetosonicWave(AbstractMHDWave):
 
         ValueError
             If ``k`` or ``theta`` are not single valued or a 1-D array.
+
+        Warns
+        -----
+        : `~plasmapy.utils.exceptions.PhysicsWarning`
+            When the computed wave frequencies violate the low-frequency
+            (:math:`ω/ω_c ≪ 1`) assumption of the dispersion relation.
         """
         theta, k = super()._validate_k_theta(k, theta)
-        return np.squeeze(
-            k
-            * np.sqrt(
-                (
-                    self._c_ms**2
-                    + np.sqrt(
-                        self._c_ms**4
-                        - (2 * self._v_a * self._c_s * np.cos(theta)) ** 2
-                    )
+        omega = k * np.sqrt(
+            (
+                self._c_ms**2
+                + np.sqrt(
+                    self._c_ms**4 - (2 * self._v_a * self._c_s * np.cos(theta)) ** 2
                 )
-                / 2
             )
+            / 2
         )
+        return super()._validate_angular_frequency(omega)
 
 
 class SlowMagnetosonicWave(AbstractMHDWave):
@@ -414,7 +454,7 @@ class SlowMagnetosonicWave(AbstractMHDWave):
         The adiabatic index for the plasma, which defaults to 3/5.
     mass_numb : integer, |keyword-only|, optional
         The mass number corresponding to ``ion``.
-    Z : `float` or int, optional, |keyword-only|
+    Z : `float` or int, |keyword-only|, optional
         The charge number corresponding to ``ion``.
 
     Raises
@@ -479,21 +519,24 @@ class SlowMagnetosonicWave(AbstractMHDWave):
 
         ValueError
             If ``k`` or ``theta`` are not single valued or a 1-D array.
+
+        Warns
+        -----
+        : `~plasmapy.utils.exceptions.PhysicsWarning`
+            When the computed wave frequencies violate the low-frequency
+            (:math:`ω/ω_c ≪ 1`) assumption of the dispersion relation.
         """
         theta, k = super()._validate_k_theta(k, theta)
-        return np.squeeze(
-            k
-            * np.sqrt(
-                (
-                    self._c_ms**2
-                    - np.sqrt(
-                        self._c_ms**4
-                        - (2 * self._v_a * self._c_s * np.cos(theta)) ** 2
-                    )
+        omega = k * np.sqrt(
+            (
+                self._c_ms**2
+                - np.sqrt(
+                    self._c_ms**4 - (2 * self._v_a * self._c_s * np.cos(theta)) ** 2
                 )
-                / 2
             )
+            / 2
         )
+        return super()._validate_angular_frequency(omega)
 
 
 def mhd_waves(*args, **kwargs):
@@ -521,7 +564,7 @@ def mhd_waves(*args, **kwargs):
         The adiabatic index for the plasma, which defaults to 3/5.
     mass_numb : integer, |keyword-only|, optional
         The mass number corresponding to ``ion``.
-    Z : `float` or int, optional, |keyword-only|
+    Z : `float` or int, |keyword-only|, optional
         The charge number corresponding to ``ion``.
 
     Returns
