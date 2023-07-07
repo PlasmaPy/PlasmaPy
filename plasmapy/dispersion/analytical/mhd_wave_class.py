@@ -274,6 +274,23 @@ class AlfvenWave(AbstractMHDWave):
     ValueError
         If ``B``, ``density``, or ``T`` are not single valued
         `astropy.units.Quantity` (i.e. an array).
+
+    See Also
+    --------
+    ~plasmapy.dispersion.analytical.mhd_wave_class.FastMagnetosonicWave
+    ~plasmapy.dispersion.analytical.mhd_wave_class.SlowMagnetosonicWave
+
+    Examples
+    --------
+    >>> from astropy import units as u
+    >>> from plasmapy.dispersion.analytical import AlfvenWave
+    >>> alfven = AlfvenWave(1e-3 * u.T, 1e16 * u.m ** -3, "p+")
+    >>> alfven.angular_frequency(1e-5 * u.rad / u.m, 0 * u.deg)
+    <Quantity 2.18060973 rad / s>
+    >>> alfven.phase_velocity(1e-5 * u.rad / u.m, 0 * u.deg)
+    <Quantity 218060.97295233 m / s>
+    >>> alfven.alfven_speed
+    <Quantity 218060.97295233 m / s>
     """
 
     def angular_frequency(self, k: u.rad / u.m, theta: u.rad):
@@ -315,6 +332,21 @@ class AlfvenWave(AbstractMHDWave):
         : `~plasmapy.utils.exceptions.PhysicsWarning`
             When the computed wave frequencies violate the low-frequency
             (:math:`ω/ω_c ≪ 1`) assumption of the dispersion relation.
+
+        Examples
+        --------
+        >>> from astropy import units as u
+        >>> from plasmapy.dispersion.analytical import AlfvenWave
+        >>> alfven = AlfvenWave(1e-3 * u.T, 1e16 * u.m ** -3, "p+")
+        >>> alfven.angular_frequency(1e-5 * u.rad / u.m, 0 * u.deg)
+        <Quantity 2.18060973 rad / s>
+        >>> alfven.angular_frequency([1e-5, 2e-4] * u.rad / u.m, 0 * u.deg)
+        <Quantity [ 2.18060973, 43.61219459] rad / s>
+        >>> alfven.angular_frequency(1e-5 * u.rad / u.m, [0, 45, 90] * u.deg)
+        <Quantity [2.18060973e+00, 1.54192393e+00, 1.33523836e-16] rad / s>
+        >>> alfven.angular_frequency([1e-5, 2e-4] * u.rad / u.m, [0, 45, 90] * u.deg)
+        [[2.18060973e+00, 1.54192393e+00, 1.33523836e-16],
+           [4.36121946e+01, 3.08384785e+01, 2.67047673e-15]] rad / s>
         """
         theta, k = super()._validate_k_theta(k, theta)
         omega = k * self._v_a * np.cos(theta)
@@ -376,6 +408,23 @@ class FastMagnetosonicWave(AbstractMHDWave):
     ValueError
         If ``B``, ``density``, or ``T`` are not single valued
         `astropy.units.Quantity` (i.e. an array).
+
+    See Also
+    --------
+    ~plasmapy.dispersion.analytical.mhd_wave_class.AlfvenWave
+    ~plasmapy.dispersion.analytical.mhd_wave_class.SlowMagnetosonicWave
+
+    Examples
+    --------
+    >>> from astropy import units as u
+    >>> from plasmapy.dispersion.analytical import FastMagnetosonicWave
+    >>> fast = FastMagnetosonicWave(1e-3 * u.T, 1e16 * u.m ** -3, "p+", T=2.5e6 * u.K)
+    >>> fast.angular_frequency(1e-5 * u.rad / u.m, 0 * u.deg)
+    <Quantity 2.18060973 rad / s>
+    >>> fast.phase_velocity(1e-5 * u.rad / u.m, 0 * u.deg)
+    <Quantity 218060.97295233 m / s>
+    >>> fast.alfven_speed
+    <Quantity 218060.97295233 m / s>
     """
 
     def angular_frequency(self, k: u.rad / u.m, theta: u.rad):
@@ -416,6 +465,21 @@ class FastMagnetosonicWave(AbstractMHDWave):
         : `~plasmapy.utils.exceptions.PhysicsWarning`
             When the computed wave frequencies violate the low-frequency
             (:math:`ω/ω_c ≪ 1`) assumption of the dispersion relation.
+
+        Examples
+        --------
+        >>> from astropy import units as u
+        >>> from plasmapy.dispersion.analytical import FastMagnetosonicWave
+        >>> fast = FastMagnetosonicWave(1e-3 * u.T, 1e16 * u.m ** -3, "p+", T=2.5e6 * u.K)
+        >>> fast.angular_frequency(1e-5 * u.rad / u.m, 0 * u.deg)
+        <Quantity 2.18060973 rad / s>
+        >>> fast.angular_frequency([1e-5, 2e-4] * u.rad / u.m, 0 * u.deg)
+        <Quantity [ 2.18060973, 43.61219459] rad / s>
+        >>> fast.angular_frequency(1e-5 * u.rad / u.m, [0, 45, 90] * u.deg)
+        <Quantity [2.18060973, 2.65168984, 2.86258485] rad / s>
+        >>> fast.angular_frequency([1e-5, 2e-4] * u.rad / u.m, [0, 45, 90] * u.deg)
+        [[ 2.18060973,  2.65168984,  2.86258485],
+           [43.61219459, 53.03379678, 57.251697  ]] rad / s>
         """
         theta, k = super()._validate_k_theta(k, theta)
         omega = k * np.sqrt(
@@ -486,6 +550,23 @@ class SlowMagnetosonicWave(AbstractMHDWave):
     ValueError
         If ``B``, ``density``, or ``T`` are not single valued
         `astropy.units.Quantity` (i.e. an array).
+
+    See Also
+    --------
+    ~plasmapy.dispersion.analytical.mhd_wave_class.AlfvenWave
+    ~plasmapy.dispersion.analytical.mhd_wave_class.FastMagnetosonicWave
+
+    Examples
+    --------
+    >>> from astropy import units as u
+    >>> from plasmapy.dispersion.analytical import SlowMagnetosonicWave
+    >>> slow = SlowMagnetosonicWave(1e-3 * u.T, 1e16 * u.m ** -3, "p+", T=2.5e6 * u.K)
+    >>> slow.angular_frequency(1e-5 * u.rad / u.m, 0 * u.deg)
+    <Quantity 1.85454394 rad / s>
+    >>> slow.phase_velocity(1e-5 * u.rad / u.m, 0 * u.deg)
+    <Quantity 185454.39417735 m / s>
+    >>> slow.sound_speed
+    <Quantity 185454.39417735 m / s>
     """
 
     def angular_frequency(self, k: u.rad / u.m, theta: u.rad):
@@ -526,6 +607,21 @@ class SlowMagnetosonicWave(AbstractMHDWave):
         : `~plasmapy.utils.exceptions.PhysicsWarning`
             When the computed wave frequencies violate the low-frequency
             (:math:`ω/ω_c ≪ 1`) assumption of the dispersion relation.
+
+        Examples
+        --------
+        >>> from astropy import units as u
+        >>> from plasmapy.dispersion.analytical import SlowMagnetosonicWave
+        >>> slow = SlowMagnetosonicWave(1e-3 * u.T, 1e16 * u.m ** -3, "p+", T=2.5e6 * u.K)
+        >>> slow.angular_frequency(1e-5 * u.rad / u.m, 0 * u.deg)
+        <Quantity 1.85454394 rad / s>
+        >>> slow.angular_frequency([1e-5, 2e-4] * u.rad / u.m, 0 * u.deg)
+        <Quantity [ 1.85454394, 37.09087884] rad / s>
+        >>> slow.angular_frequency(1e-5 * u.rad / u.m, [0, 45, 90] * u.deg)
+        <Quantity [1.85454394, 1.07839372, 0.        ] rad / s>
+        >>> slow.angular_frequency([1e-5, 2e-4] * u.rad / u.m, [0, 45, 90] * u.deg)
+        [[ 1.85454394,  1.07839372,  0.        ],
+           [37.09087884, 21.56787445,  0.        ]] rad / s>
         """
         theta, k = super()._validate_k_theta(k, theta)
         omega = k * np.sqrt(
