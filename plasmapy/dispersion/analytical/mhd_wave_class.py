@@ -333,6 +333,19 @@ class AlfvenWave(AbstractMHDWave):
             When the computed wave frequencies violate the low-frequency
             (:math:`ω/ω_c ≪ 1`) assumption of the dispersion relation.
 
+        Notes
+        -----
+        The angular frequency :math:`\omega` of a magnetohydrodynamic
+        Alfvén wave is given by
+
+        .. math::
+
+            \omega = k v_A \cos\theta
+
+        where :math:`k` is the wavenumber, :math:`v_A` is the Alfvén
+        speed, and :math:`theta` is the angle between the wavevector and
+        the equilibrium magnetic field.
+
         Examples
         --------
         >>> from astropy import units as u
@@ -465,6 +478,21 @@ class FastMagnetosonicWave(AbstractMHDWave):
         : `~plasmapy.utils.exceptions.PhysicsWarning`
             When the computed wave frequencies violate the low-frequency
             (:math:`ω/ω_c ≪ 1`) assumption of the dispersion relation.
+
+        Notes
+        -----
+        The angular frequency :math:`\omega` of a fast magnetosonic wave
+        is given by the equation
+
+        .. math::
+
+            \omega^2 = \frac{k^2}{2} \left(c_{ms}^2 + \sqrt{c_{ms}^4 - 4 v_A^2 c_s^2 \cos^2 \theta}\right)
+
+        where :math:`k` is the wavenumber, :math:`v_A` is the Alfvén
+        speed, :math:`c_s` is the ideal sound speed,
+        :math:`c_{ms} = \sqrt{v_A^2 + c_s^2}` is the magnetosonic speed,
+        and :math:`theta` is the angle between the wavevector and the
+        equilibrium magnetic field.
 
         Examples
         --------
@@ -607,6 +635,21 @@ class SlowMagnetosonicWave(AbstractMHDWave):
         : `~plasmapy.utils.exceptions.PhysicsWarning`
             When the computed wave frequencies violate the low-frequency
             (:math:`ω/ω_c ≪ 1`) assumption of the dispersion relation.
+
+        Notes
+        -----
+        The angular frequency :math:`\omega` of a slow magnetosonic wave
+        is given by the equation
+
+        .. math::
+
+            \omega^2 = \frac{k^2}{2} \left(c_{ms}^2 - \sqrt{c_{ms}^4 - 4 v_A^2 c_s^2 \cos^2 \theta}\right)
+
+        where :math:`k` is the wavenumber, :math:`v_A` is the Alfvén
+        speed, :math:`c_s` is the ideal sound speed,
+        :math:`c_{ms} = \sqrt{v_A^2 + c_s^2}` is the magnetosonic speed,
+        and :math:`theta` is the angle between the wavevector and the
+        equilibrium magnetic field.
 
         Examples
         --------
