@@ -88,10 +88,11 @@ class TestMHDWave:
                 sample_waves[mode].angular_frequency(**kwargs_wave)
 
     @pytest.mark.parametrize("B", [1e-3, 1e-2])
+    @pytest.mark.parametrize("density", [1e16, 1e-11 * u.kg])
     @pytest.mark.parametrize("T", [0, 1e5, 1e6])
-    def test_angular_frequency_limiting_vals(self, B, T):
+    def test_angular_frequency_limiting_vals(self, B, density, T):
         """Test limiting values of the angular frequencies and phase velocities"""
-        waves = mhd_waves(B * u.T, 1e16 * u.m**-3, "p+", T=T * u.K)
+        waves = mhd_waves(B * u.T, density * u.m**-3, "p+", T=T * u.K)
         v_a = waves["alfven"].alfven_speed
         c_s = waves["alfven"].sound_speed
         c_ms = waves["alfven"].magnetosonic_speed
