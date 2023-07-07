@@ -341,7 +341,6 @@ max-complexity = 10
 ".github/scripts/*.py" = ["D103", "INP001"]
 "docs/conf.py" = ["D100", "D103", "E402"]
 "plasmapy/analysis/fit_functions.py" = ["D301"]
-"plasmapy/analysis/nullpoint.py" = ["PERF401"] # re-enable when ∃ autofixes
 "plasmapy/formulary/braginskii.py" = ["C901", "RET503", "RET504"]
 "plasmapy/formulary/tests/test_distribution.py" = ["ARG005"]
 "plasmapy/particles/tests/test_decorators.py" = ["ARG001", "ARG002"]
