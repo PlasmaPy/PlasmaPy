@@ -18,6 +18,7 @@ from astropy.constants.si import k_B
 from numbers import Integral, Real
 from typing import Optional, Union
 
+from plasmapy.formulary.dimensionless import beta
 from plasmapy.formulary.frequencies import gyrofrequency
 from plasmapy.formulary.speeds import Alfven_speed
 from plasmapy.particles import electron, particle_input, ParticleLike
@@ -65,8 +66,12 @@ class AbstractMHDWave(ABC):
             )
 
         if density.unit.physical_type == u.physical.mass_density:
+            self._beta = beta(
+                T, density / (ion.mass + ion.charge_number * electron.mass), B
+            )
             _rho = density
         else:
+            self._beta = beta(T, density, B)
             _rho = (ion.mass + ion.charge_number * electron.mass) * density
 
         # Alfvén speed
@@ -97,6 +102,11 @@ class AbstractMHDWave(ABC):
         :math:`v_a` is the Alfvén speed and :math:`c_s` is the sound speed
         """
         return self._c_ms
+
+    @property
+    def beta(self):
+        """The ratio of thermal pressure to magnetic pressure."""
+        return self._beta
 
     @staticmethod
     @validate_quantities
@@ -343,7 +353,7 @@ class AlfvenWave(AbstractMHDWave):
             \omega = k v_A \cos\theta
 
         where :math:`k` is the wavenumber, :math:`v_A` is the Alfvén
-        speed, and :math:`theta` is the angle between the wavevector and
+        speed, and :math:`\theta` is the angle between the wavevector and
         the equilibrium magnetic field.
 
         Examples
@@ -491,7 +501,7 @@ class FastMagnetosonicWave(AbstractMHDWave):
         where :math:`k` is the wavenumber, :math:`v_A` is the Alfvén
         speed, :math:`c_s` is the ideal sound speed,
         :math:`c_{ms} = \sqrt{v_A^2 + c_s^2}` is the magnetosonic speed,
-        and :math:`theta` is the angle between the wavevector and the
+        and :math:`\theta` is the angle between the wavevector and the
         equilibrium magnetic field.
 
         Examples
@@ -648,7 +658,7 @@ class SlowMagnetosonicWave(AbstractMHDWave):
         where :math:`k` is the wavenumber, :math:`v_A` is the Alfvén
         speed, :math:`c_s` is the ideal sound speed,
         :math:`c_{ms} = \sqrt{v_A^2 + c_s^2}` is the magnetosonic speed,
-        and :math:`theta` is the angle between the wavevector and the
+        and :math:`\theta` is the angle between the wavevector and the
         equilibrium magnetic field.
 
         Examples
