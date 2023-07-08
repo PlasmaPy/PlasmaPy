@@ -89,7 +89,15 @@ class AbstractMHDWave(ABC):
 
     @property
     def sound_speed(self) -> u.m / u.s:
-        """The sound speed of the plasma."""
+        r"""
+        The sound speed of the plasma.
+
+        Defined as :math:`c_s = \sqrt{\gamma k_B T / m_i}` where
+        :math:`gamma` is the adiabatic index of the fluid,
+        :math:`k_B` is the Boltzmann constant, :math:`T` is the
+        temperature of the fluid, and :math:`m_i` is the mass of
+        the ion species in the fluid.
+        """
         return self._sound_speed
 
     @property
