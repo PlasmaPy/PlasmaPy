@@ -391,7 +391,7 @@ class FastMagnetosonicWave(AbstractMHDWave):
         Either the ion number density :math:`n_i` in units convertible
         to m\ :sup:`-3` or the total mass density :math:`ρ` in units
         convertible to kg m\ :sup:`-3`\ .
-    ion : `str` or `~plasmapy.particles.particle_class.Particle`
+    ion : |particle-like|
         Representation of the ion species (e.g., ``'p'`` for protons,
         ``'D+'`` for deuterium, ``'He-4 +1'`` for singly ionized
         helium-4, etc.). If no charge state information is provided,
