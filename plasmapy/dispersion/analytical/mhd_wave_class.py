@@ -150,7 +150,7 @@ class AbstractMHDWave(ABC):
         return np.squeeze(omega)
 
     @abstractmethod
-    def angular_frequency(self, k: u.rad / u.m, theta: u.rad):
+    def angular_frequency(self, k: u.rad / u.m, theta: u.rad) -> u.rad / u.s:
         r"""
         Calculate the angular frequency of magnetohydrodynamic waves.
 
