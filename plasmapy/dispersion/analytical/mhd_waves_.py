@@ -295,8 +295,8 @@ class AlfvenWave(AbstractMHDWave):
 
     See Also
     --------
-    ~plasmapy.dispersion.analytical.mhd_wave_class.FastMagnetosonicWave
-    ~plasmapy.dispersion.analytical.mhd_wave_class.SlowMagnetosonicWave
+    ~plasmapy.dispersion.analytical.mhd_waves_.FastMagnetosonicWave
+    ~plasmapy.dispersion.analytical.mhd_waves_.SlowMagnetosonicWave
 
     Examples
     --------
@@ -442,8 +442,8 @@ class FastMagnetosonicWave(AbstractMHDWave):
 
     See Also
     --------
-    ~plasmapy.dispersion.analytical.mhd_wave_class.AlfvenWave
-    ~plasmapy.dispersion.analytical.mhd_wave_class.SlowMagnetosonicWave
+    ~plasmapy.dispersion.analytical.mhd_waves_.AlfvenWave
+    ~plasmapy.dispersion.analytical.mhd_waves_.SlowMagnetosonicWave
 
     Notes
     -----
@@ -610,8 +610,8 @@ class SlowMagnetosonicWave(AbstractMHDWave):
 
     See Also
     --------
-    ~plasmapy.dispersion.analytical.mhd_wave_class.AlfvenWave
-    ~plasmapy.dispersion.analytical.mhd_wave_class.FastMagnetosonicWave
+    ~plasmapy.dispersion.analytical.mhd_waves_.AlfvenWave
+    ~plasmapy.dispersion.analytical.mhd_waves_.FastMagnetosonicWave
 
     Notes
     -----
@@ -749,7 +749,7 @@ def mhd_waves(*args, **kwargs):
 
     Returns
     -------
-    mhd_waves : namedtuple[str, `~plasmapy.dispersion.analytical.mhd_wave_class.AlfvenWave` or `~plasmapy.dispersion.analytical.mhd_wave_class.FastMagnetosonicWave` or `~plasmapy.dispersion.analytical.mhd_wave_class.SlowMagnetosonicWave`]
+    mhd_waves : namedtuple[str, `~plasmapy.dispersion.analytical.mhd_waves_.AlfvenWave` or `~plasmapy.dispersion.analytical.mhd_waves_.FastMagnetosonicWave` or `~plasmapy.dispersion.analytical.mhd_waves_.SlowMagnetosonicWave`]
         A named tuple of magnetohydrodynamic-wave objects. It
         contains three keys: ``'alfven'`` for the Alfvén
         mode, ``'fast'`` for the fast magnetosonic mode, and
