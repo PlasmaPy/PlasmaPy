@@ -92,7 +92,7 @@ class AbstractMHDWave(ABC):
         r"""
         The sound speed of the plasma.
 
-        Defined as :math:`c_s = \sqrt{\gamma k_B T / m_i}` where
+        Defined as :math:`c_s = \sqrt{γ k_B T / m_i}` where
         :math:`gamma` is the adiabatic index of the fluid,
         :math:`k_B` is the Boltzmann constant, :math:`T` is the
         temperature of the fluid, and :math:`m_i` is the mass of
@@ -105,8 +105,8 @@ class AbstractMHDWave(ABC):
         r"""
         The magnetosonic speed of the plasma.
 
-        Defined as :math:`c_{ms} = \sqrt{v_a^2 + c_s^2}` where
-        :math:`v_a` is the Alfvén speed and :math:`c_s` is the sound speed
+        Defined as :math:`c_{ms} = \sqrt{v_A^2 + c_s^2}` where
+        :math:`v_A` is the Alfvén speed and :math:`c_s` is the sound speed
         """
         return self._magnetosonic_speed
 
@@ -259,9 +259,9 @@ class AlfvenWave(AbstractMHDWave):
         to zero.
     gamma : `float` or `int`, |keyword-only|, optional
         The adiabatic index for the plasma, which defaults to 3/5.
-    mass_numb : integer, |keyword-only|, optional
+    mass_numb : `int`, |keyword-only|, optional
         The mass number corresponding to ``ion``.
-    Z : `float` or int, |keyword-only|, optional
+    Z : `float` or `int`, |keyword-only|, optional
         The charge number corresponding to ``ion``.
 
     Raises
@@ -353,15 +353,15 @@ class AlfvenWave(AbstractMHDWave):
 
         Notes
         -----
-        The angular frequency :math:`\omega` of a magnetohydrodynamic
+        The angular frequency :math:`ω` of a magnetohydrodynamic
         Alfvén wave is given by
 
         .. math::
 
-            \omega = k v_A \cos\theta
+            ω = k v_A \cosθ
 
         where :math:`k` is the wavenumber, :math:`v_A` is the Alfvén
-        speed, and :math:`\theta` is the angle between the wavevector and
+        speed, and :math:`θ` is the angle between the wavevector and
         the equilibrium magnetic field.
 
         Examples
@@ -406,9 +406,9 @@ class FastMagnetosonicWave(AbstractMHDWave):
         to zero.
     gamma : `float` or `int`, |keyword-only|, optional
         The adiabatic index for the plasma, which defaults to 3/5.
-    mass_numb : integer, |keyword-only|, optional
+    mass_numb : `int`, |keyword-only|, optional
         The mass number corresponding to ``ion``.
-    Z : `float` or int, |keyword-only|, optional
+    Z : `float` or `int`, |keyword-only|, optional
         The charge number corresponding to ``ion``.
 
     Raises
@@ -504,17 +504,17 @@ class FastMagnetosonicWave(AbstractMHDWave):
 
         Notes
         -----
-        The angular frequency :math:`\omega` of a fast magnetosonic wave
+        The angular frequency :math:`ω` of a fast magnetosonic wave
         is given by the equation
 
         .. math::
 
-            \omega^2 = \frac{k^2}{2} \left(c_{ms}^2 + \sqrt{c_{ms}^4 - 4 v_A^2 c_s^2 \cos^2 \theta}\right)
+            ω^2 = \frac{k^2}{2} \left(c_{ms}^2 + \sqrt{c_{ms}^4 - 4 v_A^2 c_s^2 \cos^2 θ}\right)
 
         where :math:`k` is the wavenumber, :math:`v_A` is the Alfvén
         speed, :math:`c_s` is the ideal sound speed,
         :math:`c_{ms} = \sqrt{v_A^2 + c_s^2}` is the magnetosonic speed,
-        and :math:`\theta` is the angle between the wavevector and the
+        and :math:`θ` is the angle between the wavevector and the
         equilibrium magnetic field.
 
         Examples
@@ -564,7 +564,7 @@ class SlowMagnetosonicWave(AbstractMHDWave):
         Either the ion number density :math:`n_i` in units convertible
         to m\ :sup:`-3` or the total mass density :math:`ρ` in units
         convertible to kg m\ :sup:`-3`\ .
-    ion : `str` or `~plasmapy.particles.particle_class.Particle`
+    ion : |particle-like|
         Representation of the ion species (e.g., ``'p'`` for protons,
         ``'D+'`` for deuterium, ``'He-4 +1'`` for singly ionized
         helium-4, etc.). If no charge state information is provided,
@@ -574,9 +574,9 @@ class SlowMagnetosonicWave(AbstractMHDWave):
         to zero.
     gamma : `float` or `int`, |keyword-only|, optional
         The adiabatic index for the plasma, which defaults to 3/5.
-    mass_numb : integer, |keyword-only|, optional
+    mass_numb : `int`, |keyword-only|, optional
         The mass number corresponding to ``ion``.
-    Z : `float` or int, |keyword-only|, optional
+    Z : `float` or `int`, |keyword-only|, optional
         The charge number corresponding to ``ion``.
 
     Raises
@@ -672,17 +672,17 @@ class SlowMagnetosonicWave(AbstractMHDWave):
 
         Notes
         -----
-        The angular frequency :math:`\omega` of a slow magnetosonic wave
+        The angular frequency :math:`ω` of a slow magnetosonic wave
         is given by the equation
 
         .. math::
 
-            \omega^2 = \frac{k^2}{2} \left(c_{ms}^2 - \sqrt{c_{ms}^4 - 4 v_A^2 c_s^2 \cos^2 \theta}\right)
+            ω^2 = \frac{k^2}{2} \left(c_{ms}^2 - \sqrt{c_{ms}^4 - 4 v_A^2 c_s^2 \cos^2 θ}\right)
 
         where :math:`k` is the wavenumber, :math:`v_A` is the Alfvén
         speed, :math:`c_s` is the ideal sound speed,
         :math:`c_{ms} = \sqrt{v_A^2 + c_s^2}` is the magnetosonic speed,
-        and :math:`\theta` is the angle between the wavevector and the
+        and :math:`θ` is the angle between the wavevector and the
         equilibrium magnetic field.
 
         Examples
@@ -733,7 +733,7 @@ def mhd_waves(*args, **kwargs):
         Either the ion number density :math:`n_i` in units convertible
         to m\ :sup:`-3` or the total mass density :math:`ρ` in units
         convertible to kg m\ :sup:`-3`\ .
-    ion : `str` or `~plasmapy.particles.particle_class.Particle`
+    ion : |particle-like|
         Representation of the ion species (e.g., ``'p'`` for protons,
         ``'D+'`` for deuterium, ``'He-4 +1'`` for singly ionized
         helium-4, etc.). If no charge state information is provided,
@@ -742,14 +742,14 @@ def mhd_waves(*args, **kwargs):
         The plasma temperature in units of K or eV.
     gamma : `float` or `int`, |keyword-only|, optional
         The adiabatic index for the plasma, which defaults to 3/5.
-    mass_numb : integer, |keyword-only|, optional
+    mass_numb : 'int', |keyword-only|, optional
         The mass number corresponding to ``ion``.
-    Z : `float` or int, |keyword-only|, optional
+    Z : `float` or 'int', |keyword-only|, optional
         The charge number corresponding to ``ion``.
 
     Returns
     -------
-    mhd_waves : collections.namedtuple[str, `~plasmapy.dispersion.analytical.mhd_wave_class.AlfvenWave` or `~plasmapy.dispersion.analytical.mhd_wave_class.FastMagnetosonicWave` or `~plasmapy.dispersion.analytical.mhd_wave_class.SlowMagnetosonicWave`]
+    mhd_waves : namedtuple[str, `~plasmapy.dispersion.analytical.mhd_wave_class.AlfvenWave` or `~plasmapy.dispersion.analytical.mhd_wave_class.FastMagnetosonicWave` or `~plasmapy.dispersion.analytical.mhd_wave_class.SlowMagnetosonicWave`]
         A named tuple of magnetohydrodynamic-wave objects. It
         contains three keys: ``'alfven'`` for the Alfvén
         mode, ``'fast'`` for the fast magnetosonic mode, and
