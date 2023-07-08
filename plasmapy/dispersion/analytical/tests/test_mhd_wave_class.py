@@ -4,7 +4,7 @@ import pytest
 
 from astropy import units as u
 
-from plasmapy.dispersion.analytical.mhd_wave_class import mhd_waves
+from plasmapy.dispersion.analytical.mhd_waves_ import mhd_waves
 from plasmapy.particles.exceptions import InvalidIonError
 from plasmapy.utils.exceptions import PhysicsWarning
 
