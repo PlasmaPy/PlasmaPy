@@ -73,27 +73,27 @@ class AbstractMHDWave(ABC):
             _rho = (ion.mass + ion.charge_number * electron.mass) * density
 
         # Alfvén speed
-        self._v_a = Alfven_speed(B, _rho)
+        self._Alfven_speed = Alfven_speed(B, _rho)
         # sound speed
-        self._c_s = np.sqrt(gamma * k_B * T / ion.mass).to(u.m / u.s)
+        self._sound_speed = np.sqrt(gamma * k_B * T / ion.mass).to(u.m / u.s)
         # magnetosonic speed
-        self._c_ms = np.sqrt(self._v_a**2 + self._c_s**2)
+        self._magnetosonic_speed = np.sqrt(self._Alfven_speed**2 + self._sound_speed**2)
         # plasma beta
         self._beta = beta(T, _n, B)
         # gyrofrequency
-        self._oc = gyrofrequency(B, ion)
+        self._gyrofrequency = gyrofrequency(B, ion)
         # ion plasma frequency
-        self._op = plasma_frequency(_n, ion)
+        self._plasma_frequency = plasma_frequency(_n, ion)
 
     @property
     def alfven_speed(self) -> u.m / u.s:
         """The Alfvén speed of the plasma."""
-        return self._v_a
+        return self._Alfven_speed
 
     @property
     def sound_speed(self) -> u.m / u.s:
         """The sound speed of the plasma."""
-        return self._c_s
+        return self._sound_speed
 
     @property
     def magnetosonic_speed(self) -> u.m / u.s:
@@ -103,7 +103,7 @@ class AbstractMHDWave(ABC):
         Defined as :math:`c_{ms} = \sqrt{v_a^2 + c_s^2}` where
         :math:`v_a` is the Alfvén speed and :math:`c_s` is the sound speed
         """
-        return self._c_ms
+        return self._magnetosonic_speed
 
     @property
     def beta(self):
@@ -138,12 +138,12 @@ class AbstractMHDWave(ABC):
     @validate_quantities
     def _validate_angular_frequency(self, omega: u.rad / u.s):
         """Validate and return angular frequency."""
-        omega_oc_max = np.max(omega / self._oc)
-        omega_op_max = np.max(omega / self._op)
-        if omega_oc_max > 0.1 or omega_op_max > 0.1:
+        omega_gyrofrequency_max = np.max(omega / self._gyrofrequency)
+        omega_plasma_frequency_max = np.max(omega / self._plasma_frequency)
+        if omega_gyrofrequency_max > 0.1 or omega_plasma_frequency_max > 0.1:
             warnings.warn(
-                f"The calculation produced a high-frequency wave (ω/ω_c == {omega_oc_max:.3f} "
-                f"and ω/ω_c == {omega_op_max:.3f}), which violates the low-frequency "
+                f"The calculation produced a high-frequency wave (ω/ω_c == {omega_gyrofrequency_max:.3f} "
+                f"and ω/ω_c == {omega_plasma_frequency_max:.3f}), which violates the low-frequency "
                 f"assumption of the dispersion relation (ω/ω_c ≪ 1 and ω/ω_p ≪ 1).",
                 PhysicsWarning,
             )
@@ -375,7 +375,7 @@ class AlfvenWave(AbstractMHDWave):
                    [4.36121946e+01, 3.08384785e+01, 2.67047673e-15]] rad / s>
         """
         theta, k = super()._validate_k_theta(k, theta)
-        omega = k * self._v_a * np.cos(theta)
+        omega = k * self._Alfven_speed * np.cos(theta)
         return super()._validate_angular_frequency(omega)
 
 
@@ -525,10 +525,10 @@ class FastMagnetosonicWave(AbstractMHDWave):
         theta, k = super()._validate_k_theta(k, theta)
         omega = k * np.sqrt(
             (
-                self._c_ms**2
+                self._magnetosonic_speed**2
                 + np.sqrt(
-                    (self._c_ms**2 + 2 * self._v_a * self._c_s * np.cos(theta))
-                    * (self._c_ms**2 - 2 * self._v_a * self._c_s * np.cos(theta))
+                    (self._magnetosonic_speed**2 + 2 * self._Alfven_speed * self._sound_speed * np.cos(theta))
+                    * (self._magnetosonic_speed**2 - 2 * self._Alfven_speed * self._sound_speed * np.cos(theta))
                 )
             )
             / 2
@@ -682,10 +682,10 @@ class SlowMagnetosonicWave(AbstractMHDWave):
         theta, k = super()._validate_k_theta(k, theta)
         omega = k * np.sqrt(
             (
-                self._c_ms**2
+                self._magnetosonic_speed**2
                 - np.sqrt(
-                    (self._c_ms**2 + 2 * self._v_a * self._c_s * np.cos(theta))
-                    * (self._c_ms**2 - 2 * self._v_a * self._c_s * np.cos(theta))
+                    (self._magnetosonic_speed**2 + 2 * self._Alfven_speed * self._sound_speed * np.cos(theta))
+                    * (self._magnetosonic_speed**2 - 2 * self._Alfven_speed * self._sound_speed * np.cos(theta))
                 )
             )
             / 2
