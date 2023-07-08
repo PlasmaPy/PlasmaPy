@@ -14,7 +14,6 @@ __all__ = [
     "FastMagnetosonicWave",
     "SlowMagnetosonicWave",
     "mhd_waves",
-    "mhd_waves_.py",
 ]
 
 from plasmapy.dispersion.analytical.mhd_waves_ import (
