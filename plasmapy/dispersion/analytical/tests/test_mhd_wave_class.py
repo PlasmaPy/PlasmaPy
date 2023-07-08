@@ -62,11 +62,11 @@ class TestMHDWave:
             ({"k": 1e-5 * u.rad / u.m, "theta": 5 * u.eV}, u.UnitTypeError),
         ],
     )
-    def test_raises_angular_frequency(self, kwargs, error):
+    @pytest.mark.parametrize("mode", range(3))
+    def test_raises_angular_frequency(self, kwargs, error, mode):
         """Test scenarios that raise an `Exception`."""
-        for mode in sample_waves:
-            with pytest.raises(error):
-                sample_waves[mode].angular_frequency(**kwargs)
+        with pytest.raises(error):
+            sample_waves[mode].angular_frequency(**kwargs)
 
     @pytest.mark.parametrize(
         ("kwargs_wave", "error"),
@@ -81,11 +81,11 @@ class TestMHDWave:
             ),
         ],
     )
-    def test_warns(self, kwargs_wave, error):
+    @pytest.mark.parametrize("mode", range(3))
+    def test_warns(self, kwargs_wave, error, mode):
         """Test scenarios the issue a `Warning`."""
-        for mode in sample_waves:
-            with pytest.warns(error):
-                sample_waves[mode].angular_frequency(**kwargs_wave)
+        with pytest.warns(error):
+            sample_waves[mode].angular_frequency(**kwargs_wave)
 
     @pytest.mark.parametrize("B", [1e-3, 1e-2])
     @pytest.mark.parametrize("density", [1e16, 1e-11 * u.kg])
@@ -93,16 +93,16 @@ class TestMHDWave:
     def test_angular_frequency_limiting_vals(self, B, density, T):
         """Test limiting values of the angular frequencies and phase velocities"""
         waves = mhd_waves(B * u.T, density * u.m**-3, "p+", T=T * u.K)
-        v_a = waves["alfven"].alfven_speed
-        c_s = waves["alfven"].sound_speed
-        c_ms = waves["alfven"].magnetosonic_speed
-        expected = {
-            "alfven": [v_a, 0 * u.m / u.s],
-            "fast": [max(v_a, c_s), c_ms],
-            "slow": [min(v_a, c_s), 0 * u.m / u.s],
-        }
+        v_a = waves[0].alfven_speed
+        c_s = waves[0].sound_speed
+        c_ms = waves[0].magnetosonic_speed
+        expected = [
+            [v_a, 0 * u.m / u.s],
+            [max(v_a, c_s), c_ms],
+            [min(v_a, c_s), 0 * u.m / u.s],
+        ]
 
-        for mode in waves:
+        for mode in range(3):
             omega = waves[mode].angular_frequency(**kwargs_wave_limits)
             v_ph = waves[mode].phase_velocity(**kwargs_wave_limits)
             assert np.allclose(omega / kwargs_wave_limits["k"], expected[mode])
@@ -124,10 +124,9 @@ class TestMHDWave:
         ],
     )
     def test_angular_frequency_return_structure(self, kwargs, expected):
-        assert isinstance(sample_waves, dict)
-        assert {"alfven", "fast", "slow"} == set(sample_waves)
+        assert isinstance(sample_waves, tuple)
 
-        for mode in sample_waves:
+        for mode in range(3):
             omega = sample_waves[mode].angular_frequency(**kwargs)
             assert isinstance(omega, u.Quantity)
             assert omega.unit == u.rad / u.s
