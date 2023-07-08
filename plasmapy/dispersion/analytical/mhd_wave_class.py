@@ -15,6 +15,7 @@ import warnings
 
 from abc import ABC, abstractmethod
 from astropy.constants.si import k_B
+from collections import namedtuple
 from numbers import Integral, Real
 from typing import Optional, Union
 
@@ -730,12 +731,11 @@ def mhd_waves(*args, **kwargs):
 
     Returns
     -------
-    mhd_waves : Dict[str, `~plasmapy.dispersion.analytical.mhd_wave_class.AlfvenWave` or `~plasmapy.dispersion.analytical.mhd_wave_class.FastMagnetosonicWave` or `~plasmapy.dispersion.analytical.mhd_wave_class.SlowMagnetosonicWave`]
-        A dictionary of magnetohydrodynamic-wave objects. The
-        dictionary contains three keys: ``'alfven'`` for the Alfvén
+    mhd_waves : collections.namedtuple[str, `~plasmapy.dispersion.analytical.mhd_wave_class.AlfvenWave` or `~plasmapy.dispersion.analytical.mhd_wave_class.FastMagnetosonicWave` or `~plasmapy.dispersion.analytical.mhd_wave_class.SlowMagnetosonicWave`]
+        A named tuple of magnetohydrodynamic-wave objects. It
+        contains three keys: ``'alfven'`` for the Alfvén
         mode, ``'fast'`` for the fast magnetosonic mode, and
-        ``'slow'`` for the slow magnetosonic mode.  The value for
-        each key will be of type
+        ``'slow'`` for the slow magnetosonic mode.
 
     Raises
     ------
@@ -766,8 +766,9 @@ def mhd_waves(*args, **kwargs):
         If ``B``, ``density``, or ``T`` are not single-valued
         `astropy.units.Quantity` (i.e. an array).
     """
-    return {
-        "alfven": AlfvenWave(*args, **kwargs),
-        "fast": FastMagnetosonicWave(*args, **kwargs),
-        "slow": SlowMagnetosonicWave(*args, **kwargs),
-    }
+    MHD_Waves = namedtuple("MHD_Waves", ["alfven", "fast", "slow"])
+    return MHD_Waves(
+        alfven=AlfvenWave(*args, **kwargs),
+        fast=FastMagnetosonicWave(*args, **kwargs),
+        slow=SlowMagnetosonicWave(*args, **kwargs),
+    )
