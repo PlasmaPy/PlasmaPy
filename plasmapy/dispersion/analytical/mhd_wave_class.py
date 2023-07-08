@@ -711,9 +711,8 @@ def mhd_waves(*args, **kwargs):
         ``'D+'`` for deuterium, ``'He-4 +1'`` for singly ionized
         helium-4, etc.). If no charge state information is provided,
         then the ions are assumed to be singly ionized.
-    T : `~astropy.units.Quantity`, |keyword-only|, optional
-        The plasma temperature in units of K or eV, which defaults
-        to zero.
+    T : `~astropy.units.Quantity`, |keyword-only|, default: 0 K
+        The plasma temperature in units of K or eV.
     gamma : `float` or `int`, |keyword-only|, optional
         The adiabatic index for the plasma, which defaults to 3/5.
     mass_numb : integer, |keyword-only|, optional
