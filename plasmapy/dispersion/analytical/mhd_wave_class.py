@@ -766,9 +766,11 @@ def mhd_waves(*args, **kwargs):
         If ``B``, ``density``, or ``T`` are not single-valued
         `astropy.units.Quantity` (i.e. an array).
     """
-    MHD_Waves = namedtuple("MHD_Waves", ["alfven", "fast", "slow"])
+    MHD_Waves = namedtuple(
+        "MHD_Waves", ["alfven_wave", "fast_magnetosonic_wave", "slow_magnetosonic_wave"]
+    )
     return MHD_Waves(
-        alfven=AlfvenWave(*args, **kwargs),
-        fast=FastMagnetosonicWave(*args, **kwargs),
-        slow=SlowMagnetosonicWave(*args, **kwargs),
+        alfven_wave=AlfvenWave(*args, **kwargs),
+        fast_magnetosonic_wave=FastMagnetosonicWave(*args, **kwargs),
+        slow_magnetosonic_wave=SlowMagnetosonicWave(*args, **kwargs),
     )
