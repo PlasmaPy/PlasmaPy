@@ -86,7 +86,7 @@ class AbstractMHDWave(ABC):
         self._op = plasma_frequency(_n, ion)
 
     @property
-    def alfven_speed(self):
+    def alfven_speed(self) -> u.m / u.s:
         """The Alfvén speed of the plasma."""
         return self._v_a
 
