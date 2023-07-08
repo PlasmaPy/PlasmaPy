@@ -72,17 +72,13 @@ class AbstractMHDWave(ABC):
             _n = density
             _rho = (ion.mass + ion.charge_number * electron.mass) * density
 
-        # Alfvén speed
         self._Alfven_speed = Alfven_speed(B, _rho)
-        # sound speed
         self._sound_speed = np.sqrt(gamma * k_B * T / ion.mass).to(u.m / u.s)
-        # magnetosonic speed
-        self._magnetosonic_speed = np.sqrt(self._Alfven_speed**2 + self._sound_speed**2)
-        # plasma beta
+        self._magnetosonic_speed = np.sqrt(
+            self._Alfven_speed**2 + self._sound_speed**2
+        )
         self._beta = beta(T, _n, B)
-        # gyrofrequency
         self._gyrofrequency = gyrofrequency(B, ion)
-        # ion plasma frequency
         self._plasma_frequency = plasma_frequency(_n, ion)
 
     @property
@@ -527,8 +523,14 @@ class FastMagnetosonicWave(AbstractMHDWave):
             (
                 self._magnetosonic_speed**2
                 + np.sqrt(
-                    (self._magnetosonic_speed**2 + 2 * self._Alfven_speed * self._sound_speed * np.cos(theta))
-                    * (self._magnetosonic_speed**2 - 2 * self._Alfven_speed * self._sound_speed * np.cos(theta))
+                    (
+                        self._magnetosonic_speed**2
+                        + 2 * self._Alfven_speed * self._sound_speed * np.cos(theta)
+                    )
+                    * (
+                        self._magnetosonic_speed**2
+                        - 2 * self._Alfven_speed * self._sound_speed * np.cos(theta)
+                    )
                 )
             )
             / 2
@@ -684,8 +686,14 @@ class SlowMagnetosonicWave(AbstractMHDWave):
             (
                 self._magnetosonic_speed**2
                 - np.sqrt(
-                    (self._magnetosonic_speed**2 + 2 * self._Alfven_speed * self._sound_speed * np.cos(theta))
-                    * (self._magnetosonic_speed**2 - 2 * self._Alfven_speed * self._sound_speed * np.cos(theta))
+                    (
+                        self._magnetosonic_speed**2
+                        + 2 * self._Alfven_speed * self._sound_speed * np.cos(theta)
+                    )
+                    * (
+                        self._magnetosonic_speed**2
+                        - 2 * self._Alfven_speed * self._sound_speed * np.cos(theta)
+                    )
                 )
             )
             / 2
