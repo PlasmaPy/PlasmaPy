@@ -125,7 +125,7 @@ class TestMHDWave:
     )
     def test_angular_frequency_return_structure(self, kwargs, expected):
         assert isinstance(sample_waves, dict)
-        assert {"alfven", "fast", "slow"} == set(sample_waves.keys())
+        assert {"alfven", "fast", "slow"} == set(sample_waves)
 
         for mode in sample_waves:
             omega = sample_waves[mode].angular_frequency(**kwargs)
