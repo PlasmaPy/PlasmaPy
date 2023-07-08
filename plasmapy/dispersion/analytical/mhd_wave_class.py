@@ -445,6 +445,11 @@ class FastMagnetosonicWave(AbstractMHDWave):
     ~plasmapy.dispersion.analytical.mhd_wave_class.AlfvenWave
     ~plasmapy.dispersion.analytical.mhd_wave_class.SlowMagnetosonicWave
 
+    Notes
+    -----
+    Fast magnetosonic waves are also referred to as fast magnetoacoustic
+    waves.
+
     Examples
     --------
     >>> from astropy import units as u
@@ -607,6 +612,11 @@ class SlowMagnetosonicWave(AbstractMHDWave):
     --------
     ~plasmapy.dispersion.analytical.mhd_wave_class.AlfvenWave
     ~plasmapy.dispersion.analytical.mhd_wave_class.FastMagnetosonicWave
+
+    Notes
+    -----
+    Slow magnetosonic waves are also referred to as slow magnetoacoustic
+    waves.
 
     Examples
     --------
