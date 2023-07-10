@@ -344,8 +344,8 @@ class ParticleTracker:
         return np.sum(self.on_grid, axis=-1) > 0
 
     @staticmethod
-    def _stop_condition(_):  # noqa: ARG004
-        return False, 1
+    def _stop_condition(particle_tracker):  # noqa: ARG004
+        return False, 1, particle_tracker.nparticles_tracked
 
     @property
     def vmax(self):
@@ -447,9 +447,10 @@ class ParticleTracker:
 
         # Initialize a "progress bar" (really more of a meter)
         # Setting sys.stdout lets this play nicely with regular print()
+        _, _, pbar_total = stop_condition(self)
         pbar = tqdm(
             initial=0,
-            total=self.nparticles_tracked + 1,
+            total=pbar_total,
             disable=not self.verbose,
             desc="Particles on grid",
             unit="particles",
@@ -461,7 +462,7 @@ class ParticleTracker:
         # (no more particles on the simulation grid)
         is_finished = False
         while not is_finished:
-            is_finished, progress = stop_condition(self)
+            is_finished, progress, _ = stop_condition(self)
             pbar.n = progress
             pbar.last_print_n = progress
             pbar.update()

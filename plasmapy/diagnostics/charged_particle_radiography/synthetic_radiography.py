@@ -788,7 +788,11 @@ class ParticleTracker(GeneralParticleTracker):
         fract_entered = num_entered / particle_tracker.nparticles_tracked
 
         if fract_entered <= 0.1 or still_on >= 0.001:
-            return False, np.sum(particle_tracker.on_any_grid)
+            return (
+                False,
+                np.sum(particle_tracker.on_any_grid),
+                particle_tracker.nparticles_tracked,
+            )
 
         # Warn user if < 10% of the particles ended up on the grid
         if num_entered < 0.1 * particle_tracker.nparticles:
@@ -800,7 +804,7 @@ class ParticleTracker(GeneralParticleTracker):
                 RuntimeWarning,
             )
 
-        return True, fract_entered
+        return True, fract_entered, particle_tracker.nparticles_tracked
 
     @property
     def max_deflection(self):
