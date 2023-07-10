@@ -72,6 +72,37 @@ def _coerce_to_cartesian_si(pos):
     return pos_out
 
 
+def _stop_condition(particle_tracker: GeneralParticleTracker):
+    r"""
+    The stop condition is that most of the particles have entered the grid
+    and almost all have now left it.
+    """
+    # Count the number of particles who have entered, which is the
+    # number of non-zero entries in entered_grid
+    num_entered = (particle_tracker.entered_grid != 0).sum()
+
+    # Of the particles that have entered the grid, how many are currently
+    # on the grid?
+    # if/else avoids dividing by zero
+    if num_entered > 0:
+        # Normalize to the number that have entered a grid
+        still_on = np.sum(particle_tracker.on_any_grid) / num_entered
+    else:
+        still_on = 0.0
+
+    # How many of the particles have entered the grid
+    fract_entered = num_entered / particle_tracker.nparticles_tracked
+
+    if fract_entered <= 0.1 or still_on >= 0.001:
+        return (
+            False,
+            np.sum(particle_tracker.on_any_grid),
+            particle_tracker.nparticles_tracked + 1,
+        )
+
+    return True, fract_entered, particle_tracker.nparticles_tracked + 1
+
+
 class ParticleTracker(GeneralParticleTracker):
     r"""
     Represents a charged particle radiography experiment with simulated or
@@ -765,47 +796,6 @@ class ParticleTracker(GeneralParticleTracker):
                 RuntimeWarning,
             )
 
-    @staticmethod
-    def _stop_condition(particle_tracker: GeneralParticleTracker):
-        r"""
-        The stop condition is that most of the particles have entered the grid
-        and almost all have now left it.
-        """
-        # Count the number of particles who have entered, which is the
-        # number of non-zero entries in entered_grid
-        num_entered = (particle_tracker.entered_grid != 0).sum()
-
-        # Of the particles that have entered the grid, how many are currently
-        # on the grid?
-        # if/else avoids dividing by zero
-        if num_entered > 0:
-            # Normalize to the number that have entered a grid
-            still_on = np.sum(particle_tracker.on_any_grid) / num_entered
-        else:
-            still_on = 0.0
-
-        # How many of the particles have entered the grid
-        fract_entered = num_entered / particle_tracker.nparticles_tracked
-
-        if fract_entered <= 0.1 or still_on >= 0.001:
-            return (
-                False,
-                np.sum(particle_tracker.on_any_grid),
-                particle_tracker.nparticles_tracked,
-            )
-
-        # Warn user if < 10% of the particles ended up on the grid
-        if num_entered < 0.1 * particle_tracker.nparticles:
-            warnings.warn(
-                f"Only {100*num_entered/particle_tracker.nparticles:.2f}% of "
-                "particles entered the field grid: consider "
-                "decreasing the max_theta to increase this "
-                "number.",
-                RuntimeWarning,
-            )
-
-        return True, fract_entered, particle_tracker.nparticles_tracked
-
     @property
     def max_deflection(self):
         """
@@ -889,6 +879,20 @@ class ParticleTracker(GeneralParticleTracker):
         super().run(
             dt=dt, field_weighting=field_weighting, stop_condition=stop_condition
         )
+
+        # Count the number of particles who have entered, which is the
+        # number of non-zero entries in entered_grid
+        num_entered = (self.entered_grid != 0).sum()
+
+        # Warn user if < 10% of the particles ended up on the grid
+        if num_entered < 0.1 * self.nparticles:
+            warnings.warn(
+                f"Only {100 * num_entered / self.nparticles:.2f}% of "
+                "particles entered the field grid: consider "
+                "decreasing the max_theta to increase this "
+                "number.",
+                RuntimeWarning,
+            )
 
         # Remove particles that will never reach the detector
         self._remove_deflected_particles()

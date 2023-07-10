@@ -19,6 +19,10 @@ from plasmapy.plasma.grids import AbstractGrid
 from plasmapy.simulation.particle_integrators import boris_push
 
 
+def _stop_condition(particle_tracker):  # noqa: ARG004
+    return False, 1, particle_tracker.nparticles_tracked
+
+
 class ParticleTracker:
     """
     General particle tracer.
@@ -342,10 +346,6 @@ class ParticleTracker:
         on ANY grid.
         """
         return np.sum(self.on_grid, axis=-1) > 0
-
-    @staticmethod
-    def _stop_condition(particle_tracker):  # noqa: ARG004
-        return False, 1, particle_tracker.nparticles_tracked
 
     @property
     def vmax(self):
