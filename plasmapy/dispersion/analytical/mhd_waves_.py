@@ -380,7 +380,7 @@ class AlfvenWave(AbstractMHDWave):
                    [4.36121946e+01, 3.08384785e+01, 2.67047673e-15]] rad / s>
         """
         theta, k = super()._validate_k_theta(k, theta)
-        omega = k * self._Alfven_speed * np.cos(theta)
+        omega = k * self._Alfven_speed * np.abs(np.cos(theta))
         return super()._validate_angular_frequency(omega)
 
 
