@@ -21,9 +21,35 @@ from typing import Union
 from plasmapy.formulary.mathematics import rot_a_to_b
 from plasmapy.particles import Particle, particle_input
 from plasmapy.plasma.grids import AbstractGrid
+from plasmapy.simulation.particle_tracker import AbstractStopCondition
 from plasmapy.simulation.particle_tracker import (
     ParticleTracker as GeneralParticleTracker,
 )
+
+
+class RadiographyStopCondition(AbstractStopCondition):
+    def is_finished(self, particle_tracker):
+        """Conclude the simulation if a majority of particles have been tracked
+        through the grid.
+        """
+        num_entered = (particle_tracker.entered_grid != 0).sum()
+        fract_entered = num_entered / particle_tracker.nparticles_tracked
+
+        if num_entered > 0:
+            # Normalize to the number that have entered a grid
+            still_on = np.sum(particle_tracker.on_any_grid) / num_entered
+        else:
+            still_on = 0.0
+
+        return not (fract_entered <= 0.1 or still_on >= 0.001)
+
+    def get_progress(self, particle_tracker):
+        """Return how many particles are currently located on a grid."""
+        return np.sum(particle_tracker.on_any_grid)
+
+    def get_total(self, particle_tracker):
+        """Return the number of particles that will come into contact with the grid."""
+        return particle_tracker.nparticles_tracked
 
 
 def _coerce_to_cartesian_si(pos):
@@ -70,37 +96,6 @@ def _coerce_to_cartesian_si(pos):
         pos_out[2] = (r * np.cos(t)).to(u.m).value
 
     return pos_out
-
-
-def _stop_condition(particle_tracker: GeneralParticleTracker):
-    r"""
-    The stop condition is that most of the particles have entered the grid
-    and almost all have now left it.
-    """
-    # Count the number of particles who have entered, which is the
-    # number of non-zero entries in entered_grid
-    num_entered = (particle_tracker.entered_grid != 0).sum()
-
-    # Of the particles that have entered the grid, how many are currently
-    # on the grid?
-    # if/else avoids dividing by zero
-    if num_entered > 0:
-        # Normalize to the number that have entered a grid
-        still_on = np.sum(particle_tracker.on_any_grid) / num_entered
-    else:
-        still_on = 0.0
-
-    # How many of the particles have entered the grid
-    fract_entered = num_entered / particle_tracker.nparticles_tracked
-
-    if fract_entered <= 0.1 or still_on >= 0.001:
-        return (
-            False,
-            np.sum(particle_tracker.on_any_grid),
-            particle_tracker.nparticles_tracked + 1,
-        )
-
-    return True, fract_entered, particle_tracker.nparticles_tracked + 1
 
 
 class ParticleTracker(GeneralParticleTracker):
@@ -825,9 +820,7 @@ class ParticleTracker(GeneralParticleTracker):
 
         return max_deflection * u.rad
 
-    def run(
-        self, dt=None, field_weighting="volume averaged", stop_condition=_stop_condition
-    ):
+    def run(self, stop_condition=None, dt=None, field_weighting="volume averaged"):
         r"""
         Runs a particle-tracing simulation.
         Timesteps are adaptively calculated based on the
@@ -839,6 +832,10 @@ class ParticleTracker(GeneralParticleTracker):
         """
 
         self._validate_run_inputs(field_weighting)
+
+        # Instantiate the stop condition class if one hasn't been passed in
+        if not stop_condition:
+            stop_condition = RadiographyStopCondition()
 
         # If meshes have been added, apply them now
         for mesh in self.mesh_list:
@@ -876,9 +873,7 @@ class ParticleTracker(GeneralParticleTracker):
         # Advance the tracked particles to near the start of the grid
         self.x[grid_mask] = self._coast_to_grid(self.x[grid_mask], self.v[grid_mask])
 
-        super().run(
-            dt=dt, field_weighting=field_weighting, stop_condition=stop_condition
-        )
+        super().run(stop_condition, dt=dt, field_weighting=field_weighting)
 
         # Count the number of particles who have entered, which is the
         # number of non-zero entries in entered_grid

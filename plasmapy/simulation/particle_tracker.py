@@ -2,7 +2,7 @@
 Module containing the definition for the general particle tracker.
 """
 
-__all__ = ["ParticleTracker"]
+__all__ = ["AbstractStopCondition", "ParticleTracker", "TimeElapsedStopCondition"]
 
 import astropy.units as u
 import collections
@@ -10,7 +10,9 @@ import numpy as np
 import sys
 import warnings
 
+from abc import ABCMeta, abstractmethod
 from collections.abc import Iterable
+from numbers import Real
 from tqdm import tqdm
 from typing import Union
 
@@ -19,8 +21,44 @@ from plasmapy.plasma.grids import AbstractGrid
 from plasmapy.simulation.particle_integrators import boris_push
 
 
-def _stop_condition(particle_tracker):  # noqa: ARG004
-    return False, 1, particle_tracker.nparticles_tracked
+class AbstractStopCondition(metaclass=ABCMeta):
+    """Abstract base class containing the necessary methods for a ParticleTracker stopping condition."""
+
+    @abstractmethod
+    def is_finished(self, particle_tracker):
+        """Return `True` if the simulation has finished."""
+        ...
+
+    @abstractmethod
+    def get_progress(self, particle_tracker):
+        """Return a number representing the progress of the simulation (compared to total)."""
+        ...
+
+    @abstractmethod
+    def get_total(self, particle_tracker):
+        """Return a number representing the total number of steps in a simulation."""
+        ...
+
+
+class TimeElapsedStopCondition(AbstractStopCondition):
+    """Stop condition corresponding to the elapsed time of a ParticleTracker."""
+
+    def __init__(self, stop_time: Real):
+        self.stop_time = stop_time
+
+    def is_finished(self, particle_tracker):
+        """Conclude the simulation if all particles have been tracked over the specified stop time."""
+        tracked_mask = particle_tracker._tracked_particle_mask()
+
+        return tracked_mask.sum() == 0
+
+    def get_progress(self, particle_tracker):
+        """Return the current time step of the simulation."""
+        return np.mean(particle_tracker.time)
+
+    def get_total(self, _):  # noqa: ARG002
+        """Return the total amount of time over which the particles are tracked."""
+        return self.stop_time
 
 
 class ParticleTracker:
@@ -386,7 +424,10 @@ class ParticleTracker:
         self.nparticles_tracked = self._tracked_particle_mask().sum()
 
     def run(
-        self, dt=None, field_weighting="volume averaged", stop_condition=_stop_condition
+        self,
+        stop_condition: AbstractStopCondition,
+        dt=None,
+        field_weighting="volume averaged",
     ):
         r"""
         Runs a particle-tracing simulation.
@@ -447,7 +488,7 @@ class ParticleTracker:
 
         # Initialize a "progress bar" (really more of a meter)
         # Setting sys.stdout lets this play nicely with regular print()
-        _, _, pbar_total = stop_condition(self)
+        pbar_total = stop_condition.get_total(self)
         pbar = tqdm(
             initial=0,
             total=pbar_total,
@@ -462,7 +503,9 @@ class ParticleTracker:
         # (no more particles on the simulation grid)
         is_finished = False
         while not is_finished:
-            is_finished, progress, _ = stop_condition(self)
+            is_finished = stop_condition.is_finished(self)
+            progress = stop_condition.get_progress(self)
+
             pbar.n = progress
             pbar.last_print_n = progress
             pbar.update()
