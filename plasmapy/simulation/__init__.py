@@ -16,4 +16,4 @@ from plasmapy.simulation.abstractions import (
     AbstractSimulation,
     AbstractTimeDependentSimulation,
 )
-from plasmapy.simulation.particletracker import ParticleTracker
+from plasmapy.simulation.particle_tracker import ParticleTracker
