@@ -1,1 +1,1 @@
-Added "decorators" section to the |coding_guide|.
+Added "decorators" section to the |coding guide|.
