@@ -28,6 +28,9 @@ from plasmapy.simulation.particle_tracker import (
 
 
 class RadiographyStopCondition(AbstractStopCondition):
+    def get_description(self):
+        return "Particles on grid"
+
     def is_finished(self, particle_tracker):
         """Conclude the simulation if a majority of particles have been tracked
         through the grid.
@@ -820,7 +823,13 @@ class ParticleTracker(GeneralParticleTracker):
 
         return max_deflection * u.rad
 
-    def run(self, stop_condition=None, dt=None, field_weighting="volume averaged"):
+    def run(
+        self,
+        stop_condition=None,
+        saving_routine=None,
+        dt=None,
+        field_weighting="volume averaged",
+    ):
         r"""
         Runs a particle-tracing simulation.
         Timesteps are adaptively calculated based on the
@@ -873,7 +882,12 @@ class ParticleTracker(GeneralParticleTracker):
         # Advance the tracked particles to near the start of the grid
         self.x[grid_mask] = self._coast_to_grid(self.x[grid_mask], self.v[grid_mask])
 
-        super().run(stop_condition, dt=dt, field_weighting=field_weighting)
+        super().run(
+            stop_condition,
+            saving_routine=saving_routine,
+            dt=dt,
+            field_weighting=field_weighting,
+        )
 
         # Count the number of particles who have entered, which is the
         # number of non-zero entries in entered_grid

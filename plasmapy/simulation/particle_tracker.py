@@ -2,10 +2,17 @@
 Module containing the definition for the general particle tracker.
 """
 
-__all__ = ["AbstractStopCondition", "ParticleTracker", "TimeElapsedStopCondition"]
+__all__ = [
+    "AbstractSavingRoutine",
+    "AbstractStopCondition",
+    "ParticleTracker",
+    "TimeElapsedStopCondition",
+    "TimestepSavingRoutine",
+]
 
 import astropy.units as u
 import collections
+import h5py
 import numpy as np
 import sys
 import warnings
@@ -13,8 +20,9 @@ import warnings
 from abc import ABCMeta, abstractmethod
 from collections.abc import Iterable
 from numbers import Real
+from pathlib import Path
 from tqdm import tqdm
-from typing import Union
+from typing import Optional, Union
 
 from plasmapy.particles import Particle, particle_input
 from plasmapy.plasma.grids import AbstractGrid
@@ -23,6 +31,11 @@ from plasmapy.simulation.particle_integrators import boris_push
 
 class AbstractStopCondition(metaclass=ABCMeta):
     """Abstract base class containing the necessary methods for a ParticleTracker stopping condition."""
+
+    @abstractmethod
+    def get_description(self):
+        """Return a small string describing the relevant quantity shown on the meter."""
+        ...
 
     @abstractmethod
     def is_finished(self, particle_tracker):
@@ -59,6 +72,39 @@ class TimeElapsedStopCondition(AbstractStopCondition):
     def get_total(self, _):  # noqa: ARG002
         """Return the total amount of time over which the particles are tracked."""
         return self.stop_time
+
+
+class AbstractSavingRoutine(metaclass=ABCMeta):
+    """Abstract base class containing the necessary methods for a ParticleTracker saving routine."""
+
+    @abstractmethod
+    def post_push_hook(self, particle_tracker):
+        """Function called after a push step."""
+        ...
+
+
+class TimestepSavingRoutine(AbstractSavingRoutine):
+    """Saving routine corresponding to saving a hdf5 file every time step."""
+
+    def __init__(self, output_directory):
+        self.output_directory = output_directory
+
+    def post_push_hook(self, particle_tracker):
+        """Save an hdf5 file containing simulation positions and velocities after every push."""
+        if not isinstance(particle_tracker.dt, float):
+            raise ValueError(  # noqa: TRY004
+                "You must specify a time step in order to use this saving routine!"
+            )
+
+        # TODO: Find a better way to extract the time elapsed in the simulation
+        path = (
+            Path(self.output_directory)
+            / f"{int(particle_tracker.time[0][0]/particle_tracker.dt)}.hdf5"
+        )
+
+        with h5py.File(path, "w") as output_file:
+            output_file.create_dataset("x", data=particle_tracker.x)
+            output_file.create_dataset("v", data=particle_tracker.v)
 
 
 class ParticleTracker:
@@ -371,7 +417,12 @@ class ParticleTracker:
         if dt.size > 1:
             dt = dt[tracked_mask, np.newaxis]
 
-        self.time[tracked_mask] += dt
+        if isinstance(dt, float):
+            # If a uniform timestep is specified, use that
+            self.time += dt
+        else:
+            # Otherwise just increment the tracked particles' time by dt
+            self.time[tracked_mask] += dt
 
         self.x[tracked_mask], self.v[tracked_mask] = boris_push(
             pos_tracked, vel_tracked, B, E, self.q, self.m, dt, inplace=False
@@ -426,6 +477,7 @@ class ParticleTracker:
     def run(
         self,
         stop_condition: AbstractStopCondition,
+        saving_routine: Optional[AbstractSavingRoutine] = None,
         dt=None,
         field_weighting="volume averaged",
     ):
@@ -488,12 +540,11 @@ class ParticleTracker:
 
         # Initialize a "progress bar" (really more of a meter)
         # Setting sys.stdout lets this play nicely with regular print()
-        pbar_total = stop_condition.get_total(self)
         pbar = tqdm(
             initial=0,
-            total=pbar_total,
+            total=stop_condition.get_total(self),
             disable=not self.verbose,
-            desc="Particles on grid",
+            desc=stop_condition.get_description(),
             unit="particles",
             bar_format="{l_bar}{bar}{n:.1e}/{total:.1e} {unit}",  # noqa: FS003
             file=sys.stdout,
@@ -511,6 +562,9 @@ class ParticleTracker:
             pbar.update()
 
             self._push()
+
+            if saving_routine is not None:
+                saving_routine.post_push_hook(self)
         pbar.close()
 
         # Log a summary of the run
