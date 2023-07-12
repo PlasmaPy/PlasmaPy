@@ -28,6 +28,9 @@ from plasmapy.simulation.particle_tracker import (
 
 
 class RadiographyStopCondition(AbstractStopCondition):
+    def require_uniform_dt(self):
+        return False
+
     def get_description(self):
         return "Particles on grid"
 
@@ -44,7 +47,7 @@ class RadiographyStopCondition(AbstractStopCondition):
         else:
             still_on = 0.0
 
-        return not (fract_entered <= 0.1 or still_on >= 0.001)
+        return fract_entered > 0.1 and still_on < 0.001
 
     def get_progress(self, particle_tracker):
         """Return how many particles are currently located on a grid."""
@@ -779,8 +782,6 @@ class ParticleTracker(GeneralParticleTracker):
         # Remove untracked particles
         self._remove_particles(~keep_mask)
 
-        self._update_nparticles_tracked()
-
         # Store the number of particles deflected
         self.fract_deflected = (self.nparticles - keep_mask.sum()) / self.nparticles
 
@@ -826,7 +827,7 @@ class ParticleTracker(GeneralParticleTracker):
     def run(
         self,
         stop_condition=None,
-        saving_routine=None,
+        save_routine=None,
         dt=None,
         field_weighting="volume averaged",
     ):
@@ -840,11 +841,12 @@ class ParticleTracker(GeneralParticleTracker):
         diagnostic image.
         """
 
-        self._validate_run_inputs(field_weighting)
-
         # Instantiate the stop condition class if one hasn't been passed in
         if not stop_condition:
             stop_condition = RadiographyStopCondition()
+
+        self._validate_run_inputs(stop_condition, save_routine, dt, field_weighting)
+        self._enforce_particle_creation()
 
         # If meshes have been added, apply them now
         for mesh in self.mesh_list:
@@ -854,8 +856,6 @@ class ParticleTracker(GeneralParticleTracker):
         # This array holds the indices of all particles that WILL hit the grid
         # Only these particles will actually be pushed through the fields
         grid_mask = self.theta < self.max_theta_hit_grid
-        self.nparticles_tracked = grid_mask.sum()
-        self.fract_tracked = self.nparticles_tracked / self.nparticles
 
         # Generate a null distribution of points (the result in the absence of
         # any fields) for statistical comparison
@@ -879,12 +879,14 @@ class ParticleTracker(GeneralParticleTracker):
         # Don't track particles that will not reach the grid
         self._stop_particles(~grid_mask)
 
+        self.fract_tracked = self.nparticles_tracked / self.nparticles
+
         # Advance the tracked particles to near the start of the grid
         self.x[grid_mask] = self._coast_to_grid(self.x[grid_mask], self.v[grid_mask])
 
         super().run(
             stop_condition,
-            saving_routine=saving_routine,
+            save_routine=save_routine,
             dt=dt,
             field_weighting=field_weighting,
         )

@@ -3,11 +3,11 @@ Module containing the definition for the general particle tracker.
 """
 
 __all__ = [
-    "AbstractSavingRoutine",
+    "AbstractSaveRoutine",
     "AbstractStopCondition",
     "ParticleTracker",
     "TimeElapsedStopCondition",
-    "TimestepSavingRoutine",
+    "DiskSaveRoutine",
 ]
 
 import astropy.units as u
@@ -32,6 +32,13 @@ from plasmapy.simulation.particle_integrators import boris_push
 class AbstractStopCondition(metaclass=ABCMeta):
     """Abstract base class containing the necessary methods for a ParticleTracker stopping condition."""
 
+    @property
+    @abstractmethod
+    def require_uniform_dt(self):
+        """Return whether or not this stop condition requires a uniform dt to be specified."""
+        ...
+
+    @property
     @abstractmethod
     def get_description(self):
         """Return a small string describing the relevant quantity shown on the meter."""
@@ -44,12 +51,16 @@ class AbstractStopCondition(metaclass=ABCMeta):
 
     @abstractmethod
     def get_progress(self, particle_tracker):
-        """Return a number representing the progress of the simulation (compared to total)."""
+        """Return a number representing the progress of the simulation (compared to total).
+        This number represents the numerator of the completion percentage.
+        """
         ...
 
     @abstractmethod
     def get_total(self, particle_tracker):
-        """Return a number representing the total number of steps in a simulation."""
+        """Return a number representing the total number of steps in a simulation.
+        This number represents the denominator of the completion percentage.
+        """
         ...
 
 
@@ -59,52 +70,131 @@ class TimeElapsedStopCondition(AbstractStopCondition):
     def __init__(self, stop_time: Real):
         self.stop_time = stop_time
 
+    def require_uniform_dt(self):
+        """The elapsed time stop condition requires a uniform time step
+        to stop all particles at the same time.
+        """
+        return True
+
+    def get_description(self):
+        """The time elapsed stop condition depends on elapsed time,
+        therefore the relevant quantity is time remaining.
+        """
+        return "Time remaining"
+
     def is_finished(self, particle_tracker):
         """Conclude the simulation if all particles have been tracked over the specified stop time."""
-        tracked_mask = particle_tracker._tracked_particle_mask()
 
-        return tracked_mask.sum() == 0
+        return particle_tracker.time >= self.stop_time
 
     def get_progress(self, particle_tracker):
         """Return the current time step of the simulation."""
-        return np.mean(particle_tracker.time)
+
+        return np.max(particle_tracker.time)
 
     def get_total(self, _):  # noqa: ARG002
         """Return the total amount of time over which the particles are tracked."""
         return self.stop_time
 
 
-class AbstractSavingRoutine(metaclass=ABCMeta):
-    """Abstract base class containing the necessary methods for a ParticleTracker saving routine."""
+class AbstractSaveRoutine(metaclass=ABCMeta):
+    # TODO: Change this docstring to use the |ParticleTracker| alias
+    """Abstract base class containing the necessary methods for a
+    `~plasmapy.simulation.particle_tracker.ParticleTracker` save routine.
+
+    The save routine class is responsible for defining the conditions and hooks
+    for saving.
+
+    Parameters
+    ----------
+    output_directory : `~pathlib.Path`
+        Output for objects that are saved to disk
+
+
+    Notes
+    -----
+    After every push, the `post_push_hook` method is called with the
+    respective `~plasmapy.simulation.particle_tracker.ParticleTracker` object passed as a parameter.
+    Then, the hook calls `save_now` to determine whether or not the simulation state should be saved.
+    If it is determined that the simulation state should be saved, the save routine may call either
+    `save_to_disk` or `save_to_memory` depending on the routine implemented.
+    """
+
+    def __init__(self, output_directory: Path):
+        self.output_directory = output_directory
+        self.x_all = []
+        self.v_all = []
+
+    @property
+    @abstractmethod
+    def require_uniform_dt(self):
+        """Return whether or not this save routine requires a uniform dt to be specified."""
+        ...
+
+    @abstractmethod
+    def save_now(self, particle_tracker):
+        """Determine whether or not to save on the current push step."""
+        ...
+
+    def save_to_disk(self, particle_tracker):
+        """Save a hdf5 file containing simulation positions and velocities."""
+
+        path = Path(self.output_directory) / f"{particle_tracker.iteration_number}.hdf5"
+
+        with h5py.File(path, "w") as output_file:
+            output_file["x"] = particle_tracker.x
+            output_file["v"] = particle_tracker.v
+
+    def save_to_memory(self, particle_tracker):
+        """Append simulation positions and velocities to save routine object."""
+        self.x_all.append(particle_tracker.x)
+        self.v_all.append(particle_tracker.v)
 
     @abstractmethod
     def post_push_hook(self, particle_tracker):
-        """Function called after a push step."""
+        """Function called after a push step.
+
+        This function is responsible for handling two steps of save routine, namely:
+            - Deciding whether or not to save on the current time step
+            - How the simulation data is saved (i.e. to disk or memory)
+
+        """
         ...
 
 
-class TimestepSavingRoutine(AbstractSavingRoutine):
-    """Saving routine corresponding to saving a hdf5 file every time step."""
+class DiskSaveRoutine(AbstractSaveRoutine):
+    """Save routine corresponding to saving a hdf5 file every given interval."""
 
-    def __init__(self, output_directory):
-        self.output_directory = output_directory
+    def __init__(self, output_directory, interval: u.Quantity):
+        super().__init__(output_directory)
+        self.save_interval = interval
+        self.time_of_last_save = 0
+        self.name_of_last_save = 0
 
-    def post_push_hook(self, particle_tracker):
-        """Save an hdf5 file containing simulation positions and velocities after every push."""
-        if not isinstance(particle_tracker.dt, float):
-            raise ValueError(  # noqa: TRY004
-                "You must specify a time step in order to use this saving routine!"
+    def require_uniform_dt(self):
+        """Save output only makes sense for uniform time steps,
+        therefore this routine requires a uniform time step.
+        """
+        return True
+
+    def save_now(self, particle_tracker):
+        """Save at every interval given in instantiation."""
+        saves_per_step = np.floor(self.save_interval / particle_tracker.dt)
+
+        # If the user is requesting multiple saves per step then raise a ValueError
+        if saves_per_step == 0:
+            raise ValueError(
+                "You must specify a time step smaller than the save interval!"
             )
 
-        # TODO: Find a better way to extract the time elapsed in the simulation
-        path = (
-            Path(self.output_directory)
-            / f"{int(particle_tracker.time[0][0]/particle_tracker.dt)}.hdf5"
-        )
+        return particle_tracker.time - self.time_of_last_save >= self.save_interval
 
-        with h5py.File(path, "w") as output_file:
-            output_file.create_dataset("x", data=particle_tracker.x)
-            output_file.create_dataset("v", data=particle_tracker.v)
+    def post_push_hook(self, particle_tracker):
+        """Save to disk if one interval has elapsed since last save."""
+
+        if self.save_now(particle_tracker):
+            self.time_of_last_save = particle_tracker.time
+            self.save_to_disk(particle_tracker)
 
 
 class ParticleTracker:
@@ -252,23 +342,21 @@ class ParticleTracker:
         self.v = v.to(u.m / u.s).value
 
     def _stop_particles(self, particles_to_stop_mask):
-        if not len(particles_to_stop_mask) == self.x.shape[0]:
+        if len(particles_to_stop_mask) != self.x.shape[0]:
             raise ValueError(
                 f"Expected mask of size {self.x.shape[0]}, got {len(particles_to_stop_mask)}"
             )
 
         self.v[particles_to_stop_mask] = np.NaN
-        self._update_nparticles_tracked()
 
     def _remove_particles(self, particles_to_remove_mask):
-        if not len(particles_to_remove_mask) == self.x.shape[0]:
+        if len(particles_to_remove_mask) != self.x.shape[0]:
             raise ValueError(
                 f"Expected mask of size {self.x.shape[0]}, got {len(particles_to_remove_mask)}"
             )
 
         self.x[particles_to_remove_mask] = np.NaN
         self.v[particles_to_remove_mask] = np.NaN
-        self._update_nparticles_tracked()
 
     # *************************************************************************
     # Run/push loop methods
@@ -329,6 +417,8 @@ class ParticleTracker:
         """
         # Get a list of positions (input for interpolator)
         tracked_mask = self._tracked_particle_mask()
+
+        self.iteration_number += 1
 
         # nparticles_tracked may fluctuate with stopping
         # all particles are therefore used regardless of whether or not they reach the grid
@@ -412,16 +502,17 @@ class ParticleTracker:
         # TODO: Test v/c and implement relativistic Boris push when required
         # vc = np.max(v)/_c
 
-        # If dt is not a scalar, make sure it can be multiplied by an
-        # [nparticles, 3] shape field array
-        if dt.size > 1:
-            dt = dt[tracked_mask, np.newaxis]
-
-        if isinstance(dt, float):
+        if self.is_uniform_time:
             # If a uniform timestep is specified, use that
             self.time += dt
         else:
-            # Otherwise just increment the tracked particles' time by dt
+            # If dt is not a scalar (i.e. uniform time), make sure it can be multiplied by a
+            # [nparticles, 3] shape field array
+            dt = dt[tracked_mask, np.newaxis]
+
+            print(f"Mean dt is {np.mean(dt)}")
+
+            # Increment the tracked particles' time by dt
             self.time[tracked_mask] += dt
 
         self.x[tracked_mask], self.v[tracked_mask] = boris_push(
@@ -446,7 +537,29 @@ class ParticleTracker:
 
         return np.max(np.linalg.norm(self.v[tracked_mask], axis=-1))
 
-    def _validate_run_inputs(self, field_weighting: str):
+    def _validate_run_inputs(
+        self, stop_condition, save_routine, dt, field_weighting: str
+    ):
+        if not isinstance(stop_condition, AbstractStopCondition):
+            raise TypeError("Please specify a valid stop condition.")
+
+        if not isinstance(save_routine, AbstractSaveRoutine):
+            raise TypeError("Please specify a valid save routine")
+
+        # Will the simulation follow a uniform time step?
+        # This must be the case for certain stopping conditions and saving routines
+        self.is_uniform_time = isinstance(dt, u.Quantity) and isinstance(
+            dt.value, float
+        )
+
+        # Raise a ValueError if dt is required by stop condition or save routine but not specified
+        if (
+            stop_condition.require_uniform_dt or save_routine.require_uniform_dt
+        ) and not self.is_uniform_time:
+            raise ValueError(
+                "Please specify a uniform time step to use the simulation with this configuration!"
+            )
+
         # Load and validate inputs
         field_weightings = ["volume averaged", "nearest neighbor"]
         if field_weighting in field_weightings:
@@ -458,26 +571,21 @@ class ParticleTracker:
                 f"{field_weightings}",
             )
 
-        # Check to make sure particles have already been generated
-        if not hasattr(self, "x"):
-            raise ValueError(
-                "Either the create_particles or load_particles method must be "
-                "called before running the particle tracing algorithm."
-            )
-
     def _tracked_particle_mask(self):
         """
         Calculates a boolean mask corresponding to particles that have not been stopped or removed.
         """
         return ~np.logical_or(np.isnan(self.x[:, 0]), np.isnan(self.v[:, 0]))
 
-    def _update_nparticles_tracked(self):
-        self.nparticles_tracked = self._tracked_particle_mask().sum()
+    @property
+    def nparticles_tracked(self):
+        """Return the number of particles that don't have NaN position or velocity."""
+        return self._tracked_particle_mask().sum()
 
     def run(
         self,
         stop_condition: AbstractStopCondition,
-        saving_routine: Optional[AbstractSavingRoutine] = None,
+        save_routine: Optional[AbstractSaveRoutine] = None,
         dt=None,
         field_weighting="volume averaged",
     ):
@@ -520,16 +628,19 @@ class ParticleTracker:
 
         """
 
-        self._validate_run_inputs(field_weighting)
-
-        self._update_nparticles_tracked()
+        # Validate inputs to the run function
+        # Sets is_uniform_time property
+        self._validate_run_inputs(stop_condition, save_routine, dt, field_weighting)
+        self._enforce_particle_creation()
 
         # By default, set dt as an infinite range (auto dt with no restrictions)
         self.dt = np.array([0.0, np.inf]) * u.s if dt is None else dt
         self.dt = (self.dt).to(u.s).value
 
-        self.time = np.zeros((self.nparticles, 1))
+        # Keep track of how many push steps have occurred for trajectory tracing
+        self.iteration_number = 0
 
+        self.time = 0 if self.is_uniform_time else np.zeros((self.nparticles, 1))
         # Create flags for tracking when particles during the simulation
         # on_grid -> zero if the particle is off grid, 1
         # shape [nparticles, ngrids]
@@ -563,8 +674,9 @@ class ParticleTracker:
 
             self._push()
 
-            if saving_routine is not None:
-                saving_routine.post_push_hook(self)
+            if save_routine is not None:
+                save_routine.post_push_hook(self)
+
         pbar.close()
 
         # Log a summary of the run
@@ -573,6 +685,16 @@ class ParticleTracker:
 
         # Simulation has not run, because creating new particles changes the simulation
         self._has_run = True
+
+    def _enforce_particle_creation(self):
+        """Ensure the array position array `x` has been populated."""
+
+        # Check to make sure particles have already been generated
+        if not hasattr(self, "x"):
+            raise ValueError(
+                "Either the create_particles or load_particles method must be "
+                "called before running the particle tracing algorithm."
+            )
 
     def _enforce_order(self):
         r"""
