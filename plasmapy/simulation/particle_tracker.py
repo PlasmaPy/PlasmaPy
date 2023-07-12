@@ -26,6 +26,7 @@ from typing import Optional, Union
 
 from plasmapy.particles import Particle, particle_input
 from plasmapy.plasma.grids import AbstractGrid
+from plasmapy.plasma.plasma_base import BasePlasma
 from plasmapy.simulation.particle_integrators import boris_push
 
 
@@ -216,6 +217,10 @@ class ParticleTracker:
             ]
         elif isinstance(grids, collections.abc.Iterable):
             self.grids = grids
+        elif isinstance(grids, BasePlasma):
+            raise TypeError(
+                "This class has been deprecated. Please revert to PlasmaPy version 2023.5.1 to use this version of ParticleTracker."
+            )
         else:
             raise TypeError("Type of argument `grids` not recognized.")
 
