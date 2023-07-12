@@ -415,10 +415,6 @@ authors:
   family-names: Rao
   alias: thecasuist
 
-- given-names: Jayden
-  family-names: Roberts
-  alias: JaydenR2305
-
 - alias: seanjunheng2
 
 - given-names: Steve
@@ -426,6 +422,11 @@ authors:
   affiliation: U.S. Naval Research Laboratory
   orcid: https://orcid.org/0000-0002-3056-6334
   alias: arichar6
+
+- given-names: Jayden
+  family-names: Roberts
+  orcid: https://orcid.org/0009-0009-9490-5284
+  alias: JaydenR2305
 
 - given-names: Reynaldo
   family-names: Rojas Zelaya
