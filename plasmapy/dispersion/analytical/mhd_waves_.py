@@ -234,7 +234,9 @@ class AbstractMHDWave(ABC):
             When the computed wave frequencies violate the low-frequency
             (:math:`ω ≪ ω_c,ω_p`) assumption of the dispersion relation.
         """
-        return self.angular_frequency(k, theta) / k
+        angular_frequency = self.angular_frequency(k, theta)
+        theta, k = self._validate_k_theta(k, theta)
+        return np.squeeze(angular_frequency / k)
 
 
 class AlfvenWave(AbstractMHDWave):
