@@ -219,7 +219,9 @@ class ParticleTracker:
             self.grids = grids
         elif isinstance(grids, BasePlasma):
             raise TypeError(
-                "This class has been deprecated. Please revert to PlasmaPy version 2023.5.1 to use this version of ParticleTracker."
+                "It appears you may be trying to access an older version of the ParticleTracker class."
+                "This class has been deprecated."
+                "Please revert to PlasmaPy version 2023.5.1 to use this version of ParticleTracker."
             )
         else:
             raise TypeError("Type of argument `grids` not recognized.")
