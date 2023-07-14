@@ -247,7 +247,7 @@ class AbstractMHDWave(ABC):
 
         .. math::
 
-        \mathbf{v}_g = \frac{\partial\omega}{\partial\mathbf{k}}
+        \mathbf{v}_g = \frac{d\omega}{d\mathbf{k}}
             = \hat{\mathbf{k}} \frac{\partial\omega}{\partial k}
                 + \hat{\mathbf{\theta}} \frac{\partial v_{ph}}{\partial\theta}
 
@@ -499,7 +499,7 @@ class AlfvenWave(AbstractMHDWave):
 
         .. math::
 
-        \mathbf{v}_g = \frac{\partial\omega}{\partial\mathbf{k}}
+        \mathbf{v}_g = \frac{d\omega}{d\mathbf{k}}
             = \hat{\mathbf{k}} \frac{\partial\omega}{\partial k}
                 + \hat{\mathbf{\theta}} \frac{\partial v_{ph}}{\partial\theta}
 
@@ -732,7 +732,7 @@ class FastMagnetosonicWave(AbstractMHDWave):
 
         .. math::
 
-        \mathbf{v}_g = \frac{\partial\omega}{\partial\mathbf{k}}
+        \mathbf{v}_g = \frac{d\omega}{d\mathbf{k}}
             = \hat{\mathbf{k}} \frac{\partial\omega}{\partial k}
                 + \hat{\mathbf{\theta}} \frac{\partial v_{ph}}{\partial\theta}
 
@@ -974,7 +974,7 @@ class SlowMagnetosonicWave(AbstractMHDWave):
 
         .. math::
 
-        \mathbf{v}_g = \frac{\partial\omega}{\partial\mathbf{k}}
+        \mathbf{v}_g = \frac{d\omega}{d\mathbf{k}}
             = \hat{\mathbf{k}} \frac{\partial\omega}{\partial k}
                 + \hat{\mathbf{\theta}} \frac{\partial v_{ph}}{\partial\theta}
 
