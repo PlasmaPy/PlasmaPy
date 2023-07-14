@@ -23,7 +23,7 @@ from plasmapy.formulary.dimensionless import beta
 from plasmapy.formulary.frequencies import gyrofrequency, plasma_frequency
 from plasmapy.formulary.speeds import Alfven_speed
 from plasmapy.particles import electron, particle_input, ParticleLike
-from plasmapy.utils.decorators import validate_quantities
+from plasmapy.utils.decorators import check_relativistic, validate_quantities
 from plasmapy.utils.exceptions import PhysicsWarning
 
 
@@ -981,18 +981,22 @@ class SlowMagnetosonicWave(AbstractMHDWave):
         """
         phase_velocity = self.phase_velocity(k, theta)
         theta, k = super()._validate_k_theta(k, theta)
+
+        group_velocity = np.squeeze(
+            self._Alfven_speed**2
+            * self._sound_speed**2
+            * np.sin(theta)
+            * np.cos(theta)
+            / (
+                phase_velocity
+                * (2 * phase_velocity**2 - self._magnetosonic_speed**2)
+            )
+        )
+        group_velocity[np.isnan(group_velocity)] = 0 * u.m / u.s
+
         return [
             phase_velocity,
-            np.squeeze(
-                self._Alfven_speed**2
-                * self._sound_speed**2
-                * np.sin(theta)
-                * np.cos(theta)
-                / (
-                    phase_velocity
-                    * (2 * phase_velocity**2 - self._magnetosonic_speed**2)
-                )
-            ),
+            group_velocity,
         ]
 
 
