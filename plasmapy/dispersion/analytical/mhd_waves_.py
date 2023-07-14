@@ -196,6 +196,8 @@ class AbstractMHDWave(ABC):
         """
 
     @abstractmethod
+    @check_relativistic
+    @validate_quantities
     def group_velocity(self, k: u.rad / u.m, theta: u.rad) -> u.m / u.s:
         r"""
         Calculate the group velocities of magnetohydrodynamic waves.
@@ -255,7 +257,9 @@ class AbstractMHDWave(ABC):
         phase velocity.
         """
 
-    def phase_velocity(self, k: u.rad / u.m, theta: u.rad):
+    @check_relativistic
+    @validate_quantities
+    def phase_velocity(self, k: u.rad / u.m, theta: u.rad) -> u.m / u.s:
         r"""
         Calculate the phase velocities of magnetohydrodynamic waves.
 
