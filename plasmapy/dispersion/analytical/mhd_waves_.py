@@ -984,19 +984,21 @@ class SlowMagnetosonicWave(AbstractMHDWave):
         phase velocity.
         """
         phase_velocity = self.phase_velocity(k, theta)
-        theta, k = super()._validate_k_theta(k, theta)
 
-        group_velocity = np.squeeze(
-            self._Alfven_speed**2
-            * self._sound_speed**2
-            * np.sin(theta)
-            * np.cos(theta)
-            / (
+        theta, k = super()._validate_k_theta(k, theta)
+        group_velocity = np.ones(k.shape) * (0 * u.m / u.s)
+        np.squeeze(
+            np.divide(
+                self._Alfven_speed**2
+                * self._sound_speed**2
+                * np.sin(theta)
+                * np.cos(theta),
                 phase_velocity
-                * (2 * phase_velocity**2 - self._magnetosonic_speed**2)
+                * (2 * phase_velocity**2 - self._magnetosonic_speed**2),
+                out=group_velocity,
+                where=phase_velocity != 0,
             )
         )
-        group_velocity[np.isnan(group_velocity)] = 0 * u.m / u.s
 
         return [
             phase_velocity,
