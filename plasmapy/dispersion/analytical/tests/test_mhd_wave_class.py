@@ -131,3 +131,29 @@ class TestMHDWave:
             assert isinstance(omega, u.Quantity)
             assert omega.unit == u.rad / u.s
             assert omega.shape == expected
+
+    @pytest.mark.parametrize("B", [1e-3, 1e-2])
+    @pytest.mark.parametrize("density", [1e16, 1e-11 * u.kg])
+    @pytest.mark.parametrize("T", [0, 1e5, 1e6])
+    def test_group_velocity_vals(self, B, density, T):
+        """Test limiting values of the group velocities"""
+        waves = mhd_waves(B * u.T, density * u.m**-3, "p+", T=T * u.K)
+
+        k = 1e-5 * u.rad / u.m
+        theta = np.linspace(0, 2 * np.pi, 10) * u.rad
+        dt = 1e-3 * u.rad
+
+        for mode in range(3):
+            waves[mode].phase_velocity(k, theta)
+            group_velocity_k, group_velocity_theta = waves[mode].group_velocity(
+                k, theta
+            )
+
+            phase_velocity = waves[mode].phase_velocity(k, theta)
+            phase_velocity_p = waves[mode].phase_velocity(k, theta + dt)
+            phase_velocity_m = waves[mode].phase_velocity(k, theta - dt)
+            # symmetric difference quotient
+            dv_dtheta = (phase_velocity_p - phase_velocity_m) / (2 * dt / u.rad)
+
+            assert np.allclose(group_velocity_k, phase_velocity)
+            assert np.allclose(group_velocity_theta, dv_dtheta)
