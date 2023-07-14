@@ -195,6 +195,66 @@ class AbstractMHDWave(ABC):
             (:math:`ω ≪ ω_c,ω_p`) assumption of the dispersion relation.
         """
 
+    @abstractmethod
+    def group_velocity(self, k: u.rad / u.m, theta: u.rad) -> u.m / u.s:
+        r"""
+        Calculate the group velocities of magnetohydrodynamic waves.
+
+        Parameters
+        ----------
+        k : `~astropy.units.Quantity`, single valued or 1-D array
+            Wavenumber in units convertible to rad/m`.  Either single
+            valued or 1-D array of length :math:`N`.
+        theta : `~astropy.units.Quantity`, single valued or 1-D array
+            The angle of propagation of the wave with respect to the
+            magnetic field, :math:`\cos^{-1}(k_z / k)`, in units must be
+            convertible to radians. Either single valued or 1-D array of
+            size :math:`M`.
+
+        Returns
+        -------
+        group_velocity : `~astropy.units.Quantity` of shape ``(2, N, M)``
+            An array of group_velocities in units m/s with shape
+            :math:`2 \times N \times M`. The first dimension maps to the
+            two coordinate arrays in the direction of ``k`` and in
+            the direction of increasing ``theta``, the second
+            dimension maps to the ``k`` array, and the third dimension
+            maps to the ``theta`` array.
+
+        Raises
+        ------
+        ~astropy.units.UnitTypeError
+            If applicable arguments do not have units convertible to the
+            expected units.
+
+        ValueError
+            If ``k`` is negative or zero.
+
+        ValueError
+            If ``k`` or ``theta`` are not single valued or a 1-D array.
+
+        Warns
+        -----
+        : `~plasmapy.utils.exceptions.PhysicsWarning`
+            When the computed wave frequencies violate the low-frequency
+            (:math:`ω ≪ ω_c,ω_p`) assumption of the dispersion relation.
+
+        Notes
+        -----
+        The group velocity :math:`\mathbf{v}_g` is given by
+
+        .. math::
+
+        \mathbf{v}_g = \frac{\partial\omega}{\partial\mathbf{k}}
+            = \hat{\mathbf{k}} \frac{\partial\omega}{\partial k}
+                + \hat{\mathbf{\theta}} \frac{\partial v_{ph}}{\partial\theta}
+
+        where :math:`ω` is the angular frequency, :math:`\mathbf{k}` is
+        the wavevector, :math:`θ` is the angle between :math:`\mathbf{k}`
+        and the unperturbed magnetic field, and :math:`v_{ph}` is the
+        phase velocity.
+        """
+
     def phase_velocity(self, k: u.rad / u.m, theta: u.rad):
         r"""
         Calculate the phase velocities of magnetohydrodynamic waves.
@@ -385,6 +445,72 @@ class AlfvenWave(AbstractMHDWave):
         omega = k * self._Alfven_speed * np.abs(np.cos(theta))
         return super()._validate_angular_frequency(omega)
 
+    def group_velocity(self, k: u.rad / u.m, theta: u.rad):
+        r"""
+        Calculate the group velocities of magnetohydrodynamic Alfvén
+        waves.
+
+        Parameters
+        ----------
+        k : `~astropy.units.Quantity`, single valued or 1-D array
+            Wavenumber in units convertible to rad/m`.  Either single
+            valued or 1-D array of length :math:`N`.
+        theta : `~astropy.units.Quantity`, single valued or 1-D array
+            The angle of propagation of the wave with respect to the
+            magnetic field, :math:`\cos^{-1}(k_z / k)`, in units must be
+            convertible to radians. Either single valued or 1-D array of
+            size :math:`M`.
+
+        Returns
+        -------
+        group_velocity : `~astropy.units.Quantity` of shape ``(2, N, M)``
+            An array of group_velocities in units m/s with shape
+            :math:`2 \times N \times M`. The first dimension maps to the
+            two coordinate arrays in the direction of ``k`` and in
+            the direction of increasing ``theta``, the second
+            dimension maps to the ``k`` array, and the third dimension
+            maps to the ``theta`` array.
+
+        Raises
+        ------
+        ~astropy.units.UnitTypeError
+            If applicable arguments do not have units convertible to the
+            expected units.
+
+        ValueError
+            If ``k`` is negative or zero.
+
+        ValueError
+            If ``k`` or ``theta`` are not single valued or a 1-D array.
+
+        Warns
+        -----
+        : `~plasmapy.utils.exceptions.PhysicsWarning`
+            When the computed wave frequencies violate the low-frequency
+            (:math:`ω ≪ ω_c,ω_p`) assumption of the dispersion relation.
+
+        Notes
+        -----
+        The group velocity :math:`\mathbf{v}_g` is given by
+
+        .. math::
+
+        \mathbf{v}_g = \frac{\partial\omega}{\partial\mathbf{k}}
+            = \hat{\mathbf{k}} \frac{\partial\omega}{\partial k}
+                + \hat{\mathbf{\theta}} \frac{\partial v_{ph}}{\partial\theta}
+
+        where :math:`ω` is the angular frequency, :math:`\mathbf{k}` is
+        the wavevector, :math:`θ` is the angle between :math:`\mathbf{k}`
+        and the unperturbed magnetic field, and :math:`v_{ph}` is the
+        phase velocity.
+        """
+        phase_velocity = self.phase_velocity(k, theta)
+        theta, k = super()._validate_k_theta(k, theta)
+        return [
+            phase_velocity,
+            np.squeeze(-np.sign(np.cos(theta)) * self._Alfven_speed * np.sin(theta)),
+        ]
+
 
 class FastMagnetosonicWave(AbstractMHDWave):
     r"""
@@ -553,6 +679,80 @@ class FastMagnetosonicWave(AbstractMHDWave):
         )
         return super()._validate_angular_frequency(omega)
 
+    def group_velocity(self, k: u.rad / u.m, theta: u.rad):
+        r"""
+        Calculate the group velocities of fast magnetosonic waves.
+
+        Parameters
+        ----------
+        k : `~astropy.units.Quantity`, single valued or 1-D array
+            Wavenumber in units convertible to rad/m`.  Either single
+            valued or 1-D array of length :math:`N`.
+        theta : `~astropy.units.Quantity`, single valued or 1-D array
+            The angle of propagation of the wave with respect to the
+            magnetic field, :math:`\cos^{-1}(k_z / k)`, in units must be
+            convertible to radians. Either single valued or 1-D array of
+            size :math:`M`.
+
+        Returns
+        -------
+        group_velocity : `~astropy.units.Quantity` of shape ``(2, N, M)``
+            An array of group_velocities in units m/s with shape
+            :math:`2 \times N \times M`. The first dimension maps to the
+            two coordinate arrays in the direction of ``k`` and in
+            the direction of increasing ``theta``, the second
+            dimension maps to the ``k`` array, and the third dimension
+            maps to the ``theta`` array.
+
+        Raises
+        ------
+        ~astropy.units.UnitTypeError
+            If applicable arguments do not have units convertible to the
+            expected units.
+
+        ValueError
+            If ``k`` is negative or zero.
+
+        ValueError
+            If ``k`` or ``theta`` are not single valued or a 1-D array.
+
+        Warns
+        -----
+        : `~plasmapy.utils.exceptions.PhysicsWarning`
+            When the computed wave frequencies violate the low-frequency
+            (:math:`ω ≪ ω_c,ω_p`) assumption of the dispersion relation.
+
+        Notes
+        -----
+        The group velocity :math:`\mathbf{v}_g` is given by
+
+        .. math::
+
+        \mathbf{v}_g = \frac{\partial\omega}{\partial\mathbf{k}}
+            = \hat{\mathbf{k}} \frac{\partial\omega}{\partial k}
+                + \hat{\mathbf{\theta}} \frac{\partial v_{ph}}{\partial\theta}
+
+        where :math:`ω` is the angular frequency, :math:`\mathbf{k}` is
+        the wavevector, :math:`θ` is the angle between :math:`\mathbf{k}`
+        and the unperturbed magnetic field, and :math:`v_{ph}` is the
+        phase velocity.
+        """
+        phase_velocity = self.phase_velocity(k, theta)
+        theta, k = super()._validate_k_theta(k, theta)
+        return [
+            phase_velocity,
+            np.squeeze(
+                self._Alfven_speed**2
+                * self._sound_speed**2
+                * np.sin(theta)
+                * np.cos(theta)
+                / (
+                    phase_velocity
+                    * (2 * phase_velocity**2 - self._magnetosonic_speed**2)
+                )
+            ),
+        ]
+
 
 class SlowMagnetosonicWave(AbstractMHDWave):
     r"""
@@ -720,6 +920,80 @@ class SlowMagnetosonicWave(AbstractMHDWave):
             / 2
         )
         return super()._validate_angular_frequency(omega)
+
+    def group_velocity(self, k: u.rad / u.m, theta: u.rad):
+        r"""
+        Calculate the group velocities of slow magnetosonic waves.
+
+        Parameters
+        ----------
+        k : `~astropy.units.Quantity`, single valued or 1-D array
+            Wavenumber in units convertible to rad/m`.  Either single
+            valued or 1-D array of length :math:`N`.
+        theta : `~astropy.units.Quantity`, single valued or 1-D array
+            The angle of propagation of the wave with respect to the
+            magnetic field, :math:`\cos^{-1}(k_z / k)`, in units must be
+            convertible to radians. Either single valued or 1-D array of
+            size :math:`M`.
+
+        Returns
+        -------
+        group_velocity : `~astropy.units.Quantity` of shape ``(2, N, M)``
+            An array of group_velocities in units m/s with shape
+            :math:`2 \times N \times M`. The first dimension maps to the
+            two coordinate arrays in the direction of ``k`` and in
+            the direction of increasing ``theta``, the second
+            dimension maps to the ``k`` array, and the third dimension
+            maps to the ``theta`` array.
+
+        Raises
+        ------
+        ~astropy.units.UnitTypeError
+            If applicable arguments do not have units convertible to the
+            expected units.
+
+        ValueError
+            If ``k`` is negative or zero.
+
+        ValueError
+            If ``k`` or ``theta`` are not single valued or a 1-D array.
+
+        Warns
+        -----
+        : `~plasmapy.utils.exceptions.PhysicsWarning`
+            When the computed wave frequencies violate the low-frequency
+            (:math:`ω ≪ ω_c,ω_p`) assumption of the dispersion relation.
+
+        Notes
+        -----
+        The group velocity :math:`\mathbf{v}_g` is given by
+
+        .. math::
+
+        \mathbf{v}_g = \frac{\partial\omega}{\partial\mathbf{k}}
+            = \hat{\mathbf{k}} \frac{\partial\omega}{\partial k}
+                + \hat{\mathbf{\theta}} \frac{\partial v_{ph}}{\partial\theta}
+
+        where :math:`ω` is the angular frequency, :math:`\mathbf{k}` is
+        the wavevector, :math:`θ` is the angle between :math:`\mathbf{k}`
+        and the unperturbed magnetic field, and :math:`v_{ph}` is the
+        phase velocity.
+        """
+        phase_velocity = self.phase_velocity(k, theta)
+        theta, k = super()._validate_k_theta(k, theta)
+        return [
+            phase_velocity,
+            np.squeeze(
+                self._Alfven_speed**2
+                * self._sound_speed**2
+                * np.sin(theta)
+                * np.cos(theta)
+                / (
+                    phase_velocity
+                    * (2 * phase_velocity**2 - self._magnetosonic_speed**2)
+                )
+            ),
+        ]
 
 
 def mhd_waves(*args, **kwargs):
