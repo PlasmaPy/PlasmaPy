@@ -512,7 +512,7 @@ class AlfvenWave(AbstractMHDWave):
         theta, k = super()._validate_k_theta(k, theta)
         return [
             phase_velocity,
-            np.squeeze(-np.sign(np.cos(theta)) * self._Alfven_speed * np.sin(theta)),
+            -phase_velocity * np.tan(theta),
         ]
 
 
