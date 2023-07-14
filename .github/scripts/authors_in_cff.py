@@ -67,7 +67,7 @@ contributors. Sign up at: https://orcid.org/register
 
 All fields are optional except "alias", which is the GitHub username.
 The "affiliation", "orcid", and/or "email" fields are sometimes needed
-for conference abstract or journal article submissions.
+for conference abstract or journal article submissions about PlasmaPy.
 
 Thank you for contributing!
 """
