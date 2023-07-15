@@ -500,13 +500,11 @@ class AlfvenWave(AbstractMHDWave):
         .. math::
 
         \mathbf{v}_g = \frac{d\omega}{d\mathbf{k}}
-            = \hat{\mathbf{k}} \frac{\partial\omega}{\partial k}
-                + \hat{\mathbf{\theta}} \frac{\partial v_{ph}}{\partial\theta}
+            = \pm \hat{\mathbf{B}} v_{A}
 
-        where :math:`ω` is the angular frequency, :math:`\mathbf{k}` is
-        the wavevector, :math:`θ` is the angle between :math:`\mathbf{k}`
-        and the unperturbed magnetic field, and :math:`v_{ph}` is the
-        phase velocity.
+        where :math:`\hat{\mathbf{B}}` is the unit vector in the
+        direction of the unperturbed magnetic field and :math:`v_A` is
+        the Alfvén speed.
         """
         phase_velocity = self.phase_velocity(k, theta)
         theta, k = super()._validate_k_theta(k, theta)
@@ -733,7 +731,7 @@ class FastMagnetosonicWave(AbstractMHDWave):
         .. math::
 
         \mathbf{v}_g = \frac{d\omega}{d\mathbf{k}}
-            = \hat{\mathbf{k}} \frac{\partial\omega}{\partial k}
+            = \hat{\mathbf{k}} v_{ph}
                 + \hat{\mathbf{\theta}} \frac{\partial v_{ph}}{\partial\theta}
 
         where :math:`ω` is the angular frequency, :math:`\mathbf{k}` is
@@ -975,7 +973,7 @@ class SlowMagnetosonicWave(AbstractMHDWave):
         .. math::
 
         \mathbf{v}_g = \frac{d\omega}{d\mathbf{k}}
-            = \hat{\mathbf{k}} \frac{\partial\omega}{\partial k}
+            = \hat{\mathbf{k}} v_{ph}
                 + \hat{\mathbf{\theta}} \frac{\partial v_{ph}}{\partial\theta}
 
         where :math:`ω` is the angular frequency, :math:`\mathbf{k}` is
