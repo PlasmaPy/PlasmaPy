@@ -1,0 +1,1 @@
+Fixed a bug present in the Collisional Analysis module.
