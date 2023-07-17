@@ -1,7 +1,7 @@
 name: Add no changelog label for autoupdates
 
 on:
-  pull_request:
+  pull_request_target:
     types: [opened, synchronize, reopened, edited]
 
 jobs:
