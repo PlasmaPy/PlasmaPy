@@ -9,12 +9,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Label the PR
-      uses: actions/github-script@v5
+      uses: actions/github-script@v6
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         script: |
-          const { payload, github } = context;
-
           // Regular expression to match the PR title pattern "Bump * from * to *"
           const bumpPattern = /^Bump .* from .* to .*/;
 
