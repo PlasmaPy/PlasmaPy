@@ -9,6 +9,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Label the PR
+    permissions:
+      contents: read
+      pull-requests: write
       uses: actions/github-script@v6
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
