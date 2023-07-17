@@ -1,1 +1,1 @@
-Fixed a bug present in the Collisional Analysis module.
+Fixed a bug that had been causing incorrect results in `~plasmapy.formulary.collisions.helio.collisional_analysis.temp_ratio`.
