@@ -257,6 +257,7 @@ extend-select = [
   "RUF009", # function-call-in-dataclass-default-argument
   "RUF010", # explicit-f-string-type-conversion
   "RUF011", # static-key-dict-comprehension
+  "RUF013", # implicit-optional
   "RUF200", # invalid-pyproject-toml
   "S", # flake8-bandit
   "SIM", # flake8-simplify
@@ -281,6 +282,7 @@ ignore = [
   "N803", # invalid-argument-name
   "N806", # non-lowercase-variable-in-function
   "N816", # mixed-case-variable-in-global-scope
+  "PERF203", # try-except-in-loop (remove when we require Python ≥ 3.11)
   "PLE0605", # invalid-all-format (flags `__all__ += __lite_funcs`, etc.)
   "PLR0913", # too-many-arguments
   "PLR2004", # magic-value-comparison
