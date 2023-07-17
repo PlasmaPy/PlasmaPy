@@ -34,10 +34,10 @@ def temp_ratio(  # noqa: C901, PLR0912, PLR0915
 ):
     r"""
     Calculate the thermalization ratio for a plasma in transit, taken
-    from :cite:t:`maruca:2013`. This function allows the
-    thermalization of a plasma to be modeled, it predicts the
-    temperature ratio for different ion species within a plasma at a
-    different point in space.
+    from :cite:t:`maruca:2013` and :cite:t:`johnson:2023a`. This
+    function allows the thermalization of a plasma to be modeled,
+    it predicts the temperature ratio for different ion species
+    within a plasma at a different point in space.
 
     Parameters
     ----------
