@@ -26,7 +26,6 @@ jobs:
             pull_number: context.issue.number,
           });
 
-          // Check if PR title matches any of the conditions
           if (
             pullRequest.title.includes('Update pinned requirements') ||
             pullRequest.title.includes('autoupdate') ||
