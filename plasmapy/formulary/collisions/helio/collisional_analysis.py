@@ -635,11 +635,9 @@ def diff_flow(
             n_2 = n_2_0 * (r / r_n) ** density_scale
             T_2 = T_2_0 * (r / r_n) ** temperature_scale
 
+            v_a = Alfven_speed(B, n_1, mu_1, n_2, mu_2)
 
-            #v_a = Alfven_speed(B, n_1, mu_1, n_2, mu_2)
-
-
-            a = (3 * (mu_1 * mu_2) ** 2 * (m_u ** 4) * (2*np.pi*e0) ** 2) / (
+            a = (3 * (mu_1 * mu_2) ** 2 * (m_u ** 4) * (4*np.pi*e0) ** 2) / (
                         4 * np.sqrt(2 * np.pi) * (q_e ** 4) * ((z_1 * z_2) ** 2))
             b = (((k_B * T_1) / (mu_1 * m_u)) + ((k_B * T_2) / (mu_2 * m_u))) ** 1.5
             c = (m_u ** 2) * (mu_1 + mu_2) * (n_1 * mu_1 + n_2 * mu_2)
@@ -652,7 +650,7 @@ def diff_flow(
             dv = (dv + d_dv)
 
         if alfven:
-            return dv #/ v_a
+            return dv / v_a
         else:
             return dv
 
@@ -708,7 +706,7 @@ def diff_flow(
 
         except Exception as e:  # noqa: BLE001
             raise ValueError(
-                "Argument(s) are being a fuckikng cunt"
+                "Argument(s) are being"
             ) from e
 
 
