@@ -390,7 +390,6 @@ def diff_flow( # noqa: C901, PLR0912, PLR0915
     temperature_scale: float = default_values["temperature"],
     magnetic_scale: float = default_values["magnetic"],
     alfven=False,
-    second_scale=False,
     n_step: int = 100,
     verbose=False,
 ):
@@ -464,11 +463,6 @@ def diff_flow( # noqa: C901, PLR0912, PLR0915
         The analysis for differential flow can be performed on data
         and also be scaled by the Alfven speed. Setting this to true
         will scale the output, by default it is turned off.
-
-    second_scale : `bool`, default: False
-        Allows the secondary ion parameters to also scale with the
-        given or custom values. By default, the output is off, so only
-        the primary ions of interest shall be scaled.
 
     n_step : positive integer
         The number of intervals used in solving a differential
@@ -643,9 +637,6 @@ def diff_flow( # noqa: C901, PLR0912, PLR0915
             if alfven:
                 B = B_0 * (r / r_n) ** magnetic_scale
                 v_a = B / (mu_0 * (n_1 * mu_1 + mu_2 * n_2))
-
-            n_2 = n_2_0 * (r / r_n) ** density_scale
-            T_2 = T_2_0 * (r / r_n) ** temperature_scale
 
             a = (3 * (mu_1 * mu_2) ** 2 * (m_u ** 4) * (4 * np.pi * e0) ** 2) / (
                     4 * np.sqrt(2 * np.pi) * (q_e ** 4) * ((z_1 * z_2) ** 2)
