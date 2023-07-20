@@ -1,4 +1,7 @@
 import math
+import numpy as np
+import scipy.special
+import sympy.functions.special.bessel
 
 from sympy import Derivative
 
@@ -32,6 +35,8 @@ class solution:
         self.B0 = B0
         self.a = a
         self.lamb = lamb
+        self.r = r
+        self.z = z
 
     def B_radial(self, r, theta):
         r"""
@@ -48,9 +53,15 @@ class solution:
 
         """
 
-        return 2 * self.B0 * (self.a / r) * j1 * (self.lamb * r) * math.cos(theta)
+        return (
+            2
+            * self.B0
+            * (self.a / r)
+            * scipy.special.j1(self.lamb * r)
+            * math.cos(theta)
+        )
 
-    def B_theta():
+    def B_theta(self, r, j1, theta):
         r"""
         Compute the magnetic field for theta.
 
@@ -64,9 +75,15 @@ class solution:
           eigenvalue to make J cross B = 0.
 
         """
-        return -1 * B0 * (a / r) * Derivative[r * j1 * (lamb * r), r] * math.sin(theta)
+        return (
+            -1
+            * self.B0
+            * (self.a / r)
+            * Derivative[r * sympy.functions.special.bessel.ji(self.lamb * r), r]
+            * math.sin(theta)
+        )
 
-    def B_phi():
+    def B_phi(self, r, theta):
         r"""
         Compute the magnetic field for phi.
 
@@ -80,4 +97,17 @@ class solution:
           eigenvalue to make J cross B = 0.
 
         """
-        return lamb * a * B0 * j1 * (lamb * r) * math.sin(theta)
+        return (
+            self.lamb
+            * self.a
+            * self.B0
+            * scipy.special.j1(self.lamb * r)
+            * math.sin(theta)
+        )
+
+    def pshi(self, r, z):
+        beta = self.lamb * (np.sqrt(r**2 + z**2))
+
+        return ((2 * np.pi * (r) ** 2) / (self.lamb * (r**2 + z**2))) * (
+            (np.sin(beta) / beta) - np.cos(beta)
+        )
