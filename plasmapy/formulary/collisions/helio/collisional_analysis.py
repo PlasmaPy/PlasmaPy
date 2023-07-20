@@ -9,16 +9,24 @@ import numbers
 import numpy as np
 
 from astropy import constants as const
+
 from plasmapy.formulary.speeds import Alfven_speed
 from plasmapy.particles import ParticleLike, ParticleList
 from plasmapy.utils.decorators import validate_quantities
 
-default_values = {"density": -1.8, "velocity": -0.2, "temperature": -0.74, "magnetic": -1.6}
+default_values = {
+    "density": -1.8,
+    "velocity": -0.2,
+    "temperature": -0.74,
+    "magnetic": -1.6,
+}
 m_u = const.u
-mu_0 = const.mu0
+mu_0 =const.mu0
 e0 = const.eps0
 k_B = const.k_B
 q_e = const.e.si
+
+
 # Define Coulomb log for mixed ion collisions, see docstring
 def lambda_ba(
     theta,
@@ -365,12 +373,12 @@ def temp_ratio(  # noqa: C901, PLR0912, PLR0915
             ) from e
 
 
-def diff_flow(
+def diff_flow( # noqa: C901, PLR0912, PLR0915
     *,
     r_0: u.au,
     r_n: u.au,
-    n_1: u.cm**-3,  # proton
-    n_2: u.cm**-3,  # alpha
+    n_1: u.cm**-3,
+    n_2: u.cm**-3,
     v_1: u.km / u.s,
     v_2: u.km / u.s,
     T_1: u.K,
@@ -382,6 +390,7 @@ def diff_flow(
     temperature_scale: float = default_values["temperature"],
     magnetic_scale: float = default_values["magnetic"],
     alfven=False,
+    second_scale=False,
     n_step: int = 100,
     verbose=False,
 ):
@@ -456,6 +465,11 @@ def diff_flow(
         and also be scaled by the Alfven speed. Setting this to true
         will scale the output, by default it is turned off.
 
+    second_scale : `bool`, default: False
+        Allows the secondary ion parameters to also scale with the
+        given or custom values. By default, the output is off, so only
+        the primary ions of interest shall be scaled.
+
     n_step : positive integer
         The number of intervals used in solving a differential
         equation via the Euler method.
@@ -504,7 +518,8 @@ def diff_flow(
 
     .. math::
 
-        \tau_{SD} = \frac{3m_{a}^{2}m_{b}^{2} \left( \frac{k_{B}T_{a}}{m_{a}} + \frac{k_{B}T_{b}}{m_{b}} \right)^{3/2}}{4 \sqrt{2\pi} e^{4} Z^{2}_{a}Z^{2}_{b}(m_{a} + m_{b})(n_{a}m_{a} + n_{b}m_{b}) \lambda_{ab} }
+        \tau_{SD} = \frac{3m_{a}^{2}m_{b}^{2} \left( \frac{k_{B}T_{a}}{m_{a}} + \frac{k_{B}T_{b}}{m_{b}} \right)^{
+        3/2}}{4 \sqrt{2\pi} e^{4} Z^{2}_{a}Z^{2}_{b}(m_{a} + m_{b})(n_{a}m_{a} + n_{b}m_{b}) \lambda_{ab} }
 
     with ...
 
@@ -532,11 +547,6 @@ def diff_flow(
 
     the velocity is the streaming velocity of the background particle
     field.
-
-
-
-
-
 
 
 
@@ -595,22 +605,22 @@ def diff_flow(
 
     # Define the differential equation
     def df_eq(
-            r_0,
-            r_n,
-            n_1_0,
-            n_2_0,
-            T_1_0,
-            T_2_0,
-            v_1_0,
-            v_2_0,
-            ions,
-            B_0,
-            density_scale,
-            velocity_scale,
-            temperature_scale,
-            magnetic_scale,
-            alfven,
-            n_step
+        r_0,
+        r_n,
+        n_1_0,
+        n_2_0,
+        T_1_0,
+        T_2_0,
+        v_1_0,
+        v_2_0,
+        ions,
+        B_0,
+        density_scale,
+        velocity_scale,
+        temperature_scale,
+        magnetic_scale,
+        alfven,
+        n_step,
     ):
         # Initialize the alpha-proton charge and mass ratios.
         z_1 = ions[0].charge_number
@@ -620,26 +630,26 @@ def diff_flow(
         mu_2 = ions[1].mass_number
 
         # Initialise.
-        d_r = (r_n - r_0) / (1. * n_step)
+        d_r = (r_n - r_0) / (1.0 * n_step)
         dv = abs(v_2_0 - v_1_0)
 
         for i in range(n_step):
-
             r = r_0 + ((i + 1) * d_r)
 
             n_1 = n_1_0 * (r / r_n) ** density_scale
             v_1 = v_1_0 * (r / r_n) ** velocity_scale
             T_1 = T_1_0 * (r / r_n) ** temperature_scale
 
-            B = B_0 * (r / r_n) ** magnetic_scale
+            if alfven:
+                B = B_0 * (r / r_n) ** magnetic_scale
+                v_a = B / (mu_0 * (n_1 * mu_1 + mu_2 * n_2))
 
             n_2 = n_2_0 * (r / r_n) ** density_scale
             T_2 = T_2_0 * (r / r_n) ** temperature_scale
 
-            v_a = B/(mu_0*(n_1*mu_1 + mu_2*n_2))
-
-            a = (3 * (mu_1 * mu_2) ** 2 * (m_u ** 4) * (4*np.pi*e0) ** 2) / (
-                        4 * np.sqrt(2 * np.pi) * (q_e ** 4) * ((z_1 * z_2) ** 2))
+            a = (3 * (mu_1 * mu_2) ** 2 * (m_u ** 4) * (4 * np.pi * e0) ** 2) / (
+                    4 * np.sqrt(2 * np.pi) * (q_e ** 4) * ((z_1 * z_2) ** 2)
+            )
             b = (((k_B * T_1) / (mu_1 * m_u)) + ((k_B * T_2) / (mu_2 * m_u))) ** 1.5
             c = (m_u ** 2) * (mu_1 + mu_2) * (n_1 * mu_1 + n_2 * mu_2)
             d = lambda_ba(T_2 / T_1, T_1, n_1, n_2, z_1, z_2, mu_1, mu_2)
@@ -685,29 +695,34 @@ def diff_flow(
             all(len(variables[0]) == len(z) for z in variables[1:])
             res = []
             for i in range(len(variables[0])):
-                res.append(df_eq(
-                    r_0[i],
-                    r_n[i],
-                    n_1[i],
-                    n_2[i],
-                    T_1[i],
-                    T_2[i],
-                    v_1[i],
-                    v_2[i],
-                    ions,
-                    B[i],
-                    density_scale,
-                    velocity_scale,
-                    temperature_scale,
-                    magnetic_scale,
-                    alfven,
-                    n_step,))
+                res.append(
+                    df_eq(
+                        r_0[i],
+                        r_n[i],
+                        n_1[i],
+                        n_2[i],
+                        T_1[i],
+                        T_2[i],
+                        v_1[i],
+                        v_2[i],
+                        ions,
+                        B[i],
+                        density_scale,
+                        velocity_scale,
+                        temperature_scale,
+                        magnetic_scale,
+                        alfven,
+                        n_step,
+                    )
+                )
+                if verbose:
+                    logging.info(f"\r {(i / len(variables[0])) * 100:.2f} %")
 
-            return res
+            return res  # noqa: TRY300
 
         except Exception as e:  # noqa: BLE001
             raise ValueError(
-                "Argument(s) are being"
+                "Argument(s) are of unequal lengths, the following "
+                "arguments should be of equal length: 'r_0', 'r_n', "
+                "'n_1', 'n_2', 'v_1', 'v_2', 'T_1', 'T_2'. and 'B'."
             ) from e
-
-
