@@ -34,10 +34,10 @@ def temp_ratio(  # noqa: C901, PLR0912, PLR0915
 ):
     r"""
     Calculate the thermalization ratio for a plasma in transit, taken
-    from :cite:t:`maruca:2013`. This function allows the
-    thermalization of a plasma to be modeled, it predicts the
-    temperature ratio for different ion species within a plasma at a
-    different point in space.
+    from :cite:t:`maruca:2013` and :cite:t:`johnson:2023a`. This
+    function allows the thermalization of a plasma to be modeled,
+    it predicts the temperature ratio for different ion species
+    within a plasma at a different point in space.
 
     Parameters
     ----------
@@ -185,7 +185,7 @@ def temp_ratio(  # noqa: C901, PLR0912, PLR0915
     >>> from plasmapy.formulary.collisions import helio
     >>> r_0 = [0.1, 0.1, 0.1] * u.au
     >>> r_n = [1.0, 1.0, 1.0] * u.au
-    >>> n_1 = [1200, 1500, 1400] * u.cm**-3
+    >>> n_1 = [300, 400, 500] * u.cm**-3
     >>> n_2 = [12, 18, 8] * u.cm**-3
     >>> v_1 = [450, 350, 400] * u.km / u.s
     >>> T_1 = [1.5 * 10**5, 2.1 * 10**5, 1.7 * 10**5] * u.K
@@ -194,7 +194,7 @@ def temp_ratio(  # noqa: C901, PLR0912, PLR0915
     >>> helio.temp_ratio(
     ...     r_0=r_0, r_n=r_n, n_1=n_1, n_2=n_2, v_1=v_1, T_1=T_1, T_2=T_2, ions=ions
     ...     )
-    [3.7487..., 1.8350..., 3.7713...]
+    [2.78928645832..., 1.04007368797..., 1.06914450183...]
     """
 
     # Validate ions argument
@@ -255,7 +255,7 @@ def temp_ratio(  # noqa: C901, PLR0912, PLR0915
         mu_2 = ions[1].mass_number
 
         # Initialise.
-        d_r = (r_0 - r_n) / n_step
+        d_r = (r_n - r_0) / n_step
 
         # Define constants
         A = 2.6 * 10**7 * (u.cm**3 * u.km * (u.K**1.5)) / (u.s * u.au)
@@ -277,23 +277,25 @@ def temp_ratio(  # noqa: C901, PLR0912, PLR0915
             c = np.sqrt((n_2 * z_2**2 / n_1 * z_1**2) + theta)
             return 9 + np.log(B * a * b * c)
 
+        theta = T_2 / T_1_0
         for i in range(n_step):
-            r = r_n + ((i + 1) * d_r)
+            r = r_0 + ((i + 1) * d_r)
 
             n_1 = n_1_0 * (r / r_n) ** density
             v_1 = v_1_0 * (r / r_n) ** velocity
             T_1 = T_1_0 * (r / r_n) ** temperature
 
             eta = n_2 / n_1
-            theta = T_2 / T_1
 
             alpha = n_1 / (v_1 * (T_1**1.5))
+
             beta = (
                 np.sqrt(mu_1 * mu_2)
-                * (z_1**2 * z_2**2)
+                * (z_1 * z_2) ** 2
                 * (1 - theta)
                 * (1 + eta * theta)
             ) / (np.sqrt((mu_2 / mu_1) + theta) ** 3)
+
             l_ba = lambda_ba(theta, T_1, n_1, n_2, z_1, z_2, mu_1, mu_2)
 
             d_theta = d_r * alpha * l_ba * A * beta
