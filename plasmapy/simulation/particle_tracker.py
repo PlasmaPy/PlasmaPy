@@ -3,11 +3,15 @@ Module containing the definition for the general particle tracker.
 """
 
 __all__ = [
+    "AbstractDiskSaveRoutine",
+    "AbstractIntervalSaveRoutine",
+    "AbstractMemorySaveRoutine",
     "AbstractSaveRoutine",
     "AbstractStopCondition",
+    "DiskIntervalSaveRoutine",
+    "MemoryIntervalSaveRoutine",
     "ParticleTracker",
     "TimeElapsedStopCondition",
-    "DiskSaveRoutine",
 ]
 
 import astropy.units as u
@@ -17,9 +21,8 @@ import numpy as np
 import sys
 import warnings
 
-from abc import ABCMeta, abstractmethod
+from abc import ABC, abstractmethod
 from collections.abc import Iterable
-from numbers import Real
 from pathlib import Path
 from tqdm import tqdm
 from typing import Optional, Union
@@ -30,19 +33,22 @@ from plasmapy.plasma.plasma_base import BasePlasma
 from plasmapy.simulation.particle_integrators import boris_push
 
 
-class AbstractStopCondition(metaclass=ABCMeta):
+class AbstractStopCondition(ABC):
     """Abstract base class containing the necessary methods for a ParticleTracker stopping condition."""
 
-    @property
     @abstractmethod
     def require_uniform_dt(self):
         """Return whether or not this stop condition requires a uniform dt to be specified."""
         ...
 
-    @property
     @abstractmethod
     def get_description(self):
         """Return a small string describing the relevant quantity shown on the meter."""
+        ...
+
+    @abstractmethod
+    def get_units(self):
+        """Return the units of `total`."""
         ...
 
     @abstractmethod
@@ -68,20 +74,28 @@ class AbstractStopCondition(metaclass=ABCMeta):
 class TimeElapsedStopCondition(AbstractStopCondition):
     """Stop condition corresponding to the elapsed time of a ParticleTracker."""
 
-    def __init__(self, stop_time: Real):
-        self.stop_time = stop_time
+    def __init__(self, stop_time: u.Quantity):
+        self.stop_time = stop_time.to(u.s).value
 
+    @property
     def require_uniform_dt(self):
         """The elapsed time stop condition requires a uniform time step
         to stop all particles at the same time.
         """
         return True
 
+    @property
     def get_description(self):
         """The time elapsed stop condition depends on elapsed time,
         therefore the relevant quantity is time remaining.
         """
         return "Time remaining"
+
+    @property
+    def get_units(self):
+        """The units for the time elapsed condition have the units of seconds."""
+
+        return "seconds"
 
     def is_finished(self, particle_tracker):
         """Conclude the simulation if all particles have been tracked over the specified stop time."""
@@ -90,15 +104,14 @@ class TimeElapsedStopCondition(AbstractStopCondition):
 
     def get_progress(self, particle_tracker):
         """Return the current time step of the simulation."""
-
-        return np.max(particle_tracker.time)
+        return particle_tracker.time
 
     def get_total(self, _):  # noqa: ARG002
         """Return the total amount of time over which the particles are tracked."""
         return self.stop_time
 
 
-class AbstractSaveRoutine(metaclass=ABCMeta):
+class AbstractSaveRoutine(ABC):
     # TODO: Change this docstring to use the |ParticleTracker| alias
     """Abstract base class containing the necessary methods for a
     `~plasmapy.simulation.particle_tracker.ParticleTracker` save routine.
@@ -121,12 +134,6 @@ class AbstractSaveRoutine(metaclass=ABCMeta):
     `save_to_disk` or `save_to_memory` depending on the routine implemented.
     """
 
-    def __init__(self, output_directory: Path):
-        self.output_directory = output_directory
-        self.x_all = []
-        self.v_all = []
-
-    @property
     @abstractmethod
     def require_uniform_dt(self):
         """Return whether or not this save routine requires a uniform dt to be specified."""
@@ -137,21 +144,11 @@ class AbstractSaveRoutine(metaclass=ABCMeta):
         """Determine whether or not to save on the current push step."""
         ...
 
-    def save_to_disk(self, particle_tracker):
-        """Save a hdf5 file containing simulation positions and velocities."""
-
-        path = Path(self.output_directory) / f"{particle_tracker.iteration_number}.hdf5"
-
-        with h5py.File(path, "w") as output_file:
-            output_file["x"] = particle_tracker.x
-            output_file["v"] = particle_tracker.v
-
-    def save_to_memory(self, particle_tracker):
-        """Append simulation positions and velocities to save routine object."""
-        self.x_all.append(particle_tracker.x)
-        self.v_all.append(particle_tracker.v)
-
     @abstractmethod
+    def save(self, particle_tracker):
+        """The abstract method for saving the current state of the |ParticleTracker|."""
+        ...
+
     def post_push_hook(self, particle_tracker):
         """Function called after a push step.
 
@@ -160,18 +157,18 @@ class AbstractSaveRoutine(metaclass=ABCMeta):
             - How the simulation data is saved (i.e. to disk or memory)
 
         """
-        ...
+        if self.save_now(particle_tracker):
+            self.save(particle_tracker)
 
 
-class DiskSaveRoutine(AbstractSaveRoutine):
-    """Save routine corresponding to saving a hdf5 file every given interval."""
+class AbstractIntervalSaveRoutine(AbstractSaveRoutine, ABC):
+    """Abstract class describing a save routine that saves every given interval."""
 
-    def __init__(self, output_directory, interval: u.Quantity):
-        super().__init__(output_directory)
-        self.save_interval = interval
+    def __init__(self, interval: u.Quantity):
+        self.save_interval = interval.to(u.s).value
         self.time_of_last_save = 0
-        self.name_of_last_save = 0
 
+    @property
     def require_uniform_dt(self):
         """Save output only makes sense for uniform time steps,
         therefore this routine requires a uniform time step.
@@ -188,14 +185,57 @@ class DiskSaveRoutine(AbstractSaveRoutine):
                 "You must specify a time step smaller than the save interval!"
             )
 
-        return particle_tracker.time - self.time_of_last_save >= self.save_interval
-
-    def post_push_hook(self, particle_tracker):
-        """Save to disk if one interval has elapsed since last save."""
-
-        if self.save_now(particle_tracker):
+        if particle_tracker.time - self.time_of_last_save >= self.save_interval:
             self.time_of_last_save = particle_tracker.time
-            self.save_to_disk(particle_tracker)
+
+            return True
+        else:
+            return False
+
+
+class AbstractDiskSaveRoutine(AbstractSaveRoutine, ABC):
+    """Abstract save routine corresponding to writing a hdf5 file to disk."""
+
+    def __init__(self, output_directory: Path):
+        self.output_directory = output_directory
+
+    def save(self, particle_tracker):
+        """Save a hdf5 file containing simulation positions and velocities."""
+
+        path = self.output_directory / f"{particle_tracker.iteration_number}.hdf5"
+
+        with h5py.File(path, "w") as output_file:
+            output_file["x"] = particle_tracker.x
+            output_file["v"] = particle_tracker.v
+
+
+class AbstractMemorySaveRoutine(AbstractSaveRoutine, ABC):
+    """Abstract save routine corresponding to saving the state of the tracker to memory."""
+
+    def __init__(self):
+        self.x_all = []
+        self.v_all = []
+
+    def save(self, particle_tracker):
+        """Append simulation positions and velocities to save routine object."""
+        self.x_all.append(np.copy(particle_tracker.x))
+        self.v_all.append(np.copy(particle_tracker.v))
+
+
+class DiskIntervalSaveRoutine(AbstractDiskSaveRoutine, AbstractIntervalSaveRoutine):
+    """Save routine corresponding to saving a hdf5 file every given interval."""
+
+    def __init__(self, output_directory, interval: u.Quantity):
+        AbstractDiskSaveRoutine.__init__(self, output_directory)
+        AbstractIntervalSaveRoutine.__init__(self, interval)
+
+
+class MemoryIntervalSaveRoutine(AbstractMemorySaveRoutine, AbstractIntervalSaveRoutine):
+    """Save the state of the tracker every given interval."""
+
+    def __init__(self, interval: u.Quantity):
+        AbstractMemorySaveRoutine.__init__(self)
+        AbstractIntervalSaveRoutine.__init__(self, interval)
 
 
 class ParticleTracker:
@@ -660,8 +700,8 @@ class ParticleTracker:
             initial=0,
             total=stop_condition.get_total(self),
             disable=not self.verbose,
-            desc=stop_condition.get_description(),
-            unit="particles",
+            desc=stop_condition.get_description,
+            unit=stop_condition.get_units,
             bar_format="{l_bar}{bar}{n:.1e}/{total:.1e} {unit}",  # noqa: FS003
             file=sys.stdout,
         )
@@ -671,11 +711,13 @@ class ParticleTracker:
         is_finished = False
         while not is_finished:
             is_finished = stop_condition.is_finished(self)
-            progress = stop_condition.get_progress(self)
+            progress = min(
+                stop_condition.get_progress(self), stop_condition.get_total(self)
+            )
 
             pbar.n = progress
             pbar.last_print_n = progress
-            pbar.update()
+            pbar.update(0)
 
             self._push()
 
