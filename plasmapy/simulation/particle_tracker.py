@@ -36,35 +36,44 @@ from plasmapy.simulation.particle_integrators import boris_push
 class AbstractStopCondition(ABC):
     """Abstract base class containing the necessary methods for a ParticleTracker stopping condition."""
 
+    @property
+    def particle_tracker(self):
+        """Return the `ParticleTracker` object for this stop condition."""
+        return self._particle_tracker
+
+    @particle_tracker.setter
+    def particle_tracker(self, particle_tracker):
+        self._particle_tracker = particle_tracker
+
     @abstractmethod
     def require_uniform_dt(self):
         """Return whether or not this stop condition requires a uniform dt to be specified."""
         ...
 
     @abstractmethod
-    def get_description(self):
+    def description(self):
         """Return a small string describing the relevant quantity shown on the meter."""
         ...
 
     @abstractmethod
-    def get_units(self):
+    def units(self):
         """Return the units of `total`."""
         ...
 
     @abstractmethod
-    def is_finished(self, particle_tracker):
+    def is_finished(self):
         """Return `True` if the simulation has finished."""
         ...
 
     @abstractmethod
-    def get_progress(self, particle_tracker):
+    def progress(self):
         """Return a number representing the progress of the simulation (compared to total).
         This number represents the numerator of the completion percentage.
         """
         ...
 
     @abstractmethod
-    def get_total(self, particle_tracker):
+    def total(self):
         """Return a number representing the total number of steps in a simulation.
         This number represents the denominator of the completion percentage.
         """
@@ -85,28 +94,30 @@ class TimeElapsedStopCondition(AbstractStopCondition):
         return True
 
     @property
-    def get_description(self):
+    def description(self):
         """The time elapsed stop condition depends on elapsed time,
         therefore the relevant quantity is time remaining.
         """
         return "Time remaining"
 
     @property
-    def get_units(self):
+    def units(self):
         """The units for the time elapsed condition have the units of seconds."""
 
         return "seconds"
 
-    def is_finished(self, particle_tracker):
+    @property
+    def is_finished(self):
         """Conclude the simulation if all particles have been tracked over the specified stop time."""
+        return self._particle_tracker.time >= self.stop_time
 
-        return particle_tracker.time >= self.stop_time
-
-    def get_progress(self, particle_tracker):
+    @property
+    def progress(self):
         """Return the current time step of the simulation."""
-        return particle_tracker.time
+        return self._particle_tracker.time
 
-    def get_total(self, _):  # noqa: ARG002
+    @property
+    def total(self):  # noqa: ARG002
         """Return the total amount of time over which the particles are tracked."""
         return self.stop_time
 
@@ -694,14 +705,17 @@ class ParticleTracker:
         # Entered grid -> non-zero if particle EVER entered a grid
         self.entered_grid = np.zeros([self.nparticles])
 
+        # Update the `particle_tracker` attribute so that the stop condition can be used
+        stop_condition.particle_tracker = self
+
         # Initialize a "progress bar" (really more of a meter)
         # Setting sys.stdout lets this play nicely with regular print()
         pbar = tqdm(
             initial=0,
-            total=stop_condition.get_total(self),
+            total=stop_condition.total,
             disable=not self.verbose,
-            desc=stop_condition.get_description,
-            unit=stop_condition.get_units,
+            desc=stop_condition.description,
+            unit=stop_condition.units,
             bar_format="{l_bar}{bar}{n:.1e}/{total:.1e} {unit}",  # noqa: FS003
             file=sys.stdout,
         )
@@ -710,10 +724,8 @@ class ParticleTracker:
         # (no more particles on the simulation grid)
         is_finished = False
         while not is_finished:
-            is_finished = stop_condition.is_finished(self)
-            progress = min(
-                stop_condition.get_progress(self), stop_condition.get_total(self)
-            )
+            is_finished = stop_condition.is_finished
+            progress = min(stop_condition.progress, stop_condition.total)
 
             pbar.n = progress
             pbar.last_print_n = progress
