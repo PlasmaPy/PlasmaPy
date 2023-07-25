@@ -45,26 +45,31 @@ class AbstractStopCondition(ABC):
     def particle_tracker(self, particle_tracker):
         self._particle_tracker = particle_tracker
 
+    @property
     @abstractmethod
     def require_uniform_dt(self):
         """Return whether or not this stop condition requires a uniform dt to be specified."""
         ...
 
+    @property
     @abstractmethod
     def description(self):
         """Return a small string describing the relevant quantity shown on the meter."""
         ...
 
+    @property
     @abstractmethod
     def units(self):
         """Return the units of `total`."""
         ...
 
+    @property
     @abstractmethod
     def is_finished(self):
         """Return `True` if the simulation has finished."""
         ...
 
+    @property
     @abstractmethod
     def progress(self):
         """Return a number representing the progress of the simulation (compared to total).
@@ -72,6 +77,7 @@ class AbstractStopCondition(ABC):
         """
         ...
 
+    @property
     @abstractmethod
     def total(self):
         """Return a number representing the total number of steps in a simulation.
@@ -117,7 +123,7 @@ class TimeElapsedStopCondition(AbstractStopCondition):
         return self._particle_tracker.time
 
     @property
-    def total(self):  # noqa: ARG002
+    def total(self):
         """Return the total amount of time over which the particles are tracked."""
         return self.stop_time
 
@@ -145,22 +151,33 @@ class AbstractSaveRoutine(ABC):
     `save_to_disk` or `save_to_memory` depending on the routine implemented.
     """
 
+    @property
+    def particle_tracker(self):
+        """Return the `ParticleTracker` object for this stop condition."""
+        return self._particle_tracker
+
+    @particle_tracker.setter
+    def particle_tracker(self, particle_tracker):
+        self._particle_tracker = particle_tracker
+
+    @property
     @abstractmethod
     def require_uniform_dt(self):
         """Return whether or not this save routine requires a uniform dt to be specified."""
         ...
 
+    @property
     @abstractmethod
-    def save_now(self, particle_tracker):
+    def save_now(self):
         """Determine whether or not to save on the current push step."""
         ...
 
     @abstractmethod
-    def save(self, particle_tracker):
+    def save(self):
         """The abstract method for saving the current state of the |ParticleTracker|."""
         ...
 
-    def post_push_hook(self, particle_tracker):
+    def post_push_hook(self, force_save=False):
         """Function called after a push step.
 
         This function is responsible for handling two steps of save routine, namely:
@@ -168,8 +185,8 @@ class AbstractSaveRoutine(ABC):
             - How the simulation data is saved (i.e. to disk or memory)
 
         """
-        if self.save_now(particle_tracker):
-            self.save(particle_tracker)
+        if self.save_now or force_save:
+            self.save()
 
 
 class AbstractIntervalSaveRoutine(AbstractSaveRoutine, ABC):
@@ -186,9 +203,10 @@ class AbstractIntervalSaveRoutine(AbstractSaveRoutine, ABC):
         """
         return True
 
-    def save_now(self, particle_tracker):
+    @property
+    def save_now(self):
         """Save at every interval given in instantiation."""
-        saves_per_step = np.floor(self.save_interval / particle_tracker.dt)
+        saves_per_step = np.floor(self.save_interval / self._particle_tracker.dt)
 
         # If the user is requesting multiple saves per step then raise a ValueError
         if saves_per_step == 0:
@@ -196,8 +214,8 @@ class AbstractIntervalSaveRoutine(AbstractSaveRoutine, ABC):
                 "You must specify a time step smaller than the save interval!"
             )
 
-        if particle_tracker.time - self.time_of_last_save >= self.save_interval:
-            self.time_of_last_save = particle_tracker.time
+        if self._particle_tracker.time - self.time_of_last_save >= self.save_interval:
+            self.time_of_last_save = self._particle_tracker.time
 
             return True
         else:
@@ -210,14 +228,14 @@ class AbstractDiskSaveRoutine(AbstractSaveRoutine, ABC):
     def __init__(self, output_directory: Path):
         self.output_directory = output_directory
 
-    def save(self, particle_tracker):
+    def save(self):
         """Save a hdf5 file containing simulation positions and velocities."""
 
-        path = self.output_directory / f"{particle_tracker.iteration_number}.hdf5"
+        path = self.output_directory / f"{self._particle_tracker.iteration_number}.hdf5"
 
         with h5py.File(path, "w") as output_file:
-            output_file["x"] = particle_tracker.x
-            output_file["v"] = particle_tracker.v
+            output_file["x"] = self._particle_tracker.x
+            output_file["v"] = self._particle_tracker.v
 
 
 class AbstractMemorySaveRoutine(AbstractSaveRoutine, ABC):
@@ -227,10 +245,10 @@ class AbstractMemorySaveRoutine(AbstractSaveRoutine, ABC):
         self.x_all = []
         self.v_all = []
 
-    def save(self, particle_tracker):
+    def save(self):
         """Append simulation positions and velocities to save routine object."""
-        self.x_all.append(np.copy(particle_tracker.x))
-        self.v_all.append(np.copy(particle_tracker.v))
+        self.x_all.append(np.copy(self._particle_tracker.x))
+        self.v_all.append(np.copy(self._particle_tracker.v))
 
 
 class DiskIntervalSaveRoutine(AbstractDiskSaveRoutine, AbstractIntervalSaveRoutine):
@@ -705,8 +723,9 @@ class ParticleTracker:
         # Entered grid -> non-zero if particle EVER entered a grid
         self.entered_grid = np.zeros([self.nparticles])
 
-        # Update the `particle_tracker` attribute so that the stop condition can be used
+        # Update the `particle_tracker` attribute so that the stop condition & save routine can be used
         stop_condition.particle_tracker = self
+        save_routine.particle_tracker = self
 
         # Initialize a "progress bar" (really more of a meter)
         # Setting sys.stdout lets this play nicely with regular print()
@@ -734,8 +753,9 @@ class ParticleTracker:
             self._push()
 
             if save_routine is not None:
-                save_routine.post_push_hook(self)
+                save_routine.post_push_hook()
 
+        save_routine.post_push_hook(force_save=True)
         pbar.close()
 
         # Log a summary of the run
