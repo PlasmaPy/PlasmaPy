@@ -545,7 +545,7 @@ def test_Particle_class(arg, kwargs, expected_dict):
 
         else:
             try:
-                result = eval(f"particle.{key}")  # noqa: PGH001
+                result = eval(f"particle.{key}")  # noqa: PGH001, S307
                 assert result == expected or u.isclose(result, expected, equal_nan=True)
             except AssertionError:
                 errmsg += (

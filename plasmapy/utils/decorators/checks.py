@@ -138,7 +138,9 @@ class CheckValues(CheckBase):
     }
 
     def __init__(
-        self, checks_on_return: dict[str, bool] = None, **checks: dict[str, bool]
+        self,
+        checks_on_return: Optional[dict[str, bool]] = None,
+        **checks: dict[str, bool],
     ):
         super().__init__(checks_on_return=checks_on_return, **checks)
 
@@ -1041,7 +1043,9 @@ class CheckUnits(CheckBase):
 
 
 def check_units(
-    func=None, checks_on_return: dict[str, Any] = None, **checks: dict[str, Any]
+    func=None,
+    checks_on_return: Optional[dict[str, Any]] = None,
+    **checks: dict[str, Any],
 ):
     """
     A decorator to 'check' — limit/control — the units of input and return
@@ -1176,7 +1180,9 @@ def check_units(
 
 
 def check_values(
-    func=None, checks_on_return: dict[str, bool] = None, **checks: dict[str, bool]
+    func=None,
+    checks_on_return: Optional[dict[str, bool]] = None,
+    **checks: dict[str, bool],
 ):
     """
     A decorator to 'check' — limit/control — the values of input and

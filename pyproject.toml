@@ -229,7 +229,7 @@ extend-select = [
   "COM818", # trailing-comma-on-bare-tuple
   "D", # pydocstyle
   "DTZ", # flake8-datetimez
-  "FA", # flake8-future-annotations
+  "FA102", # flake8-required-type-annotation
   "FBT003", # flake8-boolean-trap
   "FIX", # flake8-fixme
   "FLY", # flynt
