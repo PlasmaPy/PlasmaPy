@@ -485,6 +485,7 @@ wrapt==1.15.0
     # via plasmapy (setup.py)
 xarray==2023.7.0
     # via plasmapy (setup.py)
+hapiclient>=3.1.0
 
 # The following packages are considered to be unsafe in a requirements file:
 # setuptools
