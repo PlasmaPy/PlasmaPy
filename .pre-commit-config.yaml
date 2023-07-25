@@ -20,7 +20,7 @@ repos:
   - id: check-yaml
 
 - repo: https://github.com/macisamuele/language-formatters-pre-commit-hooks
-  rev: v2.9.0
+  rev: v2.10.0
   hooks:
   - id: pretty-format-ini
     args: [--autofix]
@@ -58,7 +58,7 @@ repos:
     - tomli
 
 - repo: https://github.com/astral-sh/ruff-pre-commit
-  rev: v0.0.277
+  rev: v0.0.280
   hooks:
   - id: ruff
     args: [--fix]
@@ -75,7 +75,7 @@ repos:
     - python
 
 - repo: https://github.com/psf/black
-  rev: 23.3.0
+  rev: 23.7.0
   hooks:
   - id: black
 

@@ -37,7 +37,7 @@ bleach==6.0.0
     # via nbconvert
 cachetools==5.3.1
     # via tox
-certifi==2023.5.7
+certifi==2023.7.22
     # via requests
 cffi==1.15.1
     # via argon2-cffi-bindings
@@ -47,7 +47,7 @@ chardet==5.1.0
     # via tox
 charset-normalizer==3.2.0
     # via requests
-click==8.1.5
+click==8.1.6
     # via
     #   click-default-group
     #   towncrier
@@ -67,7 +67,7 @@ decorator==5.1.1
     # via ipython
 defusedxml==0.7.1
     # via nbconvert
-distlib==0.3.6
+distlib==0.3.7
     # via virtualenv
 docutils==0.18.1
     # via
@@ -84,21 +84,21 @@ execnet==2.0.2
     # via pytest-xdist
 executing==1.2.0
     # via stack-data
-fastjsonschema==2.17.1
+fastjsonschema==2.18.0
     # via nbformat
 filelock==3.12.2
     # via
     #   tox
     #   virtualenv
-fonttools==4.41.0
+fonttools==4.41.1
     # via matplotlib
 future==0.18.3
     # via uncertainties
 h5py==3.9.0
     # via plasmapy (setup.py)
-hypothesis==6.81.2
+hypothesis==6.82.0
     # via plasmapy (setup.py)
-identify==2.5.24
+identify==2.5.26
     # via pre-commit
 idna==3.4
     # via
@@ -134,11 +134,11 @@ jinja2==3.1.2
     #   towncrier
 json5==0.9.14
     # via jupyterlab-server
-jsonschema==4.18.3
+jsonschema==4.18.4
     # via
     #   jupyterlab-server
     #   nbformat
-jsonschema-specifications==2023.6.1
+jsonschema-specifications==2023.7.1
     # via jsonschema
 jupyter-client==7.4.1
     # via
@@ -191,7 +191,7 @@ nbclient==0.7.4
     # via
     #   nbconvert
     #   voila
-nbconvert==7.6.0
+nbconvert==7.7.2
     # via
     #   jupyter-server
     #   nbsphinx
@@ -320,7 +320,7 @@ python-dateutil==2.8.2
     #   pandas
 pytz==2023.3
     # via pandas
-pyyaml==6.0
+pyyaml==6.0.1
     # via
     #   astropy
     #   pre-commit
@@ -331,7 +331,7 @@ pyzmq==25.1.0
     #   ipykernel
     #   jupyter-client
     #   jupyter-server
-referencing==0.29.1
+referencing==0.30.0
     # via
     #   jsonschema
     #   jsonschema-specifications
@@ -340,7 +340,7 @@ requests==2.31.0
     #   jupyterlab-server
     #   plasmapy (setup.py)
     #   sphinx
-rpds-py==0.8.10
+rpds-py==0.9.2
     # via
     #   jsonschema
     #   referencing
@@ -461,9 +461,9 @@ tzdata==2023.3
     # via pandas
 uncertainties==3.1.7
     # via lmfit
-urllib3==2.0.3
+urllib3==2.0.4
     # via requests
-virtualenv==20.24.0
+virtualenv==20.24.1
     # via
     #   pre-commit
     #   tox
@@ -483,7 +483,7 @@ widgetsnbextension==4.0.8
     # via ipywidgets
 wrapt==1.15.0
     # via plasmapy (setup.py)
-xarray==2023.6.0
+xarray==2023.7.0
     # via plasmapy (setup.py)
 
 # The following packages are considered to be unsafe in a requirements file:
