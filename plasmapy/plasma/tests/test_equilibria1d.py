@@ -30,7 +30,7 @@ def test_HarrisSheet_pressure_balance():
     assert u.allclose(total_pressure, total_pressure[0], atol=1e-9 * u.Pa)
 
 
-def test_currentDensity():
+def test_HarrisSheet_current_density():
     B0 = 1 * u.T
     delta = 1 * u.m
     P0 = 0 * u.Pa
