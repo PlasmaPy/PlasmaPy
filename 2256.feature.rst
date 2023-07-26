@@ -1,0 +1,4 @@
+Re-implemented |lite-functions| using Cython rather than Numba.  This
+change is intended to allow PlasmaPy to be used on new releases of
+Python with minimal delay, as it has often taken Numba several months
+to become compatible with new releases of Python.
