@@ -24,7 +24,7 @@ class HarrisSheet:
          convertible to teslas.
 
     delta : `~astropy.units.Quantity`
-        Delta is the thickness of the sheet.
+        The thickness of the current sheet in units convertible to meters.
 
     P0 : `~astropy.units.Quantity`
         Plasma Pressure.
