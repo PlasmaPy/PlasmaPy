@@ -23,7 +23,6 @@ class HarrisSheet:
          Magnitude of magnetic field in the limit of :math:`y → ∞` in units
          convertible to teslas.
 
-
     delta : `~astropy.units.Quantity`
         Delta is the thickness of the sheet.
 
