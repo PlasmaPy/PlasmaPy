@@ -10,6 +10,7 @@ __all__ = [
     "AbstractStopCondition",
     "DiskIntervalSaveRoutine",
     "MemoryIntervalSaveRoutine",
+    "NoFieldsStoppingCondition",
     "ParticleTracker",
     "TimeElapsedStopCondition",
 ]
@@ -126,6 +127,47 @@ class TimeElapsedStopCondition(AbstractStopCondition):
     def total(self):
         """Return the total amount of time over which the particles are tracked."""
         return self.stop_time
+
+
+class NoFieldsStoppingCondition(AbstractStopCondition):
+    """Stopping condition corresponding to stopping the simulation when all particles have exited the grid."""
+
+    def __init__(self):
+        self._particle_tracker = None
+
+    @property
+    def require_uniform_dt(self):
+        """The no field stopping condition does not require a uniform time step."""
+        return False
+
+    @property
+    def description(self):
+        """The progress meter is described in terms of the fraction of particles still on the grid."""
+        return "Number of particles still in fields"
+
+    @property
+    def units(self):
+        """The progress meter is described in terms of the fraction of particles still on the grid."""
+        return "Particles"
+
+    @property
+    def is_finished(self):
+        """The simulation is finished when no more particles are on any grids."""
+        is_not_on_grid = self._particle_tracker.on_grid == 0
+
+        return is_not_on_grid.all() and self._particle_tracker.iteration_number > 0
+
+    @property
+    def progress(self):
+        """The progress of the simulation is measured by how many particles are no longer on a grid."""
+        is_not_on_grid = self._particle_tracker.on_grid == 0
+
+        return is_not_on_grid.sum()
+
+    @property
+    def total(self):
+        """The progress of the simulation is measured against the total number of particles in the simulation."""
+        return self._particle_tracker.nparticles
 
 
 class AbstractSaveRoutine(ABC):
