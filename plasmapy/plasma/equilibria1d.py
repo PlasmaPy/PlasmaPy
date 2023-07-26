@@ -20,7 +20,8 @@ class HarrisSheet:
     Parameters
     ----------
     B0 : `~astropy.units.Quantity`
-         Magnitude of magnetic field in the limit of :math:`y → ∞`.
+         Magnitude of magnetic field in the limit of :math:`y → ∞` in units
+         convertible to teslas.
 
 
     delta : `~astropy.units.Quantity`
