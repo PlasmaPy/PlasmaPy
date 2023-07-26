@@ -48,7 +48,7 @@ class HarrisSheet:
     @validate_quantities
     def magnetic_field(self, y: u.m) -> u.T:
         r"""
-        Compute the magnetic field along :math:`y = 0`.
+        Compute the magnetic field.
 
         This equation uses the asymptotic magnetic field strength along with y=0.
 
