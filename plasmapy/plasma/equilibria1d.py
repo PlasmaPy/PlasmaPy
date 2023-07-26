@@ -36,7 +36,7 @@ class HarrisSheet:
     Examples
     --------
     >>> harris_sheet = HarrisSheet(delta = 3*u.m ,B0 = 2*u.T)
-    >>> harris_sheet.magnetic_field(y = 5*u.m)
+    >>> harris_sheet.magnetic_field(y = 5 * u.m)
     <Quantity 1.8622... T>
     """
 
