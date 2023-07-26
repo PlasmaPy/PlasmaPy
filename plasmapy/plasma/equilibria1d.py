@@ -27,7 +27,8 @@ class HarrisSheet:
         The thickness of the current sheet in units convertible to meters.
 
     P0 : `~astropy.units.Quantity`
-        The plasma pressure in the limit of :math:`y → ∞` in units convertible to pascals.
+        The plasma pressure in the limit of :math:`y → ∞` in units
+        convertible to pascals.
 
     Notes
     -----
