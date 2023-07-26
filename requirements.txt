@@ -61,6 +61,8 @@ contourpy==1.1.0
     # via matplotlib
 cycler==0.11.0
     # via matplotlib
+cython==3.0.0
+    # via plasmapy (setup.py)
 debugpy==1.6.7
     # via ipykernel
 decorator==5.1.1
