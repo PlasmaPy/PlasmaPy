@@ -41,7 +41,7 @@ def test_HarrisSheet_current_density():
     assert u.allclose(J, correct_J, atol=1e-8 * u.A / u.m**2)
 
 
-def test_magneticField():
+def test_HarrisSheet_magnetic_field():
     B0 = 1 * u.T
     delta = 1 * u.m
     P0 = 0 * u.Pa
