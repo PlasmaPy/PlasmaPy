@@ -17,7 +17,7 @@ def test_HarrisSheet():
     ), "Magnetic field is supposed to be zero at y=0"
 
 
-def test_pressure_balance():
+def test_HarrisSheet_pressure_balance():
     B0 = 1 * u.T
     delta = 1 * u.m
     P0 = 0 * u.Pa
