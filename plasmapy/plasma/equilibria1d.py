@@ -96,8 +96,8 @@ class HarrisSheet:
 
         Parameters
         ----------
-        y : `float`
-            The axis of reference.
+        y : `~astropy.units.Quantity`
+          Orthogonal distance from the current sheet center.
 
         """
         return (
