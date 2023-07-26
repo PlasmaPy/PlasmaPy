@@ -12,7 +12,9 @@ from plasmapy.utils.decorators.validators import validate_quantities
 class HarrisSheet:
     """
     Define a Harris Sheet Equilibrium.
-    Magnetic field will be in the plus/minus x direction and the current density will be in the plus/minus z direction.
+    Magnetic field will be in the :math:`\pm x` direction and
+    the current density will be in the :math:`\pm z` direction,
+    :math:`\hat{x} \times \hat{y} = \hat{z}` coordinate system.
 
 
     Parameters
