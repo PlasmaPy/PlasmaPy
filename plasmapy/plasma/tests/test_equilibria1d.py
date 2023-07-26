@@ -52,7 +52,7 @@ def test_magneticField():
     assert u.allclose(B, correct_B, atol=1e-9 * u.T)
 
 
-def test_limits():
+def test_HarrisSheet_limits():
     y = [-np.inf, np.inf] * u.m
     B0 = 1 * u.T
     delta = 1 * u.m
