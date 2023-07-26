@@ -1,3 +1,5 @@
+"""Functionality for representing one-dimensional equilibria."""
+
 __all__ = ["HarrisSheet"]
 
 import astropy.constants as const
