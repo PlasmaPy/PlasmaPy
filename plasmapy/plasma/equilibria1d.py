@@ -38,7 +38,6 @@ class HarrisSheet:
     >>> harris_sheet = HarrisSheet(delta = 3*u.m ,B0 = 2*u.T)
     >>> harris_sheet.magnetic_field(y = 5*u.m)
     <Quantity 1.8622... T>
-
     """
 
     def __init__(self, B0, delta, P0=0 * u.Pa):
