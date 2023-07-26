@@ -14,7 +14,7 @@ def test_HarrisSheet():
     B = hs.magnetic_field(0 * u.m)
     assert u.isclose(
         B, 0 * u.T, atol=1e-9 * u.T
-    ), "Magnetic field is supposed to be zero at Y=0"
+    ), "Magnetic field is supposed to be zero at y=0"
 
 
 def test_pressure_balance():
