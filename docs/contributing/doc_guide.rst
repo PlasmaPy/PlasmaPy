@@ -1385,19 +1385,37 @@ documentation build failure happened in the `weekly tests`_ on the
 pull request can be submitted that sets a temporary maximum allowed
 version of the package that can be revisited later.
 
-Document isn't included in any toctree
---------------------------------------
-
-.. code-block::
-
-   /home/runner/work/PlasmaPy/PlasmaPy/docs/notebooks/formulary/helio/collisional_analysis.ipynb: WARNING: document isn't included in any toctree
-
 .. tip::
 
    When dealing with this kind of error, procrastination often pays off!
    🎈 These errors usually get resolved after the upstream package makes
    a bugfix release, so it is typically better to wait a week before
    spending a large amount of time trying to fix it. 🕒
+
+Document isn't included in any toctree
+--------------------------------------
+
+In general, each source file in the documentation must be included in
+a table of contents (toctree_). Otherwise, Sphinx will issue a warning
+like:
+
+.. code-block::
+
+   WARNING: document isn't included in any toctree
+
+This warning may occur when adding a new reST_ file or example Jupyter
+notebook without adding it to a toctree.
+
+This warning can be resolved by:
+
+* Adding the file to the appropriate toctree (see Sphinx's
+  `documentation page on tables of contents <toctree>`_), or
+* Adding the ``:orphan:`` `metadata`_ field at the top of the reST file.
+
+For PlasmaPy, the tables of contents are generally located in
+:file:`index.rst` in the same directory as the source files. For
+Jupyter notebooks, the tables of contents are in
+:file:`docs/examples.rst`.
 
 .. |role| replace:: :term:`role`
 .. |roles| replace:: :term:`roles <role>`
@@ -1408,7 +1426,9 @@ Document isn't included in any toctree
 .. _configuration options: https://www.sphinx-doc.org/en/master/usage/configuration.html
 .. _define substitutions: https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html#substitution-definitions
 .. _doctests: https://docs.pytest.org/en/6.2.x/doctest.html
+.. _documentation page on tables of contents:
 .. _issues: https://github.com/PlasmaPy/PlasmaPy/issues
+.. _metadata field: https://www.sphinx-doc.org/en/master/usage/restructuredtext/field-lists.html#special-metadata-fields
 .. _nested inline markup: https://docutils.sphinx-users.jp/docutils/docs/dev/rst/alternatives.html#nested-inline-markup
 .. _options to sphinx-build: https://www.sphinx-doc.org/en/master/man/sphinx-build.html#options
 .. _packages related to Sphinx: https://pypi.org/search/?q=sphinx+or+nbsphinx&o=-created&c=Framework+%3A%3A+Sphinx
@@ -1423,4 +1443,6 @@ Document isn't included in any toctree
 .. _Sphinx's glossary: https://www.sphinx-doc.org/en/master/glossary.html
 .. _Sphinx's templating page: https://www.sphinx-doc.org/en/master/templating.html
 .. _style overrides: https://docs.readthedocs.io/en/stable/guides/adding-custom-css.html
+.. _toctree: https://www.sphinx-doc.org/en/master/usage/restructuredtext/directives.html#directive-toctree
+https://www.sphinx-doc.org/en/master/usage/restructuredtext/directives.html#table-of-contents
 .. _warns: https://numpydoc.readthedocs.io/en/latest/format.html#warns
