@@ -54,7 +54,7 @@ class AbstractStopCondition(ABC):
 
     @property
     @abstractmethod
-    def description(self):
+    def progress_description(self):
         """Return a small string describing the relevant quantity shown on the meter."""
         ...
 
@@ -101,7 +101,7 @@ class TimeElapsedStopCondition(AbstractStopCondition):
         return True
 
     @property
-    def description(self):
+    def progress_description(self):
         """The time elapsed stop condition depends on elapsed time,
         therefore the relevant quantity is time remaining.
         """
@@ -141,7 +141,7 @@ class NoFieldsStoppingCondition(AbstractStopCondition):
         return False
 
     @property
-    def description(self):
+    def progress_description(self):
         """The progress meter is described in terms of the fraction of particles still on the grid."""
         return "Number of particles still in fields"
 
@@ -775,7 +775,7 @@ class ParticleTracker:
             initial=0,
             total=stop_condition.total,
             disable=not self.verbose,
-            desc=stop_condition.description,
+            desc=stop_condition.progress_description,
             unit=stop_condition.units,
             bar_format="{l_bar}{bar}{n:.1e}/{total:.1e} {unit}",  # noqa: FS003
             file=sys.stdout,
@@ -831,3 +831,46 @@ class ParticleTracker:
                 "simulation is not supported. Create a new `Tracker` "
                 "object for a new simulation."
             )
+
+
+if __name__ == "__main__":
+    from plasmapy.formulary.lengths import gyroradius
+    from plasmapy.particles.particle_class import CustomParticle
+    from plasmapy.plasma.grids import CartesianGrid
+
+    def instantiate_simulation(B_strength=1 * u.T):
+        L = 1e6 * u.km
+        num = 2
+        grid = CartesianGrid(-L, L, num=num)
+        grid_shape = (num,) * 3
+
+        Bz = np.full(grid_shape, B_strength) * u.T
+        grid.add_quantities(B_z=Bz)
+
+        return ParticleTracker(
+            grid, req_quantities=["E_x", "E_y", "E_z", "B_x", "B_y", "B_z"]
+        )
+
+    v_x = np.array([1])
+    v_x = v_x * u.m / u.s
+    print([[v_x_element.value, 0, 0] for v_x_element in v_x])
+    v = np.array([[v_x_element.value, 0, 0] for v_x_element in v_x]) * u.m / u.s
+
+    B_strength = 1 * u.T
+    point_particle = CustomParticle(1 * u.kg, 1 * u.C)
+
+    # Set the initial position to the gyroradius
+    # This means the particle will orbit the origin
+    R_L = gyroradius(B_strength, point_particle, Vperp=v_x)
+    x = np.array([[0, R_L_element.value, 0] for R_L_element in R_L]) * u.m
+
+    simulation = instantiate_simulation(B_strength=B_strength)
+    simulation.load_particles(x, v, point_particle)
+
+    stop_condition = TimeElapsedStopCondition(10 * u.s)
+    save_routine = MemoryIntervalSaveRoutine(0.1 * u.s)
+
+    simulation.run(stop_condition, save_routine, dt=1e-3 * u.s)
+
+    positions = np.asarray(save_routine.x_all) * u.m
+    distances = np.linalg.norm(positions, axis=-1)
