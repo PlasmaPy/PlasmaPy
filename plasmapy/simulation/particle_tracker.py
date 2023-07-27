@@ -143,7 +143,7 @@ class NoParticlesOnGridsStoppingCondition(AbstractStopCondition):
     @property
     def progress_description(self):
         """The progress meter is described in terms of the fraction of particles still on the grid."""
-        return "Number of particles still in fields"
+        return "Number of particles still on grid"
 
     @property
     def units(self):
