@@ -1426,7 +1426,6 @@ Jupyter notebooks, the tables of contents are in
 .. _configuration options: https://www.sphinx-doc.org/en/master/usage/configuration.html
 .. _define substitutions: https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html#substitution-definitions
 .. _doctests: https://docs.pytest.org/en/6.2.x/doctest.html
-.. _documentation page on tables of contents:
 .. _issues: https://github.com/PlasmaPy/PlasmaPy/issues
 .. _metadata field: https://www.sphinx-doc.org/en/master/usage/restructuredtext/field-lists.html#special-metadata-fields
 .. _nested inline markup: https://docutils.sphinx-users.jp/docutils/docs/dev/rst/alternatives.html#nested-inline-markup
