@@ -15,7 +15,7 @@ class HarrisSheet:
     Magnetic field will be in the :math:`\pm x` direction and
     the current density will be in the :math:`\pm z` direction,
     :math:`\hat{x} \times \hat{y} = \hat{z}` coordinate system.
-
+A Harris sheet is a 1D ideal MHD equilibrium. In resistive MHD if there is any resistivity, it won't be a true equilibrium since the resistivity will gradually smooth the profile out over time. A Harris sheet is often used as the initial condition for simulations of magnetic reconnection.
 
     Parameters
     ----------
