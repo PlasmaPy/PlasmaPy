@@ -94,7 +94,7 @@ class HarrisSheet:
 
         .. math::
 
-            B_0/(\delta*mu_0)(\mathrm{sech}(y/\delta)^2)
+            B_0/(\delta*mu_0)(\mathrm{sech}^2(y/\delta))
 
         Parameters
         ----------
