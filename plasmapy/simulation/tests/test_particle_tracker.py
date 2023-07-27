@@ -14,7 +14,7 @@ from plasmapy.particles import CustomParticle
 from plasmapy.plasma.grids import CartesianGrid
 from plasmapy.simulation.particle_tracker import (
     MemoryIntervalSaveRoutine,
-    NoFieldsStoppingCondition,
+    NoParticlesOnGridsStoppingCondition,
     ParticleTracker,
     TimeElapsedStopCondition,
 )
@@ -122,7 +122,7 @@ def test_particle_tracker_potential_difference(E_strength, L, mass, charge):
     )
     simulation.load_particles(x, v, point_particle)
 
-    stop_condition = NoFieldsStoppingCondition()
+    stop_condition = NoParticlesOnGridsStoppingCondition()
     save_routine = MemoryIntervalSaveRoutine(dt)
 
     simulation.run(stop_condition, save_routine, dt=dt)

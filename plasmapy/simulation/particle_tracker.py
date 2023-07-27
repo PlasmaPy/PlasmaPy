@@ -10,7 +10,7 @@ __all__ = [
     "AbstractStopCondition",
     "DiskIntervalSaveRoutine",
     "MemoryIntervalSaveRoutine",
-    "NoFieldsStoppingCondition",
+    "NoParticlesOnGridsStoppingCondition",
     "ParticleTracker",
     "TimeElapsedStopCondition",
 ]
@@ -129,7 +129,7 @@ class TimeElapsedStopCondition(AbstractStopCondition):
         return self.stop_time
 
 
-class NoFieldsStoppingCondition(AbstractStopCondition):
+class NoParticlesOnGridsStoppingCondition(AbstractStopCondition):
     """Stopping condition corresponding to stopping the simulation when all particles have exited the grid."""
 
     def __init__(self):
