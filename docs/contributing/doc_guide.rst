@@ -1414,7 +1414,7 @@ This warning can be resolved by:
 
 For PlasmaPy, the tables of contents are generally located in
 :file:`index.rst` in the same directory as the source files. For
-Jupyter notebooks, the tables of contents are in
+example Jupyter notebooks, the tables of contents are in
 :file:`docs/examples.rst`.
 
 .. |role| replace:: :term:`role`
