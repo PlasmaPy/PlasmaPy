@@ -1385,6 +1385,13 @@ documentation build failure happened in the `weekly tests`_ on the
 pull request can be submitted that sets a temporary maximum allowed
 version of the package that can be revisited later.
 
+Document isn't included in any toctree
+--------------------------------------
+
+.. code-block::
+
+   /home/runner/work/PlasmaPy/PlasmaPy/docs/notebooks/formulary/helio/collisional_analysis.ipynb: WARNING: document isn't included in any toctree
+
 .. tip::
 
    When dealing with this kind of error, procrastination often pays off!
