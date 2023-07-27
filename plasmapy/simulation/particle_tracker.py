@@ -3,9 +3,7 @@ Module containing the definition for the general particle tracker.
 """
 
 __all__ = [
-    "AbstractDiskSaveRoutine",
     "AbstractIntervalSaveRoutine",
-    "AbstractMemorySaveRoutine",
     "AbstractSaveRoutine",
     "AbstractStopCondition",
     "DiskIntervalSaveRoutine",
@@ -193,6 +191,12 @@ class AbstractSaveRoutine(ABC):
     `save_to_disk` or `save_to_memory` depending on the routine implemented.
     """
 
+    def __init__(self, output_directory: Path):
+        self.output_directory = output_directory
+
+        self.x_all = []
+        self.v_all = []
+
     @property
     def particle_tracker(self):
         """Return the `ParticleTracker` object for this stop condition."""
@@ -219,6 +223,20 @@ class AbstractSaveRoutine(ABC):
         """The abstract method for saving the current state of the |ParticleTracker|."""
         ...
 
+    def save_to_disk(self):
+        """Save a hdf5 file containing simulation positions and velocities."""
+
+        path = self.output_directory / f"{self._particle_tracker.iteration_number}.hdf5"
+
+        with h5py.File(path, "w") as output_file:
+            output_file["x"] = self._particle_tracker.x
+            output_file["v"] = self._particle_tracker.v
+
+    def save_to_memory(self):
+        """Append simulation positions and velocities to save routine object."""
+        self.x_all.append(np.copy(self._particle_tracker.x))
+        self.v_all.append(np.copy(self._particle_tracker.v))
+
     def post_push_hook(self, force_save=False):
         """Function called after a push step.
 
@@ -234,7 +252,8 @@ class AbstractSaveRoutine(ABC):
 class AbstractIntervalSaveRoutine(AbstractSaveRoutine, ABC):
     """Abstract class describing a save routine that saves every given interval."""
 
-    def __init__(self, interval: u.Quantity):
+    def __init__(self, interval: u.Quantity, **kwargs):
+        super().__init__(**kwargs)
         self.save_interval = interval.to(u.s).value
         self.time_of_last_save = 0
 
@@ -264,49 +283,26 @@ class AbstractIntervalSaveRoutine(AbstractSaveRoutine, ABC):
             return False
 
 
-class AbstractDiskSaveRoutine(AbstractSaveRoutine, ABC):
-    """Abstract save routine corresponding to writing a hdf5 file to disk."""
-
-    def __init__(self, output_directory: Path):
-        self.output_directory = output_directory
-
-    def save(self):
-        """Save a hdf5 file containing simulation positions and velocities."""
-
-        path = self.output_directory / f"{self._particle_tracker.iteration_number}.hdf5"
-
-        with h5py.File(path, "w") as output_file:
-            output_file["x"] = self._particle_tracker.x
-            output_file["v"] = self._particle_tracker.v
-
-
-class AbstractMemorySaveRoutine(AbstractSaveRoutine, ABC):
-    """Abstract save routine corresponding to saving the state of the tracker to memory."""
-
-    def __init__(self):
-        self.x_all = []
-        self.v_all = []
-
-    def save(self):
-        """Append simulation positions and velocities to save routine object."""
-        self.x_all.append(np.copy(self._particle_tracker.x))
-        self.v_all.append(np.copy(self._particle_tracker.v))
-
-
-class DiskIntervalSaveRoutine(AbstractDiskSaveRoutine, AbstractIntervalSaveRoutine):
+class DiskIntervalSaveRoutine(AbstractIntervalSaveRoutine):
     """Save routine corresponding to saving a hdf5 file every given interval."""
 
-    def __init__(self, output_directory, interval: u.Quantity):
-        AbstractDiskSaveRoutine.__init__(self, output_directory)
-        AbstractIntervalSaveRoutine.__init__(self, interval)
+    def __init__(self, interval: u.Quantity, output_directory: Path):
+        super().__init__(interval, output_directory=output_directory)
+
+    def save(self):
+        """Save the state of the particle tracker to disk."""
+        self.save_to_disk()
 
 
-class MemoryIntervalSaveRoutine(AbstractMemorySaveRoutine, AbstractIntervalSaveRoutine):
+class MemoryIntervalSaveRoutine(AbstractIntervalSaveRoutine):
     """Save the state of the tracker every given interval."""
 
     def __init__(self, interval: u.Quantity):
-        AbstractMemorySaveRoutine.__init__(self)
-        AbstractIntervalSaveRoutine.__init__(self, interval)
+        super().__init__(interval)
+
+    def save(self):
+        """Save the state of the particle tracker to memory."""
+        self.save_to_memory()
 
 
 class ParticleTracker:

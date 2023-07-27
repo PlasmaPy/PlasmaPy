@@ -22,9 +22,6 @@ rng = np.random.default_rng()
 
 
 class TestParticleTrackerGyroradius:
-    RESOLUTION = 100
-    v_theta = rng.integers(0, 2 * np.pi * RESOLUTION, size=100) / RESOLUTION
-    speed = rng.integers(1, 10, size=100) * u.m / u.s
     v_x = rng.integers(1, 10, size=100) * u.m / u.s
 
     v = np.array([[v_x_element.value, 0, 0] for v_x_element in v_x]) * u.m / u.s
