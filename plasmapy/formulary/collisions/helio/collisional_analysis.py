@@ -304,7 +304,6 @@ def temp_ratio(  # noqa: C901, PLR0912, PLR0915
             T_1 = T_1_0 * (r / r_n) ** temperature
 
             eta = n_2 / n_1
-            theta = T_2 / T_1
 
             alpha = n_1 / (v_1 * (T_1**1.5))
             beta = (
@@ -385,14 +384,13 @@ def diff_flow( # noqa: C901, PLR0912, PLR0915
     v_2: u.km / u.s,
     T_1: u.K,
     T_2: u.K,
-    ions: ParticleLike = ("p+", "He-4++"),
     B: u.T,
+    ions: ParticleLike = ("p+", "He-4++"),
     density_scale: float = default_values["density"],
     velocity_scale: float = default_values["velocity"],
     temperature_scale: float = default_values["temperature"],
     magnetic_scale: float = default_values["magnetic"],
     alfven=False,
-    second_scale=False,
     n_step: int = 100,
     verbose=False,
 ):
@@ -435,12 +433,12 @@ def diff_flow( # noqa: C901, PLR0912, PLR0915
         Temperature of the secondary ion in units convertible to
         temperature K.
 
+    B : `~astropy.units.Quantity`
+        Magnetic field strength in units convertible to tesla T.
+
     ions : |particle-list-like|, default: ``("p+, "He-4 2+")``
         Particle list containing two (2) particles, primary ion of
         interest is entered first, followed by the secondary ion.
-
-    B : `~astropy.units.Quantity`
-        Magnetic field strength in units convertible to tesla T.
 
     density_scale : real number, default: -1.8
         The value used as the scaling parameter for the primary ion
@@ -466,11 +464,6 @@ def diff_flow( # noqa: C901, PLR0912, PLR0915
         The analysis for differential flow can be performed on data
         and also be scaled by the Alfven speed. Setting this to true
         will scale the output, by default it is turned off.
-
-    second_scale : `bool`, default: False
-        Allows the secondary ion parameters to also scale with the
-        given or custom values. By default, the output is off, so only
-        the primary ions of interest shall be scaled.
 
     n_step : positive integer
         The number of intervals used in solving a differential
@@ -615,8 +608,8 @@ def diff_flow( # noqa: C901, PLR0912, PLR0915
         T_2_0,
         v_1_0,
         v_2_0,
-        ions,
         B_0,
+        ions,
         density_scale,
         velocity_scale,
         temperature_scale,
@@ -642,12 +635,8 @@ def diff_flow( # noqa: C901, PLR0912, PLR0915
             v_1 = v_1_0 * (r / r_n) ** velocity_scale
             T_1 = T_1_0 * (r / r_n) ** temperature_scale
 
-            if second_scale:
-                n_2 = n_2_0 * (r / r_n) ** density_scale
-                T_2 = T_2_0 * (r / r_n) ** temperature_scale
-            else:
-                n_2 = n_2_0
-                T_2 = T_2_0
+            n_2 = n_2_0
+            T_2 = T_2_0
 
             if alfven:
                 B = B_0 * (r / r_n) ** magnetic_scale
@@ -687,8 +676,8 @@ def diff_flow( # noqa: C901, PLR0912, PLR0915
             T_2,
             v_1,
             v_2,
-            ions,
             B,
+            ions,
             density_scale,
             velocity_scale,
             temperature_scale,
@@ -711,8 +700,8 @@ def diff_flow( # noqa: C901, PLR0912, PLR0915
                         T_2[i],
                         v_1[i],
                         v_2[i],
-                        ions,
                         B[i],
+                        ions,
                         density_scale,
                         velocity_scale,
                         temperature_scale,
