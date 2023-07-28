@@ -374,3 +374,361 @@ def temp_ratio(  # noqa: C901, PLR0912, PLR0915
                 "arguments should be of equal length: 'r_0', 'r_n', "
                 "'n_1', 'n_2', 'v_1', 'T_1' and 'T_2'."
             ) from e
+
+def diff_flow( # noqa: C901, PLR0912, PLR0915
+    *,
+    r_0: u.au,
+    r_n: u.au,
+    n_1: u.cm**-3,
+    n_2: u.cm**-3,
+    v_1: u.km / u.s,
+    v_2: u.km / u.s,
+    T_1: u.K,
+    T_2: u.K,
+    ions: ParticleLike = ("p+", "He-4++"),
+    B: u.T,
+    density_scale: float = default_values["density"],
+    velocity_scale: float = default_values["velocity"],
+    temperature_scale: float = default_values["temperature"],
+    magnetic_scale: float = default_values["magnetic"],
+    alfven=False,
+    second_scale=False,
+    n_step: int = 100,
+    verbose=False,
+):
+    r"""
+    Calculate the thermalization on the differential flow for a
+    plasma in transit, taken from :cite:t:`johnson:2023b`. This
+    function allows the thermalization of a plasma to be modeled, it
+    can predict the differential flow between two ion species within
+    a plasma at a different point in space.
+
+    Parameters
+    ----------
+    r_0 : `~astropy.units.Quantity`, |keyword-only|
+        Starting position of the plasma in units convertible
+        to astronomical units.
+
+    r_n : `~astropy.units.Quantity`
+        Final position of the plasma in units convertible
+        to astronomical units.
+
+    n_1 : `~astropy.units.Quantity`
+        The primary ion number density in units convertible
+        to m\ :sup:`-3`.
+
+    n_2 : `~astropy.units.Quantity`
+        The secondary ion number density in units convertible
+        to m\ :sup:`-3`.
+
+    v_1 : `~astropy.units.Quantity`
+        The primary ion speed in units convertible to km s\ :sup:`-1`.
+
+    v_2 : `~astropy.units.Quantity`
+        The secondary ion speed in units convertible to km s\ :sup:`-1`.
+
+    T_1 : `~astropy.units.Quantity`
+        Temperature of the primary ion in units convertible to
+        temperature K.
+
+    T_2 : `~astropy.units.Quantity`
+        Temperature of the secondary ion in units convertible to
+        temperature K.
+
+    ions : |particle-list-like|, default: ``("p+, "He-4 2+")``
+        Particle list containing two (2) particles, primary ion of
+        interest is entered first, followed by the secondary ion.
+
+    B : `~astropy.units.Quantity`
+        Magnetic field strength in units convertible to tesla T.
+
+    density_scale : real number, default: -1.8
+        The value used as the scaling parameter for the primary ion
+        density. The default value is taken from
+        :cite:t:`hellinger:2011`.
+
+    velocity_scale : `float`, default: -0.2
+        The value used as the scaling parameter for the primary ion
+        velocity. The default value is taken from
+        :cite:t:`hellinger:2011`.
+
+    temperature_scale : `float`, default: -0.74
+        The value used as the scaling parameter for the primary ion
+        temperature. The default value is taken from
+        :cite:t:`hellinger:2011`.
+
+    magnetic_scale : `float`, default: -1.6
+        The value used as the scaling parameter for the magnetic
+        field. The default value is taken from
+        :cite:t:`hellinger:2011`
+
+    alfven : `bool`, default: False
+        The analysis for differential flow can be performed on data
+        and also be scaled by the Alfven speed. Setting this to true
+        will scale the output, by default it is turned off.
+
+    second_scale : `bool`, default: False
+        Allows the secondary ion parameters to also scale with the
+        given or custom values. By default, the output is off, so only
+        the primary ions of interest shall be scaled.
+
+    n_step : positive integer
+        The number of intervals used in solving a differential
+        equation via the Euler method.
+
+    Returns
+    -------
+    delta : `float`
+        The dimensionless differential velocity prediction
+        for the distance provided.
+
+    Raises
+    ------
+    `TypeError`
+        If applicable arguments are not instances of
+        `~astropy.units.Quantity` or cannot be converted into one.
+
+    ~astropy.units.UnitTypeError
+        If applicable arguments do not have units convertible to the
+        expected units.
+
+    Notes
+    -----
+    Coulomb collisions act to bring a system into local thermal
+    equilibirum (LTE) :cite:p:`verscharen:2019`, this affects how
+    parameters, i.e. temperature, density and speed, evolve in
+    transit. The collisional slowing time between two constituent
+    plasma ion species is given as:
+
+    .. math::
+
+        \Delta \vec{v}_{ab} = v_{a} - v{b} ,
+
+    where :math:`v_{a}` and :math:`v_{b}` are the bulk velocities for
+    the primary ion of interest and the secondary ion respectively.
+    The rate of change in the differential flow due to collisions is
+    taken from :cite:t:`verscharen:2019`:
+
+    .. math::\label{eq:dVdt}
+
+        \left( \frac{d \Delta \vec{v}_{ab}}{dt} \right)_{c} = -\nu_{s}^{(ab)} \, \Delta \vec{v}_{ab}
+
+    where $\nu_{s}^{(ab)}$ is the collision frequency for the slowing
+    of the secondary (b) particles by primary (a) particles. The
+    collision rate for the slowing down time is taken from
+    :cite:t:`larroche:2021` and is shown belong.
+
+    .. math::
+
+        \tau_{SD} = \frac{3m_{a}^{2}m_{b}^{2} \left( \frac{k_{B}T_{a}}{m_{a}} + \frac{k_{B}T_{b}}{m_{b}} \right)^{
+        3/2}}{4 \sqrt{2\pi} e^{4} Z^{2}_{a}Z^{2}_{b}(m_{a} + m_{b})(n_{a}m_{a} + n_{b}m_{b}) \lambda_{ab} }
+
+    with ...
+
+
+    .. math::
+
+        \lambda_{ab} = 1
+
+
+    The collisional timescale has a corresponding collisional
+    frequency which can be used in the Equation~\ref{eq:dVdt}.
+
+    .. math::
+
+        \tau_{SD} = \frac{1}{\nu_{s}^{(ab)}}
+
+    Following the example in :cite:t:`maruca:2013`, the chain rule
+    was applied to Equation~\ref{eq:dVdt} and the total derivative
+    was converted into the convective derivative to get an equation
+    in terms of $r$,
+
+    .. math::
+
+        \frac{d \Delta \vec{v_{ab}}}{dr} = -\nu_{s}^{(ab)} \cdot \frac{\Delta \vec{v_{ab}}}{|\vec{v_{b}}|}
+
+    the velocity is the streaming velocity of the background particle
+    field.
+
+
+
+
+
+    Examples
+    --------
+    >>> import astropy.units as u
+    >>> from plasmapy.formulary.collisions import helio
+
+
+    """
+
+    # Validate ions argument
+    if not isinstance(ions, (list, tuple, ParticleList)):
+        ions = [ions]
+    ions = ParticleList(ions)
+
+    # Validate number of ions
+    if len(ions) != 2:
+        raise ValueError(
+            "Argument 'ions' can only take two (2) input values. "
+            f"Instead received {len(ions)} input values."
+        )
+
+    if not all(ions.is_category("ion")):
+        raise ValueError(
+            f"Particle(s) in 'ions' must be ions, received {ions=} "
+            "instead. Please renter the 'ions' input parameter."
+        )
+
+    # Validate n_step argument
+    if not isinstance(n_step, numbers.Integral):
+        raise TypeError(
+            "Argument 'n_step' is of incorrect type, type of "
+            f"{type(n_step)} received instead. While 'n_step' must be "
+            "of type int."
+        )
+
+    # Validate scaling arguments
+    for arg in (density_scale, velocity_scale, temperature_scale, magnetic_scale):
+        if not isinstance(arg, numbers.Real):
+            raise TypeError(
+                "Scaling argument is of incorrect type, type of "
+                f"{type(arg)} received instead. Scaling argument "
+                "should be of type float or int."
+            )
+
+    # Validate booleans
+    for arg in (alfven, verbose):
+        if not isinstance(arg, bool):
+            raise TypeError(
+                f"Boolean input is of incorrect type {arg} is of "
+                f"{type(arg)}, bool type is required."
+            )
+
+    # Define the differential equation
+    def df_eq(
+        r_0,
+        r_n,
+        n_1_0,
+        n_2_0,
+        T_1_0,
+        T_2_0,
+        v_1_0,
+        v_2_0,
+        ions,
+        B_0,
+        density_scale,
+        velocity_scale,
+        temperature_scale,
+        magnetic_scale,
+        alfven,
+        n_step,
+    ):
+        # Initialize the alpha-proton charge and mass ratios.
+        z_1 = ions[0].charge_number
+        mu_1 = ions[0].mass_number
+
+        z_2 = ions[1].charge_number
+        mu_2 = ions[1].mass_number
+
+        # Initialise.
+        d_r = (r_n - r_0) / (1.0 * n_step)
+        dv = abs(v_2_0 - v_1_0)
+
+        for i in range(n_step):
+            r = r_0 + ((i + 1) * d_r)
+
+            n_1 = n_1_0 * (r / r_n) ** density_scale
+            v_1 = v_1_0 * (r / r_n) ** velocity_scale
+            T_1 = T_1_0 * (r / r_n) ** temperature_scale
+
+            if second_scale:
+                n_2 = n_2_0 * (r / r_n) ** density_scale
+                T_2 = T_2_0 * (r / r_n) ** temperature_scale
+            else:
+                n_2 = n_2_0
+                T_2 = T_2_0
+
+            if alfven:
+                B = B_0 * (r / r_n) ** magnetic_scale
+                v_a = Alfven_speed(B, n_1, mu_1, n_2, mu_2)
+
+            a = (3 * (mu_1 * mu_2) ** 2 * (m_u**4) * (4 * np.pi * e0) ** 2) / (
+                4 * np.sqrt(2 * np.pi) * (q_e**4) * ((z_1 * z_2) ** 2)
+            )
+            b = (((k_B * T_1) / (mu_1 * m_u)) + ((k_B * T_2) / (mu_2 * m_u))) ** 1.5
+            c = (m_u**2) * (mu_1 + mu_2) * (n_1 * mu_1 + n_2 * mu_2)
+            d = lambda_ba(T_2 / T_1, T_1, n_1, n_2, z_1, z_2, mu_1, mu_2)
+
+            vs = (c * d) / (a * b)
+
+            d_dv = -(vs * (dv) / v_1) * d_r
+
+            dv = dv + d_dv
+
+        if alfven:
+            return dv / v_a
+        else:
+            return dv
+
+    variables = [r_0, r_n, n_1, n_2, v_1, T_1, T_2, B]
+
+    d_type = [bool(hasattr(var, "__len__")) for var in variables]
+
+    var = all(i for i in d_type)
+
+    if not var:
+        return df_eq(
+            r_0,
+            r_n,
+            n_1,
+            n_2,
+            T_1,
+            T_2,
+            v_1,
+            v_2,
+            ions,
+            B,
+            density_scale,
+            velocity_scale,
+            temperature_scale,
+            magnetic_scale,
+            alfven,
+            n_step,
+        )
+    else:
+        try:
+            all(len(variables[0]) == len(z) for z in variables[1:])
+            res = []
+            for i in range(len(variables[0])):
+                res.append(
+                    df_eq(
+                        r_0[i],
+                        r_n[i],
+                        n_1[i],
+                        n_2[i],
+                        T_1[i],
+                        T_2[i],
+                        v_1[i],
+                        v_2[i],
+                        ions,
+                        B[i],
+                        density_scale,
+                        velocity_scale,
+                        temperature_scale,
+                        magnetic_scale,
+                        alfven,
+                        n_step,
+                    )
+                )
+                if verbose:
+                    logging.info(f"\r {(i / len(variables[0])) * 100:.2f} %")
+
+            return res  # noqa: TRY300
+
+        except Exception as e:  # noqa: BLE001
+            raise ValueError(
+                "Argument(s) are of unequal lengths, the following "
+                "arguments should be of equal length: 'r_0', 'r_n', "
+                "'n_1', 'n_2', 'v_1', 'v_2', 'T_1', 'T_2'. and 'B'."
+            ) from e
