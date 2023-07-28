@@ -1433,8 +1433,7 @@ example Jupyter notebooks, the tables of contents are in
 .. _packages related to Sphinx: https://pypi.org/search/?q=sphinx+or+nbsphinx&o=-created&c=Framework+%3A%3A+Sphinx
 .. _parameters: https://numpydoc.readthedocs.io/en/latest/format.html#parameters
 .. _raise an issue: https://github.com/PlasmaPy/PlasmaPy/issues/new?title=Improve+documentation+for...&labels=Documentation
-.. _raise an issue about the documentation build failure:
-      https://github.com/PlasmaPy/PlasmaPy/issues/new?title=Documentation+build+failure&labels=Documentation
+.. _raise an issue about the documentation build failure: https://github.com/PlasmaPy/PlasmaPy/issues/new?title=Documentation+build+failure&labels=Documentation
 .. _raises: https://numpydoc.readthedocs.io/en/latest/format.html#raises
 .. _raw string: https://docs.python.org/3/reference/lexical_analysis.html#literals
 .. _Read the Docs Sphinx Theme: https://sphinx-rtd-theme.readthedocs.io
@@ -1443,5 +1442,4 @@ example Jupyter notebooks, the tables of contents are in
 .. _Sphinx's templating page: https://www.sphinx-doc.org/en/master/templating.html
 .. _style overrides: https://docs.readthedocs.io/en/stable/guides/adding-custom-css.html
 .. _toctree: https://www.sphinx-doc.org/en/master/usage/restructuredtext/directives.html#directive-toctree
-https://www.sphinx-doc.org/en/master/usage/restructuredtext/directives.html#table-of-contents
 .. _warns: https://numpydoc.readthedocs.io/en/latest/format.html#warns
