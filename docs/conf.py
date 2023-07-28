@@ -173,7 +173,7 @@ root_doc = "index"
 # General information about the project.
 project = "PlasmaPy"
 author = "PlasmaPy Community"
-copyright = f"2015–{datetime.utcnow().year}, {author}"  # noqa: A001
+copyright = f"2015–{datetime.utcnow().year}, {author}"  # noqa: A001, DTZ003
 language = "en"
 
 # The version info for the project you're documenting, acts as replacement for

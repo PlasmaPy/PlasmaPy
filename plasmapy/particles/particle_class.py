@@ -157,7 +157,9 @@ class AbstractParticle(ABC):
             "plasmapy_particle": {
                 "type": type(self).__name__,
                 "module": self.__module__,
-                "date_created": datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S UTC"),
+                "date_created": datetime.utcnow().strftime(  # noqa: DTZ003
+                    "%Y-%m-%d %H:%M:%S UTC"
+                ),
                 "__init__": {"args": (), "kwargs": {}},
             }
         }
@@ -221,9 +223,9 @@ class AbstractPhysicalParticle(AbstractParticle):
     def is_category(
         self,
         *category_tuple,
-        require: Union[str, Iterable[str]] = None,
-        any_of: Union[str, Iterable[str]] = None,
-        exclude: Union[str, Iterable[str]] = None,
+        require: Optional[Union[str, Iterable[str]]] = None,
+        any_of: Optional[Union[str, Iterable[str]]] = None,
+        exclude: Optional[Union[str, Iterable[str]]] = None,
     ) -> bool:
         """Determine if the particle meets categorization criteria.
 
@@ -1754,6 +1756,7 @@ class Particle(AbstractPhysicalParticle):
 
         if inplace:
             self.__init__(base_particle, Z=new_charge_number)
+            return None
         else:
             return Particle(base_particle, Z=new_charge_number)
 
@@ -1827,6 +1830,7 @@ class Particle(AbstractPhysicalParticle):
 
         if inplace:
             self.__init__(base_particle, Z=new_charge_number)
+            return None
         else:
             return Particle(base_particle, Z=new_charge_number)
 
@@ -1872,7 +1876,13 @@ class DimensionlessParticle(AbstractParticle):
     'ξ'
     """
 
-    def __init__(self, *, mass: Real = None, charge: Real = None, symbol: str = None):
+    def __init__(
+        self,
+        *,
+        mass: Optional[Real] = None,
+        charge: Optional[Real] = None,
+        symbol: Optional[str] = None,
+    ):
         try:
             self.mass = mass
             self.charge = charge
@@ -2085,7 +2095,7 @@ class CustomParticle(AbstractPhysicalParticle):
         *,
         Z: Optional[Real] = None,
     ):
-        # TODO py3.10 replace ifology with structural pattern matching
+        # TODO: py3.10 replace ifology with structural pattern matching
 
         if Z is not None and charge is not None:
             raise InvalidParticleError(

@@ -158,6 +158,8 @@ def Maxwellian_1D(
         return distFunc << SPEED_DISTRIBUTION_UNITS_1D
     elif units == "unitless":
         return distFunc
+    else:
+        raise ValueError(f"Units must be either 'units' or 'unitless', got {units}).")
 
 
 @particle_input
@@ -304,6 +306,8 @@ def Maxwellian_velocity_2D(
         return distFunc << SPEED_DISTRIBUTION_UNITS_2D
     elif units == "unitless":
         return distFunc
+    else:
+        raise ValueError(f"Units must be either 'units' or 'unitless', got {units}).")
 
 
 @particle_input
@@ -461,6 +465,8 @@ def Maxwellian_velocity_3D(
         return distFunc << SPEED_DISTRIBUTION_UNITS_3D
     elif units == "unitless":
         return distFunc
+    else:
+        raise ValueError(f"Units must be either 'units' or 'unitless', got {units}).")
 
 
 @particle_input
@@ -586,6 +592,8 @@ def Maxwellian_speed_1D(
         return distFunc << SPEED_DISTRIBUTION_UNITS_1D
     elif units == "unitless":
         return distFunc
+    else:
+        raise ValueError(f"Units must be either 'units' or 'unitless', got {units}).")
 
 
 @particle_input
@@ -719,6 +727,8 @@ def Maxwellian_speed_2D(
         return distFunc << SPEED_DISTRIBUTION_UNITS_1D
     elif units == "unitless":
         return distFunc
+    else:
+        raise ValueError(f"Units must be either 'units' or 'unitless', got {units}).")
 
 
 @particle_input
@@ -851,6 +861,8 @@ def Maxwellian_speed_3D(
         return distFunc << SPEED_DISTRIBUTION_UNITS_1D
     elif units == "unitless":
         return distFunc
+    else:
+        raise ValueError(f"Units must be either 'units' or 'unitless', got {units}).")
 
 
 @particle_input
@@ -1004,6 +1016,8 @@ def kappa_velocity_1D(
         return distFunc << SPEED_DISTRIBUTION_UNITS_1D
     elif units == "unitless":
         return distFunc
+    else:
+        raise ValueError(f"Units must be either 'units' or 'unitless', got {units}).")
 
 
 @particle_input
@@ -1177,3 +1191,5 @@ def kappa_velocity_3D(
         return distFunc << SPEED_DISTRIBUTION_UNITS_3D
     elif units == "unitless":
         return distFunc
+    else:
+        raise ValueError(f"Units must be either 'units' or 'unitless', got {units}).")

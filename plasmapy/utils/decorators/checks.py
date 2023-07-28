@@ -138,7 +138,9 @@ class CheckValues(CheckBase):
     }
 
     def __init__(
-        self, checks_on_return: dict[str, bool] = None, **checks: dict[str, bool]
+        self,
+        checks_on_return: Optional[dict[str, bool]] = None,
+        **checks: dict[str, bool],
     ):
         super().__init__(checks_on_return=checks_on_return, **checks)
 
@@ -336,7 +338,7 @@ class CheckValues(CheckBase):
             elif ckey == "none_shall_pass":
                 if arg is None and arg_checks[ckey]:
                     break
-                elif arg is None:
+                elif arg is None:  # noqa: RET508
                     raise ValueError(f"{valueerror_msg} Nones.")
 
 
@@ -630,7 +632,7 @@ class CheckUnits(CheckBase):
             if _units is _units_anno is param_checks is None:
                 # no checks specified and no unit annotations defined
                 continue
-            elif _units is _units_anno is None:
+            elif _units is _units_anno is None:  # noqa: RET507
                 # checks specified, but NO unit checks
                 msg = "No astropy.units specified for "
                 if param.name == "checks_on_return":
@@ -639,7 +641,7 @@ class CheckUnits(CheckBase):
                     msg += f"argument {param.name} "
                 msg += f"of function {self.f.__name__}()."
                 raise ValueError(msg)
-            elif _units is None:
+            elif _units is None:  # noqa: RET507
                 _units = _units_anno
                 _units_are_from_anno = True
                 _units_anno = None
@@ -681,7 +683,7 @@ class CheckUnits(CheckBase):
             if not _units and not _units_anno and param_checks is None:
                 # annotations did not specify units
                 continue
-            elif not _units and not _units_anno:
+            elif not _units and not _units_anno:  # noqa: RET507
                 # checks specified, but NO unit checks
                 msg = "No astropy.units specified for "
                 if param.name == "checks_on_return":
@@ -1041,7 +1043,9 @@ class CheckUnits(CheckBase):
 
 
 def check_units(
-    func=None, checks_on_return: dict[str, Any] = None, **checks: dict[str, Any]
+    func=None,
+    checks_on_return: Optional[dict[str, Any]] = None,
+    **checks: dict[str, Any],
 ):
     """
     A decorator to 'check' — limit/control — the units of input and return
@@ -1176,7 +1180,9 @@ def check_units(
 
 
 def check_values(
-    func=None, checks_on_return: dict[str, bool] = None, **checks: dict[str, bool]
+    func=None,
+    checks_on_return: Optional[dict[str, bool]] = None,
+    **checks: dict[str, bool],
 ):
     """
     A decorator to 'check' — limit/control — the values of input and

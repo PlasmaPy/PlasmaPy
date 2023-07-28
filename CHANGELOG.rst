@@ -1,3 +1,12 @@
+PlasmaPy v2023.5.1 (2023-06-07)
+===============================
+
+Trivial/Internal Changes
+------------------------
+
+- Loosened the requirement on ``ipykernel`` for compatibility with
+  Google Colab. (:pr:`2202`)
+
 
 PlasmaPy v2023.5.0 (2023-05-31)
 ===============================

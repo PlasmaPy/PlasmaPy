@@ -31,7 +31,7 @@ for obj_name in list(globals()):
     if not (
         obj_name.startswith("__") or obj_name.endswith("__")
     ) and not inspect.ismodule(globals()[obj_name]):
-        __all__.append(obj_name)
+        __all__.append(obj_name)  # noqa: PERF401
 __all__.sort()
 
 # Put non-formulary imports here so that they don't get included in __all__
