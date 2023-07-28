@@ -1410,7 +1410,8 @@ This warning can be resolved by:
 
 * Adding the file to the appropriate toctree (see Sphinx's
   `documentation page on tables of contents <toctree>`_), or
-* Adding the ``:orphan:`` `metadata`_ field at the top of the reST file.
+* Adding the ``:orphan:`` `metadata field`_ at the top of the reST
+  file.
 
 For PlasmaPy, the tables of contents are generally located in
 :file:`index.rst` in the same directory as the source files. For
