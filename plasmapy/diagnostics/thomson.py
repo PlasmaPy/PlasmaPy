@@ -793,7 +793,7 @@ def spectral_density_model(wavelengths, settings, params):
     If an instrument function is included, the data should not include
     any `numpy.nan` values — instead regions with no data should be
     removed from both the data and wavelength arrays using
-    `numpy.delete`.
+    "`numpy.delete`."
     """
 
     required_settings = {

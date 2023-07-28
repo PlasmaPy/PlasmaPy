@@ -673,8 +673,6 @@ def run_fit(
     params,
     settings,
     noise_amp=0.05,
-    notch=None,
-    notch_as_nan=False,
     fit_method="differential_evolution",
     fit_kws={},
     max_iter=None,
@@ -727,6 +725,7 @@ def run_fit(
     scatter_vec = settings["scatter_vec"]
     probe_wavelength = settings["probe_wavelength"]
     instr_func = settings["instr_func"]
+    notches = settings["notches"]
 
     electron_vdir = settings.get("electron_vdir", np.ones([len(T_e), 3]))
     ion_vdir = settings.get("ion_vdir", np.ones([len(T_i), 3]))
@@ -749,20 +748,10 @@ def run_fit(
         electron_vel=electron_vel * u.m / u.s,
         ion_vel=ion_vel * u.m / u.s,
         instr_func=instr_func,
+        notches=notches,
     )
 
     data = Skw
-    if notch is not None:
-        x0 = np.argmin(np.abs(wavelengths.to(u.m).value * 1e9 - notch[0]))
-        x1 = np.argmin(np.abs(wavelengths.to(u.m).value * 1e9 - notch[1]))
-
-        # Depending on the notch_as_nan keyword, either delete the missing data
-        # or replace with NaN values
-        if notch_as_nan:
-            data[x0:x1] = np.nan
-        else:
-            data = np.delete(data, np.arange(x0, x1))
-            wavelengths = np.delete(wavelengths, np.arange(x0, x1))
 
     data *= 1 + np.random.normal(loc=0, scale=noise_amp, size=wavelengths.size)
     data *= 1 / np.nanmax(data)
@@ -871,6 +860,7 @@ def epw_single_species_settings_params():
     kwargs["wavelengths"] = (
         (np.linspace(w0 - 40, w0 + 40, num=512) * u.nm).to(u.m).value
     )
+    kwargs["notches"] = (531, 533)
 
     return kwargs
 
@@ -911,6 +901,8 @@ def epw_multi_species_settings_params():
     kwargs["wavelengths"] = (
         (np.linspace(w0 - 40, w0 + 40, num=512) * u.nm).to(u.m).value
     )
+
+    kwargs["notches"] = (531, 533)
 
     return kwargs
 
@@ -1045,7 +1037,7 @@ def test_fit_epw_single_species(epw_single_species_settings_params):
         epw_single_species_settings_params
     )
 
-    run_fit(wavelengths, params, settings, notch=(531, 533))
+    run_fit(wavelengths, params, settings)
 
 
 @pytest.mark.slow
@@ -1054,7 +1046,7 @@ def test_fit_epw_multi_species(epw_multi_species_settings_params):
         epw_multi_species_settings_params
     )
 
-    run_fit(wavelengths, params, settings, notch=(531, 533))
+    run_fit(wavelengths, params, settings)
 
 
 @pytest.mark.slow
@@ -1124,13 +1116,11 @@ def test_fit_with_instr_func(epw_single_species_settings_params):
             wavelengths,
             params,
             settings,
-            notch=(531, 533),
-            notch_as_nan=True,
             run_fit=False,
         )
 
     # Run the same fit using np.delete instead of np.nan values
-    run_fit(wavelengths, params, settings, notch=(531, 533))
+    run_fit(wavelengths, params, settings)
 
 
 @pytest.mark.parametrize("instr_func", invalid_instr_func_list)
