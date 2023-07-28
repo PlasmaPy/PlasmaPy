@@ -217,6 +217,32 @@ def test_single_species_collective_spectrum(single_species_collective_spectrum):
     )
 
 
+def test_notched_spectrum(single_species_collective_spectrum):
+    """
+    Compares notched and unnotched spectra
+    """
+    # Compute spectrum with notch included
+    alpha, wavelengths, Skw_notched = single_species_collective_spectrum
+
+    # Compute same spectrum without notch
+    args, kwargs = spectral_density_args_kwargs(single_species_collective_args)
+
+    # Record wavelength array indices corresponding to notch
+    x1 = np.argmin(np.abs(wavelengths - kwargs["notches"][0]))
+    x2 = np.argmin(np.abs(wavelengths - kwargs["notches"][1]))
+
+    kwargs["notches"] = None
+    alpha, Skw_unnotched = thomson.spectral_density(*args, **kwargs)
+
+    # Check that regions outside the notch are the same for both Skws
+    assert Skw_notched[:x1] == Skw_unnotched[:x1]
+
+    assert Skw_notched[x2:] == Skw_unnotched[x2:]
+
+    # Check that region inside the notch is 0 for notched Skw
+    assert Skw_notched[x1:x2] == np.zeros(x2 - x1)
+
+
 @pytest.mark.slow
 def test_spectral_density_minimal_arguments(single_species_collective_args):
     """
