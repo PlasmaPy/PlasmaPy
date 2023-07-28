@@ -1,7 +1,7 @@
 """
 Module containing the Collisional Analysis formulation.
 """
-__all__ = ["temp_ratio"]
+__all__ = ["temp_ratio", "diff_flow"]
 
 import astropy.units as u
 import logging
@@ -395,10 +395,10 @@ def diff_flow( # noqa: C901, PLR0912, PLR0915
     verbose=False,
 ):
     r"""
-    Calculate the thermalization on the differential flow for a
+    Calculate the collisionality of the differential flow for a
     plasma in transit, taken from :cite:t:`johnson:2023b`. This
-    function allows the thermalization of a plasma to be modeled, it
-    can predict the differential flow between two ion species within
+    function allows the thermalization of a plasma to be modeled,
+    predicting the differential flow between two ion species within
     a plasma at a different point in space.
 
     Parameters
@@ -642,7 +642,7 @@ def diff_flow( # noqa: C901, PLR0912, PLR0915
                 B = B_0 * (r / r_n) ** magnetic_scale
                 v_a = Alfven_speed(B, n_1, mu_1, n_2, mu_2)
 
-            a = (3 * (mu_1 * mu_2) ** 2 * (m_u**4) * (4 * np.pi * e0) ** 2) / (
+            a = (3 * (mu_1 * mu_2) ** 2 * (m_u**4) * (8 * np.pi * e0) ** 2) / (
                 4 * np.sqrt(2 * np.pi) * (q_e**4) * ((z_1 * z_2) ** 2)
             )
             b = (((k_B * T_1) / (mu_1 * m_u)) + ((k_B * T_2) / (mu_2 * m_u))) ** 1.5
