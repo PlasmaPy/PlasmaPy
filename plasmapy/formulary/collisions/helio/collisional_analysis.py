@@ -530,7 +530,7 @@ def diff_flow(  # noqa: C901, PLR0912, PLR0915
 
     .. math::
 
-        \lambda_{ab} = 23 - \ln\!\left [ \frac{Z_{i}Z_{j}(\mu_{i} + \mu_{j})}{\mu_{i}T_{j} + \mu_{j}T_{i}} \left ( \frac{n_{i}Z_{i}^{2}}{T_{i}} + \frac{n_{j}Z_{j}^{2}}{T_{j}} \right )^{1/2} \right].
+        \lambda_{ab} = 23 - \ln\!\left [ \frac{Z_{a}Z_{b}(\mu_{a} + \mu_{b})}{\mu_{a}T_{b} + \mu_{b}T_{a}} \left ( \frac{n_{a}Z_{a}^{2}}{T_{a}} + \frac{n_{b}Z_{b}^{2}}{T_{b}} \right )^{1/2} \right].
 
 
     The collisional timescale has a corresponding collisional
