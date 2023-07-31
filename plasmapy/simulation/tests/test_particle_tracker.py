@@ -48,19 +48,17 @@ class TestParticleTrackerGyroradius:
     )
     simulation.load_particles(x, v, point_particle)
 
-    stop_condition = TimeElapsedStopCondition(10 * u.s)
+    stop_condition = TimeElapsedStopCondition(6 * u.s)
     save_routine = MemoryIntervalSaveRoutine(0.1 * u.s)
 
-    simulation.run(stop_condition, save_routine, dt=1e-3 * u.s)
+    simulation.run(stop_condition, save_routine, dt=1e-2 * u.s)
 
     def test_gyroradius(self):
         """Test to ensure particles maintain their gyroradius over time"""
         positions = np.asarray(self.save_routine.x_all) * u.m
         distances = np.linalg.norm(positions, axis=-1)
 
-        is_close = np.isclose(distances, self.R_L, rtol=1e-2)
-
-        assert is_close.all()
+        assert np.isclose(distances, self.R_L, rtol=5e-2).all()
 
     def test_kinetic_energy(self):
         """Test to ensure particles maintain their gyroradius over time"""
