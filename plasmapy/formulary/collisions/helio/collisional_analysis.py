@@ -21,7 +21,7 @@ default_values = {
     "magnetic": -1.6,
 }
 m_u = const.u
-mu_0 =const.mu0
+mu_0 = const.mu0
 e0 = const.eps0
 k_B = const.k_B
 q_e = const.e.si
@@ -59,7 +59,7 @@ def temp_ratio(  # noqa: C901, PLR0912, PLR0915
     T_1: u.K,
     T_2: u.K,
     ions: ParticleLike = ("p+", "He-4++"),
-    n_step: int = 100,
+    n_step: int = 20,
     density_scale: float = default_values["density"],
     velocity_scale: float = default_values["velocity"],
     temperature_scale: float = default_values["temperature"],
@@ -292,8 +292,6 @@ def temp_ratio(  # noqa: C901, PLR0912, PLR0915
 
         # Define constants
         A = 2.6 * 10**7 * (u.cm**3 * u.km * (u.K**1.5)) / (u.s * u.au)
-        B = 1 / (u.cm * u.K) ** 1.5
-
 
         theta = T_2 / T_1_0
         for i in range(n_step):
@@ -374,7 +372,8 @@ def temp_ratio(  # noqa: C901, PLR0912, PLR0915
                 "'n_1', 'n_2', 'v_1', 'T_1' and 'T_2'."
             ) from e
 
-def diff_flow( # noqa: C901, PLR0912, PLR0915
+
+def diff_flow(  # noqa: C901, PLR0912, PLR0915
     *,
     r_0: u.au,
     r_n: u.au,
@@ -391,7 +390,7 @@ def diff_flow( # noqa: C901, PLR0912, PLR0915
     temperature_scale: float = default_values["temperature"],
     magnetic_scale: float = default_values["magnetic"],
     alfven=False,
-    n_step: int = 100,
+    n_step: int = 20,
     verbose=False,
 ):
     r"""
@@ -471,15 +470,20 @@ def diff_flow( # noqa: C901, PLR0912, PLR0915
 
     Returns
     -------
-    delta : `float`
-        The dimensionless differential velocity prediction
-        for the distance provided.
+    Δ v_{12} : `float`
+        The differential velocity prediction in units of
+        km s\ :sup:`-1`, or dimensionless if Alfven scaling is
+        enabled, for the distance provided.
 
     Raises
     ------
     `TypeError`
         If applicable arguments are not instances of
         `~astropy.units.Quantity` or cannot be converted into one.
+
+    `ValueError`
+        If applicable arguments are not of the same length or if an
+        incorrect 'ions' argument is entered.
 
     ~astropy.units.UnitTypeError
         If applicable arguments do not have units convertible to the
@@ -495,64 +499,83 @@ def diff_flow( # noqa: C901, PLR0912, PLR0915
 
     .. math::
 
-        \Delta \vec{v}_{ab} = v_{a} - v{b} ,
+        \Delta \vec{v}_{ab} = \vec{v}_{a} - \vec{v}_{b} ,
 
-    where :math:`v_{a}` and :math:`v_{b}` are the bulk velocities for
-    the primary ion of interest and the secondary ion respectively.
-    The rate of change in the differential flow due to collisions is
-    taken from :cite:t:`verscharen:2019`:
+    where :math:`\vec{v}_{a}` and :math:`\vec{v}_{b}` are the bulk
+    velocities for the primary ion of interest and the secondary ion
+    respectively. The rate of change in the differential flow due to collisions is
+    taken from :cite:t:`nrlformulary:2019`:
 
-    .. math::\label{eq:dVdt}
+    .. math::
 
-        \left( \frac{d \Delta \vec{v}_{ab}}{dt} \right)_{c} = -\nu_{s}^{(ab)} \, \Delta \vec{v}_{ab}
+        \frac{d \Delta \vec{v}_{ab}}{dt}  = \nu^{\rm s}_{(ab)} \Delta \vec{v}_{ab},
 
-    where $\nu_{s}^{(ab)}$ is the collision frequency for the slowing
-    of the secondary (b) particles by primary (a) particles. The
-    collision rate for the slowing down time is taken from
-    :cite:t:`larroche:2021` and is shown belong.
+    where :math:`t` is time and  :math:`\nu^{\rm s}_{(ab)}` is the
+    collision frequency for the slowing of the secondary (b) particles
+    by primary (a) particles. The collision rate for the slowing down
+    time is taken from :cite:t:`larroche:2021` and is shown below:
 
     .. math::
 
         \tau_{SD} = \frac{3m_{a}^{2}m_{b}^{2} \left( \frac{k_{B}T_{a}}{m_{a}} + \frac{k_{B}T_{b}}{m_{b}} \right)^{
         3/2}}{4 \sqrt{2\pi} e^{4} Z^{2}_{a}Z^{2}_{b}(m_{a} + m_{b})(n_{a}m_{a} + n_{b}m_{b}) \lambda_{ab} }
 
-    with ...
-
+    with
+    where, for :math:`i`-particles, :math:`m_{i}` is mass,
+    :math:`q_{i}` is charge, :math:`v_{i}` is bulk velocity,
+    :math:`T_{i}` is scalar temperature, :math:`n_{i}` is number
+    density and :math:`k_{\rm B}` is the Boltzmann constant. The
+    Coulomb logarithm :math:`\lambda_{ab}` for  mixed ion-ion
+    collisions is:
 
     .. math::
 
-        \lambda_{ab} = 1
+        \lambda_{ab} = 23 - \ln\!\left [ \frac{Z_{i}Z_{j}(\mu_{i} + \mu_{j})}{\mu_{i}T_{j} + \mu_{j}T_{i}} \left ( \frac{n_{i}Z_{i}^{2}}{T_{i}} + \frac{n_{j}Z_{j}^{2}}{T_{j}} \right )^{1/2} \right].
 
 
     The collisional timescale has a corresponding collisional
-    frequency which can be used in the Equation~\ref{eq:dVdt}.
+    frequency which can be used in the prior equation.
 
     .. math::
 
-        \tau_{SD} = \frac{1}{\nu_{s}^{(ab)}}
+        \tau_{SD} = \frac{1}{\nu^{\rm s}_{(ab)}}
 
     Following the example in :cite:t:`maruca:2013`, the chain rule
-    was applied to Equation~\ref{eq:dVdt} and the total derivative
-    was converted into the convective derivative to get an equation
-    in terms of $r$,
+    was applied to differential flow and the total derivative
+    was converted into the convective derivative. This produces an
+    equation in terms of :math:`r`, with  the velocity being the
+    velocity of the background particle field.
 
     .. math::
 
-        \frac{d \Delta \vec{v_{ab}}}{dr} = -\nu_{s}^{(ab)} \cdot \frac{\Delta \vec{v_{ab}}}{|\vec{v_{b}}|}
+        \frac{d \Delta \vec{v}_{ab}}{dr} = -\nu^{s}_{(ab)} \cdot \frac{\Delta \vec{v}_{ab}}{|\vec{v_{b}}|}
 
-    the velocity is the streaming velocity of the background particle
-    field.
+    Application is primarily concerned with the solar wind and the
+    system is assumed to be in steady state. The density, velocity
+    and temperature of the primary ion can be radially scaled,
+    as seen below. The values for the scaling can be altered,
+    though the default values are taken from :cite:t:`hellinger:2011`.
 
-
-
+    .. math::
+        n(r) \propto r^{-1.8}\ , \hspace{1cm} v_{r}(r) \propto r^{-0.2}\ , \hspace{1cm} T(r) \propto r^{-0.74}, \hspace{0.5cm} \, {\rm and} \hspace{0.5cm} B(r) \propto r^{-1.6}.
 
 
     Examples
     --------
     >>> import astropy.units as u
     >>> from plasmapy.formulary.collisions import helio
-
-
+    >>> r_0 = [0.1, 0.1, 0.1] * u.au
+    >>> r_n = [1.0, 1.0, 1.0] * u.au
+    >>> n_1 = [] * u.cm**-3
+    >>> n_2 = [] * u.cm**-3
+    >>> v_1 = [] * u.km/u.s
+    >>> v_2 = [] * u.km /u.s
+    >>> T_1 = [] * u.K
+    >>> T_2 = [] * u.K
+    >>> B = [] * u.T
+    >>> ions = ["p+", "He-4++"]
+    >>> helio.diff_flow(r_0=r_0, r_n=r_n, n_1=n_1, n_2=n_2, v_1=v_1, v_2=v_2, T_1=T_1, T_2=T_2, B=B, ions=ions)
+    [1.0000, 1.00000, 1.00000]
     """
 
     # Validate ions argument
