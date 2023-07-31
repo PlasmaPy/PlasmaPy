@@ -191,7 +191,7 @@ class AbstractSaveRoutine(ABC):
     `save_to_disk` or `save_to_memory` depending on the routine implemented.
     """
 
-    def __init__(self, output_directory: Path):
+    def __init__(self, output_directory: Optional[Path] = None):
         self.output_directory = output_directory
 
         self.x_all = []
@@ -225,6 +225,12 @@ class AbstractSaveRoutine(ABC):
 
     def save_to_disk(self):
         """Save a hdf5 file containing simulation positions and velocities."""
+
+        if self.output_directory:
+            raise ValueError(
+                "Please pass an `output_directory` parameter during instantiation to use disk save "
+                "routines!"
+            )
 
         path = self.output_directory / f"{self._particle_tracker.iteration_number}.hdf5"
 
