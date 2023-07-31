@@ -520,7 +520,6 @@ def diff_flow(  # noqa: C901, PLR0912, PLR0915
         \tau_{SD} = \frac{3m_{a}^{2}m_{b}^{2} \left( \frac{k_{B}T_{a}}{m_{a}} + \frac{k_{B}T_{b}}{m_{b}} \right)^{
         3/2}}{4 \sqrt{2\pi} e^{4} Z^{2}_{a}Z^{2}_{b}(m_{a} + m_{b})(n_{a}m_{a} + n_{b}m_{b}) \lambda_{ab} }
 
-    with
     where, for :math:`i`-particles, :math:`m_{i}` is mass,
     :math:`q_{i}` is charge, :math:`v_{i}` is bulk velocity,
     :math:`T_{i}` is scalar temperature, :math:`n_{i}` is number
@@ -530,8 +529,8 @@ def diff_flow(  # noqa: C901, PLR0912, PLR0915
 
     .. math::
 
-        \lambda_{ab} = 23 - \ln\!\left [ \frac{Z_{a}Z_{b}(\mu_{a} + \mu_{b})}{\mu_{a}T_{b} + \mu_{b}T_{a}} \left ( \frac{n_{a}Z_{a}^{2}}{T_{a}} + \frac{n_{b}Z_{b}^{2}}{T_{b}} \right )^{1/2} \right].
-
+        \lambda_{ab} = 23 - \ln\!\left [ \frac{Z_{a}Z_{b}(\mu_{a} + \mu_{b})}{\mu_{a}T_{b} +
+        \mu_{b}T_{a}} \left ( \frac{n_{a}Z_{a}^{2}}{T_{a}} + \frac{n_{b}Z_{b}^{2}}{T_{b}} \right )^{1/2} \right].
 
     The collisional timescale has a corresponding collisional
     frequency which can be used in the prior equation.
