@@ -151,15 +151,17 @@ class ConditionlEvents:
 
                 print("In all cases, the first peak per burst was used.")
 
+        self.return_time = return_time
+        self.s_av = s_av
         return Svals, s_av, s_var, return_time, peaks, wait
 
     @property
     def time(self):
-        pass
+        return self.return_time
 
     @property
     def average(self):
-        pass
+        return self.s_av
 
     @property
     def variance(self):
