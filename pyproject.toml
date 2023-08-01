@@ -258,6 +258,7 @@ extend-select = [
   "RUF010", # explicit-f-string-type-conversion
   "RUF011", # static-key-dict-comprehension
   "RUF013", # implicit-optional
+  "RUF100", # unused-qa
   "RUF200", # invalid-pyproject-toml
   "S", # flake8-bandit
   "SIM", # flake8-simplify

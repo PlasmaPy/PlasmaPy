@@ -641,7 +641,7 @@ class CheckUnits(CheckBase):
                     msg += f"argument {param.name} "
                 msg += f"of function {self.f.__name__}()."
                 raise ValueError(msg)
-            elif _units is None:  # noqa: RET507
+            elif _units is None:
                 _units = _units_anno
                 _units_are_from_anno = True
                 _units_anno = None
@@ -959,7 +959,7 @@ class CheckUnits(CheckBase):
         return allowed_units
 
     @staticmethod
-    def _normalize_equivalencies(equivalencies):  # noqa: D400
+    def _normalize_equivalencies(equivalencies):
         """
         Normalize equivalencies to ensure each is in a 4-tuple of the
         form `(from_unit, to_unit, forward_func, backward_func)`.
