@@ -154,7 +154,7 @@ repeated multiple times.
    * ``git push`` is like sending the package off to its destination
      (i.e., GitHub).
 
-.. _create-pr
+.. _create-pr:
 
 Creating a pull request
 -----------------------
