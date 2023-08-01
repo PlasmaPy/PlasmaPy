@@ -14,7 +14,7 @@ class ConditionlEvents:
         lower_threshold,
         upper_threshold=None,
         reference_signal=None,
-        delta=None,
+        minimal_distance=None,
         window=False,
         print_verbose=True,
     ):
@@ -39,25 +39,23 @@ class ConditionlEvents:
         # (+1 since dplaces is one ahead with respect to places)
         conditional_events = np.split(places, _split + 1)
 
-        if delta is None:
-            delta = len(normalizes_signal) / len(conditional_events) * time_step
+        if minimal_distance is None:
+            minimal_distance = len(normalizes_signal) / len(conditional_events) * time_step
         if upper_threshold is not None:
             too_high = []
             for i in range(len(conditional_events)):
                 if max(normalizes_signal[conditional_events[i]]) > upper_threshold:
                     too_high.append(i)
             removeset = set(too_high)
-            conditional_events = [v for i, v in enumerate(conditional_events) if i not in removeset]
+            conditional_events = [event for i, event in enumerate(conditional_events) if i not in removeset]
 
         # Use arange instead of linspace to guarantee 0 in the middle of the array.
-        t_av = (
-            np.arange(-int(delta / (time_step * 2)), int(delta / (time_step * 2)) + 1)
+        return_time = (
+            np.arange(-int(minimal_distance / (time_step * 2)), int(minimal_distance / (time_step * 2)) + 1)
             * time_step
         )
 
         # diagnostics
-        lplmax = 0
-        lpldiff = 0
         lplcount = 0
 
         gpl_array = np.array([])
@@ -72,8 +70,6 @@ class ConditionlEvents:
 
             # Troubleshooting in case there are more than one unique peak
             if len(local_peak_loc) > 1:
-                lplmax = max(lplmax, len(local_peak_loc))
-                lpldiff = max(lpldiff, local_peak_loc[-1] - local_peak_loc[0])
                 lplcount += 1
                 # Prefer the peak closest to the mean of the candidates
                 # (earliest time breaks ties)
@@ -89,7 +85,7 @@ class ConditionlEvents:
             while index < len(gpl_array):
                 t_to_close = np.where(
                     abs(gpl_array[index + 1 :] - gpl_array[index])
-                    < int(delta / time_step)
+                    < int(minimal_distance / time_step)
                 )[0] + (index + 1)
                 gpl_array = np.delete(gpl_array, t_to_close)
                 removeset = set(t_to_close)
@@ -108,8 +104,8 @@ class ConditionlEvents:
 
         badcount = 0
 
-        t_half_len = int((len(t_av) - 1) / 2)
-        s_tmp = np.zeros([len(t_av), len(conditional_events)])
+        t_half_len = int((len(return_time) - 1) / 2)
+        s_tmp = np.zeros([len(return_time), len(conditional_events)])
 
         for i in range(len(conditional_events)):
             global_peak_loc = gpl_array[i]
@@ -152,14 +148,10 @@ class ConditionlEvents:
                         lplcount, lplcount / len(conditional_events)
                     )
                 )
-                print(
-                    "Largest number of peaks in burst:{0}\nLargest difference (data points) between peaks:{1}".format(
-                        lplmax, lpldiff
-                    )
-                )
+
                 print("In all cases, the first peak per burst was used.")
 
-        return Svals, s_av, s_var, t_av, peaks, wait
+        return Svals, s_av, s_var, return_time, peaks, wait
 
     @property
     def time(self):
