@@ -53,13 +53,15 @@ Create a new branch
       ``Changes not staged for commit``, then either:
 
       #. :ref:`Add and commit changes <commit-changes>`,
+
       #. Use `git stash`_ to temporarily file away the changes, or
+
       #. Use ``git reset --hard`` to **permanently** remove all
          changes to tracked files and return to the previous commit.
 
       You may proceed to the next step if there are untracked files
       present, though you may wish to delete the untracked files or
-      :ref:`add and commit changes <commit-changes>`_ first.
+      :ref:`add and commit changes <commit-changes>` first.
 
 #. Download the current status of `PlasmaPy's GitHub repository`_ and
    your fork by running:
