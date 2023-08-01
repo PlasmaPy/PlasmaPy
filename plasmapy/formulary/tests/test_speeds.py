@@ -53,6 +53,7 @@ class TestAlfvenSpeed:
             ((1 * u.T, 1.0e18 * u.m**-3), {"ion": ["He"]}, InvalidIonError),
             ((1 * u.T, 1.0e-9 * u.kg * u.m**-3), {"ion": ["He+"]}, ValueError),
             (("not a Bfield", 1.0e-10 * u.kg * u.m**-3), {}, TypeError),
+            ((1 * u.T,), {"density": 1e9 * u.m**-3}, ValueError),
             ((10 * u.T, "not a density"), {}, TypeError),
             ((10 * u.T, 5), {"ion": "p"}, TypeError),
             ((1 * u.T, 1.0e18 * u.m**-3), {"ion": "He", "Z": "nope"}, TypeError),
