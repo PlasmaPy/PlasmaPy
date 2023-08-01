@@ -163,8 +163,7 @@ def Alfven_speed(
     if density.unit.physical_type == u.physical.number_density and ion is None:
         raise ValueError(
             "When calculating the Alfvén speed, the ion must be specified "
-            "when the 'density' argument has a "
-            "physical type of number density."
+            "when 'density' has a physical type of number density."
         )
 
     if density.unit.physical_type == u.physical.mass_density:
