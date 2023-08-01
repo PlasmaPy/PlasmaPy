@@ -36,6 +36,21 @@ Create a new branch
 #. Navigate to the :file:`PlasmaPy/` directory that contains the clone
    of your repository.
 
+#. Make sure the working tree is clean by running
+
+   .. code-block::
+
+      git status
+
+To make sure that
+
+   .. code-block::
+
+      On branch main
+      Your branch is up to date with 'origin/main'.
+
+      nothing to commit, working tree clean
+
 #. Download the current status of `PlasmaPy's GitHub repository`_ and
    your fork by running:
 
