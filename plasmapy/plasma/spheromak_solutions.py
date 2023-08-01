@@ -111,3 +111,6 @@ class solution:
         return ((2 * np.pi * (r) ** 2) / (self.lamb * (r**2 + z**2))) * (
             (np.sin(beta) / beta) - np.cos(beta)
         )
+
+
+  
