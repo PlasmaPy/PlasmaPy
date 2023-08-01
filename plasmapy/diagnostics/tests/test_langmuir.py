@@ -217,7 +217,7 @@ class Test__Characteristic_inherited_methods:
     bias_4length_arr = np.array(np.random.rand(N - 1)) * u.V  # noqa: NPY002
     current_5length_arr = np.array(np.random.rand(N)) * u.A  # noqa: NPY002
 
-    bias_duplicates_arr = np.array((1, 2) * int(N / 2)) * u.V  # noqa: NPY002
+    bias_duplicates_arr = np.array((1, 2) * int(N / 2)) * u.V
 
     def test_invalid_bias_dimensions(self):
         r"""Test error on non-1D bias array"""
