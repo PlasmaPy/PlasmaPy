@@ -97,3 +97,12 @@ repos:
     - isort==5.12.0
     args:
     - --nbqa-mutate
+
+- repo: local
+  hooks:
+  - id: print-help-message
+    name: Print troubleshooting link
+    entry: echo "For help with troubleshooting, see "
+    language: system
+    pass_filenames: false
+    verbose: true
