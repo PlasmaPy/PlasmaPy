@@ -28,6 +28,8 @@ contributing!
 Making a code contribution
 ==========================
 
+.. _create-branch:
+
 Create a new branch
 -------------------
 
@@ -36,20 +38,28 @@ Create a new branch
 #. Navigate to the :file:`PlasmaPy/` directory that contains the clone
    of your repository.
 
-#. Make sure the working tree is clean by running
+#. In the terminal, run:
 
    .. code-block::
 
       git status
 
-To make sure that
+   If the output ends with ``nothing to commit, working tree clean``,
+   then proceed to the next step.
 
-   .. code-block::
+   .. caution::
 
-      On branch main
-      Your branch is up to date with 'origin/main'.
+      If ``git status`` shows that any files are listed under
+      ``Changes not staged for commit``, then either:
 
-      nothing to commit, working tree clean
+      #. :ref:`Add and commit changes <commit-changes>`,
+      #. Use `git stash`_ to temporarily file away the changes, or
+      #. Use ``git reset --hard`` to **permanently** remove all
+         changes to tracked files and return to the previous commit.
+
+      You may proceed to the next step if there are untracked files
+      present, though you may wish to delete the untracked files or
+      :ref:`add and commit changes <commit-changes>`_ first.
 
 #. Download the current status of `PlasmaPy's GitHub repository`_ and
    your fork by running:
@@ -78,6 +88,8 @@ To make sure that
    .. code-block::
 
       git push --set-upstream origin new-branch-name
+
+.. _commit-changes:
 
 Add and commit changes
 ----------------------
@@ -140,6 +152,8 @@ repeated multiple times.
    * ``git push`` is like sending the package off to its destination
      (i.e., GitHub).
 
+.. _create-pr
+
 Creating a pull request
 -----------------------
 
@@ -163,9 +177,10 @@ Creating a pull request
 #. Add a descriptive title, such as
    ``Add a function to calculate particle gyroradii``.
 
-#. Write a description for the pull request. Describe the changes, and
-   why they are being made. Include information that you think would be
-   helpful for reviewers, future users, and future contributors..
+#. Write a description for the pull request (PR). Describe the
+   changes, and why they are being made. Include information that you
+   think would be helpful for reviewers, future users, and future
+   contributors..
 
    .. tip::
 
@@ -215,6 +230,7 @@ marked as a draft pull request. Thank you for contributing!
 .. _branch: https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/about-branches
 .. _fork: https://docs.github.com/en/get-started/quickstart/fork-a-repo
 .. _GitHub Documentation: https://docs.github.com/
+.. _git stash: https://git-scm.com/docs/git-stash
 .. _good first issue: https://github.com/PlasmaPy/PlasmaPy/issues?q=is%3Aissue+is%3Aopen+label%3A%22Good+first+issue%22
 .. _pull request: https://docs.github.com/en/github/collaborating-with-pull-requests
 .. _remote: https://github.com/git-guides/git-remote
