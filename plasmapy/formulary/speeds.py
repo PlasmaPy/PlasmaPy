@@ -160,6 +160,11 @@ def Alfven_speed(
             "physical type of mass density."
         )
 
+    if density.unit.physical_type = u.physical.number_density and ion is None:
+        raise ValueError(
+            "When calculating the Alfvén speed, "
+        )
+
     if density.unit.physical_type == u.physical.mass_density:
         rho = density
     else:
