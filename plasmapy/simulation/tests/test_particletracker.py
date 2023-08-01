@@ -113,7 +113,7 @@ def test_particle_exb_drift(uniform_magnetic_field):
     """
     test_plasma = uniform_magnetic_field
     test_plasma.electric_field[1] = 1 * u.V / u.m
-    expected_drift_velocity = -(
+    expected_drift_velocity = -(  # noqa: B002
         -(test_plasma.electric_field_strength / test_plasma.magnetic_field_strength)
         .mean()
         .to(u.m / u.s)
