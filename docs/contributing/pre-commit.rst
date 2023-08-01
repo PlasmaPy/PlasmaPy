@@ -15,8 +15,41 @@ Introduction
 PlasmaPy uses pre-commit_ to automate code quality checks and perform
 automated fixes.
 
+The configuration for pre-commit is in |.pre-commit-config.yaml|_.
+
+Troubleshooting pre-commit failures
+===================================
+
+Many pre-commit failures can be automatically fixed by adding a
+comment to a pull request that says ``pre-commit.ci autofix`` (like in
+`this comment
+<https://github.com/PlasmaPy/PlasmaPy/pull/1500#issuecomment-1216865989>`__).
+
+After doing this, please do a :bash:`git pull` in your clone of
+PlasmaPy's repository to pull back the auto fixes to your computer.
+
+codespell
+---------
+
+PlasmaPy uses codespell_ to find typos in source code. Rather than
+checking if each word matches a dictionary entry, it looks through a
+set of common misspellings in order to reduce the number of false
+positives.
+
+If you encounter a false positive with codespell, add it to
+``ignore-words-list`` under ``[codespell]`` in :file:`pyproject.toml`.
+
+ruff
+----
+
+
+
+
+Using pre-commit locally
+========================
+
 Installing pre-commit
-=====================
+---------------------
 
 PlasmaPy uses pre-commit_ to automate code quality checks and perform
 automated fixes. Because pre-commit checks are performed on GitHub, it
@@ -74,13 +107,15 @@ To enable pre-commit on your computer:
 
       pre-commit install
 
-.. note::
+Using pre-commit locally
+------------------------
 
-   Once pre-commit has been installed for a repository, pre-commit will
-   run every time you try to commit a change. If any pre-commit checks
-   fail, or if pre-commit changes any files, it will be necessary to
-   redo :bash:`git add` on the changed files and :bash:`git commit` once
-   again.
+Once pre-commit_ has been installed for a repository, pre-commit will
+run every time you try to commit a change.
+
+If any pre-commit checks fail, or if pre-commit changes any files, it
+will be necessary to redo :bash:`git add` on the changed files and
+:bash:`git commit` once again.
 
 .. tip::
 
@@ -89,8 +124,15 @@ To enable pre-commit on your computer:
 
 .. tip::
 
-   To run :bash:`pre-commit` on all files, use
+   To run pre-commit on all files, use
 
    .. code-block:: bash
 
       pre-commit run --all-files
+
+.. _codespell: https://github.com/codespell-project/codespell
+
+
+
+.. _`.pre-commit-config.yaml`: https://github.com/PlasmaPy/PlasmaPy/blob/main/.pre-commit-config.yaml
+.. |.pre-commit-config.yaml| replace:: :file:`.pre-commit-config.yaml`
