@@ -35,7 +35,7 @@ class PlasmaBlob(GenericPlasma):
         # extract mass from particle
         self.ionMass = particle_mass(self.particle)
 
-    def __str__(self):
+    def __str__(self) -> str:
         """
         Fetch regimes for easy printing.
 
@@ -49,7 +49,7 @@ class PlasmaBlob(GenericPlasma):
         """
         return self.__repr__() + "\n" + "\n".join(self.regimes())
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         """
         Return a string representation of this instance.
 

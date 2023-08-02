@@ -1,0 +1,3 @@
+Improved the error message to `~plasmapy.formulary.speeds.Alfven_speed`
+when the argument provided to ``density`` has a physical type of
+number density and ``ion`` is not provided.

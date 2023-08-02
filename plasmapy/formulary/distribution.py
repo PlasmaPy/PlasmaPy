@@ -38,7 +38,15 @@ def _v_drift_conversion(v_drift):
 
 @particle_input
 def Maxwellian_1D(
-    v, T, particle: ParticleLike = "e", v_drift=0, vTh=np.nan, units="units"
+    v,
+    T,
+    particle: ParticleLike = "e",
+    v_drift=0,
+    vTh=np.nan,
+    units="units",
+    *,
+    mass_numb=None,
+    Z=None,
 ):
     r"""
     Probability distribution function of velocity for a Maxwellian
@@ -74,6 +82,12 @@ def Maxwellian_1D(
         equal to "units") or to run as unitless (when equal to "unitless").
         The unitless version is substantially faster for intensive
         computations.
+
+    mass_numb : integer, |keyword-only|, optional
+        The mass number associated with ``particle``.
+
+    Z : real number, |keyword-only|, optional
+        The charge number associated with ``particle``.
 
     Returns
     -------
@@ -144,6 +158,8 @@ def Maxwellian_1D(
         return distFunc << SPEED_DISTRIBUTION_UNITS_1D
     elif units == "unitless":
         return distFunc
+    else:
+        raise ValueError(f"Units must be either 'units' or 'unitless', got {units}).")
 
 
 @particle_input
@@ -156,6 +172,9 @@ def Maxwellian_velocity_2D(
     vy_drift=0,
     vTh=np.nan,
     units="units",
+    *,
+    mass_numb=None,
+    Z=None,
 ):
     r"""
     Probability distribution function of velocity for a Maxwellian
@@ -198,6 +217,12 @@ def Maxwellian_velocity_2D(
         equal to "units") or to run as unitless (when equal to "unitless").
         The unitless version is substantially faster for intensive
         computations.
+
+    mass_numb : integer, |keyword-only|, optional
+        The mass number associated with ``particle``.
+
+    Z : real number, |keyword-only|, optional
+        The charge number associated with ``particle``.
 
     Returns
     -------
@@ -246,8 +271,6 @@ def Maxwellian_velocity_2D(
     ... vx_drift=0 * u.m / u.s,
     ... vy_drift=0 * u.m / u.s)
     <Quantity 3.5002...e-13 s2 / m2>
-
-
     """
     if units == "units":
         # unit checks and conversions
@@ -283,6 +306,8 @@ def Maxwellian_velocity_2D(
         return distFunc << SPEED_DISTRIBUTION_UNITS_2D
     elif units == "unitless":
         return distFunc
+    else:
+        raise ValueError(f"Units must be either 'units' or 'unitless', got {units}).")
 
 
 @particle_input
@@ -297,6 +322,9 @@ def Maxwellian_velocity_3D(
     vz_drift=0,
     vTh=np.nan,
     units="units",
+    *,
+    mass_numb=None,
+    Z=None,
 ):
     r"""
     Probability distribution function of velocity for a Maxwellian
@@ -345,6 +373,12 @@ def Maxwellian_velocity_3D(
         equal to "units") or to run as unitless (when equal to "unitless").
         The unitless version is substantially faster for intensive
         computations.
+
+    mass_numb : integer, |keyword-only|, optional
+        The mass number associated with ``particle``.
+
+    Z : real number, |keyword-only|, optional
+        The charge number associated with ``particle``.
 
     Returns
     -------
@@ -395,8 +429,6 @@ def Maxwellian_velocity_3D(
     ... vy_drift=0 * u.m / u.s,
     ... vz_drift=0 * u.m / u.s)
     <Quantity 2.0708...e-19 s3 / m3>
-
-
     """
     if units == "units":
         # unit checks and conversions
@@ -433,11 +465,21 @@ def Maxwellian_velocity_3D(
         return distFunc << SPEED_DISTRIBUTION_UNITS_3D
     elif units == "unitless":
         return distFunc
+    else:
+        raise ValueError(f"Units must be either 'units' or 'unitless', got {units}).")
 
 
 @particle_input
 def Maxwellian_speed_1D(
-    v, T, particle: ParticleLike = "e", v_drift=0, vTh=np.nan, units="units"
+    v,
+    T,
+    particle: ParticleLike = "e",
+    v_drift=0,
+    vTh=np.nan,
+    units="units",
+    *,
+    mass_numb=None,
+    Z=None,
 ):
     r"""
     Probability distribution function of speed for a Maxwellian distribution
@@ -473,6 +515,12 @@ def Maxwellian_speed_1D(
         equal to "units") or to run as unitless (when equal to "unitless").
         The unitless version is substantially faster for intensive
         computations.
+
+    mass_numb : integer, |keyword-only|, optional
+        The mass number associated with ``particle``.
+
+    Z : real number, |keyword-only|, optional
+        The charge number associated with ``particle``.
 
     Returns
     -------
@@ -544,11 +592,21 @@ def Maxwellian_speed_1D(
         return distFunc << SPEED_DISTRIBUTION_UNITS_1D
     elif units == "unitless":
         return distFunc
+    else:
+        raise ValueError(f"Units must be either 'units' or 'unitless', got {units}).")
 
 
 @particle_input
 def Maxwellian_speed_2D(
-    v, T, particle: ParticleLike = "e", v_drift=0, vTh=np.nan, units="units"
+    v,
+    T,
+    particle: ParticleLike = "e",
+    v_drift=0,
+    vTh=np.nan,
+    units="units",
+    *,
+    mass_numb=None,
+    Z=None,
 ):
     r"""
     Probability distribution function of speed for a Maxwellian
@@ -585,6 +643,12 @@ def Maxwellian_speed_2D(
         equal to "units") or to run as unitless (when equal to "unitless").
         The unitless version is substantially faster for intensive
         computations.
+
+    mass_numb : integer, |keyword-only|, optional
+        The mass number associated with ``particle``.
+
+    Z : real number, |keyword-only|, optional
+        The charge number associated with ``particle``.
 
     Returns
     -------
@@ -663,11 +727,21 @@ def Maxwellian_speed_2D(
         return distFunc << SPEED_DISTRIBUTION_UNITS_1D
     elif units == "unitless":
         return distFunc
+    else:
+        raise ValueError(f"Units must be either 'units' or 'unitless', got {units}).")
 
 
 @particle_input
 def Maxwellian_speed_3D(
-    v, T, particle: ParticleLike = "e", v_drift=0, vTh=np.nan, units="units"
+    v,
+    T,
+    particle: ParticleLike = "e",
+    v_drift=0,
+    vTh=np.nan,
+    units="units",
+    *,
+    mass_numb=None,
+    Z=None,
 ):
     r"""
     Probability distribution function of speed for a Maxwellian
@@ -704,6 +778,12 @@ def Maxwellian_speed_3D(
         equal to "units") or to run as unitless (when equal to "unitless").
         The unitless version is substantially faster for intensive
         computations.
+
+    mass_numb : integer, |keyword-only|, optional
+        The mass number associated with ``particle``.
+
+    Z : real number, |keyword-only|, optional
+        The charge number associated with ``particle``.
 
     Returns
     -------
@@ -746,7 +826,6 @@ def Maxwellian_speed_3D(
     >>> v=1 * u.m / u.s
     >>> Maxwellian_speed_3D(v=v, T=30000*u.K, particle='e', v_drift=0 * u.m / u.s)
     <Quantity 2.60235...e-18 s / m>
-
     """
     if v_drift != 0:
         raise NotImplementedError("Non-zero drift speed is work in progress.")
@@ -782,11 +861,22 @@ def Maxwellian_speed_3D(
         return distFunc << SPEED_DISTRIBUTION_UNITS_1D
     elif units == "unitless":
         return distFunc
+    else:
+        raise ValueError(f"Units must be either 'units' or 'unitless', got {units}).")
 
 
 @particle_input
 def kappa_velocity_1D(
-    v, T, kappa, particle: ParticleLike = "e", v_drift=0, vTh=np.nan, units="units"
+    v,
+    T,
+    kappa,
+    particle: ParticleLike = "e",
+    v_drift=0,
+    vTh=np.nan,
+    units="units",
+    *,
+    mass_numb=None,
+    Z=None,
 ):
     r"""
     Return the probability density at the velocity ``v`` in m/s
@@ -827,6 +917,12 @@ def kappa_velocity_1D(
         equal to ``"units"``) or to run as unitless (when equal to
         ``"unitless"``). The unitless version is substantially faster for
         intensive computations.
+
+    mass_numb : integer, |keyword-only|, optional
+        The mass number associated with ``particle``.
+
+    Z : real number, |keyword-only|, optional
+        The charge number associated with ``particle``.
 
     Returns
     -------
@@ -920,6 +1016,8 @@ def kappa_velocity_1D(
         return distFunc << SPEED_DISTRIBUTION_UNITS_1D
     elif units == "unitless":
         return distFunc
+    else:
+        raise ValueError(f"Units must be either 'units' or 'unitless', got {units}).")
 
 
 @particle_input
@@ -935,6 +1033,9 @@ def kappa_velocity_3D(
     vz_drift=0,
     vTh=np.nan,
     units="units",
+    *,
+    mass_numb=None,
+    Z=None,
 ):
     r"""
     Return the probability density function for finding a particle with
@@ -987,6 +1088,12 @@ def kappa_velocity_3D(
         equal to "units") or to run as unitless (when equal to "unitless").
         The unitless version is substantially faster for intensive
         computations.
+
+    mass_numb : integer, |keyword-only|, optional
+        The mass number associated with ``particle``.
+
+    Z : real number, |keyword-only|, optional
+        The charge number associated with ``particle``.
 
     Returns
     -------
@@ -1084,3 +1191,5 @@ def kappa_velocity_3D(
         return distFunc << SPEED_DISTRIBUTION_UNITS_3D
     elif units == "unitless":
         return distFunc
+    else:
+        raise ValueError(f"Units must be either 'units' or 'unitless', got {units}).")

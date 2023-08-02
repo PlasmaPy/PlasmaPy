@@ -95,7 +95,7 @@ class IonicLevel:
         except (ValueError, TypeError) as exc:
             raise ParticleError("Unable to create IonicLevel object") from exc
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return (
             f"IonicLevel({self.ionic_symbol!r}, "
             f"ionic_fraction={self.ionic_fraction})"
@@ -466,12 +466,10 @@ class IonizationState:
 
         try:
             if np.min(fractions) < 0:
-                raise ParticleError(  # noqa: TC301
-                    "Cannot have negative ionic fractions."
-                )
+                raise ParticleError("Cannot have negative ionic fractions.")
 
             if len(fractions) != self.atomic_number + 1:
-                raise ParticleError(  # noqa: TC301
+                raise ParticleError(
                     "The length of ionic_fractions must be "
                     f"{self.atomic_number + 1}."
                 )
@@ -553,7 +551,7 @@ class IonizationState:
         """The number densities for each state."""
         try:
             return (self.n_elem * self.ionic_fractions).to(u.m**-3)
-        except Exception:
+        except Exception:  # noqa: BLE001
             return np.full(self.atomic_number + 1, np.nan) * u.m**-3
 
     @number_densities.setter
@@ -579,7 +577,7 @@ class IonizationState:
         return self._T_e.to(u.K, equivalencies=u.temperature_energy())
 
     @T_e.setter
-    @validate_quantities(value=dict(equivalencies=u.temperature_energy()))
+    @validate_quantities(value={"equivalencies": u.temperature_energy()})
     def T_e(self, value: u.K):
         """Set the electron temperature."""
         try:
@@ -593,9 +591,7 @@ class IonizationState:
 
     @property
     @validate_quantities(
-        validations_on_return=dict(
-            equivalencies=u.temperature_energy(),
-        )
+        validations_on_return={"equivalencies": u.temperature_energy()}
     )
     def T_i(self) -> u.K:
         """
@@ -606,11 +602,11 @@ class IonizationState:
 
     @T_i.setter
     @validate_quantities(
-        value=dict(
-            equivalencies=u.temperature_energy(),
-            none_shall_pass=True,
-            can_be_negative=False,
-        )
+        value={
+            "equivalencies": u.temperature_energy(),
+            "none_shall_pass": True,
+            "can_be_negative": False,
+        }
     )
     def T_i(self, value: u.K):
         """Set the ion temperature."""
@@ -688,7 +684,7 @@ class IonizationState:
         """The atomic number of the element."""
         return self._particle.atomic_number
 
-    def __len__(self):
+    def __len__(self) -> int:
         return self._number_of_particles
 
     @property
@@ -896,7 +892,7 @@ class IonizationState:
             output += separator_line
             output += self._get_states_info(minimum_ionic_fraction)
             output += separator_line
-            # TODO add T_i somewhere around here, probably
+            # TODO: add T_i somewhere around here, probably
 
         if not np.isnan(self.n_elem):
             attributes.extend(

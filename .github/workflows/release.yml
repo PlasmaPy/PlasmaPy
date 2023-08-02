@@ -6,7 +6,7 @@ on:
       tag:
         description: Release tag 🏷️
         required: true
-        default: 0.9.0rc1
+        default: 2023.5.0rc1
       DOI:
         description: Reserved DOI from Zenodo
         required: true
@@ -26,7 +26,7 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
-        python-version: '3.10'
+        python-version: '3.11'
 
     - name: Install dependencies
       run: |
@@ -45,24 +45,17 @@ jobs:
 
     - name: Update CITATION.cff, docs/about/citation.rst with the DOI for the new version.
       run: |
-        python .github/workflows/citation_updater.py CITATION.cff docs/about/citation.rst docs/whatsnew/index.rst --version=${{ github.event.inputs.tag}} --doi=${{ github.event.inputs.doi}}
+        python .github/scripts/citation_updater.py CITATION.cff docs/about/citation.rst docs/changelog/index.rst --version=${{ github.event.inputs.tag}} --doi=${{ github.event.inputs.doi}}
         git add .
-        git commit -m "Update citation and whatsnew index entry"
+        git commit -m "Update citation and changelog index entry"
 
     - name: Create changelog
       run: |
-        towncrier build --yes --version ${{ github.event.inputs.tag }} --draft | tee docs/whatsnew/${{ github.event.inputs.tag }}.rst
-        sed -i -e :a -e '/^\n*$/{$d;N;ba' -e '}' docs/whatsnew/${{ github.event.inputs.tag }}.rst   # strip empty lines
+        towncrier build --yes --version ${{ github.event.inputs.tag }} --draft | tee docs/changelog/${{ github.event.inputs.tag }}.rst
+        sed -i -e :a -e '/^\n*$/{$d;N;ba' -e '}' docs/changelog/${{ github.event.inputs.tag }}.rst   # strip empty lines
         git add .
         towncrier build --yes --version ${{ github.event.inputs.tag }}
         git commit --allow-empty -nm "Add changelog entries for v${{ github.event.inputs.tag }}"
-
-    - name: Update and run pre-commit
-      run: |
-        pre-commit autoupdate
-        pre-commit run --all-files
-        git add .
-        git commit --allow-empty -nm "Apply pre-commit autoupdates and fixes"
 
     - name: Tag the release
       run: |

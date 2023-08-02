@@ -1,10 +1,15 @@
-"""Particle movement integrators, for particle simulations.
+"""
+Particle movement integrators, for particle simulations.
 
 These do not have `astropy.units` support, choosing instead to
 limit overhead and increase performance.
 
 They act in-place on position and velocity arrays to reduce
 memory allocation.
+
+.. attention::
+
+   |expect-api-changes|
 """
 
 __all__ = ["boris_push"]
@@ -15,6 +20,10 @@ import numpy as np
 def boris_push(x, v, B, E, q, m, dt, inplace: bool = True):
     r"""
     The explicit Boris pusher.
+
+    .. attention::
+
+       |expect-api-changes|
 
     Parameters
     ----------
@@ -105,7 +114,7 @@ def boris_push(x, v, B, E, q, m, dt, inplace: bool = True):
     array([[0.0003, 0.0003, 0.1003]])
 
     Notes
-    ----------
+    -----
     The Boris algorithm :cite:p:`boris:1970` is the standard energy
     conserving algorithm for particle movement in plasma physics. See
     :cite:t:`birdsall:2004` for more details, and this `page on the
@@ -135,6 +144,7 @@ def boris_push(x, v, B, E, q, m, dt, inplace: bool = True):
     if inplace:
         v[...] = vplus + hqmdt * E
         x += v * dt
+        return None
     else:
         v = vplus + hqmdt * E
         return x + v * dt, v

@@ -23,13 +23,11 @@ def _code_repr_of_ndarray(array: np.ndarray, max_items=np.inf) -> str:
     def remove_excess_spaces(s: str) -> str:
         s = " ".join(s.split())
         s = s.replace(" ,", ",")
-        s = s.replace("[ ", "[")
-        return s
+        return s.replace("[ ", "[")
 
     def put_np_before_infs_and_nans(s: str) -> str:
         s = s.replace("inf", "np.inf")
-        s = s.replace("nan", "np.nan")
-        return s
+        return s.replace("nan", "np.nan")
 
     def replace_excess_items_with_ellipsis(s: str, max_items: Integral):
         substrings_between_commas = s.split(",")
@@ -80,14 +78,18 @@ def _code_repr_of_arg(arg, max_items=np.inf) -> str:
         u.Quantity: _code_repr_of_quantity,
         np.ndarray: _code_repr_of_ndarray,
     }
-    for arg_type, code_repr_func in function_for_type.items():
-        if isinstance(arg, arg_type):
-            return code_repr_func(arg, max_items=max_items)
-    return repr(arg)
+    return next(
+        (
+            code_repr_func(arg, max_items=max_items)
+            for arg_type, code_repr_func in function_for_type.items()
+            if isinstance(arg, arg_type)
+        ),
+        repr(arg),
+    )
 
 
 def _code_repr_of_args_and_kwargs(
-    args: Any = None, kwargs: dict = None, max_items=np.inf
+    args: Any = None, kwargs: Optional[dict] = None, max_items=np.inf
 ) -> str:
     """
     Take positional and keyword arguments, and format them into a
@@ -187,7 +189,7 @@ def _string_together_warnings_for_printing(
 def call_string(
     f: Callable,
     args: Any = None,
-    kwargs: dict[str, Any] = None,
+    kwargs: Optional[dict[str, Any]] = None,
     max_items: Integral = 12,
 ) -> str:
     """

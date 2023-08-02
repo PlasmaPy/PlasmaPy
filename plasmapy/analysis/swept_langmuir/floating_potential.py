@@ -53,16 +53,17 @@ class VFExtras(NamedTuple):
     """
 
 
-def find_floating_potential(
+def find_floating_potential(  # noqa: C901, PLR0912, PLR0915
     voltage: np.ndarray,
     current: np.ndarray,
     threshold: int = 1,
-    min_points: Union[int, float] = None,
+    min_points: Optional[Union[int, float]] = None,
     fit_type: str = "exponential",
 ) -> tuple[np.floating, VFExtras]:
     """
-    Determines the floating potential (:math:`V_f`) for a given
+    Determine the floating potential (:math:`V_f`) for a given
     current-voltage (IV) curve obtained from a swept Langmuir probe.
+
     The floating potential is the probe bias where the collected
     current equals zero :math:`I = 0`.  (For additional details see
     the **Notes** section below.)
@@ -72,7 +73,6 @@ def find_floating_potential(
 
     Parameters
     ----------
-
     voltage: `numpy.ndarray`
         1-D numpy array of monotonically ascending probe biases
         (should be in volts)
@@ -264,7 +264,7 @@ def find_floating_potential(
         isl_stop = np.concatenate(
             (cp_candidates[threshold_indices] + 1, [cp_candidates[-1] + 1])
         )
-        rtn_extras["islands"] = [  # noqa: FURB140
+        rtn_extras["islands"] = [
             slice(start, stop) for start, stop in zip(isl_start, isl_stop)
         ]
 

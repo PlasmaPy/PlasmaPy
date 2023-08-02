@@ -108,7 +108,7 @@ def mass_energy(particle: Particle, mass_numb: Optional[Integral] = None) -> u.J
     return particle.mass_energy
 
 
-def nuclear_reaction_energy(*args, **kwargs) -> u.J:
+def nuclear_reaction_energy(*args, **kwargs) -> u.J:  # noqa: C901, PLR0915
     """
     Return the released energy from a nuclear reaction.
 
@@ -219,7 +219,7 @@ def nuclear_reaction_energy(*args, **kwargs) -> u.J:
                     raise ParticleError(errmsg) from exc
 
                 if particle.element and not particle.isotope:
-                    raise ParticleError(errmsg)  # noqa: TC301
+                    raise ParticleError(errmsg)
 
                 particles += [particle] * multiplier
 
@@ -316,6 +316,4 @@ def nuclear_reaction_energy(*args, **kwargs) -> u.J:
             f"Total charge is not conserved for {reactants = } and {products = }."
         )
 
-    released_energy = add_mass_energy(reactants) - add_mass_energy(products)
-
-    return released_energy
+    return add_mass_energy(reactants) - add_mass_energy(products)

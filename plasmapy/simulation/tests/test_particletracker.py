@@ -100,7 +100,7 @@ def fit_sine_curve(position, t, expected_gyrofrequency, phase=0):
 #     # s.plot_trajectories()
 
 
-@pytest.mark.slow
+@pytest.mark.slow()
 def test_particle_exb_drift(uniform_magnetic_field):
     r"""
     Tests the particle stepper for a field with magnetic field in the Z
@@ -113,14 +113,14 @@ def test_particle_exb_drift(uniform_magnetic_field):
     """
     test_plasma = uniform_magnetic_field
     test_plasma.electric_field[1] = 1 * u.V / u.m
-    expected_drift_velocity = -(
+    expected_drift_velocity = -(  # noqa: B002
         -(test_plasma.electric_field_strength / test_plasma.magnetic_field_strength)
         .mean()
         .to(u.m / u.s)
     )
 
     s = ParticleTracker(test_plasma, "p", 5, dt=1e-10 * u.s, nt=int(5e3))
-    s.v[:, 2] += np.random.normal(size=s.N) * u.m / u.s
+    s.v[:, 2] += np.random.normal(size=s.N) * u.m / u.s  # noqa: NPY002
 
     s.run()
 

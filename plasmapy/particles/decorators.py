@@ -4,6 +4,7 @@ __all__ = ["particle_input"]
 
 import functools
 import inspect
+import numpy as np
 import warnings
 import wrapt
 
@@ -228,7 +229,7 @@ class _ParticleInput:
         -------
         `dict` of `str` to `object`
         """
-        return self._data.get("annotations", None)
+        return self._data.get("annotations")
 
     @property
     def require(self) -> Optional[set]:
@@ -413,18 +414,19 @@ class _ParticleInput:
         categorization criteria.
         """
 
+        if (
+            parameter == "ion"
+            and isinstance(particle, CustomParticle)
+            and not np.isnan(particle.charge)
+            and particle.mass.value > 0
+        ):
+            return
+
         name_categorization_exception = [
             ("element", {"require": "element"}, InvalidElementError),
             ("isotope", {"require": "isotope"}, InvalidIsotopeError),
-            # TODO: In the future, "ion" should be changed to allow only
-            # ions and not neutral atoms with an explicit charge.
             (
                 "ion",
-                {"require": "element", "any_of": {"charged", "uncharged"}},
-                InvalidIonError,
-            ),
-            (
-                "ionic_level",
                 {"require": "element", "any_of": {"charged", "uncharged"}},
                 InvalidIonError,
             ),
@@ -463,12 +465,15 @@ class _ParticleInput:
                 "or particle-list-like inputs."
             )
 
-        if not self.allow_custom_particles and isinstance(particle, ParticleList):
-            if any(particle.is_category("custom")):
-                raise InvalidParticleError(
-                    f"{self.callable_.__name__} does not accept CustomParticle "
-                    f"or CustomParticle-like inputs."
-                )
+        if (
+            not self.allow_custom_particles
+            and isinstance(particle, ParticleList)
+            and any(particle.is_category("custom"))
+        ):
+            raise InvalidParticleError(
+                f"{self.callable_.__name__} does not accept CustomParticle "
+                f"or CustomParticle-like inputs."
+            )
 
     def process_argument(
         self,
@@ -517,7 +522,7 @@ class _ParticleInput:
             other annotations, this method will return ``argument``
             without alteration.
         """
-        annotation = self.annotations.get(parameter, None)
+        annotation = self.annotations.get(parameter)
 
         if annotation not in _particle_input_annotations:
             return argument
@@ -611,13 +616,13 @@ class _ParticleInput:
 def particle_input(
     callable_: Optional[Callable] = None,
     *,
-    require: Union[str, set, list, tuple] = None,
-    any_of: Union[str, set, list, tuple] = None,
-    exclude: Union[str, set, list, tuple] = None,
+    require: Optional[Union[str, set, list, tuple]] = None,
+    any_of: Optional[Union[str, set, list, tuple]] = None,
+    exclude: Optional[Union[str, set, list, tuple]] = None,
     allow_custom_particles: bool = True,
     allow_particle_lists: bool = True,
 ) -> Callable:
-    """
+    r"""
     Convert |particle-like| |arguments| into particle objects.
 
     When a callable is |decorated| with |particle_input|,
@@ -632,33 +637,47 @@ def particle_input(
     annotated.
 
     If the annotation is created using `typing.Optional` (e.g.,
-    ``Optional[ParticleLike]``), then `None` can be provided to
+    :py:`Optional[ParticleLike]`), then `None` can be provided to
     ``callable_``.
 
     If the particle representation does not satisfy any categorization
     criteria that have been provided, then |particle_input| will raise
     an exception.
 
-    If the annotated parameter is named ``element``, ``isotope``,
-    ``ion``, or ``ionic_level``, then |particle_input| will raise an
-    exception if the argument provided to the callable is not
-    consistent with the parameter.
+    If the annotated parameter is named ``element``, ``isotope``, or
+    ``ion``, then |particle_input| will raise an exception if the
+    argument provided to the callable is not consistent with the
+    parameter.
 
     .. note::
 
-       An annotated parameter named ``ion`` and ``ionic_level`` accept
-       neutral atoms as long as the |charge number| is explicitly
-       defined. To enforce that the particle be charged, provide
-       ``require={"charged"}`` to |particle_input|.
+       An annotated parameter named ``ion`` will accept neutral atoms
+       and |CustomParticle|\ -like objects as long as the
+       |charge number| is explicitly defined. To enforce that the
+       particle be charged, provide :py:`require={"charged"}` to
+       |particle_input|.
 
     .. note::
 
        When both |particle_input| and |validate_quantities| are used to
        decorate a :term:`function`, they may be used in either order.
        When using both |particle_input| and |validate_quantities| to
-       decorate a :term:`method`, |particle_input| should be the outer
-       decorator and |validate_quantities| should be the inner
+       decorate an instance :term:`method`, |particle_input| should be
+       the outer decorator and |validate_quantities| should be the inner
        decorator.
+
+       .. code-block:: python
+
+          import astropy.units as u
+          from plasmapy.particles import particle_input, ParticleLike
+          from plasmapy.utils.decorators.validators import validate_quantities
+
+
+          class SomeClass:
+              @particle_input
+              @validate_quantities
+              def instance_method(self, particle: ParticleLike, B: u.T):
+                  ...
 
     .. note::
 
@@ -723,8 +742,8 @@ def particle_input(
     |ChargeError|
         If ``"charged"`` is in the ``require`` argument and the particle
         is not explicitly charged, or if
-        ``any_of = {"charged", "uncharged"}`` and the particle does not
-        have charge information associated with it.
+        :py:`any_of = {"charged", "uncharged"}` and the particle does
+        not have charge information associated with it.
 
     |ParticleError|
         If the returned particle(s) do not meet the categorization
@@ -773,7 +792,7 @@ def particle_input(
     >>> get_particle(1e-26 * u.kg)
     CustomParticle(mass=1e-26 kg, charge=nan C)
 
-    To allow `None` to pass, use ``Optional[ParticleLike]`` as the
+    To allow `None` to pass, use :py:`Optional[ParticleLike]` as the
     annotation.
 
     >>> from typing import Optional
@@ -802,7 +821,6 @@ def particle_input(
     ``self`` following standard convention.
 
     >>> class SampleClass:
-    ...
     ...     @particle_input
     ...     def __init__(self, particle: ParticleLike):
     ...         self.particle = particle
@@ -838,11 +856,11 @@ def particle_input(
     >>> return_ionic_level("Fe-56 0+")
     Particle("Fe-56 0+")
 
-    When the parameter is named ``element``, ``isotope``, ``ion``, or
-    ``ionic_level``, then the corresponding argument must be consistent
-    with the name. When the parameter is named ``ion`` or
-    ``ionic_charge``, then the particle(s) may also be neutral atoms as
-    long as the |charge number| is explicitly defined.
+    When the parameter is named ``element``, ``isotope``, or ``ion``,
+    then the corresponding argument must be consistent with the name.
+    When the parameter is named ``ion``, then the particle(s) may also
+    be a neutral atom as long as the |charge number| is explicitly
+    defined.
 
     >>> @particle_input
     ... def mass_number(isotope: ParticleLike):

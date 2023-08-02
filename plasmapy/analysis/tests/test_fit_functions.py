@@ -29,7 +29,7 @@ class TestAbstractFitFunction:
         assert issubclass(self.ff_class, ABC)
 
     @pytest.mark.parametrize(
-        "name, isproperty",
+        ("name", "isproperty"),
         [
             ("__call__", False),
             ("curve_fit", False),
@@ -105,7 +105,7 @@ class BaseFFTests(ABC):
         assert ff_obj.__repr__() == f"{ff_obj.__str__()} {ff_obj.__class__}"
 
     @pytest.mark.parametrize(
-        "name, isproperty",
+        ("name", "isproperty"),
         [
             ("__call__", False),
             ("_param_names", False),
@@ -136,7 +136,7 @@ class BaseFFTests(ABC):
             )
 
     @pytest.mark.parametrize(
-        "name, value_ref_name",
+        ("name", "value_ref_name"),
         [
             ("param_names", "_test_param_names"),
             ("latex_str", "_test_latex_str"),
@@ -161,7 +161,7 @@ class BaseFFTests(ABC):
         assert value == exp_value
 
     @pytest.mark.parametrize(
-        "params, param_errors, with_condition",
+        ("params", "param_errors", "with_condition"),
         [
             (None, None, does_not_raise()),
             ("default", "default", does_not_raise()),
@@ -224,7 +224,7 @@ class BaseFFTests(ABC):
         assert all(isinstance(val, str) for val in ff_obj.param_names)
 
     @pytest.mark.parametrize(
-        "params, extra, with_condition",
+        ("params", "extra", "with_condition"),
         [
             ([2], None, does_not_raise()),
             (5, None, pytest.raises(ValueError)),
@@ -246,7 +246,7 @@ class BaseFFTests(ABC):
             assert ff_obj.params == ff_obj.FitParamTuple(*params)
 
     @pytest.mark.parametrize(
-        "param_errors, extra, with_condition",
+        ("param_errors", "extra", "with_condition"),
         [
             ([2], None, does_not_raise()),
             (5, None, pytest.raises(ValueError)),
@@ -268,7 +268,7 @@ class BaseFFTests(ABC):
             assert ff_obj.param_errors == ff_obj.FitParamTuple(*param_errors)
 
     @pytest.mark.parametrize(
-        "x, replace_a_param, with_condition",
+        ("x", "replace_a_param", "with_condition"),
         [
             (0, None, does_not_raise()),
             (1.0, None, does_not_raise()),
@@ -297,7 +297,7 @@ class BaseFFTests(ABC):
             assert np.allclose(y, y_expected)
 
     @pytest.mark.parametrize(
-        "x, kwargs, with_condition",
+        ("x", "kwargs", "with_condition"),
         [
             (0, {}, does_not_raise()),
             (1.0, {}, does_not_raise()),
@@ -333,7 +333,7 @@ class BaseFFTests(ABC):
                 assert np.allclose(y, self.func(x, *params))
 
     @pytest.mark.parametrize(
-        "x, kwargs, with_condition",
+        ("x", "kwargs", "with_condition"),
         [
             (0, {}, does_not_raise()),
             (0, {"reterr": True}, does_not_raise()),
@@ -431,9 +431,7 @@ class TestFFExponential(BaseFFTests):
             x_term = (alpha * x_err) ** 2
             err += x_term
 
-        err = np.abs(y) * np.sqrt(err)
-
-        return err
+        return np.abs(y) * np.sqrt(err)
 
     def test_root_solve(self):
         ff_obj = self.ff_class(params=(1, 1), param_errors=(0, 0))
@@ -479,9 +477,7 @@ class TestFFExponentialPlusLinear(BaseFFTests):
 
             err += x_term
 
-        err = np.sqrt(err)
-
-        return err
+        return np.sqrt(err)
 
     def test_root_solve(self):
         ff_obj = self.ff_class(params=(5.0, 0.5, 1.0, 5.0), param_errors=(0, 0, 0, 0))
@@ -523,9 +519,7 @@ class TestFFExponentialPlusOffset(BaseFFTests):
             x_term = (exp_y * alpha * x_err) ** 2
             err += x_term
 
-        err = np.sqrt(err)
-
-        return err
+        return np.sqrt(err)
 
     def test_root_solve(self):
         ff_obj = self.ff_class(params=(3.0, 0.5, -5.0), param_errors=(0, 0, 0))
@@ -567,12 +561,10 @@ class TestFFLinear(BaseFFTests):
         if x_err is not None:
             x_term = (m * x_err) ** 2
             err += x_term
-        err = np.sqrt(err)
-
-        return err
+        return np.sqrt(err)
 
     @pytest.mark.parametrize(
-        "params, param_errors, root, root_err, conditional",
+        ("params", "param_errors", "root", "root_err", "conditional"),
         [
             ((1, 1), (0, 0), -1, 0, does_not_raise()),
             (
