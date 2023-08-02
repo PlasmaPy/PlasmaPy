@@ -662,7 +662,7 @@ def diff_flow(  # noqa: C901, PLR0912, PLR0915
 
             if alfven:
                 B = B_0 * (r / r_n) ** magnetic_scale
-                v_a = Alfven_speed(B, n_1*mu_1 + n_2*mu_2, "p")/1000
+                v_a = Alfven_speed(B, n_1 * mu_1 + n_2 * mu_2, "p") / 1000
 
             a = (3 * (mu_1 * mu_2) ** 2 * (m_u**4) * (8 * np.pi * e0) ** 2) / (
                 4 * np.sqrt(2 * np.pi) * (q_e**4) * ((z_1 * z_2) ** 2)
@@ -709,7 +709,6 @@ def diff_flow(  # noqa: C901, PLR0912, PLR0915
         )
     else:
         try:
-
             all(len(variables[0]) == len(z) for z in variables[1:])
             res = []
             for i in range(len(variables[0])):
@@ -739,7 +738,6 @@ def diff_flow(  # noqa: C901, PLR0912, PLR0915
             return res  # noqa: TRY300
 
         except Exception as e:  # noqa: BLE001
-
             raise ValueError(
                 "Argument(s) are of unequal lengths, the following "
                 "arguments should be of equal length: 'r_0', 'r_n', "
