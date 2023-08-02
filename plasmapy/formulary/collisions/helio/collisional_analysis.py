@@ -227,7 +227,7 @@ def temp_ratio(  # noqa: C901, PLR0912, PLR0915
     >>> helio.temp_ratio(
     ...     r_0=r_0, r_n=r_n, n_1=n_1, n_2=n_2, v_1=v_1, T_1=T_1, T_2=T_2, ions=ions
     ...     )
-    [2.78928645832..., 1.04007368797..., 1.06914450183...]
+    [2.8760..., 1.0271..., 1.0474...]
     """
 
     # Validate ions argument
@@ -565,16 +565,16 @@ def diff_flow(  # noqa: C901, PLR0912, PLR0915
     >>> from plasmapy.formulary.collisions import helio
     >>> r_0 = [0.1, 0.1, 0.1] * u.au
     >>> r_n = [1.0, 1.0, 1.0] * u.au
-    >>> n_1 = [] * u.cm**-3
-    >>> n_2 = [] * u.cm**-3
-    >>> v_1 = [] * u.km/u.s
-    >>> v_2 = [] * u.km /u.s
-    >>> T_1 = [] * u.K
-    >>> T_2 = [] * u.K
-    >>> B = [] * u.T
+    >>> n_1 = [100, 125, 150] * u.cm**-3
+    >>> n_2 = [5, 15, 10] * u.cm**-3
+    >>> v_1 = [300, 200, 250] * u.km/u.s
+    >>> v_2 = [350, 400, 300] * u.km /u.s
+    >>> T_1 = [1.5 * 10**5, 2.1 * 10**5, 1.7 * 10**5] * u.K
+    >>> T_2 = [2.5 * 10**6, 1.8 * 10**6, 2.8 * 10**6] * u.K
+    >>> B = [5, 5, 5 ] * u.T
     >>> ions = ["p+", "He-4++"]
     >>> helio.diff_flow(r_0=r_0, r_n=r_n, n_1=n_1, n_2=n_2, v_1=v_1, v_2=v_2, T_1=T_1, T_2=T_2, B=B, ions=ions)
-    [1.0000, 1.00000, 1.00000]
+     [<Quantity 43.071... km / s>, <Quantity 144.267... km / s>, <Quantity 39.766... km / s>]
     """
 
     # Validate ions argument
