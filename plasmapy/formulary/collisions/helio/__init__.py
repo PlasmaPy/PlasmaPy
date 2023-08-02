@@ -5,4 +5,7 @@ solar wind.
 """
 __all__ = ["temp_ratio", "diff_flow"]
 
-from plasmapy.formulary.collisions.helio.collisional_analysis import *
+from plasmapy.formulary.collisions.helio.collisional_analysis import (
+    diff_flow,
+    temp_ratio,
+)
