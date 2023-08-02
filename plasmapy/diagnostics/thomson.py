@@ -149,7 +149,6 @@ def spectral_density_lite(
         which contains many such pairs if multiple notches are needed.
         Defaults to no notch.
 
-
     Returns
     -------
     alpha : float
