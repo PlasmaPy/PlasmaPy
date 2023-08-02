@@ -466,12 +466,10 @@ class IonizationState:
 
         try:
             if np.min(fractions) < 0:
-                raise ParticleError(  # noqa: TC301
-                    "Cannot have negative ionic fractions."
-                )
+                raise ParticleError("Cannot have negative ionic fractions.")
 
             if len(fractions) != self.atomic_number + 1:
-                raise ParticleError(  # noqa: TC301
+                raise ParticleError(
                     "The length of ionic_fractions must be "
                     f"{self.atomic_number + 1}."
                 )

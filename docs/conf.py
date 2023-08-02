@@ -24,7 +24,7 @@ from sphinx.application import Sphinx
 
 cff_to_rst.main()
 
-from plasmapy import __version__ as release  # noqa: E402
+from plasmapy import __version__ as release
 
 # -- General configuration ------------------------------------------------
 autosummary_generate = True

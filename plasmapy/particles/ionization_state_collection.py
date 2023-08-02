@@ -212,9 +212,7 @@ class IonizationStateCollection:
                 )
 
             if not isinstance(int_charge, Integral):
-                raise TypeError(  # noqa: TC301
-                    f"{int_charge} is not a valid charge for {particle}."
-                )
+                raise TypeError(f"{int_charge} is not a valid charge for {particle}.")
             elif not 0 <= int_charge <= atomic_number(particle):
                 raise ChargeError(f"{int_charge} is not a valid charge for {particle}.")
 
@@ -296,7 +294,7 @@ class IonizationStateCollection:
                         f"defined."
                     )
 
-        try:  # noqa: TC101
+        try:
             new_fractions = np.array(value, dtype=float)
         except TypeError as exc:
             raise TypeError(

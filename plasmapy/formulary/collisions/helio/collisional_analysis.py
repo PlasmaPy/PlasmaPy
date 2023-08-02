@@ -49,7 +49,7 @@ def lambda_ba(
     T_1={"can_be_negative": False, "equivalencies": u.temperature_energy()},
     T_2={"can_be_negative": False, "equivalencies": u.temperature_energy()},
 )
-def temp_ratio(  # noqa: C901, PLR0912, PLR0915
+def temp_ratio(  # noqa: C901
     *,
     r_0: u.au,
     r_n: u.au,
