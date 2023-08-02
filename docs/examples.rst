@@ -52,7 +52,7 @@ Helio
     :glob:
 
     notebooks/formulary/helio/*
-    
+
 Particles
 ---------
 
