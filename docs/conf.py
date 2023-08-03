@@ -98,6 +98,7 @@ extensions = [
     "sphinx.ext.mathjax",
     "sphinx.ext.napoleon",
     "sphinx.ext.todo",
+    "sphinx.ext.viewcode",
     "sphinx_changelog",
     "sphinx_codeautolink",
     "sphinx_copybutton",
