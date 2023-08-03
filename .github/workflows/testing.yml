@@ -95,7 +95,7 @@ jobs:
       run: python -m pip install --progress-bar off --upgrade tox
 
     - name: Build docs
-      run: tox -e build_docs_pins -- -q
+      run: tox -e build_docs_pins
 
   import-plasmapy:
     name: Importing PlasmaPy
