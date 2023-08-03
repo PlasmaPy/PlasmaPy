@@ -1,0 +1,2 @@
+Enabled a Sphinx_ extension that adds links to the source code of an
+object.
