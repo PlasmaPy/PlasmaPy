@@ -15,44 +15,51 @@ class ConditionlEvents:
         lower_threshold,
         upper_threshold=None,
         reference_signal=None,
-        size_of_return=None,
-        distance=1,  # minimum distance in index
+        length_of_return=None,
+        distance=0,
         weight="amplitude",
     ):
+        assert weight in ("amplitude", "equal")
+        assert distance >= 0, "distance can't be negative"
+        if length_of_return:
+            assert (
+                length_of_return < time[-1] - time[0]
+            ), "choose length_of_return shorter than time length"
+            assert length_of_return > 0, "length_of_return must be positive"
+
+        if upper_threshold:
+            assert (
+                upper_threshold > lower_threshold
+            ), "upper_threshold higher than lower_threshold, no events will be found"
+
         if reference_signal is None:
             reference_signal = signal.copy()
 
         assert len(reference_signal) == len(signal) and len(signal) == len(time)
 
-        normalized_signal = (reference_signal - np.mean(reference_signal)) / np.std(
-            reference_signal
-        )
+        time_step = np.diff(time).sum() / (len(time) - 1)
 
         peak_locations, _ = find_peaks(
-            normalized_signal,
+            reference_signal,
             height=[lower_threshold, upper_threshold],
-            distance=distance,
+            distance=int(distance / time_step) + 1,
         )
 
         conditional_events_indices = self._separate_events(
-            normalized_signal, lower_threshold, upper_threshold
+            reference_signal, lower_threshold, upper_threshold
         )
 
         peak_indices = self._choose_largest_peak_per_event(
             reference_signal, conditional_events_indices, peak_locations
         )
 
-        time_step = np.diff(time).sum() / (len(time) - 1)
-
-        if size_of_return is None:
-            size_of_return = (
-                len(normalized_signal) / len(conditional_events_indices) * time_step
-            )
+        if length_of_return is None:
+            length_of_return = len(signal) / len(conditional_events_indices) * time_step
 
         self._return_time = (
             np.arange(
-                -int(size_of_return / (time_step * 2)),
-                int(size_of_return / (time_step * 2)) + 1,
+                -int(length_of_return / (time_step * 2)),
+                int(length_of_return / (time_step * 2)) + 1,
             )
             * time_step
         )
@@ -66,7 +73,7 @@ class ConditionlEvents:
         )
 
         self._conditional_average, conditional_events = self._average_over_events(
-            normalized_signal, signal, weight, peak_indices
+            signal, weight, peak_indices
         )
 
         self._conditional_variance = self._calculate_conditional_variance(
@@ -101,10 +108,10 @@ class ConditionlEvents:
     def number_of_events(self):
         return self._number_of_events
 
-    def _separate_events(self, normalized_signal, lower_threshold, upper_threshold):
-        places = np.where(normalized_signal > lower_threshold)[0]
+    def _separate_events(self, reference_signal, lower_threshold, upper_threshold):
+        places = np.where(reference_signal > lower_threshold)[0]
         if upper_threshold:
-            higher = np.where(normalized_signal < upper_threshold)[0]
+            higher = np.where(reference_signal < upper_threshold)[0]
             places = np.intersect1d(places, higher)
 
         distance_between_places = np.diff(places)
@@ -125,18 +132,14 @@ class ConditionlEvents:
                 )
         return peak_indices
 
-    def _average_over_events(self, normalized_signal, signal, weight, peak_indices):
+    def _average_over_events(self, signal, weight, peak_indices):
 
         t_half_len = int((len(self._return_time) - 1) / 2)
         conditional_events = np.zeros([len(self._return_time), len(peak_indices)])
 
         for i, global_peak_loc in enumerate(peak_indices):
-
-            # Find the average values and their variance
             low_ind = int(max(0, global_peak_loc - t_half_len))
-            high_ind = int(
-                min(len(normalized_signal), global_peak_loc + t_half_len + 1)
-            )
+            high_ind = int(min(len(signal), global_peak_loc + t_half_len + 1))
             single_event = signal[low_ind:high_ind]
             if low_ind == 0:
                 single_event = np.append(
