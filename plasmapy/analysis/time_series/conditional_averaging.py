@@ -19,23 +19,35 @@ class ConditionlEvents:
         distance=0,
         weight="amplitude",
     ):
-        assert weight in ("amplitude", "equal")
-        assert distance >= 0, "distance can't be negative"
-        if length_of_return:
-            assert (
-                length_of_return < time[-1] - time[0]
-            ), "choose length_of_return shorter than time length"
-            assert length_of_return > 0, "length_of_return must be positive"
+        if weight not in ("amplitude", "equal"):
+            raise ValueError("weight must be either 'amplitude' or 'equal'")
+
+        if distance < 0:
+            raise ValueError("distance can't be negative")
+
+        if len(signal) != len(time):
+            raise ValueError("length of signal and time must be equal")
+
+        if reference_signal is not None:
+            if len(reference_signal) != len(time):
+                raise ValueError("length of reference_signal and time must be equal")
+
+        if length_of_return is not None:
+            if length_of_return > time[-1] - time[0]:
+                raise ValueError(
+                    "choose length_of_return shorter or euqal to time length"
+                )
+            if length_of_return < 0:
+                raise ValueError("length_of_return must be bigger than 0")
 
         if upper_threshold:
-            assert (
-                upper_threshold > lower_threshold
-            ), "upper_threshold higher than lower_threshold, no events will be found"
+            if upper_threshold <= lower_threshold:
+                raise ValueError(
+                    "upper_threshold higher than lower_threshold, no events will be found"
+                )
 
         if reference_signal is None:
             reference_signal = signal.copy()
-
-        assert len(reference_signal) == len(signal) and len(signal) == len(time)
 
         time_step = np.diff(time).sum() / (len(time) - 1)
 
