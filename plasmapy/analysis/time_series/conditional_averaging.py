@@ -1,13 +1,13 @@
 """Functionality to calculate the conditional average and conditional variance of a time series."""
 
-__all__ = ["ConditionlEvents"]
+__all__ = ["ConditionalEvents"]
 
 
 import numpy as np
 from scipy.signal import find_peaks
 
 
-class ConditionlEvents:
+class ConditionalEvents:
     def __init__(
         self,
         signal,
