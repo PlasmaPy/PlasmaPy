@@ -222,7 +222,7 @@ def test_ConditionalEvents_exception(
     distance,
     expected,
 ):
-    """Test ConditionalEvents class"""
+    """Tests for ConditionalEvents class"""
     cond_events = ConditionalEvents(
         signal,
         time,

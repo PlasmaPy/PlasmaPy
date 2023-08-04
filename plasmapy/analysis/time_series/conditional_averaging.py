@@ -9,6 +9,71 @@ from astropy import units as u
 
 
 class ConditionalEvents:
+    """
+    Class for analyzing conditional events in time series data.
+
+    Parameters
+    ----------
+    signal : array-like
+        The signal data.
+    time : array-like
+        The corresponding time values for the signal.
+    lower_threshold : float or `~astropy.units.Quantity`
+        The lower threshold for event detection.
+    upper_threshold : float or `~astropy.units.Quantity`, optional
+        The upper threshold for event detection (default is None).
+    reference_signal : array-like or `~astropy.units.Quantity`, optional
+        A reference signal for unit consistency checking (default is None).
+    length_of_return : float, optional
+        The desired length of the returned data (default is None).
+    distance : float, optional
+        The minimum distance between peaks, in units of time (default is 0).
+
+    Attributes
+    ----------
+    time : array
+        The time values for the returned data.
+    average : array
+        The conditional average over events.
+    variance : array
+        The conditional variance over events.
+    peaks : array
+        The peak values of the conditional events.
+    waiting_times : array
+        The time intervals between consecutive peaks.
+    arrival_times : array
+        The arrival times of the conditional events.
+    number_of_events : int
+        The total number of conditional events.
+
+    Raises
+    ------
+    ValueError
+        If length of signal and time are not equal.
+        If length of reference_signal and time are not equal (when reference_signal is provided).
+        If length_of_return is greater than the length of the time span.
+        If length_of_return is negative.
+        If upper_threshold is less than or equal to lower_threshold.
+    TypeError
+        If signal/reference_signal and lower_threshold have different astropy units.
+        If signal/reference_signal and upper_threshold have different astropy units.
+
+    Notes
+    -----
+    This class analyzes time series data for conditional events, providing
+    various statistical properties of the events.
+
+    Examples
+    --------
+    # Create a ConditionalEvents instance
+    conditional = ConditionalEvents(signal, time, lower_threshold)
+
+    # Access attributes
+    avg = conditional.average
+    peaks = conditional.peaks
+
+    """
+
     def __init__(
         self,
         signal,
@@ -120,30 +185,92 @@ class ConditionalEvents:
 
     @property
     def time(self):
+        """
+        Return an array of time values corresponding to the analysis window.
+
+        Returns
+        -------
+        time : array
+            An array of time values representing the analysis window.
+        """
         return self._return_time
 
     @property
     def average(self):
+        """
+        Return the conditional average over events.
+
+        Returns
+        -------
+        average : array
+            An array representing the conditional average over events.
+
+        """
         return self._conditional_average
 
     @property
     def variance(self):
+        """
+        Return the conditional variance over events.
+
+        Returns
+        -------
+        variance : array
+            An array representing the conditional variance over events.
+
+        """
         return self._conditional_variance
 
     @property
     def peaks(self):
+        """
+        Return an array of peak values of the conditional events.
+
+        Returns
+        -------
+        peaks : array
+            An array containing the peak values of the conditional events.
+
+        """
         return self._peaks
 
     @property
     def waiting_times(self):
+        """
+        Return an array of waiting times between consecutive peaks.
+
+        Returns
+        -------
+        waiting_times : array
+            An array of waiting times between consecutive peaks of conditional events.
+
+        """
         return self._waiting_times
 
     @property
     def arrival_times(self):
+        """
+        Return an array of arrival times corresponding to the conditional events.
+
+        Returns
+        -------
+        arrival_times : array
+            An array of arrival times for the conditional events.
+
+        """
         return self._arrival_times
 
     @property
     def number_of_events(self):
+        """
+        Return the total number of conditional events.
+
+        Returns
+        -------
+        number_of_events : int
+            The total number of conditional events.
+
+        """
         return self._number_of_events
 
     # This astropy unit checks are quite ugly in my view.
