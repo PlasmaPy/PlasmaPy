@@ -1432,9 +1432,6 @@ version of the package that can be revisited later.
    nitpick_ignore_regex in docs/conf.py so that it doesn't get counted
    as an error in a nitpicky doc build (e.g., tox -e doc_build_nitpicky).
 
-.. _`CITATION.cff`: https://github.com/PlasmaPy/PlasmaPy/blob/main/CITATION.cff
-.. |CITATION.cff| replace:: :file:`CITATION.cff`
-
 .. _`docs/_static/`: https://github.com/PlasmaPy/PlasmaPy/tree/main/docs/_static
 .. |docs/_static/| replace:: :file:`docs/_static/`
 
@@ -1461,9 +1458,6 @@ version of the package that can be revisited later.
 
 .. _`IPython.sphinxext.ipython_console_highlighting`: https://ipython.readthedocs.io/en/stable/sphinxext.html?highlight=IPython.sphinxext.ipython_console_highlighting#ipython-sphinx-directive-module
 .. |IPython.sphinxext.ipython_console_highlighting| replace:: `IPython.sphinxext.ipython_console_highlighting`
-
-.. _nbsphinx: https://nbsphinx.readthedocs.io
-.. |nbsphinx| replace:: `nbsphinx`
 
 .. _`sphinxcontrib-bibtex`: https://sphinxcontrib-bibtex.readthedocs.io
 .. |sphinxcontrib-bibtex| replace:: `sphinxcontrib-bibtex`

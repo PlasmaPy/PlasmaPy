@@ -223,6 +223,9 @@
 .. _`astropy.units`: https://docs.astropy.org/en/stable/units/index.html
 .. |astropy.units| replace:: `astropy.units`
 
+.. _`CITATION.cff`: https://github.com/PlasmaPy/PlasmaPy/blob/main/CITATION.cff
+.. |CITATION.cff| replace:: :file:`CITATION.cff`
+
 .. _git: https://git-scm.com
 .. |git| replace:: `git`
 
@@ -234,6 +237,9 @@
 
 .. _mpmath: https://mpmath.org/doc/current/
 .. |mpmath| replace:: `mpmath`
+
+.. _nbsphinx: https://nbsphinx.readthedocs.io
+.. |nbsphinx| replace:: `nbsphinx`
 
 .. _numba: https://numba.readthedocs.io
 .. |numba| replace:: `numba`
