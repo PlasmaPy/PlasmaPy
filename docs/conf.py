@@ -92,6 +92,7 @@ extensions = [
     "notfound.extension",
     "plasmapy_sphinx",
     "sphinx.ext.autodoc",
+    "sphinx.ext.duration",
     "sphinx.ext.extlinks",
     "sphinx.ext.graphviz",
     "sphinx.ext.intersphinx",
