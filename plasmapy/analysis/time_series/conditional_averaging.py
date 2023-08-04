@@ -5,6 +5,7 @@ __all__ = ["ConditionalEvents"]
 
 import numpy as np
 from scipy.signal import find_peaks
+from astropy import units as u
 
 
 class ConditionalEvents:
@@ -18,6 +19,26 @@ class ConditionalEvents:
         length_of_return=None,
         distance=0,
     ):
+        self._check_units_consistency(signal, lower_threshold, upper_threshold)
+        if reference_signal is not None:
+            self._check_units_consistency(
+                reference_signal, lower_threshold, upper_threshold
+            )
+
+        self._astropy_unit = None
+
+        if isinstance(signal, u.Quantity):
+            signal, self._astropy_unit = self._strip_unit_from_variable(signal)
+
+        if isinstance(lower_threshold, u.Quantity):
+            lower_threshold, _ = self._strip_unit_from_variable(lower_threshold)
+
+        if isinstance(upper_threshold, u.Quantity):
+            upper_threshold, _ = self._strip_unit_from_variable(upper_threshold)
+
+        if isinstance(reference_signal, u.Quantity):
+            reference_signal, _ = self._strip_unit_from_variable(reference_signal)
+
         if distance < 0:
             raise ValueError("distance can't be negative")
 
@@ -81,8 +102,6 @@ class ConditionalEvents:
 
         self._arrival_times = time[peak_indices]
         self._waiting_times = np.diff(self._arrival_times)
-        #     np.append(np.array([time[0]]), self._arrival_times)
-        # )
 
         self._conditional_average, conditional_events = self._average_over_events(
             signal, peak_indices
@@ -91,6 +110,10 @@ class ConditionalEvents:
         self._conditional_variance = self._calculate_conditional_variance(
             conditional_events
         )
+
+        if self._astropy_unit is not None:
+            self._peaks *= self._astropy_unit
+            self._conditional_average *= self._astropy_unit
 
     @property
     def time(self):
@@ -119,6 +142,31 @@ class ConditionalEvents:
     @property
     def number_of_events(self):
         return self._number_of_events
+
+    # This astropy unit checks are quite ugly in my view.
+    # If a code reviewer has a better idea how to handle this I would be very grateful.
+    def _check_units_consistency(self, signal, lower_threshold, upper_threshold):
+        if isinstance(signal, u.Quantity):
+            if not isinstance(lower_threshold, u.Quantity):
+                raise TypeError(
+                    "signal/reference_signal and lower_threshold must have same astropy unit"
+                )
+            if signal.unit != lower_threshold.unit:
+                raise TypeError(
+                    "signal/reference_signal and lower_threshold must have same astropy unit"
+                )
+            if upper_threshold is not None:
+                if not isinstance(upper_threshold, u.Quantity):
+                    raise TypeError(
+                        "signal/reference_signal and lower_threshold must have same astropy unit"
+                    )
+                if signal.unit != upper_threshold.unit:
+                    raise TypeError(
+                        "signal/reference_signal and upper_threshold must have same astropy unit"
+                    )
+
+    def _strip_unit_from_variable(self, variable):
+        return variable.value, variable.unit
 
     def _ensure_numpy_array(self, variable):
         if not isinstance(variable, np.ndarray):

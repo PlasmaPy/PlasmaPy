@@ -1,9 +1,5 @@
-"""Tests for excess_averaging.py"""
-
-from math import exp
 import astropy.units as u
 import numpy as np
-from numpy.linalg import cond
 import pytest
 
 from plasmapy.analysis.time_series.conditional_averaging import ConditionalEvents
@@ -22,6 +18,12 @@ from plasmapy.analysis.time_series.conditional_averaging import ConditionalEvent
     ),
     [
         ([1, 2], [1, 2], 1.5, None, None, None, -1, ValueError),
+        ([1, 2] * u.eV, [1, 2], 1.5, None, None, None, 0, TypeError),
+        ([1, 2] * u.eV, [1, 2], 1.5 * u.m, None, None, None, 0, TypeError),
+        ([1, 2] * u.eV, [1, 2], 1.5 * u.eV, 4.0 * u.m, None, None, 0, TypeError),
+        ([1, 2] * u.eV, [1, 2], 1.5 * u.eV, 4.0, None, None, 0, TypeError),
+        ([1, 2], [1, 2], 1.5, None, [1, 2] * u.eV, None, 0, TypeError),
+        ([1, 2], [1, 2], 1.5 * u.eV, 4.0, [1, 2] * u.eV, None, 0, TypeError),
         ([1, 2], [1, 2, 3], 1.5, None, None, None, 0, ValueError),
         ([1, 2], [1, 2], 1.5, None, [1, 2, 3], None, 0, ValueError),
         ([1, 2], [1, 2], 1.5, None, None, 5, 0, ValueError),
@@ -101,6 +103,24 @@ def test_ConditionalEvents_ValueErrors(
             ],
         ),
         (
+            [1, 2, 1, 1, 2, 1] * u.eV,
+            [1, 2, 3, 4, 5, 6],
+            1.5 * u.eV,
+            4.0 * u.eV,
+            None,
+            None,
+            0,
+            [
+                [-1.0, 0.0, 1.0],
+                [1.0, 2.0, 1.0] * u.eV,
+                [1.0, 1.0, 1.0],
+                [2.0, 2.0] * u.eV,
+                [3.0],
+                [2.0, 5.0],
+                2,
+            ],
+        ),
+        (
             [1, 2, 1, 1, 2, 1, 1, 5, 1],
             [1, 2, 3, 4, 5, 6, 7, 8, 9],
             1.5,
@@ -142,6 +162,24 @@ def test_ConditionalEvents_ValueErrors(
             1.5,
             None,
             [1, 1, 1, 5, 1, 1, 9, 1, 1, 1, 1, 1],
+            3,
+            0,
+            [
+                [-1.0, 0.0, 1.0],
+                [1.5, 2.0, 1.5],
+                [0.9, 0.8, 0.9],
+                [3.0, 1.0],
+                [3.0],
+                [4.0, 7.0],
+                2,
+            ],
+        ),
+        (
+            [1, 3, 2, 3, 1, 1, 1, 2, 1, 1, 4, 1],
+            [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+            1.5 * u.eV,
+            None,
+            [1, 1, 1, 5, 1, 1, 9, 1, 1, 1, 1, 1] * u.eV,
             3,
             0,
             [
