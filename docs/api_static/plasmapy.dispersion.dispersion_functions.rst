@@ -1,7 +1,7 @@
 :orphan:
 
 `plasmapy.dispersion.dispersion_functions`
-========================================
+==========================================
 
 .. currentmodule:: plasmapy.dispersion.dispersion_functions
 
