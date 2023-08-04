@@ -1,0 +1,2 @@
+Moved reST_ substitutions from :file:`docs/common_links.rst` the file
+the substitutions are used in.
