@@ -750,10 +750,10 @@ Features
   `plasmapy.formulary.parameters` to the new module.  Related aliases were
   also migrated. (`#1453 <https://github.com/plasmapy/plasmapy/pull/1453>`__)
 - Created :term:`lite-functions`
-  `~plasmapy.dispersion.dispersionfunction.plasma_dispersion_func_lite` and
-  `~plasmapy.dispersion.dispersionfunction.plasma_dispersion_func_deriv_lite`
-  for `~plasmapy.dispersion.dispersionfunction.plasma_dispersion_func`
-  and `~plasmapy.dispersion.dispersionfunction.plasma_dispersion_func_deriv`
+  `~plasmapy.dispersion.dispersion_functions.plasma_dispersion_func_lite` and
+  `~plasmapy.dispersion.dispersion_functions.plasma_dispersion_func_deriv_lite`
+  for `~plasmapy.dispersion.dispersion_functions.plasma_dispersion_func`
+  and `~plasmapy.dispersion.dispersion_functions.plasma_dispersion_func_deriv`
   respectively. (`#1473 <https://github.com/plasmapy/plasmapy/pull/1473>`__)
 - Created :term:`lite-function`
   `plasmapy.formulary.dielectric.permittivity_1D_Maxwellian_lite` for
@@ -1586,7 +1586,7 @@ Backwards Incompatible Changes
 
 - Created `plasmapy.dispersion` in accordance with PlasmaPy Enhancement Proposal 7
   (`PLEP 7 <https://github.com/PlasmaPy/PlasmaPy-PLEPs/blob/main/PLEP-0007.rst>`_)
-  and migrated the dispersion functionality (`dispersionfunction.py`) from
+  and migrated the dispersion functionality (:file:`dispersionfunction.py`) from
   `plasmapy.formulary` to `plasmapy.dispersion`. (`#910 <https://github.com/plasmapy/plasmapy/pull/910>`__)
 - Removed default values for the `ion` and `particle` arguments of functions contained in ``plasmapy.formulary.parameters``, in accordance with issue [#453](https://github.com/PlasmaPy/PlasmaPy/issues/453), and updated all relevant calls to modified functionality. (`#911 <https://github.com/plasmapy/plasmapy/pull/911>`__)
 - Moved test helper exceptions from ``plasmapy.utils.pytest_helpers`` to ``plasmapy.tests.helpers``. (`#919 <https://github.com/plasmapy/plasmapy/pull/919>`__)

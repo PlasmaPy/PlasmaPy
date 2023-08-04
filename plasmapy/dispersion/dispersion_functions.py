@@ -18,17 +18,13 @@ from plasmapy.utils.decorators import bind_lite_func, preserve_signature
 __all__ += __lite_funcs__
 
 
-# TODO: Use cython to speed up the Faddeeva_function execution in
-#       plasma_dispersion_func_lite
-
-
 @preserve_signature
 def plasma_dispersion_func_lite(zeta):
     r"""
     The :term:`lite-function` version of
-    `~plasmapy.dispersion.dispersionfunction.plasma_dispersion_func`.
+    `~plasmapy.dispersion.dispersion_functions.plasma_dispersion_func`.
     Performs the same calculation as
-    `~plasmapy.dispersion.dispersionfunction.plasma_dispersion_func`,
+    `~plasmapy.dispersion.dispersion_functions.plasma_dispersion_func`,
     but is intended for computational use and, thus, has all data
     conditioning safeguards removed.
 
@@ -45,7 +41,7 @@ def plasma_dispersion_func_lite(zeta):
 
     See Also
     --------
-    ~plasmapy.dispersion.dispersionfunction.plasma_dispersion_func
+    ~plasmapy.dispersion.dispersion_functions.plasma_dispersion_func
 
     """
 
@@ -90,8 +86,8 @@ def plasma_dispersion_func(
     The plasma dispersion function is defined as:
 
     .. math::
-        Z(\zeta) = \pi^{-0.5} \int_{-\infty}^{+\infty}
-        \frac{e^{-x^2}}{x-\zeta} dx
+        Z(ζ) = π^{-0.5} \int_{-∞}^{+∞}
+        \frac{e^{-x^2}}{x-ζ} dx
 
     where the argument is a complex number :cite:p:`fried:1961`.
 
@@ -110,7 +106,7 @@ def plasma_dispersion_func(
     (0.6088888957234254+0.33494583882874024j)
 
     For user convenience
-    `~plasmapy.dispersion.dispersionfunction.plasma_dispersion_func_lite`
+    `~plasmapy.dispersion.dispersion_functions.plasma_dispersion_func_lite`
     is bound to this function and can be used as follows:
 
     >>> plasma_dispersion_func.lite(0)
@@ -119,7 +115,6 @@ def plasma_dispersion_func(
     0.757872156141312j
     >>> plasma_dispersion_func.lite(-1.52+0.47j)
     (0.6088888957234254+0.33494583882874024j)
-
     """
     if not isinstance(
         zeta, (numbers.Integral, numbers.Real, numbers.Complex, np.ndarray, u.Quantity)
@@ -149,9 +144,9 @@ def plasma_dispersion_func(
 def plasma_dispersion_func_deriv_lite(zeta):
     r"""
     The :term:`lite-function` version of
-    `~plasmapy.dispersion.dispersionfunction.plasma_dispersion_func_deriv`.
+    `~plasmapy.dispersion.dispersion_functions.plasma_dispersion_func_deriv`.
     Performs the same calculation as
-    `~plasmapy.dispersion.dispersionfunction.plasma_dispersion_func_deriv`,
+    `~plasmapy.dispersion.dispersion_functions.plasma_dispersion_func_deriv`,
     but is intended for computational use and, thus, has all data
     conditioning safeguards removed.
 
@@ -168,10 +163,8 @@ def plasma_dispersion_func_deriv_lite(zeta):
 
     See Also
     --------
-    ~plasmapy.dispersion.dispersionfunction.plasma_dispersion_func_deriv
-
+    ~plasmapy.dispersion.dispersion_functions.plasma_dispersion_func_deriv
     """
-
     return -2 * (1 + zeta * plasma_dispersion_func_lite(zeta))
 
 
@@ -213,8 +206,8 @@ def plasma_dispersion_func_deriv(
     The derivative of the plasma dispersion function is defined as:
 
     .. math::
-        Z'(\zeta) = \pi^{-1/2} \int_{-\infty}^{+\infty}
-        \frac{e^{-x^2}}{(x-\zeta)^2} dx
+        Z'(ζ) = π^{-1/2} \int_{-∞}^{+∞}
+        \frac{e^{-x^2}}{(x-ζ)^2} dx
 
     where the argument is a complex number :cite:p:`fried:1961`.
 
@@ -228,7 +221,7 @@ def plasma_dispersion_func_deriv(
     (0.165871331498228...+0.445879788059350...j)
 
     For user convenience
-    `~plasmapy.dispersion.dispersionfunction.plasma_dispersion_func_deriv_lite`
+    `~plasmapy.dispersion.dispersion_functions.plasma_dispersion_func_deriv_lite`
     is bound to this function and can be used as follows:
 
     >>> plasma_dispersion_func_deriv.lite(0)

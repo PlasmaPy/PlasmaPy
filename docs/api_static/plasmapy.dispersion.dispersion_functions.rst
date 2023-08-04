@@ -1,11 +1,11 @@
 :orphan:
 
-`plasmapy.dispersion.dispersionfunction`
+`plasmapy.dispersion.dispersion_functions`
 ========================================
 
-.. currentmodule:: plasmapy.dispersion.dispersionfunction
+.. currentmodule:: plasmapy.dispersion.dispersion_functions
 
-.. automodapi:: plasmapy.dispersion.dispersionfunction
+.. automodapi:: plasmapy.dispersion.dispersion_functions
 
 Example Notebooks
 -----------------
