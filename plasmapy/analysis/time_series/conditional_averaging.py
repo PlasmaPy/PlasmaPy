@@ -17,11 +17,7 @@ class ConditionalEvents:
         reference_signal=None,
         length_of_return=None,
         distance=0,
-        weight="amplitude",
     ):
-        if weight not in ("amplitude", "equal"):
-            raise ValueError("weight must be either 'amplitude' or 'equal'")
-
         if distance < 0:
             raise ValueError("distance can't be negative")
 
@@ -48,6 +44,10 @@ class ConditionalEvents:
 
         if reference_signal is None:
             reference_signal = signal.copy()
+
+        signal = self._ensure_numpy_array(signal)
+        time = self._ensure_numpy_array(time)
+        reference_signal = self._ensure_numpy_array(reference_signal)
 
         time_step = np.diff(time).sum() / (len(time) - 1)
 
@@ -80,12 +80,12 @@ class ConditionalEvents:
         self._number_of_events = len(self._peaks)
 
         self._arrival_times = time[peak_indices]
-        self._waiting_times = np.diff(
-            np.append(np.array([time[0]]), self._arrival_times)
-        )
+        self._waiting_times = np.diff(self._arrival_times)
+        #     np.append(np.array([time[0]]), self._arrival_times)
+        # )
 
         self._conditional_average, conditional_events = self._average_over_events(
-            signal, weight, peak_indices
+            signal, peak_indices
         )
 
         self._conditional_variance = self._calculate_conditional_variance(
@@ -120,6 +120,11 @@ class ConditionalEvents:
     def number_of_events(self):
         return self._number_of_events
 
+    def _ensure_numpy_array(self, variable):
+        if not isinstance(variable, np.ndarray):
+            variable = np.array(variable)
+        return variable
+
     def _separate_events(self, reference_signal, lower_threshold, upper_threshold):
         places = np.where(reference_signal > lower_threshold)[0]
         if upper_threshold:
@@ -144,7 +149,7 @@ class ConditionalEvents:
                 )
         return peak_indices
 
-    def _average_over_events(self, signal, weight, peak_indices):
+    def _average_over_events(self, signal, peak_indices):
 
         t_half_len = int((len(self._return_time) - 1) / 2)
         conditional_events = np.zeros([len(self._return_time), len(peak_indices)])
@@ -164,8 +169,6 @@ class ConditionalEvents:
                 )
 
             conditional_events[:, i] = single_event
-            if weight == "equal":
-                conditional_events[:, i] /= single_event[t_half_len]
 
         return np.mean(conditional_events, axis=1), conditional_events
 
