@@ -19,11 +19,14 @@ class ConditionalEvents:
         length_of_return=None,
         distance=0,
     ):
-        self._check_units_consistency(signal, lower_threshold, upper_threshold)
+        # This astropy unit checks are quite ugly in my view.
+        # If a code reviewer has a better idea how to handle this I would be very grateful.
         if reference_signal is not None:
             self._check_units_consistency(
                 reference_signal, lower_threshold, upper_threshold
             )
+        else:
+            self._check_units_consistency(signal, lower_threshold, upper_threshold)
 
         self._astropy_unit = None
 
