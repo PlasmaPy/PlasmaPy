@@ -1,0 +1,2 @@
+Changed ``plasmapy.dispersion.dispersionfunction.py``
+to `plasmapy.dispersion.dispersion_functions.py`.
