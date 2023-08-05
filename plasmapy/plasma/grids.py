@@ -20,6 +20,7 @@ import xarray as xr
 from abc import ABC, abstractmethod
 from collections import namedtuple
 from functools import cached_property
+from scipy.interpolate import RegularGridInterpolator
 from scipy.spatial import distance
 from typing import Union
 
@@ -1167,150 +1168,21 @@ class CartesianGrid(AbstractGrid):
 
         return result[0] if len(result) == 1 else result
 
-    @staticmethod
-    def _volume_averaged_interpolator(
-        pos: Union[np.ndarray, u.Quantity],
-        axes: tuple,
-        volume_differentials: tuple,
-        shape: tuple,
-        interpolation_quantities: u.Quantity,
-    ):
-        """
-        Static method used in the parallelization of `~plasmapy.plasma.grids.CartesianGrid.volume_averaged_interpolator`.
+    @property
+    def _volume_averaged_interpolator(self):
+        x_points, y_points, z_points = self._ax0_si, self._ax1_si, self._ax2_si
+        quantities_array = np.zeros((*self.shape, len(self._interp_args)))
 
-        Parameters
-        ----------
-        pos : `~numpy.ndarray` or `~astropy.units.Quantity` array, shape (n,3)
-            An array of positions in space, where the second dimension
-            corresponds to the three dimensions of the grid. If a
-            `~numpy.ndarray` is provided, units will be assumed to match
-            those of the grid.
-        axes : `tuple`
-            A tuple containing field locations along its respective axis.
-        volume_differentials : `tuple`
-            A tuple corresponding to the step size along its respective axis.
-        shape : `tuple`
-            A tuple representing the shape of the grid
-        interpolation_quantities : `~astropy.units.Quantity` array
-            An array representing quantities on the grid. Must have the dimensions
-            given for ``shape``.
-        """
-        nparticles = pos.shape[0]
+        for i, datum in enumerate(self._interp_args):
+            quantities_array[..., i] = self.ds[datum][...]
 
-        # Load grid attributes (so this isn't repeated)
-        ax0, ax1, ax2 = axes
-        dx, dy, dz = volume_differentials
-        n0, n1, n2 = shape
-
-        # find cell nearest to each position
-        nearest_neighbor_index = np.zeros((nparticles, 3), dtype=np.int32)
-        nearest_neighbor_index[..., 0] = _fast_nearest_neighbor_interpolate(
-            pos[:, 0], ax0
-        )
-        nearest_neighbor_index[..., 1] = _fast_nearest_neighbor_interpolate(
-            pos[:, 1], ax1
-        )
-        nearest_neighbor_index[..., 2] = _fast_nearest_neighbor_interpolate(
-            pos[:, 2], ax2
+        return RegularGridInterpolator(
+            (x_points, y_points, z_points), quantities_array, bounds_error=False
         )
 
-        # Create a mask for positions that are off the grid. The values at
-        # these points will be set to zero later.
-        mask_particle_off = (
-            (pos[:, 0] < ax0.min())
-            | (pos[:, 0] > ax0.max())
-            | (pos[:, 1] < ax1.min())
-            | (pos[:, 1] > ax1.max())
-            | (pos[:, 2] < ax2.min())
-            | (pos[:, 2] > ax2.max())
-        )
-
-        # Get the physical positions for the nearest neighbor cell
-        # for each particle
-        xpos = ax0[nearest_neighbor_index[:, 0]]
-        ypos = ax1[nearest_neighbor_index[:, 1]]
-        zpos = ax2[nearest_neighbor_index[:, 2]]
-        nearest_neighbor_pos = np.array([xpos, ypos, zpos]).swapaxes(0, 1)
-
-        # Determine the indices for the grid cells bounding the particle
-        # - The imaginary cell centered on the particle will overlap with
-        #   1 to 8 surrounding cells
-        # - typically this is 8 but will be 4, 2, or 1 when the particle is
-        #   near the boundary of the grid
-        bounding_cell_indices = np.empty((nparticles, 8, 3), dtype=np.int32)
-        lower_indices = np.where(
-            pos >= nearest_neighbor_pos,
-            nearest_neighbor_index,
-            nearest_neighbor_index - 1,
-        )
-
-        # populate x indices
-        bounding_cell_indices[:, 0:4, 0] = np.tile(
-            lower_indices[:, 0], (4, 1)
-        ).swapaxes(0, 1)
-        bounding_cell_indices[:, 4:, 0] = bounding_cell_indices[:, 0:4, 0] + 1
-
-        # populate y indices
-        bounding_cell_indices[:, [0, 1, 4, 5], 1] = np.tile(
-            lower_indices[:, 1], (4, 1)
-        ).swapaxes(0, 1)
-        bounding_cell_indices[:, [2, 3, 6, 7], 1] = (
-            bounding_cell_indices[:, [0, 1, 4, 5], 1] + 1
-        )
-
-        # populate z indices
-        bounding_cell_indices[:, 0::2, 2] = np.tile(
-            lower_indices[:, 2], (4, 1)
-        ).swapaxes(0, 1)
-        bounding_cell_indices[:, 1::2, 2] = bounding_cell_indices[:, 0::2, 2] + 1
-
-        # Create a mask for cells whose locations would be off the grid,
-        # which occurs when the interpolation point is near the edge of the
-        # grid. These values will be weighted as zero later.
-        mask_cell_off = (
-            (bounding_cell_indices < 0).any(axis=2)
-            | (bounding_cell_indices[:, :, 0] >= n0)
-            | (bounding_cell_indices[:, :, 1] >= n1)
-            | (bounding_cell_indices[:, :, 2] >= n2)
-        )
-
-        # Zero any out of bounds indices so IndexError is not raised
-        # during indexing.  This means an incorrect value will be retrieved
-        # but will not be used because of the zero weighting and the
-        # off the grid mask
-        bounding_cell_indices[mask_cell_off, :] = 0
-
-        # Calculate the volume of the overlap between the point volume
-        # and the volume of each of the surrounding vertices
-        lx = dx - np.abs(pos[:, None, 0] - ax0[bounding_cell_indices[..., 0]])
-        ly = dy - np.abs(pos[:, None, 1] - ax1[bounding_cell_indices[..., 1]])
-        lz = dz - np.abs(pos[:, None, 2] - ax2[bounding_cell_indices[..., 2]])
-        bounding_cell_weights = lx * ly * lz
-
-        # Set the weight for any off-grid vertices (cell or particle) to zero
-        bounding_cell_weights[mask_cell_off] = 0.0
-        bounding_cell_weights[mask_particle_off, ...] = 0.0
-        norms = np.sum(bounding_cell_weights, axis=1)
-        mask_norm_zero = norms == 0.0
-        bounding_cell_weights[~mask_norm_zero] = (
-            bounding_cell_weights[~mask_norm_zero, ...] / norms[~mask_norm_zero, None]
-        )
-
-        # Get the values of each of the interpolated quantities at each
-        # of the bounding vertices
-        vals = interpolation_quantities[
-            bounding_cell_indices[..., 0],
-            bounding_cell_indices[..., 1],
-            bounding_cell_indices[..., 2],
-            :,
-        ]
-        # Construct a weighted average of the interpolated quantities
-        weighted_ave = np.sum(bounding_cell_weights[..., None] * vals, axis=1)
-        weighted_ave[mask_particle_off, :] = np.nan
-
-        output = weighted_ave
-
-        return output[0] if len(output) == 1 else output
+    @cached_property
+    def _persistent_volume_averaged_interpolator(self):
+        return self._volume_averaged_interpolator
 
     def volume_averaged_interpolator(
         self, pos: Union[np.ndarray, u.Quantity], *args, persistent=False
@@ -1354,32 +1226,21 @@ class CartesianGrid(AbstractGrid):
         This implementation of this algorithm assumes that the grid is uniformly
         spaced and Cartesian.
         """
-        nargs = len(args)
-
         # Shared setup
         pos, args, persistent = self._persistent_interpolator_setup(
             pos, args, persistent
         )
 
-        # Split position array into chunks
-        chunked_positions = da.from_array(pos, chunks=("auto", -1))
+        nargs = len(args)
 
-        # Compute the interpolation in parallel
-        result = da.map_blocks(
-            self._volume_averaged_interpolator,
-            chunked_positions,
-            axes=(self._ax0_si, self._ax1_si, self._ax2_si),
-            volume_differentials=(self._dax0_si, self._dax1_si, self._dax2_si),
-            shape=self.shape,
-            interpolation_quantities=self._interp_quantities,
-            dtype=list,
-        ).compute()
+        if persistent:
+            unitless_result = self._persistent_volume_averaged_interpolator(pos)
+        else:
+            unitless_result = self._volume_averaged_interpolator(pos)
 
-        # Transpose the result to get a (6, N) array, then add units
-        result = result.T
-        result = tuple([result[i] * self._interp_units[i] for i in range(nargs)])
+        output = [unitless_result[..., i] * self._interp_units[i] for i in range(nargs)]
 
-        return result[0] if len(result) == 1 else result
+        return output[0] if len(output) == 1 else tuple(output)
 
 
 class NonUniformCartesianGrid(AbstractGrid):
