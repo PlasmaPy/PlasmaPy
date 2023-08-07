@@ -10,7 +10,8 @@ from astropy import units as u
 
 class ConditionalEvents:
     """
-    Class for analyzing conditional events in time series data.
+    Calculate conditional average, conditional variance, peaks,
+    arrival times and waiting times of events of a time series.
 
     Parameters
     ----------
