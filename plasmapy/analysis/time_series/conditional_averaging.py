@@ -27,38 +27,25 @@ class ConditionalEvents:
         If None, ``signal`` is the reference signal.
     length_of_return : float, optional
         Desired length of returned data (default is None).
-        If None, estimated as len(``signal``)/len(conditional events)*``time_step``.
+        If None, estimated as len(``signal``)/len(``number_of_events``)* ``time_step``.
     distance : float, optional
         Minimum distance between peaks, in units of time (default is 0).
 
-    Attributes
-    ----------
-    time : 1D |array_like|
-        Time values for the returned data.
-    average : 1D |array_like|
-        Conditional average over events.
-    variance : 1D |array_like|
-        Conditional variance over events.
-    peaks : 1D |array_like|
-        Peak values of the conditional events.
-    waiting_times : 1D |array_like|
-        Time intervals between consecutive peaks.
-    arrival_times : 1D |array_like|
-        Arrival times of conditional events.
-    number_of_events : int
-        Total number of conditional events.
 
     Raises
     ------
-    `ValueError`
-        If length of ``signal`` and ``time`` are not equal.
-        If length of ``reference_signal`` and ``time`` are not equal (when reference_signal is provided).
-        If ``length_of_return`` is greater than the length of the time span.
-        If ``length_of_return`` is negative.
-        If ``upper_threshold`` is less than or equal to ``lower_threshold``.
-    `TypeError`
-        If ``signal``/``reference_signal`` and ``lower_threshold`` have different astropy units.
-        If ``signal``/``reference_signal`` and ``upper_threshold`` have different astropy units.
+    - ValueError:
+
+        * If length of ``signal`` and ``time`` are not equal.
+        * If length of ``reference_signal`` and ``time`` are not equal (when reference_signal is provided).
+        * If ``length_of_return`` is greater than the length of the time span.
+        * If ``length_of_return`` is negative.
+        * If ``upper_threshold`` is less than or equal to ``lower_threshold``.
+
+    - TypeError:
+
+     - If ``signal``/``reference_signal`` and ``lower_threshold`` have different astropy units.
+     - If ``signal``/``reference_signal`` and ``upper_threshold`` have different astropy units.
 
     Notes
     -----
@@ -202,7 +189,7 @@ class ConditionalEvents:
     @property
     def time(self):
         """
-        Return time values corresponding to the analysis window.
+        Time values corresponding to the analysis window.
 
         Returns
         -------
@@ -214,7 +201,7 @@ class ConditionalEvents:
     @property
     def average(self):
         """
-        Return the conditional average over events.
+        Conditional average over events.
 
         Returns
         -------
@@ -227,7 +214,7 @@ class ConditionalEvents:
     @property
     def variance(self):
         """
-        Return the conditional variance over events.
+        Conditional variance over events.
 
         Returns
         -------
@@ -240,7 +227,7 @@ class ConditionalEvents:
     @property
     def peaks(self):
         """
-        Return peak values of conditional events.
+        Peak values of conditional events.
 
         Returns
         -------
@@ -253,7 +240,7 @@ class ConditionalEvents:
     @property
     def waiting_times(self):
         """
-        Return waiting times between consecutive peaks.
+        Waiting times between consecutive peaks.
 
         Returns
         -------
@@ -266,7 +253,7 @@ class ConditionalEvents:
     @property
     def arrival_times(self):
         """
-        Return arrival times corresponding to the conditional events.
+        Arrival times corresponding to the conditional events.
 
         Returns
         -------
@@ -279,7 +266,7 @@ class ConditionalEvents:
     @property
     def number_of_events(self):
         """
-        Return the total number of conditional events.
+        Total number of conditional events.
 
         Returns
         -------
