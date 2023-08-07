@@ -320,7 +320,7 @@ class ConditionalEvents:
     def _choose_largest_peak_per_event(
         self, reference_signal, conditional_events_indices, peak_indices
     ):
-        for i, event in enumerate(conditional_events_indices):
+        for event in conditional_events_indices:
             peaks_in_event = np.isin(peak_indices, event)
             if peaks_in_event.sum() > 1:
                 peak_ind = peak_indices[peaks_in_event]
