@@ -18,9 +18,9 @@ class ConditionalEvents:
         Signal to be analyzed.
     time : 1D |array_like|
         Corresponding time values for ``signal``.
-    lower_threshold : float or `~astropy.units.Quantity`
+    lower_threshold : `float` or `~astropy.units.Quantity`
         Lower threshold for event detection.
-    upper_threshold : float or `~astropy.units.Quantity`, optional
+    upper_threshold : `float` or `~astropy.units.Quantity`, optional
         Upper threshold for event detection (default is None).
     reference_signal : 1D |array_like|, optional
         Reference signal (default is None).
@@ -36,16 +36,16 @@ class ConditionalEvents:
     ------
     `ValueError`:
 
-        - If length of ``signal`` and ``time`` are not equal.
-        - If length of ``reference_signal`` and ``time`` are not equal (when reference_signal is provided).
-        - If ``length_of_return`` is greater than the length of the time span.
-        - If ``length_of_return`` is negative.
-        - If ``upper_threshold`` is less than or equal to ``lower_threshold``.
+        If length of ``signal`` and ``time`` are not equal.
+        If length of ``reference_signal`` and ``time`` are not equal (when reference_signal is provided).
+        If ``length_of_return`` is greater than the length of the time span.
+        If ``length_of_return`` is negative.
+        If ``upper_threshold`` is less than or equal to ``lower_threshold``.
 
     `TypeError`:
 
-        - If ``signal``/``reference_signal`` and ``lower_threshold`` have different astropy units.
-        - If ``signal``/``reference_signal`` and ``upper_threshold`` have different astropy units.
+        If ``signal``/``reference_signal`` and ``lower_threshold`` have different astropy units.
+        If ``signal``/``reference_signal`` and ``upper_threshold`` have different astropy units.
 
     Notes
     -----
