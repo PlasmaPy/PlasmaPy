@@ -226,7 +226,7 @@ class AbstractSaveRoutine(ABC):
     def save_to_disk(self):
         """Save a hdf5 file containing simulation positions and velocities."""
 
-        if self.output_directory:
+        if self.output_directory is None:
             raise ValueError(
                 "Please pass an `output_directory` parameter during instantiation to use disk save "
                 "routines!"
