@@ -34,18 +34,18 @@ class ConditionalEvents:
 
     Raises
     ------
-    - ValueError:
+    `ValueError`:
 
-        * If length of ``signal`` and ``time`` are not equal.
-        * If length of ``reference_signal`` and ``time`` are not equal (when reference_signal is provided).
-        * If ``length_of_return`` is greater than the length of the time span.
-        * If ``length_of_return`` is negative.
-        * If ``upper_threshold`` is less than or equal to ``lower_threshold``.
+        - If length of ``signal`` and ``time`` are not equal.
+        - If length of ``reference_signal`` and ``time`` are not equal (when reference_signal is provided).
+        - If ``length_of_return`` is greater than the length of the time span.
+        - If ``length_of_return`` is negative.
+        - If ``upper_threshold`` is less than or equal to ``lower_threshold``.
 
-    - TypeError:
+    `TypeError`:
 
-     - If ``signal``/``reference_signal`` and ``lower_threshold`` have different astropy units.
-     - If ``signal``/``reference_signal`` and ``upper_threshold`` have different astropy units.
+        - If ``signal``/``reference_signal`` and ``lower_threshold`` have different astropy units.
+        - If ``signal``/``reference_signal`` and ``upper_threshold`` have different astropy units.
 
     Notes
     -----
