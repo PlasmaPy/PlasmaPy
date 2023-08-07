@@ -14,64 +14,76 @@ class ConditionalEvents:
 
     Parameters
     ----------
-    signal : array-like
-        The signal data.
-    time : array-like
-        The corresponding time values for the signal.
+    signal : 1D |array_like|
+        Signal to be analyzed.
+    time : 1D |array_like|
+        Corresponding time values for ``signal``.
     lower_threshold : float or `~astropy.units.Quantity`
-        The lower threshold for event detection.
+        Lower threshold for event detection.
     upper_threshold : float or `~astropy.units.Quantity`, optional
-        The upper threshold for event detection (default is None).
-    reference_signal : array-like or `~astropy.units.Quantity`, optional
-        A reference signal for unit consistency checking (default is None).
+        Upper threshold for event detection (default is None).
+    reference_signal : 1D |array_like|, optional
+        Reference signal (default is None).
+        If None, ``signal`` is the reference signal.
     length_of_return : float, optional
-        The desired length of the returned data (default is None).
+        Desired length of returned data (default is None).
+        If None, estimated as len(``signal``)/len(conditional events)*``time_step``.
     distance : float, optional
-        The minimum distance between peaks, in units of time (default is 0).
+        Minimum distance between peaks, in units of time (default is 0).
 
     Attributes
     ----------
-    time : array
-        The time values for the returned data.
-    average : array
-        The conditional average over events.
-    variance : array
-        The conditional variance over events.
-    peaks : array
-        The peak values of the conditional events.
-    waiting_times : array
-        The time intervals between consecutive peaks.
-    arrival_times : array
-        The arrival times of the conditional events.
+    time : 1D |array_like|
+        Time values for the returned data.
+    average : 1D |array_like|
+        Conditional average over events.
+    variance : 1D |array_like|
+        Conditional variance over events.
+    peaks : 1D |array_like|
+        Peak values of the conditional events.
+    waiting_times : 1D |array_like|
+        Time intervals between consecutive peaks.
+    arrival_times : 1D |array_like|
+        Arrival times of conditional events.
     number_of_events : int
-        The total number of conditional events.
+        Total number of conditional events.
 
     Raises
     ------
-    ValueError
-        If length of signal and time are not equal.
-        If length of reference_signal and time are not equal (when reference_signal is provided).
-        If length_of_return is greater than the length of the time span.
-        If length_of_return is negative.
-        If upper_threshold is less than or equal to lower_threshold.
-    TypeError
-        If signal/reference_signal and lower_threshold have different astropy units.
-        If signal/reference_signal and upper_threshold have different astropy units.
+    `ValueError`
+        If length of ``signal`` and ``time`` are not equal.
+        If length of ``reference_signal`` and ``time`` are not equal (when reference_signal is provided).
+        If ``length_of_return`` is greater than the length of the time span.
+        If ``length_of_return`` is negative.
+        If ``upper_threshold`` is less than or equal to ``lower_threshold``.
+    `TypeError`
+        If ``signal``/``reference_signal`` and ``lower_threshold`` have different astropy units.
+        If ``signal``/``reference_signal`` and ``upper_threshold`` have different astropy units.
 
     Notes
     -----
-    This class analyzes time series data for conditional events, providing
-    various statistical properties of the events.
+    A detailed analysis of the conditional averaging method is presented in
+    Rolf Nielsen's master thesis: "Conditional averaging of overlapping pulses"
+    https://munin.uit.no/handle/10037/29416
 
-    Examples
-    --------
-    # Create a ConditionalEvents instance
-    conditional = ConditionalEvents(signal, time, lower_threshold)
-
-    # Access attributes
-    avg = conditional.average
-    peaks = conditional.peaks
-
+    Example
+    -------
+    >>> from plasmapy.analysis.time_series.conditional_averaging import ConditionalEvents
+    >>> cond_events = ConditionalEvents(signal = [1, 2, 1, 1, 2, 1],time = [1, 2, 3, 4, 5, 6],lower_threshold = 1.5)
+    >>> cond_events.time
+    [-1.0, 0.0, 1.0]
+    >>> cond_events.average
+    [1.0, 2.0, 1.0]
+    >>> cond_events.variance
+    [1.0, 1.0, 1.0]
+    >>> cond_events.peaks
+    [2, 2]
+    >>> cond_events.waiting_times
+    [3]
+    >>> cond_events.arrival_times
+    [2, 5]
+    >>> cond_events.number_of_events
+    2
     """
 
     def __init__(
@@ -157,27 +169,31 @@ class ConditionalEvents:
         if length_of_return is None:
             length_of_return = len(signal) / len(conditional_events_indices) * time_step
 
-        self._return_time = (
-            np.arange(
-                -int(length_of_return / (time_step * 2)),
-                int(length_of_return / (time_step * 2)) + 1,
+        self._return_time = list(
+            (
+                np.arange(
+                    -int(length_of_return / (time_step * 2)),
+                    int(length_of_return / (time_step * 2)) + 1,
+                )
+                * time_step
             )
-            * time_step
         )
 
-        self._peaks = signal[peak_indices]
+        self._peaks = list(signal[peak_indices])
         self._number_of_events = len(self._peaks)
 
-        self._arrival_times = time[peak_indices]
-        self._waiting_times = np.diff(self._arrival_times)
+        self._arrival_times = list(time[peak_indices])
+        self._waiting_times = list(np.diff(self._arrival_times))
 
         self._conditional_average, conditional_events = self._average_over_events(
             signal, peak_indices
         )
 
-        self._conditional_variance = self._calculate_conditional_variance(
-            conditional_events
+        self._conditional_variance = list(
+            self._calculate_conditional_variance(conditional_events)
         )
+
+        self._conditional_average = list(self._conditional_average)
 
         if self._astropy_unit is not None:
             self._peaks *= self._astropy_unit
@@ -186,12 +202,12 @@ class ConditionalEvents:
     @property
     def time(self):
         """
-        Return an array of time values corresponding to the analysis window.
+        Return time values corresponding to the analysis window.
 
         Returns
         -------
-        time : array
-            An array of time values representing the analysis window.
+        time : 1D |array_like|
+            Time values representing the analysis window.
         """
         return self._return_time
 
@@ -202,8 +218,8 @@ class ConditionalEvents:
 
         Returns
         -------
-        average : array
-            An array representing the conditional average over events.
+        average : 1D |array_like|
+            Array representing the conditional average over events.
 
         """
         return self._conditional_average
@@ -215,8 +231,8 @@ class ConditionalEvents:
 
         Returns
         -------
-        variance : array
-            An array representing the conditional variance over events.
+        variance : 1D |array_like|
+            Array representing the conditional variance over events.
 
         """
         return self._conditional_variance
@@ -224,12 +240,12 @@ class ConditionalEvents:
     @property
     def peaks(self):
         """
-        Return an array of peak values of the conditional events.
+        Return peak values of conditional events.
 
         Returns
         -------
-        peaks : array
-            An array containing the peak values of the conditional events.
+        peaks : 1D |array_like|
+            Peak values of conditional events.
 
         """
         return self._peaks
@@ -237,12 +253,12 @@ class ConditionalEvents:
     @property
     def waiting_times(self):
         """
-        Return an array of waiting times between consecutive peaks.
+        Return waiting times between consecutive peaks.
 
         Returns
         -------
-        waiting_times : array
-            An array of waiting times between consecutive peaks of conditional events.
+        waiting_times : 1D |array_like|
+            Waiting times between consecutive peaks of conditional events.
 
         """
         return self._waiting_times
@@ -250,12 +266,12 @@ class ConditionalEvents:
     @property
     def arrival_times(self):
         """
-        Return an array of arrival times corresponding to the conditional events.
+        Return arrival times corresponding to the conditional events.
 
         Returns
         -------
-        arrival_times : array
-            An array of arrival times for the conditional events.
+        arrival_times : 1D |array_like|
+            Arrival times the conditional events.
 
         """
         return self._arrival_times
@@ -268,7 +284,7 @@ class ConditionalEvents:
         Returns
         -------
         number_of_events : int
-            The total number of conditional events.
+            Total number of conditional events.
 
         """
         return self._number_of_events
@@ -351,10 +367,4 @@ class ConditionalEvents:
         return np.mean(conditional_events, axis=1), conditional_events
 
     def _calculate_conditional_variance(self, conditional_events):
-        # The conditional variance of the conditional event f(t) is defined as
-        # CV = <(f-<f>)^2>/<f^2> = 1 - <f>^2/<f^2>
-        # at each time t.
-        # For a highly reproducible signal, f~<f> and CV = 0.
-        # For a completely random signal, <f^2> >> <f>^2 and CV = 1.
-        # HINT: We return 1-CV = <f>^2/<f^2>.
         return self._conditional_average**2 / np.mean(conditional_events**2, axis=1)
