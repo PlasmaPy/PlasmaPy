@@ -134,4 +134,4 @@ links = {
     "Zenodo": "https://zenodo.org",
 }
 
-global_substitutions = plasmapy_subs | doc_subs | numpy_subs | astropy_subs
+global_substitutions = plasmapy_subs | doc_subs | numpy_subs | astropy_subs | links
