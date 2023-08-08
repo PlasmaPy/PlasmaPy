@@ -76,6 +76,7 @@ docs = [
   "sphinx_rtd_theme >= 1.2.0",
   "sphinx_tabs >= 3.4.1",
   "sphinxcontrib-bibtex >= 2.5.0",
+  "sphinxcontrib-globalsubs >= 0.1.1",
   "towncrier >= 22.12",
   "tox >= 4.4.0",
 ]

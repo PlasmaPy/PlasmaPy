@@ -108,6 +108,7 @@ extensions = [
     "sphinx_reredirects",
     "sphinx_tabs.tabs",
     "sphinxcontrib.bibtex",
+    "sphinxcontrib_globalsubs",
 ]
 
 # Configure sphinxcontrib-bibtex
