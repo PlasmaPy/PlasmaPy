@@ -341,7 +341,7 @@ Improved Documentation
   and get plasma parameters. (`#1229
   <https://github.com/plasmapy/plasmapy/pull/1229>`__)
 - The file :file:`docs/_static/css/admonition_color_contrast.css` was
-  added to include color customizations for Sphinx_ admonitions that
+  added to include color customizations for |Sphinx| admonitions that
   originally came from `sphinx_rtd_theme_ext_color_contrast
   <https://github.com/AaltoSciComp/sphinx_rtd_theme_ext_color_contrast>`_.
   (`#1287 <https://github.com/plasmapy/plasmapy/pull/1287>`__)
@@ -351,10 +351,10 @@ Improved Documentation
   <https://www.w3.org/TR/2021/WD-WCAG22-20210521/#contrast-minimum>`__
   for contrast. (`#1287
   <https://github.com/plasmapy/plasmapy/pull/1287>`__)
-- Re-organized CSS_ files for the online documentation. The file
+- Re-organized CSS files for the online documentation. The file
   :file:`docs/_static/rtd_theme_overrides.css` was re-organized, renamed
   to :file:`docs/_static/css/plasmapy.css`, and updated with comments
-  to help someone unfamiliar with CSS_ to understand the file and
+  to help someone unfamiliar with CSS to understand the file and
   syntax. (`#1287 <https://github.com/plasmapy/plasmapy/pull/1287>`__)
 - Put references from `plasmapy.formulary` into
   :file:`docs/bibliography.bib` in BibTeX format. (`#1299
@@ -372,7 +372,7 @@ Improved Documentation
   <https://github.com/plasmapy/plasmapy/pull/1327>`__)
 - Enabled the `sphinx-hoverxref
   <https://sphinx-hoverxref.readthedocs.io>`_ extension to
-  Sphinx_. (`#1353
+  |Sphinx|. (`#1353
   <https://github.com/plasmapy/plasmapy/pull/1353>`__)
 - Added bullet points on module level docstrings and ``__all__`` to
   the documentation guide. (`#1359
@@ -383,7 +383,7 @@ Improved Documentation
   guidelines for contrast in this release. (`#1361
   <https://github.com/plasmapy/plasmapy/pull/1361>`__)
 - Described additional environments for building the documentation
-  with make_ in the |documentation guide|. (`#1373
+  with ``make`` in the |documentation guide|. (`#1373
   <https://github.com/plasmapy/plasmapy/pull/1373>`__)
 - Moved references from individual docstrings to the
   |bibliography|. (`#1374
@@ -406,7 +406,7 @@ Improved Documentation
 - Updated the cold magnetized plasma dielectric permittivity tensor
   notebook. (`#1396
   <https://github.com/plasmapy/plasmapy/pull/1396>`__)
-- Configured the Sphinx_ extension ``sphinx-hoverxref``. (`#1437
+- Configured the |Sphinx| extension ``sphinx-hoverxref``. (`#1437
   <https://github.com/plasmapy/plasmapy/pull/1437>`__)
 - Removed the following files from :file:`docs/api_static`\ :
   ``plasmapy.particles.elements.rst``,
@@ -443,13 +443,13 @@ Improved Documentation
 - Described the GitHub Action for `codespell
   <https://github.com/codespell-project/codespell>`__ in the |testing
   guide|. (`#1530 <https://github.com/plasmapy/plasmapy/pull/1530>`__)
-- Added the ``sphinx-issues`` extension to Sphinx_ to simplify linking
+- Added the ``sphinx-issues`` extension to |Sphinx| to simplify linking
   to GitHub issues, pull requests, users, and commits. (`#1532
   <https://github.com/plasmapy/plasmapy/pull/1532>`__)
-- Added the `sphinx.ext.extlinks` extension to Sphinx_ to simplify
+- Added the `sphinx.ext.extlinks` extension to |Sphinx| to simplify
   adding links to external domains which have a common base
   URL. (`#1532 <https://github.com/plasmapy/plasmapy/pull/1532>`__)
-- Added the ``sphinx-notfound-page`` extension to Sphinx_ so that the
+- Added the ``sphinx-notfound-page`` extension to |Sphinx| so that the
   documentation now has a :wikipedia:`404 <HTTP_404>` page in the same
   style as the rest of the documentation. (`#1532
   <https://github.com/plasmapy/plasmapy/pull/1532>`__)
@@ -464,10 +464,10 @@ Improved Documentation
   <https://github.com/plasmapy/plasmapy/pull/1568>`__)
 - Added an example notebook that discusses Coulomb collisions. (`#1569
   <https://github.com/plasmapy/plasmapy/pull/1569>`__)
-- Increased the strictness of the ``build_docs`` tox_ environment so
+- Increased the strictness of the ``build_docs`` |tox| environment so
   that broken reST_ links now emit warnings which are then treated as
   errors, fixed the new errors, removed the ``build_docs_nitpicky``
-  tox_ environment, and updated the |documentation guide|
+  |tox| environment, and updated the |documentation guide|
   accordingly. (`#1587
   <https://github.com/plasmapy/plasmapy/pull/1587>`__)
 - Renamed the :file:`magnetic_statics.ipynb` notebook to
@@ -487,7 +487,7 @@ Improved Documentation
   set up redirects from the original hyperlinks to the new ones for
   the contributor guide. (`#1605
   <https://github.com/plasmapy/plasmapy/pull/1605>`__)
-- Added ``sphinx-reredirects`` as a Sphinx_ extension to allow website
+- Added ``sphinx-reredirects`` as a |Sphinx| extension to allow website
   redirects. (`#1605
   <https://github.com/plasmapy/plasmapy/pull/1605>`__)
 - Added a :file:`robots.txt` file to the online documentation to tell
@@ -512,15 +512,15 @@ Trivial/Internal Changes
   |ParticleTracker| in the narrative documentation. (`#1158
   <https://github.com/plasmapy/plasmapy/pull/1158>`__)
 - Added `csslint <https://github.com/CSSLint/csslint>`_ to the
-  pre-commit_ configuration to check the formatting and style of CSS_
+  pre-commit_ configuration to check the formatting and style of CSS
   files. (`#1287 <https://github.com/plasmapy/plasmapy/pull/1287>`__)
-- Added Python 3.10 to the `GitHub Actions`_ test suite. (`#1292
+- Added Python 3.10 to the |GitHub Actions| test suite. (`#1292
   <https://github.com/plasmapy/plasmapy/pull/1292>`__)
 - Parametrized tests for
   ``plasmapy.formulary.parameters.ion_sound_speed``. (`#1313
   <https://github.com/plasmapy/plasmapy/pull/1313>`__)
-- Added cron tests of the development versions of matplotlib_ and
-  SciPy_, while changing the cadence of cron tests to be run
+- Added cron tests of the development versions of |matplotlib| and
+  |SciPy|, while changing the cadence of cron tests to be run
   approximately fortnightly. (`#1333
   <https://github.com/plasmapy/plasmapy/pull/1333>`__)
 - Applied `pytest.warns` in several tests to catch warnings that are
@@ -632,7 +632,7 @@ Trivial/Internal Changes
   <https://github.com/plasmapy/plasmapy/pull/1501>`__)
 - Added a GitHub Action for `codespell
   <https://github.com/codespell-project/codespell>`__, and updated the
-  corresponding tox_ environment to print out contextual
+  corresponding |tox| environment to print out contextual
   information. (`#1530
   <https://github.com/plasmapy/plasmapy/pull/1530>`__)
 - Added :file:`plasmapy/utils/units_definitions.py` to precompute

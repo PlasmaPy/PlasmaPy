@@ -38,3 +38,8 @@ meeting to discuss code development, a project meeting to discuss
 broader aspects of the PlasmaPy project like education and outreach to
 the broader plasma community, and meetings of PlasmaPy working groups.
 The special events include `Plasma Hack Week`_.
+
+.. _GitHub Discussions page: https://github.com/PlasmaPy/PlasmaPy/discussions
+.. _Gitter bridge: https://gitter.im/PlasmaPy/Lobby
+.. _mailing list: https://groups.google.com/forum/#!forum/plasmapy
+.. _suggestion box: https://docs.google.com/forms/d/e/1FAIpQLSdT3O5iHZrLJRuavFyzoR23PGy0Prfzx2SQOcwJGWtvHyT2lw/viewform?usp=sf_link

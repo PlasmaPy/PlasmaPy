@@ -19,7 +19,7 @@ taking these steps, you'll be ready to go through the :ref:`code
 contribution workflow <workflow>`.
 
 If you run into any problems, please feel free to reach out to us in our
-`Matrix chat room`_ or during our weekly `office hours`_.
+|Matrix chat room| or during our weekly |office hours|.
 
 Pre-requisites
 ==============
@@ -94,7 +94,7 @@ as its command line interface (CLI).
 Using git and GitHub
 --------------------
 
-Code contributions to PlasmaPy are made using |git|_ and GitHub_. Before
+Code contributions to PlasmaPy are made using |git|_ and |GitHub|. Before
 contributing code to PlasmaPy, please take the following steps:
 
 #. `Sign up on GitHub`_ for a free account.
@@ -139,7 +139,7 @@ contributing code to PlasmaPy, please take the following steps:
 Initial setup
 =============
 
-#. Log in to GitHub_.
+#. Log in to |GitHub|.
 
 #. Go to `PlasmaPy's GitHub repository`_.
 
@@ -228,7 +228,7 @@ environment`_ instead.
 Installing your clone of PlasmaPy
 =================================
 
-This section covers how to make an `editable installation`_ of your
+This section covers how to make an |editable installation| of your
 clone of PlasmaPy. Making the PlasmaPy installation *editable* means
 that if you modify the source code, then those changes will be included
 when you :py:`import plasmapy`.

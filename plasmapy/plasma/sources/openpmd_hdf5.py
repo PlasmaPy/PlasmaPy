@@ -52,6 +52,7 @@ class HDF5Reader(GenericPlasma):
     **kwargs
         Any keyword accepted by `~plasmapy.plasma.plasma_base.GenericPlasma`.
 
+    .. _OpenPMD: https://www.openpmd.org
     """
 
     def __init__(self, hdf5, **kwargs):

@@ -17,7 +17,7 @@ via a `pull request`_. This page assumes that you have finished the
 steps for :ref:`getting ready to contribute`.
 
 If you run into any problems, please feel free to reach out to us in our
-`Matrix chat room`_ or during our weekly `office hours`_. Thank you for
+|Matrix chat room| or during our weekly |office hours|. Thank you for
 contributing!
 
 .. tip::
@@ -57,7 +57,7 @@ Create a new branch
 
       Use descriptive branch names like ``update-contribution-workflow``.
 
-#. Connect your local branch to your fork_ of PlasmaPy on GitHub_ by
+#. Connect your local branch to your fork_ of PlasmaPy on |GitHub| by
    running:
 
    .. code-block::
@@ -176,7 +176,7 @@ Creating a pull request
       using ``git push`` to update the corresponding branch on GitHub.
 
 #. If this is your first contribution, please add yourself to the author
-   list in |CITATION.cff|_ (which uses `Citation File Format`_) to make
+   list in |CITATION.cff|_ (which uses |Citation File Format|) to make
    sure that you get credit for your contribution. The entry should be
    of the form:
 

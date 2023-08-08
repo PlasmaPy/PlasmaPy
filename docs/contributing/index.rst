@@ -47,7 +47,7 @@ contribute. Some of the many possibilities are to:
 * Contribute new code, documentation, and tests.
 * Refactor existing code and tests.
 * Improve the description of plasma physics in `PlasmaPy's documentation`_.
-* Write educational Jupyter_ notebook that introduce plasma concepts
+* Write educational |Jupyter| notebook that introduce plasma concepts
   using PlasmaPy.
 * Create videos that show how to use PlasmaPy. 🎥
 * Participate in code reviews.
@@ -60,8 +60,8 @@ contribute. Some of the many possibilities are to:
 * Help update PlasmaPy's development roadmap. 🛣️
 * Be part of the PlasmaPy community!
 
-Please feel free to reach out to us in PlasmaPy's `Matrix chat room`_ or
-during PlasmaPy's weekly `office hours`_.
+Please feel free to reach out to us in PlasmaPy's |Matrix chat room| or
+during PlasmaPy's weekly |office hours|.
 
 .. _request new features: https://github.com/PlasmaPy/PlasmaPy/issues/new?assignees=&labels=Feature+request&template=feature_request.yml
 .. _report bugs: https://github.com/PlasmaPy/PlasmaPy/issues/new?assignees=&labels=Bug&template=bug_report.yml

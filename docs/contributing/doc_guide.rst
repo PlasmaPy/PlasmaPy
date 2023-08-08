@@ -75,7 +75,7 @@ ReStructuredText Examples
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Here we show some examples of commonly used reST_ syntax in PlasmaPy.
-Please refer to the documentation for Sphinx_ and reST_ for a list of
+Please refer to the documentation for |Sphinx| and reST_ for a list of
 available |roles| and |directives|.
 
 This is an example of including headings for the document title,
@@ -99,7 +99,7 @@ the same length as that heading.
 
 We can link to code objects by enclosing them in single backticks. This
 linking will work for Python_ objects as well as certain packages like
-NumPy_, SciPy_, |Astropy|, and pandas_. This linking is described in the
+|NumPy|, |SciPy|, |Astropy|, and pandas_. This linking is described in the
 section on :ref:`external-references`. In-line code samples are
 typically enclosed in double backticks. To get inline code highlighting,
 use the :rest:`:py:` role for Python code or :rest:`:bash:` for code run
@@ -135,7 +135,7 @@ This reST_ block renders as:
    The ``:py:`` role can be used for inline code highlighting:
    :py:`import astropy.units as u`.
 
-Sphinx_ can format code blocks for Python_ and the Python_ console using
+|Sphinx| can format code blocks for Python_ and the Python_ console using
 the :rst:dir:`code-block` :term:`directive`.
 
    .. code-block:: rst
@@ -533,16 +533,16 @@ documentation for PlasmaPy and affiliated packages.
 * Use indentations of 3 spaces for reST_ blocks.
 
 * Store images within the |docs/_static/|_ directory, except for images
-  that are generated during the Sphinx_ build. The |docs/_static/|_
+  that are generated during the |Sphinx| build. The |docs/_static/|_
   directory contains files that are used for the online documentation
-  but are not generated during the Sphinx_ build.
+  but are not generated during the |Sphinx| build.
 
 * Avoid linking to websites that might disappear due to :wikipedia:`link
   rot <link_rot>` such as documents hosted on personal websites.
 
   * When including references, use a link that includes a
     :wikipedia:`persistent identifier <persistent_identifier>` such as a
-    digital object identifier (DOI_) when one is available (e.g.,
+    digital object identifier (|DOI|) when one is available (e.g.,
     https://doi.org/10.5281/zenodo.4602818\ ).
 
   * Wikipedia_ articles may be linked to when they contain a
@@ -619,7 +619,7 @@ documentation for PlasmaPy and affiliated packages.
   (i.e., objects with names that begin with an underscore) should not be
   included in ``__all__``.  ``__all__`` is a leftover from the now
   dissuaded practice of star imports (e.g.,
-  :samp:`from {package} import *`\ ), but is still used by Sphinx_ for
+  :samp:`from {package} import *`\ ), but is still used by |Sphinx| for
   selecting objects to document. Only objects contained within
   ``__all__`` will show up in the online documentation.
 
@@ -920,17 +920,17 @@ Narrative documentation guidelines
 Sphinx
 ======
 
-Sphinx_ is the software used to generate `PlasmaPy's documentation`_
+|Sphinx| is the software used to generate `PlasmaPy's documentation`_
 from reST_ files and Python_ docstrings. It was originally created to
 write Python's documentation and has become the de facto software for
 documenting Python_ packages. Almost all Python_ open-source packages
-utilize Sphinx_ to generate their documentation.
+utilize |Sphinx| to generate their documentation.
 
 Configuration
 -------------
 
 The |docs/conf.py|_ file contains the configuration information needed
-to customize Sphinx_ behavior. The documentation for Sphinx_ lists the
+to customize |Sphinx| behavior. The documentation for |Sphinx| lists the
 `configuration options`_ that can be set.
 
 The |docs/_static/css/|_ directory contains CSS_ files with `style
@@ -940,7 +940,7 @@ and feel of the online documentation.
 Sphinx extensions
 -----------------
 
-`PlasmaPy's documentation`_ is built with the following Sphinx_
+`PlasmaPy's documentation`_ is built with the following |Sphinx|
 extensions:
 
 * `sphinx.ext.autodoc` for including documentation from docstrings.
@@ -952,7 +952,7 @@ extensions:
 * `sphinx.ext.napoleon` for allowing NumPy style docstrings.
 * `sphinx.ext.todo` to support ``todo`` |directives|.
 * `sphinx.ext.viewcode` to generate links to pages showing source code.
-* |nbsphinx|_ for including Jupyter_ notebooks.
+* |nbsphinx|_ for including |Jupyter| notebooks.
 * |sphinxcontrib-bibtex|_ to enable usage of a BibTeX_ file to create
   the :doc:`../bibliography`.
 * |sphinx_copybutton|_ to add a "copy" button for code blocks.
@@ -992,7 +992,7 @@ will show up as `~astropy.units.Quantity`.
 To make cross-referencing to an external package available its mappings
 have to be defined in the :confval:`intersphinx_mapping` configuration
 dictionary contained in |docs/conf.py|_. PlasmaPy has already include
-several packages like Python_, NumPy_, SciPy_, |Astropy|, Sphinx_, etc.
+several packages like Python_, |NumPy|, |SciPy|, |Astropy|, |Sphinx|, etc.
 
 New source packages may be added, but please verify that references to a
 function or class in that package show up correctly in `PlasmaPy's
@@ -1021,7 +1021,7 @@ documentation. reST_ allows us to `define substitutions`_
 
    .. |Particle| replace:: `~plasmapy.particles.particle_class.Particle`
 
-Here whenever ``|Particle|`` is used Sphinx_ will replace it with
+Here whenever ``|Particle|`` is used |Sphinx| will replace it with
 ```~plasmapy.particles.particle_class.Particle``` during build time.
 
 PlasmaPy has certain common substitutions pre-defined so that they can
@@ -1032,7 +1032,7 @@ be used elsewhere in the documentation. For example, we can write
 list of substitutions, please refer to the |docs/common_links.rst|_
 file.
 
-Since substitutions are performed by Sphinx_ when the documentation is
+Since substitutions are performed by |Sphinx| when the documentation is
 built, any substitution used in docstrings will not show up when using
 Python's `help` function (or the like). For example, when ``|Particle|``
 is used in a docstring, `help` will show it as ``|Particle|`` rather
@@ -1047,7 +1047,7 @@ Bibliography
 ------------
 
 PlasmaPy uses |sphinxcontrib-bibtex|_ to manage references for its
-documentation. This Sphinx_ extension allows us to store references in a
+documentation. This |Sphinx| extension allows us to store references in a
 BibTeX_ file which is then used to generate the :doc:`../bibliography`.
 References in the :doc:`../bibliography` are then citeable from anywhere
 in the documentation.
@@ -1057,7 +1057,7 @@ To add a new reference to the :doc:`../bibliography`, open
 citekey should generally be the surname of the first author (all lower
 case) followed by a colon and the year. A letter should be added after
 the year when needed to disambiguate multiple references. Include the
-DOI_ if the reference has one. If the reference does not have a DOI_,
+DOI_ if the reference has one. If the reference does not have a |DOI|,
 then include the URL. The ISBN or ISSN number should be included for
 books. The ``misc`` field type should be used when citing data sets and
 software. Please follow the existing style in |docs/bibliography.bib|_
@@ -1116,14 +1116,14 @@ error or the absence of the module in the documentation build.
 Templating
 ----------
 
-Sphinx_ uses the Jinja_ templating engine to generate HTML code. Jinja_
+|Sphinx| uses the Jinja_ templating engine to generate HTML code. Jinja_
 may be used within the documentation when templating is necessary. For
 more details, please refer to `Sphinx's templating page`_.
 
 .. danger::
 
    There are certain tasks that one would expect to be straightforward
-   with reST_ and Sphinx_ but are only possible by doing a horrible
+   with reST_ and |Sphinx| but are only possible by doing a horrible
    workaround that can take hours to figure out. This has given rise to
    the saying:
 
@@ -1146,12 +1146,12 @@ There are two methods for building the documentation: make_ and tox_.
 
 * Using make_ will build the documentation based off of what is in the
   current directory structure. make_ is quicker for local builds than
-  tox_ but requires you to install and set up all dependencies.
+  |tox| but requires you to install and set up all dependencies.
 
-* Using tox_ does not require setting up all dependencies ahead of time,
+* Using |tox| does not require setting up all dependencies ahead of time,
   but is more computationally intensive since it creates a virtual
   environment and builds the package before building the documentation.
-  Consequently, PlasmaPy uses tox_ for building the documentation on
+  Consequently, PlasmaPy uses |tox| for building the documentation on
   continuous integration testing platforms.
 
 .. _doc-build-prereqs:
@@ -1198,7 +1198,7 @@ To remove all files previously generated by ``make``, run:
    make clean
 
 This command is needed when you make a change to a file that does not
-trigger Sphinx_ to rebuild the file that you altered, for example
+trigger |Sphinx| to rebuild the file that you altered, for example
 modifying a CSS_ file. Using ``make clean-api`` instead will only remove
 the :wikipedia:`API` portion of the documentation build.
 
@@ -1211,7 +1211,7 @@ To check that hyperlinks are correct, run:
 Building documentation with tox
 -------------------------------
 
-You can use tox_ to locally build the documentation by running:
+You can use |tox| to locally build the documentation by running:
 
 .. code-block:: bash
 
@@ -1245,7 +1245,7 @@ This command will build the documentation without executing the
 .. tip::
 
    When writing documentation, please make sure to fix any warnings that
-   arise. To enforce this, the ``build_docs`` tox_ environment will fail
+   arise. To enforce this, the ``build_docs`` |tox| environment will fail
    after completing the documentation build if there are any warnings.
 
 Troubleshooting
@@ -1259,7 +1259,7 @@ warnings. 🛠️
 Reference target not found
 --------------------------
 
-Warnings like ``py:obj reference target not found`` occur when Sphinx_
+Warnings like ``py:obj reference target not found`` occur when |Sphinx|
 attempts to interpret text as a Python object, but is unable to do so.
 For example, if a docstring includes ```y```, Sphinx will attempt to
 link to an object named ``y``. If there is no object named ``y``, then
@@ -1401,12 +1401,23 @@ version of the package that can be revisited later.
 .. _admonitions: https://docutils.sourceforge.io/docs/ref/rst/directives.html#admonitions
 .. _BibTeX: http://www.bibtex.org
 .. _configuration options: https://www.sphinx-doc.org/en/master/usage/configuration.html
+.. _CSS: https://www.w3schools.com:443/css
 .. _define substitutions: https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html#substitution-definitions
 .. _doctests: https://docs.pytest.org/en/6.2.x/doctest.html
+.. _GitHub Flavored Markdown: https://github.github.com/gfm
+.. _Graphviz: https://graphviz.org
+.. _intersphinx: https://www.sphinx-doc.org/en/master/usage/extensions/intersphinx.html
 .. _issues: https://github.com/PlasmaPy/PlasmaPy/issues
+.. _jinja: https://jinja.palletsprojects.com
+.. _LaTeX: https://www.latex-project.org
+.. _make: https://www.gnu.org/software/make
+.. _markdown: https://www.markdownguide.org
+.. _MathJax: https://www.mathjax.org
 .. _nested inline markup: https://docutils.sphinx-users.jp/docutils/docs/dev/rst/alternatives.html#nested-inline-markup
+.. _numpydoc: https://numpydoc.readthedocs.io/en/latest/format.html#docstring-standard
 .. _options to sphinx-build: https://www.sphinx-doc.org/en/master/man/sphinx-build.html#options
 .. _packages related to Sphinx: https://pypi.org/search/?q=sphinx+or+nbsphinx&o=-created&c=Framework+%3A%3A+Sphinx
+.. _pandas: https://pandas.pydata.org
 .. _parameters: https://numpydoc.readthedocs.io/en/latest/format.html#parameters
 .. _raise an issue: https://github.com/PlasmaPy/PlasmaPy/issues/new?title=Improve+documentation+for...&labels=Documentation
 .. _raise an issue about the documentation build failure:
@@ -1414,12 +1425,15 @@ version of the package that can be revisited later.
 .. _raises: https://numpydoc.readthedocs.io/en/latest/format.html#raises
 .. _raw string: https://docs.python.org/3/reference/lexical_analysis.html#literals
 .. _Read the Docs Sphinx Theme: https://sphinx-rtd-theme.readthedocs.io
+.. _SciPy: https://scipy.org
+.. _sphinx-build: https://www.sphinx-doc.org/en/master/man/sphinx-build.html
 .. _sphinx-codeautolink: https://sphinx-codeautolink.readthedocs.io
 .. _Sphinx's glossary: https://www.sphinx-doc.org/en/master/glossary.html
 .. _Sphinx's templating page: https://www.sphinx-doc.org/en/master/templating.html
 .. _style overrides: https://docs.readthedocs.io/en/stable/guides/adding-custom-css.html
 .. _warns: https://numpydoc.readthedocs.io/en/latest/format.html#warns
 .. _weekly tests: "https://github.com/PlasmaPy/PlasmaPy/actions/workflows/weekly.yml",
+.. _Wikipedia: https://www.wikipedia.org
 
 .. ----------------------
 .. Nested inline literals

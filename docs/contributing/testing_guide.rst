@@ -47,7 +47,7 @@ Summary
 
        py -m pip install -e .[tests]
 
-    These commands will perform an `editable installation`_ of your
+    These commands will perform an |editable installation| of your
     local clone of PlasmaPy.
 
 * Run ``pytest`` in the command line in order to run tests in that
@@ -76,7 +76,7 @@ Software tests help us to:
 
 Every code contribution to PlasmaPy with new functionality must also
 have corresponding tests. Creating or updating a pull request will
-activate PlasmaPy's test suite to be run via `GitHub Actions`_, along
+activate PlasmaPy's test suite to be run via |GitHub Actions|, along
 with some additional checks. The results of the test suite are shown at
 the bottom of each pull request. Click on *Details* next to each test
 run to find the reason for any test failures.
@@ -471,24 +471,24 @@ Running tests
 
 PlasmaPy's tests can be run in the following ways:
 
-1. Creating and updating a pull request on GitHub_.
+1. Creating and updating a pull request on |GitHub|.
 2. Running pytest_ from the command line.
-3. Running tox_ from the command line.
+3. Running |tox| from the command line.
 4. Running tests from an :wikipedia:`integrated development environment
    <integrated_development_environment>` (IDE).
 
 We recommend that new contributors perform the tests via a pull request
-on GitHub_. Creating a draft pull request and keeping it updated will
+on |GitHub|. Creating a draft pull request and keeping it updated will
 ensure that the necessary checks are run frequently. This approach is
 also appropriate for pull requests with a limited scope. This advantage
 of this approach is that the tests are run automatically and do not
 require any extra work. The disadvantages are that running the tests on
-GitHub_ is often slow and that navigating the test results is sometimes
+|GitHub| is often slow and that navigating the test results is sometimes
 difficult.
 
 We recommend that experienced contributors run tests either by using
-pytest_ from the command line or by using your preferred IDE. Using tox_
-is an alternative to pytest_, but running tests with tox_ adds the
+pytest_ from the command line or by using your preferred IDE. Using |tox|
+is an alternative to pytest_, but running tests with |tox| adds the
 overhead of creating an isolated environment for your test and can thus
 be slower.
 
@@ -499,8 +499,8 @@ The recommended way for new contributors to run PlasmaPy's full test
 suite is to `create a pull request`_ from your development branch to
 `PlasmaPy's GitHub repository`_. The test suite will be run
 automatically when the pull request is created and every time changes
-are pushed to the development branch on GitHub_. Most of these checks
-have been automated using `GitHub Actions`_.
+are pushed to the development branch on |GitHub|. Most of these checks
+have been automated using |GitHub Actions|.
 
 The following image shows how the results of the checks will appear in
 each pull request near the end of the *Conversation* tab. Checks that
@@ -517,7 +517,7 @@ The following checks are performed with each pull request.
 * Checks with labels like **CI / Python 3.x (pull request)** verify that
   PlasmaPy works with different versions of Python and other
   dependencies, and on different operating systems. These tests are set
-  up using tox_ and run with pytest_ via `GitHub Actions`_. When
+  up using |tox| and run with pytest_ via |GitHub Actions|. When
   multiple tests fail, investigate these tests first.
 
   .. tip::
@@ -555,11 +555,11 @@ The following checks are performed with each pull request.
 * The **CI / Importing PlasmaPy (pull_request)** checks that it is
   possible to run :py:`import plasmapy`.
 
-* PlasmaPy uses black_ to format code and isort_ to sort ``import``
+* PlasmaPy uses |black| to format code and |isort| to sort ``import``
   statements. The **CI / Linters (pull_request)** and
   **pre-commit.ci - pr** checks verify that the pull request meets these
   style requirements. These checks will fail when inconsistencies with
-  the output from black_ or isort_ are found or when there are syntax
+  the output from |black| or |isort| are found or when there are syntax
   errors. These checks can usually be ignored until the pull request is
   nearing completion.
 
@@ -584,7 +584,7 @@ The following checks are performed with each pull request.
   made.
 
 * The **Pull Request Labeler / triage (pull_request_target)** check
-  applies appropriate GitHub_ labels to pull requests.
+  applies appropriate |GitHub| labels to pull requests.
 
 .. note::
 
@@ -605,7 +605,7 @@ Using pytest
 ------------
 
 To install the packages necessary to run tests on your local computer
-(including tox_ and pytest_), run:
+(including |tox| and pytest_), run:
 
 .. code-block:: shell
 
@@ -653,12 +653,12 @@ flags you can use with it:
 Using tox
 ---------
 
-PlasmaPy's continuous integration tests on GitHub_ are typically run
-using tox_, a tool for automating Python testing. Using tox_ simplifies
+PlasmaPy's continuous integration tests on |GitHub| are typically run
+using |tox|, a tool for automating Python testing. Using |tox| simplifies
 testing PlasmaPy with different releases of Python, with different
 versions of PlasmaPy's dependencies, and on different operating systems.
-While testing with tox_ is more robust than testing with pytest_, using
-tox_ to run tests is typically slower because tox_ creates its own
+While testing with |tox| is more robust than testing with pytest_, using
+|tox| to run tests is typically slower because |tox| creates its own
 virtual environments.
 
 To run PlasmaPy's tests for a particular environment, run:
@@ -667,15 +667,15 @@ To run PlasmaPy's tests for a particular environment, run:
 
    tox -e ⟨envname⟩
 
-where ``⟨envname⟩`` is replaced with the name of the tox_ environment,
+where ``⟨envname⟩`` is replaced with the name of the |tox| environment,
 as described below.
 
-Some testing environments for tox_ are pre-defined. For example, you
+Some testing environments for |tox| are pre-defined. For example, you
 can replace ``⟨envname⟩`` with ``py39`` if you are running Python
 ``3.9.x``, ``py310`` if you are running Python ``3.10.x``, or ``py311``
-if you are running Python ``3.11.x``. Running tox_ with any of these
+if you are running Python ``3.11.x``. Running |tox| with any of these
 environments requires that the appropriate version of Python has been
-installed and can be found by tox_. To find the version of Python that
+installed and can be found by |tox|. To find the version of Python that
 you are using, go to the command line and run ``python
 --version``.
 

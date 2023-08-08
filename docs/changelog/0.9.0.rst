@@ -174,7 +174,7 @@ Improved Documentation
   functions within `~plasmapy.formulary.magnetostatics`. (:pr:`1695`)
 - Enabled ``:py:`` as a reST_ role for inline code formatting in the
   documentation. (:pr:`1698`)
-- Increased the minimum version of Sphinx_ to 5.0.0. (:pr:`1698`)
+- Increased the minimum version of |Sphinx| to 5.0.0. (:pr:`1698`)
 - Updated docstrings and annotations for |ParticleList| and its methods.
   (:pr:`1713`)
 - Updated docstrings and annotations in `plasmapy.particles`, including by
@@ -216,7 +216,7 @@ Trivial/Internal Changes
 - Re-enabled value testing for the ``quantum`` keyword argument in
   `~plasmapy.formulary.collisions.dimensionless.coupling_parameter`.
   (:pr:`1678`)
-- Increased the minimum version of NumPy_ to 1.20.0. (:pr:`1694`)
+- Increased the minimum version of |NumPy| to 1.20.0. (:pr:`1694`)
 - Added the `~plasmapy.utils.decorators.validators.validate_class_attributes`
   decorator to the `~plasmapy.utils.decorators` module.
   This decorator is useful for class methods that require optional parameters
@@ -256,12 +256,12 @@ Trivial/Internal Changes
 - Made ``pytest`` an ``install`` requirement instead of a ``testing``
   requirement. (:pr:`1749`)
 - Added a step to validate |CITATION.cff|_ as part of the ``linters``
-  tox_ testing environment. (:pr:`1771`)
+  |tox| testing environment. (:pr:`1771`)
 - Added ``cffconvert`` to the ``testing`` requirements. (:pr:`1771`)
 - Deleted :file:`codemeta.json`, which recorded project metadata using
   the `CodeMeta <https://codemeta.github.io>`__ metadata
   schema. Instead, project metadata is now stored in |CITATION.cff|_ which
-  uses the `Citation File Format`_ and was created in :pr:`1640`. See also
+  uses the |Citation File Format| and was created in :pr:`1640`. See also
   :pr:`676` and :issue:`794`. (:pr:`1772`)
 - Added the flake8_ extensions ``flake8-use-pathlib``,
   ``flake8-builtins``, and ``flake8-comments`` to the testing

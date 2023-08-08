@@ -32,7 +32,7 @@ New Features
 * Developed `online documentation for PlasmaPy
   <https://docs.plasmapy.org>`_ that is hosted by `Read the Docs`_.
 
-  - Automated documentation builds with Sphinx_.
+  - Automated documentation builds with |Sphinx|.
 
   - Wrote narrative documentation for each subpackage.
 
