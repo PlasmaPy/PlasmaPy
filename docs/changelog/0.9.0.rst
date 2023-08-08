@@ -251,7 +251,7 @@ Trivial/Internal Changes
 - Changed |particle_input| to raise a `~astropy.units.UnitConversionError`
   when the annotated argument has a physical type other than mass or
   electrical charge. (:pr:`1732`)
-- Set up issue forms on `PlasmaPy's GitHub repository`_ to replace
+- Set up issue forms on |PlasmaPy's GitHub repository| to replace
   issue templates. (:pr:`1733`)
 - Made ``pytest`` an ``install`` requirement instead of a ``testing``
   requirement. (:pr:`1749`)

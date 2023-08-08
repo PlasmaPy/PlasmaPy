@@ -156,7 +156,7 @@ A ZIP_ file containing the source code for official releases of
 `plasmapy` can be obtained `from PyPI`_ or `from Zenodo`_.
 
 Alternatively, official releases since 0.7.0 can be downloaded from the
-releases_ page on `PlasmaPy's GitHub repository`_.
+releases_ page on |PlasmaPy's GitHub repository|.
 
 Obtaining source code from GitHub
 ---------------------------------
@@ -204,7 +204,7 @@ package should also be installed.
 
    If you noticed any places where the installation instructions could
    be improved or have become out of date, please `create an issue`_ on
-   `PlasmaPy's GitHub repository`_. It would really help!
+   |PlasmaPy's GitHub repository|. It would really help!
 
 .. tip::
 

@@ -94,7 +94,6 @@ astropy_subs = {
 links = {
     "Astropy": "https://docs.astropy.org",
     "black": "https://black.readthedocs.io",
-    "BibTeX format": "https://www.bibtex.com/g/bibtex-format",
     "Citation File Format": "https://citation-file-format.github.io/",
     "DOI": "https://www.doi.org",
     "editable installation": "https://pip.pypa.io/en/stable/topics/local-project-installs/#editable-installs",
@@ -110,12 +109,11 @@ links = {
     "pip": "https://pip.pypa.io",
     "Plasma Hack Week": "https://hack.plasmapy.org",
     "PlasmaPy": "https://www.plasmapy.org",
-    "PlasmaPy meetings": "https://www.plasmapy.org/meetings",
     "PlasmaPy's documentation": "https://docs.plasmapy.org/en/stable",
     "PlasmaPy's GitHub repository": "https://github.com/PlasmaPy/plasmapy",
     "PlasmaPy's data repository": "https://github.com/PlasmaPy/PlasmaPy-data",
     "PlasmaPy's Matrix chat room": "https://app.element.io/#/room/#plasmapy:openastronomy.org",
-    "`pre-commit.ci`": "https://pre-commit.ci",
+    "pre-commit.ci": "https://pre-commit.ci",
     "pydocstyle": "https://www.pydocstyle.org/en/stable",
     "pygments": "https://pygments.org",
     "PyPI": "https://pypi.org",
@@ -134,4 +132,8 @@ links = {
     "Zenodo": "https://zenodo.org",
 }
 
-global_substitutions = plasmapy_subs | doc_subs | numpy_subs | astropy_subs | links
+processed_links = {key: f"`{key} <{value}>`_" for key, value in links.items()}
+
+global_substitutions = (
+    plasmapy_subs | doc_subs | numpy_subs | astropy_subs | processed_links
+)

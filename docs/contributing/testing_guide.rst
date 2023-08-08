@@ -497,7 +497,7 @@ Using GitHub
 
 The recommended way for new contributors to run PlasmaPy's full test
 suite is to `create a pull request`_ from your development branch to
-`PlasmaPy's GitHub repository`_. The test suite will be run
+|PlasmaPy's GitHub repository|. The test suite will be run
 automatically when the pull request is created and every time changes
 are pushed to the development branch on |GitHub|. Most of these checks
 have been automated using |GitHub Actions|.
@@ -530,7 +530,7 @@ The following checks are performed with each pull request.
      messages.
 
 * The **CI / Documentation (pull_request)** check verifies that
-  `PlasmaPy's documentation`_ is able to build correctly from the pull
+  |PlasmaPy's documentation| is able to build correctly from the pull
   request. Warnings are treated as errors.
 
 * The **docs/readthedocs.org:plasmapy** check allows us to preview

@@ -141,7 +141,7 @@ Initial setup
 
 #. Log in to |GitHub|.
 
-#. Go to `PlasmaPy's GitHub repository`_.
+#. Go to |PlasmaPy's GitHub repository|.
 
 #. Create a fork_ of PlasmaPy by clicking on :guilabel:`Fork`, followed
    by :guilabel:`Create fork`.
@@ -176,7 +176,7 @@ Initial setup
 
       cd PlasmaPy
 
-#. Add a remote_ called ``upstream`` for `PlasmaPy's GitHub repository`_
+#. Add a remote_ called ``upstream`` for |PlasmaPy's GitHub repository|
    by using the following command.
 
    .. code-block:: bash
@@ -185,7 +185,7 @@ Initial setup
 
    If you run :bash:`git remote -v`, you should see that :bash:`origin`
    corresponds to your fork_ and :bash:`upstream` corresponds to
-   `PlasmaPy's GitHub repository`_.
+   |PlasmaPy's GitHub repository|.
 
 Setting up a Python environment
 ===============================

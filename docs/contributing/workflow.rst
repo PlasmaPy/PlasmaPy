@@ -36,7 +36,7 @@ Create a new branch
 #. Navigate to the :file:`PlasmaPy/` directory that contains the clone
    of your repository.
 
-#. Download the current status of `PlasmaPy's GitHub repository`_ and
+#. Download the current status of |PlasmaPy's GitHub repository| and
    your fork by running:
 
    .. code-block::
@@ -130,7 +130,7 @@ Creating a pull request
 
 #. Run ``git push`` to make sure that branch on GitHub is up-to-date.
 
-#. Go to `PlasmaPy's GitHub repository`_.
+#. Go to |PlasmaPy's GitHub repository|.
 
 #. If you recently pushed new changes, a pale yellow box will appear
    near the top of the screen. In that box, click

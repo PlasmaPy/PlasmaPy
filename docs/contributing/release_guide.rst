@@ -137,7 +137,7 @@ Publish the release
       hub ci-status main -v [COMMIT]
    Here, ``[COMMIT]`` is replaced by the hash from the latest commit on
    the `main <https://github.com/PlasmaPy/PlasmaPy/commits/main>`__
-   branch of `PlasmaPy's GitHub repository`_.
+   branch of |PlasmaPy's GitHub repository|.
 
 * Go to the GitHub page to `draft a new release`_. We will perform a
   pre-release first.

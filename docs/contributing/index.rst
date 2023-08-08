@@ -24,7 +24,7 @@ This guide describes the fundamentals of contributing to PlasmaPy. If
 you are a first-time contributor, please follow the steps for
 :ref:`getting ready to contribute <Getting Ready to Contribute>` before
 proceeding to the :ref:`code contribution workflow <workflow>`. The
-contributions are made to `PlasmaPy's GitHub repository`_.
+contributions are made to |PlasmaPy's GitHub repository|.
 
 New functions and classes added to PlasmaPy must have documentation and
 tests. The |documentation guide| contains sections on `reStructuredText
@@ -46,7 +46,7 @@ contribute. Some of the many possibilities are to:
 
 * Contribute new code, documentation, and tests.
 * Refactor existing code and tests.
-* Improve the description of plasma physics in `PlasmaPy's documentation`_.
+* Improve the description of plasma physics in |PlasmaPy's documentation|.
 * Write educational |Jupyter| notebook that introduce plasma concepts
   using PlasmaPy.
 * Create videos that show how to use PlasmaPy. 🎥
@@ -55,7 +55,7 @@ contribute. Some of the many possibilities are to:
 * `Request new features`_.
 * `Report bugs`_. 🐞
 * Improve `PlasmaPy's website <PlasmaPy>`_.
-* Help organize events such as `Plasma Hack Week`_. 📆
+* Help organize events such as |Plasma Hack Week|. 📆
 * Provide feedback on how existing functionality could be improved.
 * Help update PlasmaPy's development roadmap. 🛣️
 * Be part of the PlasmaPy community!

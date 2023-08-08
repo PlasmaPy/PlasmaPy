@@ -27,13 +27,13 @@ PlasmaPy and affiliated packages.
 
 .. note::
 
-   If you discover areas within `PlasmaPy's documentation`_ that are
+   If you discover areas within |PlasmaPy's documentation| that are
    confusing or incomplete, please `raise an issue`_! This really helps
    PlasmaPy not only by helping us improve the documentation for all,
    but also by creating opportunities for new contributors to make their
    first contribution to the project.
 
-`PlasmaPy's documentation`_ is hosted by `Read the Docs`_ and is
+|PlasmaPy's documentation| is hosted by |Read the Docs| and is
 available at these locations:
 
 * The documentation corresponding to the most recent release to PyPI_ is
@@ -41,7 +41,7 @@ available at these locations:
   https://docs.plasmapy.org/en/stable.
 
 * The documentation corresponding to the ongoing development on the
-  ``main`` branch in `PlasmaPy's GitHub repository`_, which is often
+  ``main`` branch in |PlasmaPy's GitHub repository|, which is often
   ahead of the most recent release, is labeled ``latest`` and can be
   found at https://docs.plasmapy.org/en/latest.
 
@@ -66,7 +66,7 @@ ReStructuredText
 PlasmaPy's documentation is written using the `reStructuredText (reST)`_
 markup language. reST_ is human readable when viewed within a source
 code file or when printed out using `help`. reST_ also contains markup
-that allows the text to be transformed into `PlasmaPy's documentation`_.
+that allows the text to be transformed into |PlasmaPy's documentation|.
 reST_ files use the file extension :file:`.rst`. Documentation contained
 within :file:`.py` files are in the form of :wikipedia:`docstrings
 <docstring>`, which are written in reST_.
@@ -486,7 +486,7 @@ documentation for PlasmaPy and affiliated packages.
 * Use the :wikipedia:`active voice <active_voice>` in the present tense.
 
 * Keep the documentation style consistent within a file or module, and
-  preferably across all of `PlasmaPy's documentation`_.
+  preferably across all of |PlasmaPy's documentation|.
 
 * Update code and corresponding documentation at the same time.
 
@@ -920,7 +920,7 @@ Narrative documentation guidelines
 Sphinx
 ======
 
-|Sphinx| is the software used to generate `PlasmaPy's documentation`_
+|Sphinx| is the software used to generate |PlasmaPy's documentation|
 from reST_ files and Python_ docstrings. It was originally created to
 write Python's documentation and has become the de facto software for
 documenting Python_ packages. Almost all Python_ open-source packages
@@ -940,7 +940,7 @@ and feel of the online documentation.
 Sphinx extensions
 -----------------
 
-`PlasmaPy's documentation`_ is built with the following |Sphinx|
+|PlasmaPy's documentation| is built with the following |Sphinx|
 extensions:
 
 * `sphinx.ext.autodoc` for including documentation from docstrings.
@@ -1138,7 +1138,7 @@ Building documentation
 .. tip::
 
    Because a documentation preview is generated automatically by
-   `Read the Docs`_ for every pull request, it is not necessary to build
+   |Read the Docs| for every pull request, it is not necessary to build
    the documentation locally on your own computer. New contributors can
    safely skip this section.
 
@@ -1432,7 +1432,7 @@ version of the package that can be revisited later.
 .. _Sphinx's templating page: https://www.sphinx-doc.org/en/master/templating.html
 .. _style overrides: https://docs.readthedocs.io/en/stable/guides/adding-custom-css.html
 .. _warns: https://numpydoc.readthedocs.io/en/latest/format.html#warns
-.. _weekly tests: "https://github.com/PlasmaPy/PlasmaPy/actions/workflows/weekly.yml",
+.. _weekly tests: https://github.com/PlasmaPy/PlasmaPy/actions/workflows/weekly.yml
 .. _Wikipedia: https://www.wikipedia.org
 
 .. ----------------------

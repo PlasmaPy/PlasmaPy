@@ -249,7 +249,7 @@ Improved Documentation
   ``docutils == 0.17`` is not compatible with ``sphinx_rtd_theme < 1.0``
   (see `#1107 <https://github.com/PlasmaPy/PlasmaPy/pull/1107>`__ and
   `#1230 <https://github.com/PlasmaPy/PlasmaPy/issues/1230>`__). (`#1275 <https://github.com/plasmapy/plasmapy/pull/1275>`__)
-- Added a screenshot of the link for the `Read the Docs`_ preview of the
+- Added a screenshot of the link for the |Read the Docs| preview of the
   documentation for a pull request. (`#1298 <https://github.com/plasmapy/plasmapy/pull/1298>`__)
 - Incorporated citations in the
   `~plasmapy.dispersion.analytical.two_fluid_.two_fluid` docstring into
@@ -301,7 +301,7 @@ Trivial/Internal Changes
   (that is treated as an error). (`#1206 <https://github.com/plasmapy/plasmapy/pull/1206>`__)
 - Make queries to `plasmapy.online_help` for ``"quantity"`` or ``"quantities"`` redirect to the
   help page for `astropy.units` (which was already the case for ``"unit"`` and ``"units"``). (`#1213 <https://github.com/plasmapy/plasmapy/pull/1213>`__)
-- Bumped the Python_ version for `Read the Docs`_ builds from ``3.7`` to ``3.8``. (`#1248 <https://github.com/plasmapy/plasmapy/pull/1248>`__)
+- Bumped the Python_ version for |Read the Docs| builds from ``3.7`` to ``3.8``. (`#1248 <https://github.com/plasmapy/plasmapy/pull/1248>`__)
 - Refactored :file:`plasmapy/dispersion/tests/test_dispersion.py` to use
   ``hypothesis`` for property based testing. (`#1249 <https://github.com/plasmapy/plasmapy/pull/1249>`__)
 - Defined redirects to allow and anchors to avoid checking when using |Sphinx|

@@ -30,7 +30,7 @@ New Features
   automated code style checks with ``pep8speaks``.
 
 * Developed `online documentation for PlasmaPy
-  <https://docs.plasmapy.org>`_ that is hosted by `Read the Docs`_.
+  <https://docs.plasmapy.org>`_ that is hosted by |Read the Docs|.
 
   - Automated documentation builds with |Sphinx|.
 
