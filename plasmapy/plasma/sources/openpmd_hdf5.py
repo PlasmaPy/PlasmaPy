@@ -42,7 +42,7 @@ def _valid_version(openPMD_version, outdated=_OUTDATED_VERSION, newer=_NEWER_VER
 class HDF5Reader(GenericPlasma):
     """
     Core class for accessing various attributes on HDF5 files that
-    are based on OpenPMD_ standards.
+    are based on `OpenPMD <https://www.openpmd.org>`__ standards.
 
     Parameters
     ----------
@@ -51,8 +51,6 @@ class HDF5Reader(GenericPlasma):
 
     **kwargs
         Any keyword accepted by `~plasmapy.plasma.plasma_base.GenericPlasma`.
-
-    .. _OpenPMD: https://www.openpmd.org
     """
 
     def __init__(self, hdf5, **kwargs):
