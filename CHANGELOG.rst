@@ -578,7 +578,7 @@ Trivial/Internal Changes
 - Changed `~plasmapy.formulary.quantum.chemical_potential` to use the
   :wikipedia:`Broyden-Fletcher-Goldfarb-Shanno algorithm` to implicitly
   solve for the ideal chemical potential. (:pr:`1726`)
-- Increased the minimum version of Astropy_ to 5.0.1. (:pr:`1727`)
+- Increased the minimum version of |Astropy| to 5.0.1. (:pr:`1727`)
 - Simplified the pull request template. (:pr:`1729`)
 - Added a GitHub Action to automatically comment on pull requests with a
   code review checklist. (:pr:`1729`)
@@ -962,7 +962,7 @@ Trivial/Internal Changes
   appearing twice, with incomplete information on the first time. (`#1350 <https://github.com/plasmapy/plasmapy/pull/1350>`__)
 - Added a helper function that takes an iterable and creates a `dict` with
   physical types as keys and the corresponding objects from that iterable
-  as values. This change updates the minimum required version of Astropy_
+  as values. This change updates the minimum required version of |Astropy|
   to 4.3.1. (`#1360 <https://github.com/plasmapy/plasmapy/pull/1360>`__)
 - Added the module ``plasmapy.particles._factory`` which contains a
   private function that accepts arguments that can be provided to
@@ -1060,7 +1060,7 @@ Trivial/Internal Changes
   `~plasmapy.utils.decorators.validators.validate_quantities`. Previously,
   ``z_mean`` issued a warning when a real number was provided instead of a
   dimensionless |Quantity|. (`#1570 <https://github.com/plasmapy/plasmapy/pull/1570>`__)
-- Updated the version of black_ to 22.3.0 in PlasmaPy's pre-commit_
+- Updated the version of black to 22.3.0 in PlasmaPy's pre-commit_
   configuration. This update included a formatting change where spaces
   around power operators were removed for sufficiently simple operands
   (e.g., ``a ** b`` → ``a**b``). (`#1582 <https://github.com/plasmapy/plasmapy/pull/1582>`__)

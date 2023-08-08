@@ -536,7 +536,7 @@ Trivial/Internal Changes
 - Added a helper function that takes an iterable and creates a `dict`
   with physical types as keys and the corresponding objects from that
   iterable as values. This change updates the minimum required version
-  of Astropy_ to 4.3.1. (`#1360
+  of |Astropy| to 4.3.1. (`#1360
   <https://github.com/plasmapy/plasmapy/pull/1360>`__)
 - Added the module ``plasmapy.particles._factory`` which contains a
   private function that accepts arguments that can be provided to
@@ -678,7 +678,7 @@ Trivial/Internal Changes
   ``z_mean`` issued a warning when a real number was provided instead
   of a dimensionless |Quantity|. (`#1570
   <https://github.com/plasmapy/plasmapy/pull/1570>`__)
-- Updated the version of black_ to 22.3.0 in PlasmaPy's pre-commit_
+- Updated the version of ``black`` to 22.3.0 in PlasmaPy's pre-commit_
   configuration. This update included a formatting change where spaces
   around power operators were removed for sufficiently simple operands
   (e.g., ``a ** b`` → ``a**b``). (`#1582

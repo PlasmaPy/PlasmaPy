@@ -458,7 +458,7 @@ Requirements
   versions of NumPy_ that have been released in the last 24 months.
   This schedule was proposed in `NumPy Enhancement Proposal 29`_ for
   the scientific Python ecosystem, and has been adopted by upstream
-  packages such as NumPy_, matplotlib_, and Astropy_.
+  packages such as NumPy_, matplotlib_, and |Astropy|.
 
   .. tip::
 
@@ -693,7 +693,7 @@ adjacent fields such as astronomy and heliophysics. To get started with
 
   .. caution::
 
-     Recent versions of Astropy_ allow unit-aware |Quantity|
+     Recent versions of |Astropy| allow unit-aware |Quantity|
      annotations such as :py:`u.Quantity[u.m]`. However, these
      annotations are not yet compatible with |validate_quantities|.
 
@@ -852,7 +852,7 @@ Compatibility with Prior Versions of Python, NumPy, and Astropy
 
 PlasmaPy releases will generally abide by the following standards, which
 are adapted from `NEP 29`_ for the support of old versions of Python_,
-NumPy_, and Astropy_.
+NumPy_, and |Astropy|.
 
 * PlasmaPy should support at least the minor versions of Python
   initially released 42 months prior to a planned project release date.
@@ -894,6 +894,7 @@ in the README file of `benchmarks-repo`_.
 
 .. _ASCII: https://en.wikipedia.org/wiki/ASCII
 .. _cognitive complexity: https://www.sonarsource.com/docs/CognitiveComplexity.pdf
+.. _Cython: https://cython.org/
 .. _example notebook on particles: ../notebooks/getting_started/particles.ipynb
 .. _example notebook on units: ../notebooks/getting_started/units.ipynb
 .. _extract function refactoring pattern: https://refactoring.guru/extract-method

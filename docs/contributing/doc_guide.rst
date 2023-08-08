@@ -99,7 +99,7 @@ the same length as that heading.
 
 We can link to code objects by enclosing them in single backticks. This
 linking will work for Python_ objects as well as certain packages like
-NumPy_, SciPy_, Astropy_, and pandas_. This linking is described in the
+NumPy_, SciPy_, |Astropy|, and pandas_. This linking is described in the
 section on :ref:`external-references`. In-line code samples are
 typically enclosed in double backticks. To get inline code highlighting,
 use the :rest:`:py:` role for Python code or :rest:`:bash:` for code run
@@ -992,7 +992,7 @@ will show up as `~astropy.units.Quantity`.
 To make cross-referencing to an external package available its mappings
 have to be defined in the :confval:`intersphinx_mapping` configuration
 dictionary contained in |docs/conf.py|_. PlasmaPy has already include
-several packages like Python_, NumPy_, SciPy_, Astropy_, Sphinx_, etc.
+several packages like Python_, NumPy_, SciPy_, |Astropy|, Sphinx_, etc.
 
 New source packages may be added, but please verify that references to a
 function or class in that package show up correctly in `PlasmaPy's
@@ -1419,6 +1419,7 @@ version of the package that can be revisited later.
 .. _Sphinx's templating page: https://www.sphinx-doc.org/en/master/templating.html
 .. _style overrides: https://docs.readthedocs.io/en/stable/guides/adding-custom-css.html
 .. _warns: https://numpydoc.readthedocs.io/en/latest/format.html#warns
+.. _weekly tests: "https://github.com/PlasmaPy/PlasmaPy/actions/workflows/weekly.yml",
 
 .. ----------------------
 .. Nested inline literals
