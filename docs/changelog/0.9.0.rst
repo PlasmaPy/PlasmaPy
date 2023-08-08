@@ -146,7 +146,7 @@ Improved Documentation
 - Updated the |release guide| following the ``0.8.1`` release. (:pr:`1615`)
 - Added :file:`docs/whatsnew/dev.rst` as a stub file for the changelogs
   between releases. (:pr:`1623`)
-- Added customizations for towncrier_ in :file:`pyproject.toml`. (:pr:`1626`)
+- Added customizations for |towncrier| in :file:`pyproject.toml`. (:pr:`1626`)
 - Updated the introductory paragraphs of the |coding guide|. (:pr:`1649`)
 - Added a section to the |coding guide| on best practices for naming
   variables. (:pr:`1650`)
@@ -166,13 +166,13 @@ Improved Documentation
   should be treated in functions that accept |array_like| or |Quantity|
   inputs. (:pr:`1673`)
 - Added an admonition to the |changelog guide| that describes how to
-  change reST_ links for removed code objects into inline literals in old
+  change |reST| links for removed code objects into inline literals in old
   changelog entries. (:pr:`1674`)
 - Split the patent clause from the license file (:file:`LICENSE.md`) into
   its own file (:file:`PATENT.md`). (:pr:`1686`)
 - Added explanatory text to the "Notes" sections in the docstrings for
   functions within `~plasmapy.formulary.magnetostatics`. (:pr:`1695`)
-- Enabled ``:py:`` as a reST_ role for inline code formatting in the
+- Enabled ``:py:`` as a |reST| role for inline code formatting in the
   documentation. (:pr:`1698`)
 - Increased the minimum version of |Sphinx| to 5.0.0. (:pr:`1698`)
 - Updated docstrings and annotations for |ParticleList| and its methods.
@@ -223,11 +223,11 @@ Trivial/Internal Changes
   to be specified during class instantiation. (:pr:`1703`)
 - Made minor improvements to
   ``plasmapy.formulary.collisions.CollisionFrequencies``. (:pr:`1705`)
-- Changed the towncrier_ requirement to ``>= 19.2.0, < 22.8.0``.
+- Changed the |towncrier| requirement to ``>= 19.2.0, < 22.8.0``.
   Superseded by :pr:`1717`\ . (:pr:`1710`)
 - Applied automated refactorings from `Sourcery
   <https://sourcery.ai/>`__. (:pr:`1714`)
-- Changed the minimum version of towncrier_ to 22.8.0 and the minimum
+- Changed the minimum version of |towncrier| to 22.8.0 and the minimum
   version of ``sphinx_changelog`` to 1.2.0. (:pr:`1717`)
 - Changed `~plasmapy.formulary.quantum.chemical_potential` to use the
   :wikipedia:`Broyden-Fletcher-Goldfarb-Shanno algorithm` to implicitly
@@ -263,7 +263,7 @@ Trivial/Internal Changes
   schema. Instead, project metadata is now stored in |CITATION.cff|_ which
   uses the |Citation File Format| and was created in :pr:`1640`. See also
   :pr:`676` and :issue:`794`. (:pr:`1772`)
-- Added the flake8_ extensions ``flake8-use-pathlib``,
+- Added the ``flake8`` extensions ``flake8-use-pathlib``,
   ``flake8-builtins``, and ``flake8-comments`` to the testing
   requirements. (:pr:`1777`)
-- Added ``tryceratops`` as a flake8_ extension. (:pr:`1782`)
+- Added ``tryceratops`` as a ``flake8`` extension. (:pr:`1782`)

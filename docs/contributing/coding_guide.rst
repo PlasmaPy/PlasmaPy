@@ -483,7 +483,7 @@ Requirements
 
 * Minor versions of Python are generally released in October of each
   year. However, it may take a few months before packages like |NumPy|
-  and Numba_ become compatible with the newest minor version of Python_.
+  and Numba_ become compatible with the newest minor version of |Python|.
 
 Special function categories
 ===========================
@@ -851,7 +851,7 @@ Compatibility with Prior Versions of Python, NumPy, and Astropy
 ===============================================================
 
 PlasmaPy releases will generally abide by the following standards, which
-are adapted from `NEP 29`_ for the support of old versions of Python_,
+are adapted from `NEP 29`_ for the support of old versions of |Python|,
 |NumPy|, and |Astropy|.
 
 * PlasmaPy should support at least the minor versions of Python

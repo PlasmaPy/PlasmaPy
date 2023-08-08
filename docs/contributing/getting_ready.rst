@@ -73,7 +73,7 @@ Installing Python
    PlasmaPy requires a version of Python between |minpython| and
    |maxpython|. We recommend using Python |maxpython|.
 
-We suggest using Anaconda_ to install Python_. Anaconda_ is a versatile
+We suggest using Anaconda_ to install |Python|. Anaconda_ is a versatile
 package and environment management system which is widely used in the
 data science and scientific Python communities. Anaconda includes
 `Anaconda Navigator`_ as its graphical user interface (GUI) and Conda_

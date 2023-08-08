@@ -125,7 +125,6 @@ links = {
     "reStructuredText (reST)": "https://docutils.sourceforge.io/rst.html",
     "ruff": "https://beta.ruff.rs/docs",
     "SciPy": "https://scipy.org",
-    "sphinx_automodapi": "https://sphinx-automodapi.readthedocs.io",
     "Sphinx": "https://www.sphinx-doc.org",
     "towncrier": "https://github.com/twisted/towncrier",
     "tox": "https://tox.wiki/en/latest",

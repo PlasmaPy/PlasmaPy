@@ -378,7 +378,7 @@ Improved Documentation
   the documentation guide. (`#1359
   <https://github.com/plasmapy/plasmapy/pull/1359>`__)
 - Reverted the code syntax highlighting style back to the pygments_
-  default. The minimum version of pygments_ was set to ``2.11.0``
+  default. The minimum version of ``pygments`` was set to ``2.11.0``
   because the default style was changed to meet accessibility
   guidelines for contrast in this release. (`#1361
   <https://github.com/plasmapy/plasmapy/pull/1361>`__)
@@ -437,7 +437,7 @@ Improved Documentation
   in :file:`docs/conf.py` to specify regular expressions for objects
   to ignore in nitpicky documentation builds. (`#1509
   <https://github.com/plasmapy/plasmapy/pull/1509>`__)
-- Made numerous minor updates and fixes to reST_ links in docstrings
+- Made numerous minor updates and fixes to |reST| links in docstrings
   and the narrative documentation. (`#1509
   <https://github.com/plasmapy/plasmapy/pull/1509>`__)
 - Described the GitHub Action for `codespell
@@ -465,7 +465,7 @@ Improved Documentation
 - Added an example notebook that discusses Coulomb collisions. (`#1569
   <https://github.com/plasmapy/plasmapy/pull/1569>`__)
 - Increased the strictness of the ``build_docs`` |tox| environment so
-  that broken reST_ links now emit warnings which are then treated as
+  that broken |reST| links now emit warnings which are then treated as
   errors, fixed the new errors, removed the ``build_docs_nitpicky``
   |tox| environment, and updated the |documentation guide|
   accordingly. (`#1587
@@ -508,7 +508,7 @@ Trivial/Internal Changes
   test file :file:`plasmapy/formulary/tests/test_parameters.py` to
   :file:`plasmapy/formulary/tests/test_thermal_speed.py`. (`#1145
   <https://github.com/plasmapy/plasmapy/pull/1145>`__)
-- Applied reST_ substitutions for `plasmapy.particles` and
+- Applied |reST| substitutions for `plasmapy.particles` and
   |ParticleTracker| in the narrative documentation. (`#1158
   <https://github.com/plasmapy/plasmapy/pull/1158>`__)
 - Added `csslint <https://github.com/CSSLint/csslint>`_ to the
@@ -608,9 +608,9 @@ Trivial/Internal Changes
   requirements category.  These packages are now installed when
   running ``pip install plasmapy``. (`#1482
   <https://github.com/plasmapy/plasmapy/pull/1482>`__)
-- Added ``dlint``, flake8_, ``flake8-absolute-import``,
-  ``flake8-rst-docstrings``, ``flake8-use-fstring``, pydocstyle_, and
-  pygments_ into the ``tests`` requirements category and pre-commit_
+- Added ``dlint``, ``flake8``, ``flake8-absolute-import``,
+  ``flake8-rst-docstrings``, ``flake8-use-fstring``, |pydocstyle|, and
+  ``pygments`` into the ``tests`` requirements category and pre-commit_
   into the ``extras`` requirements category. These dependencies are
   not required for basic installation with pip_. (`#1482
   <https://github.com/plasmapy/plasmapy/pull/1482>`__)
@@ -650,11 +650,11 @@ Trivial/Internal Changes
 - Added `flake8-implicit-str-concat
   <https://github.com/flake8-implicit-str-concat/flake8-implicit-str-concat>`__
   and `flake8-mutable <https://github.com/ebeweber/flake8-mutable>`__
-  as extensions for flake8_. (`#1557
+  as extensions for ``flake8``. (`#1557
   <https://github.com/plasmapy/plasmapy/pull/1557>`__)
 - Added `flake8-simplify
   <https://github.com/MartinThoma/flake8-simplify>`__ as an extension
-  for flake8_. (`#1558
+  for ``flake8``. (`#1558
   <https://github.com/plasmapy/plasmapy/pull/1558>`__)
 - Applied automated refactorings from `Sourcery
   <https://sourcery.ai/>`__ to `plasmapy.dispersion`. (`#1562

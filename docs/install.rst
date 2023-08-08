@@ -15,15 +15,15 @@ Installing PlasmaPy
 Installing Python
 =================
 
-PlasmaPy requires a version of Python_ between |minpython| and
-|maxpython|. If you do not have Python_ installed already, here are the
+PlasmaPy requires a version of |Python| between |minpython| and
+|maxpython|. If you do not have |Python| installed already, here are the
 instructions to `download Python`_ and install it.
 
 .. tip::
 
-   New versions of Python_ are released annually in October, and it can
+   New versions of |Python| are released annually in October, and it can
    take a few months for the scientific Python ecosystem to catch up. If
-   you have trouble installing `plasmapy` on the most recent Python_
+   you have trouble installing `plasmapy` on the most recent |Python|
    version between October and March, then try installing it on the
    second most recent version.
 
@@ -32,15 +32,15 @@ instructions to `download Python`_ and install it.
 Installing PlasmaPy with pip
 ============================
 
-To install the most recent release of `plasmapy` on PyPI_ with pip_ into
-an existing Python_ |minpython|\ + environment on macOS or Linux, open a
+To install the most recent release of `plasmapy` on |PyPI| with pip_ into
+an existing |Python| |minpython|\ + environment on macOS or Linux, open a
 terminal and run:
 
 .. code-block:: bash
 
    python -m pip install plasmapy
 
-On some systems, it might be necessary to specify the Python_ version
+On some systems, it might be necessary to specify the |Python| version
 number by using ``python3``, ``python3.8``, ``python3.9``,
 ``python3.10``, or ``python3.11`` instead of ``python``.
 
@@ -50,7 +50,7 @@ To install PlasmaPy on Windows, run:
 
    py -3.11 -m pip install plasmapy
 
-The version of Python_ may be changed from ``3.11`` to another supported
+The version of |Python| may be changed from ``3.11`` to another supported
 Python |minpython|\ + release that has been installed on your computer.
 
 For more detailed information, please refer to this tutorial on
@@ -62,10 +62,10 @@ Installing PlasmaPy with Conda
 ==============================
 
 Conda_ is a package management system and environment manager that is
-commonly used in the scientific Python_ ecosystem. Conda_ lets us create
-and switch between Python_ environments that are isolated from each
+commonly used in the scientific |Python| ecosystem. Conda_ lets us create
+and switch between |Python| environments that are isolated from each
 other and the system installation. Conda_ can also be used for packages
-written in languages other than Python_.
+written in languages other than |Python|.
 
 After `installing Conda`_ or miniconda_, `plasmapy` can be installed
 into an activated Conda_ environment by opening a terminal and running:
@@ -173,9 +173,8 @@ The repository will be cloned inside a new subdirectory called
 :file:`PlasmaPy`.
 
 If you do not have git_ installed on your computer, then you may
-download the most recent source code from `PlasmaPy's GitHub
-repository`_ by going to :guilabel:`Code` and selecting
-:guilabel:`Download ZIP`.
+download the most recent source code from |PlasmaPy's GitHub repository|
+by going to :guilabel:`Code` and selecting :guilabel:`Download ZIP`.
 `Unzipping <https://www.wikihow.com/Unzip-a-File>`__ the file will
 create a subdirectory called :file:`PlasmaPy` that contains the source
 code.

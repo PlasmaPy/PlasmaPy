@@ -21,7 +21,7 @@ Introduction
 A changelog tells users and contributors what notable changes have been
 made between each release. Pull requests to PlasmaPy need changelog
 entries before they can be merged, except when the changes are very
-minor. PlasmaPy uses towncrier_ to convert the changelog entries into
+minor. PlasmaPy uses |towncrier| to convert the changelog entries into
 the full changelog. Some example changelog entries are:
 
 .. code-block:: rst
@@ -105,7 +105,7 @@ Changelog guidelines
   describe how the functionality currently works.
 
 * A changelog entry may include multiple sentences to describe important
-  context and consequences of the change. Because towncrier_
+  context and consequences of the change. Because |towncrier|
   automatically reflows text, keep entries to a single paragraph.
 
 * Use intersphinx_ links to refer to objects within PlasmaPy, and
@@ -143,7 +143,7 @@ Changelog guidelines
 
 .. tip::
 
-   When removing or moving an object, reST_ links that follow the
+   When removing or moving an object, |reST| links that follow the
    original namespace will break, causing the documentation build to
    fail.
 
@@ -165,17 +165,17 @@ Changelog guidelines
 Building the changelog
 ======================
 
-During the release cycle, towncrier_ is used to build the changelog. To
-install towncrier_ and the other packages needed to develop PlasmaPy, go
+During the release cycle, |towncrier| is used to build the changelog. To
+install |towncrier| and the other packages needed to develop PlasmaPy, go
 to the top-level directory of your local clone of PlasmaPy and run:
 
 .. code-block:: shell
 
    pip install -e .[dev]
 
-Configuration files for towncrier_ are in :file:`pyproject.toml`.
+Configuration files for |towncrier| are in :file:`pyproject.toml`.
 
-To run towncrier_, enter the top-level directory of PlasmaPy's
+To run |towncrier|, enter the top-level directory of PlasmaPy's
 repository. To print out a preview of the changelog, run:
 
 .. code-block:: shell
