@@ -7,9 +7,7 @@
 
 .. _Astropy: https://docs.astropy.org
 .. _BibTeX format: https://www.bibtex.com/g/bibtex-format
-.. _BibTeX: http://www.bibtex.org
 .. _black: https://black.readthedocs.io
-.. _Conda: https://docs.conda.io
 .. _Contributor Covenant: https://www.contributor-covenant.org
 .. _Citation File Format: https://citation-file-format.github.io/
 .. _create an issue: https://github.com/PlasmaPy/PlasmaPy/issues/new/choose

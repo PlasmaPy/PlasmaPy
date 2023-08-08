@@ -1399,6 +1399,7 @@ version of the package that can be revisited later.
 .. |directives| replace:: :term:`directives <directive>`
 
 .. _admonitions: https://docutils.sourceforge.io/docs/ref/rst/directives.html#admonitions
+.. _BibTeX: http://www.bibtex.org
 .. _configuration options: https://www.sphinx-doc.org/en/master/usage/configuration.html
 .. _define substitutions: https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html#substitution-definitions
 .. _doctests: https://docs.pytest.org/en/6.2.x/doctest.html

@@ -91,4 +91,6 @@ astropy_subs = {
     "Quantity": ":class:`~astropy.units.Quantity`",
 }
 
+links = {"Astropy": ""}
+
 global_substitutions = plasmapy_subs | doc_subs | numpy_subs | astropy_subs

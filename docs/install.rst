@@ -214,6 +214,7 @@ package should also be installed.
 
 .. _Anaconda Navigator: https://docs.anaconda.com/navigator/install
 .. _clone a repository using SSH: https://docs.github.com/en/get-started/getting-started-with-git/about-remote-repositories#cloning-with-ssh-urls
+.. _Conda: https://docs.conda.io
 .. _conda-forge: https://conda-forge.org
 .. _download Python: https://www.python.org/downloads
 .. _from PyPI: https://pypi.org/project/plasmapy

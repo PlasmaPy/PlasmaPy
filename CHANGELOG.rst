@@ -845,7 +845,7 @@ Improved Documentation
   comments to help someone unfamiliar with CSS_ to understand the file and
   syntax. (`#1287 <https://github.com/plasmapy/plasmapy/pull/1287>`__)
 - Put references from `plasmapy.formulary` into :file:`docs/bibliography.bib`
-  in BibTeX_ format. (`#1299 <https://github.com/plasmapy/plasmapy/pull/1299>`__)
+  in BibTeX format. (`#1299 <https://github.com/plasmapy/plasmapy/pull/1299>`__)
 - Added a discussion of test parametrization with argument unpacking to
   the |testing guide| in the |contributor guide|. (`#1316 <https://github.com/plasmapy/plasmapy/pull/1316>`__)
 - Adopted the `Contributor Covenant Code of Conduct version 2.1
@@ -1021,7 +1021,7 @@ Trivial/Internal Changes
   dependencies are not required for basic installation with pip_. (`#1482 <https://github.com/plasmapy/plasmapy/pull/1482>`__)
 - Updated :file:`docs/environment.yml` to use pip_ to install all
   requirements specified by :file:`requirements.txt` when creating a
-  Conda_ environment. (`#1482 <https://github.com/plasmapy/plasmapy/pull/1482>`__)
+  Conda environment. (`#1482 <https://github.com/plasmapy/plasmapy/pull/1482>`__)
 - Used `codespell <https://github.com/codespell-project/codespell>`__
   to fix typos. (`#1493 <https://github.com/plasmapy/plasmapy/pull/1493>`__)
 - Used `contextlib.suppress` to suppress exceptions, instead of ``try`` &
@@ -1271,10 +1271,10 @@ Improved Documentation
 - Fixed broken reST_ links in docstrings for aliases in `plasmapy.formulary`. (`#1238 <https://github.com/plasmapy/plasmapy/pull/1238>`__)
 - Fixed multiple broken and redirected links. (`#1257 <https://github.com/plasmapy/plasmapy/pull/1257>`__)
 - Updated the documentation guide to include a description on how to
-  add and cite references to PlasmaPy's global bibliography BibTeX_ file,
+  add and cite references to PlasmaPy's global bibliography BibTeX file,
   :file:`docs/bibliography.bib`. (`#1263 <https://github.com/plasmapy/plasmapy/pull/1263>`__)
 - Added sphinxcontrib-bibtex_ as a Sphinx_ extension to enable references
-  to be stored in a BibTeX_ file. (`#1263 <https://github.com/plasmapy/plasmapy/pull/1263>`__)
+  to be stored in a BibTeX file. (`#1263 <https://github.com/plasmapy/plasmapy/pull/1263>`__)
 - Began a documentation-wide bibliography page. (`#1263 <https://github.com/plasmapy/plasmapy/pull/1263>`__)
 - Updated documentation guide to describe where formulae should go in
   docstrings and how to use glossary entries. (`#1264 <https://github.com/plasmapy/plasmapy/pull/1264>`__)

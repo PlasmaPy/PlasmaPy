@@ -392,6 +392,7 @@ To enable pre-commit on your computer:
 .. _Anaconda Navigator: https://docs.anaconda.com/navigator/
 .. _Anaconda: https://docs.anaconda.com/
 .. _clone: https://github.com/git-guides/git-clone
+.. _Conda: https://docs.conda.io
 .. _creating an environment: https://docs.anaconda.com/navigator/tutorials/manage-environments/#creating-a-new-environment
 .. _download Python: https://www.python.org/downloads/
 .. _fork: https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/about-forks

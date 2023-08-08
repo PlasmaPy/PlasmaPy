@@ -357,7 +357,7 @@ Improved Documentation
   to help someone unfamiliar with CSS_ to understand the file and
   syntax. (`#1287 <https://github.com/plasmapy/plasmapy/pull/1287>`__)
 - Put references from `plasmapy.formulary` into
-  :file:`docs/bibliography.bib` in BibTeX_ format. (`#1299
+  :file:`docs/bibliography.bib` in BibTeX format. (`#1299
   <https://github.com/plasmapy/plasmapy/pull/1299>`__)
 - Added a discussion of test parametrization with argument unpacking
   to the |testing guide| in the |contributor guide|. (`#1316
@@ -616,7 +616,7 @@ Trivial/Internal Changes
   <https://github.com/plasmapy/plasmapy/pull/1482>`__)
 - Updated :file:`docs/environment.yml` to use pip_ to install all
   requirements specified by :file:`requirements.txt` when creating a
-  Conda_ environment. (`#1482
+  Conda environment. (`#1482
   <https://github.com/plasmapy/plasmapy/pull/1482>`__)
 - Used `codespell <https://github.com/codespell-project/codespell>`__
   to fix typos. (`#1493

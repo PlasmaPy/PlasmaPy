@@ -233,10 +233,10 @@ Improved Documentation
 - Fixed broken reST_ links in docstrings for aliases in `plasmapy.formulary`. (`#1238 <https://github.com/plasmapy/plasmapy/pull/1238>`__)
 - Fixed multiple broken and redirected links. (`#1257 <https://github.com/plasmapy/plasmapy/pull/1257>`__)
 - Updated the |documentation guide| to include a description on how to
-  add and cite references to PlasmaPy's global bibliography BibTeX_ file,
+  add and cite references to PlasmaPy's global bibliography BibTeX file,
   :file:`docs/bibliography.bib`. (`#1263 <https://github.com/plasmapy/plasmapy/pull/1263>`__)
 - Added ``sphinxcontrib-bibtex`` as a Sphinx_ extension to enable references
-  to be stored in a BibTeX_ file. (`#1263 <https://github.com/plasmapy/plasmapy/pull/1263>`__)
+  to be stored in a BibTeX file. (`#1263 <https://github.com/plasmapy/plasmapy/pull/1263>`__)
 - Began a documentation-wide |bibliography| page. (`#1263 <https://github.com/plasmapy/plasmapy/pull/1263>`__)
 - Updated the |documentation guide| to describe where formulae should go in
   docstrings and how to use |glossary| entries. (`#1264 <https://github.com/plasmapy/plasmapy/pull/1264>`__)
