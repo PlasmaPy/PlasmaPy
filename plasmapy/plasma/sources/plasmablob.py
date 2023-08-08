@@ -59,7 +59,7 @@ class PlasmaBlob(GenericPlasma):
 
         Examples
         --------
-        >>> from astropy import units as u
+        >>> import astropy.units as u
         >>> PlasmaBlob(1e4*u.K, 1e20/u.m**3, particle='p')
         PlasmaBlob(T_e=10000.0*u.K, n_e=1e+20*u.m**-3, particle='p', Z=1)
         """

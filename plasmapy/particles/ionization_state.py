@@ -5,10 +5,10 @@ a single ionization level.
 
 __all__ = ["IonicLevel", "IonizationState"]
 
+import astropy.units as u
 import numpy as np
 import warnings
 
-from astropy import units as u
 from numbers import Integral, Real
 from typing import NoReturn, Optional, Union
 

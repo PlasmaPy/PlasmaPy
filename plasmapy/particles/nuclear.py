@@ -53,14 +53,14 @@ def nuclear_binding_energy(
 
     Examples
     --------
-    >>> from astropy import units as u
+    >>> import astropy.units as u
     >>> nuclear_binding_energy('Fe-56').to(u.MeV)
     <Quantity 492.25957 MeV>
     >>> nuclear_binding_energy(26, 56)
     <Quantity 7.8868678e-11 J>
     >>> nuclear_binding_energy('p')  # proton
     <Quantity 0. J>
-    >>> from astropy import units as u
+    >>> import astropy.units as u
     >>> before = nuclear_binding_energy("D") + nuclear_binding_energy("T")
     >>> after = nuclear_binding_energy("alpha")
     >>> (after - before).to(u.MeV)  # released energy from D + T --> alpha + n
@@ -157,7 +157,7 @@ def nuclear_reaction_energy(*args, **kwargs) -> u.J:  # noqa: C901, PLR0915
 
     Examples
     --------
-    >>> from astropy import units as u
+    >>> import astropy.units as u
     >>> nuclear_reaction_energy("D + T --> alpha + n")
     <Quantity 2.8181e-12 J>
     >>> triple_alpha1 = '2*He-4 --> Be-8'

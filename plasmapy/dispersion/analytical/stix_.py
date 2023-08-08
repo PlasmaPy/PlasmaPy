@@ -161,7 +161,7 @@ def stix(  # noqa: C901, PLR0912, PLR0915
 
     Example
     -------
-    >>> from astropy import units as u
+    >>> import astropy.units as u
     >>> from plasmapy.particles import Particle
     >>> from plasmapy.dispersion.analytical.stix_ import stix
     >>> inputs = {
