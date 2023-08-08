@@ -45,13 +45,6 @@ plasmapy_subs = {
     "stable_isotopes": ":func:`~plasmapy.particles.atomic.stable_isotopes`",
     "ParticleTracker": ":class:`~plasmapy.simulation.particletracker.ParticleTracker`",
     "validate_quantities": ":func:`~plasmapy.utils.decorators.validators.validate_quantities`",
-    "inf": "`~numpy.inf`",
-    "nan": "`~numpy.nan`",
-    "ndarray": ":class:`~numpy.ndarray`",
-    "array_like": ":term:`numpy:array_like`",
-    "ArrayLike": "`~numpy.typing.ArrayLike`",
-    "DTypeLike": "`~numpy.typing.DTypeLike`",
-    "Quantity": ":class:`~astropy.units.Quantity`",
 }
 
 # The backslash is needed for the substitution to work correctly when
@@ -91,7 +84,7 @@ numpy_subs = {
     "inf": "`~numpy.inf`",
     "nan": "`~numpy.nan`",
     "ndarray": ":class:`~numpy.ndarray`",
-    "array_like": "",
+    "array_like": ":term:`numpy:array_like`",
 }
 
 astropy_subs = {
