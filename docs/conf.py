@@ -16,7 +16,7 @@ sys.path.insert(0, os.path.abspath("."))  # noqa: PTH100
 
 import cff_to_rst
 
-from _global_substitutions import global_substitutions  # noqa: F401
+from _global_substitutions import global_substitutions
 from datetime import datetime
 from pkg_resources import parse_version
 from sphinx.application import Sphinx
