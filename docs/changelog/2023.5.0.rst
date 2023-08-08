@@ -179,9 +179,9 @@ Improved Documentation
 - Updated the code contribution workflow instructions in the |contributor
   guide|
   to reflect that first-time contributors should add themselves to the author
-  list in |CITATION.cff|_ instead of in |docs/about/credits.rst|_. (:pr:`2155`)
+  list in |CITATION.cff|_ instead of in ``docs/about/credits.rst``. (:pr:`2155`)
 - Added functionality to automatically generate the author list included
-  in |docs/about/credits.rst|_ directly from |CITATION.cff|_. The script
+  in ``docs/about/credits.rst`` directly from |CITATION.cff|_. The script
   is located at :file:`docs/cff_to_rst.py`. (:pr:`2156`)
 
 
