@@ -2,3 +2,5 @@
   replacement: import astropy.units as u
 - search: from astropy import constants as const
   replacement: import astropy.constants as const
+- search: Plasmapy|PlasmPy|Plasmpy|Palsmapy
+  replacement: PlasmaPy
