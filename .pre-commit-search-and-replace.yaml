@@ -1,0 +1,4 @@
+- search: from astropy import units as u
+  replacement: import astropy.units as u
+- search: from astropy import constants as const
+  replacement: import astropy.constants as const
