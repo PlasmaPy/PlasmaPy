@@ -14,6 +14,8 @@ sys.path.insert(0, os.path.abspath(".."))  # noqa: PTH100
 sys.path.insert(0, os.path.abspath("."))  # noqa: PTH100
 # isort: on
 
+from _global_substitutions import global_substitutions  # noqa
+
 import cff_to_rst
 
 from datetime import datetime
