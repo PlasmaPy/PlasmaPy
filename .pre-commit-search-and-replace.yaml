@@ -1,6 +1,20 @@
+- search: Plasmapy
+  replacement: /PlasmaPy|PlasmaPY/PlasmPy|Plasmpy|Palsmapy|PlasmaPY/
+  description: Fix common misspellings and use consistent capitalization for PlasmaPy
+
+- search: /plasmpy|plaspmy|plasapy|palsmapy/
+  replacement: plasmapy
+  description: Fix common misspellings of plasmapy
+
 - search: from astropy import units as u
   replacement: import astropy.units as u
+
 - search: from astropy import constants as const
   replacement: import astropy.constants as const
-- search: Plasmapy|PlasmPy|Plasmpy|Palsmapy
-  replacement: PlasmaPy
+
+- search: '|array-like|'
+  replacement: '|array_like|'
+  description: NumPy uses an underscore in array_like
+
+- search: ':term:`particle-like`'
+  replacement: '|particle-like|'
