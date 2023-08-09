@@ -198,10 +198,12 @@ release = pv.public
 version = ".".join(release.split(".")[:2])  # short X.Y version
 revision = pv.local[1:] if pv.local is not None else ""
 
-# This is added to the beginning of RST files, which can be used to
-# define things globally. Use in moderation, since long values of
-# rst_prolog and/or rst_epilog can significantly slow down
-# documentation builds.
+# The Sphinx configuration variables rst_prolog and rst_epilog contain
+# text that gets prepended or appended to all reStructuredText sources.
+# These variables can be used to make global definitions; however, long
+# values of these variables can greatly slow down the documentation
+# build, so use them in moderation!  Use docs/_global_substitutions.py
+# to define substitutions.
 
 rst_prolog = """
 .. role:: py(code)
