@@ -293,7 +293,7 @@ Trivial/Internal Changes
   now determines the default detector size to be the smallest detector
   plane centered on the origin that includes all particles. (`#1134 <https://github.com/plasmapy/plasmapy/pull/1134>`__)
 - Added ion velocity input to the :file:`thomson.ipynb` diagnostics notebook. (`#1171 <https://github.com/plasmapy/plasmapy/pull/1171>`__)
-- Added |tox| and removed pytest_ as extra requirements. (`#1195 <https://github.com/plasmapy/plasmapy/pull/1195>`__)
+- Added |tox| and removed `pytest` as extra requirements. (`#1195 <https://github.com/plasmapy/plasmapy/pull/1195>`__)
 - Updated |tox| test environments for building the documentation. Added the
   ``build_docs_nitpicky`` environment to check for broken |reST| links. (`#1206 <https://github.com/plasmapy/plasmapy/pull/1206>`__)
 - Added the ``--keep-going`` flag to the ``build_docs*`` |tox| environments with

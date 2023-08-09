@@ -113,7 +113,6 @@ links = {
     "PlasmaPy's GitHub repository": "https://github.com/PlasmaPy/plasmapy",
     "PlasmaPy's data repository": "https://github.com/PlasmaPy/PlasmaPy-data",
     "PlasmaPy's Matrix chat room": "https://app.element.io/#/room/#plasmapy:openastronomy.org",
-    "pre-commit.ci": "https://pre-commit.ci",
     "pydocstyle": "https://www.pydocstyle.org/en/stable",
     "pygments": "https://pygments.org",
     "PyPI": "https://pypi.org",

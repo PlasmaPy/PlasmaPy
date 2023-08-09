@@ -654,7 +654,7 @@ Deprecations and Removals
 - Dropped support for Python 3.7 in accordance with the deprecation policy
   laid out in `NumPy Enhancement Proposal 29
   <https://numpy.org/neps/nep-0029-deprecation_policy.html>`__. (`#1465 <https://github.com/plasmapy/plasmapy/pull/1465>`__)
-- The ``[all]`` option when using pip_ to install `plasmapy` is now
+- The ``[all]`` option when using |pip| to install `plasmapy` is now
   deprecated and may be removed in a future release. Packages that were
   previously optional (|h5py|_, |lmfit|, |mpmath|_, and |numba|_) are now
   installed by default when running ``pip install plasmapy``. To install
@@ -956,7 +956,7 @@ Trivial/Internal Changes
 - Applied `pytest.warns` in several tests to catch warnings that are being
   issued during execution of the test suite. (`#1345 <https://github.com/plasmapy/plasmapy/pull/1345>`__)
 - Split the tests running on pull requests into multiple stages. The
-  various pytest_ test environments, including code coverage, now run
+  various `pytest` test environments, including code coverage, now run
   conditionally given successful execution of a basic test environment and
   the linter checks. This change also prevents code coverage prompts from
   appearing twice, with incomplete information on the first time. (`#1350 <https://github.com/plasmapy/plasmapy/pull/1350>`__)
@@ -1018,8 +1018,8 @@ Trivial/Internal Changes
   ``flake8-rst-docstrings``, ``flake8-use-fstring``,
   |pydocstyle|, and ``pygments`` into the ``tests`` requirements category and
   pre-commit_ into the ``extras`` requirements category. These
-  dependencies are not required for basic installation with pip_. (`#1482 <https://github.com/plasmapy/plasmapy/pull/1482>`__)
-- Updated :file:`docs/environment.yml` to use pip_ to install all
+  dependencies are not required for basic installation with |pip|. (`#1482 <https://github.com/plasmapy/plasmapy/pull/1482>`__)
+- Updated :file:`docs/environment.yml` to use |pip| to install all
   requirements specified by :file:`requirements.txt` when creating a
   Conda environment. (`#1482 <https://github.com/plasmapy/plasmapy/pull/1482>`__)
 - Used `codespell <https://github.com/codespell-project/codespell>`__
@@ -1331,7 +1331,7 @@ Trivial/Internal Changes
   now determines the default detector size to be the smallest detector
   plane centered on the origin that includes all particles. (`#1134 <https://github.com/plasmapy/plasmapy/pull/1134>`__)
 - Added ion velocity input to the :file:`thomson.ipynb` diagnostics notebook. (`#1171 <https://github.com/plasmapy/plasmapy/pull/1171>`__)
-- Added |tox| and removed pytest_ as extra requirements. (`#1195 <https://github.com/plasmapy/plasmapy/pull/1195>`__)
+- Added |tox| and removed `pytest` as extra requirements. (`#1195 <https://github.com/plasmapy/plasmapy/pull/1195>`__)
 - Updated |tox| test environments for building the documentation. Added the
   ``build_docs_nitpicky`` environment to check for broken |reST| links. (`#1206 <https://github.com/plasmapy/plasmapy/pull/1206>`__)
 - Added the ``--keep-going`` flag to the ``build_docs*`` |tox| environments with

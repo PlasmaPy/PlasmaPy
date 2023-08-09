@@ -87,7 +87,7 @@ does it in isolation from other tests :cite:p:`khorikov:2020`. A typical
 *assert* :cite:p:`osherove:2013`. An |integration test| verifies that
 multiple software components work together as intended.
 
-PlasmaPy's tests are set up using the pytest_ framework. The tests for a
+PlasmaPy's tests are set up using the `pytest` framework. The tests for a
 subpackage are located in its :file:`tests/` subdirectory in files with
 names of the form :file:`test_*.py`. For example, tests for
 `plasmapy.formulary.speeds` are located at
@@ -148,9 +148,9 @@ The most common way to check that a condition is met is through an
 follows ``assert`` evaluates to `True`, then this statement will do
 nothing and the test will pass.
 
-When ``assert`` statements raise an `AssertionError`, pytest_ will
+When ``assert`` statements raise an `AssertionError`, `pytest` will
 display the values of the expressions evaluated in the ``assert``
-statement. The automatic output from pytest_ is sufficient for simple
+statement. The automatic output from `pytest` is sufficient for simple
 tests like above. For more complex tests, we can add a descriptive error
 message to help us find the cause of a particular test failure.
 
@@ -191,7 +191,7 @@ Testing warnings and exceptions
 
 Robust testing frameworks should test that functions and methods return
 the expected results, issue the expected warnings, and raise the
-expected exceptions. pytest_ contains functionality to `test warnings`_
+expected exceptions. `pytest` contains functionality to `test warnings`_
 and `test exceptions`_.
 
 To test that a function issues an appropriate warning, use
@@ -472,7 +472,7 @@ Running tests
 PlasmaPy's tests can be run in the following ways:
 
 1. Creating and updating a pull request on |GitHub|.
-2. Running pytest_ from the command line.
+2. Running `pytest` from the command line.
 3. Running |tox| from the command line.
 4. Running tests from an :wikipedia:`integrated development environment
    <integrated_development_environment>` (IDE).
@@ -487,8 +487,8 @@ require any extra work. The disadvantages are that running the tests on
 difficult.
 
 We recommend that experienced contributors run tests either by using
-pytest_ from the command line or by using your preferred IDE. Using |tox|
-is an alternative to pytest_, but running tests with |tox| adds the
+`pytest` from the command line or by using your preferred IDE. Using |tox|
+is an alternative to `pytest`, but running tests with |tox| adds the
 overhead of creating an isolated environment for your test and can thus
 be slower.
 
@@ -517,7 +517,7 @@ The following checks are performed with each pull request.
 * Checks with labels like **CI / Python 3.x (pull request)** verify that
   PlasmaPy works with different versions of Python and other
   dependencies, and on different operating systems. These tests are set
-  up using |tox| and run with pytest_ via |GitHub Actions|. When
+  up using |tox| and run with `pytest` via |GitHub Actions|. When
   multiple tests fail, investigate these tests first.
 
   .. tip::
@@ -630,7 +630,7 @@ in in :file:`test_atomic.py` can be run with:
 
    pytest test_atomic.py
 
-The documentation for pytest_ describes `how to invoke pytest`_ and
+The documentation for `pytest` describes `how to invoke pytest`_ and
 specify which tests will or will not be run. A few useful examples of
 flags you can use with it:
 
@@ -657,7 +657,7 @@ PlasmaPy's continuous integration tests on |GitHub| are typically run
 using |tox|, a tool for automating Python testing. Using |tox| simplifies
 testing PlasmaPy with different releases of Python, with different
 versions of PlasmaPy's dependencies, and on different operating systems.
-While testing with |tox| is more robust than testing with pytest_, using
+While testing with |tox| is more robust than testing with `pytest`, using
 |tox| to run tests is typically slower because |tox| creates its own
 virtual environments.
 
@@ -726,7 +726,7 @@ tested, and sometimes indicate sections of code that are unreachable.
    the testing is sufficient. A test that makes no assertions has little
    value, but could still have high test coverage.
 
-PlasmaPy uses `coverage.py`_ and the `pytest-cov`_ plugin for pytest_ to
+PlasmaPy uses `coverage.py`_ and the `pytest-cov`_ plugin for `pytest` to
 measure code coverage and Codecov_ to provide reports on GitHub.
 
 Generating coverage reports with pytest

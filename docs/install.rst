@@ -32,7 +32,7 @@ instructions to `download Python`_ and install it.
 Installing PlasmaPy with pip
 ============================
 
-To install the most recent release of `plasmapy` on |PyPI| with pip_ into
+To install the most recent release of `plasmapy` on |PyPI| with |pip| into
 an existing |Python| |minpython|\ + environment on macOS or Linux, open a
 terminal and run:
 
