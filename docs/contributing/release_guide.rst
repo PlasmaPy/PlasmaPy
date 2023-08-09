@@ -267,3 +267,6 @@ Advertise the release
 
 .. _`.github/workflows/python-publish.yml`: https://github.com/PlasmaPy/PlasmaPy/blob/main/.github/workflows/python-publish.yml
 .. |.github/workflows/python-publish.yml| replace:: :file:`.github/workflows/python-publish.yml`
+
+.. _`CITATION.cff`: https://github.com/PlasmaPy/PlasmaPy/blob/main/CITATION.cff
+.. |CITATION.cff| replace:: :file:`CITATION.cff`

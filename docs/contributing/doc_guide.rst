@@ -951,7 +951,7 @@ extensions:
 * `sphinx.ext.napoleon` for allowing NumPy style docstrings.
 * `sphinx.ext.todo` to support ``todo`` |directives|.
 * `sphinx.ext.viewcode` to generate links to pages showing source code.
-* |nbsphinx|_ for including |Jupyter| notebooks.
+* |nbsphinx| for including |Jupyter| notebooks.
 * |sphinxcontrib-bibtex|_ to enable usage of a BibTeX_ file to create
   the :doc:`../bibliography`.
 * |sphinx_copybutton|_ to add a "copy" button for code blocks.

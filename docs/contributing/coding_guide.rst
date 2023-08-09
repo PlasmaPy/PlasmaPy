@@ -424,7 +424,7 @@ Imports
      import numpy as np
      import pandas as pd
 
-* PlasmaPy uses |isort| to organize import statements via a |pre-commit|_
+* PlasmaPy uses |isort| to organize import statements via a |pre-commit|
   hook.
 
 * For infrequently used objects, import the package, subpackage, or
@@ -822,7 +822,7 @@ Example notebooks
 
 Examples in PlasmaPy are written as Jupyter notebooks, taking advantage
 of their mature ecosystems. They are located in `docs/notebooks`_.
-|nbsphinx|_ takes care of executing them at documentation build time and
+|nbsphinx| takes care of executing them at documentation build time and
 including them in the documentation.
 
 Please note that it is necessary to store notebooks with their outputs
@@ -833,7 +833,7 @@ accomplishes two goals:
 
 1. helps with versioning the notebooks, as binary image data is not stored in
    the notebook
-2. signals |nbsphinx|_ that it should execute the notebook.
+2. signals |nbsphinx| that it should execute the notebook.
 
 .. note::
 
@@ -904,3 +904,12 @@ in the README file of `benchmarks-repo`_.
 .. _NumPy Enhancement Proposal 29: https://numpy.org/neps/nep-0029-deprecation_policy.html
 .. _pyupgrade: https://github.com/asottile/pyupgrade
 .. _rename refactoring in PyCharm: https://www.jetbrains.com/help/pycharm/rename-refactorings.html
+
+.. _`astropy.units`: https://docs.astropy.org/en/stable/units/index.html
+.. |astropy.units| replace:: `astropy.units`
+
+.. _`pyproject.toml`: https://github.com/PlasmaPy/PlasmaPy/blob/main/pyproject.toml
+.. |pyproject.toml| replace:: :file:`pyproject.toml`
+
+.. _`tox.ini`: https://github.com/PlasmaPy/PlasmaPy/blob/main/tox.ini
+.. |tox.ini| replace:: :file:`tox.ini`

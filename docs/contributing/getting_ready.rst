@@ -94,12 +94,12 @@ as its command line interface (CLI).
 Using git and GitHub
 --------------------
 
-Code contributions to PlasmaPy are made using |git|_ and |GitHub|. Before
+Code contributions to PlasmaPy are made using |git| and |GitHub|. Before
 contributing code to PlasmaPy, please take the following steps:
 
 #. `Sign up on GitHub`_ for a free account.
 
-#. Verify that |git|_ is installed by
+#. Verify that |git| is installed by
    :ref:`opening a terminal <opening-a-terminal>` and running:
 
    .. code-block:: bash
@@ -108,13 +108,13 @@ contributing code to PlasmaPy, please take the following steps:
 
    If there is an error, follow these instructions to `install git`_.
 
-#. Optionally, configure |git|_ with your name with a command like:
+#. Optionally, configure |git| with your name with a command like:
 
    .. code-block:: bash
 
       git config --global user.name "Your Name"
 
-   You can also configure |git|_ with your email with a command like:
+   You can also configure |git| with your email with a command like:
 
    .. code-block:: bash
 
@@ -378,7 +378,7 @@ To enable pre-commit on your computer:
 .. tip::
 
    To commit a change without running pre-commit, use the :bash:`-n` or
-   :bash:`--no-verify` flag with |git|_.
+   :bash:`--no-verify` flag with |git|.
 
 .. tip::
 

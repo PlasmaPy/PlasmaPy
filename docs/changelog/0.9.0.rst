@@ -150,7 +150,7 @@ Improved Documentation
 - Updated the introductory paragraphs of the |coding guide|. (:pr:`1649`)
 - Added a section to the |coding guide| on best practices for naming
   variables. (:pr:`1650`)
-- Updated the section of the contributor guide on |pre-commit|_, and
+- Updated the section of the contributor guide on |pre-commit|, and
   moved it to :file:`docs/contributing/install_dev.rst`. (:pr:`1651`)
 - Added sections to the |coding guide| on units and particles. (:pr:`1655`)
 - Updated the section of the |coding guide| on code style. (:pr:`1657`)
@@ -255,12 +255,12 @@ Trivial/Internal Changes
   issue templates. (:pr:`1733`)
 - Made ``pytest`` an ``install`` requirement instead of a ``testing``
   requirement. (:pr:`1749`)
-- Added a step to validate |CITATION.cff|_ as part of the ``linters``
+- Added a step to validate :file:`CITATION.cff` as part of the ``linters``
   |tox| testing environment. (:pr:`1771`)
 - Added ``cffconvert`` to the ``testing`` requirements. (:pr:`1771`)
 - Deleted :file:`codemeta.json`, which recorded project metadata using
   the `CodeMeta <https://codemeta.github.io>`__ metadata
-  schema. Instead, project metadata is now stored in |CITATION.cff|_ which
+  schema. Instead, project metadata is now stored in :file:`CITATION.cff` which
   uses the |Citation File Format| and was created in :pr:`1640`. See also
   :pr:`676` and :issue:`794`. (:pr:`1772`)
 - Added the ``flake8`` extensions ``flake8-use-pathlib``,

@@ -161,7 +161,7 @@ releases_ page on |PlasmaPy's GitHub repository|.
 Obtaining source code from GitHub
 ---------------------------------
 
-If you have git_ installed on your computer, you may clone `PlasmaPy's
+If you have |git| installed on your computer, you may clone `PlasmaPy's
 GitHub repository`_ and access the source code from the most recent
 development version by running:
 
@@ -172,7 +172,7 @@ development version by running:
 The repository will be cloned inside a new subdirectory called
 :file:`PlasmaPy`.
 
-If you do not have git_ installed on your computer, then you may
+If you do not have |git| installed on your computer, then you may
 download the most recent source code from |PlasmaPy's GitHub repository|
 by going to :guilabel:`Code` and selecting :guilabel:`Download ZIP`.
 `Unzipping <https://www.wikihow.com/Unzip-a-File>`__ the file will

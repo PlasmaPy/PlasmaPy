@@ -204,3 +204,6 @@ marked as a draft pull request. Thank you for contributing!
 .. _pull request: https://docs.github.com/en/github/collaborating-with-pull-requests
 .. _remote: https://github.com/git-guides/git-remote
 .. _sign up for an ORCID iD: https://orcid.org/register
+
+.. _`CITATION.cff`: https://github.com/PlasmaPy/PlasmaPy/blob/main/CITATION.cff
+.. |CITATION.cff| replace:: :file:`CITATION.cff`

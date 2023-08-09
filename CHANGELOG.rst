@@ -189,9 +189,9 @@ Improved Documentation
 - Updated the code contribution workflow instructions in the |contributor
   guide|
   to reflect that first-time contributors should add themselves to the author
-  list in |CITATION.cff|_ instead of in |docs/about/credits.rst|_. (:pr:`2155`)
+  list in :file:`CITATION.cff` instead of in |docs/about/credits.rst|_. (:pr:`2155`)
 - Added functionality to automatically generate the author list included
-  in |docs/about/credits.rst|_ directly from |CITATION.cff|_. The script
+  in |docs/about/credits.rst|_ directly from :file:`CITATION.cff`. The script
   is located at :file:`docs/cff_to_rst.py`. (:pr:`2156`)
 
 
@@ -317,7 +317,7 @@ Trivial/Internal Changes
 - Updated warning messages in
   `~plasmapy.formulary.collisions.coulomb.Coulomb_logarithm`. (:pr:`1586`)
 - Transferred most of the contents of :file:`setup.py` and :file:`setup.cfg` to
-  |pyproject.toml|_ (see :pep:`518` and :pep:`621`). Simplified ``extras``
+  :file:`pyproject.toml` (see :pep:`518` and :pep:`621`). Simplified ``extras``
   requirements (``pip install plasmapy[all]`` and ``[extras]`` are gone).
   (:pr:`1758`)
 - Added `blacken-docs <https://github.com/adamchainz/blacken-docs>`__ to
@@ -496,7 +496,7 @@ Improved Documentation
 - Updated the introductory paragraphs of the |coding guide|. (:pr:`1649`)
 - Added a section to the |coding guide| on best practices for naming
   variables. (:pr:`1650`)
-- Updated the section of the contributor guide on |pre-commit|_, and
+- Updated the section of the contributor guide on |pre-commit|, and
   moved it to :file:`docs/contributing/install_dev.rst`. (:pr:`1651`)
 - Added sections to the |coding guide| on units and particles. (:pr:`1655`)
 - Updated the section of the |coding guide| on code style. (:pr:`1657`)
@@ -601,12 +601,12 @@ Trivial/Internal Changes
   issue templates. (:pr:`1733`)
 - Made ``pytest`` an ``install`` requirement instead of a ``testing``
   requirement. (:pr:`1749`)
-- Added a step to validate |CITATION.cff|_ as part of the ``linters``
+- Added a step to validate :file:`CITATION.cff` as part of the ``linters``
   |tox| testing environment. (:pr:`1771`)
 - Added ``cffconvert`` to the ``testing`` requirements. (:pr:`1771`)
 - Deleted :file:`codemeta.json`, which recorded project metadata using
   the `CodeMeta <https://codemeta.github.io>`__ metadata
-  schema. Instead, project metadata is now stored in |CITATION.cff|_ which
+  schema. Instead, project metadata is now stored in :file:`CITATION.cff` which
   uses the `Citation File Format`_ and was created in :pr:`1640`. See also
   :pr:`676` and :issue:`794`. (:pr:`1772`)
 - Added the ``flake8`` extensions ``flake8-use-pathlib``,
@@ -656,7 +656,7 @@ Deprecations and Removals
   <https://numpy.org/neps/nep-0029-deprecation_policy.html>`__. (`#1465 <https://github.com/plasmapy/plasmapy/pull/1465>`__)
 - The ``[all]`` option when using |pip| to install `plasmapy` is now
   deprecated and may be removed in a future release. Packages that were
-  previously optional (|h5py|_, |lmfit|, |mpmath|_, and |numba|_) are now
+  previously optional (|h5py|, |lmfit|, |mpmath|, and |numba|) are now
   installed by default when running ``pip install plasmapy``. To install
   all packages required for code development of PlasmaPy, instead run
   ``pip install plasmapy[developer]``. (`#1482 <https://github.com/plasmapy/plasmapy/pull/1482>`__)
@@ -1008,10 +1008,10 @@ Trivial/Internal Changes
   `Sourcery <https://sourcery.ai/>`__ to `plasmapy.particles`. (`#1479 <https://github.com/plasmapy/plasmapy/pull/1479>`__)
 - Applied automated refactorings from
   `Sourcery <https://sourcery.ai/>`__ to `plasmapy.formulary`. (`#1480 <https://github.com/plasmapy/plasmapy/pull/1480>`__)
-- Bumped the minimum versions of |mpmath|_ to ``1.2.1``, `numpy` to
+- Bumped the minimum versions of |mpmath| to ``1.2.1``, `numpy` to
   ``1.19.0``, `pandas` to ``1.0.0``, `pytest` to ``5.4.0``, `scipy` to
-  ``1.5.0``, and |xarray|_ to ``0.15.0``. (`#1482 <https://github.com/plasmapy/plasmapy/pull/1482>`__)
-- Moved |h5py|_, |lmfit|_, |mpmath|_, and |numba|_ out of the ``extras``
+  ``1.5.0``, and |xarray| to ``0.15.0``. (`#1482 <https://github.com/plasmapy/plasmapy/pull/1482>`__)
+- Moved |h5py|, |lmfit|, |mpmath|, and |numba| out of the ``extras``
   requirements category and into the ``install`` requirements category.
   These packages are now installed when running ``pip install plasmapy``. (`#1482 <https://github.com/plasmapy/plasmapy/pull/1482>`__)
 - Added ``dlint``, ``flake8``, ``flake8-absolute-import``,
@@ -1398,7 +1398,7 @@ Backwards Incompatible Changes
   for functions `~plasmapy.formulary.collisions.coulomb.Coulomb_logarithm` and
   `~plasmapy.formulary.collisions.lengths.impact_parameter`, and then propagated throughout
   the functionality in `plasmapy.formulary.collisions`. (`#962 <https://github.com/plasmapy/plasmapy/pull/962>`__)
-- Add dependency ``pandas >= 1.0.0``.  Modify |xarray|_ dependency to be
+- Add dependency ``pandas >= 1.0.0``.  Modify |xarray| dependency to be
   ``xarray >= 0.14.0``. (`#963 <https://github.com/plasmapy/plasmapy/pull/963>`__)
 - The `~plasmapy.plasma.grids.AbstractGrid` property
   `~plasmapy.plasma.grids.AbstractGrid.grid` is now dimensioned (has units) and
@@ -1510,7 +1510,7 @@ Bug Fixes
 - Fixed a bug that prevented nested iterations of a single
   `~plasmapy.particles.IonizationState` or
   `~plasmapy.particles.IonizationStateCollection` instance. (`#1025 <https://github.com/plasmapy/plasmapy/pull/1025>`__)
-- Fixed a bug in :file:`grids.py` for non-uniform grids that arose when |xarray|_ upgraded
+- Fixed a bug in :file:`grids.py` for non-uniform grids that arose when |xarray| upgraded
   to `v0.17.0` (`#1027 <https://github.com/plasmapy/plasmapy/pull/1027>`__)
 - In `~plasmapy.diagnostics.proton_radiography.SyntheticProtonRadiograph`,
   adaptive ``dt`` now calculates the cyclotron period using the provided particle
