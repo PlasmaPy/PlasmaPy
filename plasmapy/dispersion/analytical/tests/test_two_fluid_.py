@@ -1,9 +1,8 @@
 """Tests for the two fluid dispersion solution."""
 
+import astropy.units as u
 import numpy as np
 import pytest
-
-from astropy import units as u
 
 from plasmapy.dispersion.analytical.two_fluid_ import two_fluid
 from plasmapy.formulary.frequencies import wc_
