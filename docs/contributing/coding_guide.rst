@@ -803,7 +803,7 @@ between cycles/s and Hz:
 
 .. code-block:: python
 
-   from astropy import units as u
+   import astropy.units as u
    f_ce = omega_ce.to(u.Hz, equivalencies=[(u.cy/u.s, u.Hz)])  # doctest: +SKIP
 
 However, ``dimensionless_angles`` does work when dividing a velocity by

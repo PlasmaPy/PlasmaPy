@@ -10,13 +10,13 @@ __all__ = [
     "CheckValues",
 ]
 
+import astropy.units as u
 import collections
 import functools
 import inspect
 import numpy as np
 import warnings
 
-from astropy import units as u
 from astropy.constants import c
 from astropy.units.equivalencies import Equivalency
 from functools import reduce
@@ -1300,7 +1300,7 @@ def check_relativistic(func=None, betafrac=0.05):
 
     Examples
     --------
-    >>> from astropy import units as u
+    >>> import astropy.units as u
     >>> @check_relativistic
     ... def speed():
     ...     return 1 * u.m / u.s
@@ -1366,7 +1366,7 @@ def _check_relativistic(V, funcname, betafrac=0.05):
 
     Examples
     --------
-    >>> from astropy import units as u
+    >>> import astropy.units as u
     >>> _check_relativistic(1*u.m/u.s, 'function_calling_this')
 
     """

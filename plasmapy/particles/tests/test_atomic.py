@@ -1,8 +1,7 @@
+import astropy.constants as const
+import astropy.units as u
 import numpy as np
 import pytest
-
-from astropy import constants as const
-from astropy import units as u
 
 from plasmapy.particles._isotopes import data_about_isotopes
 from plasmapy.particles.atomic import (

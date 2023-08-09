@@ -1,10 +1,9 @@
 """Tests for functions that calculate plasma dielectric parameters in
 dielectric.py"""
 
+import astropy.units as u
 import numpy as np
 import pytest
-
-from astropy import units as u
 
 from plasmapy.formulary.dielectric import (
     cold_plasma_permittivity_LRP,

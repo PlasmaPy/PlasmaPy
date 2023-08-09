@@ -2,10 +2,10 @@
 Tests for 'validate` decorators (i.e. decorators that check objects and change them
 when possible).
 """
+import astropy.units as u
 import inspect
 import pytest
 
-from astropy import units as u
 from functools import cached_property
 from typing import Optional
 from unittest import mock

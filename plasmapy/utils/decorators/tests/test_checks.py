@@ -2,11 +2,11 @@
 Tests for 'check` decorators (i.e. decorators that only check objects but do not
 change them).
 """
+import astropy.units as u
 import inspect
 import numpy as np
 import pytest
 
-from astropy import units as u
 from astropy.constants import c
 from types import LambdaType
 from unittest import mock

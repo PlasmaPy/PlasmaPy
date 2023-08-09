@@ -2,10 +2,10 @@
 
 __all__ = ["call_string", "attribute_call_string", "method_call_string"]
 
+import astropy.units as u
 import inspect
 import numpy as np
 
-from astropy import units as u
 from numbers import Integral
 from typing import Any, Callable, Optional, Union
 

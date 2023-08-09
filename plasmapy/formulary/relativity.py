@@ -62,7 +62,7 @@ def Lorentz_factor(V: u.m / u.s):
 
     Examples
     --------
-    >>> from astropy import units as u
+    >>> import astropy.units as u
     >>> velocity = 1.4e8 * u.m / u.s
     >>> Lorentz_factor(velocity)
     1.130885603948959

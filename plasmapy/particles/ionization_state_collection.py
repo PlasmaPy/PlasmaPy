@@ -80,7 +80,7 @@ class IonizationStateCollection:
 
     Examples
     --------
-    >>> from astropy import units as u
+    >>> import astropy.units as u
     >>> from plasmapy.particles import IonizationStateCollection
     >>> states = IonizationStateCollection(
     ...     {'H': [0.5, 0.5], 'He': [0.95, 0.05, 0]},

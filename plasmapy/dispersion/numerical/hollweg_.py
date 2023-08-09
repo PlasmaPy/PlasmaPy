@@ -200,7 +200,7 @@ def hollweg(  # noqa: C901, PLR0912, PLR0915
 
     Examples
     --------
-    >>> from astropy import units as u
+    >>> import astropy.units as u
     >>> from plasmapy.dispersion.numerical import hollweg_
     >>> inputs = {
     ...    "k": np.logspace(-7, -2, 2) * u.rad / u.m,
