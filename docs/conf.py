@@ -92,12 +92,14 @@ extensions = [
     "notfound.extension",
     "plasmapy_sphinx",
     "sphinx.ext.autodoc",
+    "sphinx.ext.duration",
     "sphinx.ext.extlinks",
     "sphinx.ext.graphviz",
     "sphinx.ext.intersphinx",
     "sphinx.ext.mathjax",
     "sphinx.ext.napoleon",
     "sphinx.ext.todo",
+    "sphinx.ext.viewcode",
     "sphinx_changelog",
     "sphinx_codeautolink",
     "sphinx_copybutton",
@@ -114,6 +116,10 @@ bibtex_bibfiles = ["bibliography.bib"]
 bibtex_default_style = "plain"
 bibtex_reference_style = "author_year"
 bibtex_cite_id = "{key}"
+
+# Configure sphinx-codeautolink
+
+codeautolink_concat_default = True
 
 # Intersphinx generates automatic links to the documentation of objects
 # in other packages. When mappings are removed or added, please update

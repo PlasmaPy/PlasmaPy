@@ -1,10 +1,9 @@
 """Tests for Langmuir probe analysis functions."""
 
 import astropy.constants.si as const
+import astropy.units as u
 import numpy as np
 import pytest
-
-from astropy import units as u
 
 from plasmapy.diagnostics import langmuir
 

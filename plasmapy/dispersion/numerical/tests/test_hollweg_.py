@@ -1,9 +1,8 @@
 """Tests for the hollweg dispersion solution."""
 
+import astropy.units as u
 import numpy as np
 import pytest
-
-from astropy import units as u
 
 from plasmapy.dispersion.numerical.hollweg_ import hollweg
 from plasmapy.formulary import speeds
