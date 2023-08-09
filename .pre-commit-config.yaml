@@ -29,7 +29,7 @@ repos:
     # be put in quotes. However, the pretty-format-yaml hook will
     # remove the quotes which will break that action, so we should not
     # run this hook on `labeler.yml`.
-    exclude: .github/labeler.yml|.pre-commit-search-and-replace.yaml|docs/common_links.rst
+    exclude: .github/labeler.yml|.pre-commit-search-and-replace.yaml
 
 - repo: https://github.com/pre-commit/mirrors-csslint
   rev: v1.0.5
@@ -46,7 +46,7 @@ repos:
   rev: v1.0.5
   hooks:
   - id: search-and-replace
-    exclude: changelog/.*|docs/changelog/.*|.sourcery.yaml
+    exclude: changelog/.*|docs/changelog/.*|.sourcery.yaml|docs/common_links.rst
 
 - repo: https://github.com/pre-commit/pygrep-hooks
   rev: v1.10.0
