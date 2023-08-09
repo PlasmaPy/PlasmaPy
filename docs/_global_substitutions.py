@@ -1,4 +1,16 @@
-"""Global substitutions that can be used throughout PlasmaPy's documentation."""
+"""
+Global substitutions that can be used throughout PlasmaPy's
+reStructuredText documentation, using the sphinxcontrib-globalsubs
+extension to Sphinx.
+
+The substitutions are defined in ``global_substitutions``, which is then
+imported in :file:`docs/conf.py` so that sphinxcontrib-globalsubs can
+use it to define substitutions.
+
+The key to the dictionary is the name of the substitution. For example,
+if the key is ``"particle-like"``, then it can be used as
+``|particle-like|`` throughout the documentation.
+"""
 
 plasmapy_subs = {
     "Layer": "`~plasmapy.diagnostics.charged_particle_radiography.detector_stacks.Layer`",
@@ -91,6 +103,10 @@ numpy_subs = {
 astropy_subs = {
     "Quantity": ":class:`~astropy.units.Quantity`",
 }
+
+# Because sphinxcontrib-globalsubs does not work for regular reStructuredText
+# links, we first define the links and then process them afterwards into
+# the form of a reStructuredText external link.
 
 links = {
     "Astropy": "https://docs.astropy.org",
