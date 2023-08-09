@@ -1,2 +1,2 @@
-Changed ``plasmapy.dispersion.dispersionfunction.py``
-to `plasmapy.dispersion.dispersion_functions.py`.
+Renamed the ``plasmapy.dispersion.dispersionfunction`` module
+to `plasmapy.dispersion.dispersion_functions`.
