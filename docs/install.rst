@@ -215,6 +215,7 @@ package should also be installed.
 .. _clone a repository using SSH: https://docs.github.com/en/get-started/getting-started-with-git/about-remote-repositories#cloning-with-ssh-urls
 .. _Conda: https://docs.conda.io
 .. _conda-forge: https://conda-forge.org
+.. _create an issue: https://github.com/PlasmaPy/PlasmaPy/issues/new/choose
 .. _download Python: https://www.python.org/downloads
 .. _from PyPI: https://pypi.org/project/plasmapy
 .. _from Zenodo: https://doi.org/10.5281/zenodo.1436011
