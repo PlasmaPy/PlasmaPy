@@ -967,6 +967,7 @@ extensions:
 * |sphinx-issues|_ to add roles for linking to GitHub (``:commit:``,
   ``:issue:``, ``:pr:``, and ``:user:``).
 * |sphinx-reredirects|_ to enable hyperlink redirects.
+* |sphinx-toolbox|_ for handy tools for Sphinx_ documentation
 * `plasmapy_sphinx` for customizations created for use in PlasmaPy and
   affiliated packages. Note that `plasmapy_sphinx` is expected to be
   broken out into its own package in the future.
@@ -1486,3 +1487,6 @@ version of the package that can be revisited later.
 
 .. _`sphinx-tabs`: https://sphinx-tabs.readthedocs.io/
 .. |sphinx-tabs| replace:: `sphinx-tabs`
+
+.. _`sphinx-toolbox`: https://sphinx-toolbox.readthedocs.io
+.. |sphinx-toolbox| replace:: `sphinx-toolbox`
