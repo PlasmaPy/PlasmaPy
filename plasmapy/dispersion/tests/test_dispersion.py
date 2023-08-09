@@ -2,10 +2,10 @@
 
 # This file contains experimental usage of unicode characters.
 
+import astropy.units as u
 import numpy as np
 import pytest
 
-from astropy import units as u
 from hypothesis import given
 from hypothesis.strategies import complex_numbers
 from numpy import pi as π

@@ -5,10 +5,10 @@ a single ionization level.
 
 __all__ = ["IonicLevel", "IonizationState"]
 
+import astropy.units as u
 import numpy as np
 import warnings
 
-from astropy import units as u
 from numbers import Integral, Real
 from typing import NoReturn, Optional, Union
 
@@ -466,12 +466,10 @@ class IonizationState:
 
         try:
             if np.min(fractions) < 0:
-                raise ParticleError(  # noqa: TC301
-                    "Cannot have negative ionic fractions."
-                )
+                raise ParticleError("Cannot have negative ionic fractions.")
 
             if len(fractions) != self.atomic_number + 1:
-                raise ParticleError(  # noqa: TC301
+                raise ParticleError(
                     "The length of ionic_fractions must be "
                     f"{self.atomic_number + 1}."
                 )

@@ -46,7 +46,7 @@ def critical_density(omega: u.rad / u.s) -> u.m**-3:
 
     Examples
     --------
-    >>> from astropy import units as u
+    >>> import astropy.units as u
     >>> critical_density(5e15 * u.rad/u.s)
     <Quantity 7.85519457e+27 1 / m3>
 

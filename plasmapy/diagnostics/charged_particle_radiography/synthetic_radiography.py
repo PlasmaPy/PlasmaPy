@@ -1137,7 +1137,7 @@ class Tracker:
             disable=not self.verbose,
             desc="Particles on grid",
             unit="particles",
-            bar_format="{l_bar}{bar}{n:.1e}/{total:.1e} {unit}",  # noqa: FS003
+            bar_format="{l_bar}{bar}{n:.1e}/{total:.1e} {unit}",
             file=sys.stdout,
         )
 

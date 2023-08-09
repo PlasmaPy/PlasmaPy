@@ -22,7 +22,7 @@ __all__ = [
 # This is the same check as the one at the top of setup.py
 import sys
 
-if sys.version_info < (3, 9):  # coverage: ignore # noqa: UP036
+if sys.version_info < (3, 9):  # coverage: ignore
     raise ImportError(
         f"This version of PlasmaPy does not support Python {sys.version.split()[0]}."
         "Please upgrade to a newer version."
