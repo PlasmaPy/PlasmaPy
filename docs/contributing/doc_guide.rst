@@ -63,19 +63,19 @@ Markup Languages
 ReStructuredText
 ----------------
 
-PlasmaPy's documentation is written using the |reStructuredText (reST)|
-markup language. |reST| is human readable when viewed within a source
-code file or when printed out using `help`. |reST| also contains markup
+PlasmaPy's documentation is written using the |reStructuredText|
+markup language. |reStructuredText| is human readable when viewed within a source
+code file or when printed out using `help`. |reStructuredText| also contains markup
 that allows the text to be transformed into |PlasmaPy's documentation|.
-|reST| files use the file extension :file:`.rst`. Documentation contained
+|reStructuredText| files use the file extension :file:`.rst`. Documentation contained
 within :file:`.py` files are in the form of :wikipedia:`docstrings
-<docstring>`, which are written in |reST|.
+<docstring>`, which are written in |reStructuredText|.
 
 ReStructuredText Examples
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Here we show some examples of commonly used |reST| syntax in PlasmaPy.
-Please refer to the documentation for |Sphinx| and |reST| for a list of
+Here we show some examples of commonly used |reStructuredText| syntax in PlasmaPy.
+Please refer to the documentation for |Sphinx| and |reStructuredText| for a list of
 available |roles| and |directives|.
 
 This is an example of including headings for the document title,
@@ -120,7 +120,7 @@ in a terminal.
    The ``:py:`` role can be used for inline code highlighting:
    :py:`import astropy.units as u`.
 
-This |reST| block renders as:
+This |reStructuredText| block renders as:
 
    Here `plasmapy.particles` provides a linked reference to the
    module's documentation.
@@ -150,7 +150,7 @@ the :rst:dir:`code-block` :term:`directive`.
          >>> print(6 * 9)
          54
 
-This |reST| block renders as:
+This |reStructuredText| block renders as:
 
    .. code-block:: python
 
@@ -174,7 +174,7 @@ Here are some examples for linking to websites.
    .. _`Write the Docs`: https://www.writethedocs.org
    .. _guide: https://www.writethedocs.org/
 
-This |reST| block renders as:
+This |reStructuredText| block renders as:
 
    `PlasmaPy Enhancement Proposals <https://github.com/PlasmaPy/PlasmaPy-PLEPs>`_
    are used to propose major changes to PlasmaPy.
@@ -193,7 +193,7 @@ Displayed math may be created using the :rst:dir:`math`
 
       \alpha = \beta + \gamma
 
-This |reST| block renders as:
+This |reStructuredText| block renders as:
 
    .. math::
 
@@ -206,7 +206,7 @@ Math can be in-line using the :rst:role:`math` |role|.
    An example of in-line math is :math:`x`. Using Unicode characters
    like :math:`α + β + γ` makes math easier to read in the source code.
 
-This |reST| block renders as:
+This |reStructuredText| block renders as:
 
    An example of in-line math is :math:`x`. Using Unicode characters
    like :math:`α + β + γ` makes math easier to read in the source code.
@@ -216,7 +216,7 @@ Markdown
 
 A few of PlasmaPy's files are written using Markdown_, such as README
 files and licenses from other packages. Markdown_ is simpler but more
-limited than |reST|. Markdown_ files use the file extension :file:`.md`.
+limited than |reStructuredText|. Markdown_ files use the file extension :file:`.md`.
 Posts on GitHub are written in `GitHub Flavored Markdown`_. The
 following code block contains a few common examples of Markdown_
 formatting.
@@ -506,7 +506,8 @@ documentation for PlasmaPy and affiliated packages.
 
   * Represent names and acronyms for a software package or language as
     they are represented in the documentation for each project. Common
-    examples include "Python", "Astropy", "NumPy", and "reST".
+    examples include "Python", "Astropy", and "NumPy", and
+    "reStructuredTest".
 
 * When referencing PlasmaPy functionality, write the full namespace path
   to where the functionality is defined, not where it is conveniently
@@ -529,7 +530,7 @@ documentation for PlasmaPy and affiliated packages.
      Studies typically show that line lengths of 50–75 characters are
      optimal for readability.
 
-* Use indentations of 3 spaces for |reST| blocks.
+* Use indentations of 3 spaces for |reStructuredText| blocks.
 
 * Store images within the |docs/_static/|_ directory, except for images
   that are generated during the |Sphinx| build. The |docs/_static/|_
@@ -572,7 +573,7 @@ documentation for PlasmaPy and affiliated packages.
 
         3 × 10^{10}\ \text{cm/s}
 
-  This |reST| block renders as:
+  This |reStructuredText| block renders as:
 
      The speed of light is approximately :math:`3 × 10^8` m/s or
 
@@ -599,7 +600,7 @@ documentation for PlasmaPy and affiliated packages.
 
      An alpha particle may be represented as :sup:`4`\ He\ :sup:`1+`.
 
-  This |reST| block renders as:
+  This |reStructuredText| block renders as:
 
      The symbol for helium is He.
 
@@ -652,7 +653,7 @@ Docstring guidelines
   a verb and should end with a period.
 
 * Keep the docstring indented at the same level as the ``r"""`` or
-  ``"""`` that begins the docstring, except for |reST| constructs like
+  ``"""`` that begins the docstring, except for |reStructuredText| constructs like
   lists, math, and code blocks. Use an indentation of four spaces more
   than the declaration of the object.
 
@@ -920,7 +921,7 @@ Sphinx
 ======
 
 |Sphinx| is the software used to generate |PlasmaPy's documentation|
-from |reST| files and |Python| docstrings. It was originally created to
+from |reStructuredText| files and |Python| docstrings. It was originally created to
 write Python's documentation and has become the de facto software for
 documenting |Python| packages. Almost all |Python| open-source packages
 utilize |Sphinx| to generate their documentation.
@@ -1014,7 +1015,7 @@ Substitutions
 -------------
 
 Some functions and classes are referred to repeatedly throughout the
-documentation. |reST| allows us to `define substitutions`_
+documentation. |reStructuredText| allows us to `define substitutions`_
 
 .. code-block:: rst
 
@@ -1121,7 +1122,7 @@ more details, please refer to `Sphinx's templating page`_.
 .. danger::
 
    There are certain tasks that one would expect to be straightforward
-   with |reST| and |Sphinx| but are only possible by doing a horrible
+   with |reStructuredText| and |Sphinx| but are only possible by doing a horrible
    workaround that can take hours to figure out. This has given rise to
    the saying:
 
@@ -1275,8 +1276,8 @@ typo and changing it to ```plasmapy.particles```.
 
    For PlasmaPy objects, use the full namespace of the object (i.e.,
    use ```plasmapy.particles.particle_class.Particle``` instead of
-   ```plasmapy.particles.Particle```) or a :ref:`reST substitution
-   <substitutions>` like ``|Particle|`` as defined in
+   ```plasmapy.particles.Particle```) or a :ref:`reStructuredText
+   substitution <substitutions>` like ``|Particle|`` as defined in
    |docs/_global_substitutions.py|_.
 
 This warning may occur when a new module or subpackage is created

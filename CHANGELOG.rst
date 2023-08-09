@@ -512,13 +512,13 @@ Improved Documentation
   should be treated in functions that accept |array_like| or |Quantity|
   inputs. (:pr:`1673`)
 - Added an admonition to the |changelog guide| that describes how to
-  change |reST| links for removed code objects into inline literals in old
+  change |reStructuredText| links for removed code objects into inline literals in old
   changelog entries. (:pr:`1674`)
 - Split the patent clause from the license file (:file:`LICENSE.md`) into
   its own file (:file:`PATENT.md`). (:pr:`1686`)
 - Added explanatory text to the "Notes" sections in the docstrings for
   functions within `~plasmapy.formulary.magnetostatics`. (:pr:`1695`)
-- Enabled ``:py:`` as a |reST| role for inline code formatting in the
+- Enabled ``:py:`` as a |reStructuredText| role for inline code formatting in the
   documentation. (:pr:`1698`)
 - Increased the minimum version of |Sphinx| to 5.0.0. (:pr:`1698`)
 - Updated docstrings and annotations for |ParticleList| and its methods.
@@ -894,7 +894,7 @@ Improved Documentation
 - Defined the :confval:`nitpick_ignore_regex` configuration variable in
   :file:`docs/conf.py` to specify regular expressions for objects to
   ignore in nitpicky documentation builds. (`#1509 <https://github.com/plasmapy/plasmapy/pull/1509>`__)
-- Made numerous minor updates and fixes to |reST| links in docstrings and
+- Made numerous minor updates and fixes to |reStructuredText| links in docstrings and
   the narrative documentation. (`#1509 <https://github.com/plasmapy/plasmapy/pull/1509>`__)
 - Described the GitHub Action for `codespell <https://github.com/codespell-project/codespell>`__
   in the |testing guide|. (`#1530 <https://github.com/plasmapy/plasmapy/pull/1530>`__)
@@ -913,7 +913,7 @@ Improved Documentation
   with the Magnetospheric Multiscale Mission (MMS). (`#1568 <https://github.com/plasmapy/plasmapy/pull/1568>`__)
 - Added an example notebook that discusses Coulomb collisions. (`#1569 <https://github.com/plasmapy/plasmapy/pull/1569>`__)
 - Increased the strictness of the ``build_docs`` |tox| environment so that
-  broken |reST| links now emit warnings which are then treated as errors,
+  broken |reStructuredText| links now emit warnings which are then treated as errors,
   fixed the new errors, removed the ``build_docs_nitpicky`` |tox|
   environment, and updated the |documentation guide| accordingly. (`#1587 <https://github.com/plasmapy/plasmapy/pull/1587>`__)
 - Renamed the :file:`magnetic_statics.ipynb` notebook to
@@ -943,7 +943,7 @@ Trivial/Internal Changes
 - Moved all tests associated with calculating the thermal speed from test
   file :file:`plasmapy/formulary/tests/test_parameters.py` to
   :file:`plasmapy/formulary/tests/test_thermal_speed.py`. (`#1145 <https://github.com/plasmapy/plasmapy/pull/1145>`__)
-- Applied |reST| substitutions for `plasmapy.particles` and
+- Applied |reStructuredText| substitutions for `plasmapy.particles` and
   |ParticleTracker| in the narrative documentation. (`#1158 <https://github.com/plasmapy/plasmapy/pull/1158>`__)
 - Added `csslint <https://github.com/CSSLint/csslint>`_ to the
   |pre-commit| configuration to check the formatting and style of CSS_
@@ -1221,7 +1221,7 @@ Improved Documentation
 ----------------------
 
 - Improved consistency of documentation style and made
-  |reST| fixes in several subpackages. (`#1073 <https://github.com/plasmapy/plasmapy/pull/1073>`__)
+  |reStructuredText| fixes in several subpackages. (`#1073 <https://github.com/plasmapy/plasmapy/pull/1073>`__)
 - Added a pre-release section to the release guide.
   This section now includes steps for having a feature freeze about a week before the release,
   followed by a code freeze about two days before the release. (`#1081 <https://github.com/plasmapy/plasmapy/pull/1081>`__)
@@ -1262,13 +1262,13 @@ Improved Documentation
   documentation. (`#1205 <https://github.com/plasmapy/plasmapy/pull/1205>`__)
 - Updated the documentation guide to include updates to |tox| environments
   for building the documentation. (`#1206 <https://github.com/plasmapy/plasmapy/pull/1206>`__)
-- Fixed numerous broken |reST| links in prior changelogs. (`#1207 <https://github.com/plasmapy/plasmapy/pull/1207>`__)
+- Fixed numerous broken |reStructuredText| links in prior changelogs. (`#1207 <https://github.com/plasmapy/plasmapy/pull/1207>`__)
 - Improve the docstring for `plasmapy.online_help`. (`#1213 <https://github.com/plasmapy/plasmapy/pull/1213>`__)
 - Renamed "Development Guide" to "Contributor Guide", and temporarily removed
   the incomplete :file:`docs/development/workflow.rst` from the ``toctree`` of the
   Contributor Guide. (`#1217 <https://github.com/plasmapy/plasmapy/pull/1217>`__)
 - Fixed a typo in the docstring of ``plasmapy.formulary.parameters.Alfven_speed``. (`#1218 <https://github.com/plasmapy/plasmapy/pull/1218>`__)
-- Fixed broken |reST| links in docstrings for aliases in `plasmapy.formulary`. (`#1238 <https://github.com/plasmapy/plasmapy/pull/1238>`__)
+- Fixed broken |reStructuredText| links in docstrings for aliases in `plasmapy.formulary`. (`#1238 <https://github.com/plasmapy/plasmapy/pull/1238>`__)
 - Fixed multiple broken and redirected links. (`#1257 <https://github.com/plasmapy/plasmapy/pull/1257>`__)
 - Updated the documentation guide to include a description on how to
   add and cite references to PlasmaPy's global bibliography BibTeX file,
@@ -1304,7 +1304,7 @@ Trivial/Internal Changes
 - Reconfigured ``flake8`` settings in CI. (`#1062 <https://github.com/plasmapy/plasmapy/pull/1062>`__)
 - Added |pydocstyle| to continuous integration (CI), to hopefully make
   writing prettier docstrings easier. (`#1062 <https://github.com/plasmapy/plasmapy/pull/1062>`__)
-- Added ``flake8-rst-docstrings`` to catch |reST| formatting
+- Added ``flake8-rst-docstrings`` to catch |reStructuredText| formatting
   errors in documentation in the linter stage of
   CI. (`#1062 <https://github.com/plasmapy/plasmapy/pull/1062>`__)
 - Added `pytest-regressions
@@ -1333,7 +1333,7 @@ Trivial/Internal Changes
 - Added ion velocity input to the :file:`thomson.ipynb` diagnostics notebook. (`#1171 <https://github.com/plasmapy/plasmapy/pull/1171>`__)
 - Added |tox| and removed `pytest` as extra requirements. (`#1195 <https://github.com/plasmapy/plasmapy/pull/1195>`__)
 - Updated |tox| test environments for building the documentation. Added the
-  ``build_docs_nitpicky`` environment to check for broken |reST| links. (`#1206 <https://github.com/plasmapy/plasmapy/pull/1206>`__)
+  ``build_docs_nitpicky`` environment to check for broken |reStructuredText| links. (`#1206 <https://github.com/plasmapy/plasmapy/pull/1206>`__)
 - Added the ``--keep-going`` flag to the ``build_docs*`` |tox| environments with
   the ``-W`` option so that test failures will not stop after the first warning
   (that is treated as an error). (`#1206 <https://github.com/plasmapy/plasmapy/pull/1206>`__)
@@ -1757,7 +1757,7 @@ Improved Documentation
 - Fixed a few documentation formatting errors. (`#827 <https://github.com/plasmapy/plasmapy/pull/827>`__)
 - Add notes on the PlasmaPy benchmarks repository to documentation. (`#841 <https://github.com/plasmapy/plasmapy/pull/841>`__)
 - Improve readability of the `plasmapy.formulary` page by replacing the `toctree`
-  list with a cleaner reST table. (`#867 <https://github.com/plasmapy/plasmapy/pull/867>`__)
+  list with a cleaner reStructuredText table. (`#867 <https://github.com/plasmapy/plasmapy/pull/867>`__)
 
 
 Trivial/Internal Changes

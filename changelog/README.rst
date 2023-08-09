@@ -143,7 +143,7 @@ Changelog guidelines
 
 .. tip::
 
-   When removing or moving an object, |reST| links that follow the
+   When removing or moving an object, |reStructuredText| links that follow the
    original namespace will break, causing the documentation build to
    fail.
 

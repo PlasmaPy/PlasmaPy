@@ -27,8 +27,8 @@ proceeding to the :ref:`code contribution workflow <workflow>`. The
 contributions are made to |PlasmaPy's GitHub repository|.
 
 New functions and classes added to PlasmaPy must have documentation and
-tests. The |documentation guide| contains sections on `reStructuredText
-(reST)`_ and :ref:`writing documentation <writing-documentation>`. The
+tests. The |documentation guide| contains sections on |reStructuredText|
+and :ref:`writing documentation <writing-documentation>`. The
 |testing guide| has sections on :ref:`writing tests <writing-tests>`
 and :ref:`testing best practices <testing-best-practices>`. Unless it is
 minor, it will also be necessary to :ref:`add a changelog entry

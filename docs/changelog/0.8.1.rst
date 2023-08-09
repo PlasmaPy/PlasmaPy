@@ -437,7 +437,7 @@ Improved Documentation
   in :file:`docs/conf.py` to specify regular expressions for objects
   to ignore in nitpicky documentation builds. (`#1509
   <https://github.com/plasmapy/plasmapy/pull/1509>`__)
-- Made numerous minor updates and fixes to |reST| links in docstrings
+- Made numerous minor updates and fixes to |reStructuredText| links in docstrings
   and the narrative documentation. (`#1509
   <https://github.com/plasmapy/plasmapy/pull/1509>`__)
 - Described the GitHub Action for `codespell
@@ -465,7 +465,7 @@ Improved Documentation
 - Added an example notebook that discusses Coulomb collisions. (`#1569
   <https://github.com/plasmapy/plasmapy/pull/1569>`__)
 - Increased the strictness of the ``build_docs`` |tox| environment so
-  that broken |reST| links now emit warnings which are then treated as
+  that broken |reStructuredText| links now emit warnings which are then treated as
   errors, fixed the new errors, removed the ``build_docs_nitpicky``
   |tox| environment, and updated the |documentation guide|
   accordingly. (`#1587
@@ -508,7 +508,7 @@ Trivial/Internal Changes
   test file :file:`plasmapy/formulary/tests/test_parameters.py` to
   :file:`plasmapy/formulary/tests/test_thermal_speed.py`. (`#1145
   <https://github.com/plasmapy/plasmapy/pull/1145>`__)
-- Applied |reST| substitutions for `plasmapy.particles` and
+- Applied |reStructuredText| substitutions for `plasmapy.particles` and
   |ParticleTracker| in the narrative documentation. (`#1158
   <https://github.com/plasmapy/plasmapy/pull/1158>`__)
 - Added `csslint <https://github.com/CSSLint/csslint>`_ to the

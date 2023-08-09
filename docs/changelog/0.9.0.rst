@@ -166,13 +166,13 @@ Improved Documentation
   should be treated in functions that accept |array_like| or |Quantity|
   inputs. (:pr:`1673`)
 - Added an admonition to the |changelog guide| that describes how to
-  change |reST| links for removed code objects into inline literals in old
+  change |reStructuredText| links for removed code objects into inline literals in old
   changelog entries. (:pr:`1674`)
 - Split the patent clause from the license file (:file:`LICENSE.md`) into
   its own file (:file:`PATENT.md`). (:pr:`1686`)
 - Added explanatory text to the "Notes" sections in the docstrings for
   functions within `~plasmapy.formulary.magnetostatics`. (:pr:`1695`)
-- Enabled ``:py:`` as a |reST| role for inline code formatting in the
+- Enabled ``:py:`` as a |reStructuredText| role for inline code formatting in the
   documentation. (:pr:`1698`)
 - Increased the minimum version of |Sphinx| to 5.0.0. (:pr:`1698`)
 - Updated docstrings and annotations for |ParticleList| and its methods.
