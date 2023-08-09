@@ -1,5 +1,5 @@
-- search: Plasmapy
-  replacement: /PlasmaPy|PlasmaPY/PlasmPy|Plasmpy|Palsmapy|PlasmaPY/
+- search: /Plasmapy|PlasmaPY/PlasmPy|Plasmpy|Palsmapy|PlasmaPY/
+  replacement: PlasmaPy
   description: Fix common misspellings and use consistent capitalization for PlasmaPy
 
 - search: /plasmpy|plaspmy|plasapy|palsmapy/
