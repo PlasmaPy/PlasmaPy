@@ -236,11 +236,11 @@ Post-release
 Advertise the release
 =====================
 
-* Write a post on the release on `PlasmaPy's website`_.
+* Write a post on the release on |PlasmaPy's website|.
 
 * Notify plasma physics communities about the release on:
 
-  * `PlasmaPy's Matrix chat room`_
+  * |PlasmaPy's Matrix chat room|
   * PlasmaPy newsletter
   * Facebook_, LinkedIn_, and Twitter_
   * APS DPP Engage forum (requires login)

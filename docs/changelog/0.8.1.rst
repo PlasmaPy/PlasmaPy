@@ -137,7 +137,7 @@ Features
   <https://github.com/plasmapy/plasmapy/pull/1145>`__)
 - Introduced the concept of :term:`lite-functions`, by creating the
   lite-function ``plasmapy.formulary.parameters.thermal_speed_lite``,
-  which is a simplified and Numba_ jitted version of
+  which is a simplified and |Numba| jitted version of
   ``plasmapy.formulary.parameters.thermal_speed``.  These functions
   are intended for computational use and as such have no validation of
   input or output values.
@@ -512,7 +512,7 @@ Trivial/Internal Changes
   |ParticleTracker| in the narrative documentation. (`#1158
   <https://github.com/plasmapy/plasmapy/pull/1158>`__)
 - Added `csslint <https://github.com/CSSLint/csslint>`_ to the
-  pre-commit_ configuration to check the formatting and style of CSS
+  |pre-commit| configuration to check the formatting and style of CSS
   files. (`#1287 <https://github.com/plasmapy/plasmapy/pull/1287>`__)
 - Added Python 3.10 to the |GitHub Actions| test suite. (`#1292
   <https://github.com/plasmapy/plasmapy/pull/1292>`__)
@@ -610,7 +610,7 @@ Trivial/Internal Changes
   <https://github.com/plasmapy/plasmapy/pull/1482>`__)
 - Added ``dlint``, ``flake8``, ``flake8-absolute-import``,
   ``flake8-rst-docstrings``, ``flake8-use-fstring``, |pydocstyle|, and
-  ``pygments`` into the ``tests`` requirements category and pre-commit_
+  ``pygments`` into the ``tests`` requirements category and |pre-commit|
   into the ``extras`` requirements category. These dependencies are
   not required for basic installation with |pip|. (`#1482
   <https://github.com/plasmapy/plasmapy/pull/1482>`__)
@@ -624,7 +624,7 @@ Trivial/Internal Changes
 - Used `contextlib.suppress` to suppress exceptions, instead of
   ``try`` & ``except`` blocks. (`#1494
   <https://github.com/plasmapy/plasmapy/pull/1494>`__)
-- Added a pre-commit_ hook that transforms relative imports to
+- Added a |pre-commit| hook that transforms relative imports to
   absolute imports, except in :file:`docs/plasmapy_sphinx`. (`#1499
   <https://github.com/plasmapy/plasmapy/pull/1499>`__)
 - Added a test that ``import plasmapy`` does not raise an
@@ -678,7 +678,7 @@ Trivial/Internal Changes
   ``z_mean`` issued a warning when a real number was provided instead
   of a dimensionless |Quantity|. (`#1570
   <https://github.com/plasmapy/plasmapy/pull/1570>`__)
-- Updated the version of ``black`` to 22.3.0 in PlasmaPy's pre-commit_
+- Updated the version of ``black`` to 22.3.0 in PlasmaPy's |pre-commit|
   configuration. This update included a formatting change where spaces
   around power operators were removed for sufficiently simple operands
   (e.g., ``a ** b`` → ``a**b``). (`#1582

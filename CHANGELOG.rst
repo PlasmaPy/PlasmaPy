@@ -436,7 +436,7 @@ Features
   fit corresponding to the ion-saturation current. (:pr:`1469`)
 - Created `plasmapy.utils.data` to contain functionality for downloading data
   from
-  `PlasmaPy's data repository`_. This module contains a new prototype function
+  |PlasmaPy's data repository|. This module contains a new prototype function
   `plasmapy.utils.data.downloader.get_file` which downloads a file from the
   repository. (:pr:`1486`)
 - Added the |RelativisticBody| class to facilitate calculation of the
@@ -681,7 +681,7 @@ Features
   functions to a parent function. (`#1145 <https://github.com/plasmapy/plasmapy/pull/1145>`__)
 - Introduced the concept of :term:`lite-functions`, by creating the lite-function
   ``plasmapy.formulary.parameters.thermal_speed_lite``, which is a simplified
-  and Numba_ jitted version of ``plasmapy.formulary.parameters.thermal_speed``.
+  and |Numba| jitted version of ``plasmapy.formulary.parameters.thermal_speed``.
   These functions are intended for computational use and as such have no
   validation of input or output values.
   ``plasmapy.formulary.parameters.thermal_speed_lite`` is also bound to
@@ -946,7 +946,7 @@ Trivial/Internal Changes
 - Applied |reST| substitutions for `plasmapy.particles` and
   |ParticleTracker| in the narrative documentation. (`#1158 <https://github.com/plasmapy/plasmapy/pull/1158>`__)
 - Added `csslint <https://github.com/CSSLint/csslint>`_ to the
-  pre-commit_ configuration to check the formatting and style of CSS_
+  |pre-commit| configuration to check the formatting and style of CSS_
   files. (`#1287 <https://github.com/plasmapy/plasmapy/pull/1287>`__)
 - Added Python 3.10 to the `GitHub Actions`_ test suite. (`#1292 <https://github.com/plasmapy/plasmapy/pull/1292>`__)
 - Parametrized tests for ``plasmapy.formulary.parameters.ion_sound_speed``. (`#1313 <https://github.com/plasmapy/plasmapy/pull/1313>`__)
@@ -1017,7 +1017,7 @@ Trivial/Internal Changes
 - Added ``dlint``, ``flake8``, ``flake8-absolute-import``,
   ``flake8-rst-docstrings``, ``flake8-use-fstring``,
   |pydocstyle|, and ``pygments`` into the ``tests`` requirements category and
-  pre-commit_ into the ``extras`` requirements category. These
+  |pre-commit| into the ``extras`` requirements category. These
   dependencies are not required for basic installation with |pip|. (`#1482 <https://github.com/plasmapy/plasmapy/pull/1482>`__)
 - Updated :file:`docs/environment.yml` to use |pip| to install all
   requirements specified by :file:`requirements.txt` when creating a
@@ -1026,7 +1026,7 @@ Trivial/Internal Changes
   to fix typos. (`#1493 <https://github.com/plasmapy/plasmapy/pull/1493>`__)
 - Used `contextlib.suppress` to suppress exceptions, instead of ``try`` &
   ``except`` blocks. (`#1494 <https://github.com/plasmapy/plasmapy/pull/1494>`__)
-- Added a pre-commit_ hook that transforms relative imports to absolute
+- Added a |pre-commit| hook that transforms relative imports to absolute
   imports, except in :file:`docs/plasmapy_sphinx`. (`#1499 <https://github.com/plasmapy/plasmapy/pull/1499>`__)
 - Added a test that ``import plasmapy`` does not raise an exception. (`#1501 <https://github.com/plasmapy/plasmapy/pull/1501>`__)
 - Added a GitHub Action for `codespell
@@ -1060,7 +1060,7 @@ Trivial/Internal Changes
   `~plasmapy.utils.decorators.validators.validate_quantities`. Previously,
   ``z_mean`` issued a warning when a real number was provided instead of a
   dimensionless |Quantity|. (`#1570 <https://github.com/plasmapy/plasmapy/pull/1570>`__)
-- Updated the version of black to 22.3.0 in PlasmaPy's pre-commit_
+- Updated the version of black to 22.3.0 in PlasmaPy's |pre-commit|
   configuration. This update included a formatting change where spaces
   around power operators were removed for sufficiently simple operands
   (e.g., ``a ** b`` → ``a**b``). (`#1582 <https://github.com/plasmapy/plasmapy/pull/1582>`__)

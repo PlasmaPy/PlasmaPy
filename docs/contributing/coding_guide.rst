@@ -30,7 +30,7 @@ a community meeting.
 
 PlasmaPy generally follows the :pep:`8` style guide for Python code,
 using auto-formatters such as |black| and |isort| that are executed using
-pre-commit_.
+|pre-commit|.
 
 Coding guidelines
 =================
@@ -483,7 +483,7 @@ Requirements
 
 * Minor versions of Python are generally released in October of each
   year. However, it may take a few months before packages like |NumPy|
-  and Numba_ become compatible with the newest minor version of |Python|.
+  and |Numba| become compatible with the newest minor version of |Python|.
 
 Special function categories
 ===========================

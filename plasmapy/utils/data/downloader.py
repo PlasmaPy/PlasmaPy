@@ -1,6 +1,6 @@
 """
 Contains functionality for downloading files from a URL. Intended for
-downloading files from `PlasmaPy's data repository`_.
+downloading files from |PlasmaPy's data repository|.
 
 """
 
@@ -32,7 +32,7 @@ def get_file(basename, base_url=_BASE_URL, directory=None):
 
     base_url : str, optional
         The base URL of the file to be downloaded. Defaults to the root
-        directory of `PlasmaPy's data repository`_.
+        directory of |PlasmaPy's data repository|.
 
     directory : str, optional
         The full path to the desired download location. Defaults to the

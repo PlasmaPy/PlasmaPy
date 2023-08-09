@@ -311,7 +311,7 @@ when you :py:`import plasmapy`.
 Installing pre-commit
 =====================
 
-PlasmaPy uses pre-commit_ to automate code quality checks and perform
+PlasmaPy uses |pre-commit| to automate code quality checks and perform
 automated fixes. Because pre-commit checks are performed on GitHub, it
 is optional to set up pre-commit locally.
 

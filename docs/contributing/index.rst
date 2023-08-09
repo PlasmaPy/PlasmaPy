@@ -54,7 +54,7 @@ contribute. Some of the many possibilities are to:
 * Help with project management.
 * `Request new features`_.
 * `Report bugs`_. 🐞
-* Improve `PlasmaPy's website <PlasmaPy>`_.
+* Improve |PlasmaPy's website|.
 * Help organize events such as |Plasma Hack Week|. 📆
 * Provide feedback on how existing functionality could be improved.
 * Help update PlasmaPy's development roadmap. 🛣️

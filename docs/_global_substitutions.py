@@ -85,6 +85,7 @@ numpy_subs = {
     "nan": "`~numpy.nan`",
     "ndarray": ":class:`~numpy.ndarray`",
     "array_like": ":term:`numpy:array_like`",
+    "DTypeLike": "`~numpy.typing.DTypeLike`",
 }
 
 astropy_subs = {

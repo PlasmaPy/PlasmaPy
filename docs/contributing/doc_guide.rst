@@ -465,7 +465,7 @@ at |docs/glossary.rst|_. Here is an example of a term defined within the
 Using the :rst:role:`term` |role| allows us to link to the definitions
 of terms. Using ``:term:`kwargs``` will link to :term:`kwargs` in the
 :ref:`glossary`. We can also refer to terms defined in the projects
-connected via intersphinx_ if they have not already been defined in
+connected via |intersphinx|if they have not already been defined in
 PlasmaPy's :ref:`glossary`. Using ``:term:`role``` will link to |role|
 and ``:term:`directive``` will link to |directive| in `Sphinx's
 glossary`_.
@@ -994,8 +994,8 @@ dictionary contained in |docs/conf.py|_. PlasmaPy has already include
 several packages like |Python|, |NumPy|, |SciPy|, |Astropy|, |Sphinx|, etc.
 
 New source packages may be added, but please verify that references to a
-function or class in that package show up correctly in `PlasmaPy's
-documentation`_. The name of the package does not always link as
+function or class in that package show up correctly in
+|PlasmaPy's documentation|. The name of the package does not always link as
 expected.
 
 .. hint::
