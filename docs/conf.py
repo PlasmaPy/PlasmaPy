@@ -198,11 +198,10 @@ release = pv.public
 version = ".".join(release.split(".")[:2])  # short X.Y version
 revision = pv.local[1:] if pv.local is not None else ""
 
-# This is added to the end of RST files — a good place to put substitutions to
-# be used globally.
-rst_epilog = ""
-with open("common_links.rst") as cl:  # noqa: PTH123
-    rst_epilog += cl.read()
+# This is added to the beginning of RST files, which can be used to
+# define things globally. Use in moderation, since long values of
+# rst_prolog and/or rst_epilog can significantly slow down
+# documentation builds.
 
 rst_prolog = """
 .. role:: py(code)
@@ -222,7 +221,6 @@ exclude_patterns = [
     "notebooks/langmuir_samples",
     "**.ipynb_checkpoints",
     "plasmapy_sphinx",
-    "common_links.rst",
     "**Untitled*",
 ]
 
