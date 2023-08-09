@@ -854,7 +854,7 @@ def reduced_mass(test_particle: ParticleLike, target_particle: ParticleLike) -> 
 
     Examples
     --------
-    >>> from astropy import units as u
+    >>> import astropy.units as u
     >>> reduced_mass('p+', 'e-')
     <Quantity 9.10442...e-31 kg>
     >>> reduced_mass(5.4e-27 * u.kg, 8.6e-27 * u.kg)

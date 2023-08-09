@@ -157,7 +157,7 @@ def kinetic_alfven(  # noqa: C901, PLR0912
     Examples
     --------
     >>> import numpy as np
-    >>> from astropy import units as u
+    >>> import astropy.units as u
     >>> from plasmapy.particles import Particle
     >>> from plasmapy.dispersion.numerical import kinetic_alfven_
     >>> inputs = {

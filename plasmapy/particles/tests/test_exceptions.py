@@ -1,8 +1,7 @@
+import astropy.units as u
 import itertools
 import numpy as np
 import pytest
-
-from astropy import units as u
 
 from plasmapy.particles import IonizationState, IonizationStateCollection
 from plasmapy.particles.atomic import (

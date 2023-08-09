@@ -1,10 +1,10 @@
 """Tests for functions that uses Distribution functions."""
 
+import astropy.units as u
 import numpy as np
 import pytest
 import scipy.integrate as spint
 
-from astropy import units as u
 from astropy.constants import k_B, m_e
 
 from plasmapy.formulary.distribution import (

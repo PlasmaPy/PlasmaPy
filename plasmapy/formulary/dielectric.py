@@ -6,9 +6,9 @@ __all__ = [
 ]
 __lite_funcs__ = ["permittivity_1D_Maxwellian_lite"]
 
+import astropy.units as u
 import numpy as np
 
-from astropy import units as u
 from collections import namedtuple
 
 from plasmapy.dispersion.dispersion_functions import plasma_dispersion_func_deriv_lite
@@ -97,7 +97,7 @@ def cold_plasma_permittivity_SDP(B: u.T, species, n, omega: u.rad / u.s):
 
     Examples
     --------
-    >>> from astropy import units as u
+    >>> import astropy.units as u
     >>> from numpy import pi
     >>> B = 2*u.T
     >>> species = ['e', 'D+']
@@ -185,7 +185,7 @@ def cold_plasma_permittivity_LRP(B: u.T, species, n, omega: u.rad / u.s):
 
     Examples
     --------
-    >>> from astropy import units as u
+    >>> import astropy.units as u
     >>> from numpy import pi
     >>> B = 2*u.T
     >>> species = ['e', 'D+']
@@ -350,7 +350,7 @@ def permittivity_1D_Maxwellian(
 
     Examples
     --------
-    >>> from astropy import units as u
+    >>> import astropy.units as u
     >>> from numpy import pi
     >>> from plasmapy.formulary import thermal_speed
     >>> T = 30 * 11600 * u.K

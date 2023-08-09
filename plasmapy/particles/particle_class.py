@@ -2062,7 +2062,7 @@ class CustomParticle(AbstractPhysicalParticle):
 
     Examples
     --------
-    >>> from astropy import units as u
+    >>> import astropy.units as u
     >>> from plasmapy.particles import CustomParticle
     >>> custom_particle = CustomParticle(
     ...     mass=1.2e-26 * u.kg,
