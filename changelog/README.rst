@@ -123,8 +123,8 @@ Changelog guidelines
      Removed the ``plasmapy.physics`` subpackage. The functionality from
      that subpackage is now in `plasmapy.formulary`.
 
-* Substitutions as defined in :file:`common_links.rst` may be used in
-  changelog entries.
+* Substitutions as defined in :file:`docs/_global_substitutions.py` may
+  be used in changelog entries.
 
 * The pull request number does not need to be included inside the
   changelog entry because it will be added automatically when the

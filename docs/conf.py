@@ -397,7 +397,7 @@ nitpick_ignore_regex = [
     # utils
     (python_role, "docstring of"),
     (python_role, "validation specifications"),
-    # for reST workarounds defined in docs/common_links.rst
+    # for reST workarounds to allow nested inline literals
     (python_role, "git"),
     (python_role, "h5py"),
     (python_role, "IPython.sphinxext.ipython_console_highlighting"),
@@ -414,7 +414,7 @@ nitpick_ignore_regex = [
     (python_role, ".*member.*"),
     (python_role, "OptionSpec"),
     (python_role, "py"),
-    (python_role, "[Ss]phinx.*"),  # also for reST workarounds in docs/common_links.rst
+    (python_role, "[Ss]phinx.*"),  # also for reST workarounds
     # The following patterns still need to be fixed.
     (python_role, "json.decoder.JSONDecoder"),
     (python_role, "plasmapy.analysis.swept_langmuir.find_floating_potential"),

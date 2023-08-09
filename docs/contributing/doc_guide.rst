@@ -1028,8 +1028,7 @@ be used elsewhere in the documentation. For example, we can write
 ``|Quantity|`` instead of ```~astropy.units.Quantity```, and
 ``|Particle|`` instead of
 ```~plasmapy.particles.particle_class.Particle```. For an up-to-date
-list of substitutions, please refer to the |docs/common_links.rst|_
-file.
+list of substitutions, please refer to |docs/_global_substitutions.py|_.
 
 Since substitutions are performed by |Sphinx| when the documentation is
 built, any substitution used in docstrings will not show up when using
@@ -1278,7 +1277,7 @@ typo and changing it to ```plasmapy.particles```.
    use ```plasmapy.particles.particle_class.Particle``` instead of
    ```plasmapy.particles.Particle```) or a :ref:`reST substitution
    <substitutions>` like ``|Particle|`` as defined in
-   |docs/common_links.rst|_.
+   |docs/_global_substitutions.py|_.
 
 This warning may occur when a new module or subpackage is created
 without :ref:`creating a stub file <api-static>` for it.
@@ -1466,11 +1465,11 @@ version of the package that can be revisited later.
 .. _`docs/glossary.rst`: https://github.com/PlasmaPy/PlasmaPy/blob/main/docs/glossary.rst
 .. |docs/glossary.rst| replace:: :file:`docs/glossary.rst`
 
-.. _`docs/common_links.rst`: https://github.com/PlasmaPy/PlasmaPy/blob/main/docs/common_links.rst
-.. |docs/common_links.rst| replace:: :file:`docs/common_links.rst`
-
 .. _`docs/bibliography.bib`: https://github.com/PlasmaPy/PlasmaPy/blob/main/docs/bibliography.bib
 .. |docs/bibliography.bib| replace:: :file:`docs/bibliography.bib`
+
+.. _`docs/_global_substitutions.py`: https://github.com/PlasmaPy/PlasmaPy/blob/main/docs/_global_substitutions.py
+.. |docs/_global_substitutions.py| replace:: :file:`docs/_global_subtitutions.py`
 
 .. _`IPython.sphinxext.ipython_console_highlighting`: https://ipython.readthedocs.io/en/stable/sphinxext.html?highlight=IPython.sphinxext.ipython_console_highlighting#ipython-sphinx-directive-module
 .. |IPython.sphinxext.ipython_console_highlighting| replace:: `IPython.sphinxext.ipython_console_highlighting`
