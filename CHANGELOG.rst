@@ -656,7 +656,7 @@ Deprecations and Removals
   <https://numpy.org/neps/nep-0029-deprecation_policy.html>`__. (`#1465 <https://github.com/plasmapy/plasmapy/pull/1465>`__)
 - The ``[all]`` option when using |pip| to install `plasmapy` is now
   deprecated and may be removed in a future release. Packages that were
-  previously optional (|h5py|, |lmfit|, |mpmath|, and |numba|) are now
+  previously optional (|h5py|, |lmfit|, |mpmath|, and |Numba|) are now
   installed by default when running ``pip install plasmapy``. To install
   all packages required for code development of PlasmaPy, instead run
   ``pip install plasmapy[developer]``. (`#1482 <https://github.com/plasmapy/plasmapy/pull/1482>`__)
@@ -1011,7 +1011,7 @@ Trivial/Internal Changes
 - Bumped the minimum versions of |mpmath| to ``1.2.1``, `numpy` to
   ``1.19.0``, `pandas` to ``1.0.0``, `pytest` to ``5.4.0``, `scipy` to
   ``1.5.0``, and |xarray| to ``0.15.0``. (`#1482 <https://github.com/plasmapy/plasmapy/pull/1482>`__)
-- Moved |h5py|, |lmfit|, |mpmath|, and |numba| out of the ``extras``
+- Moved |h5py|, |lmfit|, |mpmath|, and |Numba| out of the ``extras``
   requirements category and into the ``install`` requirements category.
   These packages are now installed when running ``pip install plasmapy``. (`#1482 <https://github.com/plasmapy/plasmapy/pull/1482>`__)
 - Added ``dlint``, ``flake8``, ``flake8-absolute-import``,
@@ -1313,7 +1313,7 @@ Trivial/Internal Changes
 - Fixed a minor error in the :math:`\mathbf{E} × \mathbf{B}` drift
   notebook. (`#1088 <https://github.com/plasmapy/plasmapy/pull/1088>`__)
 - Upgrade ``nbqa`` to latest available version (0.6.0). (`#1104 <https://github.com/plasmapy/plasmapy/pull/1104>`__)
-- Moved our custom `pre-commit`_ style testing suite to ``pre-commit.ci``,
+- Moved our custom |pre-commit| style testing suite to ``pre-commit.ci``,
   taking advantage of the new ``pre-commit.ci autofix`` command that
   allows manually calling for pre-commit to be run by typing
   that command as a comment to a pull request. (`#1106 <https://github.com/plasmapy/plasmapy/pull/1106>`__)
@@ -1357,7 +1357,7 @@ Trivial/Internal Changes
 - Added `flake8-absolute-import <https://github.com/bskinn/flake8-absolute-import>`_
   to the ``linters`` |tox| environment. (`#1283 <https://github.com/plasmapy/plasmapy/pull/1283>`__)
 - Removed unused imports, and changed several imports from relative to absolute. (`#1283 <https://github.com/plasmapy/plasmapy/pull/1283>`__)
-- Added `pre-commit`_ hooks to auto-format :file:`.ini`,
+- Added |pre-commit| hooks to auto-format :file:`.ini`,
   :file:`.toml`, and :file:`.yaml` files, and applied changes from
   those hooks to existing files. (`#1284 <https://github.com/plasmapy/plasmapy/pull/1284>`__)
 - Changed the validated units for the ``theta`` input argument of

@@ -280,8 +280,8 @@ when you :py:`import plasmapy`.
 
       Replace ``py`` with ``python`` if you are not using conda.
 
-   The :bash:`-e` specifies that this will be an `editable
-   installation`_.
+   The :bash:`-e` specifies that this will be an
+   |editable installation|.
 
    .. tip::
 

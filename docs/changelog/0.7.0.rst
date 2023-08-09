@@ -275,7 +275,7 @@ Trivial/Internal Changes
 - Fixed a minor error in the :math:`\mathbf{E} × \mathbf{B}` drift
   notebook. (`#1088 <https://github.com/plasmapy/plasmapy/pull/1088>`__)
 - Upgrade ``nbqa`` to latest available version (0.6.0). (`#1104 <https://github.com/plasmapy/plasmapy/pull/1104>`__)
-- Moved our custom `pre-commit`_ style testing suite to ``pre-commit.ci``,
+- Moved our custom |pre-commit| style testing suite to ``pre-commit.ci``,
   taking advantage of the new ``pre-commit.ci autofix`` command that
   allows manually calling for pre-commit to be run by typing
   that command as a comment to a pull request. (`#1106 <https://github.com/plasmapy/plasmapy/pull/1106>`__)
@@ -319,7 +319,7 @@ Trivial/Internal Changes
 - Added `flake8-absolute-import <https://github.com/bskinn/flake8-absolute-import>`_
   to the ``linters`` |tox| environment. (`#1283 <https://github.com/plasmapy/plasmapy/pull/1283>`__)
 - Removed unused imports, and changed several imports from relative to absolute. (`#1283 <https://github.com/plasmapy/plasmapy/pull/1283>`__)
-- Added `pre-commit`_ hooks to auto-format :file:`.ini`,
+- Added |pre-commit| hooks to auto-format :file:`.ini`,
   :file:`.toml`, and :file:`.yaml` files, and applied changes from
   those hooks to existing files. (`#1284 <https://github.com/plasmapy/plasmapy/pull/1284>`__)
 - Changed the validated units for the ``theta`` input argument of

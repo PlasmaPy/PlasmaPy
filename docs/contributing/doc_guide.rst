@@ -465,7 +465,7 @@ at |docs/glossary.rst|_. Here is an example of a term defined within the
 Using the :rst:role:`term` |role| allows us to link to the definitions
 of terms. Using ``:term:`kwargs``` will link to :term:`kwargs` in the
 :ref:`glossary`. We can also refer to terms defined in the projects
-connected via |intersphinx|if they have not already been defined in
+connected via |intersphinx| if they have not already been defined in
 PlasmaPy's :ref:`glossary`. Using ``:term:`role``` will link to |role|
 and ``:term:`directive``` will link to |directive| in `Sphinx's
 glossary`_.
@@ -498,8 +498,8 @@ documentation for PlasmaPy and affiliated packages.
 
 * Many words and software packages have more than one common spelling or
   acronym. Use the spelling that is used in the file you are modifying,
-  which is preferably the spelling used throughout `PlasmaPy's
-  documentation`_.
+  which is preferably the spelling used throughout
+  |PlasmaPy's documentation|.
 
   * More generally, it is preferable to use the spelling that is used in
     |Python's documentation| or the spelling that is used most commonly.
@@ -1055,7 +1055,7 @@ To add a new reference to the :doc:`../bibliography`, open
 citekey should generally be the surname of the first author (all lower
 case) followed by a colon and the year. A letter should be added after
 the year when needed to disambiguate multiple references. Include the
-DOI_ if the reference has one. If the reference does not have a |DOI|,
+|DOI| if the reference has one. If the reference does not have a |DOI|,
 then include the URL. The ISBN or ISSN number should be included for
 books. The ``misc`` field type should be used when citing data sets and
 software. Please follow the existing style in |docs/bibliography.bib|_
@@ -1398,6 +1398,7 @@ version of the package that can be revisited later.
 
 .. _admonitions: https://docutils.sourceforge.io/docs/ref/rst/directives.html#admonitions
 .. _BibTeX: http://www.bibtex.org
+.. _BibTeX format: https://www.bibtex.com/g/bibtex-format
 .. _configuration options: https://www.sphinx-doc.org/en/master/usage/configuration.html
 .. _CSS: https://www.w3schools.com:443/css
 .. _define substitutions: https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html#substitution-definitions

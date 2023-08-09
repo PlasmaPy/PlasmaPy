@@ -97,7 +97,7 @@ Deprecations and Removals
   <https://github.com/plasmapy/plasmapy/pull/1465>`__)
 - The ``[all]`` option when using |pip| to install `plasmapy` is now
   deprecated and may be removed in a future release. Packages that
-  were previously optional (|h5py|, |lmfit|, |mpmath|, and |numba|)
+  were previously optional (|h5py|, |lmfit|, |mpmath|, and |Numba|)
   are now installed by default when running ``pip install
   plasmapy``. To install all packages required for code development of
   PlasmaPy, instead run ``pip install plasmapy[developer]``. (`#1482
@@ -377,7 +377,7 @@ Improved Documentation
 - Added bullet points on module level docstrings and ``__all__`` to
   the documentation guide. (`#1359
   <https://github.com/plasmapy/plasmapy/pull/1359>`__)
-- Reverted the code syntax highlighting style back to the pygments_
+- Reverted the code syntax highlighting style back to the ``pygments``
   default. The minimum version of ``pygments`` was set to ``2.11.0``
   because the default style was changed to meet accessibility
   guidelines for contrast in this release. (`#1361
@@ -603,7 +603,7 @@ Trivial/Internal Changes
   ``1.19.0``, `pandas` to ``1.0.0``, `pytest` to ``5.4.0``, `scipy` to
   ``1.5.0``, and |xarray| to ``0.15.0``. (`#1482
   <https://github.com/plasmapy/plasmapy/pull/1482>`__)
-- Moved |h5py|, |lmfit|_, |mpmath|, and |numba| out of the
+- Moved |h5py|, |lmfit|, |mpmath|, and |Numba| out of the
   ``extras`` requirements category and into the ``install``
   requirements category.  These packages are now installed when
   running ``pip install plasmapy``. (`#1482

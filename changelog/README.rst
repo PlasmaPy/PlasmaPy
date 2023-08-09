@@ -108,7 +108,7 @@ Changelog guidelines
   context and consequences of the change. Because |towncrier|
   automatically reflows text, keep entries to a single paragraph.
 
-* Use |intersphinx|links to refer to objects within PlasmaPy, and
+* Use |intersphinx| links to refer to objects within PlasmaPy, and
   include the full namespace. For example, use
   ```~plasmapy.particles.particle_class.Particle``` to refer to
   |Particle|. The tilde is included to hide all but the name of the
@@ -195,7 +195,7 @@ steps to update the changelog are described in the :ref:`Release Guide`.
 
 .. tip::
 
-   Towncrier_ can be used to create a new changelog entry and open it
+   |towncrier| can be used to create a new changelog entry and open it
    for editing using a command like:
 
    .. code-block:: shell
