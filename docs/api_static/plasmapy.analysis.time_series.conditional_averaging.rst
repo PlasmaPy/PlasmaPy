@@ -1,7 +1,7 @@
 :orphan:
 
-`plasmapy.analysis.time_series.running_moments`
-===============================================
+`plasmapy.analysis.time_series.conditional_averaging`
+=====================================================
 
 .. currentmodule:: plasmapy.analysis.time_series.conditional_averaging
 
