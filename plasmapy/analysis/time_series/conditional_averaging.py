@@ -21,16 +21,16 @@ class ConditionalEvents:
         Corresponding time values for ``signal``.
     lower_threshold : `float` or `~astropy.units.Quantity`
         Lower threshold for event detection.
-    upper_threshold : `float` or `~astropy.units.Quantity`, optional
-        Upper threshold for event detection (default is None).
-    reference_signal : 1D |array_like|, optional
-        Reference signal (default is None).
-        If None, ``signal`` is the reference signal.
-    length_of_return : float, optional
-        Desired length of returned data (default is None).
-        If None, estimated as len(``signal``)/len(``number_of_events``)* ``time_step``.
-    distance : float, optional
-        Minimum distance between peaks, in units of time (default is 0).
+    upper_threshold : `float` or `~astropy.units.Quantity`, default: `None`
+        Upper threshold for event detection.
+    reference_signal : 1D |array_like|, default: `None`
+        Reference signal.
+        If `None`, ``signal`` is the reference signal.
+    length_of_return : float, default, `None`
+        Desired length of returned data.
+        If `None`, estimated as ``len(signal) / len(number_of_events) * time_step``.
+    distance : float, default: ``0``
+        Minimum distance between peaks, in units of time.
 
 
     Raises
