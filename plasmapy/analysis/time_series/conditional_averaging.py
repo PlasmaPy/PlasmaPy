@@ -35,7 +35,6 @@ class ConditionalEvents:
     Raises
     ------
     `ValueError`:
-
         If length of ``signal`` and ``time`` are not equal.
         If length of ``reference_signal`` and ``time`` are not equal (when reference_signal is provided).
         If ``length_of_return`` is greater than the length of the time span.
