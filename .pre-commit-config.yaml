@@ -28,7 +28,7 @@ repos:
     # For the labeler GitHub Action, labels with spaces in them must
     # be put in quotes. However, the pretty-format-yaml hook will
     # remove the quotes which will break that action, so we should not
-    # run this hook on certain files.
+    # run this hook on `labeler.yml` (or certain other files).
     exclude: .github/labeler.yml|.pre-commit-search-and-replace.yaml
 
 - repo: https://github.com/pre-commit/mirrors-csslint
