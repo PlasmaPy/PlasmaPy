@@ -42,7 +42,6 @@ class ConditionalEvents:
         If ``upper_threshold`` is less than or equal to ``lower_threshold``.
 
     `TypeError`:
-
         If ``signal``/``reference_signal`` and ``lower_threshold`` have different astropy units.
         If ``signal``/``reference_signal`` and ``upper_threshold`` have different astropy units.
 
