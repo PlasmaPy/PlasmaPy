@@ -56,17 +56,17 @@ class ConditionalEvents:
     >>> from plasmapy.analysis.time_series.conditional_averaging import ConditionalEvents
     >>> cond_events = ConditionalEvents(signal = [1, 2, 1, 1, 2, 1], time = [1, 2, 3, 4, 5, 6], lower_threshold = 1.5)
     >>> cond_events.time
-    [-1.0, 0.0, 1.0]
+    array([-1.0, 0.0, 1.0])
     >>> cond_events.average
-    [1.0, 2.0, 1.0]
+    array([1., 2., 1.])
     >>> cond_events.variance
-    [1.0, 1.0, 1.0]
+    array([1., 1., 1.])
     >>> cond_events.peaks
-    [2, 2]
+    array([2, 2])
     >>> cond_events.waiting_times
-    [3]
+    array([3])
     >>> cond_events.arrival_times
-    [2, 5]
+    array([2, 5])
     >>> cond_events.number_of_events
     2
     """
@@ -155,31 +155,27 @@ class ConditionalEvents:
         if length_of_return is None:
             length_of_return = len(signal) / len(conditional_events_indices) * time_step
 
-        self._return_time = list(
-            (
-                np.arange(
-                    -int(length_of_return / (time_step * 2)),
-                    int(length_of_return / (time_step * 2)) + 1,
-                )
-                * time_step
+        self._return_time = (
+            np.arange(
+                -int(length_of_return / (time_step * 2)),
+                int(length_of_return / (time_step * 2)) + 1,
             )
+            * time_step
         )
 
-        self._peaks = list(signal[peak_indices])
+        self._peaks = signal[peak_indices]
         self._number_of_events = len(self._peaks)
 
-        self._arrival_times = list(time[peak_indices])
-        self._waiting_times = list(np.diff(self._arrival_times))
+        self._arrival_times = time[peak_indices]
+        self._waiting_times = np.diff(self._arrival_times)
 
         self._conditional_average, conditional_events = self._average_over_events(
             signal, peak_indices
         )
 
-        self._conditional_variance = list(
-            self._calculate_conditional_variance(conditional_events)
+        self._conditional_variance = self._calculate_conditional_variance(
+            conditional_events
         )
-
-        self._conditional_average = list(self._conditional_average)
 
         if self._astropy_unit is not None:
             self._peaks *= self._astropy_unit
