@@ -47,10 +47,10 @@ def test_ConditionalEvents_ValueErrors(
             signal,
             time,
             lower_threshold,
-            upper_threshold,
-            reference_signal,
-            length_of_return,
-            distance,
+            upper_threshold=upper_threshold,
+            reference_signal=reference_signal,
+            length_of_return=length_of_return,
+            distance=distance,
         )
 
 
@@ -227,10 +227,10 @@ def test_ConditionalEvents_exception(
         signal,
         time,
         lower_threshold,
-        upper_threshold,
-        reference_signal,
-        length_of_return,
-        distance,
+        upper_threshold=upper_threshold,
+        reference_signal=reference_signal,
+        length_of_return=length_of_return,
+        distance=distance,
     )
     assert np.allclose(cond_events.time, expected[0])
     assert np.allclose(cond_events.average, expected[1])
