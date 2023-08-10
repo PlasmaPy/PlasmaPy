@@ -96,13 +96,13 @@ class ConditionalEvents:
             signal, self._astropy_unit = self._strip_unit_from_variable(signal)
 
         if isinstance(lower_threshold, u.Quantity):
-            lower_threshold, _ = self._strip_unit_from_variable(lower_threshold)
+            lower_threshold = lower_threshold.value
 
         if isinstance(upper_threshold, u.Quantity):
-            upper_threshold, _ = self._strip_unit_from_variable(upper_threshold)
+            upper_threshold = upper_threshold.value
 
         if isinstance(reference_signal, u.Quantity):
-            reference_signal, _ = self._strip_unit_from_variable(reference_signal)
+            reference_signal = reference_signal.value
 
         if distance < 0:
             raise ValueError("distance can't be negative")
