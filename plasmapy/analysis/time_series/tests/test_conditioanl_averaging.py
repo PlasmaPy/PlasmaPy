@@ -19,8 +19,10 @@ from plasmapy.analysis.time_series.conditional_averaging import ConditionalEvent
     [
         ([1, 2], [1, 2], 1.5, None, None, None, -1, ValueError),
         ([1, 2] * u.eV, [1, 2], 1.5, None, None, None, 0, TypeError),
+        ([1, 2], [1, 2], 1.5 * u.eV, None, None, None, 0, TypeError),
         ([1, 2] * u.eV, [1, 2], 1.5 * u.m, None, None, None, 0, TypeError),
         ([1, 2] * u.eV, [1, 2], 1.5 * u.eV, 4.0 * u.m, None, None, 0, TypeError),
+        ([1, 2], [1, 2], 1.5, 4.0 * u.m, None, None, 0, TypeError),
         ([1, 2] * u.eV, [1, 2], 1.5 * u.eV, 4.0, None, None, 0, TypeError),
         ([1, 2], [1, 2], 1.5, None, [1, 2] * u.eV, None, 0, TypeError),
         ([1, 2], [1, 2], 1.5 * u.eV, 4.0, [1, 2] * u.eV, None, 0, TypeError),
@@ -212,7 +214,7 @@ def test_ConditionalEvents_ValueErrors(
         ),
     ],
 )
-def test_ConditionalEvents_exception(
+def test_ConditionalEvents_class(
     signal,
     time,
     lower_threshold,

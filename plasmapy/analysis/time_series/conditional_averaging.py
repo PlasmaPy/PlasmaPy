@@ -94,7 +94,7 @@ class ConditionalEvents:
         self._astropy_unit = None
 
         if isinstance(signal, u.Quantity):
-            signal, self._astropy_unit = self._strip_unit_from_variable(signal)
+            signal, self._astropy_unit = signal.value, signal.unit
 
         if isinstance(lower_threshold, u.Quantity):
             lower_threshold = lower_threshold.value
@@ -277,24 +277,34 @@ class ConditionalEvents:
         if isinstance(signal, u.Quantity):
             if not isinstance(lower_threshold, u.Quantity):
                 raise TypeError(
-                    "signal/reference_signal and lower_threshold must have same astropy unit"
+                    "signal/reference_signal and lower_threshold must be compatible"
                 )
-            if signal.unit != lower_threshold.unit:
+            if signal.unit.physical_type != lower_threshold.unit.physical_type:
                 raise TypeError(
-                    "signal/reference_signal and lower_threshold must have same astropy unit"
+                    "signal/reference_signal and lower_threshold must be compatible"
                 )
             if upper_threshold is not None:
                 if not isinstance(upper_threshold, u.Quantity):
                     raise TypeError(
-                        "signal/reference_signal and lower_threshold must have same astropy unit"
+                        "signal/reference_signal and lower_threshold must be compatible"
                     )
-                if signal.unit != upper_threshold.unit:
+                if signal.unit.physical_type != upper_threshold.unit.physical_type:
                     raise TypeError(
-                        "signal/reference_signal and upper_threshold must have same astropy unit"
+                        "signal/reference_signal and upper_threshold must be compatible"
                     )
+        if isinstance(lower_threshold, u.Quantity) and not isinstance(
+            signal, u.Quantity
+        ):
+            raise TypeError(
+                "signal/reference_signal and lower_threshold must be compatible"
+            )
 
-    def _strip_unit_from_variable(self, variable):
-        return variable.value, variable.unit
+        if isinstance(upper_threshold, u.Quantity) and not isinstance(
+            signal, u.Quantity
+        ):
+            raise TypeError(
+                "signal/reference_signal and upper_threshold must be compatible"
+            )
 
     def _ensure_numpy_array(self, variable):
         if not isinstance(variable, np.ndarray):
