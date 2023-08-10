@@ -76,6 +76,7 @@ class ConditionalEvents:
         signal,
         time,
         lower_threshold,
+        *,
         upper_threshold=None,
         reference_signal=None,
         length_of_return=None,
