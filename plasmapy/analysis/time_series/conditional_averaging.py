@@ -32,7 +32,6 @@ class ConditionalEvents:
     distance : float, default: ``0``
         Minimum distance between peaks, in units of time.
 
-
     Raises
     ------
     `ValueError`:
