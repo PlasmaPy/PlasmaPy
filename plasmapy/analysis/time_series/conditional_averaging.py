@@ -3,6 +3,7 @@
 __all__ = ["ConditionalEvents"]
 
 
+from weakref import ref
 import numpy as np
 from scipy.signal import find_peaks
 from astropy import units as u
@@ -326,13 +327,21 @@ class ConditionalEvents:
     ):
         for event in conditional_events_indices:
             peaks_in_event = np.isin(peak_indices, event)
+            peak_ind = peak_indices[peaks_in_event]
+
+            # delete event if a peak is not the highest value inside the window
+            if max(reference_signal[peak_ind]) < max(reference_signal[event]):
+                indiced_to_delete = np.where(peak_indices == peak_ind)
+                peak_indices = np.delete(peak_indices, indiced_to_delete)
+                continue
+
             if peaks_in_event.sum() > 1:
-                peak_ind = peak_indices[peaks_in_event]
                 highest_local_peak = reference_signal[peak_ind].argmax()
                 not_highest_local_peaks = np.delete(peak_ind, highest_local_peak)
                 peak_indices = np.delete(
                     peak_indices, np.isin(peak_indices, not_highest_local_peaks)
                 )
+
         return peak_indices
 
     def _average_over_events(self, signal, peak_indices):
