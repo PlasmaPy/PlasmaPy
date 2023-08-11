@@ -27,11 +27,13 @@ class ConditionalEvents:
     reference_signal : 1D |array_like|, default: `None`
         Reference signal.
         If `None`, ``signal`` is the reference signal.
-    length_of_return : float, default, `None`
+    length_of_return : float, default: `None`
         Desired length of returned data.
         If `None`, estimated as ``len(signal) / len(number_of_events) * time_step``.
     distance : float, default: ``0``
         Minimum distance between peaks, in units of time.
+    remove_non_max_peaks : bool, default: `False`
+        Remove events where peak is not the largest value inside window.
 
     Raises
     ------
@@ -82,6 +84,7 @@ class ConditionalEvents:
         reference_signal=None,
         length_of_return=None,
         distance=0,
+        remove_non_max_peaks=False,
     ):
         # This astropy unit checks are quite ugly in my view.
         # If a code reviewer has a better idea how to handle this I would be very grateful.
@@ -150,7 +153,9 @@ class ConditionalEvents:
         )
 
         peak_indices = self._choose_largest_peak_per_event(
-            reference_signal, conditional_events_indices, peak_locations
+            reference_signal,
+            conditional_events_indices,
+            peak_locations,
         )
 
         if length_of_return is None:
@@ -164,19 +169,24 @@ class ConditionalEvents:
             * time_step
         )
 
+        conditional_events = self._calculate_all_events(signal, peak_indices)
+
+        if remove_non_max_peaks:
+            conditional_events, peak_indices = self._check_if_largest_value_is_peak(
+                conditional_events, peak_indices
+            )
+
+        self._conditional_average = np.mean(conditional_events, axis=0)
+
+        self._conditional_variance = self._calculate_conditional_variance(
+            conditional_events
+        )
+
         self._peaks = signal[peak_indices]
         self._number_of_events = len(self._peaks)
 
         self._arrival_times = time[peak_indices]
         self._waiting_times = np.diff(self._arrival_times)
-
-        self._conditional_average, conditional_events = self._average_over_events(
-            signal, peak_indices
-        )
-
-        self._conditional_variance = self._calculate_conditional_variance(
-            conditional_events
-        )
 
         if self._astropy_unit is not None:
             self._peaks *= self._astropy_unit
@@ -323,19 +333,16 @@ class ConditionalEvents:
         return np.split(places, _split + 1)
 
     def _choose_largest_peak_per_event(
-        self, reference_signal, conditional_events_indices, peak_indices
+        self,
+        reference_signal,
+        conditional_events_indices,
+        peak_indices,
     ):
         for event in conditional_events_indices:
             peaks_in_event = np.isin(peak_indices, event)
-            peak_ind = peak_indices[peaks_in_event]
-
-            # delete event if a peak is not the highest value inside the window
-            if max(reference_signal[peak_ind]) < max(reference_signal[event]):
-                indiced_to_delete = np.where(peak_indices == peak_ind)
-                peak_indices = np.delete(peak_indices, indiced_to_delete)
-                continue
 
             if peaks_in_event.sum() > 1:
+                peak_ind = peak_indices[peaks_in_event]
                 highest_local_peak = reference_signal[peak_ind].argmax()
                 not_highest_local_peaks = np.delete(peak_ind, highest_local_peak)
                 peak_indices = np.delete(
@@ -344,10 +351,10 @@ class ConditionalEvents:
 
         return peak_indices
 
-    def _average_over_events(self, signal, peak_indices):
+    def _calculate_all_events(self, signal, peak_indices):
 
         t_half_len = int((len(self._return_time) - 1) / 2)
-        conditional_events = np.zeros([len(self._return_time), len(peak_indices)])
+        conditional_events = np.zeros([len(peak_indices), len(self._return_time)])
 
         for i, global_peak_loc in enumerate(peak_indices):
             low_ind = int(max(0, global_peak_loc - t_half_len))
@@ -363,9 +370,24 @@ class ConditionalEvents:
                     np.zeros(global_peak_loc + t_half_len + 1 - len(signal)),
                 )
 
-            conditional_events[:, i] = single_event
+            conditional_events[i, :] = single_event
 
-        return np.mean(conditional_events, axis=1), conditional_events
+        return conditional_events
+
+    def _check_if_largest_value_is_peak(self, conditional_events, peak_indices):
+        def is_middle_value_highest(sequence):
+            middle_index = len(sequence) // 2
+            return np.max(sequence[middle_index]) == np.max(sequence)
+
+        checked_conditional_events = []
+        checked_peak_indices = []
+
+        for event, peak in zip(conditional_events, peak_indices):
+            if is_middle_value_highest(event):
+                checked_conditional_events.append(event)
+                checked_peak_indices.append(peak)
+
+        return np.array(checked_conditional_events), np.array(checked_peak_indices)
 
     def _calculate_conditional_variance(self, conditional_events):
-        return self._conditional_average**2 / np.mean(conditional_events**2, axis=1)
+        return self._conditional_average**2 / np.mean(conditional_events**2, axis=0)

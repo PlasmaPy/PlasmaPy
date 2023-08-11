@@ -241,3 +241,68 @@ def test_ConditionalEvents_class(
     assert np.allclose(cond_events.waiting_times, expected[4])
     assert np.allclose(cond_events.arrival_times, expected[5])
     assert np.allclose(cond_events.number_of_events, expected[6])
+
+
+@pytest.mark.parametrize(
+    (
+        "signal",
+        "time",
+        "lower_threshold",
+        "upper_threshold",
+        "reference_signal",
+        "length_of_return",
+        "distance",
+        "remove_non_max_peaks",
+        "expected",
+    ),
+    [
+        (
+            [1, 2, 5, 3, 1, 2, 1, 1, 1, 1, 1, 1],
+            [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+            1.5,
+            None,
+            None,
+            5,
+            0,
+            True,
+            [
+                [-2.0, -1.0, 0.0, 1.0, 2.0],
+                [1.0, 2.0, 5.0, 3.0, 1.0],
+                [1, 1, 1, 1, 1],
+                [5],
+                [3.0],
+                [3.0],
+                1,
+            ],
+        ),
+    ],
+)
+def test_peak_not_max_value(
+    signal,
+    time,
+    lower_threshold,
+    upper_threshold,
+    reference_signal,
+    length_of_return,
+    distance,
+    remove_non_max_peaks,
+    expected,
+):
+    """Tests for ConditionalEvents class"""
+    cond_events = ConditionalEvents(
+        signal,
+        time,
+        lower_threshold,
+        upper_threshold=upper_threshold,
+        reference_signal=reference_signal,
+        length_of_return=length_of_return,
+        distance=distance,
+        remove_non_max_peaks=remove_non_max_peaks,
+    )
+    assert np.allclose(cond_events.time, expected[0])
+    assert np.allclose(cond_events.average, expected[1])
+    assert np.allclose(cond_events.variance, expected[2])
+    assert np.allclose(cond_events.peaks, expected[3])
+    assert np.allclose(cond_events.waiting_times, expected[4])
+    assert np.allclose(cond_events.arrival_times, expected[5])
+    assert np.allclose(cond_events.number_of_events, expected[6])
