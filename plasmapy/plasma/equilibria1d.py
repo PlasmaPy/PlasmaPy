@@ -33,6 +33,12 @@ class HarrisSheet:
     -----
     A current sheet is current limited to a surface.
 
+    A Harris sheet is a 1D ideal MHD equilibrium. In resistive MHD if
+    there is any resistivity, it won't be a true equilibrium since the
+    resistivity will gradually smooth the profile out over time. A 
+    Harris sheet is often used as the initial condition for simulations
+    of magnetic reconnection.
+
     Examples
     --------
     >>> import astropy.units as u
