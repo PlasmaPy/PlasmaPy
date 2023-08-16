@@ -80,7 +80,7 @@ class HarrisSheet:
 
         .. math::
 
-          B_0/(\delta\mu_0)(\mathrm{sech}^2(y/\delta))
+          J_z(y) = - \frac{B_0}{δ μ_0) \mathrm{sech}^2 \left( \frac{y}{δ} \right)
 
         Parameters
         ----------
