@@ -99,7 +99,7 @@ class HarrisSheet:
 
         .. math::
 
-            B_0/(\delta*mu_0)(\mathrm{sech}^2(y/\delta))
+            p(y) = \frac{B_0^2}{2 μ_0} \mathrm{sech}^2 \left( \frac{y}{δ} \right) + p_0
 
         Parameters
         ----------
