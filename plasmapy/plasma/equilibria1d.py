@@ -57,9 +57,9 @@ class HarrisSheet:
         r"""
         Compute the magnetic field.
 
-        This equation uses the asymptotic magnetic field strength along with y=0.
-
-        Delta provides the thickness of the sheet.
+        In this equation, :math:`B_0` is the asymptotic magnitude of the
+        magnetic field for :math:`y → ±∞` and :math:`δ` is the thickness
+        of the sheet.
 
         .. math::
 
