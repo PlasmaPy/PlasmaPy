@@ -63,7 +63,7 @@ class HarrisSheet:
 
         .. math::
 
-            B_x(y) = B_0 \tanh \left( \frac{y}{\delta} \right)
+            B_x(y) = B_0 \tanh \left( \frac{y}{δ} \right)
 
         Parameters
         ----------
