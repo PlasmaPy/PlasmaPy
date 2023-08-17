@@ -1,6 +1,5 @@
+import astropy.units as u
 import numpy as np
-
-from astropy import units as u
 
 from plasmapy.formulary import magnetic_pressure
 from plasmapy.plasma.equilibria1d import HarrisSheet
