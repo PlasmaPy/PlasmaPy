@@ -2,11 +2,12 @@
 Tests for 'validate` decorators (i.e. decorators that check objects and change them
 when possible).
 """
+import astropy.units as u
 import inspect
 import pytest
 
-from astropy import units as u
 from functools import cached_property
+from typing import Optional
 from unittest import mock
 
 from plasmapy.utils.decorators.checks import CheckUnits, CheckValues
@@ -562,7 +563,12 @@ class TestValidateQuantities:
 
 class TestValidateClassAttributes:
     class SampleCase:  # noqa: D106
-        def __init__(self, x: int = None, y: int = None, z: int = None):
+        def __init__(
+            self,
+            x: Optional[int] = None,
+            y: Optional[int] = None,
+            z: Optional[int] = None,
+        ):
             self.x = x
             self.y = y
             self.z = z

@@ -1,6 +1,6 @@
+import astropy.units as u
 import pytest
 
-from astropy import units as u
 from typing import Union
 
 import plasmapy.plasma

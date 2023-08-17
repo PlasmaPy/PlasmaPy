@@ -272,8 +272,7 @@ class Tracker:
             nx = np.array([1, 0, 0])
         else:
             nx = np.cross(np.array([0, 0, 1]), self.det_n)
-        nx = nx / np.linalg.norm(nx)
-        return nx
+        return nx / np.linalg.norm(nx)
 
     def _max_theta_hit_grid(self):
         r"""
@@ -802,9 +801,7 @@ class Tracker:
 
         # dt should never actually be infinite, so replace any infinities
         # with the largest gridstep
-        dt = np.where(dt == np.inf, np.max(gridstep), dt)
-
-        return dt
+        return np.where(dt == np.inf, np.max(gridstep), dt)
 
     def _coast_to_grid(self):
         r"""
@@ -1140,7 +1137,7 @@ class Tracker:
             disable=not self.verbose,
             desc="Particles on grid",
             unit="particles",
-            bar_format="{l_bar}{bar}{n:.1e}/{total:.1e} {unit}",  # noqa: FS003
+            bar_format="{l_bar}{bar}{n:.1e}/{total:.1e} {unit}",
             file=sys.stdout,
         )
 

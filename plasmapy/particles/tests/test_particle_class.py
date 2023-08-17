@@ -1,3 +1,5 @@
+import astropy.constants as const
+import astropy.units as u
 import collections
 import inspect
 import io
@@ -5,8 +7,6 @@ import json
 import numpy as np
 import pytest
 
-from astropy import constants as const
-from astropy import units as u
 from astropy.constants import c, e, m_e, m_n, m_p
 
 from plasmapy.particles import json_load_particle, json_loads_particle, molecule
@@ -545,7 +545,7 @@ def test_Particle_class(arg, kwargs, expected_dict):
 
         else:
             try:
-                result = eval(f"particle.{key}")  # noqa: PGH001
+                result = eval(f"particle.{key}")  # noqa: PGH001, S307
                 assert result == expected or u.isclose(result, expected, equal_nan=True)
             except AssertionError:
                 errmsg += (
@@ -556,7 +556,7 @@ def test_Particle_class(arg, kwargs, expected_dict):
                 errmsg += f"\n{call}.{key} raises an unexpected exception."
 
     if errmsg:
-        raise Exception(f"Problems with {call}:{errmsg}")  # noqa: BLE001, TRY002
+        raise Exception(f"Problems with {call}:{errmsg}")  # noqa: TRY002
 
 
 equivalent_particles_table = [
@@ -904,7 +904,7 @@ def test_that_object_can_be_dict_key(key):
         if not isinstance(key, collections.abc.Hashable):
             error_message += f"{key} is not hashable. "
         try:
-            key_equals_itself = key == key
+            key_equals_itself = key == key  # noqa: PLR0124
         except Exception:  # noqa: BLE001
             error_message += f"{key} == {key} cannot be evaluated. "
         else:
@@ -912,7 +912,7 @@ def test_that_object_can_be_dict_key(key):
                 error_message += f"{key} does not equal itself."
         raise TypeError(error_message) from exc
 
-    assert dictionary[key] is value
+    assert dictionary[key] == value
 
 
 customized_particle_tests = [
