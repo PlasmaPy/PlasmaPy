@@ -8,7 +8,7 @@ alabaster==0.7.13
     # via sphinx
 anyio==3.7.1
     # via jupyter-server
-argon2-cffi==21.3.0
+argon2-cffi==23.1.0
     # via jupyter-server
 argon2-cffi-bindings==21.2.0
     # via argon2-cffi
@@ -16,7 +16,7 @@ arrow==1.2.3
     # via isoduration
 asteval==0.9.31
     # via lmfit
-astropy==5.3.1
+astropy==5.3.2
     # via plasmapy (setup.py)
 asttokens==2.2.1
     # via stack-data
@@ -43,7 +43,7 @@ certifi==2023.7.22
     # via requests
 cffi==1.15.1
     # via argon2-cffi-bindings
-cfgv==3.3.1
+cfgv==3.4.0
     # via pre-commit
 chardet==5.2.0
     # via tox
@@ -65,7 +65,7 @@ contourpy==1.1.0
     # via matplotlib
 cycler==0.11.0
     # via matplotlib
-debugpy==1.6.7
+debugpy==1.6.7.post1
     # via ipykernel
 decorator==5.1.1
     # via ipython
@@ -100,7 +100,7 @@ future==0.18.3
     # via uncertainties
 h5py==3.9.0
     # via plasmapy (setup.py)
-hypothesis==6.82.2
+hypothesis==6.82.4
     # via plasmapy (setup.py)
 identify==2.5.26
     # via pre-commit
@@ -115,7 +115,7 @@ incremental==22.10.0
     # via towncrier
 iniconfig==2.0.0
     # via pytest
-ipykernel==6.25.0
+ipykernel==6.25.1
     # via plasmapy (setup.py)
 ipython==8.14.0
     # via
@@ -140,13 +140,13 @@ jinja2==3.1.2
 json5==0.9.14
     # via jupyterlab-server
 jsonpointer==2.4
+    # via jsonschema
+jsonschema[format-nongpl]==4.19.0
     # via
     #   jupyter-events
     #   jupyterlab-server
     #   nbformat
 jsonschema-specifications==2023.7.1
-    # via jsonschema
-jsonschema[format-nongpl]==4.18.6
     # via jsonschema
 jupyter-client==8.3.0
     # via
@@ -165,7 +165,7 @@ jupyter-core==5.3.1
     #   voila
 jupyter-events==0.7.0
     # via jupyter-server
-jupyter-server==2.7.0
+jupyter-server==2.7.1
     # via
     #   jupyterlab-server
     #   voila
@@ -203,7 +203,7 @@ nbclient==0.7.4
     # via
     #   nbconvert
     #   voila
-nbconvert==7.7.3
+nbconvert==7.7.4
     # via
     #   jupyter-server
     #   nbsphinx
@@ -342,7 +342,7 @@ pyyaml==6.0.1
     #   pre-commit
     #   pybtex
     #   pytest-regressions
-pyzmq==25.1.0
+pyzmq==25.1.1
     # via
     #   ipykernel
     #   jupyter-client
@@ -406,9 +406,14 @@ sphinx==6.2.1
     #   sphinx-reredirects
     #   sphinx-rtd-theme
     #   sphinx-tabs
+    #   sphinxcontrib-applehelp
     #   sphinxcontrib-bibtex
+    #   sphinxcontrib-devhelp
     #   sphinxcontrib-globalsubs
+    #   sphinxcontrib-htmlhelp
     #   sphinxcontrib-jquery
+    #   sphinxcontrib-qthelp
+    #   sphinxcontrib-serializinghtml
 sphinx-changelog==1.4.1
     # via plasmapy (setup.py)
 sphinx-codeautolink==0.15.0
@@ -429,15 +434,15 @@ sphinx-rtd-theme==1.2.2
     # via plasmapy (setup.py)
 sphinx-tabs==3.4.1
     # via plasmapy (setup.py)
-sphinxcontrib-applehelp==1.0.4
+sphinxcontrib-applehelp==1.0.7
     # via sphinx
 sphinxcontrib-bibtex==2.5.0
     # via plasmapy (setup.py)
-sphinxcontrib-devhelp==1.0.2
+sphinxcontrib-devhelp==1.0.5
     # via sphinx
 sphinxcontrib-globalsubs==0.1.1
     # via plasmapy (setup.py)
-sphinxcontrib-htmlhelp==2.0.1
+sphinxcontrib-htmlhelp==2.0.4
     # via sphinx
 sphinxcontrib-jquery==4.1
     # via
@@ -445,9 +450,9 @@ sphinxcontrib-jquery==4.1
     #   sphinx-rtd-theme
 sphinxcontrib-jsmath==1.0.1
     # via sphinx
-sphinxcontrib-qthelp==1.0.3
+sphinxcontrib-qthelp==1.0.6
     # via sphinx
-sphinxcontrib-serializinghtml==1.1.5
+sphinxcontrib-serializinghtml==1.1.8
     # via sphinx
 stack-data==0.6.2
     # via ipython
@@ -459,7 +464,7 @@ tinycss2==1.2.1
     # via nbconvert
 tomli==2.0.1
     # via plasmapy (setup.py)
-tornado==6.3.2
+tornado==6.3.3
     # via
     #   ipykernel
     #   jupyter-client
@@ -469,9 +474,9 @@ towncrier==23.6.0
     # via
     #   plasmapy (setup.py)
     #   sphinx-changelog
-tox==4.6.4
+tox==4.9.0
     # via plasmapy (setup.py)
-tqdm==4.65.0
+tqdm==4.66.1
     # via plasmapy (setup.py)
 traitlets==5.9.0
     # via
@@ -497,11 +502,11 @@ uri-template==1.3.0
     # via jsonschema
 urllib3==2.0.4
     # via requests
-virtualenv==20.24.2
+virtualenv==20.24.3
     # via
     #   pre-commit
     #   tox
-voila==0.4.3
+voila==0.5.0
     # via plasmapy (setup.py)
 wcwidth==0.2.6
     # via prompt-toolkit

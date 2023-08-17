@@ -718,7 +718,7 @@ Particles
 ---------
 
 The |Particle| class provides an object-oriented interface for accessing
-basic particle data. |Particle| accepts :term:`particle-like` inputs.
+basic particle data. |Particle| accepts |particle-like| inputs.
 
 .. code-block:: pycon
 
