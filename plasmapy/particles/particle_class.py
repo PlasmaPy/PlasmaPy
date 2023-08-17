@@ -1919,9 +1919,7 @@ class DimensionlessParticle(AbstractParticle):
         elif isinstance(obj, bool):
             raise TypeError("Expecting a real number, not a bool.")
         elif isinstance(obj, u.Quantity) and not isinstance(obj.value, Real):
-            raise ValueError(  # noqa: TRY004
-                "The value of a Quantity must be a real number."
-            )
+            raise ValueError("The value of a Quantity must be a real number.")
 
         try:
             new_obj = np.float64(obj)
@@ -2064,7 +2062,7 @@ class CustomParticle(AbstractPhysicalParticle):
 
     Examples
     --------
-    >>> from astropy import units as u
+    >>> import astropy.units as u
     >>> from plasmapy.particles import CustomParticle
     >>> custom_particle = CustomParticle(
     ...     mass=1.2e-26 * u.kg,

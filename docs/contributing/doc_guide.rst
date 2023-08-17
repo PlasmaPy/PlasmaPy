@@ -951,6 +951,7 @@ extensions:
 * `sphinx.ext.mathjax` for math rendering with MathJax_.
 * `sphinx.ext.napoleon` for allowing NumPy style docstrings.
 * `sphinx.ext.todo` to support ``todo`` |directives|.
+* `sphinx.ext.viewcode` to generate links to pages showing source code.
 * |nbsphinx|_ for including Jupyter_ notebooks.
 * |sphinxcontrib-bibtex|_ to enable usage of a BibTeX_ file to create
   the :doc:`../bibliography`.
@@ -1444,3 +1445,71 @@ example Jupyter notebooks, the tables of contents are in
 .. _style overrides: https://docs.readthedocs.io/en/stable/guides/adding-custom-css.html
 .. _toctree: https://www.sphinx-doc.org/en/master/usage/restructuredtext/directives.html#directive-toctree
 .. _warns: https://numpydoc.readthedocs.io/en/latest/format.html#warns
+
+.. ----------------------
+.. Nested inline literals
+.. ----------------------
+
+.. A workaround for nested inline literals so that the filename will get
+   formatted like a file but will be a link. In the text, these get used
+   with the syntax for a substitution followed by an underscore to
+   indicate that it's for a link: |docs/_static|_
+
+.. For these workarounds, if the replacement is something in single back
+   ticks (e.g., `xarray`), then it should also be added to
+   nitpick_ignore_regex in docs/conf.py so that it doesn't get counted
+   as an error in a nitpicky doc build (e.g., tox -e doc_build_nitpicky).
+
+.. _`docs/_static/`: https://github.com/PlasmaPy/PlasmaPy/tree/main/docs/_static
+.. |docs/_static/| replace:: :file:`docs/_static/`
+
+.. _`docs/_static/css/`: https://github.com/PlasmaPy/PlasmaPy/tree/main/docs/_static/css
+.. |docs/_static/css/| replace:: :file:`docs/_static/css/`
+
+.. _`docs/about/credits.rst`: https://github.com/PlasmaPy/PlasmaPy/tree/main/docs/about/credits.rst
+.. |docs/about/credits.rst| replace:: :file:`docs/about/credits.rst`
+
+.. _`docs/api_static/`: https://github.com/PlasmaPy/PlasmaPy/tree/main/docs/api_static
+.. |docs/api_static/| replace:: :file:`docs/api_static/`
+
+.. _`docs/conf.py`: https://github.com/PlasmaPy/PlasmaPy/blob/main/docs/conf.py
+.. |docs/conf.py| replace:: :file:`docs/conf.py`
+
+.. _`docs/glossary.rst`: https://github.com/PlasmaPy/PlasmaPy/blob/main/docs/glossary.rst
+.. |docs/glossary.rst| replace:: :file:`docs/glossary.rst`
+
+.. _`docs/common_links.rst`: https://github.com/PlasmaPy/PlasmaPy/blob/main/docs/common_links.rst
+.. |docs/common_links.rst| replace:: :file:`docs/common_links.rst`
+
+.. _`docs/bibliography.bib`: https://github.com/PlasmaPy/PlasmaPy/blob/main/docs/bibliography.bib
+.. |docs/bibliography.bib| replace:: :file:`docs/bibliography.bib`
+
+.. _`IPython.sphinxext.ipython_console_highlighting`: https://ipython.readthedocs.io/en/stable/sphinxext.html?highlight=IPython.sphinxext.ipython_console_highlighting#ipython-sphinx-directive-module
+.. |IPython.sphinxext.ipython_console_highlighting| replace:: `IPython.sphinxext.ipython_console_highlighting`
+
+.. _`sphinxcontrib-bibtex`: https://sphinxcontrib-bibtex.readthedocs.io
+.. |sphinxcontrib-bibtex| replace:: `sphinxcontrib-bibtex`
+
+.. _`sphinx_copybutton`: https://sphinx-copybutton.readthedocs.io
+.. |sphinx_copybutton| replace:: `sphinx_copybutton`
+
+.. _`sphinx_gallery.load_style`: https://sphinx-gallery.github.io/stable/advanced.html?highlight=load_style#using-only-sphinx-gallery-styles
+.. |sphinx_gallery.load_style| replace:: `sphinx_gallery.load_style`
+
+.. _`sphinx_changelog`: https://sphinx-changelog.readthedocs.io
+.. |sphinx_changelog| replace:: `sphinx_changelog`
+
+.. _`sphinx-reredirects`: https://documatt.gitlab.io/sphinx-reredirects
+.. |sphinx-reredirects| replace:: `sphinx-reredirects`
+
+.. _`sphinx-hoverxref`: https://sphinx-hoverxref.readthedocs.io
+.. |sphinx-hoverxref| replace:: `sphinx-hoverxref`
+
+.. _`sphinx-issues`: https://github.com/sloria/sphinx-issues
+.. |sphinx-issues| replace:: `sphinx-issues`
+
+.. _`sphinx-notfound-page`: https://sphinx-notfound-page.readthedocs.io
+.. |sphinx-notfound-page| replace:: `sphinx-notfound-page`
+
+.. _`sphinx-tabs`: https://sphinx-tabs.readthedocs.io/
+.. |sphinx-tabs| replace:: `sphinx-tabs`

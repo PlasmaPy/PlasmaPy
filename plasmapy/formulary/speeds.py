@@ -135,7 +135,7 @@ def Alfven_speed(
 
     Examples
     --------
-    >>> from astropy import units as u
+    >>> import astropy.units as u
     >>> from astropy.constants.si import m_p, m_e
     >>> B = 0.014 * u.T
     >>> n = 5e19*u.m**-3
@@ -158,6 +158,12 @@ def Alfven_speed(
             "When calculating the Alfvén speed, an ion cannot be specified "
             "when the 'density' parameter is provided an argument with a "
             "physical type of mass density."
+        )
+
+    if density.unit.physical_type == u.physical.number_density and ion is None:
+        raise ValueError(
+            "When calculating the Alfvén speed, the ion must be specified "
+            "when 'density' has a physical type of number density."
         )
 
     if density.unit.physical_type == u.physical.mass_density:
@@ -305,7 +311,7 @@ def ion_sound_speed(
 
     Examples
     --------
-    >>> from astropy import units as u
+    >>> import astropy.units as u
     >>> n = 5e19*u.m**-3
     >>> k_1 = 3e1*u.m**-1
     >>> k_2 = 3e7*u.m**-1
@@ -691,7 +697,7 @@ def thermal_speed(
 
     Examples
     --------
-    >>> from astropy import units as u
+    >>> import astropy.units as u
     >>> thermal_speed(5*u.eV, 'p')
     <Quantity 30949.6... m / s>
     >>> thermal_speed(1e6*u.K, particle='p')
@@ -814,7 +820,7 @@ def kappa_thermal_speed(
 
     Examples
     --------
-    >>> from astropy import units as u
+    >>> import astropy.units as u
     >>> kappa_thermal_speed(5*u.eV, 4, 'p') # defaults to most probable
     <Quantity 24467.87... m / s>
     >>> kappa_thermal_speed(5*u.eV, 4, 'p', 'rms')

@@ -10,13 +10,13 @@ __all__ = [
     "CheckValues",
 ]
 
+import astropy.units as u
 import collections
 import functools
 import inspect
 import numpy as np
 import warnings
 
-from astropy import units as u
 from astropy.constants import c
 from astropy.units.equivalencies import Equivalency
 from functools import reduce
@@ -641,7 +641,7 @@ class CheckUnits(CheckBase):
                     msg += f"argument {param.name} "
                 msg += f"of function {self.f.__name__}()."
                 raise ValueError(msg)
-            elif _units is None:  # noqa: RET507
+            elif _units is None:
                 _units = _units_anno
                 _units_are_from_anno = True
                 _units_anno = None
@@ -959,7 +959,7 @@ class CheckUnits(CheckBase):
         return allowed_units
 
     @staticmethod
-    def _normalize_equivalencies(equivalencies):  # noqa: D400
+    def _normalize_equivalencies(equivalencies):
         """
         Normalize equivalencies to ensure each is in a 4-tuple of the
         form `(from_unit, to_unit, forward_func, backward_func)`.
@@ -1300,7 +1300,7 @@ def check_relativistic(func=None, betafrac=0.05):
 
     Examples
     --------
-    >>> from astropy import units as u
+    >>> import astropy.units as u
     >>> @check_relativistic
     ... def speed():
     ...     return 1 * u.m / u.s
@@ -1366,7 +1366,7 @@ def _check_relativistic(V, funcname, betafrac=0.05):
 
     Examples
     --------
-    >>> from astropy import units as u
+    >>> import astropy.units as u
     >>> _check_relativistic(1*u.m/u.s, 'function_calling_this')
 
     """

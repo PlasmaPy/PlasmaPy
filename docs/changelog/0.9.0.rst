@@ -228,7 +228,7 @@ Trivial/Internal Changes
 - Applied automated refactorings from `Sourcery
   <https://sourcery.ai/>`__. (:pr:`1714`)
 - Changed the minimum version of towncrier_ to 22.8.0 and the minimum
-  version of |sphinx_changelog|_ to 1.2.0. (:pr:`1717`)
+  version of ``sphinx_changelog`` to 1.2.0. (:pr:`1717`)
 - Changed `~plasmapy.formulary.quantum.chemical_potential` to use the
   :wikipedia:`Broyden-Fletcher-Goldfarb-Shanno algorithm` to implicitly
   solve for the ideal chemical potential. (:pr:`1726`)

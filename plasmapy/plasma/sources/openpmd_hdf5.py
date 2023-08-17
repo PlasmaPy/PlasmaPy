@@ -82,7 +82,7 @@ class HDF5Reader(GenericPlasma):
             if _valid_version(openPMD_version):
                 return True
             else:
-                raise DataStandardError(  # noqa: TC301
+                raise DataStandardError(
                     f"We currently only support HDF5 versions"
                     f"starting from v{_OUTDATED_VERSION} and "
                     f"lower than v{_NEWER_VERSION}. You can "
