@@ -10,20 +10,22 @@ from plasmapy.utils.decorators.validators import validate_quantities
 
 
 class HarrisSheet:
-    """
+    r"""
     Define a Harris Sheet Equilibrium.
-    Magnetic field will be in the :math:`\\pm x` direction and
-    the current density will be in the :math:`\\pm z` direction,
-    :math:`\\hat{x} \times \\hat{y} = \\hat{z}` coordinate system.
+
+    Magnetic field will be in the :math:`±x` direction and the current
+    density will be in the :math:`±z` direction in a :math:`\hat{x} ×
+    \hat{y} = \hat{z}` coordinate system.
 
     Parameters
     ----------
     B0 : `~astropy.units.Quantity`
-         Magnitude of magnetic field in the limit of :math:`y → ∞` in units
-         convertible to teslas.
+         Magnitude of magnetic field in the limit of :math:`y → ∞` in
+         units convertible to teslas.
 
     delta : `~astropy.units.Quantity`
-        The thickness of the current sheet in units convertible to meters.
+        The thickness of the current sheet in units convertible to
+        meters.
 
     P0 : `~astropy.units.Quantity`
         The plasma pressure in the limit of :math:`y → ∞` in units
@@ -35,9 +37,10 @@ class HarrisSheet:
 
     A Harris sheet is a 1D ideal MHD equilibrium. In resistive MHD if
     there is any resistivity, it won't be a true equilibrium since the
-    resistivity will gradually smooth the profile out over time. A
-    Harris sheet is often used as the initial condition for simulations
-    of magnetic reconnection.
+    resistivity will gradually smooth the profile out over time.
+
+    A Harris sheet is often used as the initial condition for
+    simulations of magnetic reconnection.
 
     Examples
     --------
@@ -69,7 +72,6 @@ class HarrisSheet:
         ----------
         y : `~astropy.units.Quantity`
            Orthogonal distance from the current sheet center.
-
         """
         return self.B0 * np.tanh(u.rad * y / self.delta)
 
@@ -86,7 +88,6 @@ class HarrisSheet:
         ----------
         y : `~astropy.units.Quantity`
           Orthogonal distance from the current sheet center.
-
         """
         return (
             -self.B0 / (self.delta * const.mu0) * np.cosh(u.rad * y / self.delta) ** -2
@@ -105,7 +106,6 @@ class HarrisSheet:
         ----------
         y : `~astropy.units.Quantity`
           Orthogonal distance from the current sheet center.
-
         """
         return (
             self.B0**2 / (2 * const.mu0) * (np.cosh(u.rad * y / self.delta) ** -2)
