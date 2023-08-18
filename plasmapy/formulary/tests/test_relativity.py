@@ -1,9 +1,9 @@
 """Tests for functions in relativity.py."""
 
+import astropy.units as u
 import numpy as np
 import pytest
 
-from astropy import units as u
 from astropy.constants import c
 from astropy.tests.helper import assert_quantity_allclose
 

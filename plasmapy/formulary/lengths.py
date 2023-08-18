@@ -79,7 +79,7 @@ def Debye_length(T_e: u.K, n_e: u.m**-3) -> u.m:
 
     Examples
     --------
-    >>> from astropy import units as u
+    >>> import astropy.units as u
     >>> Debye_length(5e6*u.K, 5e15*u.m**-3)
     <Quantity 0.002182... m>
     """
@@ -200,7 +200,7 @@ def gyroradius(  # noqa: C901
 
     Examples
     --------
-    >>> from astropy import units as u
+    >>> import astropy.units as u
     >>> gyroradius(0.2*u.T, particle='p+', T=1e5*u.K)
     <Quantity 0.002120... m>
     >>> gyroradius(0.2*u.T, particle='p+', T=1e5*u.K)
@@ -424,7 +424,7 @@ def inertial_length(
 
     Examples
     --------
-    >>> from astropy import units as u
+    >>> import astropy.units as u
     >>> inertial_length(5 * u.m ** -3, 'He+')
     <Quantity 2.02985...e+08 m>
     >>> inertial_length(5 * u.m ** -3, 'e-')

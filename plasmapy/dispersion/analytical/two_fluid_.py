@@ -26,7 +26,7 @@ from plasmapy.utils.exceptions import PhysicsWarning
     T_e={"can_be_negative": False, "equivalencies": u.temperature_energy()},
     T_i={"can_be_negative": False, "equivalencies": u.temperature_energy()},
 )
-def two_fluid(  # noqa: C901, PLR0912, PLR0915
+def two_fluid(
     B: u.T,
     ion: ParticleLike,
     k: u.rad / u.m,
@@ -203,7 +203,7 @@ def two_fluid(  # noqa: C901, PLR0912, PLR0915
 
     Examples
     --------
-    >>> from astropy import units as u
+    >>> import astropy.units as u
     >>> from plasmapy.dispersion.analytical import two_fluid
     >>> inputs = {
     ...     "k": 0.01 * u.rad / u.m,

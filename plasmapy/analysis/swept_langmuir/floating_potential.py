@@ -264,7 +264,7 @@ def find_floating_potential(  # noqa: C901, PLR0912, PLR0915
         isl_stop = np.concatenate(
             (cp_candidates[threshold_indices] + 1, [cp_candidates[-1] + 1])
         )
-        rtn_extras["islands"] = [  # noqa: FURB140
+        rtn_extras["islands"] = [
             slice(start, stop) for start, stop in zip(isl_start, isl_stop)
         ]
 

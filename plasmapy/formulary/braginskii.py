@@ -127,10 +127,10 @@ __all__ = [
     "electron_viscosity",
 ]
 
+import astropy.units as u
 import numpy as np
 import warnings
 
-from astropy import units as u
 from astropy.constants.si import e, k_B, m_e
 
 from plasmapy import particles, utils
@@ -288,7 +288,7 @@ class ClassicalTransport:
 
     Examples
     --------
-    >>> from astropy import units as u
+    >>> import astropy.units as u
     >>> t = ClassicalTransport(1*u.eV, 1e20/u.m**3,
     ...                         1*u.eV, 1e20/u.m**3, 'p')
     >>> t.resistivity  # doctest: +SKIP
