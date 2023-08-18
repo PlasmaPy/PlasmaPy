@@ -1,0 +1,1 @@
+Switched the back-end of the |lite-functions| from Numba to Cython.
