@@ -615,7 +615,7 @@ Trivial/Internal Changes
 - Added ``tryceratops`` as a flake8_ extension. (:pr:`1782`)
 
 
-Plasmapy 0.8.1 (2022-07-05)
+PlasmaPy 0.8.1 (2022-07-05)
 ===========================
 
 Backwards Incompatible Changes
@@ -812,7 +812,7 @@ Bug Fixes
   `~plasmapy.formulary.collisions.frequencies.collision_frequency`. (`#1546 <https://github.com/plasmapy/plasmapy/pull/1546>`__)
 - Updated the regular expression matching used by
   `~plasmapy.particles.particle_class.Particle` to parse and identify a
-  :term:`particle-like` string.  This fixes the bug where a string with
+  |particle-like| string.  This fixes the bug where a string with
   a trailing space (e.g. ``"Ar "``) was converted into a negatively charged
   ion (e.g. ``"Ar -1"``). (`#1555 <https://github.com/plasmapy/plasmapy/pull/1555>`__)
 - Exposed `plasmapy.formulary.radiation` and functions therein to the
@@ -1071,7 +1071,7 @@ Trivial/Internal Changes
   version ``0.8.1`` release. (`#1606 <https://github.com/plasmapy/plasmapy/pull/1606>`__)
 
 
-Plasmapy v0.7.0 (2021-11-18)
+PlasmaPy v0.7.0 (2021-11-18)
 ============================
 
 Backwards Incompatible Changes
@@ -1108,7 +1108,7 @@ Backwards Incompatible Changes
 - Changed |ParticleList| so that if it is provided with no arguments, then it creates
   an empty |ParticleList|.  This behavior is analogous to how `list` and `tuple` work. (`#1223 <https://github.com/plasmapy/plasmapy/pull/1223>`__)
 - Changed the behavior of |Particle| in equality comparisons. Comparing a
-  |Particle| with an object that is not :term:`particle-like` will now
+  |Particle| with an object that is not |particle-like| will now
   return `False` instead of raising a `TypeError`. (`#1225 <https://github.com/plasmapy/plasmapy/pull/1225>`__)
 - Changed the behavior of `~plasmapy.particles.particle_class.CustomParticle`
   so that it returns `False` when compared for equality with another type.
@@ -1372,7 +1372,7 @@ Trivial/Internal Changes
   with matplotlib 3.5.0. (`#1334 <https://github.com/plasmapy/plasmapy/pull/1334>`__)
 
 
-Plasmapy v0.6.0 (2021-03-14)
+PlasmaPy v0.6.0 (2021-03-14)
 ============================
 
 Backwards Incompatible Changes
@@ -1578,7 +1578,7 @@ Trivial/Internal Changes
 - Properly handled warnings in `test_proton_radiography.py` (`#1050 <https://github.com/plasmapy/plasmapy/pull/1050>`__)
 
 
-Plasmapy v0.5.0 (2020-12-09)
+PlasmaPy v0.5.0 (2020-12-09)
 ============================
 
 Backwards Incompatible Changes
@@ -1655,7 +1655,7 @@ Trivial/Internal Changes
   easier for contributors. Moved away from Travis CI for test cron jobs. (`#952 <https://github.com/plasmapy/plasmapy/pull/952>`__)
 
 
-Plasmapy v0.4.0 (2020-07-20)
+PlasmaPy v0.4.0 (2020-07-20)
 ============================
 
 Backwards Incompatible Changes
@@ -1780,7 +1780,7 @@ Trivial/Internal Changes
   `mass` and `charge` can accept string representations of astropy `Quantities`. (`#862 <https://github.com/plasmapy/plasmapy/pull/862>`__)
 
 
-Plasmapy v0.3.0 (2020-01-25)
+PlasmaPy v0.3.0 (2020-01-25)
 ============================
 
 Backwards Incompatible Changes
