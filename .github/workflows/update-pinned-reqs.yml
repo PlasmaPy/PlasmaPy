@@ -2,7 +2,7 @@ name: Update pinned requirements
 
 on:
   schedule:
-  - cron: 0 6 * * 1
+  - cron: 0 12 * * 1
   workflow_dispatch:
 
 jobs:
