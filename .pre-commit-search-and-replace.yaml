@@ -27,3 +27,6 @@
 - search: ':term:`array_like`'
   replacement: '|array_like|'
   description: Apply reStructuredText substitution
+
+- search: /\alpha[^a-z\`]
+  replacement: α
