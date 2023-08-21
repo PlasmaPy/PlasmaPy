@@ -102,7 +102,7 @@ h5py==3.9.0
     # via plasmapy (setup.py)
 hypothesis==6.82.6
     # via plasmapy (setup.py)
-identify==2.5.26
+identify==2.5.27
     # via pre-commit
 idna==3.4
     # via
@@ -471,7 +471,7 @@ towncrier==23.6.0
     # via
     #   plasmapy (setup.py)
     #   sphinx-changelog
-tox==4.9.0
+tox==4.10.0
     # via plasmapy (setup.py)
 tqdm==4.66.1
     # via plasmapy (setup.py)
