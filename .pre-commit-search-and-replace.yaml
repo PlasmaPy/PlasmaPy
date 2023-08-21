@@ -28,5 +28,5 @@
   replacement: '|array_like|'
   description: Apply reStructuredText substitution
 
-- search: /\\alpha(\n\r\ \\)/
-  replacement: /α\1/
+- search: /\\{1,2}alpha(?![a-zA-Z0-9]|`)/
+  replacement: α
