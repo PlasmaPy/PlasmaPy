@@ -1,9 +1,9 @@
 """Tests for functions that calculate transport coefficients."""
 
+import astropy.units as u
 import numpy as np
 import pytest
 
-from astropy import units as u
 from astropy.constants import m_e, m_p
 from astropy.tests.helper import assert_quantity_allclose
 

@@ -16,9 +16,9 @@ This page describes the workflow for making a contribution to PlasmaPy
 via a `pull request`_. This page assumes that you have finished the
 steps for :ref:`getting ready to contribute`.
 
-If you run into any problems, please feel free to reach out to us in
-our `Matrix chat room`_ or during our weekly `office hours`_. Thank you
-for contributing!
+If you run into any problems, please feel free to reach out to us in our
+`Matrix chat room`_ or during our weekly `office hours`_. Thank you for
+contributing!
 
 .. tip::
 
@@ -47,7 +47,7 @@ Create a new branch
 
    .. code-block::
 
-      git checkout -b new-branch-name upstream main
+      git checkout -b new-branch-name upstream/main
 
    where ``new-branch-name`` is changed to the name of the new branch.
    Here ``upstream`` is the name of the remote_ and ``main`` is the name

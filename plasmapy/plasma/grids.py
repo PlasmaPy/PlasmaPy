@@ -200,7 +200,7 @@ class AbstractGrid(ABC):
     # Fundamental properties of the grid
     # *************************************************************************
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         line_sep = "-----------------------------\n"
         shape = list(self.shape)
         coords = list(self.ds.coords.keys())
@@ -706,7 +706,7 @@ class AbstractGrid(ABC):
 
         # Ensure that start and stop end up as a list of three u.Quantity objs
         # and num a list of three integers
-        # TODO python3.10: simplify using structural pattern matching
+        # TODO: python3.10: simplify using structural pattern matching
         for k in ("start", "stop"):
             # Convert tuple to list
             if isinstance(var[k], tuple):
@@ -1034,10 +1034,9 @@ def _fast_nearest_neighbor_interpolate(pos, ax):
 
     # For any points that are closer to the point below than the point above,
     # correct the index
-    indices = np.where(
+    return np.where(
         np.abs(ax[indices] - pos) > np.abs(ax[indices - 1] - pos), indices - 1, indices
     )
-    return indices
 
 
 class CartesianGrid(AbstractGrid):

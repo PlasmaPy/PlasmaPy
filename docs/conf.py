@@ -9,14 +9,22 @@
 import os
 import sys
 
+# isort: off
+sys.path.insert(0, os.path.abspath(".."))  # noqa: PTH100
+sys.path.insert(0, os.path.abspath("."))  # noqa: PTH100
+# isort: on
+
+import cff_to_rst
+
 from datetime import datetime
 from pkg_resources import parse_version
 from sphinx.application import Sphinx
 
-sys.path.insert(0, os.path.abspath(".."))  # noqa: PTH100
-sys.path.insert(0, os.path.abspath("."))  # noqa: PTH100
+# Generate author list from CITATION.cff
 
-from plasmapy import __version__ as release  # noqa: E402
+cff_to_rst.main()
+
+from plasmapy import __version__ as release
 
 # -- General configuration ------------------------------------------------
 autosummary_generate = True
@@ -78,25 +86,28 @@ needs_sphinx = "6.1.3"
 # in docs/doc_guide.rst on Sphinx extensions.
 
 extensions = [
+    "hoverxref.extension",
+    "IPython.sphinxext.ipython_console_highlighting",
+    "nbsphinx",
+    "notfound.extension",
+    "plasmapy_sphinx",
     "sphinx.ext.autodoc",
+    "sphinx.ext.duration",
     "sphinx.ext.extlinks",
     "sphinx.ext.graphviz",
     "sphinx.ext.intersphinx",
     "sphinx.ext.mathjax",
     "sphinx.ext.napoleon",
     "sphinx.ext.todo",
-    "nbsphinx",
-    "sphinxcontrib.bibtex",
+    "sphinx.ext.viewcode",
+    "sphinx_changelog",
+    "sphinx_codeautolink",
     "sphinx_copybutton",
     "sphinx_gallery.load_style",
-    "IPython.sphinxext.ipython_console_highlighting",
-    "sphinx_changelog",
-    "sphinx_tabs.tabs",
-    "hoverxref.extension",
-    "notfound.extension",
     "sphinx_issues",
     "sphinx_reredirects",
-    "plasmapy_sphinx",
+    "sphinx_tabs.tabs",
+    "sphinxcontrib.bibtex",
 ]
 
 # Configure sphinxcontrib-bibtex
@@ -106,39 +117,44 @@ bibtex_default_style = "plain"
 bibtex_reference_style = "author_year"
 bibtex_cite_id = "{key}"
 
+# Configure sphinx-codeautolink
+
+codeautolink_concat_default = True
+
 # Intersphinx generates automatic links to the documentation of objects
 # in other packages. When mappings are removed or added, please update
 # the section in docs/doc_guide.rst on references to other packages.
 
 intersphinx_mapping = {
-    "readthedocs": ("https://docs.readthedocs.io/en/stable/", None),
-    "python": ("https://docs.python.org/3/", None),
-    "numpy": ("https://numpy.org/doc/stable/", None),
-    "scipy": ("https://docs.scipy.org/doc/scipy/", None),
-    "pandas": ("https://pandas.pydata.org/pandas-docs/stable/", None),
     "astropy": ("https://docs.astropy.org/en/stable/", None),
+    "lmfit": ("https://lmfit.github.io/lmfit-py/", None),
+    "matplotlib": ("https://matplotlib.org/stable/", None),
+    "numba": ("https://numba.readthedocs.io/en/stable/", None),
+    "numpy": ("https://numpy.org/doc/stable/", None),
+    "pandas": ("https://pandas.pydata.org/pandas-docs/stable/", None),
     "pytest": ("https://docs.pytest.org/en/stable/", None),
+    "python": ("https://docs.python.org/3/", None),
+    "readthedocs": ("https://docs.readthedocs.io/en/stable/", None),
+    "scipy": ("https://docs.scipy.org/doc/scipy/", None),
+    "sphinx": ("https://www.sphinx-doc.org/en/master/", None),
     "sphinx_automodapi": (
         "https://sphinx-automodapi.readthedocs.io/en/latest/",
         None,
     ),
-    "sphinx": ("https://www.sphinx-doc.org/en/master/", None),
-    "numba": ("https://numba.readthedocs.io/en/stable/", None),
-    "lmfit": ("https://lmfit.github.io/lmfit-py/", None),
 }
 
 hoverxref_intersphinx = [
-    "readthedocs",
-    "python",
-    "numpy",
-    "scipy",
-    "pandas",
     "astropy",
-    "pytest",
-    "sphinx_automodapi",
-    "sphinx",
-    "numba",
     "lmfit",
+    "numba",
+    "numpy",
+    "pandas",
+    "pytest",
+    "python",
+    "readthedocs",
+    "scipy",
+    "sphinx",
+    "sphinx_automodapi",
 ]
 
 autoclass_content = "both"
@@ -163,7 +179,7 @@ root_doc = "index"
 # General information about the project.
 project = "PlasmaPy"
 author = "PlasmaPy Community"
-copyright = f"2015–{datetime.utcnow().year}, {author}"  # noqa: A001
+copyright = f"2015–{datetime.utcnow().year}, {author}"  # noqa: A001, DTZ003
 language = "en"
 
 # The version info for the project you're documenting, acts as replacement for
@@ -247,15 +263,29 @@ linkcheck_anchors_ignore = [
 ]
 
 redirects = {
+    "contributing/install_dev": "../contributing/getting_ready.html",
     "development": "../contributing/",
-    "development/index": "../contributing/index.html",
     "development/changelog_guide": "../contributing/changelog_guide.html",
     "development/code_guide": "../contributing/code_guide.html",
     "development/doc_guide": "../contributing/doc_guide.html",
+    "development/index": "../contributing/index.html",
     "development/install_dev": "../contributing/getting_ready.html",
-    "contributing/install_dev": "../contributing/getting_ready.html",
     "development/release_guide": "../contributing/release_guide.html",
     "development/testing_guide": "../contributing/testing_guide.html",
+    "whatsnew": "../changelog/",
+    "whatsnew/0.1.0": "../changelog/0.1.0.html",
+    "whatsnew/0.1.1": "../changelog/0.1.0.html",
+    "whatsnew/0.2.0": "../changelog/0.1.0.html",
+    "whatsnew/0.3.1": "../changelog/0.1.0.html",
+    "whatsnew/0.4.0": "../changelog/0.1.0.html",
+    "whatsnew/0.5.0": "../changelog/0.1.0.html",
+    "whatsnew/0.6.0": "../changelog/0.1.0.html",
+    "whatsnew/0.7.0": "../changelog/0.1.0.html",
+    "whatsnew/0.8.1": "../changelog/0.1.0.html",
+    "whatsnew/0.9.0": "../changelog/0.1.0.html",
+    "whatsnew/0.9.1": "../changelog/0.1.0.html",
+    "whatsnew/2023.1.0": "../changelog/2023.1.0.html",
+    "whatsnew/index": "../changelog/index.html",
 }
 
 # Use a code highlighting style that meets the WCAG AA contrast standard

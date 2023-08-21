@@ -1,6 +1,6 @@
 ci:
   autofix_prs: false
-  autoupdate_schedule: weekly
+  autoupdate_schedule: monthly
 
 repos:
 
@@ -12,7 +12,6 @@ repos:
   - id: end-of-file-fixer
   - id: check-merge-conflict
     exclude: .*\.rst
-  - id: requirements-txt-fixer
   - id: check-symlinks
   - id: check-case-conflict
   - id: check-json
@@ -20,7 +19,7 @@ repos:
   - id: check-yaml
 
 - repo: https://github.com/macisamuele/language-formatters-pre-commit-hooks
-  rev: v2.9.0
+  rev: v2.10.0
   hooks:
   - id: pretty-format-ini
     args: [--autofix]
@@ -29,8 +28,8 @@ repos:
     # For the labeler GitHub Action, labels with spaces in them must
     # be put in quotes. However, the pretty-format-yaml hook will
     # remove the quotes which will break that action, so we should not
-    # run this hook on `labeler.yml`.
-    exclude: .github/labeler.yml
+    # run this hook on `labeler.yml` (or certain other files).
+    exclude: .github/labeler.yml|.pre-commit-search-and-replace.yaml
 
 - repo: https://github.com/pre-commit/mirrors-csslint
   rev: v1.0.5
@@ -43,22 +42,30 @@ repos:
   - id: absolufy-imports
     exclude: docs/plasmapy_sphinx
 
+- repo: https://github.com/mattlqx/pre-commit-search-and-replace
+  rev: v1.0.5
+  hooks:
+  - id: search-and-replace
+    exclude: changelog/.*|docs/changelog/.*|.sourcery.yaml|docs/common_links.rst
+
 - repo: https://github.com/pre-commit/pygrep-hooks
   rev: v1.10.0
   hooks:
+  - id: python-check-blanket-noqa
+    exclude: ^docs/plasmapy_sphinx/
   - id: rst-directive-colons
   - id: rst-inline-touching-normal
 
 - repo: https://github.com/codespell-project/codespell
-  rev: v2.2.4
+  rev: v2.2.5
   hooks:
   - id: codespell
     args: [--write-changes]
     additional_dependencies:
     - tomli
 
-- repo: https://github.com/charliermarsh/ruff-pre-commit
-  rev: v0.0.269
+- repo: https://github.com/astral-sh/ruff-pre-commit
+  rev: v0.0.282
   hooks:
   - id: ruff
     args: [--fix]
@@ -75,27 +82,20 @@ repos:
     - python
 
 - repo: https://github.com/psf/black
-  rev: 23.3.0
+  rev: 23.7.0
   hooks:
   - id: black
 
 - repo: https://github.com/asottile/blacken-docs
-  rev: 1.13.0
+  rev: 1.15.0
   hooks:
   - id: blacken-docs
-    additional_dependencies: [black==23.3.0]
     exclude: docs/contributing/coding_guide.rst
 
 - repo: https://github.com/nbQA-dev/nbQA
   rev: 1.7.0
   hooks:
   - id: nbqa-black
-    additional_dependencies:
-    - black==23.3.0
-    args:
-    - --nbqa-mutate
   - id: nbqa-isort
-    additional_dependencies:
-    - isort==5.11.4
     args:
     - --nbqa-mutate

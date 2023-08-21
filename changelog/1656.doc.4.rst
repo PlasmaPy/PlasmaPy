@@ -1,3 +1,0 @@
-Added a new page to the |contributor guide| on the
-|code contribution workflow|, replacing content previously contained in
-the |coding guide|.

@@ -1,3 +1,236 @@
+PlasmaPy v2023.5.1 (2023-06-07)
+===============================
+
+Trivial/Internal Changes
+------------------------
+
+- Loosened the requirement on ``ipykernel`` for compatibility with
+  Google Colab. (:pr:`2202`)
+
+
+PlasmaPy v2023.5.0 (2023-05-31)
+===============================
+
+Backwards Incompatible Changes
+------------------------------
+
+- The signature of `~plasmapy.formulary.relativity.relativistic_energy`
+  has changed. The parameter ``m`` has been replaced with ``particle``,
+  which now accepts a broader variety of |particle-like| arguments,
+  including but not limited to a |Quantity| representing mass. The
+  parameter ``v`` has been replaced with ``V`` for consistency with other
+  functionality. (:pr:`1871`)
+- Changed the minimum required version of Python from 3.8 to 3.9.
+  Accordingly, increased the minimum versions of ``numpy`` to ``1.21.0``,
+  ``pandas`` to
+  ``1.2.0``, ``h5py`` to ``3.1.0``, ``scipy`` to ``1.6.0``, ``voila`` to
+  ``0.3.0``, and ``xarray`` to ``0.17.0``. (:pr:`1885`)
+- Made |ParticleList| raise a `TypeError` when provided with a string.
+  This change was made to avoid potentially ambiguous situations like
+  :py:`ParticleList("He")` which was previously equivalent to
+  :py:`ParticleList(["H", "e"])` instead of the possibly expected value of
+  :py:`ParticleList(["He"])`. (:pr:`1892`)
+- In `~plasmapy.dispersion.analytical.two_fluid_.two_fluid`,
+  `~plasmapy.dispersion.numerical.hollweg_.hollweg`, and
+  `~plasmapy.dispersion.numerical.kinetic_alfven_.kinetic_alfven`
+  in `plasmapy.dispersion`, providing the |charge number| as a keyword
+  argument (now ``Z``, formerly ``z_mean``) will no longer override the
+  charge number provided in ``ion``. (:pr:`2022`, :pr:`2181`, :pr:`2182`)
+- |particle_input| no longer enforces that |parameters| named
+  ``ionic_level`` are ions or neutral atoms. For equivalent behavior,
+  name the parameter ``ion`` instead. (:pr:`2034`)
+- Removed ``plasmapy.utils.pytest_helpers`` from PlasmaPy's public API. It is
+  still available as ``plasmapy.utils._pytest_helpers``, but might be removed
+  in the future. (:pr:`2114`)
+- Removed ``plasmapy.tests.helpers`` from PlasmaPy's public API. It is
+  still available as ``plasmapy.tests._helpers``, but might be removed in
+  the future. (:pr:`2114`)
+- The ``ion_species`` |parameter| to
+  `~plasmapy.formulary.radiation.thermal_bremsstrahlung` has been renamed to
+  ``ion`` in order to provide a more consistent API to functions that accept
+  ions as arguments. (:pr:`2135`)
+
+
+Deprecations and Removals
+-------------------------
+
+- In `plasmapy.dispersion`, the ``z_mean`` parameter
+  to `~plasmapy.dispersion.analytical.two_fluid_.two_fluid`,
+  `~plasmapy.dispersion.numerical.hollweg_.hollweg`, and
+  `~plasmapy.dispersion.numerical.kinetic_alfven_.kinetic_alfven` has
+  been deprecated. Provide the |charge number| to ``Z`` instead.
+  (:pr:`2022`, :pr:`2181`, :pr:`2182`)
+- When a function decorated with |particle_input| is provided with
+  ``z_mean`` as a keyword |argument|, it will change ``z_mean`` to ``Z``
+  and issue a `~plasmapy.utils.exceptions.PlasmaPyDeprecationWarning` if
+  the decorated function accepts ``Z`` as a parameter. This capability
+  is intended to temporarily preserve the current behavior of several
+  functions in `plasmapy.dispersion` and `plasmapy.formulary` as they get
+  decorated with |particle_input| over the next few releases. (:pr:`2027`)
+- The ``z_mean`` parameter to `~plasmapy.formulary.speeds.ion_sound_speed`
+  and `~plasmapy.formulary.speeds.Alfven_speed` has been deprecated and
+  may be removed in a future release. Use ``Z`` instead. (:pr:`2134`, :pr:`2179`)
+
+
+Features
+--------
+
+- Added `~plasmapy.dispersion.numerical.kinetic_alfven_.kinetic_alfven`,
+  which numerically solves dispersion relations for kinetic Alfvén waves.
+  (:pr:`1665`)
+- Added the :file:`stix_dispersion.ipynb` notebook
+  which contains Stix cold-plasma dispersion examples. (:pr:`1693`)
+- Added the `~plasmapy.formulary.frequencies.Buchsbaum_frequency` function.
+  (:pr:`1828`)
+- Decorated `~plasmapy.formulary.frequencies.gyrofrequency` with
+  |particle_input| so that it can accept a broader variety of
+  |particle-like| arguments. (:pr:`1869`)
+- After having been decorated with |particle_input|, the
+  `~plasmapy.formulary.relativity.relativistic_energy` function now
+  accepts a broader variety of |particle-like| objects rather than only
+  |Quantity| objects representing mass. (:pr:`1871`)
+- After having been decorated with |particle_input|, |RelativisticBody|
+  now accepts a broader variety of |particle-like| objects. (:pr:`1871`)
+- Enabled |particle_input| to accept values of the |charge number| that
+  are real numbers but not integers. This capability can now be used by
+  many of the functions in `plasmapy.formulary` and elsewhere that are
+  decorated with |particle_input|. (:pr:`1884`)
+- Decorated `~plasmapy.particles.atomic.reduced_mass` with
+  |particle_input| so that it can now accept a broader variety of
+  |particle-like| arguments. (:pr:`1921`)
+- Added the `plasmapy.analysis.time_series.excess_statistics` module
+  including the
+  `~plasmapy.analysis.time_series.excess_statistics.ExcessStatistics`
+  class for calculating excess statistics of time series. (:pr:`1984`)
+- Added `plasmapy.formulary.collisions.helio.collisional_analysis`.
+  (:pr:`1986`)
+- Enabled |ParticleList| to accept |Quantity| objects of physical type
+  mass or electrical charge. (:pr:`1987`)
+- The following functions have been decorated with |particle_input| and
+  now accept a broader variety of |particle-like| arguments (see also
+  :issue:`341`):
+
+  - `~plasmapy.dispersion.analytical.two_fluid_.two_fluid` (:pr:`2022`)
+  - `~plasmapy.formulary.frequencies.plasma_frequency` (:pr:`2026`)
+  - `~plasmapy.formulary.speeds.ion_sound_speed` (:pr:`2134`)
+  - `~plasmapy.formulary.speeds.kappa_thermal_speed` (:pr:`2136`)
+  - `~plasmapy.formulary.speeds.Alfven_speed` (:pr:`2179`)
+  - `~plasmapy.dispersion.numerical.hollweg_.hollweg` (:pr:`2181`)
+  - `~plasmapy.dispersion.numerical.kinetic_alfven_.kinetic_alfven` (:pr:`2182`)
+
+- Refactored `~plasmapy.formulary.lengths.gyroradius` to reduce cognitive
+  complexity and increase readability. (:pr:`2031`)
+- Added ``mass_numb`` and ``Z`` as parameters to functions decorated
+  with |particle_input| in `plasmapy.formulary.lengths`
+  and `plasmapy.formulary.distribution`. (:pr:`2140`)
+
+
+Bug Fixes
+---------
+
+- When attempting to create a |Particle| object representing a proton,
+  calls like :py:`Particle("H", Z=1, mass_numb=1)` no longer incorrectly
+  issue a |ParticleWarning| for redundant particle information. (:pr:`1992`)
+- Updated the docstring of
+  `~plasmapy.dispersion.numerical.kinetic_alfven_.kinetic_alfven`. (:pr:`2016`)
+- Fixed a slight error in `~plasmapy.formulary.frequencies.plasma_frequency`
+  and `~plasmapy.formulary.speeds.Alfven_speed` when the charge number was
+  provided via ``z_mean`` (or now ``Z``) and inconsistent with the
+  charge number provided to ``particle`` (or zero, if ``particle``
+  represented an element or isotope with no charge
+  information. Previously, if we represented a proton with
+  :py:`particle="H-1"` and :py:`z_mean=1`, then the mass used to
+  calculate the plasma frequency would have been the mass of a neutral
+  hydrogen atom rather than the mass of a proton. However, using
+  :py:`particle="p+"` would have produced the correct mass. This
+  behavior has been corrected by decorating this function with
+  |particle_input|. See also :issue:`2178` and :pr:`2179`. (:pr:`2026`)
+- The ``plasmapy.analysis.nullpoint._vector_space`` function now returns a
+  list for its delta values instead of an array. (:pr:`2133`)
+
+
+Improved Documentation
+----------------------
+
+- Enabled `sphinx-codeautolink
+  <https://sphinx-codeautolink.readthedocs.io/en/latest/>`_ to make code
+  examples clickable and give quick access to API documentation. (:pr:`1410`)
+- Added an example notebook on ionization states in the solar wind.
+  (:pr:`1513`)
+- Moved the location of the changelog pages for past releases from
+  :file:`docs/whatsnew/` to :file:`docs/changelog/`, and set up
+  appropriate redirects. (:pr:`1639`)
+- Removed outdated instructions on installing the development version
+  of PlasmaPy contained in :file:`docs/contributing/install_dev.rst`.
+  (:pr:`1656`)
+- Converted :file:`docs/CONTRIBUTING.rst` to :file:`.github/contributing.md`.
+  (:pr:`1656`)
+- Added a new page to the |contributor guide| on the
+  |code contribution workflow|, replacing content previously contained in
+  the |coding guide|. (:pr:`1656`)
+- Added a page to the |contributor guide| on |getting ready to contribute|.
+  (:pr:`1656`)
+- Updated docstrings in `plasmapy.formulary.collisions.frequencies`.
+  (:pr:`1793`)
+- Updated the docstring for |particle_input|. (:pr:`1883`)
+- Updated the introductory paragraphs to the |contributor guide|. (:pr:`2014`)
+- Moved PlasmaPy's `vision statement
+  <https://doi.org/10.5281/zenodo.7734998>`__
+  from the online documentation to a Zenodo record. (:pr:`2017`)
+- Restructured the |documentation guide| by putting information on writing
+  documentation prior to instructions for building documentation. (:pr:`2038`)
+- Restructured the |testing guide| by putting information on writing
+  tests prior to instructions for running tests. (:pr:`2041`)
+- Updated the introduction on the documentation landing page and the
+  citation instructions. (:pr:`2055`)
+- Updated the |changelog guide|. (:pr:`2059`)
+- Added admonitions for functionality that is under development and for
+  which backwards incompatible changes might occur in the future. (:pr:`2112`)
+- Updated the code contribution workflow instructions in the |contributor
+  guide|
+  to reflect that first-time contributors should add themselves to the author
+  list in |CITATION.cff|_ instead of in |docs/about/credits.rst|_. (:pr:`2155`)
+- Added functionality to automatically generate the author list included
+  in |docs/about/credits.rst|_ directly from |CITATION.cff|_. The script
+  is located at :file:`docs/cff_to_rst.py`. (:pr:`2156`)
+
+
+Trivial/Internal Changes
+------------------------
+
+- Included Python 3.11 in continuous integration tests. (:pr:`1775`)
+- Turned the root-level :file:`requirements.txt` into a lockfile for continuous
+  integration purposes. (:pr:`1864`)
+- Enabled the particle creation factory in
+  ``plasmapy.particles._factory`` used by |particle_input| to create
+  |CustomParticle| instances of an element or isotope with a
+  |charge number| that is a real number but not an integer. (:pr:`1884`)
+- Implemented the new private |CustomParticle| constructor from
+  :pr:`1881` into the private particle creation factory used by
+  |particle_input|. (:pr:`1884`)
+- Dropped ``dlint`` from the the tests requirements, as it is no longer
+  being maintained. (:pr:`1906`)
+- Modified |particle_input| to allow |CustomParticle|\ -like objects with
+  a defined charge to be passed through to decorated functions when a
+  |parameter| to that function annotated with |ParticleLike| is named
+  ``ion``. Previously, only |Particle| objects representing ions or
+  neutral atoms were allowed to pass through when the parameter was named
+  ``ion``. (:pr:`2034`)
+- Updated package metadata in :file:`pyproject.toml`. (:pr:`2075`)
+- Set minimum versions for all explicitly listed dependencies. (:pr:`2075`)
+- Enabled and applied changes for additional rule sets for ``ruff``, and
+  removed corresponding ``flake8`` extensions. (:pr:`2080`)
+- Changed from ``indexserver`` to ``PIP_INDEX_URL`` to index nightly `numpy`
+  builds (:pr:`2138`)
+- Updated the function and docstring of
+  `~plasmapy.formulary.collisions.helio.collisional_analysis`. (:pr:`2151`)
+- Dropped flake8_ and its extensions as linters. Instead, ruff_ is now used as
+  the primary linter. (:pr:`2170`)
+- Expanded the variety of arguments that could be provided to a function
+  decorated by `~plasmapy.utils.decorators.converter.angular_freq_to_hz`,
+  and refactored this decorator to use ``wrapt``. (:pr:`2175`)
+
+
 PlasmaPy v2023.1.0 (2023-01-13)
 ===============================
 
@@ -382,7 +615,7 @@ Trivial/Internal Changes
 - Added ``tryceratops`` as a flake8_ extension. (:pr:`1782`)
 
 
-Plasmapy 0.8.1 (2022-07-05)
+PlasmaPy 0.8.1 (2022-07-05)
 ===========================
 
 Backwards Incompatible Changes
@@ -579,7 +812,7 @@ Bug Fixes
   `~plasmapy.formulary.collisions.frequencies.collision_frequency`. (`#1546 <https://github.com/plasmapy/plasmapy/pull/1546>`__)
 - Updated the regular expression matching used by
   `~plasmapy.particles.particle_class.Particle` to parse and identify a
-  :term:`particle-like` string.  This fixes the bug where a string with
+  |particle-like| string.  This fixes the bug where a string with
   a trailing space (e.g. ``"Ar "``) was converted into a negatively charged
   ion (e.g. ``"Ar -1"``). (`#1555 <https://github.com/plasmapy/plasmapy/pull/1555>`__)
 - Exposed `plasmapy.formulary.radiation` and functions therein to the
@@ -838,7 +1071,7 @@ Trivial/Internal Changes
   version ``0.8.1`` release. (`#1606 <https://github.com/plasmapy/plasmapy/pull/1606>`__)
 
 
-Plasmapy v0.7.0 (2021-11-18)
+PlasmaPy v0.7.0 (2021-11-18)
 ============================
 
 Backwards Incompatible Changes
@@ -875,7 +1108,7 @@ Backwards Incompatible Changes
 - Changed |ParticleList| so that if it is provided with no arguments, then it creates
   an empty |ParticleList|.  This behavior is analogous to how `list` and `tuple` work. (`#1223 <https://github.com/plasmapy/plasmapy/pull/1223>`__)
 - Changed the behavior of |Particle| in equality comparisons. Comparing a
-  |Particle| with an object that is not :term:`particle-like` will now
+  |Particle| with an object that is not |particle-like| will now
   return `False` instead of raising a `TypeError`. (`#1225 <https://github.com/plasmapy/plasmapy/pull/1225>`__)
 - Changed the behavior of `~plasmapy.particles.particle_class.CustomParticle`
   so that it returns `False` when compared for equality with another type.
@@ -1139,7 +1372,7 @@ Trivial/Internal Changes
   with matplotlib 3.5.0. (`#1334 <https://github.com/plasmapy/plasmapy/pull/1334>`__)
 
 
-Plasmapy v0.6.0 (2021-03-14)
+PlasmaPy v0.6.0 (2021-03-14)
 ============================
 
 Backwards Incompatible Changes
@@ -1345,7 +1578,7 @@ Trivial/Internal Changes
 - Properly handled warnings in `test_proton_radiography.py` (`#1050 <https://github.com/plasmapy/plasmapy/pull/1050>`__)
 
 
-Plasmapy v0.5.0 (2020-12-09)
+PlasmaPy v0.5.0 (2020-12-09)
 ============================
 
 Backwards Incompatible Changes
@@ -1422,7 +1655,7 @@ Trivial/Internal Changes
   easier for contributors. Moved away from Travis CI for test cron jobs. (`#952 <https://github.com/plasmapy/plasmapy/pull/952>`__)
 
 
-Plasmapy v0.4.0 (2020-07-20)
+PlasmaPy v0.4.0 (2020-07-20)
 ============================
 
 Backwards Incompatible Changes
@@ -1547,7 +1780,7 @@ Trivial/Internal Changes
   `mass` and `charge` can accept string representations of astropy `Quantities`. (`#862 <https://github.com/plasmapy/plasmapy/pull/862>`__)
 
 
-Plasmapy v0.3.0 (2020-01-25)
+PlasmaPy v0.3.0 (2020-01-25)
 ============================
 
 Backwards Incompatible Changes

@@ -18,8 +18,8 @@ contributors can take to get set up to contribute to PlasmaPy. After
 taking these steps, you'll be ready to go through the :ref:`code
 contribution workflow <workflow>`.
 
-If you run into any problems, please feel free to reach out to us in
-our `Matrix chat room`_ or during our weekly `office hours`_.
+If you run into any problems, please feel free to reach out to us in our
+`Matrix chat room`_ or during our weekly `office hours`_.
 
 Pre-requisites
 ==============
@@ -94,8 +94,8 @@ as its command line interface (CLI).
 Using git and GitHub
 --------------------
 
-Code contributions to PlasmaPy are made using |git|_ and GitHub_.
-Before contributing code to PlasmaPy, please take the following steps:
+Code contributions to PlasmaPy are made using |git|_ and GitHub_. Before
+contributing code to PlasmaPy, please take the following steps:
 
 #. `Sign up on GitHub`_ for a free account.
 
@@ -245,7 +245,7 @@ when you :py:`import plasmapy`.
 
    .. note::
 
-      In Windows, the directory path will be :file:`C:\Users\<username>\repos\PlasmaPy`.
+      In Windows, the directory path will be :file:`C:\\Users\\<username>\\repos\\PlasmaPy`.
 
 3. If you created a Conda_ environment for contributing to PlasmaPy,
    activate it with:
