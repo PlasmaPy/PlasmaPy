@@ -2,10 +2,10 @@
 
 __all__ = ["call_string", "attribute_call_string", "method_call_string"]
 
+import astropy.units as u
 import inspect
 import numpy as np
 
-from astropy import units as u
 from numbers import Integral
 from typing import Any, Callable, Optional, Union
 
@@ -23,13 +23,11 @@ def _code_repr_of_ndarray(array: np.ndarray, max_items=np.inf) -> str:
     def remove_excess_spaces(s: str) -> str:
         s = " ".join(s.split())
         s = s.replace(" ,", ",")
-        s = s.replace("[ ", "[")
-        return s
+        return s.replace("[ ", "[")
 
     def put_np_before_infs_and_nans(s: str) -> str:
         s = s.replace("inf", "np.inf")
-        s = s.replace("nan", "np.nan")
-        return s
+        return s.replace("nan", "np.nan")
 
     def replace_excess_items_with_ellipsis(s: str, max_items: Integral):
         substrings_between_commas = s.split(",")
@@ -91,7 +89,7 @@ def _code_repr_of_arg(arg, max_items=np.inf) -> str:
 
 
 def _code_repr_of_args_and_kwargs(
-    args: Any = None, kwargs: dict = None, max_items=np.inf
+    args: Any = None, kwargs: Optional[dict] = None, max_items=np.inf
 ) -> str:
     """
     Take positional and keyword arguments, and format them into a
@@ -191,7 +189,7 @@ def _string_together_warnings_for_printing(
 def call_string(
     f: Callable,
     args: Any = None,
-    kwargs: dict[str, Any] = None,
+    kwargs: Optional[dict[str, Any]] = None,
     max_items: Integral = 12,
 ) -> str:
     """

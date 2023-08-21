@@ -219,7 +219,7 @@ class ParticleList(collections.UserList):
         other_as_particle_list = self._cast_other_as_particle_list(other)
         return other_as_particle_list.__add__(self)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"ParticleList({self.symbols!r})"
 
     def __gt__(self, other):
@@ -230,7 +230,7 @@ class ParticleList(collections.UserList):
             reactants=self.symbols, products=other_as_particle_list.symbols
         )
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.__repr__()
 
     def _get_particle_attribute(self, attr, unit=None, default=None):
@@ -293,7 +293,7 @@ class ParticleList(collections.UserList):
             self.data.extend(iterable)
         else:
             for obj in iterable:
-                self.append(obj)
+                self.append(obj)  # noqa: PERF402
 
     @property
     def half_life(self) -> u.s:
@@ -317,9 +317,9 @@ class ParticleList(collections.UserList):
     def is_category(
         self,
         *category_tuple,
-        require: Union[str, Iterable[str]] = None,
-        any_of: Union[str, Iterable[str]] = None,
-        exclude: Union[str, Iterable[str]] = None,
+        require: Optional[Union[str, Iterable[str]]] = None,
+        any_of: Optional[Union[str, Iterable[str]]] = None,
+        exclude: Optional[Union[str, Iterable[str]]] = None,
     ) -> list[bool]:
         """
         Determine element-wise if the particles in the |ParticleList|
@@ -399,7 +399,7 @@ class ParticleList(collections.UserList):
             default=np.nan * u.J,
         )
 
-    def sort(self, key: Callable = None, reverse: bool = False):
+    def sort(self, key: Optional[Callable] = None, reverse: bool = False):
         """
         Sort the |ParticleList| in-place.
 

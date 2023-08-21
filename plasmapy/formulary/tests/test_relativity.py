@@ -1,9 +1,9 @@
 """Tests for functions in relativity.py."""
 
+import astropy.units as u
 import numpy as np
 import pytest
 
-from astropy import units as u
 from astropy.constants import c
 from astropy.tests.helper import assert_quantity_allclose
 
@@ -191,7 +191,7 @@ def test_relativistic_body_init_exceptions(kwargs, exception):
 def test_relativistic_body_equality():
     """Test that a `RelativisticBody` instance equals itself."""
     relativistic_body = RelativisticBody(particle=proton, v_over_c=0.34)
-    assert relativistic_body == relativistic_body
+    assert relativistic_body == relativistic_body  # noqa: PLR0124
 
 
 @pytest.mark.parametrize(

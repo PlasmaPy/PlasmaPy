@@ -45,8 +45,8 @@ def find_ion_saturation_current(
     current: np.ndarray,
     *,
     fit_type: str = "exp_plus_linear",
-    current_bound: numbers.Real = None,
-    voltage_bound: numbers.Real = None,
+    current_bound: Optional[numbers.Real] = None,
+    voltage_bound: Optional[numbers.Real] = None,
 ) -> tuple[ffuncs.Linear, ISatExtras]:
     """
     Determines the ion-saturation current (:math:`I_{sat}`) for a given
