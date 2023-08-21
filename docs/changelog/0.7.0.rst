@@ -235,7 +235,7 @@ Improved Documentation
 - Updated the |documentation guide| to include a description on how to
   add and cite references to PlasmaPy's global bibliography BibTeX_ file,
   :file:`docs/bibliography.bib`. (`#1263 <https://github.com/plasmapy/plasmapy/pull/1263>`__)
-- Added sphinxcontrib-bibtex_ as a Sphinx_ extension to enable references
+- Added ``sphinxcontrib-bibtex`` as a Sphinx_ extension to enable references
   to be stored in a BibTeX_ file. (`#1263 <https://github.com/plasmapy/plasmapy/pull/1263>`__)
 - Began a documentation-wide |bibliography| page. (`#1263 <https://github.com/plasmapy/plasmapy/pull/1263>`__)
 - Updated the |documentation guide| to describe where formulae should go in

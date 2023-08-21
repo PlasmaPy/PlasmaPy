@@ -92,7 +92,7 @@ def Debye_number(T_e: u.K, n_e: u.m**-3) -> u.dimensionless_unscaled:
 
     Examples
     --------
-    >>> from astropy import units as u
+    >>> import astropy.units as u
     >>> from astropy.constants.si import m_p, m_e
     >>> Debye_number(5e6*u.K, 5e9*u.cm**-3)
     <Quantity 2.17658...e+08>

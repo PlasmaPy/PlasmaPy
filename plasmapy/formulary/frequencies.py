@@ -117,7 +117,7 @@ def gyrofrequency(
 
     Examples
     --------
-    >>> from astropy import units as u
+    >>> import astropy.units as u
     >>> gyrofrequency(0.1 * u.T, 'e-')
     <Quantity 1.7588...e+10 rad / s>
     >>> gyrofrequency(0.1 * u.T, 'e-', to_hz=True)
@@ -305,7 +305,7 @@ def plasma_frequency(
 
     Examples
     --------
-    >>> from astropy import units as u
+    >>> import astropy.units as u
     >>> plasma_frequency(1e19 * u.m**-3, particle='p')
     <Quantity 4.16329...e+09 rad / s>
     >>> plasma_frequency(1e19 * u.m**-3, particle='p', to_hz=True)
@@ -417,7 +417,7 @@ def lower_hybrid_frequency(B: u.T, n_i: u.m**-3, ion: ParticleLike) -> u.rad / u
 
     Examples
     --------
-    >>> from astropy import units as u
+    >>> import astropy.units as u
     >>> lower_hybrid_frequency(0.2 * u.T, n_i = 5e19 * u.m**-3, ion='D+')
     <Quantity 5.78372...e+08 rad / s>
     >>> lower_hybrid_frequency(0.2 * u.T, n_i = 5e19 * u.m**-3, ion='D+', to_hz = True)
@@ -507,7 +507,7 @@ def upper_hybrid_frequency(B: u.T, n_e: u.m**-3) -> u.rad / u.s:
 
     Examples
     --------
-    >>> from astropy import units as u
+    >>> import astropy.units as u
     >>> upper_hybrid_frequency(0.2 * u.T, n_e=5e19 * u.m**-3)
     <Quantity 4.00459...e+11 rad / s>
     >>> upper_hybrid_frequency(0.2 * u.T, n_e=5e19 * u.m**-3, to_hz = True)
@@ -608,7 +608,7 @@ def Buchsbaum_frequency(
 
     Examples
     --------
-    >>> from astropy import units as u
+    >>> import astropy.units as u
     >>> fbb = Buchsbaum_frequency(0.1*u.T, 1e18*u.m**-3, 1e18*u.m**-3, "proton", "He+", to_hz=True)
     >>> fbb
     <Quantity 764831.28372462 Hz>
