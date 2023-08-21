@@ -3,8 +3,8 @@
 Acknowledging and Citing
 ========================
 
-.. |version_to_cite| replace:: 2023.5.0
-.. |doi_hyperlink| replace:: https://doi.org/10.5281/zenodo.799188
+.. |version_to_cite| replace:: 2023.5.1
+.. |doi_hyperlink| replace:: https://doi.org/10.5281/zenodo.8015753
 .. |citation_year| replace:: 2023
 
 If you use PlasmaPy for a project that results in a publication, we ask

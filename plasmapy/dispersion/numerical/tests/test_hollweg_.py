@@ -1,9 +1,8 @@
 """Tests for the hollweg dispersion solution."""
 
+import astropy.units as u
 import numpy as np
 import pytest
-
-from astropy import units as u
 
 from plasmapy.dispersion.numerical.hollweg_ import hollweg
 from plasmapy.formulary import speeds
@@ -367,7 +366,7 @@ class TestHollweg:
         assert isinstance(ws, dict)
         assert len({"acoustic_mode", "alfven_mode", "fast_mode"} - set(ws.keys())) == 0
 
-        for _mode, val in ws.items():  # noqa: B007
+        for val in ws.values():
             assert isinstance(val, u.Quantity)
             assert val.unit == u.rad / u.s
             assert val.shape == expected["shape"]

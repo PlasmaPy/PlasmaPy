@@ -28,7 +28,7 @@ c_si_unitless = c.value
     T_e={"can_be_negative": False, "equivalencies": u.temperature_energy()},
     T_i={"can_be_negative": False, "equivalencies": u.temperature_energy()},
 )
-def kinetic_alfven(  # noqa: C901, PLR0912, PLR0915
+def kinetic_alfven(  # noqa: C901, PLR0912
     B: u.T,
     ion: ParticleLike,
     k: u.rad / u.m,
@@ -157,7 +157,7 @@ def kinetic_alfven(  # noqa: C901, PLR0912, PLR0915
     Examples
     --------
     >>> import numpy as np
-    >>> from astropy import units as u
+    >>> import astropy.units as u
     >>> from plasmapy.particles import Particle
     >>> from plasmapy.dispersion.numerical import kinetic_alfven_
     >>> inputs = {

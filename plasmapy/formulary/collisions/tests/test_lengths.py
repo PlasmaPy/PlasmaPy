@@ -1,7 +1,6 @@
+import astropy.units as u
 import numpy as np
 import pytest
-
-from astropy import units as u
 
 from plasmapy.formulary.collisions import coulomb, lengths
 from plasmapy.utils import exceptions
