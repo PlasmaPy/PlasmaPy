@@ -8,7 +8,7 @@ import astropy.units as u
 import numpy as np
 
 from numbers import Integral, Real
-from typing import Dict, List, NoReturn, Optional, Tuple, Union
+from typing import NoReturn, Optional, Union
 
 from plasmapy.particles.atomic import atomic_number
 from plasmapy.particles.exceptions import (
@@ -80,7 +80,7 @@ class IonizationStateCollection:
 
     Examples
     --------
-    >>> from astropy import units as u
+    >>> import astropy.units as u
     >>> from plasmapy.particles import IonizationStateCollection
     >>> states = IonizationStateCollection(
     ...     {'H': [0.5, 0.5], 'He': [0.95, 0.05, 0]},
@@ -135,39 +135,34 @@ class IonizationStateCollection:
     @validate_quantities(T_e={"equivalencies": u.temperature_energy()})
     def __init__(
         self,
-        inputs: Union[Dict[str, np.ndarray], List, Tuple],
+        inputs: Union[dict[str, np.ndarray], list, tuple],
         *,
         T_e: u.K = np.nan * u.K,
-        abundances: Optional[Dict[str, Real]] = None,
-        log_abundances: Optional[Dict[str, Real]] = None,
+        abundances: Optional[dict[str, Real]] = None,
+        log_abundances: Optional[dict[str, Real]] = None,
         n0: u.m**-3 = np.nan * u.m**-3,
         tol: Real = 1e-15,
         kappa: Real = np.inf,
     ):
-
         set_abundances = True
-        if isinstance(inputs, dict):
-            all_quantities = np.all(
-                [isinstance(fracs, u.Quantity) for fracs in inputs.values()]
+        if isinstance(inputs, dict) and np.all(
+            [isinstance(fracs, u.Quantity) for fracs in inputs.values()]
+        ):
+            right_units = np.all(
+                [fracs[0].si.unit == u.m**-3 for fracs in inputs.values()]
             )
-            if all_quantities:
-                right_units = np.all(
-                    [fracs[0].si.unit == u.m**-3 for fracs in inputs.values()]
+            if not right_units:
+                raise ParticleError(
+                    "Units must be inverse volume for number densities."
                 )
-                if not right_units:
-                    raise ParticleError(
-                        "Units must be inverse volume for number densities."
-                    )
-                abundances_provided = (
-                    abundances is not None or log_abundances is not None
-                )
+            abundances_provided = abundances is not None or log_abundances is not None
 
-                if abundances_provided:
-                    raise ParticleError(
-                        "Abundances cannot be provided if inputs "
-                        "provides number density information."
-                    )
-                set_abundances = False
+            if abundances_provided:
+                raise ParticleError(
+                    "Abundances cannot be provided if inputs "
+                    "provides number density information."
+                )
+            set_abundances = False
 
         try:
             self._pars = {}
@@ -194,7 +189,6 @@ class IonizationStateCollection:
         return self.__str__()
 
     def __getitem__(self, *values) -> Union[IonizationState, IonicLevel]:
-
         errmsg = f"Invalid indexing for IonizationStateCollection instance: {values[0]}"
 
         one_input = not isinstance(values[0], tuple)
@@ -218,9 +212,7 @@ class IonizationStateCollection:
                 )
 
             if not isinstance(int_charge, Integral):
-                raise TypeError(  # noqa: TC301
-                    f"{int_charge} is not a valid charge for {particle}."
-                )
+                raise TypeError(f"{int_charge} is not a valid charge for {particle}.")
             elif not 0 <= int_charge <= atomic_number(particle):
                 raise ChargeError(f"{int_charge} is not a valid charge for {particle}.")
 
@@ -233,8 +225,7 @@ class IonizationStateCollection:
                 number_density=self.number_densities[particle][int_charge],
             )
 
-    def __setitem__(self, key, value):
-
+    def __setitem__(self, key, value):  # noqa: C901, PLR0912
         errmsg = (
             f"Cannot set item for this IonizationStateCollection instance for "
             f"key = {key!r} and value = {value!r}"
@@ -303,7 +294,7 @@ class IonizationStateCollection:
                         f"defined."
                     )
 
-        try:  # noqa: TC101
+        try:
             new_fractions = np.array(value, dtype=float)
         except TypeError as exc:
             raise TypeError(
@@ -341,10 +332,9 @@ class IonizationStateCollection:
         self._ionic_fractions[particle][:] = new_fractions.copy()
 
     def __iter__(self):
-        yield from [self[key] for key in self.ionic_fractions.keys()]
+        yield from [self[key] for key in self.ionic_fractions]
 
     def __eq__(self, other):
-
         if not isinstance(other, IonizationStateCollection):
             return False
 
@@ -374,12 +364,10 @@ class IonizationStateCollection:
                 return False
 
         for attribute in ("ionic_fractions", "number_densities"):
-
             this_dict = getattr(self, attribute)
             that_dict = getattr(other, attribute)
 
             for particle in self.base_particles:
-
                 this = this_dict[particle]
                 that = that_dict[particle]
 
@@ -397,7 +385,7 @@ class IonizationStateCollection:
         return True
 
     @property
-    def ionic_fractions(self) -> Dict[str, np.array]:
+    def ionic_fractions(self) -> dict[str, np.array]:
         """
         A `dict` containing the ionic fractions for each element and
         isotope.
@@ -410,7 +398,10 @@ class IonizationStateCollection:
         return self._ionic_fractions
 
     @ionic_fractions.setter
-    def ionic_fractions(self, inputs: Union[Dict, List, Tuple]):
+    def ionic_fractions(  # noqa: C901, PLR0912, PLR0915
+        self,
+        inputs: Union[dict, list, tuple],
+    ):
         """
         Set the ionic fractions.
 
@@ -449,7 +440,7 @@ class IonizationStateCollection:
                     "ionic_fractions has been set already."
                 )
             old_particles = set(self.base_particles)
-            new_particles = {particle_symbol(key) for key in inputs.keys()}
+            new_particles = {particle_symbol(key) for key in inputs}
             missing_particles = old_particles - new_particles
             if missing_particles:
                 raise ParticleError(
@@ -595,7 +586,6 @@ class IonizationStateCollection:
                 self._pars["abundances"] = new_abundances
 
         elif isinstance(inputs, (list, tuple)):
-
             try:
                 _particle_instances = [Particle(particle) for particle in inputs]
             except (InvalidParticleError, TypeError) as exc:
@@ -618,14 +608,15 @@ class IonizationStateCollection:
             raise TypeError("Incorrect inputs to set ionic_fractions.")
 
         for i in range(1, len(_particle_instances)):
-            if _particle_instances[i - 1].element == _particle_instances[i].element:
-                if (
-                    not _particle_instances[i - 1].isotope
-                    and _particle_instances[i].isotope
-                ):
-                    raise ParticleError(
-                        "Cannot have an element and isotopes of that element."
-                    )
+            if (
+                _particle_instances[i - 1].element == _particle_instances[i].element
+            ) and (
+                not _particle_instances[i - 1].isotope
+                and _particle_instances[i].isotope
+            ):
+                raise ParticleError(
+                    "Cannot have an element and isotopes of that element."
+                )
 
         self._particle_instances = _particle_instances
         self._base_particles = _elements_and_isotopes
@@ -674,7 +665,7 @@ class IonizationStateCollection:
         self._pars["n"] = n.to(u.m**-3)
 
     @property
-    def number_densities(self) -> Dict[str, u.Quantity]:
+    def number_densities(self) -> dict[str, u.Quantity]:
         """
         A `dict` containing the number densities for the elements and/or
         isotopes composing the collection.
@@ -685,12 +676,12 @@ class IonizationStateCollection:
         }
 
     @property
-    def abundances(self) -> Optional[Dict[ParticleLike, Real]]:
+    def abundances(self) -> Optional[dict[ParticleLike, Real]]:
         """The elemental abundances."""
         return self._pars["abundances"]
 
     @abundances.setter
-    def abundances(self, abundances_dict: Optional[Dict[ParticleLike, Real]]):
+    def abundances(self, abundances_dict: Optional[dict[ParticleLike, Real]]):
         """
         Set the elemental (or isotopic) abundances.  The elements and
         isotopes must be the same as or a superset of the elements whose
@@ -747,7 +738,7 @@ class IonizationStateCollection:
             self._pars["abundances"] = new_abundances_dict
 
     @property
-    def log_abundances(self) -> Dict[str, Real]:
+    def log_abundances(self) -> dict[str, Real]:
         """
         A `dict` with atomic or isotope symbols as keys and the base 10
         logarithms of the relative abundances as the corresponding values.
@@ -757,7 +748,7 @@ class IonizationStateCollection:
         }
 
     @log_abundances.setter
-    def log_abundances(self, value: Optional[Dict[str, Real]]):
+    def log_abundances(self, value: Optional[dict[str, Real]]):
         """Set the base 10 logarithm of the relative abundances."""
         if value is not None:
             try:
@@ -774,9 +765,7 @@ class IonizationStateCollection:
         return self._pars["T_e"]
 
     @T_e.setter
-    @validate_quantities(
-        electron_temperature=dict(equivalencies=u.temperature_energy())
-    )
+    @validate_quantities(electron_temperature={"equivalencies": u.temperature_energy()})
     def T_e(self, electron_temperature: u.K):
         """Set the electron temperature."""
         try:
@@ -818,7 +807,7 @@ class IonizationStateCollection:
         self._pars["kappa"] = np.real(value)
 
     @property
-    def base_particles(self) -> List[str]:
+    def base_particles(self) -> list[str]:
         """
         A `list` of the elements and isotopes whose ionization states
         are being kept track of.
@@ -905,7 +894,6 @@ class IonizationStateCollection:
         all_abundances = []
 
         for base_particle in self.base_particles:
-
             ionization_state = self[base_particle]
             ionic_levels = ionization_state.to_list()[min_charge:]
             all_particles.extend(ionic_levels)

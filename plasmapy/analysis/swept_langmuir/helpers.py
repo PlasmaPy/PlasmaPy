@@ -4,14 +4,12 @@ __all__ = ["check_sweep"]
 import astropy.units as u
 import numpy as np
 
-from typing import Tuple
 
-
-def check_sweep(
+def check_sweep(  # noqa: C901, PLR0912
     voltage: np.ndarray,
     current: np.ndarray,
     strip_units: bool = True,
-) -> Tuple[np.ndarray, np.ndarray]:
+) -> tuple[np.ndarray, np.ndarray]:
     """
     Function for checking that the voltage and current arrays are properly
     formatted for analysis by `plasmapy.analysis.swept_langmuir`.

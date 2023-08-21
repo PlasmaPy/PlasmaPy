@@ -16,7 +16,7 @@ import numpy as np
 import warnings
 
 from lmfit import Model
-from typing import Any, Callable, Dict, Optional, Tuple, Union
+from typing import Any, Callable, Optional, Union
 
 from plasmapy.formulary import (
     permittivity_1D_Maxwellian_lite,
@@ -63,7 +63,7 @@ def spectral_density_lite(
     probe_vec: np.ndarray,
     scatter_vec: np.ndarray,
     instr_func_arr: Optional[np.ndarray] = None,
-) -> Tuple[Union[np.floating, np.ndarray], np.ndarray]:
+) -> tuple[Union[np.floating, np.ndarray], np.ndarray]:
     r"""
     The :term:`lite-function` version of
     `~plasmapy.diagnostics.thomson.spectral_density`.  Performs the same
@@ -207,14 +207,14 @@ def spectral_density_lite(
 
     # Calculate the susceptibilities
     chiE = np.zeros([efract.size, w.size], dtype=np.complex128)
-    for i, fract in enumerate(efract):
+    for i, _fract in enumerate(efract):  # noqa: B007
         wpe = plasma_frequency_lite(ne[i], m_e_si_unitless, 1)
         chiE[i, :] = permittivity_1D_Maxwellian_lite(w_e[i, :], k, vT_e[i], wpe)
 
     # Treatment of multiple species is an extension of the discussion in
     # Sheffield Sec. 5.1
     chiI = np.zeros([ifract.size, w.size], dtype=np.complex128)
-    for i, fract in enumerate(ifract):
+    for i, _fract in enumerate(ifract):  # noqa: B007
         wpi = plasma_frequency_lite(ni[i], ion_mass[i], ion_z[i])
         chiI[i, :] = permittivity_1D_Maxwellian_lite(w_i[i, :], k, vT_i[i], wpi)
 
@@ -261,7 +261,7 @@ def spectral_density_lite(
     T_i={"can_be_negative": False, "equivalencies": u.temperature_energy()},
 )
 @bind_lite_func(spectral_density_lite)
-def spectral_density(
+def spectral_density(  # noqa: C901, PLR0912, PLR0915
     wavelengths: u.nm,
     probe_wavelength: u.nm,
     n: u.m**-3,
@@ -276,7 +276,7 @@ def spectral_density(
     probe_vec=None,
     scatter_vec=None,
     instr_func: Optional[Callable] = None,
-) -> Tuple[Union[np.floating, np.ndarray], np.ndarray]:
+) -> tuple[Union[np.floating, np.ndarray], np.ndarray]:
     r"""Calculate the spectral density function for Thomson scattering of
     a probe laser beam by a multi-species Maxwellian plasma.
 
@@ -472,7 +472,7 @@ def spectral_density(
 
     try:
         if sum(ion.charge_number <= 0 for ion in ions):
-            raise ValueError("All ions must be positively charged.")  # noqa: TC301
+            raise ValueError("All ions must be positively charged.")
     # Catch error if charge information is missing
     except ChargeError as ex:
         raise ValueError("All ions must be positively charged.") from ex
@@ -517,7 +517,6 @@ def spectral_density(
 
     # Apply the instrument function
     if instr_func is not None and callable(instr_func):
-
         # Create an array of wavelengths of the same size as wavelengths
         # but centered on zero
         wspan = (np.max(wavelengths) - np.min(wavelengths)) / 2
@@ -569,7 +568,7 @@ def spectral_density(
 # ***************************************************************************
 
 
-def _count_populations_in_params(params: Dict[str, Any], prefix: str) -> int:
+def _count_populations_in_params(params: dict[str, Any], prefix: str) -> int:
     """
     Counts the number of electron or ion populations in a ``params``
     `dict`.
@@ -582,7 +581,7 @@ def _count_populations_in_params(params: Dict[str, Any], prefix: str) -> int:
 
 
 def _params_to_array(
-    params: Dict[str, Any], prefix: str, vector: bool = False
+    params: dict[str, Any], prefix: str, vector: bool = False
 ) -> np.ndarray:
     """
     Constructs an array from the values contained in the dictionary
@@ -626,7 +625,7 @@ def _params_to_array(
 
 def _spectral_density_model(wavelengths, settings=None, **params):
     """
-    lmfit Model function for fitting Thomson spectra
+    lmfit Model function for fitting Thomson spectra.
 
     For descriptions of arguments, see the `thomson_model` function.
     """
@@ -680,7 +679,9 @@ def _spectral_density_model(wavelengths, settings=None, **params):
     return model_Skw
 
 
-def spectral_density_model(wavelengths, settings, params):
+def spectral_density_model(  # noqa: C901, PLR0912, PLR0915
+    wavelengths, settings, params
+):
     r"""
     Returns a `lmfit.model.Model` function for Thomson spectral density
     function.
@@ -790,7 +791,7 @@ def spectral_density_model(wavelengths, settings, params):
     # **********************
     for p, nums in zip(["T_e", "T_i"], [num_e, num_i]):
         for num in range(nums):
-            key = f"{p}_{str(num)}"
+            key = f"{p}_{num!s}"
             if key not in params:
                 raise ValueError(
                     f"{p} was not provided in kwarg 'parameters', but is required."
@@ -827,7 +828,7 @@ def spectral_density_model(wavelengths, settings, params):
 
     try:
         if sum(ion.charge_number <= 0 for ion in ions):
-            raise ValueError("All ions must be positively charged.")  # noqa: TC301
+            raise ValueError("All ions must be positively charged.")
     # Catch error if charge information is missing
     except ChargeError as ex:
         raise ValueError("All ions must be positively charged.") from ex

@@ -13,6 +13,7 @@
 
 .. |ClassicalTransport| replace:: :class:`~plasmapy.formulary.braginskii.ClassicalTransport`
 .. |RelativisticBody| replace:: :class:`~plasmapy.formulary.relativity.RelativisticBody`
+.. |SingleParticleCollisionFrequencies| replace:: :class:`~plasmapy.formulary.collisions.frequencies.SingleParticleCollisionFrequencies`
 
 .. ------------------
 .. plasmapy.particles
@@ -103,11 +104,15 @@
 .. |coding guide| replace:: :ref:`coding guide`\
 .. |contributor guide| replace:: :ref:`contributor guide`\
 .. |documentation guide| replace:: :ref:`documentation guide`\
+.. |expect-api-changes| replace:: This functionality is under development. Backward incompatible changes might occur in future releases.
+.. |getting ready to contribute| replace:: :ref:`getting ready to contribute`\
 .. |glossary| replace:: :ref:`glossary`\
-.. |minpython| replace:: 3.8
+.. |minpython| replace:: 3.9
+.. |maxpython| replace:: 3.11
 .. |plasma-calculator| replace:: :ref:`plasmapy-calculator`\
 .. |release guide| replace:: :ref:`release guide`\
 .. |testing guide| replace:: :ref:`testing guide`\
+.. |code contribution workflow| replace:: :ref:`code contribution workflow <workflow>`\
 
 .. --------------
 .. Glossary terms
@@ -146,7 +151,6 @@
 .. _editable installation: https://pip.pypa.io/en/stable/topics/local-project-installs/#editable-installs
 .. _equivalencies: https://docs.astropy.org/en/stable/units/equivalencies.html
 .. _flake8: https://flake8.pycqa.org/en/latest
-.. _git: https://git-scm.com
 .. _GitHub Actions: https://docs.github.com/en/actions
 .. _GitHub Discussions page: https://github.com/PlasmaPy/PlasmaPy/discussions
 .. _GitHub Flavored Markdown: https://github.github.com/gfm
@@ -168,6 +172,7 @@
 .. _nbqa: https://nbqa.readthedocs.io
 .. _numpydoc: https://numpydoc.readthedocs.io/en/latest/format.html#docstring-standard
 .. _NumPy: https://numpy.org
+.. _office hours: https://www.plasmapy.org/meetings/office_hours/
 .. _OpenPMD: https://www.openpmd.org/
 .. _pandas: https://pandas.pydata.org
 .. _pip: https://pip.pypa.io
@@ -188,6 +193,7 @@
 .. _Read the Docs: https://readthedocs.org
 .. _reST: https://docutils.sourceforge.io/rst.html
 .. _reStructuredText (reST): https://docutils.sourceforge.io/rst.html
+.. _ruff: https://beta.ruff.rs/docs
 .. _SciPy: https://scipy.org
 .. _sphinx_automodapi: https://sphinx-automodapi.readthedocs.io
 .. _sphinx-build: https://www.sphinx-doc.org/en/master/man/sphinx-build.html
@@ -220,32 +226,11 @@
 .. _`CITATION.cff`: https://github.com/PlasmaPy/PlasmaPy/blob/main/CITATION.cff
 .. |CITATION.cff| replace:: :file:`CITATION.cff`
 
-.. _`docs/_static`: https://github.com/PlasmaPy/PlasmaPy/tree/main/docs/_static
-.. |docs/_static| replace:: :file:`docs/_static`
-
-.. _`docs/_static/css`: https://github.com/PlasmaPy/PlasmaPy/tree/main/docs/_static/css
-.. |docs/_static/css| replace:: :file:`docs/_static/css`
-
-.. _`docs/api_static`: https://github.com/PlasmaPy/PlasmaPy/tree/main/docs/api_static
-.. |docs/api_static| replace:: :file:`docs/api_static`
-
-.. _`docs/conf.py`: https://github.com/PlasmaPy/PlasmaPy/blob/main/docs/conf.py
-.. |docs/conf.py| replace:: :file:`docs/conf.py`
-
-.. _`docs/glossary.rst`: https://github.com/PlasmaPy/PlasmaPy/blob/main/docs/glossary.rst
-.. |docs/glossary.rst| replace:: :file:`docs/glossary.rst`
-
-.. _`docs/common_links.rst`: https://github.com/PlasmaPy/PlasmaPy/blob/main/docs/common_links.rst
-.. |docs/common_links.rst| replace:: :file:`docs/common_links.rst`
-
-.. _`docs/bibliography.bib`: https://github.com/PlasmaPy/PlasmaPy/blob/main/docs/bibliography.bib
-.. |docs/bibliography.bib| replace:: :file:`docs/bibliography.bib`
+.. _git: https://git-scm.com
+.. |git| replace:: `git`
 
 .. _h5py: https://www.h5py.org/
 .. |h5py| replace:: `h5py`
-
-.. _`IPython.sphinxext.ipython_console_highlighting`: https://ipython.readthedocs.io/en/stable/sphinxext.html?highlight=IPython.sphinxext.ipython_console_highlighting#ipython-sphinx-directive-module
-.. |IPython.sphinxext.ipython_console_highlighting| replace:: `IPython.sphinxext.ipython_console_highlighting`
 
 .. _lmfit: https://lmfit.github.io/lmfit-py/
 .. |lmfit| replace:: `lmfit`
@@ -267,30 +252,6 @@
 
 .. _`pyproject.toml`: https://github.com/PlasmaPy/PlasmaPy/blob/main/pyproject.toml
 .. |pyproject.toml| replace:: :file:`pyproject.toml`
-
-.. _`sphinxcontrib-bibtex`: https://sphinxcontrib-bibtex.readthedocs.io
-.. |sphinxcontrib-bibtex| replace:: `sphinxcontrib-bibtex`
-
-.. _`sphinx_copybutton`: https://sphinx-copybutton.readthedocs.io
-.. |sphinx_copybutton| replace:: `sphinx_copybutton`
-
-.. _`sphinx_gallery.load_style`: https://sphinx-gallery.github.io/stable/advanced.html?highlight=load_style#using-only-sphinx-gallery-styles
-.. |sphinx_gallery.load_style| replace:: `sphinx_gallery.load_style`
-
-.. _`sphinx_changelog`: https://sphinx-changelog.readthedocs.io
-.. |sphinx_changelog| replace:: `sphinx_changelog`
-
-.. _`sphinx-reredirects`: https://documatt.gitlab.io/sphinx-reredirects
-.. |sphinx-reredirects| replace:: `sphinx-reredirects`
-
-.. _`sphinx-hoverxref`: https://sphinx-hoverxref.readthedocs.io
-.. |sphinx-hoverxref| replace:: `sphinx-hoverxref`
-
-.. _`sphinx-issues`: https://github.com/sloria/sphinx-issues
-.. |sphinx-issues| replace:: `sphinx-issues`
-
-.. _`sphinx-notfound-page`: https://sphinx-notfound-page.readthedocs.io
-.. |sphinx-notfound-page| replace:: `sphinx-notfound-page`
 
 .. _`tox.ini`: https://github.com/PlasmaPy/PlasmaPy/blob/main/tox.ini
 .. |tox.ini| replace:: :file:`tox.ini`

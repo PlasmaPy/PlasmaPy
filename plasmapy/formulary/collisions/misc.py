@@ -45,7 +45,7 @@ def _process_inputs(T: u.K, species: (particles.Particle, particles.Particle), V
 
 # TODO: Remove redundant mass parameter
 def _replace_nan_velocity_with_thermal_velocity(
-    V, T, m, species=particles.Particle("e-")
+    V, T, m, species=particles.Particle("e-")  # noqa: B008
 ):
     """
     Get thermal velocity of system if no velocity is given, for a given
@@ -187,10 +187,10 @@ def mobility(
     >>> n = 1e19 * u.m ** -3
     >>> T = 1e6 * u.K
     >>> species = ('e', 'p')
-    >>> mobility(T, n, species)
-    <Quantity 250505... m2 / (s V)>
-    >>> mobility(T, n, species, V=1e6 * u.m / u.s)
-    <Quantity 1921.2784... m2 / (s V)>
+    >>> mobility(T, n, species)  # doctest: +SKIP
+    <Quantity 250505... m2 / (V s)>
+    >>> mobility(T, n, species, V=1e6 * u.m / u.s)  # doctest: +SKIP
+    <Quantity 1921.2784... m2 / (V s)>
     """
     freq = frequencies.collision_frequency(
         T=T, n=n_e, species=species, z_mean=z_mean, V=V, method=method
@@ -313,10 +313,10 @@ def Spitzer_resistivity(
     >>> n = 1e19 * u.m ** -3
     >>> T = 1e6 * u.K
     >>> species = ('e', 'p')
-    >>> Spitzer_resistivity(T, n, species)
-    <Quantity 2.4915...e-06 m Ohm>
-    >>> Spitzer_resistivity(T, n, species, V=1e6 * u.m / u.s)
-    <Quantity 0.000324... m Ohm>
+    >>> Spitzer_resistivity(T, n, species)  # doctest: +SKIP
+    <Quantity 2.4915...e-06 Ohm m>
+    >>> Spitzer_resistivity(T, n, species, V=1e6 * u.m / u.s)  # doctest: +SKIP
+    <Quantity 0.000324... Ohm m>
     """
     # collisional frequency
     freq = frequencies.collision_frequency(

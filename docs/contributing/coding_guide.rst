@@ -25,8 +25,8 @@ important as consistency, readability, and maintainability.
 This guide can (and should!) be regularly refined by the PlasmaPy
 community as we collectively learn new practices and our shared coding
 style changes. Please feel free to propose revisions to this guide by
-:ref:`submitting a pull request <code-contribution>` or by bringing up
-an idea at a community meeting.
+:ref:`submitting a pull request <workflow>` or by bringing up an idea at
+a community meeting.
 
 PlasmaPy generally follows the :pep:`8` style guide for Python code,
 using auto-formatters such as black_ and isort_ that are executed using
@@ -140,8 +140,8 @@ Names
 
 Names are our most fundamental means of communicating the intent and
 purpose of code. Wisely chosen names can greatly improve the
-understandability of code, while inadequate names can obfuscate what
-the code is supposed to be doing.
+understandability of code, while inadequate names can obfuscate what the
+code is supposed to be doing.
 
 * PlasmaPy generally uses the :pep:`8` conventions for variable names.
 
@@ -375,10 +375,10 @@ unmaintained comment may contain inaccurate or misleading information
 Error messages
 --------------
 
-Error messages are a vital but underappreciated form of documentation.
-A good error message can help someone pinpoint the source of a problem
-in seconds, while a cryptic or missing error message can lead to hours
-of frustration.
+Error messages are a vital but underappreciated form of documentation. A
+good error message can help someone pinpoint the source of a problem in
+seconds, while a cryptic or missing error message can lead to hours of
+frustration.
 
 * Use error messages to indicate the source of the problem while
   providing enough information for the user to troubleshoot it. When
@@ -465,16 +465,21 @@ Requirements
      Tools like pyupgrade_ help automatically upgrade the code base to
      the minimum supported version of Python for the next release.
 
-* In general, it is preferable to support minor releases of dependencies
-  from the last ≲ 24 months, unless there is a new feature in a
-  dependency that would be greatly beneficial for `plasmapy` development.
+* PlasmaPy should generally allow all feature releases of required
+  dependencies made in the last ≲ 24 months, unless a more recent
+  release includes a needed feature or bugfix.
 
-* Do not set maximum requirements (e.g., ``numpy <= 1.22.3``) unless
-  absolutely necessary. Maximum requirements can lead to version
-  conflicts when installed alongside other packages. Instead, update
-  PlasmaPy to become compatible with the latest versions of its
-  dependencies. Similarly, do not require exact versions of packages
-  (e.g., ``scipy == 1.5.3``).
+* Only set maximum or exact requirements (e.g., ``numpy <= 1.22.3`` or
+  ``scipy == 1.7.2``) when absolutely necessary. After setting a maximum
+  or exact requirement, create a GitHub issue to remove that
+  requirement.
+
+  .. tip::
+
+     Maximum requirements can lead to version conflicts when installed
+     alongside other packages. It is preferable to update PlasmaPy to
+     become compatible with the latest versions of its dependencies than
+     to set a maximum requirement.
 
 * Minor versions of Python are generally released in October of each
   year. However, it may take a few months before packages like NumPy_
@@ -713,7 +718,7 @@ Particles
 ---------
 
 The |Particle| class provides an object-oriented interface for accessing
-basic particle data. |Particle| accepts :term:`particle-like` inputs.
+basic particle data. |Particle| accepts |particle-like| inputs.
 
 .. code-block:: pycon
 
@@ -762,16 +767,18 @@ Equations and Physical Formulae
   the physical constants. For example, the following line of code
   obscures information about the physics being represented:
 
-  .. code-block:: pycon
+  .. autolink-skip:: section
 
-     >>> omega_ce = 1.76e7*(B/u.G)*u.rad/u.s  # doctest: +SKIP
+  .. code-block:: python
+
+     omega_ce = 1.76e7*(B/u.G)*u.rad/u.s  # doctest: +SKIP
 
   In contrast, the following line of code shows the exact formula
   which makes the code much more readable.
 
-  .. code-block:: pycon
+  .. code-block:: python
 
-     >>> omega_ce = (e * B) / (m_e * c)  # doctest: +SKIP
+     omega_ce = (e * B) / (m_e * c)  # doctest: +SKIP
 
   The origins of numerical coefficients in formulae should be
   documented.
@@ -784,23 +791,27 @@ Equations and Physical Formulae
 Angular Frequencies
 -------------------
 
-Unit conversions involving angles must be treated with care.  Angles
-are dimensionless but do have units.  Angular velocity is often given
-in units of radians per second, though dimensionally this is
-equivalent to inverse seconds.  Astropy will treat radians
-dimensionlessly when using the ``dimensionless_angles`` equivalency,
-but ``dimensionless_angles`` does not account for the multiplicative
-factor of ``2*pi`` that is used when converting between frequency (1 /
-s) and angular frequency (rad / s).  An explicit way to do this
-conversion is to set up an equivalency between cycles/s and Hz:
+Unit conversions involving angles must be treated with care. Angles are
+dimensionless but do have units. Angular velocity is often given in
+units of radians per second, though dimensionally this is equivalent to
+inverse seconds. Astropy will treat radians dimensionlessly when using
+the ``dimensionless_angles`` equivalency, but ``dimensionless_angles``
+does not account for the multiplicative factor of ``2*pi`` that is used
+when converting between frequency (1 / s) and angular frequency (rad /
+s). An explicit way to do this conversion is to set up an equivalency
+between cycles/s and Hz:
 
->>> from astropy import units as u
->>> f_ce = omega_ce.to(u.Hz, equivalencies=[(u.cy/u.s, u.Hz)])  # doctest: +SKIP
+.. code-block:: python
 
-However, ``dimensionless_angles`` does work when dividing a velocity
-by an angular frequency to get a length scale:
+   import astropy.units as u
+   f_ce = omega_ce.to(u.Hz, equivalencies=[(u.cy/u.s, u.Hz)])  # doctest: +SKIP
 
->>> d_i = (c/omega_pi).to(u.m, equivalencies=u.dimensionless_angles())  # doctest: +SKIP
+However, ``dimensionless_angles`` does work when dividing a velocity by
+an angular frequency to get a length scale:
+
+.. code-block:: python
+
+   d_i = (c/omega_pi).to(u.m, equivalencies=u.dimensionless_angles())  # doctest: +SKIP
 
 .. _example_notebooks:
 
@@ -810,12 +821,15 @@ Example notebooks
 .. _docs/notebooks: https://github.com/PlasmaPy/PlasmaPy/tree/main/docs/notebooks
 
 Examples in PlasmaPy are written as Jupyter notebooks, taking advantage
-of their mature ecosystems. They are located in `docs/notebooks`_. |nbsphinx|_
-takes care of executing them at documentation build time and including them
-in the documentation.
+of their mature ecosystems. They are located in `docs/notebooks`_.
+|nbsphinx|_ takes care of executing them at documentation build time and
+including them in the documentation.
 
-Please note that it is necessary to store notebooks with their outputs stripped
-(use the "Edit -> Clear all" option in JupyterLab and the "Cell -> All Output -> Clear" option in the "classic" Jupyter Notebook). This accomplishes two goals:
+Please note that it is necessary to store notebooks with their outputs
+stripped
+(use the "Edit -> Clear all" option in JupyterLab and the "Cell -> All
+Output -> Clear" option in the "classic" Jupyter Notebook). This
+accomplishes two goals:
 
 1. helps with versioning the notebooks, as binary image data is not stored in
    the notebook
@@ -826,18 +840,19 @@ Please note that it is necessary to store notebooks with their outputs stripped
   In the future, verifying and running this step may be automated via a GitHub bot.
   Currently, reviewers should ensure that submitted notebooks have outputs stripped.
 
-If you have an example notebook that includes packages unavailable in the
-documentation building environment (e.g., ``bokeh``) or runs some heavy
-computation that should not be executed on every commit, *keep the outputs in
-the notebook* but store it in the repository with a ``preexecuted_`` prefix, e.g.,
+If you have an example notebook that includes packages unavailable in
+the documentation building environment (e.g., ``bokeh``) or runs some
+heavy computation that should not be executed on every commit, *keep the
+outputs in the notebook* but store it in the repository with a
+``preexecuted_`` prefix, e.g.,
 :file:`preexecuted_full_3d_mhd_chaotic_turbulence_simulation.ipynb`.
 
 Compatibility with Prior Versions of Python, NumPy, and Astropy
 ===============================================================
 
-PlasmaPy releases will generally abide by the following standards,
-which are adapted from `NEP 29`_ for the support of old versions of
-Python_, NumPy_, and Astropy_.
+PlasmaPy releases will generally abide by the following standards, which
+are adapted from `NEP 29`_ for the support of old versions of Python_,
+NumPy_, and Astropy_.
 
 * PlasmaPy should support at least the minor versions of Python
   initially released 42 months prior to a planned project release date.
@@ -861,97 +876,6 @@ Exceptions to these guidelines should only be made when there are major
 improvements or fixes to upstream functionality or when other required
 packages have stricter requirements.
 
-.. The following section will be moved off of this page in #1656
-
-.. _code-contribution:
-
-Branches, commits, and pull requests
-====================================
-
-Before making any changes, it is prudent to update your local
-repository with the most recent changes from the development
-repository:
-
-.. code-block:: bash
-
-  git fetch upstream
-
-Changes to PlasmaPy should be made using branches.  It is usually best
-to avoid making changes on your main branch so that it can be kept
-consistent with the upstream repository.  Instead we can create a new
-branch for the specific feature that you would like to work on:
-
-.. code-block:: bash
-
-  git branch *your-new-feature*
-
-Descriptive branch names such as ``grad-shafranov`` or
-``adding-eigenfunction-poetry`` are helpful, while vague names like
-``edits`` are considered harmful.  After creating your branch locally,
-let your fork of PlasmaPy know about it by running:
-
-.. code-block:: bash
-
-  git push --set-upstream origin *your-new-feature*
-
-It is also useful to configure git so that only the branch you are
-working on gets pushed to GitHub:
-
-.. code-block:: bash
-
-  git config --global push.default simple
-
-Once you have set up your fork and created a branch, you are ready to
-make edits to PlasmaPy.  Switch to your new branch by running:
-
-.. code-block:: bash
-
-  git checkout *your-new-feature*
-
-Go ahead and modify files with your favorite text editor.  Be sure to
-include tests and documentation with any new functionality.  We
-recommend reading about `best practices for scientific computing
-<https://doi.org/10.1371/journal.pbio.1001745>`_.  PlasmaPy uses the
-`PEP 8 style guide for Python code
-<https://www.python.org/dev/peps/pep-0008/>`_ and the `numpydoc format
-for docstrings
-<https://github.com/numpy/numpy/blob/main/doc/HOWTO_DOCUMENT.rst.txt>`_
-to maintain consistency and readability.  New contributors should not
-worry too much about precisely matching these styles when first
-submitting a pull request, GitHub Actions will check pull requests
-for :pep:`8` compatibility, and further changes to the style can be
-suggested during code review.
-
-You may periodically commit changes to your branch by running
-
-.. code-block:: bash
-
-  git add filename.py
-  git commit -m "*brief description of changes*"
-
-Committed changes may be pushed to the corresponding branch on your
-GitHub fork of PlasmaPy using
-
-.. code-block:: bash
-
-  git push origin *your-new-feature*
-
-or, more simply,
-
-.. code-block:: bash
-
-  git push
-
-Once you have completed your changes and pushed them to the branch on
-GitHub, you are ready to make a pull request.  Go to your fork of
-PlasmaPy in GitHub.  Select "Compare and pull request".  Add a
-descriptive title and some details about your changes.  Then select
-"Create pull request".  Other contributors will then have a chance to
-review the code and offer constructive suggestions.  You can continue
-to edit the pull request by changing the corresponding branch on your
-PlasmaPy fork on GitHub.  After a pull request is merged into the
-code, you may delete the branch you created for that pull request.
-
 Benchmarks
 ==========
 
@@ -960,13 +884,13 @@ Benchmarks
 .. _asv: https://github.com/airspeed-velocity/asv
 .. _asv-docs: https://asv.readthedocs.io/en/stable/
 
-PlasmaPy has a set of `asv`_ benchmarks that monitor performance of its
+PlasmaPy has a set of asv_ benchmarks that monitor performance of its
 functionalities.  This is meant to protect the package from performance
-regressions. The benchmarks can be viewed at `benchmarks`_. They're
+regressions. The benchmarks can be viewed at benchmarks_. They are
 generated from results located in `benchmarks-repo`_. Detailed
 instructions on writing such benchmarks can be found at `asv-docs`_.
-Up-to-date instructions on running the benchmark suite will be located in
-the README file of `benchmarks-repo`_.
+Up-to-date instructions on running the benchmark suite will be located
+in the README file of `benchmarks-repo`_.
 
 .. _ASCII: https://en.wikipedia.org/wiki/ASCII
 .. _cognitive complexity: https://www.sonarsource.com/docs/CognitiveComplexity.pdf

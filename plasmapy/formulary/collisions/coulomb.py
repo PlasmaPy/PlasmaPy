@@ -1,8 +1,8 @@
 """
-This module contains functionality for calculating Coulomb
-parameters for different configurations. Including a number of
-functions for handling Coulomb collisions spanning weakly coupled
-(low density) to strongly coupled (high density) regimes.
+Functionality for calculating Coulomb parameters for different
+configurations. Including a number of functions for handling Coulomb
+collisions spanning weakly coupled (low density) to strongly coupled
+(high density) regimes.
 
 Coulomb collisions are collisions where the interaction force is
 conveyed via the electric field, instead of any kind of contact
@@ -407,11 +407,11 @@ def Coulomb_logarithm(
     Examples
     --------
     >>> import astropy.units as u
-    >>> n = 1e19 * u.m**-3
+    >>> n_e = 1e19 * u.m**-3
     >>> T = 1e6 * u.K
-    >>> Coulomb_logarithm(T, n, ('e-', 'p+'))
+    >>> Coulomb_logarithm(T, n_e, ('e-', 'p+'))
     14.545527...
-    >>> Coulomb_logarithm(T, n, ('e-', 'p+'), V = 1e6 * u.m / u.s)
+    >>> Coulomb_logarithm(T, n_e, ('e-', 'p+'), V = 1e6 * u.m / u.s)
     11.363478...
 
     See Also

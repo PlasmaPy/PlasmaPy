@@ -1,10 +1,10 @@
 title: PlasmaPy
 type: software
-version: 2023.1.0
+version: 2023.5.1
 identifiers:
 - type: doi
-  value: 10.5281/zenodo.7529964
-date-released: '2023-01-13'
+  value: 10.5281/zenodo.8015753
+date-released: '2023-06-07'
 message: >-
   Please cite the specific version of PlasmaPy used
   during a research project.
@@ -112,6 +112,16 @@ authors:
   family-names: Carroll
   alias: seanwilliamcarroll
 
+- given-names: Carlos
+  family-names: Cartagena-Sanchez
+  affiliation: Beloit College
+  orcid: https://orcid.org/0000-0002-0486-1292
+  alias: cacsphysics
+
+- given-names: Sarthak
+  family-names: Choudhary
+  alias: martha889
+
 - given-names: Christian
   family-names: Clauss
   alias: cclauss
@@ -210,6 +220,11 @@ authors:
   family-names: Hansen
   alias: raymonshansen
 
+- given-names: Mohammed
+  family-names: Haque
+  affiliation: Hunter College
+  alias: mohawk811
+
 - given-names: Julien
   family-names: Hillairet
   affiliation: CEA
@@ -249,7 +264,7 @@ authors:
 - given-names: Elliot
   family-names: Johnson
   affiliation: University of Delaware
-  alias: etjohnson
+  alias: ejohnson-96
 
 - given-names: Marcin
   family-names: Kastek
@@ -400,10 +415,6 @@ authors:
   family-names: Rao
   alias: thecasuist
 
-- given-names: Jayden
-  family-names: Roberts
-  alias: JaydenR2305
-
 - alias: seanjunheng2
 
 - given-names: Steve
@@ -411,6 +422,11 @@ authors:
   affiliation: U.S. Naval Research Laboratory
   orcid: https://orcid.org/0000-0002-3056-6334
   alias: arichar6
+
+- given-names: Jayden
+  family-names: Roberts
+  orcid: https://orcid.org/0009-0009-9490-5284
+  alias: JaydenR2305
 
 - given-names: Reynaldo
   family-names: Rojas Zelaya
@@ -490,6 +506,10 @@ authors:
   family-names: Stinson
   alias: 14tstinson
 
+- given-names: Michaela
+  family-names: Švancarová
+  alias: mysakli
+
 - given-names: Antoine
   family-names: Tavant
   affiliation: Centre Spatial de l'École Polytechnique
@@ -521,6 +541,8 @@ authors:
   orcid: https://orcid.org/0000-0002-6468-5710
   alias: svincena
 
+- alias: WineDarkMoon
+
 - given-names: Tingfeng
   family-names: Wu
   orcid: https://orcid.org/0000-0001-8745-204X
@@ -538,3 +560,7 @@ authors:
 - given-names: Carol
   family-names: Zhang
   alias: carolyz
+
+- given-names: Cora
+  family-names: Schneck
+  alias: cyschneck

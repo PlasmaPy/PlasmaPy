@@ -1,10 +1,10 @@
 """Tests for functions that uses Distribution functions."""
 
+import astropy.units as u
 import numpy as np
 import pytest
 import scipy.integrate as spint
 
-from astropy import units as u
 from astropy.constants import k_B, m_e
 
 from plasmapy.formulary.distribution import (
@@ -23,7 +23,7 @@ from plasmapy.formulary.speeds import kappa_thermal_speed, thermal_speed
 class Test_Maxwellian_1D:
     @classmethod
     def setup_class(cls):
-        """initializing parameters for tests"""
+        """Initializing parameters for tests"""
         cls.T_e = 30000 * u.K
         cls.v = 1e5 * u.m / u.s
         cls.v_drift = 1000000 * u.m / u.s
@@ -194,11 +194,24 @@ class Test_Maxwellian_1D:
         errStr = f"Distribution function should be {testVal} and not {distFunc}."
         assert np.isclose(distFunc.value, testVal, rtol=1e-5, atol=0.0), errStr
 
+    def test_no_units(self):
+        """
+        Test resulting error from using incorrect units parameter
+        """
+        with pytest.raises(ValueError):
+            Maxwellian_1D(
+                v=self.v.value,
+                T=self.T_e.value,
+                particle=self.particle,
+                v_drift=self.v_drift3.value,
+                units="Lorem ipsum",
+            )
+
 
 class Test_Maxwellian_speed_1D:
     @classmethod
     def setup_class(cls):
-        """initializing parameters for tests"""
+        """Initializing parameters for tests"""
         cls.T = 1.0 * u.eV
         cls.particle = "H+"
         # get thermal velocity and thermal velocity squared
@@ -323,11 +336,24 @@ class Test_Maxwellian_speed_1D:
             distFunc.value, self.distFuncDrift.value, rtol=1e-5, atol=0.0
         ), errStr
 
+    def test_no_units(self):
+        """
+        Test resulting error from using incorrect units parameter
+        """
+        with pytest.raises(ValueError):
+            Maxwellian_speed_1D(
+                v=self.v.value,
+                T=self.T.value,
+                particle=self.particle,
+                v_drift=self.v_drift2.value,
+                units="Lorem ipsum",
+            )
+
 
 class Test_Maxwellian_velocity_2D:
     @classmethod
     def setup_class(cls):
-        """initializing parameters for tests"""
+        """Initializing parameters for tests"""
         cls.T = 1.0 * u.eV
         cls.particle = "H+"
         # get thermal velocity and thermal velocity squared
@@ -480,12 +506,27 @@ class Test_Maxwellian_velocity_2D:
         errStr = f"Distribution function should be {testVal} and not {distFunc}."
         assert np.isclose(distFunc.value, testVal, rtol=1e-5, atol=0.0), errStr
 
+    def test_no_units(self):
+        """
+        Test resulting error from using incorrect units parameter
+        """
+        with pytest.raises(ValueError):
+            Maxwellian_velocity_2D(
+                vx=self.vx.value,
+                vy=self.vy.value,
+                T=self.T.value,
+                particle=self.particle,
+                vx_drift=self.vx_drift.value,
+                vy_drift=self.vy_drift.value,
+                units="Lorem ipsum",
+            )
 
-@pytest.mark.slow
+
+@pytest.mark.slow()
 class Test_Maxwellian_speed_2D:
     @classmethod
     def setup_class(cls):
-        """initializing parameters for tests"""
+        """Initializing parameters for tests"""
         cls.T = 1.0 * u.eV
         cls.particle = "H+"
         # get thermal velocity and thermal velocity squared
@@ -606,12 +647,25 @@ class Test_Maxwellian_speed_2D:
                 units="units",
             )
 
+    def test_no_units(self):
+        """
+        Test resulting error from using incorrect units parameter
+        """
+        with pytest.raises(ValueError):
+            Maxwellian_speed_2D(
+                v=self.v.value,
+                T=self.T.value,
+                particle=self.particle,
+                v_drift=self.v_drift.value,
+                units="Lorem ipsum",
+            )
 
-@pytest.mark.slow
+
+@pytest.mark.slow()
 class Test_Maxwellian_velocity_3D:
     @classmethod
     def setup_class(cls):
-        """initializing parameters for tests"""
+        """Initializing parameters for tests"""
         cls.T = 1.0 * u.eV
         cls.particle = "H+"
         # get thermal velocity and thermal velocity squared
@@ -781,11 +835,28 @@ class Test_Maxwellian_velocity_3D:
         errStr = f"Distribution function should be {testVal} and not {distFunc}."
         assert np.isclose(distFunc.value, testVal, rtol=1e-5, atol=0.0), errStr
 
+    def test_no_units(self):
+        """
+        Test resulting error from using incorrect units parameter
+        """
+        with pytest.raises(ValueError):
+            Maxwellian_velocity_3D(
+                vx=self.vx.value,
+                vy=self.vy.value,
+                vz=self.vz.value,
+                T=self.T.value,
+                particle=self.particle,
+                vx_drift=self.vx_drift2.value,
+                vy_drift=self.vy_drift2.value,
+                vz_drift=self.vz_drift2.value,
+                units="Lorem ipsum",
+            )
+
 
 class Test_Maxwellian_speed_3D:
     @classmethod
     def setup_class(cls):
-        """initializing parameters for tests"""
+        """Initializing parameters for tests"""
         cls.T = 1.0 * u.eV
         cls.particle = "H+"
         # get thermal velocity and thermal velocity squared
@@ -906,11 +977,24 @@ class Test_Maxwellian_speed_3D:
                 units="units",
             )
 
+    def test_no_units(self):
+        """
+        Test resulting error from using incorrect units parameter
+        """
+        with pytest.raises(ValueError):
+            Maxwellian_speed_3D(
+                v=self.v.value,
+                T=self.T.value,
+                particle=self.particle,
+                v_drift=self.v_drift.value,
+                units="Lorem ipsum",
+            )
+
 
 class Test_kappa_velocity_1D:
     @classmethod
     def setup_class(cls):
-        """initializing parameters for tests"""
+        """Initializing parameters for tests"""
         cls.T_e = 30000 * u.K
         cls.kappa = 4
         cls.kappaInvalid = 3 / 2
@@ -968,7 +1052,7 @@ class Test_kappa_velocity_1D:
         ).argmax()
         assert np.isclose(self.v_vect[max_index].value, self.v_drift.value)
 
-    # TODO Need to add a test to see if the kappa distribution goes to a
+    # TODO: Need to add a test to see if the kappa distribution goes to a
     # Maxwellian in the limit of large κ
 
     def test_norm(self):
@@ -1126,12 +1210,26 @@ class Test_kappa_velocity_1D:
         errStr = f"Distribution function should be {testVal} and not {distFunc}."
         assert np.isclose(distFunc.value, testVal, rtol=1e-5, atol=0.0), errStr
 
+    def test_no_units(self):
+        """
+        Test resulting error from using incorrect units parameter
+        """
+        with pytest.raises(ValueError):
+            kappa_velocity_1D(
+                v=self.v.value,
+                T=self.T_e.value,
+                kappa=self.kappa,
+                particle=self.particle,
+                v_drift=self.v_drift3.value,
+                units="Lorem ipsum",
+            )
 
-@pytest.mark.slow
+
+@pytest.mark.slow()
 class Test_kappa_velocity_3D:
     @classmethod
     def setup_class(cls):
-        """initializing parameters for tests"""
+        """Initializing parameters for tests"""
         cls.T = 1.0 * u.eV
         cls.kappa = 4
         cls.kappaInvalid = 3 / 2
@@ -1359,3 +1457,21 @@ class Test_kappa_velocity_3D:
         )
         errStr = f"Distribution function should be {testVal} and not {distFunc}."
         assert np.isclose(distFunc.value, testVal, rtol=1e-5, atol=0.0), errStr
+
+    def test_no_units(self):
+        """
+        Test resulting error from using incorrect units parameter
+        """
+        with pytest.raises(ValueError):
+            kappa_velocity_3D(
+                vx=self.vx.value,
+                vy=self.vy.value,
+                vz=self.vz.value,
+                T=self.T.value,
+                kappa=self.kappa,
+                particle=self.particle,
+                vx_drift=self.vx_drift2.value,
+                vy_drift=self.vy_drift2.value,
+                vz_drift=self.vz_drift2.value,
+                units="Lorem ipsum",
+            )

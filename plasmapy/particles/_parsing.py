@@ -13,7 +13,7 @@ import re
 import warnings
 
 from numbers import Integral
-from typing import Dict, Optional, Union
+from typing import Optional, Union
 
 from plasmapy.particles import _elements, _isotopes, _special_particles
 from plasmapy.particles.exceptions import (
@@ -24,7 +24,7 @@ from plasmapy.particles.exceptions import (
 from plasmapy.utils import roman
 
 
-def create_alias_dicts(particles: dict) -> (Dict[str, str], Dict[str, str]):
+def create_alias_dicts(particles: dict) -> (dict[str, str], dict[str, str]):
     """
     Create dictionaries for case sensitive aliases and case
     insensitive aliases of special particles and antiparticles.
@@ -149,7 +149,7 @@ def invalid_particle_errmsg(
     return errmsg
 
 
-def extract_charge(arg: str):
+def extract_charge(arg: str):  # noqa: C901, PLR0912
     """
     Receive a `str` representing an element, isotope, or ion.
     Return a `tuple` containing a `str` that should represent an
@@ -180,7 +180,6 @@ def extract_charge(arg: str):
         # charge info is defined on both the charge_info and isotope_into strings
         raise InvalidParticleError(invalid_charge_errmsg) from None
     elif charge_info is not None:  # Cases like 'H 1-' and 'Fe-56 1+'
-
         sign_indicator_only_on_one_end = charge_info.endswith(
             ("-", "+")
         ) ^ charge_info.startswith(("-", "+"))
@@ -224,7 +223,7 @@ def extract_charge(arg: str):
     return isotope_info, Z_from_arg
 
 
-def parse_and_check_atomic_input(
+def parse_and_check_atomic_input(  # noqa: C901, PLR0912, PLR0915
     argument: Union[str, Integral],
     mass_numb: Optional[Integral] = None,
     Z: Optional[Integral] = None,
@@ -362,7 +361,7 @@ def parse_and_check_atomic_input(
         return isotope
 
     def reconstruct_ion_symbol(
-        element: str, isotope: Integral = None, Z: Integral = None
+        element: str, isotope: Optional[Integral] = None, Z: Optional[Integral] = None
     ):
         """
         Receive a `str` representing an atomic symbol and/or a

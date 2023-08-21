@@ -2,12 +2,12 @@
 
 __all__ = ["call_string", "attribute_call_string", "method_call_string"]
 
+import astropy.units as u
 import inspect
 import numpy as np
 
-from astropy import units as u
 from numbers import Integral
-from typing import Any, Callable, Dict, List, Optional, Tuple, Union
+from typing import Any, Callable, Optional, Union
 
 
 def _code_repr_of_ndarray(array: np.ndarray, max_items=np.inf) -> str:
@@ -23,13 +23,11 @@ def _code_repr_of_ndarray(array: np.ndarray, max_items=np.inf) -> str:
     def remove_excess_spaces(s: str) -> str:
         s = " ".join(s.split())
         s = s.replace(" ,", ",")
-        s = s.replace("[ ", "[")
-        return s
+        return s.replace("[ ", "[")
 
     def put_np_before_infs_and_nans(s: str) -> str:
         s = s.replace("inf", "np.inf")
-        s = s.replace("nan", "np.nan")
-        return s
+        return s.replace("nan", "np.nan")
 
     def replace_excess_items_with_ellipsis(s: str, max_items: Integral):
         substrings_between_commas = s.split(",")
@@ -80,14 +78,18 @@ def _code_repr_of_arg(arg, max_items=np.inf) -> str:
         u.Quantity: _code_repr_of_quantity,
         np.ndarray: _code_repr_of_ndarray,
     }
-    for arg_type, code_repr_func in function_for_type.items():
-        if isinstance(arg, arg_type):
-            return code_repr_func(arg, max_items=max_items)
-    return repr(arg)
+    return next(
+        (
+            code_repr_func(arg, max_items=max_items)
+            for arg_type, code_repr_func in function_for_type.items()
+            if isinstance(arg, arg_type)
+        ),
+        repr(arg),
+    )
 
 
 def _code_repr_of_args_and_kwargs(
-    args: Any = None, kwargs: Dict = None, max_items=np.inf
+    args: Any = None, kwargs: Optional[dict] = None, max_items=np.inf
 ) -> str:
     """
     Take positional and keyword arguments, and format them into a
@@ -169,7 +171,7 @@ def _object_name(obj: Any, showmodule=False) -> str:
 
 
 def _string_together_warnings_for_printing(
-    warning_types: List[Warning], warning_messages: List[str]
+    warning_types: list[Warning], warning_messages: list[str]
 ):
     """
     Take a list of warning types with a list of corresponding warning
@@ -187,7 +189,7 @@ def _string_together_warnings_for_printing(
 def call_string(
     f: Callable,
     args: Any = None,
-    kwargs: Dict[str, Any] = None,
+    kwargs: Optional[dict[str, Any]] = None,
     max_items: Integral = 12,
 ) -> str:
     """
@@ -248,8 +250,8 @@ def call_string(
 def attribute_call_string(
     cls,
     attr: str,
-    args_to_cls: Optional[Union[Tuple, Any]] = None,
-    kwargs_to_cls: Optional[Dict[str, Any]] = None,
+    args_to_cls: Optional[Union[tuple, Any]] = None,
+    kwargs_to_cls: Optional[dict[str, Any]] = None,
     max_items: Integral = 12,
 ) -> str:
     """
@@ -323,9 +325,9 @@ def method_call_string(
     method: str,
     *,
     args_to_cls: Optional[Any] = None,
-    kwargs_to_cls: Optional[Dict[str, Any]] = None,
+    kwargs_to_cls: Optional[dict[str, Any]] = None,
     args_to_method: Optional[Any] = None,
-    kwargs_to_method: Optional[Dict[str, Any]] = None,
+    kwargs_to_method: Optional[dict[str, Any]] = None,
     max_items: Integral = 12,
 ) -> str:
     """

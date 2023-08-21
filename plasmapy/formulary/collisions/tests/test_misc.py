@@ -4,14 +4,14 @@ import pytest
 
 from plasmapy.formulary.collisions.misc import mobility, Spitzer_resistivity
 from plasmapy.utils import exceptions
+from plasmapy.utils._pytest_helpers import assert_can_handle_nparray
 from plasmapy.utils.exceptions import CouplingWarning
-from plasmapy.utils.pytest_helpers import assert_can_handle_nparray
 
 
 class Test_Spitzer_resistivity:
     @classmethod
     def setup_class(cls):
-        """initializing parameters for tests"""
+        """Initializing parameters for tests"""
         cls.T = 11604 * u.K
         cls.n = 1e12 * u.cm**-3
         cls.particles = ("e", "p")
@@ -76,7 +76,7 @@ class Test_Spitzer_resistivity:
         errStr = f"Spitzer resistivity should be {self.True_zmean} and not {methodVal}."
         assert testTrue, errStr
 
-    # TODO vector z_mean
+    # TODO: vector z_mean
     @pytest.mark.parametrize("insert_some_nans", [[], ["V"]])
     @pytest.mark.parametrize("insert_all_nans", [[], ["V"]])
     def test_handle_nparrays(self, insert_some_nans, insert_all_nans):
@@ -89,7 +89,7 @@ class Test_Spitzer_resistivity:
 class Test_mobility:
     @classmethod
     def setup_class(cls):
-        """initializing parameters for tests"""
+        """Initializing parameters for tests"""
         cls.T = 11604 * u.K
         cls.n_e = 1e17 * u.cm**-3
         cls.particles = ("e", "p")
@@ -158,7 +158,7 @@ class Test_mobility:
         errStr = f"Mobility should be {self.True_zmean} and not {methodVal}."
         assert testTrue, errStr
 
-    # TODO vector z_mean
+    # TODO: vector z_mean
     @pytest.mark.parametrize("insert_some_nans", [[], ["V"]])
     @pytest.mark.parametrize("insert_all_nans", [[], ["V"]])
     def test_handle_nparrays(self, insert_some_nans, insert_all_nans):

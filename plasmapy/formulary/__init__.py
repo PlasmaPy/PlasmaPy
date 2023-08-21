@@ -31,7 +31,7 @@ for obj_name in list(globals()):
     if not (
         obj_name.startswith("__") or obj_name.endswith("__")
     ) and not inspect.ismodule(globals()[obj_name]):
-        __all__.append(obj_name)
+        __all__.append(obj_name)  # noqa: PERF401
 __all__.sort()
 
 # Put non-formulary imports here so that they don't get included in __all__
@@ -69,8 +69,8 @@ for modname in (
     with contextlib.suppress(AttributeError):
         __lite_funcs__.extend(obj.__lite_funcs__)
 
-__aliases__ = list(sorted(set(__aliases__)))
-__lite_funcs__ = list(sorted(set(__lite_funcs__)))
+__aliases__ = sorted(set(__aliases__))
+__lite_funcs__ = sorted(set(__lite_funcs__))
 
 # cleanup namespace
 del contextlib, inspect, modname, obj, obj_name
