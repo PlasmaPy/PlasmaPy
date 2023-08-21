@@ -1,4 +1,4 @@
-from astropy import units as u
+import astropy.units as u
 
 SPEED_UNITS = u.m / u.s
 SPEED_DISTRIBUTION_UNITS_1D = SPEED_UNITS**-1

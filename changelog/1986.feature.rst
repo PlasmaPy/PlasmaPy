@@ -1,1 +1,0 @@
-Added `plasmapy.formulary.collisions.helio.collisional_analysis`.

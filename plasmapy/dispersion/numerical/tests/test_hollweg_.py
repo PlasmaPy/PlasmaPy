@@ -1,13 +1,13 @@
 """Tests for the hollweg dispersion solution."""
 
+import astropy.units as u
 import numpy as np
 import pytest
-
-from astropy import units as u
 
 from plasmapy.dispersion.numerical.hollweg_ import hollweg
 from plasmapy.formulary import speeds
 from plasmapy.particles import Particle
+from plasmapy.particles.exceptions import InvalidIonError
 from plasmapy.utils.exceptions import PhysicsWarning
 
 
@@ -38,8 +38,8 @@ class TestHollweg:
             ({**_kwargs_single_valued, "B": -1 * u.T}, ValueError),
             ({**_kwargs_single_valued, "B": 5 * u.m}, u.UnitTypeError),
             ({**_kwargs_single_valued, "ion": {"not": "a particle"}}, TypeError),
-            ({**_kwargs_single_valued, "ion": "e-"}, ValueError),
-            ({**_kwargs_single_valued, "ion": "He", "z_mean": "wrong type"}, TypeError),
+            ({**_kwargs_single_valued, "ion": "e-"}, InvalidIonError),
+            ({**_kwargs_single_valued, "ion": "He", "Z": "wrong type"}, TypeError),
             ({**_kwargs_single_valued, "k": np.ones((3, 2)) * u.rad / u.m}, ValueError),
             ({**_kwargs_single_valued, "k": 0 * u.rad / u.m}, ValueError),
             ({**_kwargs_single_valued, "k": -1.0 * u.rad / u.m}, ValueError),
@@ -299,8 +299,8 @@ class TestHollweg:
     @pytest.mark.xfail(
         reason=(
             "This functionality is breaking because of updates to "
-            "gyrofrequency where z_mean override behavior is being "
-            "dropped. We will address z_mean override behavior when "
+            "gyrofrequency where Z override behavior is being "
+            "dropped. We will address Z override behavior when "
             "hollweg is decorated with particle_input."
         )
     )
@@ -311,20 +311,20 @@ class TestHollweg:
                 {
                     **_kwargs_single_valued,
                     "ion": Particle("He"),
-                    "z_mean": 2.0,
+                    "Z": 2.0,
                 },
                 {**_kwargs_single_valued, "ion": Particle("He +2")},
             ),
             #
-            # z_mean defaults to 1
+            # Z defaults to 1
             (
                 {**_kwargs_single_valued, "ion": Particle("He")},
                 {**_kwargs_single_valued, "ion": Particle("He+")},
             ),
         ],
     )
-    def test_z_mean_override(self, kwargs, expected):
-        """Test overriding behavior of kw 'z_mean'."""
+    def test_Z_override(self, kwargs, expected):
+        """Test overriding behavior of kw 'Z'."""
         ws = hollweg(**kwargs)
         ws_expected = hollweg(**expected)
 
@@ -366,7 +366,7 @@ class TestHollweg:
         assert isinstance(ws, dict)
         assert len({"acoustic_mode", "alfven_mode", "fast_mode"} - set(ws.keys())) == 0
 
-        for _mode, val in ws.items():  # noqa: B007
+        for val in ws.values():
             assert isinstance(val, u.Quantity)
             assert val.unit == u.rad / u.s
             assert val.shape == expected["shape"]

@@ -9,14 +9,22 @@
 import os
 import sys
 
+# isort: off
+sys.path.insert(0, os.path.abspath(".."))  # noqa: PTH100
+sys.path.insert(0, os.path.abspath("."))  # noqa: PTH100
+# isort: on
+
+import cff_to_rst
+
 from datetime import datetime
 from pkg_resources import parse_version
 from sphinx.application import Sphinx
 
-sys.path.insert(0, os.path.abspath(".."))  # noqa: PTH100
-sys.path.insert(0, os.path.abspath("."))  # noqa: PTH100
+# Generate author list from CITATION.cff
 
-from plasmapy import __version__ as release  # noqa: E402
+cff_to_rst.main()
+
+from plasmapy import __version__ as release
 
 # -- General configuration ------------------------------------------------
 autosummary_generate = True
@@ -84,12 +92,14 @@ extensions = [
     "notfound.extension",
     "plasmapy_sphinx",
     "sphinx.ext.autodoc",
+    "sphinx.ext.duration",
     "sphinx.ext.extlinks",
     "sphinx.ext.graphviz",
     "sphinx.ext.intersphinx",
     "sphinx.ext.mathjax",
     "sphinx.ext.napoleon",
     "sphinx.ext.todo",
+    "sphinx.ext.viewcode",
     "sphinx_changelog",
     "sphinx_codeautolink",
     "sphinx_copybutton",
@@ -106,6 +116,10 @@ bibtex_bibfiles = ["bibliography.bib"]
 bibtex_default_style = "plain"
 bibtex_reference_style = "author_year"
 bibtex_cite_id = "{key}"
+
+# Configure sphinx-codeautolink
+
+codeautolink_concat_default = True
 
 # Intersphinx generates automatic links to the documentation of objects
 # in other packages. When mappings are removed or added, please update
@@ -165,7 +179,7 @@ root_doc = "index"
 # General information about the project.
 project = "PlasmaPy"
 author = "PlasmaPy Community"
-copyright = f"2015–{datetime.utcnow().year}, {author}"  # noqa: A001
+copyright = f"2015–{datetime.utcnow().year}, {author}"  # noqa: A001, DTZ003
 language = "en"
 
 # The version info for the project you're documenting, acts as replacement for

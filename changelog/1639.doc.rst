@@ -1,3 +1,0 @@
-Moved the location of the changelog pages for past releases from
-:file:`docs/whatsnew` to :file:`docs/changelog`, and set up
-appropriate redirects.

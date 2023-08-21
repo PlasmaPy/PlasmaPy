@@ -122,7 +122,7 @@ def Maxwellian_1D(
 
     Examples
     --------
-    >>> from astropy import units as u
+    >>> import astropy.units as u
     >>> v=1*u.m/u.s
     >>> Maxwellian_1D(v=v, T=30000 * u.K, particle='e', v_drift=0 * u.m / u.s)
     <Quantity 5.9163...e-07 s / m>
@@ -158,6 +158,8 @@ def Maxwellian_1D(
         return distFunc << SPEED_DISTRIBUTION_UNITS_1D
     elif units == "unitless":
         return distFunc
+    else:
+        raise ValueError(f"Units must be either 'units' or 'unitless', got {units}).")
 
 
 @particle_input
@@ -260,7 +262,7 @@ def Maxwellian_velocity_2D(
 
     Examples
     --------
-    >>> from astropy import units as u
+    >>> import astropy.units as u
     >>> v=1 * u.m / u.s
     >>> Maxwellian_velocity_2D(vx=v,
     ... vy=v,
@@ -304,6 +306,8 @@ def Maxwellian_velocity_2D(
         return distFunc << SPEED_DISTRIBUTION_UNITS_2D
     elif units == "unitless":
         return distFunc
+    else:
+        raise ValueError(f"Units must be either 'units' or 'unitless', got {units}).")
 
 
 @particle_input
@@ -414,7 +418,7 @@ def Maxwellian_velocity_3D(
 
     Examples
     --------
-    >>> from astropy import units as u
+    >>> import astropy.units as u
     >>> v=1 * u.m / u.s
     >>> Maxwellian_velocity_3D(vx=v,
     ... vy=v,
@@ -461,6 +465,8 @@ def Maxwellian_velocity_3D(
         return distFunc << SPEED_DISTRIBUTION_UNITS_3D
     elif units == "unitless":
         return distFunc
+    else:
+        raise ValueError(f"Units must be either 'units' or 'unitless', got {units}).")
 
 
 @particle_input
@@ -549,7 +555,7 @@ def Maxwellian_speed_1D(
 
     Examples
     --------
-    >>> from astropy import units as u
+    >>> import astropy.units as u
     >>> v=1 * u.m / u.s
     >>> Maxwellian_speed_1D(v=v, T=30000 * u.K, particle='e', v_drift=0 * u.m / u.s)
     <Quantity 1.1832...e-06 s / m>
@@ -586,6 +592,8 @@ def Maxwellian_speed_1D(
         return distFunc << SPEED_DISTRIBUTION_UNITS_1D
     elif units == "unitless":
         return distFunc
+    else:
+        raise ValueError(f"Units must be either 'units' or 'unitless', got {units}).")
 
 
 @particle_input
@@ -679,7 +687,7 @@ def Maxwellian_speed_2D(
 
     Examples
     --------
-    >>> from astropy import units as u
+    >>> import astropy.units as u
     >>> v=1 * u.m / u.s
     >>> Maxwellian_speed_2D(v=v, T=30000 * u.K, particle='e', v_drift=0 * u.m / u.s)
     <Quantity 2.199...e-12 s / m>
@@ -719,6 +727,8 @@ def Maxwellian_speed_2D(
         return distFunc << SPEED_DISTRIBUTION_UNITS_1D
     elif units == "unitless":
         return distFunc
+    else:
+        raise ValueError(f"Units must be either 'units' or 'unitless', got {units}).")
 
 
 @particle_input
@@ -812,7 +822,7 @@ def Maxwellian_speed_3D(
 
     Examples
     --------
-    >>> from astropy import units as u
+    >>> import astropy.units as u
     >>> v=1 * u.m / u.s
     >>> Maxwellian_speed_3D(v=v, T=30000*u.K, particle='e', v_drift=0 * u.m / u.s)
     <Quantity 2.60235...e-18 s / m>
@@ -851,6 +861,8 @@ def Maxwellian_speed_3D(
         return distFunc << SPEED_DISTRIBUTION_UNITS_1D
     elif units == "unitless":
         return distFunc
+    else:
+        raise ValueError(f"Units must be either 'units' or 'unitless', got {units}).")
 
 
 @particle_input
@@ -953,7 +965,7 @@ def kappa_velocity_1D(
 
     Examples
     --------
-    >>> from astropy import units as u
+    >>> import astropy.units as u
     >>> v=1 * u.m / u.s
     >>> kappa_velocity_1D(
     ...     v=v,
@@ -1004,6 +1016,8 @@ def kappa_velocity_1D(
         return distFunc << SPEED_DISTRIBUTION_UNITS_1D
     elif units == "unitless":
         return distFunc
+    else:
+        raise ValueError(f"Units must be either 'units' or 'unitless', got {units}).")
 
 
 @particle_input
@@ -1126,7 +1140,7 @@ def kappa_velocity_3D(
 
     Examples
     --------
-    >>> from astropy import units as u
+    >>> import astropy.units as u
     >>> v=1 * u.m / u.s
     >>> kappa_velocity_3D(vx=v,
     ... vy=v,
@@ -1177,3 +1191,5 @@ def kappa_velocity_3D(
         return distFunc << SPEED_DISTRIBUTION_UNITS_3D
     elif units == "unitless":
         return distFunc
+    else:
+        raise ValueError(f"Units must be either 'units' or 'unitless', got {units}).")

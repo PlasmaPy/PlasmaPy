@@ -6,7 +6,7 @@ import pytest
 
 from plasmapy.formulary.speeds import Alfven_speed, cs_, ion_sound_speed, va_
 from plasmapy.particles import Particle
-from plasmapy.particles.exceptions import InvalidParticleError
+from plasmapy.particles.exceptions import InvalidIonError, InvalidParticleError
 from plasmapy.utils._pytest_helpers import assert_can_handle_nparray
 from plasmapy.utils.exceptions import (
     PhysicsError,
@@ -46,29 +46,22 @@ class TestAlfvenSpeed:
     @pytest.mark.parametrize(
         ("args", "kwargs", "_error"),
         [
-            # scenarios that raise RelativityError
             ((10 * u.T, 1.0e-10 * u.kg * u.m**-3), {}, RelativityError),
             ((np.inf * u.T, 1 * u.m**-3), {"ion": "p"}, RelativityError),
             ((-np.inf * u.T, 1 * u.m**-3), {"ion": "p"}, RelativityError),
-            #
-            # scenarios that raise InvalidParticleError
             ((1 * u.T, 5e19 * u.m**-3), {"ion": "spacecats"}, InvalidParticleError),
-            #
-            # scenarios that raise TypeError
+            ((1 * u.T, 1.0e18 * u.m**-3), {"ion": ["He"]}, InvalidIonError),
+            ((1 * u.T, 1.0e-9 * u.kg * u.m**-3), {"ion": ["He+"]}, ValueError),
             (("not a Bfield", 1.0e-10 * u.kg * u.m**-3), {}, TypeError),
+            ((1 * u.T,), {"density": 1e9 * u.m**-3, "ion": None}, ValueError),
             ((10 * u.T, "not a density"), {}, TypeError),
             ((10 * u.T, 5), {"ion": "p"}, TypeError),
-            ((1 * u.T, 1.0e18 * u.m**-3), {"ion": ["He"]}, TypeError),
-            ((1 * u.T, 1.0e18 * u.m**-3), {"ion": "He", "z_mean": "nope"}, TypeError),
-            #
-            # scenarios that raise UnitTypeError
-            ((1 * u.T, 1.0e18 * u.cm), {"ion": "He"}, u.UnitTypeError),
+            ((1 * u.T, 1.0e18 * u.m**-3), {"ion": "He", "Z": "nope"}, TypeError),
+            ((1 * u.T, 1.0e18 * u.cm), {"ion": "He 1+"}, u.UnitTypeError),
             ((1 * u.T, 5 * u.m**-2), {"ion": "p"}, u.UnitTypeError),
-            ((1 * u.cm, 1.0e18 * u.m**-3), {"ion": "He"}, u.UnitTypeError),
+            ((1 * u.cm, 1.0e18 * u.m**-3), {"ion": "He 1+"}, u.UnitTypeError),
             ((5 * u.A, 5e19 * u.m**-3), {"ion": "p"}, u.UnitTypeError),
-            #
-            # scenarios that raise ValueError
-            ((1 * u.T, -1.0e18 * u.m**-3), {"ion": "He"}, ValueError),
+            ((1 * u.T, -1.0e18 * u.m**-3), {"ion": "He+"}, ValueError),
             (
                 (np.array([5, 6, 7]) * u.T, np.array([5, 6]) * u.m**-3),
                 {"ion": "p"},
@@ -89,11 +82,10 @@ class TestAlfvenSpeed:
     @pytest.mark.parametrize(
         ("args", "kwargs", "expected", "isclose_kw", "_warning"),
         [
-            # scenarios that issue RelativityWarning
             (
                 (5 * u.T, 5e19 * u.m**-3),
-                {"ion": "H"},
-                15413707.39,
+                {"ion": "H", "Z": 1},
+                15417901.09,
                 {},
                 RelativityWarning,
             ),
@@ -111,9 +103,7 @@ class TestAlfvenSpeed:
                 {"rtol": 4.0e-4},
                 RelativityWarning,
             ),
-            #
-            # scenarios that issue UnitsWarning
-            ((0.5, 1.0e18 * u.m**-3), {"ion": "He"}, 5470657.93, {}, u.UnitsWarning),
+            ((0.5, 1.0e18 * u.m**-3), {"ion": "He+"}, 5471032.81, {}, u.UnitsWarning),
         ],
     )
     def test_warns(self, args, kwargs, expected, isclose_kw, _warning):
@@ -129,7 +119,7 @@ class TestAlfvenSpeed:
         [
             (
                 (1 * u.T, 1e-8 * u.kg * u.m**-3),
-                {"ion": "p"},
+                {},
                 8920620.58 * u.m / u.s,
                 {"rtol": 1e-6},
             ),
@@ -141,19 +131,19 @@ class TestAlfvenSpeed:
             ),
             (
                 (0.05 * u.T, 1e18 * u.m**-3),
-                {"ion": "He"},
-                Alfven_speed(0.05 * u.T, 6.64738793e-09 * u.kg * u.m**-3),
+                {"ion": "He+"},
+                Alfven_speed(0.05 * u.T, 6.64647699e-09 * u.kg * u.m**-3),
                 {},
             ),
             (
                 (0.05 * u.T, 1e18 * u.m**-3),
                 {"ion": "He+"},
-                Alfven_speed(0.05 * u.T, 1e18 * u.m**-3, ion="He"),
+                Alfven_speed(0.05 * u.T, 1e18 * u.m**-3, ion="He 1+"),
                 {"rtol": 7e-5},
             ),
             (
                 (0.05 * u.T, 1e18 * u.m**-3),
-                {"ion": "He", "z_mean": 2},
+                {"ion": "He", "Z": 2},
                 Alfven_speed(0.05 * u.T, 1e18 * u.m**-3, ion="He +2"),
                 {"rtol": 1.4e-4},
             ),

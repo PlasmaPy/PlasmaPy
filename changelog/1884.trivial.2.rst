@@ -1,4 +1,0 @@
-Enabled the particle creation factory in
-``plasmapy.particles._factory`` used by |particle_input| to create
-|CustomParticle| instances of an element or isotope with a
-|charge number| that is a real number but not an integer.

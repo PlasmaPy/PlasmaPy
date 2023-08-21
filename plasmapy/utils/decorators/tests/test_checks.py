@@ -2,11 +2,11 @@
 Tests for 'check` decorators (i.e. decorators that only check objects but do not
 change them).
 """
+import astropy.units as u
 import inspect
 import numpy as np
 import pytest
 
-from astropy import units as u
 from astropy.constants import c
 from types import LambdaType
 from unittest import mock
@@ -63,7 +63,7 @@ class TestCheckUnits:
     check_defaults = CheckUnits._CheckUnits__check_defaults  # type: Dict[str, Any]
 
     @staticmethod
-    def foo_no_anno(x, y):  # noqa: FURB118
+    def foo_no_anno(x, y):
         return x + y
 
     @staticmethod
@@ -723,7 +723,7 @@ class TestCheckValues:
     check_defaults = CheckValues._CheckValues__check_defaults  # type: Dict[str, bool]
 
     @staticmethod
-    def foo(x, y):  # noqa: FURB118
+    def foo(x, y):
         return x + y
 
     @staticmethod

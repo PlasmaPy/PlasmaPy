@@ -1,3 +1,0 @@
-Decorated `~plasmapy.particles.atomic.reduced_mass` with
-|particle_input| so that it can now accept a broader variety of
-|particle-like| arguments.
