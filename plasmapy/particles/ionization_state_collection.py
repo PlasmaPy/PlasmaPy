@@ -987,5 +987,4 @@ class IonizationStateCollection:
         else:
             output_string = output[0]
 
-        # We'll need to switch from print() to using logging library
         print(output_string.strip("\n"))  # noqa: T201

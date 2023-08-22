@@ -31,7 +31,6 @@ def parse_cff(filename: str) -> dict[str, Union[str, list[dict[str, str]]]]:
         try:
             return yaml.safe_load(stream)
         except yaml.YAMLError as e:
-            # We'll need to switch from print() to using logging library
             print(e)  # noqa: T201
 
 
