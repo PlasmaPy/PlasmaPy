@@ -266,6 +266,7 @@ extend-select = [
   "RUF011", # static-key-dict-comprehension
   "RUF013", # implicit-optional
   "RUF015", # unnecessary-iterable-allocation-for-first-element
+  "RUF016", # invalid-index-type
   "RUF100", # unused-noqa
   "RUF200", # invalid-pyproject-toml
   "S", # flake8-bandit
