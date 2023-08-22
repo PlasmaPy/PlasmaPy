@@ -810,10 +810,11 @@ class TestIonizationStateCollectionDensityEqualities:
         expect_equality = this[:4] == that[:4]
         are_equal = self.instances[this] == self.instances[that]
         if expect_equality != are_equal:
-            print(f"{this} kwargs:\n {self.dict_of_kwargs[this]}\n")
+            # We'll need to switch from print() to using logging library
+            print(f"{this} kwargs:\n {self.dict_of_kwargs[this]}\n")  # noqa: T201
             self.instances[this].summarize()
-            print()
-            print(f"{that} kwargs:\n {self.dict_of_kwargs[that]}\n")
+            print()  # noqa: T201
+            print(f"{that} kwargs:\n {self.dict_of_kwargs[that]}\n")  # noqa: T201
             self.instances[that].summarize()
             descriptor = "equal" if expect_equality else "unequal"
             pytest.fail(f"Cases {this} and {that} should be {descriptor} but are not.")

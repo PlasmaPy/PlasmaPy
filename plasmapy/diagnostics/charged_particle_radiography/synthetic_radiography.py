@@ -303,7 +303,8 @@ class Tracker:
 
     def _log(self, msg):
         if self.verbose:
-            print(msg)
+            # We'll need to switch from print() to using logging library
+            print(msg)  # noqa: T201
 
     # Define some constants so they don't get constantly re-evaluated
     _c = const.c.si.value

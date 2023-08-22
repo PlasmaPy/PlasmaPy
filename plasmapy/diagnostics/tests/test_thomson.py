@@ -1285,7 +1285,8 @@ def test_fit_with_minimal_parameters():
 )
 def test_model_input_validation(control, error, msg, iaw_multi_species_settings_params):
     kwargs = iaw_multi_species_settings_params
-    print(list(control.keys()))
+    # We'll need to switch from print() to using logging library
+    print(list(control.keys()))  # noqa: T201
 
     # Remove or replace values in kwargs
     for k, v in control.items():
@@ -1310,5 +1311,5 @@ def test_model_input_validation(control, error, msg, iaw_multi_species_settings_
             # If msg is not None, check that this string is a subset of the
             # error message
             if msg is not None:
-                print(excinfo.value)
+                print(excinfo.value)  # noqa: T201
                 assert msg in str(excinfo.value)
