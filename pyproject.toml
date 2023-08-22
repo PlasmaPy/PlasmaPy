@@ -254,6 +254,7 @@ extend-select = [
   "PT", # flake8-pytest-style
   "PTH", # flake8-use-pathlib
   "PYI", # flake8-pyi
+  "Q003", # avoidable-escaped-quote
   "RET", # flake8-return
   "RUF005", # collection-literal-concatenation
   "RUF006", # asyncio-dangling-task
