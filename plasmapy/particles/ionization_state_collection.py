@@ -963,7 +963,9 @@ class IonizationStateCollection:
         # ionization levels for each element.
 
         for ionization_state in self:
-            states_info = ionization_state._get_states_info(minimum_ionic_fraction)
+            states_info = ionization_state._get_states_info(  # noqa: SLF001
+                minimum_ionic_fraction,
+            )
             if len(states_info) > 0:
                 output += states_info
                 output[-1] += "\n" + separator_line

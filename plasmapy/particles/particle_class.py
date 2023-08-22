@@ -681,7 +681,9 @@ class Particle(AbstractPhysicalParticle):
                 self.symbol
             ][attribute]
 
-        particle_taxonomy = _special_particles.particle_zoo._taxonomy_dict
+        particle_taxonomy = (
+            _special_particles.particle_zoo._taxonomy_dict  # noqa: SLF001
+        )
         all_categories = particle_taxonomy.keys()
 
         for category in all_categories:
