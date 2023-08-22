@@ -264,6 +264,7 @@ extend-select = [
   "RUF200", # invalid-pyproject-toml
   "S", # flake8-bandit
   "SIM", # flake8-simplify
+  "T100", # debugger
   "TD", # flake8-todos
   "TID", # flake8-tidy-imports
   "TRY", # tryceratops
