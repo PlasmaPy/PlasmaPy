@@ -510,8 +510,6 @@ def test_single_species_non_collective_spectrum(single_species_non_collective_sp
             ValueError,
             "All ions must be positively charged.",
         ),
-        # Value error when the ion list is empty
-        ({"ions": []}, ValueError, "At least one ion species needs to be defined."),
     ],
 )
 def test_spectral_density_input_errors(

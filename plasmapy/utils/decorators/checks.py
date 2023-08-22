@@ -908,7 +908,7 @@ class CheckUnits(CheckBase):
         return arg, unit, equiv, err
 
     @staticmethod
-    def _condition_target_units(targets: list, from_annotations: bool = False):
+    def _condition_target_units(targets: list, from_annotations: bool = False) -> list:
         """
         From a list of target units (either as a string or astropy
         :class:`~astropy.units.Unit` objects), return a list of conditioned

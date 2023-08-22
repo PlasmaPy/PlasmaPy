@@ -346,7 +346,7 @@ def temp_ratio(  # noqa: C901
                 )
             )
             if verbose:
-                logging.info(f"\r {(i / len(variables[0])) * 100:.2f} %")
+                logging.info(f"\r {(i / len(variables[0])) * 100:.2f} %")  # noqa: G004
 
         return res  # noqa: TRY300
 

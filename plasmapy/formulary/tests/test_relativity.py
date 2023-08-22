@@ -171,7 +171,6 @@ def test_relativistic_body_mass_energy(particle):
         ({"lorentz_factor": 0.99}, ValueError),
         ({"lorentz_factor": 0}, ValueError),
         ({"lorentz_factor": -1}, ValueError),
-        ({"lorentz_factor": -1}, ValueError),
         ({"lorentz_factor": -1, "v_over_c": 0.5}, ValueError),
         ({"total_energy": 1 * u.J, "momentum": 1 * u.kg * u.m / u.s}, ValueError),
         ({}, ValueError),
