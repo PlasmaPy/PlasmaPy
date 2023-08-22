@@ -296,7 +296,7 @@ pybtex==0.24.0
     # via
     #   pybtex-docutils
     #   sphinxcontrib-bibtex
-pybtex-docutils==1.0.2
+pybtex-docutils==1.0.3
     # via sphinxcontrib-bibtex
 pycparser==2.21
     # via cffi
@@ -513,7 +513,7 @@ webencodings==0.5.1
     # via
     #   bleach
     #   tinycss2
-websocket-client==1.6.1
+websocket-client==1.6.2
     # via jupyter-server
 websockets==11.0.3
     # via voila
