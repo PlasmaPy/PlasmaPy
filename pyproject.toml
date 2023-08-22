@@ -229,6 +229,7 @@ extend-select = [
   "COM818", # trailing-comma-on-bare-tuple
   "D", # pydocstyle
   "DTZ", # flake8-datetimez
+  "EM", # flake8-errmsg
   "FA102", # flake8-required-type-annotation
   "FBT003", # flake8-boolean-trap
   "FIX", # flake8-fixme
@@ -280,6 +281,8 @@ ignore = [
   "D205", # blank-line-after-summary (incompatible with multiline short summaries)
   "D401", # non-imperative-mood (enable later?)
   "E501", # line-too-long
+  "EM101", # raw-string-in-exception (enable later in focused PR)
+  "EM102", # f-string-in-exception (enable later in focused PR)
   "FIX002", # line-contains-todo
   "N802", # invalid-function-name
   "N803", # invalid-argument-name
