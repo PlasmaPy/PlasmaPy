@@ -256,6 +256,7 @@ extend-select = [
   "PYI", # flake8-pyi
   "Q003", # avoidable-escaped-quote
   "RET", # flake8-return
+  "RSE", # flake8-raise
   "RUF005", # collection-literal-concatenation
   "RUF006", # asyncio-dangling-task
   "RUF007", # pairwise-over-zipped
