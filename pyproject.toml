@@ -235,6 +235,7 @@ extend-select = [
   "FBT003", # flake8-boolean-trap
   "FIX", # flake8-fixme
   "FLY", # flynt
+  "G", # flake8-logging-format
   "I002", # missing-required-import
   "ICN", # flake8-import-conventions
   "INP", # flake8-no-pep420
