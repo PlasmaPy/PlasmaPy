@@ -280,7 +280,7 @@ class SingleParticleCollisionFrequencies:
         return x.to(u.dimensionless_unscaled)
 
     @staticmethod
-    def _phi_integrand(t: u.dimensionless_unscaled):
+    def _phi_integrand(t: u.dimensionless_unscaled):  # noqa: ANN205
         """
         The phi integrand used in calculating phi.
         """

@@ -279,7 +279,7 @@ class RelativisticBody:
     @staticmethod
     def _get_speed_like_input(
         velocity_like_arguments: dict[str, Union[u.Quantity, Real]]
-    ):
+    ) -> dict[str, Union[u.Quantity, Real]]:
         not_none_arguments = {
             key: value
             for key, value in velocity_like_arguments.items()
