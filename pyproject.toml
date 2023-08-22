@@ -306,6 +306,7 @@ ignore = [
   "PT011", # pytest-raises-too-broad
   "PT012", # pytest-raises-multiple-statements (enable later?)
   "PT019", # pytest-fixture-param-without-value (enable later?)
+  "PYI024", # collections-named-tuple (enable later)
   "RET501", # unnecessary-return-none
   "RET502", # implicit-return-value
   "RET505", # superfluous-else-return (enable later?)

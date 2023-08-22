@@ -10,7 +10,7 @@ import numpy as np
 import warnings
 
 from numbers import Integral, Real
-from typing import NoReturn, Optional, Union
+from typing import NoReturn, Optional
 
 from plasmapy.particles.atomic import ionic_levels
 from plasmapy.particles.decorators import particle_input
@@ -260,7 +260,7 @@ class IonizationState:
         T_i: u.K = None,
         kappa: Real = np.inf,
         n_elem: u.m**-3 = np.nan * u.m**-3,
-        tol: Union[float, int] = 1e-15,
+        tol: float = 1e-15,
     ):
         self._number_of_particles = particle.atomic_number + 1
 

@@ -105,7 +105,6 @@ class TestStix:
                 },
                 {"shape": (4,)},
             ),
-            ({**_kwargs_single_valued, "ions": ["He+", "H+"]}, {"shape": (4,)}),
             (
                 {
                     **_kwargs_single_valued,

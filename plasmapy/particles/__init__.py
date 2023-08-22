@@ -79,7 +79,7 @@ for name, obj in list(globals().items()):
     if inspect.ismodule(obj) or name.startswith("__") or name.endswith("__"):
         continue
 
-    __all__.append(name)
+    __all__ += name
 
 __all__.sort()
 
