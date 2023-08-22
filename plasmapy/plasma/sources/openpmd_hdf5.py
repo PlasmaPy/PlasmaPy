@@ -65,7 +65,7 @@ class HDF5Reader(GenericPlasma):
 
         self._check_valid_openpmd_version()
 
-        self.subname = tuple(self.h5["data"])[0]
+        self.subname = next(iter(self.h5["data"]))
 
     def __enter__(self):
         return self.h5

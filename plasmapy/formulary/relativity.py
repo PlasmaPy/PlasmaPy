@@ -302,7 +302,7 @@ class RelativisticBody:
         Take the velocity-like argument and store it via the setter for
         the corresponding attribute.
         """
-        name = list(speed_like_input.keys())[0]
+        name = next(iter(speed_like_input.keys()))
         value = speed_like_input[name]
         if self._dtype:
             value = u.Quantity(value, dtype=self._dtype)
