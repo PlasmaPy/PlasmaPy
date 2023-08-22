@@ -6,9 +6,11 @@ __all__ = []
 
 import astropy.units as u
 
-from collections.abc import Iterable
 from numbers import Number
-from typing import Optional, Union
+from typing import Optional, TYPE_CHECKING, Union
+
+if TYPE_CHECKING:
+    from collections.abc import Iterable
 
 
 def _get_physical_type_dict(

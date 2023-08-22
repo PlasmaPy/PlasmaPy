@@ -310,11 +310,6 @@ ignore = [
   "S101", # asserts
   "SIM117", # multiple-with-statements (remove for Python 3.10+)
   "SIM300", # yoda-conditions
-  "TCH001",
-  "TCH002",
-  "TCH003",
-  "TCH004",
-  "TCH005",
   "TD002", # missing-todo-author
   "TD003", # missing-todo-link
   "TRY003", # raise-vanilla-args

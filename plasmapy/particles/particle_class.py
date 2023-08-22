@@ -21,10 +21,9 @@ import warnings
 
 from abc import ABC, abstractmethod
 from collections import defaultdict, namedtuple
-from collections.abc import Iterable, Sequence
 from datetime import datetime
 from numbers import Integral, Real
-from typing import NoReturn, Optional, Union
+from typing import NoReturn, Optional, TYPE_CHECKING, Union
 
 from plasmapy.particles import _elements, _isotopes, _parsing, _special_particles
 from plasmapy.particles.exceptions import (
@@ -40,6 +39,9 @@ from plasmapy.particles.exceptions import (
 )
 from plasmapy.utils import PlasmaPyDeprecationWarning, roman
 from plasmapy.utils._units_helpers import _get_physical_type_dict
+
+if TYPE_CHECKING:
+    from collections.abc import Iterable, Sequence
 
 _classification_categories = {
     "lepton",
