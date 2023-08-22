@@ -25,7 +25,7 @@ def bar():
     Test support function for the Lite-Function framework.  To be bound
     to foo.
     """
-    print("I am a helper function that support the Lite-Function 'foo_lite'.")
+    return "I am a helper function that support the Lite-Function 'foo_lite'."
 
 
 @pytest.mark.parametrize(

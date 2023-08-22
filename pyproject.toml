@@ -275,6 +275,7 @@ extend-select = [
   "SIM", # flake8-simplify
   "SLF", # flake8-self
   "SLOT", # flake8-slots
+  "T", # flake8-print
   "T100", # debugger
   "TCH", # flake8-type-checking
   "TD", # flake8-todos
