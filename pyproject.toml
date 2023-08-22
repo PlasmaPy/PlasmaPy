@@ -270,6 +270,7 @@ extend-select = [
   "S", # flake8-bandit
   "SIM", # flake8-simplify
   "SLF", # flake8-self
+  "SLOT", # flake8-slots
   "T100", # debugger
   "TD", # flake8-todos
   "TID", # flake8-tidy-imports
