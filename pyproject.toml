@@ -262,6 +262,7 @@ extend-select = [
   "RUF200", # invalid-pyproject-toml
   "S", # flake8-bandit
   "SIM", # flake8-simplify
+  "T", # flake8-print
   "TD", # flake8-todos
   "TID", # flake8-tidy-imports
   "TRY", # tryceratops
@@ -298,6 +299,7 @@ ignore = [
   "S101", # asserts
   "SIM117", # multiple-with-statements (remove for Python 3.10+)
   "SIM300", # yoda-conditions
+  "T201", # print
   "TD002", # missing-todo-author
   "TD003", # missing-todo-link
   "TRY003", # raise-vanilla-args
