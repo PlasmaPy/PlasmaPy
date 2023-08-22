@@ -222,6 +222,7 @@ extend-select = [
   "ANN205", # missing-return-type-static-method
   "ANN206", # missing-return-type-class-method
   "ARG", # flake8-unused-arguments
+  "ASYNC", # flake8-async
   "B", # flake8-bugbear
   "BLE", # flake8-blind-except
   "C4", # flake8-comprehensions
