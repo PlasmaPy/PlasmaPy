@@ -912,4 +912,4 @@ class IonizationState:
             output += attributes
 
         for line in output:
-            print(line)
+            print(line)  # noqa: T201
