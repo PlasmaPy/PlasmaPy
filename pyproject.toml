@@ -279,7 +279,6 @@ ignore = [
   "D401", # non-imperative-mood (enable later?)
   "E501", # line-too-long
   "FIX002", # line-contains-todo
-  "N801", # invalid-class-name
   "N802", # invalid-function-name
   "N803", # invalid-argument-name
   "N806", # non-lowercase-variable-in-function
@@ -351,7 +350,7 @@ max-complexity = 10
 "plasmapy/utils/_pytest_helpers/tests/test_pytest_helpers.py" = ["BLE001", "TRY002"]
 "plasmapy/utils/decorators/tests/test_converters.py" = ["ARG001", "ARG005"]
 "setup.py" = ["D100"]
-"test_*" = ["D100", "D101", "D102", "D103", "D104", "D209", "D400", "D401"]
+"test_*" = ["D100", "D101", "D102", "D103", "D104", "D209", "D400", "D401", "N801"]
 "*/*/tests/__init__.py" = ["D104"]
 
 [tool.ruff.pydocstyle]
