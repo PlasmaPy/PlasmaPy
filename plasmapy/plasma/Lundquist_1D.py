@@ -2,7 +2,7 @@ import numpy as np
 import scipy.special
 
 
-class lundquist:
+class Lundquist:
     """
     Define Analytical solution for lundquist solution.
 
