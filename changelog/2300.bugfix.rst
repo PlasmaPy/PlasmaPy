@@ -1,0 +1,1 @@
+Enable `time_step` parameter in `ExcessStatistics` class to have a astropy unit.
