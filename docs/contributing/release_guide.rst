@@ -46,12 +46,12 @@ Announce the release timeline
 Update metadata
 ===============
 
-* Begin an upload to Zenodo_ for the new release using the
-  ``team@plasmapy.org`` login, and reserve a DOI_.
+* Begin an upload to |Zenodo| for the new release using the
+  ``team@plasmapy.org`` login, and reserve a |DOI|.
 
 * Open a pull request to update and alphabetize the author list in
   :file:`docs/about/credits.rst`, :file:`.mailmap`, and |CITATION.cff|_, the
-  latter using the `Citation File Format`_. Missing ORCID_ identifiers may be
+  latter using the |Citation File Format|. Missing ORCID_ identifiers may be
   added.
 
 .. Add a Python script here to update :file:`.mailmap`.
@@ -81,12 +81,12 @@ Perform code quality checks
 * Run ``make linkcheck`` in :file:`docs/`, and if necessary, open a pull
   request to update redirects and fix broken links. The reserved DOI
   link in :file:`docs/about/citation.rst` will not work yet since the
-  Zenodo_ record will not be published until after the official release.
+  |Zenodo| record will not be published until after the official release.
 
   .. tip::
 
      Use ``linkcheck_allowed_redirects`` in :file:`docs/conf.py` to
-     specify allowed redirects. For example, DOI_ links are always
+     specify allowed redirects. For example, |DOI| links are always
      redirects, but are significantly more persistent than hyperlinks.
 
 * Make sure that all tests are passing.
@@ -137,7 +137,7 @@ Publish the release
       hub ci-status main -v [COMMIT]
    Here, ``[COMMIT]`` is replaced by the hash from the latest commit on
    the `main <https://github.com/PlasmaPy/PlasmaPy/commits/main>`__
-   branch of `PlasmaPy's GitHub repository`_.
+   branch of |PlasmaPy's GitHub repository|.
 
 * Go to the GitHub page to `draft a new release`_. We will perform a
   pre-release first.
@@ -230,17 +230,17 @@ Post-release
     * If tests fail, look at the :file:`recipe.yaml` file — usually it's
       either changed dependencies or the simple import tests there.
 
-* Upload the release to the Zenodo_ record corresponding to the reserved
+* Upload the release to the |Zenodo| record corresponding to the reserved
   DOI, making the metadata consistent with |CITATION.cff|_.
 
 Advertise the release
 =====================
 
-* Write a post on the release on `PlasmaPy's website`_.
+* Write a post on the release on |PlasmaPy's website|.
 
 * Notify plasma physics communities about the release on:
 
-  * `PlasmaPy's Matrix chat room`_
+  * |PlasmaPy's Matrix chat room|
   * PlasmaPy newsletter
   * Facebook_, LinkedIn_, and Twitter_
   * APS DPP Engage forum (requires login)
@@ -267,3 +267,6 @@ Advertise the release
 
 .. _`.github/workflows/python-publish.yml`: https://github.com/PlasmaPy/PlasmaPy/blob/main/.github/workflows/python-publish.yml
 .. |.github/workflows/python-publish.yml| replace:: :file:`.github/workflows/python-publish.yml`
+
+.. _`CITATION.cff`: https://github.com/PlasmaPy/PlasmaPy/blob/main/CITATION.cff
+.. |CITATION.cff| replace:: :file:`CITATION.cff`

@@ -409,6 +409,7 @@ sphinx==6.2.1
     #   sphinxcontrib-applehelp
     #   sphinxcontrib-bibtex
     #   sphinxcontrib-devhelp
+    #   sphinxcontrib-globalsubs
     #   sphinxcontrib-htmlhelp
     #   sphinxcontrib-jquery
     #   sphinxcontrib-qthelp
@@ -439,6 +440,8 @@ sphinxcontrib-bibtex==2.5.0
     # via plasmapy (setup.py)
 sphinxcontrib-devhelp==1.0.5
     # via sphinx
+sphinxcontrib-globalsubs==0.1.1
+    # via plasmapy (setup.py)
 sphinxcontrib-htmlhelp==2.0.4
     # via sphinx
 sphinxcontrib-jquery==4.1

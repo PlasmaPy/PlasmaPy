@@ -19,7 +19,7 @@ taking these steps, you'll be ready to go through the :ref:`code
 contribution workflow <workflow>`.
 
 If you run into any problems, please feel free to reach out to us in our
-`Matrix chat room`_ or during our weekly `office hours`_.
+|Matrix chat room| or during our weekly |office hours|.
 
 Pre-requisites
 ==============
@@ -73,7 +73,7 @@ Installing Python
    PlasmaPy requires a version of Python between |minpython| and
    |maxpython|. We recommend using Python |maxpython|.
 
-We suggest using Anaconda_ to install Python_. Anaconda_ is a versatile
+We suggest using Anaconda_ to install |Python|. Anaconda_ is a versatile
 package and environment management system which is widely used in the
 data science and scientific Python communities. Anaconda includes
 `Anaconda Navigator`_ as its graphical user interface (GUI) and Conda_
@@ -94,12 +94,12 @@ as its command line interface (CLI).
 Using git and GitHub
 --------------------
 
-Code contributions to PlasmaPy are made using |git|_ and GitHub_. Before
+Code contributions to PlasmaPy are made using |git| and |GitHub|. Before
 contributing code to PlasmaPy, please take the following steps:
 
 #. `Sign up on GitHub`_ for a free account.
 
-#. Verify that |git|_ is installed by
+#. Verify that |git| is installed by
    :ref:`opening a terminal <opening-a-terminal>` and running:
 
    .. code-block:: bash
@@ -108,13 +108,13 @@ contributing code to PlasmaPy, please take the following steps:
 
    If there is an error, follow these instructions to `install git`_.
 
-#. Optionally, configure |git|_ with your name with a command like:
+#. Optionally, configure |git| with your name with a command like:
 
    .. code-block:: bash
 
       git config --global user.name "Your Name"
 
-   You can also configure |git|_ with your email with a command like:
+   You can also configure |git| with your email with a command like:
 
    .. code-block:: bash
 
@@ -139,9 +139,9 @@ contributing code to PlasmaPy, please take the following steps:
 Initial setup
 =============
 
-#. Log in to GitHub_.
+#. Log in to |GitHub|.
 
-#. Go to `PlasmaPy's GitHub repository`_.
+#. Go to |PlasmaPy's GitHub repository|.
 
 #. Create a fork_ of PlasmaPy by clicking on :guilabel:`Fork`, followed
    by :guilabel:`Create fork`.
@@ -176,7 +176,7 @@ Initial setup
 
       cd PlasmaPy
 
-#. Add a remote_ called ``upstream`` for `PlasmaPy's GitHub repository`_
+#. Add a remote_ called ``upstream`` for |PlasmaPy's GitHub repository|
    by using the following command.
 
    .. code-block:: bash
@@ -185,7 +185,7 @@ Initial setup
 
    If you run :bash:`git remote -v`, you should see that :bash:`origin`
    corresponds to your fork_ and :bash:`upstream` corresponds to
-   `PlasmaPy's GitHub repository`_.
+   |PlasmaPy's GitHub repository|.
 
 Setting up a Python environment
 ===============================
@@ -228,7 +228,7 @@ environment`_ instead.
 Installing your clone of PlasmaPy
 =================================
 
-This section covers how to make an `editable installation`_ of your
+This section covers how to make an |editable installation| of your
 clone of PlasmaPy. Making the PlasmaPy installation *editable* means
 that if you modify the source code, then those changes will be included
 when you :py:`import plasmapy`.
@@ -280,8 +280,8 @@ when you :py:`import plasmapy`.
 
       Replace ``py`` with ``python`` if you are not using conda.
 
-   The :bash:`-e` specifies that this will be an `editable
-   installation`_.
+   The :bash:`-e` specifies that this will be an
+   |editable installation|.
 
    .. tip::
 
@@ -311,7 +311,7 @@ when you :py:`import plasmapy`.
 Installing pre-commit
 =====================
 
-PlasmaPy uses pre-commit_ to automate code quality checks and perform
+PlasmaPy uses |pre-commit| to automate code quality checks and perform
 automated fixes. Because pre-commit checks are performed on GitHub, it
 is optional to set up pre-commit locally.
 
@@ -378,7 +378,7 @@ To enable pre-commit on your computer:
 .. tip::
 
    To commit a change without running pre-commit, use the :bash:`-n` or
-   :bash:`--no-verify` flag with |git|_.
+   :bash:`--no-verify` flag with |git|.
 
 .. tip::
 
@@ -392,6 +392,7 @@ To enable pre-commit on your computer:
 .. _Anaconda Navigator: https://docs.anaconda.com/navigator/
 .. _Anaconda: https://docs.anaconda.com/
 .. _clone: https://github.com/git-guides/git-clone
+.. _Conda: https://docs.conda.io
 .. _creating an environment: https://docs.anaconda.com/navigator/tutorials/manage-environments/#creating-a-new-environment
 .. _download Python: https://www.python.org/downloads/
 .. _fork: https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/about-forks
