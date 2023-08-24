@@ -9,9 +9,9 @@ Functionality to calculate excess statistics of time series.
 __all__ = ["ExcessStatistics"]
 
 
+import astropy.units as u
 import numbers
 import numpy as np
-import astropy.units as u
 
 from collections.abc import Iterable
 
