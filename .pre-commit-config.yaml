@@ -99,3 +99,5 @@ repos:
   - id: nbqa-isort
     args:
     - --nbqa-mutate
+  - id: nbqa-check-ast
+  - id: nbqa-ruff
