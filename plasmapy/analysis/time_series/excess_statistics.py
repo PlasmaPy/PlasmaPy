@@ -11,6 +11,7 @@ __all__ = ["ExcessStatistics"]
 
 import numbers
 import numpy as np
+import astropy.units as u
 
 from collections.abc import Iterable
 
@@ -97,6 +98,9 @@ class ExcessStatistics:
                 self._times_above_threshold = [
                     time_step * len(event_lengths[i]) for i in range(len(event_lengths))
                 ]
+
+                if isinstance(time_step, u.Quantity):
+                    self._times_above_threshold *= time_step.unit
 
                 self._number_of_crossings.append(len(event_lengths))
                 if indices_above_threshold[0] == 0:
