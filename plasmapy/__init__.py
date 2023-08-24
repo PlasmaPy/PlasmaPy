@@ -73,7 +73,7 @@ __citation__ = (
 
 def online_help(query: str):  # coverage: ignore
     """
-    Open a webpage containing a search page in `PlasmaPy's documentation`_,
+    Open a webpage containing a search page in |PlasmaPy's documentation|,
     or another page that contains relevant online help.
 
     This function requires an active internet connection, and will open

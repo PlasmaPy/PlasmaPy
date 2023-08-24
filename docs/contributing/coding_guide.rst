@@ -29,15 +29,15 @@ style changes. Please feel free to propose revisions to this guide by
 a community meeting.
 
 PlasmaPy generally follows the :pep:`8` style guide for Python code,
-using auto-formatters such as black_ and isort_ that are executed using
-pre-commit_.
+using auto-formatters such as |black| and |isort| that are executed using
+|pre-commit|.
 
 Coding guidelines
 =================
 
 * Write short functions that do exactly one thing with no side effects.
 
-* Use NumPy_ array options instead of ``for`` loops to make code more
+* Use |NumPy| array options instead of ``for`` loops to make code more
   compact, readable, and performant.
 
 * Instead of defining variables like ``a0``, ``a1``, & ``a2``, define
@@ -196,7 +196,7 @@ code is supposed to be doing.
 * Python allows alphanumeric Unicode characters to be used in object
   names (e.g., ``πλάσμα`` or ``φυσική``). These characters may be used
   for *internal* code when doing so improves readability (i.e., to match
-  a commonly used symbol) and in Jupyter_ notebooks.
+  a commonly used symbol) and in |Jupyter| notebooks.
 
 * If a plasma parameter has multiple names, then use the name that
   provides the most physical insight. For example, ``gyrofrequency``
@@ -424,7 +424,7 @@ Imports
      import numpy as np
      import pandas as pd
 
-* PlasmaPy uses isort_ to organize import statements via a |pre-commit|_
+* PlasmaPy uses |isort| to organize import statements via a |pre-commit|
   hook.
 
 * For infrequently used objects, import the package, subpackage, or
@@ -455,10 +455,10 @@ Requirements
 
 * Each release of PlasmaPy should support all minor versions of
   Python that have been released in the prior 42 months, and all minor
-  versions of NumPy_ that have been released in the last 24 months.
+  versions of |NumPy| that have been released in the last 24 months.
   This schedule was proposed in `NumPy Enhancement Proposal 29`_ for
   the scientific Python ecosystem, and has been adopted by upstream
-  packages such as NumPy_, matplotlib_, and Astropy_.
+  packages such as |NumPy|, |matplotlib|, and |Astropy|.
 
   .. tip::
 
@@ -482,8 +482,8 @@ Requirements
      to set a maximum requirement.
 
 * Minor versions of Python are generally released in October of each
-  year. However, it may take a few months before packages like NumPy_
-  and Numba_ become compatible with the newest minor version of Python_.
+  year. However, it may take a few months before packages like |NumPy|
+  and |Numba| become compatible with the newest minor version of |Python|.
 
 Special function categories
 ===========================
@@ -557,7 +557,7 @@ the performance penalty can become significant for numerically intensive
 applications.
 
 A :term:`lite-function` is an optimized version of another `plasmapy`
-function that accepts numbers and NumPy_ arrays in assumed SI units.
+function that accepts numbers and |NumPy| arrays in assumed SI units.
 :term:`Lite-functions` skip all validations and instead prioritize
 performance. Most :term:`lite-functions` are defined in
 `plasmapy.formulary`.
@@ -693,7 +693,7 @@ adjacent fields such as astronomy and heliophysics. To get started with
 
   .. caution::
 
-     Recent versions of Astropy_ allow unit-aware |Quantity|
+     Recent versions of |Astropy| allow unit-aware |Quantity|
      annotations such as :py:`u.Quantity[u.m]`. However, these
      annotations are not yet compatible with |validate_quantities|.
 
@@ -822,7 +822,7 @@ Example notebooks
 
 Examples in PlasmaPy are written as Jupyter notebooks, taking advantage
 of their mature ecosystems. They are located in `docs/notebooks`_.
-|nbsphinx|_ takes care of executing them at documentation build time and
+|nbsphinx| takes care of executing them at documentation build time and
 including them in the documentation.
 
 Please note that it is necessary to store notebooks with their outputs
@@ -833,7 +833,7 @@ accomplishes two goals:
 
 1. helps with versioning the notebooks, as binary image data is not stored in
    the notebook
-2. signals |nbsphinx|_ that it should execute the notebook.
+2. signals |nbsphinx| that it should execute the notebook.
 
 .. note::
 
@@ -851,8 +851,8 @@ Compatibility with Prior Versions of Python, NumPy, and Astropy
 ===============================================================
 
 PlasmaPy releases will generally abide by the following standards, which
-are adapted from `NEP 29`_ for the support of old versions of Python_,
-NumPy_, and Astropy_.
+are adapted from `NEP 29`_ for the support of old versions of |Python|,
+|NumPy|, and |Astropy|.
 
 * PlasmaPy should support at least the minor versions of Python
   initially released 42 months prior to a planned project release date.
@@ -894,6 +894,8 @@ in the README file of `benchmarks-repo`_.
 
 .. _ASCII: https://en.wikipedia.org/wiki/ASCII
 .. _cognitive complexity: https://www.sonarsource.com/docs/CognitiveComplexity.pdf
+.. _Cython: https://cython.org/
+.. _equivalencies: https://docs.astropy.org/en/stable/units/equivalencies.html
 .. _example notebook on particles: ../notebooks/getting_started/particles.ipynb
 .. _example notebook on units: ../notebooks/getting_started/units.ipynb
 .. _extract function refactoring pattern: https://refactoring.guru/extract-method
@@ -902,3 +904,12 @@ in the README file of `benchmarks-repo`_.
 .. _NumPy Enhancement Proposal 29: https://numpy.org/neps/nep-0029-deprecation_policy.html
 .. _pyupgrade: https://github.com/asottile/pyupgrade
 .. _rename refactoring in PyCharm: https://www.jetbrains.com/help/pycharm/rename-refactorings.html
+
+.. _`astropy.units`: https://docs.astropy.org/en/stable/units/index.html
+.. |astropy.units| replace:: `astropy.units`
+
+.. _`pyproject.toml`: https://github.com/PlasmaPy/PlasmaPy/blob/main/pyproject.toml
+.. |pyproject.toml| replace:: :file:`pyproject.toml`
+
+.. _`tox.ini`: https://github.com/PlasmaPy/PlasmaPy/blob/main/tox.ini
+.. |tox.ini| replace:: :file:`tox.ini`

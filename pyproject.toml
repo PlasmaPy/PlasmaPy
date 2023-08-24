@@ -76,6 +76,7 @@ docs = [
   "sphinx_rtd_theme >= 1.2.2",
   "sphinx_tabs >= 3.4.1",
   "sphinxcontrib-bibtex >= 2.5.0",
+  "sphinxcontrib-globalsubs >= 0.1.1",
   "towncrier >= 22.12",
   "tox >= 4.4.0",
 ]
@@ -358,7 +359,7 @@ max-complexity = 10
 [tool.ruff.per-file-ignores]
 "__init__.py" = ["D104", "E402", "F401", "F402", "F403"] # ignore import errors
 ".github/scripts/*.py" = ["D103", "INP001"]
-"docs/conf.py" = ["D100", "D103", "E402", "EXE001", "EXE005"]
+"docs/conf.py" = ["D100", "D103", "E402", "EXE001", "EXE005", "F401"]
 "plasmapy/analysis/fit_functions.py" = ["D301"]
 "plasmapy/formulary/braginskii.py" = ["C901", "RET503", "RET504"]
 "plasmapy/formulary/tests/test_distribution.py" = ["ARG005"]

@@ -58,7 +58,7 @@ def sorting_key(author: dict[str, str]) -> str:
         return ""
 
 
-def generate_reST(authors: list[dict[str, str]]) -> str:
+def generate_rst_author_list(authors: list[dict[str, str]]) -> str:
     """
     Generate a reStructuredText formatted list of authors.
 
@@ -74,7 +74,7 @@ def generate_reST(authors: list[dict[str, str]]) -> str:
         The reStructuredText formatted list of authors.
     """
     authors = sorted(authors, key=sorting_key)
-    authors_reST = ""
+    authors_rst = ""
     for author in authors:
         if "given-names" in author and "family-names" in author:
             name = f'{author["given-names"]} {author["family-names"]}'
@@ -85,12 +85,12 @@ def generate_reST(authors: list[dict[str, str]]) -> str:
 
         if "orcid" in author and "alias" in author:
             orcid = author["orcid"].removeprefix("https://orcid.org/")
-            authors_reST += f'- :user:`{name} <{author["alias"]}>` (:orcid:`{orcid}`)\n'
+            authors_rst += f'- :user:`{name} <{author["alias"]}>` (:orcid:`{orcid}`)\n'
         elif "alias" in author:
-            authors_reST += f'- :user:`{name} <{author["alias"]}>`\n'
+            authors_rst += f'- :user:`{name} <{author["alias"]}>`\n'
         else:
-            authors_reST += f"- :user:`{name}`\n"
-    return authors_reST
+            authors_rst += f"- :user:`{name}`\n"
+    return authors_rst
 
 
 def main(cff_file="../CITATION.cff", rst_file="about/_authors.rst"):
@@ -107,6 +107,6 @@ def main(cff_file="../CITATION.cff", rst_file="about/_authors.rst"):
         The path to the output :file:`.rst` file.
     """
     cff_data = parse_cff(cff_file)
-    authors_reST = generate_reST(cff_data["authors"])
+    authors_rst = generate_rst_author_list(cff_data["authors"])
     with pathlib.Path(rst_file).open("w") as file:
-        file.write(authors_reST)
+        file.write(authors_rst)
