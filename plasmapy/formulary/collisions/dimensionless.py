@@ -169,7 +169,7 @@ def coupling_parameter(
     >>> coupling_parameter(T, n, species, V=1e6 * u.m / u.s)
     <Quantity 5.8033...e-05>
     """
-    T, masses, charges, reduced_mass, V = misc._process_inputs(
+    T, masses, charges, reduced_mass, V = misc._process_inputs(  # noqa: SLF001
         T=T, species=species, V=V
     )
 

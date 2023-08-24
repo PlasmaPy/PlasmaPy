@@ -102,7 +102,7 @@ def _make_custom_particle_with_real_charge_number(
 _particle_constructors = (
     Particle,
     CustomParticle,
-    CustomParticle._from_quantities,
+    CustomParticle._from_quantities,  # noqa: SLF001
     ParticleList,
     _make_custom_particle_with_real_charge_number,
 )

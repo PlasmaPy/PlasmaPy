@@ -124,12 +124,6 @@ class TestAlfvenSpeed:
                 {"rtol": 1e-6},
             ),
             (
-                (1 * u.T, 1e-8 * u.kg * u.m**-3),
-                {},
-                8920620.58 * u.m / u.s,
-                {"rtol": 1e-6},
-            ),
-            (
                 (0.05 * u.T, 1e18 * u.m**-3),
                 {"ion": "He+"},
                 Alfven_speed(0.05 * u.T, 6.64647699e-09 * u.kg * u.m**-3),
