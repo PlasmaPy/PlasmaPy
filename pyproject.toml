@@ -117,6 +117,7 @@ write_to = "plasmapy/_version.py"
 profile = "black"
 known_first_party = ["plasmapy", ]
 default_section = "STDLIB"
+force_alphabetical_sort_within_sections = true
 honor_noqa = true
 lines_between_types = 1
 
