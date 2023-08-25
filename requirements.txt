@@ -177,7 +177,7 @@ jupyterlab-server==2.24.0
     # via voila
 jupyterlab-widgets==3.0.8
     # via ipywidgets
-kiwisolver==1.4.4
+kiwisolver==1.4.5
     # via matplotlib
 latexcodec==2.0.1
     # via pybtex
@@ -506,7 +506,7 @@ virtualenv==20.24.3
     # via
     #   pre-commit
     #   tox
-voila==0.5.0
+voila==0.5.1
     # via plasmapy (setup.py)
 wcwidth==0.2.6
     # via prompt-toolkit
