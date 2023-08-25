@@ -6,6 +6,7 @@ __all__ = []
 __aliases__ = []
 __lite_funcs__ = []
 
+from plasmapy.formulary._speeds import *
 from plasmapy.formulary.braginskii import *
 from plasmapy.formulary.collisions import *
 from plasmapy.formulary.densities import *
