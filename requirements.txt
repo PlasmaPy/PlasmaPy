@@ -177,7 +177,7 @@ jupyterlab-server==2.24.0
     # via voila
 jupyterlab-widgets==3.0.8
     # via ipywidgets
-kiwisolver==1.4.4
+kiwisolver==1.4.5
     # via matplotlib
 latexcodec==2.0.1
     # via pybtex
@@ -391,7 +391,7 @@ sortedcontainers==2.4.0
     # via hypothesis
 soupsieve==2.4.1
     # via beautifulsoup4
-sphinx==6.2.1
+sphinx==7.2.3
     # via
     #   nbsphinx
     #   numpydoc
@@ -426,7 +426,7 @@ sphinx-hoverxref==1.3.0
     # via plasmapy (setup.py)
 sphinx-issues==3.0.1
     # via plasmapy (setup.py)
-sphinx-notfound-page==0.8.3
+sphinx-notfound-page==1.0.0rc1
     # via plasmapy (setup.py)
 sphinx-reredirects==0.1.2
     # via plasmapy (setup.py)
@@ -506,7 +506,7 @@ virtualenv==20.24.3
     # via
     #   pre-commit
     #   tox
-voila==0.5.0
+voila==0.5.1
     # via plasmapy (setup.py)
 wcwidth==0.2.6
     # via prompt-toolkit
