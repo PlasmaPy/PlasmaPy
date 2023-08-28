@@ -106,6 +106,7 @@ authors:
 - given-names: Khalil
   family-names: Bryant
   affiliation: University of Michigan
+  orcid: https://orcid.org/0000-0002-2105-0280
   alias: KhalilBryant
 
 - given-names: Sean
@@ -188,6 +189,7 @@ authors:
 
 - given-names: Bryan
   family-names: Foo
+  orcid: https://orcid.org/0000-0001-5308-6870
   alias: bryancfoo
 
 - given-names: Rajagopalan
@@ -247,6 +249,7 @@ authors:
 
 - given-names: Nabil
   family-names: Humphrey
+  orcid: https://orcid.org/0000-0002-4227-2544
   alias: NabilHumphrey
 
 - alias: itsraasshi
@@ -264,6 +267,7 @@ authors:
 - given-names: Elliot
   family-names: Johnson
   affiliation: University of Delaware
+  orcid: https://orcid.org/0000-0003-2892-6924
   alias: ejohnson-96
 
 - given-names: Marcin
