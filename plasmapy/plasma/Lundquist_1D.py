@@ -64,7 +64,7 @@ class Lundquist:
 
     def B_magnitude(self, r):
         r"""
-        Compute the magnetic field in the radial direction.
+        Compute the total magnetic field.
 
         .. math::
 
