@@ -650,7 +650,7 @@ class Automodsumm(Autosummary):
         return super().result
 
     @property
-    def warnings(self) -> List["Node"]:
+    def warnings(self) -> List:
         """.. deprecated:: Sphinx 2.0.0"""
         return super().warnings
 
