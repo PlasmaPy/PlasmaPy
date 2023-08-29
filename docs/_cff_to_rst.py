@@ -198,6 +198,6 @@ if __name__ == "__main__":
 
     .. code-block: bash
 
-        python cff_to_rst.py
+        python _cff_to_rst.py
     """
     main(verbose=True)

@@ -1,3 +1,4 @@
-Refactored and improved the functionality in :file:`docs/cff_to_rst.py`
-that converts author information contained in :file:`CITATION.cff` into
-a |reStructuredText| author list.
+Renamed :file:`docs/cff_to_rst.py` to :file:`docs/_cff_to_rst.py`, and
+updated the functionality contained within that file for converting
+author information in :file:`CITATION.cff` into a |reStructuredText|
+author list to be included in the documentation.
