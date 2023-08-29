@@ -362,10 +362,12 @@ max-complexity = 10
 "plasmapy/plasma/sources/*.py" = ["D102"]
 "plasmapy/utils/_pytest_helpers/pytest_helpers.py" = ["BLE001", "PLR", "SLF001"]
 "plasmapy/utils/_pytest_helpers/tests/test_pytest_helpers.py" = ["BLE001", "TRY002"]
+"plasmapy/utils/calculator/plasma_calculator.ipynb" = ["D100", "SLF001"]
 "plasmapy/utils/decorators/tests/test_converters.py" = ["ARG001", "ARG005"]
 "setup.py" = ["D100"]
 "test_*" = ["D100", "D101", "D102", "D103", "D104", "D209", "D400", "D401", "N801", "SLF001"]
 "*/*/tests/__init__.py" = ["D104"]
+"docs/notebooks/*/*.ipynb" = ["D100", "T201"]
 
 [tool.ruff.pydocstyle]
 convention = "numpy"
