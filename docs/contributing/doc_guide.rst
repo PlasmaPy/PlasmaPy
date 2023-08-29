@@ -1429,7 +1429,7 @@ version of the package that can be revisited later.
 .. _sphinx-build: https://www.sphinx-doc.org/en/master/man/sphinx-build.html
 .. _sphinx-codeautolink: https://sphinx-codeautolink.readthedocs.io
 .. _Sphinx's glossary: https://www.sphinx-doc.org/en/master/glossary.html
-.. _Sphinx's templating page: https://www.sphinx-doc.org/en/master/templating.html
+.. _Sphinx's templating page: https://www.sphinx-doc.org/en/master/development/templating.html
 .. _style overrides: https://docs.readthedocs.io/en/stable/guides/adding-custom-css.html
 .. _warns: https://numpydoc.readthedocs.io/en/latest/format.html#warns
 .. _weekly tests: https://github.com/PlasmaPy/PlasmaPy/actions/workflows/weekly.yml

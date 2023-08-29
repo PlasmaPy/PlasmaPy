@@ -1,0 +1,13 @@
+
+(           index: line   24) broken    PlasmaPy'sGitHubrepository -
+
+(           index: line   19) broken    getting-started-notebooks -
+
+(contributing/getting_ready: line  193) broken    installing-python -
+
+(contributing/getting_ready: line  206) broken    opening-a-terminal -
+
+
+(notebooks/formulary/iter: line   11) broken    https://www.iter.org/ - HTTPSConnectionPool(host='www.iter.org', port=443): Max retries exceeded with url: / (Caused by SSLError(SSLError(1, '[SSL: UNSAFE_LEGACY_RENEGOTIATION_DISABLED] unsafe legacy renegotiation disabled (_ssl.c:1002)')))
+
+(contributing/doc_guide: line 1118) broken    https://www.sphinx-doc.org/en/master/templating.html - 404 Client Error: Not Found for url: https://www.sphinx-doc.org/en/master/templating.html

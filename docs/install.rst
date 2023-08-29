@@ -116,7 +116,7 @@ Installing PlasmaPy with Anaconda Navigator
    This section contains instructions on how to install PlasmaPy with
    `Anaconda Navigator`_ at the time of writing. For the most up-to-date
    information, please go to the official documentation on `installing
-   Anaconda Navigator`_ and `managing packages`_.
+   Anaconda Navigator`_ and `getting started with Anaconda Navigator`_.
 
 `Anaconda Navigator`_ is a graphical user interface (GUI) for Conda_
 that can be used to install Python packages. It is installed
@@ -211,7 +211,7 @@ package should also be installed.
    and create branches so that you may make contributions via pull
    requests.
 
-.. _Anaconda Navigator: https://docs.anaconda.com/navigator/install
+.. _Anaconda Navigator: https://docs.anaconda.com/free/navigator
 .. _clone a repository using SSH: https://docs.github.com/en/get-started/getting-started-with-git/about-remote-repositories#cloning-with-ssh-urls
 .. _Conda: https://docs.conda.io
 .. _conda-forge: https://conda-forge.org
@@ -220,10 +220,10 @@ package should also be installed.
 .. _from PyPI: https://pypi.org/project/plasmapy
 .. _from Zenodo: https://doi.org/10.5281/zenodo.1436011
 .. _improving Conda performance: https://docs.conda.io/projects/conda/en/latest/user-guide/concepts/conda-performance.html#improving-conda-performance
-.. _installing Anaconda Navigator: https://docs.anaconda.com/navigator/install
+.. _installing Anaconda Navigator: https://docs.anaconda.com/free/navigator/install
 .. _installing Conda: https://docs.conda.io/projects/conda/en/latest/user-guide/install/index.html
 .. _installing packages: https://packaging.python.org/en/latest/tutorials/installing-packages/#installing-from-vcs
-.. _managing packages: https://docs.anaconda.com/navigator/tutorials/manage-packages/#installing-a-package
+.. _getting started with Anaconda Navigator: https://docs.anaconda.com/free/navigator/getting-started
 .. _miniconda: https://docs.conda.io/en/latest/miniconda.html
 .. _releases: https://github.com/PlasmaPy/PlasmaPy/releases
 .. _ZIP: https://en.wikipedia.org/wiki/ZIP_(file_format)
