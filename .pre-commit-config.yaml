@@ -99,3 +99,4 @@ repos:
   - id: nbqa-check-ast
   - id: nbqa-isort
   - id: nbqa-ruff
+    args: [--fix]
