@@ -212,6 +212,7 @@ authors:
 
 - given-names: Silvina
   family-names: Guidoni
+  orcid: https://orcid.org/0000-0003-1439-4218
   affiliation: American University
 
 - given-names: Colby
@@ -254,11 +255,11 @@ authors:
   orcid: https://orcid.org/0000-0002-4227-2544
   alias: NabilHumphrey
 
-- alias: itsraasshi
-
 - given-names: Maria
   family-names: Isupova
   alias: misupova
+
+- alias: itsraashi
 
 - given-names: Alexis
   family-names: Jeandet
