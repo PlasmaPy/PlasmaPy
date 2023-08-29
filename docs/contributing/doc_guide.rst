@@ -1398,7 +1398,7 @@ version of the package that can be revisited later.
 .. |directives| replace:: :term:`directives <directive>`
 
 .. _admonitions: https://docutils.sourceforge.io/docs/ref/rst/directives.html#admonitions
-.. _BibTeX: http://www.bibtex.org
+.. _BibTeX: https://www.bibtex.org
 .. _BibTeX format: https://www.bibtex.com/g/bibtex-format
 .. _configuration options: https://www.sphinx-doc.org/en/master/usage/configuration.html
 .. _CSS: https://www.w3schools.com:443/css
