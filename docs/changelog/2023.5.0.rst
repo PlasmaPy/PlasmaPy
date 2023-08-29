@@ -208,7 +208,7 @@ Trivial/Internal Changes
   ``ion``. (:pr:`2034`)
 - Updated package metadata in :file:`pyproject.toml`. (:pr:`2075`)
 - Set minimum versions for all explicitly listed dependencies. (:pr:`2075`)
-- Enabled and applied changes for additional rule sets for ``ruff``, and
+- Enabled and applied changes for additional rule sets for |ruff|, and
   removed corresponding ``flake8`` extensions. (:pr:`2080`)
 - Changed from ``indexserver`` to ``PIP_INDEX_URL`` to index nightly `numpy`
   builds (:pr:`2138`)

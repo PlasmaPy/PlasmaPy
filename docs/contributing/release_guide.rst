@@ -256,8 +256,8 @@ Advertise the release
 .. _API token for PyPI: https://pypi.org/help/#apitoken
 .. _Astropy's release procedures: https://docs.astropy.org/en/stable/development/releasing.html
 .. _Draft a new release: https://github.com/PlasmaPy/PlasmaPy/releases/new
-.. _Facebook: https://www.facebook.com/people/PlasmaPy/100064083033291/
-.. _LinkedIn: https://www.linkedin.com/company/plasmapy/
+.. _Facebook: https://www.facebook.com/people/PlasmaPy/100064083033291
+.. _LinkedIn: https://www.linkedin.com/company/plasmapy
 .. _ORCID: https://orcid.org
 .. _PlasmaPy releases on PyPI: https://pypi.org/project/plasmapy/#history
 .. _PlasmaPy's website: https://www.plasmapy.org

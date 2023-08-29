@@ -194,7 +194,7 @@ If you plan to make multiple contributions, we recommend setting up a
 Python environment specifically for PlasmaPy. This section describes how
 to set up a Conda_ environment from the command line, which can be done
 after installing Conda or `Anaconda Navigator`_ as described in the
-section on `getting Python <installing-python>`_. If you did not use
+section on :ref:`getting Python <installing-python>`. If you did not use
 Conda or Anaconda to install Python, we suggest using a `virtual
 environment`_ instead.
 
@@ -203,7 +203,7 @@ environment`_ instead.
    Using Conda/virtual environments helps avoid situations as in `this
    xkcd comic`_.
 
-#. `Open a terminal <opening-a-terminal>`_.
+#. :ref:`Open a terminal <opening-a-terminal>`.
 
 #. Create a Conda environment named ``plasmapy-dev`` by running:
 
@@ -233,7 +233,7 @@ clone of PlasmaPy. Making the PlasmaPy installation *editable* means
 that if you modify the source code, then those changes will be included
 when you :py:`import plasmapy`.
 
-1. `Open a terminal <opening-a-terminal>`_.
+1. :ref:`Open a terminal <opening-a-terminal>`.
 
 2. Navigate to the directory for your clone of PlasmaPy, which should be
    named :file:`PlasmaPy`. For example, if you ran the :bash:`git clone`
@@ -323,7 +323,7 @@ is optional to set up pre-commit locally.
 
 To enable pre-commit on your computer:
 
-#. `Open a terminal <opening-a-terminal>`_.
+#. :ref:`Open a terminal <opening-a-terminal>`.
 
 #. Navigate to the :file:`PlasmaPy/` directory that contains your clone
    of PlasmaPy's repository. For example, if you cloned PlasmaPy into
@@ -389,33 +389,33 @@ To enable pre-commit on your computer:
       pre-commit run --all-files
 
 .. _Add a new SSH key to your GitHub account: https://docs.github.com/en/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account
-.. _Anaconda Navigator: https://docs.anaconda.com/navigator/
-.. _Anaconda: https://docs.anaconda.com/
+.. _Anaconda Navigator: https://docs.anaconda.com/free/navigator
+.. _Anaconda: https://docs.anaconda.com
 .. _clone: https://github.com/git-guides/git-clone
 .. _Conda: https://docs.conda.io
 .. _creating an environment: https://docs.anaconda.com/navigator/tutorials/manage-environments/#creating-a-new-environment
-.. _download Python: https://www.python.org/downloads/
+.. _download Python: https://www.python.org/downloads
 .. _fork: https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/about-forks
 .. _frequently used Unix commands: https://faculty.tru.ca/nmora/Frequently%20used%20UNIX%20commands.pdf
 .. _git commands for setup and config: https://git-scm.com/book/en/v2/Appendix-C%3A-Git-Commands-Setup-and-Config
 .. _install git: https://git-scm.com/book/en/v2/Getting-Started-Installing-Git
-.. _install Graphviz: https://graphviz.org/download/
+.. _install Graphviz: https://graphviz.org/download
 .. _install pandoc: https://pandoc.org/installing.html
-.. _installing Anaconda Navigator: https://docs.anaconda.com/navigator/install
+.. _installing Anaconda Navigator: https://docs.anaconda.com/free/navigator/install
 .. _installing Conda: https://conda.io/projects/conda/en/latest/user-guide/install/index.html
-.. _installing Python: https://realpython.com/installing-python/
+.. _installing Python: https://realpython.com/installing-python
 .. _installing WSL: https://learn.microsoft.com/en-us/windows/wsl/install
 .. _miniconda: https://docs.conda.io/en/latest/miniconda.html
 .. _opening Powershell: https://learn.microsoft.com/en-us/powershell/scripting/windows-powershell/starting-windows-powershell?view=powershell-7.3
-.. _powershell: https://learn.microsoft.com/en-us/powershell/
-.. _Real Python: https://realpython.com/
+.. _powershell: https://learn.microsoft.com/en-us/powershell
+.. _Real Python: https://realpython.com
 .. _remote: https://github.com/git-guides/git-remote
 .. _sign up on GitHub: https://github.com/join
 .. _terminal user guide: https://support.apple.com/guide/terminal/welcome/mac
-.. _this xkcd comic: https://xkcd.com/1987/
+.. _this xkcd comic: https://xkcd.com/1987
 .. _unix tutorial: https://www.hpc.iastate.edu/guides/unix-introduction/unix-tutorial-1
 .. _using an environment: https://docs.anaconda.com/navigator/tutorials/manage-environments/#using-an-environment
 .. _venv: https://docs.python.org/3/library/venv.html
-.. _virtual environment: https://realpython.com/python-virtual-environments-a-primer/
+.. _virtual environment: https://realpython.com/python-virtual-environments-a-primer
 .. _Windows Subsystem for Linux: https://learn.microsoft.com/en-us/windows/wsl
 .. _WSL: https://learn.microsoft.com/en-us/windows/wsl

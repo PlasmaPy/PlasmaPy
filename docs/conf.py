@@ -254,7 +254,11 @@ linkcheck_allowed_redirects = {
 # Hyperlinks for `make linkcheck` to ignore, such as links that point to
 # setting options in PlasmaPy's GitHub account that require a login.
 
-linkcheck_ignore = ["https://github.com/PlasmaPy/PlasmaPy/settings/secrets/actions"]
+# To speed up `make linkcheck`, ignore github.com & doi.org.
+
+linkcheck_ignore = [
+    "https://github.com/PlasmaPy/PlasmaPy/settings/secrets/actions",
+]
 
 linkcheck_anchors = True
 linkcheck_anchors_ignore = [
