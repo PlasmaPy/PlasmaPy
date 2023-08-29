@@ -882,7 +882,7 @@ Benchmarks
 .. _benchmarks: https://www.plasmapy.org/plasmapy-benchmarks
 .. _benchmarks-repo: https://github.com/PlasmaPy/plasmapy-benchmarks
 .. _asv: https://github.com/airspeed-velocity/asv
-.. _asv-docs: https://asv.readthedocs.io/en/stable/
+.. _asv-docs: https://asv.readthedocs.io/en/stable
 
 PlasmaPy has a set of asv_ benchmarks that monitor performance of its
 functionalities.  This is meant to protect the package from performance
@@ -894,7 +894,7 @@ in the README file of `benchmarks-repo`_.
 
 .. _ASCII: https://en.wikipedia.org/wiki/ASCII
 .. _cognitive complexity: https://www.sonarsource.com/docs/CognitiveComplexity.pdf
-.. _Cython: https://cython.org/
+.. _Cython: https://cython.org
 .. _equivalencies: https://docs.astropy.org/en/stable/units/equivalencies.html
 .. _example notebook on particles: ../notebooks/getting_started/particles.ipynb
 .. _example notebook on units: ../notebooks/getting_started/units.ipynb

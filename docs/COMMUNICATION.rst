@@ -40,7 +40,7 @@ the broader plasma community, and meetings of PlasmaPy working groups.
 The special events include |Plasma Hack Week|.
 
 .. _GitHub Discussions page: https://github.com/PlasmaPy/PlasmaPy/discussions
-.. _Gitter bridge: https://gitter.im/PlasmaPy/Lobby
+.. _Gitter bridge: https://app.gitter.im/#/room/#PlasmaPy_Lobby:gitter.im
 .. _mailing list: https://groups.google.com/forum/#!forum/plasmapy
 .. _PlasmaPy meetings: https://www.plasmapy.org/meetings
 .. _suggestion box: https://docs.google.com/forms/d/e/1FAIpQLSdT3O5iHZrLJRuavFyzoR23PGy0Prfzx2SQOcwJGWtvHyT2lw/viewform?usp=sf_link
