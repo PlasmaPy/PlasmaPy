@@ -100,7 +100,7 @@ def parse_event(env, sig, signode):
         case ``foo`` would be the signature.
 
     signode : sphinx.addnodes.desc_signature
-        A `docutils` ``Node`` for the object signatures.
+        A `docutils` Node for the object signatures.
     """
     event_sig_re = re.compile(r"([a-zA-Z-_]+)\s*\((.*)\)")
 
