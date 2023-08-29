@@ -233,7 +233,7 @@ clone of PlasmaPy. Making the PlasmaPy installation *editable* means
 that if you modify the source code, then those changes will be included
 when you :py:`import plasmapy`.
 
-1. `Open a terminal <opening-a-terminal>`_.
+1. :ref:`Open a terminal <opening-a-terminal>`.
 
 2. Navigate to the directory for your clone of PlasmaPy, which should be
    named :file:`PlasmaPy`. For example, if you ran the :bash:`git clone`
@@ -323,7 +323,7 @@ is optional to set up pre-commit locally.
 
 To enable pre-commit on your computer:
 
-#. `Open a terminal <opening-a-terminal>`_.
+#. :ref:`Open a terminal <opening-a-terminal>`.
 
 #. Navigate to the :file:`PlasmaPy/` directory that contains your clone
    of PlasmaPy's repository. For example, if you cloned PlasmaPy into
