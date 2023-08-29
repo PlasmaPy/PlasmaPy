@@ -17,6 +17,12 @@ sys.path.insert(0, os.path.abspath("."))  # noqa: PTH100
 import cff_to_rst
 
 from _global_substitutions import global_substitutions
+from _linkcheck_settings import (
+    linkcheck_allowed_redirects,
+    linkcheck_anchors,
+    linkcheck_anchors_ignore,
+    linkcheck_ignore,
+)
 from datetime import datetime
 from pkg_resources import parse_version
 from sphinx.application import Sphinx
@@ -232,37 +238,6 @@ html_extra_path = ["robots.txt"]
 todo_include_todos = False
 
 default_role = "py:obj"
-
-# Customizations for make linkcheck using regular expressions
-
-linkcheck_allowed_redirects = {
-    r"https://doi\.org/.+": r"https://.+",  # DOI links are more persistent
-    r"https://docs.+\.org": r"https://docs.+\.org/en/.+",
-    r"https://docs.+\.io": r"https://docs.+\.io/en/.+",
-    r"https://docs.+\.com": r"https://docs.+\.com/en/.+",
-    r"https://docs.+\.dev": r"https://docs.+\.dev/en/.+",
-    r"https://en.wikipedia.org/wiki.+": "https://en.wikipedia.org/wiki.+",
-    r"https://.+\.readthedocs\.io": r"https://.+\.readthedocs\.io/en/.+",
-    r"https://www\.sphinx-doc\.org": r"https://www\.sphinx-doc\.org/en/.+",
-    r"https://.+/github\.io": r"https://.+/github\.io/en/.+",
-    r"https://.+": r".+(google|github).+[lL]ogin.+",  # some links require logins
-    r"https://jinja\.palletsprojects\.com": r"https://jinja\.palletsprojects\.com/.+",
-    r"https://pip\.pypa\.io": r"https://pip\.pypa\.io/en/.+",
-    r"https://www.python.org/dev/peps/pep.+": "https://peps.python.org/pep.+",
-}
-
-# Hyperlinks for `make linkcheck` to ignore, such as links that point to
-# setting options in PlasmaPy's GitHub account that require a login.
-
-linkcheck_ignore = ["https://github.com/PlasmaPy/PlasmaPy/settings/secrets/actions"]
-
-linkcheck_anchors = True
-linkcheck_anchors_ignore = [
-    "/room",
-    r".+openastronomy.+",
-    "L[0-9].+",
-    "!forum/plasmapy",
-]
 
 redirects = {
     "contributing/install_dev": "../contributing/getting_ready.html",
