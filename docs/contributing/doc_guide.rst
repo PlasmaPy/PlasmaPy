@@ -1119,12 +1119,14 @@ Templating
 may be used within the documentation when templating is necessary. For
 more details, please refer to `Sphinx's templating page`_.
 
+.. _sphinx-rabbit-dragon-holes:
+
 .. danger::
 
    There are certain tasks that one would expect to be straightforward
-   with |reStructuredText| and |Sphinx| but are only possible by doing a horrible
-   workaround that can take hours to figure out. This has given rise to
-   the saying:
+   with |reStructuredText| and |Sphinx| but are only possible by doing a
+   horrible workaround that can take hours to figure out. This has given
+   rise to the saying:
 
       *Sphinx rabbit holes often have dragons in them.* 🐇 🕳️ 🐉
 
