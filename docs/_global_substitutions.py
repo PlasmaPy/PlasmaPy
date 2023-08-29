@@ -144,7 +144,7 @@ links = {
     "pytest": "https://docs.pytest.org",
     "Python": "https://www.python.org",
     "Python's documentation": "https://docs.python.org/3",
-    "Read the Docs": "https://readthedocs.org",
+    "Read the Docs": "https://about.readthedocs.com/",
     "reStructuredText": "https://docutils.sourceforge.io/rst.html",
     "ruff": "https://beta.ruff.rs/docs",
     "SciPy": "https://scipy.org",
