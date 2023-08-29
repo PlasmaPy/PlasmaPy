@@ -99,7 +99,4 @@ repos:
   - id: nbqa-check-ast
   - id: nbqa-isort
   - id: nbqa-ruff
-    args: [
-      --fix,
-      "--ignore=B018,D100,E402,INP001,NPY002,PD011,T",
-    ]
+    args: [--fix, '--ignore=B018,D100,E402,INP001,NPY002,PD011,T']
