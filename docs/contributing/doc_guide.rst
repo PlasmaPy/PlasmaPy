@@ -1119,12 +1119,14 @@ Templating
 may be used within the documentation when templating is necessary. For
 more details, please refer to `Sphinx's templating page`_.
 
+.. _sphinx-rabbit-dragon-holes:
+
 .. danger::
 
    There are certain tasks that one would expect to be straightforward
-   with |reStructuredText| and |Sphinx| but are only possible by doing a horrible
-   workaround that can take hours to figure out. This has given rise to
-   the saying:
+   with |reStructuredText| and |Sphinx| but are only possible by doing a
+   horrible workaround that can take hours to figure out. This has given
+   rise to the saying:
 
       *Sphinx rabbit holes often have dragons in them.* 🐇 🕳️ 🐉
 
@@ -1398,7 +1400,7 @@ version of the package that can be revisited later.
 .. |directives| replace:: :term:`directives <directive>`
 
 .. _admonitions: https://docutils.sourceforge.io/docs/ref/rst/directives.html#admonitions
-.. _BibTeX: http://www.bibtex.org
+.. _BibTeX: https://www.bibtex.org
 .. _BibTeX format: https://www.bibtex.com/g/bibtex-format
 .. _configuration options: https://www.sphinx-doc.org/en/master/usage/configuration.html
 .. _CSS: https://www.w3schools.com:443/css
@@ -1429,7 +1431,7 @@ version of the package that can be revisited later.
 .. _sphinx-build: https://www.sphinx-doc.org/en/master/man/sphinx-build.html
 .. _sphinx-codeautolink: https://sphinx-codeautolink.readthedocs.io
 .. _Sphinx's glossary: https://www.sphinx-doc.org/en/master/glossary.html
-.. _Sphinx's templating page: https://www.sphinx-doc.org/en/master/templating.html
+.. _Sphinx's templating page: https://www.sphinx-doc.org/en/master/development/templating.html
 .. _style overrides: https://docs.readthedocs.io/en/stable/guides/adding-custom-css.html
 .. _warns: https://numpydoc.readthedocs.io/en/latest/format.html#warns
 .. _weekly tests: https://github.com/PlasmaPy/PlasmaPy/actions/workflows/weekly.yml

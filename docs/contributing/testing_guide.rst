@@ -806,6 +806,6 @@ popular IDEs:
 .. _`test discovery conventions`: https://docs.pytest.org/en/latest/goodpractices.html#conventions-for-python-test-discovery
 .. _`test warnings`: https://docs.pytest.org/en/latest/warnings.html#warns
 .. _`test exceptions`: https://docs.pytest.org/en/latest/assert.html#assertions-about-expected-exceptions
-.. _`tox environments`: https://tox.wiki/en/latest/config.html#tox-environments
+.. _`tox environments`: https://tox.wiki/en/stable/config.html#tox-environment
 .. _unpacking: https://docs.python.org/3/tutorial/controlflow.html#unpacking-argument-lists
-.. _`Visual Studio`: https://visualstudio.microsoft.com/
+.. _`Visual Studio`: https://visualstudio.microsoft.com
