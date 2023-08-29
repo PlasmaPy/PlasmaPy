@@ -194,7 +194,7 @@ If you plan to make multiple contributions, we recommend setting up a
 Python environment specifically for PlasmaPy. This section describes how
 to set up a Conda_ environment from the command line, which can be done
 after installing Conda or `Anaconda Navigator`_ as described in the
-section on `getting Python <installing-python>`_. If you did not use
+section on :ref:`getting Python <installing-python>`. If you did not use
 Conda or Anaconda to install Python, we suggest using a `virtual
 environment`_ instead.
 
@@ -203,7 +203,7 @@ environment`_ instead.
    Using Conda/virtual environments helps avoid situations as in `this
    xkcd comic`_.
 
-#. `Open a terminal <opening-a-terminal>`_.
+#. :ref:`Open a terminal <opening-a-terminal>`.
 
 #. Create a Conda environment named ``plasmapy-dev`` by running:
 
