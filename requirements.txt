@@ -391,7 +391,7 @@ sortedcontainers==2.4.0
     # via hypothesis
 soupsieve==2.4.1
     # via beautifulsoup4
-sphinx==7.2.3
+sphinx==7.2.4
     # via
     #   nbsphinx
     #   numpydoc
