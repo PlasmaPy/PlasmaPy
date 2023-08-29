@@ -132,6 +132,7 @@ class TestStix:
             ),
         ],
     )
+    @pytest.mark.filterwarnings("ignore::astropy.units.UnitsWarning")
     def test_return_structure(self, kwargs, expected):
         k = stix(**kwargs)
 
