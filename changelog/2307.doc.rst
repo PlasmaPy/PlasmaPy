@@ -1,0 +1,3 @@
+Refactored and improved the functionality in :file:`docs/cff_to_rst.py`
+that converts author information contained in :file:`CITATION.cff` into
+a |reStructuredText| author list.
