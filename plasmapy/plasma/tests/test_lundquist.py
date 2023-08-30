@@ -12,9 +12,6 @@ def test_B_z():
     assert u.allclose(B_z, [B0, -0.028448945653561195 * u.T], atol=1e-9 * u.T)
 
 
-# calculate the value of B_z at r = 5
-
-
 def test_B_theta():
     B0 = 2 * u.T
     a = 3 * (1 / u.m)
