@@ -51,7 +51,7 @@ def test_raises(lite_func, attrs, _error):
     ("lite_func", "attrs"),
     [
         (foo_lite, None),
-        (jit(foo_lite), None),
+        (jit(foo_lite, nopython=True), None),
         (njit(foo_lite), None),
         (foo_lite, {"bar": bar}),
     ],

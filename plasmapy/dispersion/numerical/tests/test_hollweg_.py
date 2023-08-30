@@ -188,6 +188,8 @@ class TestHollweg:
             ),
         ],
     )
+    @pytest.mark.filterwarnings("ignore::astropy.units.UnitsWarning")
+    @pytest.mark.filterwarnings("ignore::plasmapy.utils.exceptions.PhysicsWarning")
     def test_handle_k_theta_arrays(self, kwargs, expected):
         """Test scenarios involving k and theta arrays."""
         ws = hollweg(**kwargs)
@@ -263,6 +265,7 @@ class TestHollweg:
             ),
         ],
     )
+    @pytest.mark.filterwarnings("ignore::plasmapy.utils.exceptions.PhysicsWarning")
     def test_hollweg1999_vals(self, kwargs, expected, desired_beta):
         """
         Test calculated values based on Figure 2 of Hollweg1999
@@ -324,6 +327,7 @@ class TestHollweg:
             ),
         ],
     )
+    @pytest.mark.filterwarnings("ignore::plasmapy.utils.exceptions.PhysicsWarning")
     def test_Z_override(self, kwargs, expected):
         """Test overriding behavior of kw 'Z'."""
         ws = hollweg(**kwargs)
@@ -332,6 +336,7 @@ class TestHollweg:
         for mode in ws:
             assert np.isclose(ws[mode], ws_expected[mode], atol=1e-5, rtol=1.7e-4)
 
+    @pytest.mark.filterwarnings("ignore::plasmapy.utils.exceptions.PhysicsWarning")
     @pytest.mark.parametrize(
         ("kwargs", "expected"),
         [
