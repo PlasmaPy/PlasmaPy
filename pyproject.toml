@@ -136,7 +136,10 @@ NORMALIZE_WHITESPACE
 ELLIPSIS
 NUMBER"""
 addopts = "--doctest-modules --doctest-continue-on-failure"
-filterwarnings = ["ignore:.*Creating", "a"]
+filterwarnings = [
+  "ignore::plasmapy.utils.exceptions.PlasmaPyDeprecationWarning",
+  "ignore:.*no specified units. Assuming units of.*:astropy.units.UnitsWarning"
+]
 
 [tool.coverage.report]
 exclude_lines = [
