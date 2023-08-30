@@ -1,3 +1,5 @@
+"""Classes for representing cylindrical equilibria."""
+
 import numpy as np
 import scipy.special
 
