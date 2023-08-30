@@ -6,7 +6,7 @@ import scipy.special
 
 class ForceFreeFluxRope:
     r"""
-    Define Analytical solution for lundquist solution.
+    Define Analytical solution for lundquist solution :cite:p:`lundquist:1950`.
 
     Parameters
     ----------
