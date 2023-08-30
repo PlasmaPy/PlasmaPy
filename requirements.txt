@@ -426,7 +426,7 @@ sphinx-hoverxref==1.3.0
     # via plasmapy (setup.py)
 sphinx-issues==3.0.1
     # via plasmapy (setup.py)
-sphinx-notfound-page==1.0.0rc1
+sphinx-notfound-page==1.0.0
     # via plasmapy (setup.py)
 sphinx-reredirects==0.1.2
     # via plasmapy (setup.py)
