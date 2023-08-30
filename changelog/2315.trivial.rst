@@ -1,2 +1,3 @@
-Made it so that if tests marked as expected to fail actually pass
-that the test will fail.
+Changed the default configuration for `pytest` so that if a test is marked
+as expected to fail actually but then passes, then that test issue an
+error.
