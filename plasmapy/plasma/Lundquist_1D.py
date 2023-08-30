@@ -3,7 +3,7 @@ import scipy.special
 
 
 class ForceFreeFluxRope:
-    """
+    r"""
     Define Analytical solution for lundquist solution.
 
     Parameters
@@ -12,7 +12,7 @@ class ForceFreeFluxRope:
         Magnetic field strength in units convertible to tesla.
 
     a : `~astropy.units.Quantity`
-        Eigenvalue to make :math:`\mathbf{J} × \mathbf{B} = 0`, in units 
+        Eigenvalue to make :math:`\mathbf{J} × \mathbf{B} = 0`, in units
         convertible to inverse length.
 
     Notes
@@ -22,9 +22,9 @@ class ForceFreeFluxRope:
 
     """
 
-    def __init__(self, B0, a):
+    def __init__(self, B0, alpha):
         self.B0 = B0
-        self.a = a
+        self.alpha = alpha
 
     def B_theta(self, r):
         r"""
@@ -39,7 +39,7 @@ class ForceFreeFluxRope:
         r : `~astropy.units.Quantity`
              A distance from the flux rope.
         """
-        return self.B0 * scipy.special.j1(self.a * r)
+        return self.B0 * scipy.special.j1(self.alpha * r)
 
     def B_z(self, r):
         r"""
@@ -55,7 +55,7 @@ class ForceFreeFluxRope:
           distance from equilibria
 
         """
-        return self.B0 * scipy.special.j0(self.a * r)
+        return self.B0 * scipy.special.j0(self.alpha * r)
 
     def B_magnitude(self, r):
         r"""

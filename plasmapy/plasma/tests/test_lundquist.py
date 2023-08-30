@@ -1,22 +1,22 @@
 import astropy.units as u
 
-from plasmapy.plasma import Lundquist
+from plasmapy.plasma import ForceFreeFluxRope
 
 
 def test_B_z():
     B0 = 2 * u.T
-    a = 3 * (1 / u.m)
+    alpha = 3 * (1 / u.m)
     r = [0, 5] * u.m
-    flux_rope = Lundquist(B0=B0, a=a)
+    flux_rope = ForceFreeFluxRope(B0=B0, alpha=alpha)
     B_z = flux_rope.B_z(r=r)
     assert u.allclose(B_z, [B0, -0.028448945653561195 * u.T], atol=1e-9 * u.T)
 
 
 def test_B_theta():
     B0 = 2 * u.T
-    a = 3 * (1 / u.m)
+    alpha = 3 * (1 / u.m)
     r = [0, 5] * u.m
-    flux_rope = Lundquist(B0=B0, a=a)
+    flux_rope = ForceFreeFluxRope(B0=B0, alpha=alpha)
     B_theta = flux_rope.B_theta(r=r)
     assert u.allclose(
         B_theta,
@@ -30,9 +30,8 @@ def test_B_theta():
 
 def test_B_magnitude():
     B0 = 2 * u.T
-    a = 3 * (1 / u.m)
+    alpha = 3 * (1 / u.m)
     r = [0, 5] * u.m
-    flux_rope = Lundquist(B0=B0, a=a)
+    flux_rope = ForceFreeFluxRope(B0=B0, alpha=alpha)
     B_magnitude = flux_rope.B_magnitude(r=r)
     assert u.allclose(B_magnitude, [B0, 0.4111933962639831 * u.T], atol=1e-9 * u.T)
-
