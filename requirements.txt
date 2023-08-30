@@ -311,7 +311,7 @@ pygments==2.16.1
     #   sphinx-tabs
 pyparsing==3.0.9
     # via matplotlib
-pyproject-api==1.6.1
+pyproject-api==1.5.4
     # via tox
 pytest==7.4.0
     # via
