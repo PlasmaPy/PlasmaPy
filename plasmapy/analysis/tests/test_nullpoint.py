@@ -308,6 +308,10 @@ def test_null_point_find4():
 
 
 @pytest.mark.slow()
+@pytest.mark.filterwarnings(
+    "ignore::plasmapy.analysis.nullpoint.MultipleNullPointWarning"
+)
+@pytest.mark.filterwarnings("ignore::UserWarning")
 def test_null_point_find5():
     r"""Test `~plasmapy.analysis.nullpoint.null_point_find`."""
     # Many null points because a y vector dimension is zero
@@ -338,6 +342,9 @@ def test_null_point_find5():
 
 
 @pytest.mark.slow()
+@pytest.mark.filterwarnings(
+    "ignore::plasmapy.analysis.nullpoint.MultipleNullPointWarning"
+)
 def test_null_point_find6():
     r"""Test `~plasmapy.analysis.nullpoint.null_point_find`."""
     # Many null points; All vector dimensions zero
@@ -387,6 +394,9 @@ def test_null_point_find8():
 
 
 @pytest.mark.slow()
+@pytest.mark.filterwarnings(
+    "ignore::plasmapy.analysis.nullpoint.MultipleNullPointWarning"
+)
 class Test_classify_null_point:
     r"""Test `~plasmapy.analysis.nullpoint._classify_null_point`."""
 
@@ -472,6 +482,10 @@ def test_null_point_find9():
 
 # Tests that capture the degenerate nulls/2D nulls
 @pytest.mark.slow()
+@pytest.mark.filterwarnings(
+    "ignore::plasmapy.analysis.nullpoint.MultipleNullPointWarning"
+)
+@pytest.mark.filterwarnings("ignore::UserWarning")
 def test_null_point_find10():
     nullpoint10_args = {
         "x_range": [-0.1, 0.1],
@@ -494,6 +508,10 @@ def test_null_point_find10():
 
 
 @pytest.mark.slow()
+@pytest.mark.filterwarnings(
+    "ignore::plasmapy.analysis.nullpoint.MultipleNullPointWarning"
+)
+@pytest.mark.filterwarnings("ignore::UserWarning")
 def test_null_point_find11():
     nullpoint10_args = {
         "x_range": [-0.1, 0.1],
