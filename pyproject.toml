@@ -136,7 +136,7 @@ NORMALIZE_WHITESPACE
 ELLIPSIS
 NUMBER"""
 addopts = "--doctest-modules --doctest-continue-on-failure"
-filterwarnings = ["ignore::plasmapy.utils.exceptions.PlasmaPyDeprecationWarning"]
+filterwarnings = ["ignore:.*Creating", "a"]
 
 [tool.coverage.report]
 exclude_lines = [
