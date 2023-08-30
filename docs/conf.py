@@ -416,6 +416,8 @@ nitpick_ignore_regex = [
     (python_role, "automod.*"),
     (python_role, "Builder"),
     (python_role, "docutils.*"),
+    (python_role, "Documenter"),
+    (python_role, "Node"),
     (python_role, "level"),
     (python_role, ".*member.*"),
     (python_role, "OptionSpec"),
