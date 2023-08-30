@@ -2,7 +2,7 @@ import numpy as np
 import scipy.special
 
 
-class Lundquist:
+class ForceFreeFluxRope:
     """
     Define Analytical solution for lundquist solution.
 
