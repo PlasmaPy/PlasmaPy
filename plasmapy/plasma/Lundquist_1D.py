@@ -36,7 +36,7 @@ class ForceFreeFluxRope:
 
         Parameters
         ----------
-        r : 'float'
+        r : `~astropy.units.Quantity`
              A distance from the flux rope.
         """
         return self.B0 * scipy.special.j1(self.a * r)
