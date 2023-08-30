@@ -8,17 +8,12 @@ class ForceFreeFluxRope:
 
     Parameters
     ----------
-    B0: `float`
-        magnetic field.
+    B0 : `~astropy.units.Quantity`
+        Magnetic field strength in units convertible to tesla.
 
-    j1 : `float`
-        spherical bessel function.
-
-    r : 'float'
-        A distance from the flux rope.
-
-    a : 'float'
-        eigenvalue to make j cross B = 0.
+    a : `~astropy.units.Quantity`
+        Eigenvalue to make :math:`\mathbf{J} × \mathbf{B} = 0`, in units 
+        convertible to inverse length.
 
     Notes
     -----
