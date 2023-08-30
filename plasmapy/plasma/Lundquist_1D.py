@@ -51,7 +51,7 @@ class ForceFreeFluxRope:
 
         Parameters
         ----------
-        r : `float`
+        r : `~astropy.units.Quantity`
           distance from equilibria
 
         """
