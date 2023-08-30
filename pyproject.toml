@@ -71,7 +71,7 @@ docs = [
   "sphinx-gallery >= 0.12.2",
   "sphinx-hoverxref >= 1.1.1",
   "sphinx-issues >= 3.0.1",
-  "sphinx-notfound-page == 1.0.0rc1",
+  "sphinx-notfound-page >= 1.0.0",
   "sphinx-reredirects >= 0.1.1",
   "sphinx_rtd_theme >= 1.2.2",
   "sphinx_tabs >= 3.4.1",
