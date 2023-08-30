@@ -28,9 +28,6 @@ def test_B_theta():
     )
 
 
-# calculate the value of B_theta at r = 5
-
-
 def test_B_magnitude():
     B0 = 2 * u.T
     a = 3 * (1 / u.m)
@@ -39,5 +36,3 @@ def test_B_magnitude():
     B_magnitude = flux_rope.B_magnitude(r=r)
     assert u.allclose(B_magnitude, [B0, 0.4111933962639831 * u.T], atol=1e-9 * u.T)
 
-
-# calculate the value of B_magnitude at r =5
