@@ -82,6 +82,8 @@ class ForceFreeFluxRope:
         r"""
         Compute the total magnetic field.
 
+        The magnitude of the magnetic field is given by
+
         .. math::
 
             B(r) = \sqrt{B_z(r)^2 + B_θ(r)^2}.
