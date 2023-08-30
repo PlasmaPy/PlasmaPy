@@ -136,7 +136,10 @@ NORMALIZE_WHITESPACE
 ELLIPSIS
 NUMBER"""
 addopts = "--doctest-modules --doctest-continue-on-failure"
-filterwarnings = ["ignore:.*Creating", "a"]
+filterwarnings = [
+  "ignore:.*deprecated in traitlets 4.2.*:DeprecationWarning",
+  "ignore:.*MultiIndex.*:DeprecationWarning",  # https://github.com/PlasmaPy/PlasmaPy/issues/2319
+]
 
 [tool.coverage.report]
 exclude_lines = [
