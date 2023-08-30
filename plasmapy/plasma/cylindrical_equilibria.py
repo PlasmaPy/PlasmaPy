@@ -6,7 +6,7 @@ import scipy.special
 
 class ForceFreeFluxRope:
     r"""
-    Representation of the analytical Lundquist solution for 
+    Representation of the analytical Lundquist solution for
     force-free magnetic flux ropes :cite:p:`lundquist:1950`.
 
     Parameters
@@ -38,7 +38,7 @@ class ForceFreeFluxRope:
         .. math::
 
             B_θ(r) = B_0 J_1(α r)
-            
+
         where :math:`α` is the eigenvalue and :math:`J_1` is the Bessel
         function of the first kind of order 1.
 
@@ -71,8 +71,8 @@ class ForceFreeFluxRope:
              Radial distance from flux rope axis in units convertible
              to meters.
 
-         Returns
-         -------
+        Returns
+        -------
          `~astropy.units.Quantity`
 
         """
