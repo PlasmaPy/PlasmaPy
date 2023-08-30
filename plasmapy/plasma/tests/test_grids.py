@@ -172,6 +172,8 @@ def test_AbstractGrid_creation(args, kwargs, shape, error):
             grids.CartesianGrid(*args, **kwargs)
 
 
+@pytest.mark.filterwarnings("ignore::UserWarning")
+@pytest.mark.filterwarnings("ignore::RuntimeWarning")
 def test_print_summary(abstract_grid_uniform, abstract_grid_nonuniform):
     """
     Verify that both __str__ methods can be called without errors
@@ -229,6 +231,7 @@ abstract_attrs = [
 
 
 @pytest.mark.parametrize(("attr", "type_", "type_in_iter", "value"), abstract_attrs)
+@pytest.mark.filterwarnings("ignore::RuntimeWarning")
 def test_AbstractGrid_uniform_attributes(
     attr,
     type_,
@@ -265,6 +268,7 @@ abstract_attrs = [
 
 
 @pytest.mark.parametrize(("attr", "type_", "type_in_iter", "value"), abstract_attrs)
+@pytest.mark.filterwarnings("ignore::RuntimeWarning")
 def test_AbstractGrid_nonuniform_attributes(
     attr,
     type_,
@@ -422,6 +426,7 @@ on_grid = [
 
 
 @pytest.mark.parametrize(("fixture", "pos", "result"), on_grid)
+@pytest.mark.filterwarnings("ignore::RuntimeWarning")
 def test_AbstractGrid_on_grid(
     abstract_grid_uniform, abstract_grid_nonuniform, fixture, pos, result
 ):
@@ -445,6 +450,7 @@ vector_intersect = [
 
 
 @pytest.mark.parametrize(("fixture", "p1", "p2", "result"), vector_intersect)
+@pytest.mark.filterwarnings("ignore::RuntimeWarning")
 def test_AbstractGrid_vector_intersects(
     abstract_grid_uniform, abstract_grid_nonuniform, fixture, p1, p2, result
 ):
