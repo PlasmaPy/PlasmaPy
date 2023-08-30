@@ -131,6 +131,7 @@ lines_between_types = 1
 minversion = "7.0.1"
 testpaths = ['plasmapy']
 norecursedirs = ['build', 'docs', 'plasmapy[\/]_dev']
+xfail_strict = true
 doctest_optionflags = """
 NORMALIZE_WHITESPACE
 ELLIPSIS

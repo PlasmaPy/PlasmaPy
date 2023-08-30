@@ -305,7 +305,8 @@ class TestHollweg:
             "gyrofrequency where Z override behavior is being "
             "dropped. We will address Z override behavior when "
             "hollweg is decorated with particle_input."
-        )
+        ),
+        strict=False,
     )
     @pytest.mark.parametrize(
         ("kwargs", "expected"),
