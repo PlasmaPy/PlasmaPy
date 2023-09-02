@@ -79,6 +79,7 @@ docs = [
   "sphinxcontrib-globalsubs >= 0.1.1",
   "towncrier >= 22.12",
   "tox >= 4.4.0",
+  "unidecode >= 1.3.6",
 ]
 tests = [
   "hypothesis >= 6.35.1",
