@@ -14,7 +14,7 @@ sys.path.insert(0, os.path.abspath(".."))  # noqa: PTH100
 sys.path.insert(0, os.path.abspath("."))  # noqa: PTH100
 # isort: on
 
-import cff_to_rst
+import _cff_to_rst
 
 from _global_substitutions import global_substitutions
 from datetime import datetime
@@ -23,7 +23,7 @@ from sphinx.application import Sphinx
 
 # Generate author list from CITATION.cff
 
-cff_to_rst.main()
+_cff_to_rst.main()
 
 from plasmapy import __version__ as release
 
@@ -416,6 +416,8 @@ nitpick_ignore_regex = [
     (python_role, "automod.*"),
     (python_role, "Builder"),
     (python_role, "docutils.*"),
+    (python_role, "Documenter"),
+    (python_role, "Node"),
     (python_role, "level"),
     (python_role, ".*member.*"),
     (python_role, "OptionSpec"),
