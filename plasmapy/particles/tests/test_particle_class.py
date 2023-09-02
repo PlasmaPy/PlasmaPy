@@ -1,3 +1,5 @@
+import astropy.constants as const
+import astropy.units as u
 import collections
 import inspect
 import io
@@ -5,8 +7,6 @@ import json
 import numpy as np
 import pytest
 
-from astropy import constants as const
-from astropy import units as u
 from astropy.constants import c, e, m_e, m_n, m_p
 
 from plasmapy.particles import json_load_particle, json_loads_particle, molecule
@@ -556,7 +556,7 @@ def test_Particle_class(arg, kwargs, expected_dict):
                 errmsg += f"\n{call}.{key} raises an unexpected exception."
 
     if errmsg:
-        raise Exception(f"Problems with {call}:{errmsg}")  # noqa: BLE001, TRY002
+        raise Exception(f"Problems with {call}:{errmsg}")  # noqa: TRY002
 
 
 equivalent_particles_table = [
@@ -943,6 +943,7 @@ customized_particle_tests = [
 @pytest.mark.parametrize(
     ("cls", "kwargs", "attr", "expected"), customized_particle_tests
 )
+@pytest.mark.filterwarnings("ignore::UserWarning")
 def test_custom_particles(cls, kwargs, attr, expected):
     """Test the attributes of dimensionless and custom particles."""
     instance = cls(**kwargs)

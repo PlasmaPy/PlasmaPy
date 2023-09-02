@@ -1,8 +1,8 @@
 """Test functionality of Stix in `plasmapy.dispersion.analytical.stix_`."""
+import astropy.units as u
 import numpy as np
 import pytest
 
-from astropy import units as u
 from astropy.constants.si import c
 
 from plasmapy.dispersion.analytical.stix_ import stix
@@ -105,7 +105,6 @@ class TestStix:
                 },
                 {"shape": (4,)},
             ),
-            ({**_kwargs_single_valued, "ions": ["He+", "H+"]}, {"shape": (4,)}),
             (
                 {
                     **_kwargs_single_valued,
@@ -133,6 +132,7 @@ class TestStix:
             ),
         ],
     )
+    @pytest.mark.filterwarnings("ignore::astropy.units.UnitsWarning")
     def test_return_structure(self, kwargs, expected):
         k = stix(**kwargs)
 

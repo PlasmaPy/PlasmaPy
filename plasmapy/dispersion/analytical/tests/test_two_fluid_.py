@@ -1,9 +1,8 @@
 """Tests for the two fluid dispersion solution."""
 
+import astropy.units as u
 import numpy as np
 import pytest
-
-from astropy import units as u
 
 from plasmapy.dispersion.analytical.two_fluid_ import two_fluid
 from plasmapy.formulary.frequencies import wc_
@@ -173,7 +172,7 @@ class TestTwoFluid:
         assert isinstance(ws, dict)
         assert len({"acoustic_mode", "alfven_mode", "fast_mode"} - set(ws.keys())) == 0
 
-        for val in ws.values():  # noqa: B007
+        for val in ws.values():
             assert isinstance(val, u.Quantity)
             assert val.unit == u.rad / u.s
             assert val.shape == expected["shape"]

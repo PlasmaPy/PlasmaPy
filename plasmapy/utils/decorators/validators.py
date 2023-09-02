@@ -260,7 +260,7 @@ class ValidateQuantities(CheckUnits, CheckValues):
                     _none_shall_pass is False
                     and validations[arg_name]["none_shall_pass"] is True
                 ):
-                    raise ValueError(  # noqa: TC301
+                    raise ValueError(
                         f"Validation 'none_shall_pass' for argument '{arg_name}' is "
                         f"inconsistent between function annotations "
                         f"({validations[arg_name]['none_shall_pass']}) and decorator "

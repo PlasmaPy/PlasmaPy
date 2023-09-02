@@ -16,7 +16,7 @@ from plasmapy.utils.decorators import validate_quantities
     T_1={"can_be_negative": False, "equivalencies": u.temperature_energy()},
     T_2={"can_be_negative": False, "equivalencies": u.temperature_energy()},
 )
-def temp_ratio(  # noqa: C901, PLR0912, PLR0915
+def temp_ratio(  # noqa: C901
     *,
     r_0: u.au,
     r_n: u.au,
@@ -346,7 +346,7 @@ def temp_ratio(  # noqa: C901, PLR0912, PLR0915
                 )
             )
             if verbose:
-                logging.info(f"\r {(i / len(variables[0])) * 100:.2f} %")
+                logging.info(f"\r {(i / len(variables[0])) * 100:.2f} %")  # noqa: G004
 
         return res  # noqa: TRY300
 

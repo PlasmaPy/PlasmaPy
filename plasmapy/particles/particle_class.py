@@ -21,10 +21,9 @@ import warnings
 
 from abc import ABC, abstractmethod
 from collections import defaultdict, namedtuple
-from collections.abc import Iterable, Sequence
 from datetime import datetime
 from numbers import Integral, Real
-from typing import NoReturn, Optional, Union
+from typing import NoReturn, Optional, TYPE_CHECKING, Union
 
 from plasmapy.particles import _elements, _isotopes, _parsing, _special_particles
 from plasmapy.particles.exceptions import (
@@ -40,6 +39,9 @@ from plasmapy.particles.exceptions import (
 )
 from plasmapy.utils import PlasmaPyDeprecationWarning, roman
 from plasmapy.utils._units_helpers import _get_physical_type_dict
+
+if TYPE_CHECKING:
+    from collections.abc import Iterable, Sequence
 
 _classification_categories = {
     "lepton",
@@ -681,7 +683,9 @@ class Particle(AbstractPhysicalParticle):
                 self.symbol
             ][attribute]
 
-        particle_taxonomy = _special_particles.particle_zoo._taxonomy_dict
+        particle_taxonomy = (
+            _special_particles.particle_zoo._taxonomy_dict  # noqa: SLF001
+        )
         all_categories = particle_taxonomy.keys()
 
         for category in all_categories:
@@ -1919,9 +1923,7 @@ class DimensionlessParticle(AbstractParticle):
         elif isinstance(obj, bool):
             raise TypeError("Expecting a real number, not a bool.")
         elif isinstance(obj, u.Quantity) and not isinstance(obj.value, Real):
-            raise ValueError(  # noqa: TRY004
-                "The value of a Quantity must be a real number."
-            )
+            raise ValueError("The value of a Quantity must be a real number.")
 
         try:
             new_obj = np.float64(obj)
@@ -2064,7 +2066,7 @@ class CustomParticle(AbstractPhysicalParticle):
 
     Examples
     --------
-    >>> from astropy import units as u
+    >>> import astropy.units as u
     >>> from plasmapy.particles import CustomParticle
     >>> custom_particle = CustomParticle(
     ...     mass=1.2e-26 * u.kg,

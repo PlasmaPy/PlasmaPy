@@ -1,9 +1,9 @@
 """Tests for code representation functions."""
 
+import astropy.units as u
 import numpy as np
 import pytest
 
-from astropy import units as u
 from collections import namedtuple
 
 from plasmapy.utils.code_repr import (

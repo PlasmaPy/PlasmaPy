@@ -1,8 +1,8 @@
 """Test functionality of Stix in `plasmapy.dispersion.numerical.kinetic_alfven_`."""
+import astropy.units as u
 import numpy as np
 import pytest
 
-from astropy import units as u
 from astropy.constants.si import c
 
 from plasmapy.dispersion.numerical.kinetic_alfven_ import kinetic_alfven
@@ -89,13 +89,14 @@ class TestKinetic_Alfven:
             ),
         ],
     )
+    @pytest.mark.filterwarnings("ignore::plasmapy.utils.exceptions.PhysicsWarning")
     def test_return_structure(self, kwargs, expected):
         """Test the structure of the returned values."""
         ws = kinetic_alfven(**kwargs)
 
         assert isinstance(ws, dict)
 
-        for val in ws.values():  # noqa: B007
+        for val in ws.values():
             assert isinstance(val, u.Quantity)
             assert val.unit == u.rad / u.s
             assert val.shape == expected["shape"]

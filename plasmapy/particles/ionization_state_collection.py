@@ -80,7 +80,7 @@ class IonizationStateCollection:
 
     Examples
     --------
-    >>> from astropy import units as u
+    >>> import astropy.units as u
     >>> from plasmapy.particles import IonizationStateCollection
     >>> states = IonizationStateCollection(
     ...     {'H': [0.5, 0.5], 'He': [0.95, 0.05, 0]},
@@ -212,9 +212,7 @@ class IonizationStateCollection:
                 )
 
             if not isinstance(int_charge, Integral):
-                raise TypeError(  # noqa: TC301
-                    f"{int_charge} is not a valid charge for {particle}."
-                )
+                raise TypeError(f"{int_charge} is not a valid charge for {particle}.")
             elif not 0 <= int_charge <= atomic_number(particle):
                 raise ChargeError(f"{int_charge} is not a valid charge for {particle}.")
 
@@ -296,7 +294,7 @@ class IonizationStateCollection:
                         f"defined."
                     )
 
-        try:  # noqa: TC101
+        try:
             new_fractions = np.array(value, dtype=float)
         except TypeError as exc:
             raise TypeError(
@@ -965,7 +963,9 @@ class IonizationStateCollection:
         # ionization levels for each element.
 
         for ionization_state in self:
-            states_info = ionization_state._get_states_info(minimum_ionic_fraction)
+            states_info = ionization_state._get_states_info(  # noqa: SLF001
+                minimum_ionic_fraction,
+            )
             if len(states_info) > 0:
                 output += states_info
                 output[-1] += "\n" + separator_line
@@ -989,4 +989,4 @@ class IonizationStateCollection:
         else:
             output_string = output[0]
 
-        print(output_string.strip("\n"))
+        print(output_string.strip("\n"))  # noqa: T201

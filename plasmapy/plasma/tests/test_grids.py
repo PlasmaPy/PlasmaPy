@@ -166,26 +166,31 @@ def test_AbstractGrid_creation(args, kwargs, shape, error):
     # If an exception is expected, verify that it is raised
     else:
         with pytest.raises(error):
-            print(f"{args = }")
-            print(f"{kwargs = }")
+            # We'll need to switch from print() to using logging library
+            print(f"{args = }")  # noqa: T201
+            print(f"{kwargs = }")  # noqa: T201
             grids.CartesianGrid(*args, **kwargs)
 
 
+@pytest.mark.filterwarnings("ignore::UserWarning")
+@pytest.mark.filterwarnings("ignore::RuntimeWarning")
 def test_print_summary(abstract_grid_uniform, abstract_grid_nonuniform):
     """
     Verify that both __str__ methods can be called without errors
     """
-    print(abstract_grid_uniform)
-    print(abstract_grid_nonuniform)
+    # We'll need to switch from print() to using logging library
+
+    print(abstract_grid_uniform)  # noqa: T201
+    print(abstract_grid_nonuniform)  # noqa: T201
 
     # Test printing a grid with no quantities
     grid = grids.CartesianGrid(-1 * u.cm, 1 * u.cm, num=3)
-    print(grid)
+    print(grid)  # noqa: T201
 
     # Test printing a grid with unrecognized quantities
     grid = grids.CartesianGrid(-1 * u.cm, 1 * u.cm, num=3)
     grid.add_quantities(unrecognized_quantity=np.ones([3, 3, 3]) * u.T)
-    print(grid)
+    print(grid)  # noqa: T201
 
 
 abstract_attrs = [
@@ -226,6 +231,7 @@ abstract_attrs = [
 
 
 @pytest.mark.parametrize(("attr", "type_", "type_in_iter", "value"), abstract_attrs)
+@pytest.mark.filterwarnings("ignore::RuntimeWarning")
 def test_AbstractGrid_uniform_attributes(
     attr,
     type_,
@@ -262,6 +268,7 @@ abstract_attrs = [
 
 
 @pytest.mark.parametrize(("attr", "type_", "type_in_iter", "value"), abstract_attrs)
+@pytest.mark.filterwarnings("ignore::RuntimeWarning")
 def test_AbstractGrid_nonuniform_attributes(
     attr,
     type_,
@@ -419,6 +426,7 @@ on_grid = [
 
 
 @pytest.mark.parametrize(("fixture", "pos", "result"), on_grid)
+@pytest.mark.filterwarnings("ignore::RuntimeWarning")
 def test_AbstractGrid_on_grid(
     abstract_grid_uniform, abstract_grid_nonuniform, fixture, pos, result
 ):
@@ -442,6 +450,7 @@ vector_intersect = [
 
 
 @pytest.mark.parametrize(("fixture", "p1", "p2", "result"), vector_intersect)
+@pytest.mark.filterwarnings("ignore::RuntimeWarning")
 def test_AbstractGrid_vector_intersects(
     abstract_grid_uniform, abstract_grid_nonuniform, fixture, p1, p2, result
 ):
@@ -909,7 +918,8 @@ def test_NonUniformCartesianGrid():
     pts0, pts1, pts2 = grid.grids
 
     grid.add_quantities(x=pts0)
-    print(grid)
+    # We'll need to switch from print() to using logging library
+    print(grid)  # noqa: T201
 
     # Grid should be non-uniform
     assert not grid.is_uniform

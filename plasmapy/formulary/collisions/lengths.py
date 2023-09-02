@@ -96,7 +96,7 @@ def impact_parameter_perp(
     #       dominate.
     # TODO: need to incorporate an average ionization parameter
 
-    T, masses, charges, reduced_mass, V = misc._process_inputs(
+    T, masses, charges, reduced_mass, V = misc._process_inputs(  # noqa: SLF001
         T=T, species=species, V=V
     )
 
@@ -225,7 +225,7 @@ def impact_parameter(  # noqa: C901
     >>> impact_parameter(T, n, species, V=1e6 * u.m / u.s)
     (<Quantity 2.534...e-10 m>, <Quantity 2.182...e-05 m>)
     """
-    T, masses, charges, reduced_mass, V = misc._process_inputs(
+    T, masses, charges, reduced_mass, V = misc._process_inputs(  # noqa: SLF001
         T=T, species=species, V=V
     )
     # catching error where mean charge state is not given for non-classical
@@ -286,7 +286,7 @@ def impact_parameter(  # noqa: C901
         ionRadius = Wigner_Seitz_radius(n_i)
         bmax = (lambdaDe**2 + ionRadius**2) ** (1 / 2)
         bmin = (lambdaBroglie**2 + bPerp**2) ** (1 / 2)
-    elif method in ("ls_clamp_mininterp", "GMS-3"):  # noqa: SIM114
+    elif method in ("ls_clamp_mininterp", "GMS-3"):
         # 3rd method listed in Table 1 of reference [1]
         # same as GMS-1, but not Lambda has a clamp at Lambda_min = 2
         # where Lambda is the argument to the Coulomb logarithm.
@@ -441,7 +441,7 @@ def mean_free_path(
     # reduced mass thermal velocity in electron-ion collision case.
     # Should be fine since collision_frequency has its own _process_inputs
     # check, and we are only using this here to get the velocity.
-    T, masses, charges, reduced_mass, V = misc._process_inputs(
+    T, masses, charges, reduced_mass, V = misc._process_inputs(  # noqa: SLF001
         T=T, species=species, V=V
     )
     return V / freq

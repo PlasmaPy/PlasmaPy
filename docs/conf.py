@@ -14,17 +14,18 @@ sys.path.insert(0, os.path.abspath(".."))  # noqa: PTH100
 sys.path.insert(0, os.path.abspath("."))  # noqa: PTH100
 # isort: on
 
-import cff_to_rst
+import _cff_to_rst
 
+from _global_substitutions import global_substitutions
 from datetime import datetime
 from pkg_resources import parse_version
 from sphinx.application import Sphinx
 
 # Generate author list from CITATION.cff
 
-cff_to_rst.main()
+_cff_to_rst.main()
 
-from plasmapy import __version__ as release  # noqa: E402
+from plasmapy import __version__ as release
 
 # -- General configuration ------------------------------------------------
 autosummary_generate = True
@@ -92,12 +93,14 @@ extensions = [
     "notfound.extension",
     "plasmapy_sphinx",
     "sphinx.ext.autodoc",
+    "sphinx.ext.duration",
     "sphinx.ext.extlinks",
     "sphinx.ext.graphviz",
     "sphinx.ext.intersphinx",
     "sphinx.ext.mathjax",
     "sphinx.ext.napoleon",
     "sphinx.ext.todo",
+    "sphinx.ext.viewcode",
     "sphinx_changelog",
     "sphinx_codeautolink",
     "sphinx_copybutton",
@@ -106,6 +109,7 @@ extensions = [
     "sphinx_reredirects",
     "sphinx_tabs.tabs",
     "sphinxcontrib.bibtex",
+    "sphinxcontrib.globalsubs",
 ]
 
 # Configure sphinxcontrib-bibtex
@@ -114,6 +118,10 @@ bibtex_bibfiles = ["bibliography.bib"]
 bibtex_default_style = "plain"
 bibtex_reference_style = "author_year"
 bibtex_cite_id = "{key}"
+
+# Configure sphinx-codeautolink
+
+codeautolink_concat_default = True
 
 # Intersphinx generates automatic links to the documentation of objects
 # in other packages. When mappings are removed or added, please update
@@ -190,11 +198,12 @@ release = pv.public
 version = ".".join(release.split(".")[:2])  # short X.Y version
 revision = pv.local[1:] if pv.local is not None else ""
 
-# This is added to the end of RST files — a good place to put substitutions to
-# be used globally.
-rst_epilog = ""
-with open("common_links.rst") as cl:  # noqa: PTH123
-    rst_epilog += cl.read()
+# The Sphinx configuration variables rst_prolog and rst_epilog contain
+# text that gets prepended or appended to all reStructuredText sources.
+# These variables can be used to make global definitions; however, long
+# values of these variables can greatly slow down the documentation
+# build, so use them in moderation!  Use docs/_global_substitutions.py
+# to define substitutions.
 
 rst_prolog = """
 .. role:: py(code)
@@ -214,7 +223,6 @@ exclude_patterns = [
     "notebooks/langmuir_samples",
     "**.ipynb_checkpoints",
     "plasmapy_sphinx",
-    "common_links.rst",
     "**Untitled*",
 ]
 
@@ -246,7 +254,11 @@ linkcheck_allowed_redirects = {
 # Hyperlinks for `make linkcheck` to ignore, such as links that point to
 # setting options in PlasmaPy's GitHub account that require a login.
 
-linkcheck_ignore = ["https://github.com/PlasmaPy/PlasmaPy/settings/secrets/actions"]
+# To speed up `make linkcheck`, ignore github.com & doi.org.
+
+linkcheck_ignore = [
+    "https://github.com/PlasmaPy/PlasmaPy/settings/secrets/actions",
+]
 
 linkcheck_anchors = True
 linkcheck_anchors_ignore = [
@@ -391,7 +403,7 @@ nitpick_ignore_regex = [
     # utils
     (python_role, "docstring of"),
     (python_role, "validation specifications"),
-    # for reST workarounds defined in docs/common_links.rst
+    # for reStructuredText workarounds to allow nested inline literals
     (python_role, "git"),
     (python_role, "h5py"),
     (python_role, "IPython.sphinxext.ipython_console_highlighting"),
@@ -404,11 +416,13 @@ nitpick_ignore_regex = [
     (python_role, "automod.*"),
     (python_role, "Builder"),
     (python_role, "docutils.*"),
+    (python_role, "Documenter"),
+    (python_role, "Node"),
     (python_role, "level"),
     (python_role, ".*member.*"),
     (python_role, "OptionSpec"),
     (python_role, "py"),
-    (python_role, "[Ss]phinx.*"),  # also for reST workarounds in docs/common_links.rst
+    (python_role, "[Ss]phinx.*"),  # also for reStructuredText workarounds
     # The following patterns still need to be fixed.
     (python_role, "json.decoder.JSONDecoder"),
     (python_role, "plasmapy.analysis.swept_langmuir.find_floating_potential"),

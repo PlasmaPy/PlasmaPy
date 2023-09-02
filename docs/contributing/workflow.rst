@@ -17,7 +17,7 @@ via a `pull request`_. This page assumes that you have finished the
 steps for :ref:`getting ready to contribute`.
 
 If you run into any problems, please feel free to reach out to us in our
-`Matrix chat room`_ or during our weekly `office hours`_. Thank you for
+|Matrix chat room| or during our weekly |office hours|. Thank you for
 contributing!
 
 .. tip::
@@ -36,7 +36,7 @@ Create a new branch
 #. Navigate to the :file:`PlasmaPy/` directory that contains the clone
    of your repository.
 
-#. Download the current status of `PlasmaPy's GitHub repository`_ and
+#. Download the current status of |PlasmaPy's GitHub repository| and
    your fork by running:
 
    .. code-block::
@@ -57,7 +57,7 @@ Create a new branch
 
       Use descriptive branch names like ``update-contribution-workflow``.
 
-#. Connect your local branch to your fork_ of PlasmaPy on GitHub_ by
+#. Connect your local branch to your fork_ of PlasmaPy on |GitHub| by
    running:
 
    .. code-block::
@@ -130,7 +130,7 @@ Creating a pull request
 
 #. Run ``git push`` to make sure that branch on GitHub is up-to-date.
 
-#. Go to `PlasmaPy's GitHub repository`_.
+#. Go to |PlasmaPy's GitHub repository|.
 
 #. If you recently pushed new changes, a pale yellow box will appear
    near the top of the screen. In that box, click
@@ -176,7 +176,7 @@ Creating a pull request
       using ``git push`` to update the corresponding branch on GitHub.
 
 #. If this is your first contribution, please add yourself to the author
-   list in |CITATION.cff|_ (which uses `Citation File Format`_) to make
+   list in |CITATION.cff|_ (which uses |Citation File Format|) to make
    sure that you get credit for your contribution. The entry should be
    of the form:
 
@@ -199,8 +199,11 @@ marked as a draft pull request. Thank you for contributing!
 .. _Add a new SSH key to your GitHub account: https://docs.github.com/en/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account
 .. _branch: https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/about-branches
 .. _fork: https://docs.github.com/en/get-started/quickstart/fork-a-repo
-.. _GitHub Documentation: https://docs.github.com/
+.. _GitHub Documentation: https://docs.github.com
 .. _good first issue: https://github.com/PlasmaPy/PlasmaPy/issues?q=is%3Aissue+is%3Aopen+label%3A%22Good+first+issue%22
 .. _pull request: https://docs.github.com/en/github/collaborating-with-pull-requests
 .. _remote: https://github.com/git-guides/git-remote
 .. _sign up for an ORCID iD: https://orcid.org/register
+
+.. _`CITATION.cff`: https://github.com/PlasmaPy/PlasmaPy/blob/main/CITATION.cff
+.. |CITATION.cff| replace:: :file:`CITATION.cff`
