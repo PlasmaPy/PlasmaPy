@@ -72,7 +72,7 @@ jobs:
           toxenv: build_docs-sphinxdev
           toxposargs: -q
 
-        - name: Check hyperlinks in documentation
+        - name: Documentation check hyperlinks
           os: ubuntu-latest
           python: '3.11'
           toxenv: build_docs_linkcheck
