@@ -81,6 +81,11 @@ repos:
     types:
     - python
 
+- repo: https://github.com/dosisod/refurb
+  rev: v1.20.0
+  hooks:
+  - id: refurb
+
 - repo: https://github.com/psf/black
   rev: 23.7.0
   hooks:
@@ -97,6 +102,6 @@ repos:
   hooks:
   - id: nbqa-check-ast
   - id: nbqa-ruff
-    args: ['--select=A,ARG,B,BLE,C,C4,E,F,FLY,I002,INT,ISC,PERF,PIE,PLC,PLE,PYI,Q003,RET,RSE,RUF005,RUF006,RUF007,RUF008,RUF009,RUF010,RUF011,RUF013,RUF015,RUF016,RUF017,RUF100,SIM,TID,TRY,UP,W', '--ignore=B007,B008,B015,B018,E402,E501,E741,SIM114']
+    args: ['--select=A,ARG,B,BLE,C,C4,E,F,FLY,I002,INT,ISC,PERF,PIE,PLC,PLE,PYI,Q003,RET,RSE,SIM,TID,TRY,UP,W', '--ignore=B007,B008,B015,B018,E402,E501,E741,SIM114']
   - id: nbqa-isort
   - id: nbqa-black
