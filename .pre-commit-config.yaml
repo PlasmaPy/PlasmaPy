@@ -95,8 +95,8 @@ repos:
 - repo: https://github.com/nbQA-dev/nbQA
   rev: 1.7.0
   hooks:
-  - id: nbqa-black
   - id: nbqa-check-ast
   - id: nbqa-isort
   - id: nbqa-ruff
+  - id: nbqa-black
     args: [--fix, '--ignore=B018,D100,E402,INP001,NPY002,PD011,T']
