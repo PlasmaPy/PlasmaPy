@@ -843,7 +843,6 @@ def test_iteration_with_nested_iterator():
     assert i == 4
 
 
-@pytest.mark.xfail()
 def test_two_isotopes_of_same_element():
     IonizationStateCollection(["H-1", "D"])
 
