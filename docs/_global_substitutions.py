@@ -138,7 +138,6 @@ links = {
     "PlasmaPy's Matrix chat room": "https://app.element.io/#/room/#plasmapy:openastronomy.org",
     "PlasmaPy's website": "https://www.plasmapy.org",
     "pre-commit": "https://pre-commit.com",
-    "pydocstyle": "https://www.pydocstyle.org/en/stable",
     "pygments": "https://pygments.org",
     "PyPI": "https://pypi.org",
     "pytest": "https://docs.pytest.org",
