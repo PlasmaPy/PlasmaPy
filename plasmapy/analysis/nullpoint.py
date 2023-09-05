@@ -1369,7 +1369,7 @@ def _classify_null_point(vspace, cell, loc):
     jcb = _trilinear_jacobian(vspace, cell)
     M = jcb(loc[0], loc[1], loc[2])
     if not np.isclose(np.trace(M), 0, atol=_EQUALITY_ATOL):
-        raise NonZeroDivergence()
+        raise NonZeroDivergence
     eigen_vals, eigen_vectors = np.linalg.eig(M)
     # using the notation from Parnell et al. (1996)
     R = -1.0 * np.linalg.det(M)

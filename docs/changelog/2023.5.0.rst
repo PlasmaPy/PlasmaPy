@@ -179,9 +179,9 @@ Improved Documentation
 - Updated the code contribution workflow instructions in the |contributor
   guide|
   to reflect that first-time contributors should add themselves to the author
-  list in |CITATION.cff|_ instead of in ``docs/about/credits.rst``. (:pr:`2155`)
+  list in :file:`CITATION.cff` instead of in ``docs/about/credits.rst``. (:pr:`2155`)
 - Added functionality to automatically generate the author list included
-  in ``docs/about/credits.rst`` directly from |CITATION.cff|_. The script
+  in ``docs/about/credits.rst`` directly from :file:`CITATION.cff`. The script
   is located at :file:`docs/cff_to_rst.py`. (:pr:`2156`)
 
 
@@ -208,13 +208,13 @@ Trivial/Internal Changes
   ``ion``. (:pr:`2034`)
 - Updated package metadata in :file:`pyproject.toml`. (:pr:`2075`)
 - Set minimum versions for all explicitly listed dependencies. (:pr:`2075`)
-- Enabled and applied changes for additional rule sets for ``ruff``, and
+- Enabled and applied changes for additional rule sets for |ruff|, and
   removed corresponding ``flake8`` extensions. (:pr:`2080`)
 - Changed from ``indexserver`` to ``PIP_INDEX_URL`` to index nightly `numpy`
   builds (:pr:`2138`)
 - Updated the function and docstring of
   `~plasmapy.formulary.collisions.helio.collisional_analysis`. (:pr:`2151`)
-- Dropped flake8_ and its extensions as linters. Instead, ruff_ is now used as
+- Dropped ``flake8`` and its extensions as linters. Instead, |ruff| is now used as
   the primary linter. (:pr:`2170`)
 - Expanded the variety of arguments that could be provided to a function
   decorated by `~plasmapy.utils.decorators.converter.angular_freq_to_hz`,

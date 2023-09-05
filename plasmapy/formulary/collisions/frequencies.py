@@ -280,7 +280,7 @@ class SingleParticleCollisionFrequencies:
         return x.to(u.dimensionless_unscaled)
 
     @staticmethod
-    def _phi_integrand(t: u.dimensionless_unscaled):
+    def _phi_integrand(t: u.dimensionless_unscaled):  # noqa: ANN205
         """
         The phi integrand used in calculating phi.
         """
@@ -734,7 +734,7 @@ def collision_frequency(
         ),
     )
 
-    T, masses, charges, reduced_mass, V_r = misc._process_inputs(
+    T, masses, charges, reduced_mass, V_r = misc._process_inputs(  # noqa: SLF001
         T=T, species=species, V=V
     )
     # using a more descriptive name for the thermal velocity using
@@ -745,7 +745,11 @@ def collision_frequency(
         # electron-electron collision
         # if a velocity was passed, we use that instead of the reduced
         # thermal velocity
-        V = misc._replace_nan_velocity_with_thermal_velocity(V, T, reduced_mass)
+        V = misc._replace_nan_velocity_with_thermal_velocity(  # noqa: SLF001
+            V,
+            T,
+            reduced_mass,
+        )
         # impact parameter for 90° collision
         bPerp = lengths.impact_parameter_perp(T=T, species=species, V=V_reduced)
     elif species[0] in ("e", "e-") or species[1] in ("e", "e-"):
@@ -754,7 +758,7 @@ def collision_frequency(
         # correct perpendicular collision radius
         # we ignore the reduced velocity and use the electron thermal
         # velocity instead
-        V = misc._replace_nan_velocity_with_thermal_velocity(V, T, m_e)
+        V = misc._replace_nan_velocity_with_thermal_velocity(V, T, m_e)  # noqa: SLF001
         # need to also correct mass in collision radius from reduced
         # mass to electron mass
         bPerp = (
@@ -768,7 +772,11 @@ def collision_frequency(
         # ion-ion collision
         # if a velocity was passed, we use that instead of the reduced
         # thermal velocity
-        V = misc._replace_nan_velocity_with_thermal_velocity(V, T, reduced_mass)
+        V = misc._replace_nan_velocity_with_thermal_velocity(  # noqa: SLF001
+            V,
+            T,
+            reduced_mass,
+        )
         bPerp = lengths.impact_parameter_perp(T=T, species=species, V=V)
     cou_log = coulomb.Coulomb_logarithm(T, n, species, z_mean, V=V, method=method)
     # collisional cross section
@@ -911,7 +919,7 @@ def fundamental_electron_collision_freq(
     )
 
     # specify to use electron thermal velocity (most probable), not based on reduced mass
-    V = misc._replace_nan_velocity_with_thermal_velocity(V, T_e, m_e)
+    V = misc._replace_nan_velocity_with_thermal_velocity(V, T_e, m_e)  # noqa: SLF001
 
     species = [ion, "e-"]
     Z_i = particles.charge_number(ion) * u.dimensionless_unscaled
@@ -1076,7 +1084,7 @@ def fundamental_ion_collision_freq(
     species = [ion, ion]
 
     # specify to use ion thermal velocity (most probable), not based on reduced mass
-    V = misc._replace_nan_velocity_with_thermal_velocity(V, T_i, m_i)
+    V = misc._replace_nan_velocity_with_thermal_velocity(V, T_i, m_i)  # noqa: SLF001
 
     Z_i = particles.charge_number(ion) * u.dimensionless_unscaled
 

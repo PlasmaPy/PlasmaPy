@@ -89,6 +89,7 @@ class TestKinetic_Alfven:
             ),
         ],
     )
+    @pytest.mark.filterwarnings("ignore::plasmapy.utils.exceptions.PhysicsWarning")
     def test_return_structure(self, kwargs, expected):
         """Test the structure of the returned values."""
         ws = kinetic_alfven(**kwargs)

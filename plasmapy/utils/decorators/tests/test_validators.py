@@ -39,7 +39,7 @@ class TestValidateQuantities:
         return x
 
     @staticmethod
-    def foo_anno(x: u.cm):
+    def foo_anno(x: u.cm):  # noqa: ANN205
         return x
 
     def test_inheritance(self):
