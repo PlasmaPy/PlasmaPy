@@ -72,11 +72,10 @@ jobs:
           toxenv: build_docs-sphinxdev
           toxposargs: -q
 
-        - name: Documentation hyperlinks
+        - name: Documentation build with hyperlink check
           os: ubuntu-latest
           python: '3.11'
           toxenv: build_docs_linkcheck
-          toxposargs: -q
 
         - name: Python 3.9 with xarray dev
           os: ubuntu-latest
