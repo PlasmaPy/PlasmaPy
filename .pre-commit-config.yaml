@@ -97,6 +97,6 @@ repos:
   hooks:
   - id: nbqa-check-ast
   - id: nbqa-ruff
-    args: ['--select=E,F,B', '--ignore=B007,B008,B015,B018,E402,E501,E741']
+    args: ['--select=A,B,C,E,F', '--ignore=B007,B008,B015,B018,E402,E501,E741']
   - id: nbqa-isort
   - id: nbqa-black
