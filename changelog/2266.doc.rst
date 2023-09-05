@@ -1,0 +1,2 @@
+Added :file:`CONTRIBUTING.md` to PlasmaPy's GitHub repository.  This
+page refers contributors to PlasmaPy's |contributor guide|.

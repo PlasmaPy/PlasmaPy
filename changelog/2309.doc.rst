@@ -1,0 +1,3 @@
+Moved the settings for linkcheck documentation builds into
+:file:`docs/_linkcheck_settings.py`, and expanded the list of links to
+be ignored when doing a linkcheck documentation build.
