@@ -1,39 +1,23 @@
 # Auto-detect if a file is a text file and set line endings to LF
 * text=auto eol=lf
 
-# Specify certain files as text files
-*.bib text encoding=utf-8
-*.cff text encoding=utf-8
-*.css text encoding=utf-8
-*.html text encoding=utf-8
-*.json text encoding=utf-8
-*.md text encoding=utf-8
-*.py text encoding=utf-8
-*.pyx text encoding=utf-8
-*.rst text encoding=utf-8
-*.yaml text encoding=utf-8
-*.yml text encoding=utf-8
-
-# Automatically strip trailing whitespace in text files
-*.bib filter=strip_whitespace
-*.cff filter=strip_whitespace
-*.css filter=strip_whitespace
-*.html filter=strip_whitespace
-*.json filter=strip_whitespace
-*.md filter=strip_whitespace
-*.py filter=strip_whitespace
-*.pyx filter=strip_whitespace
-*.rst filter=strip_whitespace
-*.yaml filter=strip_whitespace
-*.yml filter=strip_whitespace
+# Mark file types as text files & improve git diff headers
+*.bib text diff=bibtex
+*.c text diff=cpp
+*.cff text
+*.css text diff=css
+*.html text diff=html
+*.json text
+*.md text diff=markdown
+*.py text diff=python
+*.pyx text diff=python
+*.rst text
+*.yaml text
+*.yml text
 
 # Mark file formats that are binary
 *.h5 binary
 *.hdf5 binary
 *.ico binary
+*.npy binary
 *.png binary
-
-# Map extensions to file types for better git diffs
-*.bib diff=bibtex
-*.py diff=python
-*.md diff=markdown
