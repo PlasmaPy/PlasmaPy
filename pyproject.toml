@@ -64,21 +64,23 @@ docs = [
   "numpydoc >= 1.5.0",
   "pillow >= 9.5.0",
   "pygments >= 2.15.0",
-  "sphinx >= 6.1.3",
+  "sphinx >= 7.2.3",
   "sphinx-changelog >= 1.3.0",
   "sphinx-codeautolink >= 0.15.0",
   "sphinx-copybutton >= 0.5.1",
   "sphinx-gallery >= 0.12.2",
   "sphinx-hoverxref >= 1.1.1",
   "sphinx-issues >= 3.0.1",
-  "sphinx-notfound-page >= 0.8.3",
+  "sphinx-notfound-page >= 1.0.0",
   "sphinx-reredirects >= 0.1.1",
-  "sphinx_rtd_theme >= 1.2.0",
+  "sphinx_rtd_theme >= 1.2.2",
   "sphinx_tabs >= 3.4.1",
   "sphinx_toolbox >= 3.5.0",
   "sphinxcontrib-bibtex >= 2.5.0",
+  "sphinxcontrib-globalsubs >= 0.1.1",
   "towncrier >= 22.12",
   "tox >= 4.4.0",
+  "unidecode >= 1.3.6",
 ]
 tests = [
   "hypothesis >= 6.35.1",
@@ -131,12 +133,16 @@ lines_between_types = 1
 minversion = "7.0.1"
 testpaths = ['plasmapy']
 norecursedirs = ['build', 'docs', 'plasmapy[\/]_dev']
+xfail_strict = true
 doctest_optionflags = """
 NORMALIZE_WHITESPACE
 ELLIPSIS
 NUMBER"""
 addopts = "--doctest-modules --doctest-continue-on-failure"
-filterwarnings = ["ignore:.*Creating", "a"]
+filterwarnings = [
+  "ignore:.*deprecated in traitlets 4.2.*:DeprecationWarning",
+  "ignore:.*MultiIndex.*:DeprecationWarning",  # https://github.com/PlasmaPy/PlasmaPy/issues/2319
+]
 
 [tool.coverage.report]
 exclude_lines = [
@@ -220,8 +226,10 @@ target-version = "py39"
 extend-select = [
   "A", # flake8-builtins
   "ANN204", # missing-return-type-special-method
+  "ANN205", # missing-return-type-static-method
   "ANN206", # missing-return-type-class-method
   "ARG", # flake8-unused-arguments
+  "ASYNC", # flake8-async
   "B", # flake8-bugbear
   "BLE", # flake8-blind-except
   "C4", # flake8-comprehensions
@@ -229,10 +237,14 @@ extend-select = [
   "COM818", # trailing-comma-on-bare-tuple
   "D", # pydocstyle
   "DTZ", # flake8-datetimez
+  "EM", # flake8-errmsg
+  "EXE", # flake8-executable
   "FA102", # flake8-required-type-annotation
   "FBT003", # flake8-boolean-trap
   "FIX", # flake8-fixme
   "FLY", # flynt
+  "G", # flake8-logging-format
+  "I002", # missing-required-import
   "ICN", # flake8-import-conventions
   "INP", # flake8-no-pep420
   "INT", # flake8-gettext
@@ -250,7 +262,9 @@ extend-select = [
   "PT", # flake8-pytest-style
   "PTH", # flake8-use-pathlib
   "PYI", # flake8-pyi
+  "Q003", # avoidable-escaped-quote
   "RET", # flake8-return
+  "RSE", # flake8-raise
   "RUF005", # collection-literal-concatenation
   "RUF006", # asyncio-dangling-task
   "RUF007", # pairwise-over-zipped
@@ -259,10 +273,18 @@ extend-select = [
   "RUF010", # explicit-f-string-type-conversion
   "RUF011", # static-key-dict-comprehension
   "RUF013", # implicit-optional
+  "RUF015", # unnecessary-iterable-allocation-for-first-element
+  "RUF016", # invalid-index-type
+  "RUF017", # quadratic-list-summation
   "RUF100", # unused-noqa
   "RUF200", # invalid-pyproject-toml
   "S", # flake8-bandit
   "SIM", # flake8-simplify
+  "SLF", # flake8-self
+  "SLOT", # flake8-slots
+  "T", # flake8-print
+  "T100", # debugger
+  "TCH", # flake8-type-checking
   "TD", # flake8-todos
   "TID", # flake8-tidy-imports
   "TRY", # tryceratops
@@ -278,8 +300,9 @@ ignore = [
   "D205", # blank-line-after-summary (incompatible with multiline short summaries)
   "D401", # non-imperative-mood (enable later?)
   "E501", # line-too-long
+  "EM101", # raw-string-in-exception (enable later in focused PR)
+  "EM102", # f-string-in-exception (enable later in focused PR)
   "FIX002", # line-contains-todo
-  "N801", # invalid-class-name
   "N802", # invalid-function-name
   "N803", # invalid-argument-name
   "N806", # non-lowercase-variable-in-function
@@ -292,6 +315,7 @@ ignore = [
   "PT011", # pytest-raises-too-broad
   "PT012", # pytest-raises-multiple-statements (enable later?)
   "PT019", # pytest-fixture-param-without-value (enable later?)
+  "PYI024", # collections-named-tuple (enable later)
   "RET501", # unnecessary-return-none
   "RET502", # implicit-return-value
   "RET505", # superfluous-else-return (enable later?)
@@ -341,17 +365,17 @@ max-complexity = 10
 [tool.ruff.per-file-ignores]
 "__init__.py" = ["D104", "E402", "F401", "F402", "F403"] # ignore import errors
 ".github/scripts/*.py" = ["D103", "INP001"]
-"docs/conf.py" = ["D100", "D103", "E402"]
+"docs/conf.py" = ["D100", "D103", "E402", "EXE001", "EXE005", "F401"]
 "plasmapy/analysis/fit_functions.py" = ["D301"]
 "plasmapy/formulary/braginskii.py" = ["C901", "RET503", "RET504"]
 "plasmapy/formulary/tests/test_distribution.py" = ["ARG005"]
 "plasmapy/particles/tests/test_decorators.py" = ["ARG001", "ARG002"]
 "plasmapy/plasma/sources/*.py" = ["D102"]
-"plasmapy/utils/_pytest_helpers/pytest_helpers.py" = ["BLE001", "PLR"]
+"plasmapy/utils/_pytest_helpers/pytest_helpers.py" = ["BLE001", "PLR", "SLF001"]
 "plasmapy/utils/_pytest_helpers/tests/test_pytest_helpers.py" = ["BLE001", "TRY002"]
 "plasmapy/utils/decorators/tests/test_converters.py" = ["ARG001", "ARG005"]
 "setup.py" = ["D100"]
-"test_*" = ["D100", "D101", "D102", "D103", "D104", "D209", "D400", "D401"]
+"test_*" = ["D100", "D101", "D102", "D103", "D104", "D209", "D400", "D401", "N801", "SLF001"]
 "*/*/tests/__init__.py" = ["D104"]
 
 [tool.ruff.pydocstyle]

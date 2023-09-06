@@ -72,8 +72,7 @@ for conference abstract or journal article submissions about PlasmaPy.
 Thank you for contributing!
 """
 
-        print(error_message)
-
+        print(error_message)  # noqa: T201
         sys.exit(1)
 
 
