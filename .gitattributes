@@ -30,6 +30,7 @@
 # Mark file formats that are binary
 *.h5 binary
 *.hdf5 binary
+*.ico binary
 *.png binary
 
 # Map extensions to file types for better git diffs
