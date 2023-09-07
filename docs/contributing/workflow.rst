@@ -62,7 +62,7 @@ Create a new branch
          changes to tracked files and return to the previous commit.
 
       If there are untracked files present, then you may delete the
-      untracked files, :ref:`add and commit changes <commit-changes>,
+      untracked files, :ref:`add and commit changes <commit-changes>`,
       or proceed to the next step.
 
 #. Download the current status of |PlasmaPy's GitHub repository| and
