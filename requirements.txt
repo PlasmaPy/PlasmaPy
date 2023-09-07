@@ -8,6 +8,10 @@ alabaster==0.7.13
     # via sphinx
 anyio==4.0.0
     # via jupyter-server
+apeye==1.4.1
+    # via sphinx-toolbox
+apeye-core==1.1.4
+    # via apeye
 argon2-cffi==23.1.0
     # via jupyter-server
 argon2-cffi-bindings==21.2.0
@@ -18,13 +22,15 @@ asteval==0.9.31
     # via lmfit
 astropy==5.3.2
     # via plasmapy (setup.py)
-asttokens==2.3.0
+asttokens==2.4.0
     # via stack-data
 attrs==23.1.0
     # via
     #   hypothesis
     #   jsonschema
     #   referencing
+autodocsumm==0.2.11
+    # via sphinx-toolbox
 babel==2.12.1
     # via
     #   jupyterlab-server
@@ -35,8 +41,11 @@ beautifulsoup4==4.12.2
     # via
     #   nbconvert
     #   sphinx-codeautolink
+    #   sphinx-toolbox
 bleach==6.0.0
     # via nbconvert
+cachecontrol[filecache]==0.13.1
+    # via sphinx-toolbox
 cachetools==5.3.1
     # via tox
 certifi==2023.7.22
@@ -63,6 +72,8 @@ comm==0.1.4
     #   ipywidgets
 contourpy==1.1.0
     # via matplotlib
+cssutils==2.7.1
+    # via dict2css
 cycler==0.11.0
     # via matplotlib
 debugpy==1.6.7.post1
@@ -71,6 +82,8 @@ decorator==5.1.1
     # via ipython
 defusedxml==0.7.1
     # via nbconvert
+dict2css==0.3.0
+    # via sphinx-toolbox
 distlib==0.3.7
     # via virtualenv
 docutils==0.18.1
@@ -81,7 +94,14 @@ docutils==0.18.1
     #   sphinx
     #   sphinx-rtd-theme
     #   sphinx-tabs
+    #   sphinx-toolbox
     #   sphinxcontrib-bibtex
+domdf-python-tools==3.6.1
+    # via
+    #   apeye
+    #   apeye-core
+    #   dict2css
+    #   sphinx-toolbox
 execnet==2.0.2
     # via pytest-xdist
 executing==1.2.0
@@ -90,6 +110,8 @@ fastjsonschema==2.18.0
     # via nbformat
 filelock==3.12.3
     # via
+    #   cachecontrol
+    #   sphinx-toolbox
     #   tox
     #   virtualenv
 fonttools==4.42.1
@@ -100,13 +122,16 @@ future==0.18.3
     # via uncertainties
 h5py==3.9.0
     # via plasmapy (setup.py)
-hypothesis==6.84.0
+html5lib==1.1
+    # via sphinx-toolbox
+hypothesis==6.84.2
     # via plasmapy (setup.py)
 identify==2.5.27
     # via pre-commit
 idna==3.4
     # via
     #   anyio
+    #   apeye-core
     #   jsonschema
     #   requests
 imagesize==1.4.1
@@ -115,7 +140,7 @@ incremental==22.10.0
     # via towncrier
 iniconfig==2.0.0
     # via pytest
-ipykernel==6.25.1
+ipykernel==6.25.2
     # via plasmapy (setup.py)
 ipython==8.15.0
     # via
@@ -136,6 +161,7 @@ jinja2==3.1.2
     #   numpydoc
     #   plasmapy (setup.py)
     #   sphinx
+    #   sphinx-jinja2-compat
     #   towncrier
 json5==0.9.14
     # via jupyterlab-server
@@ -189,6 +215,7 @@ markupsafe==2.1.3
     # via
     #   jinja2
     #   nbconvert
+    #   sphinx-jinja2-compat
 matplotlib==3.7.2
     # via plasmapy (setup.py)
 matplotlib-inline==0.1.6
@@ -199,6 +226,10 @@ mistune==3.0.1
     # via nbconvert
 mpmath==1.3.0
     # via plasmapy (setup.py)
+msgpack==1.0.5
+    # via cachecontrol
+natsort==8.4.0
+    # via domdf-python-tools
 nbclient==0.7.4
     # via
     #   nbconvert
@@ -271,6 +302,7 @@ pillow==10.0.0
     #   plasmapy (setup.py)
 platformdirs==3.10.0
     # via
+    #   apeye
     #   jupyter-core
     #   tox
     #   virtualenv
@@ -308,6 +340,7 @@ pygments==2.16.1
     #   nbconvert
     #   plasmapy (setup.py)
     #   sphinx
+    #   sphinx-prompt
     #   sphinx-tabs
 pyparsing==3.0.9
     # via matplotlib
@@ -333,7 +366,7 @@ python-dateutil==2.8.2
     #   pandas
 python-json-logger==2.0.7
     # via jupyter-events
-pytz==2023.3
+pytz==2023.3.post1
     # via pandas
 pyyaml==6.0.1
     # via
@@ -354,6 +387,8 @@ referencing==0.30.2
     #   jupyter-events
 requests==2.31.0
     # via
+    #   apeye
+    #   cachecontrol
     #   jupyterlab-server
     #   plasmapy (setup.py)
     #   sphinx
@@ -365,10 +400,14 @@ rfc3986-validator==0.1.1
     # via
     #   jsonschema
     #   jupyter-events
-rpds-py==0.10.0
+rpds-py==0.10.2
     # via
     #   jsonschema
     #   referencing
+ruamel-yaml==0.17.32
+    # via sphinx-toolbox
+ruamel-yaml-clib==0.2.7
+    # via ruamel-yaml
 scipy==1.11.2
     # via
     #   lmfit
@@ -379,6 +418,7 @@ six==1.16.0
     # via
     #   asttokens
     #   bleach
+    #   html5lib
     #   latexcodec
     #   pybtex
     #   python-dateutil
@@ -393,9 +433,11 @@ soupsieve==2.5
     # via beautifulsoup4
 sphinx==7.2.5
     # via
+    #   autodocsumm
     #   nbsphinx
     #   numpydoc
     #   plasmapy (setup.py)
+    #   sphinx-autodoc-typehints
     #   sphinx-changelog
     #   sphinx-codeautolink
     #   sphinx-copybutton
@@ -403,9 +445,11 @@ sphinx==7.2.5
     #   sphinx-hoverxref
     #   sphinx-issues
     #   sphinx-notfound-page
+    #   sphinx-prompt
     #   sphinx-reredirects
     #   sphinx-rtd-theme
     #   sphinx-tabs
+    #   sphinx-toolbox
     #   sphinxcontrib-applehelp
     #   sphinxcontrib-bibtex
     #   sphinxcontrib-devhelp
@@ -414,6 +458,8 @@ sphinx==7.2.5
     #   sphinxcontrib-jquery
     #   sphinxcontrib-qthelp
     #   sphinxcontrib-serializinghtml
+sphinx-autodoc-typehints==1.24.0
+    # via sphinx-toolbox
 sphinx-changelog==1.4.1
     # via plasmapy (setup.py)
 sphinx-codeautolink==0.15.0
@@ -426,13 +472,21 @@ sphinx-hoverxref==1.3.0
     # via plasmapy (setup.py)
 sphinx-issues==3.0.1
     # via plasmapy (setup.py)
+sphinx-jinja2-compat==0.2.0
+    # via sphinx-toolbox
 sphinx-notfound-page==1.0.0
     # via plasmapy (setup.py)
+sphinx-prompt==1.5.0
+    # via sphinx-toolbox
 sphinx-reredirects==0.1.2
     # via plasmapy (setup.py)
 sphinx-rtd-theme==1.3.0
     # via plasmapy (setup.py)
 sphinx-tabs==3.4.1
+    # via
+    #   plasmapy (setup.py)
+    #   sphinx-toolbox
+sphinx-toolbox==3.5.0
     # via plasmapy (setup.py)
 sphinxcontrib-applehelp==1.0.7
     # via sphinx
@@ -456,6 +510,8 @@ sphinxcontrib-serializinghtml==1.1.9
     # via sphinx
 stack-data==0.6.2
     # via ipython
+tabulate==0.9.0
+    # via sphinx-toolbox
 terminado==0.17.1
     # via
     #   jupyter-server
@@ -494,6 +550,10 @@ traitlets==5.9.0
     #   nbformat
     #   nbsphinx
     #   voila
+typing-extensions==4.7.1
+    # via
+    #   domdf-python-tools
+    #   sphinx-toolbox
 tzdata==2023.3
     # via pandas
 uncertainties==3.1.7
@@ -517,6 +577,7 @@ webcolors==1.13
 webencodings==0.5.1
     # via
     #   bleach
+    #   html5lib
     #   tinycss2
 websocket-client==1.6.2
     # via jupyter-server
