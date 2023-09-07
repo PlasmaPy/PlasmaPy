@@ -47,7 +47,7 @@ Create a new branch
    If the output ends with ``nothing to commit, working tree clean``,
    then proceed to the next step.
 
-   .. collapse:: *Click here if there are uncommitted changes*
+   .. collapse:: Click here if there are uncommitted changes
 
       .. tip::
 
