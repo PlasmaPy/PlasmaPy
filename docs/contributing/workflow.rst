@@ -45,25 +45,28 @@ Create a new branch
       git status
 
    If the output ends with ``nothing to commit, working tree clean``,
-   then proceed to the next step. Otherwise, click to open the next
-   section.
+   then proceed to the next step.
 
-   .. collapse:: Instructions if there are uncommitted changes
+   .. collapse:: *Click here if there are uncommitted changes*
 
-      If :bash:`git status` shows that any files are listed under
-      ``Changes not staged for commit`` or ``Changes to be committed``,
-      then do one of the following before proceeding to the next step:
+      .. tip::
 
-      #. :ref:`Add and commit changes <commit-changes>`,
+         If :bash:`git status` shows that any files are listed under
+         ``Changes not staged for commit`` or ``Changes to be
+         committed``, then do one of the following before proceeding
+         to the next step:
 
-      #. Use `git stash`_ to temporarily file away the changes, or
+         #. :ref:`Add and commit changes <commit-changes>`,
 
-      #. Use :bash:`git reset --hard` to **permanently** remove all
-         changes to tracked files and return to the previous commit.
+         #. Use `git stash`_ to temporarily file away the changes, or
 
-      If there are untracked files present, then you may delete the
-      untracked files, :ref:`add and commit changes <commit-changes>`,
-      or proceed to the next step.
+         #. Use :bash:`git reset --hard` to **permanently** remove all
+            changes to tracked files and return to the previous
+            commit.
+
+         If there are untracked files present, then you may delete the
+         untracked files, :ref:`add and commit changes <commit-changes>`,
+         or proceed to the next step.
 
 #. Download the current status of |PlasmaPy's GitHub repository| and
    your fork by running:
