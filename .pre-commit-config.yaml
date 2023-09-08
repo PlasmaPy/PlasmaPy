@@ -95,7 +95,8 @@ repos:
 - repo: https://github.com/nbQA-dev/nbQA
   rev: 1.7.0
   hooks:
-  - id: nbqa-black
+  - id: nbqa-check-ast
+  - id: nbqa-ruff
+    args: ['--select=A,ARG,B,BLE,C,C4,E,F,FLY,I002,INT,ISC,PERF,PIE,PLC,PLE,PYI,Q003,RET,RSE,SIM,TID,TRY,UP,W', '--ignore=B007,B008,B015,B018,E402,E501,E741,SIM114']
   - id: nbqa-isort
-    args:
-    - --nbqa-mutate
+  - id: nbqa-black
