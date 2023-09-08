@@ -20,7 +20,7 @@ arrow==1.2.3
     # via isoduration
 asteval==0.9.31
     # via lmfit
-astropy==5.3.2
+astropy==5.3.3
     # via plasmapy (setup.py)
 asttokens==2.4.0
     # via stack-data
@@ -76,7 +76,7 @@ cssutils==2.7.1
     # via dict2css
 cycler==0.11.0
     # via matplotlib
-debugpy==1.6.7.post1
+debugpy==1.7.0
     # via ipykernel
 decorator==5.1.1
     # via ipython
@@ -346,7 +346,7 @@ pyparsing==3.0.9
     # via matplotlib
 pyproject-api==1.6.1
     # via tox
-pytest==7.4.1
+pytest==7.4.2
     # via
     #   plasmapy (setup.py)
     #   pytest-datadir
