@@ -8,34 +8,17 @@ repos:
   rev: v4.4.0
   hooks:
   - id: check-ast
-  - id: trailing-whitespace
-  - id: end-of-file-fixer
   - id: check-merge-conflict
     exclude: .*\.rst
-  - id: check-symlinks
   - id: check-case-conflict
-  - id: check-json
-  - id: check-toml
-  - id: check-yaml
   - id: name-tests-test
     args: [--pytest-test-first]
     exclude: plasmapy/tests/_helpers/.*
-
-- repo: https://github.com/Lucas-C/pre-commit-hooks
-  rev: v1.5.4
-  hooks:
-  - id: remove-crlf
-
-- repo: https://github.com/jonasbb/pre-commit-latex-hooks
-  rev: v1.4.0
-  hooks:
-  - id: american-eg-ie
-
-- repo: https://github.com/MarcoGorelli/cython-lint
-  rev: v0.15.0
-  hooks:
-  - id: cython-lint
-  - id: double-quote-cython-strings
+  - id: trailing-whitespace
+  - id: end-of-file-fixer
+  - id: check-json
+  - id: check-toml
+  - id: check-yaml
 
 - repo: https://github.com/sirosen/texthooks
   rev: 0.5.0
@@ -44,6 +27,17 @@ repos:
   - id: fix-spaces
   - id: fix-ligatures
   - id: forbid-bidi-controls
+
+- repo: https://github.com/Lucas-C/pre-commit-hooks
+  rev: v1.5.4
+  hooks:
+  - id: remove-crlf
+
+- repo: https://github.com/MarcoGorelli/cython-lint
+  rev: v0.15.0
+  hooks:
+  - id: cython-lint
+  - id: double-quote-cython-strings
 
 - repo: https://github.com/macisamuele/language-formatters-pre-commit-hooks
   rev: v2.10.0
