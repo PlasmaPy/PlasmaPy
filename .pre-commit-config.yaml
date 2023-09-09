@@ -21,6 +21,11 @@ repos:
     args: [--pytest-test-first]
     exclude: plasmapy/tests/_helpers/.*
 
+- repo: https://github.com/Lucas-C/pre-commit-hooks
+  rev: v1.5.4
+  hooks:
+  - id: remove-crlf
+
 - repo: https://github.com/jonasbb/pre-commit-latex-hooks
   rev: v1.4.0
   hooks:
