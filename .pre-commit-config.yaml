@@ -45,11 +45,6 @@ repos:
   - id: fix-ligatures
   - id: forbid-bidi-controls
 
-- repo: https://github.com/rhysd/actionlint
-  rev: v1.6.25
-  hooks:
-  - id: actionlint
-
 - repo: https://github.com/macisamuele/language-formatters-pre-commit-hooks
   rev: v2.10.0
   hooks:
