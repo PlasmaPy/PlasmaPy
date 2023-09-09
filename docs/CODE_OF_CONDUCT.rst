@@ -40,7 +40,7 @@ Examples of unacceptable behavior include:
 - Trolling, insulting or derogatory comments, and personal or political
   attacks
 - Public or private harassment
-- Publishing others’ private information, such as a physical or email
+- Publishing others' private information, such as a physical or email
   address, without their explicit permission
 - Other conduct which could reasonably be considered inappropriate in a
   professional setting
@@ -140,7 +140,7 @@ This Code of Conduct is adapted from the `Contributor Covenant`_,
 version 2.1, available at
 https://www.contributor-covenant.org/version/2/1/code_of_conduct\ .
 
-Community Impact Guidelines were inspired by `Mozilla’s code of conduct
+Community Impact Guidelines were inspired by `Mozilla's code of conduct
 enforcement ladder <https://github.com/mozilla/inclusion>`__.
 
 For answers to common questions about this code of conduct, see the FAQ
