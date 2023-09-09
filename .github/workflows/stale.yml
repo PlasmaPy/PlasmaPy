@@ -23,8 +23,4 @@ jobs:
         days-before-issue-close: 90
         days-before-pr-stale: 366
         days-before-pr-close: 60
-        exempt-issue-labels:
-        - Bug
-        - 'Bug: needs more info'
-        - 'Priority: high'
-        - 'Priority: critical'
+        exempt-issue-labels: 'bug,bug: needs more info,epic,priority: high,priority: very high,revisit in 2024,revisit in 2025,revisit in 2026,revisit in 2027'
