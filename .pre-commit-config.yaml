@@ -33,12 +33,6 @@ repos:
   hooks:
   - id: remove-crlf
 
-- repo: https://github.com/MarcoGorelli/cython-lint
-  rev: v0.15.0
-  hooks:
-  - id: cython-lint
-  - id: double-quote-cython-strings
-
 - repo: https://github.com/macisamuele/language-formatters-pre-commit-hooks
   rev: v2.10.0
   hooks:
