@@ -3,11 +3,11 @@
 __all__ = ["ConditionalEvents"]
 
 
-from weakref import ref
 import numpy as np
-from scipy.signal import find_peaks
+
 from astropy import units as u
 from astropy.units import UnitsError
+from scipy.signal import find_peaks
 
 
 class ConditionalEvents:

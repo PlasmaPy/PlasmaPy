@@ -1,3 +1,5 @@
+"""Tests for conditional_averaging.py"""
+
 import astropy.units as u
 import numpy as np
 import pytest
@@ -50,7 +52,7 @@ def test_ConditionalEvents_Errors(
 ):
     """Test whether exception is risen"""
     with pytest.raises(exception):
-        tmp = ConditionalEvents(
+        _ = ConditionalEvents(
             signal,
             time,
             lower_threshold,
