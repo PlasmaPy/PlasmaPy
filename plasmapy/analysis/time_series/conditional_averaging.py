@@ -3,9 +3,9 @@
 __all__ = ["ConditionalEvents"]
 
 
+import astropy.units as u
 import numpy as np
 
-from astropy import units as u
 from astropy.units import UnitsError
 from scipy.signal import find_peaks
 
