@@ -352,7 +352,6 @@ class ConditionalEvents:
         return peak_indices
 
     def _calculate_all_events(self, signal, peak_indices):
-
         t_half_len = int((len(self._return_time) - 1) / 2)
         conditional_events = np.zeros([len(peak_indices), len(self._return_time)])
 
