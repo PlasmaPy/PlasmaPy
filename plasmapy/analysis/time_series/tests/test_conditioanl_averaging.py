@@ -2,6 +2,8 @@ import astropy.units as u
 import numpy as np
 import pytest
 
+from astropy.units import UnitsError
+
 from plasmapy.analysis.time_series.conditional_averaging import ConditionalEvents
 
 
@@ -18,14 +20,17 @@ from plasmapy.analysis.time_series.conditional_averaging import ConditionalEvent
     ),
     [
         ([1, 2], [1, 2], 1.5, None, None, None, -1, ValueError),
-        ([1, 2] * u.eV, [1, 2], 1.5, None, None, None, 0, TypeError),
-        ([1, 2], [1, 2], 1.5 * u.eV, None, None, None, 0, TypeError),
-        ([1, 2] * u.eV, [1, 2], 1.5 * u.m, None, None, None, 0, TypeError),
-        ([1, 2] * u.eV, [1, 2], 1.5 * u.eV, 4.0 * u.m, None, None, 0, TypeError),
-        ([1, 2], [1, 2], 1.5, 4.0 * u.m, None, None, 0, TypeError),
-        ([1, 2] * u.eV, [1, 2], 1.5 * u.eV, 4.0, None, None, 0, TypeError),
-        ([1, 2], [1, 2], 1.5, None, [1, 2] * u.eV, None, 0, TypeError),
-        ([1, 2], [1, 2], 1.5 * u.eV, 4.0, [1, 2] * u.eV, None, 0, TypeError),
+        ([1, 2] * u.eV, [1, 2], 1.5, None, None, None, 0, UnitsError),
+        ([1, 2], [1, 2], 1.5 * u.eV, None, None, None, 0, UnitsError),
+        ([1, 2] * u.eV, [1, 2], 1.5 * u.m, None, None, None, 0, UnitsError),
+        ([1, 2] * u.eV, [1, 2], 1.5 * u.eV, 4.0 * u.m, None, None, 0, UnitsError),
+        ([1, 2], [1, 2], 1.5, 4.0 * u.m, None, None, 0, UnitsError),
+        ([1, 2] * u.eV, [1, 2], 1.5 * u.eV, 4.0, None, None, 0, UnitsError),
+        ([1, 2], [1, 2], 1.5, None, [1, 2] * u.eV, None, 0, UnitsError),
+        ([1, 2], [1, 2], 1.5 * u.eV, 4.0, [1, 2] * u.eV, None, 0, UnitsError),
+        ([1, 2], [1, 2] * u.s, 1.5, 4.0, [1, 2], None, 0, UnitsError),
+        ([1, 2], [1, 2], 1.5, 4.0, [1, 2], None, 0 * u.s, UnitsError),
+        ([1, 2], [1, 2] * u.s, 1.5, 4.0, [1, 2], 1, 0 * u.s, UnitsError),
         ([1, 2], [1, 2, 3], 1.5, None, None, None, 0, ValueError),
         ([1, 2], [1, 2], 1.5, None, [1, 2, 3], None, 0, ValueError),
         ([1, 2], [1, 2], 1.5, None, None, 5, 0, ValueError),
@@ -33,7 +38,7 @@ from plasmapy.analysis.time_series.conditional_averaging import ConditionalEvent
         ([1, 2], [1, 2], 1.5, 1, None, None, 0, ValueError),
     ],
 )
-def test_ConditionalEvents_ValueErrors(
+def test_ConditionalEvents_Errors(
     signal,
     time,
     lower_threshold,
@@ -119,6 +124,24 @@ def test_ConditionalEvents_ValueErrors(
                 [2.0, 2.0] * u.eV,
                 [3.0],
                 [2.0, 5.0],
+                2,
+            ],
+        ),
+        (
+            [1, 2, 1, 1, 2, 1, 1, 5, 1],
+            [1, 2, 3, 4, 5, 6, 7, 8, 9] * u.s,
+            1.5,
+            4,
+            None,
+            3 * u.s,
+            0 * u.s,
+            [
+                [-1.0, 0.0, 1.0] * u.s,
+                [1.0, 2.0, 1.0],
+                [1.0, 1.0, 1.0],
+                [2.0, 2.0],
+                [3.0] * u.s,
+                [2.0, 5.0] * u.s,
                 2,
             ],
         ),

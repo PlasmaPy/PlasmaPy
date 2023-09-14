@@ -7,6 +7,7 @@ from weakref import ref
 import numpy as np
 from scipy.signal import find_peaks
 from astropy import units as u
+from astropy.units import UnitsError
 
 
 class ConditionalEvents:
@@ -44,9 +45,10 @@ class ConditionalEvents:
         If ``length_of_return`` is negative.
         If ``upper_threshold`` is less than or equal to ``lower_threshold``.
 
-    `TypeError`:
-        If ``signal``/``reference_signal`` and ``lower_threshold`` have different astropy units.
-        If ``signal``/``reference_signal`` and ``upper_threshold`` have different astropy units.
+    `UnitsError`:
+        If astropy units of ``signal``/``reference_signal`` and ``lower_threshold`` do not match.
+        If astropy units of ``signal``/``reference_signal`` and ``upper_threshold`` do not match.
+        If astropy units of ``time``, ``length_of_return`` and ``distance`` do not match.
 
     Notes
     -----
@@ -90,15 +92,21 @@ class ConditionalEvents:
         # If a code reviewer has a better idea how to handle this I would be very grateful.
         if reference_signal is not None:
             self._check_units_consistency(
-                reference_signal, lower_threshold, upper_threshold
+                [reference_signal, lower_threshold, upper_threshold]
             )
         else:
-            self._check_units_consistency(signal, lower_threshold, upper_threshold)
+            self._check_units_consistency([signal, lower_threshold, upper_threshold])
 
-        self._astropy_unit = None
+        self._check_units_consistency([time, length_of_return, distance])
+
+        self._astropy_signal_unit = None
+        self._astropy_time_unit = None
 
         if isinstance(signal, u.Quantity):
-            signal, self._astropy_unit = signal.value, signal.unit
+            signal, self._astropy_signal_unit = signal.value, signal.unit
+
+        if isinstance(time, u.Quantity):
+            time, self._astropy_time_unit = time.value, time.unit
 
         if isinstance(lower_threshold, u.Quantity):
             lower_threshold = lower_threshold.value
@@ -108,6 +116,12 @@ class ConditionalEvents:
 
         if isinstance(reference_signal, u.Quantity):
             reference_signal = reference_signal.value
+
+        if isinstance(length_of_return, u.Quantity):
+            length_of_return = length_of_return.value
+
+        if isinstance(distance, u.Quantity):
+            distance = distance.value
 
         if distance < 0:
             raise ValueError("distance can't be negative")
@@ -188,9 +202,14 @@ class ConditionalEvents:
         self._arrival_times = time[peak_indices]
         self._waiting_times = np.diff(self._arrival_times)
 
-        if self._astropy_unit is not None:
-            self._peaks *= self._astropy_unit
-            self._conditional_average *= self._astropy_unit
+        if self._astropy_signal_unit is not None:
+            self._peaks *= self._astropy_signal_unit
+            self._conditional_average *= self._astropy_signal_unit
+
+        if self._astropy_time_unit is not None:
+            self._return_time *= self._astropy_time_unit
+            self._arrival_times *= self._astropy_time_unit
+            self._waiting_times *= self._astropy_time_unit
 
     @property
     def time(self):
@@ -282,40 +301,23 @@ class ConditionalEvents:
         """
         return self._number_of_events
 
-    # This astropy unit checks are quite ugly in my view.
-    # If a code reviewer has a better idea how to handle this I would be very grateful.
-    def _check_units_consistency(self, signal, lower_threshold, upper_threshold):
-        if isinstance(signal, u.Quantity):
-            if not isinstance(lower_threshold, u.Quantity):
-                raise TypeError(
-                    "signal/reference_signal and lower_threshold must be compatible"
-                )
-            if signal.unit.physical_type != lower_threshold.unit.physical_type:
-                raise TypeError(
-                    "signal/reference_signal and lower_threshold must be compatible"
-                )
-            if upper_threshold is not None:
-                if not isinstance(upper_threshold, u.Quantity):
-                    raise TypeError(
-                        "signal/reference_signal and lower_threshold must be compatible"
-                    )
-                if signal.unit.physical_type != upper_threshold.unit.physical_type:
-                    raise TypeError(
-                        "signal/reference_signal and upper_threshold must be compatible"
-                    )
-        if isinstance(lower_threshold, u.Quantity) and not isinstance(
-            signal, u.Quantity
-        ):
-            raise TypeError(
-                "signal/reference_signal and lower_threshold must be compatible"
-            )
+    def _check_units_consistency(self, variables):
+        # check whether all variables have an astropy unit
+        first_variable_has_unit = isinstance(variables[0], u.Quantity)
+        for variable in variables:
+            if variable is not None and first_variable_has_unit != isinstance(
+                variable, u.Quantity
+            ):
+                raise UnitsError(f"Units do not match: {variable} and {variables[0]}")
 
-        if isinstance(upper_threshold, u.Quantity) and not isinstance(
-            signal, u.Quantity
-        ):
-            raise TypeError(
-                "signal/reference_signal and upper_threshold must be compatible"
-            )
+        # check whether all variables have same astropy unit
+        if first_variable_has_unit:
+            first_unit = variables[0].unit
+            for variable in variables:
+                if variable is not None and first_unit != variable.unit:
+                    raise UnitsError(
+                        f"Units do not match: {variable} and {variables[0]}"
+                    )
 
     def _ensure_numpy_array(self, variable):
         if not isinstance(variable, np.ndarray):
