@@ -52,7 +52,7 @@ def test_ConditionalEvents_Errors(
 ):
     """Test whether exception is risen"""
     with pytest.raises(exception):
-        _ = ConditionalEvents(
+        ConditionalEvents(
             signal,
             time,
             lower_threshold,

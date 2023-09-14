@@ -88,8 +88,16 @@ class ConditionalEvents:
         distance=0,
         remove_non_max_peaks=False,
     ):
-        # This astropy unit checks are quite ugly in my view.
-        # If a code reviewer has a better idea how to handle this I would be very grateful.
+        self._check_for_value_errors(
+            distance,
+            signal,
+            time,
+            reference_signal,
+            length_of_return,
+            upper_threshold,
+            lower_threshold,
+        )
+
         if reference_signal is not None:
             self._check_units_consistency(
                 [reference_signal, lower_threshold, upper_threshold]
@@ -102,48 +110,13 @@ class ConditionalEvents:
         self._astropy_signal_unit = None
         self._astropy_time_unit = None
 
-        if isinstance(signal, u.Quantity):
-            signal, self._astropy_signal_unit = signal.value, signal.unit
-
-        if isinstance(time, u.Quantity):
-            time, self._astropy_time_unit = time.value, time.unit
-
-        if isinstance(lower_threshold, u.Quantity):
-            lower_threshold = lower_threshold.value
-
-        if isinstance(upper_threshold, u.Quantity):
-            upper_threshold = upper_threshold.value
-
-        if isinstance(reference_signal, u.Quantity):
-            reference_signal = reference_signal.value
-
-        if isinstance(length_of_return, u.Quantity):
-            length_of_return = length_of_return.value
-
-        if isinstance(distance, u.Quantity):
-            distance = distance.value
-
-        if distance < 0:
-            raise ValueError("distance can't be negative")
-
-        if len(signal) != len(time):
-            raise ValueError("length of signal and time must be equal")
-
-        if reference_signal is not None and len(reference_signal) != len(time):
-            raise ValueError("length of reference_signal and time must be equal")
-
-        if length_of_return is not None:
-            if length_of_return > time[-1] - time[0]:
-                raise ValueError(
-                    "choose length_of_return shorter or euqal to time length"
-                )
-            if length_of_return < 0:
-                raise ValueError("length_of_return must be bigger than 0")
-
-        if upper_threshold and upper_threshold <= lower_threshold:
-            raise ValueError(
-                "upper_threshold higher than lower_threshold, no events will be found"
-            )
+        signal, self._astropy_signal_unit = self._separate_unit_from_variable(signal)
+        time, self._astropy_time_unit = self._separate_unit_from_variable(time)
+        lower_threshold, _ = self._separate_unit_from_variable(lower_threshold)
+        upper_threshold, _ = self._separate_unit_from_variable(upper_threshold)
+        reference_signal, _ = self._separate_unit_from_variable(reference_signal)
+        length_of_return, _ = self._separate_unit_from_variable(length_of_return)
+        distance, _ = self._separate_unit_from_variable(distance)
 
         if reference_signal is None:
             reference_signal = signal.copy()
@@ -298,6 +271,43 @@ class ConditionalEvents:
 
         """
         return self._number_of_events
+
+    def _check_for_value_errors(
+        self,
+        distance,
+        signal,
+        time,
+        reference_signal,
+        length_of_return,
+        upper_threshold,
+        lower_threshold,
+    ):
+        if distance < 0:
+            raise ValueError("distance can't be negative")
+
+        if len(signal) != len(time):
+            raise ValueError("length of signal and time must be equal")
+
+        if reference_signal is not None and len(reference_signal) != len(time):
+            raise ValueError("length of reference_signal and time must be equal")
+
+        if length_of_return is not None:
+            if length_of_return > time[-1] - time[0]:
+                raise ValueError(
+                    "choose length_of_return shorter or euqal to time length"
+                )
+            if length_of_return < 0:
+                raise ValueError("length_of_return must be bigger than 0")
+
+        if upper_threshold and upper_threshold <= lower_threshold:
+            raise ValueError(
+                "upper_threshold higher than lower_threshold, no events will be found"
+            )
+
+    def _separate_unit_from_variable(self, variable):
+        if isinstance(variable, u.Quantity):
+            return variable.value, variable.unit
+        return variable, None
 
     def _check_units_consistency(self, variables):
         # check whether all variables have an astropy unit
