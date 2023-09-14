@@ -129,9 +129,8 @@ class ConditionalEvents:
         if len(signal) != len(time):
             raise ValueError("length of signal and time must be equal")
 
-        if reference_signal is not None:
-            if len(reference_signal) != len(time):
-                raise ValueError("length of reference_signal and time must be equal")
+        if reference_signal is not None and len(reference_signal) != len(time):
+            raise ValueError("length of reference_signal and time must be equal")
 
         if length_of_return is not None:
             if length_of_return > time[-1] - time[0]:
@@ -141,11 +140,10 @@ class ConditionalEvents:
             if length_of_return < 0:
                 raise ValueError("length_of_return must be bigger than 0")
 
-        if upper_threshold:
-            if upper_threshold <= lower_threshold:
-                raise ValueError(
-                    "upper_threshold higher than lower_threshold, no events will be found"
-                )
+        if upper_threshold and upper_threshold <= lower_threshold:
+            raise ValueError(
+                "upper_threshold higher than lower_threshold, no events will be found"
+            )
 
         if reference_signal is None:
             reference_signal = signal.copy()
