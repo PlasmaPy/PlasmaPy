@@ -58,7 +58,8 @@ class ConditionalEvents:
 
     A detailed analysis of the conditional averaging method is presented in
     Rolf Nilsen's master thesis: "Conditional averaging of overlapping pulses"
-    https://munin.uit.no/handle/10037/29416
+    .. _`thesis-link`: https://munin.uit.no/handle/10037/29416
+    :ref:`Rolf Nilsen's master thesis <thesis-link>`
 
     Example
     -------
