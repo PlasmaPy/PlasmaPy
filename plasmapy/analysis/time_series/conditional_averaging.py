@@ -52,6 +52,10 @@ class ConditionalEvents:
 
     Notes
     -----
+    The method, in its simplest form, works by finding peaks in a signal that fulfill a certain size threshold.
+    Equally sized excerpts of the signal around every peak are then cut out and averaged.
+    This yields the average shape of the events that fulfill the condition.
+
     A detailed analysis of the conditional averaging method is presented in
     Rolf Nilsen's master thesis: "Conditional averaging of overlapping pulses"
     https://munin.uit.no/handle/10037/29416
@@ -118,7 +122,10 @@ class ConditionalEvents:
         length_of_return, _ = self._separate_unit_from_variable(length_of_return)
         distance, _ = self._separate_unit_from_variable(distance)
 
+        self._reference_signal_provided = True
+
         if reference_signal is None:
+            self._reference_signal_provided = False
             reference_signal = signal.copy()
 
         signal = self._ensure_numpy_array(signal)
@@ -157,9 +164,20 @@ class ConditionalEvents:
         conditional_events = self._calculate_all_events(signal, peak_indices)
 
         if remove_non_max_peaks:
-            conditional_events, peak_indices = self._check_if_largest_value_is_peak(
-                conditional_events, peak_indices
-            )
+            if self._reference_signal_provided:
+                conditional_events_reference_signal = self._calculate_all_events(
+                    reference_signal, peak_indices
+                )
+
+                conditional_events, peak_indices = self._check_if_largest_value_is_peak(
+                    conditional_events,
+                    peak_indices,
+                    conditional_events_reference_signal,
+                )
+            else:
+                conditional_events, peak_indices = self._check_if_largest_value_is_peak(
+                    conditional_events, peak_indices, None
+                )
 
         self._conditional_average = np.mean(conditional_events, axis=0)
 
@@ -383,7 +401,9 @@ class ConditionalEvents:
 
         return conditional_events
 
-    def _check_if_largest_value_is_peak(self, conditional_events, peak_indices):
+    def _check_if_largest_value_is_peak(
+        self, conditional_events, peak_indices, conditional_events_reference_signal
+    ):
         def is_middle_value_highest(sequence):
             middle_index = len(sequence) // 2
             return np.max(sequence[middle_index]) == np.max(sequence)
@@ -391,10 +411,18 @@ class ConditionalEvents:
         checked_conditional_events = []
         checked_peak_indices = []
 
-        for event, peak in zip(conditional_events, peak_indices):
-            if is_middle_value_highest(event):
-                checked_conditional_events.append(event)
-                checked_peak_indices.append(peak)
+        if self._reference_signal_provided:
+            for event, peak, reference_event in zip(
+                conditional_events, peak_indices, conditional_events_reference_signal
+            ):
+                if is_middle_value_highest(reference_event):
+                    checked_conditional_events.append(event)
+                    checked_peak_indices.append(peak)
+        else:
+            for event, peak in zip(conditional_events, peak_indices):
+                if is_middle_value_highest(event):
+                    checked_conditional_events.append(event)
+                    checked_peak_indices.append(peak)
 
         return np.array(checked_conditional_events), np.array(checked_peak_indices)
 
