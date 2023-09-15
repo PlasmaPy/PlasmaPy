@@ -283,25 +283,25 @@ class ConditionalEvents:
         lower_threshold,
     ):
         if distance < 0:
-            raise ValueError("distance can't be negative")
+            raise ValueError("The distance parameter can't be negative")
 
         if len(signal) != len(time):
-            raise ValueError("length of signal and time must be equal")
+            raise ValueError("Length of signal and time must be equal")
 
         if reference_signal is not None and len(reference_signal) != len(time):
-            raise ValueError("length of reference_signal and time must be equal")
+            raise ValueError("Length of reference_signal and time must be equal")
 
         if length_of_return is not None:
             if length_of_return > time[-1] - time[0]:
                 raise ValueError(
-                    "choose length_of_return shorter or euqal to time length"
+                    "Choose length_of_return shorter or euqal to time length"
                 )
             if length_of_return < 0:
-                raise ValueError("length_of_return must be bigger than 0")
+                raise ValueError("The length_of_return parameter must be bigger than 0")
 
         if upper_threshold and upper_threshold <= lower_threshold:
             raise ValueError(
-                "upper_threshold higher than lower_threshold, no events will be found"
+                "The upper_threshold is higher than the lower_threshold, no events will be found"
             )
 
     def _separate_unit_from_variable(self, variable):
