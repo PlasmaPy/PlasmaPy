@@ -31,10 +31,8 @@ def construct_integration_matrix(num_points, point_spacing):
         raise ValueError("Can't create integration matrix for fewer than 3 points.")
 
     integration_matrix = np.zeros((num_points, num_points), dtype=float)
-    for Y_index in range(num_points):
-        if Y_index == 0:  # Y_0 = 0
-            continue
-        elif Y_index == 1:  # Y_1 is a parabolic arc through y_0, y_1, and y_2.
+    for Y_index in range(1, num_points):
+        if Y_index == 1:  # Y_1 is a parabolic arc through y_0, y_1, and y_2.
             integration_matrix[Y_index, : Y_index + 2] = np.array([5, 8, -1]) / 12
         elif (
             Y_index < num_points - 1
