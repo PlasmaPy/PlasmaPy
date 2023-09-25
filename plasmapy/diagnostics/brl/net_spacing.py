@@ -100,3 +100,30 @@ def small_probe_x_and_dx_ds(s_points):
     x_points = np.exp(-s_points)
     dx_ds_points = -np.exp(-s_points)
     return x_points, dx_ds_points
+
+
+def get_x_and_dx_ds(s_points, normalized_probe_radius):
+    r"""The values of `x` and `dx/ds` that correspond to the `s_points` for a probe of any radius.
+
+    Parameters
+    ----------
+    s_points : `numpy.ndarray`
+    normalized_probe_radius : `float`
+        The radio of probe radius to debye length, :math:`R_p / \lambda_D`.
+
+    Returns
+    -------
+    x_points, dx_ds_points : `numpy.ndarray`
+        Value at each :math:`s` of :math:`x(s)` and :math:`\frac{dx}{ds}(s)`.
+
+    Notes
+    -----
+    Laframboise gives no explanation as to why these functions are chosen nor
+    the boundary values on small, medium, and large probes.
+    """
+    if normalized_probe_radius <= 2.6:
+        return small_probe_x_and_dx_ds(s_points)
+    elif normalized_probe_radius <= 25.1:
+        return medium_probe_x_and_dx_ds(s_points)
+    else:
+        return large_probe_x_and_dx_ds(s_points)
