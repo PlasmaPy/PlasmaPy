@@ -527,3 +527,4 @@ class MHDNormalizations(AbstractNormalizations):
 
            k_⭑ ≡ \frac{1}{L_⭑}
         """
+        return 1 / self.length
