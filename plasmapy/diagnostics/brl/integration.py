@@ -26,6 +26,15 @@ def construct_integration_matrix(num_points, point_spacing):
     get :math:`Y(s_i)` for all :math:`i \in {0, ..., n - 1}` by doing
     `Y_values = integration_matrix @ y_values + integration_constant`,
     where :math:`integration_constant = Y(s_0)`.
+
+    Examples
+    --------
+    >>> import numpy as np
+    >>> num_points = 20
+    >>> x_points, dx = np.linspace(0, 10, num_points, retstep=True)
+    >>> integration_matrix = construct_integration_matrix(num_points, dx)
+    >>> y_points = x_points**2
+    >>> integrated_y_points = integration_matrix @ y_points
     """
     if num_points < 3:
         raise ValueError("Can't create integration matrix for fewer than 3 points.")
