@@ -493,7 +493,7 @@ def half_life(particle: Particle, mass_numb: Optional[Integral] = None) -> u.Qua
     return particle.half_life
 
 
-def known_isotopes(argument: Union[str, Integral] = None) -> list[str]:
+def known_isotopes(argument: Optional[Union[str, Integral]] = None) -> list[str]:
     """
     Return a list of all known isotopes of an element, or a list of all
     known isotopes of every element if no input is provided.
@@ -584,7 +584,7 @@ def known_isotopes(argument: Union[str, Integral] = None) -> list[str]:
 
 
 def common_isotopes(
-    argument: Union[str, Integral] = None, most_common_only: bool = False
+    argument: Optional[Union[str, Integral]] = None, most_common_only: bool = False
 ) -> list[str]:
     """
     Return a list of isotopes of an element with an isotopic abundances
@@ -854,7 +854,7 @@ def reduced_mass(test_particle: ParticleLike, target_particle: ParticleLike) -> 
 
     Examples
     --------
-    >>> from astropy import units as u
+    >>> import astropy.units as u
     >>> reduced_mass('p+', 'e-')
     <Quantity 9.10442...e-31 kg>
     >>> reduced_mass(5.4e-27 * u.kg, 8.6e-27 * u.kg)

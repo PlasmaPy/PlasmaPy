@@ -21,10 +21,9 @@ import warnings
 
 from abc import ABC, abstractmethod
 from collections import defaultdict, namedtuple
-from collections.abc import Iterable, Sequence
 from datetime import datetime
 from numbers import Integral, Real
-from typing import NoReturn, Optional, Union
+from typing import NoReturn, Optional, TYPE_CHECKING, Union
 
 from plasmapy.particles import _elements, _isotopes, _parsing, _special_particles
 from plasmapy.particles.exceptions import (
@@ -40,6 +39,9 @@ from plasmapy.particles.exceptions import (
 )
 from plasmapy.utils import PlasmaPyDeprecationWarning, roman
 from plasmapy.utils._units_helpers import _get_physical_type_dict
+
+if TYPE_CHECKING:
+    from collections.abc import Iterable, Sequence
 
 _classification_categories = {
     "lepton",
@@ -157,7 +159,9 @@ class AbstractParticle(ABC):
             "plasmapy_particle": {
                 "type": type(self).__name__,
                 "module": self.__module__,
-                "date_created": datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S UTC"),
+                "date_created": datetime.utcnow().strftime(  # noqa: DTZ003
+                    "%Y-%m-%d %H:%M:%S UTC"
+                ),
                 "__init__": {"args": (), "kwargs": {}},
             }
         }
@@ -221,9 +225,9 @@ class AbstractPhysicalParticle(AbstractParticle):
     def is_category(
         self,
         *category_tuple,
-        require: Union[str, Iterable[str]] = None,
-        any_of: Union[str, Iterable[str]] = None,
-        exclude: Union[str, Iterable[str]] = None,
+        require: Optional[Union[str, Iterable[str]]] = None,
+        any_of: Optional[Union[str, Iterable[str]]] = None,
+        exclude: Optional[Union[str, Iterable[str]]] = None,
     ) -> bool:
         """Determine if the particle meets categorization criteria.
 
@@ -679,7 +683,9 @@ class Particle(AbstractPhysicalParticle):
                 self.symbol
             ][attribute]
 
-        particle_taxonomy = _special_particles.particle_zoo._taxonomy_dict
+        particle_taxonomy = (
+            _special_particles.particle_zoo._taxonomy_dict  # noqa: SLF001
+        )
         all_categories = particle_taxonomy.keys()
 
         for category in all_categories:
@@ -1754,6 +1760,7 @@ class Particle(AbstractPhysicalParticle):
 
         if inplace:
             self.__init__(base_particle, Z=new_charge_number)
+            return None
         else:
             return Particle(base_particle, Z=new_charge_number)
 
@@ -1827,6 +1834,7 @@ class Particle(AbstractPhysicalParticle):
 
         if inplace:
             self.__init__(base_particle, Z=new_charge_number)
+            return None
         else:
             return Particle(base_particle, Z=new_charge_number)
 
@@ -1872,7 +1880,13 @@ class DimensionlessParticle(AbstractParticle):
     'ξ'
     """
 
-    def __init__(self, *, mass: Real = None, charge: Real = None, symbol: str = None):
+    def __init__(
+        self,
+        *,
+        mass: Optional[Real] = None,
+        charge: Optional[Real] = None,
+        symbol: Optional[str] = None,
+    ):
         try:
             self.mass = mass
             self.charge = charge
@@ -1909,9 +1923,7 @@ class DimensionlessParticle(AbstractParticle):
         elif isinstance(obj, bool):
             raise TypeError("Expecting a real number, not a bool.")
         elif isinstance(obj, u.Quantity) and not isinstance(obj.value, Real):
-            raise ValueError(  # noqa: TRY004
-                "The value of a Quantity must be a real number."
-            )
+            raise ValueError("The value of a Quantity must be a real number.")
 
         try:
             new_obj = np.float64(obj)
@@ -2054,7 +2066,7 @@ class CustomParticle(AbstractPhysicalParticle):
 
     Examples
     --------
-    >>> from astropy import units as u
+    >>> import astropy.units as u
     >>> from plasmapy.particles import CustomParticle
     >>> custom_particle = CustomParticle(
     ...     mass=1.2e-26 * u.kg,
@@ -2085,7 +2097,7 @@ class CustomParticle(AbstractPhysicalParticle):
         *,
         Z: Optional[Real] = None,
     ):
-        # TODO py3.10 replace ifology with structural pattern matching
+        # TODO: py3.10 replace ifology with structural pattern matching
 
         if Z is not None and charge is not None:
             raise InvalidParticleError(

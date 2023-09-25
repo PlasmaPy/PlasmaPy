@@ -10,13 +10,13 @@ __all__ = [
     "CheckValues",
 ]
 
+import astropy.units as u
 import collections
 import functools
 import inspect
 import numpy as np
 import warnings
 
-from astropy import units as u
 from astropy.constants import c
 from astropy.units.equivalencies import Equivalency
 from functools import reduce
@@ -138,7 +138,9 @@ class CheckValues(CheckBase):
     }
 
     def __init__(
-        self, checks_on_return: dict[str, bool] = None, **checks: dict[str, bool]
+        self,
+        checks_on_return: Optional[dict[str, bool]] = None,
+        **checks: dict[str, bool],
     ):
         super().__init__(checks_on_return=checks_on_return, **checks)
 
@@ -336,7 +338,7 @@ class CheckValues(CheckBase):
             elif ckey == "none_shall_pass":
                 if arg is None and arg_checks[ckey]:
                     break
-                elif arg is None:
+                elif arg is None:  # noqa: RET508
                     raise ValueError(f"{valueerror_msg} Nones.")
 
 
@@ -630,7 +632,7 @@ class CheckUnits(CheckBase):
             if _units is _units_anno is param_checks is None:
                 # no checks specified and no unit annotations defined
                 continue
-            elif _units is _units_anno is None:
+            elif _units is _units_anno is None:  # noqa: RET507
                 # checks specified, but NO unit checks
                 msg = "No astropy.units specified for "
                 if param.name == "checks_on_return":
@@ -681,7 +683,7 @@ class CheckUnits(CheckBase):
             if not _units and not _units_anno and param_checks is None:
                 # annotations did not specify units
                 continue
-            elif not _units and not _units_anno:
+            elif not _units and not _units_anno:  # noqa: RET507
                 # checks specified, but NO unit checks
                 msg = "No astropy.units specified for "
                 if param.name == "checks_on_return":
@@ -906,7 +908,7 @@ class CheckUnits(CheckBase):
         return arg, unit, equiv, err
 
     @staticmethod
-    def _condition_target_units(targets: list, from_annotations: bool = False):
+    def _condition_target_units(targets: list, from_annotations: bool = False) -> list:
         """
         From a list of target units (either as a string or astropy
         :class:`~astropy.units.Unit` objects), return a list of conditioned
@@ -957,7 +959,7 @@ class CheckUnits(CheckBase):
         return allowed_units
 
     @staticmethod
-    def _normalize_equivalencies(equivalencies):  # noqa: D400
+    def _normalize_equivalencies(equivalencies):
         """
         Normalize equivalencies to ensure each is in a 4-tuple of the
         form `(from_unit, to_unit, forward_func, backward_func)`.
@@ -1041,7 +1043,9 @@ class CheckUnits(CheckBase):
 
 
 def check_units(
-    func=None, checks_on_return: dict[str, Any] = None, **checks: dict[str, Any]
+    func=None,
+    checks_on_return: Optional[dict[str, Any]] = None,
+    **checks: dict[str, Any],
 ):
     """
     A decorator to 'check' — limit/control — the units of input and return
@@ -1176,7 +1180,9 @@ def check_units(
 
 
 def check_values(
-    func=None, checks_on_return: dict[str, bool] = None, **checks: dict[str, bool]
+    func=None,
+    checks_on_return: Optional[dict[str, bool]] = None,
+    **checks: dict[str, bool],
 ):
     """
     A decorator to 'check' — limit/control — the values of input and
@@ -1294,7 +1300,7 @@ def check_relativistic(func=None, betafrac=0.05):
 
     Examples
     --------
-    >>> from astropy import units as u
+    >>> import astropy.units as u
     >>> @check_relativistic
     ... def speed():
     ...     return 1 * u.m / u.s
@@ -1360,7 +1366,7 @@ def _check_relativistic(V, funcname, betafrac=0.05):
 
     Examples
     --------
-    >>> from astropy import units as u
+    >>> import astropy.units as u
     >>> _check_relativistic(1*u.m/u.s, 'function_calling_this')
 
     """

@@ -8,7 +8,7 @@ Acknowledging and Citing
 .. |citation_year| replace:: 2023
 
 If you use PlasmaPy for a project that results in a publication, we ask
-that you cite the Zenodo_ record for the specific version of PlasmaPy
+that you cite the |Zenodo| record for the specific version of PlasmaPy
 used in your project. Citing a software package promotes scientific
 reproducibility, gives credit to its developers, and highlights the
 importance of software as a vital research product.
@@ -50,4 +50,4 @@ on, such as `Astropy <https://www.astropy.org/acknowledging.html>`__,
 .. note::
 
    All public releases of PlasmaPy are openly archived in the `PlasmaPy
-   Community <https://zenodo.org/communities/plasmapy>`__ on Zenodo_.
+   Community <https://zenodo.org/communities/plasmapy>`__ on |Zenodo|.

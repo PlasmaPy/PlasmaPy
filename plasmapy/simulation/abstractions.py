@@ -58,8 +58,6 @@ class AbstractTimeDependentSimulation(AbstractSimulation):
         This interface is unstable and is subject to change.
     """
 
-    ...
-
 
 class AbstractNormalizations(ABC):
     """

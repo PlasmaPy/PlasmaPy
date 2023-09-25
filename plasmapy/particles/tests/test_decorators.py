@@ -2,7 +2,6 @@ import astropy.constants as const
 import astropy.units as u
 import inspect
 import pytest
-import sys
 
 from numbers import Real
 from typing import Optional
@@ -25,7 +24,11 @@ from plasmapy.utils.decorators.validators import validate_quantities
 
 @particle_input
 def function_decorated_with_particle_input(
-    a, particle: ParticleLike, b=None, Z: int = None, mass_numb: int = None
+    a,
+    particle: ParticleLike,
+    b=None,
+    Z: Optional[int] = None,
+    mass_numb: Optional[int] = None,
 ) -> Particle:
     """
     A simple function that is decorated with `particle_input` and
@@ -45,7 +48,11 @@ def function_decorated_with_particle_input(
 
 @particle_input()
 def function_decorated_with_call_of_particle_input(
-    a, particle: ParticleLike, b=None, Z: int = None, mass_numb: int = None
+    a,
+    particle: ParticleLike,
+    b=None,
+    Z: Optional[int] = None,
+    mass_numb: Optional[int] = None,
 ) -> Particle:
     """
     A simple function that is decorated with `@particle_input()` and
@@ -344,10 +351,6 @@ def test_preserving_signature_with_stacked_decorators(decorator1, decorator2):
     assert undecorated_signature == decorated_signature_1_2 == decorated_signature_2_1
 
 
-@pytest.mark.xfail(
-    condition=sys.version_info < (3, 9),
-    reason="This test fails for Python 3.8 but it is not clear why.",
-)
 def test_annotated_classmethod():
     """
     Test that `particle_input` behaves as expected for a method that is
@@ -357,7 +360,7 @@ def test_annotated_classmethod():
     class HasAnnotatedClassMethod:
         @classmethod
         @particle_input
-        def f(cls, particle: ParticleLike):
+        def f(cls, particle: ParticleLike) -> Particle:
             return particle
 
     has_annotated_classmethod = HasAnnotatedClassMethod()
@@ -519,7 +522,7 @@ def get_isotope(isotope: ParticleLike):
 
 
 @particle_input
-def get_ion(ion: ParticleLike, Z: Real = None):
+def get_ion(ion: ParticleLike, Z: Optional[Real] = None):
     return ion
 
 

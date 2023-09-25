@@ -36,8 +36,8 @@ class AbstractFitFunction(ABC):
 
     def __init__(
         self,
-        params: tuple[float, ...] = None,
-        param_errors: tuple[float, ...] = None,
+        params: Optional[tuple[float, ...]] = None,
+        param_errors: Optional[tuple[float, ...]] = None,
     ):
         """
         Parameters
@@ -99,11 +99,9 @@ class AbstractFitFunction(ABC):
 
             return y, y_err
 
-        y = self.func(x, *self.params)
+        return self.func(x, *self.params)
 
-        return y
-
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"{self.__str__()} {self.__class__}"
 
     @abstractmethod
@@ -481,7 +479,7 @@ class Linear(AbstractFitFunction):
 
     _param_names = ("m", "b")
 
-    def __str__(self):
+    def __str__(self) -> str:
         return "f(x) = m x + b"
 
     @property
@@ -671,7 +669,7 @@ class Exponential(AbstractFitFunction):
 
     _param_names = ("a", "alpha")
 
-    def __str__(self):
+    def __str__(self) -> str:
         return "f(x) = a exp(alpha x)"
 
     @property
@@ -803,14 +801,14 @@ class ExponentialPlusLinear(AbstractFitFunction):
 
     def __init__(
         self,
-        params: tuple[float, ...] = None,
-        param_errors: tuple[float, ...] = None,
+        params: Optional[tuple[float, ...]] = None,
+        param_errors: Optional[tuple[float, ...]] = None,
     ):
         self._exponential = Exponential()
         self._linear = Linear()
         super().__init__(params=params, param_errors=param_errors)
 
-    def __str__(self):
+    def __str__(self) -> str:
         exp_str = self._exponential.__str__().replace("f(x) = ", "")
         lin_str = self._linear.__str__().replace("f(x) = ", "")
         return f"f(x) = {exp_str} + {lin_str}"
@@ -941,13 +939,13 @@ class ExponentialPlusOffset(AbstractFitFunction):
 
     def __init__(
         self,
-        params: tuple[float, ...] = None,
-        param_errors: tuple[float, ...] = None,
+        params: Optional[tuple[float, ...]] = None,
+        param_errors: Optional[tuple[float, ...]] = None,
     ):
         self._explin = ExponentialPlusLinear()
         super().__init__(params=params, param_errors=param_errors)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return "f(x) = a exp(alpha x) + b"
 
     @property

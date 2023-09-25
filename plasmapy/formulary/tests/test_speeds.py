@@ -53,6 +53,7 @@ class TestAlfvenSpeed:
             ((1 * u.T, 1.0e18 * u.m**-3), {"ion": ["He"]}, InvalidIonError),
             ((1 * u.T, 1.0e-9 * u.kg * u.m**-3), {"ion": ["He+"]}, ValueError),
             (("not a Bfield", 1.0e-10 * u.kg * u.m**-3), {}, TypeError),
+            ((1 * u.T,), {"density": 1e9 * u.m**-3, "ion": None}, ValueError),
             ((10 * u.T, "not a density"), {}, TypeError),
             ((10 * u.T, 5), {"ion": "p"}, TypeError),
             ((1 * u.T, 1.0e18 * u.m**-3), {"ion": "He", "Z": "nope"}, TypeError),
@@ -116,12 +117,6 @@ class TestAlfvenSpeed:
     @pytest.mark.parametrize(
         ("args", "kwargs", "expected", "isclose_kw"),
         [
-            (
-                (1 * u.T, 1e-8 * u.kg * u.m**-3),
-                {},
-                8920620.58 * u.m / u.s,
-                {"rtol": 1e-6},
-            ),
             (
                 (1 * u.T, 1e-8 * u.kg * u.m**-3),
                 {},

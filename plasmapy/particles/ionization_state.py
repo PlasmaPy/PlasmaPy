@@ -5,12 +5,12 @@ a single ionization level.
 
 __all__ = ["IonicLevel", "IonizationState"]
 
+import astropy.units as u
 import numpy as np
 import warnings
 
-from astropy import units as u
 from numbers import Integral, Real
-from typing import NoReturn, Optional, Union
+from typing import NoReturn, Optional
 
 from plasmapy.particles.atomic import ionic_levels
 from plasmapy.particles.decorators import particle_input
@@ -95,7 +95,7 @@ class IonicLevel:
         except (ValueError, TypeError) as exc:
             raise ParticleError("Unable to create IonicLevel object") from exc
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return (
             f"IonicLevel({self.ionic_symbol!r}, "
             f"ionic_fraction={self.ionic_fraction})"
@@ -260,7 +260,7 @@ class IonizationState:
         T_i: u.K = None,
         kappa: Real = np.inf,
         n_elem: u.m**-3 = np.nan * u.m**-3,
-        tol: Union[float, int] = 1e-15,
+        tol: float = 1e-15,
     ):
         self._number_of_particles = particle.atomic_number + 1
 
@@ -466,12 +466,10 @@ class IonizationState:
 
         try:
             if np.min(fractions) < 0:
-                raise ParticleError(  # noqa: TC301
-                    "Cannot have negative ionic fractions."
-                )
+                raise ParticleError("Cannot have negative ionic fractions.")
 
             if len(fractions) != self.atomic_number + 1:
-                raise ParticleError(  # noqa: TC301
+                raise ParticleError(
                     "The length of ionic_fractions must be "
                     f"{self.atomic_number + 1}."
                 )
@@ -686,7 +684,7 @@ class IonizationState:
         """The atomic number of the element."""
         return self._particle.atomic_number
 
-    def __len__(self):
+    def __len__(self) -> int:
         return self._number_of_particles
 
     @property
@@ -894,7 +892,7 @@ class IonizationState:
             output += separator_line
             output += self._get_states_info(minimum_ionic_fraction)
             output += separator_line
-            # TODO add T_i somewhere around here, probably
+            # TODO: add T_i somewhere around here, probably
 
         if not np.isnan(self.n_elem):
             attributes.extend(
@@ -914,4 +912,4 @@ class IonizationState:
             output += attributes
 
         for line in output:
-            print(line)
+            print(line)  # noqa: T201

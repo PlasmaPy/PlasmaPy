@@ -1,9 +1,9 @@
 """Tests for functions in relativity.py."""
 
+import astropy.units as u
 import numpy as np
 import pytest
 
-from astropy import units as u
 from astropy.constants import c
 from astropy.tests.helper import assert_quantity_allclose
 
@@ -171,7 +171,6 @@ def test_relativistic_body_mass_energy(particle):
         ({"lorentz_factor": 0.99}, ValueError),
         ({"lorentz_factor": 0}, ValueError),
         ({"lorentz_factor": -1}, ValueError),
-        ({"lorentz_factor": -1}, ValueError),
         ({"lorentz_factor": -1, "v_over_c": 0.5}, ValueError),
         ({"total_energy": 1 * u.J, "momentum": 1 * u.kg * u.m / u.s}, ValueError),
         ({}, ValueError),
@@ -191,7 +190,7 @@ def test_relativistic_body_init_exceptions(kwargs, exception):
 def test_relativistic_body_equality():
     """Test that a `RelativisticBody` instance equals itself."""
     relativistic_body = RelativisticBody(particle=proton, v_over_c=0.34)
-    assert relativistic_body == relativistic_body
+    assert relativistic_body == relativistic_body  # noqa: PLR0124
 
 
 @pytest.mark.parametrize(

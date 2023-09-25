@@ -501,6 +501,7 @@ class TestMaxwellianCollisionFrequencies:
             mu = (species.mass / m_p).value
 
             return (4.8e-8 * n * Coulomb_log * T_a**-1.5 * mu**-0.5) * u.Hz
+        return None
 
     @pytest.mark.parametrize(
         ("expected_error", "constructor_arguments", "constructor_keyword_arguments"),
@@ -596,6 +597,7 @@ class TestMaxwellianCollisionFrequencies:
             ),
         ],
     )
+    @pytest.mark.filterwarnings("ignore::plasmapy.utils.exceptions.RelativityWarning")
     def test_attribute_errors(
         self,
         expected_error,
@@ -643,6 +645,7 @@ class TestMaxwellianCollisionFrequencies:
             ),
         ],
     )
+    @pytest.mark.filterwarnings("ignore::plasmapy.utils.exceptions.RelativityWarning")
     def test_fundamental_frequency_values(
         self, frequency_to_test, constructor_keyword_arguments
     ):

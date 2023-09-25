@@ -17,7 +17,7 @@ import numpy as np
 import pytest
 import warnings
 
-from typing import Any, Callable
+from typing import Any, Callable, Optional
 
 from plasmapy.tests._helpers.exceptions import (
     InvalidTestError,
@@ -68,7 +68,7 @@ def _process_input(wrapped_function: Callable):  # coverage: ignore
 def run_test(  # noqa: C901
     func,
     args: Any = (),
-    kwargs: dict = None,
+    kwargs: Optional[dict] = None,
     expected_outcome: Any = None,
     rtol: float = 0.0,
     atol: float = 0.0,
@@ -304,7 +304,10 @@ def run_test(  # noqa: C901
             )
 
     try:
-        with pytest.warns(expected["warning"]):
+        if expected["warning"] is not None:
+            with pytest.warns(expected["warning"]):
+                result = func(*args, **kwargs)
+        else:
             result = func(*args, **kwargs)
     except pytest.raises.Exception as missing_warning:
         raise MissingWarningFail(

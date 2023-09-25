@@ -431,9 +431,7 @@ class TestFFExponential(BaseFFTests):
             x_term = (alpha * x_err) ** 2
             err += x_term
 
-        err = np.abs(y) * np.sqrt(err)
-
-        return err
+        return np.abs(y) * np.sqrt(err)
 
     def test_root_solve(self):
         ff_obj = self.ff_class(params=(1, 1), param_errors=(0, 0))
@@ -479,9 +477,7 @@ class TestFFExponentialPlusLinear(BaseFFTests):
 
             err += x_term
 
-        err = np.sqrt(err)
-
-        return err
+        return np.sqrt(err)
 
     def test_root_solve(self):
         ff_obj = self.ff_class(params=(5.0, 0.5, 1.0, 5.0), param_errors=(0, 0, 0, 0))
@@ -523,9 +519,7 @@ class TestFFExponentialPlusOffset(BaseFFTests):
             x_term = (exp_y * alpha * x_err) ** 2
             err += x_term
 
-        err = np.sqrt(err)
-
-        return err
+        return np.sqrt(err)
 
     def test_root_solve(self):
         ff_obj = self.ff_class(params=(3.0, 0.5, -5.0), param_errors=(0, 0, 0))
@@ -567,9 +561,7 @@ class TestFFLinear(BaseFFTests):
         if x_err is not None:
             x_term = (m * x_err) ** 2
             err += x_term
-        err = np.sqrt(err)
-
-        return err
+        return np.sqrt(err)
 
     @pytest.mark.parametrize(
         ("params", "param_errors", "root", "root_err", "conditional"),
