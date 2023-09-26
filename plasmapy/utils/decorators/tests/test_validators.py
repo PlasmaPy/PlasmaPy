@@ -637,3 +637,28 @@ class TestValidateClassAttributes:
             else:
                 with pytest.raises(ValueError):
                     getattr(test_case, method)
+
+# add this to class later
+def test_validate_quantities_decorate_argument():
+    @validate_quantities
+    def f(x: u.Quantity[u.m]):
+        return x
+
+    argument = 100 * u.cm
+    expected = 1 * u.m
+    actual = f(argument)
+
+    assert u.isclose(actual, expected)
+    assert actual.unit == expected.unit
+
+def test_validate_quantities_return_annotation():
+    @validate_quantities
+    def f(x) -> u.Quantity[u.m]:
+        return x
+
+    argument = 100 * u.cm
+    expected = 1 * u.m
+    actual = f(argument)
+
+    assert u.isclose(actual, expected)
+    assert actual.unit == expected.unit

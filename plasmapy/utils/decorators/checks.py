@@ -946,6 +946,20 @@ class CheckUnits(CheckBase):
         #
         allowed_units = []
         for target in targets:
+
+            # The following two blocks are to create extract the unit from
+            # annotations of the form u.Quantity[u.m], which is an annotated
+            # alias.  The unit is stored as the first item in the __metadata__
+            # attribute and the original class is stored in the __origin__
+            # attribute.
+
+            annotation_metadata = getattr(target, "__metadata__", None)
+            annotation_original_class = getattr(target, "__origin__", None)
+
+            if annotation_original_class is u.Quantity and annotation_metadata is not None:
+                if tuple_that_should_have_unit := getattr(target, "__metadata__", None):
+                    target = tuple_that_should_have_unit[0]
+
             try:
                 target_unit = u.Unit(target)
                 allowed_units.append(target_unit)
