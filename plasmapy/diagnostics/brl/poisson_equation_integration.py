@@ -119,3 +119,63 @@ def dchi_dx_at_probe(
         else:
             # Equation (D.18).
             return (K2_term[-1] - x[-1] * K1_term[-1] / dx_ds[-1]) / (1 - np.log(x[-1]))
+
+
+def chi_and_dchi_ds(
+    eta_net,
+    gamma,
+    chi_0,
+    x,
+    dx_ds,
+    integration_matrix,
+    spherical=True,
+    zero_T_repelled_particles=False,
+):
+    r"""The normalized potential, :math:`\chi`, and it's :math:`s` derivative.
+
+    Parameters
+    ----------
+    eta_net : `numpy.ndarray`
+        Normalized net charge density from equation (9.1).
+    gamma : `float`
+        :math:`\gamma = R_p^2 / \lambda_D^2` from equation (9.1).
+    chi_0 : `float`
+        The normalized potential of the probe.
+    x, dx_ds : `numpy.ndarray`
+        The the normalized inverse radius and it's `s` derivative calculated from `~plasmapy.diagnostics.brl.net_spacing.get_x_and_dx_ds`.
+    integration_matrix : `numpy.ndarray`
+        The matrix used for integrating functions from `~plasmapy.diagnostics.brl.integration.construct_integration_matrix`.
+    spherical : `bool`, optional
+        If `True` the probe will be treated as spherical. If `False` then the probe is cylindrical. Default is `True`.
+    zero_T_repelled_particles : `bool`, optional
+        If `True` then the repelled particles have zero temperature which requires a slightly modified calculation. Default is `False`.
+
+    Returns
+    -------
+    `chi`, `dchi_ds` : `numpy.ndarray`
+
+    Notes
+    -----
+    These are the terms :math:`\chi(s)` and :math:`(d\chi / ds)(s)` from equations (D.7) and (D.8) (spherical probe) or (D.15) and (D.16) (cylindrical probe).
+    """
+    K0_term = evaluate_K0_term(eta_net, gamma, x, spherical)
+    K1_term = evaluate_K1_term(K0_term, x, dx_ds, integration_matrix, spherical)
+    K2_term = evaluate_K2_term(K1_term, chi_0, integration_matrix)
+    dchi_dx_0 = dchi_dx_at_probe(
+        K1_term, K2_term, x, dx_ds, spherical, zero_T_repelled_particles
+    )
+
+    if spherical:
+        # Equation (D.7)
+        chi = dchi_dx_0 * (x - 1) + K2_term
+        # Equation (D.8)
+        dchi_dx = dchi_dx_0 + K1_term / dx_ds
+    else:
+        # Equation (D.15)
+        chi = dchi_dx_0 * np.log(x) + K2_term
+        # Equation (D.16)
+        dchi_dx = dchi_dx_0 / x + K1_term / dx_ds
+
+    dchi_ds = dchi_dx * dx_ds
+
+    return chi, dchi_ds
