@@ -7,7 +7,7 @@ def get_s_points(num_points, s_end_point):
     return np.linspace(0, s_end_point, num_points)
 
 
-def large_probe_x_and_dx_ds(s_points, normalized_probe_radius):
+def _large_probe_x_and_dx_ds(s_points, normalized_probe_radius):
     r"""The values of `x` and `dx/ds` that correspond to the `s_points` for a probe of large radius.
 
     Parameters
@@ -50,7 +50,7 @@ def large_probe_x_and_dx_ds(s_points, normalized_probe_radius):
     return x_points, dx_ds_points
 
 
-def medium_probe_x_and_dx_ds(s_points):
+def _medium_probe_x_and_dx_ds(s_points):
     r"""The values of `x` and `dx/ds` that correspond to the `s_points` for a probe of medium radius.
 
     Parameters
@@ -76,7 +76,7 @@ def medium_probe_x_and_dx_ds(s_points):
     return x_points, dx_ds_points
 
 
-def small_probe_x_and_dx_ds(s_points):
+def _small_probe_x_and_dx_ds(s_points):
     r"""The values of `x` and `dx/ds` that correspond to the `s_points` for a probe of small radius.
 
     Parameters
@@ -102,7 +102,7 @@ def small_probe_x_and_dx_ds(s_points):
     return x_points, dx_ds_points
 
 
-def zero_T_repelled_x_and_dx_ds(
+def _zero_T_repelled_x_and_dx_ds(
     s_points, normalized_probe_radius, normalized_probe_potential
 ):
     r"""The values of `x` and `dx/ds` that correspond to the `s_points` for zero temperature repelled particles.
@@ -179,12 +179,12 @@ def get_x_and_dx_ds(
             raise ValueError(
                 "The `normalized_probe_potential` must be a `float` to get the net spacing for zero temperature repelled particles. The passed potential was `None`."
             )
-        return zero_T_repelled_x_and_dx_ds(
+        return _zero_T_repelled_x_and_dx_ds(
             s_points, normalized_probe_radius, normalized_probe_potential
         )
     elif normalized_probe_radius <= 2.6:
-        return small_probe_x_and_dx_ds(s_points)
+        return _small_probe_x_and_dx_ds(s_points)
     elif normalized_probe_radius <= 25.1:
-        return medium_probe_x_and_dx_ds(s_points)
+        return _medium_probe_x_and_dx_ds(s_points)
     else:
-        return large_probe_x_and_dx_ds(s_points)
+        return _large_probe_x_and_dx_ds(s_points)
