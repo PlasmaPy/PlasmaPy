@@ -1,5 +1,4 @@
-Changed ``from astropy import units as u``
-to ``import astropy.units as u``
-and ``from astropy import constants as const``
-to ``import astropy.constants as const`` in order to increase
-consistency of import statements.
+Changed :py:`from astropy import units as u` to :py:`import astropy.units as u`
+and :py:`from astropy import constants as const`
+to :py:`import astropy.constants as const` throughout the code in order to
+increase consistency of import statements.
