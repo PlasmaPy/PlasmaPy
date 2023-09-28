@@ -62,7 +62,7 @@ class TestValidateQuantities:
         # 'output' = expected return from `_get_validations`
         # 'raises' = if `_get_validations` raises an Exception
         # 'warns' = if `_get_validations` issues a warning
-        #
+
         _cases = [
             {
                 "descr": "typical call...using 'can_be_negative'",
@@ -229,7 +229,7 @@ class TestValidateQuantities:
         # 'output' = expected return from `_get_validations`
         # 'raises' = if `_get_validations` raises an Exception
         # 'warns' = if `_get_validations` issues a warning
-        #
+
         _cases = [
             # typical call
             {
@@ -361,7 +361,7 @@ class TestValidateQuantities:
         # 'output' = expected return from wrapped function
         # 'raises' = if an Exception is expected to be raised
         # 'warns' = if a warning is expected to be issued
-        #
+
         _cases = [
             {
                 "descr": "clean execution",
@@ -496,7 +496,7 @@ class TestValidateQuantities:
         # 'output' = expected return from wrapped function
         # 'raises' = a raised Exception is expected
         # 'warns' = an issued warning is expected
-        #
+
         _cases = [
             # only argument checks
             {
