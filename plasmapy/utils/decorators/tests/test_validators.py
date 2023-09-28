@@ -630,7 +630,11 @@ class TestValidateClassAttributes:
                     getattr(test_case, method)
 
 
-def test_validate_quantities_decorate_argument():
+def test_validate_quantities_argument_type_annotation():
+    """
+    Test that |validate_quantities| works with type hint annotations of
+    the form ``u.Quantity[u.m]`` on a function argument.
+    """
 
     @validate_quantities
     def f(x: u.Quantity[u.m]):
@@ -644,7 +648,12 @@ def test_validate_quantities_decorate_argument():
     assert actual.unit == expected.unit
 
 
-def test_validate_quantities_return_annotation():
+def test_validate_quantities_return_type_annotation():
+    """
+    Test that |validate_quantities| works with type hint annotations of
+    the form ``u.Quantity[u.m]`` as a return argument.
+    """
+
     @validate_quantities
     def f(x) -> u.Quantity[u.m]:
         return x
