@@ -17,9 +17,6 @@ from plasmapy.utils.decorators.validators import (
 )
 
 
-# ----------------------------------------------------------------------------------------
-# Test Decorator class `ValidateQuantities` and decorator `validate_quantities`
-# ----------------------------------------------------------------------------------------
 class TestValidateQuantities:
     """
     Test for decorator
@@ -297,7 +294,7 @@ class TestValidateQuantities:
             },
         ]
 
-        # setup wrapped function
+        # set up wrapped function
         vq = ValidateQuantities()
         vq.f = self.foo
 
@@ -345,8 +342,6 @@ class TestValidateQuantities:
 
     def test_vq_preserves_signature(self):
         """Test `ValidateQuantities` preserves signature of wrapped function."""
-        # I'd like to directly test the @preserve_signature is used (??)
-
         wfoo = ValidateQuantities()(self.foo_anno)
         assert hasattr(wfoo, "__signature__")
         assert wfoo.__signature__ == inspect.signature(self.foo_anno)
@@ -534,12 +529,10 @@ class TestValidateQuantities:
                     #  @validate_quantities(x=check)
                     #      def foo(x):
                     #          return x
-                    #
                     wfoo = validate_quantities(**case["setup"]["validations"])(mock_foo)
                 else:
                     continue
 
-                # test
                 args = case["setup"]["args"]
                 kwargs = case["setup"]["kwargs"]
                 assert wfoo(*args, **kwargs) == case["output"]
@@ -555,7 +548,6 @@ class TestValidateQuantities:
                 for arg_name, validations in case["setup"]["validations"].items():
                     assert mock_vq_class.call_args[1][arg_name] == validations
 
-                # reset
                 mock_vq_class.reset_mock()
                 mock_foo.reset_mock()
 
@@ -638,8 +630,8 @@ class TestValidateClassAttributes:
                     getattr(test_case, method)
 
 
-# add this to class later
 def test_validate_quantities_decorate_argument():
+
     @validate_quantities
     def f(x: u.Quantity[u.m]):
         return x
