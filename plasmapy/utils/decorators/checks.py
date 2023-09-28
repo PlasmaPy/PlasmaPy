@@ -909,8 +909,8 @@ class CheckUnits(CheckBase):
 
     @staticmethod
     def _condition_target_units(
-            targets: list[Union[str, u.Unit, u.Quantity]],
-            from_annotations: bool = False,
+        targets: list[Union[str, u.Unit, u.Quantity]],
+        from_annotations: bool = False,
     ) -> list:
         """
         From a `list` of target objects that have or represent units,
@@ -964,7 +964,7 @@ class CheckUnits(CheckBase):
                 annotation_original_class is u.Quantity
                 and annotation_metadata is not None
             ):
-                target = annotation_metadata[0]
+                target = annotation_metadata[0]  # noqa: PLW2901
 
             try:
                 target_unit = u.Unit(target)
