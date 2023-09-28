@@ -38,7 +38,7 @@ jobs:
     # do this are in the documentation for the create-pull-request
     # action.
 
-    - uses: tibdex/github-app-token@v1
+    - uses: tibdex/github-app-token@v2
       id: generate_token
       with:
         app_id: ${{ secrets.APP_ID }}

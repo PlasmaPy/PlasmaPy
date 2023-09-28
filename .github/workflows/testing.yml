@@ -30,7 +30,7 @@ jobs:
           toxargs: --develop
 
         - name: Python 3.10 (MacOS), code coverage
-          os: windows-latest
+          os: macos-latest
           python: '3.10'
           toxenv: py310-cov-all
 

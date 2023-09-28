@@ -28,6 +28,43 @@ _cff_to_rst.main()
 from plasmapy import __version__ as release
 
 # -- General configuration ------------------------------------------------
+
+# If your documentation needs a minimal Sphinx version, state it here.
+
+needs_sphinx = "6.1.3"
+
+# Add Sphinx extension module names here. When extensions are removed or
+# added, please update the corresponding section in docs/doc_guide.rst.
+
+extensions = [
+    "hoverxref.extension",
+    "IPython.sphinxext.ipython_console_highlighting",
+    "nbsphinx",
+    "notfound.extension",
+    "plasmapy_sphinx",
+    "sphinx.ext.autodoc",
+    "sphinx.ext.duration",
+    "sphinx.ext.extlinks",
+    "sphinx.ext.graphviz",
+    "sphinx.ext.intersphinx",
+    "sphinx.ext.mathjax",
+    "sphinx.ext.napoleon",
+    "sphinx.ext.todo",
+    "sphinx.ext.viewcode",
+    "sphinx_changelog",
+    "sphinx_codeautolink",
+    "sphinx_copybutton",
+    "sphinx_gallery.load_style",
+    "sphinx_issues",
+    "sphinx_reredirects",
+    "sphinx_tabs.tabs",
+    "sphinx_toolbox.collapse",
+    "sphinxcontrib.bibtex",
+    "sphinxcontrib.globalsubs",
+]
+
+# plasmapy_sphinx settings
+
 autosummary_generate = True
 automodapi_custom_groups = {
     "aliases": {
@@ -76,41 +113,6 @@ automodapi_group_order = (
     "lite-functions",
     "variables",
 )
-
-# If your documentation needs a minimal Sphinx version, state it here.
-
-needs_sphinx = "6.1.3"
-
-# Add any Sphinx extension module names here, as strings. They can be
-# extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
-# ones. When extensions are removed or added, please update the section
-# in docs/doc_guide.rst on Sphinx extensions.
-
-extensions = [
-    "hoverxref.extension",
-    "IPython.sphinxext.ipython_console_highlighting",
-    "nbsphinx",
-    "notfound.extension",
-    "plasmapy_sphinx",
-    "sphinx.ext.autodoc",
-    "sphinx.ext.duration",
-    "sphinx.ext.extlinks",
-    "sphinx.ext.graphviz",
-    "sphinx.ext.intersphinx",
-    "sphinx.ext.mathjax",
-    "sphinx.ext.napoleon",
-    "sphinx.ext.todo",
-    "sphinx.ext.viewcode",
-    "sphinx_changelog",
-    "sphinx_codeautolink",
-    "sphinx_copybutton",
-    "sphinx_gallery.load_style",
-    "sphinx_issues",
-    "sphinx_reredirects",
-    "sphinx_tabs.tabs",
-    "sphinxcontrib.bibtex",
-    "sphinxcontrib.globalsubs",
-]
 
 # Configure sphinxcontrib-bibtex
 

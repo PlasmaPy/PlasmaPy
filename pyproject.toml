@@ -75,6 +75,7 @@ docs = [
   "sphinx-reredirects >= 0.1.1",
   "sphinx_rtd_theme >= 1.2.2",
   "sphinx_tabs >= 3.4.1",
+  "sphinx_toolbox >= 3.5.0",
   "sphinxcontrib-bibtex >= 2.5.0",
   "sphinxcontrib-globalsubs >= 0.1.1",
   "towncrier >= 22.12",
@@ -116,14 +117,9 @@ namespaces = false
 write_to = "plasmapy/_version.py"
 
 [tool.isort]
-line_length = 88
-wrap_length = 80
-sections = ["FUTURE", "STDLIB", "FIRSTPARTY", "LOCALFOLDER"]
+profile = "black"
 known_first_party = ["plasmapy", ]
 default_section = "STDLIB"
-multi_line_output = 3
-use_parentheses = true
-include_trailing_comma = true
 force_alphabetical_sort_within_sections = true
 honor_noqa = true
 lines_between_types = 1
@@ -274,7 +270,6 @@ extend-select = [
   "RUF013", # implicit-optional
   "RUF015", # unnecessary-iterable-allocation-for-first-element
   "RUF016", # invalid-index-type
-  "RUF017", # quadratic-list-summation
   "RUF100", # unused-noqa
   "RUF200", # invalid-pyproject-toml
   "S", # flake8-bandit
