@@ -948,7 +948,7 @@ class CheckUnits(CheckBase):
         # Note: this method does not allow for astropy physical types. This is
         #       done because we expect all use cases of CheckUnits to define the
         #       exact units desired.
-        #
+
         allowed_units = []
         for target in targets:
             # The following two blocks are to create extract the unit from
@@ -959,13 +959,12 @@ class CheckUnits(CheckBase):
 
             annotation_metadata = getattr(target, "__metadata__", None)
             annotation_original_class = getattr(target, "__origin__", None)
-            tuple_that_should_have_unit =
 
             if (
                 annotation_original_class is u.Quantity
                 and annotation_metadata is not None
             ):
-                target = tuple_that_should_have_unit[0]
+                target = annotation_metadata[0]
 
             try:
                 target_unit = u.Unit(target)
