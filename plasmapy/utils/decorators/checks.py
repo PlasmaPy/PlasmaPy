@@ -217,8 +217,8 @@ class CheckValues(CheckBase):
         Returns
         -------
         Dict[str, Dict[str, bool]]
-            A complete 'checks' dictionary for checking function input arguments
-            and return.
+            A complete 'checks' dictionary for checking function input
+            arguments and return.
         """
         # initialize validation dictionary
         out_checks = {}
@@ -289,18 +289,18 @@ class CheckValues(CheckBase):
         Parameters
         ----------
         arg
-            The argument to be checked
+            The argument to be checked.
 
         arg_name: str
-            The name of the argument to be checked
+            The name of the argument to be checked.
 
         arg_checks: Dict[str, bool]
-            The requested checks for the argument
+            The requested checks for the argument.
 
         Raises
         ------
         ValueError
-            raised if a check fails
+            If a check fails.
 
         """
         if arg_name == "checks_on_return":
@@ -344,8 +344,8 @@ class CheckValues(CheckBase):
 
 class CheckUnits(CheckBase):
     """
-    A decorator class to 'check' — limit/control — the units of input and return
-    arguments to a function or method.
+    A decorator class to 'check' — limit/control — the units of input
+    and return arguments to a function or method.
 
     Parameters
     ----------
@@ -908,37 +908,42 @@ class CheckUnits(CheckBase):
         return arg, unit, equiv, err
 
     @staticmethod
-    def _condition_target_units(targets: list, from_annotations: bool = False) -> list:
+    def _condition_target_units(
+            targets: list[Union[str, u.Unit, u.Quantity]],
+            from_annotations: bool = False,
+    ) -> list:
         """
-        From a list of target units (either as a string or astropy
-        :class:`~astropy.units.Unit` objects), return a list of conditioned
-        :class:`~astropy.units.Unit` objects.
+        From a `list` of target objects that have or represent units,
+        return a `list` of conditioned :class:`~astropy.units.Unit`
+        objects.
 
         Parameters
         ----------
-        targets: list of target units
-            list of units (either as a string or :class:`~astropy.units.Unit`)
-            to be conditioned into astropy :class:`~astropy.units.Unit` objects
+        targets: `list` of  `str`, `~astropy.units.Unit`, or `~astropy.units.Quantity`
+            A list containing strings representing units (e.g., ``"kg"``,
+            `~astropy.units.Unit` objects (e.g., ``u.kg``), or
+            |Quantity| objects indexed with a `~astropy.units.U nit`
+            object (e.g., ``u.Quantity[u.kg]``).
 
-        from_annotations: bool
-            (Default `False`) Indicates if `targets` originated from function/method
+        from_annotations: bool, default: `False`
+            Indicates if ``targets`` originated from function/method
             annotations versus decorator input arguments.
 
         Returns
         -------
         list:
-            list of `targets` converted into astropy
-            :class:`~astropy.units.Unit` objects
+            `list` of ``targets`` converted into
+            :class:`~astropy.units.Unit` objects.
 
         Raises
         ------
         TypeError
-            If `target` is not a valid type for :class:`~astropy.units.Unit` when
-            `from_annotations == True`,
+            If `target` is not a valid type for
+            :class:`~astropy.units.Unit` when ``from_annotations == True``,
 
         ValueError
-            If a `target` is a valid unit type but not a valid value for
-            :class:`~astropy.units.Unit`.
+            If a ``target`` is a valid unit type but not a valid value
+            for :class:`~astropy.units.Unit`.
         """
         # Note: this method does not allow for astropy physical types. This is
         #       done because we expect all use cases of CheckUnits to define the
@@ -954,13 +959,13 @@ class CheckUnits(CheckBase):
 
             annotation_metadata = getattr(target, "__metadata__", None)
             annotation_original_class = getattr(target, "__origin__", None)
+            tuple_that_should_have_unit =
 
             if (
                 annotation_original_class is u.Quantity
                 and annotation_metadata is not None
             ):
-                if tuple_that_should_have_unit := getattr(target, "__metadata__", None):
-                    target = tuple_that_should_have_unit[0]
+                target = tuple_that_should_have_unit[0]
 
             try:
                 target_unit = u.Unit(target)
