@@ -6,7 +6,6 @@ import astropy.units as u
 import inspect
 import pytest
 
-from functools import cached_property
 from typing import Optional
 from unittest import mock
 
@@ -573,29 +572,29 @@ class TestValidateClassAttributes:
             self.y = y
             self.z = z
 
-        @cached_property
+        @property
         @validate_class_attributes(expected_attributes=["x"])
         def require_x(self):
             return 0
 
-        @cached_property
+        @property
         @validate_class_attributes(expected_attributes=["x", "y"])
         def require_x_and_y(self):
             return 0
 
-        @cached_property
+        @property
         @validate_class_attributes(both_or_either_attributes=[("x", "y")])
         def require_x_or_y(self):
             return 0
 
-        @cached_property
+        @property
         @validate_class_attributes(
             expected_attributes=["x"], both_or_either_attributes=[("y", "z")]
         )
         def require_x_and_either_y_or_z(self):
             return 0
 
-        @cached_property
+        @property
         @validate_class_attributes(mutually_exclusive_attributes=[("x", "y")])
         def require_only_either_x_or_y(self):
             return 0
