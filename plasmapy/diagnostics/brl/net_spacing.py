@@ -157,6 +157,7 @@ def get_x_and_dx_ds(
     Parameters
     ----------
     s_points : `numpy.ndarray`
+        Array of :math:`s` from `~plasmapy.diagnostics.brl.net_spacing.get_s_points`.
     normalized_probe_radius : `float`
         The radio of probe radius to debye length, :math:`R_p / \lambda_D`.
     normalized_probe_potential : `float`
