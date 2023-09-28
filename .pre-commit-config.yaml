@@ -81,7 +81,7 @@ repos:
     - tomli
 
 - repo: https://github.com/astral-sh/ruff-pre-commit
-  rev: v0.0.287
+  rev: v0.0.291
   hooks:
   - id: ruff
     args: [--fix]
@@ -98,7 +98,7 @@ repos:
     - python
 
 - repo: https://github.com/psf/black
-  rev: 23.9.0
+  rev: 23.9.1
   hooks:
   - id: black
 
