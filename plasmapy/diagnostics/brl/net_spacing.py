@@ -2,9 +2,9 @@
 import numpy as np
 
 
-def get_s_points(num_points, s_upper_bound):
+def get_s_points(num_points, s_end_point):
     r"""Get the equally spaced points for the variable `s`."""
-    return np.linspace(0, s_upper_bound, num_points)
+    return np.linspace(0, s_end_point, num_points)
 
 
 def large_probe_x_and_dx_ds(s_points, normalized_probe_radius):
