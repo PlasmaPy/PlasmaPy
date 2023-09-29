@@ -5,7 +5,9 @@ import numpy as np
 def get_s_points(num_points, s_end_point):
     r"""Get the equally spaced points for the variable `s`."""
     if s_end_point <= 0:
-        raise ValueError(f"The `s_end_point` must be greater than or equal to 0 but was {s_end_point}.")
+        raise ValueError(
+            f"The `s_end_point` must be greater than or equal to 0 but was {s_end_point}."
+        )
     return np.linspace(0, s_end_point, num_points)
 
 
