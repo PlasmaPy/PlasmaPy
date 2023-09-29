@@ -179,13 +179,13 @@ def get_x_and_dx_ds(
     Laframboise gives no explanation as to why these functions are chosen nor
     the boundary values on small, medium, and large probes.
     """
-    if normalized_probe_radius <= 2.6:
-        return _small_probe_x_and_dx_ds(s_points)
-
-    if np.max(s_points) > 1:
+    if (normalized_probe_radius > 2.6 or zero_T_repelled_particles) and np.max(s_points) > 1:
         raise ValueError(
             "Maximum value of `s` must be less than or equal to 1 for all probes that aren't small."
         )
+
+    if normalized_probe_radius <= 2.6:
+        return _small_probe_x_and_dx_ds(s_points)
 
     if zero_T_repelled_particles:
         if normalized_probe_potential is None:

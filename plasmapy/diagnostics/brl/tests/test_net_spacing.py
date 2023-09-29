@@ -108,5 +108,17 @@ class Test__get_x_and_dx_ds:
     def get_num_s_poits(ds, s_end_point):
         return round(s_end_point / ds) + 1
 
-    def test_too_large_s_points(self):
+    @pytest.mark.parametrize(
+        ("normalized_probe_radius", "zero_T_repelled_particles"),
+        [(3, False), (30, False), (1, True)],
+    )
+    def test_too_large_s_points(
+        self, normalized_probe_radius, zero_T_repelled_particles
+    ):
         r"""Test that an error is raised if the maximum `s` is greater than 1 for a non-small probe."""
+        with pytest.raises(ValueError):
+            net_spacing.get_x_and_dx_ds(
+                np.linspace(0, 10),
+                normalized_probe_radius,
+                zero_T_repelled_particles=zero_T_repelled_particles,
+            )
