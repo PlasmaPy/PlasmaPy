@@ -72,7 +72,7 @@ def _medium_probe_x_and_dx_ds(s_points):
        x(s) = 1 - s.
     """
     x_points = 1 - s_points
-    dx_ds_points = -1
+    dx_ds_points = -np.ones_like(s_points)
     return x_points, dx_ds_points
 
 
