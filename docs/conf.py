@@ -29,10 +29,6 @@ from plasmapy import __version__ as release
 
 # -- General configuration ------------------------------------------------
 
-# If your documentation needs a minimal Sphinx version, state it here.
-
-needs_sphinx = "6.1.3"
-
 # Add Sphinx extension module names here. When extensions are removed or
 # added, please update the corresponding section in docs/doc_guide.rst.
 
