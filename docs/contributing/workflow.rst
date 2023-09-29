@@ -16,8 +16,8 @@ This page describes the workflow for making a contribution to PlasmaPy
 via a `pull request`_ after having finished the steps for
 |getting ready to contribute|.
 
-If you run into any problems, please reach out to us in our `Matrix
-chat room`_ or during our weekly `office hours`_. Thank you for
+If you run into any problems, please feel free to reach out to us in our
+|Matrix chat room| or during our weekly |office hours|. Thank you for
 contributing!
 
 .. tip::
@@ -36,7 +36,37 @@ Create a new branch
 #. Navigate to the :file:`PlasmaPy/` directory that contains the clone
    of your repository.
 
-#. Download the current status of `PlasmaPy's GitHub repository`_ and
+#. In the terminal, run:
+
+   .. code-block:: bash
+
+      git status
+
+   If the output ends with ``nothing to commit, working tree clean``,
+   then proceed to the next step.
+
+   .. collapse:: Click here if there are uncommitted changes
+
+      .. tip::
+
+         If :bash:`git status` shows that any files are listed under
+         ``Changes not staged for commit`` or ``Changes to be
+         committed``, then do one of the following before proceeding
+         to the next step:
+
+         #. :ref:`Add and commit changes <commit-changes>`,
+
+         #. Use `git stash`_ to temporarily file away the changes, or
+
+         #. Use :bash:`git reset --hard` to **permanently** remove all
+            changes to tracked files and return to the previous
+            commit.
+
+         If there are untracked files present, then you may delete the
+         untracked files, :ref:`add and commit changes <commit-changes>`,
+         or proceed to the next step.
+
+#. Download the current status of |PlasmaPy's GitHub repository| and
    your fork by running:
 
    .. code-block:: bash
@@ -57,12 +87,14 @@ Create a new branch
 
       Use descriptive branch names like ``update-contribution-workflow``.
 
-#. Connect your local branch to your fork_ of PlasmaPy on GitHub_ by
+#. Connect your local branch to your fork_ of PlasmaPy on |GitHub| by
    running:
 
-   .. code-block::
+   .. code-block:: bash
 
       git push --set-upstream origin new-branch-name
+
+.. _commit-changes:
 
 Add and commit changes
 ----------------------
@@ -119,30 +151,32 @@ each step, try running ``git status``.
 
 .. tip::
 
-   Try using the ``git status`` command after each step to get a better
-   idea of what is happening.
+   Try using the :bash:`git status` command after each step to get a
+   better idea of what is happening.
 
 .. note::
 
    The ``git`` workflow can be thought of as the process of mailing a
    package.
 
-   * ``git add`` is like packing the contents of a package into a box.
+   * :bash:`git add` is like packing the contents of a package into a box.
      This step allows you to choose which changes to include in the next
      commit.
 
-   * ``git commit`` is like sealing and labeling the package, and
+   * :bash:`git commit` is like sealing and labeling the package, and
      putting it in the outgoing mail.
 
-   * ``git push`` is like sending the package off to its destination
+   * :bash:`git push` is like sending the package off to its destination
      (i.e., GitHub).
+
+.. _create-pr:
 
 Creating a pull request
 -----------------------
 
-#. Run ``git push`` to make sure that branch on GitHub is up-to-date.
+#. Run :bash:`git push` to make sure that branch on GitHub is up-to-date.
 
-#. Go to `PlasmaPy's GitHub repository`_.
+#. Go to |PlasmaPy's GitHub repository|.
 
 #. If you recently pushed new changes, a pale yellow box will appear
    near the top of the screen. In that box, click
@@ -160,9 +194,10 @@ Creating a pull request
 #. Add a descriptive title, such as
    ``Add a function to calculate particle gyroradii``.
 
-#. Write a description for the pull request. Describe the changes, and
-   why they are being made. Include information that you think would be
-   helpful for reviewers, future users, and future contributors..
+#. Write a description for the pull request (PR). Describe the
+   changes, and why they are being made. Include information that you
+   think would be helpful for reviewers, future users, and future
+   contributors..
 
    .. tip::
 
@@ -206,8 +241,9 @@ If any of the changes conflict with each other, it will be necessary to
 
 .. note::
 
-   After the pull request has been created, it can be updated by
-   using ``git push`` to update the corresponding branch on GitHub.
+      After the pull request has been created, it can be updated by
+      using :bash:`git push` to update the corresponding branch on
+      GitHub.
 
 .. note::
 
@@ -233,8 +269,12 @@ If any of the changes conflict with each other, it will be necessary to
 .. _branch: https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/about-branches
 .. _fork: https://docs.github.com/en/get-started/quickstart/fork-a-repo
 .. _GitHub Documentation: https://docs.github.com/
+.. _git stash: https://git-scm.com/docs/git-stash
 .. _good first issue: https://github.com/PlasmaPy/PlasmaPy/issues?q=is%3Aissue+is%3Aopen+label%3A%22Good+first+issue%22
 .. _pull request: https://docs.github.com/en/github/collaborating-with-pull-requests
 .. _remote: https://github.com/git-guides/git-remote
 .. _resolve the merge conflict: https://www.atlassian.com/git/tutorials/using-branches/merge-conflicts
 .. _sign up for an ORCID iD: https://orcid.org/register
+
+.. _`CITATION.cff`: https://github.com/PlasmaPy/PlasmaPy/blob/main/CITATION.cff
+.. |CITATION.cff| replace:: :file:`CITATION.cff`

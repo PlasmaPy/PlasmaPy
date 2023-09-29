@@ -1,0 +1,4 @@
+Fixed a `pytest` deprecation warning that had been issued
+by ``plasmapy.utils._pytest_helpers/pytest_helpers.run_test``
+so that `None` is no longer passed to the `pytest.warns` context
+manager.
