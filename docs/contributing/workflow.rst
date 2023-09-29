@@ -99,8 +99,6 @@ Create a new branch
 Add and commit changes
 ----------------------
 
-Next we will go through the cycle of making changes and uploading them
-
 Next we can go through the cycle of making changes, which is usually
 repeated multiple times. To get a better idea of what is being done in
 each step, try running ``git status``.
@@ -115,8 +113,9 @@ each step, try running ``git status``.
       git add filename
 
    where :samp:`{filename}` is replaced with the name of the edited
-   file(s). This step lets us line up the changes that we want to record
-   as a snapshot in history.
+   file(s). Use ``git add *`` to add all files in the directory (except
+   for files specified in :file:`.gitignore`. This step lets us line up
+   the changes that we want to record as a snapshot in history.
 
 #. To commit the changes, run:
 
@@ -129,9 +128,6 @@ each step, try running ``git status``.
    Committing a change is like preserving a snapshot of what each file
    looks like at this point in history.
 
-   .. hint::
-
-      G
 
    .. hint::
 
