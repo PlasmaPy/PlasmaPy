@@ -143,24 +143,24 @@ the [meetings] page of PlasmaPy's website.
 Our weekly informal [office hours] are an opportunity to chat with
 active members of the PlasmaPy community about topics related to
 Python and plasma science. If you'd like to learn more about PlasmaPy,
-our office hours are one of the best places to start. As of January
-2023, our office hours are on Thursdays at 2 pm Eastern. Please feel
-free to come by!
+our office hours are one of the best places to start. As of October
+2023, our office hours are on most Thursdays at 2 pm Eastern. Please
+feel free to come by!
 
 ### Community meetings
 
 PlasmaPy's weekly [community meetings] are a place to talk about code
 development. If you have an idea for a new feature or would like to
 make a code contribution, community meetings are a good place to go
-to.  As of January 2023, community meetings are on Tuesdays at 2 pm
-Eastern.
+to.  As of October 2023, our community meetings are on most Tuesdays
+at 2 pm Eastern.
 
 ### Project meetings
 
 PlasmaPy's weekly project meetings are a place to discuss education,
 outreach, and project coordination. Topics might range from creating
-educational notebooks to organizing community events. As of January
-2023, project meetings are held on Wednesdays at 3 pm Eastern.
+educational notebooks to organizing community events. As of October
+2023, project meetings are held on most Wednesdays at 3 pm Eastern.
 
 ### Working group meetings
 
