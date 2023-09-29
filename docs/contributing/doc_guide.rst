@@ -800,7 +800,7 @@ The type specification should not include information about the
    conventions from the `numpydoc style guide
    <https://numpydoc.readthedocs.io/en/latest/format.html#parameters>`__,
    the `matplotlib documentation guide
-   <https://matplotlib.org/stable/devel/documenting_mpl.html#parameter-type-descriptions>`__,
+   <https://matplotlib.org/stable/devel/document.html#parameter-type-descriptions>`__,
    or the `LSST docstring guide
    <https://developer.lsst.io/python/numpydoc.html>`__.
 

@@ -1,1 +1,3 @@
-Added the `~plasmapy.plasma.cylindrical_equilibria.ForceFreeFluxRope` class to calculate magnetic field for the Lundquist solution for cylindrical equilibria.
+Added the `~plasmapy.plasma.cylindrical_equilibria.ForceFreeFluxRope`
+class to calculate magnetic field for the Lundquist solution for
+force-free cylindrical equilibria.
