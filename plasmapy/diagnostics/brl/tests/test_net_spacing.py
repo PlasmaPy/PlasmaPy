@@ -57,3 +57,12 @@ class Test__private_x_and_dx_ds:
 
         assert x_points[0] == 1
         assert np.allclose(dx_ds_points[1:-1], approximate_derivative)
+
+    def test_zero_T_repelled_x_and_dx_ds(self):
+        r"""Test zero temperature repelled particles x and dx/ds calculation."""
+
+        x_points, dx_ds_points = net_spacing._zero_T_repelled_x_and_dx_ds(self.s_points, 10, 25)
+        approximate_derivative = (x_points[2:] - x_points[:-2]) / (2 * self.ds)
+
+        assert x_points[0] == 1
+        assert np.allclose(dx_ds_points[1:-1], approximate_derivative)
