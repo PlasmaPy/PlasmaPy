@@ -198,4 +198,4 @@ def get_x_and_dx_ds(
     elif normalized_probe_radius <= 25.1:
         return _medium_probe_x_and_dx_ds(s_points)
     else:
-        return _large_probe_x_and_dx_ds(s_points)
+        return _large_probe_x_and_dx_ds(s_points, normalized_probe_radius)
