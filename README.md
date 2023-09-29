@@ -95,7 +95,7 @@ very welcome!
 
 ## Installation
 
-PlasmaPy requires Python 3.8 or newer. If you do not have Python
+PlasmaPy requires Python 3.9 or newer. If you do not have Python
 installed already, here are the instructions to [download and install
 Python].
 
