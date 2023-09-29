@@ -1,12 +1,16 @@
 """Tests for calculating the net spacing."""
 
 import numpy as np
+import pytest
 
 from plasmapy.diagnostics.brl import net_spacing
 
 
 def test_get_s_points():
     """Test the returned `s_points`."""
+    with pytest.raises(ValueError):
+        net_spacing.get_s_points(1, -1)
+
     num_points = 20
     s_end_point = 0.4
 
@@ -84,3 +88,33 @@ class Test__private_x_and_dx_ds:
 
 class Test__get_x_and_dx_ds:
     r"""Test the get_x_and_dx_ds function in net_spacing.py"""
+
+    # These are all values given by Laframboise in Table 4.
+    normalized_probe_radius_values = np.array([
+        0.5, 1, 2, 5, 10, 20, 50, 100
+    ])
+    ds_values = np.array([
+        .0667, .05, .0333, .01, .005, .005, .005
+    ])
+    points_per_debye_length_at_probe_values = np.array([
+        30, 20, 15, 15, 10, 10, 10, 10
+    ], dtype=float)
+    ds_dx_at_probe_values = np.array([
+        -1, -1, -1, -1, -1, -1, -2.5, -5
+    ])
+    s_end_point_values = np.array([
+        2.8, 2.4, 2.0, 0.80, 0.72, 0.56, 0.56, 0.50
+    ])
+    r_end_over_r_probe_values = np.array([
+        16.44, 11.02, 7.39, 5.00, 3.57, 2.27, 1.64, 1.40
+    ])
+    r_end_minus_r_probe_over_debye_length_values = np.array([
+        7.7, 10.0, 12.8, 20.0, 25.7, 25.5, 31.8, 40.3
+    ])
+
+    @staticmethod
+    def get_num_s_poits(ds, s_end_point):
+        return round(s_end_point / ds) + 1
+    
+    def test_too_large_s_points(self):
+        r"""Test that an error is raised if the maximum `s` is greater than 1 for a non-small probe."""
