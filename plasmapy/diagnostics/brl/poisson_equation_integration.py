@@ -133,6 +133,8 @@ def chi_and_dchi_ds(
 ):
     r"""The normalized potential, :math:`\chi`, and it's :math:`s` derivative.
 
+    Integrate the charge density using Poisson's equation to get the normalized potential and it's derivative.
+
     Parameters
     ----------
     eta_net : `numpy.ndarray`
