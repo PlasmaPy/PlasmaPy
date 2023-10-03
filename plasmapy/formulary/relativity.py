@@ -204,7 +204,7 @@ class RelativisticBody:
     V : |Quantity|, optional
         The velocity of the relativistic body in units convertible to
         m/s. The absolute magnitude of ``V`` cannot be greater than
-        :math:`c`\ .
+        :math:`c`.
 
     momentum : |Quantity|, optional
         The momentum of the relativistic body in units convertible to
@@ -220,11 +220,11 @@ class RelativisticBody:
 
     v_over_c : real number or |Quantity|, |keyword-only|, optional
        The ratio of the velocity to the speed of light. Must have an
-       absolute magnitude :math:`≤ 1`\ .
+       absolute magnitude :math:`≤ 1`.
 
     lorentz_factor : real number or |Quantity|, |keyword-only|, optional
-       The Lorentz factor of the relativistic body. Must be
-       :math:`≥ 1`\ .
+       The Lorentz factor, :math:`γ` of the relativistic body. Must have
+       :math:`γ ≥ 1`.
 
     Z : integer, |keyword-only|, optional
         The charge number associated with ``particle``.
