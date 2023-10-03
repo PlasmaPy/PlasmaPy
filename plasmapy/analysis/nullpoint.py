@@ -1418,9 +1418,8 @@ def _vspace_iterator(vspace, maxiter=500, err=1e-10):
         vector values, and the third element containing the delta values
         for each dimension.
 
-    maxiter : int
-        The maximum iterations of the Newton-Raphson method. Defaults to
-        500.
+    maxiter : int, default: 500
+        The maximum iterations of the Newton-Raphson method.
 
     err : float, default: ``1e-10``
         The threshold/error that determines if convergence has occurred
@@ -1499,9 +1498,8 @@ def null_point_find(
         the vector space. If not given, the vector values are generated
         over the vector space using the function func.
 
-    maxiter: int
-        The maximum iterations of the Newton-Raphson method. Defaults to
-        500.
+    maxiter: int, default: 500
+        The maximum iterations of the Newton-Raphson method.
 
     err: float, default: ``1e-10``
         The threshold/error that determines if convergence has occurred
