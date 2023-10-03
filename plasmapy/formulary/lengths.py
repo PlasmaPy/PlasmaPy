@@ -232,7 +232,7 @@ def gyroradius(  # noqa: C901
     :math:`k_B T`, to ``T``.
 
     >>> gyroradius(B = 5 * u.T, particle=["D+", "T+"], T = 13 * u.keV)
-    <Quantity 0.0046... m>
+    <Quantity [0.00465..., 0.00570...] m>
 
     Relativistic effects are included by default, but can be turned
     off using the ``relativistic`` parameter. Let's use this in the
