@@ -493,34 +493,33 @@ Decorators
 
 .. _particle_inputs:
 
-Particle inputs
----------------
+Transforming particle-like arguments into particle objects
+----------------------------------------------------------
 
-* Use |particle_input| to coerce objects to relevant |Particle| type
-  (see :ref:`particles`)
+Use |particle_input| to transform arguments to relevant |Particle|,
+|CustomParticle|, or |ParticleList| objects (see :ref:`particles`).
 
 .. _validating_quantities:
 
-Validating quantities
----------------------
-* Use |validate_quantities| to verify function arguments and impose
-  relevant restrictions
+Validating Quantity arguments
+-----------------------------
+Use |validate_quantities| to verify function arguments and impose
+relevant restrictions
 
-  .. code-block:: python
+.. code-block:: python
 
-     from plasmapy.utils.decorators.validators import validate_quantities
+   from plasmapy.utils.decorators.validators import validate_quantities
 
+   @validate_quantities(
+       n={"can_be_negative": False},
+       validations_on_return={"equivalencies": u.dimensionless_angles()},
+   )
+   def inertial_length(n: u.m**-3, particle) -> u.m:
+       ...
 
-     @validate_quantities(
-         n={"can_be_negative": False},
-         validations_on_return={"equivalencies": u.dimensionless_angles()},
-     )
-     def inertial_length(n: u.m**-3, particle) -> u.m:
-         ...
+Use |validate_quantities| to enforce |Quantity| type hints
 
-* Use |validate_quantities| to enforce |Quantity| type hints
-
-  .. code-block:: python
+.. code-block:: python
 
    @validate_quantities
    def magnetic_pressure(B: u.T) -> u.Pa:
