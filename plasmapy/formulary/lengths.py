@@ -127,17 +127,17 @@ def gyroradius(  # noqa: C901
         ionized helium-4). If no charge state information is
         provided, then the particles are assumed to be singly charged.
 
-    Vperp : `~astropy.units.Quantity`, optional, |keyword-only|
+    Vperp : `~astropy.units.Quantity`, |keyword-only|, optional
         The component of particle velocity that is perpendicular to
         the magnetic field in units convertible to meters per second.
 
-    T : `~astropy.units.Quantity`, optional, |keyword-only|
+    T : `~astropy.units.Quantity`, |keyword-only|, optional
         The particle temperature in units convertible to kelvin.
 
-    lorentzfactor : `float` or `~numpy.ndarray`, optional, |keyword-only|
+    lorentzfactor : `float` or `~numpy.ndarray`, |keyword-only|, optional
         The Lorentz factor for the particles, use for high precision.
 
-    relativistic : `bool`, optional, |keyword-only|
+    relativistic : `bool`, |keyword-only|, optional
         Whether or not you want to use a relativistic approximation.
         `True` by default.
 
@@ -203,24 +203,16 @@ def gyroradius(  # noqa: C901
     >>> import astropy.units as u
     >>> gyroradius(0.2*u.T, particle='p+', T=1e5*u.K)
     <Quantity 0.002120... m>
-    >>> gyroradius(0.2*u.T, particle='p+', T=1e5*u.K)
-    <Quantity 0.002120... m>
     >>> gyroradius(5*u.uG, particle='alpha', T=1*u.eV)
     <Quantity 288002.38... m>
     >>> gyroradius(400*u.G, particle='Fe+++', Vperp=1e7*u.m/u.s)
     <Quantity 48.25815... m>
-    >>> gyroradius(B=0.01*u.T, particle='e-', T=1e6*u.K)
-    <Quantity 0.003130... m>
     >>> gyroradius(0.01*u.T, 'e-', Vperp=1e6*u.m/u.s)
     <Quantity 0.000568... m>
     >>> gyroradius(0.2*u.T, 'e-', T=1e5*u.K)
     <Quantity 4.94957...e-05 m>
-    >>> gyroradius(5*u.uG, 'e-', T=1*u.eV)
-    <Quantity 6744.27... m>
     >>> gyroradius(400*u.G, 'e-', Vperp=1e7*u.m/u.s)
     <Quantity 0.001422... m>
-    >>> gyroradius(400*u.G, 'e-', Vperp=1e7*u.m/u.s, lorentzfactor=1.0)
-    <Quantity 0.001421... m>
     >>> gyroradius(400*u.G, 'e-', Vperp=1e7*u.m/u.s, relativistic=False)
     <Quantity 0.001421... m>
     """

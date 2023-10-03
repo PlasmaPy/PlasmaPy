@@ -95,9 +95,9 @@ Deprecations and Removals
   policy laid out in `NumPy Enhancement Proposal 29
   <https://numpy.org/neps/nep-0029-deprecation_policy.html>`__. (`#1465
   <https://github.com/plasmapy/plasmapy/pull/1465>`__)
-- The ``[all]`` option when using pip_ to install `plasmapy` is now
+- The ``[all]`` option when using |pip| to install `plasmapy` is now
   deprecated and may be removed in a future release. Packages that
-  were previously optional (|h5py|_, |lmfit|, |mpmath|_, and |numba|_)
+  were previously optional (|h5py|, |lmfit|, |mpmath|, and |Numba|)
   are now installed by default when running ``pip install
   plasmapy``. To install all packages required for code development of
   PlasmaPy, instead run ``pip install plasmapy[developer]``. (`#1482
@@ -137,7 +137,7 @@ Features
   <https://github.com/plasmapy/plasmapy/pull/1145>`__)
 - Introduced the concept of :term:`lite-functions`, by creating the
   lite-function ``plasmapy.formulary.parameters.thermal_speed_lite``,
-  which is a simplified and Numba_ jitted version of
+  which is a simplified and |Numba| jitted version of
   ``plasmapy.formulary.parameters.thermal_speed``.  These functions
   are intended for computational use and as such have no validation of
   input or output values.
@@ -341,7 +341,7 @@ Improved Documentation
   and get plasma parameters. (`#1229
   <https://github.com/plasmapy/plasmapy/pull/1229>`__)
 - The file :file:`docs/_static/css/admonition_color_contrast.css` was
-  added to include color customizations for Sphinx_ admonitions that
+  added to include color customizations for |Sphinx| admonitions that
   originally came from `sphinx_rtd_theme_ext_color_contrast
   <https://github.com/AaltoSciComp/sphinx_rtd_theme_ext_color_contrast>`_.
   (`#1287 <https://github.com/plasmapy/plasmapy/pull/1287>`__)
@@ -351,13 +351,13 @@ Improved Documentation
   <https://www.w3.org/TR/2021/WD-WCAG22-20210521/#contrast-minimum>`__
   for contrast. (`#1287
   <https://github.com/plasmapy/plasmapy/pull/1287>`__)
-- Re-organized CSS_ files for the online documentation. The file
+- Re-organized CSS files for the online documentation. The file
   :file:`docs/_static/rtd_theme_overrides.css` was re-organized, renamed
   to :file:`docs/_static/css/plasmapy.css`, and updated with comments
-  to help someone unfamiliar with CSS_ to understand the file and
+  to help someone unfamiliar with CSS to understand the file and
   syntax. (`#1287 <https://github.com/plasmapy/plasmapy/pull/1287>`__)
 - Put references from `plasmapy.formulary` into
-  :file:`docs/bibliography.bib` in BibTeX_ format. (`#1299
+  :file:`docs/bibliography.bib` in BibTeX format. (`#1299
   <https://github.com/plasmapy/plasmapy/pull/1299>`__)
 - Added a discussion of test parametrization with argument unpacking
   to the |testing guide| in the |contributor guide|. (`#1316
@@ -372,18 +372,18 @@ Improved Documentation
   <https://github.com/plasmapy/plasmapy/pull/1327>`__)
 - Enabled the `sphinx-hoverxref
   <https://sphinx-hoverxref.readthedocs.io>`_ extension to
-  Sphinx_. (`#1353
+  |Sphinx|. (`#1353
   <https://github.com/plasmapy/plasmapy/pull/1353>`__)
 - Added bullet points on module level docstrings and ``__all__`` to
   the documentation guide. (`#1359
   <https://github.com/plasmapy/plasmapy/pull/1359>`__)
-- Reverted the code syntax highlighting style back to the pygments_
-  default. The minimum version of pygments_ was set to ``2.11.0``
+- Reverted the code syntax highlighting style back to the ``pygments``
+  default. The minimum version of ``pygments`` was set to ``2.11.0``
   because the default style was changed to meet accessibility
   guidelines for contrast in this release. (`#1361
   <https://github.com/plasmapy/plasmapy/pull/1361>`__)
 - Described additional environments for building the documentation
-  with make_ in the |documentation guide|. (`#1373
+  with ``make`` in the |documentation guide|. (`#1373
   <https://github.com/plasmapy/plasmapy/pull/1373>`__)
 - Moved references from individual docstrings to the
   |bibliography|. (`#1374
@@ -406,7 +406,7 @@ Improved Documentation
 - Updated the cold magnetized plasma dielectric permittivity tensor
   notebook. (`#1396
   <https://github.com/plasmapy/plasmapy/pull/1396>`__)
-- Configured the Sphinx_ extension ``sphinx-hoverxref``. (`#1437
+- Configured the |Sphinx| extension ``sphinx-hoverxref``. (`#1437
   <https://github.com/plasmapy/plasmapy/pull/1437>`__)
 - Removed the following files from :file:`docs/api_static`\ :
   ``plasmapy.particles.elements.rst``,
@@ -437,19 +437,19 @@ Improved Documentation
   in :file:`docs/conf.py` to specify regular expressions for objects
   to ignore in nitpicky documentation builds. (`#1509
   <https://github.com/plasmapy/plasmapy/pull/1509>`__)
-- Made numerous minor updates and fixes to reST_ links in docstrings
+- Made numerous minor updates and fixes to |reStructuredText| links in docstrings
   and the narrative documentation. (`#1509
   <https://github.com/plasmapy/plasmapy/pull/1509>`__)
 - Described the GitHub Action for `codespell
   <https://github.com/codespell-project/codespell>`__ in the |testing
   guide|. (`#1530 <https://github.com/plasmapy/plasmapy/pull/1530>`__)
-- Added the ``sphinx-issues`` extension to Sphinx_ to simplify linking
+- Added the ``sphinx-issues`` extension to |Sphinx| to simplify linking
   to GitHub issues, pull requests, users, and commits. (`#1532
   <https://github.com/plasmapy/plasmapy/pull/1532>`__)
-- Added the `sphinx.ext.extlinks` extension to Sphinx_ to simplify
+- Added the `sphinx.ext.extlinks` extension to |Sphinx| to simplify
   adding links to external domains which have a common base
   URL. (`#1532 <https://github.com/plasmapy/plasmapy/pull/1532>`__)
-- Added the ``sphinx-notfound-page`` extension to Sphinx_ so that the
+- Added the ``sphinx-notfound-page`` extension to |Sphinx| so that the
   documentation now has a :wikipedia:`404 <HTTP_404>` page in the same
   style as the rest of the documentation. (`#1532
   <https://github.com/plasmapy/plasmapy/pull/1532>`__)
@@ -464,10 +464,10 @@ Improved Documentation
   <https://github.com/plasmapy/plasmapy/pull/1568>`__)
 - Added an example notebook that discusses Coulomb collisions. (`#1569
   <https://github.com/plasmapy/plasmapy/pull/1569>`__)
-- Increased the strictness of the ``build_docs`` tox_ environment so
-  that broken reST_ links now emit warnings which are then treated as
+- Increased the strictness of the ``build_docs`` |tox| environment so
+  that broken |reStructuredText| links now emit warnings which are then treated as
   errors, fixed the new errors, removed the ``build_docs_nitpicky``
-  tox_ environment, and updated the |documentation guide|
+  |tox| environment, and updated the |documentation guide|
   accordingly. (`#1587
   <https://github.com/plasmapy/plasmapy/pull/1587>`__)
 - Renamed the :file:`magnetic_statics.ipynb` notebook to
@@ -487,7 +487,7 @@ Improved Documentation
   set up redirects from the original hyperlinks to the new ones for
   the contributor guide. (`#1605
   <https://github.com/plasmapy/plasmapy/pull/1605>`__)
-- Added ``sphinx-reredirects`` as a Sphinx_ extension to allow website
+- Added ``sphinx-reredirects`` as a |Sphinx| extension to allow website
   redirects. (`#1605
   <https://github.com/plasmapy/plasmapy/pull/1605>`__)
 - Added a :file:`robots.txt` file to the online documentation to tell
@@ -508,26 +508,26 @@ Trivial/Internal Changes
   test file :file:`plasmapy/formulary/tests/test_parameters.py` to
   :file:`plasmapy/formulary/tests/test_thermal_speed.py`. (`#1145
   <https://github.com/plasmapy/plasmapy/pull/1145>`__)
-- Applied reST_ substitutions for `plasmapy.particles` and
+- Applied |reStructuredText| substitutions for `plasmapy.particles` and
   |ParticleTracker| in the narrative documentation. (`#1158
   <https://github.com/plasmapy/plasmapy/pull/1158>`__)
 - Added `csslint <https://github.com/CSSLint/csslint>`_ to the
-  pre-commit_ configuration to check the formatting and style of CSS_
+  |pre-commit| configuration to check the formatting and style of CSS
   files. (`#1287 <https://github.com/plasmapy/plasmapy/pull/1287>`__)
-- Added Python 3.10 to the `GitHub Actions`_ test suite. (`#1292
+- Added Python 3.10 to the |GitHub Actions| test suite. (`#1292
   <https://github.com/plasmapy/plasmapy/pull/1292>`__)
 - Parametrized tests for
   ``plasmapy.formulary.parameters.ion_sound_speed``. (`#1313
   <https://github.com/plasmapy/plasmapy/pull/1313>`__)
-- Added cron tests of the development versions of matplotlib_ and
-  SciPy_, while changing the cadence of cron tests to be run
+- Added cron tests of the development versions of |matplotlib| and
+  |SciPy|, while changing the cadence of cron tests to be run
   approximately fortnightly. (`#1333
   <https://github.com/plasmapy/plasmapy/pull/1333>`__)
 - Applied `pytest.warns` in several tests to catch warnings that are
   being issued during execution of the test suite. (`#1345
   <https://github.com/plasmapy/plasmapy/pull/1345>`__)
 - Split the tests running on pull requests into multiple stages. The
-  various pytest_ test environments, including code coverage, now run
+  various `pytest` test environments, including code coverage, now run
   conditionally given successful execution of a basic test environment
   and the linter checks. This change also prevents code coverage
   prompts from appearing twice, with incomplete information on the
@@ -536,7 +536,7 @@ Trivial/Internal Changes
 - Added a helper function that takes an iterable and creates a `dict`
   with physical types as keys and the corresponding objects from that
   iterable as values. This change updates the minimum required version
-  of Astropy_ to 4.3.1. (`#1360
+  of |Astropy| to 4.3.1. (`#1360
   <https://github.com/plasmapy/plasmapy/pull/1360>`__)
 - Added the module ``plasmapy.particles._factory`` which contains a
   private function that accepts arguments that can be provided to
@@ -599,24 +599,24 @@ Trivial/Internal Changes
 - Applied automated refactorings from `Sourcery
   <https://sourcery.ai/>`__ to `plasmapy.formulary`. (`#1480
   <https://github.com/plasmapy/plasmapy/pull/1480>`__)
-- Bumped the minimum versions of |mpmath|_ to ``1.2.1``, `numpy` to
+- Bumped the minimum versions of |mpmath| to ``1.2.1``, `numpy` to
   ``1.19.0``, `pandas` to ``1.0.0``, `pytest` to ``5.4.0``, `scipy` to
-  ``1.5.0``, and |xarray|_ to ``0.15.0``. (`#1482
+  ``1.5.0``, and |xarray| to ``0.15.0``. (`#1482
   <https://github.com/plasmapy/plasmapy/pull/1482>`__)
-- Moved |h5py|_, |lmfit|_, |mpmath|_, and |numba|_ out of the
+- Moved |h5py|, |lmfit|, |mpmath|, and |Numba| out of the
   ``extras`` requirements category and into the ``install``
   requirements category.  These packages are now installed when
   running ``pip install plasmapy``. (`#1482
   <https://github.com/plasmapy/plasmapy/pull/1482>`__)
-- Added ``dlint``, flake8_, ``flake8-absolute-import``,
-  ``flake8-rst-docstrings``, ``flake8-use-fstring``, pydocstyle_, and
-  pygments_ into the ``tests`` requirements category and pre-commit_
+- Added ``dlint``, ``flake8``, ``flake8-absolute-import``,
+  ``flake8-rst-docstrings``, ``flake8-use-fstring``, ``pydocstyle``, and
+  ``pygments`` into the ``tests`` requirements category and |pre-commit|
   into the ``extras`` requirements category. These dependencies are
-  not required for basic installation with pip_. (`#1482
+  not required for basic installation with |pip|. (`#1482
   <https://github.com/plasmapy/plasmapy/pull/1482>`__)
-- Updated :file:`docs/environment.yml` to use pip_ to install all
+- Updated :file:`docs/environment.yml` to use |pip| to install all
   requirements specified by :file:`requirements.txt` when creating a
-  Conda_ environment. (`#1482
+  Conda environment. (`#1482
   <https://github.com/plasmapy/plasmapy/pull/1482>`__)
 - Used `codespell <https://github.com/codespell-project/codespell>`__
   to fix typos. (`#1493
@@ -624,7 +624,7 @@ Trivial/Internal Changes
 - Used `contextlib.suppress` to suppress exceptions, instead of
   ``try`` & ``except`` blocks. (`#1494
   <https://github.com/plasmapy/plasmapy/pull/1494>`__)
-- Added a pre-commit_ hook that transforms relative imports to
+- Added a |pre-commit| hook that transforms relative imports to
   absolute imports, except in :file:`docs/plasmapy_sphinx`. (`#1499
   <https://github.com/plasmapy/plasmapy/pull/1499>`__)
 - Added a test that ``import plasmapy`` does not raise an
@@ -632,7 +632,7 @@ Trivial/Internal Changes
   <https://github.com/plasmapy/plasmapy/pull/1501>`__)
 - Added a GitHub Action for `codespell
   <https://github.com/codespell-project/codespell>`__, and updated the
-  corresponding tox_ environment to print out contextual
+  corresponding |tox| environment to print out contextual
   information. (`#1530
   <https://github.com/plasmapy/plasmapy/pull/1530>`__)
 - Added :file:`plasmapy/utils/units_definitions.py` to precompute
@@ -650,11 +650,11 @@ Trivial/Internal Changes
 - Added `flake8-implicit-str-concat
   <https://github.com/flake8-implicit-str-concat/flake8-implicit-str-concat>`__
   and `flake8-mutable <https://github.com/ebeweber/flake8-mutable>`__
-  as extensions for flake8_. (`#1557
+  as extensions for ``flake8``. (`#1557
   <https://github.com/plasmapy/plasmapy/pull/1557>`__)
 - Added `flake8-simplify
   <https://github.com/MartinThoma/flake8-simplify>`__ as an extension
-  for flake8_. (`#1558
+  for ``flake8``. (`#1558
   <https://github.com/plasmapy/plasmapy/pull/1558>`__)
 - Applied automated refactorings from `Sourcery
   <https://sourcery.ai/>`__ to `plasmapy.dispersion`. (`#1562
@@ -678,7 +678,7 @@ Trivial/Internal Changes
   ``z_mean`` issued a warning when a real number was provided instead
   of a dimensionless |Quantity|. (`#1570
   <https://github.com/plasmapy/plasmapy/pull/1570>`__)
-- Updated the version of black_ to 22.3.0 in PlasmaPy's pre-commit_
+- Updated the version of ``black`` to 22.3.0 in PlasmaPy's |pre-commit|
   configuration. This update included a formatting change where spaces
   around power operators were removed for sufficiently simple operands
   (e.g., ``a ** b`` → ``a**b``). (`#1582

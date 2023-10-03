@@ -134,7 +134,7 @@ div.wy-nav-content a:hover {
 
 /*
   The style for generic code literals, in particular text that is
-  enclosed in double back ticks in reST (e.g., ``make -j 32``).
+  enclosed in double back ticks in reStructuredText (e.g., ``make -j 32``).
 */
 
 div.wy-nav-content .rst-content code.literal {
@@ -144,7 +144,7 @@ div.wy-nav-content .rst-content code.literal {
 
 /*
   The style for links to Python objects, in particular text enclosed in
-  single back ticks in reST (e.g., `~plasmapy.particles`).
+  single back ticks in reStructuredText (e.g., `~plasmapy.particles`).
 */
 
 div.wy-nav-content .rst-content code.literal.xref {
@@ -154,7 +154,7 @@ div.wy-nav-content .rst-content code.literal.xref {
 
 /*
   The style for literal text that shows the location of a file, in
-  particular when used by the reST role :file: (e.g.,
+  particular when used by the reStructuredText role :file: (e.g.,
   :file:`docs/_static/css/plasmapy.css`).
 */
 div.wy-nav-content .rst-content code.literal.file {

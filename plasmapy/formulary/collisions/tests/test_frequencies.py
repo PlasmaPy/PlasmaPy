@@ -597,6 +597,7 @@ class TestMaxwellianCollisionFrequencies:
             ),
         ],
     )
+    @pytest.mark.filterwarnings("ignore::plasmapy.utils.exceptions.RelativityWarning")
     def test_attribute_errors(
         self,
         expected_error,
@@ -644,6 +645,7 @@ class TestMaxwellianCollisionFrequencies:
             ),
         ],
     )
+    @pytest.mark.filterwarnings("ignore::plasmapy.utils.exceptions.RelativityWarning")
     def test_fundamental_frequency_values(
         self, frequency_to_test, constructor_keyword_arguments
     ):

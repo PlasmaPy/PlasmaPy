@@ -8,15 +8,30 @@ repos:
   rev: v4.4.0
   hooks:
   - id: check-ast
-  - id: trailing-whitespace
-  - id: end-of-file-fixer
   - id: check-merge-conflict
     exclude: .*\.rst
-  - id: check-symlinks
   - id: check-case-conflict
+  - id: name-tests-test
+    args: [--pytest-test-first]
+    exclude: plasmapy/tests/_helpers/.*
+  - id: trailing-whitespace
+  - id: end-of-file-fixer
   - id: check-json
   - id: check-toml
   - id: check-yaml
+
+- repo: https://github.com/sirosen/texthooks
+  rev: 0.5.0
+  hooks:
+  - id: fix-smartquotes
+  - id: fix-spaces
+  - id: fix-ligatures
+  - id: forbid-bidi-controls
+
+- repo: https://github.com/Lucas-C/pre-commit-hooks
+  rev: v1.5.4
+  hooks:
+  - id: remove-crlf
 
 - repo: https://github.com/macisamuele/language-formatters-pre-commit-hooks
   rev: v2.10.0
@@ -46,7 +61,7 @@ repos:
   rev: v1.0.5
   hooks:
   - id: search-and-replace
-    exclude: changelog/.*|docs/changelog/.*|.sourcery.yaml|docs/common_links.rst
+    exclude: changelog/.*|docs/changelog/.*|.sourcery.yaml|docs/_global_substitutions.py
 
 - repo: https://github.com/pre-commit/pygrep-hooks
   rev: v1.10.0
@@ -55,9 +70,10 @@ repos:
     exclude: ^docs/plasmapy_sphinx/
   - id: rst-directive-colons
   - id: rst-inline-touching-normal
+  - id: text-unicode-replacement-char
 
 - repo: https://github.com/codespell-project/codespell
-  rev: v2.2.5
+  rev: v2.2.6
   hooks:
   - id: codespell
     args: [--write-changes]
@@ -65,7 +81,7 @@ repos:
     - tomli
 
 - repo: https://github.com/astral-sh/ruff-pre-commit
-  rev: v0.0.282
+  rev: v0.0.292
   hooks:
   - id: ruff
     args: [--fix]
@@ -82,12 +98,12 @@ repos:
     - python
 
 - repo: https://github.com/psf/black
-  rev: 23.7.0
+  rev: 23.9.1
   hooks:
   - id: black
 
 - repo: https://github.com/asottile/blacken-docs
-  rev: 1.15.0
+  rev: 1.16.0
   hooks:
   - id: blacken-docs
     exclude: docs/contributing/coding_guide.rst
@@ -95,7 +111,8 @@ repos:
 - repo: https://github.com/nbQA-dev/nbQA
   rev: 1.7.0
   hooks:
-  - id: nbqa-black
+  - id: nbqa-check-ast
+  - id: nbqa-ruff
+    args: ['--select=A,ARG,B,BLE,C,C4,E,F,FLY,I002,INT,ISC,PERF,PIE,PLC,PLE,PYI,Q003,RET,RSE,SIM,TID,TRY,UP,W', '--ignore=B007,B008,B015,B018,E402,E501,E741,SIM114']
   - id: nbqa-isort
-    args:
-    - --nbqa-mutate
+  - id: nbqa-black

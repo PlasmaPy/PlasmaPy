@@ -84,7 +84,7 @@ Trivial/Internal Changes
 - Updated warning messages in
   `~plasmapy.formulary.collisions.coulomb.Coulomb_logarithm`. (:pr:`1586`)
 - Transferred most of the contents of :file:`setup.py` and :file:`setup.cfg` to
-  |pyproject.toml|_ (see :pep:`518` and :pep:`621`). Simplified ``extras``
+  :file:`pyproject.toml` (see :pep:`518` and :pep:`621`). Simplified ``extras``
   requirements (``pip install plasmapy[all]`` and ``[extras]`` are gone).
   (:pr:`1758`)
 - Added `blacken-docs <https://github.com/adamchainz/blacken-docs>`__ to
@@ -93,15 +93,14 @@ Trivial/Internal Changes
   :issue:`750`). (:pr:`1822`)
 - Refactored tests of `~plasmapy.formulary.relativity.Lorentz_factor`
   and `~plasmapy.formulary.relativity.relativistic_energy`. (:pr:`1844`)
-- Applied refactorings from ``ruff`` and ``refurb`` to `plasmapy.utils`.
+- Applied refactorings from |ruff| and ``refurb`` to `plasmapy.utils`.
   (:pr:`1845`)
 - Applied changes from ``refurb`` to `plasmapy.particles`. (:pr:`1846`)
 - Applied changes from ``refurb`` to `plasmapy.formulary`. (:pr:`1847`)
-- Apply changes from ``ruff`` and ``refurb`` to `plasmapy.analysis`,
+- Apply changes from |ruff| and ``refurb`` to `plasmapy.analysis`,
   `plasmapy.diagnostics`, `plasmapy.dispersion`, and `plasmapy.plasma`.
   (:pr:`1853`)
-- Added `ruff <https://github.com/charliermarsh/ruff>`__ to the ``pre-commit``
-  configuration. (:pr:`1854`)
+- Added |ruff| to the ``pre-commit`` configuration. (:pr:`1854`)
 - Added the ``strict`` and ``allowed_physical_types`` parameters to
   ``plasmapy.utils._units_helpers._get_physical_type_dict``. (:pr:`1880`)
 - Added a private constructor method to |CustomParticle| with an API

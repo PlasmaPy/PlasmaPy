@@ -10,7 +10,7 @@ import numpy as np
 import warnings
 
 from numbers import Integral, Real
-from typing import NoReturn, Optional, Union
+from typing import NoReturn, Optional
 
 from plasmapy.particles.atomic import ionic_levels
 from plasmapy.particles.decorators import particle_input
@@ -194,7 +194,7 @@ class IonizationState:
         The number density of the element, including neutrals and all
         ions.
 
-    tol : `float` or integer, |keyword-only|, optional, default: ``1e-15``
+    tol : `float` or integer, |keyword-only|, default: ``1e-15``
         The absolute tolerance used by `~numpy.isclose` and similar
         functions when testing normalizations and making comparisons.
 
@@ -260,7 +260,7 @@ class IonizationState:
         T_i: u.K = None,
         kappa: Real = np.inf,
         n_elem: u.m**-3 = np.nan * u.m**-3,
-        tol: Union[float, int] = 1e-15,
+        tol: float = 1e-15,
     ):
         self._number_of_particles = particle.atomic_number + 1
 
@@ -811,15 +811,15 @@ class IonizationState:
 
         Parameters
         ----------
-        include_neutrals : `bool`, optional, |keyword-only|, default: `True`
+        include_neutrals : `bool`, |keyword-only|, default: `True`
             If `True`, include neutrals when calculating the mean values
             of the different particles.  If `False`, exclude neutrals.
 
-        use_rms_charge : `bool`, optional, |keyword-only|, default: `False`
+        use_rms_charge : `bool`, |keyword-only|, default: `False`
             If `True`, use the root-mean-square charge instead of the
             mean charge.
 
-        use_rms_mass : `bool`, optional, |keyword-only|, default: `False`
+        use_rms_mass : `bool`, |keyword-only|, default: `False`
             If `True`, use the root-mean-square mass instead of the mean
             mass.
 
@@ -912,4 +912,4 @@ class IonizationState:
             output += attributes
 
         for line in output:
-            print(line)
+            print(line)  # noqa: T201
