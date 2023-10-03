@@ -23,10 +23,20 @@ __all__ += __aliases__
     T_e={"can_be_negative": False, "equivalencies": u.temperature_energy()},
     n_e={"can_be_negative": False},
 )
-def Debye_length(T_e: u.K, n_e: u.m**-3) -> u.m:
+def Debye_length(T_e: u.Quantity[u.K], n_e: u.Quantity[u.m**-3]) -> u.Quantity[u.m]:
     r"""
-    Calculate the characteristic decay length for electric fields due to
-    charge screening.
+    Calculate the exponential scale length for charge screening in an
+    electron plasma with stationary ions.
+
+    The Debye length is given by
+
+    .. math::
+        λ_D = \sqrt{\frac{ε_0 k_B T_e}{n_e q_e^2}},
+
+    where :math:`n_e` is the electron number density, :math:`T_e` is the
+    electron temperature, :math:`k_B` is the Boltzmann constant,
+    :math:`q_e` is the elementary charge, and :math:`ε_0` is the vacuum
+    permittivity.
 
     **Aliases:** `lambdaD_`
 
@@ -61,19 +71,12 @@ def Debye_length(T_e: u.K, n_e: u.m**-3) -> u.m:
 
     Notes
     -----
-    The Debye length is the exponential scale length for charge
-    screening and is given by
-
-    .. math::
-        λ_D = \sqrt{\frac{ε_0 k_B T_e}{n_e e^2}}
-
-    for an electron plasma with nearly stationary ions.
-
-    The electrical potential will drop by a factor of :math:`1/e`
-    every Debye length.
-
     Plasmas will generally be quasineutral on length scales
-    significantly larger than the Debye length.
+    significantly longer than the Debye length.
+
+    The electrical potential will drop by a factor of
+    :math:`∼\frac{1}{e}` every Debye length away from the vicinity of a
+    charged particle.
 
     See Also
     --------
@@ -103,18 +106,19 @@ lambdaD_ = Debye_length
 )
 @particle_input(any_of={"charged", "uncharged"})
 def gyroradius(  # noqa: C901
-    B: u.T,
+    B: u.Quantity[u.T],
     particle: ParticleLike,
     *,
-    Vperp: u.m / u.s = np.nan * u.m / u.s,
-    T: u.K = None,
+    Vperp: u.Quantity[u.m / u.s] = np.nan * u.m / u.s,
+    T: u.Quantity[u.K] = None,
     lorentzfactor=np.nan,
     relativistic: bool = True,
     mass_numb: Optional[Integral] = None,
     Z: Optional[Real] = None,
-) -> u.m:
-    r"""Return the :wikipedia:`gyroradius` of a particle in a uniform
-    magnetic field.
+) -> u.Quantity[u.m]:
+    r"""
+    Calculate the radius of circular motion for a charged particle in a
+    uniform magnetic field.
 
     **Aliases:** `rc_`, `rhoc_`
 
@@ -133,22 +137,20 @@ def gyroradius(  # noqa: C901
         the magnetic field in units convertible to meters per second.
 
     T : `~astropy.units.Quantity`, |keyword-only|, optional
-        The particle temperature in units convertible to kelvin
-        or electron-volts.
+        The particle temperature in units convertible to kelvin or
+        electron-volts. If provided, the perpendicular velocity gets set
+        to the most probable *non-relativistic* thermal velocity for
+        that particle at this temperature. Cannot be provided if
+        ``Vperp`` is provided.
 
     lorentzfactor : `float` or `~numpy.ndarray`, |keyword-only|, optional
         The :wikipedia:`Lorentz factor` of the particle corresponding
-        to the direction perpendicular to the magnetic field.
+        to the direction perpendicular to the magnetic field. Cannot be
+        provided if ``Vperp`` or ``T`` is provided.
 
     relativistic : `bool`, |keyword-only|, default: `True`
-        If `True`, the relativistic formula for the gyroradius will be
-        used. If `False`, relativistic effects will be ignored.
-
-    mass_numb : integer, |keyword-only|, optional
-        The mass number, if not provided in ``particle``.
-
-    Z : real number, |keyword-only|, optional
-        The charge number, if not provided in ``particle``.
+        If `True`, the relativistic formula for gyroradius will be used.
+        If `False`, the non-relativistic formula will be used.
 
     Returns
     -------
@@ -158,6 +160,14 @@ def gyroradius(  # noqa: C901
         perpendicular component of particle velocity as inputted, or
         the most probable speed for a particle within a Maxwellian
         distribution for the particle temperature.
+
+    Other Parameters
+    ----------------
+    mass_numb : integer, |keyword-only|, optional
+        The mass number, if not provided in ``particle``.
+
+    Z : real number, |keyword-only|, optional
+        The |charge number|, if not provided in ``particle``.
 
     Raises
     ------
@@ -171,31 +181,40 @@ def gyroradius(  # noqa: C901
     Warns
     -----
     : `~astropy.units.UnitsWarning`
-        If units are not provided and SI units are assumed.
+        Issued if any of ``B``, ``Vperp``, or ``T`` do not have units,
+        in which case SI units will be assumed.
+
+    Warnings
+    --------
+    The Lorentz factor can be inferred from ``Vperp`` or ``T`` but near
+    the speed of light, this can lead to rounding errors. For very high
+    values of the Lo
 
     Notes
     -----
-    The gyroradius (or Larmor radius) for a particle of species
-    :math:`s` is given by:
+    The relativistic :wikipedia:`gyroradius` for a particle of species
+    :math:`s` is given by
 
     .. math::
-        r_{Ls} = \frac{γ V_{s,⟂}}{ω_{cs}}
 
-    where :math:`V_{s,⟂}` is the component of particle velocity
-    perpendicular to the magnetic field, :math:`ω_{cs}` is the
-    particle gyrofrequency, and :math:`γ` is the Lorentz factor. If a
-    temperature is provided, then :math:`V_{s,⟂}` will be the most
-    probable thermal velocity of a particle at that temperature. If
-    ``relativistic`` is false, :math:`γ = 1`.
+        r_{L,s} = \frac{γ m_s V_{⟂,s}}{ |q_s| B}
 
-    One but not both of ``Vperp`` and ``T`` must be provided.
+    where :math:`V_⟂` is the component of particle velocity that is
+    perpendicular to the magnetic field, :math:`m_s` is the particle
+    mass, :math:`q_s` is the particle charge, :math:`B` is the magnetic
+    field magnitude, and :math:`γ` is the :wikipedia:`Lorentz factor`.
 
-    ``lorentzfactor`` can be inferred from ``Vperp`` or ``T`` but near
-    the speed of light, this can lead to rounding errors.
+    In the non-relativistic limit, the gyroradius reduces to
 
-    If any of ``B``, ``Vperp``, or ``T`` is a number rather than a
-    `~astropy.units.Quantity`, then SI units will be assumed and a
-    warning will be raised.
+    .. math::
+
+        r_{Ls} = \frac{V_{⟂,s}{ω_{c,s}}
+
+    where :math:`ω_{c,s}` is the particle gyrofrequency. To turn off
+    relativistic effects, set the ``relativistic`` keyword to `False`.
+
+    The gyroradius is sometimes called the Larmor radius, cyclotron
+    radius, or radius of gyration.
 
     Examples
     --------
@@ -208,11 +227,11 @@ def gyroradius(  # noqa: C901
     >>> gyroradius(B = 0.2 * u.T, particle="p+", T = 1e6 * u.K)
     <Quantity 0.0067... m>
 
-    We can estimate the gyroradius of a deuteron in ITER by providing
-    the characteristic thermal energy per particle, :math:`k_B T`, to
-    ``T``.
+    Let's estimate the gyroradius of a deuteron and a triton in ITER by
+    providing the characteristic thermal energy per particle,
+    :math:`k_B T`, to ``T``.
 
-    >>> gyroradius(B = 5 * u.T, particle="D+", T = 13 * u.keV)
+    >>> gyroradius(B = 5 * u.T, particle=["D+", "T+"], T = 13 * u.keV)
     <Quantity 0.0046... m>
 
     Relativistic effects are included by default, but can be turned
@@ -246,7 +265,8 @@ def gyroradius(  # noqa: C901
     def _raise_error_if_lorentzfactor_not_scalar(lorentzfactor):
         if nans_in_both_T_and_Vperp and not np.isscalar(lorentzfactor):
             raise ValueError(
-                "Inferring velocity(s) from more than one Lorentz factor is not currently supported"
+                "Inferring velocity(s) from more than one Lorentz "
+                "factor is not currently supported"
             )
 
     def _calculate_vperp_from_lorentzfactor(
@@ -372,14 +392,24 @@ rhoc_ = gyroradius
 )
 @particle_input(require="charged")
 def inertial_length(
-    n: u.m**-3,
+    n: u.Quantity[u.m**-3],
     particle: ParticleLike,
     *,
     mass_numb: Optional[Integral] = None,
     Z: Optional[Real] = None,
-) -> u.m:
+) -> u.Quantity[u.m]:
     r"""
     Calculate a charged particle's inertial length.
+
+    The inertial length of a particle of species :math:`s` is given by
+
+    .. math::
+
+        d = \frac{c}{ω_{ps}}
+
+    The inertial length is the characteristic length scale for a
+    particle to be accelerated in a plasma. The Hall effect becomes
+    important on length scales shorter than the ion inertial length.
 
     **Aliases:** `cwp_`
 
@@ -392,16 +422,18 @@ def inertial_length(
         Representation of the particle species (e.g., 'p+' for protons,
         'D+' for deuterium, or 'He-4 +1' for singly ionized helium-4).
 
-    mass_numb : integer, |keyword-only|, optional
-        The mass number associated with ``particle``.
-
-    Z : real number, |keyword-only|, optional
-        The charge number associated with ``particle``.
-
     Returns
     -------
     d : `~astropy.units.Quantity`
         The particle's inertial length in meters.
+
+    Other Parameters
+    ----------------
+    mass_numb : integer, |keyword-only|, optional
+        The mass number, if not provided in ``particle``.
+
+    Z : real number, |keyword-only|, optional
+        The |charge number|, if not provided in ``particle``.
 
     Raises
     ------
@@ -422,16 +454,6 @@ def inertial_length(
 
     Notes
     -----
-    The inertial length of a particle of species :math:`s` is given by
-
-    .. math::
-
-        d = \frac{c}{ω_{ps}}
-
-    The inertial length is the characteristic length scale for a
-    particle to be accelerated in a plasma. The Hall effect becomes
-    important on length scales shorter than the ion inertial length.
-
     The inertial length is also known as the skin depth.
 
     Examples
@@ -441,10 +463,8 @@ def inertial_length(
     <Quantity 2.02985...e+08 m>
     >>> inertial_length(5 * u.m ** -3, 'e-')
     <Quantity 2376534.75... m>
-
     """
     omega_p = frequencies.plasma_frequency(n, particle=particle)
-
     return c / omega_p
 
 
