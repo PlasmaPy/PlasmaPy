@@ -208,10 +208,10 @@ def call_string(
     kwargs : `dict`, optional
         A `dict` containing keyword arguments.
 
-    max_items : `int`, optional
+    max_items : `int`, default: 12
         The maximum number of items to include in a `~numpy.ndarray` or
         `~astropy.units.Quantity`; additional items will be truncated
-        with an ellipsis.  Defaults to 12.
+        with an ellipsis.
 
     Returns
     -------
@@ -275,10 +275,10 @@ def attribute_call_string(
         A `dict` containing the keyword arguments to be used during
         instantiation of ``cls``.
 
-    max_items : `int`, optional
+    max_items : `int`, default: 12
         The maximum number of items to include in a `~numpy.ndarray` or
         `~astropy.units.Quantity`; additional items will be truncated
-        with an ellipsis.  Defaults to 12.
+        with an ellipsis.
 
     Returns
     -------
@@ -360,10 +360,10 @@ def method_call_string(
         A `dict` containing the keyword arguments to be used during
         the method call.
 
-    max_items : int, |keyword-only|, optional
+    max_items : int, |keyword-only|, default: 12
         The maximum number of items to include in a `~numpy.ndarray` or
         `~astropy.units.Quantity`; additional items will be truncated
-        with an ellipsis.  Defaults to 12.
+        with an ellipsis.
 
     Returns
     -------

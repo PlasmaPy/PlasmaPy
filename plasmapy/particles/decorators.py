@@ -280,7 +280,7 @@ class _ParticleInput:
     def allow_custom_particles(self) -> bool:
         """
         If `True`, then the decorated argument may be or include
-        |CustomParticle| instances. Defaults to `True`.
+        |CustomParticle| instances.
 
         Returns
         -------
@@ -296,7 +296,6 @@ class _ParticleInput:
     def allow_particle_lists(self) -> bool:
         """
         If `True`, then the decorated argument may be a |ParticleList|.
-        Defaults to `True`.
 
         Returns
         -------
