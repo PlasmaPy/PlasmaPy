@@ -31,7 +31,7 @@ def test_to_hz():
 def test_to_hz_complicated_signature():
     """
     Test that `angular_freq_to_hz` can decorate a function with
-    positional-only, postional, var-positional, keyword, keyword-only,
+    positional-only, positional, var-positional, keyword, keyword-only,
     or var-keyword.
     """
 
