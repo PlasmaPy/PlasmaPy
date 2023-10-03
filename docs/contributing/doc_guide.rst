@@ -1399,7 +1399,7 @@ Document isn't included in any toctree
 --------------------------------------
 
 In general, each source file in the documentation must be included in
-a table of contents (toctree_). Otherwise, Sphinx will issue a warning
+a table of contents (toctree_). Otherwise, Sphinx_ will issue a warning
 like:
 
 .. code-block::
@@ -1414,11 +1414,12 @@ This warning can be resolved by:
 * Adding the file to the appropriate toctree (see Sphinx's
   `documentation page on tables of contents <toctree>`_), or
 
-* Adding the ``:orphan:`` `metadata field`_ at the top of the file.
+* Adding the ``:orphan:`` `metadata field`_ at the top of the file (not
+  recommended in most situations).
 
-For PlasmaPy, the tables of contents are generally located in
-:file:`index.rst` in the same directory as the source files. For
-example Jupyter notebooks, the tables of contents are in
+In the :file:`docs/` folder, the tables of contents are generally
+located in :file:`index.rst` in the same directory as the source files.
+For example Jupyter notebooks, the tables of contents are in
 :file:`docs/examples.rst`.
 
 .. |role| replace:: :term:`role`
