@@ -488,6 +488,43 @@ Requirements
   year. However, it may take a few months before packages like |NumPy|
   and |Numba| become compatible with the newest minor version of |Python|.
 
+Decorators
+==========
+
+.. _particle_inputs:
+
+Transforming particle-like arguments into particle objects
+----------------------------------------------------------
+
+Use |particle_input| to transform arguments to relevant |Particle|,
+|CustomParticle|, or |ParticleList| objects (see :ref:`particles`).
+
+.. _validating_quantities:
+
+Validating Quantity arguments
+-----------------------------
+Use |validate_quantities| to verify function arguments and impose
+relevant restrictions
+
+.. code-block:: python
+
+   from plasmapy.utils.decorators.validators import validate_quantities
+
+   @validate_quantities(
+       n={"can_be_negative": False},
+       validations_on_return={"equivalencies": u.dimensionless_angles()},
+   )
+   def inertial_length(n: u.m**-3, particle) -> u.m:
+       ...
+
+Use |validate_quantities| to enforce |Quantity| type hints
+
+.. code-block:: python
+
+   @validate_quantities
+   def magnetic_pressure(B: u.T) -> u.Pa:
+       return B**2 / (2 * const.mu0)
+
 Special function categories
 ===========================
 
@@ -681,19 +718,8 @@ adjacent fields such as astronomy and heliophysics. To get started with
   for |astropy.units|_.
 
 * Use unit annotations with the |validate_quantities| decorator to
-  validate |Quantity| arguments and return values.
-
-  .. code-block:: python
-
-     from plasmapy.utils.decorators.validators import validate_quantities
-
-
-     @validate_quantities(
-         n={"can_be_negative": False},
-         validations_on_return={"equivalencies": u.dimensionless_angles()},
-     )
-     def inertial_length(n: u.m**-3, particle) -> u.m:
-         ...
+  validate |Quantity| arguments and return values
+  (see :ref:`validating_quantities`).
 
   .. caution::
 
@@ -717,6 +743,8 @@ adjacent fields such as astronomy and heliophysics. To get started with
 * The names of SI units should not be capitalized except at the
   beginning of a sentence, including when they are named after a person.
   The sole exception is "degree Celsius".
+
+.. _particles:
 
 Particles
 ---------
