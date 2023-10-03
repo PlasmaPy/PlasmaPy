@@ -54,4 +54,5 @@ def main():
     try:
         subprocess.call(command)  # noqa: S603
     except KeyboardInterrupt:
-        print("Stopping calculator! Bye")
+        # We'll need to switch from print() to using logging library
+        print("Stopping calculator! Bye")  # noqa: T201

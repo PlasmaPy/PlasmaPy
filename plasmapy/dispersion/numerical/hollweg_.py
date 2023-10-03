@@ -193,14 +193,14 @@ def hollweg(  # noqa: C901, PLR0912, PLR0915
     states in §1.7 that due to the inconsistent retention of the
     :math:`ω / ω_{\rm ci} ≪ 1` terms the expression can
     only be valid if both :math:`c_{\rm s} ≪ v_{\rm A}` (low-β) and
-    the wave propgation is nearly perpendicular to the magnetic field.
+    the wave propagation is nearly perpendicular to the magnetic field.
 
     This routine solves for :math:`ω` for given :math:`k` values
     by numerically solving for the roots of the above expression.
 
     Examples
     --------
-    >>> from astropy import units as u
+    >>> import astropy.units as u
     >>> from plasmapy.dispersion.numerical import hollweg_
     >>> inputs = {
     ...    "k": np.logspace(-7, -2, 2) * u.rad / u.m,

@@ -1,7 +1,7 @@
 """Test functionality of `plasmapy.formulary.collisions.helio.collisional_analysis`."""
+import astropy.units as u
 import pytest
 
-from astropy import units as u
 from astropy.constants.si import c
 
 from plasmapy.formulary.collisions.helio import temp_ratio
@@ -11,7 +11,7 @@ from plasmapy.particles.exceptions import InvalidParticleError
 c_si_unitless = c.value
 
 
-class Testcollisional_thermalizastion:
+class Testcollisional_thermalization:
     _kwargs_single_valued = {
         "r_0": [0.1, 0.1, 0.1] * u.au,
         "r_n": [1.0, 1.0, 1.0] * u.au,
@@ -109,6 +109,7 @@ class Testcollisional_thermalizastion:
         ],
     )
     @pytest.mark.slow()
+    @pytest.mark.filterwarnings("ignore::RuntimeWarning")
     def test_raises(self, kwargs, _error):
         with pytest.raises(_error):
             temp_ratio(**kwargs)

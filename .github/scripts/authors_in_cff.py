@@ -11,7 +11,7 @@ GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
 PR_NUMBER = os.getenv("PR_NUMBER")
 REPO = os.getenv("GITHUB_REPOSITORY")
 
-EXCLUDED_USERS = ["dependabot", "pre-commit-ci[bot]", "sourcery-ai"]
+EXCLUDED_USERS = ["dependabot[bot]", "pre-commit-ci[bot]", "sourcery-ai"]
 
 
 def get_pr_authors() -> set[str]:
@@ -55,22 +55,24 @@ The entry should be of the form:
   affiliation: <affiliation>
   orcid: https://orcid.org/<ORCiD number>
   alias: {missing_github_username}
+  email: <email address>
 
 This file can be edited directly on GitHub at:
 
 https://github.com/{REPO}/edit/{branch_name}/CITATION.cff
 
-All fields are optional except "alias", which is the GitHub username.
-
 We encourage all contributors to sign up for an ORCID iD: a unique,
 persistent identifier used by researchers, authors, and open source
 contributors. Sign up at: https://orcid.org/register
 
+All fields are optional except "alias", which is the GitHub username.
+The "affiliation", "orcid", and/or "email" fields are sometimes needed
+for conference abstract or journal article submissions about PlasmaPy.
+
 Thank you for contributing!
 """
 
-        print(error_message)
-
+        print(error_message)  # noqa: T201
         sys.exit(1)
 
 

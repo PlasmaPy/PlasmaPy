@@ -1,0 +1,4 @@
+Moved definitions of certain |reStructuredText| substitutions
+from :file:`docs/common_links.rst` to the
+file :file:`docs/contributing/doc_guide.rst` in order to speed up the
+documentation build (see :issue:`2277`\ ).

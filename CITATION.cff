@@ -106,6 +106,7 @@ authors:
 - given-names: Khalil
   family-names: Bryant
   affiliation: University of Michigan
+  orcid: https://orcid.org/0000-0002-2105-0280
   alias: KhalilBryant
 
 - given-names: Sean
@@ -174,6 +175,8 @@ authors:
 
 - given-names: Thomas
   family-names: Fan
+  affiliation: Quansight Labs
+  alias: thomasjpfan
 
 - given-names: Samaiyah I.
   family-names: Farid
@@ -188,6 +191,7 @@ authors:
 
 - given-names: Bryan
   family-names: Foo
+  orcid: https://orcid.org/0000-0001-5308-6870
   alias: bryancfoo
 
 - given-names: Rajagopalan
@@ -208,6 +212,7 @@ authors:
 
 - given-names: Silvina
   family-names: Guidoni
+  orcid: https://orcid.org/0000-0003-1439-4218
   affiliation: American University
 
 - given-names: Colby
@@ -247,13 +252,14 @@ authors:
 
 - given-names: Nabil
   family-names: Humphrey
+  orcid: https://orcid.org/0000-0002-4227-2544
   alias: NabilHumphrey
-
-- alias: itsraasshi
 
 - given-names: Maria
   family-names: Isupova
   alias: misupova
+
+- alias: itsraashi
 
 - given-names: Alexis
   family-names: Jeandet
@@ -264,6 +270,7 @@ authors:
 - given-names: Elliot
   family-names: Johnson
   affiliation: University of Delaware
+  orcid: https://orcid.org/0000-0003-2892-6924
   alias: ejohnson-96
 
 - given-names: Marcin
@@ -366,7 +373,7 @@ authors:
 
 - given-names: Suzanne
   family-names: Nie
-  alias: suzannenie
+  alias: sznie
 
 - alias: nrb1234
 
@@ -415,10 +422,6 @@ authors:
   family-names: Rao
   alias: thecasuist
 
-- given-names: Jayden
-  family-names: Roberts
-  alias: JaydenR2305
-
 - alias: seanjunheng2
 
 - given-names: Steve
@@ -426,6 +429,11 @@ authors:
   affiliation: U.S. Naval Research Laboratory
   orcid: https://orcid.org/0000-0002-3056-6334
   alias: arichar6
+
+- given-names: Jayden
+  family-names: Roberts
+  orcid: https://orcid.org/0009-0009-9490-5284
+  alias: JaydenR2305
 
 - given-names: Reynaldo
   family-names: Rojas Zelaya
@@ -559,3 +567,7 @@ authors:
 - given-names: Carol
   family-names: Zhang
   alias: carolyz
+
+- given-names: Cora
+  family-names: Schneck
+  alias: cyschneck

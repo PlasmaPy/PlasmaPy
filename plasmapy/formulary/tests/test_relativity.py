@@ -1,9 +1,9 @@
 """Tests for functions in relativity.py."""
 
+import astropy.units as u
 import numpy as np
 import pytest
 
-from astropy import units as u
 from astropy.constants import c
 from astropy.tests.helper import assert_quantity_allclose
 
@@ -170,7 +170,6 @@ def test_relativistic_body_mass_energy(particle):
         ({"kinetic_energy": -1 * u.J}, ValueError),
         ({"lorentz_factor": 0.99}, ValueError),
         ({"lorentz_factor": 0}, ValueError),
-        ({"lorentz_factor": -1}, ValueError),
         ({"lorentz_factor": -1}, ValueError),
         ({"lorentz_factor": -1, "v_over_c": 0.5}, ValueError),
         ({"total_energy": 1 * u.J, "momentum": 1 * u.kg * u.m / u.s}, ValueError),

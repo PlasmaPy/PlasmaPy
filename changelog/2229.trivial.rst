@@ -1,0 +1,2 @@
+Distributions defined in the `~plasmapy.formulary.distribution` module
+will now raise a `ValueError` for an improper ``units`` parameter.

@@ -1,0 +1,3 @@
+Updated the |coding guide| by discussing when to use aliases and
+applied the ``:py:`` role so that in-line code gets formatted the same
+as Python code blocks.

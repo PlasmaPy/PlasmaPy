@@ -1,0 +1,2 @@
+Enabled the `sphinx.ext.duration` extension to show the times required
+to process different pages during documentation builds.

@@ -124,7 +124,8 @@ class BasicRegistrationFactory:
             else:
                 candidate_widget_types = [self.default_widget_type]
         elif n_matches > 1:
-            print(candidate_widget_types)
+            # We'll need to switch from print() to using logging library
+            print(candidate_widget_types)  # noqa: T201
             raise MultipleMatchError(
                 f"Too many candidate types identified ({n_matches}). "
                 "Specify enough keywords to guarantee unique type "

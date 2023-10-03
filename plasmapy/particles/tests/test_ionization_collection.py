@@ -456,7 +456,7 @@ class TestIonizationStateCollectionAttributes:
     @pytest.mark.parametrize("uninitialized_attribute", ["T_e", "n0", "n_e"])
     def test_attribute_defaults_to_nan(self, uninitialized_attribute):
         command = f"self.instance.{uninitialized_attribute}"
-        default_value = eval(command)  # noqa: PGH001
+        default_value = eval(command)  # noqa: PGH001, S307
         assert np.isnan(default_value), (
             f"{uninitialized_attribute} does not default to nan but "
             f"instead defaults to {default_value}."
@@ -472,7 +472,7 @@ class TestIonizationStateCollectionAttributes:
     )
     def test_attribute_defaults_to_dict_of_nans(self, uninitialized_attribute):
         command = f"self.instance.{uninitialized_attribute}"
-        default_value = eval(command)  # noqa: PGH001
+        default_value = eval(command)  # noqa: PGH001, S307
         assert (
             list(default_value.keys()) == self.elements
         ), "Incorrect base particle keys."
@@ -489,7 +489,7 @@ class TestIonizationStateCollectionAttributes:
     )
     def test_abundances_default_to_nans(self, uninitialized_attribute):
         command = f"self.instance.{uninitialized_attribute}"
-        default_value = eval(command)  # noqa: PGH001
+        default_value = eval(command)  # noqa: PGH001, S307
         for element in self.elements:
             assert isinstance(default_value[element], Real)
             assert np.isnan(default_value[element])
@@ -810,10 +810,11 @@ class TestIonizationStateCollectionDensityEqualities:
         expect_equality = this[:4] == that[:4]
         are_equal = self.instances[this] == self.instances[that]
         if expect_equality != are_equal:
-            print(f"{this} kwargs:\n {self.dict_of_kwargs[this]}\n")
+            # We'll need to switch from print() to using logging library
+            print(f"{this} kwargs:\n {self.dict_of_kwargs[this]}\n")  # noqa: T201
             self.instances[this].summarize()
-            print()
-            print(f"{that} kwargs:\n {self.dict_of_kwargs[that]}\n")
+            print()  # noqa: T201
+            print(f"{that} kwargs:\n {self.dict_of_kwargs[that]}\n")  # noqa: T201
             self.instances[that].summarize()
             descriptor = "equal" if expect_equality else "unequal"
             pytest.fail(f"Cases {this} and {that} should be {descriptor} but are not.")
@@ -842,7 +843,6 @@ def test_iteration_with_nested_iterator():
     assert i == 4
 
 
-@pytest.mark.xfail()
 def test_two_isotopes_of_same_element():
     IonizationStateCollection(["H-1", "D"])
 
