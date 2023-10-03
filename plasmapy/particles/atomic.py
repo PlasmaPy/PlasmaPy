@@ -200,10 +200,10 @@ def particle_mass(
         particle; an integer representing an atomic number; or a
         |Particle|.
 
-    mass_numb : integer, optional, |keyword-only|
+    mass_numb : integer, |keyword-only|, optional
         The mass number of an isotope.
 
-    Z : integer, optional, |keyword-only|
+    Z : integer, |keyword-only|, optional
         The |charge number| of an ion or neutral atom.
 
     Returns
@@ -1068,7 +1068,7 @@ def ionic_levels(
     particle : |atom-like|
         Representation of an element, ion, or isotope.
 
-    min_charge : integer, optional, default: ``0``
+    min_charge : integer, default: ``0``
         The starting charge number.
 
     max_charge : integer, optional

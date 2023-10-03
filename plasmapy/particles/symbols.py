@@ -166,10 +166,10 @@ def ionic_symbol(
         A `str` representing an element, isotope, or ion; or an
         `int` representing an atomic number.
 
-    mass_numb : integer, optional, |keyword-only|
+    mass_numb : integer, |keyword-only|, optional
         The mass number of an isotope.
 
-    Z : integer, optional, |keyword-only|
+    Z : integer, |keyword-only|, optional
         The |charge number| of an ion or neutral atom.
 
     Returns
@@ -232,10 +232,10 @@ def particle_symbol(
         A `str` representing a particle, element, isotope, or ion or an
         `int` representing an atomic number
 
-    mass_numb : integer, optional, |keyword-only|
+    mass_numb : integer, |keyword-only|, optional
         The mass number of an isotope.
 
-    Z : integer, optional, |keyword-only|
+    Z : integer, |keyword-only|, optional
         The |charge number| of an ion or neutral atom.
 
     Returns

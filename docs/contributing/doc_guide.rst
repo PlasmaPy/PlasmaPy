@@ -728,7 +728,7 @@ The **type specification** may include:
 * Size and/or shape information
 * Type information
 * Valid choices for the parameter
-* Whether the parameter is optional, |keyword-only|, and/or
+* Whether the parameter is |keyword-only|, optional, and/or
   positional-only
 * Default values
 
