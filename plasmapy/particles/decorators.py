@@ -151,22 +151,22 @@ class _ParticleInput:
     callable_ : callable
         The callable_ or method to be decorated.
 
-    require : `str`, `set`, `list`, or `tuple`, optional, |keyword-only|
+    require : `str`, `set`, `list`, or `tuple`, |keyword-only|, optional
         Categories that a particle must be in.  If a particle is not in
         all of these categories, then a |ParticleError| will be raised.
 
-    any_of : `str`, `set`, `list`, or `tuple`, optional, |keyword-only|
+    any_of : `str`, `set`, `list`, or `tuple`, |keyword-only|, optional
         Categories that a particle may be in.  If a particle is not in
         any of these categories, then a |ParticleError| will be raised.
 
-    exclude : `str`, `set`, `list`, or `tuple`, optional, |keyword-only|
+    exclude : `str`, `set`, `list`, or `tuple`, |keyword-only|, optional
         Categories that a particle cannot be in.  If a particle is in
         any of these categories, then a |ParticleError| will be raised.
 
-    allow_custom_particles : bool, optional, |keyword-only|, default: `True`
+    allow_custom_particles : bool, |keyword-only|, optional, default: `True`
         If `True`, allow |CustomParticle| instances to be passed through.
 
-    allow_particle_lists : bool, optional, |keyword-only|, default: `True`
+    allow_particle_lists : bool, |keyword-only|, optional, default: `True`
         If `True`, allow |ParticleList| instances to be passed through.
     """
 

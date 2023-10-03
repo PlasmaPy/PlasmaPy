@@ -210,29 +210,29 @@ class RelativisticBody:
         The momentum of the relativistic body in units convertible to
         kg·m/s.
 
-    total_energy : |Quantity|, optional, |keyword-only|
+    total_energy : |Quantity|, |keyword-only|, optional
        The sum of the mass energy and the kinetic energy in units
        convertible to joules. Must be non-negative.
 
-    kinetic_energy : |Quantity|, optional, |keyword-only|
+    kinetic_energy : |Quantity|, |keyword-only|, optional
        The kinetic energy of the relativistic body in units convertible
        to joules. Must be non-negative.
 
-    v_over_c : real number or |Quantity|, optional, |keyword-only|
+    v_over_c : real number or |Quantity|, |keyword-only|, optional
        The ratio of the velocity to the speed of light. Must have an
        absolute magnitude :math:`≤ 1`\ .
 
-    lorentz_factor : real number or |Quantity|, optional, |keyword-only|
+    lorentz_factor : real number or |Quantity|, |keyword-only|, optional
        The Lorentz factor of the relativistic body. Must be
        :math:`≥ 1`\ .
 
-    Z : integer, optional, |keyword-only|
+    Z : integer, |keyword-only|, optional
         The charge number associated with ``particle``.
 
-    mass_numb : integer, optional, |keyword-only|
+    mass_numb : integer, |keyword-only|, optional
         The mass number associated with ``particle``.
 
-    dtype : |DTypeLike|, optional, |keyword-only|, default: `numpy.longdouble`
+    dtype : |DTypeLike|, |keyword-only|, optional, default: `numpy.longdouble`
         The `numpy` data type to use to store the inputs.
 
     Notes

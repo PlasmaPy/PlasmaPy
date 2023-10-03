@@ -200,10 +200,10 @@ def particle_mass(
         particle; an integer representing an atomic number; or a
         |Particle|.
 
-    mass_numb : integer, optional, |keyword-only|
+    mass_numb : integer, |keyword-only|, optional
         The mass number of an isotope.
 
-    Z : integer, optional, |keyword-only|
+    Z : integer, |keyword-only|, optional
         The |charge number| of an ion or neutral atom.
 
     Returns
