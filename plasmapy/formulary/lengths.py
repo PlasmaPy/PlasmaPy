@@ -118,7 +118,7 @@ def gyroradius(  # noqa: C901
 ) -> u.Quantity[u.m]:
     r"""
     Calculate the radius of circular motion for a charged particle in a
-    uniform magnetic field.
+    uniform magnetic field (including relativistic effects by default).
 
     **Aliases:** `rc_`, `rhoc_`
 
@@ -144,8 +144,8 @@ def gyroradius(  # noqa: C901
         ``Vperp`` is provided.
 
     lorentzfactor : `float` or `~numpy.ndarray`, |keyword-only|, optional
-        The :wikipedia:`Lorentz factor` of the particle corresponding
-        to the direction perpendicular to the magnetic field. Cannot be
+        The :wikipedia:`Lorentz factor` of the particle corresponding to
+        the direction perpendicular to the magnetic field. Cannot be
         provided if ``Vperp`` or ``T`` is provided.
 
     relativistic : `bool`, |keyword-only|, default: `True`
