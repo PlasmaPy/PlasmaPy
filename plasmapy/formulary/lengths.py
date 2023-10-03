@@ -127,17 +127,17 @@ def gyroradius(  # noqa: C901
         ionized helium-4). If no charge state information is
         provided, then the particles are assumed to be singly charged.
 
-    Vperp : `~astropy.units.Quantity`, optional, |keyword-only|
+    Vperp : `~astropy.units.Quantity`, |keyword-only|, optional
         The component of particle velocity that is perpendicular to
         the magnetic field in units convertible to meters per second.
 
-    T : `~astropy.units.Quantity`, optional, |keyword-only|
+    T : `~astropy.units.Quantity`, |keyword-only|, optional
         The particle temperature in units convertible to kelvin.
 
-    lorentzfactor : `float` or `~numpy.ndarray`, optional, |keyword-only|
+    lorentzfactor : `float` or `~numpy.ndarray`, |keyword-only|, optional
         The Lorentz factor for the particles, use for high precision.
 
-    relativistic : `bool`, optional, |keyword-only|
+    relativistic : `bool`, |keyword-only|, optional
         Whether or not you want to use a relativistic approximation.
         `True` by default.
 
