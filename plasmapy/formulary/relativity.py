@@ -232,7 +232,7 @@ class RelativisticBody:
     mass_numb : integer, |keyword-only|, optional
         The mass number associated with ``particle``.
 
-    dtype : |DTypeLike|, |keyword-only|, optional, default: `numpy.longdouble`
+    dtype : |DTypeLike|, |keyword-only|, default: `numpy.longdouble`
         The `numpy` data type to use to store the inputs.
 
     Notes

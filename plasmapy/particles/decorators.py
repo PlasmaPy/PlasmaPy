@@ -163,10 +163,10 @@ class _ParticleInput:
         Categories that a particle cannot be in.  If a particle is in
         any of these categories, then a |ParticleError| will be raised.
 
-    allow_custom_particles : bool, |keyword-only|, optional, default: `True`
+    allow_custom_particles : bool, |keyword-only|, default: `True`
         If `True`, allow |CustomParticle| instances to be passed through.
 
-    allow_particle_lists : bool, |keyword-only|, optional, default: `True`
+    allow_particle_lists : bool, |keyword-only|, default: `True`
         If `True`, allow |ParticleList| instances to be passed through.
     """
 

@@ -1068,7 +1068,7 @@ def ionic_levels(
     particle : |atom-like|
         Representation of an element, ion, or isotope.
 
-    min_charge : integer, optional, default: ``0``
+    min_charge : integer, default: ``0``
         The starting charge number.
 
     max_charge : integer, optional

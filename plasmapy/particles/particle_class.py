@@ -1697,7 +1697,7 @@ class Particle(AbstractPhysicalParticle):
 
         Parameters
         ----------
-        n : positive integer, optional, default: ``1``
+        n : positive integer, default: ``1``
             The number of bound electrons to remove from the |Particle|
             object.
 
@@ -1848,10 +1848,10 @@ class DimensionlessParticle(AbstractParticle):
 
     Parameters
     ----------
-    mass : positive real number, |keyword-only|, optional, default: |nan|
+    mass : positive real number, |keyword-only|, default: |nan|
         The mass of the dimensionless particle.
 
-    charge : real number, |keyword-only|, optional, default: |nan|
+    charge : real number, |keyword-only|, default: |nan|
         The electric charge of the dimensionless particle.
 
     symbol : str, |keyword-only|, optional

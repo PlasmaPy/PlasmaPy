@@ -64,7 +64,7 @@ class IonizationStateCollection:
     kappa : `float`, |keyword-only|, optional
         The value of kappa for a kappa distribution function.
 
-    tol : `float` or `integer`, |keyword-only|, optional, default: ``1e-15``
+    tol : `float` or `integer`, |keyword-only|, default: ``1e-15``
         The absolute tolerance used by `~numpy.isclose` when testing
         normalizations and making comparisons.
 
@@ -850,15 +850,15 @@ class IonizationStateCollection:
 
         Parameters
         ----------
-        include_neutrals : `bool`, |keyword-only|, optional, default: `True`
+        include_neutrals : `bool`, |keyword-only|, default: `True`
             If `True`, include neutrals when calculating the mean values
             of the different particles.  If `False`, exclude neutrals.
 
-        use_rms_charge : `bool`, |keyword-only|, optional, default: `False`
+        use_rms_charge : `bool`, |keyword-only|, default: `False`
             If `True`, use the root-mean-square charge instead of the
             mean charge.
 
-        use_rms_mass : `bool`, |keyword-only|, optional, default: `False`
+        use_rms_mass : `bool`, |keyword-only|, default: `False`
             If `True`, use the root-mean-square mass instead of the mean
             mass.
 
