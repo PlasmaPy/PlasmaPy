@@ -1,4 +1,4 @@
-name: Package improvements
+name: 🛠️ Package improvements
 description: |
   Improve package infrastructure or refactor existing functionality
 labels: [refactoring]
@@ -8,24 +8,33 @@ body:
   attributes:
     label: Description of improvements
     description: >
-      What change(s) or improvements should be made to PlasmaPy?
+      What improvements should we make to PlasmaPy?
   validations:
     required: true
 
 - type: textarea
   id: motivation
   attributes:
-    label: Location
+    label: Motivation
     description: >
-      Where should we make these changes? (optional)
-    validations:
-      required: false
+      What are the benefits of making these improvements? What problems or
+      limitations would be solved? (optional)
+
+- type: textarea
+  id: solution
+  attributes:
+    label: Implementation strategy
+    description: >
+      How might we go about implementing these improvements? (optional)
+  validations:
+    required: false
 
 - type: textarea
   id: additional-context
   attributes:
     label: Additional context
     description: >
-      Please provide any additional helpful details here. (optional)
+      Please provide any additional helpful details or related issues
+      here. (optional)
   validations:
     required: false

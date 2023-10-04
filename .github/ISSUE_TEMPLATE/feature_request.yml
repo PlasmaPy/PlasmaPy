@@ -1,7 +1,7 @@
-name: 💡 Feature Request
+name: 💡 Feature request
 description: |
   Help shape the future of PlasmaPy by requesting a new feature
-labels: [Feature request]
+labels: [feature request]
 body:
 - type: textarea
   id: description
@@ -34,6 +34,6 @@ body:
   attributes:
     label: Additional context
     description: >
-      Please provide any additional helpful details here. (optional)
+      Please provide any additional helpful details or related issues here. (optional)
   validations:
     required: false
