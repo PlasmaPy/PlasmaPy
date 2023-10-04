@@ -297,10 +297,10 @@ Here is an example docstring in the numpydoc_ format:
        Parameters
        ----------
        a : `float`
-           The left multiplicand.
+           The number from which ``b`` will be subtracted.
 
        b : `float`
-           The right multiplicand.
+           The number being subtracted from ``a``.
 
        switch_order : `bool`, |keyword-only|, default: `True`
            If `True`, return :math:`a - b`. If `False`, then return
@@ -356,7 +356,7 @@ Here is an example docstring in the numpydoc_ format:
        if np.isinf(a) or np.isinf(b):
            raise ValueError("Cannot perform subtraction operations involving infinity.")
 
-       warnings.warn("The subtract function encountered a nan value.", UserWarning)
+       warnings.warn("The `subtract` function encountered a nan value.", UserWarning)
 
        return b - a if switch_order else a - b
 
