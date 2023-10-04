@@ -28,6 +28,8 @@ contributing!
 Making a code contribution
 ==========================
 
+.. _create-branch:
+
 Create a new branch
 -------------------
 
