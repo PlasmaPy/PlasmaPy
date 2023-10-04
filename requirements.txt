@@ -16,7 +16,7 @@ argon2-cffi==23.1.0
     # via jupyter-server
 argon2-cffi-bindings==21.2.0
     # via argon2-cffi
-arrow==1.2.3
+arrow==1.3.0
     # via isoduration
 asteval==0.9.31
     # via lmfit
@@ -56,7 +56,7 @@ cfgv==3.4.0
     # via pre-commit
 chardet==5.2.0
     # via tox
-charset-normalizer==3.2.0
+charset-normalizer==3.3.0
     # via requests
 click==8.1.7
     # via
@@ -74,7 +74,7 @@ contourpy==1.1.1
     # via matplotlib
 cssutils==2.7.1
     # via dict2css
-cycler==0.11.0
+cycler==0.12.0
     # via matplotlib
 debugpy==1.8.0
     # via ipykernel
@@ -105,9 +105,9 @@ domdf-python-tools==3.6.1
     #   sphinx-toolbox
 execnet==2.0.2
     # via pytest-xdist
-executing==1.2.0
+executing==2.0.0
     # via stack-data
-fastjsonschema==2.18.0
+fastjsonschema==2.18.1
     # via nbformat
 filelock==3.12.4
     # via
@@ -115,7 +115,7 @@ filelock==3.12.4
     #   sphinx-toolbox
     #   tox
     #   virtualenv
-fonttools==4.42.1
+fonttools==4.43.0
     # via matplotlib
 fqdn==1.5.1
     # via jsonschema
@@ -125,9 +125,9 @@ h5py==3.9.0
     # via plasmapy (setup.py)
 html5lib==1.1
     # via sphinx-toolbox
-hypothesis==6.87.0
+hypothesis==6.87.1
     # via plasmapy (setup.py)
-identify==2.5.29
+identify==2.5.30
     # via pre-commit
 idna==3.4
     # via
@@ -143,7 +143,7 @@ iniconfig==2.0.0
     # via pytest
 ipykernel==6.25.2
     # via plasmapy (setup.py)
-ipython==8.15.0
+ipython==8.16.1
     # via
     #   ipykernel
     #   ipywidgets
@@ -151,7 +151,7 @@ ipywidgets==8.1.1
     # via plasmapy (setup.py)
 isoduration==20.11.0
     # via jsonschema
-jedi==0.19.0
+jedi==0.19.1
     # via ipython
 jinja2==3.1.2
     # via
@@ -223,7 +223,7 @@ matplotlib-inline==0.1.6
     # via
     #   ipykernel
     #   ipython
-mistune==3.0.1
+mistune==3.0.2
     # via nbconvert
 mpmath==1.3.0
     # via plasmapy (setup.py)
@@ -271,7 +271,7 @@ numpydoc==1.6.0
     # via plasmapy (setup.py)
 overrides==7.4.0
     # via jupyter-server
-packaging==23.1
+packaging==23.2
     # via
     #   astropy
     #   ipykernel
@@ -509,7 +509,7 @@ sphinxcontrib-qthelp==1.0.6
     # via sphinx
 sphinxcontrib-serializinghtml==1.1.9
     # via sphinx
-stack-data==0.6.2
+stack-data==0.6.3
     # via ipython
 tabulate==0.9.0
     # via
@@ -553,6 +553,8 @@ traitlets==5.10.1
     #   nbformat
     #   nbsphinx
     #   voila
+types-python-dateutil==2.8.19.14
+    # via arrow
 typing-extensions==4.8.0
     # via
     #   domdf-python-tools
@@ -565,7 +567,7 @@ unidecode==1.3.7
     # via plasmapy (setup.py)
 uri-template==1.3.0
     # via jsonschema
-urllib3==2.0.5
+urllib3==2.0.6
     # via requests
 virtualenv==20.24.5
     # via
@@ -573,7 +575,7 @@ virtualenv==20.24.5
     #   tox
 voila==0.5.4
     # via plasmapy (setup.py)
-wcwidth==0.2.6
+wcwidth==0.2.8
     # via prompt-toolkit
 webcolors==1.13
     # via jsonschema

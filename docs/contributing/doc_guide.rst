@@ -297,14 +297,14 @@ Here is an example docstring in the numpydoc_ format:
        Parameters
        ----------
        a : `float`
-           The left multiplicand.
+           The number from which ``b`` will be subtracted.
 
        b : `float`
-           The right multiplicand.
+           The number being subtracted from ``a``.
 
-       switch_order : `bool`, optional, |keyword-only|
+       switch_order : `bool`, |keyword-only|, default: `True`
            If `True`, return :math:`a - b`. If `False`, then return
-           :math:`b - a`. Defaults to `True`.
+           :math:`b - a`.
 
        Returns
        -------
@@ -356,7 +356,7 @@ Here is an example docstring in the numpydoc_ format:
        if np.isinf(a) or np.isinf(b):
            raise ValueError("Cannot perform subtraction operations involving infinity.")
 
-       warnings.warn("The subtract function encountered a nan value.", UserWarning)
+       warnings.warn("The `subtract` function encountered a nan value.", UserWarning)
 
        return b - a if switch_order else a - b
 
@@ -728,7 +728,7 @@ The **type specification** may include:
 * Size and/or shape information
 * Type information
 * Valid choices for the parameter
-* Whether the parameter is optional, |keyword-only|, and/or
+* Whether the parameter is |keyword-only|, optional, and/or
   positional-only
 * Default values
 
@@ -800,7 +800,7 @@ The type specification should not include information about the
    conventions from the `numpydoc style guide
    <https://numpydoc.readthedocs.io/en/latest/format.html#parameters>`__,
    the `matplotlib documentation guide
-   <https://matplotlib.org/stable/devel/documenting_mpl.html#parameter-type-descriptions>`__,
+   <https://matplotlib.org/stable/devel/document.html#parameter-type-descriptions>`__,
    or the `LSST docstring guide
    <https://developer.lsst.io/python/numpydoc.html>`__.
 
@@ -1395,6 +1395,33 @@ version of the package that can be revisited later.
    a bugfix release, so it is typically better to wait a week before
    spending a large amount of time trying to fix it. 🕒
 
+Document isn't included in any toctree
+--------------------------------------
+
+In general, each source file in the documentation must be included in
+a table of contents (toctree_). Otherwise, Sphinx_ will issue a warning
+like:
+
+.. code-block::
+
+   WARNING: document isn't included in any toctree
+
+This warning may occur when adding a new :file:`.rst` file or example
+Jupyter notebook without adding it to a toctree.
+
+This warning can be resolved by:
+
+* Adding the file to the appropriate toctree (see Sphinx's
+  `documentation page on tables of contents <toctree>`_), or
+
+* Adding the ``:orphan:`` `metadata field`_ at the top of the file (not
+  recommended in most situations).
+
+In the :file:`docs/` folder, the tables of contents are generally
+located in :file:`index.rst` in the same directory as the source files.
+For example Jupyter notebooks, the tables of contents are in
+:file:`docs/examples.rst`.
+
 .. |role| replace:: :term:`role`
 .. |roles| replace:: :term:`roles <role>`
 .. |directive| replace:: :term:`directive`
@@ -1411,6 +1438,7 @@ version of the package that can be revisited later.
 .. _Graphviz: https://graphviz.org
 .. _intersphinx: https://www.sphinx-doc.org/en/master/usage/extensions/intersphinx.html
 .. _issues: https://github.com/PlasmaPy/PlasmaPy/issues
+.. _metadata field: https://www.sphinx-doc.org/en/master/usage/restructuredtext/field-lists.html#special-metadata-fields
 .. _jinja: https://jinja.palletsprojects.com
 .. _LaTeX: https://www.latex-project.org
 .. _make: https://www.gnu.org/software/make
@@ -1423,8 +1451,7 @@ version of the package that can be revisited later.
 .. _pandas: https://pandas.pydata.org
 .. _parameters: https://numpydoc.readthedocs.io/en/latest/format.html#parameters
 .. _raise an issue: https://github.com/PlasmaPy/PlasmaPy/issues/new?title=Improve+documentation+for...&labels=Documentation
-.. _raise an issue about the documentation build failure:
-      https://github.com/PlasmaPy/PlasmaPy/issues/new?title=Documentation+build+failure&labels=Documentation
+.. _raise an issue about the documentation build failure: https://github.com/PlasmaPy/PlasmaPy/issues/new?title=Documentation+build+failure&labels=Documentation
 .. _raises: https://numpydoc.readthedocs.io/en/latest/format.html#raises
 .. _raw string: https://docs.python.org/3/reference/lexical_analysis.html#literals
 .. _Read the Docs Sphinx Theme: https://sphinx-rtd-theme.readthedocs.io
@@ -1434,6 +1461,7 @@ version of the package that can be revisited later.
 .. _Sphinx's glossary: https://www.sphinx-doc.org/en/master/glossary.html
 .. _Sphinx's templating page: https://www.sphinx-doc.org/en/master/development/templating.html
 .. _style overrides: https://docs.readthedocs.io/en/stable/guides/adding-custom-css.html
+.. _toctree: https://www.sphinx-doc.org/en/master/usage/restructuredtext/directives.html#directive-toctree
 .. _warns: https://numpydoc.readthedocs.io/en/latest/format.html#warns
 .. _weekly tests: https://github.com/PlasmaPy/PlasmaPy/actions/workflows/weekly.yml
 .. _Wikipedia: https://www.wikipedia.org

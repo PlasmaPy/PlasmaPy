@@ -1,1 +1,1 @@
-Expanded the ``ruff`` settings to include more linter rules.
+Expanded the |ruff| settings to include more linter rules.
