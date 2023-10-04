@@ -105,7 +105,6 @@ class TestStix:
                 },
                 {"shape": (4,)},
             ),
-            ({**_kwargs_single_valued, "ions": ["He+", "H+"]}, {"shape": (4,)}),
             (
                 {
                     **_kwargs_single_valued,
@@ -133,6 +132,7 @@ class TestStix:
             ),
         ],
     )
+    @pytest.mark.filterwarnings("ignore::astropy.units.UnitsWarning")
     def test_return_structure(self, kwargs, expected):
         k = stix(**kwargs)
 

@@ -1,2 +1,2 @@
-Enabled the ``sphinx.ext.duration`` extension to add links to the source code of an
-object.
+Enabled the `sphinx.ext.duration` extension to show the times required
+to process different pages during documentation builds.

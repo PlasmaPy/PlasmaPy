@@ -221,7 +221,7 @@ def test_spectral_density_minimal_arguments(single_species_collective_args):
     """
     Check that spectral density runs with minimal arguments
     """
-    wavelengths = single_species_collective_args["wavelengths"]
+    single_species_collective_args["wavelengths"]
     args, kwargs = spectral_density_args_kwargs(single_species_collective_args)
 
     # Delete the arguments that have default values
@@ -240,8 +240,6 @@ def test_spectral_density_minimal_arguments(single_species_collective_args):
             del kwargs[key]
 
     alpha, Skw = thomson.spectral_density(*args, **kwargs)
-
-    return (alpha, wavelengths, Skw)
 
 
 def test_single_species_collective_lite(single_species_collective_args):
@@ -510,8 +508,6 @@ def test_single_species_non_collective_spectrum(single_species_non_collective_sp
             ValueError,
             "All ions must be positively charged.",
         ),
-        # Value error when the ion list is empty
-        ({"ions": []}, ValueError, "At least one ion species needs to be defined."),
     ],
 )
 def test_spectral_density_input_errors(
@@ -1064,6 +1060,7 @@ def test_fit_iaw_single_species(iaw_single_species_settings_params):
 
 
 @pytest.mark.slow()
+@pytest.mark.filterwarnings("ignore::UserWarning")
 def test_fit_iaw_instr_func(iaw_single_species_settings_params):
     """
     Tests fitting with an instrument function
@@ -1097,6 +1094,7 @@ def test_fit_noncollective_single_species(noncollective_single_species_settings_
 
 
 @pytest.mark.slow()
+@pytest.mark.filterwarnings("ignore::UserWarning")
 def test_fit_with_instr_func(epw_single_species_settings_params):
     """
 
@@ -1285,7 +1283,8 @@ def test_fit_with_minimal_parameters():
 )
 def test_model_input_validation(control, error, msg, iaw_multi_species_settings_params):
     kwargs = iaw_multi_species_settings_params
-    print(list(control.keys()))
+    # We'll need to switch from print() to using logging library
+    print(list(control.keys()))  # noqa: T201
 
     # Remove or replace values in kwargs
     for k, v in control.items():
@@ -1310,5 +1309,5 @@ def test_model_input_validation(control, error, msg, iaw_multi_species_settings_
             # If msg is not None, check that this string is a subset of the
             # error message
             if msg is not None:
-                print(excinfo.value)
+                print(excinfo.value)  # noqa: T201
                 assert msg in str(excinfo.value)

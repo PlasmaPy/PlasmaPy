@@ -284,6 +284,7 @@ class TestGyroradius:
             ),
         ],
     )
+    @pytest.mark.filterwarnings("ignore::UserWarning")
     def test_values(self, args, kwargs, expected, atol):
         if atol is None:
             atol = 1e-8

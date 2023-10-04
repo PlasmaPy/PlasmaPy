@@ -653,7 +653,7 @@ def _spectral_density_model(wavelengths, settings=None, **params):
     electron_vel = electron_speed[:, np.newaxis] * electron_vdir
     ion_vel = ion_speed[:, np.newaxis] * ion_vdir
 
-    # Convert temperatures from eV to Kelvin (required by fast_spectral_density)
+    # Convert temperatures from eV to kelvin (required by fast_spectral_density)
     T_e *= 11604.51812155
     T_i *= 11604.51812155
 

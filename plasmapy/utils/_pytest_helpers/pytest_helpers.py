@@ -304,7 +304,10 @@ def run_test(  # noqa: C901
             )
 
     try:
-        with pytest.warns(expected["warning"]):
+        if expected["warning"] is not None:
+            with pytest.warns(expected["warning"]):
+                result = func(*args, **kwargs)
+        else:
             result = func(*args, **kwargs)
     except pytest.raises.Exception as missing_warning:
         raise MissingWarningFail(
