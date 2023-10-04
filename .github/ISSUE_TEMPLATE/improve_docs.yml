@@ -8,7 +8,7 @@ body:
   attributes:
     label: Nature of improvement
     description: >
-      What should we improve about PlasmaPy's documentation?
+      What improvement should we make to PlasmaPy's documentation?
   validations:
     required: true
 
