@@ -243,7 +243,7 @@ If any of the changes conflict with each other, it will be necessary to
       using :bash:`git push` to update the corresponding branch on
       GitHub.
 
-.. note::
+.. important::
 
    If this is your first contribution, please add yourself to the author
    list in |CITATION.cff|_ (which uses |Citation File Format|) to make
