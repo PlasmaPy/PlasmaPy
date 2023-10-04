@@ -131,7 +131,7 @@ each step, try running ``git status``.
 
    .. hint::
 
-      If it has been installed, pre-commit_ will perform automated
+      If it has been installed, |pre-commit| will perform automated
       checks and possibly auto-fixes. If pre-commit fails, then
       it'll be necessary to fix any remaining problems and do the
       ``git add`` and ``git commit`` steps once more. Try using
@@ -244,7 +244,7 @@ If any of the changes conflict with each other, it will be necessary to
 .. note::
 
    If this is your first contribution, please add yourself to the author
-   list in |CITATION.cff|_ (which uses `Citation File Format`_) to make
+   list in |CITATION.cff|_ (which uses |Citation File Format|) to make
    sure that you get credit for your contribution. The entry should be
    of the form:
 
