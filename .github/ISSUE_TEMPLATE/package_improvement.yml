@@ -1,14 +1,14 @@
-name: Feature request 💡
+name: Package improvements 🛠
 description: |
-  Help shape the future of PlasmaPy by requesting a new feature.
-labels: [feature request]
+  Refactor existing functionality or improve package infrastructure.
+labels: [refactoring]
 body:
 - type: textarea
-  id: description
+  id: Description
   attributes:
-    label: Feature description
+    label: Description of improvement
     description: >
-      What new capability should we add to PlasmaPy?
+      What improvement should we make to PlasmaPy?
   validations:
     required: true
 
@@ -17,7 +17,7 @@ body:
   attributes:
     label: Motivation
     description: >
-      What are the benefits from adding this feature? What problems or
+      What are the benefits of making these improvements? What problems or
       limitations would be solved? (optional)
 
 - type: textarea
@@ -25,7 +25,7 @@ body:
   attributes:
     label: Implementation strategy
     description: >
-      How might we go about implementing this new capability? (optional)
+      How might we go about implementing these improvements? (optional)
   validations:
     required: false
 
@@ -34,6 +34,7 @@ body:
   attributes:
     label: Additional context
     description: >
-      Please provide any additional helpful details or related issues here. (optional)
+      Please provide any additional helpful details or related issues
+      here. (optional)
   validations:
     required: false
