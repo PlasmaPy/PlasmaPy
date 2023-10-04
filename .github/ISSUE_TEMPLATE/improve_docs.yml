@@ -1,6 +1,6 @@
-name: 📚 Documentation improvements
+name: Documentation improvement 📚
 description: |
-  Share ideas on how to improve PlasmaPy's documentation
+  Share ideas on how to improve PlasmaPy's documentation.
 labels: [docs]
 body:
 - type: textarea

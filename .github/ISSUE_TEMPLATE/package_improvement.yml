@@ -1,6 +1,6 @@
-name: 🛠️ Package improvements
+name: Package improvements 🛠
 description: |
-  Improve package infrastructure or refactor existing functionality
+  Refactor existing functionality or improve package infrastructure.
 labels: [refactoring]
 body:
 - type: textarea
@@ -8,7 +8,7 @@ body:
   attributes:
     label: Description of improvements
     description: >
-      What improvements should we make to PlasmaPy?
+      What improvement should we make to PlasmaPy?
   validations:
     required: true
 
