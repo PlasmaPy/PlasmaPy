@@ -1,0 +1,2 @@
+Exposed `plasmapy.dispersion.analytical` and `plasmapy.dispersion.numerical`
+to the `plasmapy.dispersion` namespace.

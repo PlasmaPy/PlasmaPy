@@ -11,7 +11,7 @@ import numpy as np
 
 from collections import namedtuple
 
-from plasmapy.dispersion.dispersionfunction import plasma_dispersion_func_deriv_lite
+from plasmapy.dispersion.dispersion_functions import plasma_dispersion_func_deriv_lite
 from plasmapy.formulary.frequencies import gyrofrequency, plasma_frequency
 from plasmapy.formulary.speeds import thermal_speed
 from plasmapy.utils.decorators import (
