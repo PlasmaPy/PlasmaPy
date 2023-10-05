@@ -14,8 +14,6 @@ from scipy.special import gamma as Γ  # noqa: N812
 from plasmapy.dispersion.dispersion_functions import (
     plasma_dispersion_func,
     plasma_dispersion_func_deriv,
-    plasma_dispersion_func_deriv_lite,
-    plasma_dispersion_func_lite,
 )
 
 # Expected errors table. Used for both plasma_dispersion_func
@@ -44,38 +42,7 @@ plasma_dispersion_func_table = [
 
 
 class TestPlasmaDispersionFunction:
-    """
-    Test class for `plasmapy.dispersion.plasma_dispersion_func`.
-
-    Note: Testing of `plasma_dispersion_func_lite` is done in a separate
-    test class.
-    """
-
-    @pytest.mark.parametrize(
-        ("bound_name", "bound_attr"),
-        [("lite", plasma_dispersion_func_lite)],
-    )
-    def test_lite_function_binding(self, bound_name, bound_attr):
-        """Test expected attributes are bound correctly."""
-        assert hasattr(plasma_dispersion_func, bound_name)
-        assert getattr(plasma_dispersion_func, bound_name) is bound_attr
-
-    def test_lite_function_marking(self):
-        """
-        Test function is marked as having a Lite-Function.
-        """
-        assert hasattr(plasma_dispersion_func, "__bound_lite_func__")
-        assert isinstance(plasma_dispersion_func.__bound_lite_func__, dict)
-
-        for (
-            bound_name,
-            bound_origin,
-        ) in plasma_dispersion_func.__bound_lite_func__.items():
-            assert hasattr(plasma_dispersion_func, bound_name)
-
-            attr = getattr(plasma_dispersion_func, bound_name)
-            origin = f"{attr.__module__}.{attr.__name__}"
-            assert origin == bound_origin
+    """Test class for `plasmapy.dispersion.plasma_dispersion_func`."""
 
     @pytest.mark.parametrize(("w", "expected"), plasma_dispersion_func_table)
     def test_plasma_dispersion_func(self, w, expected):
@@ -214,27 +181,6 @@ class TestPlasmaDispersionFunction:
             )
 
 
-class TestPlasmaDispersionFunctionLite:
-    """Test class for `plasma_dispersion_func_lite`."""
-
-    @pytest.mark.parametrize(("w", "expected"), plasma_dispersion_func_table)
-    def test_normal_vs_lite(self, w, expected):  # noqa: ARG002
-        r"""Test that plasma_dispersion_func and plasma_dispersion_func_lite
-        calculate the same values."""
-
-        # Many of the tabulated results originally came from the book
-        # entitled "The Plasma Dispersion Function: The Hilbert Transform
-        # of the Gaussian" by B. D. Fried and S. D. Conte (1961).
-
-        Z_of_w = plasma_dispersion_func(w)
-        Z_of_w_lite = plasma_dispersion_func_lite(w)
-
-        assert np.isclose(Z_of_w, Z_of_w_lite, atol=1e-12 * (1 + 1j), rtol=1e-12), (
-            f"plasma_dispersion_func({w}) and plasma_dispersion_func_lite({w}) "
-            "are not equal."
-        )
-
-
 # Array of expected values for plasma_dispersion_func_deriv
 # w, expected
 plasma_disp_deriv_table = [
@@ -251,38 +197,7 @@ plasma_disp_deriv_table = [
 
 
 class TestPlasmaDispersionFunctionDeriv:
-    """
-    Test class for `plasmapy.dispersion.plasma_dispersion_func_deriv`.
-
-    Note: Testing of `plasma_dispersion_func_deriv_lite` is done in a separate
-    test class.
-    """
-
-    @pytest.mark.parametrize(
-        ("bound_name", "bound_attr"),
-        [("lite", plasma_dispersion_func_deriv_lite)],
-    )
-    def test_lite_function_binding(self, bound_name, bound_attr):
-        """Test expected attributes are bound correctly."""
-        assert hasattr(plasma_dispersion_func_deriv, bound_name)
-        assert getattr(plasma_dispersion_func_deriv, bound_name) is bound_attr
-
-    def test_lite_function_marking(self):
-        """
-        Test function is marked as having a Lite-Function.
-        """
-        assert hasattr(plasma_dispersion_func_deriv, "__bound_lite_func__")
-        assert isinstance(plasma_dispersion_func_deriv.__bound_lite_func__, dict)
-
-        for (
-            bound_name,
-            bound_origin,
-        ) in plasma_dispersion_func_deriv.__bound_lite_func__.items():
-            assert hasattr(plasma_dispersion_func_deriv, bound_name)
-
-            attr = getattr(plasma_dispersion_func_deriv, bound_name)
-            origin = f"{attr.__module__}.{attr.__name__}"
-            assert origin == bound_origin
+    """Test class for `plasmapy.dispersion.plasma_dispersion_func_deriv`."""
 
     @pytest.mark.parametrize(("w", "expected"), plasma_disp_deriv_table)
     def test_plasma_dispersion_func_deriv(self, w, expected):
@@ -327,26 +242,3 @@ class TestPlasmaDispersionFunctionDeriv:
                 f"plasma_dispersion_func_deriv({w}) did not raise "
                 f"{expected_error.__name__} as expected."
             )
-
-
-class TestPlasmaDispersionFunctionDerivLite:
-    """Test class for `plasma_dispersion_func_deriv_lite`."""
-
-    @pytest.mark.parametrize(("w", "expected"), plasma_disp_deriv_table)
-    def test_normal_vs_lite(self, w, expected):  # noqa: ARG002
-        r"""Test that plasma_dispersion_func_deriv and
-        plasma_dispersion_func_deriv_lite
-        calculate the same values."""
-
-        # Many of the tabulated results originally came from the book
-        # entitled "The Plasma Dispersion Function: The Hilbert Transform
-        # of the Gaussian" by B. D. Fried and S. D. Conte (1961).
-
-        Z_of_w = plasma_dispersion_func_deriv(w)
-        Z_of_w_lite = plasma_dispersion_func_deriv_lite(w)
-
-        assert np.isclose(Z_of_w, Z_of_w_lite, atol=1e-12 * (1 + 1j), rtol=1e-12), (
-            f"plasma_dispersion_func_deriv({w}) and "
-            "plasma_dispersion_func_deriv_lite({w}) "
-            "are not equal."
-        )
