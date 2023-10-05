@@ -29,10 +29,10 @@ def plasma_dispersion_func_lite(zeta):
 
     .. deprecated::
 
-       The location of this function has moved. Use
-       `plasmapy.dispersion.dispersion_functions.plasma_dispersion_func`
-       instead. This function will be removed from the old location in
-       a subsequent release.
+        The lite function for ``plasma_dispersion_func`` has been
+        deprecated and will be removed in a future release. Use
+        `~plasmapy.dispersion.dispersion_functions.plasma_dispersion_func`
+        instead.
     """
 
     warnings.warn(
@@ -44,7 +44,7 @@ def plasma_dispersion_func_lite(zeta):
         PlasmaPyFutureWarning,
     )
 
-    return dispersion_functions.plasma_dispersion_func_lite(zeta)
+    return dispersion_functions.plasma_dispersion_func(zeta)
 
 
 @bind_lite_func(plasma_dispersion_func_lite)
@@ -81,10 +81,10 @@ def plasma_dispersion_func_deriv_lite(zeta):
 
     .. deprecated::
 
-        The location of this function has moved. Use
-        `plasmapy.dispersion.dispersion_functions.plasma_dispersion_func_deriv.lite`
-        instead. This function will be removed from the old location in
-        the future.
+        The lite function for plasma_dispersion_func_deriv has been
+        deprecated and will be removed in a future release. Use
+        `~plasmapy.dispersion.dispersion_functions.plasma_dispersion_func_deriv`
+        instead.
     """
     warnings.warn(
         (
@@ -95,7 +95,7 @@ def plasma_dispersion_func_deriv_lite(zeta):
         PlasmaPyFutureWarning,
     )
 
-    return dispersion_functions.plasma_dispersion_func_deriv_lite(zeta)
+    return dispersion_functions.plasma_dispersion_func_deriv(zeta)
 
 
 @bind_lite_func(plasma_dispersion_func_deriv_lite)
