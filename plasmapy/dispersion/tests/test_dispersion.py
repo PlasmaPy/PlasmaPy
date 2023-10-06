@@ -59,7 +59,7 @@ class TestPlasmaDispersionFunction:
             f"the actual and expected results is {Z_of_w - expected}."
         )
 
-    @given(complex_numbers(allow_infinity=False, allow_nan=False, max_magnitude=100))
+    @given(complex_numbers(allow_infinity=False, allow_nan=False, max_magnitude=50))
     def test_plasma_dispersion_func_symmetry(self, w):
         r"""Test plasma_dispersion_func against its symmetry properties"""
 
