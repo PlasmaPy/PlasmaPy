@@ -81,6 +81,8 @@ doc_subs = {
     "getting ready to contribute": r":ref:`getting ready to contribute`\ ",
     "glossary": r":ref:`glossary`\ ",
     "keyword-only": r":term:`keyword-only`\ ",
+    "lite-function": r":term:`lite-function`\ ",
+    "lite-functions": r":term:`lite-functions`\ ",
     "maxpython": "3.11",
     "minpython": "3.9",
     "parameter": r":term:`parameter`\ ",
