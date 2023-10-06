@@ -53,7 +53,7 @@ class TestPlasmaDispersionFunction:
 
         Z_of_w = plasma_dispersion_func(w)
 
-        assert np.isclose(Z_of_w, expected, atol=1e-12 * (1 + 1j), rtol=1e-12), (
+        assert u.isclose(Z_of_w, expected, atol=1e-12 * (1 + 1j), rtol=1e-12), (
             f"plasma_dispersion_func({w}) equals {Z_of_w} instead of the "
             f"expected approximate result of {expected}.  The difference between "
             f"the actual and expected results is {Z_of_w - expected}."
@@ -70,7 +70,7 @@ class TestPlasmaDispersionFunction:
         Z_of_wconj = plasma_dispersion_func(w.conjugate())
         minusZ_of_minuswconj = -(plasma_dispersion_func(-w).conjugate())
 
-        assert np.isclose(
+        assert u.isclose(
             Z_of_wconj,
             minusZ_of_minuswconj,
             atol=1e-12 * (1 + 1j),
@@ -91,7 +91,7 @@ class TestPlasmaDispersionFunction:
                 plasma_dispersion_func(w)
             ).conjugate() + 2j * np.sqrt(π) * np.exp(-(w.conjugate() ** 2))
 
-            assert np.isclose(
+            assert u.isclose(
                 Z_of_wconj, should_equal_Z_of_wconj, rtol=1e-13, equal_nan=True
             ), (
                 "The symmetry property of the plasma dispersion function that "
@@ -169,7 +169,7 @@ class TestPlasmaDispersionFunction:
 
         for root in roots:
             Z_at_root = plasma_dispersion_func(root)
-            assert np.isclose(Z_at_root, 0 + 0j, atol=1e-15 * (1 + 1j)), (
+            assert u.isclose(Z_at_root, 0 + 0j, atol=1e-15 * (1 + 1j)), (
                 "A root of the plasma dispersion function is expected "
                 f"at w = {root}, but plasma_dispersion_func({root}) is "
                 f"equal to {Z_at_root} instead of 0j."
@@ -213,7 +213,7 @@ class TestPlasmaDispersionFunctionDeriv:
 
         Z_deriv = plasma_dispersion_func_deriv(w)
 
-        assert np.isclose(Z_deriv, expected, atol=5e-5 * (1 + 1j), rtol=5e-6), (
+        assert u.isclose(Z_deriv, expected, atol=5e-5 * (1 + 1j), rtol=5e-6), (
             f"The derivative of the plasma dispersion function does not match "
             f"the expected value for {w = }.  The value of "
             f"plasma_dispersion_func_deriv({w}) equals {Z_deriv} whereas the "
@@ -232,7 +232,7 @@ class TestPlasmaDispersionFunctionDeriv:
         Z_deriv = plasma_dispersion_func_deriv(w)
         Z_deriv_characterization = -2 * (1 + w * Z)
 
-        assert np.isclose(
+        assert u.isclose(
             Z_deriv,
             Z_deriv_characterization,
             atol=1e-12 * (1 + 1j),
