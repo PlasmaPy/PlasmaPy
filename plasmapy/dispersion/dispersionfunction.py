@@ -44,7 +44,7 @@ def plasma_dispersion_func_lite(zeta):
         PlasmaPyFutureWarning,
     )
 
-    return dispersion_functions.plasma_dispersion_func(zeta)
+    return dispersion_functions.plasma_dispersion_func(zeta)  # coverage: ignore
 
 
 @bind_lite_func(plasma_dispersion_func_lite)
@@ -70,7 +70,7 @@ def plasma_dispersion_func(
         PlasmaPyFutureWarning,
     )
 
-    return dispersion_functions.plasma_dispersion_func(zeta)
+    return dispersion_functions.plasma_dispersion_func(zeta)  # coverage: ignore
 
 
 @preserve_signature
@@ -95,7 +95,7 @@ def plasma_dispersion_func_deriv_lite(zeta):
         PlasmaPyFutureWarning,
     )
 
-    return dispersion_functions.plasma_dispersion_func_deriv(zeta)
+    return dispersion_functions.plasma_dispersion_func_deriv(zeta)  # coverage: ignore
 
 
 @bind_lite_func(plasma_dispersion_func_deriv_lite)
@@ -122,4 +122,4 @@ def plasma_dispersion_func_deriv(
         PlasmaPyFutureWarning,
     )
 
-    return dispersion_functions.plasma_dispersion_func_deriv(zeta)
+    return dispersion_functions.plasma_dispersion_func_deriv(zeta)  # coverage: ignore
