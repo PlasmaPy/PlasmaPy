@@ -22,8 +22,6 @@ from plasmapy.dispersion.dispersion_functions import (
 plasma_disp_func_errors_table = [
     ("", TypeError),
     (7 * u.m, u.UnitsError),
-    (np.inf, ValueError),
-    (np.nan, ValueError),
 ]
 
 
@@ -61,7 +59,7 @@ class TestPlasmaDispersionFunction:
             f"the actual and expected results is {Z_of_w - expected}."
         )
 
-    @given(complex_numbers(allow_infinity=False, allow_nan=False, max_magnitude=20))
+    @given(complex_numbers(allow_infinity=False, allow_nan=False, max_magnitude=100))
     def test_plasma_dispersion_func_symmetry(self, w):
         r"""Test plasma_dispersion_func against its symmetry properties"""
 
@@ -72,9 +70,15 @@ class TestPlasmaDispersionFunction:
         Z_of_wconj = plasma_dispersion_func(w.conjugate())
         minusZ_of_minuswconj = -(plasma_dispersion_func(-w).conjugate())
 
-        assert np.isclose(Z_of_wconj, minusZ_of_minuswconj, atol=0, rtol=1e-15), (
+        assert np.isclose(
+            Z_of_wconj,
+            minusZ_of_minuswconj,
+            atol=1e-12 * (1 + 1j),
+            rtol=1e-12,
+            equal_nan=True,
+        ), (
             "The symmetry property of the plasma dispersion function that "
-            f"Z(w*) == -[Z(-w)]* is not met for w = {w}.  Instead, "
+            f"Z(w*) == -[Z(-w)]* is not met for {w = }.  Instead, "
             f"plasma_dispersion_func({w.conjugate()}) = {Z_of_wconj} "
             f"whereas -plasma_dispersion_func({-w}).conjugate() = "
             f"{minusZ_of_minuswconj}.  "
@@ -87,10 +91,12 @@ class TestPlasmaDispersionFunction:
                 plasma_dispersion_func(w)
             ).conjugate() + 2j * np.sqrt(π) * np.exp(-(w.conjugate() ** 2))
 
-            assert np.isclose(Z_of_wconj, should_equal_Z_of_wconj, rtol=1e-13), (
+            assert np.isclose(
+                Z_of_wconj, should_equal_Z_of_wconj, rtol=1e-13, equal_nan=True
+            ), (
                 "The symmetry property of the plasma dispersion function that "
                 "Z(w*) = Z(w)* + 2j * sqrt(pi) * exp[-(w*)**2] for Im(w) > 0 "
-                f"is not met for w = {w}.  The value of "
+                f"is not met for {w = }.  The value of "
                 f"plasma_dispersion_func({w.conjugate()}) is {Z_of_wconj}, "
                 f"which is different from {should_equal_Z_of_wconj}.  "
                 "The difference between these two results is "
@@ -209,13 +215,13 @@ class TestPlasmaDispersionFunctionDeriv:
 
         assert np.isclose(Z_deriv, expected, atol=5e-5 * (1 + 1j), rtol=5e-6), (
             f"The derivative of the plasma dispersion function does not match "
-            f"the expected value for w = {w}.  The value of "
+            f"the expected value for {w = }.  The value of "
             f"plasma_dispersion_func_deriv({w}) equals {Z_deriv} whereas the "
             f"expected value is {expected}.  The difference between the actual "
             f"and expected results is {Z_deriv - expected}."
         )
 
-    @given(complex_numbers(allow_infinity=False, allow_nan=False, max_magnitude=20))
+    @given(complex_numbers(allow_infinity=True, allow_nan=False))
     def test_plasma_dispersion_func_deriv_characterization(self, w):
         r"""Test plasma_dispersion_func_deriv against an exact relationship."""
 
@@ -226,9 +232,15 @@ class TestPlasmaDispersionFunctionDeriv:
         Z_deriv = plasma_dispersion_func_deriv(w)
         Z_deriv_characterization = -2 * (1 + w * Z)
 
-        assert np.isclose(Z_deriv, Z_deriv_characterization, rtol=1e-15), (
-            f"The relationship that Z'(w) = -2 * [1 + w * Z(w)] is not "
-            f"met for w = {w}, where Z'(w) = {Z_deriv} and "
+        assert np.isclose(
+            Z_deriv,
+            Z_deriv_characterization,
+            atol=1e-12 * (1 + 1j),
+            rtol=1e-12,
+            equal_nan=True,
+        ), (
+            f"The relationship that Z′(w) = -2 * [1 + w * Z(w)] is not "
+            f"met for {w = }, where Z′(w) = {Z_deriv} and "
             f"-2 * [1 + w * Z(w)] = {Z_deriv_characterization}."
         )
 

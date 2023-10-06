@@ -60,8 +60,9 @@ def plasma_dispersion_func(
     >>> plasma_dispersion_func(0)
     1.7724538509055159j
     >>> plasma_dispersion_func(1 + 1j)
-    (0.6088888957234254+0.33494583882874024j)
-    >>> plasma_dispersion_func([0, 1 + 1j, 2 + 2j])
+    (-0.369...+0.540...j)
+    >>> plasma_dispersion_func([0.3, 0.7 + 2.3j])
+    array([-0.56526333+1.61990085j, -0.09995023+0.37685142j])
     """
     try:
         return 1j * np.sqrt(np.pi) * faddeeva_function(zeta)
