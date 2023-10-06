@@ -1,6 +1,7 @@
 """Using the potential, calculate the charge density."""
 import numpy as np
 
+from scipy.integrate import quad_vec
 from scipy.special import erfc
 
 
@@ -44,16 +45,14 @@ def eta_1(A, chi, spherical=True):
     This is the term :math:`\eta_1(A)` that appears in various formula in appendix E.
     """
     if spherical:
-        # Equation (E.21).
-        g = np.pi**0.5 / 2 * np.exp(A - chi) * erfc((A - chi) ** 0.5)
         # Equation (E.23).
-        return -np.exp(-A) / np.pi**0.5 * ((A - chi) ** 0.5 + g)
+        return -np.exp(-A) / np.pi**0.5 * ((A - chi) ** 0.5 + _g((A - chi) ** 0.5))
     else:
         # Equation (E.10).
         return 0
 
 
-def eta_2(A, chi, x, spherical=True):
+def eta_2(A, chi, chi_p, x, spherical=True):
     r"""Calculate the contribution to the charge density between the region where particles are absorbed by the probe and non-striking particles exist.
 
     Parameters
@@ -77,6 +76,47 @@ def eta_2(A, chi, x, spherical=True):
     -----
     This is the term :math:`\eta_2(A)` that appears in various formula in appendix E.
     """
+    kappa = (chi - x**2 * chi_p) / (1 - x**2)
     if spherical:
-        # Equation (E.3)
-        pass
+        # Equation (E.25)
+        return (
+            -((1 - x**2) ** 0.5)
+            * np.exp(-A)
+            / np.pi**0.5
+            * ((A - kappa) ** 0.5 + _g(A - kappa**0.5))
+        )
+    else:
+        # TODO: Change this to use the approximations given by equations (E.45) - (E.65).
+
+        # Variables defined in (E.45).
+        tau = (kappa - chi_p) / 2
+        mu = np.max(kappa, chi_p) - tau
+        theta = chi - tau
+        B = A - tau
+
+        # Integrand from (E.59). (E.59) is a formula that is ready to integrate numerically.
+        def integrand(omega):
+            return 1 / (
+                (-np.log(omega) - theta) * (np.log(omega) ** 2 - mu**2) ** 0.5
+            )
+
+        # Evaluate H1 from (E.59).
+        H1 = (
+            np.exp(-tau)
+            * quad_vec(
+                lambda omega: (
+                    (-np.log(omega) - theta) * ((np.log(omega)) ** 2 - mu**2) ** 0.5
+                )
+                ** -1,
+                0,
+                np.exp(-B),
+            )[0]
+        )
+
+        # Equation (E.44)
+        return (
+            np.exp(-A)
+            / np.pi
+            * np.arctan((x**2 / (1 - x**2) * (A - chi_p) / (A - kappa)) ** 0.5)
+            + x / (1 - x**2) ** 0.5 * (chi_p - chi) / (2 * np.pi) * H1
+        )
