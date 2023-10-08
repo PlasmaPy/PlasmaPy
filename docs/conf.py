@@ -18,7 +18,7 @@ import _cff_to_rst
 
 from _global_substitutions import global_substitutions
 from datetime import datetime
-from pkg_resources import parse_version
+import pkg_resources  # deprecated
 from sphinx.application import Sphinx
 
 # Generate author list from CITATION.cff
@@ -27,10 +27,21 @@ _cff_to_rst.main()
 
 from plasmapy import __version__ as release
 
-# -- General configuration ------------------------------------------------
 
-# Add Sphinx extension module names here. When extensions are removed or
-# added, please update the corresponding section in docs/doc_guide.rst.
+# Project metadata
+
+project = "PlasmaPy"
+author = "PlasmaPy Community"
+copyright = f"2015–{datetime.utcnow().year}, {author}"  # noqa: A001, DTZ003
+language = "en"
+
+release = "" if release == "unknown" else release
+parsed_version = pkg_resources.parse_version(release)  # deprecated
+release = parsed_version.public
+version = ".".join(release.split(".")[:2])  # short X.Y version
+revision = parsed_version.local[1:] if parsed_version.local is not None else ""
+
+# Sphinx configuration variables
 
 extensions = [
     "hoverxref.extension",
@@ -59,65 +70,46 @@ extensions = [
     "sphinxcontrib.globalsubs",
 ]
 
-# plasmapy_sphinx settings
+exclude_patterns = [
+    "_build",
+    "Thumbs.db",
+    ".DS_Store",
+    "notebooks/langmuir_samples",
+    "**.ipynb_checkpoints",
+    "plasmapy_sphinx",
+    "**Untitled*",
+]
 
-autosummary_generate = True
-automodapi_custom_groups = {
-    "aliases": {
-        "title": "Aliases",
-        "description": (
-            """
-            PlasmaPy provides :term:`aliases` of the most common plasma
-            functionality for user convenience. Aliases in PlasmaPy are
-            denoted with a trailing underscore (e.g., ``alias_``). For
-            further details, please refer to the :ref:`contributor
-            guide's section on aliases <aliases>`.
-            """
-        ),
-        "dunder": "__aliases__",
-    },
-    "lite-functions": {
-        "title": "Lite-Functions",
-        "description": (
-            """
-            :term:`Lite-functions` are optimized versions of existing
-            `plasmapy` functions that are intended for applications where
-            computational efficiency matters most. Lite-functions accept
-            numbers and NumPy arrays that are implicitly assumed to be
-            in SI units, and do not accept |Quantity| objects as inputs.
-            For further details, please refer to the :ref:`contributor
-            guide's section on lite-functions <lite-functions>`.
+default_role = "py:obj"
+html_extra_path = ["robots.txt"]
+html_favicon = "./_static/icon.ico"
+root_doc = "index"
+source_suffix = ".rst"
+templates_path = ["_templates"]
 
-            .. caution::
+# The Sphinx configuration variables rst_prolog and rst_epilog contain
+# text that gets prepended or appended to all reStructuredText sources.
+# These variables can be used to make global definitions; however, long
+# values of these variables can greatly slow down the documentation
+# build, so use them in moderation!  Use docs/_global_substitutions.py
+# to define substitutions.
 
-               Lite-functions do not include the safeguards that are
-               included in most `plasmapy.formulary` functions. When
-               using lite-functions, it is vital to double-check your
-               implementation!
-            """
-        ),
-        "dunder": "__lite_funcs__",
-    },
-}
-automodapi_group_order = (
-    "modules",
-    "classes",
-    "exceptions",
-    "warnings",
-    "functions",
-    "aliases",
-    "lite-functions",
-    "variables",
-)
+rst_prolog = """
+.. role:: py(code)
+   :language: python
 
-# Configure sphinxcontrib-bibtex
+.. role:: bash(code)
+   :language: bash
+"""
+
+# sphinxcontrib-bibtex
 
 bibtex_bibfiles = ["bibliography.bib"]
 bibtex_default_style = "plain"
 bibtex_reference_style = "author_year"
 bibtex_cite_id = "{key}"
 
-# Configure sphinx-codeautolink
+# sphinx-codeautolink
 
 codeautolink_concat_default = True
 
@@ -164,72 +156,9 @@ autodoc_typehints_format = "short"
 
 issues_github_path = "PlasmaPy/PlasmaPy"
 
-# Add any paths that contain templates here, relative to this directory.
-templates_path = ["_templates"]
+# sphinx.ext.todo
 
-# The suffix(es) of source filenames.
-# You can specify multiple suffix as a list of string:
-#
-# source_suffix = ['.rst', '.md']
-source_suffix = ".rst"
-
-# The root toctree document.
-root_doc = "index"
-
-# General information about the project.
-project = "PlasmaPy"
-author = "PlasmaPy Community"
-copyright = f"2015–{datetime.utcnow().year}, {author}"  # noqa: A001, DTZ003
-language = "en"
-
-# The version info for the project you're documenting, acts as replacement for
-# |version| and |release|, also used in various other places throughout the
-# built documents.
-#
-# The full version, including alpha/beta/rc tags.
-#  Note: If plasmapy.__version__ can not be defined then it is set to 'unknown'.
-#        However, release needs to be a semantic style version number, so set
-#        the 'unknown' case to ''.
-release = "" if release == "unknown" else release
-pv = parse_version(release)
-release = pv.public
-version = ".".join(release.split(".")[:2])  # short X.Y version
-revision = pv.local[1:] if pv.local is not None else ""
-
-# The Sphinx configuration variables rst_prolog and rst_epilog contain
-# text that gets prepended or appended to all reStructuredText sources.
-# These variables can be used to make global definitions; however, long
-# values of these variables can greatly slow down the documentation
-# build, so use them in moderation!  Use docs/_global_substitutions.py
-# to define substitutions.
-
-rst_prolog = """
-.. role:: py(code)
-   :language: python
-
-.. role:: bash(code)
-   :language: bash
-"""
-
-# List of patterns, relative to source directory, that match files and
-# directories to ignore when looking for source files.
-# This patterns also effect to html_static_path and html_extra_path
-exclude_patterns = [
-    "_build",
-    "Thumbs.db",
-    ".DS_Store",
-    "notebooks/langmuir_samples",
-    "**.ipynb_checkpoints",
-    "plasmapy_sphinx",
-    "**Untitled*",
-]
-
-html_extra_path = ["robots.txt"]
-
-# If true, `todo` and `todoList` produce output, else they produce nothing.
-todo_include_todos = False
-
-default_role = "py:obj"
+todo_include_todos = False  # if true, show TODOs in the doc build
 
 redirects = {
     "contributing/install_dev": "../contributing/getting_ready.html",
@@ -393,23 +322,16 @@ nitpick_ignore_regex = [
     (python_role, "plasmapy.utils.decorators.lite_func"),
 ]
 
-# -- Options for HTML output ----------------------------------------------
+# html output options
 
-# The theme to use for HTML and HTML Help pages.  See the documentation for
-# a list of builtin themes.
-#
 html_theme = "sphinx_rtd_theme"
 
-# Theme options are theme-specific and customize the look and feel of a theme
-# further.  For a list of options available for each theme, see the
-# documentation.
-#
+# sphinx_rtd_theme options:
+# https://sphinx-rtd-theme.readthedocs.io/en/stable/configuring.html#theme-options
+
 html_logo = "./_static/with-text-light-190px.png"
 html_theme_options = {
     "logo_only": True,
-    #
-    # TOC options
-    #   https://sphinx-rtd-theme.readthedocs.io/en/stable/configuring.html#theme-options
     "includehidden": False,
 }
 
@@ -423,64 +345,13 @@ html_static_path = ["_static"]
 # B, not F).
 modindex_common_prefix = ["plasmapy."]
 
-# -- Options for HTMLHelp output ------------------------------------------
+# HTML help builder options
 
-# Output file base name for HTML help builder.
 htmlhelp_basename = "PlasmaPydoc"
 
-# -- Options for LaTeX output ---------------------------------------------
+# Can we delete the man_pages output?  I don't think we use this.
 
-latex_elements = {
-    # The paper size ('letterpaper' or 'a4paper').
-    # 'papersize': 'letterpaper',
-    #
-    # The font size ('10pt', '11pt' or '12pt').
-    # 'pointsize': '10pt',
-    #
-    # Additional stuff for the LaTeX preamble.
-    # 'preamble': '',
-    #
-    # Latex figure (float) alignment
-    # 'figure_align': 'htbp',
-}
-
-# Grouping the document tree into LaTeX files. List of tuples
-# (source start file, target name, title,
-#  author, documentclass [howto, manual, or own class]).
-latex_documents = [
-    (
-        root_doc,
-        "PlasmaPy.tex",
-        "PlasmaPy Documentation",
-        "PlasmaPy Community",
-        "manual",
-    )
-]
-
-# -- Options for manual page output ---------------------------------------
-
-# One entry per manual page. List of tuples
-# (source start file, name, description, authors, manual section).
 man_pages = [(root_doc, "plasmapy", "PlasmaPy Documentation", [author], 1)]
-
-# -- Options for Texinfo output -------------------------------------------
-
-# Grouping the document tree into Texinfo files. List of tuples
-# (source start file, target name, title, author,
-#  dir menu entry, description, category)
-texinfo_documents = [
-    (
-        root_doc,
-        "PlasmaPy",
-        "PlasmaPy Documentation",
-        author,
-        "PlasmaPy",
-        "Python package for plasma physics",
-        "Miscellaneous",
-    )
-]
-
-html_favicon = "./_static/icon.ico"
 
 # Settings for checking hyperlinks with `make linkcheck`.
 
@@ -602,7 +473,7 @@ linkcheck_ignore = [
     r"https://doi\.org/10\.1016/0032-0633\(94\)00197-Y",
 ]
 
-# -- NBSphinx options
+# nbsphinx
 
 nbsphinx_thumbnails = {
     "notebooks/*": "_static/graphic-circular.png",
@@ -653,6 +524,58 @@ nbsphinx_prolog = r"""
     \textcolor{gray}{The following section was generated from
     \sphinxcode{\sphinxupquote{\strut {{ docname | escape_latex }}}} \dotfill}}
 """
+
+# plasmapy_sphinx settings
+
+autosummary_generate = True
+automodapi_custom_groups = {
+    "aliases": {
+        "title": "Aliases",
+        "description": (
+            """
+            PlasmaPy provides :term:`aliases` of the most common plasma
+            functionality for user convenience. Aliases in PlasmaPy are
+            denoted with a trailing underscore (e.g., ``alias_``). For
+            further details, please refer to the :ref:`contributor
+            guide's section on aliases <aliases>`.
+            """
+        ),
+        "dunder": "__aliases__",
+    },
+    "lite-functions": {
+        "title": "Lite-Functions",
+        "description": (
+            """
+            :term:`Lite-functions` are optimized versions of existing
+            `plasmapy` functions that are intended for applications where
+            computational efficiency matters most. Lite-functions accept
+            numbers and NumPy arrays that are implicitly assumed to be
+            in SI units, and do not accept |Quantity| objects as inputs.
+            For further details, please refer to the :ref:`contributor
+            guide's section on lite-functions <lite-functions>`.
+
+            .. caution::
+
+               Lite-functions do not include the safeguards that are
+               included in most `plasmapy.formulary` functions. When
+               using lite-functions, it is vital to double-check your
+               implementation!
+            """
+        ),
+        "dunder": "__lite_funcs__",
+    },
+}
+
+automodapi_group_order = (
+    "modules",
+    "classes",
+    "exceptions",
+    "warnings",
+    "functions",
+    "aliases",
+    "lite-functions",
+    "variables",
+)
 
 
 def setup(app: Sphinx) -> None:
