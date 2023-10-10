@@ -15,10 +15,10 @@ sys.path.insert(0, os.path.abspath("."))  # noqa: PTH100
 # isort: on
 
 import _cff_to_rst
+import pkg_resources  # deprecated
 
 from _global_substitutions import global_substitutions
 from datetime import datetime
-import pkg_resources  # deprecated
 from sphinx.application import Sphinx
 
 # Generate author list from CITATION.cff
@@ -26,7 +26,6 @@ from sphinx.application import Sphinx
 _cff_to_rst.main()
 
 from plasmapy import __version__ as release
-
 
 # Project metadata
 
