@@ -188,38 +188,6 @@ html_theme_options = {
 }
 htmlhelp_basename = "PlasmaPydoc"
 
-# sphinx.ext.autodoc
-
-autoclass_content = "both"
-autodoc_typehints_format = "short"
-
-# sphinx.ext.extlinks lets us simplify the process of creating links to
-# commonly used external sites. The key of the extlink becomes a new
-# role, and the corresponding tuple contains the base url and the
-# caption. For example, we can now do :orcid:`0000-0000-0000-0000` and
-# have a link create to the corresponding ORCID page. New roles should
-# be added to rst-roles in tox.ini to avoid being caught by
-# flake8-rst-docstrings.
-
-extlinks = {
-    "orcid": ("https://orcid.org/%s", "%s"),
-    "wikipedia": ("https://en.wikipedia.org/wiki/%s", "%s"),
-}
-
-# sphinx.ext.todo
-
-todo_include_todos = False
-
-# adapted from sphinx-hoverxref conf.py
-
-if building_on_readthedocs := os.environ.get("READTHEDOCS"):
-    # Using the proxied API endpoint is a Read the Docs strategy to
-    # avoid a cross-site request forgery block for docs using a custom
-    # domain.
-    use_proxied_api_endpoint = os.environ.get("PROXIED_API_ENDPOINT")
-    hoverxref_api_host = "/_" if use_proxied_api_endpoint else "https://readthedocs.org"
-
-
 # sphinxcontrib-bibtex
 
 bibtex_bibfiles = ("bibliography.bib",)
@@ -251,7 +219,7 @@ intersphinx_mapping = {
     ),
 }
 
-# sphinx-hoverxref
+# hoverxref
 
 hoverxref_intersphinx = tuple(intersphinx_mapping.keys())
 
@@ -283,9 +251,27 @@ hoverxref_role_types = {
     "term": "tooltip",
 }
 
+# sphinx.ext.autodoc
+
+autoclass_content = "both"
+autodoc_typehints_format = "short"
+
+# adapted from sphinx-hoverxref conf.py
+
+if building_on_readthedocs := os.environ.get("READTHEDOCS"):
+    # Using the proxied API endpoint is a Read the Docs strategy to
+    # avoid a cross-site request forgery block for docs using a custom
+    # domain.
+    use_proxied_api_endpoint = os.environ.get("PROXIED_API_ENDPOINT")
+    hoverxref_api_host = "/_" if use_proxied_api_endpoint else "https://readthedocs.org"
+
 # sphinx-issues
 
 issues_github_path = "PlasmaPy/PlasmaPy"
+
+# sphinx.ext.todo
+
+todo_include_todos = False
 
 # sphinx_reredirects
 
@@ -313,6 +299,19 @@ redirects = {
     "whatsnew/0.9.1": "../changelog/0.1.0.html",
     "whatsnew/2023.1.0": "../changelog/2023.1.0.html",
     "whatsnew/index": "../changelog/index.html",
+}
+
+# Using sphinx.ext.extlinks lets us simplify the process of creating
+# links to commonly used external sites. The key of the extlink becomes
+# a new role, and the corresponding tuple contains the base url and the
+# caption. For example, we can now do :orcid:`0000-0000-0000-0000` and
+# have a link create to the corresponding ORCID page. New roles should
+# be added to rst-roles in tox.ini to avoid being caught by
+# flake8-rst-docstrings.
+
+extlinks = {
+    "orcid": ("https://orcid.org/%s", "%s"),
+    "wikipedia": ("https://en.wikipedia.org/wiki/%s", "%s"),
 }
 
 # Can we delete the man_pages output?  I don't think we use this.
@@ -484,9 +483,10 @@ nbsphinx_prolog = r"""
     \sphinxcode{\sphinxupquote{\strut {{ docname | escape_latex }}}} \dotfill}}
 """
 
-# plasmapy_sphinx
+# plasmapy_sphinx settings
 
 autosummary_generate = True
+
 automodapi_group_order = (
     "modules",
     "classes",
@@ -497,6 +497,7 @@ automodapi_group_order = (
     "lite-functions",
     "variables",
 )
+
 automodapi_custom_groups = {
     "aliases": {
         "title": "Aliases",
@@ -537,6 +538,6 @@ automodapi_custom_groups = {
 
 
 def setup(app: Sphinx) -> None:
-    app.add_config_value(name="revision", default="", rebuild=True)
-    app.add_css_file(filename="css/admonition_color_contrast.css")
-    app.add_css_file(filename="css/plasmapy.css", priority=600)
+    app.add_config_value("revision", "", rebuild=True)
+    app.add_css_file("css/admonition_color_contrast.css")
+    app.add_css_file("css/plasmapy.css", priority=600)
