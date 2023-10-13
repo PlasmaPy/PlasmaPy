@@ -82,6 +82,7 @@ exclude_patterns = [
 default_role = "py:obj"
 html_extra_path = ["robots.txt"]
 html_favicon = "./_static/icon.ico"
+modindex_common_prefix = ["plasmapy."]
 pygments_style = "default"  # code highlighting style to meet WCAG AA contrast standard
 root_doc = "index"
 source_suffix = ".rst"
@@ -305,44 +306,29 @@ extlinks = {
 
 # html output options
 
-html_theme = "sphinx_rtd_theme"
-
-# sphinx_rtd_theme options:
-
 html_logo = "./_static/with-text-light-190px.png"
+html_static_path = ["_static"]
+html_theme = "sphinx_rtd_theme"
 html_theme_options = {
     "logo_only": True,
     "includehidden": False,
 }
-
-html_static_path = ["_static"]
-
-# A list of prefixes that are ignored for sorting the Python module
-# index (e.g., if this is set to ['foo.'], then foo.bar is shown under
-# B, not F).
-modindex_common_prefix = ["plasmapy."]
-
-# HTML help builder options
-
 htmlhelp_basename = "PlasmaPydoc"
 
 # Can we delete the man_pages output?  I don't think we use this.
 
 man_pages = [(root_doc, "plasmapy", "PlasmaPy Documentation", [author], 1)]
 
-# Settings for checking hyperlinks with `make linkcheck`.
-
-# Regular expressions primer: https://docs.python.org/3/library/re.html
+# Settings for checking hyperlinks with `make linkcheck`. For a primer
+# on regular expressions, see: https://docs.python.org/3/library/re.html
 
 linkcheck_anchors = True
-
 linkcheck_anchors_ignore = [
     "/room",
     r".+openastronomy.+",
     "L[0-9].+",
     "!forum/plasmapy",
 ]
-
 linkcheck_allowed_redirects = {
     r"https://doi\.org/.+": r"https://.+",  # DOI links are persistent
     r"https://docs.+\.org": r"https://docs.+\.org/en/.+",
@@ -359,13 +345,9 @@ linkcheck_allowed_redirects = {
     r"https://www\.python\.org/dev/peps/pep.+": r"https://peps\.python\.org/pep.+",
 }
 
-# Hyperlinks for `make linkcheck` to ignore. This may include:
-#
-#  - Stable links (i.e. DOI links that have been tested)
-#  - Links to domains that get repeatedly accessed by `make linkcheck`
-#    and are prone to 403 errors (i.e. some DOI links)
-#  - Links that require a login (i.e. from )
-#  - Links that require you to verify as human
+# Hyperlinks for `make linkcheck` to ignore. This may include stable
+# links (like DOIs), links prone to 403 errors, links requiring a login,
+# or links that require you to verify that you are a human.
 
 linkcheck_ignore = [
     r"https://agupubs\.onlinelibrary\.wiley\.com/doi/10\.1029/2012JA017856",
