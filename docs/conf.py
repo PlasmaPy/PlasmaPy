@@ -42,7 +42,7 @@ revision = parsed_version.local[1:] if parsed_version.local is not None else ""
 
 # Sphinx configuration variables
 
-extensions = [
+extensions = (
     "hoverxref.extension",
     "IPython.sphinxext.ipython_console_highlighting",
     "nbsphinx",
@@ -67,9 +67,9 @@ extensions = [
     "sphinx_toolbox.collapse",
     "sphinxcontrib.bibtex",
     "sphinxcontrib.globalsubs",
-]
+)
 
-exclude_patterns = [
+exclude_patterns = (
     "**.ipynb_checkpoints",
     "**Untitled*",
     ".DS_Store",
@@ -77,16 +77,16 @@ exclude_patterns = [
     "notebooks/langmuir_samples",
     "plasmapy_sphinx",
     "Thumbs.db",
-]
+)
 
 default_role = "py:obj"
-html_extra_path = ["robots.txt"]
+html_extra_path = ("robots.txt",)
 html_favicon = "./_static/icon.ico"
-modindex_common_prefix = ["plasmapy."]
+modindex_common_prefix = ("plasmapy.",)
 pygments_style = "default"  # code highlighting style to meet WCAG AA contrast standard
 root_doc = "index"
 source_suffix = ".rst"
-templates_path = ["_templates"]
+templates_path = "_templates"
 
 # Specify patterns to ignore when doing a nitpicky documentation build.
 # These may include common expressions like "real number" as well as
@@ -94,7 +94,7 @@ templates_path = ["_templates"]
 
 python_role = "py:.*"
 
-nitpick_ignore_regex = [
+nitpick_ignore_regex = (
     # Before adding patterns for type specifications in docstrings, note
     # that information on the *meaning* of a parameter should be
     # included in the parameter description instead.
@@ -163,7 +163,7 @@ nitpick_ignore_regex = [
     (python_role, "plasmapy.analysis.swept_langmuir.find_floating_potential"),
     (python_role, "plasmapy.particles.particle_collections"),
     (python_role, "plasmapy.utils.decorators.lite_func"),
-]
+)
 
 # The Sphinx configuration variables rst_prolog and rst_epilog contain
 # text that gets prepended or appended to all reStructuredText sources.
@@ -180,9 +180,20 @@ rst_prolog = """
    :language: bash
 """
 
+# html output options
+
+html_logo = "./_static/with-text-light-190px.png"
+html_static_path = "_static"
+html_theme = "sphinx_rtd_theme"
+html_theme_options = {
+    "logo_only": True,
+    "includehidden": False,
+}
+htmlhelp_basename = "PlasmaPydoc"
+
 # sphinxcontrib-bibtex
 
-bibtex_bibfiles = ["bibliography.bib"]
+bibtex_bibfiles = ("bibliography.bib",)
 bibtex_default_style = "plain"
 bibtex_reference_style = "author_year"
 bibtex_cite_id = "{key}"
@@ -213,12 +224,12 @@ intersphinx_mapping = {
 
 # hoverxref
 
-hoverxref_intersphinx = list(intersphinx_mapping.keys())
+hoverxref_intersphinx = tuple(intersphinx_mapping.keys())
 
 hoverxref_auto_ref = True
-hoverxref_domains = ["py", "cite"]
+hoverxref_domains = ("py", "cite")
 hoverxref_mathjax = True
-hoverxref_roles = ["confval", "term"]
+hoverxref_roles = ("confval", "term")
 hoverxref_sphinxtabs = True
 hoverxref_tooltip_maxwidth = 600  # RTD main window is 696px
 
@@ -243,6 +254,8 @@ hoverxref_role_types = {
     "term": "tooltip",
 }
 
+# sphinx.ext.autodoc
+
 autoclass_content = "both"
 autodoc_typehints_format = "short"
 
@@ -261,7 +274,7 @@ issues_github_path = "PlasmaPy/PlasmaPy"
 
 # sphinx.ext.todo
 
-todo_include_todos = False  # if true, show TODOs in the doc build
+todo_include_todos = False
 
 # sphinx_reredirects
 
@@ -304,17 +317,6 @@ extlinks = {
     "wikipedia": ("https://en.wikipedia.org/wiki/%s", "%s"),
 }
 
-# html output options
-
-html_logo = "./_static/with-text-light-190px.png"
-html_static_path = ["_static"]
-html_theme = "sphinx_rtd_theme"
-html_theme_options = {
-    "logo_only": True,
-    "includehidden": False,
-}
-htmlhelp_basename = "PlasmaPydoc"
-
 # Can we delete the man_pages output?  I don't think we use this.
 
 man_pages = [(root_doc, "plasmapy", "PlasmaPy Documentation", [author], 1)]
@@ -323,12 +325,12 @@ man_pages = [(root_doc, "plasmapy", "PlasmaPy Documentation", [author], 1)]
 # on regular expressions, see: https://docs.python.org/3/library/re.html
 
 linkcheck_anchors = True
-linkcheck_anchors_ignore = [
+linkcheck_anchors_ignore = (
     "/room",
     r".+openastronomy.+",
     "L[0-9].+",
     "!forum/plasmapy",
-]
+)
 linkcheck_allowed_redirects = {
     r"https://doi\.org/.+": r"https://.+",  # DOI links are persistent
     r"https://docs.+\.org": r"https://docs.+\.org/en/.+",
@@ -349,7 +351,7 @@ linkcheck_allowed_redirects = {
 # links (like DOIs), links prone to 403 errors, links requiring a login,
 # or links that require you to verify that you are a human.
 
-linkcheck_ignore = [
+linkcheck_ignore = (
     r"https://agupubs\.onlinelibrary\.wiley\.com/doi/10\.1029/2012JA017856",
     r"https://doi\.org/10\.1007/978-3-319-22309-4",
     r"https://doi\.org/10\.1007/978-3-319-24121-0",
@@ -430,7 +432,7 @@ linkcheck_ignore = [
     r"https://www\.iter\.org/",
     r"https://www\.sciencedirect\.com/book/9780123748775/.*",
     r"https://doi\.org/10\.1016/0032-0633\(94\)00197-Y",
-]
+)
 
 # nbsphinx
 
@@ -487,6 +489,18 @@ nbsphinx_prolog = r"""
 # plasmapy_sphinx settings
 
 autosummary_generate = True
+
+automodapi_group_order = (
+    "modules",
+    "classes",
+    "exceptions",
+    "warnings",
+    "functions",
+    "aliases",
+    "lite-functions",
+    "variables",
+)
+
 automodapi_custom_groups = {
     "aliases": {
         "title": "Aliases",
@@ -524,17 +538,6 @@ automodapi_custom_groups = {
         "dunder": "__lite_funcs__",
     },
 }
-
-automodapi_group_order = (
-    "modules",
-    "classes",
-    "exceptions",
-    "warnings",
-    "functions",
-    "aliases",
-    "lite-functions",
-    "variables",
-)
 
 
 def setup(app: Sphinx) -> None:
