@@ -99,7 +99,7 @@ the same length as that heading.
 
 We can link to code objects by enclosing them in single backticks. This
 linking will work for |Python| objects as well as certain packages like
-|NumPy|, |SciPy|, |Astropy|, and pandas_. This linking is described in the
+|NumPy|, |SciPy|, |Astropy|, and |pandas|. This linking is described in the
 section on :ref:`external-references`. In-line code samples are
 typically enclosed in double backticks. To get inline code highlighting,
 use the :rest:`:py:` role for Python code or :rest:`:bash:` for code run
@@ -994,7 +994,7 @@ The external packages that we can cross-reference via the magic of
 `~sphinx.ext.intersphinx` are defined in :confval:`intersphinx_mapping`
 in |docs/conf.py|_. Intersphinx has already been set up in PlasmaPy to
 include the central |Python| documentation, as well as frequently used
-packages such as |Astropy|, |lmfit|, |matplotlib|, |NumPy|, |Pandas|,
+packages such as |Astropy|, |lmfit|, |matplotlib|, |NumPy|, |pandas|,
 |SciPy|, and |Sphinx|.
 
 .. tip::
@@ -1451,7 +1451,6 @@ For example Jupyter notebooks, the tables of contents are in
 .. _numpydoc: https://numpydoc.readthedocs.io/en/latest/format.html#docstring-standard
 .. _options to sphinx-build: https://www.sphinx-doc.org/en/master/man/sphinx-build.html#options
 .. _packages related to Sphinx: https://pypi.org/search/?q=sphinx+or+nbsphinx&o=-created&c=Framework+%3A%3A+Sphinx
-.. _pandas: https://pandas.pydata.org
 .. _parameters: https://numpydoc.readthedocs.io/en/latest/format.html#parameters
 .. _raise an issue: https://github.com/PlasmaPy/PlasmaPy/issues/new?title=Improve+documentation+for...&labels=Documentation
 .. _raise an issue about the documentation build failure: https://github.com/PlasmaPy/PlasmaPy/issues/new?title=Documentation+build+failure&labels=Documentation
