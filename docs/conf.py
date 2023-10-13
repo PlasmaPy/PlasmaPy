@@ -69,7 +69,7 @@ extensions = [
     "sphinxcontrib.globalsubs",
 ]
 
-exclude_patterns = [
+exclude_patterns = (
     "**.ipynb_checkpoints",
     "**Untitled*",
     ".DS_Store",
@@ -77,12 +77,12 @@ exclude_patterns = [
     "notebooks/langmuir_samples",
     "plasmapy_sphinx",
     "Thumbs.db",
-]
+)
 
 default_role = "py:obj"
-html_extra_path = ["robots.txt"]
+html_extra_path = ("robots.txt",)
 html_favicon = "./_static/icon.ico"
-modindex_common_prefix = ["plasmapy."]
+modindex_common_prefix = ("plasmapy.",)
 pygments_style = "default"  # code highlighting style to meet WCAG AA contrast standard
 root_doc = "index"
 source_suffix = ".rst"
@@ -94,7 +94,7 @@ templates_path = "_templates"
 
 python_role = "py:.*"
 
-nitpick_ignore_regex = [
+nitpick_ignore_regex = (
     # Before adding patterns for type specifications in docstrings, note
     # that information on the *meaning* of a parameter should be
     # included in the parameter description instead.
@@ -163,7 +163,7 @@ nitpick_ignore_regex = [
     (python_role, "plasmapy.analysis.swept_langmuir.find_floating_potential"),
     (python_role, "plasmapy.particles.particle_collections"),
     (python_role, "plasmapy.utils.decorators.lite_func"),
-]
+)
 
 # The Sphinx configuration variables rst_prolog and rst_epilog contain
 # text that gets prepended or appended to all reStructuredText sources.
@@ -256,9 +256,9 @@ intersphinx_mapping = {
 hoverxref_intersphinx = tuple(intersphinx_mapping.keys())
 
 hoverxref_auto_ref = True
-hoverxref_domains = ["py", "cite"]
+hoverxref_domains = ("py", "cite")
 hoverxref_mathjax = True
-hoverxref_roles = ["confval", "term"]
+hoverxref_roles = ("confval", "term")
 hoverxref_sphinxtabs = True
 hoverxref_tooltip_maxwidth = 600  # RTD main window is 696px
 
@@ -325,12 +325,12 @@ man_pages = [(root_doc, "plasmapy", "PlasmaPy Documentation", [author], 1)]
 # on regular expressions, see: https://docs.python.org/3/library/re.html
 
 linkcheck_anchors = True
-linkcheck_anchors_ignore = [
+linkcheck_anchors_ignore = (
     "/room",
     r".+openastronomy.+",
     "L[0-9].+",
     "!forum/plasmapy",
-]
+)
 linkcheck_allowed_redirects = {
     r"https://doi\.org/.+": r"https://.+",  # DOI links are persistent
     r"https://docs.+\.org": r"https://docs.+\.org/en/.+",
