@@ -246,13 +246,13 @@ autoclass_content = "both"
 autodoc_typehints_format = "short"
 
 # adapted from sphinx-hoverxref conf.py
-if os.environ.get("READTHEDOCS"):  # building on Read the Docs
-    hoverxref_api_host = "https://readthedocs.org"
-    if os.environ.get("PROXIED_API_ENDPOINT"):
-        # Use the proxied API endpoint. This is a Read the Docs strategy
-        # to avoid a cross-site request forgery block when docs are
-        # using a custom domain.
-        hoverxref_api_host = "/_"
+
+if building_on_readthedocs := os.environ.get("READTHEDOCS"):
+    # Using the proxied API endpoint is a Read the Docs strategy to
+    # avoid a cross-site request forgery block for docs using a custom
+    # domain.
+    use_proxied_api_endpoint = os.environ.get("PROXIED_API_ENDPOINT")
+    hoverxref_api_host = "/_" if use_proxied_api_endpoint else "https://readthedocs.org"
 
 # sphinx-issues
 
@@ -308,7 +308,6 @@ extlinks = {
 html_theme = "sphinx_rtd_theme"
 
 # sphinx_rtd_theme options:
-# https://sphinx-rtd-theme.readthedocs.io/en/stable/configuring.html#theme-options
 
 html_logo = "./_static/with-text-light-190px.png"
 html_theme_options = {
@@ -316,9 +315,6 @@ html_theme_options = {
     "includehidden": False,
 }
 
-# Add any paths that contain custom static files (such as style sheets) here,
-# relative to this directory. They are copied after the builtin static files,
-# so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ["_static"]
 
 # A list of prefixes that are ignored for sorting the Python module
