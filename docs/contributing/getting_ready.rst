@@ -419,3 +419,6 @@ To enable pre-commit on your computer:
 .. _virtual environment: https://realpython.com/python-virtual-environments-a-primer
 .. _Windows Subsystem for Linux: https://learn.microsoft.com/en-us/windows/wsl
 .. _WSL: https://learn.microsoft.com/en-us/windows/wsl
+
+.. role:: bash(code)
+   :language: bash

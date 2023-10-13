@@ -263,6 +263,9 @@ If any of the changes conflict with each other, it will be necessary to
    unique, persistent identifier used by researchers, authors, and open
    source contributors.
 
+.. role:: bash(code)
+   :language: bash
+
 .. _Add a new SSH key to your GitHub account: https://docs.github.com/en/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account
 .. _branch: https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/about-branches
 .. _fork: https://docs.github.com/en/get-started/quickstart/fork-a-repo

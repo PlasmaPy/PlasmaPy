@@ -175,9 +175,6 @@ nitpick_ignore_regex = (
 rst_prolog = """
 .. role:: py(code)
    :language: python
-
-.. role:: bash(code)
-   :language: bash
 """
 
 # html output options
