@@ -212,19 +212,7 @@ intersphinx_mapping = {
 
 # hoverxref
 
-hoverxref_intersphinx = [
-    "astropy",
-    "lmfit",
-    "numba",
-    "numpy",
-    "pandas",
-    "pytest",
-    "python",
-    "readthedocs",
-    "scipy",
-    "sphinx",
-    "sphinx_automodapi",
-]
+hoverxref_intersphinx = intersphinx_mapping.keys()
 
 hoverxref_auto_ref = True
 hoverxref_domains = ["py", "cite"]
