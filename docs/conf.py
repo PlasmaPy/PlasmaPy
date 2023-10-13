@@ -42,7 +42,7 @@ revision = parsed_version.local[1:] if parsed_version.local is not None else ""
 
 # Sphinx configuration variables
 
-extensions = (
+extensions = [
     "hoverxref.extension",
     "IPython.sphinxext.ipython_console_highlighting",
     "nbsphinx",
@@ -67,7 +67,7 @@ extensions = (
     "sphinx_toolbox.collapse",
     "sphinxcontrib.bibtex",
     "sphinxcontrib.globalsubs",
-)
+]
 
 exclude_patterns = (
     "**.ipynb_checkpoints",
