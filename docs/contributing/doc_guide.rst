@@ -9,6 +9,12 @@ Documentation Guide
    :local:
    :backlinks: none
 
+.. role:: rest(code)
+   :language: rst
+
+.. role:: bash(code)
+   :language: bash
+
 Introduction
 ============
 
@@ -1414,19 +1420,13 @@ This warning can be resolved by:
 * Adding the file to the appropriate toctree (see Sphinx's
   `documentation page on tables of contents <toctree>`_), or
 
-* Adding the :rst:role:`orphan` `metadata field`_ at the top of the file
-  (not recommended in most situations).
+* Adding the ``orphan`` `metadata field`_ at the top of the file (not
+  recommended in most situations).
 
 In the :file:`docs/` folder, the tables of contents are generally
 located in :file:`index.rst` in the same directory as the source files.
 For example Jupyter notebooks, the tables of contents are in
 :file:`docs/examples.rst`.
-
-.. role:: rest(code)
-   :language: rst
-
-.. role:: bash(code)
-   :language: bash
 
 .. |role| replace:: :term:`role`
 .. |roles| replace:: :term:`roles <role>`
