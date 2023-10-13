@@ -70,179 +70,22 @@ extensions = [
 ]
 
 exclude_patterns = [
-    "_build",
-    "Thumbs.db",
-    ".DS_Store",
-    "notebooks/langmuir_samples",
     "**.ipynb_checkpoints",
-    "plasmapy_sphinx",
     "**Untitled*",
+    ".DS_Store",
+    "_build",
+    "notebooks/langmuir_samples",
+    "plasmapy_sphinx",
+    "Thumbs.db",
 ]
 
 default_role = "py:obj"
 html_extra_path = ["robots.txt"]
 html_favicon = "./_static/icon.ico"
+pygments_style = "default"  # code highlighting style to meet WCAG AA contrast standard
 root_doc = "index"
 source_suffix = ".rst"
 templates_path = ["_templates"]
-
-# The Sphinx configuration variables rst_prolog and rst_epilog contain
-# text that gets prepended or appended to all reStructuredText sources.
-# These variables can be used to make global definitions; however, long
-# values of these variables can greatly slow down the documentation
-# build, so use them in moderation!  Use docs/_global_substitutions.py
-# to define substitutions.
-
-rst_prolog = """
-.. role:: py(code)
-   :language: python
-
-.. role:: bash(code)
-   :language: bash
-"""
-
-# sphinxcontrib-bibtex
-
-bibtex_bibfiles = ["bibliography.bib"]
-bibtex_default_style = "plain"
-bibtex_reference_style = "author_year"
-bibtex_cite_id = "{key}"
-
-# sphinx-codeautolink
-
-codeautolink_concat_default = True
-
-# Intersphinx generates automatic links to the documentation of objects
-# in other packages. When mappings are removed or added, please update
-# the section in docs/doc_guide.rst on references to other packages.
-
-intersphinx_mapping = {
-    "astropy": ("https://docs.astropy.org/en/stable/", None),
-    "lmfit": ("https://lmfit.github.io/lmfit-py/", None),
-    "matplotlib": ("https://matplotlib.org/stable/", None),
-    "numba": ("https://numba.readthedocs.io/en/stable/", None),
-    "numpy": ("https://numpy.org/doc/stable/", None),
-    "pandas": ("https://pandas.pydata.org/pandas-docs/stable/", None),
-    "pytest": ("https://docs.pytest.org/en/stable/", None),
-    "python": ("https://docs.python.org/3/", None),
-    "readthedocs": ("https://docs.readthedocs.io/en/stable/", None),
-    "scipy": ("https://docs.scipy.org/doc/scipy/", None),
-    "sphinx": ("https://www.sphinx-doc.org/en/master/", None),
-    "sphinx_automodapi": (
-        "https://sphinx-automodapi.readthedocs.io/en/latest/",
-        None,
-    ),
-}
-
-hoverxref_intersphinx = [
-    "astropy",
-    "lmfit",
-    "numba",
-    "numpy",
-    "pandas",
-    "pytest",
-    "python",
-    "readthedocs",
-    "scipy",
-    "sphinx",
-    "sphinx_automodapi",
-]
-
-autoclass_content = "both"
-autodoc_typehints_format = "short"
-
-# Configure sphinx-issues
-
-issues_github_path = "PlasmaPy/PlasmaPy"
-
-# sphinx.ext.todo
-
-todo_include_todos = False  # if true, show TODOs in the doc build
-
-redirects = {
-    "contributing/install_dev": "../contributing/getting_ready.html",
-    "development": "../contributing/",
-    "development/changelog_guide": "../contributing/changelog_guide.html",
-    "development/code_guide": "../contributing/code_guide.html",
-    "development/doc_guide": "../contributing/doc_guide.html",
-    "development/index": "../contributing/index.html",
-    "development/install_dev": "../contributing/getting_ready.html",
-    "development/release_guide": "../contributing/release_guide.html",
-    "development/testing_guide": "../contributing/testing_guide.html",
-    "whatsnew": "../changelog/",
-    "whatsnew/0.1.0": "../changelog/0.1.0.html",
-    "whatsnew/0.1.1": "../changelog/0.1.0.html",
-    "whatsnew/0.2.0": "../changelog/0.1.0.html",
-    "whatsnew/0.3.1": "../changelog/0.1.0.html",
-    "whatsnew/0.4.0": "../changelog/0.1.0.html",
-    "whatsnew/0.5.0": "../changelog/0.1.0.html",
-    "whatsnew/0.6.0": "../changelog/0.1.0.html",
-    "whatsnew/0.7.0": "../changelog/0.1.0.html",
-    "whatsnew/0.8.1": "../changelog/0.1.0.html",
-    "whatsnew/0.9.0": "../changelog/0.1.0.html",
-    "whatsnew/0.9.1": "../changelog/0.1.0.html",
-    "whatsnew/2023.1.0": "../changelog/2023.1.0.html",
-    "whatsnew/index": "../changelog/index.html",
-}
-
-# Use a code highlighting style that meets the WCAG AA contrast standard
-pygments_style = "default"
-
-# adapted from sphinx-hoverxref conf.py
-if os.environ.get("READTHEDOCS"):
-    # Building on Read the Docs
-    hoverxref_api_host = "https://readthedocs.org"
-
-    if os.environ.get("PROXIED_API_ENDPOINT"):
-        # Use the proxied API endpoint
-        # - A RTD thing to avoid a CSRF block when docs are using a
-        #   custom domain
-        hoverxref_api_host = "/_"
-
-hoverxref_tooltip_maxwidth = 600  # RTD main window is 696px
-hoverxref_auto_ref = True
-hoverxref_mathjax = True
-hoverxref_sphinxtabs = True
-
-# hoverxref has to be applied to these
-hoverxref_domains = ["py", "cite"]
-hoverxref_roles = ["confval", "term"]
-
-hoverxref_role_types = {
-    # roles with cite domain
-    "p": "tooltip",
-    "t": "tooltip",
-    #
-    # roles with py domain
-    "attr": "tooltip",
-    "class": "tooltip",
-    "const": "tooltip",
-    "data": "tooltip",
-    "exc": "tooltip",
-    "func": "tooltip",
-    "meth": "tooltip",
-    "mod": "tooltip",
-    "obj": "tooltip",
-    #
-    # roles with std domain
-    "confval": "tooltip",
-    "hoverxref": "tooltip",
-    "ref": "tooltip",
-    "term": "tooltip",
-}
-
-# Using sphinx.ext.extlinks lets us simplify the process of creating
-# links to commonly used external sites. The key of the extlink becomes
-# a new role, and the corresponding tuple contains the base url and the
-# caption. For example, we can now do :orcid:`0000-0000-0000-0000` and
-# have a link create to the corresponding ORCID page. New roles should
-# be added to rst-roles in tox.ini to avoid being caught by
-# flake8-rst-docstrings.
-
-extlinks = {
-    "orcid": ("https://orcid.org/%s", "%s"),
-    "wikipedia": ("https://en.wikipedia.org/wiki/%s", "%s"),
-}
 
 # Specify patterns to ignore when doing a nitpicky documentation build.
 # These may include common expressions like "real number" as well as
@@ -320,6 +163,157 @@ nitpick_ignore_regex = [
     (python_role, "plasmapy.particles.particle_collections"),
     (python_role, "plasmapy.utils.decorators.lite_func"),
 ]
+
+# The Sphinx configuration variables rst_prolog and rst_epilog contain
+# text that gets prepended or appended to all reStructuredText sources.
+# These variables can be used to make global definitions; however, long
+# values of these variables can greatly slow down the documentation
+# build, so use them in moderation!  Use docs/_global_substitutions.py
+# to define substitutions.
+
+rst_prolog = """
+.. role:: py(code)
+   :language: python
+
+.. role:: bash(code)
+   :language: bash
+"""
+
+# sphinxcontrib-bibtex
+
+bibtex_bibfiles = ["bibliography.bib"]
+bibtex_default_style = "plain"
+bibtex_reference_style = "author_year"
+bibtex_cite_id = "{key}"
+
+# sphinx-codeautolink
+
+codeautolink_concat_default = True
+
+# intersphinx
+
+intersphinx_mapping = {
+    "astropy": ("https://docs.astropy.org/en/stable/", None),
+    "lmfit": ("https://lmfit.github.io/lmfit-py/", None),
+    "matplotlib": ("https://matplotlib.org/stable/", None),
+    "numba": ("https://numba.readthedocs.io/en/stable/", None),
+    "numpy": ("https://numpy.org/doc/stable/", None),
+    "pandas": ("https://pandas.pydata.org/pandas-docs/stable/", None),
+    "pytest": ("https://docs.pytest.org/en/stable/", None),
+    "python": ("https://docs.python.org/3/", None),
+    "readthedocs": ("https://docs.readthedocs.io/en/stable/", None),
+    "scipy": ("https://docs.scipy.org/doc/scipy/", None),
+    "sphinx": ("https://www.sphinx-doc.org/en/master/", None),
+    "sphinx_automodapi": (
+        "https://sphinx-automodapi.readthedocs.io/en/latest/",
+        None,
+    ),
+}
+
+# hoverxref
+
+hoverxref_intersphinx = [
+    "astropy",
+    "lmfit",
+    "numba",
+    "numpy",
+    "pandas",
+    "pytest",
+    "python",
+    "readthedocs",
+    "scipy",
+    "sphinx",
+    "sphinx_automodapi",
+]
+
+hoverxref_auto_ref = True
+hoverxref_domains = ["py", "cite"]
+hoverxref_mathjax = True
+hoverxref_roles = ["confval", "term"]
+hoverxref_sphinxtabs = True
+hoverxref_tooltip_maxwidth = 600  # RTD main window is 696px
+
+hoverxref_role_types = {
+    # roles with cite domain
+    "p": "tooltip",
+    "t": "tooltip",
+    # roles with py domain
+    "attr": "tooltip",
+    "class": "tooltip",
+    "const": "tooltip",
+    "data": "tooltip",
+    "exc": "tooltip",
+    "func": "tooltip",
+    "meth": "tooltip",
+    "mod": "tooltip",
+    "obj": "tooltip",
+    # roles with std domain
+    "confval": "tooltip",
+    "hoverxref": "tooltip",
+    "ref": "tooltip",
+    "term": "tooltip",
+}
+
+autoclass_content = "both"
+autodoc_typehints_format = "short"
+
+# adapted from sphinx-hoverxref conf.py
+if os.environ.get("READTHEDOCS"):  # building on Read the Docs
+    hoverxref_api_host = "https://readthedocs.org"
+    if os.environ.get("PROXIED_API_ENDPOINT"):
+        # Use the proxied API endpoint. This is a Read the Docs strategy
+        # to avoid a cross-site request forgery block when docs are
+        # using a custom domain.
+        hoverxref_api_host = "/_"
+
+# sphinx-issues
+
+issues_github_path = "PlasmaPy/PlasmaPy"
+
+# sphinx.ext.todo
+
+todo_include_todos = False  # if true, show TODOs in the doc build
+
+# sphinx_reredirects
+
+redirects = {
+    "contributing/install_dev": "../contributing/getting_ready.html",
+    "development": "../contributing/",
+    "development/changelog_guide": "../contributing/changelog_guide.html",
+    "development/code_guide": "../contributing/code_guide.html",
+    "development/doc_guide": "../contributing/doc_guide.html",
+    "development/index": "../contributing/index.html",
+    "development/install_dev": "../contributing/getting_ready.html",
+    "development/release_guide": "../contributing/release_guide.html",
+    "development/testing_guide": "../contributing/testing_guide.html",
+    "whatsnew": "../changelog/",
+    "whatsnew/0.1.0": "../changelog/0.1.0.html",
+    "whatsnew/0.1.1": "../changelog/0.1.0.html",
+    "whatsnew/0.2.0": "../changelog/0.1.0.html",
+    "whatsnew/0.3.1": "../changelog/0.1.0.html",
+    "whatsnew/0.4.0": "../changelog/0.1.0.html",
+    "whatsnew/0.5.0": "../changelog/0.1.0.html",
+    "whatsnew/0.6.0": "../changelog/0.1.0.html",
+    "whatsnew/0.7.0": "../changelog/0.1.0.html",
+    "whatsnew/0.8.1": "../changelog/0.1.0.html",
+    "whatsnew/0.9.0": "../changelog/0.1.0.html",
+    "whatsnew/0.9.1": "../changelog/0.1.0.html",
+    "whatsnew/2023.1.0": "../changelog/2023.1.0.html",
+    "whatsnew/index": "../changelog/index.html",
+}
+
+# Using sphinx.ext.extlinks lets us simplify the process of creating
+# links to commonly used external sites. The key of the extlink becomes
+# a new role, and the corresponding tuple contains the base url and the
+# caption. For example, we can now do :orcid:`0000-0000-0000-0000` and
+# have a link create to the corresponding ORCID page. New roles should
+# be added to rst-roles in tox.ini to avoid being caught by
+# flake8-rst-docstrings.
+
+extlinks = {
+    "orcid": ("https://orcid.org/%s", "%s"),
+    "wikipedia": ("https://en.wikipedia.org/wiki/%s", "%s"),
+}
 
 # html output options
 
