@@ -990,17 +990,17 @@ will show up as `astropy.units.Quantity` with a link to the appropriate
 page in Astropy documentation. Similarly, ```~astropy.units.Quantity```
 will show up as `~astropy.units.Quantity`.
 
-To make cross-referencing to an external package available its mappings
-have to be defined in the :confval:`intersphinx_mapping` configuration
-dictionary contained in |docs/conf.py|_. PlasmaPy has already include
-several packages like |Python|, |NumPy|, |SciPy|, |Astropy|, |Sphinx|, etc.
+The external packages that we can cross-reference via the magic of
+`~sphinx.ext.intersphinx` are defined in :confval:`intersphinx_mapping`
+in |docs/conf.py|_. Intersphinx has already been set up in PlasmaPy to
+include the central |Python| documentation, as well as frequently used
+packages such as |Astropy|, |lmfit|, |matplotlib|, |NumPy|, |Pandas|,
+|SciPy|, and |Sphinx|.
 
-New source packages may be added, but please verify that references to a
-function or class in that package show up correctly in
-|PlasmaPy's documentation|. The name of the package does not always link as
-expected.
+.. tip::
 
-.. hint::
+   When adding new packages to :confval:`intersphinx_mapping`, please
+   double check that the configuration has been set up correctly.
 
    If a cross-link is not working as expected this is usually due to one
    of the following reasons:
@@ -1009,6 +1009,9 @@ expected.
    * The package not being defined in :confval:`intersphinx_mapping`, or
    * The referenced source package not properly or fully indexing their
      own code, which is common in |Python| packages.
+
+   For some packages, the name of the package itself does not link
+   correctly.
 
 .. _substitutions:
 
