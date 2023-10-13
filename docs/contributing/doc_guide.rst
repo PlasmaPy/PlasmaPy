@@ -12,6 +12,9 @@ Documentation Guide
 .. role:: bash(code)
    :language: bash
 
+.. role:: rest(code)
+   :language: rest
+
 Introduction
 ============
 
