@@ -213,7 +213,7 @@ intersphinx_mapping = {
 
 # hoverxref
 
-hoverxref_intersphinx = intersphinx_mapping.keys()
+hoverxref_intersphinx = list(intersphinx_mapping.keys())
 
 hoverxref_auto_ref = True
 hoverxref_domains = ["py", "cite"]
