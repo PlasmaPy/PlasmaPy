@@ -290,7 +290,6 @@ issues_github_path = "PlasmaPy/PlasmaPy"
 # sphinx_reredirects
 
 redirects = {
-    # remove contributor guide redirects in 2026
     "contributing/install_dev": "../contributing/getting_ready.html",
     "development": "../contributing/",
     "development/changelog_guide": "../contributing/changelog_guide.html",
@@ -300,7 +299,6 @@ redirects = {
     "development/install_dev": "../contributing/getting_ready.html",
     "development/release_guide": "../contributing/release_guide.html",
     "development/testing_guide": "../contributing/testing_guide.html",
-    # remove changelog redirects in 2025
     "whatsnew": "../changelog/",
     "whatsnew/0.1.0": "../changelog/0.1.0.html",
     "whatsnew/0.1.1": "../changelog/0.1.0.html",
