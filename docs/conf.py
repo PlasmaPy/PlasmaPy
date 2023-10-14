@@ -177,6 +177,22 @@ rst_prolog = """
    :language: python
 """
 
+# html output options
+
+html_logo = "./_static/with-text-light-190px.png"
+html_static_path = ["_static"]
+html_theme = "sphinx_rtd_theme"
+html_theme_options = {
+    "logo_only": True,
+    "includehidden": False,
+}
+htmlhelp_basename = "PlasmaPydoc"
+
+# sphinx.ext.autodoc
+
+autoclass_content = "both"
+autodoc_typehints_format = "short"
+
 # sphinxcontrib-bibtex
 
 bibtex_bibfiles = ["bibliography.bib"]
@@ -240,15 +256,10 @@ hoverxref_role_types = {
     "term": "tooltip",
 }
 
-autoclass_content = "both"
-autodoc_typehints_format = "short"
-
-# adapted from sphinx-hoverxref conf.py
-
 if building_on_readthedocs := os.environ.get("READTHEDOCS"):
     # Using the proxied API endpoint is a Read the Docs strategy to
     # avoid a cross-site request forgery block for docs using a custom
-    # domain.
+    # domain. See conf.py for sphinx-hoverxref.
     use_proxied_api_endpoint = os.environ.get("PROXIED_API_ENDPOINT")
     hoverxref_api_host = "/_" if use_proxied_api_endpoint else "https://readthedocs.org"
 
@@ -258,7 +269,7 @@ issues_github_path = "PlasmaPy/PlasmaPy"
 
 # sphinx.ext.todo
 
-todo_include_todos = False  # if true, show TODOs in the doc build
+todo_include_todos = False
 
 # sphinx_reredirects
 
@@ -300,17 +311,6 @@ extlinks = {
     "orcid": ("https://orcid.org/%s", "%s"),
     "wikipedia": ("https://en.wikipedia.org/wiki/%s", "%s"),
 }
-
-# html output options
-
-html_logo = "./_static/with-text-light-190px.png"
-html_static_path = ["_static"]
-html_theme = "sphinx_rtd_theme"
-html_theme_options = {
-    "logo_only": True,
-    "includehidden": False,
-}
-htmlhelp_basename = "PlasmaPydoc"
 
 # Can we delete the man_pages output?  I don't think we use this.
 
