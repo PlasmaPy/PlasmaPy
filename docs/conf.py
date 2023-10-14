@@ -353,6 +353,7 @@ linkcheck_ignore = (
     r"https://doi\.org/10\.1007/978-3-319-67711-8.*",
     r"https://doi\.org/10\.1007/s11207-014-0526-6",
     r"https://doi\.org/10\.1007/s41116-019-0021-0",
+    r"https://doi\.org/10\.1016/0032-0633\(94\)00197-Y",
     r"https://doi\.org/10\.1016/c2009-0-20048-1",
     r"https://doi\.org/10\.1016/c2013-0-12176-9",
     r"https://doi\.org/10\.1016/j\.physleta\.2004\.08\.021",
@@ -426,7 +427,6 @@ linkcheck_ignore = (
     r"https://orcid\.org/0009-0009-9490-5284",
     r"https://www\.iter\.org/",
     r"https://www\.sciencedirect\.com/book/9780123748775/.*",
-    r"https://doi\.org/10\.1016/0032-0633\(94\)00197-Y",
 )
 
 # nbsphinx
