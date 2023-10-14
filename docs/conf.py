@@ -312,10 +312,6 @@ extlinks = {
     "wikipedia": ("https://en.wikipedia.org/wiki/%s", "%s"),
 }
 
-# Can we delete the man_pages output?  I don't think we use this.
-
-man_pages = [(root_doc, "plasmapy", "PlasmaPy Documentation", [author], 1)]
-
 # Settings for checking hyperlinks with `make linkcheck`. For a primer
 # on regular expressions, see: https://docs.python.org/3/library/re.html
 
