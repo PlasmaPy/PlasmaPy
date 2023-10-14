@@ -94,7 +94,7 @@ templates_path = ["_templates"]
 
 python_role = "py:.*"
 
-nitpick_ignore_regex = [
+nitpick_ignore_regex = (
     # Before adding patterns for type specifications in docstrings, note
     # that information on the *meaning* of a parameter should be
     # included in the parameter description instead.
@@ -163,7 +163,7 @@ nitpick_ignore_regex = [
     (python_role, "plasmapy.analysis.swept_langmuir.find_floating_potential"),
     (python_role, "plasmapy.particles.particle_collections"),
     (python_role, "plasmapy.utils.decorators.lite_func"),
-]
+)
 
 # The Sphinx configuration variables rst_prolog and rst_epilog contain
 # text that gets prepended or appended to all reStructuredText sources.
@@ -346,7 +346,7 @@ linkcheck_allowed_redirects = {
 # links (like DOIs), links prone to 403 errors, links requiring a login,
 # or links that require you to verify that you are a human.
 
-linkcheck_ignore = [
+linkcheck_ignore = (
     r"https://agupubs\.onlinelibrary\.wiley\.com/doi/10\.1029/2012JA017856",
     r"https://doi\.org/10\.1007/978-3-319-22309-4",
     r"https://doi\.org/10\.1007/978-3-319-24121-0",
@@ -427,7 +427,7 @@ linkcheck_ignore = [
     r"https://www\.iter\.org/",
     r"https://www\.sciencedirect\.com/book/9780123748775/.*",
     r"https://doi\.org/10\.1016/0032-0633\(94\)00197-Y",
-]
+)
 
 # nbsphinx
 
