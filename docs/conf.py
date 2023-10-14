@@ -94,7 +94,7 @@ templates_path = ["_templates"]
 
 python_role = "py:.*"
 
-nitpick_ignore_regex = (
+nitpick_ignore_regex = [
     # Before adding patterns for type specifications in docstrings, note
     # that information on the *meaning* of a parameter should be
     # included in the parameter description instead.
@@ -163,7 +163,7 @@ nitpick_ignore_regex = (
     (python_role, "plasmapy.analysis.swept_langmuir.find_floating_potential"),
     (python_role, "plasmapy.particles.particle_collections"),
     (python_role, "plasmapy.utils.decorators.lite_func"),
-)
+]
 
 # The Sphinx configuration variables rst_prolog and rst_epilog contain
 # text that gets prepended or appended to all reStructuredText sources.
