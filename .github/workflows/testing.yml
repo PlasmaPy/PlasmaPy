@@ -23,11 +23,16 @@ jobs:
       matrix:
         include:
 
-        - name: Python 3.11 (Linux), pinned dependencies
+        - name: Python 3.12 (Linux), pinned dependencies
+          os: ubuntu-latest
+          python: '3.12'
+          toxenv: py312-pins
+          toxargs: --develop
+
+        - name: Python 3.11 (Linux)
           os: ubuntu-latest
           python: '3.11'
-          toxenv: py311-pins
-          toxargs: --develop
+          toxenv: py311
 
         - name: Python 3.10 (MacOS), code coverage
           os: macos-latest
