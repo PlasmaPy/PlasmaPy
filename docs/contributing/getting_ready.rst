@@ -268,7 +268,7 @@ when you :py:`import plasmapy`.
 
          .. code-block:: bash
 
-            python -m pip install -e .[docs,tests]
+            python -m pip install -e '.[docs,tests]'
 
       .. group-tab:: Linux/WSL
 
