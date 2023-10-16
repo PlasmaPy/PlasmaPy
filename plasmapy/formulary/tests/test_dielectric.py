@@ -127,7 +127,7 @@ class Test_permittivity_1D_Maxwellian:
                 "T": 30 * 11600 * u.K,
                 "n": 1e18 * u.cm**-3,
                 "particle": "Ne",
-                "z_mean": 8,
+                "Z": 8,
                 "omega": 5.635e14 * 2 * np.pi * u.rad / u.s,
             },
             (-6.729556105413448e-08 + 5.761632594678113e-07j)
