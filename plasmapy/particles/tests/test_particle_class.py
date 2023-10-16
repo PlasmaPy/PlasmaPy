@@ -1046,7 +1046,7 @@ custom_particle_errors = [
     (CustomParticle, {"charge": "not a charge"}, InvalidParticleError),
     (CustomParticle, {"charge": "5.0 km"}, InvalidParticleError),
     (CustomParticle, {"charge": 1 * u.C, "Z": -1}, InvalidParticleError),
-    (CustomParticle, {"charge": 1}, TypeError),
+    (CustomParticle, {"charge": 1}, InvalidParticleError),
 ]
 
 
