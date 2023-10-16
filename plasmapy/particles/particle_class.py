@@ -37,7 +37,7 @@ from plasmapy.particles.exceptions import (
     ParticleError,
     ParticleWarning,
 )
-from plasmapy.utils import PlasmaPyDeprecationWarning, roman
+from plasmapy.utils import roman
 from plasmapy.utils._units_helpers import _get_physical_type_dict
 
 if TYPE_CHECKING:
@@ -2255,16 +2255,10 @@ class CustomParticle(AbstractPhysicalParticle):
         if np.isnan(q):
             self._charge = q
         elif isinstance(q, Real):
-            self._charge = q * const.e.si
-            warnings.warn(
-                f"CustomParticle charge set to {q} times the elementary charge."
-            )
-            warnings.warn(
-                "Providing a real number to 'charge' is deprecated. To "
-                "specify the charge as a multiple of the elementary "
-                "charge, use 'Z' as a keyword argument instead, or pass, "
-                "e.g., '2 * astropy.constants.e.si' into 'charge'.",
-                PlasmaPyDeprecationWarning,
+            raise TypeError(
+                "'charge' must be a Quantity with units of electrical charge. "
+                "To specify the charge as a multiple of the elementary charge, "
+                "use 'Z' as a keyword argument instead."
             )
         elif isinstance(q, u.Quantity):
             if not isinstance(q.value, Real):

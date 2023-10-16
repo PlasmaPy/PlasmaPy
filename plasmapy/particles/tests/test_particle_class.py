@@ -928,7 +928,6 @@ customized_particle_tests = [
     (CustomParticle, {}, "charge", np.nan * u.C),
     (CustomParticle, {"mass": 1.1 * u.kg, "charge": -0.1 * u.C}, "mass", 1.1 * u.kg),
     (CustomParticle, {"charge": -0.1 * u.C}, "charge", -0.1 * u.C),
-    (CustomParticle, {"charge": -2}, "charge", -2 * const.e.si),
     (CustomParticle, {"mass": np.inf * u.g}, "mass", np.inf * u.kg),
     (CustomParticle, {"mass": "100.0 g"}, "mass", 100.0 * u.g),
     (CustomParticle, {"charge": -np.inf * u.kC}, "charge", -np.inf * u.C),
