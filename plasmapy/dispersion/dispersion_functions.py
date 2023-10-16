@@ -8,14 +8,14 @@ __all__ = ["plasma_dispersion_func", "plasma_dispersion_func_deriv"]
 import astropy.units as u
 import numpy as np
 
-from numpy.typing import ArrayLike
+from numbers import Complex
 from scipy.special import wofz as faddeeva_function
 from typing import Union
 
 
 def plasma_dispersion_func(
-    zeta: Union[ArrayLike, u.Quantity[u.dimensionless_unscaled]]
-) -> Union[ArrayLike, u.Quantity[u.dimensionless_unscaled]]:
+    zeta: Union[Complex, np.ndarray, u.Quantity[u.dimensionless_unscaled]]
+) -> Union[Complex, np.ndarray, u.Quantity[u.dimensionless_unscaled]]:
     r"""
     Calculate the plasma dispersion function.
 
@@ -80,8 +80,8 @@ def plasma_dispersion_func(
 
 
 def plasma_dispersion_func_deriv(
-    zeta: Union[ArrayLike, u.Quantity[u.dimensionless_unscaled]]
-) -> Union[ArrayLike, u.Quantity[u.dimensionless_unscaled]]:
+    zeta: Union[Complex, np.ndarray, u.Quantity[u.dimensionless_unscaled]]
+) -> Union[Complex, np.ndarray, u.Quantity[u.dimensionless_unscaled]]:
     r"""
     Calculate the derivative of the plasma dispersion function.
 
@@ -99,7 +99,7 @@ def plasma_dispersion_func_deriv(
 
     Returns
     -------
-    complex, float, or ~numpy.ndarray
+    complex, `~numpy.ndarray`, or |Quantity|
         First derivative of plasma dispersion function.
 
     Raises
