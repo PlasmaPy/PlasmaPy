@@ -218,7 +218,7 @@ package should also be installed.
 .. _create an issue: https://github.com/PlasmaPy/PlasmaPy/issues/new/choose
 .. _download Python: https://www.python.org/downloads
 .. _from PyPI: https://pypi.org/project/plasmapy
-.. _from Zenodo: https://doi.org/10.5281/zenodo.1436011
+.. _from Zenodo: https://doi.org/10.5281/zenodo.6774349
 .. _improving Conda performance: https://docs.conda.io/projects/conda/en/latest/user-guide/concepts/conda-performance.html#improving-conda-performance
 .. _installing Anaconda Navigator: https://docs.anaconda.com/free/navigator/install
 .. _installing Conda: https://docs.conda.io/projects/conda/en/latest/user-guide/install/index.html
