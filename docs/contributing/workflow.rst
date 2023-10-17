@@ -9,6 +9,9 @@ Code Contribution Workflow
    :local:
    :backlinks: none
 
+.. role:: bash(code)
+   :language: bash
+
 Introduction
 ============
 

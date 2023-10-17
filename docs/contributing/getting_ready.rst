@@ -9,6 +9,9 @@ Getting Ready to Contribute
    :local:
    :backlinks: none
 
+.. role:: bash(code)
+   :language: bash
+
 Introduction
 ============
 
