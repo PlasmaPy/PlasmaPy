@@ -1,4 +1,7 @@
-"""Functionality to calculate the conditional average and conditional variance of a time series."""
+"""
+Functionality to calculate the conditional average and conditional
+variance of a time series.
+"""
 
 __all__ = ["ConditionalEvents"]
 
