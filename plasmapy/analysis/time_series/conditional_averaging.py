@@ -69,7 +69,7 @@ class ConditionalEvents:
     the average shape of the events that fulfill the condition.
 
     A detailed analysis of the conditional averaging method is presented
-    by :cite:t:`nilsen:2023`.
+    in the Master thesis by :cite:t:`nilsen:2023`.
 
     Examples
     --------
