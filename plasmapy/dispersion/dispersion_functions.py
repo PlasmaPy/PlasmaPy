@@ -46,7 +46,7 @@ def plasma_dispersion_func(
 
     See Also
     --------
-    `~plasmapy.dispersion.dispersion_function.plasma_dispersion_func_deriv`
+    `~plasmapy.dispersion.dispersion_functions.plasma_dispersion_func_deriv`
 
     Notes
     -----
@@ -124,14 +124,14 @@ def plasma_dispersion_func_deriv(
     """
     try:
         return -2 * (1 + zeta * plasma_dispersion_func(zeta))
-    except u.UnitTypeError as wrong_units:
+    except u.UnitsError as wrong_units:
         raise u.UnitsError(
             "The argument to plasma_dispersion_func_deriv "
             "must be dimensionless if it is a Quantity."
         ) from wrong_units
     except TypeError as wrong_type:
         raise TypeError(
-            "The argument to plasma_dispersion_function_deriv "
+            "The argument to plasma_dispersion_func_deriv "
             "must be one of the following types: complex, float, "
             "int, ndarray, or a dimensionless Quantity."
         ) from wrong_type
