@@ -19,13 +19,19 @@ PlasmaPy requires a version of |Python| between |minpython| and
 |maxpython|. If you do not have |Python| installed already, here are the
 instructions to `download Python`_ and install it.
 
-.. tip::
+.. collapse:: Click here if you have trouble installing PlasmaPy on the newest Python release
 
-   New versions of |Python| are released annually in October, and it can
-   take a few months for the scientific Python ecosystem to catch up. If
-   you have trouble installing `plasmapy` on the most recent |Python|
-   version between October and March, then try installing it on the
-   second most recent version.
+   .. tip::
+
+      New version of |Python| are released annually in October, and it
+      can take a few months for the scientific Python ecosystem to catch
+      up. If you have trouble installing PlasmaPy on the newest version
+      of Python between October and ∼March, try either:
+
+      * Downgrading to the previous release of Python, or
+      * Installing PlasmaPy with
+        ``python -m pip install plasmapy==2023.10.0`` (which drops
+        PlasmaPy's dependency on |Numba|).
 
 .. _install-pip:
 
@@ -40,9 +46,9 @@ terminal and run:
 
    python -m pip install plasmapy
 
-On some systems, it might be necessary to specify the |Python| version
-number by using ``python3``, ``python3.8``, ``python3.9``,
-``python3.10``, or ``python3.11`` instead of ``python``.
+Sometimes it might be necessary to specify the |Python| version number
+by using ``python3``, ``python3.9``, ``python3.10``, ``python3.11``, or
+``python3.12`` instead of ``python``.
 
 To install PlasmaPy on Windows, run:
 
