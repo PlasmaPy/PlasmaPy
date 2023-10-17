@@ -11,7 +11,7 @@ from hypothesis.strategies import complex_numbers
 from numpy import pi as π
 from scipy.special import gamma as Γ  # noqa: N812
 
-from plasmapy.dispersion.dispersionfunction import (
+from plasmapy.dispersion.dispersion_functions import (
     plasma_dispersion_func,
     plasma_dispersion_func_deriv,
     plasma_dispersion_func_deriv_lite,

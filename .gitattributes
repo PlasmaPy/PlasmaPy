@@ -1,0 +1,23 @@
+# Auto-detect if a file is a text file and set line endings to LF
+* text=auto eol=lf
+
+# Mark file types as text files & improve git diff headers
+*.bib text diff=bibtex
+*.c text diff=cpp
+*.cff text
+*.css text diff=css
+*.html text diff=html
+*.json text
+*.md text diff=markdown
+*.py text diff=python
+*.pyx text diff=python
+*.rst text
+*.yaml text
+*.yml text
+
+# Mark file formats that are binary
+*.h5 binary
+*.hdf5 binary
+*.ico binary
+*.npy binary
+*.png binary

@@ -519,7 +519,7 @@ class MaxwellianCollisionFrequencies:
         ...     "e-", "Na+", v_drift=v_drift, n_a=n_a, T_a=T_a, n_b=n_b, T_b=T_b, Coulomb_log=Coulomb_log
         ... )
         >>> electron_ion_collisions.Maxwellian_avg_ei_collision_freq
-        <Quantity 2906316911556553.5 Hz>
+        <Quantity 2.8053078...e+15 Hz>
         """
 
         if not self.test_particle.is_electron or not self.field_particle.is_ion:
@@ -576,7 +576,7 @@ class MaxwellianCollisionFrequencies:
         ...     "Na+", "Na+", v_drift=v_drift, n_a=n_a, T_a=T_a, n_b=n_b, T_b=T_b, Coulomb_log=Coulomb_log
         ... )
         >>> ion_ion_collisions.Maxwellian_avg_ii_collision_freq
-        <Quantity 79364412.21510696 Hz>
+        <Quantity 1.1223822...e+08 Hz>
         """
 
         if not self.test_particle.is_ion or not self.field_particle.is_ion:

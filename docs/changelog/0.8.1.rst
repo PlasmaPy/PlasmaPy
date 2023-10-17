@@ -227,12 +227,12 @@ Features
   were also migrated. (`#1453
   <https://github.com/plasmapy/plasmapy/pull/1453>`__)
 - Created :term:`lite-functions`
-  `~plasmapy.dispersion.dispersionfunction.plasma_dispersion_func_lite`
+  `~plasmapy.dispersion.dispersion_functions.plasma_dispersion_func_lite`
   and
-  `~plasmapy.dispersion.dispersionfunction.plasma_dispersion_func_deriv_lite`
-  for `~plasmapy.dispersion.dispersionfunction.plasma_dispersion_func`
+  `~plasmapy.dispersion.dispersion_functions.plasma_dispersion_func_deriv_lite`
+  for `~plasmapy.dispersion.dispersion_functions.plasma_dispersion_func`
   and
-  `~plasmapy.dispersion.dispersionfunction.plasma_dispersion_func_deriv`
+  `~plasmapy.dispersion.dispersion_functions.plasma_dispersion_func_deriv`
   respectively. (`#1473
   <https://github.com/plasmapy/plasmapy/pull/1473>`__)
 - Created :term:`lite-function`
@@ -609,7 +609,7 @@ Trivial/Internal Changes
   running ``pip install plasmapy``. (`#1482
   <https://github.com/plasmapy/plasmapy/pull/1482>`__)
 - Added ``dlint``, ``flake8``, ``flake8-absolute-import``,
-  ``flake8-rst-docstrings``, ``flake8-use-fstring``, |pydocstyle|, and
+  ``flake8-rst-docstrings``, ``flake8-use-fstring``, ``pydocstyle``, and
   ``pygments`` into the ``tests`` requirements category and |pre-commit|
   into the ``extras`` requirements category. These dependencies are
   not required for basic installation with |pip|. (`#1482

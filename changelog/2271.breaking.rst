@@ -1,0 +1,6 @@
+Renamed the ``plasmapy.dispersion.dispersionfunction`` module
+to `plasmapy.dispersion.dispersion_functions`. Both
+of ``plasma_dispersion_func`` and ``plasma_dispersion_func_deriv``
+are temporarily still available, but will issue
+a `~plasmapy.utils.exceptions.PlasmaPyFutureWarning` and will be
+removed in a subsequent release.
