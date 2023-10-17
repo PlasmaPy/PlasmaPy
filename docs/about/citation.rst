@@ -44,9 +44,8 @@ on, such as `Astropy <https://www.astropy.org/acknowledging.html>`__,
 
 .. tip::
 
-   A paper written using `AASTeX
-   <https://journals.aas.org/author-resources/aastex-package-for-manuscript-preparation/aastexguide>`__
-   should use the ``\software{}`` command to cite PlasmaPy.
+   A paper written using `AASTeX <https://journals.aas.org/aastexguide>`__
+   should use the ``\software`` command to cite PlasmaPy.
 
 .. note::
 

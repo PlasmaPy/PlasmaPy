@@ -146,7 +146,7 @@ links = {
     "Python's documentation": "https://docs.python.org/3",
     "Read the Docs": "https://about.readthedocs.com/",
     "reStructuredText": "https://docutils.sourceforge.io/rst.html",
-    "ruff": "https://beta.ruff.rs/docs",
+    "ruff": "https://docs.astral.sh/ruff",
     "SciPy": "https://scipy.org",
     "Sphinx": "https://www.sphinx-doc.org",
     "towncrier": "https://github.com/twisted/towncrier",
