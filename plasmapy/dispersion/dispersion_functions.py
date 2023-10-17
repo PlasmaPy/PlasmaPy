@@ -85,12 +85,13 @@ def plasma_dispersion_func_deriv(
     r"""
     Calculate the derivative of the plasma dispersion function.
 
-    The derivative of the plasma dispersion function is defined as:
+    The derivative of the plasma dispersion function is:
 
     .. math::
         Z'(ζ) = π^{-1/2} \int_{-∞}^{+∞} \frac{e^{-x^2}}{(x-ζ)^2} dx
 
-    where the argument is a complex number :cite:p:`fried:1961`.
+    where the argument :math:`ζ` is a complex number
+    :cite:p:`fried:1961`.
 
     Parameters
     ----------
@@ -132,5 +133,5 @@ def plasma_dispersion_func_deriv(
         raise TypeError(
             "The argument to plasma_dispersion_function_deriv "
             "must be one of the following types: complex, float, "
-            "int, ndarray, or Quantity."
+            "int, ndarray, or a dimensionless Quantity."
         ) from wrong_type
