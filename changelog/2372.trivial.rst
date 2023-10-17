@@ -1,4 +1,4 @@
 Temporarily removed the dependency on |Numba| to enable installation
 of PlasmaPy on Python 3.12 prior to the release of Numba
 ``v0.59.0``. The dependency on Numba for |lite-functions| will be
-restored in Plasmapy ``v2023.10.1``.
+restored in PlasmaPy ``v2023.10.1``.
