@@ -181,7 +181,7 @@ class TestPlasmaDispersionFunction:
     def test_plasma_dispersion_func_errors(self, w, expected_error):
         """Test errors that should be raised by plasma_dispersion_func."""
 
-        with pytest.raises(expected_error):
+        with pytest.raises(expected_error, match=r".*plasma_dispersion_func.*"):
             plasma_dispersion_func(w)
             pytest.fail(
                 f"plasma_dispersion_func({w}) did not raise "
@@ -252,10 +252,7 @@ class TestPlasmaDispersionFunctionDeriv:
     def test_plasma_dispersion_deriv_errors(self, w, expected_error):
         """Test errors that should be raised by plasma_dispersion_func_deriv."""
 
-        if isinstance(w, str):
-            raise KeyError
-
-        with pytest.raises(expected_error):
+        with pytest.raises(expected_error, match=r".*plasma_dispersion_func_deriv.*"):
             plasma_dispersion_func_deriv(w)
             pytest.fail(
                 f"plasma_dispersion_func_deriv({w}) did not raise "
