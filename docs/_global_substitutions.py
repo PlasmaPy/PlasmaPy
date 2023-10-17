@@ -131,6 +131,7 @@ links = {
     "Numba": "https://numba.readthedocs.io",
     "NumPy": "https://numpy.org",
     "office hours": "https://www.plasmapy.org/meetings/office_hours/",
+    "pandas": "https://pandas.pydata.org",
     "pip": "https://pip.pypa.io",
     "Plasma Hack Week": "https://hack.plasmapy.org",
     "PlasmaPy": "https://www.plasmapy.org",
