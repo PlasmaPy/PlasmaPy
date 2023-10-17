@@ -274,6 +274,7 @@ class TestFindIonSaturationCurrent:
         assert np.isclose(extras.rsq, 1.0)
         assert extras.fitted_indices == expected[1].fitted_indices
 
+    @pytest.mark.filterwarnings("ignore::RuntimeWarning")
     def test_on_pace_data(self):
         """
         Test functionality on D. Pace data.

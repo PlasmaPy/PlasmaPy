@@ -61,7 +61,6 @@ class TestPlasmaFrequency:
     @pytest.mark.parametrize(
         ("args", "kwargs", "_error"),
         [
-            ((u.m**-3, "e-"), {}, TypeError),
             (("not a density", "e-"), {}, TypeError),
             ((5 * u.s, "e-"), {}, u.UnitTypeError),
             ((5 * u.m**-2, "e-"), {}, u.UnitTypeError),

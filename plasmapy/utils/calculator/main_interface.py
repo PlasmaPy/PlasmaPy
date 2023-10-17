@@ -5,6 +5,7 @@ __all__ = []
 
 import astropy.units as u
 import json
+import warnings
 
 from ipywidgets import widgets
 from pathlib import Path
@@ -21,6 +22,12 @@ from plasmapy.utils.calculator.widget_helpers import (
     _ParticleBox,
     _process_queue,
 )
+
+warnings.filterwarnings(
+    action="ignore",
+    message="Passing unrecognized arguments",
+    category=DeprecationWarning,
+)  # see issue 2370 for a deprecation warning from traitlets
 
 LIGHT_BLUE = "#00BFD8"
 """
