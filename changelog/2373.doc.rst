@@ -1,0 +1,4 @@
+Expanded the installation instructions to mention that if you are
+having trouble installing PlasmaPy on a new release of Python, then
+you should try installing PlasmaPy ``v2023.10.0`` instead because it
+does not include a |Numba| dependency.
