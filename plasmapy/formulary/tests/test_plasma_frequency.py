@@ -11,7 +11,6 @@ import numpy as np
 import pytest
 
 from astropy.constants.si import m_p
-from numba.extending import is_jitted
 
 from plasmapy.formulary.frequencies import plasma_frequency, plasma_frequency_lite, wp_
 from plasmapy.particles._factory import _physical_particle_factory
@@ -148,10 +147,6 @@ class TestPlasmaFrequency:
 
 class TestPlasmaFrequencyLite:
     """Test class for `plasma_frequency_lite`."""
-
-    def test_is_jitted(self):
-        """Ensure `plasmapy_frequency_lite` was jitted by `numba`."""
-        assert is_jitted(plasma_frequency_lite)
 
     @pytest.mark.parametrize(
         "inputs",

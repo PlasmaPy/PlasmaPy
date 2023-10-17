@@ -14,7 +14,6 @@ import numbers
 import numpy as np
 
 from astropy.constants.si import e, eps0
-from numba import njit
 from typing import Optional
 
 from plasmapy import particles
@@ -156,7 +155,6 @@ wc_ = gyrofrequency
 
 
 @preserve_signature
-@njit
 def plasma_frequency_lite(
     n: numbers.Real,
     mass: numbers.Real,

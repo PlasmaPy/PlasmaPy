@@ -15,7 +15,6 @@ import numpy as np
 import warnings
 
 from astropy.constants.si import k_B, mu0
-from numba import njit
 from numbers import Integral, Real
 from typing import Optional
 
@@ -473,7 +472,6 @@ def thermal_speed_coefficients(method: str, ndim: int) -> float:
 
 
 @preserve_signature
-@njit
 def thermal_speed_lite(T: Real, mass: Real, coeff: Real) -> Real:
     r"""
     The :term:`lite-function` for
