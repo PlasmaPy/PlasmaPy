@@ -714,6 +714,9 @@ def test_nonuniform_cartesian_NN_interp(
     assert np.allclose(pout, expected, atol=dx_max, equal_nan=True)
 
 
+@pytest.mark.filterwarnings(
+    "ignore:.*MultiIndex.*:DeprecationWarning"
+)  # see issue 2319
 @pytest.mark.slow()
 def test_nonuniform_cartesian_nearest_neighbor_interpolator():
     """
