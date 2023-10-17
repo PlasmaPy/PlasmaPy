@@ -55,7 +55,7 @@ class ConditionalEvents:
         ``length_of_return`` is negative. If ``upper_threshold`` is less
         than or equal to ``lower_threshold``.
 
-    `UnitsError`:
+    `~astropy.units.UnitsError`:
         If astropy units of ``signal``/``reference_signal`` and either
         ``lower_threshold`` or ``upper_threshold`` do not match. If the
         units of ``time``, ``length_of_return`` and ``distance`` do not
