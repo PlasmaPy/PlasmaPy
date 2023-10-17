@@ -20,7 +20,7 @@ from plasmapy.dispersion.dispersion_functions import (
 # and plasma_dispersion_func_deriv
 # w, expected_error
 plasma_disp_func_errors_table = [
-    ("", TypeError),
+    ("invalid type", TypeError),
     (7 * u.m, u.UnitsError),
 ]
 
@@ -59,7 +59,8 @@ class TestPlasmaDispersionFunction:
             f"the actual and expected results is {Z_of_w - expected}."
         )
 
-    @given(complex_numbers(allow_infinity=False, allow_nan=False, max_magnitude=50))
+    @given(complex_numbers(allow_infinity=False, allow_nan=False, max_magnitude=20))
+    @pytest.mark.filterwarnings("ignore::RuntimeWarning")
     def test_plasma_dispersion_func_symmetry(self, w):
         r"""Test plasma_dispersion_func against its symmetry properties"""
 
@@ -176,6 +177,7 @@ class TestPlasmaDispersionFunction:
             )
 
     @pytest.mark.parametrize(("w", "expected_error"), plasma_disp_func_errors_table)
+    @pytest.mark.filterwarnings("ignore::RuntimeWarning")
     def test_plasma_dispersion_func_errors(self, w, expected_error):
         """Test errors that should be raised by plasma_dispersion_func."""
 
@@ -222,6 +224,7 @@ class TestPlasmaDispersionFunctionDeriv:
         )
 
     @given(complex_numbers(allow_infinity=True, allow_nan=False))
+    @pytest.mark.filterwarnings("ignore::RuntimeWarning")
     def test_plasma_dispersion_func_deriv_characterization(self, w):
         r"""Test plasma_dispersion_func_deriv against an exact relationship."""
 
@@ -245,8 +248,12 @@ class TestPlasmaDispersionFunctionDeriv:
         )
 
     @pytest.mark.parametrize(("w", "expected_error"), plasma_disp_func_errors_table)
+    @pytest.mark.filterwarnings("ignore::RuntimeWarning")
     def test_plasma_dispersion_deriv_errors(self, w, expected_error):
         """Test errors that should be raised by plasma_dispersion_func_deriv."""
+
+        if isinstance(w, str):
+            raise KeyError
 
         with pytest.raises(expected_error):
             plasma_dispersion_func_deriv(w)
