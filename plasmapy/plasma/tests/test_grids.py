@@ -174,6 +174,9 @@ def test_AbstractGrid_creation(args, kwargs, shape, error):
 
 @pytest.mark.filterwarnings("ignore::UserWarning")
 @pytest.mark.filterwarnings("ignore::RuntimeWarning")
+@pytest.mark.filterwarnings(
+    "ignore:.*MultiIndex.*:DeprecationWarning"
+)  # see issue 2319
 def test_print_summary(abstract_grid_uniform, abstract_grid_nonuniform):
     """
     Verify that both __str__ methods can be called without errors
@@ -269,6 +272,9 @@ abstract_attrs = [
 
 @pytest.mark.parametrize(("attr", "type_", "type_in_iter", "value"), abstract_attrs)
 @pytest.mark.filterwarnings("ignore::RuntimeWarning")
+@pytest.mark.filterwarnings(
+    "ignore:.*MultiIndex.*:DeprecationWarning"
+)  # see issue 2319
 def test_AbstractGrid_nonuniform_attributes(
     attr,
     type_,
@@ -427,6 +433,9 @@ on_grid = [
 
 @pytest.mark.parametrize(("fixture", "pos", "result"), on_grid)
 @pytest.mark.filterwarnings("ignore::RuntimeWarning")
+@pytest.mark.filterwarnings(
+    "ignore:.*MultiIndex.*:DeprecationWarning"
+)  # see issue 2319
 def test_AbstractGrid_on_grid(
     abstract_grid_uniform, abstract_grid_nonuniform, fixture, pos, result
 ):
@@ -451,6 +460,9 @@ vector_intersect = [
 
 @pytest.mark.parametrize(("fixture", "p1", "p2", "result"), vector_intersect)
 @pytest.mark.filterwarnings("ignore::RuntimeWarning")
+@pytest.mark.filterwarnings(
+    "ignore:.*MultiIndex.*:DeprecationWarning"
+)  # see issue 2319
 def test_AbstractGrid_vector_intersects(
     abstract_grid_uniform, abstract_grid_nonuniform, fixture, p1, p2, result
 ):
@@ -683,6 +695,9 @@ def test_NonUniformCartesianGrid_creation(args, kwargs, shape, error):
         (np.array([2, -0.3, 0]) * u.cm, ["x"], np.array([np.nan]) * u.cm),
     ],
 )
+@pytest.mark.filterwarnings(
+    "ignore:.*MultiIndex.*:DeprecationWarning"
+)  # see issue 2319
 def test_nonuniform_cartesian_NN_interp(
     pos, quantities, expected, nonuniform_cartesian_grid
 ):
@@ -699,6 +714,9 @@ def test_nonuniform_cartesian_NN_interp(
     assert np.allclose(pout, expected, atol=dx_max, equal_nan=True)
 
 
+@pytest.mark.filterwarnings(
+    "ignore:.*MultiIndex.*:DeprecationWarning"
+)  # see issue 2319
 @pytest.mark.slow()
 def test_nonuniform_cartesian_nearest_neighbor_interpolator():
     """
@@ -912,6 +930,9 @@ def test_volume_averaged_interpolator_compare_NN_3D(uniform_cartesian_grid):
     assert va_error < nn_error
 
 
+@pytest.mark.filterwarnings(
+    "ignore:.*MultiIndex.*:DeprecationWarning"
+)  # see issue 2319
 def test_NonUniformCartesianGrid():
     grid = grids.NonUniformCartesianGrid(-1 * u.cm, 1 * u.cm, num=10)
 

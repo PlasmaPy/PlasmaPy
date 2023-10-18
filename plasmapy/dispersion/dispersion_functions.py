@@ -4,85 +4,21 @@ Module containing functionality focused on the plasma dispersion function
 """
 __all__ = ["plasma_dispersion_func", "plasma_dispersion_func_deriv"]
 
-__lite_funcs__ = ["plasma_dispersion_func_lite", "plasma_dispersion_func_deriv_lite"]
 
 import astropy.units as u
-import numbers
 import numpy as np
 
-from scipy.special import wofz as Faddeeva_function  # noqa: N812
+from numbers import Complex
+from scipy.special import wofz as faddeeva_function
 from typing import Union
 
-from plasmapy.utils.decorators import bind_lite_func, preserve_signature
 
-__all__ += __lite_funcs__
-
-
-@preserve_signature
-def plasma_dispersion_func_lite(zeta):
-    r"""
-    The :term:`lite-function` version of
-    `~plasmapy.dispersion.dispersion_functions.plasma_dispersion_func`.
-    Performs the same calculation as
-    `~plasmapy.dispersion.dispersion_functions.plasma_dispersion_func`,
-    but is intended for computational use and, thus, has all data
-    conditioning safeguards removed.
-
-    Parameters
-    ----------
-    zeta : |array_like| of real or complex values
-        Argument of the plasma dispersion function. ``zeta`` is
-        dimensionless.
-
-    Returns
-    -------
-    Z : |array_like| of complex values
-        Value of plasma dispersion function.
-
-    See Also
-    --------
-    ~plasmapy.dispersion.dispersion_functions.plasma_dispersion_func
-
-    """
-
-    return 1j * np.sqrt(np.pi) * Faddeeva_function(zeta)
-
-
-@bind_lite_func(plasma_dispersion_func_lite)
 def plasma_dispersion_func(
-    zeta: Union[complex, np.ndarray, u.Quantity]
-) -> Union[complex, np.ndarray, u.Quantity]:
+    zeta: Union[Complex, np.ndarray, u.Quantity[u.dimensionless_unscaled]]
+) -> Union[Complex, np.ndarray, u.Quantity[u.dimensionless_unscaled]]:
     r"""
     Calculate the plasma dispersion function.
 
-    Parameters
-    ----------
-    zeta : complex, int, float, ~numpy.ndarray, or ~astropy.units.Quantity
-        Argument of plasma dispersion function.
-
-    Returns
-    -------
-    Z : complex, float, or ~numpy.ndarray
-        Value of plasma dispersion function.
-
-    Raises
-    ------
-    TypeError
-        If the argument is of an invalid type.
-
-    ~astropy.units.UnitsError
-        If the argument is a `~astropy.units.Quantity` but is not
-        dimensionless.
-
-    ValueError
-        If the argument is not entirely finite.
-
-    See Also
-    --------
-    plasma_dispersion_func_deriv
-
-    Notes
-    -----
     The plasma dispersion function is defined as:
 
     .. math::
@@ -91,6 +27,29 @@ def plasma_dispersion_func(
 
     where the argument is a complex number :cite:p:`fried:1961`.
 
+    Parameters
+    ----------
+    zeta : |array_like| or |Quantity|
+        The real or complex value to be provided as an argument to the
+        plasma dispersion function.
+
+    Returns
+    -------
+    |array_like| or |Quantity|
+        The real or complex value of plasma dispersion function
+        evaluated at ``zeta``.
+
+    Raises
+    ------
+    ~astropy.units.UnitsError
+        If ``zeta`` is a |Quantity| but is not dimensionless.
+
+    See Also
+    --------
+    `~plasmapy.dispersion.dispersion_functions.plasma_dispersion_func_deriv`
+
+    Notes
+    -----
     In plasma wave theory, the plasma dispersion function appears
     frequently when the background medium has a Maxwellian
     distribution function.  The argument of this function then refers
@@ -98,118 +57,61 @@ def plasma_dispersion_func(
 
     Examples
     --------
+    >>> from plasmapy.dispersion import plasma_dispersion_func
     >>> plasma_dispersion_func(0)
     1.7724538509055159j
-    >>> plasma_dispersion_func(1j)
-    0.757872156141312j
-    >>> plasma_dispersion_func(-1.52+0.47j)
-    (0.6088888957234254+0.33494583882874024j)
-
-    For user convenience
-    `~plasmapy.dispersion.dispersion_functions.plasma_dispersion_func_lite`
-    is bound to this function and can be used as follows:
-
-    >>> plasma_dispersion_func.lite(0)
-    1.7724538509055159j
-    >>> plasma_dispersion_func.lite(1j)
-    0.757872156141312j
-    >>> plasma_dispersion_func.lite(-1.52+0.47j)
-    (0.6088888957234254+0.33494583882874024j)
+    >>> plasma_dispersion_func(1 + 1j)
+    (-0.369...+0.540...j)
+    >>> plasma_dispersion_func([0.3, 0.7 + 2.3j])
+    array([-0.56526333+1.61990085j, -0.09995023+0.37685142j])
     """
-    if not isinstance(
-        zeta, (numbers.Integral, numbers.Real, numbers.Complex, np.ndarray, u.Quantity)
-    ):
+    try:
+        return 1j * np.sqrt(np.pi) * faddeeva_function(zeta)
+    except u.UnitTypeError as wrong_units:
+        raise u.UnitsError(
+            "The argument to plasma_dispersion_func "
+            "must be dimensionless if it is a Quantity."
+        ) from wrong_units
+    except TypeError as wrong_type:
         raise TypeError(
-            "The argument to plasma_dispersion_function "
-            "must be one of the following types: complex, float, "
-            "int, ndarray, or Quantity."
-        )
-
-    if isinstance(zeta, u.Quantity):
-        if zeta.unit == u.dimensionless_unscaled:
-            zeta = zeta.value
-        else:
-            raise u.UnitsError(
-                "The argument to plasma_dispersion_function "
-                "must be dimensionless if it is a Quantity"
-            )
-
-    if not np.all(np.isfinite(zeta)):
-        raise ValueError("The argument to plasma_dispersion_function is not finite.")
-
-    return plasma_dispersion_func_lite(zeta)
+            "The argument to plasma_dispersion_func should be a real or "
+            "complex number or array, or a dimensionless Quantity."
+        ) from wrong_type
 
 
-@preserve_signature
-def plasma_dispersion_func_deriv_lite(zeta):
-    r"""
-    The :term:`lite-function` version of
-    `~plasmapy.dispersion.dispersion_functions.plasma_dispersion_func_deriv`.
-    Performs the same calculation as
-    `~plasmapy.dispersion.dispersion_functions.plasma_dispersion_func_deriv`,
-    but is intended for computational use and, thus, has all data
-    conditioning safeguards removed.
-
-    Parameters
-    ----------
-    zeta : |array_like| of real or complex values
-        Argument of the plasma dispersion function. ``zeta`` is
-        dimensionless.
-
-    Returns
-    -------
-    Zprime : |array_like| of complex values
-        First derivative of plasma dispersion function.
-
-    See Also
-    --------
-    ~plasmapy.dispersion.dispersion_functions.plasma_dispersion_func_deriv
-    """
-    return -2 * (1 + zeta * plasma_dispersion_func_lite(zeta))
-
-
-@bind_lite_func(plasma_dispersion_func_deriv_lite)
 def plasma_dispersion_func_deriv(
-    zeta: Union[complex, np.ndarray, u.Quantity]
-) -> Union[complex, np.ndarray, u.Quantity]:
+    zeta: Union[Complex, np.ndarray, u.Quantity[u.dimensionless_unscaled]]
+) -> Union[Complex, np.ndarray, u.Quantity[u.dimensionless_unscaled]]:
     r"""
     Calculate the derivative of the plasma dispersion function.
 
+    The derivative of the plasma dispersion function is:
+
+    .. math::
+        Z'(ζ) = π^{-1/2} \int_{-∞}^{+∞} \frac{e^{-x^2}}{(x-ζ)^2} dx
+
+    where the argument :math:`ζ` is a complex number
+    :cite:p:`fried:1961`.
+
     Parameters
     ----------
-    zeta : complex, int, float, ~numpy.ndarray, or ~astropy.units.Quantity
+    zeta : |array_like| or |Quantity|
         Argument of plasma dispersion function.
 
     Returns
     -------
-    Zprime : complex, float, or ~numpy.ndarray
+    complex, `~numpy.ndarray`, or |Quantity|
         First derivative of plasma dispersion function.
 
     Raises
     ------
-    TypeError
-        If the argument is invalid.
-
     ~astropy.units.UnitsError
         If the argument is a `~astropy.units.Quantity` but is not
         dimensionless.
 
-    ValueError
-        If the argument is not entirely finite.
-
     See Also
     --------
-    plasma_dispersion_func
-
-    Notes
-    -----
-    The derivative of the plasma dispersion function is defined as:
-
-    .. math::
-        Z'(ζ) = π^{-1/2} \int_{-∞}^{+∞}
-        \frac{e^{-x^2}}{(x-ζ)^2} dx
-
-    where the argument is a complex number :cite:p:`fried:1961`.
+    `~plasmapy.dispersion.dispersion_functions.plasma_dispersion_func`
 
     Examples
     --------
@@ -219,41 +121,17 @@ def plasma_dispersion_func_deriv(
     (-0.484255687717376...+0j)
     >>> plasma_dispersion_func_deriv(-1.52+0.47j)
     (0.165871331498228...+0.445879788059350...j)
-
-    For user convenience
-    `~plasmapy.dispersion.dispersion_functions.plasma_dispersion_func_deriv_lite`
-    is bound to this function and can be used as follows:
-
-    >>> plasma_dispersion_func_deriv.lite(0)
-    (-2+0j)
-    >>> plasma_dispersion_func_deriv.lite(1j)
-    (-0.484255687717376...+0j)
-    >>> plasma_dispersion_func_deriv.lite(-1.52+0.47j)
-    (0.165871331498228...+0.445879788059350...j)
-
     """
-
-    if not isinstance(
-        zeta, (numbers.Integral, numbers.Real, numbers.Complex, np.ndarray, u.Quantity)
-    ):
+    try:
+        return -2 * (1 + zeta * plasma_dispersion_func(zeta))
+    except u.UnitsError as wrong_units:
+        raise u.UnitsError(
+            "The argument to plasma_dispersion_func_deriv "
+            "must be dimensionless if it is a Quantity."
+        ) from wrong_units
+    except TypeError as wrong_type:
         raise TypeError(
-            "The argument to plasma_dispersion_function_deriv "
+            "The argument to plasma_dispersion_func_deriv "
             "must be one of the following types: complex, float, "
-            "int, ndarray, or Quantity."
-        )
-
-    if isinstance(zeta, u.Quantity):
-        if zeta.unit == u.dimensionless_unscaled:
-            zeta = zeta.value
-        else:
-            raise u.UnitsError(
-                "The argument to plasma_dispersion_function_deriv "
-                "must be dimensionless if it is a Quantity."
-            )
-
-    if not np.all(np.isfinite(zeta)):
-        raise ValueError(
-            "The argument to plasma_dispersion_function_deriv is not finite."
-        )
-
-    return plasma_dispersion_func_deriv_lite(zeta)
+            "int, ndarray, or a dimensionless Quantity."
+        ) from wrong_type

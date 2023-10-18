@@ -5,7 +5,7 @@ ci:
 repos:
 
 - repo: https://github.com/pre-commit/pre-commit-hooks
-  rev: v4.4.0
+  rev: v4.5.0
   hooks:
   - id: check-ast
   - id: check-merge-conflict
@@ -34,7 +34,7 @@ repos:
   - id: remove-crlf
 
 - repo: https://github.com/macisamuele/language-formatters-pre-commit-hooks
-  rev: v2.10.0
+  rev: v2.11.0
   hooks:
   - id: pretty-format-ini
     args: [--autofix]
