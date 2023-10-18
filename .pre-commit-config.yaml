@@ -124,4 +124,4 @@ repos:
     entry: echo "For help with troubleshooting, see https://docs.plasmapy.org/en/latest/contributing/pre-commit.html"
     language: system
     pass_filenames: false
-    verbose: true
+    verbose: false
