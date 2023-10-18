@@ -5,9 +5,16 @@
 
 # Release checklist
 
+This issue contains the procedure for releasing a new minor version of
+PlasmaPy. Below, `2023.10.0` represents the version to be released.
+
+> [!IMPORTANT]
+> Split up pre-release changes into multiple focused PRs rather than a
+> single monolothic PR.
+
 ## Ahead of release
 
- - [x] Create an issue with release checklist
+ - [x] [Create an issue with release checklist]()
  - [ ] Announce the forthcoming release at a [community meeting]
 
 ### Update metadata
@@ -49,4 +56,4 @@ Go to the GitHub page to [draft a new release].
 ## After release
 
  - [ ] Discuss the release at the [community meeting]
- - [ ] Update the [release checklist]
+ - [ ] Modify the [release checklist], if necessary
