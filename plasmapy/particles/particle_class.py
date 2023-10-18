@@ -2285,7 +2285,7 @@ class CustomParticle(AbstractPhysicalParticle):
     @property
     def charge_number(self) -> Real:
         """The ratio of the charge to the elementary charge."""
-        return self.charge / const.e.si
+        return (self.charge / const.e.si).value
 
     @charge_number.setter
     def charge_number(self, Z: int):
