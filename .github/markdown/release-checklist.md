@@ -1,6 +1,7 @@
-[community meeting]:
-[release checklist]:
-[Zenodo]:
+[community meeting]: https://www.plasmapy.org/meetings/weekly
+[`docs/about/citation.rst`]: https://github.com/PlasmaPy/PlasmaPy/blob/main/docs/about/citation.rst
+[release checklist]: https://github.com/PlasmaPy/PlasmaPy/tree/main/.github/markdown/release-checklist.md
+[Zenodo]: https://zenodo.org
 
 # Release checklist
 
@@ -13,7 +14,7 @@
 
  - [ ] Begin an upload to [Zenodo] for the new release using the
    `team@plasmapy.org` login, and reserve a DOI
- - [ ] Open a pull request to update the DOI in `docs/about/citation.rst`
+ - [ ] Open a pull request to update the DOI in [`docs/about/citation.rst`]
  - [ ] Update `.mailmap`
 
 ### Perform code quality checks
