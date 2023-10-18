@@ -1,2 +1,2 @@
-Added a page to the |contributor guide| about pre-commit_, including
+Added a page to the |contributor guide| about |pre-commit|, including
 how to troubleshoot test failures.
