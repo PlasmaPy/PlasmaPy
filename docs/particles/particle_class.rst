@@ -149,25 +149,6 @@ True
 False
 >>> deuteron.is_ion
 True
-
-The `~plasmapy.particles.particle_class.Particle.element` and
-`~plasmapy.particles.particle_class.Particle.isotope` attributes
-return `None` when the particle does not correspond to an element or
-isotope. Because non-empty strings evaluate to `True` and `None`
-evaluates to `False` when converted to a `bool`, these attributes may be
-used in conditional statements to test whether or not a particle is in
-one of these categories.
-
-.. code-block:: python
-
-    particles = [Particle("e-"), Particle("Fe-56"), Particle("alpha")]
-
-    for particle in particles:
-        if particle.element:
-            print(f"{particle} corresponds to element {particle.element}")
-        if particle.isotope:
-            print(f"{particle} corresponds to isotope {particle.isotope}")
-
 .. _particle-class-antiparticles:
 
 Returning antiparticles
