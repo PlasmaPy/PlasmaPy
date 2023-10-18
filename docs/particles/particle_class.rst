@@ -1,6 +1,6 @@
 .. _particle-class:
 
-|Particle| Class
+Particle classes
 ****************
 
 The |Particle| class provides an object-oriented interface to access and
@@ -8,11 +8,11 @@ represent particle information.
 
 .. _particle-class-instantiation:
 
-Creating a |Particle| object
-============================
+Working with Particle objects
+=============================
 
-The simplest way to create a |Particle| object is to pass it a `str`
-representing a particle.
+We can create a |Particle| object is to pass it a `str` representing a
+particle.
 
 >>> from plasmapy.particles import Particle
 >>> electron = Particle('e-')
@@ -32,13 +32,13 @@ names and many aliases are not.
 
 An `int` may be used as the first positional argument to |Particle| to
 represent an atomic number. For isotopes and ions, the mass number may
-be represented with the ``mass_numb`` keyword and the integer charge may
-be represented with the ``Z`` keyword.
+be represented with the ``mass_numb`` keyword and the |charge number|
+may be represented with the ``Z`` keyword.
 
 >>> proton = Particle(1, mass_numb=1, Z=1)
 
 The most frequently used |Particle| objects may be imported directly
-from the atomic subpackage.
+from `plasmapy.particles`.
 
 >>> from plasmapy.particles import proton, electron
 
@@ -51,7 +51,7 @@ The |Particle| objects that may be imported directly are:
 .. _particle-class-properties:
 
 Accessing particle properties
-=============================
+-----------------------------
 
 The properties of each particle may be accessed using the attributes of
 the corresponding |Particle| object.
@@ -92,7 +92,7 @@ Strings representing particles may be accessed using the
 .. _particle-class-categories:
 
 Categories
-==========
+----------
 
 The `~plasmapy.particles.particle_class.Particle.categories` attribute
 returns a `set` with the classification categories corresponding to the
@@ -128,7 +128,7 @@ Valid particle categories are listed in the docstring for |is_category|.
 .. _particle-class-conditionals-equality:
 
 Conditionals and equality properties
-====================================
+------------------------------------
 
 Equality between particles may be tested either between two |Particle|
 objects, or between a |Particle| object and a `str`.
@@ -171,7 +171,7 @@ one of these categories.
 .. _particle-class-antiparticles:
 
 Returning antiparticles
-=======================
+-----------------------
 
 The antiparticle of an elementary particle or antiparticle may be found
 by either using Python's unary invert operator (``~``) or the
@@ -182,5 +182,8 @@ of a |Particle| object.
 Particle("e+")
 >>> antimuon.antiparticle
 Particle("mu-")
+
+Custom particles
+================
 
 .. |is_category| replace:: `~plasmapy.particles.particle_class.AbstractPhysicalParticle.is_category`
