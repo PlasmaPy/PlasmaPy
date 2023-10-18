@@ -149,10 +149,10 @@ Initial setup
 #. Create a fork_ of PlasmaPy by clicking on :guilabel:`Fork`, followed
    by :guilabel:`Create fork`.
 
-#. :ref:`Open a terminal <opening-a-terminal>`. Then create and/or
-   navigate to the folder in which you want to download PlasmaPy. For
-   example, to put PlasmaPy into a new directory called :file:`repos/`
-   in your home directory (denoted by :bash:`~`), run:
+#. |Open a terminal|. Then create and/or navigate to the folder in which
+   you want to download PlasmaPy. For example, to put PlasmaPy into a
+   new directory called :file:`repos/` in your home directory (denoted
+   by :bash:`~`), run:
 
    .. code-block::
 
@@ -206,7 +206,7 @@ environment`_ instead.
    Using Conda/virtual environments helps avoid situations as in `this
    xkcd comic`_.
 
-#. :ref:`Open a terminal <opening-a-terminal>`.
+#. |Open a terminal|.
 
 #. Create a Conda environment named ``plasmapy-dev`` by running:
 
@@ -236,7 +236,7 @@ clone of PlasmaPy. Making the PlasmaPy installation *editable* means
 that if you modify the source code, then those changes will be included
 when you :py:`import plasmapy`.
 
-1. :ref:`Open a terminal <opening-a-terminal>`.
+1. |Open a terminal|.
 
 2. Navigate to the directory for your clone of PlasmaPy, which should be
    named :file:`PlasmaPy`. For example, if you ran the :bash:`git clone`
