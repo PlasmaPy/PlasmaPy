@@ -91,7 +91,7 @@ To enable pre-commit on your computer:
 
 #. |Open a terminal|.
 
-#. If you use a Conda_ or virtual environment for developing PlasmaPy,
+#. If you use a |Conda| or virtual environment for developing PlasmaPy,
    activate it (i.e., with ``conda activate plasmapy-dev``).
 
 #. Make sure that pre-commit is installed to your Python environment by
@@ -144,7 +144,7 @@ will be necessary to redo :bash:`git add` on the changed files and
 .. tip::
 
    To commit a change without running pre-commit, use the :bash:`-n`
-   flag (short for :bash:`--no-verify`) with |git|_.
+   flag (short for :bash:`--no-verify`) with |git|.
 
 .. tip::
 
