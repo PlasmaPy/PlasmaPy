@@ -13,26 +13,32 @@ Introduction
 ============
 
 PlasmaPy uses |pre-commit| to automate code quality checks and perform
-automated fixes.
-
-The configuration for pre-commit is in |.pre-commit-config.yaml|_.
+automated fixes. The configuration for pre-commit is in
+|.pre-commit-config.yaml|_.
 
 Troubleshooting pre-commit failures
 ===================================
 
-Most common |pre-commit| test failures related to formatting can be
+Many common |pre-commit| test failures related to formatting can be
 automatically fixed by adding a comment on a pull request that says
 ``pre-commit.ci autofix`` (like in
 `this comment
 <https://github.com/PlasmaPy/PlasmaPy/pull/1500#issuecomment-1216865989>`__).
 This comment will lead to a new commit to the pull request branch that
-applies the automatic fixes made by the different |pre-commit| hooks.
+applies the automatic fixes made by the different pre-commit hooks.
 
 After doing this, please do a :bash:`git pull` in your clone of
 PlasmaPy's repository to pull back the auto fixes to your computer.
 
-If these steps do not fix the pre-commit failure, then please check out
-the sections below for more suggestions on how to make the fixes.
+The following sections contain suggestions for how to fix pre-commit
+failures that were not corrected by commenting ``pre-commit.ci autofix``
+on the issue.
+
+.. tip::
+
+   Make sure all other tests are passing before manually fixing
+   |pre-commit| test failures. Failures from pre-commit should generally
+   be fixed after making sure all other tests are passing.
 
 ruff
 ----
@@ -41,11 +47,10 @@ PlasmaPy uses |ruff| as its primary linter and code quality tool. |ruff|
 can quickly find code quality issues and is able to do many code quality
 fixes.
 
-Every issue detected by ruff corresponds to a particular lint rule. For
-example, lint rule F401_ checks for and then removes unused :py:`import`
-statements. If you encounter a confusing ruff rule, try searching
-`ruff's documentation page on rules`_ for the rule code and clicking on
-its name for more information.
+Every issue detected by ruff corresponds to a specific lint rule. For
+example, lint rule F401_ removes unused :py:`import` statements. If you
+encounter a confusing ruff rule, search `ruff's documentation page on
+rules`_ for the rule code and click on its name for more information.
 
 Problems flagged by C901_ occur when a function is too complex (i.e.,
 when it contains heavily nested control flow), which makes code much
@@ -56,9 +61,34 @@ more difficult to maintain.
    Reduce complexity by breaking up complicated functions into short
    functions that do exactly one thing with no side effects.
 
-.. _C901: https://docs.astral.sh/ruff/rules/complex-structure
-.. _F401: https://docs.astral.sh/ruff/rules/unused-import
-.. _ruff's documentation page on rules: https://docs.astral.sh/ruff/rules
+Disabling a ruff rule
+~~~~~~~~~~~~~~~~~~~~~
+
+While |ruff| usually suggests improvements, there will occasionally be
+times where a departure from a |ruff| rule is (at least temporarily)
+justified. In these cases, we can append a :samp:`# noqa {<rule-codes>}`
+comment to the end of a line (where :samp:`{<rule-codes>}` is replaced
+with the corresponding |ruff| rule codes, and ``noqa`` stands for "no
+quality assurance") to tell |ruff| to ignore that error on that line.
+
+For example, we can tell |ruff| to ignore a function with excessive
+code complexity (C901_), too many branches (PLR0912_), and too many
+statements (PLR0915_) by adding the following ``noqa`` comment:
+
+.. code-block:: python
+
+   def overly_complicated_function():  # noqa: C901, PLR0912, PLR0915
+       """A function with 100+ lines of code and lots of if/else branches."""
+
+.. important::
+
+   When writing new code, it is almost always better to refactor the
+   code to remove the error rather than add a ``noqa`` comment. In the
+   above example, it would be better to refactor an overly complicated
+   function into multiple short functions that do exactly one thing with
+   no side effects so that the code is easier to understand, modify, and
+   maintain. We should only add ``noqa`` statements when we have a good
+   reason to.
 
 codespell
 ---------
@@ -84,8 +114,8 @@ it is also possible to set up pre-commit locally.
    |PlasmaPy's GitHub repository| only *after* you have become
    comfortable with the |code contribution workflow|.
 
-Installing pre-commit
----------------------
+Enabling pre-commit
+-------------------
 
 To enable pre-commit on your computer:
 
@@ -125,14 +155,14 @@ To enable pre-commit on your computer:
 
       cd ~/repos/PlasmaPy
 
-#. Install pre-commit with:
+#. Enable pre-commit with:
 
    .. code-block:: bash
 
       pre-commit install
 
-Using pre-commit locally
-------------------------
+Changes to the workflow
+-----------------------
 
 Once |pre-commit| has been installed for a repository, pre-commit will
 run every time you try to commit a change.
@@ -154,7 +184,12 @@ will be necessary to redo :bash:`git add` on the changed files and
 
       pre-commit run --all-files
 
+.. _C901: https://docs.astral.sh/ruff/rules/complex-structure
 .. _codespell: https://github.com/codespell-project/codespell
+.. _F401: https://docs.astral.sh/ruff/rules/unused-import
+.. _PLR0912: https://docs.astral.sh/ruff/rules/too-many-branches
+.. _PLR0915: https://docs.astral.sh/ruff/rules/too-many-statements
+.. _ruff's documentation page on rules: https://docs.astral.sh/ruff/rules
 
 .. _`.pre-commit-config.yaml`: https://github.com/PlasmaPy/PlasmaPy/blob/main/.pre-commit-config.yaml
 .. |.pre-commit-config.yaml| replace:: :file:`.pre-commit-config.yaml`
