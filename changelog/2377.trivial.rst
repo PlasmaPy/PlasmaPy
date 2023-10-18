@@ -1,0 +1,3 @@
+Modified the `~plasmapy.particles.particle_class.CustomParticle.charge_number`
+attribute of |CustomParticle| to return a real number rather than a
+dimensionless |Quantity|.
