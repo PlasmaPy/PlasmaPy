@@ -3,16 +3,16 @@
 Particle classes
 ****************
 
-The |Particle| class provides an object-oriented interface to access and
-represent particle information.
+PlasmaPy contains several classes to represent particles, including
+|Particle|, |CustomParticle|, |ParticleList|, and
+|DimensionlessParticle|.
 
 .. _particle-class-instantiation:
 
 Working with Particle objects
 =============================
 
-We can create a |Particle| object is to pass it a `str` representing a
-particle.
+To create a |Particle| object, pass it a `str` representing a particle.
 
 >>> from plasmapy.particles import Particle
 >>> electron = Particle('e-')
@@ -63,7 +63,7 @@ the corresponding |Particle| object.
 >>> triton.mass_number
 3
 
-Some of these properties are returned as a |Quantity| in SI units.
+These properties are often returned as a |Quantity| in SI units.
 
 >>> alpha.charge
 <Quantity 3.20435324e-19 C>
