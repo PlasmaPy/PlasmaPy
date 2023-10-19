@@ -9,8 +9,8 @@ PlasmaPy contains several classes to represent particles, including
 
 .. _particle-class-instantiation:
 
-Working with Particle objects
-=============================
+Particles
+=========
 
 To create a |Particle| object, pass it a `str` representing a particle.
 
@@ -233,7 +233,6 @@ rather than a single-valued |Quantity|.
 >>> helium_ions.mass
 <Quantity [6.64647907e-27, 6.64556813e-27, 6.64465719e-27] kg>
 
-
 If we provide a |Quantity| with units of mass or charge, it will get
 converted into a |CustomParticle|.
 
@@ -259,9 +258,8 @@ and/or |ParticleList| objects together.
 >>> helium_ions + cp + proton
 ParticleList(['He-4 0+', 'He-4 1+', 'He-4 2+', 'Fe 9.5+', 'p+'])
 
-The machinery contained with |ParticleList| lets us calculate many
-plasma parameters from `plasmapy.formulary` for multiple particles at
-once.
+The machinery contained with |ParticleList| lets us calculate plasma
+parameters from `plasmapy.formulary` for multiple particles at once.
 
 >>> from plasmapy.formulary import gyroradius
 >>> gyroradius(B = 5 * u.nT, particle=["e-", "p+"], Vperp = 100 * u.km/u.s)
