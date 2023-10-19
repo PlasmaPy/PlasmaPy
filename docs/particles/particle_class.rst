@@ -1,6 +1,6 @@
 .. _particle-class:
 
-Particle classes
+Particle objects
 ****************
 
 PlasmaPy contains several classes to represent particles, including
@@ -12,7 +12,8 @@ PlasmaPy contains several classes to represent particles, including
 Particles
 =========
 
-To create a |Particle| object, pass it a `str` representing a particle.
+To create a |Particle| object, pass it a |particle-like| string that
+represents a particle.
 
 >>> from plasmapy.particles import Particle
 >>> electron = Particle('e-')
@@ -167,24 +168,17 @@ Particle("mu-")
 Custom particles
 ================
 
-There are many occasions where we might want to represent a particle
-that does not correspond to an exact ion or fundamental particle. For
-example, we might want a particle that represents an ion that represents
-the mean ionization level or a simple representation of a molecule. On
-these occasions, we can use |CustomParticle|.
-
-We can create a |CustomParticle| by providing it with a charge, mass,
-and/or a symbol. |CustomParticle| has many of the same attributes as
-|Particle|, and can often be used interchangeably.
+We can use |CustomParticle| to create particle objects with a mass,
+charge, and/or symbol that we provide. The mass and charge must be
+|Quantity| objects from `astropy.units`.
 
 >>> import astropy.units as u
 >>> from plasmapy.particles import CustomParticle
->>> cp = CustomParticle(
-...     mass = 9.3e-26 * u.kg,
-...     charge = 1.5e-18 * u.C,
-...     symbol = "Fe 9.5+",
-... )
-...
+>>> cp = CustomParticle(mass = 9.3e-26 * u.kg, charge = 1.5e-18 * u.C, symbol = "Fe 9.5+")
+
+|CustomParticle| has many of the same attributes and methods as
+|Particle|, and can often be used interchangeably.
+
 >>> cp.charge
 <Quantity 1.52e-18 C>
 >>> cp.mass
@@ -209,14 +203,20 @@ CustomParticle(mass=7.30786637819994e-26 kg, charge=1.602176634e-19 C, symbol=CO
 Particle lists
 ==============
 
-We can use |ParticleList| to work with multiple particles.
-A |ParticleList| can contain |Particle| or |CustomParticle| objects.
+|ParticleList| lets us work with multiple particles at once. A
+|ParticleList| can contain |Particle| and/or |CustomParticle| objects.
+
+We can create a |ParticleList| by providing it with a
+|particle-list-like| object (i.e., a `list` containing |particle-like|
+objects). For example, we could provide |ParticleList| with a `list` of
+strings that represent individual particles.
 
 >>> from plasmapy.particles import ParticleList
 >>> helium_ions = ParticleList(["He-4 0+", "He-4 1+"])
 
 |ParticleList| objects behave similarly to `list` objects, but convert
-new objects into the appropriate particle objects.
+its contents into the appropriate |Particle| or |CustomParticle|
+objects.
 
 >>> helium_ions.append("alpha")
 >>> print(helium_ions)
@@ -225,8 +225,9 @@ ParticleList(['He-4 0+', 'He-4 1+', 'He-4 2+'])
 Particle("He-4 1+")
 
 |ParticleList| shares many of the same attributes as |Particle| and
-|CustomParticle|. These attributes often return a |Quantity| array
-rather than a single-valued |Quantity|.
+|CustomParticle|. Attributes of |Particle| and |CustomParticle| that
+provide a scalar |Quantity| will provide a |Quantity| array from
+|ParticleList|.
 
 >>> helium_ions.charge
 <Quantity [0.00000000e+00, 1.60217663e-19, 3.20435327e-19] C>
@@ -279,6 +280,6 @@ normalized (i.e., both the mass and charge are dimensionless).
 
 Because |DimensionlessParticle| objects do not directly represent
 physical particles without normalization information, they cannot be
-contained within a |ParticleList|.
+contained within a |ParticleList| or used in `plasmapy.formulary`.
 
 .. |is_category| replace:: `~plasmapy.particles.particle_class.AbstractPhysicalParticle.is_category`
