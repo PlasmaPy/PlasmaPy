@@ -21,6 +21,14 @@ from plasmapy.analysis.time_series.excess_statistics import ExcessStatistics
         (
             [0, 2, 0],
             1,
+            1 * u.s,
+            False,
+            32,
+            ([1] * u.s, [1], [1] * u.s, [0] * u.s),
+        ),
+        (
+            [0, 2, 0],
+            1,
             0.5,
             False,
             32,
@@ -76,7 +84,7 @@ from plasmapy.analysis.time_series.excess_statistics import ExcessStatistics
     ],
 )
 def test_ExcessStatistics(signal, thresholds, time_step, pdf, bins, expected):
-    """Test excess_stat function"""
+    """Test ExcessStatistics class"""
     excess_stats = ExcessStatistics(signal, thresholds, time_step)
     assert excess_stats.total_time_above_threshold == expected[0]
     assert excess_stats.number_of_crossings == expected[1]

@@ -1,0 +1,3 @@
+Added the `plasmapy.analysis.time_series.conditional_averaging` module
+including the `~plasmapy.analysis.time_series.conditional_averaging.ConditionalEvents`
+class for calculating the conditional average and variance of time series.

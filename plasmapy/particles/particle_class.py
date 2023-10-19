@@ -21,10 +21,9 @@ import warnings
 
 from abc import ABC, abstractmethod
 from collections import defaultdict, namedtuple
-from collections.abc import Iterable, Sequence
 from datetime import datetime
 from numbers import Integral, Real
-from typing import NoReturn, Optional, Union
+from typing import NoReturn, Optional, TYPE_CHECKING, Union
 
 from plasmapy.particles import _elements, _isotopes, _parsing, _special_particles
 from plasmapy.particles.exceptions import (
@@ -38,8 +37,11 @@ from plasmapy.particles.exceptions import (
     ParticleError,
     ParticleWarning,
 )
-from plasmapy.utils import PlasmaPyDeprecationWarning, roman
+from plasmapy.utils import roman
 from plasmapy.utils._units_helpers import _get_physical_type_dict
+
+if TYPE_CHECKING:
+    from collections.abc import Iterable, Sequence
 
 _classification_categories = {
     "lepton",
@@ -223,9 +225,9 @@ class AbstractPhysicalParticle(AbstractParticle):
     def is_category(
         self,
         *category_tuple,
-        require: Union[str, Iterable[str]] = None,
-        any_of: Union[str, Iterable[str]] = None,
-        exclude: Union[str, Iterable[str]] = None,
+        require: Optional[Union[str, Iterable[str]]] = None,
+        any_of: Optional[Union[str, Iterable[str]]] = None,
+        exclude: Optional[Union[str, Iterable[str]]] = None,
     ) -> bool:
         """Determine if the particle meets categorization criteria.
 
@@ -238,17 +240,17 @@ class AbstractPhysicalParticle(AbstractParticle):
             Required categories in the form of one or more `str` objects
             or an iterable.
 
-        require : `str` or iterable of `str`, optional, |keyword-only|
+        require : `str` or iterable of `str`, |keyword-only|, optional
             One or more particle categories. This method will return
             `False` if the particle does not belong to all of these
             categories.
 
-        any_of : `str` or iterable of `str`, optional, |keyword-only|
+        any_of : `str` or iterable of `str`, |keyword-only|, optional
             One or more particle categories. This method will return
             `False` if the particle does not belong to at least one of
             these categories.
 
-        exclude : `str` or iterable of `str`, optional, |keyword-only|
+        exclude : `str` or iterable of `str`, |keyword-only|, optional
             One or more particle categories.  This method will return
             `False` if the particle belongs to any of these categories.
 
@@ -391,10 +393,10 @@ class Particle(AbstractPhysicalParticle):
         integer representing the atomic number of an element; or a
         |Particle|.
 
-    mass_numb : integer, optional, |keyword-only|
+    mass_numb : integer, |keyword-only|, optional
         The mass number of an isotope.
 
-    Z : integer, optional, |keyword-only|
+    Z : integer, |keyword-only|, optional
         The |charge number| of an ion or neutral atom.
 
     Raises
@@ -681,7 +683,9 @@ class Particle(AbstractPhysicalParticle):
                 self.symbol
             ][attribute]
 
-        particle_taxonomy = _special_particles.particle_zoo._taxonomy_dict
+        particle_taxonomy = (
+            _special_particles.particle_zoo._taxonomy_dict  # noqa: SLF001
+        )
         all_categories = particle_taxonomy.keys()
 
         for category in all_categories:
@@ -1693,7 +1697,7 @@ class Particle(AbstractPhysicalParticle):
 
         Parameters
         ----------
-        n : positive integer, optional, default: ``1``
+        n : positive integer, default: ``1``
             The number of bound electrons to remove from the |Particle|
             object.
 
@@ -1844,13 +1848,13 @@ class DimensionlessParticle(AbstractParticle):
 
     Parameters
     ----------
-    mass : positive real number, optional, |keyword-only|, default: |nan|
+    mass : positive real number, |keyword-only|, default: |nan|
         The mass of the dimensionless particle.
 
-    charge : real number, optional, |keyword-only|, default: |nan|
+    charge : real number, |keyword-only|, default: |nan|
         The electric charge of the dimensionless particle.
 
-    symbol : str, optional, |keyword-only|
+    symbol : str, |keyword-only|, optional
         The symbol to be assigned to the dimensionless particle.
 
     See Also
@@ -1876,7 +1880,13 @@ class DimensionlessParticle(AbstractParticle):
     'ξ'
     """
 
-    def __init__(self, *, mass: Real = None, charge: Real = None, symbol: str = None):
+    def __init__(
+        self,
+        *,
+        mass: Optional[Real] = None,
+        charge: Optional[Real] = None,
+        symbol: Optional[str] = None,
+    ):
         try:
             self.mass = mass
             self.charge = charge
@@ -1913,9 +1923,7 @@ class DimensionlessParticle(AbstractParticle):
         elif isinstance(obj, bool):
             raise TypeError("Expecting a real number, not a bool.")
         elif isinstance(obj, u.Quantity) and not isinstance(obj.value, Real):
-            raise ValueError(  # noqa: TRY004
-                "The value of a Quantity must be a real number."
-            )
+            raise ValueError("The value of a Quantity must be a real number.")
 
         try:
             new_obj = np.float64(obj)
@@ -2033,7 +2041,7 @@ class CustomParticle(AbstractPhysicalParticle):
         `~astropy.units.Quantity`, then it must be in units of electric
         charge. Defaults to |nan| C.
 
-    Z : ~numbers.Real, optional, |keyword-only|
+    Z : ~numbers.Real, |keyword-only|, optional
         The :term:`charge number`, which is equal to the ratio of the
         charge to the elementary charge.
 
@@ -2058,7 +2066,7 @@ class CustomParticle(AbstractPhysicalParticle):
 
     Examples
     --------
-    >>> from astropy import units as u
+    >>> import astropy.units as u
     >>> from plasmapy.particles import CustomParticle
     >>> custom_particle = CustomParticle(
     ...     mass=1.2e-26 * u.kg,
@@ -2247,16 +2255,10 @@ class CustomParticle(AbstractPhysicalParticle):
         if np.isnan(q):
             self._charge = q
         elif isinstance(q, Real):
-            self._charge = q * const.e.si
-            warnings.warn(
-                f"CustomParticle charge set to {q} times the elementary charge."
-            )
-            warnings.warn(
-                "Providing a real number to 'charge' is deprecated. To "
-                "specify the charge as a multiple of the elementary "
-                "charge, use 'Z' as a keyword argument instead, or pass, "
-                "e.g., '2 * astropy.constants.e.si' into 'charge'.",
-                PlasmaPyDeprecationWarning,
+            raise TypeError(
+                "'charge' must be a Quantity with units of electrical charge. "
+                "To specify the charge as a multiple of the elementary charge, "
+                "use 'Z' as a keyword argument instead."
             )
         elif isinstance(q, u.Quantity):
             if not isinstance(q.value, Real):
@@ -2283,7 +2285,7 @@ class CustomParticle(AbstractPhysicalParticle):
     @property
     def charge_number(self) -> Real:
         """The ratio of the charge to the elementary charge."""
-        return self.charge / const.e.si
+        return (self.charge / const.e.si).value
 
     @charge_number.setter
     def charge_number(self, Z: int):

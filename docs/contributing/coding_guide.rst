@@ -29,19 +29,19 @@ style changes. Please feel free to propose revisions to this guide by
 a community meeting.
 
 PlasmaPy generally follows the :pep:`8` style guide for Python code,
-using auto-formatters such as black_ and isort_ that are executed using
-pre-commit_.
+using auto-formatters such as |black| and |isort| that are executed using
+|pre-commit|.
 
 Coding guidelines
 =================
 
 * Write short functions that do exactly one thing with no side effects.
 
-* Use NumPy_ array options instead of ``for`` loops to make code more
+* Use |NumPy| array options instead of :py:`for` loops to make code more
   compact, readable, and performant.
 
-* Instead of defining variables like ``a0``, ``a1``, & ``a2``, define
-  these values in a collection such as an |ndarray| or a `list`.
+* Instead of defining variables like :py:`a0`, :py:`a1`, & :py:`a2`,
+  define these values in a collection such as an |ndarray| or a `list`.
 
 * Use the `property` :term:`decorator` instead of getters and setters.
 
@@ -61,26 +61,26 @@ Coding guidelines
 
      f(T_i=1e6 * u.K, T_e=2e6 * u.K)
 
-  Similarly, when a function has parameters named ``T_e`` and ``T_i``,
-  these parameters should be made |keyword-only| to avoid ambiguity and
-  reduce the chance of errors.
+  Similarly, when a function has parameters named :py:`T_e` and
+  :py:`T_i`, these parameters should be made |keyword-only| to avoid
+  ambiguity and reduce the chance of errors.
 
   .. code-block:: python
 
      def f(*, T_i, T_e):
          ...
 
-* The ``__eq__`` and ``__ne__`` methods of a class should not raise
+* The :py:`__eq__` and :py:`__ne__` methods of a class should not raise
   exceptions. If the comparison for equality is being made between
   objects of different types, these methods should return `False`
   instead. This behavior is for consistency with operations like
   :py:`1 == "1"` which will return `False`.
 
-* Limit usage of ``lambda`` functions to one-liners, such as when
+* Limit usage of :py:`lambda` functions to one-liners, such as when
   defining the default factory of a `~collections.defaultdict`). For
-  anything longer than one line, use ``def`` instead.
+  anything longer than one line, use :py:`def` instead.
 
-* List and dictionary comprehensions can be used for simple ``for``
+* List and dictionary comprehensions can be used for simple :py:`for`
   loops, like:
 
   .. code-block:: pycon
@@ -94,18 +94,20 @@ Coding guidelines
 
 * Avoid defining global variables when possible.
 
-* Use ``assert`` statements only in tests.
+* Use :py:`assert` statements only in tests.
 
 * Use formatted string literals (f-strings) instead of legacy formatting
   for strings.
 
-  >>> package_name = "PlasmaPy"
-  >>> print(f"The name of the package is {package_name}.")
-  The name of the package is PlasmaPy.
-  >>> print(f"{package_name=}")
-  package_name='PlasmaPy'
-  >>> print(f"{package_name!r}")  # shortcut for f"{repr(package_name)}"
-  'PlasmaPy'
+  .. code-block:: pycon
+
+     >>> package_name = "PlasmaPy"
+     >>> print(f"The name of the package is {package_name}.")
+     The name of the package is PlasmaPy.
+     >>> print(f"{package_name=}")
+     package_name='PlasmaPy'
+     >>> print(f"{package_name!r}")  # shortcut for f"{repr(package_name)}"
+     'PlasmaPy'
 
 * Functions that accept |array_like| or |Quantity| inputs should accept
   and return |nan| (`not a number`_) values. This guideline applies when
@@ -115,7 +117,7 @@ Coding guidelines
   .. tip::
 
      Normally, :py:`numpy.nan == numpy.nan` evaluates to `False`, which
-     complicates testing |nan| behavior. The ``equal_nan`` keyword of
+     complicates testing |nan| behavior. The :py:`equal_nan` keyword of
      functions like `numpy.allclose` and `numpy.testing.assert_allclose`
      makes it so that |nan| is considered equal to itself.
 
@@ -146,24 +148,24 @@ code is supposed to be doing.
 * PlasmaPy generally uses the :pep:`8` conventions for variable names.
 
   - Use lowercase words separated by underscores for function and
-    variable names (e.g., ``function_name`` and ``variable_name``).
+    variable names (e.g., :py:`function_name` and :py:`variable_name`).
 
   - Use capitalized words without separators when naming a class (e.g.,
-    ``ClassName``), but keep acronyms capitalized (e.g.,
-    ``MHDEquations``).
+    :py:`ClassName`), but keep acronyms capitalized (e.g.,
+    :py:`MHDEquations`).
 
   - Use capital letters words separated by underscores when naming
-    constants (e.g., ``CONSTANT`` or ``CONSTANT_NAME``).
+    constants (e.g., :py:`CONSTANT` or :py:`CONSTANT_NAME`).
 
   There are some situations in PlasmaPy which justify a departure from
   the :pep:`8` conventions.
 
   - Functions based on plasma parameters that are named after people may
-    be capitalized (e.g., ``Alfven_speed``).
+    be capitalized (e.g., :py:`Alfven_speed`).
 
   - Capital letters may be used for a variable when it matches the
-    standard usage in plasma science (e.g., ``B`` for magnetic field and
-    ``T`` for temperature).
+    standard usage in plasma science (e.g., :py:`B` for magnetic field
+    and :py:`T` for temperature).
 
 * Choose names that are pronounceable to make them more memorable and
   compatible with text-to-speech technology.
@@ -180,31 +182,31 @@ code is supposed to be doing.
      Measure the length of a variable not by the number of characters,
      but rather by the time needed to understand its meaning.
 
-     By this measure, ``cggglm`` is significantly longer than
-     ``solve_gauss_markov_linear_model``.
+     By this measure, :py:`cggglm` is significantly longer than
+     :py:`solve_gauss_markov_linear_model`.
 
-* Avoid ambiguity. Does ``temp`` mean "temperature", "temporary", or
+* Avoid ambiguity. Does :py:`temp` mean "temperature", "temporary", or
   "template"?
 
-* Append ``_e`` to a variable name to indicate that it refers to
-  electrons, ``_i`` for ions, and ``_p`` for protons (e.g., ``T_e``,
-  ``T_i``, and ``T_p``).
+* Append :py:`_e` to a variable name to indicate that it refers to
+  electrons, :py:`_i` for ions, and :py:`_p` for protons (e.g.,
+  :py:`T_e`, :py:`T_i`, and :py:`T_p`).
 
 * Only ASCII_ characters should be used in code that is part of the
   public :wikipedia:`API`.
 
 * Python allows alphanumeric Unicode characters to be used in object
-  names (e.g., ``πλάσμα`` or ``φυσική``). These characters may be used
-  for *internal* code when doing so improves readability (i.e., to match
-  a commonly used symbol) and in Jupyter_ notebooks.
+  names (e.g., :py:`πλάσμα` or :py:`φυσική`). These characters may be
+  used for *internal* code when doing so improves readability (i.e.,
+  to match a commonly used symbol) and in |Jupyter| notebooks.
 
 * If a plasma parameter has multiple names, then use the name that
-  provides the most physical insight. For example, ``gyrofrequency``
-  indicates gyration but ``Larmor_frequency`` does not.
+  provides the most physical insight. For example, :py:`gyrofrequency`
+  indicates gyration but :py:`Larmor_frequency` does not.
 
 * It is *usually* preferable to name a variable after its name rather
-  than its symbol.  An object named ``Debye_length`` is more broadly
-  understandable and searchable than ``lambda_D``. However, there are
+  than its symbol.  An object named :py:`Debye_length` is more broadly
+  understandable and searchable than :py:`lambda_D`. However, there are
   some exceptions to this guideline.
 
   * Symbols used widely across plasma science can be used with low risk
@@ -217,8 +219,8 @@ code is supposed to be doing.
   * Sometimes code that represents an equation will be more readable if
     the Unicode characters for the symbols are used, especially for
     complex equations. For someone who is familiar with the symbols,
-    ``λ = c / ν`` will be more readable than ``lambda = c / nu`` or
-    ``wavelength = speed_of_light / frequency``.
+    :py:`λ = c / ν` will be more readable than :py:`lambda = c / nu` or
+    :py:`wavelength = speed_of_light / frequency`.
 
   * If an implementation is based on a journal article, then variable
     names may be based on the symbols used in that article. The article
@@ -227,11 +229,11 @@ code is supposed to be doing.
 
 * To mark that an object is not part of PlasmaPy's public
   :wikipedia:`API`, begin its name with a leading underscore (e.g.,
-  ``_private_variable``). Private variables should not be included in
-  ``__all__``.
+  :py:`_private_variable`). Private variables should not be included in
+  :py:`__all__`.
 
 * Avoid single character variable names except for standard plasma
-  physics symbols (e.g., ``B``) or as indices in ``for`` loops.
+  physics symbols (e.g., :py:`B`) or as indices in :py:`for` loops.
 
 * Avoid encoding type information in a variable name.
 
@@ -254,8 +256,8 @@ code is supposed to be doing.
      if point_is_in_grid_cell:
          ...
 
-  In ``for`` loops, this may take the form of assignment expressions
-  with the walrus operator (``:=``).
+  In :py:`for` loops, this may take the form of assignment expressions
+  with the walrus operator (:py:`:=`).
 
 .. tip::
 
@@ -317,7 +319,8 @@ unmaintained comment may contain inaccurate or misleading information
 
 * Remove commented out code before merging a pull request.
 
-* When updating code, be sure to review and update, if necessary, associated comments too!
+* When updating code, be sure to review and update, if necessary,
+  associated comments too!
 
 * When a comment is used as the header for a section of code, consider
   extracting that section of code into its own function. For example, we
@@ -424,14 +427,14 @@ Imports
      import numpy as np
      import pandas as pd
 
-* PlasmaPy uses isort_ to organize import statements via a |pre-commit|_
+* PlasmaPy uses |isort| to organize import statements via a |pre-commit|
   hook.
 
 * For infrequently used objects, import the package, subpackage, or
   module rather than the individual code object. Including more of the
   namespace provides contextual information that can make code easier to
-  read. For example, ``json.loads`` is more readable than using only
-  ``loads``.
+  read. For example, :py:`json.loads` is more readable than using only
+  :py:`loads`.
 
 * For frequently used objects (e.g., |Particle|) and type hint
   annotations (e.g., `~typing.Optional` and `~numbers.Real`), import the
@@ -455,10 +458,10 @@ Requirements
 
 * Each release of PlasmaPy should support all minor versions of
   Python that have been released in the prior 42 months, and all minor
-  versions of NumPy_ that have been released in the last 24 months.
+  versions of |NumPy| that have been released in the last 24 months.
   This schedule was proposed in `NumPy Enhancement Proposal 29`_ for
   the scientific Python ecosystem, and has been adopted by upstream
-  packages such as NumPy_, matplotlib_, and Astropy_.
+  packages such as |NumPy|, |matplotlib|, and |Astropy|.
 
   .. tip::
 
@@ -482,8 +485,45 @@ Requirements
      to set a maximum requirement.
 
 * Minor versions of Python are generally released in October of each
-  year. However, it may take a few months before packages like NumPy_
-  and Numba_ become compatible with the newest minor version of Python_.
+  year. However, it may take a few months before packages like |NumPy|
+  and |Numba| become compatible with the newest minor version of |Python|.
+
+Decorators
+==========
+
+.. _particle_inputs:
+
+Transforming particle-like arguments into particle objects
+----------------------------------------------------------
+
+Use |particle_input| to transform arguments to relevant |Particle|,
+|CustomParticle|, or |ParticleList| objects (see :ref:`particles`).
+
+.. _validating_quantities:
+
+Validating Quantity arguments
+-----------------------------
+Use |validate_quantities| to verify function arguments and impose
+relevant restrictions
+
+.. code-block:: python
+
+   from plasmapy.utils.decorators.validators import validate_quantities
+
+   @validate_quantities(
+       n={"can_be_negative": False},
+       validations_on_return={"equivalencies": u.dimensionless_angles()},
+   )
+   def inertial_length(n: u.m**-3, particle) -> u.m:
+       ...
+
+Use |validate_quantities| to enforce |Quantity| type hints
+
+.. code-block:: python
+
+   @validate_quantities
+   def magnetic_pressure(B: u.T) -> u.Pa:
+       return B**2 / (2 * const.mu0)
 
 Special function categories
 ===========================
@@ -502,8 +542,8 @@ their code while maintaining some readability and explicit meaning. As
 such, :term:`aliases` are given to functionality that already has a
 widely-used symbol in plasma literature.
 
-Here is a minimal example of an alias ``f_`` to ``function`` as would be
-defined in :file:`plasmapy/subpackage/module.py`.
+Here is a minimal example of an alias :py:`f_` to :py:`function` as
+would be defined in :file:`plasmapy/subpackage/module.py`.
 
 .. code-block:: python
 
@@ -520,11 +560,11 @@ defined in :file:`plasmapy/subpackage/module.py`.
    f_ = function
    """Alias to `~plasmapy.subpackage.module.function`."""
 
-* Aliases should only be defined for functionality that already has a
-  symbol that is widely used in the community's literature.  This is to
-  ensure that the abbreviated function name is still widely
-  understandable. For example, `~plasmapy.formulary.lengths.cwp_` is a
-  shortcut for :math:`c/ω_p`\ .
+* Aliases should only be defined for frequently used plasma parameters
+  which already have a symbol that is widely used in the community's
+  literature.  This is to ensure that the abbreviated function name is
+  still reasonably understandable. For example,
+  `~plasmapy.formulary.lengths.cwp_` is a shortcut for :math:`c/ω_p`\ .
 
 * The name of an alias should end with a trailing underscore.
 
@@ -533,10 +573,10 @@ defined in :file:`plasmapy/subpackage/module.py`.
 * Each alias should have a one-line docstring that refers users to the
   original function.
 
-* The name of the original function should be included in ``__all__``
+* The name of the original function should be included in :py:`__all__`
   near the top of each module, and the name of the alias should be
-  included in ``__aliases__``, which will then get appended to
-  ``__all__``. This is done so both the :term:`alias` and the original
+  included in :py:`__aliases__`, which will then get appended to
+  :py:`__all__`. This is done so both the :term:`alias` and the original
   function get properly documented.
 
 * Aliases are intended for end users, and should not be used in PlasmaPy
@@ -557,7 +597,7 @@ the performance penalty can become significant for numerically intensive
 applications.
 
 A :term:`lite-function` is an optimized version of another `plasmapy`
-function that accepts numbers and NumPy_ arrays in assumed SI units.
+function that accepts numbers and |NumPy| arrays in assumed SI units.
 :term:`Lite-functions` skip all validations and instead prioritize
 performance. Most :term:`lite-functions` are defined in
 `plasmapy.formulary`.
@@ -570,8 +610,8 @@ performance. Most :term:`lite-functions` are defined in
    :term:`lite-functions`, it is vital to double-check your
    implementation!
 
-Here is a minimal example of a :term:`lite-function` ``function_lite``
-that corresponds to ``function`` as would be defined in
+Here is a minimal example of a :term:`lite-function` :py:`function_lite`
+that corresponds to :py:`function` as would be defined in
 :file:`plasmapy/subpackage/module.py`.
 
 .. code-block:: python
@@ -603,7 +643,7 @@ that corresponds to ``function`` as would be defined in
        ...
 
 * The name of each :term:`lite-function` should be the name of the
-  original function with ``_lite`` appended at the end. For example,
+  original function with :py:`_lite` appended at the end. For example,
   `~plasmapy.formulary.speeds.thermal_speed_lite` is the
   :term:`lite-function` associated with
   `~plasmapy.formulary.speeds.thermal_speed`.
@@ -619,7 +659,7 @@ that corresponds to ``function`` as would be defined in
   reduce code duplication.
 
 * :term:`Lite-functions` are bound to their normal version as the
-  ``lite`` attribute using the
+  :py:`lite` attribute using the
   `~plasmapy.utils.decorators.lite_func.bind_lite_func` decorator. This
   allows the :term:`lite-function` to also be accessed like
   :py:`thermal_speed.lite()`.
@@ -636,11 +676,12 @@ that corresponds to ``function`` as would be defined in
   or utilize Cython_.  At a minimum any "extra" code beyond the raw
   calculation should be removed.
 
-* The name of the original function should be included in ``__all__``
+* The name of the original function should be included in :py:`__all__`
   near the top of each module, and the name of the :term:`lite-function`
-  should be included in ``__lite_funcs__``, which will then get
-  appended to ``__all__``. This is done so both the :term:`lite-function`
-  and the original function get properly documented.
+  should be included in :py:`__lite_funcs__`, which will then get
+  appended to :py:`__all__`. This is done so both the
+  :term:`lite-function` and the original function get properly
+  documented.
 
 Physics
 =======
@@ -677,23 +718,12 @@ adjacent fields such as astronomy and heliophysics. To get started with
   for |astropy.units|_.
 
 * Use unit annotations with the |validate_quantities| decorator to
-  validate |Quantity| arguments and return values.
-
-  .. code-block:: python
-
-     from plasmapy.utils.decorators.validators import validate_quantities
-
-
-     @validate_quantities(
-         n={"can_be_negative": False},
-         validations_on_return={"equivalencies": u.dimensionless_angles()},
-     )
-     def inertial_length(n: u.m**-3, particle) -> u.m:
-         ...
+  validate |Quantity| arguments and return values
+  (see :ref:`validating_quantities`).
 
   .. caution::
 
-     Recent versions of Astropy_ allow unit-aware |Quantity|
+     Recent versions of |Astropy| allow unit-aware |Quantity|
      annotations such as :py:`u.Quantity[u.m]`. However, these
      annotations are not yet compatible with |validate_quantities|.
 
@@ -714,11 +744,13 @@ adjacent fields such as astronomy and heliophysics. To get started with
   beginning of a sentence, including when they are named after a person.
   The sole exception is "degree Celsius".
 
+.. _particles:
+
 Particles
 ---------
 
 The |Particle| class provides an object-oriented interface for accessing
-basic particle data. |Particle| accepts :term:`particle-like` inputs.
+basic particle data. |Particle| accepts |particle-like| inputs.
 
 .. code-block:: pycon
 
@@ -749,7 +781,7 @@ notebook on particles`_.
      def get_particle(particle: ParticleLike):
          return particle
 
-  If we use ``get_particle`` on something |particle-like|, it will
+  If we use :py:`get_particle` on something |particle-like|, it will
   return the corresponding particle object.
 
   .. code-block:: pycon
@@ -795,18 +827,18 @@ Unit conversions involving angles must be treated with care. Angles are
 dimensionless but do have units. Angular velocity is often given in
 units of radians per second, though dimensionally this is equivalent to
 inverse seconds. Astropy will treat radians dimensionlessly when using
-the ``dimensionless_angles`` equivalency, but ``dimensionless_angles``
-does not account for the multiplicative factor of ``2*pi`` that is used
-when converting between frequency (1 / s) and angular frequency (rad /
-s). An explicit way to do this conversion is to set up an equivalency
-between cycles/s and Hz:
+the :py:`dimensionless_angles` equivalency, but
+:py:`dimensionless_angles` does not account for the multiplicative
+factor of :math:`2π` that is used when converting between frequency
+(1/s) and angular frequency (rad/s). An explicit way to do this
+conversion is to set up an equivalency between cycles/s and Hz:
 
 .. code-block:: python
 
-   from astropy import units as u
+   import astropy.units as u
    f_ce = omega_ce.to(u.Hz, equivalencies=[(u.cy/u.s, u.Hz)])  # doctest: +SKIP
 
-However, ``dimensionless_angles`` does work when dividing a velocity by
+However, :py:`dimensionless_angles` does work when dividing a velocity by
 an angular frequency to get a length scale:
 
 .. code-block:: python
@@ -822,7 +854,7 @@ Example notebooks
 
 Examples in PlasmaPy are written as Jupyter notebooks, taking advantage
 of their mature ecosystems. They are located in `docs/notebooks`_.
-|nbsphinx|_ takes care of executing them at documentation build time and
+|nbsphinx| takes care of executing them at documentation build time and
 including them in the documentation.
 
 Please note that it is necessary to store notebooks with their outputs
@@ -833,7 +865,7 @@ accomplishes two goals:
 
 1. helps with versioning the notebooks, as binary image data is not stored in
    the notebook
-2. signals |nbsphinx|_ that it should execute the notebook.
+2. signals |nbsphinx| that it should execute the notebook.
 
 .. note::
 
@@ -841,18 +873,18 @@ accomplishes two goals:
   Currently, reviewers should ensure that submitted notebooks have outputs stripped.
 
 If you have an example notebook that includes packages unavailable in
-the documentation building environment (e.g., ``bokeh``) or runs some
+the documentation building environment (e.g., :py:`bokeh`) or runs some
 heavy computation that should not be executed on every commit, *keep the
 outputs in the notebook* but store it in the repository with a
-``preexecuted_`` prefix, e.g.,
-:file:`preexecuted_full_3d_mhd_chaotic_turbulence_simulation.ipynb`.
+:file:`preexecuted_` prefix (e.g.,
+:file:`preexecuted_full_3d_mhd_chaotic_turbulence_simulation.ipynb`).
 
 Compatibility with Prior Versions of Python, NumPy, and Astropy
 ===============================================================
 
 PlasmaPy releases will generally abide by the following standards, which
-are adapted from `NEP 29`_ for the support of old versions of Python_,
-NumPy_, and Astropy_.
+are adapted from `NEP 29`_ for the support of old versions of |Python|,
+|NumPy|, and |Astropy|.
 
 * PlasmaPy should support at least the minor versions of Python
   initially released 42 months prior to a planned project release date.
@@ -882,7 +914,7 @@ Benchmarks
 .. _benchmarks: https://www.plasmapy.org/plasmapy-benchmarks
 .. _benchmarks-repo: https://github.com/PlasmaPy/plasmapy-benchmarks
 .. _asv: https://github.com/airspeed-velocity/asv
-.. _asv-docs: https://asv.readthedocs.io/en/stable/
+.. _asv-docs: https://asv.readthedocs.io/en/stable
 
 PlasmaPy has a set of asv_ benchmarks that monitor performance of its
 functionalities.  This is meant to protect the package from performance
@@ -894,6 +926,8 @@ in the README file of `benchmarks-repo`_.
 
 .. _ASCII: https://en.wikipedia.org/wiki/ASCII
 .. _cognitive complexity: https://www.sonarsource.com/docs/CognitiveComplexity.pdf
+.. _Cython: https://cython.org
+.. _equivalencies: https://docs.astropy.org/en/stable/units/equivalencies.html
 .. _example notebook on particles: ../notebooks/getting_started/particles.ipynb
 .. _example notebook on units: ../notebooks/getting_started/units.ipynb
 .. _extract function refactoring pattern: https://refactoring.guru/extract-method
@@ -902,3 +936,12 @@ in the README file of `benchmarks-repo`_.
 .. _NumPy Enhancement Proposal 29: https://numpy.org/neps/nep-0029-deprecation_policy.html
 .. _pyupgrade: https://github.com/asottile/pyupgrade
 .. _rename refactoring in PyCharm: https://www.jetbrains.com/help/pycharm/rename-refactorings.html
+
+.. _`astropy.units`: https://docs.astropy.org/en/stable/units/index.html
+.. |astropy.units| replace:: `astropy.units`
+
+.. _`pyproject.toml`: https://github.com/PlasmaPy/PlasmaPy/blob/main/pyproject.toml
+.. |pyproject.toml| replace:: :file:`pyproject.toml`
+
+.. _`tox.ini`: https://github.com/PlasmaPy/PlasmaPy/blob/main/tox.ini
+.. |tox.ini| replace:: :file:`tox.ini`

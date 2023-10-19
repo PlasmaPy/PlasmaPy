@@ -132,6 +132,7 @@ def _test_grid(  # noqa: C901, PLR0912
 
 
 @pytest.mark.slow()
+@pytest.mark.filterwarnings("ignore::RuntimeWarning")
 def test_multiple_grids():
     """
     Test that a case with two grids runs.
@@ -605,6 +606,7 @@ class TestSyntheticRadiograph:
         assert isinstance(histogram, np.ndarray)
         assert histogram.shape == expected["bins"]
 
+    @pytest.mark.filterwarnings("ignore:divide by zero:RuntimeWarning")
     def test_optical_density_histogram(self):
         """
         Test the optical density calculation is correct and stuffed
@@ -898,6 +900,7 @@ def test_add_wire_mesh():
 
 
 @pytest.mark.slow()
+@pytest.mark.filterwarnings("ignore::RuntimeWarning")
 def test_multiple_grids2():
     """
     Test that a case with two grids runs.

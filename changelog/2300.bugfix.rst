@@ -1,0 +1,1 @@
+Enabled the ``time_step`` parameter in `~plasmapy.analysis.time_series.excess_statistics.ExcessStatistics` class to be a |Quantity| with a unit.

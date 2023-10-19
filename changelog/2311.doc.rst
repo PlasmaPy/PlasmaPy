@@ -1,0 +1,3 @@
+Replaced :py:`from plasmapy.particles import *` in
+:file:`docs/notebooks/getting_started/particles.ipynb` with imports of
+the actual functions and classes that were used.

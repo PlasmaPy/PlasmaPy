@@ -1,9 +1,9 @@
 """Tests for code representation functions."""
 
+import astropy.units as u
 import numpy as np
 import pytest
 
-from astropy import units as u
 from collections import namedtuple
 
 from plasmapy.utils.code_repr import (
@@ -324,7 +324,7 @@ def test__code_repr_of_ndarray(array_inputs, max_items, expected):
     )
 
     if max_items >= array.size:
-        recreated_array = eval(actual)  # noqa: PGH001
+        recreated_array = eval(actual)  # noqa: PGH001, S307
         assert np.allclose(array, recreated_array, atol=1e-15, equal_nan=True), (
             f"Evaluating the representation of an ndarray for array_inputs = "
             f"{array_inputs} and max_items = {max_items} does not recreate "

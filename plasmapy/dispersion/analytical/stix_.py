@@ -44,8 +44,8 @@ def stix(  # noqa: C901, PLR0912, PLR0915
         Wavefrequency in units convertible to rad/s.  Either singled
         valued or 1-D array of length :math:`N`.
 
-    ions: a single or `list` of :term:`particle-like` object(s)
-        A list or single instance of :term:`particle-like` objects
+    ions: a single or `list` of |particle-like| object(s)
+        A list or single instance of |particle-like| objects
         representing the ion species (e.g., ``"p"`` for protons,
         ``"D+"`` for deuterium, ``["H+", "He+"]`` for hydrogen and
         helium, etc.).  All ions must be positively charged.
@@ -161,7 +161,7 @@ def stix(  # noqa: C901, PLR0912, PLR0915
 
     Example
     -------
-    >>> from astropy import units as u
+    >>> import astropy.units as u
     >>> from plasmapy.particles import Particle
     >>> from plasmapy.dispersion.analytical.stix_ import stix
     >>> inputs = {

@@ -627,7 +627,7 @@ def _bilinear_root(a1, b1, c1, d1, a2, b2, c2, d2):  # noqa: C901, PLR0911, PLR0
             return np.array([(x1, y1), (x2, y2)])
 
 
-def _trilinear_analysis(vspace, cell):  # noqa: C901, PLR0911, PLR0912, PLR0915
+def _trilinear_analysis(vspace, cell):  # noqa: C901, PLR0915
     r"""
     Return a true or false value based on whether a grid cell which has
     passed the reduction step, contains a null point, using trilinear
@@ -712,9 +712,14 @@ def _trilinear_analysis(vspace, cell):  # noqa: C901, PLR0911, PLR0912, PLR0915
         dy + gy * yConst1,
         fy + hy * yConst1,
     )
-    for root in root_list:
-        if not is_root_in_list((root[0], yConst1, root[1]), BxByEndpoints):
-            BxByEndpoints.append((root[0], yConst1, root[1]))
+
+    BxByEndpoints.extend(
+        [
+            (root[0], yConst1, root[1])
+            for root in root_list
+            if not is_root_in_list((root[0], yConst1, root[1]), BxByEndpoints)
+        ]
+    )
 
     # Bx=Bz=0 Curve Endpoint
     root_list = _bilinear_root(
@@ -728,9 +733,13 @@ def _trilinear_analysis(vspace, cell):  # noqa: C901, PLR0911, PLR0912, PLR0915
         fz + hz * yConst1,
     )
 
-    for root in root_list:
-        if not is_root_in_list((root[0], yConst1, root[1]), BxBzEndpoints):
-            BxBzEndpoints.append((root[0], yConst1, root[1]))
+    BxBzEndpoints.extend(
+        [
+            (root[0], yConst1, root[1])
+            for root in root_list
+            if not is_root_in_list((root[0], yConst1, root[1]), BxBzEndpoints)
+        ]
+    )
 
     # By=Bz=0 Curve Endpoint
     root_list = _bilinear_root(
@@ -744,9 +753,13 @@ def _trilinear_analysis(vspace, cell):  # noqa: C901, PLR0911, PLR0912, PLR0915
         fz + hz * yConst1,
     )
 
-    for root in root_list:
-        if not is_root_in_list((root[0], yConst1, root[1]), ByBzEndpoints):
-            ByBzEndpoints.append((root[0], yConst1, root[1]))
+    ByBzEndpoints.extend(
+        [
+            (root[0], yConst1, root[1])
+            for root in root_list
+            if not is_root_in_list((root[0], yConst1, root[1]), ByBzEndpoints)
+        ]
+    )
 
     # Back Surface
     yConst2 = vspace[0][1][f111[0]][f111[1]][
@@ -764,9 +777,13 @@ def _trilinear_analysis(vspace, cell):  # noqa: C901, PLR0911, PLR0912, PLR0915
         fy + hy * yConst2,
     )
 
-    for root in root_list:
-        if not is_root_in_list((root[0], yConst2, root[1]), BxByEndpoints):
-            BxByEndpoints.append((root[0], yConst2, root[1]))
+    BxByEndpoints.extend(
+        [
+            (root[0], yConst2, root[1])
+            for root in root_list
+            if not is_root_in_list((root[0], yConst2, root[1]), BxByEndpoints)
+        ]
+    )
 
     # Bx=Bz=0 Curve Endpoint
     root_list = _bilinear_root(
@@ -780,9 +797,13 @@ def _trilinear_analysis(vspace, cell):  # noqa: C901, PLR0911, PLR0912, PLR0915
         fz + hz * yConst2,
     )
 
-    for root in root_list:
-        if not is_root_in_list((root[0], yConst2, root[1]), BxBzEndpoints):
-            BxBzEndpoints.append((root[0], yConst2, root[1]))
+    BxBzEndpoints.extend(
+        [
+            (root[0], yConst2, root[1])
+            for root in root_list
+            if not is_root_in_list((root[0], yConst2, root[1]), BxBzEndpoints)
+        ]
+    )
 
     # By=Bz=0 Curve Endpoint
     root_list = _bilinear_root(
@@ -796,9 +817,13 @@ def _trilinear_analysis(vspace, cell):  # noqa: C901, PLR0911, PLR0912, PLR0915
         fz + hz * yConst2,
     )
 
-    for root in root_list:
-        if not is_root_in_list((root[0], yConst2, root[1]), ByBzEndpoints):
-            ByBzEndpoints.append((root[0], yConst2, root[1]))
+    ByBzEndpoints.extend(
+        [
+            (root[0], yConst2, root[1])
+            for root in root_list
+            if not is_root_in_list((root[0], yConst2, root[1]), ByBzEndpoints)
+        ]
+    )
 
     # Right Surface
     xConst1 = vspace[0][0][f111[0]][f111[1]][f111[2]]
@@ -814,9 +839,13 @@ def _trilinear_analysis(vspace, cell):  # noqa: C901, PLR0911, PLR0912, PLR0915
         gy + hy * xConst1,
     )
 
-    for root in root_list:
-        if not is_root_in_list((xConst1, root[0], root[1]), BxByEndpoints):
-            BxByEndpoints.append((xConst1, root[0], root[1]))
+    BxByEndpoints.extend(
+        [
+            (xConst1, root[0], root[1])
+            for root in root_list
+            if not is_root_in_list((xConst1, root[0], root[1]), BxByEndpoints)
+        ]
+    )
 
     # Bx=BZ=0 Curve Endpoint
     root_list = _bilinear_root(
@@ -830,9 +859,13 @@ def _trilinear_analysis(vspace, cell):  # noqa: C901, PLR0911, PLR0912, PLR0915
         gz + hz * xConst1,
     )
 
-    for root in root_list:
-        if not is_root_in_list((xConst1, root[0], root[1]), BxBzEndpoints):
-            BxBzEndpoints.append((xConst1, root[0], root[1]))
+    BxBzEndpoints.extend(
+        [
+            (xConst1, root[0], root[1])
+            for root in root_list
+            if not is_root_in_list((xConst1, root[0], root[1]), BxBzEndpoints)
+        ]
+    )
 
     # By=Bz=0 Curve Endpoint
     root_list = _bilinear_root(
@@ -846,9 +879,13 @@ def _trilinear_analysis(vspace, cell):  # noqa: C901, PLR0911, PLR0912, PLR0915
         gz + hz * xConst1,
     )
 
-    for root in root_list:
-        if not is_root_in_list((xConst1, root[0], root[1]), ByBzEndpoints):
-            ByBzEndpoints.append((xConst1, root[0], root[1]))
+    ByBzEndpoints.extend(
+        [
+            (xConst1, root[0], root[1])
+            for root in root_list
+            if not is_root_in_list((xConst1, root[0], root[1]), ByBzEndpoints)
+        ]
+    )
 
     # Left Surface
     xConst2 = vspace[0][0][f000[0]][f000[1]][f000[2]]
@@ -864,9 +901,13 @@ def _trilinear_analysis(vspace, cell):  # noqa: C901, PLR0911, PLR0912, PLR0915
         gy + hy * xConst2,
     )
 
-    for root in root_list:
-        if not is_root_in_list((xConst2, root[0], root[1]), BxByEndpoints):
-            BxByEndpoints.append((xConst2, root[0], root[1]))
+    BxByEndpoints.extend(
+        [
+            (xConst2, root[0], root[1])
+            for root in root_list
+            if not is_root_in_list((xConst2, root[0], root[1]), BxByEndpoints)
+        ]
+    )
 
     # Bx=BZ=0 Curve Endpoint
     root_list = _bilinear_root(
@@ -880,9 +921,13 @@ def _trilinear_analysis(vspace, cell):  # noqa: C901, PLR0911, PLR0912, PLR0915
         gz + hz * xConst2,
     )
 
-    for root in root_list:
-        if not is_root_in_list((xConst2, root[0], root[1]), BxBzEndpoints):
-            BxBzEndpoints.append((xConst2, root[0], root[1]))
+    BxBzEndpoints.extend(
+        [
+            (xConst2, root[0], root[1])
+            for root in root_list
+            if not is_root_in_list((xConst2, root[0], root[1]), BxBzEndpoints)
+        ]
+    )
 
     # By=Bz=0 Curve Endpoint
     root_list = _bilinear_root(
@@ -896,9 +941,13 @@ def _trilinear_analysis(vspace, cell):  # noqa: C901, PLR0911, PLR0912, PLR0915
         gz + hz * xConst2,
     )
 
-    for root in root_list:
-        if not is_root_in_list((xConst2, root[0], root[1]), ByBzEndpoints):
-            ByBzEndpoints.append((xConst2, root[0], root[1]))
+    ByBzEndpoints.extend(
+        [
+            (xConst2, root[0], root[1])
+            for root in root_list
+            if not is_root_in_list((xConst2, root[0], root[1]), ByBzEndpoints)
+        ]
+    )
 
     # Up Surface
     zConst1 = vspace[0][2][f111[0]][f111[1]][f111[2]]
@@ -914,9 +963,13 @@ def _trilinear_analysis(vspace, cell):  # noqa: C901, PLR0911, PLR0912, PLR0915
         ey + hy * zConst1,
     )
 
-    for root in root_list:
-        if not is_root_in_list((root[0], root[1], zConst1), BxByEndpoints):
-            BxByEndpoints.append((root[0], root[1], zConst1))
+    BxByEndpoints.extend(
+        [
+            (root[0], root[1], zConst1)
+            for root in root_list
+            if not is_root_in_list((root[0], root[1], zConst1), BxByEndpoints)
+        ]
+    )
 
     # Bx=Bz=0 Curve Endpoint
     root_list = _bilinear_root(
@@ -930,9 +983,13 @@ def _trilinear_analysis(vspace, cell):  # noqa: C901, PLR0911, PLR0912, PLR0915
         ez + hz * zConst1,
     )
 
-    for root in root_list:
-        if not is_root_in_list((root[0], root[1], zConst1), BxBzEndpoints):
-            BxBzEndpoints.append((root[0], root[1], zConst1))
+    BxBzEndpoints.extend(
+        [
+            (root[0], root[1], zConst1)
+            for root in root_list
+            if not is_root_in_list((root[0], root[1], zConst1), BxBzEndpoints)
+        ]
+    )
 
     # By=Bz=0 Curve Endpoint
     root_list = _bilinear_root(
@@ -946,9 +1003,13 @@ def _trilinear_analysis(vspace, cell):  # noqa: C901, PLR0911, PLR0912, PLR0915
         ez + hz * zConst1,
     )
 
-    for root in root_list:
-        if not is_root_in_list((root[0], root[1], zConst1), ByBzEndpoints):
-            ByBzEndpoints.append((root[0], root[1], zConst1))
+    ByBzEndpoints.extend(
+        [
+            (root[0], root[1], zConst1)
+            for root in root_list
+            if not is_root_in_list((root[0], root[1], zConst1), ByBzEndpoints)
+        ]
+    )
 
     # Down Surface
     zConst2 = vspace[0][2][f000[0]][f000[1]][f000[2]]
@@ -964,9 +1025,13 @@ def _trilinear_analysis(vspace, cell):  # noqa: C901, PLR0911, PLR0912, PLR0915
         ey + hy * zConst2,
     )
 
-    for root in root_list:
-        if not is_root_in_list((root[0], root[1], zConst2), BxByEndpoints):
-            BxByEndpoints.append((root[0], root[1], zConst2))
+    BxByEndpoints.extend(
+        [
+            (root[0], root[1], zConst2)
+            for root in root_list
+            if not is_root_in_list((root[0], root[1], zConst2), BxByEndpoints)
+        ]
+    )
 
     # Bx=Bz=0 Curve Endpoint
     root_list = _bilinear_root(
@@ -980,9 +1045,13 @@ def _trilinear_analysis(vspace, cell):  # noqa: C901, PLR0911, PLR0912, PLR0915
         ez + hz * zConst2,
     )
 
-    for root in root_list:
-        if not is_root_in_list((root[0], root[1], zConst2), BxBzEndpoints):
-            BxBzEndpoints.append((root[0], root[1], zConst2))
+    BxBzEndpoints.extend(
+        [
+            (root[0], root[1], zConst2)
+            for root in root_list
+            if not is_root_in_list((root[0], root[1], zConst2), BxBzEndpoints)
+        ]
+    )
 
     # By=Bz=0 Curve Endpoint
     root_list = _bilinear_root(
@@ -996,9 +1065,13 @@ def _trilinear_analysis(vspace, cell):  # noqa: C901, PLR0911, PLR0912, PLR0915
         ez + hz * zConst2,
     )
 
-    for root in root_list:
-        if not is_root_in_list((root[0], root[1], zConst2), ByBzEndpoints):
-            ByBzEndpoints.append((root[0], root[1], zConst2))
+    ByBzEndpoints.extend(
+        [
+            (root[0], root[1], zConst2)
+            for root in root_list
+            if not is_root_in_list((root[0], root[1], zConst2), ByBzEndpoints)
+        ]
+    )
 
     xbound = vspace[0][0][f111[0]][f111[1]][f111[2]]
     ybound = vspace[0][1][f111[0]][f111[1]][f111[2]]
@@ -1188,16 +1261,16 @@ def _locate_null_point(vspace, cell, n, err):
         )
         return is_x_in_bound and is_y_in_bound and is_z_in_bound
 
-    starting_pos = []  # noqa: FURB138
+    starting_pos = []
     # Adding the Corners
-    for point in corners:
-        starting_pos.append(
-            [
-                vspace[0][0][point[0]][point[1]][point[2]],
-                vspace[0][1][point[0]][point[1]][point[2]],
-                vspace[0][2][point[0]][point[1]][point[2]],
-            ]
-        )
+    starting_pos = [
+        [
+            vspace[0][0][point[0]][point[1]][point[2]],
+            vspace[0][1][point[0]][point[1]][point[2]],
+            vspace[0][2][point[0]][point[1]][point[2]],
+        ]
+        for point in corners
+    ]
     # Adding the Mid Point
     starting_pos.append(
         [
@@ -1253,7 +1326,7 @@ def _locate_null_point(vspace, cell, n, err):
     return None
 
 
-def _classify_null_point(vspace, cell, loc):  # noqa: PLR0912
+def _classify_null_point(vspace, cell, loc):
     r"""
     Return the coordinates of a null point within a given grid cell in a
     vector space using the Newton-Rapshon method.
@@ -1296,7 +1369,7 @@ def _classify_null_point(vspace, cell, loc):  # noqa: PLR0912
     jcb = _trilinear_jacobian(vspace, cell)
     M = jcb(loc[0], loc[1], loc[2])
     if not np.isclose(np.trace(M), 0, atol=_EQUALITY_ATOL):
-        raise NonZeroDivergence()
+        raise NonZeroDivergence
     eigen_vals, eigen_vectors = np.linalg.eig(M)
     # using the notation from Parnell et al. (1996)
     R = -1.0 * np.linalg.det(M)
@@ -1320,11 +1393,11 @@ def _classify_null_point(vspace, cell, loc):  # noqa: PLR0912
                 if np.isclose(determinant, 0, atol=_EQUALITY_ATOL)
                 else "Improper radial null"
             )
-        elif np.isclose(determinant, 0, atol=_EQUALITY_ATOL):  # noqa: PLR5501
+        elif np.isclose(determinant, 0, atol=_EQUALITY_ATOL):
             null_point_type = "Continuous X-points"
         else:
             null_point_type = "Skewed improper null"
-    elif np.isclose(determinant, 0, atol=_EQUALITY_ATOL):  # noqa: PLR5501
+    elif np.isclose(determinant, 0, atol=_EQUALITY_ATOL):
         null_point_type = "Continuous concentric ellipses"
     else:
         null_point_type = "Spiral null"
@@ -1345,9 +1418,8 @@ def _vspace_iterator(vspace, maxiter=500, err=1e-10):
         vector values, and the third element containing the delta values
         for each dimension.
 
-    maxiter : int
-        The maximum iterations of the Newton-Raphson method. Defaults to
-        500.
+    maxiter : int, default: 500
+        The maximum iterations of the Newton-Raphson method.
 
     err : float, default: ``1e-10``
         The threshold/error that determines if convergence has occurred
@@ -1426,9 +1498,8 @@ def null_point_find(
         the vector space. If not given, the vector values are generated
         over the vector space using the function func.
 
-    maxiter: int
-        The maximum iterations of the Newton-Raphson method. Defaults to
-        500.
+    maxiter: int, default: 500
+        The maximum iterations of the Newton-Raphson method.
 
     err: float, default: ``1e-10``
         The threshold/error that determines if convergence has occurred

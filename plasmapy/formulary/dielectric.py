@@ -6,12 +6,12 @@ __all__ = [
 ]
 __lite_funcs__ = ["permittivity_1D_Maxwellian_lite"]
 
+import astropy.units as u
 import numpy as np
 
-from astropy import units as u
 from collections import namedtuple
 
-from plasmapy.dispersion.dispersionfunction import plasma_dispersion_func_deriv_lite
+from plasmapy.dispersion.dispersion_functions import plasma_dispersion_func_deriv
 from plasmapy.formulary.frequencies import gyrofrequency, plasma_frequency
 from plasmapy.formulary.speeds import thermal_speed
 from plasmapy.utils.decorators import (
@@ -97,7 +97,7 @@ def cold_plasma_permittivity_SDP(B: u.T, species, n, omega: u.rad / u.s):
 
     Examples
     --------
-    >>> from astropy import units as u
+    >>> import astropy.units as u
     >>> from numpy import pi
     >>> B = 2*u.T
     >>> species = ['e', 'D+']
@@ -185,7 +185,7 @@ def cold_plasma_permittivity_LRP(B: u.T, species, n, omega: u.rad / u.s):
 
     Examples
     --------
-    >>> from astropy import units as u
+    >>> import astropy.units as u
     >>> from numpy import pi
     >>> B = 2*u.T
     >>> species = ['e', 'D+']
@@ -272,7 +272,7 @@ def permittivity_1D_Maxwellian_lite(omega, kWave, vth, wp):
     alpha = np.sqrt(2) * wp / (kWave * vth)
     # The dimensionless phase velocity of the propagating EM wave.
     zeta = omega / (kWave * vth)
-    return -0.5 * (alpha**2) * plasma_dispersion_func_deriv_lite(zeta)
+    return -0.5 * (alpha**2) * plasma_dispersion_func_deriv(zeta)
 
 
 @bind_lite_func(permittivity_1D_Maxwellian_lite)
@@ -350,7 +350,7 @@ def permittivity_1D_Maxwellian(
 
     Examples
     --------
-    >>> from astropy import units as u
+    >>> import astropy.units as u
     >>> from numpy import pi
     >>> from plasmapy.formulary import thermal_speed
     >>> T = 30 * 11600 * u.K

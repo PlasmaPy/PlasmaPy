@@ -1,0 +1,3 @@
+Expanded the troubleshooting section of the |documentation guide| to
+describe how to resolve warnings related to documents not being
+included in any toctrees.

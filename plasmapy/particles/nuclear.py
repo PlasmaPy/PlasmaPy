@@ -53,14 +53,14 @@ def nuclear_binding_energy(
 
     Examples
     --------
-    >>> from astropy import units as u
+    >>> import astropy.units as u
     >>> nuclear_binding_energy('Fe-56').to(u.MeV)
     <Quantity 492.25957 MeV>
     >>> nuclear_binding_energy(26, 56)
     <Quantity 7.8868678e-11 J>
     >>> nuclear_binding_energy('p')  # proton
     <Quantity 0. J>
-    >>> from astropy import units as u
+    >>> import astropy.units as u
     >>> before = nuclear_binding_energy("D") + nuclear_binding_energy("T")
     >>> after = nuclear_binding_energy("alpha")
     >>> (after - before).to(u.MeV)  # released energy from D + T --> alpha + n
@@ -118,12 +118,12 @@ def nuclear_reaction_energy(*args, **kwargs) -> u.J:  # noqa: C901, PLR0915
         A string representing the reaction, like
         ``"D + T --> alpha + n"`` or ``"Be-8 --> 2 * He-4"``.
 
-    reactants : |particle-like| or |particle-list-like|, optional, |keyword-only|
+    reactants : |particle-like| or |particle-list-like|, |keyword-only|, optional
         A `list` or `tuple` containing the reactants of a nuclear
         reaction (e.g., ``['D', 'T']``), or a string representing the
         sole reactant.
 
-    products : |particle-like| or |particle-list-like|, optional, |keyword-only|
+    products : |particle-like| or |particle-list-like|, |keyword-only|, optional
         A list or tuple containing the products of a nuclear reaction
         (e.g., ``['alpha', 'n']``), or a string representing the sole
         product.
@@ -157,7 +157,7 @@ def nuclear_reaction_energy(*args, **kwargs) -> u.J:  # noqa: C901, PLR0915
 
     Examples
     --------
-    >>> from astropy import units as u
+    >>> import astropy.units as u
     >>> nuclear_reaction_energy("D + T --> alpha + n")
     <Quantity 2.8181e-12 J>
     >>> triple_alpha1 = '2*He-4 --> Be-8'
@@ -219,7 +219,7 @@ def nuclear_reaction_energy(*args, **kwargs) -> u.J:  # noqa: C901, PLR0915
                     raise ParticleError(errmsg) from exc
 
                 if particle.element and not particle.isotope:
-                    raise ParticleError(errmsg)  # noqa: TC301
+                    raise ParticleError(errmsg)
 
                 particles += [particle] * multiplier
 

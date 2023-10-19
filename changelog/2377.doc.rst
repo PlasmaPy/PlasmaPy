@@ -1,0 +1,3 @@
+Updated the narrative documentation on particle objects to
+include |CustomParticle|, |DimensionlessParticle|, and |ParticleList|
+objects.

@@ -1,0 +1,1 @@
+Updated the docstrings and type hint annotations in `plasmapy.formulary.lengths`.

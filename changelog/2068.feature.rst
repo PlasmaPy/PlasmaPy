@@ -1,0 +1,2 @@
+Added the `~plasmapy.plasma.equilibria1d.HarrisSheet` class to calculate
+magnetic field, current density, and plasma pressure for 1D Harris sheets.
