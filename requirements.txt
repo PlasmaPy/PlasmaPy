@@ -45,9 +45,7 @@ beautifulsoup4==4.12.2
 bleach==6.1.0
     # via nbconvert
 cachecontrol[filecache]==0.13.1
-    # via
-    #   cachecontrol
-    #   sphinx-toolbox
+    # via sphinx-toolbox
 cachetools==5.3.1
     # via tox
 certifi==2023.7.22
@@ -127,7 +125,7 @@ h5py==3.10.0
     # via plasmapy (setup.py)
 html5lib==1.1
     # via sphinx-toolbox
-hypothesis==6.88.0
+hypothesis==6.88.1
     # via plasmapy (setup.py)
 identify==2.5.30
     # via pre-commit
@@ -210,7 +208,7 @@ kiwisolver==1.4.5
     # via matplotlib
 latexcodec==2.0.1
     # via pybtex
-llvmlite==0.41.0
+llvmlite==0.41.1
     # via numba
 lmfit==1.2.2
     # via plasmapy (setup.py)
@@ -254,9 +252,9 @@ nest-asyncio==1.5.8
     # via ipykernel
 nodeenv==1.8.0
     # via pre-commit
-numba==0.58.0
+numba==0.58.1
     # via plasmapy (setup.py)
-numpy==1.25.2
+numpy==1.26.1
     # via
     #   astropy
     #   contourpy
