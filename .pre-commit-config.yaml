@@ -116,3 +116,12 @@ repos:
     args: ['--select=A,ARG,B,BLE,C,C4,E,F,FLY,I002,INT,ISC,PERF,PIE,PLC,PLE,PYI,Q003,RET,RSE,SIM,TID,TRY,UP,W', '--ignore=B007,B008,B015,B018,E402,E501,E741,SIM114']
   - id: nbqa-isort
   - id: nbqa-black
+
+- repo: local
+  hooks:
+  - id: print-help-message
+    name: Print troubleshooting link
+    entry: echo "For help with troubleshooting, see https://docs.plasmapy.org/en/latest/contributing/pre-commit.html"
+    language: system
+    pass_filenames: false
+    verbose: true
