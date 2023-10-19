@@ -17,7 +17,7 @@ from abc import ABC, abstractmethod
 from astropy.constants.si import k_B
 from collections import namedtuple
 from numbers import Integral, Real
-from typing import Optional, Union
+from typing import Optional
 
 from plasmapy.formulary.dimensionless import beta
 from plasmapy.formulary.frequencies import gyrofrequency, plasma_frequency
@@ -43,7 +43,7 @@ class AbstractMHDWave(ABC):
         ion: ParticleLike,
         *,
         T: u.K = 0 * u.K,
-        gamma: Union[float, int] = 5 / 3,
+        gamma: float = 5 / 3,
         mass_numb: Optional[Integral] = None,
         Z: Optional[Real] = None,
     ):
@@ -114,7 +114,7 @@ class AbstractMHDWave(ABC):
 
     @staticmethod
     @validate_quantities
-    def _validate_k_theta(k: u.rad / u.m, theta: u.rad):
+    def _validate_k_theta(k: u.rad / u.m, theta: u.rad) -> u.Quantity:
         """Validate and return wavenumber and angle."""
         # validate argument k
         k = k.squeeze()
@@ -124,7 +124,7 @@ class AbstractMHDWave(ABC):
                 f" got array of shape {k.shape}."
             )
         if np.any(k <= 0):
-            raise ValueError("Argument 'k' can not be a or have negative values.")
+            raise ValueError("Argument 'k' cannot be a or have negative values.")
 
         # validate argument theta
         theta = theta.squeeze()
@@ -372,7 +372,7 @@ class AlfvenWave(AbstractMHDWave):
 
     Examples
     --------
-    >>> from astropy import units as u
+    >>> import astropy.units as u
     >>> from plasmapy.dispersion.analytical import AlfvenWave
     >>> alfven = AlfvenWave(1e-3 * u.T, 1e16 * u.m ** -3, "p+")
     >>> alfven.angular_frequency(1e-5 * u.rad / u.m, 0 * u.deg)
@@ -438,7 +438,7 @@ class AlfvenWave(AbstractMHDWave):
 
         Examples
         --------
-        >>> from astropy import units as u
+        >>> import astropy.units as u
         >>> from plasmapy.dispersion.analytical import AlfvenWave
         >>> alfven = AlfvenWave(1e-3 * u.T, 1e16 * u.m ** -3, "p+")
         >>> alfven.angular_frequency(1e-5 * u.rad / u.m, 0 * u.deg)
@@ -595,7 +595,7 @@ class FastMagnetosonicWave(AbstractMHDWave):
 
     Examples
     --------
-    >>> from astropy import units as u
+    >>> import astropy.units as u
     >>> from plasmapy.dispersion.analytical import FastMagnetosonicWave
     >>> fast = FastMagnetosonicWave(1e-3 * u.T, 1e16 * u.m ** -3, "p+", T=2.5e6 * u.K)
     >>> fast.angular_frequency(1e-5 * u.rad / u.m, 0 * u.deg)
@@ -665,7 +665,7 @@ class FastMagnetosonicWave(AbstractMHDWave):
 
         Examples
         --------
-        >>> from astropy import units as u
+        >>> import astropy.units as u
         >>> from plasmapy.dispersion.analytical import FastMagnetosonicWave
         >>> fast = FastMagnetosonicWave(1e-3 * u.T, 1e16 * u.m ** -3, "p+", T=2.5e6 * u.K)
         >>> fast.angular_frequency(1e-5 * u.rad / u.m, 0 * u.deg)
@@ -841,7 +841,7 @@ class SlowMagnetosonicWave(AbstractMHDWave):
 
     Examples
     --------
-    >>> from astropy import units as u
+    >>> import astropy.units as u
     >>> from plasmapy.dispersion.analytical import SlowMagnetosonicWave
     >>> slow = SlowMagnetosonicWave(1e-3 * u.T, 1e16 * u.m ** -3, "p+", T=2.5e6 * u.K)
     >>> slow.angular_frequency(1e-5 * u.rad / u.m, 0 * u.deg)
@@ -908,7 +908,7 @@ class SlowMagnetosonicWave(AbstractMHDWave):
 
         Examples
         --------
-        >>> from astropy import units as u
+        >>> import astropy.units as u
         >>> from plasmapy.dispersion.analytical import SlowMagnetosonicWave
         >>> slow = SlowMagnetosonicWave(1e-3 * u.T, 1e16 * u.m ** -3, "p+", T=2.5e6 * u.K)
         >>> slow.angular_frequency(1e-5 * u.rad / u.m, 0 * u.deg)

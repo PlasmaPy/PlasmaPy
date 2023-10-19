@@ -1,8 +1,7 @@
+import astropy.units as u
 import astropy.units.core
 import numpy as np
 import pytest
-
-from astropy import units as u
 
 from plasmapy.dispersion.analytical.mhd_waves_ import mhd_waves
 from plasmapy.particles.exceptions import InvalidIonError
