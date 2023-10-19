@@ -1,0 +1,2 @@
+Made minor updates to :file:`plasmapy/__init__.py`, including to the
+top-level package docstring.
