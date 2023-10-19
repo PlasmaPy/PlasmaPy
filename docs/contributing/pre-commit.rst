@@ -121,7 +121,7 @@ To enable pre-commit on your computer:
 
 #. |Open a terminal|.
 
-#. If you use a |Conda| or virtual environment for developing PlasmaPy,
+#. If you use a Conda or virtual environment for developing PlasmaPy,
    activate it (i.e., with ``conda activate plasmapy-dev``).
 
 #. Make sure that pre-commit is installed to your Python environment by
