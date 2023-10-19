@@ -28,9 +28,7 @@ from plasmapy.utils.exceptions import PhysicsWarning
 
 
 class AbstractMHDWave(ABC):
-    """
-    Core class for magnetohydrodynamic waves.
-    """
+    """Abstract base class for magnetohydrodynamic waves."""
 
     @particle_input
     @validate_quantities(
@@ -59,7 +57,6 @@ class AbstractMHDWave(ABC):
                 )
             locals()[arg_name] = val
 
-        # validate gamma
         if not isinstance(gamma, Real):
             raise TypeError(
                 f"Expected int or float for argument 'gamma', but got "
@@ -106,7 +103,7 @@ class AbstractMHDWave(ABC):
         The magnetosonic speed of the plasma.
 
         Defined as :math:`c_{ms} = \sqrt{v_A^2 + c_s^2}` where
-        :math:`v_A` is the Alfvén speed and :math:`c_s` is the sound speed
+        :math:`v_A` is the Alfvén speed and :math:`c_s` is the sound speed.
         """
         return self._magnetosonic_speed
 
@@ -161,12 +158,13 @@ class AbstractMHDWave(ABC):
 
         Parameters
         ----------
-        k : `~astropy.units.Quantity`, single valued or 1-D array
+        k : `~astropy.units.Quantity`
             Wavenumber in units convertible to rad/m`.  Either single
             valued or 1-D array of length :math:`N`.
-        theta : `~astropy.units.Quantity`, single valued or 1-D array
+
+        theta : `~astropy.units.Quantity`
             The angle of propagation of the wave with respect to the
-            magnetic field, :math:`\cos^{-1}(k_z / k)`, in units must be
+            magnetic field, :math:`\cos^{-1}(k_z / k)`, in units
             convertible to radians. Either single valued or 1-D array of
             size :math:`M`.
 
@@ -204,12 +202,13 @@ class AbstractMHDWave(ABC):
 
         Parameters
         ----------
-        k : `~astropy.units.Quantity`, single valued or 1-D array
+        k : `~astropy.units.Quantity`
             Wavenumber in units convertible to rad/m`.  Either single
             valued or 1-D array of length :math:`N`.
-        theta : `~astropy.units.Quantity`, single valued or 1-D array
+
+        theta : `~astropy.units.Quantity`
             The angle of propagation of the wave with respect to the
-            magnetic field, :math:`\cos^{-1}(k_z / k)`, in units must be
+            magnetic field, :math:`\cos^{-1}(k_z / k)`, in units
             convertible to radians. Either single valued or 1-D array of
             size :math:`M`.
 
@@ -217,7 +216,7 @@ class AbstractMHDWave(ABC):
         -------
         group_velocity : `~astropy.units.Quantity` of shape ``(2, N, M)``
             An array of group_velocities in units m/s with shape
-            :math:`2 \times N \times M`. The first dimension maps to the
+            :math:`2 × N × M`. The first dimension maps to the
             two coordinate arrays in the direction of ``k`` and in
             the direction of increasing ``theta``, the second
             dimension maps to the ``k`` array, and the third dimension
@@ -265,12 +264,13 @@ class AbstractMHDWave(ABC):
 
         Parameters
         ----------
-        k : `~astropy.units.Quantity`, single valued or 1-D array
+        k : `~astropy.units.Quantity`
             Wavenumber in units convertible to rad/m`.  Either single
-            valued or 1-D array of length :math:`N`.
-        theta : `~astropy.units.Quantity`, single valued or 1-D array
+            valued or 1-D array of size :math:`N`.
+
+        theta : `~astropy.units.Quantity`
             The angle of propagation of the wave with respect to the
-            magnetic field, :math:`\cos^{-1}(k_z / k)`, in units must be
+            magnetic field, :math:`\cos^{-1}(k_z / k)`, in units
             convertible to radians. Either single valued or 1-D array of
             size :math:`M`.
 
@@ -278,7 +278,7 @@ class AbstractMHDWave(ABC):
         -------
         phase_velocity : `~astropy.units.Quantity`
             An :math:`N × M` array of computed phase velocities in units
-            m/s.
+            of m/s.
 
         Raises
         ------
@@ -311,22 +311,28 @@ class AlfvenWave(AbstractMHDWave):
     ----------
     B : `~astropy.units.Quantity`
         The magnetic field magnitude in units convertible to T.
+
     density : `~astropy.units.Quantity`
         Either the ion number density :math:`n_i` in units convertible
         to m\ :sup:`-3` or the total mass density :math:`ρ` in units
         convertible to kg m\ :sup:`-3`\ .
+
     ion : |particle-like|
         Representation of the ion species (e.g., ``'p'`` for protons,
         ``'D+'`` for deuterium, ``'He-4 +1'`` for singly ionized
         helium-4, etc.). If no charge state information is provided,
         then the ions are assumed to be singly ionized.
+
     T : `~astropy.units.Quantity`, |keyword-only|, optional
         The plasma temperature in units of K or eV, which defaults
         to zero.
-    gamma : `float` or `int`, |keyword-only|, optional
-        The adiabatic index for the plasma, which defaults to 3/5.
+
+    gamma : `float` or `int`, |keyword-only|, default: 5/3
+        The adiabatic index for the plasma.
+
     mass_numb : `int`, |keyword-only|, optional
         The mass number corresponding to ``ion``.
+
     Z : `float` or `int`, |keyword-only|, optional
         The charge number corresponding to ``ion``.
 
@@ -457,11 +463,12 @@ class AlfvenWave(AbstractMHDWave):
         Parameters
         ----------
         k : `~astropy.units.Quantity`, single valued or 1-D array
-            Wavenumber in units convertible to rad/m`.  Either single
+            Wavenumber in units convertible to rad/m`. Either single
             valued or 1-D array of length :math:`N`.
-        theta : `~astropy.units.Quantity`, single valued or 1-D array
+
+        theta : `~astropy.units.Quantity`
             The angle of propagation of the wave with respect to the
-            magnetic field, :math:`\cos^{-1}(k_z / k)`, in units must be
+            magnetic field, :math:`\cos^{-1}(k_z / k)`, in units
             convertible to radians. Either single valued or 1-D array of
             size :math:`M`.
 
@@ -522,22 +529,28 @@ class FastMagnetosonicWave(AbstractMHDWave):
     ----------
     B : `~astropy.units.Quantity`
         The magnetic field magnitude in units convertible to T.
+
     density : `~astropy.units.Quantity`
         Either the ion number density :math:`n_i` in units convertible
         to m\ :sup:`-3` or the total mass density :math:`ρ` in units
         convertible to kg m\ :sup:`-3`\ .
+
     ion : |particle-like|
         Representation of the ion species (e.g., ``'p'`` for protons,
         ``'D+'`` for deuterium, ``'He-4 +1'`` for singly ionized
         helium-4, etc.). If no charge state information is provided,
         then the ions are assumed to be singly ionized.
+
     T : `~astropy.units.Quantity`, |keyword-only|, optional
         The plasma temperature in units of K or eV, which defaults
         to zero.
-    gamma : `float` or `int`, |keyword-only|, optional
-        The adiabatic index for the plasma, which defaults to 3/5.
+
+    gamma : `float` or `int`, |keyword-only|, default: 5/3
+        The adiabatic index for the plasma.
+
     mass_numb : `int`, |keyword-only|, optional
         The mass number corresponding to ``ion``.
+
     Z : `float` or `int`, |keyword-only|, optional
         The charge number corresponding to ``ion``.
 
@@ -599,12 +612,13 @@ class FastMagnetosonicWave(AbstractMHDWave):
 
         Parameters
         ----------
-        k : `~astropy.units.Quantity`, single valued or 1-D array
+        k : `~astropy.units.Quantity`
             Wavenumber in units convertible to rad/m`.  Either single
             valued or 1-D array of length :math:`N`.
-        theta : `~astropy.units.Quantity`, single valued or 1-D array
+
+        theta : `~astropy.units.Quantity`
             The angle of propagation of the wave with respect to the
-            magnetic field, :math:`\cos^{-1}(k_z / k)`, in units must be
+            magnetic field, :math:`\cos^{-1}(k_z / k)`, in units
             convertible to radians. Either single valued or 1-D array of
             size :math:`M`.
 
@@ -639,7 +653,9 @@ class FastMagnetosonicWave(AbstractMHDWave):
 
         .. math::
 
-            ω^2 = \frac{k^2}{2} \left(c_{ms}^2 + \sqrt{c_{ms}^4 - 4 v_A^2 c_s^2 \cos^2 θ}\right)
+            ω^2 = \frac{k^2}{2} \left(
+               c_{ms}^2 + \sqrt{c_{ms}^4 - 4 v_A^2 c_s^2 \cos^2 θ}
+            \right)
 
         where :math:`k` is the wavenumber, :math:`v_A` is the Alfvén
         speed, :math:`c_s` is the ideal sound speed,
@@ -687,12 +703,13 @@ class FastMagnetosonicWave(AbstractMHDWave):
 
         Parameters
         ----------
-        k : `~astropy.units.Quantity`, single valued or 1-D array
-            Wavenumber in units convertible to rad/m`.  Either single
+        k : `~astropy.units.Quantity`
+            Wavenumber in units convertible to rad/m`. Either single
             valued or 1-D array of length :math:`N`.
-        theta : `~astropy.units.Quantity`, single valued or 1-D array
+
+        theta : `~astropy.units.Quantity`
             The angle of propagation of the wave with respect to the
-            magnetic field, :math:`\cos^{-1}(k_z / k)`, in units must be
+            magnetic field, :math:`\cos^{-1}(k_z / k)`, in units
             convertible to radians. Either single valued or 1-D array of
             size :math:`M`.
 
@@ -929,12 +946,13 @@ class SlowMagnetosonicWave(AbstractMHDWave):
 
         Parameters
         ----------
-        k : `~astropy.units.Quantity`, single valued or 1-D array
-            Wavenumber in units convertible to rad/m`.  Either single
+        k : `~astropy.units.Quantity`
+            Wavenumber in units convertible to rad/m`. Either single
             valued or 1-D array of length :math:`N`.
-        theta : `~astropy.units.Quantity`, single valued or 1-D array
+
+        theta : `~astropy.units.Quantity`
             The angle of propagation of the wave with respect to the
-            magnetic field, :math:`\cos^{-1}(k_z / k)`, in units must be
+            magnetic field, :math:`\cos^{-1}(k_z / k)`, in units
             convertible to radians. Either single valued or 1-D array of
             size :math:`M`.
 
@@ -1013,21 +1031,27 @@ def mhd_waves(*args, **kwargs):
     ----------
     B : `~astropy.units.Quantity`
         The magnetic field magnitude in units convertible to T.
+
     density : `~astropy.units.Quantity`
         Either the ion number density :math:`n_i` in units convertible
         to m\ :sup:`-3` or the total mass density :math:`ρ` in units
         convertible to kg m\ :sup:`-3`\ .
+
     ion : |particle-like|
         Representation of the ion species (e.g., ``'p'`` for protons,
         ``'D+'`` for deuterium, ``'He-4 +1'`` for singly ionized
         helium-4, etc.). If no charge state information is provided,
         then the ions are assumed to be singly ionized.
+
     T : `~astropy.units.Quantity`, |keyword-only|, default: 0 K
         The plasma temperature in units of K or eV.
-    gamma : `float` or `int`, |keyword-only|, optional
-        The adiabatic index for the plasma, which defaults to 3/5.
+
+    gamma : `float` or `int`, |keyword-only|, default: 5/3
+        The adiabatic index for the plasma.
+
     mass_numb : 'int', |keyword-only|, optional
         The mass number corresponding to ``ion``.
+
     Z : `float` or 'int', |keyword-only|, optional
         The charge number corresponding to ``ion``.
 

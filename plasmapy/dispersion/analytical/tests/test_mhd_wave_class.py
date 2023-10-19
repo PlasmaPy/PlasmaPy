@@ -44,7 +44,7 @@ class TestMHDWave:
         ],
     )
     def test_raises_init(self, kwargs, error):
-        """Test scenarios that raise an `Exception`."""
+        """Test scenarios that raise an exception."""
         with pytest.raises(error):
             mhd_waves(**kwargs)
 
@@ -64,7 +64,7 @@ class TestMHDWave:
     )
     @pytest.mark.parametrize("mode", range(3))
     def test_raises_angular_frequency(self, kwargs, error, mode):
-        """Test scenarios that raise an `Exception`."""
+        """Test scenarios that raise an exception."""
         with pytest.raises(error):
             sample_waves[mode].angular_frequency(**kwargs)
 
