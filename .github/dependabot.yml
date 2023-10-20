@@ -4,8 +4,10 @@ updates:
 
 - package-ecosystem: github-actions
   directory: /
+  labels:
+  - GitHub Actions
+  - no changelog entry needed
+  reviewers:
+  - namurphy
   schedule:
     interval: daily
-  labels:
-  - No changelog entry needed
-  - GitHub Actions
