@@ -176,7 +176,7 @@ def create_particles_dict() -> dict[str, dict]:  # noqa: C901, PLR0912
     for fermion in particle_zoo.fermions:
         particles[fermion]["spin"] = 0.5
 
-    for boson in particle_zoo.bosons:  # coverage: ignore
+    for boson in particle_zoo.bosons:
         particles[boson]["spin"] = 0
 
     for lepton in particle_zoo.leptons:

@@ -178,7 +178,7 @@ def relativistic_energy(
     # TODO: Remove references to the parameters ``m`` and ``v`` in the
     # docstring and below no sooner than 2024.
 
-    if m is not None or v is not None:  # coverage: ignore
+    if m is not None or v is not None:
         raise TypeError(
             "The parameters 'm' and 'v' to relativistic_energy have "
             " been removed. Use 'particle' instead of 'm' and 'V' "
