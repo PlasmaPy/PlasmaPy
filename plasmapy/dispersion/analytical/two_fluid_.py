@@ -261,7 +261,7 @@ def two_fluid(
             f" got array of shape {k.shape}."
         )
     if np.any(k <= 0):
-        raise ValueError("Argument 'k' can not be a or have negative values.")
+        raise ValueError("Argument 'k' cannot be a or have negative values.")
 
     # validate argument theta
     theta = theta.squeeze()
