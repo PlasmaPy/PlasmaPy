@@ -85,7 +85,7 @@ plasmapy.utils:
 testing:
 - '**/test*.py'
 - '**/conftest.py'
-- .github/workflows/weekly_tests.yml
+- .github/workflows/weekly-tests.yml
 - .codecov.yaml
 - noxfile.py
 - tox.ini
