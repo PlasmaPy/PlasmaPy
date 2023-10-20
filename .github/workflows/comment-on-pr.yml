@@ -6,6 +6,8 @@ on:
 
 jobs:
   comment:
+    # Skip posting this comment for frequent contributors
+    if: "!contains(fromJSON('[''namurphy'', ''rocco8773'', ''StanczakDominik'']'), github.event.pull_request.user.login)"
     runs-on: ubuntu-latest
     steps:
     - uses: actions/github-script@v6
