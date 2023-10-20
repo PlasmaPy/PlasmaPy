@@ -206,13 +206,13 @@ enabled = true
 
 [tool.gilesbot.towncrier_changelog]
 enabled = true
-changelog_skip_label = "No changelog entry needed"
+changelog_skip_label = "no changelog entry needed"
 help_url = "https://docs.plasmapy.org/en/latest/contributing/changelog_guide.html#adding-a-changelog-entry"
 changelog_missing = "Missing changelog entry (see `changelog/README.rst`)"
 changelog_missing_long = "This pull request needs a changelog entry at `changelog/NUMBER.TYPE.rst`, where `NUMBER` is the pull request number and `TYPE` is one of `feature`, `trivial`, `doc`, `bugfix`, `breaking`, or `removal`.\n\nFor details, see: https://docs.plasmapy.org/en/latest/contributing/changelog_guide.html#adding-a-changelog-entry"
 verify_pr_number = true
 number_incorrect = "Changelog entry number ≠ PR number (see `changelog/README.rst`)"
-number_incorrect_long = "The changelog entry number does not match this pull request's number.\n\nWhen purposefully editing the changelog entry for a different pull request, set the 'No changelog entry needed' label to ignore this check."
+number_incorrect_long = "The changelog entry number does not match this pull request's number.\n\nWhen purposefully editing the changelog entry for a different pull request, set the 'no changelog entry needed' label to ignore this check."
 type_incorrect = "Incorrect changelog type (see `changelog/README.rst`)"
 type_incorrect_long = "The filename of the changelog entry must be of the form `changelog/NUMBER.TYPE.rst` where `TYPE` is one of `feature`, `trivial`, `doc`, `bugfix`, `breaking`, or `removal`.\n\nFor details, see: https://docs.plasmapy.org/en/latest/contributing/changelog_guide.html#adding-a-changelog-entry"
 

@@ -1,4 +1,7 @@
-"""Functionality to calculate the conditional average and conditional variance of a time series."""
+"""
+Functionality to calculate the conditional average and conditional
+variance of a time series.
+"""
 
 __all__ = ["ConditionalEvents"]
 
@@ -12,59 +15,71 @@ from scipy.signal import find_peaks
 
 class ConditionalEvents:
     """
-    Calculate conditional average, conditional variance, peaks,
-    arrival times and waiting times of events of a time series.
+    Calculate conditional average, conditional variance, peaks, arrival
+    times and waiting times of events of a time series.
 
     Parameters
     ----------
     signal : 1D |array_like|
         Signal to be analyzed.
+
     time : 1D |array_like|
         Corresponding time values for ``signal``.
+
     lower_threshold : `float` or `~astropy.units.Quantity`
         Lower threshold for event detection.
+
     upper_threshold : `float` or `~astropy.units.Quantity`, default: `None`
         Upper threshold for event detection.
+
     reference_signal : 1D |array_like|, default: `None`
-        Reference signal.
-        If `None`, ``signal`` is the reference signal.
-    length_of_return : float, default: `None`
-        Desired length of returned data.
-        If `None`, estimated as ``len(signal) / len(number_of_events) * time_step``.
-    distance : float, default: ``0``
+        Reference signal. If `None`, ``signal`` is the reference signal.
+
+    length_of_return : `float`, default: `None`
+        Desired length of returned data. If `None`, estimated as
+        ``len(signal) / len(number_of_events) * time_step``.
+
+    distance : `float`, default: ``0``
         Minimum distance between peaks, in units of time.
-    remove_non_max_peaks : bool, default: `False`
+
+    remove_non_max_peaks : `bool`, default: `False`
         Remove events where peak is not the largest value inside window.
 
     Raises
     ------
     `ValueError`:
-        If length of ``signal`` and ``time`` are not equal.
-        If length of ``reference_signal`` and ``time`` are not equal (when reference_signal is provided).
-        If ``length_of_return`` is greater than the length of the time span.
-        If ``length_of_return`` is negative.
-        If ``upper_threshold`` is less than or equal to ``lower_threshold``.
+        If length of ``signal`` and ``time`` are not equal. If length of
+        ``reference_signal`` and ``time`` are not equal (when
+        ``reference_signal`` is provided). If ``length_of_return`` is
+        greater than the length of the time span. If
+        ``length_of_return`` is negative. If ``upper_threshold`` is less
+        than or equal to ``lower_threshold``.
 
-    `UnitsError`:
-        If astropy units of ``signal``/``reference_signal`` and ``lower_threshold`` do not match.
-        If astropy units of ``signal``/``reference_signal`` and ``upper_threshold`` do not match.
-        If astropy units of ``time``, ``length_of_return`` and ``distance`` do not match.
+    `~astropy.units.UnitsError`:
+        If astropy units of ``signal``/``reference_signal`` and either
+        ``lower_threshold`` or ``upper_threshold`` do not match. If the
+        units of ``time``, ``length_of_return`` and ``distance`` do not
+        match.
 
     Notes
     -----
-    The method, in its simplest form, works by finding peaks in a signal that fulfill a certain size threshold.
-    Equally sized excerpts of the signal around every peak are then cut out and averaged.
-    This yields the average shape of the events that fulfill the condition.
+    The method, in its simplest form, works by finding peaks in a signal
+    that fulfill a certain size threshold. Equally sized excerpts of the
+    signal around every peak are then cut out and averaged. This yields
+    the average shape of the events that fulfill the condition.
 
-    A detailed analysis of the conditional averaging method is presented in
-    Rolf Nilsen's master thesis: "Conditional averaging of overlapping pulses"
-    .. _`thesis-link`: https://munin.uit.no/handle/10037/29416
-    :ref:`Rolf Nilsen's master thesis <thesis-link>`
+    A detailed analysis of the conditional averaging method is presented
+    in the Master thesis by :cite:t:`nilsen:2023`.
 
-    Example
-    -------
+    Examples
+    --------
     >>> from plasmapy.analysis.time_series.conditional_averaging import ConditionalEvents
-    >>> cond_events = ConditionalEvents(signal = [1, 2, 1, 1, 2, 1], time = [1, 2, 3, 4, 5, 6], lower_threshold = 1.5)
+    >>> cond_events = ConditionalEvents(
+    ...     signal = [1, 2, 1, 1, 2, 1],
+    ...     time = [1, 2, 3, 4, 5, 6],
+    ...     lower_threshold = 1.5,
+    ... )
+    ...
     >>> cond_events.time
     array([-1.0, 0.0, 1.0])
     >>> cond_events.average
@@ -222,7 +237,6 @@ class ConditionalEvents:
         -------
         average : 1D |array_like|
             Array representing the conditional average over events.
-
         """
         return self._conditional_average
 
@@ -248,7 +262,6 @@ class ConditionalEvents:
         -------
         peaks : 1D |array_like|
             Peak values of conditional events.
-
         """
         return self._peaks
 
@@ -261,7 +274,6 @@ class ConditionalEvents:
         -------
         waiting_times : 1D |array_like|
             Waiting times between consecutive peaks of conditional events.
-
         """
         return self._waiting_times
 
@@ -274,7 +286,6 @@ class ConditionalEvents:
         -------
         arrival_times : 1D |array_like|
             Arrival times the conditional events.
-
         """
         return self._arrival_times
 
@@ -287,7 +298,6 @@ class ConditionalEvents:
         -------
         number_of_events : int
             Total number of conditional events.
-
         """
         return self._number_of_events
 

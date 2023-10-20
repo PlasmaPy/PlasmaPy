@@ -20,8 +20,13 @@ repos:
   - id: check-toml
   - id: check-yaml
 
+- repo: https://github.com/python-jsonschema/check-jsonschema
+  rev: 0.27.0
+  hooks:
+  - id: check-github-workflows
+
 - repo: https://github.com/sirosen/texthooks
-  rev: 0.5.0
+  rev: 0.6.2
   hooks:
   - id: fix-smartquotes
   - id: fix-spaces
@@ -81,7 +86,7 @@ repos:
     - tomli
 
 - repo: https://github.com/astral-sh/ruff-pre-commit
-  rev: v0.0.292
+  rev: v0.1.1
   hooks:
   - id: ruff
     args: [--fix]
@@ -98,7 +103,7 @@ repos:
     - python
 
 - repo: https://github.com/psf/black
-  rev: 23.9.1
+  rev: 23.10.0
   hooks:
   - id: black
 
@@ -116,3 +121,12 @@ repos:
     args: ['--select=A,ARG,B,BLE,C,C4,E,F,FLY,I002,INT,ISC,PERF,PIE,PLC,PLE,PYI,Q003,RET,RSE,SIM,TID,TRY,UP,W', '--ignore=B007,B008,B015,B018,E402,E501,E741,SIM114']
   - id: nbqa-isort
   - id: nbqa-black
+
+- repo: local
+  hooks:
+  - id: print-help-message
+    name: Print troubleshooting link
+    entry: echo "For help with troubleshooting, see https://docs.plasmapy.org/en/latest/contributing/pre-commit.html"
+    language: system
+    pass_filenames: false
+    verbose: true

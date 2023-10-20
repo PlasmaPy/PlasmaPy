@@ -85,6 +85,7 @@ doc_subs = {
     "lite-functions": r":term:`lite-functions`\ ",
     "maxpython": "3.11",
     "minpython": "3.9",
+    "Open a terminal": r":ref:`Open a terminal <opening-a-terminal>`\ ",
     "parameter": r":term:`parameter`\ ",
     "parameters": r":term:`parameters <parameter>`\ ",
     "particle-like": r":term:`particle-like`\ ",

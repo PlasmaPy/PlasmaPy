@@ -12,6 +12,11 @@ Release Guide
 Introduction
 ============
 
+.. important::
+
+   Please see the `latest version of release guide`_ for up-to-date
+   details on how to perform a release.
+
 This document describes the procedure for making a release of PlasmaPy.
 Developers should revise and expand these instructions while performing
 each release, and may refer to `Astropy's release procedures`_ for
@@ -71,7 +76,7 @@ Perform code quality checks
 
   .. tip::
 
-     Apply the :guilabel:`No changelog entry needed` label to pull
+     Apply the :guilabel:`no changelog entry needed` label to pull
      requests that change multiple changelog entries in order to skip
      the changelog entry check.
 
@@ -257,6 +262,7 @@ Advertise the release
 .. _Astropy's release procedures: https://docs.astropy.org/en/stable/development/releasing.html
 .. _Draft a new release: https://github.com/PlasmaPy/PlasmaPy/releases/new
 .. _Facebook: https://www.facebook.com/people/PlasmaPy/100064083033291
+.. _latest version of release guide: https://docs.plasmapy.org/en/latest/contributing/release_guide.html
 .. _LinkedIn: https://www.linkedin.com/company/plasmapy
 .. _ORCID: https://orcid.org
 .. _PlasmaPy releases on PyPI: https://pypi.org/project/plasmapy/#history
