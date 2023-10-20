@@ -1,2 +1,0 @@
-Added a weekly linkcheck test that verifies that hyperlinks in the
-documentation are up-to-date.

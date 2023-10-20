@@ -1,3 +1,0 @@
-Both `~plasmapy.dispersion.dispersion_functions.plasma_dispersion_func`
-and `~plasmapy.dispersion.dispersion_functions.plasma_dispersion_func_deriv`
-now allow |inf| and |nan| arguments without raising a `ValueError`.

@@ -1,1 +1,0 @@
-Added "decorators" section to the |coding guide|.

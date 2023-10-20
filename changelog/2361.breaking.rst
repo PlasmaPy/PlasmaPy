@@ -1,6 +1,0 @@
-Removed the |lite-functions|
-for `~plasmapy.dispersion.dispersion_functions.plasma_dispersion_func`
-and `~plasmapy.dispersion.dispersion_functions.plasma_dispersion_func_deriv`.
-Instead, the performance of the original functions has been improved
-by using a :py:`try` and :py:`except` block instead of having multiple
-:py:`if` statements to check for preconditions.

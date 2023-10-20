@@ -1,2 +1,0 @@
-Enabled the `sphinx.ext.viewcode` extension for adding links in the
-documentation to pages containing the source code.
