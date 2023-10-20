@@ -332,7 +332,7 @@ class AbstractPhysicalParticle(AbstractParticle):
                 return {arg}
             return set(arg[0]) if isinstance(arg[0], (tuple, list, set)) else set(arg)
 
-        if category_tuple and require:  # coverage: ignore
+        if category_tuple and require:
             raise ParticleError(
                 "No positional arguments are allowed if the `require` keyword "
                 "is set in is_category."
@@ -848,7 +848,7 @@ class Particle(AbstractPhysicalParticle):
             other
         )
 
-        if no_symbol_attr or no_attributes_attr:  # coverage: ignore
+        if no_symbol_attr or no_attributes_attr:
             return False
 
         same_particle = self.symbol == other.symbol
@@ -869,7 +869,7 @@ class Particle(AbstractPhysicalParticle):
 
         same_attributes = self._attributes == other._attributes
 
-        if same_particle and not same_attributes:  # coverage: ignore
+        if same_particle and not same_attributes:
             raise ParticleError(
                 f"{self} and {other} should be the same Particle, but "
                 f"have differing attributes.\n\n"
@@ -1172,7 +1172,7 @@ class Particle(AbstractPhysicalParticle):
         """
         if self.isotope or self.is_ion or not self.element:
             raise InvalidElementError(_category_errmsg(self, "element"))
-        if self._attributes["standard atomic weight"] is None:  # coverage: ignore
+        if self._attributes["standard atomic weight"] is None:
             return np.nan * u.kg
         return self._attributes["standard atomic weight"].to(u.kg)
 
@@ -1273,7 +1273,7 @@ class Particle(AbstractPhysicalParticle):
 
         base_mass = self._attributes["isotope mass"]
 
-        if base_mass is None:  # coverage: ignore
+        if base_mass is None:
             return np.nan * u.kg
 
         _nuclide_mass = (
@@ -1432,7 +1432,7 @@ class Particle(AbstractPhysicalParticle):
             return 1
         elif self.isotope:
             return self.mass_number - self.atomic_number
-        else:  # coverage: ignore
+        else:
             raise InvalidIsotopeError(_category_errmsg(self, "isotope"))
 
     @property
@@ -1459,7 +1459,7 @@ class Particle(AbstractPhysicalParticle):
             return 1
         elif self.ionic_symbol:
             return self.atomic_number - self.charge_number
-        else:  # coverage: ignore
+        else:
             raise InvalidIonError(_category_errmsg(self, "ion"))
 
     @property
@@ -1483,7 +1483,7 @@ class Particle(AbstractPhysicalParticle):
         """
         from plasmapy.particles.atomic import common_isotopes
 
-        if not self.isotope or self.is_ion:  # coverage: ignore
+        if not self.isotope or self.is_ion:
             raise InvalidIsotopeError(_category_errmsg(self.symbol, "isotope"))
 
         abundance = self._attributes.get("isotopic abundance", 0.0)
@@ -1517,7 +1517,7 @@ class Particle(AbstractPhysicalParticle):
         >>> alpha.baryon_number
         4
         """
-        if self._attributes["baryon number"] is None:  # coverage: ignore
+        if self._attributes["baryon number"] is None:
             raise MissingParticleDataError(
                 f"The baryon number for '{self.symbol}' is not available."
             )
@@ -1545,7 +1545,7 @@ class Particle(AbstractPhysicalParticle):
         >>> Particle('He-4 0+').lepton_number
         0
         """
-        if self._attributes["lepton number"] is None:  # coverage: ignore
+        if self._attributes["lepton number"] is None:
             raise MissingParticleDataError(
                 f"The lepton number for {self.symbol} is not available."
             )
@@ -1631,7 +1631,7 @@ class Particle(AbstractPhysicalParticle):
         """
         if self.element:
             return self._attributes["periodic table"]
-        else:  # coverage: ignore
+        else:
             raise InvalidElementError(_category_errmsg(self.symbol, "element"))
 
     @property
