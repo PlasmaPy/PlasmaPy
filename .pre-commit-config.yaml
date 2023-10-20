@@ -20,6 +20,12 @@ repos:
   - id: check-toml
   - id: check-yaml
 
+- repo: https://github.com/python-jsonschema/check-jsonschema
+  rev: 0.27.0
+  hooks:
+  - id: check-github-workflows
+    args: [--verbose]
+
 - repo: https://github.com/sirosen/texthooks
   rev: 0.6.2
   hooks:
