@@ -71,7 +71,7 @@ Perform code quality checks
 
   .. tip::
 
-     Apply the :guilabel:`No changelog entry needed` label to pull
+     Apply the :guilabel:`no changelog entry needed` label to pull
      requests that change multiple changelog entries in order to skip
      the changelog entry check.
 
