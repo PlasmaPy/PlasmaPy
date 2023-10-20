@@ -1,4 +1,4 @@
-name: Add no changelog label for autoupdates
+name: Add no changelog label
 
 on:
   pull_request_target:
