@@ -64,7 +64,7 @@ extensions = [
     "sphinx_issues",
     "sphinx_reredirects",
     "sphinx_tabs.tabs",
-    "sphinx_toolbox.collapse",
+    "sphinx_collapse",
     "sphinxcontrib.bibtex",
     "sphinxcontrib.globalsubs",
 ]
