@@ -55,11 +55,9 @@ We have had less need of a feature freeze as the package has become more mature,
 
  - [ ] Begin an upload to [Zenodo] for the new release using the `team@plasmapy.org` login, and reserve a DOI.
  - [ ] Run the GitHub Action to [mint a release]. Specify the version (i.e., `2024.1.0` or `2024.1.0rc` for a release candidate) and copy/paste the reserved DOI from Zenodo.  This action will update the DOI, build the changelog, and tag the release.
- - [ ] [Create a release on GitHub].
-   - Choose the newly created tag (e.g., `v2024.1.0`)
-   - Click to automatically generate release notes
+ - [ ] [Create a release on GitHub]. Choose the newly created tag (e.g., `v2024.1.0`) and use it as the title, automatically generate release notes, and create a discussion for the release. If it is a release candidate (e.g., `v2024.1.0rc1`), then specify it as a pre-release.
  - [ ] Create a pull request to merge the release branch back into `main`. <!-- Automate this step? -->
- - [ ] Download a `.tar.gz` file of the release from the [GitHub releases page] and upload it to [Zenodo]. Update the author list and other metadata, and publish the release to Zenodo.
+ - [ ] Download a `.tar.gz` file of the release from the [GitHub releases page] and upload it to [Zenodo]. Update the author list (using the automatically generated release notes) and bibliography, and publish the release to Zenodo.
  - [ ] After fixing any broken tests, merge the pull request from the release branch back into `main`.
 
 ## Test the release
