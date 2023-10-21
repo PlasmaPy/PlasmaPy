@@ -97,7 +97,7 @@ docutils==0.18.1
     #   sphinx-tabs
     #   sphinx-toolbox
     #   sphinxcontrib-bibtex
-domdf-python-tools==3.6.1
+domdf-python-tools==3.7.0
     # via
     #   apeye
     #   apeye-core
@@ -333,7 +333,7 @@ pybtex-docutils==1.0.3
     # via sphinxcontrib-bibtex
 pycparser==2.21
     # via cffi
-pyerfa==2.0.1
+pyerfa==2.0.1.1
     # via astropy
 pygments==2.16.1
     # via
@@ -405,7 +405,7 @@ rpds-py==0.10.6
     # via
     #   jsonschema
     #   referencing
-ruamel-yaml==0.17.35
+ruamel-yaml==0.17.40
     # via sphinx-toolbox
 ruamel-yaml-clib==0.2.8
     # via ruamel-yaml
@@ -586,13 +586,13 @@ webencodings==0.5.1
     #   tinycss2
 websocket-client==1.6.4
     # via jupyter-server
-websockets==11.0.3
+websockets==12.0
     # via voila
 widgetsnbextension==4.0.9
     # via ipywidgets
 wrapt==1.15.0
     # via plasmapy (setup.py)
-xarray==2023.9.0
+xarray==2023.10.1
     # via plasmapy (setup.py)
 
 # The following packages are considered to be unsafe in a requirements file:
