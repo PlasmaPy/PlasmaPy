@@ -1,2 +1,0 @@
-Applied minor refactorings and formatting improvements to
-:file:`docs/notebooks/dispersion/stix_dispersion.ipynb`.

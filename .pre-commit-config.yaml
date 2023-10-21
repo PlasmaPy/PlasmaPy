@@ -66,7 +66,7 @@ repos:
   rev: v1.0.5
   hooks:
   - id: search-and-replace
-    exclude: changelog/.*|docs/changelog/.*|.sourcery.yaml|docs/_global_substitutions.py
+    exclude: changelog/.*|docs/changelog/.*|.sourcery.yaml|docs/_global_substitutions.py|CHANGELOG.rst
 
 - repo: https://github.com/pre-commit/pygrep-hooks
   rev: v1.10.0

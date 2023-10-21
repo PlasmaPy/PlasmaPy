@@ -1,2 +1,0 @@
-Improved the consistency and specificity of the names of various
-GitHub Actions.

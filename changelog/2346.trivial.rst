@@ -1,2 +1,0 @@
-Enabled |validate_quantities| to accept annotations of the form
-:py:`u.Quantity[u.m]`, where we have previously run :py:`import astropy.units as u`.
