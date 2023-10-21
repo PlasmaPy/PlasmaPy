@@ -1,5 +1,0 @@
-Providing a real number to the ``charge`` parameter in |CustomParticle|
-will now result in a |InvalidParticleError| instead of a deprecation warning. Now,
-``charge`` must be a |Quantity| with units of electrical charge. To
-express the charge as a multiple of the elementary charge, provide a
-real number to the ``Z`` parameter instead.

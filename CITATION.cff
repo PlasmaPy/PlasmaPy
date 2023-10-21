@@ -1,10 +1,10 @@
 title: PlasmaPy
 type: software
-version: 2023.5.1
+version: 2023.10.0
 identifiers:
 - type: doi
-  value: 10.5281/zenodo.8015753
-date-released: '2023-06-07'
+  value: 10.5281/zenodo.10011217
+date-released: '2023-10-20'
 message: >-
   Please cite the specific version of PlasmaPy used
   during a research project.

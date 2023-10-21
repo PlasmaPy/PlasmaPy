@@ -1,2 +1,0 @@
-Updated the |code contribution workflow| in the |contributor guide| to
-describe how to use ``git pull``.
