@@ -59,17 +59,18 @@ We have had less need of a feature freeze as the package has become more mature,
  - [ ] Create a pull request to merge the release branch back into `main`. <!-- Automate this step? -->
  - [ ] Download a `.tar.gz` file of the release from the [GitHub releases page] and upload it to [Zenodo]. Update the author list (using the automatically generated release notes) and bibliography, and publish the release to Zenodo.
  - [ ] After fixing any broken tests, merge the pull request from the release branch back into `main`.
+ - [ ] Merge the automatically generated pull request to the [conda-forge feedstock]. (This may take a while.)
 
 ## Test the release
 
  - [ ] After activating a new virtual or conda environment,  make sure that the released version installs correctly.
- - [ ] Open Python and run `import plasmapy` and `dir(plasmapy)`.
+ - [ ] Open Python and run `import plasmapy`, `dir(plasmapy)`, and `plasmapy.__version__`.
  - [ ] Run `plasma-calculator` from the command line.
- - [ ] Verify that the [citation page] link to the Zenodo record is working.
+ - [ ] Verify that the [citation page] is up-to-date and that the `stable` branch of Read the Docs is pointing to the new release. (This may take a while.)
 
 ## After the release
 
- - [ ] Merge the automatically generated pull request to the [conda-forge feedstock]
+ - [ ] Verify that the new version can be installed with conda.
  - [ ] Announce the release
  - [ ] Discuss the release at the [community meeting]
  - [ ] Update the [release checklist] and raise issues about the release process could be improved
