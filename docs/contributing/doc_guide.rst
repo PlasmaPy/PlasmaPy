@@ -1419,8 +1419,7 @@ Jupyter notebook without adding it to a toctree.
 
 This warning can be resolved by:
 
-* Adding the file to the appropriate toctree (see Sphinx's
-  `documentation page on tables of contents <toctree>`_), or
+* Adding the file to the appropriate toctree, or
 
 * Adding the ``orphan`` `metadata field`_ at the top of the file (not
   recommended in most situations).
@@ -1468,7 +1467,7 @@ For example Jupyter notebooks, the tables of contents are in
 .. _Sphinx's glossary: https://www.sphinx-doc.org/en/master/glossary.html
 .. _Sphinx's templating page: https://www.sphinx-doc.org/en/master/development/templating.html
 .. _style overrides: https://docs.readthedocs.io/en/stable/guides/adding-custom-css.html
-.. _toctree: https://www.sphinx-doc.org/en/master/usage/restructuredtext/directives.html#directive-toctree
+.. _toctree: https://www.sphinx-doc.org/en/master/usage/restructuredtext/directives.html#table-of-contents
 .. _warns: https://numpydoc.readthedocs.io/en/latest/format.html#warns
 .. _weekly tests: https://github.com/PlasmaPy/PlasmaPy/actions/workflows/weekly.yml
 .. _Wikipedia: https://www.wikipedia.org

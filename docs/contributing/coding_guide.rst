@@ -925,7 +925,7 @@ Up-to-date instructions on running the benchmark suite will be located
 in the README file of `benchmarks-repo`_.
 
 .. _ASCII: https://en.wikipedia.org/wiki/ASCII
-.. _cognitive complexity: https://www.sonarsource.com/docs/CognitiveComplexity.pdf
+.. _cognitive complexity: https://docs.codeclimate.com/docs/cognitive-complexity
 .. _Cython: https://cython.org
 .. _equivalencies: https://docs.astropy.org/en/stable/units/equivalencies.html
 .. _example notebook on particles: ../notebooks/getting_started/particles.ipynb
