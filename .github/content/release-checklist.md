@@ -70,7 +70,8 @@ This issue contains the procedure for releasing a new version of PlasmaPy.
 
 [stable documentation build]: https://docs.plasmapy.org/en/stable
 [`stable`]: https://github.com/PlasmaPy/PlasmaPy/tree/stable
-[Read the Docs]: https://readthedocs.org/projects/plasmapy/
+[Read the Docs]: https://readthedocs.org/projects/plasmapy
+[versions page on RTD]: https://readthedocs.org/projects/plasmapy/versions/
 
 <!-- This section of the checklist may need revision. -->
 
@@ -78,6 +79,7 @@ This issue contains the procedure for releasing a new version of PlasmaPy.
 > The [stable documentation build] on [Read the Docs] (RTD) will point to the [`stable`] branch on GitHub, if it exists. Otherwise, it will point to the most recent release on GitHub. The [`stable`] branch is needed if the documentation build for the release fails or if we wish to make any changes to documentation between releases.
 
  - [ ] Delete the [`stable`] branch on GitHub, if it exists.
+ - [ ] Activate the new release on the [versions page on RTD]
  - [ ] Check that the documentation builds correctly for the release branch, and that the [citation page] is up-to-date.
  - [ ] If the documentation build fails, create a new [`stable`] branch from the release branch (e.g., `2023.10.x`) and fix any problems with the documentation build.
 
