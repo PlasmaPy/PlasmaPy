@@ -380,6 +380,7 @@ linkcheck_ignore = [
     r"https://doi\.org/10\.5281/zenodo\.1436011",
     r"https://doi\.org/10\.5281/zenodo\.1460977",
     r"https://doi\.org/10\.5281/zenodo\.3406803",
+    r"https://doi\.org/10\.5281/zenodo\.3766933",
     r"https://doi\.org/10\.5281/zenodo\.4602818",
     r"https://doi\.org/10\.5281/zenodo\.7734998",
     r"https://doi\.org/10\.5281/zenodo\.8015753",
