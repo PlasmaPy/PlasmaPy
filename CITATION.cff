@@ -575,3 +575,8 @@ authors:
 - given-names: Julia
   family-names: Guimiot
   alias: JuliaGuimiot
+
+- given-names: Evan
+  family-names: Jones
+  orcid: https://orcid.org/0009-0004-6699-4869
+  alias: E-W-Jones
