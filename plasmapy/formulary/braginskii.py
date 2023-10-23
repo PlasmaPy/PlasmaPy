@@ -945,7 +945,7 @@ def ion_thermal_conductivity(
 
     See Also
     --------
-    ion_thermal_conductivity
+    electron_thermal_conductivity
 
     """
     ct = ClassicalTransport(
