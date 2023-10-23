@@ -559,7 +559,7 @@ class ClassicalTransport:
 
         See Also
         --------
-        ion_thermal_conductivity
+        electron_thermal_conductivity
 
         """
         kappa_hat = _nondim_thermal_conductivity(
