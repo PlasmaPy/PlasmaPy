@@ -25,9 +25,7 @@ class TestValidateQuantities:
     """
 
     unit_check_defaults = CheckUnits._CheckUnits__check_defaults  # type: Dict[str, Any]
-    value_check_defaults = (
-        CheckValues._CheckValues__check_defaults
-    )  # type: Dict[str, Any]
+    value_check_defaults = CheckValues._CheckValues__check_defaults  # type: Dict[str, Any]
     check_defaults = {**unit_check_defaults, **value_check_defaults}
 
     @staticmethod

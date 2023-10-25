@@ -72,9 +72,7 @@ class AbstractMHDWave(ABC):
 
         self._Alfven_speed = Alfven_speed(B, _rho)
         self._sound_speed = np.sqrt(gamma * k_B * T / ion.mass).to(u.m / u.s)
-        self._magnetosonic_speed = np.sqrt(
-            self._Alfven_speed**2 + self._sound_speed**2
-        )
+        self._magnetosonic_speed = np.sqrt(self._Alfven_speed**2 + self._sound_speed**2)
         self._beta = beta(T, _n, B)
         self._gyrofrequency = gyrofrequency(B, ion)
         self._plasma_frequency = plasma_frequency(_n, ion)
@@ -1009,8 +1007,7 @@ class SlowMagnetosonicWave(AbstractMHDWave):
                 * self._sound_speed**2
                 * np.sin(theta)
                 * np.cos(theta),
-                phase_velocity
-                * (2 * phase_velocity**2 - self._magnetosonic_speed**2),
+                phase_velocity * (2 * phase_velocity**2 - self._magnetosonic_speed**2),
                 out=group_velocity,
                 where=phase_velocity != 0,
             )
