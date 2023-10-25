@@ -116,9 +116,7 @@ class TestOpenPMDThetaMode:
         assert h5_theta.magnetic_field.shape == (3, 3, 51, 201)
 
     def test_has_electric_current_with_units(self, h5_theta):
-        assert isinstance(
-            h5_theta.electric_current.to(u.A * u.kg / u.m**3), u.Quantity
-        )
+        assert isinstance(h5_theta.electric_current.to(u.A * u.kg / u.m**3), u.Quantity)
 
     def test_correct_shape_electric_current(self, h5_theta):
         assert h5_theta.electric_current.shape == (3, 3, 51, 201)

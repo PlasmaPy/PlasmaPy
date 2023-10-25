@@ -80,7 +80,14 @@ def test_angular_freq_to_hz_preserves_signature():
 
     original_signature = inspect.signature(test_func)
     expected_signature = inspect.signature(
-        lambda pos_only, /, arg, *args, required_kwarg, optional_kwarg=2, to_hz=False, **kwargs: None
+        lambda pos_only,
+        /,
+        arg,
+        *args,
+        required_kwarg,
+        optional_kwarg=2,
+        to_hz=False,
+        **kwargs: None
     )
 
     assert (

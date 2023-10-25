@@ -257,7 +257,6 @@ extend-select = [
   "PT", # flake8-pytest-style
   "PTH", # flake8-use-pathlib
   "PYI", # flake8-pyi
-  "Q003", # avoidable-escaped-quote
   "RET", # flake8-return
   "RSE", # flake8-raise
   "RUF005", # collection-literal-concatenation
@@ -292,11 +291,13 @@ ignore = [
   "D200", # fits-on-one-line (incompatible with multiline short summaries)
   "D202", # no-blank-line-after-function
   "D205", # blank-line-after-summary (incompatible with multiline short summaries)
+  "D206", # indent-with-spaces (formatter conflict)
   "D401", # non-imperative-mood (enable later?)
   "E501", # line-too-long
   "EM101", # raw-string-in-exception (enable later in focused PR)
   "EM102", # f-string-in-exception (enable later in focused PR)
   "FIX002", # line-contains-todo
+  "ISC001", # single-line-implicit-string-concatenation (formatter conflict)
   "N802", # invalid-function-name
   "N803", # invalid-argument-name
   "N806", # non-lowercase-variable-in-function
@@ -324,6 +325,7 @@ ignore = [
   "UP006", # non-pep585-annotation
   "UP007", # non-pep604-annotation
   "UP025", # unicode-kind-prefix
+  "W191", # tab-indentation (formatter conflict)
 ]
 extend-exclude = [
   "docs/plasmapy_sphinx",

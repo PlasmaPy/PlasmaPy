@@ -1223,12 +1223,7 @@ def get_ion_density_OML(
     ion = Particle(argument=gas)
 
     n_i_OML = np.sqrt(
-        -slope
-        * u.mA**2
-        / u.V
-        * np.pi**2
-        * ion.mass
-        / (probe_area**2 * const.e**3 * 2)
+        -slope * u.mA**2 / u.V * np.pi**2 * ion.mass / (probe_area**2 * const.e**3 * 2)
     )
 
     if visualize:

@@ -371,15 +371,11 @@ def test_inertial_length():
 
     with pytest.warns(u.UnitsWarning):
         inertial_length_no_units = inertial_length(1e19, particle="p")
-        assert inertial_length_no_units == inertial_length(
-            1e19 * u.m**-3, particle="p"
-        )
+        assert inertial_length_no_units == inertial_length(1e19 * u.m**-3, particle="p")
 
     assert inertial_length(n_e, "e-").unit.is_equivalent(u.m)
 
-    assert np.isclose(
-        inertial_length(1 * u.cm**-3, "e-").cgs.value, 5.31e5, rtol=1e-3
-    )
+    assert np.isclose(inertial_length(1 * u.cm**-3, "e-").cgs.value, 5.31e5, rtol=1e-3)
 
     with pytest.warns(u.UnitsWarning):
         inertial_length(5, "e-")

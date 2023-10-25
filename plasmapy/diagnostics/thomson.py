@@ -229,7 +229,7 @@ def spectral_density_lite(
             / k
             / vT_e[m]
             * np.power(np.abs(1 - np.sum(chiE, axis=0) / epsilon), 2)
-            * np.exp(-xe[m, :] ** 2)
+            * np.exp(-(xe[m, :] ** 2))
         )
 
     icontr = np.zeros([ifract.size, w.size], dtype=np.complex128)
@@ -241,7 +241,7 @@ def spectral_density_lite(
             / k
             / vT_i[m]
             * np.power(np.abs(np.sum(chiE, axis=0) / epsilon), 2)
-            * np.exp(-xi[m, :] ** 2)
+            * np.exp(-(xi[m, :] ** 2))
         )
 
     # Recast as real: imaginary part is already zero

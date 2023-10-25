@@ -86,10 +86,11 @@ repos:
     - tomli
 
 - repo: https://github.com/astral-sh/ruff-pre-commit
-  rev: v0.1.1
+  rev: v0.1.2
   hooks:
   - id: ruff
     args: [--fix]
+  - id: ruff-format
 
 - repo: https://github.com/PyCQA/isort
   rev: 5.12.0
@@ -101,11 +102,6 @@ repos:
     language: python
     types:
     - python
-
-- repo: https://github.com/psf/black
-  rev: 23.10.0
-  hooks:
-  - id: black
 
 - repo: https://github.com/asottile/blacken-docs
   rev: 1.16.0
@@ -120,7 +116,6 @@ repos:
   - id: nbqa-ruff
     args: ['--select=A,ARG,B,BLE,C,C4,E,F,FLY,I002,INT,ISC,PERF,PIE,PLC,PLE,PYI,Q003,RET,RSE,SIM,TID,TRY,UP,W', '--ignore=B007,B008,B015,B018,E402,E501,E741,SIM114']
   - id: nbqa-isort
-  - id: nbqa-black
 
 - repo: local
   hooks:
