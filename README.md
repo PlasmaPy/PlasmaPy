@@ -173,11 +173,11 @@ or even start a new one, please email us at [team@plasmapy.org]!
 ### Plasma Hack Week
 
 A [hack week] is a mix of a hackathon and a summer school. Hack weeks
-provide an opportunity to learn from each other and code together. The
-inaugural [Plasma Hack Week] was held virtually in the summer of 2021,
-and will hopefully be held annually. Please check out the [Plasma Hack
-Week] website for more details, and email [team@plasmapy.org] if you
-would like to become an organizer.
+provide an opportunity to learn from each other and code together.
+[Plasma Hack Week] was held virtually in the summers of 2021 and 2022,
+and we hope to hold this again in the future. If you would like to
+help organize a future Plasma Hack Week, please email
+[team@plasmapy.org].
 
 ## Community
 
