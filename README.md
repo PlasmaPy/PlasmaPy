@@ -24,7 +24,7 @@
 [![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)](https://github.com/pre-commit/pre-commit)
 [![Open Source Helpers](https://www.codetriage.com/plasmapy/plasmapy/badges/users.svg)](https://www.codetriage.com/plasmapy/plasmapy)
 
-[Anaconda Navigator]: https://docs.anaconda.com/anaconda/navigator/index.html
+[Anaconda Navigator]: https://anaconda.org/anaconda/anaconda-navigator
 [Astropy]: https://www.astropy.org
 [3-clause BSD license]: ./LICENSE.md
 [calendar]: https://calendar.google.com/calendar/embed?src=c_sqqq390s24jjfjp3q86pv41pi8%40group.calendar.google.com&ctz=America%2FNew_York
@@ -56,7 +56,7 @@
 [National Science Foundation]: https://nsf.gov
 [office hours]: http://www.plasmapy.org/meetings/office_hours
 [pip]: https://pypi.org/project/pip
-[Plasma Hack Week]: https://hack.plasma.org
+[Plasma Hack Week]: https://hack.plasmapy.org
 [PlasmaPy Community on Zenodo]: https://zenodo.org/communities/plasmapy
 [PlasmaPy]: https://www.plasmapy.org
 [PlasmaPy's online documentation]: https://docs.plasmapy.org
@@ -173,11 +173,11 @@ or even start a new one, please email us at [team@plasmapy.org]!
 ### Plasma Hack Week
 
 A [hack week] is a mix of a hackathon and a summer school. Hack weeks
-provide an opportunity to learn from each other and code together. The
-inaugural [Plasma Hack Week] was held virtually in the summer of 2021,
-and will hopefully be held annually. Please check out the [Plasma Hack
-Week] website for more details, and email [team@plasmapy.org] if you
-would like to become an organizer.
+provide an opportunity to learn from each other and code together.
+[Plasma Hack Week] was held virtually in the summers of 2021 and 2022,
+and we hope to hold this again in the future. If you would like to
+help organize a future Plasma Hack Week, please email
+[team@plasmapy.org].
 
 ## Community
 
