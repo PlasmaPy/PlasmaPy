@@ -24,7 +24,7 @@
 [![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)](https://github.com/pre-commit/pre-commit)
 [![Open Source Helpers](https://www.codetriage.com/plasmapy/plasmapy/badges/users.svg)](https://www.codetriage.com/plasmapy/plasmapy)
 
-[Anaconda Navigator]: https://docs.anaconda.com/anaconda/navigator/index.html
+[Anaconda Navigator]: https://anaconda.org/anaconda/anaconda-navigator
 [Astropy]: https://www.astropy.org
 [3-clause BSD license]: ./LICENSE.md
 [calendar]: https://calendar.google.com/calendar/embed?src=c_sqqq390s24jjfjp3q86pv41pi8%40group.calendar.google.com&ctz=America%2FNew_York
