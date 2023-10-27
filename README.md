@@ -56,7 +56,7 @@
 [National Science Foundation]: https://nsf.gov
 [office hours]: http://www.plasmapy.org/meetings/office_hours
 [pip]: https://pypi.org/project/pip
-[Plasma Hack Week]: https://hack.plasma.org
+[Plasma Hack Week]: https://hack.plasmapy.org
 [PlasmaPy Community on Zenodo]: https://zenodo.org/communities/plasmapy
 [PlasmaPy]: https://www.plasmapy.org
 [PlasmaPy's online documentation]: https://docs.plasmapy.org
