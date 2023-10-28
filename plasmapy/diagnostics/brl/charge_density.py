@@ -1,5 +1,6 @@
 """Using the potential, calculate the charge density."""
 import numpy as np
+
 from diagnostics.brl.integration import integrate
 from scipy.integrate import quad_vec
 from scipy.special import erfc, erfi
@@ -166,28 +167,28 @@ def eta_3(A, chi, x, x_B, spherical=True):
 
 
 def eta_4(
-        s1_indeces,
-        s2_indeces, 
-        complex_integrand_at_s1,
-        complex_integrand_at_s2,
-        s_indeces, 
-        ds, 
-        chi, 
-        dchi_ds, 
-        x, 
-        dx_ds, 
-        eta_net, 
-        gamma, 
-        omega_G, 
-        beta_G, 
-        spherical=True
-    ):
+    s1_indeces,
+    s2_indeces,
+    complex_integrand_at_s1,
+    complex_integrand_at_s2,
+    s_indeces,
+    ds,
+    chi,
+    dchi_ds,
+    x,
+    dx_ds,
+    eta_net,
+    gamma,
+    omega_G,
+    beta_G,
+    spherical=True,
+):
     r"""Calculate the contribution to the charge density across the locus of extrema.
 
     Parameters
     ----------
     s1_indeces, s2_indeces : `numpy.ndarray[float]`
-        Lower and upper indeces of `s` to integrate between where `s1_indeces <= s2_indeces`.
+        Lower and upper indices of `s` to integrate between where `s1_indeces <= s2_indeces`.
     complex_integrand_at_s1, complex_integrand_at_s2 : `numpy.ndarray[bool]`
         Whether the integrand is complex at s1 or s2.
     s_indeces : `numpy.ndarray[int]`
@@ -213,12 +214,12 @@ def eta_4(
 
     Notes
     -----
-    All the terms that enter the integrand (`chi`, `x`, `eta_net`, `omega_G`, 
-    and `beta_G`) should be 1D-arrays that contain the value for all points in 
+    All the terms that enter the integrand (`chi`, `x`, `eta_net`, `omega_G`,
+    and `beta_G`) should be 1D-arrays that contain the value for all points in
     `s`.
 
-    This is the term :math:`\eta_4(\beta_1, \beta_2)` that appears in various 
-    formula in appendix E. The integration is defined in the `CAL` function on 
+    This is the term :math:`\eta_4(\beta_1, \beta_2)` that appears in various
+    formula in appendix E. The integration is defined in the `CAL` function on
     page 36 of the computer program listing, appendix I.
     """
     if spherical:
@@ -227,19 +228,42 @@ def eta_4(
         # Equation (E.31).
         epsilon_G = alpha_G * np.exp(-beta_G)
         # Equation (E.32).
-        psi_G = (beta_G[np.newaxis, :] - chi[:, np.newaxis] - omega_G[np.newaxis, :] * x[:, np.newaxis]**2)**0.5
+        psi_G = (
+            beta_G[np.newaxis, :]
+            - chi[:, np.newaxis]
+            - omega_G[np.newaxis, :] * x[:, np.newaxis] ** 2
+        ) ** 0.5
 
-        all_integrands = -1 / np.pi**0.5 * epsilon_G[np.newaxis, :] * psi_G # Indexed as `[s, s']` in (E.33).
+        all_integrands = (
+            -1 / np.pi**0.5 * epsilon_G[np.newaxis, :] * psi_G
+        )  # Indexed as `[s, s']` in (E.33).
     else:
         # Equation (E.86).
         alpha_G = dchi_ds + gamma * eta_net / (2 * x**3) * dx_ds
         # Equation (E.31).
         epsilon_G = alpha_G * np.exp(-beta_G)
         # Equation (E.87).
-        psi_G = np.arctan((omega_G[np.newaxis, :] * x[:, np.newaxis]**2 / (beta_G[np.newaxis, :] - chi[:, np.newaxis] - omega_G[np.newaxis, :] * x[:, np.newaxis]**2))**0.5)
+        psi_G = np.arctan(
+            (
+                omega_G[np.newaxis, :]
+                * x[:, np.newaxis] ** 2
+                / (
+                    beta_G[np.newaxis, :]
+                    - chi[:, np.newaxis]
+                    - omega_G[np.newaxis, :] * x[:, np.newaxis] ** 2
+                )
+            )
+            ** 0.5
+        )
 
         all_integrands = 1 / np.pi * epsilon_G[np.newaxis, :] * psi_G
     all_integrands = all_integrands[s_indeces]
-    
-    return integrate(all_integrands, s1_indeces, s2_indeces, complex_integrand_at_s1, complex_integrand_at_s2, ds)
 
+    return integrate(
+        all_integrands,
+        s1_indeces,
+        s2_indeces,
+        complex_integrand_at_s1,
+        complex_integrand_at_s2,
+        ds,
+    )

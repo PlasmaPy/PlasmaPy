@@ -68,11 +68,18 @@ def construct_integration_matrix(num_points, point_spacing):
     return integration_matrix
 
 
-def integrate(integrand, start_indeces, end_indeces, complex_before_start, complex_after_end, point_spacing):
-    f"""Integrate an array where the start and end indeces can be floats.
-    
+def integrate(
+    integrand,
+    start_indeces,
+    end_indeces,
+    complex_before_start,
+    complex_after_end,
+    point_spacing,
+):
+    """Integrate an array where the start and end indices can be floats.
+
     This will only calculate the integrand where it is real.
-    The integration is defined in the `CAL` function on 
+    The integration is defined in the `CAL` function on
     page 37 - 39 of the computer program listing, appendix I.
 
     Parameters
@@ -80,10 +87,10 @@ def integrate(integrand, start_indeces, end_indeces, complex_before_start, compl
     integrand : `numpy.ndarray[float]`
         2D-array to integrate. Of shape `(num_x_points, num_y_points)`.
     starts, ends : `numpy.ndarray[float]`
-        1D-array of indeces of the `integrand` array to integrate between. Of 
+        1D-array of indices of the `integrand` array to integrate between. Of
         shape `(num_x_points,)`. Additionally, `0 <= starts <= ends <= num_y_points - 1`.
     complex_before_start, complex_after_end : `numpy.ndarray[bool]`
-        1D-array of booleans containing whether the integrand is complex before 
+        1D-array of booleans containing whether the integrand is complex before
         and after the start and end points respectively.
     point_spacing : `float`
         Distance between each sample point.
@@ -95,10 +102,10 @@ def integrate(integrand, start_indeces, end_indeces, complex_before_start, compl
 
     Notes
     -----
-    This operates by using the integration described in appendix D for 
-    integration between the indeces closest to the `starts` and `ends`. If the 
-    start or end point is not an integer then a Taylor expansion is done around 
-    either the closest integer index or one away from that depending on if the 
+    This operates by using the integration described in appendix D for
+    integration between the indices closest to the `starts` and `ends`. If the
+    start or end point is not an integer then a Taylor expansion is done around
+    either the closest integer index or one away from that depending on if the
     integrand is a complex number.
 
     The integrand must pass through zero to go from the reals to complex.
@@ -141,36 +148,89 @@ def integrate(integrand, start_indeces, end_indeces, complex_before_start, compl
             # Line 233.
             # For the integrand to become complex it has to pass through 0. We'll do the trapezoidal rule with this in mind.
             interpolated_start_value = 0
-            start_area = (start_integer_index - start_index) * point_spacing * current_integrand[start_integer_index] / 2
+            start_area = (
+                (start_integer_index - start_index)
+                * point_spacing
+                * current_integrand[start_integer_index]
+                / 2
+            )
         else:
             if end_bound_index > start_integer_index + 1:
                 # Line 326.
                 # Do a second order Taylor expansion around `start_integer_index + 1`.
                 distance = (start_index - (start_integer_index + 1)) * point_spacing
                 zeroth_derivative = current_integrand[start_integer_index + 1]
-                first_derivative = (current_integrand[start_integer_index + 2] - current_integrand[start_integer_index]) / (2 * point_spacing)
-                second_derivative = (current_integrand[start_integer_index + 2] - 2 * current_integrand[start_integer_index + 1] + current_integrand[start_integer_index]) / point_spacing**2
-                interpolated_start_value = zeroth_derivative + first_derivative * distance + second_derivative / 2 * distance**2
+                first_derivative = (
+                    current_integrand[start_integer_index + 2]
+                    - current_integrand[start_integer_index]
+                ) / (2 * point_spacing)
+                second_derivative = (
+                    current_integrand[start_integer_index + 2]
+                    - 2 * current_integrand[start_integer_index + 1]
+                    + current_integrand[start_integer_index]
+                ) / point_spacing**2
+                interpolated_start_value = (
+                    zeroth_derivative
+                    + first_derivative * distance
+                    + second_derivative / 2 * distance**2
+                )
                 # Integrate the expansion from start_index to start_integer_index + 1.
-                start_area = -distance * zeroth_derivative - 1 / 2 * distance**2 * first_derivative - 1 / 3 * distance**3 * second_derivative / 2
+                start_area = (
+                    -distance * zeroth_derivative
+                    - 1 / 2 * distance**2 * first_derivative
+                    - 1 / 3 * distance**3 * second_derivative / 2
+                )
                 # Also calculate the area between start_integer_index + 1 and start_integer_index + 2.
-                internal_start_area = point_spacing * zeroth_derivative + point_spacing**2 / 2 * first_derivative + point_spacing**3 / 3 * second_derivative / 2
-            elif end_bound_index <= start_integer_index or start_integer_index <= start_bound_index:
+                internal_start_area = (
+                    point_spacing * zeroth_derivative
+                    + point_spacing**2 / 2 * first_derivative
+                    + point_spacing**3 / 3 * second_derivative / 2
+                )
+            elif (
+                end_bound_index <= start_integer_index
+                or start_integer_index <= start_bound_index
+            ):
                 # Line 325.
                 # Do a Taylor expansion up to the first derivative around the point just to the left of start.
-                interpolated_start_value = current_integrand[start_integer_index] + (current_integrand[start_integer_index + 1] - current_integrand[start_integer_index]) * (start_index - start_integer_index)
+                interpolated_start_value = current_integrand[start_integer_index] + (
+                    current_integrand[start_integer_index + 1]
+                    - current_integrand[start_integer_index]
+                ) * (start_index - start_integer_index)
                 # Now do the trapezoidal rule.
-                start_area = (start_integer_index + 1 - start_index) * point_spacing * (current_integrand[start_integer_index + 1] + interpolated_start_value) * 0.5
+                start_area = (
+                    (start_integer_index + 1 - start_index)
+                    * point_spacing
+                    * (
+                        current_integrand[start_integer_index + 1]
+                        + interpolated_start_value
+                    )
+                    * 0.5
+                )
             else:
                 # Line 363.
                 # Do a second order Taylor expansion around the point just to the left of start.
                 distance = (start_index - start_integer_index) * point_spacing
                 zeroth_derivative = current_integrand[start_integer_index]
-                first_derivative = (current_integrand[start_integer_index + 1] - current_integrand[start_integer_index - 1]) / (2 * point_spacing)
-                second_derivative = (current_integrand[start_integer_index + 1] - 2 * current_integrand[start_integer_index] + current_integrand[start_integer_index - 1]) / point_spacing**2
-                interpolated_start_value = zeroth_derivative + first_derivative * distance + second_derivative / 2 * distance**2
+                first_derivative = (
+                    current_integrand[start_integer_index + 1]
+                    - current_integrand[start_integer_index - 1]
+                ) / (2 * point_spacing)
+                second_derivative = (
+                    current_integrand[start_integer_index + 1]
+                    - 2 * current_integrand[start_integer_index]
+                    + current_integrand[start_integer_index - 1]
+                ) / point_spacing**2
+                interpolated_start_value = (
+                    zeroth_derivative
+                    + first_derivative * distance
+                    + second_derivative / 2 * distance**2
+                )
                 # Now integrate from start to the point to the right of start.
-                start_area = zeroth_derivative * (point_spacing - distance) + 1 / 2 * first_derivative * (point_spacing**2 - distance**2) + 1 / 6 * second_derivative * (point_spacing**3 - distance**3)
+                start_area = (
+                    zeroth_derivative * (point_spacing - distance)
+                    + 1 / 2 * first_derivative * (point_spacing**2 - distance**2)
+                    + 1 / 6 * second_derivative * (point_spacing**3 - distance**3)
+                )
 
             # Line 327.
             start_integer_index += 1
@@ -184,35 +244,88 @@ def integrate(integrand, start_indeces, end_indeces, complex_before_start, compl
         elif complex_after_end[i]:
             # Line 238.
             interpolated_end_value = 0
-            end_area = (end_index - end_integer_index) * point_spacing * current_integrand[end_integer_index] / 2
+            end_area = (
+                (end_index - end_integer_index)
+                * point_spacing
+                * current_integrand[end_integer_index]
+                / 2
+            )
         else:
             if end_index > start_bound_index + 1:
                 # Line 342.
                 # Second order Taylor expansion at `end_integer_index - 1`.
                 distance = (end_index - (end_integer_index - 1)) * point_spacing
                 zeroth_derivative = current_integrand[end_integer_index - 1]
-                first_derivative = (current_integrand[end_integer_index] - current_integrand[end_integer_index - 2]) / (2 * point_spacing)
-                second_derivative = (current_integrand[end_integer_index] - 2 * current_integrand[end_integer_index - 1] + current_integrand[end_integer_index - 2]) / point_spacing**2
-                interpolated_end_value = zeroth_derivative + first_derivative * distance + second_derivative / 2 * distance**2
+                first_derivative = (
+                    current_integrand[end_integer_index]
+                    - current_integrand[end_integer_index - 2]
+                ) / (2 * point_spacing)
+                second_derivative = (
+                    current_integrand[end_integer_index]
+                    - 2 * current_integrand[end_integer_index - 1]
+                    + current_integrand[end_integer_index - 2]
+                ) / point_spacing**2
+                interpolated_end_value = (
+                    zeroth_derivative
+                    + first_derivative * distance
+                    + second_derivative / 2 * distance**2
+                )
                 # Integrate from `end_integer_index - 1` to `end_index`.
-                end_area = zeroth_derivative * distance + first_derivative * 1 / 2 * distance**2 + 1 / 2 * second_derivative * 1 / 3 * distance**3
+                end_area = (
+                    zeroth_derivative * distance
+                    + first_derivative * 1 / 2 * distance**2
+                    + 1 / 2 * second_derivative * 1 / 3 * distance**3
+                )
                 # Integrate from `end_integer_index - 2` to `end_integer_index - 1`.
-                internal_end_area = point_spacing * zeroth_derivative + point_spacing**2 / 2 * first_derivative + point_spacing**3 / 3 * second_derivative / 2
-            elif end_bound_index <= end_integer_index or end_integer_index <= start_bound_index:
+                internal_end_area = (
+                    point_spacing * zeroth_derivative
+                    + point_spacing**2 / 2 * first_derivative
+                    + point_spacing**3 / 3 * second_derivative / 2
+                )
+            elif (
+                end_bound_index <= end_integer_index
+                or end_integer_index <= start_bound_index
+            ):
                 # Line 341.
                 # First order Taylor expansion at `end_integer_index - 1`.
-                interpolated_end_value = current_integrand[end_integer_index - 1] + (current_integrand[end_integer_index] - current_integrand[end_integer_index - 1]) * (end_index - (end_integer_index - 1))
-                end_area = (end_index - (end_integer_index - 1)) * point_spacing * (current_integrand[end_integer_index - 1] + interpolated_end_value) / 2
+                interpolated_end_value = current_integrand[end_integer_index - 1] + (
+                    current_integrand[end_integer_index]
+                    - current_integrand[end_integer_index - 1]
+                ) * (end_index - (end_integer_index - 1))
+                end_area = (
+                    (end_index - (end_integer_index - 1))
+                    * point_spacing
+                    * (
+                        current_integrand[end_integer_index - 1]
+                        + interpolated_end_value
+                    )
+                    / 2
+                )
             else:
                 # Line 366.
                 # Second order Taylor expansion at `end_integer_index`.
                 distance = (end_index - end_integer_index) * point_spacing
                 zeroth_derivative = current_integrand[end_integer_index]
-                first_derivative = (current_integrand[end_integer_index + 1] - current_integrand[end_integer_index - 1]) / (2 * point_spacing)
-                second_derivative = (current_integrand[end_integer_index + 1] - 2 * current_integrand[end_integer_index] + current_integrand[end_integer_index - 1]) / point_spacing**2
-                interpolated_end_value = zeroth_derivative + first_derivative * distance + second_derivative / 2 * distance**2
+                first_derivative = (
+                    current_integrand[end_integer_index + 1]
+                    - current_integrand[end_integer_index - 1]
+                ) / (2 * point_spacing)
+                second_derivative = (
+                    current_integrand[end_integer_index + 1]
+                    - 2 * current_integrand[end_integer_index]
+                    + current_integrand[end_integer_index - 1]
+                ) / point_spacing**2
+                interpolated_end_value = (
+                    zeroth_derivative
+                    + first_derivative * distance
+                    + second_derivative / 2 * distance**2
+                )
                 # Integrate from `end_integer_index - 1` to `end_index`.
-                end_area = zeroth_derivative * (distance - point_spacing) + 1 / 2 * first_derivative * (distance**2 - point_spacing**2) + 1 / 6 * second_derivative * (distance**3 - point_spacing**3)
+                end_area = (
+                    zeroth_derivative * (distance - point_spacing)
+                    + 1 / 2 * first_derivative * (distance**2 - point_spacing**2)
+                    + 1 / 6 * second_derivative * (distance**3 - point_spacing**3)
+                )
 
             # Line 343.
             end_integer_index -= 1
@@ -232,7 +345,12 @@ def integrate(integrand, start_indeces, end_indeces, complex_before_start, compl
             else:
                 # Line 372.
                 # If there are no grid points and the valid bound points don't work to Taylor expand around then just do the trapezoidal rule.
-                integral[i] = (interpolated_start_value + interpolated_end_value) * (end_index - start_index) * point_spacing / 2
+                integral[i] = (
+                    (interpolated_start_value + interpolated_end_value)
+                    * (end_index - start_index)
+                    * point_spacing
+                    / 2
+                )
                 continue
 
             # Line 375.
@@ -240,10 +358,27 @@ def integrate(integrand, start_indeces, end_indeces, complex_before_start, compl
             start_to_expansion = (start_index - expansion_index) * point_spacing
             end_to_expansion = (end_index - expansion_index) * point_spacing
             zeroth_derivative = current_integrand[expansion_index]
-            first_derivative = (current_integrand[expansion_index + 1] - current_integrand[expansion_index - 1]) / (2 * point_spacing)
-            second_derivative = (current_integrand[expansion_index + 1] - 2 * current_integrand[expansion_index] + current_integrand[expansion_index - 1]) / point_spacing**2
+            first_derivative = (
+                current_integrand[expansion_index + 1]
+                - current_integrand[expansion_index - 1]
+            ) / (2 * point_spacing)
+            second_derivative = (
+                current_integrand[expansion_index + 1]
+                - 2 * current_integrand[expansion_index]
+                + current_integrand[expansion_index - 1]
+            ) / point_spacing**2
             # Integrate from `start` to `end`.
-            integral[i] = zeroth_derivative * (end_to_expansion - start_to_expansion) + 1 / 2 * first_derivative * (end_to_expansion**2 - start_to_expansion**2) + 1 / 6 * second_derivative * (end_to_expansion**3 - start_to_expansion**3)
+            integral[i] = (
+                zeroth_derivative * (end_to_expansion - start_to_expansion)
+                + 1
+                / 2
+                * first_derivative
+                * (end_to_expansion**2 - start_to_expansion**2)
+                + 1
+                / 6
+                * second_derivative
+                * (end_to_expansion**3 - start_to_expansion**3)
+            )
         elif num_grid_points == 1:
             # If there is only one point between `start` and `end` then just add the start and end area contributions.
             # Line 242.
@@ -257,21 +392,63 @@ def integrate(integrand, start_indeces, end_indeces, complex_before_start, compl
             elif internal_start_area is not None:
                 integral[i] += internal_start_area
             else:
-                integral[i] += (current_integrand[start_integer_index] + current_integrand[end_integer_index]) * point_spacing / 2
-        
+                integral[i] += (
+                    (
+                        current_integrand[start_integer_index]
+                        + current_integrand[end_integer_index]
+                    )
+                    * point_spacing
+                    / 2
+                )
+
         # If there are at least 3 grid points then do the integration from equation (D.22).
         elif num_grid_points == 3:
-            integral[i] += (current_integrand[start_integer_index] + 4 * current_integrand[start_integer_index + 1] + current_integrand[start_integer_index + 2]) * point_spacing / 3
+            integral[i] += (
+                (
+                    current_integrand[start_integer_index]
+                    + 4 * current_integrand[start_integer_index + 1]
+                    + current_integrand[start_integer_index + 2]
+                )
+                * point_spacing
+                / 3
+            )
         elif num_grid_points == 4:
-            integral[i] += (current_integrand[start_integer_index] + 3 * current_integrand[start_integer_index + 1] + 3 * current_integrand[start_integer_index + 2] + current_integrand[start_integer_index + 3]) * point_spacing * 3 / 8
+            integral[i] += (
+                (
+                    current_integrand[start_integer_index]
+                    + 3 * current_integrand[start_integer_index + 1]
+                    + 3 * current_integrand[start_integer_index + 2]
+                    + current_integrand[start_integer_index + 3]
+                )
+                * point_spacing
+                * 3
+                / 8
+            )
         elif num_grid_points == 5:
-            integral[i] += (9 * current_integrand[start_integer_index] + 28 * current_integrand[start_integer_index + 1] + 22 * current_integrand[start_integer_index + 2] + 28 * current_integrand[start_integer_index + 3] + 9 * current_integrand[start_integer_index + 4]) * point_spacing / 24
+            integral[i] += (
+                (
+                    9 * current_integrand[start_integer_index]
+                    + 28 * current_integrand[start_integer_index + 1]
+                    + 22 * current_integrand[start_integer_index + 2]
+                    + 28 * current_integrand[start_integer_index + 3]
+                    + 9 * current_integrand[start_integer_index + 4]
+                )
+                * point_spacing
+                / 24
+            )
         else:
             integral[i] += (
-                9 * current_integrand[start_integer_index] + 28 * current_integrand[start_integer_index + 1] + 
-                23 * current_integrand[start_integer_index + 2] + 23 * current_integrand[end_integer_index - 2] + 
-                28 * current_integrand[end_integer_index - 1] + 9 * current_integrand[end_integer_index] +
-                24 * integral[start_integer_index + 3:end_integer_index - 2]
-            ) * point_spacing / 24
+                (
+                    9 * current_integrand[start_integer_index]
+                    + 28 * current_integrand[start_integer_index + 1]
+                    + 23 * current_integrand[start_integer_index + 2]
+                    + 23 * current_integrand[end_integer_index - 2]
+                    + 28 * current_integrand[end_integer_index - 1]
+                    + 9 * current_integrand[end_integer_index]
+                    + 24 * integral[start_integer_index + 3 : end_integer_index - 2]
+                )
+                * point_spacing
+                / 24
+            )
 
     return integral
