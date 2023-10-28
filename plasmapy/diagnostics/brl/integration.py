@@ -110,6 +110,9 @@ def integrate(
 
     The integrand must pass through zero to go from the reals to complex.
     """
+    if np.any(start_indeces > end_indeces):
+        raise ValueError("Start indeces must be less than end indeces.")
+
     # TODO: Convert this to a vectorized method.
     num_x_points, num_y_points = integrand.shape
     integral = np.zeros(num_x_points)
@@ -117,6 +120,11 @@ def integrate(
     for i, current_integrand in enumerate(integrand):
         start_index = start_indeces[i]
         end_index = end_indeces[i]
+
+        if start_index == end_index:
+            integral[i] = 0
+            continue
+
         # Get `IA` and `IAX`. Lines 385, 201, 202, and 203.
         if np.isclose(start_index, round(start_index)):
             start_integer_index = round(start_index)
