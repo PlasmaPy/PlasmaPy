@@ -1,8 +1,5 @@
 .. _documentation guide:
 
-.. role:: rest(code)
-   :language: rst
-
 *******************
 Documentation Guide
 *******************
@@ -11,6 +8,12 @@ Documentation Guide
    :depth: 2
    :local:
    :backlinks: none
+
+.. role:: bash(code)
+   :language: bash
+
+.. role:: rest(code)
+   :language: rst
 
 Introduction
 ============
@@ -36,8 +39,8 @@ PlasmaPy and affiliated packages.
 |PlasmaPy's documentation| is hosted by |Read the Docs| and is
 available at these locations:
 
-* The documentation corresponding to the most recent release to |PyPI| is
-  labeled ``stable`` and is found at https://docs.plasmapy.org or
+* The documentation corresponding to the most recent release to |PyPI|
+  is labeled ``stable`` and is found at https://docs.plasmapy.org or
   https://docs.plasmapy.org/en/stable.
 
 * The documentation corresponding to the ongoing development on the
@@ -63,20 +66,21 @@ Markup Languages
 ReStructuredText
 ----------------
 
-PlasmaPy's documentation is written using the |reStructuredText|
-markup language. |reStructuredText| is human readable when viewed within a source
-code file or when printed out using `help`. |reStructuredText| also contains markup
-that allows the text to be transformed into |PlasmaPy's documentation|.
-|reStructuredText| files use the file extension :file:`.rst`. Documentation contained
-within :file:`.py` files are in the form of :wikipedia:`docstrings
-<docstring>`, which are written in |reStructuredText|.
+PlasmaPy's documentation is written using the |reStructuredText| markup
+language. |reStructuredText| is human readable when viewed within a
+source code file or when printed out using `help`. |reStructuredText|
+also contains markup that allows the text to be transformed into
+|PlasmaPy's documentation|.  |reStructuredText| files use the file
+extension :file:`.rst`. Documentation contained within :file:`.py` files
+are in the form of :wikipedia:`docstrings <docstring>`, which are
+written in |reStructuredText|.
 
 ReStructuredText Examples
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Here we show some examples of commonly used |reStructuredText| syntax in PlasmaPy.
-Please refer to the documentation for |Sphinx| and |reStructuredText| for a list of
-available |roles| and |directives|.
+Here we show some examples of commonly used |reStructuredText| syntax in
+PlasmaPy.  Please refer to the documentation for |Sphinx| and
+|reStructuredText| for a list of available |roles| and |directives|.
 
 This is an example of including headings for the document title,
 sections, subsections, and so on. The lines surrounding each heading are
@@ -99,7 +103,7 @@ the same length as that heading.
 
 We can link to code objects by enclosing them in single backticks. This
 linking will work for |Python| objects as well as certain packages like
-|NumPy|, |SciPy|, |Astropy|, and pandas_. This linking is described in the
+|NumPy|, |SciPy|, |Astropy|, and |pandas|. This linking is described in the
 section on :ref:`external-references`. In-line code samples are
 typically enclosed in double backticks. To get inline code highlighting,
 use the :rest:`:py:` role for Python code or :rest:`:bash:` for code run
@@ -135,8 +139,8 @@ This |reStructuredText| block renders as:
    The ``:py:`` role can be used for inline code highlighting:
    :py:`import astropy.units as u`.
 
-|Sphinx| can format code blocks for |Python| and the |Python| console using
-the :rst:dir:`code-block` :term:`directive`.
+|Sphinx| can format code blocks for |Python| and the |Python| console
+using the :rst:dir:`code-block` :term:`directive`.
 
    .. code-block:: rst
 
@@ -216,10 +220,10 @@ Markdown
 
 A few of PlasmaPy's files are written using Markdown_, such as README
 files and licenses from other packages. Markdown_ is simpler but more
-limited than |reStructuredText|. Markdown_ files use the file extension :file:`.md`.
-Posts on GitHub are written in `GitHub Flavored Markdown`_. The
-following code block contains a few common examples of Markdown_
-formatting.
+limited than |reStructuredText|. Markdown_ files use the file extension
+:file:`.md`. Posts on GitHub are written in `GitHub Flavored
+Markdown`_. The following code block contains a few common examples of
+Markdown_ formatting.
 
 .. code-block:: markdown
 
@@ -249,11 +253,11 @@ Docstrings
 A :wikipedia:`docstring` is a comment at the beginning of a function or
 another object that provides information on how to use that function
 (see :pep:`257`). Docstrings are designated by surrounding the content
-with triple quotes ``"""This is my docstring."""``.
+with triple quotes :py:`"""This is my docstring."""`.
 
 In order to improve readability and maintain consistency, PlasmaPy uses
-the numpydoc_ standard for docstrings. Docstring conventions for |Python|
-are more generally described in :pep:`257`.
+the numpydoc_ standard for docstrings. Docstring conventions for
+|Python| are more generally described in :pep:`257`.
 
 .. tip::
 
@@ -297,14 +301,14 @@ Here is an example docstring in the numpydoc_ format:
        Parameters
        ----------
        a : `float`
-           The left multiplicand.
+           The number from which ``b`` will be subtracted.
 
        b : `float`
-           The right multiplicand.
+           The number being subtracted from ``a``.
 
-       switch_order : `bool`, optional, |keyword-only|
+       switch_order : `bool`, |keyword-only|, default: `True`
            If `True`, return :math:`a - b`. If `False`, then return
-           :math:`b - a`. Defaults to `True`.
+           :math:`b - a`.
 
        Returns
        -------
@@ -356,7 +360,7 @@ Here is an example docstring in the numpydoc_ format:
        if np.isinf(a) or np.isinf(b):
            raise ValueError("Cannot perform subtraction operations involving infinity.")
 
-       warnings.warn("The subtract function encountered a nan value.", UserWarning)
+       warnings.warn("The `subtract` function encountered a nan value.", UserWarning)
 
        return b - a if switch_order else a - b
 
@@ -653,9 +657,9 @@ Docstring guidelines
   a verb and should end with a period.
 
 * Keep the docstring indented at the same level as the ``r"""`` or
-  ``"""`` that begins the docstring, except for |reStructuredText| constructs like
-  lists, math, and code blocks. Use an indentation of four spaces more
-  than the declaration of the object.
+  ``"""`` that begins the docstring, except for |reStructuredText|
+  constructs like lists, math, and code blocks. Use an indentation of
+  four spaces more than the declaration of the object.
 
   .. code-block:: python
 
@@ -728,7 +732,7 @@ The **type specification** may include:
 * Size and/or shape information
 * Type information
 * Valid choices for the parameter
-* Whether the parameter is optional, |keyword-only|, and/or
+* Whether the parameter is |keyword-only|, optional, and/or
   positional-only
 * Default values
 
@@ -800,7 +804,7 @@ The type specification should not include information about the
    conventions from the `numpydoc style guide
    <https://numpydoc.readthedocs.io/en/latest/format.html#parameters>`__,
    the `matplotlib documentation guide
-   <https://matplotlib.org/stable/devel/documenting_mpl.html#parameter-type-descriptions>`__,
+   <https://matplotlib.org/stable/devel/document.html#parameter-type-descriptions>`__,
    or the `LSST docstring guide
    <https://developer.lsst.io/python/numpydoc.html>`__.
 
@@ -921,9 +925,9 @@ Sphinx
 ======
 
 |Sphinx| is the software used to generate |PlasmaPy's documentation|
-from |reStructuredText| files and |Python| docstrings. It was originally created to
-write Python's documentation and has become the de facto software for
-documenting |Python| packages. Almost all |Python| open-source packages
+from |reStructuredText| files and |Python| docstrings. It was originally
+created to write Python's documentation and has become the de facto
+software for documenting |Python| packages. Most |Python| packages
 utilize |Sphinx| to generate their documentation.
 
 Configuration
@@ -990,17 +994,17 @@ will show up as `astropy.units.Quantity` with a link to the appropriate
 page in Astropy documentation. Similarly, ```~astropy.units.Quantity```
 will show up as `~astropy.units.Quantity`.
 
-To make cross-referencing to an external package available its mappings
-have to be defined in the :confval:`intersphinx_mapping` configuration
-dictionary contained in |docs/conf.py|_. PlasmaPy has already include
-several packages like |Python|, |NumPy|, |SciPy|, |Astropy|, |Sphinx|, etc.
+The external packages that we can cross-reference via the magic of
+`~sphinx.ext.intersphinx` are defined in :confval:`intersphinx_mapping`
+in |docs/conf.py|_. Intersphinx has already been set up in PlasmaPy to
+include the central |Python| documentation, as well as frequently used
+packages such as |Astropy|, |lmfit|, |matplotlib|, |NumPy|, |pandas|,
+|SciPy|, and |Sphinx|.
 
-New source packages may be added, but please verify that references to a
-function or class in that package show up correctly in
-|PlasmaPy's documentation|. The name of the package does not always link as
-expected.
+.. tip::
 
-.. hint::
+   When adding new packages to :confval:`intersphinx_mapping`, please
+   double check that the configuration has been set up correctly.
 
    If a cross-link is not working as expected this is usually due to one
    of the following reasons:
@@ -1009,6 +1013,9 @@ expected.
    * The package not being defined in :confval:`intersphinx_mapping`, or
    * The referenced source package not properly or fully indexing their
      own code, which is common in |Python| packages.
+
+   For some packages, the name of the package itself does not link
+   correctly.
 
 .. _substitutions:
 
@@ -1047,10 +1054,10 @@ Bibliography
 ------------
 
 PlasmaPy uses |sphinxcontrib-bibtex|_ to manage references for its
-documentation. This |Sphinx| extension allows us to store references in a
-BibTeX_ file which is then used to generate the :doc:`../bibliography`.
-References in the :doc:`../bibliography` are then citeable from anywhere
-in the documentation.
+documentation. This |Sphinx| extension allows us to store references in
+a BibTeX_ file which is then used to generate the
+:doc:`../bibliography`.  References in the :doc:`../bibliography` are
+then citeable from anywhere in the documentation.
 
 To add a new reference to the :doc:`../bibliography`, open
 |docs/bibliography.bib|_ and add the reference in `BibTeX format`_. The
@@ -1139,9 +1146,9 @@ Building documentation
 
 .. tip::
 
-   Because a documentation preview is generated automatically by
-   |Read the Docs| for every pull request, it is not necessary to build
-   the documentation locally on your own computer. New contributors can
+   Because a documentation preview is generated automatically by |Read
+   the Docs| for every pull request, it is not necessary to build the
+   documentation locally on your own computer. New contributors can
    safely skip this section.
 
 There are two methods for building the documentation: make_ and |tox|.
@@ -1150,8 +1157,8 @@ There are two methods for building the documentation: make_ and |tox|.
   current directory structure. make_ is quicker for local builds than
   |tox| but requires you to install and set up all dependencies.
 
-* Using |tox| does not require setting up all dependencies ahead of time,
-  but is more computationally intensive since it creates a virtual
+* Using |tox| does not require setting up all dependencies ahead of
+  time, but is more computationally intensive since it creates a virtual
   environment and builds the package before building the documentation.
   Consequently, PlasmaPy uses |tox| for building the documentation on
   continuous integration testing platforms.
@@ -1185,15 +1192,15 @@ entering the :file:`docs/` directory and running:
 
    make html
 
-Including the :samp:`-j {n}` flag in the ``make`` command will enable a
-parallel build, where :samp:`{n}` is replaced with the number of
-processes or ``auto``. To skip building example notebooks, use ``make
-html-nonb`` instead.
+Including the :samp:`-j {n}` flag in the :bash:`make` command will
+enable a parallel build, where :samp:`{n}` is replaced with the number
+of processes or :bash:`auto`. To skip building example notebooks, use
+:bash:`make html-nonb` instead.
 
 You can access the documentation landing page by opening
 :file:`docs/_build/html/index.html` with your browser of choice.
 
-To remove all files previously generated by ``make``, run:
+To remove all files previously generated by :bash:`make`, run:
 
 .. code-block:: bash
 
@@ -1201,8 +1208,8 @@ To remove all files previously generated by ``make``, run:
 
 This command is needed when you make a change to a file that does not
 trigger |Sphinx| to rebuild the file that you altered, for example
-modifying a CSS_ file. Using ``make clean-api`` instead will only remove
-the :wikipedia:`API` portion of the documentation build.
+modifying a CSS_ file. Using :bash:`make clean-api` instead will only
+remove the :wikipedia:`API` portion of the documentation build.
 
 To check that hyperlinks are correct, run:
 
@@ -1247,8 +1254,9 @@ This command will build the documentation without executing the
 .. tip::
 
    When writing documentation, please make sure to fix any warnings that
-   arise. To enforce this, the ``build_docs`` |tox| environment will fail
-   after completing the documentation build if there are any warnings.
+   arise. To enforce this, the ``build_docs`` |tox| environment will
+   fail after completing the documentation build if there are any
+   warnings.
 
 Troubleshooting
 ===============
@@ -1277,8 +1285,8 @@ typo and changing it to ```plasmapy.particles```.
 
 .. important::
 
-   For PlasmaPy objects, use the full namespace of the object (i.e.,
-   use ```plasmapy.particles.particle_class.Particle``` instead of
+   For PlasmaPy objects, use the full namespace of the object (i.e., use
+   ```plasmapy.particles.particle_class.Particle``` instead of
    ```plasmapy.particles.Particle```) or a :ref:`reStructuredText
    substitution <substitutions>` like ``|Particle|`` as defined in
    |docs/_global_substitutions.py|_.
@@ -1313,16 +1321,16 @@ error or missing documentation pages.
 Missing attribute errors
 ------------------------
 
-An `AttributeError` may occur when an ``import`` statement is missing in
-a :file:`__init__.py` file. For example, the error
+An `AttributeError` may occur when an :py:`import` statement is missing
+in a :file:`__init__.py` file. For example, the error
 
 .. code-block::
 
    AttributeError: module 'plasmapy.subpackage' has no attribute 'module'
 
 will occur when :file:`plasmapy/subpackage/__init__.py` is missing
-:py:`from plasmapy.subpackage import module`. Make sure that ``__all__``
-contains ``"module"`` as well.
+:py:`from plasmapy.subpackage import module`. Make sure that
+:py:`__all__` contains :py:`"module"` as well.
 
 List ends without a blank line
 ------------------------------
@@ -1342,8 +1350,8 @@ a blank line and follows the formatting described in `Sphinx's
 documentation on lists`_.
 
 This warning may occur in other places due to an indentation or other
-formatting problem. Try checking out the formatting in the
-:ref:`example docstring` above.
+formatting problem. Try checking out the formatting in the :ref:`example
+docstring` above.
 
 This warning can occur when a changelog entry contains lines that start
 with a backtick. Try editing each changelog entry so that it is on a
@@ -1356,10 +1364,10 @@ single really long line, rewording the changelog entry, or using
 Could not match a code example to HTML
 --------------------------------------
 
-This warning occurs when `sphinx-codeautolink`_ cannot match a
-code object to its corresponding documentation. Double check that the
-code is correct, and consider adding any missing :py:`import`
-statements. The documentation for this extension contains `examples
+This warning occurs when `sphinx-codeautolink`_ cannot match a code
+object to its corresponding documentation. Double check that the code is
+correct, and consider adding any missing :py:`import` statements. The
+documentation for this extension contains `examples
 <https://sphinx-codeautolink.readthedocs.io/en/latest/examples.html>`__
 on how to skip blocks with ``.. autolink-skip::`` and how to do
 invisible imports with ``.. autolink-preface::``.
@@ -1395,6 +1403,32 @@ version of the package that can be revisited later.
    a bugfix release, so it is typically better to wait a week before
    spending a large amount of time trying to fix it. 🕒
 
+Document isn't included in any toctree
+--------------------------------------
+
+In general, each source file in the documentation must be included in a
+table of contents (toctree_). Otherwise, Sphinx_ will issue a warning
+like:
+
+.. code-block::
+
+   WARNING: document isn't included in any toctree
+
+This warning may occur when adding a new :file:`.rst` file or example
+Jupyter notebook without adding it to a toctree.
+
+This warning can be resolved by:
+
+* Adding the file to the appropriate toctree, or
+
+* Adding the ``orphan`` `metadata field`_ at the top of the file (not
+  recommended in most situations).
+
+In the :file:`docs/` folder, the tables of contents are generally
+located in :file:`index.rst` in the same directory as the source files.
+For example Jupyter notebooks, the tables of contents are in
+:file:`docs/examples.rst`.
+
 .. |role| replace:: :term:`role`
 .. |roles| replace:: :term:`roles <role>`
 .. |directive| replace:: :term:`directive`
@@ -1411,6 +1445,7 @@ version of the package that can be revisited later.
 .. _Graphviz: https://graphviz.org
 .. _intersphinx: https://www.sphinx-doc.org/en/master/usage/extensions/intersphinx.html
 .. _issues: https://github.com/PlasmaPy/PlasmaPy/issues
+.. _metadata field: https://www.sphinx-doc.org/en/master/usage/restructuredtext/field-lists.html#special-metadata-fields
 .. _jinja: https://jinja.palletsprojects.com
 .. _LaTeX: https://www.latex-project.org
 .. _make: https://www.gnu.org/software/make
@@ -1420,11 +1455,9 @@ version of the package that can be revisited later.
 .. _numpydoc: https://numpydoc.readthedocs.io/en/latest/format.html#docstring-standard
 .. _options to sphinx-build: https://www.sphinx-doc.org/en/master/man/sphinx-build.html#options
 .. _packages related to Sphinx: https://pypi.org/search/?q=sphinx+or+nbsphinx&o=-created&c=Framework+%3A%3A+Sphinx
-.. _pandas: https://pandas.pydata.org
 .. _parameters: https://numpydoc.readthedocs.io/en/latest/format.html#parameters
 .. _raise an issue: https://github.com/PlasmaPy/PlasmaPy/issues/new?title=Improve+documentation+for...&labels=Documentation
-.. _raise an issue about the documentation build failure:
-      https://github.com/PlasmaPy/PlasmaPy/issues/new?title=Documentation+build+failure&labels=Documentation
+.. _raise an issue about the documentation build failure: https://github.com/PlasmaPy/PlasmaPy/issues/new?title=Documentation+build+failure&labels=Documentation
 .. _raises: https://numpydoc.readthedocs.io/en/latest/format.html#raises
 .. _raw string: https://docs.python.org/3/reference/lexical_analysis.html#literals
 .. _Read the Docs Sphinx Theme: https://sphinx-rtd-theme.readthedocs.io
@@ -1434,6 +1467,7 @@ version of the package that can be revisited later.
 .. _Sphinx's glossary: https://www.sphinx-doc.org/en/master/glossary.html
 .. _Sphinx's templating page: https://www.sphinx-doc.org/en/master/development/templating.html
 .. _style overrides: https://docs.readthedocs.io/en/stable/guides/adding-custom-css.html
+.. _toctree: https://www.sphinx-doc.org/en/master/usage/restructuredtext/directives.html#table-of-contents
 .. _warns: https://numpydoc.readthedocs.io/en/latest/format.html#warns
 .. _weekly tests: https://github.com/PlasmaPy/PlasmaPy/actions/workflows/weekly.yml
 .. _Wikipedia: https://www.wikipedia.org

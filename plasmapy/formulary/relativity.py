@@ -178,7 +178,7 @@ def relativistic_energy(
     # TODO: Remove references to the parameters ``m`` and ``v`` in the
     # docstring and below no sooner than 2024.
 
-    if m is not None or v is not None:  # coverage: ignore
+    if m is not None or v is not None:
         raise TypeError(
             "The parameters 'm' and 'v' to relativistic_energy have "
             " been removed. Use 'particle' instead of 'm' and 'V' "
@@ -204,35 +204,35 @@ class RelativisticBody:
     V : |Quantity|, optional
         The velocity of the relativistic body in units convertible to
         m/s. The absolute magnitude of ``V`` cannot be greater than
-        :math:`c`\ .
+        :math:`c`.
 
     momentum : |Quantity|, optional
         The momentum of the relativistic body in units convertible to
         kg·m/s.
 
-    total_energy : |Quantity|, optional, |keyword-only|
+    total_energy : |Quantity|, |keyword-only|, optional
        The sum of the mass energy and the kinetic energy in units
        convertible to joules. Must be non-negative.
 
-    kinetic_energy : |Quantity|, optional, |keyword-only|
+    kinetic_energy : |Quantity|, |keyword-only|, optional
        The kinetic energy of the relativistic body in units convertible
        to joules. Must be non-negative.
 
-    v_over_c : real number or |Quantity|, optional, |keyword-only|
+    v_over_c : real number or |Quantity|, |keyword-only|, optional
        The ratio of the velocity to the speed of light. Must have an
-       absolute magnitude :math:`≤ 1`\ .
+       absolute magnitude :math:`≤ 1`.
 
-    lorentz_factor : real number or |Quantity|, optional, |keyword-only|
-       The Lorentz factor of the relativistic body. Must be
-       :math:`≥ 1`\ .
+    lorentz_factor : real number or |Quantity|, |keyword-only|, optional
+       The Lorentz factor, :math:`γ` of the relativistic body. Must have
+       :math:`γ ≥ 1`.
 
-    Z : integer, optional, |keyword-only|
+    Z : integer, |keyword-only|, optional
         The charge number associated with ``particle``.
 
-    mass_numb : integer, optional, |keyword-only|
+    mass_numb : integer, |keyword-only|, optional
         The mass number associated with ``particle``.
 
-    dtype : |DTypeLike|, optional, |keyword-only|, default: `numpy.longdouble`
+    dtype : |DTypeLike|, |keyword-only|, default: `numpy.longdouble`
         The `numpy` data type to use to store the inputs.
 
     Notes

@@ -294,9 +294,7 @@ class Test__swept_probe_analysis:
 
         with pytest.raises(ValueError):
             with pytest.warns(FutureWarning):
-                langmuir.swept_probe_analysis(
-                    characteristic, -1 * u.cm**2, "Ar-40 1+"
-                )
+                langmuir.swept_probe_analysis(characteristic, -1 * u.cm**2, "Ar-40 1+")
 
     @staticmethod
     @pytest.mark.parametrize("bimaxwellian", [True, False])

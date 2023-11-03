@@ -75,7 +75,7 @@ docs = [
   "sphinx-reredirects >= 0.1.1",
   "sphinx_rtd_theme >= 1.2.2",
   "sphinx_tabs >= 3.4.1",
-  "sphinx_toolbox >= 3.5.0",
+  "sphinx_collapse >= 0.1.2",
   "sphinxcontrib-bibtex >= 2.5.0",
   "sphinxcontrib-globalsubs >= 0.1.1",
   "towncrier >= 22.12",
@@ -206,13 +206,13 @@ enabled = true
 
 [tool.gilesbot.towncrier_changelog]
 enabled = true
-changelog_skip_label = "No changelog entry needed"
+changelog_skip_label = "no changelog entry needed"
 help_url = "https://docs.plasmapy.org/en/latest/contributing/changelog_guide.html#adding-a-changelog-entry"
 changelog_missing = "Missing changelog entry (see `changelog/README.rst`)"
 changelog_missing_long = "This pull request needs a changelog entry at `changelog/NUMBER.TYPE.rst`, where `NUMBER` is the pull request number and `TYPE` is one of `feature`, `trivial`, `doc`, `bugfix`, `breaking`, or `removal`.\n\nFor details, see: https://docs.plasmapy.org/en/latest/contributing/changelog_guide.html#adding-a-changelog-entry"
 verify_pr_number = true
 number_incorrect = "Changelog entry number ≠ PR number (see `changelog/README.rst`)"
-number_incorrect_long = "The changelog entry number does not match this pull request's number.\n\nWhen purposefully editing the changelog entry for a different pull request, set the 'No changelog entry needed' label to ignore this check."
+number_incorrect_long = "The changelog entry number does not match this pull request's number.\n\nWhen purposefully editing the changelog entry for a different pull request, set the 'no changelog entry needed' label to ignore this check."
 type_incorrect = "Incorrect changelog type (see `changelog/README.rst`)"
 type_incorrect_long = "The filename of the changelog entry must be of the form `changelog/NUMBER.TYPE.rst` where `TYPE` is one of `feature`, `trivial`, `doc`, `bugfix`, `breaking`, or `removal`.\n\nFor details, see: https://docs.plasmapy.org/en/latest/contributing/changelog_guide.html#adding-a-changelog-entry"
 
@@ -257,7 +257,6 @@ extend-select = [
   "PT", # flake8-pytest-style
   "PTH", # flake8-use-pathlib
   "PYI", # flake8-pyi
-  "Q003", # avoidable-escaped-quote
   "RET", # flake8-return
   "RSE", # flake8-raise
   "RUF005", # collection-literal-concatenation
@@ -270,7 +269,6 @@ extend-select = [
   "RUF013", # implicit-optional
   "RUF015", # unnecessary-iterable-allocation-for-first-element
   "RUF016", # invalid-index-type
-  "RUF017", # quadratic-list-summation
   "RUF100", # unused-noqa
   "RUF200", # invalid-pyproject-toml
   "S", # flake8-bandit
@@ -293,11 +291,13 @@ ignore = [
   "D200", # fits-on-one-line (incompatible with multiline short summaries)
   "D202", # no-blank-line-after-function
   "D205", # blank-line-after-summary (incompatible with multiline short summaries)
+  "D206", # indent-with-spaces (formatter conflict)
   "D401", # non-imperative-mood (enable later?)
   "E501", # line-too-long
   "EM101", # raw-string-in-exception (enable later in focused PR)
   "EM102", # f-string-in-exception (enable later in focused PR)
   "FIX002", # line-contains-todo
+  "ISC001", # single-line-implicit-string-concatenation (formatter conflict)
   "N802", # invalid-function-name
   "N803", # invalid-argument-name
   "N806", # non-lowercase-variable-in-function
@@ -325,6 +325,7 @@ ignore = [
   "UP006", # non-pep585-annotation
   "UP007", # non-pep604-annotation
   "UP025", # unicode-kind-prefix
+  "W191", # tab-indentation (formatter conflict)
 ]
 extend-exclude = [
   "docs/plasmapy_sphinx",

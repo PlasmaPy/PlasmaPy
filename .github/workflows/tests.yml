@@ -30,7 +30,7 @@ jobs:
           toxargs: --develop
 
         - name: Python 3.10 (MacOS), code coverage
-          os: windows-latest
+          os: macos-latest
           python: '3.10'
           toxenv: py310-cov-all
 
@@ -73,9 +73,6 @@ jobs:
     name: Documentation, pinned dependencies
     runs-on: ubuntu-latest
 
-    strategy:
-      fail-fast: false
-
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
@@ -100,9 +97,6 @@ jobs:
   import-plasmapy:
     name: Importing PlasmaPy
     runs-on: windows-latest
-
-    strategy:
-      fail-fast: false
 
     steps:
     - name: Checkout code

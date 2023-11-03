@@ -99,7 +99,8 @@ Changelog guidelines
 
 * Changelog entries are not required for changes that are sufficiently
   minor, such as typo fixes. When this is the case, a package maintainer
-  will add the *No changelog entry needed* label to the pull request.
+  will add the :guilabel`no changelog entry needed` label to the pull
+  request.
 
 * Use the past tense to describe the change, and the present tense to
   describe how the functionality currently works.
@@ -143,17 +144,16 @@ Changelog guidelines
 
 .. tip::
 
-   When removing or moving an object, |reStructuredText| links that follow the
-   original namespace will break, causing the documentation build to
-   fail.
+   When removing or moving an object, |reStructuredText| links that
+   follow the original namespace will break, causing the documentation
+   build to fail.
 
    Text in single back ticks is used to link to code objects, while text
    in double back ticks is treated as an `inline literal`_. To remedy
    this problem in old changelog entries, change the broken link into an
    inline literal by surrounding it with double back ticks instead.
    Remove the tilde if present. For example,
-   ```~plasmapy.subpackage.module.function``` should be changed
-   to:
+   ```~plasmapy.subpackage.module.function``` should be changed to:
 
    .. code-block:: rst
 
@@ -166,8 +166,8 @@ Building the changelog
 ======================
 
 During the release cycle, |towncrier| is used to build the changelog. To
-install |towncrier| and the other packages needed to develop PlasmaPy, go
-to the top-level directory of your local clone of PlasmaPy and run:
+install |towncrier| and the other packages needed to develop PlasmaPy,
+go to the top-level directory of your local clone of PlasmaPy and run:
 
 .. code-block:: shell
 

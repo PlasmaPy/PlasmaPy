@@ -9,12 +9,15 @@ Code Contribution Workflow
    :local:
    :backlinks: none
 
+.. role:: bash(code)
+   :language: bash
+
 Introduction
 ============
 
 This page describes the workflow for making a contribution to PlasmaPy
-via a `pull request`_. This page assumes that you have finished the
-steps for :ref:`getting ready to contribute`.
+via a `pull request`_ after having finished the steps for
+|getting ready to contribute|.
 
 If you run into any problems, please feel free to reach out to us in our
 |Matrix chat room| or during our weekly |office hours|. Thank you for
@@ -33,7 +36,7 @@ Making a code contribution
 Create a new branch
 -------------------
 
-#. :ref:`Open a terminal <opening-a-terminal>`.
+#. |Open a terminal|.
 
 #. Navigate to the :file:`PlasmaPy/` directory that contains the clone
    of your repository.
@@ -83,7 +86,7 @@ Create a new branch
 
    where ``new-branch-name`` is changed to the name of the new branch.
    Here ``upstream`` is the name of the remote_ and ``main`` is the name
-   of the original branch.
+   of the original branch which the new branch will be based off of.
 
    .. tip::
 
@@ -101,12 +104,14 @@ Create a new branch
 Add and commit changes
 ----------------------
 
-Next we can go through the cycle of making changes, which can be
-repeated multiple times.
+Next we can go through the cycle of making changes, which is usually
+repeated multiple times. To get a better idea of what is being done in
+each step, try running ``git status``.
 
 #. Edit a file and save the changes.
 
-#. In a terminal, run:
+#. In a terminal, navigate to the directory with the changed file and
+   run:
 
    .. code-block:: bash
 
@@ -128,10 +133,16 @@ repeated multiple times.
    Committing a change is like preserving a snapshot of what each file
    looks like at this point in history.
 
-   If it has been installed, pre-commit will perform automated checks
-   and possibly make some automated changes. If pre-commit fails, then
-   it'll be necessary to do the ``git add`` and ``git commit`` steps
-   once more.
+
+   .. hint::
+
+      If it has been installed, |pre-commit| will perform automated
+      checks and possibly auto-fixes. If pre-commit fails, then
+      it'll be necessary to fix any remaining problems and do the
+      ``git add`` and ``git commit`` steps once more. Try using
+      ``git diff`` and ``git diff --cached`` to view the changes, and
+      :guilabel:`↑` and :guilabel:`↓` to scroll through previous
+      commands in a terminal.
 
 #. To push the changes to GitHub, run:
 
@@ -207,13 +218,37 @@ Creating a pull request
 #. :ref:`Add a changelog entry <add-changelog>`, except for minor
    changes like typo fixes.
 
-   .. note::
+At this stage, a reviewer will perform a code review, unless it has been
+marked as a draft pull request. Thank you for contributing!
+
+Pulling changes from GitHub
+---------------------------
+
+If your branch changes on GitHub, run
+
+.. code-block:: bash
+
+   git pull
+
+to pull the changes from GitHub to your computer. If you'd like to pull
+the changes from the ``main`` branch, instead run
+
+.. code-block:: bash
+
+   git pull upstream main
+
+If any of the changes conflict with each other, it will be necessary to
+`resolve the merge conflict`_.
+
+.. note::
 
       After the pull request has been created, it can be updated by
       using :bash:`git push` to update the corresponding branch on
       GitHub.
 
-#. If this is your first contribution, please add yourself to the author
+.. important::
+
+   If this is your first contribution, please add yourself to the author
    list in |CITATION.cff|_ (which uses |Citation File Format|) to make
    sure that you get credit for your contribution. The entry should be
    of the form:
@@ -224,15 +259,12 @@ Creating a pull request
         family-names: <family names>
         affiliation: <affiliation>
         orcid: https://orcid.org/<ORCiD-iD>
-        alias: {missing_github_username}
+        alias: <GitHub username>
 
    All fields are optional except ``alias``, which is your GitHub
    username. We encourage contributors to `sign up for an ORCID iD`_: a
    unique, persistent identifier used by researchers, authors, and open
    source contributors.
-
-At this stage, a reviewer will perform a code review, unless it has been
-marked as a draft pull request. Thank you for contributing!
 
 .. _Add a new SSH key to your GitHub account: https://docs.github.com/en/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account
 .. _branch: https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/about-branches
@@ -242,6 +274,7 @@ marked as a draft pull request. Thank you for contributing!
 .. _good first issue: https://github.com/PlasmaPy/PlasmaPy/issues?q=is%3Aissue+is%3Aopen+label%3A%22Good+first+issue%22
 .. _pull request: https://docs.github.com/en/github/collaborating-with-pull-requests
 .. _remote: https://github.com/git-guides/git-remote
+.. _resolve the merge conflict: https://www.atlassian.com/git/tutorials/using-branches/merge-conflicts
 .. _sign up for an ORCID iD: https://orcid.org/register
 
 .. _`CITATION.cff`: https://github.com/PlasmaPy/PlasmaPy/blob/main/CITATION.cff

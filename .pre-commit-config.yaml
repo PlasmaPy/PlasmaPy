@@ -5,7 +5,7 @@ ci:
 repos:
 
 - repo: https://github.com/pre-commit/pre-commit-hooks
-  rev: v4.4.0
+  rev: v4.5.0
   hooks:
   - id: check-ast
   - id: check-merge-conflict
@@ -20,8 +20,13 @@ repos:
   - id: check-toml
   - id: check-yaml
 
+- repo: https://github.com/python-jsonschema/check-jsonschema
+  rev: 0.27.0
+  hooks:
+  - id: check-github-workflows
+
 - repo: https://github.com/sirosen/texthooks
-  rev: 0.5.0
+  rev: 0.6.2
   hooks:
   - id: fix-smartquotes
   - id: fix-spaces
@@ -34,7 +39,7 @@ repos:
   - id: remove-crlf
 
 - repo: https://github.com/macisamuele/language-formatters-pre-commit-hooks
-  rev: v2.10.0
+  rev: v2.11.0
   hooks:
   - id: pretty-format-ini
     args: [--autofix]
@@ -61,7 +66,7 @@ repos:
   rev: v1.0.5
   hooks:
   - id: search-and-replace
-    exclude: changelog/.*|docs/changelog/.*|.sourcery.yaml|docs/_global_substitutions.py
+    exclude: changelog/.*|docs/changelog/.*|.sourcery.yaml|docs/_global_substitutions.py|CHANGELOG.rst
 
 - repo: https://github.com/pre-commit/pygrep-hooks
   rev: v1.10.0
@@ -73,7 +78,7 @@ repos:
   - id: text-unicode-replacement-char
 
 - repo: https://github.com/codespell-project/codespell
-  rev: v2.2.5
+  rev: v2.2.6
   hooks:
   - id: codespell
     args: [--write-changes]
@@ -81,10 +86,11 @@ repos:
     - tomli
 
 - repo: https://github.com/astral-sh/ruff-pre-commit
-  rev: v0.0.287
+  rev: v0.1.2
   hooks:
   - id: ruff
     args: [--fix]
+  - id: ruff-format
 
 - repo: https://github.com/PyCQA/isort
   rev: 5.12.0
@@ -96,11 +102,6 @@ repos:
     language: python
     types:
     - python
-
-- repo: https://github.com/psf/black
-  rev: 23.9.0
-  hooks:
-  - id: black
 
 - repo: https://github.com/asottile/blacken-docs
   rev: 1.16.0
@@ -115,4 +116,12 @@ repos:
   - id: nbqa-ruff
     args: ['--select=A,ARG,B,BLE,C,C4,E,F,FLY,I002,INT,ISC,PERF,PIE,PLC,PLE,PYI,Q003,RET,RSE,SIM,TID,TRY,UP,W', '--ignore=B007,B008,B015,B018,E402,E501,E741,SIM114']
   - id: nbqa-isort
-  - id: nbqa-black
+
+- repo: local
+  hooks:
+  - id: print-help-message
+    name: Print troubleshooting link
+    entry: echo "For help with troubleshooting, see https://docs.plasmapy.org/en/latest/contributing/pre-commit.html"
+    language: system
+    pass_filenames: false
+    verbose: true

@@ -1,1 +1,0 @@
-Added a weekly test of hyperlinks in the documentation.

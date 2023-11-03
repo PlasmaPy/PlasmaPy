@@ -1,2 +1,0 @@
-Enabled the ``sphinx.ext.duration`` extension to add links to the source code of an
-object.

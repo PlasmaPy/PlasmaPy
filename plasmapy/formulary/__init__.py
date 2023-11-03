@@ -60,7 +60,7 @@ for modname in (
 ):
     try:
         obj = globals()[modname]
-    except KeyError:  # coverage: ignore
+    except KeyError:
         continue
 
     with contextlib.suppress(AttributeError):

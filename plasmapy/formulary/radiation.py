@@ -137,13 +137,7 @@ def thermal_bremsstrahlung(
     )
 
     Zi = ion.charge_number
-    c2 = (
-        np.sqrt(1 - ω_pe**2 / ω**2)
-        * Zi**2
-        * n_i
-        * n_e
-        / np.sqrt(const.k_B.si * T_e)
-    )
+    c2 = np.sqrt(1 - ω_pe**2 / ω**2) * Zi**2 * n_i * n_e / np.sqrt(const.k_B.si * T_e)
 
     # Dimensionless argument for exponential integral
     arg = 0.5 * ω**2 * const.m_e.si / (kmax**2 * const.k_B.si * T_e) / u.rad**2

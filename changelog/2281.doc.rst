@@ -1,4 +1,0 @@
-Implemented ``sphinxcontrib-globalsubs`` to enable global
-|reStructuredText| substitutions to be used throughout the documentation,
-and moved the definition of substitutions from :file:`docs/common_links.rst`
-to the ``global_substitutions`` `dict` in :file:`docs/_global_substitutions.py`.

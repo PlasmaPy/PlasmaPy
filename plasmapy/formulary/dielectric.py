@@ -11,7 +11,7 @@ import numpy as np
 
 from collections import namedtuple
 
-from plasmapy.dispersion.dispersionfunction import plasma_dispersion_func_deriv_lite
+from plasmapy.dispersion.dispersion_functions import plasma_dispersion_func_deriv
 from plasmapy.formulary.frequencies import gyrofrequency, plasma_frequency
 from plasmapy.formulary.speeds import thermal_speed
 from plasmapy.utils.decorators import (
@@ -272,7 +272,7 @@ def permittivity_1D_Maxwellian_lite(omega, kWave, vth, wp):
     alpha = np.sqrt(2) * wp / (kWave * vth)
     # The dimensionless phase velocity of the propagating EM wave.
     zeta = omega / (kWave * vth)
-    return -0.5 * (alpha**2) * plasma_dispersion_func_deriv_lite(zeta)
+    return -0.5 * (alpha**2) * plasma_dispersion_func_deriv(zeta)
 
 
 @bind_lite_func(permittivity_1D_Maxwellian_lite)

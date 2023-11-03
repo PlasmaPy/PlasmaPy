@@ -559,7 +559,7 @@ class ClassicalTransport:
 
         See Also
         --------
-        ion_thermal_conductivity
+        electron_thermal_conductivity
 
         """
         kappa_hat = _nondim_thermal_conductivity(
@@ -945,7 +945,7 @@ def ion_thermal_conductivity(
 
     See Also
     --------
-    ion_thermal_conductivity
+    electron_thermal_conductivity
 
     """
     ct = ClassicalTransport(
@@ -1565,9 +1565,7 @@ def _nondim_resist_braginskii(hall, Z, field_orientation):
         return alpha_par
 
     if field_orientation in ("perpendicular", "perp"):
-        alpha_perp = (
-            1 - (alpha_1_prime[Z_idx] * hall**2 + alpha_0_prime[Z_idx]) / Delta
-        )
+        alpha_perp = 1 - (alpha_1_prime[Z_idx] * hall**2 + alpha_0_prime[Z_idx]) / Delta
         return alpha_perp
 
     if field_orientation == "cross":
@@ -1579,9 +1577,7 @@ def _nondim_resist_braginskii(hall, Z, field_orientation):
     if field_orientation == "all":
         alpha_par = alpha_0
 
-        alpha_perp = (
-            1 - (alpha_1_prime[Z_idx] * hall**2 + alpha_0_prime[Z_idx]) / Delta
-        )
+        alpha_perp = 1 - (alpha_1_prime[Z_idx] * hall**2 + alpha_0_prime[Z_idx]) / Delta
 
         alpha_cross = (
             alpha_1_doubleprime[Z_idx] * hall**3 + alpha_0_doubleprime[Z_idx] * hall
@@ -2103,13 +2099,7 @@ def _nondim_tc_i_ji_held(hall, Z, mu, theta, field_orientation, K=3):
         Delta_perp_i1 = (
             r**6
             + (3.635 + 29.15 * zeta + 83 * zeta**2) * r**4
-            + (
-                1.395
-                + 35.64 * zeta
-                + 344.9 * zeta**2
-                + 1345 * zeta**3
-                + 1891 * zeta**4
-            )
+            + (1.395 + 35.64 * zeta + 344.9 * zeta**2 + 1345 * zeta**3 + 1891 * zeta**4)
             * r**2
             + 0.09163 * Delta_par_i1**2
         )
@@ -2125,17 +2115,14 @@ def _nondim_tc_i_ji_held(hall, Z, mu, theta, field_orientation, K=3):
             + 0.1693 * Delta_par_i1**2
         )
         kappa_perp_i = (
-            (np.sqrt(2) + 15 / 2 * zeta) * r**2
-            + 0.1693 * kappa_par_i * Delta_par_i1**2
+            (np.sqrt(2) + 15 / 2 * zeta) * r**2 + 0.1693 * kappa_par_i * Delta_par_i1**2
         ) / Delta_perp_i1
     if field_orientation in ("perpendicular", "perp"):
         return kappa_perp_i / np.sqrt(2)
 
     if K == 2:
         kappa_cross_i = (
-            r
-            * (5 / 2 * r**2 + 2.323 + 22.73 * zeta + 62.5 * zeta**2)
-            / Delta_perp_i1
+            r * (5 / 2 * r**2 + 2.323 + 22.73 * zeta + 62.5 * zeta**2) / Delta_perp_i1
         )
     elif K == 3:
         kappa_cross_i = (
@@ -2262,9 +2249,7 @@ def _nondim_visc_i_ji_held(hall, Z, mu, theta, K=3):
                 + (2.023 + 11.68 * zeta + 20 * zeta**2) * r**2
                 + 0.5820 * Delta_par_i2**2
             )
-            eta_4_i = (
-                r * (r**2 + 1.188 + 8.283 * zeta + 16 * zeta**2) / Delta_perp_i2
-            )
+            eta_4_i = r * (r**2 + 1.188 + 8.283 * zeta + 16 * zeta**2) / Delta_perp_i2
             return eta_4_i
 
         eta_4_i = f_eta_4(r, zeta, Delta_perp_i2_24)

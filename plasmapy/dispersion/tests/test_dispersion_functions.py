@@ -11,21 +11,17 @@ from hypothesis.strategies import complex_numbers
 from numpy import pi as π
 from scipy.special import gamma as Γ  # noqa: N812
 
-from plasmapy.dispersion.dispersionfunction import (
+from plasmapy.dispersion.dispersion_functions import (
     plasma_dispersion_func,
     plasma_dispersion_func_deriv,
-    plasma_dispersion_func_deriv_lite,
-    plasma_dispersion_func_lite,
 )
 
 # Expected errors table. Used for both plasma_dispersion_func
 # and plasma_dispersion_func_deriv
 # w, expected_error
 plasma_disp_func_errors_table = [
-    ("", TypeError),
+    ("invalid type", TypeError),
     (7 * u.m, u.UnitsError),
-    (np.inf, ValueError),
-    (np.nan, ValueError),
 ]
 
 
@@ -44,38 +40,7 @@ plasma_dispersion_func_table = [
 
 
 class TestPlasmaDispersionFunction:
-    """
-    Test class for `plasmapy.dispersion.plasma_dispersion_func`.
-
-    Note: Testing of `plasma_dispersion_func_lite` is done in a separate
-    test class.
-    """
-
-    @pytest.mark.parametrize(
-        ("bound_name", "bound_attr"),
-        [("lite", plasma_dispersion_func_lite)],
-    )
-    def test_lite_function_binding(self, bound_name, bound_attr):
-        """Test expected attributes are bound correctly."""
-        assert hasattr(plasma_dispersion_func, bound_name)
-        assert getattr(plasma_dispersion_func, bound_name) is bound_attr
-
-    def test_lite_function_marking(self):
-        """
-        Test function is marked as having a Lite-Function.
-        """
-        assert hasattr(plasma_dispersion_func, "__bound_lite_func__")
-        assert isinstance(plasma_dispersion_func.__bound_lite_func__, dict)
-
-        for (
-            bound_name,
-            bound_origin,
-        ) in plasma_dispersion_func.__bound_lite_func__.items():
-            assert hasattr(plasma_dispersion_func, bound_name)
-
-            attr = getattr(plasma_dispersion_func, bound_name)
-            origin = f"{attr.__module__}.{attr.__name__}"
-            assert origin == bound_origin
+    """Test class for `plasmapy.dispersion.plasma_dispersion_func`."""
 
     @pytest.mark.parametrize(("w", "expected"), plasma_dispersion_func_table)
     def test_plasma_dispersion_func(self, w, expected):
@@ -88,13 +53,14 @@ class TestPlasmaDispersionFunction:
 
         Z_of_w = plasma_dispersion_func(w)
 
-        assert np.isclose(Z_of_w, expected, atol=1e-12 * (1 + 1j), rtol=1e-12), (
+        assert u.isclose(Z_of_w, expected, atol=1e-12 * (1 + 1j), rtol=1e-12), (
             f"plasma_dispersion_func({w}) equals {Z_of_w} instead of the "
             f"expected approximate result of {expected}.  The difference between "
             f"the actual and expected results is {Z_of_w - expected}."
         )
 
     @given(complex_numbers(allow_infinity=False, allow_nan=False, max_magnitude=20))
+    @pytest.mark.filterwarnings("ignore::RuntimeWarning")
     def test_plasma_dispersion_func_symmetry(self, w):
         r"""Test plasma_dispersion_func against its symmetry properties"""
 
@@ -105,9 +71,15 @@ class TestPlasmaDispersionFunction:
         Z_of_wconj = plasma_dispersion_func(w.conjugate())
         minusZ_of_minuswconj = -(plasma_dispersion_func(-w).conjugate())
 
-        assert np.isclose(Z_of_wconj, minusZ_of_minuswconj, atol=0, rtol=1e-15), (
+        assert u.isclose(
+            Z_of_wconj,
+            minusZ_of_minuswconj,
+            atol=1e-12 * (1 + 1j),
+            rtol=1e-12,
+            equal_nan=True,
+        ), (
             "The symmetry property of the plasma dispersion function that "
-            f"Z(w*) == -[Z(-w)]* is not met for w = {w}.  Instead, "
+            f"Z(w*) == -[Z(-w)]* is not met for {w = }.  Instead, "
             f"plasma_dispersion_func({w.conjugate()}) = {Z_of_wconj} "
             f"whereas -plasma_dispersion_func({-w}).conjugate() = "
             f"{minusZ_of_minuswconj}.  "
@@ -120,10 +92,12 @@ class TestPlasmaDispersionFunction:
                 plasma_dispersion_func(w)
             ).conjugate() + 2j * np.sqrt(π) * np.exp(-(w.conjugate() ** 2))
 
-            assert np.isclose(Z_of_wconj, should_equal_Z_of_wconj, rtol=1e-13), (
+            assert u.isclose(
+                Z_of_wconj, should_equal_Z_of_wconj, rtol=1e-13, equal_nan=True
+            ), (
                 "The symmetry property of the plasma dispersion function that "
                 "Z(w*) = Z(w)* + 2j * sqrt(pi) * exp[-(w*)**2] for Im(w) > 0 "
-                f"is not met for w = {w}.  The value of "
+                f"is not met for {w = }.  The value of "
                 f"plasma_dispersion_func({w.conjugate()}) is {Z_of_wconj}, "
                 f"which is different from {should_equal_Z_of_wconj}.  "
                 "The difference between these two results is "
@@ -196,43 +170,23 @@ class TestPlasmaDispersionFunction:
 
         for root in roots:
             Z_at_root = plasma_dispersion_func(root)
-            assert np.isclose(Z_at_root, 0 + 0j, atol=1e-15 * (1 + 1j)), (
+            assert u.isclose(Z_at_root, 0 + 0j, atol=1e-15 * (1 + 1j)), (
                 "A root of the plasma dispersion function is expected "
                 f"at w = {root}, but plasma_dispersion_func({root}) is "
                 f"equal to {Z_at_root} instead of 0j."
             )
 
     @pytest.mark.parametrize(("w", "expected_error"), plasma_disp_func_errors_table)
+    @pytest.mark.filterwarnings("ignore::RuntimeWarning")
     def test_plasma_dispersion_func_errors(self, w, expected_error):
         """Test errors that should be raised by plasma_dispersion_func."""
 
-        with pytest.raises(expected_error):
+        with pytest.raises(expected_error, match=r".*plasma_dispersion_func.*"):
             plasma_dispersion_func(w)
             pytest.fail(
                 f"plasma_dispersion_func({w}) did not raise "
                 f"{expected_error.__name__} as expected."
             )
-
-
-class TestPlasmaDispersionFunctionLite:
-    """Test class for `plasma_dispersion_func_lite`."""
-
-    @pytest.mark.parametrize(("w", "expected"), plasma_dispersion_func_table)
-    def test_normal_vs_lite(self, w, expected):  # noqa: ARG002
-        r"""Test that plasma_dispersion_func and plasma_dispersion_func_lite
-        calculate the same values."""
-
-        # Many of the tabulated results originally came from the book
-        # entitled "The Plasma Dispersion Function: The Hilbert Transform
-        # of the Gaussian" by B. D. Fried and S. D. Conte (1961).
-
-        Z_of_w = plasma_dispersion_func(w)
-        Z_of_w_lite = plasma_dispersion_func_lite(w)
-
-        assert np.isclose(Z_of_w, Z_of_w_lite, atol=1e-12 * (1 + 1j), rtol=1e-12), (
-            f"plasma_dispersion_func({w}) and plasma_dispersion_func_lite({w}) "
-            "are not equal."
-        )
 
 
 # Array of expected values for plasma_dispersion_func_deriv
@@ -251,38 +205,7 @@ plasma_disp_deriv_table = [
 
 
 class TestPlasmaDispersionFunctionDeriv:
-    """
-    Test class for `plasmapy.dispersion.plasma_dispersion_func_deriv`.
-
-    Note: Testing of `plasma_dispersion_func_deriv_lite` is done in a separate
-    test class.
-    """
-
-    @pytest.mark.parametrize(
-        ("bound_name", "bound_attr"),
-        [("lite", plasma_dispersion_func_deriv_lite)],
-    )
-    def test_lite_function_binding(self, bound_name, bound_attr):
-        """Test expected attributes are bound correctly."""
-        assert hasattr(plasma_dispersion_func_deriv, bound_name)
-        assert getattr(plasma_dispersion_func_deriv, bound_name) is bound_attr
-
-    def test_lite_function_marking(self):
-        """
-        Test function is marked as having a Lite-Function.
-        """
-        assert hasattr(plasma_dispersion_func_deriv, "__bound_lite_func__")
-        assert isinstance(plasma_dispersion_func_deriv.__bound_lite_func__, dict)
-
-        for (
-            bound_name,
-            bound_origin,
-        ) in plasma_dispersion_func_deriv.__bound_lite_func__.items():
-            assert hasattr(plasma_dispersion_func_deriv, bound_name)
-
-            attr = getattr(plasma_dispersion_func_deriv, bound_name)
-            origin = f"{attr.__module__}.{attr.__name__}"
-            assert origin == bound_origin
+    """Test class for `plasmapy.dispersion.plasma_dispersion_func_deriv`."""
 
     @pytest.mark.parametrize(("w", "expected"), plasma_disp_deriv_table)
     def test_plasma_dispersion_func_deriv(self, w, expected):
@@ -292,15 +215,16 @@ class TestPlasmaDispersionFunctionDeriv:
 
         Z_deriv = plasma_dispersion_func_deriv(w)
 
-        assert np.isclose(Z_deriv, expected, atol=5e-5 * (1 + 1j), rtol=5e-6), (
+        assert u.isclose(Z_deriv, expected, atol=5e-5 * (1 + 1j), rtol=5e-6), (
             f"The derivative of the plasma dispersion function does not match "
-            f"the expected value for w = {w}.  The value of "
+            f"the expected value for {w = }.  The value of "
             f"plasma_dispersion_func_deriv({w}) equals {Z_deriv} whereas the "
             f"expected value is {expected}.  The difference between the actual "
             f"and expected results is {Z_deriv - expected}."
         )
 
-    @given(complex_numbers(allow_infinity=False, allow_nan=False, max_magnitude=20))
+    @given(complex_numbers(allow_infinity=True, allow_nan=False))
+    @pytest.mark.filterwarnings("ignore::RuntimeWarning")
     def test_plasma_dispersion_func_deriv_characterization(self, w):
         r"""Test plasma_dispersion_func_deriv against an exact relationship."""
 
@@ -311,42 +235,26 @@ class TestPlasmaDispersionFunctionDeriv:
         Z_deriv = plasma_dispersion_func_deriv(w)
         Z_deriv_characterization = -2 * (1 + w * Z)
 
-        assert np.isclose(Z_deriv, Z_deriv_characterization, rtol=1e-15), (
-            f"The relationship that Z'(w) = -2 * [1 + w * Z(w)] is not "
-            f"met for w = {w}, where Z'(w) = {Z_deriv} and "
+        assert u.isclose(
+            Z_deriv,
+            Z_deriv_characterization,
+            atol=1e-12 * (1 + 1j),
+            rtol=1e-12,
+            equal_nan=True,
+        ), (
+            f"The relationship that Z′(w) = -2 * [1 + w * Z(w)] is not "
+            f"met for {w = }, where Z′(w) = {Z_deriv} and "
             f"-2 * [1 + w * Z(w)] = {Z_deriv_characterization}."
         )
 
     @pytest.mark.parametrize(("w", "expected_error"), plasma_disp_func_errors_table)
+    @pytest.mark.filterwarnings("ignore::RuntimeWarning")
     def test_plasma_dispersion_deriv_errors(self, w, expected_error):
         """Test errors that should be raised by plasma_dispersion_func_deriv."""
 
-        with pytest.raises(expected_error):
+        with pytest.raises(expected_error, match=r".*plasma_dispersion_func_deriv.*"):
             plasma_dispersion_func_deriv(w)
             pytest.fail(
                 f"plasma_dispersion_func_deriv({w}) did not raise "
                 f"{expected_error.__name__} as expected."
             )
-
-
-class TestPlasmaDispersionFunctionDerivLite:
-    """Test class for `plasma_dispersion_func_deriv_lite`."""
-
-    @pytest.mark.parametrize(("w", "expected"), plasma_disp_deriv_table)
-    def test_normal_vs_lite(self, w, expected):  # noqa: ARG002
-        r"""Test that plasma_dispersion_func_deriv and
-        plasma_dispersion_func_deriv_lite
-        calculate the same values."""
-
-        # Many of the tabulated results originally came from the book
-        # entitled "The Plasma Dispersion Function: The Hilbert Transform
-        # of the Gaussian" by B. D. Fried and S. D. Conte (1961).
-
-        Z_of_w = plasma_dispersion_func_deriv(w)
-        Z_of_w_lite = plasma_dispersion_func_deriv_lite(w)
-
-        assert np.isclose(Z_of_w, Z_of_w_lite, atol=1e-12 * (1 + 1j), rtol=1e-12), (
-            f"plasma_dispersion_func_deriv({w}) and "
-            "plasma_dispersion_func_deriv_lite({w}) "
-            "are not equal."
-        )

@@ -161,7 +161,7 @@ class SingleParticleCollisionFrequencies:
         v_drift: u.m / u.s,
         T_b: u.K,
         n_b: u.m**-3,
-        Coulomb_log: u.dimensionless_unscaled,
+        Coulomb_log,
     ):
         # Note: This class uses CGS units internally to coincide
         #       with our references.  Input is taken in MKS units and
