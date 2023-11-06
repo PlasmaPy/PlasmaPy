@@ -21,7 +21,7 @@ repos:
   - id: check-yaml
 
 - repo: https://github.com/python-jsonschema/check-jsonschema
-  rev: 0.27.0
+  rev: 0.27.1
   hooks:
   - id: check-github-workflows
 
@@ -86,7 +86,7 @@ repos:
     - tomli
 
 - repo: https://github.com/astral-sh/ruff-pre-commit
-  rev: v0.1.2
+  rev: v0.1.4
   hooks:
   - id: ruff
     args: [--fix]
