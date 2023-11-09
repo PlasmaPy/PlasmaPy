@@ -111,7 +111,7 @@ def integrate(
     The integrand must pass through zero to go from the reals to complex.
     """
     if np.any(start_indeces > end_indeces):
-        raise ValueError("Start indeces must be less than end indeces.")
+        raise ValueError("Start indices must be less than end indices.")
 
     # TODO: Convert this to a vectorized method.
     num_x_points, num_y_points = integrand.shape
@@ -454,7 +454,12 @@ def integrate(
                     + 23 * current_integrand[end_integer_index - 2]
                     + 28 * current_integrand[end_integer_index - 1]
                     + 9 * current_integrand[end_integer_index]
-                    + 24 * np.sum(current_integrand[start_integer_index + 3 : end_integer_index - 2])
+                    + 24
+                    * np.sum(
+                        current_integrand[
+                            start_integer_index + 3 : end_integer_index - 2
+                        ]
+                    )
                 )
                 * point_spacing
                 / 24
