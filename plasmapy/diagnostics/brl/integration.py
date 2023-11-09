@@ -1,3 +1,4 @@
+"""Functions related to accurate integration of a sampled integrand."""
 import numpy as np
 
 
@@ -68,7 +69,7 @@ def construct_integration_matrix(num_points, point_spacing):
     return integration_matrix
 
 
-def integrate(
+def integrate(  # noqa: C901, PLR0912, PLR0915
     integrand,
     start_indeces,
     end_indeces,
