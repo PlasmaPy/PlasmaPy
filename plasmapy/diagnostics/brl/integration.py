@@ -145,7 +145,7 @@ def integrate(  # noqa: C901, PLR0912, PLR0915
             end_bound_index = end_integer_index
         else:
             end_integer_index = int(end_index) + 1
-            end_bound_index = max(num_y_points - 1, end_integer_index + 1)
+            end_bound_index = min(num_y_points - 1, end_integer_index + 1)
 
         # Calculate the contributions to the integral if the starting index is not an integer.
         internal_start_area = None
