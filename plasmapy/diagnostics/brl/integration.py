@@ -86,7 +86,7 @@ def integrate(
     ----------
     integrand : `numpy.ndarray[float]`
         2D-array to integrate. Of shape `(num_x_points, num_y_points)`.
-    starts, ends : `numpy.ndarray[float]`
+    start_indeces, end_indeces : `numpy.ndarray[float]`
         1D-array of indices of the `integrand` array to integrate between. Of
         shape `(num_x_points,)`. Additionally, `0 <= starts <= ends <= num_y_points - 1`.
     complex_before_start, complex_after_end : `numpy.ndarray[bool]`
@@ -287,7 +287,7 @@ def integrate(
                 # Integrate from `end_integer_index - 2` to `end_integer_index - 1`.
                 internal_end_area = (
                     point_spacing * zeroth_derivative
-                    + point_spacing**2 / 2 * first_derivative
+                    - point_spacing**2 / 2 * first_derivative
                     + point_spacing**3 / 3 * second_derivative / 2
                 )
             elif (
@@ -330,9 +330,9 @@ def integrate(
                 )
                 # Integrate from `end_integer_index - 1` to `end_index`.
                 end_area = (
-                    zeroth_derivative * (distance - point_spacing)
+                    zeroth_derivative * (distance + point_spacing)
                     + 1 / 2 * first_derivative * (distance**2 - point_spacing**2)
-                    + 1 / 6 * second_derivative * (distance**3 - point_spacing**3)
+                    + 1 / 6 * second_derivative * (distance**3 + point_spacing**3)
                 )
 
             # Line 343.
@@ -391,7 +391,7 @@ def integrate(
             # If there is only one point between `start` and `end` then just add the start and end area contributions.
             # Line 242.
             integral[i] = start_area + end_area
-        if num_grid_points == 2:
+        elif num_grid_points == 2:
             # If there are two points between `start` and `end` then either do the trapezoidal rule or use the internal areas.
             if internal_end_area is not None and internal_start_area is not None:
                 integral[i] += (internal_end_area + internal_start_area) / 2
@@ -400,6 +400,7 @@ def integrate(
             elif internal_start_area is not None:
                 integral[i] += internal_start_area
             else:
+                # TODO: This integration can be done better by checking if there are enough points to the left and right that you could do a Taylor expansion.
                 integral[i] += (
                     (
                         current_integrand[start_integer_index]
@@ -453,7 +454,7 @@ def integrate(
                     + 23 * current_integrand[end_integer_index - 2]
                     + 28 * current_integrand[end_integer_index - 1]
                     + 9 * current_integrand[end_integer_index]
-                    + 24 * integral[start_integer_index + 3 : end_integer_index - 2]
+                    + 24 * np.sum(current_integrand[start_integer_index + 3 : end_integer_index - 2])
                 )
                 * point_spacing
                 / 24
