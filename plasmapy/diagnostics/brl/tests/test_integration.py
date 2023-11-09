@@ -14,12 +14,14 @@ class Test__integrate:
     sample_spacing = 1
     constant_integrand = np.ones(num_points)[np.newaxis, :]
 
+    @staticmethod
     def constant_integral_func(x):
         return x
 
     real_integrand = (sample_points**2 + 3)[np.newaxis, :]
     real_integral = (1 / 3 * sample_points**3 + 3 * sample_points)[np.newaxis, :]
 
+    @staticmethod
     def real_integral_func(x):
         return 1 / 3 * x**3 + 3 * x
 
@@ -96,10 +98,7 @@ class Test__integrate:
                 np.zeros_like(start),
                 self.sample_spacing,
             ),
-            (
-                Test__integrate.constant_integral_func(end)
-                - Test__integrate.constant_integral_func(start)
-            ),
+            (self.constant_integral_func(end) - self.constant_integral_func(start)),
             atol=error,
         )
         assert np.isclose(
@@ -111,9 +110,6 @@ class Test__integrate:
                 np.zeros_like(start),
                 self.sample_spacing,
             ),
-            (
-                Test__integrate.real_integral_func(end)
-                - Test__integrate.real_integral_func(start)
-            ),
+            (self.real_integral_func(end) - self.real_integral_func(start)),
             atol=error,
         )
