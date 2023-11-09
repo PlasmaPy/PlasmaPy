@@ -1,9 +1,10 @@
 """Using the potential, calculate the charge density."""
 import numpy as np
 
-from plasmapy.diagnostics.brl.integration import integrate
 from scipy.integrate import quad_vec
 from scipy.special import erfc, erfi
+
+from plasmapy.diagnostics.brl.integration import integrate
 
 
 def _g(x):
