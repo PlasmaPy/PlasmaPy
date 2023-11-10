@@ -195,12 +195,19 @@ def integrate(  # noqa: C901, PLR0912, PLR0915
                     + point_spacing**2 / 2 * first_derivative
                     + point_spacing**3 / 3 * second_derivative / 2
                 )
-            elif (
-                end_bound_index <= start_integer_index
-                or start_integer_index <= start_bound_index
-            ):
+            elif end_bound_index <= start_integer_index and complex_after_end[i]:
+                # This is different than Laframboise in that we will do the
+                # trapezoidal rule to estimate the start value when the start and
+                # end are between the same grid points and the end is complex.
+                interpolated_start_value = (
+                    current_integrand[start_integer_index]
+                    / (end_index - start_integer_index)
+                    * (end_index - start_index)
+                )
+                start_area = interpolated_start_value / 2 * (end_index - start_index)
+            elif start_integer_index <= start_bound_index:
                 # Line 325.
-                # Do a Taylor expansion up to the first derivative around the point just to the left of start.
+                # Do a Taylor expansion up to the first derivative around `start_integer_index`.
                 interpolated_start_value = current_integrand[start_integer_index] + (
                     current_integrand[start_integer_index + 1]
                     - current_integrand[start_integer_index]
@@ -291,10 +298,17 @@ def integrate(  # noqa: C901, PLR0912, PLR0915
                     - point_spacing**2 / 2 * first_derivative
                     + point_spacing**3 / 3 * second_derivative / 2
                 )
-            elif (
-                end_bound_index <= end_integer_index
-                or end_integer_index <= start_bound_index
-            ):
+            elif end_integer_index <= start_bound_index and complex_before_start[i]:
+                # This is different than Laframboise in that we will do the
+                # trapezoidal rule to estimate the end value when the start and
+                # end are between the same grid points and the start is complex.
+                interpolated_end_value = (
+                    current_integrand[end_integer_index]
+                    / (end_integer_index - start_index)
+                    * (end_index - start_index)
+                )
+                end_area = interpolated_end_value / 2 * (end_index - start_index)
+            elif end_bound_index <= end_integer_index:
                 # Line 341.
                 # First order Taylor expansion at `end_integer_index - 1`.
                 interpolated_end_value = current_integrand[end_integer_index - 1] + (
@@ -345,11 +359,12 @@ def integrate(  # noqa: C901, PLR0912, PLR0915
         # Line 239.
         if num_grid_points == 0:
             # If there are no points between `start` and `end` then either do the trapezoidal rule or a Taylor expansion.
+            # We've addid in the additional qualifier of not complex so that we can do sub-grid integration.
             # Line 248.
-            if start_bound_index < end_integer_index:
+            if start_bound_index < end_integer_index and not complex_after_end[i]:
                 expansion_index = end_integer_index
             # Line 371.
-            elif end_bound_index > start_integer_index:
+            elif end_bound_index > start_integer_index and not complex_before_start[i]:
                 expansion_index = start_integer_index
             else:
                 # Line 372.
