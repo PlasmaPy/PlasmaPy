@@ -107,7 +107,7 @@ jobs:
     - name: Install Python dependencies
       run: python -m pip install --upgrade tox
 
-    - name: Install language-pack-fr and tzdata
+    - name: Install graphviz & pandoc
       if: startsWith(matrix.name, 'Documentation')
       run: sudo apt-get install graphviz pandoc
 
