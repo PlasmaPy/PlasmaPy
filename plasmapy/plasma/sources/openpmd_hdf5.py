@@ -72,7 +72,7 @@ class HDF5Reader(GenericPlasma):
     def close(self):
         self.h5.close()
 
-    def __exit__(self):  # noqa: PLE0302, PYI036
+    def __exit__(self, exc_type, exc_value, traceback):  # noqa: PLE0302, PYI036
         self.h5.close()
 
     def _check_valid_openpmd_version(self):
