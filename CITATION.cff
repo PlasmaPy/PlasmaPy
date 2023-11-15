@@ -583,3 +583,8 @@ authors:
 
 - given-names: Oscar
   alias: 0scvr
+
+- given-names: Ataf Fazledin
+  family-names: Ahamed
+  affiliation: OpenRefactory Inc.
+  alias: fazledyn-or
