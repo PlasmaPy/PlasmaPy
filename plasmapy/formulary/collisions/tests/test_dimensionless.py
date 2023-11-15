@@ -6,9 +6,8 @@ from plasmapy.formulary.collisions.dimensionless import (
     coupling_parameter,
     Knudsen_number,
 )
-from plasmapy.utils import exceptions
 from plasmapy.utils._pytest_helpers import assert_can_handle_nparray
-from plasmapy.utils.exceptions import CouplingWarning
+from plasmapy.utils.exceptions import CouplingWarning, PhysicsWarning
 
 
 class Test_coupling_parameter:
@@ -142,7 +141,7 @@ class Test_Knudsen_number:
         """
         Test for known value.
         """
-        with pytest.warns(exceptions.PhysicsWarning, match="strong coupling effects"):
+        with pytest.warns(PhysicsWarning, match="strong coupling effects"):
             methodVal = Knudsen_number(
                 self.length,
                 self.T,
@@ -162,7 +161,7 @@ class Test_Knudsen_number:
         value comparison by some quantity close to numerical error.
         """
         fail1 = self.True1 * (1 + 1e-15)
-        with pytest.warns(exceptions.PhysicsWarning, match="strong coupling effects"):
+        with pytest.warns(PhysicsWarning, match="strong coupling effects"):
             methodVal = Knudsen_number(
                 self.length,
                 self.T,

@@ -17,8 +17,8 @@ from plasmapy.formulary.dimensionless import (
     Rm_,
 )
 from plasmapy.particles import Particle
-from plasmapy.utils import RelativityWarning
 from plasmapy.utils._pytest_helpers import assert_can_handle_nparray
+from plasmapy.utils.exceptions import RelativityWarning
 
 Z = 1
 

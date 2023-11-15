@@ -17,8 +17,8 @@ import warnings
 from typing import Union
 
 from plasmapy.dispersion import dispersion_functions
-from plasmapy.utils import PlasmaPyFutureWarning
 from plasmapy.utils.decorators import bind_lite_func, preserve_signature
+from plasmapy.utils.exceptions import PlasmaPyFutureWarning
 
 
 @preserve_signature

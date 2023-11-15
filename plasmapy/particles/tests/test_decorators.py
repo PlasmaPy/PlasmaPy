@@ -17,9 +17,9 @@ from plasmapy.particles.exceptions import (
     ParticleError,
 )
 from plasmapy.particles.particle_class import CustomParticle, Particle, ParticleLike
-from plasmapy.utils import PlasmaPyDeprecationWarning
 from plasmapy.utils.code_repr import call_string
 from plasmapy.utils.decorators.validators import validate_quantities
+from plasmapy.utils.exceptions import PlasmaPyDeprecationWarning
 
 
 @particle_input

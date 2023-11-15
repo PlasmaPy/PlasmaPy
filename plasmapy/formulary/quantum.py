@@ -23,8 +23,8 @@ from lmfit import minimize, Parameters
 from plasmapy.formulary import mathematics
 from plasmapy.formulary.relativity import Lorentz_factor
 from plasmapy.particles import particle_input, ParticleLike
-from plasmapy.utils import RelativityError
 from plasmapy.utils.decorators import validate_quantities
+from plasmapy.utils.exceptions import RelativityError
 
 __all__ += __aliases__
 
