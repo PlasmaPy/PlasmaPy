@@ -23,7 +23,7 @@ from plasmapy.particles.exceptions import (
 )
 from plasmapy.particles.particle_class import CustomParticle, Particle, ParticleLike
 from plasmapy.particles.particle_collections import ParticleList, ParticleListLike
-from plasmapy.utils import PlasmaPyDeprecationWarning
+from plasmapy.utils.exceptions import PlasmaPyDeprecationWarning
 
 _basic_particle_input_annotations = (
     Particle,  # deprecated

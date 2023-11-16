@@ -3,9 +3,8 @@ import numpy as np
 import pytest
 
 from plasmapy.formulary.collisions import coulomb, lengths
-from plasmapy.utils import exceptions
 from plasmapy.utils._pytest_helpers import assert_can_handle_nparray
-from plasmapy.utils.exceptions import CouplingWarning
+from plasmapy.utils.exceptions import CouplingWarning, PhysicsWarning
 
 
 class Test_impact_parameter_perp:
@@ -214,7 +213,7 @@ class Test_mean_free_path:
         """
         Test for known value.
         """
-        with pytest.warns(exceptions.PhysicsWarning, match="strong coupling effects"):
+        with pytest.warns(PhysicsWarning, match="strong coupling effects"):
             methodVal = lengths.mean_free_path(
                 self.T,
                 self.n_e,
@@ -233,7 +232,7 @@ class Test_mean_free_path:
         value comparison by some quantity close to numerical error.
         """
         fail1 = self.True1 * (1 + 1e-15)
-        with pytest.warns(exceptions.PhysicsWarning, match="strong coupling effects"):
+        with pytest.warns(PhysicsWarning, match="strong coupling effects"):
             methodVal = lengths.mean_free_path(
                 self.T,
                 self.n_e,

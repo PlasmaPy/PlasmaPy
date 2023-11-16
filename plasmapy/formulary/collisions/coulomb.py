@@ -23,9 +23,10 @@ import warnings
 
 from numbers import Real
 
-from plasmapy import particles, utils
+from plasmapy import particles
 from plasmapy.formulary.collisions import lengths
 from plasmapy.utils.decorators import validate_quantities
+from plasmapy.utils.exceptions import CouplingWarning
 
 
 @validate_quantities(
@@ -475,14 +476,14 @@ def Coulomb_logarithm(
             f"min(ln Λ) = {min_ln_Lambda:.4f} which is likely to be inaccurate "
             f"due to strong coupling effects, in particular because "
             f"{method = } assumes weak coupling.",
-            utils.CouplingWarning,
+            CouplingWarning,
         )
     elif min_ln_Lambda < 4:
         warnings.warn(
             f"The calculation of the Coulomb logarithm has found a value of "
             f"min(ln Λ) = {min_ln_Lambda:.4f}. Coulomb logarithms of ≲ 4 may "
             f"have increased uncertainty due to strong coupling effects.",
-            utils.CouplingWarning,
+            CouplingWarning,
         )
 
     return ln_Lambda

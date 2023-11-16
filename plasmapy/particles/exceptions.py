@@ -13,7 +13,7 @@ __all__ = [
     "UnexpectedParticleError",
 ]
 
-from plasmapy.utils import PlasmaPyError, PlasmaPyWarning
+from plasmapy.utils.exceptions import PlasmaPyError, PlasmaPyWarning
 
 
 class ParticleError(PlasmaPyError):
