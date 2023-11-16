@@ -1,1 +1,1 @@
-Removed sub-packages' imports from ``plasmapy.utils``, all classes and functions from the sub-packages have to be imported directly
+Removed imports from subpackages in `plasmapy.utils`. All classes and functions from the subpackages now must be imported directly.
