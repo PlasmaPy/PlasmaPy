@@ -496,20 +496,20 @@ class ParticleTracker:
         if self.dt.size == 1:
             return self.dt
 
-        # candidate timesteps includes one per grid (based on the grid resolution)
+        # candidate time steps includes one per grid (based on the grid resolution)
         # plus additional candidates based on the field at each particle
         candidates = np.ones([self.nparticles, self.num_grids + 1]) * np.inf
 
-        # Compute the timestep indicated by the grid resolution
+        # Compute the time step indicated by the grid resolution
         ds = np.array([grid.grid_resolution.to(u.m).value for grid in self.grids])
         gridstep = 0.5 * (ds / self.vmax)
 
-        # Wherever a particle is on a grid, include that grid's gridstep
-        # in the list of candidate timesteps
+        # Wherever a particle is on a grid, include that grid's grid step
+        # in the list of candidate time steps
         for i, _grid in enumerate(self.grids):  # noqa: B007
             candidates[:, i] = np.where(self.on_grid[:, i] > 0, gridstep[i], np.inf)
 
-        # If not, compute a number of possible timesteps
+        # If not, compute a number of possible time steps
         # Compute the cyclotron gyroperiod
         Bmag = np.max(np.sqrt(Bx**2 + By**2 + Bz**2)).to(u.T).value
         # Compute the gyroperiod
@@ -520,7 +520,7 @@ class ParticleTracker:
 
         candidates[:, self.num_grids] = gyroperiod / 12
 
-        # TODO: introduce a minimum timestep based on electric fields too!
+        # TODO: introduce a minimum time step based on electric fields too!
 
         # Enforce limits on dt
         candidates = np.clip(candidates, self.dt[0], self.dt[1])
@@ -617,7 +617,7 @@ class ParticleTracker:
         B = np.array([Bx.to(u.T).value, By.to(u.T).value, Bz.to(u.T).value])
         B = np.moveaxis(B, 0, -1)
 
-        # Calculate the adaptive timestep from the fields currently experienced
+        # Calculate the adaptive time step from the fields currently experienced
         # by the particles
         # If user sets dt explicitly, that's handled in _adaptive_dt
         dt = self._adaptive_dt(Ex, Ey, Ez, Bx, By, Bz)
@@ -626,7 +626,7 @@ class ParticleTracker:
         # vc = np.max(v)/_c
 
         if self.is_uniform_time:
-            # If a uniform timestep is specified, use that
+            # If a uniform time step is specified, use that
             self.time += dt
         else:
             # If dt is not a scalar (i.e. uniform time), make sure it can be multiplied by a
@@ -652,7 +652,7 @@ class ParticleTracker:
     def vmax(self):
         """
         Calculate the maximum velocity.
-        Used for determining the grid crossing maximum timestep.
+        Used for determining the grid crossing maximum time step.
         """
         tracked_mask = self._tracked_particle_mask()
 
@@ -667,6 +667,10 @@ class ParticleTracker:
         if not isinstance(save_routine, AbstractSaveRoutine):
             raise TypeError("Please specify a valid save routine")
 
+        require_uniform_time = (
+            stop_condition.require_uniform_dt or save_routine.require_uniform_dt
+        )
+
         # Will the simulation follow a uniform time step?
         # This must be the case for certain stopping conditions and saving routines
         self.is_uniform_time = isinstance(dt, u.Quantity) and isinstance(
@@ -674,9 +678,7 @@ class ParticleTracker:
         )
 
         # Raise a ValueError if dt is required by stop condition or save routine but not specified
-        if (
-            stop_condition.require_uniform_dt or save_routine.require_uniform_dt
-        ) and not self.is_uniform_time:
+        if require_uniform_time and not self.is_uniform_time:
             raise ValueError(
                 "Please specify a uniform time step to use the simulation with this configuration!"
             )
@@ -712,17 +714,17 @@ class ParticleTracker:
     ):
         r"""
         Runs a particle-tracing simulation.
-        Timesteps are adaptively calculated based on the
+        Time steps are adaptively calculated based on the
         local grid resolution of the particles and the electric and magnetic
         fields they are experiencing.
 
         Parameters
         ----------
         dt : `~astropy.units.Quantity`, optional
-            An explicitly set timestep in units convertible to seconds.
+            An explicitly set time step in units convertible to seconds.
             Setting this optional keyword overrules the adaptive time step
-            capability and forces the use of this timestep throughout. If a tuple
-            of timesteps is provided, the adaptive timestep will be clamped
+            capability and forces the use of this time step throughout. If a tuple
+            of time steps is provided, the adaptive time step will be clamped
             between the first and second values.
 
         field_weighting : str
@@ -787,7 +789,6 @@ class ParticleTracker:
         )
 
         # Push the particles until the stop condition is satisfied
-        # (no more particles on the simulation grid)
         is_finished = False
         while not is_finished:
             is_finished = stop_condition.is_finished
