@@ -36,12 +36,12 @@ class AbstractStopCondition(ABC):
     """Abstract base class containing the necessary methods for a ParticleTracker stopping condition."""
 
     @property
-    def particle_tracker(self):
+    def tracker(self):
         """Return the `ParticleTracker` object for this stop condition."""
         return self._particle_tracker
 
-    @particle_tracker.setter
-    def particle_tracker(self, particle_tracker):
+    @tracker.setter
+    def tracker(self, particle_tracker):
         self._particle_tracker = particle_tracker
 
     @property
@@ -89,6 +89,7 @@ class TimeElapsedStopCondition(AbstractStopCondition):
     """Stop condition corresponding to the elapsed time of a ParticleTracker."""
 
     def __init__(self, stop_time: u.Quantity):
+        self._particle_tracker = None
         self.stop_time = stop_time.to(u.s).value
 
     @property
@@ -197,13 +198,15 @@ class AbstractSaveRoutine(ABC):
         self.x_all = []
         self.v_all = []
 
+        self._particle_tracker = None
+
     @property
-    def particle_tracker(self):
+    def tracker(self):
         """Return the `ParticleTracker` object for this stop condition."""
         return self._particle_tracker
 
-    @particle_tracker.setter
-    def particle_tracker(self, particle_tracker):
+    @tracker.setter
+    def tracker(self, particle_tracker):
         self._particle_tracker = particle_tracker
 
     @property
@@ -767,9 +770,9 @@ class ParticleTracker:
         # Entered grid -> non-zero if particle EVER entered a grid
         self.entered_grid = np.zeros([self.nparticles])
 
-        # Update the `particle_tracker` attribute so that the stop condition & save routine can be used
-        stop_condition.particle_tracker = self
-        save_routine.particle_tracker = self
+        # Update the `tracker` attribute so that the stop condition & save routine can be used
+        stop_condition.tracker = self
+        save_routine.tracker = self
 
         # Initialize a "progress bar" (really more of a meter)
         # Setting sys.stdout lets this play nicely with regular print()
