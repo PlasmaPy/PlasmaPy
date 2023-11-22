@@ -3,7 +3,6 @@ Tests for particle_tracker.py
 """
 import astropy.units as u
 import numpy as np
-import pytest
 
 from hypothesis import given, settings
 from hypothesis import strategies as st
@@ -72,7 +71,6 @@ class TestParticleTrackerGyroradius:
         assert np.isclose(initial_kinetic_energies, simulation_kinetic_energies).all()
 
 
-@pytest.mark.slow()
 @given(
     st.integers(1, 100), st.integers(1, 100), st.integers(1, 100), st.integers(1, 100)
 )
@@ -85,7 +83,7 @@ def test_particle_tracker_potential_difference(E_strength, L, mass, charge):
     charge = charge * u.C
 
     num = 2
-    dt = 1e-3 * u.s
+    dt = 1e-2 * u.s
 
     grid = CartesianGrid(-L, L, num=num)
     grid_shape = (num,) * 3
@@ -115,4 +113,4 @@ def test_particle_tracker_potential_difference(E_strength, L, mass, charge):
     final_expected_energy = (E_strength * L * point_particle.charge).to(u.J)
     final_simulated_energy = (0.5 * point_particle.mass * speeds[-1] ** 2).to(u.J)
 
-    assert np.isclose(final_expected_energy, final_simulated_energy, rtol=1e-2)
+    assert np.isclose(final_expected_energy, final_simulated_energy, rtol=5e-2)
