@@ -720,6 +720,16 @@ class ParticleTracker:
 
         Parameters
         ----------
+        stop_condition : `~plasmapy.simulation.particle_tracker.AbstractStopCondition`
+            A class responsible for determining when the simulation has reached
+            a suitable termination condition. The class is passed an instance
+            of `~plasmapy.simulation.particle_tracker.ParticleTracker`. See `~plasmapy.simulation.particle_tracker.AbstractStopCondition`
+            for more details.
+
+        save_routine: `~plasmapy.simulation.particle_tracker.AbstractSaveRoutine`
+            A class responsible for determining when the state of the simulation
+            is saved. See `~plasmapy.simulation.particle_tracker.AbstractSaveRoutine` for more details.
+
         dt : `~astropy.units.Quantity`, optional
             An explicitly set time step in units convertible to seconds.
             Setting this optional keyword overrules the adaptive time step
@@ -737,13 +747,6 @@ class ParticleTracker:
                 volume-average of the eight grid points surrounding them.
 
             The default is 'volume averaged'.
-
-        stop_condition : callable
-            A function responsible for determining when the simulation has reached
-            a suitable termination condition. The function is passed an instance
-            of `~plasmapy.simulation.particle_tracker.ParticleTracker`. The function
-            must return a tuple of a boolean, corresponding to the completion status of
-            the simulation, and a number, representing the progress of the simulation.
 
         Returns
         -------
