@@ -3,6 +3,7 @@ Tests for particle_tracker.py
 """
 import astropy.units as u
 import numpy as np
+import pytest
 
 from hypothesis import given, settings
 from hypothesis import strategies as st
@@ -11,6 +12,7 @@ from plasmapy.formulary.lengths import gyroradius
 from plasmapy.particles import CustomParticle
 from plasmapy.plasma.grids import CartesianGrid
 from plasmapy.simulation.particle_tracker import (
+    DiskIntervalSaveRoutine,
     MemoryIntervalSaveRoutine,
     NoParticlesOnGridsStoppingCondition,
     ParticleTracker,
@@ -18,6 +20,41 @@ from plasmapy.simulation.particle_tracker import (
 )
 
 rng = np.random.default_rng()
+
+
+@pytest.mark.parametrize(
+    ("stop_condition", "save_routine", "is_disk_routine"),
+    [
+        (NoParticlesOnGridsStoppingCondition(), MemoryIntervalSaveRoutine, False),
+        (TimeElapsedStopCondition(10 * u.s), MemoryIntervalSaveRoutine, False),
+        (NoParticlesOnGridsStoppingCondition(), DiskIntervalSaveRoutine, True),
+        (TimeElapsedStopCondition(10 * u.s), DiskIntervalSaveRoutine, True),
+    ],
+)
+def test_interval_save_routine(tmp_path, stop_condition, save_routine, is_disk_routine):
+    x = [[0, 0, 0]] * u.m
+    v = [[0, 1, 0]] * u.m / u.s
+    point_particle = CustomParticle(1 * u.kg, 1 * u.C)
+
+    L = 1 * u.m
+    num = 2
+    grid = CartesianGrid(-L, L, num=num)
+    grid_shape = (num,) * 3
+
+    Ex = np.full(grid_shape, 1) * u.V / u.m
+    grid.add_quantities(E_x=Ex)
+
+    simulation = ParticleTracker(
+        grid, req_quantities=["E_x", "E_y", "E_z", "B_x", "B_y", "B_z"]
+    )
+    simulation.load_particles(x, v, point_particle)
+
+    if is_disk_routine:
+        instantiated_save_routine = save_routine(1 * u.s, output_directory=tmp_path)
+    else:
+        instantiated_save_routine = save_routine(1 * u.s)
+
+    simulation.run(stop_condition, instantiated_save_routine, dt=0.1 * u.s)
 
 
 class TestParticleTrackerGyroradius:
