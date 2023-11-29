@@ -12,8 +12,7 @@ from plasmapy.formulary.lengths import gyroradius
 from plasmapy.particles import CustomParticle
 from plasmapy.plasma.grids import CartesianGrid
 from plasmapy.simulation.particle_tracker import (
-    DiskIntervalSaveRoutine,
-    MemoryIntervalSaveRoutine,
+    IntervalSaveRoutine,
     NoParticlesOnGridsStoppingCondition,
     ParticleTracker,
     TimeElapsedStopCondition,
@@ -25,10 +24,10 @@ rng = np.random.default_rng()
 @pytest.mark.parametrize(
     ("stop_condition", "save_routine", "is_disk_routine"),
     [
-        (NoParticlesOnGridsStoppingCondition(), MemoryIntervalSaveRoutine, False),
-        (TimeElapsedStopCondition(10 * u.s), MemoryIntervalSaveRoutine, False),
-        (NoParticlesOnGridsStoppingCondition(), DiskIntervalSaveRoutine, True),
-        (TimeElapsedStopCondition(10 * u.s), DiskIntervalSaveRoutine, True),
+        (NoParticlesOnGridsStoppingCondition(), IntervalSaveRoutine, False),
+        (TimeElapsedStopCondition(10 * u.s), IntervalSaveRoutine, False),
+        (NoParticlesOnGridsStoppingCondition(), IntervalSaveRoutine, True),
+        (TimeElapsedStopCondition(10 * u.s), IntervalSaveRoutine, True),
     ],
 )
 def test_interval_save_routine(tmp_path, stop_condition, save_routine, is_disk_routine):
@@ -85,7 +84,7 @@ class TestParticleTrackerGyroradius:
     simulation.load_particles(x, v, point_particle)
 
     stop_condition = TimeElapsedStopCondition(6 * u.s)
-    save_routine = MemoryIntervalSaveRoutine(0.1 * u.s)
+    save_routine = IntervalSaveRoutine(0.1 * u.s)
 
     simulation.run(stop_condition, save_routine, dt=1e-2 * u.s)
 

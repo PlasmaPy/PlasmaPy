@@ -3,11 +3,9 @@ Module containing the definition for the general particle tracker.
 """
 
 __all__ = [
-    "AbstractIntervalSaveRoutine",
     "AbstractSaveRoutine",
     "AbstractStopCondition",
-    "DiskIntervalSaveRoutine",
-    "MemoryIntervalSaveRoutine",
+    "IntervalSaveRoutine",
     "NoParticlesOnGridsStoppingCondition",
     "ParticleTracker",
     "TimeElapsedStopCondition",
@@ -261,7 +259,7 @@ class AbstractSaveRoutine(ABC):
             self.save()
 
 
-class AbstractIntervalSaveRoutine(AbstractSaveRoutine, ABC):
+class IntervalSaveRoutine(AbstractSaveRoutine):
     """Abstract class describing a save routine that saves every given interval."""
 
     def __init__(self, interval: u.Quantity, **kwargs):
@@ -284,20 +282,6 @@ class AbstractIntervalSaveRoutine(AbstractSaveRoutine, ABC):
             return True
         else:
             return False
-
-
-class DiskIntervalSaveRoutine(AbstractIntervalSaveRoutine):
-    """Save routine corresponding to saving a hdf5 file every given interval."""
-
-    def __init__(self, interval: u.Quantity, output_directory: Path):
-        super().__init__(interval, output_directory=output_directory)
-
-
-class MemoryIntervalSaveRoutine(AbstractIntervalSaveRoutine):
-    """Save the state of the tracker every given interval."""
-
-    def __init__(self, interval: u.Quantity):
-        super().__init__(interval)
 
 
 class ParticleTracker:
