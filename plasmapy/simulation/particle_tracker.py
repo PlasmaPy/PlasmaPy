@@ -221,10 +221,13 @@ class AbstractSaveRoutine(ABC):
         """Determine whether or not to save on the current push step."""
         ...
 
-    @abstractmethod
     def save(self):
-        """The abstract method for saving the current state of the |ParticleTracker|."""
-        ...
+        """Save the current state of the simulation to disk or memory based on whether the output directory was set."""
+
+        if self.output_directory is not None:
+            self.save_to_disk()
+        else:
+            self.save_to_memory()
 
     def save_to_disk(self):
         """Save a hdf5 file containing simulation positions and velocities."""
@@ -289,20 +292,12 @@ class DiskIntervalSaveRoutine(AbstractIntervalSaveRoutine):
     def __init__(self, interval: u.Quantity, output_directory: Path):
         super().__init__(interval, output_directory=output_directory)
 
-    def save(self):
-        """Save the state of the particle tracker to disk."""
-        self.save_to_disk()
-
 
 class MemoryIntervalSaveRoutine(AbstractIntervalSaveRoutine):
     """Save the state of the tracker every given interval."""
 
     def __init__(self, interval: u.Quantity):
         super().__init__(interval)
-
-    def save(self):
-        """Save the state of the particle tracker to memory."""
-        self.save_to_memory()
 
 
 class ParticleTracker:
