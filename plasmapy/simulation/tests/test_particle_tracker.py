@@ -62,11 +62,11 @@ class TestParticleTrackerGyroradius:
     def test_kinetic_energy(self):
         """Test to ensure particles maintain their gyroradius over time"""
 
-        initial_kinetic_energies = 0.5 * self.point_particle.mass * self.v_x**2
+        initial_kinetic_energies = 0.5 * self.point_particle.mass * self.v_x ** 2
 
         velocities = np.asarray(self.save_routine.v_all) * u.m / u.s
         speeds = np.linalg.norm(velocities, axis=-1)
-        simulation_kinetic_energies = 0.5 * self.point_particle.mass * speeds**2
+        simulation_kinetic_energies = 0.5 * self.point_particle.mass * speeds ** 2
 
         assert np.isclose(initial_kinetic_energies, simulation_kinetic_energies).all()
 

@@ -46,8 +46,8 @@ class AbstractStopCondition(ABC):
 
     @property
     @abstractmethod
-    def require_uniform_dt(self):
-        """Return whether or not this stop condition requires a uniform dt to be specified."""
+    def require_synchronized_dt(self):
+        """Return whether or not this stop condition requires a synchronized time step."""
         ...
 
     @property
@@ -93,8 +93,8 @@ class TimeElapsedStopCondition(AbstractStopCondition):
         self.stop_time = stop_time.to(u.s).value
 
     @property
-    def require_uniform_dt(self):
-        """The elapsed time stop condition requires a uniform time step
+    def require_synchronized_dt(self):
+        """The elapsed time stop condition requires a synchronized step
         to stop all particles at the same time.
         """
         return True
@@ -120,7 +120,7 @@ class TimeElapsedStopCondition(AbstractStopCondition):
     @property
     def progress(self):
         """Return the current time step of the simulation."""
-        return self._particle_tracker.time
+        return int(self._particle_tracker.time)
 
     @property
     def total(self):
@@ -135,8 +135,8 @@ class NoParticlesOnGridsStoppingCondition(AbstractStopCondition):
         self._particle_tracker = None
 
     @property
-    def require_uniform_dt(self):
-        """The no field stopping condition does not require a uniform time step."""
+    def require_synchronized_dt(self):
+        """The no field stopping condition does not require a synchronized time step."""
         return False
 
     @property
@@ -211,8 +211,8 @@ class AbstractSaveRoutine(ABC):
 
     @property
     @abstractmethod
-    def require_uniform_dt(self):
-        """Return whether or not this save routine requires a uniform dt to be specified."""
+    def require_synchronized_dt(self):
+        """Return whether or not this save routine requires a synchronized time step."""
         ...
 
     @property
@@ -267,22 +267,13 @@ class AbstractIntervalSaveRoutine(AbstractSaveRoutine, ABC):
         self.time_of_last_save = 0
 
     @property
-    def require_uniform_dt(self):
-        """Save output only makes sense for uniform time steps,
-        therefore this routine requires a uniform time step.
-        """
+    def require_synchronized_dt(self):
+        """Save output only makes sense for synchronized time steps."""
         return True
 
     @property
     def save_now(self):
         """Save at every interval given in instantiation."""
-        saves_per_step = np.floor(self.save_interval / self._particle_tracker.dt)
-
-        # If the user is requesting multiple saves per step then raise a ValueError
-        if saves_per_step == 0:
-            raise ValueError(
-                "You must specify a time step smaller than the save interval!"
-            )
 
         if self._particle_tracker.time - self.time_of_last_save >= self.save_interval:
             self.time_of_last_save = self._particle_tracker.time
@@ -350,6 +341,9 @@ class ParticleTracker:
 
         # This flag records whether the simulation has been run
         self._has_run = False
+
+        self._is_adaptive_time_step = False
+        self._is_synchronized_time_step = False
 
         # *********************************************************************
         # Validate required fields
@@ -493,7 +487,7 @@ class ParticleTracker:
         particles in the current fields.
         """
         # If dt was explicitly set, skip the rest of this function
-        if self.dt.size == 1:
+        if not self._is_adaptive_time_step:
             return self.dt
 
         # candidate time steps includes one per grid (based on the grid resolution)
@@ -523,15 +517,22 @@ class ParticleTracker:
         # TODO: introduce a minimum time step based on electric fields too!
 
         # Enforce limits on dt
-        candidates = np.clip(candidates, self.dt[0], self.dt[1])
+        candidates = np.clip(candidates, self.dt_range[0], self.dt_range[1])
 
-        # dt is the min of all the candidates for each particle
-        # a separate dt is returned for each particle
-        dt = np.min(candidates, axis=-1)
+        if not self._is_synchronized_time_step:
+            # dt is the min of all the candidates for each particle
+            # a separate dt is returned for each particle
+            dt = np.min(candidates, axis=-1)
 
-        # dt should never actually be infinite, so replace any infinities
-        # with the largest gridstep
-        return np.where(dt == np.inf, np.max(gridstep), dt)
+            # dt should never actually be infinite, so replace any infinities
+            # with the largest gridstep
+            dt[dt == np.inf] = np.max(gridstep)
+        else:
+            # a single value for dt is returned
+            # this is the time step used for all particles
+            dt = np.min(candidates)
+
+        return dt
 
     def _push(self):
         r"""
@@ -625,20 +626,20 @@ class ParticleTracker:
         # TODO: Test v/c and implement relativistic Boris push when required
         # vc = np.max(v)/_c
 
-        if self.is_uniform_time:
-            # If a uniform time step is specified, use that
-            self.time += dt
-        else:
-            # If dt is not a scalar (i.e. uniform time), make sure it can be multiplied by a
-            # [nparticles, 3] shape field array
+        # Make sure the time step can be multiplied by a [nparticles, 3] shape field array
+        if dt.size > 1:
             dt = dt[tracked_mask, np.newaxis]
 
             # Increment the tracked particles' time by dt
             self.time[tracked_mask] += dt
+        else:
+            self.time += dt
 
         self.x[tracked_mask], self.v[tracked_mask] = boris_push(
             pos_tracked, vel_tracked, B, E, self.q, self.m, dt, inplace=False
         )
+
+        self.dt = dt
 
     @property
     def on_any_grid(self):
@@ -667,20 +668,28 @@ class ParticleTracker:
         if not isinstance(save_routine, AbstractSaveRoutine):
             raise TypeError("Please specify a valid save routine")
 
-        require_uniform_time = (
-            stop_condition.require_uniform_dt or save_routine.require_uniform_dt
+        require_synchronized_time = (
+            stop_condition.require_synchronized_dt or save_routine.require_synchronized_dt
         )
 
-        # Will the simulation follow a uniform time step?
+        # Will the simulation follow a synchronized time step?
         # This must be the case for certain stopping conditions and saving routines
-        self.is_uniform_time = isinstance(dt, u.Quantity) and isinstance(
-            dt.value, float
-        )
+        if isinstance(dt, u.Quantity):
+            if isinstance(dt.value, np.ndarray):
+                # If an array is specified for the time step, a synchronized time step is implied if all
+                # the entries are equal
+                self._is_synchronized_time_step = np.all(dt.value[0] == dt.value[:])
+            else:
+                self._is_synchronized_time_step = True
+        elif dt is None:
+            self._is_synchronized_time_step = True
+            self._is_adaptive_time_step = True
 
-        # Raise a ValueError if dt is required by stop condition or save routine but not specified
-        if require_uniform_time and not self.is_uniform_time:
+        # Raise a ValueError if a synchronized dt is required by stop condition or save routine but one is not given
+        # This is only the case if an array with differing entries is specified for dt
+        if require_synchronized_time and not self._is_synchronized_time_step:
             raise ValueError(
-                "Please specify a uniform time step to use the simulation with this configuration!"
+                "Please specify a synchronized time step to use the simulation with this configuration!"
             )
 
         # Load and validate inputs
@@ -705,11 +714,22 @@ class ParticleTracker:
         """Return the number of particles that don't have NaN position or velocity."""
         return self._tracked_particle_mask().sum()
 
+    @property
+    def is_adaptive_time_step(self):
+        """Return whether the simulation is calculating an adaptive time step or using the user-provided time step."""
+        return self._is_adaptive_time_step
+
+    @property
+    def is_synchronized_time_step(self):
+        """Return whether or not the simulation is applying the same time step across all particles."""
+        return self._is_synchronized_time_step
+
     def run(
         self,
         stop_condition: AbstractStopCondition,
         save_routine: Optional[AbstractSaveRoutine] = None,
         dt=None,
+        dt_range=None,
         field_weighting="volume averaged",
     ):
         r"""
@@ -751,19 +771,20 @@ class ParticleTracker:
 
         """
 
+        dt_range = [0, np.inf] * u.s if dt_range is None else dt_range
+        self.dt_range = dt_range.to(u.s).value
+
         # Validate inputs to the run function
-        # Sets is_uniform_time property
+        # Sets is_synchronized_time property
         self._validate_run_inputs(stop_condition, save_routine, dt, field_weighting)
         self._enforce_particle_creation()
 
-        # By default, set dt as an infinite range (auto dt with no restrictions)
-        self.dt = np.array([0.0, np.inf]) * u.s if dt is None else dt
-        self.dt = (self.dt).to(u.s).value
+        self.dt = dt.to(u.s).value if dt is not None else None
 
         # Keep track of how many push steps have occurred for trajectory tracing
         self.iteration_number = 0
 
-        self.time = 0 if self.is_uniform_time else np.zeros((self.nparticles, 1))
+        self.time = np.zeros((self.nparticles, 1)) if not self.is_synchronized_time_step else 0
         # Create flags for tracking when particles during the simulation
         # on_grid -> zero if the particle is off grid, 1
         # shape [nparticles, ngrids]
@@ -790,7 +811,7 @@ class ParticleTracker:
 
         # Push the particles until the stop condition is satisfied
         is_finished = False
-        while not is_finished:
+        while not (is_finished or self.nparticles_tracked == 0):
             is_finished = stop_condition.is_finished
             progress = min(stop_condition.progress, stop_condition.total)
 
