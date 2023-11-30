@@ -285,9 +285,31 @@ class IntervalSaveRoutine(AbstractSaveRoutine):
 
 
 class ParticleTracker:
-    """
-    General particle tracer.
+    r"""A many body particle tracker for electric and magnetic fields with no particle-particle interactions.
 
+    Particles are created and pushed through calculated E and B fields. These fields are specified as part of a grid
+    which can then be interpolated to determine local field strength. The time step used can be specified, otherwise an
+    adaptive time step is calculated based off grid resolution and the particle's gyroradius.
+
+    The simulation is terminated when a specified stop condition is met. The results of a simulation can be exported
+    using a save routine.
+
+    Parameters
+    ----------
+    grids : `~plasmapy.plasma.grids.AbstractGrid` or subclass thereof, or list
+        of same.
+        A Grid object or list of grid objects containing the required
+        quantities [E_x, E_y, E_z, B_x, B_y, B_z].
+        If any of these quantities are missing, a warning will be given and that
+        quantity will be assumed to be zero everywhere.
+
+    req_quantities : `list` of str, optional
+        A list of quantity keys required to be specified on the Grid object.
+        The default is None.
+
+    verbose : bool, optional
+        If true, updates on the status of the program will be printed
+        into the standard output while running. The default is True.
     """
 
     def __init__(
@@ -374,6 +396,9 @@ class ParticleTracker:
 
     @property
     def num_grids(self):  # noqa: D102
+        """
+        The number of grids specified at instantiation
+        """
         return len(self.grids)
 
     def _log(self, msg):
@@ -395,14 +420,14 @@ class ParticleTracker:
         x : `~astropy.units.Quantity`, shape (N,3)
             Positions for N particles
 
-        v: `~astropy.units.Quantity`, shape (N,3)
+        v : `~astropy.units.Quantity`, shape (N,3)
             Velocities for N particles
 
         particle : |particle-like|, optional
             Representation of the particle species as either a |Particle| object
             or a string representation. The default particle is protons.
 
-        distribution: str
+        distribution : str
             A keyword which determines how particles will be distributed
             in velocity space. Options are:
 
@@ -641,6 +666,11 @@ class ParticleTracker:
     def _validate_run_inputs(
         self, stop_condition, save_routine, dt, field_weighting: str
     ):
+        """
+        Ensure the specified stop condition and save routine are actually
+        a stop routine class and save routine, respectively. This function also
+        sets the `_is_synchronized_time_step` and `_is_adaptive_time_step` attributes.
+        """
         if not isinstance(stop_condition, AbstractStopCondition):
             raise TypeError("Please specify a valid stop condition.")
 
@@ -725,15 +755,17 @@ class ParticleTracker:
             of `~plasmapy.simulation.particle_tracker.ParticleTracker`. See `~plasmapy.simulation.particle_tracker.AbstractStopCondition`
             for more details.
 
-        save_routine: `~plasmapy.simulation.particle_tracker.AbstractSaveRoutine`
+        save_routine : `~plasmapy.simulation.particle_tracker.AbstractSaveRoutine`
             An instance of `~plasmapy.simulation.particle_tracker.AbstractSaveRoutine` which determines which
             time steps of the simulation to save. See `~plasmapy.simulation.particle_tracker.AbstractSaveRoutine` for more details.
 
         dt : `~astropy.units.Quantity`, optional
             An explicitly set time step in units convertible to seconds.
             Setting this optional keyword overrules the adaptive time step
-            capability and forces the use of this time step throughout. If a tuple
-            of time steps is provided, the adaptive time step will be clamped
+            capability and forces the use of this time step throughout.
+
+        dt_range : tuple of shape `(2,)` of `~astropy.units.Quantity`, optional
+            If specified, the calculated adaptive time step will be clamped
             between the first and second values.
 
         field_weighting : str
