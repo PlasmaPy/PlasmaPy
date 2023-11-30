@@ -169,7 +169,7 @@ def coupling_parameter(
     >>> coupling_parameter(T, n, species, V=1e6 * u.m / u.s)
     <Quantity 5.8033...e-05>
     """
-    T, masses, charges, reduced_mass, V = misc._process_inputs(
+    T, masses, charges, reduced_mass, V = misc._process_inputs(  # noqa: SLF001
         T=T, species=species, V=V
     )
 
@@ -205,7 +205,7 @@ def coupling_parameter(
         kinetic_energy = 2 * k_B * T / denominator
         if np.all(np.imag(kinetic_energy) < 1e-15 * u.J):
             kinetic_energy = np.real(kinetic_energy)
-        else:  # coverage: ignore
+        else:
             raise ValueError(
                 "Kinetic energy should not be imaginary."
                 "Something went horribly wrong."

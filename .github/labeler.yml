@@ -41,9 +41,6 @@ linters:
 - .sourcery.yaml
 - .pre-commit-config.yaml
 
-'No changelog entry needed':
-- any: ['.pre-commit-config.yaml', '.github/**/*.*', '.codecov.yml', '.editorconfig', '.gitignore', 'CODEOWNERS', 'requirements.txt']
-
 notebooks:
 - docs/notebooks/**/*
 
@@ -88,7 +85,7 @@ plasmapy.utils:
 testing:
 - '**/test*.py'
 - '**/conftest.py'
-- .github/workflows/weekly.yml
+- .github/workflows/weekly-tests.yml
 - .codecov.yaml
 - noxfile.py
 - tox.ini

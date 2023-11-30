@@ -90,7 +90,7 @@ def _make_custom_particle_with_real_charge_number(
 
     if not base_particle.is_category(require="element", exclude="ion"):
         # Add tests if this function becomes part of public API
-        raise InvalidParticleError("Cannot create CustomParticle.")  # coverage: ignore
+        raise InvalidParticleError("Cannot create CustomParticle.")
 
     if Z > base_particle.atomic_number:
         raise ChargeError("The charge number cannot exceed the atomic number.")
@@ -102,7 +102,7 @@ def _make_custom_particle_with_real_charge_number(
 _particle_constructors = (
     Particle,
     CustomParticle,
-    CustomParticle._from_quantities,
+    CustomParticle._from_quantities,  # noqa: SLF001
     ParticleList,
     _make_custom_particle_with_real_charge_number,
 )

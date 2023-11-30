@@ -267,7 +267,7 @@ class _FloatBox(_GenericWidget):
         self.min = min
         self.max = max
 
-    def create_widget(self, style=None):  # noqa: B006
+    def create_widget(self, style=None):
         """
         Implements create_widget. description_width is set to initial
         to make the widget as wide as possible.
@@ -338,7 +338,7 @@ class _ParticleBox(_GenericWidget):
         `bool`
             `True` if the value is empty, `False` otherwise
         """
-        return value is None or value == ""  # noqa: PLC1901
+        return value is None or value == ""
 
     def edge_case(self, value):  # noqa: ARG002
         """
@@ -370,7 +370,7 @@ class _ParticleBox(_GenericWidget):
         self.widget.layout.border = ""
         self.widget.description = ""
 
-    def create_widget(self, style=None):  # noqa: B006
+    def create_widget(self, style=None):
         """
         Implements create_widget. description_width is set to initial
         to make the widget as wide as possible.
@@ -512,13 +512,23 @@ class _FunctionInfo:
         spec: `list`
             List of parameters to be used in the function
         """
-        print(_colored_text(BLACK, "["), end="")
+        # We'll need to switch from print() to using logging library
+
+        print(_colored_text(BLACK, "["), end="")  # noqa: T201
+
         for arg in spec:
             if arg in self.values_cont and self.values_cont[arg] is not None:
-                print(_colored_text(LIGHT_GREEN, f"{arg}:present,"), end="")
+                print(  # noqa: T201
+                    _colored_text(LIGHT_GREEN, f"{arg}:present,"),
+                    end="",
+                )
             else:
-                print(_colored_text(DARK_RED, f"{arg}:missing,"), end="")
-        print(_colored_text(BLACK, "]"))
+                print(  # noqa: T201
+                    _colored_text(DARK_RED, f"{arg}:missing,"),
+                    end="",
+                )
+
+        print(_colored_text(BLACK, "]"))  # noqa: T201
 
     def process(self):
         """
@@ -538,12 +548,15 @@ class _FunctionInfo:
         with self.output_widget:
             try:
                 self.output_widget.layout.border = "0px"
-                print(f" : {self.fattr(**args_dict)}")
+
+                # We'll need to switch from print() to using logging library
+
+                print(f" : {self.fattr(**args_dict)}")  # noqa: T201
 
             except Exception as e:  # noqa: BLE001
                 self.output_widget.layout.border = ERROR_STYLE
-                print(e)
-                print(
+                print(e)  # noqa: T201
+                print(  # noqa: T201
                     " : could not be computed one or more parameter is missing - check below for missing parameters"
                 )
                 if self.spec_combo:

@@ -268,7 +268,7 @@ class AbstractGrid(ABC):
         uniformly spaced.
         """
 
-        if self._is_uniform is None:  # coverage: ignore
+        if self._is_uniform is None:
             raise ValueError(
                 "The `is_uniform` attribute is not accessible "
                 "before a grid has been loaded."
@@ -668,8 +668,8 @@ class AbstractGrid(ABC):
 
     def _make_grid(  # noqa: C901, PLR0912
         self,
-        start: Union[int, float, u.Quantity],
-        stop: Union[int, float, u.Quantity],
+        start: Union[float, u.Quantity],
+        stop: Union[float, u.Quantity],
         num=100,
         units=None,
         **kwargs,

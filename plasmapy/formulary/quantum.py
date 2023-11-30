@@ -23,8 +23,8 @@ from lmfit import minimize, Parameters
 from plasmapy.formulary import mathematics
 from plasmapy.formulary.relativity import Lorentz_factor
 from plasmapy.particles import particle_input, ParticleLike
-from plasmapy.utils import RelativityError
 from plasmapy.utils.decorators import validate_quantities
+from plasmapy.utils.exceptions import RelativityError
 
 __all__ += __aliases__
 
@@ -88,7 +88,7 @@ def deBroglie_wavelength(V: u.m / u.s, particle: ParticleLike) -> u.m:
 
     Examples
     --------
-    >>> from astropy import units as u
+    >>> import astropy.units as u
     >>> velocity = 1.4e7 * u.m / u.s
     >>> deBroglie_wavelength(velocity, 'e')
     <Quantity 5.18997095e-11 m>
@@ -171,7 +171,7 @@ def thermal_deBroglie_wavelength(T_e: u.K) -> u.m:
 
     Examples
     --------
-    >>> from astropy import units as u
+    >>> import astropy.units as u
     >>> thermal_deBroglie_wavelength(1 * u.eV)
     <Quantity 6.9193675e-10 m>
     """
@@ -236,7 +236,7 @@ def Fermi_energy(n_e: u.m**-3) -> u.J:
 
     Examples
     --------
-    >>> from astropy import units as u
+    >>> import astropy.units as u
     >>> Fermi_energy(1e23 * u.cm**-3)
     <Quantity 1.2586761e-18 J>
     """
@@ -309,7 +309,7 @@ def Thomas_Fermi_length(n_e: u.m**-3) -> u.m:
 
     Examples
     --------
-    >>> from astropy import units as u
+    >>> import astropy.units as u
     >>> Thomas_Fermi_length(1e23 * u.cm**-3)
     <Quantity 5.37991409e-11 m>
 
@@ -374,7 +374,7 @@ def Wigner_Seitz_radius(n: u.m**-3) -> u.m:
 
     Examples
     --------
-    >>> from astropy import units as u
+    >>> import astropy.units as u
     >>> Wigner_Seitz_radius(1e29 * u.m**-3)
     <Quantity 1.33650462e-10 m>
 
@@ -448,7 +448,7 @@ def chemical_potential(n_e: u.m**-3, T: u.K) -> u.dimensionless_unscaled:
 
     Examples
     --------
-    >>> from astropy import units as u
+    >>> import astropy.units as u
     >>> chemical_potential(n_e=1e25*u.cm**-3,T=11000*u.K)
     <Quantity 283.43506297>
     """
@@ -543,7 +543,7 @@ def _chemical_potential_interp(n_e, T):
 
     Examples
     --------
-    >>> from astropy import units as u
+    >>> import astropy.units as u
     >>> _chemical_potential_interp(n_e=1e23*u.cm**-3, T=11000*u.K)
     <Quantity 8.17649>
 

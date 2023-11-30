@@ -31,7 +31,7 @@ from plasmapy.utils.code_repr import _name_with_article, _object_name, call_stri
 from plasmapy.utils.exceptions import PlasmaPyWarning
 
 
-def _process_input(wrapped_function: Callable):  # coverage: ignore
+def _process_input(wrapped_function: Callable):
     """
     Allow `run_test` to take a single positional argument that is a
     `list` or `tuple` in lieu of using multiple positional/keyword
@@ -72,7 +72,7 @@ def run_test(  # noqa: C901
     expected_outcome: Any = None,
     rtol: float = 0.0,
     atol: float = 0.0,
-):  # coverage: ignore
+):
     """
     Test that a function or class returns the expected result, raises
     the expected exception, or issues an expected warning for the
@@ -304,7 +304,10 @@ def run_test(  # noqa: C901
             )
 
     try:
-        with pytest.warns(expected["warning"]):
+        if expected["warning"] is not None:
+            with pytest.warns(expected["warning"]):
+                result = func(*args, **kwargs)
+        else:
             result = func(*args, **kwargs)
     except pytest.raises.Exception as missing_warning:
         raise MissingWarningFail(
@@ -376,7 +379,7 @@ def run_test(  # noqa: C901
     try:
         if result == expected["result"]:
             return None
-    except Exception as exc_equality:  # coverage: ignore
+    except Exception as exc_equality:
         raise TypeError(
             f"The equality of {_object_name(result)} and "
             f"{_object_name(expected['result'])} "
@@ -599,7 +602,7 @@ def run_test_equivalent_calls(  # noqa: C901
 
     try:
         equals_first_result = [result == results[0] for result in results]
-    except Exception as exc:  # coverage: ignore
+    except Exception as exc:
         raise UnexpectedExceptionFail(
             "Unable to determine equality properties of results."
         ) from exc

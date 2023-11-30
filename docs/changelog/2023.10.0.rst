@@ -1,0 +1,162 @@
+PlasmaPy v2023.10.0 (2023-10-20)
+================================
+
+Backwards Incompatible Changes
+------------------------------
+
+- Renamed the ``plasmapy.dispersion.dispersionfunction`` module
+  to `plasmapy.dispersion.dispersion_functions`. Both
+  of ``plasma_dispersion_func`` and ``plasma_dispersion_func_deriv``
+  are temporarily still available, but will issue
+  a `~plasmapy.utils.exceptions.PlasmaPyFutureWarning` and will be
+  removed in a subsequent release. (:pr:`2271`)
+- Removed the |lite-functions|
+  for `~plasmapy.dispersion.dispersion_functions.plasma_dispersion_func`
+  and `~plasmapy.dispersion.dispersion_functions.plasma_dispersion_func_deriv`.
+  Instead, the performance of the original functions has been improved
+  by using a :py:`try` and :py:`except` block instead of having multiple
+  :py:`if` statements to check for preconditions. (:pr:`2361`)
+- Providing a real number to the ``charge`` parameter in |CustomParticle|
+  will now result in a |InvalidParticleError| instead of a deprecation warning.
+  Now,
+  ``charge`` must be a |Quantity| with units of electrical charge. To
+  express the charge as a multiple of the elementary charge, provide a
+  real number to the ``Z`` parameter instead. (:pr:`2369`)
+
+
+Features
+--------
+
+- Added the `~plasmapy.plasma.equilibria1d.HarrisSheet` class to calculate
+  magnetic field, current density, and plasma pressure for 1D Harris sheets.
+  (:pr:`2068`)
+- Added module `plasmapy.dispersion.analytical.mhd_waves_`
+  with classes for storing and calculating parameters of
+  magnetohydrodynamic waves. (:pr:`2206`)
+- Added the `plasmapy.analysis.time_series.conditional_averaging` module
+  including the
+  `~plasmapy.analysis.time_series.conditional_averaging.ConditionalEvents`
+  class for calculating the conditional average and variance of time series.
+  (:pr:`2275`)
+- Added the `~plasmapy.plasma.cylindrical_equilibria.ForceFreeFluxRope`
+  class to calculate magnetic field for the Lundquist solution for
+  force-free cylindrical equilibria. (:pr:`2289`)
+
+
+Bug Fixes
+---------
+
+- Fixed a bug that had been causing incorrect results
+  in `~plasmapy.formulary.collisions.helio.collisional_analysis.temp_ratio`.
+  (:pr:`2248`)
+- Enabled the ``time_step`` parameter in
+  `~plasmapy.analysis.time_series.excess_statistics.ExcessStatistics` class to
+  be a |Quantity| with a unit. (:pr:`2300`)
+
+
+Improved Documentation
+----------------------
+
+- Updated the |code contribution workflow| in the |contributor guide| to
+  describe how to use ``git pull``. (:pr:`2193`)
+- Expanded the troubleshooting section of the |documentation guide| to
+  describe how to resolve warnings related to documents not being
+  included in any toctrees. (:pr:`2257`)
+- Added a step to the |code contribution workflow| about using ``git status``
+  to verify that there have been no changes to tracked files before
+  creating and switching to a new branch. (:pr:`2263`)
+- Added a page to the |contributor guide| about |pre-commit|, including
+  how to troubleshoot test failures. (:pr:`2265`)
+- Added :file:`CONTRIBUTING.md` to PlasmaPy's GitHub repository.  This
+  page refers contributors to PlasmaPy's |contributor guide|. (:pr:`2266`)
+- Enabled the `sphinx.ext.duration` extension to show the times required
+  to process different pages during documentation builds. (:pr:`2268`)
+- Enabled the `sphinx.ext.viewcode` extension for adding links in the
+  documentation to pages containing the source code. (:pr:`2269`)
+- Moved definitions of certain |reStructuredText| substitutions
+  from :file:`docs/common_links.rst` to the
+  file :file:`docs/contributing/doc_guide.rst` in order to speed up the
+  documentation build (see :issue:`2277`\ ). (:pr:`2272`)
+- Implemented ``sphinxcontrib-globalsubs`` to enable global
+  |reStructuredText| substitutions to be used throughout the documentation,
+  and moved the definition of substitutions from :file:`docs/common_links.rst`
+  to the ``global_substitutions`` `dict` in
+  :file:`docs/_global_substitutions.py`. (:pr:`2281`)
+- Changed :py:`from astropy import units as u` to :py:`import astropy.units as
+  u`
+  and :py:`from astropy import constants as const`
+  to :py:`import astropy.constants as const` throughout the code in order to
+  increase consistency of import statements. (:pr:`2282`)
+- Added and applied ``nbqa-ruff`` to our suite of |pre-commit| hooks so
+  that |ruff| can perform code quality checks on our example notebooks.
+  (:pr:`2302`)
+- Renamed :file:`docs/cff_to_rst.py` to :file:`docs/_cff_to_rst.py`, and
+  updated the functionality contained within that file for converting
+  author information in :file:`CITATION.cff` into a |reStructuredText|
+  author list to be included in the documentation. (:pr:`2307`)
+- Fixed broken hyperlinks and |reStructuredText| references. (:pr:`2308`)
+- Replaced :py:`from plasmapy.particles import *` in
+  :file:`docs/notebooks/getting_started/particles.ipynb` with imports of
+  the actual functions and classes that were used. (:pr:`2311`)
+- Applied minor refactorings and formatting improvements to
+  :file:`docs/notebooks/dispersion/stix_dispersion.ipynb`. (:pr:`2312`)
+- Updated the |coding guide| by discussing when to use aliases and
+  applied the ``:py:`` role so that in-line code gets formatted the same
+  as Python code blocks. (:pr:`2324`)
+- Updated the docstrings and type hint annotations in
+  `plasmapy.formulary.lengths`. (:pr:`2356`)
+- Refactored :file:`docs/conf.py` to improve organization. (:pr:`2363`)
+- Updated the narrative documentation on particle objects to
+  include |CustomParticle|, |DimensionlessParticle|, and |ParticleList|
+  objects. (:pr:`2377`)
+
+
+Trivial/Internal Changes
+------------------------
+
+- Modernized :file:`MANIFEST.in`. (:pr:`2189`)
+- Applied automated refactorings from Sourcery. (:pr:`2219`)
+- Distributions defined in the `~plasmapy.formulary.distribution` module
+  will now raise a `ValueError` for an improper ``units`` parameter.
+  (:pr:`2229`)
+- Added "decorators" section to the |coding guide|. (:pr:`2231`)
+- Improved the error message issued by
+  `~plasmapy.formulary.speeds.Alfven_speed`
+  when the argument provided to ``density`` has a physical type of
+  number density and ``ion`` is not provided. (:pr:`2262`)
+- Exposed `plasmapy.dispersion.analytical` and `plasmapy.dispersion.numerical`
+  to the `plasmapy.dispersion` namespace. (:pr:`2271`)
+- Expanded the |ruff| settings to include more linter rules. (:pr:`2295`)
+- Add |ruff| linter rules that check for `print` and :py:`pprint`, as
+  the `logging` library is generally preferred for production code.
+  (:pr:`2296`)
+- Updated and corrected author information in :file:`CITATION.cff`.
+  (:pr:`2307`)
+- Reduced the number of warnings emitted by `plasmapy.particles` during
+  tests by decorating test functions with `pytest.mark.filterwarnings`.
+  (:pr:`2314`)
+- Fixed a `pytest` deprecation warning that had been issued
+  by ``plasmapy.utils._pytest_helpers/pytest_helpers.run_test``
+  so that `None` is no longer passed to the `pytest.warns` context
+  manager. (:pr:`2314`)
+- Changed the default configuration for `pytest` so that if a test is marked
+  as expected to fail actually passes, then that test will issue an error
+  to indicate that the `pytest.mark.xfail` mark can be removed. (:pr:`2315`)
+- Added a weekly linkcheck test that verifies that hyperlinks in the
+  documentation are up-to-date. (:pr:`2328`)
+- Enabled |validate_quantities| to accept annotations of the form
+  :py:`u.Quantity[u.m]`, where we have previously run :py:`import astropy.units
+  as u`. (:pr:`2346`)
+- Both `~plasmapy.dispersion.dispersion_functions.plasma_dispersion_func`
+  and `~plasmapy.dispersion.dispersion_functions.plasma_dispersion_func_deriv`
+  now allow |inf| and |nan| arguments without raising a `ValueError`.
+  (:pr:`2361`)
+- Modified the
+  `~plasmapy.particles.particle_class.CustomParticle.charge_number`
+  attribute of |CustomParticle| to return a real number rather than a
+  dimensionless |Quantity|. (:pr:`2377`)
+- Made minor updates to :file:`plasmapy/__init__.py`, including to the
+  top-level package docstring. (:pr:`2378`)
+- Improved the consistency and specificity of the names of various
+  GitHub Actions. (:pr:`2379`)
+- Added a |pre-commit| hook to validate |GitHub Actions|. (:pr:`2380`)

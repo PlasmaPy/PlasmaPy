@@ -627,7 +627,7 @@ def _bilinear_root(a1, b1, c1, d1, a2, b2, c2, d2):  # noqa: C901, PLR0911, PLR0
             return np.array([(x1, y1), (x2, y2)])
 
 
-def _trilinear_analysis(vspace, cell):  # noqa: C901, PLR0911, PLR0912, PLR0915
+def _trilinear_analysis(vspace, cell):  # noqa: C901, PLR0915
     r"""
     Return a true or false value based on whether a grid cell which has
     passed the reduction step, contains a null point, using trilinear
@@ -1261,7 +1261,7 @@ def _locate_null_point(vspace, cell, n, err):
         )
         return is_x_in_bound and is_y_in_bound and is_z_in_bound
 
-    starting_pos = []  # noqa: FURB138
+    starting_pos = []
     # Adding the Corners
     starting_pos = [
         [
@@ -1326,7 +1326,7 @@ def _locate_null_point(vspace, cell, n, err):
     return None
 
 
-def _classify_null_point(vspace, cell, loc):  # noqa: PLR0912
+def _classify_null_point(vspace, cell, loc):
     r"""
     Return the coordinates of a null point within a given grid cell in a
     vector space using the Newton-Rapshon method.
@@ -1369,7 +1369,7 @@ def _classify_null_point(vspace, cell, loc):  # noqa: PLR0912
     jcb = _trilinear_jacobian(vspace, cell)
     M = jcb(loc[0], loc[1], loc[2])
     if not np.isclose(np.trace(M), 0, atol=_EQUALITY_ATOL):
-        raise NonZeroDivergence()
+        raise NonZeroDivergence
     eigen_vals, eigen_vectors = np.linalg.eig(M)
     # using the notation from Parnell et al. (1996)
     R = -1.0 * np.linalg.det(M)
@@ -1393,11 +1393,11 @@ def _classify_null_point(vspace, cell, loc):  # noqa: PLR0912
                 if np.isclose(determinant, 0, atol=_EQUALITY_ATOL)
                 else "Improper radial null"
             )
-        elif np.isclose(determinant, 0, atol=_EQUALITY_ATOL):  # noqa: PLR5501
+        elif np.isclose(determinant, 0, atol=_EQUALITY_ATOL):
             null_point_type = "Continuous X-points"
         else:
             null_point_type = "Skewed improper null"
-    elif np.isclose(determinant, 0, atol=_EQUALITY_ATOL):  # noqa: PLR5501
+    elif np.isclose(determinant, 0, atol=_EQUALITY_ATOL):
         null_point_type = "Continuous concentric ellipses"
     else:
         null_point_type = "Spiral null"
@@ -1418,9 +1418,8 @@ def _vspace_iterator(vspace, maxiter=500, err=1e-10):
         vector values, and the third element containing the delta values
         for each dimension.
 
-    maxiter : int
-        The maximum iterations of the Newton-Raphson method. Defaults to
-        500.
+    maxiter : int, default: 500
+        The maximum iterations of the Newton-Raphson method.
 
     err : float, default: ``1e-10``
         The threshold/error that determines if convergence has occurred
@@ -1499,9 +1498,8 @@ def null_point_find(
         the vector space. If not given, the vector values are generated
         over the vector space using the function func.
 
-    maxiter: int
-        The maximum iterations of the Newton-Raphson method. Defaults to
-        500.
+    maxiter: int, default: 500
+        The maximum iterations of the Newton-Raphson method.
 
     err: float, default: ``1e-10``
         The threshold/error that determines if convergence has occurred

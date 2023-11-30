@@ -1,16 +1,21 @@
+import astropy.units as u
 import numpy as np
 import pytest
 
-from astropy import units as u
 from astropy.constants import c
 from astropy.tests.helper import assert_quantity_allclose
 
 import plasmapy.particles.exceptions
 
 from plasmapy.formulary.collisions.coulomb import Coulomb_logarithm
-from plasmapy.utils import exceptions
 from plasmapy.utils._pytest_helpers import assert_can_handle_nparray
-from plasmapy.utils.exceptions import CouplingWarning
+from plasmapy.utils.exceptions import (
+    CouplingWarning,
+    PhysicsError,
+    PhysicsWarning,
+    RelativityError,
+    RelativityWarning,
+)
 
 
 class Test_Coulomb_logarithm:
@@ -117,7 +122,7 @@ class Test_Coulomb_logarithm:
 
     def test_handle_zero_V(self):
         """Test that V == 0 returns a PhysicsError"""
-        with pytest.raises(exceptions.PhysicsError):
+        with pytest.raises(PhysicsError):
             Coulomb_logarithm(
                 self.T_arr[0],
                 self.n_arr[0],
@@ -239,7 +244,7 @@ class Test_Coulomb_logarithm:
         # velocity. Chen uses v**2 = k * T / m  whereas we use
         # v ** 2 = 2 * k * T / m
         lnLambdaChen = 16 + np.log(2)
-        with pytest.warns(exceptions.RelativityWarning):
+        with pytest.warns(RelativityWarning):
             lnLambda = Coulomb_logarithm(T, n, ("e", "p"))
         testTrue = np.isclose(lnLambda, lnLambdaChen, rtol=1e-1, atol=0.0)
         errStr = (
@@ -261,7 +266,7 @@ class Test_Coulomb_logarithm:
         # velocity. Chen uses v**2 = k * T / m  whereas we use
         # v ** 2 = 2 * k * T / m
         lnLambdaChen = 6.8 + np.log(2)
-        with pytest.warns(exceptions.RelativityWarning):
+        with pytest.warns(RelativityWarning):
             lnLambda = Coulomb_logarithm(T, n, ("e", "p"))
         testTrue = np.isclose(lnLambda, lnLambdaChen, rtol=1e-1, atol=0.0)
         errStr = (
@@ -275,7 +280,7 @@ class Test_Coulomb_logarithm:
         Test for first version of Coulomb logarithm from Gericke,
         Murillo, and Schlanges PRE (2002).
         """
-        with pytest.warns(exceptions.PhysicsWarning, match="strong coupling effects"):
+        with pytest.warns(PhysicsWarning, match="strong coupling effects"):
             methodVal = Coulomb_logarithm(
                 self.temperature1,
                 self.density1,
@@ -296,7 +301,7 @@ class Test_Coulomb_logarithm:
         Test for first version of Coulomb logarithm from Gericke,
         Murillo, and Schlanges PRE (2002).
         """
-        with pytest.warns(exceptions.PhysicsWarning, match="strong coupling effects"):
+        with pytest.warns(PhysicsWarning, match="strong coupling effects"):
             methodVal = Coulomb_logarithm(
                 self.temperature1,
                 self.density1,
@@ -318,7 +323,7 @@ class Test_Coulomb_logarithm:
         Murillo, and Schlanges PRE (2002). This checks for when
         a negative (invalid) Coulomb logarithm is returned.
         """
-        with pytest.warns(exceptions.CouplingWarning, match="strong coupling effects"):
+        with pytest.warns(CouplingWarning, match="strong coupling effects"):
             Coulomb_logarithm(
                 self.temperature2,
                 self.density2,
@@ -334,7 +339,7 @@ class Test_Coulomb_logarithm:
         Murillo, and Schlanges PRE (2002). This checks for when
         a negative (invalid) Coulomb logarithm is returned.
         """
-        with pytest.warns(exceptions.CouplingWarning, match="strong coupling effects"):
+        with pytest.warns(CouplingWarning, match="strong coupling effects"):
             Coulomb_logarithm(
                 self.temperature2,
                 self.density2,
@@ -349,7 +354,7 @@ class Test_Coulomb_logarithm:
         Test for second version of Coulomb logarithm from Gericke,
         Murillo, and Schlanges PRE (2002).
         """
-        with pytest.warns(exceptions.PhysicsWarning, match="strong coupling effects"):
+        with pytest.warns(PhysicsWarning, match="strong coupling effects"):
             methodVal = Coulomb_logarithm(
                 self.temperature1,
                 self.density1,
@@ -370,7 +375,7 @@ class Test_Coulomb_logarithm:
         Test for second version of Coulomb logarithm from Gericke,
         Murillo, and Schlanges PRE (2002).
         """
-        with pytest.warns(exceptions.PhysicsWarning, match="strong coupling effects"):
+        with pytest.warns(PhysicsWarning, match="strong coupling effects"):
             methodVal = Coulomb_logarithm(
                 self.temperature1,
                 self.density1,
@@ -392,7 +397,7 @@ class Test_Coulomb_logarithm:
         Murillo, and Schlanges PRE (2002). This checks for when
         a negative (invalid) Coulomb logarithm is returned.
         """
-        with pytest.warns(exceptions.CouplingWarning, match="strong coupling effects"):
+        with pytest.warns(CouplingWarning, match="strong coupling effects"):
             Coulomb_logarithm(
                 self.temperature2,
                 self.density2,
@@ -408,7 +413,7 @@ class Test_Coulomb_logarithm:
         Murillo, and Schlanges PRE (2002). This checks for when
         a negative (invalid) Coulomb logarithm is returned.
         """
-        with pytest.warns(exceptions.CouplingWarning, match="strong coupling effects"):
+        with pytest.warns(CouplingWarning, match="strong coupling effects"):
             Coulomb_logarithm(
                 self.temperature2,
                 self.density2,
@@ -423,7 +428,7 @@ class Test_Coulomb_logarithm:
         Test for third version of Coulomb logarithm from Gericke,
         Murillo, and Schlanges PRE (2002).
         """
-        with pytest.warns(exceptions.PhysicsWarning, match="strong coupling effects"):
+        with pytest.warns(PhysicsWarning, match="strong coupling effects"):
             methodVal = Coulomb_logarithm(
                 self.temperature1,
                 self.density1,
@@ -444,7 +449,7 @@ class Test_Coulomb_logarithm:
         Test for third version of Coulomb logarithm from Gericke,
         Murillo, and Schlanges PRE (2002).
         """
-        with pytest.warns(exceptions.PhysicsWarning, match="strong coupling effects"):
+        with pytest.warns(PhysicsWarning, match="strong coupling effects"):
             methodVal = Coulomb_logarithm(
                 self.temperature1,
                 self.density1,
@@ -467,7 +472,7 @@ class Test_Coulomb_logarithm:
         a positive value is returned whereas the classical Coulomb
         logarithm would return a negative value.
         """
-        with pytest.warns(exceptions.PhysicsWarning, match="strong coupling effects"):
+        with pytest.warns(PhysicsWarning, match="strong coupling effects"):
             methodVal = Coulomb_logarithm(
                 self.temperature2,
                 self.density2,
@@ -492,7 +497,7 @@ class Test_Coulomb_logarithm:
         a positive value is returned whereas the classical Coulomb
         logarithm would return a negative value.
         """
-        with pytest.warns(exceptions.PhysicsWarning, match="strong coupling effects"):
+        with pytest.warns(PhysicsWarning, match="strong coupling effects"):
             methodVal = Coulomb_logarithm(
                 self.temperature2,
                 self.density2,
@@ -515,7 +520,7 @@ class Test_Coulomb_logarithm:
         passing in a collection of density values returns a
         collection of Coulomb logarithm values.
         """
-        with pytest.warns(exceptions.PhysicsWarning, match="strong coupling effects"):
+        with pytest.warns(PhysicsWarning, match="strong coupling effects"):
             methodVal = Coulomb_logarithm(
                 10 * 1160 * u.K,
                 (1e23 * u.cm**-3, 1e20 * u.cm**-3),
@@ -540,7 +545,7 @@ class Test_Coulomb_logarithm:
         passing in a collection of density values returns a
         collection of Coulomb logarithm values.
         """
-        with pytest.warns(exceptions.PhysicsWarning, match="strong coupling effects"):
+        with pytest.warns(PhysicsWarning, match="strong coupling effects"):
             methodVal = Coulomb_logarithm(
                 10 * 1160 * u.K,
                 (1e23 * u.cm**-3, 1e20 * u.cm**-3),
@@ -561,7 +566,7 @@ class Test_Coulomb_logarithm:
         Test for fourth version of Coulomb logarithm from Gericke,
         Murillo, and Schlanges PRE (2002).
         """
-        with pytest.warns(exceptions.PhysicsWarning, match="strong coupling effects"):
+        with pytest.warns(PhysicsWarning, match="strong coupling effects"):
             methodVal = Coulomb_logarithm(
                 self.temperature1,
                 self.density1,
@@ -582,7 +587,7 @@ class Test_Coulomb_logarithm:
         Test for fourth version of Coulomb logarithm from Gericke,
         Murillo, and Schlanges PRE (2002).
         """
-        with pytest.warns(exceptions.PhysicsWarning, match="strong coupling effects"):
+        with pytest.warns(PhysicsWarning, match="strong coupling effects"):
             methodVal = Coulomb_logarithm(
                 self.temperature1,
                 self.density1,
@@ -605,7 +610,7 @@ class Test_Coulomb_logarithm:
         a positive value is returned whereas the classical Coulomb
         logarithm would return a negative value.
         """
-        with pytest.warns(exceptions.PhysicsWarning, match="strong coupling effects"):
+        with pytest.warns(PhysicsWarning, match="strong coupling effects"):
             methodVal = Coulomb_logarithm(
                 self.temperature2,
                 self.density2,
@@ -630,7 +635,7 @@ class Test_Coulomb_logarithm:
         a positive value is returned whereas the classical Coulomb
         logarithm would return a negative value.
         """
-        with pytest.warns(exceptions.PhysicsWarning, match="strong coupling effects"):
+        with pytest.warns(PhysicsWarning, match="strong coupling effects"):
             methodVal = Coulomb_logarithm(
                 self.temperature2,
                 self.density2,
@@ -651,7 +656,7 @@ class Test_Coulomb_logarithm:
         Test for fifth version of Coulomb logarithm from Gericke,
         Murillo, and Schlanges PRE (2002).
         """
-        with pytest.warns(exceptions.PhysicsWarning, match="strong coupling effects"):
+        with pytest.warns(PhysicsWarning, match="strong coupling effects"):
             methodVal = Coulomb_logarithm(
                 self.temperature1,
                 self.density1,
@@ -672,7 +677,7 @@ class Test_Coulomb_logarithm:
         Test for fifth version of Coulomb logarithm from Gericke,
         Murillo, and Schlanges PRE (2002).
         """
-        with pytest.warns(exceptions.PhysicsWarning, match="strong coupling effects"):
+        with pytest.warns(PhysicsWarning, match="strong coupling effects"):
             methodVal = Coulomb_logarithm(
                 self.temperature1,
                 self.density1,
@@ -695,7 +700,7 @@ class Test_Coulomb_logarithm:
         a positive value is returned whereas the classical Coulomb
         logarithm would return a negative value.
         """
-        with pytest.warns(exceptions.PhysicsWarning, match="strong coupling effects"):
+        with pytest.warns(PhysicsWarning, match="strong coupling effects"):
             methodVal = Coulomb_logarithm(
                 self.temperature2,
                 self.density2,
@@ -720,7 +725,7 @@ class Test_Coulomb_logarithm:
         a positive value is returned whereas the classical Coulomb
         logarithm would return a negative value.
         """
-        with pytest.warns(exceptions.PhysicsWarning, match="strong coupling effects"):
+        with pytest.warns(PhysicsWarning, match="strong coupling effects"):
             methodVal = Coulomb_logarithm(
                 self.temperature2,
                 self.density2,
@@ -741,7 +746,7 @@ class Test_Coulomb_logarithm:
         Test for sixth version of Coulomb logarithm from Gericke,
         Murillo, and Schlanges PRE (2002).
         """
-        with pytest.warns(exceptions.PhysicsWarning, match="strong coupling effects"):
+        with pytest.warns(PhysicsWarning, match="strong coupling effects"):
             methodVal = Coulomb_logarithm(
                 self.temperature1,
                 self.density1,
@@ -762,7 +767,7 @@ class Test_Coulomb_logarithm:
         Test for sixth version of Coulomb logarithm from Gericke,
         Murillo, and Schlanges PRE (2002).
         """
-        with pytest.warns(exceptions.PhysicsWarning, match="strong coupling effects"):
+        with pytest.warns(PhysicsWarning, match="strong coupling effects"):
             methodVal = Coulomb_logarithm(
                 self.temperature1,
                 self.density1,
@@ -785,7 +790,7 @@ class Test_Coulomb_logarithm:
         a positive value is returned whereas the classical Coulomb
         logarithm would return a negative value.
         """
-        with pytest.warns(exceptions.PhysicsWarning, match="strong coupling effects"):
+        with pytest.warns(PhysicsWarning, match="strong coupling effects"):
             methodVal = Coulomb_logarithm(
                 self.temperature2,
                 self.density2,
@@ -810,7 +815,7 @@ class Test_Coulomb_logarithm:
         a positive value is returned whereas the classical Coulomb
         logarithm would return a negative value.
         """
-        with pytest.warns(exceptions.PhysicsWarning, match="strong coupling effects"):
+        with pytest.warns(PhysicsWarning, match="strong coupling effects"):
             methodVal = Coulomb_logarithm(
                 self.temperature2,
                 self.density2,
@@ -897,12 +902,12 @@ class Test_Coulomb_logarithm:
 
     def test_relativity_warn(self):
         """Tests whether relativity warning is raised at high velocity."""
-        with pytest.warns(exceptions.RelativityWarning):
+        with pytest.warns(RelativityWarning):
             Coulomb_logarithm(1e5 * u.K, 1 * u.m**-3, ("e", "p"), V=0.9 * c)
 
     def test_relativity_error(self):
         """Tests whether relativity error is raised at light speed."""
-        with pytest.raises(exceptions.RelativityError):
+        with pytest.raises(RelativityError):
             Coulomb_logarithm(1e5 * u.K, 1 * u.m**-3, ("e", "p"), V=1.1 * c)
 
     def test_unit_conversion_error(self):

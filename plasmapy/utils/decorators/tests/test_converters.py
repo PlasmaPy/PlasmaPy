@@ -31,7 +31,7 @@ def test_to_hz():
 def test_to_hz_complicated_signature():
     """
     Test that `angular_freq_to_hz` can decorate a function with
-    positional-only, postional, var-positional, keyword, keyword-only,
+    positional-only, positional, var-positional, keyword, keyword-only,
     or var-keyword.
     """
 
@@ -80,7 +80,14 @@ def test_angular_freq_to_hz_preserves_signature():
 
     original_signature = inspect.signature(test_func)
     expected_signature = inspect.signature(
-        lambda pos_only, /, arg, *args, required_kwarg, optional_kwarg=2, to_hz=False, **kwargs: None
+        lambda pos_only,
+        /,
+        arg,
+        *args,
+        required_kwarg,
+        optional_kwarg=2,
+        to_hz=False,
+        **kwargs: None
     )
 
     assert (

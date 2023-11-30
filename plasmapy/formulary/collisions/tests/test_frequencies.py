@@ -12,9 +12,8 @@ from plasmapy.formulary.collisions.frequencies import (
     SingleParticleCollisionFrequencies,
 )
 from plasmapy.particles import Particle
-from plasmapy.utils import exceptions
 from plasmapy.utils._pytest_helpers import assert_can_handle_nparray
-from plasmapy.utils.exceptions import CouplingWarning, PhysicsError
+from plasmapy.utils.exceptions import CouplingWarning, PhysicsError, PhysicsWarning
 
 
 class TestSingleParticleCollisionFrequencies:
@@ -597,6 +596,7 @@ class TestMaxwellianCollisionFrequencies:
             ),
         ],
     )
+    @pytest.mark.filterwarnings("ignore::plasmapy.utils.exceptions.RelativityWarning")
     def test_attribute_errors(
         self,
         expected_error,
@@ -644,6 +644,7 @@ class TestMaxwellianCollisionFrequencies:
             ),
         ],
     )
+    @pytest.mark.filterwarnings("ignore::plasmapy.utils.exceptions.RelativityWarning")
     def test_fundamental_frequency_values(
         self, frequency_to_test, constructor_keyword_arguments
     ):
@@ -688,7 +689,7 @@ class Test_collision_frequency:
         """
         Test for known value.
         """
-        with pytest.warns(exceptions.PhysicsWarning, match="strong coupling effects"):
+        with pytest.warns(PhysicsWarning, match="strong coupling effects"):
             methodVal = collision_frequency(
                 self.T,
                 self.n,
@@ -707,7 +708,7 @@ class Test_collision_frequency:
         value comparison by some quantity close to numerical error.
         """
         fail1 = self.True1 * (1 + 1e-15)
-        with pytest.warns(exceptions.PhysicsWarning, match="strong coupling effects"):
+        with pytest.warns(PhysicsWarning, match="strong coupling effects"):
             methodVal = collision_frequency(
                 self.T,
                 self.n,
@@ -743,7 +744,7 @@ class Test_collision_frequency:
         """
         Testing collision frequency between electrons.
         """
-        with pytest.warns(exceptions.PhysicsWarning, match="strong coupling effects"):
+        with pytest.warns(PhysicsWarning, match="strong coupling effects"):
             methodVal = collision_frequency(
                 self.T,
                 self.n,
@@ -765,7 +766,7 @@ class Test_collision_frequency:
         """
         Testing collision frequency between protons (ions).
         """
-        with pytest.warns(exceptions.PhysicsWarning, match="strong coupling effects"):
+        with pytest.warns(PhysicsWarning, match="strong coupling effects"):
             methodVal = collision_frequency(
                 self.T,
                 self.n,
@@ -787,7 +788,7 @@ class Test_collision_frequency:
         """
         Test collisional frequency function when given arbitrary z_mean.
         """
-        with pytest.warns(exceptions.PhysicsWarning, match="strong coupling effects"):
+        with pytest.warns(PhysicsWarning, match="strong coupling effects"):
             methodVal = collision_frequency(
                 self.T,
                 self.n,

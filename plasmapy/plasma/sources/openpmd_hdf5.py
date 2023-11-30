@@ -42,7 +42,7 @@ def _valid_version(openPMD_version, outdated=_OUTDATED_VERSION, newer=_NEWER_VER
 class HDF5Reader(GenericPlasma):
     """
     Core class for accessing various attributes on HDF5 files that
-    are based on OpenPMD_ standards.
+    are based on `OpenPMD <https://www.openpmd.org>`__ standards.
 
     Parameters
     ----------
@@ -51,7 +51,6 @@ class HDF5Reader(GenericPlasma):
 
     **kwargs
         Any keyword accepted by `~plasmapy.plasma.plasma_base.GenericPlasma`.
-
     """
 
     def __init__(self, hdf5, **kwargs):
@@ -65,7 +64,7 @@ class HDF5Reader(GenericPlasma):
 
         self._check_valid_openpmd_version()
 
-        self.subname = tuple(self.h5["data"])[0]
+        self.subname = next(iter(self.h5["data"]))
 
     def __enter__(self):
         return self.h5
@@ -73,7 +72,7 @@ class HDF5Reader(GenericPlasma):
     def close(self):
         self.h5.close()
 
-    def __exit__(self):  # noqa: PLE0302
+    def __exit__(self, exc_type, exc_value, traceback):
         self.h5.close()
 
     def _check_valid_openpmd_version(self):
@@ -82,7 +81,7 @@ class HDF5Reader(GenericPlasma):
             if _valid_version(openPMD_version):
                 return True
             else:
-                raise DataStandardError(  # noqa: TC301
+                raise DataStandardError(
                     f"We currently only support HDF5 versions"
                     f"starting from v{_OUTDATED_VERSION} and "
                     f"lower than v{_NEWER_VERSION}. You can "

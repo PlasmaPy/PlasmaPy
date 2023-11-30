@@ -17,14 +17,18 @@ from plasmapy.particles.exceptions import (
     ParticleError,
 )
 from plasmapy.particles.particle_class import CustomParticle, Particle, ParticleLike
-from plasmapy.utils import PlasmaPyDeprecationWarning
 from plasmapy.utils.code_repr import call_string
 from plasmapy.utils.decorators.validators import validate_quantities
+from plasmapy.utils.exceptions import PlasmaPyDeprecationWarning
 
 
 @particle_input
 def function_decorated_with_particle_input(
-    a, particle: ParticleLike, b=None, Z: int = None, mass_numb: int = None
+    a,
+    particle: ParticleLike,
+    b=None,
+    Z: Optional[int] = None,
+    mass_numb: Optional[int] = None,
 ) -> Particle:
     """
     A simple function that is decorated with `particle_input` and
@@ -44,7 +48,11 @@ def function_decorated_with_particle_input(
 
 @particle_input()
 def function_decorated_with_call_of_particle_input(
-    a, particle: ParticleLike, b=None, Z: int = None, mass_numb: int = None
+    a,
+    particle: ParticleLike,
+    b=None,
+    Z: Optional[int] = None,
+    mass_numb: Optional[int] = None,
 ) -> Particle:
     """
     A simple function that is decorated with `@particle_input()` and
@@ -514,7 +522,7 @@ def get_isotope(isotope: ParticleLike):
 
 
 @particle_input
-def get_ion(ion: ParticleLike, Z: Real = None):
+def get_ion(ion: ParticleLike, Z: Optional[Real] = None):
     return ion
 
 

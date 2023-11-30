@@ -10,8 +10,8 @@ from typing import Union
 
 
 def Fermi_integral(
-    x: Union[float, int, complex, np.ndarray], j: Union[float, int, complex, np.ndarray]
-) -> Union[float, complex, np.ndarray]:
+    x: Union[complex, np.ndarray], j: Union[complex, np.ndarray]
+) -> Union[complex, np.ndarray]:
     r"""
     Calculate the complete Fermi-Dirac integral.
 

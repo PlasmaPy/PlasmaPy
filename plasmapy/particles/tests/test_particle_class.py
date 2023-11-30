@@ -1,3 +1,5 @@
+import astropy.constants as const
+import astropy.units as u
 import collections
 import inspect
 import io
@@ -5,8 +7,6 @@ import json
 import numpy as np
 import pytest
 
-from astropy import constants as const
-from astropy import units as u
 from astropy.constants import c, e, m_e, m_n, m_p
 
 from plasmapy.particles import json_load_particle, json_loads_particle, molecule
@@ -545,7 +545,7 @@ def test_Particle_class(arg, kwargs, expected_dict):
 
         else:
             try:
-                result = eval(f"particle.{key}")  # noqa: PGH001
+                result = eval(f"particle.{key}")  # noqa: PGH001, S307
                 assert result == expected or u.isclose(result, expected, equal_nan=True)
             except AssertionError:
                 errmsg += (
@@ -556,7 +556,7 @@ def test_Particle_class(arg, kwargs, expected_dict):
                 errmsg += f"\n{call}.{key} raises an unexpected exception."
 
     if errmsg:
-        raise Exception(f"Problems with {call}:{errmsg}")  # noqa: BLE001, TRY002
+        raise Exception(f"Problems with {call}:{errmsg}")  # noqa: TRY002
 
 
 equivalent_particles_table = [
@@ -928,7 +928,6 @@ customized_particle_tests = [
     (CustomParticle, {}, "charge", np.nan * u.C),
     (CustomParticle, {"mass": 1.1 * u.kg, "charge": -0.1 * u.C}, "mass", 1.1 * u.kg),
     (CustomParticle, {"charge": -0.1 * u.C}, "charge", -0.1 * u.C),
-    (CustomParticle, {"charge": -2}, "charge", -2 * const.e.si),
     (CustomParticle, {"mass": np.inf * u.g}, "mass", np.inf * u.kg),
     (CustomParticle, {"mass": "100.0 g"}, "mass", 100.0 * u.g),
     (CustomParticle, {"charge": -np.inf * u.kC}, "charge", -np.inf * u.C),
@@ -943,6 +942,7 @@ customized_particle_tests = [
 @pytest.mark.parametrize(
     ("cls", "kwargs", "attr", "expected"), customized_particle_tests
 )
+@pytest.mark.filterwarnings("ignore::UserWarning")
 def test_custom_particles(cls, kwargs, attr, expected):
     """Test the attributes of dimensionless and custom particles."""
     instance = cls(**kwargs)
@@ -1046,6 +1046,7 @@ custom_particle_errors = [
     (CustomParticle, {"charge": "not a charge"}, InvalidParticleError),
     (CustomParticle, {"charge": "5.0 km"}, InvalidParticleError),
     (CustomParticle, {"charge": 1 * u.C, "Z": -1}, InvalidParticleError),
+    (CustomParticle, {"charge": 1}, InvalidParticleError),
 ]
 
 

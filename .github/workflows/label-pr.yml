@@ -1,4 +1,7 @@
-name: Pull Request Labeler
+name: Label pull request
+
+# The labels to be added are defined in .github/labeler.yml
+
 on:
 - pull_request_target
 

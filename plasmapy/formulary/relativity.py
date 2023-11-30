@@ -10,11 +10,11 @@ from numbers import Integral, Real
 from numpy.typing import DTypeLike
 from typing import Optional, Union
 
-from plasmapy import utils
 from plasmapy.particles import particle_input
 from plasmapy.particles.particle_class import CustomParticle, Particle, ParticleLike
 from plasmapy.particles.particle_collections import ParticleList
 from plasmapy.utils.decorators import validate_quantities
+from plasmapy.utils.exceptions import RelativityError
 
 
 @validate_quantities(V={"can_be_negative": True})
@@ -62,7 +62,7 @@ def Lorentz_factor(V: u.m / u.s):
 
     Examples
     --------
-    >>> from astropy import units as u
+    >>> import astropy.units as u
     >>> velocity = 1.4e8 * u.m / u.s
     >>> Lorentz_factor(velocity)
     1.130885603948959
@@ -71,7 +71,7 @@ def Lorentz_factor(V: u.m / u.s):
     """
 
     if not np.all((np.abs(V) <= c) | (np.isnan(V))):
-        raise utils.RelativityError(
+        raise RelativityError(
             "The Lorentz factor cannot be calculated for "
             "speeds faster than the speed of light."
         )
@@ -178,7 +178,7 @@ def relativistic_energy(
     # TODO: Remove references to the parameters ``m`` and ``v`` in the
     # docstring and below no sooner than 2024.
 
-    if m is not None or v is not None:  # coverage: ignore
+    if m is not None or v is not None:
         raise TypeError(
             "The parameters 'm' and 'v' to relativistic_energy have "
             " been removed. Use 'particle' instead of 'm' and 'V' "
@@ -204,35 +204,35 @@ class RelativisticBody:
     V : |Quantity|, optional
         The velocity of the relativistic body in units convertible to
         m/s. The absolute magnitude of ``V`` cannot be greater than
-        :math:`c`\ .
+        :math:`c`.
 
     momentum : |Quantity|, optional
         The momentum of the relativistic body in units convertible to
         kg·m/s.
 
-    total_energy : |Quantity|, optional, |keyword-only|
+    total_energy : |Quantity|, |keyword-only|, optional
        The sum of the mass energy and the kinetic energy in units
        convertible to joules. Must be non-negative.
 
-    kinetic_energy : |Quantity|, optional, |keyword-only|
+    kinetic_energy : |Quantity|, |keyword-only|, optional
        The kinetic energy of the relativistic body in units convertible
        to joules. Must be non-negative.
 
-    v_over_c : real number or |Quantity|, optional, |keyword-only|
+    v_over_c : real number or |Quantity|, |keyword-only|, optional
        The ratio of the velocity to the speed of light. Must have an
-       absolute magnitude :math:`≤ 1`\ .
+       absolute magnitude :math:`≤ 1`.
 
-    lorentz_factor : real number or |Quantity|, optional, |keyword-only|
-       The Lorentz factor of the relativistic body. Must be
-       :math:`≥ 1`\ .
+    lorentz_factor : real number or |Quantity|, |keyword-only|, optional
+       The Lorentz factor, :math:`γ` of the relativistic body. Must have
+       :math:`γ ≥ 1`.
 
-    Z : integer, optional, |keyword-only|
+    Z : integer, |keyword-only|, optional
         The charge number associated with ``particle``.
 
-    mass_numb : integer, optional, |keyword-only|
+    mass_numb : integer, |keyword-only|, optional
         The mass number associated with ``particle``.
 
-    dtype : |DTypeLike|, optional, |keyword-only|, default: `numpy.longdouble`
+    dtype : |DTypeLike|, |keyword-only|, default: `numpy.longdouble`
         The `numpy` data type to use to store the inputs.
 
     Notes
@@ -279,7 +279,7 @@ class RelativisticBody:
     @staticmethod
     def _get_speed_like_input(
         velocity_like_arguments: dict[str, Union[u.Quantity, Real]]
-    ):
+    ) -> dict[str, Union[u.Quantity, Real]]:
         not_none_arguments = {
             key: value
             for key, value in velocity_like_arguments.items()
@@ -302,7 +302,7 @@ class RelativisticBody:
         Take the velocity-like argument and store it via the setter for
         the corresponding attribute.
         """
-        name = list(speed_like_input.keys())[0]
+        name = next(iter(speed_like_input.keys()))
         value = speed_like_input[name]
         if self._dtype:
             value = u.Quantity(value, dtype=self._dtype)

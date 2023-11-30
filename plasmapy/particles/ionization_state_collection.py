@@ -42,29 +42,29 @@ class IonizationStateCollection:
         with elements or isotopes as keys and `~astropy.units.Quantity`
         instances with units of number density.
 
-    abundances : `dict`, optional, |keyword-only|
+    abundances : `dict`, |keyword-only|, optional
         A `dict` with `~plasmapy.particles.particle_class.ParticleLike`
         objects used as the keys and the corresponding relative abundance as the
         values.  The values must be positive real numbers.
 
-    log_abundances : `dict`, optional, |keyword-only|
+    log_abundances : `dict`, |keyword-only|, optional
         A `dict` with `~plasmapy.particles.particle_class.ParticleLike`
         objects used as the keys and the corresponding base 10 logarithms of their
         relative abundances as the values.  The values must be real numbers.
 
-    n0 : `~astropy.units.Quantity`, optional, |keyword-only|
+    n0 : `~astropy.units.Quantity`, |keyword-only|, optional
         The number density normalization factor corresponding to the
         abundances.  The number density of each element is the product
         of its abundance and ``n0``.
 
-    T_e : `~astropy.units.Quantity`, optional, |keyword-only|
+    T_e : `~astropy.units.Quantity`, |keyword-only|, optional
         The electron temperature in units of temperature or thermal
         energy per particle.
 
-    kappa : `float`, optional, |keyword-only|
+    kappa : `float`, |keyword-only|, optional
         The value of kappa for a kappa distribution function.
 
-    tol : `float` or `integer`, optional, |keyword-only|, default: ``1e-15``
+    tol : `float` or `integer`, |keyword-only|, default: ``1e-15``
         The absolute tolerance used by `~numpy.isclose` when testing
         normalizations and making comparisons.
 
@@ -80,7 +80,7 @@ class IonizationStateCollection:
 
     Examples
     --------
-    >>> from astropy import units as u
+    >>> import astropy.units as u
     >>> from plasmapy.particles import IonizationStateCollection
     >>> states = IonizationStateCollection(
     ...     {'H': [0.5, 0.5], 'He': [0.95, 0.05, 0]},
@@ -212,9 +212,7 @@ class IonizationStateCollection:
                 )
 
             if not isinstance(int_charge, Integral):
-                raise TypeError(  # noqa: TC301
-                    f"{int_charge} is not a valid charge for {particle}."
-                )
+                raise TypeError(f"{int_charge} is not a valid charge for {particle}.")
             elif not 0 <= int_charge <= atomic_number(particle):
                 raise ChargeError(f"{int_charge} is not a valid charge for {particle}.")
 
@@ -296,7 +294,7 @@ class IonizationStateCollection:
                         f"defined."
                     )
 
-        try:  # noqa: TC101
+        try:
             new_fractions = np.array(value, dtype=float)
         except TypeError as exc:
             raise TypeError(
@@ -852,15 +850,15 @@ class IonizationStateCollection:
 
         Parameters
         ----------
-        include_neutrals : `bool`, optional, |keyword-only|, default: `True`
+        include_neutrals : `bool`, |keyword-only|, default: `True`
             If `True`, include neutrals when calculating the mean values
             of the different particles.  If `False`, exclude neutrals.
 
-        use_rms_charge : `bool`, optional, |keyword-only|, default: `False`
+        use_rms_charge : `bool`, |keyword-only|, default: `False`
             If `True`, use the root-mean-square charge instead of the
             mean charge.
 
-        use_rms_mass : `bool`, optional, |keyword-only|, default: `False`
+        use_rms_mass : `bool`, |keyword-only|, default: `False`
             If `True`, use the root-mean-square mass instead of the mean
             mass.
 
@@ -965,7 +963,9 @@ class IonizationStateCollection:
         # ionization levels for each element.
 
         for ionization_state in self:
-            states_info = ionization_state._get_states_info(minimum_ionic_fraction)
+            states_info = ionization_state._get_states_info(  # noqa: SLF001
+                minimum_ionic_fraction,
+            )
             if len(states_info) > 0:
                 output += states_info
                 output[-1] += "\n" + separator_line
@@ -989,4 +989,4 @@ class IonizationStateCollection:
         else:
             output_string = output[0]
 
-        print(output_string.strip("\n"))
+        print(output_string.strip("\n"))  # noqa: T201

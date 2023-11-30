@@ -260,7 +260,7 @@ class ValidateQuantities(CheckUnits, CheckValues):
                     _none_shall_pass is False
                     and validations[arg_name]["none_shall_pass"] is True
                 ):
-                    raise ValueError(  # noqa: TC301
+                    raise ValueError(
                         f"Validation 'none_shall_pass' for argument '{arg_name}' is "
                         f"inconsistent between function annotations "
                         f"({validations[arg_name]['none_shall_pass']}) and decorator "
@@ -472,7 +472,6 @@ def validate_quantities(func=None, validations_on_return=None, **validations):
             def bar(self, mass, vel):
                 return mass * vel
 
-
     Define units with function annotations::
 
         import astropy.units as u
@@ -492,6 +491,15 @@ def validate_quantities(func=None, validations_on_return=None, **validations):
             @validate_quantities(mass={'can_be_negative': False})
             def bar(self, mass: u.g, vel: u.cm / u.s) -> u.g * u.cm / u.s:
                 return mass * vel
+
+    Define units using type hint annotations::
+
+        import astropy.units as u
+        from plasmapy.decorators import validate_quantities
+
+        @validate_quantities
+        def foo(x: u.Quantity[u.m], time: u.Quantity[u.s]) -> u.Quantity[u.m / u.s]:
+            return x / time
 
     Allow `None` values to pass::
 

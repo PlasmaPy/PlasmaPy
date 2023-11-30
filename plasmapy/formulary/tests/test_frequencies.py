@@ -134,9 +134,7 @@ def test_lower_hybrid_frequency():
     assert omega_ce.unit.is_equivalent(u.rad / u.s)
     assert omega_lh.unit.is_equivalent(u.rad / u.s)
     left_hand_side = omega_lh**-2
-    right_hand_side = (
-        1 / (omega_ci**2 + omega_pi**2) + omega_ci**-1 * omega_ce**-1
-    )
+    right_hand_side = 1 / (omega_ci**2 + omega_pi**2) + omega_ci**-1 * omega_ce**-1
     assert np.isclose(left_hand_side.value, right_hand_side.value)
 
     assert np.isclose(omega_lh_hz.value, 299878691.3223296)

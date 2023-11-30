@@ -229,7 +229,7 @@ def spectral_density_lite(
             / k
             / vT_e[m]
             * np.power(np.abs(1 - np.sum(chiE, axis=0) / epsilon), 2)
-            * np.exp(-xe[m, :] ** 2)
+            * np.exp(-(xe[m, :] ** 2))
         )
 
     icontr = np.zeros([ifract.size, w.size], dtype=np.complex128)
@@ -241,7 +241,7 @@ def spectral_density_lite(
             / k
             / vT_i[m]
             * np.power(np.abs(np.sum(chiE, axis=0) / epsilon), 2)
-            * np.exp(-xi[m, :] ** 2)
+            * np.exp(-(xi[m, :] ** 2))
         )
 
     # Recast as real: imaginary part is already zero
@@ -472,7 +472,7 @@ def spectral_density(  # noqa: C901, PLR0912, PLR0915
 
     try:
         if sum(ion.charge_number <= 0 for ion in ions):
-            raise ValueError("All ions must be positively charged.")  # noqa: TC301
+            raise ValueError("All ions must be positively charged.")
     # Catch error if charge information is missing
     except ChargeError as ex:
         raise ValueError("All ions must be positively charged.") from ex
@@ -653,7 +653,7 @@ def _spectral_density_model(wavelengths, settings=None, **params):
     electron_vel = electron_speed[:, np.newaxis] * electron_vdir
     ion_vel = ion_speed[:, np.newaxis] * ion_vdir
 
-    # Convert temperatures from eV to Kelvin (required by fast_spectral_density)
+    # Convert temperatures from eV to kelvin (required by fast_spectral_density)
     T_e *= 11604.51812155
     T_i *= 11604.51812155
 
@@ -828,7 +828,7 @@ def spectral_density_model(  # noqa: C901, PLR0912, PLR0915
 
     try:
         if sum(ion.charge_number <= 0 for ion in ions):
-            raise ValueError("All ions must be positively charged.")  # noqa: TC301
+            raise ValueError("All ions must be positively charged.")
     # Catch error if charge information is missing
     except ChargeError as ex:
         raise ValueError("All ions must be positively charged.") from ex

@@ -21,7 +21,7 @@ Introduction
 A changelog tells users and contributors what notable changes have been
 made between each release. Pull requests to PlasmaPy need changelog
 entries before they can be merged, except when the changes are very
-minor. PlasmaPy uses towncrier_ to convert the changelog entries into
+minor. PlasmaPy uses |towncrier| to convert the changelog entries into
 the full changelog. Some example changelog entries are:
 
 .. code-block:: rst
@@ -99,16 +99,17 @@ Changelog guidelines
 
 * Changelog entries are not required for changes that are sufficiently
   minor, such as typo fixes. When this is the case, a package maintainer
-  will add the *No changelog entry needed* label to the pull request.
+  will add the :guilabel`no changelog entry needed` label to the pull
+  request.
 
 * Use the past tense to describe the change, and the present tense to
   describe how the functionality currently works.
 
 * A changelog entry may include multiple sentences to describe important
-  context and consequences of the change. Because towncrier_
+  context and consequences of the change. Because |towncrier|
   automatically reflows text, keep entries to a single paragraph.
 
-* Use intersphinx_ links to refer to objects within PlasmaPy, and
+* Use |intersphinx| links to refer to objects within PlasmaPy, and
   include the full namespace. For example, use
   ```~plasmapy.particles.particle_class.Particle``` to refer to
   |Particle|. The tilde is included to hide all but the name of the
@@ -123,8 +124,8 @@ Changelog guidelines
      Removed the ``plasmapy.physics`` subpackage. The functionality from
      that subpackage is now in `plasmapy.formulary`.
 
-* Substitutions as defined in :file:`common_links.rst` may be used in
-  changelog entries.
+* Substitutions as defined in :file:`docs/_global_substitutions.py` may
+  be used in changelog entries.
 
 * The pull request number does not need to be included inside the
   changelog entry because it will be added automatically when the
@@ -143,17 +144,16 @@ Changelog guidelines
 
 .. tip::
 
-   When removing or moving an object, reST_ links that follow the
-   original namespace will break, causing the documentation build to
-   fail.
+   When removing or moving an object, |reStructuredText| links that
+   follow the original namespace will break, causing the documentation
+   build to fail.
 
    Text in single back ticks is used to link to code objects, while text
    in double back ticks is treated as an `inline literal`_. To remedy
    this problem in old changelog entries, change the broken link into an
    inline literal by surrounding it with double back ticks instead.
    Remove the tilde if present. For example,
-   ```~plasmapy.subpackage.module.function``` should be changed
-   to:
+   ```~plasmapy.subpackage.module.function``` should be changed to:
 
    .. code-block:: rst
 
@@ -165,17 +165,17 @@ Changelog guidelines
 Building the changelog
 ======================
 
-During the release cycle, towncrier_ is used to build the changelog. To
-install towncrier_ and the other packages needed to develop PlasmaPy, go
-to the top-level directory of your local clone of PlasmaPy and run:
+During the release cycle, |towncrier| is used to build the changelog. To
+install |towncrier| and the other packages needed to develop PlasmaPy,
+go to the top-level directory of your local clone of PlasmaPy and run:
 
 .. code-block:: shell
 
    pip install -e .[dev]
 
-Configuration files for towncrier_ are in :file:`pyproject.toml`.
+Configuration files for |towncrier| are in :file:`pyproject.toml`.
 
-To run towncrier_, enter the top-level directory of PlasmaPy's
+To run |towncrier|, enter the top-level directory of PlasmaPy's
 repository. To print out a preview of the changelog, run:
 
 .. code-block:: shell
@@ -195,7 +195,7 @@ steps to update the changelog are described in the :ref:`Release Guide`.
 
 .. tip::
 
-   Towncrier_ can be used to create a new changelog entry and open it
+   |towncrier| can be used to create a new changelog entry and open it
    for editing using a command like:
 
    .. code-block:: shell
