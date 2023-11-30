@@ -726,8 +726,8 @@ class ParticleTracker:
             for more details.
 
         save_routine: `~plasmapy.simulation.particle_tracker.AbstractSaveRoutine`
-            A class responsible for determining when the state of the simulation
-            is saved. See `~plasmapy.simulation.particle_tracker.AbstractSaveRoutine` for more details.
+            An instance of `~plasmapy.simulation.particle_tracker.AbstractSaveRoutine` which determines which
+            time steps of the simulation to save. See `~plasmapy.simulation.particle_tracker.AbstractSaveRoutine` for more details.
 
         dt : `~astropy.units.Quantity`, optional
             An explicitly set time step in units convertible to seconds.
