@@ -21,22 +21,22 @@ from plasmapy.simulation.particle_tracker import (
 rng = np.random.default_rng()
 
 
-@pytest.fixture
+@pytest.fixture()
 def no_particles_on_grids_instantiated():
     return NoParticlesOnGridsStoppingCondition()
 
 
-@pytest.fixture
+@pytest.fixture()
 def time_elapsed_stop_condition_instantiated():
     return TimeElapsedStopCondition(1 * u.s)
 
 
-@pytest.fixture
+@pytest.fixture()
 def disk_interval_save_routine_instantiated(tmp_path):
     return IntervalSaveRoutine(1 * u.s, output_directory=tmp_path)
 
 
-@pytest.fixture
+@pytest.fixture()
 def memory_interval_save_routine_instantiated():
     return IntervalSaveRoutine(1 * u.s)
 
@@ -44,13 +44,25 @@ def memory_interval_save_routine_instantiated():
 @pytest.mark.parametrize(
     ("stop_condition", "save_routine"),
     [
-        ("no_particles_on_grids_instantiated", "memory_interval_save_routine_instantiated"),
-        ("time_elapsed_stop_condition_instantiated", "memory_interval_save_routine_instantiated"),
-        ("no_particles_on_grids_instantiated", "disk_interval_save_routine_instantiated"),
-        ("time_elapsed_stop_condition_instantiated", "disk_interval_save_routine_instantiated"),
+        (
+            "no_particles_on_grids_instantiated",
+            "memory_interval_save_routine_instantiated",
+        ),
+        (
+            "time_elapsed_stop_condition_instantiated",
+            "memory_interval_save_routine_instantiated",
+        ),
+        (
+            "no_particles_on_grids_instantiated",
+            "disk_interval_save_routine_instantiated",
+        ),
+        (
+            "time_elapsed_stop_condition_instantiated",
+            "disk_interval_save_routine_instantiated",
+        ),
     ],
 )
-def test_interval_save_routine(request, tmp_path, stop_condition, save_routine):
+def test_interval_save_routine(request, stop_condition, save_routine):
     x = [[0, 0, 0]] * u.m
     v = [[0, 1, 0]] * u.m / u.s
     point_particle = CustomParticle(1 * u.kg, 1 * u.C)
@@ -116,11 +128,11 @@ class TestParticleTrackerGyroradius:
     def test_kinetic_energy(self):
         """Test to ensure particles maintain their gyroradius over time"""
 
-        initial_kinetic_energies = 0.5 * self.point_particle.mass * self.v_x ** 2
+        initial_kinetic_energies = 0.5 * self.point_particle.mass * self.v_x**2
 
         velocities = np.asarray(self.save_routine.v_all) * u.m / u.s
         speeds = np.linalg.norm(velocities, axis=-1)
-        simulation_kinetic_energies = 0.5 * self.point_particle.mass * speeds ** 2
+        simulation_kinetic_energies = 0.5 * self.point_particle.mass * speeds**2
 
         assert np.isclose(initial_kinetic_energies, simulation_kinetic_energies).all()
 
@@ -129,7 +141,7 @@ class TestParticleTrackerGyroradius:
     st.integers(1, 100), st.integers(1, 100), st.integers(1, 100), st.integers(1, 100)
 )
 @settings(deadline=2e4, max_examples=10)
-def test_particle_tracker_potential_difference(E_strength, L, mass, charge):
+def test_particle_tracker_potential_difference(request, E_strength, L, mass, charge):
     # Apply appropriate units to the random inputs
     E_strength = E_strength * u.V / u.m
     L = L * u.m
@@ -155,8 +167,8 @@ def test_particle_tracker_potential_difference(E_strength, L, mass, charge):
     )
     simulation.load_particles(x, v, point_particle)
 
-    stop_condition = NoParticlesOnGridsStoppingCondition()
-    save_routine = MemoryIntervalSaveRoutine(dt)
+    stop_condition = request.getfixturevalue("no_particles_on_grids_instantiated")
+    save_routine = request.getfixturevalue("memory_interval_save_routine_instantiated")
 
     simulation.run(stop_condition, save_routine, dt=dt)
 

@@ -395,15 +395,13 @@ class ParticleTracker:
                     )
 
     @property
-    def num_grids(self):  # noqa: D102
-        """
-        The number of grids specified at instantiation
-        """
+    def num_grids(self):
+        """The number of grids specified at instantiation."""
         return len(self.grids)
 
     def _log(self, msg):
         if self.verbose:
-            print(msg)
+            print(msg)  # noqa: T201
 
     @particle_input
     def load_particles(
@@ -678,7 +676,8 @@ class ParticleTracker:
             raise TypeError("Please specify a valid save routine")
 
         require_synchronized_time = (
-            stop_condition.require_synchronized_dt or save_routine.require_synchronized_dt
+            stop_condition.require_synchronized_dt
+            or save_routine.require_synchronized_dt
         )
 
         # Will the simulation follow a synchronized time step?
@@ -798,7 +797,9 @@ class ParticleTracker:
         # Keep track of how many push steps have occurred for trajectory tracing
         self.iteration_number = 0
 
-        self.time = np.zeros((self.nparticles, 1)) if not self.is_synchronized_time_step else 0
+        self.time = (
+            np.zeros((self.nparticles, 1)) if not self.is_synchronized_time_step else 0
+        )
         # Create flags for tracking when particles during the simulation
         # on_grid -> zero if the particle is off grid, 1
         # shape [nparticles, ngrids]
@@ -819,7 +820,7 @@ class ParticleTracker:
             disable=not self.verbose,
             desc=stop_condition.progress_description,
             unit=stop_condition.units_string,
-            bar_format="{l_bar}{bar}{n:.1e}/{total:.1e} {unit}",  # noqa: FS003
+            bar_format="{l_bar}{bar}{n:.1e}/{total:.1e} {unit}",
             file=sys.stdout,
         )
 
