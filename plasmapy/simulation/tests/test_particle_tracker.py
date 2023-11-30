@@ -21,16 +21,36 @@ from plasmapy.simulation.particle_tracker import (
 rng = np.random.default_rng()
 
 
+@pytest.fixture
+def no_particles_on_grids_instantiated():
+    return NoParticlesOnGridsStoppingCondition()
+
+
+@pytest.fixture
+def time_elapsed_stop_condition_instantiated():
+    return TimeElapsedStopCondition(1 * u.s)
+
+
+@pytest.fixture
+def disk_interval_save_routine_instantiated(tmp_path):
+    return IntervalSaveRoutine(1 * u.s, output_directory=tmp_path)
+
+
+@pytest.fixture
+def memory_interval_save_routine_instantiated():
+    return IntervalSaveRoutine(1 * u.s)
+
+
 @pytest.mark.parametrize(
-    ("stop_condition", "save_routine", "is_disk_routine"),
+    ("stop_condition", "save_routine"),
     [
-        (NoParticlesOnGridsStoppingCondition(), IntervalSaveRoutine, False),
-        (TimeElapsedStopCondition(10 * u.s), IntervalSaveRoutine, False),
-        (NoParticlesOnGridsStoppingCondition(), IntervalSaveRoutine, True),
-        (TimeElapsedStopCondition(10 * u.s), IntervalSaveRoutine, True),
+        ("no_particles_on_grids_instantiated", "memory_interval_save_routine_instantiated"),
+        ("time_elapsed_stop_condition_instantiated", "memory_interval_save_routine_instantiated"),
+        ("no_particles_on_grids_instantiated", "disk_interval_save_routine_instantiated"),
+        ("time_elapsed_stop_condition_instantiated", "disk_interval_save_routine_instantiated"),
     ],
 )
-def test_interval_save_routine(tmp_path, stop_condition, save_routine, is_disk_routine):
+def test_interval_save_routine(request, tmp_path, stop_condition, save_routine):
     x = [[0, 0, 0]] * u.m
     v = [[0, 1, 0]] * u.m / u.s
     point_particle = CustomParticle(1 * u.kg, 1 * u.C)
@@ -48,12 +68,10 @@ def test_interval_save_routine(tmp_path, stop_condition, save_routine, is_disk_r
     )
     simulation.load_particles(x, v, point_particle)
 
-    if is_disk_routine:
-        instantiated_save_routine = save_routine(1 * u.s, output_directory=tmp_path)
-    else:
-        instantiated_save_routine = save_routine(1 * u.s)
+    stop_condition = request.getfixturevalue(stop_condition)
+    save_routine = request.getfixturevalue(save_routine)
 
-    simulation.run(stop_condition, instantiated_save_routine, dt=0.1 * u.s)
+    simulation.run(stop_condition, save_routine)  # , dt=0.1 * u.s)
 
 
 class TestParticleTrackerGyroradius:
