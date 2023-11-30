@@ -56,8 +56,8 @@ class AbstractStopCondition(ABC):
 
     @property
     @abstractmethod
-    def units(self):
-        """Return the units of `total`."""
+    def units_string(self):
+        """Return a string representation of the units of `total`."""
         ...
 
     @property
@@ -105,7 +105,7 @@ class TimeElapsedStopCondition(AbstractStopCondition):
         return "Time remaining"
 
     @property
-    def units(self):
+    def units_string(self):
         """The units for the time elapsed condition have the units of seconds."""
 
         return "seconds"
@@ -143,7 +143,7 @@ class NoParticlesOnGridsStoppingCondition(AbstractStopCondition):
         return "Number of particles still on grid"
 
     @property
-    def units(self):
+    def units_string(self):
         """The progress meter is described in terms of the fraction of particles still on the grid."""
         return "Particles"
 
@@ -786,7 +786,7 @@ class ParticleTracker:
             total=stop_condition.total,
             disable=not self.verbose,
             desc=stop_condition.progress_description,
-            unit=stop_condition.units,
+            unit=stop_condition.units_string,
             bar_format="{l_bar}{bar}{n:.1e}/{total:.1e} {unit}",  # noqa: FS003
             file=sys.stdout,
         )
