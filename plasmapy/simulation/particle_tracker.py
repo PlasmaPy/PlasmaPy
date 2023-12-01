@@ -285,28 +285,38 @@ class IntervalSaveRoutine(AbstractSaveRoutine):
 
 
 class ParticleTracker:
-    r"""A many body particle tracker for electric and magnetic fields with no particle-particle interactions.
+    r"""A particle tracker for particles in electric and magnetic fields with inter-particle interactions.
 
-    Particles are created and pushed through calculated E and B fields. These fields are specified as part of a grid
-    which can then be interpolated to determine local field strength. The time step used can be specified, otherwise an
+    Particles are instantiated and pushed through a grid of provided E and B fields
+    using the boris push algorithm. These fields are specified as part of a grid
+    which are then interpolated to determine the local field acting on each particle.
+
+    The time step used in the push routine can be specified, or an adaptive time step
+    will be determined based off the gyroradius of the particle. Some save routines involve
+    time stamping the location and velocities of particles at fixed intervals. In order for this
+    data to make sense, it is required that all particles follow the same time step. This is
+    referred to as a synchronized time step. If no time step is specified and the provided
+    save routine does not require a synchronized time step, then an adaptive time step is calculated
+    independently for each particle.
+
+    The time step used can be specified, otherwise an
     adaptive time step is calculated based off grid resolution and the particle's gyroradius.
 
-    The simulation is terminated when a specified stop condition is met. The results of a simulation can be exported
-    using a save routine.
+    Stopping conditions for the simulation are provided as an instance of the `~plasmapy.simulation.particle_tracker.AbstractStopCondition` class as arguments to the ``run`` method.
+    The results of a simulation can be exported by specifying an instance of the `~plasmapy.simulation.particle_tracker.AbstractSaveRoutine` class to the ``run`` method.
 
     Parameters
     ----------
-    grids : `~plasmapy.plasma.grids.AbstractGrid` or subclass thereof, or list
-        of same.
+    grids : An instance of `~plasmapy.plasma.grids.AbstractGrid`
         A Grid object or list of grid objects containing the required
-        quantities [E_x, E_y, E_z, B_x, B_y, B_z].
-        If any of these quantities are missing, a warning will be given and that
-        quantity will be assumed to be zero everywhere.
+        quantities.
 
     req_quantities : `list` of str, optional
         A list of quantity keys required to be specified on the Grid object.
         The base particle pushing simulation requires the quantities [E_x, E_y, E_z, B_x, B_y, B_z].
-        This keyword is for specifying quantities in addition to these six. The default is None.
+        If any of these quantities are missing, a warning will be given and that
+        quantity will be assumed to be zero everywhere. This keyword is for specifying quantities in
+        addition to these six. The default is None.
 
     verbose : bool, optional
         If true, updates on the status of the program will be printed
