@@ -680,7 +680,7 @@ class ParticleTracker:
         return np.max(np.linalg.norm(self.v[tracked_mask], axis=-1))
 
     def _validate_run_inputs(
-        self, stop_condition, save_routine, dt, field_weighting: str
+        self, stop_condition, save_routine, dt, dt_range, field_weighting: str
     ):
         """
         Ensure the specified stop condition and save routine are actually
@@ -697,6 +697,9 @@ class ParticleTracker:
             stop_condition.require_synchronized_dt
             or save_routine.require_synchronized_dt
         )
+
+        if dt is not None and dt_range is not None:
+            raise ValueError("Please only specify either dt or dt_range")
 
         # Will the simulation follow a synchronized time step?
         # This must be the case for certain stopping conditions and saving routines
@@ -802,15 +805,17 @@ class ParticleTracker:
 
         """
 
-        dt_range = [0, np.inf] * u.s if dt_range is None else dt_range
-        self.dt_range = dt_range.to(u.s).value
-
         # Validate inputs to the run function
         # Sets is_synchronized_time property
-        self._validate_run_inputs(stop_condition, save_routine, dt, field_weighting)
+        self._validate_run_inputs(
+            stop_condition, save_routine, dt, dt_range, field_weighting
+        )
         self._enforce_particle_creation()
 
         self.dt = dt.to(u.s).value if dt is not None else None
+
+        dt_range = [0, np.inf] * u.s if dt_range is None else dt_range
+        self.dt_range = dt_range.to(u.s).value
 
         # Keep track of how many push steps have occurred for trajectory tracing
         self.iteration_number = 0

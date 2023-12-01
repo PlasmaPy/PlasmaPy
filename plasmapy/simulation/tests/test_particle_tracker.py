@@ -10,6 +10,7 @@ from hypothesis import strategies as st
 
 from plasmapy.formulary.lengths import gyroradius
 from plasmapy.particles import CustomParticle
+from plasmapy.plasma import Plasma
 from plasmapy.plasma.grids import CartesianGrid
 from plasmapy.simulation.particle_tracker import (
     IntervalSaveRoutine,
@@ -19,6 +20,31 @@ from plasmapy.simulation.particle_tracker import (
 )
 
 rng = np.random.default_rng()
+
+# (([CartesianGrid(-1 * u.m, 1 * u.m), CartesianGrid(-10 * u.m, 10 * u.m)]), ),
+
+
+@pytest.mark.parametrize(
+    ("constructor_args", "expected_exception"),
+    [
+        # Deprecation error
+        (
+            (
+                Plasma(
+                    domain_x=np.linspace(-1, 1, 10) * u.m,
+                    domain_y=np.linspace(-1, 1, 10) * u.m,
+                    domain_z=np.linspace(-1, 1, 10) * u.m,
+                )
+            ),
+            TypeError,
+        ),
+        # Unrecognized grid type
+        (("lorem ipsum"), TypeError),
+    ],
+)
+def test_particle_tracker_constructor_errors(constructor_args, expected_exception):
+    with pytest.raises(expected_exception):
+        ParticleTracker(*constructor_args)
 
 
 @pytest.fixture()
