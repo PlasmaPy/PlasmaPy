@@ -48,7 +48,7 @@ plasmapy_subs = {
     "ParticleLike": ":obj:`~plasmapy.particles.particle_class.ParticleLike`",
     "ParticleList": ":class:`~plasmapy.particles.particle_collections.ParticleList`",
     "ParticleListLike": ":obj:`~plasmapy.particles.particle_collections.ParticleListLike`",
-    "ParticleTracker": ":class:`~plasmapy.simulation.particletracker.ParticleTracker`",
+    "ParticleTracker": ":class:`~plasmapy.simulation.particle_tracker.ParticleTracker`",
     "ParticleWarning": ":class:`~plasmapy.particles.exceptions.ParticleWarning`",
     "reduced_mass": ":func:`~plasmapy.particles.atomic.reduced_mass`",
     "RelativisticBody": ":class:`~plasmapy.formulary.relativity.RelativisticBody`",
