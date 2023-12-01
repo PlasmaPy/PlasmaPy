@@ -75,9 +75,7 @@ def test_interval_save_routine(request, stop_condition, save_routine):
     Ex = np.full(grid_shape, 1) * u.V / u.m
     grid.add_quantities(E_x=Ex)
 
-    simulation = ParticleTracker(
-        grid, req_quantities=["E_x", "E_y", "E_z", "B_x", "B_y", "B_z"]
-    )
+    simulation = ParticleTracker(grid)
     simulation.load_particles(x, v, point_particle)
 
     stop_condition = request.getfixturevalue(stop_condition)
@@ -108,9 +106,7 @@ class TestParticleTrackerGyroradius:
     Bz = np.full(grid_shape, B_strength) * u.T
     grid.add_quantities(B_z=Bz)
 
-    simulation = ParticleTracker(
-        grid, req_quantities=["E_x", "E_y", "E_z", "B_x", "B_y", "B_z"]
-    )
+    simulation = ParticleTracker(grid)
     simulation.load_particles(x, v, point_particle)
 
     stop_condition = TimeElapsedStopCondition(6 * u.s)
@@ -160,9 +156,7 @@ def test_particle_tracker_potential_difference(request, E_strength, L, mass, cha
     x = [[0, 0, 0]] * u.m
     v = [[0, 0, 0]] * u.m / u.s
 
-    simulation = ParticleTracker(
-        grid, req_quantities=["E_x", "E_y", "E_z", "B_x", "B_y", "B_z"]
-    )
+    simulation = ParticleTracker(grid)
     simulation.load_particles(x, v, point_particle)
 
     stop_condition = request.getfixturevalue("no_particles_on_grids_instantiated")

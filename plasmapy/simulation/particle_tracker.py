@@ -313,7 +313,8 @@ class ParticleTracker:
 
     req_quantities : `list` of str, optional
         A list of quantity keys required to be specified on the Grid object.
-        The default is [E_x, E_y, E_z, B_x, B_y, B_z].
+        The base particle pushing simulation requires the quantities [E_x, E_y, E_z, B_x, B_y, B_z].
+        This keyword is for specifying quantities in addition to these six. The default is None.
 
     verbose : bool, optional
         If true, updates on the status of the program will be printed
@@ -358,8 +359,12 @@ class ParticleTracker:
         # Validate required fields
         # *********************************************************************
 
-        if req_quantities is None:
-            req_quantities = ["E_x", "E_y", "E_z", "B_x", "B_y", "B_z"]
+        base_req_quantities = ["E_x", "E_y", "E_z", "B_x", "B_y", "B_z"]
+
+        if req_quantities is not None:
+            req_quantities.extend(base_req_quantities)
+        else:
+            req_quantities = base_req_quantities
 
         for grid in self.grids:
             grid.require_quantities(req_quantities, replace_with_zeros=True)
