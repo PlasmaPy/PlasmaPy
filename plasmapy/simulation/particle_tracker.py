@@ -118,7 +118,7 @@ class TimeElapsedStopCondition(AbstractStopCondition):
     @property
     def progress(self):
         """Return the current time step of the simulation."""
-        return int(self._particle_tracker.time)
+        return self._particle_tracker.time
 
     @property
     def total(self):
@@ -193,7 +193,7 @@ class AbstractSaveRoutine(ABC):
     def __init__(self, output_directory: Optional[Path] = None):
         self.output_directory = output_directory
 
-        self.x_all = []
+        self.r_all = []
         self.v_all = []
 
         self._particle_tracker = None
@@ -244,7 +244,7 @@ class AbstractSaveRoutine(ABC):
 
     def save_to_memory(self):
         """Append simulation positions and velocities to save routine object."""
-        self.x_all.append(np.copy(self._particle_tracker.x))
+        self.r_all.append(np.copy(self._particle_tracker.x))
         self.v_all.append(np.copy(self._particle_tracker.v))
 
     def post_push_hook(self, force_save=False):
@@ -264,6 +264,8 @@ class IntervalSaveRoutine(AbstractSaveRoutine):
 
     def __init__(self, interval: u.Quantity, **kwargs):
         super().__init__(**kwargs)
+        self.t_all = []
+
         self.save_interval = interval.to(u.s).value
         self.time_of_last_save = 0
 
@@ -276,12 +278,18 @@ class IntervalSaveRoutine(AbstractSaveRoutine):
     def save_now(self):
         """Save at every interval given in instantiation."""
 
-        if self._particle_tracker.time - self.time_of_last_save >= self.save_interval:
-            self.time_of_last_save = self._particle_tracker.time
+        return (
+            self._particle_tracker.time - self.time_of_last_save >= self.save_interval
+        )
 
-            return True
-        else:
-            return False
+    def save(self):
+        """Save the current state of the simulation.
+        Sets the time of last save attribute and log the timestamp.
+        """
+        super().save()
+
+        self.time_of_last_save = self._particle_tracker.time
+        self.t_all.append(self._particle_tracker.time)
 
 
 class ParticleTracker:
@@ -305,7 +313,7 @@ class ParticleTracker:
 
     req_quantities : `list` of str, optional
         A list of quantity keys required to be specified on the Grid object.
-        The default is None.
+        The default is [E_x, E_y, E_z, B_x, B_y, B_z].
 
     verbose : bool, optional
         If true, updates on the status of the program will be printed
@@ -349,6 +357,9 @@ class ParticleTracker:
         # *********************************************************************
         # Validate required fields
         # *********************************************************************
+
+        if req_quantities is None:
+            req_quantities = ["E_x", "E_y", "E_z", "B_x", "B_y", "B_z"]
 
         for grid in self.grids:
             grid.require_quantities(req_quantities, replace_with_zeros=True)
