@@ -113,12 +113,12 @@ class TimeElapsedStopCondition(AbstractStopCondition):
     @property
     def is_finished(self):
         """Conclude the simulation if all particles have been tracked over the specified stop time."""
-        return self._particle_tracker.time >= self.stop_time
+        return self.tracker.time >= self.stop_time
 
     @property
     def progress(self):
         """Return the current time step of the simulation."""
-        return self._particle_tracker.time
+        return self.tracker.time
 
     @property
     def total(self):
@@ -150,21 +150,21 @@ class NoParticlesOnGridsStoppingCondition(AbstractStopCondition):
     @property
     def is_finished(self):
         """The simulation is finished when no more particles are on any grids."""
-        is_not_on_grid = self._particle_tracker.on_grid == 0
+        is_not_on_grid = self.tracker.on_grid == 0
 
-        return is_not_on_grid.all() and self._particle_tracker.iteration_number > 0
+        return is_not_on_grid.all() and self.tracker.iteration_number > 0
 
     @property
     def progress(self):
         """The progress of the simulation is measured by how many particles are no longer on a grid."""
-        is_not_on_grid = self._particle_tracker.on_grid == 0
+        is_not_on_grid = self.tracker.on_grid == 0
 
         return is_not_on_grid.sum()
 
     @property
     def total(self):
         """The progress of the simulation is measured against the total number of particles in the simulation."""
-        return self._particle_tracker.nparticles
+        return self.tracker.nparticles
 
 
 class AbstractSaveRoutine(ABC):
@@ -223,26 +223,20 @@ class AbstractSaveRoutine(ABC):
         """Save the current state of the simulation to disk or memory based on whether the output directory was set."""
 
         if self.output_directory is not None:
-            self.save_to_disk()
+            self._save_to_disk()
         else:
-            self.save_to_memory()
+            self._save_to_memory()
 
-    def save_to_disk(self):
+    def _save_to_disk(self):
         """Save a hdf5 file containing simulation positions and velocities."""
 
-        if self.output_directory is None:
-            raise ValueError(
-                "Please pass an `output_directory` parameter during instantiation to use disk save "
-                "routines!"
-            )
-
-        path = self.output_directory / f"{self._particle_tracker.iteration_number}.hdf5"
+        path = self.output_directory / f"{self.tracker.iteration_number}.hdf5"
 
         with h5py.File(path, "w") as output_file:
-            output_file["x"] = self._particle_tracker.x
-            output_file["v"] = self._particle_tracker.v
+            output_file["x"] = self.tracker.x
+            output_file["v"] = self.tracker.v
 
-    def save_to_memory(self):
+    def _save_to_memory(self):
         """Append simulation positions and velocities to save routine object."""
         self.r_all.append(np.copy(self._particle_tracker.x))
         self.v_all.append(np.copy(self._particle_tracker.v))
@@ -278,9 +272,7 @@ class IntervalSaveRoutine(AbstractSaveRoutine):
     def save_now(self):
         """Save at every interval given in instantiation."""
 
-        return (
-            self._particle_tracker.time - self.time_of_last_save >= self.save_interval
-        )
+        return self.tracker.time - self.time_of_last_save >= self.save_interval
 
     def save(self):
         """Save the current state of the simulation.
@@ -288,8 +280,8 @@ class IntervalSaveRoutine(AbstractSaveRoutine):
         """
         super().save()
 
-        self.time_of_last_save = self._particle_tracker.time
-        self.t_all.append(self._particle_tracker.time)
+        self.time_of_last_save = self.tracker.time
+        self.t_all.append(self.tracker.time)
 
 
 class ParticleTracker:
