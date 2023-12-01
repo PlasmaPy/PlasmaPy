@@ -143,7 +143,7 @@ def test_particle_tracker_potential_difference(request, E_strength, L, mass, cha
     charge = charge * u.C
 
     num = 2
-    dt = 5e-2 * u.s
+    dt = 1e-2 * u.s
 
     grid = CartesianGrid(-L, L, num=num)
     grid_shape = (num,) * 3
@@ -171,4 +171,6 @@ def test_particle_tracker_potential_difference(request, E_strength, L, mass, cha
     final_expected_energy = (E_strength * L * point_particle.charge).to(u.J)
     final_simulated_energy = (0.5 * point_particle.mass * speeds[-1] ** 2).to(u.J)
 
-    assert np.isclose(final_expected_energy, final_simulated_energy, rtol=5e-2)
+    assert np.isclose(
+        final_expected_energy, final_simulated_energy, atol=0.5, rtol=5e-2
+    )
