@@ -168,17 +168,17 @@ class NoParticlesOnGridsStoppingCondition(AbstractStopCondition):
 
 
 class AbstractSaveRoutine(ABC):
-    # TODO: Change this docstring to use the |ParticleTracker| alias
     """Abstract base class containing the necessary methods for a
-    `~plasmapy.simulation.particle_tracker.ParticleTracker` save routine.
+    |ParticleTracker| save routine.
 
     The save routine class is responsible for defining the conditions and hooks
     for saving.
 
     Parameters
     ----------
-    output_directory : `~pathlib.Path`
-        Output for objects that are saved to disk
+    output_directory : `~pathlib.Path`, optional
+        Output for objects that are saved to disk. If a directory is not specified
+        then a memory save routine is used.
 
 
     Notes
@@ -186,8 +186,6 @@ class AbstractSaveRoutine(ABC):
     After every push, the `post_push_hook` method is called with the
     respective `~plasmapy.simulation.particle_tracker.ParticleTracker` object passed as a parameter.
     Then, the hook calls `save_now` to determine whether or not the simulation state should be saved.
-    If it is determined that the simulation state should be saved, the save routine may call either
-    `save_to_disk` or `save_to_memory` depending on the routine implemented.
     """
 
     def __init__(self, output_directory: Optional[Path] = None):
