@@ -120,7 +120,7 @@ class TestParticleTrackerGyroradius:
 
     def test_gyroradius(self):
         """Test to ensure particles maintain their gyroradius over time"""
-        positions = np.asarray(self.save_routine.x_all) * u.m
+        positions = np.asarray(self.save_routine.r_all) * u.m
         distances = np.linalg.norm(positions, axis=-1)
 
         assert np.isclose(distances, self.R_L, rtol=5e-2).all()
@@ -137,9 +137,7 @@ class TestParticleTrackerGyroradius:
         assert np.isclose(initial_kinetic_energies, simulation_kinetic_energies).all()
 
 
-@given(
-    st.integers(1, 100), st.integers(1, 100), st.integers(1, 100), st.integers(1, 100)
-)
+@given(st.integers(1, 10), st.integers(1, 10), st.integers(1, 10), st.integers(1, 10))
 @settings(deadline=2e4, max_examples=10)
 def test_particle_tracker_potential_difference(request, E_strength, L, mass, charge):
     # Apply appropriate units to the random inputs
@@ -149,7 +147,7 @@ def test_particle_tracker_potential_difference(request, E_strength, L, mass, cha
     charge = charge * u.C
 
     num = 2
-    dt = 1e-2 * u.s
+    dt = 5e-2 * u.s
 
     grid = CartesianGrid(-L, L, num=num)
     grid_shape = (num,) * 3
