@@ -782,7 +782,7 @@ class ParticleTracker:
             Setting this optional keyword overrules the adaptive time step
             capability and forces the use of this time step throughout.
 
-        dt_range : tuple of shape `(2,)` of `~astropy.units.Quantity`, optional
+        dt_range : tuple of shape (2,) of `~astropy.units.Quantity`, optional
             If specified, the calculated adaptive time step will be clamped
             between the first and second values.
 
