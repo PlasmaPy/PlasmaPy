@@ -107,7 +107,7 @@ def test_interval_save_routine(request, stop_condition, save_routine):
     stop_condition = request.getfixturevalue(stop_condition)
     save_routine = request.getfixturevalue(save_routine)
 
-    simulation.run(stop_condition, save_routine)  # , dt=0.1 * u.s)
+    simulation.run(stop_condition, save_routine)
 
 
 class TestParticleTrackerGyroradius:
@@ -200,3 +200,39 @@ def test_particle_tracker_potential_difference(request, E_strength, L, mass, cha
     assert np.isclose(
         final_expected_energy, final_simulated_energy, atol=0.5, rtol=5e-2
     )
+
+
+def test_particle_tracker_stop_particles(request):
+    E_strength = 1 * u.V / u.m
+    L = 1 * u.m
+    mass = 1 * u.kg
+    charge = 1 * u.C
+
+    num = 2
+    dt = 1e-2 * u.s
+
+    grid = CartesianGrid(-L, L, num=num)
+    grid_shape = (num,) * 3
+
+    Ex = np.full(grid_shape, E_strength) * u.V / u.m
+    grid.add_quantities(E_x=Ex)
+
+    point_particle = CustomParticle(mass, charge)
+
+    x = [[0, 0, 0]] * u.m
+    v = [[0, 0, 0]] * u.m / u.s
+
+    stop_condition = request.getfixturevalue("no_particles_on_grids_instantiated")
+    save_routine = request.getfixturevalue("memory_interval_save_routine_instantiated")
+
+    simulation = ParticleTracker(grid)
+    simulation.load_particles(x, v, point_particle)
+
+    simulation.run(stop_condition, save_routine, dt=dt)
+    simulation._stop_particles([True])
+
+    assert np.isnan(simulation.v[0, :]).all()
+    assert not np.isnan(simulation.x[0, :]).all()
+
+    simulation._remove_particles([True])
+    assert np.isnan(simulation.x[0, :]).all()
