@@ -34,12 +34,12 @@ rng = np.random.default_rng()
                     domain_x=np.linspace(-1, 1, 10) * u.m,
                     domain_y=np.linspace(-1, 1, 10) * u.m,
                     domain_z=np.linspace(-1, 1, 10) * u.m,
-                )
+                ),
             ),
             TypeError,
         ),
         # Unrecognized grid type
-        (("lorem ipsum"), TypeError),
+        ((42,), TypeError),
     ],
 )
 def test_particle_tracker_constructor_errors(constructor_args, expected_exception):
