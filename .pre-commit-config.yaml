@@ -21,12 +21,12 @@ repos:
   - id: check-yaml
 
 - repo: https://github.com/python-jsonschema/check-jsonschema
-  rev: 0.27.1
+  rev: 0.27.2
   hooks:
   - id: check-github-workflows
 
 - repo: https://github.com/sirosen/texthooks
-  rev: 0.6.2
+  rev: 0.6.3
   hooks:
   - id: fix-smartquotes
   - id: fix-spaces
@@ -110,7 +110,7 @@ repos:
     exclude: docs/contributing/coding_guide.rst
 
 - repo: https://github.com/nbQA-dev/nbQA
-  rev: 1.7.0
+  rev: 1.7.1
   hooks:
   - id: nbqa-check-ast
   - id: nbqa-ruff
