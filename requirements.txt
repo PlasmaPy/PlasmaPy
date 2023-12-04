@@ -16,8 +16,10 @@ arrow==1.3.0
     # via isoduration
 asteval==0.9.31
     # via lmfit
-astropy==5.3.4
+astropy==6.0.0
     # via plasmapy (setup.py)
+astropy-iers-data==0.2023.12.4.0.30.20
+    # via astropy
 asttokens==2.4.1
     # via stack-data
 attrs==23.1.0
@@ -90,7 +92,7 @@ filelock==3.13.1
     # via
     #   tox
     #   virtualenv
-fonttools==4.45.1
+fonttools==4.46.0
     # via matplotlib
 fqdn==1.5.1
     # via jsonschema
@@ -113,7 +115,7 @@ incremental==22.10.0
     # via towncrier
 iniconfig==2.0.0
     # via pytest
-ipykernel==6.26.0
+ipykernel==6.27.1
     # via plasmapy (setup.py)
 ipython==8.18.1
     # via
@@ -144,7 +146,7 @@ jsonschema[format-nongpl]==4.20.0
     #   jupyter-events
     #   jupyterlab-server
     #   nbformat
-jsonschema-specifications==2023.11.1
+jsonschema-specifications==2023.11.2
     # via jsonschema
 jupyter-client==8.6.0
     # via
@@ -163,7 +165,7 @@ jupyter-core==5.5.0
     #   voila
 jupyter-events==0.9.0
     # via jupyter-server
-jupyter-server==2.10.1
+jupyter-server==2.11.1
     # via
     #   jupyterlab-server
     #   voila
@@ -344,7 +346,7 @@ pyzmq==25.1.1
     #   ipykernel
     #   jupyter-client
     #   jupyter-server
-referencing==0.31.0
+referencing==0.31.1
     # via
     #   jsonschema
     #   jsonschema-specifications
@@ -362,7 +364,7 @@ rfc3986-validator==0.1.1
     # via
     #   jsonschema
     #   jupyter-events
-rpds-py==0.13.1
+rpds-py==0.13.2
     # via
     #   jsonschema
     #   referencing
@@ -430,7 +432,7 @@ sphinx-notfound-page==1.0.0
     # via plasmapy (setup.py)
 sphinx-reredirects==0.1.3
     # via plasmapy (setup.py)
-sphinx-rtd-theme==1.3.0
+sphinx-rtd-theme==2.0.0
     # via plasmapy (setup.py)
 sphinx-tabs==3.4.4
     # via plasmapy (setup.py)
@@ -466,7 +468,7 @@ tinycss2==1.2.1
     # via nbconvert
 tomli==2.0.1
     # via plasmapy (setup.py)
-tornado==6.3.3
+tornado==6.4
     # via
     #   ipykernel
     #   jupyter-client
@@ -476,11 +478,11 @@ towncrier==23.6.0
     # via
     #   plasmapy (setup.py)
     #   sphinx-changelog
-tox==4.11.3
+tox==4.11.4
     # via plasmapy (setup.py)
 tqdm==4.66.1
     # via plasmapy (setup.py)
-traitlets==5.13.0
+traitlets==5.14.0
     # via
     #   comm
     #   ipykernel
@@ -508,7 +510,7 @@ uri-template==1.3.0
     # via jsonschema
 urllib3==2.1.0
     # via requests
-virtualenv==20.24.7
+virtualenv==20.25.0
     # via
     #   pre-commit
     #   tox
@@ -522,7 +524,7 @@ webencodings==0.5.1
     # via
     #   bleach
     #   tinycss2
-websocket-client==1.6.4
+websocket-client==1.7.0
     # via jupyter-server
 websockets==12.0
     # via voila
