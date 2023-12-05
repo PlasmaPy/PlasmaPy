@@ -3,12 +3,9 @@ import astropy.units as u
 import numpy as np
 import pytest
 
-from plasmapy.formulary.densities import (
-    critical_density,
-    mass_density,
-)
-from plasmapy.particles import Particle
+from plasmapy.formulary.densities import critical_density, mass_density
 from plasmapy.formulary.frequencies import plasma_frequency
+from plasmapy.particles import Particle
 from plasmapy.utils._pytest_helpers import assert_can_handle_nparray
 
 

@@ -1,0 +1,2 @@
+Removed the ``plasmapy.formulary.misc.mass_density`` function. This
+function is now in `plasmapy.formulary.densities`.

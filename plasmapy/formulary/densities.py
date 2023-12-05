@@ -84,8 +84,6 @@ def mass_density(
     ``particle``.  For example, if the electron density is given for :math:`n_s`
     and ``particle`` is a doubly ionized atom, then :math:`Z_{ratio} = -1 / 2`\ .
 
-    **Aliases:** `rho_`
-
     Parameters
     ----------
     density : `~astropy.units.Quantity`

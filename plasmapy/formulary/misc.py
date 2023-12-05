@@ -13,7 +13,7 @@ import astropy.units as u
 from astropy.constants.si import e, k_B, mu0
 
 from plasmapy import particles
-from plasmapy.particles import Particle, ParticleLike
+from plasmapy.particles import ParticleLike
 from plasmapy.utils.decorators import validate_quantities
 
 __all__ += __aliases__

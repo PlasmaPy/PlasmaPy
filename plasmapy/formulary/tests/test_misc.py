@@ -16,7 +16,6 @@ from plasmapy.formulary.misc import (
     thermal_pressure,
     ub_,
 )
-from plasmapy.particles import Particle
 from plasmapy.utils._pytest_helpers import assert_can_handle_nparray
 
 B = 1.0 * u.T
