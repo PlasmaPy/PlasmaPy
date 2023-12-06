@@ -16,7 +16,15 @@ bug:
 
 'CI':
   - changed-files:
-    - any-glob-to-any-file: ['.codecov.yaml', '.github/workflows/*test*.yml', '.pre-commit-config.yaml', '.readthedocs.yml', 'CODEOWNERS', 'noxfile.py', 'tox.ini']
+    - any-glob-to-any-file: [
+      '.codecov.yaml',
+      '.github/workflows/*test*.yml',
+      '.pre-commit-config.yaml',
+      '.readthedocs.yml',
+      'CODEOWNERS',
+      'noxfile.py',
+      'tox.ini'
+    ]
 
 'contributor guide':
   - changed-files:
@@ -44,7 +52,17 @@ notebooks:
 
 packaging:
   - changed-files:
-    - any-glob-to-any-file: ['.github/workflows/*publish*', '.github/workflows/*release*', '.zenodo*', 'CITATION.cff', 'LICENSE.md', 'MANIFEST.in', 'PATENT.md', 'pyproject.toml', 'setup.*']
+    - any-glob-to-any-file: [
+      '.github/workflows/*publish*',
+      '.github/workflows/*release*',
+      '.zenodo*',
+      'CITATION.cff',
+      'LICENSE.md',
+      'MANIFEST.in',
+      'PATENT.md',
+      'pyproject.toml',
+      'setup.*'
+    ]
 
 plasmapy.analysis:
   - changed-files:
@@ -84,4 +102,11 @@ plasmapy.utils:
 
 testing:
   - changed-files:
-    - any-glob-to-any-file: ['**/test*.py', '**/conftest.py', '.github/workflows/weekly-tests.yml', '.codecov.yaml', 'noxfile.py', 'tox.ini']
+    - any-glob-to-any-file: [
+      '**/test*.py',
+      '**/conftest.py',
+      '.github/workflows/weekly-tests.yml',
+      '.codecov.yaml',
+      'noxfile.py',
+      'tox.ini'
+    ]
