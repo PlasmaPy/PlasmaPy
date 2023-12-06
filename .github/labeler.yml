@@ -7,85 +7,81 @@
 # special character, enclose it in quotes.
 
 'changes existing API':
-- changelog/*.breaking*.rst
+  - changed-files:
+    - any-glob-to-any-file: 'changelog/*.breaking*.rst'
 
 bug:
-- changelog/*.bugfix*.rst
+  - changed-files:
+    - any-glob-to-any-file: 'changelog/*.bugfix*.rst'
 
 'CI':
-- .codecov.yaml
-- .github/workflows/*test*.yml
-- .pre-commit-config.yaml
-- .readthedocs.yml
-- CODEOWNERS
-- noxfile.py
-- tox.ini
+  - changed-files:
+    - any-glob-to-any-file: ['.codecov.yaml', '.github/workflows/*test*.yml', '.pre-commit-config.yaml', '.readthedocs.yml', 'CODEOWNERS', 'noxfile.py', 'tox.ini']
 
 'contributor guide':
-- changelog/README.rst
-- docs/contributing/**/*
+  - changed-files:
+    - any-glob-to-any-file: ['changelog/README.rst', 'docs/contributing/**/*']
 
 dependencies:
-- requirements.txt
+  - changed-files:
+    - any-glob-to-any-file: 'requirements.txt'
 
 docs:
-- .readthedocs.yml
-- changelog/*doc*.rst
-- docs/**/*
-- README.md
+  - changed-files:
+    - any-glob-to-any-file: ['.readthedocs.yml', 'changelog/*doc*.rst', 'docs/**/*', 'README.md']
 
 'GitHub Actions':
-- .github/**/*
+  - changed-files:
+    - any-glob-to-any-file: '.github/**/*'
 
 linters:
-- .sourcery.yaml
-- .pre-commit-config.yaml
+  - changed-files:
+    - any-glob-to-any-file: ['.sourcery.yaml', '.pre-commit-config.yaml']
 
 notebooks:
-- docs/notebooks/**/*
+  - changed-files:
+    - any-glob-to-any-file: 'docs/notebooks/**/*'
 
 packaging:
-- .github/workflows/*publish*
-- .github/workflows/*release*
-- .zenodo*
-- CITATION.cff
-- LICENSE.md
-- MANIFEST.in
-- PATENT.md
-- pyproject.toml
-- setup.*
+  - changed-files:
+    - any-glob-to-any-file: ['.github/workflows/*publish*', '.github/workflows/*release*', '.zenodo*', 'CITATION.cff', 'LICENSE.md', 'MANIFEST.in', 'PATENT.md', 'pyproject.toml', 'setup.*']
 
 plasmapy.analysis:
-- plasmapy/analysis/**/*
+  - changed-files:
+    - any-glob-to-any-file: 'plasmapy/analysis/**/*'
 
 plasmapy.diagnostics:
-- plasmapy/diagnostics/**/*
+  - changed-files:
+    - any-glob-to-any-file: 'plasmapy/diagnostics/**/*'
 
 plasmapy.dispersion:
-- plasmapy/dispersion/**/*
+  - changed-files:
+    - any-glob-to-any-file: 'plasmapy/dispersion/**/*'
 
 plasmapy.formulary:
-- plasmapy/formulary/**/*
+  - changed-files:
+    - any-glob-to-any-file: 'plasmapy/formulary/**/*'
 
 plasmapy.formulary.quantum:
-- plasmapy/**/quantum*
+  - changed-files:
+    - any-glob-to-any-file: 'plasmapy/**/quantum*'
 
 plasmapy.particles:
-- plasmapy/particles/**/*
+  - changed-files:
+    - any-glob-to-any-file: 'plasmapy/particles/**/*'
 
 plasmapy.plasma:
-- plasmapy/plasma/**/*
+  - changed-files:
+    - any-glob-to-any-file: 'plasmapy/plasma/**/*'
 
 plasmapy.simulation:
-- plasmapy/simulation/**/*
+  - changed-files:
+    - any-glob-to-any-file: 'plasmapy/simulation/**/*'
 
 plasmapy.utils:
-- plasmapy/utils/**/*
+  - changed-files:
+    - any-glob-to-any-file: 'plasmapy/utils/**/*'
 
 testing:
-- '**/test*.py'
-- '**/conftest.py'
-- .github/workflows/weekly-tests.yml
-- .codecov.yaml
-- noxfile.py
-- tox.ini
+  - changed-files:
+    - any-glob-to-any-file: ['**/test*.py', '**/conftest.py', '.github/workflows/weekly-tests.yml', '.codecov.yaml', 'noxfile.py', 'tox.ini']
