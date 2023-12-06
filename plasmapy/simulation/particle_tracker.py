@@ -4,11 +4,11 @@ Module containing the definition for the general particle tracker.
 
 __all__ = [
     "AbstractSaveRoutine",
-    "AbstractStopCondition",
+    "AbstractTerminationCondition",
     "IntervalSaveRoutine",
-    "NoParticlesOnGridsStoppingCondition",
+    "NoParticlesOnGridsTerminationCondition",
     "ParticleTracker",
-    "TimeElapsedStopCondition",
+    "TimeElapsedTerminationCondition",
 ]
 
 import astropy.units as u
@@ -30,8 +30,8 @@ from plasmapy.plasma.plasma_base import BasePlasma
 from plasmapy.simulation.particle_integrators import boris_push
 
 
-class AbstractStopCondition(ABC):
-    """Abstract base class containing the necessary methods for a ParticleTracker stopping condition."""
+class AbstractTerminationCondition(ABC):
+    """Abstract base class containing the necessary methods for a ParticleTracker termination condition."""
 
     @property
     def tracker(self):
@@ -83,7 +83,7 @@ class AbstractStopCondition(ABC):
         ...
 
 
-class TimeElapsedStopCondition(AbstractStopCondition):
+class TimeElapsedTerminationCondition(AbstractTerminationCondition):
     """Stop condition corresponding to the elapsed time of a ParticleTracker."""
 
     def __init__(self, stop_time: u.Quantity):
@@ -126,15 +126,15 @@ class TimeElapsedStopCondition(AbstractStopCondition):
         return self.stop_time
 
 
-class NoParticlesOnGridsStoppingCondition(AbstractStopCondition):
-    """Stopping condition corresponding to stopping the simulation when all particles have exited the grid."""
+class NoParticlesOnGridsTerminationCondition(AbstractTerminationCondition):
+    """Termination condition corresponding to stopping the simulation when all particles have exited the grid."""
 
     def __init__(self):
         self._particle_tracker = None
 
     @property
     def require_synchronized_dt(self):
-        """The no field stopping condition does not require a synchronized time step."""
+        """The no field termination condition does not require a synchronized time step."""
         return False
 
     @property
@@ -300,7 +300,7 @@ class ParticleTracker:
     The time step used can be specified, otherwise an
     adaptive time step is calculated based off grid resolution and the particle's gyroradius.
 
-    Stopping conditions for the simulation are provided as an instance of the `~plasmapy.simulation.particle_tracker.AbstractStopCondition` class as arguments to the ``run`` method.
+    Termination conditions for the simulation are provided as an instance of the `~plasmapy.simulation.particle_tracker.AbstractTerminationCondition` class as arguments to the ``run`` method.
     The results of a simulation can be exported by specifying an instance of the `~plasmapy.simulation.particle_tracker.AbstractSaveRoutine` class to the ``run`` method.
 
     Parameters
@@ -678,21 +678,21 @@ class ParticleTracker:
         return np.max(np.linalg.norm(self.v[tracked_mask], axis=-1))
 
     def _validate_run_inputs(
-        self, stop_condition, save_routine, dt, dt_range, field_weighting: str
+        self, termination_condition, save_routine, dt, dt_range, field_weighting: str
     ):
         """
         Ensure the specified stop condition and save routine are actually
         a stop routine class and save routine, respectively. This function also
         sets the `_is_synchronized_time_step` and `_is_adaptive_time_step` attributes.
         """
-        if not isinstance(stop_condition, AbstractStopCondition):
+        if not isinstance(termination_condition, AbstractTerminationCondition):
             raise TypeError("Please specify a valid stop condition.")
 
         if not isinstance(save_routine, AbstractSaveRoutine):
             raise TypeError("Please specify a valid save routine")
 
         require_synchronized_time = (
-            stop_condition.require_synchronized_dt
+            termination_condition.require_synchronized_dt
             or save_routine.require_synchronized_dt
         )
 
@@ -700,7 +700,7 @@ class ParticleTracker:
             raise ValueError("Please only specify either dt or dt_range")
 
         # Will the simulation follow a synchronized time step?
-        # This must be the case for certain stopping conditions and saving routines
+        # This must be the case for certain termination conditions and saving routines
         if isinstance(dt, u.Quantity):
             if isinstance(dt.value, np.ndarray):
                 # If an array is specified for the time step, a synchronized time step is implied if all
@@ -753,7 +753,7 @@ class ParticleTracker:
 
     def run(
         self,
-        stop_condition: AbstractStopCondition,
+        termination_condition: AbstractTerminationCondition,
         save_routine: Optional[AbstractSaveRoutine] = None,
         dt=None,
         dt_range=None,
@@ -767,10 +767,10 @@ class ParticleTracker:
 
         Parameters
         ----------
-        stop_condition : `~plasmapy.simulation.particle_tracker.AbstractStopCondition`
+        termination_condition : `~plasmapy.simulation.particle_tracker.AbstractTerminationCondition`
             A class responsible for determining when the simulation has reached
             a suitable termination condition. The class is passed an instance
-            of `~plasmapy.simulation.particle_tracker.ParticleTracker`. See `~plasmapy.simulation.particle_tracker.AbstractStopCondition`
+            of `~plasmapy.simulation.particle_tracker.ParticleTracker`. See `~plasmapy.simulation.particle_tracker.AbstractTerminationCondition`
             for more details.
 
         save_routine : `~plasmapy.simulation.particle_tracker.AbstractSaveRoutine`
@@ -806,7 +806,7 @@ class ParticleTracker:
         # Validate inputs to the run function
         # Sets is_synchronized_time property
         self._validate_run_inputs(
-            stop_condition, save_routine, dt, dt_range, field_weighting
+            termination_condition, save_routine, dt, dt_range, field_weighting
         )
         self._enforce_particle_creation()
 
@@ -830,17 +830,17 @@ class ParticleTracker:
         self.entered_grid = np.zeros([self.nparticles])
 
         # Update the `tracker` attribute so that the stop condition & save routine can be used
-        stop_condition.tracker = self
+        termination_condition.tracker = self
         save_routine.tracker = self
 
         # Initialize a "progress bar" (really more of a meter)
         # Setting sys.stdout lets this play nicely with regular print()
         pbar = tqdm(
             initial=0,
-            total=stop_condition.total,
+            total=termination_condition.total,
             disable=not self.verbose,
-            desc=stop_condition.progress_description,
-            unit=stop_condition.units_string,
+            desc=termination_condition.progress_description,
+            unit=termination_condition.units_string,
             bar_format="{l_bar}{bar}{n:.1e}/{total:.1e} {unit}",
             file=sys.stdout,
         )
@@ -848,8 +848,8 @@ class ParticleTracker:
         # Push the particles until the stop condition is satisfied
         is_finished = False
         while not (is_finished or self.nparticles_tracked == 0):
-            is_finished = stop_condition.is_finished
-            progress = min(stop_condition.progress, stop_condition.total)
+            is_finished = termination_condition.is_finished
+            progress = min(termination_condition.progress, termination_condition.total)
 
             pbar.n = progress
             pbar.last_print_n = progress

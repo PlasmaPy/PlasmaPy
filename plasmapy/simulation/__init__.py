@@ -18,7 +18,7 @@ from plasmapy.simulation.abstractions import (
 )
 from plasmapy.simulation.particle_tracker import (
     IntervalSaveRoutine,
-    NoParticlesOnGridsStoppingCondition,
+    NoParticlesOnGridsTerminationCondition,
     ParticleTracker,
-    TimeElapsedStopCondition,
+    TimeElapsedTerminationCondition,
 )
