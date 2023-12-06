@@ -14,14 +14,12 @@ from plasmapy.plasma import Plasma
 from plasmapy.plasma.grids import CartesianGrid
 from plasmapy.simulation.particle_tracker import (
     IntervalSaveRoutine,
-    NoParticlesOnGridsStoppingCondition,
+    NoParticlesOnGridsTerminationCondition,
     ParticleTracker,
-    TimeElapsedStopCondition,
+    TimeElapsedTerminationCondition,
 )
 
 rng = np.random.default_rng()
-
-# (([CartesianGrid(-1 * u.m, 1 * u.m), CartesianGrid(-10 * u.m, 10 * u.m)]), ),
 
 
 @pytest.mark.parametrize(
@@ -49,12 +47,12 @@ def test_particle_tracker_constructor_errors(constructor_args, expected_exceptio
 
 @pytest.fixture()
 def no_particles_on_grids_instantiated():
-    return NoParticlesOnGridsStoppingCondition()
+    return NoParticlesOnGridsTerminationCondition()
 
 
 @pytest.fixture()
 def time_elapsed_stop_condition_instantiated():
-    return TimeElapsedStopCondition(1 * u.s)
+    return TimeElapsedTerminationCondition(1 * u.s)
 
 
 @pytest.fixture()
@@ -135,7 +133,7 @@ class TestParticleTrackerGyroradius:
     simulation = ParticleTracker(grid)
     simulation.load_particles(x, v, point_particle)
 
-    stop_condition = TimeElapsedStopCondition(6 * u.s)
+    stop_condition = TimeElapsedTerminationCondition(6 * u.s)
     save_routine = IntervalSaveRoutine(0.1 * u.s)
 
     simulation.run(stop_condition, save_routine, dt=1e-2 * u.s)
