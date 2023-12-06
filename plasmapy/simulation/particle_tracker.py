@@ -390,6 +390,9 @@ class ParticleTracker:
         self._is_adaptive_time_step = False
         self._is_synchronized_time_step = False
 
+        # By default, the gyration of a particle is divided into twelve steps
+        self._steps_per_gyroperiod = 12
+
         # *********************************************************************
         # Validate required fields
         # *********************************************************************
@@ -469,6 +472,25 @@ class ParticleTracker:
     def num_grids(self):
         """The number of grids specified at instantiation."""
         return len(self.grids)
+
+    @property
+    def steps_per_gyroperiod(self):
+        """Controls the magnetic field component of the adaptive time step candidates.
+
+        By default, the adaptive time step candidate associated with the gyration of a charged particle
+        is one twelfth of the particle's gyroradius. This corresponds to twelve time steps per gyroperiod.
+        """
+
+        if not self.is_adaptive_time_step:
+            raise ValueError(
+                "The gyroperiod subdivision property only applies to adaptive time steps!"
+            )
+
+        return self._steps_per_gyroperiod
+
+    @steps_per_gyroperiod.setter
+    def steps_per_gyroperiod(self, new_subdivision):
+        self._steps_per_gyroperiod = new_subdivision
 
     def _log(self, msg):
         if self.verbose:
@@ -585,7 +607,9 @@ class ParticleTracker:
         else:
             gyroperiod = 2 * np.pi * self.m / (self.q * np.max(Bmag))
 
-        candidates[:, self.num_grids] = gyroperiod / 12
+        # Subdivide the gyroperiod into a provided number of steps
+        # Use the result as the candidate associated with gyration in B field
+        candidates[:, self.num_grids] = gyroperiod / self._steps_per_gyroperiod
 
         # TODO: introduce a minimum time step based on electric fields too!
 

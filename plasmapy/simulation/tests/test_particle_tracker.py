@@ -8,6 +8,7 @@ import pytest
 from hypothesis import given, settings
 from hypothesis import strategies as st
 
+from plasmapy.formulary.frequencies import gyrofrequency
 from plasmapy.formulary.lengths import gyroradius
 from plasmapy.particles import CustomParticle
 from plasmapy.plasma import Plasma
@@ -192,12 +193,14 @@ class TestParticleTrackerGyroradius:
     Bz = np.full(grid_shape, B_strength) * u.T
     grid.add_quantities(B_z=Bz)
 
-    termination_condition = TimeElapsedTerminationCondition(6 * u.s)
-    save_routine = IntervalSaveRoutine(0.1 * u.s)
-
-    simulation = ParticleTracker(
-        grid, termination_condition, save_routine, dt=1e-2 * u.s
+    termination_time = 5 * np.max(1 / gyrofrequency(Bz, point_particle)).to(
+        u.s, equivalencies=u.dimensionless_angles()
     )
+    termination_condition = TimeElapsedTerminationCondition(termination_time)
+    save_routine = IntervalSaveRoutine(termination_time / 10)
+
+    simulation = ParticleTracker(grid, termination_condition, save_routine)
+    simulation.steps_per_gyroperiod = 100
     simulation.load_particles(x, v, point_particle)
 
     simulation.run()
