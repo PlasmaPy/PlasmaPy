@@ -42,9 +42,19 @@ def memory_interval_save_routine_instantiated():
     return IntervalSaveRoutine(1 * u.s)
 
 
+@pytest.fixture()
+def grid_with_inf_entry():
+    grid = CartesianGrid(-1 * u.m, 1 * u.m)
+    entry = np.full(grid.shape, np.NaN) * u.V / u.m
+    grid.add_quantities(E_x=entry)
+
+    return grid
+
+
 @pytest.mark.parametrize(
     ("grids", "termination_condition", "save_routine", "expected_exception"),
     [
+        # Old ParticleTracker construction deprecation error
         (
             Plasma(
                 domain_x=np.linspace(-1, 1, 10) * u.m,
@@ -57,11 +67,16 @@ def memory_interval_save_routine_instantiated():
         ),
         # Unrecognized grid type
         (42, "time_elapsed_termination_condition_instantiated", None, TypeError),
+        # Infinite/NaN entry in grid object
+        ("grid_with_inf_entry", "no_particles_on_grids_instantiated", None, ValueError),
     ],
 )
 def test_particle_tracker_constructor_errors(
     request, grids, termination_condition, save_routine, expected_exception
 ):
+    if isinstance(grids, str):
+        grids = request.getfixturevalue(grids)
+
     if termination_condition is not None:
         termination_condition = request.getfixturevalue(termination_condition)
 
@@ -98,6 +113,18 @@ def test_particle_tracker_construction(
         save_routine = request.getfixturevalue(save_routine)
 
     ParticleTracker(grids, termination_condition, save_routine, **kwargs)
+
+
+def test_particle_tracker_load_particles_shape_error(
+    no_particles_on_grids_instantiated
+):
+    """Inconsistent shape for x and v error"""
+    grid = CartesianGrid(-1 * u.m, 1 * u.m)
+
+    simulation = ParticleTracker(grid, no_particles_on_grids_instantiated)
+
+    with pytest.raises(ValueError):
+        simulation.load_particles([[0, 0, 0]] * u.m, [[0, 0, 0], [0, 0, 0]] * u.m / u.s)
 
 
 @pytest.mark.parametrize(
@@ -270,8 +297,17 @@ def test_particle_tracker_stop_particles(request):
     simulation.run()
     simulation._stop_particles([True])
 
+    # Number of entries in mask must be equal to number of particles
+    with pytest.raises(ValueError):
+        simulation._stop_particles([True, True])
+
     assert np.isnan(simulation.v[0, :]).all()
     assert not np.isnan(simulation.x[0, :]).all()
 
     simulation._remove_particles([True])
+
+    # Number of entries in mask must be equal to number of particles
+    with pytest.raises(ValueError):
+        simulation._remove_particles([True, True])
+
     assert np.isnan(simulation.x[0, :]).all()
