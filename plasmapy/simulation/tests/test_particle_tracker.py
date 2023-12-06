@@ -51,7 +51,7 @@ def no_particles_on_grids_instantiated():
 
 
 @pytest.fixture()
-def time_elapsed_stop_condition_instantiated():
+def time_elapsed_termination_condition_instantiated():
     return TimeElapsedTerminationCondition(1 * u.s)
 
 
@@ -73,7 +73,7 @@ def memory_interval_save_routine_instantiated():
             "memory_interval_save_routine_instantiated",
         ),
         (
-            "time_elapsed_stop_condition_instantiated",
+            "time_elapsed_termination_condition_instantiated",
             "memory_interval_save_routine_instantiated",
         ),
         (
@@ -81,7 +81,7 @@ def memory_interval_save_routine_instantiated():
             "disk_interval_save_routine_instantiated",
         ),
         (
-            "time_elapsed_stop_condition_instantiated",
+            "time_elapsed_termination_condition_instantiated",
             "disk_interval_save_routine_instantiated",
         ),
     ],
@@ -99,13 +99,13 @@ def test_interval_save_routine(request, stop_condition, save_routine):
     Ex = np.full(grid_shape, 1) * u.V / u.m
     grid.add_quantities(E_x=Ex)
 
-    simulation = ParticleTracker(grid)
-    simulation.load_particles(x, v, point_particle)
-
-    stop_condition = request.getfixturevalue(stop_condition)
+    termination_condition = request.getfixturevalue(stop_condition)
     save_routine = request.getfixturevalue(save_routine)
 
-    simulation.run(stop_condition, save_routine)
+    simulation = ParticleTracker(grid, termination_condition, save_routine)
+    simulation.load_particles(x, v, point_particle)
+
+    simulation.run()
 
 
 class TestParticleTrackerGyroradius:
@@ -130,13 +130,15 @@ class TestParticleTrackerGyroradius:
     Bz = np.full(grid_shape, B_strength) * u.T
     grid.add_quantities(B_z=Bz)
 
-    simulation = ParticleTracker(grid)
-    simulation.load_particles(x, v, point_particle)
-
-    stop_condition = TimeElapsedTerminationCondition(6 * u.s)
+    termination_condition = TimeElapsedTerminationCondition(6 * u.s)
     save_routine = IntervalSaveRoutine(0.1 * u.s)
 
-    simulation.run(stop_condition, save_routine, dt=1e-2 * u.s)
+    simulation = ParticleTracker(
+        grid, termination_condition, save_routine, dt=1e-2 * u.s
+    )
+    simulation.load_particles(x, v, point_particle)
+
+    simulation.run()
 
     def test_gyroradius(self):
         """Test to ensure particles maintain their gyroradius over time"""
@@ -180,13 +182,15 @@ def test_particle_tracker_potential_difference(request, E_strength, L, mass, cha
     x = [[0, 0, 0]] * u.m
     v = [[0, 0, 0]] * u.m / u.s
 
-    simulation = ParticleTracker(grid)
-    simulation.load_particles(x, v, point_particle)
-
-    stop_condition = request.getfixturevalue("no_particles_on_grids_instantiated")
+    termination_condition = request.getfixturevalue(
+        "no_particles_on_grids_instantiated"
+    )
     save_routine = request.getfixturevalue("memory_interval_save_routine_instantiated")
 
-    simulation.run(stop_condition, save_routine, dt=dt)
+    simulation = ParticleTracker(grid, termination_condition, save_routine, dt=dt)
+    simulation.load_particles(x, v, point_particle)
+
+    simulation.run()
 
     velocities = np.asarray(save_routine.v_all)[:, 0] * u.m / u.s
     speeds = np.linalg.norm(velocities, axis=-1)
@@ -220,13 +224,15 @@ def test_particle_tracker_stop_particles(request):
     x = [[0, 0, 0]] * u.m
     v = [[0, 0, 0]] * u.m / u.s
 
-    stop_condition = request.getfixturevalue("no_particles_on_grids_instantiated")
+    termination_condition = request.getfixturevalue(
+        "no_particles_on_grids_instantiated"
+    )
     save_routine = request.getfixturevalue("memory_interval_save_routine_instantiated")
 
-    simulation = ParticleTracker(grid)
+    simulation = ParticleTracker(grid, termination_condition, save_routine, dt=dt)
     simulation.load_particles(x, v, point_particle)
 
-    simulation.run(stop_condition, save_routine, dt=dt)
+    simulation.run()
     simulation._stop_particles([True])
 
     assert np.isnan(simulation.v[0, :]).all()
