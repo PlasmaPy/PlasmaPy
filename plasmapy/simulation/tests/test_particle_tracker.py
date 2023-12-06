@@ -269,6 +269,67 @@ def test_particle_tracker_potential_difference(request, E_strength, L, mass, cha
     )
 
 
+def test_asynchronous_time_step(time_elapsed_termination_condition_instantiated):
+    E_strength = 1 * u.V / u.m
+    L = 1 * u.m
+    mass = 1 * u.kg
+    charge = 1 * u.C
+
+    num = 2
+
+    grid = CartesianGrid(-L, L, num=num)
+    grid_shape = (num,) * 3
+
+    Ex = np.full(grid_shape, E_strength) * u.V / u.m
+    grid.add_quantities(E_x=Ex)
+
+    point_particle = CustomParticle(mass, charge)
+
+    x = [[0, 0, 0]] * u.m
+    v = [[0, 0, 0]] * u.m / u.s
+
+    termination_condition = time_elapsed_termination_condition_instantiated
+
+    simulation = ParticleTracker(grid, termination_condition)
+    simulation.load_particles(x, v, point_particle)
+
+    assert simulation.is_adaptive_time_step
+    assert not simulation.is_synchronized_time_step
+
+    simulation.run()
+
+
+def test_nearest_neighbor_interpolation(
+    time_elapsed_termination_condition_instantiated
+):
+    E_strength = 1 * u.V / u.m
+    L = 1 * u.m
+    mass = 1 * u.kg
+    charge = 1 * u.C
+
+    num = 2
+
+    grid = CartesianGrid(-L, L, num=num)
+    grid_shape = (num,) * 3
+
+    Ex = np.full(grid_shape, E_strength) * u.V / u.m
+    grid.add_quantities(E_x=Ex)
+
+    point_particle = CustomParticle(mass, charge)
+
+    x = [[0, 0, 0]] * u.m
+    v = [[0, 0, 0]] * u.m / u.s
+
+    termination_condition = time_elapsed_termination_condition_instantiated
+
+    simulation = ParticleTracker(
+        grid, termination_condition, field_weighting="nearest neighbor"
+    )
+    simulation.load_particles(x, v, point_particle)
+
+    simulation.run()
+
+
 def test_particle_tracker_stop_particles(request):
     E_strength = 1 * u.V / u.m
     L = 1 * u.m
