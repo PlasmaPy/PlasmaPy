@@ -165,7 +165,7 @@ jupyter-core==5.5.0
     #   voila
 jupyter-events==0.9.0
     # via jupyter-server
-jupyter-server==2.11.1
+jupyter-server==2.11.2
     # via
     #   jupyterlab-server
     #   voila
