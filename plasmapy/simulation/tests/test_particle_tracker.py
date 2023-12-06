@@ -22,29 +22,6 @@ from plasmapy.simulation.particle_tracker import (
 rng = np.random.default_rng()
 
 
-@pytest.mark.parametrize(
-    ("constructor_args", "expected_exception"),
-    [
-        # Deprecation error
-        (
-            (
-                Plasma(
-                    domain_x=np.linspace(-1, 1, 10) * u.m,
-                    domain_y=np.linspace(-1, 1, 10) * u.m,
-                    domain_z=np.linspace(-1, 1, 10) * u.m,
-                ),
-            ),
-            TypeError,
-        ),
-        # Unrecognized grid type
-        ((42,), TypeError),
-    ],
-)
-def test_particle_tracker_constructor_errors(constructor_args, expected_exception):
-    with pytest.raises(expected_exception):
-        ParticleTracker(*constructor_args)
-
-
 @pytest.fixture()
 def no_particles_on_grids_instantiated():
     return NoParticlesOnGridsTerminationCondition()
@@ -63,6 +40,64 @@ def disk_interval_save_routine_instantiated(tmp_path):
 @pytest.fixture()
 def memory_interval_save_routine_instantiated():
     return IntervalSaveRoutine(1 * u.s)
+
+
+@pytest.mark.parametrize(
+    ("grids", "termination_condition", "save_routine", "expected_exception"),
+    [
+        (
+            Plasma(
+                domain_x=np.linspace(-1, 1, 10) * u.m,
+                domain_y=np.linspace(-1, 1, 10) * u.m,
+                domain_z=np.linspace(-1, 1, 10) * u.m,
+            ),
+            "no_particles_on_grids_instantiated",
+            None,
+            TypeError,
+        ),
+        # Unrecognized grid type
+        (42, "time_elapsed_termination_condition_instantiated", None, TypeError),
+    ],
+)
+def test_particle_tracker_constructor_errors(
+    request, grids, termination_condition, save_routine, expected_exception
+):
+    if termination_condition is not None:
+        termination_condition = request.getfixturevalue(termination_condition)
+
+    if save_routine is not None:
+        save_routine = request.getfixturevalue(save_routine)
+
+    with pytest.raises(expected_exception):
+        ParticleTracker(grids, termination_condition, save_routine)
+
+
+@pytest.mark.parametrize(
+    ("grids", "termination_condition", "save_routine", "kwargs"),
+    [
+        (
+            [CartesianGrid(-2 * u.m, 1 * u.m), CartesianGrid(-1 * u.m, 2 * u.m)],
+            "no_particles_on_grids_instantiated",
+            None,
+            {},
+        ),
+        (
+            CartesianGrid(-1 * u.m, 1 * u.m),
+            "no_particles_on_grids_instantiated",
+            None,
+            {"req_quantities": ["rho"]},
+        ),
+    ],
+)
+def test_particle_tracker_construction(
+    request, grids, termination_condition, save_routine, kwargs
+):
+    termination_condition = request.getfixturevalue(termination_condition)
+
+    if save_routine is not None:
+        save_routine = request.getfixturevalue(save_routine)
+
+    ParticleTracker(grids, termination_condition, save_routine, **kwargs)
 
 
 @pytest.mark.parametrize(

@@ -354,7 +354,7 @@ class ParticleTracker:
     def __init__(
         self,
         grids: Union[AbstractGrid, Iterable[AbstractGrid]],
-        termination_condition: AbstractTerminationCondition,
+        termination_condition: AbstractTerminationCondition = None,
         save_routine: Optional[AbstractSaveRoutine] = None,
         dt=None,
         dt_range=None,
@@ -458,7 +458,9 @@ class ParticleTracker:
 
         # Update the `tracker` attribute so that the stop condition & save routine can be used
         termination_condition.tracker = self
-        save_routine.tracker = self
+
+        if save_routine is not None:
+            save_routine.tracker = self
 
         self.termination_condition = termination_condition
         self.save_routine = save_routine
@@ -741,12 +743,13 @@ class ParticleTracker:
         if not isinstance(termination_condition, AbstractTerminationCondition):
             raise TypeError("Please specify a valid termination condition.")
 
-        if not isinstance(save_routine, AbstractSaveRoutine):
+        if save_routine is not None and not isinstance(
+            save_routine, AbstractSaveRoutine
+        ):
             raise TypeError("Please specify a valid save routine")
 
-        require_synchronized_time = (
-            termination_condition.require_synchronized_dt
-            or save_routine.require_synchronized_dt
+        require_synchronized_time = termination_condition.require_synchronized_dt or (
+            save_routine is not None and save_routine.require_synchronized_dt
         )
 
         if dt is not None and dt_range is not None:
@@ -862,7 +865,9 @@ class ParticleTracker:
             if self.save_routine is not None:
                 self.save_routine.post_push_hook()
 
-        self.save_routine.post_push_hook(force_save=True)
+        if self.save_routine is not None:
+            self.save_routine.post_push_hook(force_save=True)
+
         pbar.close()
 
         # Log a summary of the run
