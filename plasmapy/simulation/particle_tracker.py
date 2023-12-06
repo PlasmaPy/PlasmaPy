@@ -393,6 +393,8 @@ class ParticleTracker:
         # By default, the gyration of a particle is divided into twelve steps
         self._steps_per_gyroperiod = 12
 
+        self._Courant_parameter = 0.5
+
         # *********************************************************************
         # Validate required fields
         # *********************************************************************
@@ -473,24 +475,40 @@ class ParticleTracker:
         """The number of grids specified at instantiation."""
         return len(self.grids)
 
-    @property
-    def steps_per_gyroperiod(self):
-        """Controls the magnetic field component of the adaptive time step candidates.
+    def setup_adaptive_time_step(
+        self,
+        time_steps_per_gyroperiod: Optional[int] = 12,
+        Courant_parameter: Optional[float] = 0.5,
+    ):
+        """Set parameters for the adaptive time step candidates.
 
-        By default, the adaptive time step candidate associated with the gyration of a charged particle
-        is one twelfth of the particle's gyroradius. This corresponds to twelve time steps per gyroperiod.
+        Parameters
+        ----------
+        time_steps_per_gyroperiod : int, optional
+            The number of subdivisions of the particle's gyration. The default is twelve.
+
+        Courant_parameter : float, optional
+            The Courant parameter is the fraction of a grid cell length by which to subdivide
+            the motion of the particle.
+
+
+        Notes
+        -----
+        Two candidates are calculated for the adaptive time step: a time step based on the gyroradius
+        of the particle and a time step based on the resolution of the grid. The candidate associated
+        with the gyroradius of the particle takes a ``time_steps_per_gyroperiod`` parameter that specifies
+        how many times the orbit of a gyrating particles will be subdivided. The other candidate,
+        associated with the spatial resolution of the grid object, calculates a time step using the time
+        it would take the fastest particle to cross some fraction of a grid cell length. This fraction is the Courant number.
         """
 
         if not self.is_adaptive_time_step:
             raise ValueError(
-                "The gyroperiod subdivision property only applies to adaptive time steps!"
+                "The setup adaptive time step method only applies to adaptive time steps!"
             )
 
-        return self._steps_per_gyroperiod
-
-    @steps_per_gyroperiod.setter
-    def steps_per_gyroperiod(self, new_subdivision):
-        self._steps_per_gyroperiod = new_subdivision
+        self._steps_per_gyroperiod = time_steps_per_gyroperiod
+        self._Courant_parameter = Courant_parameter
 
     def _log(self, msg):
         if self.verbose:
@@ -591,7 +609,7 @@ class ParticleTracker:
 
         # Compute the time step indicated by the grid resolution
         ds = np.array([grid.grid_resolution.to(u.m).value for grid in self.grids])
-        gridstep = 0.5 * (ds / self.vmax)
+        gridstep = self._Courant_parameter * (ds / self.vmax)
 
         # Wherever a particle is on a grid, include that grid's grid step
         # in the list of candidate time steps
@@ -792,8 +810,8 @@ class ParticleTracker:
             self._is_synchronized_time_step = True
             self._is_adaptive_time_step = True
 
-        # Raise a ValueError if a synchronized dt is required by termination condition or save routine but one is not given
-        # This is only the case if an array with differing entries is specified for dt
+        # Raise a ValueError if a synchronized dt is required by termination condition or save routine but one is not
+        # given. This is only the case if an array with differing entries is specified for dt
         if require_synchronized_time and not self._is_synchronized_time_step:
             raise ValueError(
                 "Please specify a synchronized time step to use the simulation with this configuration!"

@@ -200,7 +200,7 @@ class TestParticleTrackerGyroradius:
     save_routine = IntervalSaveRoutine(termination_time / 10)
 
     simulation = ParticleTracker(grid, termination_condition, save_routine)
-    simulation.steps_per_gyroperiod = 100
+    simulation.setup_adaptive_time_step(time_steps_per_gyroperiod=100)
     simulation.load_particles(x, v, point_particle)
 
     simulation.run()
