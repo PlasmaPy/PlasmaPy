@@ -52,7 +52,7 @@ jobs:
         fetch-depth: 0
 
     - name: Set up Python
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v5
       with:
         python-version: ${{ matrix.python }}
         cache: pip
@@ -83,7 +83,7 @@ jobs:
       run: sudo apt-get install graphviz pandoc
 
     - name: Set up Python
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v5
       with:
         python-version: '3.11'
         cache: pip
@@ -105,7 +105,7 @@ jobs:
         fetch-depth: 0
 
     - name: Set up Python
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v5
       with:
         python-version: 3.9
         cache: pip
@@ -129,7 +129,7 @@ jobs:
         git fetch --depth=1 origin +refs/tags/*:refs/tags/*
 
     - name: Set up Python 3.11
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v5
       with:
         python-version: '3.11'
         cache: pip
