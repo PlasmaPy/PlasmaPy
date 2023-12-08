@@ -53,7 +53,7 @@ def grid_with_inf_entry():
 
 
 @pytest.mark.parametrize(
-    ("grids", "termination_condition", "save_routine", "expected_exception"),
+    ("grids", "termination_condition", "save_routine", "kwargs", "expected_exception"),
     [
         # Old ParticleTracker construction deprecation error
         (
@@ -64,28 +64,53 @@ def grid_with_inf_entry():
             ),
             "no_particles_on_grids_instantiated",
             None,
+            {},
             TypeError,
         ),
         # Unrecognized grid type
-        (42, "time_elapsed_termination_condition_instantiated", None, TypeError),
+        (42, "time_elapsed_termination_condition_instantiated", None, {}, TypeError),
+        # Unrecognized termination condition
+        (CartesianGrid(-1 * u.m, 1 * u.m), ("lorem ipsum",), None, {}, TypeError),
+        # Specifies dt and dt_range error
+        (
+            CartesianGrid(-1 * u.m, 1 * u.m),
+            "no_particles_on_grids_instantiated",
+            None,
+            {"dt": 1e-2 * u.s, "dt_range": [1e-2 * u.s, 5e-2 * u.s]},
+            ValueError,
+        ),
         # Infinite/NaN entry in grid object
-        ("grid_with_inf_entry", "no_particles_on_grids_instantiated", None, ValueError),
+        (
+            "grid_with_inf_entry",
+            "no_particles_on_grids_instantiated",
+            None,
+            {},
+            ValueError,
+        ),
+        # Invalid field weighting
+        (
+            CartesianGrid(-1 * u.m, 1 * u.m),
+            "no_particles_on_grids_instantiated",
+            None,
+            {"field_weighting": "lorem ipsum"},
+            ValueError,
+        ),
     ],
 )
 def test_particle_tracker_constructor_errors(
-    request, grids, termination_condition, save_routine, expected_exception
+    request, grids, termination_condition, save_routine, kwargs, expected_exception
 ):
     if isinstance(grids, str):
         grids = request.getfixturevalue(grids)
 
-    if termination_condition is not None:
+    if termination_condition is not None and isinstance(termination_condition, str):
         termination_condition = request.getfixturevalue(termination_condition)
 
-    if save_routine is not None:
+    if save_routine is not None and isinstance(save_routine, str):
         save_routine = request.getfixturevalue(save_routine)
 
     with pytest.raises(expected_exception):
-        ParticleTracker(grids, termination_condition, save_routine)
+        ParticleTracker(grids, termination_condition, save_routine, **kwargs)
 
 
 @pytest.mark.parametrize(
@@ -388,6 +413,10 @@ def test_particle_tracker_stop_particles(request):
 
     simulation = ParticleTracker(grid, termination_condition, save_routine, dt=dt)
     simulation.load_particles(x, v, point_particle)
+
+    # Not an adaptive time step error
+    with pytest.raises(ValueError):
+        simulation.setup_adaptive_time_step(time_steps_per_gyroperiod=15)
 
     simulation.run()
     simulation._stop_particles([True])
