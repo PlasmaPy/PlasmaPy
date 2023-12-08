@@ -269,7 +269,7 @@ def test_particle_tracker_potential_difference(request, E_strength, L, mass, cha
     )
 
 
-def test_asynchronous_time_step(time_elapsed_termination_condition_instantiated):
+def test_asynchronous_time_step(no_particles_on_grids_instantiated):
     E_strength = 1 * u.V / u.m
     L = 1 * u.m
     mass = 1 * u.kg
@@ -288,7 +288,7 @@ def test_asynchronous_time_step(time_elapsed_termination_condition_instantiated)
     x = [[0, 0, 0]] * u.m
     v = [[0, 0, 0]] * u.m / u.s
 
-    termination_condition = time_elapsed_termination_condition_instantiated
+    termination_condition = no_particles_on_grids_instantiated
 
     simulation = ParticleTracker(grid, termination_condition)
     simulation.load_particles(x, v, point_particle)

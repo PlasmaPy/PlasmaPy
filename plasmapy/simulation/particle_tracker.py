@@ -807,7 +807,7 @@ class ParticleTracker:
             else:
                 self._is_synchronized_time_step = True
         elif dt is None:
-            self._is_synchronized_time_step = True
+            self._is_synchronized_time_step = require_synchronized_time
             self._is_adaptive_time_step = True
 
         # Raise a ValueError if a synchronized dt is required by termination condition or save routine but one is not
