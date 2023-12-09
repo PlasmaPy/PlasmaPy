@@ -150,7 +150,7 @@ class NoParticlesOnGridsTerminationCondition(AbstractTerminationCondition):
     @property
     def is_finished(self):
         """The simulation is finished when no more particles are on any grids."""
-        is_not_on_grid = self.tracker.on_grid == 0
+        is_not_on_grid = self.tracker.on_any_grid == False  # noqa: E712
 
         return is_not_on_grid.all() and self.tracker.iteration_number > 0
 

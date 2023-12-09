@@ -71,6 +71,13 @@ def grid_with_inf_entry():
         (42, "time_elapsed_termination_condition_instantiated", None, {}, TypeError),
         # Unrecognized termination condition
         (CartesianGrid(-1 * u.m, 1 * u.m), ("lorem ipsum",), None, {}, TypeError),
+        (
+            CartesianGrid(-1 * u.m, 1 * u.m),
+            "time_elapsed_termination_condition_instantiated",
+            ("lorem ipsum",),
+            {},
+            TypeError,
+        ),
         # Specifies dt and dt_range error
         (
             CartesianGrid(-1 * u.m, 1 * u.m),
@@ -310,18 +317,47 @@ def test_asynchronous_time_step(no_particles_on_grids_instantiated):
 
     point_particle = CustomParticle(mass, charge)
 
-    x = [[0, 0, 0]] * u.m
-    v = [[0, 0, 0]] * u.m / u.s
+    x = [[0, 0, 0], [0, 0, 0]] * u.m
+    v = [[0, 0, 1], [1, 0, 0]] * u.m / u.s
 
     termination_condition = no_particles_on_grids_instantiated
 
     simulation = ParticleTracker(grid, termination_condition)
+
+    # Particles not loaded error
+    with pytest.raises(ValueError):
+        simulation.run()
+
     simulation.load_particles(x, v, point_particle)
 
     assert simulation.is_adaptive_time_step
     assert not simulation.is_synchronized_time_step
 
     simulation.run()
+
+    with pytest.raises(RuntimeError):
+        simulation.load_particles(x, v, point_particle)
+
+
+def test_asynchronous_time_step_error(
+    memory_interval_save_routine_instantiated, no_particles_on_grids_instantiated
+):
+    E_strength = 1 * u.V / u.m
+    L = 1 * u.m
+
+    num = 2
+
+    grid = CartesianGrid(-L, L, num=num)
+    grid_shape = (num,) * 3
+
+    Ex = np.full(grid_shape, E_strength) * u.V / u.m
+    grid.add_quantities(E_x=Ex)
+
+    termination_condition = no_particles_on_grids_instantiated
+    save_routine = memory_interval_save_routine_instantiated
+
+    with pytest.raises(ValueError):
+        ParticleTracker(grid, termination_condition, save_routine, dt=[1e-2, 2e-2])
 
 
 def test_nearest_neighbor_interpolation(
