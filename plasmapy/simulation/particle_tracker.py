@@ -386,10 +386,8 @@ class ParticleTracker:
         self._is_adaptive_time_step = False
         self._is_synchronized_time_step = False
 
-        # By default, the gyration of a particle is divided into twelve steps
-        self._steps_per_gyroperiod = 12
-
-        self._Courant_parameter = 0.5
+        # Initialize default values for time steps per gyroperiod and Courant parameter
+        self.setup_adaptive_time_step()
 
         # *********************************************************************
         # Validate required fields
