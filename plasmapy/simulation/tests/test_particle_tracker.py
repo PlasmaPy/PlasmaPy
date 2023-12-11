@@ -357,7 +357,9 @@ def test_asynchronous_time_step_error(
     save_routine = memory_interval_save_routine_instantiated
 
     with pytest.raises(ValueError):
-        ParticleTracker(grid, termination_condition, save_routine, dt=[1e-2, 2e-2])
+        ParticleTracker(
+            grid, termination_condition, save_routine, dt=[1e-2, 2e-2] * u.s
+        )
 
 
 def test_nearest_neighbor_interpolation(
