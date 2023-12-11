@@ -283,7 +283,7 @@ class IntervalSaveRoutine(AbstractSaveRoutine):
 
 
 class ParticleTracker:
-    r"""A particle tracker for particles in electric and magnetic fields with inter-particle interactions.
+    r"""A particle tracker for particles in electric and magnetic fields without inter-particle interactions.
 
     Particles are instantiated and pushed through a grid of provided E and B fields
     using the boris push algorithm. These fields are specified as part of a grid
