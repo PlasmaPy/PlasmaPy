@@ -383,9 +383,6 @@ class ParticleTracker:
         # This flag records whether the simulation has been run
         self._has_run = False
 
-        self._is_adaptive_time_step = False
-        self._is_synchronized_time_step = False
-
         # Initialize default values for time steps per gyroperiod and Courant parameter
         self.setup_adaptive_time_step()
 
@@ -445,7 +442,7 @@ class ParticleTracker:
                     )
 
         # Validate inputs to the run function
-        # Sets is_synchronized_time property
+        # Sets is_adaptive_time_step and is_synchronous_time_step properties
         self._validate_constructor_inputs(
             termination_condition, save_routine, dt, dt_range, field_weighting
         )
