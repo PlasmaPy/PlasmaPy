@@ -286,34 +286,30 @@ class ParticleTracker:
     r"""A particle tracker for particles in electric and magnetic fields without inter-particle interactions.
 
     Particles are instantiated and pushed through a grid of provided E and B fields
-    using the boris push algorithm. These fields are specified as part of a grid
+    using the Boris push algorithm. These fields are specified as part of a grid
     which are then interpolated to determine the local field acting on each particle.
 
     The time step used in the push routine can be specified, or an adaptive time step
     will be determined based off the gyroradius of the particle. Some save routines involve
     time stamping the location and velocities of particles at fixed intervals. In order for this
-    data to make sense, it is required that all particles follow the same time step. This is
+    data to be coherent, it is required that all particles follow the same time step. This is
     referred to as a synchronized time step. If no time step is specified and the provided
     save routine does not require a synchronized time step, then an adaptive time step is calculated
     independently for each particle.
 
-    The time step used can be specified, otherwise an
-    adaptive time step is calculated based off grid resolution and the particle's gyroradius.
-
-    Termination conditions for the simulation are provided as an instance of the `~plasmapy.simulation.particle_tracker.AbstractTerminationCondition` class as arguments to the ``run`` method.
+    The simulation will push particles through the provided fields until a condition is met. This termination condition
+    is provided as an instance of the `~plasmapy.simulation.particle_tracker.AbstractTerminationCondition` class as arguments to the simulation constructor.
     The results of a simulation can be exported by specifying an instance of the `~plasmapy.simulation.particle_tracker.AbstractSaveRoutine` class to the ``run`` method.
 
     Parameters
     ----------
     grids : An instance of `~plasmapy.plasma.grids.AbstractGrid`
         A Grid object or list of grid objects containing the required
-        quantities.
+        quantities. The list of required quantities varies depending on other keywords.
 
     termination_condition : `~plasmapy.simulation.particle_tracker.AbstractTerminationCondition`
-        A class responsible for determining when the simulation has reached
-        a suitable termination condition. The class is passed an instance
-        of `~plasmapy.simulation.particle_tracker.ParticleTracker`. See `~plasmapy.simulation.particle_tracker.AbstractTerminationCondition`
-        for more details.
+        An instance of `~plasmapy.simulation.particle_tracker.AbstractTerminationCondition` which determines when
+        the simulation has finished. See `~plasmapy.simulation.particle_tracker.AbstractTerminationCondition` for more details.
 
     save_routine : `~plasmapy.simulation.particle_tracker.AbstractSaveRoutine`
         An instance of `~plasmapy.simulation.particle_tracker.AbstractSaveRoutine` which determines which
@@ -328,7 +324,7 @@ class ParticleTracker:
         If specified, the calculated adaptive time step will be clamped
         between the first and second values.
 
-        field_weighting : str
+    field_weighting : str
         String that selects the field weighting algorithm used to determine
         what fields are felt by the particles. Options are:
 
@@ -485,11 +481,12 @@ class ParticleTracker:
         Parameters
         ----------
         time_steps_per_gyroperiod : int, optional
-            The number of subdivisions of the particle's gyration. The default is twelve.
+            The minimum ratio of the particle gyroperiod to the timestep. Higher numbers
+            correspond to higher temporal resolution. The default is twelve.
 
         Courant_parameter : float, optional
-            The Courant parameter is the fraction of a grid cell length by which to subdivide
-            the motion of the particle.
+            The Courant parameter is the minimum ratio of the timestep to the grid crossing time,
+            grid cell length / particle velocity. Lower Courant numbers correspond to higher temporal resolution.
 
 
         Notes
@@ -535,23 +532,6 @@ class ParticleTracker:
         particle : |particle-like|, optional
             Representation of the particle species as either a |Particle| object
             or a string representation. The default particle is protons.
-
-        distribution : str
-            A keyword which determines how particles will be distributed
-            in velocity space. Options are:
-
-                - 'monte-carlo': velocities will be chosen randomly,
-                    such that the flux per solid angle is uniform.
-
-                - 'uniform': velocities will be distributed such that,
-                   left unperturbed,they will form a uniform pattern
-                   on the detection plane.
-
-            Simulations run in the ``'uniform'`` mode will imprint a grid pattern
-            on the image, but will well-sample the field grid with a
-            smaller number of particles. The default is ``'monte-carlo'``.
-
-
         """
         # Raise an error if the run method has already been called.
         self._enforce_order()
