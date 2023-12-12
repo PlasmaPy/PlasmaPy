@@ -383,8 +383,7 @@ class ParticleTracker:
         # This flag records whether the simulation has been run
         self._has_run = False
 
-        # Initialize default values for time steps per gyroperiod and Courant parameter
-        self.setup_adaptive_time_step()
+        self._set_time_step_attributes(dt, save_routine, termination_condition)
 
         # *********************************************************************
         # Validate required fields
@@ -442,9 +441,8 @@ class ParticleTracker:
                     )
 
         # Validate inputs to the run function
-        # Sets is_adaptive_time_step and is_synchronous_time_step properties
         self._validate_constructor_inputs(
-            termination_condition, save_routine, dt, dt_range, field_weighting
+            termination_condition, save_routine, field_weighting
         )
 
         self.dt = dt.to(u.s).value if dt is not None else None
@@ -461,10 +459,29 @@ class ParticleTracker:
         self.termination_condition = termination_condition
         self.save_routine = save_routine
 
-    @property
-    def num_grids(self):
-        """The number of grids specified at instantiation."""
-        return len(self.grids)
+    def _set_time_step_attributes(self, dt, termination_condition, save_routine):
+        """Determines whether the simulation will follow a synchronized or adaptive time step."""
+        if isinstance(dt, u.Quantity):
+            if isinstance(dt.value, np.ndarray):
+                # If an array is specified for the time step, a synchronized time step is implied if all
+                # the entries are equal
+                self._is_synchronized_time_step = np.all(dt.value[0] == dt.value[:])
+            else:
+                self._is_synchronized_time_step = True
+
+            self._is_adaptive_time_step = False
+        elif dt is None:
+            require_synchronized_time = (
+                termination_condition.require_synchronized_dt
+                or (save_routine is not None and save_routine.require_synchronized_dt)
+            )
+
+            self._is_synchronized_time_step = require_synchronized_time
+            self._is_adaptive_time_step = True
+
+        if self._is_adaptive_time_step:
+            # Initialize default values for time steps per gyroperiod and Courant parameter
+            self.setup_adaptive_time_step()
 
     def setup_adaptive_time_step(
         self,
@@ -494,13 +511,56 @@ class ParticleTracker:
         it would take the fastest particle to cross some fraction of a grid cell length. This fraction is the Courant number.
         """
 
-        if not self.is_adaptive_time_step:
+        if not self._is_adaptive_time_step:
             raise ValueError(
                 "The setup adaptive time step method only applies to adaptive time steps!"
             )
 
         self._steps_per_gyroperiod = time_steps_per_gyroperiod
         self._Courant_parameter = Courant_parameter
+
+    def _validate_constructor_inputs(
+        self, termination_condition, save_routine, field_weighting: str
+    ):
+        """
+        Ensure the specified termination condition and save routine are actually
+        a termination routine class and save routine, respectively. This function also
+        sets the `_is_synchronized_time_step` and `_is_adaptive_time_step` attributes.
+        """
+        if not isinstance(termination_condition, AbstractTerminationCondition):
+            raise TypeError("Please specify a valid termination condition.")
+
+        if save_routine is not None and not isinstance(
+            save_routine, AbstractSaveRoutine
+        ):
+            raise TypeError("Please specify a valid save routine")
+
+        require_synchronized_time = termination_condition.require_synchronized_dt or (
+            save_routine is not None and save_routine.require_synchronized_dt
+        )
+
+        # Raise a ValueError if a synchronized dt is required by termination condition or save routine but one is not
+        # given. This is only the case if an array with differing entries is specified for dt
+        if require_synchronized_time and not self._is_synchronized_time_step:
+            raise ValueError(
+                "Please specify a synchronized time step to use the simulation with this configuration!"
+            )
+
+        # Load and validate inputs
+        field_weightings = ["volume averaged", "nearest neighbor"]
+        if field_weighting in field_weightings:
+            self.field_weighting = field_weighting
+        else:
+            raise ValueError(
+                f"{field_weighting} is not a valid option for ",
+                "field_weighting. Valid choices are",
+                f"{field_weightings}",
+            )
+
+    @property
+    def num_grids(self):
+        """The number of grids specified at instantiation."""
+        return len(self.grids)
 
     def _log(self, msg):
         if self.verbose:
@@ -748,60 +808,6 @@ class ParticleTracker:
         tracked_mask = self._tracked_particle_mask()
 
         return np.max(np.linalg.norm(self.v[tracked_mask], axis=-1))
-
-    def _validate_constructor_inputs(
-        self, termination_condition, save_routine, dt, dt_range, field_weighting: str
-    ):
-        """
-        Ensure the specified termination condition and save routine are actually
-        a termination routine class and save routine, respectively. This function also
-        sets the `_is_synchronized_time_step` and `_is_adaptive_time_step` attributes.
-        """
-        if not isinstance(termination_condition, AbstractTerminationCondition):
-            raise TypeError("Please specify a valid termination condition.")
-
-        if save_routine is not None and not isinstance(
-            save_routine, AbstractSaveRoutine
-        ):
-            raise TypeError("Please specify a valid save routine")
-
-        require_synchronized_time = termination_condition.require_synchronized_dt or (
-            save_routine is not None and save_routine.require_synchronized_dt
-        )
-
-        if dt is not None and dt_range is not None:
-            raise ValueError("Please only specify either dt or dt_range")
-
-        # Will the simulation follow a synchronized time step?
-        # This must be the case for certain termination conditions and saving routines
-        if isinstance(dt, u.Quantity):
-            if isinstance(dt.value, np.ndarray):
-                # If an array is specified for the time step, a synchronized time step is implied if all
-                # the entries are equal
-                self._is_synchronized_time_step = np.all(dt.value[0] == dt.value[:])
-            else:
-                self._is_synchronized_time_step = True
-        elif dt is None:
-            self._is_synchronized_time_step = require_synchronized_time
-            self._is_adaptive_time_step = True
-
-        # Raise a ValueError if a synchronized dt is required by termination condition or save routine but one is not
-        # given. This is only the case if an array with differing entries is specified for dt
-        if require_synchronized_time and not self._is_synchronized_time_step:
-            raise ValueError(
-                "Please specify a synchronized time step to use the simulation with this configuration!"
-            )
-
-        # Load and validate inputs
-        field_weightings = ["volume averaged", "nearest neighbor"]
-        if field_weighting in field_weightings:
-            self.field_weighting = field_weighting
-        else:
-            raise ValueError(
-                f"{field_weighting} is not a valid option for ",
-                "field_weighting. Valid choices are",
-                f"{field_weightings}",
-            )
 
     def _tracked_particle_mask(self):
         """
