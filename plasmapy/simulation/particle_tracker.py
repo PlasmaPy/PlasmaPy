@@ -373,7 +373,7 @@ class ParticleTracker:
         self,
         grids: Union[AbstractGrid, Iterable[AbstractGrid]],
         termination_condition: AbstractTerminationCondition = None,
-        save_routine: AbstractSaveRoutine = DoNotSaveSaveRoutine,
+        save_routine: AbstractSaveRoutine = None,
         dt=None,
         dt_range=None,
         field_weighting="volume averaged",
@@ -396,26 +396,25 @@ class ParticleTracker:
         else:
             raise TypeError("Type of argument `grids` not recognized.")
 
-        # self.grid_arr is the grid positions in si units. This is created here
-        # so that it isn't continuously called later
-        self.grids_arr = [grid.grid.to(u.m).value for grid in self.grids]
-
         self.verbose = verbose
 
         # This flag records whether the simulation has been run
         self._has_run = False
 
-        self._set_time_step_attributes(dt, save_routine, termination_condition)
+        # Instantiate the do not save save routine if no save routine was specified
+        if save_routine is None:
+            save_routine = DoNotSaveSaveRoutine()
 
-        # *********************************************************************
-        # Validate required fields
-        # *********************************************************************
+        self._set_time_step_attributes(dt, termination_condition, save_routine)
+
         self._validate_grids(req_quantities)
 
         # Validate inputs to the run function
-        self._validate_constructor_inputs(
-            termination_condition, save_routine, dt_range, field_weighting
-        )
+        self._validate_constructor_inputs(dt_range, field_weighting)
+
+        # self.grid_arr is the grid positions in si units. This is created here
+        # so that it isn't continuously called later
+        self.grids_arr = [grid.grid.to(u.m).value for grid in self.grids]
 
         self.dt = dt.to(u.s).value if dt is not None else None
 
@@ -432,6 +431,17 @@ class ParticleTracker:
 
     def _set_time_step_attributes(self, dt, termination_condition, save_routine):
         """Determines whether the simulation will follow a synchronized or adaptive time step."""
+
+        if not isinstance(termination_condition, AbstractTerminationCondition):
+            raise TypeError("Please specify a valid termination condition.")
+
+        if not isinstance(save_routine, AbstractSaveRoutine):
+            raise TypeError("Please specify a valid save routine")
+
+        require_synchronized_time = termination_condition.require_synchronized_dt or (
+            save_routine is not None and save_routine.require_synchronized_dt
+        )
+
         if isinstance(dt, u.Quantity):
             if isinstance(dt.value, np.ndarray):
                 # If an array is specified for the time step, a synchronized time step is implied if all
@@ -442,17 +452,19 @@ class ParticleTracker:
 
             self._is_adaptive_time_step = False
         elif dt is None:
-            require_synchronized_time = (
-                termination_condition.require_synchronized_dt
-                or (save_routine is not None and save_routine.require_synchronized_dt)
-            )
-
             self._is_synchronized_time_step = require_synchronized_time
             self._is_adaptive_time_step = True
 
         if self._is_adaptive_time_step:
             # Initialize default values for time steps per gyroperiod and Courant parameter
             self.setup_adaptive_time_step()
+
+        # Raise a ValueError if a synchronized dt is required by termination condition or save routine but one is
+        # not given. This is only the case if an array with differing entries is specified for dt
+        if require_synchronized_time and not self._is_synchronized_time_step:
+            raise ValueError(
+                "Please specify a synchronized time step to use the simulation with this configuration!"
+            )
 
     def setup_adaptive_time_step(
         self,
@@ -490,34 +502,16 @@ class ParticleTracker:
         self._steps_per_gyroperiod = time_steps_per_gyroperiod
         self._Courant_parameter = Courant_parameter
 
-    def _validate_constructor_inputs(
-        self, termination_condition, save_routine, dt_range, field_weighting: str
-    ):
+    def _validate_constructor_inputs(self, dt_range, field_weighting: str):
         """
         Ensure the specified termination condition and save routine are actually
         a termination routine class and save routine, respectively. This function also
         sets the `_is_synchronized_time_step` and `_is_adaptive_time_step` attributes.
         """
-        if not isinstance(termination_condition, AbstractTerminationCondition):
-            raise TypeError("Please specify a valid termination condition.")
-
-        if not isinstance(save_routine, AbstractSaveRoutine):
-            raise TypeError("Please specify a valid save routine")
 
         if dt_range is not None and not self._is_adaptive_time_step:
             raise ValueError(
                 "Specifying a time step range is only possible for an adaptive time step."
-            )
-
-        require_synchronized_time = termination_condition.require_synchronized_dt or (
-            save_routine is not None and save_routine.require_synchronized_dt
-        )
-
-        # Raise a ValueError if a synchronized dt is required by termination condition or save routine but one is not
-        # given. This is only the case if an array with differing entries is specified for dt
-        if require_synchronized_time and not self._is_synchronized_time_step:
-            raise ValueError(
-                "Please specify a synchronized time step to use the simulation with this configuration!"
             )
 
         # Load and validate inputs
@@ -540,8 +534,9 @@ class ParticleTracker:
         # Some quantities are necessary for the particle tracker to function regardless of other configurations
         required_quantities = {"E_x", "E_y", "E_z", "B_x", "B_y", "B_z"}
 
-        # Add additional required quantities based off simulation configuration
-        required_quantities.update(additional_required_quantities)
+        if additional_required_quantities is not None:
+            # Add additional required quantities based off simulation configuration
+            required_quantities.update(additional_required_quantities)
 
         for grid in self.grids:
             grid.require_quantities(required_quantities, replace_with_zeros=True)
