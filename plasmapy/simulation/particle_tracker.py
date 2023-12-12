@@ -388,57 +388,7 @@ class ParticleTracker:
         # *********************************************************************
         # Validate required fields
         # *********************************************************************
-
-        base_req_quantities = ["E_x", "E_y", "E_z", "B_x", "B_y", "B_z"]
-
-        if req_quantities is not None:
-            req_quantities.extend(base_req_quantities)
-        else:
-            req_quantities = base_req_quantities
-
-        for grid in self.grids:
-            grid.require_quantities(req_quantities, replace_with_zeros=True)
-
-            for rq in req_quantities:
-                # Check that there are no infinite values
-                if not np.isfinite(grid[rq].value).all():
-                    raise ValueError(
-                        f"Input arrays must be finite: {rq} contains "
-                        "either NaN or infinite values."
-                    )
-
-                # Check that the max values on the edges of the arrays are
-                # small relative to the maximum values on that grid
-                #
-                # Array must be dimensionless to re-assemble it into an array
-                # of max values like this
-                arr = np.abs(grid[rq]).value
-                edge_max = np.max(
-                    np.array(
-                        [
-                            np.max(a)
-                            for a in (
-                                arr[0, :, :],
-                                arr[-1, :, :],
-                                arr[:, 0, :],
-                                arr[:, -1, :],
-                                arr[:, :, 0],
-                                arr[:, :, -1],
-                            )
-                        ]
-                    )
-                )
-
-                if edge_max > 1e-3 * np.max(arr):
-                    unit = grid.recognized_quantities[rq].unit
-                    warnings.warn(
-                        "Fields should go to zero at edges of grid to avoid "
-                        f"non-physical effects, but a value of {edge_max:.2E} {unit} was "
-                        f"found on the edge of the {rq} array. Consider applying a "
-                        "envelope function to force the fields at the edge to go to "
-                        "zero.",
-                        RuntimeWarning,
-                    )
+        self._validate_grids(req_quantities)
 
         # Validate inputs to the run function
         self._validate_constructor_inputs(
@@ -561,6 +511,62 @@ class ParticleTracker:
                 "field_weighting. Valid choices are",
                 f"{field_weightings}",
             )
+
+    def _validate_grids(self, additional_required_quantities):
+        """Add required quantities to grid objects.
+
+        Grids lacking the required quantities will be filled with zeros.
+        """
+
+        # Some quantities are necessary for the particle tracker to function regardless of other configurations
+        required_quantities = {"E_x", "E_y", "E_z", "B_x", "B_y", "B_z"}
+
+        # Add additional required quantities based off simulation configuration
+        required_quantities.update(additional_required_quantities)
+
+        for grid in self.grids:
+            grid.require_quantities(required_quantities, replace_with_zeros=True)
+
+            for rq in required_quantities:
+                # Check that there are no infinite values
+                if not np.isfinite(grid[rq].value).all():
+                    raise ValueError(
+                        f"Input arrays must be finite: {rq} contains "
+                        "either NaN or infinite values."
+                    )
+
+                # Check that the max values on the edges of the arrays are
+                # small relative to the maximum values on that grid
+                #
+                # Array must be dimensionless to re-assemble it into an array
+                # of max values like this
+                arr = np.abs(grid[rq]).value
+                edge_max = np.max(
+                    np.array(
+                        [
+                            np.max(a)
+                            for a in (
+                                arr[0, :, :],
+                                arr[-1, :, :],
+                                arr[:, 0, :],
+                                arr[:, -1, :],
+                                arr[:, :, 0],
+                                arr[:, :, -1],
+                            )
+                        ]
+                    )
+                )
+
+                if edge_max > 1e-3 * np.max(arr):
+                    unit = grid.recognized_quantities[rq].unit
+                    warnings.warn(
+                        "Fields should go to zero at edges of grid to avoid "
+                        f"non-physical effects, but a value of {edge_max:.2E} {unit} was "
+                        f"found on the edge of the {rq} array. Consider applying a "
+                        "envelope function to force the fields at the edge to go to "
+                        "zero.",
+                        RuntimeWarning,
+                    )
 
     @property
     def num_grids(self):
