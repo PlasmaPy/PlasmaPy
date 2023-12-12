@@ -812,9 +812,9 @@ class ParticleTracker:
 
     @property
     def vmax(self):
-        """
-        Calculate the maximum velocity.
-        Used for determining the grid crossing maximum time step.
+        """The maximum velocity of any particle in the simulation.
+
+        This quantity is used for determining the grid crossing maximum time step.
         """
         tracked_mask = self._tracked_particle_mask()
 
