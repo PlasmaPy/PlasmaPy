@@ -442,7 +442,7 @@ class ParticleTracker:
 
         # Validate inputs to the run function
         self._validate_constructor_inputs(
-            termination_condition, save_routine, field_weighting
+            termination_condition, save_routine, dt_range, field_weighting
         )
 
         self.dt = dt.to(u.s).value if dt is not None else None
@@ -520,7 +520,7 @@ class ParticleTracker:
         self._Courant_parameter = Courant_parameter
 
     def _validate_constructor_inputs(
-        self, termination_condition, save_routine, field_weighting: str
+        self, termination_condition, save_routine, dt_range, field_weighting: str
     ):
         """
         Ensure the specified termination condition and save routine are actually
@@ -534,6 +534,11 @@ class ParticleTracker:
             save_routine, AbstractSaveRoutine
         ):
             raise TypeError("Please specify a valid save routine")
+
+        if dt_range is not None and not self._is_adaptive_time_step:
+            raise ValueError(
+                "Specifying a time step range is only possible for an adaptive time step."
+            )
 
         require_synchronized_time = termination_condition.require_synchronized_dt or (
             save_routine is not None and save_routine.require_synchronized_dt
