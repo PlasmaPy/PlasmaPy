@@ -607,6 +607,11 @@ class ParticleTracker:
         self.v = v.to(u.m / u.s).value
 
     def _stop_particles(self, particles_to_stop_mask):
+        """Stop tracking the particles specified by the stop mask.
+
+        This is accomplished by setting the particle's velocity to NaN.
+        """
+
         if len(particles_to_stop_mask) != self.x.shape[0]:
             raise ValueError(
                 f"Expected mask of size {self.x.shape[0]}, got {len(particles_to_stop_mask)}"
@@ -615,6 +620,12 @@ class ParticleTracker:
         self.v[particles_to_stop_mask] = np.NaN
 
     def _remove_particles(self, particles_to_remove_mask):
+        """Remove the specified particles from the simulation.
+
+        For the same of keeping consistent array lengths, the position and velocities of the
+        particles are set to NaN.
+        """
+
         if len(particles_to_remove_mask) != self.x.shape[0]:
             raise ValueError(
                 f"Expected mask of size {self.x.shape[0]}, got {len(particles_to_remove_mask)}"
