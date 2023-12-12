@@ -5,6 +5,7 @@ Module containing the definition for the general particle tracker.
 __all__ = [
     "AbstractSaveRoutine",
     "AbstractTerminationCondition",
+    "DoNotSaveSaveRoutine",
     "IntervalSaveRoutine",
     "NoParticlesOnGridsTerminationCondition",
     "ParticleTracker",
@@ -251,6 +252,26 @@ class AbstractSaveRoutine(ABC):
             self.save()
 
 
+class DoNotSaveSaveRoutine(AbstractSaveRoutine):
+    """The default save routine for the |ParticleTracker| class.
+
+    This save routine is a placeholder and will not save the state of the particle tracker.
+    """
+
+    def __init__(self):
+        super().__init__()
+
+    @property
+    def require_synchronized_dt(self):
+        """The do not save save routine does not require a synchronized time step."""
+        return False
+
+    @property
+    def save_now(self):
+        """The do not save save routine will never save by definition."""
+        return False
+
+
 class IntervalSaveRoutine(AbstractSaveRoutine):
     """Abstract class describing a save routine that saves every given interval."""
 
@@ -311,9 +332,10 @@ class ParticleTracker:
         An instance of `~plasmapy.simulation.particle_tracker.AbstractTerminationCondition` which determines when
         the simulation has finished. See `~plasmapy.simulation.particle_tracker.AbstractTerminationCondition` for more details.
 
-    save_routine : `~plasmapy.simulation.particle_tracker.AbstractSaveRoutine`
+    save_routine : `~plasmapy.simulation.particle_tracker.AbstractSaveRoutine`, optional
         An instance of `~plasmapy.simulation.particle_tracker.AbstractSaveRoutine` which determines which
-        time steps of the simulation to save. See `~plasmapy.simulation.particle_tracker.AbstractSaveRoutine` for more details.
+        time steps of the simulation to save. The default is `~plasmapy.simulation.particle_tracker.DoNotSaveSaveRoutine`.
+        See `~plasmapy.simulation.particle_tracker.AbstractSaveRoutine` for more details.
 
     dt : `~astropy.units.Quantity`, optional
         An explicitly set time step in units convertible to seconds.
@@ -351,7 +373,7 @@ class ParticleTracker:
         self,
         grids: Union[AbstractGrid, Iterable[AbstractGrid]],
         termination_condition: AbstractTerminationCondition = None,
-        save_routine: Optional[AbstractSaveRoutine] = None,
+        save_routine: AbstractSaveRoutine = DoNotSaveSaveRoutine,
         dt=None,
         dt_range=None,
         field_weighting="volume averaged",
@@ -403,8 +425,7 @@ class ParticleTracker:
         # Update the `tracker` attribute so that the stop condition & save routine can be used
         termination_condition.tracker = self
 
-        if save_routine is not None:
-            save_routine.tracker = self
+        save_routine.tracker = self
 
         self.termination_condition = termination_condition
         self.save_routine = save_routine
@@ -480,9 +501,7 @@ class ParticleTracker:
         if not isinstance(termination_condition, AbstractTerminationCondition):
             raise TypeError("Please specify a valid termination condition.")
 
-        if save_routine is not None and not isinstance(
-            save_routine, AbstractSaveRoutine
-        ):
+        if not isinstance(save_routine, AbstractSaveRoutine):
             raise TypeError("Please specify a valid save routine")
 
         if dt_range is not None and not self._is_adaptive_time_step:
