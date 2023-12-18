@@ -6,7 +6,7 @@
 #
 alabaster==0.7.13
     # via sphinx
-anyio==4.1.0
+anyio==4.2.0
     # via jupyter-server
 argon2-cffi==23.1.0
     # via jupyter-server
@@ -18,7 +18,7 @@ asteval==0.9.31
     # via lmfit
 astropy==6.0.0
     # via plasmapy (setup.py)
-astropy-iers-data==0.2023.12.11.0.31.11
+astropy-iers-data==0.2023.12.18.0.30.18
     # via astropy
 asttokens==2.4.1
     # via stack-data
@@ -27,7 +27,7 @@ attrs==23.1.0
     #   hypothesis
     #   jsonschema
     #   referencing
-babel==2.13.1
+babel==2.14.0
     # via
     #   jupyterlab-server
     #   sphinx
@@ -71,7 +71,7 @@ decorator==5.1.1
     # via ipython
 defusedxml==0.7.1
     # via nbconvert
-distlib==0.3.7
+distlib==0.3.8
     # via virtualenv
 docutils==0.18.1
     # via
@@ -100,7 +100,7 @@ future==0.18.3
     # via uncertainties
 h5py==3.10.0
     # via plasmapy (setup.py)
-hypothesis==6.92.0
+hypothesis==6.92.1
     # via plasmapy (setup.py)
 identify==2.5.33
     # via pre-commit
@@ -169,7 +169,7 @@ jupyter-server==2.12.1
     # via
     #   jupyterlab-server
     #   voila
-jupyter-server-terminals==0.4.4
+jupyter-server-terminals==0.5.0
     # via jupyter-server
 jupyterlab-pygments==0.3.0
     # via nbconvert
@@ -281,9 +281,9 @@ pre-commit==3.6.0
     # via plasmapy (setup.py)
 prometheus-client==0.19.0
     # via jupyter-server
-prompt-toolkit==3.0.41
+prompt-toolkit==3.0.43
     # via ipython
-psutil==5.9.6
+psutil==5.9.7
     # via ipykernel
 ptyprocess==0.7.0
     # via
@@ -364,7 +364,7 @@ rfc3986-validator==0.1.1
     # via
     #   jsonschema
     #   jupyter-events
-rpds-py==0.13.2
+rpds-py==0.15.2
     # via
     #   jsonschema
     #   referencing
