@@ -47,7 +47,7 @@ def angular_freq_to_hz(fn):
 
         @validate_quantities(validations_on_return={'units': [u.rad / u.s, u.Hz]})
         @angular_freq_to_hz
-        def foo(x: u.Quantity[u.rad / u.s]) -> u.rad / u.s
+        def foo(x: u.Quantity[u.rad / u.s]) -> u.Quantity[u.rad / u.s]
             return x
 
       Adding ``u.Hz`` to the allowed units allows the converted
