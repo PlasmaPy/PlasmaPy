@@ -88,7 +88,7 @@ class AbstractNormalizations(ABC):
 
     @property
     @abstractmethod
-    def electric_field(self) -> u.Quantity[u.V / u.m] / u.m:
+    def electric_field(self) -> u.Quantity[u.V / u.m]:
         """The electric field normalization."""
         ...
 
