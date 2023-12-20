@@ -142,7 +142,7 @@ class IonicLevel:
                     self._ionic_fraction = ionfrac
 
     @property
-    def number_density(self) -> u.m**-3:
+    def number_density(self) -> u.Quantity[u.m**-3]:
         """The number density of the ion."""
         return self._number_density
 
@@ -259,7 +259,7 @@ class IonizationState:
         T_e: u.Quantity[u.K] = np.nan * u.K,
         T_i: u.Quantity[u.K] = None,
         kappa: Real = np.inf,
-        n_elem: u.m**-3 = np.nan * u.m**-3,
+        n_elem: u.Quantity[u.m**-3] = np.nan * u.m**-3,
         tol: float = 1e-15,
     ):
         self._number_of_particles = particle.atomic_number + 1
@@ -522,7 +522,7 @@ class IonizationState:
 
     @property
     @validate_quantities
-    def n_e(self) -> u.m**-3:
+    def n_e(self) -> u.Quantity[u.m**-3]:
         """
         The electron number density assuming a single species plasma.
         """
@@ -530,7 +530,7 @@ class IonizationState:
 
     @property
     @validate_quantities
-    def n_elem(self) -> u.m**-3:
+    def n_elem(self) -> u.Quantity[u.m**-3]:
         """The total number density of neutrals and all ions."""
         return self._n_elem.to(u.m**-3)
 
@@ -547,7 +547,7 @@ class IonizationState:
 
     @property
     @validate_quantities
-    def number_densities(self) -> u.m**-3:
+    def number_densities(self) -> u.Quantity[u.m**-3]:
         """The number densities for each state."""
         try:
             return (self.n_elem * self.ionic_fractions).to(u.m**-3)

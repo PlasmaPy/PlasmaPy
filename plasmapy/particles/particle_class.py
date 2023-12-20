@@ -1129,7 +1129,7 @@ class Particle(AbstractPhysicalParticle):
         return self._attributes["charge number"]
 
     @property
-    def charge(self) -> u.C:
+    def charge(self) -> u.Quantity[u.C]:
         """
         The particle's electrical charge in coulombs.
 
@@ -1151,7 +1151,7 @@ class Particle(AbstractPhysicalParticle):
         return self._attributes["charge"]
 
     @property
-    def standard_atomic_weight(self) -> u.kg:
+    def standard_atomic_weight(self) -> u.Quantity[u.kg]:
         """
         The element's standard atomic weight in kg.
 
@@ -1177,7 +1177,7 @@ class Particle(AbstractPhysicalParticle):
         return self._attributes["standard atomic weight"].to(u.kg)
 
     @property
-    def mass(self) -> u.kg:
+    def mass(self) -> u.Quantity[u.kg]:
         """
         The mass of the particle in kilograms.
 
@@ -1239,7 +1239,7 @@ class Particle(AbstractPhysicalParticle):
         return np.nan * u.kg
 
     @property
-    def nuclide_mass(self) -> u.kg:
+    def nuclide_mass(self) -> u.Quantity[u.kg]:
         """
         The mass of the bare nucleus of an isotope or a neutron.
 
@@ -1283,7 +1283,7 @@ class Particle(AbstractPhysicalParticle):
         return _nuclide_mass.to(u.kg)
 
     @property
-    def mass_energy(self) -> u.J:
+    def mass_energy(self) -> u.Quantity[u.J]:
         """
         The mass energy of the particle in joules.
 
@@ -1316,7 +1316,7 @@ class Particle(AbstractPhysicalParticle):
             return energy.to(u.J)
 
     @property
-    def binding_energy(self) -> u.J:
+    def binding_energy(self) -> u.Quantity[u.J]:
         """
         The particle's nuclear binding energy.
 
@@ -2241,7 +2241,7 @@ class CustomParticle(AbstractPhysicalParticle):
         return particle_dictionary
 
     @property
-    def charge(self) -> u.C:
+    def charge(self) -> u.Quantity[u.C]:
         """The electric charge of the |CustomParticle| in coulombs."""
         return self._charge
 
@@ -2292,7 +2292,7 @@ class CustomParticle(AbstractPhysicalParticle):
         self._charge = Z * const.e.si
 
     @property
-    def mass(self) -> u.kg:
+    def mass(self) -> u.Quantity[u.kg]:
         """The mass of the |CustomParticle|."""
         return self._mass
 
@@ -2326,7 +2326,7 @@ class CustomParticle(AbstractPhysicalParticle):
                     raise ValueError("The mass of a particle must be nonnegative.")
 
     @property
-    def mass_energy(self) -> u.J:
+    def mass_energy(self) -> u.Quantity[u.J]:
         """
         The mass energy of the |CustomParticle|.
 

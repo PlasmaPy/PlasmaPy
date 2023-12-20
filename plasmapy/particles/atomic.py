@@ -189,7 +189,7 @@ def particle_mass(
     *,
     mass_numb: Optional[Integral] = None,
     Z: Optional[Integral] = None,
-) -> u.kg:
+) -> u.Quantity[u.kg]:
     """
     Return the mass of a particle.
 
@@ -339,7 +339,7 @@ def charge_number(particle: Particle) -> Integral:
 
 
 @particle_input(any_of={"charged", "uncharged"})
-def electric_charge(particle: Particle) -> u.C:
+def electric_charge(particle: Particle) -> u.Quantity[u.C]:
     """
     Return the electric charge (in coulombs) of a particle.
 
@@ -803,7 +803,9 @@ def stable_isotopes(
 
 @particle_input
 @validate_quantities
-def reduced_mass(test_particle: ParticleLike, target_particle: ParticleLike) -> u.kg:
+def reduced_mass(
+    test_particle: ParticleLike, target_particle: ParticleLike
+) -> u.Quantity[u.kg]:
     r"""
     Find the :wikipedia:`reduced mass` between two particles.
 
