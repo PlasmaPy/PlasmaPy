@@ -503,8 +503,17 @@ Use |particle_input| to transform arguments to relevant |Particle|,
 
 Validating Quantity arguments
 -----------------------------
+
+Use |validate_quantities| to enforce |Quantity| type hints:
+
+.. code-block:: python
+
+   @validate_quantities
+   def magnetic_pressure(B: u.Quantity[u.T]) -> u.Quantity[u.Pa]:
+       return B**2 / (2 * const.mu0)
+
 Use |validate_quantities| to verify function arguments and impose
-relevant restrictions
+relevant restrictions:
 
 .. code-block:: python
 
@@ -514,16 +523,8 @@ relevant restrictions
        n={"can_be_negative": False},
        validations_on_return={"equivalencies": u.dimensionless_angles()},
    )
-   def inertial_length(n: u.Quantity[u.m**-3], particle) -> u.m:
+   def inertial_length(n: u.Quantity[u.m**-3], particle) -> u.Quantity[u.m]:
        ...
-
-Use |validate_quantities| to enforce |Quantity| type hints
-
-.. code-block:: python
-
-   @validate_quantities
-   def magnetic_pressure(B: u.T) -> u.Pa:
-       return B**2 / (2 * const.mu0)
 
 Special function categories
 ===========================
