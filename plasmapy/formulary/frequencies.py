@@ -47,7 +47,7 @@ def gyrofrequency(
     signed: bool = False,
     Z: Optional[numbers.Real] = None,
     mass_numb: Optional[numbers.Integral] = None,
-) -> u.rad / u.s:
+) -> u.Quantity[u.rad / u.s]:
     r"""
     Calculate the particle gyrofrequency in units of radians per second.
 
@@ -239,7 +239,7 @@ def plasma_frequency(
     *,
     mass_numb: Optional[numbers.Integral] = None,
     Z: Optional[numbers.Real] = None,
-) -> u.rad / u.s:
+) -> u.Quantity[u.rad / u.s]:
     r"""Calculate the particle plasma frequency.
 
     **Aliases:** `wp_`
@@ -353,7 +353,7 @@ wp_ = plasma_frequency
 @angular_freq_to_hz
 def lower_hybrid_frequency(
     B: u.Quantity[u.T], n_i: u.Quantity[u.m**-3], ion: ParticleLike
-) -> u.rad / u.s:
+) -> u.Quantity[u.rad / u.s]:
     r"""
     Return the lower hybrid frequency.
 
@@ -451,7 +451,9 @@ wlh_ = lower_hybrid_frequency
     },
 )
 @angular_freq_to_hz
-def upper_hybrid_frequency(B: u.Quantity[u.T], n_e: u.m**-3) -> u.rad / u.s:
+def upper_hybrid_frequency(
+    B: u.Quantity[u.T], n_e: u.Quantity[u.m**-3]
+) -> u.Quantity[u.rad / u.s]:
     r"""
     Return the upper hybrid frequency.
 
@@ -540,7 +542,7 @@ def Buchsbaum_frequency(
     ion2: ParticleLike,
     Z1: Optional[float] = None,
     Z2: Optional[float] = None,
-) -> u.rad / u.s:
+) -> u.Quantity[u.rad / u.s]:
     r"""
     Return the Buchsbaum frequency for a two-ion-species plasma.
 
