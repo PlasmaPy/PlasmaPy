@@ -31,9 +31,9 @@ c_si_unitless = c.value
 def hollweg(  # noqa: C901, PLR0912, PLR0915
     B: u.T,
     ion: ParticleLike,
-    k: u.rad / u.m,
+    k: u.Quantity[u.rad / u.m],
     n_i: u.Quantity[u.m**-3],
-    theta: u.rad,
+    theta: u.Quantity[u.rad],
     *,
     T_e: u.K,
     T_i: u.K,

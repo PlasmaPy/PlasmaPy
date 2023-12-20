@@ -281,7 +281,7 @@ def permittivity_1D_Maxwellian_lite(omega, kWave, vth, wp):
 )
 def permittivity_1D_Maxwellian(
     omega: u.rad / u.s,
-    kWave: u.rad / u.m,
+    kWave: u.Quantity[u.rad / u.m],
     T: u.K,
     n: u.Quantity[u.m**-3],
     particle,

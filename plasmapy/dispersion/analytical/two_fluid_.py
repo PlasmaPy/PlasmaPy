@@ -29,9 +29,9 @@ from plasmapy.utils.exceptions import PhysicsWarning
 def two_fluid(
     B: u.T,
     ion: ParticleLike,
-    k: u.rad / u.m,
+    k: u.Quantity[u.rad / u.m],
     n_i: u.Quantity[u.m**-3],
-    theta: u.rad,
+    theta: u.Quantity[u.rad],
     *,
     T_e: u.K,
     T_i: u.K,
