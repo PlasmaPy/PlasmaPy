@@ -760,13 +760,13 @@ class IonizationStateCollection:
                 raise ParticleError("Invalid log_abundances.") from None
 
     @property
-    def T_e(self) -> u.K:
+    def T_e(self) -> u.Quantity[u.K]:
         """The electron temperature."""
         return self._pars["T_e"]
 
     @T_e.setter
     @validate_quantities(electron_temperature={"equivalencies": u.temperature_energy()})
-    def T_e(self, electron_temperature: u.K):
+    def T_e(self, electron_temperature: u.Quantity[u.K]):
         """Set the electron temperature."""
         try:
             temperature = electron_temperature.to(

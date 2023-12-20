@@ -128,7 +128,7 @@ lambdaDB_ = deBroglie_wavelength
     T_e={"can_be_negative": False, "equivalencies": u.temperature_energy()},
     validations_on_return={"can_be_negative": False},
 )
-def thermal_deBroglie_wavelength(T_e: u.K) -> u.m:
+def thermal_deBroglie_wavelength(T_e: u.Quantity[u.K]) -> u.m:
     r"""
     Calculate the thermal de Broglie wavelength for electrons.
 
@@ -386,7 +386,9 @@ def Wigner_Seitz_radius(n: u.m**-3) -> u.m:
     n_e={"can_be_negative": False},
     T={"can_be_negative": False, "equivalencies": u.temperature_energy()},
 )
-def chemical_potential(n_e: u.Quantity[u.m**-3], T: u.K) -> u.dimensionless_unscaled:
+def chemical_potential(
+    n_e: u.Quantity[u.m**-3], T: u.Quantity[u.K]
+) -> u.dimensionless_unscaled:
     r"""
     Calculate the ideal chemical potential.
 
@@ -565,7 +567,7 @@ def _chemical_potential_interp(n_e, T):
     T={"can_be_negative": False, "equivalencies": u.temperature_energy()},
     n_e={"can_be_negative": False},
 )
-def quantum_theta(T: u.K, n_e: u.m**-3) -> u.dimensionless_unscaled:
+def quantum_theta(T: u.Quantity[u.K], n_e: u.m**-3) -> u.dimensionless_unscaled:
     r"""
     Compare Fermi energy to thermal kinetic energy to check if quantum
     effects are important.

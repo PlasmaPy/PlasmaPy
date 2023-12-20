@@ -38,7 +38,7 @@ class AbstractMHDWave(ABC):
     )
     def __init__(
         self,
-        B: u.T,
+        B: u.Quantity[u.T],
         density: (u.m**-3, u.kg / u.m**3),
         ion: ParticleLike,
         *,

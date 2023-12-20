@@ -38,7 +38,7 @@ k_B_si_unitless = k_B.value
 @check_relativistic
 @validate_quantities(density={"can_be_negative": False})
 def Alfven_speed(
-    B: u.T,
+    B: u.Quantity[u.T],
     density: (u.m**-3, u.kg / u.m**3),
     ion: Optional[ParticleLike] = None,
     *,
@@ -187,8 +187,8 @@ va_ = Alfven_speed
 )
 @particle_input
 def ion_sound_speed(
-    T_e: u.K,
-    T_i: u.K,
+    T_e: u.Quantity[u.K],
+    T_i: u.Quantity[u.K],
     ion: ParticleLike,
     n_e: u.m**-3 = None,
     k: u.m**-1 = None,
@@ -534,7 +534,7 @@ def thermal_speed_lite(T: Real, mass: Real, coeff: Real) -> Real:
 )
 @particle_input
 def thermal_speed(
-    T: u.K,
+    T: u.Quantity[u.K],
     particle: ParticleLike,
     method="most_probable",
     mass: u.kg = None,
@@ -740,7 +740,7 @@ vth_ = thermal_speed
 )
 @particle_input
 def kappa_thermal_speed(
-    T: u.K,
+    T: u.Quantity[u.K],
     kappa,
     particle: ParticleLike,
     method="most_probable",

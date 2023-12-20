@@ -451,7 +451,7 @@ class CheckUnits(CheckBase):
         import astropy.units as u
         from plasmapy.utils.decorators import CheckUnits
 
-        @CheckUnits(arg1={'units': u.K,
+        @CheckUnits(arg1={'units': u.Quantity[u.K],
                           'equivalencies': u.temperature_energy(),
                           'pass_equivalent_units': True})
         def foo(arg1):
@@ -1184,7 +1184,7 @@ def check_units(
         import astropy.units as u
         from plasmapy.utils.decorators import check_units
 
-        @check_units(arg1={'units': u.K,
+        @check_units(arg1={'units': u.Quantity[u.K],
                            'equivalencies': u.temperature(),
                            'pass_equivalent_units': True})
         def foo(arg1):

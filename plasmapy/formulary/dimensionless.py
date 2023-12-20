@@ -38,7 +38,7 @@ __all__ += __aliases__
     T_e={"can_be_negative": False, "equivalencies": u.temperature_energy()},
     n_e={"can_be_negative": False},
 )
-def Debye_number(T_e: u.K, n_e: u.m**-3) -> u.dimensionless_unscaled:
+def Debye_number(T_e: u.Quantity[u.K], n_e: u.m**-3) -> u.dimensionless_unscaled:
     r"""Return the number of electrons within a sphere with a radius
     of the Debye length.
 
@@ -114,8 +114,8 @@ nD_ = Debye_number
 @particle_input
 def Hall_parameter(
     n: u.Quantity[u.m**-3],
-    T: u.K,
-    B: u.T,
+    T: u.Quantity[u.K],
+    B: u.Quantity[u.T],
     ion: ParticleLike,
     particle: ParticleLike,
     coulomb_log=None,
@@ -238,7 +238,9 @@ betaH_ = Hall_parameter
     T={"can_be_negative": False, "equivalencies": u.temperature_energy()},
     n={"can_be_negative": False},
 )
-def beta(T: u.K, n: u.Quantity[u.m**-3], B: u.T) -> u.dimensionless_unscaled:
+def beta(
+    T: u.Quantity[u.K], n: u.Quantity[u.m**-3], B: u.Quantity[u.T]
+) -> u.dimensionless_unscaled:
     r"""
     Compute the ratio of thermal pressure to magnetic pressure.
 
@@ -438,7 +440,7 @@ Rm_ = Mag_Reynolds
 
 def Lundquist_number(
     L: u.m,
-    B: u.T,
+    B: u.Quantity[u.T],
     density: (u.m**-3, u.kg / u.m**3),
     sigma: u.S / u.m,
     ion: Optional[ParticleLike] = None,

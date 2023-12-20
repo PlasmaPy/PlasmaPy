@@ -159,7 +159,7 @@ class SingleParticleCollisionFrequencies:
         field_particle: ParticleLike,
         *,
         v_drift: u.Quantity[u.m / u.s],
-        T_b: u.K,
+        T_b: u.Quantity[u.K],
         n_b: u.Quantity[u.m**-3],
         Coulomb_log,
     ):
@@ -392,9 +392,9 @@ class MaxwellianCollisionFrequencies:
         field_particle: ParticleLike,
         *,
         v_drift: u.Quantity[u.m / u.s] = 0 * u.m / u.s,
-        T_a: u.K,
+        T_a: u.Quantity[u.K],
         n_a: u.Quantity[u.m**-3],
-        T_b: u.K,
+        T_b: u.Quantity[u.K],
         n_b: u.Quantity[u.m**-3],
         Coulomb_log: u.dimensionless_unscaled,
     ):
@@ -602,7 +602,7 @@ class MaxwellianCollisionFrequencies:
     n={"can_be_negative": False},
 )
 def collision_frequency(
-    T: u.K,
+    T: u.Quantity[u.K],
     n: u.Quantity[u.m**-3],
     species,
     z_mean: Real = np.nan,
@@ -792,7 +792,7 @@ def collision_frequency(
     n_e={"can_be_negative": False},
 )
 def fundamental_electron_collision_freq(
-    T_e: u.K,
+    T_e: u.Quantity[u.K],
     n_e: u.Quantity[u.m**-3],
     ion,
     coulomb_log=None,
@@ -948,7 +948,7 @@ def fundamental_electron_collision_freq(
     n_i={"can_be_negative": False},
 )
 def fundamental_ion_collision_freq(
-    T_i: u.K,
+    T_i: u.Quantity[u.K],
     n_i: u.Quantity[u.m**-3],
     ion,
     coulomb_log=None,

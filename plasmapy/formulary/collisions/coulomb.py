@@ -35,7 +35,7 @@ from plasmapy.utils.exceptions import CouplingWarning
 )
 @particles.particle_input
 def Coulomb_logarithm(
-    T: u.K,
+    T: u.Quantity[u.K],
     n_e: u.Quantity[u.m**-3],
     species: (particles.Particle, particles.Particle),
     z_mean: Real = np.nan,

@@ -22,7 +22,7 @@ from plasmapy.utils.decorators import validate_quantities
 )
 @particles.particle_input
 def impact_parameter_perp(
-    T: u.K,
+    T: u.Quantity[u.K],
     species: (particles.Particle, particles.Particle),
     V: u.Quantity[u.m / u.s] = np.nan * u.m / u.s,
 ) -> u.m:
@@ -109,7 +109,7 @@ def impact_parameter_perp(
     V={"none_shall_pass": True},
 )
 def impact_parameter(  # noqa: C901
-    T: u.K,
+    T: u.Quantity[u.K],
     n_e: u.Quantity[u.m**-3],
     species,
     z_mean: Real = np.nan,
@@ -331,7 +331,7 @@ def impact_parameter(  # noqa: C901
     n_e={"can_be_negative": False},
 )
 def mean_free_path(
-    T: u.K,
+    T: u.Quantity[u.K],
     n_e: u.Quantity[u.m**-3],
     species,
     z_mean: Real = np.nan,

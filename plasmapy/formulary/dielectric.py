@@ -33,7 +33,9 @@ RotatingTensorElements = namedtuple(
 
 
 @validate_quantities(B={"can_be_negative": False}, omega={"can_be_negative": False})
-def cold_plasma_permittivity_SDP(B: u.T, species, n, omega: u.Quantity[u.rad / u.s]):
+def cold_plasma_permittivity_SDP(
+    B: u.Quantity[u.T], species, n, omega: u.Quantity[u.rad / u.s]
+):
     r"""
     Magnetized cold plasma dielectric permittivity tensor elements.
 
@@ -126,7 +128,9 @@ def cold_plasma_permittivity_SDP(B: u.T, species, n, omega: u.Quantity[u.rad / u
 
 
 @validate_quantities(B={"can_be_negative": False}, omega={"can_be_negative": False})
-def cold_plasma_permittivity_LRP(B: u.T, species, n, omega: u.Quantity[u.rad / u.s]):
+def cold_plasma_permittivity_LRP(
+    B: u.Quantity[u.T], species, n, omega: u.Quantity[u.rad / u.s]
+):
     r"""
     Magnetized cold plasma dielectric permittivity tensor elements.
 
@@ -282,7 +286,7 @@ def permittivity_1D_Maxwellian_lite(omega, kWave, vth, wp):
 def permittivity_1D_Maxwellian(
     omega: u.Quantity[u.rad / u.s],
     kWave: u.Quantity[u.rad / u.m],
-    T: u.K,
+    T: u.Quantity[u.K],
     n: u.Quantity[u.m**-3],
     particle,
     z_mean=None,

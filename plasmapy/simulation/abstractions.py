@@ -142,7 +142,7 @@ class AbstractNormalizations(ABC):
 
     @property
     @abstractmethod
-    def temperature(self) -> u.K:
+    def temperature(self) -> u.Quantity[u.K]:
         """The normalization for temperature."""
         ...
 

@@ -136,7 +136,7 @@ class ValidateQuantities(CheckUnits, CheckValues):
         import astropy.units as u
         from plasmapy.utils.decorators import ValidateQuantities
 
-        @ValidateQuantities(arg1={'units': u.K,
+        @ValidateQuantities(arg1={'units': u.Quantity[u.K],
                                   'equivalencies': u.temperature(),
                                   'pass_equivalent_units': True})
         def foo(arg1):
@@ -527,7 +527,7 @@ def validate_quantities(func=None, validations_on_return=None, **validations):
         import astropy.units as u
         from plasmapy.utils.decorators import validate_quantities
 
-        @validate_quantities(arg1={'units': u.K,
+        @validate_quantities(arg1={'units': u.Quantity[u.K],
                                    'equivalencies': u.temperature(),
                                    'pass_equivalent_units': True})
         def foo(arg1):
