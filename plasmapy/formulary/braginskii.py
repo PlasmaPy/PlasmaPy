@@ -319,7 +319,7 @@ class ClassicalTransport:
         T_i: u.Quantity[u.K],
         n_i: u.Quantity[u.m**-3],
         ion,
-        m_i: u.kg = None,
+        m_i: u.Quantity[u.kg] = None,
         Z=None,
         B: u.Quantity[u.T] = 0.0 * u.T,
         model="Braginskii",
@@ -455,7 +455,7 @@ class ClassicalTransport:
 
     @property
     @validate_quantities
-    def resistivity(self) -> u.Ohm * u.m:
+    def resistivity(self) -> u.Quantity[u.Ohm * u.m]:
         r"""
         Calculate the resistivity.
 
@@ -525,7 +525,7 @@ class ClassicalTransport:
 
     @property
     @validate_quantities
-    def ion_thermal_conductivity(self) -> u.W / u.m / u.K:
+    def ion_thermal_conductivity(self) -> u.Quantity[u.W / u.m / u.K]:
         r"""
         Calculate the thermal conductivity for ions.
 
@@ -579,7 +579,7 @@ class ClassicalTransport:
 
     @property
     @validate_quantities
-    def electron_thermal_conductivity(self) -> u.W / u.m / u.K:
+    def electron_thermal_conductivity(self) -> u.Quantity[u.W / u.m / u.K]:
         r"""
         Calculate the thermal conductivity for electrons.
 
@@ -645,7 +645,7 @@ class ClassicalTransport:
 
     @property
     @validate_quantities
-    def ion_viscosity(self) -> u.Pa * u.s:
+    def ion_viscosity(self) -> u.Quantity[u.Pa * u.s]:
         r"""
         Calculate the ion viscosity.
 
@@ -693,7 +693,7 @@ class ClassicalTransport:
 
     @property
     @validate_quantities
-    def electron_viscosity(self) -> u.Pa * u.s:
+    def electron_viscosity(self) -> u.Quantity[u.Pa * u.s]:
         r"""
         Calculate the electron viscosity.
 
@@ -799,7 +799,7 @@ def resistivity(
     mu=None,
     theta=None,
     coulomb_log_method="classical",
-) -> u.Ohm * u.m:
+) -> u.Quantity[u.Ohm * u.m]:
     r"""
     Calculate the resistivity.
 
@@ -910,7 +910,7 @@ def ion_thermal_conductivity(
     mu=None,
     theta=None,
     coulomb_log_method="classical",
-) -> u.W / u.m / u.K:
+) -> u.Quantity[u.W / u.m / u.K]:
     r"""
     Calculate the thermal conductivity for ions.
 
@@ -981,7 +981,7 @@ def electron_thermal_conductivity(
     mu=None,
     theta=None,
     coulomb_log_method="classical",
-) -> u.W / u.m / u.K:
+) -> u.Quantity[u.W / u.m / u.K]:
     r"""
     Calculate the thermal conductivity for electrons.
 
@@ -1063,7 +1063,7 @@ def ion_viscosity(
     mu=None,
     theta=None,
     coulomb_log_method="classical",
-) -> u.Pa * u.s:
+) -> u.Quantity[u.Pa * u.s]:
     r"""
     Calculate the ion viscosity.
 
@@ -1120,7 +1120,7 @@ def electron_viscosity(
     mu=None,
     theta=None,
     coulomb_log_method="classical",
-) -> u.Pa * u.s:
+) -> u.Quantity[u.Pa * u.s]:
     r"""
     Calculate the electron viscosity.
 
