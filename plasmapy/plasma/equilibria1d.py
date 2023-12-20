@@ -56,7 +56,7 @@ class HarrisSheet:
         self.P0 = P0
 
     @validate_quantities
-    def magnetic_field(self, y: u.m) -> u.T:
+    def magnetic_field(self, y: u.m) -> u.Quantity[u.T]:
         r"""
         Compute the magnetic field.
 
@@ -94,7 +94,7 @@ class HarrisSheet:
         )
 
     @validate_quantities
-    def plasma_pressure(self, y: u.m) -> u.Pa:
+    def plasma_pressure(self, y: u.m) -> u.Quantity[u.Pa]:
         r"""
         Compute plasma pressure.
 

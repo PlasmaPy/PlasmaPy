@@ -76,13 +76,13 @@ class AbstractNormalizations(ABC):
 
     @property
     @abstractmethod
-    def diffusivity(self) -> u.m**2 / u.s:
+    def diffusivity(self) -> u.Quantity[u.m**2 / u.s]:
         """The normalization for diffusivity."""
         ...
 
     @property
     @abstractmethod
-    def dynamic_viscosity(self) -> u.Pa * u.s:
+    def dynamic_viscosity(self) -> u.Quantity[u.Pa * u.s]:
         """The normalization for dynamic viscosity."""
         ...
 
@@ -100,13 +100,13 @@ class AbstractNormalizations(ABC):
 
     @property
     @abstractmethod
-    def length(self) -> u.m:
+    def length(self) -> u.Quantity[u.m]:
         """The normalization for length."""
         ...
 
     @property
     @abstractmethod
-    def magnetic_field(self) -> u.T:
+    def magnetic_field(self) -> u.Quantity[u.T]:
         """The magnetic field normalization."""
         ...
 
@@ -118,7 +118,7 @@ class AbstractNormalizations(ABC):
 
     @property
     @abstractmethod
-    def mass(self) -> u.kg:
+    def mass(self) -> u.Quantity[u.kg]:
         """The normalization for mass."""
         ...
 
@@ -130,13 +130,13 @@ class AbstractNormalizations(ABC):
 
     @property
     @abstractmethod
-    def number_density(self) -> u.m**-3:
+    def number_density(self) -> u.Quantity[u.m**-3]:
         """The normalization for number density."""
         ...
 
     @property
     @abstractmethod
-    def pressure(self) -> u.Pa:
+    def pressure(self) -> u.Quantity[u.Pa]:
         """The normalization for pressure."""
         ...
 
@@ -160,13 +160,13 @@ class AbstractNormalizations(ABC):
 
     @property
     @abstractmethod
-    def wavenumber(self) -> u.m**-1:
+    def wavenumber(self) -> u.Quantity[u.m**1]:
         """The normalization for inverse length."""
         ...
 
     @property
     @abstractmethod
-    def velocity(self) -> u.m / u.s:
+    def velocity(self) -> u.Quantity[u.m / u.s]:
         """The normalization for velocity."""
         ...
 
@@ -178,7 +178,7 @@ class AbstractNormalizations(ABC):
 
     @property
     @abstractmethod
-    def volumetric_rate(self) -> u.m**-3 * u.s**-1:
+    def volumetric_rate(self) -> u.Quantity[u.m**-3 * u.s**-1]:
         """
         The normalization for a volumetric rate.
 
