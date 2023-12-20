@@ -92,7 +92,7 @@ filelock==3.13.1
     # via
     #   tox
     #   virtualenv
-fonttools==4.46.0
+fonttools==4.47.0
     # via matplotlib
 fqdn==1.5.1
     # via jsonschema
@@ -154,7 +154,7 @@ jupyter-client==8.6.0
     #   jupyter-server
     #   nbclient
     #   voila
-jupyter-core==5.5.0
+jupyter-core==5.5.1
     # via
     #   ipykernel
     #   jupyter-client
@@ -203,7 +203,7 @@ nbclient==0.7.4
     # via
     #   nbconvert
     #   voila
-nbconvert==7.12.0
+nbconvert==7.13.0
     # via
     #   jupyter-server
     #   nbsphinx
