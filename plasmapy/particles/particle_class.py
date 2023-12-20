@@ -2091,8 +2091,8 @@ class CustomParticle(AbstractPhysicalParticle):
 
     def __init__(
         self,
-        mass: u.kg = None,
-        charge: u.C = None,
+        mass: u.Quantity[u.kg] = None,
+        charge: u.Quantity[u.C] = None,
         symbol: Optional[str] = None,
         *,
         Z: Optional[Real] = None,
@@ -2297,7 +2297,7 @@ class CustomParticle(AbstractPhysicalParticle):
         return self._mass
 
     @mass.setter
-    def mass(self, m: u.kg):
+    def mass(self, m: u.Quantity[u.kg]):
         if m is None:
             m = np.nan * u.kg
         elif isinstance(m, str):

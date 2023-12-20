@@ -150,7 +150,7 @@ class IonicLevel:
     @validate_quantities(
         n={"can_be_negative": False, "can_be_inf": False, "none_shall_pass": True},
     )
-    def number_density(self, n: u.m**-3):
+    def number_density(self, n: u.Quantity[u.m**-3]):
         self._number_density = np.nan * u.m**-3 if n is None else n
 
     @property
@@ -536,7 +536,7 @@ class IonizationState:
 
     @n_elem.setter
     @validate_quantities
-    def n_elem(self, value: u.m**-3):
+    def n_elem(self, value: u.Quantity[u.m**-3]):
         """Set the number density of neutrals and all ions."""
         if value < 0 * u.m**-3:
             raise ParticleError
@@ -556,7 +556,7 @@ class IonizationState:
 
     @number_densities.setter
     @validate_quantities
-    def number_densities(self, value: u.m**-3):
+    def number_densities(self, value: u.Quantity[u.m**-3]):
         """Set the number densities for each state."""
         if np.any(value.value < 0):
             raise ParticleError("Number densities cannot be negative.")

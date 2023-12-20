@@ -652,7 +652,7 @@ class IonizationStateCollection:
 
     @n0.setter
     @validate_quantities
-    def n0(self, n: u.m**-3):
+    def n0(self, n: u.Quantity[u.m**-3]):
         """Set the number density scaling factor."""
         try:
             n = n.to(u.m**-3)

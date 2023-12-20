@@ -303,7 +303,7 @@ def test_optional_particle_annotation_parameter():
     )
 
 
-def undecorated_function(particle: ParticleLike, distance: u.m):
+def undecorated_function(particle: ParticleLike, distance: u.Quantity[u.m]):
     return particle, distance
 
 

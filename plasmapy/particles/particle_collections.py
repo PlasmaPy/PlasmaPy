@@ -296,7 +296,7 @@ class ParticleList(collections.UserList):
                 self.append(obj)
 
     @property
-    def half_life(self) -> u.s:
+    def half_life(self) -> u.Quantity[u.s]:
         """
         The half-lives of the particles.
 
