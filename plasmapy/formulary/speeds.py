@@ -44,7 +44,7 @@ def Alfven_speed(
     *,
     mass_numb: Optional[Integral] = None,
     Z: Optional[Real] = None,
-) -> u.m / u.s:
+) -> u.Quantity[u.m / u.s]:
     r"""Calculate the Alfvén speed.
 
     The Alfvén speed :math:`V_A` is the typical propagation speed of
@@ -190,12 +190,12 @@ def ion_sound_speed(
     T_e: u.Quantity[u.K],
     T_i: u.Quantity[u.K],
     ion: ParticleLike,
-    n_e: u.m**-3 = None,
-    k: u.m**-1 = None,
+    n_e: u.Quantity[u.m**-3] = None,
+    k: u.Quantity[u.m**-1] = None,
     gamma_e=1,
     gamma_i=3,
     Z=None,
-) -> u.m / u.s:
+) -> u.Quantity[u.m / u.s]:
     r"""
     Return the ion sound speed for an electron-ion plasma.
 
@@ -537,9 +537,9 @@ def thermal_speed(
     T: u.Quantity[u.K],
     particle: ParticleLike,
     method="most_probable",
-    mass: u.kg = None,
+    mass: u.Quantity[u.kg] = None,
     ndim=3,
-) -> u.m / u.s:
+) -> u.Quantity[u.m / u.s]:
     r"""
     Calculate the speed of thermal motion for particles with a Maxwellian
     distribution.  (See the :ref:`Notes <thermal-speed-notes>` section for
@@ -747,7 +747,7 @@ def kappa_thermal_speed(
     *,
     mass_numb: Optional[Real] = None,
     Z: Optional[Real] = None,
-) -> u.m / u.s:
+) -> u.Quantity[u.m / u.s]:
     r"""
     Return the most probable speed for a particle within a kappa
     distribution.

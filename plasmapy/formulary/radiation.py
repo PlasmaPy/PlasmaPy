@@ -27,12 +27,12 @@ from plasmapy.utils.exceptions import PhysicsError
 )
 @particle_input
 def thermal_bremsstrahlung(
-    frequencies: u.Hz,
+    frequencies: u.Quantity[u.Hz],
     n_e: u.Quantity[u.m**-3],
     T_e: u.Quantity[u.K],
-    n_i: u.m**-3 = None,
+    n_i: u.Quantity[u.m**-3] = None,
     ion: ParticleLike = "p+",
-    kmax: u.m = None,
+    kmax: u.Quantity[u.m] = None,
 ) -> np.ndarray:
     r"""
     Calculate the bremsstrahlung emission spectrum for a Maxwellian plasma
