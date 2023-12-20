@@ -29,7 +29,7 @@ from plasmapy.utils.decorators import validate_quantities
 )
 def coupling_parameter(
     T: u.K,
-    n_e: u.m**-3,
+    n_e: u.Quantity[u.m**-3],
     species,
     z_mean: Real = np.nan,
     V: u.m / u.s = np.nan * u.m / u.s,
@@ -226,7 +226,7 @@ def coupling_parameter(
 def Knudsen_number(
     characteristic_length,
     T: u.K,
-    n_e: u.m**-3,
+    n_e: u.Quantity[u.m**-3],
     species,
     z_mean: Real = np.nan,
     V: u.m / u.s = np.nan * u.m / u.s,

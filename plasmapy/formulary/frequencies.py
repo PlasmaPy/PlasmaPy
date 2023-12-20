@@ -234,7 +234,7 @@ def plasma_frequency_lite(
 )
 @angular_freq_to_hz
 def plasma_frequency(
-    n: u.m**-3,
+    n: u.Quantity[u.m**-3],
     particle: ParticleLike,
     *,
     mass_numb: Optional[numbers.Integral] = None,
@@ -351,7 +351,9 @@ wp_ = plasma_frequency
     },
 )
 @angular_freq_to_hz
-def lower_hybrid_frequency(B: u.T, n_i: u.m**-3, ion: ParticleLike) -> u.rad / u.s:
+def lower_hybrid_frequency(
+    B: u.T, n_i: u.Quantity[u.m**-3], ion: ParticleLike
+) -> u.rad / u.s:
     r"""
     Return the lower hybrid frequency.
 
@@ -532,8 +534,8 @@ wuh_ = upper_hybrid_frequency
 @angular_freq_to_hz
 def Buchsbaum_frequency(
     B: u.T,
-    n1: u.m**-3,
-    n2: u.m**-3,
+    n1: u.Quantity[u.m**-3],
+    n2: u.Quantity[u.m**-3],
     ion1: ParticleLike,
     ion2: ParticleLike,
     Z1: Optional[float] = None,

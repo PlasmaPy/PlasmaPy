@@ -283,7 +283,7 @@ def permittivity_1D_Maxwellian(
     omega: u.rad / u.s,
     kWave: u.rad / u.m,
     T: u.K,
-    n: u.m**-3,
+    n: u.Quantity[u.m**-3],
     particle,
     z_mean=None,
 ) -> u.dimensionless_unscaled:

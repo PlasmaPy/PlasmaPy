@@ -514,7 +514,7 @@ relevant restrictions
        n={"can_be_negative": False},
        validations_on_return={"equivalencies": u.dimensionless_angles()},
    )
-   def inertial_length(n: u.m**-3, particle) -> u.m:
+   def inertial_length(n: u.Quantity[u.m**-3], particle) -> u.m:
        ...
 
 Use |validate_quantities| to enforce |Quantity| type hints

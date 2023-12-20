@@ -110,7 +110,7 @@ def impact_parameter_perp(
 )
 def impact_parameter(  # noqa: C901
     T: u.K,
-    n_e: u.m**-3,
+    n_e: u.Quantity[u.m**-3],
     species,
     z_mean: Real = np.nan,
     V: u.m / u.s = np.nan * u.m / u.s,
@@ -332,7 +332,7 @@ def impact_parameter(  # noqa: C901
 )
 def mean_free_path(
     T: u.K,
-    n_e: u.m**-3,
+    n_e: u.Quantity[u.m**-3],
     species,
     z_mean: Real = np.nan,
     V: u.m / u.s = np.nan * u.m / u.s,

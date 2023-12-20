@@ -315,9 +315,9 @@ class ClassicalTransport:
     def __init__(  # noqa: PLR0912, PLR0915
         self,
         T_e: u.K,
-        n_e: u.m**-3,
+        n_e: u.Quantity[u.m**-3],
         T_i: u.K,
-        n_i: u.m**-3,
+        n_i: u.Quantity[u.m**-3],
         ion,
         m_i: u.kg = None,
         Z=None,

@@ -28,7 +28,7 @@ from plasmapy.utils.exceptions import PhysicsError
 @particle_input
 def thermal_bremsstrahlung(
     frequencies: u.Hz,
-    n_e: u.m**-3,
+    n_e: u.Quantity[u.m**-3],
     T_e: u.K,
     n_i: u.m**-3 = None,
     ion: ParticleLike = "p+",

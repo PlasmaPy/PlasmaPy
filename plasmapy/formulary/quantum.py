@@ -386,7 +386,7 @@ def Wigner_Seitz_radius(n: u.m**-3) -> u.m:
     n_e={"can_be_negative": False},
     T={"can_be_negative": False, "equivalencies": u.temperature_energy()},
 )
-def chemical_potential(n_e: u.m**-3, T: u.K) -> u.dimensionless_unscaled:
+def chemical_potential(n_e: u.Quantity[u.m**-3], T: u.K) -> u.dimensionless_unscaled:
     r"""
     Calculate the ideal chemical potential.
 

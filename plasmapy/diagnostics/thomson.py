@@ -264,7 +264,7 @@ def spectral_density_lite(
 def spectral_density(  # noqa: C901, PLR0912, PLR0915
     wavelengths: u.nm,
     probe_wavelength: u.nm,
-    n: u.m**-3,
+    n: u.Quantity[u.m**-3],
     *,
     T_e: u.K,
     T_i: u.K,

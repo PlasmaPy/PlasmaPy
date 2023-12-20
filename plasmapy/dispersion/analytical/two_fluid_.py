@@ -30,7 +30,7 @@ def two_fluid(
     B: u.T,
     ion: ParticleLike,
     k: u.rad / u.m,
-    n_i: u.m**-3,
+    n_i: u.Quantity[u.m**-3],
     theta: u.rad,
     *,
     T_e: u.K,

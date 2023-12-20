@@ -14,7 +14,7 @@ from plasmapy.utils.decorators import validate_quantities
 @validate_quantities(
     T_e={"can_be_negative": False, "equivalencies": u.temperature_energy()}
 )
-def ionization_balance(n: u.m**-3, T_e: u.K) -> u.dimensionless_unscaled:
+def ionization_balance(n: u.Quantity[u.m**-3], T_e: u.K) -> u.dimensionless_unscaled:
     r"""
     Return the average ionization state of ions in a plasma assuming that
     the numbers of ions in each state are equal.
@@ -96,7 +96,9 @@ Z_bal_ = ionization_balance
 @validate_quantities(
     T_e={"can_be_negative": False, "equivalencies": u.temperature_energy()}
 )
-def Saha(g_j, g_k, n_e: u.m**-3, E_jk: u.J, T_e: u.K) -> u.dimensionless_unscaled:
+def Saha(
+    g_j, g_k, n_e: u.Quantity[u.m**-3], E_jk: u.J, T_e: u.K
+) -> u.dimensionless_unscaled:
     r"""
     Return the ratio of populations of two ionization states.
 

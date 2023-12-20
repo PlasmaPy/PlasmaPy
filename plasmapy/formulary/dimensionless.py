@@ -113,7 +113,7 @@ nD_ = Debye_number
 )
 @particle_input
 def Hall_parameter(
-    n: u.m**-3,
+    n: u.Quantity[u.m**-3],
     T: u.K,
     B: u.T,
     ion: ParticleLike,
@@ -238,7 +238,7 @@ betaH_ = Hall_parameter
     T={"can_be_negative": False, "equivalencies": u.temperature_energy()},
     n={"can_be_negative": False},
 )
-def beta(T: u.K, n: u.m**-3, B: u.T) -> u.dimensionless_unscaled:
+def beta(T: u.K, n: u.Quantity[u.m**-3], B: u.T) -> u.dimensionless_unscaled:
     r"""
     Compute the ratio of thermal pressure to magnetic pressure.
 

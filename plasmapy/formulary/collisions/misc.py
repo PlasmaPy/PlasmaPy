@@ -85,7 +85,7 @@ def _replace_nan_velocity_with_thermal_velocity(
 )
 def mobility(
     T: u.K,
-    n_e: u.m**-3,
+    n_e: u.Quantity[u.m**-3],
     species,
     z_mean: Real = np.nan,
     V: u.m / u.s = np.nan * u.m / u.s,
@@ -213,7 +213,7 @@ def mobility(
 )
 def Spitzer_resistivity(
     T: u.K,
-    n: u.m**-3,
+    n: u.Quantity[u.m**-3],
     species,
     z_mean: Real = np.nan,
     V: u.m / u.s = np.nan * u.m / u.s,

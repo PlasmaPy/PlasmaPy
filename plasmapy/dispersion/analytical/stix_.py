@@ -25,7 +25,7 @@ def stix(  # noqa: C901, PLR0912, PLR0915
     B: u.T,
     w: u.rad / u.s,
     ions: Particle,
-    n_i: u.m**-3,
+    n_i: u.Quantity[u.m**-3],
     theta: u.rad,
 ):
     r"""

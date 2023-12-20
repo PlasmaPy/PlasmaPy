@@ -160,7 +160,7 @@ class SingleParticleCollisionFrequencies:
         *,
         v_drift: u.m / u.s,
         T_b: u.K,
-        n_b: u.m**-3,
+        n_b: u.Quantity[u.m**-3],
         Coulomb_log,
     ):
         # Note: This class uses CGS units internally to coincide
@@ -393,9 +393,9 @@ class MaxwellianCollisionFrequencies:
         *,
         v_drift: u.m / u.s = 0 * u.m / u.s,
         T_a: u.K,
-        n_a: u.m**-3,
+        n_a: u.Quantity[u.m**-3],
         T_b: u.K,
-        n_b: u.m**-3,
+        n_b: u.Quantity[u.m**-3],
         Coulomb_log: u.dimensionless_unscaled,
     ):
         if (
@@ -603,7 +603,7 @@ class MaxwellianCollisionFrequencies:
 )
 def collision_frequency(
     T: u.K,
-    n: u.m**-3,
+    n: u.Quantity[u.m**-3],
     species,
     z_mean: Real = np.nan,
     V: u.m / u.s = np.nan * u.m / u.s,
@@ -793,7 +793,7 @@ def collision_frequency(
 )
 def fundamental_electron_collision_freq(
     T_e: u.K,
-    n_e: u.m**-3,
+    n_e: u.Quantity[u.m**-3],
     ion,
     coulomb_log=None,
     V=None,
@@ -949,7 +949,7 @@ def fundamental_electron_collision_freq(
 )
 def fundamental_ion_collision_freq(
     T_i: u.K,
-    n_i: u.m**-3,
+    n_i: u.Quantity[u.m**-3],
     ion,
     coulomb_log=None,
     V=None,
