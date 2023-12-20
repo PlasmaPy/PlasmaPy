@@ -490,7 +490,7 @@ def Coulomb_logarithm(
 
 
 @validate_quantities(impact_param={"can_be_negative": False})
-def Coulomb_cross_section(impact_param: u.m) -> u.m**2:
+def Coulomb_cross_section(impact_param: u.Quantity[u.m]) -> u.Quantity[u.m**2]:
     r"""
     Cross-section for a large angle Coulomb collision.
 

@@ -34,7 +34,7 @@ def coupling_parameter(
     z_mean: Real = np.nan,
     V: u.Quantity[u.m / u.s] = np.nan * u.m / u.s,
     method="classical",
-) -> u.dimensionless_unscaled:
+) -> u.Quantity[u.dimensionless_unscaled]:
     r"""
     Ratio of the Coulomb energy to the kinetic (usually thermal) energy.
 
@@ -231,7 +231,7 @@ def Knudsen_number(
     z_mean: Real = np.nan,
     V: u.Quantity[u.m / u.s] = np.nan * u.m / u.s,
     method="classical",
-) -> u.dimensionless_unscaled:
+) -> u.Quantity[u.dimensionless_unscaled]:
     r"""
     Knudsen number (dimensionless).
 

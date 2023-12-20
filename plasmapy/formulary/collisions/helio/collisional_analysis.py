@@ -18,11 +18,11 @@ from plasmapy.utils.decorators import validate_quantities
 )
 def temp_ratio(  # noqa: C901
     *,
-    r_0: u.au,
-    r_n: u.au,
-    n_1: u.cm**-3,
-    n_2: u.cm**-3,
-    v_1: u.km / u.s,
+    r_0: u.Quantity[u.au],
+    r_n: u.Quantity[u.au],
+    n_1: u.Quantity[u.cm**-3],
+    n_2: u.Quantity[u.cm**-3],
+    v_1: u.Quantity[u.km / u.s],
     T_1: u.Quantity[u.K],
     T_2: u.Quantity[u.K],
     ions: ParticleLike = ("p+", "He-4++"),

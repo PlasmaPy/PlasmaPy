@@ -25,7 +25,7 @@ def impact_parameter_perp(
     T: u.Quantity[u.K],
     species: (particles.Particle, particles.Particle),
     V: u.Quantity[u.m / u.s] = np.nan * u.m / u.s,
-) -> u.m:
+) -> u.Quantity[u.m]:
     r"""
     Distance of the closest approach for a 90° Coulomb collision.
 
@@ -337,7 +337,7 @@ def mean_free_path(
     z_mean: Real = np.nan,
     V: u.Quantity[u.m / u.s] = np.nan * u.m / u.s,
     method="classical",
-) -> u.m:
+) -> u.Quantity[u.m]:
     r"""
     Collisional mean free path (m).
 

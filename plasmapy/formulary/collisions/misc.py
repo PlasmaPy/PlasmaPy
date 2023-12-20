@@ -92,7 +92,7 @@ def mobility(
     z_mean: Real = np.nan,
     V: u.Quantity[u.m / u.s] = np.nan * u.m / u.s,
     method="classical",
-) -> u.m**2 / (u.V * u.s):
+) -> u.Quantity[u.m**2 / (u.V * u.s)]:
     r"""
     Return the electrical mobility.
 
@@ -220,7 +220,7 @@ def Spitzer_resistivity(
     z_mean: Real = np.nan,
     V: u.Quantity[u.m / u.s] = np.nan * u.m / u.s,
     method="classical",
-) -> u.Ohm * u.m:
+) -> u.Quantity[u.Ohm * u.m]:
     r"""
     Spitzer resistivity of a plasma.
 

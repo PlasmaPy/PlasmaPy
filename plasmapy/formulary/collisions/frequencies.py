@@ -263,7 +263,7 @@ class SingleParticleCollisionFrequencies:
         ).to(u.Hz)
 
     @cached_property
-    def x(self) -> u.dimensionless_unscaled:
+    def x(self) -> u.Quantity[u.dimensionless_unscaled]:
         """
         The ratio of kinetic energy in the test particle to the thermal
         energy of the field particle.
@@ -280,7 +280,7 @@ class SingleParticleCollisionFrequencies:
         return x.to(u.dimensionless_unscaled)
 
     @staticmethod
-    def _phi_integrand(t: u.dimensionless_unscaled):  # noqa: ANN205
+    def _phi_integrand(t: u.Quantity[u.dimensionless_unscaled]):  # noqa: ANN205
         """
         The phi integrand used in calculating phi.
         """
@@ -396,7 +396,7 @@ class MaxwellianCollisionFrequencies:
         n_a: u.Quantity[u.m**-3],
         T_b: u.Quantity[u.K],
         n_b: u.Quantity[u.m**-3],
-        Coulomb_log: u.dimensionless_unscaled,
+        Coulomb_log: u.Quantity[u.dimensionless_unscaled],
     ):
         if (
             isinstance(v_drift, np.ndarray)
@@ -608,7 +608,7 @@ def collision_frequency(
     z_mean: Real = np.nan,
     V: u.Quantity[u.m / u.s] = np.nan * u.m / u.s,
     method="classical",
-) -> u.Hz:
+) -> u.Quantity[u.Hz]:
     r"""
     Collision frequency of particles in a plasma.
 
@@ -798,7 +798,7 @@ def fundamental_electron_collision_freq(
     coulomb_log=None,
     V=None,
     coulomb_log_method="classical",
-) -> u.s**-1:
+) -> u.Quantity[u.s**-1]:
     r"""
     Average momentum relaxation rate for a slowly flowing Maxwellian
     distribution of electrons.
@@ -954,7 +954,7 @@ def fundamental_ion_collision_freq(
     coulomb_log=None,
     V=None,
     coulomb_log_method="classical",
-) -> u.s**-1:
+) -> u.Quantity[u.s**-1]:
     r"""
     Average momentum relaxation rate for a slowly flowing Maxwellian
     distribution of ions.
