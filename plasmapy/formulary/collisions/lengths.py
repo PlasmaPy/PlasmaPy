@@ -24,7 +24,7 @@ from plasmapy.utils.decorators import validate_quantities
 def impact_parameter_perp(
     T: u.K,
     species: (particles.Particle, particles.Particle),
-    V: u.m / u.s = np.nan * u.m / u.s,
+    V: u.Quantity[u.m / u.s] = np.nan * u.m / u.s,
 ) -> u.m:
     r"""
     Distance of the closest approach for a 90° Coulomb collision.
@@ -113,7 +113,7 @@ def impact_parameter(  # noqa: C901
     n_e: u.Quantity[u.m**-3],
     species,
     z_mean: Real = np.nan,
-    V: u.m / u.s = np.nan * u.m / u.s,
+    V: u.Quantity[u.m / u.s] = np.nan * u.m / u.s,
     method="classical",
 ):
     r"""
@@ -335,7 +335,7 @@ def mean_free_path(
     n_e: u.Quantity[u.m**-3],
     species,
     z_mean: Real = np.nan,
-    V: u.m / u.s = np.nan * u.m / u.s,
+    V: u.Quantity[u.m / u.s] = np.nan * u.m / u.s,
     method="classical",
 ) -> u.m:
     r"""

@@ -286,7 +286,7 @@ def beta(T: u.K, n: u.Quantity[u.m**-3], B: u.T) -> u.dimensionless_unscaled:
 
 @validate_quantities(U={"can_be_negative": True})
 def Reynolds_number(
-    rho: u.kg / u.m**3, U: u.m / u.s, L: u.m, mu: u.kg / (u.m * u.s)
+    rho: u.kg / u.m**3, U: u.Quantity[u.m / u.s], L: u.m, mu: u.kg / (u.m * u.s)
 ) -> u.dimensionless_unscaled:
     r"""
     Compute the Reynolds number.
@@ -364,7 +364,9 @@ Re_ = Reynolds_number
 
 
 @validate_quantities(U={"can_be_negative": True})
-def Mag_Reynolds(U: u.m / u.s, L: u.m, sigma: u.S / u.m) -> u.dimensionless_unscaled:
+def Mag_Reynolds(
+    U: u.Quantity[u.m / u.s], L: u.m, sigma: u.S / u.m
+) -> u.dimensionless_unscaled:
     r"""
     Compute the magnetic Reynolds number.
 

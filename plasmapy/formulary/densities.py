@@ -16,7 +16,7 @@ from plasmapy.utils.decorators import validate_quantities
         "units": [u.m**-3],
     },
 )
-def critical_density(omega: u.rad / u.s) -> u.m**-3:
+def critical_density(omega: u.Quantity[u.rad / u.s]) -> u.m**-3:
     r"""Calculate the plasma critical density for a radiation of a given frequency.
 
     Parameters

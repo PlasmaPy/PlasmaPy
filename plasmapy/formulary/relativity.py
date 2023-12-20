@@ -18,7 +18,7 @@ from plasmapy.utils.exceptions import RelativityError
 
 
 @validate_quantities(V={"can_be_negative": True})
-def Lorentz_factor(V: u.m / u.s):
+def Lorentz_factor(V: u.Quantity[u.m / u.s]):
     r"""
     Return the Lorentz factor.
 
@@ -94,7 +94,7 @@ def Lorentz_factor(V: u.m / u.s):
 @particle_input
 def relativistic_energy(
     particle: ParticleLike,
-    V: u.m / u.s,
+    V: u.Quantity[u.m / u.s],
     *,
     mass_numb: Optional[Integral] = None,
     Z: Optional[Integral] = None,
@@ -318,7 +318,7 @@ class RelativisticBody:
     def __init__(
         self,
         particle: ParticleLike,
-        V: u.m / u.s = None,
+        V: u.Quantity[u.m / u.s] = None,
         momentum: u.kg * u.m / u.s = None,
         *,
         total_energy: u.J = None,
@@ -490,7 +490,7 @@ class RelativisticBody:
 
     @velocity.setter
     @validate_quantities
-    def velocity(self, V: u.m / u.s):
+    def velocity(self, V: u.Quantity[u.m / u.s]):
         self._momentum = (Lorentz_factor(V) * self.mass * V).to(u.kg * u.m / u.s)
 
     @lorentz_factor.setter

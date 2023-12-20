@@ -39,7 +39,7 @@ def Coulomb_logarithm(
     n_e: u.Quantity[u.m**-3],
     species: (particles.Particle, particles.Particle),
     z_mean: Real = np.nan,
-    V: u.m / u.s = np.nan * u.m / u.s,
+    V: u.Quantity[u.m / u.s] = np.nan * u.m / u.s,
     method="classical",
 ):
     r"""

@@ -158,7 +158,7 @@ class SingleParticleCollisionFrequencies:
         test_particle: ParticleLike,
         field_particle: ParticleLike,
         *,
-        v_drift: u.m / u.s,
+        v_drift: u.Quantity[u.m / u.s],
         T_b: u.K,
         n_b: u.Quantity[u.m**-3],
         Coulomb_log,
@@ -391,7 +391,7 @@ class MaxwellianCollisionFrequencies:
         test_particle: ParticleLike,
         field_particle: ParticleLike,
         *,
-        v_drift: u.m / u.s = 0 * u.m / u.s,
+        v_drift: u.Quantity[u.m / u.s] = 0 * u.m / u.s,
         T_a: u.K,
         n_a: u.Quantity[u.m**-3],
         T_b: u.K,
@@ -606,7 +606,7 @@ def collision_frequency(
     n: u.Quantity[u.m**-3],
     species,
     z_mean: Real = np.nan,
-    V: u.m / u.s = np.nan * u.m / u.s,
+    V: u.Quantity[u.m / u.s] = np.nan * u.m / u.s,
     method="classical",
 ) -> u.Hz:
     r"""

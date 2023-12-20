@@ -34,7 +34,7 @@ __all__ += __aliases__
     V={"can_be_negative": True}, validations_on_return={"can_be_negative": False}
 )
 @particle_input
-def deBroglie_wavelength(V: u.m / u.s, particle: ParticleLike) -> u.m:
+def deBroglie_wavelength(V: u.Quantity[u.m / u.s], particle: ParticleLike) -> u.m:
     r"""
     Return the de Broglie wavelength.
 

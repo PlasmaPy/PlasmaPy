@@ -88,7 +88,7 @@ def mobility(
     n_e: u.Quantity[u.m**-3],
     species,
     z_mean: Real = np.nan,
-    V: u.m / u.s = np.nan * u.m / u.s,
+    V: u.Quantity[u.m / u.s] = np.nan * u.m / u.s,
     method="classical",
 ) -> u.m**2 / (u.V * u.s):
     r"""
@@ -216,7 +216,7 @@ def Spitzer_resistivity(
     n: u.Quantity[u.m**-3],
     species,
     z_mean: Real = np.nan,
-    V: u.m / u.s = np.nan * u.m / u.s,
+    V: u.Quantity[u.m / u.s] = np.nan * u.m / u.s,
     method="classical",
 ) -> u.Ohm * u.m:
     r"""

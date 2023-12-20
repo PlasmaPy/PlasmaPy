@@ -32,7 +32,7 @@ def coupling_parameter(
     n_e: u.Quantity[u.m**-3],
     species,
     z_mean: Real = np.nan,
-    V: u.m / u.s = np.nan * u.m / u.s,
+    V: u.Quantity[u.m / u.s] = np.nan * u.m / u.s,
     method="classical",
 ) -> u.dimensionless_unscaled:
     r"""
@@ -229,7 +229,7 @@ def Knudsen_number(
     n_e: u.Quantity[u.m**-3],
     species,
     z_mean: Real = np.nan,
-    V: u.m / u.s = np.nan * u.m / u.s,
+    V: u.Quantity[u.m / u.s] = np.nan * u.m / u.s,
     method="classical",
 ) -> u.dimensionless_unscaled:
     r"""
