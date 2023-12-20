@@ -42,7 +42,7 @@ class AbstractMHDWave(ABC):
         density: (u.m**-3, u.kg / u.m**3),
         ion: ParticleLike,
         *,
-        T: u.K = 0 * u.K,
+        T: u.Quantity[u.K] = 0 * u.K,
         gamma: float = 5 / 3,
         mass_numb: Optional[Integral] = None,
         Z: Optional[Real] = None,

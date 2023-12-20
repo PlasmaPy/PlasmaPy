@@ -450,7 +450,7 @@ def test_particle_input_with_validate_quantities(outer_decorator, inner_decorato
         def __init__(
             self,
             particle: ParticleLike,
-            T_e: u.K = None,
+            T_e: u.Quantity[u.K] = None,
         ):
             self.particle = particle
             self.T_e = T_e

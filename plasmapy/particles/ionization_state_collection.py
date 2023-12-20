@@ -137,7 +137,7 @@ class IonizationStateCollection:
         self,
         inputs: Union[dict[str, np.ndarray], list, tuple],
         *,
-        T_e: u.K = np.nan * u.K,
+        T_e: u.Quantity[u.K] = np.nan * u.K,
         abundances: Optional[dict[str, Real]] = None,
         log_abundances: Optional[dict[str, Real]] = None,
         n0: u.m**-3 = np.nan * u.m**-3,
