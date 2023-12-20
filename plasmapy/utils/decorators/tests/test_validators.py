@@ -460,7 +460,7 @@ class TestValidateQuantities:
                 self.y = y
 
             @ValidateQuantities(validations_on_return={"can_be_negative": False})
-            def bar(self, x: u.cm) -> u.m:
+            def bar(self, x: u.cm) -> u.Quantity[u.m]:
                 return x + self.y
 
         foo = Foo(-10 * u.cm)
