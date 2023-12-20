@@ -160,7 +160,7 @@ class AbstractNormalizations(ABC):
 
     @property
     @abstractmethod
-    def wavenumber(self) -> u.Quantity[u.m**1]:
+    def wavenumber(self) -> u.Quantity[u.m**-1]:
         """The normalization for inverse length."""
         ...
 
