@@ -70,7 +70,7 @@ class AbstractNormalizations(ABC):
 
     @property
     @abstractmethod
-    def current_density(self) -> u.A / u.m**2:
+    def current_density(self) -> u.Quantity[u.A / u.m**2]:
         """The current density normalization."""
         ...
 
@@ -88,13 +88,13 @@ class AbstractNormalizations(ABC):
 
     @property
     @abstractmethod
-    def electric_field(self) -> u.V / u.m:
+    def electric_field(self) -> u.Quantity[u.V / u.m] / u.m:
         """The electric field normalization."""
         ...
 
     @property
     @abstractmethod
-    def heat_flux(self) -> u.J * u.m**-2 * u.s**-1:
+    def heat_flux(self) -> u.Quantity[u.J * u.m**-2 * u.s**-1]:
         """The normalization for heat flux."""
         ...
 
@@ -112,7 +112,7 @@ class AbstractNormalizations(ABC):
 
     @property
     @abstractmethod
-    def magnetic_flux(self) -> u.T * u.m:
+    def magnetic_flux(self) -> u.Quantity[u.T * u.m]:
         """The normalization for the magnetic flux or vector potential."""
         ...
 
@@ -124,7 +124,7 @@ class AbstractNormalizations(ABC):
 
     @property
     @abstractmethod
-    def mass_density(self) -> u.kg / u.m**3:
+    def mass_density(self) -> u.Quantity[u.kg / u.m**3]:
         """The normalization for mass density."""
         ...
 
@@ -148,13 +148,13 @@ class AbstractNormalizations(ABC):
 
     @property
     @abstractmethod
-    def thermal_conductivity(self) -> u.W / (u.K * u.m):
+    def thermal_conductivity(self) -> u.Quantity[u.W / u.m / u.K]:
         """The normalization for thermal conductivity."""
         ...
 
     @property
     @abstractmethod
-    def time(self) -> u.s:
+    def time(self) -> u.Quantity[u.s]:
         """The normalization for time."""
         ...
 
@@ -172,7 +172,7 @@ class AbstractNormalizations(ABC):
 
     @property
     @abstractmethod
-    def volumetric_heating_rate(self) -> u.J * u.m**-3 * u.s**-1:
+    def volumetric_heating_rate(self) -> u.Quantity[u.J * u.m**-3 * u.s**-1]:
         """The normalization for the volumetric heating rate."""
         ...
 
