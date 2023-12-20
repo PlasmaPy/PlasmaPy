@@ -1463,7 +1463,7 @@ class Particle(AbstractPhysicalParticle):
             raise InvalidIonError(_category_errmsg(self, "ion"))
 
     @property
-    def isotopic_abundance(self) -> u.Quantity:
+    def isotopic_abundance(self) -> Real:
         """
         The isotopic abundance of an isotope.
 

@@ -114,7 +114,7 @@ class AbstractMHDWave(ABC):
     @validate_quantities
     def _validate_k_theta(
         k: u.Quantity[u.rad / u.m], theta: u.Quantity[u.rad]
-    ) -> u.Quantity:
+    ) -> list[u.Quantity]:
         """Validate and return wavenumber and angle."""
         # validate argument k
         k = k.squeeze()

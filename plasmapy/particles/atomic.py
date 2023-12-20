@@ -127,7 +127,7 @@ def mass_number(isotope: Particle) -> Integral:
 
 
 @particle_input(exclude={"isotope", "ion"})
-def standard_atomic_weight(element: Particle) -> u.Quantity:
+def standard_atomic_weight(element: Particle) -> u.Quantity[u.kg]:
     """Return the standard (conventional) atomic weight of an element
     based on the relative abundances of isotopes in terrestrial
     environments.
@@ -443,7 +443,9 @@ def is_stable(particle: Particle, mass_numb: Optional[Integral] = None) -> bool:
 
 
 @particle_input(any_of={"stable", "unstable", "isotope"})
-def half_life(particle: Particle, mass_numb: Optional[Integral] = None) -> u.Quantity:
+def half_life(
+    particle: Particle, mass_numb: Optional[Integral] = None
+) -> u.Quantity[u.s]:
     """
     Return the half-life in seconds for unstable isotopes and particles,
     and |inf| seconds for stable isotopes and particles.

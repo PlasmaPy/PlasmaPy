@@ -253,7 +253,7 @@ def nuclear_reaction_energy(*args, **kwargs) -> u.Quantity[u.J]:  # noqa: C901, 
                 total_charge += particle.charge_number
         return total_charge
 
-    def add_mass_energy(particles: list[Particle]) -> u.Quantity:
+    def add_mass_energy(particles: list[Particle]) -> u.Quantity[u.J]:
         """
         Find the total mass energy from a list of particles, while
         taking the masses of the fully ionized isotopes.
