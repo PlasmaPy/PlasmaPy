@@ -290,7 +290,7 @@ def permittivity_1D_Maxwellian(
     n: u.Quantity[u.m**-3],
     particle,
     z_mean=None,
-) -> u.dimensionless_unscaled:
+) -> u.Quantity[u.dimensionless_unscaled]:
     r"""
     Compute the classical dielectric permittivity for a 1D Maxwellian
     plasma.
