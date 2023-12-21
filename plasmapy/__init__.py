@@ -47,7 +47,7 @@ try:
     try:
         from plasmapy._dev.scm_version import version as __version__
     except ImportError:
-        from plasmapy._version import version as __version__
+        from plasmapy._version import version as __version__  # type: ignore[no-redef]
 except Exception:  # coverage: ignore  # noqa: BLE001
     __version__ = "0.0.0"  # package is not installed
 
