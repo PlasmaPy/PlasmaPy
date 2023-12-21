@@ -1,0 +1,2 @@
+Established an initial configuration for ``mypy``, and set up a
+|pre-commit| hook for ``mypy``.
