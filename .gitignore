@@ -117,7 +117,7 @@ ENV/
 *.#
 .#*
 
-# Auxilliary files associated with vim
+# Auxiliary files associated with vim
 *.swp
 VIRTUAL/
 

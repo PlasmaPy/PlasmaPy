@@ -88,7 +88,7 @@ def parse_event(env, sig, signode):
         Instance of the Sphinx's build environment.
 
     sig : str
-        The "signature" given the the event directive or role.  For example,
+        The "signature" given the event directive or role.  For example,
 
         .. code-block:: rst
 
