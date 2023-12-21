@@ -416,26 +416,3 @@ showcontent = true
 directory = "trivial"
 name = "Trivial/Internal Changes"
 showcontent = true
-
-[tool.mypy]
-python_version = 3.9
-warn_return_any = true
-warn_unused_configs = true
-
-[[tool.mypy.overrides]]
-module = [
-  "astropy",
-  "astropy.*",
-  "astropy.*.*",
-  "h5py",
-  "ipywidgets",
-  "lmfit",
-  "mpmath",
-  "numba",
-  "numba.*",
-  "scipy",
-  "scipy.*",
-
-  "wrapt",
-]
-ignore_missing_imports = true
