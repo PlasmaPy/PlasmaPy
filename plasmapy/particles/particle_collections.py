@@ -20,7 +20,7 @@ from plasmapy.particles.particle_class import (
 
 
 def _turn_quantity_into_custom_particle(
-    quantity: u.Quantity[u.physical.electrical_charge, u.physical.mass]
+    quantity: u.Quantity[u.physical.electrical_charge, u.physical.mass],
 ) -> CustomParticle:
     """
     Convert a |Quantity| of physical type mass or electrical charge
