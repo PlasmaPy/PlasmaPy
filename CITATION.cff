@@ -592,3 +592,8 @@ authors:
 - given-names: Tomasz Adam
   family-names: Skrzypczak
   alias: tomasz-adam-skrzypczak
+
+- given-names: Dusan
+  family-names: Klima
+  orcid: https://orcid.org/0009-0008-5134-6171
+  alias: ironwod
