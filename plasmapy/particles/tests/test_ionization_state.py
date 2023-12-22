@@ -167,15 +167,9 @@ def test_equal_to_within_tolerance(tolerance, output):
     `IonizationState` instances that differ within the inputted
     tolerance.
     """
-    H = IonizationState(  # noqa: PIE804
-        **{"particle": "H", "ionic_fractions": [0.6, 0.4], "tol": tolerance}
-    )
-    H_acceptable_error = IonizationState(  # noqa: PIE804
-        **{
-            "particle": "H",
-            "ionic_fractions": [0.6, 0.400_000_001],
-            "tol": 1e-8,  # trick because the first one's tolerance is taken - or the smallest one, I think?
-        }
+    H = IonizationState(particle="H", ionic_fractions=[0.6, 0.4], tol=tolerance)
+    H_acceptable_error = IonizationState(
+        particle="H", ionic_fractions=[0.6, 0.400_000_001], tol=1e-8
     )
     assert (H == H_acceptable_error) == output
 
@@ -340,12 +334,10 @@ def test_getitem(test_ionization_state):
 
 @pytest.fixture()
 def He_ionization_state():
-    return IonizationState(  # noqa: PIE804
-        **{
-            "particle": "He",
-            "ionic_fractions": [0.5, 0.3, 0.2],
-            "n_elem": 1e20 * u.m**-3,
-        },
+    return IonizationState(
+        particle="He",
+        ionic_fractions=[0.5, 0.3, 0.2],
+        n_elem=1e20 * u.m**-3,
     )
 
 

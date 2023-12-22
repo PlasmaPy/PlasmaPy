@@ -14,7 +14,7 @@ from typing import Union
 
 
 def plasma_dispersion_func(
-    zeta: Union[Complex, np.ndarray, u.Quantity[u.dimensionless_unscaled]]
+    zeta: Union[Complex, np.ndarray, u.Quantity[u.dimensionless_unscaled]],
 ) -> Union[Complex, np.ndarray, u.Quantity[u.dimensionless_unscaled]]:
     r"""
     Calculate the plasma dispersion function.
@@ -80,7 +80,7 @@ def plasma_dispersion_func(
 
 
 def plasma_dispersion_func_deriv(
-    zeta: Union[Complex, np.ndarray, u.Quantity[u.dimensionless_unscaled]]
+    zeta: Union[Complex, np.ndarray, u.Quantity[u.dimensionless_unscaled]],
 ) -> Union[Complex, np.ndarray, u.Quantity[u.dimensionless_unscaled]]:
     r"""
     Calculate the derivative of the plasma dispersion function.
