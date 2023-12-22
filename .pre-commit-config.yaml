@@ -25,6 +25,12 @@ repos:
   hooks:
   - id: check-github-workflows
 
+- repo: https://github.com/numpy/numpydoc
+  rev: v1.6.0
+  hooks:
+  - id: numpydoc-validation
+    exclude: docs/plasmapy_sphinx
+
 - repo: https://github.com/sirosen/texthooks
   rev: 0.6.3
   hooks:
