@@ -3,7 +3,7 @@ __all__ = [
     "critical_density",
     "mass_density",
 ]
-
+__aliases__ = ["rho_"]
 import astropy.units as u
 import numbers
 import numpy as np
@@ -14,6 +14,7 @@ from typing import Optional
 from plasmapy.particles import Particle, ParticleLike
 from plasmapy.utils.decorators import validate_quantities
 
+__all__ += __aliases__
 
 @validate_quantities(
     omega={"can_be_negative": False},
@@ -160,3 +161,7 @@ def mass_density(
         )
 
     return abs(z_ratio) * density * particle.mass
+
+
+rho_ = mass_density
+"""Alias to `~plasmapy.formulary.densities.mass_density`."""

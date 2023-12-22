@@ -1,2 +1,2 @@
-Removed the ``plasmapy.formulary.misc.mass_density`` function. This
-function is now in `plasmapy.formulary.densities`.
+Moved ``mass_density`` and its alias ``rho_`` from `plasmapy.formulary.misc`
+to `plasmapy.formulary.densities`.
