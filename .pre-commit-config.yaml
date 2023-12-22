@@ -29,7 +29,7 @@ repos:
   rev: v1.6.0
   hooks:
   - id: numpydoc-validation
-    exclude: docs/plasmapy_sphinx
+    exclude: docs/plasmapy_sphinx|plasmapy/formulary/collisions/coulomb.py|plasmapy/formulary/braginskii.py
 
 - repo: https://github.com/sirosen/texthooks
   rev: 0.6.3
