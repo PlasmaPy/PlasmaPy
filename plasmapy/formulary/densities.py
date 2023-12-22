@@ -16,6 +16,7 @@ from plasmapy.utils.decorators import validate_quantities
 
 __all__ += __aliases__
 
+
 @validate_quantities(
     omega={"can_be_negative": False},
     validations_on_return={
