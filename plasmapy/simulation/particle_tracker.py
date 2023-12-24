@@ -367,6 +367,15 @@ class ParticleTracker:
     verbose : bool, optional
         If true, updates on the status of the program will be printed
         into the standard output while running. The default is True.
+
+    Notes
+    -----
+    We adopt the convention of ``NaN`` values to represent various states of a particle.
+
+    If the particle's position and velocity are not ``NaN``, the particle is being tracked and evolved.
+    If the particle's position is not ``NaN``, but the velocity is ``NaN``, the particle has been stopped
+    (i.e. it is still in the simulation but is no longer evolved.)
+    If both the particle's position and velocity are set to ``NaN``, then the particle has been removed from the simulation.
     """
 
     def __init__(
@@ -387,30 +396,40 @@ class ParticleTracker:
             ]
         elif isinstance(grids, collections.abc.Iterable):
             self.grids = grids
-        elif isinstance(grids, BasePlasma):
-            raise TypeError(
-                "It appears you may be trying to access an older version of the ParticleTracker class."
-                "This class has been deprecated."
-                "Please revert to PlasmaPy version 2023.5.1 to use this version of ParticleTracker."
-            )
         else:
-            raise TypeError("Type of argument `grids` not recognized.")
+            self.grids = None
+
+        # Errors for unsupported grid types are raised in the validate constructor inputs method
+
+        # Instantiate the "do not save" save routine if no save routine was specified
+        if save_routine is None:
+            save_routine = DoNotSaveSaveRoutine()
+
+        # Validate inputs to the run function
+        self._validate_constructor_inputs(
+            grids, termination_condition, save_routine, field_weighting
+        )
+
+        self._set_time_step_attributes(dt, termination_condition, save_routine)
+
+        if dt_range is not None and not self._is_adaptive_time_step:
+            raise ValueError(
+                "Specifying a time step range is only possible for an adaptive time step."
+            )
 
         self.verbose = verbose
 
         # This flag records whether the simulation has been run
         self._has_run = False
 
-        # Instantiate the do not save save routine if no save routine was specified
-        if save_routine is None:
-            save_routine = DoNotSaveSaveRoutine()
+        # Raise a ValueError if a synchronized dt is required by termination condition or save routine but one is
+        # not given. This is only the case if an array with differing entries is specified for dt
+        if self._require_synchronized_time and not self._is_synchronized_time_step:
+            raise ValueError(
+                "Please specify a synchronized time step to use the simulation with this configuration!"
+            )
 
-        self._set_time_step_attributes(dt, termination_condition, save_routine)
-
-        self._validate_grids(req_quantities)
-
-        # Validate inputs to the run function
-        self._validate_constructor_inputs(dt_range, field_weighting)
+        self._preprocess_grids(req_quantities)
 
         # self.grid_arr is the grid positions in si units. This is created here
         # so that it isn't continuously called later
@@ -432,14 +451,9 @@ class ParticleTracker:
     def _set_time_step_attributes(self, dt, termination_condition, save_routine):
         """Determines whether the simulation will follow a synchronized or adaptive time step."""
 
-        if not isinstance(termination_condition, AbstractTerminationCondition):
-            raise TypeError("Please specify a valid termination condition.")
-
-        if not isinstance(save_routine, AbstractSaveRoutine):
-            raise TypeError("Please specify a valid save routine")
-
-        require_synchronized_time = termination_condition.require_synchronized_dt or (
-            save_routine is not None and save_routine.require_synchronized_dt
+        self._require_synchronized_time = (
+            termination_condition.require_synchronized_dt
+            or (save_routine is not None and save_routine.require_synchronized_dt)
         )
 
         if isinstance(dt, u.Quantity):
@@ -452,19 +466,12 @@ class ParticleTracker:
 
             self._is_adaptive_time_step = False
         elif dt is None:
-            self._is_synchronized_time_step = require_synchronized_time
+            self._is_synchronized_time_step = self._require_synchronized_time
             self._is_adaptive_time_step = True
 
         if self._is_adaptive_time_step:
             # Initialize default values for time steps per gyroperiod and Courant parameter
             self.setup_adaptive_time_step()
-
-        # Raise a ValueError if a synchronized dt is required by termination condition or save routine but one is
-        # not given. This is only the case if an array with differing entries is specified for dt
-        if require_synchronized_time and not self._is_synchronized_time_step:
-            raise ValueError(
-                "Please specify a synchronized time step to use the simulation with this configuration!"
-            )
 
     def setup_adaptive_time_step(
         self,
@@ -502,17 +509,30 @@ class ParticleTracker:
         self._steps_per_gyroperiod = time_steps_per_gyroperiod
         self._Courant_parameter = Courant_parameter
 
-    def _validate_constructor_inputs(self, dt_range, field_weighting: str):
+    def _validate_constructor_inputs(
+        self, grids, termination_condition, save_routine, field_weighting: str
+    ):
         """
         Ensure the specified termination condition and save routine are actually
         a termination routine class and save routine, respectively. This function also
         sets the `_is_synchronized_time_step` and `_is_adaptive_time_step` attributes.
         """
 
-        if dt_range is not None and not self._is_adaptive_time_step:
-            raise ValueError(
-                "Specifying a time step range is only possible for an adaptive time step."
+        if isinstance(grids, BasePlasma):
+            raise TypeError(
+                "It appears you may be trying to access an older version of the ParticleTracker class."
+                "This class has been deprecated."
+                "Please revert to PlasmaPy version 2023.5.1 to use this version of ParticleTracker."
             )
+        # The constructor did not recognize the provided grid object
+        elif self.grids is None:
+            raise TypeError("Type of argument `grids` not recognized.")
+
+        if not isinstance(termination_condition, AbstractTerminationCondition):
+            raise TypeError("Please specify a valid termination condition.")
+
+        if not isinstance(save_routine, AbstractSaveRoutine):
+            raise TypeError("Please specify a valid save routine.")
 
         # Load and validate inputs
         field_weightings = ["volume averaged", "nearest neighbor"]
@@ -525,7 +545,7 @@ class ParticleTracker:
                 f"{field_weightings}",
             )
 
-    def _validate_grids(self, additional_required_quantities):
+    def _preprocess_grids(self, additional_required_quantities):
         """Add required quantities to grid objects.
 
         Grids lacking the required quantities will be filled with zeros.
@@ -574,10 +594,10 @@ class ParticleTracker:
                 if edge_max > 1e-3 * np.max(arr):
                     unit = grid.recognized_quantities[rq].unit
                     warnings.warn(
-                        "Fields should go to zero at edges of grid to avoid "
+                        "Quantities should go to zero at edges of grid to avoid "
                         f"non-physical effects, but a value of {edge_max:.2E} {unit} was "
                         f"found on the edge of the {rq} array. Consider applying a "
-                        "envelope function to force the fields at the edge to go to "
+                        "envelope function to force the quantities at the edge to go to "
                         "zero.",
                         RuntimeWarning,
                     )
@@ -634,7 +654,7 @@ class ParticleTracker:
     def _stop_particles(self, particles_to_stop_mask):
         """Stop tracking the particles specified by the stop mask.
 
-        This is accomplished by setting the particle's velocity to NaN.
+        This is represented by setting the particle's velocity to NaN.
         """
 
         if len(particles_to_stop_mask) != self.x.shape[0]:
@@ -647,8 +667,8 @@ class ParticleTracker:
     def _remove_particles(self, particles_to_remove_mask):
         """Remove the specified particles from the simulation.
 
-        For the same of keeping consistent array lengths, the position and velocities of the
-        particles are set to NaN.
+        For the sake of keeping consistent array lengths, the position and velocities of the
+        removed particles are set to NaN.
         """
 
         if len(particles_to_remove_mask) != self.x.shape[0]:
