@@ -192,7 +192,7 @@ class AbstractSaveRoutine(ABC):
     def __init__(self, output_directory: Optional[Path] = None):
         self.output_directory = output_directory
 
-        self.r_all = []
+        self.x_all = []
         self.v_all = []
 
         self._particle_tracker = None
@@ -237,7 +237,7 @@ class AbstractSaveRoutine(ABC):
 
     def _save_to_memory(self):
         """Append simulation positions and velocities to save routine object."""
-        self.r_all.append(np.copy(self._particle_tracker.x))
+        self.x_all.append(np.copy(self._particle_tracker.x))
         self.v_all.append(np.copy(self._particle_tracker.v))
 
     def post_push_hook(self, force_save=False):
@@ -301,6 +301,17 @@ class IntervalSaveRoutine(AbstractSaveRoutine):
 
         self.time_of_last_save = self.tracker.time
         self.t_all.append(self.tracker.time)
+
+    def results(self):
+        """Return the results of the simulation.
+        The quantities returned are the times, positions, and velocities, respectively.
+        """
+
+        return (
+            np.asarray(self.t_all) * u.s,
+            np.asarray(self.x_all) * u.m,
+            np.asarray(self.v_all) * u.m / u.s,
+        )
 
 
 class ParticleTracker:

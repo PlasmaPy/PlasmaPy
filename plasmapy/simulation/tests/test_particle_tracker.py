@@ -239,7 +239,7 @@ class TestParticleTrackerGyroradius:
 
     def test_gyroradius(self):
         """Test to ensure particles maintain their gyroradius over time"""
-        positions = np.asarray(self.save_routine.r_all) * u.m
+        _, positions, _ = self.save_routine.results()
         distances = np.linalg.norm(positions, axis=-1)
 
         assert np.isclose(distances, self.R_L, rtol=5e-2).all()
@@ -249,7 +249,7 @@ class TestParticleTrackerGyroradius:
 
         initial_kinetic_energies = 0.5 * self.point_particle.mass * self.v_x**2
 
-        velocities = np.asarray(self.save_routine.v_all) * u.m / u.s
+        _, _, velocities = self.save_routine.results()
         speeds = np.linalg.norm(velocities, axis=-1)
         simulation_kinetic_energies = 0.5 * self.point_particle.mass * speeds**2
 
@@ -289,8 +289,10 @@ def test_particle_tracker_potential_difference(request, E_strength, L, mass, cha
 
     simulation.run()
 
-    velocities = np.asarray(save_routine.v_all)[:, 0] * u.m / u.s
-    speeds = np.linalg.norm(velocities, axis=-1)
+    _, _, velocities = save_routine.results()
+    velocities_particle = velocities[:, 0]
+
+    speeds = np.linalg.norm(velocities_particle, axis=-1)
 
     # Final energy is given by the product of the charge and potential difference
     final_expected_energy = (E_strength * L * point_particle.charge).to(u.J)

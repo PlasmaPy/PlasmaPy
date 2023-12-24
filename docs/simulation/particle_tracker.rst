@@ -22,7 +22,7 @@ future.
 .. nbgallery::
     :caption: Examples
 
-    /notebooks/simulation/particle_stepper
+    /notebooks/simulation/particle_tracker
 
 API
 ===
