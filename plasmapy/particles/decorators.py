@@ -69,6 +69,7 @@ def _make_into_set_or_none(obj) -> Optional[set]:
 
 
 def _bind_arguments(
+    wrapped_signature: inspect.Signature,
     callable_: Callable,
     args: Optional[tuple] = None,
     kwargs: Optional[dict[str, Any]] = None,
@@ -81,8 +82,13 @@ def _bind_arguments(
 
     Parameters
     ----------
+    wrapped_signature : `inspect.Signature`
+        The signature of the function or method to which to bind
+        ``args`` and ``kwargs``.
+
     callable_ : callable
         The function or method to which to bind ``args`` and ``kwargs``.
+        This argument is only needed for error messages.
 
     args : tuple, optional
         Positional arguments.
@@ -101,7 +107,6 @@ def _bind_arguments(
         the corresponding arguments as values, but removing ``self`` and
         ``cls``.
     """
-    wrapped_signature = inspect.signature(callable_)
 
     # We should keep the warning about "z_mean" for perhaps ∼2
     # releases following the last pull request that removes a "z_mean"
@@ -605,7 +610,9 @@ class _ParticleInput:
             belongs.
         """
 
-        arguments = _bind_arguments(self.callable_, args, kwargs, instance)
+        arguments = _bind_arguments(
+            self.signature, self.callable_, args, kwargs, instance
+        )
 
         Z = arguments.pop("Z", None)
         mass_numb = arguments.pop("mass_numb", None)
