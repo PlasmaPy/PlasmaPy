@@ -204,6 +204,12 @@ class _ParticleInput:
         self._data["callable"] = callable_
         self._data["annotations"] = _get_annotations(callable_)
         self._data["parameters_to_process"] = self.find_parameters_to_process()
+        self._data["signature"] = inspect.signature(callable_)
+
+    @property
+    def signature(self) -> inspect.Signature:
+        """The signature of the wrapped callable."""
+        return self._data["signature"]
 
     def find_parameters_to_process(self) -> list[str]:
         """
