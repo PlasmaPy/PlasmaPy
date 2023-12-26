@@ -592,7 +592,7 @@ class _ParticleInput:
 
     def process_arguments(
         self, args: tuple, kwargs: dict[str, Any], instance=None
-    ) -> dict[str, Any]:
+    ) -> tuple[list, dict[str, Any]]:
         """
         Process the arguments passed to the callable_ callable.
 
@@ -619,10 +619,15 @@ class _ParticleInput:
 
         self.perform_pre_validations(Z, mass_numb)
 
-        return {
-            parameter: self.process_argument(parameter, argument, Z, mass_numb)
-            for parameter, argument in arguments.items()
-        }
+        new_args = []
+        new_kwargs = {}
+
+        for parameter, argument in arguments.items():
+            new_kwargs[parameter] = self.process_argument(
+                parameter, argument, Z, mass_numb
+            )
+
+        return new_args, new_kwargs
 
 
 def particle_input(
@@ -907,7 +912,9 @@ def particle_input(
     def wrapper(
         callable__: Callable, instance: Any, args: tuple, kwargs: dict[str, Any]
     ):
-        new_kwargs = particle_validator.process_arguments(args, kwargs, instance)
-        return callable__(**new_kwargs)
+        new_args, new_kwargs = particle_validator.process_arguments(
+            args, kwargs, instance
+        )
+        return callable__(*new_args, **new_kwargs)
 
     return wrapper(callable_)
