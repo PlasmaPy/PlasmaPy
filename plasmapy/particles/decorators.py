@@ -74,7 +74,7 @@ def _bind_arguments(
     args: Optional[tuple] = None,
     kwargs: Optional[dict[str, Any]] = None,
     instance=None,
-) -> dict:
+) -> inspect.BoundArguments:
     """
     Bind the arguments provided by ``args`` and ``kwargs`` to
     the corresponding parameters in the signature of the callable_
@@ -139,12 +139,11 @@ def _bind_arguments(
         bound_arguments = wrapped_signature.bind(instance, *args, **kwargs)
 
     bound_arguments.apply_defaults()
-    arguments_to_be_processed = bound_arguments.arguments
 
-    arguments_to_be_processed.pop("self", None)
-    arguments_to_be_processed.pop("cls", None)
+    bound_arguments.arguments.pop("self", None)
+    bound_arguments.arguments.pop("cls", None)
 
-    return arguments_to_be_processed
+    return bound_arguments
 
 
 class _ParticleInput:
@@ -610,19 +609,19 @@ class _ParticleInput:
             belongs.
         """
 
-        arguments = _bind_arguments(
+        bound_arguments = _bind_arguments(
             self.signature, self.callable_, args, kwargs, instance
         )
 
-        Z = arguments.pop("Z", None)
-        mass_numb = arguments.pop("mass_numb", None)
+        Z = bound_arguments.arguments.pop("Z", None)
+        mass_numb = bound_arguments.arguments.pop("mass_numb", None)
 
         self.perform_pre_validations(Z, mass_numb)
 
         new_args = []
         new_kwargs = {}
 
-        for parameter, argument in arguments.items():
+        for parameter, argument in bound_arguments.arguments.items():
             new_kwargs[parameter] = self.process_argument(
                 parameter, argument, Z, mass_numb
             )
