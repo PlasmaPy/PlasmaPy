@@ -10,11 +10,11 @@ from numbers import Integral, Real
 from numpy.typing import DTypeLike
 from typing import Optional, Union
 
-from plasmapy import utils
 from plasmapy.particles import particle_input
 from plasmapy.particles.particle_class import CustomParticle, Particle, ParticleLike
 from plasmapy.particles.particle_collections import ParticleList
 from plasmapy.utils.decorators import validate_quantities
+from plasmapy.utils.exceptions import RelativityError
 
 
 @validate_quantities(V={"can_be_negative": True})
@@ -71,7 +71,7 @@ def Lorentz_factor(V: u.m / u.s):
     """
 
     if not np.all((np.abs(V) <= c) | (np.isnan(V))):
-        raise utils.RelativityError(
+        raise RelativityError(
             "The Lorentz factor cannot be calculated for "
             "speeds faster than the speed of light."
         )
@@ -278,7 +278,7 @@ class RelativisticBody:
 
     @staticmethod
     def _get_speed_like_input(
-        velocity_like_arguments: dict[str, Union[u.Quantity, Real]]
+        velocity_like_arguments: dict[str, Union[u.Quantity, Real]],
     ) -> dict[str, Union[u.Quantity, Real]]:
         not_none_arguments = {
             key: value

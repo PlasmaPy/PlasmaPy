@@ -12,11 +12,12 @@ import numpy as np
 from astropy.constants.si import e
 from numbers import Real
 
-from plasmapy import particles, utils
+from plasmapy import particles
 from plasmapy.formulary.collisions import frequencies
 from plasmapy.formulary.speeds import thermal_speed
 from plasmapy.utils.decorators import validate_quantities
 from plasmapy.utils.decorators.checks import _check_relativistic
+from plasmapy.utils.exceptions import PhysicsError
 
 
 @validate_quantities(T={"equivalencies": u.temperature_energy()})
@@ -56,7 +57,7 @@ def _replace_nan_velocity_with_thermal_velocity(
     ``T`` and ``m`` are okay.
     """
     if np.any(V == 0):
-        raise utils.PhysicsError("Collisions are not possible with a zero velocity.")
+        raise PhysicsError("Collisions are not possible with a zero velocity.")
 
     if V is None:
         return thermal_speed(T, species, mass=m)

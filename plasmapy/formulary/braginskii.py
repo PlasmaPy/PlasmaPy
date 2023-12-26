@@ -133,7 +133,7 @@ import warnings
 
 from astropy.constants.si import e, k_B, m_e
 
-from plasmapy import particles, utils
+from plasmapy import particles
 from plasmapy.formulary.collisions import (
     Coulomb_logarithm,
     fundamental_electron_collision_freq,
@@ -143,8 +143,8 @@ from plasmapy.formulary.dimensionless import Hall_parameter
 from plasmapy.formulary.misc import _grab_charge
 from plasmapy.particles.atomic import _is_electron
 from plasmapy.particles.exceptions import InvalidParticleError
-from plasmapy.utils import PhysicsError
 from plasmapy.utils.decorators import validate_quantities
+from plasmapy.utils.exceptions import CouplingWarning, PhysicsError
 
 
 class ClassicalTransport:
@@ -394,7 +394,7 @@ class ClassicalTransport:
             warnings.warn(
                 f"Coulomb logarithm is {coulomb_log_ei},"
                 f" you might have strong coupling effects",
-                utils.CouplingWarning,
+                CouplingWarning,
             )
 
         if coulomb_log_ii is not None:
@@ -418,7 +418,7 @@ class ClassicalTransport:
             warnings.warn(
                 f"Coulomb logarithm is {coulomb_log_ii},"
                 f" you might have strong coupling effects",
-                utils.CouplingWarning,
+                CouplingWarning,
             )
 
         # calculate Hall parameters if not forced in input
@@ -1299,7 +1299,7 @@ def _check_Z(allowed_Z, Z):
             # return a Z_idx pointing to the 'arbitrary'
             Z_idx = the_arbitrary_idx
         else:
-            raise utils.PhysicsError(f"{Z} is not an allowed Z value")
+            raise PhysicsError(f"{Z} is not an allowed Z value")
     # we have got the Z_idx we want. return
     return Z_idx
 
