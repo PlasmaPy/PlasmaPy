@@ -88,7 +88,7 @@ def _bind_arguments(
 
     callable_ : callable
         The function or method to which to bind ``args`` and ``kwargs``.
-        This argument is only needed for error messages.
+        This argument is only needed for a deprecation warning message.
 
     args : tuple, optional
         Positional arguments.
