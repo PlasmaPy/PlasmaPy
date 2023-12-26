@@ -149,7 +149,7 @@ def test_particle_tracker_construction(
 
 
 def test_particle_tracker_load_particles_shape_error(
-    no_particles_on_grids_instantiated
+    no_particles_on_grids_instantiated,
 ):
     """Inconsistent shape for x and v error"""
     grid = CartesianGrid(-1 * u.m, 1 * u.m)
@@ -365,7 +365,7 @@ def test_asynchronous_time_step_error(
 
 
 def test_nearest_neighbor_interpolation(
-    time_elapsed_termination_condition_instantiated
+    time_elapsed_termination_condition_instantiated,
 ):
     E_strength = 1 * u.V / u.m
     L = 1 * u.m
