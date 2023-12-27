@@ -563,9 +563,12 @@ class _ParticleInput:
 
     def perform_pre_validations(self, Z, mass_numb):
         """
-        Check that there are annotated parameters, that ``Z`` and
-        ``mass_numb`` are integers, and that ``Z`` and ``mass_numb`` are
-        not parameters when more than one parameter is annotated.
+        Perform a variety of pre-checks on the arguments.
+
+        Check that there are annotated parameters. Check that ``Z`` is
+        a real number if not `None`. Check that ``mass_numb`` is an
+        integer if not `None`. Verify that ``Z`` and ``mass_numb`` are
+        not included if there are multiple annotated parameters.
         """
 
         if not self.parameters_to_process:
