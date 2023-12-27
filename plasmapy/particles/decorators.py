@@ -594,7 +594,7 @@ class _ParticleInput:
 
     def process_arguments(
         self, args: tuple, kwargs: dict[str, Any], instance=None
-    ) -> tuple[list, dict[str, Any]]:
+    ) -> tuple[tuple[Any, ...], dict[str, Any]]:
         """
         Process the arguments passed to the callable_ callable.
 
@@ -610,6 +610,11 @@ class _ParticleInput:
             If the callable_ callable is a class instance method, then
             ``instance`` should be the class instance to which ``func``
             belongs.
+
+        Notes
+        -----
+        This method does not work when there are positional arguments
+        before variadic positional arguments.  See :issue:`2150`.
         """
 
         bound_arguments = _bind_arguments(
@@ -621,15 +626,15 @@ class _ParticleInput:
 
         self.perform_pre_validations(Z, mass_numb)
 
-        new_args = []
-        new_kwargs = {}
+        processed_kwargs = {
+            parameter: self.process_argument(parameter, argument, Z, mass_numb)
+            for parameter, argument in bound_arguments.arguments.items()
+        }
 
-        for parameter, argument in bound_arguments.arguments.items():
-            new_kwargs[parameter] = self.process_argument(
-                parameter, argument, Z, mass_numb
-            )
+        for parameter in processed_kwargs:
+            bound_arguments.arguments[parameter] = processed_kwargs[parameter]
 
-        return new_args, new_kwargs
+        return bound_arguments.args, bound_arguments.kwargs
 
 
 def particle_input(
