@@ -588,8 +588,8 @@ class _ParticleInput:
         if Z_or_mass_numb and multiple_annotated_parameters:
             raise ParticleError(
                 "The arguments Z and mass_numb are not allowed when more "
-                "than one argument or keyword is annotated with Particle "
-                "in callables decorated with particle_input."
+                "than one argument or keyword is annotated with ParticleLike "
+                "in callables decorated with @particle_input."
             )
 
     def process_arguments(
