@@ -11,6 +11,8 @@ __all__ = [
     "element_names_to_symbols",
 ]
 
+from typing import Any
+
 import astropy.units as u
 import json
 import pkgutil
@@ -28,7 +30,7 @@ class PeriodicTable:
     category: str
 
 
-def element_obj_hook(obj):
+def element_obj_hook(obj: dict[str, Any]) -> Any:
     """Provide an ``object_hook`` designed for `json.load` and `json.loads`."""
     return obj["value"] * u.Unit(obj["unit"]) if "unit" in obj else obj
 
@@ -54,10 +56,10 @@ data_about_elements = json.loads(
 )
 
 
-atomic_numbers_to_symbols = {
+atomic_numbers_to_symbols: dict[str, str] = {
     elemdict["atomic number"]: symb for (symb, elemdict) in data_about_elements.items()
 }
 
-element_names_to_symbols = {
+element_names_to_symbols: dict[str, str] = {
     elemdict["element name"]: symb for (symb, elemdict) in data_about_elements.items()
 }

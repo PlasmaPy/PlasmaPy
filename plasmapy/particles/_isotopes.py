@@ -7,6 +7,8 @@ __all__ = [
     "data_about_isotopes",
 ]
 
+from typing import Any
+
 import astropy.units as u
 import json
 import pkgutil
@@ -25,7 +27,7 @@ import pkgutil
 #     json.dump(_Isotopes, f, default=plasma_default, indent=2)
 
 
-def isotope_obj_hook(obj):
+def isotope_obj_hook(obj: dict[str, Any]) -> Any:
     """Provide an ``object_hook`` designed for `json.load` and `json.loads`."""
     return obj["value"] * u.Unit(obj["unit"]) if "unit" in obj else obj
 

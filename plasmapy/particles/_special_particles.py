@@ -14,6 +14,7 @@ __all__ = [
 import astropy.constants as const
 import astropy.units as u
 import numpy as np
+from typing import Any, SupportsFloat, Union
 
 from plasmapy.particles import _elements
 
@@ -42,17 +43,17 @@ class ParticleZoo:
     True
     """
 
-    def __init__(self):
-        leptons = {"e-", "mu-", "tau-", "nu_e", "nu_mu", "nu_tau"}
-        antileptons = {"e+", "mu+", "tau+", "anti_nu_e", "anti_nu_mu", "anti_nu_tau"}
-        baryons = {"p+", "n"}
-        antibaryons = {"p-", "antineutron"}
+    def __init__(self) -> None:
+        leptons: set[str] = {"e-", "mu-", "tau-", "nu_e", "nu_mu", "nu_tau"}
+        antileptons: set[str] = {"e+", "mu+", "tau+", "anti_nu_e", "anti_nu_mu", "anti_nu_tau"}
+        baryons: set[str] = {"p+", "n"}
+        antibaryons: set[str] = {"p-", "antineutron"}
 
         particles = leptons | baryons
         antiparticles = antileptons | antibaryons
         fermions = leptons | antileptons | baryons | antibaryons
 
-        bosons = set()
+        bosons: set[str] = set()
 
         neutrinos = {lepton for lepton in leptons if "nu" in lepton}
 
@@ -136,7 +137,7 @@ An instance of `~plasmapy.particles._special_particles.ParticleZoo`.
 """
 
 
-def create_particles_dict() -> dict[str, dict]:  # noqa: C901, PLR0912
+def create_particles_dict() -> dict[str, dict[str, Any]]:  # noqa: C901, PLR0912
     """
     Create a dictionary of dictionaries that contains physical
     information for particles and antiparticles that are not elements or
@@ -149,7 +150,7 @@ def create_particles_dict() -> dict[str, dict]:  # noqa: C901, PLR0912
     properties as symbols.
     """
 
-    symbols_and_names = [
+    symbols_and_names: list[tuple[str, str]] = [
         ("e-", "electron"),
         ("e+", "positron"),
         ("mu-", "muon"),
@@ -168,7 +169,7 @@ def create_particles_dict() -> dict[str, dict]:  # noqa: C901, PLR0912
         ("antineutron", "antineutron"),
     ]
 
-    particles = {particle: {} for particle in particle_zoo.everything}
+    particles: dict['str', dict[str, Union[str, SupportsFloat, u.Quantity]]] = {particle: {} for particle in particle_zoo.everything}
 
     for symbol, name in symbols_and_names:
         particles[symbol]["name"] = name
@@ -274,13 +275,13 @@ def create_particles_dict() -> dict[str, dict]:  # noqa: C901, PLR0912
 
 data_about_special_particles = create_particles_dict()
 
-special_ion_masses = {
+special_ion_masses: dict[str, u.Quantity[u.kg]] = {
     "p+": const.m_p,
     "D 1+": 3.343583719e-27 * u.kg,
     "T 1+": 5.007356665e-27 * u.kg,
 }
 
-antiparticles = {
+antiparticles: dict[str, str] = {
     "p+": "p-",
     "n": "antineutron",
     "e-": "e+",
