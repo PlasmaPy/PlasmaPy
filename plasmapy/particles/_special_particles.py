@@ -14,6 +14,7 @@ __all__ = [
 import astropy.constants as const
 import astropy.units as u
 import numpy as np
+
 from typing import Any, SupportsFloat, Union
 
 from plasmapy.particles import _elements
@@ -45,7 +46,14 @@ class ParticleZoo:
 
     def __init__(self) -> None:
         leptons: set[str] = {"e-", "mu-", "tau-", "nu_e", "nu_mu", "nu_tau"}
-        antileptons: set[str] = {"e+", "mu+", "tau+", "anti_nu_e", "anti_nu_mu", "anti_nu_tau"}
+        antileptons: set[str] = {
+            "e+",
+            "mu+",
+            "tau+",
+            "anti_nu_e",
+            "anti_nu_mu",
+            "anti_nu_tau",
+        }
         baryons: set[str] = {"p+", "n"}
         antibaryons: set[str] = {"p-", "antineutron"}
 
@@ -169,7 +177,9 @@ def create_particles_dict() -> dict[str, dict[str, Any]]:  # noqa: C901, PLR0912
         ("antineutron", "antineutron"),
     ]
 
-    particles: dict['str', dict[str, Union[str, SupportsFloat, u.Quantity]]] = {particle: {} for particle in particle_zoo.everything}
+    particles: dict["str", dict[str, Union[str, SupportsFloat, u.Quantity]]] = {
+        particle: {} for particle in particle_zoo.everything
+    }
 
     for symbol, name in symbols_and_names:
         particles[symbol]["name"] = name

@@ -11,13 +11,12 @@ __all__ = [
     "element_names_to_symbols",
 ]
 
-from typing import Any
-
 import astropy.units as u
 import json
 import pkgutil
 
 from dataclasses import dataclass
+from typing import Any
 
 
 @dataclass
