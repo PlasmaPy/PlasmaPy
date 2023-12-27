@@ -55,7 +55,7 @@ data_about_elements = json.loads(
 )
 
 
-atomic_numbers_to_symbols: dict[str, str] = {
+atomic_numbers_to_symbols: dict[int, str] = {
     elemdict["atomic number"]: symb for (symb, elemdict) in data_about_elements.items()
 }
 

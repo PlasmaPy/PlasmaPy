@@ -15,7 +15,7 @@ import astropy.constants as const
 import astropy.units as u
 import numpy as np
 
-from typing import Any, SupportsFloat, Union
+from typing import Union
 
 from plasmapy.particles import _elements
 
@@ -145,7 +145,7 @@ An instance of `~plasmapy.particles._special_particles.ParticleZoo`.
 """
 
 
-def create_particles_dict() -> dict[str, dict[str, Any]]:  # noqa: C901, PLR0912
+def create_particles_dict() -> dict[str, dict[str, Union[str, int, u.Quantity]]]:  # noqa: C901, PLR0912
     """
     Create a dictionary of dictionaries that contains physical
     information for particles and antiparticles that are not elements or
@@ -177,7 +177,7 @@ def create_particles_dict() -> dict[str, dict[str, Any]]:  # noqa: C901, PLR0912
         ("antineutron", "antineutron"),
     ]
 
-    particles: dict["str", dict[str, Union[str, SupportsFloat, u.Quantity]]] = {
+    particles: dict["str", dict[str, Union[str, int, u.Quantity]]] = {
         particle: {} for particle in particle_zoo.everything
     }
 

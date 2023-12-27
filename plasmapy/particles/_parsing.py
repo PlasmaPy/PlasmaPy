@@ -12,8 +12,7 @@ import numpy as np
 import re
 import warnings
 
-from numbers import Integral
-from typing import Optional, Union
+from typing import Any, Optional, Union
 
 from plasmapy.particles import _elements, _isotopes, _special_particles
 from plasmapy.particles.exceptions import (
@@ -24,7 +23,7 @@ from plasmapy.particles.exceptions import (
 from plasmapy.utils import roman
 
 
-def create_alias_dicts(particles: dict) -> (dict[str, str], dict[str, str]):
+def create_alias_dicts(particles: dict[str, Any]) -> tuple[dict, dict[str, str]]:
     """
     Create dictionaries for case sensitive aliases and case
     insensitive aliases of special particles and antiparticles.
@@ -111,7 +110,7 @@ case_sensitive_aliases, case_insensitive_aliases = create_alias_dicts(
 )
 
 
-def dealias_particle_aliases(alias: Union[str, Integral]) -> str:
+def dealias_particle_aliases(alias: Union[str, int]) -> Any:
     """
     Return the standard symbol for a particle or antiparticle
     when the argument is a valid alias.  If the argument is not a
@@ -129,9 +128,9 @@ def dealias_particle_aliases(alias: Union[str, Integral]) -> str:
 
 def invalid_particle_errmsg(
     argument,
-    mass_numb: Optional[Integral] = None,
-    Z: Optional[Integral] = None,
-):
+    mass_numb: Optional[int] = None,
+    Z: Optional[int] = None,
+) -> str:
     """
     Return an appropriate error message for an
     `~plasmapy.particles.exceptions.InvalidParticleError`.
@@ -210,8 +209,8 @@ def extract_charge(arg: str):  # noqa: C901, PLR0912
             r"\s*(?P<isotope>\w+(-[0-9]+)?)(?P<charge>[-+]+)\s*",
             isotope_info,
         )
-        isotope_info = match.groupdict()["isotope"]
-        charge_info = match.groupdict()["charge"]
+        isotope_info = match.groupdict()["isotope"]  # type: ignore[union-attr]
+        charge_info = match.groupdict()["charge"]  # type: ignore[union-attr]
 
         if len(set(charge_info)) != 1:
             raise InvalidParticleError(invalid_charge_errmsg) from None
@@ -224,9 +223,9 @@ def extract_charge(arg: str):  # noqa: C901, PLR0912
 
 
 def parse_and_check_atomic_input(  # noqa: C901, PLR0912, PLR0915
-    argument: Union[str, Integral],
-    mass_numb: Optional[Integral] = None,
-    Z: Optional[Integral] = None,
+    argument: Union[str, int],
+    mass_numb: Optional[int] = None,
+    Z: Optional[int] = None,
 ):
     """
     Parse information about a particle into a dictionary of standard
@@ -272,7 +271,7 @@ def parse_and_check_atomic_input(  # noqa: C901, PLR0912, PLR0915
         correct type.
     """
 
-    def atomic_number_to_symbol(atomic_numb: Integral):
+    def atomic_number_to_symbol(atomic_numb: int) -> str:
         """
         Return the atomic symbol associated with an integer representing
         an atomic number, or raises an
@@ -284,7 +283,7 @@ def parse_and_check_atomic_input(  # noqa: C901, PLR0912, PLR0915
         else:
             raise InvalidParticleError(f"{atomic_numb} is not a valid atomic number.")
 
-    def extract_mass_number(isotope_info: str):
+    def extract_mass_number(isotope_info: str) -> tuple[str, Optional[int]]:
         """
         Receives a string representing an element or isotope. Return a
         tuple containing a string that should represent an element, and
@@ -332,7 +331,9 @@ def parse_and_check_atomic_input(  # noqa: C901, PLR0912, PLR0915
             )
         return element
 
-    def reconstruct_isotope_symbol(element: str, mass_numb: Integral) -> str:
+    def reconstruct_isotope_symbol(
+        element: str, mass_numb: Optional[int]
+    ) -> Optional[str]:
         """
         Receive a `str` representing an atomic symbol and an
         `int` representing a mass number.  Return the isotope symbol
@@ -361,8 +362,8 @@ def parse_and_check_atomic_input(  # noqa: C901, PLR0912, PLR0915
         return isotope
 
     def reconstruct_ion_symbol(
-        element: str, isotope: Optional[Integral] = None, Z: Optional[Integral] = None
-    ):
+        element: str, isotope: Optional[str] = None, Z: Optional[int] = None
+    ) -> Optional[str]:
         """
         Receive a `str` representing an atomic symbol and/or a
         string representing an isotope, and an `int` representing the
@@ -382,7 +383,7 @@ def parse_and_check_atomic_input(  # noqa: C901, PLR0912, PLR0915
 
         return ion
 
-    if not isinstance(argument, (str, Integral)):
+    if not isinstance(argument, (str, int)):
         raise TypeError(f"The argument {argument} is not an integer or string.")
 
     arg = dealias_particle_aliases(argument)
@@ -397,9 +398,9 @@ def parse_and_check_atomic_input(  # noqa: C901, PLR0912, PLR0915
             raise InvalidElementError(f"{argument} is not a valid element.")
 
     if isinstance(arg, str) and arg.isdigit():
-        arg = int(arg)
+        arg = int(arg)  # type: ignore[assignment]
 
-    if isinstance(arg, Integral):
+    if isinstance(arg, int):
         element = atomic_number_to_symbol(arg)
         Z_from_arg = None
         mass_numb_from_arg = None
@@ -441,7 +442,7 @@ def parse_and_check_atomic_input(  # noqa: C901, PLR0912, PLR0915
     if Z_from_arg is not None:
         Z = Z_from_arg
 
-    if isinstance(Z, Integral):
+    if isinstance(Z, int):
         if Z > _elements.data_about_elements[element]["atomic number"]:
             raise InvalidParticleError(
                 f"The charge number Z = {Z} cannot exceed the atomic number "
@@ -476,7 +477,7 @@ def parse_and_check_atomic_input(  # noqa: C901, PLR0912, PLR0915
     }
 
 
-def parse_and_check_molecule_input(argument: str, Z: Optional[Integral] = None):
+def parse_and_check_molecule_input(argument: str, Z: Optional[int] = None):
     """
     Separate the constitutive elements and charge of a molecule symbol.
 
@@ -518,7 +519,7 @@ def parse_and_check_molecule_input(argument: str, Z: Optional[Integral] = None):
             f"{molecule_info} is not recognized as a molecule symbol."
         )
 
-    elements_dict = {}
+    elements_dict: dict[str, int] = {}
     for match in re.finditer(r"([A-Z][a-z]?)(\d+)?", molecule_info):
         element, amount = match.groups(default="1")
         if element in elements_dict:

@@ -14,7 +14,7 @@ from numbers import Integral
 from typing import Optional
 
 from plasmapy.particles.decorators import particle_input
-from plasmapy.particles.particle_class import Particle
+from plasmapy.particles.particle_class import ParticleLike
 
 # The @particle_input decorator takes the inputs for a function or
 # method and passes through the corresponding instance of the Particle
@@ -27,7 +27,7 @@ from plasmapy.particles.particle_class import Particle
 
 
 @particle_input
-def atomic_symbol(element: Particle) -> str:
+def atomic_symbol(element: ParticleLike) -> str:
     """
     Return the atomic symbol.
 
@@ -94,7 +94,7 @@ def atomic_symbol(element: Particle) -> str:
 
 
 @particle_input
-def isotope_symbol(isotope: Particle, mass_numb: Optional[Integral] = None) -> str:
+def isotope_symbol(isotope: ParticleLike, mass_numb: Optional[Integral] = None) -> str:
     """
     Return the symbol representing an isotope.
 
@@ -152,7 +152,7 @@ def isotope_symbol(isotope: Particle, mass_numb: Optional[Integral] = None) -> s
 
 @particle_input(require="element", any_of=("charged", "uncharged"))
 def ionic_symbol(
-    particle: Particle,
+    particle: ParticleLike,
     *,
     mass_numb: Optional[Integral] = None,
     Z: Optional[Integral] = None,
@@ -218,7 +218,7 @@ def ionic_symbol(
 
 @particle_input
 def particle_symbol(
-    particle: Particle,
+    particle: ParticleLike,
     *,
     mass_numb: Optional[Integral] = None,
     Z: Optional[Integral] = None,
@@ -278,7 +278,7 @@ def particle_symbol(
 
 
 @particle_input
-def element_name(element: Particle) -> str:
+def element_name(element: ParticleLike) -> str:
     """
     Return the name of an element.
 
