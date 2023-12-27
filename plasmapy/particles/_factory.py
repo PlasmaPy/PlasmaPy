@@ -4,7 +4,7 @@ for |Particle|, |CustomParticle|, or |ParticleList| and returns the
 appropriate instance of one of those three classes.
 """
 
-__all__ = []
+__all__: list[str] = []
 
 import astropy.units as u
 import contextlib
@@ -44,10 +44,10 @@ def _generate_particle_factory_error_message(
 def _make_custom_particle_with_real_charge_number(
     arg: ParticleLike,
     *,
-    mass_numb: Optional[Integral] = None,
+    mass_numb: Optional[int] = None,
     symbol: Optional[str] = None,
-    Z: Optional[Real] = None,
-):
+    Z: Optional[float] = None,
+) -> CustomParticle:
     """
     Create a |CustomParticle| for mean or composite ions.
 
