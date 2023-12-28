@@ -142,7 +142,7 @@ class IonicLevel:
                     self._ionic_fraction = ionfrac
 
     @property
-    def number_density(self) -> u.m**-3:
+    def number_density(self) -> u.Quantity[u.m**-3]:
         """The number density of the ion."""
         return self._number_density
 
@@ -150,11 +150,11 @@ class IonicLevel:
     @validate_quantities(
         n={"can_be_negative": False, "can_be_inf": False, "none_shall_pass": True},
     )
-    def number_density(self, n: u.m**-3):
+    def number_density(self, n: u.Quantity[u.m**-3]):
         self._number_density = np.nan * u.m**-3 if n is None else n
 
     @property
-    def T_i(self) -> u.K:
+    def T_i(self) -> u.Quantity[u.K]:
         """The ion temperature of this particular charge state."""
         return self._T_i
 
@@ -162,7 +162,7 @@ class IonicLevel:
     @validate_quantities(
         T={"can_be_negative": False, "can_be_inf": False, "none_shall_pass": True},
     )
-    def T_i(self, T: u.K):
+    def T_i(self, T: u.Quantity[u.K]):
         self._T_i = np.nan * u.K if T is None else T
 
 
@@ -244,9 +244,9 @@ class IonizationState:
 
     @particle_input(require="element")
     @validate_quantities(
-        T_e={"unit": u.K, "equivalencies": u.temperature_energy()},
+        T_e={"unit": u.Quantity[u.K], "equivalencies": u.temperature_energy()},
         T_i={
-            "unit": u.K,
+            "unit": u.Quantity[u.K],
             "equivalencies": u.temperature_energy(),
             "none_shall_pass": True,
         },
@@ -256,10 +256,10 @@ class IonizationState:
         particle: Particle,
         ionic_fractions=None,
         *,
-        T_e: u.K = np.nan * u.K,
-        T_i: u.K = None,
+        T_e: u.Quantity[u.K] = np.nan * u.K,
+        T_i: u.Quantity[u.K] = None,
         kappa: Real = np.inf,
-        n_elem: u.m**-3 = np.nan * u.m**-3,
+        n_elem: u.Quantity[u.m**-3] = np.nan * u.m**-3,
         tol: float = 1e-15,
     ):
         self._number_of_particles = particle.atomic_number + 1
@@ -522,7 +522,7 @@ class IonizationState:
 
     @property
     @validate_quantities
-    def n_e(self) -> u.m**-3:
+    def n_e(self) -> u.Quantity[u.m**-3]:
         """
         The electron number density assuming a single species plasma.
         """
@@ -530,13 +530,13 @@ class IonizationState:
 
     @property
     @validate_quantities
-    def n_elem(self) -> u.m**-3:
+    def n_elem(self) -> u.Quantity[u.m**-3]:
         """The total number density of neutrals and all ions."""
         return self._n_elem.to(u.m**-3)
 
     @n_elem.setter
     @validate_quantities
-    def n_elem(self, value: u.m**-3):
+    def n_elem(self, value: u.Quantity[u.m**-3]):
         """Set the number density of neutrals and all ions."""
         if value < 0 * u.m**-3:
             raise ParticleError
@@ -547,7 +547,7 @@ class IonizationState:
 
     @property
     @validate_quantities
-    def number_densities(self) -> u.m**-3:
+    def number_densities(self) -> u.Quantity[u.m**-3]:
         """The number densities for each state."""
         try:
             return (self.n_elem * self.ionic_fractions).to(u.m**-3)
@@ -556,7 +556,7 @@ class IonizationState:
 
     @number_densities.setter
     @validate_quantities
-    def number_densities(self, value: u.m**-3):
+    def number_densities(self, value: u.Quantity[u.m**-3]):
         """Set the number densities for each state."""
         if np.any(value.value < 0):
             raise ParticleError("Number densities cannot be negative.")
@@ -570,7 +570,7 @@ class IonizationState:
         self._ionic_fractions = value / self._n_elem
 
     @property
-    def T_e(self) -> u.K:
+    def T_e(self) -> u.Quantity[u.K]:
         """The electron temperature."""
         if self._T_e is None:
             raise ParticleError("No electron temperature has been specified.")
@@ -578,7 +578,7 @@ class IonizationState:
 
     @T_e.setter
     @validate_quantities(value={"equivalencies": u.temperature_energy()})
-    def T_e(self, value: u.K):
+    def T_e(self, value: u.Quantity[u.K]):
         """Set the electron temperature."""
         try:
             value = value.to(u.K, equivalencies=u.temperature_energy())
@@ -593,7 +593,7 @@ class IonizationState:
     @validate_quantities(
         validations_on_return={"equivalencies": u.temperature_energy()}
     )
-    def T_i(self) -> u.K:
+    def T_i(self) -> u.Quantity[u.K]:
         """
         The ion temperature. If the ion temperature has not been provided,
         then this attribute will provide the electron temperature.
@@ -608,7 +608,7 @@ class IonizationState:
             "can_be_negative": False,
         }
     )
-    def T_i(self, value: u.K):
+    def T_i(self, value: u.Quantity[u.K]):
         """Set the ion temperature."""
         if value is None:
             self._T_i = np.repeat(self._T_e, self._number_of_particles)

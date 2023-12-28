@@ -46,7 +46,9 @@ def _grab_charge(ion: ParticleLike, z_mean=None):
     T_e={"can_be_negative": False, "equivalencies": u.temperature_energy()},
     B={"can_be_negative": False},
 )
-def Bohm_diffusion(T_e: u.K, B: u.T) -> u.m**2 / u.s:
+def Bohm_diffusion(
+    T_e: u.Quantity[u.K], B: u.Quantity[u.T]
+) -> u.Quantity[u.m**2 / u.s]:
     r"""
     Return the Bohm diffusion coefficient.
 
@@ -114,7 +116,7 @@ DB_ = Bohm_diffusion
 
 
 @validate_quantities
-def magnetic_energy_density(B: u.T) -> u.J / u.m**3:
+def magnetic_energy_density(B: u.Quantity[u.T]) -> u.Quantity[u.J / u.m**3]:
     r"""
     Calculate the magnetic energy density.
 
@@ -179,7 +181,7 @@ ub_ = magnetic_energy_density
 
 
 @validate_quantities
-def magnetic_pressure(B: u.T) -> u.Pa:
+def magnetic_pressure(B: u.Quantity[u.T]) -> u.Quantity[u.Pa]:
     r"""
     Calculate the magnetic pressure.
 
@@ -247,7 +249,7 @@ pmag_ = magnetic_pressure
     T={"can_be_negative": False, "equivalencies": u.temperature_energy()},
     n={"can_be_negative": False},
 )
-def thermal_pressure(T: u.K, n: u.m**-3) -> u.Pa:
+def thermal_pressure(T: u.Quantity[u.K], n: u.Quantity[u.m**-3]) -> u.Quantity[u.Pa]:
     r"""
     Return the thermal pressure for a Maxwellian distribution.
 

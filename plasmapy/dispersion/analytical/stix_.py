@@ -22,11 +22,11 @@ c_si_unitless = c.value
     w={"can_be_negative": False, "can_be_zero": False},
 )
 def stix(  # noqa: C901, PLR0912, PLR0915
-    B: u.T,
-    w: u.rad / u.s,
+    B: u.Quantity[u.T],
+    w: u.Quantity[u.rad / u.s],
     ions: Particle,
-    n_i: u.m**-3,
-    theta: u.rad,
+    n_i: u.Quantity[u.m**-3],
+    theta: u.Quantity[u.rad],
 ):
     r"""
     Calculate the cold plasma dispersion function presented by

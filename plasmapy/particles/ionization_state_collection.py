@@ -137,10 +137,10 @@ class IonizationStateCollection:
         self,
         inputs: Union[dict[str, np.ndarray], list, tuple],
         *,
-        T_e: u.K = np.nan * u.K,
+        T_e: u.Quantity[u.K] = np.nan * u.K,
         abundances: Optional[dict[str, Real]] = None,
         log_abundances: Optional[dict[str, Real]] = None,
-        n0: u.m**-3 = np.nan * u.m**-3,
+        n0: u.Quantity[u.m**-3] = np.nan * u.m**-3,
         tol: Real = 1e-15,
         kappa: Real = np.inf,
     ):
@@ -633,7 +633,7 @@ class IonizationStateCollection:
 
     @property
     @validate_quantities
-    def n_e(self) -> u.m**-3:
+    def n_e(self) -> u.Quantity[u.m**-3]:
         """The electron number density under the assumption of quasineutrality."""
         number_densities = self.number_densities
         n_e = 0.0 * u.m**-3
@@ -646,13 +646,13 @@ class IonizationStateCollection:
 
     @property
     @validate_quantities
-    def n0(self) -> u.m**-3:
+    def n0(self) -> u.Quantity[u.m**-3]:
         """The number density scaling factor."""
         return self._pars["n"]
 
     @n0.setter
     @validate_quantities
-    def n0(self, n: u.m**-3):
+    def n0(self, n: u.Quantity[u.m**-3]):
         """Set the number density scaling factor."""
         try:
             n = n.to(u.m**-3)
@@ -760,13 +760,13 @@ class IonizationStateCollection:
                 raise ParticleError("Invalid log_abundances.") from None
 
     @property
-    def T_e(self) -> u.K:
+    def T_e(self) -> u.Quantity[u.K]:
         """The electron temperature."""
         return self._pars["T_e"]
 
     @T_e.setter
     @validate_quantities(electron_temperature={"equivalencies": u.temperature_energy()})
-    def T_e(self, electron_temperature: u.K):
+    def T_e(self, electron_temperature: u.Quantity[u.K]):
         """Set the electron temperature."""
         try:
             temperature = electron_temperature.to(

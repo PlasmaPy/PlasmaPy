@@ -15,7 +15,7 @@ from plasmapy.particles.particle_class import Particle
 @particle_input(any_of={"isotope", "baryon"})
 def nuclear_binding_energy(
     particle: Particle, mass_numb: Optional[Integral] = None
-) -> u.J:
+) -> u.Quantity[u.J]:
     """
     Return the nuclear binding energy associated with an isotope.
 
@@ -70,7 +70,9 @@ def nuclear_binding_energy(
 
 
 @particle_input
-def mass_energy(particle: Particle, mass_numb: Optional[Integral] = None) -> u.J:
+def mass_energy(
+    particle: Particle, mass_numb: Optional[Integral] = None
+) -> u.Quantity[u.J]:
     """
     Return a particle's mass energy.  If the particle is an isotope or
     nuclide, return the nuclear mass energy only.
@@ -108,7 +110,7 @@ def mass_energy(particle: Particle, mass_numb: Optional[Integral] = None) -> u.J
     return particle.mass_energy
 
 
-def nuclear_reaction_energy(*args, **kwargs) -> u.J:  # noqa: C901, PLR0915
+def nuclear_reaction_energy(*args, **kwargs) -> u.Quantity[u.J]:  # noqa: C901, PLR0915
     """
     Return the released energy from a nuclear reaction.
 
@@ -251,7 +253,7 @@ def nuclear_reaction_energy(*args, **kwargs) -> u.J:  # noqa: C901, PLR0915
                 total_charge += particle.charge_number
         return total_charge
 
-    def add_mass_energy(particles: list[Particle]) -> u.Quantity:
+    def add_mass_energy(particles: list[Particle]) -> u.Quantity[u.J]:
         """
         Find the total mass energy from a list of particles, while
         taking the masses of the fully ionized isotopes.

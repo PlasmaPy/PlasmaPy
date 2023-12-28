@@ -126,8 +126,8 @@ class Tracker:
     def __init__(
         self,
         grids: Union[AbstractGrid, Iterable[AbstractGrid]],
-        source: u.m,
-        detector: u.m,
+        source: u.Quantity[u.m],
+        detector: u.Quantity[u.m],
         detector_hdir=None,
         verbose=True,
     ):

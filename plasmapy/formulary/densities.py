@@ -23,7 +23,7 @@ __all__ += __aliases__
         "units": [u.m**-3],
     },
 )
-def critical_density(omega: u.rad / u.s) -> u.m**-3:
+def critical_density(omega: u.Quantity[u.rad / u.s]) -> u.Quantity[u.m**-3]:
     r"""Calculate the plasma critical density for a radiation of a given frequency.
 
     Parameters
@@ -71,7 +71,7 @@ def mass_density(
     density: (u.m**-3, u.kg / (u.m**3)),
     particle: ParticleLike,
     z_ratio: Optional[numbers.Real] = 1,
-) -> u.kg / u.m**3:
+) -> u.Quantity[u.kg / u.m**3]:
     r"""
     Calculate the mass density from a number density.
 
