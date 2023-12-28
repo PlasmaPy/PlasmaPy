@@ -18,7 +18,7 @@ asteval==0.9.31
     # via lmfit
 astropy==6.0.0
     # via plasmapy (setup.py)
-astropy-iers-data==0.2023.12.18.0.30.18
+astropy-iers-data==0.2023.12.25.0.30.16
     # via astropy
 asttokens==2.4.1
     # via stack-data
@@ -92,7 +92,7 @@ filelock==3.13.1
     # via
     #   tox
     #   virtualenv
-fonttools==4.46.0
+fonttools==4.47.0
     # via matplotlib
 fqdn==1.5.1
     # via jsonschema
@@ -117,7 +117,7 @@ iniconfig==2.0.0
     # via pytest
 ipykernel==6.27.1
     # via plasmapy (setup.py)
-ipython==8.18.1
+ipython==8.19.0
     # via
     #   ipykernel
     #   ipywidgets
@@ -154,7 +154,7 @@ jupyter-client==8.6.0
     #   jupyter-server
     #   nbclient
     #   voila
-jupyter-core==5.5.0
+jupyter-core==5.5.1
     # via
     #   ipykernel
     #   jupyter-client
@@ -203,7 +203,7 @@ nbclient==0.7.4
     # via
     #   nbconvert
     #   voila
-nbconvert==7.12.0
+nbconvert==7.13.1
     # via
     #   jupyter-server
     #   nbsphinx

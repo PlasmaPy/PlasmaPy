@@ -1,0 +1,2 @@
+Moved ``mass_density`` and its alias ``rho_`` from `plasmapy.formulary.misc`
+to `plasmapy.formulary.densities`.

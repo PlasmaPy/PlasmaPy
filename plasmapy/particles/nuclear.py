@@ -184,7 +184,7 @@ def nuclear_reaction_energy(*args, **kwargs) -> u.Quantity[u.J]:  # noqa: C901, 
     errmsg = "Invalid nuclear reaction."
 
     def process_particles_list(
-        unformatted_particles_list: list[Union[str, Particle]]
+        unformatted_particles_list: list[Union[str, Particle]],
     ) -> list[Particle]:
         """
         Take an unformatted list of particles and puts each
