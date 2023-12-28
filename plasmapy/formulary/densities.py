@@ -68,10 +68,10 @@ def critical_density(omega: u.Quantity[u.rad / u.s]) -> u.Quantity[u.m**-3]:
     density={"can_be_negative": False}, validations_on_return={"can_be_negative": False}
 )
 def mass_density(
-    density: (u.m**-3, u.kg / (u.m**3)),
+    density: u.Quantity[u.m**-3, u.kg / (u.m**3)],
     particle: ParticleLike,
     z_ratio: Optional[numbers.Real] = 1,
-) -> u.kg / u.m**3:
+) -> u.Quantity[u.kg / u.m**3]:
     r"""
     Calculate the mass density from a number density.
 
