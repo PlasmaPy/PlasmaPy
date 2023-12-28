@@ -452,7 +452,7 @@ class CheckUnits(CheckBase):
     """
 
     #: Default values for the possible 'check' keys.
-    # To add a new check the the class, the following needs to be done:
+    # To add a new check to the class, the following needs to be done:
     #   1. Add a key & default value to the `__check_defaults` dictionary
     #   2. Add a corresponding conditioning statement to `_get_unit_checks`
     #   3. Add a corresponding behavior to `_check_unit`

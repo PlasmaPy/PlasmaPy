@@ -139,7 +139,7 @@ def stix(  # noqa: C901, PLR0912, PLR0915
     dispersion relation assumed:
 
     * zero temperature for all plasma species (:math:`T_{s}=0`)
-    * quasi-neutrallity
+    * quasi-neutrality
     * a uniform background magntic field
       :math:`\mathbf{B_o} = B_{o} \mathbf{\hat{z}}`
     * no D.C. electric field :math:`\mathbf{E_o}=0`
