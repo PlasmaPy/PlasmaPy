@@ -1,0 +1,1 @@
+Improve type hint annotations in `plasmapy.particles`.
