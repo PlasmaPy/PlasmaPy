@@ -2,9 +2,9 @@
 The `~plasmapy.formulary` subpackage contains commonly used formulae
 from plasma science.
 """
-__all__ = []
-__aliases__ = []
-__lite_funcs__ = []
+__all__: list[str] = []
+__aliases__: list[str] = []
+__lite_funcs__: list[str] = []
 
 from plasmapy.formulary.braginskii import *
 from plasmapy.formulary.collisions import *
