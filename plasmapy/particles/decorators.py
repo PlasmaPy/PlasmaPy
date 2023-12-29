@@ -9,6 +9,7 @@ import warnings
 import wrapt
 
 from collections.abc import Iterable
+from inspect import BoundArguments
 from numbers import Integral, Real
 from typing import Any, Callable, NoReturn, Optional, Union
 
@@ -69,11 +70,12 @@ def _make_into_set_or_none(obj) -> Optional[set]:
 
 
 def _bind_arguments(
+    wrapped_signature: inspect.Signature,
     callable_: Callable,
     args: Optional[tuple] = None,
     kwargs: Optional[dict[str, Any]] = None,
     instance=None,
-) -> dict:
+) -> inspect.BoundArguments:
     """
     Bind the arguments provided by ``args`` and ``kwargs`` to
     the corresponding parameters in the signature of the callable_
@@ -81,8 +83,13 @@ def _bind_arguments(
 
     Parameters
     ----------
+    wrapped_signature : `inspect.Signature`
+        The signature of the function or method to which to bind
+        ``args`` and ``kwargs``.
+
     callable_ : callable
         The function or method to which to bind ``args`` and ``kwargs``.
+        This argument is only needed for a deprecation warning message.
 
     args : tuple, optional
         Positional arguments.
@@ -101,7 +108,6 @@ def _bind_arguments(
         the corresponding arguments as values, but removing ``self`` and
         ``cls``.
     """
-    wrapped_signature = inspect.signature(callable_)
 
     # We should keep the warning about "z_mean" for perhaps ∼2
     # releases following the last pull request that removes a "z_mean"
@@ -134,12 +140,11 @@ def _bind_arguments(
         bound_arguments = wrapped_signature.bind(instance, *args, **kwargs)
 
     bound_arguments.apply_defaults()
-    arguments_to_be_processed = bound_arguments.arguments
 
-    arguments_to_be_processed.pop("self", None)
-    arguments_to_be_processed.pop("cls", None)
+    bound_arguments.arguments.pop("self", None)
+    bound_arguments.arguments.pop("cls", None)
 
-    return arguments_to_be_processed
+    return bound_arguments
 
 
 class _ParticleInput:
@@ -204,6 +209,12 @@ class _ParticleInput:
         self._data["callable"] = callable_
         self._data["annotations"] = _get_annotations(callable_)
         self._data["parameters_to_process"] = self.find_parameters_to_process()
+        self._data["signature"] = inspect.signature(callable_)
+
+    @property
+    def signature(self) -> inspect.Signature:
+        """The signature of the wrapped callable."""
+        return self._data["signature"]
 
     def find_parameters_to_process(self) -> list[str]:
         """
@@ -553,9 +564,12 @@ class _ParticleInput:
 
     def perform_pre_validations(self, Z, mass_numb):
         """
-        Check that there are annotated parameters, that ``Z`` and
-        ``mass_numb`` are integers, and that ``Z`` and ``mass_numb`` are
-        not parameters when more than one parameter is annotated.
+        Perform a variety of pre-checks on the arguments.
+
+        Check that there are annotated parameters. Check that ``Z`` is
+        a real number if not `None`. Check that ``mass_numb`` is an
+        integer if not `None`. Verify that ``Z`` and ``mass_numb`` are
+        not included if there are multiple annotated parameters.
         """
 
         if not self.parameters_to_process:
@@ -575,13 +589,13 @@ class _ParticleInput:
         if Z_or_mass_numb and multiple_annotated_parameters:
             raise ParticleError(
                 "The arguments Z and mass_numb are not allowed when more "
-                "than one argument or keyword is annotated with Particle "
-                "in callables decorated with particle_input."
+                "than one argument or keyword is annotated with ParticleLike "
+                "in callables decorated with @particle_input."
             )
 
     def process_arguments(
         self, args: tuple, kwargs: dict[str, Any], instance=None
-    ) -> dict[str, Any]:
+    ) -> BoundArguments:
         """
         Process the arguments passed to the callable_ callable.
 
@@ -597,19 +611,31 @@ class _ParticleInput:
             If the callable_ callable is a class instance method, then
             ``instance`` should be the class instance to which ``func``
             belongs.
+
+        Notes
+        -----
+        This method does not work when there are positional arguments
+        before variadic positional arguments.  See :issue:`2150`.
         """
 
-        arguments = _bind_arguments(self.callable_, args, kwargs, instance)
+        bound_arguments = _bind_arguments(
+            self.signature, self.callable_, args, kwargs, instance
+        )
 
-        Z = arguments.pop("Z", None)
-        mass_numb = arguments.pop("mass_numb", None)
+        Z = bound_arguments.arguments.pop("Z", None)
+        mass_numb = bound_arguments.arguments.pop("mass_numb", None)
 
         self.perform_pre_validations(Z, mass_numb)
 
-        return {
+        processed_kwargs = {
             parameter: self.process_argument(parameter, argument, Z, mass_numb)
-            for parameter, argument in arguments.items()
+            for parameter, argument in bound_arguments.arguments.items()
         }
+
+        for parameter in processed_kwargs:
+            bound_arguments.arguments[parameter] = processed_kwargs[parameter]
+
+        return bound_arguments
 
 
 def particle_input(
@@ -894,7 +920,7 @@ def particle_input(
     def wrapper(
         callable__: Callable, instance: Any, args: tuple, kwargs: dict[str, Any]
     ):
-        new_kwargs = particle_validator.process_arguments(args, kwargs, instance)
-        return callable__(**new_kwargs)
+        bound_arguments = particle_validator.process_arguments(args, kwargs, instance)
+        return callable__(*bound_arguments.args, **bound_arguments.kwargs)
 
     return wrapper(callable_)
