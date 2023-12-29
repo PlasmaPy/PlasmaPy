@@ -84,11 +84,14 @@ docs = [
 ]
 tests = [
   "hypothesis >= 6.35.1",
+  "pandas-stubs >= 1.5.0.221010",
   "pre-commit >= 3.0.0",
   "pytest-regressions >= 2.3.1",
   "pytest-xdist >= 3.0.2",
   "tomli >= 2.0.1",
   "tox >= 4.3.1",
+  "types-requests >= 2.27.1",
+  "types-tqdm >= 4.66.0.3",
 ]
 [project.urls]
 Changelog = "https://docs.plasmapy.org/en/stable/whatsnew/index.html"
