@@ -2,7 +2,7 @@
 Contains functions that create widgets and process properties for the calculator.
 """
 
-__all__ = []
+__all__: list[str] = []
 
 import abc
 import importlib
