@@ -4,7 +4,7 @@ for |Particle|, |CustomParticle|, or |ParticleList| and returns the
 appropriate instance of one of those three classes.
 """
 
-__all__ = []
+__all__: list[str] = []
 
 import astropy.units as u
 import contextlib
