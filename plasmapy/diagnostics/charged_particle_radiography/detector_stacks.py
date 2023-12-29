@@ -12,6 +12,7 @@ import astropy.units as u
 import numpy as np
 
 from scipy.interpolate import interp1d
+from typing import Optional
 
 
 class Layer:
@@ -60,8 +61,8 @@ class Layer:
         self,
         thickness: u.Quantity[u.m],
         energy_axis: u.Quantity[u.J],
-        stopping_power: [u.J / u.m, u.J * u.m**2 / u.kg],
-        mass_density: [u.kg / u.m**3, None] = None,
+        stopping_power: u.Quantity[u.J / u.m, u.J * u.m**2 / u.kg],
+        mass_density: Optional[u.Quantity[u.kg / u.m**3]] = None,
         active: bool = True,
         name: str = "",
     ):
