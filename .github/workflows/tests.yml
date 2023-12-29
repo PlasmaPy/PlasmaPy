@@ -39,6 +39,11 @@ jobs:
           python: 3.9
           toxenv: py39-all-minimal
 
+        - name: mypy
+          os: ubuntu-latest
+          python: '3.11'
+          toxenv: mypy
+
         - name: Linters
           os: ubuntu-latest
           python: '3.11'
