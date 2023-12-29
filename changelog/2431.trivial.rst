@@ -1,0 +1,2 @@
+Added the mypy static type checker to PlasmaPy's suite of continuous
+integration checks.
