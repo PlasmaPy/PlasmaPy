@@ -1,2 +1,1 @@
-Added the mypy static type checker to PlasmaPy's suite of continuous
-integration checks.
+Added a tox environment for running mypy.
