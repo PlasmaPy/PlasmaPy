@@ -44,6 +44,11 @@ jobs:
           python: '3.11'
           toxenv: linters
 
+        - name: mypy
+          os: ubuntu-latest
+          python: '3.11'
+          toxenv: mypy
+
     steps:
 
     - name: Checkout code
