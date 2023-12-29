@@ -398,7 +398,7 @@ def parse_and_check_atomic_input(  # noqa: C901, PLR0912, PLR0915
             raise InvalidElementError(f"{argument} is not a valid element.")
 
     if isinstance(arg, str) and arg.isdigit():
-        arg = int(arg)  # type: ignore[assignment]
+        arg = int(arg)
 
     if isinstance(arg, int):
         element = atomic_number_to_symbol(arg)
