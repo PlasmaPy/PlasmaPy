@@ -48,6 +48,7 @@ jobs:
           os: ubuntu-latest
           python: '3.11'
           toxenv: mypy
+          toxargs: --show-error-context --show-error-code-links --pretty
 
     steps:
 
