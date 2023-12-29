@@ -82,19 +82,13 @@ docs = [
   "tox >= 4.4.0",
   "unidecode >= 1.3.6",
 ]
-# Some of these packages contain typing information for packages that
-# don't themselves contain type hints. We might want to move these from
-# the tests section and into the specific mypy environment.
 tests = [
   "hypothesis >= 6.35.1",
-  "pandas-stubs >= 1.5.0.221010",  # used by mypy
   "pre-commit >= 3.0.0",
   "pytest-regressions >= 2.3.1",
   "pytest-xdist >= 3.0.2",
   "tomli >= 2.0.1",
   "tox >= 4.3.1",
-  "types-requests >= 2.27.1",  # used by mypy
-  "types-tqdm >= 4.66.0.3",  # used by mypy
 ]
 [project.urls]
 Changelog = "https://docs.plasmapy.org/en/stable/whatsnew/index.html"
