@@ -303,7 +303,7 @@ def test_optional_particle_annotation_parameter():
     )
 
 
-def undecorated_function(particle: ParticleLike, distance: u.m):
+def undecorated_function(particle: ParticleLike, distance: u.Quantity[u.m]):
     return particle, distance
 
 
@@ -450,7 +450,7 @@ def test_particle_input_with_validate_quantities(outer_decorator, inner_decorato
         def __init__(
             self,
             particle: ParticleLike,
-            T_e: u.K = None,
+            T_e: u.Quantity[u.K] = None,
         ):
             self.particle = particle
             self.T_e = T_e
@@ -654,3 +654,43 @@ def test_particle_input_warning_for_float_z_mean():
     Z = result.charge / const.e.si
 
     assert u.isclose(Z, z_mean)
+
+
+def test_particle_input_with_var_positional_arguments():
+    """
+    Test that |particle_input| works with functions that accept
+    variadic positional arguments and keyword arguments.
+    """
+
+    @particle_input
+    def function_with_var_positional_arguments(*args, particle: ParticleLike = None):
+        return args, particle
+
+    args = (5, 6, 7)
+    particle = "p+"
+    expected = (args, Particle(particle))
+
+    actual = function_with_var_positional_arguments(*args, particle=particle)
+
+    assert actual == expected
+
+
+@pytest.mark.xfail(reason="See issue #2150.")
+def test_particle_input_with_pos_and_var_positional_arguments():
+    """
+    Test that |particle_input| works with functions that accept
+    positional followed by variadic positional arguments.
+    """
+
+    @particle_input
+    def function_with_pos_and_var_positional_arguments(
+        a, *args, particle: ParticleLike = None
+    ):
+        return args, particle
+
+    a = 1
+    args = (5, 6, 7)
+    particle = "p+"
+    expected = (a, args, Particle(particle))
+    actual = function_with_pos_and_var_positional_arguments(a, *args, particle=particle)
+    assert actual == expected

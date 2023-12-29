@@ -22,7 +22,9 @@ from plasmapy.utils.exceptions import PhysicsError
 
 @validate_quantities(T={"equivalencies": u.temperature_energy()})
 @particles.particle_input
-def _process_inputs(T: u.K, species: (particles.Particle, particles.Particle), V):
+def _process_inputs(
+    T: u.Quantity[u.K], species: (particles.Particle, particles.Particle), V
+):
     """
     Helper function for processing inputs to functionality contained
     in `plasmapy.formulary.collisions`.
@@ -84,13 +86,13 @@ def _replace_nan_velocity_with_thermal_velocity(
     n_e={"can_be_negative": False},
 )
 def mobility(
-    T: u.K,
-    n_e: u.m**-3,
+    T: u.Quantity[u.K],
+    n_e: u.Quantity[u.m**-3],
     species,
     z_mean: Real = np.nan,
-    V: u.m / u.s = np.nan * u.m / u.s,
+    V: u.Quantity[u.m / u.s] = np.nan * u.m / u.s,
     method="classical",
-) -> u.m**2 / (u.V * u.s):
+) -> u.Quantity[u.m**2 / (u.V * u.s)]:
     r"""
     Return the electrical mobility.
 
@@ -212,13 +214,13 @@ def mobility(
     n={"can_be_negative": False},
 )
 def Spitzer_resistivity(
-    T: u.K,
-    n: u.m**-3,
+    T: u.Quantity[u.K],
+    n: u.Quantity[u.m**-3],
     species,
     z_mean: Real = np.nan,
-    V: u.m / u.s = np.nan * u.m / u.s,
+    V: u.Quantity[u.m / u.s] = np.nan * u.m / u.s,
     method="classical",
-) -> u.Ohm * u.m:
+) -> u.Quantity[u.Ohm * u.m]:
     r"""
     Spitzer resistivity of a plasma.
 

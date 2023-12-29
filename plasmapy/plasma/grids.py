@@ -1407,7 +1407,7 @@ class NonUniformCartesianGrid(AbstractGrid):
         )
 
         # Clear additional property that is not handled in the
-        # _persistant_interpolator_setup function because it is unique
+        # _persistent_interpolator_setup function because it is unique
         # to this non_uniform grid.
         if not persistent:
             with contextlib.suppress(AttributeError):

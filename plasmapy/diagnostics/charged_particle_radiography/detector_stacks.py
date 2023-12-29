@@ -58,8 +58,8 @@ class Layer:
 
     def __init__(
         self,
-        thickness: u.m,
-        energy_axis: u.J,
+        thickness: u.Quantity[u.m],
+        energy_axis: u.Quantity[u.J],
         stopping_power: [u.J / u.m, u.J * u.m**2 / u.kg],
         mass_density: [u.kg / u.m**3, None] = None,
         active: bool = True,
@@ -139,7 +139,9 @@ class Stack:
         thickness = np.array([layer.thickness.to(u.m).value for layer in self._layers])
         return np.sum(thickness) * u.m
 
-    def deposition_curves(self, energies: u.J, dx=1 * u.um, return_only_active=True):
+    def deposition_curves(
+        self, energies: u.Quantity[u.J], dx=1 * u.um, return_only_active=True
+    ):
         """
         Calculate the deposition of an ensemble of particles over a range of
         energies in a stack of films and filters.
@@ -219,8 +221,8 @@ class Stack:
 
     def energy_bands(
         self,
-        energy_range: u.J,
-        dE: u.J,
+        energy_range: u.Quantity[u.J],
+        dE: u.Quantity[u.J],
         dx=1e-6 * u.m,  # noqa: ARG002
         return_only_active=True,
     ):
