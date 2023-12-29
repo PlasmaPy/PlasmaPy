@@ -1,1 +1,1 @@
-Added an initial configuration for ``mypy` that temporarily ignores existing errors.
+Added an initial configuration for ``mypy`` that temporarily ignores existing errors.
