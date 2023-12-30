@@ -6,8 +6,9 @@ import astropy.units as u
 import inspect
 import numpy as np
 
+from collections.abc import Callable
 from numbers import Integral
-from typing import Any, Callable, Optional, Union
+from typing import Any, Optional, Union
 
 
 def _code_repr_of_ndarray(array: np.ndarray, max_items=np.inf) -> str:

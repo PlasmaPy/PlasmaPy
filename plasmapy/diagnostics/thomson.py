@@ -15,8 +15,9 @@ import numbers
 import numpy as np
 import warnings
 
+from collections.abc import Callable
 from lmfit import Model
-from typing import Any, Callable, Optional, Union
+from typing import Any, Optional, Union
 
 from plasmapy.formulary import (
     permittivity_1D_Maxwellian_lite,

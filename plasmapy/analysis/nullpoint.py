@@ -21,7 +21,7 @@ __all__ = [
 import numpy as np
 import warnings
 
-from typing import Callable
+from collections.abc import Callable
 
 # Declare Constants & global variables
 _EQUALITY_ATOL = 1e-10
