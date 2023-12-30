@@ -185,7 +185,7 @@ class _ParticleInput:
         allow_custom_particles: bool = True,
         allow_particle_lists: bool = True,
     ):
-        self._data: dict[str, Any] = {}
+        self._data = {}
         self.callable_ = callable_
         self.require = require
         self.any_of = any_of
