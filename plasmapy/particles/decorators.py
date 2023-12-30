@@ -43,7 +43,7 @@ _particle_input_annotations = (
 )
 
 
-def _get_annotations(callable_: Callable) -> dict[str, Any]:
+def _get_annotations(callable_: Callable):
     """
     Access the annotations of a callable.
 
