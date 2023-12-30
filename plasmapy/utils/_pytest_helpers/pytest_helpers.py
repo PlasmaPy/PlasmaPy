@@ -17,7 +17,8 @@ import numpy as np
 import pytest
 import warnings
 
-from typing import Any, Callable, Optional
+from collections.abc import Callable
+from typing import Any, Optional
 
 from plasmapy.tests._helpers.exceptions import (
     InvalidTestError,

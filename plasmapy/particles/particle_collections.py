@@ -7,8 +7,8 @@ import collections
 import contextlib
 import numpy as np
 
-from collections.abc import Iterable, Sequence
-from typing import Callable, Optional, Union
+from collections.abc import Callable, Iterable, Sequence
+from typing import Optional, Union
 
 from plasmapy.particles.exceptions import InvalidParticleError
 from plasmapy.particles.particle_class import (

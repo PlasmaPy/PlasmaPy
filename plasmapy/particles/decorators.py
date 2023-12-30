@@ -8,10 +8,10 @@ import numpy as np
 import warnings
 import wrapt
 
-from collections.abc import Iterable
+from collections.abc import Callable, Iterable
 from inspect import BoundArguments
 from numbers import Integral, Real
-from typing import Any, Callable, NoReturn, Optional, Union
+from typing import Any, NoReturn, Optional, Union
 
 from plasmapy.particles._factory import _physical_particle_factory
 from plasmapy.particles.exceptions import (
@@ -43,7 +43,7 @@ _particle_input_annotations = (
 )
 
 
-def _get_annotations(callable_: Callable):
+def _get_annotations(callable_: Callable) -> dict[str, Any]:
     """
     Access the annotations of a callable.
 
@@ -185,7 +185,7 @@ class _ParticleInput:
         allow_custom_particles: bool = True,
         allow_particle_lists: bool = True,
     ):
-        self._data = {}
+        self._data: dict[str, Any] = {}
         self.callable_ = callable_
         self.require = require
         self.any_of = any_of
