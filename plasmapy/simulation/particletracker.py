@@ -99,7 +99,7 @@ class ParticleTracker:
         dt=np.inf * u.s,
         nt=np.inf,
         integrator="explicit_boris",
-    ):
+    ) -> None:
         if np.isinf(dt) and np.isinf(nt):
             raise ValueError("Both dt and nt are infinite.")
 
