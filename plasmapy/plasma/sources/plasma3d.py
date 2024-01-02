@@ -38,7 +38,7 @@ class Plasma3D(GenericPlasma):
     """
 
     @validate_quantities(domain_x=u.m, domain_y=u.m, domain_z=u.m)
-    def __init__(self, domain_x, domain_y, domain_z, **kwargs):
+    def __init__(self, domain_x, domain_y, domain_z, **kwargs) -> None:
         super().__init__(**kwargs)
 
         # Define domain sizes

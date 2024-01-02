@@ -50,7 +50,7 @@ class HarrisSheet:
     <Quantity 1.8622... T>
     """
 
-    def __init__(self, B0, delta, P0=0 * u.Pa):
+    def __init__(self, B0, delta, P0=0 * u.Pa) -> None:
         self.B0 = B0
         self.delta = delta
         self.P0 = P0

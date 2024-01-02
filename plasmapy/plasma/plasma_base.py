@@ -75,7 +75,7 @@ class GenericPlasma(BasePlasma):
     methods declared in the `~plasmapy.plasma.plasma_base.BasePlasma`.
     """
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs) -> None:
         pass
 
     # The definitions for the abstract methods declared in `BasePlasma`

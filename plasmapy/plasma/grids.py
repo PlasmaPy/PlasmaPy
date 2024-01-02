@@ -76,7 +76,7 @@ class AbstractGrid(ABC):
 
     """
 
-    def __init__(self, *seeds, num=100, **kwargs):
+    def __init__(self, *seeds, num=100, **kwargs) -> None:
         # Initialize some variables
         self._interpolator = None
         self._is_uniform = None
