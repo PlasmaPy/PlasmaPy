@@ -11,7 +11,7 @@ import wrapt
 from collections.abc import Callable, Iterable
 from inspect import BoundArguments
 from numbers import Integral, Real
-from typing import Any, NoReturn, Optional, Union
+from typing import Any, Optional, Union
 
 from plasmapy.particles._factory import _physical_particle_factory
 from plasmapy.particles.exceptions import (
@@ -331,7 +331,7 @@ class _ParticleInput:
         """
         return self._data["parameters_to_process"]
 
-    def verify_charge_categorization(self, particle) -> NoReturn:
+    def verify_charge_categorization(self, particle) -> None:
         """
         Raise an exception if the particle does not meet charge
         categorization criteria.
@@ -391,7 +391,7 @@ class _ParticleInput:
 
         return category_errmsg
 
-    def verify_particle_categorization(self, particle) -> NoReturn:
+    def verify_particle_categorization(self, particle) -> None:
         """
         Verify that the particle meets the categorization criteria.
 

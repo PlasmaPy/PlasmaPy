@@ -8,7 +8,7 @@ import astropy.units as u
 import numpy as np
 
 from numbers import Integral, Real
-from typing import NoReturn, Optional, Union
+from typing import Optional, Union
 
 from plasmapy.particles.atomic import atomic_number
 from plasmapy.particles.exceptions import (
@@ -918,7 +918,7 @@ class IonizationStateCollection:
             abundances=all_abundances,
         )
 
-    def summarize(self, minimum_ionic_fraction: Real = 0.01) -> NoReturn:
+    def summarize(self, minimum_ionic_fraction: Real = 0.01) -> None:
         """
         Print quicklook information.
 

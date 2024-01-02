@@ -10,7 +10,7 @@ import numpy as np
 import warnings
 
 from numbers import Integral, Real
-from typing import NoReturn, Optional
+from typing import Optional
 
 from plasmapy.particles.atomic import ionic_levels
 from plasmapy.particles.decorators import particle_input
@@ -510,7 +510,7 @@ class IonizationState:
         total = np.sum(self._ionic_fractions)
         return np.isclose(total, 1, atol=tol, rtol=0)
 
-    def normalize(self) -> NoReturn:
+    def normalize(self) -> None:
         """
         Normalize the ionization state distribution (if set) so that the
         sum of the ionic fractions becomes equal to one.

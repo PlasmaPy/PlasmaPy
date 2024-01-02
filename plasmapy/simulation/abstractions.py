@@ -15,7 +15,6 @@ __all__ = [
 import astropy.units as u
 
 from abc import ABC, abstractmethod
-from typing import NoReturn
 
 
 class AbstractSimulation(ABC):
@@ -35,7 +34,7 @@ class AbstractSimulation(ABC):
         ...
 
     @abstractmethod
-    def initialize(self) -> NoReturn:
+    def initialize(self) -> None:
         """Prepare the simulation to be run."""
         ...
 
@@ -45,7 +44,7 @@ class AbstractSimulation(ABC):
         ...
 
     @abstractmethod
-    def finalize(self) -> NoReturn:
+    def finalize(self) -> None:
         """Perform the steps to close the simulation."""
         ...
 
