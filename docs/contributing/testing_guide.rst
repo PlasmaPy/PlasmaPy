@@ -714,9 +714,14 @@ environments are available, run:
 
    tox -a
 
-These commands can be run in any directory within PlasmaPy's repository
-with the same effect.
+For example, static type checking with |mypy| can be run locally with
 
+.. code-block:: shell
+
+   tox -e mypy
+
+Commands using |tox| can be run in any directory within PlasmaPy's
+repository with the same effect.
 
 .. _code-coverage:
 
