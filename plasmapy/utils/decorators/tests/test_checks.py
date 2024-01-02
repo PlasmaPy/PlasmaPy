@@ -612,7 +612,7 @@ class TestCheckUnits:
         # test on class method
         class Foo:
             @CheckUnits()
-            def __init__(self, y: u.cm):
+            def __init__(self, y: u.cm) -> None:
                 self.y = y
 
             @CheckUnits(x=u.cm)
@@ -1108,7 +1108,7 @@ class TestCheckValues:
         # test on class method
         class Foo:
             @CheckValues(y={"can_be_negative": True})
-            def __init__(self, y):
+            def __init__(self, y) -> None:
                 self.y = y
 
             @CheckValues(
