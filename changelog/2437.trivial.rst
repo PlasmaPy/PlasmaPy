@@ -1,0 +1,2 @@
+Used ``autotyping`` to implement type hint annotations for special
+methods like ``__init__`` and ``__str__``.
