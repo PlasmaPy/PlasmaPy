@@ -130,7 +130,7 @@ class Tracker:
         detector: u.Quantity[u.m],
         detector_hdir=None,
         verbose=True,
-    ):
+    ) -> None:
         # self.grid is the grid object
         if isinstance(grids, AbstractGrid):
             self.grids = [

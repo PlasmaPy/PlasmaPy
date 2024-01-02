@@ -85,7 +85,7 @@ class Characteristic:
     """
 
     @validate_quantities(bias={"can_be_inf": False}, current={"can_be_inf": False})
-    def __init__(self, bias: u.Quantity[u.V], current: u.Quantity[u.A]):
+    def __init__(self, bias: u.Quantity[u.V], current: u.Quantity[u.A]) -> None:
         _langmuir_futurewarning()
 
         self.bias = bias
