@@ -184,7 +184,7 @@ class _ParticleInput:
         exclude: Optional[Union[str, set, list, tuple]] = None,
         allow_custom_particles: bool = True,
         allow_particle_lists: bool = True,
-    ):
+    ) -> None:
         self._data = {}
         self.callable_ = callable_
         self.require = require

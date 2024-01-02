@@ -166,7 +166,7 @@ class AbstractParticle(ABC):
             }
         }
 
-    def __bool__(self):
+    def __bool__(self) -> bool:
         """
         Raise an `~plasmapy.particles.exceptions.ParticleError` because
         particles do not have a truth value.
@@ -581,7 +581,7 @@ class Particle(AbstractPhysicalParticle):
         *_,
         mass_numb: Optional[Integral] = None,
         Z: Optional[Integral] = None,
-    ):
+    ) -> None:
         # TODO: Remove the following block during or after the 0.9.0 release
 
         if _:
@@ -1886,7 +1886,7 @@ class DimensionlessParticle(AbstractParticle):
         mass: Optional[Real] = None,
         charge: Optional[Real] = None,
         symbol: Optional[str] = None,
-    ):
+    ) -> None:
         try:
             self.mass = mass
             self.charge = charge
@@ -2096,7 +2096,7 @@ class CustomParticle(AbstractPhysicalParticle):
         symbol: Optional[str] = None,
         *,
         Z: Optional[Real] = None,
-    ):
+    ) -> None:
         # TODO: py3.10 replace ifology with structural pattern matching
 
         if Z is not None and charge is not None:

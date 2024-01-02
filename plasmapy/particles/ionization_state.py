@@ -86,7 +86,7 @@ class IonicLevel:
     @particle_input
     def __init__(
         self, ion: Particle, ionic_fraction=None, number_density=None, T_i=None
-    ):
+    ) -> None:
         try:
             self.ion = ion
             self.ionic_fraction = ionic_fraction
@@ -261,7 +261,7 @@ class IonizationState:
         kappa: Real = np.inf,
         n_elem: u.Quantity[u.m**-3] = np.nan * u.m**-3,
         tol: float = 1e-15,
-    ):
+    ) -> None:
         self._number_of_particles = particle.atomic_number + 1
 
         if particle.is_ion or particle.is_category(require=("uncharged", "element")):

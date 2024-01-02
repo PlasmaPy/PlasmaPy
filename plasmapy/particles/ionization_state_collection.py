@@ -143,7 +143,7 @@ class IonizationStateCollection:
         n0: u.Quantity[u.m**-3] = np.nan * u.m**-3,
         tol: Real = 1e-15,
         kappa: Real = np.inf,
-    ):
+    ) -> None:
         set_abundances = True
         if isinstance(inputs, dict) and np.all(
             [isinstance(fracs, u.Quantity) for fracs in inputs.values()]
