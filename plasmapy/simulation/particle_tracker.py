@@ -317,31 +317,36 @@ class IntervalSaveRoutine(AbstractSaveRoutine):
 class ParticleTracker:
     r"""A particle tracker for particles in electric and magnetic fields without inter-particle interactions.
 
-    Particles are instantiated and pushed through a grid of provided E and B fields
-    using the Boris push algorithm. These fields are specified as part of a grid
-    which are then interpolated to determine the local field acting on each particle.
+    Particles are instantiated and pushed through a grid of provided E and
+    B fields using the Boris push algorithm. These fields are specified as
+    part of a grid which are then interpolated to determine the local field
+    acting on each particle.
 
-    The time step used in the push routine can be specified, or an adaptive time step
-    will be determined based off the gyroradius of the particle. Some save routines involve
-    time stamping the location and velocities of particles at fixed intervals. In order for this
-    data to be coherent, it is required that all particles follow the same time step. This is
-    referred to as a synchronized time step. If no time step is specified and the provided
-    save routine does not require a synchronized time step, then an adaptive time step is calculated
-    independently for each particle.
+    The time step used in the push routine can be specified, or an adaptive
+    time step will be determined based off the gyroradius of the particle.
+    Some save routines involve time stamping the location and velocities of
+    particles at fixed intervals. In order for this data to be coherent, it
+    is required that all particles follow the same time step. This is
+    referred to as a synchronized time step. If no time step is specified
+    and the provided save routine does not require a synchronized time step,
+    then an adaptive time step is calculated independently for each particle.
 
-    The simulation will push particles through the provided fields until a condition is met. This termination condition
-    is provided as an instance of the `~plasmapy.simulation.particle_tracker.AbstractTerminationCondition` class as arguments to the simulation constructor.
-    The results of a simulation can be exported by specifying an instance of the `~plasmapy.simulation.particle_tracker.AbstractSaveRoutine` class to the ``run`` method.
+    The simulation will push particles through the provided fields until a
+    condition is met. This termination condition is provided as an instance
+    of the `~plasmapy.simulation.particle_tracker.AbstractTerminationCondition`
+    class as arguments to the simulation constructor. The results of a simulation
+    can be exported by specifying an instance of the `~plasmapy.simulation.particle_tracker.AbstractSaveRoutine`
+    class to the ``run`` method.
 
     Parameters
     ----------
     grids : An instance of `~plasmapy.plasma.grids.AbstractGrid`
-        A Grid object or list of grid objects containing the required
-        quantities. The list of required quantities varies depending on other keywords.
+        A Grid object or list of grid objects containing the required quantities.
+        The list of required quantities varies depending on other keywords.
 
     termination_condition : `~plasmapy.simulation.particle_tracker.AbstractTerminationCondition`
-        An instance of `~plasmapy.simulation.particle_tracker.AbstractTerminationCondition` which determines when
-        the simulation has finished. See `~plasmapy.simulation.particle_tracker.AbstractTerminationCondition` for more details.
+        An instance of `~plasmapy.simulation.particle_tracker.AbstractTerminationCondition` which determines when the simulation has finished.
+        See `~plasmapy.simulation.particle_tracker.AbstractTerminationCondition` for more details.
 
     save_routine : `~plasmapy.simulation.particle_tracker.AbstractSaveRoutine`, optional
         An instance of `~plasmapy.simulation.particle_tracker.AbstractSaveRoutine` which determines which
