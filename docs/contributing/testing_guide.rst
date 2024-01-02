@@ -322,6 +322,13 @@ positional arguments (``a`` and ``b``) and one optional keyword argument
            return b + a
        return a + b
 
+.. hint::
+
+   This function uses |type hint annotations| to indicate that ``a`` and
+   ``b`` can be either a :py:`float` or :py:`str`, :py:`reverse_order`
+   should be a :py:`bool`, and :py:`add` should return a :py:`float` or
+   :py:`str`.
+
 Argument unpacking_ lets us provide positional arguments in a `tuple` or
 `list` (commonly referred to as :term:`args`) and keyword arguments in a
 `dict` (commonly referred to as :term:`kwargs`). Unpacking_ occurs when
@@ -358,6 +365,14 @@ and unpacking_ them inside of the test function.
    )
    def test_add(args: list[str], kwargs: dict[str, bool], expected: str) -> None:
        assert add(*args, **kwargs) == expected
+
+.. hint::
+
+   This function uses |type hint annotations| to indicate that ``args``
+   should be a `list` containing `str` objects, ``kwargs`` should be a
+   `dict` containing `str` objects that map to `bool` objects,
+   ``expected`` should be a `str`, and that there should be no
+   :py:`return` statement.
 
 Fixtures
 --------
