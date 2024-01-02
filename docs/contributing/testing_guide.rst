@@ -165,6 +165,18 @@ message to help us find the cause of a particular test failure.
 
    Use `f-strings`_ to improve error message readability.
 
+Type hint annotations
+---------------------
+
+PlasmaPy has begun using |type hint annotations| and |mypy| to perform
+|static type checking|. Adding a :py:`-> None` return annotation lets
+|mypy| verify that tests do not have :py:`return` statements.
+
+.. code-block:: python
+
+   def test_addition() -> None:
+       assert 2 * 2 == 4
+
 Floating point comparisons
 --------------------------
 
