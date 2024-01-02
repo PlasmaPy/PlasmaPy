@@ -287,7 +287,7 @@ tests for the same function, the preferred method is to decorate it with
 .. code-block:: python
 
    @pytest.mark.parametrize("truth_value", [True, False])
-   def test_proof_if_riemann(truth_value):
+   def test_proof_if_riemann(truth_value: bool) -> None:
        assert proof_by_riemann(truth_value)
 
 This code snippet will run :py:`proof_by_riemann(truth_value)` for each
@@ -302,7 +302,7 @@ functions or pass in tuples containing inputs and expected values.
 .. code-block:: python
 
    @pytest.mark.parametrize("truth_value, expected", [(True, True), (False, True)])
-   def test_proof_if_riemann(truth_value, expected):
+   def test_proof_if_riemann(truth_value: bool, expected: bool) -> None:
        assert proof_by_riemann(truth_value) == expected
 
 Test parametrization with argument unpacking
@@ -317,7 +317,7 @@ positional arguments (``a`` and ``b``) and one optional keyword argument
 
 .. code-block:: python
 
-   def add(a, b, reverse_order=False):
+   def add(a: float | str, b: float | str, reverse_order: bool = False) -> float | str:
        if reverse_order:
            return b + a
        return a + b
@@ -356,7 +356,7 @@ and unpacking_ them inside of the test function.
            (["1", "2"], {}, "12"),  # if no keyword arguments, use an empty dict
        ],
    )
-   def test_add(args, kwargs, expected):
+   def test_add(args: list[str], kwargs: dict[str, bool], expected: str) -> None:
        assert add(*args, **kwargs) == expected
 
 Fixtures
