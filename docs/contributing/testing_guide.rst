@@ -157,9 +157,9 @@ message to help us find the cause of a particular test failure.
 .. code-block:: python
 
    def test_addition():
-       result = 2 + 2
+       actual = 2 + 2
        expected = 4
-       assert result == expected, f"2 + 2 returns {result} instead of {expected}."
+       assert actual == expected, f"2 + 2 returns {actual} instead of {expected}."
 
 .. tip::
 
