@@ -110,6 +110,6 @@ class Testcollisional_thermalization:
     )
     @pytest.mark.slow()
     @pytest.mark.filterwarnings("ignore::RuntimeWarning")
-    def test_raises(self, kwargs, _error):
+    def test_raises(self, kwargs, _error) -> None:
         with pytest.raises(_error):
             temp_ratio(**kwargs)
