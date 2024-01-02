@@ -216,11 +216,11 @@ To test that a function issues an appropriate warning, use
    import pytest
 
 
-   def issue_warning():
+   def issue_warning() -> None:
        warnings.warn("warning message", UserWarning)
 
 
-   def test_that_a_warning_is_issued():
+   def test_that_a_warning_is_issued() -> None:
        with pytest.warns(UserWarning):
            issue_warning()
 
@@ -232,11 +232,11 @@ To test that a function raises an appropriate exception, use
    import pytest
 
 
-   def raise_exception():
+   def raise_exception() -> None:
        raise Exception
 
 
-   def test_that_an_exception_is_raised():
+   def test_that_an_exception_is_raised() -> None:
        with pytest.raises(Exception):
            raise_exception()
 
@@ -261,7 +261,7 @@ function.
 
 .. code-block:: python
 
-   def test_proof_by_riemann_hypothesis():
+   def test_proof_by_riemann_hypothesis() -> None:
        assert proof_by_riemann(False)
        assert proof_by_riemann(True)  # will only be run if the previous test passes
 
@@ -272,11 +272,11 @@ both will be run.
 
 .. code-block:: python
 
-   def test_proof_if_riemann_false():
+   def test_proof_if_riemann_false() -> None:
        assert proof_by_riemann(False)
 
 
-   def test_proof_if_riemann_true():
+   def test_proof_if_riemann_true() -> None:
        assert proof_by_riemann(True)
 
 However, this approach can lead to cumbersome, repeated code if you are
@@ -411,7 +411,7 @@ balanced with each other rather than absolute principles.
   .. code-block:: python
 
      @pytest.mark.slow
-     def test_calculating_primes():
+     def test_calculating_primes() -> None:
          calculate_all_primes()
 
 * **Write tests that are easy to understand and change.** To fully
