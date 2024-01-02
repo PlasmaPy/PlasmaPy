@@ -297,7 +297,7 @@ class RelativisticBody:
 
     def _store_velocity_like_argument(
         self, speed_like_input: dict[str, Union[u.Quantity, Real]]
-    ):
+    ) -> None:
         """
         Take the velocity-like argument and store it via the setter for
         the corresponding attribute.
@@ -328,7 +328,7 @@ class RelativisticBody:
         Z: Optional[Integral] = None,
         mass_numb: Optional[Integral] = None,
         dtype: Optional[DTypeLike] = np.longdouble,
-    ):
+    ) -> None:
         self._particle = particle
 
         self._dtype = dtype
@@ -476,21 +476,21 @@ class RelativisticBody:
 
     @kinetic_energy.setter
     @validate_quantities(E_K={"can_be_negative": False})
-    def kinetic_energy(self, E_K: u.Quantity[u.J]):
+    def kinetic_energy(self, E_K: u.Quantity[u.J]) -> None:
         self.total_energy = E_K + self.mass_energy
 
     @total_energy.setter
     @validate_quantities(E_tot={"can_be_negative": False})
-    def total_energy(self, E_tot: u.Quantity[u.J]):
+    def total_energy(self, E_tot: u.Quantity[u.J]) -> None:
         self._momentum = np.sqrt(E_tot**2 - self.mass_energy**2) / c
 
     @v_over_c.setter
-    def v_over_c(self, v_over_c_: Real):
+    def v_over_c(self, v_over_c_: Real) -> None:
         self.velocity = v_over_c_ * c
 
     @velocity.setter
     @validate_quantities
-    def velocity(self, V: u.Quantity[u.m / u.s]):
+    def velocity(self, V: u.Quantity[u.m / u.s]) -> None:
         self._momentum = (Lorentz_factor(V) * self.mass * V).to(u.kg * u.m / u.s)
 
     @lorentz_factor.setter
@@ -513,7 +513,7 @@ class RelativisticBody:
 
     @momentum.setter
     @validate_quantities
-    def momentum(self, p: u.Quantity[u.kg * u.m / u.s]):
+    def momentum(self, p: u.Quantity[u.kg * u.m / u.s]) -> None:
         self._momentum = p.to(u.kg * u.m / u.s)
 
     def __eq__(self, other) -> bool:
