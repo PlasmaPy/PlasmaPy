@@ -156,21 +156,21 @@ def test_run_test(f, args, kwargs, expected, whaterror):
         ) from spectacular_exception
 
 
-def test_run_test_rtol():
+def test_run_test_rtol() -> None:
     run_test(return_arg, 1.0, {}, 0.999999, rtol=1.1e-6)
 
 
-def test_run_test_rtol_failure():
+def test_run_test_rtol_failure() -> None:
     with pytest.raises(UnexpectedResultFail):
         run_test(return_arg, 1.0, {}, 0.999999, rtol=1e-7)
         pytest.fail("No exception raised for rtol test.")
 
 
-def test_run_test_atol():
+def test_run_test_atol() -> None:
     run_test(return_arg, 1.0, {}, 0.999999, atol=1.1e-6, rtol=0.0)
 
 
-def test_run_test_atol_failure():
+def test_run_test_atol_failure() -> None:
     with pytest.raises(UnexpectedResultFail):
         run_test(return_arg, (1.0,), {}, 0.999999, atol=1e-7)
         pytest.fail("No exception raised for atol test.")
@@ -194,7 +194,7 @@ inputs_table = [
 
 
 @pytest.mark.parametrize("inputs", inputs_table)
-def test_func(inputs):
+def test_func(inputs) -> None:
     """Test cases originally put in the docstring."""
     run_test(inputs)
 
@@ -257,7 +257,7 @@ def test_run_test_equivalent_calls(inputs, error):
             run_test_equivalent_calls(inputs)
 
 
-def test_run_test_equivalent_calls_types():
+def test_run_test_equivalent_calls_types() -> None:
     run_test_equivalent_calls(return_arg, 1, 1.0, require_same_type=False)
     with pytest.raises(UnexpectedResultFail):
         run_test_equivalent_calls(return_arg, 1, 1.0)
