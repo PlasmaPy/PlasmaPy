@@ -198,7 +198,7 @@ class DryCharacteristic(langmuir.Characteristic):
     unique values.
     """
 
-    def __init__(self, bias, current) -> None:
+    def __init__(self, bias, current):
         super().__init__(bias, current)
         self.bias = bias
         self.current = current
