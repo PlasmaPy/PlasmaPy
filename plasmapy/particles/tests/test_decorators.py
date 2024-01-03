@@ -3,8 +3,9 @@ import astropy.units as u
 import inspect
 import pytest
 
+from collections.abc import Iterable
 from numbers import Real
-from typing import Optional
+from typing import Any, Optional
 
 from plasmapy.particles import ParticleList
 from plasmapy.particles.decorators import particle_input
@@ -24,10 +25,10 @@ from plasmapy.utils.exceptions import PlasmaPyDeprecationWarning
 
 @particle_input
 def function_decorated_with_particle_input(
-    a,
+    a: Any,
     particle: ParticleLike,
-    b=None,
-    Z: Optional[int] = None,
+    b: Any = None,
+    Z: Optional[float] = None,
     mass_numb: Optional[int] = None,
 ) -> Particle:
     """
@@ -48,10 +49,10 @@ def function_decorated_with_particle_input(
 
 @particle_input()
 def function_decorated_with_call_of_particle_input(
-    a,
+    a: Any,
     particle: ParticleLike,
-    b=None,
-    Z: Optional[int] = None,
+    b: Any = None,
+    Z: Optional[float] = None,
     mass_numb: Optional[int] = None,
 ) -> Particle:
     """
@@ -86,7 +87,9 @@ particle_input_simple_table = [
     ],
 )
 @pytest.mark.parametrize(("args", "kwargs", "symbol"), particle_input_simple_table)
-def test_particle_input_simple(func, args, kwargs, symbol) -> None:
+def test_particle_input_simple(
+    func, args: Iterable[Any], kwargs: dict[str, Any], symbol: str
+) -> None:
     """
     Test that simple functions decorated by particle_input correctly
     return the correct Particle object.
