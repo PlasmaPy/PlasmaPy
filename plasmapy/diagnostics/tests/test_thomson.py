@@ -874,10 +874,12 @@ def epw_single_species_settings_params():
     probe_wavelength = 532 * u.nm
     scattering_angle = np.deg2rad(63)
     scatter_vec = np.array([np.cos(scattering_angle), np.sin(scattering_angle), 0])
+    notch = np.array([531, 533]) * u.nm
 
     kwargs = {"probe_wavelength": probe_wavelength.to(u.m).value}
     kwargs["probe_vec"] = np.array([1, 0, 0])
     kwargs["scatter_vec"] = scatter_vec
+    kwargs["notch"] = notch.to(u.m).value
     kwargs["ions"] = ["H+"]
 
     kwargs["n"] = Parameter(
@@ -909,11 +911,13 @@ def epw_multi_species_settings_params():
     probe_vec = np.array([1, 0, 0])
     scattering_angle = np.deg2rad(63)
     scatter_vec = np.array([np.cos(scattering_angle), np.sin(scattering_angle), 0])
+    notch = np.array([531, 533]) * u.nm
 
     kwargs = {"probe_wavelength": probe_wavelength.to(u.m).value}
 
     kwargs["probe_vec"] = probe_vec
     kwargs["scatter_vec"] = scatter_vec
+    kwargs["notch"] = notch.to(u.m).value
     kwargs["ions"] = ["H+"]
 
     kwargs["n"] = Parameter(
