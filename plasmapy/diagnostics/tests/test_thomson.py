@@ -272,9 +272,16 @@ def test_notched_spectrum(notch, notch_num, single_species_collective_args):
         assert np.allclose(Skw_notched[x2:x3], np.zeros(x3 - x2))
 
 
-def test_notch_order_error(single_species_collective_args):
+@pytest.mark.parametrize(
+    ("notch"),
+    [(np.array([533, 531]) * u.nm), (np.array([530, 531, 533]) * u.nm)],
+)
+def test_notch_errors(notch, single_species_collective_args):
+    """
+    Check notch input validation
+    """
     args, kwargs = spectral_density_args_kwargs(single_species_collective_args)
-    kwargs["notch"] = np.array([533, 531]) * u.nm
+    kwargs["notch"] = notch
     with pytest.raises(ValueError):
         alpha, Skw = thomson.spectral_density(*args, **kwargs)
 
