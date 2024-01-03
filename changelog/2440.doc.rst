@@ -1,0 +1,2 @@
+Added a discussion of |type hint annotations| in the |testing guide|
+within the |contributor guide|.
