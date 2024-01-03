@@ -9,7 +9,7 @@ from plasmapy.utils.decorators import validate_quantities
 from plasmapy.utils.decorators.converter import angular_freq_to_hz
 
 
-def test_to_hz():
+def test_to_hz() -> None:
     @angular_freq_to_hz
     def func():
         return 2 * np.pi * u.rad / u.s
@@ -28,10 +28,10 @@ def test_to_hz():
     ), f"Value expected is 1 instead of {func(to_hz=True).value}"
 
 
-def test_to_hz_complicated_signature():
+def test_to_hz_complicated_signature() -> None:
     """
     Test that `angular_freq_to_hz` can decorate a function with
-    positional-only, postional, var-positional, keyword, keyword-only,
+    positional-only, positional, var-positional, keyword, keyword-only,
     or var-keyword.
     """
 
@@ -55,7 +55,7 @@ def test_to_hz_complicated_signature():
     assert result_hz.value == 1, f"Value expected is 1 instead of {result_hz.value}"
 
 
-def test_to_hz_stacked_decorators():
+def test_to_hz_stacked_decorators() -> None:
     """Test that @angular_freq_to_hz can be stacked with multiple decorators."""
 
     @particle_input
@@ -68,7 +68,7 @@ def test_to_hz_stacked_decorators():
     assert u.isclose(func(to_hz=True), 1 * u.Hz)
 
 
-def test_angular_freq_to_hz_preserves_signature():
+def test_angular_freq_to_hz_preserves_signature() -> None:
     """
     Tests if the angular_freq_to_hz decorator preserves the signature of
     the wrapped function.
@@ -80,7 +80,14 @@ def test_angular_freq_to_hz_preserves_signature():
 
     original_signature = inspect.signature(test_func)
     expected_signature = inspect.signature(
-        lambda pos_only, /, arg, *args, required_kwarg, optional_kwarg=2, to_hz=False, **kwargs: None
+        lambda pos_only,
+        /,
+        arg,
+        *args,
+        required_kwarg,
+        optional_kwarg=2,
+        to_hz=False,
+        **kwargs: None
     )
 
     assert (

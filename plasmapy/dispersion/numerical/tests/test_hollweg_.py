@@ -1,9 +1,8 @@
 """Tests for the hollweg dispersion solution."""
 
+import astropy.units as u
 import numpy as np
 import pytest
-
-from astropy import units as u
 
 from plasmapy.dispersion.numerical.hollweg_ import hollweg
 from plasmapy.formulary import speeds
@@ -63,7 +62,7 @@ class TestHollweg:
             ({**_kwargs_single_valued, "gamma_i": "wrong type"}, TypeError),
         ],
     )
-    def test_raises(self, kwargs, _error):
+    def test_raises(self, kwargs, _error) -> None:
         """Test scenarios that raise an `Exception`."""
         with pytest.raises(_error):
             hollweg(**kwargs)
@@ -112,7 +111,7 @@ class TestHollweg:
             ),
         ],
     )
-    def test_warning(self, kwargs, _warning):
+    def test_warning(self, kwargs, _warning) -> None:
         """Test scenarios that raise a `Warning`."""
         with pytest.warns(_warning):
             hollweg(**kwargs)
@@ -189,7 +188,9 @@ class TestHollweg:
             ),
         ],
     )
-    def test_handle_k_theta_arrays(self, kwargs, expected):
+    @pytest.mark.filterwarnings("ignore::astropy.units.UnitsWarning")
+    @pytest.mark.filterwarnings("ignore::plasmapy.utils.exceptions.PhysicsWarning")
+    def test_handle_k_theta_arrays(self, kwargs, expected) -> None:
         """Test scenarios involving k and theta arrays."""
         ws = hollweg(**kwargs)
         for mode, val in ws.items():
@@ -264,7 +265,8 @@ class TestHollweg:
             ),
         ],
     )
-    def test_hollweg1999_vals(self, kwargs, expected, desired_beta):
+    @pytest.mark.filterwarnings("ignore::plasmapy.utils.exceptions.PhysicsWarning")
+    def test_hollweg1999_vals(self, kwargs, expected, desired_beta) -> None:
         """
         Test calculated values based on Figure 2 of Hollweg1999
         (DOI: https://doi.org/10.1029/1998JA900132) using eqn 3 of
@@ -303,7 +305,8 @@ class TestHollweg:
             "gyrofrequency where Z override behavior is being "
             "dropped. We will address Z override behavior when "
             "hollweg is decorated with particle_input."
-        )
+        ),
+        strict=False,
     )
     @pytest.mark.parametrize(
         ("kwargs", "expected"),
@@ -324,7 +327,8 @@ class TestHollweg:
             ),
         ],
     )
-    def test_Z_override(self, kwargs, expected):
+    @pytest.mark.filterwarnings("ignore::plasmapy.utils.exceptions.PhysicsWarning")
+    def test_Z_override(self, kwargs, expected) -> None:
         """Test overriding behavior of kw 'Z'."""
         ws = hollweg(**kwargs)
         ws_expected = hollweg(**expected)
@@ -332,6 +336,7 @@ class TestHollweg:
         for mode in ws:
             assert np.isclose(ws[mode], ws_expected[mode], atol=1e-5, rtol=1.7e-4)
 
+    @pytest.mark.filterwarnings("ignore::plasmapy.utils.exceptions.PhysicsWarning")
     @pytest.mark.parametrize(
         ("kwargs", "expected"),
         [
@@ -360,7 +365,7 @@ class TestHollweg:
             ),
         ],
     )
-    def test_return_structure(self, kwargs, expected):
+    def test_return_structure(self, kwargs, expected) -> None:
         """Test the structure of the returned values."""
         ws = hollweg(**kwargs)
 

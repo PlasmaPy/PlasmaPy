@@ -158,11 +158,11 @@ class SingleParticleCollisionFrequencies:
         test_particle: ParticleLike,
         field_particle: ParticleLike,
         *,
-        v_drift: u.m / u.s,
-        T_b: u.K,
-        n_b: u.m**-3,
-        Coulomb_log: u.dimensionless_unscaled,
-    ):
+        v_drift: u.Quantity[u.m / u.s],
+        T_b: u.Quantity[u.K],
+        n_b: u.Quantity[u.m**-3],
+        Coulomb_log,
+    ) -> None:
         # Note: This class uses CGS units internally to coincide
         #       with our references.  Input is taken in MKS units and
         #       then converted as necessary. Output is in MKS units.
@@ -263,7 +263,7 @@ class SingleParticleCollisionFrequencies:
         ).to(u.Hz)
 
     @cached_property
-    def x(self) -> u.dimensionless_unscaled:
+    def x(self) -> u.Quantity[u.dimensionless_unscaled]:
         """
         The ratio of kinetic energy in the test particle to the thermal
         energy of the field particle.
@@ -280,7 +280,7 @@ class SingleParticleCollisionFrequencies:
         return x.to(u.dimensionless_unscaled)
 
     @staticmethod
-    def _phi_integrand(t: u.dimensionless_unscaled):
+    def _phi_integrand(t: u.Quantity[u.dimensionless_unscaled]):  # noqa: ANN205
         """
         The phi integrand used in calculating phi.
         """
@@ -391,13 +391,13 @@ class MaxwellianCollisionFrequencies:
         test_particle: ParticleLike,
         field_particle: ParticleLike,
         *,
-        v_drift: u.m / u.s = 0 * u.m / u.s,
-        T_a: u.K,
-        n_a: u.m**-3,
-        T_b: u.K,
-        n_b: u.m**-3,
-        Coulomb_log: u.dimensionless_unscaled,
-    ):
+        v_drift: u.Quantity[u.m / u.s] = 0 * u.m / u.s,
+        T_a: u.Quantity[u.K],
+        n_a: u.Quantity[u.m**-3],
+        T_b: u.Quantity[u.K],
+        n_b: u.Quantity[u.m**-3],
+        Coulomb_log: u.Quantity[u.dimensionless_unscaled],
+    ) -> None:
         if (
             isinstance(v_drift, np.ndarray)
             and isinstance(T_a, np.ndarray)
@@ -519,7 +519,7 @@ class MaxwellianCollisionFrequencies:
         ...     "e-", "Na+", v_drift=v_drift, n_a=n_a, T_a=T_a, n_b=n_b, T_b=T_b, Coulomb_log=Coulomb_log
         ... )
         >>> electron_ion_collisions.Maxwellian_avg_ei_collision_freq
-        <Quantity 2906316911556553.5 Hz>
+        <Quantity 2.8053078...e+15 Hz>
         """
 
         if not self.test_particle.is_electron or not self.field_particle.is_ion:
@@ -576,7 +576,7 @@ class MaxwellianCollisionFrequencies:
         ...     "Na+", "Na+", v_drift=v_drift, n_a=n_a, T_a=T_a, n_b=n_b, T_b=T_b, Coulomb_log=Coulomb_log
         ... )
         >>> ion_ion_collisions.Maxwellian_avg_ii_collision_freq
-        <Quantity 79364412.21510696 Hz>
+        <Quantity 1.1223822...e+08 Hz>
         """
 
         if not self.test_particle.is_ion or not self.field_particle.is_ion:
@@ -602,13 +602,13 @@ class MaxwellianCollisionFrequencies:
     n={"can_be_negative": False},
 )
 def collision_frequency(
-    T: u.K,
-    n: u.m**-3,
+    T: u.Quantity[u.K],
+    n: u.Quantity[u.m**-3],
     species,
     z_mean: Real = np.nan,
-    V: u.m / u.s = np.nan * u.m / u.s,
+    V: u.Quantity[u.m / u.s] = np.nan * u.m / u.s,
     method="classical",
-) -> u.Hz:
+) -> u.Quantity[u.Hz]:
     r"""
     Collision frequency of particles in a plasma.
 
@@ -734,7 +734,7 @@ def collision_frequency(
         ),
     )
 
-    T, masses, charges, reduced_mass, V_r = misc._process_inputs(
+    T, masses, charges, reduced_mass, V_r = misc._process_inputs(  # noqa: SLF001
         T=T, species=species, V=V
     )
     # using a more descriptive name for the thermal velocity using
@@ -745,7 +745,11 @@ def collision_frequency(
         # electron-electron collision
         # if a velocity was passed, we use that instead of the reduced
         # thermal velocity
-        V = misc._replace_nan_velocity_with_thermal_velocity(V, T, reduced_mass)
+        V = misc._replace_nan_velocity_with_thermal_velocity(  # noqa: SLF001
+            V,
+            T,
+            reduced_mass,
+        )
         # impact parameter for 90° collision
         bPerp = lengths.impact_parameter_perp(T=T, species=species, V=V_reduced)
     elif species[0] in ("e", "e-") or species[1] in ("e", "e-"):
@@ -754,7 +758,7 @@ def collision_frequency(
         # correct perpendicular collision radius
         # we ignore the reduced velocity and use the electron thermal
         # velocity instead
-        V = misc._replace_nan_velocity_with_thermal_velocity(V, T, m_e)
+        V = misc._replace_nan_velocity_with_thermal_velocity(V, T, m_e)  # noqa: SLF001
         # need to also correct mass in collision radius from reduced
         # mass to electron mass
         bPerp = (
@@ -768,7 +772,11 @@ def collision_frequency(
         # ion-ion collision
         # if a velocity was passed, we use that instead of the reduced
         # thermal velocity
-        V = misc._replace_nan_velocity_with_thermal_velocity(V, T, reduced_mass)
+        V = misc._replace_nan_velocity_with_thermal_velocity(  # noqa: SLF001
+            V,
+            T,
+            reduced_mass,
+        )
         bPerp = lengths.impact_parameter_perp(T=T, species=species, V=V)
     cou_log = coulomb.Coulomb_logarithm(T, n, species, z_mean, V=V, method=method)
     # collisional cross section
@@ -784,13 +792,13 @@ def collision_frequency(
     n_e={"can_be_negative": False},
 )
 def fundamental_electron_collision_freq(
-    T_e: u.K,
-    n_e: u.m**-3,
+    T_e: u.Quantity[u.K],
+    n_e: u.Quantity[u.m**-3],
     ion,
     coulomb_log=None,
     V=None,
     coulomb_log_method="classical",
-) -> u.s**-1:
+) -> u.Quantity[u.s**-1]:
     r"""
     Average momentum relaxation rate for a slowly flowing Maxwellian
     distribution of electrons.
@@ -911,7 +919,7 @@ def fundamental_electron_collision_freq(
     )
 
     # specify to use electron thermal velocity (most probable), not based on reduced mass
-    V = misc._replace_nan_velocity_with_thermal_velocity(V, T_e, m_e)
+    V = misc._replace_nan_velocity_with_thermal_velocity(V, T_e, m_e)  # noqa: SLF001
 
     species = [ion, "e-"]
     Z_i = particles.charge_number(ion) * u.dimensionless_unscaled
@@ -940,13 +948,13 @@ def fundamental_electron_collision_freq(
     n_i={"can_be_negative": False},
 )
 def fundamental_ion_collision_freq(
-    T_i: u.K,
-    n_i: u.m**-3,
+    T_i: u.Quantity[u.K],
+    n_i: u.Quantity[u.m**-3],
     ion,
     coulomb_log=None,
     V=None,
     coulomb_log_method="classical",
-) -> u.s**-1:
+) -> u.Quantity[u.s**-1]:
     r"""
     Average momentum relaxation rate for a slowly flowing Maxwellian
     distribution of ions.
@@ -1076,7 +1084,7 @@ def fundamental_ion_collision_freq(
     species = [ion, ion]
 
     # specify to use ion thermal velocity (most probable), not based on reduced mass
-    V = misc._replace_nan_velocity_with_thermal_velocity(V, T_i, m_i)
+    V = misc._replace_nan_velocity_with_thermal_velocity(V, T_i, m_i)  # noqa: SLF001
 
     Z_i = particles.charge_number(ion) * u.dimensionless_unscaled
 

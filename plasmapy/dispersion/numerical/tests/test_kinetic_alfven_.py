@@ -1,8 +1,8 @@
 """Test functionality of Stix in `plasmapy.dispersion.numerical.kinetic_alfven_`."""
+import astropy.units as u
 import numpy as np
 import pytest
 
-from astropy import units as u
 from astropy.constants.si import c
 
 from plasmapy.dispersion.numerical.kinetic_alfven_ import kinetic_alfven
@@ -58,7 +58,7 @@ class TestKinetic_Alfven:
             ({**_kwargs_single_valued, "Z": "wrong type"}, TypeError),
         ],
     )
-    def test_raises(self, kwargs, _error):
+    def test_raises(self, kwargs, _error) -> None:
         """Test scenarios that raise an `Exception`."""
         with pytest.raises(_error):
             kinetic_alfven(**kwargs)
@@ -89,7 +89,8 @@ class TestKinetic_Alfven:
             ),
         ],
     )
-    def test_return_structure(self, kwargs, expected):
+    @pytest.mark.filterwarnings("ignore::plasmapy.utils.exceptions.PhysicsWarning")
+    def test_return_structure(self, kwargs, expected) -> None:
         """Test the structure of the returned values."""
         ws = kinetic_alfven(**kwargs)
 
@@ -144,7 +145,7 @@ class TestKinetic_Alfven:
             ),
         ],
     )
-    def test_warning(self, kwargs, _warning):
+    def test_warning(self, kwargs, _warning) -> None:
         """Test scenarios that raise a `Warning`."""
         with pytest.warns(_warning):
             kinetic_alfven(**kwargs)

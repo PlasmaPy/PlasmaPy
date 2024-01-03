@@ -29,14 +29,14 @@ c_si_unitless = c.value
 )
 @particle_input
 def hollweg(  # noqa: C901, PLR0912, PLR0915
-    B: u.T,
+    B: u.Quantity[u.T],
     ion: ParticleLike,
-    k: u.rad / u.m,
-    n_i: u.m**-3,
-    theta: u.rad,
+    k: u.Quantity[u.rad / u.m],
+    n_i: u.Quantity[u.m**-3],
+    theta: u.Quantity[u.rad],
     *,
-    T_e: u.K,
-    T_i: u.K,
+    T_e: u.Quantity[u.K],
+    T_i: u.Quantity[u.K],
     gamma_e: Real = 1,
     gamma_i: Real = 3,
     mass_numb: Optional[Integral] = None,
@@ -193,14 +193,14 @@ def hollweg(  # noqa: C901, PLR0912, PLR0915
     states in §1.7 that due to the inconsistent retention of the
     :math:`ω / ω_{\rm ci} ≪ 1` terms the expression can
     only be valid if both :math:`c_{\rm s} ≪ v_{\rm A}` (low-β) and
-    the wave propgation is nearly perpendicular to the magnetic field.
+    the wave propagation is nearly perpendicular to the magnetic field.
 
     This routine solves for :math:`ω` for given :math:`k` values
     by numerically solving for the roots of the above expression.
 
     Examples
     --------
-    >>> from astropy import units as u
+    >>> import astropy.units as u
     >>> from plasmapy.dispersion.numerical import hollweg_
     >>> inputs = {
     ...    "k": np.logspace(-7, -2, 2) * u.rad / u.m,

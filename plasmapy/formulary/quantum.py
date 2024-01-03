@@ -23,8 +23,8 @@ from lmfit import minimize, Parameters
 from plasmapy.formulary import mathematics
 from plasmapy.formulary.relativity import Lorentz_factor
 from plasmapy.particles import particle_input, ParticleLike
-from plasmapy.utils import RelativityError
 from plasmapy.utils.decorators import validate_quantities
+from plasmapy.utils.exceptions import RelativityError
 
 __all__ += __aliases__
 
@@ -34,7 +34,10 @@ __all__ += __aliases__
     V={"can_be_negative": True}, validations_on_return={"can_be_negative": False}
 )
 @particle_input
-def deBroglie_wavelength(V: u.m / u.s, particle: ParticleLike) -> u.m:
+def deBroglie_wavelength(
+    V: u.Quantity[u.m / u.s],
+    particle: ParticleLike,
+) -> u.Quantity[u.m]:
     r"""
     Return the de Broglie wavelength.
 
@@ -88,7 +91,7 @@ def deBroglie_wavelength(V: u.m / u.s, particle: ParticleLike) -> u.m:
 
     Examples
     --------
-    >>> from astropy import units as u
+    >>> import astropy.units as u
     >>> velocity = 1.4e7 * u.m / u.s
     >>> deBroglie_wavelength(velocity, 'e')
     <Quantity 5.18997095e-11 m>
@@ -128,7 +131,7 @@ lambdaDB_ = deBroglie_wavelength
     T_e={"can_be_negative": False, "equivalencies": u.temperature_energy()},
     validations_on_return={"can_be_negative": False},
 )
-def thermal_deBroglie_wavelength(T_e: u.K) -> u.m:
+def thermal_deBroglie_wavelength(T_e: u.Quantity[u.K]) -> u.Quantity[u.m]:
     r"""
     Calculate the thermal de Broglie wavelength for electrons.
 
@@ -171,7 +174,7 @@ def thermal_deBroglie_wavelength(T_e: u.K) -> u.m:
 
     Examples
     --------
-    >>> from astropy import units as u
+    >>> import astropy.units as u
     >>> thermal_deBroglie_wavelength(1 * u.eV)
     <Quantity 6.9193675e-10 m>
     """
@@ -185,7 +188,7 @@ lambdaDB_th_ = thermal_deBroglie_wavelength
 @validate_quantities(
     n_e={"can_be_negative": False}, validations_on_return={"can_be_negative": False}
 )
-def Fermi_energy(n_e: u.m**-3) -> u.J:
+def Fermi_energy(n_e: u.Quantity[u.m**-3]) -> u.Quantity[u.J]:
     r"""
     Calculate the kinetic energy in a degenerate electron gas.
 
@@ -236,7 +239,7 @@ def Fermi_energy(n_e: u.m**-3) -> u.J:
 
     Examples
     --------
-    >>> from astropy import units as u
+    >>> import astropy.units as u
     >>> Fermi_energy(1e23 * u.cm**-3)
     <Quantity 1.2586761e-18 J>
     """
@@ -251,7 +254,7 @@ Ef_ = Fermi_energy
 @validate_quantities(
     n_e={"can_be_negative": False}, validations_on_return={"can_be_negative": False}
 )
-def Thomas_Fermi_length(n_e: u.m**-3) -> u.m:
+def Thomas_Fermi_length(n_e: u.Quantity[u.m**-3]) -> u.Quantity[u.m]:
     r"""
     Calculate the exponential scale length for charge screening
     for cold and dense plasmas.
@@ -309,7 +312,7 @@ def Thomas_Fermi_length(n_e: u.m**-3) -> u.m:
 
     Examples
     --------
-    >>> from astropy import units as u
+    >>> import astropy.units as u
     >>> Thomas_Fermi_length(1e23 * u.cm**-3)
     <Quantity 5.37991409e-11 m>
 
@@ -321,7 +324,7 @@ def Thomas_Fermi_length(n_e: u.m**-3) -> u.m:
 @validate_quantities(
     n={"can_be_negative": False}, validations_on_return={"can_be_negative": False}
 )
-def Wigner_Seitz_radius(n: u.m**-3) -> u.m:
+def Wigner_Seitz_radius(n: u.Quantity[u.m**-3]) -> u.Quantity[u.m]:
     r"""
     Calculate the Wigner-Seitz radius, which approximates the inter-particle
     spacing.
@@ -374,7 +377,7 @@ def Wigner_Seitz_radius(n: u.m**-3) -> u.m:
 
     Examples
     --------
-    >>> from astropy import units as u
+    >>> import astropy.units as u
     >>> Wigner_Seitz_radius(1e29 * u.m**-3)
     <Quantity 1.33650462e-10 m>
 
@@ -386,7 +389,9 @@ def Wigner_Seitz_radius(n: u.m**-3) -> u.m:
     n_e={"can_be_negative": False},
     T={"can_be_negative": False, "equivalencies": u.temperature_energy()},
 )
-def chemical_potential(n_e: u.m**-3, T: u.K) -> u.dimensionless_unscaled:
+def chemical_potential(
+    n_e: u.Quantity[u.m**-3], T: u.Quantity[u.K]
+) -> u.Quantity[u.dimensionless_unscaled]:
     r"""
     Calculate the ideal chemical potential.
 
@@ -448,7 +453,7 @@ def chemical_potential(n_e: u.m**-3, T: u.K) -> u.dimensionless_unscaled:
 
     Examples
     --------
-    >>> from astropy import units as u
+    >>> import astropy.units as u
     >>> chemical_potential(n_e=1e25*u.cm**-3,T=11000*u.K)
     <Quantity 283.43506297>
     """
@@ -543,7 +548,7 @@ def _chemical_potential_interp(n_e, T):
 
     Examples
     --------
-    >>> from astropy import units as u
+    >>> import astropy.units as u
     >>> _chemical_potential_interp(n_e=1e23*u.cm**-3, T=11000*u.K)
     <Quantity 8.17649>
 
@@ -565,7 +570,9 @@ def _chemical_potential_interp(n_e, T):
     T={"can_be_negative": False, "equivalencies": u.temperature_energy()},
     n_e={"can_be_negative": False},
 )
-def quantum_theta(T: u.K, n_e: u.m**-3) -> u.dimensionless_unscaled:
+def quantum_theta(
+    T: u.Quantity[u.K], n_e: u.Quantity[u.m**-3]
+) -> u.Quantity[u.dimensionless_unscaled]:
     r"""
     Compare Fermi energy to thermal kinetic energy to check if quantum
     effects are important.

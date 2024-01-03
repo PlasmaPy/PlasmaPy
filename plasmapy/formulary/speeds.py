@@ -38,13 +38,13 @@ k_B_si_unitless = k_B.value
 @check_relativistic
 @validate_quantities(density={"can_be_negative": False})
 def Alfven_speed(
-    B: u.T,
+    B: u.Quantity[u.T],
     density: (u.m**-3, u.kg / u.m**3),
     ion: Optional[ParticleLike] = None,
     *,
     mass_numb: Optional[Integral] = None,
     Z: Optional[Real] = None,
-) -> u.m / u.s:
+) -> u.Quantity[u.m / u.s]:
     r"""Calculate the Alfvén speed.
 
     The Alfvén speed :math:`V_A` is the typical propagation speed of
@@ -135,7 +135,7 @@ def Alfven_speed(
 
     Examples
     --------
-    >>> from astropy import units as u
+    >>> import astropy.units as u
     >>> from astropy.constants.si import m_p, m_e
     >>> B = 0.014 * u.T
     >>> n = 5e19*u.m**-3
@@ -187,15 +187,15 @@ va_ = Alfven_speed
 )
 @particle_input
 def ion_sound_speed(
-    T_e: u.K,
-    T_i: u.K,
+    T_e: u.Quantity[u.K],
+    T_i: u.Quantity[u.K],
     ion: ParticleLike,
-    n_e: u.m**-3 = None,
-    k: u.m**-1 = None,
+    n_e: u.Quantity[u.m**-3] = None,
+    k: u.Quantity[u.m**-1] = None,
     gamma_e=1,
     gamma_i=3,
     Z=None,
-) -> u.m / u.s:
+) -> u.Quantity[u.m / u.s]:
     r"""
     Return the ion sound speed for an electron-ion plasma.
 
@@ -311,7 +311,7 @@ def ion_sound_speed(
 
     Examples
     --------
-    >>> from astropy import units as u
+    >>> import astropy.units as u
     >>> n = 5e19*u.m**-3
     >>> k_1 = 3e1*u.m**-1
     >>> k_2 = 3e7*u.m**-1
@@ -534,12 +534,12 @@ def thermal_speed_lite(T: Real, mass: Real, coeff: Real) -> Real:
 )
 @particle_input
 def thermal_speed(
-    T: u.K,
+    T: u.Quantity[u.K],
     particle: ParticleLike,
     method="most_probable",
-    mass: u.kg = None,
+    mass: u.Quantity[u.kg] = None,
     ndim=3,
-) -> u.m / u.s:
+) -> u.Quantity[u.m / u.s]:
     r"""
     Calculate the speed of thermal motion for particles with a Maxwellian
     distribution.  (See the :ref:`Notes <thermal-speed-notes>` section for
@@ -697,7 +697,7 @@ def thermal_speed(
 
     Examples
     --------
-    >>> from astropy import units as u
+    >>> import astropy.units as u
     >>> thermal_speed(5*u.eV, 'p')
     <Quantity 30949.6... m / s>
     >>> thermal_speed(1e6*u.K, particle='p')
@@ -740,14 +740,14 @@ vth_ = thermal_speed
 )
 @particle_input
 def kappa_thermal_speed(
-    T: u.K,
+    T: u.Quantity[u.K],
     kappa,
     particle: ParticleLike,
     method="most_probable",
     *,
     mass_numb: Optional[Real] = None,
     Z: Optional[Real] = None,
-) -> u.m / u.s:
+) -> u.Quantity[u.m / u.s]:
     r"""
     Return the most probable speed for a particle within a kappa
     distribution.
@@ -820,7 +820,7 @@ def kappa_thermal_speed(
 
     Examples
     --------
-    >>> from astropy import units as u
+    >>> import astropy.units as u
     >>> kappa_thermal_speed(5*u.eV, 4, 'p') # defaults to most probable
     <Quantity 24467.87... m / s>
     >>> kappa_thermal_speed(5*u.eV, 4, 'p', 'rms')

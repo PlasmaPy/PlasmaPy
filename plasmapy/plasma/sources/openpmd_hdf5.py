@@ -1,4 +1,6 @@
 """Functionality for reading in HDF5 files following the OpenPMD standard."""
+from types import TracebackType
+from typing import Optional
 
 __all__ = ["HDF5Reader"]
 
@@ -42,7 +44,7 @@ def _valid_version(openPMD_version, outdated=_OUTDATED_VERSION, newer=_NEWER_VER
 class HDF5Reader(GenericPlasma):
     """
     Core class for accessing various attributes on HDF5 files that
-    are based on OpenPMD_ standards.
+    are based on `OpenPMD <https://www.openpmd.org>`__ standards.
 
     Parameters
     ----------
@@ -51,10 +53,9 @@ class HDF5Reader(GenericPlasma):
 
     **kwargs
         Any keyword accepted by `~plasmapy.plasma.plasma_base.GenericPlasma`.
-
     """
 
-    def __init__(self, hdf5, **kwargs):
+    def __init__(self, hdf5, **kwargs) -> None:
         super().__init__(**kwargs)
 
         if not Path(hdf5).is_file():
@@ -65,15 +66,20 @@ class HDF5Reader(GenericPlasma):
 
         self._check_valid_openpmd_version()
 
-        self.subname = tuple(self.h5["data"])[0]
+        self.subname = next(iter(self.h5["data"]))
 
     def __enter__(self):
         return self.h5
 
-    def close(self):
+    def close(self) -> None:
         self.h5.close()
 
-    def __exit__(self):  # noqa: PLE0302
+    def __exit__(
+        self,
+        exc_type: Optional[type[BaseException]],
+        exc_value: Optional[BaseException],
+        traceback: Optional[TracebackType],
+    ):
         self.h5.close()
 
     def _check_valid_openpmd_version(self):

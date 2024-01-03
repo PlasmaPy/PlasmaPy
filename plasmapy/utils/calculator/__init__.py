@@ -18,7 +18,7 @@ and feedback: https://github.com/PlasmaPy/PlasmaPy/issues/new
 """
 
 
-def main():
+def main() -> None:
     """
     Stub function for command line tool that launches the plasma calculator notebook.
     """
@@ -54,4 +54,5 @@ def main():
     try:
         subprocess.call(command)  # noqa: S603
     except KeyboardInterrupt:
-        print("Stopping calculator! Bye")
+        # We'll need to switch from print() to using logging library
+        print("Stopping calculator! Bye")  # noqa: T201

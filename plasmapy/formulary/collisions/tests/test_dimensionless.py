@@ -6,14 +6,13 @@ from plasmapy.formulary.collisions.dimensionless import (
     coupling_parameter,
     Knudsen_number,
 )
-from plasmapy.utils import exceptions
 from plasmapy.utils._pytest_helpers import assert_can_handle_nparray
-from plasmapy.utils.exceptions import CouplingWarning
+from plasmapy.utils.exceptions import CouplingWarning, PhysicsWarning
 
 
 class Test_coupling_parameter:
     @classmethod
-    def setup_class(cls):
+    def setup_class(cls) -> None:
         """Initializing parameters for tests"""
         cls.T = 11604 * u.K
         cls.n_e = 1e21 * u.cm**-3
@@ -24,12 +23,12 @@ class Test_coupling_parameter:
         cls.True_zmean = 10.689750083758698
         cls.True_quantum = 0.3334662805238162
 
-    def test_symmetry(self):
+    def test_symmetry(self) -> None:
         result = coupling_parameter(self.T, self.n_e, self.particles)
         resultRev = coupling_parameter(self.T, self.n_e, self.particles[::-1])
         assert result == resultRev
 
-    def test_known1(self):
+    def test_known1(self) -> None:
         """
         Test for known value.
         """
@@ -45,7 +44,7 @@ class Test_coupling_parameter:
         errStr = f"Coupling parameter should be {self.True1} and not {methodVal}."
         assert testTrue, errStr
 
-    def test_fail1(self):
+    def test_fail1(self) -> None:
         """
         Tests if test_known1() would fail if we slightly adjusted the
         value comparison by some quantity close to numerical error.
@@ -66,7 +65,7 @@ class Test_coupling_parameter:
         )
         assert testTrue, errStr
 
-    def test_zmean(self):
+    def test_zmean(self) -> None:
         """
         Test value obtained when arbitrary z_mean is passed
         """
@@ -93,13 +92,13 @@ class Test_coupling_parameter:
             {"method": "quantum"},
         ],
     )
-    def test_handle_nparrays(self, insert_some_nans, insert_all_nans, kwargs):
+    def test_handle_nparrays(self, insert_some_nans, insert_all_nans, kwargs) -> None:
         """Test for ability to handle numpy array quantities"""
         assert_can_handle_nparray(
             coupling_parameter, insert_some_nans, insert_all_nans, kwargs
         )
 
-    def test_quantum(self):
+    def test_quantum(self) -> None:
         """
         Testing quantum method for coupling parameter.
         """
@@ -112,7 +111,7 @@ class Test_coupling_parameter:
         )
         assert testTrue, errStr
 
-    def test_kwarg_method_error(self):
+    def test_kwarg_method_error(self) -> None:
         """Testing kwarg `method` fails is not 'classical' or 'quantum'"""
         with pytest.raises(ValueError):
             coupling_parameter(self.T, self.n_e, self.particles, method="not a method")
@@ -120,7 +119,7 @@ class Test_coupling_parameter:
 
 class Test_Knudsen_number:
     @classmethod
-    def setup_class(cls):
+    def setup_class(cls) -> None:
         """Initializing parameters for tests"""
         cls.length = 1 * u.nm
         cls.T = 11604 * u.K
@@ -130,7 +129,7 @@ class Test_Knudsen_number:
         cls.V = 1e4 * u.km / u.s
         cls.True1 = 440.4757187793204
 
-    def test_symmetry(self):
+    def test_symmetry(self) -> None:
         with pytest.warns(CouplingWarning):
             result = Knudsen_number(self.length, self.T, self.n_e, self.particles)
             resultRev = Knudsen_number(
@@ -138,11 +137,11 @@ class Test_Knudsen_number:
             )
         assert result == resultRev
 
-    def test_known1(self):
+    def test_known1(self) -> None:
         """
         Test for known value.
         """
-        with pytest.warns(exceptions.PhysicsWarning, match="strong coupling effects"):
+        with pytest.warns(PhysicsWarning, match="strong coupling effects"):
             methodVal = Knudsen_number(
                 self.length,
                 self.T,
@@ -156,13 +155,13 @@ class Test_Knudsen_number:
         errStr = f"Knudsen number should be {self.True1} and not {methodVal}."
         assert testTrue, errStr
 
-    def test_fail1(self):
+    def test_fail1(self) -> None:
         """
         Tests if test_known1() would fail if we slightly adjusted the
         value comparison by some quantity close to numerical error.
         """
         fail1 = self.True1 * (1 + 1e-15)
-        with pytest.warns(exceptions.PhysicsWarning, match="strong coupling effects"):
+        with pytest.warns(PhysicsWarning, match="strong coupling effects"):
             methodVal = Knudsen_number(
                 self.length,
                 self.T,
@@ -181,6 +180,6 @@ class Test_Knudsen_number:
 
     @pytest.mark.parametrize("insert_some_nans", [[], ["V"]])
     @pytest.mark.parametrize("insert_all_nans", [[], ["V"]])
-    def test_handle_nparrays(self, insert_some_nans, insert_all_nans):
+    def test_handle_nparrays(self, insert_some_nans, insert_all_nans) -> None:
         """Test for ability to handle numpy array quantities"""
         assert_can_handle_nparray(Knudsen_number, insert_some_nans, insert_all_nans, {})

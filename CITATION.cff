@@ -1,10 +1,10 @@
 title: PlasmaPy
 type: software
-version: 2023.5.1
+version: 2023.10.0
 identifiers:
 - type: doi
-  value: 10.5281/zenodo.8015753
-date-released: '2023-06-07'
+  value: 10.5281/zenodo.10011217
+date-released: '2023-10-20'
 message: >-
   Please cite the specific version of PlasmaPy used
   during a research project.
@@ -106,6 +106,7 @@ authors:
 - given-names: Khalil
   family-names: Bryant
   affiliation: University of Michigan
+  orcid: https://orcid.org/0000-0002-2105-0280
   alias: KhalilBryant
 
 - given-names: Sean
@@ -174,6 +175,8 @@ authors:
 
 - given-names: Thomas
   family-names: Fan
+  affiliation: Quansight Labs
+  alias: thomasjpfan
 
 - given-names: Samaiyah I.
   family-names: Farid
@@ -188,6 +191,7 @@ authors:
 
 - given-names: Bryan
   family-names: Foo
+  orcid: https://orcid.org/0000-0001-5308-6870
   alias: bryancfoo
 
 - given-names: Rajagopalan
@@ -208,6 +212,7 @@ authors:
 
 - given-names: Silvina
   family-names: Guidoni
+  orcid: https://orcid.org/0000-0003-1439-4218
   affiliation: American University
 
 - given-names: Colby
@@ -247,13 +252,14 @@ authors:
 
 - given-names: Nabil
   family-names: Humphrey
+  orcid: https://orcid.org/0000-0002-4227-2544
   alias: NabilHumphrey
-
-- alias: itsraasshi
 
 - given-names: Maria
   family-names: Isupova
   alias: misupova
+
+- alias: itsraashi
 
 - given-names: Alexis
   family-names: Jeandet
@@ -264,6 +270,7 @@ authors:
 - given-names: Elliot
   family-names: Johnson
   affiliation: University of Delaware
+  orcid: https://orcid.org/0000-0003-2892-6924
   alias: ejohnson-96
 
 - given-names: Marcin
@@ -366,7 +373,7 @@ authors:
 
 - given-names: Suzanne
   family-names: Nie
-  alias: suzannenie
+  alias: sznie
 
 - alias: nrb1234
 
@@ -564,3 +571,34 @@ authors:
 - given-names: Cora
   family-names: Schneck
   alias: cyschneck
+
+- given-names: Julia
+  family-names: Guimiot
+  alias: JuliaGuimiot
+
+- given-names: Evan
+  family-names: Jones
+  orcid: https://orcid.org/0009-0004-6699-4869
+  alias: E-W-Jones
+
+- given-names: Oscar
+  alias: 0scvr
+
+- given-names: Ataf Fazledin
+  family-names: Ahamed
+  affiliation: OpenRefactory Inc.
+  alias: fazledyn-or
+
+- given-names: Tomasz Adam
+  family-names: Skrzypczak
+  alias: tomasz-adam-skrzypczak
+
+- given-names: Dusan
+  family-names: Klima
+  orcid: https://orcid.org/0009-0008-5134-6171
+  alias: ironwod
+
+- given-names: Heinz-Alexander
+  family-names: Fütterer
+  orcid: https://orcid.org/0000-0003-4397-027X
+  alias: afuetterer

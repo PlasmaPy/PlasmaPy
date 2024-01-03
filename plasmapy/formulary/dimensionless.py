@@ -38,7 +38,9 @@ __all__ += __aliases__
     T_e={"can_be_negative": False, "equivalencies": u.temperature_energy()},
     n_e={"can_be_negative": False},
 )
-def Debye_number(T_e: u.K, n_e: u.m**-3) -> u.dimensionless_unscaled:
+def Debye_number(
+    T_e: u.Quantity[u.K], n_e: u.Quantity[u.m**-3]
+) -> u.Quantity[u.dimensionless_unscaled]:
     r"""Return the number of electrons within a sphere with a radius
     of the Debye length.
 
@@ -92,7 +94,7 @@ def Debye_number(T_e: u.K, n_e: u.m**-3) -> u.dimensionless_unscaled:
 
     Examples
     --------
-    >>> from astropy import units as u
+    >>> import astropy.units as u
     >>> from astropy.constants.si import m_p, m_e
     >>> Debye_number(5e6*u.K, 5e9*u.cm**-3)
     <Quantity 2.17658...e+08>
@@ -113,9 +115,9 @@ nD_ = Debye_number
 )
 @particle_input
 def Hall_parameter(
-    n: u.m**-3,
-    T: u.K,
-    B: u.T,
+    n: u.Quantity[u.m**-3],
+    T: u.Quantity[u.K],
+    B: u.Quantity[u.T],
     ion: ParticleLike,
     particle: ParticleLike,
     coulomb_log=None,
@@ -238,7 +240,9 @@ betaH_ = Hall_parameter
     T={"can_be_negative": False, "equivalencies": u.temperature_energy()},
     n={"can_be_negative": False},
 )
-def beta(T: u.K, n: u.m**-3, B: u.T) -> u.dimensionless_unscaled:
+def beta(
+    T: u.Quantity[u.K], n: u.Quantity[u.m**-3], B: u.Quantity[u.T]
+) -> u.Quantity[u.dimensionless_unscaled]:
     r"""
     Compute the ratio of thermal pressure to magnetic pressure.
 
@@ -286,8 +290,11 @@ def beta(T: u.K, n: u.m**-3, B: u.T) -> u.dimensionless_unscaled:
 
 @validate_quantities(U={"can_be_negative": True})
 def Reynolds_number(
-    rho: u.kg / u.m**3, U: u.m / u.s, L: u.m, mu: u.kg / (u.m * u.s)
-) -> u.dimensionless_unscaled:
+    rho: u.Quantity[u.kg / u.m**3],
+    U: u.Quantity[u.m / u.s],
+    L: u.Quantity[u.m],
+    mu: u.Quantity[u.kg / (u.m * u.s)],
+) -> u.Quantity[u.dimensionless_unscaled]:
     r"""
     Compute the Reynolds number.
 
@@ -364,7 +371,9 @@ Re_ = Reynolds_number
 
 
 @validate_quantities(U={"can_be_negative": True})
-def Mag_Reynolds(U: u.m / u.s, L: u.m, sigma: u.S / u.m) -> u.dimensionless_unscaled:
+def Mag_Reynolds(
+    U: u.Quantity[u.m / u.s], L: u.Quantity[u.m], sigma: u.Quantity[u.S / u.m]
+) -> u.Quantity[u.dimensionless_unscaled]:
     r"""
     Compute the magnetic Reynolds number.
 
@@ -435,13 +444,13 @@ Rm_ = Mag_Reynolds
 
 
 def Lundquist_number(
-    L: u.m,
-    B: u.T,
-    density: (u.m**-3, u.kg / u.m**3),
-    sigma: u.S / u.m,
+    L: u.Quantity[u.m],
+    B: u.Quantity[u.T],
+    density: u.Quantity[u.m**-3, u.kg / u.m**3],
+    sigma: u.Quantity[u.S / u.m],
     ion: Optional[ParticleLike] = None,
     z_mean: Optional[numbers.Real] = None,
-) -> u.dimensionless_unscaled:
+) -> u.Quantity[u.dimensionless_unscaled]:
     r"""
     Compute the Lundquist number.
 

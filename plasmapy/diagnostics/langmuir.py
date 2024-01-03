@@ -85,7 +85,7 @@ class Characteristic:
     """
 
     @validate_quantities(bias={"can_be_inf": False}, current={"can_be_inf": False})
-    def __init__(self, bias: u.V, current: u.A):
+    def __init__(self, bias: u.Quantity[u.V], current: u.Quantity[u.A]) -> None:
         _langmuir_futurewarning()
 
         self.bias = bias
@@ -115,7 +115,7 @@ class Characteristic:
         b.current += other.current
         return b
 
-    def sort(self):
+    def sort(self) -> None:
         r"""Sort the characteristic by ascending bias."""
 
         _sort = self.bias.argsort()
@@ -166,7 +166,7 @@ class Characteristic:
         if len(np.unique(self.bias)) != len(self.bias):
             raise ValueError("Bias array contains duplicate values.")
 
-    def get_padded_limit(self, padding, log=False):  # coverage: ignore
+    def get_padded_limit(self, padding, log=False):
         r"""Return the limits of the current range for plotting, taking into
         account padding. Matplotlib lacks this functionality.
 
@@ -196,7 +196,7 @@ class Characteristic:
                 ymax + padding * (ymax - ymin),
             ] * u.A
 
-    def plot(self):  # coverage: ignore
+    def plot(self) -> None:
         r"""Plot the characteristic in matplotlib."""
         import matplotlib.pyplot as plt
 
@@ -211,7 +211,7 @@ class Characteristic:
 )
 def swept_probe_analysis(  # noqa: PLR0915
     probe_characteristic,
-    probe_area: u.m**2,
+    probe_area: u.Quantity[u.m**2],
     gas_argument,
     bimaxwellian=False,
     visualize=False,
@@ -362,7 +362,7 @@ def swept_probe_analysis(  # noqa: PLR0915
         I_es, reduce_bimaxwellian_temperature(T_e, hot_fraction), probe_area
     )
 
-    if visualize:  # coverage: ignore
+    if visualize:
         import matplotlib.pyplot as plt
 
         with quantity_support():
@@ -428,7 +428,7 @@ def swept_probe_analysis(  # noqa: PLR0915
 
     # Obtain and show the EEDF. This is only useful if the characteristic data
     # has been preprocessed to be sufficiently smooth and noiseless.
-    if plot_EEDF:  # coverage: ignore
+    if plot_EEDF:
         get_EEDF(probe_characteristic, visualize=True)
 
     # Compile the results dictionary
@@ -631,8 +631,11 @@ def get_ion_saturation_current(probe_characteristic):
     validations_on_return={"can_be_negative": False},
 )
 def get_ion_density_LM(
-    ion_saturation_current: u.A, T_e: u.eV, probe_area: u.m**2, gas
-) -> u.m**-3:
+    ion_saturation_current: u.Quantity[u.A],
+    T_e: u.Quantity[u.eV],
+    probe_area: u.Quantity[u.m**2],
+    gas,
+) -> u.Quantity[u.m**-3]:
     r"""
     Implement the Langmuir-Mottley (LM) method of obtaining the ion
     density.
@@ -694,8 +697,10 @@ def get_ion_density_LM(
     validations_on_return={"can_be_negative": False},
 )
 def get_electron_density_LM(
-    electron_saturation_current: u.A, T_e: u.eV, probe_area: u.m**2
-) -> u.m**-3:
+    electron_saturation_current: u.Quantity[u.A],
+    T_e: u.Quantity[u.eV],
+    probe_area: u.Quantity[u.m**2],
+) -> u.Quantity[u.m**-3]:
     r"""Implement the Langmuir-Mottley (LM) method of obtaining the electron
     density.
 
@@ -967,7 +972,7 @@ def get_electron_temperature(
         # If bi-Maxwellian, return main temperature first
         T_e = np.array([T0, T0 + Delta_T]) * u.eV
 
-    if visualize:  # coverage: ignore
+    if visualize:
         import matplotlib.pyplot as plt
 
         with quantity_support():
@@ -1075,7 +1080,7 @@ def extrapolate_electron_current(
         probe_characteristic.bias, electron_current
     )
 
-    if visualize:  # coverage: ignore
+    if visualize:
         import matplotlib.pyplot as plt
 
         with quantity_support():
@@ -1106,7 +1111,9 @@ def extrapolate_electron_current(
     },
     validations_on_return={"equivalencies": u.temperature_energy()},
 )
-def reduce_bimaxwellian_temperature(T_e: u.eV, hot_fraction: float) -> u.eV:
+def reduce_bimaxwellian_temperature(
+    T_e: u.Quantity[u.eV], hot_fraction: float
+) -> u.Quantity[u.eV]:
     r"""Reduce a bi-Maxwellian (dual) temperature to a single mean temperature
     for a given fraction.
 
@@ -1151,7 +1158,7 @@ def reduce_bimaxwellian_temperature(T_e: u.eV, hot_fraction: float) -> u.eV:
 )
 def get_ion_density_OML(
     probe_characteristic: Characteristic,
-    probe_area: u.m**2,
+    probe_area: u.Quantity[u.m**2],
     gas,
     visualize=False,
     return_fit=False,
@@ -1223,15 +1230,10 @@ def get_ion_density_OML(
     ion = Particle(argument=gas)
 
     n_i_OML = np.sqrt(
-        -slope
-        * u.mA**2
-        / u.V
-        * np.pi**2
-        * ion.mass
-        / (probe_area**2 * const.e**3 * 2)
+        -slope * u.mA**2 / u.V * np.pi**2 * ion.mass / (probe_area**2 * const.e**3 * 2)
     )
 
-    if visualize:  # coverage: ignore
+    if visualize:
         import matplotlib.pyplot as plt
 
         with quantity_support():
@@ -1298,7 +1300,7 @@ def extrapolate_ion_current_OML(probe_characteristic, fit, visualize=False):
 
     ion_characteristic = Characteristic(probe_characteristic.bias, ion_current)
 
-    if visualize:  # coverage: ignore
+    if visualize:
         import matplotlib.pyplot as plt
 
         with quantity_support():
@@ -1393,7 +1395,7 @@ def get_EEDF(probe_characteristic, visualize=False):
     integral = np.abs(np.trapz(probability, x=energy.to(u.eV).value))
     probability = probability / integral
 
-    if visualize:  # coverage: ignore
+    if visualize:
         import matplotlib.pyplot as plt
 
         with quantity_support():
