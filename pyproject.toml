@@ -387,6 +387,11 @@ issue_format = ":pr:`{issue}`" # Despite the name mismatch, we use this for link
 wrap = true
 
 [[tool.towncrier.type]]
+directory = "feature"
+name = "Features"
+showcontent = true
+
+[[tool.towncrier.type]]
 directory = "breaking"
 name = "Backwards Incompatible Changes"
 showcontent = true
@@ -394,11 +399,6 @@ showcontent = true
 [[tool.towncrier.type]]
 directory = "removal"
 name = "Deprecations and Removals"
-showcontent = true
-
-[[tool.towncrier.type]]
-directory = "feature"
-name = "Features"
 showcontent = true
 
 [[tool.towncrier.type]]
