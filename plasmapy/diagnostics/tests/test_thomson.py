@@ -219,18 +219,19 @@ def test_notched_spectrum(single_species_collective_spectrum):
     """
     Compares notched and unnotched spectra
     """
-    # Compute spectrum with notch included
-    alpha, wavelengths, Skw_notched = single_species_collective_spectrum
+    # Compute spectrum with no notch included
+    alpha, wavelengths, Skw_unnotched = single_species_collective_spectrum
 
-    # Compute same spectrum without notch
+    # Compute same spectrum with notch
     args, kwargs = spectral_density_args_kwargs(single_species_collective_args)
 
+    kwargs["notch"] = np.array([531, 533]) * u.nm
+        
     # Record wavelength array indices corresponding to notch
-    x1 = np.argmin(np.abs(wavelengths - kwargs["notches"][0]))
-    x2 = np.argmin(np.abs(wavelengths - kwargs["notches"][1]))
-
-    kwargs["notches"] = None
-    alpha, Skw_unnotched = thomson.spectral_density(*args, **kwargs)
+    x1 = np.argmin(np.abs(wavelengths - kwargs["notch"][0]))
+    x2 = np.argmin(np.abs(wavelengths - kwargs["notch"][1]))
+    
+    alpha, Skw_notched = thomson.spectral_density(*args, **kwargs)
 
     # Check that regions outside the notch are the same for both Skws
     assert Skw_notched[:x1] == Skw_unnotched[:x1]
@@ -742,6 +743,9 @@ def run_fit(  # noqa: C901
 
     if "instr_func" not in skeys:
         settings["instr_func"] = None
+    
+    if "notch" not in skeys:
+        settings["notch"] = None
 
     # LOAD FROM SETTINGS
     ions = settings["ions"]
@@ -749,7 +753,7 @@ def run_fit(  # noqa: C901
     scatter_vec = settings["scatter_vec"]
     probe_wavelength = settings["probe_wavelength"]
     instr_func = settings["instr_func"]
-    notches = settings["notches"]
+    notch = settings["notch"]
 
     electron_vdir = settings.get("electron_vdir", np.ones([len(T_e), 3]))
     ion_vdir = settings.get("ion_vdir", np.ones([len(T_i), 3]))
@@ -772,7 +776,7 @@ def run_fit(  # noqa: C901
         electron_vel=electron_vel * u.m / u.s,
         ion_vel=ion_vel * u.m / u.s,
         instr_func=instr_func,
-        notches=notches,
+        notch=notch,
     )
 
     data = Skw
@@ -886,7 +890,6 @@ def epw_single_species_settings_params():
     kwargs["wavelengths"] = (
         (np.linspace(w0 - 40, w0 + 40, num=512) * u.nm).to(u.m).value
     )
-    kwargs["notches"] = (531, 533)
 
     return kwargs
 
@@ -926,8 +929,6 @@ def epw_multi_species_settings_params():
     kwargs["wavelengths"] = (
         (np.linspace(w0 - 40, w0 + 40, num=512) * u.nm).to(u.m).value
     )
-
-    kwargs["notches"] = (531, 533)
 
     return kwargs
 
@@ -1127,6 +1128,7 @@ def test_fit_with_instr_func(epw_single_species_settings_params):
     )
 
     settings["instr_func"] = example_instr_func
+    settings["notch"] = np.array([531, 533]) * 1e-9
 
     # Warns that data should not include any NaNs
     # This is taken care of in run_fit by deleting the notch region rather than
