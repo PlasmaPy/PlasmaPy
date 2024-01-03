@@ -261,10 +261,13 @@ def spectral_density_lite(
 
     # add notch(es) to the spectrum if any are provided
     if notch is not None:
+        # If only one notch is included, create a dummy second dimension
         if np.ndim(notch) == 1:
             notch = np.array([notch])
 
         for notch_i in notch:
+            # For each notch, identify the index for the beginning and end
+            # wavelengths and set Skw to zero between those indices
             x0 = np.argwhere(wavelengths > notch_i[0])[0][0]
             x1 = np.argwhere(wavelengths > notch_i[1])[0][0]
             Skw[x0:x1] = 0
@@ -367,11 +370,12 @@ def spectral_density(  # noqa: C901, PLR0912, PLR0915
     notch : (2,) or (N, 2) `~astropy.units.Quantity`, |keyword-only|, optional
         A pair of wavelengths which are the endpoints of a notch over
         which the output Skw is set to 0. Can also be input as a 2D array
-        which contains many such pairs if multiple notches are needed. The
-        notch is applied after the instrument function, so the instrument
+        which contains many such pairs if multiple notches are needed. If the 
+        `notch` and `instr_func` keywords are both set, the
+        notch is applied after the instrument function such the instrument
         function does convolve the values of the theoretical spectrum
-        originally in the notch region. Should be in units convertible to meters.
-        Defaults to no notch.
+        originally in the notch region. Should be in units convertible to 
+        meters. Defaults to no notch.
 
 
     Returns
@@ -573,7 +577,6 @@ def spectral_density(  # noqa: C901, PLR0912, PLR0915
         instr_func_arr = None
 
     # Valildate notch input
-
     if notch is not None:
         notch_unitless = notch.to(u.m).value
 
@@ -582,10 +585,11 @@ def spectral_density(  # noqa: C901, PLR0912, PLR0915
 
         for notch_i in notch_unitless:
             if np.shape(notch_i) != (2,):
-                raise ValueError("Notches must be pairs of values")
+                raise ValueError("Notches must be pairs of values.")
             if notch_i[0] > notch_i[1]:
                 raise ValueError(
-                    "First element of notch cannot be greater than second element."
+                    "The first element of the notch cannot be greater than " 
+                    "the second element."
                 )
     else:
         notch_unitless = None
@@ -804,7 +808,7 @@ def spectral_density_model(  # noqa: C901, PLR0912, PLR0915
     If an instrument function is included, the data should not include
     any `numpy.nan` values — instead regions with no data should be
     removed from both the data and wavelength arrays using
-    "`numpy.delete`."
+    `numpy.delete`.
     """
 
     required_settings = {
