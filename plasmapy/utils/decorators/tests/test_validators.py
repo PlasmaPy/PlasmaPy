@@ -456,7 +456,7 @@ class TestValidateQuantities:
         # test on class method
         class Foo:
             @ValidateQuantities()
-            def __init__(self, y: u.cm):
+            def __init__(self, y: u.cm) -> None:
                 self.y = y
 
             @ValidateQuantities(validations_on_return={"can_be_negative": False})
@@ -557,7 +557,7 @@ class TestValidateClassAttributes:
             x: Optional[int] = None,
             y: Optional[int] = None,
             z: Optional[int] = None,
-        ):
+        ) -> None:
             self.x = x
             self.y = y
             self.z = z

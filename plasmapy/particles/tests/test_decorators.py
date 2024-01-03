@@ -393,7 +393,7 @@ def test_class_stacked_decorator(outer_decorator, inner_decorator):
     class Sample:
         @outer_decorator
         @inner_decorator
-        def __init__(self, particle: ParticleLike):
+        def __init__(self, particle: ParticleLike) -> None:
             self.particle = particle
 
     result = Sample("p+")
@@ -411,7 +411,7 @@ def test_annotated_init():
 
     class HasAnnotatedInit:
         @particle_input(require="element")
-        def __init__(self, particle: ParticleLike, ionic_fractions=None):
+        def __init__(self, particle: ParticleLike, ionic_fractions=None) -> None:
             self.particle = particle
 
     x = HasAnnotatedInit("H-1", ionic_fractions=32)
@@ -451,7 +451,7 @@ def test_particle_input_with_validate_quantities(outer_decorator, inner_decorato
             self,
             particle: ParticleLike,
             T_e: u.Quantity[u.K] = None,
-        ):
+        ) -> None:
             self.particle = particle
             self.T_e = T_e
 
@@ -500,7 +500,7 @@ class ParameterNamesCase:
         particles_in_category,
         particles_not_in_category,
         exception,
-    ):
+    ) -> None:
         self.category = category
         self.function = function
         self.particles_in_category = particles_in_category

@@ -328,7 +328,7 @@ class RelativisticBody:
         Z: Optional[Integral] = None,
         mass_numb: Optional[Integral] = None,
         dtype: Optional[DTypeLike] = np.longdouble,
-    ):
+    ) -> None:
         self._particle = particle
 
         self._dtype = dtype

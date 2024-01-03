@@ -59,7 +59,9 @@ class _GenericWidget(abc.ABC):
         If the method `create_widget` is not implemented.
     """
 
-    def __init__(self, property_name, property_alias="", values_cont=values_container):
+    def __init__(
+        self, property_name, property_alias="", values_cont=values_container
+    ) -> None:
         self.property_name = property_name
         self.property_alias = property_alias or property_name
         self.widget = None
@@ -262,7 +264,7 @@ class _FloatBox(_GenericWidget):
         Maximum value the widget can take
     """
 
-    def __init__(self, property_name, min=-1e50, max=1e50):  # noqa: A002
+    def __init__(self, property_name, min=-1e50, max=1e50) -> None:  # noqa: A002
         super().__init__(property_name)
         self.min = min
         self.max = max
@@ -295,7 +297,7 @@ class _CheckBox(_GenericWidget):
         Name of the property the widget is associated with.
     """
 
-    def __init__(self, property_name):
+    def __init__(self, property_name) -> None:
         super().__init__(property_name)
 
     def create_widget(self):
@@ -321,7 +323,7 @@ class _ParticleBox(_GenericWidget):
         (particle_type in this case)
     """
 
-    def __init__(self, property_name, property_alias=None):
+    def __init__(self, property_name, property_alias=None) -> None:
         super().__init__(property_name, property_alias=property_alias)
 
     def edge_case_condition(self, value):
@@ -394,7 +396,7 @@ class _IonBox(_ParticleBox):
         Alias of the property the widget is associated with.
     """
 
-    def __init__(self, property_name, property_alias=None):
+    def __init__(self, property_name, property_alias=None) -> None:
         super().__init__(property_name, property_alias=property_alias)
 
     def try_change_value(self, value):
@@ -440,7 +442,9 @@ class _FunctionInfo:
         Reference to global dictionary of values to be passed to the function
     """
 
-    def __init__(self, module_name, function_name, values_cont=values_container):
+    def __init__(
+        self, module_name, function_name, values_cont=values_container
+    ) -> None:
         self.module = module_name
         self.fname = function_name
         self.fattr = getattr(importlib.import_module(module_name), function_name)

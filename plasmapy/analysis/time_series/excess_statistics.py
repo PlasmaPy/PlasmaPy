@@ -54,7 +54,7 @@ class ExcessStatistics:
     [0.5, 0.0, 0]
     """
 
-    def __init__(self, signal, thresholds, time_step):
+    def __init__(self, signal, thresholds, time_step) -> None:
         if time_step <= 0:
             raise ValueError("time_step must be positive")
 

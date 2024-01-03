@@ -188,7 +188,7 @@ class ParticleList(collections.UserList):
 
         return new_particles
 
-    def __init__(self, particles: Optional[Iterable] = None):
+    def __init__(self, particles: Optional[Iterable] = None) -> None:
         self._data = self._list_of_particles_and_custom_particles(particles)
 
     @staticmethod

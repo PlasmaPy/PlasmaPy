@@ -41,7 +41,7 @@ from plasmapy.utils.datatype_factory_base import (
 
 
 class BaseWidget:
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         pass
 
 
