@@ -259,6 +259,7 @@ def test_spectral_density_minimal_arguments(single_species_collective_args):
         "probe_vec",
         "scatter_vec",
         "instr_func",
+        "notch"
     ]
     for key in optional_keys:
         if key in kwargs:

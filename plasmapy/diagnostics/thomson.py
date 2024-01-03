@@ -259,10 +259,11 @@ def spectral_density_lite(
         Skw = np.convolve(Skw, instr_func_arr, mode="same")
 
     # add notch(es) to the spectrum if any are provided
-    for notch_i in notch:
-        x0 = np.argmin(np.abs(wavelengths - notch_i[0]))
-        x1 = np.argmin(np.abs(wavelengths - notch_i[1]))
-        Skw[x0:x1] = 0
+    if notch is not None:
+        for notch_i in notch:
+            x0 = np.argmin(np.abs(wavelengths - notch_i[0]))
+            x1 = np.argmin(np.abs(wavelengths - notch_i[1]))
+            Skw[x0:x1] = 0
 
     return np.mean(alpha), Skw
 
