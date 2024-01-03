@@ -403,7 +403,7 @@ showcontent = true
 
 [[tool.towncrier.type]]
 directory = "removal"
-name = "Deprecations and Removals"
+name = "Deprecations and Planned Removals"
 showcontent = true
 
 [[tool.towncrier.type]]
