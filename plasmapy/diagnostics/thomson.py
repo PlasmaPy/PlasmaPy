@@ -260,6 +260,9 @@ def spectral_density_lite(
 
     # add notch(es) to the spectrum if any are provided
     if notch is not None:
+        if np.ndim(notch) == 1:
+            notch = np.array([notch])
+
         for notch_i in notch:
             x0 = np.argwhere(wavelengths > notch_i[0])[0][0]
             x1 = np.argwhere(wavelengths > notch_i[1])[0][0]
