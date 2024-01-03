@@ -216,6 +216,79 @@ def test_single_species_collective_spectrum(single_species_collective_spectrum) 
     )
 
 
+@pytest.mark.parametrize(
+    ("notch", "notch_num"),
+    [
+        # one notch
+        (np.array([531, 533]) * u.nm, 1),
+        # two notches
+        (np.array([np.array([520, 525]), np.array([530, 540])]) * u.nm, 2),
+    ],
+)
+def test_notched_spectrum(notch, notch_num, single_species_collective_args):
+    """
+    Compares notched and unnotched spectra
+    """
+    # make a copy of the input args
+    args_fixture_copy = copy.copy(single_species_collective_args)
+    wavelengths = single_species_collective_args["wavelengths"]
+
+    # Compute spectrum with no notch included
+    args, kwargs = spectral_density_args_kwargs(single_species_collective_args)
+    alpha_unnotched, Skw_unnotched = thomson.spectral_density(*args, **kwargs)
+
+    # Compute same spectrum with notch
+    args, kwargs = spectral_density_args_kwargs(args_fixture_copy)
+
+    kwargs["notch"] = notch
+    alpha_notched, Skw_notched = thomson.spectral_density(*args, **kwargs)
+
+    # Check that notch does not affect alpha
+    assert np.isclose(alpha_notched, alpha_unnotched)
+
+    if notch_num == 1:
+        # Record wavelength array indices corresponding to notch
+        x0 = np.argwhere(wavelengths > notch[0])[0][0]
+        x1 = np.argwhere(wavelengths > notch[1])[0][0]
+        # Check that regions outside the notch are the same for both Skws
+        assert np.allclose(Skw_notched[:x0], Skw_unnotched[:x0])
+        assert np.allclose(Skw_notched[x1:], Skw_unnotched[x1:])
+
+        # Check that region inside the notch is 0 for notched Skw
+        assert np.allclose(Skw_notched[x0:x1], np.zeros(x1 - x0))
+    elif notch_num == 2:
+        x0 = np.argwhere(wavelengths > notch[0, 0])[0][0]
+        x1 = np.argwhere(wavelengths > notch[0, 1])[0][0]
+        x2 = np.argwhere(wavelengths > notch[1, 0])[0][0]
+        x3 = np.argwhere(wavelengths > notch[1, 1])[0][0]
+
+        # Check that regions outside the notches are the same for both Skws
+        assert np.allclose(Skw_notched[:x0], Skw_unnotched[:x0])
+        assert np.allclose(Skw_notched[x1:x2], Skw_unnotched[x1:x2])
+        assert np.allclose(Skw_notched[x3:], Skw_unnotched[x3:])
+
+        # Check that region inside the notches is 0 for notched Skw
+        assert np.allclose(Skw_notched[x0:x1], np.zeros(x1 - x0))
+        assert np.allclose(Skw_notched[x2:x3], np.zeros(x3 - x2))
+
+
+@pytest.mark.parametrize(
+    ("notch"),
+    [
+        (np.array([533, 531]) * u.nm),  # Elements not in montonic increasing order
+        (np.array([530, 531, 533]) * u.nm),  # Not exactly 2 elements
+    ],
+)
+def test_notch_errors(notch, single_species_collective_args):
+    """
+    Check notch input validation
+    """
+    args, kwargs = spectral_density_args_kwargs(single_species_collective_args)
+    kwargs["notch"] = notch
+    with pytest.raises(ValueError):
+        alpha, Skw = thomson.spectral_density(*args, **kwargs)
+
+
 @pytest.mark.slow()
 def test_spectral_density_minimal_arguments(single_species_collective_args) -> None:
     """
@@ -234,6 +307,7 @@ def test_spectral_density_minimal_arguments(single_species_collective_args) -> N
         "probe_vec",
         "scatter_vec",
         "instr_func",
+        "notch",
     ]
     for key in optional_keys:
         if key in kwargs:
@@ -671,13 +745,11 @@ def test_param_to_array_fcns() -> None:
     assert np.mean(arr) == 2
 
 
-def run_fit(  # noqa: C901
+def run_fit(
     wavelengths,
     params,
     settings,
     noise_amp=0.05,
-    notch=None,
-    notch_as_nan=False,
     fit_method="differential_evolution",
     fit_kws={},  # noqa: B006
     max_iter=None,
@@ -723,12 +795,16 @@ def run_fit(  # noqa: C901
     if "instr_func" not in skeys:
         settings["instr_func"] = None
 
+    if "notch" not in skeys:
+        settings["notch"] = None
+
     # LOAD FROM SETTINGS
     ions = settings["ions"]
     probe_vec = settings["probe_vec"]
     scatter_vec = settings["scatter_vec"]
     probe_wavelength = settings["probe_wavelength"]
     instr_func = settings["instr_func"]
+    notch = settings["notch"]
 
     electron_vdir = settings.get("electron_vdir", np.ones([len(T_e), 3]))
     ion_vdir = settings.get("ion_vdir", np.ones([len(T_i), 3]))
@@ -751,20 +827,10 @@ def run_fit(  # noqa: C901
         electron_vel=electron_vel * u.m / u.s,
         ion_vel=ion_vel * u.m / u.s,
         instr_func=instr_func,
+        notch=notch,
     )
 
     data = Skw
-    if notch is not None:
-        x0 = np.argmin(np.abs(wavelengths.to(u.m).value * 1e9 - notch[0]))
-        x1 = np.argmin(np.abs(wavelengths.to(u.m).value * 1e9 - notch[1]))
-
-        # Depending on the notch_as_nan keyword, either delete the missing data
-        # or replace with NaN values
-        if notch_as_nan:
-            data[x0:x1] = np.nan
-        else:
-            data = np.delete(data, np.arange(x0, x1))
-            wavelengths = np.delete(wavelengths, np.arange(x0, x1))
 
     data *= 1 + np.random.normal(  # noqa: NPY002
         loc=0, scale=noise_amp, size=wavelengths.size
@@ -824,6 +890,7 @@ def spectral_density_model_settings_params(kwargs):
         "electron_vdir",
         "ion_vdir",
         "instr_func",
+        "notch",
     ]
 
     params = Parameters()
@@ -859,10 +926,12 @@ def epw_single_species_settings_params():
     probe_wavelength = 532 * u.nm
     scattering_angle = np.deg2rad(63)
     scatter_vec = np.array([np.cos(scattering_angle), np.sin(scattering_angle), 0])
+    notch = np.array([531, 533]) * u.nm
 
     kwargs = {"probe_wavelength": probe_wavelength.to(u.m).value}
     kwargs["probe_vec"] = np.array([1, 0, 0])
     kwargs["scatter_vec"] = scatter_vec
+    kwargs["notch"] = notch.to(u.m).value
     kwargs["ions"] = ["H+"]
 
     kwargs["n"] = Parameter(
@@ -894,11 +963,13 @@ def epw_multi_species_settings_params():
     probe_vec = np.array([1, 0, 0])
     scattering_angle = np.deg2rad(63)
     scatter_vec = np.array([np.cos(scattering_angle), np.sin(scattering_angle), 0])
+    notch = np.array([531, 533]) * u.nm
 
     kwargs = {"probe_wavelength": probe_wavelength.to(u.m).value}
 
     kwargs["probe_vec"] = probe_vec
     kwargs["scatter_vec"] = scatter_vec
+    kwargs["notch"] = notch.to(u.m).value
     kwargs["ions"] = ["H+"]
 
     kwargs["n"] = Parameter(
@@ -1044,7 +1115,7 @@ def test_fit_epw_single_species(epw_single_species_settings_params) -> None:
         epw_single_species_settings_params
     )
 
-    run_fit(wavelengths, params, settings, notch=(531, 533))
+    run_fit(wavelengths, params, settings)
 
 
 @pytest.mark.slow()
@@ -1053,7 +1124,7 @@ def test_fit_epw_multi_species(epw_multi_species_settings_params) -> None:
         epw_multi_species_settings_params
     )
 
-    run_fit(wavelengths, params, settings, notch=(531, 533))
+    run_fit(wavelengths, params, settings)
 
 
 @pytest.mark.slow()
@@ -1117,6 +1188,7 @@ def test_fit_with_instr_func(epw_single_species_settings_params) -> None:
     )
 
     settings["instr_func"] = example_instr_func
+    settings["notch"] = np.array([531, 533]) * 1e-9
 
     # Warns that data should not include any NaNs
     # This is taken care of in run_fit by deleting the notch region rather than
@@ -1126,13 +1198,11 @@ def test_fit_with_instr_func(epw_single_species_settings_params) -> None:
             wavelengths,
             params,
             settings,
-            notch=(531, 533),
-            notch_as_nan=True,
             run_fit=False,
         )
 
     # Run the same fit using np.delete instead of np.nan values
-    run_fit(wavelengths, params, settings, notch=(531, 533))
+    run_fit(wavelengths, params, settings)
 
 
 @pytest.mark.parametrize("instr_func", invalid_instr_func_list)
