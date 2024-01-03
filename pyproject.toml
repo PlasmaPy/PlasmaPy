@@ -388,7 +388,12 @@ wrap = true
 
 [[tool.towncrier.type]]
 directory = "feature"
-name = "Features"
+name = "New Features"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "doc"
+name = "Documentation Improvements"
 showcontent = true
 
 [[tool.towncrier.type]]
