@@ -407,11 +407,11 @@ name = "Bug Fixes"
 showcontent = true
 
 [[tool.towncrier.type]]
-directory = "doc"
-name = "Improved Documentation"
+directory = "internal"
+name = "Internal Changes and Refactorings"
 showcontent = true
 
 [[tool.towncrier.type]]
 directory = "trivial"
-name = "Trivial/Internal Changes"
+name = "Additional Changes"
 showcontent = true
