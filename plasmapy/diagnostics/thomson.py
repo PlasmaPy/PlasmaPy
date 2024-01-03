@@ -583,9 +583,7 @@ def spectral_density(  # noqa: C901, PLR0912, PLR0915
             if np.shape(notch_i) != (2,):
                 raise ValueError("Notches must be pairs of values")
             if notch_i[0] > notch_i[1]:
-                raise ValueError(
-                    "First element of notch cannot be greater than second element."
-                )
+                raise ValueError("First element of notch cannot be greater than second element.")
     else:
         notch_unitless = None
 
