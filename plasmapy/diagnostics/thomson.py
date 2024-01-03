@@ -763,7 +763,7 @@ def spectral_density_model(  # noqa: C901, PLR0912, PLR0915
         - ``"instr_func"`` : A function that takes a wavelength
           |Quantity| array and returns a spectrometer instrument
           function as an `~numpy.ndarray`.
-        - ``"notch"`` : A wavelength range or array of several wavelength
+        - ``"notch"`` : A wavelength range or array of multiple wavelength
           ranges over which the spectral density is set to 0.
 
         These quantities cannot be varied during the fit.
