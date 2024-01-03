@@ -850,6 +850,7 @@ def spectral_density_model_settings_params(kwargs):
         "electron_vdir",
         "ion_vdir",
         "instr_func",
+        "notch",
     ]
 
     params = Parameters()
