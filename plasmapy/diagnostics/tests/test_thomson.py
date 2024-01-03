@@ -233,8 +233,8 @@ def test_notched_spectrum(single_species_collective_args):
     kwargs["notch"] = np.array([531, 533]) * u.nm
         
     # Record wavelength array indices corresponding to notch
-    x1 = np.argmin(np.abs(wavelengths - kwargs["notch"][0]))
-    x2 = np.argmin(np.abs(wavelengths - kwargs["notch"][1]))
+    x1 = np.argwhere(wavelengths > kwargs["notch"][0])[0][0]
+    x2 = np.argwhere(wavelengths > kwargs["notch"][1])[0][0]
     
     alpha, Skw_notched = thomson.spectral_density(*args, **kwargs)
 
