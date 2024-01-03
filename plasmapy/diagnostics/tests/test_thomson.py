@@ -215,15 +215,20 @@ def test_single_species_collective_spectrum(single_species_collective_spectrum):
         "instead of expected 17.7899"
     )
 
-def test_notched_spectrum(single_species_collective_spectrum, single_species_collective_args):
+def test_notched_spectrum(single_species_collective_args):
     """
     Compares notched and unnotched spectra
     """
+    #make a copy of the input args
+    args_fixture_copy = copy.copy(single_species_collective_args)    
+    wavelengths = single_species_collective_args["wavelengths"]
+
     # Compute spectrum with no notch included
-    alpha, wavelengths, Skw_unnotched = single_species_collective_spectrum
+    args, kwargs = spectral_density_args_kwargs(single_species_collective_args)
+    alpha, Skw_unnotched = thomson.spectral_density(*args, **kwargs)
 
     # Compute same spectrum with notch
-    args, kwargs = spectral_density_args_kwargs(single_species_collective_args)
+    args, kwargs = spectral_density_args_kwargs(args_fixture_copy)
 
     kwargs["notch"] = np.array([531, 533]) * u.nm
         
