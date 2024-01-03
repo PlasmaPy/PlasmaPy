@@ -248,8 +248,8 @@ def test_notched_spectrum(notch, notch_num, single_species_collective_args):
 
     if notch_num == 1:
         # Record wavelength array indices corresponding to notch
-        x0 = np.argwhere(wavelengths > kwargs["notch"][0])[0][0]
-        x1 = np.argwhere(wavelengths > kwargs["notch"][1])[0][0]
+        x0 = np.argwhere(wavelengths > notch[0])[0][0]
+        x1 = np.argwhere(wavelengths > notch[1])[0][0]
         # Check that regions outside the notch are the same for both Skws
         assert np.allclose(Skw_notched[:x0], Skw_unnotched[:x0])
         assert np.allclose(Skw_notched[x1:], Skw_unnotched[x1:])
