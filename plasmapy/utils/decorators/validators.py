@@ -139,7 +139,9 @@ class ValidateQuantities(CheckUnits, CheckValues):
         https://docs.astropy.org/en/stable/units/equivalencies.html
     """
 
-    def __init__(self, validations_on_return=None, **validations: dict[str, Any]):
+    def __init__(
+        self, validations_on_return=None, **validations: dict[str, Any]
+    ) -> None:
         if "checks_on_return" in validations:
             raise TypeError(
                 "keyword argument 'checks_on_return' is not allowed, "

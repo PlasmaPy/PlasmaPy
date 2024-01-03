@@ -23,7 +23,7 @@ from abc import ABC, abstractmethod
 from collections import defaultdict, namedtuple
 from datetime import datetime
 from numbers import Integral, Real
-from typing import NoReturn, Optional, TYPE_CHECKING, Union
+from typing import Optional, TYPE_CHECKING, Union
 
 from plasmapy.particles import _elements, _isotopes, _parsing, _special_particles
 from plasmapy.particles.exceptions import (
@@ -166,7 +166,7 @@ class AbstractParticle(ABC):
             }
         }
 
-    def __bool__(self):
+    def __bool__(self) -> bool:
         """
         Raise an `~plasmapy.particles.exceptions.ParticleError` because
         particles do not have a truth value.
@@ -581,7 +581,7 @@ class Particle(AbstractPhysicalParticle):
         *_,
         mass_numb: Optional[Integral] = None,
         Z: Optional[Integral] = None,
-    ):
+    ) -> None:
         # TODO: Remove the following block during or after the 0.9.0 release
 
         if _:
@@ -610,12 +610,12 @@ class Particle(AbstractPhysicalParticle):
 
         self.__name__ = self.__repr__()
 
-    def _initialize_attributes_and_categories(self) -> NoReturn:
+    def _initialize_attributes_and_categories(self) -> None:
         """Create empty collections for attributes and categories."""
         self._attributes = defaultdict(type(None))
         self._categories = set()
 
-    def _validate_inputs(self) -> NoReturn:
+    def _validate_inputs(self) -> None:
         """Raise appropriate exceptions when inputs are invalid."""
         argument, mass_numb, Z = self.__inputs
 
@@ -632,7 +632,7 @@ class Particle(AbstractPhysicalParticle):
         if Z is not None and not isinstance(Z, Integral):
             raise TypeError("Z is not an integer.")
 
-    def _store_particle_identity(self) -> NoReturn:
+    def _store_particle_identity(self) -> None:
         """Store the particle's symbol and identifying information."""
         self._validate_inputs()
         argument, mass_numb, Z = self.__inputs
@@ -642,7 +642,7 @@ class Particle(AbstractPhysicalParticle):
         else:
             self._store_identity_of_atom(argument)
 
-    def _store_identity_of_atom(self, argument) -> NoReturn:
+    def _store_identity_of_atom(self, argument) -> None:
         """
         Store the particle's symbol, element, isotope, ion, mass number,
         and charge number.
@@ -666,14 +666,14 @@ class Particle(AbstractPhysicalParticle):
         for key in information_about_atom:
             self._attributes[key] = information_about_atom[key]
 
-    def _assign_particle_attributes(self) -> NoReturn:
+    def _assign_particle_attributes(self) -> None:
         """Assign particle attributes and categories."""
         if self.symbol in _special_particles.data_about_special_particles:
             self._assign_special_particle_attributes()
         else:
             self._assign_atom_attributes()
 
-    def _assign_special_particle_attributes(self) -> NoReturn:
+    def _assign_special_particle_attributes(self) -> None:
         """Initialize special particles."""
         attributes = self._attributes
         categories = self._categories
@@ -720,7 +720,7 @@ class Particle(AbstractPhysicalParticle):
                 "mass number or charge number not equal to 1."
             )
 
-    def _assign_atom_attributes(self) -> NoReturn:
+    def _assign_atom_attributes(self) -> None:
         """Assign attributes and categories to elements, isotopes, and ions."""
         attributes = self._attributes
         categories = self._categories
@@ -776,7 +776,7 @@ class Particle(AbstractPhysicalParticle):
 
         categories.add(this_element["category"])
 
-    def _add_charge_information(self) -> NoReturn:
+    def _add_charge_information(self) -> None:
         """Assign attributes and categories related to charge information."""
         if self._attributes["charge number"] == 1:
             self._attributes["charge"] = const.e.si
@@ -788,7 +788,7 @@ class Particle(AbstractPhysicalParticle):
         elif self._attributes["charge number"] == 0:
             self._categories.add("uncharged")
 
-    def _add_half_life_information(self) -> NoReturn:
+    def _add_half_life_information(self) -> None:
         """Assign categories related to stability."""
         if self._attributes["half-life"] is not None:
             if isinstance(self._attributes["half-life"], str):
@@ -1886,7 +1886,7 @@ class DimensionlessParticle(AbstractParticle):
         mass: Optional[Real] = None,
         charge: Optional[Real] = None,
         symbol: Optional[str] = None,
-    ):
+    ) -> None:
         try:
             self.mass = mass
             self.charge = charge
@@ -2096,7 +2096,7 @@ class CustomParticle(AbstractPhysicalParticle):
         symbol: Optional[str] = None,
         *,
         Z: Optional[Real] = None,
-    ):
+    ) -> None:
         # TODO: py3.10 replace ifology with structural pattern matching
 
         if Z is not None and charge is not None:
@@ -2288,7 +2288,7 @@ class CustomParticle(AbstractPhysicalParticle):
         return (self.charge / const.e.si).value
 
     @charge_number.setter
-    def charge_number(self, Z: int):
+    def charge_number(self, Z: int) -> None:
         self._charge = Z * const.e.si
 
     @property

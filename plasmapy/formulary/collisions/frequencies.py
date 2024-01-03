@@ -162,7 +162,7 @@ class SingleParticleCollisionFrequencies:
         T_b: u.Quantity[u.K],
         n_b: u.Quantity[u.m**-3],
         Coulomb_log,
-    ):
+    ) -> None:
         # Note: This class uses CGS units internally to coincide
         #       with our references.  Input is taken in MKS units and
         #       then converted as necessary. Output is in MKS units.
@@ -397,7 +397,7 @@ class MaxwellianCollisionFrequencies:
         T_b: u.Quantity[u.K],
         n_b: u.Quantity[u.m**-3],
         Coulomb_log: u.Quantity[u.dimensionless_unscaled],
-    ):
+    ) -> None:
         if (
             isinstance(v_drift, np.ndarray)
             and isinstance(T_a, np.ndarray)

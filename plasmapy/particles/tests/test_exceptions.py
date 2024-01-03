@@ -201,7 +201,9 @@ tests_for_exceptions = {
     list(tests_for_exceptions.values()),
     ids=list(tests_for_exceptions.keys()),
 )
-def test_named_tests_for_exceptions(tested_object, args, kwargs, expected_exception):
+def test_named_tests_for_exceptions(
+    tested_object, args, kwargs, expected_exception
+) -> None:
     """
     Test that appropriate exceptions are raised for inappropriate inputs
     to `IonizationState` or `IonizationStateCollection`
@@ -1025,7 +1027,7 @@ type_error_tests = [
     ("tested_object", "args", "kwargs", "expected"),
     tests_from_nuclear + tests_from_atomic + particle_error_tests + type_error_tests,
 )
-def test_unnamed_tests_exceptions(tested_object, args, kwargs, expected):
+def test_unnamed_tests_exceptions(tested_object, args, kwargs, expected) -> None:
     """
     Test that appropriate exceptions are raised for inappropriate inputs
     to different functions.

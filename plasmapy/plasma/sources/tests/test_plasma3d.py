@@ -13,7 +13,7 @@ from plasmapy.plasma.sources import plasma3d
         pytest.param((64, 64, 64), 262144, marks=pytest.mark.slow),  # 3D
     ],
 )
-def test_Plasma3D_setup(grid_dimensions, expected_size):
+def test_Plasma3D_setup(grid_dimensions, expected_size) -> None:
     r"""Function to test basic setup of the Plasma3D object.
 
     Tests that a Plasma3D object initiated with a particular
@@ -61,7 +61,7 @@ def test_Plasma3D_setup(grid_dimensions, expected_size):
 
 
 @pytest.mark.slow()
-def test_Plasma3D_derived_vars():
+def test_Plasma3D_derived_vars() -> None:
     r"""Function to test derived variables of the Plasma3D class.
 
     Tests the shapes, units and values of variables derived from core

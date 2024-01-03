@@ -44,7 +44,7 @@ class CheckBase:
         specified checks on the input arguments of the wrapped function
     """
 
-    def __init__(self, checks_on_return=None, **checks):
+    def __init__(self, checks_on_return=None, **checks) -> None:
         self._checks = checks
         if checks_on_return is not None:
             self._checks["checks_on_return"] = checks_on_return
@@ -141,7 +141,7 @@ class CheckValues(CheckBase):
         self,
         checks_on_return: Optional[dict[str, bool]] = None,
         **checks: dict[str, bool],
-    ):
+    ) -> None:
         super().__init__(checks_on_return=checks_on_return, **checks)
 
     def __call__(self, f):
@@ -468,7 +468,7 @@ class CheckUnits(CheckBase):
         self,
         checks_on_return: Union[u.Unit, list[u.Unit], dict[str, Any]] = None,
         **checks: Union[u.Unit, list[u.Unit], dict[str, Any]],
-    ):
+    ) -> None:
         super().__init__(checks_on_return=checks_on_return, **checks)
 
     def __call__(self, f):
