@@ -215,12 +215,13 @@ def test_single_species_collective_spectrum(single_species_collective_spectrum):
         "instead of expected 17.7899"
     )
 
+
 def test_notched_spectrum(single_species_collective_args):
     """
     Compares notched and unnotched spectra
     """
-    #make a copy of the input args
-    args_fixture_copy = copy.copy(single_species_collective_args)    
+    # make a copy of the input args
+    args_fixture_copy = copy.copy(single_species_collective_args)
     wavelengths = single_species_collective_args["wavelengths"]
 
     # Compute spectrum with no notch included
@@ -231,11 +232,11 @@ def test_notched_spectrum(single_species_collective_args):
     args, kwargs = spectral_density_args_kwargs(args_fixture_copy)
 
     kwargs["notch"] = np.array([531, 533]) * u.nm
-        
+
     # Record wavelength array indices corresponding to notch
     x1 = np.argwhere(wavelengths > kwargs["notch"][0])[0][0]
     x2 = np.argwhere(wavelengths > kwargs["notch"][1])[0][0]
-    
+
     alpha, Skw_notched = thomson.spectral_density(*args, **kwargs)
 
     # Check that regions outside the notch are the same for both Skws
@@ -245,6 +246,7 @@ def test_notched_spectrum(single_species_collective_args):
 
     # Check that region inside the notch is 0 for notched Skw
     assert Skw_notched[x1:x2] == np.zeros(x2 - x1)
+
 
 @pytest.mark.slow()
 def test_spectral_density_minimal_arguments(single_species_collective_args):
@@ -264,7 +266,7 @@ def test_spectral_density_minimal_arguments(single_species_collective_args):
         "probe_vec",
         "scatter_vec",
         "instr_func",
-        "notch"
+        "notch",
     ]
     for key in optional_keys:
         if key in kwargs:
@@ -700,7 +702,7 @@ def test_param_to_array_fcns():
     assert np.mean(arr) == 2
 
 
-def run_fit(  # noqa: C901
+def run_fit(
     wavelengths,
     params,
     settings,
@@ -749,7 +751,7 @@ def run_fit(  # noqa: C901
 
     if "instr_func" not in skeys:
         settings["instr_func"] = None
-    
+
     if "notch" not in skeys:
         settings["notch"] = None
 
