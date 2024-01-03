@@ -226,7 +226,7 @@ def test_notched_spectrum(single_species_collective_args):
 
     # Compute spectrum with no notch included
     args, kwargs = spectral_density_args_kwargs(single_species_collective_args)
-    alpha, Skw_unnotched = thomson.spectral_density(*args, **kwargs)
+    alpha_unnotched, Skw_unnotched = thomson.spectral_density(*args, **kwargs)
 
     # Compute same spectrum with notch
     args, kwargs = spectral_density_args_kwargs(args_fixture_copy)
@@ -237,7 +237,10 @@ def test_notched_spectrum(single_species_collective_args):
     x0 = np.argwhere(wavelengths > kwargs["notch"][0])[0][0]
     x1 = np.argwhere(wavelengths > kwargs["notch"][1])[0][0]
 
-    alpha, Skw_notched = thomson.spectral_density(*args, **kwargs)
+    alpha_notched, Skw_notched = thomson.spectral_density(*args, **kwargs)
+
+    # Check that notch does not affect alpha
+    assert np.isclose(alpha_notched, alpha_unnotched)
 
     # Check that regions outside the notch are the same for both Skws
     assert np.allclose(Skw_notched[:x0], Skw_unnotched[:x0])
