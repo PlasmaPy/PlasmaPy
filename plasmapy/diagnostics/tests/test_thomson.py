@@ -222,7 +222,7 @@ def test_single_species_collective_spectrum(single_species_collective_spectrum):
         # one notch
         (np.array([531, 533]) * u.nm, 1),
         # two notches
-        (np.array([np.array([520, 525]) * u.nm, np.array([530, 540]) * u.nm]), 2),
+        (np.array([np.array([520, 525]), np.array([530, 540])]) * u.nm, 2),
     ],
 )
 def test_notched_spectrum(notch, notch_num, single_species_collective_args):
