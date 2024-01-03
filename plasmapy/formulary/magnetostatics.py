@@ -57,7 +57,7 @@ class MagneticDipole(MagnetoStatics):
     """
 
     @validate_quantities
-    def __init__(self, moment: u.Quantity[u.A * u.m**2], p0: u.Quantity[u.m]):
+    def __init__(self, moment: u.Quantity[u.A * u.m**2], p0: u.Quantity[u.m]) -> None:
         self.moment = moment.value
         self._moment_u = moment.unit
         self.p0 = p0.value
@@ -150,7 +150,7 @@ class GeneralWire(Wire):
     """
 
     @validate_quantities
-    def __init__(self, parametric_eq, t1, t2, current: u.Quantity[u.A]):
+    def __init__(self, parametric_eq, t1, t2, current: u.Quantity[u.A]) -> None:
         if callable(parametric_eq):
             self.parametric_eq = parametric_eq
         else:
@@ -270,7 +270,7 @@ class FiniteStraightWire(Wire):
     @validate_quantities
     def __init__(
         self, p1: u.Quantity[u.m], p2: u.Quantity[u.m], current: u.Quantity[u.A]
-    ):
+    ) -> None:
         self.p1 = p1.value
         self.p2 = p2.value
         self._p1_u = p1.unit
@@ -411,7 +411,9 @@ class InfiniteStraightWire(Wire):
     """
 
     @validate_quantities
-    def __init__(self, direction, p0: u.Quantity[u.m], current: u.Quantity[u.A]):
+    def __init__(
+        self, direction, p0: u.Quantity[u.m], current: u.Quantity[u.A]
+    ) -> None:
         self.direction = direction / np.linalg.norm(direction)
         self.p0 = p0.value
         self._p0_u = p0.unit
@@ -520,7 +522,7 @@ class CircularWire(Wire):
         radius: u.Quantity[u.m],
         current: u.Quantity[u.A],
         n=300,
-    ):
+    ) -> None:
         self.normal = normal / np.linalg.norm(normal)
         self.center = center.value
         self._center_u = center.unit

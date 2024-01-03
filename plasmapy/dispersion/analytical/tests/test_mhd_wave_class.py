@@ -42,7 +42,7 @@ class TestMHDWave:
             ({**kwargs_plasma_cold, "gamma": "wrong type"}, TypeError),
         ],
     )
-    def test_raises_init(self, kwargs, error):
+    def test_raises_init(self, kwargs, error) -> None:
         """Test scenarios that raise an exception."""
         with pytest.raises(error):
             mhd_waves(**kwargs)
@@ -62,7 +62,7 @@ class TestMHDWave:
         ],
     )
     @pytest.mark.parametrize("mode", range(3))
-    def test_raises_angular_frequency(self, kwargs, error, mode):
+    def test_raises_angular_frequency(self, kwargs, error, mode) -> None:
         """Test scenarios that raise an exception."""
         with pytest.raises(error):
             sample_waves[mode].angular_frequency(**kwargs)
@@ -81,7 +81,7 @@ class TestMHDWave:
         ],
     )
     @pytest.mark.parametrize("mode", range(3))
-    def test_warns(self, kwargs_wave, error, mode):
+    def test_warns(self, kwargs_wave, error, mode) -> None:
         """Test scenarios the issue a `Warning`."""
         with pytest.warns(error):
             sample_waves[mode].angular_frequency(**kwargs_wave)
@@ -89,7 +89,7 @@ class TestMHDWave:
     @pytest.mark.parametrize("B", [1e-3, 1e-2])
     @pytest.mark.parametrize("density", [1e16, 1e-11 * u.kg])
     @pytest.mark.parametrize("T", [0, 1e5, 1e6])
-    def test_angular_frequency_limiting_vals(self, B, density, T):
+    def test_angular_frequency_limiting_vals(self, B, density, T) -> None:
         """Test limiting values of the angular frequencies and phase velocities"""
         waves = mhd_waves(B * u.T, density * u.m**-3, "p+", T=T * u.K)
         v_a = waves[0].alfven_speed
@@ -122,7 +122,7 @@ class TestMHDWave:
             ),
         ],
     )
-    def test_angular_frequency_return_structure(self, kwargs, expected):
+    def test_angular_frequency_return_structure(self, kwargs, expected) -> None:
         assert isinstance(sample_waves, tuple)
 
         for mode in range(3):
@@ -134,7 +134,7 @@ class TestMHDWave:
     @pytest.mark.parametrize("B", [1e-3, 1e-2])
     @pytest.mark.parametrize("density", [1e16, 1e-11 * u.kg])
     @pytest.mark.parametrize("T", [0, 1e5, 1e6])
-    def test_group_velocity_vals(self, B, density, T):
+    def test_group_velocity_vals(self, B, density, T) -> None:
         """Test limiting values of the group velocities"""
         waves = mhd_waves(B * u.T, density * u.m**-3, "p+", T=T * u.K)
 

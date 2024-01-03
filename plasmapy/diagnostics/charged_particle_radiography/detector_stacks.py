@@ -65,7 +65,7 @@ class Layer:
         mass_density: Optional[u.Quantity[u.kg / u.m**3]] = None,
         active: bool = True,
         name: str = "",
-    ):
+    ) -> None:
         self.thickness = thickness
         self.energy_axis = energy_axis
         self.active = active
@@ -112,7 +112,7 @@ class Stack:
 
     """
 
-    def __init__(self, layers: list[Layer]):
+    def __init__(self, layers: list[Layer]) -> None:
         self._layers = layers
         self._energy_bands = None
 

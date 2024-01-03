@@ -278,7 +278,9 @@ def gyroradius(  # noqa: C901
             Vperp[~isfinite_Vperp] = rbody.velocity
         return Vperp
 
-    def _warn_if_lorentz_factor_and_relativistic(isfinite_lorentzfactor, relativistic):
+    def _warn_if_lorentz_factor_and_relativistic(
+        isfinite_lorentzfactor, relativistic
+    ) -> None:
         if np.any(isfinite_lorentzfactor) and relativistic:
             warnings.warn(
                 "lorentzfactor is given along with Vperp or T, will lead "

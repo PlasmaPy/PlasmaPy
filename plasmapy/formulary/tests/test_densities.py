@@ -20,12 +20,12 @@ class TestCriticalDensity:
         """Get the critical density for the example frequency"""
         return critical_density(self.omega)
 
-    def test_units(self, n_c):
+    def test_units(self, n_c) -> None:
         """Test the return units"""
 
         assert n_c.unit.is_equivalent(u.m**-3)
 
-    def test_value(self, n_c):
+    def test_value(self, n_c) -> None:
         """
         Compare the calculated critical density with the expected value.
 
@@ -56,7 +56,7 @@ class Test_mass_density:
             ),
         ],
     )
-    def test_raises(self, args, kwargs, conditional):
+    def test_raises(self, args, kwargs, conditional) -> None:
         with conditional:
             mass_density(*args, **kwargs)
 
@@ -82,9 +82,9 @@ class Test_mass_density:
             ),
         ],
     )
-    def test_values(self, args, kwargs, expected):
+    def test_values(self, args, kwargs, expected) -> None:
         assert np.isclose(mass_density(*args, **kwargs), expected)
 
-    def test_handle_nparrays(self):
+    def test_handle_nparrays(self) -> None:
         """Test for ability to handle numpy array quantities"""
         assert_can_handle_nparray(mass_density)

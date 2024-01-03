@@ -35,7 +35,7 @@ T_negarr = np.array([1e6, -5151.0]) * u.K
         (cs_, ion_sound_speed),
     ],
 )
-def test_aliases(alias, parent):
+def test_aliases(alias, parent) -> None:
     """Test all aliases defined in speeds.py"""
     assert alias is parent
 
@@ -74,7 +74,7 @@ class TestAlfvenSpeed:
             ),
         ],
     )
-    def test_raises(self, args, kwargs, _error):
+    def test_raises(self, args, kwargs, _error) -> None:
         """Test scenarios that raise exceptions or warnings."""
         with pytest.raises(_error):
             Alfven_speed(*args, **kwargs)
@@ -106,7 +106,7 @@ class TestAlfvenSpeed:
             ((0.5, 1.0e18 * u.m**-3), {"ion": "He+"}, 5471032.81, {}, u.UnitsWarning),
         ],
     )
-    def test_warns(self, args, kwargs, expected, isclose_kw, _warning):
+    def test_warns(self, args, kwargs, expected, isclose_kw, _warning) -> None:
         """Test scenarios that issue warnings"""
         with pytest.warns(_warning):
             val = Alfven_speed(*args, **kwargs)
@@ -179,7 +179,7 @@ class TestAlfvenSpeed:
             ),
         ],
     )
-    def test_values(self, args, kwargs, expected, isclose_kw):
+    def test_values(self, args, kwargs, expected, isclose_kw) -> None:
         """Test expected values."""
         assert np.allclose(Alfven_speed(*args, **kwargs), expected, **isclose_kw)
 
@@ -202,7 +202,7 @@ class TestAlfvenSpeed:
             ),
         ],
     )
-    def test_nan_values(self, args, kwargs, nan_mask):
+    def test_nan_values(self, args, kwargs, nan_mask) -> None:
         """Input scenarios that lead to `numpy.nan` values being returned."""
         val = Alfven_speed(*args, **kwargs)
         if np.isscalar(val.value):
@@ -212,7 +212,7 @@ class TestAlfvenSpeed:
             assert np.all(nan_arr[nan_mask])
             assert np.all(np.logical_not(nan_arr[np.logical_not(nan_mask)]))
 
-    def test_handle_nparrays(self):
+    def test_handle_nparrays(self) -> None:
         """Test for ability to handle numpy array quantities"""
         assert_can_handle_nparray(Alfven_speed)
 
@@ -305,7 +305,7 @@ class Test_Ion_Sound_Speed:
             ),  # testing for user input Z
         ],
     )
-    def test_values(self, args, kwargs, expected, isclose_kw):
+    def test_values(self, args, kwargs, expected, isclose_kw) -> None:
         assert np.isclose(ion_sound_speed(*args, **kwargs), expected, **isclose_kw)
 
     # case when Z=1 is assumed
@@ -330,7 +330,7 @@ class Test_Ion_Sound_Speed:
             ),
         ],
     )
-    def test_warns(self, kwargs1, kwargs2, _warning):
+    def test_warns(self, kwargs1, kwargs2, _warning) -> None:
         with pytest.warns(_warning):
             val = ion_sound_speed(**kwargs1)
             if kwargs2 != {}:
@@ -414,7 +414,7 @@ class Test_Ion_Sound_Speed:
             ),
         ],
     )
-    def test_raises(self, args, kwargs, _error):
+    def test_raises(self, args, kwargs, _error) -> None:
         with pytest.raises(_error):
             ion_sound_speed(*args, **kwargs)
 
@@ -425,8 +425,8 @@ class Test_Ion_Sound_Speed:
             ({"T_e": T_nanarr, "T_i": 0 * u.K, "n_e": n_e, "k": k_1, "ion": "p"}),
         ],
     )
-    def test_nan_values(self, kwargs):
+    def test_nan_values(self, kwargs) -> None:
         np.isnan(ion_sound_speed(**kwargs)[1])
 
-    def test_handle_nparrays(self):
+    def test_handle_nparrays(self) -> None:
         assert_can_handle_nparray(ion_sound_speed)

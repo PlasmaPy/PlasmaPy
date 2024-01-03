@@ -8,10 +8,10 @@ import numpy as np
 import warnings
 import wrapt
 
-from collections.abc import Iterable
+from collections.abc import Callable, Iterable
 from inspect import BoundArguments
 from numbers import Integral, Real
-from typing import Any, Callable, NoReturn, Optional, Union
+from typing import Any, Optional, Union
 
 from plasmapy.particles._factory import _physical_particle_factory
 from plasmapy.particles.exceptions import (
@@ -184,7 +184,7 @@ class _ParticleInput:
         exclude: Optional[Union[str, set, list, tuple]] = None,
         allow_custom_particles: bool = True,
         allow_particle_lists: bool = True,
-    ):
+    ) -> None:
         self._data = {}
         self.callable_ = callable_
         self.require = require
@@ -205,7 +205,7 @@ class _ParticleInput:
         return self._data["callable"]
 
     @callable_.setter
-    def callable_(self, callable_: Callable):
+    def callable_(self, callable_: Callable) -> None:
         self._data["callable"] = callable_
         self._data["annotations"] = _get_annotations(callable_)
         self._data["parameters_to_process"] = self.find_parameters_to_process()
@@ -254,7 +254,7 @@ class _ParticleInput:
         return self._data["require"]
 
     @require.setter
-    def require(self, require_: Optional[Union[str, set, list, tuple]]):
+    def require(self, require_: Optional[Union[str, set, list, tuple]]) -> None:
         self._data["require"] = _make_into_set_or_none(require_)
 
     @property
@@ -269,7 +269,7 @@ class _ParticleInput:
         return self._data["any_of"]
 
     @any_of.setter
-    def any_of(self, any_of_: Optional[Union[str, set, list, tuple]]):
+    def any_of(self, any_of_: Optional[Union[str, set, list, tuple]]) -> None:
         self._data["any_of"] = _make_into_set_or_none(any_of_)
 
     @property
@@ -284,7 +284,7 @@ class _ParticleInput:
         return self._data["exclude"]
 
     @exclude.setter
-    def exclude(self, exclude_):
+    def exclude(self, exclude_) -> None:
         self._data["exclude"] = _make_into_set_or_none(exclude_)
 
     @property
@@ -300,7 +300,7 @@ class _ParticleInput:
         return self._data["allow_custom_particles"]
 
     @allow_custom_particles.setter
-    def allow_custom_particles(self, allow_custom_particles_: bool):
+    def allow_custom_particles(self, allow_custom_particles_: bool) -> None:
         self._data["allow_custom_particles"] = allow_custom_particles_
 
     @property
@@ -315,7 +315,7 @@ class _ParticleInput:
         return self._data["allow_particle_lists"]
 
     @allow_particle_lists.setter
-    def allow_particle_lists(self, allow_particle_lists_: bool):
+    def allow_particle_lists(self, allow_particle_lists_: bool) -> None:
         self._data["allow_particle_lists"] = allow_particle_lists_
 
     @property
@@ -331,7 +331,7 @@ class _ParticleInput:
         """
         return self._data["parameters_to_process"]
 
-    def verify_charge_categorization(self, particle) -> NoReturn:
+    def verify_charge_categorization(self, particle) -> None:
         """
         Raise an exception if the particle does not meet charge
         categorization criteria.
@@ -391,7 +391,7 @@ class _ParticleInput:
 
         return category_errmsg
 
-    def verify_particle_categorization(self, particle) -> NoReturn:
+    def verify_particle_categorization(self, particle) -> None:
         """
         Verify that the particle meets the categorization criteria.
 

@@ -3,7 +3,7 @@ import astropy.units as u
 from plasmapy.plasma import ForceFreeFluxRope
 
 
-def test_B_z():
+def test_B_z() -> None:
     B0 = 2 * u.T
     alpha = 3 * (1 / u.m)
     r = [0, 5] * u.m
@@ -12,7 +12,7 @@ def test_B_z():
     assert u.allclose(B_z, [B0, -0.028448945653561195 * u.T], atol=1e-9 * u.T)
 
 
-def test_B_theta():
+def test_B_theta() -> None:
     B0 = 2 * u.T
     alpha = 3 * (1 / u.m)
     r = [0, 5] * u.m
@@ -28,7 +28,7 @@ def test_B_theta():
     )
 
 
-def test_B_magnitude():
+def test_B_magnitude() -> None:
     B0 = 2 * u.T
     alpha = 3 * (1 / u.m)
     r = [0, 5] * u.m

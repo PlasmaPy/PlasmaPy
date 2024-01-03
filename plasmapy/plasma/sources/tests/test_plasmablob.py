@@ -16,7 +16,7 @@ from plasmapy.utils.exceptions import CouplingWarning
         pytest.param((64, 64, 64), 262144, marks=pytest.mark.slow),  # 3D
     ],
 )
-def test_Plasma3D_setup(grid_dimensions, expected_size):
+def test_Plasma3D_setup(grid_dimensions, expected_size) -> None:
     r"""Function to test basic setup of the Plasma3D object.
 
     Tests that a Plasma3D object initiated with a particular
@@ -64,7 +64,7 @@ def test_Plasma3D_setup(grid_dimensions, expected_size):
 
 
 @pytest.mark.slow()
-def test_Plasma3D_derived_vars():
+def test_Plasma3D_derived_vars() -> None:
     r"""Function to test derived variables of the Plasma3D class.
 
     Tests the shapes, units and values of variables derived from core
@@ -107,7 +107,7 @@ def test_Plasma3D_derived_vars():
 
 
 @pytest.mark.slow()
-def test_Plasma3D_add_magnetostatics():
+def test_Plasma3D_add_magnetostatics() -> None:
     r"""Function to test add_magnetostatic function"""
     dipole = magnetostatics.MagneticDipole(
         np.array([0, 0, 1]) * u.A * u.m * u.m, np.array([0, 0, 0]) * u.m
@@ -129,7 +129,7 @@ def test_Plasma3D_add_magnetostatics():
 
 
 class Test_PlasmaBlobRegimes:
-    def test_intermediate_coupling(self):
+    def test_intermediate_coupling(self) -> None:
         r"""
         Method to test for coupling parameter for a plasma.
 
@@ -154,7 +154,7 @@ class Test_PlasmaBlobRegimes:
         errStr = f"Regime should be {expect_regime}, but got {regime} instead."
         assert testTrue, errStr
 
-    def test_strongly_coupled(self):
+    def test_strongly_coupled(self) -> None:
         r"""
         Method to test for coupling parameter for a plasma.
 
@@ -180,7 +180,7 @@ class Test_PlasmaBlobRegimes:
         errStr = f"Regime should be {expect_regime}, but got {regime} instead."
         assert testTrue, errStr
 
-    def test_weakly_coupled(self):
+    def test_weakly_coupled(self) -> None:
         r"""
         Method to test for coupling parameter for a plasma.
 
@@ -206,7 +206,7 @@ class Test_PlasmaBlobRegimes:
             regime, _ = blob.regimes()
         assert regime == expect_regime
 
-    def test_thermal_kinetic_energy_dominant(self):
+    def test_thermal_kinetic_energy_dominant(self) -> None:
         r"""
         Method to test for degeneracy parameter for a plasma.
 
@@ -234,7 +234,7 @@ class Test_PlasmaBlobRegimes:
         errStr = f"Regime should be {expect_regime}, but got {regime} instead."
         assert testTrue, errStr
 
-    def test_fermi_quantum_energy_dominant(self):
+    def test_fermi_quantum_energy_dominant(self) -> None:
         r"""
         Method to test for degeneracy parameter for a plasma.
 
@@ -260,7 +260,7 @@ class Test_PlasmaBlobRegimes:
         errStr = f"Regime should be {expect_regime}, but got {regime} instead."
         assert testTrue, errStr
 
-    def test_both_fermi_and_thermal_energy_important(self):
+    def test_both_fermi_and_thermal_energy_important(self) -> None:
         r"""
         Method to test for degeneracy parameter for a plasma.
 
@@ -291,7 +291,7 @@ class Test_PlasmaBlobRegimes:
 
 class Test_PlasmaBlob:
     @classmethod
-    def setup_class(cls):
+    def setup_class(cls) -> None:
         """Initializing parameters for tests"""
         cls.T_e = 5 * 11e3 * u.K
         cls.n_e = 1e23 * u.cm**-3
@@ -303,7 +303,7 @@ class Test_PlasmaBlob:
         cls.couplingVal = 10.468374460435724
         cls.thetaVal = 0.6032979246923964
 
-    def test_invalid_particle(self):
+    def test_invalid_particle(self) -> None:
         """
         Checks if function raises error for invalid particle.
         """
@@ -312,7 +312,7 @@ class Test_PlasmaBlob:
                 T_e=self.T_e, n_e=self.n_e, Z=self.Z, particle="cupcakes"
             )
 
-    def test_electron_temperature(self):
+    def test_electron_temperature(self) -> None:
         """Testing if we get the same electron temperature we put in"""
         testTrue = self.T_e == self.blob.electron_temperature
         errStr = (
@@ -322,7 +322,7 @@ class Test_PlasmaBlob:
         )
         assert testTrue, errStr
 
-    def test_electron_density(self):
+    def test_electron_density(self) -> None:
         """Testing if we get the same electron density we put in"""
         testTrue = self.n_e == self.blob.electron_density
         errStr = (
@@ -332,7 +332,7 @@ class Test_PlasmaBlob:
         )
         assert testTrue, errStr
 
-    def test_ionization(self):
+    def test_ionization(self) -> None:
         """Testing if we get the same ionization we put in"""
         testTrue = self.Z == self.blob.ionization
         errStr = (
@@ -342,7 +342,7 @@ class Test_PlasmaBlob:
         )
         assert testTrue, errStr
 
-    def test_composition(self):
+    def test_composition(self) -> None:
         """Testing if we get the same composition (particle) we put in"""
         testTrue = self.particle == self.blob.composition
         errStr = (
@@ -352,7 +352,7 @@ class Test_PlasmaBlob:
         )
         assert testTrue, errStr
 
-    def test_coupling(self):
+    def test_coupling(self) -> None:
         """
         Tests if coupling  method value meets expected value.
         """
@@ -364,7 +364,7 @@ class Test_PlasmaBlob:
         testTrue = np.isclose(methodVal.value, self.couplingVal, rtol=1e-6, atol=0.0)
         assert testTrue, errStr
 
-    def test_quantum_theta(self):
+    def test_quantum_theta(self) -> None:
         """
         Tests if degeneracy parameter method value meets expected value.
         """

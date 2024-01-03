@@ -85,7 +85,7 @@ class Characteristic:
     """
 
     @validate_quantities(bias={"can_be_inf": False}, current={"can_be_inf": False})
-    def __init__(self, bias: u.Quantity[u.V], current: u.Quantity[u.A]):
+    def __init__(self, bias: u.Quantity[u.V], current: u.Quantity[u.A]) -> None:
         _langmuir_futurewarning()
 
         self.bias = bias
@@ -115,7 +115,7 @@ class Characteristic:
         b.current += other.current
         return b
 
-    def sort(self):
+    def sort(self) -> None:
         r"""Sort the characteristic by ascending bias."""
 
         _sort = self.bias.argsort()
@@ -196,7 +196,7 @@ class Characteristic:
                 ymax + padding * (ymax - ymin),
             ] * u.A
 
-    def plot(self):
+    def plot(self) -> None:
         r"""Plot the characteristic in matplotlib."""
         import matplotlib.pyplot as plt
 
