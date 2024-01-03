@@ -366,8 +366,11 @@ def spectral_density(  # noqa: C901, PLR0912, PLR0915
     notch : (2,) or (N, 2) `~astropy.units.Quantity`, |keyword-only|, optional
         A pair of wavelengths which are the endpoints of a notch over
         which the output Skw is set to 0. Can also be input as a 2D array
-        which contains many such pairs if multiple notches are needed.
-        Should be in units convertible to meters. Defaults to no notch.
+        which contains many such pairs if multiple notches are needed. The
+        notch is applied after the instrument function, so the instrument
+        function does convolve the values of the theoretical spectrum
+        originally in the notch region. Should be in units convertible to meters.
+        Defaults to no notch.
 
 
     Returns
@@ -584,7 +587,7 @@ def spectral_density(  # noqa: C901, PLR0912, PLR0915
                     "First element of notch cannot be greater than second element."
                 )
     else:
-        notch_unitless = np.array([[0, 0]])
+        notch_unitless = None
 
     alpha, Skw = spectral_density_lite(
         wavelengths.to(u.m).value,
