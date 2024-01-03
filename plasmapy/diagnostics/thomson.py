@@ -371,7 +371,7 @@ def spectral_density(  # noqa: C901, PLR0912, PLR0915
         A pair of wavelengths in units convertible to meters which are the
         endpoints of a notch over which the output Skw is set to 0. Can also
         be input as a 2D array which contains many such pairs if multiple
-        notches are needed. If the `notch` and `instr_func` keywords are both
+        notches are needed. If the ``notch`` and ``instr_func`` keywords are both
         set, the notch is applied after the instrument function such the
         instrument function does convolve the values of the theoretical
         spectrum originally in the notch region. Defaults to no notch.
