@@ -28,7 +28,7 @@ class BasePlasma(ABC):
     # GenericPlasma subclass registry
     _registry = {}
 
-    def __init_subclass__(cls, **kwargs):
+    def __init_subclass__(cls, **kwargs) -> None:
         super().__init_subclass__(**kwargs)
         if hasattr(cls, "is_datasource_for"):
             cls._registry[cls] = cls.is_datasource_for

@@ -83,7 +83,7 @@ from plasmapy.analysis.time_series.excess_statistics import ExcessStatistics
         ),
     ],
 )
-def test_ExcessStatistics(signal, thresholds, time_step, pdf, bins, expected):
+def test_ExcessStatistics(signal, thresholds, time_step, pdf, bins, expected) -> None:
     """Test ExcessStatistics class"""
     excess_stats = ExcessStatistics(signal, thresholds, time_step)
     assert excess_stats.total_time_above_threshold == expected[0]
@@ -100,7 +100,9 @@ def test_ExcessStatistics(signal, thresholds, time_step, pdf, bins, expected):
     ("signal", "thresholds", "time_step", "bins", "exception"),
     [([1, 2], 1, -1, 32, ValueError), ([1, 2], 1, 1, 1.5, TypeError)],
 )
-def test_ExcessStatistics_exception(signal, thresholds, time_step, bins, exception):
+def test_ExcessStatistics_exception(
+    signal, thresholds, time_step, bins, exception
+) -> None:
     """Test whether exception is risen"""
     with pytest.raises(exception):
         tmp = ExcessStatistics(signal, thresholds, time_step)

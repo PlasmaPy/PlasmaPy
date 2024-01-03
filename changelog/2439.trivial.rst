@@ -1,0 +1,2 @@
+Used ``autotyping`` to add ``-> None`` return annotations to functions
+and methods with no ``return`` statement.

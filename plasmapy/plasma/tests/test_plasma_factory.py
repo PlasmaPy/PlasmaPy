@@ -15,12 +15,12 @@ def h5(request):
 
 
 class TestPlasma:
-    def test_patters(self):
+    def test_patters(self) -> None:
         # Input data whose specific subclass cannot be known
         generic = plasmapy.plasma.Plasma(blablobleh="spam")
         assert isinstance(generic, plasmapy.plasma.GenericPlasma)
 
-    def test_Plasma3D(self):
+    def test_Plasma3D(self) -> None:
         # Input data for Plasma3D
         three_dimensional = plasmapy.plasma.Plasma(
             domain_x=np.linspace(0, 1, 3) * u.m,
@@ -30,7 +30,7 @@ class TestPlasma:
         assert isinstance(three_dimensional, plasmapy.plasma.sources.Plasma3D)
         assert isinstance(three_dimensional, plasmapy.plasma.BasePlasma)
 
-    def test_PlasmaBlob(self):
+    def test_PlasmaBlob(self) -> None:
         # Input data for PlasmaBlob
         T_e = 25 * 15e3 * u.K
         n_e = 1e26 * u.cm**-3

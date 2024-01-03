@@ -2288,7 +2288,7 @@ class CustomParticle(AbstractPhysicalParticle):
         return (self.charge / const.e.si).value
 
     @charge_number.setter
-    def charge_number(self, Z: int):
+    def charge_number(self, Z: int) -> None:
         self._charge = Z * const.e.si
 
     @property

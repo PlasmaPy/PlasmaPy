@@ -152,7 +152,7 @@ exceptions_table = [
 
 
 @pytest.mark.parametrize(("integer", "roman_numeral"), ints_and_roman_numerals)
-def test_to_roman(integer, roman_numeral):
+def test_to_roman(integer, roman_numeral) -> None:
     """
     Test that `~plasmapy.utils.roman.to_roman` correctly converts
     integers to Roman numerals, and that the inverse is true as well.
@@ -164,7 +164,7 @@ def test_to_roman(integer, roman_numeral):
 @pytest.mark.parametrize(
     ("function", "argument", "expected_exception"), exceptions_table
 )
-def test_to_roman_exceptions(function, argument, expected_exception):
+def test_to_roman_exceptions(function, argument, expected_exception) -> None:
     """
     Test that `~plasmapy.utils.roman` functions raise the correct
     exceptions when necessary.
@@ -183,5 +183,5 @@ test_is_roman_numeral_table = [
 
 
 @pytest.mark.parametrize(("argument", "expected"), test_is_roman_numeral_table)
-def test_is_roman_numeral(argument, expected):
+def test_is_roman_numeral(argument, expected) -> None:
     run_test(func=roman.is_roman_numeral, args=argument, expected_outcome=expected)

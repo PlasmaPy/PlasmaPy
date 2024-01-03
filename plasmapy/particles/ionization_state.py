@@ -150,7 +150,7 @@ class IonicLevel:
     @validate_quantities(
         n={"can_be_negative": False, "can_be_inf": False, "none_shall_pass": True},
     )
-    def number_density(self, n: u.Quantity[u.m**-3]):
+    def number_density(self, n: u.Quantity[u.m**-3]) -> None:
         self._number_density = np.nan * u.m**-3 if n is None else n
 
     @property
@@ -162,7 +162,7 @@ class IonicLevel:
     @validate_quantities(
         T={"can_be_negative": False, "can_be_inf": False, "none_shall_pass": True},
     )
-    def T_i(self, T: u.Quantity[u.K]):
+    def T_i(self, T: u.Quantity[u.K]) -> None:
         self._T_i = np.nan * u.K if T is None else T
 
 

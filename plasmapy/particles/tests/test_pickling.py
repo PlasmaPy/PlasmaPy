@@ -29,7 +29,7 @@ class TestPickling:
             IonizationStateCollection({"H": [0.5, 0.5]}),
         ],
     )
-    def test_pickling(self, instance, tmp_path):
+    def test_pickling(self, instance, tmp_path) -> None:
         """
         Test that different objects contained within `plasmapy.particles`
         can be pickled and unpickled.

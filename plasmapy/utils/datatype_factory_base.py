@@ -191,7 +191,7 @@ class BasicRegistrationFactory:
                     f"{WidgetType.__name__} found."
                 )
 
-    def unregister(self, WidgetType):
+    def unregister(self, WidgetType) -> None:
         """Remove a widget from the factory's registry."""
         self.registry.pop(WidgetType)
 

@@ -71,7 +71,7 @@ class HDF5Reader(GenericPlasma):
     def __enter__(self):
         return self.h5
 
-    def close(self):
+    def close(self) -> None:
         self.h5.close()
 
     def __exit__(

@@ -245,7 +245,7 @@ class ParticleList(collections.UserList):
             values = u.Quantity(values)
         return values
 
-    def append(self, particle: ParticleLike):
+    def append(self, particle: ParticleLike) -> None:
         """Append a particle to the end of the |ParticleList|."""
         if isinstance(particle, u.Quantity):
             particle = _turn_quantity_into_custom_particle(particle)
@@ -280,7 +280,7 @@ class ParticleList(collections.UserList):
         """
         return self._data
 
-    def extend(self, iterable: Iterable[ParticleLike]):
+    def extend(self, iterable: Iterable[ParticleLike]) -> None:
         """
         Extend the sequence by appending |particle-like| elements from
         ``iterable``.
@@ -306,7 +306,7 @@ class ParticleList(collections.UserList):
         """
         return self._get_particle_attribute("half_life", unit=u.s, default=np.nan * u.s)
 
-    def insert(self, index, particle: ParticleLike):
+    def insert(self, index, particle: ParticleLike) -> None:
         """Insert a particle before an index."""
         if isinstance(particle, u.Quantity):
             particle = _turn_quantity_into_custom_particle(particle)

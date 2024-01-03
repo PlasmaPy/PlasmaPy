@@ -18,7 +18,7 @@ and feedback: https://github.com/PlasmaPy/PlasmaPy/issues/new
 """
 
 
-def main():
+def main() -> None:
     """
     Stub function for command line tool that launches the plasma calculator notebook.
     """

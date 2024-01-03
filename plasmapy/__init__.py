@@ -71,7 +71,7 @@ __citation__ = (
 )
 
 
-def online_help(query: str):  # coverage: ignore
+def online_help(query: str) -> None:  # coverage: ignore
     """
     Open a search page in |PlasmaPy's documentation|, or another page
     that contains relevant online help.

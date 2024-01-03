@@ -182,7 +182,7 @@ class Plasma3D(GenericPlasma):
             else False
         )
 
-    def add_magnetostatic(self, *mstats: MagnetoStatics):
+    def add_magnetostatic(self, *mstats: MagnetoStatics) -> None:
         # for each MagnetoStatic argument
         prod = itertools.product(*[list(range(n)) for n in self.domain_shape])
         for mstat in mstats:
