@@ -215,7 +215,7 @@ def test_single_species_collective_spectrum(single_species_collective_spectrum):
         "instead of expected 17.7899"
     )
 
-def test_notched_spectrum(single_species_collective_spectrum):
+def test_notched_spectrum(single_species_collective_spectrum, single_species_collective_args):
     """
     Compares notched and unnotched spectra
     """
