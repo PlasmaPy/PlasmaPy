@@ -216,7 +216,7 @@ def test_single_species_collective_spectrum(single_species_collective_spectrum):
     )
 
 
-@pytest.parametrize(
+@pytest.mark.parametrize(
     ("notch", "notch_num"),
     [
         # one notch
