@@ -240,12 +240,12 @@ def test_notched_spectrum(single_species_collective_args):
     alpha, Skw_notched = thomson.spectral_density(*args, **kwargs)
 
     # Check that regions outside the notch are the same for both Skws
-    assert Skw_notched[:x1] == Skw_unnotched[:x1]
+    assert np.allclose(Skw_notched[:x1], Skw_unnotched[:x1])
 
-    assert Skw_notched[x2:] == Skw_unnotched[x2:]
+    assert np.allclose(Skw_notched[x2:], Skw_unnotched[x2:])
 
     # Check that region inside the notch is 0 for notched Skw
-    assert Skw_notched[x1:x2] == np.zeros(x2 - x1)
+    assert np.allclose(Skw_notched[x1:x2], np.zeros(x2 - x1))
 
 
 @pytest.mark.slow()
