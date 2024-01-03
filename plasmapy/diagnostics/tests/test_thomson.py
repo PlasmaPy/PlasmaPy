@@ -234,18 +234,18 @@ def test_notched_spectrum(single_species_collective_args):
     kwargs["notch"] = np.array([531, 533]) * u.nm
 
     # Record wavelength array indices corresponding to notch
-    x1 = np.argwhere(wavelengths > kwargs["notch"][0])[0][0]
-    x2 = np.argwhere(wavelengths > kwargs["notch"][1])[0][0]
+    x0 = np.argwhere(wavelengths > kwargs["notch"][0])[0][0]
+    x1 = np.argwhere(wavelengths > kwargs["notch"][1])[0][0]
 
     alpha, Skw_notched = thomson.spectral_density(*args, **kwargs)
 
     # Check that regions outside the notch are the same for both Skws
-    assert np.allclose(Skw_notched[:x1], Skw_unnotched[:x1])
+    assert np.allclose(Skw_notched[:x0], Skw_unnotched[:x0])
 
-    assert np.allclose(Skw_notched[x2:], Skw_unnotched[x2:])
+    assert np.allclose(Skw_notched[x1:], Skw_unnotched[x1:])
 
     # Check that region inside the notch is 0 for notched Skw
-    assert np.allclose(Skw_notched[x1:x2], np.zeros(x2 - x1))
+    assert np.allclose(Skw_notched[x0:x1], np.zeros(x1 - x0))
 
 
 @pytest.mark.slow()
