@@ -269,7 +269,7 @@ def test_notched_spectrum(notch, notch_num, single_species_collective_args):
 
         # Check that region inside the notches is 0 for notched Skw
         assert np.allclose(Skw_notched[x0:x1], np.zeros(x1 - x0))
-        assert np.allclose(Skw_notched[x2:x3], np.zeros(x1 - x0))
+        assert np.allclose(Skw_notched[x2:x3], np.zeros(x3 - x2))
 
 
 def test_notch_order_error(single_species_collective_args):
