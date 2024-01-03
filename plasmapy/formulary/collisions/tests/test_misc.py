@@ -5,12 +5,12 @@ import pytest
 from plasmapy.formulary.collisions.misc import mobility, Spitzer_resistivity
 from plasmapy.utils import exceptions
 from plasmapy.utils._pytest_helpers import assert_can_handle_nparray
-from plasmapy.utils.exceptions import CouplingWarning
+from plasmapy.utils.exceptions import CouplingWarning, PhysicsWarning
 
 
 class Test_Spitzer_resistivity:
     @classmethod
-    def setup_class(cls):
+    def setup_class(cls) -> None:
         """Initializing parameters for tests"""
         cls.T = 11604 * u.K
         cls.n = 1e12 * u.cm**-3
@@ -20,12 +20,12 @@ class Test_Spitzer_resistivity:
         cls.True1 = 1.2665402649805445e-3
         cls.True_zmean = 0.00020264644239688712
 
-    def test_symmetry(self):
+    def test_symmetry(self) -> None:
         result = Spitzer_resistivity(self.T, self.n, self.particles)
         resultRev = Spitzer_resistivity(self.T, self.n, self.particles[::-1])
         assert result == resultRev
 
-    def test_known1(self):
+    def test_known1(self) -> None:
         """
         Test for known value.
         """
@@ -41,7 +41,7 @@ class Test_Spitzer_resistivity:
         errStr = f"Spitzer resistivity should be {self.True1} and not {methodVal}."
         assert testTrue, errStr
 
-    def test_fail1(self):
+    def test_fail1(self) -> None:
         """
         Tests if test_known1() would fail if we slightly adjusted the
         value comparison by some quantity close to numerical error.
@@ -62,7 +62,7 @@ class Test_Spitzer_resistivity:
         )
         assert testTrue, errStr
 
-    def test_zmean(self):
+    def test_zmean(self) -> None:
         """Testing Spitzer when z_mean is passed."""
         methodVal = Spitzer_resistivity(
             self.T,
@@ -79,7 +79,7 @@ class Test_Spitzer_resistivity:
     # TODO: vector z_mean
     @pytest.mark.parametrize("insert_some_nans", [[], ["V"]])
     @pytest.mark.parametrize("insert_all_nans", [[], ["V"]])
-    def test_handle_nparrays(self, insert_some_nans, insert_all_nans):
+    def test_handle_nparrays(self, insert_some_nans, insert_all_nans) -> None:
         """Test for ability to handle numpy array quantities"""
         assert_can_handle_nparray(
             Spitzer_resistivity, insert_some_nans, insert_all_nans, {}
@@ -88,7 +88,7 @@ class Test_Spitzer_resistivity:
 
 class Test_mobility:
     @classmethod
-    def setup_class(cls):
+    def setup_class(cls) -> None:
         """Initializing parameters for tests"""
         cls.T = 11604 * u.K
         cls.n_e = 1e17 * u.cm**-3
@@ -98,17 +98,17 @@ class Test_mobility:
         cls.True1 = 0.13066090887074902
         cls.True_zmean = 0.32665227217687254
 
-    def test_symmetry(self):
+    def test_symmetry(self) -> None:
         with pytest.warns(CouplingWarning):
             result = mobility(self.T, self.n_e, self.particles)
             resultRev = mobility(self.T, self.n_e, self.particles[::-1])
         assert result == resultRev
 
-    def test_known1(self):
+    def test_known1(self) -> None:
         """
         Test for known value.
         """
-        with pytest.warns(exceptions.PhysicsWarning, match="strong coupling effects"):
+        with pytest.warns(PhysicsWarning, match="strong coupling effects"):
             methodVal = mobility(
                 self.T,
                 self.n_e,
@@ -121,13 +121,13 @@ class Test_mobility:
         errStr = f"Mobility should be {self.True1} and not {methodVal}."
         assert testTrue, errStr
 
-    def test_fail1(self):
+    def test_fail1(self) -> None:
         """
         Tests if test_known1() would fail if we slightly adjusted the
         value comparison by some quantity close to numerical error.
         """
         fail1 = self.True1 * (1 + 1e-15)
-        with pytest.warns(exceptions.PhysicsWarning, match="strong coupling effects"):
+        with pytest.warns(PhysicsWarning, match="strong coupling effects"):
             methodVal = mobility(
                 self.T,
                 self.n_e,
@@ -143,7 +143,7 @@ class Test_mobility:
         )
         assert testTrue, errStr
 
-    def test_zmean(self):
+    def test_zmean(self) -> None:
         """Testing mobility when z_mean is passed."""
         with pytest.warns(exceptions.PhysicsWarning, match="strong coupling effects"):
             methodVal = mobility(
@@ -161,6 +161,6 @@ class Test_mobility:
     # TODO: vector z_mean
     @pytest.mark.parametrize("insert_some_nans", [[], ["V"]])
     @pytest.mark.parametrize("insert_all_nans", [[], ["V"]])
-    def test_handle_nparrays(self, insert_some_nans, insert_all_nans):
+    def test_handle_nparrays(self, insert_some_nans, insert_all_nans) -> None:
         """Test for ability to handle numpy array quantities"""
         assert_can_handle_nparray(mobility, insert_some_nans, insert_all_nans, {})

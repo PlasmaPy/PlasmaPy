@@ -35,12 +35,12 @@ B_nanarr = np.array([0.001, np.nan]) * u.T
         (wuh_, upper_hybrid_frequency),
     ],
 )
-def test_aliases(alias, parent):
+def test_aliases(alias, parent) -> None:
     """Test all aliases defined in frequencies.py"""
     assert alias is parent
 
 
-def test_gyrofrequency():
+def test_gyrofrequency() -> None:
     r"""Test the gyrofrequency function in frequencies.py."""
 
     assert gyrofrequency(B, "e-").unit.is_equivalent(u.rad / u.s)
@@ -120,7 +120,7 @@ def test_gyrofrequency():
     assert_can_handle_nparray(gyrofrequency, kwargs={"signed": False})
 
 
-def test_lower_hybrid_frequency():
+def test_lower_hybrid_frequency() -> None:
     r"""Test the lower_hybrid_frequency function in frequencies.py."""
 
     ion = "He-4 1+"
@@ -134,9 +134,7 @@ def test_lower_hybrid_frequency():
     assert omega_ce.unit.is_equivalent(u.rad / u.s)
     assert omega_lh.unit.is_equivalent(u.rad / u.s)
     left_hand_side = omega_lh**-2
-    right_hand_side = (
-        1 / (omega_ci**2 + omega_pi**2) + omega_ci**-1 * omega_ce**-1
-    )
+    right_hand_side = 1 / (omega_ci**2 + omega_pi**2) + omega_ci**-1 * omega_ce**-1
     assert np.isclose(left_hand_side.value, right_hand_side.value)
 
     assert np.isclose(omega_lh_hz.value, 299878691.3223296)
@@ -157,7 +155,7 @@ def test_lower_hybrid_frequency():
     assert_can_handle_nparray(lower_hybrid_frequency)
 
 
-def test_upper_hybrid_frequency():
+def test_upper_hybrid_frequency() -> None:
     r"""Test the upper_hybrid_frequency function in frequencies.py."""
 
     omega_uh = upper_hybrid_frequency(B, n_e=n_e)
@@ -190,7 +188,7 @@ def test_upper_hybrid_frequency():
     assert_can_handle_nparray(upper_hybrid_frequency)
 
 
-def test_Buchsbaum_frequency():
+def test_Buchsbaum_frequency() -> None:
     r"""Test the Buchsbaum_frequency function in frequencies.py."""
 
     with pytest.raises(InvalidParticleError):

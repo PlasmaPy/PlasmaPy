@@ -1,9 +1,9 @@
 """Tests for code representation functions."""
 
+import astropy.units as u
 import numpy as np
 import pytest
 
-from astropy import units as u
 from collections import namedtuple
 
 from plasmapy.utils.code_repr import (
@@ -120,7 +120,7 @@ function_case = namedtuple("function_case", ("func", "args", "kwargs", "expected
         ),
     ],
 )
-def test_call_string(func, args, kwargs, expected):
+def test_call_string(func, args, kwargs, expected) -> None:
     """
     Tests that call_string returns a string that is equivalent to the
     function call.
@@ -138,11 +138,11 @@ def test_call_string(func, args, kwargs, expected):
 
 
 class SampleClass:
-    def method(self, *args, **kwargs):
+    def method(self, *args, **kwargs) -> None:
         pass
 
     @property
-    def attr(self):
+    def attr(self) -> None:
         pass
 
 
@@ -193,7 +193,7 @@ method_case = namedtuple(
 )
 def test_method_call_string(
     args_to_cls, kwargs_to_cls, args_to_method, kwargs_to_method, expected
-):
+) -> None:
     """Test that `method_call_string` returns the expected results."""
     actual = method_call_string(
         cls=SampleClass,
@@ -244,7 +244,7 @@ attribute_case = namedtuple(
         ),
     ],
 )
-def test_attribute_call_string(args_to_cls, kwargs_to_cls, expected):
+def test_attribute_call_string(args_to_cls, kwargs_to_cls, expected) -> None:
     """Test that `attribute_call_string` returns the expected results."""
     actual = attribute_call_string(SampleClass, "attr", args_to_cls, kwargs_to_cls)
     assert actual == expected, (
@@ -307,7 +307,7 @@ ndarray_case = namedtuple("ndarray_case", ("array_inputs", "max_items", "expecte
         ),
     ],
 )
-def test__code_repr_of_ndarray(array_inputs, max_items, expected):
+def test__code_repr_of_ndarray(array_inputs, max_items, expected) -> None:
     """
     Test that `numpy.ndarray` objects get converted into a string as
     expected.  Subsequently, test that evaluating the code representation
@@ -352,7 +352,7 @@ quantity_case = namedtuple("QuantityTestCases", ("quantity", "expected"))
         ),
     ],
 )
-def test__code_repr_of_quantity(quantity, expected):
+def test__code_repr_of_quantity(quantity, expected) -> None:
     """
     Test that `astropy.units.Quantity` objects get converted into a
     string as expected.
@@ -366,7 +366,7 @@ def test__code_repr_of_quantity(quantity, expected):
     )
 
 
-def test__string_together_warnings_for_printing():
+def test__string_together_warnings_for_printing() -> None:
     """Test that warning names and messages get strung together correctly."""
     warnings = [UserWarning, DeprecationWarning]
     warning_messages = ["msg1", "msg2"]
@@ -393,7 +393,7 @@ def test__string_together_warnings_for_printing():
         (np.array([1.0, 2.0, 3.0]) * u.m / u.s, "np.array([1., 2., 3.])*u.m/u.s"),
     ],
 )
-def test__code_repr_of_arg(arg, expected):
+def test__code_repr_of_arg(arg, expected) -> None:
     """
     Test that _code_repr_of_arg correctly transforms arguments into a
     `str` the represents how the arg would appear in code.
@@ -417,7 +417,7 @@ def test__code_repr_of_arg(arg, expected):
         (np.array([1.0, 2.0]) * u.m / u.s, {}, "np.array([1., 2.])*u.m/u.s"),
     ],
 )
-def test__code_repr_of_args_and_kwargs(args, kwargs, expected):
+def test__code_repr_of_args_and_kwargs(args, kwargs, expected) -> None:
     """
     Test that `_code_repr_of_args_and_kwargs` returns a string containing
     the positional and keyword arguments, as they would appear in a
@@ -446,7 +446,7 @@ def test__code_repr_of_args_and_kwargs(args, kwargs, expected):
         (ValueError, "a ValueError"),
     ],
 )
-def test__name_with_article(obj, expected):
+def test__name_with_article(obj, expected) -> None:
     """
     Test that `_name_with_article` returns the expected string, which
     contains ``"a "`` or ``"an "`` followed by the name of ``obj``.
@@ -471,7 +471,7 @@ def test__name_with_article(obj, expected):
         (u.Unit, True, "u.Unit"),
     ],
 )
-def test__object_name(obj, showmodule, expected_name):
+def test__object_name(obj, showmodule, expected_name) -> None:
     """Test that `_object_name` produces the expected output."""
     actual_name = _object_name(obj, showmodule=showmodule)
     assert actual_name == expected_name, (

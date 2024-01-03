@@ -15,8 +15,9 @@ import numbers
 import numpy as np
 import warnings
 
+from collections.abc import Callable
 from lmfit import Model
-from typing import Any, Callable, Optional, Union
+from typing import Any, Optional, Union
 
 from plasmapy.formulary import (
     permittivity_1D_Maxwellian_lite,
@@ -236,7 +237,7 @@ def spectral_density_lite(
             / k
             / vT_e[m]
             * np.power(np.abs(1 - np.sum(chiE, axis=0) / epsilon), 2)
-            * np.exp(-xe[m, :] ** 2)
+            * np.exp(-(xe[m, :] ** 2))
         )
 
     icontr = np.zeros([ifract.size, w.size], dtype=np.complex128)
@@ -248,7 +249,7 @@ def spectral_density_lite(
             / k
             / vT_i[m]
             * np.power(np.abs(np.sum(chiE, axis=0) / epsilon), 2)
-            * np.exp(-xi[m, :] ** 2)
+            * np.exp(-(xi[m, :] ** 2))
         )
 
     # Recast as real: imaginary part is already zero
@@ -280,17 +281,17 @@ def spectral_density_lite(
 )
 @bind_lite_func(spectral_density_lite)
 def spectral_density(  # noqa: C901, PLR0912, PLR0915
-    wavelengths: u.nm,
-    probe_wavelength: u.nm,
-    n: u.m**-3,
+    wavelengths: u.Quantity[u.nm],
+    probe_wavelength: u.Quantity[u.nm],
+    n: u.Quantity[u.m**-3],
     *,
-    T_e: u.K,
-    T_i: u.K,
+    T_e: u.Quantity[u.K],
+    T_i: u.Quantity[u.K],
     efract=None,
     ifract=None,
     ions: ParticleLike = "p+",
-    electron_vel: u.m / u.s = None,
-    ion_vel: u.m / u.s = None,
+    electron_vel: u.Quantity[u.m / u.s] = None,
+    ion_vel: u.Quantity[u.m / u.s] = None,
     probe_vec=None,
     scatter_vec=None,
     instr_func: Optional[Callable] = None,
@@ -702,7 +703,7 @@ def _spectral_density_model(wavelengths, settings=None, **params):
     electron_vel = electron_speed[:, np.newaxis] * electron_vdir
     ion_vel = ion_speed[:, np.newaxis] * ion_vdir
 
-    # Convert temperatures from eV to Kelvin (required by fast_spectral_density)
+    # Convert temperatures from eV to kelvin (required by fast_spectral_density)
     T_e *= 11604.51812155
     T_i *= 11604.51812155
 

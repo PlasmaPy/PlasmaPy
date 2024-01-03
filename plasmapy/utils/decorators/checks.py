@@ -10,13 +10,13 @@ __all__ = [
     "CheckValues",
 ]
 
+import astropy.units as u
 import collections
 import functools
 import inspect
 import numpy as np
 import warnings
 
-from astropy import units as u
 from astropy.constants import c
 from astropy.units.equivalencies import Equivalency
 from functools import reduce
@@ -44,7 +44,7 @@ class CheckBase:
         specified checks on the input arguments of the wrapped function
     """
 
-    def __init__(self, checks_on_return=None, **checks):
+    def __init__(self, checks_on_return=None, **checks) -> None:
         self._checks = checks
         if checks_on_return is not None:
             self._checks["checks_on_return"] = checks_on_return
@@ -141,7 +141,7 @@ class CheckValues(CheckBase):
         self,
         checks_on_return: Optional[dict[str, bool]] = None,
         **checks: dict[str, bool],
-    ):
+    ) -> None:
         super().__init__(checks_on_return=checks_on_return, **checks)
 
     def __call__(self, f):
@@ -217,8 +217,8 @@ class CheckValues(CheckBase):
         Returns
         -------
         Dict[str, Dict[str, bool]]
-            A complete 'checks' dictionary for checking function input arguments
-            and return.
+            A complete 'checks' dictionary for checking function input
+            arguments and return.
         """
         # initialize validation dictionary
         out_checks = {}
@@ -289,18 +289,18 @@ class CheckValues(CheckBase):
         Parameters
         ----------
         arg
-            The argument to be checked
+            The argument to be checked.
 
         arg_name: str
-            The name of the argument to be checked
+            The name of the argument to be checked.
 
         arg_checks: Dict[str, bool]
-            The requested checks for the argument
+            The requested checks for the argument.
 
         Raises
         ------
         ValueError
-            raised if a check fails
+            If a check fails.
 
         """
         if arg_name == "checks_on_return":
@@ -344,8 +344,8 @@ class CheckValues(CheckBase):
 
 class CheckUnits(CheckBase):
     """
-    A decorator class to 'check' — limit/control — the units of input and return
-    arguments to a function or method.
+    A decorator class to 'check' — limit/control — the units of input
+    and return arguments to a function or method.
 
     Parameters
     ----------
@@ -397,28 +397,22 @@ class CheckUnits(CheckBase):
         import astropy.units as u
         from plasmapy.utils.decorators import CheckUnits
 
-        @CheckUnits(arg1={'units': u.cm},
-                    arg2=u.cm,
-                    checks_on_return=[u.cm, u.km])
+        @CheckUnits(arg1={"units": u.cm}, arg2=u.cm, checks_on_return=[u.cm, u.km])
         def foo(arg1, arg2):
             return arg1 + arg2
 
         # or on a method
         class Foo:
-            @CheckUnits(arg1={'units': u.cm},
-                        arg2=u.cm,
-                        checks_on_return=[u.cm, u.km])
+            @CheckUnits(arg1={"units": u.cm}, arg2=u.cm, checks_on_return=[u.cm, u.km])
             def bar(self, arg1, arg2):
                 return arg1 + arg2
 
     Define units with function annotations::
 
-        import astropy.units as u
-        from plasmapy.utils.decorators import CheckUnits
-
         @CheckUnits()
         def foo(arg1: u.cm, arg2: u.cm) -> u.cm:
             return arg1 + arg2
+
 
         # or on a method
         class Foo:
@@ -428,32 +422,28 @@ class CheckUnits(CheckBase):
 
     Allow `None` values to pass, on input and output::
 
-        import astropy.units as u
-        from plasmapy.utils.decorators import CheckUnits
-
         @CheckUnits(checks_on_return=[u.cm, None])
         def foo(arg1: u.cm = None):
             return arg1
 
     Allow return values to have equivalent units::
 
-        import astropy.units as u
-        from plasmapy.utils.decorators import CheckUnits
-
-        @CheckUnits(arg1={'units': u.cm},
-                    checks_on_return={'units': u.km,
-                                      'pass_equivalent_units': True})
+        @CheckUnits(
+            arg1={"units": u.cm},
+            checks_on_return={"units": u.km, "pass_equivalent_units": True},
+        )
         def foo(arg1):
             return arg1
 
     Allow equivalent units to pass with specified equivalencies::
 
-        import astropy.units as u
-        from plasmapy.utils.decorators import CheckUnits
-
-        @CheckUnits(arg1={'units': u.K,
-                          'equivalencies': u.temperature_energy(),
-                          'pass_equivalent_units': True})
+        @CheckUnits(
+            arg1={
+                "units": u.K,
+                "equivalencies": u.temperature_energy(),
+                "pass_equivalent_units": True,
+            }
+        )
         def foo(arg1):
             return arg1
 
@@ -462,7 +452,7 @@ class CheckUnits(CheckBase):
     """
 
     #: Default values for the possible 'check' keys.
-    # To add a new check the the class, the following needs to be done:
+    # To add a new check to the class, the following needs to be done:
     #   1. Add a key & default value to the `__check_defaults` dictionary
     #   2. Add a corresponding conditioning statement to `_get_unit_checks`
     #   3. Add a corresponding behavior to `_check_unit`
@@ -478,7 +468,7 @@ class CheckUnits(CheckBase):
         self,
         checks_on_return: Union[u.Unit, list[u.Unit], dict[str, Any]] = None,
         **checks: Union[u.Unit, list[u.Unit], dict[str, Any]],
-    ):
+    ) -> None:
         super().__init__(checks_on_return=checks_on_return, **checks)
 
     def __call__(self, f):
@@ -908,44 +898,64 @@ class CheckUnits(CheckBase):
         return arg, unit, equiv, err
 
     @staticmethod
-    def _condition_target_units(targets: list, from_annotations: bool = False):
+    def _condition_target_units(
+        targets: list[Union[str, u.Unit, u.Quantity]],
+        from_annotations: bool = False,
+    ) -> list:
         """
-        From a list of target units (either as a string or astropy
-        :class:`~astropy.units.Unit` objects), return a list of conditioned
-        :class:`~astropy.units.Unit` objects.
+        From a `list` of target objects that have or represent units,
+        return a `list` of conditioned :class:`~astropy.units.Unit`
+        objects.
 
         Parameters
         ----------
-        targets: list of target units
-            list of units (either as a string or :class:`~astropy.units.Unit`)
-            to be conditioned into astropy :class:`~astropy.units.Unit` objects
+        targets: `list` of  `str`, `~astropy.units.Unit`, or `~astropy.units.Quantity`
+            A list containing strings representing units (e.g., ``"kg"``,
+            `~astropy.units.Unit` objects (e.g., ``u.kg``), or
+            |Quantity| objects indexed with a `~astropy.units.U nit`
+            object (e.g., ``u.Quantity[u.kg]``).
 
-        from_annotations: bool
-            (Default `False`) Indicates if `targets` originated from function/method
+        from_annotations: bool, default: `False`
+            Indicates if ``targets`` originated from function/method
             annotations versus decorator input arguments.
 
         Returns
         -------
         list:
-            list of `targets` converted into astropy
-            :class:`~astropy.units.Unit` objects
+            `list` of ``targets`` converted into
+            :class:`~astropy.units.Unit` objects.
 
         Raises
         ------
         TypeError
-            If `target` is not a valid type for :class:`~astropy.units.Unit` when
-            `from_annotations == True`,
+            If `target` is not a valid type for
+            :class:`~astropy.units.Unit` when ``from_annotations == True``,
 
         ValueError
-            If a `target` is a valid unit type but not a valid value for
-            :class:`~astropy.units.Unit`.
+            If a ``target`` is a valid unit type but not a valid value
+            for :class:`~astropy.units.Unit`.
         """
         # Note: this method does not allow for astropy physical types. This is
         #       done because we expect all use cases of CheckUnits to define the
         #       exact units desired.
-        #
+
         allowed_units = []
         for target in targets:
+            # The following two blocks are to create extract the unit from
+            # annotations of the form u.Quantity[u.m], which is an annotated
+            # alias.  The unit is stored as the first item in the __metadata__
+            # attribute and the original class is stored in the __origin__
+            # attribute.
+
+            annotation_metadata = getattr(target, "__metadata__", None)
+            annotation_original_class = getattr(target, "__origin__", None)
+
+            if (
+                annotation_original_class is u.Quantity
+                and annotation_metadata is not None
+            ):
+                target = annotation_metadata[0]  # noqa: PLW2901
+
             try:
                 target_unit = u.Unit(target)
                 allowed_units.append(target_unit)
@@ -1110,24 +1120,17 @@ def check_units(
         import astropy.units as u
         from plasmapy.utils.decorators import check_units
 
-        @check_units(arg1={'units': u.cm},
-                     arg2=u.cm,
-                     checks_on_return=[u.cm, u.km])
+        @check_units(arg1={"units": u.cm}, arg2=u.cm, checks_on_return=[u.cm, u.km])
         def foo(arg1, arg2):
             return arg1 + arg2
 
         # or on a method
         class Foo:
-            @check_units(arg1={'units': u.cm},
-                         arg2=u.cm,
-                         checks_on_return=[u.cm, u.km])
+            @check_units(arg1={"units": u.cm}, arg2=u.cm, checks_on_return=[u.cm, u.km])
             def bar(self, arg1, arg2):
                 return arg1 + arg2
 
     Define units with function annotations::
-
-        import astropy.units as u
-        from plasmapy.utils.decorators import check_units
 
         @check_units
         def foo(arg1: u.cm, arg2: u.cm) -> u.cm:
@@ -1141,32 +1144,28 @@ def check_units(
 
     Allow `None` values to pass::
 
-        import astropy.units as u
-        from plasmapy.utils.decorators import check_units
-
-        @check_units(checks_on_return=[u.cm, None])
+        @check_units(checks_on_return = [u.cm, None])
         def foo(arg1: u.cm = None):
             return arg1
 
     Allow return values to have equivalent units::
 
-        import astropy.units as u
-        from plasmapy.utils.decorators import check_units
-
-        @check_units(arg1={'units': u.cm},
-                     checks_on_return={'units': u.km,
-                                       'pass_equivalent_units': True})
+        @check_units(
+            arg1={"units": u.cm},
+            checks_on_return={"units": u.km, "pass_equivalent_units": True},
+        )
         def foo(arg1):
             return arg1
 
     Allow equivalent units to pass with specified equivalencies::
 
-        import astropy.units as u
-        from plasmapy.utils.decorators import check_units
-
-        @check_units(arg1={'units': u.K,
-                           'equivalencies': u.temperature(),
-                           'pass_equivalent_units': True})
+        @check_units(
+            arg1={
+                "units": u.K,
+                "equivalencies": u.temperature(),
+                "pass_equivalent_units": True,
+            }
+        )
         def foo(arg1):
             return arg1
 
@@ -1300,7 +1299,7 @@ def check_relativistic(func=None, betafrac=0.05):
 
     Examples
     --------
-    >>> from astropy import units as u
+    >>> import astropy.units as u
     >>> @check_relativistic
     ... def speed():
     ...     return 1 * u.m / u.s
@@ -1366,7 +1365,7 @@ def _check_relativistic(V, funcname, betafrac=0.05):
 
     Examples
     --------
-    >>> from astropy import units as u
+    >>> import astropy.units as u
     >>> _check_relativistic(1*u.m/u.s, 'function_calling_this')
 
     """

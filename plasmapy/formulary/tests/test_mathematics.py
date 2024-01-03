@@ -24,7 +24,7 @@ from plasmapy.formulary import mathematics
         (np.array([1, 0, 0]), np.array([-1, 0, 0]), -np.identity(3)),
     ],
 )
-def test_rot_a_to_b(a, b, correct):
+def test_rot_a_to_b(a, b, correct) -> None:
     R = mathematics.rot_a_to_b(a, b)
     np.testing.assert_allclose(R, correct, atol=1e-6)
 
@@ -40,6 +40,6 @@ def test_rot_a_to_b(a, b, correct):
         (np.array([1, 0]), np.array([1, 0]), ValueError),
     ],
 )
-def test_rot_a_to_b_raises(a, b, _raises):
+def test_rot_a_to_b_raises(a, b, _raises) -> None:
     with pytest.raises(_raises):
         mathematics.rot_a_to_b(a, b)

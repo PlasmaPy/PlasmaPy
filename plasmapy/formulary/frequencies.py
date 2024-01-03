@@ -42,12 +42,12 @@ eps0_si_unitless = eps0.value
 )
 @angular_freq_to_hz
 def gyrofrequency(
-    B: u.T,
+    B: u.Quantity[u.T],
     particle: ParticleLike,
     signed: bool = False,
     Z: Optional[numbers.Real] = None,
     mass_numb: Optional[numbers.Integral] = None,
-) -> u.rad / u.s:
+) -> u.Quantity[u.rad / u.s]:
     r"""
     Calculate the particle gyrofrequency in units of radians per second.
 
@@ -117,7 +117,7 @@ def gyrofrequency(
 
     Examples
     --------
-    >>> from astropy import units as u
+    >>> import astropy.units as u
     >>> gyrofrequency(0.1 * u.T, 'e-')
     <Quantity 1.7588...e+10 rad / s>
     >>> gyrofrequency(0.1 * u.T, 'e-', to_hz=True)
@@ -234,12 +234,12 @@ def plasma_frequency_lite(
 )
 @angular_freq_to_hz
 def plasma_frequency(
-    n: u.m**-3,
+    n: u.Quantity[u.m**-3],
     particle: ParticleLike,
     *,
     mass_numb: Optional[numbers.Integral] = None,
     Z: Optional[numbers.Real] = None,
-) -> u.rad / u.s:
+) -> u.Quantity[u.rad / u.s]:
     r"""Calculate the particle plasma frequency.
 
     **Aliases:** `wp_`
@@ -305,7 +305,7 @@ def plasma_frequency(
 
     Examples
     --------
-    >>> from astropy import units as u
+    >>> import astropy.units as u
     >>> plasma_frequency(1e19 * u.m**-3, particle='p')
     <Quantity 4.16329...e+09 rad / s>
     >>> plasma_frequency(1e19 * u.m**-3, particle='p', to_hz=True)
@@ -351,7 +351,9 @@ wp_ = plasma_frequency
     },
 )
 @angular_freq_to_hz
-def lower_hybrid_frequency(B: u.T, n_i: u.m**-3, ion: ParticleLike) -> u.rad / u.s:
+def lower_hybrid_frequency(
+    B: u.Quantity[u.T], n_i: u.Quantity[u.m**-3], ion: ParticleLike
+) -> u.Quantity[u.rad / u.s]:
     r"""
     Return the lower hybrid frequency.
 
@@ -417,7 +419,7 @@ def lower_hybrid_frequency(B: u.T, n_i: u.m**-3, ion: ParticleLike) -> u.rad / u
 
     Examples
     --------
-    >>> from astropy import units as u
+    >>> import astropy.units as u
     >>> lower_hybrid_frequency(0.2 * u.T, n_i = 5e19 * u.m**-3, ion='D+')
     <Quantity 5.78372...e+08 rad / s>
     >>> lower_hybrid_frequency(0.2 * u.T, n_i = 5e19 * u.m**-3, ion='D+', to_hz = True)
@@ -449,7 +451,9 @@ wlh_ = lower_hybrid_frequency
     },
 )
 @angular_freq_to_hz
-def upper_hybrid_frequency(B: u.T, n_e: u.m**-3) -> u.rad / u.s:
+def upper_hybrid_frequency(
+    B: u.Quantity[u.T], n_e: u.Quantity[u.m**-3]
+) -> u.Quantity[u.rad / u.s]:
     r"""
     Return the upper hybrid frequency.
 
@@ -507,7 +511,7 @@ def upper_hybrid_frequency(B: u.T, n_e: u.m**-3) -> u.rad / u.s:
 
     Examples
     --------
-    >>> from astropy import units as u
+    >>> import astropy.units as u
     >>> upper_hybrid_frequency(0.2 * u.T, n_e=5e19 * u.m**-3)
     <Quantity 4.00459...e+11 rad / s>
     >>> upper_hybrid_frequency(0.2 * u.T, n_e=5e19 * u.m**-3, to_hz = True)
@@ -531,14 +535,14 @@ wuh_ = upper_hybrid_frequency
 )
 @angular_freq_to_hz
 def Buchsbaum_frequency(
-    B: u.T,
-    n1: u.m**-3,
-    n2: u.m**-3,
+    B: u.Quantity[u.T],
+    n1: u.Quantity[u.m**-3],
+    n2: u.Quantity[u.m**-3],
     ion1: ParticleLike,
     ion2: ParticleLike,
     Z1: Optional[float] = None,
     Z2: Optional[float] = None,
-) -> u.rad / u.s:
+) -> u.Quantity[u.rad / u.s]:
     r"""
     Return the Buchsbaum frequency for a two-ion-species plasma.
 
@@ -608,7 +612,7 @@ def Buchsbaum_frequency(
 
     Examples
     --------
-    >>> from astropy import units as u
+    >>> import astropy.units as u
     >>> fbb = Buchsbaum_frequency(0.1*u.T, 1e18*u.m**-3, 1e18*u.m**-3, "proton", "He+", to_hz=True)
     >>> fbb
     <Quantity 764831.28372462 Hz>
@@ -621,8 +625,8 @@ def Buchsbaum_frequency(
     """
     omega_c1_squared = gyrofrequency(B, ion1, signed=False, Z=Z1) ** 2
     omega_c2_squared = gyrofrequency(B, ion2, signed=False, Z=Z2) ** 2
-    omega_p1_squared = plasma_frequency(n1, ion1, z_mean=Z1) ** 2
-    omega_p2_squared = plasma_frequency(n2, ion2, z_mean=Z2) ** 2
+    omega_p1_squared = plasma_frequency(n1, ion1, Z=Z1) ** 2
+    omega_p2_squared = plasma_frequency(n2, ion2, Z=Z2) ** 2
 
     return np.sqrt(
         (omega_p1_squared * omega_c2_squared + omega_p2_squared * omega_c1_squared)

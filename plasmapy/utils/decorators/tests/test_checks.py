@@ -2,11 +2,11 @@
 Tests for 'check` decorators (i.e. decorators that only check objects but do not
 change them).
 """
+import astropy.units as u
 import inspect
 import numpy as np
 import pytest
 
-from astropy import units as u
 from astropy.constants import c
 from types import LambdaType
 from unittest import mock
@@ -35,10 +35,10 @@ class TestCheckBase:
     Test for decorator class :class:`~plasmapy.utils.decorators.checks.CheckBase`.
     """
 
-    def test_for_members(self):
+    def test_for_members(self) -> None:
         assert hasattr(CheckUnits, "checks")
 
-    def test_checks(self):
+    def test_checks(self) -> None:
         _cases = [
             {"input": (None, {"x": 1, "y": 2}), "output": {"x": 1, "y": 2}},
             {
@@ -75,17 +75,17 @@ class TestCheckUnits:
         return x.value + y.value
 
     @staticmethod
-    def foo_stars(x: u.Quantity, *args, y=3 * u.cm, **kwargs):
+    def foo_stars(x: u.Quantity, *args, y=3 * u.cm, **kwargs):  # noqa: ANN205
         return x.value + y.value
 
     @staticmethod
-    def foo_with_none(x: u.Quantity, y: u.cm = None):
+    def foo_with_none(x: u.Quantity, y: u.cm = None):  # noqa: ANN205
         return x.value + y.value
 
-    def test_inheritance(self):
+    def test_inheritance(self) -> None:
         assert issubclass(CheckUnits, CheckBase)
 
-    def test_cu_default_check_values(self):
+    def test_cu_default_check_values(self) -> None:
         """Test the default check dictionary for CheckUnits."""
         cu = CheckUnits()
         assert hasattr(cu, "_CheckUnits__check_defaults")
@@ -99,7 +99,7 @@ class TestCheckUnits:
         for key, val in _defaults:
             assert cu._CheckUnits__check_defaults[key] == val
 
-    def test_cu_method__flatten_equivalencies_list(self):
+    def test_cu_method__flatten_equivalencies_list(self) -> None:
         assert hasattr(CheckUnits, "_flatten_equivalencies_list")
 
         cu = CheckUnits()
@@ -107,7 +107,7 @@ class TestCheckUnits:
         for pair in pairs:
             assert cu._flatten_equivalencies_list(pair[0]) == pair[1]
 
-    def test_cu_method__condition_target_units(self):
+    def test_cu_method__condition_target_units(self) -> None:
         """Test method `CheckUnits._condition_target_units`."""
         assert hasattr(CheckUnits, "_condition_target_units")
 
@@ -126,7 +126,7 @@ class TestCheckUnits:
         with pytest.raises(ValueError):
             cu._condition_target_units(["five"])
 
-    def test_cu_method__normalize_equivalencies(self):
+    def test_cu_method__normalize_equivalencies(self) -> None:
         """Test method `CheckUnits._normalize_equivalencies`."""
         assert hasattr(CheckUnits, "_normalize_equivalencies")
 
@@ -179,7 +179,7 @@ class TestCheckUnits:
         with pytest.raises(ValueError):
             cu._normalize_equivalencies([("cm", u.cm)])
 
-    def test_cu_method__get_unit_checks(self):
+    def test_cu_method__get_unit_checks(self) -> None:
         """
         Test functionality/behavior of the method `_get_unit_checks` on `CheckUnits`.
         This method reviews the decorator `checks` arguments and wrapped function
@@ -429,7 +429,7 @@ class TestCheckUnits:
                         val = case["output"][arg_name][key]  # noqa: PLW2901
                     assert arg_checks[key] == val
 
-    def test_cu_method__check_unit(self):
+    def test_cu_method__check_unit(self) -> None:
         """
         Test functionality/behavior of the methods `_check_unit` and `_check_unit_core`
         on `CheckUnits`.  These methods do the actual checking of the argument units
@@ -553,7 +553,7 @@ class TestCheckUnits:
                 with pytest.raises(case["output"][3]):
                     cu._check_unit(arg, arg_name, arg_checks)
 
-    def test_cu_called_as_decorator(self):
+    def test_cu_called_as_decorator(self) -> None:
         """
         Test behavior of `CheckUnits.__call__` (i.e. used as a decorator).
         """
@@ -612,7 +612,7 @@ class TestCheckUnits:
         # test on class method
         class Foo:
             @CheckUnits()
-            def __init__(self, y: u.cm):
+            def __init__(self, y: u.cm) -> None:
                 self.y = y
 
             @CheckUnits(x=u.cm)
@@ -622,7 +622,7 @@ class TestCheckUnits:
         foo = Foo(10.0 * u.cm)
         assert foo.bar(-3 * u.cm) == 7 * u.cm
 
-    def test_cu_preserves_signature(self):
+    def test_cu_preserves_signature(self) -> None:
         """Test `CheckValues` preserves signature of wrapped function."""
         # I'd like to directly test the @preserve_signature is used (??)
 
@@ -635,7 +635,7 @@ class TestCheckUnits:
         side_effect=CheckUnits,
         autospec=True,
     )
-    def test_decorator_func_def(self, mock_cu_class):
+    def test_decorator_func_def(self, mock_cu_class) -> None:
         """
         Test that :func:`~plasmapy.utils.decorators.checks.check_units` is
         properly defined.
@@ -730,10 +730,10 @@ class TestCheckValues:
     def foo_stars(x, *args, y=3, **kwargs):
         return x + y
 
-    def test_inheritance(self):
+    def test_inheritance(self) -> None:
         assert issubclass(CheckValues, CheckBase)
 
-    def test_cv_default_check_values(self):
+    def test_cv_default_check_values(self) -> None:
         """Test the default check dictionary for CheckValues"""
         cv = CheckValues()
         assert hasattr(cv, "_CheckValues__check_defaults")
@@ -749,7 +749,7 @@ class TestCheckValues:
         for key, val in _defaults:
             assert cv._CheckValues__check_defaults[key] == val
 
-    def test_cv_method__get_value_checks(self):
+    def test_cv_method__get_value_checks(self) -> None:
         """
         Test functionality/behavior of the method `_get_value_checks` on `CheckValues`.
         This method reviews the decorator `checks` arguments to build a complete
@@ -856,7 +856,7 @@ class TestCheckValues:
 
                     assert arg_checks[key] == val
 
-    def test_cv_method__check_value(self):
+    def test_cv_method__check_value(self) -> None:
         """
         Test functionality/behavior of the `_check_value` method on `CheckValues`.
         This method does the actual checking of the argument values and should be
@@ -1037,7 +1037,7 @@ class TestCheckValues:
                 else:
                     assert cv._check_value(arg, arg_name, checks) is None
 
-    def test_cv_called_as_decorator(self):
+    def test_cv_called_as_decorator(self) -> None:
         """
         Test behavior of `CheckValues.__call__` (i.e. used as a decorator).
         """
@@ -1108,7 +1108,7 @@ class TestCheckValues:
         # test on class method
         class Foo:
             @CheckValues(y={"can_be_negative": True})
-            def __init__(self, y):
+            def __init__(self, y) -> None:
                 self.y = y
 
             @CheckValues(
@@ -1122,7 +1122,7 @@ class TestCheckValues:
         with pytest.raises(ValueError):
             foo.bar(1)
 
-    def test_cv_preserves_signature(self):
+    def test_cv_preserves_signature(self) -> None:
         """Test CheckValues preserves signature of wrapped function."""
         # I'd like to directly test the @preserve_signature is used (??)
 
@@ -1135,7 +1135,7 @@ class TestCheckValues:
         side_effect=CheckValues,
         autospec=True,
     )
-    def test_decorator_func_def(self, mock_cv_class):
+    def test_decorator_func_def(self, mock_cv_class) -> None:
         """
         Test that :func:`~plasmapy.utils.decorators.checks.check_values` is
         properly defined.
@@ -1250,25 +1250,25 @@ relativistic_warning_examples = [
 
 # Tests for _check_relativistic
 @pytest.mark.parametrize(("speed", "betafrac"), non_relativistic_speed_examples)
-def test__check_relativisitc_valid(speed, betafrac):
+def test__check_relativisitc_valid(speed, betafrac) -> None:
     _check_relativistic(speed, "f", betafrac=betafrac)
 
 
 @pytest.mark.parametrize(("speed", "betafrac", "error"), relativistic_error_examples)
-def test__check_relativistic_errors(speed, betafrac, error):
+def test__check_relativistic_errors(speed, betafrac, error) -> None:
     with pytest.raises(error):
         _check_relativistic(speed, "f", betafrac=betafrac)
 
 
 @pytest.mark.parametrize(("speed", "betafrac"), relativistic_warning_examples)
-def test__check_relativistic_warnings(speed, betafrac):
+def test__check_relativistic_warnings(speed, betafrac) -> None:
     with pytest.warns(RelativityWarning):
         _check_relativistic(speed, "f", betafrac=betafrac)
 
 
 # Tests for check_relativistic decorator
 @pytest.mark.parametrize(("speed", "betafrac"), non_relativistic_speed_examples)
-def test_check_relativistic_decorator(speed, betafrac):
+def test_check_relativistic_decorator(speed, betafrac) -> None:
     @check_relativistic(betafrac=betafrac)
     def speed_func():
         return speed
@@ -1277,7 +1277,7 @@ def test_check_relativistic_decorator(speed, betafrac):
 
 
 @pytest.mark.parametrize("speed", [item[0] for item in non_relativistic_speed_examples])
-def test_check_relativistic_decorator_no_args(speed):
+def test_check_relativistic_decorator_no_args(speed) -> None:
     @check_relativistic
     def speed_func():
         return speed
@@ -1286,7 +1286,7 @@ def test_check_relativistic_decorator_no_args(speed):
 
 
 @pytest.mark.parametrize("speed", [item[0] for item in non_relativistic_speed_examples])
-def test_check_relativistic_decorator_no_args_parentheses(speed):
+def test_check_relativistic_decorator_no_args_parentheses(speed) -> None:
     @check_relativistic()
     def speed_func():
         return speed
@@ -1295,7 +1295,7 @@ def test_check_relativistic_decorator_no_args_parentheses(speed):
 
 
 @pytest.mark.parametrize(("speed", "betafrac", "error"), relativistic_error_examples)
-def test_check_relativistic_decorator_errors(speed, betafrac, error):
+def test_check_relativistic_decorator_errors(speed, betafrac, error) -> None:
     @check_relativistic(betafrac=betafrac)
     def speed_func():
         return speed

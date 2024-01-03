@@ -99,8 +99,8 @@ class ParticleTracker:
         dt=np.inf * u.s,
         nt=np.inf,
         integrator="explicit_boris",
-    ):
-        if np.isinf(dt) and np.isinf(nt):  # coverage: ignore
+    ) -> None:
+        if np.isinf(dt) and np.isinf(nt):
             raise ValueError("Both dt and nt are infinite.")
 
         self.q = atomic.charge_number(particle_type) * constants.e.si
@@ -230,7 +230,7 @@ class ParticleTracker:
             f'name="{self.name}",NT={self.NT})'
         )
 
-    def __str__(self) -> str:  # coverage: ignore
+    def __str__(self) -> str:
         return (
             f"{self.N} {self.scaling:.2e}-{self.name} with "
             f"q = {self.q:.2e}, m = {self.m:.2e}, "
@@ -238,7 +238,7 @@ class ParticleTracker:
             f"steps over {self.NT} iterations"
         )
 
-    def plot_trajectories(self):  # coverage: ignore
+    def plot_trajectories(self):
         r"""Draw trajectory history."""
         import matplotlib.pyplot as plt
 
@@ -257,7 +257,7 @@ class ParticleTracker:
         ax.set_zlabel("$z$ position")
         plt.show()
 
-    def plot_time_trajectories(self, plot="xyz"):  # coverage: ignore
+    def plot_time_trajectories(self, plot="xyz"):
         r"""
         Draw position history versus time.
 

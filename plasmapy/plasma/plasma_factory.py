@@ -25,6 +25,6 @@ class PlasmaFactory(BasicRegistrationFactory):
 
 Plasma = PlasmaFactory(
     default_widget_type=GenericPlasma,
-    registry=GenericPlasma._registry,
+    registry=GenericPlasma._registry,  # noqa: SLF001
     additional_validation_functions=["is_datasource_for"],
 )

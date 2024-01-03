@@ -9,6 +9,7 @@ Functionality to calculate excess statistics of time series.
 __all__ = ["ExcessStatistics"]
 
 
+import astropy.units as u
 import numbers
 import numpy as np
 
@@ -53,7 +54,7 @@ class ExcessStatistics:
     [0.5, 0.0, 0]
     """
 
-    def __init__(self, signal, thresholds, time_step):
+    def __init__(self, signal, thresholds, time_step) -> None:
         if time_step <= 0:
             raise ValueError("time_step must be positive")
 
@@ -69,7 +70,7 @@ class ExcessStatistics:
 
         self._calculate_excess_statistics(signal, thresholds, time_step)
 
-    def _calculate_excess_statistics(self, signal, thresholds, time_step):
+    def _calculate_excess_statistics(self, signal, thresholds, time_step) -> None:
         for threshold in thresholds:
             indices_above_threshold = np.where(np.array(signal) > threshold)[0]
 
@@ -97,6 +98,9 @@ class ExcessStatistics:
                 self._times_above_threshold = [
                     time_step * len(event_lengths[i]) for i in range(len(event_lengths))
                 ]
+
+                if isinstance(time_step, u.Quantity):
+                    self._times_above_threshold *= time_step.unit
 
                 self._number_of_crossings.append(len(event_lengths))
                 if indices_above_threshold[0] == 0:

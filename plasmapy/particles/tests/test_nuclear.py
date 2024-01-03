@@ -1,8 +1,7 @@
+import astropy.constants as const
+import astropy.units as u
 import numpy as np
 import pytest
-
-from astropy import constants as const
-from astropy import units as u
 
 from plasmapy.particles.nuclear import (
     mass_energy,
@@ -17,18 +16,18 @@ test_nuclear_equivalent_calls_table = [
 
 
 @pytest.mark.parametrize("test_inputs", test_nuclear_equivalent_calls_table)
-def test_nuclear_equivalent_calls(test_inputs):
+def test_nuclear_equivalent_calls(test_inputs) -> None:
     run_test_equivalent_calls(test_inputs)
 
 
-def test_nuclear_binding_energy_D_T():
+def test_nuclear_binding_energy_D_T() -> None:
     before = nuclear_binding_energy("D") + nuclear_binding_energy("T")
     after = nuclear_binding_energy("alpha")
     E_in_MeV = (after - before).to(u.MeV).value  # D + T --> alpha + n + E
     assert np.isclose(E_in_MeV, 17.58, rtol=0.01)
 
 
-def test_nuclear_reaction_energy():
+def test_nuclear_reaction_energy() -> None:
     reaction1 = "D + T --> alpha + n"
     reaction2 = "T + D -> n + alpha"
     released_energy1 = nuclear_reaction_energy(reaction1)
@@ -41,7 +40,7 @@ def test_nuclear_reaction_energy():
     nuclear_reaction_energy("neutron + antineutron --> neutron + antineutron")
 
 
-def test_nuclear_reaction_energy_triple_alpha():
+def test_nuclear_reaction_energy_triple_alpha() -> None:
     triple_alpha1 = "alpha + He-4 --> Be-8"
     triple_alpha2 = "Be-8 + alpha --> carbon-12"
     energy_triplealpha1 = nuclear_reaction_energy(triple_alpha1)
@@ -54,19 +53,19 @@ def test_nuclear_reaction_energy_triple_alpha():
     assert np.isclose(energy.to(u.keV).value, -91.8, atol=0.1)
 
 
-def test_nuclear_reaction_energy_alpha_decay():
+def test_nuclear_reaction_energy_alpha_decay() -> None:
     alpha_decay_example = "U-238 --> Th-234 + alpha"
     energy_alpha_decay = nuclear_reaction_energy(alpha_decay_example)
     assert np.isclose(energy_alpha_decay.to(u.MeV).value, 4.26975, atol=1e-5)
 
 
-def test_nuclear_reaction_energy_triple_alpha_r():
+def test_nuclear_reaction_energy_triple_alpha_r() -> None:
     triple_alpha1_r = "4*He-4 --> 2*Be-8"
     energy_triplealpha1_r = nuclear_reaction_energy(triple_alpha1_r)
     assert np.isclose(energy_triplealpha1_r.to(u.keV).value, -91.8 * 2, atol=0.1)
 
 
-def test_nuclear_reaction_energy_beta():
+def test_nuclear_reaction_energy_beta() -> None:
     energy1 = nuclear_reaction_energy(reactants=["n"], products=["p", "e-"])
     assert np.isclose(energy1.to(u.MeV).value, 0.78, atol=0.01)
     energy2 = nuclear_reaction_energy(reactants=["Mg-23"], products=["Na-23", "e+"])
@@ -91,13 +90,13 @@ nuclear_reaction_energy_kwargs_table = [
     ("reactants", "products", "expectedMeV", "tol"),
     nuclear_reaction_energy_kwargs_table,
 )
-def test_nuclear_reaction_energy_kwargs(reactants, products, expectedMeV, tol):
+def test_nuclear_reaction_energy_kwargs(reactants, products, expectedMeV, tol) -> None:
     energy = nuclear_reaction_energy(reactants=reactants, products=products).si
     expected = (expectedMeV * u.MeV).si
     assert np.isclose(expected.value, energy.value, atol=tol)
 
 
-def test_nuclear_reaction_energy2():
+def test_nuclear_reaction_energy2() -> None:
     reactants = ["D", "T"]
     products = ["alpha", "n"]
     expected = 17.6 * u.MeV
@@ -120,5 +119,5 @@ table_of_nuclear_tests = [
 @pytest.mark.parametrize(
     ("tested_object", "args", "kwargs", "expected_value"), table_of_nuclear_tests
 )
-def test_nuclear_table(tested_object, args, kwargs, expected_value):
+def test_nuclear_table(tested_object, args, kwargs, expected_value) -> None:
     run_test(tested_object, args, kwargs, expected_value, rtol=1e-3)

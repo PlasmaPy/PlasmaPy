@@ -28,13 +28,13 @@ from plasmapy.utils.decorators import validate_quantities
     n_e={"can_be_negative": False},
 )
 def coupling_parameter(
-    T: u.K,
-    n_e: u.m**-3,
+    T: u.Quantity[u.K],
+    n_e: u.Quantity[u.m**-3],
     species,
     z_mean: Real = np.nan,
-    V: u.m / u.s = np.nan * u.m / u.s,
+    V: u.Quantity[u.m / u.s] = np.nan * u.m / u.s,
     method="classical",
-) -> u.dimensionless_unscaled:
+) -> u.Quantity[u.dimensionless_unscaled]:
     r"""
     Ratio of the Coulomb energy to the kinetic (usually thermal) energy.
 
@@ -169,7 +169,7 @@ def coupling_parameter(
     >>> coupling_parameter(T, n, species, V=1e6 * u.m / u.s)
     <Quantity 5.8033...e-05>
     """
-    T, masses, charges, reduced_mass, V = misc._process_inputs(
+    T, masses, charges, reduced_mass, V = misc._process_inputs(  # noqa: SLF001
         T=T, species=species, V=V
     )
 
@@ -205,7 +205,7 @@ def coupling_parameter(
         kinetic_energy = 2 * k_B * T / denominator
         if np.all(np.imag(kinetic_energy) < 1e-15 * u.J):
             kinetic_energy = np.real(kinetic_energy)
-        else:  # coverage: ignore
+        else:
             raise ValueError(
                 "Kinetic energy should not be imaginary."
                 "Something went horribly wrong."
@@ -225,13 +225,13 @@ def coupling_parameter(
 )
 def Knudsen_number(
     characteristic_length,
-    T: u.K,
-    n_e: u.m**-3,
+    T: u.Quantity[u.K],
+    n_e: u.Quantity[u.m**-3],
     species,
     z_mean: Real = np.nan,
-    V: u.m / u.s = np.nan * u.m / u.s,
+    V: u.Quantity[u.m / u.s] = np.nan * u.m / u.s,
     method="classical",
-) -> u.dimensionless_unscaled:
+) -> u.Quantity[u.dimensionless_unscaled]:
     r"""
     Knudsen number (dimensionless).
 

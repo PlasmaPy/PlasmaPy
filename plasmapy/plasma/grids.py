@@ -76,7 +76,7 @@ class AbstractGrid(ABC):
 
     """
 
-    def __init__(self, *seeds, num=100, **kwargs):
+    def __init__(self, *seeds, num=100, **kwargs) -> None:
         # Initialize some variables
         self._interpolator = None
         self._is_uniform = None
@@ -268,7 +268,7 @@ class AbstractGrid(ABC):
         uniformly spaced.
         """
 
-        if self._is_uniform is None:  # coverage: ignore
+        if self._is_uniform is None:
             raise ValueError(
                 "The `is_uniform` attribute is not accessible "
                 "before a grid has been loaded."
@@ -668,8 +668,8 @@ class AbstractGrid(ABC):
 
     def _make_grid(  # noqa: C901, PLR0912
         self,
-        start: Union[int, float, u.Quantity],
-        stop: Union[int, float, u.Quantity],
+        start: Union[float, u.Quantity],
+        stop: Union[float, u.Quantity],
         num=100,
         units=None,
         **kwargs,
@@ -1407,7 +1407,7 @@ class NonUniformCartesianGrid(AbstractGrid):
         )
 
         # Clear additional property that is not handled in the
-        # _persistant_interpolator_setup function because it is unique
+        # _persistent_interpolator_setup function because it is unique
         # to this non_uniform grid.
         if not persistent:
             with contextlib.suppress(AttributeError):

@@ -7,8 +7,6 @@ import astropy.units as u
 import numpy as np
 import warnings
 
-from typing import NoReturn
-
 
 class SampleException(Exception):  # noqa: N818
     """A sample exception to be used for testing purposes."""
@@ -51,7 +49,7 @@ def return_np_array(args) -> np.array:
     return np.array(args)
 
 
-def issue_warning() -> NoReturn:
+def issue_warning() -> None:
     """A sample function that issues a `SampleWarning`."""
 
     warnings.warn("warning message", SampleWarning)
@@ -91,7 +89,7 @@ def return_none() -> None:
 class SampleClass1:
     """A sample class to be used for testing purposes."""
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         pass
 
     @classmethod
@@ -114,7 +112,7 @@ class SampleClass1:
 
         raise SampleException("error message")
 
-    def issue_warning(self) -> NoReturn:
+    def issue_warning(self) -> None:
         """A sample method that issues a `SampleWarning`."""
 
         warnings.warn("warning message", SampleWarning)
@@ -123,7 +121,7 @@ class SampleClass1:
 class SampleClass2:
     """A sample class to be used for testing purposes."""
 
-    def __init__(self, cls_arg1, cls_arg2, *, cls_kwarg1, cls_kwarg2):
+    def __init__(self, cls_arg1, cls_arg2, *, cls_kwarg1, cls_kwarg2) -> None:
         self.cls_arg1 = cls_arg1
         self.cls_arg2 = cls_arg2
         self.cls_kwarg1 = cls_kwarg1

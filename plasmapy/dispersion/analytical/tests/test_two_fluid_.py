@@ -1,9 +1,8 @@
 """Tests for the two fluid dispersion solution."""
 
+import astropy.units as u
 import numpy as np
 import pytest
-
-from astropy import units as u
 
 from plasmapy.dispersion.analytical.two_fluid_ import two_fluid
 from plasmapy.formulary.frequencies import wc_
@@ -64,7 +63,7 @@ class TestTwoFluid:
             ({**_kwargs_single_valued, "gamma_i": "wrong type"}, TypeError),
         ],
     )
-    def test_raises(self, kwargs, _error):
+    def test_raises(self, kwargs, _error) -> None:
         """Test scenarios that raise an `Exception`."""
         with pytest.raises(_error):
             two_fluid(**kwargs)
@@ -87,7 +86,7 @@ class TestTwoFluid:
             ),
         ],
     )
-    def test_warns(self, kwargs, _warning):
+    def test_warns(self, kwargs, _warning) -> None:
         """Test scenarios the issue a `Warning`."""
         with pytest.warns(_warning):
             two_fluid(**kwargs)
@@ -109,7 +108,7 @@ class TestTwoFluid:
             ),
         ],
     )
-    def test_on_bellan2012_vals(self, kwargs, expected):
+    def test_on_bellan2012_vals(self, kwargs, expected) -> None:
         """
         Test calculated values based on Figure 1 of Bellan 2012
         (DOI: https://agupubs.onlinelibrary.wiley.com/doi/10.1029/2012JA017856).
@@ -166,7 +165,7 @@ class TestTwoFluid:
             ),
         ],
     )
-    def test_return_structure(self, kwargs, expected):
+    def test_return_structure(self, kwargs, expected) -> None:
         """Test the structure of the returned values."""
         ws = two_fluid(**kwargs)
 
