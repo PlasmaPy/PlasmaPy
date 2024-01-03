@@ -11,7 +11,7 @@ import wrapt
 from collections.abc import Callable, Iterable, Sequence
 from inspect import BoundArguments
 from numbers import Integral, Real
-from typing import Any, Optional, Union
+from typing import Any, Optional, TypedDict, Union
 
 from plasmapy.particles._factory import _physical_particle_factory
 from plasmapy.particles.exceptions import (
@@ -25,6 +25,19 @@ from plasmapy.particles.exceptions import (
 from plasmapy.particles.particle_class import CustomParticle, Particle, ParticleLike
 from plasmapy.particles.particle_collections import ParticleList, ParticleListLike
 from plasmapy.utils.exceptions import PlasmaPyDeprecationWarning
+
+
+class _CallableDataDict(TypedDict, total=False):
+    allow_custom_particles: bool
+    allow_particle_lists: bool
+    annotations: dict[str, Any]
+    any_of: Optional[Union[str, Iterable[str]]]
+    callable_: Callable[..., Any]
+    exclude: Optional[Union[str, Iterable[str]]]
+    parameters_to_process: list[str]
+    require: Optional[Union[str, Iterable[str]]]
+    signature: inspect.Signature
+
 
 _basic_particle_input_annotations = (
     Particle,  # deprecated
@@ -43,7 +56,7 @@ _particle_input_annotations = (
 )
 
 
-def _get_annotations(callable_: Callable[..., Any]) -> Optional[dict[str, str]]:
+def _get_annotations(callable_: Callable[..., Any]) -> Optional[Any]:
     """
     Access the annotations of a callable.
 
@@ -56,7 +69,7 @@ def _get_annotations(callable_: Callable[..., Any]) -> Optional[dict[str, str]]:
     return getattr(callable_, "__annotations__", None)
 
 
-def _make_into_set_or_none(obj: Any) -> Optional[set[str]]:
+def _make_into_set_or_none(obj: Any) -> Optional[Iterable[str]]:
     """
     Return `None` if ``obj`` is `None`, and otherwise convert ``obj``
     into a `set`.
@@ -191,7 +204,7 @@ class _ParticleInput:
         allow_custom_particles: bool = True,
         allow_particle_lists: bool = True,
     ) -> None:
-        self._data: dict[str, Any] = {}
+        self._data: _CallableDataDict = {}
         self.callable_: Callable[..., Any] = callable_
         self.require = require
         self.any_of = any_of
@@ -208,11 +221,11 @@ class _ParticleInput:
         -------
         callable
         """
-        return self._data["callable"]
+        return self._data["callable_"]
 
     @callable_.setter
     def callable_(self, callable_: Callable[..., Any]) -> None:
-        self._data["callable"] = callable_
+        self._data["callable_"] = callable_
         self._data["annotations"] = _get_annotations(callable_)
         self._data["parameters_to_process"] = self.find_parameters_to_process()
         self._data["signature"] = inspect.signature(callable_)
@@ -249,7 +262,7 @@ class _ParticleInput:
         return self._data.get("annotations")
 
     @property
-    def require(self) -> Optional[set[str]]:
+    def require(self) -> Optional[Iterable[str]]:
         """
         Categories that the particle must belong to.
 
@@ -260,11 +273,11 @@ class _ParticleInput:
         return self._data["require"]
 
     @require.setter
-    def require(self, require_: Optional[Union[str, set, Sequence[str]]]) -> None:
+    def require(self, require_: Optional[Union[str, Iterable[str]]]) -> None:
         self._data["require"] = _make_into_set_or_none(require_)
 
     @property
-    def any_of(self) -> Optional[set[str]]:
+    def any_of(self) -> Optional[Iterable[str]]:
         """
         Categories of which the particle must belong to at least one.
 
@@ -279,7 +292,7 @@ class _ParticleInput:
         self._data["any_of"] = _make_into_set_or_none(any_of_)
 
     @property
-    def exclude(self) -> Optional[set]:
+    def exclude(self) -> Optional[Iterable[str]]:
         """
         Categories that the particle cannot belong to.
 
@@ -359,7 +372,7 @@ class _ParticleInput:
 
         if isinstance(uncharged, Iterable):
             uncharged = any(uncharged)
-            lacks_charge_info = any(lacks_charge_info)
+            lacks_charge_info = any(lacks_charge_info)  # type: ignore[arg-type]
 
         if must_be_charged and (uncharged or must_have_charge_info):
             raise ChargeError(f"{self.callable_} can only accept charged particles.")
@@ -475,7 +488,7 @@ class _ParticleInput:
             meets_name_criteria = particle.is_category(**categorization)
 
             if isinstance(particle, Iterable) and not isinstance(particle, str):
-                meets_name_criteria = all(meets_name_criteria)
+                meets_name_criteria = all(meets_name_criteria)  # type: ignore[arg-type]
 
             if not meets_name_criteria:
                 raise exception(
