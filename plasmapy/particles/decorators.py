@@ -970,9 +970,9 @@ def particle_input(
         instance: Any,
         args: Iterable[Any],
         kwargs: MutableMapping[str, Any],
-    ) -> Callable[..., Any]:  # type: ignore[no-any-return]
+    ) -> Callable[..., Any]:
         bound_arguments = particle_validator.process_arguments(args, kwargs, instance)
-        return callable__(
+        return callable__(  # type: ignore[no-any-return]
             *bound_arguments.args,
             **bound_arguments.kwargs,
         )
