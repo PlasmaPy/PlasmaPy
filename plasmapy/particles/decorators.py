@@ -9,7 +9,7 @@ import numpy as np
 import warnings
 import wrapt
 
-from collections.abc import Callable, Iterable, MutableMapping, Sequence
+from collections.abc import Callable, Iterable, MutableMapping
 from inspect import BoundArguments
 from numbers import Integral, Real
 from typing import Any, Optional, TypedDict, Union
@@ -86,7 +86,7 @@ def _make_into_set_or_none(obj: Any) -> Optional[Iterable[str]]:
 def _bind_arguments(
     wrapped_signature: inspect.Signature,
     callable_: Callable[..., Any],
-    args: Sequence[Any],
+    args: Iterable[Any],
     kwargs: MutableMapping[str, Any],
     instance: Any = None,
 ) -> inspect.BoundArguments:
@@ -635,7 +635,10 @@ class _ParticleInput:
             )
 
     def process_arguments(
-        self, args: Sequence[Any], kwargs: dict[str, Any], instance: Any = None
+        self,
+        args: Iterable[Any],
+        kwargs: MutableMapping[str, Any],
+        instance: Any = None,
     ) -> BoundArguments:
         """
         Process the arguments passed to the callable_ callable.
@@ -965,10 +968,13 @@ def particle_input(
     def wrapper(
         callable__: Callable[..., Any],
         instance: Any,
-        args: Sequence[Any],
-        kwargs: dict[str, Any],
-    ) -> Callable[..., Any]:
+        args: Iterable[Any],
+        kwargs: MutableMapping[str, Any],
+    ) -> Callable[..., Any]:  # type: ignore[no-any-return]
         bound_arguments = particle_validator.process_arguments(args, kwargs, instance)
-        return callable__(*bound_arguments.args, **bound_arguments.kwargs)  # type: ignore[no-any-return]
+        return callable__(
+            *bound_arguments.args,
+            **bound_arguments.kwargs,
+        )
 
     return wrapper(callable_, instance=None, args=(), kwargs={})
