@@ -2,13 +2,14 @@
 
 __all__ = ["particle_input"]
 
+
 import functools
 import inspect
 import numpy as np
 import warnings
 import wrapt
 
-from collections.abc import Callable, Iterable, Sequence
+from collections.abc import Callable, Iterable, MutableMapping, Sequence
 from inspect import BoundArguments
 from numbers import Integral, Real
 from typing import Any, Optional, TypedDict, Union
@@ -56,7 +57,7 @@ _particle_input_annotations = (
 )
 
 
-def _get_annotations(callable_: Callable[..., Any]) -> Optional[Any]:
+def _get_annotations(callable_: Callable[..., Any]) -> dict[str, Any]:
     """
     Access the annotations of a callable.
 
@@ -66,7 +67,7 @@ def _get_annotations(callable_: Callable[..., Any]) -> Optional[Any]:
        `inspect.get_annotations`.
     """
     # Python 3.10: Replace this with inspect.get_annotations
-    return getattr(callable_, "__annotations__", None)
+    return getattr(callable_, "__annotations__", {})
 
 
 def _make_into_set_or_none(obj: Any) -> Optional[Iterable[str]]:
@@ -85,8 +86,8 @@ def _make_into_set_or_none(obj: Any) -> Optional[Iterable[str]]:
 def _bind_arguments(
     wrapped_signature: inspect.Signature,
     callable_: Callable[..., Any],
-    args: Optional[Sequence[Any]] = None,
-    kwargs: Optional[dict[str, Any]] = None,
+    args: Sequence[Any],
+    kwargs: MutableMapping[str, Any],
     instance: Any = None,
 ) -> inspect.BoundArguments:
     """
@@ -127,12 +128,6 @@ def _bind_arguments(
     # parameter from a callable decorated with @particle_input. After
     # that, we should change this warning to an exception for ∼2 more
     # releases before deleting it.
-
-    if args is None:
-        args = ()
-
-    if kwargs is None:
-        kwargs = {}
 
     if "z_mean" in kwargs and "Z" not in kwargs and "Z" in wrapped_signature.parameters:
         function_name = getattr(callable_, "__name__", None)
@@ -259,7 +254,7 @@ class _ParticleInput:
         -------
         `dict` of `str` to `object`
         """
-        return self._data.get("annotations")
+        return self._data.get("annotations")  # type: ignore[return-value]
 
     @property
     def require(self) -> Optional[Iterable[str]]:
@@ -471,7 +466,9 @@ class _ParticleInput:
         ):
             return
 
-        name_categorization_exception = [
+        name_categorization_exception: list[
+            tuple[str, dict[str, Optional[Union[str, Iterable[str]]]], type]
+        ] = [
             ("element", {"require": "element"}, InvalidElementError),
             ("isotope", {"require": "isotope"}, InvalidIsotopeError),
             (
@@ -971,10 +968,7 @@ def particle_input(
         args: Sequence[Any],
         kwargs: dict[str, Any],
     ) -> Callable[..., Any]:
-        # TODO: Callable[[...], ...]
-        # TODO: for instance, could we be more specific than Any?
-
         bound_arguments = particle_validator.process_arguments(args, kwargs, instance)
-        return callable__(*bound_arguments.args, **bound_arguments.kwargs)
+        return callable__(*bound_arguments.args, **bound_arguments.kwargs)  # type: ignore[no-any-return]
 
-    return wrapper(callable_)
+    return wrapper(callable_, instance=None, args=(), kwargs={})
