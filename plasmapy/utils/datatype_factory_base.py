@@ -85,7 +85,7 @@ class BasicRegistrationFactory:
         default_widget_type=None,
         additional_validation_functions=None,
         registry=None,
-    ):
+    ) -> None:
         self.registry = {} if registry is None else registry
         if additional_validation_functions is None:
             additional_validation_functions = []
@@ -191,7 +191,7 @@ class BasicRegistrationFactory:
                     f"{WidgetType.__name__} found."
                 )
 
-    def unregister(self, WidgetType):
+    def unregister(self, WidgetType) -> None:
         """Remove a widget from the factory's registry."""
         self.registry.pop(WidgetType)
 

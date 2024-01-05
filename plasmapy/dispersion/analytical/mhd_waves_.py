@@ -46,7 +46,7 @@ class AbstractMHDWave(ABC):
         gamma: float = 5 / 3,
         mass_numb: Optional[Integral] = None,
         Z: Optional[Real] = None,
-    ):
+    ) -> None:
         # validate arguments
         for arg_name in ("B", "density", "T"):
             val = locals()[arg_name].squeeze()

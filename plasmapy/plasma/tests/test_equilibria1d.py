@@ -5,7 +5,7 @@ from plasmapy.formulary import magnetic_pressure
 from plasmapy.plasma.equilibria1d import HarrisSheet
 
 
-def test_HarrisSheet():
+def test_HarrisSheet() -> None:
     B0 = 1 * u.T
     delta = 1 * u.m
     P0 = 0 * u.Pa
@@ -16,7 +16,7 @@ def test_HarrisSheet():
     ), "Magnetic field is supposed to be zero at y=0"
 
 
-def test_HarrisSheet_pressure_balance():
+def test_HarrisSheet_pressure_balance() -> None:
     B0 = 1 * u.T
     delta = 1 * u.m
     P0 = 0 * u.Pa
@@ -29,7 +29,7 @@ def test_HarrisSheet_pressure_balance():
     assert u.allclose(total_pressure, total_pressure[0], atol=1e-9 * u.Pa)
 
 
-def test_HarrisSheet_current_density():
+def test_HarrisSheet_current_density() -> None:
     B0 = 1 * u.T
     delta = 1 * u.m
     P0 = 0 * u.Pa
@@ -40,7 +40,7 @@ def test_HarrisSheet_current_density():
     assert u.allclose(J, correct_J, atol=1e-8 * u.A / u.m**2)
 
 
-def test_HarrisSheet_magnetic_field():
+def test_HarrisSheet_magnetic_field() -> None:
     B0 = 1 * u.T
     delta = 1 * u.m
     P0 = 0 * u.Pa
@@ -51,7 +51,7 @@ def test_HarrisSheet_magnetic_field():
     assert u.allclose(B, correct_B, atol=1e-9 * u.T)
 
 
-def test_HarrisSheet_limits():
+def test_HarrisSheet_limits() -> None:
     y = [-np.inf, np.inf] * u.m
     B0 = 1 * u.T
     delta = 1 * u.m

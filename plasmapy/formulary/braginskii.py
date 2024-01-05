@@ -333,7 +333,7 @@ class ClassicalTransport:
         mu=None,
         theta=None,
         coulomb_log_method="classical",
-    ):
+    ) -> None:
         # check the model
         self.model = model.lower()  # string inputs should be case-insensitive
         valid_models = ["braginskii", "spitzer", "spitzer-harm", "ji-held"]

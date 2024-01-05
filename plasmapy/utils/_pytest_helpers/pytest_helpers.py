@@ -633,7 +633,7 @@ def assert_can_handle_nparray(  # noqa: C901
     insert_some_nans=None,
     insert_all_nans=None,
     kwargs=None,
-):
+) -> None:
     """
     Test for ability to handle numpy array quantities.
 
