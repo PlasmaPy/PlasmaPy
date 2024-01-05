@@ -355,6 +355,25 @@ pandas = "pd"
 [tool.ruff.flake8-unused-arguments]
 ignore-variadic-names = true
 
+[tool.ruff.lint.flake8-tidy-imports.banned-api]
+"typing.Callable".msg = "Deprecated alias. Change to collections.abc.Callable"
+"typing.Collection".msg = "Deprecated alias. Change to collections.abc.Collection"
+"typing.DefaultDict".msg = "Deprecated alias. Change to collections.defaultdict"
+"typing.Dict".msg = "Deprecated alias. Change to dict"
+"typing.Generator".msg = "Deprecated alias. Change to collections.abc.Generator"
+"typing.Iterable".msg = "Deprecated alias. Change to collections.abc.Iterable"
+"typing.Iterator".msg = "Deprecated alias. Change to collections.abc.Iterator"
+"typing.List".msg = "Deprecated alias. Change to list"
+"typing.Mapping".msg = "Deprecated alias. Change to collections.abc.mapping"
+"typing.MutableMapping".msg = "Deprecated alias. Change to collections.abc.MutableMapping"
+"typing.Sequence".msg = "Deprecated alias. Change to collections.abc.Sequence"
+"typing.Set".msg = "Deprecated alias. Change to set"
+"typing.Tuple".msg = "Deprecated alias. Change to tuple"
+"typing.Type".msg = "Deprecated alias. Change to type"
+
+#"cgi".msg = "The cgi module is deprecated, see https://peps.python.org/pep-0594/#cgi."
+#"typing.TypedDict".msg = "Deprecated alias. Change to:typing_extensions.TypedDict instead."
+
 [tool.ruff.mccabe]
 max-complexity = 10
 
