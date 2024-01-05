@@ -603,7 +603,6 @@ class _ParticleInput:
     def perform_pre_validations(
         self, Z: Optional[float], mass_numb: Optional[int]
     ) -> None:
-        # TODO: too specific?
         """
         Perform a variety of pre-checks on the arguments.
 
@@ -680,10 +679,6 @@ class _ParticleInput:
             bound_arguments.arguments[parameter] = processed_kwargs[parameter]
 
         return bound_arguments
-
-
-# TODO: callable_: Callable[[...], ...]
-# TODO: -> Callable[[...], ...]
 
 
 def particle_input(

@@ -156,7 +156,9 @@ class ClassWithDecoratedMethods:
 
     @particle_input
     def method_decorated_with_no_parentheses(self, particle: ParticleLike) -> Particle:
-        # Because run-time logic is needed, mypy will assume that
+        # Because run-time logic is needed, mypy is unable to infer
+        # that @particle_input is doing a type conversion here. We 
+        # would need a dynamic type checker to address this case.
         return particle  # type: ignore[return-value]
 
     @particle_input()
