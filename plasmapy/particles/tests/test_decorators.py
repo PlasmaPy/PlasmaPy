@@ -31,7 +31,7 @@ def function_decorated_with_particle_input(
     b: Any = None,
     Z: Optional[float] = None,
     mass_numb: Optional[int] = None,
-) -> Particle:
+) -> Union[Particle, CustomParticle, ParticleList]:
     """
     A simple function that is decorated with `particle_input` and
     returns the particle instance corresponding to the inputs.
@@ -55,7 +55,7 @@ def function_decorated_with_call_of_particle_input(
     b: Any = None,
     Z: Optional[float] = None,
     mass_numb: Optional[int] = None,
-) -> Particle:
+) -> Union[Particle, CustomParticle, ParticleList]:
     """
     A simple function that is decorated with `@particle_input()` and
     returns the Particle instance corresponding to the inputs.
@@ -155,14 +155,18 @@ class ClassWithDecoratedMethods:
     """
 
     @particle_input
-    def method_decorated_with_no_parentheses(self, particle: ParticleLike) -> Particle:
+    def method_decorated_with_no_parentheses(
+        self, particle: ParticleLike
+    ) -> Union[Particle, CustomParticle, ParticleList]:
         # Because run-time logic is needed, mypy is unable to infer
-        # that @particle_input is doing a type conversion here. We 
+        # that @particle_input is doing a type conversion here. We
         # would need a dynamic type checker to address this case.
         return particle  # type: ignore[return-value]
 
     @particle_input()
-    def method_decorated_with_parentheses(self, particle: ParticleLike) -> Particle:
+    def method_decorated_with_parentheses(
+        self, particle: ParticleLike
+    ) -> Union[Particle, CustomParticle, ParticleList]:
         return particle  # type: ignore[return-value]
 
 
@@ -231,7 +235,9 @@ def test_optional_particle() -> None:
     particle = "He"
 
     @particle_input
-    def has_default_particle(particle: ParticleLike = particle) -> Particle:
+    def has_default_particle(
+        particle: ParticleLike = particle,
+    ) -> Union[Particle, CustomParticle, ParticleList]:
         return particle  # type: ignore[return-value]
 
     assert has_default_particle() == Particle(particle)
@@ -294,7 +300,9 @@ def test_decorator_categories(
     """
 
     @particle_input(**categorization)  # type: ignore[arg-type]
-    def decorated_function(argument: ParticleLike) -> Particle:
+    def decorated_function(
+        argument: ParticleLike,
+    ) -> Union[Particle, CustomParticle, ParticleList]:
         return argument  # type: ignore[return-value]
 
     if exception:
@@ -389,7 +397,9 @@ def test_annotated_classmethod() -> None:
     class HasAnnotatedClassMethod:
         @classmethod
         @particle_input
-        def f(cls, particle: ParticleLike) -> Particle:
+        def f(
+            cls, particle: ParticleLike
+        ) -> Union[Particle, CustomParticle, ParticleList]:
             return particle  # type: ignore[return-value]
 
     has_annotated_classmethod = HasAnnotatedClassMethod()
@@ -405,7 +415,9 @@ def test_self_stacked_decorator(
 
     @outer_decorator
     @inner_decorator
-    def f(x: Any, particle: ParticleLike) -> Particle:
+    def f(
+        x: Any, particle: ParticleLike
+    ) -> Union[Particle, CustomParticle, ParticleList]:
         return particle  # type: ignore[return-value]
 
     result = f(1, "p+")
@@ -518,7 +530,7 @@ def test_particle_input_verification(
     """Test the allow_custom_particles keyword argument to particle_input."""
 
     @particle_input(**kwargs_to_particle_input)
-    def f(particle: ParticleLike) -> Particle:
+    def f(particle: ParticleLike) -> Union[Particle, CustomParticle, ParticleList]:
         return particle  # type: ignore[return-value]
 
     with pytest.raises(ParticleError):
@@ -550,17 +562,19 @@ class ParameterNamesCase:
 
 
 @particle_input
-def get_element(element: ParticleLike) -> Particle:
+def get_element(element: ParticleLike) -> Union[Particle, CustomParticle, ParticleList]:
     return element  # type: ignore[return-value]
 
 
 @particle_input
-def get_isotope(isotope: ParticleLike) -> Particle:
+def get_isotope(isotope: ParticleLike) -> Union[Particle, CustomParticle, ParticleList]:
     return isotope  # type: ignore[return-value]
 
 
 @particle_input
-def get_ion(ion: ParticleLike, Z: Optional[float] = None) -> Particle:
+def get_ion(
+    ion: ParticleLike, Z: Optional[float] = None
+) -> Union[Particle, CustomParticle, ParticleList]:
     return ion  # type: ignore[return-value]
 
 
@@ -668,7 +682,7 @@ def test_creating_mean_particle_for_parameter_named_ion() -> None:
 @particle_input
 def return_particle(
     particle: ParticleLike, Z: Optional[float] = None, mass_numb: Optional[int] = None
-) -> Particle:
+) -> Union[Particle, CustomParticle, ParticleList]:
     """A simple function that is decorated by particle_input."""
     return particle  # type: ignore[return-value]
 
