@@ -371,9 +371,6 @@ ignore-variadic-names = true
 "typing.Tuple".msg = "Deprecated alias. Change to tuple"
 "typing.Type".msg = "Deprecated alias. Change to type"
 
-#"cgi".msg = "The cgi module is deprecated, see https://peps.python.org/pep-0594/#cgi."
-#"typing.TypedDict".msg = "Deprecated alias. Change to:typing_extensions.TypedDict instead."
-
 [tool.ruff.mccabe]
 max-complexity = 10
 
