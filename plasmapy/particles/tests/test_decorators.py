@@ -5,8 +5,8 @@ import astropy.units as u
 import inspect
 import pytest
 
-from collections.abc import Iterable
-from typing import Any, Callable, Optional, Union
+from collections.abc import Callable, Iterable
+from typing import Any, Optional, Union
 
 from plasmapy.particles.decorators import particle_input
 from plasmapy.particles.exceptions import (
