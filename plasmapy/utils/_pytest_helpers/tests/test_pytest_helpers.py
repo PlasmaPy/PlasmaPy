@@ -176,7 +176,7 @@ def test_run_test_atol_failure() -> None:
         pytest.fail("No exception raised for atol test.")
 
 
-def func(x, raise_exception=False, issue_warning=False):
+def func(x, raise_exception: bool = False, issue_warning: bool = False):
     if raise_exception:
         raise ValueError("")
     elif issue_warning:

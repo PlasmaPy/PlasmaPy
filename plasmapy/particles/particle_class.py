@@ -1764,7 +1764,7 @@ class Particle(AbstractPhysicalParticle):
         else:
             return Particle(base_particle, Z=new_charge_number)
 
-    def recombine(self, n: Integral = 1, inplace=False):
+    def recombine(self, n: Integral = 1, inplace: bool = False):
         """
         Create a new |Particle| instance corresponding to the current
         |Particle| after undergoing recombination ``n`` times.
@@ -1910,7 +1910,7 @@ class DimensionlessParticle(AbstractParticle):
         return f"DimensionlessParticle(mass={self.mass}, charge={self.charge})"
 
     @staticmethod
-    def _validate_parameter(obj, can_be_negative=True) -> np.float64:
+    def _validate_parameter(obj, can_be_negative: bool = True) -> np.float64:
         """Verify that the argument corresponds to a valid real number."""
 
         # TODO: Replace with validator? Use an equivalency between

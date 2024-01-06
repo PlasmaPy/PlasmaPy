@@ -162,7 +162,7 @@ class ParticleTracker:
         """
         return (self.velocity_history**2).sum(axis=-1) * self.eff_m / 2
 
-    def boris_push(self, init=False):
+    def boris_push(self, init: bool = False):
         r"""
         Implement the Boris algorithm for moving particles and updating their
         velocities.

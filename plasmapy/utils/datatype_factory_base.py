@@ -137,7 +137,7 @@ class BasicRegistrationFactory:
 
         return WidgetType(*args, **kwargs)
 
-    def register(self, WidgetType, validation_function=None, is_default=False):
+    def register(self, WidgetType, validation_function=None, is_default: bool = False):
         """Register a widget with the factory.
 
         If ``validation_function`` is not specified, tests ``WidgetType`` for
