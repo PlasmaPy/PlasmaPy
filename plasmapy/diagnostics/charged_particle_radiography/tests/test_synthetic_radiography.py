@@ -203,7 +203,7 @@ def run_mesh_example(
     wire_diameter=20 * u.um,
     mesh_hdir=None,
     mesh_vdir=None,
-    nparticles=1e4,
+    nparticles: float = 1e4,
     problem="electrostatic_gaussian_sphere",
 ):
     """

@@ -749,7 +749,7 @@ def run_fit(
     wavelengths,
     params,
     settings,
-    noise_amp=0.05,
+    noise_amp: float = 0.05,
     fit_method="differential_evolution",
     fit_kws={},  # noqa: B006
     max_iter=None,

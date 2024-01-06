@@ -264,7 +264,7 @@ class _FloatBox(_GenericWidget):
         Maximum value the widget can take
     """
 
-    def __init__(self, property_name, min=-1e50, max=1e50) -> None:  # noqa: A002
+    def __init__(self, property_name, min: float = -1e50, max: float = 1e50) -> None:  # noqa: A002
         super().__init__(property_name)
         self.min = min
         self.max = max
