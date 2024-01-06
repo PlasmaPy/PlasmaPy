@@ -208,7 +208,7 @@ def run_mesh_example(
     mesh_vdir=None,
     nparticles: int = 1e4,
     problem="electrostatic_gaussian_sphere",
-):
+) -> None:
     """
     Takes all of the add_wire_mesh parameters and runs a standard example problem
     simulation using them.
