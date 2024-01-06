@@ -602,7 +602,7 @@ class TestMaxwellianCollisionFrequencies:
         expected_error,
         constructor_arguments,
         constructor_keyword_arguments,
-        attribute_name,
+        attribute_name: str,
     ) -> None:
         """Test errors raised in attribute bodies"""
 

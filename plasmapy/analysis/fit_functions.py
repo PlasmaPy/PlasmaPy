@@ -677,7 +677,7 @@ class Exponential(AbstractFitFunction):
         """LaTeX friendly representation of the fit function."""
         return r"a \, \exp(\alpha x)"
 
-    def func(self, x, a, alpha):
+    def func(self, x: float, a: float, alpha: float):
         """
         The fit function, a exponential function.
 
@@ -835,7 +835,7 @@ class ExponentialPlusLinear(AbstractFitFunction):
         )
         self._linear.param_errors = (self.param_errors.m, self.param_errors.b)
 
-    def func(self, x, a, alpha, m, b):
+    def func(self, x: float, a: float, alpha: float, m: float, b: float):
         """
         The fit function, an exponential with a linear offset.
 
@@ -973,7 +973,7 @@ class ExponentialPlusOffset(AbstractFitFunction):
             self.param_errors.b,
         )
 
-    def func(self, x, a, alpha, b):
+    def func(self, x: float, a: float, alpha: float, b: float):
         """
         The fit function, an exponential with a constant offset.
 

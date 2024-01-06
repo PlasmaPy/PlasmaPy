@@ -90,7 +90,9 @@ nuclear_reaction_energy_kwargs_table = [
     ("reactants", "products", "expectedMeV", "tol"),
     nuclear_reaction_energy_kwargs_table,
 )
-def test_nuclear_reaction_energy_kwargs(reactants, products, expectedMeV, tol) -> None:
+def test_nuclear_reaction_energy_kwargs(
+    reactants, products, expectedMeV, tol: float
+) -> None:
     energy = nuclear_reaction_energy(reactants=reactants, products=products).si
     expected = (expectedMeV * u.MeV).si
     assert np.isclose(expected.value, energy.value, atol=tol)

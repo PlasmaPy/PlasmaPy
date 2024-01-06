@@ -94,7 +94,7 @@ class ParticleTracker:
         self,
         plasma,
         particle_type="p",
-        n_particles=1,
+        n_particles: int = 1,
         scaling=1,
         dt=np.inf * u.s,
         nt=np.inf,

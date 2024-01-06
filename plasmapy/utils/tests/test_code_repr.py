@@ -471,7 +471,7 @@ def test__name_with_article(obj, expected) -> None:
         (u.Unit, True, "u.Unit"),
     ],
 )
-def test__object_name(obj, showmodule, expected_name) -> None:
+def test__object_name(obj, showmodule, expected_name: str) -> None:
     """Test that `_object_name` produces the expected output."""
     actual_name = _object_name(obj, showmodule=showmodule)
     assert actual_name == expected_name, (

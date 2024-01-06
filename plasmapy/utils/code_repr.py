@@ -148,7 +148,7 @@ def _object_name(obj: Any, showmodule: bool = False) -> str:
     in `astropy.units`.
     """
 
-    def substitute_module_shortcuts(module_name):
+    def substitute_module_shortcuts(module_name: str):
         """Substitute common import shortcuts within module names."""
         replacements = {
             "numpy": "np",

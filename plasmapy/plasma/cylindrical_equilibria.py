@@ -26,7 +26,7 @@ class ForceFreeFluxRope:
     ejections (ICMEs).
     """
 
-    def __init__(self, B0, alpha) -> None:
+    def __init__(self, B0, alpha: float) -> None:
         self.B0 = B0
         self.alpha = alpha
 

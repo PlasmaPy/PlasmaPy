@@ -363,7 +363,7 @@ class _ParticleInput:
             )
 
     @staticmethod
-    def category_errmsg(particle, require, exclude, any_of, callable_name) -> str:
+    def category_errmsg(particle, require, exclude, any_of, callable_name: str) -> str:
         """
         Return an error message for when a particle does not meet
         categorization criteria.
@@ -562,7 +562,7 @@ class _ParticleInput:
 
     parameters_to_skip = ("Z", "mass_numb")
 
-    def perform_pre_validations(self, Z, mass_numb):
+    def perform_pre_validations(self, Z, mass_numb: int):
         """
         Perform a variety of pre-checks on the arguments.
 
