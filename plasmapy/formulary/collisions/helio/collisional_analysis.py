@@ -30,7 +30,7 @@ def temp_ratio(  # noqa: C901
     density_scale: float = -1.8,
     velocity_scale: float = -0.2,
     temperature_scale: float = -0.74,
-    verbose=False,
+    verbose: bool = False,
 ):
     r"""
     Calculate the thermalization ratio for a plasma in transit, taken
