@@ -137,7 +137,7 @@ class _GenericWidget(abc.ABC):
             Value of the widget
         """
 
-    def edge_case_condition(self, value):  # noqa: ARG002
+    def edge_case_condition(self, value) -> bool:  # noqa: ARG002
         """
         Edge case condition for the widget.
 
@@ -604,7 +604,7 @@ def _handle_clear_click(event) -> None:
         fn.output_widget.clear_output()
 
 
-def _colored_text(color, text):
+def _colored_text(color, text) -> str:
     """
     Prepares an inline string with the given color.
 

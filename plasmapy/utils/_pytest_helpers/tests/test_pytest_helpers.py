@@ -35,7 +35,7 @@ def issue_warning(*args, **kwargs) -> int:
     return 42
 
 
-def adams_number(*args, **kwargs):
+def adams_number(*args, **kwargs) -> int:
     return 42
 
 
