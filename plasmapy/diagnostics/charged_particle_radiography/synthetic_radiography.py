@@ -129,7 +129,7 @@ class Tracker:
         source: u.Quantity[u.m],
         detector: u.Quantity[u.m],
         detector_hdir=None,
-        verbose=True,
+        verbose: bool = True,
     ) -> None:
         # self.grid is the grid object
         if isinstance(grids, AbstractGrid):
@@ -1356,7 +1356,7 @@ class Tracker:
 
 
 def synthetic_radiograph(  # noqa: C901
-    obj, size=None, bins=None, ignore_grid=False, optical_density=False
+    obj, size=None, bins=None, ignore_grid: bool = False, optical_density: bool = False
 ):
     r"""
     Calculate a "synthetic radiograph" (particle count histogram in the
