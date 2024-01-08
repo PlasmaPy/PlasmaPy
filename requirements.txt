@@ -4,7 +4,7 @@
 #
 #    pip-compile --all-extras --output-file=requirements.txt
 #
-alabaster==0.7.13
+alabaster==0.7.15
     # via sphinx
 anyio==4.2.0
     # via jupyter-server
@@ -18,7 +18,7 @@ asteval==0.9.31
     # via lmfit
 astropy==6.0.0
     # via plasmapy (setup.py)
-astropy-iers-data==0.2024.1.1.0.33.39
+astropy-iers-data==0.2024.1.8.0.30.55
     # via astropy
 asttokens==2.4.1
     # via stack-data
@@ -57,7 +57,7 @@ click-default-group==1.2.4
     # via towncrier
 colorama==0.4.6
     # via tox
-comm==0.2.0
+comm==0.2.1
     # via
     #   ipykernel
     #   ipywidgets
@@ -100,7 +100,7 @@ future==0.18.3
     # via uncertainties
 h5py==3.10.0
     # via plasmapy (setup.py)
-hypothesis==6.92.2
+hypothesis==6.92.4
     # via plasmapy (setup.py)
 identify==2.5.33
     # via pre-commit
@@ -117,7 +117,7 @@ iniconfig==2.0.0
     # via pytest
 ipykernel==6.28.0
     # via plasmapy (setup.py)
-ipython==8.19.0
+ipython==8.20.0
     # via
     #   ipykernel
     #   ipywidgets
@@ -154,7 +154,7 @@ jupyter-client==8.6.0
     #   jupyter-server
     #   nbclient
     #   voila
-jupyter-core==5.5.1
+jupyter-core==5.7.0
     # via
     #   ipykernel
     #   jupyter-client
@@ -165,7 +165,7 @@ jupyter-core==5.5.1
     #   voila
 jupyter-events==0.9.0
     # via jupyter-server
-jupyter-server==2.12.1
+jupyter-server==2.12.2
     # via
     #   jupyterlab-server
     #   voila
@@ -203,7 +203,7 @@ nbclient==0.7.4
     # via
     #   nbconvert
     #   voila
-nbconvert==7.13.1
+nbconvert==7.14.0
     # via
     #   jupyter-server
     #   nbsphinx
@@ -222,7 +222,7 @@ nodeenv==1.8.0
     # via pre-commit
 numba==0.58.1
     # via plasmapy (setup.py)
-numpy==1.26.2
+numpy==1.26.3
     # via
     #   astropy
     #   contourpy
@@ -263,7 +263,7 @@ parso==0.8.3
     # via jedi
 pexpect==4.9.0
     # via ipython
-pillow==10.1.0
+pillow==10.2.0
     # via
     #   matplotlib
     #   plasmapy (setup.py)
@@ -346,7 +346,7 @@ pyzmq==25.1.2
     #   ipykernel
     #   jupyter-client
     #   jupyter-server
-referencing==0.32.0
+referencing==0.32.1
     # via
     #   jsonschema
     #   jsonschema-specifications
@@ -482,7 +482,7 @@ tox==4.11.4
     # via plasmapy (setup.py)
 tqdm==4.66.1
     # via plasmapy (setup.py)
-traitlets==5.14.0
+traitlets==5.14.1
     # via
     #   comm
     #   ipykernel
@@ -498,7 +498,7 @@ traitlets==5.14.0
     #   nbformat
     #   nbsphinx
     #   voila
-types-python-dateutil==2.8.19.14
+types-python-dateutil==2.8.19.20240106
     # via arrow
 tzdata==2023.4
     # via pandas
@@ -516,7 +516,7 @@ virtualenv==20.25.0
     #   tox
 voila==0.5.5
     # via plasmapy (setup.py)
-wcwidth==0.2.12
+wcwidth==0.2.13
     # via prompt-toolkit
 webcolors==1.13
     # via jsonschema
