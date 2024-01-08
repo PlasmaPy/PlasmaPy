@@ -431,3 +431,14 @@ showcontent = true
 directory = "trivial"
 name = "Trivial/Internal Changes"
 showcontent = true
+
+[tool.pyright]
+pythonVersion = "3.9"
+pythonPlatform = "Linux"
+include = ["plasmapy"]
+exclude = ["**/tests"]
+defineConstant = { DEBUG = true }
+stubPath = "type_stubs"
+typeCheckingMode = "basic"
+reportMissingImports = true
+reportMissingTypeStubs = true
