@@ -21,12 +21,12 @@ repos:
   - id: check-yaml
 
 - repo: https://github.com/python-jsonschema/check-jsonschema
-  rev: 0.27.1
+  rev: 0.27.3
   hooks:
   - id: check-github-workflows
 
 - repo: https://github.com/sirosen/texthooks
-  rev: 0.6.2
+  rev: 0.6.3
   hooks:
   - id: fix-smartquotes
   - id: fix-spaces
@@ -39,7 +39,7 @@ repos:
   - id: remove-crlf
 
 - repo: https://github.com/macisamuele/language-formatters-pre-commit-hooks
-  rev: v2.11.0
+  rev: v2.12.0
   hooks:
   - id: pretty-format-ini
     args: [--autofix]
@@ -86,14 +86,14 @@ repos:
     - tomli
 
 - repo: https://github.com/astral-sh/ruff-pre-commit
-  rev: v0.1.6
+  rev: v0.1.9
   hooks:
   - id: ruff
     args: [--fix]
   - id: ruff-format
 
 - repo: https://github.com/PyCQA/isort
-  rev: 5.12.0
+  rev: 5.13.2
   hooks:
   - id: isort
     name: isort
@@ -110,7 +110,7 @@ repos:
     exclude: docs/contributing/coding_guide.rst
 
 - repo: https://github.com/nbQA-dev/nbQA
-  rev: 1.7.0
+  rev: 1.7.1
   hooks:
   - id: nbqa-check-ast
   - id: nbqa-ruff

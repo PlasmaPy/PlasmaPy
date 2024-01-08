@@ -11,7 +11,7 @@ else:
         matplotlib.use("Agg")
 
 
-def pytest_configure(config):  # coverage: ignore
+def pytest_configure(config) -> None:  # coverage: ignore
     """Adds @pytest.mark.slow annotation for marking slow tests for optional skipping."""
     config.addinivalue_line(
         "markers",

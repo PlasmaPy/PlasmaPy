@@ -54,7 +54,7 @@ class ExcessStatistics:
     [0.5, 0.0, 0]
     """
 
-    def __init__(self, signal, thresholds, time_step):
+    def __init__(self, signal, thresholds, time_step) -> None:
         if time_step <= 0:
             raise ValueError("time_step must be positive")
 
@@ -70,7 +70,7 @@ class ExcessStatistics:
 
         self._calculate_excess_statistics(signal, thresholds, time_step)
 
-    def _calculate_excess_statistics(self, signal, thresholds, time_step):
+    def _calculate_excess_statistics(self, signal, thresholds, time_step) -> None:
         for threshold in thresholds:
             indices_above_threshold = np.where(np.array(signal) > threshold)[0]
 

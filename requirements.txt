@@ -4,9 +4,9 @@
 #
 #    pip-compile --all-extras --output-file=requirements.txt
 #
-alabaster==0.7.13
+alabaster==0.7.15
     # via sphinx
-anyio==4.1.0
+anyio==4.2.0
     # via jupyter-server
 argon2-cffi==23.1.0
     # via jupyter-server
@@ -16,16 +16,18 @@ arrow==1.3.0
     # via isoduration
 asteval==0.9.31
     # via lmfit
-astropy==5.3.4
+astropy==6.0.0
     # via plasmapy (setup.py)
+astropy-iers-data==0.2024.1.8.0.30.55
+    # via astropy
 asttokens==2.4.1
     # via stack-data
-attrs==23.1.0
+attrs==23.2.0
     # via
     #   hypothesis
     #   jsonschema
     #   referencing
-babel==2.13.1
+babel==2.14.0
     # via
     #   jupyterlab-server
     #   sphinx
@@ -55,7 +57,7 @@ click-default-group==1.2.4
     # via towncrier
 colorama==0.4.6
     # via tox
-comm==0.2.0
+comm==0.2.1
     # via
     #   ipykernel
     #   ipywidgets
@@ -69,7 +71,7 @@ decorator==5.1.1
     # via ipython
 defusedxml==0.7.1
     # via nbconvert
-distlib==0.3.7
+distlib==0.3.8
     # via virtualenv
 docutils==0.18.1
     # via
@@ -84,13 +86,13 @@ execnet==2.0.2
     # via pytest-xdist
 executing==2.0.1
     # via stack-data
-fastjsonschema==2.19.0
+fastjsonschema==2.19.1
     # via nbformat
 filelock==3.13.1
     # via
     #   tox
     #   virtualenv
-fonttools==4.45.1
+fonttools==4.47.0
     # via matplotlib
 fqdn==1.5.1
     # via jsonschema
@@ -98,9 +100,9 @@ future==0.18.3
     # via uncertainties
 h5py==3.10.0
     # via plasmapy (setup.py)
-hypothesis==6.91.0
+hypothesis==6.92.4
     # via plasmapy (setup.py)
-identify==2.5.32
+identify==2.5.33
     # via pre-commit
 idna==3.6
     # via
@@ -113,9 +115,9 @@ incremental==22.10.0
     # via towncrier
 iniconfig==2.0.0
     # via pytest
-ipykernel==6.26.0
+ipykernel==6.28.0
     # via plasmapy (setup.py)
-ipython==8.18.1
+ipython==8.20.0
     # via
     #   ipykernel
     #   ipywidgets
@@ -144,7 +146,7 @@ jsonschema[format-nongpl]==4.20.0
     #   jupyter-events
     #   jupyterlab-server
     #   nbformat
-jsonschema-specifications==2023.11.1
+jsonschema-specifications==2023.12.1
     # via jsonschema
 jupyter-client==8.6.0
     # via
@@ -152,7 +154,7 @@ jupyter-client==8.6.0
     #   jupyter-server
     #   nbclient
     #   voila
-jupyter-core==5.5.0
+jupyter-core==5.7.0
     # via
     #   ipykernel
     #   jupyter-client
@@ -163,11 +165,11 @@ jupyter-core==5.5.0
     #   voila
 jupyter-events==0.9.0
     # via jupyter-server
-jupyter-server==2.10.1
+jupyter-server==2.12.2
     # via
     #   jupyterlab-server
     #   voila
-jupyter-server-terminals==0.4.4
+jupyter-server-terminals==0.5.1
     # via jupyter-server
 jupyterlab-pygments==0.3.0
     # via nbconvert
@@ -201,7 +203,7 @@ nbclient==0.7.4
     # via
     #   nbconvert
     #   voila
-nbconvert==7.11.0
+nbconvert==7.14.0
     # via
     #   jupyter-server
     #   nbsphinx
@@ -220,7 +222,7 @@ nodeenv==1.8.0
     # via pre-commit
 numba==0.58.1
     # via plasmapy (setup.py)
-numpy==1.26.2
+numpy==1.26.3
     # via
     #   astropy
     #   contourpy
@@ -251,7 +253,7 @@ packaging==23.2
     #   sphinx
     #   tox
     #   xarray
-pandas==2.1.3
+pandas==2.1.4
     # via
     #   plasmapy (setup.py)
     #   xarray
@@ -261,12 +263,12 @@ parso==0.8.3
     # via jedi
 pexpect==4.9.0
     # via ipython
-pillow==10.1.0
+pillow==10.2.0
     # via
     #   matplotlib
     #   plasmapy (setup.py)
     #   sphinx-gallery
-platformdirs==4.0.0
+platformdirs==4.1.0
     # via
     #   jupyter-core
     #   tox
@@ -275,13 +277,13 @@ pluggy==1.3.0
     # via
     #   pytest
     #   tox
-pre-commit==3.5.0
+pre-commit==3.6.0
     # via plasmapy (setup.py)
 prometheus-client==0.19.0
     # via jupyter-server
-prompt-toolkit==3.0.41
+prompt-toolkit==3.0.43
     # via ipython
-psutil==5.9.6
+psutil==5.9.7
     # via ipykernel
 ptyprocess==0.7.0
     # via
@@ -310,7 +312,7 @@ pyparsing==3.1.1
     # via matplotlib
 pyproject-api==1.6.1
     # via tox
-pytest==7.4.3
+pytest==7.4.4
     # via
     #   plasmapy (setup.py)
     #   pytest-datadir
@@ -339,12 +341,12 @@ pyyaml==6.0.1
     #   pre-commit
     #   pybtex
     #   pytest-regressions
-pyzmq==25.1.1
+pyzmq==25.1.2
     # via
     #   ipykernel
     #   jupyter-client
     #   jupyter-server
-referencing==0.31.0
+referencing==0.32.1
     # via
     #   jsonschema
     #   jsonschema-specifications
@@ -362,7 +364,7 @@ rfc3986-validator==0.1.1
     # via
     #   jsonschema
     #   jupyter-events
-rpds-py==0.13.1
+rpds-py==0.16.2
     # via
     #   jsonschema
     #   referencing
@@ -430,7 +432,7 @@ sphinx-notfound-page==1.0.0
     # via plasmapy (setup.py)
 sphinx-reredirects==0.1.3
     # via plasmapy (setup.py)
-sphinx-rtd-theme==1.3.0
+sphinx-rtd-theme==2.0.0
     # via plasmapy (setup.py)
 sphinx-tabs==3.4.4
     # via plasmapy (setup.py)
@@ -466,7 +468,7 @@ tinycss2==1.2.1
     # via nbconvert
 tomli==2.0.1
     # via plasmapy (setup.py)
-tornado==6.3.3
+tornado==6.4
     # via
     #   ipykernel
     #   jupyter-client
@@ -476,11 +478,11 @@ towncrier==23.6.0
     # via
     #   plasmapy (setup.py)
     #   sphinx-changelog
-tox==4.11.3
+tox==4.11.4
     # via plasmapy (setup.py)
 tqdm==4.66.1
     # via plasmapy (setup.py)
-traitlets==5.13.0
+traitlets==5.14.1
     # via
     #   comm
     #   ipykernel
@@ -496,9 +498,9 @@ traitlets==5.13.0
     #   nbformat
     #   nbsphinx
     #   voila
-types-python-dateutil==2.8.19.14
+types-python-dateutil==2.8.19.20240106
     # via arrow
-tzdata==2023.3
+tzdata==2023.4
     # via pandas
 uncertainties==3.1.7
     # via lmfit
@@ -508,13 +510,13 @@ uri-template==1.3.0
     # via jsonschema
 urllib3==2.1.0
     # via requests
-virtualenv==20.24.7
+virtualenv==20.25.0
     # via
     #   pre-commit
     #   tox
 voila==0.5.5
     # via plasmapy (setup.py)
-wcwidth==0.2.12
+wcwidth==0.2.13
     # via prompt-toolkit
 webcolors==1.13
     # via jsonschema
@@ -522,7 +524,7 @@ webencodings==0.5.1
     # via
     #   bleach
     #   tinycss2
-websocket-client==1.6.4
+websocket-client==1.7.0
     # via jupyter-server
 websockets==12.0
     # via voila
@@ -530,7 +532,7 @@ widgetsnbextension==4.0.9
     # via ipywidgets
 wrapt==1.16.0
     # via plasmapy (setup.py)
-xarray==2023.11.0
+xarray==2023.12.0
     # via plasmapy (setup.py)
 
 # The following packages are considered to be unsafe in a requirements file:

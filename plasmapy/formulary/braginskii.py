@@ -314,14 +314,14 @@ class ClassicalTransport:
     )
     def __init__(  # noqa: PLR0912, PLR0915
         self,
-        T_e: u.K,
-        n_e: u.m**-3,
-        T_i: u.K,
-        n_i: u.m**-3,
+        T_e: u.Quantity[u.K],
+        n_e: u.Quantity[u.m**-3],
+        T_i: u.Quantity[u.K],
+        n_i: u.Quantity[u.m**-3],
         ion,
-        m_i: u.kg = None,
+        m_i: u.Quantity[u.kg] = None,
         Z=None,
-        B: u.T = 0.0 * u.T,
+        B: u.Quantity[u.T] = 0.0 * u.T,
         model="Braginskii",
         field_orientation="parallel",
         coulomb_log_ei=None,
@@ -333,7 +333,7 @@ class ClassicalTransport:
         mu=None,
         theta=None,
         coulomb_log_method="classical",
-    ):
+    ) -> None:
         # check the model
         self.model = model.lower()  # string inputs should be case-insensitive
         valid_models = ["braginskii", "spitzer", "spitzer-harm", "ji-held"]
@@ -455,7 +455,7 @@ class ClassicalTransport:
 
     @property
     @validate_quantities
-    def resistivity(self) -> u.Ohm * u.m:
+    def resistivity(self) -> u.Quantity[u.Ohm * u.m]:
         r"""
         Calculate the resistivity.
 
@@ -525,7 +525,7 @@ class ClassicalTransport:
 
     @property
     @validate_quantities
-    def ion_thermal_conductivity(self) -> u.W / u.m / u.K:
+    def ion_thermal_conductivity(self) -> u.Quantity[u.W / u.m / u.K]:
         r"""
         Calculate the thermal conductivity for ions.
 
@@ -579,7 +579,7 @@ class ClassicalTransport:
 
     @property
     @validate_quantities
-    def electron_thermal_conductivity(self) -> u.W / u.m / u.K:
+    def electron_thermal_conductivity(self) -> u.Quantity[u.W / u.m / u.K]:
         r"""
         Calculate the thermal conductivity for electrons.
 
@@ -645,7 +645,7 @@ class ClassicalTransport:
 
     @property
     @validate_quantities
-    def ion_viscosity(self) -> u.Pa * u.s:
+    def ion_viscosity(self) -> u.Quantity[u.Pa * u.s]:
         r"""
         Calculate the ion viscosity.
 
@@ -693,7 +693,7 @@ class ClassicalTransport:
 
     @property
     @validate_quantities
-    def electron_viscosity(self) -> u.Pa * u.s:
+    def electron_viscosity(self) -> u.Quantity[u.Pa * u.s]:
         r"""
         Calculate the electron viscosity.
 
@@ -793,13 +793,13 @@ def resistivity(
     ion,
     m_i=None,
     Z=None,
-    B: u.T = 0.0 * u.T,
+    B: u.Quantity[u.T] = 0.0 * u.T,
     model="Braginskii",
     field_orientation="parallel",
     mu=None,
     theta=None,
     coulomb_log_method="classical",
-) -> u.Ohm * u.m:
+) -> u.Quantity[u.Ohm * u.m]:
     r"""
     Calculate the resistivity.
 
@@ -862,7 +862,7 @@ def thermoelectric_conductivity(
     ion,
     m_i=None,
     Z=None,
-    B: u.T = 0.0 * u.T,
+    B: u.Quantity[u.T] = 0.0 * u.T,
     model="Braginskii",
     field_orientation="parallel",
     mu=None,
@@ -904,13 +904,13 @@ def ion_thermal_conductivity(
     ion,
     m_i=None,
     Z=None,
-    B: u.T = 0.0 * u.T,
+    B: u.Quantity[u.T] = 0.0 * u.T,
     model="Braginskii",
     field_orientation="parallel",
     mu=None,
     theta=None,
     coulomb_log_method="classical",
-) -> u.W / u.m / u.K:
+) -> u.Quantity[u.W / u.m / u.K]:
     r"""
     Calculate the thermal conductivity for ions.
 
@@ -975,13 +975,13 @@ def electron_thermal_conductivity(
     ion,
     m_i=None,
     Z=None,
-    B: u.T = 0.0 * u.T,
+    B: u.Quantity[u.T] = 0.0 * u.T,
     model="Braginskii",
     field_orientation="parallel",
     mu=None,
     theta=None,
     coulomb_log_method="classical",
-) -> u.W / u.m / u.K:
+) -> u.Quantity[u.W / u.m / u.K]:
     r"""
     Calculate the thermal conductivity for electrons.
 
@@ -1057,13 +1057,13 @@ def ion_viscosity(
     ion,
     m_i=None,
     Z=None,
-    B: u.T = 0.0 * u.T,
+    B: u.Quantity[u.T] = 0.0 * u.T,
     model="Braginskii",
     field_orientation="parallel",
     mu=None,
     theta=None,
     coulomb_log_method="classical",
-) -> u.Pa * u.s:
+) -> u.Quantity[u.Pa * u.s]:
     r"""
     Calculate the ion viscosity.
 
@@ -1114,13 +1114,13 @@ def electron_viscosity(
     ion,
     m_i=None,
     Z=None,
-    B: u.T = 0.0 * u.T,
+    B: u.Quantity[u.T] = 0.0 * u.T,
     model="Braginskii",
     field_orientation="parallel",
     mu=None,
     theta=None,
     coulomb_log_method="classical",
-) -> u.Pa * u.s:
+) -> u.Quantity[u.Pa * u.s]:
     r"""
     Calculate the electron viscosity.
 

@@ -49,7 +49,7 @@ def plasma_dispersion_func_lite(zeta):
 
 @bind_lite_func(plasma_dispersion_func_lite)
 def plasma_dispersion_func(
-    zeta: Union[complex, np.ndarray, u.Quantity]
+    zeta: Union[complex, np.ndarray, u.Quantity],
 ) -> Union[complex, np.ndarray, u.Quantity]:
     r"""
     Calculate the plasma dispersion function.
@@ -100,7 +100,7 @@ def plasma_dispersion_func_deriv_lite(zeta):
 
 @bind_lite_func(plasma_dispersion_func_deriv_lite)
 def plasma_dispersion_func_deriv(
-    zeta: Union[complex, np.ndarray, u.Quantity]
+    zeta: Union[complex, np.ndarray, u.Quantity],
 ) -> Union[complex, np.ndarray, u.Quantity]:
     r"""
     Calculate the derivative of the plasma dispersion function.

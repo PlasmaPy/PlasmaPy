@@ -78,43 +78,37 @@ class ValidateQuantities(CheckUnits, CheckValues):
         import astropy.units as u
         from plasmapy.utils.decorators import ValidateQuantities
 
-        @ValidateQuantities(mass={'units': u.g,
-                                  'can_be_negative': False},
-                            vel=u.cm / u.s,
-                            validations_on_return=[u.g * u.cm / u.s, u.kg * u.m / u.s])
+        @ValidateQuantities(
+            mass={"units": u.g, "can_be_negative": False},
+            vel=u.cm / u.s,
+            validations_on_return=[u.g * u.cm / u.s, u.kg * u.m / u.s],
+        )
         def foo(mass, vel):
             return mass * vel
 
         # on a method
         class Foo:
-            @ValidateQuantities(mass={'units': u.g,
-                                      'can_be_negative': False},
-                                vel=u.cm / u.s,
-                                validations_on_return=[u.g * u.cm / u.s,
-                                                       u.kg * u.m / u.s])
+            @ValidateQuantities(
+                mass={"units": u.g, "can_be_negative": False},
+                vel=u.cm / u.s,
+                validations_on_return=[u.g * u.cm / u.s, u.kg * u.m / u.s],
+            )
             def bar(self, mass, vel):
                 return mass * vel
 
-
     Define units with function annotations::
 
-        import astropy.units as u
-        from plasmapy.utils.decorators import ValidateQuantities
-
-        @ValidateQuantities(mass={'can_be_negative': False})
+        @ValidateQuantities(mass={"can_be_negative": False})
         def foo(mass: u.g, vel: u.cm / u.s) -> u.g * u.cm / u.s:
             return mass * vel
 
         # on a method
         class Foo:
-            @ValidateQuantities(mass={'can_be_negative': False})
+            @ValidateQuantities(mass={"can_be_negative": False})
             def bar(self, mass: u.g, vel: u.cm / u.s) -> u.g * u.cm / u.s:
                 return mass * vel
 
     Allow `None` values to pass::
-
-        import astropy.units as u
-        from plasmapy.utils.decorators import ValidateQuantities
 
         @ValidateQuantities(checks_on_return=[u.cm, None])
         def foo(arg1: u.cm = None):
@@ -122,23 +116,22 @@ class ValidateQuantities(CheckUnits, CheckValues):
 
     Allow return values to have equivalent units::
 
-        import astropy.units as u
-        from plasmapy.utils.decorators import ValidateQuantities
-
-        @ValidateQuantities(arg1={'units': u.cm},
-                            checks_on_return={'units': u.km,
-                                              'pass_equivalent_units': True})
+        @ValidateQuantities(
+            arg1={"units": u.cm},
+            checks_on_return={"units": u.km, "pass_equivalent_units": True},
+        )
         def foo(arg1):
             return arg1
 
     Allow equivalent units to pass with specified equivalencies::
 
-        import astropy.units as u
-        from plasmapy.utils.decorators import ValidateQuantities
-
-        @ValidateQuantities(arg1={'units': u.K,
-                                  'equivalencies': u.temperature(),
-                                  'pass_equivalent_units': True})
+        @ValidateQuantities(
+            arg1={
+                "units": u.K,
+                "equivalencies": u.temperature(),
+                "pass_equivalent_units": True,
+            }
+        )
         def foo(arg1):
             return arg1
 
@@ -146,7 +139,9 @@ class ValidateQuantities(CheckUnits, CheckValues):
         https://docs.astropy.org/en/stable/units/equivalencies.html
     """
 
-    def __init__(self, validations_on_return=None, **validations: dict[str, Any]):
+    def __init__(
+        self, validations_on_return=None, **validations: dict[str, Any]
+    ) -> None:
         if "checks_on_return" in validations:
             raise TypeError(
                 "keyword argument 'checks_on_return' is not allowed, "
@@ -311,8 +306,9 @@ class ValidateQuantities(CheckUnits, CheckValues):
         Raises
         ------
         TypeError
-            if argument is not an AstroPy :class:`~astropy.units.Quantity`
+            if argument is not an Astropy :class:`~astropy.units.Quantity`
             or not convertible to a :class:`~astropy.units.Quantity`
+
         ValueError
             if validations fail
         """
@@ -455,29 +451,27 @@ def validate_quantities(func=None, validations_on_return=None, **validations):
         import astropy.units as u
         from plasmapy.utils.decorators import validate_quantities
 
-        @validate_quantities(mass={'units': u.g,
-                                   'can_be_negative': False},
-                             vel=u.cm / u.s,
-                             validations_on_return=[u.g * u.cm / u.s, u.kg * u.m / u.s])
+        @validate_quantities(
+            mass={"units": u.g, "can_be_negative": False},
+            vel=u.cm / u.s,
+            validations_on_return=[u.g * u.cm / u.s, u.kg * u.m / u.s],
+        )
         def foo(mass, vel):
             return mass * vel
 
         # on a method
         class Foo:
-            @validate_quantities(mass={'units': u.g,
-                                       'can_be_negative': False},
-                                 vel=u.cm / u.s,
-                                 validations_on_return=[u.g * u.cm / u.s,
-                                                        u.kg * u.m / u.s])
+            @validate_quantities(
+                mass={"units": u.g, "can_be_negative": False},
+                vel=u.cm / u.s,
+                validations_on_return=[u.g * u.cm / u.s, u.kg * u.m / u.s],
+            )
             def bar(self, mass, vel):
                 return mass * vel
 
     Define units with function annotations::
 
-        import astropy.units as u
-        from plasmapy.utils.decorators import validate_quantities
-
-        @validate_quantities(mass={'can_be_negative': False})
+        @validate_quantities(mass={"can_be_negative": False})
         def foo(mass: u.g, vel: u.cm / u.s) -> u.g * u.cm / u.s:
             return mass * vel
 
@@ -488,14 +482,11 @@ def validate_quantities(func=None, validations_on_return=None, **validations):
 
         # on a method
         class Foo:
-            @validate_quantities(mass={'can_be_negative': False})
+            @validate_quantities(mass={"can_be_negative": False})
             def bar(self, mass: u.g, vel: u.cm / u.s) -> u.g * u.cm / u.s:
                 return mass * vel
 
     Define units using type hint annotations::
-
-        import astropy.units as u
-        from plasmapy.decorators import validate_quantities
 
         @validate_quantities
         def foo(x: u.Quantity[u.m], time: u.Quantity[u.s]) -> u.Quantity[u.m / u.s]:
@@ -503,33 +494,24 @@ def validate_quantities(func=None, validations_on_return=None, **validations):
 
     Allow `None` values to pass::
 
-        import astropy.units as u
-        from plasmapy.utils.decorators import validate_quantities
-
-        @validate_quantities(arg2={'none_shall_pass': True},
-                             checks_on_return=[u.cm, None])
-        def foo(arg1: u.cm = None, arg2: u.cm):
+        @validate_quantities(arg2={"none_shall_pass": True}, checks_on_return=[u.cm, None])
+        def foo(arg1: u.cm, arg2: u.cm = None):
             return None
 
     Allow return values to have equivalent units::
 
-        import astropy.units as u
-        from plasmapy.utils.decorators import validate_quantities
-
-        @validate_quantities(arg1={'units': u.cm},
-                             checks_on_return={'units': u.km,
-                                               'pass_equivalent_units': True})
+        @validate_quantities(
+            arg1={"units": u.cm},
+            checks_on_return={"units": u.km, "pass_equivalent_units": True},
+        )
         def foo(arg1):
             return arg1
 
     Allow equivalent units to pass with specified equivalencies::
 
-        import astropy.units as u
-        from plasmapy.utils.decorators import validate_quantities
-
-        @validate_quantities(arg1={'units': u.K,
-                                   'equivalencies': u.temperature(),
-                                   'pass_equivalent_units': True})
+        @validate_quantities(
+            arg1={"units": u.K, "equivalencies": u.temperature(), "pass_equivalent_units": True}
+        )
         def foo(arg1):
             return arg1
 

@@ -21,7 +21,7 @@ __all__ = [
 import numpy as np
 import warnings
 
-from typing import Callable
+from collections.abc import Callable
 
 # Declare Constants & global variables
 _EQUALITY_ATOL = 1e-10
@@ -65,7 +65,7 @@ class NonZeroDivergence(NullPointError):  # noqa: N818
        change in future releases.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__(
             "The divergence constraint does not hold for the provided magnetic field."
         )
@@ -94,7 +94,7 @@ class Point:
        change in future releases.
     """
 
-    def __init__(self, loc):
+    def __init__(self, loc) -> None:
         self._loc = loc
 
     def get_loc(self):
@@ -116,7 +116,7 @@ class NullPoint(Point):
        change in future releases.
     """
 
-    def __init__(self, null_loc, classification):
+    def __init__(self, null_loc, classification) -> None:
         super().__init__(null_loc)
         self._classification = classification
 

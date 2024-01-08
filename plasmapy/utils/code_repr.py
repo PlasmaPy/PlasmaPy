@@ -6,8 +6,9 @@ import astropy.units as u
 import inspect
 import numpy as np
 
+from collections.abc import Callable
 from numbers import Integral
-from typing import Any, Callable, Optional, Union
+from typing import Any, Optional, Union
 
 
 def _code_repr_of_ndarray(array: np.ndarray, max_items=np.inf) -> str:
@@ -137,7 +138,7 @@ def _name_with_article(ex: Exception) -> str:
     return f"{indefinite_article} {name}"
 
 
-def _object_name(obj: Any, showmodule=False) -> str:
+def _object_name(obj: Any, showmodule: bool = False) -> str:
     """
     Return the name of an `object`.
 

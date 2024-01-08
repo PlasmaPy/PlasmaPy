@@ -52,7 +52,7 @@ dependencies = [
   "requests >= 2.27.1",
   "scipy >= 1.7.0",
   "tqdm >= 4.60.0",
-  "voila >= 0.3.3",
+  "voila >= 0.5.0",
   "wrapt >= 1.12.1",
   "xarray >= 2022.3.0",
 ]
@@ -269,7 +269,6 @@ extend-select = [
   "RUF013", # implicit-optional
   "RUF015", # unnecessary-iterable-allocation-for-first-element
   "RUF016", # invalid-index-type
-  "RUF018", # assignment-in-assert
   "RUF100", # unused-noqa
   "RUF200", # invalid-pyproject-toml
   "S", # flake8-bandit
@@ -355,6 +354,22 @@ pandas = "pd"
 
 [tool.ruff.flake8-unused-arguments]
 ignore-variadic-names = true
+
+[tool.ruff.lint.flake8-tidy-imports.banned-api]
+"typing.Callable".msg = "Deprecated alias. Change to collections.abc.Callable"
+"typing.Collection".msg = "Deprecated alias. Change to collections.abc.Collection"
+"typing.DefaultDict".msg = "Deprecated alias. Change to collections.defaultdict"
+"typing.Dict".msg = "Deprecated alias. Change to dict"
+"typing.Generator".msg = "Deprecated alias. Change to collections.abc.Generator"
+"typing.Iterable".msg = "Deprecated alias. Change to collections.abc.Iterable"
+"typing.Iterator".msg = "Deprecated alias. Change to collections.abc.Iterator"
+"typing.List".msg = "Deprecated alias. Change to list"
+"typing.Mapping".msg = "Deprecated alias. Change to collections.abc.mapping"
+"typing.MutableMapping".msg = "Deprecated alias. Change to collections.abc.MutableMapping"
+"typing.Sequence".msg = "Deprecated alias. Change to collections.abc.Sequence"
+"typing.Set".msg = "Deprecated alias. Change to set"
+"typing.Tuple".msg = "Deprecated alias. Change to tuple"
+"typing.Type".msg = "Deprecated alias. Change to type"
 
 [tool.ruff.mccabe]
 max-complexity = 10

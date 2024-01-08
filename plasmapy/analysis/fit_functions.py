@@ -38,7 +38,7 @@ class AbstractFitFunction(ABC):
         self,
         params: Optional[tuple[float, ...]] = None,
         param_errors: Optional[tuple[float, ...]] = None,
-    ):
+    ) -> None:
         """
         Parameters
         ----------
@@ -67,7 +67,7 @@ class AbstractFitFunction(ABC):
         self._curve_fit_results = None
         self._rsq = None
 
-    def __call__(self, x, x_err=None, reterr=False):
+    def __call__(self, x, x_err=None, reterr: bool = False):  # noqa: ANN204
         """
         Direct call of the fit function :math:`f(x)`.
 
@@ -105,7 +105,7 @@ class AbstractFitFunction(ABC):
         return f"{self.__str__()} {self.__class__}"
 
     @abstractmethod
-    def __str__(self):
+    def __str__(self) -> str:
         ...
 
     @abstractmethod
@@ -170,7 +170,7 @@ class AbstractFitFunction(ABC):
                 return err
         """,
     )
-    def func_err(self, x, x_err=None, rety=False):
+    def func_err(self, x, x_err=None, rety: bool = False):
         """
         Parameters
         ----------
@@ -522,7 +522,7 @@ class Linear(AbstractFitFunction):
         return m * x + b
 
     @modify_docstring(append=AbstractFitFunction.func_err.__original_doc__)
-    def func_err(self, x, x_err=None, rety=False):
+    def func_err(self, x, x_err=None, rety: bool = False):
         """
         Calculate dependent variable uncertainties :math:`\\delta y` for
         dependent variables :math:`y=f(x)`.
@@ -710,7 +710,7 @@ class Exponential(AbstractFitFunction):
         return a * np.exp(alpha * x)
 
     @modify_docstring(append=AbstractFitFunction.func_err.__original_doc__)
-    def func_err(self, x, x_err=None, rety=False):
+    def func_err(self, x, x_err=None, rety: bool = False):
         """
         Calculate dependent variable uncertainties :math:`\\delta y` for
         dependent variables :math:`y=f(x)`.
@@ -803,7 +803,7 @@ class ExponentialPlusLinear(AbstractFitFunction):
         self,
         params: Optional[tuple[float, ...]] = None,
         param_errors: Optional[tuple[float, ...]] = None,
-    ):
+    ) -> None:
         self._exponential = Exponential()
         self._linear = Linear()
         super().__init__(params=params, param_errors=param_errors)
@@ -874,7 +874,7 @@ class ExponentialPlusLinear(AbstractFitFunction):
         return exp_term + lin_term
 
     @modify_docstring(append=AbstractFitFunction.func_err.__original_doc__)
-    def func_err(self, x, x_err=None, rety=False):
+    def func_err(self, x, x_err=None, rety: bool = False):
         """
         Calculate dependent variable uncertainties :math:`\\delta y` for
         dependent variables :math:`y=f(x)`.
@@ -941,7 +941,7 @@ class ExponentialPlusOffset(AbstractFitFunction):
         self,
         params: Optional[tuple[float, ...]] = None,
         param_errors: Optional[tuple[float, ...]] = None,
-    ):
+    ) -> None:
         self._explin = ExponentialPlusLinear()
         super().__init__(params=params, param_errors=param_errors)
 
@@ -1007,7 +1007,7 @@ class ExponentialPlusOffset(AbstractFitFunction):
         return self._explin.func(x, a, alpha, 0.0, b)
 
     @modify_docstring(append=AbstractFitFunction.func_err.__original_doc__)
-    def func_err(self, x, x_err=None, rety=False):
+    def func_err(self, x, x_err=None, rety: bool = False):
         """
         Calculate dependent variable uncertainties :math:`\\delta y` for
         dependent variables :math:`y=f(x)`.

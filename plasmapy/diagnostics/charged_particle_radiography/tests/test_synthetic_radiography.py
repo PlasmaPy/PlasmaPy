@@ -133,7 +133,7 @@ def _test_grid(  # noqa: C901, PLR0912
 
 @pytest.mark.slow()
 @pytest.mark.filterwarnings("ignore::RuntimeWarning")
-def test_multiple_grids():
+def test_multiple_grids() -> None:
     """
     Test that a case with two grids runs.
 
@@ -235,7 +235,7 @@ def run_mesh_example(
 
 
 @pytest.mark.slow()
-def test_1D_deflections():
+def test_1D_deflections() -> None:
     # Check B-deflection
     hax, lineout = run_1D_example("constant_bz")
     loc = hax[np.argmax(lineout)]
@@ -248,7 +248,7 @@ def test_1D_deflections():
 
 
 @pytest.mark.slow()
-def test_coordinate_systems():
+def test_coordinate_systems() -> None:
     """
     Check that specifying the same point in different coordinate systems
     ends up with identical source and detector vectors.
@@ -278,7 +278,7 @@ def test_coordinate_systems():
 
 
 @pytest.mark.slow()
-def test_input_validation():
+def test_input_validation() -> None:
     """
     Intentionally raise a number of errors.
     """
@@ -359,7 +359,7 @@ def test_input_validation():
 
 
 @pytest.mark.slow()
-def test_init():
+def test_init() -> None:
     grid = _test_grid("electrostatic_gaussian_sphere", num=50)
 
     # Cartesian
@@ -386,7 +386,7 @@ def test_init():
 
 
 @pytest.mark.slow()
-def test_create_particles():
+def test_create_particles() -> None:
     grid = _test_grid("electrostatic_gaussian_sphere", num=50)
 
     # Cartesian
@@ -406,7 +406,7 @@ def test_create_particles():
 
 
 @pytest.mark.slow()
-def test_load_particles():
+def test_load_particles() -> None:
     grid = _test_grid("electrostatic_gaussian_sphere", num=50)
 
     # Cartesian
@@ -438,7 +438,7 @@ def test_load_particles():
 
 
 @pytest.mark.slow()
-def test_run_options():
+def test_run_options() -> None:
     grid = _test_grid("electrostatic_gaussian_sphere", num=50)
 
     # Cartesian
@@ -533,12 +533,12 @@ class TestSyntheticRadiograph:
             ((tracker_obj_not_simulated,), {}, RuntimeError),
         ],
     )
-    def test_raises(self, args, kwargs, _raises):
+    def test_raises(self, args, kwargs, _raises) -> None:
         """Test scenarios the raise an Exception."""
         with pytest.raises(_raises):
             cpr.synthetic_radiograph(*args, **kwargs)
 
-    def test_warns(self):
+    def test_warns(self) -> None:
         """
         Test warning when less than half the particles reach the detector plane.
         """
@@ -582,7 +582,7 @@ class TestSyntheticRadiograph:
             ),
         ],
     )
-    def test_intensity_histogram(self, args, kwargs, expected):
+    def test_intensity_histogram(self, args, kwargs, expected) -> None:
         """Test several valid use cases."""
         results = cpr.synthetic_radiograph(*args, **kwargs)
 
@@ -607,7 +607,7 @@ class TestSyntheticRadiograph:
         assert histogram.shape == expected["bins"]
 
     @pytest.mark.filterwarnings("ignore:divide by zero:RuntimeWarning")
-    def test_optical_density_histogram(self):
+    def test_optical_density_histogram(self) -> None:
         """
         Test the optical density calculation is correct and stuffed
         with numpy.inf when the intensity is zero.
@@ -635,7 +635,7 @@ class TestSyntheticRadiograph:
 
 
 @pytest.mark.slow()
-def test_saving_output(tmp_path):
+def test_saving_output(tmp_path) -> None:
     """Test behavior of Tracker.save_results."""
 
     sim = create_tracker_obj()
@@ -665,7 +665,7 @@ def test_saving_output(tmp_path):
     "case",
     ["creating particles", "loading particles", "adding a wire mesh"],
 )
-def test_cannot_modify_simulation_after_running(case):
+def test_cannot_modify_simulation_after_running(case) -> None:
     """
     Test that a Tracker objection can not be modified after it is
     run (Tracker.run).
@@ -692,7 +692,7 @@ def test_cannot_modify_simulation_after_running(case):
 
 
 @pytest.mark.slow()
-def test_gaussian_sphere_analytical_comparison():
+def test_gaussian_sphere_analytical_comparison() -> None:
     """
     Run a known example problem and compare it to a theoretical
     model for small deflections.
@@ -788,7 +788,7 @@ def test_gaussian_sphere_analytical_comparison():
 
 
 @pytest.mark.slow()
-def test_add_wire_mesh():
+def test_add_wire_mesh() -> None:
     # ************************************************************
     # Test various input configurations
     # ************************************************************
@@ -901,7 +901,7 @@ def test_add_wire_mesh():
 
 @pytest.mark.slow()
 @pytest.mark.filterwarnings("ignore::RuntimeWarning")
-def test_multiple_grids2():
+def test_multiple_grids2() -> None:
     """
     Test that a case with two grids runs.
     TODO: automate test by including two fields with some obvious analytical

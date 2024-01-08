@@ -158,11 +158,11 @@ class SingleParticleCollisionFrequencies:
         test_particle: ParticleLike,
         field_particle: ParticleLike,
         *,
-        v_drift: u.m / u.s,
-        T_b: u.K,
-        n_b: u.m**-3,
+        v_drift: u.Quantity[u.m / u.s],
+        T_b: u.Quantity[u.K],
+        n_b: u.Quantity[u.m**-3],
         Coulomb_log,
-    ):
+    ) -> None:
         # Note: This class uses CGS units internally to coincide
         #       with our references.  Input is taken in MKS units and
         #       then converted as necessary. Output is in MKS units.
@@ -263,7 +263,7 @@ class SingleParticleCollisionFrequencies:
         ).to(u.Hz)
 
     @cached_property
-    def x(self) -> u.dimensionless_unscaled:
+    def x(self) -> u.Quantity[u.dimensionless_unscaled]:
         """
         The ratio of kinetic energy in the test particle to the thermal
         energy of the field particle.
@@ -280,7 +280,7 @@ class SingleParticleCollisionFrequencies:
         return x.to(u.dimensionless_unscaled)
 
     @staticmethod
-    def _phi_integrand(t: u.dimensionless_unscaled):  # noqa: ANN205
+    def _phi_integrand(t: u.Quantity[u.dimensionless_unscaled]):  # noqa: ANN205
         """
         The phi integrand used in calculating phi.
         """
@@ -391,13 +391,13 @@ class MaxwellianCollisionFrequencies:
         test_particle: ParticleLike,
         field_particle: ParticleLike,
         *,
-        v_drift: u.m / u.s = 0 * u.m / u.s,
-        T_a: u.K,
-        n_a: u.m**-3,
-        T_b: u.K,
-        n_b: u.m**-3,
-        Coulomb_log: u.dimensionless_unscaled,
-    ):
+        v_drift: u.Quantity[u.m / u.s] = 0 * u.m / u.s,
+        T_a: u.Quantity[u.K],
+        n_a: u.Quantity[u.m**-3],
+        T_b: u.Quantity[u.K],
+        n_b: u.Quantity[u.m**-3],
+        Coulomb_log: u.Quantity[u.dimensionless_unscaled],
+    ) -> None:
         if (
             isinstance(v_drift, np.ndarray)
             and isinstance(T_a, np.ndarray)
@@ -602,13 +602,13 @@ class MaxwellianCollisionFrequencies:
     n={"can_be_negative": False},
 )
 def collision_frequency(
-    T: u.K,
-    n: u.m**-3,
+    T: u.Quantity[u.K],
+    n: u.Quantity[u.m**-3],
     species,
     z_mean: Real = np.nan,
-    V: u.m / u.s = np.nan * u.m / u.s,
+    V: u.Quantity[u.m / u.s] = np.nan * u.m / u.s,
     method="classical",
-) -> u.Hz:
+) -> u.Quantity[u.Hz]:
     r"""
     Collision frequency of particles in a plasma.
 
@@ -792,13 +792,13 @@ def collision_frequency(
     n_e={"can_be_negative": False},
 )
 def fundamental_electron_collision_freq(
-    T_e: u.K,
-    n_e: u.m**-3,
+    T_e: u.Quantity[u.K],
+    n_e: u.Quantity[u.m**-3],
     ion,
     coulomb_log=None,
     V=None,
     coulomb_log_method="classical",
-) -> u.s**-1:
+) -> u.Quantity[u.s**-1]:
     r"""
     Average momentum relaxation rate for a slowly flowing Maxwellian
     distribution of electrons.
@@ -948,13 +948,13 @@ def fundamental_electron_collision_freq(
     n_i={"can_be_negative": False},
 )
 def fundamental_ion_collision_freq(
-    T_i: u.K,
-    n_i: u.m**-3,
+    T_i: u.Quantity[u.K],
+    n_i: u.Quantity[u.m**-3],
     ion,
     coulomb_log=None,
     V=None,
     coulomb_log_method="classical",
-) -> u.s**-1:
+) -> u.Quantity[u.s**-1]:
     r"""
     Average momentum relaxation rate for a slowly flowing Maxwellian
     distribution of ions.

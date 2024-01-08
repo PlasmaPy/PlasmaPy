@@ -17,7 +17,8 @@ import numpy as np
 import pytest
 import warnings
 
-from typing import Any, Callable, Optional
+from collections.abc import Callable
+from typing import Any, Optional
 
 from plasmapy.tests._helpers.exceptions import (
     InvalidTestError,
@@ -632,7 +633,7 @@ def assert_can_handle_nparray(  # noqa: C901
     insert_some_nans=None,
     insert_all_nans=None,
     kwargs=None,
-):
+) -> None:
     """
     Test for ability to handle numpy array quantities.
 

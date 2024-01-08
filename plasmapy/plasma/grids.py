@@ -76,7 +76,7 @@ class AbstractGrid(ABC):
 
     """
 
-    def __init__(self, *seeds, num=100, **kwargs):
+    def __init__(self, *seeds, num=100, **kwargs) -> None:
         # Initialize some variables
         self._interpolator = None
         self._is_uniform = None
@@ -142,7 +142,7 @@ class AbstractGrid(ABC):
         """
         return self._recognized_quantities
 
-    def require_quantities(self, req_quantities, replace_with_zeros=False):
+    def require_quantities(self, req_quantities, replace_with_zeros: bool = False):
         r"""
         Check to make sure that a list of required quantities are present.
         Optionally, can create missing quantities and fill them with
@@ -903,7 +903,7 @@ class AbstractGrid(ABC):
 
     @abstractmethod
     def nearest_neighbor_interpolator(
-        self, pos: Union[np.ndarray, u.Quantity], *args, persistent=False
+        self, pos: Union[np.ndarray, u.Quantity], *args, persistent: bool = False
     ):
         r"""
         Interpolate values on the grid using a nearest-neighbor scheme with
@@ -1094,7 +1094,7 @@ class CartesianGrid(AbstractGrid):
 
     @modify_docstring(prepend=AbstractGrid.nearest_neighbor_interpolator.__doc__)
     def nearest_neighbor_interpolator(
-        self, pos: Union[np.ndarray, u.Quantity], *args, persistent=False
+        self, pos: Union[np.ndarray, u.Quantity], *args, persistent: bool = False
     ):
         r""" """  # noqa: D419
 
@@ -1133,7 +1133,7 @@ class CartesianGrid(AbstractGrid):
         return output[0] if len(output) == 1 else tuple(output)
 
     def volume_averaged_interpolator(
-        self, pos: Union[np.ndarray, u.Quantity], *args, persistent=False
+        self, pos: Union[np.ndarray, u.Quantity], *args, persistent: bool = False
     ):
         r"""
         Interpolate values on the grid using a volume-averaged scheme with
@@ -1398,7 +1398,7 @@ class NonUniformCartesianGrid(AbstractGrid):
 
     @modify_docstring(prepend=AbstractGrid.nearest_neighbor_interpolator.__doc__)
     def nearest_neighbor_interpolator(
-        self, pos: Union[np.ndarray, u.Quantity], *args, persistent=False
+        self, pos: Union[np.ndarray, u.Quantity], *args, persistent: bool = False
     ):
         r""" """  # noqa: D419
         # Shared setup
@@ -1407,7 +1407,7 @@ class NonUniformCartesianGrid(AbstractGrid):
         )
 
         # Clear additional property that is not handled in the
-        # _persistant_interpolator_setup function because it is unique
+        # _persistent_interpolator_setup function because it is unique
         # to this non_uniform grid.
         if not persistent:
             with contextlib.suppress(AttributeError):

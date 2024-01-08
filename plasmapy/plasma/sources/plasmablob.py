@@ -22,7 +22,7 @@ class PlasmaBlob(GenericPlasma):
     """
 
     @validate_quantities(T_e=u.K, n_e=u.m**-3)
-    def __init__(self, T_e, n_e, Z=None, particle="p"):
+    def __init__(self, T_e, n_e, Z=None, particle="p") -> None:
         """
         Initialize plasma parameters.
         The most basic description is composition (ion), temperature,

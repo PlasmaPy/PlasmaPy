@@ -43,7 +43,7 @@ class TestPlasmaDispersionFunction:
     """Test class for `plasmapy.dispersion.plasma_dispersion_func`."""
 
     @pytest.mark.parametrize(("w", "expected"), plasma_dispersion_func_table)
-    def test_plasma_dispersion_func(self, w, expected):
+    def test_plasma_dispersion_func(self, w, expected) -> None:
         r"""Test plasma_dispersion_func against tabulated results and
         known symmetry properties."""
 
@@ -61,7 +61,7 @@ class TestPlasmaDispersionFunction:
 
     @given(complex_numbers(allow_infinity=False, allow_nan=False, max_magnitude=20))
     @pytest.mark.filterwarnings("ignore::RuntimeWarning")
-    def test_plasma_dispersion_func_symmetry(self, w):
+    def test_plasma_dispersion_func_symmetry(self, w) -> None:
         r"""Test plasma_dispersion_func against its symmetry properties"""
 
         # The two symmetry properties of the plasma dispersion function
@@ -149,7 +149,7 @@ class TestPlasmaDispersionFunction:
             f"{Z_of_w_array - Z_power_series}\n"
         )
 
-    def test_plasma_dispersion_func_roots(self):
+    def test_plasma_dispersion_func_roots(self) -> None:
         """Test roots of the plasma dispersion function."""
 
         # The first five roots of the plasma dispersion function are given
@@ -178,7 +178,7 @@ class TestPlasmaDispersionFunction:
 
     @pytest.mark.parametrize(("w", "expected_error"), plasma_disp_func_errors_table)
     @pytest.mark.filterwarnings("ignore::RuntimeWarning")
-    def test_plasma_dispersion_func_errors(self, w, expected_error):
+    def test_plasma_dispersion_func_errors(self, w, expected_error) -> None:
         """Test errors that should be raised by plasma_dispersion_func."""
 
         with pytest.raises(expected_error, match=r".*plasma_dispersion_func.*"):
@@ -208,7 +208,7 @@ class TestPlasmaDispersionFunctionDeriv:
     """Test class for `plasmapy.dispersion.plasma_dispersion_func_deriv`."""
 
     @pytest.mark.parametrize(("w", "expected"), plasma_disp_deriv_table)
-    def test_plasma_dispersion_func_deriv(self, w, expected):
+    def test_plasma_dispersion_func_deriv(self, w, expected) -> None:
         r"""Test plasma_dispersion_func_deriv against tabulated results"""
 
         # The tabulated results are taken from Fried & Conte (1961)
@@ -225,7 +225,7 @@ class TestPlasmaDispersionFunctionDeriv:
 
     @given(complex_numbers(allow_infinity=True, allow_nan=False))
     @pytest.mark.filterwarnings("ignore::RuntimeWarning")
-    def test_plasma_dispersion_func_deriv_characterization(self, w):
+    def test_plasma_dispersion_func_deriv_characterization(self, w) -> None:
         r"""Test plasma_dispersion_func_deriv against an exact relationship."""
 
         # The exact analytical relationship comes from the bottom of
@@ -249,7 +249,7 @@ class TestPlasmaDispersionFunctionDeriv:
 
     @pytest.mark.parametrize(("w", "expected_error"), plasma_disp_func_errors_table)
     @pytest.mark.filterwarnings("ignore::RuntimeWarning")
-    def test_plasma_dispersion_deriv_errors(self, w, expected_error):
+    def test_plasma_dispersion_deriv_errors(self, w, expected_error) -> None:
         """Test errors that should be raised by plasma_dispersion_func_deriv."""
 
         with pytest.raises(expected_error, match=r".*plasma_dispersion_func_deriv.*"):
