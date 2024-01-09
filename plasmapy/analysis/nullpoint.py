@@ -687,7 +687,7 @@ def _trilinear_analysis(vspace, cell):  # noqa: C901, PLR0915
     ByBzEndpoints = []
 
     # Check if the null point already exists in root list
-    def is_root_in_list(root, arr):
+    def is_root_in_list(root, arr) -> bool:
         for r in arr:
             x_close = np.isclose(root[0], r[0], atol=_EQUALITY_ATOL)
             y_close = np.isclose(root[1], r[1], atol=_EQUALITY_ATOL)

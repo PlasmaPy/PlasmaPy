@@ -10,13 +10,13 @@ class NoDataSource(BasePlasma):
 
 class IsDataSource(BasePlasma):
     @classmethod
-    def is_datasource_for(cls, **kwargs):
+    def is_datasource_for(cls, **kwargs) -> bool:
         return True
 
 
 class IsNotDataSource(BasePlasma):
     @classmethod
-    def is_datasource_for(cls, **kwargs):
+    def is_datasource_for(cls, **kwargs) -> bool:
         return False
 
 

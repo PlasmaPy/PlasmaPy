@@ -20,7 +20,7 @@ def foo_lite(x):
     return x
 
 
-def bar():
+def bar() -> str:
     """
     Test support function for the Lite-Function framework.  To be bound
     to foo.
