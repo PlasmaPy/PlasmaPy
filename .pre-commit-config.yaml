@@ -92,17 +92,6 @@ repos:
     args: [--fix]
   - id: ruff-format
 
-- repo: https://github.com/PyCQA/isort
-  rev: 5.13.2
-  hooks:
-  - id: isort
-    name: isort
-    entry: isort
-    require_serial: true
-    language: python
-    types:
-    - python
-
 - repo: https://github.com/asottile/blacken-docs
   rev: 1.16.0
   hooks:
