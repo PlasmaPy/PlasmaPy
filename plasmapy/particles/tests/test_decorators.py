@@ -1,10 +1,10 @@
-import astropy.constants as const
-import astropy.units as u
 import inspect
-import pytest
-
 from numbers import Real
 from typing import Optional
+
+import astropy.constants as const
+import astropy.units as u
+import pytest
 
 from plasmapy.particles import ParticleList
 from plasmapy.particles.decorators import particle_input

@@ -17,11 +17,11 @@ __all__ = [
     "Coulomb_cross_section",
 ]
 
+import warnings
+from numbers import Real
+
 import astropy.units as u
 import numpy as np
-import warnings
-
-from numbers import Real
 
 from plasmapy import particles
 from plasmapy.formulary.collisions import lengths

@@ -2,12 +2,12 @@
 Tests for Thomson scattering analysis functions
 """
 
+import copy
+
 import astropy.constants as const
 import astropy.units as u
-import copy
 import numpy as np
 import pytest
-
 from lmfit import Parameter, Parameters
 
 from plasmapy.diagnostics import thomson

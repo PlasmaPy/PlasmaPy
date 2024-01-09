@@ -2,18 +2,18 @@
 Tests for 'validate` decorators (i.e. decorators that check objects and change them
 when possible).
 """
-import astropy.units as u
 import inspect
-import pytest
-
 from typing import Optional
 from unittest import mock
 
+import astropy.units as u
+import pytest
+
 from plasmapy.utils.decorators.checks import CheckUnits, CheckValues
 from plasmapy.utils.decorators.validators import (
+    ValidateQuantities,
     validate_class_attributes,
     validate_quantities,
-    ValidateQuantities,
 )
 
 

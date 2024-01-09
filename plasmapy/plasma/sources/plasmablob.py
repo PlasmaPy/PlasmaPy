@@ -3,8 +3,9 @@ Defines the core Plasma class used by PlasmaPy to represent plasma properties.
 """
 __all__ = ["PlasmaBlob"]
 
-import astropy.units as u
 import warnings
+
+import astropy.units as u
 
 from plasmapy.formulary import coupling_parameter, quantum_theta
 from plasmapy.formulary.misc import _grab_charge

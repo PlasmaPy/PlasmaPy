@@ -5,12 +5,12 @@ a single ionization level.
 
 __all__ = ["IonicLevel", "IonizationState"]
 
-import astropy.units as u
-import numpy as np
 import warnings
-
 from numbers import Integral, Real
 from typing import Optional
+
+import astropy.units as u
+import numpy as np
 
 from plasmapy.particles.atomic import ionic_levels
 from plasmapy.particles.decorators import particle_input

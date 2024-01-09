@@ -1,11 +1,11 @@
 """
 Tests for the fitting function classes defined in `plasmapy.analysis.fit_functions`.
 """
-import numpy as np
-import pytest
-
 from abc import ABC, abstractmethod
 from contextlib import nullcontext as does_not_raise
+
+import numpy as np
+import pytest
 
 import plasmapy.analysis.fit_functions as ffuncs
 

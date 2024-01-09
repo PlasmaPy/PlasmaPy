@@ -2,7 +2,7 @@ import astropy.units as u
 import numpy as np
 import pytest
 
-from plasmapy.formulary.collisions.misc import mobility, Spitzer_resistivity
+from plasmapy.formulary.collisions.misc import Spitzer_resistivity, mobility
 from plasmapy.utils import exceptions
 from plasmapy.utils._pytest_helpers import assert_can_handle_nparray
 from plasmapy.utils.exceptions import CouplingWarning, PhysicsWarning

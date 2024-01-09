@@ -4,12 +4,12 @@ from typing import Optional
 
 __all__ = ["HDF5Reader"]
 
+from pathlib import Path
+
 import astropy.units as u
 import h5py
 import numpy as np
-
 from packaging.version import Version
-from pathlib import Path
 
 from plasmapy.plasma.exceptions import DataStandardError
 from plasmapy.plasma.plasma_base import GenericPlasma

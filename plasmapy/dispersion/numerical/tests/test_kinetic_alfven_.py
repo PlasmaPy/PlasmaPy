@@ -2,7 +2,6 @@
 import astropy.units as u
 import numpy as np
 import pytest
-
 from astropy.constants.si import c
 
 from plasmapy.dispersion.numerical.kinetic_alfven_ import kinetic_alfven

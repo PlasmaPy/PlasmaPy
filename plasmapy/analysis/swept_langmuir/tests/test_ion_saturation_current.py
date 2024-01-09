@@ -3,16 +3,16 @@ Tests for functionality contained in
 `plasmapy.analysis.swept_langmuir.ion_saturation_current`.
 """
 
+from pathlib import Path
+
 import numpy as np
 import pytest
 
-from pathlib import Path
-
 from plasmapy.analysis import fit_functions as ffuncs
 from plasmapy.analysis.swept_langmuir.ion_saturation_current import (
+    ISatExtras,
     find_ion_saturation_current,
     find_isat_,
-    ISatExtras,
 )
 
 

@@ -5,7 +5,6 @@
 import astropy.units as u
 import numpy as np
 import pytest
-
 from hypothesis import given
 from hypothesis.strategies import complex_numbers
 from numpy import pi as π

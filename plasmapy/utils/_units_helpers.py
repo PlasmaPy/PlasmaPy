@@ -4,10 +4,10 @@ from __future__ import annotations
 
 __all__: list[str] = []
 
-import astropy.units as u
-
 from numbers import Number
-from typing import Optional, TYPE_CHECKING, Union
+from typing import TYPE_CHECKING, Optional, Union
+
+import astropy.units as u
 
 if TYPE_CHECKING:
     from collections.abc import Iterable

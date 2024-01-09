@@ -4,12 +4,12 @@ __all__ = [
     "mass_density",
 ]
 __aliases__ = ["rho_"]
-import astropy.units as u
 import numbers
-import numpy as np
-
-from astropy.constants.si import e, eps0, m_e
 from typing import Optional
+
+import astropy.units as u
+import numpy as np
+from astropy.constants.si import e, eps0, m_e
 
 from plasmapy.particles import Particle, ParticleLike
 from plasmapy.utils.decorators import validate_quantities

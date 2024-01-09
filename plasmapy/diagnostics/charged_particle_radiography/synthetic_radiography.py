@@ -7,16 +7,16 @@ original fields (under some set of assumptions).
 
 __all__ = ["Tracker", "synthetic_radiograph"]
 
-import astropy.constants as const
-import astropy.units as u
 import collections
-import numpy as np
 import sys
 import warnings
-
 from collections.abc import Iterable
-from tqdm import tqdm
 from typing import Union
+
+import astropy.constants as const
+import astropy.units as u
+import numpy as np
+from tqdm import tqdm
 
 from plasmapy import particles
 from plasmapy.formulary.mathematics import rot_a_to_b

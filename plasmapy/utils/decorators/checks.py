@@ -10,18 +10,18 @@ __all__ = [
     "CheckValues",
 ]
 
-import astropy.units as u
 import collections
 import functools
 import inspect
-import numpy as np
 import warnings
-
-from astropy.constants import c
-from astropy.units.equivalencies import Equivalency
 from functools import reduce
 from operator import add
 from typing import Any, Optional, Union
+
+import astropy.units as u
+import numpy as np
+from astropy.constants import c
+from astropy.units.equivalencies import Equivalency
 
 from plasmapy.utils.decorators.helpers import preserve_signature
 from plasmapy.utils.exceptions import (
