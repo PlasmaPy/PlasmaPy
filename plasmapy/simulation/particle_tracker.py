@@ -35,12 +35,12 @@ class AbstractTerminationCondition(ABC):
     """Abstract base class containing the necessary methods for a ParticleTracker termination condition."""
 
     @property
-    def tracker(self):
+    def tracker(self) -> "ParticleTracker":
         """Return the `ParticleTracker` object for this termination condition."""
         return self._particle_tracker
 
     @tracker.setter
-    def tracker(self, particle_tracker) -> None:
+    def tracker(self, particle_tracker: "ParticleTracker") -> None:
         self._particle_tracker = particle_tracker
 
     @property
@@ -88,8 +88,8 @@ class TimeElapsedTerminationCondition(AbstractTerminationCondition):
     """Termination condition corresponding to the elapsed time of a ParticleTracker."""
 
     def __init__(self, termination_time: u.Quantity):
-        self._particle_tracker = None
-        self.termination_time = termination_time.to(u.s).value
+        self._particle_tracker: Optional["ParticleTracker"] = None
+        self.termination_time: float = termination_time.to(u.s).value
 
     @property
     def require_synchronized_dt(self) -> bool:
@@ -114,7 +114,7 @@ class TimeElapsedTerminationCondition(AbstractTerminationCondition):
     @property
     def is_finished(self) -> bool:
         """Conclude the simulation if all particles have been tracked over the specified termination time."""
-        return self.tracker.time >= self.termination_time
+        return bool(self.tracker.time >= self.termination_time)
 
     @property
     def progress(self) -> float:
@@ -131,7 +131,7 @@ class NoParticlesOnGridsTerminationCondition(AbstractTerminationCondition):
     """Termination condition corresponding to stopping the simulation when all particles have exited the grid."""
 
     def __init__(self):
-        self._particle_tracker = None
+        self._particle_tracker: Optional["ParticleTracker"] = None
 
     @property
     def require_synchronized_dt(self) -> bool:
@@ -195,15 +195,15 @@ class AbstractSaveRoutine(ABC):
         self.x_all = []
         self.v_all = []
 
-        self._particle_tracker = None
+        self._particle_tracker: Optional["ParticleTracker"] = None
 
     @property
-    def tracker(self):
+    def tracker(self) -> "ParticleTracker":
         """Return the `ParticleTracker` object for this stop condition."""
         return self._particle_tracker
 
     @tracker.setter
-    def tracker(self, particle_tracker) -> None:
+    def tracker(self, particle_tracker: "ParticleTracker") -> None:
         self._particle_tracker = particle_tracker
 
     @property
@@ -277,10 +277,10 @@ class IntervalSaveRoutine(AbstractSaveRoutine):
 
     def __init__(self, interval: u.Quantity, **kwargs):
         super().__init__(**kwargs)
-        self.t_all = []
+        self.t_all: list[float] = []
 
-        self.save_interval = interval.to(u.s).value
-        self.time_of_last_save = 0
+        self.save_interval: float = interval.to(u.s).value
+        self.time_of_last_save: float = 0
 
     @property
     def require_synchronized_dt(self) -> bool:
@@ -291,7 +291,7 @@ class IntervalSaveRoutine(AbstractSaveRoutine):
     def save_now(self) -> bool:
         """Save at every interval given in instantiation."""
 
-        return self.tracker.time - self.time_of_last_save >= self.save_interval
+        return bool(self.tracker.time - self.time_of_last_save >= self.save_interval)
 
     def save(self) -> None:
         """Save the current state of the simulation.
@@ -701,7 +701,7 @@ class ParticleTracker:
     # Run/push loop methods
     # *************************************************************************
 
-    def _adaptive_dt(self, Ex, Ey, Ez, Bx, By, Bz) -> Union[np.ndarray, float]:  # noqa: ARG002
+    def _adaptive_dt(self, Ex, Ey, Ez, Bx, By, Bz) -> Union[np.ndarray[float], float]:  # noqa: ARG002
         r"""
         Calculate the appropriate dt for each grid based on a number of
         considerations
