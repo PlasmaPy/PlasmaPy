@@ -168,8 +168,8 @@ message to help us find the cause of a particular test failure.
 Type hint annotations
 ---------------------
 
-PlasmaPy has begun using |type hint annotations| and |mypy| to perform
-|static type checking|. Adding a :py:`-> None` return annotation lets
+PlasmaPy has begun using |mypy| to perform |static type checking| on 
+|type hint annotations|. Adding a :py:`-> None` return annotation lets
 |mypy| verify that tests do not have :py:`return` statements.
 
 .. code-block:: python
