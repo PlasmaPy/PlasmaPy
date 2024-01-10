@@ -1,15 +1,15 @@
 """Tests for functionality contained in `plasmapy.formulary.lengths`."""
+import warnings
+
 import astropy.units as u
 import numpy as np
 import pytest
-import warnings
-
 from astropy.constants import m_p
 from astropy.tests.helper import assert_quantity_allclose
 
 from plasmapy.formulary.lengths import (
-    cwp_,
     Debye_length,
+    cwp_,
     gyroradius,
     inertial_length,
     lambdaD_,

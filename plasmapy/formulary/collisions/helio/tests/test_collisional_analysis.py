@@ -1,7 +1,6 @@
 """Test functionality of `plasmapy.formulary.collisions.helio.collisional_analysis`."""
 import astropy.units as u
 import pytest
-
 from astropy.constants.si import c
 
 from plasmapy.formulary.collisions.helio import temp_ratio

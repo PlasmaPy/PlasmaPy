@@ -20,8 +20,8 @@ from plasmapy.dispersion.analytical.mhd_waves_ import (
     AbstractMHDWave,
     AlfvenWave,
     FastMagnetosonicWave,
-    mhd_waves,
     SlowMagnetosonicWave,
+    mhd_waves,
 )
 from plasmapy.dispersion.analytical.stix_ import stix
 from plasmapy.dispersion.analytical.two_fluid_ import two_fluid

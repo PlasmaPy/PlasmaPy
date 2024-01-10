@@ -11,14 +11,14 @@ __all__ = [
 ]
 
 import numbers
-import numpy as np
-
 from abc import ABC, abstractmethod
 from collections import namedtuple
-from scipy.optimize import curve_fit, fsolve
-from scipy.stats import linregress
 from typing import Optional
 from warnings import warn
+
+import numpy as np
+from scipy.optimize import curve_fit, fsolve
+from scipy.stats import linregress
 
 from plasmapy.utils.decorators import modify_docstring
 

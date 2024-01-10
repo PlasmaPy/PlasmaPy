@@ -9,20 +9,20 @@ __all__ = [
     "mhd_waves",
 ]
 
-import astropy.units as u
-import numpy as np
 import warnings
-
 from abc import ABC, abstractmethod
-from astropy.constants.si import k_B
 from collections import namedtuple
 from numbers import Integral, Real
 from typing import Optional
 
+import astropy.units as u
+import numpy as np
+from astropy.constants.si import k_B
+
 from plasmapy.formulary.dimensionless import beta
 from plasmapy.formulary.frequencies import gyrofrequency, plasma_frequency
 from plasmapy.formulary.speeds import Alfven_speed
-from plasmapy.particles import electron, particle_input, ParticleLike
+from plasmapy.particles import ParticleLike, electron, particle_input
 from plasmapy.utils.decorators import check_relativistic, validate_quantities
 from plasmapy.utils.exceptions import PhysicsWarning
 

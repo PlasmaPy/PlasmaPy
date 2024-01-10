@@ -10,9 +10,9 @@ __all__ = ["running_mean", "running_moment"]
 
 
 import numbers
-import numpy as np
-
 from collections import namedtuple
+
+import numpy as np
 
 _run_moment_tuple = namedtuple("Running_Moment", ["run_moment", "time"])
 

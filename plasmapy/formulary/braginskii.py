@@ -128,10 +128,10 @@ __all__ = [
     "electron_viscosity",
 ]
 
-import astropy.units as u
-import numpy as np
 import warnings
 
+import astropy.units as u
+import numpy as np
 from astropy.constants.si import e, k_B, m_e
 
 from plasmapy import particles

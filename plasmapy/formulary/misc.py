@@ -9,7 +9,6 @@ __all__ = [
 __aliases__ = ["DB_", "pmag_", "pth_", "ub_"]
 
 import astropy.units as u
-
 from astropy.constants.si import e, k_B, mu0
 
 from plasmapy import particles

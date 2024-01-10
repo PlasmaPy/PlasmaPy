@@ -5,7 +5,6 @@ Tests for proton radiography functions
 import astropy.units as u
 import numpy as np
 import pytest
-
 from scipy.special import erf
 from typing import Optional
 

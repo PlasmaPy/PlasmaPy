@@ -10,11 +10,10 @@ __all__ = [
 import astropy.constants as const
 import astropy.units as u
 import numpy as np
-
 from scipy.special import exp1
 
 from plasmapy.formulary.frequencies import plasma_frequency
-from plasmapy.particles import particle_input, ParticleLike
+from plasmapy.particles import ParticleLike, particle_input
 from plasmapy.utils.decorators import validate_quantities
 from plasmapy.utils.exceptions import PhysicsError
 

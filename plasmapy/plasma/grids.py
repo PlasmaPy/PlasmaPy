@@ -9,19 +9,19 @@ __all__ = [
     "NonUniformCartesianGrid",
 ]
 
-import astropy.units as u
 import contextlib
-import numpy as np
-import pandas as pd
-import scipy.interpolate as interp
 import warnings
-import xarray as xr
-
 from abc import ABC, abstractmethod
 from collections import namedtuple
 from functools import cached_property
-from scipy.spatial import distance
 from typing import Union
+
+import astropy.units as u
+import numpy as np
+import pandas as pd
+import scipy.interpolate as interp
+import xarray as xr
+from scipy.spatial import distance
 
 from plasmapy.utils.decorators.helpers import modify_docstring
 

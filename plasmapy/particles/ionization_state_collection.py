@@ -4,11 +4,11 @@ isotopes.
 """
 __all__ = ["IonizationStateCollection"]
 
-import astropy.units as u
-import numpy as np
-
 from numbers import Integral, Real
 from typing import Optional, Union
+
+import astropy.units as u
+import numpy as np
 
 from plasmapy.particles.atomic import atomic_number
 from plasmapy.particles.exceptions import (

@@ -9,7 +9,6 @@ plasma frequency.
 import astropy.units as u
 import numpy as np
 import pytest
-
 from astropy.constants.si import m_p
 from numba.extending import is_jitted
 

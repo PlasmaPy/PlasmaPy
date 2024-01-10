@@ -13,17 +13,17 @@ __all__ = [
     "valid_categories",
 ]
 
-import astropy.constants as const
-import astropy.units as u
 import json
-import numpy as np
 import warnings
-
 from abc import ABC, abstractmethod
 from collections import defaultdict, namedtuple
 from datetime import datetime
 from numbers import Integral, Real
-from typing import Optional, TYPE_CHECKING, Union
+from typing import TYPE_CHECKING, Optional, Union
+
+import astropy.constants as const
+import astropy.units as u
+import numpy as np
 
 from plasmapy.particles import _elements, _isotopes, _parsing, _special_particles
 from plasmapy.particles.exceptions import (

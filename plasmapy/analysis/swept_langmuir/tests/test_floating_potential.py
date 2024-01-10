@@ -3,17 +3,17 @@ Tests for functionality contained in
 `plasmapy.analysis.swept_langmuir.floating_potential`.
 """
 
+from unittest import mock
+
 import numpy as np
 import pytest
-
-from unittest import mock
 
 from plasmapy.analysis import fit_functions as ffuncs
 from plasmapy.analysis import swept_langmuir as sla
 from plasmapy.analysis.swept_langmuir.floating_potential import (
+    VFExtras,
     find_floating_potential,
     find_vf_,
-    VFExtras,
 )
 from plasmapy.utils.exceptions import PlasmaPyWarning
 

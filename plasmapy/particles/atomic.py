@@ -21,10 +21,10 @@ __all__ = [
     "standard_atomic_weight",
 ]
 
-import astropy.units as u
-
 from numbers import Integral, Real
 from typing import Any, Optional, Union
+
+import astropy.units as u
 
 from plasmapy.particles import _elements, _isotopes
 from plasmapy.particles.decorators import particle_input

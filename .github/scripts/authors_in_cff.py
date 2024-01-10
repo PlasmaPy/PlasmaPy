@@ -2,10 +2,10 @@
 
 import os
 import pathlib
-import requests
 import sys
-
 from typing import Optional
+
+import requests
 
 GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
 PR_NUMBER = os.getenv("PR_NUMBER")

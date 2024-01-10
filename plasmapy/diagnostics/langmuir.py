@@ -18,14 +18,14 @@ __all__ = [
     "get_EEDF",
 ]
 
-import astropy.units as u
 import copy
-import numpy as np
+from warnings import warn
 
+import astropy.units as u
+import numpy as np
 from astropy.constants import si as const
 from astropy.visualization import quantity_support
 from scipy.optimize import curve_fit
-from warnings import warn
 
 from plasmapy.particles import Particle
 from plasmapy.utils.decorators import validate_quantities

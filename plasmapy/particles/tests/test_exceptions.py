@@ -1,5 +1,6 @@
-import astropy.units as u
 import itertools
+
+import astropy.units as u
 import numpy as np
 import pytest
 

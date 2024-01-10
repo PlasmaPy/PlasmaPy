@@ -1,12 +1,12 @@
-import astropy.constants as const
-import astropy.units as u
 import collections
 import inspect
 import io
 import json
+
+import astropy.constants as const
+import astropy.units as u
 import numpy as np
 import pytest
-
 from astropy.constants import c, e, m_e, m_n, m_p
 
 from plasmapy.particles import json_load_particle, json_loads_particle, molecule

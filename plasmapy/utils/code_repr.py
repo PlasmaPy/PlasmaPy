@@ -2,13 +2,13 @@
 
 __all__ = ["call_string", "attribute_call_string", "method_call_string"]
 
-import astropy.units as u
 import inspect
-import numpy as np
-
 from collections.abc import Callable
 from numbers import Integral
 from typing import Any, Optional, Union
+
+import astropy.units as u
+import numpy as np
 
 
 def _code_repr_of_ndarray(array: np.ndarray, max_items=np.inf) -> str:
