@@ -1,25 +1,14 @@
 """Tests for `plasmapy.particles.decorators`."""
 
 import inspect
-from numbers import Real
-from typing import Optional
+from collections.abc import Callable, Iterable
+from typing import Any, Optional, Union
 
 import astropy.constants as const
 import astropy.units as u
 import pytest
 
 from plasmapy.particles import ParticleList
-
-
-
-import astropy.constants as const
-import astropy.units as u
-import inspect
-import pytest
-
-from collections.abc import Callable, Iterable
-from typing import Any, Optional, Union
-
 from plasmapy.particles.decorators import particle_input
 from plasmapy.particles.exceptions import (
     ChargeError,
