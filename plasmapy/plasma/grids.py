@@ -25,7 +25,7 @@ from typing import Union
 from plasmapy.utils.decorators.helpers import modify_docstring
 
 
-def _detect_is_uniform_grid(pts0, pts1, pts2, tol=1e-6):
+def _detect_is_uniform_grid(pts0, pts1, pts2, tol: float = 1e-6):
     r"""
     Determine whether a grid is uniform (uniformly spaced) by computing the
     variance of the grid gradients.
