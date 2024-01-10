@@ -4,7 +4,6 @@ __all__ = ["ionization_balance", "Saha", "Z_bal_"]
 __aliases__ = ["Z_bal_"]
 
 import astropy.units as u
-
 from astropy.constants import a0, k_B
 from numpy import exp, log, pi, sqrt
 

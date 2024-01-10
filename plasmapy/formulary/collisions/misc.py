@@ -6,11 +6,11 @@ __all__ = [
     "Spitzer_resistivity",
 ]
 
+from numbers import Real
+
 import astropy.units as u
 import numpy as np
-
 from astropy.constants.si import e
-from numbers import Real
 
 from plasmapy import particles
 from plasmapy.formulary.collisions import frequencies

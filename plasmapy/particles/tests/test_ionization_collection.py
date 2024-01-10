@@ -1,20 +1,20 @@
-import astropy.units as u
 import itertools
-import numpy as np
-import pytest
-
-from astropy.tests.helper import assert_quantity_allclose
 from numbers import Real
 
+import astropy.units as u
+import numpy as np
+import pytest
+from astropy.tests.helper import assert_quantity_allclose
+
 from plasmapy.particles import (
-    atomic_number,
     IonicLevel,
     IonizationState,
     IonizationStateCollection,
-    mass_number,
     Particle,
-    particle_symbol,
     ParticleList,
+    atomic_number,
+    mass_number,
+    particle_symbol,
 )
 from plasmapy.particles.exceptions import InvalidIsotopeError, ParticleError
 

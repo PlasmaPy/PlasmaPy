@@ -1,9 +1,9 @@
-import astropy.units as u
 import collections
 import itertools
+
+import astropy.units as u
 import numpy as np
 import pytest
-
 from astropy.tests.helper import assert_quantity_allclose
 
 from plasmapy.particles import (

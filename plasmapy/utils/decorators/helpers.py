@@ -5,7 +5,6 @@ __all__ = ["modify_docstring", "preserve_signature"]
 
 import functools
 import inspect
-
 from typing import Optional
 
 

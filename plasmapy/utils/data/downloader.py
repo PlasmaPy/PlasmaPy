@@ -4,10 +4,10 @@ downloading files from |PlasmaPy's data repository|.
 
 """
 
-import requests
-
 from pathlib import Path
 from urllib.parse import urljoin
+
+import requests
 
 __all__ = ["get_file"]
 

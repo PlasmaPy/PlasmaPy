@@ -6,10 +6,10 @@ __all__ = ["bind_lite_func"]
 
 import functools
 import inspect
-
 from collections.abc import Callable
-from numba.extending import is_jitted
 from typing import Optional
+
+from numba.extending import is_jitted
 
 
 class _LiteFuncDict(dict):

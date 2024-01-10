@@ -3,7 +3,6 @@ import numpy as np
 import pytest
 
 import plasmapy.plasma
-
 from plasmapy.particles.data.test import data_dir
 
 

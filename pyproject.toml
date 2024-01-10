@@ -116,14 +116,6 @@ namespaces = false
 [tool.setuptools_scm]
 write_to = "plasmapy/_version.py"
 
-[tool.isort]
-profile = "black"
-known_first_party = ["plasmapy", ]
-default_section = "STDLIB"
-force_alphabetical_sort_within_sections = true
-honor_noqa = true
-lines_between_types = 1
-
 [tool.pytest.ini_options]
 minversion = "7.0.1"
 testpaths = ['plasmapy']
@@ -239,7 +231,7 @@ extend-select = [
   "FIX", # flake8-fixme
   "FLY", # flynt
   "G", # flake8-logging-format
-  "I002", # missing-required-import
+  "I", # isort
   "ICN", # flake8-import-conventions
   "INP", # flake8-no-pep420
   "INT", # flake8-gettext

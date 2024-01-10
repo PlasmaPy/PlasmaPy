@@ -3,10 +3,10 @@ Defines the core Plasma class used by PlasmaPy to represent plasma properties.
 """
 __all__ = ["Plasma3D"]
 
-import astropy.units as u
 import itertools
-import numpy as np
 
+import astropy.units as u
+import numpy as np
 from astropy.constants import mu0
 
 from plasmapy.formulary.magnetostatics import MagnetoStatics

@@ -9,15 +9,15 @@ __all__ = [
 ]
 __lite_funcs__ = ["spectral_density_lite"]
 
+import numbers
+import warnings
+from collections.abc import Callable
+from typing import Any, Optional, Union
+
 import astropy.constants as const
 import astropy.units as u
-import numbers
 import numpy as np
-import warnings
-
-from collections.abc import Callable
 from lmfit import Model
-from typing import Any, Optional, Union
 
 from plasmapy.formulary import (
     permittivity_1D_Maxwellian_lite,

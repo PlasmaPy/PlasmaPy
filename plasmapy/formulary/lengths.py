@@ -3,17 +3,17 @@
 __all__ = ["Debye_length", "gyroradius", "inertial_length"]
 __aliases__ = ["cwp_", "lambdaD_", "rc_", "rhoc_"]
 
-import astropy.units as u
-import numpy as np
 import warnings
-
-from astropy.constants.si import c, e, eps0, k_B
 from numbers import Integral, Real
 from typing import Optional
 
+import astropy.units as u
+import numpy as np
+from astropy.constants.si import c, e, eps0, k_B
+
 from plasmapy.formulary import frequencies, speeds
 from plasmapy.formulary.relativity import RelativisticBody
-from plasmapy.particles import particle_input, ParticleLike
+from plasmapy.particles import ParticleLike, particle_input
 from plasmapy.utils.decorators import validate_quantities
 
 __all__ += __aliases__

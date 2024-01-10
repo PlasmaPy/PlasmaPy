@@ -1,9 +1,9 @@
-import astropy.units as u
 import operator
-import pytest
 import warnings
-
 from typing import Any
+
+import astropy.units as u
+import pytest
 
 from plasmapy.particles import Particle
 from plasmapy.tests._helpers import (

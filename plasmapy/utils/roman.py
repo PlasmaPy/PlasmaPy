@@ -17,11 +17,11 @@ __all__ = [
     "is_roman_numeral",
 ]
 
-import numpy as np
 import re
-
 from numbers import Integral
 from typing import Union
+
+import numpy as np
 
 from plasmapy.utils.exceptions import InvalidRomanNumeralError, OutOfRangeError
 

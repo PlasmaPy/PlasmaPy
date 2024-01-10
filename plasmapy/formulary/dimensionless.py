@@ -19,16 +19,16 @@ __all__ = [
 ]
 __aliases__ = ["betaH_", "nD_", "Re_", "Rm_"]
 
-import astropy.units as u
 import numbers
-import numpy as np
-
-from astropy.constants.si import mu0
 from typing import Optional
+
+import astropy.units as u
+import numpy as np
+from astropy.constants.si import mu0
 
 from plasmapy.formulary import frequencies, lengths, misc, speeds
 from plasmapy.formulary.quantum import quantum_theta
-from plasmapy.particles import Particle, particle_input, ParticleLike
+from plasmapy.particles import Particle, ParticleLike, particle_input
 from plasmapy.utils.decorators import validate_quantities
 
 __all__ += __aliases__

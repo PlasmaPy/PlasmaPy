@@ -8,11 +8,11 @@ __all__ = [
     "Layer",
 ]
 
+from typing import Optional
+
 import astropy.units as u
 import numpy as np
-
 from scipy.interpolate import interp1d
-from typing import Optional
 
 
 class Layer:

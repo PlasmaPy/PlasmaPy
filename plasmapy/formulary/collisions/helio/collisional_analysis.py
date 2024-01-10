@@ -3,9 +3,10 @@ Module containing the Collisional Analysis formulation.
 """
 __all__ = ["temp_ratio"]
 
-import astropy.units as u
 import logging
 import numbers
+
+import astropy.units as u
 import numpy as np
 
 from plasmapy.particles import ParticleLike, ParticleList

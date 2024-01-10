@@ -6,7 +6,6 @@ __all__ = ["stix"]
 
 import astropy.units as u
 import numpy as np
-
 from astropy.constants.si import c
 
 from plasmapy.formulary.frequencies import gyrofrequency, plasma_frequency

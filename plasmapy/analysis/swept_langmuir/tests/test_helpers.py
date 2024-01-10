@@ -1,10 +1,10 @@
 """Tests for `plasmapy.analysis.swept_langmuir.helpers`."""
 
+from contextlib import nullcontext as does_not_raise
+
 import astropy.units as u
 import numpy as np
 import pytest
-
-from contextlib import nullcontext as does_not_raise
 
 from plasmapy.analysis.swept_langmuir.helpers import check_sweep
 

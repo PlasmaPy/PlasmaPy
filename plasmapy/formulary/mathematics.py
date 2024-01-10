@@ -3,10 +3,10 @@
 __all__ = ["Fermi_integral", "rot_a_to_b"]
 
 import numbers
-import numpy as np
-
-from mpmath import polylog
 from typing import Union
+
+import numpy as np
+from mpmath import polylog
 
 
 def Fermi_integral(

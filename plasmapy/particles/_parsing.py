@@ -8,12 +8,12 @@ __all__ = [
     "parse_and_check_molecule_input",
 ]
 
-import numpy as np
 import re
 import warnings
-
 from numbers import Integral
 from typing import Optional, Union
+
+import numpy as np
 
 from plasmapy.particles import _elements, _isotopes, _special_particles
 from plasmapy.particles.exceptions import (
