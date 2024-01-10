@@ -21,6 +21,7 @@ import warnings
 
 from abc import ABC, abstractmethod
 from collections.abc import Iterable
+from numpy.typing import NDArray
 from pathlib import Path
 from tqdm import tqdm
 from typing import Optional, Union
@@ -701,7 +702,7 @@ class ParticleTracker:
     # Run/push loop methods
     # *************************************************************************
 
-    def _adaptive_dt(self, Ex, Ey, Ez, Bx, By, Bz) -> Union[np.ndarray[float], float]:  # noqa: ARG002
+    def _adaptive_dt(self, Ex, Ey, Ez, Bx, By, Bz) -> Union[NDArray[float], float]:  # noqa: ARG002
         r"""
         Calculate the appropriate dt for each grid based on a number of
         considerations
@@ -922,7 +923,7 @@ class ParticleTracker:
         # Keep track of how many push steps have occurred for trajectory tracing
         self.iteration_number = 0
 
-        self.time = (
+        self.time: Union[NDArray[float], float] = (
             np.zeros((self.nparticles, 1)) if not self.is_synchronized_time_step else 0
         )
         # Create flags for tracking when particles during the simulation
