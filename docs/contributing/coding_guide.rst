@@ -29,8 +29,8 @@ style changes. Please feel free to propose revisions to this guide by
 a community meeting.
 
 PlasmaPy generally follows the :pep:`8` style guide for Python code,
-using auto-formatters such as |black| and |isort| that are executed using
-|pre-commit|.
+while using tools like |pre-commit|, |ruff|, and the |ruff formatter| to
+perform autoformatting, code quality checks, and automatic fixes.
 
 Coding guidelines
 =================
@@ -411,6 +411,49 @@ frustration.
 * Write error messages that are friendly, supportive, and helpful. Error
   message should never be condescending or blame the user.
 
+Type hint annotations
+=====================
+
+PlasmaPy uses |type hint annotations| and |mypy| to perform
+|static type checking|.
+
+Type hint annotations are used to specify the expected types of
+arguments and return values. A function that accepts a `float` and
+returns a `str` may be written as:
+
+.. code-block:: python
+
+   def f(name: float) -> str:
+       ...
+
+Type hint annotations are usually not enforced at runtime. Instead, they
+are used by developers to indicate that a function accepts or returns
+different types.
+
+
+the types of objects that a function accepts and
+returns.
+
+
+
+.. code-block:: python
+
+   from typing import Optional
+   from collections.abc import Iterable
+
+   def g(
+       arg1: float | str,  # arg1 should be either a float or str
+       arg2: Iterable[str],  # arg2 should be, for example, a list of `str` objects
+       kwarg1: Optional[float] = None,  # kwarg1 can be a float or None
+   ):
+       ...
+
+Type hint annotations are usually not enforced at runtime, but are
+rather used
+
+When we wish to add a type hint annotation for an object such as
+
+
 Project infrastructure
 ======================
 
@@ -427,21 +470,18 @@ Imports
      import numpy as np
      import pandas as pd
 
-* PlasmaPy uses |isort| to organize import statements via a |pre-commit|
+* PlasmaPy uses |ruff| to organize import statements via a |pre-commit|
   hook.
 
-* For infrequently used objects, import the package, subpackage, or
-  module rather than the individual code object. Including more of the
-  namespace provides contextual information that can make code easier to
-  read. For example, :py:`json.loads` is more readable than using only
+* For most objects, import the package, subpackage, or module rather
+  than the individual code object. Including more of the namespace
+  provides contextual information that can make code easier to read. For
+  example, :py:`json.loads` is more readable than using only
   :py:`loads`.
 
-* For frequently used objects (e.g., |Particle|) and type hint
-  annotations (e.g., `~typing.Optional` and `~numbers.Real`), import the
-  object directly instead of importing the package, subpackage, or
-  module. Including more of the namespace would increase clutter and
-  decrease readability without providing commensurately more
-  information.
+* For the most frequently used PlasmaPy objects (e.g., |Particle|) and
+  |type hint annotations| (e.g., `~typing.Optional`), import the object
+  directly instead of importing the package, subpackage, or module.
 
 * Use absolute imports (e.g., :py:`from plasmapy.particles import
   Particle`) rather than relative imports (e.g., :py:`from ..particles
@@ -775,11 +815,11 @@ notebook on particles`_.
 
   .. code-block:: python
 
-     from plasmapy.particles import ParticleLike, particle_input
+     from plasmapy.particles import Particle, ParticleLike, particle_input
 
 
      @particle_input
-     def get_particle(particle: ParticleLike):
+     def get_particle(particle: ParticleLike) -> Particle:
          return particle
 
   If we use :py:`get_particle` on something |particle-like|, it will
