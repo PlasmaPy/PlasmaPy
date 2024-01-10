@@ -208,7 +208,7 @@ def run_mesh_example(
     mesh_vdir=None,
     nparticles: int = 10000,
     problem="electrostatic_gaussian_sphere",
-) -> None:
+) -> cpr.Tracker:
     """
     Takes all of the add_wire_mesh parameters and runs a standard example problem
     simulation using them.
@@ -495,7 +495,7 @@ def test_run_options() -> None:
     assert 0 < sim.max_deflection.to(u.rad).value < np.pi / 2
 
 
-def create_tracker_obj():
+def create_tracker_obj() -> cpr.Tracker:
     # CREATE A RADIOGRAPH OBJECT
     grid = _test_grid("electrostatic_gaussian_sphere", num=50)
     source = (0 * u.mm, -10 * u.mm, 0 * u.mm)
