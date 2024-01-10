@@ -1258,7 +1258,7 @@ def check_values(
     return CheckValues(**checks) if func is None else CheckValues(**checks)(func)
 
 
-def check_relativistic(func=None, betafrac=0.05):
+def check_relativistic(func=None, betafrac: float = 0.05):
     """
     Warns or raises an exception when the output of the decorated
     function is greater than ``betafrac`` times the speed of light.
@@ -1325,7 +1325,7 @@ def check_relativistic(func=None, betafrac=0.05):
     return decorator(func) if func else decorator
 
 
-def _check_relativistic(V, funcname, betafrac=0.05):
+def _check_relativistic(V, funcname, betafrac: float = 0.05):
     r"""
     Warn or raise error for relativistic or superrelativistic
     velocities.
