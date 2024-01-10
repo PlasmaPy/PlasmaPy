@@ -2,11 +2,12 @@
 Tests for proton radiography functions
 """
 
+from typing import Optional
+
 import astropy.units as u
 import numpy as np
 import pytest
 from scipy.special import erf
-from typing import Optional
 
 from plasmapy.diagnostics.charged_particle_radiography import (
     synthetic_radiography as cpr,
