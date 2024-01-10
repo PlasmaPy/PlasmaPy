@@ -8,7 +8,6 @@ import astropy.constants as const
 import astropy.units as u
 import pytest
 
-from plasmapy.particles import ParticleList
 from plasmapy.particles.decorators import particle_input
 from plasmapy.particles.exceptions import (
     ChargeError,
