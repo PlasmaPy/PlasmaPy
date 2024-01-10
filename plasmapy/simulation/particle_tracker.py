@@ -40,36 +40,36 @@ class AbstractTerminationCondition(ABC):
         return self._particle_tracker
 
     @tracker.setter
-    def tracker(self, particle_tracker):
+    def tracker(self, particle_tracker) -> None:
         self._particle_tracker = particle_tracker
 
     @property
     @abstractmethod
-    def require_synchronized_dt(self):
+    def require_synchronized_dt(self) -> bool:
         """Return whether or not this termination condition requires a synchronized time step."""
         ...
 
     @property
     @abstractmethod
-    def progress_description(self):
+    def progress_description(self) -> str:
         """Return a small string describing the relevant quantity shown on the meter."""
         ...
 
     @property
     @abstractmethod
-    def units_string(self):
+    def units_string(self) -> str:
         """Return a string representation of the units of `total`."""
         ...
 
     @property
     @abstractmethod
-    def is_finished(self):
+    def is_finished(self) -> bool:
         """Return `True` if the simulation has finished."""
         ...
 
     @property
     @abstractmethod
-    def progress(self):
+    def progress(self) -> float:
         """Return a number representing the progress of the simulation (compared to total).
         This number represents the numerator of the completion percentage.
         """
@@ -77,7 +77,7 @@ class AbstractTerminationCondition(ABC):
 
     @property
     @abstractmethod
-    def total(self):
+    def total(self) -> float:
         """Return a number representing the total number of steps in a simulation.
         This number represents the denominator of the completion percentage.
         """
@@ -92,37 +92,37 @@ class TimeElapsedTerminationCondition(AbstractTerminationCondition):
         self.termination_time = termination_time.to(u.s).value
 
     @property
-    def require_synchronized_dt(self):
+    def require_synchronized_dt(self) -> bool:
         """The elapsed time termination condition requires a synchronized step
         to stop all particles at the same time.
         """
         return True
 
     @property
-    def progress_description(self):
+    def progress_description(self) -> str:
         """The time elapsed termination condition depends on elapsed time,
         therefore the relevant quantity is time remaining.
         """
         return "Time remaining"
 
     @property
-    def units_string(self):
+    def units_string(self) -> str:
         """The units for the time elapsed condition have the units of seconds."""
 
         return "seconds"
 
     @property
-    def is_finished(self):
+    def is_finished(self) -> bool:
         """Conclude the simulation if all particles have been tracked over the specified termination time."""
         return self.tracker.time >= self.termination_time
 
     @property
-    def progress(self):
+    def progress(self) -> float:
         """Return the current time step of the simulation."""
         return self.tracker.time
 
     @property
-    def total(self):
+    def total(self) -> float:
         """Return the total amount of time over which the particles are tracked."""
         return self.termination_time
 
@@ -134,36 +134,36 @@ class NoParticlesOnGridsTerminationCondition(AbstractTerminationCondition):
         self._particle_tracker = None
 
     @property
-    def require_synchronized_dt(self):
+    def require_synchronized_dt(self) -> bool:
         """The no field termination condition does not require a synchronized time step."""
         return False
 
     @property
-    def progress_description(self):
+    def progress_description(self) -> str:
         """The progress meter is described in terms of the fraction of particles still on the grid."""
         return "Number of particles still on grid"
 
     @property
-    def units_string(self):
+    def units_string(self) -> str:
         """The progress meter is described in terms of the fraction of particles still on the grid."""
         return "Particles"
 
     @property
-    def is_finished(self):
+    def is_finished(self) -> bool:
         """The simulation is finished when no more particles are on any grids."""
         is_not_on_grid = self.tracker.on_any_grid == False  # noqa: E712
 
         return is_not_on_grid.all() and self.tracker.iteration_number > 0
 
     @property
-    def progress(self):
+    def progress(self) -> float:
         """The progress of the simulation is measured by how many particles are no longer on a grid."""
         is_not_on_grid = self.tracker.on_grid == 0
 
         return is_not_on_grid.sum()
 
     @property
-    def total(self):
+    def total(self) -> float:
         """The progress of the simulation is measured against the total number of particles in the simulation."""
         return self.tracker.nparticles
 
@@ -203,22 +203,22 @@ class AbstractSaveRoutine(ABC):
         return self._particle_tracker
 
     @tracker.setter
-    def tracker(self, particle_tracker):
+    def tracker(self, particle_tracker) -> None:
         self._particle_tracker = particle_tracker
 
     @property
     @abstractmethod
-    def require_synchronized_dt(self):
+    def require_synchronized_dt(self) -> bool:
         """Return whether or not this save routine requires a synchronized time step."""
         ...
 
     @property
     @abstractmethod
-    def save_now(self):
+    def save_now(self) -> bool:
         """Determine whether or not to save on the current push step."""
         ...
 
-    def save(self):
+    def save(self) -> None:
         """Save the current state of the simulation to disk or memory based on whether the output directory was set."""
 
         if self.output_directory is not None:
@@ -226,7 +226,7 @@ class AbstractSaveRoutine(ABC):
         else:
             self._save_to_memory()
 
-    def _save_to_disk(self):
+    def _save_to_disk(self) -> None:
         """Save a hdf5 file containing simulation positions and velocities."""
 
         path = self.output_directory / f"{self.tracker.iteration_number}.hdf5"
@@ -235,12 +235,12 @@ class AbstractSaveRoutine(ABC):
             output_file["x"] = self.tracker.x
             output_file["v"] = self.tracker.v
 
-    def _save_to_memory(self):
+    def _save_to_memory(self) -> None:
         """Append simulation positions and velocities to save routine object."""
         self.x_all.append(np.copy(self._particle_tracker.x))
         self.v_all.append(np.copy(self._particle_tracker.v))
 
-    def post_push_hook(self, force_save=False):
+    def post_push_hook(self, force_save=False) -> None:
         """Function called after a push step.
 
         This function is responsible for handling two steps of save routine, namely:
@@ -262,12 +262,12 @@ class DoNotSaveSaveRoutine(AbstractSaveRoutine):
         super().__init__()
 
     @property
-    def require_synchronized_dt(self):
+    def require_synchronized_dt(self) -> bool:
         """The do not save save routine does not require a synchronized time step."""
         return False
 
     @property
-    def save_now(self):
+    def save_now(self) -> bool:
         """The do not save save routine will never save by definition."""
         return False
 
@@ -283,17 +283,17 @@ class IntervalSaveRoutine(AbstractSaveRoutine):
         self.time_of_last_save = 0
 
     @property
-    def require_synchronized_dt(self):
+    def require_synchronized_dt(self) -> bool:
         """Save output only makes sense for synchronized time steps."""
         return True
 
     @property
-    def save_now(self):
+    def save_now(self) -> bool:
         """Save at every interval given in instantiation."""
 
         return self.tracker.time - self.time_of_last_save >= self.save_interval
 
-    def save(self):
+    def save(self) -> None:
         """Save the current state of the simulation.
         Sets the time of last save attribute and log the timestamp.
         """
@@ -302,7 +302,7 @@ class IntervalSaveRoutine(AbstractSaveRoutine):
         self.time_of_last_save = self.tracker.time
         self.t_all.append(self.tracker.time)
 
-    def results(self):
+    def results(self) -> tuple:
         """Return the results of the simulation.
         The quantities returned are the times, positions, and velocities, respectively.
         """
@@ -464,7 +464,9 @@ class ParticleTracker:
         self.termination_condition = termination_condition
         self.save_routine = save_routine
 
-    def _set_time_step_attributes(self, dt, termination_condition, save_routine):
+    def _set_time_step_attributes(
+        self, dt, termination_condition, save_routine
+    ) -> None:
         """Determines whether the simulation will follow a synchronized or adaptive time step."""
 
         self._require_synchronized_time = (
@@ -493,7 +495,7 @@ class ParticleTracker:
         self,
         time_steps_per_gyroperiod: Optional[int] = 12,
         Courant_parameter: Optional[float] = 0.5,
-    ):
+    ) -> None:
         """Set parameters for the adaptive time step candidates.
 
         Parameters
@@ -527,7 +529,7 @@ class ParticleTracker:
 
     def _validate_constructor_inputs(
         self, grids, termination_condition, save_routine, field_weighting: str
-    ):
+    ) -> None:
         """
         Ensure the specified termination condition and save routine are actually
         a termination routine class and save routine, respectively. This function also
@@ -561,7 +563,7 @@ class ParticleTracker:
                 f"{field_weightings}",
             )
 
-    def _preprocess_grids(self, additional_required_quantities):
+    def _preprocess_grids(self, additional_required_quantities) -> None:
         """Add required quantities to grid objects.
 
         Grids lacking the required quantities will be filled with zeros.
@@ -619,11 +621,11 @@ class ParticleTracker:
                     )
 
     @property
-    def num_grids(self):
+    def num_grids(self) -> int:
         """The number of grids specified at instantiation."""
         return len(self.grids)
 
-    def _log(self, msg):
+    def _log(self, msg) -> None:
         if self.verbose:
             print(msg)  # noqa: T201
 
@@ -633,7 +635,7 @@ class ParticleTracker:
         x,
         v,
         particle: Particle = Particle("p+"),  # noqa: B008
-    ):
+    ) -> None:
         r"""
         Load arrays of particle positions and velocities.
 
@@ -667,7 +669,7 @@ class ParticleTracker:
         self.x = x.to(u.m).value
         self.v = v.to(u.m / u.s).value
 
-    def _stop_particles(self, particles_to_stop_mask):
+    def _stop_particles(self, particles_to_stop_mask) -> None:
         """Stop tracking the particles specified by the stop mask.
 
         This is represented by setting the particle's velocity to NaN.
@@ -680,7 +682,7 @@ class ParticleTracker:
 
         self.v[particles_to_stop_mask] = np.NaN
 
-    def _remove_particles(self, particles_to_remove_mask):
+    def _remove_particles(self, particles_to_remove_mask) -> None:
         """Remove the specified particles from the simulation.
 
         For the sake of keeping consistent array lengths, the position and velocities of the
@@ -699,7 +701,7 @@ class ParticleTracker:
     # Run/push loop methods
     # *************************************************************************
 
-    def _adaptive_dt(self, Ex, Ey, Ez, Bx, By, Bz):  # noqa: ARG002
+    def _adaptive_dt(self, Ex, Ey, Ez, Bx, By, Bz) -> Union[np.ndarray, float]:  # noqa: ARG002
         r"""
         Calculate the appropriate dt for each grid based on a number of
         considerations
@@ -756,7 +758,7 @@ class ParticleTracker:
 
         return dt
 
-    def _push(self):
+    def _push(self) -> None:
         r"""
         Advance particles using an implementation of the time-centered
         Boris algorithm.
@@ -864,7 +866,7 @@ class ParticleTracker:
         self.dt = dt
 
     @property
-    def on_any_grid(self):
+    def on_any_grid(self) -> bool:
         """
         Binary array for each particle indicating whether it is currently
         on ANY grid.
@@ -872,7 +874,7 @@ class ParticleTracker:
         return np.sum(self.on_grid, axis=-1) > 0
 
     @property
-    def vmax(self):
+    def vmax(self) -> float:
         """The maximum velocity of any particle in the simulation.
 
         This quantity is used for determining the grid crossing maximum time step.
@@ -881,28 +883,28 @@ class ParticleTracker:
 
         return np.max(np.linalg.norm(self.v[tracked_mask], axis=-1))
 
-    def _tracked_particle_mask(self):
+    def _tracked_particle_mask(self) -> np.ndarray:
         """
         Calculates a boolean mask corresponding to particles that have not been stopped or removed.
         """
         return ~np.logical_or(np.isnan(self.x[:, 0]), np.isnan(self.v[:, 0]))
 
     @property
-    def nparticles_tracked(self):
+    def nparticles_tracked(self) -> int:
         """Return the number of particles that don't have NaN position or velocity."""
         return self._tracked_particle_mask().sum()
 
     @property
-    def is_adaptive_time_step(self):
+    def is_adaptive_time_step(self) -> bool:
         """Return whether the simulation is calculating an adaptive time step or using the user-provided time step."""
         return self._is_adaptive_time_step
 
     @property
-    def is_synchronized_time_step(self):
+    def is_synchronized_time_step(self) -> bool:
         """Return whether or not the simulation is applying the same time step across all particles."""
         return self._is_synchronized_time_step
 
-    def run(self):
+    def run(self) -> None:
         r"""
         Runs a particle-tracing simulation.
         Time steps are adaptively calculated based on the
@@ -972,7 +974,7 @@ class ParticleTracker:
         # Simulation has not run, because creating new particles changes the simulation
         self._has_run = True
 
-    def _enforce_particle_creation(self):
+    def _enforce_particle_creation(self) -> None:
         """Ensure the array position array `x` has been populated."""
 
         # Check to make sure particles have already been generated
@@ -982,7 +984,7 @@ class ParticleTracker:
                 "called before running the particle tracing algorithm."
             )
 
-    def _enforce_order(self):
+    def _enforce_order(self) -> None:
         r"""
         The `Tracker` methods could give strange results if setup methods
         are used again after the simulation has run. This method
