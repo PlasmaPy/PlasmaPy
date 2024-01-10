@@ -999,7 +999,7 @@ class Tracker:
         """
         return np.sum(self.on_grid, axis=-1) > 0
 
-    def _stop_condition(self):
+    def _stop_condition(self) -> bool:
         r"""
         The stop condition is that most of the particles have entered the grid
         and almost all have now left it.

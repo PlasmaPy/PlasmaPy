@@ -82,7 +82,7 @@ class HDF5Reader(GenericPlasma):
     ):
         self.h5.close()
 
-    def _check_valid_openpmd_version(self):
+    def _check_valid_openpmd_version(self) -> bool:
         try:
             openPMD_version = self.h5.attrs["openPMD"].decode("utf-8")
             if _valid_version(openPMD_version):

@@ -687,7 +687,7 @@ def _trilinear_analysis(vspace, cell):  # noqa: C901, PLR0915
     ByBzEndpoints = []
 
     # Check if the null point already exists in root list
-    def is_root_in_list(root, arr):
+    def is_root_in_list(root, arr) -> bool:
         for r in arr:
             x_close = np.isclose(root[0], r[0], atol=_EQUALITY_ATOL)
             y_close = np.isclose(root[1], r[1], atol=_EQUALITY_ATOL)
@@ -1404,7 +1404,7 @@ def _classify_null_point(vspace, cell, loc):
     return null_point_type
 
 
-def _vspace_iterator(vspace, maxiter=500, err=1e-10):
+def _vspace_iterator(vspace, maxiter=500, err: float = 1e-10):
     r"""
     Returns an array of null point objects, representing the null points
     of the given vector space.
@@ -1455,7 +1455,7 @@ def null_point_find(
     v_arr=None,
     w_arr=None,
     maxiter=500,
-    err=1e-10,
+    err: float = 1e-10,
 ):
     r"""
     Returns an array of `~plasmapy.analysis.nullpoint.NullPoint` object,
@@ -1539,7 +1539,7 @@ def uniform_null_point_find(
     func: Callable,
     precision=(0.05, 0.05, 0.05),
     maxiter=500,
-    err=1e-10,
+    err: float = 1e-10,
 ):
     r"""
     Return an array of `~plasmapy.analysis.nullpoint.NullPoint` objects,

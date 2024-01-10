@@ -334,7 +334,7 @@ class IonizationStateCollection:
     def __iter__(self):
         yield from [self[key] for key in self.ionic_fractions]
 
-    def __eq__(self, other):
+    def __eq__(self, other) -> bool:
         if not isinstance(other, IonizationStateCollection):
             return False
 

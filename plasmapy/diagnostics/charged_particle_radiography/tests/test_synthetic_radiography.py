@@ -206,7 +206,7 @@ def run_mesh_example(
     wire_diameter=20 * u.um,
     mesh_hdir=None,
     mesh_vdir=None,
-    nparticles: int = 1e4,
+    nparticles: int = 10000,
     problem="electrostatic_gaussian_sphere",
 ) -> None:
     """
@@ -834,7 +834,7 @@ def test_add_wire_mesh() -> None:
     nwires = 9
     sim = run_mesh_example(
         problem="empty",
-        nparticles=1e5,
+        nparticles=100000,
         location=loc,
         extent=extent,
         wire_diameter=wire_diameter,

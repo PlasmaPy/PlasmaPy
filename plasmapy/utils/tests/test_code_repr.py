@@ -24,7 +24,7 @@ def generic_function(*args, **kwargs):
     return None
 
 
-def adams_number():
+def adams_number() -> int:
     return 42
 
 

@@ -137,7 +137,7 @@ class _GenericWidget(abc.ABC):
             Value of the widget
         """
 
-    def edge_case_condition(self, value):  # noqa: ARG002
+    def edge_case_condition(self, value) -> bool:  # noqa: ARG002
         """
         Edge case condition for the widget.
 
@@ -264,7 +264,12 @@ class _FloatBox(_GenericWidget):
         Maximum value the widget can take
     """
 
-    def __init__(self, property_name: str, min=-1e50, max=1e50) -> None:  # noqa: A002
+    def __init__(
+        self,
+        property_name: str,
+        min: float = -1e50,  # noqa: A002
+        max: float = 1e50,  # noqa: A002
+    ) -> None:
         super().__init__(property_name)
         self.min = min
         self.max = max
@@ -604,7 +609,7 @@ def _handle_clear_click(event) -> None:
         fn.output_widget.clear_output()
 
 
-def _colored_text(color, text: str):
+def _colored_text(color, text: str) -> str:
     """
     Prepares an inline string with the given color.
 

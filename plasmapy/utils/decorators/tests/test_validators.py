@@ -564,29 +564,29 @@ class TestValidateClassAttributes:
 
         @property
         @validate_class_attributes(expected_attributes=["x"])
-        def require_x(self):
+        def require_x(self) -> int:
             return 0
 
         @property
         @validate_class_attributes(expected_attributes=["x", "y"])
-        def require_x_and_y(self):
+        def require_x_and_y(self) -> int:
             return 0
 
         @property
         @validate_class_attributes(both_or_either_attributes=[("x", "y")])
-        def require_x_or_y(self):
+        def require_x_or_y(self) -> int:
             return 0
 
         @property
         @validate_class_attributes(
             expected_attributes=["x"], both_or_either_attributes=[("y", "z")]
         )
-        def require_x_and_either_y_or_z(self):
+        def require_x_and_either_y_or_z(self) -> int:
             return 0
 
         @property
         @validate_class_attributes(mutually_exclusive_attributes=[("x", "y")])
-        def require_only_either_x_or_y(self):
+        def require_only_either_x_or_y(self) -> int:
             return 0
 
     @pytest.mark.parametrize(

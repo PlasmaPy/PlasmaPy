@@ -98,7 +98,7 @@ class AbstractGrid(ABC):
                 f"positional arguments but {len(seeds)} were given"
             )
 
-    def _validate(self):
+    def _validate(self) -> bool:
         r"""
         Checks to make sure that the grid parameters are
         consistent with the coordinate system and units selected.
