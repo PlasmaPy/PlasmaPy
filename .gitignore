@@ -147,5 +147,6 @@ untitled*
 .DS_Store
 */cython_version.py
 .mypy_cache
+monkeytype.sqlite3
 node_modules
 package-lock.json
