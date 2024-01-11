@@ -12,19 +12,19 @@ __all__ = [
     "TimeElapsedTerminationCondition",
 ]
 
-import astropy.units as u
 import collections
-import h5py
-import numpy as np
 import sys
 import warnings
-
 from abc import ABC, abstractmethod
 from collections.abc import Iterable
-from numpy.typing import NDArray
 from pathlib import Path
-from tqdm import tqdm
 from typing import Optional, Union
+
+import astropy.units as u
+import h5py
+import numpy as np
+from numpy.typing import NDArray
+from tqdm import tqdm
 
 from plasmapy.particles import Particle, particle_input
 from plasmapy.plasma.grids import AbstractGrid
@@ -47,7 +47,7 @@ class AbstractTerminationCondition(ABC):
     @property
     @abstractmethod
     def require_synchronized_dt(self) -> bool:
-        """Return whether or not this termination condition requires a synchronized time step."""
+        """Return if this termination condition requires a synchronized time step."""
         ...
 
     @property
@@ -210,13 +210,13 @@ class AbstractSaveRoutine(ABC):
     @property
     @abstractmethod
     def require_synchronized_dt(self) -> bool:
-        """Return whether or not this save routine requires a synchronized time step."""
+        """Return if this save routine requires a synchronized time step."""
         ...
 
     @property
     @abstractmethod
     def save_now(self) -> bool:
-        """Determine whether or not to save on the current push step."""
+        """Determine if to save on the current push step."""
         ...
 
     def save(self) -> None:
@@ -245,7 +245,7 @@ class AbstractSaveRoutine(ABC):
         """Function called after a push step.
 
         This function is responsible for handling two steps of save routine, namely:
-            - Deciding whether or not to save on the current time step
+            - Deciding to save on the current time step
             - How the simulation data is saved (i.e. to disk or memory)
 
         """
@@ -770,7 +770,7 @@ class ParticleTracker:
         self.iteration_number += 1
 
         # nparticles_tracked may fluctuate with stopping
-        # all particles are therefore used regardless of whether or not they reach the grid
+        # all particles are therefore used regardless of if they reach the grid
         pos_all = self.x
         pos_tracked = pos_all[tracked_mask]
 
@@ -902,7 +902,7 @@ class ParticleTracker:
 
     @property
     def is_synchronized_time_step(self) -> bool:
-        """Return whether or not the simulation is applying the same time step across all particles."""
+        """Return if the simulation is applying the same time step across all particles."""
         return self._is_synchronized_time_step
 
     def run(self) -> None:
