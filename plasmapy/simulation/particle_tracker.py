@@ -88,7 +88,7 @@ class AbstractTerminationCondition(ABC):
 class TimeElapsedTerminationCondition(AbstractTerminationCondition):
     """Termination condition corresponding to the elapsed time of a ParticleTracker."""
 
-    def __init__(self, termination_time: u.Quantity):
+    def __init__(self, termination_time: u.Quantity) -> None:
         self._particle_tracker: Optional["ParticleTracker"] = None
         self.termination_time: float = termination_time.to(u.s).value
 
@@ -131,7 +131,7 @@ class TimeElapsedTerminationCondition(AbstractTerminationCondition):
 class NoParticlesOnGridsTerminationCondition(AbstractTerminationCondition):
     """Termination condition corresponding to stopping the simulation when all particles have exited the grid."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         self._particle_tracker: Optional["ParticleTracker"] = None
 
     @property
@@ -190,7 +190,7 @@ class AbstractSaveRoutine(ABC):
     Then, the hook calls `save_now` to determine whether or not the simulation state should be saved.
     """
 
-    def __init__(self, output_directory: Optional[Path] = None):
+    def __init__(self, output_directory: Optional[Path] = None) -> None:
         self.output_directory = output_directory
 
         self.x_all = []
@@ -259,7 +259,7 @@ class DoNotSaveSaveRoutine(AbstractSaveRoutine):
     This save routine is a placeholder and will not save the state of the particle tracker.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
 
     @property
@@ -276,7 +276,7 @@ class DoNotSaveSaveRoutine(AbstractSaveRoutine):
 class IntervalSaveRoutine(AbstractSaveRoutine):
     """Abstract class describing a save routine that saves every given interval."""
 
-    def __init__(self, interval: u.Quantity, **kwargs):
+    def __init__(self, interval: u.Quantity, **kwargs) -> None:
         super().__init__(**kwargs)
         self.t_all: list[float] = []
 
@@ -405,7 +405,7 @@ class ParticleTracker:
         field_weighting="volume averaged",
         req_quantities=None,
         verbose=True,
-    ):
+    ) -> None:
         # self.grid is the grid object
         if isinstance(grids, AbstractGrid):
             self.grids = [
