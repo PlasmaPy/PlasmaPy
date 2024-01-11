@@ -3,7 +3,7 @@ ci:
   autoupdate_schedule: monthly
 
 default_language_version:
-  ruby: 3.3.0
+  ruby: 2.7.2
 
 repos:
 
