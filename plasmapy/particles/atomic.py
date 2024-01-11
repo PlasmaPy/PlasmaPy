@@ -43,7 +43,7 @@ __all__.sort()
 
 
 @particle_input
-def atomic_number(element: Particle) -> int:
+def atomic_number(element: ParticleLike) -> int:
     """
     Return the number of protons in an atom, isotope, or ion.
 
@@ -85,7 +85,7 @@ def atomic_number(element: Particle) -> int:
 
 
 @particle_input
-def mass_number(isotope: Particle) -> int:
+def mass_number(isotope: ParticleLike) -> int:
     """Get the mass number (the number of protons and neutrons) of an
     isotope.
 
@@ -127,7 +127,7 @@ def mass_number(isotope: Particle) -> int:
 
 
 @particle_input(exclude={"isotope", "ion"})
-def standard_atomic_weight(element: Particle) -> u.Quantity[u.kg]:
+def standard_atomic_weight(element: ParticleLike) -> u.Quantity[u.kg]:
     """Return the standard (conventional) atomic weight of an element
     based on the relative abundances of isotopes in terrestrial
     environments.
@@ -185,7 +185,7 @@ def standard_atomic_weight(element: Particle) -> u.Quantity[u.kg]:
 
 @particle_input(exclude={"neutrino", "antineutrino"})
 def particle_mass(
-    particle: Particle,
+    particle: ParticleLike,
     *,
     mass_numb: Optional[int] = None,
     Z: Optional[float] = None,
@@ -238,7 +238,7 @@ def particle_mass(
 
 
 @particle_input
-def isotopic_abundance(isotope: Particle, mass_numb: Optional[int] = None) -> Real:
+def isotopic_abundance(isotope: ParticleLike, mass_numb: Optional[int] = None) -> Real:
     """
     Return the isotopic abundances if known, and otherwise zero.
 
@@ -285,7 +285,7 @@ def isotopic_abundance(isotope: Particle, mass_numb: Optional[int] = None) -> Re
 
 
 @particle_input(any_of={"charged", "uncharged"})
-def charge_number(particle: Particle) -> int:
+def charge_number(particle: ParticleLike) -> int:
     """Return the charge number of a particle.
 
     Parameters
@@ -339,7 +339,7 @@ def charge_number(particle: Particle) -> int:
 
 
 @particle_input(any_of={"charged", "uncharged"})
-def electric_charge(particle: Particle) -> u.Quantity[u.C]:
+def electric_charge(particle: ParticleLike) -> u.Quantity[u.C]:
     """
     Return the electric charge (in coulombs) of a particle.
 
@@ -393,7 +393,7 @@ def electric_charge(particle: Particle) -> u.Quantity[u.C]:
 
 
 @particle_input
-def is_stable(particle: Particle, mass_numb: Optional[int] = None) -> bool:
+def is_stable(particle: ParticleLike, mass_numb: Optional[int] = None) -> bool:
     """
     Return `True` for stable isotopes and particles and `False` for
     unstable isotopes.
@@ -443,7 +443,9 @@ def is_stable(particle: Particle, mass_numb: Optional[int] = None) -> bool:
 
 
 @particle_input(any_of={"stable", "unstable", "isotope"})
-def half_life(particle: Particle, mass_numb: Optional[int] = None) -> u.Quantity[u.s]:
+def half_life(
+    particle: ParticleLike, mass_numb: Optional[int] = None
+) -> u.Quantity[u.s]:
     """
     Return the half-life in seconds for unstable isotopes and particles,
     and |inf| seconds for stable isotopes and particles.
@@ -804,7 +806,8 @@ def stable_isotopes(
 @particle_input
 @validate_quantities
 def reduced_mass(
-    test_particle: ParticleLike, target_particle: ParticleLike
+    test_particle: ParticleLike,
+    target_particle: ParticleLike,
 ) -> u.Quantity[u.kg]:
     r"""
     Find the :wikipedia:`reduced mass` between two particles.
@@ -1057,7 +1060,7 @@ def periodic_table_category(argument: Union[str, int]) -> str:
 
 @particle_input(any_of={"element", "isotope", "ion"})
 def ionic_levels(
-    particle: Particle,
+    particle: ParticleLike,
     min_charge: int = 0,
     max_charge: Optional[int] = None,
 ) -> ParticleList:
