@@ -2,13 +2,13 @@
 
 __all__ = ["ParticleList", "ParticleListLike"]
 
-import astropy.units as u
 import collections
 import contextlib
-import numpy as np
-
 from collections.abc import Callable, Iterable, Sequence
 from typing import Optional, Union
+
+import astropy.units as u
+import numpy as np
 
 from plasmapy.particles.exceptions import InvalidParticleError
 from plasmapy.particles.particle_class import (

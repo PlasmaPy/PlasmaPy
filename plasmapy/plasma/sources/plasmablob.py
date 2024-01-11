@@ -3,8 +3,9 @@ Defines the core Plasma class used by PlasmaPy to represent plasma properties.
 """
 __all__ = ["PlasmaBlob"]
 
-import astropy.units as u
 import warnings
+
+import astropy.units as u
 
 from plasmapy.formulary import coupling_parameter, quantum_theta
 from plasmapy.formulary.misc import _grab_charge
@@ -143,5 +144,5 @@ class PlasmaBlob(GenericPlasma):
         return quantum_theta(self.T_e, self.n_e)
 
     @classmethod
-    def is_datasource_for(cls, **kwargs):
+    def is_datasource_for(cls, **kwargs) -> bool:
         return "T_e" in kwargs and "n_e" in kwargs

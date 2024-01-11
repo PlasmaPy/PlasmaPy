@@ -6,19 +6,19 @@ __all__ = [
     "run_test_equivalent_calls",
 ]
 
-import astropy.constants as const
-import astropy.tests.helper as astrohelper
-import astropy.units as u
 import collections
 import contextlib
 import functools
 import inspect
-import numpy as np
-import pytest
 import warnings
-
 from collections.abc import Callable
 from typing import Any, Optional
+
+import astropy.constants as const
+import astropy.tests.helper as astrohelper
+import astropy.units as u
+import numpy as np
+import pytest
 
 from plasmapy.tests._helpers.exceptions import (
     InvalidTestError,

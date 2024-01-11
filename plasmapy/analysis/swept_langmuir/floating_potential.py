@@ -3,10 +3,10 @@ __all__ = ["find_floating_potential", "VFExtras"]
 __aliases__ = ["find_vf_"]
 
 import numbers
-import numpy as np
-
 from typing import NamedTuple, Optional, Union
 from warnings import warn
+
+import numpy as np
 
 from plasmapy.analysis import fit_functions as ffuncs
 from plasmapy.analysis.swept_langmuir.helpers import check_sweep

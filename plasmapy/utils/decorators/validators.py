@@ -3,13 +3,13 @@ Various decorators to validate input/output arguments to functions.
 """
 __all__ = ["validate_class_attributes", "validate_quantities", "ValidateQuantities"]
 
-import astropy.units as u
 import functools
 import inspect
 import warnings
-
 from collections.abc import Iterable
 from typing import Any, Optional
+
+import astropy.units as u
 
 from plasmapy.utils.decorators.checks import CheckUnits, CheckValues
 from plasmapy.utils.decorators.helpers import preserve_signature

@@ -2,18 +2,18 @@
 Tests for 'validate` decorators (i.e. decorators that check objects and change them
 when possible).
 """
-import astropy.units as u
 import inspect
-import pytest
-
 from typing import Optional
 from unittest import mock
 
+import astropy.units as u
+import pytest
+
 from plasmapy.utils.decorators.checks import CheckUnits, CheckValues
 from plasmapy.utils.decorators.validators import (
+    ValidateQuantities,
     validate_class_attributes,
     validate_quantities,
-    ValidateQuantities,
 )
 
 
@@ -564,29 +564,29 @@ class TestValidateClassAttributes:
 
         @property
         @validate_class_attributes(expected_attributes=["x"])
-        def require_x(self):
+        def require_x(self) -> int:
             return 0
 
         @property
         @validate_class_attributes(expected_attributes=["x", "y"])
-        def require_x_and_y(self):
+        def require_x_and_y(self) -> int:
             return 0
 
         @property
         @validate_class_attributes(both_or_either_attributes=[("x", "y")])
-        def require_x_or_y(self):
+        def require_x_or_y(self) -> int:
             return 0
 
         @property
         @validate_class_attributes(
             expected_attributes=["x"], both_or_either_attributes=[("y", "z")]
         )
-        def require_x_and_either_y_or_z(self):
+        def require_x_and_either_y_or_z(self) -> int:
             return 0
 
         @property
         @validate_class_attributes(mutually_exclusive_attributes=[("x", "y")])
-        def require_only_either_x_or_y(self):
+        def require_only_either_x_or_y(self) -> int:
             return 0
 
     @pytest.mark.parametrize(

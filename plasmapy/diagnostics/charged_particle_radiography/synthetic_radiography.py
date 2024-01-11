@@ -7,16 +7,16 @@ original fields (under some set of assumptions).
 
 __all__ = ["Tracker", "synthetic_radiograph"]
 
-import astropy.constants as const
-import astropy.units as u
 import collections
-import numpy as np
 import sys
 import warnings
-
 from collections.abc import Iterable
-from tqdm import tqdm
 from typing import Union
+
+import astropy.constants as const
+import astropy.units as u
+import numpy as np
+from tqdm import tqdm
 
 from plasmapy import particles
 from plasmapy.formulary.mathematics import rot_a_to_b
@@ -999,7 +999,7 @@ class Tracker:
         """
         return np.sum(self.on_grid, axis=-1) > 0
 
-    def _stop_condition(self):
+    def _stop_condition(self) -> bool:
         r"""
         The stop condition is that most of the particles have entered the grid
         and almost all have now left it.

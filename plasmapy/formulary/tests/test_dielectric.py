@@ -6,12 +6,12 @@ import numpy as np
 import pytest
 
 from plasmapy.formulary.dielectric import (
+    RotatingTensorElements,
+    StixTensorElements,
     cold_plasma_permittivity_LRP,
     cold_plasma_permittivity_SDP,
     permittivity_1D_Maxwellian,
     permittivity_1D_Maxwellian_lite,
-    RotatingTensorElements,
-    StixTensorElements,
 )
 from plasmapy.formulary.frequencies import gyrofrequency, plasma_frequency
 from plasmapy.formulary.speeds import thermal_speed

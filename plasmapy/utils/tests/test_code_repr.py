@@ -1,10 +1,10 @@
 """Tests for code representation functions."""
 
+from collections import namedtuple
+
 import astropy.units as u
 import numpy as np
 import pytest
-
-from collections import namedtuple
 
 from plasmapy.utils.code_repr import (
     _code_repr_of_arg,
@@ -24,7 +24,7 @@ def generic_function(*args, **kwargs):
     return None
 
 
-def adams_number():
+def adams_number() -> int:
     return 42
 
 

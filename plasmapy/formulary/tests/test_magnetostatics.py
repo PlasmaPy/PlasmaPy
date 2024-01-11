@@ -2,7 +2,6 @@ import astropy
 import astropy.units as u
 import numpy as np
 import pytest
-
 from astropy import constants
 
 from plasmapy.formulary.magnetostatics import (

@@ -16,13 +16,12 @@ __aliases__ = ["Ef_", "lambdaDB_", "lambdaDB_th_"]
 
 import astropy.units as u
 import numpy as np
-
 from astropy.constants.si import c, e, eps0, h, hbar, k_B, m_e
-from lmfit import minimize, Parameters
+from lmfit import Parameters, minimize
 
 from plasmapy.formulary import mathematics
 from plasmapy.formulary.relativity import Lorentz_factor
-from plasmapy.particles import particle_input, ParticleLike
+from plasmapy.particles import ParticleLike, particle_input
 from plasmapy.utils.decorators import validate_quantities
 from plasmapy.utils.exceptions import RelativityError
 

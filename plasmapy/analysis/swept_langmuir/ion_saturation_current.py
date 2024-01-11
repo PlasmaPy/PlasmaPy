@@ -5,9 +5,9 @@ __all__ = ["find_ion_saturation_current", "ISatExtras"]
 __aliases__ = ["find_isat_"]
 
 import numbers
-import numpy as np
-
 from typing import Any, NamedTuple, Optional
+
+import numpy as np
 
 from plasmapy.analysis import fit_functions as ffuncs
 from plasmapy.analysis.swept_langmuir.helpers import check_sweep

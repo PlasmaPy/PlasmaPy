@@ -2,7 +2,6 @@
 Test module for `plasmapy.utils.decorators.lite_func.bind_lite_func`.
 """
 import pytest
-
 from numba import jit, njit
 
 from plasmapy.utils.decorators.lite_func import bind_lite_func
@@ -20,7 +19,7 @@ def foo_lite(x):
     return x
 
 
-def bar():
+def bar() -> str:
     """
     Test support function for the Lite-Function framework.  To be bound
     to foo.

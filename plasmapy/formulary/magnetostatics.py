@@ -13,11 +13,11 @@ __all__ = [
 ]
 
 import abc
-import astropy.units as u
 import numbers
+
+import astropy.units as u
 import numpy as np
 import scipy.special
-
 from astropy import constants
 
 from plasmapy.utils.decorators import validate_quantities

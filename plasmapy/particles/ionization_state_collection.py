@@ -4,11 +4,11 @@ isotopes.
 """
 __all__ = ["IonizationStateCollection"]
 
-import astropy.units as u
-import numpy as np
-
 from numbers import Integral, Real
 from typing import Optional, Union
+
+import astropy.units as u
+import numpy as np
 
 from plasmapy.particles.atomic import atomic_number
 from plasmapy.particles.exceptions import (
@@ -334,7 +334,7 @@ class IonizationStateCollection:
     def __iter__(self):
         yield from [self[key] for key in self.ionic_fractions]
 
-    def __eq__(self, other):
+    def __eq__(self, other) -> bool:
         if not isinstance(other, IonizationStateCollection):
             return False
 

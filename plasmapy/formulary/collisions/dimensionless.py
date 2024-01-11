@@ -6,19 +6,19 @@ __all__ = [
     "Knudsen_number",
 ]
 
+from numbers import Real
+
 import astropy.units as u
 import numpy as np
-
 from astropy.constants.si import e, eps0, k_B
-from numbers import Real
 
 from plasmapy import particles
 from plasmapy.formulary.collisions import lengths, misc
 from plasmapy.formulary.mathematics import Fermi_integral
 from plasmapy.formulary.quantum import (
+    Wigner_Seitz_radius,
     chemical_potential,
     thermal_deBroglie_wavelength,
-    Wigner_Seitz_radius,
 )
 from plasmapy.utils.decorators import validate_quantities
 

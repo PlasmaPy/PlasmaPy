@@ -12,9 +12,9 @@ __all__ = [
     "AbstractTimeDependentSimulation",
 ]
 
-import astropy.units as u
-
 from abc import ABC, abstractmethod
+
+import astropy.units as u
 
 
 class AbstractSimulation(ABC):

@@ -5,16 +5,16 @@ import numpy as np
 import pytest
 
 from plasmapy.formulary.dimensionless import (
-    beta,
-    betaH_,
     Debye_number,
     Hall_parameter,
     Lundquist_number,
     Mag_Reynolds,
-    nD_,
     Re_,
     Reynolds_number,
     Rm_,
+    beta,
+    betaH_,
+    nD_,
 )
 from plasmapy.particles import Particle
 from plasmapy.utils._pytest_helpers import assert_can_handle_nparray

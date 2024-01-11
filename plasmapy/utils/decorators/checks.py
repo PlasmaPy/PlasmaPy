@@ -10,18 +10,18 @@ __all__ = [
     "CheckValues",
 ]
 
-import astropy.units as u
 import collections
 import functools
 import inspect
-import numpy as np
 import warnings
-
-from astropy.constants import c
-from astropy.units.equivalencies import Equivalency
 from functools import reduce
 from operator import add
 from typing import Any, Optional, Union
+
+import astropy.units as u
+import numpy as np
+from astropy.constants import c
+from astropy.units.equivalencies import Equivalency
 
 from plasmapy.utils.decorators.helpers import preserve_signature
 from plasmapy.utils.exceptions import (
@@ -1258,7 +1258,7 @@ def check_values(
     return CheckValues(**checks) if func is None else CheckValues(**checks)(func)
 
 
-def check_relativistic(func=None, betafrac=0.05):
+def check_relativistic(func=None, betafrac: float = 0.05):
     """
     Warns or raises an exception when the output of the decorated
     function is greater than ``betafrac`` times the speed of light.
@@ -1325,7 +1325,7 @@ def check_relativistic(func=None, betafrac=0.05):
     return decorator(func) if func else decorator
 
 
-def _check_relativistic(V, funcname, betafrac=0.05):
+def _check_relativistic(V, funcname, betafrac: float = 0.05):
     r"""
     Warn or raise error for relativistic or superrelativistic
     velocities.

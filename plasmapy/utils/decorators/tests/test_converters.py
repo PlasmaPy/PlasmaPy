@@ -1,10 +1,10 @@
-import astropy.units as u
 import inspect
-import numpy as np
-
 from typing import Optional
 
-from plasmapy.particles import particle_input, ParticleLike
+import astropy.units as u
+import numpy as np
+
+from plasmapy.particles import ParticleLike, particle_input
 from plasmapy.utils.decorators import validate_quantities
 from plasmapy.utils.decorators.converter import angular_freq_to_hz
 

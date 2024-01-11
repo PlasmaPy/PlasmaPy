@@ -2,12 +2,12 @@
 Tests for Thomson scattering analysis functions
 """
 
+import copy
+
 import astropy.constants as const
 import astropy.units as u
-import copy
 import numpy as np
 import pytest
-
 from lmfit import Parameter, Parameters
 
 from plasmapy.diagnostics import thomson
@@ -749,7 +749,7 @@ def run_fit(
     wavelengths,
     params,
     settings,
-    noise_amp=0.05,
+    noise_amp: float = 0.05,
     fit_method="differential_evolution",
     fit_kws={},  # noqa: B006
     max_iter=None,

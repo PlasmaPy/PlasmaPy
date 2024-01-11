@@ -1,7 +1,8 @@
 """Test that objects in `plasmapy.particles` can be pickled."""
 
-import astropy.units as u
 import pickle
+
+import astropy.units as u
 import pytest
 
 from plasmapy.particles.ionization_state import IonicLevel, IonizationState

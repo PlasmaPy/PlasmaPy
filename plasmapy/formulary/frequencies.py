@@ -9,16 +9,16 @@ __all__ = [
 __aliases__ = ["oc_", "wc_", "wlh_", "wp_", "wuh_"]
 __lite_funcs__ = ["plasma_frequency_lite"]
 
-import astropy.units as u
 import numbers
-import numpy as np
-
-from astropy.constants.si import e, eps0
-from numba import njit
 from typing import Optional
 
+import astropy.units as u
+import numpy as np
+from astropy.constants.si import e, eps0
+from numba import njit
+
 from plasmapy import particles
-from plasmapy.particles import particle_input, ParticleLike
+from plasmapy.particles import ParticleLike, particle_input
 from plasmapy.particles.exceptions import InvalidParticleError
 from plasmapy.utils.decorators import (
     angular_freq_to_hz,

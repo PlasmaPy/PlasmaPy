@@ -1,10 +1,10 @@
 """Tests of `plasmapy.utils._units_helpers`."""
 
+from collections import namedtuple
+
 import astropy.units as u
 import pytest
-
 from astropy.constants import c, m_e
-from collections import namedtuple
 
 from plasmapy.utils._units_helpers import _get_physical_type_dict
 

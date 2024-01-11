@@ -2,7 +2,7 @@ import astropy.units as u
 import numpy as np
 import pytest
 
-from plasmapy.formulary.ionization import ionization_balance, Saha, Z_bal_
+from plasmapy.formulary.ionization import Saha, Z_bal_, ionization_balance
 
 
 def test_ionization_balance() -> None:

@@ -8,13 +8,13 @@ __all__ = [
     "fundamental_ion_collision_freq",
 ]
 
+from functools import cached_property
+from numbers import Real
+
 import astropy.units as u
 import numpy as np
 import scipy
-
 from astropy.constants.si import e, k_B, m_e
-from functools import cached_property
-from numbers import Real
 
 from plasmapy import particles
 from plasmapy.formulary.collisions import coulomb, lengths, misc

@@ -8,24 +8,24 @@ __all__ = [
     "NonUniformCartesianGrid",
 ]
 
-import astropy.units as u
 import contextlib
-import numpy as np
-import pandas as pd
-import scipy.interpolate as interp
 import warnings
-import xarray as xr
-
 from abc import ABC, abstractmethod
 from collections import namedtuple
 from functools import cached_property
-from scipy.spatial import distance
 from typing import Union
+
+import astropy.units as u
+import numpy as np
+import pandas as pd
+import scipy.interpolate as interp
+import xarray as xr
+from scipy.spatial import distance
 
 from plasmapy.utils.decorators.helpers import modify_docstring
 
 
-def _detect_is_uniform_grid(pts0, pts1, pts2, tol=1e-6):
+def _detect_is_uniform_grid(pts0, pts1, pts2, tol: float = 1e-6):
     r"""
     Determine whether a grid is uniform (uniformly spaced) by computing the
     variance of the grid gradients.
@@ -97,7 +97,7 @@ class AbstractGrid(ABC):
                 f"positional arguments but {len(seeds)} were given"
             )
 
-    def _validate(self):
+    def _validate(self) -> bool:
         r"""
         Checks to make sure that the grid parameters are
         consistent with the coordinate system and units selected.

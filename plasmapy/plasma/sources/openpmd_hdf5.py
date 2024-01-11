@@ -4,12 +4,12 @@ from typing import Optional
 
 __all__ = ["HDF5Reader"]
 
+from pathlib import Path
+
 import astropy.units as u
 import h5py
 import numpy as np
-
 from packaging.version import Version
-from pathlib import Path
 
 from plasmapy.plasma.exceptions import DataStandardError
 from plasmapy.plasma.plasma_base import GenericPlasma
@@ -82,7 +82,7 @@ class HDF5Reader(GenericPlasma):
     ):
         self.h5.close()
 
-    def _check_valid_openpmd_version(self):
+    def _check_valid_openpmd_version(self) -> bool:
         try:
             openPMD_version = self.h5.attrs["openPMD"].decode("utf-8")
             if _valid_version(openPMD_version):
