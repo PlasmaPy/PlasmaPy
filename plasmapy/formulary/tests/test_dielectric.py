@@ -139,7 +139,7 @@ class Test_permittivity_1D_Maxwellian:
         ("bound_name", "bound_attr"),
         [("lite", permittivity_1D_Maxwellian_lite)],
     )
-    def test_lite_function_binding(self, bound_name, bound_attr) -> None:
+    def test_lite_function_binding(self, bound_name: str, bound_attr) -> None:
         """Test expected attributes are bound correctly."""
         assert hasattr(permittivity_1D_Maxwellian, bound_name)
         assert getattr(permittivity_1D_Maxwellian, bound_name) is bound_attr

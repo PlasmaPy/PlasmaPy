@@ -772,7 +772,7 @@ def test_particle_half_life_string() -> None:
 @pytest.mark.parametrize(
     ("p", "is_one"), [(Particle("e-"), True), (Particle("p+"), False)]
 )
-def test_particle_is_electron(p, is_one) -> None:
+def test_particle_is_electron(p, is_one: bool) -> None:
     assert p.is_electron == is_one
 
 
@@ -1196,7 +1196,7 @@ custom_particles_from_json_tests = [
     custom_particles_from_json_tests,
 )
 def test_custom_particles_from_json_string(
-    cls, kwargs, json_string, expected_exception
+    cls, kwargs, json_string: str, expected_exception
 ) -> None:
     """Test the attributes of dimensionless and custom particles generated from
     JSON representation"""
@@ -1229,7 +1229,7 @@ def test_custom_particles_from_json_string(
     custom_particles_from_json_tests,
 )
 def test_custom_particles_from_json_file(
-    cls, kwargs, json_string, expected_exception
+    cls, kwargs, json_string: str, expected_exception
 ) -> None:
     """Test the attributes of dimensionless and custom particles generated from
     JSON representation"""
@@ -1299,7 +1299,7 @@ particles_from_json_tests = [
     ("cls", "kwargs", "json_string", "expected_exception"), particles_from_json_tests
 )
 def test_particles_from_json_string(
-    cls, kwargs, json_string, expected_exception
+    cls, kwargs, json_string: str, expected_exception
 ) -> None:
     """Test the attributes of Particle objects created from JSON representation."""
     if expected_exception is None:
@@ -1322,7 +1322,9 @@ def test_particles_from_json_string(
 @pytest.mark.parametrize(
     ("cls", "kwargs", "json_string", "expected_exception"), particles_from_json_tests
 )
-def test_particles_from_json_file(cls, kwargs, json_string, expected_exception) -> None:
+def test_particles_from_json_file(
+    cls, kwargs, json_string: str, expected_exception
+) -> None:
     """Test the attributes of Particle objects created from JSON representation."""
     if expected_exception is None:
         instance = cls(**kwargs)

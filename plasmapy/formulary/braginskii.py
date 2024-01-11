@@ -116,6 +116,7 @@ notably the asymptotic behavior of alpha-cross and beta_perp as Hall →
 terms, which all other treatments have not. To neglect electron-electron
 collisions, leave :math:`μ = 0`\ . To consider them, specify mu and theta.
 """
+from typing import Optional
 
 __all__ = [
     "ClassicalTransport",
@@ -331,7 +332,7 @@ class ClassicalTransport:
         hall_e=None,
         hall_i=None,
         mu=None,
-        theta=None,
+        theta: Optional[float] = None,
         coulomb_log_method="classical",
     ) -> None:
         # check the model
@@ -797,7 +798,7 @@ def resistivity(
     model="Braginskii",
     field_orientation="parallel",
     mu=None,
-    theta=None,
+    theta: Optional[float] = None,
     coulomb_log_method="classical",
 ) -> u.Quantity[u.Ohm * u.m]:
     r"""
@@ -866,7 +867,7 @@ def thermoelectric_conductivity(
     model="Braginskii",
     field_orientation="parallel",
     mu=None,
-    theta=None,
+    theta: Optional[float] = None,
     coulomb_log_method="classical",
 ):
     r"""
@@ -908,7 +909,7 @@ def ion_thermal_conductivity(
     model="Braginskii",
     field_orientation="parallel",
     mu=None,
-    theta=None,
+    theta: Optional[float] = None,
     coulomb_log_method="classical",
 ) -> u.Quantity[u.W / u.m / u.K]:
     r"""
@@ -979,7 +980,7 @@ def electron_thermal_conductivity(
     model="Braginskii",
     field_orientation="parallel",
     mu=None,
-    theta=None,
+    theta: Optional[float] = None,
     coulomb_log_method="classical",
 ) -> u.Quantity[u.W / u.m / u.K]:
     r"""
@@ -1061,7 +1062,7 @@ def ion_viscosity(
     model="Braginskii",
     field_orientation="parallel",
     mu=None,
-    theta=None,
+    theta: Optional[float] = None,
     coulomb_log_method="classical",
 ) -> u.Quantity[u.Pa * u.s]:
     r"""
@@ -1118,7 +1119,7 @@ def electron_viscosity(
     model="Braginskii",
     field_orientation="parallel",
     mu=None,
-    theta=None,
+    theta: Optional[float] = None,
     coulomb_log_method="classical",
 ) -> u.Quantity[u.Pa * u.s]:
     r"""
@@ -1163,7 +1164,7 @@ def electron_viscosity(
 
 
 def _nondim_thermal_conductivity(
-    hall, Z, particle, model, field_orientation, mu=None, theta=None
+    hall, Z, particle, model, field_orientation, mu=None, theta: Optional[float] = None
 ):
     """
     Calculate dimensionless classical thermal conductivity coefficients.
@@ -1206,7 +1207,7 @@ def _nondim_viscosity(
     model,
     field_orientation,  # noqa: ARG001
     mu=None,
-    theta=None,
+    theta: Optional[float] = None,
 ):
     """
     Calculate dimensionless classical viscosity coefficients.
@@ -2070,7 +2071,7 @@ def _nondim_visc_e_ji_held(hall, Z):
     return np.array((eta_0, eta_1, eta_2, eta_3, eta_4))
 
 
-def _nondim_tc_i_ji_held(hall, Z, mu, theta, field_orientation, K=3):
+def _nondim_tc_i_ji_held(hall, Z, mu, theta: float, field_orientation, K=3):
     """
     Dimensionless ion thermal conductivity — Ji-Held.
 
@@ -2151,7 +2152,7 @@ def _nondim_tc_i_ji_held(hall, Z, mu, theta, field_orientation, K=3):
         )
 
 
-def _nondim_visc_i_ji_held(hall, Z, mu, theta, K=3):
+def _nondim_visc_i_ji_held(hall, Z, mu, theta: float, K=3):
     """
     Dimensionless ion viscosity — Ji-Held.
 

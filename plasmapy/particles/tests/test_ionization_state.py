@@ -161,7 +161,7 @@ def test_equal_to_itself(He_ionization_state) -> None:
 
 
 @pytest.mark.parametrize(("tolerance", "output"), [(1e-8, True), (1e-9001, False)])
-def test_equal_to_within_tolerance(tolerance, output) -> None:
+def test_equal_to_within_tolerance(tolerance: float, output) -> None:
     """
     Test that `IonizationState.__eq__` returns `True` for two
     `IonizationState` instances that differ within the inputted
@@ -356,7 +356,7 @@ def test_inequality_with_different_type(He_ionization_state) -> None:
 
 
 @pytest.mark.parametrize("tol", [-1e-16, 1.0000001])
-def test_invalid_tolerances(He_ionization_state, tol) -> None:
+def test_invalid_tolerances(He_ionization_state, tol: float) -> None:
     """Test that invalid tolerances raise appropriate errors."""
     with pytest.raises(ValueError):
         He_ionization_state.tol = tol

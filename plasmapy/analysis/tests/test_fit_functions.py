@@ -44,7 +44,7 @@ class TestAbstractFitFunction:
             ("root_solve", False),
         ],
     )
-    def test_methods(self, name, isproperty) -> None:
+    def test_methods(self, name: str, isproperty: bool) -> None:
         """Test for required methods and properties."""
         assert hasattr(self.ff_class, name)
 
@@ -55,7 +55,7 @@ class TestAbstractFitFunction:
         "name",
         ["__str__", "func", "func_err", "latex_str"],
     )
-    def test_abstractmethods(self, name) -> None:
+    def test_abstractmethods(self, name: str) -> None:
         """Test for required abstract methods."""
         assert name in self.ff_class.__abstractmethods__
 
@@ -121,7 +121,7 @@ class BaseFFTests(ABC):
             ("root_solve", False),
         ],
     )
-    def test_methods(self, name, isproperty) -> None:
+    def test_methods(self, name: str, isproperty: bool) -> None:
         """Test attribute/method/property existence."""
         assert hasattr(self.ff_class, name)
 
@@ -143,7 +143,7 @@ class BaseFFTests(ABC):
             ("__str__", "_test__str__"),
         ],
     )
-    def test_abstractmethod_values(self, name, value_ref_name) -> None:
+    def test_abstractmethod_values(self, name: str, value_ref_name: str) -> None:
         """Test value of all abstract methods, except `func` and `func_err`."""
         ff_obj = self.ff_class()
 
@@ -454,7 +454,7 @@ class TestFFExponentialPlusLinear(BaseFFTests):
     _test__str__ = "f(x) = a exp(alpha x) + m x + b"
 
     @staticmethod
-    def func(x, a, alpha, m, b):
+    def func(x: float, a: float, alpha: float, m: float, b: float) -> float:
         return a * np.exp(alpha * x) + m * x + b
 
     def func_err(self, x, params, param_errors, x_err=None):
@@ -500,7 +500,7 @@ class TestFFExponentialPlusOffset(BaseFFTests):
     _test__str__ = "f(x) = a exp(alpha x) + b"
 
     @staticmethod
-    def func(x, a, alpha, b):
+    def func(x: float, a: float, alpha: float, b: float) -> float:
         return a * np.exp(alpha * x) + b
 
     def func_err(self, x, params, param_errors, x_err=None):
