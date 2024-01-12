@@ -27,6 +27,7 @@ from plasmapy.particles.particle_class import (
     CustomParticle,
     DimensionlessParticle,
     Particle,
+    ParticleLike,
     valid_categories,
 )
 from plasmapy.utils import roman
@@ -559,7 +560,7 @@ def test_Particle_class(arg, kwargs, expected_dict):
         raise Exception(f"Problems with {call}:{errmsg}")  # noqa: TRY002
 
 
-equivalent_particles_table = [
+equivalent_particles_table: list[list[ParticleLike]] = [
     ["H", "hydrogen", "hYdRoGeN"],
     ["p+", "proton", "H-1+", "H-1 1+", "H-1 +1"],
     ["D", "H-2", "Hydrogen-2", "deuterium"],
