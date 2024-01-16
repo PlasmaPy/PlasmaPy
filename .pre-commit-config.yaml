@@ -8,9 +8,12 @@ repos:
   rev: v4.5.0
   hooks:
   - id: check-ast
+    name: no Python syntax errors
   - id: check-merge-conflict
+    name: check for git merge conflicts
     exclude: .*\.rst
   - id: check-case-conflict
+    name: check for filename case conflicts
   - id: name-tests-test
     args: [--pytest-test-first]
     exclude: plasmapy/tests/_helpers/.*
@@ -37,7 +40,7 @@ repos:
   rev: v1.5.4
   hooks:
   - id: remove-crlf
-
+    name: remove CRLF line endings
 - repo: https://github.com/macisamuele/language-formatters-pre-commit-hooks
   rev: v2.12.0
   hooks:
@@ -51,15 +54,11 @@ repos:
     # run this hook on `labeler.yml` (or certain other files).
     exclude: .github/labeler.yml|.pre-commit-search-and-replace.yaml
 
-- repo: https://github.com/pre-commit/mirrors-csslint
-  rev: v1.0.5
-  hooks:
-  - id: csslint
-
 - repo: https://github.com/MarcoGorelli/absolufy-imports
   rev: v0.3.1
   hooks:
   - id: absolufy-imports
+    name: Use absolute rather than relative imports
     exclude: docs/plasmapy_sphinx
 
 - repo: https://github.com/mattlqx/pre-commit-search-and-replace
@@ -72,6 +71,7 @@ repos:
   rev: v1.10.0
   hooks:
   - id: python-check-blanket-noqa
+    name: noqa comments have an error code
     exclude: ^docs/plasmapy_sphinx/
   - id: rst-directive-colons
   - id: rst-inline-touching-normal
@@ -81,6 +81,7 @@ repos:
   rev: v2.2.6
   hooks:
   - id: codespell
+    name: codespell (add false positives to pyproject.toml)
     args: [--write-changes]
     additional_dependencies:
     - tomli
@@ -89,19 +90,23 @@ repos:
   rev: v0.1.9
   hooks:
   - id: ruff
+    name: ruff (see https://docs.astral.sh/ruff/rules)
     args: [--fix]
   - id: ruff-format
+    name: autoformat source code with ruff formatter
 
 - repo: https://github.com/asottile/blacken-docs
   rev: 1.16.0
   hooks:
   - id: blacken-docs
+    name: autoformat code blocks in docs
     exclude: docs/contributing/coding_guide.rst
 
 - repo: https://github.com/nbQA-dev/nbQA
   rev: 1.7.1
   hooks:
   - id: nbqa-check-ast
+    name: validate abstract syntax tree in notebooks
   - id: nbqa-ruff
-    args: ['--select=A,ARG,B,BLE,C,C4,E,F,FLY,I002,INT,ISC,PERF,PIE,PLC,PLE,PYI,Q003,RET,RSE,SIM,TID,TRY,UP,W', '--ignore=B007,B008,B015,B018,E402,E501,E741,SIM114']
-  - id: nbqa-isort
+    name: ruff for notebooks (see https://docs.astral.sh/ruff/rules)
+    args: [--fix, '--select=A,ARG,B,BLE,C,C4,E,F,FLY,I,INT,ISC,PERF,PIE,PLC,PLE,PYI,Q003,RET,RSE,SIM,TID,TRY,UP,W', '--ignore=B007,B008,B015,B018,E402,E501,E741,SIM114']
