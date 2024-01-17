@@ -649,7 +649,7 @@ class EpperleinHaines(AbstractClassicalTransportCoefficients):
     @property
     def norm_beta_para(self):
         i = self._find_nearest_Z(self.Z)
-        return self._c["beta0"][i] / (self._c['b0p'][i]**(8/9)) * np.ones(self.chi_e.shape)
+        return self._c["beta0"][i]  * np.ones(self.chi_e.shape)
 
     @property
     def norm_beta_perp(self):
