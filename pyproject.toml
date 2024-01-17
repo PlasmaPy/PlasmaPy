@@ -161,6 +161,7 @@ all_files = "1"
 
 [tool.codespell]
 skip = "*.png,*cache*,*egg*,.git,.hypothesis,.idea,.tox,_build,*charged_particle*.ipynb,venv"
+# Add false positives found by codespell to ignore-words-list
 ignore-words-list = """
 aas,
 aci,
