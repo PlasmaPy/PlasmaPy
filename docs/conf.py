@@ -336,7 +336,6 @@ linkcheck_allowed_redirects = {
     r"https://jinja\.palletsprojects\.com": r"https://jinja\.palletsprojects\.com/.+",
     r"https://pip\.pypa\.io": r"https://pip\.pypa\.io/en/.+",
     r"https://www\.python\.org/dev/peps/pep.+": r"https://peps\.python\.org/pep.+",
-    r"https://github\.com/.+/.+/tree/.+": r"https://github\.com/.+/.+/blob/.+",
     r"https://matplotlib.org/stable/devel.*": r"https://matplotlib.org/devdocs/devel/.*",
 }
 
