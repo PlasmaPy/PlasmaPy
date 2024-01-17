@@ -197,7 +197,7 @@ coef_table["a2pp"] = np.array(
 # β0(Z=20) is clearly incorrect; replaced with fitted value
 coef_table["beta0"] = np.array(
     [
-        0.702,
+        0.7029,
         0.9054,
         1.018,
         1.092,
@@ -649,7 +649,7 @@ class EpperleinHaines(AbstractClassicalTransportCoefficients):
     @property
     def norm_beta_para(self):
         i = self._find_nearest_Z(self.Z)
-        return self._c["beta0"][i] * np.ones(self.chi_e.shape)
+        return self._c["beta0"][i] / (self._c['b0p'][i]**(8/9)) * np.ones(self.chi_e.shape)
 
     @property
     def norm_beta_perp(self):
