@@ -1,2 +1,2 @@
-Enabled and applied all ``isort`` rules in |ruff| after dropping the |pre-commit|
-hook for ``isort``.
+Dropped the |pre-commit| hook for ``isort`` and enabled all ``isort``
+rules in |ruff|.

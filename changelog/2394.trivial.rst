@@ -1,1 +1,1 @@
-Replaced |black| with |ruff| in pre-commit config.
+Replaced |black| with |ruff| in the |pre-commit| configuration.
