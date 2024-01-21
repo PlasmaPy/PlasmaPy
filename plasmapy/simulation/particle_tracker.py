@@ -36,7 +36,7 @@ class AbstractTerminationCondition(ABC):
     """Abstract base class containing the necessary methods for a ParticleTracker termination condition."""
 
     @property
-    def tracker(self) -> "ParticleTracker":
+    def tracker(self) -> Optional["ParticleTracker"]:
         """Return the `ParticleTracker` object for this termination condition."""
         return self._particle_tracker
 
@@ -89,7 +89,6 @@ class TimeElapsedTerminationCondition(AbstractTerminationCondition):
     """Termination condition corresponding to the elapsed time of a ParticleTracker."""
 
     def __init__(self, termination_time: u.Quantity) -> None:
-        self._particle_tracker: Optional["ParticleTracker"] = None
         self.termination_time: float = termination_time.to(u.s).value
 
     @property
@@ -115,12 +114,13 @@ class TimeElapsedTerminationCondition(AbstractTerminationCondition):
     @property
     def is_finished(self) -> bool:
         """Conclude the simulation if all particles have been tracked over the specified termination time."""
-        return bool(self.tracker.time >= self.termination_time)
+
+        return bool(float(self.tracker.time) >= self.termination_time)
 
     @property
     def progress(self) -> float:
         """Return the current time step of the simulation."""
-        return self.tracker.time
+        return float(self.tracker.time)
 
     @property
     def total(self) -> float:
@@ -132,7 +132,7 @@ class NoParticlesOnGridsTerminationCondition(AbstractTerminationCondition):
     """Termination condition corresponding to stopping the simulation when all particles have exited the grid."""
 
     def __init__(self) -> None:
-        self._particle_tracker: Optional["ParticleTracker"] = None
+        pass
 
     @property
     def require_synchronized_dt(self) -> bool:
@@ -159,14 +159,14 @@ class NoParticlesOnGridsTerminationCondition(AbstractTerminationCondition):
     @property
     def progress(self) -> float:
         """The progress of the simulation is measured by how many particles are no longer on a grid."""
-        is_not_on_grid = self.tracker.on_grid == 0
+        is_not_on_grid: NDArray[np.bool_] = self.tracker.on_grid == 0
 
-        return is_not_on_grid.sum()
+        return float(is_not_on_grid.sum())
 
     @property
     def total(self) -> float:
         """The progress of the simulation is measured against the total number of particles in the simulation."""
-        return self.tracker.nparticles
+        return float(self.tracker.nparticles)
 
 
 class AbstractSaveRoutine(ABC):
@@ -196,10 +196,8 @@ class AbstractSaveRoutine(ABC):
         self.x_all = []
         self.v_all = []
 
-        self._particle_tracker: Optional["ParticleTracker"] = None
-
     @property
-    def tracker(self) -> "ParticleTracker":
+    def tracker(self) -> Optional["ParticleTracker"]:
         """Return the `ParticleTracker` object for this stop condition."""
         return self._particle_tracker
 
@@ -479,7 +477,9 @@ class ParticleTracker:
             if isinstance(dt.value, np.ndarray):
                 # If an array is specified for the time step, a synchronized time step is implied if all
                 # the entries are equal
-                self._is_synchronized_time_step = np.all(dt.value[0] == dt.value[:])
+                self._is_synchronized_time_step = bool(
+                    np.all(dt.value[0] == dt.value[:])
+                )
             else:
                 self._is_synchronized_time_step = True
 
@@ -665,7 +665,7 @@ class ParticleTracker:
                 f"({x.shape[0]} and {v.shape[0]} respectively)."
             )
         else:
-            self.nparticles = x.shape[0]
+            self.nparticles: int = x.shape[0]
 
         self.x = x.to(u.m).value
         self.v = v.to(u.m / u.s).value
@@ -702,7 +702,7 @@ class ParticleTracker:
     # Run/push loop methods
     # *************************************************************************
 
-    def _adaptive_dt(self, Ex, Ey, Ez, Bx, By, Bz) -> Union[NDArray[float], float]:  # noqa: ARG002
+    def _adaptive_dt(self, Ex, Ey, Ez, Bx, By, Bz) -> Union[NDArray[np.float_], float]:  # noqa: ARG002
         r"""
         Calculate the appropriate dt for each grid based on a number of
         considerations
@@ -779,7 +779,9 @@ class ParticleTracker:
 
         # Update the list of particles on and off the grid
         # shape [nparticles, ngrids]
-        self.on_grid = np.array([grid.on_grid(pos_all * u.m) for grid in self.grids]).T
+        self.on_grid: NDArray[np.bool_] = np.array(
+            [grid.on_grid(pos_all * u.m) for grid in self.grids]
+        ).T
 
         # entered_grid is zero at the end if a particle has never
         # entered any grid
@@ -867,7 +869,7 @@ class ParticleTracker:
         self.dt = dt
 
     @property
-    def on_any_grid(self) -> bool:
+    def on_any_grid(self) -> NDArray[np.bool_]:
         """
         Binary array for each particle indicating whether it is currently
         on ANY grid.
@@ -923,13 +925,13 @@ class ParticleTracker:
         # Keep track of how many push steps have occurred for trajectory tracing
         self.iteration_number = 0
 
-        self.time: Union[NDArray[float], float] = (
+        self.time = (
             np.zeros((self.nparticles, 1)) if not self.is_synchronized_time_step else 0
         )
         # Create flags for tracking when particles during the simulation
         # on_grid -> zero if the particle is off grid, 1
         # shape [nparticles, ngrids]
-        self.on_grid = np.zeros([self.nparticles, self.num_grids])
+        self.on_grid: NDArray[np.float_] = np.zeros([self.nparticles, self.num_grids])
 
         # Entered grid -> non-zero if particle EVER entered a grid
         self.entered_grid = np.zeros([self.nparticles])
