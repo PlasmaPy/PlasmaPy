@@ -2,6 +2,8 @@
 Tests for proton radiography functions
 """
 
+from typing import Optional
+
 import astropy.units as u
 import numpy as np
 import pytest
@@ -14,14 +16,14 @@ from plasmapy.plasma.grids import CartesianGrid
 
 
 def _test_grid(  # noqa: C901, PLR0912
-    name,
-    L=1 * u.mm,
-    num=100,
-    B0=10 * u.T,
-    E0=5e8 * u.V / u.m,
-    phi0=1.4e5 * u.V,
-    a=None,
-    b=None,
+    name: str,
+    L: u.Quantity[u.m] = 1 * u.mm,
+    num: int = 100,
+    B0: u.Quantity[u.T] = 10 * u.T,
+    E0: u.Quantity[u.V / u.m] = 5e8 * u.V / u.m,
+    phi0: u.Quantity[u.V] = 1.4e5 * u.V,
+    a: Optional[u.Quantity[u.m]] = None,
+    b: Optional[u.Quantity[u.m]] = None,
 ):
     r"""
     Generates grids representing some common physical scenarios for testing
@@ -37,9 +39,11 @@ def _test_grid(  # noqa: C901, PLR0912
     ----------
     name : str
         Name of example to load (from list above)
+
     L : `~u.Quantity` (or array of three of the same)
         Length scale (or scales). -L and L are passed to the grid constructor
         as start and stop respectively. The default is 1 cm.
+
     num : int or list of three ints
         The number of points in each direction (or list of one for each dimension).
         Passed to the grid constructor as the num argument. The default is 100.
@@ -165,7 +169,7 @@ def test_multiple_grids() -> None:
     """
 
 
-def run_1D_example(name):
+def run_1D_example(name: str):
     """
     Run a simulation through an example with parameters optimized to
     sum up to a lineout along x. The goal is to run a relatively fast
@@ -204,7 +208,7 @@ def run_mesh_example(
     mesh_vdir=None,
     nparticles: int = 10000,
     problem="electrostatic_gaussian_sphere",
-):
+) -> cpr.Tracker:
     """
     Takes all of the add_wire_mesh parameters and runs a standard example problem
     simulation using them.
@@ -491,7 +495,7 @@ def test_run_options() -> None:
     assert 0 < sim.max_deflection.to(u.rad).value < np.pi / 2
 
 
-def create_tracker_obj():
+def create_tracker_obj() -> cpr.Tracker:
     # CREATE A RADIOGRAPH OBJECT
     grid = _test_grid("electrostatic_gaussian_sphere", num=50)
     source = (0 * u.mm, -10 * u.mm, 0 * u.mm)

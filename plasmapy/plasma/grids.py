@@ -1,6 +1,7 @@
 """
 Defines the AbstractGrid class and child classes.
 """
+from collections.abc import Sequence
 
 __all__ = [
     "AbstractGrid",
@@ -76,7 +77,7 @@ class AbstractGrid(ABC):
 
     """
 
-    def __init__(self, *seeds, num=100, **kwargs) -> None:
+    def __init__(self, *seeds: Sequence[int], num: int = 100, **kwargs) -> None:
         # Initialize some variables
         self._interpolator = None
         self._is_uniform = None
@@ -670,7 +671,7 @@ class AbstractGrid(ABC):
         self,
         start: Union[float, u.Quantity],
         stop: Union[float, u.Quantity],
-        num=100,
+        num: int = 100,
         units=None,
         **kwargs,
     ):
@@ -795,7 +796,7 @@ class AbstractGrid(ABC):
             pts2 * units[2],
         )
 
-    def _make_mesh(self, start, stop, num, **kwargs):
+    def _make_mesh(self, start, stop, num: int, **kwargs):
         r"""
         Creates mesh as part of _make_grid(). Separated into its own function
         so it can be re-implemented to make non-uniformly spaced meshes.
@@ -1361,7 +1362,7 @@ class NonUniformCartesianGrid(AbstractGrid):
 
         return Tmin < Tmax
 
-    def _make_mesh(self, start, stop, num, **kwargs):
+    def _make_mesh(self, start, stop, num: int, **kwargs):
         r"""
         Creates mesh as part of ``_make_grid()``. Separated into its own
         function so it can be re-implemented to make non-uniform grids.

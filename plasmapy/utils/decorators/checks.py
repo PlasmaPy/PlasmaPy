@@ -1325,7 +1325,11 @@ def check_relativistic(func=None, betafrac: float = 0.05):
     return decorator(func) if func else decorator
 
 
-def _check_relativistic(V, funcname, betafrac: float = 0.05):
+def _check_relativistic(
+    V: u.Quantity[u.m / u.s],
+    funcname: str,
+    betafrac: float = 0.05,
+) -> None:
     r"""
     Warn or raise error for relativistic or superrelativistic
     velocities.

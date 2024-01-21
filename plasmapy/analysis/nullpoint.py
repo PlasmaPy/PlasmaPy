@@ -1128,7 +1128,7 @@ def _trilinear_analysis(vspace, cell):  # noqa: C901, PLR0915
     if len(BxByEndpoints) != 2 or len(BxBzEndpoints) != 2 or len(ByBzEndpoints) != 2:
         return False
 
-    def endpoint_sign_check(curve_endpoints, curve_name):
+    def endpoint_sign_check(curve_endpoints, curve_name: str):
         if curve_name == "x":
             index = 0
         elif curve_name == "y":

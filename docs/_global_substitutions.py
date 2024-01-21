@@ -12,7 +12,7 @@ if the key is ``"particle-like"``, then it can be used as
 ``|particle-like|`` throughout the documentation.
 """
 
-plasmapy_subs = {
+plasmapy_subs: dict[str, str] = {
     "atomic_number": ":func:`~plasmapy.particles.atomic.atomic_number`",
     "atomic_symbol": ":func:`~plasmapy.particles.symbols.atomic_symbol`",
     "charge_number": ":func:`~plasmapy.particles.atomic.charge_number`",
@@ -62,7 +62,7 @@ plasmapy_subs = {
 # The backslash is needed for the substitution to work correctly when
 # used just before a period.
 
-doc_subs = {
+doc_subs: dict[str, str] = {
     "annotated": r":term:`annotated <annotation>`\ ",
     "annotation": r":term:`annotation`\ ",
     "argument": r":term:`argument`\ ",
@@ -95,7 +95,7 @@ doc_subs = {
     "testing guide": r":ref:`testing guide`\ ",
 }
 
-numpy_subs = {
+numpy_subs: dict[str, str] = {
     "array_like": ":term:`numpy:array_like`",
     "DTypeLike": "`~numpy.typing.DTypeLike`",
     "inf": "`~numpy.inf`",
@@ -103,7 +103,7 @@ numpy_subs = {
     "ndarray": ":class:`~numpy.ndarray`",
 }
 
-astropy_subs = {
+astropy_subs: dict[str, str] = {
     "Quantity": ":class:`~astropy.units.Quantity`",
 }
 
@@ -111,7 +111,7 @@ astropy_subs = {
 # links, we first define the links and then process them afterwards into
 # the form of a reStructuredText external link.
 
-links = {
+links: dict[str, str] = {
     "Astropy": "https://docs.astropy.org",
     "black": "https://black.readthedocs.io",
     "Citation File Format": "https://citation-file-format.github.io/",
@@ -128,6 +128,7 @@ links = {
     "matplotlib": "https://matplotlib.org",
     "Matrix chat room": "https://app.element.io/#/room/#plasmapy:openastronomy.org",
     "mpmath": "https://mpmath.org/doc/current",
+    "mypy": "https://mypy.readthedocs.io",
     "nbsphinx": "https://nbsphinx.readthedocs.io",
     "Numba": "https://numba.readthedocs.io",
     "NumPy": "https://numpy.org",
@@ -152,8 +153,10 @@ links = {
     "ruff": "https://docs.astral.sh/ruff",
     "SciPy": "https://scipy.org",
     "Sphinx": "https://www.sphinx-doc.org",
+    "static type checking": "https://realpython.com/lessons/python-type-checking-overview",
     "towncrier": "https://github.com/twisted/towncrier",
     "tox": "https://tox.wiki/en/latest",
+    "type hint annotations": "https://peps.python.org/pep-0484",
     "xarray": "https://docs.xarray.dev",
     "Zenodo": "https://zenodo.org",
 }

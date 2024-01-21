@@ -246,7 +246,7 @@ def temp_ratio(  # noqa: C901
         n_step,
         density,
         velocity,
-        temperature,
+        temperature: float,
     ):
         # Initialize the alpha-proton charge and mass ratios.
         z_1 = ions[0].charge_number
@@ -264,7 +264,7 @@ def temp_ratio(  # noqa: C901
 
         # Define Coulomb log for mixed ion collisions, see docstring
         def lambda_ba(
-            theta,
+            theta: float,
             T_1,
             n_1,
             n_2,

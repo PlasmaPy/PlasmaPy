@@ -102,7 +102,7 @@ class TestThermalSpeed:
             ("coefficients", thermal_speed_coefficients),
         ],
     )
-    def test_lite_function_binding(self, bound_name, bound_attr) -> None:
+    def test_lite_function_binding(self, bound_name: str, bound_attr) -> None:
         """Test expected attributes are bound correctly."""
         assert hasattr(thermal_speed, bound_name)
         assert getattr(thermal_speed, bound_name) is bound_attr

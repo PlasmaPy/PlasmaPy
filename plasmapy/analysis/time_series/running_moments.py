@@ -17,7 +17,7 @@ import numpy as np
 _run_moment_tuple = namedtuple("Running_Moment", ["run_moment", "time"])
 
 
-def running_mean(signal, radius):
+def running_mean(signal, radius: int):
     """
     Calculate the running mean of a sequence.
 
@@ -62,7 +62,7 @@ def running_mean(signal, radius):
     return run_mean[window - 1 :] / window
 
 
-def running_moment(signal, radius, moment=1, time=None):
+def running_moment(signal, radius: int, moment=1, time=None):
     """
     Calculate either the running mean, standard deviation, skewness or
     excess kurtosis of a sequence.

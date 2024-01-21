@@ -379,7 +379,7 @@ class Test_classical_transport:
         ],
     )
     def test_number_of_returns(
-        self, model, attr_name, field_orientation, expected
+        self, model, attr_name: str, field_orientation, expected
     ) -> None:
         with pytest.warns(RelativityWarning):
             ct2 = ClassicalTransport(
@@ -964,7 +964,7 @@ class Test__nondim_visc_e_braginskii:
             (1, 1.0, 4),  # eq (2.27)
         ],
     )
-    def test_known_values(self, Z, expected, idx) -> None:
+    def test_known_values(self, Z, expected, idx: int) -> None:
         """Check some known values"""
         beta_hat = _nondim_visc_e_braginskii(self.big_hall, Z)
         if idx == 0:
@@ -1243,7 +1243,9 @@ def test__nondim_visc_e_ji_held(hall, Z, index, expected) -> None:
         (77.11707, 1, 0, 100, "cross", 0.03235721),
     ],
 )
-def test__nondim_tc_i_ji_held(hall, Z, mu, theta, field_orientation, expected) -> None:
+def test__nondim_tc_i_ji_held(
+    hall, Z, mu, theta: float, field_orientation, expected
+) -> None:
     """Test _nondim_tc_i_ji_held function"""
     kappa_hat = _nondim_tc_i_ji_held(hall, Z, mu, theta, field_orientation)
     kappa_check = expected
@@ -1271,7 +1273,7 @@ def test__nondim_tc_i_ji_held(hall, Z, mu, theta, field_orientation, expected) -
         (80.42633, 1, 0, 100, 4, 0.01238144),
     ],
 )
-def test__nondim_visc_i_ji_held(hall, Z, mu, theta, index, expected) -> None:
+def test__nondim_visc_i_ji_held(hall, Z, mu, theta: float, index, expected) -> None:
     """Test _nondim_visc_i_ji_held function"""
     kappa_hat = _nondim_visc_i_ji_held(hall, Z, mu, theta)
     kappa_check = expected
