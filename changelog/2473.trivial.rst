@@ -1,0 +1,2 @@
+Added a :file:`py.typed` marker to indicate that PlasmaPy contains
+type hint annotations.
