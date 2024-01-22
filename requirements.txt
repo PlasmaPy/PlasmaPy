@@ -100,7 +100,7 @@ future==0.18.3
     # via uncertainties
 h5py==3.10.0
     # via plasmapy (setup.py)
-hypothesis==6.96.2
+hypothesis==6.96.3
     # via plasmapy (setup.py)
 identify==2.5.33
     # via pre-commit
@@ -169,7 +169,7 @@ jupyter-server==2.12.5
     # via
     #   jupyterlab-server
     #   voila
-jupyter-server-terminals==0.5.1
+jupyter-server-terminals==0.5.2
     # via jupyter-server
 jupyterlab-pygments==0.3.0
     # via nbconvert
@@ -368,7 +368,7 @@ rpds-py==0.17.1
     # via
     #   jsonschema
     #   referencing
-scipy==1.12.0
+scipy==1.11.4
     # via
     #   lmfit
     #   plasmapy (setup.py)
