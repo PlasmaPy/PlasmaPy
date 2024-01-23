@@ -1,0 +1,1 @@
+Changed ``_nearest_neighbor_interpolator`` method in `~plasmapy.plasma.grids` to interpolate quantities array instead of producing an intermediate index.
