@@ -336,6 +336,7 @@ linkcheck_allowed_redirects = {
     r"https://jinja\.palletsprojects\.com": r"https://jinja\.palletsprojects\.com/.+",
     r"https://pip\.pypa\.io": r"https://pip\.pypa\.io/en/.+",
     r"https://www\.python\.org/dev/peps/pep.+": r"https://peps\.python\.org/pep.+",
+    r"https://matplotlib.org/stable/devel.*": r"https://matplotlib.org/devdocs/devel/.*",
 }
 
 # Hyperlinks for `make linkcheck` to ignore. This may include stable
@@ -425,6 +426,7 @@ linkcheck_ignore = [
     r"https://hdl\.handle\.net/10037/29416",
     r"https://www\.iter\.org/",
     r"https://www\.sciencedirect\.com/book/9780123748775/.*",
+    r"https://github.com/DarkAEther",  # author profile not found (HTTP 404)
 ]
 
 # nbsphinx
