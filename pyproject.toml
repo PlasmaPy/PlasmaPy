@@ -50,7 +50,7 @@ dependencies = [
   "pandas >= 1.3.0",
   "pytest >= 7.0.1",
   "requests >= 2.27.1",
-  "scipy >= 1.7.0",
+  "scipy >= 1.7.0, < 1.12.0",
   "tqdm >= 4.60.0",
   "voila >= 0.5.0",
   "wrapt >= 1.12.1",
@@ -161,6 +161,7 @@ all_files = "1"
 
 [tool.codespell]
 skip = "*.png,*cache*,*egg*,.git,.hypothesis,.idea,.tox,_build,*charged_particle*.ipynb,venv"
+# Add false positives found by codespell to ignore-words-list
 ignore-words-list = """
 aas,
 aci,

@@ -19,5 +19,5 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
-        checklist=$(sed "s/%VERSION%/${{ github.event.inputs.version }}/g" .github/markdown/release-checklist.md)
+        checklist=$(sed "s/%VERSION%/${{ github.event.inputs.version }}/g" .github/content/release-checklist.md)
         gh issue create --title "Release ${{ github.event.inputs.version }}" --body "$checklist" --label "release"
