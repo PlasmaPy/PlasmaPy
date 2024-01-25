@@ -443,7 +443,6 @@ linkcheck_ignore = [
     r"https://hdl\.handle\.net/10037/29416",
     r"https://www\.iter\.org/",
     r"https://www\.sciencedirect\.com/book/9780123748775/.*",
-    r"https://github.com/sponsors/DarkAEther",
 ]
 
 # nbsphinx
