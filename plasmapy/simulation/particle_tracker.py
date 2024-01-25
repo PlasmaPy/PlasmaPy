@@ -2,8 +2,6 @@
 Module containing the definition for the general particle tracker.
 """
 
-from __future__ import annotations
-
 __all__ = [
     "AbstractSaveRoutine",
     "AbstractTerminationCondition",
@@ -18,11 +16,14 @@ import collections
 import sys
 import warnings
 from abc import ABC, abstractmethod
-from typing import TYPE_CHECKING, Optional, Union
+from collections.abc import Iterable
+from pathlib import Path
+from typing import Optional, Union
 
 import astropy.units as u
 import h5py
 import numpy as np
+from numpy.typing import NDArray
 from tqdm import tqdm
 
 from plasmapy.particles import Particle, particle_input
@@ -30,23 +31,17 @@ from plasmapy.plasma.grids import AbstractGrid
 from plasmapy.plasma.plasma_base import BasePlasma
 from plasmapy.simulation.particle_integrators import boris_push
 
-if TYPE_CHECKING:
-    from collections.abc import Iterable
-    from pathlib import Path
-
-    from numpy.typing import NDArray
-
 
 class AbstractTerminationCondition(ABC):
     """Abstract base class containing the necessary methods for a ParticleTracker termination condition."""
 
     @property
-    def tracker(self) -> Optional[ParticleTracker]:
+    def tracker(self) -> Optional["ParticleTracker"]:
         """Return the `ParticleTracker` object for this termination condition."""
         return self._particle_tracker
 
     @tracker.setter
-    def tracker(self, particle_tracker: ParticleTracker) -> None:
+    def tracker(self, particle_tracker: "ParticleTracker") -> None:
         self._particle_tracker = particle_tracker
 
     @property
@@ -204,12 +199,12 @@ class AbstractSaveRoutine(ABC):
         self._particle_tracker: Optional[ParticleTracker] = None
 
     @property
-    def tracker(self) -> Optional[ParticleTracker]:
+    def tracker(self) -> Optional["ParticleTracker"]:
         """Return the `ParticleTracker` object for this stop condition."""
         return self._particle_tracker
 
     @tracker.setter
-    def tracker(self, particle_tracker: ParticleTracker) -> None:
+    def tracker(self, particle_tracker: "ParticleTracker") -> None:
         self._particle_tracker = particle_tracker
 
     @property
