@@ -28,4 +28,4 @@ jobs:
       run: sudo apt-get install graphviz pandoc
 
     - name: Check hyperlinks
-      run: tox -e build_docs_linkcheck -- -q
+      run: tox -e linkcheck
