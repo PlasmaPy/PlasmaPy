@@ -1,0 +1,1 @@
+Check hyperlinks: run the ``sphinx`` linkchecker in quiet mode to make it easier to find problem links from the console output.
