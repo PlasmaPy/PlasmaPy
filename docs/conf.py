@@ -1,4 +1,20 @@
-"""The configuration file for building PlasmaPy's documentation."""
+"""
+The configuration file for building PlasmaPy's documentation.
+
+For more information, please see the following links:
+
+PlasmaPy documentation guide:
+    https://docs.plasmapy.org/en/latest/contributing/doc_guide.html
+
+Sphinx documentation:
+    https://www.sphinx-doc.org
+
+Sphinx configuration variables:
+    https://www.sphinx-doc.org/en/master/usage/configuration.html
+
+Sphinx extensions (built-in):
+    https://www.sphinx-doc.org/en/master/usage/extensions/index.html
+"""
 
 #!/usr/bin/env python3
 
@@ -328,6 +344,7 @@ linkcheck_allowed_redirects = {
     r"https://docs.+\.io": r"https://docs.+\.io/en/.+",
     r"https://docs.+\.com": r"https://docs.+\.com/en/.+",
     r"https://docs.+\.dev": r"https://docs.+\.dev/en/.+",
+    r"https://github\.com/sponsors/.+": r"https://github\.com/.+",
     r"https://en.wikipedia.org/wiki.+": "https://en.wikipedia.org/wiki.+",
     r"https://.+\.readthedocs\.io": r"https://.+\.readthedocs\.io/en/.+",
     r"https://www\.sphinx-doc\.org": r"https://www\.sphinx-doc\.org/en/.+",
@@ -426,7 +443,6 @@ linkcheck_ignore = [
     r"https://hdl\.handle\.net/10037/29416",
     r"https://www\.iter\.org/",
     r"https://www\.sciencedirect\.com/book/9780123748775/.*",
-    r"https://github.com/DarkAEther",  # author profile not found (HTTP 404)
 ]
 
 # nbsphinx
