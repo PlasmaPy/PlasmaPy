@@ -1,0 +1,2 @@
+Fixed a bug so that |particle_input| now works when a module begins
+with py:`from future import annotations`.
