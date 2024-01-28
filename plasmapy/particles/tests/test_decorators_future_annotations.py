@@ -4,39 +4,40 @@
 # import must be at the top.
 from __future__ import annotations
 
-from plasmapy.particles import Particle, ParticleLike, particle_input
+from plasmapy.particles.decorators import particle_input
+from plasmapy.particles.particle_class import Particle, ParticleLike
 
 
 @particle_input
-def function_decorated_with_particle_input(particle: ParticleLike):
+def function_decorated_with_particle_input(particle: ParticleLike) -> Particle:
     return particle
 
 
 class DecoratedClass:
     @particle_input
-    def __init__(self, particle: ParticleLike):
-        self.particle = particle
+    def __init__(self, particle: ParticleLike) -> None:
+        self.particle = particle  # type: ignore[return-value]
 
 
 class UndecoratedClass:
     @particle_input
-    def decorated_method(self, particle: ParticleLike):
-        return particle
+    def decorated_method(self, particle: ParticleLike) -> Particle:
+        return particle  # type: ignore[return-value]
 
 
-def test_particle_input_from_future_import_annotations_function():
+def test_particle_input_from_future_import_annotations_function() -> None:
     particle = function_decorated_with_particle_input("p+")
     assert particle == Particle("p+")
 
 
-def test_particle_input_from_future_import_annotations_instantiation():
+def test_particle_input_from_future_import_annotations_instantiation() -> None:
     instance = DecoratedClass("p+")
 
     assert isinstance(instance.particle, Particle)
     assert instance.particle == Particle("p+")
 
 
-def test_particle_input_from_future_import_annotations_method():
+def test_particle_input_from_future_import_annotations_method() -> None:
     instance = UndecoratedClass()
     result = instance.decorated_method(particle="p+")
     assert isinstance(result, Particle)
