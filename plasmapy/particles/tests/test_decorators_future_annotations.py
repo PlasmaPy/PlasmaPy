@@ -10,13 +10,13 @@ from plasmapy.particles.particle_class import Particle, ParticleLike
 
 @particle_input
 def function_decorated_with_particle_input(particle: ParticleLike) -> Particle:
-    return particle
+    return particle  # type: ignore[return-value]
 
 
 class DecoratedClass:
     @particle_input
     def __init__(self, particle: ParticleLike) -> None:
-        self.particle = particle  # type: ignore[return-value]
+        self.particle = particle
 
 
 class UndecoratedClass:
