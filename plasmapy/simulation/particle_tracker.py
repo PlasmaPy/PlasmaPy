@@ -672,6 +672,80 @@ class ParticleTracker:
         self.x = x.to(u.m).value
         self.v = v.to(u.m / u.s).value
 
+    def run(self) -> None:
+        r"""
+        Runs a particle-tracing simulation.
+        Time steps are adaptively calculated based on the
+        local grid resolution of the particles and the electric and magnetic
+        fields they are experiencing.
+
+        Returns
+        -------
+        None
+
+        """
+
+        self._enforce_particle_creation()
+
+        # Keep track of how many push steps have occurred for trajectory tracing
+        self.iteration_number = 0
+
+        self.time: Union[NDArray[np.float_], float] = (
+            np.zeros((self.nparticles, 1)) if not self.is_synchronized_time_step else 0
+        )
+        # Create flags for tracking when particles during the simulation
+        # on_grid -> zero if the particle is off grid, 1
+        # shape [nparticles, ngrids]
+        self.on_grid: NDArray[np.bool_] = np.zeros(
+            [self.nparticles, self.num_grids]
+        ).astype(np.bool_)
+
+        # Entered grid -> non-zero if particle EVER entered a grid
+        self.entered_grid: NDArray[np.bool_] = np.zeros([self.nparticles]).astype(
+            np.bool_
+        )
+
+        # Initialize a "progress bar" (really more of a meter)
+        # Setting sys.stdout lets this play nicely with regular print()
+        pbar = tqdm(
+            initial=0,
+            total=self.termination_condition.total,
+            disable=not self.verbose,
+            desc=self.termination_condition.progress_description,
+            unit=self.termination_condition.units_string,
+            bar_format="{l_bar}{bar}{n:.1e}/{total:.1e} {unit}",
+            file=sys.stdout,
+        )
+
+        # Push the particles until the termination condition is satisfied
+        is_finished = False
+        while not (is_finished or self.nparticles_tracked == 0):
+            is_finished = self.termination_condition.is_finished
+            progress = min(
+                self.termination_condition.progress, self.termination_condition.total
+            )
+
+            pbar.n = progress
+            pbar.last_print_n = progress
+            pbar.update(0)
+
+            self._push()
+
+            if self.save_routine is not None:
+                self.save_routine.post_push_hook()
+
+        if self.save_routine is not None:
+            self.save_routine.post_push_hook(force_save=True)
+
+        pbar.close()
+
+        # Log a summary of the run
+
+        self._log("Run completed")
+
+        # Simulation has not run, because creating new particles changes the simulation
+        self._has_run = True
+
     def _stop_particles(self, particles_to_stop_mask) -> None:
         """Stop tracking the particles specified by the stop mask.
 
@@ -858,7 +932,7 @@ class ParticleTracker:
         # vc = np.max(v)/_c
 
         # Make sure the time step can be multiplied by a [nparticles, 3] shape field array
-        if isinstance(dt, NDArray) and dt.size > 1:
+        if isinstance(dt, np.ndarray) and dt.size > 1:
             dt = dt[tracked_mask, np.newaxis]
 
             # Increment the tracked particles' time by dt
@@ -910,78 +984,6 @@ class ParticleTracker:
     def is_synchronized_time_step(self) -> bool:
         """Return if the simulation is applying the same time step across all particles."""
         return self._is_synchronized_time_step
-
-    def run(self) -> None:
-        r"""
-        Runs a particle-tracing simulation.
-        Time steps are adaptively calculated based on the
-        local grid resolution of the particles and the electric and magnetic
-        fields they are experiencing.
-
-        Returns
-        -------
-        None
-
-        """
-
-        self._enforce_particle_creation()
-
-        # Keep track of how many push steps have occurred for trajectory tracing
-        self.iteration_number = 0
-
-        self.time: Union[NDArray[np.float_], float] = (
-            np.zeros((self.nparticles, 1)) if not self.is_synchronized_time_step else 0
-        )
-        # Create flags for tracking when particles during the simulation
-        # on_grid -> zero if the particle is off grid, 1
-        # shape [nparticles, ngrids]
-        self.on_grid: NDArray[np.bool_] = np.zeros(
-            [self.nparticles, self.num_grids]
-        ).astype(np.bool_)
-
-        # Entered grid -> non-zero if particle EVER entered a grid
-        self.entered_grid = np.zeros([self.nparticles]).astype(np.bool_)
-
-        # Initialize a "progress bar" (really more of a meter)
-        # Setting sys.stdout lets this play nicely with regular print()
-        pbar = tqdm(
-            initial=0,
-            total=self.termination_condition.total,
-            disable=not self.verbose,
-            desc=self.termination_condition.progress_description,
-            unit=self.termination_condition.units_string,
-            bar_format="{l_bar}{bar}{n:.1e}/{total:.1e} {unit}",
-            file=sys.stdout,
-        )
-
-        # Push the particles until the termination condition is satisfied
-        is_finished = False
-        while not (is_finished or self.nparticles_tracked == 0):
-            is_finished = self.termination_condition.is_finished
-            progress = min(
-                self.termination_condition.progress, self.termination_condition.total
-            )
-
-            pbar.n = progress
-            pbar.last_print_n = progress
-            pbar.update(0)
-
-            self._push()
-
-            if self.save_routine is not None:
-                self.save_routine.post_push_hook()
-
-        if self.save_routine is not None:
-            self.save_routine.post_push_hook(force_save=True)
-
-        pbar.close()
-
-        # Log a summary of the run
-
-        self._log("Run completed")
-
-        # Simulation has not run, because creating new particles changes the simulation
-        self._has_run = True
 
     def _enforce_particle_creation(self) -> None:
         """Ensure the array position array `x` has been populated."""
