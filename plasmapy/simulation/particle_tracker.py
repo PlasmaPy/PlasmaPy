@@ -205,7 +205,7 @@ class AbstractSaveRoutine(ABC):
 
     @tracker.setter
     def tracker(self, particle_tracker: "ParticleTracker") -> None:
-        self._particle_tracker: ParticleTracker = particle_tracker
+        self._particle_tracker = particle_tracker
 
     @property
     @abstractmethod
