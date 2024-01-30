@@ -781,13 +781,15 @@ class ParticleTracker:
 
         # Update the list of particles on and off the grid
         # shape [nparticles, ngrids]
-        self.on_grid: NDArray[np.bool_] = np.array(
-            [grid.on_grid(pos_all * u.m) for grid in self.grids]
-        ).T
+        self.on_grid = (
+            np.array([grid.on_grid(pos_all * u.m) for grid in self.grids])
+            .astype(np.bool_)
+            .T
+        )
 
         # entered_grid is zero at the end if a particle has never
         # entered any grid
-        self.entered_grid += np.sum(self.on_grid, axis=-1)
+        self.entered_grid += np.sum(self.on_grid.astype(np.int_), axis=-1)
 
         Ex = np.zeros(self.nparticles_tracked) * u.V / u.m
         Ey = np.zeros(self.nparticles_tracked) * u.V / u.m
@@ -876,7 +878,7 @@ class ParticleTracker:
         Binary array for each particle indicating whether it is currently
         on ANY grid.
         """
-        return np.sum(self.on_grid, axis=-1) > 0
+        return np.sum(self.on_grid.astype(np.int_), axis=-1) > 0
 
     @property
     def vmax(self) -> float:
@@ -886,9 +888,9 @@ class ParticleTracker:
         """
         tracked_mask = self._tracked_particle_mask()
 
-        return np.max(np.linalg.norm(self.v[tracked_mask], axis=-1))
+        return float(np.max(np.linalg.norm(self.v[tracked_mask], axis=-1)))
 
-    def _tracked_particle_mask(self) -> np.ndarray:
+    def _tracked_particle_mask(self) -> NDArray[np.bool_]:
         """
         Calculates a boolean mask corresponding to particles that have not been stopped or removed.
         """
@@ -897,7 +899,7 @@ class ParticleTracker:
     @property
     def nparticles_tracked(self) -> int:
         """Return the number of particles that don't have NaN position or velocity."""
-        return self._tracked_particle_mask().sum()
+        return int(self._tracked_particle_mask().sum())
 
     @property
     def is_adaptive_time_step(self) -> bool:
@@ -933,7 +935,9 @@ class ParticleTracker:
         # Create flags for tracking when particles during the simulation
         # on_grid -> zero if the particle is off grid, 1
         # shape [nparticles, ngrids]
-        self.on_grid: NDArray[np.float_] = np.zeros([self.nparticles, self.num_grids])
+        self.on_grid: NDArray[np.bool_] = np.zeros(
+            [self.nparticles, self.num_grids]
+        ).astype(np.bool_)
 
         # Entered grid -> non-zero if particle EVER entered a grid
         self.entered_grid = np.zeros([self.nparticles])
