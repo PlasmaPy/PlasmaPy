@@ -711,9 +711,6 @@ class ParticleTracker:
         including the local grid resolution (ds) and the gyroperiod of the
         particles in the current fields.
         """
-        # If dt was explicitly set, skip the rest of this function
-        if not self._is_adaptive_time_step:
-            return self.dt
 
         # candidate time steps includes one per grid (based on the grid resolution)
         # plus additional candidates based on the field at each particle
@@ -789,7 +786,7 @@ class ParticleTracker:
 
         # entered_grid is zero at the end if a particle has never
         # entered any grid
-        self.entered_grid += np.sum(self.on_grid.astype(np.int_), axis=-1)
+        self.entered_grid += np.sum(self.on_grid, axis=-1).astype(np.bool_)
 
         Ex = np.zeros(self.nparticles_tracked) * u.V / u.m
         Ey = np.zeros(self.nparticles_tracked) * u.V / u.m
@@ -852,13 +849,16 @@ class ParticleTracker:
         # Calculate the adaptive time step from the fields currently experienced
         # by the particles
         # If user sets dt explicitly, that's handled in _adaptive_dt
-        dt = self._adaptive_dt(Ex, Ey, Ez, Bx, By, Bz)
+        if self._is_adaptive_time_step:
+            dt = self._adaptive_dt(Ex, Ey, Ez, Bx, By, Bz)
+        else:
+            dt = self.dt
 
         # TODO: Test v/c and implement relativistic Boris push when required
         # vc = np.max(v)/_c
 
         # Make sure the time step can be multiplied by a [nparticles, 3] shape field array
-        if dt.size > 1:
+        if isinstance(dt, NDArray) and dt.size > 1:
             dt = dt[tracked_mask, np.newaxis]
 
             # Increment the tracked particles' time by dt
@@ -878,7 +878,7 @@ class ParticleTracker:
         Binary array for each particle indicating whether it is currently
         on ANY grid.
         """
-        return np.sum(self.on_grid.astype(np.int_), axis=-1) > 0
+        return np.sum(self.on_grid, axis=-1) > 0
 
     @property
     def vmax(self) -> float:
@@ -940,7 +940,7 @@ class ParticleTracker:
         ).astype(np.bool_)
 
         # Entered grid -> non-zero if particle EVER entered a grid
-        self.entered_grid = np.zeros([self.nparticles])
+        self.entered_grid = np.zeros([self.nparticles]).astype(np.bool_)
 
         # Initialize a "progress bar" (really more of a meter)
         # Setting sys.stdout lets this play nicely with regular print()

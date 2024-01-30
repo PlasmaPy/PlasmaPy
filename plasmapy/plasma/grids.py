@@ -605,7 +605,7 @@ class AbstractGrid(ABC):
         # requirements: eg. units correspond to the coordinate system
         self._validate()
 
-    def add_quantities(self, **kwargs : u.Quantity) -> None:
+    def add_quantities(self, **kwargs: u.Quantity) -> None:
         r"""
         Adds a quantity to the dataset as a new DataArray.
 
