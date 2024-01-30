@@ -42,7 +42,7 @@ class AbstractTerminationCondition(ABC):
 
     @tracker.setter
     def tracker(self, particle_tracker: "ParticleTracker") -> None:
-        self._particle_tracker = particle_tracker
+        self._particle_tracker: ParticleTracker = particle_tracker
 
     @property
     @abstractmethod
@@ -205,7 +205,7 @@ class AbstractSaveRoutine(ABC):
 
     @tracker.setter
     def tracker(self, particle_tracker: "ParticleTracker") -> None:
-        self._particle_tracker = particle_tracker
+        self._particle_tracker: ParticleTracker = particle_tracker
 
     @property
     @abstractmethod
@@ -303,7 +303,7 @@ class IntervalSaveRoutine(AbstractSaveRoutine):
         self.time_of_last_save = self.tracker.time
         self.t_all.append(self.tracker.time)
 
-    def results(self) -> tuple:
+    def results(self) -> tuple[u.Quantity]:
         """Return the results of the simulation.
         The quantities returned are the times, positions, and velocities, respectively.
         """
@@ -398,8 +398,8 @@ class ParticleTracker:
     def __init__(
         self,
         grids: Union[AbstractGrid, Iterable[AbstractGrid]],
-        termination_condition: AbstractTerminationCondition = None,
-        save_routine: AbstractSaveRoutine = None,
+        termination_condition: Union[AbstractTerminationCondition, None] = None,
+        save_routine: Union[AbstractSaveRoutine, None] = None,
         dt=None,
         dt_range=None,
         field_weighting="volume averaged",
