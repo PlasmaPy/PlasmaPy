@@ -303,7 +303,7 @@ class IntervalSaveRoutine(AbstractSaveRoutine):
         self.time_of_last_save = self.tracker.time
         self.t_all.append(self.tracker.time)
 
-    def results(self) -> tuple[u.Quantity]:
+    def results(self) -> tuple[u.Quantity,u.Quantity,u.Quantity]:
         """Return the results of the simulation.
         The quantities returned are the times, positions, and velocities, respectively.
         """
