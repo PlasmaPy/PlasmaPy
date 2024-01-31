@@ -104,6 +104,8 @@ repos:
   hooks:
   - id: blacken-docs
     name: autoformat code blocks in docs
+    # Got different results when running this hook locally and in CI for
+    # plasmapy.particles.decorators. Consider re-enabling this later.
     exclude: docs/contributing/coding_guide.rst|plasmapy/particles/decorators.py
 
 - repo: https://github.com/nbQA-dev/nbQA
