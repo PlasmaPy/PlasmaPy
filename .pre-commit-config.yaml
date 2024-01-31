@@ -106,7 +106,7 @@ repos:
     name: autoformat code blocks in docs
     # Got different results when running this hook locally and in CI for
     # plasmapy.particles.decorators. Consider re-enabling this later.
-    exclude: plasmapy/particles/decorators.py
+    exclude: docs/contributing/coding_guide.rst|plasmapy/particles/decorators.py
 
 - repo: https://github.com/nbQA-dev/nbQA
   rev: 1.7.1
