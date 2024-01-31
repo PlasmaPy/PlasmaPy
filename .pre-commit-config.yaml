@@ -28,12 +28,12 @@ repos:
   - id: check-yaml
 
 - repo: https://github.com/python-jsonschema/check-jsonschema
-  rev: 0.27.3
+  rev: 0.27.4
   hooks:
   - id: check-github-workflows
 
 - repo: https://github.com/sirosen/texthooks
-  rev: 0.6.3
+  rev: 0.6.4
   hooks:
   - id: fix-smartquotes
   - id: fix-spaces
@@ -91,7 +91,7 @@ repos:
     - tomli
 
 - repo: https://github.com/astral-sh/ruff-pre-commit
-  rev: v0.1.13
+  rev: v0.1.15
   hooks:
   - id: ruff
     name: ruff (see https://docs.astral.sh/ruff/rules)
