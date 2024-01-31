@@ -85,6 +85,7 @@ docs = [
 tests = [
   "hypothesis >= 6.35.1",
   "pre-commit >= 3.0.0",
+  "pytest-rerunfailures >= 13.0",
   "pytest-regressions >= 2.3.1",
   "pytest-xdist >= 3.0.2",
   "tomli >= 2.0.1",
