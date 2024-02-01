@@ -177,7 +177,7 @@ kiwisolver==1.4.5
     # via matplotlib
 latexcodec==2.0.1
     # via pybtex
-llvmlite==0.41.1
+llvmlite==0.42.0
     # via numba
 lmfit==1.2.2
     # via plasmapy (setup.py)
@@ -216,7 +216,7 @@ nest-asyncio==1.6.0
     # via ipykernel
 nodeenv==1.8.0
     # via pre-commit
-numba==0.58.1
+numba==0.59.0
     # via plasmapy (setup.py)
 numpy==1.26.3
     # via
