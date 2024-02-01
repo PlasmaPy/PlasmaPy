@@ -62,7 +62,7 @@ jobs:
           python: '3.10'
           toxenv: py310-minimal-pypi-import
 
-        - name: Import PlasmaPy (macOS X)
+        - name: Import PlasmaPy (macOS)
           os: macos-latest
           python: '3.11'
           toxenv: py311-minimal-pypi-import
