@@ -1,0 +1,2 @@
+Added ``pytest-rerunfailures`` to the ``tests`` set of dependencies,
+and applied it to a flaky test.
