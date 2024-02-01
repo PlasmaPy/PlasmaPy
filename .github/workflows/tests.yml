@@ -168,4 +168,4 @@ jobs:
 
     - name: Perform editable installation with tests & docs requirements sets
       run: |
-        pip install --progress-bar off -e .[tests, docs]
+        pip install --progress-bar off -e .[tests,docs]
