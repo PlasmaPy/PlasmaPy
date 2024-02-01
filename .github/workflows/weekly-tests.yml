@@ -26,7 +26,6 @@ jobs:
     - name: Install PlasmaPy
       run: conda install -c ${{ matrix.channel }} --yes plasmapy
 
-
   tests:
     name: ${{ matrix.name }}
     runs-on: ${{ matrix.os }}
@@ -36,25 +35,25 @@ jobs:
       matrix:
         include:
 
-        - name: Python 3.9 (Windows)
-          os: windows-latest
-          python: 3.9
-          toxenv: py39-all
-
-        - name: Python 3.10 (macOS)
+        - name: Python 3.12 (macOS)
           os: macos-latest
-          python: '3.10'
-          toxenv: py310-all
+          python: '3.12'
+          toxenv: py312-all
 
-        - name: Python 3.11 (ubuntu-latest)
+        - name: Python 3.11 (Ubuntu)
           os: ubuntu-latest
           python: '3.11'
           toxenv: py311-all
 
-        - name: Python 3.12 (Linux), pinned dependencies
-          os: ubuntu-latest
-          python: '3.12'
-          toxenv: py312-all
+        - name: Python 3.10 (Windows)
+          os: windows-latest
+          python: '3.10'
+          toxenv: py310-all
+
+        - name: Python 3.9 (Windows)
+          os: windows-latest
+          python: 3.9
+          toxenv: py39-all
 
         - name: Python 3.9 with Astropy dev
           os: ubuntu-latest

@@ -29,7 +29,7 @@ jobs:
           toxenv: py312-pins
           toxargs: --develop
 
-        - name: Python 3.11 (MacOS), code coverage
+        - name: Python 3.11 (macOS), code coverage
           os: macos-latest
           python: '3.11'
           toxenv: py311-cov-all
