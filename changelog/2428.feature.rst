@@ -1,0 +1,2 @@
+Enabled |particle_input| to decorate functions which have variadic
+positional arguments followed by keyword arguments. See :issue:`2150`.

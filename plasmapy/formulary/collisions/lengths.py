@@ -3,11 +3,11 @@ Module of length parameters related to collisions.
 """
 __all__ = ["impact_parameter_perp", "impact_parameter", "mean_free_path"]
 
+from numbers import Real
+
 import astropy.units as u
 import numpy as np
-
 from astropy.constants.si import eps0, hbar
-from numbers import Real
 from numpy import pi
 
 from plasmapy import particles
@@ -22,10 +22,10 @@ from plasmapy.utils.decorators import validate_quantities
 )
 @particles.particle_input
 def impact_parameter_perp(
-    T: u.K,
+    T: u.Quantity[u.K],
     species: (particles.Particle, particles.Particle),
-    V: u.m / u.s = np.nan * u.m / u.s,
-) -> u.m:
+    V: u.Quantity[u.m / u.s] = np.nan * u.m / u.s,
+) -> u.Quantity[u.m]:
     r"""
     Distance of the closest approach for a 90° Coulomb collision.
 
@@ -109,11 +109,11 @@ def impact_parameter_perp(
     V={"none_shall_pass": True},
 )
 def impact_parameter(  # noqa: C901
-    T: u.K,
-    n_e: u.m**-3,
+    T: u.Quantity[u.K],
+    n_e: u.Quantity[u.m**-3],
     species,
     z_mean: Real = np.nan,
-    V: u.m / u.s = np.nan * u.m / u.s,
+    V: u.Quantity[u.m / u.s] = np.nan * u.m / u.s,
     method="classical",
 ):
     r"""
@@ -331,13 +331,13 @@ def impact_parameter(  # noqa: C901
     n_e={"can_be_negative": False},
 )
 def mean_free_path(
-    T: u.K,
-    n_e: u.m**-3,
+    T: u.Quantity[u.K],
+    n_e: u.Quantity[u.m**-3],
     species,
     z_mean: Real = np.nan,
-    V: u.m / u.s = np.nan * u.m / u.s,
+    V: u.Quantity[u.m / u.s] = np.nan * u.m / u.s,
     method="classical",
-) -> u.m:
+) -> u.Quantity[u.m]:
     r"""
     Collisional mean free path (m).
 

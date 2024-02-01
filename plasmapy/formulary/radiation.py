@@ -10,11 +10,10 @@ __all__ = [
 import astropy.constants as const
 import astropy.units as u
 import numpy as np
-
 from scipy.special import exp1
 
 from plasmapy.formulary.frequencies import plasma_frequency
-from plasmapy.particles import particle_input, ParticleLike
+from plasmapy.particles import ParticleLike, particle_input
 from plasmapy.utils.decorators import validate_quantities
 from plasmapy.utils.exceptions import PhysicsError
 
@@ -27,12 +26,12 @@ from plasmapy.utils.exceptions import PhysicsError
 )
 @particle_input
 def thermal_bremsstrahlung(
-    frequencies: u.Hz,
-    n_e: u.m**-3,
-    T_e: u.K,
-    n_i: u.m**-3 = None,
+    frequencies: u.Quantity[u.Hz],
+    n_e: u.Quantity[u.m**-3],
+    T_e: u.Quantity[u.K],
+    n_i: u.Quantity[u.m**-3] = None,
     ion: ParticleLike = "p+",
-    kmax: u.m = None,
+    kmax: u.Quantity[u.m] = None,
 ) -> np.ndarray:
     r"""
     Calculate the bremsstrahlung emission spectrum for a Maxwellian plasma
@@ -137,13 +136,7 @@ def thermal_bremsstrahlung(
     )
 
     Zi = ion.charge_number
-    c2 = (
-        np.sqrt(1 - ω_pe**2 / ω**2)
-        * Zi**2
-        * n_i
-        * n_e
-        / np.sqrt(const.k_B.si * T_e)
-    )
+    c2 = np.sqrt(1 - ω_pe**2 / ω**2) * Zi**2 * n_i * n_e / np.sqrt(const.k_B.si * T_e)
 
     # Dimensionless argument for exponential integral
     arg = 0.5 * ω**2 * const.m_e.si / (kmax**2 * const.k_B.si * T_e) / u.rad**2

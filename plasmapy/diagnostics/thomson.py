@@ -9,14 +9,15 @@ __all__ = [
 ]
 __lite_funcs__ = ["spectral_density_lite"]
 
+import numbers
+import warnings
+from collections.abc import Callable
+from typing import Any, Optional, Union
+
 import astropy.constants as const
 import astropy.units as u
-import numbers
 import numpy as np
-import warnings
-
 from lmfit import Model
-from typing import Any, Callable, Optional, Union
 
 from plasmapy.formulary import (
     permittivity_1D_Maxwellian_lite,
@@ -63,6 +64,7 @@ def spectral_density_lite(
     probe_vec: np.ndarray,
     scatter_vec: np.ndarray,
     instr_func_arr: Optional[np.ndarray] = None,
+    notch: Optional[np.ndarray] = None,
 ) -> tuple[Union[np.floating, np.ndarray], np.ndarray]:
     r"""
     The :term:`lite-function` version of
@@ -141,6 +143,12 @@ def spectral_density_lite(
         Here :math:`λ` is the ``wavelengths`` array. This array will be
         convolved with the spectral density function before it is
         returned.
+
+    notch : (2,) or (N, 2) `~numpy.ndarray`, |keyword-only|, optional
+        A pair of wavelengths in meters which are the endpoints of a notch over
+        which the output Skw is set to 0. Can also be input as a 2D array
+        which contains many such pairs if multiple notches are needed.
+        Defaults to no notch.
 
     Returns
     -------
@@ -229,7 +237,7 @@ def spectral_density_lite(
             / k
             / vT_e[m]
             * np.power(np.abs(1 - np.sum(chiE, axis=0) / epsilon), 2)
-            * np.exp(-xe[m, :] ** 2)
+            * np.exp(-(xe[m, :] ** 2))
         )
 
     icontr = np.zeros([ifract.size, w.size], dtype=np.complex128)
@@ -241,7 +249,7 @@ def spectral_density_lite(
             / k
             / vT_i[m]
             * np.power(np.abs(np.sum(chiE, axis=0) / epsilon), 2)
-            * np.exp(-xi[m, :] ** 2)
+            * np.exp(-(xi[m, :] ** 2))
         )
 
     # Recast as real: imaginary part is already zero
@@ -250,6 +258,20 @@ def spectral_density_lite(
     # Apply an instrument function if one is provided
     if instr_func_arr is not None:
         Skw = np.convolve(Skw, instr_func_arr, mode="same")
+
+    # add notch(es) to the spectrum if any are provided
+    if notch is not None:
+        # If only one notch is included, create a dummy second dimension
+        if np.ndim(notch) == 1:
+            notch = np.array([notch])
+
+        for notch_i in notch:
+            # For each notch, identify the index for the beginning and end
+            # wavelengths and set Skw to zero between those indices
+            x0 = np.argwhere(wavelengths > notch_i[0])[0][0]
+            x1 = np.argwhere(wavelengths > notch_i[1])[0][0]
+            Skw[x0:x1] = 0
+
     return np.mean(alpha), Skw
 
 
@@ -262,20 +284,21 @@ def spectral_density_lite(
 )
 @bind_lite_func(spectral_density_lite)
 def spectral_density(  # noqa: C901, PLR0912, PLR0915
-    wavelengths: u.nm,
-    probe_wavelength: u.nm,
-    n: u.m**-3,
+    wavelengths: u.Quantity[u.nm],
+    probe_wavelength: u.Quantity[u.nm],
+    n: u.Quantity[u.m**-3],
     *,
-    T_e: u.K,
-    T_i: u.K,
+    T_e: u.Quantity[u.K],
+    T_i: u.Quantity[u.K],
     efract=None,
     ifract=None,
     ions: ParticleLike = "p+",
-    electron_vel: u.m / u.s = None,
-    ion_vel: u.m / u.s = None,
+    electron_vel: u.Quantity[u.m / u.s] = None,
+    ion_vel: u.Quantity[u.m / u.s] = None,
     probe_vec=None,
     scatter_vec=None,
     instr_func: Optional[Callable] = None,
+    notch: u.m = None,
 ) -> tuple[Union[np.floating, np.ndarray], np.ndarray]:
     r"""Calculate the spectral density function for Thomson scattering of
     a probe laser beam by a multi-species Maxwellian plasma.
@@ -343,6 +366,16 @@ def spectral_density(  # noqa: C901, PLR0912, PLR0915
         and returns the instrument point spread function. The
         resulting array will be convolved with the spectral density
         function before it is returned.
+
+    notch : (2,) or (N, 2) `~astropy.units.Quantity`, |keyword-only|, optional
+        A pair of wavelengths in units convertible to meters which are the
+        endpoints of a notch over which the output Skw is set to 0. Can also
+        be input as a 2D array which contains many such pairs if multiple
+        notches are needed. If the ``notch`` and ``instr_func`` keywords are both
+        set, the notch is applied after the instrument function such the
+        instrument function does convolve the values of the theoretical
+        spectrum originally in the notch region. Defaults to no notch.
+
 
     Returns
     -------
@@ -542,6 +575,24 @@ def spectral_density(  # noqa: C901, PLR0912, PLR0915
     else:
         instr_func_arr = None
 
+    # Valildate notch input
+    if notch is not None:
+        notch_unitless = notch.to(u.m).value
+
+        if np.ndim(notch_unitless) == 1:
+            notch_unitless = np.array([notch_unitless])
+
+        for notch_i in notch_unitless:
+            if np.shape(notch_i) != (2,):
+                raise ValueError("Notches must be pairs of values.")
+            if notch_i[0] > notch_i[1]:
+                raise ValueError(
+                    "The first element of the notch cannot be greater than "
+                    "the second element."
+                )
+    else:
+        notch_unitless = None
+
     alpha, Skw = spectral_density_lite(
         wavelengths.to(u.m).value,
         probe_wavelength.to(u.m).value,
@@ -557,6 +608,7 @@ def spectral_density(  # noqa: C901, PLR0912, PLR0915
         probe_vec=probe_vec,
         scatter_vec=scatter_vec,
         instr_func_arr=instr_func_arr,
+        notch=notch_unitless,
     )
 
     return alpha, Skw * u.s / u.rad
@@ -639,6 +691,7 @@ def _spectral_density_model(wavelengths, settings=None, **params):
     ion_vdir = settings["ion_vdir"]
     probe_wavelength = settings["probe_wavelength"]
     instr_func_arr = settings["instr_func_arr"]
+    notch = settings["notch"]
 
     # LOAD FROM PARAMS
     n = params["n"]
@@ -672,6 +725,7 @@ def _spectral_density_model(wavelengths, settings=None, **params):
         probe_vec=probe_vec,
         scatter_vec=scatter_vec,
         instr_func_arr=instr_func_arr,
+        notch=notch,
     )
 
     model_Skw *= 1 / np.max(model_Skw)
@@ -712,6 +766,8 @@ def spectral_density_model(  # noqa: C901, PLR0912, PLR0915
         - ``"instr_func"`` : A function that takes a wavelength
           |Quantity| array and returns a spectrometer instrument
           function as an `~numpy.ndarray`.
+        - ``"notch"`` : A wavelength range or array of multiple wavelength
+          ranges over which the spectral density is set to 0.
 
         These quantities cannot be varied during the fit.
 
@@ -937,6 +993,9 @@ def spectral_density_model(  # noqa: C901, PLR0912, PLR0915
             "both the data and wavelength arrays using "
             "`numpy.delete`."
         )
+
+    if "notch" not in settings:
+        settings["notch"] = None
 
     # TODO: raise an exception if the number of any of the ion or electron
     #       quantities isn't consistent with the number of that species defined

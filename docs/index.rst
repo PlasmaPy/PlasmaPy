@@ -22,8 +22,6 @@ If you are new to PlasmaPy, please check out our
 questions in our |Matrix chat room| or during our weekly virtual
 |office hours|.
 
-
-
 PlasmaPy is developed openly `on GitHub`_, where you can
 `request a new feature`_ or `report a bug`_.
 
@@ -72,19 +70,6 @@ Example highlights
 
 .. toctree::
    :maxdepth: 1
-   :caption: Contributor Guide
-
-   Overview <contributing/index>
-   contributing/getting_ready
-   contributing/workflow
-   contributing/coding_guide
-   contributing/changelog_guide
-   contributing/doc_guide
-   contributing/testing_guide
-   contributing/release_guide
-
-.. toctree::
-   :maxdepth: 1
    :caption: All the Rest
 
    changelog/index
@@ -93,8 +78,22 @@ Example highlights
    glossary
    performance_tips
    PlasmaPy Enhancement Proposals <https://github.com/PlasmaPy/PlasmaPy-PLEPs>
-   PlasmaPy.org <https://www.plasmapy.org>
+   PlasmaPy website <https://www.plasmapy.org>
    GitHub Repository <https://github.com/PlasmaPy/PlasmaPy>
+
+.. toctree::
+   :maxdepth: 1
+   :caption: Contributor Guide
+
+   Overview <contributing/index>
+   contributing/getting_ready
+   contributing/workflow
+   contributing/coding_guide
+   contributing/pre-commit
+   contributing/changelog_guide
+   contributing/doc_guide
+   contributing/testing_guide
+   contributing/release_guide
 
 .. _new discussion on GitHub: https://github.com/PlasmaPy/PlasmaPy/discussions/new/choose
 .. _on GitHub: https://github.com/PlasmaPy/PlasmaPy

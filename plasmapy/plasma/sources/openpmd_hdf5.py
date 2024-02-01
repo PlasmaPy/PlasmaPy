@@ -1,13 +1,15 @@
 """Functionality for reading in HDF5 files following the OpenPMD standard."""
+from types import TracebackType
+from typing import Optional
 
 __all__ = ["HDF5Reader"]
+
+from pathlib import Path
 
 import astropy.units as u
 import h5py
 import numpy as np
-
 from packaging.version import Version
-from pathlib import Path
 
 from plasmapy.plasma.exceptions import DataStandardError
 from plasmapy.plasma.plasma_base import GenericPlasma
@@ -53,7 +55,7 @@ class HDF5Reader(GenericPlasma):
         Any keyword accepted by `~plasmapy.plasma.plasma_base.GenericPlasma`.
     """
 
-    def __init__(self, hdf5, **kwargs):
+    def __init__(self, hdf5, **kwargs) -> None:
         super().__init__(**kwargs)
 
         if not Path(hdf5).is_file():
@@ -69,13 +71,18 @@ class HDF5Reader(GenericPlasma):
     def __enter__(self):
         return self.h5
 
-    def close(self):
+    def close(self) -> None:
         self.h5.close()
 
-    def __exit__(self):  # noqa: PLE0302, PYI036
+    def __exit__(
+        self,
+        exc_type: Optional[type[BaseException]],
+        exc_value: Optional[BaseException],
+        traceback: Optional[TracebackType],
+    ):
         self.h5.close()
 
-    def _check_valid_openpmd_version(self):
+    def _check_valid_openpmd_version(self) -> bool:
         try:
             openPMD_version = self.h5.attrs["openPMD"].decode("utf-8")
             if _valid_version(openPMD_version):

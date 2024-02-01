@@ -10,17 +10,17 @@ __all__ = [
 __aliases__ = ["cs_", "va_", "vth_", "vth_kappa_"]
 __lite_funcs__ = ["thermal_speed_lite"]
 
-import astropy.units as u
-import numpy as np
 import warnings
-
-from astropy.constants.si import k_B, mu0
-from numba import njit
 from numbers import Integral, Real
 from typing import Optional
 
+import astropy.units as u
+import numpy as np
+from astropy.constants.si import k_B, mu0
+from numba import njit
+
 from plasmapy.formulary import lengths
-from plasmapy.particles import electron, particle_input, particle_mass, ParticleLike
+from plasmapy.particles import ParticleLike, electron, particle_input, particle_mass
 from plasmapy.utils.decorators import (
     bind_lite_func,
     check_relativistic,
@@ -38,13 +38,13 @@ k_B_si_unitless = k_B.value
 @check_relativistic
 @validate_quantities(density={"can_be_negative": False})
 def Alfven_speed(
-    B: u.T,
+    B: u.Quantity[u.T],
     density: (u.m**-3, u.kg / u.m**3),
     ion: Optional[ParticleLike] = None,
     *,
     mass_numb: Optional[Integral] = None,
     Z: Optional[Real] = None,
-) -> u.m / u.s:
+) -> u.Quantity[u.m / u.s]:
     r"""Calculate the Alfvén speed.
 
     The Alfvén speed :math:`V_A` is the typical propagation speed of
@@ -187,15 +187,15 @@ va_ = Alfven_speed
 )
 @particle_input
 def ion_sound_speed(
-    T_e: u.K,
-    T_i: u.K,
+    T_e: u.Quantity[u.K],
+    T_i: u.Quantity[u.K],
     ion: ParticleLike,
-    n_e: u.m**-3 = None,
-    k: u.m**-1 = None,
+    n_e: u.Quantity[u.m**-3] = None,
+    k: u.Quantity[u.m**-1] = None,
     gamma_e=1,
     gamma_i=3,
     Z=None,
-) -> u.m / u.s:
+) -> u.Quantity[u.m / u.s]:
     r"""
     Return the ion sound speed for an electron-ion plasma.
 
@@ -534,12 +534,12 @@ def thermal_speed_lite(T: Real, mass: Real, coeff: Real) -> Real:
 )
 @particle_input
 def thermal_speed(
-    T: u.K,
+    T: u.Quantity[u.K],
     particle: ParticleLike,
     method="most_probable",
-    mass: u.kg = None,
+    mass: u.Quantity[u.kg] = None,
     ndim=3,
-) -> u.m / u.s:
+) -> u.Quantity[u.m / u.s]:
     r"""
     Calculate the speed of thermal motion for particles with a Maxwellian
     distribution.  (See the :ref:`Notes <thermal-speed-notes>` section for
@@ -740,14 +740,14 @@ vth_ = thermal_speed
 )
 @particle_input
 def kappa_thermal_speed(
-    T: u.K,
+    T: u.Quantity[u.K],
     kappa,
     particle: ParticleLike,
     method="most_probable",
     *,
     mass_numb: Optional[Real] = None,
     Z: Optional[Real] = None,
-) -> u.m / u.s:
+) -> u.Quantity[u.m / u.s]:
     r"""
     Return the most probable speed for a particle within a kappa
     distribution.

@@ -4,14 +4,14 @@ for |Particle|, |CustomParticle|, or |ParticleList| and returns the
 appropriate instance of one of those three classes.
 """
 
-__all__ = []
+__all__: list[str] = []
 
-import astropy.units as u
 import contextlib
-
-from astropy.constants import m_e
 from numbers import Integral, Real
 from typing import Any, Optional, Union
+
+import astropy.units as u
+from astropy.constants import m_e
 
 from plasmapy.particles.exceptions import ChargeError, InvalidParticleError
 from plasmapy.particles.particle_class import CustomParticle, Particle, ParticleLike
@@ -90,7 +90,7 @@ def _make_custom_particle_with_real_charge_number(
 
     if not base_particle.is_category(require="element", exclude="ion"):
         # Add tests if this function becomes part of public API
-        raise InvalidParticleError("Cannot create CustomParticle.")  # coverage: ignore
+        raise InvalidParticleError("Cannot create CustomParticle.")
 
     if Z > base_particle.atomic_number:
         raise ChargeError("The charge number cannot exceed the atomic number.")

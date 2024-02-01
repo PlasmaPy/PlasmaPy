@@ -1,13 +1,14 @@
 """
 Collection of private functions to load properties and construct widgets.
 """
-__all__ = []
+__all__: list[str] = []
+
+import json
+import warnings
+from pathlib import Path
 
 import astropy.units as u
-import json
-
 from ipywidgets import widgets
-from pathlib import Path
 
 from plasmapy.utils.calculator.widget_helpers import (
     _calculate_button,
@@ -21,6 +22,12 @@ from plasmapy.utils.calculator.widget_helpers import (
     _ParticleBox,
     _process_queue,
 )
+
+warnings.filterwarnings(
+    action="ignore",
+    message="Passing unrecognized arguments",
+    category=DeprecationWarning,
+)  # see issue 2370 for a deprecation warning from traitlets
 
 LIGHT_BLUE = "#00BFD8"
 """

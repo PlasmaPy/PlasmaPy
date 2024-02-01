@@ -2,7 +2,6 @@ import astropy
 import astropy.units as u
 import numpy as np
 import pytest
-
 from astropy import constants
 
 from plasmapy.formulary.magnetostatics import (
@@ -17,11 +16,11 @@ mu0_4pi = constants.mu0 / 4 / np.pi
 
 
 class Test_MagneticDipole:
-    def setup_method(self):
+    def setup_method(self) -> None:
         self.moment = np.array([0, 0, 1]) * u.A * u.m * u.m
         self.p0 = np.array([0, 0, 0]) * u.m
 
-    def test_value1(self):
+    def test_value1(self) -> None:
         """Test a known solution"""
         p = np.array([1, 0, 0])
         B1 = MagneticDipole(self.moment, self.p0).magnetic_field(p)
@@ -29,7 +28,7 @@ class Test_MagneticDipole:
         assert np.all(np.isclose(B1.value, B1_expected.value))
         assert B1.unit == u.T
 
-    def test_value2(self):
+    def test_value2(self) -> None:
         """Test a known solution"""
         p = np.array([0, 0, 1])
         B2 = MagneticDipole(self.moment, self.p0).magnetic_field(p)
@@ -40,14 +39,14 @@ class Test_MagneticDipole:
     @pytest.mark.skipif(
         astropy.__version__ < "5.3.0", reason="change in unit representation"
     )
-    def test_repr(self):
+    def test_repr(self) -> None:
         """Test __repr__ function"""
         B1 = MagneticDipole(self.moment, self.p0)
         assert repr(B1) == r"MagneticDipole(moment=[0. 0. 1.]m2 A, p0=[0. 0. 0.]m)"
 
 
 class Test_GeneralWire:
-    def setup_method(self):
+    def setup_method(self) -> None:
         self.cw = CircularWire(
             np.array([0, 0, 1]), np.array([0, 0, 0]) * u.m, 1 * u.m, 1 * u.A
         )
@@ -55,12 +54,12 @@ class Test_GeneralWire:
         p2 = np.array([0.0, 0.0, 1.0]) * u.m
         self.fw = FiniteStraightWire(p1, p2, 1 * u.A)
 
-    def test_not_callable(self):
+    def test_not_callable(self) -> None:
         """Test that `GeneralWire` raises `TypeError` if its first argument is not callable"""
         with pytest.raises(TypeError):
             GeneralWire("wire", 0, 1, 1 * u.A)
 
-    def test_close_cw(self):
+    def test_close_cw(self) -> None:
         """Test if the GeneralWire is close to the CircularWire it converted from"""
         gw_cw = self.cw.to_GeneralWire()
         p = np.array([0, 0, 0])
@@ -70,7 +69,7 @@ class Test_GeneralWire:
         assert np.all(np.isclose(B_cw.value, B_gw_cw.value))
         assert B_cw.unit == B_gw_cw.unit
 
-    def test_repr(self):
+    def test_repr(self) -> None:
         """Test __repr__ function"""
         gw_cw = self.cw.to_GeneralWire()
         # round numbers to avoid calculation accuracy mismatch
@@ -81,7 +80,7 @@ class Test_GeneralWire:
             == r"GeneralWire(parametric_eq=curve, t1=-3.1516, t2=3.1516, current=1.0A)"
         )
 
-    def test_close_fw(self):
+    def test_close_fw(self) -> None:
         """Test if the GeneralWire is close to the FiniteWire it converted from"""
         gw_fw = self.fw.to_GeneralWire()
         p = np.array([1, 0, 0])
@@ -91,24 +90,24 @@ class Test_GeneralWire:
         assert np.all(np.isclose(B_fw.value, B_gw_fw.value))
         assert B_fw.unit == B_gw_fw.unit
 
-    def test_value_error(self):
+    def test_value_error(self) -> None:
         """Test GeneralWire raise ValueError when argument t1>t2"""
         with pytest.raises(ValueError):
             GeneralWire(lambda t: [0, 0, t], 2, 1, 1.0 * u.A)
 
 
 class Test_FiniteStraightWire:
-    def setup_method(self):
+    def setup_method(self) -> None:
         self.p1 = np.array([0.0, 0.0, -1.0]) * u.m
         self.p2 = np.array([0.0, 0.0, 1.0]) * u.m
         self.current = 1 * u.A
 
-    def test_same_point(self):
+    def test_same_point(self) -> None:
         """Test that `FiniteStraightWire` raises `ValueError` if p1 == p2"""
         with pytest.raises(ValueError):
             FiniteStraightWire(self.p1, self.p1, self.current)
 
-    def test_value1(self):
+    def test_value1(self) -> None:
         """Test a known solution"""
         fw = FiniteStraightWire(self.p1, self.p2, self.current)
         B1 = fw.magnetic_field([1, 0, 0])
@@ -116,7 +115,7 @@ class Test_FiniteStraightWire:
         assert np.all(np.isclose(B1.value, B1_expected.value))
         assert B1.unit == u.T
 
-    def test_repr(self):
+    def test_repr(self) -> None:
         """Test __repr__ function"""
         fw = FiniteStraightWire(self.p1, self.p2, self.current)
         assert (
@@ -126,12 +125,12 @@ class Test_FiniteStraightWire:
 
 
 class Test_InfiniteStraightWire:
-    def setup_method(self):
+    def setup_method(self) -> None:
         self.direction = np.array([0, 1, 0])
         self.p0 = np.array([0, 0, 0]) * u.m
         self.current = 1 * u.A
 
-    def test_value1(self):
+    def test_value1(self) -> None:
         """Test a known solution"""
         iw = InfiniteStraightWire(self.direction, self.p0, self.current)
         B1 = iw.magnetic_field([1, 0, 0])
@@ -139,7 +138,7 @@ class Test_InfiniteStraightWire:
         assert np.all(np.isclose(B1.value, B1_expected.value))
         assert B1.unit == u.T
 
-    def test_repr(self):
+    def test_repr(self) -> None:
         """Test __repr__ function"""
         iw = InfiniteStraightWire(self.direction, self.p0, self.current)
         assert (
@@ -149,19 +148,19 @@ class Test_InfiniteStraightWire:
 
 
 class Test_CircularWire:
-    def setup_method(self):
+    def setup_method(self) -> None:
         self.normalz = np.array([0, 0, 1])
         self.normalx = np.array([1, 0, 0])
         self.center = np.array([0, 0, 0]) * u.m
         self.radius = 1 * u.m
         self.current = 1 * u.A
 
-    def test_negative_radius(self):
+    def test_negative_radius(self) -> None:
         """Test that `FiniteStraightWire` raises `ValueError` if radius < 0"""
         with pytest.raises(ValueError):
             CircularWire(self.normalz, self.center, -1.0 * u.m, self.current)
 
-    def test_value1(self):
+    def test_value1(self) -> None:
         """Test a known solution"""
         cw = CircularWire(self.normalz, self.center, self.radius, self.current)
         B1 = cw.magnetic_field([0, 0, 1])
@@ -169,7 +168,7 @@ class Test_CircularWire:
         assert np.all(np.isclose(B1.value, B1_expected.value))
         assert B1.unit == u.T
 
-    def test_value2(self):
+    def test_value2(self) -> None:
         """Test a known solution"""
         cw = CircularWire(self.normalx, self.center, self.radius, self.current)
         B2 = cw.magnetic_field([1, 0, 0])
@@ -177,7 +176,7 @@ class Test_CircularWire:
         assert np.all(np.isclose(B2.value, B2_expected.value))
         assert B2.unit == u.T
 
-    def test_repr(self):
+    def test_repr(self) -> None:
         """Test __repr__ function"""
         cw = CircularWire(self.normalz, self.center, self.radius, self.current)
         assert (

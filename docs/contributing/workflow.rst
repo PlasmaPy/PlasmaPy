@@ -9,6 +9,9 @@ Code Contribution Workflow
    :local:
    :backlinks: none
 
+.. role:: bash(code)
+   :language: bash
+
 Introduction
 ============
 
@@ -33,7 +36,7 @@ Making a code contribution
 Create a new branch
 -------------------
 
-#. :ref:`Open a terminal <opening-a-terminal>`.
+#. |Open a terminal|.
 
 #. Navigate to the :file:`PlasmaPy/` directory that contains the clone
    of your repository.

@@ -2,8 +2,9 @@
 
 __all__ = ["angular_freq_to_hz"]
 
-import astropy.units as u
 import inspect
+
+import astropy.units as u
 import wrapt
 
 
@@ -45,7 +46,7 @@ def angular_freq_to_hz(fn):
         from plasmapy.utils.decorators.converter import angular_freq_to_hz
         from plasmapy.utils.decorators.validators import validate_quantities
 
-        @validate_quantities(validations_on_return={'units': [u.rad / u.s, u.Hz]})
+        @validate_quantities(validations_on_return={"units": [u.rad / u.s, u.Hz]})
         @angular_freq_to_hz
         def foo(x: u.rad / u.s) -> u.rad / u.s
             return x

@@ -21,10 +21,10 @@ __all__ = [
     "standard_atomic_weight",
 ]
 
-import astropy.units as u
-
 from numbers import Integral, Real
 from typing import Any, Optional, Union
+
+import astropy.units as u
 
 from plasmapy.particles import _elements, _isotopes
 from plasmapy.particles.decorators import particle_input
@@ -127,7 +127,7 @@ def mass_number(isotope: Particle) -> Integral:
 
 
 @particle_input(exclude={"isotope", "ion"})
-def standard_atomic_weight(element: Particle) -> u.Quantity:
+def standard_atomic_weight(element: Particle) -> u.Quantity[u.kg]:
     """Return the standard (conventional) atomic weight of an element
     based on the relative abundances of isotopes in terrestrial
     environments.
@@ -189,7 +189,7 @@ def particle_mass(
     *,
     mass_numb: Optional[Integral] = None,
     Z: Optional[Integral] = None,
-) -> u.kg:
+) -> u.Quantity[u.kg]:
     """
     Return the mass of a particle.
 
@@ -339,7 +339,7 @@ def charge_number(particle: Particle) -> Integral:
 
 
 @particle_input(any_of={"charged", "uncharged"})
-def electric_charge(particle: Particle) -> u.C:
+def electric_charge(particle: Particle) -> u.Quantity[u.C]:
     """
     Return the electric charge (in coulombs) of a particle.
 
@@ -443,7 +443,9 @@ def is_stable(particle: Particle, mass_numb: Optional[Integral] = None) -> bool:
 
 
 @particle_input(any_of={"stable", "unstable", "isotope"})
-def half_life(particle: Particle, mass_numb: Optional[Integral] = None) -> u.Quantity:
+def half_life(
+    particle: Particle, mass_numb: Optional[Integral] = None
+) -> u.Quantity[u.s]:
     """
     Return the half-life in seconds for unstable isotopes and particles,
     and |inf| seconds for stable isotopes and particles.
@@ -803,7 +805,9 @@ def stable_isotopes(
 
 @particle_input
 @validate_quantities
-def reduced_mass(test_particle: ParticleLike, target_particle: ParticleLike) -> u.kg:
+def reduced_mass(
+    test_particle: ParticleLike, target_particle: ParticleLike
+) -> u.Quantity[u.kg]:
     r"""
     Find the :wikipedia:`reduced mass` between two particles.
 

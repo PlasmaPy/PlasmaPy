@@ -2,7 +2,6 @@
 Test module for `plasmapy.utils.decorators.lite_func.bind_lite_func`.
 """
 import pytest
-
 from numba import jit, njit
 
 from plasmapy.utils.decorators.lite_func import bind_lite_func
@@ -20,7 +19,7 @@ def foo_lite(x):
     return x
 
 
-def bar():
+def bar() -> str:
     """
     Test support function for the Lite-Function framework.  To be bound
     to foo.
@@ -41,7 +40,7 @@ def bar():
         (print, None, ValueError),  # can not be builtin
     ],
 )
-def test_raises(lite_func, attrs, _error):
+def test_raises(lite_func, attrs, _error) -> None:
     """Test scenarios that will raise an Exception."""
     with pytest.raises(_error):
         bind_lite_func(lite_func, attrs=attrs)(foo)
@@ -56,7 +55,7 @@ def test_raises(lite_func, attrs, _error):
         (foo_lite, {"bar": bar}),
     ],
 )
-def test_binding(lite_func, attrs):
+def test_binding(lite_func, attrs) -> None:
     """Test that the expected members are bound to the decorated function."""
     dfoo = bind_lite_func(lite_func, attrs=attrs)(foo)
 
@@ -85,7 +84,7 @@ def test_binding(lite_func, attrs):
         (foo_lite, {"bar": bar}),
     ],
 )
-def test_lite_func_dunder(lite_func, attrs):
+def test_lite_func_dunder(lite_func, attrs) -> None:
     """Test that the ``__bound_lite_func__`` dunder is properly defined."""
     dfoo = bind_lite_func(lite_func, attrs=attrs)(foo)
 

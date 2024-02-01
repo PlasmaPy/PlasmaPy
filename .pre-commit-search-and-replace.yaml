@@ -35,3 +35,7 @@
 - search: ', optional, default:'
   replacement: ', default:'
   description: No need to specify that a parameter is optional if there is a default value
+
+- search: 'the the '
+  replacement: 'the '
+  description: Fix common grammar error

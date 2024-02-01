@@ -3,9 +3,9 @@ Convert author information from :file:`CITATION.cff` into a
 reStructuredText-formatted list.
 """
 import pathlib
-import yaml
-
 from typing import Union
+
+import yaml
 from unidecode import unidecode
 
 # If a contributor changed their contributor name and we don't know

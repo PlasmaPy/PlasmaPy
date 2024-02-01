@@ -503,8 +503,17 @@ Use |particle_input| to transform arguments to relevant |Particle|,
 
 Validating Quantity arguments
 -----------------------------
+
+Use |validate_quantities| to enforce |Quantity| type hints:
+
+.. code-block:: python
+
+   @validate_quantities
+   def magnetic_pressure(B: u.Quantity[u.T]) -> u.Quantity[u.Pa]:
+       return B**2 / (2 * const.mu0)
+
 Use |validate_quantities| to verify function arguments and impose
-relevant restrictions
+relevant restrictions:
 
 .. code-block:: python
 
@@ -514,16 +523,8 @@ relevant restrictions
        n={"can_be_negative": False},
        validations_on_return={"equivalencies": u.dimensionless_angles()},
    )
-   def inertial_length(n: u.m**-3, particle) -> u.m:
+   def inertial_length(n: u.Quantity[u.m**-3], particle) -> u.Quantity[u.m]:
        ...
-
-Use |validate_quantities| to enforce |Quantity| type hints
-
-.. code-block:: python
-
-   @validate_quantities
-   def magnetic_pressure(B: u.T) -> u.Pa:
-       return B**2 / (2 * const.mu0)
 
 Special function categories
 ===========================
@@ -925,7 +926,7 @@ Up-to-date instructions on running the benchmark suite will be located
 in the README file of `benchmarks-repo`_.
 
 .. _ASCII: https://en.wikipedia.org/wiki/ASCII
-.. _cognitive complexity: https://www.sonarsource.com/docs/CognitiveComplexity.pdf
+.. _cognitive complexity: https://docs.codeclimate.com/docs/cognitive-complexity
 .. _Cython: https://cython.org
 .. _equivalencies: https://docs.astropy.org/en/stable/units/equivalencies.html
 .. _example notebook on particles: ../notebooks/getting_started/particles.ipynb

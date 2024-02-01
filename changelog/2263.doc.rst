@@ -1,3 +1,0 @@
-Added a step to the |code contribution workflow| about using ``git status``
-to verify that there have been no changes to tracked files before
-creating and switching to a new branch.

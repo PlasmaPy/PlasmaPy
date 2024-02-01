@@ -6,7 +6,6 @@ __all__ = ["stix"]
 
 import astropy.units as u
 import numpy as np
-
 from astropy.constants.si import c
 
 from plasmapy.formulary.frequencies import gyrofrequency, plasma_frequency
@@ -22,11 +21,11 @@ c_si_unitless = c.value
     w={"can_be_negative": False, "can_be_zero": False},
 )
 def stix(  # noqa: C901, PLR0912, PLR0915
-    B: u.T,
-    w: u.rad / u.s,
+    B: u.Quantity[u.T],
+    w: u.Quantity[u.rad / u.s],
     ions: Particle,
-    n_i: u.m**-3,
-    theta: u.rad,
+    n_i: u.Quantity[u.m**-3],
+    theta: u.Quantity[u.rad],
 ):
     r"""
     Calculate the cold plasma dispersion function presented by
@@ -139,7 +138,7 @@ def stix(  # noqa: C901, PLR0912, PLR0915
     dispersion relation assumed:
 
     * zero temperature for all plasma species (:math:`T_{s}=0`)
-    * quasi-neutrallity
+    * quasi-neutrality
     * a uniform background magntic field
       :math:`\mathbf{B_o} = B_{o} \mathbf{\hat{z}}`
     * no D.C. electric field :math:`\mathbf{E_o}=0`

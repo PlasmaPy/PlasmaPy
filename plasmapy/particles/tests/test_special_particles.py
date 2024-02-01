@@ -1,7 +1,7 @@
 from plasmapy.particles._special_particles import data_about_special_particles
 
 
-def test_particle_antiparticle_pairs(particle_antiparticle_pair):
+def test_particle_antiparticle_pairs(particle_antiparticle_pair) -> None:
     """Test that particles and antiparticles have the same or exact
     opposite properties in the _Particles dictionary."""
     particle, antiparticle = (p.symbol for p in particle_antiparticle_pair)

@@ -32,15 +32,15 @@ from plasmapy.particles.particle_class import (
     AbstractPhysicalParticle,
     CustomParticle,
     DimensionlessParticle,
-    molecule,
     Particle,
     ParticleLike,
+    molecule,
 )
 from plasmapy.particles.particle_collections import ParticleList, ParticleListLike
 from plasmapy.particles.serialization import (
+    ParticleJSONDecoder,
     json_load_particle,
     json_loads_particle,
-    ParticleJSONDecoder,
 )
 from plasmapy.particles.symbols import (
     atomic_symbol,

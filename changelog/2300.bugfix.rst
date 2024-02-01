@@ -1,1 +1,0 @@
-Enable ``time_step`` parameter in `~plasmapy.analysis.time_series.excess_statistics.ExcessStatistics` class to have a astropy unit.

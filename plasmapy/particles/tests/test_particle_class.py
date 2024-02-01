@@ -1,12 +1,12 @@
-import astropy.constants as const
-import astropy.units as u
 import collections
 import inspect
 import io
 import json
+
+import astropy.constants as const
+import astropy.units as u
 import numpy as np
 import pytest
-
 from astropy.constants import c, e, m_e, m_n, m_p
 
 from plasmapy.particles import json_load_particle, json_loads_particle, molecule
@@ -577,7 +577,7 @@ equivalent_particles_table = [
 
 
 @pytest.mark.parametrize("equivalent_particles", equivalent_particles_table)
-def test_Particle_equivalent_cases(equivalent_particles):
+def test_Particle_equivalent_cases(equivalent_particles) -> None:
     """Test that all instances of a list of particles are equivalent."""
     run_test_equivalent_calls(Particle, *equivalent_particles)
 
@@ -624,7 +624,7 @@ test_Particle_error_table = [
 @pytest.mark.parametrize(
     ("args", "kwargs", "attribute", "exception"), test_Particle_error_table
 )
-def test_Particle_errors(args, kwargs, attribute, exception):
+def test_Particle_errors(args, kwargs, attribute, exception) -> None:
     """
     Test that the appropriate exceptions are raised during the creation
     and use of a `~plasmapy.particles.Particle` object.
@@ -649,7 +649,7 @@ test_Particle_warning_table = [
 @pytest.mark.parametrize(
     ("arg", "kwargs", "attribute", "warning"), test_Particle_warning_table
 )
-def test_Particle_warnings(arg, kwargs, attribute, warning):
+def test_Particle_warnings(arg, kwargs, attribute, warning) -> None:
     """
     Test that the appropriate warnings are issued during the creation
     and use of a `~plasmapy.particles.Particle` object.
@@ -664,7 +664,7 @@ def test_Particle_warnings(arg, kwargs, attribute, warning):
             )
 
 
-def test_Particle_cmp():
+def test_Particle_cmp() -> None:
     """Test ``__eq__`` and ``__ne__`` in the Particle class."""
     proton1 = Particle("p+")
     proton2 = Particle("proton")
@@ -679,7 +679,7 @@ def test_Particle_cmp():
 
 
 @pytest.mark.parametrize("particle", ["p+", "D+", "T+", "alpha"])
-def test_particle_equality_special_nuclides(particle):
+def test_particle_equality_special_nuclides(particle) -> None:
     particle_from_string = Particle(particle)
     particle_from_numbers = Particle(
         particle_from_string.element_name,
@@ -703,7 +703,7 @@ nuclide_mass_and_mass_equiv_table = [
 
 
 @pytest.mark.parametrize(("isotope", "ion"), nuclide_mass_and_mass_equiv_table)
-def test_particle_class_mass_nuclide_mass(isotope: str, ion: str):
+def test_particle_class_mass_nuclide_mass(isotope: str, ion: str) -> None:
     """
     Test that the ``mass`` and ``nuclide_mass`` attributes return
     equivalent values when appropriate.  The inputs should generally be
@@ -752,7 +752,7 @@ def test_particle_class_mass_nuclide_mass(isotope: str, ion: str):
 
 
 @pytest.mark.slow()
-def test_particle_half_life_string():
+def test_particle_half_life_string() -> None:
     """
     Find the first isotope where the half-life is stored as a string
     (because the uncertainties are too great), and tests that requesting
@@ -772,16 +772,16 @@ def test_particle_half_life_string():
 @pytest.mark.parametrize(
     ("p", "is_one"), [(Particle("e-"), True), (Particle("p+"), False)]
 )
-def test_particle_is_electron(p, is_one):
+def test_particle_is_electron(p, is_one: bool) -> None:
     assert p.is_electron == is_one
 
 
-def test_particle_bool_error():
+def test_particle_bool_error() -> None:
     with pytest.raises(ParticleError):
         bool(Particle("e-"))
 
 
-def test_particle_inversion(particle_antiparticle_pair):
+def test_particle_inversion(particle_antiparticle_pair) -> None:
     """Test that particles have the correct antiparticles."""
     particle, antiparticle = particle_antiparticle_pair
     assert particle.antiparticle == antiparticle, (
@@ -790,7 +790,7 @@ def test_particle_inversion(particle_antiparticle_pair):
     )
 
 
-def test_antiparticle_inversion(particle_antiparticle_pair):
+def test_antiparticle_inversion(particle_antiparticle_pair) -> None:
     """Test that antiparticles have the correct antiparticles."""
     particle, antiparticle = particle_antiparticle_pair
     assert antiparticle.antiparticle == particle, (
@@ -799,7 +799,7 @@ def test_antiparticle_inversion(particle_antiparticle_pair):
     )
 
 
-def test_unary_operator_for_elements():
+def test_unary_operator_for_elements() -> None:
     with pytest.raises(ParticleError):
         Particle("C").antiparticle  # noqa: B018
 
@@ -810,7 +810,7 @@ class Test_antiparticle_properties_inversion:
     instances.
     """
 
-    def test_inverted_inversion(self, particle):
+    def test_inverted_inversion(self, particle) -> None:
         """
         Test that the antiparticle of the antiparticle of a particle is
         the original particle.
@@ -819,7 +819,7 @@ class Test_antiparticle_properties_inversion:
             particle == ~~particle
         ), f"~~{particle!r} equals {~~particle!r} instead of {particle!r}."
 
-    def test_opposite_charge(self, particle, opposite):
+    def test_opposite_charge(self, particle, opposite) -> None:
         """
         Test that a particle and its antiparticle have the opposite
         charge.
@@ -829,7 +829,7 @@ class Test_antiparticle_properties_inversion:
             f"opposites, as expected of a particle/antiparticle pair."
         )
 
-    def test_equal_mass(self, particle, opposite):
+    def test_equal_mass(self, particle, opposite) -> None:
         """
         Test that a particle and its antiparticle have the same mass.
         """
@@ -838,7 +838,7 @@ class Test_antiparticle_properties_inversion:
             f"as expected of a particle/antiparticle pair."
         )
 
-    def test_antiparticle_attribute_and_operator(self, particle):
+    def test_antiparticle_attribute_and_operator(self, particle) -> None:
         """
         Test that the Particle.antiparticle attribute returns the same
         value as the unary ~ (invert) operator acting on the same
@@ -852,7 +852,7 @@ class Test_antiparticle_properties_inversion:
 
 
 @pytest.mark.parametrize("arg", ["e-", "D+", "Fe 25+", "H-", "mu+"])
-def test_particleing_a_particle(arg):
+def test_particleing_a_particle(arg) -> None:
     """
     Test that Particle(arg) is equal to Particle(Particle(arg)), but is
     not the same object in memory.
@@ -928,7 +928,6 @@ customized_particle_tests = [
     (CustomParticle, {}, "charge", np.nan * u.C),
     (CustomParticle, {"mass": 1.1 * u.kg, "charge": -0.1 * u.C}, "mass", 1.1 * u.kg),
     (CustomParticle, {"charge": -0.1 * u.C}, "charge", -0.1 * u.C),
-    (CustomParticle, {"charge": -2}, "charge", -2 * const.e.si),
     (CustomParticle, {"mass": np.inf * u.g}, "mass", np.inf * u.kg),
     (CustomParticle, {"mass": "100.0 g"}, "mass", 100.0 * u.g),
     (CustomParticle, {"charge": -np.inf * u.kC}, "charge", -np.inf * u.C),
@@ -944,7 +943,7 @@ customized_particle_tests = [
     ("cls", "kwargs", "attr", "expected"), customized_particle_tests
 )
 @pytest.mark.filterwarnings("ignore::UserWarning")
-def test_custom_particles(cls, kwargs, attr, expected):
+def test_custom_particles(cls, kwargs, attr, expected) -> None:
     """Test the attributes of dimensionless and custom particles."""
     instance = cls(**kwargs)
     value = getattr(instance, attr)
@@ -964,7 +963,7 @@ def test_custom_particles(cls, kwargs, attr, expected):
         (DimensionlessParticle, "η", "η"),
     ],
 )
-def test_custom_particle_symbol(cls, symbol, expected):
+def test_custom_particle_symbol(cls, symbol, expected) -> None:
     instance = cls(symbol=symbol)
     assert instance.symbol == expected
 
@@ -977,7 +976,7 @@ custom_particle_categories_table = [
 
 
 @pytest.mark.parametrize(("kwargs", "expected"), custom_particle_categories_table)
-def test_custom_particle_categories(kwargs, expected):
+def test_custom_particle_categories(kwargs, expected) -> None:
     """Test that CustomParticle.categories behaves as expected."""
     custom_particle = CustomParticle(**kwargs)
     assert custom_particle.categories == expected
@@ -1004,7 +1003,7 @@ def test_custom_particle_is_category(
     kwargs_to_custom_particle,
     kwargs_to_is_category,
     expected,
-):
+) -> None:
     """Test that CustomParticle.is_category works as expected."""
     custom_particle = CustomParticle(**kwargs_to_custom_particle)
     actual = custom_particle.is_category(**kwargs_to_is_category)
@@ -1047,11 +1046,12 @@ custom_particle_errors = [
     (CustomParticle, {"charge": "not a charge"}, InvalidParticleError),
     (CustomParticle, {"charge": "5.0 km"}, InvalidParticleError),
     (CustomParticle, {"charge": 1 * u.C, "Z": -1}, InvalidParticleError),
+    (CustomParticle, {"charge": 1}, InvalidParticleError),
 ]
 
 
 @pytest.mark.parametrize(("cls", "kwargs", "exception"), custom_particle_errors)
-def test_customized_particles_errors(cls, kwargs, exception):
+def test_customized_particles_errors(cls, kwargs, exception) -> None:
     """
     Test that attempting to create invalid dimensionless or custom particles
     results in an InvalidParticleError.
@@ -1082,7 +1082,7 @@ customized_particle_repr_table = [
 @pytest.mark.parametrize(
     ("cls", "kwargs", "expected_repr"), customized_particle_repr_table
 )
-def test_customized_particle_repr(cls, kwargs, expected_repr):
+def test_customized_particle_repr(cls, kwargs, expected_repr) -> None:
     """Test the string representations of dimensionless and custom particles."""
     instance = cls(**kwargs)
     from_repr = repr(instance)
@@ -1099,7 +1099,7 @@ def test_customized_particle_repr(cls, kwargs, expected_repr):
 
 @pytest.mark.parametrize("cls", [CustomParticle, DimensionlessParticle])
 @pytest.mark.parametrize("not_a_str", [1, u.kg])
-def test_typeerror_redefining_symbol(cls, not_a_str):
+def test_typeerror_redefining_symbol(cls, not_a_str) -> None:
     """Test that the symbol attribute cannot be set to something besides a string"""
     instance = cls()
     with pytest.raises(TypeError):
@@ -1196,8 +1196,8 @@ custom_particles_from_json_tests = [
     custom_particles_from_json_tests,
 )
 def test_custom_particles_from_json_string(
-    cls, kwargs, json_string, expected_exception
-):
+    cls, kwargs, json_string: str, expected_exception
+) -> None:
     """Test the attributes of dimensionless and custom particles generated from
     JSON representation"""
     if expected_exception is None:
@@ -1228,7 +1228,9 @@ def test_custom_particles_from_json_string(
     ("cls", "kwargs", "json_string", "expected_exception"),
     custom_particles_from_json_tests,
 )
-def test_custom_particles_from_json_file(cls, kwargs, json_string, expected_exception):
+def test_custom_particles_from_json_file(
+    cls, kwargs, json_string: str, expected_exception
+) -> None:
     """Test the attributes of dimensionless and custom particles generated from
     JSON representation"""
     if expected_exception is None:
@@ -1296,7 +1298,9 @@ particles_from_json_tests = [
 @pytest.mark.parametrize(
     ("cls", "kwargs", "json_string", "expected_exception"), particles_from_json_tests
 )
-def test_particles_from_json_string(cls, kwargs, json_string, expected_exception):
+def test_particles_from_json_string(
+    cls, kwargs, json_string: str, expected_exception
+) -> None:
     """Test the attributes of Particle objects created from JSON representation."""
     if expected_exception is None:
         instance = cls(**kwargs)
@@ -1318,7 +1322,9 @@ def test_particles_from_json_string(cls, kwargs, json_string, expected_exception
 @pytest.mark.parametrize(
     ("cls", "kwargs", "json_string", "expected_exception"), particles_from_json_tests
 )
-def test_particles_from_json_file(cls, kwargs, json_string, expected_exception):
+def test_particles_from_json_file(
+    cls, kwargs, json_string: str, expected_exception
+) -> None:
     """Test the attributes of Particle objects created from JSON representation."""
     if expected_exception is None:
         instance = cls(**kwargs)
@@ -1379,7 +1385,7 @@ particle_json_repr_table = [
 
 
 @pytest.mark.parametrize(("cls", "kwargs", "expected_repr"), particle_json_repr_table)
-def test_particle_to_json_string(cls, kwargs, expected_repr):
+def test_particle_to_json_string(cls, kwargs, expected_repr) -> None:
     """Test the JSON representations of normal, dimensionless and custom particles."""
     instance = cls(**kwargs)
     json_repr = instance.json_dumps()
@@ -1400,7 +1406,7 @@ def test_particle_to_json_string(cls, kwargs, expected_repr):
 
 
 @pytest.mark.parametrize(("cls", "kwargs", "expected_repr"), particle_json_repr_table)
-def test_particle_to_json_file(cls, kwargs, expected_repr):
+def test_particle_to_json_file(cls, kwargs, expected_repr) -> None:
     """Test the JSON representations of normal, dimensionless and custom particles."""
     instance = cls(**kwargs)
     test_file_object = io.StringIO("")
@@ -1423,7 +1429,7 @@ def test_particle_to_json_file(cls, kwargs, expected_repr):
     )
 
 
-def test_particle_is_category_valid_categories():
+def test_particle_is_category_valid_categories() -> None:
     """Test the location where valid categories may be accessed."""
     some_valid_categories = {
         "charged",
@@ -1440,7 +1446,7 @@ def test_particle_is_category_valid_categories():
     assert some_valid_categories.issubset(valid_categories)
 
 
-def test_CustomParticle_cmp():
+def test_CustomParticle_cmp() -> None:
     """Test ``__eq__`` and ``__ne__`` in the CustomParticle class."""
     particle1 = CustomParticle(2 * 126.90447 * u.u, 0 * u.C, "I2")
     particle2 = CustomParticle(2 * 126.90447 * u.u, 0 * u.C, "I2")
@@ -1463,7 +1469,7 @@ def test_CustomParticle_cmp():
         ("symbol", "😺"),
     ],
 )
-def test_CustomParticle_setters(attr, arg):
+def test_CustomParticle_setters(attr, arg) -> None:
     custom_particle = CustomParticle()
     setattr(custom_particle, attr, arg)
     output = getattr(custom_particle, attr)
@@ -1490,7 +1496,7 @@ test_molecule_table = [
         ([], {"symbol": "..."}, CustomParticle(symbol="...")),
     ],
 )
-def test_CustomParticle_from_quantities(args, kwargs, expected):
+def test_CustomParticle_from_quantities(args, kwargs, expected) -> None:
     actual = CustomParticle._from_quantities(*args, **kwargs)
     assert actual == expected
 
@@ -1503,13 +1509,13 @@ def test_CustomParticle_from_quantities(args, kwargs, expected):
         ([4 * u.kg, "invalid"], {}, InvalidParticleError),
     ],
 )
-def test_CustomParticle_from_quantities_errors(args, kwargs, exception):
+def test_CustomParticle_from_quantities_errors(args, kwargs, exception) -> None:
     with pytest.raises(exception):
         CustomParticle._from_quantities(*args, **kwargs)
 
 
 @pytest.mark.parametrize(("m", "Z", "symbol", "m_symbol", "m_Z"), test_molecule_table)
-def test_molecule(m, Z, symbol, m_symbol, m_Z):
+def test_molecule(m, Z, symbol, m_symbol, m_Z) -> None:
     """Test ``molecule`` function."""
     assert CustomParticle(m, Z, symbol) == molecule(m_symbol, m_Z)
 
@@ -1524,13 +1530,13 @@ test_molecule_error_table = [
 
 
 @pytest.mark.parametrize(("symbol", "Z"), test_molecule_error_table)
-def test_molecule_error(symbol, Z):
+def test_molecule_error(symbol, Z) -> None:
     """Test the error raised in case of a bad molecule symbol."""
     with pytest.raises(InvalidParticleError):
         molecule(symbol, Z)
 
 
-def test_molecule_other():
+def test_molecule_other() -> None:
     """Test fallback to |Particle| object and warning in case of redundant charge."""
     assert Particle("I") == molecule("I")
 
@@ -1540,25 +1546,25 @@ def test_molecule_other():
         )
 
 
-def test_undefined_charge():
+def test_undefined_charge() -> None:
     """Test that a particle with an undefined charge returns |nan| C."""
     H_particle = Particle("H")
     assert u.isclose(H_particle.charge, np.nan * u.C, equal_nan=True)
 
 
-def test_undefined_standard_atomic_weight():
+def test_undefined_standard_atomic_weight() -> None:
     """Test that a particle with an undefined standard atomic weight returns |nan| kg."""
     Pm_particle = Particle("Pm")
     assert u.isclose(Pm_particle.standard_atomic_weight, np.nan * u.kg, equal_nan=True)
 
 
-def test_undefined_mass():
+def test_undefined_mass() -> None:
     """Test that a particle with an undefined mass returns |nan| kg."""
     tau_neutrino_particle = Particle("tau neutrino")
     assert u.isclose(tau_neutrino_particle.mass, np.nan * u.kg, equal_nan=True)
 
 
-def test_undefined_mass_energy():
+def test_undefined_mass_energy() -> None:
     """Test that a particle with an undefined mass energy returns |nan| J."""
     nu_tau_particle = Particle("nu_tau")
     assert u.isclose(nu_tau_particle.mass_energy, np.nan * u.J, equal_nan=True)

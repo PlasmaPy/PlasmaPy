@@ -1,2 +1,0 @@
-Add |ruff| linter rules that check for `print` and :py:`pprint`, as
-the `logging` library is generally preferred for production code.

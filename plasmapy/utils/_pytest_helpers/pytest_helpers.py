@@ -6,18 +6,19 @@ __all__ = [
     "run_test_equivalent_calls",
 ]
 
-import astropy.constants as const
-import astropy.tests.helper as astrohelper
-import astropy.units as u
 import collections
 import contextlib
 import functools
 import inspect
+import warnings
+from collections.abc import Callable
+from typing import Any, Optional
+
+import astropy.constants as const
+import astropy.tests.helper as astrohelper
+import astropy.units as u
 import numpy as np
 import pytest
-import warnings
-
-from typing import Any, Callable, Optional
 
 from plasmapy.tests._helpers.exceptions import (
     InvalidTestError,
@@ -31,7 +32,7 @@ from plasmapy.utils.code_repr import _name_with_article, _object_name, call_stri
 from plasmapy.utils.exceptions import PlasmaPyWarning
 
 
-def _process_input(wrapped_function: Callable):  # coverage: ignore
+def _process_input(wrapped_function: Callable):
     """
     Allow `run_test` to take a single positional argument that is a
     `list` or `tuple` in lieu of using multiple positional/keyword
@@ -72,7 +73,7 @@ def run_test(  # noqa: C901
     expected_outcome: Any = None,
     rtol: float = 0.0,
     atol: float = 0.0,
-):  # coverage: ignore
+):
     """
     Test that a function or class returns the expected result, raises
     the expected exception, or issues an expected warning for the
@@ -379,7 +380,7 @@ def run_test(  # noqa: C901
     try:
         if result == expected["result"]:
             return None
-    except Exception as exc_equality:  # coverage: ignore
+    except Exception as exc_equality:
         raise TypeError(
             f"The equality of {_object_name(result)} and "
             f"{_object_name(expected['result'])} "
@@ -602,7 +603,7 @@ def run_test_equivalent_calls(  # noqa: C901
 
     try:
         equals_first_result = [result == results[0] for result in results]
-    except Exception as exc:  # coverage: ignore
+    except Exception as exc:
         raise UnexpectedExceptionFail(
             "Unable to determine equality properties of results."
         ) from exc
@@ -632,7 +633,7 @@ def assert_can_handle_nparray(  # noqa: C901
     insert_some_nans=None,
     insert_all_nans=None,
     kwargs=None,
-):
+) -> None:
     """
     Test for ability to handle numpy array quantities.
 
@@ -684,7 +685,7 @@ def assert_can_handle_nparray(  # noqa: C901
         kwargs = {}
 
     def _prepare_input(  # noqa: C901
-        param_name, param_default, insert_some_nans, insert_all_nans, kwargs
+        param_name: str, param_default, insert_some_nans, insert_all_nans, kwargs
     ):
         """
         Parse parameter names and set up values to input for 0d, 1d, and 2d array tests.

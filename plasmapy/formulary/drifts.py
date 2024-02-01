@@ -17,7 +17,12 @@ from plasmapy.utils.decorators import validate_quantities
 
 
 @validate_quantities
-def diamagnetic_drift(dp: u.Pa / u.m, B: u.T, n: u.m ** (-3), q: u.C) -> u.m / u.s:
+def diamagnetic_drift(
+    dp: u.Quantity[u.Pa / u.m],
+    B: u.Quantity[u.T],
+    n: u.Quantity[u.m**-3],
+    q: u.Quantity[u.C],
+) -> u.Quantity[u.m / u.s]:
     r"""
     Calculate the diamagnetic fluid perpendicular drift.
 
@@ -70,7 +75,7 @@ vd_ = diamagnetic_drift
 
 
 @validate_quantities
-def ExB_drift(E: u.V / u.m, B: u.T) -> u.m / u.s:
+def ExB_drift(E: u.Quantity[u.V / u.m], B: u.Quantity[u.T]) -> u.Quantity[u.m / u.s]:
     r"""
     Calculate the "electric cross magnetic" particle drift.
 
@@ -122,7 +127,9 @@ veb_ = ExB_drift
 
 
 @validate_quantities
-def force_drift(F: u.N, B: u.T, q: u.C) -> u.m / u.s:
+def force_drift(
+    F: u.Quantity[u.N], B: u.Quantity[u.T], q: u.Quantity[u.C]
+) -> u.Quantity[u.m / u.s]:
     r"""
     Calculate the general force drift for a particle in a magnetic field.
 

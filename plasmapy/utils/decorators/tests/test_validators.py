@@ -2,18 +2,18 @@
 Tests for 'validate` decorators (i.e. decorators that check objects and change them
 when possible).
 """
-import astropy.units as u
 import inspect
-import pytest
-
 from typing import Optional
 from unittest import mock
 
+import astropy.units as u
+import pytest
+
 from plasmapy.utils.decorators.checks import CheckUnits, CheckValues
 from plasmapy.utils.decorators.validators import (
+    ValidateQuantities,
     validate_class_attributes,
     validate_quantities,
-    ValidateQuantities,
 )
 
 
@@ -25,9 +25,7 @@ class TestValidateQuantities:
     """
 
     unit_check_defaults = CheckUnits._CheckUnits__check_defaults  # type: Dict[str, Any]
-    value_check_defaults = (
-        CheckValues._CheckValues__check_defaults
-    )  # type: Dict[str, Any]
+    value_check_defaults = CheckValues._CheckValues__check_defaults  # type: Dict[str, Any]
     check_defaults = {**unit_check_defaults, **value_check_defaults}
 
     @staticmethod
@@ -38,11 +36,11 @@ class TestValidateQuantities:
     def foo_anno(x: u.cm):  # noqa: ANN205
         return x
 
-    def test_inheritance(self):
+    def test_inheritance(self) -> None:
         assert issubclass(ValidateQuantities, CheckUnits)
         assert issubclass(ValidateQuantities, CheckValues)
 
-    def test_vq_method__get_validations(self):
+    def test_vq_method__get_validations(self) -> None:
         # method must exist
         assert hasattr(ValidateQuantities, "validations")
         assert hasattr(ValidateQuantities, "_get_validations")
@@ -210,7 +208,7 @@ class TestValidateQuantities:
             assert mock_cu_get.called
             assert mock_cv_get.called
 
-    def test_vq_method__validate_quantity(self):
+    def test_vq_method__validate_quantity(self) -> None:
         # method must exist
         assert hasattr(ValidateQuantities, "_validate_quantity")
 
@@ -340,13 +338,13 @@ class TestValidateQuantities:
             assert mock_cu_checks.called
             assert mock_cv_checks.called
 
-    def test_vq_preserves_signature(self):
+    def test_vq_preserves_signature(self) -> None:
         """Test `ValidateQuantities` preserves signature of wrapped function."""
         wfoo = ValidateQuantities()(self.foo_anno)
         assert hasattr(wfoo, "__signature__")
         assert wfoo.__signature__ == inspect.signature(self.foo_anno)
 
-    def test_vq_called_as_decorator(self):
+    def test_vq_called_as_decorator(self) -> None:
         """
         Test behavior of `ValidateQuantities.__call__` (i.e. used as a decorator).
         """
@@ -458,7 +456,7 @@ class TestValidateQuantities:
         # test on class method
         class Foo:
             @ValidateQuantities()
-            def __init__(self, y: u.cm):
+            def __init__(self, y: u.cm) -> None:
                 self.y = y
 
             @ValidateQuantities(validations_on_return={"can_be_negative": False})
@@ -475,7 +473,7 @@ class TestValidateQuantities:
         side_effect=ValidateQuantities,
         autospec=True,
     )
-    def test_decorator_func_def(self, mock_vq_class):
+    def test_decorator_func_def(self, mock_vq_class) -> None:
         """
         Test that :func:`~plasmapy.utils.decorators.validators.validate_quantities` is
         properly defined.
@@ -559,36 +557,36 @@ class TestValidateClassAttributes:
             x: Optional[int] = None,
             y: Optional[int] = None,
             z: Optional[int] = None,
-        ):
+        ) -> None:
             self.x = x
             self.y = y
             self.z = z
 
         @property
         @validate_class_attributes(expected_attributes=["x"])
-        def require_x(self):
+        def require_x(self) -> int:
             return 0
 
         @property
         @validate_class_attributes(expected_attributes=["x", "y"])
-        def require_x_and_y(self):
+        def require_x_and_y(self) -> int:
             return 0
 
         @property
         @validate_class_attributes(both_or_either_attributes=[("x", "y")])
-        def require_x_or_y(self):
+        def require_x_or_y(self) -> int:
             return 0
 
         @property
         @validate_class_attributes(
             expected_attributes=["x"], both_or_either_attributes=[("y", "z")]
         )
-        def require_x_and_either_y_or_z(self):
+        def require_x_and_either_y_or_z(self) -> int:
             return 0
 
         @property
         @validate_class_attributes(mutually_exclusive_attributes=[("x", "y")])
-        def require_only_either_x_or_y(self):
+        def require_only_either_x_or_y(self) -> int:
             return 0
 
     @pytest.mark.parametrize(
@@ -602,7 +600,7 @@ class TestValidateClassAttributes:
             {"y": 0, "z": 0},
         ],
     )
-    def test_method_errors(self, test_case_constructor_keyword_arguments):
+    def test_method_errors(self, test_case_constructor_keyword_arguments) -> None:
         """
         Test errors raised by the validate_class_attributes decorator.
         """
@@ -630,7 +628,7 @@ class TestValidateClassAttributes:
                     getattr(test_case, method)
 
 
-def test_validate_quantities_argument_type_annotation():
+def test_validate_quantities_argument_type_annotation() -> None:
     """
     Test that |validate_quantities| works with type hint annotations of
     the form ``u.Quantity[u.m]`` on a function argument.
@@ -648,7 +646,7 @@ def test_validate_quantities_argument_type_annotation():
     assert actual.unit == expected.unit
 
 
-def test_validate_quantities_return_type_annotation():
+def test_validate_quantities_return_type_annotation() -> None:
     """
     Test that |validate_quantities| works with type hint annotations of
     the form ``u.Quantity[u.m]`` as a return argument.

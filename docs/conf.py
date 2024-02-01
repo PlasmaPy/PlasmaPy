@@ -1,4 +1,20 @@
-"""The configuration file for building PlasmaPy's documentation."""
+"""
+The configuration file for building PlasmaPy's documentation.
+
+For more information, please see the following links:
+
+PlasmaPy documentation guide:
+    https://docs.plasmapy.org/en/latest/contributing/doc_guide.html
+
+Sphinx documentation:
+    https://www.sphinx-doc.org
+
+Sphinx configuration variables:
+    https://www.sphinx-doc.org/en/master/usage/configuration.html
+
+Sphinx extensions (built-in):
+    https://www.sphinx-doc.org/en/master/usage/extensions/index.html
+"""
 
 #!/usr/bin/env python3
 
@@ -14,11 +30,11 @@ sys.path.insert(0, os.path.abspath(".."))  # noqa: PTH100
 sys.path.insert(0, os.path.abspath("."))  # noqa: PTH100
 # isort: on
 
-import _cff_to_rst
-
-from _global_substitutions import global_substitutions
 from datetime import datetime
-from pkg_resources import parse_version
+
+import _cff_to_rst
+import pkg_resources  # deprecated
+from _global_substitutions import global_substitutions
 from sphinx.application import Sphinx
 
 # Generate author list from CITATION.cff
@@ -27,10 +43,20 @@ _cff_to_rst.main()
 
 from plasmapy import __version__ as release
 
-# -- General configuration ------------------------------------------------
+# Project metadata
 
-# Add Sphinx extension module names here. When extensions are removed or
-# added, please update the corresponding section in docs/doc_guide.rst.
+project = "PlasmaPy"
+author = "PlasmaPy Community"
+copyright = f"2015–{datetime.utcnow().year}, {author}"  # noqa: A001, DTZ003
+language = "en"
+
+release = "" if release == "unknown" else release
+parsed_version = pkg_resources.parse_version(release)  # deprecated
+release = parsed_version.public
+version = ".".join(release.split(".")[:2])  # short X.Y version
+revision = parsed_version.local[1:] if parsed_version.local is not None else ""
+
+# Sphinx configuration variables
 
 extensions = [
     "hoverxref.extension",
@@ -54,267 +80,29 @@ extensions = [
     "sphinx_issues",
     "sphinx_reredirects",
     "sphinx_tabs.tabs",
-    "sphinx_toolbox.collapse",
+    "sphinx_collapse",
     "sphinxcontrib.bibtex",
     "sphinxcontrib.globalsubs",
 ]
 
-# plasmapy_sphinx settings
-
-autosummary_generate = True
-automodapi_custom_groups = {
-    "aliases": {
-        "title": "Aliases",
-        "description": (
-            """
-            PlasmaPy provides :term:`aliases` of the most common plasma
-            functionality for user convenience. Aliases in PlasmaPy are
-            denoted with a trailing underscore (e.g., ``alias_``). For
-            further details, please refer to the :ref:`contributor
-            guide's section on aliases <aliases>`.
-            """
-        ),
-        "dunder": "__aliases__",
-    },
-    "lite-functions": {
-        "title": "Lite-Functions",
-        "description": (
-            """
-            :term:`Lite-functions` are optimized versions of existing
-            `plasmapy` functions that are intended for applications where
-            computational efficiency matters most. Lite-functions accept
-            numbers and NumPy arrays that are implicitly assumed to be
-            in SI units, and do not accept |Quantity| objects as inputs.
-            For further details, please refer to the :ref:`contributor
-            guide's section on lite-functions <lite-functions>`.
-
-            .. caution::
-
-               Lite-functions do not include the safeguards that are
-               included in most `plasmapy.formulary` functions. When
-               using lite-functions, it is vital to double-check your
-               implementation!
-            """
-        ),
-        "dunder": "__lite_funcs__",
-    },
-}
-automodapi_group_order = (
-    "modules",
-    "classes",
-    "exceptions",
-    "warnings",
-    "functions",
-    "aliases",
-    "lite-functions",
-    "variables",
-)
-
-# Configure sphinxcontrib-bibtex
-
-bibtex_bibfiles = ["bibliography.bib"]
-bibtex_default_style = "plain"
-bibtex_reference_style = "author_year"
-bibtex_cite_id = "{key}"
-
-# Configure sphinx-codeautolink
-
-codeautolink_concat_default = True
-
-# Intersphinx generates automatic links to the documentation of objects
-# in other packages. When mappings are removed or added, please update
-# the section in docs/doc_guide.rst on references to other packages.
-
-intersphinx_mapping = {
-    "astropy": ("https://docs.astropy.org/en/stable/", None),
-    "lmfit": ("https://lmfit.github.io/lmfit-py/", None),
-    "matplotlib": ("https://matplotlib.org/stable/", None),
-    "numba": ("https://numba.readthedocs.io/en/stable/", None),
-    "numpy": ("https://numpy.org/doc/stable/", None),
-    "pandas": ("https://pandas.pydata.org/pandas-docs/stable/", None),
-    "pytest": ("https://docs.pytest.org/en/stable/", None),
-    "python": ("https://docs.python.org/3/", None),
-    "readthedocs": ("https://docs.readthedocs.io/en/stable/", None),
-    "scipy": ("https://docs.scipy.org/doc/scipy/", None),
-    "sphinx": ("https://www.sphinx-doc.org/en/master/", None),
-    "sphinx_automodapi": (
-        "https://sphinx-automodapi.readthedocs.io/en/latest/",
-        None,
-    ),
-}
-
-hoverxref_intersphinx = [
-    "astropy",
-    "lmfit",
-    "numba",
-    "numpy",
-    "pandas",
-    "pytest",
-    "python",
-    "readthedocs",
-    "scipy",
-    "sphinx",
-    "sphinx_automodapi",
-]
-
-autoclass_content = "both"
-autodoc_typehints_format = "short"
-
-# Configure sphinx-issues
-
-issues_github_path = "PlasmaPy/PlasmaPy"
-
-# Add any paths that contain templates here, relative to this directory.
-templates_path = ["_templates"]
-
-# The suffix(es) of source filenames.
-# You can specify multiple suffix as a list of string:
-#
-# source_suffix = ['.rst', '.md']
-source_suffix = ".rst"
-
-# The root toctree document.
-root_doc = "index"
-
-# General information about the project.
-project = "PlasmaPy"
-author = "PlasmaPy Community"
-copyright = f"2015–{datetime.utcnow().year}, {author}"  # noqa: A001, DTZ003
-language = "en"
-
-# The version info for the project you're documenting, acts as replacement for
-# |version| and |release|, also used in various other places throughout the
-# built documents.
-#
-# The full version, including alpha/beta/rc tags.
-#  Note: If plasmapy.__version__ can not be defined then it is set to 'unknown'.
-#        However, release needs to be a semantic style version number, so set
-#        the 'unknown' case to ''.
-release = "" if release == "unknown" else release
-pv = parse_version(release)
-release = pv.public
-version = ".".join(release.split(".")[:2])  # short X.Y version
-revision = pv.local[1:] if pv.local is not None else ""
-
-# The Sphinx configuration variables rst_prolog and rst_epilog contain
-# text that gets prepended or appended to all reStructuredText sources.
-# These variables can be used to make global definitions; however, long
-# values of these variables can greatly slow down the documentation
-# build, so use them in moderation!  Use docs/_global_substitutions.py
-# to define substitutions.
-
-rst_prolog = """
-.. role:: py(code)
-   :language: python
-
-.. role:: bash(code)
-   :language: bash
-"""
-
-# List of patterns, relative to source directory, that match files and
-# directories to ignore when looking for source files.
-# This patterns also effect to html_static_path and html_extra_path
 exclude_patterns = [
-    "_build",
-    "Thumbs.db",
-    ".DS_Store",
-    "notebooks/langmuir_samples",
     "**.ipynb_checkpoints",
-    "plasmapy_sphinx",
     "**Untitled*",
+    ".DS_Store",
+    "_build",
+    "notebooks/langmuir_samples",
+    "plasmapy_sphinx",
+    "Thumbs.db",
 ]
-
-html_extra_path = ["robots.txt"]
-
-# If true, `todo` and `todoList` produce output, else they produce nothing.
-todo_include_todos = False
 
 default_role = "py:obj"
-
-redirects = {
-    "contributing/install_dev": "../contributing/getting_ready.html",
-    "development": "../contributing/",
-    "development/changelog_guide": "../contributing/changelog_guide.html",
-    "development/code_guide": "../contributing/code_guide.html",
-    "development/doc_guide": "../contributing/doc_guide.html",
-    "development/index": "../contributing/index.html",
-    "development/install_dev": "../contributing/getting_ready.html",
-    "development/release_guide": "../contributing/release_guide.html",
-    "development/testing_guide": "../contributing/testing_guide.html",
-    "whatsnew": "../changelog/",
-    "whatsnew/0.1.0": "../changelog/0.1.0.html",
-    "whatsnew/0.1.1": "../changelog/0.1.0.html",
-    "whatsnew/0.2.0": "../changelog/0.1.0.html",
-    "whatsnew/0.3.1": "../changelog/0.1.0.html",
-    "whatsnew/0.4.0": "../changelog/0.1.0.html",
-    "whatsnew/0.5.0": "../changelog/0.1.0.html",
-    "whatsnew/0.6.0": "../changelog/0.1.0.html",
-    "whatsnew/0.7.0": "../changelog/0.1.0.html",
-    "whatsnew/0.8.1": "../changelog/0.1.0.html",
-    "whatsnew/0.9.0": "../changelog/0.1.0.html",
-    "whatsnew/0.9.1": "../changelog/0.1.0.html",
-    "whatsnew/2023.1.0": "../changelog/2023.1.0.html",
-    "whatsnew/index": "../changelog/index.html",
-}
-
-# Use a code highlighting style that meets the WCAG AA contrast standard
-pygments_style = "default"
-
-# adapted from sphinx-hoverxref conf.py
-if os.environ.get("READTHEDOCS"):
-    # Building on Read the Docs
-    hoverxref_api_host = "https://readthedocs.org"
-
-    if os.environ.get("PROXIED_API_ENDPOINT"):
-        # Use the proxied API endpoint
-        # - A RTD thing to avoid a CSRF block when docs are using a
-        #   custom domain
-        hoverxref_api_host = "/_"
-
-hoverxref_tooltip_maxwidth = 600  # RTD main window is 696px
-hoverxref_auto_ref = True
-hoverxref_mathjax = True
-hoverxref_sphinxtabs = True
-
-# hoverxref has to be applied to these
-hoverxref_domains = ["py", "cite"]
-hoverxref_roles = ["confval", "term"]
-
-hoverxref_role_types = {
-    # roles with cite domain
-    "p": "tooltip",
-    "t": "tooltip",
-    #
-    # roles with py domain
-    "attr": "tooltip",
-    "class": "tooltip",
-    "const": "tooltip",
-    "data": "tooltip",
-    "exc": "tooltip",
-    "func": "tooltip",
-    "meth": "tooltip",
-    "mod": "tooltip",
-    "obj": "tooltip",
-    #
-    # roles with std domain
-    "confval": "tooltip",
-    "hoverxref": "tooltip",
-    "ref": "tooltip",
-    "term": "tooltip",
-}
-
-# Using sphinx.ext.extlinks lets us simplify the process of creating
-# links to commonly used external sites. The key of the extlink becomes
-# a new role, and the corresponding tuple contains the base url and the
-# caption. For example, we can now do :orcid:`0000-0000-0000-0000` and
-# have a link create to the corresponding ORCID page. New roles should
-# be added to rst-roles in tox.ini to avoid being caught by
-# flake8-rst-docstrings.
-
-extlinks = {
-    "orcid": ("https://orcid.org/%s", "%s"),
-    "wikipedia": ("https://en.wikipedia.org/wiki/%s", "%s"),
-}
+html_extra_path = ["robots.txt"]
+html_favicon = "./_static/icon.ico"
+modindex_common_prefix = ["plasmapy."]
+pygments_style = "default"  # code highlighting style to meet WCAG AA contrast standard
+root_doc = "index"
+source_suffix = ".rst"
+templates_path = ["_templates"]
 
 # Specify patterns to ignore when doing a nitpicky documentation build.
 # These may include common expressions like "real number" as well as
@@ -393,114 +181,170 @@ nitpick_ignore_regex = [
     (python_role, "plasmapy.utils.decorators.lite_func"),
 ]
 
-# -- Options for HTML output ----------------------------------------------
+# The Sphinx configuration variables rst_prolog and rst_epilog contain
+# text that gets prepended or appended to all reStructuredText sources.
+# These variables can be used to make global definitions; however, long
+# values of these variables can greatly slow down the documentation
+# build, so use them in moderation!  Use docs/_global_substitutions.py
+# to define substitutions.
 
-# The theme to use for HTML and HTML Help pages.  See the documentation for
-# a list of builtin themes.
-#
-html_theme = "sphinx_rtd_theme"
+rst_prolog = """
+.. role:: py(code)
+   :language: python
+"""
 
-# Theme options are theme-specific and customize the look and feel of a theme
-# further.  For a list of options available for each theme, see the
-# documentation.
-#
+# html output options
+
 html_logo = "./_static/with-text-light-190px.png"
+html_static_path = ["_static"]
+html_theme = "sphinx_rtd_theme"
 html_theme_options = {
     "logo_only": True,
-    #
-    # TOC options
-    #   https://sphinx-rtd-theme.readthedocs.io/en/stable/configuring.html#theme-options
     "includehidden": False,
 }
-
-# Add any paths that contain custom static files (such as style sheets) here,
-# relative to this directory. They are copied after the builtin static files,
-# so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ["_static"]
-
-# A list of prefixes that are ignored for sorting the Python module
-# index (e.g., if this is set to ['foo.'], then foo.bar is shown under
-# B, not F).
-modindex_common_prefix = ["plasmapy."]
-
-# -- Options for HTMLHelp output ------------------------------------------
-
-# Output file base name for HTML help builder.
 htmlhelp_basename = "PlasmaPydoc"
 
-# -- Options for LaTeX output ---------------------------------------------
+# sphinx.ext.autodoc
 
-latex_elements = {
-    # The paper size ('letterpaper' or 'a4paper').
-    # 'papersize': 'letterpaper',
-    #
-    # The font size ('10pt', '11pt' or '12pt').
-    # 'pointsize': '10pt',
-    #
-    # Additional stuff for the LaTeX preamble.
-    # 'preamble': '',
-    #
-    # Latex figure (float) alignment
-    # 'figure_align': 'htbp',
+autoclass_content = "both"
+autodoc_typehints_format = "short"
+
+# sphinxcontrib-bibtex
+
+bibtex_bibfiles = ["bibliography.bib"]
+bibtex_default_style = "plain"
+bibtex_reference_style = "author_year"
+bibtex_cite_id = "{key}"
+
+# sphinx-codeautolink
+
+codeautolink_concat_default = True
+
+# intersphinx
+
+intersphinx_mapping = {
+    "astropy": ("https://docs.astropy.org/en/stable/", None),
+    "lmfit": ("https://lmfit.github.io/lmfit-py/", None),
+    "matplotlib": ("https://matplotlib.org/stable/", None),
+    "numba": ("https://numba.readthedocs.io/en/stable/", None),
+    "numpy": ("https://numpy.org/doc/stable/", None),
+    "pandas": ("https://pandas.pydata.org/pandas-docs/stable/", None),
+    "pytest": ("https://docs.pytest.org/en/stable/", None),
+    "python": ("https://docs.python.org/3/", None),
+    "readthedocs": ("https://docs.readthedocs.io/en/stable/", None),
+    "scipy": ("https://docs.scipy.org/doc/scipy/", None),
+    "sphinx": ("https://www.sphinx-doc.org/en/master/", None),
+    "sphinx_automodapi": (
+        "https://sphinx-automodapi.readthedocs.io/en/latest/",
+        None,
+    ),
 }
 
-# Grouping the document tree into LaTeX files. List of tuples
-# (source start file, target name, title,
-#  author, documentclass [howto, manual, or own class]).
-latex_documents = [
-    (
-        root_doc,
-        "PlasmaPy.tex",
-        "PlasmaPy Documentation",
-        "PlasmaPy Community",
-        "manual",
-    )
-]
+# hoverxref
 
-# -- Options for manual page output ---------------------------------------
+hoverxref_intersphinx = list(intersphinx_mapping.keys())
 
-# One entry per manual page. List of tuples
-# (source start file, name, description, authors, manual section).
-man_pages = [(root_doc, "plasmapy", "PlasmaPy Documentation", [author], 1)]
+hoverxref_auto_ref = True
+hoverxref_domains = ["py", "cite"]
+hoverxref_mathjax = True
+hoverxref_roles = ["confval", "term"]
+hoverxref_sphinxtabs = True
+hoverxref_tooltip_maxwidth = 600  # RTD main window is 696px
 
-# -- Options for Texinfo output -------------------------------------------
+hoverxref_role_types = {
+    # roles with cite domain
+    "p": "tooltip",
+    "t": "tooltip",
+    # roles with py domain
+    "attr": "tooltip",
+    "class": "tooltip",
+    "const": "tooltip",
+    "data": "tooltip",
+    "exc": "tooltip",
+    "func": "tooltip",
+    "meth": "tooltip",
+    "mod": "tooltip",
+    "obj": "tooltip",
+    # roles with std domain
+    "confval": "tooltip",
+    "hoverxref": "tooltip",
+    "ref": "tooltip",
+    "term": "tooltip",
+}
 
-# Grouping the document tree into Texinfo files. List of tuples
-# (source start file, target name, title, author,
-#  dir menu entry, description, category)
-texinfo_documents = [
-    (
-        root_doc,
-        "PlasmaPy",
-        "PlasmaPy Documentation",
-        author,
-        "PlasmaPy",
-        "Python package for plasma physics",
-        "Miscellaneous",
-    )
-]
+if building_on_readthedocs := os.environ.get("READTHEDOCS"):
+    # Using the proxied API endpoint is a Read the Docs strategy to
+    # avoid a cross-site request forgery block for docs using a custom
+    # domain. See conf.py for sphinx-hoverxref.
+    use_proxied_api_endpoint = os.environ.get("PROXIED_API_ENDPOINT")
+    hoverxref_api_host = "/_" if use_proxied_api_endpoint else "https://readthedocs.org"
 
-html_favicon = "./_static/icon.ico"
+# sphinx-issues
 
-# Settings for checking hyperlinks with `make linkcheck`.
+issues_github_path = "PlasmaPy/PlasmaPy"
 
-# Regular expressions primer: https://docs.python.org/3/library/re.html
+# sphinx.ext.todo
+
+todo_include_todos = False
+
+# sphinx_reredirects
+
+redirects = {
+    "contributing/install_dev": "../contributing/getting_ready.html",
+    "development": "../contributing/",
+    "development/changelog_guide": "../contributing/changelog_guide.html",
+    "development/code_guide": "../contributing/code_guide.html",
+    "development/doc_guide": "../contributing/doc_guide.html",
+    "development/index": "../contributing/index.html",
+    "development/install_dev": "../contributing/getting_ready.html",
+    "development/release_guide": "../contributing/release_guide.html",
+    "development/testing_guide": "../contributing/testing_guide.html",
+    "whatsnew": "../changelog/",
+    "whatsnew/0.1.0": "../changelog/0.1.0.html",
+    "whatsnew/0.1.1": "../changelog/0.1.0.html",
+    "whatsnew/0.2.0": "../changelog/0.1.0.html",
+    "whatsnew/0.3.1": "../changelog/0.1.0.html",
+    "whatsnew/0.4.0": "../changelog/0.1.0.html",
+    "whatsnew/0.5.0": "../changelog/0.1.0.html",
+    "whatsnew/0.6.0": "../changelog/0.1.0.html",
+    "whatsnew/0.7.0": "../changelog/0.1.0.html",
+    "whatsnew/0.8.1": "../changelog/0.1.0.html",
+    "whatsnew/0.9.0": "../changelog/0.1.0.html",
+    "whatsnew/0.9.1": "../changelog/0.1.0.html",
+    "whatsnew/2023.1.0": "../changelog/2023.1.0.html",
+    "whatsnew/index": "../changelog/index.html",
+}
+
+# Using sphinx.ext.extlinks lets us simplify the process of creating
+# links to commonly used external sites. The key of the extlink becomes
+# a new role, and the corresponding tuple contains the base url and the
+# caption. For example, we can now do :orcid:`0000-0000-0000-0000` and
+# have a link create to the corresponding ORCID page. New roles should
+# be added to rst-roles in tox.ini to avoid being caught by
+# flake8-rst-docstrings.
+
+extlinks = {
+    "orcid": ("https://orcid.org/%s", "%s"),
+    "wikipedia": ("https://en.wikipedia.org/wiki/%s", "%s"),
+}
+
+# Settings for checking hyperlinks with `make linkcheck`. For a primer
+# on regular expressions, see: https://docs.python.org/3/library/re.html
 
 linkcheck_anchors = True
-
 linkcheck_anchors_ignore = [
     "/room",
     r".+openastronomy.+",
     "L[0-9].+",
     "!forum/plasmapy",
 ]
-
 linkcheck_allowed_redirects = {
     r"https://doi\.org/.+": r"https://.+",  # DOI links are persistent
     r"https://docs.+\.org": r"https://docs.+\.org/en/.+",
     r"https://docs.+\.io": r"https://docs.+\.io/en/.+",
     r"https://docs.+\.com": r"https://docs.+\.com/en/.+",
     r"https://docs.+\.dev": r"https://docs.+\.dev/en/.+",
+    r"https://github\.com/sponsors/.+": r"https://github\.com/.+",
     r"https://en.wikipedia.org/wiki.+": "https://en.wikipedia.org/wiki.+",
     r"https://.+\.readthedocs\.io": r"https://.+\.readthedocs\.io/en/.+",
     r"https://www\.sphinx-doc\.org": r"https://www\.sphinx-doc\.org/en/.+",
@@ -509,15 +353,12 @@ linkcheck_allowed_redirects = {
     r"https://jinja\.palletsprojects\.com": r"https://jinja\.palletsprojects\.com/.+",
     r"https://pip\.pypa\.io": r"https://pip\.pypa\.io/en/.+",
     r"https://www\.python\.org/dev/peps/pep.+": r"https://peps\.python\.org/pep.+",
+    r"https://matplotlib.org/stable/devel.*": r"https://matplotlib.org/devdocs/devel/.*",
 }
 
-# Hyperlinks for `make linkcheck` to ignore. This may include:
-#
-#  - Stable links (i.e. DOI links that have been tested)
-#  - Links to domains that get repeatedly accessed by `make linkcheck`
-#    and are prone to 403 errors (i.e. some DOI links)
-#  - Links that require a login (i.e. from )
-#  - Links that require you to verify as human
+# Hyperlinks for `make linkcheck` to ignore. This may include stable
+# links (like DOIs), links prone to 403 errors, links requiring a login,
+# or links that require you to verify that you are a human.
 
 linkcheck_ignore = [
     r"https://agupubs\.onlinelibrary\.wiley\.com/doi/10\.1029/2012JA017856",
@@ -526,6 +367,7 @@ linkcheck_ignore = [
     r"https://doi\.org/10\.1007/978-3-319-67711-8.*",
     r"https://doi\.org/10\.1007/s11207-014-0526-6",
     r"https://doi\.org/10\.1007/s41116-019-0021-0",
+    r"https://doi\.org/10\.1016/0032-0633\(94\)00197-Y",
     r"https://doi\.org/10\.1016/c2009-0-20048-1",
     r"https://doi\.org/10\.1016/c2013-0-12176-9",
     r"https://doi\.org/10\.1016/j\.physleta\.2004\.08\.021",
@@ -552,6 +394,7 @@ linkcheck_ignore = [
     r"https://doi\.org/10\.1371/journal\.pbio\.1001745",
     r"https://doi\.org/10\.1371/journal\.pcbi\.1005510",
     r"https://doi\.org/10\.2172/5259641",
+    r"https://doi\.org/10\.5281/zenodo\.3766933",
     r"https://doi\.org/10\.3847/1538-4357/accc32",
     r"https://doi\.org/10\.5281/zenodo\.1436011",
     r"https://doi\.org/10\.5281/zenodo\.1460977",
@@ -597,12 +440,12 @@ linkcheck_ignore = [
     r"https://orcid\.org/0000-0003-3530-7910",
     r"https://orcid\.org/0000-0003-4217-4642",
     r"https://orcid\.org/0009-0009-9490-5284",
+    r"https://hdl\.handle\.net/10037/29416",
     r"https://www\.iter\.org/",
     r"https://www\.sciencedirect\.com/book/9780123748775/.*",
-    r"https://doi\.org/10\.1016/0032-0633\(94\)00197-Y",
 ]
 
-# -- NBSphinx options
+# nbsphinx
 
 nbsphinx_thumbnails = {
     "notebooks/*": "_static/graphic-circular.png",
@@ -653,6 +496,58 @@ nbsphinx_prolog = r"""
     \textcolor{gray}{The following section was generated from
     \sphinxcode{\sphinxupquote{\strut {{ docname | escape_latex }}}} \dotfill}}
 """
+
+# plasmapy_sphinx settings
+
+autosummary_generate = True
+automodapi_custom_groups = {
+    "aliases": {
+        "title": "Aliases",
+        "description": (
+            """
+            PlasmaPy provides :term:`aliases` of the most common plasma
+            functionality for user convenience. Aliases in PlasmaPy are
+            denoted with a trailing underscore (e.g., ``alias_``). For
+            further details, please refer to the :ref:`contributor
+            guide's section on aliases <aliases>`.
+            """
+        ),
+        "dunder": "__aliases__",
+    },
+    "lite-functions": {
+        "title": "Lite-Functions",
+        "description": (
+            """
+            :term:`Lite-functions` are optimized versions of existing
+            `plasmapy` functions that are intended for applications where
+            computational efficiency matters most. Lite-functions accept
+            numbers and NumPy arrays that are implicitly assumed to be
+            in SI units, and do not accept |Quantity| objects as inputs.
+            For further details, please refer to the :ref:`contributor
+            guide's section on lite-functions <lite-functions>`.
+
+            .. caution::
+
+               Lite-functions do not include the safeguards that are
+               included in most `plasmapy.formulary` functions. When
+               using lite-functions, it is vital to double-check your
+               implementation!
+            """
+        ),
+        "dunder": "__lite_funcs__",
+    },
+}
+
+automodapi_group_order = (
+    "modules",
+    "classes",
+    "exceptions",
+    "warnings",
+    "functions",
+    "aliases",
+    "lite-functions",
+    "variables",
+)
 
 
 def setup(app: Sphinx) -> None:

@@ -2,7 +2,6 @@
 import astropy.units as u
 import numpy as np
 import pytest
-
 from astropy.constants.si import c
 
 from plasmapy.dispersion.analytical.stix_ import stix
@@ -80,7 +79,7 @@ class TestStix:
             ),
         ],
     )
-    def test_raises(self, kwargs, _error):
+    def test_raises(self, kwargs, _error) -> None:
         with pytest.raises(_error):
             stix(**kwargs)
 
@@ -133,7 +132,7 @@ class TestStix:
         ],
     )
     @pytest.mark.filterwarnings("ignore::astropy.units.UnitsWarning")
-    def test_return_structure(self, kwargs, expected):
+    def test_return_structure(self, kwargs, expected) -> None:
         k = stix(**kwargs)
 
         assert isinstance(k, u.Quantity)
@@ -234,7 +233,7 @@ class TestStix:
             ),
         ],
     )
-    def test_vals_stix_figs(self, kwargs, expected):
+    def test_vals_stix_figs(self, kwargs, expected) -> None:
         ion = kwargs["ions"][0]
 
         mu = ion.mass / Particle("e-").mass
@@ -301,7 +300,7 @@ class TestStix:
             },
         ],
     )
-    def test_vals_theta_zero(self, kwargs):
+    def test_vals_theta_zero(self, kwargs) -> None:
         """
         Test on the known solutions for theta = 0,
         see Stix ch. 1 eqn 37.
@@ -354,7 +353,7 @@ class TestStix:
             },
         ],
     )
-    def test_vals_theta_90deg(self, kwargs):
+    def test_vals_theta_90deg(self, kwargs) -> None:
         """
         Test on the known solutions for theta = pi/2,
         see Stix ch. 1 eqn 38.

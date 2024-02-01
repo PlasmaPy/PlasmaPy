@@ -7,16 +7,16 @@ original fields (under some set of assumptions).
 
 __all__ = ["Tracker", "synthetic_radiograph"]
 
-import astropy.constants as const
-import astropy.units as u
 import collections
-import numpy as np
 import sys
 import warnings
-
 from collections.abc import Iterable
-from tqdm import tqdm
 from typing import Union
+
+import astropy.constants as const
+import astropy.units as u
+import numpy as np
+from tqdm import tqdm
 
 from plasmapy import particles
 from plasmapy.formulary.mathematics import rot_a_to_b
@@ -126,11 +126,11 @@ class Tracker:
     def __init__(
         self,
         grids: Union[AbstractGrid, Iterable[AbstractGrid]],
-        source: u.m,
-        detector: u.m,
+        source: u.Quantity[u.m],
+        detector: u.Quantity[u.m],
         detector_hdir=None,
-        verbose=True,
-    ):
+        verbose: bool = True,
+    ) -> None:
         # self.grid is the grid object
         if isinstance(grids, AbstractGrid):
             self.grids = [
@@ -301,7 +301,7 @@ class Tracker:
 
         return np.max(theta)
 
-    def _log(self, msg):
+    def _log(self, msg) -> None:
         if self.verbose:
             # We'll need to switch from print() to using logging library
             print(msg)  # noqa: T201
@@ -579,7 +579,7 @@ class Tracker:
         max_theta=None,
         particle: Particle = Particle("p+"),  # noqa: B008
         distribution="monte-carlo",
-    ):
+    ) -> None:
         r"""
         Generates the angular distributions about the Z-axis, then
         rotates those distributions to align with the source-to-detector axis.
@@ -804,7 +804,7 @@ class Tracker:
         # with the largest gridstep
         return np.where(dt == np.inf, np.max(gridstep), dt)
 
-    def _coast_to_grid(self):
+    def _coast_to_grid(self) -> None:
         r"""
         Coasts all particles to the timestep when the first particle should
         be entering the grid. Doing in this in one step (rather than pushing
@@ -862,7 +862,7 @@ class Tracker:
 
         return x
 
-    def _remove_deflected_particles(self):
+    def _remove_deflected_particles(self) -> None:
         r"""
         Removes any particles that have been deflected away from the detector
         plane (eg. those that will never hit the grid).
@@ -898,7 +898,7 @@ class Tracker:
                 RuntimeWarning,
             )
 
-    def _push(self):
+    def _push(self) -> None:
         r"""
         Advance particles using an implementation of the time-centered
         Boris algorithm.
@@ -999,7 +999,7 @@ class Tracker:
         """
         return np.sum(self.on_grid, axis=-1) > 0
 
-    def _stop_condition(self):
+    def _stop_condition(self) -> bool:
         r"""
         The stop condition is that most of the particles have entered the grid
         and almost all have now left it.
@@ -1284,7 +1284,7 @@ class Tracker:
             "v0": v0,
         }
 
-    def save_results(self, path):
+    def save_results(self, path) -> None:
         """
         Save the simulations results :attr:`results_dict` to a `numpy`
         ``.npz`` file format (see `numpy.lib.format`) using `numpy.savez`.
@@ -1356,7 +1356,7 @@ class Tracker:
 
 
 def synthetic_radiograph(  # noqa: C901
-    obj, size=None, bins=None, ignore_grid=False, optical_density=False
+    obj, size=None, bins=None, ignore_grid: bool = False, optical_density: bool = False
 ):
     r"""
     Calculate a "synthetic radiograph" (particle count histogram in the

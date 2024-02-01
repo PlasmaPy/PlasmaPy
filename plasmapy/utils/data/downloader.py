@@ -4,10 +4,10 @@ downloading files from |PlasmaPy's data repository|.
 
 """
 
-import requests
-
 from pathlib import Path
 from urllib.parse import urljoin
+
+import requests
 
 __all__ = ["get_file"]
 
@@ -48,7 +48,7 @@ def get_file(basename, base_url=_BASE_URL, directory=None):
     if "." not in str(basename):
         raise ValueError(f"'filename' ({basename}) must include an extension.")
 
-    if directory is None:  # coverage: ignore
+    if directory is None:
         directory = Path(Path.home(), ".plasmapy", "downloads")
 
         # Create the .plasmapy/downloads directory if it does not already

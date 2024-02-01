@@ -2,13 +2,13 @@
 
 __all__ = ["ParticleList", "ParticleListLike"]
 
-import astropy.units as u
 import collections
 import contextlib
-import numpy as np
+from collections.abc import Callable, Iterable, Sequence
+from typing import Optional, Union
 
-from collections.abc import Iterable, Sequence
-from typing import Callable, Optional, Union
+import astropy.units as u
+import numpy as np
 
 from plasmapy.particles.exceptions import InvalidParticleError
 from plasmapy.particles.particle_class import (
@@ -20,7 +20,7 @@ from plasmapy.particles.particle_class import (
 
 
 def _turn_quantity_into_custom_particle(
-    quantity: u.Quantity[u.physical.electrical_charge, u.physical.mass]
+    quantity: u.Quantity[u.physical.electrical_charge, u.physical.mass],
 ) -> CustomParticle:
     """
     Convert a |Quantity| of physical type mass or electrical charge
@@ -188,7 +188,7 @@ class ParticleList(collections.UserList):
 
         return new_particles
 
-    def __init__(self, particles: Optional[Iterable] = None):
+    def __init__(self, particles: Optional[Iterable] = None) -> None:
         self._data = self._list_of_particles_and_custom_particles(particles)
 
     @staticmethod
@@ -245,7 +245,7 @@ class ParticleList(collections.UserList):
             values = u.Quantity(values)
         return values
 
-    def append(self, particle: ParticleLike):
+    def append(self, particle: ParticleLike) -> None:
         """Append a particle to the end of the |ParticleList|."""
         if isinstance(particle, u.Quantity):
             particle = _turn_quantity_into_custom_particle(particle)
@@ -254,7 +254,7 @@ class ParticleList(collections.UserList):
         self.data.append(particle)
 
     @property
-    def charge(self) -> u.C:
+    def charge(self) -> u.Quantity[u.C]:
         """
         The electric charges of the particles.
 
@@ -280,7 +280,7 @@ class ParticleList(collections.UserList):
         """
         return self._data
 
-    def extend(self, iterable: Iterable[ParticleLike]):
+    def extend(self, iterable: Iterable[ParticleLike]) -> None:
         """
         Extend the sequence by appending |particle-like| elements from
         ``iterable``.
@@ -296,7 +296,7 @@ class ParticleList(collections.UserList):
                 self.append(obj)
 
     @property
-    def half_life(self) -> u.s:
+    def half_life(self) -> u.Quantity[u.s]:
         """
         The half-lives of the particles.
 
@@ -306,7 +306,7 @@ class ParticleList(collections.UserList):
         """
         return self._get_particle_attribute("half_life", unit=u.s, default=np.nan * u.s)
 
-    def insert(self, index, particle: ParticleLike):
+    def insert(self, index, particle: ParticleLike) -> None:
         """Insert a particle before an index."""
         if isinstance(particle, u.Quantity):
             particle = _turn_quantity_into_custom_particle(particle)
@@ -371,7 +371,7 @@ class ParticleList(collections.UserList):
         return np.array(self._get_particle_attribute("charge_number", default=np.nan))
 
     @property
-    def mass(self) -> u.kg:
+    def mass(self) -> u.Quantity[u.kg]:
         """
         The masses of the particles.
 
@@ -382,7 +382,7 @@ class ParticleList(collections.UserList):
         return self._get_particle_attribute("mass", unit=u.kg, default=np.nan * u.J)
 
     @property
-    def mass_energy(self) -> u.J:
+    def mass_energy(self) -> u.Quantity[u.J]:
         """
         The mass energies of the particles.
 
