@@ -522,7 +522,7 @@ class Tracker:
     # Particle creation methods
     # *************************************************************************
 
-    def _angles_monte_carlo(self):
+    def _angles_monte_carlo(self, random_seed=None):
         """
         Generates angles for each particle randomly such that the flux
         per solid angle is uniform.
@@ -534,13 +534,14 @@ class Tracker:
         prob = np.sin(arg)
         prob *= 1 / np.sum(prob)
 
+        # Create a numpy random number generator instance
+        rng = np.random.default_rng(seed=random_seed)
+
         # Randomly choose theta's weighted with the sine probabilities
-        theta = np.random.choice(  # noqa: NPY002
-            arg, size=self.nparticles, replace=True, p=prob
-        )
+        theta = rng.choice(arg, size=self.nparticles, replace=True, p=prob)
 
         # Also generate a uniform phi distribution
-        phi = np.random.uniform(high=2 * np.pi, size=self.nparticles)  # noqa: NPY002
+        phi = rng.uniform(high=2 * np.pi, size=self.nparticles)
 
         return theta, phi
 
@@ -579,6 +580,7 @@ class Tracker:
         max_theta=None,
         particle: Particle = Particle("p+"),  # noqa: B008
         distribution="monte-carlo",
+        random_seed=None,
     ) -> None:
         r"""
         Generates the angular distributions about the Z-axis, then
@@ -630,6 +632,10 @@ class Tracker:
             on the image, but will well-sample the field grid with a
             smaller number of particles. The default is ``'monte-carlo'``.
 
+        random_seed : int, optional
+            A random seed to be used when generating random particle
+            distributions, e.g. with the `monte-carlo` distribution.
+
 
         """
         self._log("Creating Particles")
@@ -656,7 +662,7 @@ class Tracker:
         v0 = self._c * np.sqrt(1 - 1 / (ER + 1) ** 2)
 
         if distribution == "monte-carlo":
-            theta, phi = self._angles_monte_carlo()
+            theta, phi = self._angles_monte_carlo(random_seed=random_seed)
         elif distribution == "uniform":
             theta, phi = self._angles_uniform()
 
