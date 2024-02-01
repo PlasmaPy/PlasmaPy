@@ -1,3 +1,3 @@
-Added a `random_seed` keyword in 
+Added a `random_seed` keyword in
 `~plasmapy.diagnostics.charged_particle_radiography.synthetic_radiography.Tracker.create_particles`
 that makes the function deterministic to resolve intermittent test failures.
