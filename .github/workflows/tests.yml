@@ -104,6 +104,11 @@ jobs:
     - name: Build docs
       run: tox -e build_docs_pins -- -q
 
+    - name: Print troubleshooting information on failure
+      if: ${{ failure() }}
+      run: |
+        echo "\n\nDocumentation troubleshooting guide: https://docs.plasmapy.org/en/latest/contributing/doc_guide.html#troubleshooting\n\n"
+
   import-plasmapy:
     name: Importing PlasmaPy
     runs-on: windows-latest
