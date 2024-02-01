@@ -610,6 +610,7 @@ class TestSyntheticRadiograph:
         assert histogram.shape == expected["bins"]
 
     @pytest.mark.filterwarnings("ignore:divide by zero:RuntimeWarning")
+    @pytest.mark.flaky(reruns=5)  # see issue 1548
     def test_optical_density_histogram(self) -> None:
         """
         Test the optical density calculation is correct and stuffed
