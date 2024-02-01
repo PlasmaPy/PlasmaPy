@@ -162,7 +162,10 @@ jobs:
     - name: Twine check
       run: twine check dist/*
 
-    - name: Install PlasmaPy in all variants
+    - name: Install PlasmaPy with pip
       run: |
-        pip install --progress-bar off .[dev]
-        pip install --progress-bar off -e .[dev]
+        pip install --progress-bar off .
+
+    - name: Perform editable installation with tests & docs requirements sets
+      run: |
+        pip install --progress-bar off -e .[tests, docs]
