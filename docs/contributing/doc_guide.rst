@@ -1251,6 +1251,12 @@ You can alternatively shorten the documentation build by running:
 This command will build the documentation without executing the
 :ref:`example notebooks <example_notebooks>`.
 
+To check hyperlinks, run:
+
+.. code-block:: bash
+
+   tox -e linkcheck
+
 .. tip::
 
    When writing documentation, please make sure to fix any warnings that
