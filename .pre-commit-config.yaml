@@ -105,6 +105,8 @@ repos:
   - id: blacken-docs
     name: autoformat code blocks in docs
     exclude: docs/contributing/coding_guide.rst
+    additional_dependencies:
+    - black==24.1.0
 
 - repo: https://github.com/nbQA-dev/nbQA
   rev: 1.7.1
