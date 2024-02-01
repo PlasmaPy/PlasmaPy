@@ -23,21 +23,21 @@ jobs:
       matrix:
         include:
 
-        - name: Python 3.12 (Linux), pinned dependencies
+        - name: Python 3.12 (Ubuntu), pinned dependencies, skip slow tests
           os: ubuntu-latest
           python: '3.12'
           toxenv: py312-pins
           toxargs: --develop
 
-        - name: Python 3.11 (Linux)
-          os: ubuntu-latest
-          python: '3.11'
-          toxenv: py311
-
-        - name: Python 3.10 (MacOS), code coverage
+        - name: Python 3.11 (MacOS), code coverage
           os: macos-latest
+          python: '3.11'
+          toxenv: py311-cov-all
+
+        - name: Python 3.10 (Ubuntu)
+          os: ubuntu-latest
           python: '3.10'
-          toxenv: py310-cov-all
+          toxenv: py310-all
 
         - name: Python 3.9 (Windows), minimal dependencies
           os: windows-latest
@@ -46,12 +46,12 @@ jobs:
 
         - name: mypy
           os: ubuntu-latest
-          python: '3.11'
+          python: '3.12'
           toxenv: mypy
 
         - name: Linters
           os: ubuntu-latest
-          python: '3.11'
+          python: '3.12'
           toxenv: linters
 
     steps:
@@ -95,7 +95,7 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v5
       with:
-        python-version: '3.11'
+        python-version: '3.12'
         cache: pip
 
     - name: Install tox
@@ -138,10 +138,10 @@ jobs:
         git fetch --prune --unshallow
         git fetch --depth=1 origin +refs/tags/*:refs/tags/*
 
-    - name: Set up Python 3.11
+    - name: Set up Python
       uses: actions/setup-python@v5
       with:
-        python-version: '3.11'
+        python-version: '3.12'
         cache: pip
 
     - name: Install requirements
