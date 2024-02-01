@@ -634,7 +634,7 @@ class Tracker:
 
         random_seed : int, optional
             A random seed to be used when generating random particle
-            distributions, e.g. with the `monte-carlo` distribution.
+            distributions, e.g. with the ``monte-carlo`` distribution.
 
 
         """
