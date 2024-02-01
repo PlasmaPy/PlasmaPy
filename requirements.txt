@@ -96,7 +96,7 @@ future==0.18.3
     # via uncertainties
 h5py==3.10.0
     # via plasmapy (setup.py)
-hypothesis==6.97.3
+hypothesis==6.97.4
     # via plasmapy (setup.py)
 identify==2.5.33
     # via pre-commit
@@ -113,7 +113,7 @@ iniconfig==2.0.0
     # via pytest
 ipykernel==6.29.0
     # via plasmapy (setup.py)
-ipython==8.20.0
+ipython==8.21.0
     # via
     #   ipykernel
     #   ipywidgets
@@ -264,7 +264,7 @@ pillow==10.2.0
     #   matplotlib
     #   plasmapy (setup.py)
     #   sphinx-gallery
-platformdirs==4.1.0
+platformdirs==4.2.0
     # via
     #   jupyter-core
     #   tox
