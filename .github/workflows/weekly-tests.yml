@@ -37,27 +37,22 @@ jobs:
           python: '3.10'
           toxenv: py310-all
 
-        - name: Python 3.9 (Windows)
-          os: windows-latest
-          python: 3.9
-          toxenv: py39-all
-
-        - name: Python 3.10 with astropy-dev (Ubuntu)
+        - name: Python 3.10 with Astropy dev (Ubuntu)
           os: ubuntu-latest
           python: '3.10'
           toxenv: py310-astropydev
 
-        - name: Python 3.10 with matplotlib-dev (Ubuntu)
+        - name: Python 3.10 with matplotlib dev (Ubuntu)
           os: ubuntu-latest
           python: '3.10'
           toxenv: py310-matplotlibdev
 
-        - name: Python 3.10 with numpy-dev (Ubuntu)
+        - name: Python 3.10 with NumPy dev (Ubuntu)
           os: ubuntu-latest
           python: '3.10'
           toxenv: py310-numpydev
 
-        - name: Python '3.10' with xarray-dev (Ubuntu)
+        - name: Python '3.10' with xarray dev (Ubuntu)
           os: ubuntu-latest
           python: '3.10'
           toxenv: py310-xarraydev
