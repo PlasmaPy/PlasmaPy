@@ -51,6 +51,7 @@ dependencies = [
   "pytest == 7.4.4",
   "requests >= 2.28.0",
   "scipy >= 1.8.0",
+  "setuptools >= 61.2.0",
   "tqdm >= 4.60.0",
   "voila >= 0.5.0",
   "wrapt >= 1.14.0",
@@ -64,6 +65,8 @@ docs = [
   "numpydoc >= 1.6.0",
   "pillow >= 10.2.0",
   "pygments >= 2.17.2",
+  # install setuptools to get pkg_resources for doc build
+  "setuptools; python_version >= '3.12'",
   "sphinx >= 7.2.6",
   "sphinx-changelog >= 1.5.0",
   "sphinx-codeautolink >= 0.15.0",
