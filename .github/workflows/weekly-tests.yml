@@ -106,20 +106,15 @@ jobs:
         file: ./coverage.xml
 
   install-plasmapy-via-conda-forge:
-    name: Install from ${{ matrix.channel }} channel
+    name: Install PlasmaPy from conda-forge
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        include:
-        - channel: conda-forge
-
     steps:
-    - name: Set up conda
+    - name: Set up miniconda
       uses: conda-incubator/setup-miniconda@v3
       with:
         auto-update-conda: true
         python-version: '3.10'
 
-    - name: Install PlasmaPy
-      run: conda install -c ${{ matrix.channel }} --yes plasmapy
+    - name: Use conda to install PlasmaPy from conda-forge
+      run: conda install -c conda-forge --yes plasmapy
