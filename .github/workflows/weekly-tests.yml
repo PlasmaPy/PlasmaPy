@@ -40,22 +40,22 @@ jobs:
         - name: Python 3.10 with Astropy dev (Ubuntu)
           os: ubuntu-latest
           python: '3.10'
-          toxenv: py310-astropydev
+          toxenv: py310-astropydev-all
 
         - name: Python 3.10 with matplotlib dev (Ubuntu)
           os: ubuntu-latest
           python: '3.10'
-          toxenv: py310-matplotlibdev
+          toxenv: py310-matplotlibdev-all
 
         - name: Python 3.10 with NumPy dev (Ubuntu)
           os: ubuntu-latest
           python: '3.10'
-          toxenv: py310-numpydev
+          toxenv: py310-numpydev-all
 
         - name: Python '3.10' with xarray dev (Ubuntu)
           os: ubuntu-latest
           python: '3.10'
-          toxenv: py310-xarraydev
+          toxenv: py310-xarraydev-all
 
         - name: Import PlasmaPy (Windows)
           os: windows-latest
