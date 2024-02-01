@@ -744,7 +744,8 @@ def particle_input(
           class SomeClass:
               @particle_input
               @validate_quantities
-              def instance_method(self, particle: ParticleLike, B: u.Quantity[u.T]): ...
+              def instance_method(self, particle: ParticleLike, B: u.Quantity[u.T]):
+                  ...
 
     .. note::
 
