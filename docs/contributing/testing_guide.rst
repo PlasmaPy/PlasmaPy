@@ -35,7 +35,7 @@ Summary
   - Navigate to the top-level directory (probably named
     :file:`PlasmaPy/`) in your local clone of PlasmaPy's repository.
 
-  - If you are on MacOS or Linux, run:
+  - If you are on macOS or Linux, run:
 
     .. code-block:: console
 
