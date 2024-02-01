@@ -69,13 +69,13 @@ jobs:
 
         - name: Import PlasmaPy (macOS X)
           os: macos-latest
-          python: '3.10'
-          toxenv: py310-minimal-pypi-import
+          python: '3.11'
+          toxenv: py311-minimal-pypi-import
 
         - name: Import PlasmaPy (Ubuntu)
           os: ubuntu-latest
-          python: '3.10'
-          toxenv: py310-minimal-pypi-import
+          python: '3.12'
+          toxenv: py312-minimal-pypi-import
 
     steps:
     - name: Checkout code
