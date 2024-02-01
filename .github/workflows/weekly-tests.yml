@@ -51,6 +51,11 @@ jobs:
           python: '3.11'
           toxenv: py311-all
 
+        - name: Python 3.12 (Linux), pinned dependencies
+          os: ubuntu-latest
+          python: '3.12'
+          toxenv: py312-all
+
         - name: Python 3.9 with Astropy dev
           os: ubuntu-latest
           python: 3.9
@@ -68,7 +73,7 @@ jobs:
 
         - name: Documentation with Sphinx dev
           os: ubuntu-latest
-          python: '3.11'
+          python: '3.12'
           toxenv: build_docs-sphinxdev
           toxposargs: -q
 
