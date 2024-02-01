@@ -1,4 +1,4 @@
-"""Tests for ``@particle_input`` with delayed evaluation of annotations."""
+"""Tests for ``@particle_input`` with postponed evaluation of annotations."""
 
 # These tests must be in their own file because the `from __future__`
 # import must be at the top.
@@ -25,19 +25,30 @@ class UndecoratedClass:
         return particle  # type: ignore[return-value]
 
 
-def test_particle_input_from_future_import_annotations_function() -> None:
+def test_particle_input_postponed_annotations_function() -> None:
+    """
+    Test that `@particle_input` works with postponed evaluation of
+    annotations for a simple function.
+    """
     particle = function_decorated_with_particle_input("p+")
     assert particle == Particle("p+")
 
 
-def test_particle_input_from_future_import_annotations_instantiation() -> None:
+def test_particle_input_postponed_annotations_instance() -> None:
+    """
+    Test that `@particle_input` works with postponed evaluation of
+    annotations when it decorates the `__init__` method of a class.
+    """
     instance = DecoratedClass("p+")
-
     assert isinstance(instance.particle, Particle)
     assert instance.particle == Particle("p+")
 
 
-def test_particle_input_from_future_import_annotations_method() -> None:
+def test_particle_input_postponed_annotations_method() -> None:
+    """
+    Test that `@particle_input` works with postponed evaluation of
+    annotations when it decorates an instance method.
+    """
     instance = UndecoratedClass()
     result = instance.decorated_method(particle="p+")
     assert isinstance(result, Particle)
