@@ -96,7 +96,7 @@ future==0.18.3
     # via uncertainties
 h5py==3.10.0
     # via plasmapy (setup.py)
-hypothesis==6.97.4
+hypothesis==6.97.3
     # via plasmapy (setup.py)
 identify==2.5.33
     # via pre-commit
@@ -113,7 +113,7 @@ iniconfig==2.0.0
     # via pytest
 ipykernel==6.29.0
     # via plasmapy (setup.py)
-ipython==8.21.0
+ipython==8.20.0
     # via
     #   ipykernel
     #   ipywidgets
@@ -177,7 +177,7 @@ kiwisolver==1.4.5
     # via matplotlib
 latexcodec==2.0.1
     # via pybtex
-llvmlite==0.42.0
+llvmlite==0.41.1
     # via numba
 lmfit==1.2.2
     # via plasmapy (setup.py)
@@ -216,7 +216,7 @@ nest-asyncio==1.6.0
     # via ipykernel
 nodeenv==1.8.0
     # via pre-commit
-numba==0.59.0
+numba==0.58.1
     # via plasmapy (setup.py)
 numpy==1.26.3
     # via
@@ -246,7 +246,6 @@ packaging==23.2
     #   plasmapy (setup.py)
     #   pyproject-api
     #   pytest
-    #   pytest-rerunfailures
     #   sphinx
     #   tox
     #   xarray
@@ -265,7 +264,7 @@ pillow==10.2.0
     #   matplotlib
     #   plasmapy (setup.py)
     #   sphinx-gallery
-platformdirs==4.2.0
+platformdirs==4.1.0
     # via
     #   jupyter-core
     #   tox
@@ -314,13 +313,10 @@ pytest==7.4.4
     #   plasmapy (setup.py)
     #   pytest-datadir
     #   pytest-regressions
-    #   pytest-rerunfailures
     #   pytest-xdist
 pytest-datadir==1.5.0
     # via pytest-regressions
 pytest-regressions==2.5.0
-    # via plasmapy (setup.py)
-pytest-rerunfailures==13.0
     # via plasmapy (setup.py)
 pytest-xdist==3.5.0
     # via plasmapy (setup.py)
