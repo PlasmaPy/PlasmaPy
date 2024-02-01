@@ -1,2 +1,2 @@
-Fixed a bug so that |particle_input| now works when a module begins
-with :py:`from future import annotations`.
+Enabled |particle_input| to be compatible with postponed evaluation of
+annotations (see :pep:`563`).
