@@ -1,0 +1,2 @@
+Another changelog entry with backticks starting the second line like
+`plasmapy.formulary`.
