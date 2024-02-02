@@ -1,0 +1,3 @@
+Bumped the minimum versions of dependencies to drop support for
+minor releases older than two years old. In particular, the minimum
+version of NumPy was bumped to ``1.23.0``.

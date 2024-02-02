@@ -9,7 +9,7 @@ import warnings
 from collections.abc import Callable, Iterable, MutableMapping
 from inspect import BoundArguments
 from numbers import Integral, Real
-from typing import Any, Optional, TypedDict, Union
+from typing import Any, Optional, TypedDict, Union, get_type_hints
 
 import numpy as np
 import wrapt
@@ -55,19 +55,6 @@ _optional_particle_input_annotations = tuple(
 _particle_input_annotations = (
     _basic_particle_input_annotations + _optional_particle_input_annotations
 )
-
-
-def _get_annotations(callable_: Callable[..., Any]) -> dict[str, Any]:
-    """
-    Access the annotations of a callable.
-
-    .. note::
-
-       For Python 3.10+, this should be replaced with
-       `inspect.get_annotations`.
-    """
-    # Python 3.10: Replace this with inspect.get_annotations
-    return getattr(callable_, "__annotations__", {})
 
 
 def _make_into_set_or_none(obj: Any) -> Optional[Iterable[str]]:
@@ -221,7 +208,7 @@ class _ParticleInput:
     @callable_.setter
     def callable_(self, callable_: Callable[..., Any]) -> None:
         self._data["callable_"] = callable_
-        self._data["annotations"] = _get_annotations(callable_)
+        self._data["annotations"] = get_type_hints(callable_)
         self._data["parameters_to_process"] = self.find_parameters_to_process()
         self._data["signature"] = inspect.signature(callable_)
 
@@ -744,8 +731,7 @@ def particle_input(
           class SomeClass:
               @particle_input
               @validate_quantities
-              def instance_method(self, particle: ParticleLike, B: u.Quantity[u.T]):
-                  ...
+              def instance_method(self, particle: ParticleLike, B: u.Quantity[u.T]): ...
 
     .. note::
 

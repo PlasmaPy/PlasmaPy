@@ -1,0 +1,2 @@
+Enabled |particle_input| to be compatible with postponed evaluation of
+annotations (see :pep:`563`).

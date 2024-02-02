@@ -39,3 +39,6 @@
 - search: 'the the '
   replacement: 'the '
   description: Fix common grammar error
+
+- search: 'MacOS'
+  replacement: 'macOS'

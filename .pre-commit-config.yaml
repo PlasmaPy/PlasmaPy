@@ -2,6 +2,10 @@ ci:
   autofix_prs: false
   autoupdate_schedule: monthly
 
+# Specify the default version of Ruby in case it is not installed
+default_language_version:
+  ruby: 2.7.2
+
 repos:
 
 - repo: https://github.com/pre-commit/pre-commit-hooks
@@ -24,12 +28,12 @@ repos:
   - id: check-yaml
 
 - repo: https://github.com/python-jsonschema/check-jsonschema
-  rev: 0.27.3
+  rev: 0.27.4
   hooks:
   - id: check-github-workflows
 
 - repo: https://github.com/sirosen/texthooks
-  rev: 0.6.3
+  rev: 0.6.4
   hooks:
   - id: fix-smartquotes
   - id: fix-spaces
@@ -87,7 +91,7 @@ repos:
     - tomli
 
 - repo: https://github.com/astral-sh/ruff-pre-commit
-  rev: v0.1.13
+  rev: v0.1.15
   hooks:
   - id: ruff
     name: ruff (see https://docs.astral.sh/ruff/rules)
@@ -101,6 +105,8 @@ repos:
   - id: blacken-docs
     name: autoformat code blocks in docs
     exclude: docs/contributing/coding_guide.rst
+    additional_dependencies:
+    - black==24.1.1
 
 - repo: https://github.com/nbQA-dev/nbQA
   rev: 1.7.1
