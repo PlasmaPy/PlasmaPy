@@ -13,7 +13,7 @@ on:
 
 jobs:
 
-  initial-tests:
+  tests:
     name: ${{ matrix.name }}
     runs-on: ${{ matrix.os }}
 
@@ -80,10 +80,12 @@ jobs:
         file: ./coverage.xml
 
   documentation:
+
     name: Documentation, pinned dependencies
     runs-on: ubuntu-latest
 
     steps:
+
     - name: Checkout code
       uses: actions/checkout@v4
       with:
@@ -107,13 +109,15 @@ jobs:
     - name: Print troubleshooting information on failure
       if: ${{ failure() }}
       run: |
-        echo "\n\nDocumentation troubleshooting guide: https://docs.plasmapy.org/en/latest/contributing/doc_guide.html#troubleshooting\n\n"
+        echo "\nDocumentation troubleshooting guide:\n\nhttps://docs.plasmapy.org/en/latest/contributing/doc_guide.html#troubleshooting\n\n"
 
   import-plasmapy:
-    name: Importing PlasmaPy
+
+    name: Import PlasmaPy
     runs-on: windows-latest
 
     steps:
+
     - name: Checkout code
       uses: actions/checkout@v4
       with:
@@ -136,6 +140,7 @@ jobs:
     runs-on: ubuntu-22.04
 
     steps:
+
     - uses: actions/checkout@v4
 
     - name: Get history and tags for SCM versioning to work

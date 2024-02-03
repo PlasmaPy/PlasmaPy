@@ -1,4 +1,4 @@
-name: Check hyperlinks
+name: linkcheck
 
 on:
   schedule:
@@ -10,10 +10,13 @@ on:
     - main
 
 jobs:
+
   linkcheck:
     runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'perform linkcheck in CI')
+    if: github.event_name != 'pull_request' || contains(github.event.pull_request.labels.*.name, 'perform linkcheck in CI')
+
     steps:
+
     - name: Checkout code
       uses: actions/checkout@v4
       with:
