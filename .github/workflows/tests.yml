@@ -109,8 +109,8 @@ jobs:
       run: |
         echo "\n\nDocumentation troubleshooting guide: https://docs.plasmapy.org/en/latest/contributing/doc_guide.html#troubleshooting\n\n"
 
-  documentation-linkcheck:
-    name: Linkcheck
+  pr-linkcheck:
+    name: Linkcheck documentation if labeled appropriately
     runs-on: ubuntu-latest
     if: github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'perform linkcheck in CI')
 
