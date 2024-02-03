@@ -1,0 +1,1 @@
+Modified the ``__exit__`` method of ``HDF5Reader`` for context management.
