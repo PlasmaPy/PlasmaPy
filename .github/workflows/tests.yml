@@ -109,32 +109,6 @@ jobs:
       run: |
         echo "\n\nDocumentation troubleshooting guide: https://docs.plasmapy.org/en/latest/contributing/doc_guide.html#troubleshooting\n\n"
 
-  pr-linkcheck:
-    name: Linkcheck documentation if labeled appropriately
-    runs-on: ubuntu-latest
-    if: contains(github.event.pull_request.labels.*.name, 'perform linkcheck in CI')
-
-    steps:
-
-    - name: Check out code
-      uses: actions/checkout@v4
-      with:
-        fetch-depth: 0
-
-    - name: Set up Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: 3.12
-
-    - name: Install Python dependencies
-      run: python -m pip install --upgrade tox
-
-    - name: Install graphviz & pandoc
-      run: sudo apt-get install graphviz pandoc
-
-    - name: Check hyperlinks
-      run: tox -e linkcheck
-
   import-plasmapy:
     name: Importing PlasmaPy
     runs-on: windows-latest
