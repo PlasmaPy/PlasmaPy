@@ -112,7 +112,7 @@ jobs:
   pr-linkcheck:
     name: Linkcheck documentation if labeled appropriately
     runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'perform linkcheck in CI')
+    if: contains(github.event.pull_request.labels.*.name, 'perform linkcheck in CI')
 
     steps:
 
