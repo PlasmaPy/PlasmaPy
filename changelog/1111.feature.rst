@@ -1,2 +1,0 @@
-This is a sample changelog entry to test what happens when the
-``second`` line starts with a literal.  Sometimes I got an error.
