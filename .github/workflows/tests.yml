@@ -56,7 +56,7 @@ jobs:
 
     steps:
 
-    - name: Checkout code
+    - name: Check out code
       uses: actions/checkout@v4
       with:
         fetch-depth: 0
@@ -84,7 +84,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
+    - name: Check out code
       uses: actions/checkout@v4
       with:
         fetch-depth: 0
@@ -109,14 +109,14 @@ jobs:
       run: |
         echo "\n\nDocumentation troubleshooting guide: https://docs.plasmapy.org/en/latest/contributing/doc_guide.html#troubleshooting\n\n"
 
-  check-hyperlinks:
-    name: Check hyperlinks
+  documentation-linkcheck:
+    name: Linkcheck
     runs-on: ubuntu-latest
     if: github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'perform linkcheck in CI')
 
     steps:
 
-    - name: Checkout code
+    - name: Check out code
       uses: actions/checkout@v4
       with:
         fetch-depth: 0
@@ -140,7 +140,7 @@ jobs:
     runs-on: windows-latest
 
     steps:
-    - name: Checkout code
+    - name: Check out code
       uses: actions/checkout@v4
       with:
         fetch-depth: 0
