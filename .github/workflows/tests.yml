@@ -13,7 +13,7 @@ on:
 
 jobs:
 
-  initial-tests:
+  tests:
     name: ${{ matrix.name }}
     runs-on: ${{ matrix.os }}
 
@@ -108,6 +108,32 @@ jobs:
       if: ${{ failure() }}
       run: |
         echo "\n\nDocumentation troubleshooting guide: https://docs.plasmapy.org/en/latest/contributing/doc_guide.html#troubleshooting\n\n"
+
+  check-hyperlinks:
+    name: Check hyperlinks
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'perform linkcheck in CI')
+
+    steps:
+
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: 3.12
+
+    - name: Install Python dependencies
+      run: python -m pip install --upgrade tox
+
+    - name: Install graphviz & pandoc
+      run: sudo apt-get install graphviz pandoc
+
+    - name: Check hyperlinks
+      run: tox -e linkcheck
 
   import-plasmapy:
     name: Importing PlasmaPy
