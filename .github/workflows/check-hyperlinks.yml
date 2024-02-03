@@ -1,19 +1,15 @@
-name: Check hyperlinks
+name: linkcheck
 
 on:
   schedule:
   - cron: 37 7 * * 2
   workflow_dispatch:
-  pull_request:
-    types: [labeled, opened, synchronize, reopened]
-    branches:
-    - main
 
 jobs:
   linkcheck:
     runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'perform linkcheck in CI')
     steps:
+
     - name: Checkout code
       uses: actions/checkout@v4
       with:
