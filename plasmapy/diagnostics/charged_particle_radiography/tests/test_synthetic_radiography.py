@@ -151,11 +151,13 @@ def test_multiple_grids() -> None:
     source = (0 * u.mm, -10 * u.mm, 0 * u.mm)
     detector = (0 * u.mm, 200 * u.mm, 0 * u.mm)
 
-    sim = cpr.Tracker(grids, source, detector, verbose=True)
+    sim = cpr.Tracker(
+        grids, source, detector, field_weighting="nearest neighbor", verbose=True
+    )
 
     sim.create_particles(1e5, 15 * u.MeV, max_theta=8 * u.deg)
 
-    sim.run(field_weighting="nearest neighbor")
+    sim.run()
 
     size = np.array([[-1, 1], [-1, 1]]) * 5 * u.cm
     bins = [100, 100]
@@ -220,7 +222,9 @@ def run_mesh_example(
     source = (0 * u.mm, -10 * u.mm, 0 * u.mm)
     detector = (0 * u.mm, 200 * u.mm, 0 * u.mm)
 
-    sim = cpr.Tracker(grid, source, detector, verbose=False)
+    sim = cpr.Tracker(
+        grid, source, detector, field_weighting="nearest neighbor", verbose=False
+    )
 
     sim.add_wire_mesh(
         location,
@@ -232,7 +236,7 @@ def run_mesh_example(
     )
 
     sim.create_particles(nparticles, 3 * u.MeV, max_theta=10 * u.deg)
-    sim.run(field_weighting="nearest neighbor")
+    sim.run()
 
     return sim
 
@@ -339,16 +343,22 @@ def test_input_validation() -> None:
     # During runtime
     # ************************************************************************
 
-    sim = cpr.Tracker(grid, source, detector, verbose=False)
-    sim.create_particles(1e3, 15 * u.MeV)
-
     # Test an invalid field weighting keyword
     with pytest.raises(ValueError):
-        sim.run(field_weighting="not a valid field weighting")
+        cpr.Tracker(
+            grid,
+            source,
+            detector,
+            field_weighting="not a valid field weighting",
+            verbose=False,
+        )
 
     # ************************************************************************
     # During runtime
     # ************************************************************************
+    sim = cpr.Tracker(grid, source, detector, verbose=False)
+    sim.create_particles(1e3, 15 * u.MeV)
+
     # SYNTHETIC RADIOGRAPH ERRORS
     sim.run()
 
@@ -416,7 +426,9 @@ def test_load_particles() -> None:
     source = (0 * u.mm, -10 * u.mm, 0 * u.mm)
     detector = (0 * u.mm, 200 * u.mm, 0 * u.mm)
 
-    sim = cpr.Tracker(grid, source, detector, verbose=False)
+    sim = cpr.Tracker(
+        grid, source, detector, field_weighting="nearest neighbor", verbose=False
+    )
     sim.create_particles(1e3, 15 * u.MeV, max_theta=0.1 * u.rad, distribution="uniform")
 
     # Test adding unequal numbers of particles
@@ -437,7 +449,7 @@ def test_load_particles() -> None:
     sim.load_particles(x, v, particle="C-12 +3")
 
     # Run the tracker to make sure everything works
-    sim.run(field_weighting="nearest neighbor")
+    sim.run()
 
 
 @pytest.mark.slow()
@@ -447,7 +459,14 @@ def test_run_options() -> None:
     # Cartesian
     source = (0 * u.mm, -10 * u.mm, 0 * u.mm)
     detector = (0 * u.mm, 200 * u.mm, 0 * u.mm)
-    sim = cpr.Tracker(grid, source, detector, verbose=True)
+    sim = cpr.Tracker(
+        grid,
+        source,
+        detector,
+        dt=1e-12 * u.s,
+        field_weighting="nearest neighbor",
+        verbose=True,
+    )
 
     # Test that trying to call run() without creating particles
     # raises an exception
@@ -459,16 +478,23 @@ def test_run_options() -> None:
 
     # Try running with nearest neighbor interpolator
     # Test manually setting a timestep
-    sim.run(field_weighting="nearest neighbor", dt=1e-12 * u.s)
+    sim.run()
 
     # Test max_deflections
     sim.max_deflection  # noqa: B018
 
     # Test way too big of a max_theta
-    sim = cpr.Tracker(grid, source, detector, verbose=True)
+    sim = cpr.Tracker(
+        grid,
+        source,
+        detector,
+        field_weighting="nearest neighbor",
+        dt=1e-12 * u.s,
+        verbose=True,
+    )
     sim.create_particles(1e4, 3 * u.MeV, max_theta=89 * u.deg)
     with pytest.warns(RuntimeWarning, match="of particles entered the field grid"):
-        sim.run(field_weighting="nearest neighbor", dt=1e-12 * u.s)
+        sim.run()
 
     # Test extreme deflections -> warns user
     # This requires instantiating a whole new example field with a really
@@ -481,13 +507,20 @@ def test_run_options() -> None:
     with pytest.warns(
         RuntimeWarning, match="Fields should go to zero at edges of grid to avoid "
     ):
-        sim = cpr.Tracker(grid, source, detector, verbose=False)
+        sim = cpr.Tracker(
+            grid,
+            source,
+            detector,
+            field_weighting="nearest neighbor",
+            dt=1e-12 * u.s,
+            verbose=False,
+        )
     sim.create_particles(1e4, 3 * u.MeV, max_theta=0.1 * u.deg)
     with pytest.warns(
         RuntimeWarning,
         match="particles have been deflected away from the detector plane",
     ):
-        sim.run(field_weighting="nearest neighbor", dt=1e-12 * u.s)
+        sim.run()
     # Calc max deflection: should be between 0 and pi/2
     # Note: that's only true because max_theta is very small
     # More generally, max_deflection can be a bit bigger than pi/2 for
@@ -495,18 +528,18 @@ def test_run_options() -> None:
     assert 0 < sim.max_deflection.to(u.rad).value < np.pi / 2
 
 
-def create_tracker_obj() -> cpr.Tracker:
+def create_tracker_obj(**kwargs) -> cpr.Tracker:
     # CREATE A RADIOGRAPH OBJECT
     grid = _test_grid("electrostatic_gaussian_sphere", num=50)
     source = (0 * u.mm, -10 * u.mm, 0 * u.mm)
     detector = (0 * u.mm, 200 * u.mm, 0 * u.mm)
 
-    sim = cpr.Tracker(grid, source, detector, verbose=False)
+    sim = cpr.Tracker(grid, source, detector, verbose=False, **kwargs)
     sim.create_particles(int(1e4), 3 * u.MeV, max_theta=10 * u.deg)
     return sim
 
 
-tracker_obj_simulated = create_tracker_obj().run(field_weighting="nearest neighbor")
+tracker_obj_simulated = create_tracker_obj(field_weighting="nearest neighbor").run()
 
 
 @pytest.mark.slow()
@@ -517,8 +550,8 @@ class TestSyntheticRadiograph:
     """
 
     tracker_obj_not_simulated = create_tracker_obj()
-    tracker_obj_simulated = create_tracker_obj()
-    tracker_obj_simulated.run(field_weighting="nearest neighbor")
+    tracker_obj_simulated = create_tracker_obj(field_weighting="nearest neighbor")
+    tracker_obj_simulated.run()
     sim_results = tracker_obj_simulated.results_dict.copy()
 
     @pytest.mark.parametrize(
@@ -641,13 +674,13 @@ class TestSyntheticRadiograph:
 def test_saving_output(tmp_path) -> None:
     """Test behavior of Tracker.save_results."""
 
-    sim = create_tracker_obj()
+    sim = create_tracker_obj(field_weighting="nearest neighbor")
 
     # Test that output cannot be saved prior to running
     with pytest.raises(RuntimeError):
         sim.results_dict  # noqa: B018
 
-    sim.run(field_weighting="nearest neighbor")
+    sim.run()
 
     results_1 = sim.results_dict
 
@@ -674,8 +707,8 @@ def test_cannot_modify_simulation_after_running(case) -> None:
     run (Tracker.run).
     """
 
-    sim = create_tracker_obj()
-    sim.run(field_weighting="nearest neighbor")
+    sim = create_tracker_obj(field_weighting="nearest neighbor")
+    sim.run()
 
     # Error from creating particles
     with pytest.raises(RuntimeError):
@@ -918,11 +951,13 @@ def test_multiple_grids2() -> None:
     source = (0 * u.mm, -10 * u.mm, 0 * u.mm)
     detector = (0 * u.mm, 200 * u.mm, 0 * u.mm)
 
-    sim = cpr.Tracker(grids, source, detector, verbose=True)
+    sim = cpr.Tracker(
+        grids, source, detector, field_weighting="nearest neighbor", verbose=True
+    )
 
     sim.create_particles(1e5, 15 * u.MeV, max_theta=8 * u.deg)
 
-    sim.run(field_weighting="nearest neighbor")
+    sim.run()
 
     size = np.array([[-1, 1], [-1, 1]]) * 5 * u.cm
     bins = [100, 100]
