@@ -858,6 +858,9 @@ class ParticleTracker:
             .T
         )
 
+        # Don't count untracked particles as being on the grid
+        self.on_grid[~tracked_mask] = False
+
         # entered_grid is zero at the end if a particle has never
         # entered any grid
         self.entered_grid += np.sum(self.on_grid, axis=-1).astype(np.bool_)
