@@ -60,7 +60,7 @@ def deBroglie_wavelength(
 
     particle : `str`, `~plasmapy.particles.particle_class.Particle`, or |Quantity|
         An instance of `~plasmapy.particles.particle_class.Particle`, or
-        an equivalent representation (e.g., ``'e'``, ``'p'``, ``'D+'``, or
+        an equivalent representation (e.g., ``'e-'``, ``'p'``, ``'D+'``, or
         ``'He-4 1+'``), for the particle of interest, or the particle
         mass in units convertible to kg.  If a
         `~plasmapy.particles.particle_class.Particle` instance is given, then the
@@ -92,7 +92,7 @@ def deBroglie_wavelength(
     --------
     >>> import astropy.units as u
     >>> velocity = 1.4e7 * u.m / u.s
-    >>> deBroglie_wavelength(velocity, "e")
+    >>> deBroglie_wavelength(velocity, "e-")
     <Quantity 5.18997095e-11 m>
     >>> deBroglie_wavelength(V=0 * u.m / u.s, particle="D+")
     <Quantity inf m>

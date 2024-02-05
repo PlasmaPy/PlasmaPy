@@ -43,7 +43,7 @@ class PlasmaBlob(GenericPlasma):
         Examples
         --------
         >>> print(PlasmaBlob(1e4 * u.K, 1e20 / u.m**3, particle="p+"))
-        PlasmaBlob(T_e=10000.0*u.K, n_e=1e+20*u.m**-3, particle='p', Z=1)
+        PlasmaBlob(T_e=10000.0*u.K, n_e=1e+20*u.m**-3, particle='p+', Z=1)
         Intermediate coupling regime: Gamma = 0.01250283...
         Thermal kinetic energy dominant: Theta = 109690.5...
 
@@ -62,7 +62,7 @@ class PlasmaBlob(GenericPlasma):
         --------
         >>> import astropy.units as u
         >>> PlasmaBlob(1e4 * u.K, 1e20 / u.m**3, particle="p+")
-        PlasmaBlob(T_e=10000.0*u.K, n_e=1e+20*u.m**-3, particle='p', Z=1)
+        PlasmaBlob(T_e=10000.0*u.K, n_e=1e+20*u.m**-3, particle='p+', Z=1)
         """
         argument_dict = {
             "T_e": self.T_e,
