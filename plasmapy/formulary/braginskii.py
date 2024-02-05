@@ -368,7 +368,7 @@ class ClassicalTransport:
             raise ValueError("Z is not allowed to be negative!")  # TODO: remove?
 
         # decide on the particle string for the electrons
-        self.e_particle = "e"
+        self.e_particle = "e-"
         self.ion = ion
 
         # save other arguments
