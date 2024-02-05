@@ -7,6 +7,7 @@ on:
 
 jobs:
   update-requirements:
+    name: Regenerate requirements.txt
     runs-on: ubuntu-latest
     if: github.repository == 'PlasmaPy/PlasmaPy'
 
