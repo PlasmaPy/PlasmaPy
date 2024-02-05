@@ -215,7 +215,7 @@ type_incorrect_long = "The filename of the changelog entry must be of the form `
 [tool.ruff]
 target-version = "py39"
 namespace-packages = [".github/workflows", "docs"]
-output-format = "full"
+output-format = "grouped"
 show-fixes = true
 extend-exclude = [
   "docs/plasmapy_sphinx",
@@ -225,6 +225,9 @@ extend-exclude = [
   "__pycache__",
   "_dev",
 ]
+
+[tool.ruff.format]
+docstring-code-format = true
 
 [tool.ruff.lint]
 extend-select = [
