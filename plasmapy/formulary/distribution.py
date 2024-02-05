@@ -64,7 +64,7 @@ def Maxwellian_1D(
         The temperature in kelvin.
 
     particle : `str`, optional
-        Representation of the particle species(e.g., ``'p'`` for protons,
+        Representation of the particle species(e.g., ``'p+'`` for protons,
         ``'D+'`` for deuterium, or ``'He-4 +1'`` for singly ionized
         helium-4), which defaults to electrons.
 
@@ -196,7 +196,7 @@ def Maxwellian_velocity_2D(
         The temperature, preferably in kelvin.
 
     particle : `str`, optional
-        Representation of the particle species [e.g., ``'p'`` for protons,
+        Representation of the particle species [e.g., ``'p+'`` for protons,
         ``'D+'`` for deuterium, or ``'He-4 +1'`` for :math:`He_4^{+1}`
         (singly ionized helium-4)], which defaults to electrons.
 
@@ -351,7 +351,7 @@ def Maxwellian_velocity_3D(
         The temperature, preferably in kelvin.
 
     particle : `str`, optional
-        Representation of the particle species (e.g., ``'p'`` for protons,
+        Representation of the particle species (e.g., ``'p+'`` for protons,
         ``'D+'`` for deuterium, or ``'He-4 +1'`` for
         singly ionized helium-4), which defaults to electrons.
 
@@ -501,7 +501,7 @@ def Maxwellian_speed_1D(
         The temperature, preferably in kelvin.
 
     particle : `str`, optional
-        Representation of the particle species [e.g., ``'p'`` for protons, ``'D+'``
+        Representation of the particle species [e.g., ``'p+'`` for protons, ``'D+'``
         for deuterium, or ``'He-4 +1'`` for :math:`He_4^{+1}`
         (singly ionized helium-4)], which defaults to electrons.
 
@@ -629,7 +629,7 @@ def Maxwellian_speed_2D(
         The temperature, preferably in kelvin.
 
     particle: |particle-like|, optional
-        Representation of the particle species(e.g., ``'p'`` for protons,
+        Representation of the particle species(e.g., ``'p+'`` for protons,
         ``'D+'`` for deuterium, or ``'He-4 +1'`` for singly ionized
         helium-4), which defaults to electrons.
 
@@ -764,9 +764,9 @@ def Maxwellian_speed_3D(
         The temperature, preferably in kelvin.
 
     particle : `str`, optional
-        Representation of the particle species(e.g., ``'p'`` for protons, ``'D+'``
+        Representation of the particle species(e.g., ``'p+'`` for protons, ``'D+'``
         for deuterium, or ``'He-4 +1'`` for :math:`He_4^{+1}`
-        (singly ionized helium-4)), which defaults to electrons.
+        (singly ionized helium-4), which defaults to electrons.
 
     v_drift : `~astropy.units.Quantity`
         The drift speed in units convertible to m/s.
@@ -1068,7 +1068,7 @@ def kappa_velocity_3D(
         than :math:`3/2`.
 
     particle : `str`, optional
-        Representation of the particle species(e.g., 'p' for protons, 'D+'
+        Representation of the particle species(e.g., 'p+' for protons, 'D+'
         for deuterium, or 'He-4 +1' for :math:`He_4^{+1}` : singly ionized
         helium-4)), which defaults to electrons.
 

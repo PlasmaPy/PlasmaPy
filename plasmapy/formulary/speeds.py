@@ -214,10 +214,9 @@ def ion_sound_speed(
         assumed to be zero.
 
     ion : |particle-like|
-        Representation of the ion species (e.g., ``'p'`` for protons,
+        Representation of the ion species (e.g., ``'p+'`` for protons,
         ``'D+'`` for deuterium, or ``'He-4 +1'`` for singly ionized
-        helium-4). If no charge state information is provided, then the
-        ions are assumed to be singly charged.
+        helium-4).
 
     n_e : `~astropy.units.Quantity`
         Electron number density. If this is not given, then ion_sound_speed
@@ -558,8 +557,6 @@ def thermal_speed(
     particle : `~plasmapy.particles.particle_class.Particle`
         Representation of the particle species (e.g., ``"p"`` for protons,
         ``"D+"`` for deuterium, or ``"He-4 +1"`` for singly ionized helium-4).
-        If no charge state information is provided, then the particles are
-        assumed to be singly charged.
 
     method : `str`, optional
         (Default ``"most_probable"``) Method to be used for calculating the
@@ -698,9 +695,9 @@ def thermal_speed(
     Examples
     --------
     >>> import astropy.units as u
-    >>> thermal_speed(5*u.eV, 'p')
+    >>> thermal_speed(5*u.eV, 'p+')
     <Quantity 30949.6... m / s>
-    >>> thermal_speed(1e6*u.K, particle='p')
+    >>> thermal_speed(1e6*u.K, particle='p+')
     <Quantity 128486... m / s>
     >>> thermal_speed(5*u.eV, particle='e-')
     <Quantity 132620... m / s>
@@ -766,10 +763,8 @@ def kappa_thermal_speed(
         than 3/2.
 
     particle : |particle-like|
-        Representation of the particle species (e.g., 'p' for protons, 'D+'
-        for deuterium, or 'He-4 +1' for singly ionized helium-4). If no
-        charge state information is provided, then the particles are
-        assumed to be singly charged.
+        Representation of the particle species (e.g., ``'p+'`` for protons,
+        ``'D+'`` for deuterium, or 'He-4 +1' for singly ionized helium-4).
 
     method : `str`, optional
         Method to be used for calculating the thermal speed. Options are

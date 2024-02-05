@@ -326,7 +326,7 @@ class AlfvenWave(AbstractMHDWave):
         convertible to kg m\ :sup:`-3`\ .
 
     ion : |particle-like|
-        Representation of the ion species (e.g., ``'p'`` for protons,
+        Representation of the ion species (e.g., ``'p+'`` for protons,
         ``'D+'`` for deuterium, ``'He-4 +1'`` for singly ionized
         helium-4, etc.). If no charge state information is provided,
         then the ions are assumed to be singly ionized.
@@ -544,7 +544,7 @@ class FastMagnetosonicWave(AbstractMHDWave):
         convertible to kg m\ :sup:`-3`\ .
 
     ion : |particle-like|
-        Representation of the ion species (e.g., ``'p'`` for protons,
+        Representation of the ion species (e.g., ``'p+'`` for protons,
         ``'D+'`` for deuterium, ``'He-4 +1'`` for singly ionized
         helium-4, etc.). If no charge state information is provided,
         then the ions are assumed to be singly ionized.
@@ -794,7 +794,7 @@ class SlowMagnetosonicWave(AbstractMHDWave):
         to m\ :sup:`-3` or the total mass density :math:`ρ` in units
         convertible to kg m\ :sup:`-3`\ .
     ion : |particle-like|
-        Representation of the ion species (e.g., ``'p'`` for protons,
+        Representation of the ion species (e.g., ``'p+'`` for protons,
         ``'D+'`` for deuterium, ``'He-4 +1'`` for singly ionized
         helium-4, etc.). If no charge state information is provided,
         then the ions are assumed to be singly ionized.
@@ -1045,7 +1045,7 @@ def mhd_waves(*args, **kwargs):
         convertible to kg m\ :sup:`-3`\ .
 
     ion : |particle-like|
-        Representation of the ion species (e.g., ``'p'`` for protons,
+        Representation of the ion species (e.g., ``'p+'`` for protons,
         ``'D+'`` for deuterium, ``'He-4 +1'`` for singly ionized
         helium-4, etc.). If no charge state information is provided,
         then the ions are assumed to be singly ionized.

@@ -60,7 +60,7 @@ def deBroglie_wavelength(
 
     particle : `str`, `~plasmapy.particles.particle_class.Particle`, or |Quantity|
         An instance of `~plasmapy.particles.particle_class.Particle`, or
-        an equivalent representation (e.g., ``'e-'``, ``'p'``, ``'D+'``, or
+        an equivalent representation (e.g., ``'e-'``, ``'p+'``, ``'D+'``, or
         ``'He-4 1+'``), for the particle of interest, or the particle
         mass in units convertible to kg.  If a
         `~plasmapy.particles.particle_class.Particle` instance is given, then the

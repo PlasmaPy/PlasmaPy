@@ -97,7 +97,7 @@ def mass_density(
     particle : `~plasmapy.particles.particle_class.Particle`
         The particle for which the mass density is being calculated for.  Must
         be a `~plasmapy.particles.particle_class.Particle` or a value convertible to
-        a `~plasmapy.particles.particle_class.Particle` (e.g., ``'p'`` for protons,
+        a `~plasmapy.particles.particle_class.Particle` (e.g., ``'p+'`` for protons,
         ``'D+'`` for deuterium, or ``'He-4 +1'`` for singly ionized helium-4).
 
     z_ratio : `int`, `float`, optional
@@ -133,7 +133,7 @@ def mass_density(
     Examples
     --------
     >>> import astropy.units as u
-    >>> mass_density(1 * u.m**-3, "p")
+    >>> mass_density(1 * u.m**-3, "p+")
     <Quantity 1.67262...e-27 kg / m3>
     >>> mass_density(4 * u.m**-3, "D+")
     <Quantity 1.33743...e-26 kg / m3>
