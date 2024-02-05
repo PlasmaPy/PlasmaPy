@@ -1074,7 +1074,7 @@ def extrapolate_electron_current(
         np.exp(fit_func(probe_characteristic.bias.to(u.V).value, *fit)) * u.A
     )
 
-    electron_current[electron_current > np.max(probe_characteristic.current)] = np.NaN
+    electron_current[electron_current > np.max(probe_characteristic.current)] = np.nan
 
     electron_characteristic = Characteristic(
         probe_characteristic.bias, electron_current
