@@ -413,7 +413,7 @@ def test_create_particles() -> None:
     )
 
     # Test specifying particle
-    sim.create_particles(1e3, 15 * u.MeV, particle="e", random_seed=42)
+    sim.create_particles(1e3, 15 * u.MeV, particle="e-", random_seed=42)
 
 
 @pytest.mark.slow()

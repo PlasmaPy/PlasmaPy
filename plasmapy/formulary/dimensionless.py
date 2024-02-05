@@ -562,7 +562,7 @@ def Lundquist_number(
     >>> sigma = 10**-7 * u.S / u.m
     >>> Lundquist_number(L, B, rho, sigma)
     <Quantity 0.866538...>
-    >>> Lundquist_number(L, B, n, sigma, ion="p")
+    >>> Lundquist_number(L, B, n, sigma, ion="p+")
     <Quantity 0.866538...>
     >>> Lundquist_number(L, B, n, sigma, ion="He +2")
     <Quantity 0.434819...>

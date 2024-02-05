@@ -82,11 +82,13 @@ def test_gyrofrequency() -> None:
 
     assert gyrofrequency(B, particle=ion).unit.is_equivalent(u.rad / u.s)
 
-    assert np.isclose(gyrofrequency(1 * u.T, particle="p").value, 95788335.834874)
+    assert np.isclose(gyrofrequency(1 * u.T, particle="p+").value, 95788335.834874)
 
-    assert np.isclose(gyrofrequency(2.4 * u.T, particle="p").value, 229892006.00369796)
+    assert np.isclose(gyrofrequency(2.4 * u.T, particle="p+").value, 229892006.00369796)
 
-    assert np.isclose(gyrofrequency(1 * u.G, particle="p").cgs.value, 9.58e3, rtol=2e-3)
+    assert np.isclose(
+        gyrofrequency(1 * u.G, particle="p+").cgs.value, 9.58e3, rtol=2e-3
+    )
 
     assert gyrofrequency(-5 * u.T, "p") == gyrofrequency(5 * u.T, "p")
 
@@ -108,7 +110,7 @@ def test_gyrofrequency() -> None:
         # TODO: this should be WARNS, not RAISES. and it's probably still raised
         assert gyrofrequency(5.0, "p") == gyrofrequency(5.0 * u.T, "p")
 
-    gyrofrequency(1 * u.T, particle="p")
+    gyrofrequency(1 * u.T, particle="p+")
     # testing for user input Z
     testMeth1 = gyrofrequency(1 * u.T, particle="H-1", Z=0.8).si.value
     testTrue1 = 76622320.37
