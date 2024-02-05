@@ -59,7 +59,7 @@ def gyrofrequency(
         The magnetic field magnitude in units convertible to tesla.
 
     particle : |particle-like|
-        Representation of the particle species (e.g., ``'p'`` for
+        Representation of the particle species (e.g., ``'p+'`` for
         protons, ``'D+'`` for deuterium, or ``'He-4 1+'`` for singly
         ionized helium-4).
 
@@ -212,7 +212,7 @@ def plasma_frequency_lite(
     Examples
     --------
     >>> from plasmapy.particles import Particle
-    >>> mass = Particle("p").mass.value
+    >>> mass = Particle("p+").mass.value
     >>> plasma_frequency_lite(n=1e19, mass=mass, Z=1)
     416329...
     >>> plasma_frequency_lite(n=1e19, mass=mass, Z=1, to_hz=True)
@@ -252,7 +252,7 @@ def plasma_frequency(
         Particle number density in units convertible to m\ :sup:`-3`.
 
     particle : |particle-like|
-        Representation of the particle species (e.g., ``"p"`` for
+        Representation of the particle species (e.g., ``"p+"`` for
         protons, ``"D+"`` for deuterium, or ``"He-4 1+"`` for singly
         ionized helium-4). If no charge state information is provided,
         then the particles are assumed to be singly charged.
@@ -306,9 +306,9 @@ def plasma_frequency(
     Examples
     --------
     >>> import astropy.units as u
-    >>> plasma_frequency(1e19 * u.m**-3, particle="p")
+    >>> plasma_frequency(1e19 * u.m**-3, particle="p+")
     <Quantity 4.16329...e+09 rad / s>
-    >>> plasma_frequency(1e19 * u.m**-3, particle="p", to_hz=True)
+    >>> plasma_frequency(1e19 * u.m**-3, particle="p+", to_hz=True)
     <Quantity 6.62608...e+08 Hz>
     >>> plasma_frequency(1e19 * u.m**-3, particle="D+")
     <Quantity 2.94462...e+09 rad / s>
@@ -368,7 +368,7 @@ def lower_hybrid_frequency(
         Ion number density.
 
     ion : `~plasmapy.particles.particle_class.Particle`
-        Representation of the ion species (e.g., ``'p'`` for protons, ``'D+'``
+        Representation of the ion species (e.g., ``'p+'`` for protons, ``'D+'``
         for deuterium, or ``'He-4 +1'`` for singly ionized helium-4). If no
         charge state information is provided, then the ions are assumed to
         be singly charged.
@@ -558,7 +558,7 @@ def Buchsbaum_frequency(
         Particle number density of ion species #2 in units convertible to m\ :sup:`-3`.
 
     ion1 : `~plasmapy.particles.particle_class.Particle`
-        Representation of ion species #1 (e.g., 'p' for protons, 'D+'
+        Representation of ion species #1 (e.g., 'p+' for protons, 'D+'
         for deuterium, or 'He-4 +1' for singly ionized helium-4). If no
         charge state information is provided, then species #1 is assumed
         to be singly charged.

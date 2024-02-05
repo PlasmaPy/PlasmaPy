@@ -32,7 +32,7 @@ class Test_Maxwellian_1D:
         cls.stop = -cls.start
         cls.dv = 10000 * u.m / u.s
         cls.v_vect = np.arange(cls.start, cls.stop, dtype="float64") * cls.dv
-        cls.particle = "e"
+        cls.particle = "e-"
         cls.vTh = thermal_speed(cls.T_e, particle=cls.particle, method="most_probable")
         cls.distFuncTrue = 5.851627151617136e-07
 
@@ -1005,7 +1005,7 @@ class Test_kappa_velocity_1D:
         cls.stop = -cls.start
         cls.dv = 10000 * u.m / u.s
         cls.v_vect = np.arange(cls.start, cls.stop, dtype="float64") * cls.dv
-        cls.particle = "e"
+        cls.particle = "e-"
         cls.vTh = kappa_thermal_speed(cls.T_e, kappa=cls.kappa, particle=cls.particle)
         cls.distFuncTrue = 6.637935187755855e-07
 

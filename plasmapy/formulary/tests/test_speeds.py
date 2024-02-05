@@ -171,8 +171,8 @@ class TestAlfvenSpeed:
                 (0.001 * u.T, [1.0e18, 2e18] * u.m**-3),
                 {"ion": "p"},
                 [
-                    va_(0.001 * u.T, 1e18 * u.m**-3, ion="p").value,
-                    va_(0.001 * u.T, 2e18 * u.m**-3, ion="p").value,
+                    va_(0.001 * u.T, 1e18 * u.m**-3, ion="p+").value,
+                    va_(0.001 * u.T, 2e18 * u.m**-3, ion="p+").value,
                 ]
                 * (u.m / u.s),
                 {},

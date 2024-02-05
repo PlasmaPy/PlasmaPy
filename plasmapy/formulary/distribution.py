@@ -39,7 +39,7 @@ def _v_drift_conversion(v_drift):
 def Maxwellian_1D(
     v,
     T,
-    particle: ParticleLike = "e",
+    particle: ParticleLike = "e-",
     v_drift=0,
     vTh=np.nan,
     units="units",
@@ -64,7 +64,7 @@ def Maxwellian_1D(
         The temperature in kelvin.
 
     particle : `str`, optional
-        Representation of the particle species(e.g., ``'p'`` for protons,
+        Representation of the particle species(e.g., ``'p+'`` for protons,
         ``'D+'`` for deuterium, or ``'He-4 +1'`` for singly ionized
         helium-4), which defaults to electrons.
 
@@ -123,7 +123,7 @@ def Maxwellian_1D(
     --------
     >>> import astropy.units as u
     >>> v = 1 * u.m / u.s
-    >>> Maxwellian_1D(v=v, T=30000 * u.K, particle="e", v_drift=0 * u.m / u.s)
+    >>> Maxwellian_1D(v=v, T=30000 * u.K, particle="e-", v_drift=0 * u.m / u.s)
     <Quantity 5.9163...e-07 s / m>
     """
 
@@ -166,7 +166,7 @@ def Maxwellian_velocity_2D(
     vx,
     vy,
     T,
-    particle: ParticleLike = "e",
+    particle: ParticleLike = "e-",
     vx_drift=0,
     vy_drift=0,
     vTh=np.nan,
@@ -196,7 +196,7 @@ def Maxwellian_velocity_2D(
         The temperature, preferably in kelvin.
 
     particle : `str`, optional
-        Representation of the particle species [e.g., ``'p'`` for protons,
+        Representation of the particle species [e.g., ``'p+'`` for protons,
         ``'D+'`` for deuterium, or ``'He-4 +1'`` for :math:`He_4^{+1}`
         (singly ionized helium-4)], which defaults to electrons.
 
@@ -267,7 +267,7 @@ def Maxwellian_velocity_2D(
     ...     vx=v,
     ...     vy=v,
     ...     T=30000 * u.K,
-    ...     particle="e",
+    ...     particle="e-",
     ...     vx_drift=0 * u.m / u.s,
     ...     vy_drift=0 * u.m / u.s,
     ... )
@@ -317,7 +317,7 @@ def Maxwellian_velocity_3D(
     vy,
     vz,
     T,
-    particle: ParticleLike = "e",
+    particle: ParticleLike = "e-",
     vx_drift=0,
     vy_drift=0,
     vz_drift=0,
@@ -351,7 +351,7 @@ def Maxwellian_velocity_3D(
         The temperature, preferably in kelvin.
 
     particle : `str`, optional
-        Representation of the particle species (e.g., ``'p'`` for protons,
+        Representation of the particle species (e.g., ``'p+'`` for protons,
         ``'D+'`` for deuterium, or ``'He-4 +1'`` for
         singly ionized helium-4), which defaults to electrons.
 
@@ -426,7 +426,7 @@ def Maxwellian_velocity_3D(
     ...     vy=v,
     ...     vz=v,
     ...     T=30000 * u.K,
-    ...     particle="e",
+    ...     particle="e-",
     ...     vx_drift=0 * u.m / u.s,
     ...     vy_drift=0 * u.m / u.s,
     ...     vz_drift=0 * u.m / u.s,
@@ -476,7 +476,7 @@ def Maxwellian_velocity_3D(
 def Maxwellian_speed_1D(
     v,
     T,
-    particle: ParticleLike = "e",
+    particle: ParticleLike = "e-",
     v_drift=0,
     vTh=np.nan,
     units="units",
@@ -501,7 +501,7 @@ def Maxwellian_speed_1D(
         The temperature, preferably in kelvin.
 
     particle : `str`, optional
-        Representation of the particle species [e.g., ``'p'`` for protons, ``'D+'``
+        Representation of the particle species [e.g., ``'p+'`` for protons, ``'D+'``
         for deuterium, or ``'He-4 +1'`` for :math:`He_4^{+1}`
         (singly ionized helium-4)], which defaults to electrons.
 
@@ -560,7 +560,7 @@ def Maxwellian_speed_1D(
     --------
     >>> import astropy.units as u
     >>> v = 1 * u.m / u.s
-    >>> Maxwellian_speed_1D(v=v, T=30000 * u.K, particle="e", v_drift=0 * u.m / u.s)
+    >>> Maxwellian_speed_1D(v=v, T=30000 * u.K, particle="e-", v_drift=0 * u.m / u.s)
     <Quantity 1.1832...e-06 s / m>
 
     """
@@ -603,7 +603,7 @@ def Maxwellian_speed_1D(
 def Maxwellian_speed_2D(
     v,
     T,
-    particle: ParticleLike = "e",
+    particle: ParticleLike = "e-",
     v_drift=0,
     vTh=np.nan,
     units="units",
@@ -629,7 +629,7 @@ def Maxwellian_speed_2D(
         The temperature, preferably in kelvin.
 
     particle: |particle-like|, optional
-        Representation of the particle species(e.g., ``'p'`` for protons,
+        Representation of the particle species(e.g., ``'p+'`` for protons,
         ``'D+'`` for deuterium, or ``'He-4 +1'`` for singly ionized
         helium-4), which defaults to electrons.
 
@@ -692,7 +692,7 @@ def Maxwellian_speed_2D(
     --------
     >>> import astropy.units as u
     >>> v = 1 * u.m / u.s
-    >>> Maxwellian_speed_2D(v=v, T=30000 * u.K, particle="e", v_drift=0 * u.m / u.s)
+    >>> Maxwellian_speed_2D(v=v, T=30000 * u.K, particle="e-", v_drift=0 * u.m / u.s)
     <Quantity 2.199...e-12 s / m>
 
     """
@@ -738,7 +738,7 @@ def Maxwellian_speed_2D(
 def Maxwellian_speed_3D(
     v,
     T,
-    particle: ParticleLike = "e",
+    particle: ParticleLike = "e-",
     v_drift=0,
     vTh=np.nan,
     units="units",
@@ -764,9 +764,9 @@ def Maxwellian_speed_3D(
         The temperature, preferably in kelvin.
 
     particle : `str`, optional
-        Representation of the particle species(e.g., ``'p'`` for protons, ``'D+'``
+        Representation of the particle species(e.g., ``'p+'`` for protons, ``'D+'``
         for deuterium, or ``'He-4 +1'`` for :math:`He_4^{+1}`
-        (singly ionized helium-4)), which defaults to electrons.
+        (singly ionized helium-4), which defaults to electrons.
 
     v_drift : `~astropy.units.Quantity`
         The drift speed in units convertible to m/s.
@@ -827,7 +827,7 @@ def Maxwellian_speed_3D(
     --------
     >>> import astropy.units as u
     >>> v = 1 * u.m / u.s
-    >>> Maxwellian_speed_3D(v=v, T=30000 * u.K, particle="e", v_drift=0 * u.m / u.s)
+    >>> Maxwellian_speed_3D(v=v, T=30000 * u.K, particle="e-", v_drift=0 * u.m / u.s)
     <Quantity 2.60235...e-18 s / m>
     """
     if v_drift != 0:
@@ -873,7 +873,7 @@ def kappa_velocity_1D(
     v,
     T,
     kappa,
-    particle: ParticleLike = "e",
+    particle: ParticleLike = "e-",
     v_drift=0,
     vTh=np.nan,
     units="units",
@@ -974,7 +974,7 @@ def kappa_velocity_1D(
     ...     v=v,
     ...     T=30000 * u.K,
     ...     kappa=4,
-    ...     particle="e",
+    ...     particle="e-",
     ...     v_drift=0 * u.m / u.s,
     ... )
     <Quantity 6.75549...e-07 s / m>
@@ -1030,7 +1030,7 @@ def kappa_velocity_3D(
     vz,
     T,
     kappa,
-    particle: ParticleLike = "e",
+    particle: ParticleLike = "e-",
     vx_drift=0,
     vy_drift=0,
     vz_drift=0,
@@ -1068,7 +1068,7 @@ def kappa_velocity_3D(
         than :math:`3/2`.
 
     particle : `str`, optional
-        Representation of the particle species(e.g., 'p' for protons, 'D+'
+        Representation of the particle species(e.g., 'p+' for protons, 'D+'
         for deuterium, or 'He-4 +1' for :math:`He_4^{+1}` : singly ionized
         helium-4)), which defaults to electrons.
 
@@ -1151,7 +1151,7 @@ def kappa_velocity_3D(
     ...     vz=v,
     ...     T=30000 * u.K,
     ...     kappa=4,
-    ...     particle="e",
+    ...     particle="e-",
     ...     vx_drift=0 * u.m / u.s,
     ...     vy_drift=0 * u.m / u.s,
     ...     vz_drift=0 * u.m / u.s,

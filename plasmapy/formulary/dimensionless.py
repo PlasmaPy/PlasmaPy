@@ -157,7 +157,7 @@ def Hall_parameter(
 
     particle : `~plasmapy.particles.particle_class.Particle`
         The particle species for which the Hall parameter is calculated
-        for.  Representation of the particle species (e.g., ``'p'`` for
+        for.  Representation of the particle species (e.g., ``'p+'`` for
         protons, ``'D+'`` for deuterium, or ``'He-4 +1'`` for singly
         ionized helium-4).  If no charge state information is provided,
         then the particles are assumed to be singly charged.
@@ -484,7 +484,7 @@ def Lundquist_number(
         The conductivity of the plasma.
 
     ion : `~plasmapy.particles.particle_class.Particle`, optional
-        Representation of the ion species (e.g., ``'p'`` for protons, ``'D+'`` for
+        Representation of the ion species (e.g., ``'p+'`` for protons, ``'D+'`` for
         deuterium, ``'He-4 +1'`` for singly ionized helium-4, etc.). If no charge
         state information is provided, then the ions are assumed to be singly
         ionized. If the density is an ion number density, then this parameter
@@ -562,7 +562,7 @@ def Lundquist_number(
     >>> sigma = 10**-7 * u.S / u.m
     >>> Lundquist_number(L, B, rho, sigma)
     <Quantity 0.866538...>
-    >>> Lundquist_number(L, B, n, sigma, ion="p")
+    >>> Lundquist_number(L, B, n, sigma, ion="p+")
     <Quantity 0.866538...>
     >>> Lundquist_number(L, B, n, sigma, ion="He +2")
     <Quantity 0.434819...>
