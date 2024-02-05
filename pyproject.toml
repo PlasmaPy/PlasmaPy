@@ -359,6 +359,7 @@ banned-from = [
 ]
 
 [tool.ruff.lint.flake8-import-conventions.aliases]
+"astropy.constants" = "const"
 "astropy.units" = "u"
 "matplotlib" = "mpl"
 "matplotlib.pyplot" = "plt"
