@@ -369,6 +369,9 @@ pandas = "pd"
 [tool.ruff.lint.flake8-unused-arguments]
 ignore-variadic-names = true
 
+[tool.ruff.lint.flake8-tidy-imports]
+ban-relative-imports = "all"
+
 [tool.ruff.lint.flake8-tidy-imports.banned-api]
 "typing.Callable".msg = "Deprecated alias. Change to collections.abc.Callable"
 "typing.Collection".msg = "Deprecated alias. Change to collections.abc.Collection"
