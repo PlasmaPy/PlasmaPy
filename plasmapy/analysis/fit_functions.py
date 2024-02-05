@@ -11,10 +11,10 @@ __all__ = [
 ]
 
 import numbers
+import warnings
 from abc import ABC, abstractmethod
 from collections import namedtuple
 from typing import Optional
-from warnings import warn
 
 import numpy as np
 from scipy.optimize import curve_fit, fsolve
@@ -595,7 +595,7 @@ class Linear(AbstractFitFunction):
         m, b = self.params
 
         if m == 0.0:
-            warn(
+            warnings.warn(
                 "Slope of Linear fit function is zero so no finite root exists. ",
                 RuntimeWarning,
             )

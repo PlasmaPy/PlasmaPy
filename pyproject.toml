@@ -352,11 +352,15 @@ suppress-none-returning = true
 [tool.ruff.lint.flake8-import-conventions]
 banned-from = [
   "astropy.units",
+  "matplotlib.pyplot",
   "numpy",
+  "pytest",
+  "warnings",
 ]
 
 [tool.ruff.lint.flake8-import-conventions.aliases]
 "astropy.units" = "u"
+"matplotlib" = "mpl"
 "matplotlib.pyplot" = "plt"
 numpy = "np"
 pandas = "pd"
