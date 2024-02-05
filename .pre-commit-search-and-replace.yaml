@@ -42,3 +42,12 @@
 
 - search: 'MacOS'
   replacement: 'macOS'
+
+- search: 'particle="e"'
+  replacement: 'particle="e-"'
+
+- search: 'particle="p"'
+  replacement: 'particle="p+"'
+
+- search: 'ion="p"'
+  replacement: 'ion="p+"'
