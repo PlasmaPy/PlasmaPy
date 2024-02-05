@@ -67,11 +67,11 @@ def ionization_balance(
     --------
     >>> import astropy.units as u
     >>> T_e = 5000 * u.K
-    >>> n = 1e19 * u.m ** -3
+    >>> n = 1e19 * u.m**-3
     >>> ionization_balance(n, T_e)
     <Quantity 0.274...>
     >>> T_e = 50 * u.eV
-    >>> n = 1e10 * u.m ** -3
+    >>> n = 1e10 * u.m**-3
     >>> ionization_balance(n, T_e)
     <Quantity 12.615...>
 
@@ -164,14 +164,14 @@ def Saha(
     --------
     >>> import astropy.units as u
     >>> T_e = 5000 * u.K
-    >>> n = 1e19 * u.m ** -3
+    >>> n = 1e19 * u.m**-3
     >>> g_j = 2
     >>> g_k = 2
     >>> E_jk = 1 * u.Ry
     >>> Saha(g_j, g_k, n, E_jk, T_e)
     <Quantity 3.299...e-06>
     >>> T_e = 1 * u.Ry
-    >>> n = 1e23 * u.m ** -3
+    >>> n = 1e23 * u.m**-3
     >>> Saha(g_j, g_k, n, E_jk, T_e)
     <Quantity 1114595.586...>
 

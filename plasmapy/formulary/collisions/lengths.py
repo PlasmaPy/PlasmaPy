@@ -87,7 +87,7 @@ def impact_parameter_perp(
     --------
     >>> import astropy.units as u
     >>> T = 1e6 * u.K
-    >>> species = ('e', 'p')
+    >>> species = ("e", "p")
     >>> impact_parameter_perp(T, species)
     <Quantity 8.3550...e-12 m>
     """
@@ -219,7 +219,7 @@ def impact_parameter(  # noqa: C901
     >>> import astropy.units as u
     >>> n = 1e19 * u.m**-3
     >>> T = 1e6 * u.K
-    >>> species = ('e', 'p')
+    >>> species = ("e", "p")
     >>> impact_parameter(T, n, species)
     (<Quantity 1.051...e-11 m>, <Quantity 2.182...e-05 m>)
     >>> impact_parameter(T, n, species, V=1e6 * u.m / u.s)
@@ -425,11 +425,11 @@ def mean_free_path(
     Examples
     --------
     >>> import astropy.units as u
-    >>> n = 1e19 * u.m ** -3
+    >>> n = 1e19 * u.m**-3
     >>> T = 1e6 * u.K
-    >>> mean_free_path(T, n, ('e-', 'p+'))
+    >>> mean_free_path(T, n, ("e-", "p+"))
     <Quantity 7.839... m>
-    >>> mean_free_path(T, n, ('e-', 'p+'), V=1e6 * u.m / u.s)
+    >>> mean_free_path(T, n, ("e-", "p+"), V=1e6 * u.m / u.s)
     <Quantity 0.0109... m>
     """
     # collisional frequency

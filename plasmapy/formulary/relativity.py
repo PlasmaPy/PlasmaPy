@@ -170,7 +170,7 @@ def relativistic_energy(
     >>> mass = 1 * u.kg
     >>> relativistic_energy(mass, velocity)
     <Quantity 1.01638929e+17 J>
-    >>> relativistic_energy(mass, 299792458*u.m / u.s)
+    >>> relativistic_energy(mass, 299792458 * u.m / u.s)
     <Quantity inf J>
     >>> relativistic_energy(1 * u.mg, 1.4e8 * u.m / u.s)
     <Quantity 1.01638929e+11 J>
@@ -250,7 +250,7 @@ class RelativisticBody:
     Examples
     --------
     >>> import astropy.units as u
-    >>> relativistic_proton = RelativisticBody("p+", total_energy = 1 * u.GeV)
+    >>> relativistic_proton = RelativisticBody("p+", total_energy=1 * u.GeV)
     >>> relativistic_proton.particle
     Particle("p+")
     >>> relativistic_proton.velocity

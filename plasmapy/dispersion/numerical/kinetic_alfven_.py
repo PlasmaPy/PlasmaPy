@@ -164,7 +164,7 @@ def kinetic_alfven(  # noqa: C901, PLR0912
     ...     "B": 8.3e-9 * u.T,
     ...     "ion": Particle("p+"),
     ...     "k": np.logspace(-7, -2, 2) * u.rad / u.m,
-    ...     "n_i": 5 * u.m ** -3,
+    ...     "n_i": 5 * u.m**-3,
     ...     "T_e": 1.6e6 * u.K,
     ...     "T_i": 4.0e5 * u.K,
     ...     "theta": 30 * u.deg,

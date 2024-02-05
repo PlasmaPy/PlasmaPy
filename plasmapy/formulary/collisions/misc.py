@@ -190,9 +190,9 @@ def mobility(
     Examples
     --------
     >>> import astropy.units as u
-    >>> n = 1e19 * u.m ** -3
+    >>> n = 1e19 * u.m**-3
     >>> T = 1e6 * u.K
-    >>> species = ('e', 'p')
+    >>> species = ("e", "p")
     >>> mobility(T, n, species)  # doctest: +SKIP
     <Quantity 250505... m2 / (V s)>
     >>> mobility(T, n, species, V=1e6 * u.m / u.s)  # doctest: +SKIP
@@ -316,9 +316,9 @@ def Spitzer_resistivity(
     Examples
     --------
     >>> import astropy.units as u
-    >>> n = 1e19 * u.m ** -3
+    >>> n = 1e19 * u.m**-3
     >>> T = 1e6 * u.K
-    >>> species = ('e', 'p')
+    >>> species = ("e", "p")
     >>> Spitzer_resistivity(T, n, species)  # doctest: +SKIP
     <Quantity 2.4915...e-06 Ohm m>
     >>> Spitzer_resistivity(T, n, species, V=1e6 * u.m / u.s)  # doctest: +SKIP

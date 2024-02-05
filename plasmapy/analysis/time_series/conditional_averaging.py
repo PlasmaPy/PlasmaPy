@@ -72,13 +72,14 @@ class ConditionalEvents:
 
     Examples
     --------
-    >>> from plasmapy.analysis.time_series.conditional_averaging import ConditionalEvents
-    >>> cond_events = ConditionalEvents(
-    ...     signal = [1, 2, 1, 1, 2, 1],
-    ...     time = [1, 2, 3, 4, 5, 6],
-    ...     lower_threshold = 1.5,
+    >>> from plasmapy.analysis.time_series.conditional_averaging import (
+    ...     ConditionalEvents,
     ... )
-    ...
+    >>> cond_events = ConditionalEvents(
+    ...     signal=[1, 2, 1, 1, 2, 1],
+    ...     time=[1, 2, 3, 4, 5, 6],
+    ...     lower_threshold=1.5,
+    ... )
     >>> cond_events.time
     array([-1.0, 0.0, 1.0])
     >>> cond_events.average

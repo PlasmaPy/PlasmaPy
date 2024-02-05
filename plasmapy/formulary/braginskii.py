@@ -290,8 +290,7 @@ class ClassicalTransport:
     Examples
     --------
     >>> import astropy.units as u
-    >>> t = ClassicalTransport(1*u.eV, 1e20/u.m**3,
-    ...                         1*u.eV, 1e20/u.m**3, 'p')
+    >>> t = ClassicalTransport(1 * u.eV, 1e20 / u.m**3, 1 * u.eV, 1e20 / u.m**3, "p")
     >>> t.resistivity  # doctest: +SKIP
     <Quantity 0.0003670... Ohm m>
     >>> t.thermoelectric_conductivity

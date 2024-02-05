@@ -397,9 +397,11 @@ class CheckUnits(CheckBase):
         import astropy.units as u
         from plasmapy.utils.decorators import CheckUnits
 
+
         @CheckUnits(arg1={"units": u.cm}, arg2=u.cm, checks_on_return=[u.cm, u.km])
         def foo(arg1, arg2):
             return arg1 + arg2
+
 
         # or on a method
         class Foo:
@@ -1120,9 +1122,11 @@ def check_units(
         import astropy.units as u
         from plasmapy.utils.decorators import check_units
 
+
         @check_units(arg1={"units": u.cm}, arg2=u.cm, checks_on_return=[u.cm, u.km])
         def foo(arg1, arg2):
             return arg1 + arg2
+
 
         # or on a method
         class Foo:
@@ -1136,6 +1140,7 @@ def check_units(
         def foo(arg1: u.cm, arg2: u.cm) -> u.cm:
             return arg1 + arg2
 
+
         # or on a method
         class Foo:
             @check_units
@@ -1144,7 +1149,7 @@ def check_units(
 
     Allow `None` values to pass::
 
-        @check_units(checks_on_return = [u.cm, None])
+        @check_units(checks_on_return=[u.cm, None])
         def foo(arg1: u.cm = None):
             return arg1
 
@@ -1370,7 +1375,7 @@ def _check_relativistic(
     Examples
     --------
     >>> import astropy.units as u
-    >>> _check_relativistic(1*u.m/u.s, 'function_calling_this')
+    >>> _check_relativistic(1 * u.m / u.s, "function_calling_this")
 
     """
 

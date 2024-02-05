@@ -136,7 +136,7 @@ class AbstractFitFunction(ABC):
                 x = self._check_x(x)
                 self._check_params(a, b, c)
 
-                return a * x ** 2 + b * x + c
+                return a * x**2 + b * x + c
         """
         ...
 

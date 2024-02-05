@@ -296,7 +296,7 @@ def test_getitem(test_ionization_state) -> None:
 
     For example, if we create
 
-    >>> He_states = IonizationState('He', [0.2, 0.3, 0.5])
+    >>> He_states = IonizationState("He", [0.2, 0.3, 0.5])
 
     then this checks to make sure that `He_states[2]`,
     `He_states['He 2+']`, and `He_states[Particle('He 2+')]` all
