@@ -1,2 +1,2 @@
-Used ``autotyping`` to add ``-> None`` return annotations to functions
-and methods with no ``return`` statement.
+Used ``autotyping`` to add :py:`-> None` return annotations to functions
+and methods with no :py:`return` statement.

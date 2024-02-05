@@ -138,14 +138,14 @@ def Alfven_speed(
     >>> import astropy.units as u
     >>> from astropy.constants.si import m_p, m_e
     >>> B = 0.014 * u.T
-    >>> n = 5e19*u.m**-3
-    >>> ion = 'p+'
-    >>> rho = n * (m_p+m_e)
+    >>> n = 5e19 * u.m**-3
+    >>> ion = "p+"
+    >>> rho = n * (m_p + m_e)
     >>> Alfven_speed(B=B, density=n, ion=ion)
     <Quantity 43173.870... m / s>
     >>> Alfven_speed(B=B, density=rho)
     <Quantity 43173.870... m / s>
-    >>> Alfven_speed(B=B, density=rho).to(u.cm/u.us)
+    >>> Alfven_speed(B=B, density=rho).to(u.cm / u.us)
     <Quantity 4.317387 cm / us>
     >>> Alfven_speed(B=B, density=n, ion="He-4 2+")
     <Quantity 21664.18... m / s>
@@ -312,40 +312,40 @@ def ion_sound_speed(
     Examples
     --------
     >>> import astropy.units as u
-    >>> n = 5e19*u.m**-3
-    >>> k_1 = 3e1*u.m**-1
-    >>> k_2 = 3e7*u.m**-1
+    >>> n = 5e19 * u.m**-3
+    >>> k_1 = 3e1 * u.m**-1
+    >>> k_2 = 3e7 * u.m**-1
     >>> ion_sound_speed(
-    ...     T_e=5e6*u.K,
-    ...     T_i=0*u.K,
-    ...     ion='p',
+    ...     T_e=5e6 * u.K,
+    ...     T_i=0 * u.K,
+    ...     ion="p",
     ...     gamma_e=1,
     ...     gamma_i=3,
     ... )
     <Quantity 203155... m / s>
     >>> ion_sound_speed(
-    ...     T_e=5e6*u.K,
-    ...     T_i=0*u.K,
+    ...     T_e=5e6 * u.K,
+    ...     T_i=0 * u.K,
     ...     n_e=n,
     ...     k=k_1,
-    ...     ion='p',
+    ...     ion="p",
     ...     gamma_e=1,
     ...     gamma_i=3,
     ... )
     <Quantity 203155... m / s>
     >>> ion_sound_speed(
-    ...     T_e=5e6*u.K,
-    ...     T_i=0*u.K,
+    ...     T_e=5e6 * u.K,
+    ...     T_i=0 * u.K,
     ...     n_e=n,
     ...     k=k_2,
-    ...     ion='p',
+    ...     ion="p",
     ...     gamma_e=1,
     ...     gamma_i=3,
     ... )
     <Quantity 310.31... m / s>
-    >>> ion_sound_speed(T_e=5e6*u.K, T_i=0*u.K, n_e=n, k=k_1, ion='p')
+    >>> ion_sound_speed(T_e=5e6 * u.K, T_i=0 * u.K, n_e=n, k=k_1, ion="p")
     <Quantity 203155... m / s>
-    >>> ion_sound_speed(T_e=500*u.eV, T_i=200*u.eV, n_e=n, k=k_1, ion='D+')
+    >>> ion_sound_speed(T_e=500 * u.eV, T_i=200 * u.eV, n_e=n, k=k_1, ion="D+")
     <Quantity 229585... m / s>
 
     """
@@ -821,11 +821,11 @@ def kappa_thermal_speed(
     Examples
     --------
     >>> import astropy.units as u
-    >>> kappa_thermal_speed(5*u.eV, 4, 'p') # defaults to most probable
+    >>> kappa_thermal_speed(5 * u.eV, 4, "p")  # defaults to most probable
     <Quantity 24467.87... m / s>
-    >>> kappa_thermal_speed(5*u.eV, 4, 'p', 'rms')
+    >>> kappa_thermal_speed(5 * u.eV, 4, "p", "rms")
     <Quantity 37905.47... m / s>
-    >>> kappa_thermal_speed(5*u.eV, 4, 'p', 'mean_magnitude')
+    >>> kappa_thermal_speed(5 * u.eV, 4, "p", "mean_magnitude")
     <Quantity 34922.98... m / s>
 
     See Also

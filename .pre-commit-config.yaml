@@ -2,15 +2,22 @@ ci:
   autofix_prs: false
   autoupdate_schedule: monthly
 
+# Specify the default version of Ruby in case it is not installed
+default_language_version:
+  ruby: 2.7.2
+
 repos:
 
 - repo: https://github.com/pre-commit/pre-commit-hooks
   rev: v4.5.0
   hooks:
   - id: check-ast
+    name: validate Python code
   - id: check-merge-conflict
+    name: check for git merge conflicts
     exclude: .*\.rst
   - id: check-case-conflict
+    name: check for filename case conflicts
   - id: name-tests-test
     args: [--pytest-test-first]
     exclude: plasmapy/tests/_helpers/.*
@@ -21,22 +28,17 @@ repos:
   - id: check-yaml
 
 - repo: https://github.com/python-jsonschema/check-jsonschema
-  rev: 0.27.3
+  rev: 0.27.4
   hooks:
   - id: check-github-workflows
 
 - repo: https://github.com/sirosen/texthooks
-  rev: 0.6.3
+  rev: 0.6.4
   hooks:
   - id: fix-smartquotes
   - id: fix-spaces
   - id: fix-ligatures
   - id: forbid-bidi-controls
-
-- repo: https://github.com/Lucas-C/pre-commit-hooks
-  rev: v1.5.4
-  hooks:
-  - id: remove-crlf
 
 - repo: https://github.com/macisamuele/language-formatters-pre-commit-hooks
   rev: v2.12.0
@@ -51,17 +53,6 @@ repos:
     # run this hook on `labeler.yml` (or certain other files).
     exclude: .github/labeler.yml|.pre-commit-search-and-replace.yaml
 
-- repo: https://github.com/pre-commit/mirrors-csslint
-  rev: v1.0.5
-  hooks:
-  - id: csslint
-
-- repo: https://github.com/MarcoGorelli/absolufy-imports
-  rev: v0.3.1
-  hooks:
-  - id: absolufy-imports
-    exclude: docs/plasmapy_sphinx
-
 - repo: https://github.com/mattlqx/pre-commit-search-and-replace
   rev: v1.0.5
   hooks:
@@ -72,6 +63,7 @@ repos:
   rev: v1.10.0
   hooks:
   - id: python-check-blanket-noqa
+    name: noqa comments have an error code
     exclude: ^docs/plasmapy_sphinx/
   - id: rst-directive-colons
   - id: rst-inline-touching-normal
@@ -81,36 +73,35 @@ repos:
   rev: v2.2.6
   hooks:
   - id: codespell
+    name: codespell (add false positives to pyproject.toml)
     args: [--write-changes]
     additional_dependencies:
     - tomli
 
 - repo: https://github.com/astral-sh/ruff-pre-commit
-  rev: v0.1.9
+  rev: v0.2.0
   hooks:
   - id: ruff
+    name: ruff (see https://docs.astral.sh/ruff/rules)
     args: [--fix]
   - id: ruff-format
+    name: autoformat source code with ruff formatter
 
 - repo: https://github.com/asottile/blacken-docs
   rev: 1.16.0
   hooks:
   - id: blacken-docs
-    exclude: docs/contributing/coding_guide.rst
+    name: autoformat code blocks in docs
+    # docstrings are formatted using the ruff-format hook
+    exclude: docs/contributing/coding_guide.rst|.*\.py
+    additional_dependencies:
+    - black==24.1.1
 
 - repo: https://github.com/nbQA-dev/nbQA
   rev: 1.7.1
   hooks:
   - id: nbqa-check-ast
+    name: validate Python notebooks
   - id: nbqa-ruff
-    args: ['--select=A,ARG,B,BLE,C,C4,E,F,FLY,I002,INT,ISC,PERF,PIE,PLC,PLE,PYI,Q003,RET,RSE,SIM,TID,TRY,UP,W', '--ignore=B007,B008,B015,B018,E402,E501,E741,SIM114']
-  - id: nbqa-isort
-
-- repo: local
-  hooks:
-  - id: print-help-message
-    name: Print troubleshooting link
-    entry: echo "For help with troubleshooting, see https://docs.plasmapy.org/en/latest/contributing/pre-commit.html"
-    language: system
-    pass_filenames: false
-    verbose: true
+    name: ruff for notebooks (see https://docs.astral.sh/ruff/rules)
+    args: [--fix, '--select=A,ARG,B,BLE,C,C4,E,F,FLY,I,INT,ISC,PERF,PIE,PLC,PLE,PYI,Q003,RET,RSE,SIM,TID,TRY,UP,W', '--ignore=B007,B008,B015,B018,E402,E501,E741,SIM114']

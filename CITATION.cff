@@ -416,7 +416,7 @@ authors:
   family-names: Rajashekar
   affiliation: PES University
   orcid: https://orcid.org/0000-0002-4914-6612
-  alias: DarkAEther
+  alias: vrajashkr
 
 - given-names: Afzal
   family-names: Rao
@@ -602,3 +602,7 @@ authors:
   family-names: Fütterer
   orcid: https://orcid.org/0000-0003-4397-027X
   alias: afuetterer
+
+- given-names: James
+  family-names: Addison
+  alias: jayaddison

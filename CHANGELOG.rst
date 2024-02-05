@@ -1606,7 +1606,7 @@ Features
   derived by P. M. Bellan 2012 (DOI: `10.1029/2012JA017856
   <https://agupubs.onlinelibrary.wiley.com/doi/10.1029/2012JA017856>`_). (`#932 <https://github.com/plasmapy/plasmapy/pull/932>`__)
 - Refactor out the `~plasmapy.simulation.particle_integrators.boris_push` tracking
-  integrator algorithm from `~plasmapy.simulation.particletracker.ParticleTracker`. (`#953 <https://github.com/plasmapy/plasmapy/pull/953>`__)
+  integrator algorithm from ``plasmapy.simulation.particletracker.ParticleTracker``. (`#953 <https://github.com/plasmapy/plasmapy/pull/953>`__)
 - For `plasmapy.plasma.grids` functionality, add better support for recognizing and
   handling physical quantities (e.g. spatial position, magnetic field, etc.) added
   to a grid object. (`#963 <https://github.com/plasmapy/plasmapy/pull/963>`__)

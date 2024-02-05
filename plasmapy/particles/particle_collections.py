@@ -110,7 +110,7 @@ class ParticleList(collections.UserList):
     >>> from plasmapy.particles import Particle, CustomParticle
     >>> import astropy.units as u
     >>> proton = Particle("p+")
-    >>> custom_particle = CustomParticle(mass=1e-26*u.kg, charge=6e-19*u.C)
+    >>> custom_particle = CustomParticle(mass=1e-26 * u.kg, charge=6e-19 * u.C)
     >>> 2 * proton + custom_particle
     ParticleList(['p+', 'p+', 'CustomParticle(mass=1e-26 kg, charge=6e-19 C)'])
 

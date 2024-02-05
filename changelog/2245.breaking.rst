@@ -1,0 +1,3 @@
+Created new `~plasmapy.simulation.particle_tracker.ParticleTracker`
+object for general particle pushing simulations involving
+electromagnetic fields. The tracker replaces the old ``~plasmapy.simulation.particletracker.ParticleTracker``.

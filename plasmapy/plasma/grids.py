@@ -605,7 +605,7 @@ class AbstractGrid(ABC):
         # requirements: eg. units correspond to the coordinate system
         self._validate()
 
-    def add_quantities(self, **kwargs):
+    def add_quantities(self, **kwargs: u.Quantity) -> None:
         r"""
         Adds a quantity to the dataset as a new DataArray.
 
@@ -1393,9 +1393,9 @@ class NonUniformCartesianGrid(AbstractGrid):
 
         """
 
-        indgrid = np.arange(self.grid.shape[0])
-
-        return interp.NearestNDInterpolator(self.grid.to(u.m).value, indgrid)
+        return interp.NearestNDInterpolator(
+            self.grid.to(u.m).value, self._interp_quantities
+        )
 
     @modify_docstring(prepend=AbstractGrid.nearest_neighbor_interpolator.__doc__)
     def nearest_neighbor_interpolator(
@@ -1418,10 +1418,6 @@ class NonUniformCartesianGrid(AbstractGrid):
         pts1 = self.pts1.to(u.m).value
         pts2 = self.pts2.to(u.m).value
 
-        i = self._nearest_neighbor_interpolator(pos)
-
-        vals = self._interp_quantities[i, :]
-
         mask_particle_off = (
             (pos[:, 0] < pts0.min())
             | (pos[:, 0] > pts0.max())
@@ -1431,6 +1427,7 @@ class NonUniformCartesianGrid(AbstractGrid):
             | (pos[:, 2] > pts2.max())
         )
 
+        vals = self._nearest_neighbor_interpolator(pos)
         vals[mask_particle_off] = np.nan
 
         output = [vals[:, arg] * self._interp_units[arg] for arg in range(len(args))]

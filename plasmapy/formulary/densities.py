@@ -54,7 +54,7 @@ def critical_density(omega: u.Quantity[u.rad / u.s]) -> u.Quantity[u.m**-3]:
     Examples
     --------
     >>> import astropy.units as u
-    >>> critical_density(5e15 * u.rad/u.s)
+    >>> critical_density(5e15 * u.rad / u.s)
     <Quantity 7.85519457e+27 1 / m3>
 
     """
@@ -133,15 +133,15 @@ def mass_density(
     Examples
     --------
     >>> import astropy.units as u
-    >>> mass_density(1 * u.m ** -3, 'p')
+    >>> mass_density(1 * u.m**-3, "p")
     <Quantity 1.67262...e-27 kg / m3>
-    >>> mass_density(4 * u.m ** -3, 'D+')
+    >>> mass_density(4 * u.m**-3, "D+")
     <Quantity 1.33743...e-26 kg / m3>
-    >>> mass_density(2.e12 * u.cm ** -3, 'He')
+    >>> mass_density(2.0e12 * u.cm**-3, "He")
     <Quantity 1.32929...e-08 kg / m3>
-    >>> mass_density(2.e12 * u.cm ** -3, 'He', z_ratio=0.5)
+    >>> mass_density(2.0e12 * u.cm**-3, "He", z_ratio=0.5)
     <Quantity 6.64647...e-09 kg / m3>
-    >>> mass_density(1.0 * u.g * u.m ** -3, "")
+    >>> mass_density(1.0 * u.g * u.m**-3, "")
     <Quantity 0.001 kg / m3>
     """
     if density.unit.is_equivalent(u.kg / u.m**3):

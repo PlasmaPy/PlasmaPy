@@ -37,58 +37,61 @@ dynamic = [
   "version",
 ]
 dependencies = [
-  "astropy >= 5.0.2",
-  "h5py >= 3.3.0",
-  "ipykernel >= 5.5.6",
-  "ipywidgets >= 7.6.5",
-  "lmfit >= 1.0.3",
+  "astropy >= 5.1",
+  "h5py >= 3.7.0",
+  "ipykernel >= 6.8.0",
+  "ipywidgets >= 7.7.0",
+  "lmfit >= 1.1.0",
   "matplotlib >= 3.5.1",
   "mpmath >= 1.2.1",
-  "numba >= 0.56.0",
-  "numpy >= 1.21.0",
+  "numba >= 0.57.0",
+  "numpy >= 1.23.0",
   "packaging >= 22.0",
-  "pandas >= 1.3.0",
-  "pytest >= 7.0.1",
-  "requests >= 2.27.1",
-  "scipy >= 1.7.0",
+  "pandas >= 1.4.0",
+  "pytest == 7.4.4",
+  "requests >= 2.28.0",
+  "scipy >= 1.8.0",
+  "setuptools >= 61.2.0",
   "tqdm >= 4.60.0",
   "voila >= 0.5.0",
-  "wrapt >= 1.12.1",
+  "wrapt >= 1.14.0",
   "xarray >= 2022.3.0",
 ]
 [project.optional-dependencies]
 docs = [
-  "docutils >= 0.18.1",
-  "jinja2 >= 3.1.2",
-  "nbsphinx >= 0.9.1",
-  "numpydoc >= 1.5.0",
-  "pillow >= 9.5.0",
-  "pygments >= 2.15.0",
-  "sphinx >= 7.2.3",
-  "sphinx-changelog >= 1.3.0",
+  "docutils >= 0.20.1",
+  "jinja2 >= 3.1.3",
+  "nbsphinx >= 0.9.3",
+  "numpydoc >= 1.6.0",
+  "pillow >= 10.2.0",
+  "pygments >= 2.17.2",
+  # install setuptools to get pkg_resources for doc build
+  "setuptools; python_version >= '3.12'",
+  "sphinx >= 7.2.6",
+  "sphinx-changelog >= 1.5.0",
   "sphinx-codeautolink >= 0.15.0",
-  "sphinx-copybutton >= 0.5.1",
-  "sphinx-gallery >= 0.12.2",
-  "sphinx-hoverxref >= 1.1.1",
-  "sphinx-issues >= 3.0.1",
+  "sphinx-copybutton >= 0.5.2",
+  "sphinx-gallery >= 0.15.0",
+  "sphinx-hoverxref >= 1.3.0",
+  "sphinx-issues >= 4.0.0",
   "sphinx-notfound-page >= 1.0.0",
-  "sphinx-reredirects >= 0.1.1",
-  "sphinx_rtd_theme >= 1.2.2",
-  "sphinx_tabs >= 3.4.1",
+  "sphinx-reredirects >= 0.1.3",
+  "sphinx_rtd_theme >= 2.0.0",
+  "sphinx_tabs >= 3.4.5",
   "sphinx_collapse >= 0.1.2",
-  "sphinxcontrib-bibtex >= 2.5.0",
+  "sphinxcontrib-bibtex >= 2.6.2",
   "sphinxcontrib-globalsubs >= 0.1.1",
-  "towncrier >= 22.12",
-  "tox >= 4.4.0",
-  "unidecode >= 1.3.6",
+  "towncrier >= 23.11.0",
+  "tox >= 4.12.1",
+  "unidecode >= 1.3.8",
 ]
 tests = [
-  "hypothesis >= 6.35.1",
-  "pre-commit >= 3.0.0",
-  "pytest-regressions >= 2.3.1",
-  "pytest-xdist >= 3.0.2",
+  "hypothesis >= 6.97.4",
+  "pre-commit >= 3.6.0",
+  "pytest-regressions >= 2.5.0",
+  "pytest-xdist >= 3.5.0",
   "tomli >= 2.0.1",
-  "tox >= 4.3.1",
+  "tox >= 4.12.1",
 ]
 [project.urls]
 Changelog = "https://docs.plasmapy.org/en/stable/whatsnew/index.html"
@@ -161,6 +164,7 @@ all_files = "1"
 
 [tool.codespell]
 skip = "*.png,*cache*,*egg*,.git,.hypothesis,.idea,.tox,_build,*charged_particle*.ipynb,venv"
+# Add false positives found by codespell to ignore-words-list
 ignore-words-list = """
 aas,
 aci,
@@ -210,6 +214,23 @@ type_incorrect_long = "The filename of the changelog entry must be of the form `
 
 [tool.ruff]
 target-version = "py39"
+namespace-packages = [".github/workflows", "docs"]
+output-format = "grouped"
+show-fixes = true
+extend-exclude = [
+  "docs/plasmapy_sphinx",
+  ".idea",
+  ".hypothesis",
+  ".jupyter",
+  "__pycache__",
+  "_dev",
+]
+
+[tool.ruff.format]
+docstring-code-format = true
+line-ending = "lf"
+
+[tool.ruff.lint]
 extend-select = [
   "A", # flake8-builtins
   "ANN204", # missing-return-type-special-method
@@ -257,7 +278,6 @@ extend-select = [
   "RUF008", # mutable-dataclass-default
   "RUF009", # function-call-in-dataclass-default-argument
   "RUF010", # explicit-f-string-type-conversion
-  "RUF011", # static-key-dict-comprehension
   "RUF013", # implicit-optional
   "RUF015", # unnecessary-iterable-allocation-for-first-element
   "RUF016", # invalid-index-type
@@ -319,33 +339,38 @@ ignore = [
   "UP025", # unicode-kind-prefix
   "W191", # tab-indentation (formatter conflict)
 ]
-extend-exclude = [
-  "docs/plasmapy_sphinx",
-  ".jupyter",
-  "__pycache__",
-  "_build",
-  "_dev",
-]
 dummy-variable-rgx = "Z|mass_numb|request|event"
-namespace-packages = [".github/workflows", "docs"]
-show-fixes = true
-show-source = true
+ignore-init-module-imports = true
 
-[tool.ruff.flake8-annotations]
+[tool.ruff.lint.flake8-annotations]
 allow-star-arg-any = true
 ignore-fully-untyped = true
 mypy-init-return = true
 suppress-dummy-args = true
 suppress-none-returning = true
 
-[tool.ruff.flake8-import-conventions.aliases]
+[tool.ruff.lint.flake8-import-conventions]
+banned-from = [
+  "astropy.units",
+  "matplotlib.pyplot",
+  "numpy",
+  "pytest",
+  "warnings",
+]
+
+[tool.ruff.lint.flake8-import-conventions.aliases]
+"astropy.constants" = "const"
 "astropy.units" = "u"
+"matplotlib" = "mpl"
 "matplotlib.pyplot" = "plt"
 numpy = "np"
 pandas = "pd"
 
-[tool.ruff.flake8-unused-arguments]
+[tool.ruff.lint.flake8-unused-arguments]
 ignore-variadic-names = true
+
+[tool.ruff.lint.flake8-tidy-imports]
+ban-relative-imports = "all"
 
 [tool.ruff.lint.flake8-tidy-imports.banned-api]
 "typing.Callable".msg = "Deprecated alias. Change to collections.abc.Callable"
@@ -363,10 +388,10 @@ ignore-variadic-names = true
 "typing.Tuple".msg = "Deprecated alias. Change to tuple"
 "typing.Type".msg = "Deprecated alias. Change to type"
 
-[tool.ruff.mccabe]
+[tool.ruff.lint.mccabe]
 max-complexity = 10
 
-[tool.ruff.per-file-ignores]
+[tool.ruff.lint.per-file-ignores]
 "__init__.py" = ["D104", "E402", "F401", "F402", "F403"] # ignore import errors
 ".github/scripts/*.py" = ["D103", "INP001"]
 "docs/conf.py" = ["D100", "D103", "E402", "EXE001", "EXE005", "F401"]
@@ -382,7 +407,7 @@ max-complexity = 10
 "test_*" = ["D100", "D101", "D102", "D103", "D104", "D209", "D400", "D401", "N801", "SLF001"]
 "*/*/tests/__init__.py" = ["D104"]
 
-[tool.ruff.pydocstyle]
+[tool.ruff.lint.pydocstyle]
 convention = "numpy"
 
 [tool.towncrier]

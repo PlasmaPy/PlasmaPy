@@ -239,7 +239,7 @@ def call_string(
     --------
     >>> call_string(int, 3.14159)
     'int(3.14159)'
-    >>> call_string(int, args=(9.2,), kwargs={'base': 2})
+    >>> call_string(int, args=(9.2,), kwargs={"base": 2})
     'int(9.2, base=2)'
     """
     args = () if args is None else args
@@ -308,12 +308,13 @@ def attribute_call_string(
     >>> class SampleClass:
     ...     def __init__(self, arg1, kwarg1=None):
     ...         pass
+    ...
     ...     @property
     ...     def attribute(self):
     ...         return 42
     >>> args_to_cls = (1, 2)
-    >>> kwargs_to_cls = {'kwarg1': 2}
-    >>> attribute_call_string(SampleClass, 'attribute', args_to_cls, kwargs_to_cls)
+    >>> kwargs_to_cls = {"kwarg1": 2}
+    >>> attribute_call_string(SampleClass, "attribute", args_to_cls, kwargs_to_cls)
     'SampleClass(1, 2, kwarg1=2).attribute'
     """
     args_to_cls = () if args_to_cls is None else args_to_cls
@@ -395,19 +396,21 @@ def method_call_string(
     >>> class SampleClass:
     ...     def __init__(self, cls_arg, cls_kwarg=None):
     ...         pass
+    ...
     ...     def method(self, method_arg, method_kwarg=None):
     ...         return 42
     >>> c_args = (1,)
-    >>> c_kwargs = {'cls_kwarg': 2}
+    >>> c_kwargs = {"cls_kwarg": 2}
     >>> m_args = 3
-    >>> m_kwargs = {'method_kwarg': 4}
+    >>> m_kwargs = {"method_kwarg": 4}
     >>> method_call_string(
     ...     SampleClass,
-    ...     'method',
+    ...     "method",
     ...     args_to_cls=c_args,
     ...     kwargs_to_cls=c_kwargs,
     ...     args_to_method=m_args,
-    ...     kwargs_to_method=m_kwargs)
+    ...     kwargs_to_method=m_kwargs,
+    ... )
     'SampleClass(1, cls_kwarg=2).method(3, method_kwarg=4)'
     """
     class_call_string = f"{call_string(cls, args_to_cls, kwargs_to_cls, max_items)}"

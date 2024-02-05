@@ -83,10 +83,10 @@ class IonizationStateCollection:
     >>> import astropy.units as u
     >>> from plasmapy.particles import IonizationStateCollection
     >>> states = IonizationStateCollection(
-    ...     {'H': [0.5, 0.5], 'He': [0.95, 0.05, 0]},
-    ...     T_e = 1.2e4 * u.K,
-    ...     n0 = 1e15 * u.m ** -3,
-    ...     abundances = {'H': 1, 'He': 0.08},
+    ...     {"H": [0.5, 0.5], "He": [0.95, 0.05, 0]},
+    ...     T_e=1.2e4 * u.K,
+    ...     n0=1e15 * u.m**-3,
+    ...     abundances={"H": 1, "He": 0.08},
     ... )
     >>> states.ionic_fractions
     {'H': array([0.5, 0.5]), 'He': array([0.95, 0.05, 0.  ])}
@@ -94,22 +94,22 @@ class IonizationStateCollection:
     The number densities are given by the ionic fractions multiplied by
     the abundance and the number density scaling factor ``n0``.
 
-    >>> states.number_densities['H']
+    >>> states.number_densities["H"]
     <Quantity [5.e+14, 5.e+14] 1 / m3>
-    >>> states['He'] = [0.4, 0.59, 0.01]
+    >>> states["He"] = [0.4, 0.59, 0.01]
 
     To change the ionic fractions for a single element, use item
     assignment.
 
-    >>> states = IonizationStateCollection(['H', 'He'])
-    >>> states['H'] = [0.1, 0.9]
+    >>> states = IonizationStateCollection(["H", "He"])
+    >>> states["H"] = [0.1, 0.9]
 
     Item assignment will also work if you supply number densities.
 
-    >>> states['He'] = [0.4, 0.6, 0.0] * u.m ** -3
-    >>> states.ionic_fractions['He']
+    >>> states["He"] = [0.4, 0.6, 0.0] * u.m**-3
+    >>> states.ionic_fractions["He"]
     array([0.4, 0.6, 0. ])
-    >>> states.number_densities['He']
+    >>> states.number_densities["He"]
     <Quantity [0.4, 0.6, 0. ] 1 / m3>
 
     Notes
@@ -876,8 +876,7 @@ class IonizationStateCollection:
         Examples
         --------
         >>> states = IonizationStateCollection(
-        ...     {"H": [0.1, 0.9], "He": [0, 0.1, 0.9]},
-        ...     abundances={"H": 1, "He": 0.1}
+        ...     {"H": [0.1, 0.9], "He": [0, 0.1, 0.9]}, abundances={"H": 1, "He": 0.1}
         ... )
         >>> states.average_ion()
         CustomParticle(mass=2.12498...e-27 kg, charge=1.5876...e-19 C)
@@ -932,11 +931,11 @@ class IonizationStateCollection:
         Examples
         --------
         >>> states = IonizationStateCollection(
-        ...     {'H': [0.1, 0.9], 'He': [0.95, 0.05, 0.0]},
-        ...     T_e = 12000 * u.K,
-        ...     n0 = 3e9 * u.cm ** -3,
-        ...     abundances = {'H': 1.0, 'He': 0.1},
-        ...     kappa = 3.4,
+        ...     {"H": [0.1, 0.9], "He": [0.95, 0.05, 0.0]},
+        ...     T_e=12000 * u.K,
+        ...     n0=3e9 * u.cm**-3,
+        ...     abundances={"H": 1.0, "He": 0.1},
+        ...     kappa=3.4,
         ... )
         >>> states.summarize()
         IonizationStateCollection instance for: H, He

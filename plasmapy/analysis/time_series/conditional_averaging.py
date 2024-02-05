@@ -8,7 +8,6 @@ __all__ = ["ConditionalEvents"]
 
 import astropy.units as u
 import numpy as np
-from astropy.units import UnitsError
 from scipy.signal import find_peaks
 
 
@@ -72,13 +71,14 @@ class ConditionalEvents:
 
     Examples
     --------
-    >>> from plasmapy.analysis.time_series.conditional_averaging import ConditionalEvents
-    >>> cond_events = ConditionalEvents(
-    ...     signal = [1, 2, 1, 1, 2, 1],
-    ...     time = [1, 2, 3, 4, 5, 6],
-    ...     lower_threshold = 1.5,
+    >>> from plasmapy.analysis.time_series.conditional_averaging import (
+    ...     ConditionalEvents,
     ... )
-    ...
+    >>> cond_events = ConditionalEvents(
+    ...     signal=[1, 2, 1, 1, 2, 1],
+    ...     time=[1, 2, 3, 4, 5, 6],
+    ...     lower_threshold=1.5,
+    ... )
     >>> cond_events.time
     array([-1.0, 0.0, 1.0])
     >>> cond_events.average
@@ -344,14 +344,14 @@ class ConditionalEvents:
             if variable is not None and first_variable_has_unit != isinstance(
                 variable, u.Quantity
             ):
-                raise UnitsError(f"Units do not match: {variable} and {variables[0]}")
+                raise u.UnitsError(f"Units do not match: {variable} and {variables[0]}")
 
         # check whether all variables have same astropy unit
         if first_variable_has_unit:
             first_unit = variables[0].unit
             for variable in variables:
                 if variable is not None and first_unit != variable.unit:
-                    raise UnitsError(
+                    raise u.UnitsError(
                         f"Units do not match: {variable} and {variables[0]}"
                     )
 

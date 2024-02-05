@@ -1,14 +1,20 @@
-name: Check hyperlinks
+name: linkcheck
 
 on:
   schedule:
-  - cron: 37 8 * * 1
+  - cron: 37 7 * * 2
   workflow_dispatch:
+  pull_request:
+    types: [labeled, opened, synchronize, reopened]
+    branches:
+    - main
 
 jobs:
 
   linkcheck:
     runs-on: ubuntu-latest
+    if: github.event_name != 'pull_request' || contains(github.event.pull_request.labels.*.name, 'perform linkcheck in CI')
+
     steps:
 
     - name: Checkout code
@@ -19,7 +25,7 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v5
       with:
-        python-version: 3.11
+        python-version: 3.12
 
     - name: Install Python dependencies
       run: python -m pip install --upgrade tox
@@ -28,4 +34,4 @@ jobs:
       run: sudo apt-get install graphviz pandoc
 
     - name: Check hyperlinks
-      run: tox -e build_docs_linkcheck
+      run: tox -e linkcheck
