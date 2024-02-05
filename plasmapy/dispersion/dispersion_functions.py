@@ -119,7 +119,7 @@ def plasma_dispersion_func_deriv(
     (-2+0j)
     >>> plasma_dispersion_func_deriv(1j)
     (-0.484255687717376...+0j)
-    >>> plasma_dispersion_func_deriv(-1.52+0.47j)
+    >>> plasma_dispersion_func_deriv(-1.52 + 0.47j)
     (0.165871331498228...+0.445879788059350...j)
     """
     try:

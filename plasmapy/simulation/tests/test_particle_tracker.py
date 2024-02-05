@@ -45,7 +45,7 @@ def memory_interval_save_routine_instantiated():
 @pytest.fixture()
 def grid_with_inf_entry():
     grid = CartesianGrid(-1 * u.m, 1 * u.m)
-    entry = np.full(grid.shape, np.NaN) * u.V / u.m
+    entry = np.full(grid.shape, np.nan) * u.V / u.m
     grid.add_quantities(E_x=entry)
 
     return grid

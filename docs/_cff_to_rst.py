@@ -118,7 +118,7 @@ def begin_author_line(author: dict[str, str]) -> str:
         The beginning of the author line.
     """
     name = get_author_name(author)
-    alias = author.get("alias", None)
+    alias = author.get("alias")
 
     if not alias or alias in obsolete_github_usernames:
         return f"- {name}"
