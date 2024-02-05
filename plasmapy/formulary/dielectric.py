@@ -191,14 +191,14 @@ def cold_plasma_permittivity_LRP(
     --------
     >>> import astropy.units as u
     >>> from numpy import pi
-    >>> B = 2*u.T
-    >>> species = ['e', 'D+']
-    >>> n = [1e18*u.m**-3, 1e18*u.m**-3]
-    >>> omega = 3.7e9*(2*pi)*(u.rad/u.s)
+    >>> B = 2 * u.T
+    >>> species = ["e", "D+"]
+    >>> n = [1e18 * u.m**-3, 1e18 * u.m**-3]
+    >>> omega = 3.7e9 * (2 * pi) * (u.rad / u.s)
     >>> L, R, P = permittivity = cold_plasma_permittivity_LRP(B, species, n, omega)
     >>> L
     <Quantity 0.63333...>
-    >>> permittivity.left    # namedtuple-style access
+    >>> permittivity.left  # namedtuple-style access
     <Quantity 0.63333...>
     >>> R
     <Quantity 1.41512...>
@@ -359,7 +359,7 @@ def permittivity_1D_Maxwellian(
     >>> from plasmapy.formulary import thermal_speed
     >>> T = 30 * 11600 * u.K
     >>> n = 1e18 * u.cm**-3
-    >>> particle = 'Ne'
+    >>> particle = "Ne"
     >>> Z = 8
     >>> vth = thermal_speed(T, particle, method="most_probable")
     >>> omega = 5.635e14 * 2 * pi * u.rad / u.s

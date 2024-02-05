@@ -163,7 +163,7 @@ def coupling_parameter(
     >>> import astropy.units as u
     >>> n = 1e19 * u.m**-3
     >>> T = 1e6 * u.K
-    >>> species = ('e', 'p')
+    >>> species = ("e", "p")
     >>> coupling_parameter(T, n, species)
     <Quantity 5.8033...e-05>
     >>> coupling_parameter(T, n, species, V=1e6 * u.m / u.s)
@@ -330,9 +330,9 @@ def Knudsen_number(
     --------
     >>> import astropy.units as u
     >>> L = 1e-3 * u.m
-    >>> n = 1e19 * u.m ** -3
+    >>> n = 1e19 * u.m**-3
     >>> T = 1e6 * u.K
-    >>> species = ('e', 'p')
+    >>> species = ("e", "p")
     >>> Knudsen_number(L, T, n, species)
     <Quantity 7839.5...>
     >>> Knudsen_number(L, T, n, species, V=1e6 * u.m / u.s)

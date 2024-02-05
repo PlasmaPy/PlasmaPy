@@ -135,9 +135,9 @@ def from_roman(s: str) -> Integral:
 
     Examples
     --------
-    >>> from_roman('V')
+    >>> from_roman("V")
     5
-    >>> from_roman('MMMMCCCLXVII')
+    >>> from_roman("MMMMCCCLXVII")
     4367
 
     """

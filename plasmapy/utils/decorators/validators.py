@@ -78,6 +78,7 @@ class ValidateQuantities(CheckUnits, CheckValues):
         import astropy.units as u
         from plasmapy.utils.decorators import ValidateQuantities
 
+
         @ValidateQuantities(
             mass={"units": u.g, "can_be_negative": False},
             vel=u.cm / u.s,
@@ -85,6 +86,7 @@ class ValidateQuantities(CheckUnits, CheckValues):
         )
         def foo(mass, vel):
             return mass * vel
+
 
         # on a method
         class Foo:
@@ -101,6 +103,7 @@ class ValidateQuantities(CheckUnits, CheckValues):
         @ValidateQuantities(mass={"can_be_negative": False})
         def foo(mass: u.g, vel: u.cm / u.s) -> u.g * u.cm / u.s:
             return mass * vel
+
 
         # on a method
         class Foo:
@@ -451,6 +454,7 @@ def validate_quantities(func=None, validations_on_return=None, **validations):
         import astropy.units as u
         from plasmapy.utils.decorators import validate_quantities
 
+
         @validate_quantities(
             mass={"units": u.g, "can_be_negative": False},
             vel=u.cm / u.s,
@@ -458,6 +462,7 @@ def validate_quantities(func=None, validations_on_return=None, **validations):
         )
         def foo(mass, vel):
             return mass * vel
+
 
         # on a method
         class Foo:
@@ -475,10 +480,12 @@ def validate_quantities(func=None, validations_on_return=None, **validations):
         def foo(mass: u.g, vel: u.cm / u.s) -> u.g * u.cm / u.s:
             return mass * vel
 
+
         # rely only on annotations
         @validate_quantities
         def foo(x: u.cm, time: u.s) -> u.cm / u.s:
             return x / time
+
 
         # on a method
         class Foo:
@@ -510,7 +517,11 @@ def validate_quantities(func=None, validations_on_return=None, **validations):
     Allow equivalent units to pass with specified equivalencies::
 
         @validate_quantities(
-            arg1={"units": u.K, "equivalencies": u.temperature(), "pass_equivalent_units": True}
+            arg1={
+                "units": u.K,
+                "equivalencies": u.temperature(),
+                "pass_equivalent_units": True,
+            }
         )
         def foo(arg1):
             return arg1

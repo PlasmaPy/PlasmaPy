@@ -168,7 +168,7 @@ def magnetic_energy_density(B: u.Quantity[u.T]) -> u.Quantity[u.J / u.m**3]:
     Examples
     --------
     >>> import astropy.units as u
-    >>> magnetic_energy_density(0.1*u.T)
+    >>> magnetic_energy_density(0.1 * u.T)
     <Quantity 3978.87... J / m3>
 
     """
@@ -233,7 +233,7 @@ def magnetic_pressure(B: u.Quantity[u.T]) -> u.Quantity[u.Pa]:
     Examples
     --------
     >>> import astropy.units as u
-    >>> magnetic_pressure(0.1*u.T).to(u.Pa)
+    >>> magnetic_pressure(0.1 * u.T).to(u.Pa)
     <Quantity 3978.87... Pa>
 
     """
@@ -265,9 +265,9 @@ def thermal_pressure(T: u.Quantity[u.K], n: u.Quantity[u.m**-3]) -> u.Quantity[u
     Examples
     --------
     >>> import astropy.units as u
-    >>> thermal_pressure(1*u.eV, 1e20/u.m**3)
+    >>> thermal_pressure(1 * u.eV, 1e20 / u.m**3)
     <Quantity 16.021... Pa>
-    >>> thermal_pressure(10*u.eV, 1e20/u.m**3)
+    >>> thermal_pressure(10 * u.eV, 1e20 / u.m**3)
     <Quantity 160.21... Pa>
 
     Returns

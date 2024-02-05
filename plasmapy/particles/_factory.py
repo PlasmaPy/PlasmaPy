@@ -166,7 +166,7 @@ def _physical_particle_factory(
     >>> import astropy.units as u
     >>> _physical_particle_factory("p+")
     Particle("p+")
-    >>> _physical_particle_factory(mass = 9e-26 * u.kg, charge = 8e20 * u.C)
+    >>> _physical_particle_factory(mass=9e-26 * u.kg, charge=8e20 * u.C)
     CustomParticle(mass=9e-26 kg, charge=8e+20 C)
     >>> _physical_particle_factory(["p+", "e-"])
     ParticleList(['p+', 'e-'])

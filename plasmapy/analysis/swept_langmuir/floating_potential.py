@@ -3,8 +3,8 @@ __all__ = ["find_floating_potential", "VFExtras"]
 __aliases__ = ["find_vf_"]
 
 import numbers
+import warnings
 from typing import NamedTuple, Optional, Union
-from warnings import warn
 
 import numpy as np
 
@@ -277,7 +277,7 @@ def find_floating_potential(  # noqa: C901, PLR0912, PLR0915
             + 1
         )
         if isl_window > min_points:
-            warn(
+            warnings.warn(
                 f"Unable to determine floating potential, Langmuir sweep has "
                 f"{n_islands} crossing-islands.  Try adjusting keyword 'threshold' "
                 f"and/or smooth the current.",
@@ -320,7 +320,7 @@ def find_floating_potential(  # noqa: C901, PLR0912, PLR0915
                     istart -= ipad_2_start
 
         if (istop - istart + 1) < min_points:
-            warn(
+            warnings.warn(
                 f"The number of elements in the current array ({istop - istart + 1}) "
                 f"is less than 'min_points' ({min_points}).",
                 PlasmaPyWarning,

@@ -382,7 +382,7 @@ class AlfvenWave(AbstractMHDWave):
     --------
     >>> import astropy.units as u
     >>> from plasmapy.dispersion.analytical import AlfvenWave
-    >>> alfven = AlfvenWave(1e-3 * u.T, 1e16 * u.m ** -3, "p+")
+    >>> alfven = AlfvenWave(1e-3 * u.T, 1e16 * u.m**-3, "p+")
     >>> alfven.angular_frequency(1e-5 * u.rad / u.m, 0 * u.deg)
     <Quantity 2.18060973 rad / s>
     >>> alfven.phase_velocity(1e-5 * u.rad / u.m, 0 * u.deg)
@@ -448,7 +448,7 @@ class AlfvenWave(AbstractMHDWave):
         --------
         >>> import astropy.units as u
         >>> from plasmapy.dispersion.analytical import AlfvenWave
-        >>> alfven = AlfvenWave(1e-3 * u.T, 1e16 * u.m ** -3, "p+")
+        >>> alfven = AlfvenWave(1e-3 * u.T, 1e16 * u.m**-3, "p+")
         >>> alfven.angular_frequency(1e-5 * u.rad / u.m, 0 * u.deg)
         <Quantity 2.18060973 rad / s>
         >>> alfven.angular_frequency([1e-5, 2e-4] * (u.rad / u.m), 0 * u.deg)
@@ -605,7 +605,7 @@ class FastMagnetosonicWave(AbstractMHDWave):
     --------
     >>> import astropy.units as u
     >>> from plasmapy.dispersion.analytical import FastMagnetosonicWave
-    >>> fast = FastMagnetosonicWave(1e-3 * u.T, 1e16 * u.m ** -3, "p+", T=2.5e6 * u.K)
+    >>> fast = FastMagnetosonicWave(1e-3 * u.T, 1e16 * u.m**-3, "p+", T=2.5e6 * u.K)
     >>> fast.angular_frequency(1e-5 * u.rad / u.m, 0 * u.deg)
     <Quantity 2.18060973 rad / s>
     >>> fast.phase_velocity(1e-5 * u.rad / u.m, 0 * u.deg)
@@ -675,7 +675,7 @@ class FastMagnetosonicWave(AbstractMHDWave):
         --------
         >>> import astropy.units as u
         >>> from plasmapy.dispersion.analytical import FastMagnetosonicWave
-        >>> fast = FastMagnetosonicWave(1e-3 * u.T, 1e16 * u.m ** -3, "p+", T=2.5e6 * u.K)
+        >>> fast = FastMagnetosonicWave(1e-3 * u.T, 1e16 * u.m**-3, "p+", T=2.5e6 * u.K)
         >>> fast.angular_frequency(1e-5 * u.rad / u.m, 0 * u.deg)
         <Quantity 2.18060973 rad / s>
         >>> fast.angular_frequency([1e-5, 2e-4] * (u.rad / u.m), 0 * u.deg)
@@ -851,7 +851,7 @@ class SlowMagnetosonicWave(AbstractMHDWave):
     --------
     >>> import astropy.units as u
     >>> from plasmapy.dispersion.analytical import SlowMagnetosonicWave
-    >>> slow = SlowMagnetosonicWave(1e-3 * u.T, 1e16 * u.m ** -3, "p+", T=2.5e6 * u.K)
+    >>> slow = SlowMagnetosonicWave(1e-3 * u.T, 1e16 * u.m**-3, "p+", T=2.5e6 * u.K)
     >>> slow.angular_frequency(1e-5 * u.rad / u.m, 0 * u.deg)
     <Quantity 1.85454394 rad / s>
     >>> slow.phase_velocity(1e-5 * u.rad / u.m, 0 * u.deg)
@@ -918,7 +918,7 @@ class SlowMagnetosonicWave(AbstractMHDWave):
         --------
         >>> import astropy.units as u
         >>> from plasmapy.dispersion.analytical import SlowMagnetosonicWave
-        >>> slow = SlowMagnetosonicWave(1e-3 * u.T, 1e16 * u.m ** -3, "p+", T=2.5e6 * u.K)
+        >>> slow = SlowMagnetosonicWave(1e-3 * u.T, 1e16 * u.m**-3, "p+", T=2.5e6 * u.K)
         >>> slow.angular_frequency(1e-5 * u.rad / u.m, 0 * u.deg)
         <Quantity 1.85454394 rad / s>
         >>> slow.angular_frequency([1e-5, 2e-4] * (u.rad / u.m), 0 * u.deg)
