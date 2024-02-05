@@ -18,7 +18,7 @@ from plasmapy.particles.exceptions import InvalidParticleError
 from plasmapy.utils._pytest_helpers import assert_can_handle_nparray
 
 Z = 1
-ion = "p"
+ion = "p+"
 n_i = 5e19 * u.m**-3
 n_e = Z * 5e19 * u.m**-3
 

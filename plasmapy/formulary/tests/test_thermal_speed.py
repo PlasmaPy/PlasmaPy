@@ -341,7 +341,7 @@ class Test_kappa_thermal_speed:
         cls.T_e = 5 * u.eV
         cls.kappaInvalid = 3 / 2
         cls.kappa = 4
-        cls.particle = "p"
+        cls.particle = "p+"
         cls.probable1True = 24467.878463594963
         cls.rms1True = 37905.474322612165
         cls.mean1True = 34922.98563039583
