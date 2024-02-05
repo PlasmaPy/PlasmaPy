@@ -306,9 +306,9 @@ def plasma_frequency(
     Examples
     --------
     >>> import astropy.units as u
-    >>> plasma_frequency(1e19 * u.m**-3, particle="p")
+    >>> plasma_frequency(1e19 * u.m**-3, particle="p+")
     <Quantity 4.16329...e+09 rad / s>
-    >>> plasma_frequency(1e19 * u.m**-3, particle="p", to_hz=True)
+    >>> plasma_frequency(1e19 * u.m**-3, particle="p+", to_hz=True)
     <Quantity 6.62608...e+08 Hz>
     >>> plasma_frequency(1e19 * u.m**-3, particle="D+")
     <Quantity 2.94462...e+09 rad / s>

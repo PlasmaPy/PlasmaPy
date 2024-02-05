@@ -318,7 +318,7 @@ def ion_sound_speed(
     >>> ion_sound_speed(
     ...     T_e=5e6 * u.K,
     ...     T_i=0 * u.K,
-    ...     ion="p",
+    ...     ion="p+",
     ...     gamma_e=1,
     ...     gamma_i=3,
     ... )
@@ -328,7 +328,7 @@ def ion_sound_speed(
     ...     T_i=0 * u.K,
     ...     n_e=n,
     ...     k=k_1,
-    ...     ion="p",
+    ...     ion="p+",
     ...     gamma_e=1,
     ...     gamma_i=3,
     ... )
@@ -338,12 +338,12 @@ def ion_sound_speed(
     ...     T_i=0 * u.K,
     ...     n_e=n,
     ...     k=k_2,
-    ...     ion="p",
+    ...     ion="p+",
     ...     gamma_e=1,
     ...     gamma_i=3,
     ... )
     <Quantity 310.31... m / s>
-    >>> ion_sound_speed(T_e=5e6 * u.K, T_i=0 * u.K, n_e=n, k=k_1, ion="p")
+    >>> ion_sound_speed(T_e=5e6 * u.K, T_i=0 * u.K, n_e=n, k=k_1, ion="p+")
     <Quantity 203155... m / s>
     >>> ion_sound_speed(T_e=500 * u.eV, T_i=200 * u.eV, n_e=n, k=k_1, ion="D+")
     <Quantity 229585... m / s>

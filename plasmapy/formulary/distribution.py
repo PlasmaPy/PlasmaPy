@@ -123,7 +123,7 @@ def Maxwellian_1D(
     --------
     >>> import astropy.units as u
     >>> v = 1 * u.m / u.s
-    >>> Maxwellian_1D(v=v, T=30000 * u.K, particle="e", v_drift=0 * u.m / u.s)
+    >>> Maxwellian_1D(v=v, T=30000 * u.K, particle="e-", v_drift=0 * u.m / u.s)
     <Quantity 5.9163...e-07 s / m>
     """
 
@@ -267,7 +267,7 @@ def Maxwellian_velocity_2D(
     ...     vx=v,
     ...     vy=v,
     ...     T=30000 * u.K,
-    ...     particle="e",
+    ...     particle="e-",
     ...     vx_drift=0 * u.m / u.s,
     ...     vy_drift=0 * u.m / u.s,
     ... )
@@ -426,7 +426,7 @@ def Maxwellian_velocity_3D(
     ...     vy=v,
     ...     vz=v,
     ...     T=30000 * u.K,
-    ...     particle="e",
+    ...     particle="e-",
     ...     vx_drift=0 * u.m / u.s,
     ...     vy_drift=0 * u.m / u.s,
     ...     vz_drift=0 * u.m / u.s,
@@ -560,7 +560,7 @@ def Maxwellian_speed_1D(
     --------
     >>> import astropy.units as u
     >>> v = 1 * u.m / u.s
-    >>> Maxwellian_speed_1D(v=v, T=30000 * u.K, particle="e", v_drift=0 * u.m / u.s)
+    >>> Maxwellian_speed_1D(v=v, T=30000 * u.K, particle="e-", v_drift=0 * u.m / u.s)
     <Quantity 1.1832...e-06 s / m>
 
     """
@@ -692,7 +692,7 @@ def Maxwellian_speed_2D(
     --------
     >>> import astropy.units as u
     >>> v = 1 * u.m / u.s
-    >>> Maxwellian_speed_2D(v=v, T=30000 * u.K, particle="e", v_drift=0 * u.m / u.s)
+    >>> Maxwellian_speed_2D(v=v, T=30000 * u.K, particle="e-", v_drift=0 * u.m / u.s)
     <Quantity 2.199...e-12 s / m>
 
     """
@@ -827,7 +827,7 @@ def Maxwellian_speed_3D(
     --------
     >>> import astropy.units as u
     >>> v = 1 * u.m / u.s
-    >>> Maxwellian_speed_3D(v=v, T=30000 * u.K, particle="e", v_drift=0 * u.m / u.s)
+    >>> Maxwellian_speed_3D(v=v, T=30000 * u.K, particle="e-", v_drift=0 * u.m / u.s)
     <Quantity 2.60235...e-18 s / m>
     """
     if v_drift != 0:
@@ -974,7 +974,7 @@ def kappa_velocity_1D(
     ...     v=v,
     ...     T=30000 * u.K,
     ...     kappa=4,
-    ...     particle="e",
+    ...     particle="e-",
     ...     v_drift=0 * u.m / u.s,
     ... )
     <Quantity 6.75549...e-07 s / m>
@@ -1151,7 +1151,7 @@ def kappa_velocity_3D(
     ...     vz=v,
     ...     T=30000 * u.K,
     ...     kappa=4,
-    ...     particle="e",
+    ...     particle="e-",
     ...     vx_drift=0 * u.m / u.s,
     ...     vy_drift=0 * u.m / u.s,
     ...     vz_drift=0 * u.m / u.s,
