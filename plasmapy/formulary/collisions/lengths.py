@@ -8,7 +8,6 @@ from numbers import Real
 import astropy.units as u
 import numpy as np
 from astropy.constants.si import eps0, hbar
-from numpy import pi
 
 from plasmapy import particles
 from plasmapy.formulary.collisions import frequencies, misc
@@ -100,7 +99,7 @@ def impact_parameter_perp(
         T=T, species=species, V=V
     )
 
-    return charges[0] * charges[1] / (4 * pi * eps0 * reduced_mass * V**2)
+    return charges[0] * charges[1] / (4 * np.pi * eps0 * reduced_mass * V**2)
 
 
 @validate_quantities(

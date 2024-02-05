@@ -349,6 +349,12 @@ mypy-init-return = true
 suppress-dummy-args = true
 suppress-none-returning = true
 
+[tool.ruff.lint.flake8-import-conventions]
+banned-from = [
+  "astropy.units",
+  "numpy",
+]
+
 [tool.ruff.lint.flake8-import-conventions.aliases]
 "astropy.units" = "u"
 "matplotlib.pyplot" = "plt"

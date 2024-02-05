@@ -4,8 +4,8 @@ __all__ = ["ionization_balance", "Saha", "Z_bal_"]
 __aliases__ = ["Z_bal_"]
 
 import astropy.units as u
+import numpy as np
 from astropy.constants import a0, k_B
-from numpy import exp, log, pi, sqrt
 
 from plasmapy.utils.decorators import validate_quantities
 
@@ -84,10 +84,10 @@ def ionization_balance(
     """
     E_H = 1 * u.Ry
 
-    A = sqrt(k_B * T_e / E_H)
-    B = log(1 / (4 * n * a0**3) * (k_B * T_e / (pi * E_H)) ** (3 / 2))
+    A = np.sqrt(k_B * T_e / E_H)
+    B = np.log(1 / (4 * n * a0**3) * (k_B * T_e / (np.pi * E_H)) ** (3 / 2))
 
-    return A * sqrt(B) - 1 / 2
+    return A * np.sqrt(B) - 1 / 2
 
 
 Z_bal_ = ionization_balance
@@ -188,7 +188,7 @@ def Saha(
     E_h = 1 * u.Ry
 
     degeneracy_factor = (1 / n_e) * g_j / (4 * g_k * a0**3)
-    physical_constants = (k_B * T_e / (pi * E_h)) ** (3 / 2)
-    boltzmann_factor = exp(-E_jk / (k_B * T_e))
+    physical_constants = (k_B * T_e / (np.pi * E_h)) ** (3 / 2)
+    boltzmann_factor = np.exp(-E_jk / (k_B * T_e))
 
     return degeneracy_factor * physical_constants * boltzmann_factor
