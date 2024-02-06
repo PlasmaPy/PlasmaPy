@@ -10,25 +10,25 @@ class NoDataSource(BasePlasma):
 
 class IsDataSource(BasePlasma):
     @classmethod
-    def is_datasource_for(cls, **kwargs):
+    def is_datasource_for(cls, **kwargs) -> bool:
         return True
 
 
 class IsNotDataSource(BasePlasma):
     @classmethod
-    def is_datasource_for(cls, **kwargs):
+    def is_datasource_for(cls, **kwargs) -> bool:
         return False
 
 
 class TestRegistrar:
-    def test_no_data_source(self):
+    def test_no_data_source(self) -> None:
         """
         NoDataSource class should not be registered since it has
         no method named ``is_datasource_for``.
         """
         assert not BasePlasma._registry.get(NoDataSource)
 
-    def test_is_data_source(self):
+    def test_is_data_source(self) -> None:
         """
         IsDataSource class should be registered since it has a
         method named ``is_datasource_for`` and must return True.
@@ -39,7 +39,7 @@ class TestRegistrar:
         # to not interfere with plasma factory tests
         del BasePlasma._registry[IsDataSource]
 
-    def test_is_not_data_source(self):
+    def test_is_not_data_source(self) -> None:
         """
         IsNotDataSource class should be registered since it has a
         method named ``is_datasource_for`` but must return False.
@@ -49,5 +49,5 @@ class TestRegistrar:
         del BasePlasma._registry[IsNotDataSource]
 
 
-def test_subclasses():
+def test_subclasses() -> None:
     assert issubclass(GenericPlasma, BasePlasma)

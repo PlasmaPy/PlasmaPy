@@ -4,9 +4,8 @@ __all__ = ["ionization_balance", "Saha", "Z_bal_"]
 __aliases__ = ["Z_bal_"]
 
 import astropy.units as u
-
+import numpy as np
 from astropy.constants import a0, k_B
-from numpy import exp, log, pi, sqrt
 
 from plasmapy.utils.decorators import validate_quantities
 
@@ -14,7 +13,9 @@ from plasmapy.utils.decorators import validate_quantities
 @validate_quantities(
     T_e={"can_be_negative": False, "equivalencies": u.temperature_energy()}
 )
-def ionization_balance(n: u.m**-3, T_e: u.K) -> u.dimensionless_unscaled:
+def ionization_balance(
+    n: u.Quantity[u.m**-3], T_e: u.Quantity[u.K]
+) -> u.Quantity[u.dimensionless_unscaled]:
     r"""
     Return the average ionization state of ions in a plasma assuming that
     the numbers of ions in each state are equal.
@@ -66,11 +67,11 @@ def ionization_balance(n: u.m**-3, T_e: u.K) -> u.dimensionless_unscaled:
     --------
     >>> import astropy.units as u
     >>> T_e = 5000 * u.K
-    >>> n = 1e19 * u.m ** -3
+    >>> n = 1e19 * u.m**-3
     >>> ionization_balance(n, T_e)
     <Quantity 0.274...>
     >>> T_e = 50 * u.eV
-    >>> n = 1e10 * u.m ** -3
+    >>> n = 1e10 * u.m**-3
     >>> ionization_balance(n, T_e)
     <Quantity 12.615...>
 
@@ -83,10 +84,10 @@ def ionization_balance(n: u.m**-3, T_e: u.K) -> u.dimensionless_unscaled:
     """
     E_H = 1 * u.Ry
 
-    A = sqrt(k_B * T_e / E_H)
-    B = log(1 / (4 * n * a0**3) * (k_B * T_e / (pi * E_H)) ** (3 / 2))
+    A = np.sqrt(k_B * T_e / E_H)
+    B = np.log(1 / (4 * n * a0**3) * (k_B * T_e / (np.pi * E_H)) ** (3 / 2))
 
-    return A * sqrt(B) - 1 / 2
+    return A * np.sqrt(B) - 1 / 2
 
 
 Z_bal_ = ionization_balance
@@ -96,7 +97,9 @@ Z_bal_ = ionization_balance
 @validate_quantities(
     T_e={"can_be_negative": False, "equivalencies": u.temperature_energy()}
 )
-def Saha(g_j, g_k, n_e: u.m**-3, E_jk: u.J, T_e: u.K) -> u.dimensionless_unscaled:
+def Saha(
+    g_j, g_k, n_e: u.Quantity[u.m**-3], E_jk: u.Quantity[u.J], T_e: u.Quantity[u.K]
+) -> u.Quantity[u.dimensionless_unscaled]:
     r"""
     Return the ratio of populations of two ionization states.
 
@@ -161,14 +164,14 @@ def Saha(g_j, g_k, n_e: u.m**-3, E_jk: u.J, T_e: u.K) -> u.dimensionless_unscale
     --------
     >>> import astropy.units as u
     >>> T_e = 5000 * u.K
-    >>> n = 1e19 * u.m ** -3
+    >>> n = 1e19 * u.m**-3
     >>> g_j = 2
     >>> g_k = 2
     >>> E_jk = 1 * u.Ry
     >>> Saha(g_j, g_k, n, E_jk, T_e)
     <Quantity 3.299...e-06>
     >>> T_e = 1 * u.Ry
-    >>> n = 1e23 * u.m ** -3
+    >>> n = 1e23 * u.m**-3
     >>> Saha(g_j, g_k, n, E_jk, T_e)
     <Quantity 1114595.586...>
 
@@ -185,7 +188,7 @@ def Saha(g_j, g_k, n_e: u.m**-3, E_jk: u.J, T_e: u.K) -> u.dimensionless_unscale
     E_h = 1 * u.Ry
 
     degeneracy_factor = (1 / n_e) * g_j / (4 * g_k * a0**3)
-    physical_constants = (k_B * T_e / (pi * E_h)) ** (3 / 2)
-    boltzmann_factor = exp(-E_jk / (k_B * T_e))
+    physical_constants = (k_B * T_e / (np.pi * E_h)) ** (3 / 2)
+    boltzmann_factor = np.exp(-E_jk / (k_B * T_e))
 
     return degeneracy_factor * physical_constants * boltzmann_factor

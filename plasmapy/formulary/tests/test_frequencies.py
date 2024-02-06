@@ -18,7 +18,7 @@ from plasmapy.particles.exceptions import InvalidParticleError
 from plasmapy.utils._pytest_helpers import assert_can_handle_nparray
 
 Z = 1
-ion = "p"
+ion = "p+"
 n_i = 5e19 * u.m**-3
 n_e = Z * 5e19 * u.m**-3
 
@@ -35,12 +35,12 @@ B_nanarr = np.array([0.001, np.nan]) * u.T
         (wuh_, upper_hybrid_frequency),
     ],
 )
-def test_aliases(alias, parent):
+def test_aliases(alias, parent) -> None:
     """Test all aliases defined in frequencies.py"""
     assert alias is parent
 
 
-def test_gyrofrequency():
+def test_gyrofrequency() -> None:
     r"""Test the gyrofrequency function in frequencies.py."""
 
     assert gyrofrequency(B, "e-").unit.is_equivalent(u.rad / u.s)
@@ -82,11 +82,13 @@ def test_gyrofrequency():
 
     assert gyrofrequency(B, particle=ion).unit.is_equivalent(u.rad / u.s)
 
-    assert np.isclose(gyrofrequency(1 * u.T, particle="p").value, 95788335.834874)
+    assert np.isclose(gyrofrequency(1 * u.T, particle="p+").value, 95788335.834874)
 
-    assert np.isclose(gyrofrequency(2.4 * u.T, particle="p").value, 229892006.00369796)
+    assert np.isclose(gyrofrequency(2.4 * u.T, particle="p+").value, 229892006.00369796)
 
-    assert np.isclose(gyrofrequency(1 * u.G, particle="p").cgs.value, 9.58e3, rtol=2e-3)
+    assert np.isclose(
+        gyrofrequency(1 * u.G, particle="p+").cgs.value, 9.58e3, rtol=2e-3
+    )
 
     assert gyrofrequency(-5 * u.T, "p") == gyrofrequency(5 * u.T, "p")
 
@@ -108,7 +110,7 @@ def test_gyrofrequency():
         # TODO: this should be WARNS, not RAISES. and it's probably still raised
         assert gyrofrequency(5.0, "p") == gyrofrequency(5.0 * u.T, "p")
 
-    gyrofrequency(1 * u.T, particle="p")
+    gyrofrequency(1 * u.T, particle="p+")
     # testing for user input Z
     testMeth1 = gyrofrequency(1 * u.T, particle="H-1", Z=0.8).si.value
     testTrue1 = 76622320.37
@@ -120,7 +122,7 @@ def test_gyrofrequency():
     assert_can_handle_nparray(gyrofrequency, kwargs={"signed": False})
 
 
-def test_lower_hybrid_frequency():
+def test_lower_hybrid_frequency() -> None:
     r"""Test the lower_hybrid_frequency function in frequencies.py."""
 
     ion = "He-4 1+"
@@ -155,7 +157,7 @@ def test_lower_hybrid_frequency():
     assert_can_handle_nparray(lower_hybrid_frequency)
 
 
-def test_upper_hybrid_frequency():
+def test_upper_hybrid_frequency() -> None:
     r"""Test the upper_hybrid_frequency function in frequencies.py."""
 
     omega_uh = upper_hybrid_frequency(B, n_e=n_e)
@@ -188,7 +190,7 @@ def test_upper_hybrid_frequency():
     assert_can_handle_nparray(upper_hybrid_frequency)
 
 
-def test_Buchsbaum_frequency():
+def test_Buchsbaum_frequency() -> None:
     r"""Test the Buchsbaum_frequency function in frequencies.py."""
 
     with pytest.raises(InvalidParticleError):

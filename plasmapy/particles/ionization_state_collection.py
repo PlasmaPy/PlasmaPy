@@ -4,11 +4,11 @@ isotopes.
 """
 __all__ = ["IonizationStateCollection"]
 
+from numbers import Integral, Real
+from typing import Optional, Union
+
 import astropy.units as u
 import numpy as np
-
-from numbers import Integral, Real
-from typing import NoReturn, Optional, Union
 
 from plasmapy.particles.atomic import atomic_number
 from plasmapy.particles.exceptions import (
@@ -83,10 +83,10 @@ class IonizationStateCollection:
     >>> import astropy.units as u
     >>> from plasmapy.particles import IonizationStateCollection
     >>> states = IonizationStateCollection(
-    ...     {'H': [0.5, 0.5], 'He': [0.95, 0.05, 0]},
-    ...     T_e = 1.2e4 * u.K,
-    ...     n0 = 1e15 * u.m ** -3,
-    ...     abundances = {'H': 1, 'He': 0.08},
+    ...     {"H": [0.5, 0.5], "He": [0.95, 0.05, 0]},
+    ...     T_e=1.2e4 * u.K,
+    ...     n0=1e15 * u.m**-3,
+    ...     abundances={"H": 1, "He": 0.08},
     ... )
     >>> states.ionic_fractions
     {'H': array([0.5, 0.5]), 'He': array([0.95, 0.05, 0.  ])}
@@ -94,22 +94,22 @@ class IonizationStateCollection:
     The number densities are given by the ionic fractions multiplied by
     the abundance and the number density scaling factor ``n0``.
 
-    >>> states.number_densities['H']
+    >>> states.number_densities["H"]
     <Quantity [5.e+14, 5.e+14] 1 / m3>
-    >>> states['He'] = [0.4, 0.59, 0.01]
+    >>> states["He"] = [0.4, 0.59, 0.01]
 
     To change the ionic fractions for a single element, use item
     assignment.
 
-    >>> states = IonizationStateCollection(['H', 'He'])
-    >>> states['H'] = [0.1, 0.9]
+    >>> states = IonizationStateCollection(["H", "He"])
+    >>> states["H"] = [0.1, 0.9]
 
     Item assignment will also work if you supply number densities.
 
-    >>> states['He'] = [0.4, 0.6, 0.0] * u.m ** -3
-    >>> states.ionic_fractions['He']
+    >>> states["He"] = [0.4, 0.6, 0.0] * u.m**-3
+    >>> states.ionic_fractions["He"]
     array([0.4, 0.6, 0. ])
-    >>> states.number_densities['He']
+    >>> states.number_densities["He"]
     <Quantity [0.4, 0.6, 0. ] 1 / m3>
 
     Notes
@@ -137,13 +137,13 @@ class IonizationStateCollection:
         self,
         inputs: Union[dict[str, np.ndarray], list, tuple],
         *,
-        T_e: u.K = np.nan * u.K,
+        T_e: u.Quantity[u.K] = np.nan * u.K,
         abundances: Optional[dict[str, Real]] = None,
         log_abundances: Optional[dict[str, Real]] = None,
-        n0: u.m**-3 = np.nan * u.m**-3,
+        n0: u.Quantity[u.m**-3] = np.nan * u.m**-3,
         tol: Real = 1e-15,
         kappa: Real = np.inf,
-    ):
+    ) -> None:
         set_abundances = True
         if isinstance(inputs, dict) and np.all(
             [isinstance(fracs, u.Quantity) for fracs in inputs.values()]
@@ -334,7 +334,7 @@ class IonizationStateCollection:
     def __iter__(self):
         yield from [self[key] for key in self.ionic_fractions]
 
-    def __eq__(self, other):
+    def __eq__(self, other) -> bool:
         if not isinstance(other, IonizationStateCollection):
             return False
 
@@ -585,7 +585,7 @@ class IonizationStateCollection:
 
                 self._pars["abundances"] = new_abundances
 
-        elif isinstance(inputs, (list, tuple)):
+        elif isinstance(inputs, list | tuple):
             try:
                 _particle_instances = [Particle(particle) for particle in inputs]
             except (InvalidParticleError, TypeError) as exc:
@@ -633,7 +633,7 @@ class IonizationStateCollection:
 
     @property
     @validate_quantities
-    def n_e(self) -> u.m**-3:
+    def n_e(self) -> u.Quantity[u.m**-3]:
         """The electron number density under the assumption of quasineutrality."""
         number_densities = self.number_densities
         n_e = 0.0 * u.m**-3
@@ -646,13 +646,13 @@ class IonizationStateCollection:
 
     @property
     @validate_quantities
-    def n0(self) -> u.m**-3:
+    def n0(self) -> u.Quantity[u.m**-3]:
         """The number density scaling factor."""
         return self._pars["n"]
 
     @n0.setter
     @validate_quantities
-    def n0(self, n: u.m**-3):
+    def n0(self, n: u.Quantity[u.m**-3]):
         """Set the number density scaling factor."""
         try:
             n = n.to(u.m**-3)
@@ -760,13 +760,13 @@ class IonizationStateCollection:
                 raise ParticleError("Invalid log_abundances.") from None
 
     @property
-    def T_e(self) -> u.K:
+    def T_e(self) -> u.Quantity[u.K]:
         """The electron temperature."""
         return self._pars["T_e"]
 
     @T_e.setter
     @validate_quantities(electron_temperature={"equivalencies": u.temperature_energy()})
-    def T_e(self, electron_temperature: u.K):
+    def T_e(self, electron_temperature: u.Quantity[u.K]):
         """Set the electron temperature."""
         try:
             temperature = electron_temperature.to(
@@ -876,8 +876,7 @@ class IonizationStateCollection:
         Examples
         --------
         >>> states = IonizationStateCollection(
-        ...     {"H": [0.1, 0.9], "He": [0, 0.1, 0.9]},
-        ...     abundances={"H": 1, "He": 0.1}
+        ...     {"H": [0.1, 0.9], "He": [0, 0.1, 0.9]}, abundances={"H": 1, "He": 0.1}
         ... )
         >>> states.average_ion()
         CustomParticle(mass=2.12498...e-27 kg, charge=1.5876...e-19 C)
@@ -918,7 +917,7 @@ class IonizationStateCollection:
             abundances=all_abundances,
         )
 
-    def summarize(self, minimum_ionic_fraction: Real = 0.01) -> NoReturn:
+    def summarize(self, minimum_ionic_fraction: Real = 0.01) -> None:
         """
         Print quicklook information.
 
@@ -932,11 +931,11 @@ class IonizationStateCollection:
         Examples
         --------
         >>> states = IonizationStateCollection(
-        ...     {'H': [0.1, 0.9], 'He': [0.95, 0.05, 0.0]},
-        ...     T_e = 12000 * u.K,
-        ...     n0 = 3e9 * u.cm ** -3,
-        ...     abundances = {'H': 1.0, 'He': 0.1},
-        ...     kappa = 3.4,
+        ...     {"H": [0.1, 0.9], "He": [0.95, 0.05, 0.0]},
+        ...     T_e=12000 * u.K,
+        ...     n0=3e9 * u.cm**-3,
+        ...     abundances={"H": 1.0, "He": 0.1},
+        ...     kappa=3.4,
         ... )
         >>> states.summarize()
         IonizationStateCollection instance for: H, He

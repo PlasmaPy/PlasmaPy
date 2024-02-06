@@ -3,10 +3,10 @@
 __all__ = ["Fermi_integral", "rot_a_to_b"]
 
 import numbers
-import numpy as np
-
-from mpmath import polylog
 from typing import Union
+
+import numpy as np
+from mpmath import polylog
 
 
 def Fermi_integral(
@@ -71,7 +71,7 @@ def Fermi_integral(
     >>> Fermi_integral(1, 1)
     (1.8062860704447743-0j)
     """
-    if isinstance(x, (numbers.Integral, numbers.Real, numbers.Complex)):
+    if isinstance(x, numbers.Integral | numbers.Real | numbers.Complex):
         arg = -np.exp(x)
         return -1 * complex(polylog(j + 1, arg))
     elif isinstance(x, np.ndarray):

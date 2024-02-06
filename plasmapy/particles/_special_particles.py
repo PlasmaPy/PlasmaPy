@@ -34,15 +34,15 @@ class ParticleZoo:
     Examples
     --------
     >>> particle_zoo_ = ParticleZoo()
-    >>> 'e-' in particle_zoo_.leptons
+    >>> "e-" in particle_zoo_.leptons
     True
-    >>> 'nu_e' in particle_zoo_.antineutrinos
+    >>> "nu_e" in particle_zoo_.antineutrinos
     False
-    >>> 'mu+' in particle_zoo_.antiparticles
+    >>> "mu+" in particle_zoo_.antiparticles
     True
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         leptons = {"e-", "mu-", "tau-", "nu_e", "nu_mu", "nu_tau"}
         antileptons = {"e+", "mu+", "tau+", "anti_nu_e", "anti_nu_mu", "anti_nu_tau"}
         baryons = {"p+", "n"}

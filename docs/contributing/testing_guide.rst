@@ -35,7 +35,7 @@ Summary
   - Navigate to the top-level directory (probably named
     :file:`PlasmaPy/`) in your local clone of PlasmaPy's repository.
 
-  - If you are on MacOS or Linux, run:
+  - If you are on macOS or Linux, run:
 
     .. code-block:: console
 
@@ -157,13 +157,25 @@ message to help us find the cause of a particular test failure.
 .. code-block:: python
 
    def test_addition():
-       result = 2 + 2
+       actual = 2 + 2
        expected = 4
-       assert result == expected, f"2 + 2 returns {result} instead of {expected}."
+       assert actual == expected, f"2 + 2 returns {actual} instead of {expected}."
 
 .. tip::
 
    Use `f-strings`_ to improve error message readability.
+
+Type hint annotations
+---------------------
+
+PlasmaPy has begun using |mypy| to perform |static type checking| on
+|type hint annotations|. Adding a :py:`-> None` return annotation lets
+|mypy| verify that tests do not have :py:`return` statements.
+
+.. code-block:: python
+
+   def test_addition() -> None:
+       assert 2 * 2 == 4
 
 Floating point comparisons
 --------------------------
@@ -204,11 +216,11 @@ To test that a function issues an appropriate warning, use
    import pytest
 
 
-   def issue_warning():
+   def issue_warning() -> None:
        warnings.warn("warning message", UserWarning)
 
 
-   def test_that_a_warning_is_issued():
+   def test_that_a_warning_is_issued() -> None:
        with pytest.warns(UserWarning):
            issue_warning()
 
@@ -220,11 +232,11 @@ To test that a function raises an appropriate exception, use
    import pytest
 
 
-   def raise_exception():
+   def raise_exception() -> None:
        raise Exception
 
 
-   def test_that_an_exception_is_raised():
+   def test_that_an_exception_is_raised() -> None:
        with pytest.raises(Exception):
            raise_exception()
 
@@ -249,7 +261,7 @@ function.
 
 .. code-block:: python
 
-   def test_proof_by_riemann_hypothesis():
+   def test_proof_by_riemann_hypothesis() -> None:
        assert proof_by_riemann(False)
        assert proof_by_riemann(True)  # will only be run if the previous test passes
 
@@ -260,11 +272,11 @@ both will be run.
 
 .. code-block:: python
 
-   def test_proof_if_riemann_false():
+   def test_proof_if_riemann_false() -> None:
        assert proof_by_riemann(False)
 
 
-   def test_proof_if_riemann_true():
+   def test_proof_if_riemann_true() -> None:
        assert proof_by_riemann(True)
 
 However, this approach can lead to cumbersome, repeated code if you are
@@ -275,7 +287,7 @@ tests for the same function, the preferred method is to decorate it with
 .. code-block:: python
 
    @pytest.mark.parametrize("truth_value", [True, False])
-   def test_proof_if_riemann(truth_value):
+   def test_proof_if_riemann(truth_value: bool) -> None:
        assert proof_by_riemann(truth_value)
 
 This code snippet will run :py:`proof_by_riemann(truth_value)` for each
@@ -290,7 +302,7 @@ functions or pass in tuples containing inputs and expected values.
 .. code-block:: python
 
    @pytest.mark.parametrize("truth_value, expected", [(True, True), (False, True)])
-   def test_proof_if_riemann(truth_value, expected):
+   def test_proof_if_riemann(truth_value: bool, expected: bool) -> None:
        assert proof_by_riemann(truth_value) == expected
 
 Test parametrization with argument unpacking
@@ -305,10 +317,17 @@ positional arguments (``a`` and ``b``) and one optional keyword argument
 
 .. code-block:: python
 
-   def add(a, b, reverse_order=False):
+   def add(a: float | str, b: float | str, reverse_order: bool = False) -> float | str:
        if reverse_order:
            return b + a
        return a + b
+
+.. hint::
+
+   This function uses |type hint annotations| to indicate that ``a`` and
+   ``b`` can be either a :py:`float` or :py:`str`, :py:`reverse_order`
+   should be a :py:`bool`, and :py:`add` should return a :py:`float` or
+   :py:`str`.
 
 Argument unpacking_ lets us provide positional arguments in a `tuple` or
 `list` (commonly referred to as :term:`args`) and keyword arguments in a
@@ -344,8 +363,16 @@ and unpacking_ them inside of the test function.
            (["1", "2"], {}, "12"),  # if no keyword arguments, use an empty dict
        ],
    )
-   def test_add(args, kwargs, expected):
+   def test_add(args: list[str], kwargs: dict[str, bool], expected: str) -> None:
        assert add(*args, **kwargs) == expected
+
+.. hint::
+
+   This function uses |type hint annotations| to indicate that ``args``
+   should be a `list` containing `str` objects, ``kwargs`` should be a
+   `dict` containing `str` objects that map to `bool` objects,
+   ``expected`` should be a `str`, and that there should be no
+   :py:`return` statement.
 
 Fixtures
 --------
@@ -399,7 +426,7 @@ balanced with each other rather than absolute principles.
   .. code-block:: python
 
      @pytest.mark.slow
-     def test_calculating_primes():
+     def test_calculating_primes() -> None:
          calculate_all_primes()
 
 * **Write tests that are easy to understand and change.** To fully
@@ -687,9 +714,14 @@ environments are available, run:
 
    tox -a
 
-These commands can be run in any directory within PlasmaPy's repository
-with the same effect.
+For example, static type checking with |mypy| can be run locally with
 
+.. code-block:: shell
+
+   tox -e mypy
+
+Commands using |tox| can be run in any directory within PlasmaPy's
+repository with the same effect.
 
 .. _code-coverage:
 

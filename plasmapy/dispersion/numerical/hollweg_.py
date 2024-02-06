@@ -4,17 +4,17 @@ two-fluid dispersion relation.
 """
 __all__ = ["hollweg"]
 
-import astropy.units as u
-import numpy as np
 import warnings
-
-from astropy.constants.si import c
 from numbers import Integral, Real
 from typing import Optional
 
+import astropy.units as u
+import numpy as np
+from astropy.constants.si import c
+
 from plasmapy.formulary.frequencies import gyrofrequency, plasma_frequency
 from plasmapy.formulary.speeds import Alfven_speed, ion_sound_speed
-from plasmapy.particles import particle_input, ParticleLike
+from plasmapy.particles import ParticleLike, particle_input
 from plasmapy.utils.decorators import validate_quantities
 from plasmapy.utils.exceptions import PhysicsWarning
 
@@ -29,14 +29,14 @@ c_si_unitless = c.value
 )
 @particle_input
 def hollweg(  # noqa: C901, PLR0912, PLR0915
-    B: u.T,
+    B: u.Quantity[u.T],
     ion: ParticleLike,
-    k: u.rad / u.m,
-    n_i: u.m**-3,
-    theta: u.rad,
+    k: u.Quantity[u.rad / u.m],
+    n_i: u.Quantity[u.m**-3],
+    theta: u.Quantity[u.rad],
     *,
-    T_e: u.K,
-    T_i: u.K,
+    T_e: u.Quantity[u.K],
+    T_i: u.Quantity[u.K],
     gamma_e: Real = 1,
     gamma_i: Real = 3,
     mass_numb: Optional[Integral] = None,

@@ -6,26 +6,6 @@ on:
   workflow_dispatch:
 
 jobs:
-  conda_installs:
-    name: Install from ${{ matrix.channel }} channel
-    runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        include:
-
-        - channel: conda-forge
-
-    steps:
-    - name: Set up conda
-      uses: conda-incubator/setup-miniconda@v3
-      with:
-        auto-update-conda: true
-        python-version: 3.9
-
-    - name: Install PlasmaPy
-      run: conda install -c ${{ matrix.channel }} --yes plasmapy
-
 
   tests:
     name: ${{ matrix.name }}
@@ -33,66 +13,68 @@ jobs:
 
     strategy:
       fail-fast: false
+
       matrix:
         include:
 
-        - name: Python 3.9 (Windows)
-          os: windows-latest
-          python: 3.9
-          toxenv: py39-all
-
-        - name: Python 3.10 (macOS)
+        - name: Python 3.12 (macOS)
           os: macos-latest
-          python: '3.10'
-          toxenv: py310-all
+          python: '3.12'
+          toxenv: py312-all
 
-        - name: Python 3.11 (ubuntu-latest)
+        - name: Python 3.11 (Ubuntu)
           os: ubuntu-latest
           python: '3.11'
           toxenv: py311-all
 
-        - name: Python 3.9 with Astropy dev
-          os: ubuntu-latest
-          python: 3.9
-          toxenv: py39-astropydev
+        - name: Python 3.10 (Windows)
+          os: windows-latest
+          python: '3.10'
+          toxenv: py310-all
 
-        - name: Python 3.9 with matplotlib dev
+        - name: Python 3.10 with Astropy dev (Ubuntu)
           os: ubuntu-latest
-          python: 3.9
-          toxenv: py39-matplotlibdev
+          python: '3.10'
+          toxenv: py310-astropydev-all
 
-        - name: Python 3.9 with NumPy dev
+        - name: Python 3.10 with matplotlib dev (Ubuntu)
           os: ubuntu-latest
-          python: 3.9
-          toxenv: py39-numpydev
+          python: '3.10'
+          toxenv: py310-matplotlibdev-all
 
-        - name: Documentation with Sphinx dev
+        - name: Python 3.10 with NumPy dev (Ubuntu)
           os: ubuntu-latest
-          python: '3.11'
+          python: '3.10'
+          toxenv: py310-numpydev-all
+
+        - name: Python '3.10' with xarray dev (Ubuntu)
+          os: ubuntu-latest
+          python: '3.10'
+          toxenv: py310-xarraydev-all
+
+        - name: Documentation with Sphinx dev (Ubuntu)
+          os: ubuntu-latest
+          python: '3.12'
           toxenv: build_docs-sphinxdev
           toxposargs: -q
 
-        - name: Python 3.9 with xarray dev
-          os: ubuntu-latest
-          python: 3.9
-          toxenv: py39-xarraydev
-
         - name: Import PlasmaPy (Windows)
           os: windows-latest
-          python: 3.9
-          toxenv: py39-minimal-pypi-import
+          python: '3.10'
+          toxenv: py310-minimal-pypi-import
 
-        - name: Import PlasmaPy (macOS X)
+        - name: Import PlasmaPy (macOS)
           os: macos-latest
-          python: 3.9
-          toxenv: py39-minimal-pypi-import
+          python: '3.11'
+          toxenv: py311-minimal-pypi-import
 
         - name: Import PlasmaPy (Ubuntu)
           os: ubuntu-latest
-          python: 3.9
-          toxenv: py39-minimal-pypi-import
+          python: '3.12'
+          toxenv: py312-minimal-pypi-import
 
     steps:
+
     - name: Checkout code
       uses: actions/checkout@v4
       with:
@@ -116,6 +98,21 @@ jobs:
 
     - name: Upload coverage to codecov
       if: ${{ contains(matrix.toxenv,'-cov') }}
-      uses: codecov/codecov-action@v3
+      uses: codecov/codecov-action@v4
       with:
         file: ./coverage.xml
+
+  install-plasmapy-via-conda-forge:
+    name: Install PlasmaPy from conda-forge
+    runs-on: ubuntu-latest
+
+    steps:
+
+    - name: Set up miniconda
+      uses: conda-incubator/setup-miniconda@v3
+      with:
+        auto-update-conda: true
+        python-version: '3.10'
+
+    - name: Use conda to install PlasmaPy from conda-forge
+      run: conda install -c conda-forge --yes plasmapy

@@ -4,8 +4,6 @@ import astropy.units as u
 import numpy as np
 import pytest
 
-from astropy.units import UnitsError
-
 from plasmapy.analysis.time_series.conditional_averaging import ConditionalEvents
 
 
@@ -22,15 +20,15 @@ from plasmapy.analysis.time_series.conditional_averaging import ConditionalEvent
     ),
     [
         ([1, 2], [1, 2], 1.5, None, None, None, -1, ValueError),
-        ([1, 2] * u.eV, [1, 2], 1.5, None, None, None, 0, UnitsError),
-        ([1, 2], [1, 2], 1.5 * u.eV, None, None, None, 0, UnitsError),
-        ([1, 2] * u.eV, [1, 2], 1.5 * u.m, None, None, None, 0, UnitsError),
-        ([1, 2] * u.eV, [1, 2], 1.5 * u.eV, 4.0, None, None, 0, UnitsError),
-        ([1, 2], [1, 2], 1.5, None, [1, 2] * u.eV, None, 0, UnitsError),
-        ([1, 2], [1, 2], 1.5 * u.eV, 4.0, [1, 2] * u.eV, None, 0, UnitsError),
-        ([1, 2], [1, 2] * u.s, 1.5, 4.0, [1, 2], None, 0, UnitsError),
-        ([1, 2], [1, 2], 1.5, 4.0, [1, 2], None, 0 * u.s, UnitsError),
-        ([1, 2], [1, 2] * u.s, 1.5, 4.0, [1, 2], 1, 0 * u.s, UnitsError),
+        ([1, 2] * u.eV, [1, 2], 1.5, None, None, None, 0, u.UnitsError),
+        ([1, 2], [1, 2], 1.5 * u.eV, None, None, None, 0, u.UnitsError),
+        ([1, 2] * u.eV, [1, 2], 1.5 * u.m, None, None, None, 0, u.UnitsError),
+        ([1, 2] * u.eV, [1, 2], 1.5 * u.eV, 4.0, None, None, 0, u.UnitsError),
+        ([1, 2], [1, 2], 1.5, None, [1, 2] * u.eV, None, 0, u.UnitsError),
+        ([1, 2], [1, 2], 1.5 * u.eV, 4.0, [1, 2] * u.eV, None, 0, u.UnitsError),
+        ([1, 2], [1, 2] * u.s, 1.5, 4.0, [1, 2], None, 0, u.UnitsError),
+        ([1, 2], [1, 2], 1.5, 4.0, [1, 2], None, 0 * u.s, u.UnitsError),
+        ([1, 2], [1, 2] * u.s, 1.5, 4.0, [1, 2], 1, 0 * u.s, u.UnitsError),
         ([1, 2], [1, 2, 3], 1.5, None, None, None, 0, ValueError),
         ([1, 2], [1, 2], 1.5, None, [1, 2, 3], None, 0, ValueError),
         ([1, 2], [1, 2], 1.5, None, None, 5, 0, ValueError),
@@ -47,7 +45,7 @@ def test_ConditionalEvents_Errors(
     length_of_return,
     distance,
     exception,
-):
+) -> None:
     """Test whether exception is risen"""
     with pytest.raises(exception):
         ConditionalEvents(
@@ -228,7 +226,7 @@ def test_ConditionalEvents_class(
     length_of_return,
     distance,
     expected,
-):
+) -> None:
     """Tests for ConditionalEvents class"""
     cond_events = ConditionalEvents(
         signal,
@@ -311,7 +309,7 @@ def test_peak_not_max_value(
     distance,
     remove_non_max_peaks,
     expected,
-):
+) -> None:
     """Tests for ConditionalEvents class"""
     cond_events = ConditionalEvents(
         signal,

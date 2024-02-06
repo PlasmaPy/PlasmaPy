@@ -2,10 +2,10 @@ import astropy.units as u
 import numpy as np
 import pytest
 
-from plasmapy.formulary.ionization import ionization_balance, Saha, Z_bal_
+from plasmapy.formulary.ionization import Saha, Z_bal_, ionization_balance
 
 
-def test_ionization_balance():
+def test_ionization_balance() -> None:
     n = 1e19 * u.m**-3
     T_e = 5000 * u.K
 
@@ -23,7 +23,7 @@ def test_ionization_balance():
         ionization_balance(2e19 * u.kg, T_e)
 
 
-def test_Saha():
+def test_Saha() -> None:
     g_j = 2
     g_k = 1
     n_e = 1e19 * u.m**-3

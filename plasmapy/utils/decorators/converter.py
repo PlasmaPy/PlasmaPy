@@ -2,8 +2,9 @@
 
 __all__ = ["angular_freq_to_hz"]
 
-import astropy.units as u
 import inspect
+
+import astropy.units as u
 import wrapt
 
 

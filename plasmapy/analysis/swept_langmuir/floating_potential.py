@@ -3,10 +3,10 @@ __all__ = ["find_floating_potential", "VFExtras"]
 __aliases__ = ["find_vf_"]
 
 import numbers
-import numpy as np
-
+import warnings
 from typing import NamedTuple, Optional, Union
-from warnings import warn
+
+import numpy as np
 
 from plasmapy.analysis import fit_functions as ffuncs
 from plasmapy.analysis.swept_langmuir.helpers import check_sweep
@@ -217,7 +217,7 @@ def find_floating_potential(  # noqa: C901, PLR0912, PLR0915
     # condition min_points
     if min_points is None:
         min_points = int(np.max([5, np.around(min_point_factor * voltage.size)]))
-    elif not isinstance(min_points, (float, np.floating, int, np.integer)):
+    elif not isinstance(min_points, float | np.floating | int | np.integer):
         raise TypeError(
             f"Argument 'min_points' is wrong type '{type(min_points)}', expecting "
             f"an int or float."
@@ -265,7 +265,7 @@ def find_floating_potential(  # noqa: C901, PLR0912, PLR0915
             (cp_candidates[threshold_indices] + 1, [cp_candidates[-1] + 1])
         )
         rtn_extras["islands"] = [
-            slice(start, stop) for start, stop in zip(isl_start, isl_stop)
+            slice(start, stop) for start, stop in zip(isl_start, isl_stop, strict=False)
         ]
 
         # do islands fall within the min_points window?
@@ -277,7 +277,7 @@ def find_floating_potential(  # noqa: C901, PLR0912, PLR0915
             + 1
         )
         if isl_window > min_points:
-            warn(
+            warnings.warn(
                 f"Unable to determine floating potential, Langmuir sweep has "
                 f"{n_islands} crossing-islands.  Try adjusting keyword 'threshold' "
                 f"and/or smooth the current.",
@@ -320,7 +320,7 @@ def find_floating_potential(  # noqa: C901, PLR0912, PLR0915
                     istart -= ipad_2_start
 
         if (istop - istart + 1) < min_points:
-            warn(
+            warnings.warn(
                 f"The number of elements in the current array ({istop - istart + 1}) "
                 f"is less than 'min_points' ({min_points}).",
                 PlasmaPyWarning,

@@ -9,7 +9,6 @@ __all__ = [
 __aliases__ = ["DB_", "pmag_", "pth_", "ub_"]
 
 import astropy.units as u
-
 from astropy.constants.si import e, k_B, mu0
 
 from plasmapy import particles
@@ -46,7 +45,9 @@ def _grab_charge(ion: ParticleLike, z_mean=None):
     T_e={"can_be_negative": False, "equivalencies": u.temperature_energy()},
     B={"can_be_negative": False},
 )
-def Bohm_diffusion(T_e: u.K, B: u.T) -> u.m**2 / u.s:
+def Bohm_diffusion(
+    T_e: u.Quantity[u.K], B: u.Quantity[u.T]
+) -> u.Quantity[u.m**2 / u.s]:
     r"""
     Return the Bohm diffusion coefficient.
 
@@ -114,7 +115,7 @@ DB_ = Bohm_diffusion
 
 
 @validate_quantities
-def magnetic_energy_density(B: u.T) -> u.J / u.m**3:
+def magnetic_energy_density(B: u.Quantity[u.T]) -> u.Quantity[u.J / u.m**3]:
     r"""
     Calculate the magnetic energy density.
 
@@ -167,7 +168,7 @@ def magnetic_energy_density(B: u.T) -> u.J / u.m**3:
     Examples
     --------
     >>> import astropy.units as u
-    >>> magnetic_energy_density(0.1*u.T)
+    >>> magnetic_energy_density(0.1 * u.T)
     <Quantity 3978.87... J / m3>
 
     """
@@ -179,7 +180,7 @@ ub_ = magnetic_energy_density
 
 
 @validate_quantities
-def magnetic_pressure(B: u.T) -> u.Pa:
+def magnetic_pressure(B: u.Quantity[u.T]) -> u.Quantity[u.Pa]:
     r"""
     Calculate the magnetic pressure.
 
@@ -232,7 +233,7 @@ def magnetic_pressure(B: u.T) -> u.Pa:
     Examples
     --------
     >>> import astropy.units as u
-    >>> magnetic_pressure(0.1*u.T).to(u.Pa)
+    >>> magnetic_pressure(0.1 * u.T).to(u.Pa)
     <Quantity 3978.87... Pa>
 
     """
@@ -247,7 +248,7 @@ pmag_ = magnetic_pressure
     T={"can_be_negative": False, "equivalencies": u.temperature_energy()},
     n={"can_be_negative": False},
 )
-def thermal_pressure(T: u.K, n: u.m**-3) -> u.Pa:
+def thermal_pressure(T: u.Quantity[u.K], n: u.Quantity[u.m**-3]) -> u.Quantity[u.Pa]:
     r"""
     Return the thermal pressure for a Maxwellian distribution.
 
@@ -264,9 +265,9 @@ def thermal_pressure(T: u.K, n: u.m**-3) -> u.Pa:
     Examples
     --------
     >>> import astropy.units as u
-    >>> thermal_pressure(1*u.eV, 1e20/u.m**3)
+    >>> thermal_pressure(1 * u.eV, 1e20 / u.m**3)
     <Quantity 16.021... Pa>
-    >>> thermal_pressure(10*u.eV, 1e20/u.m**3)
+    >>> thermal_pressure(10 * u.eV, 1e20 / u.m**3)
     <Quantity 160.21... Pa>
 
     Returns

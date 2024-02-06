@@ -45,18 +45,18 @@ class HarrisSheet:
     Examples
     --------
     >>> import astropy.units as u
-    >>> harris_sheet = HarrisSheet(delta = 3 * u.m, B0 = 2 * u.T)
-    >>> harris_sheet.magnetic_field(y = 5 * u.m)
+    >>> harris_sheet = HarrisSheet(delta=3 * u.m, B0=2 * u.T)
+    >>> harris_sheet.magnetic_field(y=5 * u.m)
     <Quantity 1.8622... T>
     """
 
-    def __init__(self, B0, delta, P0=0 * u.Pa):
+    def __init__(self, B0, delta, P0=0 * u.Pa) -> None:
         self.B0 = B0
         self.delta = delta
         self.P0 = P0
 
     @validate_quantities
-    def magnetic_field(self, y: u.m) -> u.T:
+    def magnetic_field(self, y: u.Quantity[u.m]) -> u.Quantity[u.T]:
         r"""
         Compute the magnetic field.
 
@@ -76,7 +76,7 @@ class HarrisSheet:
         return self.B0 * np.tanh(u.rad * y / self.delta)
 
     @validate_quantities
-    def current_density(self, y: u.m) -> u.A / u.m**2:
+    def current_density(self, y: u.Quantity[u.m]) -> u.Quantity[u.A / u.m**2]:
         r"""
         Compute the current density.
 
@@ -94,7 +94,7 @@ class HarrisSheet:
         )
 
     @validate_quantities
-    def plasma_pressure(self, y: u.m) -> u.Pa:
+    def plasma_pressure(self, y: u.Quantity[u.m]) -> u.Quantity[u.Pa]:
         r"""
         Compute plasma pressure.
 

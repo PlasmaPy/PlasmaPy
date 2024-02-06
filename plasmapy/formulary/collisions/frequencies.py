@@ -8,13 +8,13 @@ __all__ = [
     "fundamental_ion_collision_freq",
 ]
 
+from functools import cached_property
+from numbers import Real
+
 import astropy.units as u
 import numpy as np
 import scipy
-
 from astropy.constants.si import e, k_B, m_e
-from functools import cached_property
-from numbers import Real
 
 from plasmapy import particles
 from plasmapy.formulary.collisions import coulomb, lengths, misc
@@ -158,11 +158,11 @@ class SingleParticleCollisionFrequencies:
         test_particle: ParticleLike,
         field_particle: ParticleLike,
         *,
-        v_drift: u.m / u.s,
-        T_b: u.K,
-        n_b: u.m**-3,
+        v_drift: u.Quantity[u.m / u.s],
+        T_b: u.Quantity[u.K],
+        n_b: u.Quantity[u.m**-3],
         Coulomb_log,
-    ):
+    ) -> None:
         # Note: This class uses CGS units internally to coincide
         #       with our references.  Input is taken in MKS units and
         #       then converted as necessary. Output is in MKS units.
@@ -263,7 +263,7 @@ class SingleParticleCollisionFrequencies:
         ).to(u.Hz)
 
     @cached_property
-    def x(self) -> u.dimensionless_unscaled:
+    def x(self) -> u.Quantity[u.dimensionless_unscaled]:
         """
         The ratio of kinetic energy in the test particle to the thermal
         energy of the field particle.
@@ -280,7 +280,7 @@ class SingleParticleCollisionFrequencies:
         return x.to(u.dimensionless_unscaled)
 
     @staticmethod
-    def _phi_integrand(t: u.dimensionless_unscaled):  # noqa: ANN205
+    def _phi_integrand(t: u.Quantity[u.dimensionless_unscaled]):  # noqa: ANN205
         """
         The phi integrand used in calculating phi.
         """
@@ -391,13 +391,13 @@ class MaxwellianCollisionFrequencies:
         test_particle: ParticleLike,
         field_particle: ParticleLike,
         *,
-        v_drift: u.m / u.s = 0 * u.m / u.s,
-        T_a: u.K,
-        n_a: u.m**-3,
-        T_b: u.K,
-        n_b: u.m**-3,
-        Coulomb_log: u.dimensionless_unscaled,
-    ):
+        v_drift: u.Quantity[u.m / u.s] = 0 * u.m / u.s,
+        T_a: u.Quantity[u.K],
+        n_a: u.Quantity[u.m**-3],
+        T_b: u.Quantity[u.K],
+        n_b: u.Quantity[u.m**-3],
+        Coulomb_log: u.Quantity[u.dimensionless_unscaled],
+    ) -> None:
         if (
             isinstance(v_drift, np.ndarray)
             and isinstance(T_a, np.ndarray)
@@ -516,7 +516,14 @@ class MaxwellianCollisionFrequencies:
         >>> T_b = 1e3 * u.eV
         >>> Coulomb_log = 10 * u.dimensionless_unscaled
         >>> electron_ion_collisions = MaxwellianCollisionFrequencies(
-        ...     "e-", "Na+", v_drift=v_drift, n_a=n_a, T_a=T_a, n_b=n_b, T_b=T_b, Coulomb_log=Coulomb_log
+        ...     "e-",
+        ...     "Na+",
+        ...     v_drift=v_drift,
+        ...     n_a=n_a,
+        ...     T_a=T_a,
+        ...     n_b=n_b,
+        ...     T_b=T_b,
+        ...     Coulomb_log=Coulomb_log,
         ... )
         >>> electron_ion_collisions.Maxwellian_avg_ei_collision_freq
         <Quantity 2.8053078...e+15 Hz>
@@ -573,7 +580,14 @@ class MaxwellianCollisionFrequencies:
         >>> T_b = 1e3 * u.eV
         >>> Coulomb_log = 10 * u.dimensionless_unscaled
         >>> ion_ion_collisions = MaxwellianCollisionFrequencies(
-        ...     "Na+", "Na+", v_drift=v_drift, n_a=n_a, T_a=T_a, n_b=n_b, T_b=T_b, Coulomb_log=Coulomb_log
+        ...     "Na+",
+        ...     "Na+",
+        ...     v_drift=v_drift,
+        ...     n_a=n_a,
+        ...     T_a=T_a,
+        ...     n_b=n_b,
+        ...     T_b=T_b,
+        ...     Coulomb_log=Coulomb_log,
         ... )
         >>> ion_ion_collisions.Maxwellian_avg_ii_collision_freq
         <Quantity 1.1223822...e+08 Hz>
@@ -602,13 +616,13 @@ class MaxwellianCollisionFrequencies:
     n={"can_be_negative": False},
 )
 def collision_frequency(
-    T: u.K,
-    n: u.m**-3,
+    T: u.Quantity[u.K],
+    n: u.Quantity[u.m**-3],
     species,
     z_mean: Real = np.nan,
-    V: u.m / u.s = np.nan * u.m / u.s,
+    V: u.Quantity[u.m / u.s] = np.nan * u.m / u.s,
     method="classical",
-) -> u.Hz:
+) -> u.Quantity[u.Hz]:
     r"""
     Collision frequency of particles in a plasma.
 
@@ -713,7 +727,7 @@ def collision_frequency(
     >>> import astropy.units as u
     >>> n = 1e19 * u.m**-3
     >>> T = 1e6 * u.K
-    >>> species = ('e', 'p')
+    >>> species = ("e", "p")
     >>> collision_frequency(T, n, species)
     <Quantity 70249... Hz>
 
@@ -792,13 +806,13 @@ def collision_frequency(
     n_e={"can_be_negative": False},
 )
 def fundamental_electron_collision_freq(
-    T_e: u.K,
-    n_e: u.m**-3,
+    T_e: u.Quantity[u.K],
+    n_e: u.Quantity[u.m**-3],
     ion,
     coulomb_log=None,
     V=None,
     coulomb_log_method="classical",
-) -> u.s**-1:
+) -> u.Quantity[u.s**-1]:
     r"""
     Average momentum relaxation rate for a slowly flowing Maxwellian
     distribution of electrons.
@@ -886,17 +900,21 @@ def fundamental_electron_collision_freq(
     --------
     >>> import astropy.units as u
     >>> from astropy.constants import c
-    >>> fundamental_electron_collision_freq(0.1 * u.eV, 1e6 / u.m ** 3, 'p')
+    >>> fundamental_electron_collision_freq(0.1 * u.eV, 1e6 / u.m**3, "p")
     <Quantity 0.001801... 1 / s>
-    >>> fundamental_electron_collision_freq(1e6 * u.K, 1e6 / u.m ** 3, 'p')
+    >>> fundamental_electron_collision_freq(1e6 * u.K, 1e6 / u.m**3, "p")
     <Quantity 1.07221...e-07 1 / s>
-    >>> fundamental_electron_collision_freq(100 * u.eV, 1e20 / u.m ** 3, 'p')
+    >>> fundamental_electron_collision_freq(100 * u.eV, 1e20 / u.m**3, "p")
     <Quantity 3935958.7... 1 / s>
-    >>> fundamental_electron_collision_freq(100 * u.eV, 1e20 / u.m ** 3, 'p', coulomb_log_method = 'GMS-1')
+    >>> fundamental_electron_collision_freq(
+    ...     100 * u.eV, 1e20 / u.m**3, "p", coulomb_log_method="GMS-1"
+    ... )
     <Quantity 3872815.5... 1 / s>
-    >>> fundamental_electron_collision_freq(0.1 * u.eV, 1e6 / u.m ** 3, 'p', V = c / 100)
+    >>> fundamental_electron_collision_freq(0.1 * u.eV, 1e6 / u.m**3, "p", V=c / 100)
     <Quantity 5.6589...e-07 1 / s>
-    >>> fundamental_electron_collision_freq(100 * u.eV, 1e20 / u.m ** 3, 'p', coulomb_log = 20)
+    >>> fundamental_electron_collision_freq(
+    ...     100 * u.eV, 1e20 / u.m**3, "p", coulomb_log=20
+    ... )
     <Quantity 5812633... 1 / s>
 
     See Also
@@ -948,13 +966,13 @@ def fundamental_electron_collision_freq(
     n_i={"can_be_negative": False},
 )
 def fundamental_ion_collision_freq(
-    T_i: u.K,
-    n_i: u.m**-3,
+    T_i: u.Quantity[u.K],
+    n_i: u.Quantity[u.m**-3],
     ion,
     coulomb_log=None,
     V=None,
     coulomb_log_method="classical",
-) -> u.s**-1:
+) -> u.Quantity[u.s**-1]:
     r"""
     Average momentum relaxation rate for a slowly flowing Maxwellian
     distribution of ions.
@@ -1048,17 +1066,19 @@ def fundamental_ion_collision_freq(
     --------
     >>> import astropy.units as u
     >>> from astropy.constants import c
-    >>> fundamental_ion_collision_freq(0.1 * u.eV, 1e6 / u.m ** 3, 'p')
+    >>> fundamental_ion_collision_freq(0.1 * u.eV, 1e6 / u.m**3, "p")
     <Quantity 2.868...e-05 1 / s>
-    >>> fundamental_ion_collision_freq(1e6 * u.K, 1e6 / u.m ** 3, 'p')
+    >>> fundamental_ion_collision_freq(1e6 * u.K, 1e6 / u.m**3, "p")
     <Quantity 1.741...e-09 1 / s>
-    >>> fundamental_ion_collision_freq(100 * u.eV, 1e20 / u.m ** 3, 'p')
+    >>> fundamental_ion_collision_freq(100 * u.eV, 1e20 / u.m**3, "p")
     <Quantity 63087.5... 1 / s>
-    >>> fundamental_ion_collision_freq(100 * u.eV, 1e20 / u.m ** 3, 'p', coulomb_log_method='GMS-1')
+    >>> fundamental_ion_collision_freq(
+    ...     100 * u.eV, 1e20 / u.m**3, "p", coulomb_log_method="GMS-1"
+    ... )
     <Quantity 63085.1... 1 / s>
-    >>> fundamental_ion_collision_freq(100 * u.eV, 1e20 / u.m ** 3, 'p', V = c / 100)
+    >>> fundamental_ion_collision_freq(100 * u.eV, 1e20 / u.m**3, "p", V=c / 100)
     <Quantity 9.111... 1 / s>
-    >>> fundamental_ion_collision_freq(100 * u.eV, 1e20 / u.m ** 3, 'p', coulomb_log=20)
+    >>> fundamental_ion_collision_freq(100 * u.eV, 1e20 / u.m**3, "p", coulomb_log=20)
     <Quantity 95918.7... 1 / s>
 
     See Also

@@ -1,5 +1,6 @@
-import astropy.units as u
 import itertools
+
+import astropy.units as u
 import numpy as np
 import pytest
 
@@ -201,7 +202,9 @@ tests_for_exceptions = {
     list(tests_for_exceptions.values()),
     ids=list(tests_for_exceptions.keys()),
 )
-def test_named_tests_for_exceptions(tested_object, args, kwargs, expected_exception):
+def test_named_tests_for_exceptions(
+    tested_object, args, kwargs, expected_exception
+) -> None:
     """
     Test that appropriate exceptions are raised for inappropriate inputs
     to `IonizationState` or `IonizationStateCollection`
@@ -1025,7 +1028,7 @@ type_error_tests = [
     ("tested_object", "args", "kwargs", "expected"),
     tests_from_nuclear + tests_from_atomic + particle_error_tests + type_error_tests,
 )
-def test_unnamed_tests_exceptions(tested_object, args, kwargs, expected):
+def test_unnamed_tests_exceptions(tested_object, args, kwargs, expected) -> None:
     """
     Test that appropriate exceptions are raised for inappropriate inputs
     to different functions.
@@ -1038,6 +1041,6 @@ def test_unnamed_tests_exceptions(tested_object, args, kwargs, expected):
 
     if hasattr(expected, "expected_warning"):
         for expected_warning, recorded_warning in zip(
-            exc_info.expected_warning, exc_info.list
+            exc_info.expected_warning, exc_info.list, strict=False
         ):
             assert expected_warning == recorded_warning.category

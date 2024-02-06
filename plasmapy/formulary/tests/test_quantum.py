@@ -1,27 +1,26 @@
 import astropy.units as u
 import numpy as np
 import pytest
-
 from astropy.constants import c
 
 from plasmapy.formulary.quantum import (
+    Ef_,
+    Fermi_energy,
+    Thomas_Fermi_length,
+    Wigner_Seitz_radius,
     _chemical_potential_interp,
     chemical_potential,
     deBroglie_wavelength,
-    Ef_,
-    Fermi_energy,
     lambdaDB_,
     lambdaDB_th_,
     quantum_theta,
     thermal_deBroglie_wavelength,
-    Thomas_Fermi_length,
-    Wigner_Seitz_radius,
 )
 from plasmapy.particles.exceptions import InvalidParticleError
 from plasmapy.utils.exceptions import RelativityError
 
 
-def test_deBroglie_wavelength():
+def test_deBroglie_wavelength() -> None:
     dbwavelength1 = deBroglie_wavelength(2e7 * u.cm / u.s, "e")
     assert np.isclose(dbwavelength1.value, 3.628845222852886e-11)
     assert dbwavelength1.unit == u.m
@@ -64,12 +63,12 @@ def test_deBroglie_wavelength():
         ({"V": 8 * u.m / u.s, "particle": "invalid particle"}, InvalidParticleError),
     ],
 )
-def test_deBroglie_exceptions(kwargs, exception):
+def test_deBroglie_exceptions(kwargs, exception) -> None:
     with pytest.raises(exception):
         deBroglie_wavelength(**kwargs)
 
 
-def test_deBroglie_warning():
+def test_deBroglie_warning() -> None:
     with pytest.warns(u.UnitsWarning):
         deBroglie_wavelength(0.79450719277, "Be-7 1+")
 
@@ -82,7 +81,7 @@ n_e = 1e23 * u.cm**-3
 # add tests for different astropy units (random fuzzing method?)
 
 
-def test_thermal_deBroglie_wavelength():
+def test_thermal_deBroglie_wavelength() -> None:
     r"""Test the thermal_deBroglie_wavelength function in quantum.py."""
     lambda_dbTh = thermal_deBroglie_wavelength(T_e)
     # true value at 1 eV
@@ -104,7 +103,7 @@ def test_thermal_deBroglie_wavelength():
         thermal_deBroglie_wavelength(T_e=-1 * u.eV)
 
 
-def test_Fermi_energy():
+def test_Fermi_energy() -> None:
     r"""Test the Fermi_energy function in quantum.py."""
     energy_F = Fermi_energy(n_e)
     # true value at 1e23 cm-3
@@ -123,7 +122,7 @@ def test_Fermi_energy():
         Fermi_energy(n_e=-1 * u.m**-3)
 
 
-def test_Thomas_Fermi_length():
+def test_Thomas_Fermi_length() -> None:
     r"""Test the Thomas_Fermi_length function in quantum.py."""
     lambda_TF = Thomas_Fermi_length(n_e)
     # true value at 1e23 cm-3
@@ -143,7 +142,7 @@ def test_Thomas_Fermi_length():
         Thomas_Fermi_length(n_e=-1 * u.m**-3)
 
 
-def test_Wigner_Seitz_radius():
+def test_Wigner_Seitz_radius() -> None:
     """
     Checks Wigner-Seitz radius for a known value.
     """
@@ -167,7 +166,7 @@ class TestChemicalPotential:
 
     @staticmethod
     @pytest.mark.parametrize(*value_test_parameters)
-    def test_return_value(n_e, T, expected_value):
+    def test_return_value(n_e, T, expected_value) -> None:
         """
         Tests chemical_potential for expected value.
         """
@@ -181,7 +180,7 @@ class TestChemicalPotential:
 
     @staticmethod
     @pytest.mark.parametrize(*value_test_parameters)
-    def test_fail1(n_e, T, expected_value):
+    def test_fail1(n_e, T, expected_value) -> None:
         """
         Tests if test_return_value would fail if we slightly adjusted the
         value comparison by some quantity close to numerical error.
@@ -200,13 +199,13 @@ class TestChemicalPotential:
 
 class Test__chemical_potential_interp:
     @classmethod
-    def setup_class(cls):
+    def setup_class(cls) -> None:
         """Initializing parameters for tests"""
         cls.n_e = 1e23 * u.cm**-3
         cls.T = 11604 * u.K
         cls.True1 = 7.741254037813922
 
-    def test_known1(self):
+    def test_known1(self) -> None:
         """
         Tests Fermi_integral for expected value.
         """
@@ -215,7 +214,7 @@ class Test__chemical_potential_interp:
         errStr = f"Chemical potential value should be {self.True1} and not {methodVal}."
         assert testTrue, errStr
 
-    def test_fail1(self):
+    def test_fail1(self) -> None:
         """
         Tests if test_known1() would fail if we slightly adjusted the
         value comparison by some quantity close to numerical error.
@@ -230,7 +229,7 @@ class Test__chemical_potential_interp:
         assert testTrue, errStr
 
 
-def test_quantum_aliases():
+def test_quantum_aliases() -> None:
     r"""Test all aliases defined in quantum.py"""
 
     assert Ef_ is Fermi_energy
@@ -241,7 +240,7 @@ def test_quantum_aliases():
 class TestQuantumTheta:
     """Test the quantum_theta function in quantum.py."""
 
-    def test_units(self):
+    def test_units(self) -> None:
         """Test the return units"""
 
         theta = quantum_theta(1 * u.eV, 1e26 * u.m**-3)
@@ -257,7 +256,7 @@ class TestQuantumTheta:
             (1 * u.K, 1e26 * u.m**-3, 1.09690e-3),  # Specify temperature in Kelvin
         ],
     )
-    def test_value(self, T, n_e, expected_theta):
+    def test_value(self, T, n_e, expected_theta) -> None:
         """Compare the calculated theta with the expected value."""
 
         theta = quantum_theta(T, n_e)

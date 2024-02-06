@@ -3,9 +3,10 @@ Module containing the Collisional Analysis formulation.
 """
 __all__ = ["temp_ratio"]
 
-import astropy.units as u
 import logging
 import numbers
+
+import astropy.units as u
 import numpy as np
 
 from plasmapy.particles import ParticleLike, ParticleList
@@ -18,19 +19,19 @@ from plasmapy.utils.decorators import validate_quantities
 )
 def temp_ratio(  # noqa: C901
     *,
-    r_0: u.au,
-    r_n: u.au,
-    n_1: u.cm**-3,
-    n_2: u.cm**-3,
-    v_1: u.km / u.s,
-    T_1: u.K,
-    T_2: u.K,
+    r_0: u.Quantity[u.au],
+    r_n: u.Quantity[u.au],
+    n_1: u.Quantity[u.cm**-3],
+    n_2: u.Quantity[u.cm**-3],
+    v_1: u.Quantity[u.km / u.s],
+    T_1: u.Quantity[u.K],
+    T_2: u.Quantity[u.K],
     ions: ParticleLike = ("p+", "He-4++"),
     n_step: int = 100,
     density_scale: float = -1.8,
     velocity_scale: float = -0.2,
     temperature_scale: float = -0.74,
-    verbose=False,
+    verbose: bool = False,
 ):
     r"""
     Calculate the thermalization ratio for a plasma in transit, taken
@@ -193,12 +194,12 @@ def temp_ratio(  # noqa: C901
     >>> ions = ["p+", "He-4++"]
     >>> helio.temp_ratio(
     ...     r_0=r_0, r_n=r_n, n_1=n_1, n_2=n_2, v_1=v_1, T_1=T_1, T_2=T_2, ions=ions
-    ...     )
+    ... )
     [2.78928645832..., 1.04007368797..., 1.06914450183...]
     """
 
     # Validate ions argument
-    if not isinstance(ions, (list, tuple, ParticleList)):
+    if not isinstance(ions, list | tuple | ParticleList):
         ions = [ions]
     ions = ParticleList(ions)
 
@@ -245,7 +246,7 @@ def temp_ratio(  # noqa: C901
         n_step,
         density,
         velocity,
-        temperature,
+        temperature: float,
     ):
         # Initialize the alpha-proton charge and mass ratios.
         z_1 = ions[0].charge_number
@@ -263,7 +264,7 @@ def temp_ratio(  # noqa: C901
 
         # Define Coulomb log for mixed ion collisions, see docstring
         def lambda_ba(
-            theta,
+            theta: float,
             T_1,
             n_1,
             n_2,

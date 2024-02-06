@@ -10,11 +10,11 @@ Module containing functionality focused on the plasma dispersion function
 """
 __all__ = ["plasma_dispersion_func", "plasma_dispersion_func_deriv"]
 
+import warnings
+from typing import Union
+
 import astropy.units as u
 import numpy as np
-import warnings
-
-from typing import Union
 
 from plasmapy.dispersion import dispersion_functions
 from plasmapy.utils.decorators import bind_lite_func, preserve_signature

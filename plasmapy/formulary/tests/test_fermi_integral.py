@@ -10,7 +10,7 @@ from plasmapy.formulary.mathematics import Fermi_integral
 
 class Test_Fermi_integral:
     @classmethod
-    def setup_class(cls):
+    def setup_class(cls) -> None:
         """Initialize parameters for tests."""
         cls.arg1 = 3.889780
         cls.True1 = 6.272518847136373 - 8.673617379884035e-19j
@@ -25,7 +25,7 @@ class Test_Fermi_integral:
             ]
         )
 
-    def test_known1(self):
+    def test_known1(self) -> None:
         """
         Test Fermi_integral for expected value.
         """
@@ -34,7 +34,7 @@ class Test_Fermi_integral:
         errStr = f"Fermi integral value should be {self.True1} and not {methodVal}."
         assert testTrue, errStr
 
-    def test_fail1(self):
+    def test_fail1(self) -> None:
         """
         Test if test_known1() would fail if we slightly adjusted the
         value comparison by some quantity close to numerical error.
@@ -48,14 +48,14 @@ class Test_Fermi_integral:
         )
         assert testTrue, errStr
 
-    def test_array(self):
+    def test_array(self) -> None:
         """Test Fermi_integral where argument is an array of inputs."""
         methodVals = Fermi_integral(self.args, self.order1)
         testTrue = np.allclose(methodVals, self.Trues, rtol=1e-16, atol=0.0)
         errStr = f"Fermi integral value should be {self.Trues} and not {methodVals}."
         assert testTrue, errStr
 
-    def test_invalid_type(self):
+    def test_invalid_type(self) -> None:
         """
         Test whether `TypeError` is raised when an invalid argument
         type is passed to `~plasmapy.mathematics.Fermi_integral`.

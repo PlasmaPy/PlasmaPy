@@ -5,12 +5,12 @@ a single ionization level.
 
 __all__ = ["IonicLevel", "IonizationState"]
 
+import warnings
+from numbers import Integral, Real
+from typing import Optional
+
 import astropy.units as u
 import numpy as np
-import warnings
-
-from numbers import Integral, Real
-from typing import NoReturn, Optional
 
 from plasmapy.particles.atomic import ionic_levels
 from plasmapy.particles.decorators import particle_input
@@ -86,7 +86,7 @@ class IonicLevel:
     @particle_input
     def __init__(
         self, ion: Particle, ionic_fraction=None, number_density=None, T_i=None
-    ):
+    ) -> None:
         try:
             self.ion = ion
             self.ionic_fraction = ionic_fraction
@@ -142,7 +142,7 @@ class IonicLevel:
                     self._ionic_fraction = ionfrac
 
     @property
-    def number_density(self) -> u.m**-3:
+    def number_density(self) -> u.Quantity[u.m**-3]:
         """The number density of the ion."""
         return self._number_density
 
@@ -150,11 +150,11 @@ class IonicLevel:
     @validate_quantities(
         n={"can_be_negative": False, "can_be_inf": False, "none_shall_pass": True},
     )
-    def number_density(self, n: u.m**-3):
+    def number_density(self, n: u.Quantity[u.m**-3]) -> None:
         self._number_density = np.nan * u.m**-3 if n is None else n
 
     @property
-    def T_i(self) -> u.K:
+    def T_i(self) -> u.Quantity[u.K]:
         """The ion temperature of this particular charge state."""
         return self._T_i
 
@@ -162,7 +162,7 @@ class IonicLevel:
     @validate_quantities(
         T={"can_be_negative": False, "can_be_inf": False, "none_shall_pass": True},
     )
-    def T_i(self, T: u.K):
+    def T_i(self, T: u.Quantity[u.K]) -> None:
         self._T_i = np.nan * u.K if T is None else T
 
 
@@ -215,7 +215,7 @@ class IonizationState:
 
     Examples
     --------
-    >>> states = IonizationState('H', [0.6, 0.4], n_elem=1*u.cm**-3, T_e=11000*u.K)
+    >>> states = IonizationState("H", [0.6, 0.4], n_elem=1 * u.cm**-3, T_e=11000 * u.K)
     >>> states.ionic_fractions[0]  # fraction of hydrogen that is neutral
     0.6
     >>> states.ionic_fractions[1]  # fraction of hydrogen that is ionized
@@ -231,7 +231,7 @@ class IonizationState:
     base particle will be He-4, and all He-4 particles will be set as
     doubly charged.
 
-    >>> states = IonizationState('alpha')
+    >>> states = IonizationState("alpha")
     >>> states.base_particle
     'He-4'
     >>> states.ionic_fractions
@@ -244,9 +244,9 @@ class IonizationState:
 
     @particle_input(require="element")
     @validate_quantities(
-        T_e={"unit": u.K, "equivalencies": u.temperature_energy()},
+        T_e={"unit": u.Quantity[u.K], "equivalencies": u.temperature_energy()},
         T_i={
-            "unit": u.K,
+            "unit": u.Quantity[u.K],
             "equivalencies": u.temperature_energy(),
             "none_shall_pass": True,
         },
@@ -256,12 +256,12 @@ class IonizationState:
         particle: Particle,
         ionic_fractions=None,
         *,
-        T_e: u.K = np.nan * u.K,
-        T_i: u.K = None,
+        T_e: u.Quantity[u.K] = np.nan * u.K,
+        T_i: u.Quantity[u.K] = None,
         kappa: Real = np.inf,
-        n_elem: u.m**-3 = np.nan * u.m**-3,
+        n_elem: u.Quantity[u.m**-3] = np.nan * u.m**-3,
         tol: float = 1e-15,
-    ):
+    ) -> None:
         self._number_of_particles = particle.atomic_number + 1
 
         if particle.is_ion or particle.is_category(require=("uncharged", "element")):
@@ -388,9 +388,13 @@ class IonizationState:
 
         Examples
         --------
-        >>> IonizationState('H', [1, 0], tol=1e-6) == IonizationState('H', [1, 1e-6], tol=1e-6)  # noqa: W505
+        >>> IonizationState("H", [1, 0], tol=1e-6) == IonizationState(
+        ...     "H", [1, 1e-6], tol=1e-6
+        ... )  # noqa: W505
         True
-        >>> IonizationState('H', [1, 0], tol=1e-8) == IonizationState('H', [1, 1e-6], tol=1e-5)  # noqa: W505
+        >>> IonizationState("H", [1, 0], tol=1e-8) == IonizationState(
+        ...     "H", [1, 1e-6], tol=1e-5
+        ... )  # noqa: W505
         False
 
         """
@@ -445,7 +449,7 @@ class IonizationState:
 
         Examples
         --------
-        >>> hydrogen_states = IonizationState('H', [0.9, 0.1])
+        >>> hydrogen_states = IonizationState("H", [0.9, 0.1])
         >>> hydrogen_states.ionic_fractions
         array([0.9, 0.1])
 
@@ -510,7 +514,7 @@ class IonizationState:
         total = np.sum(self._ionic_fractions)
         return np.isclose(total, 1, atol=tol, rtol=0)
 
-    def normalize(self) -> NoReturn:
+    def normalize(self) -> None:
         """
         Normalize the ionization state distribution (if set) so that the
         sum of the ionic fractions becomes equal to one.
@@ -522,7 +526,7 @@ class IonizationState:
 
     @property
     @validate_quantities
-    def n_e(self) -> u.m**-3:
+    def n_e(self) -> u.Quantity[u.m**-3]:
         """
         The electron number density assuming a single species plasma.
         """
@@ -530,13 +534,13 @@ class IonizationState:
 
     @property
     @validate_quantities
-    def n_elem(self) -> u.m**-3:
+    def n_elem(self) -> u.Quantity[u.m**-3]:
         """The total number density of neutrals and all ions."""
         return self._n_elem.to(u.m**-3)
 
     @n_elem.setter
     @validate_quantities
-    def n_elem(self, value: u.m**-3):
+    def n_elem(self, value: u.Quantity[u.m**-3]):
         """Set the number density of neutrals and all ions."""
         if value < 0 * u.m**-3:
             raise ParticleError
@@ -547,7 +551,7 @@ class IonizationState:
 
     @property
     @validate_quantities
-    def number_densities(self) -> u.m**-3:
+    def number_densities(self) -> u.Quantity[u.m**-3]:
         """The number densities for each state."""
         try:
             return (self.n_elem * self.ionic_fractions).to(u.m**-3)
@@ -556,7 +560,7 @@ class IonizationState:
 
     @number_densities.setter
     @validate_quantities
-    def number_densities(self, value: u.m**-3):
+    def number_densities(self, value: u.Quantity[u.m**-3]):
         """Set the number densities for each state."""
         if np.any(value.value < 0):
             raise ParticleError("Number densities cannot be negative.")
@@ -570,7 +574,7 @@ class IonizationState:
         self._ionic_fractions = value / self._n_elem
 
     @property
-    def T_e(self) -> u.K:
+    def T_e(self) -> u.Quantity[u.K]:
         """The electron temperature."""
         if self._T_e is None:
             raise ParticleError("No electron temperature has been specified.")
@@ -578,7 +582,7 @@ class IonizationState:
 
     @T_e.setter
     @validate_quantities(value={"equivalencies": u.temperature_energy()})
-    def T_e(self, value: u.K):
+    def T_e(self, value: u.Quantity[u.K]):
         """Set the electron temperature."""
         try:
             value = value.to(u.K, equivalencies=u.temperature_energy())
@@ -593,7 +597,7 @@ class IonizationState:
     @validate_quantities(
         validations_on_return={"equivalencies": u.temperature_energy()}
     )
-    def T_i(self) -> u.K:
+    def T_i(self) -> u.Quantity[u.K]:
         """
         The ion temperature. If the ion temperature has not been provided,
         then this attribute will provide the electron temperature.
@@ -608,7 +612,7 @@ class IonizationState:
             "can_be_negative": False,
         }
     )
-    def T_i(self, value: u.K):
+    def T_i(self, value: u.Quantity[u.K]):
         """Set the ion temperature."""
         if value is None:
             self._T_i = np.repeat(self._T_e, self._number_of_particles)
@@ -719,10 +723,10 @@ class IonizationState:
 
         Examples
         --------
-        >>> He = IonizationState('He', [0.2, 0.5, 0.3])
+        >>> He = IonizationState("He", [0.2, 0.5, 0.3])
         >>> He.Z_most_abundant
         [1]
-        >>> Li = IonizationState('Li', [0.4, 0.4, 0.2, 0.0])
+        >>> Li = IonizationState("Li", [0.4, 0.4, 0.2, 0.0])
         >>> Li.Z_most_abundant
         [0, 1]
         """
@@ -758,7 +762,7 @@ class IonizationState:
         else:
             raise ValueError("Need 0 <= tol < 1.")
 
-    def _get_states_info(self, minimum_ionic_fraction=0.01) -> list[str]:
+    def _get_states_info(self, minimum_ionic_fraction: float = 0.01) -> list[str]:
         """
         Return a `list` containing the ion symbol, ionic fraction, and
         (if available) the number density and temperature for that ion.
@@ -862,11 +866,11 @@ class IonizationState:
         Examples
         --------
         >>> He_states = IonizationState(
-        ...     'He',
+        ...     "He",
         ...     [0.941, 0.058, 0.001],
-        ...     T_e = 5.34 * u.K,
-        ...     kappa = 4.05,
-        ...     n_elem = 5.51e19 * u.m ** -3,
+        ...     T_e=5.34 * u.K,
+        ...     kappa=4.05,
+        ...     n_elem=5.51e19 * u.m**-3,
         ... )
         >>> He_states.summarize()
         IonizationState instance for He with Z_mean = 0.06

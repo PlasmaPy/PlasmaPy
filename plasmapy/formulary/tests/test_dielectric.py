@@ -6,12 +6,12 @@ import numpy as np
 import pytest
 
 from plasmapy.formulary.dielectric import (
+    RotatingTensorElements,
+    StixTensorElements,
     cold_plasma_permittivity_LRP,
     cold_plasma_permittivity_SDP,
     permittivity_1D_Maxwellian,
     permittivity_1D_Maxwellian_lite,
-    RotatingTensorElements,
-    StixTensorElements,
 )
 from plasmapy.formulary.frequencies import gyrofrequency, plasma_frequency
 from plasmapy.formulary.speeds import thermal_speed
@@ -26,7 +26,7 @@ three_species = ["e", "D+", "H+"]
 
 
 class Test_ColdPlasmaPermittivity:
-    def test_proton_electron_plasma(self):
+    def test_proton_electron_plasma(self) -> None:
         """
         Test proton-electron plasma against the (approximate)
         analytical formulas
@@ -34,8 +34,8 @@ class Test_ColdPlasmaPermittivity:
         B = 1 * u.T
         n = [1, 1] * 1 / u.m**3
         omega = 1 * u.rad / u.s
-        omega_ce = gyrofrequency(B, particle="e", signed=True)
-        omega_pe = plasma_frequency(n[0], particle="e")
+        omega_ce = gyrofrequency(B, particle="e-", signed=True)
+        omega_pe = plasma_frequency(n[0], particle="e-")
         omega_cp = abs(omega_ce) / 1860
         omega_pp = omega_pe / 43
 
@@ -71,7 +71,7 @@ class Test_ColdPlasmaPermittivity:
         assert rotating_tuple_result.plasma is P
         assert isinstance(rotating_tuple_result, RotatingTensorElements)
 
-    def test_three_species(self):
+    def test_three_species(self) -> None:
         """
         Test with three species (2 ions): D plasma with 5%H minority fraction
         """
@@ -81,7 +81,7 @@ class Test_ColdPlasmaPermittivity:
         assert np.isclose(D, 13408.99181054283)
         assert np.isclose(P, -10524167.9)
 
-    def test_SD_to_LR_relationships(self):
+    def test_SD_to_LR_relationships(self) -> None:
         """
         Test the relationships between (S, D, P) notation in Stix basis and
         (L, R, P) notation in the rotating basis, ie test:
@@ -98,7 +98,7 @@ class Test_ColdPlasmaPermittivity:
         assert np.isclose(S, (R + L) / 2)
         assert np.isclose(D, (R - L) / 2)
 
-    def test_numpy_array_workflow(self):
+    def test_numpy_array_workflow(self) -> None:
         """
         As per @jhillairet at:
         https://github.com/PlasmaPy/PlasmaPy/issues/539#issuecomment-425337810
@@ -139,12 +139,12 @@ class Test_permittivity_1D_Maxwellian:
         ("bound_name", "bound_attr"),
         [("lite", permittivity_1D_Maxwellian_lite)],
     )
-    def test_lite_function_binding(self, bound_name, bound_attr):
+    def test_lite_function_binding(self, bound_name: str, bound_attr) -> None:
         """Test expected attributes are bound correctly."""
         assert hasattr(permittivity_1D_Maxwellian, bound_name)
         assert getattr(permittivity_1D_Maxwellian, bound_name) is bound_attr
 
-    def test_lite_function_marking(self):
+    def test_lite_function_marking(self) -> None:
         """
         Test permittivity_1D_Maxwellian is marked as having a Lite-Function.
         """
@@ -162,7 +162,7 @@ class Test_permittivity_1D_Maxwellian:
             assert origin == bound_origin
 
     @pytest.mark.parametrize(("kwargs", "expected"), cases)
-    def test_known(self, kwargs, expected):
+    def test_known(self, kwargs, expected) -> None:
         """
         Tests permittivity_1D_Maxwellian for expected value.
         """
@@ -176,7 +176,7 @@ class Test_permittivity_1D_Maxwellian:
         )
 
     @pytest.mark.parametrize(("kwargs", "expected"), cases)
-    def test_fail(self, kwargs, expected):
+    def test_fail(self, kwargs, expected) -> None:
         """
         Tests if `test_known` would fail if we slightly adjusted the
         value comparison by some quantity close to numerical error.
@@ -199,7 +199,7 @@ class Test_permittivity_1D_Maxwellian_lite:
     @pytest.mark.parametrize(
         ("kwargs", "expected"), Test_permittivity_1D_Maxwellian.cases
     )
-    def test_normal_vs_lite_values(self, kwargs, expected):  # noqa: ARG002
+    def test_normal_vs_lite_values(self, kwargs, expected) -> None:  # noqa: ARG002
         """
         Test that `permittivity_1D_Maxwellian_lite` and
         `permittivity_1D_Maxwellian` calculate the same values.

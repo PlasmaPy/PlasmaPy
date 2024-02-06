@@ -9,20 +9,20 @@ __all__ = [
     "mhd_waves",
 ]
 
-import astropy.units as u
-import numpy as np
 import warnings
-
 from abc import ABC, abstractmethod
-from astropy.constants.si import k_B
 from collections import namedtuple
 from numbers import Integral, Real
 from typing import Optional
 
+import astropy.units as u
+import numpy as np
+from astropy.constants.si import k_B
+
 from plasmapy.formulary.dimensionless import beta
 from plasmapy.formulary.frequencies import gyrofrequency, plasma_frequency
 from plasmapy.formulary.speeds import Alfven_speed
-from plasmapy.particles import electron, particle_input, ParticleLike
+from plasmapy.particles import ParticleLike, electron, particle_input
 from plasmapy.utils.decorators import check_relativistic, validate_quantities
 from plasmapy.utils.exceptions import PhysicsWarning
 
@@ -38,15 +38,15 @@ class AbstractMHDWave(ABC):
     )
     def __init__(
         self,
-        B: u.T,
+        B: u.Quantity[u.T],
         density: (u.m**-3, u.kg / u.m**3),
         ion: ParticleLike,
         *,
-        T: u.K = 0 * u.K,
+        T: u.Quantity[u.K] = 0 * u.K,
         gamma: float = 5 / 3,
         mass_numb: Optional[Integral] = None,
         Z: Optional[Real] = None,
-    ):
+    ) -> None:
         # validate arguments
         for arg_name in ("B", "density", "T"):
             val = locals()[arg_name].squeeze()
@@ -78,12 +78,12 @@ class AbstractMHDWave(ABC):
         self._plasma_frequency = plasma_frequency(_n, ion)
 
     @property
-    def alfven_speed(self) -> u.m / u.s:
+    def alfven_speed(self) -> u.Quantity[u.m / u.s]:
         """The Alfvén speed of the plasma."""
         return self._Alfven_speed
 
     @property
-    def sound_speed(self) -> u.m / u.s:
+    def sound_speed(self) -> u.Quantity[u.m / u.s]:
         r"""
         The sound speed of the plasma.
 
@@ -96,7 +96,7 @@ class AbstractMHDWave(ABC):
         return self._sound_speed
 
     @property
-    def magnetosonic_speed(self) -> u.m / u.s:
+    def magnetosonic_speed(self) -> u.Quantity[u.m / u.s]:
         r"""
         The magnetosonic speed of the plasma.
 
@@ -112,7 +112,9 @@ class AbstractMHDWave(ABC):
 
     @staticmethod
     @validate_quantities
-    def _validate_k_theta(k: u.rad / u.m, theta: u.rad) -> u.Quantity:
+    def _validate_k_theta(
+        k: u.Quantity[u.rad / u.m], theta: u.Quantity[u.rad]
+    ) -> list[u.Quantity]:
         """Validate and return wavenumber and angle."""
         # validate argument k
         k = k.squeeze()
@@ -136,7 +138,7 @@ class AbstractMHDWave(ABC):
         return np.meshgrid(theta, k)
 
     @validate_quantities
-    def _validate_angular_frequency(self, omega: u.rad / u.s):
+    def _validate_angular_frequency(self, omega: u.Quantity[u.rad / u.s]):
         """Validate and return angular frequency."""
         omega_gyrofrequency_max = np.max(omega / self._gyrofrequency)
         omega_plasma_frequency_max = np.max(omega / self._plasma_frequency)
@@ -150,7 +152,11 @@ class AbstractMHDWave(ABC):
         return np.squeeze(omega)
 
     @abstractmethod
-    def angular_frequency(self, k: u.rad / u.m, theta: u.rad) -> u.rad / u.s:
+    def angular_frequency(
+        self,
+        k: u.Quantity[u.rad / u.m],
+        theta: u.Quantity[u.rad],
+    ) -> u.Quantity[u.rad / u.s]:
         r"""
         Calculate the angular frequency of magnetohydrodynamic waves.
 
@@ -194,7 +200,9 @@ class AbstractMHDWave(ABC):
     @abstractmethod
     @check_relativistic
     @validate_quantities
-    def group_velocity(self, k: u.rad / u.m, theta: u.rad) -> u.m / u.s:
+    def group_velocity(
+        self, k: u.Quantity[u.rad / u.m], theta: u.Quantity[u.rad]
+    ) -> u.Quantity[u.m / u.s]:
         r"""
         Calculate the group velocities of magnetohydrodynamic waves.
 
@@ -256,7 +264,9 @@ class AbstractMHDWave(ABC):
 
     @check_relativistic
     @validate_quantities
-    def phase_velocity(self, k: u.rad / u.m, theta: u.rad) -> u.m / u.s:
+    def phase_velocity(
+        self, k: u.Quantity[u.rad / u.m], theta: u.Quantity[u.rad]
+    ) -> u.Quantity[u.m / u.s]:
         r"""
         Calculate the phase velocities of magnetohydrodynamic waves.
 
@@ -316,7 +326,7 @@ class AlfvenWave(AbstractMHDWave):
         convertible to kg m\ :sup:`-3`\ .
 
     ion : |particle-like|
-        Representation of the ion species (e.g., ``'p'`` for protons,
+        Representation of the ion species (e.g., ``'p+'`` for protons,
         ``'D+'`` for deuterium, ``'He-4 +1'`` for singly ionized
         helium-4, etc.). If no charge state information is provided,
         then the ions are assumed to be singly ionized.
@@ -372,7 +382,7 @@ class AlfvenWave(AbstractMHDWave):
     --------
     >>> import astropy.units as u
     >>> from plasmapy.dispersion.analytical import AlfvenWave
-    >>> alfven = AlfvenWave(1e-3 * u.T, 1e16 * u.m ** -3, "p+")
+    >>> alfven = AlfvenWave(1e-3 * u.T, 1e16 * u.m**-3, "p+")
     >>> alfven.angular_frequency(1e-5 * u.rad / u.m, 0 * u.deg)
     <Quantity 2.18060973 rad / s>
     >>> alfven.phase_velocity(1e-5 * u.rad / u.m, 0 * u.deg)
@@ -381,7 +391,7 @@ class AlfvenWave(AbstractMHDWave):
     <Quantity 218060.97295233 m / s>
     """
 
-    def angular_frequency(self, k: u.rad / u.m, theta: u.rad):
+    def angular_frequency(self, k: u.Quantity[u.rad / u.m], theta: u.Quantity[u.rad]):
         r"""
         Calculate the angular frequency of magnetohydrodynamic
         Alfvén waves.
@@ -438,7 +448,7 @@ class AlfvenWave(AbstractMHDWave):
         --------
         >>> import astropy.units as u
         >>> from plasmapy.dispersion.analytical import AlfvenWave
-        >>> alfven = AlfvenWave(1e-3 * u.T, 1e16 * u.m ** -3, "p+")
+        >>> alfven = AlfvenWave(1e-3 * u.T, 1e16 * u.m**-3, "p+")
         >>> alfven.angular_frequency(1e-5 * u.rad / u.m, 0 * u.deg)
         <Quantity 2.18060973 rad / s>
         >>> alfven.angular_frequency([1e-5, 2e-4] * (u.rad / u.m), 0 * u.deg)
@@ -453,7 +463,7 @@ class AlfvenWave(AbstractMHDWave):
         omega = k * self._Alfven_speed * np.abs(np.cos(theta))
         return super()._validate_angular_frequency(omega)
 
-    def group_velocity(self, k: u.rad / u.m, theta: u.rad):
+    def group_velocity(self, k: u.Quantity[u.rad / u.m], theta: u.Quantity[u.rad]):
         r"""
         Calculate the group velocities of magnetohydrodynamic Alfvén
         waves.
@@ -534,7 +544,7 @@ class FastMagnetosonicWave(AbstractMHDWave):
         convertible to kg m\ :sup:`-3`\ .
 
     ion : |particle-like|
-        Representation of the ion species (e.g., ``'p'`` for protons,
+        Representation of the ion species (e.g., ``'p+'`` for protons,
         ``'D+'`` for deuterium, ``'He-4 +1'`` for singly ionized
         helium-4, etc.). If no charge state information is provided,
         then the ions are assumed to be singly ionized.
@@ -595,7 +605,7 @@ class FastMagnetosonicWave(AbstractMHDWave):
     --------
     >>> import astropy.units as u
     >>> from plasmapy.dispersion.analytical import FastMagnetosonicWave
-    >>> fast = FastMagnetosonicWave(1e-3 * u.T, 1e16 * u.m ** -3, "p+", T=2.5e6 * u.K)
+    >>> fast = FastMagnetosonicWave(1e-3 * u.T, 1e16 * u.m**-3, "p+", T=2.5e6 * u.K)
     >>> fast.angular_frequency(1e-5 * u.rad / u.m, 0 * u.deg)
     <Quantity 2.18060973 rad / s>
     >>> fast.phase_velocity(1e-5 * u.rad / u.m, 0 * u.deg)
@@ -604,7 +614,7 @@ class FastMagnetosonicWave(AbstractMHDWave):
     <Quantity 218060.97295233 m / s>
     """
 
-    def angular_frequency(self, k: u.rad / u.m, theta: u.rad):
+    def angular_frequency(self, k: u.Quantity[u.rad / u.m], theta: u.Quantity[u.rad]):
         r"""
         Calculate the angular frequency of a fast magnetosonic waves.
 
@@ -665,7 +675,7 @@ class FastMagnetosonicWave(AbstractMHDWave):
         --------
         >>> import astropy.units as u
         >>> from plasmapy.dispersion.analytical import FastMagnetosonicWave
-        >>> fast = FastMagnetosonicWave(1e-3 * u.T, 1e16 * u.m ** -3, "p+", T=2.5e6 * u.K)
+        >>> fast = FastMagnetosonicWave(1e-3 * u.T, 1e16 * u.m**-3, "p+", T=2.5e6 * u.K)
         >>> fast.angular_frequency(1e-5 * u.rad / u.m, 0 * u.deg)
         <Quantity 2.18060973 rad / s>
         >>> fast.angular_frequency([1e-5, 2e-4] * (u.rad / u.m), 0 * u.deg)
@@ -695,7 +705,7 @@ class FastMagnetosonicWave(AbstractMHDWave):
         )
         return super()._validate_angular_frequency(omega)
 
-    def group_velocity(self, k: u.rad / u.m, theta: u.rad):
+    def group_velocity(self, k: u.Quantity[u.rad / u.m], theta: u.Quantity[u.rad]):
         r"""
         Calculate the group velocities of fast magnetosonic waves.
 
@@ -784,7 +794,7 @@ class SlowMagnetosonicWave(AbstractMHDWave):
         to m\ :sup:`-3` or the total mass density :math:`ρ` in units
         convertible to kg m\ :sup:`-3`\ .
     ion : |particle-like|
-        Representation of the ion species (e.g., ``'p'`` for protons,
+        Representation of the ion species (e.g., ``'p+'`` for protons,
         ``'D+'`` for deuterium, ``'He-4 +1'`` for singly ionized
         helium-4, etc.). If no charge state information is provided,
         then the ions are assumed to be singly ionized.
@@ -841,7 +851,7 @@ class SlowMagnetosonicWave(AbstractMHDWave):
     --------
     >>> import astropy.units as u
     >>> from plasmapy.dispersion.analytical import SlowMagnetosonicWave
-    >>> slow = SlowMagnetosonicWave(1e-3 * u.T, 1e16 * u.m ** -3, "p+", T=2.5e6 * u.K)
+    >>> slow = SlowMagnetosonicWave(1e-3 * u.T, 1e16 * u.m**-3, "p+", T=2.5e6 * u.K)
     >>> slow.angular_frequency(1e-5 * u.rad / u.m, 0 * u.deg)
     <Quantity 1.85454394 rad / s>
     >>> slow.phase_velocity(1e-5 * u.rad / u.m, 0 * u.deg)
@@ -850,7 +860,7 @@ class SlowMagnetosonicWave(AbstractMHDWave):
     <Quantity 185454.39417735 m / s>
     """
 
-    def angular_frequency(self, k: u.rad / u.m, theta: u.rad):
+    def angular_frequency(self, k: u.Quantity[u.rad / u.m], theta: u.Quantity[u.rad]):
         r"""
         Calculate the angular frequency of slow magnetosonic waves.
 
@@ -908,7 +918,7 @@ class SlowMagnetosonicWave(AbstractMHDWave):
         --------
         >>> import astropy.units as u
         >>> from plasmapy.dispersion.analytical import SlowMagnetosonicWave
-        >>> slow = SlowMagnetosonicWave(1e-3 * u.T, 1e16 * u.m ** -3, "p+", T=2.5e6 * u.K)
+        >>> slow = SlowMagnetosonicWave(1e-3 * u.T, 1e16 * u.m**-3, "p+", T=2.5e6 * u.K)
         >>> slow.angular_frequency(1e-5 * u.rad / u.m, 0 * u.deg)
         <Quantity 1.85454394 rad / s>
         >>> slow.angular_frequency([1e-5, 2e-4] * (u.rad / u.m), 0 * u.deg)
@@ -938,7 +948,7 @@ class SlowMagnetosonicWave(AbstractMHDWave):
         )
         return super()._validate_angular_frequency(omega)
 
-    def group_velocity(self, k: u.rad / u.m, theta: u.rad):
+    def group_velocity(self, k: u.Quantity[u.rad / u.m], theta: u.Quantity[u.rad]):
         r"""
         Calculate the group velocities of slow magnetosonic waves.
 
@@ -1035,7 +1045,7 @@ def mhd_waves(*args, **kwargs):
         convertible to kg m\ :sup:`-3`\ .
 
     ion : |particle-like|
-        Representation of the ion species (e.g., ``'p'`` for protons,
+        Representation of the ion species (e.g., ``'p+'`` for protons,
         ``'D+'`` for deuterium, ``'He-4 +1'`` for singly ionized
         helium-4, etc.). If no charge state information is provided,
         then the ions are assumed to be singly ionized.

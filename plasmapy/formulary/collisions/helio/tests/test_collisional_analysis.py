@@ -1,7 +1,6 @@
 """Test functionality of `plasmapy.formulary.collisions.helio.collisional_analysis`."""
 import astropy.units as u
 import pytest
-
 from astropy.constants.si import c
 
 from plasmapy.formulary.collisions.helio import temp_ratio
@@ -110,6 +109,6 @@ class Testcollisional_thermalization:
     )
     @pytest.mark.slow()
     @pytest.mark.filterwarnings("ignore::RuntimeWarning")
-    def test_raises(self, kwargs, _error):
+    def test_raises(self, kwargs, _error) -> None:
         with pytest.raises(_error):
             temp_ratio(**kwargs)

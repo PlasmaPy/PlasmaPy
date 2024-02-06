@@ -1,11 +1,11 @@
 """
 Tests for the fitting function classes defined in `plasmapy.analysis.fit_functions`.
 """
-import numpy as np
-import pytest
-
 from abc import ABC, abstractmethod
 from contextlib import nullcontext as does_not_raise
+
+import numpy as np
+import pytest
 
 import plasmapy.analysis.fit_functions as ffuncs
 
@@ -24,7 +24,7 @@ class TestAbstractFitFunction:
 
     ff_class = ffuncs.AbstractFitFunction
 
-    def test_is_abc(self):
+    def test_is_abc(self) -> None:
         """Test `AbstractFitFunction` is an abstract base class."""
         assert issubclass(self.ff_class, ABC)
 
@@ -44,7 +44,7 @@ class TestAbstractFitFunction:
             ("root_solve", False),
         ],
     )
-    def test_methods(self, name, isproperty):
+    def test_methods(self, name: str, isproperty: bool) -> None:
         """Test for required methods and properties."""
         assert hasattr(self.ff_class, name)
 
@@ -55,7 +55,7 @@ class TestAbstractFitFunction:
         "name",
         ["__str__", "func", "func_err", "latex_str"],
     )
-    def test_abstractmethods(self, name):
+    def test_abstractmethods(self, name: str) -> None:
         """Test for required abstract methods."""
         assert name in self.ff_class.__abstractmethods__
 
@@ -91,15 +91,15 @@ class BaseFFTests(ABC):
         """
         ...
 
-    def test_inheritance(self):
+    def test_inheritance(self) -> None:
         """Test inheritance from `AbstractFitFunction`."""
         assert issubclass(self.ff_class, self.abc)
 
-    def test_iscallable(self):
+    def test_iscallable(self) -> None:
         """Test instantiated fit function is callable."""
         assert callable(self.ff_class())
 
-    def test_repr(self):
+    def test_repr(self) -> None:
         """Test __repr__."""
         ff_obj = self.ff_class()
         assert ff_obj.__repr__() == f"{ff_obj.__str__()} {ff_obj.__class__}"
@@ -121,7 +121,7 @@ class BaseFFTests(ABC):
             ("root_solve", False),
         ],
     )
-    def test_methods(self, name, isproperty):
+    def test_methods(self, name: str, isproperty: bool) -> None:
         """Test attribute/method/property existence."""
         assert hasattr(self.ff_class, name)
 
@@ -143,7 +143,7 @@ class BaseFFTests(ABC):
             ("__str__", "_test__str__"),
         ],
     )
-    def test_abstractmethod_values(self, name, value_ref_name):
+    def test_abstractmethod_values(self, name: str, value_ref_name: str) -> None:
         """Test value of all abstract methods, except `func` and `func_err`."""
         ff_obj = self.ff_class()
 
@@ -173,7 +173,7 @@ class BaseFFTests(ABC):
             (None, "default+", pytest.raises(ValueError)),
         ],
     )
-    def test_instantiation(self, params, param_errors, with_condition):
+    def test_instantiation(self, params, param_errors, with_condition) -> None:
         """Test behavior of fit function class instantiation."""
         if params == "default":
             params = self._test_params
@@ -205,7 +205,7 @@ class BaseFFTests(ABC):
             else:
                 assert ff_obj.param_errors == ff_obj.FitParamTuple(*param_errors)
 
-    def test_param_namedtuple(self):
+    def test_param_namedtuple(self) -> None:
         """
         Test that the namedtuple used for `params` and `param_errors` is
         constructed correctly.
@@ -216,7 +216,7 @@ class BaseFFTests(ABC):
         for name in ff_obj.param_names:
             assert hasattr(ff_obj.FitParamTuple, name)
 
-    def test_param_names(self):
+    def test_param_names(self) -> None:
         """Test attribute `param_names` is defined correctly."""
         ff_obj = self.ff_class()
         assert isinstance(ff_obj.param_names, tuple)
@@ -232,7 +232,7 @@ class BaseFFTests(ABC):
             ([3], 10, pytest.raises(ValueError)),
         ],
     )
-    def test_params_setting(self, params, extra, with_condition):
+    def test_params_setting(self, params, extra, with_condition) -> None:
         """Tests for property setting of attribute `params`."""
         ff_obj = self.ff_class()
 
@@ -254,7 +254,7 @@ class BaseFFTests(ABC):
             ([3], 10, pytest.raises(ValueError)),
         ],
     )
-    def test_param_errors_setting(self, param_errors, extra, with_condition):
+    def test_param_errors_setting(self, param_errors, extra, with_condition) -> None:
         """Tests for property setting of attribute `param_errors`."""
         ff_obj = self.ff_class()
 
@@ -278,7 +278,7 @@ class BaseFFTests(ABC):
             (5, "hello", pytest.raises(TypeError)),
         ],
     )
-    def test_func(self, x, replace_a_param, with_condition):
+    def test_func(self, x, replace_a_param, with_condition) -> None:
         """Test the `func` method."""
         ff_obj = self.ff_class()
 
@@ -308,7 +308,7 @@ class BaseFFTests(ABC):
             (5, {"x_err": [0.1, 0.1]}, pytest.raises(ValueError)),
         ],
     )
-    def test_func_err(self, x, kwargs, with_condition):
+    def test_func_err(self, x, kwargs, with_condition) -> None:
         """Test the `func_err` method."""
         params = self._test_params
         param_errors = self._test_param_errors
@@ -322,7 +322,7 @@ class BaseFFTests(ABC):
                 y_err = results
                 y = None
 
-            x_err = kwargs["x_err"] if "x_err" in kwargs else None
+            x_err = kwargs.get("x_err", None)
             if isinstance(x, list):
                 x = np.array(x)
             y_err_expected = self.func_err(x, params, param_errors, x_err=x_err)
@@ -347,14 +347,13 @@ class BaseFFTests(ABC):
             (5, {"x_err": [1, 2], "reterr": True}, pytest.raises(ValueError)),
         ],
     )
-    def test_call(self, x, kwargs, with_condition):
+    def test_call(self, x, kwargs, with_condition) -> None:
         """Test __call__ behavior."""
         params = self._test_params
         param_errors = self._test_param_errors
         ff_obj = self.ff_class(params=params, param_errors=param_errors)
-
-        reterr = kwargs["reterr"] if "reterr" in kwargs else False
-        x_err = kwargs["x_err"] if "x_err" in kwargs else None
+        reterr = kwargs.get("reterr", False)
+        x_err = kwargs.get("x_err", None)
         with with_condition:
             results = ff_obj(x, **kwargs)
             if reterr:
@@ -377,7 +376,7 @@ class BaseFFTests(ABC):
     def test_root_solve(self):
         ...
 
-    def test_curve_fit(self):
+    def test_curve_fit(self) -> None:
         """Test the `curve_fit` method."""
         ff_obj = self.ff_class()
 
@@ -433,7 +432,7 @@ class TestFFExponential(BaseFFTests):
 
         return np.abs(y) * np.sqrt(err)
 
-    def test_root_solve(self):
+    def test_root_solve(self) -> None:
         ff_obj = self.ff_class(params=(1, 1), param_errors=(0, 0))
         root, err = ff_obj.root_solve()
         assert np.isnan(root)
@@ -454,7 +453,7 @@ class TestFFExponentialPlusLinear(BaseFFTests):
     _test__str__ = "f(x) = a exp(alpha x) + m x + b"
 
     @staticmethod
-    def func(x, a, alpha, m, b):
+    def func(x: float, a: float, alpha: float, m: float, b: float) -> float:
         return a * np.exp(alpha * x) + m * x + b
 
     def func_err(self, x, params, param_errors, x_err=None):
@@ -479,7 +478,7 @@ class TestFFExponentialPlusLinear(BaseFFTests):
 
         return np.sqrt(err)
 
-    def test_root_solve(self):
+    def test_root_solve(self) -> None:
         ff_obj = self.ff_class(params=(5.0, 0.5, 1.0, 5.0), param_errors=(0, 0, 0, 0))
         root, err = ff_obj.root_solve(-5)
         assert np.isclose(root, -5.345338)
@@ -500,7 +499,7 @@ class TestFFExponentialPlusOffset(BaseFFTests):
     _test__str__ = "f(x) = a exp(alpha x) + b"
 
     @staticmethod
-    def func(x, a, alpha, b):
+    def func(x: float, a: float, alpha: float, b: float) -> float:
         return a * np.exp(alpha * x) + b
 
     def func_err(self, x, params, param_errors, x_err=None):
@@ -521,7 +520,7 @@ class TestFFExponentialPlusOffset(BaseFFTests):
 
         return np.sqrt(err)
 
-    def test_root_solve(self):
+    def test_root_solve(self) -> None:
         ff_obj = self.ff_class(params=(3.0, 0.5, -5.0), param_errors=(0, 0, 0))
         root, err = ff_obj.root_solve()
         assert root == np.log(5.0 / 3.0) / 0.5
@@ -578,7 +577,9 @@ class TestFFLinear(BaseFFTests):
             ((0.0, 1.0), (0.1, 0.1), np.nan, np.nan, pytest.warns(RuntimeWarning)),
         ],
     )
-    def test_root_solve(self, params, param_errors, root, root_err, conditional):
+    def test_root_solve(
+        self, params, param_errors, root, root_err, conditional
+    ) -> None:
         with conditional:
             ff_obj = self.ff_class(params=params, param_errors=param_errors)
             results = ff_obj.root_solve()

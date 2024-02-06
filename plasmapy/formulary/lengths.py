@@ -3,17 +3,17 @@
 __all__ = ["Debye_length", "gyroradius", "inertial_length"]
 __aliases__ = ["cwp_", "lambdaD_", "rc_", "rhoc_"]
 
-import astropy.units as u
-import numpy as np
 import warnings
-
-from astropy.constants.si import c, e, eps0, k_B
 from numbers import Integral, Real
 from typing import Optional
 
+import astropy.units as u
+import numpy as np
+from astropy.constants.si import c, e, eps0, k_B
+
 from plasmapy.formulary import frequencies, speeds
 from plasmapy.formulary.relativity import RelativisticBody
-from plasmapy.particles import particle_input, ParticleLike
+from plasmapy.particles import ParticleLike, particle_input
 from plasmapy.utils.decorators import validate_quantities
 
 __all__ += __aliases__
@@ -85,7 +85,7 @@ def Debye_length(T_e: u.Quantity[u.K], n_e: u.Quantity[u.m**-3]) -> u.Quantity[u
     Examples
     --------
     >>> import astropy.units as u
-    >>> Debye_length(5e6*u.K, 5e15*u.m**-3)
+    >>> Debye_length(5e6 * u.K, 5e15 * u.m**-3)
     <Quantity 0.002182... m>
     """
     return np.sqrt(eps0 * k_B * T_e / (n_e * e**2))
@@ -224,14 +224,14 @@ def gyroradius(  # noqa: C901
 
     Let's estimate the proton gyroradius in the solar corona.
 
-    >>> gyroradius(B = 0.2 * u.T, particle="p+", T = 1e6 * u.K)
+    >>> gyroradius(B=0.2 * u.T, particle="p+", T=1e6 * u.K)
     <Quantity 0.0067... m>
 
     Let's estimate the gyroradius of a deuteron and a triton in ITER by
     providing the characteristic thermal energy per particle,
     :math:`k_B T`, to ``T``.
 
-    >>> gyroradius(B = 5 * u.T, particle=["D+", "T+"], T = 13 * u.keV)
+    >>> gyroradius(B=5 * u.T, particle=["D+", "T+"], T=13 * u.keV)
     <Quantity [0.00465..., 0.00570...] m>
 
     Relativistic effects are included by default, but can be turned
@@ -240,15 +240,15 @@ def gyroradius(  # noqa: C901
     medium (ISM). We will provide the magnetic field in units of
     microgauss (μG).
 
-    >>> gyroradius(B = 10 * u.uG, particle="p+", Vperp = 0.99 * c)
+    >>> gyroradius(B=10 * u.uG, particle="p+", Vperp=0.99 * c)
     <Quantity 2.19642688e+10 m>
-    >>> gyroradius(B = 10 * u.uG, particle="p+", Vperp = 0.99 * c, relativistic=False)
+    >>> gyroradius(B=10 * u.uG, particle="p+", Vperp=0.99 * c, relativistic=False)
     <Quantity 3.09844141e+09 m>
 
     Let's calculate the gyroradius of a much higher energy cosmic ray
     in the ISM using ``lorentzfactor``.
 
-    >>> gyroradius(B = 10 * u.uG, particle="p+", lorentzfactor=3e6).to('pc')
+    >>> gyroradius(B=10 * u.uG, particle="p+", lorentzfactor=3e6).to("pc")
     <Quantity 0.30428378 pc>
     """
 
@@ -278,7 +278,9 @@ def gyroradius(  # noqa: C901
             Vperp[~isfinite_Vperp] = rbody.velocity
         return Vperp
 
-    def _warn_if_lorentz_factor_and_relativistic(isfinite_lorentzfactor, relativistic):
+    def _warn_if_lorentz_factor_and_relativistic(
+        isfinite_lorentzfactor, relativistic
+    ) -> None:
         if np.any(isfinite_lorentzfactor) and relativistic:
             warnings.warn(
                 "lorentzfactor is given along with Vperp or T, will lead "
@@ -459,9 +461,9 @@ def inertial_length(
     Examples
     --------
     >>> import astropy.units as u
-    >>> inertial_length(5 * u.m ** -3, 'He+')
+    >>> inertial_length(5 * u.m**-3, "He+")
     <Quantity 2.02985...e+08 m>
-    >>> inertial_length(5 * u.m ** -3, 'e-')
+    >>> inertial_length(5 * u.m**-3, "e-")
     <Quantity 2376534.75... m>
     """
     omega_p = frequencies.plasma_frequency(n, particle=particle)

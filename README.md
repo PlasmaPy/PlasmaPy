@@ -95,7 +95,7 @@ very welcome!
 
 ## Installation
 
-PlasmaPy requires Python 3.9 or newer. If you do not have Python
+PlasmaPy requires Python 3.10 or newer. If you do not have Python
 installed already, here are the instructions to [download and install
 Python].
 
@@ -104,14 +104,14 @@ To install PlasmaPy on macOS or Linux, open a terminal and run:
 python -m pip install plasmapy
 ```
 On some systems, it might be necessary to specify the Python version
-number, for example by using `python3` or `python3.11` instead of
+number, for example by using `python3` or `python3.12` instead of
 `python`.
 
 To install PlasmaPy on Windows, open a terminal and run
 ```Shell
-py -3.11 -m pip install plasmapy
+py -3.12 -m pip install plasmapy
 ```
-The `3.11` may be replaced by any version of Python that is supported by
+The `3.12` may be replaced by any version of Python that is supported by
 PlasmaPy.
 
 If you have [installed Conda], then you can also install PlasmaPy into
@@ -143,8 +143,8 @@ the [meetings] page of PlasmaPy's website.
 Our weekly informal [office hours] are an opportunity to chat with
 active members of the PlasmaPy community about topics related to
 Python and plasma science. If you'd like to learn more about PlasmaPy,
-our office hours are one of the best places to start. As of October
-2023, our office hours are on most Thursdays at 2 pm Eastern. Please
+our office hours are one of the best places to start. As of February
+2024, our office hours are on most Thursdays at 3 pm Eastern. Please
 feel free to come by!
 
 ### Community meetings
@@ -152,15 +152,15 @@ feel free to come by!
 PlasmaPy's weekly [community meetings] are a place to talk about code
 development. If you have an idea for a new feature or would like to
 make a code contribution, community meetings are a good place to go
-to.  As of October 2023, our community meetings are on most Tuesdays
+to.  As of February 2024, our community meetings are on most Tuesdays
 at 2 pm Eastern.
 
 ### Project meetings
 
 PlasmaPy's weekly project meetings are a place to discuss education,
 outreach, and project coordination. Topics might range from creating
-educational notebooks to organizing community events. As of October
-2023, project meetings are held on most Wednesdays at 3 pm Eastern.
+educational notebooks to organizing community events. As of February
+2024, project meetings are held on most Wednesdays at 3 pm Eastern.
 
 ### Working group meetings
 

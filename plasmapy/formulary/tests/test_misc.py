@@ -3,12 +3,11 @@
 import astropy.units as u
 import numpy as np
 import pytest
-
 from astropy.tests.helper import assert_quantity_allclose
 
 from plasmapy.formulary.misc import (
-    Bohm_diffusion,
     DB_,
+    Bohm_diffusion,
     magnetic_energy_density,
     magnetic_pressure,
     pmag_,
@@ -36,19 +35,19 @@ T_e = 1e6 * u.K
         (pth_, thermal_pressure),
     ],
 )
-def test_aliases(alias, parent):
+def test_aliases(alias, parent) -> None:
     """Test all aliases defined in misc.py"""
     assert alias is parent
 
 
-def test_thermal_pressure():
+def test_thermal_pressure() -> None:
     assert thermal_pressure(T_e, n_i).unit.is_equivalent(u.Pa)
 
     # TODO: may be array issues with arg "mass"
     assert_can_handle_nparray(thermal_pressure)
 
 
-def test_magnetic_pressure():
+def test_magnetic_pressure() -> None:
     r"""Test the magnetic_pressure function in misc.py."""
 
     assert magnetic_pressure(B_arr).unit.is_equivalent(u.Pa)
@@ -82,7 +81,7 @@ def test_magnetic_pressure():
     assert_can_handle_nparray(magnetic_pressure)
 
 
-def test_magnetic_energy_density():
+def test_magnetic_energy_density() -> None:
     r"""Test the magnetic_energy_density function in misc.py."""
 
     assert magnetic_energy_density(B_arr).unit.is_equivalent(u.J / u.m**3)
@@ -122,7 +121,7 @@ def test_magnetic_energy_density():
     assert_can_handle_nparray(magnetic_energy_density)
 
 
-def test_Bohm_diffusion():
+def test_Bohm_diffusion() -> None:
     r"""Test Mag_Reynolds in dimensionless.py"""
 
     T_e = 5000 * u.K

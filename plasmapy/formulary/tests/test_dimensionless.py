@@ -5,16 +5,16 @@ import numpy as np
 import pytest
 
 from plasmapy.formulary.dimensionless import (
-    beta,
-    betaH_,
     Debye_number,
     Hall_parameter,
     Lundquist_number,
     Mag_Reynolds,
-    nD_,
     Re_,
     Reynolds_number,
     Rm_,
+    beta,
+    betaH_,
+    nD_,
 )
 from plasmapy.particles import Particle
 from plasmapy.utils._pytest_helpers import assert_can_handle_nparray
@@ -40,17 +40,17 @@ T_e = 1e6 * u.K
         (Rm_, Mag_Reynolds),
     ],
 )
-def test_aliases(alias, parent):
+def test_aliases(alias, parent) -> None:
     """Test all aliases defined in dimensionless.py"""
     assert alias is parent
 
 
-def test_beta_dimensionless():
+def test_beta_dimensionless() -> None:
     # Check that beta is dimensionless
     float(beta(T, n, B))
 
 
-def test_beta_nan():
+def test_beta_nan() -> None:
     # Check that nans are passed through properly
     B = np.array([1, np.nan]) * u.T
     n = np.array([1, 1]) * u.cm**-3
@@ -60,7 +60,7 @@ def test_beta_nan():
     assert out[1].unit == u.dimensionless_unscaled
 
 
-def test_Reynolds_number():
+def test_Reynolds_number() -> None:
     r"""Test Reynolds_number in dimensionless.py"""
     rho = 1490 * u.kg / u.m**3
     U = 0.1 * u.m / u.s
@@ -78,7 +78,7 @@ def test_Reynolds_number():
         Reynolds_number(rho, 4 * u.kg, L, mu)
 
 
-def test_Mag_Reynolds():
+def test_Mag_Reynolds() -> None:
     r"""Test Mag_Reynolds in dimensionless.py"""
 
     sigma = 1e8 * u.S / u.m
@@ -96,7 +96,7 @@ def test_Mag_Reynolds():
         Mag_Reynolds(2.2 * u.kg, L, sigma)
 
 
-def test_Debye_number():
+def test_Debye_number() -> None:
     r"""Test the Debye_number function in dimensionless.py."""
 
     assert Debye_number(T_e, n_e).unit.is_equivalent(u.dimensionless_unscaled)
@@ -135,7 +135,7 @@ def test_Debye_number():
     assert_can_handle_nparray(Debye_number)
 
 
-def test_Hall_parameter():
+def test_Hall_parameter() -> None:
     r"""Test Hall_parameter in dimensionless.py"""
 
     ion = Particle("He-4 +1")
@@ -169,7 +169,7 @@ def test_Hall_parameter():
         Hall_parameter(1e10 * u.m**-3, 5.8e3 * u.eV, 2.3 * u.T, ion, particle)
 
 
-def test_Lundquist_number():
+def test_Lundquist_number() -> None:
     r"""Test the Lundquist_number function in dimensionless.py."""
     L = 0.05 * u.m
     rho = 1490 * u.kg / u.m**3

@@ -8,12 +8,12 @@ __all__ = [
     "parse_and_check_molecule_input",
 ]
 
-import numpy as np
 import re
 import warnings
-
 from numbers import Integral
 from typing import Optional, Union
+
+import numpy as np
 
 from plasmapy.particles import _elements, _isotopes, _special_particles
 from plasmapy.particles.exceptions import (
@@ -382,7 +382,7 @@ def parse_and_check_atomic_input(  # noqa: C901, PLR0912, PLR0915
 
         return ion
 
-    if not isinstance(argument, (str, Integral)):
+    if not isinstance(argument, str | Integral):
         raise TypeError(f"The argument {argument} is not an integer or string.")
 
     arg = dealias_particle_aliases(argument)

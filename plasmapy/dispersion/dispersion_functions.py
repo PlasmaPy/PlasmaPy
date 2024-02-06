@@ -5,12 +5,12 @@ Module containing functionality focused on the plasma dispersion function
 __all__ = ["plasma_dispersion_func", "plasma_dispersion_func_deriv"]
 
 
+from numbers import Complex
+from typing import Union
+
 import astropy.units as u
 import numpy as np
-
-from numbers import Complex
 from scipy.special import wofz as faddeeva_function
-from typing import Union
 
 
 def plasma_dispersion_func(
@@ -119,7 +119,7 @@ def plasma_dispersion_func_deriv(
     (-2+0j)
     >>> plasma_dispersion_func_deriv(1j)
     (-0.484255687717376...+0j)
-    >>> plasma_dispersion_func_deriv(-1.52+0.47j)
+    >>> plasma_dispersion_func_deriv(-1.52 + 0.47j)
     (0.165871331498228...+0.445879788059350...j)
     """
     try:
