@@ -217,7 +217,7 @@ def find_floating_potential(  # noqa: C901, PLR0912, PLR0915
     # condition min_points
     if min_points is None:
         min_points = int(np.max([5, np.around(min_point_factor * voltage.size)]))
-    elif not isinstance(min_points, (float, np.floating, int, np.integer)):
+    elif not isinstance(min_points, float | np.floating | int | np.integer):
         raise TypeError(
             f"Argument 'min_points' is wrong type '{type(min_points)}', expecting "
             f"an int or float."

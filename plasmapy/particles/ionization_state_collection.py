@@ -585,7 +585,7 @@ class IonizationStateCollection:
 
                 self._pars["abundances"] = new_abundances
 
-        elif isinstance(inputs, (list, tuple)):
+        elif isinstance(inputs, list | tuple):
             try:
                 _particle_instances = [Particle(particle) for particle in inputs]
             except (InvalidParticleError, TypeError) as exc:

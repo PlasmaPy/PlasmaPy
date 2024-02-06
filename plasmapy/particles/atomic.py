@@ -906,7 +906,7 @@ def periodic_table_period(argument: Union[str, Integral]) -> Integral:
     2
     """
     # TODO: Implement @particle_input
-    if not isinstance(argument, (str, Integral)):
+    if not isinstance(argument, str | Integral):
         raise TypeError(
             "The argument to periodic_table_period must be either a "
             "string representing the element or its symbol, or an "
@@ -954,7 +954,7 @@ def periodic_table_group(argument: Union[str, Integral]) -> Integral:
     2
     """
     # TODO: Implement @particle_input
-    if not isinstance(argument, (str, Integral)):
+    if not isinstance(argument, str | Integral):
         raise TypeError(
             "The argument to periodic_table_group must be "
             "either a string representing the element or its "
@@ -1005,7 +1005,7 @@ def periodic_table_block(argument: Union[str, Integral]) -> str:
     's'
     """
     # TODO: Implement @particle_input
-    if not isinstance(argument, (str, Integral)):
+    if not isinstance(argument, str | Integral):
         raise TypeError(
             "The argument to periodic_table_block must be "
             "either a string representing the element or its "
@@ -1051,7 +1051,7 @@ def periodic_table_category(argument: Union[str, Integral]) -> str:
     'transition metal'
     """
     # TODO: Implement @particle_input
-    if not isinstance(argument, (str, Integral)):
+    if not isinstance(argument, str | Integral):
         raise TypeError(
             "The argument to periodic_table_category must be "
             "either a string representing the element or its "

@@ -332,7 +332,7 @@ class AbstractPhysicalParticle(AbstractParticle):
                 return arg
             if isinstance(arg, str):
                 return {arg}
-            return set(arg[0]) if isinstance(arg[0], (tuple, list, set)) else set(arg)
+            return set(arg[0]) if isinstance(arg[0], tuple | list | set) else set(arg)
 
         if category_tuple and require:
             raise ParticleError(
@@ -621,7 +621,7 @@ class Particle(AbstractPhysicalParticle):
         """Raise appropriate exceptions when inputs are invalid."""
         argument, mass_numb, Z = self.__inputs
 
-        if not isinstance(argument, (Integral, np.integer, str, Particle)):
+        if not isinstance(argument, Integral | np.integer | str | Particle):
             raise TypeError(
                 "The first positional argument when creating a "
                 "Particle object must be either an integer, string, or "

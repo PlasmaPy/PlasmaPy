@@ -99,7 +99,7 @@ def _code_repr_of_args_and_kwargs(
     args = () if args is None else args
     kwargs = {} if kwargs is None else kwargs
 
-    args_collection = args if isinstance(args, (tuple, list)) else (args,)
+    args_collection = args if isinstance(args, tuple | list) else (args,)
 
     args_and_kwargs = "".join(
         f"{_code_repr_of_arg(arg, max_items)}, " for arg in args_collection

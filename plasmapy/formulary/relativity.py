@@ -495,7 +495,7 @@ class RelativisticBody:
 
     @lorentz_factor.setter
     def lorentz_factor(self, γ: Union[Real, u.Quantity]):
-        if not isinstance(γ, (Real, u.Quantity)):
+        if not isinstance(γ, Real | u.Quantity):
             raise TypeError("Invalid type for Lorentz factor")
 
         if isinstance(γ, u.Quantity):

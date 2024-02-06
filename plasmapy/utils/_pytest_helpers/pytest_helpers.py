@@ -47,7 +47,7 @@ def _process_input(wrapped_function: Callable):
         @functools.wraps(wrapped_function)
         def wrapper(*args, **kwargs):
             arguments = wrapped_signature.bind(*args, **kwargs).arguments
-            if len(args) == 1 and not kwargs and isinstance(args[0], (list, tuple)):
+            if len(args) == 1 and not kwargs and isinstance(args[0], list | tuple):
                 inputs = args[0]
                 if len(inputs) not in (3, 4):
                     raise RuntimeError(f"{args} is an invalid input to run_test.")
@@ -335,7 +335,7 @@ def run_test(  # noqa: C901
                 )
             return None
 
-        if not isinstance(result, (u.Quantity, const.Constant, const.EMConstant)):
+        if not isinstance(result, u.Quantity | const.Constant | const.EMConstant):
             raise u.UnitsError(
                 f"The command {call_str} returned "
                 f"{_object_name(result)} instead of a quantity or "
@@ -353,7 +353,7 @@ def run_test(  # noqa: C901
 
         return None
 
-    if isinstance(expected["result"], (u.Quantity, const.Constant, const.EMConstant)):
+    if isinstance(expected["result"], u.Quantity | const.Constant | const.EMConstant):
         if result.unit != expected["result"].unit:
             raise u.UnitsError(
                 f"The command {call_str} returned "
@@ -510,7 +510,7 @@ def run_test_equivalent_calls(  # noqa: C901
     if len(test_inputs) == 1:
         test_inputs = test_inputs[0]
 
-    if not isinstance(test_inputs, (tuple, list)):
+    if not isinstance(test_inputs, tuple | list):
         raise InvalidTestError(
             f"The argument to run_test_equivalent_calls must be a tuple "
             f"or list.  The provided inputs are: {test_inputs}"
@@ -525,7 +525,7 @@ def run_test_equivalent_calls(  # noqa: C901
     # Make sure everything is a list to allow f(*args)
 
     test_inputs = [
-        test_input if isinstance(test_input, (list, tuple)) else [test_input]
+        test_input if isinstance(test_input, list | tuple) else [test_input]
         for test_input in test_inputs
     ]
 
@@ -541,7 +541,7 @@ def run_test_equivalent_calls(  # noqa: C901
             "args": inputs[0] if func else inputs[1],
         }
 
-        if not isinstance(test_case["args"], (list, tuple)):
+        if not isinstance(test_case["args"], list | tuple):
             test_case["args"] = [test_case["args"]]
 
         if func:
@@ -576,7 +576,7 @@ def run_test_equivalent_calls(  # noqa: C901
     for test_case in test_cases:
         if not callable(test_case["function"]):
             bad_inputs_errmsg += f"\n{test_case['function']} is not callable "
-        if not isinstance(test_case["args"], (tuple, list)):
+        if not isinstance(test_case["args"], tuple | list):
             bad_inputs_errmsg += f"\n{test_case['args']} is not a list or tuple "
         if not isinstance(test_case["kwargs"], dict):
             bad_inputs_errmsg += f"\n{test_case['kwargs']} is not a dict "

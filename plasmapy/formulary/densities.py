@@ -156,7 +156,7 @@ def mass_density(
                 f"(not type {type(particle)}) to calculate the mass density!"
             ) from e
 
-    if not isinstance(z_ratio, (float, np.floating, int, np.integer)):
+    if not isinstance(z_ratio, float | np.floating | int | np.integer):
         raise TypeError(
             f"Expected type int or float for keyword z_ratio, got type {type(z_ratio)}."
         )

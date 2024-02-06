@@ -94,7 +94,7 @@ def to_roman(n: Union[Integral, np.integer]) -> str:
     'MMDXXV'
 
     """
-    if not isinstance(n, (Integral, np.integer)):
+    if not isinstance(n, Integral | np.integer):
         raise TypeError(f"{n} cannot be converted to a Roman numeral.")
     if not (0 < n < 5000):
         raise OutOfRangeError("Number is out of range (need 0 < n < 5000)")

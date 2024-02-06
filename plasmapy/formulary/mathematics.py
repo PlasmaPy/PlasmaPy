@@ -71,7 +71,7 @@ def Fermi_integral(
     >>> Fermi_integral(1, 1)
     (1.8062860704447743-0j)
     """
-    if isinstance(x, (numbers.Integral, numbers.Real, numbers.Complex)):
+    if isinstance(x, numbers.Integral | numbers.Real | numbers.Complex):
         arg = -np.exp(x)
         return -1 * complex(polylog(j + 1, arg))
     elif isinstance(x, np.ndarray):

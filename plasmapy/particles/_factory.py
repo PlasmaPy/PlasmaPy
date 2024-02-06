@@ -83,7 +83,7 @@ def _make_custom_particle_with_real_charge_number(
     CustomParticle(mass=6.64511...e-27 kg, charge=2.40326...e-19 C)
     """
 
-    if not isinstance(Z, (Real, u.Quantity)) and Z is not None:
+    if not isinstance(Z, Real | u.Quantity) and Z is not None:
         raise ChargeError("The charge number must be a real number.")
 
     base_particle = Particle(arg, mass_numb=mass_numb, Z=0)
@@ -191,7 +191,7 @@ def _physical_particle_factory(
         with contextlib.suppress(ChargeError, InvalidParticleError, TypeError):
             return constructor(*args, **kwargs)
 
-    if args and not isinstance(args[0], (str, Integral, u.Quantity)):
+    if args and not isinstance(args[0], str | Integral | u.Quantity):
         raise TypeError("Invalid type for particle.")
 
     raise InvalidParticleError(_generate_particle_factory_error_message(args, kwargs))

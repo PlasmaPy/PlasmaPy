@@ -168,7 +168,7 @@ class ParticleList(collections.UserList):
         if particles is None:
             return new_particles
         for obj in particles:
-            if isinstance(obj, (Particle, CustomParticle)):
+            if isinstance(obj, Particle | CustomParticle):
                 new_particles.append(obj)
             elif isinstance(obj, DimensionlessParticle):
                 raise TypeError(
@@ -249,7 +249,7 @@ class ParticleList(collections.UserList):
         """Append a particle to the end of the |ParticleList|."""
         if isinstance(particle, u.Quantity):
             particle = _turn_quantity_into_custom_particle(particle)
-        elif not isinstance(particle, (Particle, CustomParticle)):
+        elif not isinstance(particle, Particle | CustomParticle):
             particle = Particle(particle)
         self.data.append(particle)
 
@@ -310,7 +310,7 @@ class ParticleList(collections.UserList):
         """Insert a particle before an index."""
         if isinstance(particle, u.Quantity):
             particle = _turn_quantity_into_custom_particle(particle)
-        elif not isinstance(particle, (Particle, CustomParticle)):
+        elif not isinstance(particle, Particle | CustomParticle):
             particle = Particle(particle)
         self.data.insert(index, particle)
 

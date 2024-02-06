@@ -176,7 +176,7 @@ def stix(  # noqa: C901, PLR0912, PLR0915
     """
 
     # Validate ions argument
-    if not isinstance(ions, (list, tuple, ParticleList)):
+    if not isinstance(ions, list | tuple | ParticleList):
         ions = [ions]
     ions = ParticleList(ions)
 
