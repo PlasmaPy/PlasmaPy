@@ -518,6 +518,14 @@ class MHDNormalizations(AbstractNormalizations):
         return Alfven_speed(B=self.magnetic_field, density=self.mass_density)
 
     @property
+    def volume(self) -> u.Quantity[u.m**3]:
+        r"""
+        The volume :term:`normalization`.
+
+        .. math::
+        """
+
+    @property
     def wavenumber(self) -> u.Quantity[u.m**-1]:
         r"""
         The wavenumber :term:`normalization`.
