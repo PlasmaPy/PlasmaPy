@@ -113,13 +113,13 @@ class AbstractParticle(ABC):
 
     @property
     @abstractmethod
-    def mass(self) -> u.Quantity | Real:
+    def mass(self) -> u.Quantity | float:
         """Provide the particle's mass."""
         raise NotImplementedError
 
     @property
     @abstractmethod
-    def charge(self) -> u.Quantity | Real:
+    def charge(self) -> u.Quantity | float:
         """Provide the particle's electric charge."""
         raise NotImplementedError
 
@@ -395,10 +395,10 @@ class Particle(AbstractPhysicalParticle):
         integer representing the atomic number of an element; or a
         |Particle|.
 
-    mass_numb : integer, |keyword-only|, optional
+    mass_numb : int, |keyword-only|, optional
         The mass number of an isotope.
 
-    Z : integer, |keyword-only|, optional
+    Z : int, |keyword-only|, optional
         The |charge number| of an ion or neutral atom.
 
     Raises
@@ -581,8 +581,8 @@ class Particle(AbstractPhysicalParticle):
         self,
         argument: ParticleLike,
         *_,
-        mass_numb: Integral | None = None,
-        Z: Integral | None = None,
+        mass_numb: int | None = None,
+        Z: int | None = None,
     ) -> None:
         # TODO: Remove the following block during or after the 0.9.0 release
 
@@ -1465,7 +1465,7 @@ class Particle(AbstractPhysicalParticle):
             raise InvalidIonError(_category_errmsg(self, "ion"))
 
     @property
-    def isotopic_abundance(self) -> Real:
+    def isotopic_abundance(self) -> float:
         """
         The isotopic abundance of an isotope.
 
@@ -1587,7 +1587,7 @@ class Particle(AbstractPhysicalParticle):
         return self._attributes["half-life"]
 
     @property
-    def spin(self) -> Real:
+    def spin(self) -> float:
         """
         The intrinsic spin of the particle.
 
@@ -1684,7 +1684,7 @@ class Particle(AbstractPhysicalParticle):
         """
         return self.is_category("ion")
 
-    def ionize(self, n: Integral = 1, inplace: bool = False):
+    def ionize(self, n: int = 1, inplace: bool = False):
         """
         Create a new |Particle| instance corresponding to the current
         |Particle| after being ionized ``n`` times.
@@ -1766,7 +1766,7 @@ class Particle(AbstractPhysicalParticle):
         else:
             return Particle(base_particle, Z=new_charge_number)
 
-    def recombine(self, n: Integral = 1, inplace: bool = False):
+    def recombine(self, n: int = 1, inplace: bool = False):
         """
         Create a new |Particle| instance corresponding to the current
         |Particle| after undergoing recombination ``n`` times.
@@ -1885,8 +1885,8 @@ class DimensionlessParticle(AbstractParticle):
     def __init__(
         self,
         *,
-        mass: Real | None = None,
-        charge: Real | None = None,
+        mass: float | None = None,
+        charge: float | None = None,
         symbol: str | None = None,
     ) -> None:
         try:
@@ -1987,7 +1987,7 @@ class DimensionlessParticle(AbstractParticle):
         return self._charge
 
     @mass.setter
-    def mass(self, m: Real | u.Quantity | None):
+    def mass(self, m: float | u.Quantity | None):
         try:
             self._mass = self._validate_parameter(m, can_be_negative=False)
         except (TypeError, ValueError):
@@ -1997,7 +1997,7 @@ class DimensionlessParticle(AbstractParticle):
             ) from None
 
     @charge.setter
-    def charge(self, q: Real | u.Quantity | None):
+    def charge(self, q: float | u.Quantity | None):
         try:
             self._charge = self._validate_parameter(q, can_be_negative=True)
         except (TypeError, ValueError):
@@ -2034,20 +2034,20 @@ class CustomParticle(AbstractPhysicalParticle):
 
     Parameters
     ----------
-    mass : ~astropy.units.Quantity, optional
+    mass : `~astropy.units.Quantity`, optional
         The mass of the custom particle in units of mass.  Defaults to
         |nan| kg.
 
-    charge : ~astropy.units.Quantity or ~numbers.Real, optional
+    charge : `~astropy.units.Quantity` | `float`, optional
         The electric charge of the custom particle.  If provided as a
         `~astropy.units.Quantity`, then it must be in units of electric
         charge. Defaults to |nan| C.
 
-    Z : ~numbers.Real, |keyword-only|, optional
+    Z : `float`, |keyword-only|, optional
         The :term:`charge number`, which is equal to the ratio of the
         charge to the elementary charge.
 
-    symbol : str, optional
+    symbol : `str`, optional
         The symbol to be assigned to the custom particle.
 
     Raises
@@ -2097,7 +2097,7 @@ class CustomParticle(AbstractPhysicalParticle):
         charge: u.Quantity[u.C] = None,
         symbol: str | None = None,
         *,
-        Z: Real | None = None,
+        Z: float | None = None,
     ) -> None:
         # TODO: py3.10 replace ifology with structural pattern matching
 
@@ -2125,7 +2125,7 @@ class CustomParticle(AbstractPhysicalParticle):
         cls,
         *quantities,
         symbol: str | None = None,
-        Z: Real | None = None,
+        Z: float | None = None,
     ) -> CustomParticle:
         """
         An alternate constructor for |CustomParticle| objects where the
@@ -2248,7 +2248,7 @@ class CustomParticle(AbstractPhysicalParticle):
         return self._charge
 
     @charge.setter
-    def charge(self, q: u.Quantity | Real | None):
+    def charge(self, q: u.Quantity | float | None):
         if q is None:
             q = np.nan * u.C
         elif isinstance(q, str):
@@ -2285,7 +2285,7 @@ class CustomParticle(AbstractPhysicalParticle):
             )
 
     @property
-    def charge_number(self) -> Real:
+    def charge_number(self) -> float:
         """The ratio of the charge to the elementary charge."""
         return (self.charge / const.e.si).value
 
@@ -2398,7 +2398,7 @@ class CustomParticle(AbstractPhysicalParticle):
         return hash(self.__repr__())
 
 
-def molecule(symbol: str, Z: Integral | None = None) -> Particle | CustomParticle:
+def molecule(symbol: str, Z: int | None = None) -> Particle | CustomParticle:
     r"""
     Parse a molecule symbol into a |CustomParticle| or |Particle|.
 
