@@ -9,7 +9,7 @@ import warnings
 from collections.abc import Callable, Iterable, MutableMapping
 from inspect import BoundArguments
 from numbers import Integral, Real
-from typing import Any, TypedDict, get_type_hints
+from typing import Any, TypeAlias, TypedDict, get_type_hints
 
 import numpy as np
 import wrapt
@@ -40,7 +40,7 @@ class _CallableDataDict(TypedDict, total=False):
     signature: inspect.Signature
 
 
-_basic_particle_input_annotations = (
+_basic_particle_input_annotations: tuple[type | TypeAlias, ...] = (
     Particle,  # deprecated
     ParticleLike,
     ParticleListLike,
@@ -49,7 +49,9 @@ _basic_particle_input_annotations = (
 )
 _optional_particle_input_annotations = tuple(
     annotation | None
-    for annotation in _basic_particle_input_annotations
+    # remove [:-1] index in following line when dropping (Particle, Particle)
+    # as a valid annotation
+    for annotation in _basic_particle_input_annotations[:-1]
     if annotation != (Particle, Particle)  # temporary hack
 )
 _particle_input_annotations = (
