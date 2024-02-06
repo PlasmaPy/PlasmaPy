@@ -19,7 +19,7 @@ from abc import ABC, abstractmethod
 from collections import defaultdict, namedtuple
 from datetime import datetime
 from numbers import Integral, Real
-from typing import TYPE_CHECKING, Union
+from typing import TYPE_CHECKING, TypeAlias, Union
 
 import astropy.constants as const
 import astropy.units as u
@@ -2492,7 +2492,7 @@ def molecule(symbol: str, Z: Integral | None = None) -> Particle | CustomParticl
 # If ParticleLike is renamed or moves out of particle_class.py, check
 # for a link to its doc page in error messages in _factory.py.
 
-ParticleLike = Union[str, Integral, Particle, CustomParticle, u.Quantity]  # noqa: UP007
+ParticleLike: TypeAlias = Union[str, Integral, Particle, CustomParticle, u.Quantity]  # noqa: UP007
 
 ParticleLike.__doc__ = r"""
 An `object` is particle-like if it can be identified as an instance of
