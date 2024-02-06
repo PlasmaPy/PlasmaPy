@@ -300,7 +300,7 @@ class MHDNormalizations(AbstractNormalizations):
     @property
     def heat_flux(self) -> u.Quantity[u.J * u.m**-2 * u.s**-1]:
         r"""
-        The heat flux :term:`normalization`,.
+        The heat flux :term:`normalization`.
 
         .. math::
 
@@ -365,7 +365,7 @@ class MHDNormalizations(AbstractNormalizations):
     @property
     def magnetic_flux(self) -> u.Quantity[u.Wb]:
         r"""
-        The magnetic flux :term:`normalization`,.
+        The magnetic flux :term:`normalization`.
 
         .. math::
 
@@ -380,7 +380,7 @@ class MHDNormalizations(AbstractNormalizations):
     @property
     def mass(self) -> u.Quantity[u.kg]:
         r"""
-        The |normalization constant| for mass,.
+        The |normalization constant| for mass.
 
         .. math::
 
@@ -402,7 +402,7 @@ class MHDNormalizations(AbstractNormalizations):
     @property
     def mass_density(self) -> u.Quantity[u.kg * u.m**-3]:
         r"""
-        The |normalization constant| for mass density,.
+        The |normalization constant| for mass density.
 
         .. math::
 
@@ -432,7 +432,7 @@ class MHDNormalizations(AbstractNormalizations):
     @property
     def pressure(self) -> u.Quantity[u.Pa]:
         r"""
-        The |normalization constant| for pressure,.
+        The |normalization constant| for pressure.
 
         .. math::
 
@@ -447,7 +447,7 @@ class MHDNormalizations(AbstractNormalizations):
     @property
     def resistivity(self) -> u.Quantity[u.ohm * u.m]:
         r"""
-        The |normalization constant| for resistivity,.
+        The |normalization constant| for resistivity.
 
         .. math::
 
@@ -462,7 +462,7 @@ class MHDNormalizations(AbstractNormalizations):
     @property
     def temperature(self) -> u.Quantity[u.K]:
         r"""
-        The temperature :term:`normalization`,.
+        The temperature :term:`normalization`.
 
         .. math::
 
@@ -477,7 +477,7 @@ class MHDNormalizations(AbstractNormalizations):
     @property
     def thermal_conductivity(self) -> u.Quantity[u.W * u.K**-1 * u.m**-1]:
         r"""
-        The thermal conduction :term:`normalization`,.
+        The thermal conduction :term:`normalization`.
 
         .. math::
 
@@ -492,7 +492,7 @@ class MHDNormalizations(AbstractNormalizations):
     @property
     def time(self) -> u.Quantity[u.s]:
         r"""
-        The time :term:`normalization`,.
+        The time :term:`normalization`.
 
         t_⭑ ≡ \frac{L_⭑}{V_⭑}.
 
@@ -505,7 +505,7 @@ class MHDNormalizations(AbstractNormalizations):
     @property
     def velocity(self) -> u.Quantity[u.m / u.s]:
         r"""
-        The velocity :term:`normalization`,.
+        The velocity :term:`normalization`.
 
         .. math::
 
@@ -520,7 +520,7 @@ class MHDNormalizations(AbstractNormalizations):
     @property
     def wavenumber(self) -> u.Quantity[u.m**-1]:
         r"""
-        The wavenumber :term:`normalization`,.
+        The wavenumber :term:`normalization`.
 
         .. math::
 
