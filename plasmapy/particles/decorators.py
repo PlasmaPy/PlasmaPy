@@ -9,7 +9,7 @@ import warnings
 from collections.abc import Callable, Iterable, MutableMapping
 from inspect import BoundArguments
 from numbers import Integral, Real
-from typing import Any, Optional, TypedDict, Union, get_type_hints
+from typing import Any, TypedDict, get_type_hints
 
 import numpy as np
 import wrapt
@@ -44,11 +44,11 @@ _basic_particle_input_annotations = (
     Particle,  # deprecated
     ParticleLike,
     ParticleListLike,
-    Union[ParticleLike, ParticleListLike],
+    ParticleLike | ParticleListLike,
     (Particle, Particle),  # deprecated
 )
 _optional_particle_input_annotations = tuple(
-    Optional[annotation]
+    annotation | None
     for annotation in _basic_particle_input_annotations
     if annotation != (Particle, Particle)  # temporary hack
 )
