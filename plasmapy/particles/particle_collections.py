@@ -5,7 +5,6 @@ __all__ = ["ParticleList", "ParticleListLike"]
 import collections
 import contextlib
 from collections.abc import Callable, Iterable, Sequence
-from typing import Union
 
 import astropy.units as u
 import numpy as np
@@ -574,7 +573,7 @@ Raises
 
 ParticleList.reverse.__doc__ = """Reverse the |ParticleList| in place."""
 
-ParticleListLike = Union[ParticleList, Sequence[ParticleLike]]
+ParticleListLike = ParticleList | Sequence[ParticleLike]
 
 ParticleListLike.__doc__ = r"""
 An `object` is |particle-list-like| if it can be identified as a
