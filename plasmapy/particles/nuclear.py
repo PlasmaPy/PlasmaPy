@@ -3,6 +3,7 @@ __all__ = ["nuclear_binding_energy", "nuclear_reaction_energy", "mass_energy"]
 
 import re
 from numbers import Integral
+from typing import Optional, Union
 
 import astropy.units as u
 
@@ -13,7 +14,7 @@ from plasmapy.particles.particle_class import Particle
 
 @particle_input(any_of={"isotope", "baryon"})
 def nuclear_binding_energy(
-    particle: Particle, mass_numb: Integral | None = None
+    particle: Particle, mass_numb: Optional[Integral] = None
 ) -> u.Quantity[u.J]:
     """
     Return the nuclear binding energy associated with an isotope.
@@ -70,7 +71,7 @@ def nuclear_binding_energy(
 
 @particle_input
 def mass_energy(
-    particle: Particle, mass_numb: Integral | None = None
+    particle: Particle, mass_numb: Optional[Integral] = None
 ) -> u.Quantity[u.J]:
     """
     Return a particle's mass energy.  If the particle is an isotope or
@@ -183,7 +184,7 @@ def nuclear_reaction_energy(*args, **kwargs) -> u.Quantity[u.J]:  # noqa: C901, 
     errmsg = "Invalid nuclear reaction."
 
     def process_particles_list(
-        unformatted_particles_list: list[str | Particle],
+        unformatted_particles_list: list[Union[str, Particle]],
     ) -> list[Particle]:
         """
         Take an unformatted list of particles and puts each

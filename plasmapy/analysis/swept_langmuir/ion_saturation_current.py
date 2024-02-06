@@ -5,7 +5,7 @@ __all__ = ["find_ion_saturation_current", "ISatExtras"]
 __aliases__ = ["find_isat_"]
 
 import numbers
-from typing import Any, NamedTuple
+from typing import Any, NamedTuple, Optional
 
 import numpy as np
 
@@ -21,19 +21,19 @@ class ISatExtras(NamedTuple):
     `~plasmapy.analysis.swept_langmuir.ion_saturation_current.find_ion_saturation_current`.
     """
 
-    rsq: float | None
+    rsq: Optional[float]
     """
     Alias for field number 0, the r-squared value of the ion-saturation
     curve fit.
     """
 
-    fitted_func: ffuncs.AbstractFitFunction | None
+    fitted_func: Optional[ffuncs.AbstractFitFunction]
     """
     Alias for field number 1, the :term:`fit-function` fitted during
     the ion-saturation curve fit.
     """
 
-    fitted_indices: slice | None
+    fitted_indices: Optional[slice]
     """
     Alias for field number 2, the indices used in the ion-saturation
     curve fit.
@@ -45,8 +45,8 @@ def find_ion_saturation_current(
     current: np.ndarray,
     *,
     fit_type: str = "exp_plus_linear",
-    current_bound: numbers.Real | None = None,
-    voltage_bound: numbers.Real | None = None,
+    current_bound: Optional[numbers.Real] = None,
+    voltage_bound: Optional[numbers.Real] = None,
 ) -> tuple[ffuncs.Linear, ISatExtras]:
     """
     Determines the ion-saturation current (:math:`I_{sat}`) for a given

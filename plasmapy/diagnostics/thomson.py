@@ -12,7 +12,7 @@ __lite_funcs__ = ["spectral_density_lite"]
 import numbers
 import warnings
 from collections.abc import Callable
-from typing import Any
+from typing import Any, Optional, Union
 
 import astropy.constants as const
 import astropy.units as u
@@ -63,9 +63,9 @@ def spectral_density_lite(
     ion_vel: np.ndarray,
     probe_vec: np.ndarray,
     scatter_vec: np.ndarray,
-    instr_func_arr: np.ndarray | None = None,
-    notch: np.ndarray | None = None,
-) -> tuple[np.floating | np.ndarray, np.ndarray]:
+    instr_func_arr: Optional[np.ndarray] = None,
+    notch: Optional[np.ndarray] = None,
+) -> tuple[Union[np.floating, np.ndarray], np.ndarray]:
     r"""
     The :term:`lite-function` version of
     `~plasmapy.diagnostics.thomson.spectral_density`.  Performs the same
@@ -297,9 +297,9 @@ def spectral_density(  # noqa: C901, PLR0912, PLR0915
     ion_vel: u.Quantity[u.m / u.s] = None,
     probe_vec=None,
     scatter_vec=None,
-    instr_func: Callable | None = None,
+    instr_func: Optional[Callable] = None,
     notch: u.m = None,
-) -> tuple[np.floating | np.ndarray, np.ndarray]:
+) -> tuple[Union[np.floating, np.ndarray], np.ndarray]:
     r"""Calculate the spectral density function for Thomson scattering of
     a probe laser beam by a multi-species Maxwellian plasma.
 

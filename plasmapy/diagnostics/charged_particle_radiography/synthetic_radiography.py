@@ -11,6 +11,7 @@ import collections
 import sys
 import warnings
 from collections.abc import Iterable
+from typing import Union
 
 import astropy.constants as const
 import astropy.units as u
@@ -124,7 +125,7 @@ class Tracker:
 
     def __init__(
         self,
-        grids: AbstractGrid | Iterable[AbstractGrid],
+        grids: Union[AbstractGrid, Iterable[AbstractGrid]],
         source: u.Quantity[u.m],
         detector: u.Quantity[u.m],
         detector_hdir=None,

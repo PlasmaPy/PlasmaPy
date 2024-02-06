@@ -7,6 +7,7 @@ __all__ = ["IonicLevel", "IonizationState"]
 
 import warnings
 from numbers import Integral, Real
+from typing import Optional
 
 import astropy.units as u
 import numpy as np
@@ -126,7 +127,7 @@ class IonicLevel:
         return self._ionic_fraction
 
     @ionic_fraction.setter
-    def ionic_fraction(self, ionfrac: Real | None):
+    def ionic_fraction(self, ionfrac: Optional[Real]):
         if ionfrac is None or np.isnan(ionfrac):
             self._ionic_fraction = np.nan
         else:
@@ -500,7 +501,7 @@ class IonizationState:
                 f"Unable to set ionic fractions of {self.element} to {fractions}."
             ) from exc
 
-    def _is_normalized(self, tol: Real | None = None) -> bool:
+    def _is_normalized(self, tol: Optional[Real] = None) -> bool:
         """
         `True` if the sum of the ionization fractions is equal to
         ``1`` within the allowed tolerance, and `False` otherwise.
@@ -663,7 +664,7 @@ class IonizationState:
         return self._particle.element
 
     @property
-    def isotope(self) -> str | None:
+    def isotope(self) -> Optional[str]:
         """
         The isotope symbol for an isotope, or `None` if the particle is
         not an isotope.

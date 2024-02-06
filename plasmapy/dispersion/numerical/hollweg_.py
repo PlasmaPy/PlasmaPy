@@ -6,6 +6,7 @@ __all__ = ["hollweg"]
 
 import warnings
 from numbers import Integral, Real
+from typing import Optional
 
 import astropy.units as u
 import numpy as np
@@ -38,8 +39,8 @@ def hollweg(  # noqa: C901, PLR0912, PLR0915
     T_i: u.Quantity[u.K],
     gamma_e: Real = 1,
     gamma_i: Real = 3,
-    mass_numb: Integral | None = None,
-    Z: Real | None = None,
+    mass_numb: Optional[Integral] = None,
+    Z: Optional[Real] = None,
 ):
     r"""
     Calculate the two-fluid dispersion relation presented by

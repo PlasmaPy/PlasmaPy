@@ -13,6 +13,7 @@ import warnings
 from abc import ABC, abstractmethod
 from collections import namedtuple
 from numbers import Integral, Real
+from typing import Optional
 
 import astropy.units as u
 import numpy as np
@@ -43,8 +44,8 @@ class AbstractMHDWave(ABC):
         *,
         T: u.Quantity[u.K] = 0 * u.K,
         gamma: float = 5 / 3,
-        mass_numb: Integral | None = None,
-        Z: Real | None = None,
+        mass_numb: Optional[Integral] = None,
+        Z: Optional[Real] = None,
     ) -> None:
         # validate arguments
         for arg_name in ("B", "density", "T"):

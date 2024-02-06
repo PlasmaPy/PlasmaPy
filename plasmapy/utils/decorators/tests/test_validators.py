@@ -3,6 +3,7 @@ Tests for 'validate` decorators (i.e. decorators that check objects and change t
 when possible).
 """
 import inspect
+from typing import Optional
 from unittest import mock
 
 import astropy.units as u
@@ -553,9 +554,9 @@ class TestValidateClassAttributes:
     class SampleCase:  # noqa: D106
         def __init__(
             self,
-            x: int | None = None,
-            y: int | None = None,
-            z: int | None = None,
+            x: Optional[int] = None,
+            y: Optional[int] = None,
+            z: Optional[int] = None,
         ) -> None:
             self.x = x
             self.y = y

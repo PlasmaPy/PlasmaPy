@@ -14,6 +14,7 @@ import numbers
 import warnings
 from abc import ABC, abstractmethod
 from collections import namedtuple
+from typing import Optional
 
 import numpy as np
 from scipy.optimize import curve_fit, fsolve
@@ -35,8 +36,8 @@ class AbstractFitFunction(ABC):
 
     def __init__(
         self,
-        params: tuple[float, ...] | None = None,
-        param_errors: tuple[float, ...] | None = None,
+        params: Optional[tuple[float, ...]] = None,
+        param_errors: Optional[tuple[float, ...]] = None,
     ) -> None:
         """
         Parameters
@@ -224,7 +225,7 @@ class AbstractFitFunction(ABC):
         return self._FitParamTuple
 
     @property
-    def params(self) -> tuple | None:
+    def params(self) -> Optional[tuple]:
         """The fitted parameters for the fit function."""
         if self._params is None:
             return self._params
@@ -246,7 +247,7 @@ class AbstractFitFunction(ABC):
             )
 
     @property
-    def param_errors(self) -> tuple | None:
+    def param_errors(self) -> Optional[tuple]:
         """The associated errors of the fitted :attr:`params`."""
         if self._param_errors is None:
             return self._param_errors
@@ -800,8 +801,8 @@ class ExponentialPlusLinear(AbstractFitFunction):
 
     def __init__(
         self,
-        params: tuple[float, ...] | None = None,
-        param_errors: tuple[float, ...] | None = None,
+        params: Optional[tuple[float, ...]] = None,
+        param_errors: Optional[tuple[float, ...]] = None,
     ) -> None:
         self._exponential = Exponential()
         self._linear = Linear()
@@ -938,8 +939,8 @@ class ExponentialPlusOffset(AbstractFitFunction):
 
     def __init__(
         self,
-        params: tuple[float, ...] | None = None,
-        param_errors: tuple[float, ...] | None = None,
+        params: Optional[tuple[float, ...]] = None,
+        param_errors: Optional[tuple[float, ...]] = None,
     ) -> None:
         self._explin = ExponentialPlusLinear()
         super().__init__(params=params, param_errors=param_errors)

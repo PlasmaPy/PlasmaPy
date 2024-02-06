@@ -14,6 +14,7 @@ import warnings
 from abc import ABC, abstractmethod
 from collections import namedtuple
 from functools import cached_property
+from typing import Union
 
 import astropy.units as u
 import numpy as np
@@ -668,8 +669,8 @@ class AbstractGrid(ABC):
 
     def _make_grid(  # noqa: C901, PLR0912
         self,
-        start: float | u.Quantity,
-        stop: float | u.Quantity,
+        start: Union[float, u.Quantity],
+        stop: Union[float, u.Quantity],
         num: int = 100,
         units=None,
         **kwargs,
@@ -903,7 +904,7 @@ class AbstractGrid(ABC):
 
     @abstractmethod
     def nearest_neighbor_interpolator(
-        self, pos: np.ndarray | u.Quantity, *args, persistent: bool = False
+        self, pos: Union[np.ndarray, u.Quantity], *args, persistent: bool = False
     ):
         r"""
         Interpolate values on the grid using a nearest-neighbor scheme with
@@ -1094,7 +1095,7 @@ class CartesianGrid(AbstractGrid):
 
     @modify_docstring(prepend=AbstractGrid.nearest_neighbor_interpolator.__doc__)
     def nearest_neighbor_interpolator(
-        self, pos: np.ndarray | u.Quantity, *args, persistent: bool = False
+        self, pos: Union[np.ndarray, u.Quantity], *args, persistent: bool = False
     ):
         r""" """  # noqa: D419
 
@@ -1133,7 +1134,7 @@ class CartesianGrid(AbstractGrid):
         return output[0] if len(output) == 1 else tuple(output)
 
     def volume_averaged_interpolator(
-        self, pos: np.ndarray | u.Quantity, *args, persistent: bool = False
+        self, pos: Union[np.ndarray, u.Quantity], *args, persistent: bool = False
     ):
         r"""
         Interpolate values on the grid using a volume-averaged scheme with
@@ -1398,7 +1399,7 @@ class NonUniformCartesianGrid(AbstractGrid):
 
     @modify_docstring(prepend=AbstractGrid.nearest_neighbor_interpolator.__doc__)
     def nearest_neighbor_interpolator(
-        self, pos: np.ndarray | u.Quantity, *args, persistent: bool = False
+        self, pos: Union[np.ndarray, u.Quantity], *args, persistent: bool = False
     ):
         r""" """  # noqa: D419
         # Shared setup

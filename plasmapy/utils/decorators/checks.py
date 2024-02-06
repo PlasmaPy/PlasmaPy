@@ -16,7 +16,7 @@ import inspect
 import warnings
 from functools import reduce
 from operator import add
-from typing import Any
+from typing import Any, Optional, Union
 
 import astropy.units as u
 import numpy as np
@@ -139,7 +139,7 @@ class CheckValues(CheckBase):
 
     def __init__(
         self,
-        checks_on_return: dict[str, bool] | None = None,
+        checks_on_return: Optional[dict[str, bool]] = None,
         **checks: dict[str, bool],
     ) -> None:
         super().__init__(checks_on_return=checks_on_return, **checks)
@@ -468,8 +468,8 @@ class CheckUnits(CheckBase):
 
     def __init__(
         self,
-        checks_on_return: u.Unit | list[u.Unit] | dict[str, Any] = None,
-        **checks: u.Unit | list[u.Unit] | dict[str, Any],
+        checks_on_return: Union[u.Unit, list[u.Unit], dict[str, Any]] = None,
+        **checks: Union[u.Unit, list[u.Unit], dict[str, Any]],
     ) -> None:
         super().__init__(checks_on_return=checks_on_return, **checks)
 
@@ -785,10 +785,10 @@ class CheckUnits(CheckBase):
     def _check_unit_core(  # noqa: C901, PLR0912, PLR0915
         self, arg, arg_name: str, arg_checks: dict[str, Any]
     ) -> tuple[
-        u.Quantity | None,
-        u.Unit | None,
-        list[Any] | None,
-        Exception | None,
+        Optional[u.Quantity],
+        Optional[u.Unit],
+        Optional[list[Any]],
+        Optional[Exception],
     ]:
         """
         Determines if `arg` passes unit checks `arg_checks` and if the units of
@@ -901,7 +901,7 @@ class CheckUnits(CheckBase):
 
     @staticmethod
     def _condition_target_units(
-        targets: list[str | u.Unit | u.Quantity],
+        targets: list[Union[str, u.Unit, u.Quantity]],
         from_annotations: bool = False,
     ) -> list:
         """
@@ -1056,7 +1056,7 @@ class CheckUnits(CheckBase):
 
 def check_units(
     func=None,
-    checks_on_return: dict[str, Any] | None = None,
+    checks_on_return: Optional[dict[str, Any]] = None,
     **checks: dict[str, Any],
 ):
     """
@@ -1185,7 +1185,7 @@ def check_units(
 
 def check_values(
     func=None,
-    checks_on_return: dict[str, bool] | None = None,
+    checks_on_return: Optional[dict[str, bool]] = None,
     **checks: dict[str, bool],
 ):
     """

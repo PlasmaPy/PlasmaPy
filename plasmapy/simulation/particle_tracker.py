@@ -18,7 +18,7 @@ import warnings
 from abc import ABC, abstractmethod
 from collections.abc import Iterable
 from pathlib import Path
-from typing import Optional
+from typing import Optional, Union
 
 import astropy.units as u
 import h5py
@@ -190,13 +190,13 @@ class AbstractSaveRoutine(ABC):
     Then, the hook calls `save_now` to determine whether or not the simulation state should be saved.
     """
 
-    def __init__(self, output_directory: Path | None = None) -> None:
+    def __init__(self, output_directory: Optional[Path] = None) -> None:
         self.output_directory = output_directory
 
         self.x_all = []
         self.v_all = []
 
-        self._particle_tracker: ParticleTracker | None = None
+        self._particle_tracker: Optional[ParticleTracker] = None
 
     @property
     def tracker(self) -> Optional["ParticleTracker"]:
@@ -397,9 +397,9 @@ class ParticleTracker:
 
     def __init__(
         self,
-        grids: AbstractGrid | Iterable[AbstractGrid],
-        termination_condition: AbstractTerminationCondition | None = None,
-        save_routine: AbstractSaveRoutine | None = None,
+        grids: Union[AbstractGrid, Iterable[AbstractGrid]],
+        termination_condition: Union[AbstractTerminationCondition, None] = None,
+        save_routine: Union[AbstractSaveRoutine, None] = None,
         dt=None,
         dt_range=None,
         field_weighting="volume averaged",
@@ -496,8 +496,8 @@ class ParticleTracker:
 
     def setup_adaptive_time_step(
         self,
-        time_steps_per_gyroperiod: int | None = 12,
-        Courant_parameter: float | None = 0.5,
+        time_steps_per_gyroperiod: Optional[int] = 12,
+        Courant_parameter: Optional[float] = 0.5,
     ) -> None:
         """Set parameters for the adaptive time step candidates.
 
@@ -690,7 +690,7 @@ class ParticleTracker:
         # Keep track of how many push steps have occurred for trajectory tracing
         self.iteration_number = 0
 
-        self.time: NDArray[np.float64] | float = (
+        self.time: Union[NDArray[np.float64], float] = (
             np.zeros((self.nparticles, 1)) if not self.is_synchronized_time_step else 0
         )
         # Create flags for tracking when particles during the simulation
@@ -778,7 +778,7 @@ class ParticleTracker:
     # Run/push loop methods
     # *************************************************************************
 
-    def _adaptive_dt(self, Ex, Ey, Ez, Bx, By, Bz) -> NDArray[np.float64] | float:  # noqa: ARG002
+    def _adaptive_dt(self, Ex, Ey, Ez, Bx, By, Bz) -> Union[NDArray[np.float64], float]:  # noqa: ARG002
         r"""
         Calculate the appropriate dt for each grid based on a number of
         considerations

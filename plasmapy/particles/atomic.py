@@ -22,7 +22,7 @@ __all__ = [
 ]
 
 from numbers import Integral, Real
-from typing import Any
+from typing import Any, Optional, Union
 
 import astropy.units as u
 
@@ -187,8 +187,8 @@ def standard_atomic_weight(element: Particle) -> u.Quantity[u.kg]:
 def particle_mass(
     particle: Particle,
     *,
-    mass_numb: Integral | None = None,
-    Z: Integral | None = None,
+    mass_numb: Optional[Integral] = None,
+    Z: Optional[Integral] = None,
 ) -> u.Quantity[u.kg]:
     """
     Return the mass of a particle.
@@ -238,7 +238,7 @@ def particle_mass(
 
 
 @particle_input
-def isotopic_abundance(isotope: Particle, mass_numb: Integral | None = None) -> Real:
+def isotopic_abundance(isotope: Particle, mass_numb: Optional[Integral] = None) -> Real:
     """
     Return the isotopic abundances if known, and otherwise zero.
 
@@ -393,7 +393,7 @@ def electric_charge(particle: Particle) -> u.Quantity[u.C]:
 
 
 @particle_input
-def is_stable(particle: Particle, mass_numb: Integral | None = None) -> bool:
+def is_stable(particle: Particle, mass_numb: Optional[Integral] = None) -> bool:
     """
     Return `True` for stable isotopes and particles and `False` for
     unstable isotopes.
@@ -443,7 +443,9 @@ def is_stable(particle: Particle, mass_numb: Integral | None = None) -> bool:
 
 
 @particle_input(any_of={"stable", "unstable", "isotope"})
-def half_life(particle: Particle, mass_numb: Integral | None = None) -> u.Quantity[u.s]:
+def half_life(
+    particle: Particle, mass_numb: Optional[Integral] = None
+) -> u.Quantity[u.s]:
     """
     Return the half-life in seconds for unstable isotopes and particles,
     and |inf| seconds for stable isotopes and particles.
@@ -493,7 +495,7 @@ def half_life(particle: Particle, mass_numb: Integral | None = None) -> u.Quanti
     return particle.half_life
 
 
-def known_isotopes(argument: str | Integral | None = None) -> list[str]:
+def known_isotopes(argument: Optional[Union[str, Integral]] = None) -> list[str]:
     """
     Return a list of all known isotopes of an element, or a list of all
     known isotopes of every element if no input is provided.
@@ -586,7 +588,7 @@ def known_isotopes(argument: str | Integral | None = None) -> list[str]:
 
 
 def common_isotopes(
-    argument: str | Integral | None = None, most_common_only: bool = False
+    argument: Optional[Union[str, Integral]] = None, most_common_only: bool = False
 ) -> list[str]:
     """
     Return a list of isotopes of an element with an isotopic abundances
@@ -657,7 +659,7 @@ def common_isotopes(
     # TODO: Allow Particle objects representing elements to be inputs
 
     def common_isotopes_for_element(
-        argument: str | int, most_common_only: bool | None
+        argument: Union[str, int], most_common_only: Optional[bool]
     ) -> list[str]:
         isotopes = known_isotopes(argument)
 
@@ -707,7 +709,7 @@ def common_isotopes(
 
 
 def stable_isotopes(
-    argument: ParticleLike | None = None, unstable: bool = False
+    argument: Optional[ParticleLike] = None, unstable: bool = False
 ) -> list[str]:
     """
     Return a list of all stable isotopes of an element, or if no input is
@@ -777,7 +779,7 @@ def stable_isotopes(
     # TODO: Allow Particle objects representing elements to be inputs
 
     def stable_isotopes_for_element(
-        argument: str | int, stable_only: bool | None
+        argument: Union[str, int], stable_only: Optional[bool]
     ) -> list[str]:
         KnownIsotopes = known_isotopes(argument)
         return [
@@ -871,7 +873,7 @@ def reduced_mass(
     )
 
 
-def periodic_table_period(argument: str | Integral) -> Integral:
+def periodic_table_period(argument: Union[str, Integral]) -> Integral:
     """
     Return the periodic table period.
 
@@ -914,7 +916,7 @@ def periodic_table_period(argument: str | Integral) -> Integral:
     return _elements.data_about_elements[symbol]["period"]
 
 
-def periodic_table_group(argument: str | Integral) -> Integral:
+def periodic_table_group(argument: Union[str, Integral]) -> Integral:
     """
     Return the periodic table group.
 
@@ -962,7 +964,7 @@ def periodic_table_group(argument: str | Integral) -> Integral:
     return _elements.data_about_elements[symbol]["group"]
 
 
-def periodic_table_block(argument: str | Integral) -> str:
+def periodic_table_block(argument: Union[str, Integral]) -> str:
     """
     Return the periodic table block.
 
@@ -1013,7 +1015,7 @@ def periodic_table_block(argument: str | Integral) -> str:
     return _elements.data_about_elements[symbol]["block"]
 
 
-def periodic_table_category(argument: str | Integral) -> str:
+def periodic_table_category(argument: Union[str, Integral]) -> str:
     """
     Return the periodic table category.
 
@@ -1063,7 +1065,7 @@ def periodic_table_category(argument: str | Integral) -> str:
 def ionic_levels(
     particle: Particle,
     min_charge: Integral = 0,
-    max_charge: Integral | None = None,
+    max_charge: Optional[Integral] = None,
 ) -> ParticleList:
     """
     Return a |ParticleList| that includes different ionic levels of a

@@ -6,6 +6,7 @@ __all__ = ["kinetic_alfven"]
 
 import warnings
 from numbers import Integral, Real
+from typing import Optional
 
 import astropy.units as u
 import numpy as np
@@ -38,8 +39,8 @@ def kinetic_alfven(  # noqa: C901, PLR0912
     T_i: u.Quantity[u.K],
     gamma_e: Real = 1,
     gamma_i: Real = 3,
-    mass_numb: Integral | None = None,
-    Z: Real | None = None,
+    mass_numb: Optional[Integral] = None,
+    Z: Optional[Real] = None,
 ):
     r"""Using the equation provided in :cite:t:`bellan:2012`, this function
     calculates the numerical solution to the kinetic Alfvén dispersion

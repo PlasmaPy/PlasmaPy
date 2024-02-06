@@ -20,6 +20,7 @@ __all__ = [
 __aliases__ = ["betaH_", "nD_", "Re_", "Rm_"]
 
 import numbers
+from typing import Optional
 
 import astropy.units as u
 import numpy as np
@@ -447,8 +448,8 @@ def Lundquist_number(
     B: u.Quantity[u.T],
     density: u.Quantity[u.m**-3, u.kg / u.m**3],
     sigma: u.Quantity[u.S / u.m],
-    ion: ParticleLike | None = None,
-    z_mean: numbers.Real | None = None,
+    ion: Optional[ParticleLike] = None,
+    z_mean: Optional[numbers.Real] = None,
 ) -> u.Quantity[u.dimensionless_unscaled]:
     r"""
     Compute the Lundquist number.

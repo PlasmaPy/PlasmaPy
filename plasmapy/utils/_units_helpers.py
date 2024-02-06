@@ -5,7 +5,7 @@ from __future__ import annotations
 __all__: list[str] = []
 
 from numbers import Number
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional, Union
 
 import astropy.units as u
 
@@ -16,10 +16,10 @@ if TYPE_CHECKING:
 def _get_physical_type_dict(
     iterable: Iterable,
     *,
-    only_quantities: bool | None = False,
-    numbers_become_quantities: bool | None = False,
-    strict: bool | None = False,
-    allowed_physical_types: set[str | u.PhysicalType] | None = None,
+    only_quantities: Optional[bool] = False,
+    numbers_become_quantities: Optional[bool] = False,
+    strict: Optional[bool] = False,
+    allowed_physical_types: Optional[set[Union[str, u.PhysicalType]]] = None,
 ) -> dict[u.PhysicalType, u.Quantity]:
     """
     Return a `dict` that contains `~astropy.units.PhysicalType` objects

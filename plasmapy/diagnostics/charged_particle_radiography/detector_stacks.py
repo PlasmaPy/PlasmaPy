@@ -8,6 +8,7 @@ __all__ = [
     "Layer",
 ]
 
+from typing import Optional
 
 import astropy.units as u
 import numpy as np
@@ -61,7 +62,7 @@ class Layer:
         thickness: u.Quantity[u.m],
         energy_axis: u.Quantity[u.J],
         stopping_power: u.Quantity[u.J / u.m, u.J * u.m**2 / u.kg],
-        mass_density: u.Quantity[u.kg / u.m**3] | None = None,
+        mass_density: Optional[u.Quantity[u.kg / u.m**3]] = None,
         active: bool = True,
         name: str = "",
     ) -> None:

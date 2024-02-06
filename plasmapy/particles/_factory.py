@@ -8,7 +8,7 @@ __all__: list[str] = []
 
 import contextlib
 from numbers import Integral, Real
-from typing import Any
+from typing import Any, Optional, Union
 
 import astropy.units as u
 from astropy.constants import m_e
@@ -44,9 +44,9 @@ def _generate_particle_factory_error_message(
 def _make_custom_particle_with_real_charge_number(
     arg: ParticleLike,
     *,
-    mass_numb: Integral | None = None,
-    symbol: str | None = None,
-    Z: Real | None = None,
+    mass_numb: Optional[Integral] = None,
+    symbol: Optional[str] = None,
+    Z: Optional[Real] = None,
 ):
     """
     Create a |CustomParticle| for mean or composite ions.
@@ -112,7 +112,7 @@ _particle_types = (Particle, CustomParticle, ParticleList)
 
 def _physical_particle_factory(
     *args, **kwargs
-) -> Particle | CustomParticle | ParticleList:
+) -> Union[Particle, CustomParticle, ParticleList]:
     """
     Return a representation of one or more physical particles.
 
