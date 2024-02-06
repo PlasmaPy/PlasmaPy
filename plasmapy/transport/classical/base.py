@@ -345,6 +345,20 @@ class AbstractClassicalTransportCoefficients(ABC):
             return self.n_i * self.T_i / self.i_collision_freq
         else:
             return None
+        
+    @property
+    def gamma_normalization(self):
+        """
+        The normalization constant for gamma.
+
+        Defined such that multiplying the dimensionless quantity by the
+        normalization constnat will return the dimensional quantity.
+        """
+        # Walsh 2020 Eq. A6, gamma =  gamma_dimensionless * tau_e/m_e
+        if self._dimensional:
+            return 1 / (self.e_collision_freq* const.m_e.si)
+        else:
+            return None
 
     # **********************************************************************
     # Resistivity (alpha)
@@ -614,7 +628,7 @@ class AbstractClassicalTransportCoefficients(ABC):
     @property
     @validate_attributes_not_none(attributes=[])
     def gamma(self):
-        return self.norm_gamma * self.beta_normalization
+        return self.norm_gamma * self.gamma_normalization
 
 
 if __name__ == "__main__":
