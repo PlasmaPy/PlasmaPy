@@ -117,7 +117,7 @@ class MHDNormalizations(AbstractNormalizations):
     Examples
     --------
     >>> import astropy.units as u
-    >>> from plasmapy.simulation import MHDNormalizations
+    >>> from plasmapy.simulation.normalizations import MHDNormalizations
     >>> n0 = 1e19 * u.m**-3
     >>> L0 = 1 * u.km
     >>> B0 = 10 * u.G
