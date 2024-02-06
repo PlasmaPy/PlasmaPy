@@ -6,7 +6,7 @@ from collections.abc import Iterable
 from typing import Union
 
 import astropy.units as u
-from astropy.constants import k_B
+from astropy.constants import k_B, m_e
 from astropy.constants import mu0 as μ0
 
 from plasmapy.formulary import Alfven_speed
@@ -166,11 +166,8 @@ class MHDNormalizations(AbstractNormalizations):
     @property
     def acceleration(self) -> u.Quantity[u.m * u.s**-2]:
         r"""
-        The |normalization constant| for acceleration,.
-
-        .. math::
-
-           a_⭑ ≡ \frac{L_⭑}{t_⭑^2}.
+        The |normalization constant| for acceleration,
+        :math:`a_⭑ ≡ \frac{L_⭑}{t_⭑^2}`.
 
         Returns
         -------
@@ -192,11 +189,8 @@ class MHDNormalizations(AbstractNormalizations):
     @property
     def current_density(self) -> u.Quantity[u.A * u.m**-2]:
         r"""
-        The |normalization constant| for :wikipedia:`current density`,.
-
-        .. math::
-
-           J_⭑ ≡ \frac{B_⭑}{μ_0 L_⭑}.
+        The |normalization constant| for :wikipedia:`current density`,
+        :math:`J_⭑ ≡ \frac{B_⭑}{μ_0 L_⭑}`.
 
         Returns
         -------
@@ -207,11 +201,8 @@ class MHDNormalizations(AbstractNormalizations):
     @property
     def diffusivity(self) -> u.Quantity[u.m**2 / u.s]:
         r"""
-        The |normalization constant| for :wikipedia:`diffusivity`,.
-
-        .. math:
-
-           D_⭑ ≡ \frac{L_⭑^2}{t_⭑}
+        The |normalization constant| for :wikipedia:`diffusivity`,
+        :math:`D_⭑ ≡ \frac{L_⭑^2}{t_⭑}`.
 
         Returns
         -------
@@ -222,11 +213,8 @@ class MHDNormalizations(AbstractNormalizations):
     @property
     def dynamic_viscosity(self) -> u.Quantity[u.Pa * u.s]:
         r"""
-        The |normalization constant| for :wikipedia:`dynamic viscosity`,.
-
-        .. math::
-
-           μ_⭑ ≡ p_⭑ t_⭑
+        The |normalization constant| for :wikipedia:`dynamic viscosity`,
+        :math:`μ_⭑ ≡ p_⭑ t_⭑`.
 
         .. danger::
 
@@ -248,11 +236,8 @@ class MHDNormalizations(AbstractNormalizations):
     @property
     def electric_field(self) -> u.Quantity[u.V / u.m]:
         """
-        The |normalization constant| for electric field,.
-
-        .. math::
-
-           E_⭑ ≡ V_⭑ B_⭑.
+        The |normalization constant| for electric field strength,
+        :math:`E_⭑ ≡ V_⭑ B_⭑`.
 
         Returns
         -------
@@ -263,9 +248,8 @@ class MHDNormalizations(AbstractNormalizations):
     @property
     def energy(self) -> u.Quantity[u.J]:
         r"""
-        The |normalization constant| for energy,.
-
-           e_⋆ ≡ \frac{m_⋆ L_⋆^2}{t_⋆^2}
+        The |normalization constant| for energy,
+        :math:`e_⋆ ≡ \frac{m_⋆ L_⋆^2}{t_⋆^2}`.
 
         .. danger::
 
@@ -280,11 +264,8 @@ class MHDNormalizations(AbstractNormalizations):
     @property
     def frequency(self) -> u.Quantity[u.s**-1]:
         """
-        The |normalization constant| for frequency,.
-
-        .. math::
-
-           f_⭑ ≡ t_⭑^{-1}.
+        The |normalization constant| for frequency,
+        :math:`f_⭑ ≡ t_⭑^{-1}`.
 
         .. danger::
 
@@ -300,11 +281,8 @@ class MHDNormalizations(AbstractNormalizations):
     @property
     def heat_flux(self) -> u.Quantity[u.J * u.m**-2 * u.s**-1]:
         r"""
-        The heat flux :term:`normalization`.
-
-        .. math::
-
-           q_⭑ ≡ \frac{n_⋆ e_⋆ L_⋆}{t_⋆}.
+        The heat flux :term:`normalization`,
+        :math:`q_⭑ ≡ \frac{n_⋆ e_⋆ L_⋆}{t_⋆}`.
 
         .. danger::
 
@@ -319,7 +297,7 @@ class MHDNormalizations(AbstractNormalizations):
     @property
     def ion(self) -> Union[Particle, CustomParticle]:
         """
-        The ion in the plasma.
+        The ion of the plasma.
 
         Returns
         -------
@@ -365,11 +343,7 @@ class MHDNormalizations(AbstractNormalizations):
     @property
     def magnetic_flux(self) -> u.Quantity[u.Wb]:
         r"""
-        The magnetic flux :term:`normalization`.
-
-        .. math::
-
-           Φ_⋆ ≡ B_⋆ A_⋆.
+        The magnetic flux :term:`normalization`, :math:`Φ_⋆ ≡ B_⋆ A_⋆`.
 
         Returns
         -------
@@ -380,14 +354,10 @@ class MHDNormalizations(AbstractNormalizations):
     @property
     def mass(self) -> u.Quantity[u.kg]:
         r"""
-        The |normalization constant| for mass.
+        The |normalization constant| for mass, :math:`m_⭑ ≡ m_i + Z m_e`.
 
-        .. math::
-
-           m_⭑ ≡ m_i + Z m_e,
-
-        where :math:`m_i` is the ion mass, :math:`m_e` is the electron
-        mass, and :math:`Z` is the charge number of the ion.
+        Here, :math:`m_i` is the ion mass, :math:`m_e` is the electron
+        mass, and :math:`Z` is the |charge number| of the ion.
 
         .. danger::
 
@@ -397,16 +367,12 @@ class MHDNormalizations(AbstractNormalizations):
         -------
         |Quantity|
         """
-        raise NotImplementedError
+        return self.ion.mass + self.ion.charge_number * m_e
 
     @property
     def mass_density(self) -> u.Quantity[u.kg * u.m**-3]:
         r"""
-        The |normalization constant| for mass density.
-
-        .. math::
-
-           ρ_⋆ ≡ m_⋆ n_⋆.
+        The |normalization constant| for mass density, :math:`ρ_⋆ ≡ m_⋆ n_⋆`.
 
         .. danger::
 
@@ -432,11 +398,8 @@ class MHDNormalizations(AbstractNormalizations):
     @property
     def pressure(self) -> u.Quantity[u.Pa]:
         r"""
-        The |normalization constant| for pressure.
-
-        .. math::
-
-           p_⭑ ≡ \frac{B_⭑^2}{μ_0}.
+        The |normalization constant| for pressure,
+        :math:`p_⭑ ≡ \frac{B_⭑^2}{μ_0}`.
 
         Returns
         -------
@@ -462,11 +425,8 @@ class MHDNormalizations(AbstractNormalizations):
     @property
     def temperature(self) -> u.Quantity[u.K]:
         r"""
-        The temperature :term:`normalization`.
-
-        .. math::
-
-           T_⭑ ≡ \frac{B_⭑^2}{k_B μ_0 n_⭑}.
+        The temperature :term:`normalization`,
+        :math:`T_⭑ ≡ \frac{B_⭑^2}{k_B μ_0 n_⭑}`.
 
         Returns
         -------
@@ -479,22 +439,18 @@ class MHDNormalizations(AbstractNormalizations):
         r"""
         The thermal conduction :term:`normalization`.
 
-        .. math::
-
-           _⭑ ≡
-
         Returns
         -------
         |Quantity|
         """
-        return ...
+        raise NotImplementedError(
+            "The thermal conductivity normalization has not yet been " "implemented."
+        )
 
     @property
     def time(self) -> u.Quantity[u.s]:
         r"""
-        The time :term:`normalization`.
-
-        t_⭑ ≡ \frac{L_⭑}{V_⭑}.
+        The time :term:`normalization`, :math:`t_⭑ ≡ \frac{L_⭑}{V_⭑}`.
 
         Returns
         -------
@@ -505,11 +461,8 @@ class MHDNormalizations(AbstractNormalizations):
     @property
     def velocity(self) -> u.Quantity[u.m / u.s]:
         r"""
-        The velocity :term:`normalization`.
-
-        .. math::
-
-           V_⭑ ≡ \frac{B_⭑}{\sqrt{μ_0 ρ_⭑}}.
+        The velocity :term:`normalization`,
+        :math:`V_⭑ ≡ \frac{B_⭑}{\sqrt{μ_0 ρ_⭑}}`.
 
         Returns
         -------
@@ -520,20 +473,20 @@ class MHDNormalizations(AbstractNormalizations):
     @property
     def volume(self) -> u.Quantity[u.m**3]:
         r"""
-        The volume :term:`normalization`.
+        The volume :term:`normalization`, :math:`𝒱 ≡ L_⭑^3`.
 
-        .. math::
-
-            𝒱 ≡ L_⭑^3
+        Returns
+        -------
+        |Quantity|
         """
 
     @property
     def wavenumber(self) -> u.Quantity[u.m**-1]:
         r"""
-        The wavenumber :term:`normalization`.
+        The wavenumber :term:`normalization`, :math:`k_⭑ ≡ \frac{1}{L_⭑}`.
 
-        .. math::
-
-           k_⭑ ≡ \frac{1}{L_⭑}
+        Returns
+        -------
+        |Quantity|
         """
         return 1 / self.length
