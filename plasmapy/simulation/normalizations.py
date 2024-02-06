@@ -121,7 +121,7 @@ class MHDNormalizations(AbstractNormalizations):
     >>> n0 = 1e19 * u.m**-3
     >>> L0 = 1 * u.km
     >>> B0 = 10 * u.G
-    >>> normalizations = MHDNormalizations("p+", n0, L0, B0)
+    >>> normalizations = MHDNormalizations(n0, L0, B0, ion="p+")
     >>> normalizations.ion
     Particle("p+")
     >>> normalizations.number_density
