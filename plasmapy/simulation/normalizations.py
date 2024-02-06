@@ -2,20 +2,19 @@
 
 __all__ = ["NormalizationError", "MHDNormalizations"]
 
-import astropy.units as u
+from collections.abc import Iterable
+from typing import Union
 
+import astropy.units as u
 from astropy.constants import k_B
 from astropy.constants import mu0 as μ0
-from collections.abc import Iterable
-from numbers import Integral, Real
-from typing import Optional, Union
 
 from plasmapy.formulary import Alfven_speed
-from plasmapy.particles import CustomParticle, Particle, particle_input, ParticleLike
+from plasmapy.particles import CustomParticle, Particle, ParticleLike, particle_input
 from plasmapy.particles.exceptions import ChargeError
 from plasmapy.simulation.abstractions import AbstractNormalizations
-from plasmapy.utils import PlasmaPyError
 from plasmapy.utils._units_helpers import _get_physical_type_dict
+from plasmapy.utils.exceptions import PlasmaPyError
 
 _length = u.get_physical_type(u.m)
 _magnetic_field = u.get_physical_type(u.T)
@@ -137,9 +136,9 @@ class MHDNormalizations(AbstractNormalizations):
     def __init__(
         self,
         *quantities: Iterable[u.Quantity],
-        ion: Optional[ParticleLike] = None,
-        Z: Optional[Real] = None,
-        mass_numb: Optional[Integral] = None,
+        ion: ParticleLike | None = None,
+        Z: float | None = None,
+        mass_numb: int | None = None,
     ):
         self._ptypes_to_quantities = _get_physical_type_dict(
             quantities=quantities,
