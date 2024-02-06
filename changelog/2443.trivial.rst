@@ -1,2 +1,0 @@
-Improved |type hint annotations| for `plasmapy.particles.decorators`,
-which includes |particle_input|, and the corresponding tests.

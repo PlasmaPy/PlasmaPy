@@ -1,1 +1,0 @@
-Added a |tox| environment for running |mypy|.

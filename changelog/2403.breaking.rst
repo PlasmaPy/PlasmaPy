@@ -1,3 +1,0 @@
-Imports of classes and functions from `plasmapy.utils` must now be made
-directly from the subpackages and modules, rather than from `plasmapy.utils`
-itself.

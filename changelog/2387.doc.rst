@@ -1,2 +1,0 @@
-Switched from ``sphinx_toolbox.collapse`` to ``sphinx_collapse`` for
-including collapsible content in our documentation.

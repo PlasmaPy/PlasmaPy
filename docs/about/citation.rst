@@ -3,9 +3,9 @@
 Acknowledging and Citing
 ========================
 
-.. |version_to_cite| replace:: 2023.10.0
-.. |doi_hyperlink| replace:: https://doi.org/10.5281/zenodo.10011217
-.. |citation_year| replace:: 2023
+.. |version_to_cite| replace:: 2024.2.0
+.. |doi_hyperlink| replace:: https://doi.org/10.5281/zenodo.10613904
+.. |citation_year| replace:: 2024
 
 If you use PlasmaPy for a project that results in a publication, we ask
 that you cite the |Zenodo| record for the specific version of PlasmaPy
