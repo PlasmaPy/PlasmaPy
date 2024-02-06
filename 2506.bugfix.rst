@@ -1,0 +1,2 @@
+- Enabled |validate_quantities| to be compatible with postponed evaluation of
+  annotations (see :pep:`563`). (:pr:`2479`)
