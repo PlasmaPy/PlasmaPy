@@ -523,6 +523,8 @@ class MHDNormalizations(AbstractNormalizations):
         The volume :term:`normalization`.
 
         .. math::
+
+            𝒱 ≡ L_⭑^3
         """
 
     @property
