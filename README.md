@@ -95,7 +95,7 @@ very welcome!
 
 ## Installation
 
-PlasmaPy requires Python 3.9 or newer. If you do not have Python
+PlasmaPy requires Python 3.10 or newer. If you do not have Python
 installed already, here are the instructions to [download and install
 Python].
 
@@ -104,14 +104,14 @@ To install PlasmaPy on macOS or Linux, open a terminal and run:
 python -m pip install plasmapy
 ```
 On some systems, it might be necessary to specify the Python version
-number, for example by using `python3` or `python3.11` instead of
+number, for example by using `python3` or `python3.12` instead of
 `python`.
 
 To install PlasmaPy on Windows, open a terminal and run
 ```Shell
-py -3.11 -m pip install plasmapy
+py -3.12 -m pip install plasmapy
 ```
-The `3.11` may be replaced by any version of Python that is supported by
+The `3.12` may be replaced by any version of Python that is supported by
 PlasmaPy.
 
 If you have [installed Conda], then you can also install PlasmaPy into
