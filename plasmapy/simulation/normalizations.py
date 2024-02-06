@@ -327,8 +327,8 @@ class MHDNormalizations(AbstractNormalizations):
         """
         return self._ion
 
-    @particle_input(require="ion")  # outside or inside decorator?
     @ion.setter
+    @particle_input(require="ion")  # outside or inside decorator?
     def ion(self, ion_: ParticleLike):
         if ion_ is not None and ion_.charge_number <= 0:
             raise ChargeError("The charge of the ion must be positive.")
