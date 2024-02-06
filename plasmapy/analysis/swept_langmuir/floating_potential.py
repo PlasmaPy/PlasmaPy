@@ -57,7 +57,7 @@ def find_floating_potential(  # noqa: C901, PLR0912, PLR0915
     voltage: np.ndarray,
     current: np.ndarray,
     threshold: int = 1,
-    min_points: float | None = None,
+    min_points: int | float | None = None,
     fit_type: str = "exponential",
 ) -> tuple[np.floating, VFExtras]:
     """
