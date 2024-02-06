@@ -409,7 +409,7 @@ class TestSingleParticleCollisionFrequencies:
             ) ** 2
 
         for attribute_name, expected_limit_value in zip(
-            self.return_values_to_test, expected_limit_values
+            self.return_values_to_test, expected_limit_values, strict=False
         ):
             calculated_limit_value = getattr(value_test_case, attribute_name).value
             # Energy loss limit value is already in units of

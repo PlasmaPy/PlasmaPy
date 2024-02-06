@@ -75,7 +75,7 @@ def test_particle_list_membership(args) -> None:
     (or particle-like objects) that are passed to it.
     """
     particle_list = ParticleList(args)
-    for arg, particle in zip(args, particle_list):
+    for arg, particle in zip(args, particle_list, strict=False):
         assert particle == arg
     assert _everything_is_particle_or_custom_particle(particle_list)
     assert _everything_is_particle_or_custom_particle(particle_list.data)

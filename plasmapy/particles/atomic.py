@@ -563,7 +563,9 @@ def known_isotopes(argument: Optional[Union[str, Integral]] = None) -> list[str]
         mass_numbers = [mass_number(isotope) for isotope in isotopes]
         return [
             mass_number
-            for (isotope, mass_number) in sorted(zip(mass_numbers, isotopes))
+            for (isotope, mass_number) in sorted(
+                zip(mass_numbers, isotopes, strict=False)
+            )
         ]
 
     if argument is not None:
@@ -674,7 +676,9 @@ def common_isotopes(
 
         sorted_isotopes = [
             iso_comp
-            for (isotope, iso_comp) in sorted(zip(isotopic_abundances, CommonIsotopes))
+            for (isotope, iso_comp) in sorted(
+                zip(isotopic_abundances, CommonIsotopes, strict=False)
+            )
         ]
 
         sorted_isotopes.reverse()

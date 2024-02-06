@@ -494,7 +494,7 @@ isotopic_abundance_isotopes = (
 isotopic_abundance_sum_table = (
     (element, isotopes)
     for element, isotopes in zip(
-        isotopic_abundance_elements, isotopic_abundance_isotopes
+        isotopic_abundance_elements, isotopic_abundance_isotopes, strict=False
     )
     if isotopes
 )

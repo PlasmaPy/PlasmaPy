@@ -60,7 +60,7 @@ def _code_repr_of_quantity(arg: u.Quantity, max_items=np.inf) -> str:
     if arg.unit == u.dimensionless_unscaled:
         formatted += "*u.dimensionless_unscaled"
     else:
-        for base, power in zip(arg.unit.bases, arg.unit.powers):
+        for base, power in zip(arg.unit.bases, arg.unit.powers, strict=False):
             if power == -1:
                 formatted += f"/u.{base}"
             elif power == 1:
@@ -181,7 +181,7 @@ def _string_together_warnings_for_printing(
     """
     warnings_with_messages = [
         f"{_object_name(warning, showmodule=False)}: {message}"
-        for warning, message in zip(warning_types, warning_messages)
+        for warning, message in zip(warning_types, warning_messages, strict=False)
     ]
 
     return "\n\n".join(warnings_with_messages)

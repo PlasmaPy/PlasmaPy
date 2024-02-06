@@ -26,7 +26,7 @@ def _fetch_units(openPMD_dims):
     """Converts a collection of OpenPMD dimensions to astropy.units."""
 
     units = u.dimensionless_unscaled
-    for factor, unit in zip(openPMD_dims, _UNITS):
+    for factor, unit in zip(openPMD_dims, _UNITS, strict=False):
         units *= unit**factor
     units, *_ = units.compose()
     return units
