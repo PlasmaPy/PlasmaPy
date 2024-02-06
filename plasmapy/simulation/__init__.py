@@ -13,6 +13,7 @@ __all__ = [
     "ParticleTracker",
 ]
 
+from plasmapy.simulation import normalizations, particle_tracker
 from plasmapy.simulation.abstractions import (
     AbstractNormalizations,
     AbstractSimulation,
