@@ -563,7 +563,9 @@ def known_isotopes(argument: Optional[Union[str, Integral]] = None) -> list[str]
         mass_numbers = [mass_number(isotope) for isotope in isotopes]
         return [
             mass_number
-            for (isotope, mass_number) in sorted(zip(mass_numbers, isotopes))
+            for (isotope, mass_number) in sorted(
+                zip(mass_numbers, isotopes, strict=False)
+            )
         ]
 
     if argument is not None:
@@ -674,7 +676,9 @@ def common_isotopes(
 
         sorted_isotopes = [
             iso_comp
-            for (isotope, iso_comp) in sorted(zip(isotopic_abundances, CommonIsotopes))
+            for (isotope, iso_comp) in sorted(
+                zip(isotopic_abundances, CommonIsotopes, strict=False)
+            )
         ]
 
         sorted_isotopes.reverse()
@@ -902,7 +906,7 @@ def periodic_table_period(argument: Union[str, Integral]) -> Integral:
     2
     """
     # TODO: Implement @particle_input
-    if not isinstance(argument, (str, Integral)):
+    if not isinstance(argument, str | Integral):
         raise TypeError(
             "The argument to periodic_table_period must be either a "
             "string representing the element or its symbol, or an "
@@ -950,7 +954,7 @@ def periodic_table_group(argument: Union[str, Integral]) -> Integral:
     2
     """
     # TODO: Implement @particle_input
-    if not isinstance(argument, (str, Integral)):
+    if not isinstance(argument, str | Integral):
         raise TypeError(
             "The argument to periodic_table_group must be "
             "either a string representing the element or its "
@@ -1001,7 +1005,7 @@ def periodic_table_block(argument: Union[str, Integral]) -> str:
     's'
     """
     # TODO: Implement @particle_input
-    if not isinstance(argument, (str, Integral)):
+    if not isinstance(argument, str | Integral):
         raise TypeError(
             "The argument to periodic_table_block must be "
             "either a string representing the element or its "
@@ -1047,7 +1051,7 @@ def periodic_table_category(argument: Union[str, Integral]) -> str:
     'transition metal'
     """
     # TODO: Implement @particle_input
-    if not isinstance(argument, (str, Integral)):
+    if not isinstance(argument, str | Integral):
         raise TypeError(
             "The argument to periodic_table_category must be "
             "either a string representing the element or its "

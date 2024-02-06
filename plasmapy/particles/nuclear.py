@@ -197,7 +197,7 @@ def nuclear_reaction_energy(*args, **kwargs) -> u.Quantity[u.J]:  # noqa: C901, 
         if isinstance(unformatted_particles_list, str):
             unformatted_particles_list = [unformatted_particles_list]
 
-        if not isinstance(unformatted_particles_list, (list, tuple)):
+        if not isinstance(unformatted_particles_list, list | tuple):
             raise TypeError(
                 "The input to process_particles_list should be a "
                 "string, list, or tuple."

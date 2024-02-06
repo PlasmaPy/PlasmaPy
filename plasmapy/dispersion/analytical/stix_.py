@@ -176,7 +176,7 @@ def stix(  # noqa: C901, PLR0912, PLR0915
     """
 
     # Validate ions argument
-    if not isinstance(ions, (list, tuple, ParticleList)):
+    if not isinstance(ions, list | tuple | ParticleList):
         ions = [ions]
     ions = ParticleList(ions)
 
@@ -184,7 +184,7 @@ def stix(  # noqa: C901, PLR0912, PLR0915
         raise ValueError(
             "Particle(s) passed to 'ions' must be a positively charged"
             " ion. The following particle(s) is(are) not allowed "
-            f"{[ion for ion, fail in zip(ions, failed) if not fail]}"
+            f"{[ion for ion, fail in zip(ions, failed, strict=False) if not fail]}"
         )
 
     # Validate n_i argument
@@ -244,7 +244,7 @@ def stix(  # noqa: C901, PLR0912, PLR0915
     # Generate the plasma parameters needed
     wps = []
     wcs = []
-    for par, dens in zip(species, densities):
+    for par, dens in zip(species, densities, strict=False):
         wps.append(plasma_frequency(n=dens * u.m**-3, particle=par).value)
         wcs.append(gyrofrequency(B=B, particle=par, signed=True).value)
 
@@ -252,7 +252,7 @@ def stix(  # noqa: C901, PLR0912, PLR0915
     S = np.ones_like(w, dtype=np.float64)
     P = np.ones_like(S)
     D = np.zeros_like(S)
-    for wc, wp in zip(wcs, wps):
+    for wc, wp in zip(wcs, wps, strict=False):
         S -= (wp**2) / (w**2 - wc**2)
         P -= (wp / w) ** 2
         D += ((wp**2) / (w**2 - wc**2)) * (wc / w)

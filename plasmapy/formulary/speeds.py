@@ -348,7 +348,7 @@ def ion_sound_speed(
     <Quantity 229585... m / s>
 
     """
-    for gamma, species in zip([gamma_e, gamma_i], ["electrons", "ions"]):
+    for gamma, species in zip([gamma_e, gamma_i], ["electrons", "ions"], strict=False):
         if not isinstance(gamma, Real):
             raise TypeError(
                 f"The adiabatic index gamma for {species} must be a positive "

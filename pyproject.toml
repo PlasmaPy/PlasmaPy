@@ -21,7 +21,7 @@ keywords = [
   "space plasmas",
 ]
 license = {file = "LICENSE.md"}
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 classifiers = [
   "Development Status :: 4 - Beta",
   "Intended Audience :: Education",
@@ -214,7 +214,7 @@ type_incorrect = "Incorrect changelog type (see `changelog/README.rst`)"
 type_incorrect_long = "The filename of the changelog entry must be of the form `changelog/NUMBER.TYPE.rst` where `TYPE` is one of `feature`, `trivial`, `doc`, `bugfix`, `breaking`, or `removal`.\n\nFor details, see: https://docs.plasmapy.org/en/latest/contributing/changelog_guide.html#adding-a-changelog-entry"
 
 [tool.ruff]
-target-version = "py39"
+target-version = "py310"
 namespace-packages = [".github/workflows", "docs"]
 output-format = "grouped"
 show-fixes = true

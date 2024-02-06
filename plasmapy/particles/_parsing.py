@@ -382,7 +382,7 @@ def parse_and_check_atomic_input(  # noqa: C901, PLR0912, PLR0915
 
         return ion
 
-    if not isinstance(argument, (str, Integral)):
+    if not isinstance(argument, str | Integral):
         raise TypeError(f"The argument {argument} is not an integer or string.")
 
     arg = dealias_particle_aliases(argument)

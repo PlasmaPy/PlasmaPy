@@ -707,7 +707,7 @@ class CheckUnits(CheckBase):
                 _equivs = None
             elif isinstance(_equivs, Equivalency):
                 pass
-            elif isinstance(_equivs, (list, tuple)):
+            elif isinstance(_equivs, list | tuple):
                 # flatten list to non-list elements
                 if isinstance(_equivs, tuple):
                     _equivs = [_equivs]

@@ -208,7 +208,7 @@ class AbstractGrid(ABC):
         ax_units = self.units
         ax_dtypes = [self.ds[i].dtype for i in coords]
 
-        coord_lbls = [f"{i}: {j}" for i, j in zip(coords, shape)]
+        coord_lbls = [f"{i}: {j}" for i, j in zip(coords, shape, strict=False)]
 
         s = f"*** Grid Summary ***\n{type(self)}\n"
 

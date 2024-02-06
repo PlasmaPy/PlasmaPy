@@ -39,11 +39,6 @@ jobs:
           python: '3.10'
           toxenv: py310-all
 
-        - name: Python 3.9 (Windows), minimal dependencies
-          os: windows-latest
-          python: 3.9
-          toxenv: py39-all-minimal
-
         - name: mypy
           os: ubuntu-latest
           python: '3.12'

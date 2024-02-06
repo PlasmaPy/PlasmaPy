@@ -117,7 +117,7 @@ def cold_plasma_permittivity_SDP(
     """
     S, D, P = 1, 0, 1
 
-    for s, n_s in zip(species, n):
+    for s, n_s in zip(species, n, strict=False):
         omega_c = gyrofrequency(B=B, particle=s, signed=True)
         omega_p = plasma_frequency(n=n_s, particle=s)
 
@@ -207,7 +207,7 @@ def cold_plasma_permittivity_LRP(
     """
     L, R, P = 1, 1, 1
 
-    for s, n_s in zip(species, n):
+    for s, n_s in zip(species, n, strict=False):
         omega_c = gyrofrequency(B=B, particle=s, signed=True)
         omega_p = plasma_frequency(n=n_s, particle=s)
 
