@@ -21,7 +21,7 @@ __all__ = [
     "standard_atomic_weight",
 ]
 
-from numbers import Integral, Real
+from numbers import Integral
 from typing import Any
 
 import astropy.units as u
@@ -238,7 +238,7 @@ def particle_mass(
 
 
 @particle_input
-def isotopic_abundance(isotope: Particle, mass_numb: Integral | None = None) -> Real:
+def isotopic_abundance(isotope: Particle, mass_numb: Integral | None = None) -> float:
     """
     Return the isotopic abundances if known, and otherwise zero.
 
