@@ -335,6 +335,8 @@ ignore = [
   "TD003", # missing-todo-link
   "TRY003", # raise-vanilla-args
   "TRY301", # raise-within-try
+  "UP006", # non-pep585-annotation
+  "UP007", # non-pep604-annotation
   "UP025", # unicode-kind-prefix
   "W191", # tab-indentation (formatter conflict)
 ]
