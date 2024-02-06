@@ -5,7 +5,6 @@ __all__ = ["ParticleList", "ParticleListLike"]
 import collections
 import contextlib
 from collections.abc import Callable, Iterable, Sequence
-from typing import Optional, Union
 
 import astropy.units as u
 import numpy as np
@@ -151,8 +150,8 @@ class ParticleList(collections.UserList):
 
     @staticmethod
     def _list_of_particles_and_custom_particles(
-        particles: Optional[Iterable[ParticleLike]],
-    ) -> list[Union[Particle, CustomParticle]]:
+        particles: Iterable[ParticleLike] | None,
+    ) -> list[Particle | CustomParticle]:
         """
         Convert an iterable that provides |particle-like| objects into a
         `list` containing |Particle| and |CustomParticle| instances.
@@ -188,7 +187,7 @@ class ParticleList(collections.UserList):
 
         return new_particles
 
-    def __init__(self, particles: Optional[Iterable] = None) -> None:
+    def __init__(self, particles: Iterable | None = None) -> None:
         self._data = self._list_of_particles_and_custom_particles(particles)
 
     @staticmethod
@@ -265,7 +264,7 @@ class ParticleList(collections.UserList):
         return self._get_particle_attribute("charge", unit=u.C, default=np.nan * u.C)
 
     @property
-    def data(self) -> list[Union[Particle, CustomParticle]]:
+    def data(self) -> list[Particle | CustomParticle]:
         """
         A `list` containing the particles contained in the
         |ParticleList| instance.
@@ -317,9 +316,9 @@ class ParticleList(collections.UserList):
     def is_category(
         self,
         *category_tuple,
-        require: Optional[Union[str, Iterable[str]]] = None,
-        any_of: Optional[Union[str, Iterable[str]]] = None,
-        exclude: Optional[Union[str, Iterable[str]]] = None,
+        require: str | Iterable[str] | None = None,
+        any_of: str | Iterable[str] | None = None,
+        exclude: str | Iterable[str] | None = None,
     ) -> list[bool]:
         """
         Determine element-wise if the particles in the |ParticleList|
@@ -399,7 +398,7 @@ class ParticleList(collections.UserList):
             default=np.nan * u.J,
         )
 
-    def sort(self, key: Optional[Callable] = None, reverse: bool = False):
+    def sort(self, key: Callable | None = None, reverse: bool = False):
         """
         Sort the |ParticleList| in-place.
 
@@ -466,7 +465,7 @@ class ParticleList(collections.UserList):
         *,
         use_rms_charge: bool = False,
         use_rms_mass: bool = False,
-    ) -> Union[CustomParticle, Particle]:
+    ) -> CustomParticle | Particle:
         """
         Return a particle with the average mass and charge.
 
@@ -574,7 +573,7 @@ Raises
 
 ParticleList.reverse.__doc__ = """Reverse the |ParticleList| in place."""
 
-ParticleListLike = Union[ParticleList, Sequence[ParticleLike]]
+ParticleListLike = ParticleList | Sequence[ParticleLike]
 
 ParticleListLike.__doc__ = r"""
 An `object` is |particle-list-like| if it can be identified as a

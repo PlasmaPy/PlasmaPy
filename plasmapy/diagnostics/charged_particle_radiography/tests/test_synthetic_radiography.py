@@ -2,7 +2,6 @@
 Tests for proton radiography functions
 """
 
-from typing import Optional
 
 import astropy.units as u
 import numpy as np
@@ -22,8 +21,8 @@ def _test_grid(  # noqa: C901, PLR0912
     B0: u.Quantity[u.T] = 10 * u.T,
     E0: u.Quantity[u.V / u.m] = 5e8 * u.V / u.m,
     phi0: u.Quantity[u.V] = 1.4e5 * u.V,
-    a: Optional[u.Quantity[u.m]] = None,
-    b: Optional[u.Quantity[u.m]] = None,
+    a: u.Quantity[u.m] | None = None,
+    b: u.Quantity[u.m] | None = None,
 ):
     r"""
     Generates grids representing some common physical scenarios for testing

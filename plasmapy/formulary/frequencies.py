@@ -10,7 +10,6 @@ __aliases__ = ["oc_", "wc_", "wlh_", "wp_", "wuh_"]
 __lite_funcs__ = ["plasma_frequency_lite"]
 
 import numbers
-from typing import Optional
 
 import astropy.units as u
 import numpy as np
@@ -45,8 +44,8 @@ def gyrofrequency(
     B: u.Quantity[u.T],
     particle: ParticleLike,
     signed: bool = False,
-    Z: Optional[numbers.Real] = None,
-    mass_numb: Optional[numbers.Integral] = None,
+    Z: numbers.Real | None = None,
+    mass_numb: numbers.Integral | None = None,
 ) -> u.Quantity[u.rad / u.s]:
     r"""
     Calculate the particle gyrofrequency in units of radians per second.
@@ -237,8 +236,8 @@ def plasma_frequency(
     n: u.Quantity[u.m**-3],
     particle: ParticleLike,
     *,
-    mass_numb: Optional[numbers.Integral] = None,
-    Z: Optional[numbers.Real] = None,
+    mass_numb: numbers.Integral | None = None,
+    Z: numbers.Real | None = None,
 ) -> u.Quantity[u.rad / u.s]:
     r"""Calculate the particle plasma frequency.
 
@@ -540,8 +539,8 @@ def Buchsbaum_frequency(
     n2: u.Quantity[u.m**-3],
     ion1: ParticleLike,
     ion2: ParticleLike,
-    Z1: Optional[float] = None,
-    Z2: Optional[float] = None,
+    Z1: float | None = None,
+    Z2: float | None = None,
 ) -> u.Quantity[u.rad / u.s]:
     r"""
     Return the Buchsbaum frequency for a two-ion-species plasma.
