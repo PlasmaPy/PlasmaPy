@@ -1,4 +1,4 @@
-name: Create issue with release checklist
+name: Create issue
 
 on:
   workflow_dispatch:
@@ -8,7 +8,8 @@ on:
         required: true
 
 jobs:
-  create-issue:
+  release-checklist:
+    name: Release checklist
     runs-on: ubuntu-latest
 
     steps:

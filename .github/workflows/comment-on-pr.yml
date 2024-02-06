@@ -1,4 +1,4 @@
-name: Add comment to pull request
+name: Add comment
 
 on:
   pull_request_target:
@@ -6,6 +6,7 @@ on:
 
 jobs:
   comment:
+    name: Welcome message
     # Skip posting this comment for frequent contributors
     if: "!contains(fromJSON('[''namurphy'', ''rocco8773'', ''StanczakDominik'', ''dependabot'', ''plasmapy-requirements-bot'', ''pre-commit-ci'']'), github.event.pull_request.user.login)"
     runs-on: ubuntu-latest

@@ -1,4 +1,4 @@
-name: Check author list
+name: Check metadata
 
 on:
   pull_request:
@@ -6,6 +6,7 @@ on:
 
 jobs:
   authors-included:
+    name: Author in CITATION.cff
     runs-on: ubuntu-latest
     steps:
 
@@ -15,7 +16,7 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v5
       with:
-        python-version: 3.11
+        python-version: 3.12
 
     - name: Install dependencies
       run: pip install requests
