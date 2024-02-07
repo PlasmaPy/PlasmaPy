@@ -3,7 +3,6 @@
 __all__ = ["NormalizationError", "MHDNormalizations"]
 
 from collections.abc import Iterable
-from typing import Union
 
 import astropy.units as u
 from astropy.constants import k_B, m_e
@@ -31,6 +30,19 @@ _allowed_physical_types = (
     _time,
     _velocity,
 )
+
+
+@particle_input
+def _resolve_ion(
+    ion: ParticleLike, Z: float | None = None, mass_numb: int | None = None
+) -> Particle | CustomParticle:
+    """
+    Take particle-like arguments and return the corresponding ion object.
+
+    This workaround is needed because |particle_input| does not work with
+    setters (see :issue:`2507`).
+    """
+    return ion
 
 
 class NormalizationError(PlasmaPyError):
@@ -132,7 +144,6 @@ class MHDNormalizations(AbstractNormalizations):
     <Quantity 1000. m>
     """
 
-    @particle_input
     def __init__(
         self,
         *quantities: Iterable[u.Quantity],
@@ -141,7 +152,7 @@ class MHDNormalizations(AbstractNormalizations):
         mass_numb: int | None = None,
     ):
         self._ptypes_to_quantities = _get_physical_type_dict(
-            quantities=quantities,
+            quantities,
             only_quantities=True,
             strict=True,
             allowed_physical_types=_allowed_physical_types,
@@ -295,7 +306,7 @@ class MHDNormalizations(AbstractNormalizations):
         return ...
 
     @property
-    def ion(self) -> Union[Particle, CustomParticle]:
+    def ion(self) -> Particle | CustomParticle:
         """
         The ion of the plasma.
 
@@ -306,17 +317,18 @@ class MHDNormalizations(AbstractNormalizations):
         return self._ion
 
     @ion.setter
-    @particle_input(require="ion")  # outside or inside decorator?
     def ion(self, ion_: ParticleLike):
-        if ion_ is not None and ion_.charge_number <= 0:
+        ion = _resolve_ion(ion_)
+
+        if ion is not None and ion.charge_number <= 0:
             raise ChargeError("The charge of the ion must be positive.")
 
-        if ion_ is None and _mass_density not in self._ptypes_to_quantities:
+        if ion is None and _mass_density not in self._ptypes_to_quantities:
             raise NormalizationError(
                 "If no ion is provided, then a mass density must be provided."
             )
 
-        self._ion = ion_
+        self._ion = ion
 
     @property
     def length(self) -> u.Quantity[u.m]:
