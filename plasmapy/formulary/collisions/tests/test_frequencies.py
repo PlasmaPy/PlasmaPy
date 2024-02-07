@@ -399,11 +399,11 @@ class TestSingleParticleCollisionFrequencies:
         if interaction_type == "e|e":
             charge_constant = 1
         elif interaction_type == "e|i":
-            charge_constant = value_test_case.field_particle.charge_number**2
+            charge_constant = value_test_case.field_particle.charge_number**2  # type: ignore[assignment]
         elif interaction_type == "i|e":
-            charge_constant = value_test_case.test_particle.charge_number**2
+            charge_constant = value_test_case.test_particle.charge_number**2  # type: ignore[assignment]
         elif interaction_type == "i|i":
-            charge_constant = (
+            charge_constant = (  # type: ignore[assignment]
                 value_test_case.test_particle.charge_number
                 * value_test_case.field_particle.charge_number
             ) ** 2

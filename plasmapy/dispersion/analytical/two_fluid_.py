@@ -6,7 +6,6 @@ __all__ = ["two_fluid"]
 
 import warnings
 from numbers import Integral, Real
-from typing import Optional
 
 import astropy.units as u
 import numpy as np
@@ -37,8 +36,8 @@ def two_fluid(
     T_i: u.Quantity[u.K],
     gamma_e: Real = 1,
     gamma_i: Real = 3,
-    mass_numb: Optional[Integral] = None,
-    Z: Optional[Real] = None,
+    mass_numb: Integral | None = None,
+    Z: Real | None = None,
 ):
     r"""
     Using the solution provided by :cite:t:`bellan:2012`, calculate the

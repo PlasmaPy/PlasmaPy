@@ -3,7 +3,6 @@
 __all__ = ["Lorentz_factor", "relativistic_energy", "RelativisticBody"]
 
 from numbers import Integral, Real
-from typing import Optional, Union
 
 import astropy.units as u
 import numpy as np
@@ -96,8 +95,8 @@ def relativistic_energy(
     particle: ParticleLike,
     V: u.Quantity[u.m / u.s],
     *,
-    mass_numb: Optional[Integral] = None,
-    Z: Optional[Integral] = None,
+    mass_numb: Integral | None = None,
+    Z: Integral | None = None,
     m=None,
     v=None,
 ) -> u.Quantity[u.J]:
@@ -278,8 +277,8 @@ class RelativisticBody:
 
     @staticmethod
     def _get_speed_like_input(
-        velocity_like_arguments: dict[str, Union[u.Quantity, Real]],
-    ) -> dict[str, Union[u.Quantity, Real]]:
+        velocity_like_arguments: dict[str, u.Quantity | Real],
+    ) -> dict[str, u.Quantity | Real]:
         not_none_arguments = {
             key: value
             for key, value in velocity_like_arguments.items()
@@ -296,7 +295,7 @@ class RelativisticBody:
         return not_none_arguments or {"velocity": np.nan * u.m / u.s}
 
     def _store_velocity_like_argument(
-        self, speed_like_input: dict[str, Union[u.Quantity, Real]]
+        self, speed_like_input: dict[str, u.Quantity | Real]
     ) -> None:
         """
         Take the velocity-like argument and store it via the setter for
@@ -323,11 +322,11 @@ class RelativisticBody:
         *,
         total_energy: u.Quantity[u.J] = None,
         kinetic_energy: u.Quantity[u.J] = None,
-        v_over_c: Optional[Real] = None,
-        lorentz_factor: Optional[Real] = None,
-        Z: Optional[Integral] = None,
-        mass_numb: Optional[Integral] = None,
-        dtype: Optional[DTypeLike] = np.longdouble,
+        v_over_c: Real | None = None,
+        lorentz_factor: Real | None = None,
+        Z: Integral | None = None,
+        mass_numb: Integral | None = None,
+        dtype: DTypeLike | None = np.longdouble,
     ) -> None:
         self._particle = particle
 
@@ -349,7 +348,7 @@ class RelativisticBody:
         return f"RelativisticBody({self.particle}, {self.velocity})"
 
     @property
-    def particle(self) -> Union[CustomParticle, Particle, ParticleList]:
+    def particle(self) -> CustomParticle | Particle | ParticleList:
         """
         Representation of the particle(s).
 
@@ -494,7 +493,7 @@ class RelativisticBody:
         self._momentum = (Lorentz_factor(V) * self.mass * V).to(u.kg * u.m / u.s)
 
     @lorentz_factor.setter
-    def lorentz_factor(self, γ: Union[Real, u.Quantity]):
+    def lorentz_factor(self, γ: Real | u.Quantity):
         if not isinstance(γ, Real | u.Quantity):
             raise TypeError("Invalid type for Lorentz factor")
 

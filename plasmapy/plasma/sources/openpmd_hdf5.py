@@ -1,6 +1,5 @@
 """Functionality for reading in HDF5 files following the OpenPMD standard."""
 from types import TracebackType
-from typing import Optional
 
 __all__ = ["HDF5Reader"]
 
@@ -76,9 +75,9 @@ class HDF5Reader(GenericPlasma):
 
     def __exit__(
         self,
-        exc_type: Optional[type[BaseException]],
-        exc_value: Optional[BaseException],
-        traceback: Optional[TracebackType],
+        exc_type: type[BaseException] | None,
+        exc_value: BaseException | None,
+        traceback: TracebackType | None,
     ):
         self.h5.close()
 
