@@ -71,7 +71,7 @@ def check_sweep(  # noqa: C901, PLR0912
     # check type
     if isinstance(voltage, np.ndarray):
         pass
-    elif isinstance(voltage, (list, tuple)):
+    elif isinstance(voltage, list | tuple):
         voltage = np.array(voltage)
     else:
         raise TypeError(
@@ -102,7 +102,7 @@ def check_sweep(  # noqa: C901, PLR0912
     # check type
     if isinstance(current, np.ndarray):
         pass
-    elif isinstance(current, (list, tuple)):
+    elif isinstance(current, list | tuple):
         current = np.array(current)
     else:
         raise TypeError(

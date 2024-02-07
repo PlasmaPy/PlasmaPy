@@ -194,7 +194,7 @@ class TestGyroradius:
             (
                 (B,),
                 {"particle": "p", "Vperp": V},
-                gyroradius(B, particle="p", Vperp=-V),
+                gyroradius(B, particle="p+", Vperp=-V),
                 None,
             ),
             (
@@ -344,34 +344,36 @@ class TestGyroradius:
 def test_inertial_length() -> None:
     r"""Test the inertial_length function in lengths.py."""
 
-    assert inertial_length(n_i, particle="p").unit.is_equivalent(u.m)
+    assert inertial_length(n_i, particle="p+").unit.is_equivalent(u.m)
 
     assert np.isclose(
-        inertial_length(mu * u.cm**-3, particle="p").cgs.value, 2.28e7, rtol=0.01
+        inertial_length(mu * u.cm**-3, particle="p+").cgs.value, 2.28e7, rtol=0.01
     )
 
     inertial_length_electron_plus = inertial_length(5.351 * u.m**-3, particle="e+")
     assert inertial_length_electron_plus == inertial_length(
-        5.351 * u.m**-3, particle="e"
+        5.351 * u.m**-3, particle="e-"
     )
 
-    assert inertial_length(n_i, particle="p") == inertial_length(n_i, particle="p")
+    assert inertial_length(n_i, particle="p+") == inertial_length(n_i, particle="p+")
 
     with pytest.warns(u.UnitsWarning):
-        inertial_length(4, particle="p")
+        inertial_length(4, particle="p+")
 
     with pytest.raises(u.UnitTypeError):
-        inertial_length(4 * u.m**-2, particle="p")
+        inertial_length(4 * u.m**-2, particle="p+")
 
     with pytest.raises(ValueError):
-        inertial_length(-5 * u.m**-3, particle="p")
+        inertial_length(-5 * u.m**-3, particle="p+")
 
     with pytest.raises(InvalidParticleError):
         inertial_length(n_i, particle=-135)
 
     with pytest.warns(u.UnitsWarning):
-        inertial_length_no_units = inertial_length(1e19, particle="p")
-        assert inertial_length_no_units == inertial_length(1e19 * u.m**-3, particle="p")
+        inertial_length_no_units = inertial_length(1e19, particle="p+")
+        assert inertial_length_no_units == inertial_length(
+            1e19 * u.m**-3, particle="p+"
+        )
 
     assert inertial_length(n_e, "e-").unit.is_equivalent(u.m)
 

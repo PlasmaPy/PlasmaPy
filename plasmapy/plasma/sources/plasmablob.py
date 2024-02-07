@@ -23,7 +23,7 @@ class PlasmaBlob(GenericPlasma):
     """
 
     @validate_quantities(T_e=u.K, n_e=u.m**-3)
-    def __init__(self, T_e, n_e, Z=None, particle="p") -> None:
+    def __init__(self, T_e, n_e, Z=None, particle="p+") -> None:
         """
         Initialize plasma parameters.
         The most basic description is composition (ion), temperature,
@@ -42,8 +42,8 @@ class PlasmaBlob(GenericPlasma):
 
         Examples
         --------
-        >>> print(PlasmaBlob(1e4*u.K, 1e20/u.m**3, particle='p'))
-        PlasmaBlob(T_e=10000.0*u.K, n_e=1e+20*u.m**-3, particle='p', Z=1)
+        >>> print(PlasmaBlob(1e4 * u.K, 1e20 / u.m**3, particle="p+"))
+        PlasmaBlob(T_e=10000.0*u.K, n_e=1e+20*u.m**-3, particle='p+', Z=1)
         Intermediate coupling regime: Gamma = 0.01250283...
         Thermal kinetic energy dominant: Theta = 109690.5...
 
@@ -61,8 +61,8 @@ class PlasmaBlob(GenericPlasma):
         Examples
         --------
         >>> import astropy.units as u
-        >>> PlasmaBlob(1e4*u.K, 1e20/u.m**3, particle='p')
-        PlasmaBlob(T_e=10000.0*u.K, n_e=1e+20*u.m**-3, particle='p', Z=1)
+        >>> PlasmaBlob(1e4 * u.K, 1e20 / u.m**3, particle="p+")
+        PlasmaBlob(T_e=10000.0*u.K, n_e=1e+20*u.m**-3, particle='p+', Z=1)
         """
         argument_dict = {
             "T_e": self.T_e,

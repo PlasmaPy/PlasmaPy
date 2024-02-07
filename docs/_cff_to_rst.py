@@ -3,7 +3,6 @@ Convert author information from :file:`CITATION.cff` into a
 reStructuredText-formatted list.
 """
 import pathlib
-from typing import Union
 
 import yaml
 from unidecode import unidecode
@@ -16,7 +15,7 @@ from unidecode import unidecode
 obsolete_github_usernames = {}
 
 
-def parse_cff(filename: str) -> dict[str, Union[str, list[dict[str, str]]]]:
+def parse_cff(filename: str) -> dict[str, str | list[dict[str, str]]]:
     """
     Parse a :file:`CITATION.cff` file into a dictionary.
 
@@ -118,7 +117,7 @@ def begin_author_line(author: dict[str, str]) -> str:
         The beginning of the author line.
     """
     name = get_author_name(author)
-    alias = author.get("alias", None)
+    alias = author.get("alias")
 
     if not alias or alias in obsolete_github_usernames:
         return f"- {name}"

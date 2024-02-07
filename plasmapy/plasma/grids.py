@@ -14,7 +14,6 @@ import warnings
 from abc import ABC, abstractmethod
 from collections import namedtuple
 from functools import cached_property
-from typing import Union
 
 import astropy.units as u
 import numpy as np
@@ -208,7 +207,7 @@ class AbstractGrid(ABC):
         ax_units = self.units
         ax_dtypes = [self.ds[i].dtype for i in coords]
 
-        coord_lbls = [f"{i}: {j}" for i, j in zip(coords, shape)]
+        coord_lbls = [f"{i}: {j}" for i, j in zip(coords, shape, strict=False)]
 
         s = f"*** Grid Summary ***\n{type(self)}\n"
 
@@ -605,7 +604,7 @@ class AbstractGrid(ABC):
         # requirements: eg. units correspond to the coordinate system
         self._validate()
 
-    def add_quantities(self, **kwargs):
+    def add_quantities(self, **kwargs: u.Quantity) -> None:
         r"""
         Adds a quantity to the dataset as a new DataArray.
 
@@ -669,8 +668,8 @@ class AbstractGrid(ABC):
 
     def _make_grid(  # noqa: C901, PLR0912
         self,
-        start: Union[float, u.Quantity],
-        stop: Union[float, u.Quantity],
+        start: float | u.Quantity,
+        stop: float | u.Quantity,
         num: int = 100,
         units=None,
         **kwargs,
@@ -904,7 +903,7 @@ class AbstractGrid(ABC):
 
     @abstractmethod
     def nearest_neighbor_interpolator(
-        self, pos: Union[np.ndarray, u.Quantity], *args, persistent: bool = False
+        self, pos: np.ndarray | u.Quantity, *args, persistent: bool = False
     ):
         r"""
         Interpolate values on the grid using a nearest-neighbor scheme with
@@ -1095,7 +1094,7 @@ class CartesianGrid(AbstractGrid):
 
     @modify_docstring(prepend=AbstractGrid.nearest_neighbor_interpolator.__doc__)
     def nearest_neighbor_interpolator(
-        self, pos: Union[np.ndarray, u.Quantity], *args, persistent: bool = False
+        self, pos: np.ndarray | u.Quantity, *args, persistent: bool = False
     ):
         r""" """  # noqa: D419
 
@@ -1134,7 +1133,7 @@ class CartesianGrid(AbstractGrid):
         return output[0] if len(output) == 1 else tuple(output)
 
     def volume_averaged_interpolator(
-        self, pos: Union[np.ndarray, u.Quantity], *args, persistent: bool = False
+        self, pos: np.ndarray | u.Quantity, *args, persistent: bool = False
     ):
         r"""
         Interpolate values on the grid using a volume-averaged scheme with
@@ -1393,13 +1392,13 @@ class NonUniformCartesianGrid(AbstractGrid):
 
         """
 
-        indgrid = np.arange(self.grid.shape[0])
-
-        return interp.NearestNDInterpolator(self.grid.to(u.m).value, indgrid)
+        return interp.NearestNDInterpolator(
+            self.grid.to(u.m).value, self._interp_quantities
+        )
 
     @modify_docstring(prepend=AbstractGrid.nearest_neighbor_interpolator.__doc__)
     def nearest_neighbor_interpolator(
-        self, pos: Union[np.ndarray, u.Quantity], *args, persistent: bool = False
+        self, pos: np.ndarray | u.Quantity, *args, persistent: bool = False
     ):
         r""" """  # noqa: D419
         # Shared setup
@@ -1418,10 +1417,6 @@ class NonUniformCartesianGrid(AbstractGrid):
         pts1 = self.pts1.to(u.m).value
         pts2 = self.pts2.to(u.m).value
 
-        i = self._nearest_neighbor_interpolator(pos)
-
-        vals = self._interp_quantities[i, :]
-
         mask_particle_off = (
             (pos[:, 0] < pts0.min())
             | (pos[:, 0] > pts0.max())
@@ -1431,6 +1426,7 @@ class NonUniformCartesianGrid(AbstractGrid):
             | (pos[:, 2] > pts2.max())
         )
 
+        vals = self._nearest_neighbor_interpolator(pos)
         vals[mask_particle_off] = np.nan
 
         output = [vals[:, arg] * self._interp_units[arg] for arg in range(len(args))]

@@ -1,19 +1,20 @@
-name: Create issue with release checklist
+name: Create issue
 
 on:
   workflow_dispatch:
     inputs:
       version:
-        description: Version (e.g., v2023.9.0)
+        description: Version (e.g., v2024.5.0)
         required: true
 
 jobs:
-  create-issue:
+  release-checklist:
+    name: Release checklist
     runs-on: ubuntu-latest
 
     steps:
-    - name: Check out repository
-      uses: actions/checkout@v4.1.1
+    - name: Checkout code
+      uses: actions/checkout@v4
 
     - name: Create issue
       env:

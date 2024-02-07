@@ -6,7 +6,6 @@ __all__ = ["plasma_dispersion_func", "plasma_dispersion_func_deriv"]
 
 
 from numbers import Complex
-from typing import Union
 
 import astropy.units as u
 import numpy as np
@@ -14,8 +13,8 @@ from scipy.special import wofz as faddeeva_function
 
 
 def plasma_dispersion_func(
-    zeta: Union[Complex, np.ndarray, u.Quantity[u.dimensionless_unscaled]],
-) -> Union[Complex, np.ndarray, u.Quantity[u.dimensionless_unscaled]]:
+    zeta: Complex | np.ndarray | u.Quantity[u.dimensionless_unscaled],
+) -> Complex | np.ndarray | u.Quantity[u.dimensionless_unscaled]:
     r"""
     Calculate the plasma dispersion function.
 
@@ -80,8 +79,8 @@ def plasma_dispersion_func(
 
 
 def plasma_dispersion_func_deriv(
-    zeta: Union[Complex, np.ndarray, u.Quantity[u.dimensionless_unscaled]],
-) -> Union[Complex, np.ndarray, u.Quantity[u.dimensionless_unscaled]]:
+    zeta: Complex | np.ndarray | u.Quantity[u.dimensionless_unscaled],
+) -> Complex | np.ndarray | u.Quantity[u.dimensionless_unscaled]:
     r"""
     Calculate the derivative of the plasma dispersion function.
 
@@ -119,7 +118,7 @@ def plasma_dispersion_func_deriv(
     (-2+0j)
     >>> plasma_dispersion_func_deriv(1j)
     (-0.484255687717376...+0j)
-    >>> plasma_dispersion_func_deriv(-1.52+0.47j)
+    >>> plasma_dispersion_func_deriv(-1.52 + 0.47j)
     (0.165871331498228...+0.445879788059350...j)
     """
     try:

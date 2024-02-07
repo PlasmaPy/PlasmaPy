@@ -9,7 +9,7 @@ import warnings
 from collections.abc import Callable, Iterable, MutableMapping
 from inspect import BoundArguments
 from numbers import Integral, Real
-from typing import Any, Optional, TypedDict, Union
+from typing import Any, TypeAlias, TypedDict, get_type_hints
 
 import numpy as np
 import wrapt
@@ -32,24 +32,26 @@ class _CallableDataDict(TypedDict, total=False):
     allow_custom_particles: bool
     allow_particle_lists: bool
     annotations: dict[str, Any]
-    any_of: Optional[Union[str, Iterable[str]]]
+    any_of: str | Iterable[str] | None
     callable_: Callable[..., Any]
-    exclude: Optional[Union[str, Iterable[str]]]
+    exclude: str | Iterable[str] | None
     parameters_to_process: list[str]
-    require: Optional[Union[str, Iterable[str]]]
+    require: str | Iterable[str] | None
     signature: inspect.Signature
 
 
-_basic_particle_input_annotations = (
+_basic_particle_input_annotations: tuple[type | TypeAlias, ...] = (
     Particle,  # deprecated
     ParticleLike,
     ParticleListLike,
-    Union[ParticleLike, ParticleListLike],
+    ParticleLike | ParticleListLike,
     (Particle, Particle),  # deprecated
 )
 _optional_particle_input_annotations = tuple(
-    Optional[annotation]
-    for annotation in _basic_particle_input_annotations
+    annotation | None
+    # remove [:-1] index in following line when dropping (Particle, Particle)
+    # as a valid annotation
+    for annotation in _basic_particle_input_annotations[:-1]
     if annotation != (Particle, Particle)  # temporary hack
 )
 _particle_input_annotations = (
@@ -57,20 +59,7 @@ _particle_input_annotations = (
 )
 
 
-def _get_annotations(callable_: Callable[..., Any]) -> dict[str, Any]:
-    """
-    Access the annotations of a callable.
-
-    .. note::
-
-       For Python 3.10+, this should be replaced with
-       `inspect.get_annotations`.
-    """
-    # Python 3.10: Replace this with inspect.get_annotations
-    return getattr(callable_, "__annotations__", {})
-
-
-def _make_into_set_or_none(obj: Any) -> Optional[Iterable[str]]:
+def _make_into_set_or_none(obj: Any) -> Iterable[str] | None:
     """
     Return `None` if ``obj`` is `None`, and otherwise convert ``obj``
     into a `set`.
@@ -193,9 +182,9 @@ class _ParticleInput:
         self,
         callable_: Callable[..., Any],
         *,
-        require: Optional[Union[str, Iterable[str]]] = None,
-        any_of: Optional[Union[str, Iterable[str]]] = None,
-        exclude: Optional[Union[str, Iterable[str]]] = None,
+        require: str | Iterable[str] | None = None,
+        any_of: str | Iterable[str] | None = None,
+        exclude: str | Iterable[str] | None = None,
         allow_custom_particles: bool = True,
         allow_particle_lists: bool = True,
     ) -> None:
@@ -221,7 +210,7 @@ class _ParticleInput:
     @callable_.setter
     def callable_(self, callable_: Callable[..., Any]) -> None:
         self._data["callable_"] = callable_
-        self._data["annotations"] = _get_annotations(callable_)
+        self._data["annotations"] = get_type_hints(callable_)
         self._data["parameters_to_process"] = self.find_parameters_to_process()
         self._data["signature"] = inspect.signature(callable_)
 
@@ -257,7 +246,7 @@ class _ParticleInput:
         return self._data.get("annotations")  # type: ignore[return-value]
 
     @property
-    def require(self) -> Optional[Iterable[str]]:
+    def require(self) -> Iterable[str] | None:
         """
         Categories that the particle must belong to.
 
@@ -268,11 +257,11 @@ class _ParticleInput:
         return self._data["require"]
 
     @require.setter
-    def require(self, require_: Optional[Union[str, Iterable[str]]]) -> None:
+    def require(self, require_: str | Iterable[str] | None) -> None:
         self._data["require"] = _make_into_set_or_none(require_)
 
     @property
-    def any_of(self) -> Optional[Iterable[str]]:
+    def any_of(self) -> Iterable[str] | None:
         """
         Categories of which the particle must belong to at least one.
 
@@ -283,11 +272,11 @@ class _ParticleInput:
         return self._data["any_of"]
 
     @any_of.setter
-    def any_of(self, any_of_: Optional[Union[str, Iterable[str]]]) -> None:
+    def any_of(self, any_of_: str | Iterable[str] | None) -> None:
         self._data["any_of"] = _make_into_set_or_none(any_of_)
 
     @property
-    def exclude(self) -> Optional[Iterable[str]]:
+    def exclude(self) -> Iterable[str] | None:
         """
         Categories that the particle cannot belong to.
 
@@ -298,7 +287,7 @@ class _ParticleInput:
         return self._data["exclude"]
 
     @exclude.setter
-    def exclude(self, exclude_: Optional[Union[str, Iterable[str]]]) -> None:
+    def exclude(self, exclude_: str | Iterable[str] | None) -> None:
         self._data["exclude"] = _make_into_set_or_none(exclude_)
 
     @property
@@ -346,7 +335,7 @@ class _ParticleInput:
         return self._data["parameters_to_process"]
 
     def verify_charge_categorization(
-        self, particle: Union[Particle, CustomParticle, ParticleList]
+        self, particle: Particle | CustomParticle | ParticleList
     ) -> None:
         """
         Raise an exception if the particle does not meet charge
@@ -380,10 +369,10 @@ class _ParticleInput:
 
     @staticmethod
     def category_errmsg(
-        particle: Union[Particle, CustomParticle, ParticleList],
-        require: Optional[Union[str, Iterable[str]]],
-        exclude: Optional[Union[str, Iterable[str]]],
-        any_of: Optional[Union[str, Iterable[str]]],
+        particle: Particle | CustomParticle | ParticleList,
+        require: str | Iterable[str] | None,
+        exclude: str | Iterable[str] | None,
+        any_of: str | Iterable[str] | None,
         callable_name: str,
     ) -> str:
         """
@@ -414,7 +403,7 @@ class _ParticleInput:
         return category_errmsg
 
     def verify_particle_categorization(
-        self, particle: Union[Particle, CustomParticle, ParticleList]
+        self, particle: Particle | CustomParticle | ParticleList
     ) -> None:
         """
         Verify that the particle meets the categorization criteria.
@@ -451,7 +440,7 @@ class _ParticleInput:
             raise ParticleError(errmsg)
 
     def verify_particle_name_criteria(
-        self, parameter: str, particle: Union[Particle, CustomParticle, ParticleList]
+        self, parameter: str, particle: Particle | CustomParticle | ParticleList
     ) -> None:
         """
         Check that parameters with special names meet the expected
@@ -467,7 +456,7 @@ class _ParticleInput:
             return
 
         name_categorization_exception: list[
-            tuple[str, dict[str, Optional[Union[str, Iterable[str]]]], type]
+            tuple[str, dict[str, str | Iterable[str] | None], type]
         ] = [
             ("element", {"require": "element"}, InvalidElementError),
             ("isotope", {"require": "isotope"}, InvalidIsotopeError),
@@ -495,7 +484,7 @@ class _ParticleInput:
                 )
 
     def verify_allowed_types(
-        self, particle: Union[Particle, CustomParticle, ParticleList]
+        self, particle: Particle | CustomParticle | ParticleList
     ) -> None:
         """
         Verify that the particle object contains only the allowed types
@@ -527,8 +516,8 @@ class _ParticleInput:
         self,
         parameter: str,
         argument: Any,
-        Z: Optional[float],
-        mass_numb: Optional[int],
+        Z: float | None,
+        mass_numb: int | None,
     ) -> Any:
         """
         Process an argument that has an appropriate annotation.
@@ -600,9 +589,7 @@ class _ParticleInput:
 
     parameters_to_skip = ("Z", "mass_numb")
 
-    def perform_pre_validations(
-        self, Z: Optional[float], mass_numb: Optional[int]
-    ) -> None:
+    def perform_pre_validations(self, Z: float | None, mass_numb: int | None) -> None:
         """
         Perform a variety of pre-checks on the arguments.
 
@@ -682,11 +669,11 @@ class _ParticleInput:
 
 
 def particle_input(
-    callable_: Optional[Callable[..., Any]] = None,
+    callable_: Callable[..., Any] | None = None,
     *,
-    require: Optional[Union[str, Iterable[str]]] = None,
-    any_of: Optional[Union[str, Iterable[str]]] = None,
-    exclude: Optional[Union[str, Iterable[str]]] = None,
+    require: str | Iterable[str] | None = None,
+    any_of: str | Iterable[str] | None = None,
+    exclude: str | Iterable[str] | None = None,
     allow_custom_particles: bool = True,
     allow_particle_lists: bool = True,
 ) -> Callable[..., Any]:
