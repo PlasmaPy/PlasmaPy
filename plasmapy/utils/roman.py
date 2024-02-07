@@ -19,7 +19,6 @@ __all__ = [
 
 import re
 from numbers import Integral
-from typing import Union
 
 import numpy as np
 
@@ -59,7 +58,7 @@ _romanNumeralPattern = re.compile(
 )
 
 
-def to_roman(n: Union[Integral, np.integer]) -> str:
+def to_roman(n: Integral | np.integer) -> str:
     """
     Convert an integer to a Roman numeral.
 

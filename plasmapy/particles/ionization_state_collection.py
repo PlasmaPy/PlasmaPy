@@ -5,7 +5,6 @@ isotopes.
 __all__ = ["IonizationStateCollection"]
 
 from numbers import Integral, Real
-from typing import Optional, Union
 
 import astropy.units as u
 import numpy as np
@@ -135,11 +134,11 @@ class IonizationStateCollection:
     @validate_quantities(T_e={"equivalencies": u.temperature_energy()})
     def __init__(
         self,
-        inputs: Union[dict[str, np.ndarray], list, tuple],
+        inputs: dict[str, np.ndarray] | list | tuple,
         *,
         T_e: u.Quantity[u.K] = np.nan * u.K,
-        abundances: Optional[dict[str, Real]] = None,
-        log_abundances: Optional[dict[str, Real]] = None,
+        abundances: dict[str, Real] | None = None,
+        log_abundances: dict[str, Real] | None = None,
         n0: u.Quantity[u.m**-3] = np.nan * u.m**-3,
         tol: Real = 1e-15,
         kappa: Real = np.inf,
@@ -188,7 +187,7 @@ class IonizationStateCollection:
     def __repr__(self) -> str:
         return self.__str__()
 
-    def __getitem__(self, *values) -> Union[IonizationState, IonicLevel]:
+    def __getitem__(self, *values) -> IonizationState | IonicLevel:
         errmsg = f"Invalid indexing for IonizationStateCollection instance: {values[0]}"
 
         one_input = not isinstance(values[0], tuple)
@@ -400,7 +399,7 @@ class IonizationStateCollection:
     @ionic_fractions.setter
     def ionic_fractions(  # noqa: C901, PLR0912, PLR0915
         self,
-        inputs: Union[dict, list, tuple],
+        inputs: dict | list | tuple,
     ):
         """
         Set the ionic fractions.
@@ -676,12 +675,12 @@ class IonizationStateCollection:
         }
 
     @property
-    def abundances(self) -> Optional[dict[ParticleLike, Real]]:
+    def abundances(self) -> dict[ParticleLike, Real] | None:
         """The elemental abundances."""
         return self._pars["abundances"]
 
     @abundances.setter
-    def abundances(self, abundances_dict: Optional[dict[ParticleLike, Real]]):
+    def abundances(self, abundances_dict: dict[ParticleLike, Real] | None):
         """
         Set the elemental (or isotopic) abundances.  The elements and
         isotopes must be the same as or a superset of the elements whose
@@ -748,7 +747,7 @@ class IonizationStateCollection:
         }
 
     @log_abundances.setter
-    def log_abundances(self, value: Optional[dict[str, Real]]):
+    def log_abundances(self, value: dict[str, Real] | None):
         """Set the base 10 logarithm of the relative abundances."""
         if value is not None:
             try:

@@ -5,7 +5,6 @@ __all__ = [
 ]
 __aliases__ = ["rho_"]
 import numbers
-from typing import Optional
 
 import astropy.units as u
 import numpy as np
@@ -70,7 +69,7 @@ def critical_density(omega: u.Quantity[u.rad / u.s]) -> u.Quantity[u.m**-3]:
 def mass_density(
     density: (u.m**-3, u.kg / (u.m**3)),
     particle: ParticleLike,
-    z_ratio: Optional[numbers.Real] = 1,
+    z_ratio: numbers.Real | None = 1,
 ) -> u.Quantity[u.kg / u.m**3]:
     r"""
     Calculate the mass density from a number density.

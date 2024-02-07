@@ -12,7 +12,7 @@ import functools
 import inspect
 import warnings
 from collections.abc import Callable
-from typing import Any, Optional
+from typing import Any
 
 import astropy.constants as const
 import astropy.tests.helper as astrohelper
@@ -69,7 +69,7 @@ def _process_input(wrapped_function: Callable):
 def run_test(  # noqa: C901
     func,
     args: Any = (),
-    kwargs: Optional[dict] = None,
+    kwargs: dict | None = None,
     expected_outcome: Any = None,
     rtol: float = 0.0,
     atol: float = 0.0,

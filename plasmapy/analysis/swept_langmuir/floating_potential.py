@@ -4,7 +4,7 @@ __aliases__ = ["find_vf_"]
 
 import numbers
 import warnings
-from typing import NamedTuple, Optional, Union
+from typing import NamedTuple
 
 import numpy as np
 
@@ -21,32 +21,32 @@ class VFExtras(NamedTuple):
     `~plasmapy.analysis.swept_langmuir.floating_potential.find_floating_potential`.
     """
 
-    vf_err: Optional[float]
+    vf_err: float | None
     """
     Alias for field number 0, the error in the calculated floating
     potential from the floating potential curve fit.
     """
 
-    rsq: Optional[float]
+    rsq: float | None
     """
     Alias for field number 1, the r-squared value of the ion-saturation
     curve fit.
     """
 
-    fitted_func: Optional[float]
+    fitted_func: float | None
     """
     Alias for field number 2, the :term:`fit-function` fitted during
     the floating potential curve fit.
     """
 
-    islands: Optional[list[slice]]
+    islands: list[slice] | None
     """
     Alias for field number 3, a list of `slice` objects representing
     the indices of the identified crossing-islands discovered during
     the floating potential curve fit.
     """
 
-    fitted_indices: Optional[slice]
+    fitted_indices: slice | None
     """
     Alias for field number 4, the indices used in the floating potential
     curve fit.
@@ -57,7 +57,7 @@ def find_floating_potential(  # noqa: C901, PLR0912, PLR0915
     voltage: np.ndarray,
     current: np.ndarray,
     threshold: int = 1,
-    min_points: Optional[Union[int, float]] = None,
+    min_points: float | None = None,
     fit_type: str = "exponential",
 ) -> tuple[np.floating, VFExtras]:
     """
