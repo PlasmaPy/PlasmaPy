@@ -5,7 +5,7 @@ __all__ = ["call_string", "attribute_call_string", "method_call_string"]
 import inspect
 from collections.abc import Callable
 from numbers import Integral
-from typing import Any, Optional, Union
+from typing import Any
 
 import astropy.units as u
 import numpy as np
@@ -90,7 +90,7 @@ def _code_repr_of_arg(arg, max_items=np.inf) -> str:
 
 
 def _code_repr_of_args_and_kwargs(
-    args: Any = None, kwargs: Optional[dict] = None, max_items=np.inf
+    args: Any = None, kwargs: dict | None = None, max_items=np.inf
 ) -> str:
     """
     Take positional and keyword arguments, and format them into a
@@ -190,7 +190,7 @@ def _string_together_warnings_for_printing(
 def call_string(
     f: Callable,
     args: Any = None,
-    kwargs: Optional[dict[str, Any]] = None,
+    kwargs: dict[str, Any] | None = None,
     max_items: Integral = 12,
 ) -> str:
     """
@@ -251,8 +251,8 @@ def call_string(
 def attribute_call_string(
     cls,
     attr: str,
-    args_to_cls: Optional[Union[tuple, Any]] = None,
-    kwargs_to_cls: Optional[dict[str, Any]] = None,
+    args_to_cls: tuple | Any | None = None,
+    kwargs_to_cls: dict[str, Any] | None = None,
     max_items: Integral = 12,
 ) -> str:
     """
@@ -326,10 +326,10 @@ def method_call_string(
     cls,
     method: str,
     *,
-    args_to_cls: Optional[Any] = None,
-    kwargs_to_cls: Optional[dict[str, Any]] = None,
-    args_to_method: Optional[Any] = None,
-    kwargs_to_method: Optional[dict[str, Any]] = None,
+    args_to_cls: Any | None = None,
+    kwargs_to_cls: dict[str, Any] | None = None,
+    args_to_method: Any | None = None,
+    kwargs_to_method: dict[str, Any] | None = None,
     max_items: Integral = 12,
 ) -> str:
     """

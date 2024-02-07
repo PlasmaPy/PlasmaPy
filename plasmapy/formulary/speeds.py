@@ -12,7 +12,6 @@ __lite_funcs__ = ["thermal_speed_lite"]
 
 import warnings
 from numbers import Integral, Real
-from typing import Optional
 
 import astropy.units as u
 import numpy as np
@@ -40,10 +39,10 @@ k_B_si_unitless = k_B.value
 def Alfven_speed(
     B: u.Quantity[u.T],
     density: (u.m**-3, u.kg / u.m**3),
-    ion: Optional[ParticleLike] = None,
+    ion: ParticleLike | None = None,
     *,
-    mass_numb: Optional[Integral] = None,
-    Z: Optional[Real] = None,
+    mass_numb: Integral | None = None,
+    Z: Real | None = None,
 ) -> u.Quantity[u.m / u.s]:
     r"""Calculate the Alfvén speed.
 
@@ -742,8 +741,8 @@ def kappa_thermal_speed(
     particle: ParticleLike,
     method="most_probable",
     *,
-    mass_numb: Optional[Real] = None,
-    Z: Optional[Real] = None,
+    mass_numb: Real | None = None,
+    Z: Real | None = None,
 ) -> u.Quantity[u.m / u.s]:
     r"""
     Return the most probable speed for a particle within a kappa
