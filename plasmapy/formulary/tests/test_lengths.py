@@ -69,7 +69,22 @@ def test_Debye_length() -> None:
     with pytest.warns(u.UnitsWarning):
         assert Debye_length(2.0 * u.K, 2.0) == Debye_length(2.0, 2.0 * u.m**-3)
 
+def test_that_Debye_length_can_handle_nparray(Debye_length):
     assert_can_handle_nparray(Debye_length)
+
+
+@pytest.mark.parametrize(
+    "T_e, n_e, expected",
+    [
+        (1.3e6 * u.K, 5.2e16 * u.m**-3, 0.0003450449033 * u.m),
+        (0 * u.K, 1 * u.m**-3, 0 * u.m),
+        (1 * u.K, 0 * u.m**-3, np.inf * u.m),
+    ]
+)
+def test_Debye_length(T_e, n_e, expected):
+    result = Debye_length(T_e=T_e, n_e=n_e)
+    assert_quantity_allclose(result, expected, rtol=1e-7, equal_nan=True, verbose=True)
+    assert Debye_length.unit == u.m
 
 
 class TestGyroradius:
