@@ -1,2 +1,2 @@
-Reordered changelog sections and added new category for internal
-changes.
+Reordered changelog sections and added the ``internal`` category for
+internal refactorings with minimal impact on the API.
