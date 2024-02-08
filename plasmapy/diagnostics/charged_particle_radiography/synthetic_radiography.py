@@ -722,7 +722,7 @@ class Tracker(ParticleTracker):
 
         """
         # Load particles for particle tracker class
-        self.load_particles(x, v, particle)
+        super().load_particles(x, v, particle)
 
         # But also calculate geometry-dependent variables
         self.theta = np.arccos(
@@ -819,7 +819,6 @@ class Tracker(ParticleTracker):
 
         # Drop the other particles
         self._remove_particles((v_towards_det < 0) & (dist_remaining > 0))
-        self.v_init = self.v_init[ind, :]
 
         # Store the number of particles deflected
         self.fract_deflected = (self.nparticles - ind.size) / self.nparticles
@@ -869,6 +868,9 @@ class Tracker(ParticleTracker):
         None
 
         """
+
+        self._enforce_particle_creation()
+
         # If meshes have been added, apply them now
         for mesh in self.mesh_list:
             self._apply_wire_mesh(**mesh)
@@ -891,6 +893,15 @@ class Tracker(ParticleTracker):
         self.coasted_particles = np.copy(self.x)
 
         super().run()
+
+        if self.num_entered < 0.1 * self.nparticles:
+            warnings.warn(
+                f"Only {100 * self.num_entered / self.nparticles:.2f}% of "
+                "particles entered the field grid: consider "
+                "decreasing the max_theta to increase this "
+                "number.",
+                RuntimeWarning,
+            )
 
         # Remove particles that will never reach the detector
         self._remove_deflected_particles()
@@ -938,7 +949,7 @@ class Tracker(ParticleTracker):
         # In case of numerical errors, make sure the output is within the domain of
         # arccos
         proj = np.where(proj > 1, 1, proj)
-        max_deflection = np.max(np.arccos(proj))
+        max_deflection = np.nanmax(np.arccos(proj))
 
         return max_deflection * u.rad
 
@@ -1143,7 +1154,7 @@ def synthetic_radiograph(  # noqa: C901
     if size is None:
         # If a detector size is not given, choose a size based on the
         # particle positions
-        w = np.max([np.max(np.abs(xloc)), np.max(np.abs(yloc))])
+        w = np.max([np.nanmax(np.abs(xloc)), np.nanmax(np.abs(yloc))])
         size = np.array([[-w, w], [-w, w]]) * u.m
     elif not isinstance(size, u.Quantity):
         raise TypeError(
@@ -1157,8 +1168,14 @@ def synthetic_radiograph(  # noqa: C901
             f"Argument `size` must have shape (2, 2), but got {size.shape}."
         )
 
+    nan_mask = np.logical_or(np.isnan(xloc), np.isnan(yloc))
+    sanitized_xloc = xloc[~nan_mask]
+    sanitized_yloc = yloc[~nan_mask]
+
     # Generate the histogram
-    intensity, h, v = np.histogram2d(xloc, yloc, range=size.to(u.m).value, bins=bins)
+    intensity, h, v = np.histogram2d(
+        sanitized_xloc, sanitized_yloc, range=size.to(u.m).value, bins=bins
+    )
 
     # h, v are the bin edges: compute the centers to produce arrays
     # of the right length (then trim off the extra point)

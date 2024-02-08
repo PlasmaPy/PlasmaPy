@@ -407,14 +407,7 @@ class ParticleTracker:
         verbose=True,
     ) -> None:
         # self.grid is the grid object
-        if isinstance(grids, AbstractGrid):
-            self.grids = [
-                grids,
-            ]
-        elif isinstance(grids, collections.abc.Iterable):
-            self.grids = grids
-        else:
-            self.grids = None
+        self.grids = self._grid_factory(grids)
 
         # Errors for unsupported grid types are raised in the validate constructor inputs method
 
@@ -464,6 +457,21 @@ class ParticleTracker:
 
         self.termination_condition = termination_condition
         self.save_routine = save_routine
+
+    @staticmethod
+    def _grid_factory(grids):
+        """
+        Take the user provided argument for grids and convert it into the proper type.
+        """
+
+        if isinstance(grids, AbstractGrid):
+            return [
+                grids,
+            ]
+        elif isinstance(grids, collections.abc.Iterable):
+            return grids
+        else:
+            return None
 
     def _set_time_step_attributes(
         self, dt, termination_condition, save_routine
