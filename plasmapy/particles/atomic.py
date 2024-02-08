@@ -21,8 +21,8 @@ __all__ = [
     "standard_atomic_weight",
 ]
 
-from numbers import Integral, Real
-from typing import Any, Optional, Union
+from numbers import Integral
+from typing import Any
 
 import astropy.units as u
 
@@ -187,8 +187,8 @@ def standard_atomic_weight(element: Particle) -> u.Quantity[u.kg]:
 def particle_mass(
     particle: Particle,
     *,
-    mass_numb: Optional[Integral] = None,
-    Z: Optional[Integral] = None,
+    mass_numb: Integral | None = None,
+    Z: Integral | None = None,
 ) -> u.Quantity[u.kg]:
     """
     Return the mass of a particle.
@@ -238,7 +238,7 @@ def particle_mass(
 
 
 @particle_input
-def isotopic_abundance(isotope: Particle, mass_numb: Optional[Integral] = None) -> Real:
+def isotopic_abundance(isotope: Particle, mass_numb: Integral | None = None) -> float:
     """
     Return the isotopic abundances if known, and otherwise zero.
 
@@ -276,9 +276,9 @@ def isotopic_abundance(isotope: Particle, mass_numb: Optional[Integral] = None) 
 
     Examples
     --------
-    >>> isotopic_abundance('Pb-208')
+    >>> isotopic_abundance("Pb-208")
     0.524
-    >>> isotopic_abundance('hydrogen', 1)
+    >>> isotopic_abundance("hydrogen", 1)
     0.999885
     """
     return isotope.isotopic_abundance
@@ -326,13 +326,13 @@ def charge_number(particle: Particle) -> Integral:
 
     Examples
     --------
-    >>> charge_number('Fe-56 2+')
+    >>> charge_number("Fe-56 2+")
     2
-    >>> charge_number('He -2')
+    >>> charge_number("He -2")
     -2
-    >>> charge_number('H+')
+    >>> charge_number("H+")
     1
-    >>> charge_number('N-14++')
+    >>> charge_number("N-14++")
     2
     """
     return particle.charge_number
@@ -384,16 +384,16 @@ def electric_charge(particle: Particle) -> u.Quantity[u.C]:
 
     Examples
     --------
-    >>> electric_charge('p+')
+    >>> electric_charge("p+")
     <<class 'astropy.constants.codata...'> name='Electron charge' ...>
-    >>> electric_charge('H-')
+    >>> electric_charge("H-")
     <Quantity -1.60217662e-19 C>
     """
     return particle.charge
 
 
 @particle_input
-def is_stable(particle: Particle, mass_numb: Optional[Integral] = None) -> bool:
+def is_stable(particle: Particle, mass_numb: Integral | None = None) -> bool:
     """
     Return `True` for stable isotopes and particles and `False` for
     unstable isotopes.
@@ -443,9 +443,7 @@ def is_stable(particle: Particle, mass_numb: Optional[Integral] = None) -> bool:
 
 
 @particle_input(any_of={"stable", "unstable", "isotope"})
-def half_life(
-    particle: Particle, mass_numb: Optional[Integral] = None
-) -> u.Quantity[u.s]:
+def half_life(particle: Particle, mass_numb: Integral | None = None) -> u.Quantity[u.s]:
     """
     Return the half-life in seconds for unstable isotopes and particles,
     and |inf| seconds for stable isotopes and particles.
@@ -485,17 +483,17 @@ def half_life(
 
     Examples
     --------
-    >>> half_life('T')
+    >>> half_life("T")
     <Quantity 3.888e+08 s>
-    >>> half_life('n')
+    >>> half_life("n")
     <Quantity 881.5 s>
-    >>> half_life('H-1')
+    >>> half_life("H-1")
     <Quantity inf s>
     """
     return particle.half_life
 
 
-def known_isotopes(argument: Optional[Union[str, Integral]] = None) -> list[str]:
+def known_isotopes(argument: str | Integral | None = None) -> list[str]:
     """
     Return a list of all known isotopes of an element, or a list of all
     known isotopes of every element if no input is provided.
@@ -537,9 +535,9 @@ def known_isotopes(argument: Optional[Union[str, Integral]] = None) -> list[str]
 
     Examples
     --------
-    >>> known_isotopes('H')
+    >>> known_isotopes("H")
     ['H-1', 'D', 'T', 'H-4', 'H-5', 'H-6', 'H-7']
-    >>> known_isotopes('helium 1+')
+    >>> known_isotopes("helium 1+")
     ['He-3', 'He-4', 'He-5', 'He-6', 'He-7', 'He-8', 'He-9', 'He-10']
     >>> known_isotopes()[0:10]
     ['H-1', 'D', 'T', 'H-4', 'H-5', 'H-6', 'H-7', 'He-3', 'He-4', 'He-5']
@@ -563,7 +561,9 @@ def known_isotopes(argument: Optional[Union[str, Integral]] = None) -> list[str]
         mass_numbers = [mass_number(isotope) for isotope in isotopes]
         return [
             mass_number
-            for (isotope, mass_number) in sorted(zip(mass_numbers, isotopes))
+            for (isotope, mass_number) in sorted(
+                zip(mass_numbers, isotopes, strict=False)
+            )
         ]
 
     if argument is not None:
@@ -586,7 +586,7 @@ def known_isotopes(argument: Optional[Union[str, Integral]] = None) -> list[str]
 
 
 def common_isotopes(
-    argument: Optional[Union[str, Integral]] = None, most_common_only: bool = False
+    argument: str | Integral | None = None, most_common_only: bool = False
 ) -> list[str]:
     """
     Return a list of isotopes of an element with an isotopic abundances
@@ -640,15 +640,15 @@ def common_isotopes(
 
     Examples
     --------
-    >>> common_isotopes('H')
+    >>> common_isotopes("H")
     ['H-1', 'D']
     >>> common_isotopes(44)
     ['Ru-102', 'Ru-104', 'Ru-101', 'Ru-99', 'Ru-100', 'Ru-96', 'Ru-98']
-    >>> common_isotopes('beryllium 2+')
+    >>> common_isotopes("beryllium 2+")
     ['Be-9']
-    >>> common_isotopes('Fe')
+    >>> common_isotopes("Fe")
     ['Fe-56', 'Fe-54', 'Fe-57', 'Fe-58']
-    >>> common_isotopes('Fe', most_common_only=True)
+    >>> common_isotopes("Fe", most_common_only=True)
     ['Fe-56']
     >>> common_isotopes()[0:7]
     ['H-1', 'D', 'He-4', 'He-3', 'Li-7', 'Li-6', 'Be-9']
@@ -657,7 +657,7 @@ def common_isotopes(
     # TODO: Allow Particle objects representing elements to be inputs
 
     def common_isotopes_for_element(
-        argument: Union[str, int], most_common_only: Optional[bool]
+        argument: str | int, most_common_only: bool | None
     ) -> list[str]:
         isotopes = known_isotopes(argument)
 
@@ -674,7 +674,9 @@ def common_isotopes(
 
         sorted_isotopes = [
             iso_comp
-            for (isotope, iso_comp) in sorted(zip(isotopic_abundances, CommonIsotopes))
+            for (isotope, iso_comp) in sorted(
+                zip(isotopic_abundances, CommonIsotopes, strict=False)
+            )
         ]
 
         sorted_isotopes.reverse()
@@ -705,7 +707,7 @@ def common_isotopes(
 
 
 def stable_isotopes(
-    argument: Optional[ParticleLike] = None, unstable: bool = False
+    argument: ParticleLike | None = None, unstable: bool = False
 ) -> list[str]:
     """
     Return a list of all stable isotopes of an element, or if no input is
@@ -755,27 +757,27 @@ def stable_isotopes(
 
     Examples
     --------
-    >>> stable_isotopes('H')
+    >>> stable_isotopes("H")
     ['H-1', 'D']
     >>> stable_isotopes(44)
     ['Ru-96', 'Ru-98', 'Ru-99', 'Ru-100', 'Ru-101', 'Ru-102', 'Ru-104']
-    >>> stable_isotopes('beryllium')
+    >>> stable_isotopes("beryllium")
     ['Be-9']
-    >>> stable_isotopes('Pb-209')
+    >>> stable_isotopes("Pb-209")
     ['Pb-204', 'Pb-206', 'Pb-207', 'Pb-208']
     >>> stable_isotopes(118)
     []
 
     Find unstable isotopes using the ``unstable`` keyword.
 
-    >>> stable_isotopes('U', unstable=True)[:5]  # only first five
+    >>> stable_isotopes("U", unstable=True)[:5]  # only first five
     ['U-217', 'U-218', 'U-219', 'U-220', 'U-221']
     """
 
     # TODO: Allow Particle objects representing elements to be inputs
 
     def stable_isotopes_for_element(
-        argument: Union[str, int], stable_only: Optional[bool]
+        argument: str | int, stable_only: bool | None
     ) -> list[str]:
         KnownIsotopes = known_isotopes(argument)
         return [
@@ -859,7 +861,7 @@ def reduced_mass(
     Examples
     --------
     >>> import astropy.units as u
-    >>> reduced_mass('p+', 'e-')
+    >>> reduced_mass("p+", "e-")
     <Quantity 9.10442...e-31 kg>
     >>> reduced_mass(5.4e-27 * u.kg, 8.6e-27 * u.kg)
     <Quantity 3.31714...e-27 kg>
@@ -869,7 +871,7 @@ def reduced_mass(
     )
 
 
-def periodic_table_period(argument: Union[str, Integral]) -> Integral:
+def periodic_table_period(argument: str | Integral) -> Integral:
     """
     Return the periodic table period.
 
@@ -902,7 +904,7 @@ def periodic_table_period(argument: Union[str, Integral]) -> Integral:
     2
     """
     # TODO: Implement @particle_input
-    if not isinstance(argument, (str, Integral)):
+    if not isinstance(argument, str | Integral):
         raise TypeError(
             "The argument to periodic_table_period must be either a "
             "string representing the element or its symbol, or an "
@@ -912,7 +914,7 @@ def periodic_table_period(argument: Union[str, Integral]) -> Integral:
     return _elements.data_about_elements[symbol]["period"]
 
 
-def periodic_table_group(argument: Union[str, Integral]) -> Integral:
+def periodic_table_group(argument: str | Integral) -> Integral:
     """
     Return the periodic table group.
 
@@ -950,7 +952,7 @@ def periodic_table_group(argument: Union[str, Integral]) -> Integral:
     2
     """
     # TODO: Implement @particle_input
-    if not isinstance(argument, (str, Integral)):
+    if not isinstance(argument, str | Integral):
         raise TypeError(
             "The argument to periodic_table_group must be "
             "either a string representing the element or its "
@@ -960,7 +962,7 @@ def periodic_table_group(argument: Union[str, Integral]) -> Integral:
     return _elements.data_about_elements[symbol]["group"]
 
 
-def periodic_table_block(argument: Union[str, Integral]) -> str:
+def periodic_table_block(argument: str | Integral) -> str:
     """
     Return the periodic table block.
 
@@ -1001,7 +1003,7 @@ def periodic_table_block(argument: Union[str, Integral]) -> str:
     's'
     """
     # TODO: Implement @particle_input
-    if not isinstance(argument, (str, Integral)):
+    if not isinstance(argument, str | Integral):
         raise TypeError(
             "The argument to periodic_table_block must be "
             "either a string representing the element or its "
@@ -1011,7 +1013,7 @@ def periodic_table_block(argument: Union[str, Integral]) -> str:
     return _elements.data_about_elements[symbol]["block"]
 
 
-def periodic_table_category(argument: Union[str, Integral]) -> str:
+def periodic_table_category(argument: str | Integral) -> str:
     """
     Return the periodic table category.
 
@@ -1047,7 +1049,7 @@ def periodic_table_category(argument: Union[str, Integral]) -> str:
     'transition metal'
     """
     # TODO: Implement @particle_input
-    if not isinstance(argument, (str, Integral)):
+    if not isinstance(argument, str | Integral):
         raise TypeError(
             "The argument to periodic_table_category must be "
             "either a string representing the element or its "
@@ -1061,7 +1063,7 @@ def periodic_table_category(argument: Union[str, Integral]) -> str:
 def ionic_levels(
     particle: Particle,
     min_charge: Integral = 0,
-    max_charge: Optional[Integral] = None,
+    max_charge: Integral | None = None,
 ) -> ParticleList:
     """
     Return a |ParticleList| that includes different ionic levels of a

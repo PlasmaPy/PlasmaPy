@@ -521,9 +521,9 @@ def Coulomb_cross_section(impact_param: u.Quantity[u.m]) -> u.Quantity[u.m**2]:
 
     Examples
     --------
-    >>> Coulomb_cross_section(7e-10*u.m)
+    >>> Coulomb_cross_section(7e-10 * u.m)
     <Quantity 6.157...e-18 m2>
-    >>> Coulomb_cross_section(0.5*u.m)
+    >>> Coulomb_cross_section(0.5 * u.m)
     <Quantity 3.141... m2>
     """
     return np.pi * (2 * impact_param) ** 2

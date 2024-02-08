@@ -2,7 +2,6 @@
 Tests for proton radiography functions
 """
 
-from typing import Optional
 
 import astropy.units as u
 import numpy as np
@@ -22,8 +21,8 @@ def _test_grid(  # noqa: C901, PLR0912
     B0: u.Quantity[u.T] = 10 * u.T,
     E0: u.Quantity[u.V / u.m] = 5e8 * u.V / u.m,
     phi0: u.Quantity[u.V] = 1.4e5 * u.V,
-    a: Optional[u.Quantity[u.m]] = None,
-    b: Optional[u.Quantity[u.m]] = None,
+    a: u.Quantity[u.m] | None = None,
+    b: u.Quantity[u.m] | None = None,
 ):
     r"""
     Generates grids representing some common physical scenarios for testing
@@ -155,7 +154,7 @@ def test_multiple_grids() -> None:
         grids, source, detector, field_weighting="nearest neighbor", verbose=True
     )
 
-    sim.create_particles(1e5, 15 * u.MeV, max_theta=8 * u.deg)
+    sim.create_particles(1e5, 15 * u.MeV, max_theta=8 * u.deg, random_seed=42)
 
     sim.run()
 
@@ -189,7 +188,7 @@ def run_1D_example(name: str):
         RuntimeWarning, match="Quantities should go to zero at edges of grid to avoid "
     ):
         sim = cpr.Tracker(grid, source, detector, verbose=False)
-    sim.create_particles(1e4, 3 * u.MeV, max_theta=0.1 * u.deg)
+    sim.create_particles(1e4, 3 * u.MeV, max_theta=0.1 * u.deg, random_seed=42)
     sim.run()
 
     size = np.array([[-1, 1], [-1, 1]]) * 10 * u.cm
@@ -235,7 +234,7 @@ def run_mesh_example(
         mesh_vdir=mesh_vdir,
     )
 
-    sim.create_particles(nparticles, 3 * u.MeV, max_theta=10 * u.deg)
+    sim.create_particles(nparticles, 3 * u.MeV, max_theta=10 * u.deg, random_seed=42)
     sim.run()
 
     return sim
@@ -337,7 +336,9 @@ def test_input_validation() -> None:
     # During create_particles
     # ************************************************************************
     sim = cpr.Tracker(grid, source, detector, verbose=False)
-    sim.create_particles(1e3, 15 * u.MeV, max_theta=0.99 * np.pi / 2 * u.rad)
+    sim.create_particles(
+        1e3, 15 * u.MeV, max_theta=0.99 * np.pi / 2 * u.rad, random_seed=42
+    )
 
     # ************************************************************************
     # During runtime
@@ -409,13 +410,19 @@ def test_create_particles() -> None:
     sim = cpr.Tracker(grid, source, detector, verbose=False)
 
     sim.create_particles(
-        1e3, 15 * u.MeV, max_theta=0.1 * u.rad, distribution="monte-carlo"
+        1e3,
+        15 * u.MeV,
+        max_theta=0.1 * u.rad,
+        distribution="monte-carlo",
+        random_seed=42,
     )
 
-    sim.create_particles(1e3, 15 * u.MeV, max_theta=0.1 * u.rad, distribution="uniform")
+    sim.create_particles(
+        1e3, 15 * u.MeV, max_theta=0.1 * u.rad, distribution="uniform", random_seed=42
+    )
 
     # Test specifying particle
-    sim.create_particles(1e3, 15 * u.MeV, particle="e")
+    sim.create_particles(1e3, 15 * u.MeV, particle="e-", random_seed=42)
 
 
 @pytest.mark.slow()
@@ -429,7 +436,9 @@ def test_load_particles() -> None:
     sim = cpr.Tracker(
         grid, source, detector, field_weighting="nearest neighbor", verbose=False
     )
-    sim.create_particles(1e3, 15 * u.MeV, max_theta=0.1 * u.rad, distribution="uniform")
+    sim.create_particles(
+        1e3, 15 * u.MeV, max_theta=0.1 * u.rad, distribution="uniform", random_seed=42
+    )
 
     # Test adding unequal numbers of particles
     x = np.zeros([100, 3]) * u.m
@@ -474,7 +483,7 @@ def test_run_options() -> None:
         sim.run()
 
     sim = cpr.Tracker(grid, source, detector, verbose=True)
-    sim.create_particles(1e4, 3 * u.MeV, max_theta=10 * u.deg)
+    sim.create_particles(1e4, 3 * u.MeV, max_theta=10 * u.deg, random_seed=42)
 
     # Try running with nearest neighbor interpolator
     # Test manually setting a timestep
@@ -492,7 +501,7 @@ def test_run_options() -> None:
         dt=1e-12 * u.s,
         verbose=True,
     )
-    sim.create_particles(1e4, 3 * u.MeV, max_theta=89 * u.deg)
+    sim.create_particles(1e4, 3 * u.MeV, max_theta=89 * u.deg, random_seed=42)
     with pytest.warns(RuntimeWarning, match="of particles entered the field grid"):
         sim.run()
 
@@ -515,7 +524,7 @@ def test_run_options() -> None:
             dt=1e-12 * u.s,
             verbose=False,
         )
-    sim.create_particles(1e4, 3 * u.MeV, max_theta=0.1 * u.deg)
+    sim.create_particles(1e4, 3 * u.MeV, max_theta=0.1 * u.deg, random_speed=42)
     with pytest.warns(
         RuntimeWarning,
         match="particles have been deflected away from the detector plane",
@@ -535,7 +544,7 @@ def create_tracker_obj(**kwargs) -> cpr.Tracker:
     detector = (0 * u.mm, 200 * u.mm, 0 * u.mm)
 
     sim = cpr.Tracker(grid, source, detector, verbose=False, **kwargs)
-    sim.create_particles(int(1e4), 3 * u.MeV, max_theta=10 * u.deg)
+    sim.create_particles(int(1e4), 3 * u.MeV, max_theta=10 * u.deg, random_seed=42)
     return sim
 
 
@@ -713,7 +722,7 @@ def test_cannot_modify_simulation_after_running(case) -> None:
     # Error from creating particles
     with pytest.raises(RuntimeError):
         if case == "creating particles":
-            sim.create_particles(1e4, 3 * u.MeV, max_theta=10 * u.deg)
+            sim.create_particles(1e4, 3 * u.MeV, max_theta=10 * u.deg, random_seed=42)
         elif case == "loading particles":
             sim.load_particles(sim.x, sim.v)
         elif case == "adding a wire mesh":
@@ -768,7 +777,7 @@ def test_gaussian_sphere_analytical_comparison() -> None:
     ):
         sim = cpr.Tracker(grid, source, detector, verbose=False)
 
-    sim.create_particles(1e3, W * u.eV, max_theta=12 * u.deg)
+    sim.create_particles(1e3, W * u.eV, max_theta=12 * u.deg, random_seed=42)
     sim.run()
 
     size = np.array([[-1, 1], [-1, 1]]) * 4 * u.cm
@@ -955,7 +964,7 @@ def test_multiple_grids2() -> None:
         grids, source, detector, field_weighting="nearest neighbor", verbose=True
     )
 
-    sim.create_particles(1e5, 15 * u.MeV, max_theta=8 * u.deg)
+    sim.create_particles(1e5, 15 * u.MeV, max_theta=8 * u.deg, random_seed=42)
 
     sim.run()
 

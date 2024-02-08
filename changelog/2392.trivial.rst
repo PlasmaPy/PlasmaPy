@@ -1,2 +1,0 @@
-Separated the GitHub Action for checking hyperlinks in the
-documentation into its own GitHub Action.
