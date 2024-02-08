@@ -6,6 +6,7 @@
 [Create a release on GitHub]: https://github.com/PlasmaPy/PlasmaPy/releases/new
 [`docs/about/citation.rst`]: https://github.com/PlasmaPy/PlasmaPy/blob/main/docs/about/citation.rst
 [`docs/conf.py`]: https://github.com/PlasmaPy/PlasmaPy/blob/main/docs/conf.py
+[documentation]: https://docs.plasmapy/org/en/stable
 [Draft a new release]: https://github.com/PlasmaPy/PlasmaPy/releases/new
 [GitHub Action for checking hyperlinks]: https://github.com/PlasmaPy/PlasmaPy/actions/workflows/linkcheck.yml
 [list of tagged versions]: https://github.com/PlasmaPy/PlasmaPy/tags
@@ -18,6 +19,10 @@
 [Update pinned requirements]: https://github.com/PlasmaPy/PlasmaPy/actions/workflows/update-pinned-reqs.yml
 [weekly tests]: https://github.com/PlasmaPy/PlasmaPy/actions/workflows/weekly-tests.yml
 [Zenodo]: https://zenodo.org/me/uploads
+[stable documentation build]: https://docs.plasmapy.org/en/stable
+[`stable`]: https://github.com/PlasmaPy/PlasmaPy/tree/stable
+[Read the Docs]: https://readthedocs.org/projects/plasmapy
+[versions page on RTD]: https://readthedocs.org/projects/plasmapy/versions/
 
 This issue contains the procedure for releasing a new version of PlasmaPy.
 
@@ -49,19 +54,14 @@ This issue contains the procedure for releasing a new version of PlasmaPy.
  - [ ] Begin an upload to [Zenodo] for the new release using the `team@plasmapy.org` login, and reserve a DOI.
  - [ ] Run the GitHub Action to [mint a release]. Specify the version (i.e., `2024.5.0` or `2024.5.0rc1` for a release candidate) and copy/paste the reserved DOI from Zenodo.  This action will update the DOI, build the changelog, and tag the release.
  - [ ] [Create a release on GitHub]. Choose the newly created tag (e.g., `v2024.5.0`) and use it as the title. Select the options to automatically generate release notes and create a discussion for the release. For beta releases or release candidates (e.g., `v2024.5.0rc1`), specify it as a pre-release.
- - [ ] Create and merge a pull request from the release branch back into `main`. <!-- Automate this step? -->
  - [ ] Download a `.tar.gz` file of the tagged release from the [list of tagged versions] and upload it to [Zenodo].
    - [ ] Update the author list with new authors from the automatically generated release notes or [`CITATION.cff`].
    - [ ] Update the bibliography, and publish the release to Zenodo.
- - [ ] After fixing any broken tests, merge the pull request from the release branch back into `main`.
+ - [ ] Create and merge a pull request from the release branch back into `main`. <!-- Automate pull request creation? Change it into a commit? -->
  - [ ] Fix any problems with the automated pull request to [conda-forge feedstock], if necessary. This step should be automatic, but may take a while.
 
 ### Update documentation
 
-[stable documentation build]: https://docs.plasmapy.org/en/stable
-[`stable`]: https://github.com/PlasmaPy/PlasmaPy/tree/stable
-[Read the Docs]: https://readthedocs.org/projects/plasmapy
-[versions page on RTD]: https://readthedocs.org/projects/plasmapy/versions/
 
 <!-- This section of the checklist may need revision. -->
 
@@ -70,7 +70,7 @@ This issue contains the procedure for releasing a new version of PlasmaPy.
 
  - [ ] Delete the [`stable`] branch on GitHub, if it exists.
  - [ ] Activate the new release on the [versions page on RTD].
- - [ ] Check that the documentation builds correctly for the release branch, the [citation page] is up-to-date, and the DOI link points to the most recent release.
+ - [ ] Check that the [documentation] builds correctly for the release branch, the [citation page] is up-to-date, and the DOI link points to the most recent release.
  - [ ] If the documentation build fails, create a new [`stable`] branch from the release branch (e.g., `2024.5.x`) and fix any problems with the documentation build.
 
 ## Test the release
@@ -83,6 +83,6 @@ This issue contains the procedure for releasing a new version of PlasmaPy.
 ## After the release
 
  - [ ] Announce the release at the [community meeting]
- - [ ] Update the [release checklist], if needed
  - [ ] [Create an issue for the release] to occur ∼3–4 months after this one
- - [ ] Close this issue, and take a moment to celebrate!
+ - [ ] Update the [release checklist], as needed
+ - [ ] Close this issue.
