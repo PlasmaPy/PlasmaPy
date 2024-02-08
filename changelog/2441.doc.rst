@@ -1,2 +1,3 @@
-Reordered changelog sections and added the ``internal`` category for
-internal refactorings with minimal impact on the API.
+Added the ``internal`` category for changelog entries, which will be used to denote
+refactorings with minimal impact on the API, and updated the |changelog guide| to
+reflect these changes.
