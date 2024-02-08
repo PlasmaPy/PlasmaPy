@@ -524,7 +524,7 @@ def test_run_options() -> None:
             dt=1e-12 * u.s,
             verbose=False,
         )
-    sim.create_particles(1e4, 3 * u.MeV, max_theta=0.1 * u.deg, random_speed=42)
+    sim.create_particles(1e4, 3 * u.MeV, max_theta=0.1 * u.deg, random_seed=42)
     with pytest.warns(
         RuntimeWarning,
         match="particles have been deflected away from the detector plane",
