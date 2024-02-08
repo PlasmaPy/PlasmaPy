@@ -758,16 +758,20 @@ class Tracker(ParticleTracker):
             np.min(np.linalg.norm(arr - self.source, axis=3)) for arr in self.grids_arr
         )
 
+        tracked_mask = self._tracked_particle_mask()
+
         # Find speed of each particle towards the grid.
-        vmax = np.dot(self.v, self.src_n)
+        vmax = np.dot(self.v[tracked_mask], self.src_n)
 
         # Time for each particle to reach the grid
         t = dist / vmax
 
         # Coast the particles to the advanced position
-        self.x = self.x + self.v * t[:, np.newaxis]
+        self.x[tracked_mask] = (
+            self.x[tracked_mask] + self.v[tracked_mask] * t[:, np.newaxis]
+        )
 
-    def _coast_to_plane(self, center, hdir, vdir, x=None):
+    def _coast_to_plane(self, center, hdir, vdir, x=None, mask=None):
         """
         Calculates the positions where the current trajectories of each
         particle impact a plane, described by the plane's center and
@@ -787,21 +791,26 @@ class Tracker(ParticleTracker):
 
         normal = np.cross(hdir, vdir)
 
+        if mask is None:
+            mask = self._tracked_particle_mask()
+
         # Calculate the time required to evolve each particle into the
         # plane
-        t = np.inner(center[np.newaxis, :] - self.x, normal) / np.inner(self.v, normal)
+        t = np.inner(center[np.newaxis, :] - self.x[mask], normal) / np.inner(
+            self.v[mask], normal
+        )
 
         # Calculate particle positions in the plane
         if x is None:
             # If no output array is provided, preallocate
-            x = np.empty_like(self.x)
+            x = np.copy(self.x)
 
-        x[...] = self.x + self.v * t[:, np.newaxis]
+        x[mask] = self.x[mask] + self.v[mask] * t[:, np.newaxis]
 
         # Check that all points are now in the plane
         # (Eq. of a plane is nhat*x + d = 0)
         plane_eq = np.dot(x - center, normal)
-        assert np.allclose(plane_eq[self._tracked_particle_mask()], 0, atol=1e-6)
+        assert np.allclose(plane_eq[mask], 0, atol=1e-6)
 
         return x
 
@@ -886,14 +895,18 @@ class Tracker(ParticleTracker):
 
         # Determine which particles should be removed
         # These particles will not be pushed through the fields
-        self._stop_particles(self.theta >= self.max_theta_hit_grid)
+        theta_mask = self.theta >= self.max_theta_hit_grid
+        self.x = self._coast_to_plane(
+            self.detector, self.det_hdir, self.det_vdir, mask=theta_mask
+        )
+        self._stop_particles(theta_mask)
         self.fract_tracked = self.nparticles_tracked / self.nparticles
 
         # Generate a null distribution of points (the result in the absence of
         # any fields) for statistical comparison
         self.x0 = self._coast_to_plane(self.detector, self.det_hdir, self.det_vdir)
 
-        # Advance the particles to the near the start of the grid
+        # Advance the tracked particles to the near the start of the grid
         self._coast_to_grid()
         self.coasted_particles = np.copy(self.x)
 
