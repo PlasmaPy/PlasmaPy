@@ -1,0 +1,2 @@
+Reordered changelog sections and added new category for internal
+changes.
