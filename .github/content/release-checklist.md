@@ -62,27 +62,21 @@ This issue contains the procedure for releasing a new version of PlasmaPy.
 
 ### Update documentation
 
-
-<!-- This section of the checklist may need revision. -->
-
-> [!NOTE]
-> The [stable documentation build] on [Read the Docs] (RTD) will point to the [`stable`] branch on GitHub, if it exists. Otherwise, it will point to the most recent release on GitHub. The [`stable`] branch is needed if the documentation build for the release fails or if we wish to make any changes to documentation between releases.
-
  - [ ] Delete the [`stable`] branch on GitHub, if it exists.
- - [ ] Activate the new release on the [versions page on RTD].
- - [ ] Check that the [documentation] builds correctly for the release branch, the [citation page] is up-to-date, and the DOI link points to the most recent release.
- - [ ] If the documentation build fails, create a new [`stable`] branch from the release branch (e.g., `2024.5.x`) and fix any problems with the documentation build.
+ - [ ] Activate the current and prior release on the [versions page on RTD], if necessary. If the documentation fails to build for a release, activate the corresponding branch (e.g., activate the `v2023.10.x` branch instead of the `v2023.10.0` tag). <!-- true example! -->
+ - [ ] Check that the [documentation] builds correctly for the release branch. If the documentation build fails, create a new [`stable`] branch from the release branch (e.g., `2024.5.x`) and fix any problems with the documentation build. The [`stable`] branch is needed if the documentation build for the release fails or if we make any changes to the documentation between releases. The [stable documentation build] will point to the [`stable`] branch on GitHub if it exists. Otherwise, it will point to the most recent release on GitHub.
+ - [ ] Verify that the [citation page] is up-to-date and the DOI link points to the most recent release.
 
 ## Test the release
 
- - [ ] After activating a new virtual or conda environment, make sure that the released version installs correctly with `pip install --upgrade plasmapy`
+ - [ ] After activating a new virtual or conda environment, make sure that the released version installs correctly with `pip install --upgrade plasmapy`.
  - [ ] Open Python and run `import plasmapy`, `dir(plasmapy)`, and `plasmapy.__version__`.
  - [ ] Run `plasma-calculator` from the command line.
  - [ ] Verify that the new version can be installed with conda.
 
 ## After the release
 
- - [ ] Announce the release at the [community meeting]
- - [ ] [Create an issue for the release] to occur ∼3–4 months after this one
- - [ ] Update the [release checklist], as needed
+ - [ ] Announce the release at the [community meeting].
+ - [ ] [Create an issue for the release] to occur ∼3–4 months after this one.
+ - [ ] Update the [release checklist], as needed.
  - [ ] Close this issue.
