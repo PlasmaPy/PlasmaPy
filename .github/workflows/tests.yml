@@ -13,7 +13,7 @@ on:
 
 jobs:
 
-  initial-tests:
+  tests:
     name: ${{ matrix.name }}
     runs-on: ${{ matrix.os }}
 
@@ -23,30 +23,30 @@ jobs:
       matrix:
         include:
 
-        - name: Python 3.11 (Linux), pinned dependencies
+        - name: Python 3.12 (Ubuntu), pinned dependencies, skip slow tests
           os: ubuntu-latest
-          python: '3.11'
-          toxenv: py311-pins
+          python: '3.12'
+          toxenv: py312-pins
           toxargs: --develop
 
-        - name: Python 3.10 (MacOS), code coverage
+        - name: Python 3.11 (macOS), code coverage
           os: macos-latest
-          python: '3.10'
-          toxenv: py310-cov-all
+          python: '3.11'
+          toxenv: py311-cov-all
 
-        - name: Python 3.9 (Windows), minimal dependencies
-          os: windows-latest
-          python: 3.9
-          toxenv: py39-all-minimal
+        - name: Python 3.10 (Ubuntu)
+          os: ubuntu-latest
+          python: '3.10'
+          toxenv: py310-all
 
         - name: mypy
           os: ubuntu-latest
-          python: '3.11'
+          python: '3.12'
           toxenv: mypy
 
         - name: Linters
           os: ubuntu-latest
-          python: '3.11'
+          python: '3.12'
           toxenv: linters
 
     steps:
@@ -62,23 +62,25 @@ jobs:
         python-version: ${{ matrix.python }}
         cache: pip
 
-    - name: Install Python dependencies
+    - name: Install and upgrade tox
       run: python -m pip install --progress-bar off --upgrade tox
 
     - name: Run tests
       run: tox ${{ matrix.toxargs }} -e ${{ matrix.toxenv }} -- ${{ matrix.toxposargs }}
 
-    - name: Upload coverage to codecov
+    - name: Upload coverage to codecov if requested
       if: ${{ contains(matrix.toxenv,'-cov') }}
-      uses: codecov/codecov-action@v3
+      uses: codecov/codecov-action@v4
       with:
         file: ./coverage.xml
 
   documentation:
+
     name: Documentation, pinned dependencies
     runs-on: ubuntu-latest
 
     steps:
+
     - name: Checkout code
       uses: actions/checkout@v4
       with:
@@ -90,7 +92,7 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v5
       with:
-        python-version: '3.11'
+        python-version: '3.12'
         cache: pip
 
     - name: Install tox
@@ -99,11 +101,18 @@ jobs:
     - name: Build docs
       run: tox -e build_docs_pins -- -q
 
+    - name: Print troubleshooting information on failure
+      if: ${{ failure() }}
+      run: |
+        echo "\nDocumentation troubleshooting guide:\n\nhttps://docs.plasmapy.org/en/latest/contributing/doc_guide.html#troubleshooting\n\n"
+
   import-plasmapy:
-    name: Importing PlasmaPy
+
+    name: Import PlasmaPy
     runs-on: windows-latest
 
     steps:
+
     - name: Checkout code
       uses: actions/checkout@v4
       with:
@@ -112,20 +121,21 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v5
       with:
-        python-version: 3.9
+        python-version: '3.10'
         cache: pip
 
-    - name: Install Python dependencies
+    - name: Install tox
       run: python -m pip install --progress-bar off --upgrade tox
 
     - name: Import PlasmaPy
-      run: tox -e py39-minimal-pypi-import
+      run: tox -e py310-minimal-pypi-import
 
   build-n-publish:
     name: Packaging
     runs-on: ubuntu-22.04
 
     steps:
+
     - uses: actions/checkout@v4
 
     - name: Get history and tags for SCM versioning to work
@@ -133,15 +143,15 @@ jobs:
         git fetch --prune --unshallow
         git fetch --depth=1 origin +refs/tags/*:refs/tags/*
 
-    - name: Set up Python 3.11
+    - name: Set up Python
       uses: actions/setup-python@v5
       with:
-        python-version: '3.11'
+        python-version: '3.12'
         cache: pip
 
-    - name: Install requirements
+    - name: Install and upgrade requirements
       run: |
-        pip install --progress-bar off setuptools numpy wheel setuptools_scm twine build pip
+        pip install --progress-bar off setuptools numpy wheel setuptools_scm twine build pip --upgrade
 
     - name: Build a source tarball
       run: python -m build --sdist --outdir dist/
@@ -152,7 +162,10 @@ jobs:
     - name: Twine check
       run: twine check dist/*
 
-    - name: Install PlasmaPy in all variants
+    - name: Install PlasmaPy with pip
       run: |
-        pip install --progress-bar off .[dev]
-        pip install --progress-bar off -e .[dev]
+        pip install --progress-bar off .
+
+    - name: Perform editable installation with tests & docs requirements sets
+      run: |
+        pip install --progress-bar off -e .[tests,docs]

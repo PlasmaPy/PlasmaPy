@@ -8,11 +8,10 @@ __all__ = [
     "Layer",
 ]
 
+
 import astropy.units as u
 import numpy as np
-
 from scipy.interpolate import interp1d
-from typing import Optional
 
 
 class Layer:
@@ -62,7 +61,7 @@ class Layer:
         thickness: u.Quantity[u.m],
         energy_axis: u.Quantity[u.J],
         stopping_power: u.Quantity[u.J / u.m, u.J * u.m**2 / u.kg],
-        mass_density: Optional[u.Quantity[u.kg / u.m**3]] = None,
+        mass_density: u.Quantity[u.kg / u.m**3] | None = None,
         active: bool = True,
         name: str = "",
     ) -> None:
@@ -141,7 +140,7 @@ class Stack:
         return np.sum(thickness) * u.m
 
     def deposition_curves(
-        self, energies: u.Quantity[u.J], dx=1 * u.um, return_only_active=True
+        self, energies: u.Quantity[u.J], dx=1 * u.um, return_only_active: bool = True
     ):
         """
         Calculate the deposition of an ensemble of particles over a range of
@@ -225,7 +224,7 @@ class Stack:
         energy_range: u.Quantity[u.J],
         dE: u.Quantity[u.J],
         dx=1e-6 * u.m,  # noqa: ARG002
-        return_only_active=True,
+        return_only_active: bool = True,
     ):
         """
         Calculate the energy bands in each of the active layers of a film

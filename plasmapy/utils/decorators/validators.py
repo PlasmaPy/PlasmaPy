@@ -3,13 +3,13 @@ Various decorators to validate input/output arguments to functions.
 """
 __all__ = ["validate_class_attributes", "validate_quantities", "ValidateQuantities"]
 
-import astropy.units as u
 import functools
 import inspect
 import warnings
-
 from collections.abc import Iterable
-from typing import Any, Optional
+from typing import Any
+
+import astropy.units as u
 
 from plasmapy.utils.decorators.checks import CheckUnits, CheckValues
 from plasmapy.utils.decorators.helpers import preserve_signature
@@ -78,6 +78,7 @@ class ValidateQuantities(CheckUnits, CheckValues):
         import astropy.units as u
         from plasmapy.utils.decorators import ValidateQuantities
 
+
         @ValidateQuantities(
             mass={"units": u.g, "can_be_negative": False},
             vel=u.cm / u.s,
@@ -85,6 +86,7 @@ class ValidateQuantities(CheckUnits, CheckValues):
         )
         def foo(mass, vel):
             return mass * vel
+
 
         # on a method
         class Foo:
@@ -101,6 +103,7 @@ class ValidateQuantities(CheckUnits, CheckValues):
         @ValidateQuantities(mass={"can_be_negative": False})
         def foo(mass: u.g, vel: u.cm / u.s) -> u.g * u.cm / u.s:
             return mass * vel
+
 
         # on a method
         class Foo:
@@ -451,6 +454,7 @@ def validate_quantities(func=None, validations_on_return=None, **validations):
         import astropy.units as u
         from plasmapy.utils.decorators import validate_quantities
 
+
         @validate_quantities(
             mass={"units": u.g, "can_be_negative": False},
             vel=u.cm / u.s,
@@ -458,6 +462,7 @@ def validate_quantities(func=None, validations_on_return=None, **validations):
         )
         def foo(mass, vel):
             return mass * vel
+
 
         # on a method
         class Foo:
@@ -475,10 +480,12 @@ def validate_quantities(func=None, validations_on_return=None, **validations):
         def foo(mass: u.g, vel: u.cm / u.s) -> u.g * u.cm / u.s:
             return mass * vel
 
+
         # rely only on annotations
         @validate_quantities
         def foo(x: u.cm, time: u.s) -> u.cm / u.s:
             return x / time
+
 
         # on a method
         class Foo:
@@ -510,7 +517,11 @@ def validate_quantities(func=None, validations_on_return=None, **validations):
     Allow equivalent units to pass with specified equivalencies::
 
         @validate_quantities(
-            arg1={"units": u.K, "equivalencies": u.temperature(), "pass_equivalent_units": True}
+            arg1={
+                "units": u.K,
+                "equivalencies": u.temperature(),
+                "pass_equivalent_units": True,
+            }
         )
         def foo(arg1):
             return arg1
@@ -532,9 +543,9 @@ def validate_quantities(func=None, validations_on_return=None, **validations):
 
 def get_attributes_not_provided(
     self,
-    expected_attributes: Optional[list[str]] = None,
-    both_or_either_attributes: Optional[list[Iterable[str]]] = None,
-    mutually_exclusive_attributes: Optional[list[Iterable[str]]] = None,
+    expected_attributes: list[str] | None = None,
+    both_or_either_attributes: list[Iterable[str]] | None = None,
+    mutually_exclusive_attributes: list[Iterable[str]] | None = None,
 ):
     """
     Collect attributes that weren't provided during instantiation needed
@@ -573,9 +584,9 @@ def get_attributes_not_provided(
 
 
 def validate_class_attributes(
-    expected_attributes: Optional[list[str]] = None,
-    both_or_either_attributes: Optional[list[Iterable[str]]] = None,
-    mutually_exclusive_attributes: Optional[list[Iterable[str]]] = None,
+    expected_attributes: list[str] | None = None,
+    both_or_either_attributes: list[Iterable[str]] | None = None,
+    mutually_exclusive_attributes: list[Iterable[str]] | None = None,
 ):
     """
     A decorator responsible for raising errors if the expected arguments weren't

@@ -1,4 +1,4 @@
-name: Label pull request
+name: Label PR
 
 # The labels to be added are defined in .github/labeler.yml
 
@@ -6,10 +6,12 @@ on:
 - pull_request_target
 
 jobs:
-  triage:
+  labeler:
+    name: Add labels
     permissions:
       contents: read
       pull-requests: write
     runs-on: ubuntu-latest
+
     steps:
     - uses: actions/labeler@v5

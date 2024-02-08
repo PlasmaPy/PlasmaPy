@@ -16,13 +16,12 @@ __aliases__ = ["Ef_", "lambdaDB_", "lambdaDB_th_"]
 
 import astropy.units as u
 import numpy as np
-
 from astropy.constants.si import c, e, eps0, h, hbar, k_B, m_e
-from lmfit import minimize, Parameters
+from lmfit import Parameters, minimize
 
 from plasmapy.formulary import mathematics
 from plasmapy.formulary.relativity import Lorentz_factor
-from plasmapy.particles import particle_input, ParticleLike
+from plasmapy.particles import ParticleLike, particle_input
 from plasmapy.utils.decorators import validate_quantities
 from plasmapy.utils.exceptions import RelativityError
 
@@ -61,7 +60,7 @@ def deBroglie_wavelength(
 
     particle : `str`, `~plasmapy.particles.particle_class.Particle`, or |Quantity|
         An instance of `~plasmapy.particles.particle_class.Particle`, or
-        an equivalent representation (e.g., ``'e'``, ``'p'``, ``'D+'``, or
+        an equivalent representation (e.g., ``'e-'``, ``'p+'``, ``'D+'``, or
         ``'He-4 1+'``), for the particle of interest, or the particle
         mass in units convertible to kg.  If a
         `~plasmapy.particles.particle_class.Particle` instance is given, then the
@@ -93,9 +92,9 @@ def deBroglie_wavelength(
     --------
     >>> import astropy.units as u
     >>> velocity = 1.4e7 * u.m / u.s
-    >>> deBroglie_wavelength(velocity, 'e')
+    >>> deBroglie_wavelength(velocity, "e-")
     <Quantity 5.18997095e-11 m>
-    >>> deBroglie_wavelength(V = 0 * u.m / u.s, particle = 'D+')
+    >>> deBroglie_wavelength(V=0 * u.m / u.s, particle="D+")
     <Quantity inf m>
     """
 
@@ -454,7 +453,7 @@ def chemical_potential(
     Examples
     --------
     >>> import astropy.units as u
-    >>> chemical_potential(n_e=1e25*u.cm**-3,T=11000*u.K)
+    >>> chemical_potential(n_e=1e25 * u.cm**-3, T=11000 * u.K)
     <Quantity 283.43506297>
     """
 
@@ -549,7 +548,7 @@ def _chemical_potential_interp(n_e, T):
     Examples
     --------
     >>> import astropy.units as u
-    >>> _chemical_potential_interp(n_e=1e23*u.cm**-3, T=11000*u.K)
+    >>> _chemical_potential_interp(n_e=1e23 * u.cm**-3, T=11000 * u.K)
     <Quantity 8.17649>
 
     """
@@ -596,13 +595,13 @@ def quantum_theta(
     Examples
     --------
     >>> import astropy.units as u
-    >>> quantum_theta(1*u.eV, 1e20*u.m**-3)
+    >>> quantum_theta(1 * u.eV, 1e20 * u.m**-3)
     <Quantity 127290.619...>
-    >>> quantum_theta(1*u.eV, 1e16*u.m**-3)
+    >>> quantum_theta(1 * u.eV, 1e16 * u.m**-3)
     <Quantity 59083071...>
-    >>> quantum_theta(1*u.eV, 1e26*u.m**-3)
+    >>> quantum_theta(1 * u.eV, 1e26 * u.m**-3)
     <Quantity 12.72906...>
-    >>> quantum_theta(1*u.K, 1e26*u.m**-3)
+    >>> quantum_theta(1 * u.K, 1e26 * u.m**-3)
     <Quantity 0.00109...>
 
     Returns

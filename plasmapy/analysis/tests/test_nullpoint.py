@@ -5,8 +5,9 @@ import numpy as np
 import pytest
 
 from plasmapy.analysis.nullpoint import (
-    _bilinear_root,
     _EQUALITY_ATOL,
+    NonZeroDivergence,
+    _bilinear_root,
     _locate_null_point,
     _reduction,
     _trilinear_analysis,
@@ -14,7 +15,6 @@ from plasmapy.analysis.nullpoint import (
     _trilinear_jacobian,
     _vector_space,
     _vspace_iterator,
-    NonZeroDivergence,
     null_point_find,
     trilinear_approx,
     uniform_null_point_find,

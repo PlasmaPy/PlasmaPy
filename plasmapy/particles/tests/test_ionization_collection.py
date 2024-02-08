@@ -1,20 +1,20 @@
-import astropy.units as u
 import itertools
-import numpy as np
-import pytest
-
-from astropy.tests.helper import assert_quantity_allclose
 from numbers import Real
 
+import astropy.units as u
+import numpy as np
+import pytest
+from astropy.tests.helper import assert_quantity_allclose
+
 from plasmapy.particles import (
-    atomic_number,
     IonicLevel,
     IonizationState,
     IonizationStateCollection,
-    mass_number,
     Particle,
-    particle_symbol,
     ParticleList,
+    atomic_number,
+    mass_number,
+    particle_symbol,
 )
 from plasmapy.particles.exceptions import InvalidIsotopeError, ParticleError
 
@@ -114,7 +114,7 @@ class TestIonizationStateCollection:
         cls.instances = {}
 
     @pytest.mark.parametrize("test_name", test_names)
-    def test_instantiation(self, test_name) -> None:
+    def test_instantiation(self, test_name: str) -> None:
         try:
             self.instances[test_name] = IonizationStateCollection(**tests[test_name])
         except Exception:  # noqa: BLE001
@@ -123,19 +123,19 @@ class TestIonizationStateCollection:
             )
 
     @pytest.mark.parametrize("test_name", test_names)
-    def test_no_exceptions_from_str(self, test_name) -> None:
+    def test_no_exceptions_from_str(self, test_name: str) -> None:
         self.instances[test_name].__str__()
 
     @pytest.mark.parametrize("test_name", test_names)
-    def test_no_exceptions_from_repr(self, test_name) -> None:
+    def test_no_exceptions_from_repr(self, test_name: str) -> None:
         self.instances[test_name].__repr__()
 
     @pytest.mark.parametrize("test_name", test_names)
-    def test_no_exceptions_from_info(self, test_name) -> None:
+    def test_no_exceptions_from_info(self, test_name: str) -> None:
         self.instances[test_name].summarize()
 
     @pytest.mark.parametrize("test_name", test_names)
-    def test_simple_equality(self, test_name) -> None:
+    def test_simple_equality(self, test_name: str) -> None:
         """Test that __eq__ is not extremely broken."""
         a = IonizationStateCollection(**tests[test_name])
         b = IonizationStateCollection(**tests[test_name])
@@ -154,7 +154,7 @@ class TestIonizationStateCollection:
             if isinstance(tests[test_name]["inputs"], dict)
         ],
     )
-    def test_that_particles_were_set_correctly(self, test_name) -> None:
+    def test_that_particles_were_set_correctly(self, test_name: str) -> None:
         input_particles = tests[test_name]["inputs"].keys()
         particles = [Particle(input_particle) for input_particle in input_particles]
         expected_particles = {p.symbol for p in particles}
@@ -167,7 +167,7 @@ class TestIonizationStateCollection:
         )
 
     @pytest.mark.parametrize("test_name", has_attribute("abundances", tests))
-    def test_that_abundances_kwarg_sets_abundances(self, test_name) -> None:
+    def test_that_abundances_kwarg_sets_abundances(self, test_name: str) -> None:
         try:
             actual_abundances = self.instances[test_name].abundances
         except Exception:  # noqa: BLE001
@@ -185,7 +185,7 @@ class TestIonizationStateCollection:
             )
 
     @pytest.mark.parametrize("test_name", test_names)
-    def test_that_elements_and_isotopes_are_sorted(self, test_name) -> None:
+    def test_that_elements_and_isotopes_are_sorted(self, test_name: str) -> None:
         elements = self.instances[test_name].base_particles
         before_sorting = []
         for element in elements:
@@ -205,7 +205,7 @@ class TestIonizationStateCollection:
         )
 
     @pytest.mark.parametrize("test_name", test_names)
-    def test_that_ionic_fractions_are_set_correctly(self, test_name):
+    def test_that_ionic_fractions_are_set_correctly(self, test_name: str):
         errmsg = ""
 
         elements_actual = self.instances[test_name].base_particles
@@ -219,7 +219,7 @@ class TestIonizationStateCollection:
 
             input_keys = sorted(input_keys, key=sort_key)
 
-            for element, input_key in zip(elements_actual, input_keys):
+            for element, input_key in zip(elements_actual, input_keys, strict=False):
                 expected = tests[test_name]["inputs"][input_key]
 
                 if isinstance(expected, u.Quantity):
@@ -250,7 +250,7 @@ class TestIonizationStateCollection:
             pytest.fail(errmsg)
 
     @pytest.mark.parametrize("test_name", test_names)
-    def test_getitem_element(self, test_name):
+    def test_getitem_element(self, test_name: str):
         """Test that __get_item__ returns an IonizationState instance"""
         instance = self.instances[test_name]
 
@@ -287,7 +287,7 @@ class TestIonizationStateCollection:
                 )
 
     @pytest.mark.parametrize("test_name", test_names)
-    def test_getitem_element_intcharge(self, test_name) -> None:
+    def test_getitem_element_intcharge(self, test_name: str) -> None:
         instance = self.instances[test_name]
         for particle in instance.base_particles:
             for int_charge in range(atomic_number(particle) + 1):
@@ -309,7 +309,7 @@ class TestIonizationStateCollection:
             if isinstance(tests[test_name]["inputs"], dict)
         ],
     )
-    def test_normalization(self, test_name) -> None:
+    def test_normalization(self, test_name: str) -> None:
         instance = self.instances[test_name]
         instance.normalize()
         not_normalized_elements = []

@@ -9,7 +9,6 @@ plasma frequency.
 import astropy.units as u
 import numpy as np
 import pytest
-
 from astropy.constants.si import m_p
 from numba.extending import is_jitted
 
@@ -39,7 +38,7 @@ class TestPlasmaFrequency:
         ("bound_name", "bound_attr"),
         [("lite", plasma_frequency_lite)],
     )
-    def test_lite_function_binding(self, bound_name, bound_attr) -> None:
+    def test_lite_function_binding(self, bound_name: str, bound_attr) -> None:
         """Test expected attributes are bound correctly."""
         assert hasattr(plasma_frequency, bound_name)
         assert getattr(plasma_frequency, bound_name) is bound_attr
@@ -172,7 +171,7 @@ class TestPlasmaFrequencyLite:
         inputs_unitless = {
             "n": inputs["n"].to(u.m**-3).value,
             "mass": particle.mass.value,
-            "Z": np.abs(particle.charge_number),
+            "Z": np.abs(particle.charge_number),  # type: ignore[arg-type]
         }
 
         if "to_hz" in inputs:

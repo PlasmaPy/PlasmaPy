@@ -6,12 +6,12 @@ import numpy as np
 import pytest
 
 from plasmapy.formulary.dielectric import (
+    RotatingTensorElements,
+    StixTensorElements,
     cold_plasma_permittivity_LRP,
     cold_plasma_permittivity_SDP,
     permittivity_1D_Maxwellian,
     permittivity_1D_Maxwellian_lite,
-    RotatingTensorElements,
-    StixTensorElements,
 )
 from plasmapy.formulary.frequencies import gyrofrequency, plasma_frequency
 from plasmapy.formulary.speeds import thermal_speed
@@ -34,8 +34,8 @@ class Test_ColdPlasmaPermittivity:
         B = 1 * u.T
         n = [1, 1] * 1 / u.m**3
         omega = 1 * u.rad / u.s
-        omega_ce = gyrofrequency(B, particle="e", signed=True)
-        omega_pe = plasma_frequency(n[0], particle="e")
+        omega_ce = gyrofrequency(B, particle="e-", signed=True)
+        omega_pe = plasma_frequency(n[0], particle="e-")
         omega_cp = abs(omega_ce) / 1860
         omega_pp = omega_pe / 43
 
@@ -139,7 +139,7 @@ class Test_permittivity_1D_Maxwellian:
         ("bound_name", "bound_attr"),
         [("lite", permittivity_1D_Maxwellian_lite)],
     )
-    def test_lite_function_binding(self, bound_name, bound_attr) -> None:
+    def test_lite_function_binding(self, bound_name: str, bound_attr) -> None:
         """Test expected attributes are bound correctly."""
         assert hasattr(permittivity_1D_Maxwellian, bound_name)
         assert getattr(permittivity_1D_Maxwellian, bound_name) is bound_attr

@@ -5,12 +5,11 @@ a single ionization level.
 
 __all__ = ["IonicLevel", "IonizationState"]
 
+import warnings
+from numbers import Integral, Real
+
 import astropy.units as u
 import numpy as np
-import warnings
-
-from numbers import Integral, Real
-from typing import Optional
 
 from plasmapy.particles.atomic import ionic_levels
 from plasmapy.particles.decorators import particle_input
@@ -127,7 +126,7 @@ class IonicLevel:
         return self._ionic_fraction
 
     @ionic_fraction.setter
-    def ionic_fraction(self, ionfrac: Optional[Real]):
+    def ionic_fraction(self, ionfrac: Real | None):
         if ionfrac is None or np.isnan(ionfrac):
             self._ionic_fraction = np.nan
         else:
@@ -215,7 +214,7 @@ class IonizationState:
 
     Examples
     --------
-    >>> states = IonizationState('H', [0.6, 0.4], n_elem=1*u.cm**-3, T_e=11000*u.K)
+    >>> states = IonizationState("H", [0.6, 0.4], n_elem=1 * u.cm**-3, T_e=11000 * u.K)
     >>> states.ionic_fractions[0]  # fraction of hydrogen that is neutral
     0.6
     >>> states.ionic_fractions[1]  # fraction of hydrogen that is ionized
@@ -231,7 +230,7 @@ class IonizationState:
     base particle will be He-4, and all He-4 particles will be set as
     doubly charged.
 
-    >>> states = IonizationState('alpha')
+    >>> states = IonizationState("alpha")
     >>> states.base_particle
     'He-4'
     >>> states.ionic_fractions
@@ -388,9 +387,13 @@ class IonizationState:
 
         Examples
         --------
-        >>> IonizationState('H', [1, 0], tol=1e-6) == IonizationState('H', [1, 1e-6], tol=1e-6)  # noqa: W505
+        >>> IonizationState("H", [1, 0], tol=1e-6) == IonizationState(
+        ...     "H", [1, 1e-6], tol=1e-6
+        ... )  # noqa: W505
         True
-        >>> IonizationState('H', [1, 0], tol=1e-8) == IonizationState('H', [1, 1e-6], tol=1e-5)  # noqa: W505
+        >>> IonizationState("H", [1, 0], tol=1e-8) == IonizationState(
+        ...     "H", [1, 1e-6], tol=1e-5
+        ... )  # noqa: W505
         False
 
         """
@@ -445,7 +448,7 @@ class IonizationState:
 
         Examples
         --------
-        >>> hydrogen_states = IonizationState('H', [0.9, 0.1])
+        >>> hydrogen_states = IonizationState("H", [0.9, 0.1])
         >>> hydrogen_states.ionic_fractions
         array([0.9, 0.1])
 
@@ -497,7 +500,7 @@ class IonizationState:
                 f"Unable to set ionic fractions of {self.element} to {fractions}."
             ) from exc
 
-    def _is_normalized(self, tol: Optional[Real] = None) -> bool:
+    def _is_normalized(self, tol: Real | None = None) -> bool:
         """
         `True` if the sum of the ionization fractions is equal to
         ``1`` within the allowed tolerance, and `False` otherwise.
@@ -660,7 +663,7 @@ class IonizationState:
         return self._particle.element
 
     @property
-    def isotope(self) -> Optional[str]:
+    def isotope(self) -> str | None:
         """
         The isotope symbol for an isotope, or `None` if the particle is
         not an isotope.
@@ -719,10 +722,10 @@ class IonizationState:
 
         Examples
         --------
-        >>> He = IonizationState('He', [0.2, 0.5, 0.3])
+        >>> He = IonizationState("He", [0.2, 0.5, 0.3])
         >>> He.Z_most_abundant
         [1]
-        >>> Li = IonizationState('Li', [0.4, 0.4, 0.2, 0.0])
+        >>> Li = IonizationState("Li", [0.4, 0.4, 0.2, 0.0])
         >>> Li.Z_most_abundant
         [0, 1]
         """
@@ -758,7 +761,7 @@ class IonizationState:
         else:
             raise ValueError("Need 0 <= tol < 1.")
 
-    def _get_states_info(self, minimum_ionic_fraction=0.01) -> list[str]:
+    def _get_states_info(self, minimum_ionic_fraction: float = 0.01) -> list[str]:
         """
         Return a `list` containing the ion symbol, ionic fraction, and
         (if available) the number density and temperature for that ion.
@@ -862,11 +865,11 @@ class IonizationState:
         Examples
         --------
         >>> He_states = IonizationState(
-        ...     'He',
+        ...     "He",
         ...     [0.941, 0.058, 0.001],
-        ...     T_e = 5.34 * u.K,
-        ...     kappa = 4.05,
-        ...     n_elem = 5.51e19 * u.m ** -3,
+        ...     T_e=5.34 * u.K,
+        ...     kappa=4.05,
+        ...     n_elem=5.51e19 * u.m**-3,
         ... )
         >>> He_states.summarize()
         IonizationState instance for He with Z_mean = 0.06

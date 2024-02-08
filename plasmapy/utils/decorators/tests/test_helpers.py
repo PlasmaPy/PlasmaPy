@@ -1,8 +1,8 @@
 """Tests for module :mod:`plasmapy.utils.decorators`."""
 import inspect
-import pytest
-
 from unittest import mock
+
+import pytest
 
 from plasmapy.utils.decorators.helpers import modify_docstring, preserve_signature
 
@@ -94,7 +94,7 @@ class TestModifyDocstring:
             ),
         ],
     )
-    def test_modification(self, prepend, append, func_name, additions) -> None:
+    def test_modification(self, prepend, append, func_name: str, additions) -> None:
         func = getattr(self, func_name)
 
         expected = "\n".join(

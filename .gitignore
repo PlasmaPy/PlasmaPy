@@ -127,14 +127,8 @@ VIRTUAL/
 *.bbl
 *.blg
 
-# Miscellaneous files
-.idea/
-Untitled*
-untitled*
-*debuglog*
-.DS_Store
-*/cython_version.py
-.mypy_cache
+# Configuration files for autotyping
+.libcst.codemod.yaml
 
 # Documentation files
 auto_examples
@@ -144,3 +138,15 @@ docs/notebooks/*.md
 # Version file
 plasmapy/_version.py
 tags
+
+# Miscellaneous files
+.idea/
+Untitled*
+untitled*
+*debuglog*
+.DS_Store
+*/cython_version.py
+.mypy_cache
+node_modules
+package-lock.json
+monkeytype.sqlite3

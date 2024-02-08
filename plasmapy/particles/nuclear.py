@@ -1,11 +1,10 @@
 """Functions that are related to nuclear reactions."""
 __all__ = ["nuclear_binding_energy", "nuclear_reaction_energy", "mass_energy"]
 
-import astropy.units as u
 import re
-
 from numbers import Integral
-from typing import Optional, Union
+
+import astropy.units as u
 
 from plasmapy.particles.decorators import particle_input
 from plasmapy.particles.exceptions import InvalidParticleError, ParticleError
@@ -14,7 +13,7 @@ from plasmapy.particles.particle_class import Particle
 
 @particle_input(any_of={"isotope", "baryon"})
 def nuclear_binding_energy(
-    particle: Particle, mass_numb: Optional[Integral] = None
+    particle: Particle, mass_numb: Integral | None = None
 ) -> u.Quantity[u.J]:
     """
     Return the nuclear binding energy associated with an isotope.
@@ -54,11 +53,11 @@ def nuclear_binding_energy(
     Examples
     --------
     >>> import astropy.units as u
-    >>> nuclear_binding_energy('Fe-56').to(u.MeV)
+    >>> nuclear_binding_energy("Fe-56").to(u.MeV)
     <Quantity 492.25957 MeV>
     >>> nuclear_binding_energy(26, 56)
     <Quantity 7.8868678e-11 J>
-    >>> nuclear_binding_energy('p')  # proton
+    >>> nuclear_binding_energy("p")  # proton
     <Quantity 0. J>
     >>> import astropy.units as u
     >>> before = nuclear_binding_energy("D") + nuclear_binding_energy("T")
@@ -71,7 +70,7 @@ def nuclear_binding_energy(
 
 @particle_input
 def mass_energy(
-    particle: Particle, mass_numb: Optional[Integral] = None
+    particle: Particle, mass_numb: Integral | None = None
 ) -> u.Quantity[u.J]:
     """
     Return a particle's mass energy.  If the particle is an isotope or
@@ -104,7 +103,7 @@ def mass_energy(
 
     Examples
     --------
-    >>> mass_energy('He-4')
+    >>> mass_energy("He-4")
     <Quantity 5.9719e-10 J>
     """
     return particle.mass_energy
@@ -162,15 +161,15 @@ def nuclear_reaction_energy(*args, **kwargs) -> u.Quantity[u.J]:  # noqa: C901, 
     >>> import astropy.units as u
     >>> nuclear_reaction_energy("D + T --> alpha + n")
     <Quantity 2.8181e-12 J>
-    >>> triple_alpha1 = '2*He-4 --> Be-8'
-    >>> triple_alpha2 = 'Be-8 + alpha --> carbon-12'
+    >>> triple_alpha1 = "2*He-4 --> Be-8"
+    >>> triple_alpha2 = "Be-8 + alpha --> carbon-12"
     >>> energy_triplealpha1 = nuclear_reaction_energy(triple_alpha1)
     >>> energy_triplealpha2 = nuclear_reaction_energy(triple_alpha2)
     >>> print(energy_triplealpha1, energy_triplealpha2)
     -1.471430e-14 J 1.1802573e-12 J
     >>> energy_triplealpha2.to(u.MeV)
     <Quantity 7.3665870 MeV>
-    >>> nuclear_reaction_energy(reactants=['n'], products=['p+', 'e-'])
+    >>> nuclear_reaction_energy(reactants=["n"], products=["p+", "e-"])
     <Quantity 1.25343e-13 J>
     """
 
@@ -184,7 +183,7 @@ def nuclear_reaction_energy(*args, **kwargs) -> u.Quantity[u.J]:  # noqa: C901, 
     errmsg = "Invalid nuclear reaction."
 
     def process_particles_list(
-        unformatted_particles_list: list[Union[str, Particle]],
+        unformatted_particles_list: list[str | Particle],
     ) -> list[Particle]:
         """
         Take an unformatted list of particles and puts each
@@ -197,7 +196,7 @@ def nuclear_reaction_energy(*args, **kwargs) -> u.Quantity[u.J]:  # noqa: C901, 
         if isinstance(unformatted_particles_list, str):
             unformatted_particles_list = [unformatted_particles_list]
 
-        if not isinstance(unformatted_particles_list, (list, tuple)):
+        if not isinstance(unformatted_particles_list, list | tuple):
             raise TypeError(
                 "The input to process_particles_list should be a "
                 "string, list, or tuple."

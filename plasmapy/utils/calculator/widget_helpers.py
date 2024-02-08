@@ -6,9 +6,9 @@ __all__: list[str] = []
 
 import abc
 import importlib
-import ipywidgets as widgets
-
 from inspect import signature
+
+import ipywidgets as widgets
 
 from plasmapy.particles import Particle
 
@@ -60,7 +60,7 @@ class _GenericWidget(abc.ABC):
     """
 
     def __init__(
-        self, property_name, property_alias="", values_cont=values_container
+        self, property_name: str, property_alias="", values_cont=values_container
     ) -> None:
         self.property_name = property_name
         self.property_alias = property_alias or property_name
@@ -102,7 +102,7 @@ class _GenericWidget(abc.ABC):
         """
         return self.units_dropdown
 
-    def set_place_holder(self, text) -> None:
+    def set_place_holder(self, text: str) -> None:
         """
         Set place holder text of the widget, defaults to empty string.
 
@@ -137,7 +137,7 @@ class _GenericWidget(abc.ABC):
             Value of the widget
         """
 
-    def edge_case_condition(self, value):  # noqa: ARG002
+    def edge_case_condition(self, value) -> bool:  # noqa: ARG002
         """
         Edge case condition for the widget.
 
@@ -264,7 +264,12 @@ class _FloatBox(_GenericWidget):
         Maximum value the widget can take
     """
 
-    def __init__(self, property_name, min=-1e50, max=1e50) -> None:  # noqa: A002
+    def __init__(
+        self,
+        property_name: str,
+        min: float = -1e50,  # noqa: A002
+        max: float = 1e50,  # noqa: A002
+    ) -> None:
         super().__init__(property_name)
         self.min = min
         self.max = max
@@ -297,7 +302,7 @@ class _CheckBox(_GenericWidget):
         Name of the property the widget is associated with.
     """
 
-    def __init__(self, property_name) -> None:
+    def __init__(self, property_name: str) -> None:
         super().__init__(property_name)
 
     def create_widget(self) -> None:
@@ -323,7 +328,7 @@ class _ParticleBox(_GenericWidget):
         (particle_type in this case)
     """
 
-    def __init__(self, property_name, property_alias=None) -> None:
+    def __init__(self, property_name: str, property_alias=None) -> None:
         super().__init__(property_name, property_alias=property_alias)
 
     def edge_case_condition(self, value):
@@ -396,7 +401,7 @@ class _IonBox(_ParticleBox):
         Alias of the property the widget is associated with.
     """
 
-    def __init__(self, property_name, property_alias=None) -> None:
+    def __init__(self, property_name: str, property_alias=None) -> None:
         super().__init__(property_name, property_alias=property_alias)
 
     def try_change_value(self, value):
@@ -443,7 +448,7 @@ class _FunctionInfo:
     """
 
     def __init__(
-        self, module_name, function_name, values_cont=values_container
+        self, module_name: str, function_name: str, values_cont=values_container
     ) -> None:
         self.module = module_name
         self.fname = function_name
@@ -570,7 +575,7 @@ class _FunctionInfo:
                     self.error_message(self.sig)
 
 
-def _create_label(label, color="black"):
+def _create_label(label: str, color="black"):
     """
     Creates a label widget with the given text and color.
 
@@ -604,7 +609,7 @@ def _handle_clear_click(event) -> None:
         fn.output_widget.clear_output()
 
 
-def _colored_text(color, text):
+def _colored_text(color, text: str) -> str:
     """
     Prepares an inline string with the given color.
 

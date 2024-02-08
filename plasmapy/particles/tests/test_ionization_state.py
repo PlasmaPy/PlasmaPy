@@ -1,9 +1,9 @@
-import astropy.units as u
 import collections
 import itertools
+
+import astropy.units as u
 import numpy as np
 import pytest
-
 from astropy.tests.helper import assert_quantity_allclose
 
 from plasmapy.particles import (
@@ -161,7 +161,7 @@ def test_equal_to_itself(He_ionization_state) -> None:
 
 
 @pytest.mark.parametrize(("tolerance", "output"), [(1e-8, True), (1e-9001, False)])
-def test_equal_to_within_tolerance(tolerance, output) -> None:
+def test_equal_to_within_tolerance(tolerance: float, output) -> None:
     """
     Test that `IonizationState.__eq__` returns `True` for two
     `IonizationState` instances that differ within the inputted
@@ -296,7 +296,7 @@ def test_getitem(test_ionization_state) -> None:
 
     For example, if we create
 
-    >>> He_states = IonizationState('He', [0.2, 0.3, 0.5])
+    >>> He_states = IonizationState("He", [0.2, 0.3, 0.5])
 
     then this checks to make sure that `He_states[2]`,
     `He_states['He 2+']`, and `He_states[Particle('He 2+')]` all
@@ -317,7 +317,7 @@ def test_getitem(test_ionization_state) -> None:
     # these objects, we compare the string representations instead
     # (see Astropy issue #7901 on GitHub).
 
-    for keys in zip(charge_numbers, symbols, particles):
+    for keys in zip(charge_numbers, symbols, particles, strict=False):
         set_of_str_values = {str(test_ionization_state[key]) for key in keys}
         if len(set_of_str_values) != 1:
             errors.append(
@@ -356,7 +356,7 @@ def test_inequality_with_different_type(He_ionization_state) -> None:
 
 
 @pytest.mark.parametrize("tol", [-1e-16, 1.0000001])
-def test_invalid_tolerances(He_ionization_state, tol) -> None:
+def test_invalid_tolerances(He_ionization_state, tol: float) -> None:
     """Test that invalid tolerances raise appropriate errors."""
     with pytest.raises(ValueError):
         He_ionization_state.tol = tol

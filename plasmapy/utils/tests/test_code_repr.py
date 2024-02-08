@@ -1,10 +1,10 @@
 """Tests for code representation functions."""
 
+from collections import namedtuple
+
 import astropy.units as u
 import numpy as np
 import pytest
-
-from collections import namedtuple
 
 from plasmapy.utils.code_repr import (
     _code_repr_of_arg,
@@ -24,7 +24,7 @@ def generic_function(*args, **kwargs):
     return None
 
 
-def adams_number():
+def adams_number() -> int:
     return 42
 
 
@@ -471,7 +471,7 @@ def test__name_with_article(obj, expected) -> None:
         (u.Unit, True, "u.Unit"),
     ],
 )
-def test__object_name(obj, showmodule, expected_name) -> None:
+def test__object_name(obj, showmodule, expected_name: str) -> None:
     """Test that `_object_name` produces the expected output."""
     actual_name = _object_name(obj, showmodule=showmodule)
     assert actual_name == expected_name, (

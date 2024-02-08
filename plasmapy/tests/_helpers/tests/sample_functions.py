@@ -3,9 +3,10 @@ Sample functions and classes to be used for testing the test helper
 functionality.
 """
 
+import warnings
+
 import astropy.units as u
 import numpy as np
-import warnings
 
 
 class SampleException(Exception):  # noqa: N818

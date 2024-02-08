@@ -3,17 +3,17 @@ Tests for functionality contained in
 `plasmapy.analysis.swept_langmuir.floating_potential`.
 """
 
+from unittest import mock
+
 import numpy as np
 import pytest
-
-from unittest import mock
 
 from plasmapy.analysis import fit_functions as ffuncs
 from plasmapy.analysis import swept_langmuir as sla
 from plasmapy.analysis.swept_langmuir.floating_potential import (
+    VFExtras,
     find_floating_potential,
     find_vf_,
-    VFExtras,
 )
 from plasmapy.utils.exceptions import PlasmaPyWarning
 
@@ -388,7 +388,7 @@ class TestFindFloatingPotential:
         ("a", "alpha", "b"),
         [(1.0, 0.2, -0.2), (2.7, 0.2, -10.0), (6.0, 0.6, -10.0)],
     )
-    def test_perfect_exponential(self, a, alpha, b) -> None:
+    def test_perfect_exponential(self, a: float, alpha: float, b: float) -> None:
         """Test calculated fit parameters on a few perfectly exponential cases."""
         voltage = self._voltage
         current = a * np.exp(alpha * voltage) + b

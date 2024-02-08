@@ -3,12 +3,11 @@
 import astropy.units as u
 import numpy as np
 import pytest
-
 from astropy.tests.helper import assert_quantity_allclose
 
 from plasmapy.formulary.misc import (
-    Bohm_diffusion,
     DB_,
+    Bohm_diffusion,
     magnetic_energy_density,
     magnetic_pressure,
     pmag_,

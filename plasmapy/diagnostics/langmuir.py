@@ -18,21 +18,21 @@ __all__ = [
     "get_EEDF",
 ]
 
-import astropy.units as u
 import copy
-import numpy as np
+import warnings
 
+import astropy.units as u
+import numpy as np
 from astropy.constants import si as const
 from astropy.visualization import quantity_support
 from scipy.optimize import curve_fit
-from warnings import warn
 
 from plasmapy.particles import Particle
 from plasmapy.utils.decorators import validate_quantities
 
 
 def _langmuir_futurewarning() -> None:
-    warn(
+    warnings.warn(
         "The plasmapy.diagnostics.langmuir module will be deprecated in favor of "
         "the plasmapy.analysis.swept_langmuir sub-package and phased out over "
         "2021.  The plasmapy.analysis package was released in v0.5.0.",
@@ -122,7 +122,7 @@ class Characteristic:
         self.current = self.current[_sort]
         self.bias = self.bias[_sort]
 
-    def get_unique_bias(self, inplace=False):
+    def get_unique_bias(self, inplace: bool = False):
         r"""Remove any duplicate bias values through averaging."""
 
         if len(self.bias) != len(self.current):
@@ -166,7 +166,7 @@ class Characteristic:
         if len(np.unique(self.bias)) != len(self.bias):
             raise ValueError("Bias array contains duplicate values.")
 
-    def get_padded_limit(self, padding, log=False):
+    def get_padded_limit(self, padding, log: bool = False):
         r"""Return the limits of the current range for plotting, taking into
         account padding. Matplotlib lacks this functionality.
 
@@ -213,10 +213,10 @@ def swept_probe_analysis(  # noqa: PLR0915
     probe_characteristic,
     probe_area: u.Quantity[u.m**2],
     gas_argument,
-    bimaxwellian=False,
-    visualize=False,
-    plot_electron_fit=False,
-    plot_EEDF=False,
+    bimaxwellian: bool = False,
+    visualize: bool = False,
+    plot_electron_fit: bool = False,
+    plot_EEDF: bool = False,
 ):
     r"""Attempt to perform a basic swept probe analysis based on the provided
     characteristic and probe data. Suitable for single cylindrical probes in
@@ -449,7 +449,7 @@ def swept_probe_analysis(  # noqa: PLR0915
     return results
 
 
-def get_plasma_potential(probe_characteristic, return_arg=False):
+def get_plasma_potential(probe_characteristic, return_arg: bool = False):
     r"""Implement the simplest but crudest method for obtaining an estimate of
     the plasma potential from the probe characteristic.
 
@@ -502,7 +502,7 @@ def get_plasma_potential(probe_characteristic, return_arg=False):
     return probe_characteristic.bias[arg_V_P]
 
 
-def get_floating_potential(probe_characteristic, return_arg=False):
+def get_floating_potential(probe_characteristic, return_arg: bool = False):
     r"""Implement the simplest but crudest method for obtaining an estimate of
     the floating potential from the probe characteristic.
 
@@ -847,10 +847,10 @@ def extract_ion_section(probe_characteristic):
 
 def get_electron_temperature(
     exponential_section,
-    bimaxwellian=False,
-    visualize=False,
-    return_fit=False,
-    return_hot_fraction=False,
+    bimaxwellian: bool = False,
+    visualize: bool = False,
+    return_fit: bool = False,
+    return_hot_fraction: bool = False,
 ):
     r"""Obtain the Maxwellian or bi-Maxwellian electron temperature using the
     exponential fit method.
@@ -1025,7 +1025,7 @@ def get_electron_temperature(
 
 
 def extrapolate_electron_current(
-    probe_characteristic, fit, bimaxwellian=False, visualize=False
+    probe_characteristic, fit, bimaxwellian: bool = False, visualize: bool = False
 ):
     r"""Extrapolate the electron current from the Maxwellian electron
     temperature obtained in the exponential growth region.
@@ -1074,7 +1074,7 @@ def extrapolate_electron_current(
         np.exp(fit_func(probe_characteristic.bias.to(u.V).value, *fit)) * u.A
     )
 
-    electron_current[electron_current > np.max(probe_characteristic.current)] = np.NaN
+    electron_current[electron_current > np.max(probe_characteristic.current)] = np.nan
 
     electron_characteristic = Characteristic(
         probe_characteristic.bias, electron_current
@@ -1160,8 +1160,8 @@ def get_ion_density_OML(
     probe_characteristic: Characteristic,
     probe_area: u.Quantity[u.m**2],
     gas,
-    visualize=False,
-    return_fit=False,
+    visualize: bool = False,
+    return_fit: bool = False,
 ):
     r"""Implement the Orbital Motion Limit (OML) method of obtaining an
     estimate of the ion density.
@@ -1253,7 +1253,7 @@ def get_ion_density_OML(
     return (n_i_OML.to(u.m**-3), fit) if return_fit else n_i_OML.to(u.m**-3)
 
 
-def extrapolate_ion_current_OML(probe_characteristic, fit, visualize=False):
+def extrapolate_ion_current_OML(probe_characteristic, fit, visualize: bool = False):
     r"""Extrapolate the ion current from the ion density obtained with the
     OML method.
 
@@ -1318,7 +1318,7 @@ def extrapolate_ion_current_OML(probe_characteristic, fit, visualize=False):
     return ion_characteristic
 
 
-def get_EEDF(probe_characteristic, visualize=False):
+def get_EEDF(probe_characteristic, visualize: bool = False):
     r"""Implement the Druyvesteyn method of obtaining the normalized
     Electron Energy Distribution Function (EEDF).
 

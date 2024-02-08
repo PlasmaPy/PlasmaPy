@@ -1,15 +1,14 @@
 import astropy.units as u
 import numpy as np
 import pytest
-
 from astropy.constants import k_B, m_p
 
 from plasmapy.formulary.collisions.frequencies import (
+    MaxwellianCollisionFrequencies,
+    SingleParticleCollisionFrequencies,
     collision_frequency,
     fundamental_electron_collision_freq,
     fundamental_ion_collision_freq,
-    MaxwellianCollisionFrequencies,
-    SingleParticleCollisionFrequencies,
 )
 from plasmapy.particles import Particle
 from plasmapy.utils._pytest_helpers import assert_can_handle_nparray
@@ -400,17 +399,17 @@ class TestSingleParticleCollisionFrequencies:
         if interaction_type == "e|e":
             charge_constant = 1
         elif interaction_type == "e|i":
-            charge_constant = value_test_case.field_particle.charge_number**2
+            charge_constant = value_test_case.field_particle.charge_number**2  # type: ignore[assignment]
         elif interaction_type == "i|e":
-            charge_constant = value_test_case.test_particle.charge_number**2
+            charge_constant = value_test_case.test_particle.charge_number**2  # type: ignore[assignment]
         elif interaction_type == "i|i":
-            charge_constant = (
+            charge_constant = (  # type: ignore[assignment]
                 value_test_case.test_particle.charge_number
                 * value_test_case.field_particle.charge_number
             ) ** 2
 
         for attribute_name, expected_limit_value in zip(
-            self.return_values_to_test, expected_limit_values
+            self.return_values_to_test, expected_limit_values, strict=False
         ):
             calculated_limit_value = getattr(value_test_case, attribute_name).value
             # Energy loss limit value is already in units of
@@ -602,7 +601,7 @@ class TestMaxwellianCollisionFrequencies:
         expected_error,
         constructor_arguments,
         constructor_keyword_arguments,
-        attribute_name,
+        attribute_name: str,
     ) -> None:
         """Test errors raised in attribute bodies"""
 
@@ -808,7 +807,7 @@ class Test_fundamental_electron_collision_freq:
         """Initializing parameters for tests"""
         cls.T_arr = np.array([1, 2]) * u.eV
         cls.n_arr = np.array([1e20, 2e20]) * u.cm**-3
-        cls.ion = "p"
+        cls.ion = "p+"
         cls.coulomb_log = 10
 
     # TODO: array coulomb log
@@ -827,7 +826,7 @@ class Test_fundamental_ion_collision_freq:
         """Initializing parameters for tests"""
         cls.T_arr = np.array([1, 2]) * u.eV
         cls.n_arr = np.array([1e20, 2e20]) * u.cm**-3
-        cls.ion = "p"
+        cls.ion = "p+"
         cls.coulomb_log = 10
 
     # TODO: array coulomb log

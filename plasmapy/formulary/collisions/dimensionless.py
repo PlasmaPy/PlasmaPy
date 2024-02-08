@@ -6,19 +6,19 @@ __all__ = [
     "Knudsen_number",
 ]
 
+from numbers import Real
+
 import astropy.units as u
 import numpy as np
-
 from astropy.constants.si import e, eps0, k_B
-from numbers import Real
 
 from plasmapy import particles
 from plasmapy.formulary.collisions import lengths, misc
 from plasmapy.formulary.mathematics import Fermi_integral
 from plasmapy.formulary.quantum import (
+    Wigner_Seitz_radius,
     chemical_potential,
     thermal_deBroglie_wavelength,
-    Wigner_Seitz_radius,
 )
 from plasmapy.utils.decorators import validate_quantities
 
@@ -163,7 +163,7 @@ def coupling_parameter(
     >>> import astropy.units as u
     >>> n = 1e19 * u.m**-3
     >>> T = 1e6 * u.K
-    >>> species = ('e', 'p')
+    >>> species = ("e", "p")
     >>> coupling_parameter(T, n, species)
     <Quantity 5.8033...e-05>
     >>> coupling_parameter(T, n, species, V=1e6 * u.m / u.s)
@@ -330,9 +330,9 @@ def Knudsen_number(
     --------
     >>> import astropy.units as u
     >>> L = 1e-3 * u.m
-    >>> n = 1e19 * u.m ** -3
+    >>> n = 1e19 * u.m**-3
     >>> T = 1e6 * u.K
-    >>> species = ('e', 'p')
+    >>> species = ("e", "p")
     >>> Knudsen_number(L, T, n, species)
     <Quantity 7839.5...>
     >>> Knudsen_number(L, T, n, species, V=1e6 * u.m / u.s)

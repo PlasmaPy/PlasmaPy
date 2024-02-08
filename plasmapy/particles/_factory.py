@@ -6,12 +6,12 @@ appropriate instance of one of those three classes.
 
 __all__: list[str] = []
 
-import astropy.units as u
 import contextlib
-
-from astropy.constants import m_e
 from numbers import Integral, Real
-from typing import Any, Optional, Union
+from typing import Any
+
+import astropy.units as u
+from astropy.constants import m_e
 
 from plasmapy.particles.exceptions import ChargeError, InvalidParticleError
 from plasmapy.particles.particle_class import CustomParticle, Particle, ParticleLike
@@ -44,9 +44,9 @@ def _generate_particle_factory_error_message(
 def _make_custom_particle_with_real_charge_number(
     arg: ParticleLike,
     *,
-    mass_numb: Optional[Integral] = None,
-    symbol: Optional[str] = None,
-    Z: Optional[Real] = None,
+    mass_numb: Integral | None = None,
+    symbol: str | None = None,
+    Z: Real | None = None,
 ):
     """
     Create a |CustomParticle| for mean or composite ions.
@@ -83,7 +83,7 @@ def _make_custom_particle_with_real_charge_number(
     CustomParticle(mass=6.64511...e-27 kg, charge=2.40326...e-19 C)
     """
 
-    if not isinstance(Z, (Real, u.Quantity)) and Z is not None:
+    if not isinstance(Z, Real | u.Quantity) and Z is not None:
         raise ChargeError("The charge number must be a real number.")
 
     base_particle = Particle(arg, mass_numb=mass_numb, Z=0)
@@ -112,7 +112,7 @@ _particle_types = (Particle, CustomParticle, ParticleList)
 
 def _physical_particle_factory(
     *args, **kwargs
-) -> Union[Particle, CustomParticle, ParticleList]:
+) -> Particle | CustomParticle | ParticleList:
     """
     Return a representation of one or more physical particles.
 
@@ -166,7 +166,7 @@ def _physical_particle_factory(
     >>> import astropy.units as u
     >>> _physical_particle_factory("p+")
     Particle("p+")
-    >>> _physical_particle_factory(mass = 9e-26 * u.kg, charge = 8e20 * u.C)
+    >>> _physical_particle_factory(mass=9e-26 * u.kg, charge=8e20 * u.C)
     CustomParticle(mass=9e-26 kg, charge=8e+20 C)
     >>> _physical_particle_factory(["p+", "e-"])
     ParticleList(['p+', 'e-'])
@@ -191,7 +191,7 @@ def _physical_particle_factory(
         with contextlib.suppress(ChargeError, InvalidParticleError, TypeError):
             return constructor(*args, **kwargs)
 
-    if args and not isinstance(args[0], (str, Integral, u.Quantity)):
+    if args and not isinstance(args[0], str | Integral | u.Quantity):
         raise TypeError("Invalid type for particle.")
 
     raise InvalidParticleError(_generate_particle_factory_error_message(args, kwargs))

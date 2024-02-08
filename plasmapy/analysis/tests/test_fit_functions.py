@@ -1,11 +1,11 @@
 """
 Tests for the fitting function classes defined in `plasmapy.analysis.fit_functions`.
 """
-import numpy as np
-import pytest
-
 from abc import ABC, abstractmethod
 from contextlib import nullcontext as does_not_raise
+
+import numpy as np
+import pytest
 
 import plasmapy.analysis.fit_functions as ffuncs
 
@@ -44,7 +44,7 @@ class TestAbstractFitFunction:
             ("root_solve", False),
         ],
     )
-    def test_methods(self, name, isproperty) -> None:
+    def test_methods(self, name: str, isproperty: bool) -> None:
         """Test for required methods and properties."""
         assert hasattr(self.ff_class, name)
 
@@ -55,7 +55,7 @@ class TestAbstractFitFunction:
         "name",
         ["__str__", "func", "func_err", "latex_str"],
     )
-    def test_abstractmethods(self, name) -> None:
+    def test_abstractmethods(self, name: str) -> None:
         """Test for required abstract methods."""
         assert name in self.ff_class.__abstractmethods__
 
@@ -121,7 +121,7 @@ class BaseFFTests(ABC):
             ("root_solve", False),
         ],
     )
-    def test_methods(self, name, isproperty) -> None:
+    def test_methods(self, name: str, isproperty: bool) -> None:
         """Test attribute/method/property existence."""
         assert hasattr(self.ff_class, name)
 
@@ -143,7 +143,7 @@ class BaseFFTests(ABC):
             ("__str__", "_test__str__"),
         ],
     )
-    def test_abstractmethod_values(self, name, value_ref_name) -> None:
+    def test_abstractmethod_values(self, name: str, value_ref_name: str) -> None:
         """Test value of all abstract methods, except `func` and `func_err`."""
         ff_obj = self.ff_class()
 
@@ -322,7 +322,7 @@ class BaseFFTests(ABC):
                 y_err = results
                 y = None
 
-            x_err = kwargs["x_err"] if "x_err" in kwargs else None
+            x_err = kwargs.get("x_err", None)
             if isinstance(x, list):
                 x = np.array(x)
             y_err_expected = self.func_err(x, params, param_errors, x_err=x_err)
@@ -352,9 +352,8 @@ class BaseFFTests(ABC):
         params = self._test_params
         param_errors = self._test_param_errors
         ff_obj = self.ff_class(params=params, param_errors=param_errors)
-
-        reterr = kwargs["reterr"] if "reterr" in kwargs else False
-        x_err = kwargs["x_err"] if "x_err" in kwargs else None
+        reterr = kwargs.get("reterr", False)
+        x_err = kwargs.get("x_err", None)
         with with_condition:
             results = ff_obj(x, **kwargs)
             if reterr:
@@ -454,7 +453,7 @@ class TestFFExponentialPlusLinear(BaseFFTests):
     _test__str__ = "f(x) = a exp(alpha x) + m x + b"
 
     @staticmethod
-    def func(x, a, alpha, m, b):
+    def func(x: float, a: float, alpha: float, m: float, b: float) -> float:
         return a * np.exp(alpha * x) + m * x + b
 
     def func_err(self, x, params, param_errors, x_err=None):
@@ -500,7 +499,7 @@ class TestFFExponentialPlusOffset(BaseFFTests):
     _test__str__ = "f(x) = a exp(alpha x) + b"
 
     @staticmethod
-    def func(x, a, alpha, b):
+    def func(x: float, a: float, alpha: float, b: float) -> float:
         return a * np.exp(alpha * x) + b
 
     def func_err(self, x, params, param_errors, x_err=None):

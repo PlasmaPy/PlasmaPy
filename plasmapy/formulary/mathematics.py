@@ -3,15 +3,14 @@
 __all__ = ["Fermi_integral", "rot_a_to_b"]
 
 import numbers
-import numpy as np
 
+import numpy as np
 from mpmath import polylog
-from typing import Union
 
 
 def Fermi_integral(
-    x: Union[complex, np.ndarray], j: Union[complex, np.ndarray]
-) -> Union[complex, np.ndarray]:
+    x: complex | np.ndarray, j: complex | np.ndarray
+) -> complex | np.ndarray:
     r"""
     Calculate the complete Fermi-Dirac integral.
 
@@ -71,7 +70,7 @@ def Fermi_integral(
     >>> Fermi_integral(1, 1)
     (1.8062860704447743-0j)
     """
-    if isinstance(x, (numbers.Integral, numbers.Real, numbers.Complex)):
+    if isinstance(x, numbers.Integral | numbers.Real | numbers.Complex):
         arg = -np.exp(x)
         return -1 * complex(polylog(j + 1, arg))
     elif isinstance(x, np.ndarray):

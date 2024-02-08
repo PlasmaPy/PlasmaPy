@@ -1,9 +1,8 @@
 import astropy
+import astropy.constants as const
 import astropy.units as u
 import numpy as np
 import pytest
-
-from astropy import constants
 
 from plasmapy.formulary.magnetostatics import (
     CircularWire,
@@ -13,7 +12,7 @@ from plasmapy.formulary.magnetostatics import (
     MagneticDipole,
 )
 
-mu0_4pi = constants.mu0 / 4 / np.pi
+mu0_4pi = const.mu0 / 4 / np.pi
 
 
 class Test_MagneticDipole:

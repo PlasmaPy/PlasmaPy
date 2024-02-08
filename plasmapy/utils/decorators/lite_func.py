@@ -6,10 +6,9 @@ __all__ = ["bind_lite_func"]
 
 import functools
 import inspect
-
 from collections.abc import Callable
+
 from numba.extending import is_jitted
-from typing import Optional
 
 
 class _LiteFuncDict(dict):
@@ -24,7 +23,7 @@ class _LiteFuncDict(dict):
     # This is only to give __bound_lite_func__ a docstring.
 
 
-def bind_lite_func(lite_func, attrs: Optional[dict[str, Callable]] = None):
+def bind_lite_func(lite_func, attrs: dict[str, Callable] | None = None):
     """
     Decorator to bind a lightweight "lite" version of a formulary
     function to the full formulary function, as well as any supporting

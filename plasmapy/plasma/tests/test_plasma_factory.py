@@ -3,7 +3,6 @@ import numpy as np
 import pytest
 
 import plasmapy.plasma
-
 from plasmapy.particles.data.test import data_dir
 
 
@@ -35,7 +34,7 @@ class TestPlasma:
         T_e = 25 * 15e3 * u.K
         n_e = 1e26 * u.cm**-3
         Z = 2.0
-        particle = "p"
+        particle = "p+"
         blob = plasmapy.plasma.Plasma(T_e=T_e, n_e=n_e, Z=Z, particle=particle)
         assert isinstance(blob, plasmapy.plasma.sources.PlasmaBlob)
         assert isinstance(blob, plasmapy.plasma.BasePlasma)

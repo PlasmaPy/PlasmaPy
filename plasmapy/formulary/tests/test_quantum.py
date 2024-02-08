@@ -1,21 +1,20 @@
 import astropy.units as u
 import numpy as np
 import pytest
-
 from astropy.constants import c
 
 from plasmapy.formulary.quantum import (
+    Ef_,
+    Fermi_energy,
+    Thomas_Fermi_length,
+    Wigner_Seitz_radius,
     _chemical_potential_interp,
     chemical_potential,
     deBroglie_wavelength,
-    Ef_,
-    Fermi_energy,
     lambdaDB_,
     lambdaDB_th_,
     quantum_theta,
     thermal_deBroglie_wavelength,
-    Thomas_Fermi_length,
-    Wigner_Seitz_radius,
 )
 from plasmapy.particles.exceptions import InvalidParticleError
 from plasmapy.utils.exceptions import RelativityError

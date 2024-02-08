@@ -127,10 +127,10 @@ __all__ = [
     "electron_viscosity",
 ]
 
-import astropy.units as u
-import numpy as np
 import warnings
 
+import astropy.units as u
+import numpy as np
 from astropy.constants.si import e, k_B, m_e
 
 from plasmapy import particles
@@ -181,7 +181,7 @@ class ClassicalTransport:
 
     ion : `str`
         Representation of the ion species (e.g., ``'p'`` for protons,
-        ``'e'`` for electrons, ``'D+'`` for deuterium, or ``'He-4 +1'``
+        ``'e-'`` for electrons, ``'D+'`` for deuterium, or ``'He-4 +1'``
         for singly ionized helium-4). If no charge state information is
         provided, then the particles are assumed to be singly charged.
 
@@ -289,8 +289,7 @@ class ClassicalTransport:
     Examples
     --------
     >>> import astropy.units as u
-    >>> t = ClassicalTransport(1*u.eV, 1e20/u.m**3,
-    ...                         1*u.eV, 1e20/u.m**3, 'p')
+    >>> t = ClassicalTransport(1 * u.eV, 1e20 / u.m**3, 1 * u.eV, 1e20 / u.m**3, "p")
     >>> t.resistivity  # doctest: +SKIP
     <Quantity 0.0003670... Ohm m>
     >>> t.thermoelectric_conductivity
@@ -331,7 +330,7 @@ class ClassicalTransport:
         hall_e=None,
         hall_i=None,
         mu=None,
-        theta=None,
+        theta: float | None = None,
         coulomb_log_method="classical",
     ) -> None:
         # check the model
@@ -368,7 +367,7 @@ class ClassicalTransport:
             raise ValueError("Z is not allowed to be negative!")  # TODO: remove?
 
         # decide on the particle string for the electrons
-        self.e_particle = "e"
+        self.e_particle = "e-"
         self.ion = ion
 
         # save other arguments
@@ -797,7 +796,7 @@ def resistivity(
     model="Braginskii",
     field_orientation="parallel",
     mu=None,
-    theta=None,
+    theta: float | None = None,
     coulomb_log_method="classical",
 ) -> u.Quantity[u.Ohm * u.m]:
     r"""
@@ -866,7 +865,7 @@ def thermoelectric_conductivity(
     model="Braginskii",
     field_orientation="parallel",
     mu=None,
-    theta=None,
+    theta: float | None = None,
     coulomb_log_method="classical",
 ):
     r"""
@@ -908,7 +907,7 @@ def ion_thermal_conductivity(
     model="Braginskii",
     field_orientation="parallel",
     mu=None,
-    theta=None,
+    theta: float | None = None,
     coulomb_log_method="classical",
 ) -> u.Quantity[u.W / u.m / u.K]:
     r"""
@@ -979,7 +978,7 @@ def electron_thermal_conductivity(
     model="Braginskii",
     field_orientation="parallel",
     mu=None,
-    theta=None,
+    theta: float | None = None,
     coulomb_log_method="classical",
 ) -> u.Quantity[u.W / u.m / u.K]:
     r"""
@@ -1061,7 +1060,7 @@ def ion_viscosity(
     model="Braginskii",
     field_orientation="parallel",
     mu=None,
-    theta=None,
+    theta: float | None = None,
     coulomb_log_method="classical",
 ) -> u.Quantity[u.Pa * u.s]:
     r"""
@@ -1118,7 +1117,7 @@ def electron_viscosity(
     model="Braginskii",
     field_orientation="parallel",
     mu=None,
-    theta=None,
+    theta: float | None = None,
     coulomb_log_method="classical",
 ) -> u.Quantity[u.Pa * u.s]:
     r"""
@@ -1163,7 +1162,7 @@ def electron_viscosity(
 
 
 def _nondim_thermal_conductivity(
-    hall, Z, particle, model, field_orientation, mu=None, theta=None
+    hall, Z, particle, model, field_orientation, mu=None, theta: float | None = None
 ):
     """
     Calculate dimensionless classical thermal conductivity coefficients.
@@ -1206,7 +1205,7 @@ def _nondim_viscosity(
     model,
     field_orientation,  # noqa: ARG001
     mu=None,
-    theta=None,
+    theta: float | None = None,
 ):
     """
     Calculate dimensionless classical viscosity coefficients.
@@ -2070,7 +2069,7 @@ def _nondim_visc_e_ji_held(hall, Z):
     return np.array((eta_0, eta_1, eta_2, eta_3, eta_4))
 
 
-def _nondim_tc_i_ji_held(hall, Z, mu, theta, field_orientation, K=3):
+def _nondim_tc_i_ji_held(hall, Z, mu, theta: float, field_orientation, K=3):
     """
     Dimensionless ion thermal conductivity — Ji-Held.
 
@@ -2151,7 +2150,7 @@ def _nondim_tc_i_ji_held(hall, Z, mu, theta, field_orientation, K=3):
         )
 
 
-def _nondim_visc_i_ji_held(hall, Z, mu, theta, K=3):
+def _nondim_visc_i_ji_held(hall, Z, mu, theta: float, K=3):
     """
     Dimensionless ion viscosity — Ji-Held.
 

@@ -1,6 +1,7 @@
 """
 Defines the AbstractGrid class and child classes.
 """
+from collections.abc import Sequence
 
 __all__ = [
     "AbstractGrid",
@@ -8,24 +9,23 @@ __all__ = [
     "NonUniformCartesianGrid",
 ]
 
-import astropy.units as u
 import contextlib
-import numpy as np
-import pandas as pd
-import scipy.interpolate as interp
 import warnings
-import xarray as xr
-
 from abc import ABC, abstractmethod
 from collections import namedtuple
 from functools import cached_property
+
+import astropy.units as u
+import numpy as np
+import pandas as pd
+import scipy.interpolate as interp
+import xarray as xr
 from scipy.spatial import distance
-from typing import Union
 
 from plasmapy.utils.decorators.helpers import modify_docstring
 
 
-def _detect_is_uniform_grid(pts0, pts1, pts2, tol=1e-6):
+def _detect_is_uniform_grid(pts0, pts1, pts2, tol: float = 1e-6):
     r"""
     Determine whether a grid is uniform (uniformly spaced) by computing the
     variance of the grid gradients.
@@ -76,7 +76,7 @@ class AbstractGrid(ABC):
 
     """
 
-    def __init__(self, *seeds, num=100, **kwargs) -> None:
+    def __init__(self, *seeds: Sequence[int], num: int = 100, **kwargs) -> None:
         # Initialize some variables
         self._interpolator = None
         self._is_uniform = None
@@ -97,7 +97,7 @@ class AbstractGrid(ABC):
                 f"positional arguments but {len(seeds)} were given"
             )
 
-    def _validate(self):
+    def _validate(self) -> bool:
         r"""
         Checks to make sure that the grid parameters are
         consistent with the coordinate system and units selected.
@@ -142,7 +142,7 @@ class AbstractGrid(ABC):
         """
         return self._recognized_quantities
 
-    def require_quantities(self, req_quantities, replace_with_zeros=False):
+    def require_quantities(self, req_quantities, replace_with_zeros: bool = False):
         r"""
         Check to make sure that a list of required quantities are present.
         Optionally, can create missing quantities and fill them with
@@ -207,7 +207,7 @@ class AbstractGrid(ABC):
         ax_units = self.units
         ax_dtypes = [self.ds[i].dtype for i in coords]
 
-        coord_lbls = [f"{i}: {j}" for i, j in zip(coords, shape)]
+        coord_lbls = [f"{i}: {j}" for i, j in zip(coords, shape, strict=False)]
 
         s = f"*** Grid Summary ***\n{type(self)}\n"
 
@@ -604,7 +604,7 @@ class AbstractGrid(ABC):
         # requirements: eg. units correspond to the coordinate system
         self._validate()
 
-    def add_quantities(self, **kwargs):
+    def add_quantities(self, **kwargs: u.Quantity) -> None:
         r"""
         Adds a quantity to the dataset as a new DataArray.
 
@@ -668,9 +668,9 @@ class AbstractGrid(ABC):
 
     def _make_grid(  # noqa: C901, PLR0912
         self,
-        start: Union[float, u.Quantity],
-        stop: Union[float, u.Quantity],
-        num=100,
+        start: float | u.Quantity,
+        stop: float | u.Quantity,
+        num: int = 100,
         units=None,
         **kwargs,
     ):
@@ -795,7 +795,7 @@ class AbstractGrid(ABC):
             pts2 * units[2],
         )
 
-    def _make_mesh(self, start, stop, num, **kwargs):
+    def _make_mesh(self, start, stop, num: int, **kwargs):
         r"""
         Creates mesh as part of _make_grid(). Separated into its own function
         so it can be re-implemented to make non-uniformly spaced meshes.
@@ -903,7 +903,7 @@ class AbstractGrid(ABC):
 
     @abstractmethod
     def nearest_neighbor_interpolator(
-        self, pos: Union[np.ndarray, u.Quantity], *args, persistent=False
+        self, pos: np.ndarray | u.Quantity, *args, persistent: bool = False
     ):
         r"""
         Interpolate values on the grid using a nearest-neighbor scheme with
@@ -1094,7 +1094,7 @@ class CartesianGrid(AbstractGrid):
 
     @modify_docstring(prepend=AbstractGrid.nearest_neighbor_interpolator.__doc__)
     def nearest_neighbor_interpolator(
-        self, pos: Union[np.ndarray, u.Quantity], *args, persistent=False
+        self, pos: np.ndarray | u.Quantity, *args, persistent: bool = False
     ):
         r""" """  # noqa: D419
 
@@ -1133,7 +1133,7 @@ class CartesianGrid(AbstractGrid):
         return output[0] if len(output) == 1 else tuple(output)
 
     def volume_averaged_interpolator(
-        self, pos: Union[np.ndarray, u.Quantity], *args, persistent=False
+        self, pos: np.ndarray | u.Quantity, *args, persistent: bool = False
     ):
         r"""
         Interpolate values on the grid using a volume-averaged scheme with
@@ -1361,7 +1361,7 @@ class NonUniformCartesianGrid(AbstractGrid):
 
         return Tmin < Tmax
 
-    def _make_mesh(self, start, stop, num, **kwargs):
+    def _make_mesh(self, start, stop, num: int, **kwargs):
         r"""
         Creates mesh as part of ``_make_grid()``. Separated into its own
         function so it can be re-implemented to make non-uniform grids.
@@ -1392,13 +1392,13 @@ class NonUniformCartesianGrid(AbstractGrid):
 
         """
 
-        indgrid = np.arange(self.grid.shape[0])
-
-        return interp.NearestNDInterpolator(self.grid.to(u.m).value, indgrid)
+        return interp.NearestNDInterpolator(
+            self.grid.to(u.m).value, self._interp_quantities
+        )
 
     @modify_docstring(prepend=AbstractGrid.nearest_neighbor_interpolator.__doc__)
     def nearest_neighbor_interpolator(
-        self, pos: Union[np.ndarray, u.Quantity], *args, persistent=False
+        self, pos: np.ndarray | u.Quantity, *args, persistent: bool = False
     ):
         r""" """  # noqa: D419
         # Shared setup
@@ -1417,10 +1417,6 @@ class NonUniformCartesianGrid(AbstractGrid):
         pts1 = self.pts1.to(u.m).value
         pts2 = self.pts2.to(u.m).value
 
-        i = self._nearest_neighbor_interpolator(pos)
-
-        vals = self._interp_quantities[i, :]
-
         mask_particle_off = (
             (pos[:, 0] < pts0.min())
             | (pos[:, 0] > pts0.max())
@@ -1430,6 +1426,7 @@ class NonUniformCartesianGrid(AbstractGrid):
             | (pos[:, 2] > pts2.max())
         )
 
+        vals = self._nearest_neighbor_interpolator(pos)
         vals[mask_particle_off] = np.nan
 
         output = [vals[:, arg] * self._interp_units[arg] for arg in range(len(args))]

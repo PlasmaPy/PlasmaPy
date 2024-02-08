@@ -6,19 +6,19 @@ __all__ = [
     "run_test_equivalent_calls",
 ]
 
-import astropy.constants as const
-import astropy.tests.helper as astrohelper
-import astropy.units as u
 import collections
 import contextlib
 import functools
 import inspect
+import warnings
+from collections.abc import Callable
+from typing import Any
+
+import astropy.constants as const
+import astropy.tests.helper as astrohelper
+import astropy.units as u
 import numpy as np
 import pytest
-import warnings
-
-from collections.abc import Callable
-from typing import Any, Optional
 
 from plasmapy.tests._helpers.exceptions import (
     InvalidTestError,
@@ -47,7 +47,7 @@ def _process_input(wrapped_function: Callable):
         @functools.wraps(wrapped_function)
         def wrapper(*args, **kwargs):
             arguments = wrapped_signature.bind(*args, **kwargs).arguments
-            if len(args) == 1 and not kwargs and isinstance(args[0], (list, tuple)):
+            if len(args) == 1 and not kwargs and isinstance(args[0], list | tuple):
                 inputs = args[0]
                 if len(inputs) not in (3, 4):
                     raise RuntimeError(f"{args} is an invalid input to run_test.")
@@ -69,7 +69,7 @@ def _process_input(wrapped_function: Callable):
 def run_test(  # noqa: C901
     func,
     args: Any = (),
-    kwargs: Optional[dict] = None,
+    kwargs: dict | None = None,
     expected_outcome: Any = None,
     rtol: float = 0.0,
     atol: float = 0.0,
@@ -160,7 +160,8 @@ def run_test(  # noqa: C901
     >>> issue_warning = lambda: warn("Electrons are weird!", UserWarning)
     >>> run_test(issue_warning, args, kwargs, UserWarning)
 
-    >>> def raise_exception(): raise RuntimeError
+    >>> def raise_exception():
+    ...     raise RuntimeError
     >>> run_test(raise_exception, args, kwargs, RuntimeError)
 
     For warnings, `~plasmapy.utils.pytest_helpers.pytest_helpers.run_test`
@@ -334,7 +335,7 @@ def run_test(  # noqa: C901
                 )
             return None
 
-        if not isinstance(result, (u.Quantity, const.Constant, const.EMConstant)):
+        if not isinstance(result, u.Quantity | const.Constant | const.EMConstant):
             raise u.UnitsError(
                 f"The command {call_str} returned "
                 f"{_object_name(result)} instead of a quantity or "
@@ -352,7 +353,7 @@ def run_test(  # noqa: C901
 
         return None
 
-    if isinstance(expected["result"], (u.Quantity, const.Constant, const.EMConstant)):
+    if isinstance(expected["result"], u.Quantity | const.Constant | const.EMConstant):
         if result.unit != expected["result"].unit:
             raise u.UnitsError(
                 f"The command {call_str} returned "
@@ -462,7 +463,8 @@ def run_test_equivalent_calls(  # noqa: C901
     then ``test_inputs`` may be the function followed by an arbitrary
     number of positional arguments to be included into the function.
 
-    >>> def f(x): return x ** 2
+    >>> def f(x):
+    ...     return x**2
     >>> run_test_equivalent_calls(f, -1, 1)
 
     To test a single function with an arbitrary number of positional and
@@ -471,8 +473,9 @@ def run_test_equivalent_calls(  # noqa: C901
     contain a `tuple` or `list` containing the positional arguments, and
     a `dict` containing the keyword arguments.
 
-    >>> def g(x, y, z): return x + y + z
-    >>> run_test_equivalent_calls(g, ((1, 2, 3), {}), ((3, 2), {'z': 1}))
+    >>> def g(x, y, z):
+    ...     return x + y + z
+    >>> run_test_equivalent_calls(g, ((1, 2, 3), {}), ((3, 2), {"z": 1}))
 
     If there is only one positional argument, then it is not necessary
     to include it in a `tuple` or `list`.
@@ -485,10 +488,12 @@ def run_test_equivalent_calls(  # noqa: C901
     that contain the function for each test, a `tuple` or `list` with
     the positional arguments, and a `dict` with the keyword arguments.
 
-    >>> def p(x, y=None): return x + y if y else x
-    >>> def q(x, y=None): return x + 1 if y else x
+    >>> def p(x, y=None):
+    ...     return x + y if y else x
+    >>> def q(x, y=None):
+    ...     return x + 1 if y else x
 
-    >>> run_test_equivalent_calls([p, (1,), {'y': 1}], [q, (2,), {'y': False}])
+    >>> run_test_equivalent_calls([p, (1,), {"y": 1}], [q, (2,), {"y": False}])
 
     The inputs may also be passed in as a whole as a `tuple` or `list`.
 
@@ -505,7 +510,7 @@ def run_test_equivalent_calls(  # noqa: C901
     if len(test_inputs) == 1:
         test_inputs = test_inputs[0]
 
-    if not isinstance(test_inputs, (tuple, list)):
+    if not isinstance(test_inputs, tuple | list):
         raise InvalidTestError(
             f"The argument to run_test_equivalent_calls must be a tuple "
             f"or list.  The provided inputs are: {test_inputs}"
@@ -520,7 +525,7 @@ def run_test_equivalent_calls(  # noqa: C901
     # Make sure everything is a list to allow f(*args)
 
     test_inputs = [
-        test_input if isinstance(test_input, (list, tuple)) else [test_input]
+        test_input if isinstance(test_input, list | tuple) else [test_input]
         for test_input in test_inputs
     ]
 
@@ -536,7 +541,7 @@ def run_test_equivalent_calls(  # noqa: C901
             "args": inputs[0] if func else inputs[1],
         }
 
-        if not isinstance(test_case["args"], (list, tuple)):
+        if not isinstance(test_case["args"], list | tuple):
             test_case["args"] = [test_case["args"]]
 
         if func:
@@ -571,7 +576,7 @@ def run_test_equivalent_calls(  # noqa: C901
     for test_case in test_cases:
         if not callable(test_case["function"]):
             bad_inputs_errmsg += f"\n{test_case['function']} is not callable "
-        if not isinstance(test_case["args"], (tuple, list)):
+        if not isinstance(test_case["args"], tuple | list):
             bad_inputs_errmsg += f"\n{test_case['args']} is not a list or tuple "
         if not isinstance(test_case["kwargs"], dict):
             bad_inputs_errmsg += f"\n{test_case['kwargs']} is not a dict "
@@ -685,7 +690,7 @@ def assert_can_handle_nparray(  # noqa: C901
         kwargs = {}
 
     def _prepare_input(  # noqa: C901
-        param_name, param_default, insert_some_nans, insert_all_nans, kwargs
+        param_name: str, param_default, insert_some_nans, insert_all_nans, kwargs
     ):
         """
         Parse parameter names and set up values to input for 0d, 1d, and 2d array tests.

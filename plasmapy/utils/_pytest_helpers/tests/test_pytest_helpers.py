@@ -1,9 +1,9 @@
-import astropy.units as u
 import operator
-import pytest
 import warnings
-
 from typing import Any
+
+import astropy.units as u
+import pytest
 
 from plasmapy.particles import Particle
 from plasmapy.tests._helpers import (
@@ -35,7 +35,7 @@ def issue_warning(*args, **kwargs) -> int:
     return 42
 
 
-def adams_number(*args, **kwargs):
+def adams_number(*args, **kwargs) -> int:
     return 42
 
 
@@ -176,7 +176,7 @@ def test_run_test_atol_failure() -> None:
         pytest.fail("No exception raised for atol test.")
 
 
-def func(x, raise_exception=False, issue_warning=False):
+def func(x, raise_exception: bool = False, issue_warning: bool = False):
     if raise_exception:
         raise ValueError("")
     elif issue_warning:

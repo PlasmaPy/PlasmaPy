@@ -1,10 +1,7 @@
 import astropy.units as u
 import pytest
 
-from typing import Union
-
 import plasmapy.plasma
-
 from plasmapy.particles.data.test import data_dir
 from plasmapy.plasma.exceptions import DataStandardError
 from plasmapy.plasma.sources import openpmd_hdf5
@@ -132,7 +129,7 @@ units_test_table = [
 
 @pytest.mark.parametrize(("openPMD_dims", "expected"), units_test_table)
 @pytest.mark.slow()
-def test_fetch_units(openPMD_dims, expected: Union[tuple, list]) -> None:
+def test_fetch_units(openPMD_dims, expected: tuple | list) -> None:
     units = openpmd_hdf5._fetch_units(openPMD_dims)
     assert units == expected
 

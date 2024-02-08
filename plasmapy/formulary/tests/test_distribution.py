@@ -4,18 +4,17 @@ import astropy.units as u
 import numpy as np
 import pytest
 import scipy.integrate as spint
-
 from astropy.constants import k_B, m_e
 
 from plasmapy.formulary.distribution import (
-    kappa_velocity_1D,
-    kappa_velocity_3D,
     Maxwellian_1D,
     Maxwellian_speed_1D,
     Maxwellian_speed_2D,
     Maxwellian_speed_3D,
     Maxwellian_velocity_2D,
     Maxwellian_velocity_3D,
+    kappa_velocity_1D,
+    kappa_velocity_3D,
 )
 from plasmapy.formulary.speeds import kappa_thermal_speed, thermal_speed
 
@@ -33,7 +32,7 @@ class Test_Maxwellian_1D:
         cls.stop = -cls.start
         cls.dv = 10000 * u.m / u.s
         cls.v_vect = np.arange(cls.start, cls.stop, dtype="float64") * cls.dv
-        cls.particle = "e"
+        cls.particle = "e-"
         cls.vTh = thermal_speed(cls.T_e, particle=cls.particle, method="most_probable")
         cls.distFuncTrue = 5.851627151617136e-07
 
@@ -1006,7 +1005,7 @@ class Test_kappa_velocity_1D:
         cls.stop = -cls.start
         cls.dv = 10000 * u.m / u.s
         cls.v_vect = np.arange(cls.start, cls.stop, dtype="float64") * cls.dv
-        cls.particle = "e"
+        cls.particle = "e-"
         cls.vTh = kappa_thermal_speed(cls.T_e, kappa=cls.kappa, particle=cls.particle)
         cls.distFuncTrue = 6.637935187755855e-07
 

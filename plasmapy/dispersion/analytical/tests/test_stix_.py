@@ -2,7 +2,6 @@
 import astropy.units as u
 import numpy as np
 import pytest
-
 from astropy.constants.si import c
 
 from plasmapy.dispersion.analytical.stix_ import stix
@@ -35,7 +34,7 @@ class TestStix:
         # Generate the plasma parameters needed
         wps = []
         wcs = []
-        for par, dens in zip(species, densities):
+        for par, dens in zip(species, densities, strict=False):
             wps.append(plasma_frequency(n=dens * u.m**-3, particle=par).value)
             wcs.append(gyrofrequency(B=B, particle=par, signed=True).value)
 
@@ -43,7 +42,7 @@ class TestStix:
         S = np.ones_like(w, dtype=np.float64)
         P = np.ones_like(S)
         D = np.zeros_like(S)
-        for wc, wp in zip(wcs, wps):
+        for wc, wp in zip(wcs, wps, strict=False):
             S -= (wp**2) / (w**2 - wc**2)
             P -= (wp / w) ** 2
             D += ((wp**2) / (w**2 - wc**2)) * (wc / w)

@@ -3,8 +3,8 @@ import numpy as np
 import pytest
 
 from plasmapy.formulary.collisions.dimensionless import (
-    coupling_parameter,
     Knudsen_number,
+    coupling_parameter,
 )
 from plasmapy.utils._pytest_helpers import assert_can_handle_nparray
 from plasmapy.utils.exceptions import CouplingWarning, PhysicsWarning

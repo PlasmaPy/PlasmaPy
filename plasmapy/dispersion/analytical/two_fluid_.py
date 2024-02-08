@@ -4,17 +4,16 @@ fluid dispersion relation.
 """
 __all__ = ["two_fluid"]
 
+import warnings
+from numbers import Integral, Real
+
 import astropy.units as u
 import numpy as np
-import warnings
-
 from astropy.constants.si import c
-from numbers import Integral, Real
-from typing import Optional
 
 from plasmapy.formulary.frequencies import gyrofrequency, plasma_frequency
 from plasmapy.formulary.speeds import Alfven_speed, ion_sound_speed
-from plasmapy.particles import particle_input, ParticleLike
+from plasmapy.particles import ParticleLike, particle_input
 from plasmapy.utils.decorators import validate_quantities
 from plasmapy.utils.exceptions import PhysicsWarning
 
@@ -37,8 +36,8 @@ def two_fluid(
     T_i: u.Quantity[u.K],
     gamma_e: Real = 1,
     gamma_i: Real = 3,
-    mass_numb: Optional[Integral] = None,
-    Z: Optional[Real] = None,
+    mass_numb: Integral | None = None,
+    Z: Real | None = None,
 ):
     r"""
     Using the solution provided by :cite:t:`bellan:2012`, calculate the

@@ -9,16 +9,15 @@ __all__ = [
 __aliases__ = ["oc_", "wc_", "wlh_", "wp_", "wuh_"]
 __lite_funcs__ = ["plasma_frequency_lite"]
 
-import astropy.units as u
 import numbers
-import numpy as np
 
+import astropy.units as u
+import numpy as np
 from astropy.constants.si import e, eps0
 from numba import njit
-from typing import Optional
 
 from plasmapy import particles
-from plasmapy.particles import particle_input, ParticleLike
+from plasmapy.particles import ParticleLike, particle_input
 from plasmapy.particles.exceptions import InvalidParticleError
 from plasmapy.utils.decorators import (
     angular_freq_to_hz,
@@ -45,8 +44,8 @@ def gyrofrequency(
     B: u.Quantity[u.T],
     particle: ParticleLike,
     signed: bool = False,
-    Z: Optional[numbers.Real] = None,
-    mass_numb: Optional[numbers.Integral] = None,
+    Z: numbers.Real | None = None,
+    mass_numb: numbers.Integral | None = None,
 ) -> u.Quantity[u.rad / u.s]:
     r"""
     Calculate the particle gyrofrequency in units of radians per second.
@@ -59,7 +58,7 @@ def gyrofrequency(
         The magnetic field magnitude in units convertible to tesla.
 
     particle : |particle-like|
-        Representation of the particle species (e.g., ``'p'`` for
+        Representation of the particle species (e.g., ``'p+'`` for
         protons, ``'D+'`` for deuterium, or ``'He-4 1+'`` for singly
         ionized helium-4).
 
@@ -118,26 +117,26 @@ def gyrofrequency(
     Examples
     --------
     >>> import astropy.units as u
-    >>> gyrofrequency(0.1 * u.T, 'e-')
+    >>> gyrofrequency(0.1 * u.T, "e-")
     <Quantity 1.7588...e+10 rad / s>
-    >>> gyrofrequency(0.1 * u.T, 'e-', to_hz=True)
+    >>> gyrofrequency(0.1 * u.T, "e-", to_hz=True)
     <Quantity 2.79924...e+09 Hz>
-    >>> gyrofrequency(0.1 * u.T, 'e-', signed=True)
+    >>> gyrofrequency(0.1 * u.T, "e-", signed=True)
     <Quantity -1.75882...e+10 rad / s>
-    >>> gyrofrequency(0.01 * u.T, 'p+')
+    >>> gyrofrequency(0.01 * u.T, "p+")
     <Quantity 957883.32... rad / s>
-    >>> gyrofrequency(0.01 * u.T, 'p+', signed=True)
+    >>> gyrofrequency(0.01 * u.T, "p+", signed=True)
     <Quantity 957883.32... rad / s>
-    >>> gyrofrequency(0.01 * u.T, particle='T+')
+    >>> gyrofrequency(0.01 * u.T, particle="T+")
     <Quantity 319964.5... rad / s>
-    >>> gyrofrequency(0.01 * u.T, particle='T+', to_hz=True)
+    >>> gyrofrequency(0.01 * u.T, particle="T+", to_hz=True)
     <Quantity 50923.9... Hz>
     >>> gyrofrequency(250 * u.G, particle="Fe", mass_numb=56, Z=13)
     <Quantity 560682.34875287 rad / s>
-    >>> omega_ce = gyrofrequency(0.1 * u.T, 'e-')
+    >>> omega_ce = gyrofrequency(0.1 * u.T, "e-")
     >>> print(omega_ce)
     1758820... rad / s
-    >>> f_ce = omega_ce.to(u.Hz, equivalencies=[(u.cy/u.s, u.Hz)])
+    >>> f_ce = omega_ce.to(u.Hz, equivalencies=[(u.cy / u.s, u.Hz)])
     >>> print(f_ce)
     279924... Hz
     """
@@ -212,7 +211,7 @@ def plasma_frequency_lite(
     Examples
     --------
     >>> from plasmapy.particles import Particle
-    >>> mass = Particle("p").mass.value
+    >>> mass = Particle("p+").mass.value
     >>> plasma_frequency_lite(n=1e19, mass=mass, Z=1)
     416329...
     >>> plasma_frequency_lite(n=1e19, mass=mass, Z=1, to_hz=True)
@@ -237,8 +236,8 @@ def plasma_frequency(
     n: u.Quantity[u.m**-3],
     particle: ParticleLike,
     *,
-    mass_numb: Optional[numbers.Integral] = None,
-    Z: Optional[numbers.Real] = None,
+    mass_numb: numbers.Integral | None = None,
+    Z: numbers.Real | None = None,
 ) -> u.Quantity[u.rad / u.s]:
     r"""Calculate the particle plasma frequency.
 
@@ -252,7 +251,7 @@ def plasma_frequency(
         Particle number density in units convertible to m\ :sup:`-3`.
 
     particle : |particle-like|
-        Representation of the particle species (e.g., ``"p"`` for
+        Representation of the particle species (e.g., ``"p+"`` for
         protons, ``"D+"`` for deuterium, or ``"He-4 1+"`` for singly
         ionized helium-4). If no charge state information is provided,
         then the particles are assumed to be singly charged.
@@ -306,15 +305,15 @@ def plasma_frequency(
     Examples
     --------
     >>> import astropy.units as u
-    >>> plasma_frequency(1e19 * u.m**-3, particle='p')
+    >>> plasma_frequency(1e19 * u.m**-3, particle="p+")
     <Quantity 4.16329...e+09 rad / s>
-    >>> plasma_frequency(1e19 * u.m**-3, particle='p', to_hz=True)
+    >>> plasma_frequency(1e19 * u.m**-3, particle="p+", to_hz=True)
     <Quantity 6.62608...e+08 Hz>
-    >>> plasma_frequency(1e19 * u.m**-3, particle='D+')
+    >>> plasma_frequency(1e19 * u.m**-3, particle="D+")
     <Quantity 2.94462...e+09 rad / s>
-    >>> plasma_frequency(1e19 * u.m**-3, 'e-')
+    >>> plasma_frequency(1e19 * u.m**-3, "e-")
     <Quantity 1.78398...e+11 rad / s>
-    >>> plasma_frequency(1e19 * u.m**-3, 'e-', to_hz=True)
+    >>> plasma_frequency(1e19 * u.m**-3, "e-", to_hz=True)
     <Quantity 2.83930...e+10 Hz>
 
     For user convenience
@@ -368,7 +367,7 @@ def lower_hybrid_frequency(
         Ion number density.
 
     ion : `~plasmapy.particles.particle_class.Particle`
-        Representation of the ion species (e.g., ``'p'`` for protons, ``'D+'``
+        Representation of the ion species (e.g., ``'p+'`` for protons, ``'D+'``
         for deuterium, or ``'He-4 +1'`` for singly ionized helium-4). If no
         charge state information is provided, then the ions are assumed to
         be singly charged.
@@ -420,9 +419,9 @@ def lower_hybrid_frequency(
     Examples
     --------
     >>> import astropy.units as u
-    >>> lower_hybrid_frequency(0.2 * u.T, n_i = 5e19 * u.m**-3, ion='D+')
+    >>> lower_hybrid_frequency(0.2 * u.T, n_i=5e19 * u.m**-3, ion="D+")
     <Quantity 5.78372...e+08 rad / s>
-    >>> lower_hybrid_frequency(0.2 * u.T, n_i = 5e19 * u.m**-3, ion='D+', to_hz = True)
+    >>> lower_hybrid_frequency(0.2 * u.T, n_i=5e19 * u.m**-3, ion="D+", to_hz=True)
     <Quantity 92050879.3... Hz>
 
     """
@@ -514,7 +513,7 @@ def upper_hybrid_frequency(
     >>> import astropy.units as u
     >>> upper_hybrid_frequency(0.2 * u.T, n_e=5e19 * u.m**-3)
     <Quantity 4.00459...e+11 rad / s>
-    >>> upper_hybrid_frequency(0.2 * u.T, n_e=5e19 * u.m**-3, to_hz = True)
+    >>> upper_hybrid_frequency(0.2 * u.T, n_e=5e19 * u.m**-3, to_hz=True)
     <Quantity 6.37350...e+10 Hz>
 
     """
@@ -540,8 +539,8 @@ def Buchsbaum_frequency(
     n2: u.Quantity[u.m**-3],
     ion1: ParticleLike,
     ion2: ParticleLike,
-    Z1: Optional[float] = None,
-    Z2: Optional[float] = None,
+    Z1: float | None = None,
+    Z2: float | None = None,
 ) -> u.Quantity[u.rad / u.s]:
     r"""
     Return the Buchsbaum frequency for a two-ion-species plasma.
@@ -558,7 +557,7 @@ def Buchsbaum_frequency(
         Particle number density of ion species #2 in units convertible to m\ :sup:`-3`.
 
     ion1 : `~plasmapy.particles.particle_class.Particle`
-        Representation of ion species #1 (e.g., 'p' for protons, 'D+'
+        Representation of ion species #1 (e.g., 'p+' for protons, 'D+'
         for deuterium, or 'He-4 +1' for singly ionized helium-4). If no
         charge state information is provided, then species #1 is assumed
         to be singly charged.
@@ -613,14 +612,16 @@ def Buchsbaum_frequency(
     Examples
     --------
     >>> import astropy.units as u
-    >>> fbb = Buchsbaum_frequency(0.1*u.T, 1e18*u.m**-3, 1e18*u.m**-3, "proton", "He+", to_hz=True)
+    >>> fbb = Buchsbaum_frequency(
+    ...     0.1 * u.T, 1e18 * u.m**-3, 1e18 * u.m**-3, "proton", "He+", to_hz=True
+    ... )
     >>> fbb
     <Quantity 764831.28372462 Hz>
-    >>> fc_helium = gyrofrequency(0.1*u.T, "He+", to_hz=True)
-    >>> fc_proton = gyrofrequency(0.1*u.T, "proton", to_hz=True)
-    >>> fbb/fc_helium
+    >>> fc_helium = gyrofrequency(0.1 * u.T, "He+", to_hz=True)
+    >>> fc_proton = gyrofrequency(0.1 * u.T, "proton", to_hz=True)
+    >>> fbb / fc_helium
     <Quantity 1.99327444>
-    >>> fbb/fc_proton
+    >>> fbb / fc_proton
     <Quantity 0.50168706>
     """
     omega_c1_squared = gyrofrequency(B, ion1, signed=False, Z=Z1) ** 2

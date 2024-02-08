@@ -19,16 +19,15 @@ __all__ = [
 ]
 __aliases__ = ["betaH_", "nD_", "Re_", "Rm_"]
 
-import astropy.units as u
 import numbers
-import numpy as np
 
+import astropy.units as u
+import numpy as np
 from astropy.constants.si import mu0
-from typing import Optional
 
 from plasmapy.formulary import frequencies, lengths, misc, speeds
 from plasmapy.formulary.quantum import quantum_theta
-from plasmapy.particles import Particle, particle_input, ParticleLike
+from plasmapy.particles import Particle, ParticleLike, particle_input
 from plasmapy.utils.decorators import validate_quantities
 
 __all__ += __aliases__
@@ -96,7 +95,7 @@ def Debye_number(
     --------
     >>> import astropy.units as u
     >>> from astropy.constants.si import m_p, m_e
-    >>> Debye_number(5e6*u.K, 5e9*u.cm**-3)
+    >>> Debye_number(5e6 * u.K, 5e9 * u.cm**-3)
     <Quantity 2.17658...e+08>
 
     """
@@ -157,7 +156,7 @@ def Hall_parameter(
 
     particle : `~plasmapy.particles.particle_class.Particle`
         The particle species for which the Hall parameter is calculated
-        for.  Representation of the particle species (e.g., ``'p'`` for
+        for.  Representation of the particle species (e.g., ``'p+'`` for
         protons, ``'D+'`` for deuterium, or ``'He-4 +1'`` for singly
         ionized helium-4).  If no charge state information is provided,
         then the particles are assumed to be singly charged.
@@ -210,10 +209,10 @@ def Hall_parameter(
     >>> import pytest
     >>> from plasmapy.utils.exceptions import RelativityWarning
 
-    >>> Hall_parameter(1e10 * u.m**-3, 2.8e2 * u.eV, 2.3 * u.T, 'He-4 +1', 'e-')
+    >>> Hall_parameter(1e10 * u.m**-3, 2.8e2 * u.eV, 2.3 * u.T, "He-4 +1", "e-")
     <Quantity 2.500...e+15>
     >>> with pytest.warns(RelativityWarning):
-    ...     Hall_parameter(1e10 * u.m**-3, 5.8e3 * u.eV, 2.3 * u.T, 'He-4 +1', 'e-')
+    ...     Hall_parameter(1e10 * u.m**-3, 5.8e3 * u.eV, 2.3 * u.T, "He-4 +1", "e-")
     <Quantity 2.11158...e+17>
     """
     from plasmapy.formulary.collisions import (
@@ -268,9 +267,9 @@ def beta(
     Examples
     --------
     >>> import astropy.units as u
-    >>> beta(1*u.eV, 1e20*u.m**-3, 1*u.T)
+    >>> beta(1 * u.eV, 1e20 * u.m**-3, 1 * u.T)
     <Quantity 4.0267...e-05>
-    >>> beta(8.8e3*u.eV, 1e20*u.m**-3, 5.3*u.T)
+    >>> beta(8.8e3 * u.eV, 1e20 * u.m**-3, 5.3 * u.T)
     <Quantity 0.01261...>
 
     Returns
@@ -344,13 +343,13 @@ def Reynolds_number(
     Examples
     --------
     >>> import astropy.units as u
-    >>> rho = 1000 * u.kg / u.m ** 3
+    >>> rho = 1000 * u.kg / u.m**3
     >>> U = 10 * u.m / u.s
     >>> L = 1 * u.m
     >>> mu = 8.9e-4 * u.kg / (u.m * u.s)
     >>> Reynolds_number(rho, U, L, mu)
     <Quantity 11235955.05617978>
-    >>> rho = 1490 * u.kg / u.m ** 3
+    >>> rho = 1490 * u.kg / u.m**3
     >>> U = 0.1 * u.m / u.s
     >>> L = 0.05 * u.m
     >>> mu = 10 * u.kg / (u.m * u.s)
@@ -448,8 +447,8 @@ def Lundquist_number(
     B: u.Quantity[u.T],
     density: u.Quantity[u.m**-3, u.kg / u.m**3],
     sigma: u.Quantity[u.S / u.m],
-    ion: Optional[ParticleLike] = None,
-    z_mean: Optional[numbers.Real] = None,
+    ion: ParticleLike | None = None,
+    z_mean: numbers.Real | None = None,
 ) -> u.Quantity[u.dimensionless_unscaled]:
     r"""
     Compute the Lundquist number.
@@ -484,7 +483,7 @@ def Lundquist_number(
         The conductivity of the plasma.
 
     ion : `~plasmapy.particles.particle_class.Particle`, optional
-        Representation of the ion species (e.g., ``'p'`` for protons, ``'D+'`` for
+        Representation of the ion species (e.g., ``'p+'`` for protons, ``'D+'`` for
         deuterium, ``'He-4 +1'`` for singly ionized helium-4, etc.). If no charge
         state information is provided, then the ions are assumed to be singly
         ionized. If the density is an ion number density, then this parameter
@@ -558,11 +557,11 @@ def Lundquist_number(
     >>> L = 10**8 * u.m
     >>> B = 10**2 * u.G
     >>> n = 10**19 * u.m**-3
-    >>> rho = n*(m_p + m_e)
+    >>> rho = n * (m_p + m_e)
     >>> sigma = 10**-7 * u.S / u.m
     >>> Lundquist_number(L, B, rho, sigma)
     <Quantity 0.866538...>
-    >>> Lundquist_number(L, B, n, sigma, ion="p")
+    >>> Lundquist_number(L, B, n, sigma, ion="p+")
     <Quantity 0.866538...>
     >>> Lundquist_number(L, B, n, sigma, ion="He +2")
     <Quantity 0.434819...>

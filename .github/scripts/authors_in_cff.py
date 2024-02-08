@@ -2,10 +2,9 @@
 
 import os
 import pathlib
-import requests
 import sys
 
-from typing import Optional
+import requests
 
 GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
 PR_NUMBER = os.getenv("PR_NUMBER")
@@ -27,7 +26,7 @@ def get_pr_authors() -> set[str]:
     return authors - set(EXCLUDED_USERS)
 
 
-def check_citation_file(authors: set[str]) -> tuple[bool, Optional[str]]:
+def check_citation_file(authors: set[str]) -> tuple[bool, str | None]:
     """Verify that all authors of a PR are included in :file:`CITATION.cff`."""
     with pathlib.Path("CITATION.cff").open() as file:
         contents = file.read()
