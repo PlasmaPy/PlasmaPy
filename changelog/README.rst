@@ -52,8 +52,11 @@ pull request to PlasmaPy's ``main`` branch.
    * ``bugfix``: For changes that fix bugs or problems with the code.
    * ``doc``: For changes to the documentation.
    * ``feature``: For new user-facing features and any new behavior.
+   * ``internal``: For refactoring of the internal mechanics of the code
+     and tests in ways that do not change the application user interface.
    * ``removal``: For feature deprecation and/or removal.
-   * ``trivial``: For changes that have no user-facing effects.
+   * ``trivial``: For minor changes that do not change the application
+     programming interface.
 
    Pull request `#1198 <https://github.com/PlasmaPy/PlasmaPy/pull/1198>`__
    includes an update to the documentation, so the file should be named
@@ -98,9 +101,9 @@ Changelog guidelines
   understandable to someone with limited familiarity of the package.
 
 * Changelog entries are not required for changes that are sufficiently
-  minor, such as typo fixes. When this is the case, a package maintainer
-  will add the :guilabel`no changelog entry needed` label to the pull
-  request.
+  minor, such as typo fixes or fixed hyperlinks. When this is the case,
+  a package maintainer will add the :guilabel`no changelog entry needed`
+  label to the pull request.
 
 * Use the past tense to describe the change, and the present tense to
   describe how the functionality currently works.
