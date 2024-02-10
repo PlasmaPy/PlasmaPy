@@ -59,6 +59,7 @@ This issue contains the procedure for releasing a new version of PlasmaPy.
    - [ ] Update the bibliography, and publish the release to Zenodo.
  - [ ] Create and merge a pull request from the release branch back into `main`. <!-- Automate pull request creation? Change it into a commit? -->
  - [ ] Fix any problems with the automated pull request to [conda-forge feedstock], if necessary. This step should be automatic, but may take a while.
+ - [ ] Update requirements in the [conda-forge feedstock] in `recipe/meta.yaml`, in particular when there is a new version of Python.
 
 ### Update documentation
 
