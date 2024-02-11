@@ -252,6 +252,10 @@ class AbstractSaveRoutine(ABC):
         if self.save_now or force_save:
             self.save()
 
+    def post_run_hook(self) -> None:
+        """Function called after the simulation has finished running."""
+        return
+
 
 class DoNotSaveSaveRoutine(AbstractSaveRoutine):
     """The default save routine for the |ParticleTracker| class.
@@ -742,17 +746,16 @@ class ParticleTracker:
             if self.save_routine is not None:
                 self.save_routine.post_push_hook()
 
+        # Simulation has finished running
+        self._has_run = True
+
         if self.save_routine is not None:
             self.save_routine.post_push_hook(force_save=True)
+            self.save_routine.post_run_hook()
 
         pbar.close()
 
-        # Log a summary of the run
-
         self._log("Run completed")
-
-        # Simulation has not run, because creating new particles changes the simulation
-        self._has_run = True
 
     def _stop_particles(self, particles_to_stop_mask) -> None:
         """Stop tracking the particles specified by the stop mask.

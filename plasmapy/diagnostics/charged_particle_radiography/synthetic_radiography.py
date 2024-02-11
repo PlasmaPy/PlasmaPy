@@ -9,9 +9,11 @@ __all__ = ["Tracker", "synthetic_radiograph"]
 
 import warnings
 from collections.abc import Iterable
+from pathlib import Path
 
 import astropy.constants as const
 import astropy.units as u
+import h5py
 import numpy as np
 
 from plasmapy import particles
@@ -19,6 +21,7 @@ from plasmapy.formulary.mathematics import rot_a_to_b
 from plasmapy.particles import Particle
 from plasmapy.plasma.grids import AbstractGrid
 from plasmapy.simulation.particle_tracker import (
+    AbstractSaveRoutine,
     AbstractTerminationCondition,
     ParticleTracker,
 )
@@ -125,6 +128,33 @@ class _SyntheticRadiographyTerminationCondition(AbstractTerminationCondition):
         return self._particle_tracker.nparticles_tracked
 
 
+class _SyntheticRadiographySaveRoutine(AbstractSaveRoutine):
+    ARRAY_KEYS = ["x", "y", "v", "x0", "y0", "v0"]
+
+    def __init__(self, output_file: Path):
+        super().__init__()
+
+        self.output_file = output_file
+
+    @property
+    def require_synchronized_dt(self) -> bool:
+        return False
+
+    @property
+    def save_now(self) -> bool:
+        return False
+
+    def post_run_hook(self) -> None:
+        result_dictionary = self._particle_tracker.results_dict
+
+        with h5py.File(self.output_file, "w") as output_file:
+            for attribute, value in result_dictionary.items():
+                if attribute in self.ARRAY_KEYS:
+                    output_file[attribute] = value
+                else:
+                    output_file.attrs.create(attribute, value)
+
+
 class Tracker(ParticleTracker):
     r"""
     Represents a charged particle radiography experiment with simulated or
@@ -186,15 +216,23 @@ class Tracker(ParticleTracker):
         dt_range=None,
         field_weighting="volume averaged",
         detector_hdir=None,
+        output_file: Path | None = None,
         verbose: bool = True,
     ) -> None:
         # Instantiate a ParticleTracker object
         # The synthetic radiography class handles logging, so we can disable logging for the particle tracker
         # The particle tracker class ensures that the provided grid argument has the proper type and
         # that the necessary grid quantities are created if they are not already specified
+        save_routine = (
+            _SyntheticRadiographySaveRoutine(output_file)
+            if output_file is not None
+            else None
+        )
+
         super().__init__(
             grids,
             _SyntheticRadiographyTerminationCondition(),
+            save_routine,
             dt=dt,
             dt_range=dt_range,
             field_weighting=field_weighting,
