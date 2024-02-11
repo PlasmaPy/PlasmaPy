@@ -207,7 +207,7 @@ def gyroradius(  # noqa: C901
 
     .. math::
 
-        r_{Ls} = \frac{V_{⟂,s}{ω_{c,s}}
+        r_{Ls} = \frac{V_{⟂,s}}{ω_{c,s}}
 
     where :math:`ω_{c,s}` is the particle gyrofrequency. To turn off
     relativistic effects, set the ``relativistic`` keyword to `False`.
