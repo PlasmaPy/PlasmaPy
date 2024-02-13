@@ -39,53 +39,47 @@ V_nanarr = np.array([25, np.nan]) * u.m / u.s
 mu = m_p.to(u.u).value
 
 
-def test_Debye_length() -> None:
-    r"""Test the Debye_length function in lengths.py."""
-
-    assert Debye_length(T_e, n_e).unit.is_equivalent(u.m)
-
-    assert np.isclose(Debye_length(1 * u.eV, 1 * u.cm**-3).value, 7.43, atol=0.005)
-
-    with pytest.warns(u.UnitsWarning):
-        Debye_length(5, 5 * u.m**-3)
-
-    with pytest.raises(u.UnitTypeError):
-        Debye_length(56 * u.kg, 5 * u.m**-3)
-
-    with pytest.raises(ValueError):
-        Debye_length(5 * u.eV, -5 * u.m**-3)
-
-    with pytest.raises(ValueError):
-        Debye_length(-45 * u.K, 5 * u.m**-3)
-
-    Tarr2 = np.array([1, 2]) * u.K
-    narr3 = np.array([1, 2, 3]) * u.m**-3
-    with pytest.raises(ValueError):
-        Debye_length(Tarr2, narr3)
-
-    with pytest.warns(u.UnitsWarning):
-        assert Debye_length(2.0, 2.0) == Debye_length(2.0 * u.K, 2.0 * u.m**-3)
-
-    with pytest.warns(u.UnitsWarning):
-        assert Debye_length(2.0 * u.K, 2.0) == Debye_length(2.0, 2.0 * u.m**-3)
-
-
-def test_that_Debye_length_can_handle_nparray(Debye_length):
-    assert_can_handle_nparray(Debye_length)
-
-
 @pytest.mark.parametrize(
-    "T_e, n_e, expected",
+    ("T_e", "n_e", "expected"),
     [
         (1.3e6 * u.K, 5.2e16 * u.m**-3, 0.0003450449033 * u.m),
         (0 * u.K, 1 * u.m**-3, 0 * u.m),
         (1 * u.K, 0 * u.m**-3, np.inf * u.m),
+        ([1.2, 5.6] * u.MK, [5e19, 6e19] * u.m**-3, [1.069083e-05, 2.108259e-05] * u.m),
+        ([1.2e6, 5.6e6], [5e19, 6e19], [1.069083e-05, 2.108259e-05] * u.m),
     ],
 )
+@pytest.mark.filterwarnings("ignore::astropy.units.UnitsWarning")
 def test_Debye_length(T_e, n_e, expected):
     result = Debye_length(T_e=T_e, n_e=n_e)
-    assert_quantity_allclose(result, expected, rtol=1e-7, equal_nan=True, verbose=True)
-    assert Debye_length.unit == u.m
+    assert_quantity_allclose(result, expected, rtol=1e-6, equal_nan=True, verbose=True)
+    assert result.unit == u.m
+
+
+@pytest.mark.parametrize(
+    ("T_e", "n_e", "expected"),
+    [
+        (-5e4 * u.K, 5 * u.m**-3, ValueError),
+        (5e4 * u.K, -5e13 * u.m**-3, ValueError),
+        ([5, 6] * u.K, [7, 8, 9] * u.m**-3, ValueError),
+        (1 * u.kg, 5 * u.m**-3, u.UnitTypeError),
+    ],
+)
+def test_Debye_length_errors(T_e, n_e, expected):
+    with pytest.raises(expected):
+        Debye_length(T_e=T_e, n_e=n_e)
+
+
+@pytest.mark.parametrize(
+    ("T_e", "n_e", "expected_warning"),
+    [
+        (5, 5 * u.m**-3, u.UnitsWarning),
+        (5 * u.K, 5, u.UnitsWarning),
+    ],
+)
+def test_Deybe_length_warnings(T_e, n_e, expected_warning):
+    with pytest.warns(expected_warning):
+        Debye_length(T_e=T_e, n_e=n_e)
 
 
 class TestGyroradius:
