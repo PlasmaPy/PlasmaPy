@@ -691,9 +691,8 @@ def particle_input(
     accepted by the callable and only one parameter is appropriately
     annotated.
 
-    If the annotation is created using `typing.Optional` (e.g.,
-    :py:`Optional[ParticleLike]`), then `None` can be provided to
-    ``callable_``.
+    To indicate that `None` can be passed to a parameter, annotate it
+    with :py:`ParticleLike | None` or :py:`ParticleListLike | None`.
 
     If the particle representation does not satisfy any categorization
     criteria that have been provided, then |particle_input| will raise
@@ -746,13 +745,13 @@ def particle_input(
     callable_ : callable, optional
         The function or method to be decorated.
 
-    require : `str`, `set`, `list`, or `tuple`, |keyword-only|, optional
+    require : `str` | `set` | `list` | `tuple`, |keyword-only|, optional
         Categories that each particle are required to be in.
 
-    any_of : `str`, `set`, `list`, or `tuple`, |keyword-only|, optional
+    any_of : `str` | `set` | `list` | `tuple`, |keyword-only|, optional
         Categories of which each particle must belong to at least one.
 
-    exclude : `str`, `set`, `list`, or `tuple`, |keyword-only|, optional
+    exclude : `str` | `set` | `list` | `tuple`, |keyword-only|, optional
         Categories that each particle cannot be in.
 
     allow_custom_particles : bool, |keyword-only|, default: `True`
@@ -847,12 +846,12 @@ def particle_input(
     >>> get_particle(1e-26 * u.kg)
     CustomParticle(mass=1e-26 kg, charge=nan C)
 
-    To allow `None` to pass, use :py:`Optional[ParticleLike]` as the
+    To allow `None` to pass, use :py:`ParticleLike | None` as the
     annotation.
 
     >>> from typing import Optional
     >>> @particle_input
-    ... def get_particle_or_none(particle: Optional[ParticleLike]):
+    ... def get_particle_or_none(particle: ParticleLike | None):
     ...     return particle
     >>> get_particle_or_none("p+")
     Particle("p+")
