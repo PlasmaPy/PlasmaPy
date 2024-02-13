@@ -1,0 +1,1 @@
+Refactored and parametrized the tests for `~plasmapy.formulary.lengths.Debye_length`.
