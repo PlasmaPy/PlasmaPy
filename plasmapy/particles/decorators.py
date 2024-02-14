@@ -677,8 +677,7 @@ def particle_input(
     allow_custom_particles: bool = True,
     allow_particle_lists: bool = True,
 ) -> Callable[..., Any]:
-    r"""
-    Convert |particle-like| |arguments| into particle objects.
+    r"""Convert |particle-like| |arguments| into particle objects.
 
     When a callable is |decorated| with |particle_input|,
     |particle-like| arguments that are appropriately |annotated| (i.e.,
@@ -687,9 +686,9 @@ def particle_input(
 
     The parameters ``Z`` and ``mass_numb`` may be used to specify the
     |charge number| of an ion and mass number of an isotope,
-    respectively, as long as ``Z`` and/or ``mass_numb`` are |parameters|
-    accepted by the callable and only one parameter is appropriately
-    annotated.
+    respectively, as long as ``Z`` and/or ``mass_numb`` are
+    |parameters| of the callable and only one parameter is
+    annotated with |ParticleLike| or |ParticleListLike|.
 
     To indicate that `None` can be passed to a parameter, annotate it
     with :py:`ParticleLike | None` or :py:`ParticleListLike | None`.
@@ -700,7 +699,7 @@ def particle_input(
 
     If the annotated parameter is named ``element``, ``isotope``, or
     ``ion``, then |particle_input| will raise an exception if the
-    argument provided to the callable is not consistent with the
+    argument provided to the callable is not consistent with 
     parameter.
 
     .. note::
@@ -822,6 +821,14 @@ def particle_input(
     ~plasmapy.particles.particle_collections.ParticleList
     ~plasmapy.utils.decorators.validators.validate_quantities
 
+    Notes
+    -----
+    There are some known limitations to |particle_input|.  
+
+    - Particle categorization criteria are not yet applied to
+      arguments that get converted into a |ParticleList| (see :issue:``).
+    - 
+
     Examples
     --------
     The |particle_input| decorator takes appropriately annotated
@@ -921,6 +928,7 @@ def particle_input(
     ...     return isotope.mass_number
     >>> mass_number("D")
     2
+
     """
 
     # The following pattern comes from the docs for wrapt, and requires
