@@ -41,7 +41,7 @@ from plasmapy.utils.datatype_factory_base import (
 
 
 class BaseWidget:
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         pass
 
 
@@ -96,7 +96,7 @@ class MissingClassMethodDifferentValidationWidget(BaseWidget):
 
 
 class TestBasicRegistrationFactory:
-    def test_default_factory(self):
+    def test_default_factory(self) -> None:
         DefaultFactory = BasicRegistrationFactory()
 
         DefaultFactory.register(DefaultWidget, is_default=True)
@@ -123,13 +123,13 @@ class TestBasicRegistrationFactory:
         DefaultFactory.unregister(StandardWidget)
         assert type(DefaultFactory(style="standard")) is not StandardWidget
 
-    def test_validation_fun_not_callable(self):
+    def test_validation_fun_not_callable(self) -> None:
         TestFactory = BasicRegistrationFactory()
 
         with pytest.raises(AttributeError):
             TestFactory.register(StandardWidget, validation_function="not_callable")
 
-    def test_no_default_factory(self):
+    def test_no_default_factory(self) -> None:
         NoDefaultFactory = BasicRegistrationFactory()
 
         NoDefaultFactory.register(StandardWidget)
@@ -146,14 +146,14 @@ class TestBasicRegistrationFactory:
         assert type(NoDefaultFactory(style="standard")) is StandardWidget
         assert type(NoDefaultFactory(style="fancy", feature="present")) is FancyWidget
 
-    def test_with_external_registry(self):
+    def test_with_external_registry(self) -> None:
         external_registry = {}
 
         FactoryWithExternalRegistry = BasicRegistrationFactory(
             registry=external_registry
         )
 
-        assert len(external_registry) == 0
+        assert not external_registry
 
         FactoryWithExternalRegistry.register(StandardWidget)
         assert type(FactoryWithExternalRegistry(style="standard")) is StandardWidget
@@ -161,7 +161,7 @@ class TestBasicRegistrationFactory:
         # Ensure the 'external_registry' is being populated see #1988
         assert len(external_registry) == 1
 
-    def test_multiple_match_factory(self):
+    def test_multiple_match_factory(self) -> None:
         MultipleMatchFactory = BasicRegistrationFactory()
 
         MultipleMatchFactory.register(StandardWidget)
@@ -170,7 +170,7 @@ class TestBasicRegistrationFactory:
         with pytest.raises(MultipleMatchError):
             MultipleMatchFactory(style="standard")
 
-    def test_extra_validation_factory(self):
+    def test_extra_validation_factory(self) -> None:
         ExtraValidationFactory = BasicRegistrationFactory(
             additional_validation_functions=["different_validation_function"]
         )

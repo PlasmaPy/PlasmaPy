@@ -2,22 +2,24 @@
 
 from __future__ import annotations
 
-__all__ = []
+__all__: list[str] = []
+
+from numbers import Number
+from typing import TYPE_CHECKING
 
 import astropy.units as u
 
-from collections.abc import Iterable
-from numbers import Number
-from typing import Optional, Union
+if TYPE_CHECKING:
+    from collections.abc import Iterable
 
 
 def _get_physical_type_dict(
     iterable: Iterable,
     *,
-    only_quantities: Optional[bool] = False,
-    numbers_become_quantities: Optional[bool] = False,
-    strict: Optional[bool] = False,
-    allowed_physical_types: Optional[set[Union[str, u.PhysicalType]]] = None,
+    only_quantities: bool | None = False,
+    numbers_become_quantities: bool | None = False,
+    strict: bool | None = False,
+    allowed_physical_types: set[str | u.PhysicalType] | None = None,
 ) -> dict[u.PhysicalType, u.Quantity]:
     """
     Return a `dict` that contains `~astropy.units.PhysicalType` objects
@@ -71,7 +73,7 @@ def _get_physical_type_dict(
 
     for obj in iterable:
         if isinstance(obj, Number) and numbers_become_quantities:
-            obj = u.Quantity(obj, u.dimensionless_unscaled)
+            obj = u.Quantity(obj, u.dimensionless_unscaled)  # noqa: PLW2901
 
         if only_quantities and not isinstance(obj, u.Quantity):
             if strict:

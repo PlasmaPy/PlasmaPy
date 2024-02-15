@@ -3,22 +3,22 @@ Tests for functionality contained in
 `plasmapy.analysis.swept_langmuir.floating_potential`.
 """
 
+from unittest import mock
+
 import numpy as np
 import pytest
-
-from unittest import mock
 
 from plasmapy.analysis import fit_functions as ffuncs
 from plasmapy.analysis import swept_langmuir as sla
 from plasmapy.analysis.swept_langmuir.floating_potential import (
+    VFExtras,
     find_floating_potential,
     find_vf_,
-    VFExtras,
 )
 from plasmapy.utils.exceptions import PlasmaPyWarning
 
 
-def test_floating_potential_namedtuple():
+def test_floating_potential_namedtuple() -> None:
     """
     Test structure of the namedtuple used to return computed floating potential
     data.
@@ -55,11 +55,11 @@ class TestFindFloatingPotential:
     _linear_p_sine_current = _linear_current + 1.2 * np.sin(1.2 * _voltage)
     _exp_current = -1.3 + 2.2 * np.exp(_voltage)
 
-    def test_alias(self):
+    def test_alias(self) -> None:
         """Test the associated alias(es) is(are) defined correctly."""
         assert find_vf_ is find_floating_potential
 
-    def test_call_of_check_sweep(self):
+    def test_call_of_check_sweep(self) -> None:
         """
         Test `find_floating_potential` appropriately calls
         `plasmapy.analysis.swept_langmuir.helpers.check_sweep` so we can relay on
@@ -85,7 +85,7 @@ class TestFindFloatingPotential:
             assert mock_cs.call_args[1] == {"strip_units": True}
 
     @pytest.mark.parametrize(
-        "kwargs, _error",
+        ("kwargs", "_error"),
         [
             # errors on kwarg fit_type
             (
@@ -163,13 +163,13 @@ class TestFindFloatingPotential:
             ),
         ],
     )
-    def test_raises(self, kwargs, _error):
+    def test_raises(self, kwargs, _error) -> None:
         """Test scenarios that raise `Exception`s."""
         with pytest.raises(_error):
             find_floating_potential(**kwargs)
 
     @pytest.mark.parametrize(
-        "kwargs, expected, _warning",
+        ("kwargs", "expected", "_warning"),
         [
             # too many crossing islands
             (
@@ -208,7 +208,7 @@ class TestFindFloatingPotential:
             ),
         ],
     )
-    def test_warnings(self, kwargs, expected, _warning):
+    def test_warnings(self, kwargs, expected, _warning) -> None:
         """Test scenarios that issue warnings."""
         with pytest.warns(_warning):
             vf, extras = find_floating_potential(**kwargs)
@@ -229,7 +229,7 @@ class TestFindFloatingPotential:
                 assert rtn_val == val
 
     @pytest.mark.parametrize(
-        "min_points, fit_type, islands, indices",
+        ("min_points", "fit_type", "islands", "indices"),
         [
             (np.inf, "linear", [slice(29, 31)], slice(0, 70)),
             (1, "linear", [slice(29, 31)], slice(29, 31)),
@@ -244,7 +244,7 @@ class TestFindFloatingPotential:
             (None, "exponential", [slice(26, 28)], slice(20, 34)),
         ],
     )
-    def test_kwarg_min_points(self, min_points, fit_type, islands, indices):
+    def test_kwarg_min_points(self, min_points, fit_type, islands, indices) -> None:
         """
         Test functionality of keyword `min_points` and how it affects the
         size of the crossing-point island.
@@ -263,7 +263,7 @@ class TestFindFloatingPotential:
         assert extras.fitted_indices == indices
 
     @pytest.mark.parametrize(
-        "kwargs, expected",
+        ("kwargs", "expected"),
         [
             # simple linear
             (
@@ -342,7 +342,7 @@ class TestFindFloatingPotential:
             ),
         ],
     )
-    def test_island_finding(self, kwargs, expected):
+    def test_island_finding(self, kwargs, expected) -> None:
         """
         Test scenarios related to the identification of crossing-point islands.
         """
@@ -363,8 +363,8 @@ class TestFindFloatingPotential:
             else:
                 assert rtn_val == val
 
-    @pytest.mark.parametrize("m, b", [(2.0, 0.0), (1.33, -0.1), (0.5, -0.1)])
-    def test_perfect_linear(self, m, b):
+    @pytest.mark.parametrize(("m", "b"), [(2.0, 0.0), (1.33, -0.1), (0.5, -0.1)])
+    def test_perfect_linear(self, m, b) -> None:
         """Test calculated fit parameters on a few perfectly linear cases."""
         voltage = self._voltage
         current = m * voltage + b
@@ -385,10 +385,10 @@ class TestFindFloatingPotential:
         assert np.allclose(extras.fitted_func.param_errors, (0.0, 0.0), atol=2e-8)
 
     @pytest.mark.parametrize(
-        "a, alpha, b",
+        ("a", "alpha", "b"),
         [(1.0, 0.2, -0.2), (2.7, 0.2, -10.0), (6.0, 0.6, -10.0)],
     )
-    def test_perfect_exponential(self, a, alpha, b):
+    def test_perfect_exponential(self, a: float, alpha: float, b: float) -> None:
         """Test calculated fit parameters on a few perfectly exponential cases."""
         voltage = self._voltage
         current = a * np.exp(alpha * voltage) + b

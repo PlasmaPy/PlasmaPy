@@ -20,7 +20,7 @@ test_cases = [
     (["p+"], {}, proton),
     (["H"], {"Z": 1, "mass_numb": 2}, deuteron),
     (["muon"], {}, Particle("muon")),
-    pytest.param([charge, mass], {}, custom_particle, marks=[pytest.mark.xfail]),
+    pytest.param([charge, mass], {}, custom_particle),
     ([mass, charge], {"Z": None, "mass_numb": None}, custom_particle),
     ([], {"symbol": "ξ"}, CustomParticle(symbol="ξ")),
     ([[proton, electron]], {}, ParticleList([proton, electron])),
@@ -48,8 +48,8 @@ test_cases = [
 ]
 
 
-@pytest.mark.parametrize("args, kwargs, expected", test_cases)
-def test_physical_particle_factory(args, kwargs, expected):
+@pytest.mark.parametrize(("args", "kwargs", "expected"), test_cases)
+def test_physical_particle_factory(args, kwargs, expected) -> None:
     result = _physical_particle_factory(*args, **kwargs)
     assert result == expected
     assert type(result) == type(expected)
@@ -65,13 +65,13 @@ test_cases_for_exceptions = [
 ]
 
 
-@pytest.mark.parametrize("args, kwargs, expected", test_cases_for_exceptions)
-def test_particle_factory_exceptions(args, kwargs, expected):
+@pytest.mark.parametrize(("args", "kwargs", "expected"), test_cases_for_exceptions)
+def test_particle_factory_exceptions(args, kwargs, expected) -> None:
     with pytest.raises(expected):
         _physical_particle_factory(*args, **kwargs)
 
 
-def test_particle_factory_custom_particle_with_none_kwargs():
+def test_particle_factory_custom_particle_with_none_kwargs() -> None:
     """
     Test that when `_physical_particle_factory` is provided with a
     `CustomParticle` along with ``Z=None`` and ``mass_numb=None`` as

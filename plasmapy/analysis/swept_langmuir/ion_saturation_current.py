@@ -5,9 +5,9 @@ __all__ = ["find_ion_saturation_current", "ISatExtras"]
 __aliases__ = ["find_isat_"]
 
 import numbers
-import numpy as np
+from typing import Any, NamedTuple
 
-from typing import Any, NamedTuple, Optional
+import numpy as np
 
 from plasmapy.analysis import fit_functions as ffuncs
 from plasmapy.analysis.swept_langmuir.helpers import check_sweep
@@ -21,19 +21,19 @@ class ISatExtras(NamedTuple):
     `~plasmapy.analysis.swept_langmuir.ion_saturation_current.find_ion_saturation_current`.
     """
 
-    rsq: Optional[float]
+    rsq: float | None
     """
     Alias for field number 0, the r-squared value of the ion-saturation
     curve fit.
     """
 
-    fitted_func: Optional[ffuncs.AbstractFitFunction]
+    fitted_func: ffuncs.AbstractFitFunction | None
     """
     Alias for field number 1, the :term:`fit-function` fitted during
     the ion-saturation curve fit.
     """
 
-    fitted_indices: Optional[slice]
+    fitted_indices: slice | None
     """
     Alias for field number 2, the indices used in the ion-saturation
     curve fit.
@@ -45,8 +45,8 @@ def find_ion_saturation_current(
     current: np.ndarray,
     *,
     fit_type: str = "exp_plus_linear",
-    current_bound: numbers.Real = None,
-    voltage_bound: numbers.Real = None,
+    current_bound: numbers.Real | None = None,
+    voltage_bound: numbers.Real | None = None,
 ) -> tuple[ffuncs.Linear, ISatExtras]:
     """
     Determines the ion-saturation current (:math:`I_{sat}`) for a given
@@ -54,7 +54,7 @@ def find_ion_saturation_current(
     The current collected by a Langmuir probe reaches ion-saturation
     when the probe is sufficiently biased so the influx of electrons is
     completely repelled, which leads to only the collection of ions.
-    (For additional details see the **Notes** section below.)
+    (For additional details see the **Notes** section below.).
 
     **Aliases:** :func:`~plasmapy.analysis.swept_langmuir.ion_saturation_current.find_isat_`
 
@@ -206,14 +206,14 @@ def find_ion_saturation_current(
         current_min = current.min()
         current_bound = (1.0 - current_bound) * current_min
         mask = np.where(current <= current_bound)[0]
-    else:  # voltage_bound is not None
-        if not isinstance(voltage_bound, numbers.Real):
-            raise TypeError(
-                f"Keyword 'voltage_bound' is of type {type(voltage_bound)}, "
-                f"expected an int or float."
-            )
-
+    elif isinstance(voltage_bound, numbers.Real):
         mask = np.where(voltage <= voltage_bound)[0]
+
+    else:
+        raise TypeError(
+            f"Keyword 'voltage_bound' is of type {type(voltage_bound)}, "
+            f"expected an int or float."
+        )
 
     if mask.size == 0:
         raise ValueError(

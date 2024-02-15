@@ -1,0 +1,118 @@
+name: weekly tests
+
+on:
+  schedule:
+  - cron: 37 7 * * 1
+  workflow_dispatch:
+
+jobs:
+
+  tests:
+    name: ${{ matrix.name }}
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      fail-fast: false
+
+      matrix:
+        include:
+
+        - name: Python 3.12 (macOS)
+          os: macos-latest
+          python: '3.12'
+          toxenv: py312-all
+
+        - name: Python 3.11 (Ubuntu)
+          os: ubuntu-latest
+          python: '3.11'
+          toxenv: py311-all
+
+        - name: Python 3.10 (Windows)
+          os: windows-latest
+          python: '3.10'
+          toxenv: py310-all
+
+        - name: Python 3.10 with Astropy dev (Ubuntu)
+          os: ubuntu-latest
+          python: '3.10'
+          toxenv: py310-astropydev-all
+
+        - name: Python 3.10 with matplotlib dev (Ubuntu)
+          os: ubuntu-latest
+          python: '3.10'
+          toxenv: py310-matplotlibdev-all
+
+        - name: Python 3.10 with NumPy dev (Ubuntu)
+          os: ubuntu-latest
+          python: '3.10'
+          toxenv: py310-numpydev-all
+
+        - name: Python '3.10' with xarray dev (Ubuntu)
+          os: ubuntu-latest
+          python: '3.10'
+          toxenv: py310-xarraydev-all
+
+        - name: Documentation with Sphinx dev (Ubuntu)
+          os: ubuntu-latest
+          python: '3.12'
+          toxenv: build_docs-sphinxdev
+          toxposargs: -q
+
+        - name: Import PlasmaPy (Windows)
+          os: windows-latest
+          python: '3.10'
+          toxenv: py310-minimal-pypi-import
+
+        - name: Import PlasmaPy (macOS)
+          os: macos-latest
+          python: '3.11'
+          toxenv: py311-minimal-pypi-import
+
+        - name: Import PlasmaPy (Ubuntu)
+          os: ubuntu-latest
+          python: '3.12'
+          toxenv: py312-minimal-pypi-import
+
+    steps:
+
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ matrix.python }}
+        cache: pip
+
+    - name: Install Python dependencies
+      run: python -m pip install --upgrade tox
+
+    - name: Install graphviz & pandoc
+      if: startsWith(matrix.name, 'Documentation')
+      run: sudo apt-get install graphviz pandoc
+
+    - name: Run tests
+      run: tox ${{ matrix.toxargs }} -e ${{ matrix.toxenv }} -- ${{ matrix.toxposargs }}
+
+    - name: Upload coverage to codecov
+      if: ${{ contains(matrix.toxenv,'-cov') }}
+      uses: codecov/codecov-action@v4
+      with:
+        file: ./coverage.xml
+
+  install-plasmapy-via-conda-forge:
+    name: Install PlasmaPy from conda-forge
+    runs-on: ubuntu-latest
+
+    steps:
+
+    - name: Set up miniconda
+      uses: conda-incubator/setup-miniconda@v3
+      with:
+        auto-update-conda: true
+        python-version: '3.10'
+
+    - name: Use conda to install PlasmaPy from conda-forge
+      run: conda install -c conda-forge --yes plasmapy

@@ -3,12 +3,11 @@ Module of length parameters related to collisions.
 """
 __all__ = ["impact_parameter_perp", "impact_parameter", "mean_free_path"]
 
+from numbers import Real
+
 import astropy.units as u
 import numpy as np
-
 from astropy.constants.si import eps0, hbar
-from numbers import Real
-from numpy import pi
 
 from plasmapy import particles
 from plasmapy.formulary.collisions import frequencies, misc
@@ -22,10 +21,10 @@ from plasmapy.utils.decorators import validate_quantities
 )
 @particles.particle_input
 def impact_parameter_perp(
-    T: u.K,
+    T: u.Quantity[u.K],
     species: (particles.Particle, particles.Particle),
-    V: u.m / u.s = np.nan * u.m / u.s,
-) -> u.m:
+    V: u.Quantity[u.m / u.s] = np.nan * u.m / u.s,
+) -> u.Quantity[u.m]:
     r"""
     Distance of the closest approach for a 90° Coulomb collision.
 
@@ -87,7 +86,7 @@ def impact_parameter_perp(
     --------
     >>> import astropy.units as u
     >>> T = 1e6 * u.K
-    >>> species = ('e', 'p')
+    >>> species = ("e", "p")
     >>> impact_parameter_perp(T, species)
     <Quantity 8.3550...e-12 m>
     """
@@ -96,11 +95,11 @@ def impact_parameter_perp(
     #       dominate.
     # TODO: need to incorporate an average ionization parameter
 
-    T, masses, charges, reduced_mass, V = misc._process_inputs(
+    T, masses, charges, reduced_mass, V = misc._process_inputs(  # noqa: SLF001
         T=T, species=species, V=V
     )
 
-    return charges[0] * charges[1] / (4 * pi * eps0 * reduced_mass * V**2)
+    return charges[0] * charges[1] / (4 * np.pi * eps0 * reduced_mass * V**2)
 
 
 @validate_quantities(
@@ -108,12 +107,12 @@ def impact_parameter_perp(
     n_e={"can_be_negative": False},
     V={"none_shall_pass": True},
 )
-def impact_parameter(
-    T: u.K,
-    n_e: u.m**-3,
+def impact_parameter(  # noqa: C901
+    T: u.Quantity[u.K],
+    n_e: u.Quantity[u.m**-3],
     species,
     z_mean: Real = np.nan,
-    V: u.m / u.s = np.nan * u.m / u.s,
+    V: u.Quantity[u.m / u.s] = np.nan * u.m / u.s,
     method="classical",
 ):
     r"""
@@ -219,13 +218,13 @@ def impact_parameter(
     >>> import astropy.units as u
     >>> n = 1e19 * u.m**-3
     >>> T = 1e6 * u.K
-    >>> species = ('e', 'p')
+    >>> species = ("e", "p")
     >>> impact_parameter(T, n, species)
     (<Quantity 1.051...e-11 m>, <Quantity 2.182...e-05 m>)
     >>> impact_parameter(T, n, species, V=1e6 * u.m / u.s)
     (<Quantity 2.534...e-10 m>, <Quantity 2.182...e-05 m>)
     """
-    T, masses, charges, reduced_mass, V = misc._process_inputs(
+    T, masses, charges, reduced_mass, V = misc._process_inputs(  # noqa: SLF001
         T=T, species=species, V=V
     )
     # catching error where mean charge state is not given for non-classical
@@ -286,7 +285,7 @@ def impact_parameter(
         ionRadius = Wigner_Seitz_radius(n_i)
         bmax = (lambdaDe**2 + ionRadius**2) ** (1 / 2)
         bmin = (lambdaBroglie**2 + bPerp**2) ** (1 / 2)
-    elif method in ("ls_clamp_mininterp", "GMS-3"):  # noqa: SIM114
+    elif method in ("ls_clamp_mininterp", "GMS-3"):
         # 3rd method listed in Table 1 of reference [1]
         # same as GMS-1, but not Lambda has a clamp at Lambda_min = 2
         # where Lambda is the argument to the Coulomb logarithm.
@@ -331,13 +330,13 @@ def impact_parameter(
     n_e={"can_be_negative": False},
 )
 def mean_free_path(
-    T: u.K,
-    n_e: u.m**-3,
+    T: u.Quantity[u.K],
+    n_e: u.Quantity[u.m**-3],
     species,
     z_mean: Real = np.nan,
-    V: u.m / u.s = np.nan * u.m / u.s,
+    V: u.Quantity[u.m / u.s] = np.nan * u.m / u.s,
     method="classical",
-) -> u.m:
+) -> u.Quantity[u.m]:
     r"""
     Collisional mean free path (m).
 
@@ -425,11 +424,11 @@ def mean_free_path(
     Examples
     --------
     >>> import astropy.units as u
-    >>> n = 1e19 * u.m ** -3
+    >>> n = 1e19 * u.m**-3
     >>> T = 1e6 * u.K
-    >>> mean_free_path(T, n, ('e-', 'p+'))
+    >>> mean_free_path(T, n, ("e-", "p+"))
     <Quantity 7.839... m>
-    >>> mean_free_path(T, n, ('e-', 'p+'), V=1e6 * u.m / u.s)
+    >>> mean_free_path(T, n, ("e-", "p+"), V=1e6 * u.m / u.s)
     <Quantity 0.0109... m>
     """
     # collisional frequency
@@ -441,7 +440,7 @@ def mean_free_path(
     # reduced mass thermal velocity in electron-ion collision case.
     # Should be fine since collision_frequency has its own _process_inputs
     # check, and we are only using this here to get the velocity.
-    T, masses, charges, reduced_mass, V = misc._process_inputs(
+    T, masses, charges, reduced_mass, V = misc._process_inputs(  # noqa: SLF001
         T=T, species=species, V=V
     )
     return V / freq

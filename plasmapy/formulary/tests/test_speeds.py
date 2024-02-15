@@ -6,14 +6,14 @@ import pytest
 
 from plasmapy.formulary.speeds import Alfven_speed, cs_, ion_sound_speed, va_
 from plasmapy.particles import Particle
-from plasmapy.particles.exceptions import InvalidParticleError
+from plasmapy.particles.exceptions import InvalidIonError, InvalidParticleError
+from plasmapy.utils._pytest_helpers import assert_can_handle_nparray
 from plasmapy.utils.exceptions import (
     PhysicsError,
     PhysicsWarning,
     RelativityError,
     RelativityWarning,
 )
-from plasmapy.utils.pytest_helpers import assert_can_handle_nparray
 
 Z = 1
 
@@ -29,13 +29,13 @@ T_negarr = np.array([1e6, -5151.0]) * u.K
 
 
 @pytest.mark.parametrize(
-    "alias, parent",
+    ("alias", "parent"),
     [
         (va_, Alfven_speed),
         (cs_, ion_sound_speed),
     ],
 )
-def test_aliases(alias, parent):
+def test_aliases(alias, parent) -> None:
     """Test all aliases defined in speeds.py"""
     assert alias is parent
 
@@ -44,31 +44,24 @@ class TestAlfvenSpeed:
     """Test `~plasmapy.formulary.speeds.Alfven_speed`."""
 
     @pytest.mark.parametrize(
-        "args, kwargs, _error",
+        ("args", "kwargs", "_error"),
         [
-            # scenarios that raise RelativityError
             ((10 * u.T, 1.0e-10 * u.kg * u.m**-3), {}, RelativityError),
             ((np.inf * u.T, 1 * u.m**-3), {"ion": "p"}, RelativityError),
             ((-np.inf * u.T, 1 * u.m**-3), {"ion": "p"}, RelativityError),
-            #
-            # scenarios that raise InvalidParticleError
             ((1 * u.T, 5e19 * u.m**-3), {"ion": "spacecats"}, InvalidParticleError),
-            #
-            # scenarios that raise TypeError
+            ((1 * u.T, 1.0e18 * u.m**-3), {"ion": ["He"]}, InvalidIonError),
+            ((1 * u.T, 1.0e-9 * u.kg * u.m**-3), {"ion": ["He+"]}, ValueError),
             (("not a Bfield", 1.0e-10 * u.kg * u.m**-3), {}, TypeError),
+            ((1 * u.T,), {"density": 1e9 * u.m**-3, "ion": None}, ValueError),
             ((10 * u.T, "not a density"), {}, TypeError),
             ((10 * u.T, 5), {"ion": "p"}, TypeError),
-            ((1 * u.T, 1.0e18 * u.m**-3), {"ion": ["He"]}, TypeError),
-            ((1 * u.T, 1.0e18 * u.m**-3), {"ion": "He", "z_mean": "nope"}, TypeError),
-            #
-            # scenarios that raise UnitTypeError
-            ((1 * u.T, 1.0e18 * u.cm), {"ion": "He"}, u.UnitTypeError),
+            ((1 * u.T, 1.0e18 * u.m**-3), {"ion": "He", "Z": "nope"}, TypeError),
+            ((1 * u.T, 1.0e18 * u.cm), {"ion": "He 1+"}, u.UnitTypeError),
             ((1 * u.T, 5 * u.m**-2), {"ion": "p"}, u.UnitTypeError),
-            ((1 * u.cm, 1.0e18 * u.m**-3), {"ion": "He"}, u.UnitTypeError),
+            ((1 * u.cm, 1.0e18 * u.m**-3), {"ion": "He 1+"}, u.UnitTypeError),
             ((5 * u.A, 5e19 * u.m**-3), {"ion": "p"}, u.UnitTypeError),
-            #
-            # scenarios that raise ValueError
-            ((1 * u.T, -1.0e18 * u.m**-3), {"ion": "He"}, ValueError),
+            ((1 * u.T, -1.0e18 * u.m**-3), {"ion": "He+"}, ValueError),
             (
                 (np.array([5, 6, 7]) * u.T, np.array([5, 6]) * u.m**-3),
                 {"ion": "p"},
@@ -81,19 +74,18 @@ class TestAlfvenSpeed:
             ),
         ],
     )
-    def test_raises(self, args, kwargs, _error):
+    def test_raises(self, args, kwargs, _error) -> None:
         """Test scenarios that raise exceptions or warnings."""
         with pytest.raises(_error):
             Alfven_speed(*args, **kwargs)
 
     @pytest.mark.parametrize(
-        "args, kwargs, expected, isclose_kw, _warning",
+        ("args", "kwargs", "expected", "isclose_kw", "_warning"),
         [
-            # scenarios that issue RelativityWarning
             (
                 (5 * u.T, 5e19 * u.m**-3),
-                {"ion": "H"},
-                15413707.39,
+                {"ion": "H", "Z": 1},
+                15417901.09,
                 {},
                 RelativityWarning,
             ),
@@ -111,12 +103,10 @@ class TestAlfvenSpeed:
                 {"rtol": 4.0e-4},
                 RelativityWarning,
             ),
-            #
-            # scenarios that issue UnitsWarning
-            ((0.5, 1.0e18 * u.m**-3), {"ion": "He"}, 5470657.93, {}, u.UnitsWarning),
+            ((0.5, 1.0e18 * u.m**-3), {"ion": "He+"}, 5471032.81, {}, u.UnitsWarning),
         ],
     )
-    def test_warns(self, args, kwargs, expected, isclose_kw, _warning):
+    def test_warns(self, args, kwargs, expected, isclose_kw, _warning) -> None:
         """Test scenarios that issue warnings"""
         with pytest.warns(_warning):
             val = Alfven_speed(*args, **kwargs)
@@ -125,14 +115,8 @@ class TestAlfvenSpeed:
             assert np.isclose(val.value, expected, **isclose_kw)
 
     @pytest.mark.parametrize(
-        "args, kwargs, expected, isclose_kw",
+        ("args", "kwargs", "expected", "isclose_kw"),
         [
-            (
-                (1 * u.T, 1e-8 * u.kg * u.m**-3),
-                {"ion": "p"},
-                8920620.58 * u.m / u.s,
-                {"rtol": 1e-6},
-            ),
             (
                 (1 * u.T, 1e-8 * u.kg * u.m**-3),
                 {},
@@ -141,19 +125,19 @@ class TestAlfvenSpeed:
             ),
             (
                 (0.05 * u.T, 1e18 * u.m**-3),
-                {"ion": "He"},
-                Alfven_speed(0.05 * u.T, 6.64738793e-09 * u.kg * u.m**-3),
+                {"ion": "He+"},
+                Alfven_speed(0.05 * u.T, 6.64647699e-09 * u.kg * u.m**-3),
                 {},
             ),
             (
                 (0.05 * u.T, 1e18 * u.m**-3),
                 {"ion": "He+"},
-                Alfven_speed(0.05 * u.T, 1e18 * u.m**-3, ion="He"),
+                Alfven_speed(0.05 * u.T, 1e18 * u.m**-3, ion="He 1+"),
                 {"rtol": 7e-5},
             ),
             (
                 (0.05 * u.T, 1e18 * u.m**-3),
-                {"ion": "He", "z_mean": 2},
+                {"ion": "He", "Z": 2},
                 Alfven_speed(0.05 * u.T, 1e18 * u.m**-3, ion="He +2"),
                 {"rtol": 1.4e-4},
             ),
@@ -187,20 +171,20 @@ class TestAlfvenSpeed:
                 (0.001 * u.T, [1.0e18, 2e18] * u.m**-3),
                 {"ion": "p"},
                 [
-                    va_(0.001 * u.T, 1e18 * u.m**-3, ion="p").value,
-                    va_(0.001 * u.T, 2e18 * u.m**-3, ion="p").value,
+                    va_(0.001 * u.T, 1e18 * u.m**-3, ion="p+").value,
+                    va_(0.001 * u.T, 2e18 * u.m**-3, ion="p+").value,
                 ]
                 * (u.m / u.s),
                 {},
             ),
         ],
     )
-    def test_values(self, args, kwargs, expected, isclose_kw):
+    def test_values(self, args, kwargs, expected, isclose_kw) -> None:
         """Test expected values."""
         assert np.allclose(Alfven_speed(*args, **kwargs), expected, **isclose_kw)
 
     @pytest.mark.parametrize(
-        "args, kwargs, nan_mask",
+        ("args", "kwargs", "nan_mask"),
         [
             ((np.nan * u.T, 1 * u.kg * u.m**-3), {}, []),
             ((0.001 * u.T, np.nan * u.kg * u.m**-3), {}, []),
@@ -218,7 +202,7 @@ class TestAlfvenSpeed:
             ),
         ],
     )
-    def test_nan_values(self, args, kwargs, nan_mask):
+    def test_nan_values(self, args, kwargs, nan_mask) -> None:
         """Input scenarios that lead to `numpy.nan` values being returned."""
         val = Alfven_speed(*args, **kwargs)
         if np.isscalar(val.value):
@@ -228,7 +212,7 @@ class TestAlfvenSpeed:
             assert np.all(nan_arr[nan_mask])
             assert np.all(np.logical_not(nan_arr[np.logical_not(nan_mask)]))
 
-    def test_handle_nparrays(self):
+    def test_handle_nparrays(self) -> None:
         """Test for ability to handle numpy array quantities"""
         assert_can_handle_nparray(Alfven_speed)
 
@@ -237,7 +221,7 @@ class Test_Ion_Sound_Speed:
     r"""Test the ion_sound_speed function in speeds.py."""
 
     @pytest.mark.parametrize(
-        "args, kwargs, expected, isclose_kw",
+        ("args", "kwargs", "expected", "isclose_kw"),
         [
             (
                 (),
@@ -313,15 +297,15 @@ class Test_Ion_Sound_Speed:
                     "T_i": 0 * u.K,
                     "n_e": n_e,
                     "k": 0 * u.m**-1,
-                    "z_mean": 0.8,
-                    "ion": "p",
+                    "Z": 0.8,
+                    "ion": "H-1",
                 },
-                89018.09 * (u.m / u.s),
+                89013.262 * (u.m / u.s),
                 {"atol": 0.0, "rtol": 1e-6},
-            ),  # testing for user input z_mean
+            ),  # testing for user input Z
         ],
     )
-    def test_values(self, args, kwargs, expected, isclose_kw):
+    def test_values(self, args, kwargs, expected, isclose_kw) -> None:
         assert np.isclose(ion_sound_speed(*args, **kwargs), expected, **isclose_kw)
 
     # case when Z=1 is assumed
@@ -329,7 +313,7 @@ class Test_Ion_Sound_Speed:
     # ion='H-1')
 
     @pytest.mark.parametrize(
-        "kwargs1, kwargs2, _warning",
+        ("kwargs1", "kwargs2", "_warning"),
         [
             ({"T_i": T_i, "T_e": T_e, "n_e": n_e, "ion": "p"}, {}, PhysicsWarning),
             ({"T_i": T_i, "T_e": T_e, "k": k_1, "ion": "p"}, {}, PhysicsWarning),
@@ -346,14 +330,14 @@ class Test_Ion_Sound_Speed:
             ),
         ],
     )
-    def test_warns(self, kwargs1, kwargs2, _warning):
+    def test_warns(self, kwargs1, kwargs2, _warning) -> None:
         with pytest.warns(_warning):
             val = ion_sound_speed(**kwargs1)
             if kwargs2 != {}:
                 val == ion_sound_speed(**kwargs2)  # noqa: B015
 
     @pytest.mark.parametrize(
-        "args, kwargs, _error",
+        ("args", "kwargs", "_error"),
         [
             (
                 (),
@@ -430,7 +414,7 @@ class Test_Ion_Sound_Speed:
             ),
         ],
     )
-    def test_raises(self, args, kwargs, _error):
+    def test_raises(self, args, kwargs, _error) -> None:
         with pytest.raises(_error):
             ion_sound_speed(*args, **kwargs)
 
@@ -441,8 +425,8 @@ class Test_Ion_Sound_Speed:
             ({"T_e": T_nanarr, "T_i": 0 * u.K, "n_e": n_e, "k": k_1, "ion": "p"}),
         ],
     )
-    def test_nan_values(self, kwargs):
+    def test_nan_values(self, kwargs) -> None:
         np.isnan(ion_sound_speed(**kwargs)[1])
 
-    def test_handle_nparrays(self):
+    def test_handle_nparrays(self) -> None:
         assert_can_handle_nparray(ion_sound_speed)

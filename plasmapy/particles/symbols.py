@@ -11,7 +11,6 @@ __all__ = [
 ]
 
 from numbers import Integral
-from typing import Optional
 
 from plasmapy.particles.decorators import particle_input
 from plasmapy.particles.particle_class import Particle
@@ -73,28 +72,28 @@ def atomic_symbol(element: Particle) -> str:
 
     Examples
     --------
-    >>> atomic_symbol('helium')
+    >>> atomic_symbol("helium")
     'He'
     >>> atomic_symbol(42)
     'Mo'
-    >>> atomic_symbol('D')
+    >>> atomic_symbol("D")
     'H'
-    >>> atomic_symbol('C-13')
+    >>> atomic_symbol("C-13")
     'C'
-    >>> atomic_symbol('alpha')
+    >>> atomic_symbol("alpha")
     'He'
-    >>> atomic_symbol('79')
+    >>> atomic_symbol("79")
     'Au'
-    >>> atomic_symbol('N')  # Nitrogen
+    >>> atomic_symbol("N")  # Nitrogen
     'N'
-    >>> atomic_symbol('P'), atomic_symbol('p')  # Phosphorus, proton
+    >>> atomic_symbol("P"), atomic_symbol("p")  # Phosphorus, proton
     ('P', 'H')
     """
     return element.element
 
 
 @particle_input
-def isotope_symbol(isotope: Particle, mass_numb: Optional[Integral] = None) -> str:
+def isotope_symbol(isotope: Particle, mass_numb: Integral | None = None) -> str:
     """
     Return the symbol representing an isotope.
 
@@ -136,15 +135,15 @@ def isotope_symbol(isotope: Particle, mass_numb: Optional[Integral] = None) -> s
 
     Examples
     --------
-    >>> isotope_symbol('He', 4)
+    >>> isotope_symbol("He", 4)
     'He-4'
     >>> isotope_symbol(79, 197)
     'Au-197'
-    >>> isotope_symbol('hydrogen-2')
+    >>> isotope_symbol("hydrogen-2")
     'D'
-    >>> isotope_symbol('carbon-13')
+    >>> isotope_symbol("carbon-13")
     'C-13'
-    >>> isotope_symbol('alpha')
+    >>> isotope_symbol("alpha")
     'He-4'
     """
     return isotope.isotope
@@ -154,8 +153,8 @@ def isotope_symbol(isotope: Particle, mass_numb: Optional[Integral] = None) -> s
 def ionic_symbol(
     particle: Particle,
     *,
-    mass_numb: Optional[Integral] = None,
-    Z: Optional[Integral] = None,
+    mass_numb: Integral | None = None,
+    Z: Integral | None = None,
 ) -> str:
     """
     Return the ionic symbol of an ion or neutral atom.
@@ -166,10 +165,10 @@ def ionic_symbol(
         A `str` representing an element, isotope, or ion; or an
         `int` representing an atomic number.
 
-    mass_numb : integer, optional, |keyword-only|
+    mass_numb : integer, |keyword-only|, optional
         The mass number of an isotope.
 
-    Z : integer, optional, |keyword-only|
+    Z : integer, |keyword-only|, optional
         The |charge number| of an ion or neutral atom.
 
     Returns
@@ -201,15 +200,15 @@ def ionic_symbol(
 
     Examples
     --------
-    >>> ionic_symbol('alpha')
+    >>> ionic_symbol("alpha")
     'He-4 2+'
     >>> ionic_symbol(79, mass_numb=197, Z=12)
     'Au-197 12+'
-    >>> ionic_symbol('proton')
+    >>> ionic_symbol("proton")
     'p+'
-    >>> ionic_symbol('D', Z=1)
+    >>> ionic_symbol("D", Z=1)
     'D 1+'
-    >>> ionic_symbol('H-1', Z=0)
+    >>> ionic_symbol("H-1", Z=0)
     'H-1 0+'
     """
 
@@ -220,8 +219,8 @@ def ionic_symbol(
 def particle_symbol(
     particle: Particle,
     *,
-    mass_numb: Optional[Integral] = None,
-    Z: Optional[Integral] = None,
+    mass_numb: Integral | None = None,
+    Z: Integral | None = None,
 ) -> str:
     """
     Return the symbol of a particle.
@@ -232,10 +231,10 @@ def particle_symbol(
         A `str` representing a particle, element, isotope, or ion or an
         `int` representing an atomic number
 
-    mass_numb : integer, optional, |keyword-only|
+    mass_numb : integer, |keyword-only|, optional
         The mass number of an isotope.
 
-    Z : integer, optional, |keyword-only|
+    Z : integer, |keyword-only|, optional
         The |charge number| of an ion or neutral atom.
 
     Returns
@@ -265,13 +264,13 @@ def particle_symbol(
 
     Examples
     --------
-    >>> particle_symbol('electron')
+    >>> particle_symbol("electron")
     'e-'
-    >>> particle_symbol('proton')
+    >>> particle_symbol("proton")
     'p+'
-    >>> particle_symbol('alpha')
+    >>> particle_symbol("alpha")
     'He-4 2+'
-    >>> particle_symbol('H-1', Z=-1)
+    >>> particle_symbol("H-1", Z=-1)
     'H-1 1-'
     """
     return particle.symbol

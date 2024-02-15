@@ -8,12 +8,11 @@ __all__ = [
     "parse_and_check_molecule_input",
 ]
 
-import numpy as np
 import re
 import warnings
-
 from numbers import Integral
-from typing import Optional, Union
+
+import numpy as np
 
 from plasmapy.particles import _elements, _isotopes, _special_particles
 from plasmapy.particles.exceptions import (
@@ -111,7 +110,7 @@ case_sensitive_aliases, case_insensitive_aliases = create_alias_dicts(
 )
 
 
-def dealias_particle_aliases(alias: Union[str, Integral]) -> str:
+def dealias_particle_aliases(alias: str | Integral) -> str:
     """
     Return the standard symbol for a particle or antiparticle
     when the argument is a valid alias.  If the argument is not a
@@ -129,8 +128,8 @@ def dealias_particle_aliases(alias: Union[str, Integral]) -> str:
 
 def invalid_particle_errmsg(
     argument,
-    mass_numb: Optional[Integral] = None,
-    Z: Optional[Integral] = None,
+    mass_numb: Integral | None = None,
+    Z: Integral | None = None,
 ):
     """
     Return an appropriate error message for an
@@ -149,7 +148,7 @@ def invalid_particle_errmsg(
     return errmsg
 
 
-def extract_charge(arg: str):
+def extract_charge(arg: str):  # noqa: C901, PLR0912
     """
     Receive a `str` representing an element, isotope, or ion.
     Return a `tuple` containing a `str` that should represent an
@@ -223,10 +222,10 @@ def extract_charge(arg: str):
     return isotope_info, Z_from_arg
 
 
-def parse_and_check_atomic_input(
-    argument: Union[str, Integral],
-    mass_numb: Optional[Integral] = None,
-    Z: Optional[Integral] = None,
+def parse_and_check_atomic_input(  # noqa: C901, PLR0912, PLR0915
+    argument: str | Integral,
+    mass_numb: Integral | None = None,
+    Z: Integral | None = None,
 ):
     """
     Parse information about a particle into a dictionary of standard
@@ -361,7 +360,7 @@ def parse_and_check_atomic_input(
         return isotope
 
     def reconstruct_ion_symbol(
-        element: str, isotope: Integral = None, Z: Integral = None
+        element: str, isotope: Integral | None = None, Z: Integral | None = None
     ):
         """
         Receive a `str` representing an atomic symbol and/or a
@@ -382,7 +381,7 @@ def parse_and_check_atomic_input(
 
         return ion
 
-    if not isinstance(argument, (str, Integral)):  # coverage: ignore
+    if not isinstance(argument, str | Integral):
         raise TypeError(f"The argument {argument} is not an integer or string.")
 
     arg = dealias_particle_aliases(argument)
@@ -476,7 +475,7 @@ def parse_and_check_atomic_input(
     }
 
 
-def parse_and_check_molecule_input(argument: str, Z: Optional[Integral] = None):
+def parse_and_check_molecule_input(argument: str, Z: Integral | None = None):
     """
     Separate the constitutive elements and charge of a molecule symbol.
 

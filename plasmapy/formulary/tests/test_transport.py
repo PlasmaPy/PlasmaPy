@@ -1,13 +1,13 @@
 """Tests for functions that calculate transport coefficients."""
 
+import astropy.units as u
 import numpy as np
 import pytest
-
-from astropy import units as u
 from astropy.constants import m_e, m_p
 from astropy.tests.helper import assert_quantity_allclose
 
 from plasmapy.formulary.braginskii import (
+    ClassicalTransport,
     _check_Z,
     _nondim_resist_braginskii,
     _nondim_resist_ji_held,
@@ -28,7 +28,6 @@ from plasmapy.formulary.braginskii import (
     _nondim_visc_i_braginskii,
     _nondim_visc_i_ji_held,
     _nondim_viscosity,
-    ClassicalTransport,
     electron_thermal_conductivity,
     electron_viscosity,
     ion_thermal_conductivity,
@@ -49,10 +48,10 @@ def count_decimal_places(digits):
     return len(fractional)
 
 
-@pytest.mark.slow
+@pytest.mark.slow()
 class Test_classical_transport:
     @classmethod
-    def setup_class(cls):
+    def setup_class(cls) -> None:
         """Set up some initial values for tests"""
         cls.T_e = 1000 * u.eV
         cls.n_e = 2e13 / u.cm**3
@@ -109,7 +108,7 @@ class Test_classical_transport:
 
             cls.all_variables = cls.ct.all_variables
 
-    def test_spitzer_vs_formulary(self):
+    def test_spitzer_vs_formulary(self) -> None:
         """Spitzer resistivity should agree with approx. in NRL formulary"""
         with pytest.warns(RelativityWarning):
             ct2 = ClassicalTransport(
@@ -140,7 +139,7 @@ class Test_classical_transport:
             )
         assert testTrue, errStr
 
-    def test_resistivity_units(self):
+    def test_resistivity_units(self) -> None:
         """Output should be a Quantity with units of Ohm m"""
         with pytest.warns(RelativityWarning):
             testTrue = self.ct.resistivity.unit == u.Ohm * u.m
@@ -150,7 +149,7 @@ class Test_classical_transport:
             )
         assert testTrue, errStr
 
-    def test_thermoelectric_conductivity_units(self):
+    def test_thermoelectric_conductivity_units(self) -> None:
         """Output should be a Quantity with units of dimensionless"""
         testTrue = self.ct.thermoelectric_conductivity.unit == u.m / u.m
         errStr = (
@@ -159,7 +158,7 @@ class Test_classical_transport:
         )
         assert testTrue, errStr
 
-    def test_ion_thermal_conductivity_units(self):
+    def test_ion_thermal_conductivity_units(self) -> None:
         """Output should be Quantity with units of W / (m K)"""
         testTrue = self.ct.ion_thermal_conductivity.unit == u.W / u.m / u.K
         errStr = (
@@ -169,7 +168,7 @@ class Test_classical_transport:
         )
         assert testTrue, errStr
 
-    def test_electron_thermal_conductivity_units(self):
+    def test_electron_thermal_conductivity_units(self) -> None:
         """Output should be Quantity with units of W / (m K)"""
         with pytest.warns(RelativityWarning):
             testTrue = self.ct.electron_thermal_conductivity.unit == u.W / u.m / u.K
@@ -180,7 +179,7 @@ class Test_classical_transport:
             )
         assert testTrue, errStr
 
-    def test_ion_viscosity_units(self):
+    def test_ion_viscosity_units(self) -> None:
         """Output should be Quantity with units of Pa s"""
         testTrue = self.ct.ion_viscosity.unit == u.Pa * u.s
         errStr = (
@@ -189,7 +188,7 @@ class Test_classical_transport:
         )
         assert testTrue, errStr
 
-    def test_electron_viscosity_units(self):
+    def test_electron_viscosity_units(self) -> None:
         """Output should be Quantity with units of Pa s"""
         with pytest.warns(RelativityWarning):
             testTrue = self.ct.electron_viscosity.unit == u.Pa * u.s
@@ -199,7 +198,7 @@ class Test_classical_transport:
             )
         assert testTrue, errStr
 
-    def test_particle_mass(self):
+    def test_particle_mass(self) -> None:
         """Should raise ValueError if particle mass not found"""
         with pytest.raises(ValueError):
             ClassicalTransport(
@@ -211,7 +210,7 @@ class Test_classical_transport:
                 Z=1,
             )
 
-    def test_particle_charge_state(self):
+    def test_particle_charge_state(self) -> None:
         """Should raise ValueError if particle charge state not found"""
         with pytest.raises(InvalidParticleError):
             ClassicalTransport(
@@ -223,7 +222,7 @@ class Test_classical_transport:
                 m_i=m_p,
             )
 
-    def test_Z_checks(self):
+    def test_Z_checks(self) -> None:
         """Should raise ValueError if Z is negative"""
         with pytest.raises(ValueError):
             ClassicalTransport(
@@ -235,7 +234,7 @@ class Test_classical_transport:
                 Z=-1,
             )
 
-    def test_coulomb_log_warnings(self):
+    def test_coulomb_log_warnings(self) -> None:
         """Should warn CouplingWarning if coulomb log is near 1"""
         with pytest.warns(CouplingWarning):
             ClassicalTransport(
@@ -257,7 +256,7 @@ class Test_classical_transport:
                 coulomb_log_ei=1.3,
             )
 
-    def test_coulomb_log_errors(self):
+    def test_coulomb_log_errors(self) -> None:
         """Should raise PhysicsError if coulomb log is < 1"""
         with pytest.raises(PhysicsError), pytest.warns(CouplingWarning):
             ClassicalTransport(
@@ -279,7 +278,7 @@ class Test_classical_transport:
                 coulomb_log_ei=0.3,
             )
 
-    def test_coulomb_log_calc(self):
+    def test_coulomb_log_calc(self) -> None:
         """If no coulomb logs are input, they should be calculated"""
         with pytest.warns(RelativityWarning):
             ct2 = ClassicalTransport(
@@ -302,7 +301,7 @@ class Test_classical_transport:
         )
         assert testTrue, errStr
 
-    def test_hall_calc(self):
+    def test_hall_calc(self) -> None:
         """If no hall parameters are input, they should be calculated"""
         with pytest.warns(RelativityWarning):
             ct2 = ClassicalTransport(
@@ -327,7 +326,7 @@ class Test_classical_transport:
         errStr = f"Electron hall parameter should be {hall_e} and not {ct2.hall_e}."
         assert testTrue, errStr
 
-    def test_invalid_model(self):
+    def test_invalid_model(self) -> None:
         with pytest.raises(ValueError):
             ClassicalTransport(
                 T_e=self.T_e,
@@ -338,7 +337,7 @@ class Test_classical_transport:
                 model="standard",
             )
 
-    def test_invalid_field(self):
+    def test_invalid_field(self) -> None:
         with pytest.raises(ValueError):
             ClassicalTransport(
                 T_e=self.T_e,
@@ -349,7 +348,7 @@ class Test_classical_transport:
                 field_orientation="to the left",
             )
 
-    def test_precalculated_parameters(self):
+    def test_precalculated_parameters(self) -> None:
         with pytest.warns(RelativityWarning):
             ct2 = ClassicalTransport(
                 T_e=self.T_e,
@@ -370,7 +369,7 @@ class Test_classical_transport:
         assert testTrue, errStr
 
     @pytest.mark.parametrize(
-        "model, attr_name, field_orientation, expected",
+        ("model", "attr_name", "field_orientation", "expected"),
         [
             ("ji-held", "resistivity", "all", 3),
             ("ji-held", "thermoelectric_conductivity", "all", 3),
@@ -379,7 +378,9 @@ class Test_classical_transport:
             ("spitzer", "resistivity", "all", 2),
         ],
     )
-    def test_number_of_returns(self, model, attr_name, field_orientation, expected):
+    def test_number_of_returns(
+        self, model, attr_name: str, field_orientation, expected
+    ) -> None:
         with pytest.warns(RelativityWarning):
             ct2 = ClassicalTransport(
                 T_e=self.T_e,
@@ -400,14 +401,14 @@ class Test_classical_transport:
         assert testTrue, errStr
 
     @pytest.mark.parametrize(
-        "model, expected",
+        ("model", "expected"),
         [
             ("ji-held", 2.77028546e-8 * u.Ohm * u.m),
             ("spitzer", 2.78349687e-8 * u.Ohm * u.m),
             ("braginskii", 2.78349687e-8 * u.Ohm * u.m),
         ],
     )
-    def test_resistivity_by_model(self, model, expected):
+    def test_resistivity_by_model(self, model, expected) -> None:
         with pytest.warns(RelativityWarning):
             ct2 = ClassicalTransport(
                 T_e=self.T_e,
@@ -425,14 +426,14 @@ class Test_classical_transport:
         assert testTrue, errStr
 
     @pytest.mark.parametrize(
-        "model, expected",
+        ("model", "expected"),
         [
             ("ji-held", 0.702 * u.s / u.s),
             ("spitzer", 0.69944979 * u.s / u.s),
             ("braginskii", 0.711084 * u.s / u.s),
         ],
     )
-    def test_thermoelectric_conductivity_by_model(self, model, expected):
+    def test_thermoelectric_conductivity_by_model(self, model, expected) -> None:
         with pytest.warns(RelativityWarning):
             ct2 = ClassicalTransport(
                 T_e=self.T_e,
@@ -453,7 +454,7 @@ class Test_classical_transport:
         assert testTrue, errStr
 
     @pytest.mark.parametrize(
-        "model, expected",
+        ("model", "expected"),
         [
             (
                 "ji-held",
@@ -465,7 +466,7 @@ class Test_classical_transport:
             ),
         ],
     )
-    def test_electron_viscosity_by_model(self, model, expected):
+    def test_electron_viscosity_by_model(self, model, expected) -> None:
         with pytest.warns(RelativityWarning):
             ct2 = ClassicalTransport(
                 T_e=self.T_e,
@@ -485,7 +486,7 @@ class Test_classical_transport:
         assert testTrue, errStr
 
     @pytest.mark.parametrize(
-        "model, expected",
+        ("model", "expected"),
         [
             (
                 "ji-held",
@@ -497,7 +498,7 @@ class Test_classical_transport:
             ),
         ],
     )
-    def test_ion_viscosity_by_model(self, model, expected):
+    def test_ion_viscosity_by_model(self, model, expected) -> None:
         with pytest.warns(RelativityWarning):
             ct2 = ClassicalTransport(
                 T_e=self.T_e,
@@ -515,14 +516,14 @@ class Test_classical_transport:
         assert testTrue, errStr
 
     @pytest.mark.parametrize(
-        "model, expected",
+        ("model", "expected"),
         [
             ("ji-held", 5084253.556001088 * u.W / (u.K * u.m)),
             ("spitzer", 5082147.824377487 * u.W / (u.K * u.m)),
             ("braginskii", 5016895.3386957785 * u.W / (u.K * u.m)),
         ],
     )
-    def test_electron_thermal_conductivity_by_model(self, model, expected):
+    def test_electron_thermal_conductivity_by_model(self, model, expected) -> None:
         with pytest.warns(RelativityWarning):
             ct2 = ClassicalTransport(
                 T_e=self.T_e,
@@ -545,13 +546,13 @@ class Test_classical_transport:
         assert testTrue, errStr
 
     @pytest.mark.parametrize(
-        "model, expected",
+        ("model", "expected"),
         [
             ("ji-held", 134547.55528106514 * u.W / (u.K * u.m)),
             ("braginskii", 133052.21732349042 * u.W / (u.K * u.m)),
         ],
     )
-    def test_ion_thermal_conductivity_by_model(self, model, expected):
+    def test_ion_thermal_conductivity_by_model(self, model, expected) -> None:
         with pytest.warns(RelativityWarning):
             ct2 = ClassicalTransport(
                 T_e=self.T_e,
@@ -572,7 +573,7 @@ class Test_classical_transport:
         assert testTrue, errStr
 
     @pytest.mark.parametrize(
-        "key, expected",
+        ("key", "expected"),
         {
             "resistivity": [2.84304305e-08, 5.54447070e-08, 1.67853407e-12],
             "thermoelectric conductivity": [
@@ -602,7 +603,7 @@ class Test_classical_transport:
             ],
         }.items(),
     )
-    def test_dictionary(self, key, expected):
+    def test_dictionary(self, key, expected) -> None:
         calculated = self.all_variables[key]
         testTrue = np.allclose(expected, calculated.si.value)
         errStr = (
@@ -610,7 +611,7 @@ class Test_classical_transport:
         )
         assert testTrue, errStr
 
-    def test_resistivity_wrapper(self):
+    def test_resistivity_wrapper(self) -> None:
         with pytest.warns(RelativityWarning):
             assert_quantity_allclose(
                 resistivity(
@@ -629,7 +630,7 @@ class Test_classical_transport:
                 self.ct_wrapper.resistivity,
             )
 
-    def test_thermoelectric_conductivity_wrapper(self):
+    def test_thermoelectric_conductivity_wrapper(self) -> None:
         with pytest.warns(RelativityWarning):
             val1 = thermoelectric_conductivity(
                 T_e=self.T_e,
@@ -647,7 +648,7 @@ class Test_classical_transport:
             val2 = self.ct_wrapper.thermoelectric_conductivity
             assert_quantity_allclose(val1, val2)
 
-    def test_ion_thermal_conductivity_wrapper(self):
+    def test_ion_thermal_conductivity_wrapper(self) -> None:
         with pytest.warns(RelativityWarning):
             wrapped = ion_thermal_conductivity(
                 T_e=self.T_e,
@@ -664,7 +665,7 @@ class Test_classical_transport:
             )
             assert_quantity_allclose(wrapped, self.ct_wrapper.ion_thermal_conductivity)
 
-    def test_electron_thermal_conductivity_wrapper(self):
+    def test_electron_thermal_conductivity_wrapper(self) -> None:
         with pytest.warns(RelativityWarning):
             wrapped = electron_thermal_conductivity(
                 T_e=self.T_e,
@@ -683,7 +684,7 @@ class Test_classical_transport:
                 wrapped, self.ct_wrapper.electron_thermal_conductivity
             )
 
-    def test_ion_viscosity_wrapper(self):
+    def test_ion_viscosity_wrapper(self) -> None:
         with pytest.warns(RelativityWarning):
             assert_quantity_allclose(
                 ion_viscosity(
@@ -702,7 +703,7 @@ class Test_classical_transport:
                 self.ct_wrapper.ion_viscosity,
             )
 
-    def test_electron_viscosity_wrapper(self):
+    def test_electron_viscosity_wrapper(self) -> None:
         with pytest.warns(RelativityWarning):
             assert_quantity_allclose(
                 electron_viscosity(
@@ -722,26 +723,26 @@ class Test_classical_transport:
             )
 
 
-@pytest.mark.parametrize(["particle"], ["e", "p"])
-def test_nondim_thermal_conductivity_unrecognized_model(particle):
+@pytest.mark.parametrize("particle", ["e", "p"])
+def test_nondim_thermal_conductivity_unrecognized_model(particle) -> None:
     with pytest.raises(ValueError):
         _nondim_thermal_conductivity(
             1, 1, particle, "standard model is best model", "parallel"
         )
 
 
-def test_nondim_resistivity_unrecognized_model():
+def test_nondim_resistivity_unrecognized_model() -> None:
     with pytest.raises(ValueError):
         _nondim_resistivity(1, 1, "e", "SURPRISE SUPERSYMMETRY", "parallel")
 
 
-def test_nondim_te_conductivity_unrecognized_model():
+def test_nondim_te_conductivity_unrecognized_model() -> None:
     with pytest.raises(ValueError):
         _nondim_te_conductivity(1, 1, "e", "this is not a model", "parallel")
 
 
-@pytest.mark.parametrize(["particle"], ["e", "p"])
-def test_nondim_viscosity_unrecognized_model(particle):
+@pytest.mark.parametrize("particle", ["e", "p"])
+def test_nondim_viscosity_unrecognized_model(particle) -> None:
     with pytest.raises(ValueError):
         _nondim_viscosity(1, 1, particle, "not a model", "parallel")
 
@@ -749,14 +750,14 @@ def test_nondim_viscosity_unrecognized_model(particle):
 # test class for _nondim_tc_e_braginskii function:
 class Test__nondim_tc_e_braginskii:
     @classmethod
-    def setup_class(cls):
+    def setup_class(cls) -> None:
         """Set up some initial values for tests"""
         cls.big_hall = 1000
         cls.small_hall = 0
 
     # values from Braginskii '65
     @pytest.mark.parametrize(
-        "Z, field_orientation, expected",
+        ("Z", "field_orientation", "expected"),
         [
             (1, "par", 3.16),  # eq (2.12), table 1
             (2, "par", 4.9),  # eq (2.12), table 1
@@ -765,14 +766,14 @@ class Test__nondim_tc_e_braginskii:
             (np.inf, "par", 12.5),  # eq (2.12), table 1
         ],
     )
-    def test_known_values_par(self, Z, field_orientation, expected):
+    def test_known_values_par(self, Z, field_orientation, expected) -> None:
         """Check some known values"""
         kappa_e_hat = _nondim_tc_e_braginskii(self.big_hall, Z, field_orientation)
         assert np.isclose(kappa_e_hat, expected, atol=1e-1)
 
     # values from Braginskii '65
     @pytest.mark.parametrize(
-        "Z, field_orientation, expected",
+        ("Z", "field_orientation", "expected"),
         [
             (1, "perp", 4.66),  # eq (2.13), table 1
             (2, "perp", 4.0),  # eq (2.13), table 1
@@ -781,20 +782,20 @@ class Test__nondim_tc_e_braginskii:
             (np.inf, "perp", 3.2),  # eq (2.13),table 1
         ],
     )
-    def test_known_values_perp(self, Z, field_orientation, expected):
+    def test_known_values_perp(self, Z, field_orientation, expected) -> None:
         """Check some known values"""
         kappa_e_hat = _nondim_tc_e_braginskii(self.big_hall, Z, field_orientation)
         assert np.isclose(kappa_e_hat * self.big_hall**2, expected, atol=1e-1)
 
     @pytest.mark.parametrize("Z", [1, 2, 3, 4, np.inf])
-    def test_unmagnetized(self, Z):
+    def test_unmagnetized(self, Z) -> None:
         """Confirm perp -> par as B -> 0"""
         kappa_e_hat_par = _nondim_tc_e_braginskii(self.small_hall, Z, "par")
         kappa_e_hat_perp = _nondim_tc_e_braginskii(self.small_hall, Z, "perp")
         assert np.isclose(kappa_e_hat_par, kappa_e_hat_perp, rtol=1e-3)
 
     @pytest.mark.parametrize("Z", [1, 4])
-    def test_cross_vs_ji_held(self, Z):
+    def test_cross_vs_ji_held(self, Z) -> None:
         """Cross should roughly agree with ji-held"""
         kappa_e_hat_cross_brag = _nondim_tc_e_braginskii(self.big_hall, Z, "cross")
         kappa_e_hat_cross_jh = _nondim_tc_e_ji_held(self.big_hall, Z, "cross")
@@ -809,30 +810,30 @@ class Test__nondim_tc_e_braginskii:
 # test class for _nondim_tc_i_braginskii function:
 class Test__nondim_tc_i_braginskii:
     @classmethod
-    def setup_class(cls):
+    def setup_class(cls) -> None:
         """Set up some initial values for tests"""
         cls.big_hall = 1000
         cls.small_hall = 0
 
-    def test_known_values_par(self):
+    def test_known_values_par(self) -> None:
         """Check some known values"""
         kappa_i_hat = _nondim_tc_i_braginskii(self.big_hall, field_orientation="par")
         expected = 3.9  # Braginskii '65 eq (2.15)
         assert np.isclose(kappa_i_hat, expected, atol=1e-1)
 
-    def test_known_values_perp(self):
+    def test_known_values_perp(self) -> None:
         """Check some known values"""
         kappa_i_hat = _nondim_tc_i_braginskii(self.big_hall, field_orientation="perp")
         expected = 2.0  # Braginskii '65 eq (2.16)
         assert np.isclose(kappa_i_hat * self.big_hall**2, expected, atol=1e-1)
 
-    def test_unmagnetized(self):
+    def test_unmagnetized(self) -> None:
         """Confirm perp -> par as B -> 0"""
         kappa_i_hat_par = _nondim_tc_i_braginskii(self.small_hall, "par")
         kappa_i_hat_perp = _nondim_tc_i_braginskii(self.small_hall, "perp")
         assert np.isclose(kappa_i_hat_par, kappa_i_hat_perp, rtol=1e-3)
 
-    def test_cross_vs_ji_held_K2(self):
+    def test_cross_vs_ji_held_K2(self) -> None:
         """Confirm cross agrees with ji-held model when K=2"""
         kappa_i_hat_brag = _nondim_tc_i_braginskii(self.big_hall, "cross")
         kappa_i_hat_jh = _nondim_tc_i_ji_held(self.big_hall, 1, 0, 100, "cross", K=2)
@@ -842,14 +843,14 @@ class Test__nondim_tc_i_braginskii:
 # test class for _nondim_tec_braginskii function:
 class Test__nondim_tec_braginskii:
     @classmethod
-    def setup_class(cls):
+    def setup_class(cls) -> None:
         """Set up some initial values for tests"""
         cls.big_hall = 1000
         cls.small_hall = 0
 
     # values from Braginskii '65
     @pytest.mark.parametrize(
-        "Z, field_orientation, expected",
+        ("Z", "field_orientation", "expected"),
         [
             (1, "par", 0.71),  # eq (2.9), table 1
             (2, "par", 0.9),  # eq (2.9), table 1
@@ -858,20 +859,20 @@ class Test__nondim_tec_braginskii:
             (np.inf, "par", 1.5),  # eq (2.9),table 1
         ],
     )
-    def test_known_values_par(self, Z, field_orientation, expected):
+    def test_known_values_par(self, Z, field_orientation, expected) -> None:
         """Check some known values"""
         beta_hat = _nondim_tec_braginskii(self.big_hall, Z, field_orientation)
         assert np.isclose(beta_hat, expected, atol=1e-1)
 
     @pytest.mark.parametrize("Z", [1, 2, 3, 4, np.inf])
-    def test_unmagnetized(self, Z):
+    def test_unmagnetized(self, Z) -> None:
         """Confirm perp -> par as B -> 0"""
         beta_hat_par = _nondim_tec_braginskii(self.small_hall, Z, "par")
         beta_hat_perp = _nondim_tec_braginskii(self.small_hall, Z, "perp")
         assert np.isclose(beta_hat_par, beta_hat_perp, rtol=1e-3)
 
     @pytest.mark.parametrize("Z", [1, 4])
-    def test_cross_vs_ji_held(self, Z):
+    def test_cross_vs_ji_held(self, Z) -> None:
         """Cross should roughly agree with ji-held"""
         beta_hat_cross_brag = _nondim_tec_braginskii(self.big_hall, Z, "cross")
         beta_hat_cross_jh = _nondim_tec_ji_held(self.big_hall, Z, "cross")
@@ -881,14 +882,14 @@ class Test__nondim_tec_braginskii:
 # test class for _nondim_resist_braginskii function:
 class Test__nondim_resist_braginskii:
     @classmethod
-    def setup_class(cls):
+    def setup_class(cls) -> None:
         """Set up some initial values for tests"""
         cls.big_hall = 1000
         cls.small_hall = 0
 
     # values from Braginskii '65
     @pytest.mark.parametrize(
-        "Z, field_orientation, expected",
+        ("Z", "field_orientation", "expected"),
         [
             (1, "par", 0.51),  # eq (2.8), table 1
             (2, "par", 0.44),  # table 1
@@ -897,20 +898,20 @@ class Test__nondim_resist_braginskii:
             (np.inf, "par", 0.29),  # eq (2.8),table 1
         ],
     )
-    def test_known_values_par(self, Z, field_orientation, expected):
+    def test_known_values_par(self, Z, field_orientation, expected) -> None:
         """Check some known values"""
         beta_hat = _nondim_resist_braginskii(self.big_hall, Z, field_orientation)
         assert np.isclose(beta_hat, expected, atol=1e-2)
 
     @pytest.mark.parametrize("Z", [1, 2, 3, 4, np.inf])
-    def test_unmagnetized(self, Z):
+    def test_unmagnetized(self, Z) -> None:
         """Confirm perp -> par as B -> 0"""
         alpha_hat_par = _nondim_resist_braginskii(self.small_hall, Z, "par")
         alpha_hat_perp = _nondim_resist_braginskii(self.small_hall, Z, "perp")
         assert np.isclose(alpha_hat_par, alpha_hat_perp, rtol=1e-3)
 
     @pytest.mark.parametrize("Z", [1, 4])
-    def test_cross_vs_ji_held(self, Z):
+    def test_cross_vs_ji_held(self, Z) -> None:
         """Cross should roughly agree with ji-held at hall 0.1"""
         alpha_hat_cross_brag = _nondim_resist_braginskii(0.1, Z, "cross")
         alpha_hat_cross_jh = _nondim_resist_ji_held(0.1, Z, "cross")
@@ -920,23 +921,23 @@ class Test__nondim_resist_braginskii:
 # test class for _nondim_visc_i_braginskii function:
 class Test__nondim_visc_i_braginskii:
     @classmethod
-    def setup_class(cls):
+    def setup_class(cls) -> None:
         """Set up some initial values for tests"""
         cls.big_hall = 1000
         cls.small_hall = 0
 
     # values from Braginskii '65, eqs. 2.22 to 2.24
     @pytest.mark.parametrize(
-        "expected, power",
+        ("expected", "power"),
         [(np.array((0.96, 0.3, 1.2, 0.5, 1.0)), np.array((0, 2, 2, 1, 1)))],
     )
-    def test_known_values(self, expected, power):
+    def test_known_values(self, expected, power) -> None:
         """Check some known values"""
         eta_i_hat = _nondim_visc_i_braginskii(self.big_hall)
         eta_i_hat_with_powers = eta_i_hat * self.big_hall**power
         assert np.allclose(eta_i_hat_with_powers, expected, atol=1e-2)
 
-    def test_vs_ji_held_K2(self):
+    def test_vs_ji_held_K2(self) -> None:
         """Confirm agreement with ji-held model when K=2"""
         eta_i_hat_brag = _nondim_visc_i_braginskii(self.big_hall)
         eta_i_hat_jh = _nondim_visc_i_ji_held(self.big_hall, 1, 0, 100, K=2)
@@ -947,14 +948,14 @@ class Test__nondim_visc_i_braginskii:
 # test class for _nondim_visc_e_braginskii function:
 class Test__nondim_visc_e_braginskii:
     @classmethod
-    def setup_class(cls):
+    def setup_class(cls) -> None:
         """Set up some initial values for tests"""
         cls.big_hall = 1000
         cls.small_hall = 0
 
     # values from Braginskii '65
     @pytest.mark.parametrize(
-        "Z, expected, idx",
+        ("Z", "expected", "idx"),
         [
             (1, 0.73, 0),  # eq (2.25)
             (1, 0.51, 1),  # eq (2.26)
@@ -963,7 +964,7 @@ class Test__nondim_visc_e_braginskii:
             (1, 1.0, 4),  # eq (2.27)
         ],
     )
-    def test_known_values(self, Z, expected, idx):
+    def test_known_values(self, Z, expected, idx: int) -> None:
         """Check some known values"""
         beta_hat = _nondim_visc_e_braginskii(self.big_hall, Z)
         if idx == 0:
@@ -974,13 +975,13 @@ class Test__nondim_visc_e_braginskii:
             assert np.isclose(beta_hat[idx] * self.big_hall, expected, atol=1e-1)
 
 
-def test_fail__check_Z_nan():
+def test_fail__check_Z_nan() -> None:
     with pytest.raises(PhysicsError):
         _check_Z([1, 2, 3], 4)
 
 
 @pytest.mark.parametrize("Z", [1, 2, 4, 16, np.inf])
-def test__nondim_tc_e_spitzer(Z):
+def test__nondim_tc_e_spitzer(Z) -> None:
     """Test _nondim_tc_e_spitzer function"""
     kappa = _nondim_tc_e_spitzer(Z)
     if Z == 1:
@@ -999,7 +1000,7 @@ def test__nondim_tc_e_spitzer(Z):
 
 
 @pytest.mark.parametrize("Z", [1, 2, 4, 16, np.inf])
-def test__nondim_resist_spitzer(Z):
+def test__nondim_resist_spitzer(Z) -> None:
     """Test _nondim_resist_spitzer function"""
     alpha = _nondim_resist_spitzer(Z, "par")
     if Z == 1:
@@ -1015,7 +1016,7 @@ def test__nondim_resist_spitzer(Z):
 
 
 @pytest.mark.parametrize("Z", [1, 2, 4, 16, np.inf])
-def test__nondim_tec_spitzer(Z):
+def test__nondim_tec_spitzer(Z) -> None:
     """Test _nondim_tec_spitzer function"""
     beta = _nondim_tec_spitzer(Z)
     if Z == 1:
@@ -1032,7 +1033,7 @@ def test__nondim_tec_spitzer(Z):
 
 # approximated from Ji-Held '13 figures 1 and 2 (black circles)
 @pytest.mark.parametrize(
-    "hall, Z, field_orientation, expected",
+    ("hall", "Z", "field_orientation", "expected"),
     [
         (0.0501, 1, "perp", 3.187),
         (0.2522, 1, "perp", 2.597),
@@ -1072,7 +1073,7 @@ def test__nondim_tec_spitzer(Z):
         (500.8, 100, "cross", 0.004972),
     ],
 )
-def test__nondim_tc_e_ji_held(hall, Z, field_orientation, expected):
+def test__nondim_tc_e_ji_held(hall, Z, field_orientation, expected) -> None:
     """Test _nondim_tc_e_ji_held function"""
     kappa_hat = _nondim_tc_e_ji_held(hall, Z, field_orientation)
     kappa_check = expected
@@ -1083,7 +1084,7 @@ def test__nondim_tc_e_ji_held(hall, Z, field_orientation, expected):
 
 # approximated from Ji-Held '13 figures 1 and 2 (black circles)
 @pytest.mark.parametrize(
-    "hall, Z, field_orientation, expected",
+    ("hall", "Z", "field_orientation", "expected"),
     [
         (0.03939, 1, "perp", 0.6959),
         (0.2498, 1, "perp", 0.6216),
@@ -1128,7 +1129,7 @@ def test__nondim_tc_e_ji_held(hall, Z, field_orientation, expected):
         (629.8, 100, "cross", 0.002308),
     ],
 )
-def test__nondim_tec_ji_held(hall, Z, field_orientation, expected):
+def test__nondim_tec_ji_held(hall, Z, field_orientation, expected) -> None:
     """Test _nondim_tec_ji_held function"""
     beta_hat = _nondim_tec_ji_held(hall, Z, field_orientation)
     beta_check = expected
@@ -1137,7 +1138,7 @@ def test__nondim_tec_ji_held(hall, Z, field_orientation, expected):
 
 # approximated from Ji-Held '13 figures 1 and 2 (black circles)
 @pytest.mark.parametrize(
-    "hall, Z, field_orientation, expected",
+    ("hall", "Z", "field_orientation", "expected"),
     [
         (0.06317, 1, "perp", 0.5064),
         (0.3966, 1, "perp", 0.5316),
@@ -1179,7 +1180,7 @@ def test__nondim_tec_ji_held(hall, Z, field_orientation, expected):
         (7879, 100, "cross", 0.005652),
     ],
 )
-def test__nondim_resist_ji_held(hall, Z, field_orientation, expected):
+def test__nondim_resist_ji_held(hall, Z, field_orientation, expected) -> None:
     """Test _nondim_resist_ji_held function"""
     alpha_hat = _nondim_resist_ji_held(hall, Z, field_orientation)
     alpha_check = expected
@@ -1188,7 +1189,7 @@ def test__nondim_resist_ji_held(hall, Z, field_orientation, expected):
 
 # approximated from Ji-Held '13 figure 3 (K = 80)
 @pytest.mark.parametrize(
-    "hall, Z, index, expected",
+    ("hall", "Z", "index", "expected"),
     [
         (0.01968, 1, 2, 0.7368),
         (0.1338, 1, 2, 0.7171),
@@ -1210,7 +1211,7 @@ def test__nondim_resist_ji_held(hall, Z, field_orientation, expected):
         (77.82, 1, 4, 0.01288),
     ],
 )
-def test__nondim_visc_e_ji_held(hall, Z, index, expected):
+def test__nondim_visc_e_ji_held(hall, Z, index, expected) -> None:
     """Test _nondim_visc_e_ji_held function"""
     alpha_hat = _nondim_visc_e_ji_held(hall, Z)
     alpha_check = expected
@@ -1221,7 +1222,7 @@ def test__nondim_visc_e_ji_held(hall, Z, index, expected):
 # note r = sqrt(2) * x
 # note kappa from figure = kappa_hat / sqrt(2)
 @pytest.mark.parametrize(
-    "hall, Z, mu, theta, field_orientation, expected",
+    ("hall", "Z", "mu", "theta", "field_orientation", "expected"),
     [
         (0.01529, 1, 0, 100, "perp", 3.99586042),
         (0.0589, 1, 0, 100, "perp", 3.96828326),
@@ -1242,7 +1243,9 @@ def test__nondim_visc_e_ji_held(hall, Z, index, expected):
         (77.11707, 1, 0, 100, "cross", 0.03235721),
     ],
 )
-def test__nondim_tc_i_ji_held(hall, Z, mu, theta, field_orientation, expected):
+def test__nondim_tc_i_ji_held(
+    hall, Z, mu, theta: float, field_orientation, expected
+) -> None:
     """Test _nondim_tc_i_ji_held function"""
     kappa_hat = _nondim_tc_i_ji_held(hall, Z, mu, theta, field_orientation)
     kappa_check = expected
@@ -1253,7 +1256,7 @@ def test__nondim_tc_i_ji_held(hall, Z, mu, theta, field_orientation, expected):
 # note r = sqrt(2) * x
 # note eta from figure = eta_hat / sqrt(2)
 @pytest.mark.parametrize(
-    "hall, Z, mu, theta, index, expected",
+    ("hall", "Z", "mu", "theta", "index", "expected"),
     [
         (0.01981, 1, 0, 100, 2, 0.96166522),
         (0.17423, 1, 0, 100, 2, 0.92206724),
@@ -1270,7 +1273,7 @@ def test__nondim_tc_i_ji_held(hall, Z, mu, theta, field_orientation, expected):
         (80.42633, 1, 0, 100, 4, 0.01238144),
     ],
 )
-def test__nondim_visc_i_ji_held(hall, Z, mu, theta, index, expected):
+def test__nondim_visc_i_ji_held(hall, Z, mu, theta: float, index, expected) -> None:
     """Test _nondim_visc_i_ji_held function"""
     kappa_hat = _nondim_visc_i_ji_held(hall, Z, mu, theta)
     kappa_check = expected

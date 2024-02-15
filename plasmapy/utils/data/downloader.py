@@ -1,13 +1,13 @@
 """
 Contains functionality for downloading files from a URL. Intended for
-downloading files from `PlasmaPy's data repository`_.
+downloading files from |PlasmaPy's data repository|.
 
 """
 
-import requests
-
 from pathlib import Path
 from urllib.parse import urljoin
+
+import requests
 
 __all__ = ["get_file"]
 
@@ -32,7 +32,7 @@ def get_file(basename, base_url=_BASE_URL, directory=None):
 
     base_url : str, optional
         The base URL of the file to be downloaded. Defaults to the root
-        directory of `PlasmaPy's data repository`_.
+        directory of |PlasmaPy's data repository|.
 
     directory : str, optional
         The full path to the desired download location. Defaults to the
@@ -48,7 +48,7 @@ def get_file(basename, base_url=_BASE_URL, directory=None):
     if "." not in str(basename):
         raise ValueError(f"'filename' ({basename}) must include an extension.")
 
-    if directory is None:  # coverage: ignore
+    if directory is None:
         directory = Path(Path.home(), ".plasmapy", "downloads")
 
         # Create the .plasmapy/downloads directory if it does not already

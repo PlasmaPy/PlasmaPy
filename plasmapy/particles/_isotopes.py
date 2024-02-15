@@ -7,9 +7,10 @@ __all__ = [
     "data_about_isotopes",
 ]
 
-import astropy.units as u
 import json
 import pkgutil
+
+import astropy.units as u
 
 # this code was used to create the JSON file as per vn-ki on Matrix:
 # https://matrix.to/#/!hkWCiyhQyxiYJlUtKF:matrix.org/

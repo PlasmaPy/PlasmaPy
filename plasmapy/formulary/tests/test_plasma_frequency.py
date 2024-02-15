@@ -9,20 +9,20 @@ plasma frequency.
 import astropy.units as u
 import numpy as np
 import pytest
-
 from astropy.constants.si import m_p
 from numba.extending import is_jitted
 
 from plasmapy.formulary.frequencies import plasma_frequency, plasma_frequency_lite, wp_
-from plasmapy.particles import Particle
-from plasmapy.utils.pytest_helpers import assert_can_handle_nparray
+from plasmapy.particles._factory import _physical_particle_factory
+from plasmapy.particles.exceptions import InvalidParticleError
+from plasmapy.utils._pytest_helpers import assert_can_handle_nparray
 
 
 @pytest.mark.parametrize(
-    "alias, parent",
+    ("alias", "parent"),
     [(wp_, plasma_frequency)],
 )
-def test_aliases(alias, parent):
+def test_aliases(alias, parent) -> None:
     assert alias is parent
 
 
@@ -35,15 +35,15 @@ class TestPlasmaFrequency:
     """
 
     @pytest.mark.parametrize(
-        "bound_name, bound_attr",
+        ("bound_name", "bound_attr"),
         [("lite", plasma_frequency_lite)],
     )
-    def test_lite_function_binding(self, bound_name, bound_attr):
+    def test_lite_function_binding(self, bound_name: str, bound_attr) -> None:
         """Test expected attributes are bound correctly."""
         assert hasattr(plasma_frequency, bound_name)
         assert getattr(plasma_frequency, bound_name) is bound_attr
 
-    def test_lite_function_marking(self):
+    def test_lite_function_marking(self) -> None:
         """
         Test plasma_frequency is marked as having a Lite-Function.
         """
@@ -58,16 +58,19 @@ class TestPlasmaFrequency:
             assert origin == bound_origin
 
     @pytest.mark.parametrize(
-        "args, kwargs, _error",
+        ("args", "kwargs", "_error"),
         [
-            ((u.m**-3, "e-"), {}, TypeError),
             (("not a density", "e-"), {}, TypeError),
             ((5 * u.s, "e-"), {}, u.UnitTypeError),
             ((5 * u.m**-2, "e-"), {}, u.UnitTypeError),
-            ((), {"n": 5 * u.m**-3, "particle": "not a particle"}, ValueError),
+            (
+                (),
+                {"n": 5 * u.m**-3, "particle": "not a particle"},
+                InvalidParticleError,
+            ),
         ],
     )
-    def test_raises(self, args, kwargs, _error):
+    def test_raises(self, args, kwargs, _error) -> None:
         """
         Test scenarios that cause plasma_frequency to raise an
         Exception.
@@ -76,7 +79,7 @@ class TestPlasmaFrequency:
             plasma_frequency(*args, **kwargs)
 
     @pytest.mark.parametrize(
-        "args, kwargs, _warning, expected",
+        ("args", "kwargs", "_warning", "expected"),
         [
             (
                 (1e19, "e-"),
@@ -87,7 +90,7 @@ class TestPlasmaFrequency:
             ((1e19, "p"), {}, u.UnitsWarning, plasma_frequency(1e19 * u.m**-3, "p")),
         ],
     )
-    def test_warns(self, args, kwargs, _warning, expected):
+    def test_warns(self, args, kwargs, _warning, expected) -> None:
         """
         Test scenarios the cause plasma_frequency to issue a warning.
         """
@@ -100,11 +103,11 @@ class TestPlasmaFrequency:
             assert np.allclose(wp, expected)
 
     @pytest.mark.parametrize(
-        "args, kwargs, expected, rtol",
+        ("args", "kwargs", "expected", "rtol"),
         [
             ((1 * u.cm**-3, "e-"), {}, 5.64e4, 1e-2),
-            ((1 * u.cm**-3, "N"), {}, 3.53e2, 1e-1),
-            ((1e17 * u.cm**-3, "p"), {"z_mean": 0.8}, 333063562455.4028, 1e-6),
+            ((1 * u.cm**-3, "N+"), {}, 3.53e2, 1e-1),
+            ((1e17 * u.cm**-3, "H-1"), {"Z": 0.8}, 333045427357.53955, 1e-6),
             (
                 (5e19 * u.m**-3, "p"),
                 {},
@@ -114,7 +117,7 @@ class TestPlasmaFrequency:
             ((m_p.to(u.u).value * u.cm**-3,), {"particle": "p"}, 1.32e3, 1e-2),
         ],
     )
-    def test_values(self, args, kwargs, expected, rtol):
+    def test_values(self, args, kwargs, expected, rtol) -> None:
         """Test various expected values."""
         wp = plasma_frequency(*args, **kwargs)
 
@@ -123,10 +126,10 @@ class TestPlasmaFrequency:
         assert np.allclose(wp.value, expected, rtol=rtol)
 
     @pytest.mark.parametrize(
-        "args, kwargs",
-        [((1 * u.cm**-3, "N"), {}), ((1e12 * u.cm**-3,), {"particle": "p"})],
+        ("args", "kwargs"),
+        [((1 * u.cm**-3, "N+"), {}), ((1e12 * u.cm**-3,), {"particle": "p"})],
     )
-    def test_to_hz(self, args, kwargs):
+    def test_to_hz(self, args, kwargs) -> None:
         """Test behavior of the ``to_hz`` keyword."""
         wp = plasma_frequency(*args, **kwargs)
         fp = plasma_frequency(*args, to_hz=True, **kwargs)
@@ -135,17 +138,17 @@ class TestPlasmaFrequency:
         assert fp.unit == u.Hz
         assert fp.value == wp.value / (2.0 * np.pi)
 
-    def test_nans(self):
+    def test_nans(self) -> None:
         assert np.isnan(plasma_frequency(np.nan * u.m**-3, "e-"))
 
-    def test_can_handle_numpy_arrays(self):
+    def test_can_handle_numpy_arrays(self) -> None:
         assert_can_handle_nparray(plasma_frequency)
 
 
 class TestPlasmaFrequencyLite:
     """Test class for `plasma_frequency_lite`."""
 
-    def test_is_jitted(self):
+    def test_is_jitted(self) -> None:
         """Ensure `plasmapy_frequency_lite` was jitted by `numba`."""
         assert is_jitted(plasma_frequency_lite)
 
@@ -154,26 +157,23 @@ class TestPlasmaFrequencyLite:
         [
             {"n": 1e12 * u.cm**-3, "particle": "e-"},
             {"n": 1e12 * u.cm**-3, "particle": "e-", "to_hz": True},
-            {"n": 1e11 * u.cm**-3, "particle": "He", "z_mean": 0.8},
+            {"n": 1e11 * u.cm**-3, "particle": "He", "Z": 0.8},
         ],
     )
-    def test_normal_vs_lite_values(self, inputs):
+    def test_normal_vs_lite_values(self, inputs) -> None:
         """
         Test that plasma_frequency and plasma_frequency_lite calculate
         the same values.
         """
-        particle = Particle(inputs["particle"])
+        Z = inputs.get("Z", None)
+        particle = _physical_particle_factory(inputs["particle"], Z=Z)
+
         inputs_unitless = {
             "n": inputs["n"].to(u.m**-3).value,
             "mass": particle.mass.value,
+            "Z": np.abs(particle.charge_number),  # type: ignore[arg-type]
         }
-        if "z_mean" in inputs:
-            inputs_unitless["z_mean"] = inputs["z_mean"]
-        else:
-            try:
-                inputs_unitless["z_mean"] = np.abs(particle.charge_number)
-            except Exception:  # noqa: BLE001
-                inputs_unitless["z_mean"] = 1
+
         if "to_hz" in inputs:
             inputs_unitless["to_hz"] = inputs["to_hz"]
 

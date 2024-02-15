@@ -1,11 +1,10 @@
 """Functions that are related to nuclear reactions."""
 __all__ = ["nuclear_binding_energy", "nuclear_reaction_energy", "mass_energy"]
 
-import astropy.units as u
 import re
-
 from numbers import Integral
-from typing import Optional, Union
+
+import astropy.units as u
 
 from plasmapy.particles.decorators import particle_input
 from plasmapy.particles.exceptions import InvalidParticleError, ParticleError
@@ -14,8 +13,8 @@ from plasmapy.particles.particle_class import Particle
 
 @particle_input(any_of={"isotope", "baryon"})
 def nuclear_binding_energy(
-    particle: Particle, mass_numb: Optional[Integral] = None
-) -> u.J:
+    particle: Particle, mass_numb: Integral | None = None
+) -> u.Quantity[u.J]:
     """
     Return the nuclear binding energy associated with an isotope.
 
@@ -53,14 +52,14 @@ def nuclear_binding_energy(
 
     Examples
     --------
-    >>> from astropy import units as u
-    >>> nuclear_binding_energy('Fe-56').to(u.MeV)
+    >>> import astropy.units as u
+    >>> nuclear_binding_energy("Fe-56").to(u.MeV)
     <Quantity 492.25957 MeV>
     >>> nuclear_binding_energy(26, 56)
     <Quantity 7.8868678e-11 J>
-    >>> nuclear_binding_energy('p')  # proton
+    >>> nuclear_binding_energy("p")  # proton
     <Quantity 0. J>
-    >>> from astropy import units as u
+    >>> import astropy.units as u
     >>> before = nuclear_binding_energy("D") + nuclear_binding_energy("T")
     >>> after = nuclear_binding_energy("alpha")
     >>> (after - before).to(u.MeV)  # released energy from D + T --> alpha + n
@@ -70,7 +69,9 @@ def nuclear_binding_energy(
 
 
 @particle_input
-def mass_energy(particle: Particle, mass_numb: Optional[Integral] = None) -> u.J:
+def mass_energy(
+    particle: Particle, mass_numb: Integral | None = None
+) -> u.Quantity[u.J]:
     """
     Return a particle's mass energy.  If the particle is an isotope or
     nuclide, return the nuclear mass energy only.
@@ -102,13 +103,13 @@ def mass_energy(particle: Particle, mass_numb: Optional[Integral] = None) -> u.J
 
     Examples
     --------
-    >>> mass_energy('He-4')
+    >>> mass_energy("He-4")
     <Quantity 5.9719e-10 J>
     """
     return particle.mass_energy
 
 
-def nuclear_reaction_energy(*args, **kwargs) -> u.J:
+def nuclear_reaction_energy(*args, **kwargs) -> u.Quantity[u.J]:  # noqa: C901, PLR0915
     """
     Return the released energy from a nuclear reaction.
 
@@ -118,12 +119,12 @@ def nuclear_reaction_energy(*args, **kwargs) -> u.J:
         A string representing the reaction, like
         ``"D + T --> alpha + n"`` or ``"Be-8 --> 2 * He-4"``.
 
-    reactants : |particle-like| or |particle-list-like|, optional, |keyword-only|
+    reactants : |particle-like| or |particle-list-like|, |keyword-only|, optional
         A `list` or `tuple` containing the reactants of a nuclear
         reaction (e.g., ``['D', 'T']``), or a string representing the
         sole reactant.
 
-    products : |particle-like| or |particle-list-like|, optional, |keyword-only|
+    products : |particle-like| or |particle-list-like|, |keyword-only|, optional
         A list or tuple containing the products of a nuclear reaction
         (e.g., ``['alpha', 'n']``), or a string representing the sole
         product.
@@ -157,18 +158,18 @@ def nuclear_reaction_energy(*args, **kwargs) -> u.J:
 
     Examples
     --------
-    >>> from astropy import units as u
+    >>> import astropy.units as u
     >>> nuclear_reaction_energy("D + T --> alpha + n")
     <Quantity 2.8181e-12 J>
-    >>> triple_alpha1 = '2*He-4 --> Be-8'
-    >>> triple_alpha2 = 'Be-8 + alpha --> carbon-12'
+    >>> triple_alpha1 = "2*He-4 --> Be-8"
+    >>> triple_alpha2 = "Be-8 + alpha --> carbon-12"
     >>> energy_triplealpha1 = nuclear_reaction_energy(triple_alpha1)
     >>> energy_triplealpha2 = nuclear_reaction_energy(triple_alpha2)
     >>> print(energy_triplealpha1, energy_triplealpha2)
     -1.471430e-14 J 1.1802573e-12 J
     >>> energy_triplealpha2.to(u.MeV)
     <Quantity 7.3665870 MeV>
-    >>> nuclear_reaction_energy(reactants=['n'], products=['p+', 'e-'])
+    >>> nuclear_reaction_energy(reactants=["n"], products=["p+", "e-"])
     <Quantity 1.25343e-13 J>
     """
 
@@ -182,7 +183,7 @@ def nuclear_reaction_energy(*args, **kwargs) -> u.J:
     errmsg = "Invalid nuclear reaction."
 
     def process_particles_list(
-        unformatted_particles_list: list[Union[str, Particle]]
+        unformatted_particles_list: list[str | Particle],
     ) -> list[Particle]:
         """
         Take an unformatted list of particles and puts each
@@ -195,7 +196,7 @@ def nuclear_reaction_energy(*args, **kwargs) -> u.J:
         if isinstance(unformatted_particles_list, str):
             unformatted_particles_list = [unformatted_particles_list]
 
-        if not isinstance(unformatted_particles_list, (list, tuple)):
+        if not isinstance(unformatted_particles_list, list | tuple):
             raise TypeError(
                 "The input to process_particles_list should be a "
                 "string, list, or tuple."
@@ -219,7 +220,7 @@ def nuclear_reaction_energy(*args, **kwargs) -> u.J:
                     raise ParticleError(errmsg) from exc
 
                 if particle.element and not particle.isotope:
-                    raise ParticleError(errmsg)  # noqa: TC301
+                    raise ParticleError(errmsg)
 
                 particles += [particle] * multiplier
 
@@ -251,7 +252,7 @@ def nuclear_reaction_energy(*args, **kwargs) -> u.J:
                 total_charge += particle.charge_number
         return total_charge
 
-    def add_mass_energy(particles: list[Particle]) -> u.Quantity:
+    def add_mass_energy(particles: list[Particle]) -> u.Quantity[u.J]:
         """
         Find the total mass energy from a list of particles, while
         taking the masses of the fully ionized isotopes.
@@ -316,6 +317,4 @@ def nuclear_reaction_energy(*args, **kwargs) -> u.J:
             f"Total charge is not conserved for {reactants = } and {products = }."
         )
 
-    released_energy = add_mass_energy(reactants) - add_mass_energy(products)
-
-    return released_energy
+    return add_mass_energy(reactants) - add_mass_energy(products)

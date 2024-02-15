@@ -2,13 +2,13 @@
 Contains functions that create widgets and process properties for the calculator.
 """
 
-__all__ = []
+__all__: list[str] = []
 
 import abc
 import importlib
-import ipywidgets as widgets
-
 from inspect import signature
+
+import ipywidgets as widgets
 
 from plasmapy.particles import Particle
 
@@ -39,7 +39,7 @@ Stores the functions to be processed. This data is gathered from
 
 class _GenericWidget(abc.ABC):
     """
-    Generic widget class
+    Generic widget class.
 
     Parameters
     ----------
@@ -59,7 +59,9 @@ class _GenericWidget(abc.ABC):
         If the method `create_widget` is not implemented.
     """
 
-    def __init__(self, property_name, property_alias="", values_cont=values_container):
+    def __init__(
+        self, property_name: str, property_alias="", values_cont=values_container
+    ) -> None:
         self.property_name = property_name
         self.property_alias = property_alias or property_name
         self.widget = None
@@ -67,7 +69,7 @@ class _GenericWidget(abc.ABC):
         self.unit = None
         self.units_dropdown = None
 
-    def set_unit(self, unit):
+    def set_unit(self, unit) -> None:
         """
         Set unit for the value of widget, defaults to `None`.
 
@@ -80,7 +82,7 @@ class _GenericWidget(abc.ABC):
 
     def get_widget(self):
         """
-        Get current widget object reference
+        Get current widget object reference.
 
         Returns
         -------
@@ -100,9 +102,9 @@ class _GenericWidget(abc.ABC):
         """
         return self.units_dropdown
 
-    def set_place_holder(self, text):
+    def set_place_holder(self, text: str) -> None:
         """
-        Set place holder text of the widget, defaults to empty string
+        Set place holder text of the widget, defaults to empty string.
 
         Parameters
         ----------
@@ -114,10 +116,10 @@ class _GenericWidget(abc.ABC):
     @abc.abstractmethod
     def create_widget(self):
         """
-        Virtual method to create widget
+        Virtual method to create widget.
         """
 
-    def post_creation(self):
+    def post_creation(self) -> None:
         """
         Default method that is called after widget creation.
         Attaches change listener to the widget.
@@ -125,7 +127,7 @@ class _GenericWidget(abc.ABC):
         self.set_place_holder("")
         self.widget.observe(self.handle_change, names="value")
 
-    def edge_case(self, value):  # noqa: B027
+    def edge_case(self, value) -> None:  # noqa: B027
         """
         Edge case handling for the widget. This is called within handle_change.
 
@@ -135,7 +137,7 @@ class _GenericWidget(abc.ABC):
             Value of the widget
         """
 
-    def edge_case_condition(self, value):  # noqa: ARG002
+    def edge_case_condition(self, value) -> bool:  # noqa: ARG002
         """
         Edge case condition for the widget.
 
@@ -151,7 +153,7 @@ class _GenericWidget(abc.ABC):
         """
         return False
 
-    def try_change_value(self, value):
+    def try_change_value(self, value) -> None:
         """
         Set property_name in values_container to value.
 
@@ -162,7 +164,7 @@ class _GenericWidget(abc.ABC):
         """
         self.values_cont[self.property_name] = value
 
-    def display_error(self, value):  # noqa: ARG002
+    def display_error(self, value) -> None:  # noqa: ARG002
         """
         Handle invalid input provide realtime validation.
 
@@ -192,7 +194,7 @@ class _GenericWidget(abc.ABC):
         """
         return change.new * self.unit if self.unit else change.new
 
-    def attach_units_dropdown(self, options):
+    def attach_units_dropdown(self, options) -> None:
         """
         Special method that attaches dropdown widget to the input widget,
         and handles the change event of the dropdown widget.
@@ -207,7 +209,7 @@ class _GenericWidget(abc.ABC):
         )
         self.units_dropdown.observe(self.handle_dropdown_change, names="value")
 
-    def handle_dropdown_change(self, change):  # noqa: ARG002
+    def handle_dropdown_change(self, change) -> None:  # noqa: ARG002
         """
         Handle change event of the dropdown widget.
 
@@ -222,7 +224,7 @@ class _GenericWidget(abc.ABC):
                 self.values_cont[self.property_name].value * self.unit
             )
 
-    def handle_change(self, change):
+    def handle_change(self, change) -> None:
         """
         Handle change event of the widget, follows same process
         for all widgets.
@@ -262,16 +264,23 @@ class _FloatBox(_GenericWidget):
         Maximum value the widget can take
     """
 
-    def __init__(self, property_name, min=-1e50, max=1e50):  # noqa: A002
+    def __init__(
+        self,
+        property_name: str,
+        min: float = -1e50,  # noqa: A002
+        max: float = 1e50,  # noqa: A002
+    ) -> None:
         super().__init__(property_name)
         self.min = min
         self.max = max
 
-    def create_widget(self, style={"description_width": "initial"}):  # noqa: B006
+    def create_widget(self, style=None) -> None:
         """
         Implements create_widget. description_width is set to initial
         to make the widget as wide as possible.
         """
+        if style is None:
+            style = {"description_width": "initial"}
         self.widget = widgets.BoundedFloatText(
             name=self.property_name,
             min=self.min,
@@ -293,10 +302,10 @@ class _CheckBox(_GenericWidget):
         Name of the property the widget is associated with.
     """
 
-    def __init__(self, property_name):
+    def __init__(self, property_name: str) -> None:
         super().__init__(property_name)
 
-    def create_widget(self):
+    def create_widget(self) -> None:
         """
         Implements create_widget.
         """
@@ -319,7 +328,7 @@ class _ParticleBox(_GenericWidget):
         (particle_type in this case)
     """
 
-    def __init__(self, property_name, property_alias=None):
+    def __init__(self, property_name: str, property_alias=None) -> None:
         super().__init__(property_name, property_alias=property_alias)
 
     def edge_case_condition(self, value):
@@ -336,9 +345,9 @@ class _ParticleBox(_GenericWidget):
         `bool`
             `True` if the value is empty, `False` otherwise
         """
-        return value is None or value == ""  # noqa: PLC1901
+        return value is None or value == ""
 
-    def edge_case(self, value):  # noqa: ARG002
+    def edge_case(self, value) -> None:  # noqa: ARG002
         """
         Edge case to handle empty value of particle box
         resets the container value to `None`, and resets the error status.
@@ -347,7 +356,7 @@ class _ParticleBox(_GenericWidget):
         self.widget.description = ""
         self.widget.layout.border = ""
 
-    def try_change_value(self, value):
+    def try_change_value(self, value) -> None:
         """
         Set property_name in values_container to value,
         and resets the error status.
@@ -368,11 +377,13 @@ class _ParticleBox(_GenericWidget):
         self.widget.layout.border = ""
         self.widget.description = ""
 
-    def create_widget(self, style={"description_width": "initial"}):  # noqa: B006
+    def create_widget(self, style=None) -> None:
         """
         Implements create_widget. description_width is set to initial
         to make the widget as wide as possible.
         """
+        if style is None:
+            style = {"description_width": "initial"}
         self.widget = widgets.Text(style=style)
         self.post_creation()
 
@@ -390,7 +401,7 @@ class _IonBox(_ParticleBox):
         Alias of the property the widget is associated with.
     """
 
-    def __init__(self, property_name, property_alias=None):
+    def __init__(self, property_name: str, property_alias=None) -> None:
         super().__init__(property_name, property_alias=property_alias)
 
     def try_change_value(self, value):
@@ -436,7 +447,9 @@ class _FunctionInfo:
         Reference to global dictionary of values to be passed to the function
     """
 
-    def __init__(self, module_name, function_name, values_cont=values_container):
+    def __init__(
+        self, module_name: str, function_name: str, values_cont=values_container
+    ) -> None:
         self.module = module_name
         self.fname = function_name
         self.fattr = getattr(importlib.import_module(module_name), function_name)
@@ -447,7 +460,7 @@ class _FunctionInfo:
         self.output_widget.layout.margin = EQUAL_SPACING_CONFIG
         self.output_widget.layout.padding = EQUAL_SPACING_CONFIG
 
-    def add_combo(self, spec_combo):
+    def add_combo(self, spec_combo) -> None:
         """
         Specify selective combination of parameters to be used in the function,
         This is the case for few functions where having all parameters doesn't yield
@@ -499,7 +512,7 @@ class _FunctionInfo:
             if arg in self.values_cont and self.values_cont[arg] is not None
         }
 
-    def error_message(self, spec):
+    def error_message(self, spec) -> None:
         """
         Generates an error message for the function when parameters are missing.
 
@@ -508,15 +521,25 @@ class _FunctionInfo:
         spec: `list`
             List of parameters to be used in the function
         """
-        print(_colored_text(BLACK, "["), end="")
+        # We'll need to switch from print() to using logging library
+
+        print(_colored_text(BLACK, "["), end="")  # noqa: T201
+
         for arg in spec:
             if arg in self.values_cont and self.values_cont[arg] is not None:
-                print(_colored_text(LIGHT_GREEN, f"{arg}:present,"), end="")
+                print(  # noqa: T201
+                    _colored_text(LIGHT_GREEN, f"{arg}:present,"),
+                    end="",
+                )
             else:
-                print(_colored_text(DARK_RED, f"{arg}:missing,"), end="")
-        print(_colored_text(BLACK, "]"))
+                print(  # noqa: T201
+                    _colored_text(DARK_RED, f"{arg}:missing,"),
+                    end="",
+                )
 
-    def process(self):
+        print(_colored_text(BLACK, "]"))  # noqa: T201
+
+    def process(self) -> None:
         """
         Processes the function based on signatures and spec_combo provided.
         Spec_combo is prioritized over the function signature.
@@ -534,12 +557,15 @@ class _FunctionInfo:
         with self.output_widget:
             try:
                 self.output_widget.layout.border = "0px"
-                print(f" : {self.fattr(**args_dict)}")
+
+                # We'll need to switch from print() to using logging library
+
+                print(f" : {self.fattr(**args_dict)}")  # noqa: T201
 
             except Exception as e:  # noqa: BLE001
                 self.output_widget.layout.border = ERROR_STYLE
-                print(e)
-                print(
+                print(e)  # noqa: T201
+                print(  # noqa: T201
                     " : could not be computed one or more parameter is missing - check below for missing parameters"
                 )
                 if self.spec_combo:
@@ -549,7 +575,7 @@ class _FunctionInfo:
                     self.error_message(self.sig)
 
 
-def _create_label(label, color="black"):
+def _create_label(label: str, color="black"):
     """
     Creates a label widget with the given text and color.
 
@@ -566,7 +592,7 @@ def _create_label(label, color="black"):
     return widgets.HTML(f"<h3 style='margin:0px;{color_param}'>{label}<h3>")
 
 
-def _handle_button_click(event):
+def _handle_button_click(event) -> None:
     """
     Handles the click event of the calculate properties button.
     """
@@ -574,7 +600,7 @@ def _handle_button_click(event):
         fn.process()
 
 
-def _handle_clear_click(event):
+def _handle_clear_click(event) -> None:
     """
     Handles the click event of the clear properties button.
     Clears output of all functions.
@@ -583,7 +609,7 @@ def _handle_clear_click(event):
         fn.output_widget.clear_output()
 
 
-def _colored_text(color, text):
+def _colored_text(color, text: str) -> str:
     """
     Prepares an inline string with the given color.
 

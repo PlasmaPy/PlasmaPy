@@ -8,8 +8,8 @@ Nuclear Reactions
 Binding energy
 ==============
 
-The binding energy of a nuclide may be accessed either as an
-attribute of a |Particle| object, or by using the
+The binding energy of a nuclide may be accessed either as an attribute
+of a |Particle| object, or by using the
 |nuclear_binding_energy| function.
 
 >>> from plasmapy.particles import Particle, nuclear_binding_energy

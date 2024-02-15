@@ -2,9 +2,9 @@
 The `~plasmapy.formulary` subpackage contains commonly used formulae
 from plasma science.
 """
-__all__ = []
-__aliases__ = []
-__lite_funcs__ = []
+__all__: list[str] = []
+__aliases__: list[str] = []
+__lite_funcs__: list[str] = []
 
 from plasmapy.formulary.braginskii import *
 from plasmapy.formulary.collisions import *
@@ -31,7 +31,7 @@ for obj_name in list(globals()):
     if not (
         obj_name.startswith("__") or obj_name.endswith("__")
     ) and not inspect.ismodule(globals()[obj_name]):
-        __all__.append(obj_name)
+        __all__.append(obj_name)  # noqa: PYI056
 __all__.sort()
 
 # Put non-formulary imports here so that they don't get included in __all__
@@ -60,7 +60,7 @@ for modname in (
 ):
     try:
         obj = globals()[modname]
-    except KeyError:  # coverage: ignore
+    except KeyError:
         continue
 
     with contextlib.suppress(AttributeError):

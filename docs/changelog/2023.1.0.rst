@@ -1,0 +1,110 @@
+PlasmaPy v2023.1.0 (2023-01-13)
+===============================
+
+Backwards Incompatible Changes
+------------------------------
+
+- Moved the charged particle radiography analysis codes into a new module
+  `~plasmapy.diagnostics.charged_particle_radiography` containing synthetic
+  radiography tools in
+  `~plasmapy.diagnostics.charged_particle_radiography.synthetic_radiography`
+  and detector stack calculation tools in
+  `~plasmapy.diagnostics.charged_particle_radiography.detector_stacks`.
+  (:pr:`1274`)
+- Changed the `~plasmapy.formulary.lengths.gyroradius` function so that it
+  takes relativistic effects into account by default. (:pr:`1813`)
+
+
+Deprecations and Removals
+-------------------------
+
+- Changed the `~plasmapy.formulary.lengths.gyroradius` function so it no
+  longer accepts deprecated ``T_i``. (:pr:`1824`)
+- Removed ``plasmapy.formulary.parameters``, which was deprecated in
+  the ``0.7.0`` release.  The functionality in that module had previously
+  been migrated to modules that are broken down by physical type, such as:
+  `plasmapy.formulary.densities`, `plasmapy.formulary.dimensionless`,
+  `plasmapy.formulary.frequencies`, `plasmapy.formulary.lengths`,
+  `plasmapy.formulary.misc`, and `plasmapy.formulary.speeds`. (:pr:`1833`)
+- Deprecated providing a real number to the ``charge`` parameter of
+  |CustomParticle| to represent the |charge number|. Use ``Z`` instead.
+  (:pr:`1866`)
+
+
+Features
+--------
+
+- Added the
+  `~plasmapy.diagnostics.charged_particle_radiography.detector_stacks.Stack`
+  and |Layer| objects to the
+  `~plasmapy.diagnostics.charged_particle_radiography` module, which represent
+  a stack of detector media layers. The
+  `~plasmapy.diagnostics.charged_particle_radiography.detector_stacks.Stack.deposition_curves`
+  and
+  `~plasmapy.diagnostics.charged_particle_radiography.detector_stacks.Stack.energy_bands`
+  methods of
+  `~plasmapy.diagnostics.charged_particle_radiography.detector_stacks.Stack`
+  calculate the particle energies deposited in each detector layer.
+  (:pr:`1274`)
+-
+  `~plasmapy.diagnostics.charged_particle_radiography.synthetic_radiography.Tracker`
+  now supports multiple field grids, provided as an iterable. (:pr:`1799`)
+- Added the `plasmapy.analysis.time_series.running_moments` module
+  including two functions for calculating running moments of time
+  series. (:pr:`1803`)
+- Added ``lorentzfactor`` as an optional keyword-only argument
+  to `~plasmapy.formulary.lengths.gyroradius`. Also added ``relativistic``
+  as an optional keyword-only argument which can be set to `False` for the
+  non-relativistic approximation. (:pr:`1813`)
+- Modified |Particle| attributes to return |nan| in the appropriate units
+  when undefined rather than raising exceptions. (:pr:`1825`)
+- Added the `~plasmapy.particles.particle_class.CustomParticle.charge_number`
+  attribute to |CustomParticle|. (:pr:`1866`)
+- Added ``Z`` as a |keyword-only| |parameter| representing the
+  |charge number| to |CustomParticle|. (:pr:`1866`)
+
+
+Improved Documentation
+----------------------
+
+- Updated docstrings and annotations in `plasmapy.diagnostics.thomson`.
+  (:pr:`1756`)
+- Updated the discussion on type descriptions and parameter descriptions
+  for docstrings in the |documentation guide|. (:pr:`1757`)
+- Updated troubleshooting sections of the |documentation guide|. (:pr:`1817`)
+- Added a summary section to the |testing guide|. (:pr:`1823`)
+- Updated the |changelog guide|. (:pr:`1826`)
+- Reorganized the |coding guide|. (:pr:`1856`)
+- Added a documentation page on performance tips. (:pr:`1887`)
+
+
+Trivial/Internal Changes
+------------------------
+
+- Updated warning messages in
+  `~plasmapy.formulary.collisions.coulomb.Coulomb_logarithm`. (:pr:`1586`)
+- Transferred most of the contents of :file:`setup.py` and :file:`setup.cfg` to
+  :file:`pyproject.toml` (see :pep:`518` and :pep:`621`). Simplified ``extras``
+  requirements (``pip install plasmapy[all]`` and ``[extras]`` are gone).
+  (:pr:`1758`)
+- Added `blacken-docs <https://github.com/adamchainz/blacken-docs>`__ to
+  the |pre-commit| configuration. (:pr:`1807`)
+- Removed ``pytest-xdist`` from the testing requirements (see also
+  :issue:`750`). (:pr:`1822`)
+- Refactored tests of `~plasmapy.formulary.relativity.Lorentz_factor`
+  and `~plasmapy.formulary.relativity.relativistic_energy`. (:pr:`1844`)
+- Applied refactorings from |ruff| and ``refurb`` to `plasmapy.utils`.
+  (:pr:`1845`)
+- Applied changes from ``refurb`` to `plasmapy.particles`. (:pr:`1846`)
+- Applied changes from ``refurb`` to `plasmapy.formulary`. (:pr:`1847`)
+- Apply changes from |ruff| and ``refurb`` to `plasmapy.analysis`,
+  `plasmapy.diagnostics`, `plasmapy.dispersion`, and `plasmapy.plasma`.
+  (:pr:`1853`)
+- Added |ruff| to the ``pre-commit`` configuration. (:pr:`1854`)
+- Added the ``strict`` and ``allowed_physical_types`` parameters to
+  ``plasmapy.utils._units_helpers._get_physical_type_dict``. (:pr:`1880`)
+- Added a private constructor method to |CustomParticle| with an API
+  that is better suited for use in |ParticleList| and the particle
+  factory function used by |particle_input|. (:pr:`1881`)
+- Dropped the dependency on ``cached-property`` in favor of
+  `functools.cached_property`. (:pr:`1886`)

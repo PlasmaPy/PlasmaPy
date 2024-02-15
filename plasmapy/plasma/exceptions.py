@@ -1,7 +1,7 @@
 """Exceptions and warnings for functionality defined in `plasmapy.plasma`."""
 __all__ = ["DataStandardError"]
 
-from plasmapy.utils import PlasmaPyError
+from plasmapy.utils.exceptions import PlasmaPyError
 
 
 class DataStandardError(PlasmaPyError):

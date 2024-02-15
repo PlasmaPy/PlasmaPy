@@ -12,8 +12,8 @@ Introduction
 ============
 
 The `~plasmapy.utils` subpackage contains functionality that is needed
-across multiple subpackages or does not fit nicely in any other subpackage.
-Functionality contained in `~plasmapy.utils` includes:
+across multiple subpackages or does not fit nicely in any other
+subpackage. Functionality contained in `~plasmapy.utils` includes:
 
  * Warnings and exceptions used in PlasmaPy, such as
    `~plasmapy.utils.exceptions.RelativityWarning` or
@@ -23,7 +23,7 @@ Functionality contained in `~plasmapy.utils` includes:
    `~plasmapy.utils.decorators.validators.validate_quantities`
    and `~plasmapy.utils.decorators.checks.check_relativistic`.
  * Helper utilities for importing and testing packages.
- * Functionality for downloading files from `PlasmaPy's data repository`_.
+ * Functionality for downloading files from |PlasmaPy's data repository|.
 
 API
 ===
@@ -35,9 +35,6 @@ API
    :include-heading:
 
 .. automodapi:: plasmapy.utils.code_repr
-   :include-heading:
-
-.. automodapi:: plasmapy.utils.pytest_helpers
    :include-heading:
 
 .. automodapi:: plasmapy.utils.calculator

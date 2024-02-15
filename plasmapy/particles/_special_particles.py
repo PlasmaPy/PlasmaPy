@@ -34,15 +34,15 @@ class ParticleZoo:
     Examples
     --------
     >>> particle_zoo_ = ParticleZoo()
-    >>> 'e-' in particle_zoo_.leptons
+    >>> "e-" in particle_zoo_.leptons
     True
-    >>> 'nu_e' in particle_zoo_.antineutrinos
+    >>> "nu_e" in particle_zoo_.antineutrinos
     False
-    >>> 'mu+' in particle_zoo_.antiparticles
+    >>> "mu+" in particle_zoo_.antiparticles
     True
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         leptons = {"e-", "mu-", "tau-", "nu_e", "nu_mu", "nu_tau"}
         antileptons = {"e+", "mu+", "tau+", "anti_nu_e", "anti_nu_mu", "anti_nu_tau"}
         baryons = {"p+", "n"}
@@ -136,7 +136,7 @@ An instance of `~plasmapy.particles._special_particles.ParticleZoo`.
 """
 
 
-def create_particles_dict() -> dict[str, dict]:
+def create_particles_dict() -> dict[str, dict]:  # noqa: C901, PLR0912
     """
     Create a dictionary of dictionaries that contains physical
     information for particles and antiparticles that are not elements or
@@ -176,7 +176,7 @@ def create_particles_dict() -> dict[str, dict]:
     for fermion in particle_zoo.fermions:
         particles[fermion]["spin"] = 0.5
 
-    for boson in particle_zoo.bosons:  # coverage: ignore
+    for boson in particle_zoo.bosons:
         particles[boson]["spin"] = 0
 
     for lepton in particle_zoo.leptons:

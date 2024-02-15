@@ -13,7 +13,7 @@ from plasmapy.diagnostics.charged_particle_radiography.detector_stacks import (
 from plasmapy.utils.data.downloader import get_file
 
 
-@pytest.fixture
+@pytest.fixture()
 def hdv2_stack(tmp_path):
     # Fetch stopping power data files from data module
     tissue_path = get_file("NIST_PSTAR_tissue_equivalent.txt", directory=tmp_path)
@@ -45,11 +45,10 @@ def hdv2_stack(tmp_path):
         *layers,
     ]
 
-    stack = Stack(layers)
-    return stack
+    return Stack(layers)
 
 
-def test_create_layer_with_different_stopping_powers(tmp_path):
+def test_create_layer_with_different_stopping_powers(tmp_path) -> None:
     """
     Tests the input validation for creating a Layer with either the linear
     stopping power or the mass stopping power.
@@ -82,22 +81,22 @@ def test_create_layer_with_different_stopping_powers(tmp_path):
         Layer(100 * u.um, eaxis, mass_stopping_power, mass_density=None)
 
 
-def test_film_stack_num_layers(hdv2_stack):
+def test_film_stack_num_layers(hdv2_stack) -> None:
     # Test num_layers property
     assert hdv2_stack.num_layers == 21
 
 
-def test_film_stack_num_active(hdv2_stack):
+def test_film_stack_num_active(hdv2_stack) -> None:
     # Test num_active property
     assert hdv2_stack.num_active == 10
 
 
-def test_film_stack_thickness(hdv2_stack):
+def test_film_stack_thickness(hdv2_stack) -> None:
     # Test thickness property
     assert np.isclose(hdv2_stack.thickness.to(u.mm).value, 1.19)
 
 
-def test_film_stack_deposition_curves(hdv2_stack):
+def test_film_stack_deposition_curves(hdv2_stack) -> None:
     energies = np.arange(1, 60, 1) * u.MeV
     deposition_curves = hdv2_stack.deposition_curves(energies, return_only_active=False)
 
@@ -107,7 +106,7 @@ def test_film_stack_deposition_curves(hdv2_stack):
     ), "The integral over all layers for each particle species is not unity."
 
 
-def test_film_stack_energy_bands_active(hdv2_stack):
+def test_film_stack_energy_bands_active(hdv2_stack) -> None:
     # Test energy bands
     ebands = hdv2_stack.energy_bands([0.1, 60] * u.MeV, 0.1 * u.MeV, dx=1 * u.um)
 
@@ -117,7 +116,7 @@ def test_film_stack_energy_bands_active(hdv2_stack):
     assert np.allclose(ebands.to(u.MeV).value[:5, :], expected, atol=0.15)
 
 
-def test_film_stack_energy_bands_inum_active(hdv2_stack):
+def test_film_stack_energy_bands_inum_active(hdv2_stack) -> None:
     # Test including inum_active layers
     ebands = hdv2_stack.energy_bands(
         [0.1, 60] * u.MeV, 0.1 * u.MeV, dx=1 * u.um, return_only_active=False

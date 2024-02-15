@@ -1,8 +1,8 @@
 """
-This module contains functionality for calculating Coulomb
-parameters for different configurations. Including a number of
-functions for handling Coulomb collisions spanning weakly coupled
-(low density) to strongly coupled (high density) regimes.
+Functionality for calculating Coulomb parameters for different
+configurations. Including a number of functions for handling Coulomb
+collisions spanning weakly coupled (low density) to strongly coupled
+(high density) regimes.
 
 Coulomb collisions are collisions where the interaction force is
 conveyed via the electric field, instead of any kind of contact
@@ -17,15 +17,16 @@ __all__ = [
     "Coulomb_cross_section",
 ]
 
-import astropy.units as u
-import numpy as np
 import warnings
-
 from numbers import Real
 
-from plasmapy import particles, utils
+import astropy.units as u
+import numpy as np
+
+from plasmapy import particles
 from plasmapy.formulary.collisions import lengths
 from plasmapy.utils.decorators import validate_quantities
+from plasmapy.utils.exceptions import CouplingWarning
 
 
 @validate_quantities(
@@ -34,11 +35,11 @@ from plasmapy.utils.decorators import validate_quantities
 )
 @particles.particle_input
 def Coulomb_logarithm(
-    T: u.K,
-    n_e: u.m**-3,
+    T: u.Quantity[u.K],
+    n_e: u.Quantity[u.m**-3],
     species: (particles.Particle, particles.Particle),
     z_mean: Real = np.nan,
-    V: u.m / u.s = np.nan * u.m / u.s,
+    V: u.Quantity[u.m / u.s] = np.nan * u.m / u.s,
     method="classical",
 ):
     r"""
@@ -475,21 +476,21 @@ def Coulomb_logarithm(
             f"min(ln Λ) = {min_ln_Lambda:.4f} which is likely to be inaccurate "
             f"due to strong coupling effects, in particular because "
             f"{method = } assumes weak coupling.",
-            utils.CouplingWarning,
+            CouplingWarning,
         )
     elif min_ln_Lambda < 4:
         warnings.warn(
             f"The calculation of the Coulomb logarithm has found a value of "
             f"min(ln Λ) = {min_ln_Lambda:.4f}. Coulomb logarithms of ≲ 4 may "
             f"have increased uncertainty due to strong coupling effects.",
-            utils.CouplingWarning,
+            CouplingWarning,
         )
 
     return ln_Lambda
 
 
 @validate_quantities(impact_param={"can_be_negative": False})
-def Coulomb_cross_section(impact_param: u.m) -> u.m**2:
+def Coulomb_cross_section(impact_param: u.Quantity[u.m]) -> u.Quantity[u.m**2]:
     r"""
     Cross-section for a large angle Coulomb collision.
 
@@ -520,9 +521,9 @@ def Coulomb_cross_section(impact_param: u.m) -> u.m**2:
 
     Examples
     --------
-    >>> Coulomb_cross_section(7e-10*u.m)
+    >>> Coulomb_cross_section(7e-10 * u.m)
     <Quantity 6.157...e-18 m2>
-    >>> Coulomb_cross_section(0.5*u.m)
+    >>> Coulomb_cross_section(0.5 * u.m)
     <Quantity 3.141... m2>
     """
     return np.pi * (2 * impact_param) ** 2

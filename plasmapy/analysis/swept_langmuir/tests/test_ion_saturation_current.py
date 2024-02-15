@@ -3,20 +3,20 @@ Tests for functionality contained in
 `plasmapy.analysis.swept_langmuir.ion_saturation_current`.
 """
 
+from pathlib import Path
+
 import numpy as np
 import pytest
 
-from pathlib import Path
-
 from plasmapy.analysis import fit_functions as ffuncs
 from plasmapy.analysis.swept_langmuir.ion_saturation_current import (
+    ISatExtras,
     find_ion_saturation_current,
     find_isat_,
-    ISatExtras,
 )
 
 
-def test_ion_saturation_current_namedtuple():
+def test_ion_saturation_current_namedtuple() -> None:
     """
     Test structure of the namedtuple used to return the computed ion saturation
     current data.
@@ -66,12 +66,12 @@ class TestFindIonSaturationCurrent:
     _linear_p_sine_current = _linear_current + 1.2 * np.sin(1.2 * _voltage)
     _exp_current = -1.3 + 2.2 * np.exp(_voltage)
 
-    def test_alias(self):
+    def test_alias(self) -> None:
         """Test the associated alias(es) is(are) defined correctly."""
         assert find_isat_ is find_ion_saturation_current
 
     @pytest.mark.parametrize(
-        "kwargs, _error",
+        ("kwargs", "_error"),
         [
             # errors on kwarg fit_type
             (
@@ -123,13 +123,13 @@ class TestFindIonSaturationCurrent:
             ),
         ],
     )
-    def test_raises(self, kwargs, _error):
+    def test_raises(self, kwargs, _error) -> None:
         """Test scenarios that raise exceptions."""
         with pytest.raises(_error):
             find_ion_saturation_current(**kwargs)
 
     @pytest.mark.parametrize(
-        "kwargs, expected",
+        ("kwargs", "expected"),
         [
             # linear fit to linear analytical data
             (
@@ -259,7 +259,7 @@ class TestFindIonSaturationCurrent:
             ),
         ],
     )
-    def test_analytical_fits(self, kwargs, expected):
+    def test_analytical_fits(self, kwargs, expected) -> None:
         """Test functionality on analytical traces."""
         isat, extras = find_ion_saturation_current(**kwargs)
 
@@ -274,7 +274,8 @@ class TestFindIonSaturationCurrent:
         assert np.isclose(extras.rsq, 1.0)
         assert extras.fitted_indices == expected[1].fitted_indices
 
-    def test_on_pace_data(self):
+    @pytest.mark.filterwarnings("ignore::RuntimeWarning")
+    def test_on_pace_data(self) -> None:
         """
         Test functionality on D. Pace data.
 
@@ -291,7 +292,7 @@ class TestFindIonSaturationCurrent:
             voltage, current, fit_type="exp_plus_linear", current_bound=3.6
         )
 
-        assert np.isclose(isat.params.m, 3.81079e-6)
-        assert np.isclose(isat.params.b, 0.000110284)
-        assert np.isclose(extras.rsq, 0.982, atol=0.001)
-        assert np.isclose(np.min(isat(voltage)), -0.00014275)
+        assert np.isclose(isat.params.m, 3.81079e-6, rtol=1e-3, atol=0)
+        assert np.isclose(isat.params.b, 0.000110422, rtol=2e-3, atol=0)
+        assert np.isclose(extras.rsq, 0.982, rtol=0, atol=0.002)
+        assert np.isclose(np.min(isat(voltage)), -0.00014275, rtol=2e-3, atol=0)

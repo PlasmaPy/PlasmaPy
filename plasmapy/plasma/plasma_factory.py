@@ -1,5 +1,9 @@
 """
 Module for defining the framework around the plasma factory.
+
+.. attention::
+
+   |expect-api-changes|
 """
 __all__ = ["PlasmaFactory", "Plasma"]
 
@@ -12,11 +16,15 @@ class PlasmaFactory(BasicRegistrationFactory):
     Plasma factory class. Used to create a variety of Plasma objects.
     Valid plasma structures are specified by registering them with the
     factory.
+
+    .. attention::
+
+       |expect-api-changes|
     """
 
 
 Plasma = PlasmaFactory(
     default_widget_type=GenericPlasma,
-    registry=GenericPlasma._registry,
+    registry=GenericPlasma._registry,  # noqa: SLF001
     additional_validation_functions=["is_datasource_for"],
 )

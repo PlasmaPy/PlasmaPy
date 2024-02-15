@@ -14,7 +14,7 @@
 [![YouTube](https://img.shields.io/badge/YouTube%20-subscribe-red?style=flat&logo=youtube)](https://www.youtube.com/channel/UCSH6qzslhqIZKTAJmHPxIxw)
 
 [![GitHub Actions — CI](https://github.com/PlasmaPy/PlasmaPy/workflows/CI/badge.svg)](https://github.com/PlasmaPy/PlasmaPy/actions?query=workflow%3ACI+branch%3Amain)
-[![weekly tests](https://github.com/PlasmaPy/PlasmaPy/actions/workflows/weekly.yml/badge.svg?branch=main)](https://github.com/PlasmaPy/PlasmaPy/actions/workflows/weekly.yml)
+[![weekly tests](https://github.com/PlasmaPy/PlasmaPy/actions/workflows/weekly-tests.yml/badge.svg?branch=main)](https://github.com/PlasmaPy/PlasmaPy/actions/workflows/weekly-tests.yml)
 [![pre-commit.ci status](https://results.pre-commit.ci/badge/github/PlasmaPy/PlasmaPy/main.svg)](https://results.pre-commit.ci/latest/github/PlasmaPy/PlasmaPy/main)
 [![codecov](https://codecov.io/gh/PlasmaPy/PlasmaPy/branch/main/graph/badge.svg)](https://codecov.io/gh/PlasmaPy/PlasmaPy)
 [![Read the Docs Status](https://readthedocs.org/projects/plasmapy/badge/?version=latest&logo=twitter)](http://plasmapy.readthedocs.io/en/latest/?badge=latest)
@@ -24,7 +24,7 @@
 [![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)](https://github.com/pre-commit/pre-commit)
 [![Open Source Helpers](https://www.codetriage.com/plasmapy/plasmapy/badges/users.svg)](https://www.codetriage.com/plasmapy/plasmapy)
 
-[Anaconda Navigator]: https://docs.anaconda.com/anaconda/navigator/index.html
+[Anaconda Navigator]: https://anaconda.org/anaconda/anaconda-navigator
 [Astropy]: https://www.astropy.org
 [3-clause BSD license]: ./LICENSE.md
 [calendar]: https://calendar.google.com/calendar/embed?src=c_sqqq390s24jjfjp3q86pv41pi8%40group.calendar.google.com&ctz=America%2FNew_York
@@ -56,7 +56,7 @@
 [National Science Foundation]: https://nsf.gov
 [office hours]: http://www.plasmapy.org/meetings/office_hours
 [pip]: https://pypi.org/project/pip
-[Plasma Hack Week]: https://hack.plasma.org
+[Plasma Hack Week]: https://hack.plasmapy.org
 [PlasmaPy Community on Zenodo]: https://zenodo.org/communities/plasmapy
 [PlasmaPy]: https://www.plasmapy.org
 [PlasmaPy's online documentation]: https://docs.plasmapy.org
@@ -95,7 +95,7 @@ very welcome!
 
 ## Installation
 
-PlasmaPy requires Python 3.8 or newer. If you do not have Python
+PlasmaPy requires Python 3.10 or newer. If you do not have Python
 installed already, here are the instructions to [download and install
 Python].
 
@@ -104,14 +104,14 @@ To install PlasmaPy on macOS or Linux, open a terminal and run:
 python -m pip install plasmapy
 ```
 On some systems, it might be necessary to specify the Python version
-number, for example by using `python3` or `python3.10` instead of
+number, for example by using `python3` or `python3.12` instead of
 `python`.
 
 To install PlasmaPy on Windows, open a terminal and run
 ```Shell
-py -3.10 -m pip install plasmapy
+py -3.12 -m pip install plasmapy
 ```
-The `3.10` may be replaced by any version of Python that is supported by
+The `3.12` may be replaced by any version of Python that is supported by
 PlasmaPy.
 
 If you have [installed Conda], then you can also install PlasmaPy into
@@ -143,24 +143,24 @@ the [meetings] page of PlasmaPy's website.
 Our weekly informal [office hours] are an opportunity to chat with
 active members of the PlasmaPy community about topics related to
 Python and plasma science. If you'd like to learn more about PlasmaPy,
-our office hours are one of the best places to start. As of January
-2023, our office hours are on Thursdays at 2 pm Eastern. Please feel
-free to come by!
+our office hours are one of the best places to start. As of February
+2024, our office hours are on most Thursdays at 3 pm Eastern. Please
+feel free to come by!
 
 ### Community meetings
 
 PlasmaPy's weekly [community meetings] are a place to talk about code
 development. If you have an idea for a new feature or would like to
 make a code contribution, community meetings are a good place to go
-to.  As of January 2023, community meetings are on Tuesdays at 2 pm
-Eastern.
+to.  As of February 2024, our community meetings are on most Tuesdays
+at 2 pm Eastern.
 
 ### Project meetings
 
 PlasmaPy's weekly project meetings are a place to discuss education,
 outreach, and project coordination. Topics might range from creating
-educational notebooks to organizing community events. As of January
-2023, project meetings are held on Wednesdays at 3 pm Eastern.
+educational notebooks to organizing community events. As of February
+2024, project meetings are held on most Wednesdays at 3 pm Eastern.
 
 ### Working group meetings
 
@@ -173,11 +173,11 @@ or even start a new one, please email us at [team@plasmapy.org]!
 ### Plasma Hack Week
 
 A [hack week] is a mix of a hackathon and a summer school. Hack weeks
-provide an opportunity to learn from each other and code together. The
-inaugural [Plasma Hack Week] was held virtually in the summer of 2021,
-and will hopefully be held annually. Please check out the [Plasma Hack
-Week] website for more details, and email [team@plasmapy.org] if you
-would like to become an organizer.
+provide an opportunity to learn from each other and code together.
+[Plasma Hack Week] was held virtually in the summers of 2021 and 2022,
+and we hope to hold this again in the future. If you would like to
+help organize a future Plasma Hack Week, please email
+[team@plasmapy.org].
 
 ## Community
 

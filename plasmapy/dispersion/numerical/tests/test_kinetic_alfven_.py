@@ -1,8 +1,7 @@
 """Test functionality of Stix in `plasmapy.dispersion.numerical.kinetic_alfven_`."""
+import astropy.units as u
 import numpy as np
 import pytest
-
-from astropy import units as u
 from astropy.constants.si import c
 
 from plasmapy.dispersion.numerical.kinetic_alfven_ import kinetic_alfven
@@ -24,18 +23,17 @@ class TestKinetic_Alfven:
         "theta": 30 * u.deg,
         "gamma_e": 3,
         "gamma_i": 3,
-        "z_mean": 1,
+        "Z": 1,
     }
 
     @pytest.mark.parametrize(
-        "kwargs, _error",
+        ("kwargs", "_error"),
         [
             ({**_kwargs_single_valued, "B": "wrong type"}, TypeError),
             ({**_kwargs_single_valued, "B": [1e-9, 2e-9, 3e-9] * u.T}, ValueError),
             ({**_kwargs_single_valued, "B": -1 * u.T}, ValueError),
             ({**_kwargs_single_valued, "B": 5 * u.m}, u.UnitTypeError),
             ({**_kwargs_single_valued, "ion": "not a particle"}, InvalidParticleError),
-            ({**_kwargs_single_valued, "ion": "e-"}, ValueError),
             ({**_kwargs_single_valued, "k": np.ones((3, 2)) * u.rad / u.m}, ValueError),
             ({**_kwargs_single_valued, "k": 0 * u.rad / u.m}, ValueError),
             ({**_kwargs_single_valued, "k": -1.0 * u.rad / u.m}, ValueError),
@@ -56,53 +54,16 @@ class TestKinetic_Alfven:
             ({**_kwargs_single_valued, "theta": 5 * u.eV}, u.UnitTypeError),
             ({**_kwargs_single_valued, "gamma_e": "wrong type"}, TypeError),
             ({**_kwargs_single_valued, "gamma_i": "wrong type"}, TypeError),
-            ({**_kwargs_single_valued, "z_mean": "wrong type"}, TypeError),
+            ({**_kwargs_single_valued, "Z": "wrong type"}, TypeError),
         ],
     )
-    def test_raises(self, kwargs, _error):
+    def test_raises(self, kwargs, _error) -> None:
         """Test scenarios that raise an `Exception`."""
         with pytest.raises(_error):
             kinetic_alfven(**kwargs)
 
-    @pytest.mark.xfail(
-        reason=(
-            "This functionality is breaking because of updates to "
-            "gyrofrequency where z_mean override behavior is being "
-            "dropped. We will address z_mean override behavior when "
-            "kinetic_alfven is decorated with particle_input."
-        )
-    )
     @pytest.mark.parametrize(
-        "kwargs, expected",
-        [
-            (
-                {
-                    **_kwargs_single_valued,
-                    "ion": Particle("He"),
-                    "z_mean": 2.0,
-                    "theta": 0 * u.deg,
-                },
-                {**_kwargs_single_valued, "ion": Particle("He +2"), "theta": 0 * u.deg},
-            ),
-            # The following test may need to be updated when applying
-            # @particle_input to kinetic_alfven, since this refers to how
-            # z_mean had been assumed to default to 1
-            (
-                {**_kwargs_single_valued, "ion": Particle("He"), "theta": 0 * u.deg},
-                {**_kwargs_single_valued, "ion": Particle("He+"), "theta": 0 * u.deg},
-            ),
-        ],
-    )
-    def test_z_mean_override(self, kwargs, expected):
-        """Test overriding behavior of kw 'z_mean'."""
-        ws = kinetic_alfven(**kwargs)
-        ws_expected = kinetic_alfven(**expected)
-
-        for theta in ws:
-            assert np.allclose(ws[theta], ws_expected[theta], atol=0, rtol=1e-2)
-
-    @pytest.mark.parametrize(
-        "kwargs, expected",
+        ("kwargs", "expected"),
         [
             ({**_kwargs_single_valued, "theta": 0 * u.deg}, {"shape": (2,)}),
             (
@@ -127,19 +88,20 @@ class TestKinetic_Alfven:
             ),
         ],
     )
-    def test_return_structure(self, kwargs, expected):
+    @pytest.mark.filterwarnings("ignore::plasmapy.utils.exceptions.PhysicsWarning")
+    def test_return_structure(self, kwargs, expected) -> None:
         """Test the structure of the returned values."""
         ws = kinetic_alfven(**kwargs)
 
         assert isinstance(ws, dict)
 
-        for _mode, val in ws.items():  # noqa: B007
+        for val in ws.values():
             assert isinstance(val, u.Quantity)
             assert val.unit == u.rad / u.s
             assert val.shape == expected["shape"]
 
     @pytest.mark.parametrize(
-        "kwargs, _warning",
+        ("kwargs", "_warning"),
         [
             # w/vT min PhysicsWarning
             (
@@ -182,7 +144,7 @@ class TestKinetic_Alfven:
             ),
         ],
     )
-    def test_warning(self, kwargs, _warning):
+    def test_warning(self, kwargs, _warning) -> None:
         """Test scenarios that raise a `Warning`."""
         with pytest.warns(_warning):
             kinetic_alfven(**kwargs)

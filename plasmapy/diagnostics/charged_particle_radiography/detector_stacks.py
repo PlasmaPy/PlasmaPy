@@ -8,62 +8,63 @@ __all__ = [
     "Layer",
 ]
 
+
 import astropy.units as u
 import numpy as np
-
 from scipy.interpolate import interp1d
 
 
 class Layer:
+    r"""
+    A layer in a detector film stack.
+
+    The layer could either be an active layer (the actual film medium) or
+    an inum_active layer (a filter or inum_active part of the film, such as
+    a substrate.)
+
+    Tabulated stopping powers for protons and electrons can be found in the
+    `NIST PSTAR database
+    <https://physics.nist.gov/PhysRefData/Star/Text/PSTAR.html>`_
+    and the
+    `NIST ESTAR database
+    <https://physics.nist.gov/PhysRefData/Star/Text/ESTAR.html>`_.
+
+    Parameters
+    ----------
+    thickness : `~astropy.units.Quantity`
+        The thickness of the layer, in units convertible to meters.
+
+    energy_axis : `~astropy.units.Quantity`
+        The energies corresponding to the stopping power array.
+
+    stopping_power : `~astropy.units.Quantity`
+        The stopping power in the material. Either the linear stopping
+        power (units of J/m) or the mass stopping power
+        (units convertible to J m\ :sup:`2` / kg) can be provided. If the
+        mass stopping power is provided, the material_density keyword
+        is required.
+
+    mass_density : `~astropy.units.Quantity`, optional
+        The material mass density in units convertible to kg/m\ :sup:`3`.
+        This keyword is required if the provided stopping power is the
+        mass stopping power.
+
+    active : `bool`, default: `True`
+        If `True`, this layer is marked as an active layer.
+
+    name : `str`, optional
+        An optional name for the layer.
+    """
+
     def __init__(
         self,
-        thickness: u.m,
-        energy_axis: u.J,
-        stopping_power: [u.J / u.m, u.J * u.m**2 / u.kg],
-        mass_density: [u.kg / u.m**3, None] = None,
+        thickness: u.Quantity[u.m],
+        energy_axis: u.Quantity[u.J],
+        stopping_power: u.Quantity[u.J / u.m, u.J * u.m**2 / u.kg],
+        mass_density: u.Quantity[u.kg / u.m**3] | None = None,
         active: bool = True,
         name: str = "",
-    ):
-        r"""
-        A layer in a detector film stack.
-
-        The layer could either be an active layer (the actual film medium) or
-        an inum_active layer (a filter or inum_active part of the film, such as
-        a substrate.)
-
-        Tabulated stopping powers for protons and electrons can be found in the
-        `NIST PSTAR database
-        <https://physics.nist.gov/PhysRefData/Star/Text/PSTAR.html>`_
-        and the
-        `NIST ESTAR database
-        <https://physics.nist.gov/PhysRefData/Star/Text/ESTAR.html>`_.
-
-        Parameters
-        ----------
-        thickness : `~astropy.units.Quantity`
-            The thickness of the layer, in units convertible to meters.
-
-        energy_axis : `~astropy.units.Quantity`
-            The energies corresponding to the stopping power array.
-
-        stopping_power : `~astropy.units.Quantity`
-            The stopping power in the material. Either the linear stopping
-            power (units of J/m) or the mass stopping power
-            (units convertible to J m\ :sup:`2` / kg) can be provided. If the
-            mass stopping power is provided, the material_density keyword
-            is required.
-
-        mass_density : `~astropy.units.Quantity`, optional
-            The material mass density in units convertible to kg/m\ :sup:`3`.
-            This keyword is required if the provided stopping power is the
-            mass stopping power.
-
-        active : `bool`, default: `True`
-            If `True`, this layer is marked as an active layer.
-
-        name : `str`, optional
-            An optional name for the layer.
-        """
+    ) -> None:
         self.thickness = thickness
         self.energy_axis = energy_axis
         self.active = active
@@ -110,7 +111,7 @@ class Stack:
 
     """
 
-    def __init__(self, layers: list[Layer]):
+    def __init__(self, layers: list[Layer]) -> None:
         self._layers = layers
         self._energy_bands = None
 
@@ -138,7 +139,9 @@ class Stack:
         thickness = np.array([layer.thickness.to(u.m).value for layer in self._layers])
         return np.sum(thickness) * u.m
 
-    def deposition_curves(self, energies: u.J, dx=1 * u.um, return_only_active=True):
+    def deposition_curves(
+        self, energies: u.Quantity[u.J], dx=1 * u.um, return_only_active: bool = True
+    ):
         """
         Calculate the deposition of an ensemble of particles over a range of
         energies in a stack of films and filters.
@@ -218,10 +221,10 @@ class Stack:
 
     def energy_bands(
         self,
-        energy_range: u.J,
-        dE: u.J,
+        energy_range: u.Quantity[u.J],
+        dE: u.Quantity[u.J],
         dx=1e-6 * u.m,  # noqa: ARG002
-        return_only_active=True,
+        return_only_active: bool = True,
     ):
         """
         Calculate the energy bands in each of the active layers of a film

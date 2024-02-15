@@ -1,12 +1,11 @@
 """
-This module contains functionality for calculating the numerical
-solutions to the Stix cold plasma function.
+Functionality for calculating the numerical solutions to the Stix cold
+plasma function.
 """
 __all__ = ["stix"]
 
 import astropy.units as u
 import numpy as np
-
 from astropy.constants.si import c
 
 from plasmapy.formulary.frequencies import gyrofrequency, plasma_frequency
@@ -21,12 +20,12 @@ c_si_unitless = c.value
     n_i={"can_be_negative": False},
     w={"can_be_negative": False, "can_be_zero": False},
 )
-def stix(
-    B: u.T,
-    w: u.rad / u.s,
+def stix(  # noqa: C901, PLR0912, PLR0915
+    B: u.Quantity[u.T],
+    w: u.Quantity[u.rad / u.s],
     ions: Particle,
-    n_i: u.m**-3,
-    theta: u.rad,
+    n_i: u.Quantity[u.m**-3],
+    theta: u.Quantity[u.rad],
 ):
     r"""
     Calculate the cold plasma dispersion function presented by
@@ -44,8 +43,8 @@ def stix(
         Wavefrequency in units convertible to rad/s.  Either singled
         valued or 1-D array of length :math:`N`.
 
-    ions: a single or `list` of :term:`particle-like` object(s)
-        A list or single instance of :term:`particle-like` objects
+    ions: a single or `list` of |particle-like| object(s)
+        A list or single instance of |particle-like| objects
         representing the ion species (e.g., ``"p"`` for protons,
         ``"D+"`` for deuterium, ``["H+", "He+"]`` for hydrogen and
         helium, etc.).  All ions must be positively charged.
@@ -139,7 +138,7 @@ def stix(
     dispersion relation assumed:
 
     * zero temperature for all plasma species (:math:`T_{s}=0`)
-    * quasi-neutrallity
+    * quasi-neutrality
     * a uniform background magntic field
       :math:`\mathbf{B_o} = B_{o} \mathbf{\hat{z}}`
     * no D.C. electric field :math:`\mathbf{E_o}=0`
@@ -161,7 +160,7 @@ def stix(
 
     Example
     -------
-    >>> from astropy import units as u
+    >>> import astropy.units as u
     >>> from plasmapy.particles import Particle
     >>> from plasmapy.dispersion.analytical.stix_ import stix
     >>> inputs = {
@@ -177,7 +176,7 @@ def stix(
     """
 
     # Validate ions argument
-    if not isinstance(ions, (list, tuple, ParticleList)):
+    if not isinstance(ions, list | tuple | ParticleList):
         ions = [ions]
     ions = ParticleList(ions)
 
@@ -185,7 +184,7 @@ def stix(
         raise ValueError(
             "Particle(s) passed to 'ions' must be a positively charged"
             " ion. The following particle(s) is(are) not allowed "
-            f"{[ion for ion, fail in zip(ions, failed) if not fail]}"
+            f"{[ion for ion, fail in zip(ions, failed, strict=False) if not fail]}"
         )
 
     # Validate n_i argument
@@ -245,7 +244,7 @@ def stix(
     # Generate the plasma parameters needed
     wps = []
     wcs = []
-    for par, dens in zip(species, densities):
+    for par, dens in zip(species, densities, strict=False):
         wps.append(plasma_frequency(n=dens * u.m**-3, particle=par).value)
         wcs.append(gyrofrequency(B=B, particle=par, signed=True).value)
 
@@ -253,7 +252,7 @@ def stix(
     S = np.ones_like(w, dtype=np.float64)
     P = np.ones_like(S)
     D = np.zeros_like(S)
-    for wc, wp in zip(wcs, wps):
+    for wc, wp in zip(wcs, wps, strict=False):
         S -= (wp**2) / (w**2 - wc**2)
         P -= (wp / w) ** 2
         D += ((wp**2) / (w**2 - wc**2)) * (wc / w)

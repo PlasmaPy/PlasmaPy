@@ -48,8 +48,8 @@ aliases_and_symbols = [
 ]
 
 
-@pytest.mark.parametrize("alias, symbol", aliases_and_symbols)
-def test_dealias_particle_aliases(alias, symbol):
+@pytest.mark.parametrize(("alias", "symbol"), aliases_and_symbols)
+def test_dealias_particle_aliases(alias, symbol) -> None:
     """Test that _dealias_particle_aliases correctly takes in aliases and
     returns the corresponding symbols, and returns the original argument
     if the argument does not correspond to an alias."""
@@ -66,10 +66,10 @@ alias_dictionaries = [case_sensitive_aliases, case_insensitive_aliases]
 
 
 @pytest.mark.parametrize("alias_dict", alias_dictionaries)
-def test_alias_dict_properties(alias_dict):
+def test_alias_dict_properties(alias_dict) -> None:
     """Test properties of the alias dictionaries."""
 
-    for key in alias_dict.keys():
+    for key in alias_dict:
         assert isinstance(key, str), (
             f"The following key should be a string, but isn't: {key}\n\n"
             f"The entire dictionary is:\n\n{alias_dict}"
@@ -267,8 +267,8 @@ parse_check_table = [
 ]
 
 
-@pytest.mark.parametrize("arg, kwargs, expected", parse_check_table)
-def test_parse_and_check_atomic_input(arg, kwargs, expected):
+@pytest.mark.parametrize(("arg", "kwargs", "expected"), parse_check_table)
+def test_parse_and_check_atomic_input(arg, kwargs, expected) -> None:
     result = parse_and_check_atomic_input(arg, **kwargs)
     assert result == expected, (
         "Error in _parse_and_check_atomic_input.\n"
@@ -316,8 +316,8 @@ invalid_particles_table = [
 ]
 
 
-@pytest.mark.parametrize("arg, kwargs", invalid_particles_table)
-def test_parse_InvalidParticleErrors(arg, kwargs):
+@pytest.mark.parametrize(("arg", "kwargs"), invalid_particles_table)
+def test_parse_InvalidParticleErrors(arg, kwargs) -> None:
     r"""Tests that _parse_and_check_atomic_input raises an
     InvalidParticleError when the input does not correspond
     to a real particle."""
@@ -330,7 +330,7 @@ def test_parse_InvalidParticleErrors(arg, kwargs):
         )
 
 
-def test_parse_InvalidElementErrors(particle):
+def test_parse_InvalidElementErrors(particle) -> None:
     r"""Tests that _parse_and_check_atomic_input raises an
     InvalidElementError when the input corresponds to a valid
     particle but not a valid element, isotope, or ion."""
@@ -355,8 +355,8 @@ atomic_warnings_table = [
 ]
 
 
-@pytest.mark.parametrize("arg, kwargs, num_warnings", atomic_warnings_table)
-def test_parse_AtomicWarnings(arg, kwargs, num_warnings):
+@pytest.mark.parametrize(("arg", "kwargs", "num_warnings"), atomic_warnings_table)
+def test_parse_AtomicWarnings(arg, kwargs, num_warnings: int) -> None:
     r"""Tests that _parse_and_check_atomic_input issues an AtomicWarning
     under the required conditions."""
 
@@ -377,6 +377,6 @@ def test_parse_AtomicWarnings(arg, kwargs, num_warnings):
     )
 
 
-def test_Queen():
+def test_Queen() -> None:
     Queen = "Freddie Mercury (lead vocals, piano), Brian May (guitar, vocals), Roger Taylor (drums, vocals) and John Deacon (bass)"
     assert Particle("Freddie").element_name.capitalize() in Queen

@@ -1,0 +1,60 @@
+name: Update pinned requirements
+
+on:
+  schedule:
+  - cron: 0 12 * * 1
+  workflow_dispatch:
+
+jobs:
+  update-requirements:
+    name: Regenerate requirements.txt
+    runs-on: ubuntu-latest
+    if: github.repository == 'PlasmaPy/PlasmaPy'
+
+    steps:
+
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: 3.12
+
+    - name: Upgrade pip
+      run: python -m pip install --upgrade pip
+
+    - name: Install pip-tools
+      run: python -m pip install pip-tools
+
+    - name: Generate requirements.txt
+      run: pip-compile --output-file=requirements.txt --rebuild --upgrade --all-extras
+
+    # When a PR is created by a GitHub Action, normally the checks will
+    # not be run. While the simplest workaround would have been to open
+    # and close the PR, an alternative is to authenticate with GitHub
+    # App generated tokens (as done below). The instructions for how to
+    # do this are in the documentation for the create-pull-request
+    # action.
+
+    - uses: tibdex/github-app-token@v2
+      id: generate_token
+      with:
+        app_id: ${{ secrets.APP_ID }}
+        private_key: ${{ secrets.APP_PRIVATE_KEY }}
+
+    - name: Create Pull Request
+      uses: peter-evans/create-pull-request@v6
+      with:
+        token: ${{ steps.generate_token.outputs.token }}
+        commit-message: Regenerate requirements.txt
+        title: Update pinned requirements
+        body: |
+          This PR regenerates the pinned requirements contained in [requirements.txt](https://github.com/PlasmaPy/PlasmaPy/blob/main/requirements.txt). This file defines a Python environment used by certain CI checks, as well as by IDEs like PyCharm and VS Code.
+
+          If all tests pass, please merge this PR. If any checks fail due to changes in the packages that we depend on, this PR may be used to perform the fixes that are necessary to get the checks to pass again.
+        labels: No changelog entry needed, dependencies
+        delete-branch: true
+        base: main

@@ -1,7 +1,8 @@
 """Test that objects in `plasmapy.particles` can be pickled."""
 
-import astropy.units as u
 import pickle
+
+import astropy.units as u
 import pytest
 
 from plasmapy.particles.ionization_state import IonicLevel, IonizationState
@@ -29,16 +30,16 @@ class TestPickling:
             IonizationStateCollection({"H": [0.5, 0.5]}),
         ],
     )
-    def test_pickling(self, instance, tmp_path):
+    def test_pickling(self, instance, tmp_path) -> None:
         """
         Test that different objects contained within `plasmapy.particles`
         can be pickled and unpickled.
         """
         filename = tmp_path / "pickled_particles.p"
-        with open(filename, "wb") as pickle_file:
+        with open(filename, "wb") as pickle_file:  # noqa: PTH123
             pickle.dump(instance, pickle_file)
 
-        with open(filename, "rb") as pickle_file:
-            loaded_particle = pickle.load(pickle_file)
+        with open(filename, "rb") as pickle_file:  # noqa: PTH123
+            loaded_particle = pickle.load(pickle_file)  # noqa: S301
 
         assert str(instance) == str(loaded_particle)

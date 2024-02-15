@@ -4,6 +4,7 @@ import numpy as np
 import pytest
 
 from plasmapy.formulary.frequencies import (
+    Buchsbaum_frequency,
     gyrofrequency,
     lower_hybrid_frequency,
     oc_,
@@ -14,10 +15,10 @@ from plasmapy.formulary.frequencies import (
     wuh_,
 )
 from plasmapy.particles.exceptions import InvalidParticleError
-from plasmapy.utils.pytest_helpers import assert_can_handle_nparray
+from plasmapy.utils._pytest_helpers import assert_can_handle_nparray
 
 Z = 1
-ion = "p"
+ion = "p+"
 n_i = 5e19 * u.m**-3
 n_e = Z * 5e19 * u.m**-3
 
@@ -26,7 +27,7 @@ B_nanarr = np.array([0.001, np.nan]) * u.T
 
 
 @pytest.mark.parametrize(
-    "alias, parent",
+    ("alias", "parent"),
     [
         (oc_, gyrofrequency),
         (wc_, gyrofrequency),
@@ -34,12 +35,12 @@ B_nanarr = np.array([0.001, np.nan]) * u.T
         (wuh_, upper_hybrid_frequency),
     ],
 )
-def test_aliases(alias, parent):
+def test_aliases(alias, parent) -> None:
     """Test all aliases defined in frequencies.py"""
     assert alias is parent
 
 
-def test_gyrofrequency():
+def test_gyrofrequency() -> None:
     r"""Test the gyrofrequency function in frequencies.py."""
 
     assert gyrofrequency(B, "e-").unit.is_equivalent(u.rad / u.s)
@@ -81,11 +82,13 @@ def test_gyrofrequency():
 
     assert gyrofrequency(B, particle=ion).unit.is_equivalent(u.rad / u.s)
 
-    assert np.isclose(gyrofrequency(1 * u.T, particle="p").value, 95788335.834874)
+    assert np.isclose(gyrofrequency(1 * u.T, particle="p+").value, 95788335.834874)
 
-    assert np.isclose(gyrofrequency(2.4 * u.T, particle="p").value, 229892006.00369796)
+    assert np.isclose(gyrofrequency(2.4 * u.T, particle="p+").value, 229892006.00369796)
 
-    assert np.isclose(gyrofrequency(1 * u.G, particle="p").cgs.value, 9.58e3, rtol=2e-3)
+    assert np.isclose(
+        gyrofrequency(1 * u.G, particle="p+").cgs.value, 9.58e3, rtol=2e-3
+    )
 
     assert gyrofrequency(-5 * u.T, "p") == gyrofrequency(5 * u.T, "p")
 
@@ -104,10 +107,10 @@ def test_gyrofrequency():
         gyrofrequency(8 * u.T, particle="asdfasd")
 
     with pytest.warns(u.UnitsWarning):
-        # TODO this should be WARNS, not RAISES. and it's probably still raised
+        # TODO: this should be WARNS, not RAISES. and it's probably still raised
         assert gyrofrequency(5.0, "p") == gyrofrequency(5.0 * u.T, "p")
 
-    gyrofrequency(1 * u.T, particle="p")
+    gyrofrequency(1 * u.T, particle="p+")
     # testing for user input Z
     testMeth1 = gyrofrequency(1 * u.T, particle="H-1", Z=0.8).si.value
     testTrue1 = 76622320.37
@@ -119,7 +122,7 @@ def test_gyrofrequency():
     assert_can_handle_nparray(gyrofrequency, kwargs={"signed": False})
 
 
-def test_lower_hybrid_frequency():
+def test_lower_hybrid_frequency() -> None:
     r"""Test the lower_hybrid_frequency function in frequencies.py."""
 
     ion = "He-4 1+"
@@ -133,9 +136,7 @@ def test_lower_hybrid_frequency():
     assert omega_ce.unit.is_equivalent(u.rad / u.s)
     assert omega_lh.unit.is_equivalent(u.rad / u.s)
     left_hand_side = omega_lh**-2
-    right_hand_side = (
-        1 / (omega_ci**2 + omega_pi**2) + omega_ci**-1 * omega_ce**-1
-    )
+    right_hand_side = 1 / (omega_ci**2 + omega_pi**2) + omega_ci**-1 * omega_ce**-1
     assert np.isclose(left_hand_side.value, right_hand_side.value)
 
     assert np.isclose(omega_lh_hz.value, 299878691.3223296)
@@ -156,7 +157,7 @@ def test_lower_hybrid_frequency():
     assert_can_handle_nparray(lower_hybrid_frequency)
 
 
-def test_upper_hybrid_frequency():
+def test_upper_hybrid_frequency() -> None:
     r"""Test the upper_hybrid_frequency function in frequencies.py."""
 
     omega_uh = upper_hybrid_frequency(B, n_e=n_e)
@@ -187,3 +188,36 @@ def test_upper_hybrid_frequency():
         )
 
     assert_can_handle_nparray(upper_hybrid_frequency)
+
+
+def test_Buchsbaum_frequency() -> None:
+    r"""Test the Buchsbaum_frequency function in frequencies.py."""
+
+    with pytest.raises(InvalidParticleError):
+        Buchsbaum_frequency(
+            1.0 * u.T,
+            5e19 * u.m**-3,
+            5e19 * u.m**-3,
+            "norwegian jarlsberg",
+            "proton",
+        )
+
+    with pytest.raises(InvalidParticleError):
+        Buchsbaum_frequency(
+            1.0 * u.T,
+            5e19 * u.m**-3,
+            5e19 * u.m**-3,
+            "proton",
+            "venezuelan beaver cheese",
+        )
+
+    assert np.isclose(
+        Buchsbaum_frequency(
+            B=0.1 * u.T,
+            n1=1e18 * u.m**-3,
+            n2=1e18 * u.m**-3,
+            ion1="proton",
+            ion2="He-4 +1",
+        ).value,
+        4805575.93140432,
+    )

@@ -2,13 +2,13 @@
 
 __all__ = ["ParticleList", "ParticleListLike"]
 
-import astropy.units as u
 import collections
 import contextlib
-import numpy as np
+from collections.abc import Callable, Iterable, Sequence
+from typing import TypeAlias, Union
 
-from collections.abc import Iterable, Sequence
-from typing import Callable, Optional, Union
+import astropy.units as u
+import numpy as np
 
 from plasmapy.particles.exceptions import InvalidParticleError
 from plasmapy.particles.particle_class import (
@@ -20,7 +20,7 @@ from plasmapy.particles.particle_class import (
 
 
 def _turn_quantity_into_custom_particle(
-    quantity: u.Quantity[u.physical.electrical_charge, u.physical.mass]
+    quantity: u.Quantity[u.physical.electrical_charge, u.physical.mass],
 ) -> CustomParticle:
     """
     Convert a |Quantity| of physical type mass or electrical charge
@@ -110,7 +110,7 @@ class ParticleList(collections.UserList):
     >>> from plasmapy.particles import Particle, CustomParticle
     >>> import astropy.units as u
     >>> proton = Particle("p+")
-    >>> custom_particle = CustomParticle(mass=1e-26*u.kg, charge=6e-19*u.C)
+    >>> custom_particle = CustomParticle(mass=1e-26 * u.kg, charge=6e-19 * u.C)
     >>> 2 * proton + custom_particle
     ParticleList(['p+', 'p+', 'CustomParticle(mass=1e-26 kg, charge=6e-19 C)'])
 
@@ -151,8 +151,8 @@ class ParticleList(collections.UserList):
 
     @staticmethod
     def _list_of_particles_and_custom_particles(
-        particles: Optional[Iterable[ParticleLike]],
-    ) -> list[Union[Particle, CustomParticle]]:
+        particles: Iterable[ParticleLike] | None,
+    ) -> list[Particle | CustomParticle]:
         """
         Convert an iterable that provides |particle-like| objects into a
         `list` containing |Particle| and |CustomParticle| instances.
@@ -168,7 +168,7 @@ class ParticleList(collections.UserList):
         if particles is None:
             return new_particles
         for obj in particles:
-            if isinstance(obj, (Particle, CustomParticle)):
+            if isinstance(obj, Particle | CustomParticle):
                 new_particles.append(obj)
             elif isinstance(obj, DimensionlessParticle):
                 raise TypeError(
@@ -188,7 +188,7 @@ class ParticleList(collections.UserList):
 
         return new_particles
 
-    def __init__(self, particles: Optional[Iterable] = None):
+    def __init__(self, particles: Iterable | None = None) -> None:
         self._data = self._list_of_particles_and_custom_particles(particles)
 
     @staticmethod
@@ -219,7 +219,7 @@ class ParticleList(collections.UserList):
         other_as_particle_list = self._cast_other_as_particle_list(other)
         return other_as_particle_list.__add__(self)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"ParticleList({self.symbols!r})"
 
     def __gt__(self, other):
@@ -230,7 +230,7 @@ class ParticleList(collections.UserList):
             reactants=self.symbols, products=other_as_particle_list.symbols
         )
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.__repr__()
 
     def _get_particle_attribute(self, attr, unit=None, default=None):
@@ -245,16 +245,16 @@ class ParticleList(collections.UserList):
             values = u.Quantity(values)
         return values
 
-    def append(self, particle: ParticleLike):
+    def append(self, particle: ParticleLike) -> None:
         """Append a particle to the end of the |ParticleList|."""
         if isinstance(particle, u.Quantity):
             particle = _turn_quantity_into_custom_particle(particle)
-        elif not isinstance(particle, (Particle, CustomParticle)):
+        elif not isinstance(particle, Particle | CustomParticle):
             particle = Particle(particle)
         self.data.append(particle)
 
     @property
-    def charge(self) -> u.C:
+    def charge(self) -> u.Quantity[u.C]:
         """
         The electric charges of the particles.
 
@@ -265,7 +265,7 @@ class ParticleList(collections.UserList):
         return self._get_particle_attribute("charge", unit=u.C, default=np.nan * u.C)
 
     @property
-    def data(self) -> list[Union[Particle, CustomParticle]]:
+    def data(self) -> list[Particle | CustomParticle]:
         """
         A `list` containing the particles contained in the
         |ParticleList| instance.
@@ -280,7 +280,7 @@ class ParticleList(collections.UserList):
         """
         return self._data
 
-    def extend(self, iterable: Iterable[ParticleLike]):
+    def extend(self, iterable: Iterable[ParticleLike]) -> None:
         """
         Extend the sequence by appending |particle-like| elements from
         ``iterable``.
@@ -296,7 +296,7 @@ class ParticleList(collections.UserList):
                 self.append(obj)
 
     @property
-    def half_life(self) -> u.s:
+    def half_life(self) -> u.Quantity[u.s]:
         """
         The half-lives of the particles.
 
@@ -306,20 +306,20 @@ class ParticleList(collections.UserList):
         """
         return self._get_particle_attribute("half_life", unit=u.s, default=np.nan * u.s)
 
-    def insert(self, index, particle: ParticleLike):
+    def insert(self, index, particle: ParticleLike) -> None:
         """Insert a particle before an index."""
         if isinstance(particle, u.Quantity):
             particle = _turn_quantity_into_custom_particle(particle)
-        elif not isinstance(particle, (Particle, CustomParticle)):
+        elif not isinstance(particle, Particle | CustomParticle):
             particle = Particle(particle)
         self.data.insert(index, particle)
 
     def is_category(
         self,
         *category_tuple,
-        require: Union[str, Iterable[str]] = None,
-        any_of: Union[str, Iterable[str]] = None,
-        exclude: Union[str, Iterable[str]] = None,
+        require: str | Iterable[str] | None = None,
+        any_of: str | Iterable[str] | None = None,
+        exclude: str | Iterable[str] | None = None,
     ) -> list[bool]:
         """
         Determine element-wise if the particles in the |ParticleList|
@@ -371,7 +371,7 @@ class ParticleList(collections.UserList):
         return np.array(self._get_particle_attribute("charge_number", default=np.nan))
 
     @property
-    def mass(self) -> u.kg:
+    def mass(self) -> u.Quantity[u.kg]:
         """
         The masses of the particles.
 
@@ -382,7 +382,7 @@ class ParticleList(collections.UserList):
         return self._get_particle_attribute("mass", unit=u.kg, default=np.nan * u.J)
 
     @property
-    def mass_energy(self) -> u.J:
+    def mass_energy(self) -> u.Quantity[u.J]:
         """
         The mass energies of the particles.
 
@@ -399,7 +399,7 @@ class ParticleList(collections.UserList):
             default=np.nan * u.J,
         )
 
-    def sort(self, key: Callable = None, reverse: bool = False):
+    def sort(self, key: Callable | None = None, reverse: bool = False):
         """
         Sort the |ParticleList| in-place.
 
@@ -466,7 +466,7 @@ class ParticleList(collections.UserList):
         *,
         use_rms_charge: bool = False,
         use_rms_mass: bool = False,
-    ) -> Union[CustomParticle, Particle]:
+    ) -> CustomParticle | Particle:
         """
         Return a particle with the average mass and charge.
 
@@ -574,7 +574,7 @@ Raises
 
 ParticleList.reverse.__doc__ = """Reverse the |ParticleList| in place."""
 
-ParticleListLike = Union[ParticleList, Sequence[ParticleLike]]
+ParticleListLike: TypeAlias = Union[ParticleList, Sequence[ParticleLike]]  # noqa: UP007
 
 ParticleListLike.__doc__ = r"""
 An `object` is |particle-list-like| if it can be identified as a

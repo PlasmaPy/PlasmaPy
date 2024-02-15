@@ -6,77 +6,107 @@
 # If a label includes a space or a pattern begins with an asterisk or
 # special character, enclose it in quotes.
 
-Breaking:
-- changelog/*.breaking*.rst
+'changes existing API':
+  - changed-files:
+    - any-glob-to-any-file: 'changelog/*.breaking*.rst'
 
-Bug:
-- changelog/*.bugfix*.rst
+bug:
+  - changed-files:
+    - any-glob-to-any-file: 'changelog/*.bugfix*.rst'
 
-'Continuous Integration':
-- .codecov.yaml
-- .github/workflows/*test*.yml
-- .pre-commit-config.yaml
-- CODEOWNERS
-- noxfile.py
-- tox.ini
+'CI':
+  - changed-files:
+    - any-glob-to-any-file: [
+      '.codecov.yaml',
+      '.github/workflows/*test*.yml',
+      '.pre-commit-config.yaml',
+      '.readthedocs.yml',
+      'CODEOWNERS',
+      'noxfile.py',
+      'tox.ini'
+    ]
 
-'Contributor Guide':
-- changelog/README.rst
-- docs/contributing/**/*
+'contributor guide':
+  - changed-files:
+    - any-glob-to-any-file: ['changelog/README.rst', 'docs/contributing/**/*']
 
 dependencies:
-- requirements.txt
+  - changed-files:
+    - any-glob-to-any-file: 'requirements.txt'
 
-Documentation:
-- docs/**/*
-- changelog/*doc*.rst
-- README.md
-- .readthedocs.yml
+docs:
+  - changed-files:
+    - any-glob-to-any-file: ['.readthedocs.yml', 'changelog/*doc*.rst', 'docs/**/*', 'README.md']
 
 'GitHub Actions':
-- .github/**/*
+  - changed-files:
+    - any-glob-to-any-file: '.github/**/*'
 
-Notebooks:
-- docs/notebooks/**/*
+linters:
+  - changed-files:
+    - any-glob-to-any-file: ['.sourcery.yaml', '.pre-commit-config.yaml']
 
-Packaging:
-- .github/workflows/*publish*
-- .github/workflows/*release*
-- MANIFEST.in
-- pyproject.toml
-- setup.*
+notebooks:
+  - changed-files:
+    - any-glob-to-any-file: 'docs/notebooks/**/*'
+
+packaging:
+  - changed-files:
+    - any-glob-to-any-file: [
+      '.github/workflows/*publish*',
+      '.github/workflows/*release*',
+      '.zenodo*',
+      'CITATION.cff',
+      'LICENSE.md',
+      'MANIFEST.in',
+      'PATENT.md',
+      'pyproject.toml',
+      'setup.*'
+    ]
 
 plasmapy.analysis:
-- plasmapy/analysis/**/*
+  - changed-files:
+    - any-glob-to-any-file: 'plasmapy/analysis/**/*'
 
 plasmapy.diagnostics:
-- plasmapy/diagnostics/**/*
+  - changed-files:
+    - any-glob-to-any-file: 'plasmapy/diagnostics/**/*'
 
 plasmapy.dispersion:
-- plasmapy/dispersion/**/*
+  - changed-files:
+    - any-glob-to-any-file: 'plasmapy/dispersion/**/*'
 
 plasmapy.formulary:
-- plasmapy/formulary/**/*
+  - changed-files:
+    - any-glob-to-any-file: 'plasmapy/formulary/**/*'
 
 plasmapy.formulary.quantum:
-- plasmapy/**/quantum*
+  - changed-files:
+    - any-glob-to-any-file: 'plasmapy/**/quantum*'
 
 plasmapy.particles:
-- plasmapy/particles/**/*
+  - changed-files:
+    - any-glob-to-any-file: 'plasmapy/particles/**/*'
 
 plasmapy.plasma:
-- plasmapy/plasma/**/*
+  - changed-files:
+    - any-glob-to-any-file: 'plasmapy/plasma/**/*'
 
 plasmapy.simulation:
-- plasmapy/simulation/**/*
+  - changed-files:
+    - any-glob-to-any-file: 'plasmapy/simulation/**/*'
 
 plasmapy.utils:
-- plasmapy/utils/**/*
+  - changed-files:
+    - any-glob-to-any-file: 'plasmapy/utils/**/*'
 
-Testing:
-- '**/test*.py'
-- '**/conftest.py'
-- .github/workflows/weekly.yml
-- .codecov.yaml
-- noxfile.py
-- tox.ini
+testing:
+  - changed-files:
+    - any-glob-to-any-file: [
+      '**/test*.py',
+      '**/conftest.py',
+      '.github/workflows/weekly-tests.yml',
+      '.codecov.yaml',
+      'noxfile.py',
+      'tox.ini'
+    ]

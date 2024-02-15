@@ -1,20 +1,18 @@
 import astropy.units as u
 import numpy as np
 import pytest
-
 from astropy.constants import k_B, m_p
 
 from plasmapy.formulary.collisions.frequencies import (
+    MaxwellianCollisionFrequencies,
+    SingleParticleCollisionFrequencies,
     collision_frequency,
     fundamental_electron_collision_freq,
     fundamental_ion_collision_freq,
-    MaxwellianCollisionFrequencies,
-    SingleParticleCollisionFrequencies,
 )
 from plasmapy.particles import Particle
-from plasmapy.utils import exceptions
-from plasmapy.utils.exceptions import CouplingWarning, PhysicsError
-from plasmapy.utils.pytest_helpers import assert_can_handle_nparray
+from plasmapy.utils._pytest_helpers import assert_can_handle_nparray
+from plasmapy.utils.exceptions import CouplingWarning, PhysicsError, PhysicsWarning
 
 
 class TestSingleParticleCollisionFrequencies:
@@ -67,7 +65,7 @@ class TestSingleParticleCollisionFrequencies:
     ones_array2d = np.ones([5, 5])
 
     @pytest.mark.parametrize(
-        "attribute_to_test, expected_attribute_units",
+        ("attribute_to_test", "expected_attribute_units"),
         [
             ("momentum_loss", u.Hz),
             ("transverse_diffusion", u.Hz),
@@ -78,7 +76,7 @@ class TestSingleParticleCollisionFrequencies:
             ("Coulomb_log", u.dimensionless_unscaled),
         ],
     )
-    def test_units(self, attribute_to_test, expected_attribute_units):
+    def test_units(self, attribute_to_test, expected_attribute_units) -> None:
         """Test the return units"""
 
         assert getattr(
@@ -96,7 +94,7 @@ class TestSingleParticleCollisionFrequencies:
             "Lorentz_collision_frequency",
         ],
     )
-    def test_conversion_consistency(self, attribute_to_test):
+    def test_conversion_consistency(self, attribute_to_test) -> None:
         """
         Test that a consistent value is computed for attributes
         regardless of argument units.
@@ -108,7 +106,7 @@ class TestSingleParticleCollisionFrequencies:
         assert MKS_result == CGS_result
 
     @staticmethod
-    def get_limit_value(interaction_type, limit_type, cases):
+    def get_limit_value(interaction_type, limit_type, cases):  # noqa: C901
         """
         Get the limiting values for frequencies given the two particles
         interacting, and their frequencies class.
@@ -211,8 +209,12 @@ class TestSingleParticleCollisionFrequencies:
         return limit_values
 
     @pytest.mark.parametrize(
-        "interaction_type, limit_type, constructor_arguments, "
-        "constructor_keyword_arguments",
+        (
+            "interaction_type",
+            "limit_type",
+            "constructor_arguments",
+            "constructor_keyword_arguments",
+        ),
         [
             # Slow limit (x << 1)
             (
@@ -378,7 +380,7 @@ class TestSingleParticleCollisionFrequencies:
         limit_type,
         constructor_arguments,
         constructor_keyword_arguments,
-    ):
+    ) -> None:
         """Test the return values"""
 
         value_test_case = SingleParticleCollisionFrequencies(
@@ -397,17 +399,17 @@ class TestSingleParticleCollisionFrequencies:
         if interaction_type == "e|e":
             charge_constant = 1
         elif interaction_type == "e|i":
-            charge_constant = value_test_case.field_particle.charge_number**2
+            charge_constant = value_test_case.field_particle.charge_number**2  # type: ignore[assignment]
         elif interaction_type == "i|e":
-            charge_constant = value_test_case.test_particle.charge_number**2
+            charge_constant = value_test_case.test_particle.charge_number**2  # type: ignore[assignment]
         elif interaction_type == "i|i":
-            charge_constant = (
+            charge_constant = (  # type: ignore[assignment]
                 value_test_case.test_particle.charge_number
                 * value_test_case.field_particle.charge_number
             ) ** 2
 
         for attribute_name, expected_limit_value in zip(
-            self.return_values_to_test, expected_limit_values
+            self.return_values_to_test, expected_limit_values, strict=False
         ):
             calculated_limit_value = getattr(value_test_case, attribute_name).value
             # Energy loss limit value is already in units of
@@ -422,7 +424,7 @@ class TestSingleParticleCollisionFrequencies:
             )
 
     @pytest.mark.parametrize(
-        "expected_error, constructor_arguments, constructor_keyword_arguments",
+        ("expected_error", "constructor_arguments", "constructor_keyword_arguments"),
         [
             # Arrays of unequal shape error
             (
@@ -439,7 +441,7 @@ class TestSingleParticleCollisionFrequencies:
     )
     def test_init_errors(
         self, expected_error, constructor_arguments, constructor_keyword_arguments
-    ):
+    ) -> None:
         """Test errors raised in the __init__ function body"""
 
         with pytest.raises(expected_error):
@@ -468,7 +470,7 @@ class TestSingleParticleCollisionFrequencies:
             },
         ],
     )
-    def test_handle_ndarrays(self, constructor_keyword_arguments):
+    def test_handle_ndarrays(self, constructor_keyword_arguments) -> None:
         """Test for ability to handle numpy array quantities"""
 
         SingleParticleCollisionFrequencies(**constructor_keyword_arguments)
@@ -480,7 +482,7 @@ class TestMaxwellianCollisionFrequencies:
     @staticmethod
     def get_fundamental_frequency(species, n, T_a, Coulomb_log):
         """
-        This special case for computing the fundamental frequencies
+        Test a special case for computing the fundamental frequencies
         comes from page 33 of the NRL Formulary.  The formulary
         provides limiting cases for the
         `Maxwellian_avg_##_collision_freq` family of attributes in the
@@ -497,9 +499,10 @@ class TestMaxwellianCollisionFrequencies:
             mu = (species.mass / m_p).value
 
             return (4.8e-8 * n * Coulomb_log * T_a**-1.5 * mu**-0.5) * u.Hz
+        return None
 
     @pytest.mark.parametrize(
-        "expected_error, constructor_arguments, constructor_keyword_arguments",
+        ("expected_error", "constructor_arguments", "constructor_keyword_arguments"),
         [
             # Arrays of unequal shape error
             (
@@ -518,7 +521,7 @@ class TestMaxwellianCollisionFrequencies:
     )
     def test_init_errors(
         self, expected_error, constructor_arguments, constructor_keyword_arguments
-    ):
+    ) -> None:
         """Test errors raised in the __init__ function body"""
 
         with pytest.raises(expected_error):
@@ -527,8 +530,12 @@ class TestMaxwellianCollisionFrequencies:
             )
 
     @pytest.mark.parametrize(
-        "expected_error, constructor_arguments, "
-        "constructor_keyword_arguments, attribute_name",
+        (
+            "expected_error",
+            "constructor_arguments",
+            "constructor_keyword_arguments",
+            "attribute_name",
+        ),
         [
             # Specified interaction isn't electron-ion
             (
@@ -588,13 +595,14 @@ class TestMaxwellianCollisionFrequencies:
             ),
         ],
     )
+    @pytest.mark.filterwarnings("ignore::plasmapy.utils.exceptions.RelativityWarning")
     def test_attribute_errors(
         self,
         expected_error,
         constructor_arguments,
         constructor_keyword_arguments,
-        attribute_name,
-    ):
+        attribute_name: str,
+    ) -> None:
         """Test errors raised in attribute bodies"""
 
         test_case = MaxwellianCollisionFrequencies(
@@ -605,7 +613,7 @@ class TestMaxwellianCollisionFrequencies:
             getattr(test_case, attribute_name)
 
     @pytest.mark.parametrize(
-        "frequency_to_test, constructor_keyword_arguments",
+        ("frequency_to_test", "constructor_keyword_arguments"),
         [
             (
                 "Maxwellian_avg_ei_collision_freq",
@@ -635,9 +643,10 @@ class TestMaxwellianCollisionFrequencies:
             ),
         ],
     )
+    @pytest.mark.filterwarnings("ignore::plasmapy.utils.exceptions.RelativityWarning")
     def test_fundamental_frequency_values(
         self, frequency_to_test, constructor_keyword_arguments
-    ):
+    ) -> None:
         value_test_case = MaxwellianCollisionFrequencies(
             **constructor_keyword_arguments
         )
@@ -655,7 +664,7 @@ class TestMaxwellianCollisionFrequencies:
 
 class Test_collision_frequency:
     @classmethod
-    def setup_class(cls):
+    def setup_class(cls) -> None:
         """Initializing parameters for tests"""
         cls.T = 11604 * u.K
         cls.n = 1e17 * u.cm**-3
@@ -669,17 +678,17 @@ class Test_collision_frequency:
         cls.True_protons = 44450104815.91857
         cls.True_zmean = 1346828153985.4646
 
-    def test_symmetry(self):
+    def test_symmetry(self) -> None:
         with pytest.warns(CouplingWarning):
             result = collision_frequency(self.T, self.n, self.particles)
             resultRev = collision_frequency(self.T, self.n, self.particles[::-1])
         assert result == resultRev
 
-    def test_known1(self):
+    def test_known1(self) -> None:
         """
         Test for known value.
         """
-        with pytest.warns(exceptions.PhysicsWarning, match="strong coupling effects"):
+        with pytest.warns(PhysicsWarning, match="strong coupling effects"):
             methodVal = collision_frequency(
                 self.T,
                 self.n,
@@ -692,13 +701,13 @@ class Test_collision_frequency:
         errStr = f"Collision frequency should be {self.True1} and not {methodVal}."
         assert testTrue, errStr
 
-    def test_fail1(self):
+    def test_fail1(self) -> None:
         """
         Tests if test_known1() would fail if we slightly adjusted the
         value comparison by some quantity close to numerical error.
         """
         fail1 = self.True1 * (1 + 1e-15)
-        with pytest.warns(exceptions.PhysicsWarning, match="strong coupling effects"):
+        with pytest.warns(PhysicsWarning, match="strong coupling effects"):
             methodVal = collision_frequency(
                 self.T,
                 self.n,
@@ -724,17 +733,17 @@ class Test_collision_frequency:
             {"particles": ("p", "p")},
         ],
     )
-    def test_handle_nparrays(self, insert_some_nans, insert_all_nans, kwargs):
+    def test_handle_nparrays(self, insert_some_nans, insert_all_nans, kwargs) -> None:
         """Test for ability to handle numpy array quantities"""
         assert_can_handle_nparray(
             collision_frequency, insert_some_nans, insert_all_nans, kwargs
         )
 
-    def test_electrons(self):
+    def test_electrons(self) -> None:
         """
         Testing collision frequency between electrons.
         """
-        with pytest.warns(exceptions.PhysicsWarning, match="strong coupling effects"):
+        with pytest.warns(PhysicsWarning, match="strong coupling effects"):
             methodVal = collision_frequency(
                 self.T,
                 self.n,
@@ -752,11 +761,11 @@ class Test_collision_frequency:
         )
         assert testTrue, errStr
 
-    def test_protons(self):
+    def test_protons(self) -> None:
         """
         Testing collision frequency between protons (ions).
         """
-        with pytest.warns(exceptions.PhysicsWarning, match="strong coupling effects"):
+        with pytest.warns(PhysicsWarning, match="strong coupling effects"):
             methodVal = collision_frequency(
                 self.T,
                 self.n,
@@ -774,11 +783,11 @@ class Test_collision_frequency:
         )
         assert testTrue, errStr
 
-    def test_zmean(self):
+    def test_zmean(self) -> None:
         """
         Test collisional frequency function when given arbitrary z_mean.
         """
-        with pytest.warns(exceptions.PhysicsWarning, match="strong coupling effects"):
+        with pytest.warns(PhysicsWarning, match="strong coupling effects"):
             methodVal = collision_frequency(
                 self.T,
                 self.n,
@@ -794,17 +803,17 @@ class Test_collision_frequency:
 
 class Test_fundamental_electron_collision_freq:
     @classmethod
-    def setup_class(cls):
+    def setup_class(cls) -> None:
         """Initializing parameters for tests"""
         cls.T_arr = np.array([1, 2]) * u.eV
         cls.n_arr = np.array([1e20, 2e20]) * u.cm**-3
-        cls.ion = "p"
+        cls.ion = "p+"
         cls.coulomb_log = 10
 
     # TODO: array coulomb log
     @pytest.mark.parametrize("insert_some_nans", [[], ["V"]])
     @pytest.mark.parametrize("insert_all_nans", [[], ["V"]])
-    def test_handle_nparrays(self, insert_some_nans, insert_all_nans):
+    def test_handle_nparrays(self, insert_some_nans, insert_all_nans) -> None:
         """Test for ability to handle numpy array quantities"""
         assert_can_handle_nparray(
             fundamental_electron_collision_freq, insert_some_nans, insert_all_nans, {}
@@ -813,17 +822,17 @@ class Test_fundamental_electron_collision_freq:
 
 class Test_fundamental_ion_collision_freq:
     @classmethod
-    def setup_class(cls):
+    def setup_class(cls) -> None:
         """Initializing parameters for tests"""
         cls.T_arr = np.array([1, 2]) * u.eV
         cls.n_arr = np.array([1e20, 2e20]) * u.cm**-3
-        cls.ion = "p"
+        cls.ion = "p+"
         cls.coulomb_log = 10
 
     # TODO: array coulomb log
     @pytest.mark.parametrize("insert_some_nans", [[], ["V"]])
     @pytest.mark.parametrize("insert_all_nans", [[], ["V"]])
-    def test_handle_nparrays(self, insert_some_nans, insert_all_nans):
+    def test_handle_nparrays(self, insert_some_nans, insert_all_nans) -> None:
         """Test for ability to handle numpy array quantities"""
         assert_can_handle_nparray(
             fundamental_ion_collision_freq, insert_some_nans, insert_all_nans, {}

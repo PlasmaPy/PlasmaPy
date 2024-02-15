@@ -3,12 +3,15 @@
 Acknowledging and Citing
 ========================
 
-.. |version_to_cite| replace:: 2023.1.0
-.. |doi_hyperlink| replace:: https://doi.org/10.5281/zenodo.7529964
-.. |citation_year| replace:: 2023
+.. |version_to_cite| replace:: 2024.2.0
+.. |doi_hyperlink| replace:: https://doi.org/10.5281/zenodo.10613904
+.. |citation_year| replace:: 2024
 
-If you use PlasmaPy for a project that results in a publication, we ask
-that you cite the Zenodo_ record for the specific version of PlasmaPy
+.. These substitutions are automatically updated by the GitHub Action
+   to mint a release.
+
+If you use PlasmaPy for a project that results in a publication,
+please cite the |Zenodo| record for the specific version of PlasmaPy
 used in your project. Citing a software package promotes scientific
 reproducibility, gives credit to its developers, and highlights the
 importance of software as a vital research product.
@@ -45,9 +48,12 @@ on, such as `Astropy <https://www.astropy.org/acknowledging.html>`__,
 .. tip::
 
    A paper written using `AASTeX <https://journals.aas.org/aastexguide>`__
-   should use the ``\software{PlasmaPy}`` command to cite PlasmaPy.
+   should use the ``\software{PlasmaPy}`` command to cite
+   PlasmaPy. If the author instructions for a journal do not describe
+   how to cite software, please follow the instructions on how to cite
+   a dataset.
 
 .. note::
 
    All public releases of PlasmaPy are openly archived in the `PlasmaPy
-   Community <https://zenodo.org/communities/plasmapy>`__ on Zenodo_.
+   Community <https://zenodo.org/communities/plasmapy>`__ on |Zenodo|.

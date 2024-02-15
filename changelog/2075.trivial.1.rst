@@ -1,1 +1,0 @@
-Set minimum versions for all explicitly listed dependencies.

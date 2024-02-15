@@ -32,15 +32,15 @@ from plasmapy.particles.particle_class import (
     AbstractPhysicalParticle,
     CustomParticle,
     DimensionlessParticle,
-    molecule,
     Particle,
     ParticleLike,
+    molecule,
 )
 from plasmapy.particles.particle_collections import ParticleList, ParticleListLike
 from plasmapy.particles.serialization import (
+    ParticleJSONDecoder,
     json_load_particle,
     json_loads_particle,
-    ParticleJSONDecoder,
 )
 from plasmapy.particles.symbols import (
     atomic_symbol,
@@ -79,7 +79,13 @@ for name, obj in list(globals().items()):
     if inspect.ismodule(obj) or name.startswith("__") or name.endswith("__"):
         continue
 
-    __all__.append(name)
+    # Using append here may not be supported by all type checkers, but
+    # switching to += led to a documentation build error. Because of the
+    # relative stability of plasmapy.particles, we may wish to stop
+    # auto-populating __all__ and instead start explicitly listing its
+    # contents.
+
+    __all__.append(name)  # noqa: PYI056
 
 __all__.sort()
 

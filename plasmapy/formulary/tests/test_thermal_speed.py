@@ -12,7 +12,6 @@ thermal speed.
 import astropy.units as u
 import numpy as np
 import pytest
-
 from astropy.constants.si import k_B
 from numba.extending import is_jitted
 
@@ -26,15 +25,15 @@ from plasmapy.formulary.speeds import (
 )
 from plasmapy.particles import Particle
 from plasmapy.particles.exceptions import InvalidParticleError
+from plasmapy.utils._pytest_helpers import assert_can_handle_nparray
 from plasmapy.utils.exceptions import RelativityError, RelativityWarning
-from plasmapy.utils.pytest_helpers import assert_can_handle_nparray
 
 
 @pytest.mark.parametrize(
-    "alias, parent",
+    ("alias", "parent"),
     [(vth_, thermal_speed), (vth_kappa_, kappa_thermal_speed)],
 )
-def test_aliases(alias, parent):
+def test_aliases(alias, parent) -> None:
     assert alias is parent
 
 
@@ -45,7 +44,7 @@ class TestThermalSpeedCoefficients:
     """
 
     @pytest.mark.parametrize(
-        "ndim, method, _error",
+        ("ndim", "method", "_error"),
         [
             (0, "most_probable", ValueError),
             (4, "most_probable", ValueError),
@@ -54,13 +53,13 @@ class TestThermalSpeedCoefficients:
             (1, 2, ValueError),
         ],
     )
-    def test_raises(self, ndim, method, _error):
+    def test_raises(self, ndim, method, _error) -> None:
         """Test scenarios that raise exceptions."""
         with pytest.raises(_error):
             thermal_speed_coefficients(ndim=ndim, method=method)
 
     @pytest.mark.parametrize(
-        "ndim, method, expected",
+        ("ndim", "method", "expected"),
         [
             (1, "most_probable", 0),
             (2, "most_probable", 1),
@@ -76,7 +75,7 @@ class TestThermalSpeedCoefficients:
             (3, "nrl", 1),
         ],
     )
-    def test_values(self, ndim, method, expected):
+    def test_values(self, ndim, method, expected) -> None:
         """Test that the correct values are returned."""
         val = thermal_speed_coefficients(ndim=ndim, method=method)
         assert np.isclose(val, expected)
@@ -97,18 +96,18 @@ class TestThermalSpeed:
     """
 
     @pytest.mark.parametrize(
-        "bound_name, bound_attr",
+        ("bound_name", "bound_attr"),
         [
             ("lite", thermal_speed_lite),
             ("coefficients", thermal_speed_coefficients),
         ],
     )
-    def test_lite_function_binding(self, bound_name, bound_attr):
+    def test_lite_function_binding(self, bound_name: str, bound_attr) -> None:
         """Test expected attributes are bound correctly."""
         assert hasattr(thermal_speed, bound_name)
         assert getattr(thermal_speed, bound_name) is bound_attr
 
-    def test_lite_function_marking(self):
+    def test_lite_function_marking(self) -> None:
         """
         Test thermal_speed is marked as having a Lite-Function.
         """
@@ -123,7 +122,7 @@ class TestThermalSpeed:
             assert origin == bound_origin
 
     @pytest.mark.parametrize(
-        "args, kwargs, expected",
+        ("args", "kwargs", "expected"),
         [
             # Parameters that should return the value of the thermal
             # speed coefficient.
@@ -232,14 +231,14 @@ class TestThermalSpeed:
             ),
         ],
     )
-    def test_values(self, args, kwargs, expected):
+    def test_values(self, args, kwargs, expected) -> None:
         """Test scenarios with known calculated values."""
         vth = thermal_speed(*args, **kwargs)
         assert np.allclose(vth.value, expected)
         assert vth.unit == u.m / u.s
 
     @pytest.mark.parametrize(
-        "args, kwargs, _error",
+        ("args", "kwargs", "_error"),
         [
             ((5 * u.m, "e-"), {}, u.UnitTypeError),
             ((5 * u.m, "He+"), {}, u.UnitTypeError),
@@ -251,13 +250,13 @@ class TestThermalSpeed:
             ((1e6 * u.K, "e-"), {"ndim": 4}, ValueError),
         ],
     )
-    def test_raises(self, args, kwargs, _error):
+    def test_raises(self, args, kwargs, _error) -> None:
         """Test scenarios that cause an `Exception` to be raised."""
         with pytest.raises(_error):
             thermal_speed(*args, **kwargs)
 
     @pytest.mark.parametrize(
-        "args, kwargs, _warning, expected",
+        ("args", "kwargs", "_warning", "expected"),
         [
             ((), {"T": 1e9 * u.K, "particle": "e-"}, RelativityWarning, None),
             (
@@ -270,7 +269,7 @@ class TestThermalSpeed:
             ((1e6, "p"), {}, u.UnitsWarning, thermal_speed(1e6 * u.K, "p")),
         ],
     )
-    def test_warns(self, args, kwargs, _warning, expected):
+    def test_warns(self, args, kwargs, _warning, expected) -> None:
         """Test scenarios where `thermal_speed` issues warnings."""
         with pytest.warns(_warning):
             vth = thermal_speed(*args, **kwargs)
@@ -279,21 +278,21 @@ class TestThermalSpeed:
             if expected is not None:
                 assert vth == expected
 
-    def test_electron_vs_proton(self):
+    def test_electron_vs_proton(self) -> None:
         """
         Ensure the electron thermal speed is larger that the proton
         thermal speed for the same parameters.
         """
         assert thermal_speed(1e6 * u.K, "e-") > thermal_speed(1e6 * u.K, "p")
 
-    def test_can_handle_numpy_arrays(self):
+    def test_can_handle_numpy_arrays(self) -> None:
         assert_can_handle_nparray(thermal_speed)
 
 
 class TestThermalSpeedLite:
     """Test class for `thermal_speed_lite`."""
 
-    def test_is_jitted(self):
+    def test_is_jitted(self) -> None:
         """Ensure `thermal_speed_lite` was jitted by `numba`."""
         assert is_jitted(thermal_speed_lite)
 
@@ -316,7 +315,7 @@ class TestThermalSpeedLite:
             {"T": 1 * u.eV, "particle": Particle("Ar+"), "method": "rms", "ndim": 3},
         ],
     )
-    def test_normal_vs_lite_values(self, inputs):
+    def test_normal_vs_lite_values(self, inputs) -> None:
         """
         Test that thermal_speed and thermal_speed_lite calculate the same values
         for the same inputs.
@@ -337,17 +336,17 @@ class TestThermalSpeedLite:
 # test class for kappa_thermal_speed() function:
 class Test_kappa_thermal_speed:
     @classmethod
-    def setup_class(cls):
+    def setup_class(cls) -> None:
         """Initializing parameters for tests"""
         cls.T_e = 5 * u.eV
         cls.kappaInvalid = 3 / 2
         cls.kappa = 4
-        cls.particle = "p"
+        cls.particle = "p+"
         cls.probable1True = 24467.878463594963
         cls.rms1True = 37905.474322612165
         cls.mean1True = 34922.98563039583
 
-    def test_invalid_kappa(self):
+    def test_invalid_kappa(self) -> None:
         """
         Checks if function raises error when kappa <= 3/2 is passed as an
         argument.
@@ -355,7 +354,7 @@ class Test_kappa_thermal_speed:
         with pytest.raises(ValueError):
             kappa_thermal_speed(self.T_e, self.kappaInvalid, particle=self.particle)
 
-    def test_invalid_method(self):
+    def test_invalid_method(self) -> None:
         """
         Checks if function raises error when invalid method is passed as an
         argument.
@@ -365,7 +364,7 @@ class Test_kappa_thermal_speed:
                 self.T_e, self.kappa, particle=self.particle, method="invalid"
             )
 
-    def test_probable1(self):
+    def test_probable1(self) -> None:
         """
         Tests if expected value is returned for a set of regular inputs.
         """
@@ -378,7 +377,7 @@ class Test_kappa_thermal_speed:
         )
         assert np.isclose(known1.value, self.probable1True, rtol=1e-8, atol=0.0), errstr
 
-    def test_rms1(self):
+    def test_rms1(self) -> None:
         """
         Tests if expected value is returned for a set of regular inputs.
         """
@@ -391,7 +390,7 @@ class Test_kappa_thermal_speed:
         )
         assert np.isclose(known1.value, self.rms1True, rtol=1e-8, atol=0.0), errstr
 
-    def test_mean1(self):
+    def test_mean1(self) -> None:
         """
         Tests if expected value is returned for a set of regular inputs.
         """
@@ -404,7 +403,7 @@ class Test_kappa_thermal_speed:
         )
         assert np.isclose(known1.value, self.mean1True, rtol=1e-8, atol=0.0), errstr
 
-    def test_handle_nparrays(self, kwargs=None):
+    def test_handle_nparrays(self, kwargs=None) -> None:
         """Test for ability to handle numpy array quantities"""
         if kwargs is None:
             kwargs = {"kappa": 2}

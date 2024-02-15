@@ -1,16 +1,16 @@
 """Tests for `plasmapy.analysis.swept_langmuir.helpers`."""
 
+from contextlib import nullcontext as does_not_raise
+
 import astropy.units as u
 import numpy as np
 import pytest
-
-from contextlib import nullcontext as does_not_raise
 
 from plasmapy.analysis.swept_langmuir.helpers import check_sweep
 
 
 @pytest.mark.parametrize(
-    "voltage, current, kwargs, with_context, expected",
+    ("voltage", "current", "kwargs", "with_context", "expected"),
     [
         # the one that works
         (
@@ -165,7 +165,7 @@ from plasmapy.analysis.swept_langmuir.helpers import check_sweep
         ),
     ],
 )
-def test_check_sweep(voltage, current, kwargs, with_context, expected):
+def test_check_sweep(voltage, current, kwargs, with_context, expected) -> None:
     """Test functionality of `plasmapy.analysis.swept_langmuir.helpers.check_sweep`."""
     with with_context:
         rtn_voltage, rtn_current = check_sweep(

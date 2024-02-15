@@ -35,7 +35,7 @@ Summary
   - Navigate to the top-level directory (probably named
     :file:`PlasmaPy/`) in your local clone of PlasmaPy's repository.
 
-  - If you are on MacOS or Linux, run:
+  - If you are on macOS or Linux, run:
 
     .. code-block:: console
 
@@ -47,7 +47,7 @@ Summary
 
        py -m pip install -e .[tests]
 
-    These commands will perform an `editable installation`_ of your
+    These commands will perform an |editable installation| of your
     local clone of PlasmaPy.
 
 * Run ``pytest`` in the command line in order to run tests in that
@@ -76,7 +76,7 @@ Software tests help us to:
 
 Every code contribution to PlasmaPy with new functionality must also
 have corresponding tests. Creating or updating a pull request will
-activate PlasmaPy's test suite to be run via `GitHub Actions`_, along
+activate PlasmaPy's test suite to be run via |GitHub Actions|, along
 with some additional checks. The results of the test suite are shown at
 the bottom of each pull request. Click on *Details* next to each test
 run to find the reason for any test failures.
@@ -87,9 +87,9 @@ does it in isolation from other tests :cite:p:`khorikov:2020`. A typical
 *assert* :cite:p:`osherove:2013`. An |integration test| verifies that
 multiple software components work together as intended.
 
-PlasmaPy's tests are set up using the pytest_ framework. The tests for
-a subpackage are located in its :file:`tests/` subdirectory in files
-with names of the form :file:`test_*.py`. For example, tests for
+PlasmaPy's tests are set up using the `pytest` framework. The tests for a
+subpackage are located in its :file:`tests/` subdirectory in files with
+names of the form :file:`test_*.py`. For example, tests for
 `plasmapy.formulary.speeds` are located at
 :file:`plasmapy/formulary/tests/test_speeds.py` relative to the top
 of the package. Example code contained within docstrings is tested to
@@ -133,8 +133,8 @@ Assertions
 ----------
 
 A software test runs a section of code and checks that a particular
-condition is met. If the condition is not met, then the test fails.
-Here is a minimal software test:
+condition is met. If the condition is not met, then the test fails. Here
+is a minimal software test:
 
 .. code-block:: python
 
@@ -148,22 +148,34 @@ The most common way to check that a condition is met is through an
 follows ``assert`` evaluates to `True`, then this statement will do
 nothing and the test will pass.
 
-When ``assert`` statements raise an `AssertionError`, pytest_ will display
-the values of the expressions evaluated in the ``assert`` statement. The
-automatic output from pytest_ is sufficient for simple tests like
-above. For more complex tests, we can add a descriptive error message
-to help us find the cause of a particular test failure.
+When ``assert`` statements raise an `AssertionError`, `pytest` will
+display the values of the expressions evaluated in the ``assert``
+statement. The automatic output from `pytest` is sufficient for simple
+tests like above. For more complex tests, we can add a descriptive error
+message to help us find the cause of a particular test failure.
 
 .. code-block:: python
 
    def test_addition():
-       result = 2 + 2
+       actual = 2 + 2
        expected = 4
-       assert result == expected, f"2 + 2 returns {result} instead of {expected}."
+       assert actual == expected, f"2 + 2 returns {actual} instead of {expected}."
 
 .. tip::
 
    Use `f-strings`_ to improve error message readability.
+
+Type hint annotations
+---------------------
+
+PlasmaPy has begun using |mypy| to perform |static type checking| on
+|type hint annotations|. Adding a :py:`-> None` return annotation lets
+|mypy| verify that tests do not have :py:`return` statements.
+
+.. code-block:: python
+
+   def test_addition() -> None:
+       assert 2 * 2 == 4
 
 Floating point comparisons
 --------------------------
@@ -174,23 +186,24 @@ Floating point comparisons
    tests because of slight differences due to limited precision,
    rounding errors, and revisions to fundamental constants.
 
-In order to avoid these difficulties, use `numpy.testing.assert_allclose`
-when comparing floating point numbers and arrays, and
-``astropy.tests.helper.assert_quantity_allclose`` when comparing |Quantity|
-instances. The ``rtol`` keyword for each of these functions sets the
-acceptable relative tolerance. The value of ``rtol`` should be set ∼1–2
-orders of magnitude greater than the expected relative uncertainty. For
-mathematical functions, a value of ``rtol=1e-14`` is often appropriate.
-For quantities that depend on physical constants, a value between
-``rtol=1e-8`` and ``rtol=1e-5`` may be required, depending on how much
-the accepted values for fundamental constants are likely to change.
+In order to avoid these difficulties, use
+`numpy.testing.assert_allclose` when comparing floating point numbers
+and arrays, and ``astropy.tests.helper.assert_quantity_allclose`` when
+comparing |Quantity| instances. The ``rtol`` keyword for each of these
+functions sets the acceptable relative tolerance. The value of ``rtol``
+should be set ∼1–2 orders of magnitude greater than the expected
+relative uncertainty. For mathematical functions, a value of
+``rtol=1e-14`` is often appropriate. For quantities that depend on
+physical constants, a value between ``rtol=1e-8`` and ``rtol=1e-5`` may
+be required, depending on how much the accepted values for fundamental
+constants are likely to change.
 
 Testing warnings and exceptions
 -------------------------------
 
 Robust testing frameworks should test that functions and methods return
 the expected results, issue the expected warnings, and raise the
-expected exceptions. pytest_ contains functionality to `test warnings`_
+expected exceptions. `pytest` contains functionality to `test warnings`_
 and `test exceptions`_.
 
 To test that a function issues an appropriate warning, use
@@ -203,11 +216,11 @@ To test that a function issues an appropriate warning, use
    import pytest
 
 
-   def issue_warning():
+   def issue_warning() -> None:
        warnings.warn("warning message", UserWarning)
 
 
-   def test_that_a_warning_is_issued():
+   def test_that_a_warning_is_issued() -> None:
        with pytest.warns(UserWarning):
            issue_warning()
 
@@ -219,20 +232,20 @@ To test that a function raises an appropriate exception, use
    import pytest
 
 
-   def raise_exception():
+   def raise_exception() -> None:
        raise Exception
 
 
-   def test_that_an_exception_is_raised():
+   def test_that_an_exception_is_raised() -> None:
        with pytest.raises(Exception):
            raise_exception()
 
 Test independence and parametrization
 -------------------------------------
 
-In this section, we'll discuss the issue of parametrization based on
-an example of a :wikipedia:`proof <Riemann_hypothesis#Excluded_middle>`
-of Gauss's class number conjecture.
+In this section, we'll discuss the issue of parametrization based on an
+example of a :wikipedia:`proof <Riemann_hypothesis#Excluded_middle>` of
+Gauss's class number conjecture.
 
 The proof goes along these lines:
 
@@ -248,7 +261,7 @@ function.
 
 .. code-block:: python
 
-   def test_proof_by_riemann_hypothesis():
+   def test_proof_by_riemann_hypothesis() -> None:
        assert proof_by_riemann(False)
        assert proof_by_riemann(True)  # will only be run if the previous test passes
 
@@ -259,11 +272,11 @@ both will be run.
 
 .. code-block:: python
 
-   def test_proof_if_riemann_false():
+   def test_proof_if_riemann_false() -> None:
        assert proof_by_riemann(False)
 
 
-   def test_proof_if_riemann_true():
+   def test_proof_if_riemann_true() -> None:
        assert proof_by_riemann(True)
 
 However, this approach can lead to cumbersome, repeated code if you are
@@ -274,14 +287,14 @@ tests for the same function, the preferred method is to decorate it with
 .. code-block:: python
 
    @pytest.mark.parametrize("truth_value", [True, False])
-   def test_proof_if_riemann(truth_value):
+   def test_proof_if_riemann(truth_value: bool) -> None:
        assert proof_by_riemann(truth_value)
 
 This code snippet will run :py:`proof_by_riemann(truth_value)` for each
-``truth_value`` in :py:`[True, False]`. Both of the above
-tests will be run regardless of failures. This approach is much cleaner
-for long lists of arguments, and has the advantage that you would only
-need to change the function call in one place if the function changes.
+``truth_value`` in :py:`[True, False]`. Both of the above tests will be
+run regardless of failures. This approach is much cleaner for long lists
+of arguments, and has the advantage that you would only need to change
+the function call in one place if the function changes.
 
 With qualitatively different tests you would use either separate
 functions or pass in tuples containing inputs and expected values.
@@ -289,7 +302,7 @@ functions or pass in tuples containing inputs and expected values.
 .. code-block:: python
 
    @pytest.mark.parametrize("truth_value, expected", [(True, True), (False, True)])
-   def test_proof_if_riemann(truth_value, expected):
+   def test_proof_if_riemann(truth_value: bool, expected: bool) -> None:
        assert proof_by_riemann(truth_value) == expected
 
 Test parametrization with argument unpacking
@@ -304,10 +317,17 @@ positional arguments (``a`` and ``b``) and one optional keyword argument
 
 .. code-block:: python
 
-   def add(a, b, reverse_order=False):
+   def add(a: float | str, b: float | str, reverse_order: bool = False) -> float | str:
        if reverse_order:
            return b + a
        return a + b
+
+.. hint::
+
+   This function uses |type hint annotations| to indicate that ``a`` and
+   ``b`` can be either a :py:`float` or :py:`str`, :py:`reverse_order`
+   should be a :py:`bool`, and :py:`add` should return a :py:`float` or
+   :py:`str`.
 
 Argument unpacking_ lets us provide positional arguments in a `tuple` or
 `list` (commonly referred to as :term:`args`) and keyword arguments in a
@@ -343,8 +363,16 @@ and unpacking_ them inside of the test function.
            (["1", "2"], {}, "12"),  # if no keyword arguments, use an empty dict
        ],
    )
-   def test_add(args, kwargs, expected):
+   def test_add(args: list[str], kwargs: dict[str, bool], expected: str) -> None:
        assert add(*args, **kwargs) == expected
+
+.. hint::
+
+   This function uses |type hint annotations| to indicate that ``args``
+   should be a `list` containing `str` objects, ``kwargs`` should be a
+   `dict` containing `str` objects that map to `bool` objects,
+   ``expected`` should be a `str`, and that there should be no
+   :py:`return` statement.
 
 Fixtures
 --------
@@ -368,10 +396,10 @@ multiple values of :math:`x`. The hypothesis_ package simplifies
 Best practices
 ==============
 
-The following list contains suggested practices for testing
-scientific software and making tests easier to run and maintain. These
-guidelines are not rigid, and should be treated as general principles
-should be balanced with each other rather than absolute principles.
+The following list contains suggested practices for testing scientific
+software and making tests easier to run and maintain. These guidelines
+are not rigid, and should be treated as general principles should be
+balanced with each other rather than absolute principles.
 
 * **Run tests frequently for continual feedback.** If we edit a single
   section of code and discover a new test failure, then we know that the
@@ -398,7 +426,7 @@ should be balanced with each other rather than absolute principles.
   .. code-block:: python
 
      @pytest.mark.slow
-     def test_calculating_primes():
+     def test_calculating_primes() -> None:
          calculate_all_primes()
 
 * **Write tests that are easy to understand and change.** To fully
@@ -470,36 +498,36 @@ Running tests
 
 PlasmaPy's tests can be run in the following ways:
 
-1. Creating and updating a pull request on GitHub_.
-2. Running pytest_ from the command line.
-3. Running tox_ from the command line.
+1. Creating and updating a pull request on |GitHub|.
+2. Running `pytest` from the command line.
+3. Running |tox| from the command line.
 4. Running tests from an :wikipedia:`integrated development environment
    <integrated_development_environment>` (IDE).
 
 We recommend that new contributors perform the tests via a pull request
-on GitHub_. Creating a draft pull request and keeping it updated will
+on |GitHub|. Creating a draft pull request and keeping it updated will
 ensure that the necessary checks are run frequently. This approach is
 also appropriate for pull requests with a limited scope. This advantage
 of this approach is that the tests are run automatically and do not
 require any extra work. The disadvantages are that running the tests on
-GitHub_ is often slow and that navigating the test results is sometimes
+|GitHub| is often slow and that navigating the test results is sometimes
 difficult.
 
 We recommend that experienced contributors run tests either by using
-pytest_ from the command line or by using your preferred IDE.
-Using tox_ is an alternative to pytest_, but running tests with tox_
-adds the overhead of creating an isolated environment for your test and
-can thus be slower.
+`pytest` from the command line or by using your preferred IDE. Using |tox|
+is an alternative to `pytest`, but running tests with |tox| adds the
+overhead of creating an isolated environment for your test and can thus
+be slower.
 
 Using GitHub
 ------------
 
 The recommended way for new contributors to run PlasmaPy's full test
 suite is to `create a pull request`_ from your development branch to
-`PlasmaPy's GitHub repository`_. The test suite will be run
+|PlasmaPy's GitHub repository|. The test suite will be run
 automatically when the pull request is created and every time changes
-are pushed to the development branch on GitHub_. Most of these checks
-have been automated using `GitHub Actions`_.
+are pushed to the development branch on |GitHub|. Most of these checks
+have been automated using |GitHub Actions|.
 
 The following image shows how the results of the checks will appear in
 each pull request near the end of the *Conversation* tab. Checks that
@@ -516,7 +544,7 @@ The following checks are performed with each pull request.
 * Checks with labels like **CI / Python 3.x (pull request)** verify that
   PlasmaPy works with different versions of Python and other
   dependencies, and on different operating systems. These tests are set
-  up using tox_ and run with pytest_ via `GitHub Actions`_. When
+  up using |tox| and run with `pytest` via |GitHub Actions|. When
   multiple tests fail, investigate these tests first.
 
   .. tip::
@@ -529,7 +557,7 @@ The following checks are performed with each pull request.
      messages.
 
 * The **CI / Documentation (pull_request)** check verifies that
-  `PlasmaPy's documentation`_ is able to build correctly from the pull
+  |PlasmaPy's documentation| is able to build correctly from the pull
   request. Warnings are treated as errors.
 
 * The **docs/readthedocs.org:plasmapy** check allows us to preview
@@ -554,11 +582,11 @@ The following checks are performed with each pull request.
 * The **CI / Importing PlasmaPy (pull_request)** checks that it is
   possible to run :py:`import plasmapy`.
 
-* PlasmaPy uses black_ to format code and isort_ to sort ``import``
+* PlasmaPy uses |black| to format code and |isort| to sort ``import``
   statements. The **CI / Linters (pull_request)** and
   **pre-commit.ci - pr** checks verify that the pull request meets these
   style requirements. These checks will fail when inconsistencies with
-  the output from black_ or isort_ are found or when there are syntax
+  the output from |black| or |isort| are found or when there are syntax
   errors. These checks can usually be ignored until the pull request is
   nearing completion.
 
@@ -583,7 +611,7 @@ The following checks are performed with each pull request.
   made.
 
 * The **Pull Request Labeler / triage (pull_request_target)** check
-  applies appropriate GitHub_ labels to pull requests.
+  applies appropriate |GitHub| labels to pull requests.
 
 .. note::
 
@@ -604,7 +632,7 @@ Using pytest
 ------------
 
 To install the packages necessary to run tests on your local computer
-(including tox_ and pytest_), run:
+(including |tox| and pytest_), run:
 
 .. code-block:: shell
 
@@ -622,16 +650,16 @@ directory and all of its subdirectories. Because it takes time to run
 PlasmaPy's tests, it is usually most convenient to specify that only a
 subset of the tests be run. To run the tests contained within a
 particular file or directory, include its name after ``pytest``. If you
-are in the directory :file:`plasmapy/particles/tests/`, then the tests in
-in :file:`test_atomic.py` can be run with:
+are in the directory :file:`plasmapy/particles/tests/`, then the tests
+in in :file:`test_atomic.py` can be run with:
 
 .. code-block:: shell
 
    pytest test_atomic.py
 
-The documentation for pytest_ describes `how to invoke pytest`_ and
-specify which tests will or will not be run. A few useful
-examples of flags you can use with it:
+The documentation for `pytest` describes `how to invoke pytest`_ and
+specify which tests will or will not be run. A few useful examples of
+flags you can use with it:
 
 * Use the ``--tb=short`` to shorten traceback reports, which is useful
   when there are multiple related errors. Use ``--tb=long`` for
@@ -652,12 +680,12 @@ examples of flags you can use with it:
 Using tox
 ---------
 
-PlasmaPy's continuous integration tests on GitHub_ are typically run
-using tox_, a tool for automating Python testing. Using tox_ simplifies
+PlasmaPy's continuous integration tests on |GitHub| are typically run
+using |tox|, a tool for automating Python testing. Using |tox| simplifies
 testing PlasmaPy with different releases of Python, with different
 versions of PlasmaPy's dependencies, and on different operating systems.
-While testing with tox_ is more robust than testing with pytest_, using
-tox_ to run tests is typically slower because tox_ creates its own
+While testing with |tox| is more robust than testing with `pytest`, using
+|tox| to run tests is typically slower because |tox| creates its own
 virtual environments.
 
 To run PlasmaPy's tests for a particular environment, run:
@@ -666,16 +694,17 @@ To run PlasmaPy's tests for a particular environment, run:
 
    tox -e ⟨envname⟩
 
-where ``⟨envname⟩`` is replaced with the name of the tox_ environment,
+where ``⟨envname⟩`` is replaced with the name of the |tox| environment,
 as described below.
 
-Some testing environments for tox_ are pre-defined.  For example, you
-can replace ``⟨envname⟩`` with ``py38`` if you are running Python 3.8.x,
-``py39`` if you are running Python 3.9.x, or ``py310`` if you are running
-Python 3.10.x. Running tox_ with any of these environments requires that
-the appropriate version of Python has been installed and can be found by
-tox_.  To find the version of Python that you are using, go to the
-command line and run ``python --version``.
+Some testing environments for |tox| are pre-defined. For example, you
+can replace ``⟨envname⟩`` with ``py39`` if you are running Python
+``3.9.x``, ``py310`` if you are running Python ``3.10.x``, or ``py311``
+if you are running Python ``3.11.x``. Running |tox| with any of these
+environments requires that the appropriate version of Python has been
+installed and can be found by |tox|. To find the version of Python that
+you are using, go to the command line and run ``python
+--version``.
 
 Additional `tox environments`_ are defined in :file:`tox.ini` in the
 top-level directory of PlasmaPy's repository. To find which testing
@@ -685,9 +714,14 @@ environments are available, run:
 
    tox -a
 
-These commands can be run in any directory within PlasmaPy's repository
-with the same effect.
+For example, static type checking with |mypy| can be run locally with
 
+.. code-block:: shell
+
+   tox -e mypy
+
+Commands using |tox| can be run in any directory within PlasmaPy's
+repository with the same effect.
 
 .. _code-coverage:
 
@@ -724,7 +758,7 @@ tested, and sometimes indicate sections of code that are unreachable.
    the testing is sufficient. A test that makes no assertions has little
    value, but could still have high test coverage.
 
-PlasmaPy uses `coverage.py`_ and the `pytest-cov`_ plugin for pytest_ to
+PlasmaPy uses `coverage.py`_ and the `pytest-cov`_ plugin for `pytest` to
 measure code coverage and Codecov_ to provide reports on GitHub.
 
 Generating coverage reports with pytest
@@ -804,6 +838,6 @@ popular IDEs:
 .. _`test discovery conventions`: https://docs.pytest.org/en/latest/goodpractices.html#conventions-for-python-test-discovery
 .. _`test warnings`: https://docs.pytest.org/en/latest/warnings.html#warns
 .. _`test exceptions`: https://docs.pytest.org/en/latest/assert.html#assertions-about-expected-exceptions
-.. _`tox environments`: https://tox.wiki/en/latest/config.html#tox-environments
+.. _`tox environments`: https://tox.wiki/en/stable/config.html#tox-environment
 .. _unpacking: https://docs.python.org/3/tutorial/controlflow.html#unpacking-argument-lists
-.. _`Visual Studio`: https://visualstudio.microsoft.com/
+.. _`Visual Studio`: https://visualstudio.microsoft.com
