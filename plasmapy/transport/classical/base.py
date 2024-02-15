@@ -3,13 +3,12 @@ __all__ = [
     "validate_attributes_not_none",
 ]
 
+import functools
+from abc import ABC
+
 import astropy.constants as const
 import astropy.units as u
-import functools
 import numpy as np
-
-from abc import ABC
-from typing import Optional, Union
 
 from plasmapy import particles
 from plasmapy.formulary.collisions import (
@@ -22,7 +21,7 @@ from plasmapy.particles.particle_class import ParticleLike
 m_e = const.m_e.si
 
 
-def validate_attributes_not_none(attributes=[]):
+def validate_attributes_not_none(attributes=()):
     """
     This decorator for methods of a class validates that a list of
     attributes on that class are not None.
@@ -65,7 +64,7 @@ class AbstractClassicalTransportCoefficients(ABC):
     r"""
     An abstract class representing classical transport coefficients. Subclasses
     representing different classical transport models re-implement
-    the transport cofficient methods of this abstract class.
+    the transport coefficient methods of this abstract class.
 
     """
 
@@ -88,9 +87,9 @@ class AbstractClassicalTransportCoefficients(ABC):
     @classmethod
     def dimensionless(
         cls,
-        Z: Union[int, float, np.ndarray],
-        chi_e: Optional[np.ndarray] = None,
-        chi_i: Optional[np.ndarray] = None,
+        Z: int | float | np.ndarray,
+        chi_e: np.ndarray | None = None,
+        chi_i: np.ndarray | None = None,
     ):
         """
         Construct object with dimensionless parameters.
@@ -145,7 +144,7 @@ class AbstractClassicalTransportCoefficients(ABC):
     def dimensional(
         cls,
         *,
-        particle: Optional[ParticleLike] = None,
+        particle: ParticleLike | None = None,
         B: u.T = None,
         n_e: u.cm**-3 = None,
         n_i: u.cm**-3 = None,
@@ -154,36 +153,34 @@ class AbstractClassicalTransportCoefficients(ABC):
         e_collision_freq: u.Hz = None,
         i_collision_freq: u.Hz = None,
     ):
-
         """
         Parameters
         ----------
-
         particle : `~plasmapy.particles.Particle` instance or str
             The ion species
 
         B : `~astropy.units.Quantity`
-            Magnetic field strength in units convertable to Tesla.
+            Magnetic field strength in units convertible to Tesla.
 
         n_e : `~astropy.units.Quantity`
-            Electron number density, in units convertable to cm^-3.
+            Electron number density, in units convertible to cm^-3.
 
         n_i : `~astropy.units.Quantity`
-            Ion number density, in units convertable to cm^-3.
+            Ion number density, in units convertible to cm^-3.
 
         T_e : `~astropy.units.Quantity`
-            Electron temperature, in units convertable to eV.
+            Electron temperature, in units convertible to eV.
 
         T_i : `~astropy.units.Quantity`
-            Ion temperature, in units convertable to eV.
+            Ion temperature, in units convertible to eV.
 
         e_collision_freq : `~astropy.units.Quantity`
-            The fundamental electron collision frequency, in units convertable
+            The fundamental electron collision frequency, in units convertible
             to Hz. If not provided, this will be calculated using
             `~plasmapy.formulary.collisions.fundamental_electron_collision_freq()`
 
         i_collision_freq : `~astropy.units.Quantity`
-            The fundamental ion collision frequency, in units convertable
+            The fundamental ion collision frequency, in units convertible
             to Hz. If not provided, this will be calculated using
             `~plasmapy.formulary.collisions.fundamental_ion_collision_freq()`
         """
@@ -232,7 +229,6 @@ class AbstractClassicalTransportCoefficients(ABC):
 
         # If all the electron quantities are provided, calculate chi_e
         if all(v is not None for v in [obj.n_e, obj.T_e]):
-
             # If collision frequency is not provided, calculate it from the
             # provided parameters
             if obj.e_collision_freq is None:
@@ -345,7 +341,7 @@ class AbstractClassicalTransportCoefficients(ABC):
             return self.n_i * self.T_i / self.i_collision_freq
         else:
             return None
-        
+
     @property
     def gamma_normalization(self):
         """
@@ -356,7 +352,7 @@ class AbstractClassicalTransportCoefficients(ABC):
         """
         # Walsh 2020 Eq. A6, gamma =  gamma_dimensionless * tau_e/m_e
         if self._dimensional:
-            return 1 / (self.e_collision_freq* const.m_e.si)
+            return 1 / (self.e_collision_freq * const.m_e.si)
         else:
             return None
 
@@ -366,23 +362,23 @@ class AbstractClassicalTransportCoefficients(ABC):
     @property
     def norm_alpha_para(self):
         raise NotImplementedError(
-            "This coefficent is not implemented by the " "current class"
+            "This coefficient is not implemented by the " "current class"
         )
 
     @property
     def norm_alpha_perp(self):
         raise NotImplementedError(
-            "This coefficent is not implemented by the " "current class"
+            "This coefficient is not implemented by the " "current class"
         )
 
     @property
     def norm_alpha_cross(self):
         raise NotImplementedError(
-            "This coefficent is not implemented by the " "current class"
+            "This coefficient is not implemented by the " "current class"
         )
 
     @property
-    @validate_attributes_not_none(attributes=["chi_e", "Z"])
+    @validate_attributes_not_none(attributes=("chi_e", "Z"))
     def norm_alpha(self):
         """
         Calculates the normalized alpha coefficients in terms of the
@@ -411,7 +407,7 @@ class AbstractClassicalTransportCoefficients(ABC):
         return self.norm_alpha * self.norm_alpha_cross
 
     @property
-    @validate_attributes_not_none(attributes=["n_e", "T_e", "B", "particle"])
+    @validate_attributes_not_none(attributes=("n_e", "T_e", "B", "particle"))
     def alpha(self):
         return self.norm_alpha * self.alpha_normalization
 
@@ -421,23 +417,23 @@ class AbstractClassicalTransportCoefficients(ABC):
     @property
     def norm_beta_para(self):
         raise NotImplementedError(
-            "This coefficent is not implemented by the " "current class"
+            "This coefficient is not implemented by the " "current class"
         )
 
     @property
     def norm_beta_perp(self):
         raise NotImplementedError(
-            "This coefficent is not implemented by the " "current class"
+            "This coefficient is not implemented by the " "current class"
         )
 
     @property
     def norm_beta_cross(self):
         raise NotImplementedError(
-            "This coefficent is not implemented by the " "current class"
+            "This coefficient is not implemented by the " "current class"
         )
 
     @property
-    @validate_attributes_not_none(attributes=["chi_e", "Z"])
+    @validate_attributes_not_none(attributes=("chi_e", "Z"))
     def norm_beta(self):
         """
         Calculates the normalized beta coefficients in terms of the
@@ -468,7 +464,7 @@ class AbstractClassicalTransportCoefficients(ABC):
         return self.norm_beta * self.norm_beta_cross
 
     @property
-    @validate_attributes_not_none(attributes=[])
+    @validate_attributes_not_none(attributes=())
     def beta(self):
         return self.norm_beta * self.beta_normalization
 
@@ -478,23 +474,23 @@ class AbstractClassicalTransportCoefficients(ABC):
     @property
     def norm_kappa_e_para(self):
         raise NotImplementedError(
-            "This coefficent is not implemented by the " "current class"
+            "This coefficient is not implemented by the " "current class"
         )
 
     @property
     def norm_kappa_e_perp(self):
         raise NotImplementedError(
-            "This coefficent is not implemented by the " "current class"
+            "This coefficient is not implemented by the " "current class"
         )
 
     @property
     def norm_kappa_e_cross(self):
         raise NotImplementedError(
-            "This coefficent is not implemented by the " "current class"
+            "This coefficient is not implemented by the " "current class"
         )
 
     @property
-    @validate_attributes_not_none(attributes=["chi_e", "Z"])
+    @validate_attributes_not_none(attributes=("chi_e", "Z"))
     def norm_kappa_e(self):
         """
         Calculates the normalized kappa_e coefficients in terms of the
@@ -524,7 +520,7 @@ class AbstractClassicalTransportCoefficients(ABC):
         return self.norm_kappa_e * self.norm_kappa_e_cross
 
     @property
-    @validate_attributes_not_none(attributes=["n_e", "T_e", "B", "particle"])
+    @validate_attributes_not_none(attributes=("n_e", "T_e", "B", "particle"))
     def kappa_e(self):
         # newaxis is necessary if n_e, B etc. are not scalars
         return self.norm_kappa_e * self.kappa_e_normalization[..., np.newaxis]
@@ -540,7 +536,7 @@ class AbstractClassicalTransportCoefficients(ABC):
         )
 
     @property
-    @validate_attributes_not_none(attributes=["n_i", "T_i", "B", "particle"])
+    @validate_attributes_not_none(attributes=("n_i", "T_i", "B", "particle"))
     def kappa_i(self):
         return self.norm_kappa_i * self.kappa_i_normalization[..., np.newaxis]
 
@@ -555,7 +551,7 @@ class AbstractClassicalTransportCoefficients(ABC):
         )
 
     @property
-    @validate_attributes_not_none(attributes=["n_e", "T_e", "B", "particle"])
+    @validate_attributes_not_none(attributes=("n_e", "T_e", "B", "particle"))
     def eta_e(self):
         return self.norm_eta_e * self.eta_e_normalization
 
@@ -570,13 +566,13 @@ class AbstractClassicalTransportCoefficients(ABC):
         )
 
     @property
-    @validate_attributes_not_none(attributes=["n_i", "T_i", "B", "particle"])
+    @validate_attributes_not_none(attributes=("n_i", "T_i", "B", "particle"))
     def eta_i(self):
         return self.norm_eta_i * self.eta_i_normalization
 
     # **********************************************************************
     # Resistive Velocity (delta)
-    # "Symmetric" coefficent formulism of Sadler and Davies
+    # "Symmetric" coefficient formulism of Sadler and Davies
     # **********************************************************************
     @property
     def norm_delta(self):
@@ -595,13 +591,13 @@ class AbstractClassicalTransportCoefficients(ABC):
         return np.array([perp, cross])
 
     @property
-    @validate_attributes_not_none(attributes=["n_e", "T_e", "B", "particle"])
+    @validate_attributes_not_none(attributes=("n_e", "T_e", "B", "particle"))
     def delta(self):
         return self.norm_delta * self.alpha_normalization
 
     # **********************************************************************
     # Nernst Coefficient (gamma)
-    # "Symmetric" coefficent formulism of Sadler and Davies
+    # "Symmetric" coefficient formulism of Sadler and Davies
     # **********************************************************************
 
     @property
@@ -626,7 +622,7 @@ class AbstractClassicalTransportCoefficients(ABC):
         return np.array([self.norm_gamma_perp, self.norm_gamma_cross])
 
     @property
-    @validate_attributes_not_none(attributes=[])
+    @validate_attributes_not_none(attributes=())
     def gamma(self):
         return self.norm_gamma * self.gamma_normalization
 
@@ -635,4 +631,4 @@ if __name__ == "__main__":
     chi = np.linspace(-2, 2, num=50)
     chi = 10**chi
     x = AbstractClassicalTransportCoefficients.dimensionless(chi_e=chi, Z=1)
-    print(x.beta)
+    print(x.norm_beta)
