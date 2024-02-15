@@ -376,10 +376,12 @@ class ParticleTracker:
 
     req_quantities : `list` of str, optional
         A list of quantity keys required to be specified on the Grid object.
-        The base particle pushing simulation requires the quantities [E_x, E_y, E_z, B_x, B_y, B_z].
-        If any of these quantities are missing, a warning will be given and that
-        quantity will be assumed to be zero everywhere. This keyword is for specifying quantities in
-        addition to these six. The default is None.
+        The base particle pushing simulation requires the quantities
+        [E_x, E_y, E_z, B_x, B_y, B_z].
+        If any additional required quantities are missing, a warning will be
+        given and that quantity will be assumed to be zero everywhere.
+        This keyword is for specifying quantities in addition to these six.
+        The default is None.
 
     verbose : bool, optional
         If true, updates on the status of the program will be printed
@@ -575,13 +577,27 @@ class ParticleTracker:
         # Some quantities are necessary for the particle tracker to function regardless of other configurations
         required_quantities = {"E_x", "E_y", "E_z", "B_x", "B_y", "B_z"}
 
+        for grid in self.grids:
+            # Require the field quantities - do not warn if they are absent
+            # and are replaced with zeros
+            grid.require_quantities(
+                required_quantities,
+                replace_with_zeros=True,
+                warn_on_replace_with_zeros=False,
+            )
+
+            if additional_required_quantities is not None:
+                # Require the additional quantities - in this case, do warn
+                # if they are set to zeros
+                grid.require_quantities(
+                    additional_required_quantities, replace_with_zeros=True
+                )
+
         if additional_required_quantities is not None:
             # Add additional required quantities based off simulation configuration
             required_quantities.update(additional_required_quantities)
 
         for grid in self.grids:
-            grid.require_quantities(required_quantities, replace_with_zeros=True)
-
             for rq in required_quantities:
                 # Check that there are no infinite values
                 if not np.isfinite(grid[rq].value).all():
