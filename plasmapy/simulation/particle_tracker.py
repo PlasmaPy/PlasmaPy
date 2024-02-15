@@ -377,11 +377,12 @@ class ParticleTracker:
     req_quantities : `list` of str, optional
         A list of quantity keys required to be specified on the Grid object.
         The base particle pushing simulation requires the quantities
-        [E_x, E_y, E_z, B_x, B_y, B_z].
-        If any additional required quantities are missing, a warning will be
-        given and that quantity will be assumed to be zero everywhere.
-        This keyword is for specifying quantities in addition to these six.
-        The default is None.
+        [E_x, E_y, E_z, B_x, B_y, B_z]. This keyword is for specifying
+        quantities in addition to these six. If any additional required
+        quantities are missing, that quantity will be assumed to be zero
+        everywhere. A warning will be raised if any of the additional
+        required quantities are missing and are set to zero. The default is
+        None.
 
     verbose : bool, optional
         If true, updates on the status of the program will be printed
