@@ -374,15 +374,14 @@ class ParticleTracker:
 
         The default is 'volume averaged'.
 
-    req_quantities : `list` of str, optional
+    req_quantities : `list` of `str`, default : `None`
         A list of quantity keys required to be specified on the Grid object.
         The base particle pushing simulation requires the quantities
         [E_x, E_y, E_z, B_x, B_y, B_z]. This keyword is for specifying
-        quantities in addition to these six. If any additional required
-        quantities are missing, that quantity will be assumed to be zero
+        quantities in addition to these six. If any required
+        quantities are missing, those quantities will be assumed to be zero
         everywhere. A warning will be raised if any of the additional
-        required quantities are missing and are set to zero. The default is
-        None.
+        required quantities are missing and are set to zero.
 
     verbose : bool, optional
         If true, updates on the status of the program will be printed
