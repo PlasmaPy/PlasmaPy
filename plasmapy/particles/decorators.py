@@ -826,7 +826,12 @@ def particle_input(
     There are some known limitations to |particle_input|.  
 
     - Particle categorization criteria are not yet applied to
-      arguments that get converted into a |ParticleList| (see :issue:``).
+      arguments that get converted into a |ParticleList| (see
+      :issue:`2048`).
+
+    - This decorator is not compatible with setters (see
+      :issue:`2507`).
+
     - 
 
     Examples
